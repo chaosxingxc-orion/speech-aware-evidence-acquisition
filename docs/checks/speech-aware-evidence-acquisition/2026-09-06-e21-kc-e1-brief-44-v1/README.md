@@ -185,6 +185,50 @@ records provenance tier `UNVERIFIED` in the manifest's `legality` block with a G
 declaration warning. That is a property of the arm, not of this cell. The flight receipt should carry
 the warning rather than be surprised by it.
 
+## 2026-09-07 — the twin became a TOKEN twin — `placebo-token-match/`
+
+The prompt fit's own result 4 was that KU-E1c is a **whitespace** twin and not a **token** twin: at
+cap 12 the placebo rendered 42 to 256 flight tokens shorter than KC-E1 per window, median 161,
+because placeholder nouns cost fewer tokens than proper nouns and bracketed normalized forms. The
+owner ruling of 2026-09-06 locks a control to its treatment on the flight tokenizer, so that gap had
+to close before either cell could fly. Exposure row `SAEA-E21-KU-E1C-TOKEN-MATCH-V1`, study commit
+**`a947481e`**, clean tree, one server session of 18 s at zero generated tokens.
+
+Each twin LINE now grows by whole repeats of one neutral one-token filler, `" item"`, until the
+twin's rendered PREFIX through that line measures exactly what the brief's does — the mechanism
+`rails.proposer._token_matched_control` already uses for the KC-A1 control, through the same
+`token_counter` seam. Prefixes rather than isolated lines, so whole-block equality is a consequence:
+the prefix at the last index is the whole block.
+
+| | before (prompt fit) | after |
+|---|---|---|
+| per-line whitespace tokens | equal on all 44 calls | no longer equal, and deliberately so |
+| brief tokens per call, cap 12 | arm 275 / 451.5 / 676, twin 228 / 310.5 / 415 | **equal on all 44 calls**, 275 / 451.5 / 676 |
+| whole request text, per window | twin −256 / −161.0 / −42 against the arm | twin **+7**, constant on all 1,593 windows |
+| worst request | 3,051 against a 6,144-token slot | 3,058, margin 3,086, factor 2.009 |
+
+**The +7 is the evidence-block header, not the brief.** The arm's two blocks name the
+`conec-class-lists-roster` / `-document` transforms and the twin's name their `-placebo-tm` ones; a
+twin that named the arm's transforms would be indistinguishable from it in a sealed trace, so the
+two ids must differ and a differing id costs tokens. A constant 7-token surplus replaces a median
+161-token deficit. A verdict should report it rather than claim a perfect match.
+
+**The flight needs no tokenizer.** The measurement is a hash-pinned artifact,
+`configs/knowledge/e21-brief-placebo-v2/pad-plan-v1.json` (sha256 `e3b494d0…d49c`, 148,435 bytes),
+pinned by relpath and digest in KU-E1c's own fragment under the one new key `evidence_pad_plan`. The
+evidence source `conec-class-lists-placebo-token-matched` replays the per-line repeats, and
+`DerivedEvidenceRegistry` re-derives the padded twin from the same ConEC bytes with the exact
+repeats inside `params_hash`. Both caps are pinned — the whole brief and the flown 12 — and the
+receipt re-renders every call through the rewritten fragment to prove the source replays the bytes
+that were measured.
+
+**One factor, restated.** The cells now differ in two composed keys, `evidence_source` and
+`evidence_pad_plan`. KC-E1's own baseline fragment is byte-identical to the one the fit measured,
+checked with `git diff` against the fit's study commit; its COMPOSED hash reads `3ac6d436…` rather
+than the `65825553…` the fit published, because the shared experiment fragment's `mandatory_slices`
+note was rewritten at `fa357a24` — an edit that moves both cells' composed hashes and neither cell's
+protocol.
+
 ## Files
 
 | file | what it holds |
@@ -192,11 +236,12 @@ the warning rather than be surprised by it.
 | `prompt-fit/prompt-fit.json` | schema `saea-e21-kc-e1-prompt-fit-v1`. Three passes (whole brief, cap 12, cap 16), each cell's token distributions, per-call brief token counts, the max sample and its rendered-envelope sha256, the fit under all three readings, the cap sweep, the twin's per-line assertion and flight-token delta, the eight wire-shape propositions over 6,460 requests, and the decision |
 | `prompt-fit/per-window-rows.json` | schema `saea-e21-kc-e1-prompt-fit-window-rows-v1`. Every one of the 6,460 rendered requests: window id, duration, speech tokens, text tokens, required tokens. Its sha256 is recorded inside `prompt-fit.json` |
 | `prompt-fit/cap-impact.json` | schema `saea-e21-kc-e1-cap-impact-v1`. What the cap discards, class by class and call by call. Zero contacts of every kind — six pure class extractors over the same two ConEC files the evidence source reads |
-| `wire-check/wire-check.json` | schema `saea-e21-kc-e1-wire-check-v1`. Both cells' dry runs, the three halves above, the sealed artifact hashes, and the one-factor comparison |
+| `wire-check/wire-check.json` | schema `saea-e21-kc-e1-wire-check-v1`. Both cells' dry runs, the three halves above, the sealed artifact hashes, and the one-factor comparison. Run against the WHITESPACE twin, before the token match |
+| `placebo-token-match/placebo-token-match.json` | schema `saea-e21-ku-e1c-token-match-v1`. Both caps, per call and per half: the pad plan, both arms' prefix counts and totals, the per-window request-text distributions after padding, and the header residual |
 | `MANIFEST.sha256` | SHA-256 of every file in this directory |
 
-Produced by `scripts/e21_kc_e1_prompt_fit.py` (with `--cap-impact-only` for the third file) and
-`scripts/e21_kc_e1_wire_check.py`. Sealed run artifacts live under
+Produced by `scripts/e21_kc_e1_prompt_fit.py` (with `--cap-impact-only` for the third file),
+`scripts/e21_kc_e1_wire_check.py` and `scripts/build_e21_brief_placebo_token_match.py`. Sealed run artifacts live under
 `$SPEECHRL_DATA_DIR/runs/` and never enter Git.
 
 ## Boundaries

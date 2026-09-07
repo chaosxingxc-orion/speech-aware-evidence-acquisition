@@ -1,7 +1,11 @@
 {
   "arm": "fixed-legal-context",
   "policy": "obs-agent-loop",
-  "evidence_source": "conec-class-lists-placebo",
+  "evidence_source": "conec-class-lists-placebo-token-matched",
+  "evidence_pad_plan": {
+    "artifact_relpath": "configs/knowledge/e21-brief-placebo-v2/pad-plan-v1.json",
+    "artifact_sha256": "e3b494d0020ab25a997ada1d7bf59e69b19ba4c82abe5309b792619ad10dd49c"
+  },
   "evidence_mismatch": false,
   "brief_max_entries_per_class": 12,
   "scorers": [

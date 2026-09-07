@@ -1,0 +1,5954 @@
+{
+ "caps": {
+  "0": {
+   "halves": [
+    {
+     "arm_derived_sha256": "0ce4464d93dfe2947b264a073ef59f407ff211f6586312582905d31d14a29e6e",
+     "arm_prefix_tokens": [
+      57,
+      219,
+      293
+     ],
+     "arm_tokens": 293,
+     "arm_whitespace_tokens": 140,
+     "base_twin_prefix_tokens": [
+      57,
+      129,
+      166
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      90,
+      37
+     ],
+     "sample_id": "4320211",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4320211.names.txt",
+     "source_sha256": "0ebcbfd1683038b20a4d6ca3866c8f353dd44a16170cd8f513c5bd993302e82e",
+     "twin_derived_sha256": "20238f576c8ad2b9afd033bceb12b871faa9a0e6346c4ff5fce3d227f380f010",
+     "twin_prefix_tokens": [
+      57,
+      219,
+      293
+     ],
+     "twin_tokens": 293,
+     "twin_whitespace_tokens": 267
+    },
+    {
+     "arm_derived_sha256": "8edcd8d826b4334f2e8c1aba931da6dfe080e6690d3c28f4b1c66596d62bdbd2",
+     "arm_prefix_tokens": [
+      97,
+      111,
+      125,
+      1905
+     ],
+     "arm_tokens": 1905,
+     "arm_whitespace_tokens": 829,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      119,
+      864
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      4,
+      2,
+      1035
+     ],
+     "sample_id": "4320211",
+     "source_relpath": "datasets/conec/earnings21/contexts/4320211.txt",
+     "source_sha256": "115d26c2fe53a073e945f014124958b0e8e5adbb6ac6a629b9a94b6ea96426f7",
+     "twin_derived_sha256": "47231f082a267bd223467acd305395b5559ff2beeee2b1c7da4e063e80a36235",
+     "twin_prefix_tokens": [
+      97,
+      111,
+      125,
+      1905
+     ],
+     "twin_tokens": 1905,
+     "twin_whitespace_tokens": 1870
+    },
+    {
+     "arm_derived_sha256": "b8b4d649f2aad82726ecf39da9e30c4b245d9cc20cb9e851bf69acd49ca7ba68",
+     "arm_prefix_tokens": [
+      57,
+      201,
+      258,
+      282
+     ],
+     "arm_tokens": 282,
+     "arm_whitespace_tokens": 162,
+     "base_twin_prefix_tokens": [
+      57,
+      137,
+      172,
+      191
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      64,
+      22,
+      5
+     ],
+     "sample_id": "4330115",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4330115.names.txt",
+     "source_sha256": "08840410feff4b5ef428628687afc59e2231958531f31b9ed6de96867b99599c",
+     "twin_derived_sha256": "e0c667c9110d202a2f2e233e08e267858c56af6b04ef18041c97e2a974f3eadc",
+     "twin_prefix_tokens": [
+      57,
+      201,
+      258,
+      282
+     ],
+     "twin_tokens": 282,
+     "twin_whitespace_tokens": 253
+    },
+    {
+     "arm_derived_sha256": "02ebdbf788c984c25620caf4a74dafdaa7f3502f30c5fa5bf8d16b9a3018dd94",
+     "arm_prefix_tokens": [
+      97,
+      126,
+      152,
+      2352
+     ],
+     "arm_tokens": 2352,
+     "arm_whitespace_tokens": 1103,
+     "base_twin_prefix_tokens": [
+      97,
+      116,
+      137,
+      1138
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      10,
+      5,
+      1199
+     ],
+     "sample_id": "4330115",
+     "source_relpath": "datasets/conec/earnings21/contexts/4330115.txt",
+     "source_sha256": "14dcf588585b4e8f32a0c5f0055c73b0ef68780729facd8d8ac33a808549acad",
+     "twin_derived_sha256": "aa18fda5044dde356bf9b41450beea4a65b39575c74d660718a63c27489f2eb6",
+     "twin_prefix_tokens": [
+      97,
+      126,
+      152,
+      2352
+     ],
+     "twin_tokens": 2352,
+     "twin_whitespace_tokens": 2317
+    },
+    {
+     "arm_derived_sha256": "eac72c1aaffb3e48939c40889e3798f4a4a5e97b882b7577c4c6c92454586645",
+     "arm_prefix_tokens": [
+      57,
+      290,
+      399
+     ],
+     "arm_tokens": 399,
+     "arm_whitespace_tokens": 196,
+     "base_twin_prefix_tokens": [
+      57,
+      164,
+      222
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      126,
+      51
+     ],
+     "sample_id": "4341191",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4341191.names.txt",
+     "source_sha256": "ca98595cf41c6a1d3b1b18941b5c459c2b42b2d8722594eacf0619374aa13709",
+     "twin_derived_sha256": "76a785e943b1659c67e6697434639790c9dccbc55e6d4a12ff65cf39b96818ac",
+     "twin_prefix_tokens": [
+      57,
+      290,
+      399
+     ],
+     "twin_tokens": 399,
+     "twin_whitespace_tokens": 373
+    },
+    {
+     "arm_derived_sha256": "28ab6e4c264a473afe3c4d5e3c8db61b0f0fa2538c0a707deaa185eb8d617b54",
+     "arm_prefix_tokens": [
+      97,
+      106,
+      122,
+      3562
+     ],
+     "arm_tokens": 3562,
+     "arm_whitespace_tokens": 1506,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      117,
+      1541
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      1,
+      4,
+      2016
+     ],
+     "sample_id": "4341191",
+     "source_relpath": "datasets/conec/earnings21/contexts/4341191.txt",
+     "source_sha256": "fafc33aa62a02d4f6291a06359c417e8fcec318429485cb2608133841b6173e2",
+     "twin_derived_sha256": "fc931aec15026a0dca8f183d3151921c8a26b388782fedb95b3cc438807ea1c5",
+     "twin_prefix_tokens": [
+      97,
+      106,
+      122,
+      3562
+     ],
+     "twin_tokens": 3562,
+     "twin_whitespace_tokens": 3527
+    },
+    {
+     "arm_derived_sha256": "6df811fd1f126a2e3af08e318a878f605ab58ae5f174c67ce19dc6e91b36253d",
+     "arm_prefix_tokens": [
+      57,
+      184,
+      231
+     ],
+     "arm_tokens": 231,
+     "arm_whitespace_tokens": 125,
+     "base_twin_prefix_tokens": [
+      57,
+      123,
+      151
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      61,
+      19
+     ],
+     "sample_id": "4344338",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4344338.names.txt",
+     "source_sha256": "cceb54ba8aba5c349e5fe223b91b52dba5bb78a476099484fbea74fe8cbe41c2",
+     "twin_derived_sha256": "d5fb5da4ed7b9c9c7a7da2b619e17bdfae6500a924613a3319e5a986db2d594a",
+     "twin_prefix_tokens": [
+      57,
+      184,
+      231
+     ],
+     "twin_tokens": 231,
+     "twin_whitespace_tokens": 205
+    },
+    {
+     "arm_derived_sha256": "a309c4a1112e7dbc058ee1f6a240401f07a06467340bd460a1745d1a635577ec",
+     "arm_prefix_tokens": [
+      97,
+      115,
+      128,
+      1400
+     ],
+     "arm_tokens": 1400,
+     "arm_whitespace_tokens": 672,
+     "base_twin_prefix_tokens": [
+      97,
+      109,
+      121,
+      707
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      6,
+      1,
+      686
+     ],
+     "sample_id": "4344338",
+     "source_relpath": "datasets/conec/earnings21/contexts/4344338.txt",
+     "source_sha256": "4e403cd44f5b0fe24bcd0dbb13ad4bc19a26bcfaff368a924e7bd47b563b7999",
+     "twin_derived_sha256": "5b0243325d5a9cd41e29aaf47be064c92c5198de62f4efd200ceaee30c197cc9",
+     "twin_prefix_tokens": [
+      97,
+      115,
+      128,
+      1400
+     ],
+     "twin_tokens": 1400,
+     "twin_whitespace_tokens": 1365
+    },
+    {
+     "arm_derived_sha256": "e1247db313c875ee7e0b0f960a422e730a64a3db0e623cf909e8031f9c791f55",
+     "arm_prefix_tokens": [
+      57,
+      232,
+      320
+     ],
+     "arm_tokens": 320,
+     "arm_whitespace_tokens": 164,
+     "base_twin_prefix_tokens": [
+      57,
+      139,
+      190
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      93,
+      37
+     ],
+     "sample_id": "4344866",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4344866.names.txt",
+     "source_sha256": "801fda045974f8c5462181f40d356c2b7fb29a9a35230d6d69dbc3d8be5fa0ea",
+     "twin_derived_sha256": "2a060217c2c313fe169f39ba8845b1917913a204be68b137360fd0d425767e30",
+     "twin_prefix_tokens": [
+      57,
+      232,
+      320
+     ],
+     "twin_tokens": 320,
+     "twin_whitespace_tokens": 294
+    },
+    {
+     "arm_derived_sha256": "a54862844609a30e9c322a7c31f3ed9edf03a79e254113c2c4127c2923f34e17",
+     "arm_prefix_tokens": [
+      97,
+      113,
+      122,
+      2792
+     ],
+     "arm_tokens": 2792,
+     "arm_whitespace_tokens": 1210,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      119,
+      1245
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      3,
+      0,
+      1544
+     ],
+     "sample_id": "4344866",
+     "source_relpath": "datasets/conec/earnings21/contexts/4344866.txt",
+     "source_sha256": "2a1664b02798e872880fac5399480418b44c3e85ce4f7725a95524907103da76",
+     "twin_derived_sha256": "6a430c0c58d730137b2a22e0bac34263cb2e69d29981af0ff15081d63a3f816e",
+     "twin_prefix_tokens": [
+      97,
+      113,
+      122,
+      2792
+     ],
+     "twin_tokens": 2792,
+     "twin_whitespace_tokens": 2757
+    },
+    {
+     "arm_derived_sha256": "deed09167bcf3beb32b69fa8e927d68365efacac8a49fd7151849d4126a45f6c",
+     "arm_prefix_tokens": [
+      57,
+      291,
+      397
+     ],
+     "arm_tokens": 397,
+     "arm_whitespace_tokens": 182,
+     "base_twin_prefix_tokens": [
+      57,
+      153,
+      208
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      138,
+      51
+     ],
+     "sample_id": "4346818",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4346818.names.txt",
+     "source_sha256": "03a2bc46a7ee2d1c0a0d3d79ac861c5127366801eb817b73bebdac188b55f985",
+     "twin_derived_sha256": "f50c6a9392d01efec8cad33f1e0397f9dba27b46a601fa7febe342cb2f7b4c93",
+     "twin_prefix_tokens": [
+      57,
+      291,
+      397
+     ],
+     "twin_tokens": 397,
+     "twin_whitespace_tokens": 371
+    },
+    {
+     "arm_derived_sha256": "ed79b0ed3e28933617c3fda0dca6c60645cf928edf0668760ce3729112e8aa8b",
+     "arm_prefix_tokens": [
+      97,
+      120,
+      138,
+      3222
+     ],
+     "arm_tokens": 3222,
+     "arm_whitespace_tokens": 1410,
+     "base_twin_prefix_tokens": [
+      97,
+      113,
+      128,
+      1445
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      7,
+      3,
+      1767
+     ],
+     "sample_id": "4346818",
+     "source_relpath": "datasets/conec/earnings21/contexts/4346818.txt",
+     "source_sha256": "e9faba6d7a831f4b421ec0eb2ba6d3a4811d9db8b7d7659829d32f17fbd95a7c",
+     "twin_derived_sha256": "be9ab2b81948ad8c798b816a8c0b7b2dc29cf846d88342d93213a94ff697fd3b",
+     "twin_prefix_tokens": [
+      97,
+      120,
+      138,
+      3222
+     ],
+     "twin_tokens": 3222,
+     "twin_whitespace_tokens": 3187
+    },
+    {
+     "arm_derived_sha256": "db8b0a9e9b73b92f19aea8a6e4b9862d0da1adefd807ad7a718343829be66580",
+     "arm_prefix_tokens": [
+      57,
+      417,
+      572,
+      632
+     ],
+     "arm_tokens": 632,
+     "arm_whitespace_tokens": 287,
+     "base_twin_prefix_tokens": [
+      57,
+      207,
+      274,
+      316
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      210,
+      88,
+      18
+     ],
+     "sample_id": "4346923",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4346923.names.txt",
+     "source_sha256": "81a30de82786ca07c03ab5da11e8f8dea3151b511e6050de4e5812bc58d9e805",
+     "twin_derived_sha256": "6b05a3f9b969c89fe3d3720b681b650913298fe45f2bbcd181eea86f922cd010",
+     "twin_prefix_tokens": [
+      57,
+      417,
+      572,
+      632
+     ],
+     "twin_tokens": 632,
+     "twin_whitespace_tokens": 603
+    },
+    {
+     "arm_derived_sha256": "02bb1b1b9a3b974cf100a00dfc9531959d44388f55ba7086e4bb0224bc73b2bd",
+     "arm_prefix_tokens": [
+      97,
+      107,
+      145,
+      2355
+     ],
+     "arm_tokens": 2355,
+     "arm_whitespace_tokens": 1031,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      132,
+      1066
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      2,
+      11,
+      1276
+     ],
+     "sample_id": "4346923",
+     "source_relpath": "datasets/conec/earnings21/contexts/4346923.txt",
+     "source_sha256": "13439a311e5c75f3cd981d5c5bae12de668e929e4911d7403ea66aaa257c8b66",
+     "twin_derived_sha256": "a975d84a5e4ab7fd1d079e6fce08091007719099d5f20947fe539bf28d97b7bf",
+     "twin_prefix_tokens": [
+      97,
+      107,
+      145,
+      2355
+     ],
+     "twin_tokens": 2355,
+     "twin_whitespace_tokens": 2320
+    },
+    {
+     "arm_derived_sha256": "2bfe8c518db3ed550b18ee3811e9479e822228edb91153f32cdf7010e8aa2310",
+     "arm_prefix_tokens": [
+      57,
+      255,
+      347
+     ],
+     "arm_tokens": 347,
+     "arm_whitespace_tokens": 155,
+     "base_twin_prefix_tokens": [
+      57,
+      136,
+      181
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      119,
+      47
+     ],
+     "sample_id": "4359732",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4359732.names.txt",
+     "source_sha256": "13b215fba21146a6e577b2aa6874846b3d78a080a38d7221ab26e71c0b05b13a",
+     "twin_derived_sha256": "bdc77ee2213d75b64b2a9fdee746659dbc3cf7fca36f772463d8be12d347fe49",
+     "twin_prefix_tokens": [
+      57,
+      255,
+      347
+     ],
+     "twin_tokens": 347,
+     "twin_whitespace_tokens": 321
+    },
+    {
+     "arm_derived_sha256": "edf53c220fc2c7286eb33225a2e62aabb93050bd84c8087a305bbf35562ef0aa",
+     "arm_prefix_tokens": [
+      97,
+      122,
+      136,
+      2217
+     ],
+     "arm_tokens": 2217,
+     "arm_whitespace_tokens": 1002,
+     "base_twin_prefix_tokens": [
+      97,
+      114,
+      126,
+      1037
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      8,
+      2,
+      1170
+     ],
+     "sample_id": "4359732",
+     "source_relpath": "datasets/conec/earnings21/contexts/4359732.txt",
+     "source_sha256": "459be43f5c6c27d3aa7350dea294fee4943de45fe1504f04e9458ee4ff00d488",
+     "twin_derived_sha256": "52ede2e428c05f312a442fb79f794ed4079006642356cbe2003055da6e3c9498",
+     "twin_prefix_tokens": [
+      97,
+      122,
+      136,
+      2217
+     ],
+     "twin_tokens": 2217,
+     "twin_whitespace_tokens": 2182
+    },
+    {
+     "arm_derived_sha256": "1699d57d8cdce1407cd9d6d13fea1b5afe5e8e2d4d155c2e3e8e6835492667fa",
+     "arm_prefix_tokens": [
+      57,
+      199,
+      256
+     ],
+     "arm_tokens": 256,
+     "arm_whitespace_tokens": 140,
+     "base_twin_prefix_tokens": [
+      57,
+      127,
+      166
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      72,
+      18
+     ],
+     "sample_id": "4359971",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4359971.names.txt",
+     "source_sha256": "6e3b71715afb22f595ab95f9cd01b382cec71fd0da203bcd5f1279e387649973",
+     "twin_derived_sha256": "f9102e0356a3f1e90383df0ac3f0a882edf3acc5d3698ed4cd93d0b11da27981",
+     "twin_prefix_tokens": [
+      57,
+      199,
+      256
+     ],
+     "twin_tokens": 256,
+     "twin_whitespace_tokens": 230
+    },
+    {
+     "arm_derived_sha256": "34d6cc4a26d0dd8ed7b0d6fcc9eaad5e1887b3cb1a7c1f977d73ed6ddfd9e87b",
+     "arm_prefix_tokens": [
+      97,
+      111,
+      124,
+      1936
+     ],
+     "arm_tokens": 1936,
+     "arm_whitespace_tokens": 904,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      119,
+      939
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      4,
+      1,
+      992
+     ],
+     "sample_id": "4359971",
+     "source_relpath": "datasets/conec/earnings21/contexts/4359971.txt",
+     "source_sha256": "750b6e548925c61a5b9779a932a7fac6f6dd902052da34d503e4fdb975759a9a",
+     "twin_derived_sha256": "7dc7dfc5523cadebe4a838cc0e7942377a141dfab8f622f1361172b73613eac9",
+     "twin_prefix_tokens": [
+      97,
+      111,
+      124,
+      1936
+     ],
+     "twin_tokens": 1936,
+     "twin_whitespace_tokens": 1901
+    },
+    {
+     "arm_derived_sha256": "6b6838bc0aa605a5cf0979e65c0f5bdf01aebfd1792fde92297083dd83f915aa",
+     "arm_prefix_tokens": [
+      57,
+      330,
+      434
+     ],
+     "arm_tokens": 434,
+     "arm_whitespace_tokens": 227,
+     "base_twin_prefix_tokens": [
+      57,
+      194,
+      253
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      136,
+      45
+     ],
+     "sample_id": "4360366",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4360366.names.txt",
+     "source_sha256": "70f225cf167edf9784ecd33fc90408879e80dd363f9636c62ca9debe827e08b1",
+     "twin_derived_sha256": "a6195003255dfa88dbbb9e1fbfb83c906e87019685f67d680318955312792bda",
+     "twin_prefix_tokens": [
+      57,
+      330,
+      434
+     ],
+     "twin_tokens": 434,
+     "twin_whitespace_tokens": 408
+    },
+    {
+     "arm_derived_sha256": "afa4f66004d599b383fa26128a695a32b6a7d3aca18690e6100ffe4975336515",
+     "arm_prefix_tokens": [
+      97,
+      144,
+      157,
+      2895
+     ],
+     "arm_tokens": 2895,
+     "arm_whitespace_tokens": 1318,
+     "base_twin_prefix_tokens": [
+      97,
+      128,
+      140,
+      1353
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      16,
+      1,
+      1525
+     ],
+     "sample_id": "4360366",
+     "source_relpath": "datasets/conec/earnings21/contexts/4360366.txt",
+     "source_sha256": "64c340255a2b0823ae27942c2290c592d6c25eb060d5a68f194a7d8080a64351",
+     "twin_derived_sha256": "21a67c0bcdb757093cabc2deb9dc179534dc1b446b89fbfa696ef9feeb569745",
+     "twin_prefix_tokens": [
+      97,
+      144,
+      157,
+      2895
+     ],
+     "twin_tokens": 2895,
+     "twin_whitespace_tokens": 2860
+    },
+    {
+     "arm_derived_sha256": "c8582f559ff303255c004bd5a92f18c79a74438e54e815a6c0bf90573ee4fa9a",
+     "arm_prefix_tokens": [
+      57,
+      213,
+      272
+     ],
+     "arm_tokens": 272,
+     "arm_whitespace_tokens": 140,
+     "base_twin_prefix_tokens": [
+      57,
+      131,
+      166
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      82,
+      24
+     ],
+     "sample_id": "4360674",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4360674.names.txt",
+     "source_sha256": "74630cd35514706607128bbd3ba13bcd0eb8a3cd20cf5e1a10c28e8e9efe001e",
+     "twin_derived_sha256": "ef6e644767fb9dacc79602cf5ce5d897ac4d38c4f677caad4d3e4dbd5b9f1fc3",
+     "twin_prefix_tokens": [
+      57,
+      213,
+      272
+     ],
+     "twin_tokens": 272,
+     "twin_whitespace_tokens": 246
+    },
+    {
+     "arm_derived_sha256": "d301ce6b09e824f3cd88eac66484ca6c232d1c89e19993c0b575c009e33d466b",
+     "arm_prefix_tokens": [
+      97,
+      132,
+      141,
+      2808
+     ],
+     "arm_tokens": 2808,
+     "arm_whitespace_tokens": 1249,
+     "base_twin_prefix_tokens": [
+      97,
+      119,
+      128,
+      1284
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      13,
+      0,
+      1511
+     ],
+     "sample_id": "4360674",
+     "source_relpath": "datasets/conec/earnings21/contexts/4360674.txt",
+     "source_sha256": "49c227798730cfdc18d5d40e471e5d1b7842dbdce08711b586dae8c9e1790bb7",
+     "twin_derived_sha256": "699720d259d71225839fc0d02a0818a35e5f311154ecd435d0e7bd94a49ef213",
+     "twin_prefix_tokens": [
+      97,
+      132,
+      141,
+      2808
+     ],
+     "twin_tokens": 2808,
+     "twin_whitespace_tokens": 2773
+    },
+    {
+     "arm_derived_sha256": "386120aedf4df52c0b001fbce7a382e79b3658b1f83bf1e5050abb25ec023633",
+     "arm_prefix_tokens": [
+      57,
+      302,
+      436
+     ],
+     "arm_tokens": 436,
+     "arm_whitespace_tokens": 198,
+     "base_twin_prefix_tokens": [
+      57,
+      159,
+      224
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      143,
+      69
+     ],
+     "sample_id": "4360717",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4360717.names.txt",
+     "source_sha256": "3822deb5103e592deeabfde1aba72bb2c460f11af718cc154f63daeda17218ad",
+     "twin_derived_sha256": "b2496127e41c3c1310a4e9422a2a67e9be08ed245ee7e9cc5c4dd3f02d15ec08",
+     "twin_prefix_tokens": [
+      57,
+      302,
+      436
+     ],
+     "twin_tokens": 436,
+     "twin_whitespace_tokens": 410
+    },
+    {
+     "arm_derived_sha256": "d843d172fa791e352a3f2b0b0bfe059f0e348f022c18aaf8a7ac77343815aa80",
+     "arm_prefix_tokens": [
+      97,
+      119,
+      134,
+      3142
+     ],
+     "arm_tokens": 3142,
+     "arm_whitespace_tokens": 1362,
+     "base_twin_prefix_tokens": [
+      97,
+      113,
+      125,
+      1397
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      6,
+      3,
+      1736
+     ],
+     "sample_id": "4360717",
+     "source_relpath": "datasets/conec/earnings21/contexts/4360717.txt",
+     "source_sha256": "b267508f3efe210e5486285e5e529fd31d494ce66023f800dac179a5ed745d64",
+     "twin_derived_sha256": "5c5ef85bc342eaa880bf3e80603ca6d42c18561bdaa9d6995c556eac9ca7baaa",
+     "twin_prefix_tokens": [
+      97,
+      119,
+      134,
+      3142
+     ],
+     "twin_tokens": 3142,
+     "twin_whitespace_tokens": 3107
+    },
+    {
+     "arm_derived_sha256": "f4a8ce7ec31cfe9873aee6ccc658f4cd482899c14627394811c6e08299a90a98",
+     "arm_prefix_tokens": [
+      57,
+      261,
+      353
+     ],
+     "arm_tokens": 353,
+     "arm_whitespace_tokens": 168,
+     "base_twin_prefix_tokens": [
+      57,
+      143,
+      194
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      118,
+      41
+     ],
+     "sample_id": "4361631",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4361631.names.txt",
+     "source_sha256": "ab734b4692245b8b7b663dd3df02a701e54b94c3db2254b146af05ad1d66aded",
+     "twin_derived_sha256": "de76bef8e8b7ef989959d08ddfd5928ab179cfb5d481a75ca22da8a0d540d713",
+     "twin_prefix_tokens": [
+      57,
+      261,
+      353
+     ],
+     "twin_tokens": 353,
+     "twin_whitespace_tokens": 327
+    },
+    {
+     "arm_derived_sha256": "8ff1d97c17519dadbb7b5a6d3ec6d42db5294306ce1deb0941be4d1f23833089",
+     "arm_prefix_tokens": [
+      97,
+      124,
+      134,
+      1471
+     ],
+     "arm_tokens": 1471,
+     "arm_whitespace_tokens": 566,
+     "base_twin_prefix_tokens": [
+      97,
+      111,
+      120,
+      601
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      13,
+      1,
+      856
+     ],
+     "sample_id": "4361631",
+     "source_relpath": "datasets/conec/earnings21/contexts/4361631.txt",
+     "source_sha256": "a544f9536ae99751e9137985c5204db46a5b070f8879d9718602bf9dcd69c0ec",
+     "twin_derived_sha256": "c0aa2572368dbc1956e21b77378dcc8857abafd80c0344ff775d04106d068867",
+     "twin_prefix_tokens": [
+      97,
+      124,
+      134,
+      1471
+     ],
+     "twin_tokens": 1471,
+     "twin_whitespace_tokens": 1436
+    },
+    {
+     "arm_derived_sha256": "c535dc0a0fcfc48a29843128c274f6b634521a8790ee59d4254e093be4a12b57",
+     "arm_prefix_tokens": [
+      57,
+      302,
+      397
+     ],
+     "arm_tokens": 397,
+     "arm_whitespace_tokens": 187,
+     "base_twin_prefix_tokens": [
+      57,
+      168,
+      213
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      134,
+      50
+     ],
+     "sample_id": "4363614",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4363614.names.txt",
+     "source_sha256": "0d8acbf5f4df4272343baf077049fe7aec8a915dae64b45fd8f8ddc91ca50990",
+     "twin_derived_sha256": "0ad9d3ca442cfafa7ef11553f55499b8a6bb5dbfabc37ed8c43be92605808519",
+     "twin_prefix_tokens": [
+      57,
+      302,
+      397
+     ],
+     "twin_tokens": 397,
+     "twin_whitespace_tokens": 371
+    },
+    {
+     "arm_derived_sha256": "44c1b8ad0366c770d9df4c1eb7c1269b43625f5daeab0d9f9f9802e077863b51",
+     "arm_prefix_tokens": [
+      97,
+      111,
+      132,
+      3288
+     ],
+     "arm_tokens": 3288,
+     "arm_whitespace_tokens": 1451,
+     "base_twin_prefix_tokens": [
+      97,
+      108,
+      123,
+      1486
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      3,
+      6,
+      1793
+     ],
+     "sample_id": "4363614",
+     "source_relpath": "datasets/conec/earnings21/contexts/4363614.txt",
+     "source_sha256": "59ff25a9b4cad9dc177ca72bbfbf8fc4474cfafd8b1bf7a83575d5eb761a8c62",
+     "twin_derived_sha256": "767f511f42207e3403e83f42ca6c5e9e3a538de80c263b3da64cd67ccb73f315",
+     "twin_prefix_tokens": [
+      97,
+      111,
+      132,
+      3288
+     ],
+     "twin_tokens": 3288,
+     "twin_whitespace_tokens": 3253
+    },
+    {
+     "arm_derived_sha256": "49260eb714715ce6a74c15e58368af5a48e3efd595718841f67b1d5fda8f39d9",
+     "arm_prefix_tokens": [
+      57,
+      294,
+      406
+     ],
+     "arm_tokens": 406,
+     "arm_whitespace_tokens": 197,
+     "base_twin_prefix_tokens": [
+      57,
+      167,
+      223
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      127,
+      56
+     ],
+     "sample_id": "4364366",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4364366.names.txt",
+     "source_sha256": "d2d29e8566d9f0a64bd1efdfb04f1be2740e625724c7c1b9c0f89e35d405a0e6",
+     "twin_derived_sha256": "4ec1787631ed7d5f74690ce98c65aee0c18c1fa1b57d9353cc14046bee878238",
+     "twin_prefix_tokens": [
+      57,
+      294,
+      406
+     ],
+     "twin_tokens": 406,
+     "twin_whitespace_tokens": 380
+    },
+    {
+     "arm_derived_sha256": "d1741e2c6835810c6ecfe4e9616dcc18fd3ea3b1ad890cc987d4228056d488a3",
+     "arm_prefix_tokens": [
+      97,
+      113,
+      126,
+      4153
+     ],
+     "arm_tokens": 4153,
+     "arm_whitespace_tokens": 1778,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      122,
+      1813
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      3,
+      1,
+      2336
+     ],
+     "sample_id": "4364366",
+     "source_relpath": "datasets/conec/earnings21/contexts/4364366.txt",
+     "source_sha256": "a63acc293ac7e38fef44d47782df84a9f3afec98745cead961491815daff2e81",
+     "twin_derived_sha256": "25c2e255b073db846f075337a175d6832c4f67e2acd62dfc392f5231a48fcb39",
+     "twin_prefix_tokens": [
+      97,
+      113,
+      126,
+      4153
+     ],
+     "twin_tokens": 4153,
+     "twin_whitespace_tokens": 4118
+    },
+    {
+     "arm_derived_sha256": "ed0af03c967510ced9e97869b96d20543fb98a20d7a0e3aa90246d4972f367ff",
+     "arm_prefix_tokens": [
+      57,
+      250,
+      332
+     ],
+     "arm_tokens": 332,
+     "arm_whitespace_tokens": 170,
+     "base_twin_prefix_tokens": [
+      57,
+      147,
+      196
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      103,
+      33
+     ],
+     "sample_id": "4365024",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4365024.names.txt",
+     "source_sha256": "14e2677ce560b513975b7a53f1d22313da597a790f0182ef30893f8fe05a0ecd",
+     "twin_derived_sha256": "2c3d1b86403f7a3fa0304536b3c77adb4d3e9e64e72cedc2ee8f24ce294600b4",
+     "twin_prefix_tokens": [
+      57,
+      250,
+      332
+     ],
+     "twin_tokens": 332,
+     "twin_whitespace_tokens": 306
+    },
+    {
+     "arm_derived_sha256": "89c28775df80e988c0c0ccccd8bd88f67e52df62d3ca8cb4e964f0252eadb9db",
+     "arm_prefix_tokens": [
+      97,
+      115,
+      124,
+      1683
+     ],
+     "arm_tokens": 1683,
+     "arm_whitespace_tokens": 791,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      119,
+      826
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      5,
+      0,
+      852
+     ],
+     "sample_id": "4365024",
+     "source_relpath": "datasets/conec/earnings21/contexts/4365024.txt",
+     "source_sha256": "bd2acffaac04b84e8ee88a3dd566a33ccf8dd3571c0bac6768c98c4cef46f50a",
+     "twin_derived_sha256": "ab0da5fd4ed067c766d883891d33b3efda7c8108acd3bb3cf42646e15029797b",
+     "twin_prefix_tokens": [
+      97,
+      115,
+      124,
+      1683
+     ],
+     "twin_tokens": 1683,
+     "twin_whitespace_tokens": 1648
+    },
+    {
+     "arm_derived_sha256": "6858b828938429b715a70c0f060031048ab79a3dcbf0863c6ea8b9f47a8530ea",
+     "arm_prefix_tokens": [
+      57,
+      152,
+      182
+     ],
+     "arm_tokens": 182,
+     "arm_whitespace_tokens": 97,
+     "base_twin_prefix_tokens": [
+      57,
+      103,
+      123
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      49,
+      10
+     ],
+     "sample_id": "4365948",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4365948.names.txt",
+     "source_sha256": "390b70e2317b9f5f744b029a6f2db6e56927cdc72d1f4d8d974b8ae0101ed1d1",
+     "twin_derived_sha256": "b2c264b94137e2bf861ef283443b95bbcd192f443a852129ad0ad390441a31cb",
+     "twin_prefix_tokens": [
+      57,
+      152,
+      182
+     ],
+     "twin_tokens": 182,
+     "twin_whitespace_tokens": 156
+    },
+    {
+     "arm_derived_sha256": "73ef141e46298d6dd3fbb8522150d786a5e8e4986bf61daf4be7b18890098d3c",
+     "arm_prefix_tokens": [
+      97,
+      105,
+      121,
+      2013
+     ],
+     "arm_tokens": 2013,
+     "arm_whitespace_tokens": 929,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      117,
+      964
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      0,
+      4,
+      1045
+     ],
+     "sample_id": "4365948",
+     "source_relpath": "datasets/conec/earnings21/contexts/4365948.txt",
+     "source_sha256": "ab6abb87ddd28eb25535df55539342bb2eb94418283755604add56c9cf9cb3ac",
+     "twin_derived_sha256": "33674474506142ec605c24e6002e0d491f672cd9c815c16a9eee9fa253abfae0",
+     "twin_prefix_tokens": [
+      97,
+      105,
+      121,
+      2013
+     ],
+     "twin_tokens": 2013,
+     "twin_whitespace_tokens": 1978
+    },
+    {
+     "arm_derived_sha256": "d44c0b6c3e1f0727f186d26150d8d1d26971e4200edbf6c6ab57da573fd8ef6b",
+     "arm_prefix_tokens": [
+      57,
+      270,
+      356
+     ],
+     "arm_tokens": 356,
+     "arm_whitespace_tokens": 170,
+     "base_twin_prefix_tokens": [
+      57,
+      154,
+      196
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      116,
+      44
+     ],
+     "sample_id": "4366302",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4366302.names.txt",
+     "source_sha256": "c3c0ba701719b3fc51fd4f37b3368a4d783c439332cfc8742c64840a7a9796ef",
+     "twin_derived_sha256": "1579e4413d2490bc430ccead85e8ab2dae0fd0f38802dc4d04fa35b162b9d5f0",
+     "twin_prefix_tokens": [
+      57,
+      270,
+      356
+     ],
+     "twin_tokens": 356,
+     "twin_whitespace_tokens": 330
+    },
+    {
+     "arm_derived_sha256": "42c83aaed944aaac8368ffe2b60e0979dce87e24cfd6ae5bdbaa946844fec4c5",
+     "arm_prefix_tokens": [
+      97,
+      122,
+      2696
+     ],
+     "arm_tokens": 2696,
+     "arm_whitespace_tokens": 1165,
+     "base_twin_prefix_tokens": [
+      97,
+      114,
+      1198
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      8,
+      1490
+     ],
+     "sample_id": "4366302",
+     "source_relpath": "datasets/conec/earnings21/contexts/4366302.txt",
+     "source_sha256": "19100dc79de4845922fdf49e7f0d8cd7eb7076753a214024b6ca673ea74008b0",
+     "twin_derived_sha256": "7a1c6ca293c7748b939baa790b73b6aff25f80343981739debd8fffdceaa93f1",
+     "twin_prefix_tokens": [
+      97,
+      122,
+      2696
+     ],
+     "twin_tokens": 2696,
+     "twin_whitespace_tokens": 2663
+    },
+    {
+     "arm_derived_sha256": "f2f7b2d006fae11d0db6b3eb91401ff5e7527674e858782ccf341df126c2f62c",
+     "arm_prefix_tokens": [
+      57,
+      256,
+      347
+     ],
+     "arm_tokens": 347,
+     "arm_whitespace_tokens": 167,
+     "base_twin_prefix_tokens": [
+      57,
+      148,
+      193
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      108,
+      46
+     ],
+     "sample_id": "4366429",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4366429.names.txt",
+     "source_sha256": "812ad230c76a7919bb6af461f6edc2e46ed79d71b530f262e69d2a9d29b4a48e",
+     "twin_derived_sha256": "586138bf1f6d3a5d322deda775c9363bbc4f0ff03ed65361c0667ed42d1d18c8",
+     "twin_prefix_tokens": [
+      57,
+      256,
+      347
+     ],
+     "twin_tokens": 347,
+     "twin_whitespace_tokens": 321
+    },
+    {
+     "arm_derived_sha256": "b682b48867bc4ab2ac02e55b2942e5930b958612362b2cd0cb375478b5fae80c",
+     "arm_prefix_tokens": [
+      97,
+      118,
+      132,
+      1932
+     ],
+     "arm_tokens": 1932,
+     "arm_whitespace_tokens": 892,
+     "base_twin_prefix_tokens": [
+      97,
+      112,
+      124,
+      927
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      6,
+      2,
+      997
+     ],
+     "sample_id": "4366429",
+     "source_relpath": "datasets/conec/earnings21/contexts/4366429.txt",
+     "source_sha256": "7cbb0e751b4bf115c70c7e600124e8d3cf7de37ca26bc2abd410e60220652d35",
+     "twin_derived_sha256": "a90a5fe8f9f39192009715858f8d8e21fa1ac5e77c91b2f4abff04fa2f0e917d",
+     "twin_prefix_tokens": [
+      97,
+      118,
+      132,
+      1932
+     ],
+     "twin_tokens": 1932,
+     "twin_whitespace_tokens": 1897
+    },
+    {
+     "arm_derived_sha256": "a265e1136044fd4cb742b22f7e84ba9c3a13e6c109a0f4a6bb78c048e7f7682a",
+     "arm_prefix_tokens": [
+      57,
+      123,
+      156
+     ],
+     "arm_tokens": 156,
+     "arm_whitespace_tokens": 84,
+     "base_twin_prefix_tokens": [
+      57,
+      91,
+      110
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      32,
+      14
+     ],
+     "sample_id": "4366522",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4366522.names.txt",
+     "source_sha256": "386f2954d2b04c8d207b7a66d89e2605db060c90e6f56876ade59c0f020a6b0d",
+     "twin_derived_sha256": "1cd0245bbb2f7c5992e3bf22dcce7e2618223276a0d6380a2c77b2b560398395",
+     "twin_prefix_tokens": [
+      57,
+      123,
+      156
+     ],
+     "twin_tokens": 156,
+     "twin_whitespace_tokens": 130
+    },
+    {
+     "arm_derived_sha256": "de03647cf1fea2ea922daad76d2a80da8cefc10f712f70783bbec0f69138e832",
+     "arm_prefix_tokens": [
+      97,
+      123,
+      133,
+      3499
+     ],
+     "arm_tokens": 3499,
+     "arm_whitespace_tokens": 1437,
+     "base_twin_prefix_tokens": [
+      97,
+      112,
+      121,
+      1472
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      11,
+      1,
+      2015
+     ],
+     "sample_id": "4366522",
+     "source_relpath": "datasets/conec/earnings21/contexts/4366522.txt",
+     "source_sha256": "5809e340f1d51dcba2a2581cd4370de2ede30c8dc3b403cb60c425e39909c4fc",
+     "twin_derived_sha256": "2673afbbf9bfc266e8c7b3c922a101eff7989410b70cda7f2be644a08f68a42b",
+     "twin_prefix_tokens": [
+      97,
+      123,
+      133,
+      3499
+     ],
+     "twin_tokens": 3499,
+     "twin_whitespace_tokens": 3464
+    },
+    {
+     "arm_derived_sha256": "6f081fbf190dae95c6dbc79a71f4fdbe31099ab2237fcc90f39d913f403f2219",
+     "arm_prefix_tokens": [
+      57,
+      191,
+      255
+     ],
+     "arm_tokens": 255,
+     "arm_whitespace_tokens": 134,
+     "base_twin_prefix_tokens": [
+      57,
+      122,
+      160
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      69,
+      26
+     ],
+     "sample_id": "4366893",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4366893.names.txt",
+     "source_sha256": "10a128316b6fa33128caaa558a5a10c861e53c369efa26c6aa3329cee4b523d6",
+     "twin_derived_sha256": "0baef176598b3ac79475ddfd53d1ee51268f9927d289e1699cf674e13e78ac94",
+     "twin_prefix_tokens": [
+      57,
+      191,
+      255
+     ],
+     "twin_tokens": 255,
+     "twin_whitespace_tokens": 229
+    },
+    {
+     "arm_derived_sha256": "d574d6a8c97a0b072cb04e4df8c25af56d133d1515d1b7e2985c8072569e715a",
+     "arm_prefix_tokens": [
+      97,
+      113,
+      1483
+     ],
+     "arm_tokens": 1483,
+     "arm_whitespace_tokens": 681,
+     "base_twin_prefix_tokens": [
+      97,
+      109,
+      714
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      4,
+      765
+     ],
+     "sample_id": "4366893",
+     "source_relpath": "datasets/conec/earnings21/contexts/4366893.txt",
+     "source_sha256": "2554fb0005539f5f9f43853bcb0d042eb7185b1f8d286f8ba01de2ab4432c446",
+     "twin_derived_sha256": "02fd3933028646e232e0580c6270bc15f3c97e3529da270612c8c0a0ef7bb365",
+     "twin_prefix_tokens": [
+      97,
+      113,
+      1483
+     ],
+     "twin_tokens": 1483,
+     "twin_whitespace_tokens": 1450
+    },
+    {
+     "arm_derived_sha256": "4e81308415c4024f38fef4cdded1a691024c9c03d45ba4b83a44650a80b48277",
+     "arm_prefix_tokens": [
+      57,
+      173,
+      224
+     ],
+     "arm_tokens": 224,
+     "arm_whitespace_tokens": 114,
+     "base_twin_prefix_tokens": [
+      57,
+      111,
+      140
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      62,
+      22
+     ],
+     "sample_id": "4367318",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4367318.names.txt",
+     "source_sha256": "966af192b2ab154bcd4b1cbaf07fbd75ef78966a1401f28fdb2a13c7ab9497c9",
+     "twin_derived_sha256": "2cd5cb8ba9c1586f7469f047d8a79db24e1f811abefb9d62ada3ae769be979a3",
+     "twin_prefix_tokens": [
+      57,
+      173,
+      224
+     ],
+     "twin_tokens": 224,
+     "twin_whitespace_tokens": 198
+    },
+    {
+     "arm_derived_sha256": "a7d9ad2f62a8421ecde85d4ab2f06a3addd3fc54212483e8730e3f07d3107123",
+     "arm_prefix_tokens": [
+      97,
+      112,
+      122,
+      900
+     ],
+     "arm_tokens": 900,
+     "arm_whitespace_tokens": 417,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      116,
+      452
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      5,
+      1,
+      442
+     ],
+     "sample_id": "4367318",
+     "source_relpath": "datasets/conec/earnings21/contexts/4367318.txt",
+     "source_sha256": "d4b2d39b598620db38b9b781966bba61268e1a4fdc1a0ee353d1acf9c2c62bff",
+     "twin_derived_sha256": "a724024fa91d97c778c280c20b9ff75847cb0d70334b4752471dc317e828a525",
+     "twin_prefix_tokens": [
+      97,
+      112,
+      122,
+      900
+     ],
+     "twin_tokens": 900,
+     "twin_whitespace_tokens": 865
+    },
+    {
+     "arm_derived_sha256": "6144c4abf4e3bcbfc769511c1dbeb083bf8a7bbd5d7efae55f9187564f11b6e0",
+     "arm_prefix_tokens": [
+      57,
+      245,
+      301
+     ],
+     "arm_tokens": 301,
+     "arm_whitespace_tokens": 144,
+     "base_twin_prefix_tokens": [
+      57,
+      138,
+      170
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      107,
+      24
+     ],
+     "sample_id": "4367535",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4367535.names.txt",
+     "source_sha256": "94a14f7b496b9ee27726363583b62ee9399ac1cade1cb31bd9cdc8ae3c0449ac",
+     "twin_derived_sha256": "a93f2812bb44f21d1021d2eda958794cf90ffca69d4d0384278730063c244683",
+     "twin_prefix_tokens": [
+      57,
+      245,
+      301
+     ],
+     "twin_tokens": 301,
+     "twin_whitespace_tokens": 275
+    },
+    {
+     "arm_derived_sha256": "aeaa2c46e84a104906f2a9cbc2702970f1637783b27a3c693d3b830c3a088088",
+     "arm_prefix_tokens": [
+      97,
+      111,
+      1466
+     ],
+     "arm_tokens": 1466,
+     "arm_whitespace_tokens": 643,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      676
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      4,
+      786
+     ],
+     "sample_id": "4367535",
+     "source_relpath": "datasets/conec/earnings21/contexts/4367535.txt",
+     "source_sha256": "2f6f5549ef1d91cd8a60df947de1c334f23f0532f52bbbd01d3f5e3d3b2abc15",
+     "twin_derived_sha256": "de67cd2335e85cb6934e2aefe976cb64042df720aace1dbb26057e1c94b19373",
+     "twin_prefix_tokens": [
+      97,
+      111,
+      1466
+     ],
+     "twin_tokens": 1466,
+     "twin_whitespace_tokens": 1433
+    },
+    {
+     "arm_derived_sha256": "1a0ec82bbd3ae2768177603cd447a67baf1d65d032414f2eb79bca38f30f306a",
+     "arm_prefix_tokens": [
+      57,
+      325,
+      475
+     ],
+     "arm_tokens": 475,
+     "arm_whitespace_tokens": 225,
+     "base_twin_prefix_tokens": [
+      57,
+      167,
+      251
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      158,
+      66
+     ],
+     "sample_id": "4368670",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4368670.names.txt",
+     "source_sha256": "fd6610dfc20b6c480e8d30369a2f4c7110929f7336709267a3109b67d00eb8ef",
+     "twin_derived_sha256": "4131bbac0d09f91b885de096c5d4ddcf4d8bf8a3a76fba6c3a3fb9815d9f0dd5",
+     "twin_prefix_tokens": [
+      57,
+      325,
+      475
+     ],
+     "twin_tokens": 475,
+     "twin_whitespace_tokens": 449
+    },
+    {
+     "arm_derived_sha256": "25c3f5313a68e7f7fbf65076a8fa1e767a13d1bc7c372a7a6122e5ef5babbe49",
+     "arm_prefix_tokens": [
+      97,
+      125,
+      142,
+      5418
+     ],
+     "arm_tokens": 5418,
+     "arm_whitespace_tokens": 2340,
+     "base_twin_prefix_tokens": [
+      97,
+      117,
+      132,
+      2375
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      8,
+      2,
+      3033
+     ],
+     "sample_id": "4368670",
+     "source_relpath": "datasets/conec/earnings21/contexts/4368670.txt",
+     "source_sha256": "69c0aca258e913f90741f79d4ff26c163e279ef71c8d4b55b55eb58badbd627e",
+     "twin_derived_sha256": "6d546476d11551df538241fe8278848bd94db43bb1aa77f3de985a92ed7c99cb",
+     "twin_prefix_tokens": [
+      97,
+      125,
+      142,
+      5418
+     ],
+     "twin_tokens": 5418,
+     "twin_whitespace_tokens": 5383
+    },
+    {
+     "arm_derived_sha256": "2fea6bd6025a9fdedc251260620e63abf67815efb150a72af4b91b3e846c0dfc",
+     "arm_prefix_tokens": [
+      57,
+      95,
+      108
+     ],
+     "arm_tokens": 108,
+     "arm_whitespace_tokens": 62,
+     "base_twin_prefix_tokens": [
+      57,
+      77,
+      88
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      18,
+      2
+     ],
+     "sample_id": "4374910",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4374910.names.txt",
+     "source_sha256": "6332785309b0dbaeb778f2d79d09f1f6b220988d9196570aace6684a8e239e88",
+     "twin_derived_sha256": "1b30d350c41bd226aee39a3bb65cbc102252358ea910e9900091d61da1d96713",
+     "twin_prefix_tokens": [
+      57,
+      95,
+      108
+     ],
+     "twin_tokens": 108,
+     "twin_whitespace_tokens": 82
+    },
+    {
+     "arm_derived_sha256": "5859f4d276fc39f70195109523e0f44c2b4018081372aace60414285de6d8af5",
+     "arm_prefix_tokens": [
+      97,
+      110,
+      123,
+      2359
+     ],
+     "arm_tokens": 2359,
+     "arm_whitespace_tokens": 1058,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      119,
+      1093
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      3,
+      1,
+      1262
+     ],
+     "sample_id": "4374910",
+     "source_relpath": "datasets/conec/earnings21/contexts/4374910.txt",
+     "source_sha256": "2c86f863d4ec262e805adee2cb260b4845b9566ec36fa1b7d8850d0efb088cde",
+     "twin_derived_sha256": "16fea3dc4f8604af88b1d0a4fc4fe72167ff913a0e73913eb7729b0ed0003b21",
+     "twin_prefix_tokens": [
+      97,
+      110,
+      123,
+      2359
+     ],
+     "twin_tokens": 2359,
+     "twin_whitespace_tokens": 2324
+    },
+    {
+     "arm_derived_sha256": "1c370cace3c4196135cc15671aa2d83a8aafde2b26de8c031518a79e75979a72",
+     "arm_prefix_tokens": [
+      57,
+      219,
+      273
+     ],
+     "arm_tokens": 273,
+     "arm_whitespace_tokens": 139,
+     "base_twin_prefix_tokens": [
+      57,
+      133,
+      165
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      86,
+      22
+     ],
+     "sample_id": "4375653",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4375653.names.txt",
+     "source_sha256": "6db7f28e2ee1eb548c56f49589ba1f09f12057f639fd6af22105e0b8a9bc094f",
+     "twin_derived_sha256": "ffa2093676e12ef9b4933ea03250dfe8d72bc972f68ea627cb786927172b7e0e",
+     "twin_prefix_tokens": [
+      57,
+      219,
+      273
+     ],
+     "twin_tokens": 273,
+     "twin_whitespace_tokens": 247
+    },
+    {
+     "arm_derived_sha256": "0d825b592f169064fcfaa160db86999a02315eb60a8a48197a0bafe370dd45f6",
+     "arm_prefix_tokens": [
+      97,
+      105,
+      114,
+      1236
+     ],
+     "arm_tokens": 1236,
+     "arm_whitespace_tokens": 563,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      114,
+      598
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      0,
+      0,
+      638
+     ],
+     "sample_id": "4375653",
+     "source_relpath": "datasets/conec/earnings21/contexts/4375653.txt",
+     "source_sha256": "ad8ecd602ddc76d91fc522aa7f0ba37b9da0c1693f1c6d6fd6a88b2471e94f8d",
+     "twin_derived_sha256": "849317bc4147c505506773b94b557c83fac2ead1f9f14e85fbd2ed57d8ad548c",
+     "twin_prefix_tokens": [
+      97,
+      105,
+      114,
+      1236
+     ],
+     "twin_tokens": 1236,
+     "twin_whitespace_tokens": 1201
+    },
+    {
+     "arm_derived_sha256": "756552e04bc5b92a19bcb41b9edb58113e2a48f059bf9a523ae8a15ae62c08ff",
+     "arm_prefix_tokens": [
+      57,
+      378,
+      502
+     ],
+     "arm_tokens": 502,
+     "arm_whitespace_tokens": 255,
+     "base_twin_prefix_tokens": [
+      57,
+      213,
+      281
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      165,
+      56
+     ],
+     "sample_id": "4382825",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4382825.names.txt",
+     "source_sha256": "ef64d4e2499030da28bc047d9e640c36370053c9ffd281981f0ab7ee40e504ac",
+     "twin_derived_sha256": "882017dbf188be3ac6d67345f762a0392e1cb537134cf7ec9b75c9643faf24c2",
+     "twin_prefix_tokens": [
+      57,
+      378,
+      502
+     ],
+     "twin_tokens": 502,
+     "twin_whitespace_tokens": 476
+    },
+    {
+     "arm_derived_sha256": "fc3d652c96af19a494bcc04d8ffe1475ccb5e75e2a6caf433fdfd65ef43825aa",
+     "arm_prefix_tokens": [
+      97,
+      105,
+      1295
+     ],
+     "arm_tokens": 1295,
+     "arm_whitespace_tokens": 595,
+     "base_twin_prefix_tokens": [
+      97,
+      104,
+      628
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      1,
+      666
+     ],
+     "sample_id": "4382825",
+     "source_relpath": "datasets/conec/earnings21/contexts/4382825.txt",
+     "source_sha256": "e8be686472c686ab051160d67636c5baa52c82c70198a1ceb81151b29e7804eb",
+     "twin_derived_sha256": "1ca4f8a234f61db2e8858d89970a7a51f72b22fab13e2f16cfbd598e54665a36",
+     "twin_prefix_tokens": [
+      97,
+      105,
+      1295
+     ],
+     "twin_tokens": 1295,
+     "twin_whitespace_tokens": 1262
+    },
+    {
+     "arm_derived_sha256": "7a531f91f985b519d1a377c478216a7fc4b0f1c87a5d09d86a99e432f9e65480",
+     "arm_prefix_tokens": [
+      57,
+      236,
+      316
+     ],
+     "arm_tokens": 316,
+     "arm_whitespace_tokens": 163,
+     "base_twin_prefix_tokens": [
+      57,
+      143,
+      189
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      93,
+      34
+     ],
+     "sample_id": "4383161",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4383161.names.txt",
+     "source_sha256": "2454bb86c161b799f9e45e1ad7304d8cdfb3f56b1ea1e26e4dbea079ba647961",
+     "twin_derived_sha256": "ad6f146851f33d0700f2a976f82cc539a3cba8d701cfbb8a8609c710c6a28e96",
+     "twin_prefix_tokens": [
+      57,
+      236,
+      316
+     ],
+     "twin_tokens": 316,
+     "twin_whitespace_tokens": 290
+    },
+    {
+     "arm_derived_sha256": "50edd5e15d6ad89b1297584723f85214bc435bbb856ac6c8c1aabbf61b6dbef1",
+     "arm_prefix_tokens": [
+      97,
+      119,
+      133,
+      1198
+     ],
+     "arm_tokens": 1198,
+     "arm_whitespace_tokens": 567,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      122,
+      602
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      9,
+      2,
+      585
+     ],
+     "sample_id": "4383161",
+     "source_relpath": "datasets/conec/earnings21/contexts/4383161.txt",
+     "source_sha256": "a4f013325d533480a8996621169f6318a1a5516544823fc75f82ab8145a93f1b",
+     "twin_derived_sha256": "703084df4fc163855031078d6ced8f99c47e02c6809b541bc9d6522ebe96f0a8",
+     "twin_prefix_tokens": [
+      97,
+      119,
+      133,
+      1198
+     ],
+     "twin_tokens": 1198,
+     "twin_whitespace_tokens": 1163
+    },
+    {
+     "arm_derived_sha256": "3b32e7c052a74a7c6a66fe9d2962d722b96758db14ba307614db05fea4e9c817",
+     "arm_prefix_tokens": [
+      57,
+      148,
+      180
+     ],
+     "arm_tokens": 180,
+     "arm_whitespace_tokens": 97,
+     "base_twin_prefix_tokens": [
+      57,
+      101,
+      123
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      47,
+      10
+     ],
+     "sample_id": "4384198",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4384198.names.txt",
+     "source_sha256": "9cbcee310d10771b38ced1d5ad952684bbd4ab2c33e92af1b9805ffc0739243f",
+     "twin_derived_sha256": "047b41be679786d6a56d5bea344169aa05d45b0bbe90f6c048ec17b2ae97fbdd",
+     "twin_prefix_tokens": [
+      57,
+      148,
+      180
+     ],
+     "twin_tokens": 180,
+     "twin_whitespace_tokens": 154
+    },
+    {
+     "arm_derived_sha256": "3399dd6bf739aa781324752246c76d80a274d2aa89b962c27e7433132ef637d3",
+     "arm_prefix_tokens": [
+      97,
+      114,
+      123,
+      1438
+     ],
+     "arm_tokens": 1438,
+     "arm_whitespace_tokens": 663,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      116,
+      698
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      7,
+      0,
+      733
+     ],
+     "sample_id": "4384198",
+     "source_relpath": "datasets/conec/earnings21/contexts/4384198.txt",
+     "source_sha256": "f897e45796fe927e60596e9b15bc39363d8ca10858e095716641194d1ff5dde2",
+     "twin_derived_sha256": "4e0c4118840073fcfb15601ffc8b576922122baf62254577cbc59ea1596870e8",
+     "twin_prefix_tokens": [
+      97,
+      114,
+      123,
+      1438
+     ],
+     "twin_tokens": 1438,
+     "twin_whitespace_tokens": 1403
+    },
+    {
+     "arm_derived_sha256": "cb4a6a312dd0528dff15cd7c3d5e4fe711e6d8305e89dc889325adfe00b9a043",
+     "arm_prefix_tokens": [
+      57,
+      196,
+      221
+     ],
+     "arm_tokens": 221,
+     "arm_whitespace_tokens": 113,
+     "base_twin_prefix_tokens": [
+      57,
+      121,
+      139
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      75,
+      7
+     ],
+     "sample_id": "4384683",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4384683.names.txt",
+     "source_sha256": "caed16993624b6f663db1995d95d5e2f12f8998adf07bc98b01349b4862a387b",
+     "twin_derived_sha256": "aab72a90a627313799185fbdf3fd77d8a3b42d2ee831180d5a7fac8f326f9f90",
+     "twin_prefix_tokens": [
+      57,
+      196,
+      221
+     ],
+     "twin_tokens": 221,
+     "twin_whitespace_tokens": 195
+    },
+    {
+     "arm_derived_sha256": "4369190f69e7388876329cb4bbd1427d9ca2656cd7d0e3d92a3f4657463c4e49",
+     "arm_prefix_tokens": [
+      97,
+      115,
+      1218
+     ],
+     "arm_tokens": 1218,
+     "arm_whitespace_tokens": 566,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      599
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      5,
+      614
+     ],
+     "sample_id": "4384683",
+     "source_relpath": "datasets/conec/earnings21/contexts/4384683.txt",
+     "source_sha256": "3aa5d0bd4e85dabdc000890371ae83d3604e53bffc4e9c668218708e173c4c8c",
+     "twin_derived_sha256": "4fcdb1146d883f8620a5c60b9d81c1c17618a37a93dd2c968eec4afa535dcf38",
+     "twin_prefix_tokens": [
+      97,
+      115,
+      1218
+     ],
+     "twin_tokens": 1218,
+     "twin_whitespace_tokens": 1185
+    },
+    {
+     "arm_derived_sha256": "67b41d5d672ce1d982105a819bd309bed80ca9f5119b97eaa4dd6897c461b8dc",
+     "arm_prefix_tokens": [
+      57,
+      189,
+      259
+     ],
+     "arm_tokens": 259,
+     "arm_whitespace_tokens": 133,
+     "base_twin_prefix_tokens": [
+      57,
+      120,
+      159
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      69,
+      31
+     ],
+     "sample_id": "4384744",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4384744.names.txt",
+     "source_sha256": "1743975e9088ca5bdf5220612ed66b5997dac4d6eec13d684ec58a8b04f51a83",
+     "twin_derived_sha256": "6f9e08177e52eb248dbda357396a0d3bd1a2656307eadf220a84d52287a14d0a",
+     "twin_prefix_tokens": [
+      57,
+      189,
+      259
+     ],
+     "twin_tokens": 259,
+     "twin_whitespace_tokens": 233
+    },
+    {
+     "arm_derived_sha256": "d4334bd7e67e86a9b020096b78e540245733fd3b319ca08bb48fd5c8e8ee0de8",
+     "arm_prefix_tokens": [
+      97,
+      106,
+      661
+     ],
+     "arm_tokens": 661,
+     "arm_whitespace_tokens": 311,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      344
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      1,
+      316
+     ],
+     "sample_id": "4384744",
+     "source_relpath": "datasets/conec/earnings21/contexts/4384744.txt",
+     "source_sha256": "d5299251fc375f392b78262c448e18b396ef9a5285f1f49c7c6e33c4e9a6ab00",
+     "twin_derived_sha256": "470c594957120c270adf9dfcc927779186409cb66fe258b6f0d287c9de4f651b",
+     "twin_prefix_tokens": [
+      97,
+      106,
+      661
+     ],
+     "twin_tokens": 661,
+     "twin_whitespace_tokens": 628
+    },
+    {
+     "arm_derived_sha256": "da3479158eeab3ae7d924de9d17ca2ad8c3539df6f49026541147f78900b1004",
+     "arm_prefix_tokens": [
+      57,
+      361,
+      481
+     ],
+     "arm_tokens": 481,
+     "arm_whitespace_tokens": 226,
+     "base_twin_prefix_tokens": [
+      57,
+      192,
+      252
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      169,
+      60
+     ],
+     "sample_id": "4384964",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4384964.names.txt",
+     "source_sha256": "312c3a602322fe18d80b0760fb35be4f0b4c1d185c06370cf42f2909a059e735",
+     "twin_derived_sha256": "9298d4b3236bcd2dc958cf23b9d1d8f7481f5e12531737f5c6b9c247177ab16c",
+     "twin_prefix_tokens": [
+      57,
+      361,
+      481
+     ],
+     "twin_tokens": 481,
+     "twin_whitespace_tokens": 455
+    },
+    {
+     "arm_derived_sha256": "641be0284b8dc78aa61551db2415474f8ff6348ab14ba8bbd93d6dba3fc65453",
+     "arm_prefix_tokens": [
+      97,
+      106,
+      1003
+     ],
+     "arm_tokens": 1003,
+     "arm_whitespace_tokens": 433,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      466
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      1,
+      536
+     ],
+     "sample_id": "4384964",
+     "source_relpath": "datasets/conec/earnings21/contexts/4384964.txt",
+     "source_sha256": "e465b6bfdfc26b86f910b07a4b4810429a0a815a724c5ebbb5627ac136bf7369",
+     "twin_derived_sha256": "4b0c76980db9a359447502b9198d0e08b1de9998405d12943304c767ea9c7e15",
+     "twin_prefix_tokens": [
+      97,
+      106,
+      1003
+     ],
+     "twin_tokens": 1003,
+     "twin_whitespace_tokens": 970
+    },
+    {
+     "arm_derived_sha256": "9a4b8a95abd98214ad6b1373cd2b904ed67253c63cb028e897520a12b9caa373",
+     "arm_prefix_tokens": [
+      57,
+      214,
+      275
+     ],
+     "arm_tokens": 275,
+     "arm_whitespace_tokens": 130,
+     "base_twin_prefix_tokens": [
+      57,
+      124,
+      156
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      90,
+      29
+     ],
+     "sample_id": "4385072",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4385072.names.txt",
+     "source_sha256": "b5870173411fa18742a77bef8824341e94d657bfc10c6162c6e9193272a9e859",
+     "twin_derived_sha256": "291ada251d30fac0dddbf43c7649429b94e55686a1cda48636f1a2a1d9607eaa",
+     "twin_prefix_tokens": [
+      57,
+      214,
+      275
+     ],
+     "twin_tokens": 275,
+     "twin_whitespace_tokens": 249
+    },
+    {
+     "arm_derived_sha256": "a096180200f9033c1fe67c51ce42ba719d2f728a078e855a9fb2d50efecb55d5",
+     "arm_prefix_tokens": [
+      97,
+      115,
+      717
+     ],
+     "arm_tokens": 717,
+     "arm_whitespace_tokens": 346,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      379
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      5,
+      333
+     ],
+     "sample_id": "4385072",
+     "source_relpath": "datasets/conec/earnings21/contexts/4385072.txt",
+     "source_sha256": "5b32ea6dde3b525d3d15d692171429acfa83f47119ce489569c9aca405182a7c",
+     "twin_derived_sha256": "5fbae95ca7a745ffb6db27de14f83e63bbe15a47cb0ac0330fe25f781f260567",
+     "twin_prefix_tokens": [
+      97,
+      115,
+      717
+     ],
+     "twin_tokens": 717,
+     "twin_whitespace_tokens": 684
+    },
+    {
+     "arm_derived_sha256": "3d941a07e4195b48ab451be2c2a3a34bea94974eef88c77c3665cb00b7fb7ece",
+     "arm_prefix_tokens": [
+      57,
+      240,
+      329
+     ],
+     "arm_tokens": 329,
+     "arm_whitespace_tokens": 165,
+     "base_twin_prefix_tokens": [
+      57,
+      143,
+      191
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      97,
+      41
+     ],
+     "sample_id": "4385388",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4385388.names.txt",
+     "source_sha256": "c29dda3c0afcd13e1c953df1c7533d28ff8724fd537ab18d1819374c479c4afd",
+     "twin_derived_sha256": "ea5909ef64df10a05a32e8e64c170520918b02317497c33920f851b45619e332",
+     "twin_prefix_tokens": [
+      57,
+      240,
+      329
+     ],
+     "twin_tokens": 329,
+     "twin_whitespace_tokens": 303
+    },
+    {
+     "arm_derived_sha256": "27bc646c726eb874ba142769c3704f7abf12519dba2a4f1ce80e3b45ca475fd8",
+     "arm_prefix_tokens": [
+      97,
+      117,
+      127,
+      1202
+     ],
+     "arm_tokens": 1202,
+     "arm_whitespace_tokens": 562,
+     "base_twin_prefix_tokens": [
+      97,
+      113,
+      122,
+      597
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      4,
+      1,
+      600
+     ],
+     "sample_id": "4385388",
+     "source_relpath": "datasets/conec/earnings21/contexts/4385388.txt",
+     "source_sha256": "b2f141be3f95b5c5210a584faff9759f39227354ce6154af71461f7c912cc8e7",
+     "twin_derived_sha256": "70de198354dfa541684b87141beb70b0612ab18d95a081f262dbb8f1e89f91fe",
+     "twin_prefix_tokens": [
+      97,
+      117,
+      127,
+      1202
+     ],
+     "twin_tokens": 1202,
+     "twin_whitespace_tokens": 1167
+    },
+    {
+     "arm_derived_sha256": "7da9d43b8b9b44a80c231356b171b9533d9442ca88b30cc3226a19a530202369",
+     "arm_prefix_tokens": [
+      57,
+      355,
+      520
+     ],
+     "arm_tokens": 520,
+     "arm_whitespace_tokens": 259,
+     "base_twin_prefix_tokens": [
+      57,
+      193,
+      285
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      162,
+      73
+     ],
+     "sample_id": "4385939",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4385939.names.txt",
+     "source_sha256": "779685b6a4e61b2d56299bd84eff0d31324479cb0f40663e19f6ae16222ed0ef",
+     "twin_derived_sha256": "9b9a3cefd540f695a9430b53c54e972f4c2233b9629e81e6bec445f99e027e90",
+     "twin_prefix_tokens": [
+      57,
+      355,
+      520
+     ],
+     "twin_tokens": 520,
+     "twin_whitespace_tokens": 494
+    },
+    {
+     "arm_derived_sha256": "50856a4e7915fae218253aef6f8af904c142461da6c25566942a9af48d369167",
+     "arm_prefix_tokens": [
+      97,
+      115,
+      132,
+      1670
+     ],
+     "arm_tokens": 1670,
+     "arm_whitespace_tokens": 783,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      125,
+      818
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      5,
+      2,
+      845
+     ],
+     "sample_id": "4385939",
+     "source_relpath": "datasets/conec/earnings21/contexts/4385939.txt",
+     "source_sha256": "fd8ba23eea101060e63ec08bbb3626d3c683ed448f039a8d66cdfb8f796f4307",
+     "twin_derived_sha256": "5f55ed01f8ec875894de590b9b5df7bdb2515b2fcb6321beb2b5de514aec94d4",
+     "twin_prefix_tokens": [
+      97,
+      115,
+      132,
+      1670
+     ],
+     "twin_tokens": 1670,
+     "twin_whitespace_tokens": 1635
+    },
+    {
+     "arm_derived_sha256": "f0cd15e753b277bd96f2025836c5af2b7673744abcd6517ffb20b7b0450ce330",
+     "arm_prefix_tokens": [
+      57,
+      137,
+      155
+     ],
+     "arm_tokens": 155,
+     "arm_whitespace_tokens": 87,
+     "base_twin_prefix_tokens": [
+      57,
+      98,
+      113
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      39,
+      3
+     ],
+     "sample_id": "4386541",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4386541.names.txt",
+     "source_sha256": "f46c36d03297606733956b9cddb691c04159b21ccc4172cba14b2dc5528a1189",
+     "twin_derived_sha256": "6349c94bdf703f6c3d4ea7be4fabc305769e2f01b6c6c032cec33f50e394957a",
+     "twin_prefix_tokens": [
+      57,
+      137,
+      155
+     ],
+     "twin_tokens": 155,
+     "twin_whitespace_tokens": 129
+    },
+    {
+     "arm_derived_sha256": "6cb2524364ce5883db1d67fb54f335a30920ba8ad8111a7af0bb4163172bb034",
+     "arm_prefix_tokens": [
+      97,
+      116,
+      886
+     ],
+     "arm_tokens": 886,
+     "arm_whitespace_tokens": 438,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      471
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      6,
+      409
+     ],
+     "sample_id": "4386541",
+     "source_relpath": "datasets/conec/earnings21/contexts/4386541.txt",
+     "source_sha256": "1308149855c44f6f9710884dabb839b1d6ba555e026f056b9b9087db021eaae4",
+     "twin_derived_sha256": "7e4384328b80bf38e5f0e290e8be181f1536bba94284fd6d3c117516ae32b5e6",
+     "twin_prefix_tokens": [
+      97,
+      116,
+      886
+     ],
+     "twin_tokens": 886,
+     "twin_whitespace_tokens": 853
+    },
+    {
+     "arm_derived_sha256": "5530d296a850a201aeef4735f9b4aa6e8e2f0b4827558389b9a8ee141ed0ba3a",
+     "arm_prefix_tokens": [
+      57,
+      126,
+      147
+     ],
+     "arm_tokens": 147,
+     "arm_whitespace_tokens": 82,
+     "base_twin_prefix_tokens": [
+      57,
+      92,
+      108
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      34,
+      5
+     ],
+     "sample_id": "4387332",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4387332.names.txt",
+     "source_sha256": "56b0ccfbe85d57b44617a32f876b2f9d59d0752b579e470bc1a8f29269df8461",
+     "twin_derived_sha256": "d50474a6c66bc68772b2905eee80e86547f342accff095b2e9c3e2f506c4653c",
+     "twin_prefix_tokens": [
+      57,
+      126,
+      147
+     ],
+     "twin_tokens": 147,
+     "twin_whitespace_tokens": 121
+    },
+    {
+     "arm_derived_sha256": "b553a6821d8f13a1c7e3e314b3986683decc3a9fa291608e281ef12c0df2cbe2",
+     "arm_prefix_tokens": [
+      97,
+      110,
+      119,
+      1019
+     ],
+     "arm_tokens": 1019,
+     "arm_whitespace_tokens": 500,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      116,
+      535
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      3,
+      0,
+      481
+     ],
+     "sample_id": "4387332",
+     "source_relpath": "datasets/conec/earnings21/contexts/4387332.txt",
+     "source_sha256": "a282c633d40688a1959e35007cd43ddbf800109a40788d46b69bc48e915b925a",
+     "twin_derived_sha256": "598a50dcaae65dd9abbafab7aa929a44dc6b53668d1e3268594522c0ca1e8c92",
+     "twin_prefix_tokens": [
+      97,
+      110,
+      119,
+      1019
+     ],
+     "twin_tokens": 1019,
+     "twin_whitespace_tokens": 984
+    },
+    {
+     "arm_derived_sha256": "4f5ea88f11ff2bf32e68dc1993b2ac3552622b87f0fad33be49d6eaac5b9343f",
+     "arm_prefix_tokens": [
+      57,
+      149,
+      179
+     ],
+     "arm_tokens": 179,
+     "arm_whitespace_tokens": 90,
+     "base_twin_prefix_tokens": [
+      57,
+      96,
+      116
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      53,
+      10
+     ],
+     "sample_id": "4387383",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4387383.names.txt",
+     "source_sha256": "724d55b8ddd9736ae23bcc3cc9d15e815b0f24205b62f8f432bb6e8468ce7a11",
+     "twin_derived_sha256": "d601ecbe7ab7fd0e3b480d4d00d0473dc25d2d81648fcd4b75f604db805ddc3f",
+     "twin_prefix_tokens": [
+      57,
+      149,
+      179
+     ],
+     "twin_tokens": 179,
+     "twin_whitespace_tokens": 153
+    },
+    {
+     "arm_derived_sha256": "cb44a320559738e300e0a7715f1725e6e4c6daab069d969bb0b86559ca76ea52",
+     "arm_prefix_tokens": [
+      97,
+      112,
+      1043
+     ],
+     "arm_tokens": 1043,
+     "arm_whitespace_tokens": 501,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      534
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      5,
+      504
+     ],
+     "sample_id": "4387383",
+     "source_relpath": "datasets/conec/earnings21/contexts/4387383.txt",
+     "source_sha256": "841cba88f7e88ed614419afd8f73b2b2dab95f2b8bbebbefa29ccfd9730afec3",
+     "twin_derived_sha256": "5fd2b666a7cab6195a4262dccfe656e724f36fb924a9304ccd6b7e9aa488db69",
+     "twin_prefix_tokens": [
+      97,
+      112,
+      1043
+     ],
+     "twin_tokens": 1043,
+     "twin_whitespace_tokens": 1010
+    },
+    {
+     "arm_derived_sha256": "63a3d0059f4ca6e9825d3f5429c3fa7b8b5415e5c056019e36107164f1ed278f",
+     "arm_prefix_tokens": [
+      57,
+      128,
+      157
+     ],
+     "arm_tokens": 157,
+     "arm_whitespace_tokens": 89,
+     "base_twin_prefix_tokens": [
+      57,
+      93,
+      115
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      35,
+      7
+     ],
+     "sample_id": "4387865",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4387865.names.txt",
+     "source_sha256": "a6210c0ef8b0d3f6c57de6c142c5987f22356e7fdec77425aad316c83f96dc3d",
+     "twin_derived_sha256": "617ef50c60ec5744bc6c2b1c96d162502bac00a286d013249c74c05bdd6be106",
+     "twin_prefix_tokens": [
+      57,
+      128,
+      157
+     ],
+     "twin_tokens": 157,
+     "twin_whitespace_tokens": 131
+    },
+    {
+     "arm_derived_sha256": "e00e32fe54f1a3de81b029501826f70c3c355353261c2083bddcec110ff410ec",
+     "arm_prefix_tokens": [
+      97,
+      118,
+      127,
+      1097
+     ],
+     "arm_tokens": 1097,
+     "arm_whitespace_tokens": 530,
+     "base_twin_prefix_tokens": [
+      97,
+      112,
+      121,
+      565
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      6,
+      0,
+      526
+     ],
+     "sample_id": "4387865",
+     "source_relpath": "datasets/conec/earnings21/contexts/4387865.txt",
+     "source_sha256": "011e1c22a57704db27f15d7ad314171078972841c0dfa79c282c6f75e5d079b8",
+     "twin_derived_sha256": "c40196b19b0b01a437e615c6cff0433e7f2fbb16a44533c53eb1b64eb0b9ad82",
+     "twin_prefix_tokens": [
+      97,
+      118,
+      127,
+      1097
+     ],
+     "twin_tokens": 1097,
+     "twin_whitespace_tokens": 1062
+    },
+    {
+     "arm_derived_sha256": "edfa4949b3a0442ea814528007ad3f9446dc5866edb8e017a470d150bd53e368",
+     "arm_prefix_tokens": [
+      57,
+      156,
+      204
+     ],
+     "arm_tokens": 204,
+     "arm_whitespace_tokens": 108,
+     "base_twin_prefix_tokens": [
+      57,
+      106,
+      134
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      50,
+      20
+     ],
+     "sample_id": "4389907",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4389907.names.txt",
+     "source_sha256": "517467bcd2d124cea1bc5f3dd559cad6bc194bed82252a05068138e242ac5a3b",
+     "twin_derived_sha256": "3db084d6e4b9c4d2720e2967390a8d3178250dbbcde64552833684c202f51a47",
+     "twin_prefix_tokens": [
+      57,
+      156,
+      204
+     ],
+     "twin_tokens": 204,
+     "twin_whitespace_tokens": 178
+    },
+    {
+     "arm_derived_sha256": "73a2ad62747ca42f36ff7f2b7ac2bb6cd69a70e441e167de6d825bfaa23075d6",
+     "arm_prefix_tokens": [
+      97,
+      123,
+      140,
+      2327
+     ],
+     "arm_tokens": 2327,
+     "arm_whitespace_tokens": 975,
+     "base_twin_prefix_tokens": [
+      97,
+      116,
+      131,
+      1010
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      7,
+      2,
+      1308
+     ],
+     "sample_id": "4389907",
+     "source_relpath": "datasets/conec/earnings21/contexts/4389907.txt",
+     "source_sha256": "b5ef9d3ca03a34f96841f056ba46e1bf7725531993a3ebe2a55d2a348798481b",
+     "twin_derived_sha256": "c9dcb6727730e8b75ea6cedad1bfe06fa1b2b1248c08cf6fb44ff60b12c5a126",
+     "twin_prefix_tokens": [
+      97,
+      123,
+      140,
+      2327
+     ],
+     "twin_tokens": 2327,
+     "twin_whitespace_tokens": 2292
+    },
+    {
+     "arm_derived_sha256": "5a84ab85c3250fc973339ef22e09b64b5913d79b26d635150791f7cca2282cf3",
+     "arm_prefix_tokens": [
+      57,
+      154,
+      187
+     ],
+     "arm_tokens": 187,
+     "arm_whitespace_tokens": 101,
+     "base_twin_prefix_tokens": [
+      57,
+      106,
+      127
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      48,
+      12
+     ],
+     "sample_id": "4392809",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4392809.names.txt",
+     "source_sha256": "4a8698cd6ac11af6ab447dac221cd51e3592a12eeeab3b85db5f93ea46fbca72",
+     "twin_derived_sha256": "6d8783d7a3ce5980ed3a36335135dc05ec535ec1059de7d97d4e1af67de93de9",
+     "twin_prefix_tokens": [
+      57,
+      154,
+      187
+     ],
+     "twin_tokens": 187,
+     "twin_whitespace_tokens": 161
+    },
+    {
+     "arm_derived_sha256": "4ee76d9cae97fbc399a22eb5d6dc27815d75ed2652396a26541b2abecf5f1fd3",
+     "arm_prefix_tokens": [
+      97,
+      110,
+      119,
+      949
+     ],
+     "arm_tokens": 949,
+     "arm_whitespace_tokens": 468,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      116,
+      503
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      3,
+      0,
+      443
+     ],
+     "sample_id": "4392809",
+     "source_relpath": "datasets/conec/earnings21/contexts/4392809.txt",
+     "source_sha256": "e59ef8a5b89fe8b42a58700bb2eb15c5c85b7ad089fdc663da9abd67098de284",
+     "twin_derived_sha256": "1d2bb8e959628e7eb1251c04e88917a0802b0c261bd9dd465ad0b39e30dccb17",
+     "twin_prefix_tokens": [
+      97,
+      110,
+      119,
+      949
+     ],
+     "twin_tokens": 949,
+     "twin_whitespace_tokens": 914
+    },
+    {
+     "arm_derived_sha256": "db7c7c882292e27933dd5c22109dff0b9472802a963ec077dbc151b03dbfb449",
+     "arm_prefix_tokens": [
+      57,
+      131,
+      152
+     ],
+     "arm_tokens": 152,
+     "arm_whitespace_tokens": 80,
+     "base_twin_prefix_tokens": [
+      57,
+      90,
+      106
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      41,
+      5
+     ],
+     "sample_id": "4394084",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4394084.names.txt",
+     "source_sha256": "e82e2a2e8cf9b138368adf3278624318ae035caefd9bf7175ff3df805dccc91d",
+     "twin_derived_sha256": "2ba957643673e7398432fb0027bf535d832db3a33539ce03f7cf3341ad49b4c4",
+     "twin_prefix_tokens": [
+      57,
+      131,
+      152
+     ],
+     "twin_tokens": 152,
+     "twin_whitespace_tokens": 126
+    },
+    {
+     "arm_derived_sha256": "afb359ce2eedd05524dc58b7dbe4e12839c9c6b83995fa0f79bd9707054e37e8",
+     "arm_prefix_tokens": [
+      97,
+      105,
+      338
+     ],
+     "arm_tokens": 338,
+     "arm_whitespace_tokens": 183,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      216
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      0,
+      122
+     ],
+     "sample_id": "4394084",
+     "source_relpath": "datasets/conec/earnings21/contexts/4394084.txt",
+     "source_sha256": "7cd2fd31a2296b327c4671be472933597d106180cb01428910c7d1795a9a1d38",
+     "twin_derived_sha256": "07ab4552ac985390f443528101fd1343ac732e7c90427502b63bd71098862b4c",
+     "twin_prefix_tokens": [
+      97,
+      105,
+      338
+     ],
+     "twin_tokens": 338,
+     "twin_whitespace_tokens": 305
+    },
+    {
+     "arm_derived_sha256": "486a2aa10ac1fec58c15fedf3306c33cd7ef1b68079cadb20a39446df06dce34",
+     "arm_prefix_tokens": [
+      57,
+      187,
+      243
+     ],
+     "arm_tokens": 243,
+     "arm_whitespace_tokens": 119,
+     "base_twin_prefix_tokens": [
+      57,
+      116,
+      145
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      71,
+      27
+     ],
+     "sample_id": "4397800",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4397800.names.txt",
+     "source_sha256": "7d5162d1f0d58db14a137601da3833ec5cde7c20b07e6204ab4be77d93afd8f8",
+     "twin_derived_sha256": "6889578fae6706692ac3c596898d25e7410b3ca8c3a6622324a2a3905900357a",
+     "twin_prefix_tokens": [
+      57,
+      187,
+      243
+     ],
+     "twin_tokens": 243,
+     "twin_whitespace_tokens": 217
+    },
+    {
+     "arm_derived_sha256": "f7881f352922d8b9209858932acf4f4d98451f4b68bd1fc54db65f92700fe6aa",
+     "arm_prefix_tokens": [
+      97,
+      105,
+      118,
+      822
+     ],
+     "arm_tokens": 822,
+     "arm_whitespace_tokens": 393,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      117,
+      428
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      0,
+      1,
+      393
+     ],
+     "sample_id": "4397800",
+     "source_relpath": "datasets/conec/earnings21/contexts/4397800.txt",
+     "source_sha256": "cae35ab4444c7ce8ab79b788c737eca989ededfa516bc851a2911e2f3fd71fa6",
+     "twin_derived_sha256": "73fc175e7df98a09871bde0175be46eb67ccd7c767b703ca09bc77575eba05d4",
+     "twin_prefix_tokens": [
+      97,
+      105,
+      118,
+      822
+     ],
+     "twin_tokens": 822,
+     "twin_whitespace_tokens": 787
+    },
+    {
+     "arm_derived_sha256": "9ac949db80bfec88d554a36c4574369afc4567ae5114d2645c90009c0c3a18dc",
+     "arm_prefix_tokens": [
+      57,
+      298,
+      384
+     ],
+     "arm_tokens": 384,
+     "arm_whitespace_tokens": 193,
+     "base_twin_prefix_tokens": [
+      57,
+      173,
+      219
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      125,
+      40
+     ],
+     "sample_id": "4397829",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4397829.names.txt",
+     "source_sha256": "e90eb6fe82a1c0618fdbfc277d2f1b06854fb4c9eb02aa280823817ade29842e",
+     "twin_derived_sha256": "19129050dc21093e076b37e844077886bc2035e160b40b9a98bc3df406c4099d",
+     "twin_prefix_tokens": [
+      57,
+      298,
+      384
+     ],
+     "twin_tokens": 384,
+     "twin_whitespace_tokens": 358
+    },
+    {
+     "arm_derived_sha256": "eac60ff52d48119e2cd26021489ed5856d695c81266fa128946cb4b6cc76c97b",
+     "arm_prefix_tokens": [
+      97,
+      110,
+      119,
+      2796
+     ],
+     "arm_tokens": 2796,
+     "arm_whitespace_tokens": 1112,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      116,
+      1147
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      3,
+      0,
+      1646
+     ],
+     "sample_id": "4397829",
+     "source_relpath": "datasets/conec/earnings21/contexts/4397829.txt",
+     "source_sha256": "b3819c89ff4a5c88d14527c3da167dd7c4f64a9f40053603044425864fc208ec",
+     "twin_derived_sha256": "a4dbb63a4f339e19eb5c76e9c4b68bb179a7122906b1e013635e92147f307a76",
+     "twin_prefix_tokens": [
+      97,
+      110,
+      119,
+      2796
+     ],
+     "twin_tokens": 2796,
+     "twin_whitespace_tokens": 2761
+    }
+   ]
+  },
+  "12": {
+   "halves": [
+    {
+     "arm_derived_sha256": "0ce4464d93dfe2947b264a073ef59f407ff211f6586312582905d31d14a29e6e",
+     "arm_prefix_tokens": [
+      57,
+      219,
+      293
+     ],
+     "arm_tokens": 293,
+     "arm_whitespace_tokens": 140,
+     "base_twin_prefix_tokens": [
+      57,
+      129,
+      166
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      90,
+      37
+     ],
+     "sample_id": "4320211",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4320211.names.txt",
+     "source_sha256": "0ebcbfd1683038b20a4d6ca3866c8f353dd44a16170cd8f513c5bd993302e82e",
+     "twin_derived_sha256": "20238f576c8ad2b9afd033bceb12b871faa9a0e6346c4ff5fce3d227f380f010",
+     "twin_prefix_tokens": [
+      57,
+      219,
+      293
+     ],
+     "twin_tokens": 293,
+     "twin_whitespace_tokens": 267
+    },
+    {
+     "arm_derived_sha256": "a2cd562a989962f5b7f5f24f1099423946301309069a537bdac355ce83b6b5a2",
+     "arm_prefix_tokens": [
+      97,
+      111,
+      125,
+      162
+     ],
+     "arm_tokens": 162,
+     "arm_whitespace_tokens": 105,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      119,
+      140
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      4,
+      2,
+      16
+     ],
+     "sample_id": "4320211",
+     "source_relpath": "datasets/conec/earnings21/contexts/4320211.txt",
+     "source_sha256": "115d26c2fe53a073e945f014124958b0e8e5adbb6ac6a629b9a94b6ea96426f7",
+     "twin_derived_sha256": "b64f0c1216c3058c0d41b51f01573ade6e88afe670dd3c78e01b03a9a5dff037",
+     "twin_prefix_tokens": [
+      97,
+      111,
+      125,
+      162
+     ],
+     "twin_tokens": 162,
+     "twin_whitespace_tokens": 127
+    },
+    {
+     "arm_derived_sha256": "b8b4d649f2aad82726ecf39da9e30c4b245d9cc20cb9e851bf69acd49ca7ba68",
+     "arm_prefix_tokens": [
+      57,
+      201,
+      258,
+      282
+     ],
+     "arm_tokens": 282,
+     "arm_whitespace_tokens": 162,
+     "base_twin_prefix_tokens": [
+      57,
+      137,
+      172,
+      191
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      64,
+      22,
+      5
+     ],
+     "sample_id": "4330115",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4330115.names.txt",
+     "source_sha256": "08840410feff4b5ef428628687afc59e2231958531f31b9ed6de96867b99599c",
+     "twin_derived_sha256": "e0c667c9110d202a2f2e233e08e267858c56af6b04ef18041c97e2a974f3eadc",
+     "twin_prefix_tokens": [
+      57,
+      201,
+      258,
+      282
+     ],
+     "twin_tokens": 282,
+     "twin_whitespace_tokens": 253
+    },
+    {
+     "arm_derived_sha256": "8027834751e5b8bfcabf330ccb257aee72db3f77b74f89a26ac7c15179f49a64",
+     "arm_prefix_tokens": [
+      97,
+      126,
+      152,
+      184
+     ],
+     "arm_tokens": 184,
+     "arm_whitespace_tokens": 123,
+     "base_twin_prefix_tokens": [
+      97,
+      116,
+      137,
+      158
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      10,
+      5,
+      11
+     ],
+     "sample_id": "4330115",
+     "source_relpath": "datasets/conec/earnings21/contexts/4330115.txt",
+     "source_sha256": "14dcf588585b4e8f32a0c5f0055c73b0ef68780729facd8d8ac33a808549acad",
+     "twin_derived_sha256": "2e7a17e17c19ce27b9d2e737e8126b06d613bca92e69fdcade68b7b44a353334",
+     "twin_prefix_tokens": [
+      97,
+      126,
+      152,
+      184
+     ],
+     "twin_tokens": 184,
+     "twin_whitespace_tokens": 149
+    },
+    {
+     "arm_derived_sha256": "0ed73f18041ed78f9009239056cd307b108b2cfb65416aebbee116e9f46397f5",
+     "arm_prefix_tokens": [
+      57,
+      272,
+      381
+     ],
+     "arm_tokens": 381,
+     "arm_whitespace_tokens": 188,
+     "base_twin_prefix_tokens": [
+      57,
+      156,
+      214
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      116,
+      51
+     ],
+     "sample_id": "4341191",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4341191.names.txt",
+     "source_sha256": "ca98595cf41c6a1d3b1b18941b5c459c2b42b2d8722594eacf0619374aa13709",
+     "twin_derived_sha256": "fa8a7084192272752dc1bbdb75a07f0df26196be07974a166fa88c637bdd9fcb",
+     "twin_prefix_tokens": [
+      57,
+      272,
+      381
+     ],
+     "twin_tokens": 381,
+     "twin_whitespace_tokens": 355
+    },
+    {
+     "arm_derived_sha256": "00d67092ca60e1bca2f9b878d954d3e05638c21ee2aa789d86428a0bf292fc30",
+     "arm_prefix_tokens": [
+      97,
+      106,
+      122,
+      156
+     ],
+     "arm_tokens": 156,
+     "arm_whitespace_tokens": 103,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      117,
+      138
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      1,
+      4,
+      13
+     ],
+     "sample_id": "4341191",
+     "source_relpath": "datasets/conec/earnings21/contexts/4341191.txt",
+     "source_sha256": "fafc33aa62a02d4f6291a06359c417e8fcec318429485cb2608133841b6173e2",
+     "twin_derived_sha256": "2b3bf430725b9f73c1293639b42d4b253e44563326d44957d75616105351566d",
+     "twin_prefix_tokens": [
+      97,
+      106,
+      122,
+      156
+     ],
+     "twin_tokens": 156,
+     "twin_whitespace_tokens": 121
+    },
+    {
+     "arm_derived_sha256": "6df811fd1f126a2e3af08e318a878f605ab58ae5f174c67ce19dc6e91b36253d",
+     "arm_prefix_tokens": [
+      57,
+      184,
+      231
+     ],
+     "arm_tokens": 231,
+     "arm_whitespace_tokens": 125,
+     "base_twin_prefix_tokens": [
+      57,
+      123,
+      151
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      61,
+      19
+     ],
+     "sample_id": "4344338",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4344338.names.txt",
+     "source_sha256": "cceb54ba8aba5c349e5fe223b91b52dba5bb78a476099484fbea74fe8cbe41c2",
+     "twin_derived_sha256": "d5fb5da4ed7b9c9c7a7da2b619e17bdfae6500a924613a3319e5a986db2d594a",
+     "twin_prefix_tokens": [
+      57,
+      184,
+      231
+     ],
+     "twin_tokens": 231,
+     "twin_whitespace_tokens": 205
+    },
+    {
+     "arm_derived_sha256": "bf4ff7bf0ee4dd718bb3e2b3758068e1b307ed72fe46ddac02f7a89df460089a",
+     "arm_prefix_tokens": [
+      97,
+      115,
+      128,
+      166
+     ],
+     "arm_tokens": 166,
+     "arm_whitespace_tokens": 107,
+     "base_twin_prefix_tokens": [
+      97,
+      109,
+      121,
+      142
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      6,
+      1,
+      17
+     ],
+     "sample_id": "4344338",
+     "source_relpath": "datasets/conec/earnings21/contexts/4344338.txt",
+     "source_sha256": "4e403cd44f5b0fe24bcd0dbb13ad4bc19a26bcfaff368a924e7bd47b563b7999",
+     "twin_derived_sha256": "ec26f2014b38ef5784c1fca8fa70bee9e1f455c6e36180df71ea02d64c1b91f3",
+     "twin_prefix_tokens": [
+      97,
+      115,
+      128,
+      166
+     ],
+     "twin_tokens": 166,
+     "twin_whitespace_tokens": 131
+    },
+    {
+     "arm_derived_sha256": "e1247db313c875ee7e0b0f960a422e730a64a3db0e623cf909e8031f9c791f55",
+     "arm_prefix_tokens": [
+      57,
+      232,
+      320
+     ],
+     "arm_tokens": 320,
+     "arm_whitespace_tokens": 164,
+     "base_twin_prefix_tokens": [
+      57,
+      139,
+      190
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      93,
+      37
+     ],
+     "sample_id": "4344866",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4344866.names.txt",
+     "source_sha256": "801fda045974f8c5462181f40d356c2b7fb29a9a35230d6d69dbc3d8be5fa0ea",
+     "twin_derived_sha256": "2a060217c2c313fe169f39ba8845b1917913a204be68b137360fd0d425767e30",
+     "twin_prefix_tokens": [
+      57,
+      232,
+      320
+     ],
+     "twin_tokens": 320,
+     "twin_whitespace_tokens": 294
+    },
+    {
+     "arm_derived_sha256": "e701c14a45b08c348a9f52b3269078a26c6e81c434f5bbae6544c4d8aabe417b",
+     "arm_prefix_tokens": [
+      97,
+      113,
+      122,
+      176
+     ],
+     "arm_tokens": 176,
+     "arm_whitespace_tokens": 105,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      119,
+      140
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      3,
+      0,
+      33
+     ],
+     "sample_id": "4344866",
+     "source_relpath": "datasets/conec/earnings21/contexts/4344866.txt",
+     "source_sha256": "2a1664b02798e872880fac5399480418b44c3e85ce4f7725a95524907103da76",
+     "twin_derived_sha256": "0e9c09ae0697611fc8b27c40b4c19ae8b19e7e36912c03be947258ccc02d26f0",
+     "twin_prefix_tokens": [
+      97,
+      113,
+      122,
+      176
+     ],
+     "twin_tokens": 176,
+     "twin_whitespace_tokens": 141
+    },
+    {
+     "arm_derived_sha256": "4b3353e1edf2b87d0f5a7ddf38e520b6269bac3307f93be8c6a998683bf6164b",
+     "arm_prefix_tokens": [
+      57,
+      258,
+      364
+     ],
+     "arm_tokens": 364,
+     "arm_whitespace_tokens": 169,
+     "base_twin_prefix_tokens": [
+      57,
+      140,
+      195
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      118,
+      51
+     ],
+     "sample_id": "4346818",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4346818.names.txt",
+     "source_sha256": "03a2bc46a7ee2d1c0a0d3d79ac861c5127366801eb817b73bebdac188b55f985",
+     "twin_derived_sha256": "a94e9812be664fa0b776a48727d5349c14cf3971c798c0ea32e21c7f803755b5",
+     "twin_prefix_tokens": [
+      57,
+      258,
+      364
+     ],
+     "twin_tokens": 364,
+     "twin_whitespace_tokens": 338
+    },
+    {
+     "arm_derived_sha256": "07eef3ebbcd946dd9c4b8630714d14878f8a5920a78c1502ce60d62e3031938d",
+     "arm_prefix_tokens": [
+      97,
+      120,
+      138,
+      176
+     ],
+     "arm_tokens": 176,
+     "arm_whitespace_tokens": 114,
+     "base_twin_prefix_tokens": [
+      97,
+      113,
+      128,
+      149
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      7,
+      3,
+      17
+     ],
+     "sample_id": "4346818",
+     "source_relpath": "datasets/conec/earnings21/contexts/4346818.txt",
+     "source_sha256": "e9faba6d7a831f4b421ec0eb2ba6d3a4811d9db8b7d7659829d32f17fbd95a7c",
+     "twin_derived_sha256": "fed242363028a3ea4732fe8c6384e640931c9c1b401865df2f6db9a10d558b55",
+     "twin_prefix_tokens": [
+      97,
+      120,
+      138,
+      176
+     ],
+     "twin_tokens": 176,
+     "twin_whitespace_tokens": 141
+    },
+    {
+     "arm_derived_sha256": "586225250762cc8a6015e8e2aa34b09248b6f47734868cd50dc0831f8d8ce9db",
+     "arm_prefix_tokens": [
+      57,
+      290,
+      435,
+      495
+     ],
+     "arm_tokens": 495,
+     "arm_whitespace_tokens": 233,
+     "base_twin_prefix_tokens": [
+      57,
+      160,
+      220,
+      262
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      130,
+      85,
+      18
+     ],
+     "sample_id": "4346923",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4346923.names.txt",
+     "source_sha256": "81a30de82786ca07c03ab5da11e8f8dea3151b511e6050de4e5812bc58d9e805",
+     "twin_derived_sha256": "c02251c558f7235d1df10cca79b37b6acfec91bcd5c0325b42f78bf94e515844",
+     "twin_prefix_tokens": [
+      57,
+      290,
+      435,
+      495
+     ],
+     "twin_tokens": 495,
+     "twin_whitespace_tokens": 466
+    },
+    {
+     "arm_derived_sha256": "2cba83a9fa02116e629bc3692a607ef57cb0f133b010c43b4c7a2b49fe9e3ea4",
+     "arm_prefix_tokens": [
+      97,
+      107,
+      145,
+      181
+     ],
+     "arm_tokens": 181,
+     "arm_whitespace_tokens": 118,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      132,
+      153
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      2,
+      11,
+      15
+     ],
+     "sample_id": "4346923",
+     "source_relpath": "datasets/conec/earnings21/contexts/4346923.txt",
+     "source_sha256": "13439a311e5c75f3cd981d5c5bae12de668e929e4911d7403ea66aaa257c8b66",
+     "twin_derived_sha256": "1ce3bbca48b90d8b93d7484941874390b3059ce684ef30cdabdc294f595b174c",
+     "twin_prefix_tokens": [
+      97,
+      107,
+      145,
+      181
+     ],
+     "twin_tokens": 181,
+     "twin_whitespace_tokens": 146
+    },
+    {
+     "arm_derived_sha256": "2bfe8c518db3ed550b18ee3811e9479e822228edb91153f32cdf7010e8aa2310",
+     "arm_prefix_tokens": [
+      57,
+      255,
+      347
+     ],
+     "arm_tokens": 347,
+     "arm_whitespace_tokens": 155,
+     "base_twin_prefix_tokens": [
+      57,
+      136,
+      181
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      119,
+      47
+     ],
+     "sample_id": "4359732",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4359732.names.txt",
+     "source_sha256": "13b215fba21146a6e577b2aa6874846b3d78a080a38d7221ab26e71c0b05b13a",
+     "twin_derived_sha256": "bdc77ee2213d75b64b2a9fdee746659dbc3cf7fca36f772463d8be12d347fe49",
+     "twin_prefix_tokens": [
+      57,
+      255,
+      347
+     ],
+     "twin_tokens": 347,
+     "twin_whitespace_tokens": 321
+    },
+    {
+     "arm_derived_sha256": "eccd314528263e3cb1b8d54ae338aba056f0fb129d5ed86087c45351efe483bc",
+     "arm_prefix_tokens": [
+      97,
+      122,
+      136,
+      179
+     ],
+     "arm_tokens": 179,
+     "arm_whitespace_tokens": 112,
+     "base_twin_prefix_tokens": [
+      97,
+      114,
+      126,
+      147
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      8,
+      2,
+      22
+     ],
+     "sample_id": "4359732",
+     "source_relpath": "datasets/conec/earnings21/contexts/4359732.txt",
+     "source_sha256": "459be43f5c6c27d3aa7350dea294fee4943de45fe1504f04e9458ee4ff00d488",
+     "twin_derived_sha256": "c7c19e0969e82fd700962ad8ed7950ab7edd26aff640b6f8584b24b61db269d7",
+     "twin_prefix_tokens": [
+      97,
+      122,
+      136,
+      179
+     ],
+     "twin_tokens": 179,
+     "twin_whitespace_tokens": 144
+    },
+    {
+     "arm_derived_sha256": "1699d57d8cdce1407cd9d6d13fea1b5afe5e8e2d4d155c2e3e8e6835492667fa",
+     "arm_prefix_tokens": [
+      57,
+      199,
+      256
+     ],
+     "arm_tokens": 256,
+     "arm_whitespace_tokens": 140,
+     "base_twin_prefix_tokens": [
+      57,
+      127,
+      166
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      72,
+      18
+     ],
+     "sample_id": "4359971",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4359971.names.txt",
+     "source_sha256": "6e3b71715afb22f595ab95f9cd01b382cec71fd0da203bcd5f1279e387649973",
+     "twin_derived_sha256": "f9102e0356a3f1e90383df0ac3f0a882edf3acc5d3698ed4cd93d0b11da27981",
+     "twin_prefix_tokens": [
+      57,
+      199,
+      256
+     ],
+     "twin_tokens": 256,
+     "twin_whitespace_tokens": 230
+    },
+    {
+     "arm_derived_sha256": "eff24779cb6e85f7b9679fd1c10e10a86606883940ff0588755ee63c32e85da3",
+     "arm_prefix_tokens": [
+      97,
+      111,
+      124,
+      161
+     ],
+     "arm_tokens": 161,
+     "arm_whitespace_tokens": 105,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      119,
+      140
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      4,
+      1,
+      16
+     ],
+     "sample_id": "4359971",
+     "source_relpath": "datasets/conec/earnings21/contexts/4359971.txt",
+     "source_sha256": "750b6e548925c61a5b9779a932a7fac6f6dd902052da34d503e4fdb975759a9a",
+     "twin_derived_sha256": "3961d4fcc1e5af8c361ffa6747ed93be201bf94ea414c9280b029e8f27afc1b5",
+     "twin_prefix_tokens": [
+      97,
+      111,
+      124,
+      161
+     ],
+     "twin_tokens": 161,
+     "twin_whitespace_tokens": 126
+    },
+    {
+     "arm_derived_sha256": "ffc0421104c3ba1e005fb4852574f542d0f02e5a323c9d909bc978d32639a64a",
+     "arm_prefix_tokens": [
+      57,
+      296,
+      400
+     ],
+     "arm_tokens": 400,
+     "arm_whitespace_tokens": 214,
+     "base_twin_prefix_tokens": [
+      57,
+      181,
+      240
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      115,
+      45
+     ],
+     "sample_id": "4360366",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4360366.names.txt",
+     "source_sha256": "70f225cf167edf9784ecd33fc90408879e80dd363f9636c62ca9debe827e08b1",
+     "twin_derived_sha256": "aaee62fbce4c96d76264b4fac6624485f98263d620cd6cb30befd4807bd2a81f",
+     "twin_prefix_tokens": [
+      57,
+      296,
+      400
+     ],
+     "twin_tokens": 400,
+     "twin_whitespace_tokens": 374
+    },
+    {
+     "arm_derived_sha256": "fe7c06686334e375b5b7c46bcdf9563ffb742482ab2b0fe29f2bf1569a98c2fa",
+     "arm_prefix_tokens": [
+      97,
+      144,
+      157,
+      195
+     ],
+     "arm_tokens": 195,
+     "arm_whitespace_tokens": 126,
+     "base_twin_prefix_tokens": [
+      97,
+      128,
+      140,
+      161
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      16,
+      1,
+      17
+     ],
+     "sample_id": "4360366",
+     "source_relpath": "datasets/conec/earnings21/contexts/4360366.txt",
+     "source_sha256": "64c340255a2b0823ae27942c2290c592d6c25eb060d5a68f194a7d8080a64351",
+     "twin_derived_sha256": "b54241ffb13f89c9bc294c8da15141c7834cceaf777602339b369f098776c8b4",
+     "twin_prefix_tokens": [
+      97,
+      144,
+      157,
+      195
+     ],
+     "twin_tokens": 195,
+     "twin_whitespace_tokens": 160
+    },
+    {
+     "arm_derived_sha256": "c8582f559ff303255c004bd5a92f18c79a74438e54e815a6c0bf90573ee4fa9a",
+     "arm_prefix_tokens": [
+      57,
+      213,
+      272
+     ],
+     "arm_tokens": 272,
+     "arm_whitespace_tokens": 140,
+     "base_twin_prefix_tokens": [
+      57,
+      131,
+      166
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      82,
+      24
+     ],
+     "sample_id": "4360674",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4360674.names.txt",
+     "source_sha256": "74630cd35514706607128bbd3ba13bcd0eb8a3cd20cf5e1a10c28e8e9efe001e",
+     "twin_derived_sha256": "ef6e644767fb9dacc79602cf5ce5d897ac4d38c4f677caad4d3e4dbd5b9f1fc3",
+     "twin_prefix_tokens": [
+      57,
+      213,
+      272
+     ],
+     "twin_tokens": 272,
+     "twin_whitespace_tokens": 246
+    },
+    {
+     "arm_derived_sha256": "0364de425436119da54420661cad369a510bacbc2c8e6c6f4183c190ba950059",
+     "arm_prefix_tokens": [
+      97,
+      132,
+      141,
+      176
+     ],
+     "arm_tokens": 176,
+     "arm_whitespace_tokens": 114,
+     "base_twin_prefix_tokens": [
+      97,
+      119,
+      128,
+      149
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      13,
+      0,
+      14
+     ],
+     "sample_id": "4360674",
+     "source_relpath": "datasets/conec/earnings21/contexts/4360674.txt",
+     "source_sha256": "49c227798730cfdc18d5d40e471e5d1b7842dbdce08711b586dae8c9e1790bb7",
+     "twin_derived_sha256": "b8ac0009281a69b798e15239e445f6d50cf0560b1f2bdf47d4ca930959f45f5a",
+     "twin_prefix_tokens": [
+      97,
+      132,
+      141,
+      176
+     ],
+     "twin_tokens": 176,
+     "twin_whitespace_tokens": 141
+    },
+    {
+     "arm_derived_sha256": "0461c2464e1663465feb60b939a1c620324efa928e15fd181c2fce09ac5fc4a5",
+     "arm_prefix_tokens": [
+      57,
+      271,
+      405
+     ],
+     "arm_tokens": 405,
+     "arm_whitespace_tokens": 185,
+     "base_twin_prefix_tokens": [
+      57,
+      146,
+      211
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      125,
+      69
+     ],
+     "sample_id": "4360717",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4360717.names.txt",
+     "source_sha256": "3822deb5103e592deeabfde1aba72bb2c460f11af718cc154f63daeda17218ad",
+     "twin_derived_sha256": "5ed84cb1d209ebd34bc299ad3c0dbb240f005045122a69ceae8f247ea46c6d42",
+     "twin_prefix_tokens": [
+      57,
+      271,
+      405
+     ],
+     "twin_tokens": 405,
+     "twin_whitespace_tokens": 379
+    },
+    {
+     "arm_derived_sha256": "b9b62b535e7583a9fc60f47cf649a8248e9147587368baa90dae3a8a7f271021",
+     "arm_prefix_tokens": [
+      97,
+      119,
+      134,
+      174
+     ],
+     "arm_tokens": 174,
+     "arm_whitespace_tokens": 111,
+     "base_twin_prefix_tokens": [
+      97,
+      113,
+      125,
+      146
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      6,
+      3,
+      19
+     ],
+     "sample_id": "4360717",
+     "source_relpath": "datasets/conec/earnings21/contexts/4360717.txt",
+     "source_sha256": "b267508f3efe210e5486285e5e529fd31d494ce66023f800dac179a5ed745d64",
+     "twin_derived_sha256": "72636ad7503c478d3c71877048fa811e54db299306e60f2f0a377279010751a8",
+     "twin_prefix_tokens": [
+      97,
+      119,
+      134,
+      174
+     ],
+     "twin_tokens": 174,
+     "twin_whitespace_tokens": 139
+    },
+    {
+     "arm_derived_sha256": "f4a8ce7ec31cfe9873aee6ccc658f4cd482899c14627394811c6e08299a90a98",
+     "arm_prefix_tokens": [
+      57,
+      261,
+      353
+     ],
+     "arm_tokens": 353,
+     "arm_whitespace_tokens": 168,
+     "base_twin_prefix_tokens": [
+      57,
+      143,
+      194
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      118,
+      41
+     ],
+     "sample_id": "4361631",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4361631.names.txt",
+     "source_sha256": "ab734b4692245b8b7b663dd3df02a701e54b94c3db2254b146af05ad1d66aded",
+     "twin_derived_sha256": "de76bef8e8b7ef989959d08ddfd5928ab179cfb5d481a75ca22da8a0d540d713",
+     "twin_prefix_tokens": [
+      57,
+      261,
+      353
+     ],
+     "twin_tokens": 353,
+     "twin_whitespace_tokens": 327
+    },
+    {
+     "arm_derived_sha256": "987ebed5eb2acf20a9b06e5342be713f5f530b7e409f260b8035e9bf9cae858e",
+     "arm_prefix_tokens": [
+      97,
+      124,
+      134,
+      173
+     ],
+     "arm_tokens": 173,
+     "arm_whitespace_tokens": 106,
+     "base_twin_prefix_tokens": [
+      97,
+      111,
+      120,
+      141
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      13,
+      1,
+      18
+     ],
+     "sample_id": "4361631",
+     "source_relpath": "datasets/conec/earnings21/contexts/4361631.txt",
+     "source_sha256": "a544f9536ae99751e9137985c5204db46a5b070f8879d9718602bf9dcd69c0ec",
+     "twin_derived_sha256": "5b6e98e86e10c48b7b0b7e1d6ffeb37edb122e9eb0b10ba82fe56cc50c6deebe",
+     "twin_prefix_tokens": [
+      97,
+      124,
+      134,
+      173
+     ],
+     "twin_tokens": 173,
+     "twin_whitespace_tokens": 138
+    },
+    {
+     "arm_derived_sha256": "be42d829997f00ee6d71cdf2894e38b4df64abe5adc1b65f72554b08534b9159",
+     "arm_prefix_tokens": [
+      57,
+      266,
+      361
+     ],
+     "arm_tokens": 361,
+     "arm_whitespace_tokens": 173,
+     "base_twin_prefix_tokens": [
+      57,
+      154,
+      199
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      112,
+      50
+     ],
+     "sample_id": "4363614",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4363614.names.txt",
+     "source_sha256": "0d8acbf5f4df4272343baf077049fe7aec8a915dae64b45fd8f8ddc91ca50990",
+     "twin_derived_sha256": "73b68fcaecd90841ef335662b53af92cd2ffa33aea152794066aef1af5460755",
+     "twin_prefix_tokens": [
+      57,
+      266,
+      361
+     ],
+     "twin_tokens": 361,
+     "twin_whitespace_tokens": 335
+    },
+    {
+     "arm_derived_sha256": "359621a3009f6c782da3defa697db2173695594c43b100f35b182b8fe54fc99a",
+     "arm_prefix_tokens": [
+      97,
+      111,
+      132,
+      168
+     ],
+     "arm_tokens": 168,
+     "arm_whitespace_tokens": 109,
+     "base_twin_prefix_tokens": [
+      97,
+      108,
+      123,
+      144
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      3,
+      6,
+      15
+     ],
+     "sample_id": "4363614",
+     "source_relpath": "datasets/conec/earnings21/contexts/4363614.txt",
+     "source_sha256": "59ff25a9b4cad9dc177ca72bbfbf8fc4474cfafd8b1bf7a83575d5eb761a8c62",
+     "twin_derived_sha256": "6aa55259ab85e90e2759a28d1de89788abaed353a572b95d50a04e79de49a0f8",
+     "twin_prefix_tokens": [
+      97,
+      111,
+      132,
+      168
+     ],
+     "twin_tokens": 168,
+     "twin_whitespace_tokens": 133
+    },
+    {
+     "arm_derived_sha256": "f90383eea1a3a96c1139bf56a36f0109fd0fc9ecdf96661c46db8900cc77b8a5",
+     "arm_prefix_tokens": [
+      57,
+      259,
+      371
+     ],
+     "arm_tokens": 371,
+     "arm_whitespace_tokens": 181,
+     "base_twin_prefix_tokens": [
+      57,
+      151,
+      207
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      108,
+      56
+     ],
+     "sample_id": "4364366",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4364366.names.txt",
+     "source_sha256": "d2d29e8566d9f0a64bd1efdfb04f1be2740e625724c7c1b9c0f89e35d405a0e6",
+     "twin_derived_sha256": "e9b22c7755914d39b3c87dd57b0204586cb5bef86be0529ca7cef51f073d80ec",
+     "twin_prefix_tokens": [
+      57,
+      259,
+      371
+     ],
+     "twin_tokens": 371,
+     "twin_whitespace_tokens": 345
+    },
+    {
+     "arm_derived_sha256": "db0c06bf0283d0d80dd4d81dd41cc021f318f4375cbe6f1e43beb030c8a11648",
+     "arm_prefix_tokens": [
+      97,
+      113,
+      126,
+      165
+     ],
+     "arm_tokens": 165,
+     "arm_whitespace_tokens": 108,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      122,
+      143
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      3,
+      1,
+      18
+     ],
+     "sample_id": "4364366",
+     "source_relpath": "datasets/conec/earnings21/contexts/4364366.txt",
+     "source_sha256": "a63acc293ac7e38fef44d47782df84a9f3afec98745cead961491815daff2e81",
+     "twin_derived_sha256": "44247f353a536d66876e009f0e2a990c646e1809451e378039533d0b146fe493",
+     "twin_prefix_tokens": [
+      97,
+      113,
+      126,
+      165
+     ],
+     "twin_tokens": 165,
+     "twin_whitespace_tokens": 130
+    },
+    {
+     "arm_derived_sha256": "ed0af03c967510ced9e97869b96d20543fb98a20d7a0e3aa90246d4972f367ff",
+     "arm_prefix_tokens": [
+      57,
+      250,
+      332
+     ],
+     "arm_tokens": 332,
+     "arm_whitespace_tokens": 170,
+     "base_twin_prefix_tokens": [
+      57,
+      147,
+      196
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      103,
+      33
+     ],
+     "sample_id": "4365024",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4365024.names.txt",
+     "source_sha256": "14e2677ce560b513975b7a53f1d22313da597a790f0182ef30893f8fe05a0ecd",
+     "twin_derived_sha256": "2c3d1b86403f7a3fa0304536b3c77adb4d3e9e64e72cedc2ee8f24ce294600b4",
+     "twin_prefix_tokens": [
+      57,
+      250,
+      332
+     ],
+     "twin_tokens": 332,
+     "twin_whitespace_tokens": 306
+    },
+    {
+     "arm_derived_sha256": "02d818db44e0de1ac6ff45d6f609659f5ef6cc79004a9b68b437e688e4e1c8e3",
+     "arm_prefix_tokens": [
+      97,
+      115,
+      124,
+      159
+     ],
+     "arm_tokens": 159,
+     "arm_whitespace_tokens": 105,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      119,
+      140
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      5,
+      0,
+      14
+     ],
+     "sample_id": "4365024",
+     "source_relpath": "datasets/conec/earnings21/contexts/4365024.txt",
+     "source_sha256": "bd2acffaac04b84e8ee88a3dd566a33ccf8dd3571c0bac6768c98c4cef46f50a",
+     "twin_derived_sha256": "3da13479631ff7c10b0616f85499f5bead9cab9f63b7b6455b492203fb149fe3",
+     "twin_prefix_tokens": [
+      97,
+      115,
+      124,
+      159
+     ],
+     "twin_tokens": 159,
+     "twin_whitespace_tokens": 124
+    },
+    {
+     "arm_derived_sha256": "6858b828938429b715a70c0f060031048ab79a3dcbf0863c6ea8b9f47a8530ea",
+     "arm_prefix_tokens": [
+      57,
+      152,
+      182
+     ],
+     "arm_tokens": 182,
+     "arm_whitespace_tokens": 97,
+     "base_twin_prefix_tokens": [
+      57,
+      103,
+      123
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      49,
+      10
+     ],
+     "sample_id": "4365948",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4365948.names.txt",
+     "source_sha256": "390b70e2317b9f5f744b029a6f2db6e56927cdc72d1f4d8d974b8ae0101ed1d1",
+     "twin_derived_sha256": "b2c264b94137e2bf861ef283443b95bbcd192f443a852129ad0ad390441a31cb",
+     "twin_prefix_tokens": [
+      57,
+      152,
+      182
+     ],
+     "twin_tokens": 182,
+     "twin_whitespace_tokens": 156
+    },
+    {
+     "arm_derived_sha256": "b47f7516c7d0775622b5cb4f84b3abd48b5f7ee18ee8cd4c88a37ac8e6c9c82e",
+     "arm_prefix_tokens": [
+      97,
+      105,
+      121,
+      156
+     ],
+     "arm_tokens": 156,
+     "arm_whitespace_tokens": 103,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      117,
+      138
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      0,
+      4,
+      14
+     ],
+     "sample_id": "4365948",
+     "source_relpath": "datasets/conec/earnings21/contexts/4365948.txt",
+     "source_sha256": "ab6abb87ddd28eb25535df55539342bb2eb94418283755604add56c9cf9cb3ac",
+     "twin_derived_sha256": "45ae80affcff96ee1af9c9ac355d24ac6ea943c03aad1e5810dfbc7a3f8af4eb",
+     "twin_prefix_tokens": [
+      97,
+      105,
+      121,
+      156
+     ],
+     "twin_tokens": 156,
+     "twin_whitespace_tokens": 121
+    },
+    {
+     "arm_derived_sha256": "5edc7c4127b063a6be1d04dae210c35b4425807c6490221887d42fae256ce41e",
+     "arm_prefix_tokens": [
+      57,
+      251,
+      337
+     ],
+     "arm_tokens": 337,
+     "arm_whitespace_tokens": 164,
+     "base_twin_prefix_tokens": [
+      57,
+      148,
+      190
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      103,
+      44
+     ],
+     "sample_id": "4366302",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4366302.names.txt",
+     "source_sha256": "c3c0ba701719b3fc51fd4f37b3368a4d783c439332cfc8742c64840a7a9796ef",
+     "twin_derived_sha256": "d861bb78c73bc4c178e723a7bbbe0575c5d85b22c70b3c8980763e794256c684",
+     "twin_prefix_tokens": [
+      57,
+      251,
+      337
+     ],
+     "twin_tokens": 337,
+     "twin_whitespace_tokens": 311
+    },
+    {
+     "arm_derived_sha256": "53fabc986dc33a28751b2a8cc681d1785ea8bd81c27ba2e44be987da39cb7262",
+     "arm_prefix_tokens": [
+      97,
+      122,
+      157
+     ],
+     "arm_tokens": 157,
+     "arm_whitespace_tokens": 102,
+     "base_twin_prefix_tokens": [
+      97,
+      114,
+      135
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      8,
+      14
+     ],
+     "sample_id": "4366302",
+     "source_relpath": "datasets/conec/earnings21/contexts/4366302.txt",
+     "source_sha256": "19100dc79de4845922fdf49e7f0d8cd7eb7076753a214024b6ca673ea74008b0",
+     "twin_derived_sha256": "112dcd8b8744e8a53e66399857c339d7494c2bc82bf5e1b274c9a60b7cf7119d",
+     "twin_prefix_tokens": [
+      97,
+      122,
+      157
+     ],
+     "twin_tokens": 157,
+     "twin_whitespace_tokens": 124
+    },
+    {
+     "arm_derived_sha256": "f2f7b2d006fae11d0db6b3eb91401ff5e7527674e858782ccf341df126c2f62c",
+     "arm_prefix_tokens": [
+      57,
+      256,
+      347
+     ],
+     "arm_tokens": 347,
+     "arm_whitespace_tokens": 167,
+     "base_twin_prefix_tokens": [
+      57,
+      148,
+      193
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      108,
+      46
+     ],
+     "sample_id": "4366429",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4366429.names.txt",
+     "source_sha256": "812ad230c76a7919bb6af461f6edc2e46ed79d71b530f262e69d2a9d29b4a48e",
+     "twin_derived_sha256": "586138bf1f6d3a5d322deda775c9363bbc4f0ff03ed65361c0667ed42d1d18c8",
+     "twin_prefix_tokens": [
+      57,
+      256,
+      347
+     ],
+     "twin_tokens": 347,
+     "twin_whitespace_tokens": 321
+    },
+    {
+     "arm_derived_sha256": "3f0febdfbc49f3f989cd5e00ebbaf5361ef0cd2535bceefc98777046a81274af",
+     "arm_prefix_tokens": [
+      97,
+      118,
+      132,
+      170
+     ],
+     "arm_tokens": 170,
+     "arm_whitespace_tokens": 110,
+     "base_twin_prefix_tokens": [
+      97,
+      112,
+      124,
+      145
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      6,
+      2,
+      17
+     ],
+     "sample_id": "4366429",
+     "source_relpath": "datasets/conec/earnings21/contexts/4366429.txt",
+     "source_sha256": "7cbb0e751b4bf115c70c7e600124e8d3cf7de37ca26bc2abd410e60220652d35",
+     "twin_derived_sha256": "5635b3c9503d143b12ec4418302590c65e6e20d0ef287c664f3f118d396a97fb",
+     "twin_prefix_tokens": [
+      97,
+      118,
+      132,
+      170
+     ],
+     "twin_tokens": 170,
+     "twin_whitespace_tokens": 135
+    },
+    {
+     "arm_derived_sha256": "a265e1136044fd4cb742b22f7e84ba9c3a13e6c109a0f4a6bb78c048e7f7682a",
+     "arm_prefix_tokens": [
+      57,
+      123,
+      156
+     ],
+     "arm_tokens": 156,
+     "arm_whitespace_tokens": 84,
+     "base_twin_prefix_tokens": [
+      57,
+      91,
+      110
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      32,
+      14
+     ],
+     "sample_id": "4366522",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4366522.names.txt",
+     "source_sha256": "386f2954d2b04c8d207b7a66d89e2605db060c90e6f56876ade59c0f020a6b0d",
+     "twin_derived_sha256": "1cd0245bbb2f7c5992e3bf22dcce7e2618223276a0d6380a2c77b2b560398395",
+     "twin_prefix_tokens": [
+      57,
+      123,
+      156
+     ],
+     "twin_tokens": 156,
+     "twin_whitespace_tokens": 130
+    },
+    {
+     "arm_derived_sha256": "896e2846aef4c91e1f3b39e3dcbc9a0eb804a953495373610be15612ec498c1a",
+     "arm_prefix_tokens": [
+      97,
+      123,
+      133,
+      171
+     ],
+     "arm_tokens": 171,
+     "arm_whitespace_tokens": 107,
+     "base_twin_prefix_tokens": [
+      97,
+      112,
+      121,
+      142
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      11,
+      1,
+      17
+     ],
+     "sample_id": "4366522",
+     "source_relpath": "datasets/conec/earnings21/contexts/4366522.txt",
+     "source_sha256": "5809e340f1d51dcba2a2581cd4370de2ede30c8dc3b403cb60c425e39909c4fc",
+     "twin_derived_sha256": "bbce8c9369fdf3de924575625b00e8f35b519edee46bebc580cabbe4004bf3bd",
+     "twin_prefix_tokens": [
+      97,
+      123,
+      133,
+      171
+     ],
+     "twin_tokens": 171,
+     "twin_whitespace_tokens": 136
+    },
+    {
+     "arm_derived_sha256": "6f081fbf190dae95c6dbc79a71f4fdbe31099ab2237fcc90f39d913f403f2219",
+     "arm_prefix_tokens": [
+      57,
+      191,
+      255
+     ],
+     "arm_tokens": 255,
+     "arm_whitespace_tokens": 134,
+     "base_twin_prefix_tokens": [
+      57,
+      122,
+      160
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      69,
+      26
+     ],
+     "sample_id": "4366893",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4366893.names.txt",
+     "source_sha256": "10a128316b6fa33128caaa558a5a10c861e53c369efa26c6aa3329cee4b523d6",
+     "twin_derived_sha256": "0baef176598b3ac79475ddfd53d1ee51268f9927d289e1699cf674e13e78ac94",
+     "twin_prefix_tokens": [
+      57,
+      191,
+      255
+     ],
+     "twin_tokens": 255,
+     "twin_whitespace_tokens": 229
+    },
+    {
+     "arm_derived_sha256": "05bd3be301ead9246e71bd26b540a06554276c9b5df34e18c8e83e5ecc781f3d",
+     "arm_prefix_tokens": [
+      97,
+      113,
+      147
+     ],
+     "arm_tokens": 147,
+     "arm_whitespace_tokens": 97,
+     "base_twin_prefix_tokens": [
+      97,
+      109,
+      130
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      4,
+      13
+     ],
+     "sample_id": "4366893",
+     "source_relpath": "datasets/conec/earnings21/contexts/4366893.txt",
+     "source_sha256": "2554fb0005539f5f9f43853bcb0d042eb7185b1f8d286f8ba01de2ab4432c446",
+     "twin_derived_sha256": "e6a66f8ea112afd7c80768d3b0625093ea62fd10c06c5035371a5c936d97816b",
+     "twin_prefix_tokens": [
+      97,
+      113,
+      147
+     ],
+     "twin_tokens": 147,
+     "twin_whitespace_tokens": 114
+    },
+    {
+     "arm_derived_sha256": "4e81308415c4024f38fef4cdded1a691024c9c03d45ba4b83a44650a80b48277",
+     "arm_prefix_tokens": [
+      57,
+      173,
+      224
+     ],
+     "arm_tokens": 224,
+     "arm_whitespace_tokens": 114,
+     "base_twin_prefix_tokens": [
+      57,
+      111,
+      140
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      62,
+      22
+     ],
+     "sample_id": "4367318",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4367318.names.txt",
+     "source_sha256": "966af192b2ab154bcd4b1cbaf07fbd75ef78966a1401f28fdb2a13c7ab9497c9",
+     "twin_derived_sha256": "2cd5cb8ba9c1586f7469f047d8a79db24e1f811abefb9d62ada3ae769be979a3",
+     "twin_prefix_tokens": [
+      57,
+      173,
+      224
+     ],
+     "twin_tokens": 224,
+     "twin_whitespace_tokens": 198
+    },
+    {
+     "arm_derived_sha256": "61e5550ecac4804db29a0f821c113bc37c0a2b330074a3f843f3c568ae13e47a",
+     "arm_prefix_tokens": [
+      97,
+      112,
+      122,
+      157
+     ],
+     "arm_tokens": 157,
+     "arm_whitespace_tokens": 102,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      116,
+      137
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      5,
+      1,
+      14
+     ],
+     "sample_id": "4367318",
+     "source_relpath": "datasets/conec/earnings21/contexts/4367318.txt",
+     "source_sha256": "d4b2d39b598620db38b9b781966bba61268e1a4fdc1a0ee353d1acf9c2c62bff",
+     "twin_derived_sha256": "5768e9b2ee6552f7ee2b1714823804824ee67b3f557c239c6f743256de551200",
+     "twin_prefix_tokens": [
+      97,
+      112,
+      122,
+      157
+     ],
+     "twin_tokens": 157,
+     "twin_whitespace_tokens": 122
+    },
+    {
+     "arm_derived_sha256": "6144c4abf4e3bcbfc769511c1dbeb083bf8a7bbd5d7efae55f9187564f11b6e0",
+     "arm_prefix_tokens": [
+      57,
+      245,
+      301
+     ],
+     "arm_tokens": 301,
+     "arm_whitespace_tokens": 144,
+     "base_twin_prefix_tokens": [
+      57,
+      138,
+      170
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      107,
+      24
+     ],
+     "sample_id": "4367535",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4367535.names.txt",
+     "source_sha256": "94a14f7b496b9ee27726363583b62ee9399ac1cade1cb31bd9cdc8ae3c0449ac",
+     "twin_derived_sha256": "a93f2812bb44f21d1021d2eda958794cf90ffca69d4d0384278730063c244683",
+     "twin_prefix_tokens": [
+      57,
+      245,
+      301
+     ],
+     "twin_tokens": 301,
+     "twin_whitespace_tokens": 275
+    },
+    {
+     "arm_derived_sha256": "dac3fd171fcba0ea89a0ba611a2a227f9d9d16369ff48f796d0320d191c87ae7",
+     "arm_prefix_tokens": [
+      97,
+      111,
+      147
+     ],
+     "arm_tokens": 147,
+     "arm_whitespace_tokens": 95,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      128
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      4,
+      15
+     ],
+     "sample_id": "4367535",
+     "source_relpath": "datasets/conec/earnings21/contexts/4367535.txt",
+     "source_sha256": "2f6f5549ef1d91cd8a60df947de1c334f23f0532f52bbbd01d3f5e3d3b2abc15",
+     "twin_derived_sha256": "fbfb1dcc249d5b2a753f05ccf419767c28c8372c15346e4fdc146c9b6c86596f",
+     "twin_prefix_tokens": [
+      97,
+      111,
+      147
+     ],
+     "twin_tokens": 147,
+     "twin_whitespace_tokens": 114
+    },
+    {
+     "arm_derived_sha256": "ee2c1447ff1a37e3c04ce8fb8f110f27e5e1e1d4bebaa48d7bfa4333adfa9cc1",
+     "arm_prefix_tokens": [
+      57,
+      291,
+      441
+     ],
+     "arm_tokens": 441,
+     "arm_whitespace_tokens": 212,
+     "base_twin_prefix_tokens": [
+      57,
+      154,
+      238
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      137,
+      66
+     ],
+     "sample_id": "4368670",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4368670.names.txt",
+     "source_sha256": "fd6610dfc20b6c480e8d30369a2f4c7110929f7336709267a3109b67d00eb8ef",
+     "twin_derived_sha256": "3c86ab11fa8b93b8eb4720dc36aa7623621071f0c9f73f0a8ab0c100846049fb",
+     "twin_prefix_tokens": [
+      57,
+      291,
+      441
+     ],
+     "twin_tokens": 441,
+     "twin_whitespace_tokens": 415
+    },
+    {
+     "arm_derived_sha256": "6943e7cec992a16fcf4ced50b34dcbf1ca51edbcba1b152abbf14910aca643de",
+     "arm_prefix_tokens": [
+      97,
+      125,
+      142,
+      181
+     ],
+     "arm_tokens": 181,
+     "arm_whitespace_tokens": 118,
+     "base_twin_prefix_tokens": [
+      97,
+      117,
+      132,
+      153
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      8,
+      2,
+      18
+     ],
+     "sample_id": "4368670",
+     "source_relpath": "datasets/conec/earnings21/contexts/4368670.txt",
+     "source_sha256": "69c0aca258e913f90741f79d4ff26c163e279ef71c8d4b55b55eb58badbd627e",
+     "twin_derived_sha256": "c13df2ddb6725239ec1e13c1b6a60bc86d9a52ae45508c80d4786877e296f334",
+     "twin_prefix_tokens": [
+      97,
+      125,
+      142,
+      181
+     ],
+     "twin_tokens": 181,
+     "twin_whitespace_tokens": 146
+    },
+    {
+     "arm_derived_sha256": "2fea6bd6025a9fdedc251260620e63abf67815efb150a72af4b91b3e846c0dfc",
+     "arm_prefix_tokens": [
+      57,
+      95,
+      108
+     ],
+     "arm_tokens": 108,
+     "arm_whitespace_tokens": 62,
+     "base_twin_prefix_tokens": [
+      57,
+      77,
+      88
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      18,
+      2
+     ],
+     "sample_id": "4374910",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4374910.names.txt",
+     "source_sha256": "6332785309b0dbaeb778f2d79d09f1f6b220988d9196570aace6684a8e239e88",
+     "twin_derived_sha256": "1b30d350c41bd226aee39a3bb65cbc102252358ea910e9900091d61da1d96713",
+     "twin_prefix_tokens": [
+      57,
+      95,
+      108
+     ],
+     "twin_tokens": 108,
+     "twin_whitespace_tokens": 82
+    },
+    {
+     "arm_derived_sha256": "87b678022ee1fbfc36af98af4907dc1f9881a6a819a8a95af204afe3ddbf2d88",
+     "arm_prefix_tokens": [
+      97,
+      110,
+      123,
+      167
+     ],
+     "arm_tokens": 167,
+     "arm_whitespace_tokens": 105,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      119,
+      140
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      3,
+      1,
+      23
+     ],
+     "sample_id": "4374910",
+     "source_relpath": "datasets/conec/earnings21/contexts/4374910.txt",
+     "source_sha256": "2c86f863d4ec262e805adee2cb260b4845b9566ec36fa1b7d8850d0efb088cde",
+     "twin_derived_sha256": "0b6d34bcff61a0c5fc1d9a40a112f0115c71cceb31e049f7170cc0818d67ade9",
+     "twin_prefix_tokens": [
+      97,
+      110,
+      123,
+      167
+     ],
+     "twin_tokens": 167,
+     "twin_whitespace_tokens": 132
+    },
+    {
+     "arm_derived_sha256": "1c370cace3c4196135cc15671aa2d83a8aafde2b26de8c031518a79e75979a72",
+     "arm_prefix_tokens": [
+      57,
+      219,
+      273
+     ],
+     "arm_tokens": 273,
+     "arm_whitespace_tokens": 139,
+     "base_twin_prefix_tokens": [
+      57,
+      133,
+      165
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      86,
+      22
+     ],
+     "sample_id": "4375653",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4375653.names.txt",
+     "source_sha256": "6db7f28e2ee1eb548c56f49589ba1f09f12057f639fd6af22105e0b8a9bc094f",
+     "twin_derived_sha256": "ffa2093676e12ef9b4933ea03250dfe8d72bc972f68ea627cb786927172b7e0e",
+     "twin_prefix_tokens": [
+      57,
+      219,
+      273
+     ],
+     "twin_tokens": 273,
+     "twin_whitespace_tokens": 247
+    },
+    {
+     "arm_derived_sha256": "95c8e1dcb8c962177925dea74d8ff707dfe978096378e70e91d85eb603472f8c",
+     "arm_prefix_tokens": [
+      97,
+      105,
+      114,
+      148
+     ],
+     "arm_tokens": 148,
+     "arm_whitespace_tokens": 100,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      114,
+      135
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      0,
+      0,
+      13
+     ],
+     "sample_id": "4375653",
+     "source_relpath": "datasets/conec/earnings21/contexts/4375653.txt",
+     "source_sha256": "ad8ecd602ddc76d91fc522aa7f0ba37b9da0c1693f1c6d6fd6a88b2471e94f8d",
+     "twin_derived_sha256": "16aaaf37721971f027036309d40b5fb68875d386ce1896a061190ba0ca4d9d45",
+     "twin_prefix_tokens": [
+      97,
+      105,
+      114,
+      148
+     ],
+     "twin_tokens": 148,
+     "twin_whitespace_tokens": 113
+    },
+    {
+     "arm_derived_sha256": "96c0eb5da3759ff7032261e632271ca1f6fc2132f6a2e6a6ad037f79ece41569",
+     "arm_prefix_tokens": [
+      57,
+      274,
+      398
+     ],
+     "arm_tokens": 398,
+     "arm_whitespace_tokens": 211,
+     "base_twin_prefix_tokens": [
+      57,
+      169,
+      237
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      105,
+      56
+     ],
+     "sample_id": "4382825",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4382825.names.txt",
+     "source_sha256": "ef64d4e2499030da28bc047d9e640c36370053c9ffd281981f0ab7ee40e504ac",
+     "twin_derived_sha256": "92cf09f93c1baa646bbb6736d3843873b9f58aebb8bdc7c051abbf79369db439",
+     "twin_prefix_tokens": [
+      57,
+      274,
+      398
+     ],
+     "twin_tokens": 398,
+     "twin_whitespace_tokens": 372
+    },
+    {
+     "arm_derived_sha256": "bb29f56336326daf3f20e69cab9d9411ce4fda9ebcab2198cfa33cb8561b4bc1",
+     "arm_prefix_tokens": [
+      97,
+      105,
+      150
+     ],
+     "arm_tokens": 150,
+     "arm_whitespace_tokens": 92,
+     "base_twin_prefix_tokens": [
+      97,
+      104,
+      125
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      1,
+      24
+     ],
+     "sample_id": "4382825",
+     "source_relpath": "datasets/conec/earnings21/contexts/4382825.txt",
+     "source_sha256": "e8be686472c686ab051160d67636c5baa52c82c70198a1ceb81151b29e7804eb",
+     "twin_derived_sha256": "ccc9f4197a8b77969e250ab071a6520d460b1941079527e0486481bb7e9fadb5",
+     "twin_prefix_tokens": [
+      97,
+      105,
+      150
+     ],
+     "twin_tokens": 150,
+     "twin_whitespace_tokens": 117
+    },
+    {
+     "arm_derived_sha256": "7a531f91f985b519d1a377c478216a7fc4b0f1c87a5d09d86a99e432f9e65480",
+     "arm_prefix_tokens": [
+      57,
+      236,
+      316
+     ],
+     "arm_tokens": 316,
+     "arm_whitespace_tokens": 163,
+     "base_twin_prefix_tokens": [
+      57,
+      143,
+      189
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      93,
+      34
+     ],
+     "sample_id": "4383161",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4383161.names.txt",
+     "source_sha256": "2454bb86c161b799f9e45e1ad7304d8cdfb3f56b1ea1e26e4dbea079ba647961",
+     "twin_derived_sha256": "ad6f146851f33d0700f2a976f82cc539a3cba8d701cfbb8a8609c710c6a28e96",
+     "twin_prefix_tokens": [
+      57,
+      236,
+      316
+     ],
+     "twin_tokens": 316,
+     "twin_whitespace_tokens": 290
+    },
+    {
+     "arm_derived_sha256": "e626cfa6a02e72c5bc6c7cc7a5652cfa511dc1c7d24d3ad33aa1e64a2b2493a1",
+     "arm_prefix_tokens": [
+      97,
+      119,
+      133,
+      169
+     ],
+     "arm_tokens": 169,
+     "arm_whitespace_tokens": 108,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      122,
+      143
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      9,
+      2,
+      15
+     ],
+     "sample_id": "4383161",
+     "source_relpath": "datasets/conec/earnings21/contexts/4383161.txt",
+     "source_sha256": "a4f013325d533480a8996621169f6318a1a5516544823fc75f82ab8145a93f1b",
+     "twin_derived_sha256": "0f9b49db0288d4889f9ba9a7154da8c57bf70da4b9682d292bbd84f0d0e00d99",
+     "twin_prefix_tokens": [
+      97,
+      119,
+      133,
+      169
+     ],
+     "twin_tokens": 169,
+     "twin_whitespace_tokens": 134
+    },
+    {
+     "arm_derived_sha256": "3b32e7c052a74a7c6a66fe9d2962d722b96758db14ba307614db05fea4e9c817",
+     "arm_prefix_tokens": [
+      57,
+      148,
+      180
+     ],
+     "arm_tokens": 180,
+     "arm_whitespace_tokens": 97,
+     "base_twin_prefix_tokens": [
+      57,
+      101,
+      123
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      47,
+      10
+     ],
+     "sample_id": "4384198",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4384198.names.txt",
+     "source_sha256": "9cbcee310d10771b38ced1d5ad952684bbd4ab2c33e92af1b9805ffc0739243f",
+     "twin_derived_sha256": "047b41be679786d6a56d5bea344169aa05d45b0bbe90f6c048ec17b2ae97fbdd",
+     "twin_prefix_tokens": [
+      57,
+      148,
+      180
+     ],
+     "twin_tokens": 180,
+     "twin_whitespace_tokens": 154
+    },
+    {
+     "arm_derived_sha256": "ad7a6a44156dee977461c88e7d5bc5f46d094f0051fbeb7a71ab8db3fd41e74f",
+     "arm_prefix_tokens": [
+      97,
+      114,
+      123,
+      155
+     ],
+     "arm_tokens": 155,
+     "arm_whitespace_tokens": 102,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      116,
+      137
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      7,
+      0,
+      11
+     ],
+     "sample_id": "4384198",
+     "source_relpath": "datasets/conec/earnings21/contexts/4384198.txt",
+     "source_sha256": "f897e45796fe927e60596e9b15bc39363d8ca10858e095716641194d1ff5dde2",
+     "twin_derived_sha256": "7067504e2b14b0d064cea07249bab7494c968e9c565fb716a3a24d8411c47a78",
+     "twin_prefix_tokens": [
+      97,
+      114,
+      123,
+      155
+     ],
+     "twin_tokens": 155,
+     "twin_whitespace_tokens": 120
+    },
+    {
+     "arm_derived_sha256": "cb4a6a312dd0528dff15cd7c3d5e4fe711e6d8305e89dc889325adfe00b9a043",
+     "arm_prefix_tokens": [
+      57,
+      196,
+      221
+     ],
+     "arm_tokens": 221,
+     "arm_whitespace_tokens": 113,
+     "base_twin_prefix_tokens": [
+      57,
+      121,
+      139
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      75,
+      7
+     ],
+     "sample_id": "4384683",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4384683.names.txt",
+     "source_sha256": "caed16993624b6f663db1995d95d5e2f12f8998adf07bc98b01349b4862a387b",
+     "twin_derived_sha256": "aab72a90a627313799185fbdf3fd77d8a3b42d2ee831180d5a7fac8f326f9f90",
+     "twin_prefix_tokens": [
+      57,
+      196,
+      221
+     ],
+     "twin_tokens": 221,
+     "twin_whitespace_tokens": 195
+    },
+    {
+     "arm_derived_sha256": "921e775a44c41b721f820f9052496478957499fa9fd50d6af0c8f440772d3207",
+     "arm_prefix_tokens": [
+      97,
+      115,
+      147
+     ],
+     "arm_tokens": 147,
+     "arm_whitespace_tokens": 98,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      131
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      5,
+      11
+     ],
+     "sample_id": "4384683",
+     "source_relpath": "datasets/conec/earnings21/contexts/4384683.txt",
+     "source_sha256": "3aa5d0bd4e85dabdc000890371ae83d3604e53bffc4e9c668218708e173c4c8c",
+     "twin_derived_sha256": "75de64ec9021b8ffca881af158d4fc1d361b65f15aad8d71b164b15d69380262",
+     "twin_prefix_tokens": [
+      97,
+      115,
+      147
+     ],
+     "twin_tokens": 147,
+     "twin_whitespace_tokens": 114
+    },
+    {
+     "arm_derived_sha256": "67b41d5d672ce1d982105a819bd309bed80ca9f5119b97eaa4dd6897c461b8dc",
+     "arm_prefix_tokens": [
+      57,
+      189,
+      259
+     ],
+     "arm_tokens": 259,
+     "arm_whitespace_tokens": 133,
+     "base_twin_prefix_tokens": [
+      57,
+      120,
+      159
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      69,
+      31
+     ],
+     "sample_id": "4384744",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4384744.names.txt",
+     "source_sha256": "1743975e9088ca5bdf5220612ed66b5997dac4d6eec13d684ec58a8b04f51a83",
+     "twin_derived_sha256": "6f9e08177e52eb248dbda357396a0d3bd1a2656307eadf220a84d52287a14d0a",
+     "twin_prefix_tokens": [
+      57,
+      189,
+      259
+     ],
+     "twin_tokens": 259,
+     "twin_whitespace_tokens": 233
+    },
+    {
+     "arm_derived_sha256": "65b977575e284c5beb76055d187cedd4a08fec3afdf9d216c14313fc4ad5744a",
+     "arm_prefix_tokens": [
+      97,
+      106,
+      139
+     ],
+     "arm_tokens": 139,
+     "arm_whitespace_tokens": 93,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      126
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      1,
+      12
+     ],
+     "sample_id": "4384744",
+     "source_relpath": "datasets/conec/earnings21/contexts/4384744.txt",
+     "source_sha256": "d5299251fc375f392b78262c448e18b396ef9a5285f1f49c7c6e33c4e9a6ab00",
+     "twin_derived_sha256": "806f41940339aed2a963ab58e82a4ac0ac13733ea048be84482dc2c9bd801e4d",
+     "twin_prefix_tokens": [
+      97,
+      106,
+      139
+     ],
+     "twin_tokens": 139,
+     "twin_whitespace_tokens": 106
+    },
+    {
+     "arm_derived_sha256": "6740f212efb78725cbd789dfb059aed7e30012ec13f53dbc7ee56fa8f6c8f439",
+     "arm_prefix_tokens": [
+      57,
+      284,
+      404
+     ],
+     "arm_tokens": 404,
+     "arm_whitespace_tokens": 193,
+     "base_twin_prefix_tokens": [
+      57,
+      159,
+      219
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      125,
+      60
+     ],
+     "sample_id": "4384964",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4384964.names.txt",
+     "source_sha256": "312c3a602322fe18d80b0760fb35be4f0b4c1d185c06370cf42f2909a059e735",
+     "twin_derived_sha256": "9273042c572b7f877fe644cdbde891720fceb3823e1098a44f215e7f6e5a90b2",
+     "twin_prefix_tokens": [
+      57,
+      284,
+      404
+     ],
+     "twin_tokens": 404,
+     "twin_whitespace_tokens": 378
+    },
+    {
+     "arm_derived_sha256": "70f6a3841e9af6c9c99a62e5512332e8586e6d636ecfa90a33dbe960ce506bb6",
+     "arm_prefix_tokens": [
+      97,
+      106,
+      142
+     ],
+     "arm_tokens": 142,
+     "arm_whitespace_tokens": 93,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      126
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      1,
+      15
+     ],
+     "sample_id": "4384964",
+     "source_relpath": "datasets/conec/earnings21/contexts/4384964.txt",
+     "source_sha256": "e465b6bfdfc26b86f910b07a4b4810429a0a815a724c5ebbb5627ac136bf7369",
+     "twin_derived_sha256": "f912939caba72bb8106909df5312e149b408a74ac778558e87b0e1dd5764c27e",
+     "twin_prefix_tokens": [
+      97,
+      106,
+      142
+     ],
+     "twin_tokens": 142,
+     "twin_whitespace_tokens": 109
+    },
+    {
+     "arm_derived_sha256": "9a4b8a95abd98214ad6b1373cd2b904ed67253c63cb028e897520a12b9caa373",
+     "arm_prefix_tokens": [
+      57,
+      214,
+      275
+     ],
+     "arm_tokens": 275,
+     "arm_whitespace_tokens": 130,
+     "base_twin_prefix_tokens": [
+      57,
+      124,
+      156
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      90,
+      29
+     ],
+     "sample_id": "4385072",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4385072.names.txt",
+     "source_sha256": "b5870173411fa18742a77bef8824341e94d657bfc10c6162c6e9193272a9e859",
+     "twin_derived_sha256": "291ada251d30fac0dddbf43c7649429b94e55686a1cda48636f1a2a1d9607eaa",
+     "twin_prefix_tokens": [
+      57,
+      214,
+      275
+     ],
+     "twin_tokens": 275,
+     "twin_whitespace_tokens": 249
+    },
+    {
+     "arm_derived_sha256": "d7d8336f142f6cbe01e754dec3d7bcd459606eba1d8f2ccd6f7b73e810ef9e27",
+     "arm_prefix_tokens": [
+      97,
+      115,
+      151
+     ],
+     "arm_tokens": 151,
+     "arm_whitespace_tokens": 98,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      131
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      5,
+      15
+     ],
+     "sample_id": "4385072",
+     "source_relpath": "datasets/conec/earnings21/contexts/4385072.txt",
+     "source_sha256": "5b32ea6dde3b525d3d15d692171429acfa83f47119ce489569c9aca405182a7c",
+     "twin_derived_sha256": "1d26b0f41d519af74dc96aabaefef16f61bdb8e9cf3f6060a408aef577f90329",
+     "twin_prefix_tokens": [
+      97,
+      115,
+      151
+     ],
+     "twin_tokens": 151,
+     "twin_whitespace_tokens": 118
+    },
+    {
+     "arm_derived_sha256": "3d941a07e4195b48ab451be2c2a3a34bea94974eef88c77c3665cb00b7fb7ece",
+     "arm_prefix_tokens": [
+      57,
+      240,
+      329
+     ],
+     "arm_tokens": 329,
+     "arm_whitespace_tokens": 165,
+     "base_twin_prefix_tokens": [
+      57,
+      143,
+      191
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      97,
+      41
+     ],
+     "sample_id": "4385388",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4385388.names.txt",
+     "source_sha256": "c29dda3c0afcd13e1c953df1c7533d28ff8724fd537ab18d1819374c479c4afd",
+     "twin_derived_sha256": "ea5909ef64df10a05a32e8e64c170520918b02317497c33920f851b45619e332",
+     "twin_prefix_tokens": [
+      57,
+      240,
+      329
+     ],
+     "twin_tokens": 329,
+     "twin_whitespace_tokens": 303
+    },
+    {
+     "arm_derived_sha256": "dd30d6d24260e411683f89ab76680f91a94952257a0657c3d9dd83ffb7860339",
+     "arm_prefix_tokens": [
+      97,
+      117,
+      127,
+      159
+     ],
+     "arm_tokens": 159,
+     "arm_whitespace_tokens": 108,
+     "base_twin_prefix_tokens": [
+      97,
+      113,
+      122,
+      143
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      4,
+      1,
+      11
+     ],
+     "sample_id": "4385388",
+     "source_relpath": "datasets/conec/earnings21/contexts/4385388.txt",
+     "source_sha256": "b2f141be3f95b5c5210a584faff9759f39227354ce6154af71461f7c912cc8e7",
+     "twin_derived_sha256": "9bf9eb0b6a92bee0d03c126f6aa80566a5430d9edf136dbc645d6e78e13db03b",
+     "twin_prefix_tokens": [
+      97,
+      117,
+      127,
+      159
+     ],
+     "twin_tokens": 159,
+     "twin_whitespace_tokens": 124
+    },
+    {
+     "arm_derived_sha256": "b2373cb6daa3e559662a9a5b0c612f916fbd47107d3e818b6f5595b4af661557",
+     "arm_prefix_tokens": [
+      57,
+      252,
+      390
+     ],
+     "arm_tokens": 390,
+     "arm_whitespace_tokens": 199,
+     "base_twin_prefix_tokens": [
+      57,
+      148,
+      225
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      104,
+      61
+     ],
+     "sample_id": "4385939",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4385939.names.txt",
+     "source_sha256": "779685b6a4e61b2d56299bd84eff0d31324479cb0f40663e19f6ae16222ed0ef",
+     "twin_derived_sha256": "519349039f1e80952d5b9b352beefa8ccf8943e7fb3974ed45b68ed65b45baab",
+     "twin_prefix_tokens": [
+      57,
+      252,
+      390
+     ],
+     "twin_tokens": 390,
+     "twin_whitespace_tokens": 364
+    },
+    {
+     "arm_derived_sha256": "458fd76ffe21575d35cb4a5a80698fa25f0afdb37c87fdea9e3a70a8fabff4c0",
+     "arm_prefix_tokens": [
+      97,
+      115,
+      132,
+      184
+     ],
+     "arm_tokens": 184,
+     "arm_whitespace_tokens": 111,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      125,
+      146
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      5,
+      2,
+      31
+     ],
+     "sample_id": "4385939",
+     "source_relpath": "datasets/conec/earnings21/contexts/4385939.txt",
+     "source_sha256": "fd8ba23eea101060e63ec08bbb3626d3c683ed448f039a8d66cdfb8f796f4307",
+     "twin_derived_sha256": "5427936c8a06d66879d28dcfc751747a01aba25d12d6071f8db5a705ef7062de",
+     "twin_prefix_tokens": [
+      97,
+      115,
+      132,
+      184
+     ],
+     "twin_tokens": 184,
+     "twin_whitespace_tokens": 149
+    },
+    {
+     "arm_derived_sha256": "f0cd15e753b277bd96f2025836c5af2b7673744abcd6517ffb20b7b0450ce330",
+     "arm_prefix_tokens": [
+      57,
+      137,
+      155
+     ],
+     "arm_tokens": 155,
+     "arm_whitespace_tokens": 87,
+     "base_twin_prefix_tokens": [
+      57,
+      98,
+      113
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      39,
+      3
+     ],
+     "sample_id": "4386541",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4386541.names.txt",
+     "source_sha256": "f46c36d03297606733956b9cddb691c04159b21ccc4172cba14b2dc5528a1189",
+     "twin_derived_sha256": "6349c94bdf703f6c3d4ea7be4fabc305769e2f01b6c6c032cec33f50e394957a",
+     "twin_prefix_tokens": [
+      57,
+      137,
+      155
+     ],
+     "twin_tokens": 155,
+     "twin_whitespace_tokens": 129
+    },
+    {
+     "arm_derived_sha256": "6bb5a7c090194067fe0176fccfe9648cd675e6f33ffe6e9f392edc8902db60a7",
+     "arm_prefix_tokens": [
+      97,
+      116,
+      151
+     ],
+     "arm_tokens": 151,
+     "arm_whitespace_tokens": 98,
+     "base_twin_prefix_tokens": [
+      97,
+      110,
+      131
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      6,
+      14
+     ],
+     "sample_id": "4386541",
+     "source_relpath": "datasets/conec/earnings21/contexts/4386541.txt",
+     "source_sha256": "1308149855c44f6f9710884dabb839b1d6ba555e026f056b9b9087db021eaae4",
+     "twin_derived_sha256": "f1e07497ae48373f46dbebf29a51a800f31ba9d1a950ab99c7300c78f9ebc565",
+     "twin_prefix_tokens": [
+      97,
+      116,
+      151
+     ],
+     "twin_tokens": 151,
+     "twin_whitespace_tokens": 118
+    },
+    {
+     "arm_derived_sha256": "5530d296a850a201aeef4735f9b4aa6e8e2f0b4827558389b9a8ee141ed0ba3a",
+     "arm_prefix_tokens": [
+      57,
+      126,
+      147
+     ],
+     "arm_tokens": 147,
+     "arm_whitespace_tokens": 82,
+     "base_twin_prefix_tokens": [
+      57,
+      92,
+      108
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      34,
+      5
+     ],
+     "sample_id": "4387332",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4387332.names.txt",
+     "source_sha256": "56b0ccfbe85d57b44617a32f876b2f9d59d0752b579e470bc1a8f29269df8461",
+     "twin_derived_sha256": "d50474a6c66bc68772b2905eee80e86547f342accff095b2e9c3e2f506c4653c",
+     "twin_prefix_tokens": [
+      57,
+      126,
+      147
+     ],
+     "twin_tokens": 147,
+     "twin_whitespace_tokens": 121
+    },
+    {
+     "arm_derived_sha256": "042965ac852a1cce6826d392552e008ca593833c061ec5882b37044b5e0d6506",
+     "arm_prefix_tokens": [
+      97,
+      110,
+      119,
+      157
+     ],
+     "arm_tokens": 157,
+     "arm_whitespace_tokens": 102,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      116,
+      137
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      3,
+      0,
+      17
+     ],
+     "sample_id": "4387332",
+     "source_relpath": "datasets/conec/earnings21/contexts/4387332.txt",
+     "source_sha256": "a282c633d40688a1959e35007cd43ddbf800109a40788d46b69bc48e915b925a",
+     "twin_derived_sha256": "838551a238762e4d353bc58ae3115a4e7f2e72a74437c29b7969051de1db5c87",
+     "twin_prefix_tokens": [
+      97,
+      110,
+      119,
+      157
+     ],
+     "twin_tokens": 157,
+     "twin_whitespace_tokens": 122
+    },
+    {
+     "arm_derived_sha256": "4f5ea88f11ff2bf32e68dc1993b2ac3552622b87f0fad33be49d6eaac5b9343f",
+     "arm_prefix_tokens": [
+      57,
+      149,
+      179
+     ],
+     "arm_tokens": 179,
+     "arm_whitespace_tokens": 90,
+     "base_twin_prefix_tokens": [
+      57,
+      96,
+      116
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      53,
+      10
+     ],
+     "sample_id": "4387383",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4387383.names.txt",
+     "source_sha256": "724d55b8ddd9736ae23bcc3cc9d15e815b0f24205b62f8f432bb6e8468ce7a11",
+     "twin_derived_sha256": "d601ecbe7ab7fd0e3b480d4d00d0473dc25d2d81648fcd4b75f604db805ddc3f",
+     "twin_prefix_tokens": [
+      57,
+      149,
+      179
+     ],
+     "twin_tokens": 179,
+     "twin_whitespace_tokens": 153
+    },
+    {
+     "arm_derived_sha256": "8048b08820de776b3274a4090a9f589c24d3183939a8da6afa7a65f6447c6292",
+     "arm_prefix_tokens": [
+      97,
+      112,
+      146
+     ],
+     "arm_tokens": 146,
+     "arm_whitespace_tokens": 95,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      128
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      5,
+      13
+     ],
+     "sample_id": "4387383",
+     "source_relpath": "datasets/conec/earnings21/contexts/4387383.txt",
+     "source_sha256": "841cba88f7e88ed614419afd8f73b2b2dab95f2b8bbebbefa29ccfd9730afec3",
+     "twin_derived_sha256": "8d24dc88da9542c958797838694436a67f7320ce4cf02491c1a3cc19aebd462e",
+     "twin_prefix_tokens": [
+      97,
+      112,
+      146
+     ],
+     "twin_tokens": 146,
+     "twin_whitespace_tokens": 113
+    },
+    {
+     "arm_derived_sha256": "63a3d0059f4ca6e9825d3f5429c3fa7b8b5415e5c056019e36107164f1ed278f",
+     "arm_prefix_tokens": [
+      57,
+      128,
+      157
+     ],
+     "arm_tokens": 157,
+     "arm_whitespace_tokens": 89,
+     "base_twin_prefix_tokens": [
+      57,
+      93,
+      115
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      35,
+      7
+     ],
+     "sample_id": "4387865",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4387865.names.txt",
+     "source_sha256": "a6210c0ef8b0d3f6c57de6c142c5987f22356e7fdec77425aad316c83f96dc3d",
+     "twin_derived_sha256": "617ef50c60ec5744bc6c2b1c96d162502bac00a286d013249c74c05bdd6be106",
+     "twin_prefix_tokens": [
+      57,
+      128,
+      157
+     ],
+     "twin_tokens": 157,
+     "twin_whitespace_tokens": 131
+    },
+    {
+     "arm_derived_sha256": "57b2d59335aeff92de61a99c966f6ba0e3cc381197f2d7db249b34e8c0b7a7b3",
+     "arm_prefix_tokens": [
+      97,
+      118,
+      127,
+      164
+     ],
+     "arm_tokens": 164,
+     "arm_whitespace_tokens": 107,
+     "base_twin_prefix_tokens": [
+      97,
+      112,
+      121,
+      142
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      6,
+      0,
+      16
+     ],
+     "sample_id": "4387865",
+     "source_relpath": "datasets/conec/earnings21/contexts/4387865.txt",
+     "source_sha256": "011e1c22a57704db27f15d7ad314171078972841c0dfa79c282c6f75e5d079b8",
+     "twin_derived_sha256": "0f0655dd18f58eda3585ba2bafc627538a88112b49ac126f2b9de21771e46f27",
+     "twin_prefix_tokens": [
+      97,
+      118,
+      127,
+      164
+     ],
+     "twin_tokens": 164,
+     "twin_whitespace_tokens": 129
+    },
+    {
+     "arm_derived_sha256": "edfa4949b3a0442ea814528007ad3f9446dc5866edb8e017a470d150bd53e368",
+     "arm_prefix_tokens": [
+      57,
+      156,
+      204
+     ],
+     "arm_tokens": 204,
+     "arm_whitespace_tokens": 108,
+     "base_twin_prefix_tokens": [
+      57,
+      106,
+      134
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      50,
+      20
+     ],
+     "sample_id": "4389907",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4389907.names.txt",
+     "source_sha256": "517467bcd2d124cea1bc5f3dd559cad6bc194bed82252a05068138e242ac5a3b",
+     "twin_derived_sha256": "3db084d6e4b9c4d2720e2967390a8d3178250dbbcde64552833684c202f51a47",
+     "twin_prefix_tokens": [
+      57,
+      156,
+      204
+     ],
+     "twin_tokens": 204,
+     "twin_whitespace_tokens": 178
+    },
+    {
+     "arm_derived_sha256": "444a698b9993b4fe918f2579181dad962a3b7d8eaaa4332fe0b6b6628e4590b4",
+     "arm_prefix_tokens": [
+      97,
+      123,
+      140,
+      174
+     ],
+     "arm_tokens": 174,
+     "arm_whitespace_tokens": 117,
+     "base_twin_prefix_tokens": [
+      97,
+      116,
+      131,
+      152
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      7,
+      2,
+      13
+     ],
+     "sample_id": "4389907",
+     "source_relpath": "datasets/conec/earnings21/contexts/4389907.txt",
+     "source_sha256": "b5ef9d3ca03a34f96841f056ba46e1bf7725531993a3ebe2a55d2a348798481b",
+     "twin_derived_sha256": "660f00a78eacc2d2fd4389c5f9e4f33f24d5a00ef21d4c6eca76681d7bf81e87",
+     "twin_prefix_tokens": [
+      97,
+      123,
+      140,
+      174
+     ],
+     "twin_tokens": 174,
+     "twin_whitespace_tokens": 139
+    },
+    {
+     "arm_derived_sha256": "5a84ab85c3250fc973339ef22e09b64b5913d79b26d635150791f7cca2282cf3",
+     "arm_prefix_tokens": [
+      57,
+      154,
+      187
+     ],
+     "arm_tokens": 187,
+     "arm_whitespace_tokens": 101,
+     "base_twin_prefix_tokens": [
+      57,
+      106,
+      127
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      48,
+      12
+     ],
+     "sample_id": "4392809",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4392809.names.txt",
+     "source_sha256": "4a8698cd6ac11af6ab447dac221cd51e3592a12eeeab3b85db5f93ea46fbca72",
+     "twin_derived_sha256": "6d8783d7a3ce5980ed3a36335135dc05ec535ec1059de7d97d4e1af67de93de9",
+     "twin_prefix_tokens": [
+      57,
+      154,
+      187
+     ],
+     "twin_tokens": 187,
+     "twin_whitespace_tokens": 161
+    },
+    {
+     "arm_derived_sha256": "03975b9db2f0eec06b1c96570a22f0be00d946e21bde941a3c2ac949994aa4d8",
+     "arm_prefix_tokens": [
+      97,
+      110,
+      119,
+      151
+     ],
+     "arm_tokens": 151,
+     "arm_whitespace_tokens": 102,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      116,
+      137
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      3,
+      0,
+      11
+     ],
+     "sample_id": "4392809",
+     "source_relpath": "datasets/conec/earnings21/contexts/4392809.txt",
+     "source_sha256": "e59ef8a5b89fe8b42a58700bb2eb15c5c85b7ad089fdc663da9abd67098de284",
+     "twin_derived_sha256": "2f33880b8a6ca45067c0c7e81107bdfe8e03d66bf83018d6afe8828a4b7981cd",
+     "twin_prefix_tokens": [
+      97,
+      110,
+      119,
+      151
+     ],
+     "twin_tokens": 151,
+     "twin_whitespace_tokens": 116
+    },
+    {
+     "arm_derived_sha256": "db7c7c882292e27933dd5c22109dff0b9472802a963ec077dbc151b03dbfb449",
+     "arm_prefix_tokens": [
+      57,
+      131,
+      152
+     ],
+     "arm_tokens": 152,
+     "arm_whitespace_tokens": 80,
+     "base_twin_prefix_tokens": [
+      57,
+      90,
+      106
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      41,
+      5
+     ],
+     "sample_id": "4394084",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4394084.names.txt",
+     "source_sha256": "e82e2a2e8cf9b138368adf3278624318ae035caefd9bf7175ff3df805dccc91d",
+     "twin_derived_sha256": "2ba957643673e7398432fb0027bf535d832db3a33539ce03f7cf3341ad49b4c4",
+     "twin_prefix_tokens": [
+      57,
+      131,
+      152
+     ],
+     "twin_tokens": 152,
+     "twin_whitespace_tokens": 126
+    },
+    {
+     "arm_derived_sha256": "ff4478c46b7d2642fa1b93279e802f48ff9a6c83063271380dfed37e8fe6c16f",
+     "arm_prefix_tokens": [
+      97,
+      105,
+      139
+     ],
+     "arm_tokens": 139,
+     "arm_whitespace_tokens": 93,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      126
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      0,
+      13
+     ],
+     "sample_id": "4394084",
+     "source_relpath": "datasets/conec/earnings21/contexts/4394084.txt",
+     "source_sha256": "7cd2fd31a2296b327c4671be472933597d106180cb01428910c7d1795a9a1d38",
+     "twin_derived_sha256": "876221f1373e3d222328ef8625045ff6f2e2e7f06d50919527af9bd37f5ea09f",
+     "twin_prefix_tokens": [
+      97,
+      105,
+      139
+     ],
+     "twin_tokens": 139,
+     "twin_whitespace_tokens": 106
+    },
+    {
+     "arm_derived_sha256": "486a2aa10ac1fec58c15fedf3306c33cd7ef1b68079cadb20a39446df06dce34",
+     "arm_prefix_tokens": [
+      57,
+      187,
+      243
+     ],
+     "arm_tokens": 243,
+     "arm_whitespace_tokens": 119,
+     "base_twin_prefix_tokens": [
+      57,
+      116,
+      145
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      71,
+      27
+     ],
+     "sample_id": "4397800",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4397800.names.txt",
+     "source_sha256": "7d5162d1f0d58db14a137601da3833ec5cde7c20b07e6204ab4be77d93afd8f8",
+     "twin_derived_sha256": "6889578fae6706692ac3c596898d25e7410b3ca8c3a6622324a2a3905900357a",
+     "twin_prefix_tokens": [
+      57,
+      187,
+      243
+     ],
+     "twin_tokens": 243,
+     "twin_whitespace_tokens": 217
+    },
+    {
+     "arm_derived_sha256": "30fb053f49e4676642b0d4326b809e37b1c88c56c89dae85f006417c558fd11c",
+     "arm_prefix_tokens": [
+      97,
+      105,
+      118,
+      150
+     ],
+     "arm_tokens": 150,
+     "arm_whitespace_tokens": 103,
+     "base_twin_prefix_tokens": [
+      97,
+      105,
+      117,
+      138
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      0,
+      1,
+      11
+     ],
+     "sample_id": "4397800",
+     "source_relpath": "datasets/conec/earnings21/contexts/4397800.txt",
+     "source_sha256": "cae35ab4444c7ce8ab79b788c737eca989ededfa516bc851a2911e2f3fd71fa6",
+     "twin_derived_sha256": "56849337ae5e087559ca1b5503d4fcf633fb77abe0412bab8b763ee72ac39aab",
+     "twin_prefix_tokens": [
+      97,
+      105,
+      118,
+      150
+     ],
+     "twin_tokens": 150,
+     "twin_whitespace_tokens": 115
+    },
+    {
+     "arm_derived_sha256": "60ab54718debe2a3cff12a3b79661ed575df5fd8ac8300150085071febeaf01e",
+     "arm_prefix_tokens": [
+      57,
+      267,
+      353
+     ],
+     "arm_tokens": 353,
+     "arm_whitespace_tokens": 180,
+     "base_twin_prefix_tokens": [
+      57,
+      160,
+      206
+     ],
+     "half": "roster",
+     "pad_repeats": [
+      0,
+      107,
+      40
+     ],
+     "sample_id": "4397829",
+     "source_relpath": "datasets/conec/earnings21/contexts/participant_names/4397829.names.txt",
+     "source_sha256": "e90eb6fe82a1c0618fdbfc277d2f1b06854fb4c9eb02aa280823817ade29842e",
+     "twin_derived_sha256": "06c86dec9790fa656237574204b7b8c4276ee3ecf102c25f2270162e3fea92d3",
+     "twin_prefix_tokens": [
+      57,
+      267,
+      353
+     ],
+     "twin_tokens": 353,
+     "twin_whitespace_tokens": 327
+    },
+    {
+     "arm_derived_sha256": "1315a3fe8b77b6f725994ce4b1b7aab96fbde4f609227d9f2247576342654c87",
+     "arm_prefix_tokens": [
+      97,
+      110,
+      119,
+      158
+     ],
+     "arm_tokens": 158,
+     "arm_whitespace_tokens": 102,
+     "base_twin_prefix_tokens": [
+      97,
+      107,
+      116,
+      137
+     ],
+     "half": "document",
+     "pad_repeats": [
+      0,
+      3,
+      0,
+      18
+     ],
+     "sample_id": "4397829",
+     "source_relpath": "datasets/conec/earnings21/contexts/4397829.txt",
+     "source_sha256": "b3819c89ff4a5c88d14527c3da167dd7c4f64a9f40053603044425864fc208ec",
+     "twin_derived_sha256": "0ce0833de8b93f5f54bd2fae7687b9ec74bbda38a6122f12a113861b9164876c",
+     "twin_prefix_tokens": [
+      97,
+      110,
+      119,
+      158
+     ],
+     "twin_tokens": 158,
+     "twin_whitespace_tokens": 123
+    }
+   ]
+  }
+ },
+ "filler": " item",
+ "for_flight_run_id": "SAEA-E21-KC-E1-BRIEF-44-V1",
+ "generated_at": "2026-09-07T07:58:57.812777+00:00",
+ "keyed_by": "source_sha256 -- the sha256 of the ConEC source file's UTF-8 bytes, which is exactly the DerivedEvidenceRecord.source_sha256 the D1 rail already verifies for that half",
+ "measured_on": {
+  "chat_template_sha256": "45777d2e798aae1d1ce6844e69edcb23fc0c710009554711c78efab9044da2c8",
+  "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+  "prompt_fit_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/prompt-fit/prompt-fit.json",
+  "prompt_fit_receipt_sha256": "465a4200f4b6f0df3df627cc39bb3ae979d0c0fe711347b0d87732e237209c81",
+  "route": "POST /tokenize (add_special false, parse_special true)",
+  "server_args": [
+   "-c",
+   "36864",
+   "-np",
+   "6",
+   "-fa",
+   "on",
+   "-ngl",
+   "999",
+   "-ctk",
+   "q8_0",
+   "-ctv",
+   "q8_0"
+  ]
+ },
+ "run_id": "SAEA-E21-KU-E1C-TOKEN-MATCH-V1",
+ "schema": "saea-e21-brief-placebo-token-match-v1",
+ "study": "speech-aware-evidence-acquisition",
+ "study_commit": "a947481eb0734782695d65192fdae53f2785f01e",
+ "what_this_is": "the per-line pad plan that makes core.evidence's conec-class-lists-placebo-token-matched a FLIGHT-TOKEN twin of conec-class-lists. Line i of a twin half grows by pad_repeats[i] whole repeats of 'filler' and by nothing else, so the flight replays a measurement instead of taking one"
+}

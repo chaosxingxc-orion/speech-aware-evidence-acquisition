@@ -24,9 +24,11 @@ The question, the arms, the one factor and the claim surface are v1's, verbatim 
 * the cell asks whether supplying the call's **own pre-meeting brief** closes part of the PERSON
   entity gap without costing corpus WER;
 * **the one factor is the brief's CONTENT**, isolated by the form twin KU-E1c — same class labels,
-  same entry count, same whitespace-token count per line, every entity token replaced by a
-  position-chosen neutral placeholder. The two fragments differ in exactly one key,
-  `evidence_source`;
+  same entry count, every entity token replaced by a position-chosen neutral placeholder, and — since
+  2026-09-07 — the same **flight-token** count per line rather than the same whitespace count (§5,
+  "form twin token-matched on the flight tokenizer"). The two fragments differ in exactly two keys,
+  `evidence_source` and `evidence_pad_plan`, the byte pin of the twin's own pad plan; that pin names
+  no call content and changes nothing the arm renders;
 * the contrast against the sealed comparator moves the evidence **and** the task instruction, is
   reported, and is never quoted as the content effect;
 * the brief is built from two ConEC files per call and nothing else — no reference transcript, no
@@ -167,6 +169,49 @@ apart; the roster-line versus candidate-line split; the brief's flight-tokenizer
 every stratum table of §4 under both weightings; throughput and token totals against the comparator's
 1,935,965 prompt / 439,532 completion; both intervals of §3 with the optimistic one labelled.
 
+**2026-09-07 — form twin token-matched on the flight tokenizer.** §7 item 2 recorded that KU-E1c was
+a WHITESPACE twin and not a token twin: at cap 12 the placebo rendered 42 to 256 flight tokens
+shorter than KC-E1 per window, median 161. The owner ruling of 2026-09-06 locks a control to its
+treatment on the flight tokenizer, so that gap is now closed and the finding above is superseded.
+Exposure row `SAEA-E21-KU-E1C-TOKEN-MATCH-V1`; receipt
+`docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/placebo-token-match/`;
+built by `scripts/build_e21_brief_placebo_token_match.py` through `/tokenize` at zero generated
+tokens, on the same chat template the prompt fit measured on, re-checked by digest before anything
+was measured.
+
+Each twin LINE is grown by whole repeats of one neutral one-token filler, `" item"`, until the twin's
+rendered PREFIX through that line measures exactly what the brief's does — the mechanism
+`rails.proposer._token_matched_control` already uses for the KC-A1 control, reached through the same
+`token_counter` seam rather than a second implementation. Matching on prefixes rather than on
+isolated lines makes whole-block equality a consequence rather than a hope: the prefix at the last
+index is the whole block. **The brief is now token-equal on every one of the 44 calls at both caps** —
+the whole brief (per-call median 2,102.5, max 5,893) and the flown cap 12 (median 451.5, max 676) —
+asserted by measurement, per line and per call, not by construction. Cap 12 costs 6,110 filler
+repeats across the 88 halves, a median of 5 per line.
+
+The measurement is materialised as a hash-pinned artifact, `configs/knowledge/e21-brief-placebo-v2/`
+`pad-plan-v1.json`, sha256 `e3b494d0…d49c`, 148,435 bytes, carrying per cap, per call and per half
+the source bytes' sha256, the per-line pad repeats and both arms' prefix counts. **The flight needs
+no tokenizer of its own**: the new evidence source `conec-class-lists-placebo-token-matched` replays
+the repeats, and `DerivedEvidenceRegistry` re-derives the padded twin from the same ConEC bytes with
+the exact repeats inside `params_hash`. KU-E1c's composed config hash moves from `17cf642e…` to
+**`f1f63fce…`**. KC-E1's own baseline fragment is byte-identical to the one the fit measured, checked
+with `git diff` against the fit's study commit rather than asserted; its composed hash reads
+`3ac6d436…`, having moved from the fit's published `65825553…` at `fa357a24`, when the shared
+experiment fragment's `mandatory_slices` note was rewritten to point at the prompt-fit receipt. That
+edit moves both cells' composed hashes and neither cell's protocol.
+
+**What the padding cannot reach, stated rather than hidden.** After the match the whole request text
+is a constant **7 tokens LONGER** for the twin, on every one of the 1,593 windows — arm 454 / 673 /
+855, twin 461 / 680 / 862 (min / median / max). That residual is the `[evidence <id>] ` HEADER of the
+two blocks and not the brief: the arm names the `conec-class-lists-roster` / `-document` transforms
+and the twin names their `-placebo-tm` ones, and a twin that named the arm's transforms would be
+indistinguishable from it in a sealed trace. A constant 7-token surplus replaces a median 161-token
+deficit, and a verdict should say so rather than claim a perfect match. The worst request after
+padding is **3,058** against the 6,144-token slot — margin 3,086, factor 2.009 — so the cap-12 fit of
+§7 item 2 still holds.
+
+
 ## 6. Budget
 
 | | value | basis |
@@ -251,6 +296,12 @@ The separately registered `SAEA-E21-TOOL-DIARIZATION-V1` (50 tool contacts, 145,
    than proper nouns and bracketed normalized forms. The cap shrinks that gap sevenfold from the
    uncapped median of 1,154; it does not close it. A verdict that reads the arm-versus-twin contrast
    as a pure content effect must say that the arm also carried a median 161 more prompt tokens.
+
+   **CLOSED 2026-09-07 — see §5, "form twin token-matched on the flight tokenizer."** The paragraph
+   above records what the prompt fit measured and stays as written; it no longer describes the
+   committed twin. KU-E1c now renders token-equal to KC-E1 line by line and call by call at both
+   caps, and the only remaining difference in the whole request text is a constant 7-token
+   evidence-block header.
 
 ## 8. The flight agent's checklist, in order
 

@@ -1,0 +1,1188 @@
+{
+  "artifact": {
+    "bytes": 148435,
+    "relpath": "configs/knowledge/e21-brief-placebo-v2/pad-plan-v1.json",
+    "sha256": "e3b494d0020ab25a997ada1d7bf59e69b19ba4c82abe5309b792619ad10dd49c"
+  },
+  "attempt_id": "attempt-20260907T075836Z-e21kue1ctm",
+  "caps_measured": [
+    0,
+    12
+  ],
+  "cells": {
+    "E21-kc-e1-brief-whole-prompt": {
+      "baseline_fragment_relpath": "configs/baseline/e21-kc-e1-brief-whole-prompt.json",
+      "baseline_fragment_unchanged_since_the_prompt_fit": true,
+      "config_hash": "3ac6d43601019f8a1b061a9de0742a2f0313366cda1ecc6d044e9b743790f934",
+      "config_hash_published_by_the_prompt_fit": "65825553c3392b8e947c0f48529327f6e5e700a054929bc411d46e458a575635",
+      "config_hash_unchanged_since_the_prompt_fit": false,
+      "evidence_source": "conec-class-lists",
+      "why_the_composed_hash_can_differ": "the two cells share configs/experiment/e21-kc-e1-brief-44-v1.json, whose mandatory_slices note was rewritten at fa357a24 to point at the prompt-fit receipt. That edit moves BOTH cells' composed hashes and neither cell's protocol; the arm's own baseline fragment is byte-identical to the one the fit measured, which is checked with git diff above rather than asserted"
+    },
+    "E21-ku-e1c-brief-placebo": {
+      "config_hash": "f1f63fceea7295cf860e864edccfc30f4e55b5a91d8ed614b65b3e01d022374d",
+      "config_hash_before": "17cf642e960cc81e7c5a183ad814684e333c33efe26939f971ef7322a2913435",
+      "config_hash_published_by_the_prompt_fit": "fafff984e4df1bb0a83d7a3b8d94468c3e659df8fb1b1cf24ca751d01f28feee",
+      "evidence_source": "conec-class-lists-placebo-token-matched"
+    }
+  },
+  "committed_cap": 12,
+  "experiment_fragment": "e21-kc-e1-brief-44-v1",
+  "filler": " item",
+  "fits_under_study_rule": true,
+  "for_flight_run_id": "SAEA-E21-KC-E1-BRIEF-44-V1",
+  "generated_at": "2026-09-07T07:59:01.959722+00:00",
+  "geometry": {
+    "chat_template_matches_the_prompt_fit": true,
+    "chat_template_sha256": "45777d2e798aae1d1ce6844e69edcb23fc0c710009554711c78efab9044da2c8",
+    "max_tokens": 1024,
+    "media_marker": "<__media_1kqIQ2UxjH7PMAouwiKjBJpe8GLivMdw__>",
+    "slot_tokens": 6144,
+    "slots": 6
+  },
+  "not_certified_here": "the flight's own go/no-go. This receipt certifies that the twin is a flight-token twin of the arm's brief and that the pinned artifact reproduces it; KC-E1 and KU-E1c still need SAEA-E21-KC-E1-BRIEF-44-V1 and the owner's own GO, and neither is granted here",
+  "one_factor_check": {
+    "differing_composed_keys": [
+      "evidence_pad_plan",
+      "evidence_source"
+    ],
+    "rule": "exactly ['evidence_pad_plan', 'evidence_source'] after the rewrite. The pad-plan pin is the byte identity of the twin's own measurement: it names no call content, it changes nothing the arm renders, and it exists so the two cells' briefs measure the same on this very tokenizer. The arm's own baseline fragment is byte-identical to the one the prompt fit measured, checked with git; a third differing key would not be admitted"
+  },
+  "per_cap": {
+    "0": {
+      "arm_brief_token_distribution": {
+        "count": 44,
+        "max": 5893,
+        "median": 2102.5,
+        "min": 490,
+        "p90": 3655,
+        "p95": 3961
+      },
+      "brief_tokens_equal_on_every_call": true,
+      "calls": 44,
+      "pad_repeats_per_line": {
+        "count": 299,
+        "max": 3033,
+        "median": 5.0,
+        "min": 0,
+        "p90": 614,
+        "p95": 1199
+      },
+      "pad_repeats_total": 51652,
+      "twin_brief_token_distribution": {
+        "count": 44,
+        "max": 5893,
+        "median": 2102.5,
+        "min": 490,
+        "p90": 3655,
+        "p95": 3961
+      },
+      "whitespace_tokens_after_padding": {
+        "arm": {
+          "count": 88,
+          "max": 2340,
+          "median": 273.0,
+          "min": 62,
+          "p90": 1210,
+          "p95": 1437
+        },
+        "note": "no longer equal, and that is the point: matching the flight tokenizer costs more placeholder words than the arm has real ones. The whitespace count was the PROXY the owner ruling of 2026-09-06 replaced",
+        "twin": {
+          "count": 88,
+          "max": 5383,
+          "median": 548.5,
+          "min": 82,
+          "p90": 2761,
+          "p95": 3253
+        }
+      }
+    },
+    "12": {
+      "arm_brief_token_distribution": {
+        "count": 44,
+        "max": 676,
+        "median": 451.5,
+        "min": 275,
+        "p90": 574,
+        "p95": 595
+      },
+      "brief_tokens_equal_on_every_call": true,
+      "calls": 44,
+      "pad_repeats_per_line": {
+        "count": 299,
+        "max": 137,
+        "median": 5.0,
+        "min": 0,
+        "p90": 69,
+        "p95": 104
+      },
+      "pad_repeats_total": 6110,
+      "twin_brief_token_distribution": {
+        "count": 44,
+        "max": 676,
+        "median": 451.5,
+        "min": 275,
+        "p90": 574,
+        "p95": 595
+      },
+      "whitespace_tokens_after_padding": {
+        "arm": {
+          "count": 88,
+          "max": 233,
+          "median": 109.5,
+          "min": 62,
+          "p90": 180,
+          "p95": 199
+        },
+        "note": "no longer equal, and that is the point: matching the flight tokenizer costs more placeholder words than the arm has real ones. The whitespace count was the PROXY the owner ruling of 2026-09-06 replaced",
+        "twin": {
+          "count": 88,
+          "max": 466,
+          "median": 142.5,
+          "min": 82,
+          "p90": 338,
+          "p95": 374
+        }
+      }
+    }
+  },
+  "population": {
+    "calls": 44,
+    "carrier_lock_key": "earnings21-original",
+    "roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-e21-full44-roster/flight-roster-receipt.json",
+    "roster_receipt_sha256": "e870ada137c85e01fa9c52e6234341f867f8dbc87127806bd819aa467f969d5b",
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "split_role": "discovery",
+    "windows": 1593
+  },
+  "preregistration": "docs/readiness/2026-09-06-e21-kc-e1-pre-meeting-brief-v2-preregistration.md",
+  "request_text": {
+    "per_window_arm": {
+      "count": 1593,
+      "max": 855,
+      "median": 673.0,
+      "min": 454,
+      "p90": 758,
+      "p95": 801
+    },
+    "per_window_delta_twin_minus_arm": {
+      "count": 1593,
+      "max": 7,
+      "median": 7.0,
+      "min": 7,
+      "p90": 7,
+      "p95": 7
+    },
+    "per_window_twin": {
+      "count": 1593,
+      "max": 862,
+      "median": 680.0,
+      "min": 461,
+      "p90": 765,
+      "p95": 808
+    },
+    "residual_is_the_evidence_block_header": [
+      7
+    ],
+    "rows": [
+      {
+        "brief_tokens": 455,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4320211",
+          "conec-class-lists-document/4320211"
+        ],
+        "sample_id": "4320211",
+        "text_tokens": 634,
+        "windows": 37
+      },
+      {
+        "brief_tokens": 466,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4330115",
+          "conec-class-lists-document/4330115"
+        ],
+        "sample_id": "4330115",
+        "text_tokens": 645,
+        "windows": 28
+      },
+      {
+        "brief_tokens": 537,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4341191",
+          "conec-class-lists-document/4341191"
+        ],
+        "sample_id": "4341191",
+        "text_tokens": 716,
+        "windows": 64
+      },
+      {
+        "brief_tokens": 397,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4344338",
+          "conec-class-lists-document/4344338"
+        ],
+        "sample_id": "4344338",
+        "text_tokens": 576,
+        "windows": 31
+      },
+      {
+        "brief_tokens": 496,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4344866",
+          "conec-class-lists-document/4344866"
+        ],
+        "sample_id": "4344866",
+        "text_tokens": 675,
+        "windows": 37
+      },
+      {
+        "brief_tokens": 540,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4346818",
+          "conec-class-lists-document/4346818"
+        ],
+        "sample_id": "4346818",
+        "text_tokens": 719,
+        "windows": 45
+      },
+      {
+        "brief_tokens": 676,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4346923",
+          "conec-class-lists-document/4346923"
+        ],
+        "sample_id": "4346923",
+        "text_tokens": 855,
+        "windows": 53
+      },
+      {
+        "brief_tokens": 526,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4359732",
+          "conec-class-lists-document/4359732"
+        ],
+        "sample_id": "4359732",
+        "text_tokens": 705,
+        "windows": 55
+      },
+      {
+        "brief_tokens": 417,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4359971",
+          "conec-class-lists-document/4359971"
+        ],
+        "sample_id": "4359971",
+        "text_tokens": 596,
+        "windows": 42
+      },
+      {
+        "brief_tokens": 595,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4360366",
+          "conec-class-lists-document/4360366"
+        ],
+        "sample_id": "4360366",
+        "text_tokens": 774,
+        "windows": 44
+      },
+      {
+        "brief_tokens": 448,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4360674",
+          "conec-class-lists-document/4360674"
+        ],
+        "sample_id": "4360674",
+        "text_tokens": 627,
+        "windows": 40
+      },
+      {
+        "brief_tokens": 579,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4360717",
+          "conec-class-lists-document/4360717"
+        ],
+        "sample_id": "4360717",
+        "text_tokens": 758,
+        "windows": 51
+      },
+      {
+        "brief_tokens": 526,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4361631",
+          "conec-class-lists-document/4361631"
+        ],
+        "sample_id": "4361631",
+        "text_tokens": 705,
+        "windows": 50
+      },
+      {
+        "brief_tokens": 529,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4363614",
+          "conec-class-lists-document/4363614"
+        ],
+        "sample_id": "4363614",
+        "text_tokens": 708,
+        "windows": 63
+      },
+      {
+        "brief_tokens": 536,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4364366",
+          "conec-class-lists-document/4364366"
+        ],
+        "sample_id": "4364366",
+        "text_tokens": 715,
+        "windows": 39
+      },
+      {
+        "brief_tokens": 491,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4365024",
+          "conec-class-lists-document/4365024"
+        ],
+        "sample_id": "4365024",
+        "text_tokens": 670,
+        "windows": 49
+      },
+      {
+        "brief_tokens": 338,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4365948",
+          "conec-class-lists-document/4365948"
+        ],
+        "sample_id": "4365948",
+        "text_tokens": 517,
+        "windows": 28
+      },
+      {
+        "brief_tokens": 494,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4366302",
+          "conec-class-lists-document/4366302"
+        ],
+        "sample_id": "4366302",
+        "text_tokens": 673,
+        "windows": 40
+      },
+      {
+        "brief_tokens": 517,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4366429",
+          "conec-class-lists-document/4366429"
+        ],
+        "sample_id": "4366429",
+        "text_tokens": 696,
+        "windows": 45
+      },
+      {
+        "brief_tokens": 327,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4366522",
+          "conec-class-lists-document/4366522"
+        ],
+        "sample_id": "4366522",
+        "text_tokens": 506,
+        "windows": 21
+      },
+      {
+        "brief_tokens": 402,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4366893",
+          "conec-class-lists-document/4366893"
+        ],
+        "sample_id": "4366893",
+        "text_tokens": 581,
+        "windows": 27
+      },
+      {
+        "brief_tokens": 381,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4367318",
+          "conec-class-lists-document/4367318"
+        ],
+        "sample_id": "4367318",
+        "text_tokens": 560,
+        "windows": 20
+      },
+      {
+        "brief_tokens": 448,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4367535",
+          "conec-class-lists-document/4367535"
+        ],
+        "sample_id": "4367535",
+        "text_tokens": 627,
+        "windows": 36
+      },
+      {
+        "brief_tokens": 622,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4368670",
+          "conec-class-lists-document/4368670"
+        ],
+        "sample_id": "4368670",
+        "text_tokens": 801,
+        "windows": 47
+      },
+      {
+        "brief_tokens": 275,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4374910",
+          "conec-class-lists-document/4374910"
+        ],
+        "sample_id": "4374910",
+        "text_tokens": 454,
+        "windows": 23
+      },
+      {
+        "brief_tokens": 421,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4375653",
+          "conec-class-lists-document/4375653"
+        ],
+        "sample_id": "4375653",
+        "text_tokens": 600,
+        "windows": 39
+      },
+      {
+        "brief_tokens": 548,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4382825",
+          "conec-class-lists-document/4382825"
+        ],
+        "sample_id": "4382825",
+        "text_tokens": 727,
+        "windows": 43
+      },
+      {
+        "brief_tokens": 485,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4383161",
+          "conec-class-lists-document/4383161"
+        ],
+        "sample_id": "4383161",
+        "text_tokens": 664,
+        "windows": 38
+      },
+      {
+        "brief_tokens": 335,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4384198",
+          "conec-class-lists-document/4384198"
+        ],
+        "sample_id": "4384198",
+        "text_tokens": 514,
+        "windows": 30
+      },
+      {
+        "brief_tokens": 368,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4384683",
+          "conec-class-lists-document/4384683"
+        ],
+        "sample_id": "4384683",
+        "text_tokens": 547,
+        "windows": 17
+      },
+      {
+        "brief_tokens": 398,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4384744",
+          "conec-class-lists-document/4384744"
+        ],
+        "sample_id": "4384744",
+        "text_tokens": 577,
+        "windows": 37
+      },
+      {
+        "brief_tokens": 546,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4384964",
+          "conec-class-lists-document/4384964"
+        ],
+        "sample_id": "4384964",
+        "text_tokens": 725,
+        "windows": 45
+      },
+      {
+        "brief_tokens": 426,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4385072",
+          "conec-class-lists-document/4385072"
+        ],
+        "sample_id": "4385072",
+        "text_tokens": 605,
+        "windows": 29
+      },
+      {
+        "brief_tokens": 488,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4385388",
+          "conec-class-lists-document/4385388"
+        ],
+        "sample_id": "4385388",
+        "text_tokens": 667,
+        "windows": 49
+      },
+      {
+        "brief_tokens": 574,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4385939",
+          "conec-class-lists-document/4385939"
+        ],
+        "sample_id": "4385939",
+        "text_tokens": 753,
+        "windows": 34
+      },
+      {
+        "brief_tokens": 306,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4386541",
+          "conec-class-lists-document/4386541"
+        ],
+        "sample_id": "4386541",
+        "text_tokens": 485,
+        "windows": 13
+      },
+      {
+        "brief_tokens": 304,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4387332",
+          "conec-class-lists-document/4387332"
+        ],
+        "sample_id": "4387332",
+        "text_tokens": 483,
+        "windows": 15
+      },
+      {
+        "brief_tokens": 325,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4387383",
+          "conec-class-lists-document/4387383"
+        ],
+        "sample_id": "4387383",
+        "text_tokens": 504,
+        "windows": 24
+      },
+      {
+        "brief_tokens": 321,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4387865",
+          "conec-class-lists-document/4387865"
+        ],
+        "sample_id": "4387865",
+        "text_tokens": 500,
+        "windows": 25
+      },
+      {
+        "brief_tokens": 378,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4389907",
+          "conec-class-lists-document/4389907"
+        ],
+        "sample_id": "4389907",
+        "text_tokens": 557,
+        "windows": 23
+      },
+      {
+        "brief_tokens": 338,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4392809",
+          "conec-class-lists-document/4392809"
+        ],
+        "sample_id": "4392809",
+        "text_tokens": 517,
+        "windows": 16
+      },
+      {
+        "brief_tokens": 291,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4394084",
+          "conec-class-lists-document/4394084"
+        ],
+        "sample_id": "4394084",
+        "text_tokens": 470,
+        "windows": 20
+      },
+      {
+        "brief_tokens": 393,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4397800",
+          "conec-class-lists-document/4397800"
+        ],
+        "sample_id": "4397800",
+        "text_tokens": 572,
+        "windows": 31
+      },
+      {
+        "brief_tokens": 511,
+        "cell_id": "E21-kc-e1-brief-whole-prompt",
+        "evidence_ids": [
+          "conec-class-lists-roster/4397829",
+          "conec-class-lists-document/4397829"
+        ],
+        "sample_id": "4397829",
+        "text_tokens": 690,
+        "windows": 50
+      },
+      {
+        "brief_tokens": 455,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4320211",
+          "conec-class-lists-document-placebo-tm/4320211"
+        ],
+        "sample_id": "4320211",
+        "text_tokens": 641,
+        "windows": 37
+      },
+      {
+        "brief_tokens": 466,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4330115",
+          "conec-class-lists-document-placebo-tm/4330115"
+        ],
+        "sample_id": "4330115",
+        "text_tokens": 652,
+        "windows": 28
+      },
+      {
+        "brief_tokens": 537,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4341191",
+          "conec-class-lists-document-placebo-tm/4341191"
+        ],
+        "sample_id": "4341191",
+        "text_tokens": 723,
+        "windows": 64
+      },
+      {
+        "brief_tokens": 397,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4344338",
+          "conec-class-lists-document-placebo-tm/4344338"
+        ],
+        "sample_id": "4344338",
+        "text_tokens": 583,
+        "windows": 31
+      },
+      {
+        "brief_tokens": 496,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4344866",
+          "conec-class-lists-document-placebo-tm/4344866"
+        ],
+        "sample_id": "4344866",
+        "text_tokens": 682,
+        "windows": 37
+      },
+      {
+        "brief_tokens": 540,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4346818",
+          "conec-class-lists-document-placebo-tm/4346818"
+        ],
+        "sample_id": "4346818",
+        "text_tokens": 726,
+        "windows": 45
+      },
+      {
+        "brief_tokens": 676,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4346923",
+          "conec-class-lists-document-placebo-tm/4346923"
+        ],
+        "sample_id": "4346923",
+        "text_tokens": 862,
+        "windows": 53
+      },
+      {
+        "brief_tokens": 526,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4359732",
+          "conec-class-lists-document-placebo-tm/4359732"
+        ],
+        "sample_id": "4359732",
+        "text_tokens": 712,
+        "windows": 55
+      },
+      {
+        "brief_tokens": 417,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4359971",
+          "conec-class-lists-document-placebo-tm/4359971"
+        ],
+        "sample_id": "4359971",
+        "text_tokens": 603,
+        "windows": 42
+      },
+      {
+        "brief_tokens": 595,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4360366",
+          "conec-class-lists-document-placebo-tm/4360366"
+        ],
+        "sample_id": "4360366",
+        "text_tokens": 781,
+        "windows": 44
+      },
+      {
+        "brief_tokens": 448,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4360674",
+          "conec-class-lists-document-placebo-tm/4360674"
+        ],
+        "sample_id": "4360674",
+        "text_tokens": 634,
+        "windows": 40
+      },
+      {
+        "brief_tokens": 579,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4360717",
+          "conec-class-lists-document-placebo-tm/4360717"
+        ],
+        "sample_id": "4360717",
+        "text_tokens": 765,
+        "windows": 51
+      },
+      {
+        "brief_tokens": 526,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4361631",
+          "conec-class-lists-document-placebo-tm/4361631"
+        ],
+        "sample_id": "4361631",
+        "text_tokens": 712,
+        "windows": 50
+      },
+      {
+        "brief_tokens": 529,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4363614",
+          "conec-class-lists-document-placebo-tm/4363614"
+        ],
+        "sample_id": "4363614",
+        "text_tokens": 715,
+        "windows": 63
+      },
+      {
+        "brief_tokens": 536,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4364366",
+          "conec-class-lists-document-placebo-tm/4364366"
+        ],
+        "sample_id": "4364366",
+        "text_tokens": 722,
+        "windows": 39
+      },
+      {
+        "brief_tokens": 491,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4365024",
+          "conec-class-lists-document-placebo-tm/4365024"
+        ],
+        "sample_id": "4365024",
+        "text_tokens": 677,
+        "windows": 49
+      },
+      {
+        "brief_tokens": 338,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4365948",
+          "conec-class-lists-document-placebo-tm/4365948"
+        ],
+        "sample_id": "4365948",
+        "text_tokens": 524,
+        "windows": 28
+      },
+      {
+        "brief_tokens": 494,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4366302",
+          "conec-class-lists-document-placebo-tm/4366302"
+        ],
+        "sample_id": "4366302",
+        "text_tokens": 680,
+        "windows": 40
+      },
+      {
+        "brief_tokens": 517,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4366429",
+          "conec-class-lists-document-placebo-tm/4366429"
+        ],
+        "sample_id": "4366429",
+        "text_tokens": 703,
+        "windows": 45
+      },
+      {
+        "brief_tokens": 327,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4366522",
+          "conec-class-lists-document-placebo-tm/4366522"
+        ],
+        "sample_id": "4366522",
+        "text_tokens": 513,
+        "windows": 21
+      },
+      {
+        "brief_tokens": 402,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4366893",
+          "conec-class-lists-document-placebo-tm/4366893"
+        ],
+        "sample_id": "4366893",
+        "text_tokens": 588,
+        "windows": 27
+      },
+      {
+        "brief_tokens": 381,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4367318",
+          "conec-class-lists-document-placebo-tm/4367318"
+        ],
+        "sample_id": "4367318",
+        "text_tokens": 567,
+        "windows": 20
+      },
+      {
+        "brief_tokens": 448,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4367535",
+          "conec-class-lists-document-placebo-tm/4367535"
+        ],
+        "sample_id": "4367535",
+        "text_tokens": 634,
+        "windows": 36
+      },
+      {
+        "brief_tokens": 622,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4368670",
+          "conec-class-lists-document-placebo-tm/4368670"
+        ],
+        "sample_id": "4368670",
+        "text_tokens": 808,
+        "windows": 47
+      },
+      {
+        "brief_tokens": 275,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4374910",
+          "conec-class-lists-document-placebo-tm/4374910"
+        ],
+        "sample_id": "4374910",
+        "text_tokens": 461,
+        "windows": 23
+      },
+      {
+        "brief_tokens": 421,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4375653",
+          "conec-class-lists-document-placebo-tm/4375653"
+        ],
+        "sample_id": "4375653",
+        "text_tokens": 607,
+        "windows": 39
+      },
+      {
+        "brief_tokens": 548,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4382825",
+          "conec-class-lists-document-placebo-tm/4382825"
+        ],
+        "sample_id": "4382825",
+        "text_tokens": 734,
+        "windows": 43
+      },
+      {
+        "brief_tokens": 485,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4383161",
+          "conec-class-lists-document-placebo-tm/4383161"
+        ],
+        "sample_id": "4383161",
+        "text_tokens": 671,
+        "windows": 38
+      },
+      {
+        "brief_tokens": 335,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4384198",
+          "conec-class-lists-document-placebo-tm/4384198"
+        ],
+        "sample_id": "4384198",
+        "text_tokens": 521,
+        "windows": 30
+      },
+      {
+        "brief_tokens": 368,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4384683",
+          "conec-class-lists-document-placebo-tm/4384683"
+        ],
+        "sample_id": "4384683",
+        "text_tokens": 554,
+        "windows": 17
+      },
+      {
+        "brief_tokens": 398,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4384744",
+          "conec-class-lists-document-placebo-tm/4384744"
+        ],
+        "sample_id": "4384744",
+        "text_tokens": 584,
+        "windows": 37
+      },
+      {
+        "brief_tokens": 546,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4384964",
+          "conec-class-lists-document-placebo-tm/4384964"
+        ],
+        "sample_id": "4384964",
+        "text_tokens": 732,
+        "windows": 45
+      },
+      {
+        "brief_tokens": 426,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4385072",
+          "conec-class-lists-document-placebo-tm/4385072"
+        ],
+        "sample_id": "4385072",
+        "text_tokens": 612,
+        "windows": 29
+      },
+      {
+        "brief_tokens": 488,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4385388",
+          "conec-class-lists-document-placebo-tm/4385388"
+        ],
+        "sample_id": "4385388",
+        "text_tokens": 674,
+        "windows": 49
+      },
+      {
+        "brief_tokens": 574,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4385939",
+          "conec-class-lists-document-placebo-tm/4385939"
+        ],
+        "sample_id": "4385939",
+        "text_tokens": 760,
+        "windows": 34
+      },
+      {
+        "brief_tokens": 306,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4386541",
+          "conec-class-lists-document-placebo-tm/4386541"
+        ],
+        "sample_id": "4386541",
+        "text_tokens": 492,
+        "windows": 13
+      },
+      {
+        "brief_tokens": 304,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4387332",
+          "conec-class-lists-document-placebo-tm/4387332"
+        ],
+        "sample_id": "4387332",
+        "text_tokens": 490,
+        "windows": 15
+      },
+      {
+        "brief_tokens": 325,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4387383",
+          "conec-class-lists-document-placebo-tm/4387383"
+        ],
+        "sample_id": "4387383",
+        "text_tokens": 511,
+        "windows": 24
+      },
+      {
+        "brief_tokens": 321,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4387865",
+          "conec-class-lists-document-placebo-tm/4387865"
+        ],
+        "sample_id": "4387865",
+        "text_tokens": 507,
+        "windows": 25
+      },
+      {
+        "brief_tokens": 378,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4389907",
+          "conec-class-lists-document-placebo-tm/4389907"
+        ],
+        "sample_id": "4389907",
+        "text_tokens": 564,
+        "windows": 23
+      },
+      {
+        "brief_tokens": 338,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4392809",
+          "conec-class-lists-document-placebo-tm/4392809"
+        ],
+        "sample_id": "4392809",
+        "text_tokens": 524,
+        "windows": 16
+      },
+      {
+        "brief_tokens": 291,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4394084",
+          "conec-class-lists-document-placebo-tm/4394084"
+        ],
+        "sample_id": "4394084",
+        "text_tokens": 477,
+        "windows": 20
+      },
+      {
+        "brief_tokens": 393,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4397800",
+          "conec-class-lists-document-placebo-tm/4397800"
+        ],
+        "sample_id": "4397800",
+        "text_tokens": 579,
+        "windows": 31
+      },
+      {
+        "brief_tokens": 511,
+        "cell_id": "E21-ku-e1c-brief-placebo",
+        "evidence_ids": [
+          "conec-class-lists-roster-placebo-tm/4397829",
+          "conec-class-lists-document-placebo-tm/4397829"
+        ],
+        "sample_id": "4397829",
+        "text_tokens": 697,
+        "windows": 50
+      }
+    ],
+    "unit": "one rendered request per call at the committed cap, expanded to the 1,593 windows by the roster's own per-call window count. The prompt fit proved the text envelope is window-independent at this protocol over all 6,460 of its renders",
+    "why_a_residual_remains": "the brief CONTENT is token-equal per line and per call. What is left is the '[evidence <id>] ' header of the two blocks: the arm names conec-class-lists-roster/-document and the twin names their -placebo-tm transforms, and a twin that named the arm's transforms would be indistinguishable from it in a sealed trace. The residual is a constant, it is reported here, and it is two orders of magnitude below the 161-token median gap it replaces"
+  },
+  "run_id": "SAEA-E21-KU-E1C-TOKEN-MATCH-V1",
+  "schema": "saea-e21-ku-e1c-token-match-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "a947481eb0734782695d65192fdae53f2785f01e",
+  "what_this_is": "the repair of result 4 of SAEA-E21-KC-E1-PROMPT-FIT-V1: KU-E1c's brief made token-equal to KC-E1's on the flight tokenizer, line by line, on every one of the 44 calls at every measured cap, and pinned as an artifact the flight replays without a tokenizer",
+  "working_tree_clean_at_start": true,
+  "worst_required_tokens_after_padding": 3058,
+  "zero_contact": {
+    "audio_seconds_delivered": 0.0,
+    "completion_requests": 0,
+    "generated_tokens": 0,
+    "media_stand_in": {
+      "relpath": "derived/prompt-fit/e21-ku-e1c-token-match/silence-100ms-16k.wav",
+      "sample_rate_hz": 16000,
+      "seconds": 0.1,
+      "sha256": "2976da01e205a110c9fa41d47659e238a5c6d3c3f3137582f2949853faa201dd"
+    },
+    "routes_called": {
+      "GET /props": 1,
+      "POST /apply-template": 88,
+      "POST /tokenize": 3562
+    },
+    "server_load_seconds": 10.03,
+    "server_resident_seconds": 18.022,
+    "server_started_at": "2026-09-07T07:58:43.937987+00:00",
+    "server_stopped_at": "2026-09-07T07:59:01.959540+00:00",
+    "servers_started": 1
+  }
+}
