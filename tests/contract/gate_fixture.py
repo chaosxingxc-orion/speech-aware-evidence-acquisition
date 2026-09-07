@@ -147,11 +147,16 @@ class GateFixture:
             encoding="utf-8",
         )
 
-    def gate(self) -> FrozenCoreGate:
+    def gate(self, **overrides: object) -> FrozenCoreGate:
+        """The fixture's gate. ``overrides`` set any additional ``FrozenCoreGate``
+        field (e.g. a ``d1_media_supplement`` / ``d1_evidence_supplement`` pair);
+        every caller that passes none is byte-identical to before this argument
+        existed."""
+
         (self.receipts / "e0-closure.json").write_text(json.dumps(self.e0), encoding="utf-8")
         (self.receipts / "runtime.json").write_text(json.dumps(self.runtime), encoding="utf-8")
         self.lock_path.write_text(json.dumps(self.lock), encoding="utf-8")
-        return FrozenCoreGate(
+        fields: dict = dict(
             e0_receipt=self.receipts / "e0-closure.json",
             runtime_receipt=self.receipts / "runtime.json",
             data_root=self.data_root,
@@ -160,6 +165,8 @@ class GateFixture:
             exposure_ledger=self.exposure_ledger,
             source_root=self.source_root,
         )
+        fields.update(overrides)
+        return FrozenCoreGate(**fields)
 
     def plan(self, **overrides: object) -> ExecutionPlan:
         base: dict = dict(

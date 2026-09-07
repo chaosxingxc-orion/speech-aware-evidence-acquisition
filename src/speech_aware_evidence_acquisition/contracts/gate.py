@@ -101,6 +101,16 @@ class FrozenCoreGate(
     #: digest and their own parent-D1 binding both verify.
     d1_media_supplement: Path | None = None
     d1_media_supplement_sha256: str | None = None
+    #: Optional bounded D1 EVIDENCE-LAYER successor (2026-09-06, KC-E1
+    #: precondition 1): one additive ``saea-d1-evidence-supplement-v1`` document
+    #: declaring exactly one D1 layer key the base artifact does not carry --
+    #: today ``conec``'s ``e21_participant_names``. Same discipline as the media
+    #: supplement above: the immutable E0 D1 artifact is never rewritten, and
+    #: these bytes are accepted only when their configured digest, their
+    #: parent-D1 binding and their sample-universe binding all verify
+    #: (``gate_evidence_identity._EvidenceIdentityMixin._d1_evidence_supplement_manifest``).
+    d1_evidence_supplement: Path | None = None
+    d1_evidence_supplement_sha256: str | None = None
     #: WHICH pinned model this run declares -- ``_validate_runtime``
     #: (``gate_runtime.py``) asserts the runtime receipt's own
     #: ``model_lock_key`` equals THIS value (never a bare module constant),
@@ -132,6 +142,8 @@ class FrozenCoreGate(
         model_root: Path | None = None,
         d1_media_supplement_relpath: str | None = None,
         d1_media_supplement_sha256: str | None = None,
+        d1_evidence_supplement_relpath: str | None = None,
+        d1_evidence_supplement_sha256: str | None = None,
     ) -> "FrozenCoreGate":
         """The canonical production binding — the only gate a real run may use.
 
@@ -173,6 +185,13 @@ class FrozenCoreGate(
                 "d1_media_supplement_relpath and d1_media_supplement_sha256 "
                 "must be configured together"
             )
+        if (d1_evidence_supplement_relpath is None) != (
+            d1_evidence_supplement_sha256 is None
+        ):
+            raise ValueError(
+                "d1_evidence_supplement_relpath and d1_evidence_supplement_sha256 "
+                "must be configured together"
+            )
         return cls(
             e0_receipt=root / "docs" / "receipts" / "e0-closure.json",
             runtime_receipt=root / "docs" / runtime_receipt_relpath,
@@ -188,8 +207,29 @@ class FrozenCoreGate(
                 else None
             ),
             d1_media_supplement_sha256=d1_media_supplement_sha256,
+            d1_evidence_supplement=(
+                root / "docs" / d1_evidence_supplement_relpath
+                if d1_evidence_supplement_relpath is not None
+                else None
+            ),
+            d1_evidence_supplement_sha256=d1_evidence_supplement_sha256,
             expected_model_lock_key=expected_model_lock_key,
         )
+
+    def __post_init__(self) -> None:
+        """ONE supplement per gate. The base D1 identity artifact is the only
+        thing a run is ever entitled to assume; a bounded successor is a
+        deliberate, named exception, and a run that needs TWO of them is a run
+        whose identity closure should be rebuilt rather than patched twice.
+        Enforced here so no caller path -- driver, script or test -- can
+        assemble a two-supplement gate by accident."""
+
+        if self.d1_media_supplement is not None and self.d1_evidence_supplement is not None:
+            raise ValueError(
+                "a FrozenCoreGate carries the base D1 identity plus AT MOST ONE "
+                "supplement; a media supplement and an evidence supplement were both "
+                "configured"
+            )
 
     def _load(self, path: Path, label: str) -> Mapping[str, object]:
         try:
