@@ -393,11 +393,32 @@ def main() -> int:
             )
             for sample_id in wire_sample_ids
         }
+        # The obs-agent-loop emits TWO shapes on MODEL_REQUEST: one per
+        # contact carrying the payload, and one per SAMPLE carrying
+        # ``stitch: true`` and the ids it stitched. Both are read: the first
+        # is the request half's subject, the second is an independent check
+        # that every window this sample cut actually reached the wire and was
+        # stitched back, with no id invented and none lost.
         requests: list[Mapping[str, Any]] = []
+        stitches: list[Mapping[str, Any]] = []
+        organized: list[Mapping[str, Any]] = []
+        supplied: list[Mapping[str, Any]] = []
+        cost_records = 0
         for line in trace_path.read_text(encoding="utf-8").splitlines():
             record = json.loads(line)
-            if record.get("channel") == "MODEL_REQUEST":
-                requests.append(record["payload"]["payload"])
+            channel = record.get("channel")
+            payload = record.get("payload", {})
+            if channel == "MODEL_REQUEST":
+                if payload.get("stitch"):
+                    stitches.append(payload)
+                else:
+                    requests.append(payload["payload"])
+            elif channel == "ORG":
+                organized.append(payload)
+            elif channel == "SUPPLY":
+                supplied.append(payload)
+            elif channel == "COST":
+                cost_records += 1
 
         failures: list[str] = []
         windows_seen: dict[str, set[int]] = {}
@@ -463,6 +484,49 @@ def main() -> int:
             failures.append(
                 "OBS tiling cut %r windows, the roster receipt says %r"
                 % (window_counts, expected_windows)
+            )
+        if len(stitches) != len(expected_by_sample):
+            failures.append(
+                "%d stitch record(s) for %d calls"
+                % (len(stitches), len(expected_by_sample))
+            )
+        stitched_ids = sorted(
+            request_id
+            for record in stitches
+            for request_id in record["stitched_request_ids"]
+        )
+        contacted_ids = sorted(str(payload["request_id"]) for payload in requests)
+        if stitched_ids != contacted_ids:
+            failures.append(
+                "the stitch chains and the contacted request ids disagree "
+                "(%d stitched, %d contacted)"
+                % (len(stitched_ids), len(contacted_ids))
+            )
+        if cost_records != len(requests):
+            failures.append(
+                "%d COST record(s) for %d contacts" % (cost_records, len(requests))
+            )
+        # ORG and SUPPLY are the driver's own per-sample view of what was
+        # organized and supplied. They are checked independently of the
+        # payloads above, because two views agreeing is evidence and one view
+        # asserting is not.
+        if len(organized) != len(expected_by_sample):
+            failures.append("%d ORG record(s) for %d calls"
+                            % (len(organized), len(expected_by_sample)))
+        if any(int(record["org_evidence_count"]) != 2 for record in organized):
+            failures.append(
+                "an ORG record reports an evidence count other than 2: %r"
+                % ([record["org_evidence_count"] for record in organized],)
+            )
+        expected_ids = {
+            tuple(item.evidence_id for item in items)
+            for items in expected_by_sample.values()
+        }
+        supplied_ids = {tuple(record["supply_evidence_ids"]) for record in supplied}
+        if supplied_ids != expected_ids:
+            failures.append(
+                "SUPPLY evidence ids %r do not match the source's own %r"
+                % (sorted(supplied_ids), sorted(expected_ids))
             )
 
         # ---------------- evidence-rail half ----------------
@@ -564,6 +628,11 @@ def main() -> int:
             },
             "request_half": {
                 "contacts": len(requests),
+                "cost_records": cost_records,
+                "stitch_records": len(stitches),
+                "stitch_chains_cover_every_contact_exactly_once": True,
+                "org_records_report_two_evidence_items": True,
+                "supply_records_name_the_sources_own_evidence_ids": True,
                 "calls": len(expected_by_sample),
                 "windows_per_call": window_counts,
                 "windows_per_call_matches_the_roster_receipt": True,
