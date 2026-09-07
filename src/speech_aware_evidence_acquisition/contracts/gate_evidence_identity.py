@@ -96,6 +96,21 @@ sample universe and can never quietly widen it.
 
 ONE supplement per gate (``gate.FrozenCoreGate.__post_init__``): a gate carries
 the base D1 identity plus at most one supplement, media or evidence, never both.
+
+One sample, several evidence files (2026-09-06, same task)
+-----------------------------------------------------------
+Routing per relpath is only useful if every relpath a sample draws on actually
+REACHES the rail. Both methods used to take one relpath and one content blob per
+sample, and ``core.driver.run_experiment``'s per-item loop assigned rather than
+accumulated -- so a source returning several carrier-bound items per sample had
+all but the LAST silently dropped. E5's ``conec-class-lists`` is exactly that: two
+items per call, the participant roster and the context document, routing to two
+different layers. The roster half -- the whole point of the supplement above --
+was therefore never checked. Both methods now accept, per sample, either a bare
+value (unchanged for every existing caller) or an ordered tuple
+(:func:`_as_tuple`); ``evidence_contents`` and ``evidence_relpaths`` are
+positionally paired and a length mismatch refuses, because an unpaired content
+has no relpath to route by.
 """
 
 from __future__ import annotations
@@ -199,6 +214,25 @@ def _route_evidence_layer_key(layout: EvidenceLayout, relpath: str) -> str:
         f"evidence layer {layout.lock_key!r}'s own {layout.subdir!r} subdir; model "
         "touch refused (IMPORTANT 1 fail-closed)"
     )
+
+
+def _as_tuple(value: object, label: str, kinds: tuple[type, ...]) -> tuple:
+    """One value or an ordered tuple of them (2026-09-06, KC-E1).
+
+    A sample may draw on MORE THAN ONE evidence file: E5's ``conec-class-lists``
+    reads the call's participant roster AND its context document, which route to
+    two different D1 layers. Both rails therefore accept either a bare value
+    (one file -- byte-identical to every caller that predates this) or a
+    non-empty tuple of them, checked in order and each routed on its own.
+    Fail-closed on anything else, including an empty tuple."""
+
+    values = value if isinstance(value, tuple) else (value,)
+    if not values or not all(isinstance(item, kinds) for item in values):
+        raise GateClosed(
+            f"{label} must be a {'/'.join(kind.__name__ for kind in kinds)} or a "
+            "non-empty tuple of them"
+        )
+    return values
 
 
 def _parse_evidence_manifest(
@@ -483,37 +517,42 @@ class _EvidenceIdentityMixin(_D1IdentityLookupMixin):
         manifests_by_layer_key: dict[str, dict[str, tuple[int, str]]] = {}
 
         for sample_id, relpath in evidence_facts.items():
-            if not isinstance(sample_id, str) or not isinstance(relpath, str):
-                raise GateClosed(
-                    f"evidence_facts[{sample_id!r}] must be a string evidence relpath"
+            if not isinstance(sample_id, str) or not sample_id:
+                raise GateClosed("evidence_facts keys must be non-empty sample ids")
+            for one_relpath in _as_tuple(
+                relpath, f"evidence_facts[{sample_id!r}]", (str,)
+            ):
+                d1_layer_key = _route_evidence_layer_key(layout, one_relpath)
+                recorded = manifests_by_layer_key.get(d1_layer_key)
+                if recorded is None:
+                    recorded = self._evidence_layer_manifest(
+                        carrier_lock_key, layout, d1_layer_key
+                    )
+                    manifests_by_layer_key[d1_layer_key] = recorded
+                d1_fact = recorded.get(sample_id)
+                if d1_fact is None:
+                    raise GateClosed(
+                        f"sample {sample_id!r} (carrier {carrier_lock_key!r}) has no "
+                        "D1-recorded evidence identity; evidence outside D1's identity "
+                        "closure can never enter a run"
+                    )
+                rec_bytes, rec_sha = d1_fact
+                relative = _safe_relative_path(
+                    one_relpath, f"evidence_facts[{sample_id!r}] relpath"
                 )
-            d1_layer_key = _route_evidence_layer_key(layout, relpath)
-            recorded = manifests_by_layer_key.get(d1_layer_key)
-            if recorded is None:
-                recorded = self._evidence_layer_manifest(carrier_lock_key, layout, d1_layer_key)
-                manifests_by_layer_key[d1_layer_key] = recorded
-            d1_fact = recorded.get(sample_id)
-            if d1_fact is None:
-                raise GateClosed(
-                    f"sample {sample_id!r} (carrier {carrier_lock_key!r}) has no "
-                    "D1-recorded evidence identity; evidence outside D1's identity "
-                    "closure can never enter a run"
+                resolved = _resolve_under(
+                    self.data_root, relative, f"evidence for sample {sample_id!r}"
                 )
-            rec_bytes, rec_sha = d1_fact
-            relative = _safe_relative_path(relpath, f"evidence_facts[{sample_id!r}] relpath")
-            resolved = _resolve_under(
-                self.data_root, relative, f"evidence for sample {sample_id!r}"
-            )
-            actual_bytes, actual_sha = _contracts_pkg._measure_file(
-                resolved, f"evidence for sample {sample_id!r}"
-            )
-            if actual_bytes != rec_bytes or actual_sha != rec_sha:
-                raise GateClosed(
-                    f"evidence identity drift for sample {sample_id!r}: D1 recorded "
-                    f"{rec_bytes} bytes / {rec_sha[:12]}..., the live file is now "
-                    f"{actual_bytes} bytes / {actual_sha[:12]}...; model touch refused "
-                    "(IMPORTANT 1)"
+                actual_bytes, actual_sha = _contracts_pkg._measure_file(
+                    resolved, f"evidence for sample {sample_id!r}"
                 )
+                if actual_bytes != rec_bytes or actual_sha != rec_sha:
+                    raise GateClosed(
+                        f"evidence identity drift for sample {sample_id!r}: D1 recorded "
+                        f"{rec_bytes} bytes / {rec_sha[:12]}..., the live file is now "
+                        f"{actual_bytes} bytes / {actual_sha[:12]}...; model touch refused "
+                        "(IMPORTANT 1)"
+                    )
 
     def verify_evidence_content_identity(
         self,
@@ -567,39 +606,51 @@ class _EvidenceIdentityMixin(_D1IdentityLookupMixin):
         manifests_by_layer_key: dict[str, dict[str, tuple[int, str]]] = {}
 
         for sample_id, content_bytes in evidence_contents.items():
-            if not isinstance(sample_id, str) or not isinstance(
-                content_bytes, (bytes, bytearray)
-            ):
-                raise GateClosed(
-                    f"evidence_contents[{sample_id!r}] must be bytes"
-                )
+            if not isinstance(sample_id, str) or not sample_id:
+                raise GateClosed("evidence_contents keys must be non-empty sample ids")
+            blobs = _as_tuple(
+                content_bytes, f"evidence_contents[{sample_id!r}]", (bytes, bytearray)
+            )
             relpath = evidence_relpaths.get(sample_id)
-            if not isinstance(relpath, str):
+            if relpath is None:
                 raise GateClosed(
                     f"evidence_contents[{sample_id!r}] has no matching "
                     "evidence_relpaths entry to route its D1 layer by; model touch "
                     "refused (IMPORTANT 1 fail-closed)"
                 )
-            d1_layer_key = _route_evidence_layer_key(layout, relpath)
-            recorded = manifests_by_layer_key.get(d1_layer_key)
-            if recorded is None:
-                recorded = self._evidence_layer_manifest(carrier_lock_key, layout, d1_layer_key)
-                manifests_by_layer_key[d1_layer_key] = recorded
-            d1_fact = recorded.get(sample_id)
-            if d1_fact is None:
+            relpaths = _as_tuple(
+                relpath, f"evidence_relpaths[{sample_id!r}]", (str,)
+            )
+            if len(relpaths) != len(blobs):
                 raise GateClosed(
-                    f"sample {sample_id!r} (carrier {carrier_lock_key!r}) has no "
-                    "D1-recorded evidence identity; evidence outside D1's identity "
-                    "closure can never enter a run"
+                    f"evidence_contents[{sample_id!r}] carries {len(blobs)} contents "
+                    f"but evidence_relpaths carries {len(relpaths)} relpaths; the two "
+                    "are positionally paired and an unpaired content can never be "
+                    "routed (IMPORTANT 1 fail-closed)"
                 )
-            rec_bytes, rec_sha = d1_fact
-            actual_bytes = len(content_bytes)
-            actual_sha = hashlib.sha256(content_bytes).hexdigest()
-            if actual_bytes != rec_bytes or actual_sha != rec_sha:
-                raise GateClosed(
-                    f"evidence content identity drift for sample {sample_id!r}: D1 "
-                    f"recorded {rec_bytes} bytes / {rec_sha[:12]}..., the in-memory "
-                    f"content this run already read is {actual_bytes} bytes / "
-                    f"{actual_sha[:12]}...; model touch refused (fifth review, "
-                    "evidence-bytes-consumed check)"
-                )
+            for one_relpath, one_content in zip(relpaths, blobs):
+                d1_layer_key = _route_evidence_layer_key(layout, one_relpath)
+                recorded = manifests_by_layer_key.get(d1_layer_key)
+                if recorded is None:
+                    recorded = self._evidence_layer_manifest(
+                        carrier_lock_key, layout, d1_layer_key
+                    )
+                    manifests_by_layer_key[d1_layer_key] = recorded
+                d1_fact = recorded.get(sample_id)
+                if d1_fact is None:
+                    raise GateClosed(
+                        f"sample {sample_id!r} (carrier {carrier_lock_key!r}) has no "
+                        "D1-recorded evidence identity; evidence outside D1's identity "
+                        "closure can never enter a run"
+                    )
+                rec_bytes, rec_sha = d1_fact
+                actual_bytes = len(one_content)
+                actual_sha = hashlib.sha256(one_content).hexdigest()
+                if actual_bytes != rec_bytes or actual_sha != rec_sha:
+                    raise GateClosed(
+                        f"evidence content identity drift for sample {sample_id!r}: D1 "
+                        f"recorded {rec_bytes} bytes / {rec_sha[:12]}..., the in-memory "
+                        f"content this run already read is {actual_bytes} bytes / "
+                        f"{actual_sha[:12]}...; model touch refused (fifth review, "
+                        "evidence-bytes-consumed check)"
+                    )

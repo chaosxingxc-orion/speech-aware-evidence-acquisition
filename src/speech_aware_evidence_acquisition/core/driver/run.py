@@ -412,7 +412,13 @@ def run_experiment(
         # which sample a later negative-control experiment happens to route
         # that content to (see gate_evidence_identity's own docstring for why
         # this scoping is deliberate, not an oversight).
-        evidence_relpaths: dict[str, str] = {}
+        # 2026-09-06 (KC-E1): accumulated per item, not assigned per sample.
+        # ``conec-class-lists`` returns TWO carrier-bound items per call and the
+        # old ``evidence_relpaths[sid] = record.source_relpath`` kept only the
+        # last one, so the participant-roster half of the pre-meeting brief was
+        # never identity-checked at all. Single-item sources still produce a
+        # plain ``str`` value below, byte-identical to before.
+        evidence_relpath_lists: dict[str, list[str]] = {}
         # IMPROVEMENT (fifth external-threat-model review): the SAME
         # already-read content, keyed identically to evidence_relpaths --
         # gives the D1 evidence-identity rail something to check that is
@@ -422,7 +428,7 @@ def run_experiment(
         # check<->send race this closes). Built here, from exactly the same
         # evidence_by_sample this loop already reads for evidence_relpaths --
         # never a fresh disk read.
-        evidence_contents: dict[str, bytes] = {}
+        evidence_content_lists: dict[str, list[bytes]] = {}
         # Derivation-chain rail (2026-08-09, docs/readiness/2026-08-09-conec-
         # evidence-shape.md "Blocking gap"): a fresh registry per run, no
         # shared state across runs (mirrors core.model.slices.SliceRegistry).
@@ -489,8 +495,23 @@ def run_experiment(
                     # DerivedEvidenceRecord docstring) has no D1 anchor at
                     # all and is deliberately excluded here -- its identity
                     # rests solely on the self-verified chain above.
-                    evidence_relpaths[s.sample_id] = record.source_relpath
-                    evidence_contents[s.sample_id] = item.derivation_source_bytes
+                    evidence_relpath_lists.setdefault(s.sample_id, []).append(
+                        record.source_relpath
+                    )
+                    evidence_content_lists.setdefault(s.sample_id, []).append(
+                        item.derivation_source_bytes
+                    )
+        # One file stays a bare value; several become an ordered tuple whose
+        # i-th relpath pairs with the i-th content (core.base.
+        # PayloadBindingContext.evidence_relpaths).
+        evidence_relpaths: dict[str, str | tuple[str, ...]] = {
+            sample_id: (paths[0] if len(paths) == 1 else tuple(paths))
+            for sample_id, paths in evidence_relpath_lists.items()
+        }
+        evidence_contents: dict[str, bytes | tuple[bytes, ...]] = {
+            sample_id: (blobs[0] if len(blobs) == 1 else tuple(blobs))
+            for sample_id, blobs in evidence_content_lists.items()
+        }
         if values.get("evidence_mismatch", False):
             evidence_by_sample = rotated_mismatch(evidence_by_sample)
         # SUPPLY dose knob (continued from the composition-time validation

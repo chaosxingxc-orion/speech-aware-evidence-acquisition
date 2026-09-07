@@ -100,7 +100,9 @@ class _AttemptLifecycleMixin:
         # binding.evidence_relpaths is empty whenever this run's evidence
         # source supplied no evidence at all (e.g. "none"), in which case
         # there is nothing to check.
-        evidence_identity_check: Callable[[str, Mapping[str, str]], None] | None = getattr(
+        evidence_identity_check: (
+            Callable[[str, Mapping[str, str | tuple[str, ...]]], None] | None
+        ) = getattr(
             gate, "verify_evidence_identity", None
         )
         if evidence_identity_check is not None and binding.evidence_relpaths:
@@ -125,7 +127,15 @@ class _AttemptLifecycleMixin:
         # signature now raises a TypeError here; every such double in this
         # repo's own test suite was updated alongside this change.
         evidence_content_identity_check: (
-            Callable[[str, Mapping[str, bytes], Mapping[str, str]], None] | None
+            Callable[
+                [
+                    str,
+                    Mapping[str, bytes | tuple[bytes, ...]],
+                    Mapping[str, str | tuple[str, ...]],
+                ],
+                None,
+            ]
+            | None
         ) = getattr(gate, "verify_evidence_content_identity", None)
         if evidence_content_identity_check is not None and binding.evidence_contents:
             evidence_content_identity_check(
