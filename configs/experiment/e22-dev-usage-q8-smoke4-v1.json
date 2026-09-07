@@ -1,0 +1,98 @@
+{
+  "experiment_id": "SAEA-E22-DEV-ESB-Q8-SMOKE-V1",
+  "schema": "saea-e22-esb-shortform-experiment-v1",
+  "date": "2026-09-06",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "The 4-row dry run section 6.6 of docs/readiness/2026-09-06-e22-dev-usage-cells-v1-preregistration.md requires before cell (a) flies, on four rows of the same 1,500-row roster chosen before any contact to bracket it (longest, shortest, median, p90 by duration). Four reads, in order of importance: (1) does --n-cpu-moe 28 at -c 40960 -np 8 actually leave at least 3,072 MiB free on the card, and how close is the achieved figure to the 5,083 MiB the offline placement receipt projected; (2) does a LIVE mmproj encode of the 32.88 s worst case complete without an out-of-memory or CUDA fault -- the exact condition the A2T probe never tested, because every one of its 400 rows was a feature-cache hit; (3) what is the measured Q8_0-to-Q4_K_M per-call latency ratio against the 7.85x the flight budget assumes; (4) do both ESB scorers score the sealed manifest through core.scoring_batch with verified = true. The smoke's own WER numbers are on four rows and enter no verdict.",
+  "populations": {
+    "E22-ESB-DEV1500-SMOKE-4": {
+      "dataset_fragment": "earnings22-esb-dev1500-smoke4",
+      "carrier": "earnings22-original",
+      "split_role": "dev",
+      "count": 4,
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-dev-esb-1500-v1/roster/flight-roster-receipt.json",
+      "receipt_sha256": "fe9528be3ad62c27b95da61e7397fda5e19c0fe711fda07db6731c2d6fcccf9f",
+      "split_identity_hash": "c5b9886a421a9d9483c934759d9cb2a9d3b0eee2a029f73726883179f6f5f033",
+      "ids": [
+        "4469088-654",
+        "4479944-334",
+        "4482383-188",
+        "4482613-439"
+      ],
+      "audio_seconds_one_pass": 51.7005,
+      "audio_seconds_longest_item": 32.88,
+      "selection": "deterministic and pre-registered, the same rule the 2026-09-05 dev smoke used: the longest utterance (the encode and VRAM worst case), the shortest, the median and the p90 by duration over the drawn 1,500, ties broken by sample id"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "E22-DEV-ESB-Q8-SMOKE-4",
+      "dataset_fragment": "earnings22-esb-dev1500-smoke4",
+      "arm": "bare-core",
+      "baseline_fragment": "e22-esb-dev1500-q8",
+      "model_fragment": "q8-e22-dev1500-esb-mmproj-gpu-04ccc72a-np8-c40960",
+      "run_id": "SAEA-E22-DEV-ESB-Q8-SMOKE-V1",
+      "serving_geometry": "-c 40960 -np 8, 5120 tokens per slot, --n-cpu-moe 28 -- identical to the flight",
+      "factor": "none; this is cell (a)'s own protocol on four rows"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "runtime_receipt": "docs/receipts/runtime-q8-featcache-04ccc72a.json",
+    "quantization": "Q8_0",
+    "decoder_sha256": "8a50e5a7d29ae6a28fea9ca45e3bb0a142e76ec07e6787a7703cd498eb08ffaa",
+    "mmproj_sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883",
+    "audio_path": "raw audio, bf16 mmproj resident on the GPU, no feature cache directory",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none -- an ESB utterance IS the request",
+    "harness": "core.flight.FlightRuntime, entered through scripts/flights/run_e22_esb_cell.py"
+  },
+  "evaluation": {
+    "official_scorers": [
+      "asr-wer-esb-whisper",
+      "asr-wer-esb",
+      "cost"
+    ],
+    "paper_facing_scorer": "asr-wer-esb-whisper",
+    "paper_facing_aggregation": "corpus: total S+D+I over total reference words",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "merge_compounds": false,
+    "metrics": [
+      "achieved free VRAM after load at --n-cpu-moe 28, against the 3,072 MiB floor and the 5,083 MiB projection",
+      "llama.cpp's own printed audio-encoder compute-buffer estimate at this geometry, against the achieved free",
+      "server RSS and host available memory, against the A2T ladder's 18,533 / 54,633 MiB at N = 28",
+      "per-call latency, and the ratio to the sealed Q4_K_M comparator's 1.927 s mean",
+      "prompt_tokens per request (the text envelope) and completion tokens",
+      "any CUDA fault or out-of-memory",
+      "whether both ESB scorers returned per-sample rows through core.scoring_batch with verified = true"
+    ],
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "dev",
+    "planned_model_calls": 20,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 120
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "4 rows x 1 contact = 4, plus headroom for a canary and one recovery attempt; the registered ceiling is 60. core/model/adapter.py meters the plan cumulatively across every attempt of this run id.",
+    "planned_speech_audio_seconds": "51.7005 s for one pass, rounded up to 120 to cover a recovery attempt; the registered ceiling is 200.",
+    "planned_gpu_hours": "0.5, twice the Q4_K_M smoke's, because a 30.3 GiB Q8_0 load with 28 layers of experts faulting into host RAM is the dominant cost of a four-row pass; the registered ceiling is 1.0.",
+    "paid_api_spend": 0
+  },
+  "decision": {
+    "go_no_go": "The flight launches only if all four reads are affirmative: the achieved free VRAM at N = 28 is at or above 3,072 MiB AND at or above llama.cpp's own printed encoder estimate; the 32.88 s live encode completes with no CUDA fault or out-of-memory; both ESB scorers return per-sample rows on the sealed manifest through core.scoring_batch with verified = true; and the projected flight time at the measured latency is at or under the registered 3.0 GPU-hour ceiling. If the achieved free is below the floor, the cell STOPS -- it does not shrink -np, and a geometry change is a new registration.",
+    "claim_surface": "none; a smoke's numbers enter no verdict",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

@@ -1,0 +1,308 @@
+{
+  "boundary": "zero model contacts, zero servers, zero sockets, zero GPU, zero network. The two GGUF files are opened and their HEADERS are read (metadata block and tensor table); no tensor payload is read and no model is loaded.",
+  "calibration": {
+    "fitted_overhead_meaning": "CUDA context plus every compute buffer llama.cpp allocates at load. It is the ONE unknown in the arithmetic and it is fitted, not assumed: the fit is refused unless every non-saturated rung yields the same constant to within 1 MiB.",
+    "fitted_overhead_mib": 1070.9141,
+    "residual_spread_mib": 0.0,
+    "rungs": [
+      {
+        "excluded_reason": null,
+        "free_before_mib": 24137.0,
+        "measured_free_mib": 16916.0,
+        "measured_used_mib": 7222.0,
+        "n_cpu_moe": 48,
+        "residual_mib": 1070.9141,
+        "saturated": false,
+        "weights_plus_kv_plus_mmproj_mib": 6151.0859
+      },
+      {
+        "excluded_reason": null,
+        "free_before_mib": 24137.0,
+        "measured_free_mib": 14468.0,
+        "measured_used_mib": 9670.0,
+        "n_cpu_moe": 44,
+        "residual_mib": 1070.9141,
+        "saturated": false,
+        "weights_plus_kv_plus_mmproj_mib": 8599.0859
+      },
+      {
+        "excluded_reason": null,
+        "free_before_mib": 24137.0,
+        "measured_free_mib": 12020.0,
+        "measured_used_mib": 12118.0,
+        "n_cpu_moe": 40,
+        "residual_mib": 1070.9141,
+        "saturated": false,
+        "weights_plus_kv_plus_mmproj_mib": 11047.0859
+      },
+      {
+        "excluded_reason": null,
+        "free_before_mib": 24137.0,
+        "measured_free_mib": 9572.0,
+        "measured_used_mib": 14566.0,
+        "n_cpu_moe": 36,
+        "residual_mib": 1070.9141,
+        "saturated": false,
+        "weights_plus_kv_plus_mmproj_mib": 13495.0859
+      },
+      {
+        "excluded_reason": null,
+        "free_before_mib": 24137.0,
+        "measured_free_mib": 7124.0,
+        "measured_used_mib": 17014.0,
+        "n_cpu_moe": 32,
+        "residual_mib": 1070.9141,
+        "saturated": false,
+        "weights_plus_kv_plus_mmproj_mib": 15943.0859
+      },
+      {
+        "excluded_reason": null,
+        "free_before_mib": 24137.0,
+        "measured_free_mib": 4676.0,
+        "measured_used_mib": 19462.0,
+        "n_cpu_moe": 28,
+        "residual_mib": 1070.9141,
+        "saturated": false,
+        "weights_plus_kv_plus_mmproj_mib": 18391.0859
+      },
+      {
+        "excluded_reason": null,
+        "free_before_mib": 24137.0,
+        "measured_free_mib": 2228.0,
+        "measured_used_mib": 21910.0,
+        "n_cpu_moe": 24,
+        "residual_mib": 1070.9141,
+        "saturated": false,
+        "weights_plus_kv_plus_mmproj_mib": 20839.0859
+      },
+      {
+        "excluded_reason": "the card was full at this rung, so the measured figure is a truncation rather than a placement",
+        "free_before_mib": 24137.0,
+        "measured_free_mib": 14.0,
+        "measured_used_mib": 24124.0,
+        "n_cpu_moe": 20,
+        "residual_mib": 836.9141,
+        "saturated": true,
+        "weights_plus_kv_plus_mmproj_mib": 23287.0859
+      }
+    ],
+    "same_decoder_same_mmproj_same_build": true,
+    "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-q8-quantization-probe-400-v1/placement/placement-fit.json",
+    "source_run_id": "SAEA-A2T-Q8-PLACEMENT-FIT-V1",
+    "source_serving_geometry": {
+      "base_server_args": [
+        "-c",
+        "49152",
+        "-np",
+        "3",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0"
+      ],
+      "context_tokens": 49152,
+      "slot_tokens": 16384,
+      "slots": 3
+    },
+    "source_sha256": "dea2d8213489b6b3765c85f7b9c2ad1b2ef4d71212ae274f231f5ec60edea05b"
+  },
+  "cell_geometry": {
+    "context_tokens": 40960,
+    "server_args": [
+      "-c",
+      "40960",
+      "-np",
+      "8",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "slot_tokens": 5120,
+    "slots": 8,
+    "unchanged_from": "the sealed SAEA-E22-DEV-ESB-PROMPT-A-V1 comparator: a slot-count change alters batch composition, greedy decoding is not bitwise reproducible across batch compositions on this runtime, and the cell would stop being single-factor"
+  },
+  "cell_id": "E22-DEV-ESB-Q8",
+  "chosen": {
+    "margin_mib": 2011.0,
+    "meets_min_free": true,
+    "n_cpu_moe": 28,
+    "offload_flag": "--n-cpu-moe",
+    "projected_free_mib": 5083.0,
+    "projected_used_mib": 19054.0,
+    "resident_expert_layers": 20
+  },
+  "chosen_n_cpu_moe": 28,
+  "decoder_tensor_table": {
+    "architecture": "qwen3vlmoe",
+    "block_count": 48,
+    "expert_bytes_per_layer": 641728512,
+    "expert_bytes_total": 30802968576,
+    "expert_count": 128,
+    "expert_layers": 48,
+    "expert_mib_per_layer": 612.0,
+    "expert_tensor_names": [
+      "ffn_down_exps.weight",
+      "ffn_gate_exps.weight",
+      "ffn_up_exps.weight"
+    ],
+    "non_expert_bytes": 1675550720,
+    "non_expert_mib": 1597.9297,
+    "tensor_count": 579
+  },
+  "device": {
+    "free_before_basis": "the idle-card reading every A2T rung recorded before its own start; the live pass must re-read it, because anything else holding device memory on flight day moves this number and therefore the answer",
+    "free_before_mib": 24137.0,
+    "total_mib": 24463.0
+  },
+  "does_not_replace_the_live_pass": "Q8-P1 measures free VRAM through GET /props and nvidia-smi at each rung with zero /completion calls (scripts/a2t_q8_placement_fit.py). This document predicts what it will find so the ladder is short and the answer is falsifiable before a GPU minute is spent. If the live pass disagrees, the LIVE number governs and this projection is the thing that was wrong.",
+  "generated_at": "2026-09-07T00:13:29.346313+00:00",
+  "host_ram": {
+    "a2t_measured_host_available_mib": 54633,
+    "a2t_measured_server_rss_mib_at_n28": 18533,
+    "expert_mib_on_cpu_at_chosen": 17136.0,
+    "verdict": "the host has room: the A2T ladder measured 18,533 MiB of server RSS at N = 28 against 54,633 MiB available"
+  },
+  "kv_cache": {
+    "basis": "block_count x head_count_kv x (key_length + value_length) elements per token at the q8_0 34-bytes-per-32-elements rate, read from the decoder GGUF's own metadata",
+    "bytes_per_token": 52224,
+    "cache_type": "q8_0",
+    "cell_context_tokens": 40960,
+    "cell_kv_mib": 2040.0,
+    "cell_kv_saving_mib": 408.0,
+    "ladder_context_tokens": 49152,
+    "ladder_kv_mib": 2448.0
+  },
+  "ladder": [
+    {
+      "margin_mib": 14251.0,
+      "meets_min_free": true,
+      "n_cpu_moe": 48,
+      "offload_flag": "--cpu-moe",
+      "projected_free_mib": 17323.0,
+      "projected_used_mib": 6814.0,
+      "resident_expert_layers": 0
+    },
+    {
+      "margin_mib": 11803.0,
+      "meets_min_free": true,
+      "n_cpu_moe": 44,
+      "offload_flag": "--n-cpu-moe",
+      "projected_free_mib": 14875.0,
+      "projected_used_mib": 9262.0,
+      "resident_expert_layers": 4
+    },
+    {
+      "margin_mib": 9355.0,
+      "meets_min_free": true,
+      "n_cpu_moe": 40,
+      "offload_flag": "--n-cpu-moe",
+      "projected_free_mib": 12427.0,
+      "projected_used_mib": 11710.0,
+      "resident_expert_layers": 8
+    },
+    {
+      "margin_mib": 6907.0,
+      "meets_min_free": true,
+      "n_cpu_moe": 36,
+      "offload_flag": "--n-cpu-moe",
+      "projected_free_mib": 9979.0,
+      "projected_used_mib": 14158.0,
+      "resident_expert_layers": 12
+    },
+    {
+      "margin_mib": 4459.0,
+      "meets_min_free": true,
+      "n_cpu_moe": 32,
+      "offload_flag": "--n-cpu-moe",
+      "projected_free_mib": 7531.0,
+      "projected_used_mib": 16606.0,
+      "resident_expert_layers": 16
+    },
+    {
+      "margin_mib": 2011.0,
+      "meets_min_free": true,
+      "n_cpu_moe": 28,
+      "offload_flag": "--n-cpu-moe",
+      "projected_free_mib": 5083.0,
+      "projected_used_mib": 19054.0,
+      "resident_expert_layers": 20
+    },
+    {
+      "margin_mib": -437.0,
+      "meets_min_free": false,
+      "n_cpu_moe": 24,
+      "offload_flag": "--n-cpu-moe",
+      "projected_free_mib": 2635.0,
+      "projected_used_mib": 21502.0,
+      "resident_expert_layers": 24
+    }
+  ],
+  "live_pass_still_required": [
+    "start the pinned server once at the chosen N and read free VRAM through GET /props and nvidia-smi with zero /completion calls",
+    "read llama.cpp's own printed audio-encoder compute-buffer estimate at THIS geometry and refuse if it exceeds the measured free",
+    "confirm no LLAMA_MTMD_FEAT_CACHE_DIR is set in server_env",
+    "check enforced.power.limit and the Legion SmartFanMode before anything else -- a Quiet-mode 35 W cap silently overrides everything and has recurred"
+  ],
+  "min_free_basis": "2,940 MiB -- llama.cpp's own estimate of the audio encoder's worst-case compute buffer, named in caveat 2 of docs/readiness/2026-09-04-a2t-q8-quantization-probe-v1-verdict.md -- rounded up to 3,072. Every row of this cell runs a live mmproj encode, so a placement that leaves less than that is a cell that faults.",
+  "min_free_mib": 3072,
+  "mmproj": {
+    "architecture": "clip",
+    "audio_block_count": 32,
+    "audio_embedding_length": 1280,
+    "resident_bytes": 2207416320,
+    "resident_mib": 2105.1562,
+    "tensor_count": 860,
+    "why_resident": "--no-mmproj-offload is absent in this cell's model fragment, so the bf16 mmproj stays on the GPU and every one of the 1,500 rows pays a LIVE encode -- which is exactly the condition the A2T probe never tested and the reason its N = 24 may not be copied."
+  },
+  "model": {
+    "gguf_files": {
+      "models/qwen3-omni-30b-a3b-instruct-gguf/Qwen3-Omni-30B-A3B-Instruct-Q8_0.gguf": {
+        "rehashed_here": true,
+        "sha256": "8a50e5a7d29ae6a28fea9ca45e3bb0a142e76ec07e6787a7703cd498eb08ffaa"
+      },
+      "models/qwen3-omni-30b-a3b-instruct-gguf/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf": {
+        "rehashed_here": true,
+        "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+      }
+    },
+    "llama_cpp_build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf",
+    "model_materialization_root": "/home/chao",
+    "runtime_receipt": "docs/receipts/runtime-q8-featcache-04ccc72a.json",
+    "runtime_receipt_sha256": "dd3365beb213ea6edb578cd0607238a585631f7e21fa42e5df7db7f302e078d2"
+  },
+  "model_contacts": 0,
+  "precondition": "section 1.3, Q8-P1 -- PROJECTED here, not measured",
+  "preregistration": "docs/readiness/2026-09-06-e22-dev-usage-cells-v1-preregistration.md",
+  "rejected_next_rung": {
+    "margin_mib": -437.0,
+    "meets_min_free": false,
+    "n_cpu_moe": 24,
+    "offload_flag": "--n-cpu-moe",
+    "projected_free_mib": 2635.0,
+    "projected_used_mib": 21502.0,
+    "resident_expert_layers": 24
+  },
+  "rule": "start from --cpu-moe (every expert layer in host RAM), then lower N in steps of 4 while a zero-token server start still leaves at least 3072 MiB free at the declared serving geometry; the largest GPU-resident share that satisfies the rule is the value",
+  "run_id": "SAEA-E22-DEV-ESB-Q8-V1",
+  "schema": "saea-e22-q8-placement-offline-v1",
+  "sensitivity": {
+    "chosen_survives_an_overhead_increase_of_mib": 2011.0,
+    "next_rung_would_need_an_overhead_decrease_of_mib": 437.0,
+    "reading": "the answer is not delicate in either direction: the chosen rung still clears the floor even if the compute overhead were several times what the live ladder measured, and the next rung down would need the overhead to FALL at a geometry with more slots, which is the wrong sign",
+    "the_one_quantity_that_does_not_carry_over": "the compute-buffer/CUDA-context overhead at a different -c and -np. It is measured at -c 49152 -np 3 and reused at -c 40960 -np 8."
+  },
+  "status": "PROJECTION -- Q8-P1 is a LIVE pass and is still required",
+  "step": 4,
+  "study": "speech-aware-evidence-acquisition",
+  "total_generated_tokens": 0
+}

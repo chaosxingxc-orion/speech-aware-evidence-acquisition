@@ -1,0 +1,51 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 900.0,
+  "runtime_receipt": "receipts/runtime-q8-featcache-04ccc72a.json",
+  "server_args": [
+    "-c",
+    "40960",
+    "-np",
+    "8",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "--n-cpu-moe",
+    "28"
+  ],
+  "serving_geometry": {
+    "slots": 8,
+    "slot_tokens": 5120,
+    "max_tokens": 1024
+  },
+  "serving_geometry_basis": "IDENTICAL to the sealed comparator SAEA-E22-DEV-ESB-PROMPT-A-V1: -c 40960 -np 8, 5,120 tokens per slot. Section 1.3 of the preregistration forbids shrinking -np to make the Q8_0 decoder fit -- a slot-count change alters batch composition, greedy decoding is not bitwise reproducible across batch compositions on this runtime, and the cell would stop being single-factor. The subset's longest utterance is 32.880000 s -> 13 * ceil(32.88) = 429 speech tokens plus the 49-token arm A text envelope plus 1024 completion plus 2 special = about 1504 against a 5,120-token slot, a ratio of 3.4x.",
+  "n_cpu_moe_basis": "D-Q8-1, the one forced deviation of cell (a): 30.3 GiB of Q8_0 weights cannot be resident on a 24,463 MiB card, so --n-cpu-moe N puts the Mixture-of-Experts tensors of the first N layers in host RAM while attention, norms, embeddings, shared parts and the remaining experts stay on the GPU. N = 28 is PROJECTED by docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-dev-usage-cells/q8-placement.json, computed offline from the Q8_0 GGUF's own tensor table (612.0 MiB of expert tensors per layer over 48 layers, 1,597.93 MiB of non-expert weights) plus the q8_0 KV plane at this geometry (52,224 bytes per token, 2,040.0 MiB for 40,960 tokens), the resident bf16 mmproj (2,105.16 MiB) and a CUDA-context-plus-compute-buffer constant of 1,070.91 MiB fitted on the A2T probe's own LIVE eight-rung ladder at zero residual spread. Projected free at N = 28 is 5,083 MiB against the 3,072 MiB floor; N = 24 -- the value the A2T probe chose at ITS geometry -- misses by 437 MiB and must NOT be copied.",
+  "n_cpu_moe_live_precondition": "The projection does not discharge precondition Q8-P1, which is a LIVE pass: before the flight, start the pinned server at N = 28, read free VRAM through GET /props and nvidia-smi with ZERO /completion calls, and refuse if the achieved free is below 3,072 MiB or below llama.cpp's own printed audio-encoder compute-buffer estimate at this geometry. If no N clears the floor the cell STOPS; it does not silently shrink -np, and a geometry change is a new registration.",
+  "min_free_basis": "3,072 MiB = the 2,940 MiB llama.cpp estimates for the audio encoder's worst-case compute buffer, rounded up. Caveat 2 of docs/readiness/2026-09-04-a2t-q8-quantization-probe-v1-verdict.md: every one of that probe's 400 rows was a feature-cache HIT, so no encode ever ran against the 2,228 MiB its N = 24 left free. Every one of THIS cell's 1,500 rows runs a live mmproj encode, so a placement that leaves 2,228 MiB free is a cell that faults.",
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample"
+  },
+  "decoding_basis": "Byte-identical to the sealed comparator's: greedy (temperature 0), max_tokens the integer 1024, id_slot per-sample, seed 20260803 (inert under greedy). NOTHING about the request changes in this cell -- the factor is the decoder file. In particular this fragment does NOT carry cell (b)'s per-sample max_tokens rule: two factors in one cell would make neither readable.",
+  "quantization_basis": "THE ONE FACTOR of cell (a): the umbrella lock's Q8_0 file (model_lock_key qwen3-omni-30b-a3b-instruct-gguf, 32,484,494,336 bytes, sha256 8a50e5a7d29ae6a28fea9ca45e3bb0a142e76ec07e6787a7703cd498eb08ffaa, re-hashed on 2026-09-06 by the placement pass) instead of the Q4_K_M requant (qwen3-omni-30b-a3b-instruct-gguf-q4km, sha256 0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d) the comparator flew. Same llama.cpp build commit 04ccc72a2207347ca76161b93fd9d846dd0a8675 -- the build the sealed arm flew.",
+  "audio_encoder_identity": "The audio encoder is byte-identical between the two cells and that is a receipt, not an assumption: both runtime receipts pin mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf at sha256 f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883.",
+  "graphs_basis": "GGML_CUDA_DISABLE_GRAPHS=1 carried forward unchanged from the sealed dev arms as INHERITED HARDENING, not as a diagnosis. The variable changes no request byte and so cannot move the number.",
+  "feature_cache_basis": "server_env carries NO LLAMA_MTMD_FEAT_CACHE_DIR, and the prohibition is load-bearing rather than hygienic: the legacy /home/chao/feat-cache/* caches hold encoder outputs for other populations and other builds, the sealed comparator encoded every utterance live on the GPU, and so must this cell -- or the contrast acquires a second factor. It is also why the placement floor above is what it is.",
+  "audio_path_basis": "--no-mmproj-offload is absent, so the bf16 mmproj stays resident on the GPU and every one of the 1,500 utterances is encoded there, exactly as the sealed comparator encoded them.",
+  "timeout_basis": "900 s rather than the Q4_K_M fragment's 420 s. The 2026-09-05 A2T Q8 flight measured 7.85x the resident Q4_K_M per-call latency in steady state (6.141 s mean against 0.782 s) at N = 24; this cell runs at N = 28 -- four more layers on the CPU -- and pays a live mmproj encode the A2T probe never paid. The comparator's own worst per-call latency has ample room inside 900 s at that ratio, and a transport timeout that fires mid-flight would cost the attempt.",
+  "known_deviation_d_q8_2": "CPU and CUDA kernels accumulate in different orders, so a rare greedy tie can flip. This was a caveat of the A2T probe and it stays one; it cuts against over-reading a small effect, not for it.",
+  "prompt_order": "evidence-first-system-v3",
+  "server_env": {
+    "GGML_CUDA_DISABLE_GRAPHS": "1"
+  }
+}

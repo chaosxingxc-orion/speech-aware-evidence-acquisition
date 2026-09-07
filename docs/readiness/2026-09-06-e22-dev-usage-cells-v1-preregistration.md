@@ -144,6 +144,82 @@ shrink `-np`: a slot-count change alters batch composition, greedy decoding is n
 reproducible across batch compositions on this runtime, and the cell would stop being
 single-factor. A geometry change is a new registration.
 
+**Answered offline, 2026-09-06: `N = 28`, and the expectation above is now a derivation.** Receipt
+`docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-dev-usage-cells/q8-placement.json`
+(`scripts/e22_q8_placement_offline.py`, **zero model contacts, zero servers, zero sockets, zero
+GPU, zero network**). The Q8_0 and mmproj GGUF **headers** are parsed in place — metadata block and
+tensor table only, no tensor payload, no model load — and the arithmetic is closed by the A2T
+probe's own live ladder:
+
+| term | value | where it comes from |
+|---|---:|---|
+| expert tensors per layer | **612.0 MiB** | the Q8_0 tensor table: `ffn_gate_exps` + `ffn_up_exps` + `ffn_down_exps`, 641,728,512 B, identical on all 48 blocks |
+| non-expert weights | **1,597.93 MiB** | the same table, everything else (1,675,550,720 B) |
+| q8_0 KV cache | **52,224 B/token** → **2,040.0 MiB** at 40,960 | `block_count` 48 × `head_count_kv` 4 × (`key_length` 128 + `value_length` 128) at 34 B per 32 elements |
+| resident bf16 mmproj | **2,105.16 MiB** | the mmproj tensor table (2,207,416,320 B) |
+| CUDA context + compute buffers | **1,070.91 MiB** | fitted on the A2T ladder — **spread 0.0 MiB across all seven non-saturated rungs** |
+
+The fit is not a curve through noise: at `-c 49152 -np 3` the measured `used_mib` is *exactly*
+`1597.93 + (48 − N)·612 + 2448 + 2105.16 + 1070.91` at N = 48, 44, 40, 36, 32, 28 and 24. The N = 20
+rung is excluded by name — the card was full (14 MiB free), so that figure is a truncation rather
+than a placement. Re-run at `-c 40960 -np 8` (408 MiB less KV) against the 24,137 MiB an idle card
+reports:
+
+| `--n-cpu-moe` | projected used | projected free | ≥ 3,072 MiB |
+|---:|---:|---:|:--|
+| 32 | 16,606 MiB | 7,531 MiB | yes |
+| **28** | **19,054 MiB** | **5,083 MiB** | **yes — chosen, 2,011 MiB of margin** |
+| 24 | 21,502 MiB | 2,635 MiB | **no — short by 437 MiB** |
+
+**`N = 24`, the A2T probe's own answer, misses this cell's floor by 437 MiB.** Copying it would have
+been the fault caveat 2 warned about.
+
+**The one quantity that does not carry over is named rather than hidden**: the compute-buffer and
+CUDA-context constant is measured at `-c 49152 -np 3` and reused at `-c 40960 -np 8`. The answer is
+not delicate in either direction — N = 28 still clears the floor if that constant were **2,011 MiB
+larger** (nearly triple what the ladder measured), and N = 24 would only clear if it were **437 MiB
+smaller** at a geometry with *more* slots, which is the wrong sign. Host RAM is not the binding
+constraint either: 28 layers is 17,136 MiB of experts on the CPU, against the 18,533 MiB of server
+RSS the A2T ladder measured at that same N with 54,633 MiB available.
+
+Also closed by that pass: the Q8_0 GGUF is materialized at `/home/chao` and **re-hashes to
+`8a50e5a7d29ae6a28fea9ca45e3bb0a142e76ec07e6787a7703cd498eb08ffaa`**, and the mmproj to
+`f0dfe825…` — the first half of the §6(a) precondition, done by reading 32 GB rather than trusting
+a receipt.
+
+**This does not discharge Q8-P1, and the receipt says so in its own `status` field.** Q8-P1 is a
+LIVE pass; this is a projection of what it will find, so the rung ladder is short and the answer is
+falsifiable before a GPU minute is spent. The live pass still must: start the pinned server at
+N = 28 and read free VRAM through `GET /props` and `nvidia-smi` with zero `/completion` calls; read
+llama.cpp's **own printed** audio-encoder compute-buffer estimate at this geometry and refuse if it
+exceeds the achieved free; confirm no `LLAMA_MTMD_FEAT_CACHE_DIR` in `server_env`; and check
+`enforced.power.limit` and the Legion SmartFanMode first. **If the live pass disagrees, the live
+number governs and this projection is the thing that was wrong.**
+
+### 1.3.1 The cell's fragments, and its composed identity
+
+| | |
+|---|---|
+| dataset | `configs/dataset/earnings22-esb-dev1500-utterances.json` |
+| baseline | `configs/baseline/e22-esb-dev1500-q8.json` |
+| model | `configs/model/q8-e22-dev1500-esb-mmproj-gpu-04ccc72a-np8-c40960.json` |
+| experiment | `configs/experiment/e22-dev-usage-q8-v1.json` |
+| **`config_hash`** | **`8789a5abfc85926e96c5bdbd57cab688e8a6d7d20809a8b7d0483979730da5ea`** |
+| **`protocol_hash`** | **`c77a10accae07c02cdcd7b2df8dbf650a53498408e7d53421059a3c8a341886d`** |
+| `split_identity_hash` | `c626e62f8876bf52a2904a0d2ec91807a530f3195c10facc8c036f661b2bf88a` |
+| run id | `SAEA-E22-DEV-ESB-Q8-V1` |
+
+The 4-row dry run of §6.6: `configs/dataset/earnings22-esb-dev1500-smoke4.json` +
+`configs/experiment/e22-dev-usage-q8-smoke4-v1.json`, `config_hash`
+`348506249bbf8874a124a0e20b760aa45b6be05ac9c5589f28409965ad92d51a`, `protocol_hash`
+`605b30f7a181815368e7ac17fe92c80c16691d94013d46ecf63729ee0f83979f`, `split_identity_hash`
+`c5b9886a421a9d9483c934759d9cb2a9d3b0eee2a029f73726883179f6f5f033`.
+
+One further deviation, **S5**: the model fragment sets `timeout_seconds` to 900 rather than the
+comparator's 420. At 7.85× the per-call latency a 420 s client deadline is a real risk of losing the
+attempt to a timeout; it is a client-side deadline, not a request field, and changes no byte the
+server sees.
+
 **D-Q8-2, recorded rather than tuned away:** CPU and CUDA kernels accumulate in different orders,
 so a rare greedy tie can flip. This was a caveat of the A2T probe and it stays one; it cuts against
 over-reading a small effect, not for it.
@@ -555,8 +631,8 @@ Common to every cell:
    `evidence_source` and `scorers` value must resolve in a `core.base` registry, and
    `scripts/checks/engineering_base_check.py` must PASS.
 
-   **Landed 2026-09-06, with one deviation.** The fragments are §2.3.1's for cell (b); cell (a)'s
-   land with its placement receipt. The deviation is **one experiment fragment PER CELL** rather than one for all
+   **Landed 2026-09-06, with one deviation.** The fragments are §2.3.1's for cell (b) and §1.3.1's
+   for cell (a). The deviation is **one experiment fragment PER CELL** rather than one for all
    three (deviation S1, recorded in each fragment): a composed experiment fragment declares exactly
    one `execution_plan` object, `core.flight.FlightRuntime._build_execution_plan` reads
    `values["execution_plan"]`, and cell (a) plans 2.0 GPU-hours against cell (b)'s 0.20 — the two
@@ -588,7 +664,13 @@ Cell-specific:
 * **(a)** the placement pass of §1.3, with its own receipt, zero generated tokens, and a refusal if
   no `N` clears 3,072 MiB free at `-c 40960 -np 8`. Also: confirm the Q8_0 GGUF is materialized and
   re-hashes to `8a50e5a7…`, and that **no** `LLAMA_MTMD_FEAT_CACHE_DIR` is set in `server_env`.
-
+  **PROJECTED 2026-09-06, still open as a live pass.** `N = 28` with 5,083 MiB projected free
+  (§1.3), receipt
+  `docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-dev-usage-cells/q8-placement.json`;
+  the Q8_0 GGUF **re-hashed to `8a50e5a7…`** and the mmproj to `f0dfe825…`; the model fragment
+  carries no `LLAMA_MTMD_FEAT_CACHE_DIR` in `server_env`. What remains is the live half — one
+  zero-token server start at N = 28 reading `GET /props` and `nvidia-smi`, and llama.cpp's own
+  printed encoder estimate at this geometry.
 * **(b)** the seam of §2.3 with its tests, including the byte-identical-without-the-seam pin; and a
   model-free assertion that the resolver reproduces
   `analysis.e22_overgeneration.cap_tokens(1.5, seconds, 4.999220954734555, 1.2991996296395218)` on
