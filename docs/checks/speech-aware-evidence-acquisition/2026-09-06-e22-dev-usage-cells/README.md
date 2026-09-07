@@ -68,3 +68,28 @@ before the flight** (§7.6 of the preregistration) and land its receipt beside t
 
 Only documents and receipts were added after `3f33234e`; no code changed, so these receipts describe
 the code as it stands.
+
+## The primary-checkout re-run of the Q8 wire checks (2026-09-06)
+
+Section 7.6 of the preregistration requires
+`scripts/flights/run_e22_esb_cell.py --wire-check` to be re-run **on the primary checkout,
+unpatched, immediately before the flight**, because `study_commit`, the clean-tree assertion the
+seal half exercises, and the launcher's own `REPO` pin are checkout-specific. That re-run is landed
+here for cell (a)'s two run ids, at commit `207c829a` on a clean tree, through the committed
+launcher with nothing repointed:
+
+| file | run id | contacts | seal half |
+|---|---|---:|---|
+| `wire-check/wire-check-q8-flight-1500-primary.json` | `SAEA-E22-DEV-ESB-Q8-V1` | 1,500 | `OK` |
+| `wire-check/wire-check-q8-smoke-4-primary.json` | `SAEA-E22-DEV-ESB-Q8-SMOKE-V1` | 4 | `OK` |
+
+Both reproduce the composed identities the preregistration fixed before any of this existed:
+`config_hash` `8789a5ab…` / `protocol_hash` `c77a10ac…` / `split_identity_hash` `c626e62f…` for the
+flight, and `348506249b…` / `605b30f7…` / `c5b9886a…` for the four-row dry run. Payload keys are
+exactly `ARM_VISIBLE_FIELDS["bare-core"]` (ten fields), `id_slot` is an integer over the eight slots
+and `max_tokens` is the integer `1024` on every request — cell (a) carries no per-sample cap. Still
+**zero model contacts, zero servers, zero sockets**: the only fakes are `WireCheckGate` and
+`WireCheckTransport`.
+
+The stop-cap cell's two run ids are NOT re-run here; cell (b) is a later flight and §7.6 binds its
+own agent.
