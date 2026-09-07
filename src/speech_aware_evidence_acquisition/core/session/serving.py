@@ -653,39 +653,62 @@ def resolve_serving_profile(repo_root: Path, model_fragment: str) -> dict[str, o
     from .paths import _sha256_file  # noqa: PLC0415 (CLI-only)
 
     values = read_fragment(repo_root, "model", model_fragment)
-    geometry = values.get("serving_geometry")
-    if not isinstance(geometry, Mapping) or set(geometry) != {
-        "slots",
-        "slot_tokens",
-        "max_tokens",
-    }:
-        raise ServingSessionError(
-            f"model fragment {model_fragment!r} must declare an exact serving_geometry "
-            "{slots, slot_tokens, max_tokens} object"
-        )
-    slots = int(geometry["slots"])
-    slot_tokens = int(geometry["slot_tokens"])
     server_args = [str(value) for value in values.get("server_args", ())]
-    if "-c" in server_args and "-np" in server_args:
-        declared_c = int(server_args[server_args.index("-c") + 1])
-        declared_np = int(server_args[server_args.index("-np") + 1])
-        if declared_np != slots or declared_c != slots * slot_tokens:
+    if "-c" not in server_args or "-np" not in server_args:
+        raise ServingSessionError(
+            f"model fragment {model_fragment!r} must declare -c and -np in server_args; "
+            "a serving session is exactly one (-c, -np) geometry"
+        )
+    declared_c = int(server_args[server_args.index("-c") + 1])
+    declared_np = int(server_args[server_args.index("-np") + 1])
+    if declared_np <= 0 or declared_c % declared_np != 0:
+        raise ServingSessionError(
+            f"model fragment {model_fragment!r} declares -c {declared_c} -np {declared_np}; "
+            "-c must be a positive multiple of -np (a slot's window is -c / -np)"
+        )
+    # ``server_args`` is the authority for the SERVING geometry, because it is
+    # literally what llama-server is handed. Most fragments (the SLURP/
+    # Earnings hbmfree family, for one) declare no ``serving_geometry`` key at
+    # all -- for those, the adapter's own class constants are the flight-side
+    # geometry and the fragment's -c/-np the server-side one. A fragment that
+    # DOES declare the key is cross-checked against its own flags, exactly as
+    # the flight launchers already do (scripts/flights/run_e22_esb_cell.py),
+    # so a drifting pair is refused rather than silently served.
+    slots, slot_tokens = declared_np, declared_c // declared_np
+    declared_geometry = values.get("serving_geometry")
+    if declared_geometry is not None:
+        if not isinstance(declared_geometry, Mapping) or set(declared_geometry) != {
+            "slots",
+            "slot_tokens",
+            "max_tokens",
+        }:
+            raise ServingSessionError(
+                f"model fragment {model_fragment!r} declares a serving_geometry that is not "
+                "an exact {slots, slot_tokens, max_tokens} object"
+            )
+        if (
+            int(declared_geometry["slots"]) != slots
+            or int(declared_geometry["slot_tokens"]) != slot_tokens
+        ):
             raise ServingSessionError(
                 f"model fragment {model_fragment!r} server_args (-c {declared_c} -np "
                 f"{declared_np}) disagree with its declared serving_geometry "
-                f"{dict(geometry)!r}"
+                f"{dict(declared_geometry)!r}"
             )
+    decoding = values.get("decoding_params")
+    max_tokens = (
+        declared_geometry["max_tokens"]
+        if isinstance(declared_geometry, Mapping)
+        else (decoding.get("max_tokens") if isinstance(decoding, Mapping) else None)
+    )
+    geometry = {"slots": slots, "slot_tokens": slot_tokens, "max_tokens": max_tokens}
     receipt_path = resolve_runtime_receipt_path(repo_root, values)
     runtime_receipt = load_runtime_receipt(receipt_path)
     return {
         "values": values,
         "model_fragment": model_fragment,
         "model_fragment_sha256": fragment_hash(values),
-        "serving_geometry": {
-            "slots": slots,
-            "slot_tokens": slot_tokens,
-            "max_tokens": int(geometry["max_tokens"]),
-        },
+        "serving_geometry": dict(geometry),
         "extra_argv": merge_server_args(
             server_args, slots=slots, context_tokens=slots * slot_tokens
         ),
@@ -954,8 +977,22 @@ def build_parser():
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    """A refusal is an OPERATOR message, not a traceback: every fail-closed
+    condition this CLI can hit (a fragment that declares no geometry, a
+    session already resident, a port already taken, a dead session receipt)
+    is a thing the coordinator must act on, so it is printed as one line on
+    stderr with exit status 2."""
+
     args = build_parser().parse_args(list(argv) if argv is not None else None)
-    return int(args.handler(args))
+    import sys  # noqa: PLC0415 (CLI-only)
+
+    from ..config import ConfigError  # noqa: PLC0415 (CLI-only)
+
+    try:
+        return int(args.handler(args))
+    except (SessionError, ConfigError) as error:
+        print(f"serving_session: {error}", file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":  # pragma: no cover -- operator entry point

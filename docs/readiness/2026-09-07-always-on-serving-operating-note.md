@@ -92,19 +92,23 @@ argument builder would make this predicate compare two dialects instead of two s
 
 ## Geometry table
 
-Which cells use which resident geometry. `-c` is `slots x slot_tokens` exactly;
-`FlightRuntime.serve` derives `-np`/`-c` from the adapter geometry, and
-`resolve_serving_profile` refuses a fragment whose own `server_args` disagree with its declared
-`serving_geometry`.
+Which cells use which resident geometry. The SESSION's geometry is the fragment's own `-c`/`-np`
+— that is literally what llama-server is handed — so `resolve_serving_profile` derives
+`slots = -np` and `slot_tokens = -c / -np` from `server_args`. Most fragments (the whole hbmfree
+family) declare no `serving_geometry` key at all; a fragment that does declare one is cross-checked
+against its own flags and refused on a disagreement, exactly as the flight launchers already do.
+On the flight side `FlightRuntime.serve` derives `-np`/`-c` from the ADAPTER geometry, so a cell
+whose adapter disagrees with the resident session is refused at `server_argv[-c]`/`[-np]` rather
+than served at the wrong window.
 
 | Model fragment | `-np` | `-c` | slot tokens | Used by |
 |---|---|---|---|---|
 | `q4km-featcache-a2t-official-np2-04ccc72a` | 2 | 49152 | 24576 | Audio2Tool official-protocol cells on the tier-1 official population (the 654.6 s release row forces two slots) |
-| `q4km-featcache-a2t-official-04ccc72a` | varies | — | — | Audio2Tool official-protocol cells on the frozen 400 |
-| `q4km-hbmfree-np16` | 16 | — | — | SLURP wide-fan cells (short fixed-shape JSON answers) |
+| `q4km-featcache-a2t-official-04ccc72a` | 3 | 49152 | 16384 | Audio2Tool official-protocol cells on the frozen 400 |
+| `q4km-hbmfree-np16` | 16 | 32768 | 2048 | SLURP wide-fan cells (short fixed-shape JSON answers); declares no `serving_geometry` key — the geometry is derived from these two flags |
 | `q4km-e22-dev-esb-mmproj-gpu-04ccc72a-np8-c40960` | 8 | 40960 | 5120 | Earnings-22 DEV ESB utterance cells (78.36 s worst row) |
-| `q4km-e21-buf90-mmproj-gpu-04ccc72a` / `-np6` | 8 / 6 | — | — | Earnings-21 buf90 window cells |
-| `q8-*` | — | — | — | Q8 re-promotion cells only; Q8 is ~4.17x slower, so it never shares a session with a Q4 cell |
+| `q4km-e21-buf90-mmproj-gpu-04ccc72a` / `-np6` | 8 / 6 | 49152 / 36864 | 6144 | Earnings-21 buf90 window cells |
+| `q8-e22-dev1500-esb-mmproj-gpu-04ccc72a-np8-c40960`, `q8-featcache-a2t-official-04ccc72a` | 8 / 3 | 40960 / 49152 | 5120 / 16384 | Q8 re-promotion cells only; Q8 is ~4.17x slower, so it never shares a session with a Q4 cell |
 
 Two fragments that differ only in `max_tokens` can share one session: `max_tokens` is a request
 parameter, so it is recorded in `session.json` but deliberately not part of the compared identity.

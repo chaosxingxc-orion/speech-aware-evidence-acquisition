@@ -395,12 +395,51 @@ def test_resolve_serving_profile_refuses_argv_that_disagrees_with_the_geometry(t
         resolve_serving_profile(repo_root, "frag")
 
 
-def test_resolve_serving_profile_refuses_a_fragment_without_an_exact_geometry(tmp_path):
+def test_resolve_serving_profile_refuses_a_malformed_declared_geometry(tmp_path):
     _runtime_root, _data_root, runtime_receipt = _runtime_world(tmp_path)
     fragment = _fragment_document()
     fragment["serving_geometry"] = {"slots": 2, "slot_tokens": 8192}
     repo_root = _repo_with_fragment(tmp_path, runtime_receipt, fragment)
-    with pytest.raises(ServingSessionError, match="exact serving_geometry"):
+    with pytest.raises(ServingSessionError, match="not an exact"):
+        resolve_serving_profile(repo_root, "frag")
+
+
+def test_resolve_serving_profile_derives_the_geometry_from_c_and_np(tmp_path):
+    """Most pinned fragments (the whole hbmfree family) declare no
+    ``serving_geometry`` key at all; ``server_args`` is what llama-server is
+    actually handed, so it is the authority for the SERVING geometry."""
+
+    _runtime_root, _data_root, runtime_receipt = _runtime_world(tmp_path)
+    fragment = _fragment_document()
+    del fragment["serving_geometry"]
+    fragment["server_args"] = ["-c", "32768", "-np", "16", "-ngl", "999"]
+    fragment["decoding_params"] = {"max_tokens": 1024}
+    repo_root = _repo_with_fragment(tmp_path, runtime_receipt, fragment)
+    profile = resolve_serving_profile(repo_root, "frag")
+    assert profile["serving_geometry"] == {
+        "slots": 16,
+        "slot_tokens": 2048,
+        "max_tokens": 1024,
+    }
+
+
+def test_resolve_serving_profile_refuses_a_context_that_is_not_a_multiple_of_the_slots(tmp_path):
+    _runtime_root, _data_root, runtime_receipt = _runtime_world(tmp_path)
+    fragment = _fragment_document()
+    del fragment["serving_geometry"]
+    fragment["server_args"] = ["-c", "1000", "-np", "3"]
+    repo_root = _repo_with_fragment(tmp_path, runtime_receipt, fragment)
+    with pytest.raises(ServingSessionError, match="positive multiple of -np"):
+        resolve_serving_profile(repo_root, "frag")
+
+
+def test_resolve_serving_profile_refuses_a_fragment_with_no_geometry_flags(tmp_path):
+    _runtime_root, _data_root, runtime_receipt = _runtime_world(tmp_path)
+    fragment = _fragment_document()
+    del fragment["serving_geometry"]
+    fragment["server_args"] = ["-ngl", "999"]
+    repo_root = _repo_with_fragment(tmp_path, runtime_receipt, fragment)
+    with pytest.raises(ServingSessionError, match="must declare -c and -np"):
         resolve_serving_profile(repo_root, "frag")
 
 
