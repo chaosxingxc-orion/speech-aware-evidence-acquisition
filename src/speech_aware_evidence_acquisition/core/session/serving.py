@@ -27,8 +27,9 @@ This module is that semantic half plus the session's on-disk record:
                               wrote -- what ``attach_session`` binds to
     ``server.log``            llama-server's own combined output
     ``monitor.jsonl``         ``scripts/serving_monitor.py`` samples
-    ``session-stop.json``     written by ``stop``; its presence means "not
-                              resident any more"
+    ``session-stop.json``     written by ``stop``, or by the wrapper itself
+                              when the server exits on its own; its presence
+                              means "not resident any more"
 
 Standard-library only, like the rest of ``core.session``: a flight runtime,
 an operator script and a check may all import it without pulling ``rails``
@@ -40,10 +41,17 @@ from __future__ import annotations
 import json
 import math
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import Callable, Mapping, Sequence
 
 from ...contracts import STUDY_SLUG
 from . import SessionError
+from .process import (
+    PROCESS_STATE_DEFUNCT,
+    PROCESS_STATE_GONE,
+    PROCESS_STATE_RUNNING,
+    _defunct_wait_status,
+    process_state,
+)
 
 SERVING_SESSION_SCHEMA = "saea-serving-session-v1"
 SERVING_SESSION_STOP_SCHEMA = "saea-serving-session-stop-v1"
@@ -601,6 +609,178 @@ def summarize_monitor_file(
 
 
 # ---------------------------------------------------------------------------
+# Is the recorded server still there? (E7b defect 1, observed 2026-09-07)
+#
+# Both sessions of the first day ended the same way: llama-server exited,
+# its foreground wrapper never reaped it, and the resulting ZOMBIE was
+# "alive" to ``kill(pid, 0)`` but had no ``/proc/<pid>/exe`` -- so ``stop``
+# refused (I5), ``session.json`` kept no stop record, and ``start`` refused
+# the next geometry as "already resident". The coordinator had to write the
+# stop records by hand.
+#
+# A stop record for a server nobody can signal any more is only honest if
+# the absence is PROVEN, so this section observes three independent facts
+# and refuses to call a session stale unless all three agree: the recorded
+# pid is defunct or gone, nothing is listening on the session's port, and
+# the card is empty.
+# ---------------------------------------------------------------------------
+
+#: A card holding less than this is serving nothing. The pinned q4km server
+#: resides at ~18.5 GB, so this is nowhere near a close call; the threshold
+#: exists only to tolerate a display/compositor's few MiB.
+GPU_IDLE_MEMORY_MIB = 512.0
+
+
+def read_gpu_occupancy(*, run: Callable[..., object] | None = None) -> dict[str, object]:
+    """What the card is holding right now, as nvidia-smi reports it.
+
+    TWO queries, because on WSL2 the compute-process table is not
+    trustworthy: ``--query-compute-apps`` comes back empty on this host even
+    while an 18.5 GB llama-server is resident, so "no process listed" alone
+    is not evidence of an empty card. ``memory.used`` is the better of the
+    two -- it is the number the coordinator read by hand ("nvidia-smi
+    0 MiB") before writing each manual stop record, and the one
+    ``scripts/serving_monitor.py`` samples. The process list is still
+    reported, because when it DOES list something that is decisive evidence
+    in the other direction.
+
+    Neither reading is trusted ALONE, and this is why: ``scripts/
+    run_arm_sequence.sh::gpu_is_clean`` records a 2026-08-10 measurement in
+    which a llama-server with the model resident and answering /health
+    reported "0 MiB" through the WSL2 dxgkrnl paravirtualisation path,
+    minutes after the same process reported 23,312 MiB. An intermittently
+    low reading can only WEAKEN this corroborating condition; the verdict in
+    :func:`observe_session_process` rests on the pid state and the silent
+    port, which cannot both be wrong about a server that is still serving.
+
+    Never raises: a host with no nvidia-smi returns ``available: False`` with
+    the error, and the caller refuses to declare anything stale on that
+    basis rather than guessing.
+    """
+
+    import subprocess  # noqa: PLC0415 (CLI-only)
+
+    runner = run if run is not None else subprocess.run
+
+    def query(flag: str) -> tuple[bool, list[str], str | None]:
+        try:
+            completed = runner(
+                ["nvidia-smi", flag, "--format=csv,noheader,nounits"],
+                capture_output=True,
+                text=True,
+                timeout=15,
+            )
+        except (OSError, subprocess.SubprocessError) as error:
+            return False, [], f"{type(error).__name__}: {error}"
+        returncode = getattr(completed, "returncode", None)
+        if not isinstance(returncode, int) or returncode != 0:
+            detail = str(getattr(completed, "stderr", "") or "").strip()
+            return False, [], detail[:200] or f"nvidia-smi {flag} exited {returncode!r}"
+        rows = [
+            row.strip()
+            for row in str(getattr(completed, "stdout", "") or "").splitlines()
+            if row.strip()
+        ]
+        return True, rows, None
+
+    memory_ok, memory_rows, memory_error = query("--query-gpu=memory.used")
+    apps_ok, app_rows, apps_error = query("--query-compute-apps=pid,used_memory,process_name")
+    memory_used: float | None = None
+    if memory_ok and memory_rows:
+        try:
+            memory_used = float(memory_rows[0].split(",")[0].strip())
+        except ValueError:
+            memory_used = None
+    return {
+        "available": bool(memory_ok and memory_used is not None),
+        "memory_used_mib": memory_used,
+        "compute_processes": list(app_rows) if apps_ok else None,
+        "error": memory_error or apps_error,
+    }
+
+
+def observe_session_process(
+    document: Mapping[str, object],
+    *,
+    process_state_probe: Callable[[int], str] | None = None,
+    port_probe: Callable[[str, int], bool] | None = None,
+    gpu_probe: Callable[[], Mapping[str, object]] | None = None,
+    wait_status_probe: Callable[[int], int | None] | None = None,
+) -> dict[str, object]:
+    """The three ground-truth facts about a recorded serving session, plus
+    the verdict they add up to.
+
+    ``stale`` is true only when NOTHING of the session is left: the pid is
+    ``defunct``/``gone``, the port answers nothing, and the card is provably
+    empty. Every reason it is NOT stale is listed in ``blockers``, in the
+    operator's own terms, because "refused" without the failing condition is
+    what made the 2026-09-07 refusals so expensive.
+
+    ``exit_status`` is best-effort and advisory: only the parent can reap a
+    zombie, so a stopper that is not the wrapper reads the kernel's own
+    ``exit_code`` field instead (see ``process._defunct_wait_status``).
+    """
+
+    from datetime import datetime, timezone  # noqa: PLC0415 (CLI-only)
+
+    from .lifecycle import describe_wait_status  # noqa: PLC0415 (CLI-only)
+
+    identity_value = document.get("identity")
+    identity = dict(identity_value) if isinstance(identity_value, Mapping) else {}
+    pid = int(document["pid"])
+    host = str(identity.get("host") or "127.0.0.1")
+    port = int(identity.get("port") or 0)
+
+    state = (process_state_probe or process_state)(pid)
+    listening = bool((port_probe or _port_is_listening)(host, port)) if port else False
+    gpu = dict((gpu_probe or read_gpu_occupancy)())
+
+    raw_status = None
+    if state == PROCESS_STATE_DEFUNCT:
+        raw_status = (wait_status_probe or _defunct_wait_status)(pid)
+    exit_status = dict(describe_wait_status(raw_status))
+    exit_status["source"] = (
+        "/proc/<pid>/stat exit_code (advisory; the parent holds the real status)"
+        if raw_status is not None
+        else None
+    )
+
+    blockers: list[str] = []
+    if state == PROCESS_STATE_RUNNING:
+        blockers.append(f"pid {pid} is still running")
+    if listening:
+        blockers.append(f"something is still listening on {host}:{port}")
+    if not gpu.get("available"):
+        blockers.append(
+            f"nvidia-smi could not be read ({gpu.get('error')}), so an empty card "
+            "cannot be proven"
+        )
+    else:
+        memory_used = gpu.get("memory_used_mib")
+        if isinstance(memory_used, (int, float)) and memory_used >= GPU_IDLE_MEMORY_MIB:
+            blockers.append(
+                f"the card still holds {float(memory_used):.0f} MiB "
+                f"(idle threshold {GPU_IDLE_MEMORY_MIB:.0f} MiB)"
+            )
+        processes = gpu.get("compute_processes")
+        if processes:
+            blockers.append(f"nvidia-smi still lists compute processes: {list(processes)!r}")
+
+    return {
+        "observed_at": datetime.now(tz=timezone.utc).isoformat(),
+        "pid": pid,
+        "process_state": state,
+        "host": host,
+        "port": port,
+        "port_listening": listening,
+        "gpu": gpu,
+        "exit_status": exit_status,
+        "stale": not blockers,
+        "blockers": blockers,
+    }
+
+
+# ---------------------------------------------------------------------------
 # The operator CLI behind ``scripts/serving_session.sh``.
 #
 # Every heavy import below is function-local: this module stays a light,
@@ -729,6 +909,47 @@ def resolve_serving_profile(repo_root: Path, model_fragment: str) -> dict[str, o
     }
 
 
+def _resident_refusal(
+    session_dir: Path,
+    document: Mapping[str, object],
+    *,
+    observer: Callable[..., Mapping[str, object]] | None = None,
+) -> str:
+    """Why ``start`` refuses, and what to do about it.
+
+    The old message ("already recorded as resident ... stop it before
+    starting another") was true and useless on 2026-09-07: the session it
+    named could NOT be stopped, because its pid was a zombie every stop
+    refused. A refusal that names the observed state and the remedy is the
+    difference between a 30-second fix and a hand-written record.
+    """
+
+    session_id = str(document.get("session_id"))
+    head = (
+        f"serving session {session_id!r} is already recorded as resident at {session_dir}"
+    )
+    observation = (observer or observe_session_process)(document)
+    state = observation["process_state"]
+    if state == PROCESS_STATE_RUNNING:
+        return f"{head}; stop it before starting another (scripts/serving_session.sh stop)"
+    remedy = (
+        "record the stop with `bash scripts/serving_session.sh stop --stale "
+        f"--session-id {session_id}`"
+    )
+    if observation["stale"]:
+        return (
+            f"{head}, but its pid {observation['pid']} is {state} and nothing is left of "
+            f"the session (port {observation['host']}:{observation['port']} silent, card "
+            f"empty) -- {remedy}, then start this geometry again"
+        )
+    return (
+        f"{head}; its pid {observation['pid']} is {state}, but the session is not yet "
+        "provably gone ("
+        + "; ".join(str(reason) for reason in observation["blockers"])
+        + f") -- resolve that first, then {remedy}"
+    )
+
+
 def _start(args) -> int:
     from datetime import datetime, timezone  # noqa: PLC0415 (CLI-only)
 
@@ -741,10 +962,7 @@ def _start(args) -> int:
 
     resident = find_resident_session(data_root)
     if resident is not None:
-        raise ServingSessionError(
-            f"serving session {resident[1]['session_id']!r} is already recorded as "
-            f"resident at {resident[0]}; stop it before starting another"
-        )
+        raise ServingSessionError(_resident_refusal(resident[0], resident[1]))
     if _port_is_listening(args.host, args.port):
         raise ServingSessionError(
             f"something is already listening on {args.host}:{args.port}; refusing to "
@@ -870,49 +1088,125 @@ def _hold_session_open(
     flowing). Returns 0 when the operator asked it to stop, 1 when the
     server exited on its own -- an unrequested exit is a failure, and the
     exit status is what a coordinator's job monitor sees.
+
+    E7b defect 2 (2026-09-07): this loop is the server's PARENT, and until
+    now it did none of a parent's three jobs. It polled ``_pid_alive``,
+    which a zombie satisfies forever, so when llama-server exited the loop
+    kept spinning: the child was never reaped (leaving the ``<defunct>``
+    entry that then made every ``stop`` refuse -- see
+    :func:`observe_session_process`), no ``session-stop.json`` was written,
+    and the wrapper never exited, so nothing a coordinator watches could
+    tell that the session was over. It now reaps the child, records the stop
+    with the reaped exit status, and exits non-zero with ONE operator line.
+
+    Deliberately NOT added: a ``--restart-on-exit`` option. A server that
+    exits unasked is a fact the coordinator must see -- an OOM, a crash, a
+    stray signal -- and restarting it silently would hide exactly the thing
+    that needs looking at.
     """
 
     import signal  # noqa: PLC0415 (CLI-only)
+    import sys  # noqa: PLC0415 (CLI-only)
     import time  # noqa: PLC0415 (CLI-only)
+    from datetime import datetime, timezone  # noqa: PLC0415 (CLI-only)
 
     from . import stop_session  # noqa: PLC0415 (CLI-only)
-    from .process import _pid_alive  # noqa: PLC0415 (CLI-only)
+    from .lifecycle import describe_wait_status, reap_child  # noqa: PLC0415 (CLI-only)
 
     stopping = {"asked": False}
 
     def _on_signal(_signum, _frame) -> None:
         stopping["asked"] = True
 
+    installed: list[tuple[int, object]] = []
     for signal_name in ("SIGTERM", "SIGINT", "SIGHUP"):
-        handler = getattr(signal, signal_name, None)
-        if handler is not None:
-            signal.signal(handler, _on_signal)
+        number = getattr(signal, signal_name, None)
+        if number is not None:
+            installed.append((number, signal.signal(number, _on_signal)))
 
-    while not stopping["asked"] and _pid_alive(session.pid):
-        time.sleep(1.0)
+    try:
+        exit_status: int | None = None
+        exited_unasked = False
+        while not stopping["asked"]:
+            # Reaping FIRST, because this process is the parent: waitpid is
+            # the only thing that turns an exited child into a real exit
+            # status instead of a zombie, and it is non-blocking here.
+            reaped, exit_status = reap_child(session.pid)
+            if reaped:
+                exited_unasked = True
+                break
+            state = process_state(session.pid)
+            if state in (PROCESS_STATE_GONE, PROCESS_STATE_DEFUNCT):
+                # Gone: already reaped by someone else. Defunct without a
+                # successful reap: not this process's child after all (an
+                # adopted pid). Either way the server has exited.
+                exited_unasked = True
+                break
+            time.sleep(1.0)
 
-    stop_document = _write_stop_document(
-        session_dir,
-        session_id=session_id,
-        stop_receipt=stop_session(
-            session,
-            runtime_receipt=profile["runtime_receipt"],
-            runtime_root=Path(args.runtime_root),
-            force_after_timeout=True,
-        ),
-        monitor_path=monitor_path,
-    )
-    print(json.dumps(stop_document, ensure_ascii=False, indent=2, sort_keys=True))
-    return 0 if stopping["asked"] else 1
+        server_exit = None
+        if exited_unasked:
+            server_exit = {
+                "reason": "server-exited",
+                "reaped": exit_status is not None,
+                "status": describe_wait_status(exit_status),
+                "detected_at": datetime.now(tz=timezone.utc).isoformat(),
+            }
+
+        stop_document = _write_stop_document(
+            session_dir,
+            session_id=session_id,
+            stop_receipt=stop_session(
+                session,
+                runtime_receipt=profile["runtime_receipt"],
+                runtime_root=Path(args.runtime_root),
+                force_after_timeout=True,
+            ),
+            monitor_path=monitor_path,
+            server_exit=server_exit,
+        )
+        print(json.dumps(stop_document, ensure_ascii=False, indent=2, sort_keys=True))
+        if not exited_unasked:
+            return 0
+        print(
+            f"serving_session: server pid {session.pid} of session {session_id!r} exited "
+            f"on its own ({server_exit['status']['description']}); the stop is recorded in "
+            f"{session_dir / SESSION_STOP_NAME} and nothing was restarted",
+            file=sys.stderr,
+        )
+        return 1
+    finally:
+        # Hand the signals back: everything above this point is the only
+        # window in which they mean "stop the session" rather than "stop
+        # this process".
+        for number, handler in installed:
+            signal.signal(number, handler)
 
 
 def _write_stop_document(
     session_dir: Path,
     *,
     session_id: str,
-    stop_receipt: Mapping[str, object],
+    stop_receipt: Mapping[str, object] | None,
     monitor_path: Path,
+    stale: bool = False,
+    observed: Mapping[str, object] | None = None,
+    server_exit: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
+    """Write ``session-stop.json`` -- the file whose PRESENCE is what makes a
+    session no longer resident.
+
+    Three keys were added on 2026-09-07 (E7b) without bumping the schema,
+    because nothing reads this document's shape -- ``find_resident_session``
+    only tests that the file exists:
+
+    ``stale``        the stop was RECORDED, not performed: nothing was left
+                     to signal (:func:`observe_session_process` proved it).
+    ``observed``     that proof, in full.
+    ``server_exit``  the wrapper's own account of a server that exited on its
+                     own, including the reaped wait status.
+    """
+
     from datetime import datetime, timezone  # noqa: PLC0415 (CLI-only)
 
     document = {
@@ -920,7 +1214,10 @@ def _write_stop_document(
         "study": STUDY_SLUG,
         "session_id": session_id,
         "stopped_at": datetime.now(tz=timezone.utc).isoformat(),
-        "stop_receipt": dict(stop_receipt),
+        "stop_receipt": dict(stop_receipt) if stop_receipt is not None else None,
+        "stale": bool(stale),
+        "observed": dict(observed) if observed is not None else None,
+        "server_exit": dict(server_exit) if server_exit is not None else None,
         # The whole session's monitor summary, so the day's GPU accounting
         # survives the session it describes.
         "monitor_summary": summarize_monitor_file(monitor_path),
@@ -948,11 +1245,19 @@ def _status(args) -> int:
     data_root = resolve_data_root()
     session_dir, document = _resolve_session(data_root, args.session_id)
     samples = read_monitor_samples(session_dir / MONITOR_JSONL_NAME)
+    # ``pid_alive`` is kept (it is what every earlier receipt reported) but
+    # it is no longer the answer: it says "alive" for a zombie. The state
+    # beside it -- running / defunct / gone -- plus the port and card
+    # readings are what an operator has to see, and are exactly the facts
+    # ``stop`` itself acts on.
+    observation = observe_session_process(document)
     print(
         json.dumps(
             {
                 "session": document,
                 "pid_alive": _pid_alive(int(document["pid"])),
+                "process_state": observation["process_state"],
+                "observed": observation,
                 "stopped": (session_dir / SESSION_STOP_NAME).is_file(),
                 "monitor_sample_count": len(samples),
                 "last_monitor_sample": samples[-1] if samples else None,
@@ -966,12 +1271,105 @@ def _status(args) -> int:
     return 0
 
 
+#: ``resident`` exits with this when NOTHING is resident -- distinct from 0
+#: (a session is resident) and from 2 (the question could not be answered).
+#: A killer script must be able to tell "no session" from "cannot tell".
+NO_RESIDENT_SESSION_EXIT = 3
+
+
+def _resident(args) -> int:
+    """Is the coordinator's session resident? -- for scripts that would
+    otherwise kill llama-server blindly.
+
+    ``scripts/run_arm_sequence.sh`` runs ``pkill -9 -f llama-server`` around
+    every arm. That predates the always-on session (E7) and would take an
+    18.5 GB resident server away from every queued flight, with no stop
+    record and a zombie left behind -- the exact damage E7b is about. It now
+    asks this first, and refuses the arm rather than killing.
+    """
+
+    from ...data.lock import data_root as resolve_data_root  # noqa: PLC0415 (CLI-only)
+
+    data_root = resolve_data_root()
+    resident = find_resident_session(data_root)
+    if resident is None:
+        print(
+            json.dumps(
+                {"resident": False, "serving_root": str(serving_root(data_root))},
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return NO_RESIDENT_SESSION_EXIT
+    session_dir, document = resident
+    observation = observe_session_process(document)
+    print(
+        json.dumps(
+            {
+                "resident": True,
+                "session_id": document.get("session_id"),
+                "session_dir": str(session_dir),
+                "process_state": observation["process_state"],
+                "stale": observation["stale"],
+                "blockers": observation["blockers"],
+            },
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
+def _stale_stop(
+    session_dir: Path, document: Mapping[str, object], observation: Mapping[str, object]
+) -> int:
+    """Record the stop of a session there is nothing left to stop.
+
+    Refuses unless :func:`observe_session_process` proved every one of its
+    three conditions -- a stop record is a durable claim that the geometry is
+    free, and writing one while a server is still holding the card would let
+    ``start`` bring up a second 18.5 GB server on top of it.
+    """
+
+    session_id = str(document.get("session_id"))
+    if not observation["stale"]:
+        raise ServingSessionError(
+            f"serving session {session_id!r} is not stale: "
+            + "; ".join(str(reason) for reason in observation["blockers"])
+            + " -- refusing to record a stop for a session that is still there"
+        )
+    stop_document = _write_stop_document(
+        session_dir,
+        session_id=session_id,
+        stop_receipt=None,
+        monitor_path=session_dir / MONITOR_JSONL_NAME,
+        stale=True,
+        observed=observation,
+    )
+    print(json.dumps(stop_document, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0
+
+
 def _stop(args) -> int:
     from ...data.lock import data_root as resolve_data_root  # noqa: PLC0415 (CLI-only)
     from . import attach_session, load_runtime_receipt, stop_session  # noqa: PLC0415
 
     data_root = resolve_data_root()
     session_dir, document = _resolve_session(data_root, args.session_id)
+    observation = observe_session_process(document)
+
+    # A defunct or gone pid cannot be attached to (``/proc/<pid>/exe`` is
+    # unreadable for a zombie, so every I5 check refuses it) and cannot be
+    # signalled into stopping any harder than it already has. Recording the
+    # stop is then the ONLY correct action, and it is taken automatically --
+    # 2026-09-07 cost the coordinator two hand-written records for exactly
+    # this state. ``--stale`` asks for that path explicitly and refuses to
+    # fall back to signalling.
+    if args.stale or observation["process_state"] in (PROCESS_STATE_DEFUNCT, PROCESS_STATE_GONE):
+        return _stale_stop(session_dir, document, observation)
+
     repo_root = _repo_root()
     identity = document["identity"]
     runtime_receipt = load_runtime_receipt(
@@ -1037,8 +1435,26 @@ def build_parser():
         "status", parents=[common], help="print the session document and the last sample"
     ).set_defaults(handler=_status)
     subparsers.add_parser(
+        "resident",
+        parents=[common],
+        help=(
+            "exit 0 when a serving session is resident, "
+            f"{NO_RESIDENT_SESSION_EXIT} when none is (for scripts that kill servers)"
+        ),
+    ).set_defaults(handler=_resident)
+    stop = subparsers.add_parser(
         "stop", parents=[common], help="stop the session and write session-stop.json"
-    ).set_defaults(handler=_stop)
+    )
+    stop.add_argument(
+        "--stale",
+        action="store_true",
+        help=(
+            "record the stop of a session whose server is already gone or defunct "
+            "(refuses unless the pid, the port and the card all agree it is gone); "
+            "taken automatically when the recorded pid is defunct or gone"
+        ),
+    )
+    stop.set_defaults(handler=_stop)
     return parser
 
 
@@ -1066,7 +1482,9 @@ if __name__ == "__main__":  # pragma: no cover -- operator entry point
 
 
 __all__ = [
+    "GPU_IDLE_MEMORY_MIB",
     "MONITOR_JSONL_NAME",
+    "NO_RESIDENT_SESSION_EXIT",
     "REPO_ROOT",
     "PARKED_UTILIZATION_PERCENT",
     "SERVER_LOG_NAME",
@@ -1088,7 +1506,9 @@ __all__ = [
     "identity_mismatches",
     "main",
     "merge_server_args",
+    "observe_session_process",
     "props_identity",
+    "read_gpu_occupancy",
     "read_monitor_samples",
     "read_session_document",
     "resolve_serving_profile",

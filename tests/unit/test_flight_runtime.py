@@ -17,7 +17,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import subprocess
+import sys
 import threading
 import time
 from pathlib import Path
@@ -3275,6 +3277,7 @@ def _write_serving_session(
     *,
     session_id: str = "serving-test",
     argv_overrides: Mapping[str, str] | None = None,
+    pid: int = 4242,
 ) -> Path:
     """The session document the OPERATOR path writes -- built through
     ``resolve_serving_profile`` + ``build_server_command``, the same two
@@ -3336,7 +3339,7 @@ def _write_serving_session(
         build_session_document(
             session_id=session_id,
             identity=identity,
-            pid=4242,
+            pid=pid,
             started_at="2026-09-07T00:00:00+00:00",
             serving_geometry=geometry,
             props=None,
@@ -3487,3 +3490,207 @@ def test_a_spawning_flight_seals_no_monitor_summary(tmp_path):
     assert runtime.receipts.require("seal")["serving_monitor_summary"] is None
     assert runtime.receipts.require("seal")["session_reused"] is False
     assert runtime.serving_monitor_summary() is None
+
+
+# ---------------------------------------------------------------------------
+# An attached flight must never take the coordinator's server with it
+# (E7b defect 3, 2026-09-07).
+#
+# The suspicion was that an attached flight's teardown had killed the
+# resident server: in the test session llama-server was found <defunct>
+# shortly after the flight finalized. The session's own records say
+# otherwise -- the server logged "all slots are idle" for 27 more minutes
+# after that flight's receipts were written (11:20:08Z), the monitor still
+# saw eight idle slots at 11:47:19Z, and its final log line is llama.cpp's
+# graceful signal-handler shutdown at ~11:47:25Z, matching the coordinator's
+# own record that its first `stop` sent SIGTERM there. The dev session died
+# the same way. The flight teardown never reached the server.
+#
+# The invariant is worth pinning anyway, because nothing else would notice
+# if it broke: the two tests below drive a real flight process -- attach,
+# phases, seal, stop_serving, and the interpreter exiting -- past a fake
+# server that records every signal it receives, and require that it records
+# none. The fake shares this test's process group, so a stray killpg or a
+# teardown that signalled the inherited pid would be caught too.
+# ---------------------------------------------------------------------------
+
+_SIGNAL_RECORDING_SERVER = '''
+import os
+import signal
+import sys
+import time
+
+record_path, ready_path = sys.argv[1], sys.argv[2]
+
+
+def _record(signum, _frame):
+    with open(record_path, "a", encoding="utf-8") as handle:
+        handle.write("%d\\n" % signum)
+        handle.flush()
+
+
+for name in ("SIGTERM", "SIGINT", "SIGHUP"):
+    number = getattr(signal, name, None)
+    if number is not None:
+        signal.signal(number, _record)
+with open(ready_path, "w", encoding="utf-8") as handle:
+    handle.write(str(os.getpid()))
+deadline = time.time() + 180.0
+while time.time() < deadline:
+    time.sleep(0.05)
+'''
+
+
+# The flight side, run as its own process so that "the flight exits" is a
+# real process exit (atexit handlers, garbage collection, the lot) rather
+# than a function returning.
+_ATTACHED_FLIGHT = '''
+import importlib.util
+import json
+import os
+import signal
+import sys
+from pathlib import Path
+
+test_module_path, world, server_pid, result_path = sys.argv[1:5]
+world = Path(world)
+server_pid = int(server_pid)
+
+spec = importlib.util.spec_from_file_location("saea_flight_runtime_tests", test_module_path)
+tests = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(tests)
+
+repo_root, runtime_root, data_root = tests._serving_world(world)
+tests._write_serving_session(repo_root, runtime_root, data_root, pid=server_pid)
+
+signalled = []
+
+
+def trap_stopper(session, **_kwargs):
+    """What stopping the resident server would actually do."""
+
+    signalled.append(session.pid)
+    os.kill(session.pid, signal.SIGTERM)
+    return {"termination_signal": "SIGTERM"}
+
+
+def attacher(receipt_path, **_kwargs):
+    return tests._FakeSession("resident-session", pid=server_pid)
+
+
+runtime, starter, _attached = tests._serving_runtime(
+    world,
+    repo_root,
+    session_attacher=attacher,
+    session_stopper=trap_stopper,
+)
+runtime.run_all()
+# Exactly what scripts/flights/run_e22_esb_cell.py does in its finally.
+stopped = runtime.stop_serving()
+Path(result_path).write_text(
+    json.dumps(
+        {
+            "serve": dict(runtime.receipts.require("serve")),
+            "stop_serving": stopped,
+            "signalled": signalled,
+            "owns_session": runtime._owns_session,
+            "spawns": starter.calls,
+        },
+        default=str,
+    ),
+    encoding="utf-8",
+)
+'''
+
+
+def _start_signal_recording_server(tmp_path: Path):
+    """A stand-in for the coordinator's llama-server: a process this test
+    does not own the way a flight does not own it, recording every signal it
+    is sent."""
+
+    script = tmp_path / "fake_server.py"
+    script.write_text(_SIGNAL_RECORDING_SERVER, encoding="utf-8")
+    record = tmp_path / "signals.txt"
+    ready = tmp_path / "server.pid"
+    process = subprocess.Popen(
+        [sys.executable, str(script), str(record), str(ready)],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    deadline = time.monotonic() + 30.0
+    while not ready.is_file():
+        if time.monotonic() >= deadline or process.poll() is not None:
+            process.kill()
+            raise AssertionError("the fake server never came up")
+        time.sleep(0.02)
+    return process, record
+
+
+@pytest.mark.skipif(os.name == "nt", reason="signal delivery semantics are POSIX")
+def test_an_attached_flight_process_never_signals_the_resident_server(tmp_path):
+    server, record = _start_signal_recording_server(tmp_path)
+    try:
+        world = tmp_path / "world"
+        world.mkdir()
+        result_path = tmp_path / "flight-result.json"
+        flight_script = tmp_path / "flight.py"
+        flight_script.write_text(_ATTACHED_FLIGHT, encoding="utf-8")
+        environment = dict(os.environ)
+        environment["PYTHONDONTWRITEBYTECODE"] = "1"
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(flight_script),
+                str(Path(__file__).resolve()),
+                str(world),
+                str(server.pid),
+                str(result_path),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=300,
+            env=environment,
+        )
+        assert completed.returncode == 0, completed.stderr[-4000:]
+
+        result = json.loads(result_path.read_text(encoding="utf-8"))
+        assert result["serve"]["session_source"] == "attached-serving-session"
+        assert result["spawns"] == 0, "attaching must never spawn a second server"
+        assert result["owns_session"] is False
+        assert result["stop_serving"] is None, "an attached flight stops nothing"
+        assert result["signalled"] == [], "the stopper was never reached"
+
+        # The flight process is gone; the server it attached to is not.
+        deadline = time.monotonic() + 10.0
+        while server.poll() is None and time.monotonic() < deadline:
+            time.sleep(0.05)
+        assert server.poll() is None, "the coordinator's server outlives every flight"
+        # The recorder writes the file only when it is signalled at all.
+        received = record.read_text(encoding="utf-8") if record.is_file() else ""
+        assert received == "", (
+            f"an attached flight sent the resident server signal(s): {received!r}"
+        )
+    finally:
+        server.kill()
+        server.wait(timeout=10)
+
+
+def test_stop_serving_refuses_outright_if_a_flight_ever_claims_an_attached_session(tmp_path):
+    """The second guard, exercised directly.
+
+    ``_owns_session`` is false for every attached flight, so this state is
+    unreachable today; the guard exists because the failure it prevents is
+    the coordinator's whole GPU day, and a future serve path that set the
+    flag would otherwise stop the resident server silently.
+    """
+
+    repo_root, runtime_root, data_root = _serving_world(tmp_path)
+    _write_serving_session(repo_root, runtime_root, data_root)
+    runtime, _starter, _attached = _serving_runtime(tmp_path, repo_root)
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+
+    runtime._owns_session = True  # the bug this guard is here to survive
+    with pytest.raises(FlightRuntimeError, match="always-on serving session"):
+        runtime.stop_serving()

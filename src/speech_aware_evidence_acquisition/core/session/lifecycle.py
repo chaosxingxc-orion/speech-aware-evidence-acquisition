@@ -23,7 +23,13 @@ from typing import Callable, Mapping, Sequence
 from ...contracts import STUDY_SLUG, assert_wsl_execution_environment
 from . import SessionError, _bracketed, assert_session_alive, require_loopback
 from .paths import _resolve_under, _sha256_file
-from .process import _pid_alive, _verify_pid_runs_pinned_binary
+from .process import (
+    PROCESS_STATE_DEFUNCT,
+    PROCESS_STATE_GONE,
+    _pid_alive,
+    _pid_is_defunct,
+    _verify_pid_runs_pinned_binary,
+)
 from .receipt import (
     SESSION_RECEIPT_SCHEMA,
     SESSION_RECEIPT_SCHEMA_V2,
@@ -626,18 +632,76 @@ def start_session(
     return receipt
 
 
+def reap_child(pid: int) -> tuple[bool, int | None]:
+    """``(reaped, wait status)`` for ``pid`` via ``waitpid(WNOHANG)``.
+
+    Only the process that SPAWNED ``pid`` can reap it, so a stopper that is
+    not the parent always gets ``(False, None)`` (``ChildProcessError``) --
+    that is not a failure, it is the reason the parent has to do this itself
+    (2026-09-07: the serving wrapper never did, and its exited llama-server
+    stayed a zombie for the rest of the day). No-op off POSIX.
+    """
+
+    if os.name == "nt" or not hasattr(os, "waitpid"):
+        return False, None
+    try:
+        waited, status = os.waitpid(pid, os.WNOHANG)
+    except (ChildProcessError, OSError):
+        return False, None
+    if waited != pid:
+        # 0 means "still running" (WNOHANG); nothing was reaped.
+        return False, None
+    return True, int(status)
+
+
+def describe_wait_status(status: int | None) -> dict[str, object]:
+    """A ``waitpid`` status as the two facts an operator reads: the exit code
+    a process chose, or the signal that ended it.
+
+    ``None`` in, ``None`` out for every field -- an unknown status is
+    recorded as unknown, never as a clean exit 0.
+    """
+
+    if status is None:
+        return {
+            "raw": None,
+            "exit_code": None,
+            "signal": None,
+            "signal_name": None,
+            "description": "unknown (this process did not reap it)",
+        }
+    raw = int(status)
+    exit_code: int | None = None
+    signal_number: int | None = None
+    if hasattr(os, "WIFEXITED") and os.WIFEXITED(raw):
+        exit_code = int(os.WEXITSTATUS(raw))
+        description = f"exited with code {exit_code}"
+    elif hasattr(os, "WIFSIGNALED") and os.WIFSIGNALED(raw):
+        signal_number = int(os.WTERMSIG(raw))
+        description = f"killed by signal {signal_number}"
+    else:
+        description = f"raw wait status {raw}"
+    signal_name = None
+    if signal_number is not None:
+        try:
+            signal_name = signal.Signals(signal_number).name
+        except ValueError:
+            signal_name = None
+        description = f"killed by {signal_name or f'signal {signal_number}'}"
+    return {
+        "raw": raw,
+        "exit_code": exit_code,
+        "signal": signal_number,
+        "signal_name": signal_name,
+        "description": description,
+    }
+
+
 def _reap_stopped_child(pid: int) -> bool:
     """Return true when this process reaped ``pid``; no-op off POSIX."""
 
-    if os.name == "nt" or not hasattr(os, "waitpid"):
-        return False
-    try:
-        waited, _status = os.waitpid(pid, os.WNOHANG)
-    except ChildProcessError:
-        return False
-    except OSError:
-        return False
-    return waited == pid
+    reaped, _status = reap_child(pid)
+    return reaped
 
 
 def _write_stop_receipt(path: Path, document: Mapping[str, object]) -> None:
@@ -683,6 +747,19 @@ def stop_session(
     ``ALREADY_EXITED``; cleanup never masks the original server failure. This
     replaces broad ``pkill llama-server`` cleanup in the two-stage speech
     packet workflow.
+
+    A DEFUNCT pid (exited, not yet reaped by its parent) counts as exited
+    everywhere below -- both before the signal is sent and while waiting for
+    it to land. 2026-09-07: it did not, and the consequence was that every
+    stop of an always-on serving session refused. The stopper is a different
+    process from the wrapper that spawned the server, so its ``waitpid``
+    cannot reap the zombie and ``_pid_alive`` (``kill(pid, 0)``) keeps saying
+    "alive"; the wait therefore ran its full timeout and then took the force
+    path, where re-verifying the pinned binary raised "cannot resolve
+    executable image for pid ... via /proc/<pid>/exe" -- so no stop record
+    was written for a server that had in fact stopped. A zombie holds no
+    VRAM, no port and no listening socket: it has stopped, and the receipt
+    says so, naming the observed state in ``final_process_state``.
     """
 
     session.validate()
@@ -697,7 +774,9 @@ def stop_session(
         raise SessionError("session stop timeout and poll interval must be positive numbers")
     if not isinstance(force_after_timeout, bool):
         raise SessionError("force_after_timeout must be boolean")
-    def finish(termination_signal: str, forced: bool) -> dict[str, object]:
+    def finish(
+        termination_signal: str, forced: bool, final_state: str
+    ) -> dict[str, object]:
         document: dict[str, object] = {
             "schema": "saea-session-stop-receipt-v1",
             "study": STUDY_SLUG,
@@ -709,20 +788,35 @@ def stop_session(
             "termination_signal": termination_signal,
             "forced": forced,
             "stopped_at": _iso(time.time()),
+            # What the pid actually is once this returns: ``gone`` normally,
+            # ``defunct`` when the parent has not reaped it yet (a stopper
+            # that is not the parent cannot; see the docstring). Passed in
+            # by each caller from what it already observed -- deriving it
+            # here would cost one more ``kill(pid, 0)`` liveness probe
+            # against a pid this function has just finished stopping.
+            "final_process_state": final_state,
         }
         if receipt_path is not None:
             _write_stop_receipt(receipt_path, document)
         return document
 
     verify_against_runtime_receipt(session, runtime_receipt)
-    if not _pid_alive(session.pid):
-        return finish("ALREADY_EXITED", False)
+    defunct = _pid_is_defunct(session.pid)
+    if defunct or not _pid_alive(session.pid):
+        # A zombie has already exited; reap it first when this process is
+        # the parent, so the record describes a pid that is truly gone.
+        reaped = _reap_stopped_child(session.pid)
+        return finish(
+            "ALREADY_EXITED",
+            False,
+            PROCESS_STATE_DEFUNCT if defunct and not reaped else PROCESS_STATE_GONE,
+        )
     try:
         assert_session_alive(session, runtime_receipt, Path(runtime_root))
     except SessionError:
         if _pid_alive(session.pid):
             raise
-        return finish("ALREADY_EXITED", False)
+        return finish("ALREADY_EXITED", False, PROCESS_STATE_GONE)
     try:
         os.kill(session.pid, signal.SIGTERM)
     except OSError as error:
@@ -736,7 +830,14 @@ def stop_session(
     def wait_until_stopped(seconds: float) -> bool:
         deadline = time.monotonic() + seconds
         while True:
-            if _reap_stopped_child(session.pid) or not _pid_alive(session.pid):
+            # Three ways a signalled server counts as stopped: this process
+            # reaped it (it is the parent), the pid is gone, or the pid is a
+            # zombie somebody else has yet to reap. The third was missing.
+            if (
+                _reap_stopped_child(session.pid)
+                or not _pid_alive(session.pid)
+                or _pid_is_defunct(session.pid)
+            ):
                 return True
             remaining = deadline - time.monotonic()
             if remaining <= 0:
@@ -761,7 +862,13 @@ def stop_session(
             f"receipt-bound session pid {session.pid} did not stop within "
             f"{timeout_seconds} seconds"
         )
-    return finish(termination_signal, forced)
+    # Read from /proc, never by signalling: the pid has just been stopped and
+    # a liveness probe here would be a second signal against it.
+    return finish(
+        termination_signal,
+        forced,
+        PROCESS_STATE_DEFUNCT if _pid_is_defunct(session.pid) else PROCESS_STATE_GONE,
+    )
 
 
 def attach_session(

@@ -22,6 +22,22 @@ from .receipt import SessionReceipt, _pinned_binary
 
 MM_PROJ_AUDIT_SCHEMA = "saea-mmproj-free-process-audit-v1"
 
+#: The three states :func:`process_state` distinguishes. ``_pid_alive`` alone
+#: cannot: a POSIX child that has exited but has not been reaped by its
+#: parent is a ZOMBIE -- ``kill(pid, 0)`` still succeeds, so ``_pid_alive``
+#: says "alive", while ``/proc/<pid>/exe`` no longer resolves, so every I5
+#: identity check (:func:`_process_image_path` and everything above it)
+#: refuses it. That combination is exactly what stranded both serving
+#: sessions on 2026-09-07: ``stop`` sent its SIGTERM, llama-server exited,
+#: the foreground wrapper never reaped it, and from then on every stop and
+#: every attach refused with "cannot resolve executable image for pid ... via
+#: /proc/<pid>/exe" while ``session.json`` still had no stop record and
+#: ``start`` therefore refused the next geometry as "already resident".
+#: Naming the state is what lets each of those callers say the true thing.
+PROCESS_STATE_RUNNING = "running"
+PROCESS_STATE_DEFUNCT = "defunct"
+PROCESS_STATE_GONE = "gone"
+
 if os.name == "nt":  # pragma: sys-platform
     import ctypes
     import ctypes.wintypes as _wintypes
@@ -63,6 +79,84 @@ def _pid_alive(pid: int) -> bool:
     except OSError:
         return False
     return True
+
+
+def _linux_process_state_char(pid: int, proc_root: Path = Path("/proc")) -> str | None:
+    """The one-letter Linux process state (``R``, ``S``, ``D``, ``Z``, ...)
+    from ``/proc/<pid>/stat``, or ``None`` when ``/proc`` cannot answer (a
+    non-Linux host, or a pid that is already gone).
+
+    Parsed from the LAST ``)`` rather than by splitting on whitespace: the
+    second field is the executable's ``comm``, in parentheses, and it may
+    itself contain spaces and parentheses (``(llama-server (old))`` is a
+    legal comm), so a naive ``split()[2]`` reads the wrong field for exactly
+    the processes an operator is most likely to be confused by.
+    """
+
+    try:
+        raw = (Path(proc_root) / str(int(pid)) / "stat").read_text(
+            encoding="utf-8", errors="replace"
+        )
+    except (OSError, ValueError):
+        return None
+    close = raw.rfind(")")
+    if close < 0:
+        return None
+    fields = raw[close + 1 :].split()
+    return fields[0] if fields else None
+
+
+def _pid_is_defunct(pid: int, proc_root: Path = Path("/proc")) -> bool:
+    """True only for a POSIX zombie: exited, not yet reaped by its parent."""
+
+    return _linux_process_state_char(pid, proc_root) == "Z"
+
+
+def process_state(pid: int, *, proc_root: Path = Path("/proc")) -> str:
+    """``running`` / ``defunct`` / ``gone`` for ``pid``, right now.
+
+    The ``/proc`` reading comes first because it is the only one that can
+    tell a zombie from a live process (see :data:`PROCESS_STATE_DEFUNCT`);
+    ``_pid_alive`` is the fallback for a host without ``/proc`` (Windows, or
+    a POSIX host that does not mount it), where a zombie is not a state a
+    caller can observe anyway.
+    """
+
+    state = _linux_process_state_char(pid, proc_root)
+    if state == "Z":
+        return PROCESS_STATE_DEFUNCT
+    if state is not None:
+        return PROCESS_STATE_RUNNING
+    return PROCESS_STATE_RUNNING if _pid_alive(pid) else PROCESS_STATE_GONE
+
+
+def _defunct_wait_status(pid: int, proc_root: Path = Path("/proc")) -> int | None:
+    """A zombie's own ``exit_code`` field (``/proc/<pid>/stat`` field 52), in
+    the same encoding ``os.waitpid`` returns -- ADVISORY ONLY.
+
+    The parent holds the authoritative status; this is what a process that is
+    NOT the parent (``scripts/serving_session.sh stop``, say) can still learn
+    about a zombie it is about to record as stale. Absent or unparseable on
+    any kernel that does not expose the field, in which case ``None``.
+    """
+
+    try:
+        raw = (Path(proc_root) / str(int(pid)) / "stat").read_text(
+            encoding="utf-8", errors="replace"
+        )
+    except (OSError, ValueError):
+        return None
+    close = raw.rfind(")")
+    if close < 0:
+        return None
+    # fields[0] is field 3 (state), so field 52 (exit_code) is index 49.
+    fields = raw[close + 1 :].split()
+    if len(fields) <= 49:
+        return None
+    try:
+        return int(fields[49])
+    except ValueError:
+        return None
 
 
 def _process_image_path(pid: int) -> Path:

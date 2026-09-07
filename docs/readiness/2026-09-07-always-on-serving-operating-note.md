@@ -55,12 +55,28 @@ session ends when its task ends; a server it owned would go with it.
    This writes `session-stop.json` with the stop receipt and the whole session's monitor summary,
    which is the day's GPU accounting for that geometry.
 
+   A server that is already gone or `<defunct>` is recorded stopped instead of signalled: a plain
+   `stop` takes that path automatically, and `stop --stale` asks for it explicitly. It refuses
+   unless all three conditions hold — the pid is `defunct`/`gone`, nothing is listening on the
+   session's port, and `nvidia-smi` reports an empty card — and it names every condition that
+   failed. The record it writes carries `stale: true`, the whole observation, and the zombie's
+   advisory exit status.
+
 5. **Check on it any time:**
 
    ```bash
    bash scripts/serving_session.sh status
    python scripts/serving_monitor.py summarize --session-id <id> [--from T0] [--to T1]
    ```
+
+   `status` reports `process_state` (`running` / `defunct` / `gone`) beside the older `pid_alive`
+   flag, plus the port and card readings. `pid_alive` says "alive" for a zombie; `process_state`
+   is the one to read.
+
+6. **Never let a script kill llama-server blindly.** `scripts/serving_session.sh resident` exits 0
+   when a session is resident, 3 when none is, and 2 when it cannot tell. `scripts/
+   run_arm_sequence.sh` — the one launcher in this repository that runs `pkill -9 -f llama-server`
+   — now asks first and refuses the arm on anything but 3.
 
 ## What an agent does
 
@@ -71,7 +87,8 @@ anything:
   re-verifies loopback, the runtime-receipt-pinned binary and GGUF identity, that the pid is alive
   right now, that the pid's real process image is the pinned binary, and that the pid owns the
   listening socket), sets `session_reused: true` in its serve receipt, and **never stops it**:
-  `stop_serving()` is a no-op for a flight that did not start the server.
+  `stop_serving()` is a no-op for a flight that did not start the server, and refuses outright if
+  a flight ever claims to own a session it attached to (two guards, see the E7b section below).
 - **A session serving something else** → `FlightServingSessionMismatchError`, naming every
   differing field. It never falls back to a second spawn: two 18.5 GB servers do not fit in this
   host's VRAM, so the correct action is always the coordinator's (stop the session, start the
@@ -139,7 +156,32 @@ The serve receipt additionally carries `session_reused`, `session_source`
 (`attached-serving-session` / `in-process-reuse` / `spawned`), `session_id`,
 `serving_session_dir`, `monitor_path`, and `session_attach_receipt_path`.
 
-## Two things that will bite
+## The first day, measured (2026-09-07)
+
+Two sessions ran, back to back, one Earnings-22 ESB cell each. Their own monitor files, summarized
+over the window up to each session's last answering sample
+(`python scripts/serving_monitor.py summarize --session-id <id> --to <last-ok epoch>`):
+
+| Session | Geometry | Wall | Active | Parked | Requests | Mean / peak power |
+|---|---|---|---|---|---|---|
+| `e22-dev-np8-c40960-20260907` | `-np 8 -c 40960` | 7,378 s | 1,630 s (22.1 %) | 5,749 s (77.9 %) | 1,195 | 26.1 W / 94.4 W |
+| `e22-test-np8-c32768-20260907` | `-np 8 -c 32768` | 5,270 s | 799 s (15.2 %) | 4,471 s (84.8 %) | 596 | 19.4 W / 91.3 W |
+
+**The card was parked for four fifths of both sessions, and most of that was one gap, not many.**
+The dev session's last busy sample is 09:49:01Z and its server was stopped at 10:16:39Z; the test
+session's last busy sample is 11:19:56Z and its server was stopped at 11:47:25Z. Each session
+therefore ended with roughly 27½ minutes of a resident 18.5 GB server serving nothing at all,
+while the next cell was still being registered.
+
+**Rule: register the next cell while the current flight is still flying.** Preprocessing, the
+exposure-ledger row, the plan and the roster all cost nothing on the GPU (CLAUDE.md's pipeline
+rule: CPU packet preprocessing runs in parallel, ready flights are queued by geometry so the GPU
+never idles). A cell that is ready the moment the previous one seals turns those 27 minutes into
+work; a cell that starts being prepared after the previous one finishes parks the card twice a
+day. Same-geometry cells attach to the SAME session — no restart, no reload — so the only thing
+that has to be ready in advance is the registration.
+
+## Three things that will bite
 
 - **`--metrics` is not enabled on the pinned fragments, on purpose.** Adding the flag changes the
   argv and therefore the serving identity every flight compares, so it would have to be added to
@@ -148,12 +190,48 @@ The serve receipt additionally carries `session_reused`, `session_source`
   throughput number. `/slots` is on by default in this build; `/props` GET likewise.
 - **A session whose process died without a stop record is still reported as resident.** That is
   deliberate: `attach_session` refusing a dead pid is a far better signal than a flight silently
-  spawning a second 18.5 GB server. Clean it up with `scripts/serving_session.sh stop`, or delete
-  the stale session directory once the pid is confirmed gone.
+  spawning a second 18.5 GB server. `scripts/serving_session.sh stop` now records the stop for
+  such a session itself (see step 4), so this no longer needs a hand-written record — but it is
+  still a state you have to clear before the next geometry can start.
+- **A summary window that extends past the server's death counts those seconds as ACTIVE.** A
+  sample the server did not answer has no slot reading, so it is not "every slot idle" and the
+  parked test fails. Summarize to the last sample with `server_ok: true` (that is how the table
+  above is computed) or read `parked_fraction` knowing the tail is in it.
+
+## The wrapper's own lifecycle (E7b, 2026-09-07)
+
+The wrapper is the server's PARENT, and the first day proved it was not behaving like one. Both
+sessions ended with llama-server `<defunct>`: exited, never reaped. A zombie answers
+`kill(pid, 0)`, so the old liveness check said "alive", while `/proc/<pid>/exe` no longer
+resolves, so every I5 identity check refused it. `stop` refused ("cannot resolve executable image
+for pid ... via /proc/<pid>/exe"), no `session-stop.json` was written, `start` refused the next
+geometry as "already recorded as resident", and the coordinator wrote both stop records by hand.
+
+- The `start` loop now **reaps** the child, writes `session-stop.json` with a `server_exit` block
+  (reason, whether it reaped, and the decoded exit code or signal), prints ONE line to stderr, and
+  **exits 1**. Exit 0 means, and only means, that the operator asked it to stop. Watch the
+  wrapper's exit status: it is now the signal that a session ended unasked.
+- There is deliberately **no `--restart-on-exit`**. An unrequested exit — an OOM, a crash, a stray
+  signal — is exactly what has to be looked at, and a silent restart would hide it.
+- `stop` treats a defunct pid as exited rather than waiting out its timeout and then failing the
+  force path on a process that no longer has an executable image.
+
+**An attached flight cannot do this to you.** The suspicion on 2026-09-07 was that the test
+session's flight had killed the server on the way out; its own records say otherwise. That flight
+wrote its receipts at 11:20:08Z; the server logged `all slots are idle` for 27 more minutes, the
+monitor still saw eight idle slots at 11:47:19Z, and the last line of `server.log` is llama.cpp's
+graceful signal-handler shutdown at ~11:47:25Z — the coordinator's own first `stop`. A flight that
+attached sets `_owns_session = False` and records the session directory it bound to; `stop_serving`
+returns `None` on the first and now refuses outright on the second, and there is no `atexit`, no
+`killpg`, no `terminate` and no HTTP shutdown anywhere in the flight path. A regression test drives
+a whole flight process — attach, phases, seal, `stop_serving`, interpreter exit — past a fake
+server that records every signal it receives, and requires that it records none.
 
 ## Checks
 
 `scripts/checks/engineering_base_check.py` enumerates modules and config values, not scripts, so
 the two new scripts need no allowlist entry; the check passes unchanged. Coverage lives in
 `tests/unit/test_serving_session.py`, `tests/unit/test_serving_monitor.py`, and the E7 section of
-`tests/unit/test_flight_runtime.py` — no model contact, no GPU, no network in any of them.
+`tests/unit/test_flight_runtime.py` — no model contact, no GPU, no network in any of them. The
+E7b tests drive real processes (an unreaped child for the zombie states, a signal-recording fake
+server for the teardown) but never a model.
