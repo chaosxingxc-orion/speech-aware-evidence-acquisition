@@ -1,0 +1,18 @@
+{
+  "carrier": "earnings21-original",
+  "design": "THE SINGLE SHORTEST call of the frozen 44-call earnings21-original discovery split by measured window count, for the SAEA-E21-FULL44-TAIL2S-V1 smoke and for nothing else. Deterministic: sort the 44 calls by the number of fixed 90-second windows the sealed comparator emitted (docs/receipts/artifacts/d1-e21-buf90-1593-tail2s.json, 1,593 window ids) ascending, tie-broken by sample_id, and take one -- not a seeded draw, so the 'seed' field is carried for schema parity only. Call 4386541 is 13 windows and 1,097.100 s of cut audio (1,123.100 s delivered with the 2.0 s tail), the cheapest honest exercise of the 90-second tiling under the obs_slice_tail_silence_seconds knob. MEASURED, NOT ASSUMED: the cross-carrier silence-tail preregistration section 7 priced this smoke at 4 windows / 8 contacts / 400 audio seconds, and NO call in the 44 is short enough to yield four windows -- the shortest is these thirteen. The smoke's own exposure row registers the measured figures and records the correction; the GPU-hour ceiling of 0.05 that section 7 set is unchanged and is not approached. This receipt freezes identity only. It is a SMOKE roster: no measurement, contrast, verdict or reported number may ever be computed on it, and it opens no new surface -- call 4386541 is already inside the sealed SAEA-E21-FULL44-DIRECT-BASELINE-V2 population at parent discovery hash fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e.",
+  "items": [
+    {
+      "id": "4386541",
+      "key": "earnings21-original:4386541"
+    }
+  ],
+  "pool_size": 44,
+  "probe": "e21-full44-tail2s-smoke",
+  "seed": 20260907,
+  "split_identity_hash": "cb20861ab26e8b0b98485562da145bcd3148b22d96771eeeb87c26037ae88937",
+  "split_role": "discovery",
+  "strata_counts": {
+    "smoke": 1
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "carrier_lock_key": "earnings21-original",
+  "split_name": "e21-full44-tail2s-smoke-1-sample",
+  "smoke_note": "The SMOKE fragment of configs/dataset/earnings21-discovery.json: byte-identical to it apart from split_name, which narrows the 44 to the single shortest call (docs/receipts/probe-samples/e21-full44-tail2s-smoke-1-sample.json, call 4386541, 13 fixed 90-second windows, 1,097.100 s cut / 1,123.100 s delivered). It carries no D1 supplement and needs none: the SAEA-E21-FULL44-TAIL2S-V1 cell is bare-core with evidence_source none, and all 44 earnings21-original media entries are already inside the immutable D1 closure. The 2.0 s tail is appended at RUNTIME by reproduction.obs_audio.encode_slice, so no derived media is named here either. This fragment is for the section 8 item 5 smoke of that cell and for nothing else -- no measurement, contrast, verdict or reported number may be computed on this call."
+}

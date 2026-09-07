@@ -1,0 +1,48 @@
+{
+  "experiment_id": "SAEA-E21-FULL44-TAIL2S-SMOKE-V1",
+  "schema": "saea-e21-full44-direct-baseline-experiment-v1",
+  "date": "2026-09-07",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "The section 8 item 5 smoke of SAEA-E21-FULL44-TAIL2S-V1 (docs/readiness/2026-09-07-cross-carrier-silence-tail-v1-preregistration.md). Same model fragment, same baseline fragment, same serving geometry, same instruction, same decoding and the same obs_slice_tail_silence_seconds 2.0 as the full cell; the ONLY difference is the population, which is the single shortest discovery call instead of all 44. What it proves is the RUNTIME path -- that the tailed slice bytes the knob emits reach the resident server and that every emitted slice SHA-256 equals the committed @ts2 entry for that window. What it does NOT have to discover is whether the knob produces the right bytes at all: that is already proved offline on all 1,593 windows with zero contacts (tests/unit/test_obs_slice_tail_silence.py::test_the_knob_reproduces_every_committed_ts2_window_hash).",
+  "authorizes": "nothing beyond its own pre-registered exposure row SAEA-E21-FULL44-TAIL2S-SMOKE-V1. No measurement, contrast, verdict or reported number may ever be computed on this call's outputs.",
+  "population": {
+    "carrier": "earnings21-original",
+    "split_name": "e21-full44-tail2s-smoke-1-sample",
+    "dataset_fragment": "e21-full44-tail2s-smoke-1",
+    "split_role": "discovery",
+    "count": 1,
+    "split_identity_hash": "ea8022dfcba86d57498b42630147b6b0f516e476f3a30428b5a62a6ad8bf8ecc",
+    "receipt_integrity_hash": "cb20861ab26e8b0b98485562da145bcd3148b22d96771eeeb87c26037ae88937",
+    "two_hashes_note": "reproduction.probe_split carries TWO hashes: the receipt-integrity hash over the raw colon-convention item keys, and the run-identity hash under the E0 ledger convention (sha256 over LF-joined sorted <lock_key>/<sample_id>). split_identity_hash above is the RUN-identity hash, which is what the ExecutionPlan and the exposure-ledger column carry.",
+    "receipt": "docs/receipts/probe-samples/e21-full44-tail2s-smoke-1-sample.json",
+    "fixed_90s_windows_one_pass": 13,
+    "audio_seconds_one_pass_cut": 1097.1,
+    "audio_seconds_one_pass_delivered": 1123.1,
+    "selection": "no draw: the single shortest call of the frozen 44 by measured window count, deterministic and tie-broken by sample_id. Call 4386541 is already inside the sealed SAEA-E21-FULL44-DIRECT-BASELINE-V2 population, so no new speech surface is opened.",
+    "measured_not_assumed": "Section 7 of the preregistration priced this smoke at 4 windows / 8 contacts / 400 audio seconds. NO call in the frozen 44 yields four fixed 90-second windows -- the shortest yields thirteen -- so the smoke's own exposure row registers the MEASURED figures (20 calls / 1,400 speech-audio seconds / 0.05 GPU hours) and records the correction. The GPU-hour ceiling section 7 set is unchanged and is not approached."
+  },
+  "cells": [
+    {
+      "cell_id": "E21-full44-tail2s-buf90-smoke-1call",
+      "dataset_fragment": "e21-full44-tail2s-smoke-1",
+      "baseline_fragment": "e21-buf90-tail2s-scored7",
+      "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "arm": "bare-core",
+      "factor": "none against the full cell: this IS the full cell's protocol, restricted to one call",
+      "serving_geometry": "-c 36864 -np 6, 6,144 tokens per slot, bf16 mmproj resident on the GPU, GGML_CUDA_DISABLE_GRAPHS=1"
+    }
+  ],
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "discovery",
+    "planned_model_calls": 20,
+    "planned_gpu_hours": 0.05,
+    "planned_speech_audio_seconds": 1400
+  },
+  "decision": {
+    "rule": "PASS iff every emitted slice SHA-256 equals the committed @ts2 entry for that window in docs/receipts/artifacts/d1-e21-buf90-1593-tail2s.json and every delivered clip is its sealed twin plus exactly 2.0 s. 13 of 13, or the full cell does not fly.",
+    "claim_surface": "none. A smoke roster carries no metric, no contrast and no verdict.",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}
