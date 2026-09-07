@@ -11,6 +11,7 @@
         "opened_a_socket": false,
         "reached_the_end": false,
         "returncode": 1,
+        "seal_and_score": null,
         "stdout_tail": [],
         "stop_class": "gate-not-authorized",
         "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-A2T-OFFICIAL-PROTOCOL-TAIL2S-SMOKE-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-ts2y/docs/exposure-ledger.md (rows are written before results are read)"
@@ -20,15 +21,17 @@
         "mode": "wire-check",
         "model_contacts": 0,
         "opened_a_socket": false,
-        "reached_the_end": true,
+        "reached_the_end": false,
         "returncode": 0,
+        "seal_and_score": "REFUSED",
         "stdout_tail": [
           "wire check: R-official-tail2s-smoke-4",
-          "arm=bare-core contacts=4 payload_keys=10 tool_schemas=0 id_slot=2 packets_verified=0 seal_and_score=OK",
-          "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s-smoke-4.wire-check.json (sha256 67c48c9d71a6)"
+          "arm=bare-core contacts=4 payload_keys=10 tool_schemas=0 id_slot=2 packets_verified=0 seal_and_score=REFUSED",
+          "seal/score refused: BundleError: study repo /mnt/d/chao_workspace/saea-worktrees/wt-ts2y HEAD moved during the flight: the flight lock recorded study_head 'd5e260042b5114161cbdb956f3a0fdadc8d29e95' at launch, HEAD is now '1308486fc5cfde3584d7727c0bf69568e899e83a'; refusing to bind a COMPLETED manifest to a commit the flight never ran under, even though the working tree's own dirt is confined outside the load-bearing surface",
+          "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s-smoke-4.wire-check.json (sha256 2290edaf444b)"
         ],
-        "stop_class": "none",
-        "stopped_at": "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s-smoke-4.wire-check.json (sha256 67c48c9d71a6)"
+        "stop_class": "seal-and-score-not-ok",
+        "stopped_at": "arm=bare-core contacts=4 payload_keys=10 tool_schemas=0 id_slot=2 packets_verified=0 seal_and_score=REFUSED"
       }
     },
     {
@@ -42,6 +45,7 @@
         "opened_a_socket": false,
         "reached_the_end": false,
         "returncode": 1,
+        "seal_and_score": null,
         "stdout_tail": [],
         "stop_class": "gate-not-authorized",
         "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-A2T-OFFICIAL-PROTOCOL-TAIL2S-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-ts2y/docs/exposure-ledger.md (rows are written before results are read)"
@@ -51,16 +55,17 @@
         "mode": "wire-check",
         "model_contacts": 0,
         "opened_a_socket": false,
-        "reached_the_end": true,
+        "reached_the_end": false,
         "returncode": 0,
+        "seal_and_score": "REFUSED",
         "stdout_tail": [
           "wire check: R-official-tail2s",
           "arm=bare-core contacts=400 payload_keys=10 tool_schemas=0 id_slot=1 packets_verified=0 seal_and_score=REFUSED",
-          "seal/score refused: BundleError: study repo /mnt/d/chao_workspace/saea-worktrees/wt-ts2y HEAD moved during the flight: the flight lock recorded study_head 'd5e260042b5114161cbdb956f3a0fdadc8d29e95' at launch, HEAD is now '99fbc88a74d0e1d3b6a28fdce7b4218868c81bcc'; refusing to bind a COMPLETED manifest to a commit the flight never ran under, even though the working tree's own dirt is confined outside the load-bearing surface",
-          "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s.wire-check.json (sha256 10b45a48b88c)"
+          "seal/score refused: BundleError: study repo /mnt/d/chao_workspace/saea-worktrees/wt-ts2y HEAD moved during the flight: the flight lock recorded study_head 'd5e260042b5114161cbdb956f3a0fdadc8d29e95' at launch, HEAD is now '1308486fc5cfde3584d7727c0bf69568e899e83a'; refusing to bind a COMPLETED manifest to a commit the flight never ran under, even though the working tree's own dirt is confined outside the load-bearing surface",
+          "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s.wire-check.json (sha256 31a4ef21e75c)"
         ],
-        "stop_class": "none",
-        "stopped_at": "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s.wire-check.json (sha256 10b45a48b88c)"
+        "stop_class": "seal-and-score-not-ok",
+        "stopped_at": "arm=bare-core contacts=400 payload_keys=10 tool_schemas=0 id_slot=1 packets_verified=0 seal_and_score=REFUSED"
       }
     },
     {
@@ -74,6 +79,7 @@
         "opened_a_socket": false,
         "reached_the_end": false,
         "returncode": 1,
+        "seal_and_score": null,
         "stdout_tail": [
           "instruction: 7583 chars = sealed M0 5747 + suffix 1836 (4073f79ef25c4796)",
           "roster: 4 samples, config hash e1837235f2099ce2799c251ad6a5a7e074c65375d81f800dab10397fabb047bc",
@@ -89,6 +95,7 @@
         "opened_a_socket": false,
         "reached_the_end": false,
         "returncode": 1,
+        "seal_and_score": null,
         "stdout_tail": [
           "instruction: 7583 chars = sealed M0 5747 + suffix 1836 (4073f79ef25c4796)",
           "roster: 4 samples, config hash e1837235f2099ce2799c251ad6a5a7e074c65375d81f800dab10397fabb047bc",
@@ -109,6 +116,7 @@
         "opened_a_socket": false,
         "reached_the_end": false,
         "returncode": 1,
+        "seal_and_score": null,
         "stdout_tail": [
           "instruction: 7583 chars = sealed M0 5747 + suffix 1836 (4073f79ef25c4796)",
           "roster: 1000 samples, config hash 6643cfb2f988851a1df030cb0877275bb42affbcd85d0ee103ca99b24fcc9ddb",
@@ -124,6 +132,7 @@
         "opened_a_socket": false,
         "reached_the_end": false,
         "returncode": 1,
+        "seal_and_score": null,
         "stdout_tail": [
           "instruction: 7583 chars = sealed M0 5747 + suffix 1836 (4073f79ef25c4796)",
           "roster: 1000 samples, config hash 6643cfb2f988851a1df030cb0877275bb42affbcd85d0ee103ca99b24fcc9ddb",
@@ -161,5 +170,6 @@
   },
   "preregistration": "docs/readiness/2026-09-07-cross-carrier-silence-tail-v1-preregistration.md",
   "schema": "saea-cross-carrier-ts2-wire-check-v1",
+  "seal_and_score_rule": "a run that exits 0 is green only when the runner's own seal_and_score line says OK; any other status is recorded as stop_class 'seal-and-score-not-ok' with reached_the_end false, so a manifest that seals COMPLETED and then will not score can never be reported here as 'none'",
   "study": "speech-aware-evidence-acquisition"
 }

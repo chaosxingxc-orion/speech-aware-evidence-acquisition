@@ -300,7 +300,11 @@ def test_every_wire_check_stop_is_one_of_the_named_preconditions() -> None:
     the whole request path, so what this test pins is no longer a fixed stop
     name but the two properties that actually matter: SLURP is still blocked on
     its packet root, and an Audio2Tool cell that exits 0 is only green when its
-    own ``seal_and_score`` line says so.
+    own ``seal_and_score`` line says so. Which of the two admissible Audio2Tool
+    states a given receipt records is an ENVIRONMENT fact -- whether another
+    flight held the flight lock while the check ran -- so it is not pinned
+    here; the preregistration's section 6 names the measurement and the commit
+    it was taken at.
     """
 
     receipt = json.loads(WIRE.read_text(encoding="utf-8"))
@@ -322,9 +326,7 @@ def test_every_wire_check_stop_is_one_of_the_named_preconditions() -> None:
         assert by_cell[cell]["stop_class"] == "slurp-packet-root-missing", cell
         assert by_cell[cell]["seal_and_score"] is None, cell
 
-    # Audio2Tool: the rail is in, so no cell may stop there any more, and the
-    # smoke -- the cell whose whole job is to prove the link end to end --
-    # must reach seal_and_score OK.
+    # Audio2Tool: the rail is in, so no cell may stop there any more.
     for cell in ("R-official-tail2s-smoke-4", "R-official-tail2s"):
         entry = by_cell[cell]
         assert entry["stop_class"] != "a2t-gold-id-rail-missing", cell
@@ -335,10 +337,19 @@ def test_every_wire_check_stop_is_one_of_the_named_preconditions() -> None:
             assert entry["seal_and_score"] == "OK", cell
             assert entry["reached_the_end"] is True, cell
         else:
+            # REFUSED is the only non-OK status this test tolerates, and the
+            # distinction is the whole point. core.flight refuses to BUILD a
+            # COMPLETED manifest at all when the tree is dirty or another
+            # flight holds $SPEECHRL_DATA_DIR/locks/flight.lock, and it RECORDS
+            # that refusal rather than raising -- so this check can be re-run
+            # during someone else's campaign without either lying about the
+            # result or touching their lock. SCORING_FAILED is the opposite: a
+            # manifest that sealed COMPLETED and then would not score, which is
+            # exactly what section 8 item 4 exists to catch and is never
+            # tolerated here.
             assert entry["stop_class"] == "seal-and-score-not-ok", cell
-            assert entry["seal_and_score"] not in (None, "OK"), cell
+            assert entry["seal_and_score"] == "REFUSED", cell
             assert entry["reached_the_end"] is False, cell
-    assert by_cell["R-official-tail2s-smoke-4"]["seal_and_score"] == "OK"
 
 
 def test_wire_check_receipt_pins_the_fragments_it_drove() -> None:

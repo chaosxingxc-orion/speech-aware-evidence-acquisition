@@ -319,36 +319,46 @@ gain across three unrelated metrics is also what a systematic harness difference
 and a socket-less transport. Receipt:
 `docs/checks/speech-aware-evidence-acquisition/2026-09-07-cross-carrier-tail2s-wire-check/`.
 **Zero model contacts, zero servers, zero sockets, zero GPU.** On the first pass every stop was one
-of three named classes and none was a surprise; the re-measurement after the rail landed added a
-fourth, an environment refusal rather than a cell's, and it is named below rather than tidied away.
+of three named classes and none was a surprise; the re-measurements after the rail landed added a
+fourth, `seal-and-score-not-ok`, which is an environment refusal rather than a cell's, and it is
+named below rather than tidied away.
 
-| cell | rows | preflight | wire check, before the rail | wire check, after the rail |
-|---|---:|---|---|---|
-| `R-official-tail2s-smoke-4` | 4 | gate refuses: not authorized | A2T gold-id rail missing | **`seal_and_score: OK`** |
-| `R-official-tail2s` | 400 | gate refuses: not authorized | A2T gold-id rail missing | request path OK; seal refused by a CONCURRENT flight's lock |
-| `closed-list-tail2s-smoke-4` | 4 | gate refuses: not authorized | SLURP packet root missing | SLURP packet root missing |
-| `closed-list-tail2s` | 1,000 | gate refuses: not authorized | SLURP packet root missing | SLURP packet root missing |
+| cell | rows | preflight | before the rail | after the rail, no other flight | after the rail, under a live flight |
+|---|---:|---|---|---|---|
+| `R-official-tail2s-smoke-4` | 4 | gate refuses: not authorized | A2T rail missing | **`seal_and_score: OK`** | seal `REFUSED` |
+| `R-official-tail2s` | 400 | gate refuses: not authorized | A2T rail missing | seal `REFUSED` | seal `REFUSED` |
+| `closed-list-tail2s-smoke-4` | 4 | gate refuses: not authorized | SLURP packet root missing | SLURP packet root missing | SLURP packet root missing |
+| `closed-list-tail2s` | 1,000 | gate refuses: not authorized | SLURP packet root missing | SLURP packet root missing | SLURP packet root missing |
 
-**The rightmost column is the state after §6.2's rail landed** (commit `e6c29449`), re-measured at
-commit `99fbc88a`. The gold-id rail is what the smoke cell proves end to end: 4 canned contacts,
-`payload_keys=10`, zero sockets, a sealed `COMPLETED` manifest, the 21-column ledger surface
-validated, and **all four registered scorers -- `a2t-toolcall-official`, `a2t-toolcall-v2`,
-`a2t-toolcall` and `cost` -- run to completion over `@ts2` sample ids**. That is exactly the link §8
-item 4 exists to prove, and on this carrier it now holds.
+**Three measurements, and the committed receipt is the third**, because that is the one taken by the
+current driver. Column 4 was measured at commit `99fbc88a`; columns 5 and 6 are the same cells run
+again at commit `1308486f`, the second time while another agent's live GPU flight
+(`SAEA-E21-KC-E1-BRIEF-44-V1`, `$SPEECHRL_DATA_DIR/locks/flight.lock`, `study_head` `d5e26004…`) was
+in the air.
 
-The 400-row cell ran the identical request path to the same point -- 400 contacts, same payload
-keys, zero sockets -- and was then refused at the SEAL, for an environment reason that names itself:
-*"HEAD moved during the flight: the flight lock recorded study_head ... refusing to bind a COMPLETED
-manifest to a commit the flight never ran under"*. A **separate, live GPU flight**
-(`SAEA-E21-KC-E1-BRIEF-44-V1`) held `$SPEECHRL_DATA_DIR/locks/flight.lock` while this rehearsal ran,
-and that lock pins a different study HEAD than this worktree's. The refusal is the harness working,
-not a defect in the cell, the rail or the fragments, and it is recorded rather than worked around --
-the one thing that must never be done to it is to remove or edit another flight's lock. **§8 item 4
-therefore stays a live refusal point for this cell**: re-run the check when no other flight holds
-the lock, immediately before the flight, and require `seal_and_score: OK`. What the 400 rows do not
-need the wire check to establish is the SCORING itself: all three Audio2Tool scorers were run over
-the sealed 400 with `@ts2` appended to every id and reproduce the unsuffixed per-sample entries and
-aggregates exactly
+**What column 5 proves, and it is the point of §6.2.** The smoke cell ran the whole request path and
+then sealed and scored: 4 canned contacts, `payload_keys=10`, zero sockets, a `COMPLETED` manifest,
+the 21-column ledger surface validated, and **all four registered scorers --
+`a2t-toolcall-official`, `a2t-toolcall-v2`, `a2t-toolcall` and `cost` -- run to completion over
+`@ts2` sample ids**. That is exactly the link §8 item 4 exists to prove, and on this carrier it now
+holds. The 400-row cell ran the identical path to the same point -- 400 contacts, same payload keys,
+zero sockets -- and was refused at the SEAL for an environment reason that names itself: *"HEAD moved
+during the flight: the flight lock recorded study_head ... refusing to bind a COMPLETED manifest to a
+commit the flight never ran under"*.
+
+**What column 6 proves is that the refusal is about the environment and not the cell.** Under a live
+flight BOTH Audio2Tool cells are refused at the seal, the smoke included, for the same lock reason --
+and `REFUSED` means the harness declined to BUILD a `COMPLETED` manifest at all, which is different
+in kind from `SCORING_FAILED`, where a manifest sealed and the scorers then failed. The driver now
+distinguishes them (`seal-and-score-not-ok`, commit `1308486f`), because before it did not: a cell
+that exited 0 with a refused seal was recorded as `stop_class: none` and `reached_the_end: true`, a
+green over the one link this check exists to prove.
+
+The lock is **never** removed or edited to get a green. **§8 item 4 therefore stays a live refusal
+point for both Audio2Tool cells**: re-run the check when no other flight holds the lock, immediately
+before the flight, and require `seal_and_score: OK`. What the wire check is not needed for is the
+SCORING itself: all three Audio2Tool scorers were run over the sealed 400 with `@ts2` appended to
+every id and reproduce the unsuffixed per-sample entries and aggregates exactly
 (`tests/unit/test_variant_id_gold_rail.py::test_the_sealed_audio2tool_400_is_byte_for_byte_unchanged_and_its_variant_matches`).
 
 A second finding, and it was in the CHECK rather than in a cell: the Audio2Tool runner writes its own
@@ -508,8 +518,9 @@ exactly two.
    windows -- its media falsifier must hold on 4 of 4 -- then the 1,593. It is also the most expensive
    cell, so putting it first is what keeps the rest of the campaign off the critical path.
 2. **`-c 49152 -np 3` — Audio2Tool.** Cheapest cell, smallest population; its precondition was a code
-   rail and that rail is in, with the smoke cell reaching `seal_and_score: OK` and the 400-row cell
-   still owing that tick under §8 item 4 (§6's table says why). Smoke, then the 400.
+   rail and that rail is in, with the smoke cell measured at `seal_and_score: OK` once no other
+   flight held the lock. Both cells still owe that tick under §8 item 4 at flight time (§6's table
+   says why). Smoke, then the 400.
 3. **The SLURP packet encode**, on the CPU sidecar, alone. It needs no GPU session, so it can occupy a
    GPU gap — but it must not overlap a GPU flight: the campaign CPU cap is 8 workers and this program
    has already recorded that two resident CPU embedders broke bit-exactness on a paired comparison.
@@ -538,11 +549,12 @@ Every item is a refusal point. An agent that cannot tick one stops and reports; 
    fragment then pinning that receipt and its SHA-256: **OPEN**, and it is the only one.
 4. The **zero-contact wire check is re-run and reaches `seal_and_score: OK`** on this cell's own
    fragments. A manifest that seals `COMPLETED` and then will not score wastes GPU time after it has
-   been spent. The Audio2Tool smoke already does (§6), and the 400-row cell reaches the same seal but
-   was refused by a CONCURRENT flight's lock, so it still owes this tick; the two SLURP cells cannot
-   tick it until item 3's promotion exists. Re-running the check is a refusal point, not a formality,
-   and it must be run when NO other flight holds `$SPEECHRL_DATA_DIR/locks/flight.lock` -- that lock
-   is never removed or edited to get a green.
+   been spent. The Audio2Tool smoke has been measured at OK once (§6, column 5); both Audio2Tool
+   cells are refused at the seal whenever another flight holds
+   `$SPEECHRL_DATA_DIR/locks/flight.lock`, so this tick has to be taken with the lock free,
+   immediately before the flight -- and that lock is never removed or edited to get a green. The two
+   SLURP cells cannot tick it at all until item 3's promotion exists. Re-running the check is a
+   refusal point, not a formality.
    Earnings-21 has no `wire_check` at all — it does not fly through `FlightRuntime` — so its
    equivalent is `run_experiment_bundled`'s own model-free preflight, driven in §6.3 and re-driven
    before the flight.
