@@ -1,0 +1,130 @@
+{
+  "arms": {
+    "Q8": {
+      "agentic_error_rate_percent": 1.8552,
+      "agentic_error_rate_strict_percent": 2.1485,
+      "boundary_category_mass": 2128,
+      "boundary_wer_points": 8.1064,
+      "category_table": [
+        {
+          "category": "format-convention",
+          "error_mass": 94,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 78,
+          "share_of_error_mass_percent": 2.11,
+          "spans": 78,
+          "wer_points": 0.3581
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 223,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 187,
+          "share_of_error_mass_percent": 5.006,
+          "spans": 187,
+          "wer_points": 0.8495
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 914,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 552,
+          "share_of_error_mass_percent": 20.516,
+          "spans": 552,
+          "wer_points": 3.4818
+        },
+        {
+          "category": "named-entity",
+          "error_mass": 299,
+          "impact_HIGH": 217,
+          "impact_LOW": 0,
+          "impact_NONE": 0,
+          "share_of_error_mass_percent": 6.712,
+          "spans": 217,
+          "wer_points": 1.139
+        },
+        {
+          "category": "domain-term",
+          "error_mass": 49,
+          "impact_HIGH": 1,
+          "impact_LOW": 36,
+          "impact_NONE": 0,
+          "share_of_error_mass_percent": 1.1,
+          "spans": 37,
+          "wer_points": 0.1867
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 1354,
+          "impact_HIGH": 40,
+          "impact_LOW": 228,
+          "impact_NONE": 71,
+          "share_of_error_mass_percent": 30.393,
+          "spans": 339,
+          "wer_points": 5.1579
+        },
+        {
+          "category": "acoustic-misrecognition",
+          "error_mass": 331,
+          "impact_HIGH": 33,
+          "impact_LOW": 190,
+          "impact_NONE": 27,
+          "share_of_error_mass_percent": 7.43,
+          "spans": 250,
+          "wer_points": 1.2609
+        },
+        {
+          "category": "other",
+          "error_mass": 1191,
+          "impact_HIGH": 57,
+          "impact_LOW": 403,
+          "impact_NONE": 394,
+          "share_of_error_mass_percent": 26.734,
+          "spans": 854,
+          "wer_points": 4.537
+        }
+      ],
+      "corpus_wer_percent_taxonomy_aligner": 16.9708,
+      "deletions": 587,
+      "high_impact_reference_word_mass": 487,
+      "high_impact_spans": 348,
+      "hypothesis_to_reference_length_ratio": 1.0824,
+      "hypothesis_words": 28415,
+      "insertion_share_of_errors_percent": 61.751,
+      "insertions": 2751,
+      "reference_words": 26251,
+      "rows": 1500,
+      "runaway_head_mass": 77,
+      "runaway_tail_mass": 1137,
+      "segmentation_artifact_mass": 914,
+      "strata": {
+        "4453225": 150,
+        "4469088": 150,
+        "4470684": 150,
+        "4474506": 150,
+        "4479944": 150,
+        "4481952": 150,
+        "4482383": 150,
+        "4482613": 150,
+        "4483937": 150,
+        "4485192": 150
+      },
+      "substitutions": 1117
+    }
+  },
+  "boundary_definition": "segmentation-artifact category + model-behaviour/runaway-tail + model-behaviour/runaway-head",
+  "impact_neutral_categories": [
+    "format-convention",
+    "reference-convention",
+    "segmentation-artifact"
+  ],
+  "model_contacts": 0,
+  "outbound_attempts_during_this_read": 0,
+  "outbound_targets": [],
+  "population": "E22-DEV-ESB-1500-V1",
+  "schema": "saea-e22-q8-agentic-read-v1",
+  "taxonomy_version": "saea-e22-error-taxonomy-v1"
+}

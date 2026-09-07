@@ -1,0 +1,5699 @@
+{
+  "agentic_read": {
+    "agentic_error_rate_percent": 1.8552,
+    "agentic_error_rate_strict_percent": 2.1485,
+    "aligner_identity_gate": "the taxonomy's own aligner reproduces the sealed scorer's S/D/I and corpus WER on these outputs exactly (1117 / 587 / 2751, 16.9708 %), which is the condition the module imposes on itself before any figure it produces may be read",
+    "boundary_category_mass": 2128,
+    "boundary_wer_points": 8.1064,
+    "category_table": [
+      {
+        "category": "format-convention",
+        "error_mass": 94,
+        "impact_HIGH": 0,
+        "impact_LOW": 0,
+        "impact_NONE": 78,
+        "share_of_error_mass_percent": 2.11,
+        "spans": 78,
+        "wer_points": 0.3581
+      },
+      {
+        "category": "reference-convention",
+        "error_mass": 223,
+        "impact_HIGH": 0,
+        "impact_LOW": 0,
+        "impact_NONE": 187,
+        "share_of_error_mass_percent": 5.006,
+        "spans": 187,
+        "wer_points": 0.8495
+      },
+      {
+        "category": "segmentation-artifact",
+        "error_mass": 914,
+        "impact_HIGH": 0,
+        "impact_LOW": 0,
+        "impact_NONE": 552,
+        "share_of_error_mass_percent": 20.516,
+        "spans": 552,
+        "wer_points": 3.4818
+      },
+      {
+        "category": "named-entity",
+        "error_mass": 299,
+        "impact_HIGH": 217,
+        "impact_LOW": 0,
+        "impact_NONE": 0,
+        "share_of_error_mass_percent": 6.712,
+        "spans": 217,
+        "wer_points": 1.139
+      },
+      {
+        "category": "domain-term",
+        "error_mass": 49,
+        "impact_HIGH": 1,
+        "impact_LOW": 36,
+        "impact_NONE": 0,
+        "share_of_error_mass_percent": 1.1,
+        "spans": 37,
+        "wer_points": 0.1867
+      },
+      {
+        "category": "model-behaviour",
+        "error_mass": 1354,
+        "impact_HIGH": 40,
+        "impact_LOW": 228,
+        "impact_NONE": 71,
+        "share_of_error_mass_percent": 30.393,
+        "spans": 339,
+        "wer_points": 5.1579
+      },
+      {
+        "category": "acoustic-misrecognition",
+        "error_mass": 331,
+        "impact_HIGH": 33,
+        "impact_LOW": 190,
+        "impact_NONE": 27,
+        "share_of_error_mass_percent": 7.43,
+        "spans": 250,
+        "wer_points": 1.2609
+      },
+      {
+        "category": "other",
+        "error_mass": 1191,
+        "impact_HIGH": 57,
+        "impact_LOW": 403,
+        "impact_NONE": 394,
+        "share_of_error_mass_percent": 26.734,
+        "spans": 854,
+        "wer_points": 4.537
+      }
+    ],
+    "high_impact_reference_word_mass": 487,
+    "high_impact_spans": 348,
+    "hypothesis_to_reference_length_ratio": 1.0824,
+    "insertion_share_of_errors_percent": 61.751,
+    "module": "analysis.e22_error_taxonomy",
+    "reading_path_anchor": "the same call on the SEALED comparator's rows, restricted to these 1,500 ids, reproduces the preregistration's own published subset figures (corpus WER 17.4012 %, agentic error rate 1.9161 %) to the digit -- which is what proves the reading path here is the one those figures came from. That is a method check, not a contrast",
+    "runaway_head_mass": 77,
+    "runaway_tail_mass": 1137,
+    "segmentation_artifact_mass": 914,
+    "strata_rows": {
+      "4453225": 150,
+      "4469088": 150,
+      "4470684": 150,
+      "4474506": 150,
+      "4479944": 150,
+      "4481952": 150,
+      "4482383": 150,
+      "4482613": 150,
+      "4483937": 150,
+      "4485192": 150
+    },
+    "taxonomy_version": "saea-e22-error-taxonomy-v1"
+  },
+  "attempt_id": "attempt-20260907T030402Z-60e8e1",
+  "attempts": 1,
+  "budget": {
+    "gpu_hours_basis": "llama-server residency, 2026-09-07T03:04:49Z to 2026-09-07T03:59:56Z = 3307 s",
+    "paid_api_spend": 0,
+    "plan": {
+      "calls": 1508,
+      "gpu_hours": 2.0,
+      "speech_audio_seconds": 10000
+    },
+    "registered_ceilings": {
+      "calls": 1600,
+      "gpu_hours": 3.0,
+      "speech_audio_seconds": 10500
+    },
+    "spent": {
+      "calls": 1500,
+      "gpu_hours_session_residency": 0.9186,
+      "speech_audio_seconds": 9948.982999999995
+    }
+  },
+  "cell": "cell (a), the decoder quantization",
+  "generated_at": "2026-09-07T04:03:01.205851+00:00",
+  "gpu_host_timeline": [
+    {
+      "free": 5048,
+      "host_avail": 54000,
+      "power": 22.46,
+      "rss": 19186,
+      "used": 19090,
+      "utc": "03:06:08Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 53958,
+      "power": 23.13,
+      "rss": 19226,
+      "used": 19090,
+      "utc": "03:06:15Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 53945,
+      "power": 32.45,
+      "rss": 19238,
+      "used": 19090,
+      "utc": "03:06:20Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 53913,
+      "power": 24.48,
+      "rss": 19268,
+      "used": 19090,
+      "utc": "03:06:25Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 53891,
+      "power": 25.39,
+      "rss": 19293,
+      "used": 19090,
+      "utc": "03:06:30Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 53856,
+      "power": 34.27,
+      "rss": 19327,
+      "used": 19090,
+      "utc": "03:06:35Z",
+      "util": 24
+    },
+    {
+      "free": 5048,
+      "host_avail": 53839,
+      "power": 25.99,
+      "rss": 19342,
+      "used": 19090,
+      "utc": "03:06:40Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 53826,
+      "power": 23.18,
+      "rss": 19357,
+      "used": 19090,
+      "utc": "03:06:45Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 53796,
+      "power": 24.74,
+      "rss": 19387,
+      "used": 19090,
+      "utc": "03:06:52Z",
+      "util": 45
+    },
+    {
+      "free": 5048,
+      "host_avail": 53774,
+      "power": 24.31,
+      "rss": 19406,
+      "used": 19090,
+      "utc": "03:06:57Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 53746,
+      "power": 23.83,
+      "rss": 19434,
+      "used": 19090,
+      "utc": "03:07:02Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 53741,
+      "power": 22.97,
+      "rss": 19439,
+      "used": 19090,
+      "utc": "03:07:07Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 53721,
+      "power": 23.14,
+      "rss": 19458,
+      "used": 19090,
+      "utc": "03:07:13Z",
+      "util": 12
+    },
+    {
+      "free": 5048,
+      "host_avail": 53683,
+      "power": 23.4,
+      "rss": 19492,
+      "used": 19090,
+      "utc": "03:07:18Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 53668,
+      "power": 36.04,
+      "rss": 19505,
+      "used": 19090,
+      "utc": "03:07:25Z",
+      "util": 9
+    },
+    {
+      "free": 5048,
+      "host_avail": 53641,
+      "power": 23.87,
+      "rss": 19531,
+      "used": 19090,
+      "utc": "03:07:30Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 53609,
+      "power": 23.65,
+      "rss": 19561,
+      "used": 19090,
+      "utc": "03:07:35Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 53589,
+      "power": 26.83,
+      "rss": 19584,
+      "used": 19090,
+      "utc": "03:07:40Z",
+      "util": 2
+    },
+    {
+      "free": 5048,
+      "host_avail": 53576,
+      "power": 15.08,
+      "rss": 19598,
+      "used": 19090,
+      "utc": "03:07:45Z",
+      "util": 0
+    },
+    {
+      "free": 5048,
+      "host_avail": 53548,
+      "power": 22.96,
+      "rss": 19625,
+      "used": 19090,
+      "utc": "03:07:50Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 53535,
+      "power": 25.59,
+      "rss": 19639,
+      "used": 19090,
+      "utc": "03:07:56Z",
+      "util": 1
+    },
+    {
+      "free": 5048,
+      "host_avail": 53510,
+      "power": 23.76,
+      "rss": 19666,
+      "used": 19090,
+      "utc": "03:08:03Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 53493,
+      "power": 23.58,
+      "rss": 19682,
+      "used": 19090,
+      "utc": "03:08:08Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 53459,
+      "power": 23.27,
+      "rss": 19717,
+      "used": 19090,
+      "utc": "03:08:13Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 53443,
+      "power": 14.73,
+      "rss": 19732,
+      "used": 19090,
+      "utc": "03:08:18Z",
+      "util": 25
+    },
+    {
+      "free": 5048,
+      "host_avail": 53431,
+      "power": 28.96,
+      "rss": 19743,
+      "used": 19090,
+      "utc": "03:08:23Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 53413,
+      "power": 24.88,
+      "rss": 19763,
+      "used": 19090,
+      "utc": "03:08:28Z",
+      "util": 21
+    },
+    {
+      "free": 5048,
+      "host_avail": 53390,
+      "power": 24.0,
+      "rss": 19783,
+      "used": 19090,
+      "utc": "03:08:33Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 53367,
+      "power": 22.82,
+      "rss": 19811,
+      "used": 19090,
+      "utc": "03:08:40Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 53349,
+      "power": 24.91,
+      "rss": 19827,
+      "used": 19090,
+      "utc": "03:08:45Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 53326,
+      "power": 24.68,
+      "rss": 19848,
+      "used": 19090,
+      "utc": "03:08:50Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 53317,
+      "power": 33.33,
+      "rss": 19857,
+      "used": 19090,
+      "utc": "03:08:56Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 53297,
+      "power": 26.74,
+      "rss": 19877,
+      "used": 19090,
+      "utc": "03:09:01Z",
+      "util": 9
+    },
+    {
+      "free": 5048,
+      "host_avail": 53269,
+      "power": 23.48,
+      "rss": 19902,
+      "used": 19090,
+      "utc": "03:09:06Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 53263,
+      "power": 46.81,
+      "rss": 19912,
+      "used": 19090,
+      "utc": "03:09:13Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 53245,
+      "power": 34.53,
+      "rss": 19933,
+      "used": 19090,
+      "utc": "03:09:18Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 53214,
+      "power": 25.29,
+      "rss": 19963,
+      "used": 19090,
+      "utc": "03:09:23Z",
+      "util": 28
+    },
+    {
+      "free": 5048,
+      "host_avail": 53182,
+      "power": 26.67,
+      "rss": 19998,
+      "used": 19090,
+      "utc": "03:09:28Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 53158,
+      "power": 23.98,
+      "rss": 20023,
+      "used": 19090,
+      "utc": "03:09:33Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 53138,
+      "power": 24.48,
+      "rss": 20041,
+      "used": 19090,
+      "utc": "03:09:38Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 53121,
+      "power": 18.5,
+      "rss": 20058,
+      "used": 19090,
+      "utc": "03:09:43Z",
+      "util": 3
+    },
+    {
+      "free": 5048,
+      "host_avail": 53102,
+      "power": 22.49,
+      "rss": 20077,
+      "used": 19090,
+      "utc": "03:09:50Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 53074,
+      "power": 24.29,
+      "rss": 20101,
+      "used": 19090,
+      "utc": "03:09:55Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 53064,
+      "power": 26.64,
+      "rss": 20113,
+      "used": 19090,
+      "utc": "03:10:01Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 53044,
+      "power": 27.73,
+      "rss": 20128,
+      "used": 19090,
+      "utc": "03:10:06Z",
+      "util": 1
+    },
+    {
+      "free": 5048,
+      "host_avail": 53019,
+      "power": 24.57,
+      "rss": 20152,
+      "used": 19090,
+      "utc": "03:10:11Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 52996,
+      "power": 23.47,
+      "rss": 20172,
+      "used": 19090,
+      "utc": "03:10:16Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 52961,
+      "power": 35.65,
+      "rss": 20209,
+      "used": 19090,
+      "utc": "03:10:23Z",
+      "util": 46
+    },
+    {
+      "free": 5048,
+      "host_avail": 52945,
+      "power": 23.74,
+      "rss": 20226,
+      "used": 19090,
+      "utc": "03:10:28Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 52909,
+      "power": 16.88,
+      "rss": 20226,
+      "used": 19090,
+      "utc": "03:10:33Z",
+      "util": 2
+    },
+    {
+      "free": 5048,
+      "host_avail": 52919,
+      "power": 23.18,
+      "rss": 20248,
+      "used": 19090,
+      "utc": "03:10:38Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 52907,
+      "power": 23.78,
+      "rss": 20259,
+      "used": 19090,
+      "utc": "03:10:43Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 52897,
+      "power": 23.03,
+      "rss": 20270,
+      "used": 19090,
+      "utc": "03:10:48Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 52867,
+      "power": 23.95,
+      "rss": 20297,
+      "used": 19090,
+      "utc": "03:10:53Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 52857,
+      "power": 41.57,
+      "rss": 20312,
+      "used": 19090,
+      "utc": "03:11:00Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 52828,
+      "power": 32.51,
+      "rss": 20336,
+      "used": 19090,
+      "utc": "03:11:06Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 52756,
+      "power": 36.2,
+      "rss": 20409,
+      "used": 19090,
+      "utc": "03:11:11Z",
+      "util": 17
+    },
+    {
+      "free": 5048,
+      "host_avail": 52747,
+      "power": 23.56,
+      "rss": 20416,
+      "used": 19090,
+      "utc": "03:11:16Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 52722,
+      "power": 23.33,
+      "rss": 20441,
+      "used": 19090,
+      "utc": "03:11:21Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 52706,
+      "power": 32.99,
+      "rss": 20455,
+      "used": 19090,
+      "utc": "03:11:26Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 52686,
+      "power": 23.51,
+      "rss": 20479,
+      "used": 19090,
+      "utc": "03:11:31Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 52667,
+      "power": 24.09,
+      "rss": 20499,
+      "used": 19090,
+      "utc": "03:11:38Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 52641,
+      "power": 23.52,
+      "rss": 20524,
+      "used": 19090,
+      "utc": "03:11:43Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 52618,
+      "power": 23.62,
+      "rss": 20547,
+      "used": 19090,
+      "utc": "03:11:48Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 52618,
+      "power": 21.76,
+      "rss": 20547,
+      "used": 19090,
+      "utc": "03:11:53Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 52595,
+      "power": 22.94,
+      "rss": 20566,
+      "used": 19090,
+      "utc": "03:11:58Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 52573,
+      "power": 27.03,
+      "rss": 20587,
+      "used": 19090,
+      "utc": "03:12:03Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 52529,
+      "power": 24.22,
+      "rss": 20630,
+      "used": 19090,
+      "utc": "03:12:10Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 52516,
+      "power": 30.15,
+      "rss": 20649,
+      "used": 19090,
+      "utc": "03:12:15Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 52496,
+      "power": 24.23,
+      "rss": 20669,
+      "used": 19090,
+      "utc": "03:12:21Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 52464,
+      "power": 24.19,
+      "rss": 20702,
+      "used": 19090,
+      "utc": "03:12:26Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 52451,
+      "power": 31.73,
+      "rss": 20718,
+      "used": 19090,
+      "utc": "03:12:31Z",
+      "util": 28
+    },
+    {
+      "free": 5048,
+      "host_avail": 52444,
+      "power": 18.01,
+      "rss": 20725,
+      "used": 19090,
+      "utc": "03:12:36Z",
+      "util": 1
+    },
+    {
+      "free": 5048,
+      "host_avail": 52419,
+      "power": 24.21,
+      "rss": 20749,
+      "used": 19090,
+      "utc": "03:12:41Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 52402,
+      "power": 25.03,
+      "rss": 20765,
+      "used": 19090,
+      "utc": "03:12:48Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 52376,
+      "power": 25.23,
+      "rss": 20789,
+      "used": 19090,
+      "utc": "03:12:53Z",
+      "util": 12
+    },
+    {
+      "free": 5048,
+      "host_avail": 52355,
+      "power": 19.78,
+      "rss": 20810,
+      "used": 19090,
+      "utc": "03:12:58Z",
+      "util": 1
+    },
+    {
+      "free": 5048,
+      "host_avail": 52321,
+      "power": 59.78,
+      "rss": 20842,
+      "used": 19090,
+      "utc": "03:13:03Z",
+      "util": 9
+    },
+    {
+      "free": 5048,
+      "host_avail": 52300,
+      "power": 23.29,
+      "rss": 20866,
+      "used": 19090,
+      "utc": "03:13:09Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 52275,
+      "power": 24.18,
+      "rss": 20888,
+      "used": 19090,
+      "utc": "03:13:14Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 52259,
+      "power": 15.05,
+      "rss": 20904,
+      "used": 19090,
+      "utc": "03:13:19Z",
+      "util": 7
+    },
+    {
+      "free": 5048,
+      "host_avail": 52249,
+      "power": 27.21,
+      "rss": 20911,
+      "used": 19090,
+      "utc": "03:13:26Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 52209,
+      "power": 22.12,
+      "rss": 20952,
+      "used": 19090,
+      "utc": "03:13:31Z",
+      "util": 33
+    },
+    {
+      "free": 5048,
+      "host_avail": 52205,
+      "power": 24.14,
+      "rss": 20957,
+      "used": 19090,
+      "utc": "03:13:36Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 52189,
+      "power": 23.62,
+      "rss": 20975,
+      "used": 19090,
+      "utc": "03:13:41Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 52174,
+      "power": 53.85,
+      "rss": 20989,
+      "used": 19090,
+      "utc": "03:13:46Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 52154,
+      "power": 24.91,
+      "rss": 21008,
+      "used": 19090,
+      "utc": "03:13:51Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 52138,
+      "power": 34.01,
+      "rss": 21024,
+      "used": 19090,
+      "utc": "03:13:58Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 52103,
+      "power": 22.81,
+      "rss": 21060,
+      "used": 19090,
+      "utc": "03:14:03Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 52091,
+      "power": 25.4,
+      "rss": 21069,
+      "used": 19090,
+      "utc": "03:14:08Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 52064,
+      "power": 27.59,
+      "rss": 21097,
+      "used": 19090,
+      "utc": "03:14:13Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 52058,
+      "power": 25.59,
+      "rss": 21104,
+      "used": 19090,
+      "utc": "03:14:18Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 52036,
+      "power": 24.35,
+      "rss": 21126,
+      "used": 19090,
+      "utc": "03:14:24Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 52022,
+      "power": 24.14,
+      "rss": 21142,
+      "used": 19090,
+      "utc": "03:14:29Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 52022,
+      "power": 23.54,
+      "rss": 21144,
+      "used": 19090,
+      "utc": "03:14:36Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 51992,
+      "power": 31.76,
+      "rss": 21171,
+      "used": 19090,
+      "utc": "03:14:41Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 51971,
+      "power": 24.25,
+      "rss": 21193,
+      "used": 19090,
+      "utc": "03:14:46Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 51948,
+      "power": 21.73,
+      "rss": 21214,
+      "used": 19090,
+      "utc": "03:14:51Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 51920,
+      "power": 23.52,
+      "rss": 21240,
+      "used": 19090,
+      "utc": "03:14:56Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 51881,
+      "power": 35.25,
+      "rss": 21277,
+      "used": 19090,
+      "utc": "03:15:01Z",
+      "util": 47
+    },
+    {
+      "free": 5048,
+      "host_avail": 51882,
+      "power": 26.97,
+      "rss": 21277,
+      "used": 19090,
+      "utc": "03:15:08Z",
+      "util": 2
+    },
+    {
+      "free": 5048,
+      "host_avail": 51853,
+      "power": 27.84,
+      "rss": 21307,
+      "used": 19090,
+      "utc": "03:15:13Z",
+      "util": 26
+    },
+    {
+      "free": 5048,
+      "host_avail": 51841,
+      "power": 24.79,
+      "rss": 21323,
+      "used": 19090,
+      "utc": "03:15:19Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 51824,
+      "power": 37.54,
+      "rss": 21343,
+      "used": 19090,
+      "utc": "03:15:24Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 51799,
+      "power": 23.85,
+      "rss": 21364,
+      "used": 19090,
+      "utc": "03:15:29Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 51776,
+      "power": 23.52,
+      "rss": 21388,
+      "used": 19090,
+      "utc": "03:15:34Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 51761,
+      "power": 23.52,
+      "rss": 21404,
+      "used": 19090,
+      "utc": "03:15:39Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 51735,
+      "power": 23.73,
+      "rss": 21430,
+      "used": 19090,
+      "utc": "03:15:46Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 51725,
+      "power": 25.44,
+      "rss": 21438,
+      "used": 19090,
+      "utc": "03:15:51Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 51710,
+      "power": 21.81,
+      "rss": 21454,
+      "used": 19090,
+      "utc": "03:15:56Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 51698,
+      "power": 37.49,
+      "rss": 21465,
+      "used": 19090,
+      "utc": "03:16:01Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 51660,
+      "power": 23.91,
+      "rss": 21503,
+      "used": 19090,
+      "utc": "03:16:06Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 51641,
+      "power": 24.78,
+      "rss": 21517,
+      "used": 19090,
+      "utc": "03:16:11Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 51621,
+      "power": 22.79,
+      "rss": 21539,
+      "used": 19090,
+      "utc": "03:16:16Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 51601,
+      "power": 25.2,
+      "rss": 21558,
+      "used": 19090,
+      "utc": "03:16:23Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 51588,
+      "power": 23.4,
+      "rss": 21574,
+      "used": 19090,
+      "utc": "03:16:29Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 51574,
+      "power": 29.23,
+      "rss": 21591,
+      "used": 19090,
+      "utc": "03:16:34Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 51552,
+      "power": 24.62,
+      "rss": 21614,
+      "used": 19090,
+      "utc": "03:16:39Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 51530,
+      "power": 24.32,
+      "rss": 21634,
+      "used": 19090,
+      "utc": "03:16:44Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 51516,
+      "power": 25.24,
+      "rss": 21652,
+      "used": 19090,
+      "utc": "03:16:49Z",
+      "util": 8
+    },
+    {
+      "free": 5048,
+      "host_avail": 51489,
+      "power": 24.02,
+      "rss": 21678,
+      "used": 19090,
+      "utc": "03:16:56Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 51442,
+      "power": 24.43,
+      "rss": 21721,
+      "used": 19090,
+      "utc": "03:17:01Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 51442,
+      "power": 26.26,
+      "rss": 21722,
+      "used": 19090,
+      "utc": "03:17:06Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 51405,
+      "power": 31.48,
+      "rss": 21760,
+      "used": 19090,
+      "utc": "03:17:11Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 51382,
+      "power": 31.23,
+      "rss": 21782,
+      "used": 19090,
+      "utc": "03:17:16Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 51377,
+      "power": 26.45,
+      "rss": 21789,
+      "used": 19090,
+      "utc": "03:17:22Z",
+      "util": 1
+    },
+    {
+      "free": 5048,
+      "host_avail": 51361,
+      "power": 48.25,
+      "rss": 21803,
+      "used": 19090,
+      "utc": "03:17:27Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 51331,
+      "power": 27.43,
+      "rss": 21832,
+      "used": 19090,
+      "utc": "03:17:34Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 51315,
+      "power": 31.8,
+      "rss": 21849,
+      "used": 19090,
+      "utc": "03:17:39Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 51294,
+      "power": 23.16,
+      "rss": 21868,
+      "used": 19090,
+      "utc": "03:17:44Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 51257,
+      "power": 23.16,
+      "rss": 21904,
+      "used": 19090,
+      "utc": "03:17:49Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 51199,
+      "power": 22.94,
+      "rss": 21958,
+      "used": 19090,
+      "utc": "03:17:54Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 51191,
+      "power": 22.53,
+      "rss": 21969,
+      "used": 19090,
+      "utc": "03:17:59Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 51168,
+      "power": 25.67,
+      "rss": 21989,
+      "used": 19090,
+      "utc": "03:18:04Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 51164,
+      "power": 44.97,
+      "rss": 21995,
+      "used": 19090,
+      "utc": "03:18:11Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 51144,
+      "power": 28.56,
+      "rss": 22014,
+      "used": 19090,
+      "utc": "03:18:17Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 51128,
+      "power": 22.96,
+      "rss": 22030,
+      "used": 19090,
+      "utc": "03:18:22Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 51110,
+      "power": 22.16,
+      "rss": 22050,
+      "used": 19090,
+      "utc": "03:18:27Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 51070,
+      "power": 22.97,
+      "rss": 22091,
+      "used": 19090,
+      "utc": "03:18:32Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 51032,
+      "power": 23.54,
+      "rss": 22126,
+      "used": 19090,
+      "utc": "03:18:37Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 51030,
+      "power": 33.28,
+      "rss": 22128,
+      "used": 19090,
+      "utc": "03:18:44Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 50984,
+      "power": 26.15,
+      "rss": 22174,
+      "used": 19090,
+      "utc": "03:18:49Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 50982,
+      "power": 21.5,
+      "rss": 22174,
+      "used": 19090,
+      "utc": "03:18:54Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 50958,
+      "power": 38.72,
+      "rss": 22196,
+      "used": 19090,
+      "utc": "03:18:59Z",
+      "util": 12
+    },
+    {
+      "free": 5048,
+      "host_avail": 50941,
+      "power": 34.05,
+      "rss": 22216,
+      "used": 19090,
+      "utc": "03:19:04Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 50920,
+      "power": 25.43,
+      "rss": 22240,
+      "used": 19090,
+      "utc": "03:19:09Z",
+      "util": 3
+    },
+    {
+      "free": 5048,
+      "host_avail": 50895,
+      "power": 26.81,
+      "rss": 22261,
+      "used": 19090,
+      "utc": "03:19:14Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 50874,
+      "power": 24.26,
+      "rss": 22284,
+      "used": 19090,
+      "utc": "03:19:21Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 50853,
+      "power": 24.95,
+      "rss": 22303,
+      "used": 19090,
+      "utc": "03:19:26Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 50851,
+      "power": 18.28,
+      "rss": 22310,
+      "used": 19090,
+      "utc": "03:19:32Z",
+      "util": 17
+    },
+    {
+      "free": 5048,
+      "host_avail": 50825,
+      "power": 24.7,
+      "rss": 22334,
+      "used": 19090,
+      "utc": "03:19:37Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 50793,
+      "power": 22.02,
+      "rss": 22364,
+      "used": 19090,
+      "utc": "03:19:42Z",
+      "util": 45
+    },
+    {
+      "free": 5048,
+      "host_avail": 50773,
+      "power": 82.45,
+      "rss": 22380,
+      "used": 19090,
+      "utc": "03:19:47Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 50762,
+      "power": 23.14,
+      "rss": 22389,
+      "used": 19090,
+      "utc": "03:19:53Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 50745,
+      "power": 21.07,
+      "rss": 22405,
+      "used": 19090,
+      "utc": "03:19:59Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 50727,
+      "power": 25.31,
+      "rss": 22427,
+      "used": 19090,
+      "utc": "03:20:04Z",
+      "util": 3
+    },
+    {
+      "free": 5048,
+      "host_avail": 50702,
+      "power": 17.35,
+      "rss": 22455,
+      "used": 19090,
+      "utc": "03:20:09Z",
+      "util": 19
+    },
+    {
+      "free": 5048,
+      "host_avail": 50661,
+      "power": 39.93,
+      "rss": 22495,
+      "used": 19090,
+      "utc": "03:20:14Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 50632,
+      "power": 22.9,
+      "rss": 22525,
+      "used": 19090,
+      "utc": "03:20:19Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 50627,
+      "power": 32.76,
+      "rss": 22531,
+      "used": 19090,
+      "utc": "03:20:24Z",
+      "util": 20
+    },
+    {
+      "free": 5048,
+      "host_avail": 50606,
+      "power": 23.11,
+      "rss": 22558,
+      "used": 19090,
+      "utc": "03:20:31Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 50580,
+      "power": 24.06,
+      "rss": 22583,
+      "used": 19090,
+      "utc": "03:20:36Z",
+      "util": 1
+    },
+    {
+      "free": 5048,
+      "host_avail": 50533,
+      "power": 23.85,
+      "rss": 22629,
+      "used": 19090,
+      "utc": "03:20:41Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 50513,
+      "power": 24.3,
+      "rss": 22651,
+      "used": 19090,
+      "utc": "03:20:46Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 50492,
+      "power": 24.22,
+      "rss": 22673,
+      "used": 19090,
+      "utc": "03:20:51Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 50488,
+      "power": 26.32,
+      "rss": 22673,
+      "used": 19090,
+      "utc": "03:20:57Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 50469,
+      "power": 29.02,
+      "rss": 22694,
+      "used": 19090,
+      "utc": "03:21:02Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 50429,
+      "power": 24.23,
+      "rss": 22737,
+      "used": 19090,
+      "utc": "03:21:08Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 50417,
+      "power": 27.05,
+      "rss": 22750,
+      "used": 19090,
+      "utc": "03:21:13Z",
+      "util": 45
+    },
+    {
+      "free": 5048,
+      "host_avail": 50383,
+      "power": 24.69,
+      "rss": 22783,
+      "used": 19090,
+      "utc": "03:21:19Z",
+      "util": 25
+    },
+    {
+      "free": 5048,
+      "host_avail": 50382,
+      "power": 34.43,
+      "rss": 22784,
+      "used": 19090,
+      "utc": "03:21:24Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 50345,
+      "power": 17.41,
+      "rss": 22820,
+      "used": 19090,
+      "utc": "03:21:29Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 50339,
+      "power": 23.97,
+      "rss": 22821,
+      "used": 19090,
+      "utc": "03:21:34Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 50331,
+      "power": 34.2,
+      "rss": 22827,
+      "used": 19090,
+      "utc": "03:21:41Z",
+      "util": 12
+    },
+    {
+      "free": 5048,
+      "host_avail": 50310,
+      "power": 36.12,
+      "rss": 22848,
+      "used": 19090,
+      "utc": "03:21:46Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 50279,
+      "power": 24.92,
+      "rss": 22877,
+      "used": 19090,
+      "utc": "03:21:51Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 50271,
+      "power": 23.92,
+      "rss": 22884,
+      "used": 19090,
+      "utc": "03:21:56Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 50257,
+      "power": 26.77,
+      "rss": 22898,
+      "used": 19090,
+      "utc": "03:22:01Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 50247,
+      "power": 35.22,
+      "rss": 22907,
+      "used": 19090,
+      "utc": "03:22:06Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 50226,
+      "power": 32.4,
+      "rss": 22928,
+      "used": 19090,
+      "utc": "03:22:11Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 50180,
+      "power": 23.34,
+      "rss": 22974,
+      "used": 19090,
+      "utc": "03:22:18Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 50168,
+      "power": 40.37,
+      "rss": 22987,
+      "used": 19090,
+      "utc": "03:22:23Z",
+      "util": 19
+    },
+    {
+      "free": 5048,
+      "host_avail": 50138,
+      "power": 31.14,
+      "rss": 23023,
+      "used": 19090,
+      "utc": "03:22:28Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 50128,
+      "power": 31.99,
+      "rss": 23031,
+      "used": 19090,
+      "utc": "03:22:33Z",
+      "util": 23
+    },
+    {
+      "free": 5048,
+      "host_avail": 50084,
+      "power": 24.3,
+      "rss": 23076,
+      "used": 19090,
+      "utc": "03:22:38Z",
+      "util": 21
+    },
+    {
+      "free": 5048,
+      "host_avail": 50072,
+      "power": 33.13,
+      "rss": 23085,
+      "used": 19090,
+      "utc": "03:22:43Z",
+      "util": 25
+    },
+    {
+      "free": 5048,
+      "host_avail": 50067,
+      "power": 29.93,
+      "rss": 23093,
+      "used": 19090,
+      "utc": "03:22:49Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 50025,
+      "power": 23.56,
+      "rss": 23135,
+      "used": 19090,
+      "utc": "03:22:54Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 49998,
+      "power": 30.51,
+      "rss": 23159,
+      "used": 19090,
+      "utc": "03:22:59Z",
+      "util": 40
+    },
+    {
+      "free": 5048,
+      "host_avail": 49988,
+      "power": 23.14,
+      "rss": 23171,
+      "used": 19090,
+      "utc": "03:23:04Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 49968,
+      "power": 36.14,
+      "rss": 23188,
+      "used": 19090,
+      "utc": "03:23:09Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 49947,
+      "power": 27.08,
+      "rss": 23208,
+      "used": 19090,
+      "utc": "03:23:14Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 49907,
+      "power": 33.43,
+      "rss": 23246,
+      "used": 19090,
+      "utc": "03:23:19Z",
+      "util": 21
+    },
+    {
+      "free": 5048,
+      "host_avail": 49902,
+      "power": 23.57,
+      "rss": 23253,
+      "used": 19090,
+      "utc": "03:23:27Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 49882,
+      "power": 30.8,
+      "rss": 23273,
+      "used": 19090,
+      "utc": "03:23:32Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 49878,
+      "power": 24.09,
+      "rss": 23279,
+      "used": 19090,
+      "utc": "03:23:37Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 49860,
+      "power": 24.77,
+      "rss": 23297,
+      "used": 19090,
+      "utc": "03:23:42Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 49846,
+      "power": 33.17,
+      "rss": 23311,
+      "used": 19090,
+      "utc": "03:23:47Z",
+      "util": 3
+    },
+    {
+      "free": 5048,
+      "host_avail": 49804,
+      "power": 24.63,
+      "rss": 23349,
+      "used": 19090,
+      "utc": "03:23:52Z",
+      "util": 12
+    },
+    {
+      "free": 5048,
+      "host_avail": 49771,
+      "power": 55.22,
+      "rss": 23385,
+      "used": 19090,
+      "utc": "03:23:57Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 49748,
+      "power": 51.11,
+      "rss": 23407,
+      "used": 19090,
+      "utc": "03:24:02Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 49740,
+      "power": 25.97,
+      "rss": 23419,
+      "used": 19090,
+      "utc": "03:24:07Z",
+      "util": 12
+    },
+    {
+      "free": 5048,
+      "host_avail": 49732,
+      "power": 24.45,
+      "rss": 23427,
+      "used": 19090,
+      "utc": "03:24:13Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 49709,
+      "power": 27.16,
+      "rss": 23450,
+      "used": 19090,
+      "utc": "03:24:18Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 49695,
+      "power": 34.02,
+      "rss": 23464,
+      "used": 19090,
+      "utc": "03:24:23Z",
+      "util": 24
+    },
+    {
+      "free": 5048,
+      "host_avail": 49675,
+      "power": 24.52,
+      "rss": 23484,
+      "used": 19090,
+      "utc": "03:24:28Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 49660,
+      "power": 23.5,
+      "rss": 23496,
+      "used": 19090,
+      "utc": "03:24:33Z",
+      "util": 33
+    },
+    {
+      "free": 5048,
+      "host_avail": 49634,
+      "power": 44.26,
+      "rss": 23518,
+      "used": 19090,
+      "utc": "03:24:38Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 49620,
+      "power": 25.84,
+      "rss": 23534,
+      "used": 19090,
+      "utc": "03:24:43Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 49604,
+      "power": 25.23,
+      "rss": 23552,
+      "used": 19090,
+      "utc": "03:24:48Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 49580,
+      "power": 25.43,
+      "rss": 23576,
+      "used": 19090,
+      "utc": "03:24:53Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 49561,
+      "power": 39.45,
+      "rss": 23595,
+      "used": 19090,
+      "utc": "03:24:59Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 49545,
+      "power": 55.65,
+      "rss": 23611,
+      "used": 19090,
+      "utc": "03:25:04Z",
+      "util": 12
+    },
+    {
+      "free": 5048,
+      "host_avail": 49525,
+      "power": 30.08,
+      "rss": 23634,
+      "used": 19090,
+      "utc": "03:25:10Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 49503,
+      "power": 45.12,
+      "rss": 23651,
+      "used": 19090,
+      "utc": "03:25:15Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 49457,
+      "power": 24.42,
+      "rss": 23700,
+      "used": 19090,
+      "utc": "03:25:21Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 49451,
+      "power": 23.89,
+      "rss": 23707,
+      "used": 19090,
+      "utc": "03:25:26Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 49440,
+      "power": 32.64,
+      "rss": 23714,
+      "used": 19090,
+      "utc": "03:25:31Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 49421,
+      "power": 18.83,
+      "rss": 23732,
+      "used": 19090,
+      "utc": "03:25:36Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 49378,
+      "power": 23.62,
+      "rss": 23774,
+      "used": 19090,
+      "utc": "03:25:41Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 49356,
+      "power": 24.63,
+      "rss": 23796,
+      "used": 19090,
+      "utc": "03:25:47Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 49342,
+      "power": 18.39,
+      "rss": 23809,
+      "used": 19090,
+      "utc": "03:25:52Z",
+      "util": 22
+    },
+    {
+      "free": 5048,
+      "host_avail": 49325,
+      "power": 21.87,
+      "rss": 23826,
+      "used": 19090,
+      "utc": "03:25:57Z",
+      "util": 3
+    },
+    {
+      "free": 5048,
+      "host_avail": 49274,
+      "power": 24.18,
+      "rss": 23879,
+      "used": 19090,
+      "utc": "03:26:02Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 49256,
+      "power": 35.11,
+      "rss": 23898,
+      "used": 19090,
+      "utc": "03:26:07Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 49246,
+      "power": 24.52,
+      "rss": 23913,
+      "used": 19090,
+      "utc": "03:26:12Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 49246,
+      "power": 24.17,
+      "rss": 23915,
+      "used": 19090,
+      "utc": "03:26:18Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 49223,
+      "power": 22.78,
+      "rss": 23937,
+      "used": 19090,
+      "utc": "03:26:23Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 49216,
+      "power": 23.18,
+      "rss": 23944,
+      "used": 19090,
+      "utc": "03:26:28Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 49204,
+      "power": 15.84,
+      "rss": 23955,
+      "used": 19090,
+      "utc": "03:26:33Z",
+      "util": 21
+    },
+    {
+      "free": 5048,
+      "host_avail": 49192,
+      "power": 25.65,
+      "rss": 23967,
+      "used": 19090,
+      "utc": "03:26:38Z",
+      "util": 9
+    },
+    {
+      "free": 5048,
+      "host_avail": 49157,
+      "power": 31.27,
+      "rss": 24001,
+      "used": 19090,
+      "utc": "03:26:43Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 49135,
+      "power": 27.77,
+      "rss": 24022,
+      "used": 19090,
+      "utc": "03:26:48Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 49128,
+      "power": 33.8,
+      "rss": 24030,
+      "used": 19090,
+      "utc": "03:26:55Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 49109,
+      "power": 23.17,
+      "rss": 24049,
+      "used": 19090,
+      "utc": "03:27:00Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 49078,
+      "power": 21.76,
+      "rss": 24078,
+      "used": 19090,
+      "utc": "03:27:05Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 49036,
+      "power": 15.15,
+      "rss": 24117,
+      "used": 19090,
+      "utc": "03:27:10Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 49000,
+      "power": 23.73,
+      "rss": 24156,
+      "used": 19090,
+      "utc": "03:27:15Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 48987,
+      "power": 54.42,
+      "rss": 24170,
+      "used": 19090,
+      "utc": "03:27:20Z",
+      "util": 21
+    },
+    {
+      "free": 5048,
+      "host_avail": 48971,
+      "power": 24.18,
+      "rss": 24186,
+      "used": 19090,
+      "utc": "03:27:25Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 48957,
+      "power": 24.57,
+      "rss": 24203,
+      "used": 19090,
+      "utc": "03:27:32Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 48922,
+      "power": 74.52,
+      "rss": 24237,
+      "used": 19090,
+      "utc": "03:27:37Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 48900,
+      "power": 25.3,
+      "rss": 24257,
+      "used": 19090,
+      "utc": "03:27:42Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 48889,
+      "power": 36.3,
+      "rss": 24267,
+      "used": 19090,
+      "utc": "03:27:48Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 48869,
+      "power": 23.4,
+      "rss": 24288,
+      "used": 19090,
+      "utc": "03:27:53Z",
+      "util": 8
+    },
+    {
+      "free": 5048,
+      "host_avail": 48849,
+      "power": 30.9,
+      "rss": 24308,
+      "used": 19090,
+      "utc": "03:27:58Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 48814,
+      "power": 25.38,
+      "rss": 24343,
+      "used": 19090,
+      "utc": "03:28:05Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 48806,
+      "power": 23.15,
+      "rss": 24350,
+      "used": 19090,
+      "utc": "03:28:10Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 48780,
+      "power": 24.57,
+      "rss": 24377,
+      "used": 19090,
+      "utc": "03:28:15Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 48767,
+      "power": 16.37,
+      "rss": 24387,
+      "used": 19090,
+      "utc": "03:28:20Z",
+      "util": 26
+    },
+    {
+      "free": 5048,
+      "host_avail": 48738,
+      "power": 30.75,
+      "rss": 24416,
+      "used": 19090,
+      "utc": "03:28:25Z",
+      "util": 12
+    },
+    {
+      "free": 5048,
+      "host_avail": 48716,
+      "power": 26.18,
+      "rss": 24435,
+      "used": 19090,
+      "utc": "03:28:30Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 48699,
+      "power": 28.5,
+      "rss": 24455,
+      "used": 19090,
+      "utc": "03:28:36Z",
+      "util": 9
+    },
+    {
+      "free": 5048,
+      "host_avail": 48681,
+      "power": 22.56,
+      "rss": 24473,
+      "used": 19090,
+      "utc": "03:28:42Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 48638,
+      "power": 26.46,
+      "rss": 24515,
+      "used": 19090,
+      "utc": "03:28:47Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 48619,
+      "power": 31.3,
+      "rss": 24535,
+      "used": 19090,
+      "utc": "03:28:52Z",
+      "util": 35
+    },
+    {
+      "free": 5048,
+      "host_avail": 48604,
+      "power": 23.94,
+      "rss": 24551,
+      "used": 19090,
+      "utc": "03:28:57Z",
+      "util": 9
+    },
+    {
+      "free": 5048,
+      "host_avail": 48587,
+      "power": 33.34,
+      "rss": 24569,
+      "used": 19090,
+      "utc": "03:29:02Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 48573,
+      "power": 24.71,
+      "rss": 24582,
+      "used": 19090,
+      "utc": "03:29:07Z",
+      "util": 1
+    },
+    {
+      "free": 5048,
+      "host_avail": 48557,
+      "power": 24.8,
+      "rss": 24598,
+      "used": 19090,
+      "utc": "03:29:15Z",
+      "util": 26
+    },
+    {
+      "free": 5048,
+      "host_avail": 48531,
+      "power": 22.0,
+      "rss": 24622,
+      "used": 19090,
+      "utc": "03:29:20Z",
+      "util": 8
+    },
+    {
+      "free": 5048,
+      "host_avail": 48501,
+      "power": 17.27,
+      "rss": 24650,
+      "used": 19090,
+      "utc": "03:29:25Z",
+      "util": 22
+    },
+    {
+      "free": 5048,
+      "host_avail": 48493,
+      "power": 35.84,
+      "rss": 24660,
+      "used": 19090,
+      "utc": "03:29:30Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 48475,
+      "power": 24.39,
+      "rss": 24679,
+      "used": 19090,
+      "utc": "03:29:35Z",
+      "util": 33
+    },
+    {
+      "free": 5048,
+      "host_avail": 48462,
+      "power": 28.07,
+      "rss": 24699,
+      "used": 19090,
+      "utc": "03:29:40Z",
+      "util": 19
+    },
+    {
+      "free": 5048,
+      "host_avail": 48426,
+      "power": 30.21,
+      "rss": 24733,
+      "used": 19090,
+      "utc": "03:29:45Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 48410,
+      "power": 24.19,
+      "rss": 24748,
+      "used": 19090,
+      "utc": "03:29:50Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 48391,
+      "power": 40.74,
+      "rss": 24765,
+      "used": 19090,
+      "utc": "03:29:56Z",
+      "util": 8
+    },
+    {
+      "free": 5048,
+      "host_avail": 48364,
+      "power": 24.82,
+      "rss": 24793,
+      "used": 19090,
+      "utc": "03:30:01Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 48355,
+      "power": 27.44,
+      "rss": 24802,
+      "used": 19090,
+      "utc": "03:30:06Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 48333,
+      "power": 23.49,
+      "rss": 24825,
+      "used": 19090,
+      "utc": "03:30:11Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 48316,
+      "power": 23.98,
+      "rss": 24840,
+      "used": 19090,
+      "utc": "03:30:16Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 48290,
+      "power": 33.6,
+      "rss": 24862,
+      "used": 19090,
+      "utc": "03:30:21Z",
+      "util": 22
+    },
+    {
+      "free": 5048,
+      "host_avail": 48278,
+      "power": 23.91,
+      "rss": 24873,
+      "used": 19090,
+      "utc": "03:30:28Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 48256,
+      "power": 29.62,
+      "rss": 24897,
+      "used": 19090,
+      "utc": "03:30:33Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 48230,
+      "power": 24.25,
+      "rss": 24923,
+      "used": 19090,
+      "utc": "03:30:38Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 48215,
+      "power": 22.93,
+      "rss": 24937,
+      "used": 19090,
+      "utc": "03:30:43Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 48207,
+      "power": 23.67,
+      "rss": 24945,
+      "used": 19090,
+      "utc": "03:30:48Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 48187,
+      "power": 33.95,
+      "rss": 24964,
+      "used": 19090,
+      "utc": "03:30:53Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 48157,
+      "power": 26.14,
+      "rss": 24998,
+      "used": 19090,
+      "utc": "03:31:00Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 48139,
+      "power": 24.22,
+      "rss": 25018,
+      "used": 19090,
+      "utc": "03:31:05Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 48128,
+      "power": 22.82,
+      "rss": 25030,
+      "used": 19090,
+      "utc": "03:31:10Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 48073,
+      "power": 25.53,
+      "rss": 25084,
+      "used": 19090,
+      "utc": "03:31:15Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 48069,
+      "power": 15.0,
+      "rss": 25088,
+      "used": 19090,
+      "utc": "03:31:21Z",
+      "util": 24
+    },
+    {
+      "free": 5048,
+      "host_avail": 48042,
+      "power": 33.81,
+      "rss": 25114,
+      "used": 19090,
+      "utc": "03:31:26Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 48018,
+      "power": 38.48,
+      "rss": 25139,
+      "used": 19090,
+      "utc": "03:31:31Z",
+      "util": 17
+    },
+    {
+      "free": 5048,
+      "host_avail": 48004,
+      "power": 25.89,
+      "rss": 25152,
+      "used": 19090,
+      "utc": "03:31:38Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 47992,
+      "power": 25.87,
+      "rss": 25163,
+      "used": 19090,
+      "utc": "03:31:43Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 47971,
+      "power": 22.3,
+      "rss": 25186,
+      "used": 19090,
+      "utc": "03:31:48Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 47948,
+      "power": 23.61,
+      "rss": 25211,
+      "used": 19090,
+      "utc": "03:31:53Z",
+      "util": 33
+    },
+    {
+      "free": 5048,
+      "host_avail": 47927,
+      "power": 24.64,
+      "rss": 25227,
+      "used": 19090,
+      "utc": "03:31:58Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 47911,
+      "power": 47.35,
+      "rss": 25242,
+      "used": 19090,
+      "utc": "03:32:03Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 47893,
+      "power": 26.94,
+      "rss": 25256,
+      "used": 19090,
+      "utc": "03:32:08Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 47861,
+      "power": 23.85,
+      "rss": 25290,
+      "used": 19090,
+      "utc": "03:32:15Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 47832,
+      "power": 28.38,
+      "rss": 25318,
+      "used": 19090,
+      "utc": "03:32:20Z",
+      "util": 22
+    },
+    {
+      "free": 5048,
+      "host_avail": 47822,
+      "power": 32.33,
+      "rss": 25328,
+      "used": 19090,
+      "utc": "03:32:25Z",
+      "util": 42
+    },
+    {
+      "free": 5048,
+      "host_avail": 47800,
+      "power": 23.46,
+      "rss": 25354,
+      "used": 19090,
+      "utc": "03:32:30Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 47798,
+      "power": 15.12,
+      "rss": 25361,
+      "used": 19090,
+      "utc": "03:32:36Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 47773,
+      "power": 23.69,
+      "rss": 25386,
+      "used": 19090,
+      "utc": "03:32:41Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 47753,
+      "power": 34.12,
+      "rss": 25405,
+      "used": 19090,
+      "utc": "03:32:48Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 47722,
+      "power": 28.15,
+      "rss": 25436,
+      "used": 19090,
+      "utc": "03:32:53Z",
+      "util": 8
+    },
+    {
+      "free": 5048,
+      "host_avail": 47711,
+      "power": 24.05,
+      "rss": 25448,
+      "used": 19090,
+      "utc": "03:32:58Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 47693,
+      "power": 24.41,
+      "rss": 25465,
+      "used": 19090,
+      "utc": "03:33:03Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 47671,
+      "power": 24.08,
+      "rss": 25484,
+      "used": 19090,
+      "utc": "03:33:08Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 47653,
+      "power": 28.96,
+      "rss": 25501,
+      "used": 19090,
+      "utc": "03:33:13Z",
+      "util": 12
+    },
+    {
+      "free": 5048,
+      "host_avail": 47630,
+      "power": 24.93,
+      "rss": 25523,
+      "used": 19090,
+      "utc": "03:33:18Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 47611,
+      "power": 20.16,
+      "rss": 25543,
+      "used": 19090,
+      "utc": "03:33:25Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 47584,
+      "power": 23.64,
+      "rss": 25569,
+      "used": 19090,
+      "utc": "03:33:30Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 47569,
+      "power": 23.35,
+      "rss": 25583,
+      "used": 19090,
+      "utc": "03:33:35Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 47539,
+      "power": 23.63,
+      "rss": 25612,
+      "used": 19090,
+      "utc": "03:33:40Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 47524,
+      "power": 23.8,
+      "rss": 25626,
+      "used": 19090,
+      "utc": "03:33:45Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 47505,
+      "power": 24.1,
+      "rss": 25646,
+      "used": 19090,
+      "utc": "03:33:50Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 47476,
+      "power": 25.52,
+      "rss": 25671,
+      "used": 19090,
+      "utc": "03:33:58Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 47467,
+      "power": 24.92,
+      "rss": 25683,
+      "used": 19090,
+      "utc": "03:34:03Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 47450,
+      "power": 50.9,
+      "rss": 25700,
+      "used": 19090,
+      "utc": "03:34:08Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 47417,
+      "power": 22.65,
+      "rss": 25731,
+      "used": 19090,
+      "utc": "03:34:13Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 47408,
+      "power": 23.74,
+      "rss": 25744,
+      "used": 19090,
+      "utc": "03:34:18Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 47383,
+      "power": 23.81,
+      "rss": 25769,
+      "used": 19090,
+      "utc": "03:34:23Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 47374,
+      "power": 27.66,
+      "rss": 25776,
+      "used": 19090,
+      "utc": "03:34:28Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 47357,
+      "power": 23.32,
+      "rss": 25791,
+      "used": 19090,
+      "utc": "03:34:35Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 47335,
+      "power": 26.53,
+      "rss": 25812,
+      "used": 19090,
+      "utc": "03:34:40Z",
+      "util": 2
+    },
+    {
+      "free": 5048,
+      "host_avail": 47309,
+      "power": 22.36,
+      "rss": 25840,
+      "used": 19090,
+      "utc": "03:34:45Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 47293,
+      "power": 24.52,
+      "rss": 25852,
+      "used": 19090,
+      "utc": "03:34:50Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 47265,
+      "power": 23.47,
+      "rss": 25884,
+      "used": 19090,
+      "utc": "03:34:56Z",
+      "util": 33
+    },
+    {
+      "free": 5048,
+      "host_avail": 47251,
+      "power": 21.8,
+      "rss": 25893,
+      "used": 19090,
+      "utc": "03:35:01Z",
+      "util": 3
+    },
+    {
+      "free": 5048,
+      "host_avail": 47236,
+      "power": 23.7,
+      "rss": 25911,
+      "used": 19090,
+      "utc": "03:35:06Z",
+      "util": 1
+    },
+    {
+      "free": 5048,
+      "host_avail": 47229,
+      "power": 31.27,
+      "rss": 25921,
+      "used": 19090,
+      "utc": "03:35:13Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 47214,
+      "power": 33.68,
+      "rss": 25940,
+      "used": 19090,
+      "utc": "03:35:18Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 47177,
+      "power": 23.17,
+      "rss": 25978,
+      "used": 19090,
+      "utc": "03:35:23Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 47151,
+      "power": 25.2,
+      "rss": 26001,
+      "used": 19090,
+      "utc": "03:35:28Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 47142,
+      "power": 34.95,
+      "rss": 26011,
+      "used": 19090,
+      "utc": "03:35:33Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 47122,
+      "power": 24.29,
+      "rss": 26029,
+      "used": 19090,
+      "utc": "03:35:39Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 47098,
+      "power": 31.01,
+      "rss": 26057,
+      "used": 19090,
+      "utc": "03:35:45Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 47087,
+      "power": 33.19,
+      "rss": 26067,
+      "used": 19090,
+      "utc": "03:35:51Z",
+      "util": 9
+    },
+    {
+      "free": 5048,
+      "host_avail": 47073,
+      "power": 23.62,
+      "rss": 26079,
+      "used": 19090,
+      "utc": "03:35:56Z",
+      "util": 17
+    },
+    {
+      "free": 5048,
+      "host_avail": 47059,
+      "power": 19.55,
+      "rss": 26096,
+      "used": 19090,
+      "utc": "03:36:01Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 47038,
+      "power": 25.54,
+      "rss": 26117,
+      "used": 19090,
+      "utc": "03:36:06Z",
+      "util": 22
+    },
+    {
+      "free": 5048,
+      "host_avail": 47013,
+      "power": 24.32,
+      "rss": 26141,
+      "used": 19090,
+      "utc": "03:36:11Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 46995,
+      "power": 21.5,
+      "rss": 26158,
+      "used": 19090,
+      "utc": "03:36:16Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 46963,
+      "power": 22.45,
+      "rss": 26185,
+      "used": 19090,
+      "utc": "03:36:23Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 46914,
+      "power": 29.57,
+      "rss": 26234,
+      "used": 19090,
+      "utc": "03:36:28Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 46892,
+      "power": 23.4,
+      "rss": 26255,
+      "used": 19090,
+      "utc": "03:36:33Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 46886,
+      "power": 23.75,
+      "rss": 26261,
+      "used": 19090,
+      "utc": "03:36:38Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 46872,
+      "power": 26.22,
+      "rss": 26273,
+      "used": 19090,
+      "utc": "03:36:43Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 46843,
+      "power": 23.55,
+      "rss": 26305,
+      "used": 19090,
+      "utc": "03:36:48Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 46836,
+      "power": 23.84,
+      "rss": 26311,
+      "used": 19090,
+      "utc": "03:36:55Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 46800,
+      "power": 14.99,
+      "rss": 26349,
+      "used": 19090,
+      "utc": "03:37:01Z",
+      "util": 3
+    },
+    {
+      "free": 5048,
+      "host_avail": 46762,
+      "power": 24.34,
+      "rss": 26386,
+      "used": 19090,
+      "utc": "03:37:06Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 46761,
+      "power": 23.98,
+      "rss": 26386,
+      "used": 19090,
+      "utc": "03:37:11Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 46747,
+      "power": 31.21,
+      "rss": 26399,
+      "used": 19090,
+      "utc": "03:37:16Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 46721,
+      "power": 26.6,
+      "rss": 26427,
+      "used": 19090,
+      "utc": "03:37:21Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 46698,
+      "power": 30.03,
+      "rss": 26450,
+      "used": 19090,
+      "utc": "03:37:26Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 46696,
+      "power": 25.73,
+      "rss": 26450,
+      "used": 19090,
+      "utc": "03:37:33Z",
+      "util": 27
+    },
+    {
+      "free": 5048,
+      "host_avail": 46657,
+      "power": 32.06,
+      "rss": 26488,
+      "used": 19090,
+      "utc": "03:37:38Z",
+      "util": 19
+    },
+    {
+      "free": 5048,
+      "host_avail": 46646,
+      "power": 27.83,
+      "rss": 26500,
+      "used": 19090,
+      "utc": "03:37:43Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 46626,
+      "power": 23.63,
+      "rss": 26520,
+      "used": 19090,
+      "utc": "03:37:48Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 46611,
+      "power": 29.19,
+      "rss": 26536,
+      "used": 19090,
+      "utc": "03:37:54Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 46569,
+      "power": 23.65,
+      "rss": 26576,
+      "used": 19090,
+      "utc": "03:37:59Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 46562,
+      "power": 25.16,
+      "rss": 26585,
+      "used": 19090,
+      "utc": "03:38:04Z",
+      "util": 1
+    },
+    {
+      "free": 5048,
+      "host_avail": 46532,
+      "power": 24.41,
+      "rss": 26618,
+      "used": 19090,
+      "utc": "03:38:11Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 46516,
+      "power": 24.05,
+      "rss": 26635,
+      "used": 19090,
+      "utc": "03:38:16Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 46481,
+      "power": 26.52,
+      "rss": 26668,
+      "used": 19090,
+      "utc": "03:38:21Z",
+      "util": 24
+    },
+    {
+      "free": 5048,
+      "host_avail": 46430,
+      "power": 24.81,
+      "rss": 26714,
+      "used": 19090,
+      "utc": "03:38:26Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 46427,
+      "power": 29.31,
+      "rss": 26714,
+      "used": 19090,
+      "utc": "03:38:31Z",
+      "util": 27
+    },
+    {
+      "free": 5048,
+      "host_avail": 46427,
+      "power": 24.31,
+      "rss": 26716,
+      "used": 19090,
+      "utc": "03:38:36Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 46404,
+      "power": 23.32,
+      "rss": 26738,
+      "used": 19090,
+      "utc": "03:38:43Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 46381,
+      "power": 23.99,
+      "rss": 26764,
+      "used": 19090,
+      "utc": "03:38:48Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 46361,
+      "power": 23.74,
+      "rss": 26785,
+      "used": 19090,
+      "utc": "03:38:53Z",
+      "util": 28
+    },
+    {
+      "free": 5048,
+      "host_avail": 46354,
+      "power": 14.65,
+      "rss": 26792,
+      "used": 19090,
+      "utc": "03:38:58Z",
+      "util": 28
+    },
+    {
+      "free": 5048,
+      "host_avail": 46337,
+      "power": 23.58,
+      "rss": 26811,
+      "used": 19090,
+      "utc": "03:39:04Z",
+      "util": 9
+    },
+    {
+      "free": 5048,
+      "host_avail": 46318,
+      "power": 23.62,
+      "rss": 26832,
+      "used": 19090,
+      "utc": "03:39:09Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 46292,
+      "power": 24.32,
+      "rss": 26855,
+      "used": 19090,
+      "utc": "03:39:14Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 46254,
+      "power": 35.84,
+      "rss": 26892,
+      "used": 19090,
+      "utc": "03:39:21Z",
+      "util": 40
+    },
+    {
+      "free": 5048,
+      "host_avail": 46242,
+      "power": 24.53,
+      "rss": 26901,
+      "used": 19090,
+      "utc": "03:39:26Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 46226,
+      "power": 23.15,
+      "rss": 26916,
+      "used": 19090,
+      "utc": "03:39:31Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 46199,
+      "power": 30.8,
+      "rss": 26944,
+      "used": 19090,
+      "utc": "03:39:36Z",
+      "util": 25
+    },
+    {
+      "free": 5048,
+      "host_avail": 46162,
+      "power": 24.92,
+      "rss": 26980,
+      "used": 19090,
+      "utc": "03:39:41Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 46159,
+      "power": 30.22,
+      "rss": 26986,
+      "used": 19090,
+      "utc": "03:39:46Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 46150,
+      "power": 23.96,
+      "rss": 26999,
+      "used": 19090,
+      "utc": "03:39:51Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 46120,
+      "power": 23.26,
+      "rss": 27028,
+      "used": 19090,
+      "utc": "03:39:58Z",
+      "util": 47
+    },
+    {
+      "free": 5048,
+      "host_avail": 46107,
+      "power": 23.61,
+      "rss": 27046,
+      "used": 19090,
+      "utc": "03:40:03Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 46100,
+      "power": 24.64,
+      "rss": 27052,
+      "used": 19090,
+      "utc": "03:40:08Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 46068,
+      "power": 30.24,
+      "rss": 27085,
+      "used": 19090,
+      "utc": "03:40:13Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 46037,
+      "power": 37.21,
+      "rss": 27110,
+      "used": 19090,
+      "utc": "03:40:18Z",
+      "util": 44
+    },
+    {
+      "free": 5048,
+      "host_avail": 46032,
+      "power": 15.32,
+      "rss": 27112,
+      "used": 19090,
+      "utc": "03:40:24Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 45989,
+      "power": 24.05,
+      "rss": 27158,
+      "used": 19090,
+      "utc": "03:40:31Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45976,
+      "power": 15.24,
+      "rss": 27173,
+      "used": 19090,
+      "utc": "03:40:36Z",
+      "util": 0
+    },
+    {
+      "free": 5048,
+      "host_avail": 45968,
+      "power": 24.21,
+      "rss": 27181,
+      "used": 19090,
+      "utc": "03:40:41Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45951,
+      "power": 22.6,
+      "rss": 27198,
+      "used": 19090,
+      "utc": "03:40:46Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 45932,
+      "power": 29.61,
+      "rss": 27217,
+      "used": 19090,
+      "utc": "03:40:51Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 45913,
+      "power": 43.93,
+      "rss": 27235,
+      "used": 19090,
+      "utc": "03:40:56Z",
+      "util": 34
+    },
+    {
+      "free": 5048,
+      "host_avail": 45882,
+      "power": 24.36,
+      "rss": 27266,
+      "used": 19090,
+      "utc": "03:41:01Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45851,
+      "power": 43.03,
+      "rss": 27293,
+      "used": 19090,
+      "utc": "03:41:08Z",
+      "util": 19
+    },
+    {
+      "free": 5048,
+      "host_avail": 45848,
+      "power": 24.68,
+      "rss": 27293,
+      "used": 19090,
+      "utc": "03:41:13Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45831,
+      "power": 22.89,
+      "rss": 27310,
+      "used": 19090,
+      "utc": "03:41:19Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45798,
+      "power": 23.64,
+      "rss": 27345,
+      "used": 19090,
+      "utc": "03:41:24Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45783,
+      "power": 25.88,
+      "rss": 27356,
+      "used": 19090,
+      "utc": "03:41:29Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45765,
+      "power": 22.2,
+      "rss": 27377,
+      "used": 19090,
+      "utc": "03:41:34Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45738,
+      "power": 15.21,
+      "rss": 27402,
+      "used": 19090,
+      "utc": "03:41:41Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 45721,
+      "power": 18.26,
+      "rss": 27419,
+      "used": 19090,
+      "utc": "03:41:46Z",
+      "util": 8
+    },
+    {
+      "free": 5048,
+      "host_avail": 45709,
+      "power": 32.59,
+      "rss": 27432,
+      "used": 19090,
+      "utc": "03:41:51Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45680,
+      "power": 35.26,
+      "rss": 27459,
+      "used": 19090,
+      "utc": "03:41:56Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 45658,
+      "power": 24.78,
+      "rss": 27481,
+      "used": 19090,
+      "utc": "03:42:01Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45648,
+      "power": 15.2,
+      "rss": 27492,
+      "used": 19090,
+      "utc": "03:42:06Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45606,
+      "power": 24.77,
+      "rss": 27537,
+      "used": 19090,
+      "utc": "03:42:12Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45599,
+      "power": 24.72,
+      "rss": 27545,
+      "used": 19090,
+      "utc": "03:42:18Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45558,
+      "power": 26.1,
+      "rss": 27587,
+      "used": 19090,
+      "utc": "03:42:24Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45531,
+      "power": 23.78,
+      "rss": 27610,
+      "used": 19090,
+      "utc": "03:42:29Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 45524,
+      "power": 30.64,
+      "rss": 27615,
+      "used": 19090,
+      "utc": "03:42:34Z",
+      "util": 26
+    },
+    {
+      "free": 5048,
+      "host_avail": 45503,
+      "power": 45.52,
+      "rss": 27636,
+      "used": 19090,
+      "utc": "03:42:39Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 45489,
+      "power": 32.19,
+      "rss": 27652,
+      "used": 19090,
+      "utc": "03:42:44Z",
+      "util": 9
+    },
+    {
+      "free": 5048,
+      "host_avail": 45454,
+      "power": 35.26,
+      "rss": 27686,
+      "used": 19090,
+      "utc": "03:42:49Z",
+      "util": 45
+    },
+    {
+      "free": 5048,
+      "host_avail": 45444,
+      "power": 33.93,
+      "rss": 27697,
+      "used": 19090,
+      "utc": "03:42:56Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45425,
+      "power": 24.87,
+      "rss": 27715,
+      "used": 19090,
+      "utc": "03:43:01Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45413,
+      "power": 24.84,
+      "rss": 27723,
+      "used": 19090,
+      "utc": "03:43:07Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 45397,
+      "power": 23.98,
+      "rss": 27743,
+      "used": 19090,
+      "utc": "03:43:12Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45372,
+      "power": 33.63,
+      "rss": 27769,
+      "used": 19090,
+      "utc": "03:43:17Z",
+      "util": 46
+    },
+    {
+      "free": 5048,
+      "host_avail": 45327,
+      "power": 24.27,
+      "rss": 27816,
+      "used": 19090,
+      "utc": "03:43:22Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 45313,
+      "power": 24.63,
+      "rss": 27829,
+      "used": 19090,
+      "utc": "03:43:29Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45309,
+      "power": 25.55,
+      "rss": 27829,
+      "used": 19090,
+      "utc": "03:43:34Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 45311,
+      "power": 30.24,
+      "rss": 27829,
+      "used": 19090,
+      "utc": "03:43:39Z",
+      "util": 34
+    },
+    {
+      "free": 5048,
+      "host_avail": 45294,
+      "power": 23.12,
+      "rss": 27844,
+      "used": 19090,
+      "utc": "03:43:44Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 45292,
+      "power": 22.82,
+      "rss": 27844,
+      "used": 19090,
+      "utc": "03:43:49Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45290,
+      "power": 23.91,
+      "rss": 27844,
+      "used": 19090,
+      "utc": "03:43:54Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45292,
+      "power": 40.15,
+      "rss": 27844,
+      "used": 19090,
+      "utc": "03:43:59Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 45289,
+      "power": 37.89,
+      "rss": 27844,
+      "used": 19090,
+      "utc": "03:44:06Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 45289,
+      "power": 23.55,
+      "rss": 27844,
+      "used": 19090,
+      "utc": "03:44:11Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45290,
+      "power": 26.34,
+      "rss": 27844,
+      "used": 19090,
+      "utc": "03:44:16Z",
+      "util": 44
+    },
+    {
+      "free": 5048,
+      "host_avail": 45286,
+      "power": 22.27,
+      "rss": 27844,
+      "used": 19090,
+      "utc": "03:44:22Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45286,
+      "power": 34.01,
+      "rss": 27844,
+      "used": 19090,
+      "utc": "03:44:27Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 45288,
+      "power": 14.61,
+      "rss": 27844,
+      "used": 19090,
+      "utc": "03:44:32Z",
+      "util": 12
+    },
+    {
+      "free": 5048,
+      "host_avail": 45289,
+      "power": 24.57,
+      "rss": 27844,
+      "used": 19090,
+      "utc": "03:44:37Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45287,
+      "power": 36.78,
+      "rss": 27845,
+      "used": 19090,
+      "utc": "03:44:44Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45290,
+      "power": 26.38,
+      "rss": 27845,
+      "used": 19090,
+      "utc": "03:44:49Z",
+      "util": 9
+    },
+    {
+      "free": 5048,
+      "host_avail": 45286,
+      "power": 34.04,
+      "rss": 27845,
+      "used": 19090,
+      "utc": "03:44:54Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 45286,
+      "power": 33.34,
+      "rss": 27845,
+      "used": 19090,
+      "utc": "03:44:59Z",
+      "util": 46
+    },
+    {
+      "free": 5048,
+      "host_avail": 45288,
+      "power": 25.83,
+      "rss": 27845,
+      "used": 19090,
+      "utc": "03:45:04Z",
+      "util": 8
+    },
+    {
+      "free": 5048,
+      "host_avail": 45288,
+      "power": 23.52,
+      "rss": 27845,
+      "used": 19090,
+      "utc": "03:45:09Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45289,
+      "power": 28.74,
+      "rss": 27845,
+      "used": 19090,
+      "utc": "03:45:16Z",
+      "util": 9
+    },
+    {
+      "free": 5048,
+      "host_avail": 45288,
+      "power": 23.49,
+      "rss": 27845,
+      "used": 19090,
+      "utc": "03:45:21Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 45286,
+      "power": 29.25,
+      "rss": 27845,
+      "used": 19090,
+      "utc": "03:45:26Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45283,
+      "power": 23.03,
+      "rss": 27845,
+      "used": 19090,
+      "utc": "03:45:32Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 45281,
+      "power": 17.19,
+      "rss": 27845,
+      "used": 19090,
+      "utc": "03:45:37Z",
+      "util": 19
+    },
+    {
+      "free": 5048,
+      "host_avail": 45281,
+      "power": 31.7,
+      "rss": 27845,
+      "used": 19090,
+      "utc": "03:45:42Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 45271,
+      "power": 17.51,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:45:47Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45273,
+      "power": 37.48,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:45:54Z",
+      "util": 18
+    },
+    {
+      "free": 5048,
+      "host_avail": 45271,
+      "power": 24.17,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:45:59Z",
+      "util": 28
+    },
+    {
+      "free": 5048,
+      "host_avail": 45268,
+      "power": 24.64,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:46:04Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45270,
+      "power": 24.12,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:46:09Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45266,
+      "power": 28.34,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:46:14Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 45269,
+      "power": 30.47,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:46:19Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 45270,
+      "power": 27.52,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:46:26Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45270,
+      "power": 21.19,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:46:32Z",
+      "util": 4
+    },
+    {
+      "free": 5048,
+      "host_avail": 45269,
+      "power": 23.34,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:46:37Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45269,
+      "power": 34.24,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:46:42Z",
+      "util": 2
+    },
+    {
+      "free": 5048,
+      "host_avail": 45275,
+      "power": 34.02,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:46:47Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 45274,
+      "power": 15.35,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:46:52Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45274,
+      "power": 26.7,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:46:57Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 45272,
+      "power": 22.54,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:47:04Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45274,
+      "power": 23.95,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:47:09Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45272,
+      "power": 16.1,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:47:15Z",
+      "util": 2
+    },
+    {
+      "free": 5048,
+      "host_avail": 45273,
+      "power": 24.5,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:47:20Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45272,
+      "power": 26.02,
+      "rss": 27858,
+      "used": 19090,
+      "utc": "03:47:25Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 45272,
+      "power": 24.16,
+      "rss": 27859,
+      "used": 19090,
+      "utc": "03:47:30Z",
+      "util": 28
+    },
+    {
+      "free": 5048,
+      "host_avail": 45276,
+      "power": 17.68,
+      "rss": 27859,
+      "used": 19090,
+      "utc": "03:47:35Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45274,
+      "power": 29.15,
+      "rss": 27859,
+      "used": 19090,
+      "utc": "03:47:42Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45278,
+      "power": 21.54,
+      "rss": 27859,
+      "used": 19090,
+      "utc": "03:47:47Z",
+      "util": 5
+    },
+    {
+      "free": 5048,
+      "host_avail": 45277,
+      "power": 27.71,
+      "rss": 27859,
+      "used": 19090,
+      "utc": "03:47:52Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45278,
+      "power": 24.3,
+      "rss": 27859,
+      "used": 19090,
+      "utc": "03:47:57Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 45279,
+      "power": 38.53,
+      "rss": 27859,
+      "used": 19090,
+      "utc": "03:48:02Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 45288,
+      "power": 23.9,
+      "rss": 27859,
+      "used": 19090,
+      "utc": "03:48:07Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 45286,
+      "power": 30.18,
+      "rss": 27859,
+      "used": 19090,
+      "utc": "03:48:15Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45284,
+      "power": 23.65,
+      "rss": 27859,
+      "used": 19090,
+      "utc": "03:48:20Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45273,
+      "power": 22.56,
+      "rss": 27871,
+      "used": 19090,
+      "utc": "03:48:25Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 45271,
+      "power": 21.84,
+      "rss": 27871,
+      "used": 19090,
+      "utc": "03:48:30Z",
+      "util": 9
+    },
+    {
+      "free": 5048,
+      "host_avail": 45271,
+      "power": 26.37,
+      "rss": 27871,
+      "used": 19090,
+      "utc": "03:48:35Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 45269,
+      "power": 24.14,
+      "rss": 27871,
+      "used": 19090,
+      "utc": "03:48:40Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45276,
+      "power": 24.82,
+      "rss": 27871,
+      "used": 19090,
+      "utc": "03:48:45Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45271,
+      "power": 17.38,
+      "rss": 27871,
+      "used": 19090,
+      "utc": "03:48:53Z",
+      "util": 9
+    },
+    {
+      "free": 5048,
+      "host_avail": 45271,
+      "power": 24.01,
+      "rss": 27872,
+      "used": 19090,
+      "utc": "03:48:58Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45272,
+      "power": 14.68,
+      "rss": 27872,
+      "used": 19090,
+      "utc": "03:49:03Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45274,
+      "power": 25.15,
+      "rss": 27872,
+      "used": 19090,
+      "utc": "03:49:08Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45272,
+      "power": 24.06,
+      "rss": 27872,
+      "used": 19090,
+      "utc": "03:49:13Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45272,
+      "power": 37.25,
+      "rss": 27872,
+      "used": 19090,
+      "utc": "03:49:18Z",
+      "util": 12
+    },
+    {
+      "free": 5048,
+      "host_avail": 45272,
+      "power": 34.2,
+      "rss": 27872,
+      "used": 19090,
+      "utc": "03:49:23Z",
+      "util": 21
+    },
+    {
+      "free": 5048,
+      "host_avail": 45269,
+      "power": 15.06,
+      "rss": 27872,
+      "used": 19090,
+      "utc": "03:49:31Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45250,
+      "power": 28.72,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:49:36Z",
+      "util": 9
+    },
+    {
+      "free": 5048,
+      "host_avail": 45252,
+      "power": 22.65,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:49:41Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45253,
+      "power": 24.33,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:49:46Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45249,
+      "power": 33.1,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:49:51Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 45249,
+      "power": 30.94,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:49:56Z",
+      "util": 29
+    },
+    {
+      "free": 5048,
+      "host_avail": 45246,
+      "power": 19.45,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:50:03Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 45245,
+      "power": 19.17,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:50:09Z",
+      "util": 12
+    },
+    {
+      "free": 5048,
+      "host_avail": 45244,
+      "power": 23.16,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:50:14Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45245,
+      "power": 23.6,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:50:19Z",
+      "util": 28
+    },
+    {
+      "free": 5048,
+      "host_avail": 45244,
+      "power": 29.81,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:50:24Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 45249,
+      "power": 27.77,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:50:29Z",
+      "util": 37
+    },
+    {
+      "free": 5048,
+      "host_avail": 45251,
+      "power": 23.88,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:50:34Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45250,
+      "power": 27.82,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:50:41Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 45249,
+      "power": 35.56,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:50:46Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 45248,
+      "power": 25.16,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:50:51Z",
+      "util": 34
+    },
+    {
+      "free": 5048,
+      "host_avail": 45248,
+      "power": 23.12,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:50:56Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45247,
+      "power": 24.45,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:51:02Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 45247,
+      "power": 20.39,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:51:07Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 45245,
+      "power": 38.25,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:51:14Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 45248,
+      "power": 25.98,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:51:19Z",
+      "util": 2
+    },
+    {
+      "free": 5048,
+      "host_avail": 45251,
+      "power": 38.12,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:51:24Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 45252,
+      "power": 40.72,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:51:29Z",
+      "util": 6
+    },
+    {
+      "free": 5048,
+      "host_avail": 45250,
+      "power": 23.68,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:51:34Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45252,
+      "power": 24.33,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:51:39Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45252,
+      "power": 25.33,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:51:44Z",
+      "util": 9
+    },
+    {
+      "free": 5048,
+      "host_avail": 45249,
+      "power": 25.83,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:51:52Z",
+      "util": 2
+    },
+    {
+      "free": 5048,
+      "host_avail": 45249,
+      "power": 24.91,
+      "rss": 27892,
+      "used": 19090,
+      "utc": "03:51:57Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45233,
+      "power": 23.9,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:52:02Z",
+      "util": 26
+    },
+    {
+      "free": 5048,
+      "host_avail": 45233,
+      "power": 23.97,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:52:07Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45232,
+      "power": 35.94,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:52:12Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45231,
+      "power": 22.88,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:52:17Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45231,
+      "power": 22.67,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:52:22Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45231,
+      "power": 23.85,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:52:29Z",
+      "util": 33
+    },
+    {
+      "free": 5048,
+      "host_avail": 45229,
+      "power": 16.51,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:52:35Z",
+      "util": 25
+    },
+    {
+      "free": 5048,
+      "host_avail": 45230,
+      "power": 27.16,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:52:40Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 45231,
+      "power": 22.38,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:52:45Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 45232,
+      "power": 23.91,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:52:50Z",
+      "util": 26
+    },
+    {
+      "free": 5048,
+      "host_avail": 45231,
+      "power": 24.5,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:52:55Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 45231,
+      "power": 23.51,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:53:02Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45230,
+      "power": 26.47,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:53:07Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45232,
+      "power": 22.52,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:53:12Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 45228,
+      "power": 35.53,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:53:17Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45231,
+      "power": 23.81,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:53:22Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45228,
+      "power": 24.85,
+      "rss": 27908,
+      "used": 19090,
+      "utc": "03:53:27Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45217,
+      "power": 26.9,
+      "rss": 27921,
+      "used": 19090,
+      "utc": "03:53:33Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 45216,
+      "power": 24.55,
+      "rss": 27921,
+      "used": 19090,
+      "utc": "03:53:40Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 45214,
+      "power": 34.17,
+      "rss": 27921,
+      "used": 19090,
+      "utc": "03:53:45Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 45213,
+      "power": 24.65,
+      "rss": 27921,
+      "used": 19090,
+      "utc": "03:53:50Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45207,
+      "power": 37.76,
+      "rss": 27924,
+      "used": 19090,
+      "utc": "03:53:55Z",
+      "util": 17
+    },
+    {
+      "free": 5048,
+      "host_avail": 45210,
+      "power": 22.0,
+      "rss": 27924,
+      "used": 19090,
+      "utc": "03:54:00Z",
+      "util": 10
+    },
+    {
+      "free": 5048,
+      "host_avail": 45210,
+      "power": 25.26,
+      "rss": 27924,
+      "used": 19090,
+      "utc": "03:54:05Z",
+      "util": 2
+    },
+    {
+      "free": 5048,
+      "host_avail": 45192,
+      "power": 25.2,
+      "rss": 27941,
+      "used": 19090,
+      "utc": "03:54:13Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45195,
+      "power": 20.67,
+      "rss": 27941,
+      "used": 19090,
+      "utc": "03:54:18Z",
+      "util": 2
+    },
+    {
+      "free": 5048,
+      "host_avail": 45196,
+      "power": 31.82,
+      "rss": 27941,
+      "used": 19090,
+      "utc": "03:54:23Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45194,
+      "power": 23.25,
+      "rss": 27942,
+      "used": 19090,
+      "utc": "03:54:28Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 45196,
+      "power": 32.8,
+      "rss": 27942,
+      "used": 19090,
+      "utc": "03:54:33Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45199,
+      "power": 21.88,
+      "rss": 27942,
+      "used": 19090,
+      "utc": "03:54:38Z",
+      "util": 4
+    },
+    {
+      "free": 5048,
+      "host_avail": 45197,
+      "power": 33.7,
+      "rss": 27942,
+      "used": 19090,
+      "utc": "03:54:43Z",
+      "util": 18
+    },
+    {
+      "free": 5048,
+      "host_avail": 45201,
+      "power": 15.3,
+      "rss": 27942,
+      "used": 19090,
+      "utc": "03:54:51Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45202,
+      "power": 23.63,
+      "rss": 27942,
+      "used": 19090,
+      "utc": "03:54:56Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45202,
+      "power": 54.08,
+      "rss": 27942,
+      "used": 19090,
+      "utc": "03:55:01Z",
+      "util": 18
+    },
+    {
+      "free": 5048,
+      "host_avail": 45204,
+      "power": 25.02,
+      "rss": 27942,
+      "used": 19090,
+      "utc": "03:55:06Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45205,
+      "power": 23.23,
+      "rss": 27942,
+      "used": 19090,
+      "utc": "03:55:11Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45204,
+      "power": 28.09,
+      "rss": 27942,
+      "used": 19090,
+      "utc": "03:55:16Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 45202,
+      "power": 41.67,
+      "rss": 27942,
+      "used": 19090,
+      "utc": "03:55:21Z",
+      "util": 46
+    },
+    {
+      "free": 5048,
+      "host_avail": 45202,
+      "power": 22.22,
+      "rss": 27942,
+      "used": 19090,
+      "utc": "03:55:29Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45200,
+      "power": 41.42,
+      "rss": 27942,
+      "used": 19090,
+      "utc": "03:55:34Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45198,
+      "power": 24.99,
+      "rss": 27943,
+      "used": 19090,
+      "utc": "03:55:39Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 45197,
+      "power": 34.49,
+      "rss": 27943,
+      "used": 19090,
+      "utc": "03:55:44Z",
+      "util": 13
+    },
+    {
+      "free": 5048,
+      "host_avail": 45196,
+      "power": 34.47,
+      "rss": 27943,
+      "used": 19090,
+      "utc": "03:55:49Z",
+      "util": 26
+    },
+    {
+      "free": 5048,
+      "host_avail": 45197,
+      "power": 30.76,
+      "rss": 27943,
+      "used": 19090,
+      "utc": "03:55:54Z",
+      "util": 43
+    },
+    {
+      "free": 5048,
+      "host_avail": 45198,
+      "power": 24.41,
+      "rss": 27943,
+      "used": 19090,
+      "utc": "03:56:01Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45198,
+      "power": 22.54,
+      "rss": 27943,
+      "used": 19090,
+      "utc": "03:56:06Z",
+      "util": 12
+    },
+    {
+      "free": 5048,
+      "host_avail": 45196,
+      "power": 32.92,
+      "rss": 27943,
+      "used": 19090,
+      "utc": "03:56:12Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 45195,
+      "power": 22.22,
+      "rss": 27943,
+      "used": 19090,
+      "utc": "03:56:17Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 45200,
+      "power": 25.5,
+      "rss": 27943,
+      "used": 19090,
+      "utc": "03:56:22Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45199,
+      "power": 23.62,
+      "rss": 27943,
+      "used": 19090,
+      "utc": "03:56:27Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45197,
+      "power": 27.38,
+      "rss": 27943,
+      "used": 19090,
+      "utc": "03:56:32Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45200,
+      "power": 40.52,
+      "rss": 27943,
+      "used": 19090,
+      "utc": "03:56:39Z",
+      "util": 44
+    },
+    {
+      "free": 5048,
+      "host_avail": 45200,
+      "power": 23.93,
+      "rss": 27943,
+      "used": 19090,
+      "utc": "03:56:44Z",
+      "util": 26
+    },
+    {
+      "free": 5048,
+      "host_avail": 45196,
+      "power": 20.29,
+      "rss": 27943,
+      "used": 19090,
+      "utc": "03:56:49Z",
+      "util": 7
+    },
+    {
+      "free": 5048,
+      "host_avail": 45202,
+      "power": 16.2,
+      "rss": 27943,
+      "used": 19090,
+      "utc": "03:56:55Z",
+      "util": 36
+    },
+    {
+      "free": 5048,
+      "host_avail": 45202,
+      "power": 33.92,
+      "rss": 27944,
+      "used": 19090,
+      "utc": "03:57:00Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45201,
+      "power": 21.0,
+      "rss": 27944,
+      "used": 19090,
+      "utc": "03:57:05Z",
+      "util": 23
+    },
+    {
+      "free": 5048,
+      "host_avail": 45200,
+      "power": 23.0,
+      "rss": 27944,
+      "used": 19090,
+      "utc": "03:57:12Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45198,
+      "power": 23.51,
+      "rss": 27944,
+      "used": 19090,
+      "utc": "03:57:17Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45197,
+      "power": 14.94,
+      "rss": 27944,
+      "used": 19090,
+      "utc": "03:57:23Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 45195,
+      "power": 36.34,
+      "rss": 27944,
+      "used": 19090,
+      "utc": "03:57:28Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 45196,
+      "power": 24.17,
+      "rss": 27944,
+      "used": 19090,
+      "utc": "03:57:33Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45196,
+      "power": 24.88,
+      "rss": 27944,
+      "used": 19090,
+      "utc": "03:57:38Z",
+      "util": 8
+    },
+    {
+      "free": 5048,
+      "host_avail": 45194,
+      "power": 23.39,
+      "rss": 27945,
+      "used": 19090,
+      "utc": "03:57:43Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45192,
+      "power": 30.47,
+      "rss": 27945,
+      "used": 19090,
+      "utc": "03:57:50Z",
+      "util": 5
+    },
+    {
+      "free": 5048,
+      "host_avail": 45193,
+      "power": 26.23,
+      "rss": 27945,
+      "used": 19090,
+      "utc": "03:57:56Z",
+      "util": 14
+    },
+    {
+      "free": 5048,
+      "host_avail": 45194,
+      "power": 21.76,
+      "rss": 27945,
+      "used": 19090,
+      "utc": "03:58:01Z",
+      "util": 17
+    },
+    {
+      "free": 5048,
+      "host_avail": 45192,
+      "power": 24.28,
+      "rss": 27945,
+      "used": 19090,
+      "utc": "03:58:06Z",
+      "util": 12
+    },
+    {
+      "free": 5048,
+      "host_avail": 45189,
+      "power": 23.91,
+      "rss": 27945,
+      "used": 19090,
+      "utc": "03:58:11Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45188,
+      "power": 24.23,
+      "rss": 27945,
+      "used": 19090,
+      "utc": "03:58:16Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45191,
+      "power": 24.53,
+      "rss": 27945,
+      "used": 19090,
+      "utc": "03:58:21Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45194,
+      "power": 24.65,
+      "rss": 27945,
+      "used": 19090,
+      "utc": "03:58:28Z",
+      "util": 16
+    },
+    {
+      "free": 5048,
+      "host_avail": 45194,
+      "power": 24.55,
+      "rss": 27945,
+      "used": 19090,
+      "utc": "03:58:33Z",
+      "util": 33
+    },
+    {
+      "free": 5048,
+      "host_avail": 45194,
+      "power": 22.61,
+      "rss": 27945,
+      "used": 19090,
+      "utc": "03:58:39Z",
+      "util": 30
+    },
+    {
+      "free": 5048,
+      "host_avail": 45196,
+      "power": 42.55,
+      "rss": 27945,
+      "used": 19090,
+      "utc": "03:58:44Z",
+      "util": 12
+    },
+    {
+      "free": 5048,
+      "host_avail": 45196,
+      "power": 23.63,
+      "rss": 27947,
+      "used": 19090,
+      "utc": "03:58:49Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45193,
+      "power": 24.39,
+      "rss": 27947,
+      "used": 19090,
+      "utc": "03:58:54Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45189,
+      "power": 19.2,
+      "rss": 27947,
+      "used": 19090,
+      "utc": "03:59:01Z",
+      "util": 2
+    },
+    {
+      "free": 5048,
+      "host_avail": 45187,
+      "power": 23.31,
+      "rss": 27950,
+      "used": 19090,
+      "utc": "03:59:06Z",
+      "util": 40
+    },
+    {
+      "free": 5048,
+      "host_avail": 45188,
+      "power": 23.57,
+      "rss": 27950,
+      "used": 19090,
+      "utc": "03:59:11Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45189,
+      "power": 36.48,
+      "rss": 27950,
+      "used": 19090,
+      "utc": "03:59:16Z",
+      "util": 15
+    },
+    {
+      "free": 5048,
+      "host_avail": 45189,
+      "power": 22.84,
+      "rss": 27950,
+      "used": 19090,
+      "utc": "03:59:21Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45187,
+      "power": 24.48,
+      "rss": 27950,
+      "used": 19090,
+      "utc": "03:59:27Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45187,
+      "power": 24.39,
+      "rss": 27950,
+      "used": 19090,
+      "utc": "03:59:32Z",
+      "util": 31
+    },
+    {
+      "free": 5048,
+      "host_avail": 45188,
+      "power": 24.14,
+      "rss": 27950,
+      "used": 19090,
+      "utc": "03:59:39Z",
+      "util": 32
+    },
+    {
+      "free": 5048,
+      "host_avail": 45188,
+      "power": 36.8,
+      "rss": 27950,
+      "used": 19090,
+      "utc": "03:59:44Z",
+      "util": 17
+    },
+    {
+      "free": 5048,
+      "host_avail": 45187,
+      "power": 34.21,
+      "rss": 27950,
+      "used": 19090,
+      "utc": "03:59:49Z",
+      "util": 11
+    },
+    {
+      "free": 5048,
+      "host_avail": 45108,
+      "power": 11.16,
+      "rss": 27950,
+      "used": 19090,
+      "utc": "03:59:54Z",
+      "util": 0
+    },
+    {
+      "free": 24137,
+      "host_avail": 55160,
+      "power": 18.7,
+      "rss": 0,
+      "used": 0,
+      "utc": "04:00:00Z",
+      "util": 0
+    },
+    {
+      "free": 24137,
+      "host_avail": 55167,
+      "power": 24.79,
+      "rss": 0,
+      "used": 0,
+      "utc": "04:00:06Z",
+      "util": 0
+    }
+  ],
+  "identity": {
+    "attempt_state": "FINALIZED",
+    "config_hash": null,
+    "flight_receipt_sha256": "9c11b200357ccff25b0824ae811cd136d8810aace77b195e997d0c8d2510e421",
+    "manifest_sha256": "f3475ffbdc9aeb9c59b4ae236d86b0b1a28554a86b967f35818ab17d3e7dc81c",
+    "outputs_row_count": 1500,
+    "outputs_sha256": "f9253ba538f66479c17d33d9b1100ccf80c73eb8af9bcafdf7280a6811ab655c",
+    "protocol_hash": "c77a10accae07c02cdcd7b2df8dbf650a53498408e7d53421059a3c8a341886d",
+    "score_sha256": "eec18bf7d3133239c8244a897350caa437b93746318ebf0ce3cc4466f33283b2",
+    "scorers_declared": [
+      "asr-wer-esb-whisper",
+      "asr-wer-esb",
+      "cost"
+    ],
+    "split_identity_hash": null,
+    "study_commit": "0ec7ef8219a06a1322846ab325d4027209c4c0ab",
+    "study_repo_dirt": [],
+    "trace_manifest_hash": "72ad4a687a4620f02fe1df1fec10b023e3c5e21ae550f6b781ca453fd079284d"
+  },
+  "not_a_verdict": "raw numbers only. The paired contrast against the sealed comparator, its call-stratified CI90 and the preregistered decision rule are a LATER document's; nothing here pairs, compares or decides",
+  "placement_held": {
+    "a2t_ladder_reference_host_available_mib": 54633,
+    "a2t_ladder_reference_rss_mib": 18533,
+    "cuda_faults_in_server_log": 0,
+    "enforced_power_limit_w": 100.0,
+    "floor_mib": 3072,
+    "gpu_after_stop_mib": 0,
+    "llama_cpp_printed_mmproj_worst_case_mib": 2940.29,
+    "max_power_draw_w": 82.45,
+    "max_server_rss_mib": 27950,
+    "max_used_mib": 19090,
+    "min_free_mib_over_the_whole_flight": 5048,
+    "min_host_available_mib": 45108,
+    "n_cpu_moe": 28,
+    "sample_count": 603,
+    "sample_window_utc": [
+      "03:06:08Z",
+      "04:00:06Z"
+    ],
+    "server_args": [
+      "-c",
+      "40960",
+      "-np",
+      "8",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--n-cpu-moe",
+      "28"
+    ]
+  },
+  "preregistration": "docs/readiness/2026-09-06-e22-dev-usage-cells-v1-preregistration.md",
+  "recovery_re_registrations_used": 0,
+  "run_id": "SAEA-E22-DEV-ESB-Q8-V1",
+  "schema": "saea-e22-q8-flight-read-v1",
+  "scores": {
+    "asr-wer-esb": {
+      "corpus_wer": 0.22600850048467674,
+      "deletions": 835,
+      "insertions": 3345,
+      "mean_wer": 0.34682524346669674,
+      "normalizer": "saea-scoring-v1",
+      "reference_layer": "e22-esb hash-pinned derived layers (test + dev10)",
+      "reference_words": 26822,
+      "samples": 1500,
+      "scorer_version": "asr-wer-esb-v1",
+      "substitutions": 1882
+    },
+    "asr-wer-esb-whisper": {
+      "corpus_wer": 0.16970782065445125,
+      "deletions": 587,
+      "insertions": 2751,
+      "mean_wer": 0.2986477221639682,
+      "merge_compounds": false,
+      "normalizer": "whisper-english-v20240930",
+      "reference_layer": "e22-esb hash-pinned derived layers (test + dev10)",
+      "reference_words": 26251,
+      "references_empty_after_normalization": 2,
+      "samples": 1500,
+      "scorer_version": "asr-wer-whisper-v20240930",
+      "substitutions": 1117
+    },
+    "cost": {
+      "audio_seconds_used": 9948.982999999995,
+      "calls_used": 1500,
+      "completion_tokens_total": 36838,
+      "latency_seconds_total": 24775.42810044752,
+      "prompt_tokens_total": 212782,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+    },
+    "paper_facing_scorer": "asr-wer-esb-whisper",
+    "per_sample_pass": {
+      "include_per_sample": true,
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-Q8-V1/attempt-20260907T030402Z-60e8e1/score-batch-per-sample/results/attempt-20260907T030402Z-60e8e1.score.json",
+      "rows_per_esb_scorer": 1500,
+      "same_complete_manifest": true,
+      "sha256": "7b27e3048ea7c05a4b838bb52c030a5e84d7f6791bad10acc53d7928accf6e83",
+      "why_outside_git": "per-row outputs and per-row scores live under SPEECHRL_DATA_DIR and never enter this repository; the digest above is what pins them"
+    },
+    "scored_complete_manifests": 1,
+    "sharded": false,
+    "verified": true
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "throughput": {
+    "average_latency_seconds": 16.516952066965015,
+    "budget_assumed_ratio": 7.85,
+    "comparator": {
+      "contacts_per_second": 3.744,
+      "mean_latency_seconds": 1.927,
+      "source": "the sealed SAEA-E22-DEV-ESB-PROMPT-A-V1 arm at the same geometry"
+    },
+    "completion_tokens_per_call": 24.56,
+    "completion_tokens_total": 36838,
+    "contacts": 1500,
+    "contacts_per_second": 0.4581614197263361,
+    "generation_wall_seconds": 3273.9552817344666,
+    "measured_q8_to_q4km_latency_ratio": 8.571,
+    "measured_q8_to_q4km_throughput_ratio": 8.172,
+    "model_load_seconds": 10.120573997497559,
+    "occupancy_slots": 8,
+    "prompt_tokens_per_call": 141.85,
+    "prompt_tokens_total": 212782,
+    "realtime_factor": 3.039,
+    "serving_slots": 8,
+    "summed_latency_seconds": 24775.42810044752,
+    "tokens_per_second": 469.1572937997682
+  }
+}

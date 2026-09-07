@@ -1,0 +1,41 @@
+{
+  "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-Q8-V1/attempt-20260907T030402Z-60e8e1/SAEA-E22-DEV-ESB-Q8-V1.run-manifest.json",
+  "scores": {
+    "asr-wer-esb": {
+      "corpus_wer": 0.22600850048467674,
+      "deletions": 835,
+      "insertions": 3345,
+      "mean_wer": 0.34682524346669674,
+      "normalizer": "saea-scoring-v1",
+      "reference_layer": "e22-esb hash-pinned derived layers (test + dev10)",
+      "reference_words": 26822,
+      "samples": 1500,
+      "scorer_version": "asr-wer-esb-v1",
+      "substitutions": 1882
+    },
+    "asr-wer-esb-whisper": {
+      "corpus_wer": 0.16970782065445125,
+      "deletions": 587,
+      "insertions": 2751,
+      "mean_wer": 0.2986477221639682,
+      "merge_compounds": false,
+      "normalizer": "whisper-english-v20240930",
+      "reference_layer": "e22-esb hash-pinned derived layers (test + dev10)",
+      "reference_words": 26251,
+      "references_empty_after_normalization": 2,
+      "samples": 1500,
+      "scorer_version": "asr-wer-whisper-v20240930",
+      "substitutions": 1117
+    },
+    "cost": {
+      "audio_seconds_used": 9948.982999999995,
+      "calls_used": 1500,
+      "completion_tokens_total": 36838,
+      "latency_seconds_total": 24775.42810044752,
+      "prompt_tokens_total": 212782,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+    }
+  },
+  "verified": true
+}
