@@ -1,0 +1,32 @@
+{
+  "budget_basis": "1,000 registered contacts plus 8 canaries, ceiling 1,050; 2,884.7937 audio seconds in one pass, ceiling 3,000; paid API spend 0; tool and embedding contacts 0 IN FLIGHT (every vector file was sealed on 2026-09-06 under SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1 and re-encoded model-free under SAEA-SLURP-KU-S3-VECTORS-V1). GPU hours planned 1.0, ceiling 2.0, and that ceiling is set by the PRE-FLIGHT SEED rather than by the contacts: rails.phase_supply.build_bootstrap_selection scores 11,514 content facets per sample in pure Python at a measured 2.28 s per sample, so the seed costs about 0.63 h of single-threaded CPU while the serving session is resident, against about 0.20 h of contacts. Plan cells are RUN-CUMULATIVE across every attempt of this run id and at most one recovery re-registration is permitted.",
+  "cells": [
+    {
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-supplied-fillers-speech-state-v1",
+      "cell_id": "ku-s3-fillers-speech-state",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64"
+    }
+  ],
+  "comparator": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1 (sealed manifest sha256 088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08) is BOTH the headline comparator and the equal-contact control: KU-S3 spends exactly the contacts KC-S1b spends, on the same roster, with the same instruction bytes and the same serving geometry, so the only thing added is the supplied evidence. The form twin SAEA-SLURP-KU-S3-FILLERS-TWIN-DEV1000-V1 is the second required contrast. The sealed closed-list direct baseline (f908ff4c...ebc94c) and the locked DEV-1000 BLEND cell are reported beside, never as comparators.",
+  "date": "2026-09-07",
+  "decision": {
+    "paper_scale": false,
+    "test_tuning": false
+  },
+  "decision_rule": "ADMITTED iff the paired per-sample SLU-F1 CI90 lower bound is above 0 against the SEALED KC-S1b rows on the unexposed NEW500 AND the (KU-S3 minus the form twin) CI90 lower bound is above 0 on the same population -- the speech alignment of the retrieved fillers, not the presence of five extra typed blocks, has to be the lever. NULL if either interval includes 0, in which case supplied neighbour fillers join neighbour intent as a closed branch on this carrier and KC-S1b stays the SLURP slot mechanism. HARMFUL if an upper bound is below 0, and the consumption branch on SLURP ends with its form/content attribution recorded. Intent is identical by construction on every arm and is asserted row by row, exactly as in KC-S1a/b.",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 2.0,
+    "planned_model_calls": 1050,
+    "planned_speech_audio_seconds": 3000,
+    "split_role": "dev"
+  },
+  "experiment_id": "SAEA-SLURP-KU-S3-FILLERS-SPEECH-STATE-DEV1000-V1",
+  "fragment_kind": "saea-slurp-consumption-experiment-v1",
+  "population": "The whole frozen DEV-1000 runtime view, id for id, at split identity hash 8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84 -- the same roster the sealed closed-list direct baseline, KC-S1a, KC-S1b and KU-S1c already flew, and the same 1,000 recordings the MF-7b embedding pass traversed. No new draw and no new exposure. The decision population is the unexposed NEW500; pooled 1,000 and the prior-exposed DEV-500 are reported beside it.",
+  "preregistration": "docs/readiness/2026-09-07-slurp-consumption-ku-s3-v1-preregistration.md",
+  "purpose": "Cell KU-S3, key (b), ORDERED SECOND and flown only if key (a) is not HARMFUL. Identical to key (a) except the query vector, which fuses this row's own sealed KU-S1c draft text into the encoder alongside the speech. THE ONE FACTOR against key (a) is the declared query modality and the vector file it pins.",
+  "split_id": "DEV-1000"
+}

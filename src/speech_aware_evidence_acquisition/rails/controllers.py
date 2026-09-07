@@ -17,8 +17,11 @@ Two pieces:
   ``phase-select-then-fill-v1`` (a hard barrier between ``select`` and
   ``fill`` -- see :mod:`rails.phase_runner` for how the barrier is actually
   realized), ``phase-draft-revise-v1`` (``draft`` then ``revise``, no
-  barrier), and ``phase-slots-given-intent-v1`` (one slot-extraction contact
-  conditioned on an already-sealed intent).
+  barrier), ``phase-slots-given-intent-v1`` (one slot-extraction contact
+  conditioned on an already-sealed intent), and
+  ``phase-slots-given-intent-supplied-v1`` (the same contact, with its phase
+  declaring ``knowledge: "supplied"`` so a baseline fragment may hand it
+  retrieved values).
 * :class:`EvidenceAgentController` -- one ``AgentController`` (the
   ``rails.runner.AgentController`` Protocol) that walks a ``PhaseProgram``'s
   phases in order, one contact per phase. Per-phase content (the actual
@@ -860,6 +863,16 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     # because the intent is NOT re-decided here -- the sealed closed-list
     # prediction is the input, so the arm spends one contact, not two.
     "phase-slots-given-intent-v1": "phase-slots-given-intent-v1.json",
+    # KU-S3, 2026-09-07: the same one-contact slot program with its single
+    # phase declaring ``knowledge: "supplied"``, which is what
+    # ``rails.phase_supply.load_phase_supply_specs`` requires before a
+    # baseline fragment may supply it. Two program ids rather than a flag on
+    # one, because the phase's ``knowledge`` value rides the config hash and
+    # is part of what the cell IS -- KC-S1b and KU-S3 must never be able to
+    # resolve to the same program object.
+    "phase-slots-given-intent-supplied-v1": (
+        "phase-slots-given-intent-supplied-v1.json"
+    ),
 }
 
 _LOADED_PROGRAMS: dict[str, PhaseProgram] = {}
@@ -930,6 +943,13 @@ def register_phase_programs_v1() -> None:
             "phase-slots-given-intent-v1",
             default_controller_factory(
                 default_phase_program("phase-slots-given-intent-v1")
+            ),
+        )
+    if "phase-slots-given-intent-supplied-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-slots-given-intent-supplied-v1",
+            default_controller_factory(
+                default_phase_program("phase-slots-given-intent-supplied-v1")
             ),
         )
     unregistered = set(_PROGRAM_CONFIG_FILENAMES) - set(AGENT_CONTROLLERS.names())
