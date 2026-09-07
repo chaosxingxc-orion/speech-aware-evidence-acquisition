@@ -44,6 +44,7 @@ from speech_aware_evidence_acquisition.core.session import (
 )
 from speech_aware_evidence_acquisition.core.session.serving import (
     MONITOR_JSONL_NAME,
+    NO_RESIDENT_SESSION_EXIT,
     SESSION_DOCUMENT_NAME,
     SESSION_STOP_NAME,
     SERVING_SESSION_SCHEMA,
@@ -1037,3 +1038,64 @@ def test_the_wrapper_has_no_restart_on_exit_option():
 
     with pytest.raises(SystemExit):
         build_parser().parse_args(["start", "frag", "--restart-on-exit"])
+
+
+# ---------------------------------------------------------------------------
+# `resident`: the question a script must ask before it kills llama-server
+# (E7b defect 3's audit -- scripts/run_arm_sequence.sh).
+# ---------------------------------------------------------------------------
+
+
+def test_resident_exits_zero_and_describes_the_session_it_found(tmp_path, monkeypatch, capsys):
+    _stop_world(tmp_path, monkeypatch, state=PROCESS_STATE_RUNNING)
+    args = build_parser().parse_args(["resident"])
+
+    assert args.handler(args) == 0
+
+    reported = json.loads(capsys.readouterr().out)
+    assert reported["resident"] is True
+    assert reported["session_id"] == "serving-defunct"
+    assert reported["process_state"] == PROCESS_STATE_RUNNING
+    assert reported["stale"] is False
+
+
+def test_resident_exits_three_when_nothing_is_resident(tmp_path, monkeypatch, capsys):
+    from speech_aware_evidence_acquisition.data import lock as lock_module
+
+    monkeypatch.setattr(lock_module, "data_root", lambda: tmp_path)
+    args = build_parser().parse_args(["resident"])
+
+    # 3, never 0 and never 2: a killer script may only kill on this one code.
+    assert args.handler(args) == NO_RESIDENT_SESSION_EXIT
+    assert json.loads(capsys.readouterr().out)["resident"] is False
+
+
+def test_resident_refuses_rather_than_answering_when_two_sessions_are_recorded(
+    tmp_path, monkeypatch
+):
+    from speech_aware_evidence_acquisition.data import lock as lock_module
+
+    _write_session(tmp_path, "one")
+    _write_session(tmp_path, "two")
+    monkeypatch.setattr(lock_module, "data_root", lambda: tmp_path)
+    args = build_parser().parse_args(["resident"])
+
+    with pytest.raises(ServingSessionError, match="2 serving sessions"):
+        args.handler(args)
+
+
+def test_the_arm_launcher_only_kills_llama_server_behind_the_resident_check():
+    """``scripts/run_arm_sequence.sh`` used to ``pkill -9 -f llama-server``
+    twice per arm, unconditionally -- the one path in this repository that
+    could have killed the coordinator's resident server."""
+
+    script = (
+        Path(__file__).resolve().parents[2] / "scripts" / "run_arm_sequence.sh"
+    ).read_text(encoding="utf-8")
+    body = "\n".join(
+        line for line in script.splitlines() if not line.lstrip().startswith("#")
+    )
+    assert body.count("pkill -9") == 1, "the one kill must live inside the guard"
+    guard = body.split("kill_stray_llama_servers () {", 1)[1].split("\n}", 1)[0]
+    assert "serving_session.sh" in guard and "pkill" in guard
+    assert 'rc" -ne 3' in guard, "only 'no session resident' (exit 3) may permit the kill"

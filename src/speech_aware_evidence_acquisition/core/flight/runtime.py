@@ -2344,10 +2344,24 @@ class FlightRuntime:
         the VRAM to start -- exactly the situation a two-geometry factorial
         walks into. ``FlightQueue`` calls this on a genuine geometry change
         and from ``shutdown()``.
+
+        TWO independent guards, not one (E7b defect 3, 2026-09-07): a flight
+        that ATTACHED must never stop the coordinator's server, and the cost
+        of getting that wrong is every other queued flight's GPU time, so
+        ``_serving_session_dir`` is checked beside ``_owns_session`` rather
+        than trusting a single boolean that some future ``serve`` path could
+        set. The two can only disagree through a bug, which is the point.
         """
 
         if self._session is None or not self._owns_session:
             return None
+        if self._serving_session_dir is not None:  # pragma: no cover -- guard
+            raise FlightRuntimeError(
+                "refusing to stop the always-on serving session at "
+                f"{self._serving_session_dir}: this flight attached to it and does not "
+                "own it (a flight that stops the coordinator's server takes the GPU "
+                "away from every other queued flight)"
+            )
         receipt_path = (
             self._session_receipt_path.with_name(
                 self._session_receipt_path.name.replace(

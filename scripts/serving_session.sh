@@ -7,6 +7,8 @@
 #   scripts/serving_session.sh start <model-fragment-id> [--session-id ID] \
 #                                    [--host H] [--port N] [--runtime-root R]
 #   scripts/serving_session.sh status [--session-id ID]
+#   scripts/serving_session.sh resident            (exit 0 = one is resident,
+#                                                   3 = none, 2 = cannot tell)
 #   scripts/serving_session.sh stop   [--session-id ID] [--stale]
 #
 # `start` launches ONE llama-server for that fragment's geometry, built by
@@ -52,7 +54,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 usage() {
-    sed -n '2,47p' "${BASH_SOURCE[0]}" | sed 's/^#\{1,2\} \{0,1\}//'
+    sed -n '2,49p' "${BASH_SOURCE[0]}" | sed 's/^#\{1,2\} \{0,1\}//'
 }
 
 if [[ $# -lt 1 ]]; then
@@ -65,9 +67,9 @@ case "$1" in
         usage
         exit 0
         ;;
-    start|status|stop) ;;
+    start|status|stop|resident) ;;
     *)
-        echo "serving_session.sh: unknown command '$1' (expected start|status|stop)" >&2
+        echo "serving_session.sh: unknown command '$1' (expected start|status|stop|resident)" >&2
         exit 2
         ;;
 esac

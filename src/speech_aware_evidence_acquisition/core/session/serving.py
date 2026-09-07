@@ -637,11 +637,21 @@ def read_gpu_occupancy(*, run: Callable[..., object] | None = None) -> dict[str,
     TWO queries, because on WSL2 the compute-process table is not
     trustworthy: ``--query-compute-apps`` comes back empty on this host even
     while an 18.5 GB llama-server is resident, so "no process listed" alone
-    is not evidence of an empty card. ``memory.used`` is -- it is the same
-    number the coordinator read by hand ("nvidia-smi 0 MiB") before writing
-    each manual stop record, and the same one ``scripts/serving_monitor.py``
-    samples. The process list is still reported, because when it DOES list
-    something that is decisive evidence in the other direction.
+    is not evidence of an empty card. ``memory.used`` is the better of the
+    two -- it is the number the coordinator read by hand ("nvidia-smi
+    0 MiB") before writing each manual stop record, and the one
+    ``scripts/serving_monitor.py`` samples. The process list is still
+    reported, because when it DOES list something that is decisive evidence
+    in the other direction.
+
+    Neither reading is trusted ALONE, and this is why: ``scripts/
+    run_arm_sequence.sh::gpu_is_clean`` records a 2026-08-10 measurement in
+    which a llama-server with the model resident and answering /health
+    reported "0 MiB" through the WSL2 dxgkrnl paravirtualisation path,
+    minutes after the same process reported 23,312 MiB. An intermittently
+    low reading can only WEAKEN this corroborating condition; the verdict in
+    :func:`observe_session_process` rests on the pid state and the silent
+    port, which cannot both be wrong about a server that is still serving.
 
     Never raises: a host with no nvidia-smi returns ``available: False`` with
     the error, and the caller refuses to declare anything stale on that
@@ -1261,6 +1271,57 @@ def _status(args) -> int:
     return 0
 
 
+#: ``resident`` exits with this when NOTHING is resident -- distinct from 0
+#: (a session is resident) and from 2 (the question could not be answered).
+#: A killer script must be able to tell "no session" from "cannot tell".
+NO_RESIDENT_SESSION_EXIT = 3
+
+
+def _resident(args) -> int:
+    """Is the coordinator's session resident? -- for scripts that would
+    otherwise kill llama-server blindly.
+
+    ``scripts/run_arm_sequence.sh`` runs ``pkill -9 -f llama-server`` around
+    every arm. That predates the always-on session (E7) and would take an
+    18.5 GB resident server away from every queued flight, with no stop
+    record and a zombie left behind -- the exact damage E7b is about. It now
+    asks this first, and refuses the arm rather than killing.
+    """
+
+    from ...data.lock import data_root as resolve_data_root  # noqa: PLC0415 (CLI-only)
+
+    data_root = resolve_data_root()
+    resident = find_resident_session(data_root)
+    if resident is None:
+        print(
+            json.dumps(
+                {"resident": False, "serving_root": str(serving_root(data_root))},
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return NO_RESIDENT_SESSION_EXIT
+    session_dir, document = resident
+    observation = observe_session_process(document)
+    print(
+        json.dumps(
+            {
+                "resident": True,
+                "session_id": document.get("session_id"),
+                "session_dir": str(session_dir),
+                "process_state": observation["process_state"],
+                "stale": observation["stale"],
+                "blockers": observation["blockers"],
+            },
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def _stale_stop(
     session_dir: Path, document: Mapping[str, object], observation: Mapping[str, object]
 ) -> int:
@@ -1373,6 +1434,14 @@ def build_parser():
     subparsers.add_parser(
         "status", parents=[common], help="print the session document and the last sample"
     ).set_defaults(handler=_status)
+    subparsers.add_parser(
+        "resident",
+        parents=[common],
+        help=(
+            "exit 0 when a serving session is resident, "
+            f"{NO_RESIDENT_SESSION_EXIT} when none is (for scripts that kill servers)"
+        ),
+    ).set_defaults(handler=_resident)
     stop = subparsers.add_parser(
         "stop", parents=[common], help="stop the session and write session-stop.json"
     )
@@ -1415,6 +1484,7 @@ if __name__ == "__main__":  # pragma: no cover -- operator entry point
 __all__ = [
     "GPU_IDLE_MEMORY_MIB",
     "MONITOR_JSONL_NAME",
+    "NO_RESIDENT_SESSION_EXIT",
     "REPO_ROOT",
     "PARKED_UTILIZATION_PERCENT",
     "SERVER_LOG_NAME",

@@ -143,6 +143,29 @@ elif ! command -v python > /dev/null; then
   exit 4
 fi
 
+kill_stray_llama_servers () {
+  # This launcher's `pkill -9 -f llama-server` predates the always-on serving
+  # session (E7, owner rule 2026-09-07). That session is the COORDINATOR's:
+  # killing it takes an 18.5 GB resident server away from every queued flight,
+  # writes no stop record, and (2026-09-07, E7b) leaves a <defunct> child its
+  # wrapper has to be killed to clear. So ask before killing, and refuse the
+  # arm rather than the server.
+  #
+  # Exit 3 from `serving_session.sh resident` means "none is resident" and is
+  # the ONLY code that permits the kill: 0 means one is, 2 means the question
+  # could not be answered, and "cannot tell" is never a licence to SIGKILL.
+  local rc=0
+  bash "$REPO/scripts/serving_session.sh" resident >/dev/null 2>&1 || rc=$?
+  if [ "$rc" -ne 3 ]; then
+    echo "    REFUSED to pkill llama-server: serving_session.sh resident exited ${rc}" \
+         "(0 = a serving session is resident, 2 = cannot tell). Stop the session" \
+         "first with scripts/serving_session.sh stop." >&2
+    return 9
+  fi
+  pkill -9 -f 'llama-server' 2>/dev/null && sleep 8 || true
+  return 0
+}
+
 gpu_is_clean () {
   # nvidia-smi is NOT usable as the authority here. Under WSL2 the GPU is
   # reached through dxgkrnl paravirtualisation, VM workloads are not attributed
@@ -213,7 +236,10 @@ CELLS
     return 0
   fi
 
-  pkill -9 -f 'llama-server' 2>/dev/null && sleep 8 || true
+  kill_stray_llama_servers || {
+    echo "  REFUSED: an always-on serving session blocks the pre-arm cleanup for $run_id"
+    return 9
+  }
   gpu_is_clean || { echo "  REFUSED: GPU not clean before $run_id"; return 9; }
 
   npyc="$(find "$SCORING" -name '__pycache__' -type d 2>/dev/null | wc -l)"
@@ -274,7 +300,9 @@ CELLS
     echo "  --- tail (framework graph events suppressed) ---"
     grep -vE '"module_id": "graph"' "$log" | tail -6 | cut -c1-200
   fi
-  pkill -9 -f 'llama-server' 2>/dev/null && sleep 8 || true
+  # Never allowed to change this arm's exit status: a refused cleanup is a
+  # warning, the arm's own rc is the result.
+  kill_stray_llama_servers || echo "  (post-arm llama-server cleanup skipped)"
   return "$rc"
 }
 
