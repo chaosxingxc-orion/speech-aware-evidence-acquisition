@@ -21,6 +21,8 @@ model contacts.
 
 from __future__ import annotations
 
+import pathlib
+
 import pytest
 
 from speech_aware_evidence_acquisition.rails.hashing import content_hash
@@ -30,6 +32,7 @@ from speech_aware_evidence_acquisition.data.slurp import (
 )
 from speech_aware_evidence_acquisition.rails.proposer import (
     DECONTAMINATION_NGRAM,
+    PROPOSER_INSTRUCTION_VERSIONS,
     NULL_REWRITE_GATE,
     SERVING_TOKENIZER_ID,
     SLURP_DECONTAMINATION_SCHEMA,
@@ -43,6 +46,8 @@ from speech_aware_evidence_acquisition.rails.proposer import (
     ngram_digests,
     null_rewrite_check,
     parse_slurp_schema_response,
+    proposer_instruction_version,
+    render_slurp_proposer_instruction,
     rendered_artifact_sha256,
     slurp_block_texts,
     slurp_blocks_from_schema,
@@ -797,3 +802,134 @@ def test_a_slurp_rendering_without_the_train_tables_is_refused():
         rendered_artifact_sha256(
             INCUMBENT_BLOCKS, artifact_family=SLURP_SLOT_SCHEMA_FAMILY
         )
+
+
+# ---------------------------------------------------------------------------
+# proposer-instruction-v2: the blank line between blocks (track E3e)
+# ---------------------------------------------------------------------------
+
+REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
+ROUND_01 = (
+    REPO_ROOT
+    / "docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-s1/round-01"
+)
+A_0_RECEIPT = REPO_ROOT / "docs/receipts/knowledge/slurp-intent-slot-schema-v1.json"
+
+#: The rule round 1's 23 blank-line refusals broke, in the instruction's own
+#: words. Pinned here because it is the whole of proposer-instruction-v2.
+BETWEEN_BLOCKS_RULE = (
+    "- leave no blank line between one block and the next: the next block's "
+    "== header line comes immediately after the previous block's last type line"
+)
+
+
+def instruction(**overrides) -> str:
+    kwargs = {
+        "intent_order": INTENTS,
+        "entity_type_names": ENTITY_TYPES,
+        "exemplars": [
+            (
+                "slurp:train:000100:synthetic-0",
+                "alarm_set",
+                "wake me at seven",
+                (("time", "seven am"),),
+            ),
+            (
+                "slurp:train:000101:synthetic-1",
+                "alarm_query",
+                "what alarms are set",
+                (("time", "morning"),),
+            ),
+        ],
+        "line_caps": {intent: len(_TRAIN[intent][2]) for intent in INTENTS},
+        "scenario": TARGET,
+        "round": 2,
+        "k": 1,
+    }
+    kwargs.update(overrides)
+    return render_slurp_proposer_instruction(INCUMBENT_TEXTS, **kwargs)
+
+
+def test_the_instruction_names_the_rule_the_round_one_refusals_broke():
+    """v1 said only "no blank lines", inside a rule whose other two clauses are
+    about type lines, and the model put one between blocks 22 times out of 54.
+    v2 says the between-blocks case in a line of its own."""
+
+    lines = instruction().split("\n")
+    assert BETWEEN_BLOCKS_RULE in lines
+    # Still one rendered line, still ASCII, still inside the output contract.
+    assert lines.index(BETWEEN_BLOCKS_RULE) > lines.index("## Output")
+    assert instruction().isascii()
+
+
+def test_the_instruction_version_is_bumped_for_slurp_and_not_for_a2t():
+    assert proposer_instruction_version(SLURP_SLOT_SCHEMA_FAMILY) == (
+        "proposer-instruction-v2"
+    )
+    assert proposer_instruction_version("a2t-descriptions") == "proposer-instruction-v1"
+    assert PROPOSER_INSTRUCTION_VERSIONS[SLURP_SLOT_SCHEMA_FAMILY].endswith("v2")
+    with pytest.raises(ProposerError, match="artifact_family"):
+        proposer_instruction_version("not-a-family")
+
+
+@pytest.mark.skipif(
+    not (ROUND_01 / "proposer-outputs.jsonl").exists(),
+    reason="the landed EVO-S1 round-1 proposer outputs are not in this checkout",
+)
+def test_round_ones_refused_responses_are_still_refused_by_the_parser():
+    """The fix is in the INSTRUCTION, not in the parser.
+
+    Round 1's own sealed responses, replayed through the unchanged parser:
+    every one of the 22 blank-line refusals is refused again, with the same
+    rule named. A parser that had learned to repair a blank line would be a
+    second, unlogged policy deciding what the frozen core meant -- and it would
+    silently admit 22 candidates the preregistration never priced.
+
+    (22, not the 23 the round-1 verdict's table says: the receipt's 25
+    refusals are 22 blank lines, one line outside the block grammar and two
+    over the relative token budget. The verdict is corrected in place.)
+    """
+
+    import json
+
+    sealed = {
+        json.loads(line)["sample_id"]: json.loads(line)["text"]
+        for line in (ROUND_01 / "proposer-outputs.jsonl").read_text(
+            encoding="utf-8"
+        ).splitlines()
+        if line.strip()
+    }
+    # Keyed by DRAW, not by sample: two draws of one scenario can share an
+    # anchor row, and they ask for different intents.
+    contacts = {
+        str(contact["draw_id"]): tuple(
+            str(key) for key in contact.get("artifact_keys", ())
+        )
+        for contact in json.loads(
+            (ROUND_01 / "propose.json").read_text(encoding="utf-8")
+        )["contacts"]
+    }
+    landed = json.loads((ROUND_01 / "candidates.json").read_text(encoding="utf-8"))
+    blank_line = [
+        (str(record["draw_id"]), str(record["sample_id"]), str(record["reason"]))
+        for record in landed["harvest"]["refusals"]
+        if "is blank" in str(record["reason"])
+    ]
+    assert len(blank_line) == 22
+
+    types = sorted(
+        {
+            str(row["entity_type"])
+            for record in json.loads(A_0_RECEIPT.read_text(encoding="utf-8"))["intents"]
+            for row in record["types"]
+        }
+    )
+    for draw_id, sample_id, reason in sorted(blank_line):
+        with pytest.raises(ProposerError) as raised:
+            parse_slurp_schema_response(
+                sealed[sample_id],
+                expected_intents=contacts[draw_id],
+                allowed_entity_types=types,
+            )
+        assert str(raised.value) == reason, draw_id
+        assert "a block carries no blank line" in str(raised.value)

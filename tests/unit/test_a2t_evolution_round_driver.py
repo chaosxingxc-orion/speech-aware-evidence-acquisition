@@ -745,3 +745,22 @@ def test_a_candidate_that_renders_to_the_incumbent_is_refused_as_a_null_rewrite(
         assert (record["candidate_rendered_sha256"] == record["incumbent_rendered_sha256"]) is (
             record["null_rewrite"]
         )
+
+
+def test_the_propose_receipt_names_this_familys_unchanged_instruction_revision(
+    tmp_path,
+) -> None:
+    """EVO-A1's instruction did not move: its strict-JSON contract never lost a
+    draw to the blank-line habit, so it stays ``proposer-instruction-v1`` and
+    its candidate ids stay comparable across the E3e change."""
+
+    config = _loop_config()
+    _repo(tmp_path / "run", config)
+    propose = run_propose_step(
+        EvolutionState(round=0, incumbent_overrides={}).validate(),
+        1,
+        config=config,
+        carrier=_carrier(),
+    )
+    receipt = propose.documents[config.round_paths(1)["propose"]["writes"][2]]
+    assert receipt["proposer_instruction_version"] == "proposer-instruction-v1"

@@ -354,9 +354,27 @@ Rules:
 - at most {L} type lines per block, the most used type first
 - at most five fillers per type, lower case, written as they would be spoken
 - ASCII only; one line per type; no blank lines; no numbering
+- leave no blank line between one block and the next: the next block's == header line comes immediately after the previous block's last type line
 - never write anything that is not an entity type name or a filler
 - never write an identifier, a file name or a number that is not part of a filler
 ```
+
+**`proposer-instruction-v2`, from round 2 onward — dated 2026-09-07 (track E3e).** The rule line
+"leave no blank line between one block and the next…" above is NEW, and it is the whole of the
+change. Round 1 lost **22 of its 54 draws** to one formatting habit: the model separated its blocks
+with a blank line, which v1 covered only as the general "no blank lines" in a rule whose other two
+clauses are about type lines. `takeaway` lost all three of its draws that way, so its 4-saves,
+0-harms stage-one count stood against no artifact at all. The parser is deliberately unchanged and
+stays fail-closed — repairing a proposer answer here would be a second, unlogged policy deciding what
+the frozen core meant — so the repair belongs in the instruction, where it costs nothing and is
+visible. Because the instruction bytes are inside every candidate id (through
+`proposer_prompt_sha256`) and are the preregistered prompt, the revision is versioned rather than
+edited quietly: `rails.proposer.PROPOSER_INSTRUCTION_VERSIONS` names
+`slurp-slot-schema -> proposer-instruction-v2`, and every PROPOSE receipt from round 2 on records
+`proposer_instruction_version`. **Round 1's sealed prompts are untouched**: they were flown under v1,
+their digests stand, and round 1 remains replayable exactly as it landed. The `a2t-descriptions`
+instruction stays `proposer-instruction-v1` — its output contract is strict JSON, whose parser treats
+a blank line as the insignificant whitespace it is, so the same habit cannot cost EVO-A1 a draw.
 
 **No sample id ever reaches the rendered instruction** — exemplar ids are used only to group, to
 order and to seed the candidate id. No devel row, no test row, no evaluation gold and no score enters

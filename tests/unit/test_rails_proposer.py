@@ -36,6 +36,7 @@ from speech_aware_evidence_acquisition.rails.proposer import (
     parse_proposer_response,
     placebo_candidate,
     prompt_sha256,
+    proposer_instruction_version,
     proposer_candidate,
     render_placebo_instruction,
     render_proposer_instruction,
@@ -645,3 +646,33 @@ def test_the_gate_refuses_an_incumbent_that_does_not_cover_the_candidate():
         null_rewrite_check(
             a_candidate(), {"tool000": "only one side"}, registry_rows=registry_rows()
         )
+
+
+# ---------------------------------------------------------------------------
+# proposer-instruction-v2 is a SLURP-only bump (track E3e, 2026-09-07)
+# ---------------------------------------------------------------------------
+
+
+def test_a_blank_line_inside_the_json_costs_this_family_nothing():
+    """The habit that cost EVO-S1 22 of 54 draws cannot cost EVO-A1 one.
+
+    This family's output contract is strict JSON, and JSON treats a blank line
+    as the insignificant whitespace it is -- so the between-blocks rule that
+    ``proposer-instruction-v2`` adds to the SLURP instruction has no A2T
+    counterpart to add, and this instruction stays v1.
+    """
+
+    spaced = json.dumps(
+        {
+            "cue": "one names a light, the other an alarm panel",
+            "descriptions": {
+                "tool000": "Switches a named lamp on or off.",
+                "tool001": "Arms or disarms the household alarm panel.",
+            },
+        },
+        indent=2,
+    ).replace("\n", "\n\n")
+    cue, descriptions = parse_proposer_response(spaced, expected_tools=TARGET_TOOLS)
+    assert sorted(descriptions) == sorted(TARGET_TOOLS)
+    assert cue
+    assert proposer_instruction_version("a2t-descriptions") == "proposer-instruction-v1"

@@ -173,6 +173,7 @@ __all__ = [
     "SLURP_PLACEHOLDER_FILLER",
     "SLURP_PLACEHOLDER_FILLERS",
     "SERVING_TOKENIZER_ID",
+    "PROPOSER_INSTRUCTION_VERSIONS",
     "ROW_FIELDS",
     "ProposerError",
     "CandidateArtifact",
@@ -186,6 +187,7 @@ __all__ = [
     "deterministic_candidate",
     "parse_proposer_response",
     "prompt_sha256",
+    "proposer_instruction_version",
     "placebo_candidate",
     "proposer_candidate",
     "render_placebo_instruction",
@@ -1000,6 +1002,40 @@ def render_placebo_instruction(
     lines.append("")
     lines.extend(_output_contract(tools, with_cue=False))
     return "\n".join(lines) + "\n"
+
+
+#: Which revision of each family's rendered proposer instruction this module
+#: emits. The instruction text is inside every candidate id (through
+#: ``proposer_prompt_sha256``) and it is the preregistered prompt, so a change
+#: to its bytes is a version bump and is recorded in the PROPOSE receipt --
+#: never a silent edit that leaves two rounds' candidate ids incomparable with
+#: nothing in the record to say why.
+#:
+#: ``slurp-slot-schema`` moved to v2 on 2026-09-07 (track E3e). EVO-S1 round 1
+#: lost 23 of its 54 draws to ONE formatting habit: the model separated its
+#: blocks with a blank line, which the v1 rules covered only as the general
+#: "no blank lines" and which the fail-closed parser refuses without repair.
+#: v2 names the between-blocks case in its own line. The parser is unchanged:
+#: the fix belongs in the instruction, because a repair here would be a second,
+#: unlogged policy deciding what the frozen core meant. Round 1's sealed
+#: prompts are untouched -- they were flown under v1 and stay v1.
+#:
+#: ``a2t-descriptions`` stays v1: its output contract is strict JSON, whose
+#: parser treats a blank line as the insignificant whitespace it is, so the
+#: same habit cannot cost that family a draw.
+PROPOSER_INSTRUCTION_VERSIONS: Mapping[str, str] = {
+    A2T_DESCRIPTIONS_FAMILY: "proposer-instruction-v1",
+    SLURP_SLOT_SCHEMA_FAMILY: "proposer-instruction-v2",
+}
+
+
+def proposer_instruction_version(artifact_family: str) -> str:
+    """Which instruction revision this module renders for ``artifact_family``."""
+
+    version = PROPOSER_INSTRUCTION_VERSIONS.get(artifact_family)
+    if version is None:
+        raise ProposerError(f"artifact_family must be one of {ARTIFACT_FAMILIES}")
+    return version
 
 
 def prompt_sha256(instruction: str) -> str:
@@ -2104,6 +2140,9 @@ def render_slurp_proposer_instruction(
             "per block, the most used type first",
             "- at most five fillers per type, lower case, written as they would be spoken",
             "- ASCII only; one line per type; no blank lines; no numbering",
+            "- leave no blank line between one block and the next: the next block's "
+            "== header line comes immediately after the previous block's last type "
+            "line",
             "- never write anything that is not an entity type name or a filler",
             "- never write an identifier, a file name or a number that is not part of a "
             "filler",

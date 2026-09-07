@@ -81,6 +81,7 @@ from .proposer import (
     placebo_candidate,
     prompt_sha256,
     proposer_candidate,
+    proposer_instruction_version,
     render_placebo_instruction,
     render_proposer_instruction,
     render_slurp_proposer_instruction,
@@ -4169,6 +4170,13 @@ def run_propose_step(
     receipt = {
         "schema": "saea-evolution-propose-step-v1",
         "round": round_index,
+        # Which revision of the rendered instruction produced the prompt
+        # digests below. The bytes are inside every candidate id, so a round
+        # whose proposer text changed must say so rather than leave two rounds
+        # incomparable with nothing in the record to explain it.
+        "proposer_instruction_version": proposer_instruction_version(
+            config.artifact_family
+        ),
         "roster_id": roster["roster_id"],
         "roster_split_identity_hash": roster["split_identity_hash"],
         "incumbent_state_sha256": state.state_sha256(),

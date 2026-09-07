@@ -1403,3 +1403,21 @@ def test_the_landed_round_one_candidates_replay_through_the_gate() -> None:
         "iot",
         "social",
     ]
+
+
+def test_the_propose_receipt_names_the_instruction_revision_it_rendered(
+    tmp_path,
+) -> None:
+    """The instruction bytes are inside every candidate id, so the round that
+    flew them has to say which revision they were."""
+
+    config = _loop_config()
+    _repo(tmp_path / "run", config)
+    propose = run_propose_step(
+        EvolutionState(round=0, incumbent_overrides={}).validate(),
+        1,
+        config=config,
+        carrier=_carrier(),
+    )
+    receipt = propose.documents[config.round_paths(1)["propose"]["writes"][2]]
+    assert receipt["proposer_instruction_version"] == "proposer-instruction-v2"
