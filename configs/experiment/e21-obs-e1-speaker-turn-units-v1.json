@@ -1,0 +1,141 @@
+{
+  "experiment_id": "SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1",
+  "schema": "saea-e21-obs-e1-speaker-turn-units-experiment-v1",
+  "date": "2026-09-07",
+  "execution_profile": "bounded-discovery-probe",
+  "status": "DRAFT — NOT AUTHORIZED, AND NOT COMPOSABLE UNTIL THE OBS SEAM LANDS",
+  "does_not_compose_yet": "The baseline fragment this cell names carries obs_unit_plan, obs_unit_plan_sha256 and obs_slice_tail_silence_seconds, and reproduction.obs_loop.ObsLoopConfig.from_values rejects every unknown obs_ key fail-closed. So this cell REFUSES to compose on today's tree, by design. The seam is specified in docs/readiness/2026-09-07-e21-obs-speaker-turn-units-v1-preregistration.md section 8 and is implemented after wt/ts2y's tail knob merges, because the cutter calls its encoder. This file is committed now only so the composition is reviewable before the seam is written; it is a launch record, never a permission.",
+  "purpose": "Owner thesis, 2026-09-07: cut the speech by SPEAKER first, then understand per speaker. The sealed full-44 direct baseline transports each call as ceil(D/90) fixed 90-second windows, and the cross-carrier silence-tail preregistration measured what that costs: 1,043 of the 1,593 windows (65.5 %) end on an ACTIVE frame and 1,088 of the 1,549 interior ones (70.2 %) end within 20 ms of active speech, while only 645 (40.5 %) carry exactly one speaker. This cell replaces the transport unit -- and nothing else -- with the hash-pinned speaker-turn unit plan, whose 5,288 units end mid-speech 11.7 % of the time and carry exactly one speaker 76.1 % of the time. Preregistration: docs/readiness/2026-09-07-e21-obs-speaker-turn-units-v1-preregistration.md.",
+  "population": {
+    "carrier": "earnings21-original",
+    "split_name": "discovery",
+    "dataset_fragment": "earnings21-discovery",
+    "split_role": "discovery",
+    "count": 44,
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "receipt": "docs/receipts/splits.json",
+    "audio_seconds_cut": 141345.852687,
+    "audio_seconds_delivered": 151921.852688,
+    "speaker_turn_units_one_pass": 5288,
+    "fixed_90s_windows_one_pass": 1593,
+    "unit_plan": "docs/receipts/obs/e21-speaker-turn-units-v1.json",
+    "unit_plan_sha256": "fed5188b86d672b2d2a9c8f1b55dc51fe5712776fc06cc938dc759854d52026a",
+    "unit_plan_exposure_row": "SAEA-E21-MF-SPEAKER-TURN-UNITS-V1",
+    "selection": "no draw: the whole frozen earnings21-original discovery split, the comparator's own population, already exposed many times over.",
+    "estimand": "the pooled delta, comparator minus cell, of ConEC-mirror PERSON entity WER and of corpus WER, over all 44 calls.",
+    "strata": "diarization dominance (dominated / shared at 0.60, the PRIMARY stratum because the tool's speaker_count saturates at four), speaker count (0/1/2/>=3), unit length (<1 s / 1-10 s / 10-60 s / >=60 s), cut kind (pause / turn-boundary / forced-cap-split / call-end), the no-pause call 4366522 reported apart, and the release's own sector (9 levels) and sample rate (5 levels)."
+  },
+  "cells": [
+    {
+      "cell_id": "E21-obs-e1-speaker-turn-units",
+      "dataset_fragment": "earnings21-discovery",
+      "baseline_fragment": "e21-units-obse1-scored7",
+      "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "arm": "bare-core",
+      "obs": "speaker-turn units from the hash-pinned plan; no VAD trim, no overlap, no rolling tail, no preprocessing; 2.0 s digital silence tail on the delivered bytes only",
+      "evidence": "none",
+      "serving_geometry": "-c 36864 -np 6, 6,144 tokens per slot, GGML_CUDA_DISABLE_GRAPHS=1, bf16 mmproj resident on the GPU",
+      "audio_path": "raw audio through the bf16 mmproj on the GPU; no feature cache, no CPU packet preprocessing, no MP3 re-decode"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "contacts_per_item": "one per speaker-turn unit; 5,288 units over 44 calls",
+    "slot_fit": "unchanged and needing no re-certification: no unit exceeds 90 s (analysis.e21_speaker_turn_units.assert_tiles refuses a plan that contains one), so the worst request is still the 2,258-token 90-second window the slot receipt certified at 2.72x against the 6,144-token slot.",
+    "harness": "core.driver.run_experiment_bundled through scripts/run_arm_sequence.sh -- the same committed launcher path the sealed comparator flew, with the same registered core.base policy obs-agent-loop. The unit plan is a THIN derivation on that policy, not a new base: no module under rails/probes, no TaskAdapter or controller subclass, no launcher directory.",
+    "instruction": "byte-identical to the sealed SAEA-E21-FULL44-DIRECT-BASELINE-V2 arm (configs/baseline/e21-buf90-zero-locked-scored4.json task_instruction)"
+  },
+  "comparator": {
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "attempt_id": "attempt-20260904T233816Z-bcd338",
+    "rows": "SAEA-E21-MF-AGENTIC-METRIC-BASELINE-V1 and SAEA-E21-MF-SEMANTIC-IMPACT-BASELINE-V1",
+    "corpus_wer": 8.1995,
+    "conec_person_entity_wer": 22.5,
+    "conec_person_reference_words": 2917,
+    "numeric_value_accuracy": 90.7335,
+    "negation_critical_error_rate": 0.0278,
+    "taxonomy_id": "e22-semantic-scan-2026-09-06-content-impact-word-pair-v1",
+    "no_arm_is_reflown": "the comparator is the sealed run's own outputs, scored by the same registered functions; nothing is re-flown to produce it."
+  },
+  "pairing": {
+    "unit": "the CALL -- 44 clusters. The comparator's 1,593 windows and this cell's 5,288 units do not align one to one and no construction makes them, so the call's pooled metrics are the only level at which both arms produce a complete comparable quantity.",
+    "statistic": "analysis.paired.resampled_statistic on the pooled ratio sum(numerator)/sum(denominator) over the resampled call ids",
+    "seed": 20260903,
+    "n_replicates": 10000,
+    "ci_level": 0.9,
+    "power_limitation": "n = 44 clusters is BELOW the program's n >= 400 rule for a paired effectiveness claim. That rule was answered on Earnings by pairing at the window (owner ruling 2026-09-06), and a transport unit that does not align to the window breaks that answer. This cell therefore reports an interval and a direction and makes NO paper-facing effectiveness claim.",
+    "secondary_read": "preregistered and labelled: charging BOTH arms' alignment operations to the sealed 90-second window grid by REFERENCE index (the reference is the same string in both arms; an insertion goes to the window its reference cursor stands in) is a genuine common refinement at n = 1,593. It buys a saves/harms/ties count and the per-window strata, NOT power, and the 44-cluster interval stays the honest one."
+  },
+  "decision": {
+    "delta_convention": "comparator minus cell, in points; positive = the cell is better",
+    "rule": {
+      "win": "CI90 LB(delta PERSON entity WER) > 0 AND CI90 LB(delta corpus WER) > 0",
+      "win_entity_only": "CI90 LB(delta PERSON entity WER) > 0 AND corpus WER non-inferior, i.e. CI90 LB(delta corpus WER) > -0.30 points",
+      "no_effect": "neither, and CI90 on both deltas contains 0",
+      "harm": "CI90 UB(delta PERSON) < 0 or CI90 UB(delta corpus WER) < -0.30, with the failing half named and the gap decomposed per stratum and per call"
+    },
+    "non_inferiority_margin_basis": "-0.30 points is six times the 0.05-point build-and-audio-path noise the sealed verdict measured, so it cannot be tripped by the noise it absorbs; and it is one tenth of the owner's 3.0-point alignment band around the published 9.71, so a cell that passes it has spent at most a tenth of the alignment budget and the 2026-09-04 ALIGNED verdict survives it intact.",
+    "harm_guards_reported_beside": [
+      "numeric-value-accuracy-v1 against 90.7335 %",
+      "semantic-high-impact-error-rate-v1 against 0.0278 % under the same taxonomy id (a weak guard by its own note's admission -- 100 HIGH reference words on all 44 -- and reported as a direction only)",
+      "the remaining seven ConEC classes and the non-entity rate"
+    ],
+    "falsifier_before_any_score": "concatenating a call's unit slices with the 2.0-second tails removed must reproduce that call's sealed concatenated audio_sha256 from saea-diarization-v1, which holds if and only if the units tile and the cut is byte-exact against the sealed slices. A disagreement stops the cell before it is scored.",
+    "equal_contact_question": "A contact-matched control is IMPOSSIBLE BY CONSTRUCTION and is declared so before the flight: a call cut at its speaker turns yields 5,288 pieces, and there is no way to cut it into speaker-turn units and into 1,593 of them. The contrast therefore confounds boundary placement, speaker purity and contact count/length, both arms report contacts and delivered audio seconds in the verdict's first table, and the verdict states the confound in the same paragraph as the headline number. The control that WOULD separate contact count -- a fixed-window arm at obs_buffer_seconds 26.73, 5,288 windows, call it OBS-E1b -- is named as the follow-up and is deliberately NOT registered: two experiments in flight is forbidden.",
+    "claim_surface": "Discovery data. No superiority, generality or Stage-3 claim, and no paper-facing effectiveness claim at all (see pairing.power_limitation). No knob tuned on the evaluation ten: the plan's five rules were fixed model-free before any score existed. No Earnings-22 contact, no fstalign install, no diarizer re-run, no speaker naming.",
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "evaluation": {
+    "manifest_scorers": [
+      "asr-wer-whisper",
+      "conec-entity-wer-official",
+      "numeric-value-accuracy-v1",
+      "semantic-high-impact-error-rate-v1",
+      "asr-wer",
+      "entity-wer",
+      "cost"
+    ],
+    "paper_facing_scorer": "conec-entity-wer-official",
+    "paper_facing_metric": "ConEC-mirror PERSON entity WER, (S + D) / tagged reference words, with corpus WER beside it as the anchor and the harm check",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "mandatory_slices": [
+      "the per-call table for all 44 calls, with units, delivered seconds and every metric",
+      "the per-stratum table on every one of the six strata, natural mixture and equal-stratum weighted",
+      "call 4366522 reported apart: zero detected pauses, all 38 units ending on an active frame",
+      "the 166 short-kept units under 1.0 s and the 21 units attributed no reference word, reported as their own stratum",
+      "contacts and delivered audio seconds per arm, in the first table",
+      "throughput: units per minute, GPU seconds, wall, realized realtime factor, prompt and completion tokens"
+    ]
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 5800,
+    "planned_gpu_hours": 3.5,
+    "planned_speech_audio_seconds": 165000
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "5,288 speaker-turn units over the 44 calls, plus 512 of headroom for obs_slice_retry_max=1 retries; the registered exposure ceiling is 6,000.",
+    "planned_speech_audio_seconds": "151,921.853 s delivered (141,345.853 cut plus 5,288 x 2.0 s of tail), rounded up with retry headroom to 165,000; the registered exposure ceiling is 170,000.",
+    "planned_gpu_hours": "BRACKETED, not guessed. The comparator realized 3,504.4 GPU-seconds (0.973 GPU-h) for 1,593 contacts over 141,345.85 s at this exact geometry, 40.3x realtime. Audio-proportional gives 0.973 x 151,921.853 / 141,345.853 = 1.05 GPU-h (the floor, if cost tracks encoded seconds); contact-proportional gives 0.973 x 5,288 / 1,593 = 3.23 GPU-h (the ceiling, if cost tracks requests). Prompt tokens rise about 23 % (1.94 M to roughly 2.38 M) and completion tokens are roughly conserved, so the truth is between. 3.5 planned against a 4.0 ceiling covers the pessimistic bracket; the projection is re-measured on the smoke and the flight STOPS and reports if the measured rate projects past 4.0.",
+    "paid_api_spend": 0,
+    "budget_is_run_cumulative": "core/model/adapter.py enforces planned_model_calls and planned_speech_audio_seconds across ALL attempts of a run id, so a partially spent attempt cannot be re-run under this id and the one permitted recovery would take a fresh run id and a fresh exposure row.",
+    "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are the exposure-ledger row's calls / speech audio seconds / gpu hours cells, which the gate requires to be at least these planned values."
+  },
+  "preconditions": [
+    "the obs seam of the preregistration's section 8, implemented AFTER wt/ts2y's tail knob merges, with its own byte-level falsifier passing",
+    "a 4-row dry run of the composed cell",
+    "this cell's own exposure row, registered and committed with consumed = no before the first contact",
+    "the owner's GO"
+  ],
+  "not_authorized": "No Earnings-22 contact, no ConEC supply arm, no brief arm (KC-E1 is a separate cell and stays on fixed windows; the brief on turn units is a two-factor OBS x KC cell and is not this one), no OBS-E1b contact-matched control, no diarizer re-run, no speaker naming, no fstalign install, no test tuning."
+}
