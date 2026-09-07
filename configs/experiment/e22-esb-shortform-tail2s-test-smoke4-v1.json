@@ -1,0 +1,115 @@
+{
+  "experiment_id": "SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-SMOKE-V1",
+  "schema": "saea-e22-esb-shortform-experiment-v1",
+  "date": "2026-09-07",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "The 4-row dry run of SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1, required before 2,735 contacts are spent on a population whose second read is the whole cost of this cell. Same protocol, same geometry, same media root, four rows. Three reads, in order of importance: 1. the built-in falsifier -- every request's prompt_tokens must equal 49 + analysis.e22_short_clip_encoding.llamacpp_audio_tokens(n_samples) for that row's variant media, which for these four rows is 88 / 556 / 270 / 166 and 1,080 in total, and a single disagreement means the audit's front-end model is wrong for this media and the cell STOPS; 2. does this variant's worst encode (38.360125 s, 507 audio tokens over five encoder windows, the largest single request the cell will send) complete live at -c 32768 -np 8 with no CUDA fault and no out-of-memory; 3. do both ESB scorers return per-sample rows on the sealed manifest through core.scoring_batch with verified = true. The smoke's own WER numbers are on four rows and enter no verdict. One cell, E22-ESB-2735-TS2-SMOKE-4. Preregistration: docs/readiness/2026-09-07-e22-esb-shortform-tail2s-test-v1-preregistration.md. NOT AUTHORIZED by this fragment: these four contacts are part of the SECOND read of the six calibration-exposed calls and need the owner's explicit GO recorded in this run's own exposure row.",
+  "populations": {
+    "E22-ESB-TEST2735-TS2-SMOKE-4": {
+      "dataset_fragment": "earnings22-esb-test2735-tail2s-smoke4",
+      "carrier": "earnings22-original",
+      "split_role": "dev",
+      "count": 4,
+      "ids": [
+        "4479741-224@ts2",
+        "4483338-281@ts2",
+        "4485244-115@ts2",
+        "4485244-409@ts2"
+      ],
+      "selection": "the SAME four published segments the sealed 2026-09-05 test smoke selected -- shortest, longest, median and p90 by published duration over the 2,735 -- each exactly two seconds longer than its v1 twin. Named by this fragment and never by a command line, so a smoke can never quietly fly four different rows than the ones its exposure row names.",
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-test2735-tail2s-media/roster/flight-roster-receipt.json",
+      "receipt_sha256": "aa5e677b0ae1638d5aed3383ee3b56942cec96f1bbca9320c12c609df6d5377f",
+      "d1_media_supplement": "docs/receipts/artifacts/d1-e22-esb-test2735-tail2s.json",
+      "d1_media_supplement_sha256": "8e335d51cdd732bd5fa88930475261111531a88c018e3866ab39cb7afb1bb527",
+      "split_identity_hash": "f47de393dc032bba0f0d39811b4718e83753f0345a21b9fd98889abb8e6f3114",
+      "audio_seconds_one_pass": 64.760188,
+      "audio_seconds_longest_item": 38.360125,
+      "audio_tokens_one_pass": 884,
+      "media_build_row": "SAEA-SN-MF-E22-TEST-TS2-MEDIA-V1",
+      "estimand": "none; this is the flight's own protocol on four rows"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "E22-ESB-2735-TS2-SMOKE-4",
+      "dataset_fragment": "earnings22-esb-test2735-tail2s-smoke4",
+      "arm": "bare-core",
+      "baseline_fragment": "e22-esb-test2735-tail2s",
+      "model_fragment": "q4km-e22-esb-mmproj-gpu-04ccc72a-np8",
+      "run_id": "SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-SMOKE-V1",
+      "serving_geometry": "-c 32768 -np 8, 4096 tokens per slot -- identical to the flight",
+      "factor": "none; this is the cell's own protocol on four rows"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "runtime_receipt": "docs/receipts/runtime-q4km-featcache-04ccc72a.json",
+    "quantization": "Q4_K_M",
+    "decoder_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "mmproj_sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883",
+    "audio_path": "raw audio, bf16 mmproj resident on the GPU, no feature cache directory",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none -- an ESB utterance IS the request",
+    "harness": "core.flight.FlightRuntime through scripts/flights/run_e22_esb_cell.py",
+    "prompt_shape": "the base TaskAdapter.assemble_prompt default: one system message carrying the instruction, one user message carrying the audio",
+    "instruction": "Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text."
+  },
+  "falsifier": {
+    "rule": "prompt_tokens == 49 + analysis.e22_short_clip_encoding.llamacpp_audio_tokens(n_samples) for every flown row",
+    "per_row_expected": {
+      "4479741-224@ts2": 88,
+      "4483338-281@ts2": 556,
+      "4485244-115@ts2": 270,
+      "4485244-409@ts2": 166
+    },
+    "expected_total": 1080,
+    "on_disagreement": "the cell STOPS and reports rather than being interpreted"
+  },
+  "evaluation": {
+    "official_scorers": [
+      "asr-wer-esb-whisper",
+      "asr-wer-esb",
+      "cost"
+    ],
+    "paper_facing_scorer": "asr-wer-esb-whisper",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "merge_compounds": false,
+    "metrics": [
+      "the falsifier check",
+      "prompt_tokens, completion tokens, latency, throughput",
+      "peak VRAM and the absence of cuda error / out of memory / GGML_ASSERT lines",
+      "both ESB scorers returning verified per-sample rows through core.scoring_batch"
+    ],
+    "verdict_use": "NONE. Four rows produce no WER claim of any kind."
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "dev",
+    "planned_model_calls": 20,
+    "planned_gpu_hours": 0.25,
+    "planned_speech_audio_seconds": 100
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "4 rows x 1 contact plus headroom; the registered exposure ceiling is 50",
+    "planned_speech_audio_seconds": "64.760188 s for one pass, rounded up to 100; the registered ceiling is 200",
+    "planned_gpu_hours": "0.25 planned, 0.50 registered -- essentially all of it model load if a session has to be started for this geometry, and near zero if the cell attaches to a resident one",
+    "paid_api_spend": 0
+  },
+  "decision": {
+    "go_no_go": "GO only if all three reads are affirmative: the falsifier holds on 4 of 4 rows, the worst encode completes with no CUDA fault and no out-of-memory, and both ESB scorers return verified per-sample rows. Any one of them negative stops the flight.",
+    "claim_surface": "none; this smoke makes no research claim",
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "flight_run": {
+    "experiment_id": "SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1",
+    "fragment": "e22-esb-shortform-tail2s-test-v1"
+  }
+}

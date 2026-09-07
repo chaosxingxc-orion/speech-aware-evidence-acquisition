@@ -1,0 +1,271 @@
+{
+  "experiment_id": "SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1",
+  "schema": "saea-e22-esb-shortform-experiment-v1",
+  "date": "2026-09-07",
+  "execution_profile": "baseline-reproduction",
+  "purpose": "Re-read the published ESB Earnings22 TEST subset ONCE MORE, with the ONE factor the 2026-09-07 encoding probes admitted on dev: the media. Exactly 2.0 s of digital silence appended to every one of the 2,735 published test utterances, and everything else byte-identical to the sealed SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1 flight -- same instruction, same prompt shape, same decoding params, same build, same decoder and mmproj by sha256, same raw-audio mmproj path with no packet and no feature cache, same -c 32768 -np 8 geometry, same harness and same entry point. One cell, E22-ESB-2735-TS2. Preregistration: docs/readiness/2026-09-07-e22-esb-shortform-tail2s-test-v1-preregistration.md. NOT AUTHORIZED by this fragment: this is a SECOND read of a population the 2026-09-04 owner allowance permitted once, and it needs the owner's explicit GO recorded in its own exposure row before the first contact.",
+  "comparator": {
+    "run_id": "SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1",
+    "attempt_id": "attempt-20260905T044432Z-8f23ee",
+    "verdict": "docs/readiness/2026-09-04-e22-esb-shortform-alignment-v1-verdict.md",
+    "result": "NOT ALIGNED, corpus Whisper-normalized WER 15.937 over the 2,735 published test utterances",
+    "join_rule": "the variant sample id is <call>-<segment>@ts2; the published segment key is recovered by splitting on '@', which is what makes the paired join against the sealed arm exact",
+    "why_sealed_and_never_a_rerun": "Greedy decoding is not bitwise reproducible across batch compositions on this runtime, so the contrast is against sealed outputs. No new v1 arm is flown, and flying one would spend a THIRD read of these six calls for nothing.",
+    "what_it_supplies_here": "the instruction, the prompt shape, the decoding params, the audio path, the build, the hardened server env, the serving geometry, the reference layer, the scorers and the entry point -- everything except the media"
+  },
+  "dev_evidence": {
+    "run_id": "SAEA-E22-DEV-ESB-TAIL2S-V1",
+    "attempt_id": "attempt-20260907T090708Z-df36cc",
+    "receipts": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-dev-esb-tail2s-v1/",
+    "population": "the 1,500 drawn published segments of this study's own Earnings-22 dev subset10, same factor, same rule, same builder",
+    "corpus_wer_percent_whisper_normalizer": 9.4054,
+    "comparator_corpus_wer_percent": 17.4012,
+    "agentic_error_rate_percent": 1.7599,
+    "comparator_agentic_error_rate_percent": 1.9161,
+    "boundary_block_wer_points": 1.1085,
+    "comparator_boundary_block_wer_points": 8.2778,
+    "falsifier": "section 4.1 of the dev preregistration HELD on 1,500 of 1,500 rows, measured prompt_tokens 251,782 against the predicted 251,782, zero disagreements",
+    "note": "these are the dev cell's own numbers; the paired contrast, its call-stratified CI90 and the three-clause admission rule belong to that cell's own verdict and are not restated here as if they were this cell's"
+  },
+  "paper_row": {
+    "primary": {
+      "system": "Qwen3-Omni-30B-A3B-Instruct, zero-shot",
+      "wer": 9.79,
+      "source": "NVIDIA NeMo AutoModel, 'Fine-Tune Qwen3-Omni for ASR'",
+      "protocol": "Whisper EnglishTextNormalizer both sides, greedy, N = 2741 utterances",
+      "note": "the ONLY same-model published number across this study's three carriers"
+    },
+    "cross_read": {
+      "system": "Qwen3-Omni-30B-A3B-Instruct on the Open ASR Leaderboard English subset",
+      "wer": 12.3,
+      "source": "Nemotron 3 Nano Omni, arXiv:2604.24954v2 Table 8",
+      "note": "two vendor reports of the SAME frozen model that disagree by 2.5 points"
+    },
+    "degraded_model_floors": {
+      "whisper-large-v3": 11.59,
+      "whisper-large-v3-turbo": 11.07,
+      "distil-large-v3.5": 10.83,
+      "qwen3-asr-0.6b": 10.78,
+      "qwen3-asr-1.7b": 9.73,
+      "whisper-medium.en": 12.63,
+      "whisper-small.en": 12.97,
+      "whisper-base.en": 15.09,
+      "whisper-tiny.en": 19.12
+    },
+    "floor_vintage_note": "the first five are the 2026-09-04 leaderboard revision; medium.en / small.en / base.en / tiny.en are the 2026-06-13 vintage, before the normalizer and hardware change",
+    "comparison_caveat": "NONE of these systems appended silence. Deviation D-TS2-3 names that protocol difference, and the decision block below states what may and may not be claimed against these figures."
+  },
+  "populations": {
+    "E22-ESB-TEST2735-TAIL2S-UTTERANCES": {
+      "dataset_fragment": "earnings22-esb-test2735-tail2s",
+      "carrier": "earnings22-original",
+      "split_role": "dev",
+      "count": 2735,
+      "strata": "source call: 4432298 351 / 4450488 508 / 4470290 178 / 4479741 473 / 4483338 619 / 4485244 606",
+      "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-test2735-tail2s-media/roster/flight-roster-receipt.json",
+      "receipt_sha256": "aa5e677b0ae1638d5aed3383ee3b56942cec96f1bbca9320c12c609df6d5377f",
+      "d1_media_supplement": "docs/receipts/artifacts/d1-e22-esb-test2735-tail2s.json",
+      "d1_media_supplement_sha256": "8e335d51cdd732bd5fa88930475261111531a88c018e3866ab39cb7afb1bb527",
+      "split_identity_hash": "ecd9ab76755ce0158a64e4854a6b716114f7496635f6d02a65a3e3b2fa267335",
+      "audio_seconds_one_pass": 24964.608437,
+      "audio_seconds_longest_item": 38.360125,
+      "audio_tokens_one_pass": 342563,
+      "media_build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-test2735-tail2s-media/build-receipt.json",
+      "media_build_row": "SAEA-SN-MF-E22-TEST-TS2-MEDIA-V1",
+      "selection": "no draw: this is the whole published test subset, in one re-encoded form",
+      "estimand": "corpus-level WER of the frozen core on the published ESB Earnings22 test subset when the study's own serving path is given a 2.0 s acoustic tail"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "E22-ESB-2735-TS2",
+      "dataset_fragment": "earnings22-esb-test2735-tail2s",
+      "arm": "bare-core",
+      "baseline_fragment": "e22-esb-test2735-tail2s",
+      "model_fragment": "q4km-e22-esb-mmproj-gpu-04ccc72a-np8",
+      "run_id": "SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1",
+      "serving_geometry": "-c 32768 -np 8, 4096 tokens per slot -- the sealed test flight's, unchanged",
+      "factor": "the acoustic tail: exactly 2.0 s of digital silence appended to every clip, nothing removed and nothing re-decoded",
+      "what_it_separates": "whether the encoding effect the dev cell measured transfers to the published test subset, i.e. whether the boundary-insertion mass that dominated the sealed 15.937 is the model completing speech that was cut mid-signal into an unmasked constant"
+    }
+  ],
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "runtime_receipt": "docs/receipts/runtime-q4km-featcache-04ccc72a.json",
+    "quantization": "Q4_K_M",
+    "decoder_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "mmproj_sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883",
+    "audio_path": "raw audio, bf16 mmproj resident on the GPU, no feature cache directory",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "contacts_per_item": 1,
+    "evidence": "none",
+    "obs": "none -- an ESB utterance IS the request; there is no windowing here",
+    "harness": "core.flight.FlightRuntime with the shared rails zero-supply direct arm and the OpenJiuwen executor, entered through scripts/flights/run_e22_esb_cell.py -- the same harness and entry point the sealed test flight used",
+    "prompt_shape": "the base TaskAdapter.assemble_prompt default: one system message carrying the instruction, one user message carrying the audio. IDENTICAL to the sealed test flight.",
+    "instruction": "Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+    "instruction_provenance": "byte-identical to the instruction SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1 sent, itself byte-identical to SAEA-E21-FULL44-DIRECT-BASELINE-V2's and to the sealed 2026-08-14 fixed-batch-zero-locked-buf90 fragment",
+    "the_only_difference": "the WAV bytes the request carries. Same 2,735 published segments, same instruction, same reference layer, same scorers, same build, same decoder, same encoder, same geometry, same decoding params, same harness, same entry point, same prompt shape and the same model fragment as the sealed test flight."
+  },
+  "deviations_from_the_published_row": [
+    {
+      "id": "D1",
+      "deviation": "utterances cut locally from the locked MP3s instead of the published HF audio bytes",
+      "why": "inherited unchanged from the sealed test flight; no new audio asset is downloaded",
+      "expected_effect": "the boundaries are the published float32 start_ts/end_ts verbatim, so the SPANS match; the decode path differs. Three end boundaries are clamped to the decoded parent and are named in the roster receipt"
+    },
+    {
+      "id": "D2",
+      "deviation": "quantization Q4_K_M against an unstated (presumably bf16) published precision",
+      "why": "the frozen core this study is authorized to reach is the Q4_K_M GGUF",
+      "expected_effect": "unknown in sign and size; untested by this cell and still a live suspect for any residual"
+    },
+    {
+      "id": "D3",
+      "deviation": "prompt: this study's own three-sentence ASR instruction",
+      "why": "the published row's prompt is not published",
+      "expected_effect": "unknown; held byte-identical to the sealed test flight's so the two are comparable"
+    },
+    {
+      "id": "D4",
+      "deviation": "2,735 rows against the published N = 2,741",
+      "why": "the pinned segment table contains 2,735; the 2026-09-06 array-durations check explained the gap's SIZE (every call ships a contiguous index range with exactly one hole) and left its CAUSE unresolved",
+      "expected_effect": "0.2 % of the population"
+    },
+    {
+      "id": "D5",
+      "deviation": "merge_compounds is not applied",
+      "why": "this study's Whisper-normalizer scorer does not implement it",
+      "expected_effect": "works against us"
+    },
+    {
+      "id": "D-TS2-1",
+      "deviation": "the sample ids carry a variant suffix (@ts2), so the split identity hash is not the sealed test population's 9285b321...",
+      "why": "the identity rule section 1.4 of the 2026-09-06 boundary-exact preregistration fixed: a re-encoded clip must never share an identifier with its v1 twin, or a receipt, a reference lookup or a paired join could silently mix the two populations",
+      "expected_effect": "none on any request byte; the published segment key is recovered by splitting on '@' for the reference lookup and for the paired join"
+    },
+    {
+      "id": "D-TS2-2",
+      "deviation": "the media root is this variant's own derived directory, not the sealed v1 root",
+      "why": "it is the factor; payload confinement binds to the declared root, so each population's root holds exactly its own roster's media and nothing else",
+      "expected_effect": "none on any request byte other than the audio"
+    },
+    {
+      "id": "D-TS2-3",
+      "deviation": "THE PUBLISHED SYSTEMS DID NOT APPEND SILENCE. Every request in this cell carries 2.0 s of digital silence after the published span; the 9.79 and 12.3 systems consumed the ESB release's own arrays and nothing else.",
+      "why": "our serving path glues an unmasked, non-silent constant to the end of almost every clip and charges 13 audio tokens for it, while the published HF path masks that block away (2026-09-07 short-clip encoding audit). On THIS population that block is 17,695 audio tokens (6.52 % of 271,453) computed from 136,533 mel frames = 1,365.3 s of constant on 2,733 of 2,735 clips, and per clip it averages 11.53 % of what we send and reaches 76.92 % on the worst clip. The tail does not remove it -- appending 200 whole mel frames leaves the residue (n_samples // 160) % 100 unchanged, so the same 136,533 pad frames and the same 17,695 masked-away tokens are still sent and their pooled share falls only to 5.17 % (mean per-clip 11.53 % to 6.74 %, worst clip 76.92 % to 25.64 %) -- it moves the block 2.0 s away from the last word and puts the clamp floor a real stop produces between the two.",
+      "expected_effect": "the whole point of the cell, and the reason its number is NOT a like-for-like reproduction of the published protocol. Every published claim built on this number must carry this deviation; see the decision block."
+    }
+  ],
+  "prediction_fixed_before_any_contact": {
+    "basis": "SAEA-E22-DEV-ESB-TAIL2S-V1 on 1,500 dev rows: corpus Whisper-normalized WER 9.4054 against the sealed comparator's 17.4012 on the same published segments, a delta of -7.9958 points and a ratio of 0.5405.",
+    "sealed_test_baseline": 15.937,
+    "additive_transfer_point": 7.94,
+    "multiplicative_transfer_point": 8.61,
+    "preregistered_interval": [
+      7.5,
+      10.5
+    ],
+    "transfer_assumption": "The dev and test populations are two splits of one ESB repartition at one revision, cut by the same slicer from the same locked MP3s, sent through the same instruction, the same decoding params and the same build; the encoding artifact the tail addresses is a property of the serving path, not of a call. The assumption is that the artifact's effect transfers in KIND. It is NOT assumed to transfer in SIZE. The two populations are near twins in the artifact's footprint -- mean clip 7.128 s (test) against 6.633 s (dev1500), pooled masked-away share 6.52 % against 6.99 %, mean per-clip share 11.53 % against 12.00 %, the same 76.92 % worst clip -- which supports transfer in kind and, if anything, makes the test population marginally LESS affected, so the dev delta is not a lower bound. Against that, the sealed test arm's error mass has a different shape (59.2 % insertions, hypothesis-to-reference ratio 1.0749) from the dev arm's boundary-block-dominated mass, and its own length-oracle bound was 10.456, which sits ABOVE the multiplicative prediction.",
+    "predicted_direction": "corpus WER falls; the insertion share and the hypothesis-to-reference length ratio fall; the effect concentrates in the short-duration buckets, which is where the encoding audit prices the artifact.",
+    "falsifier_of_the_transfer": "a corpus WER above 12.79 refutes the transfer assumption outright, and the verdict must say so in those words rather than reinterpreting the prediction after the fact. A number inside the preregistered interval is a confirmation; a number below 7.5 or between 10.5 and 12.79 is recorded as the prediction missing its interval while keeping its sign, and the miss is reported as prominently as the direction."
+  },
+  "falsifier": {
+    "rule": "before any score is read, every flown row's prompt_tokens must equal 49 + analysis.e22_short_clip_encoding.llamacpp_audio_tokens(n_samples) for that row's variant media",
+    "expected_total": 476578,
+    "expected_total_basis": "49 x 2,735 + 342,563; the 49-token text envelope is the one the sealed test smoke measured on all four rows for this exact instruction, and the audio-token total is the build receipt's own",
+    "on_disagreement": "a single disagreeing row means the audit's front-end model is wrong for this media and the cell STOPS and reports rather than being interpreted",
+    "provenance": "section 4.1 of docs/readiness/2026-09-07-e22-dev-encoding-probes-v1-preregistration.md, which HELD on 1,500 of 1,500 dev rows on media built by the same rule"
+  },
+  "evaluation": {
+    "official_scorers": [
+      "asr-wer-esb-whisper",
+      "asr-wer-esb",
+      "cost"
+    ],
+    "paper_facing_scorer": "asr-wer-esb-whisper",
+    "paper_facing_aggregation": "corpus: total S+D+I over total reference words",
+    "scored_complete_manifests": 1,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "merge_compounds": false,
+    "agentic_metric": "analysis.e22_error_taxonomy at its committed version, recomputed on the new outputs: HIGH-impact reference-word mass over reference words",
+    "metrics": [
+      "corpus WER under the Whisper EnglishTextNormalizer, pooled and per call (paper-facing)",
+      "mean of per-utterance WER under the same normalizer",
+      "corpus and mean WER under the frozen saea-scoring-v1 normalizer",
+      "the agentic error rate",
+      "the boundary category mass (segmentation-artifact + runaway-tail + runaway-head) with its tail/head containment buckets",
+      "substitutions / deletions / insertions and reference words",
+      "hypothesis-to-reference length ratio and the insertion share of errors",
+      "the utterance-duration decomposition on the PUBLISHED duration, which is where the encoding audit predicts the effect concentrates",
+      "prompt_tokens against the audit's own predicted audio-token count for this media, row for row"
+    ],
+    "paired_analysis": {
+      "module": "analysis.paired",
+      "pooled_ratio_statistic": "resampled_statistic",
+      "per_unit_statistic": "paired_contrast",
+      "strata": "source call (6 strata)",
+      "seed": 20260903,
+      "n_replicates": 10000,
+      "ci_level": 0.9,
+      "signed_as": "cell minus the sealed SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1 arm, on the same 2,735 published segments, paired per segment"
+    },
+    "mandatory_slices": [
+      "the per-call table for all six ESB test calls, corpus WER under both normalizers",
+      "natural-mixture (corpus) and equal-call weightings side by side",
+      "the insertion / deletion / substitution split and the hypothesis-to-reference length ratio",
+      "the utterance-duration decomposition, with the 74 utterances whose published span exceeds 20 s reported separately",
+      "the three utterances whose end boundary was clamped to the decoded parent, named",
+      "the boundary category mass before and after, with the tail/head containment buckets",
+      "the agentic error rate beside the corpus number",
+      "the measured prompt_tokens falsifier check",
+      "the Earnings-21 full-44 corpus number (8.200) beside this one, with the segmentation, corpus and metric differences named rather than compared silently"
+    ],
+    "renderer": "analysis.paired.render_markdown"
+  },
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "split_role": "dev",
+    "planned_model_calls": 2743,
+    "planned_gpu_hours": 0.6,
+    "planned_speech_audio_seconds": 25000
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "2,735 rows x 1 contact + 8 canaries = 2,743; the registered exposure ceiling is 2,800",
+    "planned_speech_audio_seconds": "24,964.608437 s for one pass, rounded up to 25,000; the registered exposure ceiling is 25,500",
+    "planned_gpu_hours": "0.60 planned, 1.00 registered. Derived rather than guessed: the sealed test flight served 2,735 contacts over 19,494.608 s of audio in 0.226 GPU-h on this exact geometry and audio path, i.e. 1.16e-5 GPU-h per audio second, which puts this pass at 0.290 h. The plan carries roughly a 2x margin, the same margin the three dev encoding cells used, because every row pays a live mmproj encode and the encode cost is exactly what this cell's media changes.",
+    "paid_api_spend": 0,
+    "cumulative_metering": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are the exposure row's own calls / speech-audio-seconds / gpu-hours cells, and core/model/adapter.py meters the plan CUMULATIVELY across every attempt of this run id, so a recovery plan must cover prior durable spend as well as its own worst case."
+  },
+  "decision": {
+    "owner_alignment_standard": "2026-09-04 owner directive: aligned means within 3 points of the published number, or better by more than 3; and the frozen Qwen3-Omni Q4_K_M must never score worse than a degraded model's published number on the same column.",
+    "band_test": "corpus Whisper-normalized WER <= 12.79 (9.79 + 3.0)",
+    "floor_test_strict": "corpus Whisper-normalized WER <= 11.59 (whisper-large-v3)",
+    "floor_test_loose": "corpus Whisper-normalized WER <= 15.09 (whisper-base.en), reported either way",
+    "aligned": "ALIGNED = band test AND strict floor test both pass",
+    "aligned_better": "ALIGNED-BETTER = corpus Whisper-normalized WER < 6.79",
+    "fail": "NOT ALIGNED otherwise, with the failing half of the rule named and the gap decomposed per call and against D1-D5 and D-TS2-3",
+    "reported_beside_it": "the agentic error rate and the boundary category mass, both against the sealed arm's 2026-09-04 values, so the verdict says what MOVED and not only what the pooled number is",
+    "standing_rule_this_cell_deviates_from": "The 2026-09-06 array-durations verdict made the boundary claim rule UNCONDITIONAL: a number from a cell that changes the audio the protocol delivers is a statement about this study's own sensitivity, is never an alignment argument, and is never compared to 9.79 or 12.3. Applying the alignment band to this cell is a DEVIATION from that standing rule and rests on the owner decision recorded in this cell's exposure row, not on this fragment.",
+    "claim_surface": "This number is an alignment figure for THIS STUDY'S SHORT-FORM SURFACE UNDER A NAMED MODEL-USAGE LOCAL OPTIMIZATION. It is not a reproduction of the published protocol and must never be reported as one: the published systems did not append silence (D-TS2-3), and every statement of this number must carry that sentence. What makes the optimization legitimate rather than a thumb on the scale is that it adds no information -- the tail is digital silence after the published span, every published sample is delivered unaltered and in order, nothing is removed -- and that it addresses a defect of OUR serving path which the published path does not have: mtmd_audio_preprocessor_qwen3a glues up to 0.99 s of unmasked, non-silent 0.0 constant to the end of the clip and charges 13 audio tokens for it, where the HF Qwen3OmniMoeProcessor masks that block away. The honest reading is that the tail moves our input processing CLOSER IN EFFECT to the published path's, not that it makes the two identical.",
+    "what_this_cell_cannot_conclude": "That the residual gap is quantization, or prompt, or decode. That the tail is the only remaining difference: the 2026-09-06 array-durations check recorded a second live deviation this cell does not address -- the release stores each call's native container (16 kHz stereo, 22.05 kHz stereo, 24 kHz mono) while this study's clips are librosa-decoded 16 kHz mono from the locked MP3s. Nothing about the other 109 confirmatory calls. Nothing about generalization, superiority or Stage-3.",
+    "not_authorized": "No mechanism arm. No read of the other 109 confirmatory calls. No ESB validation-split read. No THIRD read of these six calls. No Q8_0 composition. No frame-exact or pad-30s variant on test. No post-processing of any hypothesis. No re-scoring of any sealed arm. No merge_compounds. No packet or feature-cache path. No knob tuned on this population, before or after. No paper-scale-confirmatory profile, no manuscript, no submission, no Stage-3 activity.",
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "exposure": {
+    "what_this_is": "a SECOND read of the six ESB test calls 4432298, 4450488, 4470290, 4479741, 4483338 and 4485244, whose one permitted read under the 2026-09-04 owner decision was spent by SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1",
+    "requires": "an explicit owner GO recorded in this run's exposure row before the first contact, and a separate one is NOT implied by the 2026-09-07 GO that flew the dev encoding cells",
+    "one_attempt": "one attempt, no dev-side tuning after this read, at most one recovery re-registration with a fresh run id and a fresh exposure row; a second failure stops the flight and the fix is proven on a 4-row dry run",
+    "after_this_read": "the six calls remain calibration-exposed; no further Earnings-22 test read is proposed by this fragment, and the 109 remaining confirmatory calls are untouched"
+  },
+  "companion_run": {
+    "experiment_id": "SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-SMOKE-V1",
+    "fragment": "e22-esb-shortform-tail2s-test-smoke4-v1",
+    "why_separate": "contracts.gate_exposure requires exactly one pre-registered exposure row per run id whose split identity hash equals the plan's, so a 4-row smoke and a 2,735-row flight cannot share a run id. They share one preregistration, one owner GO, one harness, one entry point and one verdict."
+  }
+}

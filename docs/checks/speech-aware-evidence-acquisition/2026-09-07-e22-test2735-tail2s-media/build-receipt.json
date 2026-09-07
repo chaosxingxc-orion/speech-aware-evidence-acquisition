@@ -1,0 +1,85 @@
+{
+  "contacts": {
+    "embedder": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "librosa_calls": 0,
+    "network": 0,
+    "outbound_connection_attempts": 0,
+    "paid_api_spend": 0,
+    "parent_mp3_decodes": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "count": 2735,
+  "deterministic": "this receipt carries no timestamp: two back-to-back writes reproduce the same MANIFEST.sha256",
+  "execution_profile": "model-free-check",
+  "exposure_row": "SAEA-SN-MF-E22-TEST-TS2-MEDIA-V1",
+  "id_suffix": "ts2",
+  "measured_media": {
+    "audio_hours_total": 6.934613,
+    "audio_seconds_longest_item": 38.360125,
+    "audio_seconds_shortest_item": 2.219937,
+    "audio_seconds_total": 24964.608437,
+    "audio_tokens_longest_item": 507,
+    "audio_tokens_total": 342563,
+    "clips_left_unchanged": 0,
+    "encoder_windows_max": 5,
+    "n_samples_total": 399433735,
+    "samples_added_total": 87520000,
+    "samples_removed_total": 0,
+    "total_bytes": 798987810,
+    "zero_pad_frames_total": 136533
+  },
+  "media_root": "derived/e22-esb-utterances/test2735-tail2s-v1",
+  "opened": {
+    "hypothesis_text": 0,
+    "note": "MEDIA BYTES ONLY. The build reads the committed probe view and D1 supplement (identifiers, media paths, measured media identity, segment spans) and the int16 samples of the sealed test WAVs. No reference sentence, no segment-table column, no sealed output, no hypothesis and no score is opened, and no test-side text of any kind is reachable from this process.",
+    "reference_sentences": 0,
+    "scores": 0,
+    "sealed_outputs": 0,
+    "segment_table_columns": []
+  },
+  "outputs": {
+    "d1_media_supplement": "docs/receipts/artifacts/d1-e22-esb-test2735-tail2s.json",
+    "d1_media_supplement_sha256": "8e335d51cdd732bd5fa88930475261111531a88c018e3866ab39cb7afb1bb527",
+    "probe_view": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-test2735-tail2s-media/roster/flight-roster-receipt.json",
+    "probe_view_sha256": "aa5e677b0ae1638d5aed3383ee3b56942cec96f1bbca9320c12c609df6d5377f",
+    "roster_receipt": "docs/receipts/rosters/e22-esb-test-2735-ts2-v1.json",
+    "roster_receipt_sha256": "216626372c1b2957b55a06ce140f0ffed4eb98dc7ebb7dd96845a4bdfe571e42"
+  },
+  "roster_id": "E22-ESB-TEST-2735-TS2-V1",
+  "rule": "exactly 2.0 s (32,000 zero samples) appended to the sealed test v1 clip; nothing is removed and nothing is re-decoded",
+  "rule_implementation": {
+    "function": "transform('tail-silence-2s', ...)",
+    "module": "scripts/build_e22_dev1500_media_variants.py",
+    "sha256": "49e5d91095c061d167688bd4dea35fc7503d3a09caa3066db68fde9807d196e6"
+  },
+  "schema": "saea-e22-test2735-media-variant-build-receipt-v1",
+  "source_population": {
+    "all_source_digests_matched": true,
+    "audio_seconds_total": 19494.608437,
+    "d1_media_supplement": "docs/receipts/artifacts/d1-e22-esb-utterances-2735.json",
+    "d1_media_supplement_sha256": "caa221ec512736f0dfad338d92e290e76b0663e188de89f97d9cbe1bb1ee906e",
+    "files_rehashed_before_reading": 2735,
+    "media_root": "derived/e22-esb-utterances/v1",
+    "roster_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-e22-esb-shortform-alignment-400-v1/roster/flight-roster-receipt.json",
+    "roster_receipt_sha256": "72be506b01c69e30097e25e836595b261dffa826bb8d31ccf8188fdbbd879ecb",
+    "split_identity_hash": "9285b32127c684ca7edd3a0f842e772f0a308a3c5021759e8381c5c45221189d"
+  },
+  "split_identity_hash": "ecd9ab76755ce0158a64e4854a6b716114f7496635f6d02a65a3e3b2fa267335",
+  "split_name": "E22-ESB-TEST2735-TAIL2S-UTTERANCES",
+  "split_role": "dev",
+  "strata_counts": {
+    "4432298": 351,
+    "4450488": 508,
+    "4470290": 178,
+    "4479741": 473,
+    "4483338": 619,
+    "4485244": 606
+  },
+  "test_split_read": true,
+  "test_split_read_scope": "MEDIA ONLY, on a calibration-exposed population. The six ESB test calls were re-designated calibration-exposed by the 2026-09-04 owner decision after the sealed SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1 read. This row transforms the derived clip bytes of that same population and opens nothing else; it is not a model contact and it is not the second read of the evaluation surface, which is the flight this media enables and which needs its own owner GO and its own exposure row.",
+  "variant": "tail-silence-2s"
+}
