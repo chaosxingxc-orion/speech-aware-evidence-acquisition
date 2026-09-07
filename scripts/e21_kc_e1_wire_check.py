@@ -586,10 +586,29 @@ def main() -> int:
             % len(evidence_facts))
 
         # ---------------- seal half ----------------
+        declared = list(values["scorers"])
         manifest = load_json(manifest_path)
         verify_bundle(manifest_path)
+        if manifest.get("study_commit") != study_commit or manifest.get(
+            "study_repo_dirt"
+        ):
+            failures.append(
+                "the sealed manifest records study_commit %r with dirt %r; this "
+                "check ran at %r on a clean tree"
+                % (
+                    manifest.get("study_commit"),
+                    manifest.get("study_repo_dirt"),
+                    study_commit,
+                )
+            )
+        if manifest.get("status") != "COMPLETED":
+            failures.append("manifest status %r" % (manifest.get("status"),))
+        if list(manifest.get("scorers") or []) != declared:
+            failures.append(
+                "the sealed manifest declares scorers %r, the fragment %r"
+                % (manifest.get("scorers"), declared)
+            )
         scores = load_json(scores_path)
-        declared = list(values["scorers"])
         aggregates = {
             name: sorted(block.get("aggregate", {}))
             for name, block in scores.items()
@@ -681,7 +700,12 @@ def main() -> int:
                 ),
             },
             "seal_half": {
-                "manifest_rows": len(manifest.get("rows", [])),
+                "manifest_status": manifest.get("status"),
+                "manifest_study_commit": manifest.get("study_commit"),
+                "manifest_study_repo_dirt": manifest.get("study_repo_dirt"),
+                "manifest_split": manifest.get("split", {}).get("name"),
+                "manifest_split_count": manifest.get("split", {}).get("count"),
+                "manifest_scorers": manifest.get("scorers"),
                 "verify_bundle": "PASS",
                 "sealed_output_rows": outputs_rows,
                 "declared_scorers": declared,
