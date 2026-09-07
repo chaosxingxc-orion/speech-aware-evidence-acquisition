@@ -1,0 +1,23 @@
+{
+  "a2t_calibration_audio_seconds_longest_item": 37.71375,
+  "a2t_calibration_audio_seconds_total": 2959.647312,
+  "a2t_calibration_count": 400,
+  "a2t_calibration_d1_basis": "Unlike the sealed frozen 400 -- whose ids are inside the base D1 closure and which therefore declares NO supplement -- these ids are new media that duplicate nothing in that closure, so an additive supplement is both needed and legal under contracts.gate_media_identity.",
+  "a2t_calibration_d1_media_supplement": "receipts/artifacts/d1-a2t-calibration-400-16k-tail2s.json",
+  "a2t_calibration_d1_media_supplement_sha256": "172ea2a90f12fb110f7c1e6a041a6aaaf21ffdbf66cf233701ae2ad52678413d",
+  "a2t_calibration_derived_subdir": "derived/a2t-calibration-400-16k-tail2s-v1",
+  "a2t_calibration_exposure": "The same frozen 400 discovery split, re-encoded. Nothing is drawn. Media row SAEA-SN-MF-A2T-CAL400-16K-MEDIA-V1. This fragment grants no contact authority.",
+  "a2t_calibration_flight_split_identity_hash": "655b5ed6a65325891e9824d3bb25964681d50c8bb9f36e2deb11822e3179db67",
+  "a2t_calibration_identity_hash_conventions": "a2t_calibration_split_identity_hash is SHA-256 over the LF-joined sorted sample ids of THIS variant; a2t_calibration_flight_split_identity_hash is data.splits.split_identity_hash(prefixed('audio2tool', sample_ids)), the value core.flight.FlightRuntime.preflight computes at flight time. Both differ from the sealed frozen 400's and from the other variant's, which is the identity separation the '@' suffix exists to guarantee.",
+  "a2t_calibration_media_build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-a2t-calibration-400-16k-tail2s-media/build-receipt.json",
+  "a2t_calibration_rate_rule": "16 kHz mono int16, produced by reproduction.obs_loop.decode_parent_pcm (librosa.load(sr=16000, mono=True), res_type 'soxr_hq', librosa 0.11.0 / soxr 1.1.0), then clip(rint(float32 * 32767), -32768, 32767). The decoder is pinned by the SHA-256 of its own source text and the build refuses if ffmpeg appears on PATH, because decode_parent_pcm would prefer it.",
+  "a2t_calibration_sample_rate_hz": 16000,
+  "a2t_calibration_source_sample_rate_hz": 24000,
+  "a2t_calibration_split_identity_hash": "95252acd4f31e90935b796e2dd17353ba0a4d0f1894a0ca9457e714bf19753d1",
+  "a2t_calibration_split_name": "A2T-CALIBRATION-400-16K-TAIL2S",
+  "a2t_calibration_split_role": "discovery",
+  "a2t_calibration_subset_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-a2t-calibration-400-16k-tail2s-media/roster/flight-roster-receipt.json",
+  "a2t_calibration_subset_receipt_sha256": "f8a67d10fa208ea70385e7f770bfedbe742a7b4d9322271a1837f69f2edf9b27",
+  "carrier_lock_key": "audio2tool",
+  "split_id": "A2T-CALIBRATION-400-16K-TS2"
+}

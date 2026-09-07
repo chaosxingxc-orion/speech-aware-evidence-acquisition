@@ -1,0 +1,81 @@
+{
+  "authorizes": "nothing. No contact, no server, no scoring and no Stage-3 activity. Composition and FlightRuntime.wire_check only.",
+  "cells": [
+    {
+      "arm": "bare-core",
+      "baseline_fragment": "a2t-direct-official-protocol",
+      "cell_id": "R-official-16k-smoke-4",
+      "dataset_fragment": "audio2tool-calibration-400-16k-smoke4",
+      "factor": "the media, and only the media: the SAME clips resampled 24 -> 16 kHz by librosa soxr_hq instead of by llama.cpp's miniaudio linear resampler",
+      "model_fragment": "q4km-featcache-a2t-official-04ccc72a"
+    }
+  ],
+  "comparator": {
+    "attempt_id": "attempt-20260904T135250Z-rofficialraw",
+    "cell_id": "R-official-raw",
+    "config_hash": "0e56ce8f2e71d1e4e8702433ae7c997aacf4e548414100bad5a1d9b9c8ef5165",
+    "paper_facing_scorer": "a2t-toolcall-official",
+    "protocol_hash": "6da614b22de0001760b0263f6026483373ce190d801cc8dd9008e34bb595aa8a",
+    "run_id": "SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1",
+    "sealed_official_tool_accuracy": {
+      "exact_match": 20.25,
+      "n": 400,
+      "overall": 61.0,
+      "parse_rate": 99.75,
+      "rows_with_multiple_call_matches": 52,
+      "tier1_direct": 60.0,
+      "tier2_parametric": 74.0,
+      "tier3_multi_intent": 72.0,
+      "tier4_implicit": 28.0,
+      "tier5_needle": 78.0,
+      "tier6_correction": 84.0,
+      "tier7_multiturn": 58.0,
+      "tier8_intent_blending": 34.0
+    },
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "what_the_comparator_sends": "the sealed 24 kHz bytes verbatim; the 24 -> 16 kHz conversion happens inside llama.cpp's miniaudio linear resampler, which is the arm under test"
+  },
+  "date": "2026-09-07",
+  "execution_plan": {
+    "execution_profile": "baseline-reproduction",
+    "planned_gpu_hours": 0.05,
+    "planned_model_calls": 8,
+    "planned_speech_audio_seconds": 60,
+    "split_role": "discovery"
+  },
+  "execution_profile": "baseline-reproduction",
+  "experiment_id": "SAEA-A2T-OFFICIAL-PROTOCOL-16K-SMOKE-V1",
+  "media": {
+    "build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-a2t-calibration-400-16k-media/build-receipt.json",
+    "count": 4,
+    "derived_subdir": "derived/a2t-calibration-400-16k-v1",
+    "exposure_row": "SAEA-SN-MF-A2T-CAL400-16K-MEDIA-V1"
+  },
+  "open_preconditions": [
+    "SCORER ID RAIL: rails/adapters/audio2tool.py::gold resolves gold by EXACT sample_id (expected_by_id.get(sample.sample_id)), so an @16k id fails closed with 'is not in the frozen audio2tool probe receipt'. Earnings-22 already solved the same problem with reproduction.esb_reference.published_segment_key, which splits on the FIRST '@' and is provably inert for unsuffixed ids. The equivalent one-line rail is NOT applied by the preparation that wrote this fragment; it is a named, reviewed change to a paper-facing path, and one rail unblocks @ts2, @16k and @16k+ts2 at once."
+  ],
+  "population": {
+    "carrier": "audio2tool",
+    "count": 4,
+    "dataset_fragment": "audio2tool-calibration-400-16k-smoke4",
+    "media_exposure_row": "SAEA-SN-MF-A2T-CAL400-16K-MEDIA-V1",
+    "split_name": "A2T-CALIBRATION-400-16K-SMOKE-4",
+    "split_role": "discovery"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "audio2tool-calibration-400-16k-smoke4",
+      "ids": [
+        "tier1_direct:000045@16k",
+        "tier2_parametric:000045@16k",
+        "tier3_multi_intent:000078@16k",
+        "tier4_implicit:000141@16k"
+      ]
+    }
+  ],
+  "preregistration": "docs/readiness/2026-09-07-a2t-input-rate-standardization-v1-preregistration.md",
+  "purpose": "Cell (a) of the Audio2Tool input-rate standardization. ONE factor, the MEDIA: every sealed 24 kHz release wav resampled to 16 kHz mono int16 through the study's own pinned decoder (reproduction.obs_loop.decode_parent_pcm, librosa soxr_hq), so the study performs the rate conversion that llama.cpp's miniaudio linear resampler performs today. The published system message, the compact 152-row registry, the user turn, the geometry, the decoding and the official scorer are the sealed SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1 cell R-official-raw's, byte for byte. Durations equal the sealed clips within one 16 kHz sample on 400 of 400 and every deviation is positive, so nothing is truncated. This fragment authorizes NOTHING. This is the 4-row dry run that must pass before the 400 contacts.",
+  "resampler_audit": "docs/readiness/2026-09-07-a2t-input-rate-audit-v1.md",
+  "schema": "saea-a2t-direct-calibration-experiment-v1",
+  "serving_geometry_unchanged": "the sealed comparator's own -c 49152 -np 3, unchanged. Cell (a) changes each clip's sample count by at most one sample, so the measured worst request (3,581 registry text + 468 speech + 256 completion + 2 special = 4,307 tokens) is unchanged; cell (b) adds 2 blocks = 26 speech tokens, worst request 4,333, both far under the 16,384-token slot. The feature cache is a MISS by construction -- the legacy key is FNV-1a over the original media bytes -- which is correct here, because a hit would return features computed from the 24 kHz bytes that are the arm under test."
+}

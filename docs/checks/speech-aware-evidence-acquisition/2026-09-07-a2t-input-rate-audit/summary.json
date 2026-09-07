@@ -1,0 +1,502 @@
+{
+  "authorizes": "nothing. No cell is flown, no media is built, no request is made and no conclusion about Audio2Tool accuracy is licensed.",
+  "contacts": {
+    "dataset_media_files_opened": 0,
+    "embedder": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "llama_cpp_binaries_executed": 0,
+    "llama_cpp_files_written": 0,
+    "llama_cpp_targets_built": 0,
+    "network": 0,
+    "outbound_connection_attempts": 0,
+    "paid_api_spend": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "decoders": {
+    "llama_cpp_miniaudio_linear": {
+      "algorithm": "ma_resample_algorithm_linear",
+      "algorithm_note": "miniaudio's own comment on the enum: 'Fastest, lowest quality. Optional low-pass filtering. Default.'",
+      "harness": "/usr/bin/cc -O2, vendored miniaudio header, read-only include",
+      "interpolation": "two-tap linear between x0 and x1",
+      "library": "miniaudio 0.11.25 (vendored, unmodified from upstream)",
+      "low_pass": "ma_lpf, a high-order Butterworth, order 4 by default (MA_DEFAULT_RESAMPLER_LPF_ORDER), applied BEFORE decimation, cutoff min(in,out)/2 = 8000 Hz",
+      "measured": true,
+      "step": "fixed point, 1.5 input frames per output frame (gcf-reduced 3:2)"
+    },
+    "study_soxr_hq": {
+      "algorithm": "res_type 'soxr_hq' (librosa.load's default)",
+      "entry_point": "reproduction.obs_loop.decode_parent_pcm",
+      "int16_quantization": "clip(rint(float32 * 32767.0), -32768, 32767)",
+      "library": "librosa 0.11.0 / soxr 1.1.0",
+      "measured": true
+    }
+  },
+  "deterministic": "this receipt carries no timestamp: two back-to-back writes reproduce the same MANIFEST.sha256",
+  "execution_profile": "model-free-check",
+  "exposure_row": "SAEA-A2T-MF-INPUT-RATE-AUDIT-V1",
+  "length_probe": {
+    "method": "a 440 Hz tone at input lengths covering every n mod 3, so the two decoders' output-length rules are measured rather than derived",
+    "rows": [
+      {
+        "ceil_two_thirds": 16000,
+        "floor_two_thirds": 16000,
+        "input_samples_24k": 24000,
+        "input_samples_mod_3": 0,
+        "input_seconds": 1.0,
+        "llama_cpp_dropped_seconds_vs_source": 0.0,
+        "llama_cpp_frame_count": 16000,
+        "llama_cpp_frames_read": 16000,
+        "llama_cpp_output_seconds": 1.0,
+        "llama_cpp_short_read_zero_pad_samples": 0,
+        "study_soxr_hq_output_samples": 16000,
+        "study_soxr_hq_output_seconds": 1.0
+      },
+      {
+        "ceil_two_thirds": 16001,
+        "floor_two_thirds": 16000,
+        "input_samples_24k": 24001,
+        "input_samples_mod_3": 1,
+        "input_seconds": 1.000041667,
+        "llama_cpp_dropped_seconds_vs_source": 4.1667e-05,
+        "llama_cpp_frame_count": 16000,
+        "llama_cpp_frames_read": 16000,
+        "llama_cpp_output_seconds": 1.0,
+        "llama_cpp_short_read_zero_pad_samples": 0,
+        "study_soxr_hq_output_samples": 16001,
+        "study_soxr_hq_output_seconds": 1.0000625
+      },
+      {
+        "ceil_two_thirds": 16002,
+        "floor_two_thirds": 16001,
+        "input_samples_24k": 24002,
+        "input_samples_mod_3": 2,
+        "input_seconds": 1.000083333,
+        "llama_cpp_dropped_seconds_vs_source": 2.0833e-05,
+        "llama_cpp_frame_count": 16001,
+        "llama_cpp_frames_read": 16001,
+        "llama_cpp_output_seconds": 1.0000625,
+        "llama_cpp_short_read_zero_pad_samples": 0,
+        "study_soxr_hq_output_samples": 16002,
+        "study_soxr_hq_output_seconds": 1.000125
+      },
+      {
+        "ceil_two_thirds": 16002,
+        "floor_two_thirds": 16002,
+        "input_samples_24k": 24003,
+        "input_samples_mod_3": 0,
+        "input_seconds": 1.000125,
+        "llama_cpp_dropped_seconds_vs_source": 0.0,
+        "llama_cpp_frame_count": 16002,
+        "llama_cpp_frames_read": 16002,
+        "llama_cpp_output_seconds": 1.000125,
+        "llama_cpp_short_read_zero_pad_samples": 0,
+        "study_soxr_hq_output_samples": 16002,
+        "study_soxr_hq_output_seconds": 1.000125
+      },
+      {
+        "ceil_two_thirds": 23954,
+        "floor_two_thirds": 23954,
+        "input_samples_24k": 35931,
+        "input_samples_mod_3": 0,
+        "input_seconds": 1.497125,
+        "llama_cpp_dropped_seconds_vs_source": 0.0,
+        "llama_cpp_frame_count": 23954,
+        "llama_cpp_frames_read": 23954,
+        "llama_cpp_output_seconds": 1.497125,
+        "llama_cpp_short_read_zero_pad_samples": 0,
+        "study_soxr_hq_output_samples": 23954,
+        "study_soxr_hq_output_seconds": 1.497125
+      },
+      {
+        "ceil_two_thirds": 23955,
+        "floor_two_thirds": 23954,
+        "input_samples_24k": 35932,
+        "input_samples_mod_3": 1,
+        "input_seconds": 1.497166667,
+        "llama_cpp_dropped_seconds_vs_source": 4.1667e-05,
+        "llama_cpp_frame_count": 23954,
+        "llama_cpp_frames_read": 23954,
+        "llama_cpp_output_seconds": 1.497125,
+        "llama_cpp_short_read_zero_pad_samples": 0,
+        "study_soxr_hq_output_samples": 23955,
+        "study_soxr_hq_output_seconds": 1.4971875
+      },
+      {
+        "ceil_two_thirds": 23956,
+        "floor_two_thirds": 23955,
+        "input_samples_24k": 35933,
+        "input_samples_mod_3": 2,
+        "input_seconds": 1.497208333,
+        "llama_cpp_dropped_seconds_vs_source": 2.0833e-05,
+        "llama_cpp_frame_count": 23955,
+        "llama_cpp_frames_read": 23955,
+        "llama_cpp_output_seconds": 1.4971875,
+        "llama_cpp_short_read_zero_pad_samples": 0,
+        "study_soxr_hq_output_samples": 23956,
+        "study_soxr_hq_output_seconds": 1.49725
+      },
+      {
+        "ceil_two_thirds": 10656,
+        "floor_two_thirds": 10656,
+        "input_samples_24k": 15984,
+        "input_samples_mod_3": 0,
+        "input_seconds": 0.666,
+        "llama_cpp_dropped_seconds_vs_source": 0.0,
+        "llama_cpp_frame_count": 10656,
+        "llama_cpp_frames_read": 10656,
+        "llama_cpp_output_seconds": 0.666,
+        "llama_cpp_short_read_zero_pad_samples": 0,
+        "study_soxr_hq_output_samples": 10656,
+        "study_soxr_hq_output_seconds": 0.666
+      },
+      {
+        "ceil_two_thirds": 14465,
+        "floor_two_thirds": 14464,
+        "input_samples_24k": 21697,
+        "input_samples_mod_3": 1,
+        "input_seconds": 0.904041667,
+        "llama_cpp_dropped_seconds_vs_source": 4.1667e-05,
+        "llama_cpp_frame_count": 14464,
+        "llama_cpp_frames_read": 14464,
+        "llama_cpp_output_seconds": 0.904,
+        "llama_cpp_short_read_zero_pad_samples": 0,
+        "study_soxr_hq_output_samples": 14465,
+        "study_soxr_hq_output_seconds": 0.9040625
+      }
+    ]
+  },
+  "opened": {
+    "evaluation_query_text": 0,
+    "gold_labels": 0,
+    "note": "NO DATASET BYTES AT ALL. Every sample measured here is a synthetic tone this script generated; the only files read from disk are the pinned llama.cpp sources, which are C and C++ text.",
+    "reference_transcripts": 0,
+    "scores": 0,
+    "sealed_outputs": 0,
+    "tool_registry_rows": 0
+  },
+  "pinned_llama_cpp": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "checkout": "/home/chao/llama.cpp-featcache",
+    "cited_sources": {
+      "tools/mtmd/clip.cpp": "c7eaf112c2e067d3552af04f00fbe6cbcb6145cedf0f0f4a9040662760b87308",
+      "tools/mtmd/mtmd-helper.cpp": "cb0bb84a55640be49a2ec5f2d6b95c97afa7775eaffc0d1ebe1e79dfb68f4064",
+      "tools/mtmd/mtmd.cpp": "8accbc17efb1b301e7b02fff5522376e95990f477ad4f4f0f389eceb3c2b3109",
+      "tools/server/server-common.cpp": "7d86566ac735e2c0e7a3d78719b49fdb8383786fd142c8b4df9dd303ba1f6e96",
+      "tools/server/server-context.cpp": "e235949a10bfa9284b8d79c735b638569e3db533e0eee8da2f3e474ca2701248",
+      "vendor/miniaudio/miniaudio.h": "ac7af4de748b7e26b777f37e01cee313a308a7296a3eb080e2906b320cc55c89"
+    },
+    "note": "read-only. No llama.cpp target is built, no binary from this checkout is executed, and no file under it is written.",
+    "runtime_receipt": "docs/receipts/runtime-q4km-featcache-04ccc72a.json",
+    "working_tree": "clean"
+  },
+  "question": "Audio2Tool release wavs are 24 kHz mono; the Qwen3-Omni front end wants 16 kHz. Nothing in this study converts them, so WHICH resampler runs, with WHICH filter, and what does that cost against converting them ourselves with librosa first?",
+  "schema": "saea-a2t-input-rate-audit-v1",
+  "source_rate_hz": 24000,
+  "study": "speech-aware-evidence-acquisition",
+  "summary_sha256": "338a97efc836ff641ae0e7738de7677fcd522aa9a960bda1b27bae1c9a6e7d1a",
+  "target_rate_hz": 16000,
+  "test_split_read": false,
+  "the_wire": {
+    "conversion_happens_in": "tools/mtmd/mtmd-helper.cpp::decode_audio_from_buf -- miniaudio, ma_decoder_config_init(ma_format_f32, 1, mtmd_get_audio_sample_rate) = 16000, which for a 24 kHz file is a RESAMPLE, not a format cast",
+    "server_forwards": "tools/server/server-common.cpp handle_media base64-decodes the string straight into a raw_buffer and hands file.data()/file.size() to mtmd_helper_bitmap_init_from_buf. Nothing between the wire and miniaudio inspects or converts the bytes.",
+    "study_sends": "core/model/transport.py::_load_audio_part -- base64.b64encode(media.read_bytes()) into an input_audio part with format taken from the file suffix. The sealed bytes go out verbatim: no resample, no trim, no normalization, no re-encode."
+  },
+  "tone_probe": {
+    "method": "one 1.0 s pure tone per frequency at amplitude 0.5, synthesized at 24000 Hz as mono int16 wav, decoded to 16000 Hz by each decoder, 50 ms of each edge dropped, then the output energy split into a +/-25 Hz bin at the frequency the tone should land on and everything else",
+    "reference_tone_dbfs": -9.0309,
+    "rows": [
+      {
+        "band": "passband",
+        "frequency_hz": 100,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 100,
+          "output_rms_dbfs": -9.0315,
+          "share_at_landing_bin": 0.999999998
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 100,
+          "output_rms_dbfs": -9.0312,
+          "share_at_landing_bin": 0.999999999
+        }
+      },
+      {
+        "band": "passband",
+        "frequency_hz": 500,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 500,
+          "output_rms_dbfs": -9.0404,
+          "share_at_landing_bin": 0.999998852
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 500,
+          "output_rms_dbfs": -9.0311,
+          "share_at_landing_bin": 1.0
+        }
+      },
+      {
+        "band": "passband",
+        "frequency_hz": 1000,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 1000,
+          "output_rms_dbfs": -9.0682,
+          "share_at_landing_bin": 0.999981559
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 1000,
+          "output_rms_dbfs": -9.0311,
+          "share_at_landing_bin": 0.999999999
+        }
+      },
+      {
+        "band": "passband",
+        "frequency_hz": 2000,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 2000,
+          "output_rms_dbfs": -9.1788,
+          "share_at_landing_bin": 0.999699681
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 2000,
+          "output_rms_dbfs": -9.0307,
+          "share_at_landing_bin": 1.0
+        }
+      },
+      {
+        "band": "passband",
+        "frequency_hz": 3000,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 3000,
+          "output_rms_dbfs": -9.3613,
+          "share_at_landing_bin": 0.998436969
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 3000,
+          "output_rms_dbfs": -9.031,
+          "share_at_landing_bin": 0.999999999
+        }
+      },
+      {
+        "band": "passband",
+        "frequency_hz": 4000,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 4000,
+          "output_rms_dbfs": -9.1698,
+          "share_at_landing_bin": 1.0
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 4000,
+          "output_rms_dbfs": -9.0306,
+          "share_at_landing_bin": 1.0
+        }
+      },
+      {
+        "band": "passband",
+        "frequency_hz": 5000,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 5000,
+          "output_rms_dbfs": -9.9275,
+          "share_at_landing_bin": 0.986896225
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 5000,
+          "output_rms_dbfs": -9.031,
+          "share_at_landing_bin": 0.999999999
+        }
+      },
+      {
+        "band": "passband",
+        "frequency_hz": 6000,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 6000,
+          "output_rms_dbfs": -10.3336,
+          "share_at_landing_bin": 0.971404521
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 6000,
+          "output_rms_dbfs": -9.0307,
+          "share_at_landing_bin": 1.0
+        }
+      },
+      {
+        "band": "passband",
+        "frequency_hz": 7000,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 7000,
+          "output_rms_dbfs": -11.097,
+          "share_at_landing_bin": 0.944161152
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 7000,
+          "output_rms_dbfs": -9.031,
+          "share_at_landing_bin": 0.999999999
+        }
+      },
+      {
+        "band": "passband",
+        "frequency_hz": 7500,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 7500,
+          "output_rms_dbfs": -12.0483,
+          "share_at_landing_bin": 0.924534235
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 7500,
+          "output_rms_dbfs": -9.462,
+          "share_at_landing_bin": 0.999999999
+        }
+      },
+      {
+        "band": "passband",
+        "frequency_hz": 7900,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 7900,
+          "output_rms_dbfs": -13.5531,
+          "share_at_landing_bin": 0.905332738
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 7900,
+          "output_rms_dbfs": -60.0369,
+          "share_at_landing_bin": 0.999898536
+        }
+      },
+      {
+        "band": "at_output_nyquist",
+        "frequency_hz": 8000,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 8000,
+          "output_rms_dbfs": -12.779,
+          "share_at_landing_bin": 1.0
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 8000,
+          "output_rms_dbfs": -330.3087,
+          "share_at_landing_bin": 0.0
+        }
+      },
+      {
+        "band": "stopband",
+        "frequency_hz": 8100,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 7900,
+          "output_rms_dbfs": -14.6833,
+          "share_at_landing_bin": 0.894446785
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 7900,
+          "output_rms_dbfs": -104.5684,
+          "share_at_landing_bin": 0.005989129
+        }
+      },
+      {
+        "band": "stopband",
+        "frequency_hz": 8500,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 7500,
+          "output_rms_dbfs": -17.8261,
+          "share_at_landing_bin": 0.869928358
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 7500,
+          "output_rms_dbfs": -99.3396,
+          "share_at_landing_bin": 0.172835429
+        }
+      },
+      {
+        "band": "stopband",
+        "frequency_hz": 9000,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 7000,
+          "output_rms_dbfs": -23.2796,
+          "share_at_landing_bin": 0.833799602
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 7000,
+          "output_rms_dbfs": -330.3087,
+          "share_at_landing_bin": 0.0
+        }
+      },
+      {
+        "band": "stopband",
+        "frequency_hz": 10000,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 6000,
+          "output_rms_dbfs": -38.4401,
+          "share_at_landing_bin": 0.742597643
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 6000,
+          "output_rms_dbfs": -330.3087,
+          "share_at_landing_bin": 0.0
+        }
+      },
+      {
+        "band": "stopband",
+        "frequency_hz": 11000,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 5000,
+          "output_rms_dbfs": -63.3259,
+          "share_at_landing_bin": 0.628408944
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 5000,
+          "output_rms_dbfs": -330.3087,
+          "share_at_landing_bin": 0.0
+        }
+      },
+      {
+        "band": "stopband",
+        "frequency_hz": 11900,
+        "llama_cpp_miniaudio_linear": {
+          "landed_at_hz": 4100,
+          "output_rms_dbfs": -102.8004,
+          "share_at_landing_bin": 0.038549894
+        },
+        "study_soxr_hq": {
+          "landed_at_hz": 4100,
+          "output_rms_dbfs": -103.319,
+          "share_at_landing_bin": 0.054885109
+        }
+      }
+    ]
+  },
+  "verdicts": {
+    "llama_cpp_miniaudio_linear": {
+      "at_output_nyquist_output_dbfs": [
+        {
+          "frequency_hz": 8000,
+          "output_rms_dbfs": -12.779
+        }
+      ],
+      "passband_min_share_at_own_frequency": 0.905332738,
+      "passband_worst_attenuation_at_hz": 7900,
+      "passband_worst_attenuation_db": 4.5222,
+      "stopband_max_output_dbfs": -14.6833,
+      "stopband_worst_leakage_at_hz": 8100,
+      "stopband_worst_leakage_db_below_input": 5.6524
+    },
+    "output_length_rule": {
+      "llama_cpp_always_floor_two_thirds": true,
+      "llama_cpp_max_dropped_seconds": 4.1667e-05,
+      "llama_cpp_short_read_zero_pad_observed": false,
+      "study_always_ceil_two_thirds": true
+    },
+    "reference_tone_dbfs": -9.0309,
+    "study_soxr_hq": {
+      "at_output_nyquist_output_dbfs": [
+        {
+          "frequency_hz": 8000,
+          "output_rms_dbfs": -330.3087
+        }
+      ],
+      "passband_min_share_at_own_frequency": 0.999898536,
+      "passband_worst_attenuation_at_hz": 7900,
+      "passband_worst_attenuation_db": 51.006,
+      "stopband_max_output_dbfs": -99.3396,
+      "stopband_worst_leakage_at_hz": 8500,
+      "stopband_worst_leakage_db_below_input": 90.3087
+    }
+  }
+}

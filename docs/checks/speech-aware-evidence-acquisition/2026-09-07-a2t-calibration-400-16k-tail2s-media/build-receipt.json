@@ -1,0 +1,382 @@
+{
+  "authorizes": "nothing beyond writing this media and these receipts. No cell is flown, no request is built, no server is started and no scorer runs.",
+  "carrier": "audio2tool",
+  "carrier_lock_key": "audio2tool",
+  "clips_above_share": {
+    "above_4k_more_than_0.001": 291,
+    "above_4k_more_than_0.01": 139,
+    "above_6k_more_than_0.001": 192,
+    "above_6k_more_than_0.01": 42,
+    "above_7k_more_than_0.001": 122,
+    "above_7k_more_than_0.01": 22,
+    "above_8k_more_than_0.001": 15,
+    "above_8k_more_than_0.01": 1
+  },
+  "comparator": {
+    "attempt_id": "attempt-20260904T135250Z-rofficialraw",
+    "cell_id": "R-official-raw",
+    "flight_split_identity_hash": "11091b38ae9d53530952af632636d7e79a614350213e10c6c26583c37f85846b",
+    "paper_facing_scorer": "a2t-toolcall-official",
+    "run_id": "SAEA-A2T-OFFICIAL-PROTOCOL-REPLICATION-V1",
+    "serving_path": "raw audio through the bf16 mmproj, -c 49152 -np 3",
+    "split_identity_hash": "e1d751e6c76e49d087620842ba17c34e432a4602169dc2b93ee7e0a529ca332c",
+    "what_the_comparator_sends": "the sealed 24 kHz bytes verbatim (core/model/transport.py base64s the file and declares format 'wav'); the 24 -> 16 kHz conversion happens inside llama.cpp's miniaudio decoder, not in this study"
+  },
+  "contacts": {
+    "embedder": 0,
+    "ffmpeg_calls": 0,
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "librosa_calls": 820,
+    "network": 0,
+    "note": "unlike the @ts2 build, this one RUNS librosa -- that is the factor under test. Each clip is decoded twice (the determinism check) and the frequency-response probe decodes one synthetic tone per frequency. No parent container is opened: the input is the sealed wav the comparator itself sends.",
+    "outbound_connection_attempts": 0,
+    "paid_api_spend": 0,
+    "parent_container_decodes": 0,
+    "retriever": 0,
+    "scorer": 0,
+    "sealed_wav_decodes": 400,
+    "tokenizer": 0
+  },
+  "container": "wav",
+  "count": 400,
+  "decoder_pins": {
+    "decoder": "reproduction.obs_loop.decode_parent_pcm",
+    "decoder_source_sha256": "32450decda3101b6d78fa01cb5bb1c105ea1a7c18666105cb4e5597b8963de1a",
+    "ffmpeg_on_path": false,
+    "int16_quantization": "clip(rint(float32 * 32767.0), -32768, 32767)",
+    "librosa_version": "0.11.0",
+    "note": "decode_parent_pcm is the study's ONE decode-and-resample path and is already the definition of 16 kHz mono int16 for every Earnings parent; this build calls it rather than writing a second resampler",
+    "numpy_version": "2.2.6",
+    "res_type": "soxr_hq",
+    "resampler": "librosa.load(res_type='soxr_hq') -> soxr",
+    "soundfile_version": "0.14.0",
+    "soxr_version": "1.1.0"
+  },
+  "deterministic": "this receipt carries no timestamp: two back-to-back writes reproduce the same MANIFEST.sha256",
+  "execution_profile": "model-free-check",
+  "exposure_row": "SAEA-SN-MF-A2T-CAL400-16K-MEDIA-V1",
+  "id_suffix": "16k+ts2",
+  "measured_media": {
+    "audio_hours_total": 0.822124,
+    "audio_seconds_longest_item": 37.71375,
+    "audio_seconds_shortest_item": 2.616875,
+    "audio_seconds_total": 2959.647312,
+    "clips_left_unchanged": 0,
+    "clips_with_a_clipped_standardized_sample": 2,
+    "max_abs_duration_delta_seconds": 4.1667e-05,
+    "n_samples_total": 47354357,
+    "one_sample_at_16k_seconds": 6.25e-05,
+    "samples_added_by_tail_total": 12800000,
+    "samples_removed_total": 0,
+    "source_audio_seconds_total": 2159.647,
+    "source_n_samples_total": 51831528,
+    "standardized_clipped_samples_total": 4,
+    "total_bytes": 94726314
+  },
+  "media_root": "derived/a2t-calibration-400-16k-tail2s-v1",
+  "opened": {
+    "evaluation_query_text": 0,
+    "gold_labels": 0,
+    "hypothesis_text": 0,
+    "note": "MEDIA BYTES ONLY. The build reads the pinned roster receipt (identifiers, media paths, measured media identity) and the audio samples of the sealed files it names. No gold tool name, argument, evaluation query, tool-registry row, sealed output, hypothesis or score is opened, and none is reachable from this process.",
+    "reference_transcripts": 0,
+    "scores": 0,
+    "sealed_outputs": 0,
+    "tool_registry_rows": 0
+  },
+  "outputs": {
+    "d1_media_supplement": "docs/receipts/artifacts/d1-a2t-calibration-400-16k-tail2s.json",
+    "d1_media_supplement_sha256": "172ea2a90f12fb110f7c1e6a041a6aaaf21ffdbf66cf233701ae2ad52678413d",
+    "probe_view": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-a2t-calibration-400-16k-tail2s-media/roster/flight-roster-receipt.json",
+    "probe_view_sha256": "f8a67d10fa208ea70385e7f770bfedbe742a7b4d9322271a1837f69f2edf9b27",
+    "roster_receipt": "docs/receipts/rosters/a2t-calibration-400-16k-ts2-v1.json",
+    "roster_receipt_sha256": "ea0e5024ef50b17e38ca37dd50251036527fa7499d475f83176b51e155ffa81a"
+  },
+  "resampler_frequency_response": {
+    "measured_on": "reproduction.obs_loop.decode_parent_pcm (librosa 0.11.0 / soxr 1.1.0, res_type 'soxr_hq'), 24000 -> 16000 Hz",
+    "method": "one 1.0 s pure tone per frequency at amplitude 0.5, synthesized at 24000 Hz, written as mono int16 wav, decoded through the pinned path, 50 ms of each edge dropped, energy split into a +/-25 Hz bin at the tone and everything else (= alias + noise)",
+    "output_nyquist_hz": 8000,
+    "passband_max_rms_dbfs_deviation": 51.006,
+    "passband_min_retained_share": 0.999898536,
+    "rows": [
+      {
+        "alias_share": 1e-09,
+        "frequency_hz": 100,
+        "output_rms": 11584.525051,
+        "output_rms_dbfs": -9.0312,
+        "passband": true,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.999999999
+      },
+      {
+        "alias_share": 0.0,
+        "frequency_hz": 500,
+        "output_rms": 11584.608828,
+        "output_rms_dbfs": -9.0311,
+        "passband": true,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 1.0
+      },
+      {
+        "alias_share": 1e-09,
+        "frequency_hz": 1000,
+        "output_rms": 11584.606451,
+        "output_rms_dbfs": -9.0311,
+        "passband": true,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.999999999
+      },
+      {
+        "alias_share": 0.0,
+        "frequency_hz": 2000,
+        "output_rms": 11585.118752,
+        "output_rms_dbfs": -9.0307,
+        "passband": true,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 1.0
+      },
+      {
+        "alias_share": 1e-09,
+        "frequency_hz": 3000,
+        "output_rms": 11584.741748,
+        "output_rms_dbfs": -9.031,
+        "passband": true,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.999999999
+      },
+      {
+        "alias_share": 0.0,
+        "frequency_hz": 4000,
+        "output_rms": 11585.237503,
+        "output_rms_dbfs": -9.0306,
+        "passband": true,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 1.0
+      },
+      {
+        "alias_share": 1e-09,
+        "frequency_hz": 5000,
+        "output_rms": 11584.741748,
+        "output_rms_dbfs": -9.031,
+        "passband": true,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.999999999
+      },
+      {
+        "alias_share": 0.0,
+        "frequency_hz": 6000,
+        "output_rms": 11585.118752,
+        "output_rms_dbfs": -9.0307,
+        "passband": true,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 1.0
+      },
+      {
+        "alias_share": 1e-09,
+        "frequency_hz": 7000,
+        "output_rms": 11584.783231,
+        "output_rms_dbfs": -9.031,
+        "passband": true,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.999999999
+      },
+      {
+        "alias_share": 1e-09,
+        "frequency_hz": 7500,
+        "output_rms": 11023.974816,
+        "output_rms_dbfs": -9.462,
+        "passband": true,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.999999999
+      },
+      {
+        "alias_share": 1.82e-07,
+        "frequency_hz": 7800,
+        "output_rms": 703.968891,
+        "output_rms_dbfs": -33.3577,
+        "passband": true,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.999999818
+      },
+      {
+        "alias_share": 0.000101464,
+        "frequency_hz": 7900,
+        "output_rms": 32.627918,
+        "output_rms_dbfs": -60.0369,
+        "passband": true,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.999898536
+      },
+      {
+        "alias_share": 0.0,
+        "frequency_hz": 8000,
+        "output_rms": 0.0,
+        "output_rms_dbfs": -330.3087,
+        "passband": false,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.0
+      },
+      {
+        "alias_share": 1.0,
+        "frequency_hz": 8100,
+        "output_rms": 0.193649,
+        "output_rms_dbfs": -104.5684,
+        "passband": false,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.0
+      },
+      {
+        "alias_share": 0.0,
+        "frequency_hz": 8200,
+        "output_rms": 0.0,
+        "output_rms_dbfs": -330.3087,
+        "passband": false,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.0
+      },
+      {
+        "alias_share": 1.0,
+        "frequency_hz": 8500,
+        "output_rms": 0.353553,
+        "output_rms_dbfs": -99.3396,
+        "passband": false,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.0
+      },
+      {
+        "alias_share": 0.0,
+        "frequency_hz": 9000,
+        "output_rms": 0.0,
+        "output_rms_dbfs": -330.3087,
+        "passband": false,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.0
+      },
+      {
+        "alias_share": 0.0,
+        "frequency_hz": 10000,
+        "output_rms": 0.0,
+        "output_rms_dbfs": -330.3087,
+        "passband": false,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.0
+      },
+      {
+        "alias_share": 0.0,
+        "frequency_hz": 11000,
+        "output_rms": 0.0,
+        "output_rms_dbfs": -330.3087,
+        "passband": false,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.0
+      },
+      {
+        "alias_share": 1.0,
+        "frequency_hz": 11900,
+        "output_rms": 0.223607,
+        "output_rms_dbfs": -103.319,
+        "passband": false,
+        "reference_rms_dbfs": -9.0309,
+        "retained_share": 0.0
+      }
+    ],
+    "stopband_max_output_rms_dbfs": -99.3396
+  },
+  "roster_id": "A2T-CALIBRATION-400-16K-TS2-V1",
+  "rule": "every sealed 24 kHz mono int16 release wav decoded to 16 kHz mono int16 through reproduction.obs_loop.decode_parent_pcm -- librosa.load(sr=16000, mono=True) at res_type 'soxr_hq' (librosa 0.11.0 / soxr 1.1.0), then clip(rint(float32 * 32767), -32768, 32767) to int16; nothing is trimmed, nothing is normalized, no channel is dropped and the sample count is the exact 2/3 the rate ratio requires; then exactly 2.0 s of digital silence appended to the 16 kHz standardized clip -- 32,000 zero samples through the PINNED Earnings-22 transform('tail-silence-2s', ...); nothing is removed, no standardized sample is altered and the sample rate is never changed",
+  "sample_rate_hz": 16000,
+  "schema": "saea-a2t-input-rate-16k-media-build-receipt-v1",
+  "source_band_energy": {
+    "above_4k_share": {
+      "max": 0.213346059,
+      "mean": 0.013410413,
+      "median": 0.005112034,
+      "min": 9.07e-07,
+      "n": 400,
+      "p10": 3.084e-06,
+      "p90": 0.034362708
+    },
+    "above_6k_share": {
+      "max": 0.140787923,
+      "mean": 0.004430298,
+      "median": 0.00079024,
+      "min": 1.35e-07,
+      "n": 400,
+      "p10": 9.26e-07,
+      "p90": 0.010684121
+    },
+    "above_7k_share": {
+      "max": 0.105254855,
+      "mean": 0.002268939,
+      "median": 0.00016501,
+      "min": 1.09e-07,
+      "n": 400,
+      "p10": 7.55e-07,
+      "p90": 0.005466807
+    },
+    "above_8k_share": {
+      "max": 0.044207116,
+      "mean": 0.000290515,
+      "median": 2.151e-06,
+      "min": 8.4e-08,
+      "n": 400,
+      "p10": 4.32e-07,
+      "p90": 0.000379271
+    }
+  },
+  "source_band_energy_note": "the mechanism budget, measured on the SEALED 24 kHz samples. Energy above 8 kHz is what a rate conversion must discard and what miniaudio's 4th-order Butterworth folds back into the speech band; energy above 6 and 7 kHz is where that same filter's passband droop (-1.3 dB and -2.1 dB, measured) differs from soxr_hq's flat response. A corpus with no energy in those bands cannot show either effect, whatever the resamplers do.",
+  "source_population": {
+    "all_source_digests_matched": true,
+    "all_sources_measured_24k_mono_int16": true,
+    "files_rehashed_before_reading": 400,
+    "roster_receipt": {
+      "path": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-calibration-400-roster/flight-roster-receipt.json",
+      "sha256": "6f352ea583d0bb91f77aad62e07bdad4d3210d066440fbfaee8e2af504853fe7"
+    }
+  },
+  "source_sample_rate_hz": 24000,
+  "split_identity_hash": "655b5ed6a65325891e9824d3bb25964681d50c8bb9f36e2deb11822e3179db67",
+  "split_name": "A2T-CALIBRATION-400-16K-TAIL2S",
+  "split_role": "discovery",
+  "strata_counts": {
+    "tier1_direct": 50,
+    "tier2_parametric": 50,
+    "tier3_multi_intent": 50,
+    "tier4_implicit": 50,
+    "tier5_needle": 50,
+    "tier6_correction": 50,
+    "tier7_multiturn": 50,
+    "tier8_intent_blending": 50
+  },
+  "tail_rule_implementation": {
+    "function": "transform('tail-silence-2s', ...)",
+    "module": "scripts/build_e22_dev1500_media_variants.py",
+    "note": "called DIRECTLY, not re-derived: the pinned transform's hard-coded 2 * 16000 samples IS 2.0 s on standardized media, which is the whole point of standardizing first",
+    "sha256": "49e5d91095c061d167688bd4dea35fc7503d3a09caa3066db68fde9807d196e6"
+  },
+  "test_split_read": false,
+  "union_rebuild_price": {
+    "contacts": {
+      "frozen_core": 0,
+      "gpu_hours": 0.0,
+      "note": "the rebuild is model-free: it is a decode and a re-encode, at most 8 CPU workers, and it opens no text of any kind. What it is NOT free of is the D1 supplement and roster work -- the union's supplement covers 3,932 ids and would need a standardized twin -- and the sealed official-population outputs it pairs against were produced on UNSTANDARDIZED media, so those pairings become cross-media and stop being single-factor"
+    },
+    "measured_basis": {
+      "output_bytes": 94726314,
+      "rows": 400,
+      "scale": 10.843477236,
+      "source_audio_seconds": 2159.647,
+      "wall_time": "NOT SEALED HERE -- wall time is not reproducible and this receipt is. The runner prints it."
+    },
+    "population": "A2T-ORG1-UNION-4000 (configs/dataset/audio2tool-org1-union-4000.json)",
+    "projected_output_bytes": 1027162630,
+    "projected_output_gib": 0.9566,
+    "rows": 4000,
+    "source_audio_seconds": 23418.083083,
+    "the_real_cost": "not the CPU minutes. Re-standardizing the union invalidates the paired comparator: the 4,000 sealed official-protocol outputs were produced from 24 kHz bytes, so after a rebuild every one of them would have to be RE-FLOWN to stay a like-for-like baseline -- 4,000 contacts and roughly 23,418 audio seconds of GPU work, which is the price this preregistration puts on cell (a) admitting",
+    "why": "an admitted 16 kHz media re-locks the A2T frozen-400 comparator, and no further Audio2Tool cell can mix standardized and unstandardized media -- so the ORG-1 union 4,000, which every sealed official-population pairing runs on, must be rebuilt by this same rule before it is used again"
+  },
+  "variant": "input-rate-16k+tail-silence-2s",
+  "what_it_is_for": "cell (b): the silence tail on STANDARDIZED bytes, which replaces the cross-carrier preregistration's 24 kHz-based @ts2 Audio2Tool cell if and only if cell (a) admits the standardization"
+}

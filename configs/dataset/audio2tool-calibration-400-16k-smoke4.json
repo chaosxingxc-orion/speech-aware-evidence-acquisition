@@ -1,0 +1,23 @@
+{
+  "a2t_calibration_audio_seconds_longest_item": 5.736875,
+  "a2t_calibration_audio_seconds_total": 12.3875,
+  "a2t_calibration_count": 4,
+  "a2t_calibration_d1_basis": "Unlike the sealed frozen 400 -- whose ids are inside the base D1 closure and which therefore declares NO supplement -- these ids are new media that duplicate nothing in that closure, so an additive supplement is both needed and legal under contracts.gate_media_identity.",
+  "a2t_calibration_d1_media_supplement": "receipts/artifacts/d1-a2t-calibration-400-16k.json",
+  "a2t_calibration_d1_media_supplement_sha256": "4894d54d7a47084e049379da1d5d38f2c0bde4c4705eb1f24019175670567ba4",
+  "a2t_calibration_derived_subdir": "derived/a2t-calibration-400-16k-v1",
+  "a2t_calibration_exposure": "The same frozen 400 discovery split, re-encoded. Nothing is drawn. Media row SAEA-SN-MF-A2T-CAL400-16K-MEDIA-V1. This fragment grants no contact authority.",
+  "a2t_calibration_flight_split_identity_hash": "69e44284616fbe0e2ab866728a94eaf8464a09b26966deb22fd0fea00becc294",
+  "a2t_calibration_identity_hash_conventions": "a2t_calibration_split_identity_hash is SHA-256 over the LF-joined sorted sample ids of THIS variant; a2t_calibration_flight_split_identity_hash is data.splits.split_identity_hash(prefixed('audio2tool', sample_ids)), the value core.flight.FlightRuntime.preflight computes at flight time. Both differ from the sealed frozen 400's and from the other variant's, which is the identity separation the '@' suffix exists to guarantee.",
+  "a2t_calibration_media_build_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-a2t-calibration-400-16k-media/build-receipt.json",
+  "a2t_calibration_rate_rule": "16 kHz mono int16, produced by reproduction.obs_loop.decode_parent_pcm (librosa.load(sr=16000, mono=True), res_type 'soxr_hq', librosa 0.11.0 / soxr 1.1.0), then clip(rint(float32 * 32767), -32768, 32767). The decoder is pinned by the SHA-256 of its own source text and the build refuses if ffmpeg appears on PATH, because decode_parent_pcm would prefer it.",
+  "a2t_calibration_sample_rate_hz": 16000,
+  "a2t_calibration_source_sample_rate_hz": 24000,
+  "a2t_calibration_split_identity_hash": "72aeee2a79c4ef08279200c5bd8b5fb6f13d795f89fa6ee31cbbc7e071db130a",
+  "a2t_calibration_split_name": "A2T-CALIBRATION-400-16K-SMOKE-4",
+  "a2t_calibration_split_role": "discovery",
+  "a2t_calibration_subset_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-a2t-calibration-400-16k-media/roster/flight-roster-receipt.json",
+  "a2t_calibration_subset_receipt_sha256": "11d3bcc2489aa346affd77735a2d0a3bce7c2a1b807af74ccdaf9d281195ef29",
+  "carrier_lock_key": "audio2tool",
+  "split_id": "A2T-CALIBRATION-400-16K-SMOKE-4"
+}
