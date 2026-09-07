@@ -318,15 +318,45 @@ gain across three unrelated metrics is also what a systematic harness difference
 `FlightRuntime.preflight` behind the real gate, and `FlightRuntime.wire_check` against a fake gate
 and a socket-less transport. Receipt:
 `docs/checks/speech-aware-evidence-acquisition/2026-09-07-cross-carrier-tail2s-wire-check/`.
-**Zero model contacts, zero servers, zero sockets, zero GPU.** Every stop was one of three named
-classes and none was a surprise.
+**Zero model contacts, zero servers, zero sockets, zero GPU.** On the first pass every stop was one
+of three named classes and none was a surprise; the re-measurement after the rail landed added a
+fourth, an environment refusal rather than a cell's, and it is named below rather than tidied away.
 
-| cell | rows | preflight | wire check |
-|---|---:|---|---|
-| `R-official-tail2s-smoke-4` | 4 | gate refuses: not authorized | **A2T gold-id rail missing** |
-| `R-official-tail2s` | 400 | gate refuses: not authorized | **A2T gold-id rail missing** |
-| `closed-list-tail2s-smoke-4` | 4 | gate refuses: not authorized | **SLURP packet root missing** |
-| `closed-list-tail2s` | 1,000 | gate refuses: not authorized | **SLURP packet root missing** |
+| cell | rows | preflight | wire check, before the rail | wire check, after the rail |
+|---|---:|---|---|---|
+| `R-official-tail2s-smoke-4` | 4 | gate refuses: not authorized | A2T gold-id rail missing | **`seal_and_score: OK`** |
+| `R-official-tail2s` | 400 | gate refuses: not authorized | A2T gold-id rail missing | request path OK; seal refused by a CONCURRENT flight's lock |
+| `closed-list-tail2s-smoke-4` | 4 | gate refuses: not authorized | SLURP packet root missing | SLURP packet root missing |
+| `closed-list-tail2s` | 1,000 | gate refuses: not authorized | SLURP packet root missing | SLURP packet root missing |
+
+**The rightmost column is the state after §6.2's rail landed** (commit `e6c29449`), re-measured at
+commit `99fbc88a`. The gold-id rail is what the smoke cell proves end to end: 4 canned contacts,
+`payload_keys=10`, zero sockets, a sealed `COMPLETED` manifest, the 21-column ledger surface
+validated, and **all four registered scorers -- `a2t-toolcall-official`, `a2t-toolcall-v2`,
+`a2t-toolcall` and `cost` -- run to completion over `@ts2` sample ids**. That is exactly the link §8
+item 4 exists to prove, and on this carrier it now holds.
+
+The 400-row cell ran the identical request path to the same point -- 400 contacts, same payload
+keys, zero sockets -- and was then refused at the SEAL, for an environment reason that names itself:
+*"HEAD moved during the flight: the flight lock recorded study_head ... refusing to bind a COMPLETED
+manifest to a commit the flight never ran under"*. A **separate, live GPU flight**
+(`SAEA-E21-KC-E1-BRIEF-44-V1`) held `$SPEECHRL_DATA_DIR/locks/flight.lock` while this rehearsal ran,
+and that lock pins a different study HEAD than this worktree's. The refusal is the harness working,
+not a defect in the cell, the rail or the fragments, and it is recorded rather than worked around --
+the one thing that must never be done to it is to remove or edit another flight's lock. **§8 item 4
+therefore stays a live refusal point for this cell**: re-run the check when no other flight holds
+the lock, immediately before the flight, and require `seal_and_score: OK`. What the 400 rows do not
+need the wire check to establish is the SCORING itself: all three Audio2Tool scorers were run over
+the sealed 400 with `@ts2` appended to every id and reproduce the unsuffixed per-sample entries and
+aggregates exactly
+(`tests/unit/test_variant_id_gold_rail.py::test_the_sealed_audio2tool_400_is_byte_for_byte_unchanged_and_its_variant_matches`).
+
+A second finding, and it was in the CHECK rather than in a cell: the Audio2Tool runner writes its own
+per-cell receipt under `docs/checks/` by default, so on the first pass the smoke cell's receipt
+landed in the working tree and the 400-row cell's scoring correctly refused a `COMPLETED` manifest on
+a dirty tree. The by-product now goes under `$SPEECHRL_DATA_DIR` (commit `99fbc88a`) and this
+section's receipt stays the single committed record. It is recorded because it is exactly the failure
+mode §8 item 2 warns about, met in a contactless rehearsal instead of after the GPU time was spent.
 
 `preflight` reaching the gate is the CORRECT state and is what it proves: config composition, roster
 hydration with a per-file SHA-256 re-hash of all 1,000 / 400 media, media-path confinement to the
@@ -361,6 +391,27 @@ build does on its own initiative mid-campaign. It is named here as a preconditio
 precedent, its exact call sites and its inertness property, so whoever does apply it does so
 deliberately and with a test that the unsuffixed populations are unchanged.
 
+**CLOSED 2026-09-07** (commit `e6c29449`). The rule now lives ONCE, in
+`data.variant_ids.published_sample_key`; `reproduction.esb_reference.published_segment_key` -- the
+Earnings-22 spelling -- delegates to it, so the three carriers cannot drift into three spellings.
+Four gold lookups resolve through it: `rails/adapters/audio2tool.py::Audio2ToolAdapter.gold` (the
+flight-time lookup this wire check stopped at, and the one `CalibrationAdapter` inherits), all three
+registered Audio2Tool scorers in `reproduction/a2t_scorer.py` (`a2t-toolcall`, `a2t-toolcall-v2`,
+`a2t-toolcall-official`), and `reproduction/slurp_official_eval.py::score_slurp_outputs_official`,
+where the published key is ALSO what goes into the official evaluator's own `file` field on BOTH
+sides, because that is the key `evaluate.py` pairs on. The RAW id stays in every per-sample row and
+every refusal message, so a score file still records which media was flown.
+
+The inertness claim is proved on the SEALED manifests rather than on fixtures
+(`tests/unit/test_variant_id_gold_rail.py`). The sealed Audio2Tool official-protocol 400 still
+reproduces its own published anchors to the digit -- overall 61.0, exact match 20.25, parse rate
+99.75, 52 rows with more than one call match, and all eight tier accuracies of section 1.3 -- and
+the same 400 rows with `@ts2` appended to every id give byte-identical per-sample entries and
+aggregates through all three scorers. The sealed SLURP DEV-1000 still gives scenario 82.60, action
+74.60, intent 73.10 and SLU-F1 35.80, and its `@ts2` twin matches it row for row. A foreign
+published key still refuses, suffix or no suffix: the rail strips a suffix, it never widens a gold
+closure.
+
 ### 6.3 Precondition C — Earnings-21 has no cell to compose at all
 
 **Earnings-21 gets no config fragments, and that is a finding rather than an omission.** Its
@@ -382,6 +433,38 @@ for a carrier that cannot yet use it: the cell's falsifier is that **each of the
 flight emits must hash to the SHA-256 the committed D1 supplement
 `docs/receipts/artifacts/d1-e21-buf90-1593-tail2s.json` already records for that window**. A runtime
 change that would otherwise be unverifiable becomes a 1,593-of-1,593 identity check.
+
+**CLOSED 2026-09-07** (commit `8b69e2eb`), and the falsifier holds at **1,593 of 1,593**. The knob is
+`obs_slice_tail_silence_seconds`, default `0.0`, on the already-registered `obs-agent-loop` policy --
+a thin derivation, not a new base. The three cut sites (the sequential path, `_slice_parallel_pass`
+and the openJiuwen `FeedBuffer`) now call ONE encoder, `reproduction.obs_audio.encode_slice`, which
+with no preprocess and no tail is `write_wav_bytes` and nothing else, so every sealed Earnings run's
+bytes are untouched; the ojw equivalence harness gained a `tail-silence` scenario, so the two
+executors are PROVED to emit identical slices under the knob rather than asserted to.
+
+The tail changes the DELIVERED bytes only. `SliceRecord.start_seconds`/`end_seconds`/`audio_seconds`
+stay the CUT span -- `core.model.SliceRegistry.register` requires `audio_seconds` to equal the span,
+and a tail that moved the span would move the next window and destroy the per-window pairing against
+the sealed comparator -- while `sha256`/`bytes` describe the file that was actually sent and
+`preprocess` declares `tail-silence-2s` with `pre_sha256` chaining back to the sealed cut. Delivered
+seconds per window are `audio_seconds + 2.0`, i.e. 144,534.532 s over 1,593 windows against the
+harness's own metered 141,348.532 s; the registered ceiling of 150,000 covers the larger figure.
+
+**The cell now composes.** Baseline `e21-buf90-tail2s-scored7` (the sealed fragment with ONE key
+added and none changed, plus the three remaining agentic scorer ids so section 4.3's four metrics
+come out of `core.scoring_batch`'s verified path -- all four measured to SUCCEED on the comparator's
+own sealed outputs first, at roughly 10 s per call for the three text-alignment ones); experiment
+`e21-full44-tail2s-v1`; arms file `docs/arms/e21-full44-tail2s-v1.arms`; composed config hash
+`3d28fb5abfe2ff6d05cbefac1384e9088504794d9859071a4e5fcc9f16047d22`.
+
+Earnings-21 still has **no `wire_check`**, because it still does not fly through `FlightRuntime`.
+What it has instead is `run_experiment_bundled`'s own model-free preflight, and both halves of it
+were driven on 2026-09-07 with zero contacts: `compose` (OK), `ObsLoopConfig.from_values` (OK: buffer
+90.0, mode fixed, batch_slices 8, tail 2.0), `load_verified_split` (OK: 44 samples, identity
+`fcc1b0bc...d69e`), `ExecutionPlan(...).validate()` (OK) and `require_clean_study_repo` (OK on the
+committed tree). The half that does NOT run model-free is `run_experiment` itself, which needs a live
+llama-server session and the cell's own owner GO and exposure row -- the gate refuses without them,
+which is the correct state.
 
 ---
 
@@ -412,15 +495,28 @@ exactly two.** The coordinator runs one resident server per geometry
 (`docs/readiness/2026-09-07-always-on-serving-operating-note.md`); a flight attaches and never stops
 it.
 
-1. **The SLURP packet encode runs first and alone**, on the CPU sidecar. It needs no GPU session, so
-   it can occupy a GPU gap — but it should not overlap a GPU flight: the campaign CPU cap is 8
-   workers and this program has already recorded that two resident CPU embedders broke bit-exactness
-   on a paired comparison.
-2. **`-c 49152 -np 3` — Audio2Tool.** Cheapest cell, smallest population, and its precondition is a
-   code rail rather than a 37-minute encode, so it is ready first. Smoke, then the 400.
-3. **`-c 65536 -np 8` — SLURP.** Its packets are warm by now. Smoke, then the 1,000.
-4. **`-c 36864 -np 6` — Earnings-21.** Last, because it is the most expensive and the one still
-   waiting on an obs knob. Smoke on four windows, then the 1,593.
+**AMENDED 2026-09-07, after two of the three preconditions closed.** The order below supersedes the
+one this section first fixed, and the reason is a change of FACT, not of preference: §6.2's gold-id
+rail and §6.3's obs knob are applied and tested, so Earnings-21 -- recorded above as having *no cell
+to compose at all* -- now composes and is the readiest carrier, while SLURP is the only one still
+waiting, on a 1,000-contact CPU encode. Cost order and readiness order no longer agree, and readiness
+wins: a ready flight occupies the GPU, and no cell reserves an idle card. The switch count is still
+exactly two.
+
+1. **`-c 36864 -np 6` — Earnings-21.** First, because it is the only cell whose every precondition is
+   closed and whose falsifier has already been checked offline at 1,593 of 1,593. Smoke on four
+   windows -- its media falsifier must hold on 4 of 4 -- then the 1,593. It is also the most expensive
+   cell, so putting it first is what keeps the rest of the campaign off the critical path.
+2. **`-c 49152 -np 3` — Audio2Tool.** Cheapest cell, smallest population; its precondition was a code
+   rail and that rail is in, with the smoke cell reaching `seal_and_score: OK` and the 400-row cell
+   still owing that tick under §8 item 4 (§6's table says why). Smoke, then the 400.
+3. **The SLURP packet encode**, on the CPU sidecar, alone. It needs no GPU session, so it can occupy a
+   GPU gap — but it must not overlap a GPU flight: the campaign CPU cap is 8 workers and this program
+   has already recorded that two resident CPU embedders broke bit-exactness on a paired comparison.
+   Row `SAEA-SN-DEV1000-TS2-PREPROCESS-V1` is registered `consumed = no`; the 4-row gate runs first.
+4. **`-c 65536 -np 8` — SLURP.** Its packets are warm by now, its baseline fragment pins the new
+   promotion receipt, and its wire check has been re-run to `seal_and_score: OK`. Smoke, then the
+   1,000.
 
 Official scoring of each cell overlaps the next flight, once per complete manifest through
 `core.scoring_batch`, never sharded.
@@ -436,12 +532,20 @@ Every item is a refusal point. An agent that cannot tick one stops and reports; 
 2. The tree is **clean** at a committed study commit, and `PYTHONDONTWRITEBYTECODE=1` is exported —
    a dirty tree and stray bytecode each close the scoring gate at finalize, after the GPU time is
    spent.
-3. The cell's **precondition is closed**: SLURP's packets promoted with their receipt, Audio2Tool's
-   and SLURP's gold-id rail applied and tested, Earnings-21's obs knob applied and its 4-row dry run
-   matching the committed `@ts2` hashes.
+3. The cell's **precondition is closed**. Audio2Tool's and SLURP's gold-id rail: **CLOSED**
+   (§6.2). Earnings-21's obs knob and its 1,593-of-1,593 hash check against the committed `@ts2`
+   media: **CLOSED** (§6.3). SLURP's packets promoted with their receipt, and the cell's baseline
+   fragment then pinning that receipt and its SHA-256: **OPEN**, and it is the only one.
 4. The **zero-contact wire check is re-run and reaches `seal_and_score: OK`** on this cell's own
    fragments. A manifest that seals `COMPLETED` and then will not score wastes GPU time after it has
-   been spent.
+   been spent. The Audio2Tool smoke already does (§6), and the 400-row cell reaches the same seal but
+   was refused by a CONCURRENT flight's lock, so it still owes this tick; the two SLURP cells cannot
+   tick it until item 3's promotion exists. Re-running the check is a refusal point, not a formality,
+   and it must be run when NO other flight holds `$SPEECHRL_DATA_DIR/locks/flight.lock` -- that lock
+   is never removed or edited to get a green.
+   Earnings-21 has no `wire_check` at all — it does not fly through `FlightRuntime` — so its
+   equivalent is `run_experiment_bundled`'s own model-free preflight, driven in §6.3 and re-driven
+   before the flight.
 5. The **4-row smoke** flies first and its media falsifier (§4.4) holds on 4 of 4.
 6. The agent **attaches** to the coordinator's resident session for its geometry; it never starts or
    stops a server and never touches port 8080.
@@ -455,6 +559,93 @@ Every item is a refusal point. An agent that cannot tick one stops and reports; 
     to the digit — before the first contrast is computed.
 11. The verdict quotes §4's rule **verbatim before applying it**, carries the per-stratum table, and
     states which null it used and whether that null was measured or imported.
+
+### 8.1 The exact command per cell
+
+Every command below runs in WSL2 `Ubuntu-24.04` under `source ~/.venvs/speechrl/bin/activate`, from
+the study checkout, with `PYTHONDONTWRITEBYTECODE=1` exported (§8 item 2) and on a clean tree at a
+committed study commit. **None of them is authorized by this document**: each needs its cell's own
+owner GO and its own exposure row first (§8 item 1). Nothing here starts or stops a server; a flight
+attaches to the coordinator's resident session for its geometry (§8 item 6).
+
+**1. Earnings-21 — `-c 36864 -np 6`.** Not a `FlightRuntime` cell: it flies through
+`core.driver.run_experiment_bundled` via the committed launcher, exactly as its sealed comparator
+did.
+
+```bash
+# smoke: four windows, media falsifier on 4 of 4 before anything else flies
+bash scripts/run_arm_sequence.sh \
+  --arms docs/arms/e21-full44-tail2s-v1.arms \
+  --dataset earnings21-discovery \
+  --experiment e21-full44-tail2s-v1 \
+  --model q4km-e21-buf90-mmproj-gpu-04ccc72a-np6 \
+  --execution-profile baseline-reproduction \
+  --planned-model-calls 1750 --planned-gpu-hours 1.2 \
+  --planned-speech-audio-seconds 150000
+```
+
+The four-window smoke needs one thing this document does NOT hand it: a dataset fragment naming a
+single short call. `earnings21-discovery` is the whole 44 and `run_arm_sequence.sh` has no sample-id
+seam, so the smoke is a one-call sibling fragment with its own run id and its own exposure row, and
+writing it is the flight agent's step. What the smoke still has to prove is the RUNTIME path -- that
+the emitted slice bytes reach the server and that its four slice SHA-256s equal the committed `@ts2`
+entries for those windows, checked before any score file is opened. What it no longer has to
+discover is whether the knob produces the right bytes at all: that is already proved offline, with
+zero contacts, on all 1,593 windows
+(`tests/unit/test_obs_slice_tail_silence.py::test_the_knob_reproduces_every_committed_ts2_window_hash`).
+
+**2. Audio2Tool — `-c 49152 -np 3`.**
+
+```bash
+python scripts/flights/run_calibration_cell.py \
+  --experiment a2t-official-protocol-tail2s-400-smoke-v1 \
+  --dataset audio2tool-calibration-400-tail2s-smoke4 \
+  --cell R-official-tail2s-smoke-4 --run
+python scripts/flights/run_calibration_cell.py \
+  --experiment a2t-official-protocol-tail2s-400-v1 \
+  --dataset audio2tool-calibration-400-tail2s \
+  --cell R-official-tail2s --run
+```
+
+**3. The SLURP packet encode — CPU sidecar on port 8081, 0 GPU-h.** Contract
+`configs/experiment/slurp-dev1000-ts2-preprocess.json` (composed config hash `67b4e7ec…`), sidecar
+fragment `configs/model/q4km-preprocess-featcache-cpu-sidecar-slurp-ts2.json`, dataset fragment
+`slurp-speech-native-dev1000-tail2s`, baseline fragment `speech-native-preprocess`, row
+`SAEA-SN-DEV1000-TS2-PREPROCESS-V1` (registered `consumed = no`, 1,004 contacts, 4,905 audio
+seconds, 0 GPU-h). The two-phase driver is the one `SAEA-SN-DEV1000-PREPROCESS` and
+`SAEA-SLURP-EVO-FOLD-PACKETS-V2` used (`scripts/slurp_evo_fold_preprocess.py` is the shape: encode
+under a session receipt, verified normal stop, then
+`materialize_legacy_cached_speech_feature_packets`); binding it to THIS contract is the flight
+agent's step, and so is the 4-row gate that precedes the 1,000.
+
+**4. SLURP — `-c 65536 -np 8`, after the promotion.** Two things must land first: a baseline
+fragment that pins the new promotion receipt and its SHA-256 (`FlightRuntime._speech_feature_root`
+refuses a root the flight's identity does not pin), and a re-run of
+
+```bash
+python scripts/cross_carrier_tail2s_wire_check.py --write
+```
+
+reaching `seal_and_score: OK` on both SLURP cells. Then:
+
+```bash
+python scripts/flights/run_slurp_closed_list_cell.py \
+  --experiment slurp-dev1000-closed-list-tail2s-smoke-4-v1 \
+  --dataset slurp-speech-native-dev1000-tail2s-smoke4 \
+  --cell closed-list-tail2s-smoke-4 --run
+python scripts/flights/run_slurp_closed_list_cell.py \
+  --experiment slurp-dev1000-closed-list-tail2s-v1 \
+  --dataset slurp-speech-native-dev1000-tail2s \
+  --cell closed-list-tail2s --run
+```
+
+**Scoring, all three carriers.** Once per complete sealed manifest through `core.scoring_batch`,
+never sharded (§8 item 9), overlapping the next flight. The Earnings-21 cell declares all seven of
+its scorer ids in its own manifest, so its four agentic metrics come out of that verified path; all
+four were re-run against the sealed comparator's own outputs on 2026-09-07 and reproduce §1.4's
+figures to the digit (`asr-wer-whisper` 8.1995, `conec-entity-wer-official` 8.1995 overall,
+`numeric-value-accuracy-v1` 90.7335), which is §2's identity gate for this carrier already passed
+offline.
 
 ---
 

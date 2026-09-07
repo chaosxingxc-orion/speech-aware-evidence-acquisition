@@ -13,20 +13,22 @@
         "returncode": 1,
         "stdout_tail": [],
         "stop_class": "gate-not-authorized",
-        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-A2T-OFFICIAL-PROTOCOL-TAIL2S-SMOKE-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-ts2x/docs/exposure-ledger.md (rows are written before results are read)"
+        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-A2T-OFFICIAL-PROTOCOL-TAIL2S-SMOKE-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-ts2y/docs/exposure-ledger.md (rows are written before results are read)"
       },
       "rows": 4,
       "wire_check": {
         "mode": "wire-check",
         "model_contacts": 0,
         "opened_a_socket": false,
-        "reached_the_end": false,
-        "returncode": 1,
+        "reached_the_end": true,
+        "returncode": 0,
         "stdout_tail": [
-          "wire check: R-official-tail2s-smoke-4"
+          "wire check: R-official-tail2s-smoke-4",
+          "arm=bare-core contacts=4 payload_keys=10 tool_schemas=0 id_slot=2 packets_verified=0 seal_and_score=OK",
+          "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s-smoke-4.wire-check.json (sha256 67c48c9d71a6)"
         ],
-        "stop_class": "a2t-gold-id-rail-missing",
-        "stopped_at": "ValueError: sample 'tier1_direct:000045@ts2' is not in the frozen audio2tool probe receipt"
+        "stop_class": "none",
+        "stopped_at": "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s-smoke-4.wire-check.json (sha256 67c48c9d71a6)"
       }
     },
     {
@@ -42,20 +44,23 @@
         "returncode": 1,
         "stdout_tail": [],
         "stop_class": "gate-not-authorized",
-        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-A2T-OFFICIAL-PROTOCOL-TAIL2S-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-ts2x/docs/exposure-ledger.md (rows are written before results are read)"
+        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-A2T-OFFICIAL-PROTOCOL-TAIL2S-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-ts2y/docs/exposure-ledger.md (rows are written before results are read)"
       },
       "rows": 400,
       "wire_check": {
         "mode": "wire-check",
         "model_contacts": 0,
         "opened_a_socket": false,
-        "reached_the_end": false,
-        "returncode": 1,
+        "reached_the_end": true,
+        "returncode": 0,
         "stdout_tail": [
-          "wire check: R-official-tail2s"
+          "wire check: R-official-tail2s",
+          "arm=bare-core contacts=400 payload_keys=10 tool_schemas=0 id_slot=1 packets_verified=0 seal_and_score=REFUSED",
+          "seal/score refused: BundleError: study repo /mnt/d/chao_workspace/saea-worktrees/wt-ts2y HEAD moved during the flight: the flight lock recorded study_head 'd5e260042b5114161cbdb956f3a0fdadc8d29e95' at launch, HEAD is now '99fbc88a74d0e1d3b6a28fdce7b4218868c81bcc'; refusing to bind a COMPLETED manifest to a commit the flight never ran under, even though the working tree's own dirt is confined outside the load-bearing surface",
+          "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s.wire-check.json (sha256 10b45a48b88c)"
         ],
-        "stop_class": "a2t-gold-id-rail-missing",
-        "stopped_at": "ValueError: sample 'tier1_direct:000045@ts2' is not in the frozen audio2tool probe receipt"
+        "stop_class": "none",
+        "stopped_at": "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s.wire-check.json (sha256 10b45a48b88c)"
       }
     },
     {
@@ -75,7 +80,7 @@
           "dry run: preflight only, no server, no contact"
         ],
         "stop_class": "gate-not-authorized",
-        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-ts2x/docs/exposure-ledger.md (rows are written before results are read)"
+        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-ts2y/docs/exposure-ledger.md (rows are written before results are read)"
       },
       "rows": 4,
       "wire_check": {
@@ -110,7 +115,7 @@
           "dry run: preflight only, no server, no contact"
         ],
         "stop_class": "gate-not-authorized",
-        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-ts2x/docs/exposure-ledger.md (rows are written before results are read)"
+        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-ts2y/docs/exposure-ledger.md (rows are written before results are read)"
       },
       "rows": 1000,
       "wire_check": {
