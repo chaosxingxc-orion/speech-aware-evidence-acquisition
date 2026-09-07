@@ -79,10 +79,71 @@ afterwards.
 
 All three reads are affirmative, so the flight's own go/no-go clause is satisfied.
 
+## `flight-2735/` — the cell itself
+
+Attempt `attempt-20260907T110507Z-cafdc7`, COMPLETED and FINALIZED on study commit `532cbb43`,
+**2,735 of 2,735 contacts**, one attempt, none aborted, **no recovery re-registration used**,
+`study_repo_dirt` empty. Config hash `f84f2078`, protocol hash `f3442e1b`, split identity `ecd9ab76`
+— the three the zero-contact wire check had already computed for this cell, unchanged. Manifest
+SHA-256 `2b4025e8…`, outputs `5713b791…`, trace `6893fe85…`, sealed scores `a8bc51f2…`.
+
+### The falsifier, run before any score was read
+
+**§4.2 HOLDS ON 2,735 OF 2,735 ROWS.** Measured `prompt_tokens` total **476,578** against the
+predicted **476,578** — exactly the `49 × 2,735 + 342,563` the preregistration published before the
+cell existed — with **zero** disagreeing rows. The predicted audio-token count is recomputed from
+each clip's own `n_samples` through `analysis.e22_short_clip_encoding.llamacpp_audio_tokens`, and the
+roster receipt's `audio_tokens` column agrees on every row as well. The sealed `cost` block's own
+`prompt_tokens_total` is the same 476,578.
+
+### What the cell measured
+
+**The verdict lives in `docs/readiness/2026-09-07-e22-esb-shortform-tail2s-test-v1-verdict.md`**, with
+the band decision, the deviation label, the paired contrast, the §4.3 slices and the §5 prediction
+scored. What follows is the headline only.
+
+| | sealed arm | **cell** |
+|---|---:|---:|
+| corpus WER, Whisper normalizer (paper-facing) | 15.9365 % | **9.2377 %** |
+| corpus WER, frozen `saea-scoring-v1` normalizer | 20.8960 % | 14.3053 % |
+| mean per-utterance WER (Whisper) | 28.1291 % | 13.9396 % |
+| substitutions / deletions / insertions | 2,236 / 948 / 4,612 | 2,019 / 1,252 / 1,248 |
+| insertion share of errors | 59.16 % | 27.62 % |
+| hypothesis-to-reference length ratio | 1.0749 | 0.9999 |
+| agentic error rate | 1.7641 % | 1.5945 % |
+| boundary category mass | 7.1465 WER points | 1.0916 WER points |
+
+Paired against the sealed arm on the same 2,735 published segments, signed cell − sealed: corpus WER
+**−6.6988** points, CI90 [−7.0373, −6.3753] stratified by call; 1,385 rows improved, 155 worsened,
+1,195 tied, sign test p ≈ 4.65e-247. **Band test PASS, strict floor PASS — ALIGNED under the
+silence-tail convention**, with deviation `D-TS2-3` (the published systems did not append silence)
+carried on every statement of the number.
+
+The taxonomy's own alignment reproduces the paper-facing scorer exactly on both arms, so the category
+split is a decomposition of those numbers rather than a second measurement of them, and the sealed
+arm reproduced all seven of its own 2026-09-04 identity anchors before any contrast was computed.
+
+### Serving and cost
+
+2,735 contacts in **799.267 s** wall at **3.4219 contacts/s** and **2.109 s** mean latency, slot
+occupancy 0.9021 on eight slots — **0.2220 GPU-hours** against the 1.00 registered ceiling. Realized
+spend 2,735 of 2,800 registered calls and 24,964.608 of 25,500 registered speech-audio seconds; zero
+paid API. Monitor summary for the attempt's own contact window: 73 samples over 785.894 s, **parked
+0.0 s, active 785.894 s, parked fraction 0.000**, `requests_delta` 576 (a lower bound at the
+10-second sampling interval), mean power **87.265 W**, peak **91.3 W**, mean GPU utilization
+**82.89 %**.
+
+Zero `cuda error`, zero `out of memory` and zero `GGML_ASSERT` lines in the session's server log,
+which shows `process_mtmd … encoding mtmd batch` throughout, so every row paid a live mmproj encode
+and no feature cache was involved. Scored once over the complete sealed manifest through
+`core.scoring_batch` with `verified = true`, one job, none failed, `include_per_sample = true`, never
+sharded. The session was still up with eight idle slots afterwards.
+
 ## Files
 
 | file | what it is |
 |---|---|
-| `smoke-4/flight-receipt.json` | the launcher's own receipt: every stage, its hash, the serve attach, the seal and the score |
-| `smoke-4/falsifier.json` | the §4.2 `prompt_tokens` check, recomputed row by row from the sealed trace |
-| `smoke-4/score.json` | the `core.scoring_batch` result over the complete sealed manifest, `verified: true`, per-sample rows included |
+| `smoke-4/flight-receipt.json`, `flight-2735/flight-receipt.json` | the launcher's own receipts: every stage, its hash, the serve attach, the seal and the score |
+| `smoke-4/falsifier.json`, `flight-2735/falsifier.json` | the §4.2 `prompt_tokens` check, recomputed row by row from the sealed trace |
+| `smoke-4/score.json`, `flight-2735/score.json` | the `core.scoring_batch` result over the complete sealed manifest, `verified: true`, per-sample rows included |
+| `flight-2735/flight-read.json` | this read's own tables: corpus, per call, per duration on the published span, category and boundary masses, the agentic rate, the paired contrast and the decision — for both arms |

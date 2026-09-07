@@ -1,0 +1,267 @@
+{
+  "attempt_id": "attempt-20260907T110507Z-cafdc7",
+  "cell_id": "E22-ESB-2735-TS2",
+  "dataset": "earnings22-esb-test2735-tail2s",
+  "experiment": "e22-esb-shortform-tail2s-test-v1",
+  "generated_at": "2026-09-07T11:20:10.099482+00:00",
+  "run_id": "SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1",
+  "schema": "saea-e22-esb-flight-receipt-v1",
+  "stages": {
+    "preflight": {
+      "attempt_id": "attempt-20260907T110507Z-cafdc7",
+      "attempt_reservation": "deferred to core.model.adapter.FrozenCoreAdapter",
+      "carrier_lock_key": "earnings22-original",
+      "config_hash": "f84f207844ea7adf0c25efb4cf1e2136420190da385a5e47808520ef9efbd681",
+      "phase_prompt_fit": null,
+      "prompt_budget": [
+        {
+          "breakdown": {
+            "completion_token_ceiling": 1024,
+            "rendered_text_tokens": 85,
+            "required_window_tokens": 1162,
+            "special_token_reserve": 2,
+            "speech_feature_packet_tokens": [
+              [
+                "4432298-0@ts2",
+                51
+              ]
+            ],
+            "speech_feature_tokens": 51
+          },
+          "compaction_pass": 0,
+          "decision": "ALLOW",
+          "dropped_identifiers": [],
+          "operational_margin_tokens": 23414,
+          "operational_reserve_tokens": 8192,
+          "payload_sha256": "db6cc9f21196f46270124732a006ce7b00afdbdd7424e70a96b0949d8e7566ff",
+          "phase": "direct",
+          "physical_margin_tokens": 31606,
+          "slot_limit_tokens": 32768
+        }
+      ],
+      "protocol_hash": "f3442e1be0307064caac51b3ca6b3b3cfff527f0fb55fb3b158b24d6ded17861",
+      "run_id": "SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1",
+      "sample_count": 2735,
+      "serving_geometry": {
+        "max_tokens": 1024,
+        "slot_tokens": 4096,
+        "slots": 8
+      },
+      "split_id": "E22-ESB-TEST2735-TAIL2S-UTTERANCES",
+      "split_identity_hash": "ecd9ab76755ce0158a64e4854a6b716114f7496635f6d02a65a3e3b2fa267335",
+      "stage": "preflight",
+      "stage_hash": "decc2d0f734458da75316113c6368197a8365ce951c5ef487611df5d94db63b4",
+      "study_commit": "532cbb434dc3f696711abaad13c75fb256b43354"
+    },
+    "preprocess": {
+      "campaign_active": false,
+      "duration_seconds": 4.5299530029296875e-06,
+      "kind": "speech-packets",
+      "packet_count": 0,
+      "packet_manifest_hash": "87c8d31e8b5d31255b80221de105b1ff1d3b2dcb032197409886f06b864d1182",
+      "packets_per_second": 0.0,
+      "promoter_meta": {
+        "audio_path": "raw-audio-mmproj",
+        "packets_required": false,
+        "reason": "this arm's D2 field set carries no speech_feature_parts; its audio travels through the mmproj at request time and no packet is promoted"
+      },
+      "stage": "preprocess",
+      "stage_hash": "aecc7b44106299e2459e838698c9bc733060033befbd23b2c0b05db543feb986",
+      "workers_declared": 8,
+      "workers_used": 8
+    },
+    "run_phases": {
+      "arm": "bare-core",
+      "average_latency_seconds": 2.1091082500223726,
+      "contact_count": 2735,
+      "contact_window": {
+        "from": 1788779201.3333755,
+        "to": 1788780000.6001592
+      },
+      "contacts_per_second": 3.4218862283881073,
+      "dispatch": {
+        "contacts_per_sample": 1,
+        "dispatch": "concurrent",
+        "max_in_flight": 8,
+        "queue_depth": "not a knob: one contact per sample means nothing queues behind a sample, and more in-flight requests than slots is what the slot pinning exists to forbid",
+        "slot_ids_used": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "workers": 8
+      },
+      "id_slot": 0,
+      "id_slot_resolution": "'per-sample' sentinel resolved to slot 0 (this harness dispatches one contact at a time)",
+      "max_tokens": 1024,
+      "max_tokens_resolution": "one integer declared by the fragment; no rule to resolve",
+      "occupancy_slots": 8,
+      "phase_material": null,
+      "phase_supply": null,
+      "phases": [],
+      "policy": "fixed",
+      "policy_kind": "direct",
+      "response_arrival": {
+        "basis": "rails.core_client.RequestTiming.native_tool_calls, set from core.model.CoreResponse.tool_calls; None means the response envelope carried no tool_calls key at all, i.e. the model answered as text",
+        "native_tool_calls_total": 0,
+        "rows_answered_as_text": 2735,
+        "rows_total": 2735,
+        "rows_with_native_tool_calls": 0
+      },
+      "serving_slots": 8,
+      "slot_occupancy": 0.9021410593664122,
+      "stage": "run_phases",
+      "stage_hash": "a64714d93af0418125d224e3095486f3b4608509292395ac176adc3e94bc8406",
+      "tokens_per_second": 3504.011497869422,
+      "tokens_per_second_basis": "contacts_per_second_times_completion_token_ceiling_upper_bound_estimate",
+      "wall_seconds": 799.2667837142944
+    },
+    "score": {
+      "duration_seconds": 5.925718307495117,
+      "include_per_sample": true,
+      "job_count": 1,
+      "jobs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1/attempt-20260907T110507Z-cafdc7/score-jobs.jsonl",
+      "jobs_per_second": 0.16875591246636795,
+      "output_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1/attempt-20260907T110507Z-cafdc7/score-batch",
+      "result": {
+        "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+        "effective_max_workers": 1,
+        "elapsed_seconds": 3.298278811009368,
+        "failed": 0,
+        "job_count": 1,
+        "jobs": [
+          {
+            "elapsed_seconds": 3.2592249359877314,
+            "error": null,
+            "index": 0,
+            "job_id": "attempt-20260907T110507Z-cafdc7",
+            "ledger_cells": null,
+            "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1/attempt-20260907T110507Z-cafdc7/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1.run-manifest.json",
+            "operation": "score",
+            "result_file": "attempt-20260907T110507Z-cafdc7.score.json",
+            "result_sha256": "a6f993b660df0b1cf7f6cd5e81f030d57b8949a853658eb95a7944cb54ef5bd8",
+            "returncode": 0,
+            "status": "succeeded",
+            "stderr_log": "attempt-20260907T110507Z-cafdc7.stderr.log",
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_log": null
+          }
+        ],
+        "operation": "score",
+        "parallelism_boundary": "one-complete-verified-manifest-per-process",
+        "requested_max_workers": 1,
+        "schema": "saea-parallel-score-batch-v1",
+        "succeeded": 1
+      },
+      "stage": "score",
+      "stage_hash": "81b8cd31ae278779f22312a6309f1113a8195cf711170582097e86dcd7f63e49"
+    },
+    "seal": {
+      "cost": {
+        "audio_seconds_used": 24964.608437499992,
+        "calls_used": 2735,
+        "completion_tokens_total": 62634,
+        "latency_seconds_total": 5768.411063811189,
+        "prompt_tokens_total": 476578,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      },
+      "finalize": {
+        "attempt_state": "FINALIZED",
+        "ledger_markdown_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1/attempt-20260907T110507Z-cafdc7/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1.ledger-row.md",
+        "scores_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1/attempt-20260907T110507Z-cafdc7/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1.scores.json"
+      },
+      "flight_receipt": null,
+      "ledger_cells": {
+        "MLflow run": "not used",
+        "changed axes": "model=q4km-e22-esb-mmproj-gpu-04ccc72a-np8; dataset=earnings22-esb-test2735-tail2s; baseline=e22-esb-test2735-tail2s; experiment=e22-esb-shortform-tail2s-test-v1",
+        "dataset rev": "ecd9ab76755ce0158a64e4854a6b716114f7496635f6d02a65a3e3b2fa267335",
+        "decision": "pending post-run analysis",
+        "deviations": "pending post-run analysis",
+        "effectiveness": "pending post-run analysis",
+        "efficiency": "pending post-run analysis",
+        "experiment_id": "SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1",
+        "model rev": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+        "reasonableness": "pending post-run analysis",
+        "shared code revision": "none; this study declares no speechrl_common dependency",
+        "speech task/carrier": "earnings22-original; split E22-ESB-TEST2735-TAIL2S-UTTERANCES; 2735 samples"
+      },
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1/attempt-20260907T110507Z-cafdc7/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1.run-manifest.json",
+      "manifest_sha256": "2b4025e8bb022abce15bf90a612328a2e3bffd47c8876829b2c2b5c3068bf1db",
+      "outputs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1/attempt-20260907T110507Z-cafdc7/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1.outputs.jsonl",
+      "outputs_row_count": 2735,
+      "phase_count": 0,
+      "phases_path": null,
+      "phases_sha256": null,
+      "serving_monitor_summary": {
+        "active_seconds": 785.8939502239227,
+        "first_sample_at": 1788779210.5502121,
+        "last_sample_at": 1788779996.4441624,
+        "mean_power_watts": 87.26547945205479,
+        "mean_utilization_percent": 82.89041095890411,
+        "parked_definition": "every slot idle AND nvidia-smi utilization.gpu < 5%",
+        "parked_fraction": 0.0,
+        "parked_seconds": 0.0,
+        "peak_power_watts": 91.3,
+        "requests_delta": 576.0,
+        "sample_count": 73,
+        "schema": "saea-serving-monitor-summary-v1",
+        "tokens_delta": null,
+        "wall_seconds": 785.8939502239227,
+        "window": {
+          "from": 1788779201.3333755,
+          "to": 1788780000.6001592
+        }
+      },
+      "session_attach_receipt_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1/attempt-20260907T110507Z-cafdc7/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1-attempt-20260907T110507Z-cafdc7.session-attach-receipt.json",
+      "session_reused": true,
+      "stage": "seal",
+      "stage_hash": "93776acbcf5ea02b4a7412622504b016f1cc567efe82dc8547de7e3b1c47145d",
+      "trace_manifest_hash": "09d319fab7ba8ee92d9c7a028bdf6b8feca44c15d48e9154717074d32cd5f990",
+      "verified_attempt_state": "OPENED"
+    },
+    "serve": {
+      "extra_argv": [
+        "-c",
+        "32768",
+        "-np",
+        "8",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0"
+      ],
+      "host": "127.0.0.1",
+      "model_root": "/home/chao",
+      "monitor_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e22-test-np8-c32768-20260907/monitor.jsonl",
+      "pid": 63718,
+      "port": 8080,
+      "reused": true,
+      "serving_geometry": {
+        "max_tokens": 1024,
+        "slot_tokens": 4096,
+        "slots": 8
+      },
+      "serving_session_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e22-test-np8-c32768-20260907",
+      "session_attach_receipt_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1/attempt-20260907T110507Z-cafdc7/SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1-attempt-20260907T110507Z-cafdc7.session-attach-receipt.json",
+      "session_id": "e22-test-np8-c32768-20260907",
+      "session_reused": true,
+      "session_role": "legacy",
+      "session_source": "attached-serving-session",
+      "stage": "serve",
+      "stage_hash": "a9678c0caf8ea1926c50edbb09aa8354005717a9316a353320f2847a6f75bc97",
+      "startup_seconds": 0.0
+    },
+    "stop_serving": null
+  },
+  "study": "speech-aware-evidence-acquisition"
+}

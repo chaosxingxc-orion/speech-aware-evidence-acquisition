@@ -446,3 +446,36 @@ Three things follow for this audit's own conclusions.
 Section 2.2's other two open items are unchanged: the official test split remains untouched, and
 a natural-mixture devel read is still owed before any single "SLURP devel" number is quoted
 beside a natural-mixture published row.
+
+## Addendum, 2026-09-07 — Earnings-22 short form aligns once the serving path stops gluing an unmasked constant to the last word
+
+The 2026-09-05 addendum above recorded the Earnings-22 short-form cell as **NOT ALIGNED at corpus
+Whisper-normalized WER 15.937**, with the miss shaped as output discipline: insertions were 59.2 %
+of all errors and the hypothesis ran 1.0749 times the reference's length. That diagnosis is now
+resolved, on the six ESB test calls themselves, by a factor the study had never varied — the audio
+the protocol delivers.
+
+`SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1` (attempt `attempt-20260907T110507Z-cafdc7`, 2,735 of 2,735
+contacts) re-read the same population with exactly 2.0 s of digital silence appended to each clip
+and everything else byte-identical to the sealed arm. **Corpus Whisper-normalized WER 9.2377 %**,
+against the published 9.79 and the cross-read 12.3: the band test (`<= 12.79`) and the strict floor
+(`<= 11.59`) both pass, every one of the nine degraded-model floors is cleared including
+`qwen3-asr-1.7b` at 9.73, and the verdict is **ALIGNED**. Paired against the sealed arm on the same
+segments the delta is **−6.6988** points, CI90 [−7.0373, −6.3753] stratified by call, with 1,385 rows
+improved against 155 worsened. The insertion share falls 59.16 % → 27.62 %, the length ratio 1.0749 →
+0.9999, the boundary category mass 7.1465 → 1.0916 WER points, and the tail insertion block collapses
+from 3,068 inserted words to 91 while the head block barely moves.
+
+**The number carries a protocol difference and is not a like-for-like reproduction.** Deviation
+`D-TS2-3`: the published systems did not append silence. What the tail addresses is a defect of THIS
+study's serving path that the published path does not have — `mtmd_audio_preprocessor_qwen3a` glues
+up to 0.99 s of unmasked, non-silent `0.0` constant to the end of a clip and charges 13 audio tokens
+for it, where the HF `Qwen3OmniMoeProcessor` masks that block away — so the honest reading is that
+the tail moves our input processing closer *in effect* to the published path's, not that it
+reproduces it. The full rule, the licensed sentence and the limits are in
+`docs/readiness/2026-09-07-e22-esb-shortform-tail2s-test-v1-verdict.md`.
+
+**Earnings-22 test is closed.** The 2026-09-04 owner allowance permitted one read of these six calls
+and the 2026-09-07 owner GO permitted a second; both are spent. No third read is proposed, the 109
+remaining confirmatory calls and the ESB validation split are untouched, and any further Earnings-22
+work moves to dev or stops.

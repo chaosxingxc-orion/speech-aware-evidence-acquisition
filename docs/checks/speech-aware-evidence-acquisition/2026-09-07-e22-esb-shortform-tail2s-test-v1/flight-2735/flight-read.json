@@ -1,0 +1,1008 @@
+{
+  "agentic": {
+    "A": {
+      "agentic_error_rate_percent": 1.7641,
+      "high_impact_reference_word_mass": 863,
+      "high_impact_spans": 626,
+      "reference_words": 48919
+    },
+    "TS2": {
+      "agentic_error_rate_percent": 1.5945,
+      "high_impact_reference_word_mass": 780,
+      "high_impact_spans": 548,
+      "reference_words": 48919
+    }
+  },
+  "arms": {
+    "A": {
+      "attempt": "attempt-20260905T044432Z-8f23ee",
+      "label": "the sealed 2026-09-04 test arm, v1 media",
+      "run_id": "SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1"
+    },
+    "TS2": {
+      "attempt": "attempt-20260907T110507Z-cafdc7",
+      "label": "this cell, +2.0 s of digital silence per clip",
+      "run_id": "SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1"
+    }
+  },
+  "attempt_id": "attempt-20260907T110507Z-cafdc7",
+  "boundary": {
+    "A": {
+      "boundary": {
+        "containment": {
+          "head": {
+            "inserted_words": 491,
+            "insertion_spans": 315,
+            "spans_by_containment": {
+              "contains_0.34_to_0.6": 25,
+              "contains_0.6_or_more": 190,
+              "contains_none": 93,
+              "contains_some": 7
+            },
+            "words_matched_at_0.6": 263
+          },
+          "tail": {
+            "inserted_words": 3068,
+            "insertion_spans": 1186,
+            "spans_by_containment": {
+              "contains_0.34_to_0.6": 175,
+              "contains_0.6_or_more": 450,
+              "contains_none": 271,
+              "contains_some": 290
+            },
+            "words_matched_at_0.6": 773
+          }
+        },
+        "runaway_head_mass": 58,
+        "runaway_tail_mass": 1706,
+        "segmentation_artifact_mass": 1732,
+        "total_error_mass": 3496,
+        "wer_points": 7.1465
+      },
+      "categories": [
+        {
+          "category": "format-convention",
+          "error_mass": 156,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 130,
+          "share_of_error_mass_percent": 2.001,
+          "spans": 130,
+          "wer_points": 0.3189
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 259,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 221,
+          "share_of_error_mass_percent": 3.322,
+          "spans": 221,
+          "wer_points": 0.5294
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 1732,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 1072,
+          "share_of_error_mass_percent": 22.217,
+          "spans": 1072,
+          "wer_points": 3.5405
+        },
+        {
+          "category": "named-entity",
+          "error_mass": 475,
+          "impact_HIGH": 344,
+          "impact_LOW": 0,
+          "impact_NONE": 0,
+          "share_of_error_mass_percent": 6.093,
+          "spans": 344,
+          "wer_points": 0.971
+        },
+        {
+          "category": "domain-term",
+          "error_mass": 129,
+          "impact_HIGH": 4,
+          "impact_LOW": 81,
+          "impact_NONE": 0,
+          "share_of_error_mass_percent": 1.655,
+          "spans": 85,
+          "wer_points": 0.2637
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 2001,
+          "impact_HIGH": 38,
+          "impact_LOW": 353,
+          "impact_NONE": 163,
+          "share_of_error_mass_percent": 25.667,
+          "spans": 554,
+          "wer_points": 4.0904
+        },
+        {
+          "category": "acoustic-misrecognition",
+          "error_mass": 714,
+          "impact_HIGH": 107,
+          "impact_LOW": 365,
+          "impact_NONE": 51,
+          "share_of_error_mass_percent": 9.159,
+          "spans": 523,
+          "wer_points": 1.4596
+        },
+        {
+          "category": "other",
+          "error_mass": 2330,
+          "impact_HIGH": 133,
+          "impact_LOW": 861,
+          "impact_NONE": 713,
+          "share_of_error_mass_percent": 29.887,
+          "spans": 1707,
+          "wer_points": 4.763
+        }
+      ]
+    },
+    "TS2": {
+      "boundary": {
+        "containment": {
+          "head": {
+            "inserted_words": 430,
+            "insertion_spans": 293,
+            "spans_by_containment": {
+              "contains_0.34_to_0.6": 20,
+              "contains_0.6_or_more": 181,
+              "contains_none": 87,
+              "contains_some": 5
+            },
+            "words_matched_at_0.6": 255
+          },
+          "tail": {
+            "inserted_words": 91,
+            "insertion_spans": 51,
+            "spans_by_containment": {
+              "contains_0.34_to_0.6": 3,
+              "contains_0.6_or_more": 36,
+              "contains_none": 10,
+              "contains_some": 2
+            },
+            "words_matched_at_0.6": 50
+          }
+        },
+        "runaway_head_mass": 40,
+        "runaway_tail_mass": 22,
+        "segmentation_artifact_mass": 472,
+        "total_error_mass": 534,
+        "wer_points": 1.0916
+      },
+      "categories": [
+        {
+          "category": "format-convention",
+          "error_mass": 195,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 164,
+          "share_of_error_mass_percent": 4.315,
+          "spans": 164,
+          "wer_points": 0.3986
+        },
+        {
+          "category": "reference-convention",
+          "error_mass": 273,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 240,
+          "share_of_error_mass_percent": 6.041,
+          "spans": 240,
+          "wer_points": 0.5581
+        },
+        {
+          "category": "segmentation-artifact",
+          "error_mass": 472,
+          "impact_HIGH": 0,
+          "impact_LOW": 0,
+          "impact_NONE": 350,
+          "share_of_error_mass_percent": 10.445,
+          "spans": 350,
+          "wer_points": 0.9649
+        },
+        {
+          "category": "named-entity",
+          "error_mass": 446,
+          "impact_HIGH": 332,
+          "impact_LOW": 0,
+          "impact_NONE": 0,
+          "share_of_error_mass_percent": 9.869,
+          "spans": 332,
+          "wer_points": 0.9117
+        },
+        {
+          "category": "domain-term",
+          "error_mass": 86,
+          "impact_HIGH": 3,
+          "impact_LOW": 66,
+          "impact_NONE": 0,
+          "share_of_error_mass_percent": 1.903,
+          "spans": 69,
+          "wer_points": 0.1758
+        },
+        {
+          "category": "model-behaviour",
+          "error_mass": 260,
+          "impact_HIGH": 6,
+          "impact_LOW": 23,
+          "impact_NONE": 100,
+          "share_of_error_mass_percent": 5.753,
+          "spans": 129,
+          "wer_points": 0.5315
+        },
+        {
+          "category": "acoustic-misrecognition",
+          "error_mass": 692,
+          "impact_HIGH": 116,
+          "impact_LOW": 361,
+          "impact_NONE": 51,
+          "share_of_error_mass_percent": 15.313,
+          "spans": 528,
+          "wer_points": 1.4146
+        },
+        {
+          "category": "other",
+          "error_mass": 2095,
+          "impact_HIGH": 91,
+          "impact_LOW": 827,
+          "impact_NONE": 688,
+          "share_of_error_mass_percent": 46.36,
+          "spans": 1606,
+          "wer_points": 4.2826
+        }
+      ]
+    }
+  },
+  "corpus": {
+    "A": {
+      "saea_scoring_v1": {
+        "corpus_wer_percent": 20.896,
+        "deletions": 1678,
+        "errors": 10504,
+        "hypothesis_over_reference_ratio": 1.076,
+        "hypothesis_words": 54090,
+        "insertion_share_of_errors_percent": 52.36,
+        "insertions": 5500,
+        "mean_per_utterance_wer_percent": 31.6615,
+        "reference_words": 50268,
+        "rows": 2735,
+        "substitutions": 3326
+      },
+      "whisper": {
+        "corpus_wer_percent": 15.9365,
+        "deletions": 948,
+        "errors": 7796,
+        "hypothesis_over_reference_ratio": 1.0749,
+        "hypothesis_words": 52583,
+        "insertion_share_of_errors_percent": 59.16,
+        "insertions": 4612,
+        "mean_per_utterance_wer_percent": 28.1291,
+        "reference_words": 48919,
+        "rows": 2735,
+        "substitutions": 2236
+      }
+    },
+    "TS2": {
+      "saea_scoring_v1": {
+        "corpus_wer_percent": 14.3053,
+        "deletions": 2016,
+        "errors": 7191,
+        "hypothesis_over_reference_ratio": 1.0025,
+        "hypothesis_words": 50395,
+        "insertion_share_of_errors_percent": 29.8,
+        "insertions": 2143,
+        "mean_per_utterance_wer_percent": 18.0881,
+        "reference_words": 50268,
+        "rows": 2735,
+        "substitutions": 3032
+      },
+      "whisper": {
+        "corpus_wer_percent": 9.2377,
+        "deletions": 1252,
+        "errors": 4519,
+        "hypothesis_over_reference_ratio": 0.9999,
+        "hypothesis_words": 48915,
+        "insertion_share_of_errors_percent": 27.62,
+        "insertions": 1248,
+        "mean_per_utterance_wer_percent": 13.9396,
+        "reference_words": 48919,
+        "rows": 2735,
+        "substitutions": 2019
+      }
+    },
+    "sealed_arm_published_insertion_share_percent": 59.2,
+    "sealed_arm_published_length_ratio": 1.0749
+  },
+  "decision": {
+    "aligned_better_threshold": 6.79,
+    "band_is_secondary": "the owner GO of 2026-09-07 admits the band on this media-changing cell only with the deviation named; the PAIRED CONTRAST against the sealed arm is the primary statement and the band the secondary one",
+    "band_test_pass": true,
+    "band_test_threshold": 12.79,
+    "corpus_wer_percent_whisper": 9.2377,
+    "cross_read_wer": 12.3,
+    "delta_vs_cross_read": -3.0623,
+    "delta_vs_published": -0.5523,
+    "e21_comparison_caveat": "different segmentation (fixed 90 s windows against published utterance boundaries), a different corpus and a different reference convention; it is placed beside this number, never compared to it",
+    "e21_full44_corpus_wer": 8.2,
+    "floor_loose_pass": true,
+    "floor_loose_threshold": 15.09,
+    "floor_strict_pass": true,
+    "floor_strict_threshold": 11.59,
+    "floors": {
+      "distil-large-v3.5": {
+        "cleared": true,
+        "published": 10.83
+      },
+      "qwen3-asr-0.6b": {
+        "cleared": true,
+        "published": 10.78
+      },
+      "qwen3-asr-1.7b": {
+        "cleared": true,
+        "published": 9.73
+      },
+      "whisper-base.en": {
+        "cleared": true,
+        "published": 15.09
+      },
+      "whisper-large-v3": {
+        "cleared": true,
+        "published": 11.59
+      },
+      "whisper-large-v3-turbo": {
+        "cleared": true,
+        "published": 11.07
+      },
+      "whisper-medium.en": {
+        "cleared": true,
+        "published": 12.63
+      },
+      "whisper-small.en": {
+        "cleared": true,
+        "published": 12.97
+      },
+      "whisper-tiny.en": {
+        "cleared": true,
+        "published": 19.12
+      }
+    },
+    "label": "under the silence-tail convention (deviation D-TS2-3: the published systems did not append silence). This is NOT a like-for-like reproduction of the published protocol and must never be reported as one.",
+    "prediction": {
+      "additive_transfer_point": 7.94,
+      "dev_cell_corpus_wer": 9.4054,
+      "dev_comparator_corpus_wer": 17.4012,
+      "dev_delta": -7.9958,
+      "dev_ratio": 0.5405,
+      "interval": [
+        7.5,
+        10.5
+      ],
+      "length_oracle_bound_of_the_sealed_arm": 10.456,
+      "multiplicative_transfer_point": 8.61,
+      "result": "CONFIRMED: inside the preregistered interval",
+      "sealed_test_baseline": 15.937
+    },
+    "published_wer": 9.79,
+    "verdict": "ALIGNED"
+  },
+  "exposure_row": "SAEA-E22-ESB-SHORTFORM-TAIL2S-TEST-V1",
+  "falsifier": {
+    "measured_prompt_tokens_total": 476578,
+    "predicted_prompt_tokens_total": 476578,
+    "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-esb-shortform-tail2s-test-v1/flight-2735/falsifier.json",
+    "receipt_sha256": "c12bc1ba6641d3b17759b649ba8ea18c356633f1a56d9eb368629cfd413f5868",
+    "rows_checked": 2735,
+    "rows_where_the_falsifier_holds": 2735,
+    "verdict": "HOLDS"
+  },
+  "identity_gate": {
+    "anchors": [
+      {
+        "field": "corpus_wer_saea_v1",
+        "measured": 20.896,
+        "reproduced": true,
+        "sealed": 20.896
+      },
+      {
+        "field": "corpus_wer_whisper",
+        "measured": 15.9365,
+        "reproduced": true,
+        "sealed": 15.9365
+      },
+      {
+        "field": "deletions",
+        "measured": 948,
+        "reproduced": true,
+        "sealed": 948
+      },
+      {
+        "field": "insertions",
+        "measured": 4612,
+        "reproduced": true,
+        "sealed": 4612
+      },
+      {
+        "field": "reference_words",
+        "measured": 48919,
+        "reproduced": true,
+        "sealed": 48919
+      },
+      {
+        "field": "substitutions",
+        "measured": 2236,
+        "reproduced": true,
+        "sealed": 2236
+      },
+      {
+        "field": "utterances",
+        "measured": 2735,
+        "reproduced": true,
+        "sealed": 2735
+      }
+    ],
+    "reproduced": true
+  },
+  "offline_guard": {
+    "connection_attempts": 0,
+    "targets": []
+  },
+  "over_20_seconds": {
+    "A": {
+      "corpus_wer_percent": 11.6535,
+      "deletions": 66,
+      "errors": 444,
+      "hypothesis_over_reference_ratio": 1.0341,
+      "hypothesis_words": 3940,
+      "insertion_share_of_errors_percent": 44.14,
+      "insertions": 196,
+      "mean_per_utterance_wer_percent": 11.8873,
+      "reference_words": 3810,
+      "rows": 74,
+      "substitutions": 182
+    },
+    "TS2": {
+      "corpus_wer_percent": 8.5564,
+      "deletions": 73,
+      "errors": 326,
+      "hypothesis_over_reference_ratio": 1.0005,
+      "hypothesis_words": 3812,
+      "insertion_share_of_errors_percent": 23.01,
+      "insertions": 75,
+      "mean_per_utterance_wer_percent": 8.6015,
+      "reference_words": 3810,
+      "rows": 74,
+      "substitutions": 178
+    },
+    "delta": -3.0971,
+    "utterances": 74
+  },
+  "paired": {
+    "agentic_points": {
+      "clustered": {
+        "ci_high": -0.0623,
+        "ci_level": 0.9,
+        "ci_low": -0.2712,
+        "n_replicates": 10000,
+        "point_estimate": -0.1697,
+        "seed": 20260903,
+        "sigma_hat": 0.0632
+      },
+      "stratified": {
+        "ci_high": -0.1044,
+        "ci_level": 0.9,
+        "ci_low": -0.2374,
+        "n_replicates": 10000,
+        "point_estimate": -0.1697,
+        "seed": 20260903,
+        "sigma_hat": 0.0401
+      }
+    },
+    "boundary_points": {
+      "clustered": {
+        "ci_high": -5.2536,
+        "ci_level": 0.9,
+        "ci_low": -6.8962,
+        "n_replicates": 10000,
+        "point_estimate": -6.0549,
+        "seed": 20260903,
+        "sigma_hat": 0.4895
+      },
+      "stratified": {
+        "ci_high": -5.7491,
+        "ci_level": 0.9,
+        "ci_low": -6.3699,
+        "n_replicates": 10000,
+        "point_estimate": -6.0549,
+        "seed": 20260903,
+        "sigma_hat": 0.1867
+      }
+    },
+    "corpus_wer_points": {
+      "clustered": {
+        "ci_high": -5.8858,
+        "ci_level": 0.9,
+        "ci_low": -7.4623,
+        "n_replicates": 10000,
+        "point_estimate": -6.6988,
+        "seed": 20260903,
+        "sigma_hat": 0.4653
+      },
+      "stratified": {
+        "ci_high": -6.3753,
+        "ci_level": 0.9,
+        "ci_low": -7.0373,
+        "n_replicates": 10000,
+        "point_estimate": -6.6988,
+        "seed": 20260903,
+        "sigma_hat": 0.2012
+      }
+    },
+    "per_utterance": {
+      "bootstrap": {
+        "ci_high": -12.9668,
+        "ci_level": 0.9,
+        "ci_low": -15.4418,
+        "n_replicates": 10000,
+        "point_estimate": -14.1895,
+        "seed": 20260903
+      },
+      "cell_mean_wer": 13.9396,
+      "mean_delta_points": -14.1895,
+      "metric": "per-utterance WER under the Whisper normalizer, signed as cell minus the sealed arm, so a NEGATIVE delta is an improvement",
+      "n": 2735,
+      "note": "analysis.paired counts `saves` as rows where the RIGHT arm's metric is larger; on WER larger is worse, so rows_improved is that field's mirror and is reported under its own name here rather than by the module's label",
+      "per_stratum": [
+        {
+          "delta": -0.09895959361680723,
+          "harms": 156,
+          "left_mean": 0.3018122932807756,
+          "n": 351,
+          "right_mean": 0.20285269966396835,
+          "saves": 22,
+          "stratum": "4432298",
+          "ties": 173
+        },
+        {
+          "delta": -0.10405995336661916,
+          "harms": 271,
+          "left_mean": 0.19540999414438853,
+          "n": 508,
+          "right_mean": 0.09135004077776937,
+          "saves": 20,
+          "stratum": "4450488",
+          "ties": 217
+        },
+        {
+          "delta": -0.08288392137409023,
+          "harms": 82,
+          "left_mean": 0.2359479654972643,
+          "n": 178,
+          "right_mean": 0.15306404412317406,
+          "saves": 16,
+          "stratum": "4470290",
+          "ties": 80
+        },
+        {
+          "delta": -0.17085844034188546,
+          "harms": 232,
+          "left_mean": 0.3012704222282009,
+          "n": 473,
+          "right_mean": 0.13041198188631542,
+          "saves": 28,
+          "stratum": "4479741",
+          "ties": 213
+        },
+        {
+          "delta": -0.15204145194435714,
+          "harms": 319,
+          "left_mean": 0.2884838521653359,
+          "n": 619,
+          "right_mean": 0.13644240022097875,
+          "saves": 35,
+          "stratum": "4483338",
+          "ties": 265
+        },
+        {
+          "delta": -0.18284117605945982,
+          "harms": 325,
+          "left_mean": 0.331775458035294,
+          "n": 606,
+          "right_mean": 0.1489342819758342,
+          "saves": 34,
+          "stratum": "4485244",
+          "ties": 247
+        }
+      ],
+      "rows_improved": 1385,
+      "rows_tied": 1195,
+      "rows_worsened": 155,
+      "sealed_mean_wer": 28.1291,
+      "sign_test_p": 4.6493997595210545e-247
+    },
+    "signed_as": "cell minus the sealed SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1 arm, on the same 2,735 published segments, paired per segment; a negative delta is an improvement",
+    "strata": "source call (6 strata)"
+  },
+  "per_call": [
+    {
+      "A_agentic_percent": 2.2865,
+      "A_corpus_wer_saea_v1": 25.9835,
+      "A_corpus_wer_whisper": 22.1587,
+      "A_reference_words": 5948,
+      "TS2_agentic_percent": 1.9166,
+      "TS2_corpus_wer_saea_v1": 20.4628,
+      "TS2_corpus_wer_whisper": 16.4257,
+      "TS2_delta_agentic": -0.3699,
+      "TS2_delta_whisper": -5.733,
+      "TS2_reference_words": 5948,
+      "call": "4432298",
+      "rows": 351
+    },
+    {
+      "A_agentic_percent": 1.2077,
+      "A_corpus_wer_saea_v1": 20.383,
+      "A_corpus_wer_whisper": 14.1132,
+      "A_reference_words": 8694,
+      "TS2_agentic_percent": 1.1617,
+      "TS2_corpus_wer_saea_v1": 14.8723,
+      "TS2_corpus_wer_whisper": 7.8445,
+      "TS2_delta_agentic": -0.046,
+      "TS2_delta_whisper": -6.2687,
+      "TS2_reference_words": 8694,
+      "call": "4450488",
+      "rows": 508
+    },
+    {
+      "A_agentic_percent": 1.4582,
+      "A_corpus_wer_saea_v1": 24.6393,
+      "A_corpus_wer_whisper": 19.5457,
+      "A_reference_words": 3566,
+      "TS2_agentic_percent": 1.5984,
+      "TS2_corpus_wer_saea_v1": 19.5616,
+      "TS2_corpus_wer_whisper": 14.5541,
+      "TS2_delta_agentic": 0.1402,
+      "TS2_delta_whisper": -4.9916,
+      "TS2_reference_words": 3566,
+      "call": "4470290",
+      "rows": 178
+    },
+    {
+      "A_agentic_percent": 1.6358,
+      "A_corpus_wer_saea_v1": 19.6114,
+      "A_corpus_wer_whisper": 14.533,
+      "A_reference_words": 8436,
+      "TS2_agentic_percent": 1.4106,
+      "TS2_corpus_wer_saea_v1": 13.5314,
+      "TS2_corpus_wer_whisper": 8.6415,
+      "TS2_delta_agentic": -0.2252,
+      "TS2_delta_whisper": -5.8915,
+      "TS2_reference_words": 8436,
+      "call": "4479741",
+      "rows": 473
+    },
+    {
+      "A_agentic_percent": 2.1362,
+      "A_corpus_wer_saea_v1": 20.2115,
+      "A_corpus_wer_whisper": 15.1094,
+      "A_reference_words": 11516,
+      "TS2_agentic_percent": 1.8062,
+      "TS2_corpus_wer_saea_v1": 12.8525,
+      "TS2_corpus_wer_whisper": 8.1191,
+      "TS2_delta_agentic": -0.33,
+      "TS2_delta_whisper": -6.9903,
+      "TS2_reference_words": 11516,
+      "call": "4483338",
+      "rows": 619
+    },
+    {
+      "A_agentic_percent": 1.7288,
+      "A_corpus_wer_saea_v1": 19.027,
+      "A_corpus_wer_whisper": 14.7597,
+      "A_reference_words": 10759,
+      "TS2_agentic_percent": 1.6823,
+      "TS2_corpus_wer_saea_v1": 10.8106,
+      "TS2_corpus_wer_whisper": 6.2924,
+      "TS2_delta_agentic": -0.0465,
+      "TS2_delta_whisper": -8.4673,
+      "TS2_reference_words": 10759,
+      "call": "4485244",
+      "rows": 606
+    }
+  ],
+  "per_duration_scorer": [
+    {
+      "A_corpus_wer_whisper": 51.259,
+      "TS2_corpus_wer_whisper": 29.8561,
+      "TS2_delta": -21.4029,
+      "bucket": "[0, 1)",
+      "reference_words": 556,
+      "rows": 209
+    },
+    {
+      "A_corpus_wer_whisper": 31.6596,
+      "TS2_corpus_wer_whisper": 20.2553,
+      "TS2_delta": -11.4043,
+      "bucket": "[1, 2)",
+      "reference_words": 1175,
+      "rows": 220
+    },
+    {
+      "A_corpus_wer_whisper": 26.1423,
+      "TS2_corpus_wer_whisper": 12.035,
+      "TS2_delta": -14.1073,
+      "bucket": "[2, 4)",
+      "reference_words": 4005,
+      "rows": 454
+    },
+    {
+      "A_corpus_wer_whisper": 17.455,
+      "TS2_corpus_wer_whisper": 9.1109,
+      "TS2_delta": -8.3441,
+      "bucket": "[4, 8)",
+      "reference_words": 13171,
+      "rows": 856
+    },
+    {
+      "A_corpus_wer_whisper": 13.1018,
+      "TS2_corpus_wer_whisper": 8.1609,
+      "TS2_delta": -4.9409,
+      "bucket": "[8, 16)",
+      "reference_words": 22081,
+      "rows": 820
+    },
+    {
+      "A_corpus_wer_whisper": 11.3479,
+      "TS2_corpus_wer_whisper": 7.9561,
+      "TS2_delta": -3.3918,
+      "bucket": "[16, inf)",
+      "reference_words": 7931,
+      "rows": 176
+    }
+  ],
+  "per_duration_taxonomy": {
+    "A": [
+      {
+        "bucket": "0-1s",
+        "corpus_wer_percent": 51.259,
+        "points_acoustic-misrecognition": 2.1583,
+        "points_domain-term": 0.0,
+        "points_format-convention": 0.1799,
+        "points_model-behaviour": 13.8489,
+        "points_named-entity": 2.518,
+        "points_other": 13.3094,
+        "points_reference-convention": 2.518,
+        "points_segmentation-artifact": 16.7266,
+        "reference_words": 556,
+        "utterances": 209
+      },
+      {
+        "bucket": "1-2s",
+        "corpus_wer_percent": 31.6596,
+        "points_acoustic-misrecognition": 1.617,
+        "points_domain-term": 0.0851,
+        "points_format-convention": 0.5106,
+        "points_model-behaviour": 5.5319,
+        "points_named-entity": 2.2979,
+        "points_other": 10.8936,
+        "points_reference-convention": 0.5106,
+        "points_segmentation-artifact": 10.2128,
+        "reference_words": 1175,
+        "utterances": 220
+      },
+      {
+        "bucket": "2-4s",
+        "corpus_wer_percent": 26.1423,
+        "points_acoustic-misrecognition": 1.7228,
+        "points_domain-term": 0.6242,
+        "points_format-convention": 0.1248,
+        "points_model-behaviour": 7.8402,
+        "points_named-entity": 1.3483,
+        "points_other": 6.2921,
+        "points_reference-convention": 0.9238,
+        "points_segmentation-artifact": 7.2659,
+        "reference_words": 4005,
+        "utterances": 454
+      },
+      {
+        "bucket": "4-8s",
+        "corpus_wer_percent": 17.455,
+        "points_acoustic-misrecognition": 1.4502,
+        "points_domain-term": 0.2354,
+        "points_format-convention": 0.1822,
+        "points_model-behaviour": 5.1856,
+        "points_named-entity": 1.1161,
+        "points_other": 4.7756,
+        "points_reference-convention": 0.4176,
+        "points_segmentation-artifact": 4.0923,
+        "reference_words": 13171,
+        "utterances": 856
+      },
+      {
+        "bucket": "8-16s",
+        "corpus_wer_percent": 13.1018,
+        "points_acoustic-misrecognition": 1.3949,
+        "points_domain-term": 0.24,
+        "points_format-convention": 0.4438,
+        "points_model-behaviour": 3.0615,
+        "points_named-entity": 0.7291,
+        "points_other": 4.1348,
+        "points_reference-convention": 0.5253,
+        "points_segmentation-artifact": 2.5723,
+        "reference_words": 22081,
+        "utterances": 820
+      },
+      {
+        "bucket": "16s+",
+        "corpus_wer_percent": 11.3479,
+        "points_acoustic-misrecognition": 1.45,
+        "points_domain-term": 0.2396,
+        "points_format-convention": 0.2774,
+        "points_model-behaviour": 2.3452,
+        "points_named-entity": 0.9078,
+        "points_other": 4.2113,
+        "points_reference-convention": 0.3909,
+        "points_segmentation-artifact": 1.5257,
+        "reference_words": 7931,
+        "utterances": 176
+      }
+    ],
+    "TS2": [
+      {
+        "bucket": "0-1s",
+        "corpus_wer_percent": 29.8561,
+        "points_acoustic-misrecognition": 0.1799,
+        "points_domain-term": 0.0,
+        "points_format-convention": 0.3597,
+        "points_model-behaviour": 6.6547,
+        "points_named-entity": 2.1583,
+        "points_other": 14.0288,
+        "points_reference-convention": 3.2374,
+        "points_segmentation-artifact": 3.2374,
+        "reference_words": 556,
+        "utterances": 209
+      },
+      {
+        "bucket": "1-2s",
+        "corpus_wer_percent": 20.2553,
+        "points_acoustic-misrecognition": 1.8723,
+        "points_domain-term": 0.0851,
+        "points_format-convention": 0.6809,
+        "points_model-behaviour": 0.5957,
+        "points_named-entity": 1.9574,
+        "points_other": 10.4681,
+        "points_reference-convention": 0.5106,
+        "points_segmentation-artifact": 4.0851,
+        "reference_words": 1175,
+        "utterances": 220
+      },
+      {
+        "bucket": "2-4s",
+        "corpus_wer_percent": 12.035,
+        "points_acoustic-misrecognition": 1.3483,
+        "points_domain-term": 0.0749,
+        "points_format-convention": 0.3745,
+        "points_model-behaviour": 0.7241,
+        "points_named-entity": 1.2984,
+        "points_other": 5.2434,
+        "points_reference-convention": 0.799,
+        "points_segmentation-artifact": 2.1723,
+        "reference_words": 4005,
+        "utterances": 454
+      },
+      {
+        "bucket": "4-8s",
+        "corpus_wer_percent": 9.1109,
+        "points_acoustic-misrecognition": 1.4729,
+        "points_domain-term": 0.1518,
+        "points_format-convention": 0.2885,
+        "points_model-behaviour": 0.577,
+        "points_named-entity": 1.0402,
+        "points_other": 3.9481,
+        "points_reference-convention": 0.4859,
+        "points_segmentation-artifact": 1.1465,
+        "reference_words": 13171,
+        "utterances": 856
+      },
+      {
+        "bucket": "8-16s",
+        "corpus_wer_percent": 8.1609,
+        "points_acoustic-misrecognition": 1.3722,
+        "points_domain-term": 0.2174,
+        "points_format-convention": 0.4982,
+        "points_model-behaviour": 0.3759,
+        "points_named-entity": 0.6974,
+        "points_other": 3.854,
+        "points_reference-convention": 0.5344,
+        "points_segmentation-artifact": 0.6114,
+        "reference_words": 22081,
+        "utterances": 820
+      },
+      {
+        "bucket": "16s+",
+        "corpus_wer_percent": 7.9561,
+        "points_acoustic-misrecognition": 1.4878,
+        "points_domain-term": 0.1765,
+        "points_format-convention": 0.2774,
+        "points_model-behaviour": 0.353,
+        "points_named-entity": 0.8574,
+        "points_other": 3.9465,
+        "points_reference-convention": 0.4413,
+        "points_segmentation-artifact": 0.4161,
+        "reference_words": 7931,
+        "utterances": 176
+      }
+    ]
+  },
+  "population": {
+    "calls": [
+      "4432298",
+      "4450488",
+      "4470290",
+      "4479741",
+      "4483338",
+      "4485244"
+    ],
+    "clamped_utterances": [
+      "4432298-351@ts2",
+      "4470290-178@ts2",
+      "4483338-619@ts2"
+    ],
+    "media_roster": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-e22-test2735-tail2s-media/roster/flight-roster-receipt.json",
+    "media_roster_sha256": "aa5e677b0ae1638d5aed3383ee3b56942cec96f1bbca9320c12c609df6d5377f",
+    "reference_layer": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-e22-esb-shortform-alignment-400-v1/reference-layer/reference-layer-receipt.json",
+    "roster": "docs/receipts/rosters/e22-esb-test-2735-ts2-v1.json",
+    "roster_sha256": "216626372c1b2957b55a06ce140f0ffed4eb98dc7ebb7dd96845a4bdfe571e42",
+    "rows": 2735,
+    "segment_table": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-e22-esb-shortform-alignment-400-v1/segment-table/segment-table-receipt.json",
+    "split_identity_hash": "ecd9ab76755ce0158a64e4854a6b716114f7496635f6d02a65a3e3b2fa267335"
+  },
+  "preregistration": "docs/readiness/2026-09-07-e22-esb-shortform-tail2s-test-v1-preregistration.md",
+  "schema": "saea-e22-esb-tail2s-test-read-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "taxonomy_identity_gate": {
+    "A": {
+      "reproduces": true,
+      "scorer_corpus_wer_percent": 15.9365,
+      "scorer_deletions": 948,
+      "scorer_insertions": 4612,
+      "scorer_reference_words": 48919,
+      "scorer_substitutions": 2236,
+      "taxonomy_corpus_wer_percent": 15.9365,
+      "taxonomy_deletions": 948,
+      "taxonomy_insertions": 4612,
+      "taxonomy_reference_words": 48919,
+      "taxonomy_substitutions": 2236
+    },
+    "TS2": {
+      "reproduces": true,
+      "scorer_corpus_wer_percent": 9.2377,
+      "scorer_deletions": 1252,
+      "scorer_insertions": 1248,
+      "scorer_reference_words": 48919,
+      "scorer_substitutions": 2019,
+      "taxonomy_corpus_wer_percent": 9.2377,
+      "taxonomy_deletions": 1252,
+      "taxonomy_insertions": 1248,
+      "taxonomy_reference_words": 48919,
+      "taxonomy_substitutions": 2019
+    }
+  },
+  "weightings": {
+    "A": {
+      "equal_call_agentic": 1.7422,
+      "equal_call_corpus_wer": 16.7033,
+      "natural_mixture_agentic": 1.7641,
+      "natural_mixture_corpus_wer": 15.9365
+    },
+    "TS2": {
+      "equal_call_agentic": 1.596,
+      "equal_call_corpus_wer": 10.3129,
+      "natural_mixture_agentic": 1.5945,
+      "natural_mixture_corpus_wer": 9.2377
+    }
+  }
+}

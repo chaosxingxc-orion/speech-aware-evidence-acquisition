@@ -1457,10 +1457,22 @@ def outputs_path(root: "Path", arm: str) -> "Path":
     return Path(root) / "runs" / run_id / source["attempt"] / f"{run_id}.outputs.jsonl"
 
 
-def load_segment_table(root: "Path", repo_root: "Path") -> dict[str, dict[str, object]]:
-    """The dev10 segment table, re-hashed against its committed receipt on every load."""
+def load_segment_table(
+    root: "Path",
+    repo_root: "Path",
+    *,
+    receipt_relpath: str = SEGMENT_TABLE_RECEIPT_RELPATH,
+) -> dict[str, dict[str, object]]:
+    """One segment table, re-hashed against its committed receipt on every load.
 
-    receipt_path = Path(repo_root) / SEGMENT_TABLE_RECEIPT_RELPATH
+    The default is the dev10 table every existing caller reads. A caller whose
+    population is a different ESB split names that split's own committed receipt
+    instead -- the loader is unchanged, the receipt it verifies against is the
+    argument -- so a population never silently borrows another split's
+    boundaries.
+    """
+
+    receipt_path = Path(repo_root) / receipt_relpath
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     table = receipt["extracted_table"]
     path = Path(root) / str(table["relpath"])
