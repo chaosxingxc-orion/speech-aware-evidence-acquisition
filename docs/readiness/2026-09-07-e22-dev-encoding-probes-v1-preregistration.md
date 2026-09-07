@@ -210,7 +210,10 @@ utterance-duration decomposition**, which is where the audit predicts the effect
 therefore the one slice that can falsify the mechanism even when the pooled number moves; the
 boundary category mass before and after with the tail/head containment buckets; per-utterance saves,
 harms, ties and the exact sign test; the measured `prompt_tokens` check of §4.1; and, for cell 1,
-the fourteen shortest re-cut clips named.
+the **five re-cut clips that fall under 0.15 s** named — `4469088-522@bx1` (0.120000 s),
+`4479944-293@bx1` (0.120063), `4481952-268@bx1` (0.139938), `4469088-654@bx1` (0.139875) and
+`4481952-330@bx1` (0.140000) — beside the 1,403 of 1,500 clips that lose audio at a mean of
+0.110275 s and a maximum of 0.180188 s.
 
 ---
 
