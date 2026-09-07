@@ -730,13 +730,10 @@ def resolve_serving_profile(repo_root: Path, model_fragment: str) -> dict[str, o
 
 
 def _start(args) -> int:
-    import signal  # noqa: PLC0415 (CLI-only)
-    import time  # noqa: PLC0415 (CLI-only)
     from datetime import datetime, timezone  # noqa: PLC0415 (CLI-only)
 
     from ...data.lock import data_root as resolve_data_root  # noqa: PLC0415 (CLI-only)
     from . import start_session, stop_session  # noqa: PLC0415 (CLI-only)
-    from .process import _pid_alive  # noqa: PLC0415 (CLI-only)
 
     repo_root = _repo_root()
     data_root = resolve_data_root()
@@ -781,7 +778,50 @@ def _start(args) -> int:
             Path(str(profile["model_root"])) if profile["model_root"] is not None else None
         ),
     )
-    props = _http_get_json(f"http://{args.host}:{args.port}/props", 30.0)
+    # Everything between the spawn and the written session.json runs under
+    # this guard: a failure here (an unreachable /props, an unwritable
+    # session directory) would otherwise leave an 18.5 GB llama-server
+    # resident with NO record naming it -- an orphan nothing can attach to
+    # and nothing knows to stop.
+    try:
+        props = _http_get_json(f"http://{args.host}:{args.port}/props", 30.0)
+        document = _session_document_for(
+            args, profile=profile, session=session, session_id=session_id,
+            props=props, receipt_path=receipt_path, log_path=log_path,
+            monitor_path=monitor_path,
+        )
+        write_json_document(session_dir / SESSION_DOCUMENT_NAME, document)
+    except BaseException:
+        _write_stop_document(
+            session_dir,
+            session_id=session_id,
+            stop_receipt=stop_session(
+                session,
+                runtime_receipt=profile["runtime_receipt"],
+                runtime_root=Path(args.runtime_root),
+                force_after_timeout=True,
+            ),
+            monitor_path=monitor_path,
+        )
+        raise
+    print(json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True))
+    return _hold_session_open(
+        args, profile=profile, session=session, session_id=session_id,
+        session_dir=session_dir, monitor_path=monitor_path,
+    )
+
+
+def _session_document_for(
+    args,
+    *,
+    profile: Mapping[str, object],
+    session,
+    session_id: str,
+    props: Mapping[str, object] | None,
+    receipt_path: Path,
+    log_path: Path,
+    monitor_path: Path,
+) -> dict[str, object]:
     identity = serving_identity(
         model_fragment=str(profile["model_fragment"]),
         model_fragment_sha256=str(profile["model_fragment_sha256"]),
@@ -800,7 +840,7 @@ def _start(args) -> int:
         port=args.port,
         props=props,
     )
-    document = build_session_document(
+    return build_session_document(
         session_id=session_id,
         identity=identity,
         pid=session.pid,
@@ -811,13 +851,33 @@ def _start(args) -> int:
         server_log_path=str(log_path),
         monitor_path=str(monitor_path),
     )
-    write_json_document(session_dir / SESSION_DOCUMENT_NAME, document)
-    print(json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True))
 
-    # The coordinator runs this as a background LIVE wrapper: a detached WSL
-    # job dies with its shell, so the wrapper must stay in the foreground for
-    # the whole life of the session (it also owns the pipe-draining thread
-    # that keeps server.log flowing).
+
+def _hold_session_open(
+    args,
+    *,
+    profile: Mapping[str, object],
+    session,
+    session_id: str,
+    session_dir: Path,
+    monitor_path: Path,
+) -> int:
+    """Stay in the foreground for the whole life of the session, then stop it.
+
+    The coordinator runs this as a background LIVE wrapper: a detached WSL
+    job dies with its shell, so the wrapper must outlive every flight that
+    attaches (it also owns the pipe-draining thread that keeps server.log
+    flowing). Returns 0 when the operator asked it to stop, 1 when the
+    server exited on its own -- an unrequested exit is a failure, and the
+    exit status is what a coordinator's job monitor sees.
+    """
+
+    import signal  # noqa: PLC0415 (CLI-only)
+    import time  # noqa: PLC0415 (CLI-only)
+
+    from . import stop_session  # noqa: PLC0415 (CLI-only)
+    from .process import _pid_alive  # noqa: PLC0415 (CLI-only)
+
     stopping = {"asked": False}
 
     def _on_signal(_signum, _frame) -> None:
