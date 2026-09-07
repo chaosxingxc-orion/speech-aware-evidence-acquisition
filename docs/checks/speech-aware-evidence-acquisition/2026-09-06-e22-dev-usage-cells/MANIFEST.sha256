@@ -1,4 +1,4 @@
-dd2d241be7a90b74d3acd66ab524595ea1a9c549affa843e13ebb8c95a032cc9 *README.md
+a1225fa7dee65cb53395c0ed795440360837d703e407e7286662ab3fd77d751e *README.md
 fb6d0f5283f687063fa9cb69ecaa294ea049b77c690b3d000325888afbc9988b *q8-placement.json
 a27ac538894c0e211331d9bb1aea7db2c7708da3e0a3c72aeaf103ce2201fc26 *stopcap-resolver.json
 01badc8f8c230b84d75dda8e5e7eb03a3737f9ce4f97e3eaf9a41d4939c9e17c *wire-check/wire-check-q8-flight-1500.json
@@ -6,4 +6,6 @@ a27ac538894c0e211331d9bb1aea7db2c7708da3e0a3c72aeaf103ce2201fc26 *stopcap-resolv
 e12cd5ae5cb91753cf6b4fb4a575728b55ef8c45cf352bfe03367ac5f7729e47 *wire-check/wire-check-q8-smoke-4.json
 81ebc0a3a10d975dd6516fb797d34914b667c1ac9134abe290cb5e8c2351ab96 *wire-check/wire-check-q8-smoke-4-primary.json
 14e1b221991bfa84ae25b038a0840caae80a8f7b03e64077f234c1dd3adaed7c *wire-check/wire-check-stopcap-flight-1500.json
+9c378c6a51079505ccd97243a2d887e1b5f99788e94ec32d268dfa09f0ae6e69 *wire-check/wire-check-stopcap-flight-1500-primary.json
 4d9bcf375f90f6a96a11f2e37211029484fb194eb829fd3e8c1f0768a114f182 *wire-check/wire-check-stopcap-smoke-4.json
+3006f78ca53764845c1e3e6d330d77405c06e4e112ea766fa03bd90e1da08196 *wire-check/wire-check-stopcap-smoke-4-primary.json

@@ -6,8 +6,10 @@ Two single-factor cells made **flight-ready and not flown**, on the 1,500-row
 document, the audio front end, is **CLOSED** (owner 2026-09-06, §3) and has no receipts here.
 
 **Nothing here contacted a model.** Every row that produced these files is model-free: no server was
-started, no socket was opened, no GPU was used and no token was generated. Neither cell has an owner
-GO and neither has a registered exposure row; **flight-ready is not authorized**.
+started, no socket was opened, no GPU was used and no token was generated. That is a statement about
+*these* receipts and it still holds. It is no longer a statement about the cells: cell (a) has since
+been registered and flown under its own exposure rows, and each cell's flight receipts live in its
+own directory rather than here.
 
 | run id | factor | fragments |
 |---|---|---|
@@ -91,5 +93,31 @@ and `max_tokens` is the integer `1024` on every request — cell (a) carries no 
 **zero model contacts, zero servers, zero sockets**: the only fakes are `WireCheckGate` and
 `WireCheckTransport`.
 
-The stop-cap cell's two run ids are NOT re-run here; cell (b) is a later flight and §7.6 binds its
-own agent.
+The stop-cap cell's own primary-checkout re-run is the section below.
+
+## The primary-checkout re-run of the stop-cap wire checks (2026-09-07)
+
+The same §7.6 obligation, discharged for cell (b)'s two run ids immediately before its flight, at
+commit `5d357e20` on a clean tree, through the committed launcher with nothing repointed:
+
+| file | run id | contacts | seal half |
+|---|---|---:|---|
+| `wire-check/wire-check-stopcap-flight-1500-primary.json` | `SAEA-E22-DEV-ESB-STOPCAP-V1` | 1,500 | `OK` |
+| `wire-check/wire-check-stopcap-smoke-4-primary.json` | `SAEA-E22-DEV-ESB-STOPCAP-SMOKE-V1` | 4 | `OK` |
+
+Both reproduce the composed identities §2.3.1 of the preregistration fixed before any of this
+existed: `config_hash` `d47999a6…` / `protocol_hash` `4fda9f67…` / `split_identity_hash`
+`c626e62f…` for the flight, and `78205c9e…` / `e03ec753…` / `c5b9886a…` for the four-row dry
+run. Payload keys are exactly `ARM_VISIBLE_FIELDS["bare-core"]` (ten fields) and `id_slot` is an
+integer over the eight slots.
+
+**The cap survives the checkout change unchanged.** `max_tokens_per_sample` on the primary checkout
+carries 1,500 integers, **202 distinct values from 3 to 321, none at the 1,024 ceiling**, and it is
+**equal row for row** both to `stopcap-resolver.json`'s `caps_by_sample_id` (0 disagreements over
+1,500 rows) and to the `wt/e22b` receipt's own mapping. The four dry-run rows resolve to `3`, `55`,
+`127` and `321` as registered. `request_body_sha256` differs from the worktree receipt's, as cell
+(a)'s re-run also did, because each wire check mints its own `WIRECHECK-…` run id and that id enters
+`request_id`; nothing else in the body moves.
+
+Still **zero model contacts, zero servers, zero sockets**: the only fakes are `WireCheckGate` and
+`WireCheckTransport`, and each check aborts its own throwaway attempt before returning.
