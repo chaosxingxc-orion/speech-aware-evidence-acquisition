@@ -87,7 +87,8 @@ anything:
   re-verifies loopback, the runtime-receipt-pinned binary and GGUF identity, that the pid is alive
   right now, that the pid's real process image is the pinned binary, and that the pid owns the
   listening socket), sets `session_reused: true` in its serve receipt, and **never stops it**:
-  `stop_serving()` is a no-op for a flight that did not start the server.
+  `stop_serving()` is a no-op for a flight that did not start the server, and refuses outright if
+  a flight ever claims to own a session it attached to (two guards, see the E7b section below).
 - **A session serving something else** → `FlightServingSessionMismatchError`, naming every
   differing field. It never falls back to a second spawn: two 18.5 GB servers do not fit in this
   host's VRAM, so the correct action is always the coordinator's (stop the session, start the
