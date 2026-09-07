@@ -75,13 +75,36 @@ volume fixed. The distractor twin the E5 brief also names ("the same shape with
 names from OTHER calls") needs no new source: it is the existing
 ``evidence_mismatch`` / ``core.evidence.rotated_mismatch`` machinery applied to
 this source, which hands each call another call's brief at identical shape.
+
+"THE SAME VOLUME" HAD TO BE MEASURED, AND IT WAS NOT
+---------------------------------------------------
+Equal whitespace-token counts are a PROXY for equal prompt volume, and the
+KC-E1 prompt fit measured what that proxy is worth on the flight tokenizer:
+at ``brief_max_entries_per_class`` 12 the twin renders 42 to 256 tokens
+SHORTER than the arm per window, median 161. The owner ruling of 2026-09-06
+locks a control to its treatment on the flight tokenizer, so the second half
+of this module -- "The TOKEN-matched form twin" -- pads each twin line with
+a neutral one-token filler until it measures its own brief line IN CONTEXT,
+through the same ``token_counter`` seam ``rails.proposer._token_matched_
+control`` uses for the KC-A1 control. The pads are measured once against a
+resident server, materialised as a hash-pinned artifact under
+``configs/knowledge/``, and replayed on the wire with no tokenizer at all;
+``conec-class-lists-placebo-token-matched`` is the evidence source that flies
+them. The whitespace twin above is unchanged and still registered -- it is
+what the prompt fit measured, and superseding a receipt in place is not how
+this repository records a correction.
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
 import re
+from functools import lru_cache
+from pathlib import Path
 from typing import Mapping, Sequence
 
+from ..e0.artifacts import REPO_ROOT
 from ..reproduction.asr_wer_whisper import normalize_whisper_english
 from .base import EvidenceError
 from .evidence_derivation import TRANSFORMS
@@ -526,6 +549,472 @@ def conec_class_lists_document_placebo_content(text: str, params: Mapping[str, o
     return placebo_of(conec_class_lists_document_content(text, params))
 
 
+# ---------------------------------------------------------------------------
+# The TOKEN-matched form twin (owner ruling, 2026-09-06)
+# ---------------------------------------------------------------------------
+#
+# The twin above holds WHITESPACE tokens equal. The KC-E1 prompt fit
+# (``docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-
+# 44-v1/prompt-fit/``, result 4) measured what that is worth on the flight
+# tokenizer and the answer is: not enough. At ``brief_max_entries_per_class``
+# 12 the placebo renders 42 to 256 tokens SHORTER than the arm per window,
+# median 161, because placeholder nouns cost fewer tokens than proper nouns
+# and bracketed normalized forms. The owner ruling of 2026-09-06 locks a
+# control to its treatment on the FLIGHT TOKENIZER rather than on characters
+# or whitespace, so a 161-token-light twin prices content and volume together
+# and cannot carry the cell's claim.
+#
+# The repair is the one ``rails.proposer._token_matched_control`` already uses
+# for the KC-A1 category-only control, reached through the same
+# ``token_counter`` seam rather than forked: grow the control by whole repeats
+# of a neutral one-token filler until it MEASURES the treatment's count, and
+# refuse rather than approximate when it cannot land exactly.
+#
+# Two differences from the A2T control, both forced by this carrier:
+#
+# * the unit is a LINE of a multi-line brief, not a single description cell.
+#   The count each line is matched to is therefore the count of the rendered
+#   PREFIX through that line, so equality holds IN CONTEXT -- a per-line count
+#   taken in isolation would leave the newline boundaries unaccounted for and
+#   whole-block equality would only be likely rather than proven. Equality at
+#   the last index IS whole-block equality, by construction;
+# * the match is measured ONCE, offline, and replayed. The pad repeats are
+#   materialised as a hash-pinned artifact under ``configs/knowledge/``, so the
+#   flight itself needs no tokenizer and the derivation registry re-derives the
+#   twin from the same source bytes and the same declared params.
+
+#: The pad unit a token-matched line grows by: one leading space and one
+#: neutral noun. Same shape and same neutral-noun family as
+#: ``rails.proposer.CONTROL_FILLER`` (``" tool"``), the filler the KC-A1
+#: control is padded with; the word itself is :data:`PLACEHOLDER_WORDS`'s own
+#: first entry, so the pad says nothing the twin does not already say and
+#: names no call, company, person or sector. A pad unit has to cost EXACTLY
+#: one token on the flight tokenizer for an exact landing to be reachable from
+#: any gap; :func:`placebo_pad_repeats` proves that per line by measurement
+#: and refuses when it cannot land, rather than assuming it here.
+PLACEBO_PAD_FILLER = " " + PLACEHOLDER_WORDS[0]
+
+#: Per-line pad ceiling. The measured gaps are tens of tokens per line; a plan
+#: asking for thousands is a broken counter or a mismatched pair, and a silent
+#: multi-megabyte line is a worse failure than a refusal.
+MAX_PAD_REPEATS_PER_LINE = 4096
+
+#: The pinned pad-plan artifact's schema string, and the config key that names
+#: it. The key holds an object with exactly ``artifact_relpath`` (under
+#: ``configs/``, so the fragment's config hash pins the PATH) and
+#: ``artifact_sha256`` (over the file's bytes, so the hash pins the BYTES) --
+#: the same two-field pin ``core.instructions.render_evolved_registry``
+#: already uses for an evolved Audio2Tool artifact.
+PLACEBO_PAD_PLAN_SCHEMA = "saea-e21-brief-placebo-token-match-v1"
+PLACEBO_PAD_PLAN_KEY = "evidence_pad_plan"
+
+_PAD_PLAN_RELPATH = re.compile(r"[A-Za-z0-9._][A-Za-z0-9._/-]*")
+_SHA256_HEX = re.compile(r"[0-9a-f]{64}")
+
+
+def _brief_lines(text: str, label: str) -> list[str]:
+    """``splitlines()``, refusing text that does not round-trip through it.
+
+    A pad plan is a list of per-line repeats replayed by rejoining the lines
+    with a newline. Text carrying a trailing newline, a carriage return or any
+    other separator ``str.splitlines`` recognises would come back changed, and
+    a twin that is not the bytes that were measured is not a twin.
+    """
+
+    if not isinstance(text, str):
+        raise ClassListError(f"{label} must be text, got {type(text).__name__}")
+    lines = text.splitlines()
+    if "\n".join(lines) != text:
+        raise ClassListError(
+            f"{label} does not round-trip through splitlines(); a per-line pad plan "
+            "can never be replayed onto it"
+        )
+    return lines
+
+
+def _measured(token_counter: object, text: str, label: str) -> int:
+    if not callable(token_counter):
+        raise ClassListError("token_counter must be callable")
+    value = token_counter(text)
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        raise ClassListError(
+            f"token_counter returned {value!r} for {label}; a token count must be a "
+            "non-negative integer"
+        )
+    return value
+
+
+def validate_pad_filler(filler: object) -> str:
+    """Fail-closed filler validation: ASCII, non-empty, one leading space and
+    no other whitespace. The leading space is what keeps the pad a separate
+    token from the entry it follows; a filler carrying a newline or an entry
+    separator would rewrite the twin's line and entry structure instead of
+    extending it."""
+
+    if not isinstance(filler, str) or not filler:
+        raise ClassListError("the pad filler must be non-empty text")
+    if not filler.isascii():
+        raise ClassListError(f"pad filler {filler!r} carries non-ASCII characters")
+    if not filler.startswith(" ") or filler[1:].strip() != filler[1:]:
+        raise ClassListError(
+            f"pad filler {filler!r} must be one leading space followed by a word"
+        )
+    if any(character in filler for character in "\n\r\t;") or "  " in filler:
+        raise ClassListError(f"pad filler {filler!r} carries a separator or padding")
+    return filler
+
+
+def placebo_pad_repeats(
+    brief: str,
+    placebo: str,
+    *,
+    token_counter,
+    filler: str = PLACEBO_PAD_FILLER,
+) -> list[int]:
+    """How many ``filler`` repeats each twin line needs to MEASURE its own
+    brief line, in context, on ``token_counter``.
+
+    ``token_counter`` is the seam and the whole point: it selects WHICH
+    quantity the twin is matched on. Passing the serving geometry's own
+    tokenizer -- ``POST /tokenize`` on the resident llama-server, the same
+    route ``scripts/e21_kc_e1_prompt_fit.py`` measures the fit with -- makes
+    the twin a FLIGHT-TOKEN twin, which is what the 2026-09-06 owner ruling
+    asks for. Passing :func:`whitespace_token_count` reproduces the old
+    whitespace twin exactly, and a test can pass a fake.
+
+    Returns one repeat count per line, ``0`` for a line that already measures
+    its target (the provenance sentence always does: :func:`placebo_of` copies
+    it verbatim). The result is a pure function of the two texts and the
+    counter, so re-running it on the same inputs returns the same list.
+
+    Three refusals, all fail-closed:
+
+    * a twin whose line count differs from the brief's is not a form twin at
+      all and is refused before a single measurement is taken;
+    * a twin line whose prefix already measures MORE than the brief's cannot
+      be padded down. Truncating it would leave a twin that is neither matched
+      nor a rendering of :func:`placebo_of`, so it is refused -- the same
+      refusal ``rails.proposer._token_matched_control`` makes for a category
+      longer than its note;
+    * a filler that does not close the gap -- one that adds no token, or one
+      that overshoots the target -- is refused rather than approximated. An
+      approximate control is the defect this function exists to remove.
+    """
+
+    validate_pad_filler(filler)
+    arm_lines = _brief_lines(brief, "a brief")
+    twin_lines = _brief_lines(placebo, "a form twin")
+    if len(arm_lines) != len(twin_lines):
+        raise ClassListError(
+            f"the form twin has {len(twin_lines)} lines against the brief's "
+            f"{len(arm_lines)}; a twin that does not share the brief's line count "
+            "cannot be matched line by line"
+        )
+    repeats: list[int] = []
+    padded: list[str] = []
+    for index, twin_line in enumerate(twin_lines):
+        target = _measured(
+            token_counter, "\n".join(arm_lines[: index + 1]), f"brief prefix {index}"
+        )
+        count = 0
+        measured = _measured(
+            token_counter, "\n".join(padded + [twin_line]), f"twin prefix {index}"
+        )
+        if measured > target:
+            raise ClassListError(
+                f"line {index} of the form twin measures {measured} tokens in context "
+                f"against the brief's {target}: a twin line already longer than the "
+                "line it twins can never be padded down to it, and a truncated twin "
+                "is neither matched nor a twin"
+            )
+        while measured < target:
+            grown = count + (target - measured)
+            if grown > MAX_PAD_REPEATS_PER_LINE:
+                raise ClassListError(
+                    f"line {index} of the form twin would need more than "
+                    f"{MAX_PAD_REPEATS_PER_LINE} {filler!r} repeats to reach "
+                    f"{target} tokens; refusing to build it"
+                )
+            after = _measured(
+                token_counter,
+                "\n".join(padded + [twin_line + filler * grown]),
+                f"twin prefix {index} at {grown} repeats",
+            )
+            if after <= measured:
+                raise ClassListError(
+                    f"filler {filler!r} adds no token to line {index} of the form twin "
+                    f"({measured} tokens at {count} repeats, {after} at {grown}); it "
+                    "cannot close a token gap"
+                )
+            if after > target:
+                raise ClassListError(
+                    f"line {index} of the form twin cannot be token-matched with "
+                    f"{filler!r}: {grown} repeats take it from {measured} to {after} "
+                    f"tokens against the brief line's {target}"
+                )
+            count, measured = grown, after
+        padded.append(twin_line + filler * count)
+        repeats.append(count)
+    return repeats
+
+
+def validate_pad_repeats(pad_repeats: object, line_count: int) -> list[int]:
+    """Fail-closed pad-plan validation: one non-negative integer per line."""
+
+    if isinstance(pad_repeats, (str, bytes)) or not isinstance(pad_repeats, Sequence):
+        raise ClassListError("a pad plan must be a sequence of per-line repeat counts")
+    repeats = list(pad_repeats)
+    if len(repeats) != line_count:
+        raise ClassListError(
+            f"the pad plan carries {len(repeats)} repeat counts for a {line_count}-line "
+            "twin; a plan that does not cover every line can never be replayed"
+        )
+    checked: list[int] = []
+    for index, value in enumerate(repeats):
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise ClassListError(
+                f"pad repeat {index} is {value!r}; a repeat count must be an integer"
+            )
+        if value < 0 or value > MAX_PAD_REPEATS_PER_LINE:
+            raise ClassListError(
+                f"pad repeat {index} is {value}, outside 0..{MAX_PAD_REPEATS_PER_LINE}"
+            )
+        checked.append(value)
+    return checked
+
+
+def pad_placebo(
+    placebo: str,
+    pad_repeats: Sequence[int],
+    *,
+    filler: str = PLACEBO_PAD_FILLER,
+) -> str:
+    """Replay a measured pad plan onto a twin. NO tokenizer, no counter, no
+    I/O: line ``i`` grows by ``pad_repeats[i]`` whole ``filler`` repeats and
+    nothing else, so what the flight renders is a function of the line index
+    and the recorded counts alone -- never of the line's content, and never of
+    the call it belongs to. This is the half of the mechanism that runs on the
+    wire; :func:`placebo_pad_repeats` is the half that runs once, offline,
+    beside a resident server."""
+
+    validate_pad_filler(filler)
+    lines = _brief_lines(placebo, "a form twin")
+    repeats = validate_pad_repeats(pad_repeats, len(lines))
+    return "\n".join(line + filler * count for line, count in zip(lines, repeats))
+
+
+def token_matched_placebo_of(
+    brief: str, *, token_counter, filler: str = PLACEBO_PAD_FILLER
+) -> tuple[str, list[int]]:
+    """The padded twin and its pad plan for one rendered brief -- the offline
+    builder's one-call entry point."""
+
+    placebo = placebo_of(brief)
+    repeats = placebo_pad_repeats(
+        brief, placebo, token_counter=token_counter, filler=filler
+    )
+    return pad_placebo(placebo, repeats, filler=filler), repeats
+
+
+# ---------------------------------------------------------------------------
+# The pinned pad-plan artifact
+# ---------------------------------------------------------------------------
+
+
+def validate_pad_plan_pin(values: Mapping[str, object] | None) -> tuple[str, str]:
+    """The pad plan's ``(artifact_relpath, artifact_sha256)`` out of a composed
+    config, fail-closed on every way of not pinning it."""
+
+    if not isinstance(values, Mapping):
+        raise ClassListError(
+            "the token-matched form twin needs a composed config to read its pad-plan "
+            "pin from; there is no default plan and deliberately no fallback to an "
+            "unpadded twin"
+        )
+    pin = values.get(PLACEBO_PAD_PLAN_KEY)
+    if not isinstance(pin, Mapping) or set(pin) != {
+        "artifact_relpath",
+        "artifact_sha256",
+    }:
+        raise ClassListError(
+            f"{PLACEBO_PAD_PLAN_KEY} must be an object with exactly 'artifact_relpath' "
+            "and 'artifact_sha256'; a token-matched twin can never be rendered from an "
+            "unpinned pad plan"
+        )
+    relpath = pin["artifact_relpath"]
+    sha256_hex = pin["artifact_sha256"]
+    if not isinstance(relpath, str) or _PAD_PLAN_RELPATH.fullmatch(relpath) is None:
+        raise ClassListError(
+            f"pad-plan artifact_relpath {relpath!r} is not a plain relative path "
+            "(no absolute paths, no backslashes)"
+        )
+    if ".." in relpath.split("/"):
+        raise ClassListError(
+            f"pad-plan artifact_relpath {relpath!r} escapes the repository"
+        )
+    if not relpath.startswith("configs/"):
+        raise ClassListError(
+            f"pad-plan artifact_relpath {relpath!r} is not under configs/; the plan has "
+            "to live on the committed config surface the fragment's config hash pins"
+        )
+    if not isinstance(sha256_hex, str) or _SHA256_HEX.fullmatch(sha256_hex) is None:
+        raise ClassListError(
+            f"pad-plan artifact_sha256 {sha256_hex!r} is not a 64-character sha256 hex "
+            "digest"
+        )
+    return relpath, sha256_hex
+
+
+@lru_cache(maxsize=8)
+def _load_pad_plan(relpath: str, sha256_hex: str, repo_root: str) -> Mapping[str, object]:
+    path = Path(repo_root) / relpath
+    if not path.is_file():
+        raise ClassListError(f"pad-plan artifact missing: {path}")
+    try:
+        blob = path.read_bytes()
+    except OSError as error:
+        raise ClassListError(f"cannot read pad-plan artifact {path}: {error}") from error
+    measured = hashlib.sha256(blob).hexdigest()
+    if measured != sha256_hex:
+        raise ClassListError(
+            f"pad-plan artifact {path} hashes to {measured}, not the configured "
+            f"{sha256_hex}; a plan edited after its fragment was written is refused "
+            "rather than silently flown"
+        )
+    try:
+        document = json.loads(blob.decode("utf-8"))
+    except (UnicodeError, json.JSONDecodeError) as error:
+        raise ClassListError(
+            f"pad-plan artifact {path} is not UTF-8 JSON: {error}"
+        ) from error
+    if not isinstance(document, Mapping) or document.get("schema") != PLACEBO_PAD_PLAN_SCHEMA:
+        raise ClassListError(
+            f"pad-plan artifact {path} does not declare schema "
+            f"{PLACEBO_PAD_PLAN_SCHEMA!r}"
+        )
+    return document
+
+
+def resolve_placebo_pad_params(
+    values: Mapping[str, object] | None, *, repo_root: Path | str | None = None
+) -> dict[str, object]:
+    """The declared params of the two token-matched transforms, resolved from
+    THIS run's own composed config and the bytes it pins.
+
+    Returned to two callers that must agree exactly: ``core.evidence.
+    _class_list_items``, which applies them, and ``core.evidence.
+    resolve_declared_transform_params``, which ``core.driver.run_experiment``
+    uses to re-verify the derivation record independently
+    (``core.evidence_derivation.DerivedEvidenceRegistry``, condition 3). Both
+    go through THIS function, so a params hash can never disagree with the pads
+    that were actually applied.
+
+    The pads themselves are IN the params rather than behind a reference, which
+    is what makes the chain complete: ``params_hash`` then covers the exact
+    per-line repeat counts, and re-invoking the pinned transform on the same
+    source bytes with the same params has to reproduce the same twin byte for
+    byte.
+    """
+
+    cap = resolve_max_entries_per_class(values)
+    relpath, sha256_hex = validate_pad_plan_pin(values)
+    root = Path(repo_root) if repo_root is not None else REPO_ROOT
+    document = _load_pad_plan(relpath, sha256_hex, str(root))
+    caps = document.get("caps")
+    if not isinstance(caps, Mapping):
+        raise ClassListError(f"pad-plan artifact {relpath} carries no 'caps' object")
+    entry = caps.get(str(cap))
+    if not isinstance(entry, Mapping):
+        raise ClassListError(
+            f"pad-plan artifact {relpath} carries no plan for "
+            f"brief_max_entries_per_class {cap}; the twin is matched at the cap it was "
+            "measured at, never at a cap nobody measured"
+        )
+    halves = entry.get("halves")
+    if isinstance(halves, (str, bytes)) or not isinstance(halves, Sequence) or not halves:
+        raise ClassListError(
+            f"pad-plan artifact {relpath} cap {cap} carries no 'halves' list"
+        )
+    line_pad_repeats: dict[str, list[int]] = {}
+    for index, half in enumerate(halves):
+        if not isinstance(half, Mapping):
+            raise ClassListError(
+                f"pad-plan {relpath} cap {cap} half {index} is not an object"
+            )
+        key = half.get("source_sha256")
+        if not isinstance(key, str) or _SHA256_HEX.fullmatch(key) is None:
+            raise ClassListError(
+                f"pad-plan {relpath} cap {cap} half {index} carries no source_sha256"
+            )
+        if key in line_pad_repeats:
+            raise ClassListError(
+                f"pad-plan {relpath} cap {cap} names source bytes {key[:12]}... twice; "
+                "two plans for one source can never both be the plan"
+            )
+        repeats = half.get("pad_repeats")
+        if isinstance(repeats, (str, bytes)) or not isinstance(repeats, Sequence):
+            raise ClassListError(
+                f"pad-plan {relpath} cap {cap} half {index} carries no pad_repeats list"
+            )
+        line_pad_repeats[key] = validate_pad_repeats(repeats, len(list(repeats)))
+    return {
+        "max_entries_per_class": cap,
+        "pad_artifact_relpath": relpath,
+        "pad_artifact_sha256": sha256_hex,
+        "line_pad_repeats": line_pad_repeats,
+    }
+
+
+def _pad_repeats_for_source(
+    text: str, params: Mapping[str, object], transform: str
+) -> list[int]:
+    """This call's own pad plan, addressed by the SOURCE BYTES it was measured
+    on. The transform signature is ``(text, params)`` and carries no sample id,
+    and those bytes are the right key anyway: ``core.evidence._conec_names`` and
+    ``_conec_contexts`` set ``DerivedEvidenceRecord.source_sha256`` to exactly
+    the sha256 of this text's UTF-8 encoding, so a plan entry is bound to the
+    bytes the D1 rail already verifies rather than to a name a caller could get
+    wrong."""
+
+    plan = params.get("line_pad_repeats") if isinstance(params, Mapping) else None
+    if not isinstance(plan, Mapping) or not plan:
+        raise ClassListError(
+            f"{transform}: the declared params carry no pad plan; a token-matched twin "
+            "is never rendered unpadded"
+        )
+    key = hashlib.sha256(text.encode("utf-8")).hexdigest()
+    repeats = plan.get(key)
+    if repeats is None:
+        raise ClassListError(
+            f"{transform}: the pad plan has no entry for source bytes {key[:12]}...; a "
+            "twin can never be token-matched to a call the plan never measured"
+        )
+    return list(repeats)
+
+
+def conec_class_lists_roster_placebo_tm_content(
+    text: str, params: Mapping[str, object]
+) -> str:
+    """TRANSFORMS: ``conec-class-lists-roster-placebo-tm`` v1 -- the roster
+    twin with its measured pad plan replayed. Pure: the same source bytes and
+    the same params always produce the same twin, which is what
+    ``DerivedEvidenceRegistry`` condition 4 re-proves on every gated run."""
+
+    transform = "conec-class-lists-roster-placebo-tm"
+    base = placebo_of(render_roster_brief(text, _max_entries(params, transform)))
+    return pad_placebo(base, _pad_repeats_for_source(text, params, transform))
+
+
+def conec_class_lists_document_placebo_tm_content(
+    text: str, params: Mapping[str, object]
+) -> str:
+    """TRANSFORMS: ``conec-class-lists-document-placebo-tm`` v1."""
+
+    transform = "conec-class-lists-document-placebo-tm"
+    base = placebo_of(render_document_brief(text, _max_entries(params, transform)))
+    return pad_placebo(base, _pad_repeats_for_source(text, params, transform))
+
+
 TRANSFORMS.register("conec-class-lists-roster", "v1", conec_class_lists_roster_content)
 TRANSFORMS.register("conec-class-lists-document", "v1", conec_class_lists_document_content)
 TRANSFORMS.register(
@@ -534,10 +1023,28 @@ TRANSFORMS.register(
 TRANSFORMS.register(
     "conec-class-lists-document-placebo", "v1", conec_class_lists_document_placebo_content
 )
+TRANSFORMS.register(
+    "conec-class-lists-roster-placebo-tm", "v1", conec_class_lists_roster_placebo_tm_content
+)
+TRANSFORMS.register(
+    "conec-class-lists-document-placebo-tm",
+    "v1",
+    conec_class_lists_document_placebo_tm_content,
+)
 
 CLASS_LIST_TRANSFORMS = (
     "conec-class-lists-roster",
     "conec-class-lists-document",
     "conec-class-lists-roster-placebo",
     "conec-class-lists-document-placebo",
+)
+
+#: The token-matched twin's own two transforms. Kept apart from
+#: :data:`CLASS_LIST_TRANSFORMS` because their declared params are a strict
+#: superset -- the cap PLUS the pinned pad plan -- and
+#: ``core.evidence.resolve_declared_transform_params`` has to resolve the two
+#: families differently or a params hash would never match.
+CLASS_LIST_TOKEN_MATCHED_TRANSFORMS = (
+    "conec-class-lists-roster-placebo-tm",
+    "conec-class-lists-document-placebo-tm",
 )

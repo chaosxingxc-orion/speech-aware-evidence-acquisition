@@ -677,10 +677,15 @@ def main() -> int:
         str(cell["cell_id"]): str(cell["baseline_fragment"]) for cell in cells
     }
 
-    # The one factor: the two fragments must differ in exactly evidence_source,
-    # and must carry the SAME cap. Re-asserted here, on the composed configs,
-    # because a fit that measured two differently-capped cells would certify a
-    # twin that no longer exists.
+    # The one factor: the two fragments must differ in exactly evidence_source
+    # -- or, since SAEA-E21-KU-E1C-TOKEN-MATCH-V1 (2026-09-07), in that plus
+    # the twin's own pad-plan pin -- and must carry the SAME cap. Re-asserted
+    # here, on the composed configs, because a fit that measured two
+    # differently-capped cells would certify a twin that no longer exists.
+    # ``evidence_pad_plan`` is admitted because it is the BYTE IDENTITY of the
+    # twin's own token match: it names no call content, it changes nothing the
+    # arm renders, and it exists so the two cells' briefs measure the same on
+    # this very tokenizer. A third key would not be admitted.
     values_a = dict(composed_by_cell[cell_ids[0]].values)
     values_b = dict(composed_by_cell[cell_ids[1]].values)
     differing = sorted(
@@ -688,10 +693,10 @@ def main() -> int:
         for key in set(values_a) | set(values_b)
         if values_a.get(key) != values_b.get(key)
     )
-    if differing != ["evidence_source"]:
+    if differing not in (["evidence_source"], ["evidence_pad_plan", "evidence_source"]):
         raise SystemExit(
-            "the two cells must differ in exactly evidence_source; they differ in %r"
-            % (differing,)
+            "the two cells must differ in exactly evidence_source, or in it plus the "
+            "twin's pad-plan pin; they differ in %r" % (differing,)
         )
     committed_cap = int(values_a.get("brief_max_entries_per_class", 0))
     log("committed brief_max_entries_per_class = %d (both fragments)" % committed_cap)
@@ -1496,7 +1501,11 @@ def main() -> int:
         ],
         "one_factor_check": {
             "differing_composed_keys": differing,
-            "rule": "exactly ['evidence_source'], asserted before any measurement",
+            "rule": (
+                "exactly ['evidence_source'], or that plus the twin's own "
+                "['evidence_pad_plan'] byte pin since 2026-09-07, asserted before "
+                "any measurement"
+            ),
         },
         "passes": passes,
         "wire_shape_summary": {

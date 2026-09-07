@@ -103,6 +103,20 @@ the twin is a function of shape alone), whose four pure transforms are
 registered in ``core.evidence_derivation.TRANSFORMS`` and resolved in
 :func:`resolve_declared_transform_params` exactly like the bias-list ones.
 
+``conec-class-lists-placebo-token-matched`` (2026-09-07,
+``SAEA-E21-KU-E1C-TOKEN-MATCH-V1``) is the twin the flight actually needs.
+The KC-E1 prompt fit measured the whitespace twin on the flight tokenizer and
+found it 42 to 256 tokens light per window at cap 12, median 161, so a verdict
+drawn against it would price content and volume together. This source renders
+the same twin and then replays a per-line pad plan measured once against the
+resident serving geometry, through the two ``-placebo-tm`` transforms; the
+plan is pinned by path and sha256 in the composed config
+(``evidence_pad_plan``), so its exact per-line repeat counts land in
+``params_hash`` and ``DerivedEvidenceRegistry`` re-derives the padded twin from
+the same ConEC bytes on every gated run. No tokenizer is reached at flight
+time. The unpadded twin stays registered unchanged, because it is what the
+prompt-fit receipt measured.
+
 ``derived-candidates`` (2026-08-12, offline retrieval-gated candidate
 evidence -- the E-003R mechanism and the KC-Q3 two-pass machinery's shared
 evidence layer; see ``scripts/materialize_candidates.py``'s own module
@@ -170,7 +184,12 @@ from .bias_lists import (
     resolve_bias_list_max_entries,
     resolve_bias_phrase_max_tokens,
 )
-from .class_lists import CLASS_LIST_TRANSFORMS, resolve_max_entries_per_class
+from .class_lists import (
+    CLASS_LIST_TOKEN_MATCHED_TRANSFORMS,
+    CLASS_LIST_TRANSFORMS,
+    resolve_max_entries_per_class,
+    resolve_placebo_pad_params,
+)
 from .evidence_derivation import TRANSFORMS, canonical_params_hash
 
 
@@ -691,6 +710,7 @@ def _class_list_item(
     content: str,
     max_entries: int,
     part: str,
+    params: Mapping[str, object],
 ) -> EvidenceItem:
     """One half of the pre-meeting brief, wrapped exactly the way
     ``_conec_bias_list`` wraps its own transform output: the RAW item's source
@@ -707,7 +727,7 @@ def _class_list_item(
         source_sha256=source_record.source_sha256,
         transform_name=transform_name,
         transform_version="v1",
-        params_hash=canonical_params_hash({"max_entries_per_class": max_entries}),
+        params_hash=canonical_params_hash(params),
         derived_sha256=derived_sha256,
         carrier_bound=True,
     )
@@ -735,8 +755,10 @@ def _class_list_items(
     values: Mapping[str, object] | None,
     *,
     placebo: bool,
+    token_matched: bool = False,
 ) -> list[EvidenceItem]:
-    """E5's pre-meeting brief, or its form twin, as TWO evidence items.
+    """E5's pre-meeting brief, or either of its two form twins, as TWO
+    evidence items.
 
     Roster first, then document, because that is the order a human reads a
     briefing in and the order ``core.model.transport`` renders the two
@@ -749,11 +771,22 @@ def _class_list_items(
     with no ConEC evidence layer (earnings22-original) fails closed with their
     wording, unchanged."""
 
+    if token_matched and not placebo:
+        raise EvidenceError(
+            "the token-matched variant is a form twin; there is no token-matched "
+            "rendering of the arm itself"
+        )
     max_entries = resolve_max_entries_per_class(values)
-    suffix = "-placebo" if placebo else ""
+    suffix = ("-placebo-tm" if token_matched else "-placebo") if placebo else ""
     roster_raw = _conec_names(lock, root, sample_id, carrier_lock_key)[0]
     document_raw = _conec_contexts(lock, root, sample_id, carrier_lock_key)[0]
-    params: dict[str, object] = {"max_entries_per_class": max_entries}
+    # The params BOTH halves are rendered with and hashed under. Resolved
+    # through the same :func:`resolve_declared_transform_params` the driver
+    # re-verifies with, never rebuilt inline, so an applied pad plan and a
+    # verified pad plan can never be two different mappings.
+    params: dict[str, object] = resolve_declared_transform_params(
+        f"conec-class-lists-roster{suffix}", values
+    )
     # The SAME registered transforms (core.evidence_derivation.TRANSFORMS) the
     # registry will independently re-invoke to verify these items -- one
     # implementation of "what does this brief say", never a second copy built
@@ -766,7 +799,13 @@ def _class_list_items(
     )
     return [
         _class_list_item(
-            roster_raw, sample_id, roster_transform, roster_content, max_entries, "roster"
+            roster_raw,
+            sample_id,
+            roster_transform,
+            roster_content,
+            max_entries,
+            "roster",
+            params,
         ),
         _class_list_item(
             document_raw,
@@ -775,6 +814,7 @@ def _class_list_items(
             document_content,
             max_entries,
             "document",
+            params,
         ),
     ]
 
@@ -812,6 +852,47 @@ def _conec_class_lists_placebo(
     shape (``core.class_lists.placebo_of``)."""
 
     return _class_list_items(lock, root, sample_id, carrier_lock_key, values, placebo=True)
+
+
+def _conec_class_lists_placebo_token_matched(
+    lock: Mapping[str, object],
+    root: Path,
+    sample_id: str,
+    carrier_lock_key: str,
+    values: Mapping[str, object] | None = None,
+) -> list[EvidenceItem]:
+    """KU-E1c's TOKEN-matched form twin (owner ruling 2026-09-06,
+    ``SAEA-E21-KU-E1C-TOKEN-MATCH-V1``): ``conec-class-lists-placebo`` with the
+    pinned per-line pad plan replayed onto it, so each twin line measures its
+    own brief line on the FLIGHT tokenizer instead of merely carrying the same
+    whitespace-token count.
+
+    Why a third source rather than a knob on the second: an unpadded twin and
+    a padded twin are different derivations, and the pinned transform name is
+    what a ``DerivedEvidenceRecord`` uses to say which one ran. Sharing a name
+    would leave the two indistinguishable in a sealed trace, which is exactly
+    what ``core.evidence_derivation``'s versioned registry exists to prevent.
+    The cost is honest and small: the twin's evidence-block header is a few
+    tokens longer than the arm's, because the two must name different
+    transforms; the measurement receipt reports that residual rather than
+    hiding it, and the brief CONTENT itself is token-equal line by line.
+
+    Everything else is ``conec-class-lists-placebo``'s: the same two source
+    files, the same two D1 layers, the same roster-then-document order, the
+    same cap. The pad plan is read from the artifact the composed config pins
+    by path and sha256 (``core.class_lists.resolve_placebo_pad_params``), so
+    the flight needs no tokenizer of its own.
+    """
+
+    return _class_list_items(
+        lock,
+        root,
+        sample_id,
+        carrier_lock_key,
+        values,
+        placebo=True,
+        token_matched=True,
+    )
 
 
 def _distractor_only_bias_list(
@@ -943,6 +1024,8 @@ def resolve_declared_transform_params(
         return {"max_tokens": resolve_bias_phrase_max_tokens(values)}
     if transform_name in CLASS_LIST_TRANSFORMS:
         return {"max_entries_per_class": resolve_max_entries_per_class(values)}
+    if transform_name in CLASS_LIST_TOKEN_MATCHED_TRANSFORMS:
+        return resolve_placebo_pad_params(values)
     raise EvidenceError(
         f"no declared-params resolver registered for transform {transform_name!r}"
     )
@@ -958,3 +1041,6 @@ EVIDENCE_SOURCES.register("conec-bias-phrases", _conec_bias_phrases)
 EVIDENCE_SOURCES.register("distractor-only-bias-list", _distractor_only_bias_list)
 EVIDENCE_SOURCES.register("conec-class-lists", _conec_class_lists)
 EVIDENCE_SOURCES.register("conec-class-lists-placebo", _conec_class_lists_placebo)
+EVIDENCE_SOURCES.register(
+    "conec-class-lists-placebo-token-matched", _conec_class_lists_placebo_token_matched
+)
