@@ -126,6 +126,24 @@ def undated(lines: Sequence[str]) -> list[str]:
     return [_LOG_STAMP.sub("", line).strip() for line in lines]
 
 
+#: The Audio2Tool runner writes its own per-cell wire-check receipt, and its
+#: DEFAULT path is inside ``docs/checks/`` -- i.e. inside the study repo. That
+#: is harmless when a cell stops early, and it was fatal the first time the
+#: gold-id rail let one get all the way to ``seal_and_score``: the smoke cell's
+#: receipt landed in the tree, the tree went dirty, and the NEXT cell's scoring
+#: correctly refused a COMPLETED manifest on a dirty tree
+#: (``core.bundle.require_clean_study_repo``). The receipt is a by-product of a
+#: contactless check, not evidence, so it is redirected OUT of the repo -- under
+#: ``$SPEECHRL_DATA_DIR``, where large by-products already live -- and this
+#: script's own receipt stays the single committed record.
+def _scratch_receipt(cell: dict[str, Any]) -> Path:
+    from speech_aware_evidence_acquisition.data.lock import data_root  # noqa: PLC0415
+
+    directory = Path(data_root()) / "wire-check" / "cross-carrier-ts2"
+    directory.mkdir(parents=True, exist_ok=True)
+    return directory / f"{cell['cell']}.wire-check.json"
+
+
 def run_mode(cell: dict[str, Any], mode: str) -> dict[str, Any]:
     env = dict(os.environ)
     env["PYTHONDONTWRITEBYTECODE"] = "1"
@@ -142,6 +160,8 @@ def run_mode(cell: dict[str, Any], mode: str) -> dict[str, Any]:
         str(cell["cell"]),
         f"--{mode}",
     ]
+    if cell["carrier"] == "audio2tool":
+        argv += ["--wire-check-out", str(_scratch_receipt(cell))]
     completed = subprocess.run(  # noqa: S603 (fixed argv, no shell)
         argv, cwd=REPO, env=env, capture_output=True, text=True, timeout=1800
     )
