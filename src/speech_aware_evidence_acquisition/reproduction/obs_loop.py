@@ -87,14 +87,18 @@ import math
 import shutil
 import subprocess
 import tempfile
+import threading
 import wave
 from array import array
+from collections import deque
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
 
 from ..core.base import SampleContext, SampleOutcome
 from ..core.model import FrozenCoreError, SliceRecord, SliceRegistry
+from ..core.tracing import set_current_trace_buffer
 from ..data.loader import SampleRef
 from ..e0.artifacts import write_json_artifact
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
@@ -142,6 +146,7 @@ _KNOWN_OBS_KEYS = frozenset(
         "obs_slice_skip_max",
         "obs_batch_samples",
         "obs_batch_slices",
+        "obs_prefetch_depth",
         "obs_slice_tail_silence_seconds",
         "obs_unit_plan",
         "obs_unit_plan_sha256",
@@ -646,6 +651,7 @@ class ObsLoopConfig:
     batch_samples: int
     batch_slices: int
     slice_tail_silence_seconds: float
+    prefetch_depth: int = 0
     unit_plan_relpath: str | None = None
     unit_plan_sha256: str | None = None
     unit_plan: UnitPlan | None = None
@@ -789,6 +795,36 @@ class ObsLoopConfig:
                     "obs_batch_slices > 1 requires obs_vad_trim_min_seconds 0 — "
                     "runtime trim spans would move window positions"
                 )
+        # Sample-level PREFETCH depth (2026-09-08 obs-pipeline throughput
+        # fix; the module comment above :class:`ObsDispatcher` carries the
+        # measurement). 0 -- the DEFAULT -- is the strictly sequential
+        # sample loop this repository has always run, byte for byte: the
+        # driver never builds a pipeline and no code below this line
+        # behaves differently. N >= 1 lets the driver keep N samples of
+        # LOOKAHEAD in flight, so the next call's decode/cut/encode/register
+        # phase runs on its own worker while the current call's windows are
+        # still being answered.
+        prefetch_depth = resolve_prefetch_depth(values)
+        if prefetch_depth > 0:
+            # The pipeline drives the slice-parallel pass and nothing else:
+            # the sequential cutter re-reads the previous window's answer to
+            # place the next cut, so overlapping two samples there would
+            # overlap two cursors as well.
+            if batch_slices <= 1:
+                raise ObsLoopError(
+                    "obs_prefetch_depth > 0 requires obs_batch_slices > 1 — "
+                    "the prefetch pipeline overlaps the SLICE-PARALLEL pass, and "
+                    "the sequential cutter's cursor is not independent"
+                )
+            # Two concurrency planes must never compose silently: the ojw
+            # executor's run_samples already runs obs_batch_samples samples at
+            # once and owns its own slot pool.
+            if batch_samples != 1:
+                raise ObsLoopError(
+                    "obs_prefetch_depth > 0 requires obs_batch_samples 1 — the "
+                    "sample-batch executor already owns sample-level concurrency, "
+                    "and two schedulers would multiply the in-flight request count"
+                )
         # The unit plan (OBS-E1 obs seam, preregistration section 8.1/8.2).
         # Both keys default to None and BOTH must move together: one without
         # the other is a config that either names bytes it does not pin or
@@ -878,6 +914,7 @@ class ObsLoopConfig:
             batch_samples=batch_samples,
             batch_slices=batch_slices,
             slice_tail_silence_seconds=tail_silence,
+            prefetch_depth=prefetch_depth,
             unit_plan_relpath=plan_relpath,
             unit_plan_sha256=plan_sha256,
             unit_plan=unit_plan,
@@ -972,6 +1009,175 @@ def _vad_flags(samples: Sequence[int], rate: int, engine: str) -> tuple[list[boo
     return flags, f"webrtcvad-{version}"
 
 
+# ---------------------------------------------------------------------------
+# Run-level request pipeline (obs-pipeline throughput fix, 2026-09-08)
+# ---------------------------------------------------------------------------
+#
+# The defect, measured on the sealed SAEA-E21-FULL44-DIRECT-BASELINE-V2
+# attempt (44 calls, 1,593 fixed 90-second windows, -c 36864 -np 6; receipt
+# under docs/checks/speech-aware-evidence-acquisition/
+# 2026-09-08-e21-obs-pipeline/): the run occupied 4.664 of 6 server slots on
+# average (77.7 %), spent 15.40 % of its 5,378.8-second wall with ZERO slots
+# busy, and delivered 17.77 windows per minute. 828.4 of those 829 idle
+# seconds are the 43 CALL BOUNDARIES: ``_slice_parallel_pass`` cuts and
+# registers every window of ONE sample before its first request, then drains
+# that sample's pool completely, and ``core.driver.run_experiment`` only then
+# starts the next sample's decode. The GPU waits out every boundary (mean
+# 19.26 s, median 17.90 s) and the slots empty at every sample's tail.
+#
+# The fix is two halves of one mechanism and moves NO request byte:
+#
+# 1. PREFETCH -- the driver keeps ``obs_prefetch_depth`` samples of lookahead
+#    in flight, each on its own worker with its own ``core.tracing.
+#    TraceBuffer``, flushed into the real sink strictly in split-id order.
+#    Sample N+1's decode/cut/encode/register therefore runs while sample N's
+#    windows are still being answered. The docstring promise that every
+#    window of a sample is cut "before that sample's first model touch" is
+#    preserved exactly -- prefetch moves WHEN a sample starts cutting, never
+#    the cut-then-send order inside it.
+# 2. SLOT-SATURATING DISPATCH -- :class:`ObsDispatcher` below is ONE pool of
+#    dispatch slots for the whole run, acquired per request and released when
+#    it settles. Because it spans samples, sample N+1's first windows occupy
+#    the slots sample N's tail is releasing, and the in-flight count never
+#    falls to zero at a boundary. It is also the ONE place the
+#    ``id_slot="per-sample"`` sentinel resolves under the pipeline: two
+#    samples drawing from two per-sample pools would hand the same integer to
+#    two live requests and pin them to one server slot.
+#
+# Fail-closed properties, enforced in ``ObsLoopConfig.from_values`` above and
+# in the constructor below: the depth is an integer >= 0 (0 = today's
+# behaviour, and the driver then builds no pipeline at all), the width is an
+# integer >= 1, and a dispatch slot is always released on the failing path
+# (the context manager's ``finally``), so one raised request can never leak a
+# slot and silently shrink the run's width.
+
+
+def resolve_prefetch_depth(values: Mapping[str, object]) -> int:
+    """``obs_prefetch_depth`` as a validated integer >= 0 (0 = sequential).
+
+    Read by BOTH ``ObsLoopConfig.from_values`` (which adds the legality the
+    knob needs from the rest of the obs block) and ``core.driver.
+    run_experiment`` (which decides the loop shape before any policy config
+    object exists), so the two can never disagree about what the config
+    asked for."""
+
+    raw = values.get("obs_prefetch_depth", 0)
+    if isinstance(raw, bool) or not isinstance(raw, int) or raw < 0:
+        raise ObsLoopError(
+            f"obs_prefetch_depth must be an integer >= 0 (0 = today's strictly "
+            f"sequential sample loop), got {raw!r}"
+        )
+    return raw
+
+
+def resolve_dispatch_width(values: Mapping[str, object]) -> int:
+    """How many requests the run's dispatcher keeps in flight at once.
+
+    ``max(obs_batch_slices, serving_geometry.slots)``:
+
+    * never NARROWER than ``obs_batch_slices`` -- that is the per-sample
+      width the config already declares and the sealed runs already flew, so
+      no run gets slower, and (because a dispatch slot doubles as the
+      ``id_slot`` sentinel's value) the set of ``id_slot`` integers a run can
+      send is exactly the set it sends today whenever the declared slice
+      width is the larger of the two -- which is the case for every fragment
+      in this repository;
+    * never narrower than the server's own slot count either, so a geometry
+      with more slots than the config's slice width can actually fill them.
+
+    The dispatcher never invents concurrency ABOVE both numbers: it cannot
+    exceed the server's slots except by inheriting a width the config itself
+    declared and already flew. A missing ``serving_geometry`` (or a missing
+    ``slots`` key in it) leaves the width at ``obs_batch_slices`` exactly."""
+
+    batch_slices = values.get("obs_batch_slices", 1)
+    if isinstance(batch_slices, bool) or not isinstance(batch_slices, int) or batch_slices < 1:
+        raise ObsLoopError(
+            f"obs_batch_slices must be an integer >= 1 (1 = sequential), "
+            f"got {batch_slices!r}"
+        )
+    slots = 0
+    geometry = values.get("serving_geometry")
+    if geometry is not None:
+        if not isinstance(geometry, Mapping):
+            raise ObsLoopError(
+                f"serving_geometry must be a mapping, got {type(geometry).__name__}"
+            )
+        raw_slots = geometry.get("slots")
+        if raw_slots is not None:
+            if isinstance(raw_slots, bool) or not isinstance(raw_slots, int) or raw_slots < 1:
+                raise ObsLoopError(
+                    f"serving_geometry.slots must be an integer >= 1, got {raw_slots!r}"
+                )
+            slots = raw_slots
+    return max(batch_slices, slots)
+
+
+class ObsDispatcher:
+    """One run's pool of dispatch slots, shared across sample boundaries.
+
+    A FIFO deque of ``width`` integers guarded by a condition variable: one
+    acquire per request bounds the in-flight count AND yields the integer the
+    ``id_slot="per-sample"`` sentinel resolves to -- exactly the per-sample
+    ``free_slots`` list the slice-parallel pass has used since 2026-08-12,
+    lifted from sample scope to run scope and nothing else. ``peak_in_flight``
+    is diagnostic only (the concurrency proof in
+    ``tests/unit/test_obs_pipeline.py`` reads it); nothing in a run's outputs,
+    trace or manifest depends on it."""
+
+    def __init__(self, width: int) -> None:
+        if isinstance(width, bool) or not isinstance(width, int) or width < 1:
+            raise ObsLoopError(
+                f"obs dispatch width must be an integer >= 1, got {width!r}"
+            )
+        self._width = width
+        self._free = deque(range(width))
+        self._condition = threading.Condition()
+        self._in_flight = 0
+        self.peak_in_flight = 0
+
+    @property
+    def width(self) -> int:
+        return self._width
+
+    @property
+    def in_flight(self) -> int:
+        with self._condition:
+            return self._in_flight
+
+    @contextmanager
+    def dispatch_slot(self):
+        """Hold one dispatch slot for the whole life of one request --
+        retries included, exactly like the per-sample pool it replaces."""
+
+        with self._condition:
+            while not self._free:
+                self._condition.wait()
+            slot = self._free.popleft()
+            self._in_flight += 1
+            if self._in_flight > self.peak_in_flight:
+                self.peak_in_flight = self._in_flight
+        try:
+            yield slot
+        finally:
+            with self._condition:
+                self._free.append(slot)
+                self._in_flight -= 1
+                self._condition.notify()
+
+
+def build_run_dispatcher(values: Mapping[str, object]) -> "ObsDispatcher | None":
+    """The run's dispatcher, or ``None`` when ``obs_prefetch_depth`` is 0.
+
+    ``None`` is what every config written before 2026-09-08 resolves to, and
+    the slice-parallel pass then takes its historical per-sample slot pool
+    unchanged."""
+
+    if resolve_prefetch_depth(values) == 0:
+        return None
+    return ObsDispatcher(resolve_dispatch_width(values))
+
+
 class ObsAgentLoopPolicy:
     """One whole-call sample -> N buffer-slice requests -> one stitched
     hypothesis (module docstring). Stateless; every run fact arrives through
@@ -981,7 +1187,7 @@ class ObsAgentLoopPolicy:
     def _slice_parallel_pass(
         self, ctx, cfg, registry, data_root, sample, rate, pcm, duration,
         parent_sha256, engine_descriptor, evidence, max_tokens,
-        *, allow_empty_evidence: bool = False, window_hook=None,
+        *, allow_empty_evidence: bool = False, window_hook=None, dispatcher=None,
     ):
         """Phases of the slice-level dispatch (owner's slice-batching
         direction, 2026-08-12; legality enforced fail-closed in
@@ -1029,7 +1235,25 @@ class ObsAgentLoopPolicy:
           why is in the sealed trace beside what was said.
 
         The hook never changes the request count, the slice cutting, the retry
-        or skip semantics, the stitch chain or the outcome shape."""
+        or skip semantics, the stitch chain or the outcome shape.
+
+        ``dispatcher`` (keyword-only, default ``None`` -- obs-pipeline
+        throughput fix, 2026-09-08; the module comment above
+        :class:`ObsDispatcher` carries the measurement and the design):
+        ``None`` is byte-identical to every run before it -- this pass then
+        builds its OWN per-sample pool of ``cfg.batch_slices`` dispatch slots,
+        exactly as it has since 2026-08-12. An :class:`ObsDispatcher` is the
+        RUN's pool instead, shared with whatever other sample the driver's
+        prefetch pipeline has in flight, so the slots stay occupied across a
+        sample boundary. What a request CONTAINS is unchanged either way: the
+        slot integer rides in ``decoding_params['id_slot']`` only when the
+        model profile declares the ``per-sample`` sentinel, and the
+        dispatcher's width is never narrower than ``cfg.batch_slices``, so the
+        set of integers a run can send does not move. Under a dispatcher this
+        pass also binds each request thread to THIS sample's trace buffer
+        (``core.tracing.set_current_trace_buffer``, the documented batch-policy
+        contract), which is what keeps two concurrent samples' MODEL records
+        in their own per-sample blocks."""
 
         from concurrent.futures import ThreadPoolExecutor
 
@@ -1112,7 +1336,7 @@ class ObsAgentLoopPolicy:
         slot_lock = _threading.Lock()
         free_slots = list(range(cfg.batch_slices))
 
-        def request_one(window):
+        def _send(window, slot):
             win_iteration, record, _is_final, slice_seconds, _pre, _unit = window
             slice_ref = SampleRef(
                 carrier_lock_key=sample.carrier_lock_key,
@@ -1122,10 +1346,6 @@ class ObsAgentLoopPolicy:
                 sample_rate_hz=rate,
             )
             base_request_id = f"{ctx.request_id_base}-i{win_iteration:04d}"
-            slot = None
-            if sentinel_active:
-                with slot_lock:
-                    slot = free_slots.pop(0)
             decoding_params = dict(ctx.decoding_params)
             if slot is not None:
                 decoding_params["id_slot"] = slot
@@ -1180,15 +1400,35 @@ class ObsAgentLoopPolicy:
                     allow_empty_evidence=allow_empty_evidence,
                 )
 
-            try:
-                return request_slice_with_retry(
-                    ctx.adapter.request, _payload, base_request_id,
-                    cfg.slice_retry_max, max_tokens,
-                )
-            finally:
-                if slot is not None:
+            return request_slice_with_retry(
+                ctx.adapter.request, _payload, base_request_id,
+                cfg.slice_retry_max, max_tokens,
+            )
+
+        def request_one(window):
+            # Historical path (``dispatcher is None``): this sample's own
+            # pool of cfg.batch_slices integers, acquired before the payload
+            # is built and released when the request settles -- unchanged.
+            if dispatcher is None:
+                slot = None
+                if sentinel_active:
                     with slot_lock:
-                        free_slots.append(slot)
+                        slot = free_slots.pop(0)
+                try:
+                    return _send(window, slot)
+                finally:
+                    if slot is not None:
+                        with slot_lock:
+                            free_slots.append(slot)
+            # Pipelined path: the RUN's pool. Acquiring it is what bounds the
+            # in-flight request count across sample boundaries; the integer is
+            # only WRITTEN into the request when the sentinel asked for it.
+            with dispatcher.dispatch_slot() as pooled_slot:
+                set_current_trace_buffer(ctx.sink)
+                try:
+                    return _send(window, pooled_slot if sentinel_active else None)
+                finally:
+                    set_current_trace_buffer(None)
 
         with ThreadPoolExecutor(max_workers=cfg.batch_slices) as pool:
             results = list(pool.map(request_one, windows))
@@ -1389,6 +1629,11 @@ class ObsAgentLoopPolicy:
                 parent_sha256, engine_descriptor, evidence, max_tokens,
                 allow_empty_evidence=evidence_empty_by_materialization,
                 window_hook=self._window_hook(ctx, cfg, data_root, sample),
+                # The run's dispatcher, supplied by core.driver.run_experiment
+                # only when obs_prefetch_depth > 0; absent (None) for every
+                # config written before 2026-09-08, and the pass then takes
+                # its historical per-sample slot pool.
+                dispatcher=ctx.extras.get("obs_dispatcher"),
             )
             cursor = duration
 

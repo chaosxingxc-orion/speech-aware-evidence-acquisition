@@ -55,7 +55,12 @@ from ..model import (
     load_speech_packet_promotion_receipt,
 )
 from ..split_receipt import load_verified_split
-from ..tracing import DispatchingSink, TraceBuffer, TraceSink
+from ..tracing import (
+    DispatchingSink,
+    TraceBuffer,
+    TraceSink,
+    set_current_trace_buffer,
+)
 from .cost import _assemble_run_cost
 from .split_check import _verify_split_for_run
 
@@ -73,6 +78,63 @@ def _sample_batch_size(values: Mapping[str, object]) -> int:
             f"got {raw!r}"
         )
     return raw
+
+
+def _obs_pipeline(values: Mapping[str, object], policy_name: str, batch_size: int):
+    """The run's ``(prefetch_depth, dispatcher)``, or ``(0, None)``.
+
+    The obs-pipeline throughput fix (2026-09-08; the module comment above
+    ``reproduction.obs_loop.ObsDispatcher`` carries the measured defect and
+    the design). ``obs_prefetch_depth`` defaults to 0 and 0 means the strictly
+    sequential sample loop below is entered unchanged -- no pipeline object is
+    built, no trace buffer is interposed, and not one byte of a request, a
+    trace record or an outputs row moves.
+
+    Resolved HERE, beside ``_sample_batch_size`` and before the adapter
+    construction reserves this attempt's slot, so an illegal combination
+    refuses with no budget ever spent. Legality:
+
+    * the depth is an integer >= 0 (``reproduction.obs_loop.
+      resolve_prefetch_depth``, the same validator the policy's own config
+      object uses, so the two can never disagree);
+    * only the slice-parallel ``obs-agent-loop`` policy is pipelined -- it is
+      the one policy whose windows are provably independent of each other
+      (fixed positions, no rolling tail, no runtime trim), which is exactly
+      what makes overlapping two samples safe;
+    * ``obs_batch_samples`` must be 1 -- the sample-batch executor already owns
+      sample-level concurrency and its own slot pool, and two schedulers would
+      multiply the in-flight request count.
+    """
+
+    from ...reproduction.obs_loop import (
+        OBS_LOOP_POLICY_NAME,
+        build_run_dispatcher,
+        resolve_prefetch_depth,
+    )
+
+    try:
+        depth = resolve_prefetch_depth(values)
+    except Exception as error:  # ObsLoopError -- surfaced as a driver refusal
+        raise CoreError(str(error)) from error
+    if depth == 0:
+        return 0, None
+    if policy_name != OBS_LOOP_POLICY_NAME:
+        raise CoreError(
+            f"config obs_prefetch_depth={depth} is only defined for policy "
+            f"{OBS_LOOP_POLICY_NAME!r} (its windows are the ones proven "
+            f"independent), but this run declares {policy_name!r}"
+        )
+    if batch_size != 1:
+        raise CoreError(
+            f"config obs_prefetch_depth={depth} requires obs_batch_samples=1, "
+            f"got {batch_size}; the sample-batch executor already owns "
+            "sample-level concurrency"
+        )
+    try:
+        dispatcher = build_run_dispatcher(values)
+    except Exception as error:  # ObsLoopError -- surfaced as a driver refusal
+        raise CoreError(str(error)) from error
+    return depth, dispatcher
 
 
 def _speech_feature_queries(
@@ -540,6 +602,13 @@ def run_experiment(
                 "only run_sample; set obs_batch_samples to 1 or use a "
                 "batch-capable policy"
             )
+        # Sample-level PREFETCH + the run's request dispatcher (obs-pipeline
+        # throughput fix, 2026-09-08). Resolved beside the batch decision and
+        # for the same reason: an illegal combination must refuse before the
+        # adapter below opens this attempt.
+        prefetch_depth, obs_dispatcher = _obs_pipeline(
+            values, str(values["policy"]), batch_size
+        )
         # P1 scaffold: the run's single task instruction resolves HERE -- a
         # literal `task_instruction` passes through unchanged (every
         # pre-existing config), a `task_instruction_template` +
@@ -596,8 +665,13 @@ def run_experiment(
         # Batch mode routes the shared adapter's per-request records to the
         # CURRENT sample task's TraceBuffer (core.tracing.DispatchingSink,
         # contextvar-driven); sequential mode keeps the adapter on the real
-        # sink exactly as before.
-        adapter_sink = sink if batch_size == 1 else DispatchingSink(sink)
+        # sink exactly as before. The prefetch pipeline is the second reader
+        # of that same seam -- it runs prefetch_depth+1 samples at once, so it
+        # needs the identical per-sample routing; at depth 0 this expression
+        # is exactly what it has always been.
+        adapter_sink = (
+            sink if (batch_size == 1 and prefetch_depth == 0) else DispatchingSink(sink)
+        )
         adapter = FrozenCoreAdapter(
             gate=gate, plan=plan, arm=arm, transport=transport, sink=adapter_sink,
             binding=binding, slice_registry=slice_registry,
@@ -669,6 +743,11 @@ def run_experiment(
                     "run_dir": Path(run_dir),
                     "repo_root": Path(repo_root),
                     "config_values": values,
+                    # The run's shared dispatch-slot pool, or None at
+                    # obs_prefetch_depth 0 (every config before 2026-09-08).
+                    # reproduction.obs_loop's slice-parallel pass reads it and
+                    # falls back to its historical per-sample pool when absent.
+                    "obs_dispatcher": obs_dispatcher,
                     **(
                         {
                             "speech_feature_query": speech_feature_query_by_sample[
@@ -708,7 +787,108 @@ def run_experiment(
             begin_request_window()
         try:
             with outputs_handle as outputs:
-                if batch_size == 1:
+                if batch_size == 1 and prefetch_depth > 0:
+                    # PIPELINED sequential path (obs-pipeline throughput fix,
+                    # 2026-09-08; the module comment above
+                    # reproduction.obs_loop.ObsDispatcher carries the measured
+                    # defect). Same one sample at a time in EVERY observable
+                    # respect -- rows are written in split-id order, each
+                    # sample's whole trace block is flushed into the real sink
+                    # in split-id order, and a failure surfaces as the first
+                    # failed sample in that same order. The only difference is
+                    # that prefetch_depth samples of LOOKAHEAD are already
+                    # running: sample N+1 decodes, cuts, encodes and registers
+                    # its windows while sample N's are still being answered,
+                    # and the run's shared ObsDispatcher lets N+1's first
+                    # requests occupy the slots N's tail is releasing.
+                    #
+                    # Consequence stated plainly: a run that aborts on sample
+                    # N has already sent some of sample N+1..N+depth's
+                    # requests, so a failed attempt's durable spend is up to
+                    # depth samples larger than the sequential path's. The
+                    # budget is run-cumulative and sized for the whole roster,
+                    # so this changes what a dead attempt costs, never what a
+                    # complete one does. Cutting audio is NOT spend: the
+                    # prefetch's decode/cut/encode/register phase never touches
+                    # the adapter, and metering still happens per request, at
+                    # the moment it is sent.
+                    from concurrent.futures import ThreadPoolExecutor
+
+                    def _pipeline_entry(index, sample):
+                        """Build one sample's buffered context on the MAIN
+                        thread (deterministic preamble bytes), ready to run."""
+
+                        request_id_base = f"req-{index:04d}"
+                        evidence = evidence_by_sample.get(sample.sample_id, [])
+                        buffer = TraceBuffer(plan.run_id)
+                        sample_evidence_bytes = _emit_sample_preamble(
+                            buffer, request_id_base, sample, evidence,
+                            exemplar_manifest, exemplar_bank_by_sample.get(sample.sample_id),
+                        )
+                        ctx = _sample_context(sample, evidence, request_id_base, buffer)
+                        return (
+                            sample, evidence, sample_evidence_bytes, buffer, ctx,
+                            request_id_base,
+                        )
+
+                    def _pipeline_run(entry):
+                        ctx = entry[4]
+                        # The batch-policy contract (core.tracing): bind this
+                        # worker to its own sample's buffer so the shared
+                        # adapter's records land in the right block.
+                        set_current_trace_buffer(ctx.sink)
+                        try:
+                            return policy.run_sample(ctx)
+                        finally:
+                            set_current_trace_buffer(None)
+
+                    pending: list = []
+                    next_index = 0
+                    total_samples = len(ordered_samples)
+                    with ThreadPoolExecutor(
+                        max_workers=prefetch_depth + 1,
+                        thread_name_prefix="saea-obs-pipeline",
+                    ) as pipeline_pool:
+
+                        def _pipeline_submit():
+                            nonlocal next_index
+                            if next_index >= total_samples:
+                                return
+                            entry = _pipeline_entry(
+                                next_index + 1, ordered_samples[next_index]
+                            )
+                            next_index += 1
+                            pending.append((entry, pipeline_pool.submit(_pipeline_run, entry)))
+
+                        for _ in range(prefetch_depth + 1):
+                            _pipeline_submit()
+                        while pending:
+                            entry, future = pending.pop(0)
+                            (
+                                sample, evidence, sample_evidence_bytes, buffer, _ctx,
+                                request_id_base,
+                            ) = entry
+                            # Blocks in SPLIT-ID order: the first failure in
+                            # split order wins, exactly as the batch path
+                            # promises, and a prefetched sample's exception is
+                            # raised on ITS OWN sample, never swallowed and
+                            # never attributed to a neighbour.
+                            outcome = future.result()
+                            # Flushed only now, so an aborted run's trace
+                            # carries no half-finished lookahead sample.
+                            buffer.flush_into(sink)
+                            supplied_evidence_bytes += sample_evidence_bytes
+                            if evidence and outcome.admitted:
+                                admitted_evidence_bytes += sample_evidence_bytes
+                            if outcome.saturated_slices:
+                                saturated_slice_total += outcome.saturated_slices
+                                saturated_sample_ids.append(outcome.sample_id)
+                            if outcome.skipped_slices:
+                                skipped_slice_total += outcome.skipped_slices
+                                skipped_sample_ids.append(outcome.sample_id)
+                            _write_row(outputs, request_id_base, sample, outcome)
+                            _pipeline_submit()
+                elif batch_size == 1:
                     for index, sample in enumerate(ordered_samples, start=1):
                         request_id_base = f"req-{index:04d}"
                         evidence = evidence_by_sample.get(sample.sample_id, [])
