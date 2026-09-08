@@ -158,3 +158,47 @@ door, no `openjiuwen` in `pyproject.toml`, deterministic equivalence of the wrap
 projection, repair alignment, flagged-span detector, speech-keyed retrieval, prompt-fit tokenizer), the Planner's
 toolkit table per task type (meeting / command / tool-call), and the equivalence test (wrapped output == direct
 output, byte for byte).
+
+## 8. One harness on `rails`, and the module admission gate
+
+The owner's fourth instruction: the harness is standardized on `rails` and reused across tasks -- never one agent
+system per task -- and before any large-scale test of the engineering base every module must bring a positive gain
+or at least not hurt the locked baseline.
+
+**One harness.** The four agents and the three mode tables live in the bases the 2026-09-03 rules already name:
+the Planner in the phase program and its loop condition (`rails.controllers.EvidenceAgentController`), the Observer
+in `rails.obs` and the observe-mode entries, the Solver behind `rails.core_client` (the single door), the Reviewer
+as judges registered in `core.base` and invoked from the controller's phase after Solve; the knowledge views come
+from `rails.knowledge_provider.KnowledgeProvider`. A carrier contributes exactly what the base rules allow: one
+`data.carriers` descriptor, one adapter under `rails/adapters/`, one scorer registration and config fragments; a
+carrier's plan is a row of the Planner's table (its toolkit of observe modes, views and judges), not a code path.
+Where today's flows still live outside the bases (the Earnings-21 obs loop under `reproduction/`, the Audio2Tool
+flight scripts, carrier-only orchestration modules), the openJiuwen implementation assessment lists each with its
+route into a mode-table entry or an adapter method.
+
+**The admission gate.** Every harness module -- a planner rule, an observe mode, a knowledge view, a judge, a tool --
+carries a per-carrier admission receipt before it may enter the default plan:
+
+- the contrast is module ON versus module OFF in the same harness on the same roster (one config key, never a
+  second code path), paired with the carrier's cluster structure, n >= 400, cluster bootstrap, CI90;
+- the guard is non-inferiority with the margin taken from the carrier's own null (family rule of 2026-09-08);
+  a positive gain on the carrier's primary metric is the preferred outcome, "no harm" is the minimum;
+- the status is one of ADMITTED (gain), NEUTRAL (no harm, no gain) or HARMFUL; the default plan contains only
+  admitted or neutral modules; harmful modules stay in the record as documented negatives and never in a plan;
+- modules are admitted one at a time; a combined plan is tested at scale only after every module in it holds a
+  receipt; the admission table is a living receipt (`docs/receipts/harness-admission.json`) mirrored as a row on
+  the umbrella page.
+
+**First entries, from the sealed record (2026-09-08):**
+
+| module | carrier | status | evidence |
+|---|---|---|---|
+| silence-tail observe mode | Earnings-22 | ADMITTED | test 9.24 under the convention |
+| silence-tail observe mode | Earnings-21 | carrier-specific: gain on the WER anchor, HARMFUL on PERSON | `SAEA-E21-FULL44-TAIL2S-V1` |
+| legal-label projection judge | SLURP | ADMITTED | projection v2 re-lock, +1.70 intent |
+| TRAIN slot schema view + two-stage Solve | SLURP | ADMITTED | KC-S1b, SLU-F1 +10.11 |
+| substitution-only repair (Reviewer + constrained Solve) | Earnings-21 | primary gain; guards pending the v2 re-decision | KC-E1f |
+| whole-prompt brief view | Earnings-21 | HARMFUL | KC-E1 |
+| embedder intent retrieval view | SLURP | NEUTRAL at best; excluded | MF-7b |
+| speaker-turn-unit observe mode | Earnings-21 | pending | OBS-E1 in the queue |
+| cross-call dispatcher (throughput) | Earnings-21 | must be NEUTRAL on score; checked against the null | `wt/obspipe` |
