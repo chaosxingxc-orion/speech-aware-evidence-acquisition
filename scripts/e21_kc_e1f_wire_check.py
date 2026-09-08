@@ -318,8 +318,18 @@ def main() -> int:
             "--ledger-cells", str(cells_path),
         ]
         log("  smoke --dry-run: %s" % " ".join(argv[3:8]))
+        # MLFLOW_ALLOW_FILE_STORE: the installed mlflow refuses a filesystem
+        # tracking backend by default (maintenance mode), and this study's
+        # local ``mlruns`` store is exactly that. The opt-out is an environment
+        # compatibility flag, not a protocol choice -- it changes no request,
+        # no seal and no score, and the exposure ledger already records it as
+        # the same non-semantic deviation two flights hit at finalize. Set here
+        # so the check is self-contained rather than depending on whoever runs
+        # it having exported it.
+        env = dict(os.environ)
+        env.setdefault("MLFLOW_ALLOW_FILE_STORE", "true")
         completed = subprocess.run(
-            argv, cwd=REPO, capture_output=True, text=True, env=dict(os.environ)
+            argv, cwd=REPO, capture_output=True, text=True, env=env
         )
         if completed.returncode != 0:
             sys.stderr.write(completed.stdout[-6000:])
