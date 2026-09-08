@@ -58,11 +58,13 @@ from .controllers import (
     EvidenceAgentController,
     MaterialForPhase,
     PhaseProgram,
+    ReviewForPhase,
     SupplyForPhase,
 )
 from .core_client import CoreClient
 from .errors import RailsError
 from .knowledge import AgentStateArtifact, KnowledgeSnapshot
+from .phase_review import emit_review_records
 from .runner import (
     AgentLoopSummary,
     AgentTraceSink,
@@ -101,6 +103,7 @@ def run_agent_phase(
     decoding_params: Mapping[str, object],
     material_for_phase: MaterialForPhase,
     supply_for_phase: SupplyForPhase | None = None,
+    review_for_phase: ReviewForPhase | None = None,
     bootstrap_facet_ids: object = (),
     bootstrap_value_ids: object = (),
     expected_row_count: int | None = None,
@@ -135,6 +138,10 @@ def run_agent_phase(
     if supply_for_phase is not None and not callable(supply_for_phase):
         raise PhaseRunnerError(
             "run_agent_phase supply_for_phase must be callable or None"
+        )
+    if review_for_phase is not None and not callable(review_for_phase):
+        raise PhaseRunnerError(
+            "run_agent_phase review_for_phase must be callable or None"
         )
     if not isinstance(decoding_params, Mapping) or "response_format" in decoding_params:
         raise PhaseRunnerError(
@@ -185,6 +192,7 @@ def run_agent_phase(
             program=solo_program,
             material_for_phase=material_for_phase,
             supply_for_phase=supply_for_phase,
+            review_for_phase=review_for_phase,
         ),
     )
 
@@ -250,6 +258,16 @@ def run_agent_phase(
         raise PhaseRunnerError(
             f"phase {phase_name!r} result identities differ from speech_packet_bindings"
         )
+    # The Reviewer's verdicts are collected per row WHILE the wave flies and
+    # written out HERE, once, in sorted order -- the same "buffer per sample,
+    # flush deterministically" discipline rails.runner and core.tracing
+    # already use, and the reason rails.phase_review never touches the sink
+    # from inside a trajectory (that module's own docstring).
+    # record_namespace stays None here: run_agent_phase already reduces the
+    # program to this ONE phase, and the base below is f"{sample}/{phase}/
+    # review" -- the same per-phase namespacing rails.runner applies with
+    # trace_record_namespace=phase_name, without repeating the phase twice.
+    emit_review_records(review_for_phase, trace_sink)
     return summary
 
 
@@ -298,6 +316,7 @@ def run_program(
     decoding_params: Mapping[str, object],
     material_for_phase: ProgramMaterialForPhase,
     supply_for_phase: SupplyForPhase | None = None,
+    review_for_phase: ReviewForPhase | None = None,
     bootstrap_facet_ids_by_phase: Mapping[str, object] | None = None,
     bootstrap_value_ids_by_phase: Mapping[str, object] | None = None,
     expected_row_count: int | None = None,
@@ -345,6 +364,7 @@ def run_program(
             decoding_params=decoding_params,
             material_for_phase=_phase_material_for_phase,
             supply_for_phase=supply_for_phase,
+            review_for_phase=review_for_phase,
             bootstrap_facet_ids=(bootstrap_facet_ids_by_phase or {}).get(
                 phase.name, ()
             ),
@@ -382,6 +402,7 @@ def run_continuous_program(
     decoding_params: Mapping[str, object],
     material_for_phase: ProgramMaterialForPhase,
     supply_for_phase: SupplyForPhase | None = None,
+    review_for_phase: ReviewForPhase | None = None,
     bootstrap_facet_ids: object = (),
     bootstrap_value_ids: object = (),
     slot_count: int | None = None,
@@ -419,6 +440,10 @@ def run_continuous_program(
     if supply_for_phase is not None and not callable(supply_for_phase):
         raise PhaseRunnerError(
             "run_continuous_program supply_for_phase must be callable or None"
+        )
+    if review_for_phase is not None and not callable(review_for_phase):
+        raise PhaseRunnerError(
+            "run_continuous_program review_for_phase must be callable or None"
         )
     barriers = [phase.name for phase in program.phases if phase.barrier]
     if barriers:
@@ -460,6 +485,7 @@ def run_continuous_program(
             program=program,
             material_for_phase=_material,
             supply_for_phase=supply_for_phase,
+            review_for_phase=review_for_phase,
         )
         holder["controller"] = controller
         return controller
@@ -502,6 +528,9 @@ def run_continuous_program(
             f"program {program.program_id!r} result identities differ from "
             "speech_packet_bindings"
         )
+    emit_review_records(
+        review_for_phase, trace_sink, record_namespace=program.program_id
+    )
     return summary
 
 
