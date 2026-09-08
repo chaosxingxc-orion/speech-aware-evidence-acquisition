@@ -44,6 +44,7 @@ from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
     umbrella_lock_path,
 )
 from speech_aware_evidence_acquisition.data.references import (  # noqa: E402
+    UNTYPED_ENTITY_TYPE,
     reference_entity_mentions,
     reference_tokens,
 )
@@ -211,14 +212,114 @@ SEALED_PROFILES: dict[str, dict[str, object]] = {
             "negation_critical_high_insertions": 44,
         },
     },
+    # KC-E1f, the second-pass entity repair
+    # (docs/checks/.../2026-09-07-e21-kc-e1f-repair-44-v1/flight/), the FIRST arm
+    # whose stitched hypothesis is not its own raw answer: `reproduction.
+    # repair_loop` delivers a substitution-only splice over the sealed comparator's
+    # own pass-1 text and records it as `obs_delivered_text`, which is the field
+    # `stitched_windows_from_trace` prefers. Three of its 1,593 windows saturated
+    # the 1,024-token pass-2 cap and NONE of them cost a span: a saturated pass-2
+    # decode arrives empty, is refused as `empty_response` and delivers pass 1, so
+    # `WindowSpan.saturated` is True on a window whose text is the PREDECESSOR
+    # rather than the empty string. Quoted from that cell's own committed
+    # `flight/flight-receipt.json` aggregates.
+    "SAEA-E21-KC-E1F-REPAIR-44-V1": {
+        "attempt_id": "attempt-20260908T040832Z-ecda9c",
+        "sealed": {
+            "corpus_wer_percent": 8.154,
+            "substitutions": 12936,
+            "deletions": 5700,
+            "insertions": 10701,
+            "reference_words": 359765,
+            "windows": 1593,
+            "calls": 44,
+            "entity_wer_percent": {
+                "PERSON": 18.75,
+                "ORG": 16.50,
+                "GPE": 17.96,
+                "LOC": 2.68,
+                "PRODUCT": 18.72,
+                "EVENT": 2.43,
+                "NORP": 9.75,
+                "FAC": 20.49,
+            },
+            "entity_reference_words": {
+                "PERSON": 2917,
+                "ORG": 4363,
+                "GPE": 1537,
+                "LOC": 485,
+                "PRODUCT": 390,
+                "EVENT": 494,
+                "NORP": 236,
+                "FAC": 122,
+            },
+            "non_entity_wer_percent": 4.729,
+            "unlabelled_reference_words": 1479,
+            "numeric_expected": 9734,
+            "numeric_matched": 8833,
+            "negation_critical_high_reference_words": 99,
+            "negation_critical_high_insertions": 56,
+        },
+    },
+    # KU-E1fc, KC-E1f's token-matched form twin
+    # (docs/checks/.../2026-09-07-e21-kc-e1f-repair-44-v1/flight-twin/): the same
+    # second contact over the same sealed pass 1 with every entity string in the
+    # brief replaced by a position-chosen neutral placeholder, +7 rendered tokens
+    # on 1,593 of 1,593 windows by the flights' own measurement. Two of its
+    # windows saturated the pass-2 cap, on ONE call, and neither cost a span for
+    # the same reason. Quoted from that cell's own committed
+    # `flight-twin/flight-receipt.json` aggregates.
+    "SAEA-E21-KU-E1FC-PLACEBO-REPAIR-44-V1": {
+        "attempt_id": "attempt-20260908T072231Z-ec8a5b",
+        "sealed": {
+            "corpus_wer_percent": 8.201,
+            "substitutions": 13105,
+            "deletions": 5699,
+            "insertions": 10702,
+            "reference_words": 359765,
+            "windows": 1593,
+            "calls": 44,
+            "entity_wer_percent": {
+                "PERSON": 22.59,
+                "ORG": 17.05,
+                "GPE": 18.61,
+                "LOC": 2.47,
+                "PRODUCT": 19.23,
+                "EVENT": 2.43,
+                "NORP": 9.75,
+                "FAC": 21.31,
+            },
+            "entity_reference_words": {
+                "PERSON": 2917,
+                "ORG": 4363,
+                "GPE": 1537,
+                "LOC": 485,
+                "PRODUCT": 390,
+                "EVENT": 494,
+                "NORP": 236,
+                "FAC": 122,
+            },
+            "non_entity_wer_percent": 4.734,
+            "unlabelled_reference_words": 1479,
+            "numeric_expected": 9734,
+            "numeric_matched": 8830,
+            "negation_critical_high_reference_words": 100,
+            "negation_critical_high_insertions": 56,
+        },
+    },
 }
 
-#: The eight ConEC-published classes, plus the two residual buckets, whose
-#: per-window ``(substitutions, deletions, reference words)`` every row carries
-#: so a paired read can pool ANY of them over a resampled set of calls without
-#: re-running this decomposition once per class. Purely additive: no existing
-#: row key, no check and no aggregate moves.
-ROW_BUCKETS: tuple[str, ...] = (
+#: The eight ConEC-published classes come first because ConEC Table 2 publishes
+#: them; the rest of the mirror's own typed classes and the three residual buckets
+#: follow, so a paired read can pool ANY class over a resampled set of calls
+#: without re-running this decomposition once per class. The list is the complete
+#: key set of ``conec-entity-wer-official``'s ``by_entity_type`` on this carrier
+#: (26 typed classes plus ``__NON_ENTITY__``, ``__UNLABELLED__`` and
+#: ``__UNTYPED__``), fixed here rather than discovered per run so two arms cannot
+#: silently carry different columns; ``__ALL__`` is the overall bucket and is
+#: already every row's own ``substitutions``/``deletions``/``reference_words``.
+#: Purely additive: no existing row key, no check and no aggregate moves.
+PUBLISHED_CLASSES: tuple[str, ...] = (
     "PERSON",
     "ORG",
     "GPE",
@@ -227,8 +328,35 @@ ROW_BUCKETS: tuple[str, ...] = (
     "EVENT",
     "NORP",
     "FAC",
+)
+
+OTHER_CLASSES: tuple[str, ...] = (
+    "ABBREVIATION",
+    "ALPHANUMERIC",
+    "CARDINAL",
+    "CONTRACTION",
+    "DATE",
+    "FALLBACK",
+    "LANGUAGE",
+    "LAW",
+    "MONEY",
+    "ORDINAL",
+    "PERCENT",
+    "QUANTITY",
+    "RANGE",
+    "TIME",
+    "TWITTER",
+    "WEBSITE",
+    "WORK_OF_ART",
+    "YEAR",
+)
+
+ROW_BUCKETS: tuple[str, ...] = (
+    *PUBLISHED_CLASSES,
+    *OTHER_CLASSES,
     conec.NON_ENTITY_BUCKET,
     conec.UNLABELLED_BUCKET,
+    UNTYPED_ENTITY_TYPE,
 )
 
 DEFAULT_DATA_ROOT = Path(
