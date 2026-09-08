@@ -30,9 +30,21 @@ one; a single failing window makes this script exit non-zero and write nothing,
 because a delivered hypothesis whose token count moved is exactly the defect the
 mechanism exists to make impossible.
 
+BOTH CELLS OF THE FRAGMENT USE THIS BUILDER. ``cell_id`` selects which one is
+being written; the twin ``E21-ku-e1fc-placebo-repair`` additionally takes its
+sibling's sealed attempt so the per-window prompt-token match the prompt fit
+asserted (+7 tokens on every window, the constant ``[evidence <id>] `` header
+residual) is re-measured on the FLIGHT's own requests rather than assumed.
+
+The ``kc_e1f`` column of ``delivered_vs_comparator_operations`` is the v1
+schema's own-cell column, named for the experiment fragment
+``e21-kc-e1f-repair-44-v1``; in the twin's receipt it carries the twin's numbers.
+It is deliberately not renamed, so the pair's two receipts stay comparable field
+for field.
+
 usage:
   python scripts/e21_kc_e1f_flight_receipt.py <attempt_dir> <run_id> <t0> <t1>
-      <session_id> <out.json>
+      <session_id> <out.json> [cell_id] [paired_run_id] [paired_attempt_dir]
 """
 
 from __future__ import annotations
@@ -88,6 +100,32 @@ COMPARATOR = {
     "windows_per_minute": 16.38,
     "saturated_slice_count": 0,
 }
+#: The treatment cell's own committed flight numbers, quoted from
+#: ``docs/checks/.../2026-09-07-e21-kc-e1f-repair-44-v1/flight/flight-receipt.json``
+#: and its exposure row. Emitted only in the TWIN's receipt, and quoted rather
+#: than recomputed. It is a reference column, never a contrast: the paired
+#: intervals belong to the verdict.
+KC_E1F = {
+    "attempt_id": "attempt-20260908T040832Z-ecda9c",
+    "corpus_wer_percent": 8.154,
+    "conec_person_entity_wer_percent": 18.752,
+    "conec_org_entity_wer_percent": 16.502,
+    "numeric_value_accuracy_percent": 90.744,
+    "negation_critical_error_rate_percent": 0.0275,
+    "substitutions": 12936,
+    "deletions": 5700,
+    "insertions": 10701,
+    "reference_words": 359765,
+    "prompt_tokens_total": 3550695,
+    "completion_tokens_total": 434219,
+    "gpu_hours": 1.1093,
+    "windows_per_minute": 15.295,
+    "saturated_slice_count": 3,
+    "windows_changed": 1064,
+    "windows_refused": 82,
+    "accepted_substitutions": 2427,
+    "substituted_tokens_applied": 2545,
+}
 KC_E1 = {
     "prompt_tokens_total": 2907274,
     "completion_tokens_total": 423115,
@@ -142,6 +180,76 @@ def _operation_table(aggregates):
     return rows
 
 
+def _window_prompt_tokens(trace_path):
+    """window_id -> the flight server's own prompt-token count for that window.
+
+    Joins the COST record to the OBS record through the shared record-id base,
+    which is the request id. Used only for the twin's token match against the
+    treatment cell: the prompt fit asserted +7 tokens per rendered line, and this
+    re-measures the same quantity on the requests that actually flew.
+    """
+
+    prompt_by_request = {}
+    window_by_request = {}
+    for line in Path(trace_path).read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        record = json.loads(line)
+        payload = record.get("payload") or {}
+        base = str(record.get("record_id", "")).split("/", 1)[0]
+        if record.get("channel") == "COST" and payload.get("prompt_tokens") is not None:
+            prompt_by_request[base] = int(payload["prompt_tokens"])
+        elif record.get("channel") == "OBS" and "obs_repair" in payload:
+            window_by_request[base] = str(
+                payload.get("obs_repair_predecessor_window_id", "")
+            )
+    return {
+        window: prompt_by_request[request]
+        for request, window in window_by_request.items()
+        if request in prompt_by_request
+    }
+
+
+def _token_match(mine, paired_run_id, paired_trace):
+    """The twin's per-window prompt-token delta against its sibling cell.
+
+    A DESCRIPTIVE match, not a contrast: the two cells fly the identical audio,
+    the identical predecessor and the identical instruction, so every token of
+    difference is the brief's own rendering. The prompt fit measured exactly +7
+    on all 1,593 windows before either cell flew; this reports what the flight
+    itself carried, including any window where the two disagree.
+    """
+
+    theirs = _window_prompt_tokens(paired_trace)
+    deltas = {
+        window: value - theirs[window] for window, value in mine.items() if window in theirs
+    }
+    if not deltas:
+        return {"paired_run_id": paired_run_id, "windows_matched": 0}
+    ordered = sorted(deltas.values())
+    histogram = Counter(ordered)
+    return {
+        "paired_run_id": paired_run_id,
+        "paired_trace": str(paired_trace),
+        "windows_this_cell": len(mine),
+        "windows_paired_cell": len(theirs),
+        "windows_matched": len(deltas),
+        "windows_unmatched": sorted(set(mine) - set(theirs))[:20],
+        "delta_min": ordered[0],
+        "delta_median": statistics.median(ordered),
+        "delta_max": ordered[-1],
+        "delta_histogram": {str(key): count for key, count in sorted(histogram.items())},
+        "constant_delta": ordered[0] if ordered[0] == ordered[-1] else None,
+        "prompt_fit_expected_delta": 7,
+        "matches_the_prompt_fit": ordered[0] == ordered[-1] == 7,
+        "basis": (
+            "each cell's own COST record joined to its OBS record through the shared "
+            "request id, so the count is the flight server's own, on the flight "
+            "tokenizer, including the identical speech tokens of the identical audio"
+        ),
+    }
+
+
 def quantile(values, fraction):
     if not values:
         return None
@@ -154,6 +262,9 @@ def main() -> int:
     t0, t1 = float(sys.argv[3]), float(sys.argv[4])
     session_id = sys.argv[5]
     out = Path(sys.argv[6])
+    cell_id = sys.argv[7] if len(sys.argv) > 7 else "E21-kc-e1f-brief-repair"
+    paired_run_id = sys.argv[8] if len(sys.argv) > 8 else None
+    paired_attempt_dir = Path(sys.argv[9]) if len(sys.argv) > 9 else None
     session_dir = DATA_ROOT / "serving" / session_id
 
     manifest_path = attempt_dir / f"{run_id}.run-manifest.json"
@@ -169,6 +280,7 @@ def main() -> int:
 
     prompt_tokens: list[int] = []
     completion_tokens: list[int] = []
+    prompt_tokens_by_request: dict[str, int] = {}
     per_call_windows: dict[str, int] = {}
     obs_by_request: dict[str, dict] = {}
     request_sample: dict[str, str] = {}
@@ -182,6 +294,7 @@ def main() -> int:
         if channel == "COST":
             if payload.get("prompt_tokens") is not None:
                 prompt_tokens.append(int(payload["prompt_tokens"]))
+                prompt_tokens_by_request[base] = int(payload["prompt_tokens"])
             if payload.get("completion_tokens") is not None:
                 completion_tokens.append(int(payload["completion_tokens"]))
         elif channel == "MODEL_REQUEST" and not payload.get("stitch"):
@@ -355,11 +468,26 @@ def main() -> int:
         if isinstance(value, dict) and "aggregate" in value
     }
 
+    my_window_prompt_tokens = {
+        str(obs_by_request[request].get("obs_repair_predecessor_window_id", "")): value
+        for request, value in prompt_tokens_by_request.items()
+        if request in obs_by_request
+    }
+    token_match = (
+        _token_match(
+            my_window_prompt_tokens,
+            paired_run_id,
+            paired_attempt_dir / f"{paired_run_id}.trace.jsonl",
+        )
+        if paired_run_id and paired_attempt_dir
+        else None
+    )
+
     receipt = {
         "schema": "saea-e21-kc-e1f-flight-receipt-v1",
         "study": "speech-aware-evidence-acquisition",
         "run_id": run_id,
-        "cell_id": "E21-kc-e1f-brief-repair",
+        "cell_id": cell_id,
         "exposure_run_id": run_id,
         "attempt_id": (
             manifest["attempt"]["attempt_id"]
@@ -370,8 +498,8 @@ def main() -> int:
         "study_commit": manifest["study_commit"],
         "study_repo_dirt": manifest["study_repo_dirt"],
         "decides_nothing": (
-            "This receipt reports one arm's flight. The comparator contrast, the form "
-            "twin KU-E1fc, the paired intervals and the preregistration's section 5 "
+            "This receipt reports ONE cell's flight. The comparator contrast, the other "
+            "cell of the pair, the paired intervals and the preregistration's section 5 "
             "decision rule are separate acts under their own rows."
         ),
         "config_hash": (
@@ -537,6 +665,12 @@ def main() -> int:
         "delivered_vs_comparator_operations": _operation_table(aggregates),
         "comparator_published": COMPARATOR,
         "kc_e1_published": KC_E1,
+        **(
+            {"kc_e1f_published": KC_E1F}
+            if cell_id != "E21-kc-e1f-brief-repair"
+            else {}
+        ),
+        **({"token_match": token_match} if token_match else {}),
         "artifacts": {
             "manifest": str(manifest_path),
             "manifest_sha256": sha256(manifest_path),
