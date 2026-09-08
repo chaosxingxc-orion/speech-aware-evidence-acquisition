@@ -34,25 +34,48 @@ The three statistics, all TRAIN-only, all declared before the table was read.
   cannot drift. :func:`classify_slot_types` takes it as an argument for exactly
   that reason.
 
-The classification rule, frozen before the read
-(:data:`CLOSED_MAX_NOVELTY` and friends):
+TWO rules are implemented, and BOTH are reported, because the first one is
+wrong in a way worth publishing rather than quietly fixing.
 
-* **CLOSED/FORMAT** -- ``novelty_ratio <= 0.10`` AND
-  ``dev_verbatim_share_pct >= 85``. A small vocabulary the corpus re-uses and
-  DEV gold stays inside. These are the surface-convention types: what the
-  corpus writes, and how it spells it.
-* **OPEN/PROPER-NOUN** -- ``novelty_ratio >= 0.35`` OR
-  ``dev_verbatim_share_pct <= 60``. Either TRAIN mints a new form per mention,
-  or DEV gold routinely lands outside what TRAIN has. Recognition, not
-  enumeration.
-* **MIXED** -- everything else, reported as its own class rather than forced
-  into one of the two.
+**:data:`SLOT_CLASS_RULE_V1`** (``mf10-novelty-v1``) is the rule this audit
+declared before it read the table: CLOSED when ``novelty_ratio <= 0.10`` AND
+``dev_verbatim_share_pct >= 85``; OPEN when ``novelty_ratio >= 0.35`` OR
+``dev_verbatim_share_pct <= 60``; MIXED otherwise.
 
-The two conditions cannot both fire (``<= 0.10`` against ``>= 0.35``, ``>= 85``
-against ``<= 60``), so the three classes partition the types. A type with no
-DEV gold mention has no verbatim share to test; it is classified on the novelty
-ratio alone and its ``class_basis`` says so, so a reader never mistakes a
-TRAIN-only verdict for a measured one.
+It selects four types out of fifty-five, and the reason is a measurable defect
+rather than a property of the corpus: **the novelty ratio is a rate estimate,
+and a rare type cannot have a low one.** ``alarm_type`` has FOUR distinct
+surface forms -- as closed a vocabulary as SLURP contains -- but only nine
+TRAIN mentions, so its ratio is 0.44 and v1 calls it open. ``date``, the type
+the owner's question names, has 289 forms over 1,823 mentions for a ratio of
+0.16 and lands in MIXED. The ratio measures how fast the corpus mints forms,
+which is only the same question as "is this vocabulary closed" when the corpus
+has minted enough of them to tell.
+
+**:data:`SLOT_CLASS_RULE_V2`** (``mf10-cardability-v2``) is the operative rule,
+and it puts the three statistics in the roles the measurement supports:
+
+* **coverage decides.** CLOSED needs
+  ``dev_verbatim_share_pct >= CLOSED_MIN_VERBATIM_PCT``; OPEN is
+  ``dev_verbatim_share_pct <= OPEN_MAX_VERBATIM_PCT``. A card pays exactly when
+  the value DEV needs is inside it, and cannot pay when the value was never
+  seen. This is the one condition that speaks to the mechanism.
+* **re-use disqualifies, where it is estimable.** A type whose corpus keeps
+  minting new forms is not a vocabulary even when DEV happened to be covered,
+  so ``novelty_ratio >= OPEN_MIN_NOVELTY`` forces OPEN -- but ONLY when the
+  type has at least :data:`NOVELTY_MIN_MENTIONS` TRAIN mentions, below which
+  the ratio is an artefact of the sample rather than a property of the type.
+* **size is checked, not capped.** No per-type form limit is imposed. The
+  enumerability question is asked where it is actually binding -- of the
+  per-intent card SET, against the arm's own measured prompt headroom -- and
+  the caller checks it with :func:`price_intent_cards`, so the threshold is a
+  measured budget rather than a taste.
+
+Under either rule the CLOSED and OPEN conditions are disjoint, so the three
+classes partition the types. A type with no DEV gold mention has no verbatim
+share to test: v2 puts it in MIXED (there is nothing for a card to cover) and
+its ``class_basis`` says so, so a reader never mistakes a TRAIN-only verdict
+for a measured one.
 
 Token cost is a **stated proxy** everywhere in this module: whitespace tokens
 times :data:`TOKEN_PROXY_FACTOR`, rounded up. It is not a tokenizer
@@ -74,6 +97,18 @@ CLOSED_MAX_NOVELTY = 0.10
 CLOSED_MIN_VERBATIM_PCT = 85.0
 OPEN_MIN_NOVELTY = 0.35
 OPEN_MAX_VERBATIM_PCT = 60.0
+
+#: How many TRAIN mentions a type needs before its novelty ratio is treated as
+#: an estimate of anything. Below this the ratio is bounded from below by
+#: ``1 / mentions`` and says more about the sample than about the type -- the
+#: defect that made ``SLOT_CLASS_RULE_V1`` call a four-form vocabulary open.
+NOVELTY_MIN_MENTIONS = 50
+
+#: The rule this audit DECLARED before reading the table.
+SLOT_CLASS_RULE_V1 = "mf10-novelty-v1"
+#: The rule the measurement licensed, and the one the views are built on.
+SLOT_CLASS_RULE_V2 = "mf10-cardability-v2"
+SLOT_CLASS_RULES = (SLOT_CLASS_RULE_V1, SLOT_CLASS_RULE_V2)
 
 #: The three classes, in report order.
 SLOT_CLASS_CLOSED = "CLOSED/FORMAT"
@@ -125,6 +160,7 @@ class SlotTypeStats:
     dev_verbatim_share_pct: float | None
     slot_class: str
     class_basis: str
+    rule: str = SLOT_CLASS_RULE_V2
 
     def as_json(self) -> dict[str, object]:
         return {
@@ -132,26 +168,90 @@ class SlotTypeStats:
             "train_mentions": self.train_mentions,
             "distinct_train_fillers": self.distinct_fillers,
             "novelty_ratio": round(self.novelty_ratio, 4),
+            "novelty_ratio_is_estimable": self.train_mentions >= NOVELTY_MIN_MENTIONS,
             "dev_gold_mentions": self.dev_gold_mentions,
             "dev_verbatim_share_pct": self.dev_verbatim_share_pct,
+            "rule": self.rule,
             "slot_class": self.slot_class,
             "class_basis": self.class_basis,
         }
 
 
+def _classify_v1(
+    novelty: float, verbatim: float | None
+) -> tuple[str, str]:
+    """The DECLARED rule, kept so its verdict stays readable beside v2's."""
+
+    if verbatim is None:
+        basis = "train-only (no DEV gold mention of this type)"
+        if novelty <= CLOSED_MAX_NOVELTY:
+            return SLOT_CLASS_CLOSED, basis
+        if novelty >= OPEN_MIN_NOVELTY:
+            return SLOT_CLASS_OPEN, basis
+        return SLOT_CLASS_MIXED, basis
+    basis = "novelty ratio and MF-9 DEV verbatim share"
+    closed = novelty <= CLOSED_MAX_NOVELTY and verbatim >= CLOSED_MIN_VERBATIM_PCT
+    open_ = novelty >= OPEN_MIN_NOVELTY or verbatim <= OPEN_MAX_VERBATIM_PCT
+    if closed and open_:  # pragma: no cover -- the thresholds exclude it
+        raise SlotVocabularyError("a type satisfies both v1 class rules")
+    return (
+        SLOT_CLASS_CLOSED if closed else SLOT_CLASS_OPEN if open_ else SLOT_CLASS_MIXED
+    ), basis
+
+
+def _classify_v2(
+    mentions: int, novelty: float, verbatim: float | None
+) -> tuple[str, str]:
+    """The OPERATIVE rule: coverage decides, re-use disqualifies where it is
+    estimable, and size is checked as a budget rather than capped here."""
+
+    estimable = mentions >= NOVELTY_MIN_MENTIONS
+    disqualified = estimable and novelty >= OPEN_MIN_NOVELTY
+    if verbatim is None:
+        return (
+            SLOT_CLASS_MIXED,
+            "train-only (no DEV gold mention of this type, so nothing for a card to cover)",
+        )
+    if verbatim <= OPEN_MAX_VERBATIM_PCT:
+        return SLOT_CLASS_OPEN, "DEV gold routinely lands outside the TRAIN vocabulary"
+    if disqualified:
+        return (
+            SLOT_CLASS_OPEN,
+            f"the corpus mints a new form per {1 / novelty:.1f} mentions over "
+            f"{mentions} mentions, so this is not a vocabulary",
+        )
+    if verbatim >= CLOSED_MIN_VERBATIM_PCT:
+        return (
+            SLOT_CLASS_CLOSED,
+            "TRAIN carries the DEV gold value at or above the coverage floor"
+            + ("" if estimable else "; the novelty ratio is not estimable at this size"),
+        )
+    return SLOT_CLASS_MIXED, "coverage sits between the two floors"
+
+
 def classify_slot_types(
     train_counts: Mapping[str, Mapping[str, int]],
     dev_verbatim: Mapping[str, tuple[int, float]],
+    *,
+    rule: str = SLOT_CLASS_RULE_V2,
 ) -> tuple[SlotTypeStats, ...]:
     """Classify every TRAIN slot type, sorted by descending TRAIN mentions.
 
     ``train_counts`` maps an entity type to ``{surface form: TRAIN mention
     count}``. ``dev_verbatim`` maps an entity type to
     ``(DEV gold mentions, verbatim share in percent)`` and is READ out of
-    MF-9's committed receipt -- a type absent from it simply has no DEV gold
-    and is classified on the novelty ratio alone.
+    MF-9's committed receipt -- a type absent from it simply has no DEV gold.
+
+    ``rule`` selects :data:`SLOT_CLASS_RULE_V1` (the rule this audit declared
+    before reading the table) or :data:`SLOT_CLASS_RULE_V2` (the one the
+    measurement licensed, and the default). Both are kept and both are
+    reported; see the module docstring for why the first one is wrong.
     """
 
+    if rule not in SLOT_CLASS_RULES:
+        raise SlotVocabularyError(
+            f"unknown rule {rule!r}; registered rules are {SLOT_CLASS_RULES}"
+        )
     if not train_counts:
         raise SlotVocabularyError("train_counts is empty")
     out: list[SlotTypeStats] = []
@@ -162,27 +262,10 @@ def classify_slot_types(
         distinct = len(forms)
         novelty = distinct / mentions
         gold_mentions, verbatim = dev_verbatim.get(str(entity_type), (0, None))
-        if verbatim is None:
-            basis = "train-only (no DEV gold mention of this type)"
-            if novelty <= CLOSED_MAX_NOVELTY:
-                slot_class = SLOT_CLASS_CLOSED
-            elif novelty >= OPEN_MIN_NOVELTY:
-                slot_class = SLOT_CLASS_OPEN
-            else:
-                slot_class = SLOT_CLASS_MIXED
+        if rule == SLOT_CLASS_RULE_V1:
+            slot_class, basis = _classify_v1(novelty, verbatim)
         else:
-            basis = "novelty ratio and MF-9 DEV verbatim share"
-            closed = (
-                novelty <= CLOSED_MAX_NOVELTY and verbatim >= CLOSED_MIN_VERBATIM_PCT
-            )
-            open_ = novelty >= OPEN_MIN_NOVELTY or verbatim <= OPEN_MAX_VERBATIM_PCT
-            if closed and open_:  # pragma: no cover -- the thresholds exclude it
-                raise SlotVocabularyError(
-                    f"{entity_type!r} satisfies both class rules; the thresholds moved"
-                )
-            slot_class = (
-                SLOT_CLASS_CLOSED if closed else SLOT_CLASS_OPEN if open_ else SLOT_CLASS_MIXED
-            )
+            slot_class, basis = _classify_v2(mentions, novelty, verbatim)
         out.append(
             SlotTypeStats(
                 entity_type=str(entity_type),
@@ -193,6 +276,7 @@ def classify_slot_types(
                 dev_verbatim_share_pct=verbatim,
                 slot_class=slot_class,
                 class_basis=basis,
+                rule=rule,
             )
         )
     return tuple(sorted(out, key=lambda stat: (-stat.train_mentions, stat.entity_type)))
@@ -405,9 +489,13 @@ __all__ = [
     "CLOSED_MAX_NOVELTY",
     "CLOSED_MIN_VERBATIM_PCT",
     "CONTAINMENT_MIN_LENGTH",
+    "NOVELTY_MIN_MENTIONS",
     "OPEN_MAX_VERBATIM_PCT",
     "OPEN_MIN_NOVELTY",
     "SLOT_CLASSES",
+    "SLOT_CLASS_RULES",
+    "SLOT_CLASS_RULE_V1",
+    "SLOT_CLASS_RULE_V2",
     "SLOT_CLASS_CLOSED",
     "SLOT_CLASS_MIXED",
     "SLOT_CLASS_OPEN",

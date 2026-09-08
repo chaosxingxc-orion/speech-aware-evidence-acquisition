@@ -1,0 +1,6025 @@
+{
+  "budget_check": {
+    "fits": true,
+    "headroom_tokens": 6378,
+    "kc_s1b_worst_envelope_tokens": 10006,
+    "margin_tokens": 4368,
+    "slot_tokens_np4": 16384,
+    "what_it_is": "the enumerability condition the v2 rule declines to cap per type: the WORST per-intent card set against the arm's own measured headroom. KC-S1b's measured worst prompt envelope is 10,006 tokens in a 16,384-token slot at -np 4 (its own prompt-fit receipt and the KU-S3 preregistration section 5), so a card set has 6,378 tokens to live in",
+    "worst_intent_card_proxy": 2010
+  },
+  "cards": {
+    "carded_types": 18,
+    "header": "Slot value cards measured on the TRAIN split. A card names one slot type and every surface form the corpus has used for it, with how often, written the way the corpus writes it. Use a form only when the speech supports it, and write it exactly as the card spells it.",
+    "header_token_proxy": 68,
+    "per_type": [
+      {
+        "chars": 85,
+        "distinct_forms": 4,
+        "entity_type": "alarm_type",
+        "forms": [
+          [
+            "wake up",
+            6
+          ],
+          [
+            "continuous alarm",
+            1
+          ],
+          [
+            "house alarm",
+            1
+          ],
+          [
+            "soccer practice",
+            1
+          ]
+        ],
+        "token_proxy": 19,
+        "train_mentions": 9
+      },
+      {
+        "chars": 195,
+        "distinct_forms": 14,
+        "entity_type": "app_name",
+        "forms": [
+          [
+            "pandora",
+            18
+          ],
+          [
+            "spotify",
+            8
+          ],
+          [
+            "sirius",
+            6
+          ],
+          [
+            "audible",
+            5
+          ],
+          [
+            "grubhub",
+            4
+          ],
+          [
+            "google play",
+            2
+          ],
+          [
+            "calendar app",
+            1
+          ],
+          [
+            "cooking app",
+            1
+          ],
+          [
+            "gps",
+            1
+          ],
+          [
+            "irctc",
+            1
+          ],
+          [
+            "lyft",
+            1
+          ],
+          [
+            "netflix",
+            1
+          ],
+          [
+            "note pad",
+            1
+          ],
+          [
+            "tidal",
+            1
+          ]
+        ],
+        "token_proxy": 45,
+        "train_mentions": 51
+      },
+      {
+        "chars": 362,
+        "distinct_forms": 25,
+        "entity_type": "color_type",
+        "forms": [
+          [
+            "blue",
+            28
+          ],
+          [
+            "red",
+            19
+          ],
+          [
+            "green",
+            11
+          ],
+          [
+            "yellow",
+            7
+          ],
+          [
+            "orange",
+            5
+          ],
+          [
+            "pink",
+            4
+          ],
+          [
+            "dark",
+            3
+          ],
+          [
+            "white",
+            3
+          ],
+          [
+            "purple",
+            2
+          ],
+          [
+            "romantic",
+            2
+          ],
+          [
+            "warm",
+            2
+          ],
+          [
+            "cooler tone",
+            1
+          ],
+          [
+            "dull blue",
+            1
+          ],
+          [
+            "lavender",
+            1
+          ],
+          [
+            "party mode",
+            1
+          ],
+          [
+            "random",
+            1
+          ],
+          [
+            "reading",
+            1
+          ],
+          [
+            "reading friendly",
+            1
+          ],
+          [
+            "rotate",
+            1
+          ],
+          [
+            "shine blue",
+            1
+          ],
+          [
+            "softer",
+            1
+          ],
+          [
+            "suitable for reading",
+            1
+          ],
+          [
+            "vibrant",
+            1
+          ],
+          [
+            "watching friendly",
+            1
+          ],
+          [
+            "yellowish",
+            1
+          ]
+        ],
+        "token_proxy": 78,
+        "train_mentions": 100
+      },
+      {
+        "chars": 763,
+        "distinct_forms": 52,
+        "entity_type": "currency_name",
+        "forms": [
+          [
+            "dollar",
+            34
+          ],
+          [
+            "u. s. d.",
+            30
+          ],
+          [
+            "euro",
+            29
+          ],
+          [
+            "us dollar",
+            19
+          ],
+          [
+            "yen",
+            9
+          ],
+          [
+            "euros",
+            8
+          ],
+          [
+            "pound",
+            8
+          ],
+          [
+            "us",
+            6
+          ],
+          [
+            "g. b. p.",
+            4
+          ],
+          [
+            "pesos",
+            4
+          ],
+          [
+            "rupee",
+            4
+          ],
+          [
+            "cad",
+            3
+          ],
+          [
+            "canadian dollar",
+            3
+          ],
+          [
+            "czk",
+            3
+          ],
+          [
+            "indian rupee",
+            3
+          ],
+          [
+            "indian rupees",
+            3
+          ],
+          [
+            "inr",
+            3
+          ],
+          [
+            "peso",
+            3
+          ],
+          [
+            "american dollar",
+            2
+          ],
+          [
+            "aus",
+            2
+          ],
+          [
+            "british pound",
+            2
+          ],
+          [
+            "canada",
+            2
+          ],
+          [
+            "canadian",
+            2
+          ],
+          [
+            "pounds",
+            2
+          ],
+          [
+            "rupees",
+            2
+          ],
+          [
+            "united states dollar",
+            2
+          ],
+          [
+            "argentinian pesos",
+            1
+          ],
+          [
+            "australian dollars",
+            1
+          ],
+          [
+            "b. p.",
+            1
+          ],
+          [
+            "calone",
+            1
+          ],
+          [
+            "cdn",
+            1
+          ],
+          [
+            "dirham",
+            1
+          ],
+          [
+            "dollar 's",
+            1
+          ],
+          [
+            "dollars",
+            1
+          ],
+          [
+            "england",
+            1
+          ],
+          [
+            "english",
+            1
+          ],
+          [
+            "english pound",
+            1
+          ],
+          [
+            "japanese yen",
+            1
+          ],
+          [
+            "nzd",
+            1
+          ],
+          [
+            "philippiness peso",
+            1
+          ],
+          [
+            "pound sterling",
+            1
+          ],
+          [
+            "rials",
+            1
+          ],
+          [
+            "rupies",
+            1
+          ],
+          [
+            "s. d.",
+            1
+          ],
+          [
+            "singapore dollar",
+            1
+          ],
+          [
+            "switzerland",
+            1
+          ],
+          [
+            "the united states",
+            1
+          ],
+          [
+            "u. s. dollars",
+            1
+          ],
+          [
+            "uk pound",
+            1
+          ],
+          [
+            "ukraine 's",
+            1
+          ],
+          [
+            "yan",
+            1
+          ],
+          [
+            "yens",
+            1
+          ]
+        ],
+        "token_proxy": 175,
+        "train_mentions": 218
+      },
+      {
+        "chars": 6129,
+        "distinct_forms": 289,
+        "entity_type": "date",
+        "forms": [
+          [
+            "today",
+            524
+          ],
+          [
+            "tomorrow",
+            221
+          ],
+          [
+            "this week",
+            93
+          ],
+          [
+            "friday",
+            70
+          ],
+          [
+            "tuesday",
+            58
+          ],
+          [
+            "today 's",
+            53
+          ],
+          [
+            "this weekend",
+            47
+          ],
+          [
+            "monday",
+            46
+          ],
+          [
+            "thursday",
+            44
+          ],
+          [
+            "next week",
+            40
+          ],
+          [
+            "saturday",
+            40
+          ],
+          [
+            "wednesday",
+            34
+          ],
+          [
+            "yesterday",
+            29
+          ],
+          [
+            "this month",
+            23
+          ],
+          [
+            "sunday",
+            22
+          ],
+          [
+            "tomorrow 's",
+            19
+          ],
+          [
+            "march",
+            15
+          ],
+          [
+            "this year",
+            14
+          ],
+          [
+            "this week 's",
+            10
+          ],
+          [
+            "todays",
+            8
+          ],
+          [
+            "next month",
+            7
+          ],
+          [
+            "tomorrows",
+            7
+          ],
+          [
+            "twenty second",
+            7
+          ],
+          [
+            "last week",
+            6
+          ],
+          [
+            "weekend",
+            6
+          ],
+          [
+            "april first",
+            5
+          ],
+          [
+            "last month",
+            5
+          ],
+          [
+            "last night",
+            5
+          ],
+          [
+            "mondays",
+            5
+          ],
+          [
+            "one thousand nine hundred and ninety",
+            5
+          ],
+          [
+            "february twelfth",
+            4
+          ],
+          [
+            "fifteenth",
+            4
+          ],
+          [
+            "friday 's",
+            4
+          ],
+          [
+            "month",
+            4
+          ],
+          [
+            "next day",
+            4
+          ],
+          [
+            "sundays",
+            4
+          ],
+          [
+            "twelveth",
+            4
+          ],
+          [
+            "april",
+            3
+          ],
+          [
+            "every sunday",
+            3
+          ],
+          [
+            "fifteenth march",
+            3
+          ],
+          [
+            "fifth march",
+            3
+          ],
+          [
+            "first of february twenty seventeen",
+            3
+          ],
+          [
+            "july fourth",
+            3
+          ],
+          [
+            "july three",
+            3
+          ],
+          [
+            "march fifth",
+            3
+          ],
+          [
+            "may fifth",
+            3
+          ],
+          [
+            "next sunday",
+            3
+          ],
+          [
+            "next week 's",
+            3
+          ],
+          [
+            "tenth",
+            3
+          ],
+          [
+            "this weeks",
+            3
+          ],
+          [
+            "twenty ninth",
+            3
+          ],
+          [
+            "yesterday 's",
+            3
+          ],
+          [
+            "april fourteenth",
+            2
+          ],
+          [
+            "april fourth",
+            2
+          ],
+          [
+            "december",
+            2
+          ],
+          [
+            "earlier today",
+            2
+          ],
+          [
+            "everyday",
+            2
+          ],
+          [
+            "february",
+            2
+          ],
+          [
+            "fifth april",
+            2
+          ],
+          [
+            "january second",
+            2
+          ],
+          [
+            "january twenty five",
+            2
+          ],
+          [
+            "july",
+            2
+          ],
+          [
+            "june",
+            2
+          ],
+          [
+            "last day",
+            2
+          ],
+          [
+            "march nineteenth",
+            2
+          ],
+          [
+            "march one",
+            2
+          ],
+          [
+            "march seven",
+            2
+          ],
+          [
+            "march twentieth two thousand and seventeen",
+            2
+          ],
+          [
+            "march twenty seventh",
+            2
+          ],
+          [
+            "march twenty third",
+            2
+          ],
+          [
+            "may",
+            2
+          ],
+          [
+            "next three sundays",
+            2
+          ],
+          [
+            "next year",
+            2
+          ],
+          [
+            "october first",
+            2
+          ],
+          [
+            "one day before",
+            2
+          ],
+          [
+            "the month",
+            2
+          ],
+          [
+            "the twenty second",
+            2
+          ],
+          [
+            "third",
+            2
+          ],
+          [
+            "thirteenth",
+            2
+          ],
+          [
+            "this friday",
+            2
+          ],
+          [
+            "this saturday",
+            2
+          ],
+          [
+            "this sunday",
+            2
+          ],
+          [
+            "three days",
+            2
+          ],
+          [
+            "tuesday 's",
+            2
+          ],
+          [
+            "tuesdays",
+            2
+          ],
+          [
+            "twelfth",
+            2
+          ],
+          [
+            "twelveth july",
+            2
+          ],
+          [
+            "twentieth",
+            2
+          ],
+          [
+            "twentieth october",
+            2
+          ],
+          [
+            "twenty fourth",
+            2
+          ],
+          [
+            "twenty sixth",
+            2
+          ],
+          [
+            "twenty third",
+            2
+          ],
+          [
+            "twenty third march",
+            2
+          ],
+          [
+            "two thousand",
+            2
+          ],
+          [
+            "two thousand and seventeen",
+            2
+          ],
+          [
+            "week",
+            2
+          ],
+          [
+            "yesterdays",
+            2
+          ],
+          [
+            "a week ago",
+            1
+          ],
+          [
+            "after some days",
+            1
+          ],
+          [
+            "after two days",
+            1
+          ],
+          [
+            "all days",
+            1
+          ],
+          [
+            "april fifteenth",
+            1
+          ],
+          [
+            "april second",
+            1
+          ],
+          [
+            "april seven",
+            1
+          ],
+          [
+            "august fifteenth",
+            1
+          ],
+          [
+            "august twenty one",
+            1
+          ],
+          [
+            "birthday",
+            1
+          ],
+          [
+            "coming week",
+            1
+          ],
+          [
+            "date",
+            1
+          ],
+          [
+            "day after",
+            1
+          ],
+          [
+            "day after tomorrow",
+            1
+          ],
+          [
+            "day before",
+            1
+          ],
+          [
+            "day of the week",
+            1
+          ],
+          [
+            "dec twenty sixth",
+            1
+          ],
+          [
+            "december fifth",
+            1
+          ],
+          [
+            "december twenty five two thousand and seventeen",
+            1
+          ],
+          [
+            "easter",
+            1
+          ],
+          [
+            "eighteen may",
+            1
+          ],
+          [
+            "eighteenth",
+            1
+          ],
+          [
+            "eighth july",
+            1
+          ],
+          [
+            "eighth november",
+            1
+          ],
+          [
+            "eleven march",
+            1
+          ],
+          [
+            "end of the month",
+            1
+          ],
+          [
+            "every friday",
+            1
+          ],
+          [
+            "every monday",
+            1
+          ],
+          [
+            "every month",
+            1
+          ],
+          [
+            "every other wednesday",
+            1
+          ],
+          [
+            "every two days from now",
+            1
+          ],
+          [
+            "every week day",
+            1
+          ],
+          [
+            "february four nineteen seventy two",
+            1
+          ],
+          [
+            "fifteenth of this month",
+            1
+          ],
+          [
+            "fifth",
+            1
+          ],
+          [
+            "fifth december",
+            1
+          ],
+          [
+            "first fifteen days",
+            1
+          ],
+          [
+            "first friday of next month",
+            1
+          ],
+          [
+            "first january",
+            1
+          ],
+          [
+            "first of april",
+            1
+          ],
+          [
+            "first of january",
+            1
+          ],
+          [
+            "five day",
+            1
+          ],
+          [
+            "five days",
+            1
+          ],
+          [
+            "four april",
+            1
+          ],
+          [
+            "fourteenth",
+            1
+          ],
+          [
+            "fourth",
+            1
+          ],
+          [
+            "fourth monday of march",
+            1
+          ],
+          [
+            "fourth october",
+            1
+          ],
+          [
+            "friday april fourteenth",
+            1
+          ],
+          [
+            "friday the thirteenth",
+            1
+          ],
+          [
+            "friday this year",
+            1
+          ],
+          [
+            "fridays",
+            1
+          ],
+          [
+            "in two weeks",
+            1
+          ],
+          [
+            "january nineteenth",
+            1
+          ],
+          [
+            "january one and january twelve",
+            1
+          ],
+          [
+            "january the third",
+            1
+          ],
+          [
+            "july seventh",
+            1
+          ],
+          [
+            "july thirtieth",
+            1
+          ],
+          [
+            "july two",
+            1
+          ],
+          [
+            "june first",
+            1
+          ],
+          [
+            "june third",
+            1
+          ],
+          [
+            "last friday",
+            1
+          ],
+          [
+            "last friday of the month",
+            1
+          ],
+          [
+            "last year",
+            1
+          ],
+          [
+            "mar twenty five",
+            1
+          ],
+          [
+            "march eleventh",
+            1
+          ],
+          [
+            "march fifteenth",
+            1
+          ],
+          [
+            "march first",
+            1
+          ],
+          [
+            "march fourth two thousand and seventeenth",
+            1
+          ],
+          [
+            "march nineteen",
+            1
+          ],
+          [
+            "march seventh",
+            1
+          ],
+          [
+            "march sixteen",
+            1
+          ],
+          [
+            "march sixteenth",
+            1
+          ],
+          [
+            "march sixth",
+            1
+          ],
+          [
+            "march tenth",
+            1
+          ],
+          [
+            "march third",
+            1
+          ],
+          [
+            "march thirtieth",
+            1
+          ],
+          [
+            "march three",
+            1
+          ],
+          [
+            "march twenty",
+            1
+          ],
+          [
+            "march twenty first",
+            1
+          ],
+          [
+            "march twenty five",
+            1
+          ],
+          [
+            "march twenty four",
+            1
+          ],
+          [
+            "march twenty four two thousand and seventeen",
+            1
+          ],
+          [
+            "march twenty second",
+            1
+          ],
+          [
+            "march twenty seven",
+            1
+          ],
+          [
+            "may fifth two thousand and seventeen",
+            1
+          ],
+          [
+            "may one",
+            1
+          ],
+          [
+            "may one and december thirty one",
+            1
+          ],
+          [
+            "may seventh",
+            1
+          ],
+          [
+            "may twenty two",
+            1
+          ],
+          [
+            "may two",
+            1
+          ],
+          [
+            "memorial day",
+            1
+          ],
+          [
+            "memorial day weekend",
+            1
+          ],
+          [
+            "monday 's",
+            1
+          ],
+          [
+            "monday morning",
+            1
+          ],
+          [
+            "monday through friday",
+            1
+          ],
+          [
+            "next day 's",
+            1
+          ],
+          [
+            "next eight days",
+            1
+          ],
+          [
+            "next few days",
+            1
+          ],
+          [
+            "next free day",
+            1
+          ],
+          [
+            "next monday night",
+            1
+          ],
+          [
+            "next month 's",
+            1
+          ],
+          [
+            "next saturdays",
+            1
+          ],
+          [
+            "next two sundays",
+            1
+          ],
+          [
+            "next two weeks",
+            1
+          ],
+          [
+            "next week sunday",
+            1
+          ],
+          [
+            "next weeks",
+            1
+          ],
+          [
+            "night before",
+            1
+          ],
+          [
+            "ninth",
+            1
+          ],
+          [
+            "ninth february two thousand and seventeen",
+            1
+          ],
+          [
+            "november fourteenth",
+            1
+          ],
+          [
+            "one month and two days",
+            1
+          ],
+          [
+            "one thousand nine hundred and seventy",
+            1
+          ],
+          [
+            "one thousand nine hundred and seventy two",
+            1
+          ],
+          [
+            "one thousand nine hundred and sixty eight",
+            1
+          ],
+          [
+            "one week from now",
+            1
+          ],
+          [
+            "past week",
+            1
+          ],
+          [
+            "rest of the year",
+            1
+          ],
+          [
+            "school week",
+            1
+          ],
+          [
+            "second january",
+            1
+          ],
+          [
+            "second saturday",
+            1
+          ],
+          [
+            "september four",
+            1
+          ],
+          [
+            "september twenty two",
+            1
+          ],
+          [
+            "seven days",
+            1
+          ],
+          [
+            "sixth of june two thousand seventeen",
+            1
+          ],
+          [
+            "sunday 's",
+            1
+          ],
+          [
+            "ten july",
+            1
+          ],
+          [
+            "tenth november",
+            1
+          ],
+          [
+            "tenth of march two thousand seventeen",
+            1
+          ],
+          [
+            "the fifteenth",
+            1
+          ],
+          [
+            "the first day of next month",
+            1
+          ],
+          [
+            "the following monday",
+            1
+          ],
+          [
+            "the past week",
+            1
+          ],
+          [
+            "the third monday of this month",
+            1
+          ],
+          [
+            "the thirty first",
+            1
+          ],
+          [
+            "the twenty fifth",
+            1
+          ],
+          [
+            "the twenty first of march two thousand and seventeen",
+            1
+          ],
+          [
+            "the twenty fourth",
+            1
+          ],
+          [
+            "the twenty sixth",
+            1
+          ],
+          [
+            "the twenty third",
+            1
+          ],
+          [
+            "third march",
+            1
+          ],
+          [
+            "third of april",
+            1
+          ],
+          [
+            "third week of this month",
+            1
+          ],
+          [
+            "thirteen october of this year",
+            1
+          ],
+          [
+            "thirteenth july",
+            1
+          ],
+          [
+            "thirtieth of march",
+            1
+          ],
+          [
+            "thirty first of march twenty seventeen",
+            1
+          ],
+          [
+            "this coming week",
+            1
+          ],
+          [
+            "this day",
+            1
+          ],
+          [
+            "this monday",
+            1
+          ],
+          [
+            "this month 's",
+            1
+          ],
+          [
+            "this wednesday",
+            1
+          ],
+          [
+            "three days from now",
+            1
+          ],
+          [
+            "thursday tomorrow",
+            1
+          ],
+          [
+            "thursdays",
+            1
+          ],
+          [
+            "tomorrow night",
+            1
+          ],
+          [
+            "tonight",
+            1
+          ],
+          [
+            "tuesday the twenty first",
+            1
+          ],
+          [
+            "twentieth of february",
+            1
+          ],
+          [
+            "twenty eighth",
+            1
+          ],
+          [
+            "twenty fifth",
+            1
+          ],
+          [
+            "twenty first april",
+            1
+          ],
+          [
+            "twenty first of may",
+            1
+          ],
+          [
+            "twenty fourth march",
+            1
+          ],
+          [
+            "twenty ninth march",
+            1
+          ],
+          [
+            "twenty one january two thousand and seventeen",
+            1
+          ],
+          [
+            "twenty one march",
+            1
+          ],
+          [
+            "twenty second april",
+            1
+          ],
+          [
+            "twenty second march",
+            1
+          ],
+          [
+            "twenty seventh of march twenty seventeen",
+            1
+          ],
+          [
+            "twenty six march",
+            1
+          ],
+          [
+            "twenty third may",
+            1
+          ],
+          [
+            "twenty third of march twenty seventeen",
+            1
+          ],
+          [
+            "twenty third of may",
+            1
+          ],
+          [
+            "twenty three of march",
+            1
+          ],
+          [
+            "twenty two june",
+            1
+          ],
+          [
+            "twenty two march",
+            1
+          ],
+          [
+            "two days",
+            1
+          ],
+          [
+            "two days from now",
+            1
+          ],
+          [
+            "two hundred pm",
+            1
+          ],
+          [
+            "two saturdays from now",
+            1
+          ],
+          [
+            "two thousand and fourteen",
+            1
+          ],
+          [
+            "two wednesdays back from today",
+            1
+          ],
+          [
+            "until may twenty fifth",
+            1
+          ],
+          [
+            "wednesday next week",
+            1
+          ],
+          [
+            "week from today",
+            1
+          ],
+          [
+            "weekdays",
+            1
+          ],
+          [
+            "weekend after next",
+            1
+          ],
+          [
+            "weekend three weeks from now",
+            1
+          ],
+          [
+            "weekends and holidays",
+            1
+          ],
+          [
+            "weekly",
+            1
+          ],
+          [
+            "year two thousand and eighteen",
+            1
+          ]
+        ],
+        "token_proxy": 1364,
+        "train_mentions": 1823
+      },
+      {
+        "chars": 1238,
+        "distinct_forms": 75,
+        "entity_type": "device_type",
+        "forms": [
+          [
+            "vacuum",
+            19
+          ],
+          [
+            "vacuum cleaner",
+            18
+          ],
+          [
+            "robot vacuum cleaner",
+            17
+          ],
+          [
+            "wemo plug socket",
+            15
+          ],
+          [
+            "coffee machine",
+            10
+          ],
+          [
+            "smart socket",
+            10
+          ],
+          [
+            "music player",
+            9
+          ],
+          [
+            "wemo plug",
+            8
+          ],
+          [
+            "lamp",
+            7
+          ],
+          [
+            "plug",
+            7
+          ],
+          [
+            "wemo socket",
+            6
+          ],
+          [
+            "roomba",
+            5
+          ],
+          [
+            "smart plug socket",
+            5
+          ],
+          [
+            "wemo",
+            5
+          ],
+          [
+            "all lights",
+            4
+          ],
+          [
+            "coffee maker",
+            4
+          ],
+          [
+            "lights",
+            3
+          ],
+          [
+            "phone",
+            3
+          ],
+          [
+            "robot cleaner",
+            3
+          ],
+          [
+            "smart plug",
+            3
+          ],
+          [
+            "television",
+            3
+          ],
+          [
+            "cleaner",
+            2
+          ],
+          [
+            "iroomba",
+            2
+          ],
+          [
+            "plug socket",
+            2
+          ],
+          [
+            "radio",
+            2
+          ],
+          [
+            "rice cooker socket",
+            2
+          ],
+          [
+            "robot vacuum",
+            2
+          ],
+          [
+            "socket",
+            2
+          ],
+          [
+            "tv",
+            2
+          ],
+          [
+            "bedside radio",
+            1
+          ],
+          [
+            "car radio",
+            1
+          ],
+          [
+            "cell phone",
+            1
+          ],
+          [
+            "cellphone",
+            1
+          ],
+          [
+            "cleaner robot",
+            1
+          ],
+          [
+            "coffee pot",
+            1
+          ],
+          [
+            "computer",
+            1
+          ],
+          [
+            "desk lamp",
+            1
+          ],
+          [
+            "disco lights",
+            1
+          ],
+          [
+            "equalizer",
+            1
+          ],
+          [
+            "fan",
+            1
+          ],
+          [
+            "fan socket",
+            1
+          ],
+          [
+            "geyser",
+            1
+          ],
+          [
+            "gps",
+            1
+          ],
+          [
+            "irobot",
+            1
+          ],
+          [
+            "kettle",
+            1
+          ],
+          [
+            "lamp next to the sofa",
+            1
+          ],
+          [
+            "laptop",
+            1
+          ],
+          [
+            "left light",
+            1
+          ],
+          [
+            "left speaker",
+            1
+          ],
+          [
+            "light",
+            1
+          ],
+          [
+            "light socket",
+            1
+          ],
+          [
+            "lights on the right side",
+            1
+          ],
+          [
+            "living room speakers",
+            1
+          ],
+          [
+            "machine",
+            1
+          ],
+          [
+            "main light",
+            1
+          ],
+          [
+            "middle light",
+            1
+          ],
+          [
+            "mobile charger plug",
+            1
+          ],
+          [
+            "music system",
+            1
+          ],
+          [
+            "one light",
+            1
+          ],
+          [
+            "outlet",
+            1
+          ],
+          [
+            "overhead",
+            1
+          ],
+          [
+            "phone book",
+            1
+          ],
+          [
+            "porch light",
+            1
+          ],
+          [
+            "power",
+            1
+          ],
+          [
+            "ps four",
+            1
+          ],
+          [
+            "radio station",
+            1
+          ],
+          [
+            "right side of light",
+            1
+          ],
+          [
+            "robotic vacuum",
+            1
+          ],
+          [
+            "satellite radio",
+            1
+          ],
+          [
+            "screen",
+            1
+          ],
+          [
+            "smart charger",
+            1
+          ],
+          [
+            "smart lamp",
+            1
+          ],
+          [
+            "vacuum bot",
+            1
+          ],
+          [
+            "vacuum cleaner robot",
+            1
+          ],
+          [
+            "wifi",
+            1
+          ]
+        ],
+        "token_proxy": 277,
+        "train_mentions": 226
+      },
+      {
+        "chars": 74,
+        "distinct_forms": 5,
+        "entity_type": "email_folder",
+        "forms": [
+          [
+            "inbox",
+            28
+          ],
+          [
+            "drafts",
+            1
+          ],
+          [
+            "inboxes",
+            1
+          ],
+          [
+            "mailbox",
+            1
+          ],
+          [
+            "spam",
+            1
+          ]
+        ],
+        "token_proxy": 16,
+        "train_mentions": 32
+      },
+      {
+        "chars": 538,
+        "distinct_forms": 38,
+        "entity_type": "house_place",
+        "forms": [
+          [
+            "living room",
+            40
+          ],
+          [
+            "kitchen",
+            28
+          ],
+          [
+            "room",
+            24
+          ],
+          [
+            "house",
+            22
+          ],
+          [
+            "bedroom",
+            20
+          ],
+          [
+            "bathroom",
+            14
+          ],
+          [
+            "hall",
+            5
+          ],
+          [
+            "bed room",
+            4
+          ],
+          [
+            "home",
+            4
+          ],
+          [
+            "office",
+            3
+          ],
+          [
+            "carpets",
+            2
+          ],
+          [
+            "den",
+            2
+          ],
+          [
+            "garage",
+            2
+          ],
+          [
+            "here",
+            2
+          ],
+          [
+            "my room",
+            2
+          ],
+          [
+            "porch",
+            2
+          ],
+          [
+            "balcony",
+            1
+          ],
+          [
+            "bathrooms",
+            1
+          ],
+          [
+            "bed room two",
+            1
+          ],
+          [
+            "bedrooms",
+            1
+          ],
+          [
+            "corner",
+            1
+          ],
+          [
+            "flat",
+            1
+          ],
+          [
+            "floor",
+            1
+          ],
+          [
+            "front porch",
+            1
+          ],
+          [
+            "front room",
+            1
+          ],
+          [
+            "furniture",
+            1
+          ],
+          [
+            "game room",
+            1
+          ],
+          [
+            "garden",
+            1
+          ],
+          [
+            "guest room",
+            1
+          ],
+          [
+            "kids bedroom",
+            1
+          ],
+          [
+            "living rooms",
+            1
+          ],
+          [
+            "lobby",
+            1
+          ],
+          [
+            "media room",
+            1
+          ],
+          [
+            "outside the house",
+            1
+          ],
+          [
+            "patio",
+            1
+          ],
+          [
+            "the room",
+            1
+          ],
+          [
+            "this room",
+            1
+          ],
+          [
+            "whole house",
+            1
+          ]
+        ],
+        "token_proxy": 124,
+        "train_mentions": 198
+      },
+      {
+        "chars": 78,
+        "distinct_forms": 5,
+        "entity_type": "meal_type",
+        "forms": [
+          [
+            "dinner",
+            30
+          ],
+          [
+            "lunch",
+            28
+          ],
+          [
+            "breakfast",
+            5
+          ],
+          [
+            "break fast",
+            1
+          ],
+          [
+            "diner",
+            1
+          ]
+        ],
+        "token_proxy": 17,
+        "train_mentions": 65
+      },
+      {
+        "chars": 1345,
+        "distinct_forms": 91,
+        "entity_type": "media_type",
+        "forms": [
+          [
+            "tweet",
+            129
+          ],
+          [
+            "facebook",
+            66
+          ],
+          [
+            "twitter",
+            44
+          ],
+          [
+            "audiobook",
+            34
+          ],
+          [
+            "cnn",
+            28
+          ],
+          [
+            "bbc",
+            18
+          ],
+          [
+            "instagram",
+            13
+          ],
+          [
+            "audio book",
+            10
+          ],
+          [
+            "music",
+            8
+          ],
+          [
+            "new york times",
+            6
+          ],
+          [
+            "audio",
+            5
+          ],
+          [
+            "social media",
+            5
+          ],
+          [
+            "album",
+            4
+          ],
+          [
+            "bob 's news",
+            4
+          ],
+          [
+            "fox news",
+            4
+          ],
+          [
+            "la times",
+            4
+          ],
+          [
+            "youtube",
+            4
+          ],
+          [
+            "book",
+            3
+          ],
+          [
+            "newsource",
+            3
+          ],
+          [
+            "pinterest",
+            3
+          ],
+          [
+            "source",
+            3
+          ],
+          [
+            "tweets",
+            3
+          ],
+          [
+            "local news",
+            2
+          ],
+          [
+            "new provider",
+            2
+          ],
+          [
+            "reddit",
+            2
+          ],
+          [
+            "seattle times",
+            2
+          ],
+          [
+            "snapchat",
+            2
+          ],
+          [
+            "times of india",
+            2
+          ],
+          [
+            "usa today",
+            2
+          ],
+          [
+            "wall street journal",
+            2
+          ],
+          [
+            "audiobooks",
+            1
+          ],
+          [
+            "bay news nine",
+            1
+          ],
+          [
+            "bbc 's",
+            1
+          ],
+          [
+            "bbc four",
+            1
+          ],
+          [
+            "bbc live",
+            1
+          ],
+          [
+            "bbc radio one",
+            1
+          ],
+          [
+            "bbc sports",
+            1
+          ],
+          [
+            "bbc world",
+            1
+          ],
+          [
+            "bbcnews dot com",
+            1
+          ],
+          [
+            "boston tribute",
+            1
+          ],
+          [
+            "cbs",
+            1
+          ],
+          [
+            "ccn",
+            1
+          ],
+          [
+            "cnn 's",
+            1
+          ],
+          [
+            "cnncom",
+            1
+          ],
+          [
+            "detroit news",
+            1
+          ],
+          [
+            "dhaka tribune",
+            1
+          ],
+          [
+            "engadget",
+            1
+          ],
+          [
+            "facebook messenger",
+            1
+          ],
+          [
+            "fox",
+            1
+          ],
+          [
+            "google",
+            1
+          ],
+          [
+            "hackernews",
+            1
+          ],
+          [
+            "huffington post",
+            1
+          ],
+          [
+            "image post",
+            1
+          ],
+          [
+            "l. a. times",
+            1
+          ],
+          [
+            "miami herald",
+            1
+          ],
+          [
+            "morning local news",
+            1
+          ],
+          [
+            "morning news",
+            1
+          ],
+          [
+            "movie",
+            1
+          ],
+          [
+            "msn",
+            1
+          ],
+          [
+            "msnbc",
+            1
+          ],
+          [
+            "myspace",
+            1
+          ],
+          [
+            "nbc",
+            1
+          ],
+          [
+            "nbc news",
+            1
+          ],
+          [
+            "new news provider",
+            1
+          ],
+          [
+            "new york time",
+            1
+          ],
+          [
+            "newsfeed",
+            1
+          ],
+          [
+            "nine",
+            1
+          ],
+          [
+            "nineteen",
+            1
+          ],
+          [
+            "nsnbc",
+            1
+          ],
+          [
+            "nytimes dot com",
+            1
+          ],
+          [
+            "nytimescom",
+            1
+          ],
+          [
+            "radio",
+            1
+          ],
+          [
+            "sky news",
+            1
+          ],
+          [
+            "snap",
+            1
+          ],
+          [
+            "snapchats",
+            1
+          ],
+          [
+            "so clean",
+            1
+          ],
+          [
+            "song",
+            1
+          ],
+          [
+            "songs",
+            1
+          ],
+          [
+            "spotify",
+            1
+          ],
+          [
+            "state paper",
+            1
+          ],
+          [
+            "the times",
+            1
+          ],
+          [
+            "tmz",
+            1
+          ],
+          [
+            "track",
+            1
+          ],
+          [
+            "truthdig",
+            1
+          ],
+          [
+            "tweeter",
+            1
+          ],
+          [
+            "tweeters",
+            1
+          ],
+          [
+            "uc web",
+            1
+          ],
+          [
+            "wallstreet journal",
+            1
+          ],
+          [
+            "wbc",
+            1
+          ],
+          [
+            "wsj",
+            1
+          ],
+          [
+            "yahoo news",
+            1
+          ]
+        ],
+        "token_proxy": 310,
+        "train_mentions": 478
+      },
+      {
+        "chars": 156,
+        "distinct_forms": 9,
+        "entity_type": "movie_type",
+        "forms": [
+          [
+            "rom com",
+            2
+          ],
+          [
+            "action",
+            1
+          ],
+          [
+            "best imdb ratings",
+            1
+          ],
+          [
+            "blockbuster",
+            1
+          ],
+          [
+            "drama",
+            1
+          ],
+          [
+            "good drama",
+            1
+          ],
+          [
+            "justin bieber",
+            1
+          ],
+          [
+            "romantic comedy",
+            1
+          ],
+          [
+            "sci fi",
+            1
+          ]
+        ],
+        "token_proxy": 36,
+        "train_mentions": 10
+      },
+      {
+        "chars": 283,
+        "distinct_forms": 18,
+        "entity_type": "order_type",
+        "forms": [
+          [
+            "takeaway",
+            33
+          ],
+          [
+            "delivery",
+            27
+          ],
+          [
+            "takeout",
+            12
+          ],
+          [
+            "take out",
+            8
+          ],
+          [
+            "deliver",
+            5
+          ],
+          [
+            "carryout",
+            4
+          ],
+          [
+            "takeaways",
+            4
+          ],
+          [
+            "delivers",
+            2
+          ],
+          [
+            "pickup",
+            2
+          ],
+          [
+            "to go",
+            2
+          ],
+          [
+            "bring home",
+            1
+          ],
+          [
+            "call in",
+            1
+          ],
+          [
+            "delivered",
+            1
+          ],
+          [
+            "orders online",
+            1
+          ],
+          [
+            "pepperoni pizza",
+            1
+          ],
+          [
+            "pick up",
+            1
+          ],
+          [
+            "take away",
+            1
+          ],
+          [
+            "take out service",
+            1
+          ]
+        ],
+        "token_proxy": 63,
+        "train_mentions": 107
+      },
+      {
+        "chars": 1175,
+        "distinct_forms": 81,
+        "entity_type": "relation",
+        "forms": [
+          [
+            "mom",
+            41
+          ],
+          [
+            "boss",
+            17
+          ],
+          [
+            "family",
+            15
+          ],
+          [
+            "friend",
+            14
+          ],
+          [
+            "friends",
+            10
+          ],
+          [
+            "mother",
+            10
+          ],
+          [
+            "wife",
+            10
+          ],
+          [
+            "dad",
+            9
+          ],
+          [
+            "sister",
+            9
+          ],
+          [
+            "dentist",
+            6
+          ],
+          [
+            "brother",
+            5
+          ],
+          [
+            "daughter",
+            5
+          ],
+          [
+            "husband",
+            5
+          ],
+          [
+            "mom 's",
+            5
+          ],
+          [
+            "client",
+            4
+          ],
+          [
+            "kids",
+            4
+          ],
+          [
+            "uncle",
+            4
+          ],
+          [
+            "family member",
+            3
+          ],
+          [
+            "girlfriend",
+            3
+          ],
+          [
+            "brother 's",
+            2
+          ],
+          [
+            "co workers",
+            2
+          ],
+          [
+            "coworker",
+            2
+          ],
+          [
+            "dad 's",
+            2
+          ],
+          [
+            "daughter 's",
+            2
+          ],
+          [
+            "doctor",
+            2
+          ],
+          [
+            "husbands",
+            2
+          ],
+          [
+            "moms",
+            2
+          ],
+          [
+            "sisters",
+            2
+          ],
+          [
+            "son",
+            2
+          ],
+          [
+            "administrator",
+            1
+          ],
+          [
+            "aunt",
+            1
+          ],
+          [
+            "baby",
+            1
+          ],
+          [
+            "bank",
+            1
+          ],
+          [
+            "boyfriend",
+            1
+          ],
+          [
+            "bro",
+            1
+          ],
+          [
+            "brothers",
+            1
+          ],
+          [
+            "child 's",
+            1
+          ],
+          [
+            "children",
+            1
+          ],
+          [
+            "clients",
+            1
+          ],
+          [
+            "co worker",
+            1
+          ],
+          [
+            "colleague",
+            1
+          ],
+          [
+            "colleagues",
+            1
+          ],
+          [
+            "company",
+            1
+          ],
+          [
+            "company mate",
+            1
+          ],
+          [
+            "daddy",
+            1
+          ],
+          [
+            "doctor 's",
+            1
+          ],
+          [
+            "employees",
+            1
+          ],
+          [
+            "father",
+            1
+          ],
+          [
+            "grandma",
+            1
+          ],
+          [
+            "grandmother 's",
+            1
+          ],
+          [
+            "hairdresser",
+            1
+          ],
+          [
+            "kid 's",
+            1
+          ],
+          [
+            "lawyers",
+            1
+          ],
+          [
+            "manager",
+            1
+          ],
+          [
+            "mgccc",
+            1
+          ],
+          [
+            "mommy",
+            1
+          ],
+          [
+            "mother in law",
+            1
+          ],
+          [
+            "mum 's",
+            1
+          ],
+          [
+            "my daughter 's",
+            1
+          ],
+          [
+            "my father",
+            1
+          ],
+          [
+            "my mother",
+            1
+          ],
+          [
+            "my sister",
+            1
+          ],
+          [
+            "my wife 's",
+            1
+          ],
+          [
+            "new intern",
+            1
+          ],
+          [
+            "new receptionist 's",
+            1
+          ],
+          [
+            "old friend",
+            1
+          ],
+          [
+            "online friends",
+            1
+          ],
+          [
+            "priest",
+            1
+          ],
+          [
+            "secretary",
+            1
+          ],
+          [
+            "sister 's",
+            1
+          ],
+          [
+            "son 's",
+            1
+          ],
+          [
+            "son 's teacher",
+            1
+          ],
+          [
+            "supervisor",
+            1
+          ],
+          [
+            "teacher",
+            1
+          ],
+          [
+            "team leader",
+            1
+          ],
+          [
+            "the agent",
+            1
+          ],
+          [
+            "the cfo",
+            1
+          ],
+          [
+            "the team",
+            1
+          ],
+          [
+            "the vp of the department",
+            1
+          ],
+          [
+            "two year old twins",
+            1
+          ],
+          [
+            "vice president",
+            1
+          ]
+        ],
+        "token_proxy": 270,
+        "train_mentions": 251
+      },
+      {
+        "chars": 177,
+        "distinct_forms": 11,
+        "entity_type": "timeofday",
+        "forms": [
+          [
+            "morning",
+            88
+          ],
+          [
+            "tonight",
+            61
+          ],
+          [
+            "noon",
+            25
+          ],
+          [
+            "evening",
+            20
+          ],
+          [
+            "afternoon",
+            16
+          ],
+          [
+            "this afternoon",
+            15
+          ],
+          [
+            "this evening",
+            6
+          ],
+          [
+            "night",
+            4
+          ],
+          [
+            "tonight 's",
+            2
+          ],
+          [
+            "next morning",
+            1
+          ],
+          [
+            "this am",
+            1
+          ]
+        ],
+        "token_proxy": 38,
+        "train_mentions": 239
+      },
+      {
+        "chars": 55,
+        "distinct_forms": 3,
+        "entity_type": "transport_agency",
+        "forms": [
+          [
+            "uber",
+            28
+          ],
+          [
+            "ola",
+            2
+          ],
+          [
+            "golden taxi",
+            1
+          ]
+        ],
+        "token_proxy": 12,
+        "train_mentions": 31
+      },
+      {
+        "chars": 216,
+        "distinct_forms": 8,
+        "entity_type": "transport_name",
+        "forms": [
+          [
+            "indianapolis express",
+            2
+          ],
+          [
+            "acela",
+            1
+          ],
+          [
+            "eurostar",
+            1
+          ],
+          [
+            "flight five thousand four hundred and thirty one",
+            1
+          ],
+          [
+            "kalka",
+            1
+          ],
+          [
+            "number five",
+            1
+          ],
+          [
+            "ten thousand eight hundred and eighty seven",
+            1
+          ],
+          [
+            "virgin train",
+            1
+          ]
+        ],
+        "token_proxy": 45,
+        "train_mentions": 9
+      },
+      {
+        "chars": 124,
+        "distinct_forms": 10,
+        "entity_type": "transport_type",
+        "forms": [
+          [
+            "train",
+            240
+          ],
+          [
+            "taxi",
+            55
+          ],
+          [
+            "cab",
+            10
+          ],
+          [
+            "car",
+            5
+          ],
+          [
+            "ride",
+            2
+          ],
+          [
+            "trains",
+            2
+          ],
+          [
+            "bus",
+            1
+          ],
+          [
+            "driving",
+            1
+          ],
+          [
+            "metro",
+            1
+          ],
+          [
+            "walk",
+            1
+          ]
+        ],
+        "token_proxy": 29,
+        "train_mentions": 318
+      },
+      {
+        "chars": 1728,
+        "distinct_forms": 104,
+        "entity_type": "weather_descriptor",
+        "forms": [
+          [
+            "rain",
+            34
+          ],
+          [
+            "temperature",
+            27
+          ],
+          [
+            "umbrella",
+            23
+          ],
+          [
+            "sunny",
+            17
+          ],
+          [
+            "cold",
+            16
+          ],
+          [
+            "snow",
+            16
+          ],
+          [
+            "coat",
+            14
+          ],
+          [
+            "raining",
+            14
+          ],
+          [
+            "hot",
+            10
+          ],
+          [
+            "sunscreen",
+            9
+          ],
+          [
+            "jacket",
+            7
+          ],
+          [
+            "warm",
+            6
+          ],
+          [
+            "cloudy",
+            5
+          ],
+          [
+            "snowing",
+            5
+          ],
+          [
+            "windy",
+            5
+          ],
+          [
+            "nice",
+            4
+          ],
+          [
+            "rainy",
+            4
+          ],
+          [
+            "hat",
+            3
+          ],
+          [
+            "highest temperature",
+            3
+          ],
+          [
+            "sandals",
+            3
+          ],
+          [
+            "shorts",
+            3
+          ],
+          [
+            "bad",
+            2
+          ],
+          [
+            "boots",
+            2
+          ],
+          [
+            "gloves",
+            2
+          ],
+          [
+            "heavy coat",
+            2
+          ],
+          [
+            "hot or cold",
+            2
+          ],
+          [
+            "rain boots",
+            2
+          ],
+          [
+            "raingear",
+            2
+          ],
+          [
+            "sunblock",
+            2
+          ],
+          [
+            "warm clothes",
+            2
+          ],
+          [
+            "a dress or a sweat shirt",
+            1
+          ],
+          [
+            "above fifty",
+            1
+          ],
+          [
+            "average temperature",
+            1
+          ],
+          [
+            "awesome",
+            1
+          ],
+          [
+            "beach",
+            1
+          ],
+          [
+            "black sunglasses",
+            1
+          ],
+          [
+            "calm",
+            1
+          ],
+          [
+            "chance of thunderstorms",
+            1
+          ],
+          [
+            "climate",
+            1
+          ],
+          [
+            "close the window",
+            1
+          ],
+          [
+            "cold enough for mittens",
+            1
+          ],
+          [
+            "degrees",
+            1
+          ],
+          [
+            "dry my clothes on the line",
+            1
+          ],
+          [
+            "estimated temperatures",
+            1
+          ],
+          [
+            "extra water",
+            1
+          ],
+          [
+            "fog",
+            1
+          ],
+          [
+            "freeze",
+            1
+          ],
+          [
+            "freezing",
+            1
+          ],
+          [
+            "galoshes",
+            1
+          ],
+          [
+            "hail",
+            1
+          ],
+          [
+            "high",
+            1
+          ],
+          [
+            "highest",
+            1
+          ],
+          [
+            "hot and muggy or warm and humid",
+            1
+          ],
+          [
+            "humid",
+            1
+          ],
+          [
+            "humidity",
+            1
+          ],
+          [
+            "light or heavy jacket",
+            1
+          ],
+          [
+            "normal",
+            1
+          ],
+          [
+            "outwards",
+            1
+          ],
+          [
+            "pants",
+            1
+          ],
+          [
+            "pleasant",
+            1
+          ],
+          [
+            "rain coat",
+            1
+          ],
+          [
+            "raincoat",
+            1
+          ],
+          [
+            "rains",
+            1
+          ],
+          [
+            "seventy degree",
+            1
+          ],
+          [
+            "short sleeve",
+            1
+          ],
+          [
+            "shovel my way",
+            1
+          ],
+          [
+            "showers",
+            1
+          ],
+          [
+            "slicker",
+            1
+          ],
+          [
+            "sneakers",
+            1
+          ],
+          [
+            "snow boots",
+            1
+          ],
+          [
+            "snow predictions",
+            1
+          ],
+          [
+            "snow shoes",
+            1
+          ],
+          [
+            "snowplows burying my car",
+            1
+          ],
+          [
+            "soft evening",
+            1
+          ],
+          [
+            "stay sunny",
+            1
+          ],
+          [
+            "storming",
+            1
+          ],
+          [
+            "stormy",
+            1
+          ],
+          [
+            "summer",
+            1
+          ],
+          [
+            "sun",
+            1
+          ],
+          [
+            "sun glasses",
+            1
+          ],
+          [
+            "sun gon na shine",
+            1
+          ],
+          [
+            "sun screen lotion",
+            1
+          ],
+          [
+            "sun with no clouds",
+            1
+          ],
+          [
+            "sunburn cream",
+            1
+          ],
+          [
+            "sunglasses",
+            1
+          ],
+          [
+            "sunny and clear",
+            1
+          ],
+          [
+            "sunscreen lotion",
+            1
+          ],
+          [
+            "sunset temperature",
+            1
+          ],
+          [
+            "sweater",
+            1
+          ],
+          [
+            "swim or work",
+            1
+          ],
+          [
+            "swimming",
+            1
+          ],
+          [
+            "temperature reaches sixty eight degrees",
+            1
+          ],
+          [
+            "temperatures",
+            1
+          ],
+          [
+            "too hot for pants",
+            1
+          ],
+          [
+            "too warm",
+            1
+          ],
+          [
+            "uv index",
+            1
+          ],
+          [
+            "warm up",
+            1
+          ],
+          [
+            "warmer",
+            1
+          ],
+          [
+            "wind speed",
+            1
+          ],
+          [
+            "windows open",
+            1
+          ],
+          [
+            "winter boots",
+            1
+          ],
+          [
+            "winter jacket",
+            1
+          ],
+          [
+            "without coat",
+            1
+          ],
+          [
+            "wooly sweater",
+            1
+          ]
+        ],
+        "token_proxy": 380,
+        "train_mentions": 320
+      }
+    ],
+    "total_forms": 842,
+    "total_token_proxy": 3298
+  },
+  "class_counts": {
+    "CLOSED/FORMAT": 18,
+    "MIXED": 8,
+    "OPEN/PROPER-NOUN": 29
+  },
+  "classes": {
+    "CLOSED/FORMAT": [
+      "alarm_type",
+      "app_name",
+      "color_type",
+      "currency_name",
+      "date",
+      "device_type",
+      "email_folder",
+      "house_place",
+      "meal_type",
+      "media_type",
+      "movie_type",
+      "order_type",
+      "relation",
+      "timeofday",
+      "transport_agency",
+      "transport_name",
+      "transport_type",
+      "weather_descriptor"
+    ],
+    "MIXED": [
+      "business_type",
+      "game_type",
+      "music_album",
+      "music_genre",
+      "player_setting",
+      "sport_type",
+      "time",
+      "transport_descriptor"
+    ],
+    "OPEN/PROPER-NOUN": [
+      "artist_name",
+      "audiobook_author",
+      "audiobook_name",
+      "business_name",
+      "change_amount",
+      "coffee_type",
+      "cooking_type",
+      "definition_word",
+      "drink_type",
+      "email_address",
+      "event_name",
+      "food_type",
+      "game_name",
+      "general_frequency",
+      "ingredient",
+      "joke_type",
+      "list_name",
+      "movie_name",
+      "music_descriptor",
+      "news_topic",
+      "person",
+      "personal_info",
+      "place_name",
+      "playlist_name",
+      "podcast_descriptor",
+      "podcast_name",
+      "radio_name",
+      "song_name",
+      "time_zone"
+    ]
+  },
+  "contacts": {
+    "audio_decode": 0,
+    "embedding": 0,
+    "gpu_hours": 0.0,
+    "model": 0,
+    "network": 0,
+    "note": "the only subprocess is the pinned official SLURP evaluate.py, which is the scorer and not a model; every token figure is the stated whitespace x 1.3 proxy and no tokenizer was called",
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "corpus": {
+    "distinct_train_fillers": 4157,
+    "slot_types_in_ontology": 55,
+    "slot_types_in_train": 55,
+    "train_mentions": 11367,
+    "train_utterances": 11514
+  },
+  "declared_rule_v1": {
+    "class_counts": {
+      "CLOSED/FORMAT": 4,
+      "MIXED": 15,
+      "OPEN/PROPER-NOUN": 36
+    },
+    "classes": {
+      "CLOSED/FORMAT": [
+        "meal_type",
+        "timeofday",
+        "transport_agency",
+        "transport_type"
+      ],
+      "MIXED": [
+        "app_name",
+        "business_type",
+        "color_type",
+        "currency_name",
+        "date",
+        "device_type",
+        "email_folder",
+        "house_place",
+        "media_type",
+        "music_genre",
+        "order_type",
+        "player_setting",
+        "relation",
+        "time",
+        "weather_descriptor"
+      ],
+      "OPEN/PROPER-NOUN": [
+        "alarm_type",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "change_amount",
+        "coffee_type",
+        "cooking_type",
+        "definition_word",
+        "drink_type",
+        "email_address",
+        "event_name",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "news_topic",
+        "person",
+        "personal_info",
+        "place_name",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "song_name",
+        "sport_type",
+        "time_zone",
+        "transport_descriptor",
+        "transport_name"
+      ]
+    },
+    "per_entity_type": [
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 159,
+        "dev_verbatim_share_pct": 90.57,
+        "distinct_train_fillers": 289,
+        "entity_type": "date",
+        "novelty_ratio": 0.1585,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "MIXED",
+        "train_mentions": 1823
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 118,
+        "dev_verbatim_share_pct": 75.42,
+        "distinct_train_fillers": 482,
+        "entity_type": "place_name",
+        "novelty_ratio": 0.443,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 1088
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 42,
+        "dev_verbatim_share_pct": 69.05,
+        "distinct_train_fillers": 351,
+        "entity_type": "event_name",
+        "novelty_ratio": 0.351,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 1000
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 56,
+        "dev_verbatim_share_pct": 57.14,
+        "distinct_train_fillers": 468,
+        "entity_type": "person",
+        "novelty_ratio": 0.5404,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 866
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 67,
+        "dev_verbatim_share_pct": 82.09,
+        "distinct_train_fillers": 237,
+        "entity_type": "time",
+        "novelty_ratio": 0.2966,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "MIXED",
+        "train_mentions": 799
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 70,
+        "dev_verbatim_share_pct": 87.14,
+        "distinct_train_fillers": 91,
+        "entity_type": "media_type",
+        "novelty_ratio": 0.1904,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "MIXED",
+        "train_mentions": 478
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 36,
+        "dev_verbatim_share_pct": 66.67,
+        "distinct_train_fillers": 213,
+        "entity_type": "business_name",
+        "novelty_ratio": 0.5547,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 384
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 27,
+        "dev_verbatim_share_pct": 100.0,
+        "distinct_train_fillers": 104,
+        "entity_type": "weather_descriptor",
+        "novelty_ratio": 0.325,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "MIXED",
+        "train_mentions": 320
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 31,
+        "dev_verbatim_share_pct": 100.0,
+        "distinct_train_fillers": 10,
+        "entity_type": "transport_type",
+        "novelty_ratio": 0.0314,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "CLOSED/FORMAT",
+        "train_mentions": 318
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 42,
+        "dev_verbatim_share_pct": 66.67,
+        "distinct_train_fillers": 156,
+        "entity_type": "food_type",
+        "novelty_ratio": 0.5288,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 295
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 14,
+        "dev_verbatim_share_pct": 92.86,
+        "distinct_train_fillers": 81,
+        "entity_type": "relation",
+        "novelty_ratio": 0.3227,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "MIXED",
+        "train_mentions": 251
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 22,
+        "dev_verbatim_share_pct": 100.0,
+        "distinct_train_fillers": 11,
+        "entity_type": "timeofday",
+        "novelty_ratio": 0.046,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "CLOSED/FORMAT",
+        "train_mentions": 239
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 14,
+        "dev_verbatim_share_pct": 57.14,
+        "distinct_train_fillers": 130,
+        "entity_type": "artist_name",
+        "novelty_ratio": 0.5603,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 232
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 22,
+        "dev_verbatim_share_pct": 95.45,
+        "distinct_train_fillers": 75,
+        "entity_type": "device_type",
+        "novelty_ratio": 0.3319,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "MIXED",
+        "train_mentions": 226
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 14,
+        "dev_verbatim_share_pct": 14.29,
+        "distinct_train_fillers": 179,
+        "entity_type": "definition_word",
+        "novelty_ratio": 0.7956,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 225
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 8,
+        "dev_verbatim_share_pct": 87.5,
+        "distinct_train_fillers": 52,
+        "entity_type": "currency_name",
+        "novelty_ratio": 0.2385,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "MIXED",
+        "train_mentions": 218
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 7,
+        "dev_verbatim_share_pct": 85.71,
+        "distinct_train_fillers": 38,
+        "entity_type": "house_place",
+        "novelty_ratio": 0.1919,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "MIXED",
+        "train_mentions": 198
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 19,
+        "dev_verbatim_share_pct": 47.37,
+        "distinct_train_fillers": 79,
+        "entity_type": "list_name",
+        "novelty_ratio": 0.4136,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 191
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 28,
+        "dev_verbatim_share_pct": 78.57,
+        "distinct_train_fillers": 63,
+        "entity_type": "business_type",
+        "novelty_ratio": 0.3333,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "MIXED",
+        "train_mentions": 189
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 27,
+        "dev_verbatim_share_pct": 40.74,
+        "distinct_train_fillers": 122,
+        "entity_type": "news_topic",
+        "novelty_ratio": 0.6667,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 183
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 13,
+        "dev_verbatim_share_pct": 61.54,
+        "distinct_train_fillers": 56,
+        "entity_type": "music_genre",
+        "novelty_ratio": 0.3077,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "MIXED",
+        "train_mentions": 182
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 9,
+        "dev_verbatim_share_pct": 77.78,
+        "distinct_train_fillers": 47,
+        "entity_type": "player_setting",
+        "novelty_ratio": 0.2919,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "MIXED",
+        "train_mentions": 161
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 5,
+        "dev_verbatim_share_pct": 0.0,
+        "distinct_train_fillers": 106,
+        "entity_type": "radio_name",
+        "novelty_ratio": 0.803,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 132
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 7,
+        "dev_verbatim_share_pct": 0.0,
+        "distinct_train_fillers": 103,
+        "entity_type": "song_name",
+        "novelty_ratio": 0.8047,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 128
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 18,
+        "dev_verbatim_share_pct": 100.0,
+        "distinct_train_fillers": 18,
+        "entity_type": "order_type",
+        "novelty_ratio": 0.1682,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "MIXED",
+        "train_mentions": 107
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 7,
+        "dev_verbatim_share_pct": 85.71,
+        "distinct_train_fillers": 25,
+        "entity_type": "color_type",
+        "novelty_ratio": 0.25,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "MIXED",
+        "train_mentions": 100
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 6,
+        "dev_verbatim_share_pct": 66.67,
+        "distinct_train_fillers": 62,
+        "entity_type": "game_name",
+        "novelty_ratio": 0.7126,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 87
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 5,
+        "dev_verbatim_share_pct": 80.0,
+        "distinct_train_fillers": 32,
+        "entity_type": "general_frequency",
+        "novelty_ratio": 0.381,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 84
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 4,
+        "dev_verbatim_share_pct": 100.0,
+        "distinct_train_fillers": 41,
+        "entity_type": "personal_info",
+        "novelty_ratio": 0.5467,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 75
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 2,
+        "dev_verbatim_share_pct": 0.0,
+        "distinct_train_fillers": 59,
+        "entity_type": "audiobook_name",
+        "novelty_ratio": 0.8082,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 73
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 5,
+        "dev_verbatim_share_pct": 60.0,
+        "distinct_train_fillers": 18,
+        "entity_type": "podcast_descriptor",
+        "novelty_ratio": 0.2647,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 68
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 2,
+        "dev_verbatim_share_pct": 100.0,
+        "distinct_train_fillers": 5,
+        "entity_type": "meal_type",
+        "novelty_ratio": 0.0769,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "CLOSED/FORMAT",
+        "train_mentions": 65
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 1,
+        "dev_verbatim_share_pct": 0.0,
+        "distinct_train_fillers": 48,
+        "entity_type": "playlist_name",
+        "novelty_ratio": 0.7742,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 62
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 3,
+        "dev_verbatim_share_pct": 66.67,
+        "distinct_train_fillers": 45,
+        "entity_type": "podcast_name",
+        "novelty_ratio": 0.8036,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 56
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 4,
+        "dev_verbatim_share_pct": 100.0,
+        "distinct_train_fillers": 21,
+        "entity_type": "time_zone",
+        "novelty_ratio": 0.375,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 56
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 2,
+        "dev_verbatim_share_pct": 100.0,
+        "distinct_train_fillers": 14,
+        "entity_type": "app_name",
+        "novelty_ratio": 0.2745,
+        "novelty_ratio_is_estimable": true,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "MIXED",
+        "train_mentions": 51
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 3,
+        "dev_verbatim_share_pct": 33.33,
+        "distinct_train_fillers": 37,
+        "entity_type": "change_amount",
+        "novelty_ratio": 0.7551,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 49
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 3,
+        "dev_verbatim_share_pct": 0.0,
+        "distinct_train_fillers": 40,
+        "entity_type": "music_descriptor",
+        "novelty_ratio": 0.8889,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 45
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 2,
+        "dev_verbatim_share_pct": 50.0,
+        "distinct_train_fillers": 16,
+        "entity_type": "joke_type",
+        "novelty_ratio": 0.4571,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 35
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 2,
+        "dev_verbatim_share_pct": 50.0,
+        "distinct_train_fillers": 23,
+        "entity_type": "email_address",
+        "novelty_ratio": 0.7188,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 32
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 3,
+        "dev_verbatim_share_pct": 100.0,
+        "distinct_train_fillers": 5,
+        "entity_type": "email_folder",
+        "novelty_ratio": 0.1562,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "MIXED",
+        "train_mentions": 32
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 4,
+        "dev_verbatim_share_pct": 100.0,
+        "distinct_train_fillers": 3,
+        "entity_type": "transport_agency",
+        "novelty_ratio": 0.0968,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "CLOSED/FORMAT",
+        "train_mentions": 31
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 2,
+        "dev_verbatim_share_pct": 50.0,
+        "distinct_train_fillers": 15,
+        "entity_type": "coffee_type",
+        "novelty_ratio": 0.6818,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 22
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 4,
+        "dev_verbatim_share_pct": 25.0,
+        "distinct_train_fillers": 16,
+        "entity_type": "ingredient",
+        "novelty_ratio": 0.8,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 20
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 2,
+        "dev_verbatim_share_pct": 50.0,
+        "distinct_train_fillers": 11,
+        "entity_type": "cooking_type",
+        "novelty_ratio": 0.6471,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 17
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 2,
+        "dev_verbatim_share_pct": 50.0,
+        "distinct_train_fillers": 11,
+        "entity_type": "movie_name",
+        "novelty_ratio": 0.6875,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 16
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 1,
+        "dev_verbatim_share_pct": 100.0,
+        "distinct_train_fillers": 9,
+        "entity_type": "movie_type",
+        "novelty_ratio": 0.9,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 10
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 2,
+        "dev_verbatim_share_pct": 100.0,
+        "distinct_train_fillers": 4,
+        "entity_type": "alarm_type",
+        "novelty_ratio": 0.4444,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 9
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 2,
+        "dev_verbatim_share_pct": 50.0,
+        "distinct_train_fillers": 8,
+        "entity_type": "drink_type",
+        "novelty_ratio": 0.8889,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 9
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 1,
+        "dev_verbatim_share_pct": 100.0,
+        "distinct_train_fillers": 8,
+        "entity_type": "transport_name",
+        "novelty_ratio": 0.8889,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 9
+      },
+      {
+        "class_basis": "train-only (no DEV gold mention of this type)",
+        "dev_gold_mentions": 0,
+        "dev_verbatim_share_pct": null,
+        "distinct_train_fillers": 8,
+        "entity_type": "transport_descriptor",
+        "novelty_ratio": 1.0,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 8
+      },
+      {
+        "class_basis": "novelty ratio and MF-9 DEV verbatim share",
+        "dev_gold_mentions": 1,
+        "dev_verbatim_share_pct": 0.0,
+        "distinct_train_fillers": 6,
+        "entity_type": "audiobook_author",
+        "novelty_ratio": 1.0,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 6
+      },
+      {
+        "class_basis": "train-only (no DEV gold mention of this type)",
+        "dev_gold_mentions": 0,
+        "dev_verbatim_share_pct": null,
+        "distinct_train_fillers": 4,
+        "entity_type": "sport_type",
+        "novelty_ratio": 0.8,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 5
+      },
+      {
+        "class_basis": "train-only (no DEV gold mention of this type)",
+        "dev_gold_mentions": 0,
+        "dev_verbatim_share_pct": null,
+        "distinct_train_fillers": 1,
+        "entity_type": "game_type",
+        "novelty_ratio": 1.0,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 1
+      },
+      {
+        "class_basis": "train-only (no DEV gold mention of this type)",
+        "dev_gold_mentions": 0,
+        "dev_verbatim_share_pct": null,
+        "distinct_train_fillers": 1,
+        "entity_type": "music_album",
+        "novelty_ratio": 1.0,
+        "novelty_ratio_is_estimable": false,
+        "rule": "mf10-novelty-v1",
+        "slot_class": "OPEN/PROPER-NOUN",
+        "train_mentions": 1
+      }
+    ],
+    "types_the_operative_rule_moves": [
+      "alarm_type",
+      "app_name",
+      "color_type",
+      "currency_name",
+      "date",
+      "device_type",
+      "email_folder",
+      "game_type",
+      "house_place",
+      "media_type",
+      "movie_type",
+      "music_album",
+      "order_type",
+      "relation",
+      "sport_type",
+      "transport_descriptor",
+      "transport_name",
+      "weather_descriptor"
+    ]
+  },
+  "full_schema_fallback_card_set": {
+    "carded_types": 17,
+    "chars": 14788,
+    "share_of_np4_slot_pct": 20.22,
+    "share_of_np8_slot_pct": 40.44,
+    "token_proxy": 3313,
+    "what_it_is": "the 42 KC-S1b rows whose block was the FULL schema would receive every card; this is the real worst case and is reported separately"
+  },
+  "generated_at": "2026-09-08T14:49:47.720017+00:00",
+  "per_entity_type": [
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor",
+      "dev_gold_mentions": 159,
+      "dev_verbatim_share_pct": 90.57,
+      "distinct_train_fillers": 289,
+      "entity_type": "date",
+      "novelty_ratio": 0.1585,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 1823
+    },
+    {
+      "class_basis": "the corpus mints a new form per 2.3 mentions over 1088 mentions, so this is not a vocabulary",
+      "dev_gold_mentions": 118,
+      "dev_verbatim_share_pct": 75.42,
+      "distinct_train_fillers": 482,
+      "entity_type": "place_name",
+      "novelty_ratio": 0.443,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 1088
+    },
+    {
+      "class_basis": "the corpus mints a new form per 2.8 mentions over 1000 mentions, so this is not a vocabulary",
+      "dev_gold_mentions": 42,
+      "dev_verbatim_share_pct": 69.05,
+      "distinct_train_fillers": 351,
+      "entity_type": "event_name",
+      "novelty_ratio": 0.351,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 1000
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 56,
+      "dev_verbatim_share_pct": 57.14,
+      "distinct_train_fillers": 468,
+      "entity_type": "person",
+      "novelty_ratio": 0.5404,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 866
+    },
+    {
+      "class_basis": "coverage sits between the two floors",
+      "dev_gold_mentions": 67,
+      "dev_verbatim_share_pct": 82.09,
+      "distinct_train_fillers": 237,
+      "entity_type": "time",
+      "novelty_ratio": 0.2966,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "MIXED",
+      "train_mentions": 799
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor",
+      "dev_gold_mentions": 70,
+      "dev_verbatim_share_pct": 87.14,
+      "distinct_train_fillers": 91,
+      "entity_type": "media_type",
+      "novelty_ratio": 0.1904,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 478
+    },
+    {
+      "class_basis": "the corpus mints a new form per 1.8 mentions over 384 mentions, so this is not a vocabulary",
+      "dev_gold_mentions": 36,
+      "dev_verbatim_share_pct": 66.67,
+      "distinct_train_fillers": 213,
+      "entity_type": "business_name",
+      "novelty_ratio": 0.5547,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 384
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor",
+      "dev_gold_mentions": 27,
+      "dev_verbatim_share_pct": 100.0,
+      "distinct_train_fillers": 104,
+      "entity_type": "weather_descriptor",
+      "novelty_ratio": 0.325,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 320
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor",
+      "dev_gold_mentions": 31,
+      "dev_verbatim_share_pct": 100.0,
+      "distinct_train_fillers": 10,
+      "entity_type": "transport_type",
+      "novelty_ratio": 0.0314,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 318
+    },
+    {
+      "class_basis": "the corpus mints a new form per 1.9 mentions over 295 mentions, so this is not a vocabulary",
+      "dev_gold_mentions": 42,
+      "dev_verbatim_share_pct": 66.67,
+      "distinct_train_fillers": 156,
+      "entity_type": "food_type",
+      "novelty_ratio": 0.5288,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 295
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor",
+      "dev_gold_mentions": 14,
+      "dev_verbatim_share_pct": 92.86,
+      "distinct_train_fillers": 81,
+      "entity_type": "relation",
+      "novelty_ratio": 0.3227,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 251
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor",
+      "dev_gold_mentions": 22,
+      "dev_verbatim_share_pct": 100.0,
+      "distinct_train_fillers": 11,
+      "entity_type": "timeofday",
+      "novelty_ratio": 0.046,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 239
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 14,
+      "dev_verbatim_share_pct": 57.14,
+      "distinct_train_fillers": 130,
+      "entity_type": "artist_name",
+      "novelty_ratio": 0.5603,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 232
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor",
+      "dev_gold_mentions": 22,
+      "dev_verbatim_share_pct": 95.45,
+      "distinct_train_fillers": 75,
+      "entity_type": "device_type",
+      "novelty_ratio": 0.3319,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 226
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 14,
+      "dev_verbatim_share_pct": 14.29,
+      "distinct_train_fillers": 179,
+      "entity_type": "definition_word",
+      "novelty_ratio": 0.7956,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 225
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor",
+      "dev_gold_mentions": 8,
+      "dev_verbatim_share_pct": 87.5,
+      "distinct_train_fillers": 52,
+      "entity_type": "currency_name",
+      "novelty_ratio": 0.2385,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 218
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor",
+      "dev_gold_mentions": 7,
+      "dev_verbatim_share_pct": 85.71,
+      "distinct_train_fillers": 38,
+      "entity_type": "house_place",
+      "novelty_ratio": 0.1919,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 198
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 19,
+      "dev_verbatim_share_pct": 47.37,
+      "distinct_train_fillers": 79,
+      "entity_type": "list_name",
+      "novelty_ratio": 0.4136,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 191
+    },
+    {
+      "class_basis": "coverage sits between the two floors",
+      "dev_gold_mentions": 28,
+      "dev_verbatim_share_pct": 78.57,
+      "distinct_train_fillers": 63,
+      "entity_type": "business_type",
+      "novelty_ratio": 0.3333,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "MIXED",
+      "train_mentions": 189
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 27,
+      "dev_verbatim_share_pct": 40.74,
+      "distinct_train_fillers": 122,
+      "entity_type": "news_topic",
+      "novelty_ratio": 0.6667,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 183
+    },
+    {
+      "class_basis": "coverage sits between the two floors",
+      "dev_gold_mentions": 13,
+      "dev_verbatim_share_pct": 61.54,
+      "distinct_train_fillers": 56,
+      "entity_type": "music_genre",
+      "novelty_ratio": 0.3077,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "MIXED",
+      "train_mentions": 182
+    },
+    {
+      "class_basis": "coverage sits between the two floors",
+      "dev_gold_mentions": 9,
+      "dev_verbatim_share_pct": 77.78,
+      "distinct_train_fillers": 47,
+      "entity_type": "player_setting",
+      "novelty_ratio": 0.2919,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "MIXED",
+      "train_mentions": 161
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 5,
+      "dev_verbatim_share_pct": 0.0,
+      "distinct_train_fillers": 106,
+      "entity_type": "radio_name",
+      "novelty_ratio": 0.803,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 132
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 7,
+      "dev_verbatim_share_pct": 0.0,
+      "distinct_train_fillers": 103,
+      "entity_type": "song_name",
+      "novelty_ratio": 0.8047,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 128
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor",
+      "dev_gold_mentions": 18,
+      "dev_verbatim_share_pct": 100.0,
+      "distinct_train_fillers": 18,
+      "entity_type": "order_type",
+      "novelty_ratio": 0.1682,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 107
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor",
+      "dev_gold_mentions": 7,
+      "dev_verbatim_share_pct": 85.71,
+      "distinct_train_fillers": 25,
+      "entity_type": "color_type",
+      "novelty_ratio": 0.25,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 100
+    },
+    {
+      "class_basis": "the corpus mints a new form per 1.4 mentions over 87 mentions, so this is not a vocabulary",
+      "dev_gold_mentions": 6,
+      "dev_verbatim_share_pct": 66.67,
+      "distinct_train_fillers": 62,
+      "entity_type": "game_name",
+      "novelty_ratio": 0.7126,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 87
+    },
+    {
+      "class_basis": "the corpus mints a new form per 2.6 mentions over 84 mentions, so this is not a vocabulary",
+      "dev_gold_mentions": 5,
+      "dev_verbatim_share_pct": 80.0,
+      "distinct_train_fillers": 32,
+      "entity_type": "general_frequency",
+      "novelty_ratio": 0.381,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 84
+    },
+    {
+      "class_basis": "the corpus mints a new form per 1.8 mentions over 75 mentions, so this is not a vocabulary",
+      "dev_gold_mentions": 4,
+      "dev_verbatim_share_pct": 100.0,
+      "distinct_train_fillers": 41,
+      "entity_type": "personal_info",
+      "novelty_ratio": 0.5467,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 75
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 2,
+      "dev_verbatim_share_pct": 0.0,
+      "distinct_train_fillers": 59,
+      "entity_type": "audiobook_name",
+      "novelty_ratio": 0.8082,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 73
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 5,
+      "dev_verbatim_share_pct": 60.0,
+      "distinct_train_fillers": 18,
+      "entity_type": "podcast_descriptor",
+      "novelty_ratio": 0.2647,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 68
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor",
+      "dev_gold_mentions": 2,
+      "dev_verbatim_share_pct": 100.0,
+      "distinct_train_fillers": 5,
+      "entity_type": "meal_type",
+      "novelty_ratio": 0.0769,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 65
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 1,
+      "dev_verbatim_share_pct": 0.0,
+      "distinct_train_fillers": 48,
+      "entity_type": "playlist_name",
+      "novelty_ratio": 0.7742,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 62
+    },
+    {
+      "class_basis": "the corpus mints a new form per 1.2 mentions over 56 mentions, so this is not a vocabulary",
+      "dev_gold_mentions": 3,
+      "dev_verbatim_share_pct": 66.67,
+      "distinct_train_fillers": 45,
+      "entity_type": "podcast_name",
+      "novelty_ratio": 0.8036,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 56
+    },
+    {
+      "class_basis": "the corpus mints a new form per 2.7 mentions over 56 mentions, so this is not a vocabulary",
+      "dev_gold_mentions": 4,
+      "dev_verbatim_share_pct": 100.0,
+      "distinct_train_fillers": 21,
+      "entity_type": "time_zone",
+      "novelty_ratio": 0.375,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 56
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor",
+      "dev_gold_mentions": 2,
+      "dev_verbatim_share_pct": 100.0,
+      "distinct_train_fillers": 14,
+      "entity_type": "app_name",
+      "novelty_ratio": 0.2745,
+      "novelty_ratio_is_estimable": true,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 51
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 3,
+      "dev_verbatim_share_pct": 33.33,
+      "distinct_train_fillers": 37,
+      "entity_type": "change_amount",
+      "novelty_ratio": 0.7551,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 49
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 3,
+      "dev_verbatim_share_pct": 0.0,
+      "distinct_train_fillers": 40,
+      "entity_type": "music_descriptor",
+      "novelty_ratio": 0.8889,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 45
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 2,
+      "dev_verbatim_share_pct": 50.0,
+      "distinct_train_fillers": 16,
+      "entity_type": "joke_type",
+      "novelty_ratio": 0.4571,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 35
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 2,
+      "dev_verbatim_share_pct": 50.0,
+      "distinct_train_fillers": 23,
+      "entity_type": "email_address",
+      "novelty_ratio": 0.7188,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 32
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor; the novelty ratio is not estimable at this size",
+      "dev_gold_mentions": 3,
+      "dev_verbatim_share_pct": 100.0,
+      "distinct_train_fillers": 5,
+      "entity_type": "email_folder",
+      "novelty_ratio": 0.1562,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 32
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor; the novelty ratio is not estimable at this size",
+      "dev_gold_mentions": 4,
+      "dev_verbatim_share_pct": 100.0,
+      "distinct_train_fillers": 3,
+      "entity_type": "transport_agency",
+      "novelty_ratio": 0.0968,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 31
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 2,
+      "dev_verbatim_share_pct": 50.0,
+      "distinct_train_fillers": 15,
+      "entity_type": "coffee_type",
+      "novelty_ratio": 0.6818,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 22
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 4,
+      "dev_verbatim_share_pct": 25.0,
+      "distinct_train_fillers": 16,
+      "entity_type": "ingredient",
+      "novelty_ratio": 0.8,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 20
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 2,
+      "dev_verbatim_share_pct": 50.0,
+      "distinct_train_fillers": 11,
+      "entity_type": "cooking_type",
+      "novelty_ratio": 0.6471,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 17
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 2,
+      "dev_verbatim_share_pct": 50.0,
+      "distinct_train_fillers": 11,
+      "entity_type": "movie_name",
+      "novelty_ratio": 0.6875,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 16
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor; the novelty ratio is not estimable at this size",
+      "dev_gold_mentions": 1,
+      "dev_verbatim_share_pct": 100.0,
+      "distinct_train_fillers": 9,
+      "entity_type": "movie_type",
+      "novelty_ratio": 0.9,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 10
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor; the novelty ratio is not estimable at this size",
+      "dev_gold_mentions": 2,
+      "dev_verbatim_share_pct": 100.0,
+      "distinct_train_fillers": 4,
+      "entity_type": "alarm_type",
+      "novelty_ratio": 0.4444,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 9
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 2,
+      "dev_verbatim_share_pct": 50.0,
+      "distinct_train_fillers": 8,
+      "entity_type": "drink_type",
+      "novelty_ratio": 0.8889,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 9
+    },
+    {
+      "class_basis": "TRAIN carries the DEV gold value at or above the coverage floor; the novelty ratio is not estimable at this size",
+      "dev_gold_mentions": 1,
+      "dev_verbatim_share_pct": 100.0,
+      "distinct_train_fillers": 8,
+      "entity_type": "transport_name",
+      "novelty_ratio": 0.8889,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "CLOSED/FORMAT",
+      "train_mentions": 9
+    },
+    {
+      "class_basis": "train-only (no DEV gold mention of this type, so nothing for a card to cover)",
+      "dev_gold_mentions": 0,
+      "dev_verbatim_share_pct": null,
+      "distinct_train_fillers": 8,
+      "entity_type": "transport_descriptor",
+      "novelty_ratio": 1.0,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "MIXED",
+      "train_mentions": 8
+    },
+    {
+      "class_basis": "DEV gold routinely lands outside the TRAIN vocabulary",
+      "dev_gold_mentions": 1,
+      "dev_verbatim_share_pct": 0.0,
+      "distinct_train_fillers": 6,
+      "entity_type": "audiobook_author",
+      "novelty_ratio": 1.0,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "OPEN/PROPER-NOUN",
+      "train_mentions": 6
+    },
+    {
+      "class_basis": "train-only (no DEV gold mention of this type, so nothing for a card to cover)",
+      "dev_gold_mentions": 0,
+      "dev_verbatim_share_pct": null,
+      "distinct_train_fillers": 4,
+      "entity_type": "sport_type",
+      "novelty_ratio": 0.8,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "MIXED",
+      "train_mentions": 5
+    },
+    {
+      "class_basis": "train-only (no DEV gold mention of this type, so nothing for a card to cover)",
+      "dev_gold_mentions": 0,
+      "dev_verbatim_share_pct": null,
+      "distinct_train_fillers": 1,
+      "entity_type": "game_type",
+      "novelty_ratio": 1.0,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "MIXED",
+      "train_mentions": 1
+    },
+    {
+      "class_basis": "train-only (no DEV gold mention of this type, so nothing for a card to cover)",
+      "dev_gold_mentions": 0,
+      "dev_verbatim_share_pct": null,
+      "distinct_train_fillers": 1,
+      "entity_type": "music_album",
+      "novelty_ratio": 1.0,
+      "novelty_ratio_is_estimable": false,
+      "rule": "mf10-cardability-v2",
+      "slot_class": "MIXED",
+      "train_mentions": 1
+    }
+  ],
+  "per_intent_card_cost": [
+    {
+      "block_types": [
+        "date",
+        "timeofday",
+        "time",
+        "alarm_type",
+        "event_name"
+      ],
+      "card_chars": 6660,
+      "card_token_proxy": 1488,
+      "carded_closed_types": [
+        "date",
+        "timeofday",
+        "alarm_type"
+      ],
+      "intent": "alarm_query"
+    },
+    {
+      "block_types": [
+        "time",
+        "date",
+        "timeofday",
+        "alarm_type"
+      ],
+      "card_chars": 6660,
+      "card_token_proxy": 1488,
+      "carded_closed_types": [
+        "date",
+        "timeofday",
+        "alarm_type"
+      ],
+      "intent": "alarm_remove"
+    },
+    {
+      "block_types": [
+        "time",
+        "date",
+        "timeofday",
+        "event_name"
+      ],
+      "card_chars": 6574,
+      "card_token_proxy": 1469,
+      "carded_closed_types": [
+        "date",
+        "timeofday"
+      ],
+      "intent": "alarm_set"
+    },
+    {
+      "block_types": [
+        "change_amount",
+        "device_type"
+      ],
+      "card_chars": 1505,
+      "card_token_proxy": 345,
+      "carded_closed_types": [
+        "device_type"
+      ],
+      "intent": "audio_volume_down"
+    },
+    {
+      "block_types": [
+        "time",
+        "device_type",
+        "change_amount",
+        "event_name",
+        "timeofday"
+      ],
+      "card_chars": 1683,
+      "card_token_proxy": 383,
+      "carded_closed_types": [
+        "device_type",
+        "timeofday"
+      ],
+      "intent": "audio_volume_mute"
+    },
+    {
+      "block_types": [
+        "change_amount"
+      ],
+      "card_chars": 0,
+      "card_token_proxy": 0,
+      "carded_closed_types": [],
+      "intent": "audio_volume_other"
+    },
+    {
+      "block_types": [
+        "change_amount",
+        "device_type",
+        "media_type",
+        "song_name"
+      ],
+      "card_chars": 2851,
+      "card_token_proxy": 654,
+      "carded_closed_types": [
+        "device_type",
+        "media_type"
+      ],
+      "intent": "audio_volume_up"
+    },
+    {
+      "block_types": [
+        "date",
+        "event_name",
+        "time",
+        "timeofday",
+        "person",
+        "relation"
+      ],
+      "card_chars": 7750,
+      "card_token_proxy": 1739,
+      "carded_closed_types": [
+        "date",
+        "timeofday",
+        "relation"
+      ],
+      "intent": "calendar_query"
+    },
+    {
+      "block_types": [
+        "date",
+        "event_name",
+        "time",
+        "meal_type",
+        "person"
+      ],
+      "card_chars": 6475,
+      "card_token_proxy": 1449,
+      "carded_closed_types": [
+        "date",
+        "meal_type"
+      ],
+      "intent": "calendar_remove"
+    },
+    {
+      "block_types": [
+        "event_name",
+        "date",
+        "time",
+        "person",
+        "general_frequency",
+        "relation",
+        "timeofday",
+        "place_name"
+      ],
+      "card_chars": 7750,
+      "card_token_proxy": 1739,
+      "carded_closed_types": [
+        "date",
+        "relation",
+        "timeofday"
+      ],
+      "intent": "calendar_set"
+    },
+    {
+      "block_types": [
+        "food_type",
+        "meal_type"
+      ],
+      "card_chars": 345,
+      "card_token_proxy": 85,
+      "carded_closed_types": [
+        "meal_type"
+      ],
+      "intent": "cooking_query"
+    },
+    {
+      "block_types": [
+        "food_type",
+        "ingredient",
+        "cooking_type",
+        "drink_type",
+        "meal_type"
+      ],
+      "card_chars": 345,
+      "card_token_proxy": 85,
+      "carded_closed_types": [
+        "meal_type"
+      ],
+      "intent": "cooking_recipe"
+    },
+    {
+      "block_types": [
+        "place_name",
+        "time_zone",
+        "time"
+      ],
+      "card_chars": 0,
+      "card_token_proxy": 0,
+      "carded_closed_types": [],
+      "intent": "datetime_convert"
+    },
+    {
+      "block_types": [
+        "date",
+        "place_name",
+        "time_zone",
+        "event_name",
+        "time"
+      ],
+      "card_chars": 6396,
+      "card_token_proxy": 1432,
+      "carded_closed_types": [
+        "date"
+      ],
+      "intent": "datetime_query"
+    },
+    {
+      "block_types": [
+        "email_address",
+        "person",
+        "personal_info",
+        "list_name",
+        "relation"
+      ],
+      "card_chars": 1442,
+      "card_token_proxy": 337,
+      "carded_closed_types": [
+        "relation"
+      ],
+      "intent": "email_addcontact"
+    },
+    {
+      "block_types": [
+        "person",
+        "relation",
+        "date",
+        "email_folder",
+        "time"
+      ],
+      "card_chars": 7647,
+      "card_token_proxy": 1716,
+      "carded_closed_types": [
+        "relation",
+        "date",
+        "email_folder"
+      ],
+      "intent": "email_query"
+    },
+    {
+      "block_types": [
+        "person",
+        "personal_info",
+        "relation"
+      ],
+      "card_chars": 1442,
+      "card_token_proxy": 337,
+      "carded_closed_types": [
+        "relation"
+      ],
+      "intent": "email_querycontact"
+    },
+    {
+      "block_types": [
+        "person",
+        "relation",
+        "date",
+        "email_address",
+        "time",
+        "event_name",
+        "timeofday"
+      ],
+      "card_chars": 7750,
+      "card_token_proxy": 1739,
+      "carded_closed_types": [
+        "relation",
+        "date",
+        "timeofday"
+      ],
+      "intent": "email_sendemail"
+    },
+    {
+      "block_types": [
+        "date"
+      ],
+      "card_chars": 6396,
+      "card_token_proxy": 1432,
+      "carded_closed_types": [
+        "date"
+      ],
+      "intent": "general_greet"
+    },
+    {
+      "block_types": [
+        "joke_type",
+        "relation",
+        "date",
+        "person",
+        "business_type",
+        "food_type"
+      ],
+      "card_chars": 7572,
+      "card_token_proxy": 1701,
+      "carded_closed_types": [
+        "relation",
+        "date"
+      ],
+      "intent": "general_joke"
+    },
+    {
+      "block_types": [
+        "date",
+        "person",
+        "place_name",
+        "event_name",
+        "relation",
+        "meal_type",
+        "time"
+      ],
+      "card_chars": 7651,
+      "card_token_proxy": 1718,
+      "carded_closed_types": [
+        "date",
+        "relation",
+        "meal_type"
+      ],
+      "intent": "general_quirky"
+    },
+    {
+      "block_types": [
+        "device_type",
+        "house_place",
+        "time"
+      ],
+      "card_chars": 2044,
+      "card_token_proxy": 468,
+      "carded_closed_types": [
+        "device_type",
+        "house_place"
+      ],
+      "intent": "iot_cleaning"
+    },
+    {
+      "block_types": [
+        "coffee_type",
+        "device_type",
+        "time",
+        "business_type",
+        "business_name",
+        "date"
+      ],
+      "card_chars": 7635,
+      "card_token_proxy": 1709,
+      "carded_closed_types": [
+        "device_type",
+        "date"
+      ],
+      "intent": "iot_coffee"
+    },
+    {
+      "block_types": [
+        "color_type",
+        "house_place",
+        "change_amount"
+      ],
+      "card_chars": 1168,
+      "card_token_proxy": 270,
+      "carded_closed_types": [
+        "color_type",
+        "house_place"
+      ],
+      "intent": "iot_hue_lightchange"
+    },
+    {
+      "block_types": [
+        "house_place",
+        "change_amount",
+        "color_type",
+        "device_type"
+      ],
+      "card_chars": 2407,
+      "card_token_proxy": 546,
+      "carded_closed_types": [
+        "house_place",
+        "color_type",
+        "device_type"
+      ],
+      "intent": "iot_hue_lightdim"
+    },
+    {
+      "block_types": [
+        "house_place",
+        "device_type",
+        "time"
+      ],
+      "card_chars": 2044,
+      "card_token_proxy": 468,
+      "carded_closed_types": [
+        "house_place",
+        "device_type"
+      ],
+      "intent": "iot_hue_lightoff"
+    },
+    {
+      "block_types": [
+        "house_place",
+        "device_type"
+      ],
+      "card_chars": 2044,
+      "card_token_proxy": 468,
+      "carded_closed_types": [
+        "house_place",
+        "device_type"
+      ],
+      "intent": "iot_hue_lighton"
+    },
+    {
+      "block_types": [
+        "house_place",
+        "change_amount",
+        "device_type"
+      ],
+      "card_chars": 2044,
+      "card_token_proxy": 468,
+      "carded_closed_types": [
+        "house_place",
+        "device_type"
+      ],
+      "intent": "iot_hue_lightup"
+    },
+    {
+      "block_types": [
+        "device_type",
+        "house_place"
+      ],
+      "card_chars": 2044,
+      "card_token_proxy": 468,
+      "carded_closed_types": [
+        "device_type",
+        "house_place"
+      ],
+      "intent": "iot_wemo_off"
+    },
+    {
+      "block_types": [
+        "device_type",
+        "house_place"
+      ],
+      "card_chars": 2044,
+      "card_token_proxy": 468,
+      "carded_closed_types": [
+        "device_type",
+        "house_place"
+      ],
+      "intent": "iot_wemo_on"
+    },
+    {
+      "block_types": [
+        "list_name",
+        "date",
+        "event_name",
+        "drink_type",
+        "music_descriptor",
+        "person"
+      ],
+      "card_chars": 6396,
+      "card_token_proxy": 1432,
+      "carded_closed_types": [
+        "date"
+      ],
+      "intent": "lists_createoradd"
+    },
+    {
+      "block_types": [
+        "list_name",
+        "date"
+      ],
+      "card_chars": 6396,
+      "card_token_proxy": 1432,
+      "carded_closed_types": [
+        "date"
+      ],
+      "intent": "lists_query"
+    },
+    {
+      "block_types": [
+        "list_name",
+        "date",
+        "person",
+        "event_name",
+        "relation"
+      ],
+      "card_chars": 7572,
+      "card_token_proxy": 1701,
+      "carded_closed_types": [
+        "date",
+        "relation"
+      ],
+      "intent": "lists_remove"
+    },
+    {
+      "block_types": [
+        "music_descriptor"
+      ],
+      "card_chars": 0,
+      "card_token_proxy": 0,
+      "carded_closed_types": [],
+      "intent": "music_dislikeness"
+    },
+    {
+      "block_types": [
+        "music_genre",
+        "artist_name",
+        "music_descriptor",
+        "app_name",
+        "player_setting",
+        "date",
+        "playlist_name",
+        "song_name"
+      ],
+      "card_chars": 6592,
+      "card_token_proxy": 1476,
+      "carded_closed_types": [
+        "app_name",
+        "date"
+      ],
+      "intent": "music_likeness"
+    },
+    {
+      "block_types": [
+        "artist_name",
+        "music_genre",
+        "date",
+        "song_name",
+        "person",
+        "timeofday",
+        "media_type",
+        "music_album",
+        "player_setting"
+      ],
+      "card_chars": 7920,
+      "card_token_proxy": 1779,
+      "carded_closed_types": [
+        "date",
+        "timeofday",
+        "media_type"
+      ],
+      "intent": "music_query"
+    },
+    {
+      "block_types": [
+        "player_setting",
+        "device_type",
+        "media_type",
+        "song_name",
+        "artist_name",
+        "music_genre"
+      ],
+      "card_chars": 2851,
+      "card_token_proxy": 654,
+      "carded_closed_types": [
+        "device_type",
+        "media_type"
+      ],
+      "intent": "music_settings"
+    },
+    {
+      "block_types": [
+        "news_topic",
+        "media_type",
+        "place_name",
+        "date",
+        "person"
+      ],
+      "card_chars": 7742,
+      "card_token_proxy": 1741,
+      "carded_closed_types": [
+        "media_type",
+        "date"
+      ],
+      "intent": "news_query"
+    },
+    {
+      "block_types": [
+        "player_setting",
+        "audiobook_name",
+        "media_type",
+        "artist_name",
+        "audiobook_author",
+        "app_name",
+        "time"
+      ],
+      "card_chars": 1808,
+      "card_token_proxy": 422,
+      "carded_closed_types": [
+        "media_type",
+        "app_name"
+      ],
+      "intent": "play_audiobook"
+    },
+    {
+      "block_types": [
+        "game_name"
+      ],
+      "card_chars": 0,
+      "card_token_proxy": 0,
+      "carded_closed_types": [],
+      "intent": "play_game"
+    },
+    {
+      "block_types": [
+        "artist_name",
+        "music_genre",
+        "song_name",
+        "playlist_name",
+        "music_descriptor",
+        "player_setting",
+        "date"
+      ],
+      "card_chars": 6396,
+      "card_token_proxy": 1432,
+      "carded_closed_types": [
+        "date"
+      ],
+      "intent": "play_music"
+    },
+    {
+      "block_types": [
+        "podcast_descriptor",
+        "podcast_name",
+        "player_setting",
+        "person",
+        "date"
+      ],
+      "card_chars": 6396,
+      "card_token_proxy": 1432,
+      "carded_closed_types": [
+        "date"
+      ],
+      "intent": "play_podcasts"
+    },
+    {
+      "block_types": [
+        "radio_name",
+        "app_name",
+        "music_genre",
+        "person",
+        "device_type"
+      ],
+      "card_chars": 1701,
+      "card_token_proxy": 389,
+      "carded_closed_types": [
+        "app_name",
+        "device_type"
+      ],
+      "intent": "play_radio"
+    },
+    {
+      "block_types": [
+        "currency_name",
+        "date"
+      ],
+      "card_chars": 7160,
+      "card_token_proxy": 1606,
+      "carded_closed_types": [
+        "currency_name",
+        "date"
+      ],
+      "intent": "qa_currency"
+    },
+    {
+      "block_types": [
+        "definition_word"
+      ],
+      "card_chars": 0,
+      "card_token_proxy": 0,
+      "carded_closed_types": [],
+      "intent": "qa_definition"
+    },
+    {
+      "block_types": [
+        "person",
+        "place_name",
+        "artist_name",
+        "event_name"
+      ],
+      "card_chars": 0,
+      "card_token_proxy": 0,
+      "carded_closed_types": [],
+      "intent": "qa_factoid"
+    },
+    {
+      "block_types": [
+        "date",
+        "general_frequency"
+      ],
+      "card_chars": 6396,
+      "card_token_proxy": 1432,
+      "carded_closed_types": [
+        "date"
+      ],
+      "intent": "qa_maths"
+    },
+    {
+      "block_types": [
+        "business_name",
+        "date",
+        "news_topic",
+        "currency_name"
+      ],
+      "card_chars": 7160,
+      "card_token_proxy": 1606,
+      "carded_closed_types": [
+        "date",
+        "currency_name"
+      ],
+      "intent": "qa_stock"
+    },
+    {
+      "block_types": [
+        "place_name",
+        "date",
+        "event_name",
+        "timeofday",
+        "business_type",
+        "time"
+      ],
+      "card_chars": 6574,
+      "card_token_proxy": 1469,
+      "carded_closed_types": [
+        "date",
+        "timeofday"
+      ],
+      "intent": "recommendation_events"
+    },
+    {
+      "block_types": [
+        "business_type",
+        "place_name",
+        "food_type",
+        "business_name"
+      ],
+      "card_chars": 0,
+      "card_token_proxy": 0,
+      "carded_closed_types": [],
+      "intent": "recommendation_locations"
+    },
+    {
+      "block_types": [
+        "place_name",
+        "movie_name",
+        "movie_type",
+        "business_type",
+        "date",
+        "event_name",
+        "timeofday",
+        "time"
+      ],
+      "card_chars": 6731,
+      "card_token_proxy": 1505,
+      "carded_closed_types": [
+        "movie_type",
+        "date",
+        "timeofday"
+      ],
+      "intent": "recommendation_movies"
+    },
+    {
+      "block_types": [
+        "media_type",
+        "business_name"
+      ],
+      "card_chars": 1612,
+      "card_token_proxy": 377,
+      "carded_closed_types": [
+        "media_type"
+      ],
+      "intent": "social_post"
+    },
+    {
+      "block_types": [
+        "media_type",
+        "date",
+        "person",
+        "relation",
+        "time"
+      ],
+      "card_chars": 8918,
+      "card_token_proxy": 2010,
+      "carded_closed_types": [
+        "media_type",
+        "date",
+        "relation"
+      ],
+      "intent": "social_query"
+    },
+    {
+      "block_types": [
+        "food_type",
+        "business_name",
+        "order_type",
+        "business_type",
+        "meal_type",
+        "time"
+      ],
+      "card_chars": 629,
+      "card_token_proxy": 147,
+      "carded_closed_types": [
+        "order_type",
+        "meal_type"
+      ],
+      "intent": "takeaway_order"
+    },
+    {
+      "block_types": [
+        "order_type",
+        "business_name",
+        "business_type",
+        "food_type"
+      ],
+      "card_chars": 550,
+      "card_token_proxy": 130,
+      "carded_closed_types": [
+        "order_type"
+      ],
+      "intent": "takeaway_query"
+    },
+    {
+      "block_types": [
+        "place_name",
+        "transport_type",
+        "date",
+        "time"
+      ],
+      "card_chars": 6521,
+      "card_token_proxy": 1460,
+      "carded_closed_types": [
+        "transport_type",
+        "date"
+      ],
+      "intent": "transport_query"
+    },
+    {
+      "block_types": [
+        "transport_type",
+        "transport_agency",
+        "place_name",
+        "time",
+        "timeofday",
+        "date"
+      ],
+      "card_chars": 6755,
+      "card_token_proxy": 1510,
+      "carded_closed_types": [
+        "transport_type",
+        "transport_agency",
+        "timeofday",
+        "date"
+      ],
+      "intent": "transport_taxi"
+    },
+    {
+      "block_types": [
+        "transport_type",
+        "place_name",
+        "date",
+        "time",
+        "transport_descriptor",
+        "timeofday"
+      ],
+      "card_chars": 6699,
+      "card_token_proxy": 1498,
+      "carded_closed_types": [
+        "transport_type",
+        "date",
+        "timeofday"
+      ],
+      "intent": "transport_ticket"
+    },
+    {
+      "block_types": [
+        "place_name",
+        "date",
+        "timeofday",
+        "time"
+      ],
+      "card_chars": 6574,
+      "card_token_proxy": 1469,
+      "carded_closed_types": [
+        "date",
+        "timeofday"
+      ],
+      "intent": "transport_traffic"
+    },
+    {
+      "block_types": [
+        "weather_descriptor",
+        "date",
+        "place_name",
+        "timeofday",
+        "time"
+      ],
+      "card_chars": 8303,
+      "card_token_proxy": 1849,
+      "carded_closed_types": [
+        "weather_descriptor",
+        "date",
+        "timeofday"
+      ],
+      "intent": "weather_query"
+    }
+  ],
+  "row_id": "SAEA-SLURP-MF10-VOCAB-CARDS-NORMALIZED-SLU-V1",
+  "rules": {
+    "mf10-cardability-v2": {
+      "closed": "dev_verbatim_share_pct >= 85.0 AND NOT (train_mentions >= 50 AND novelty_ratio >= 0.35)",
+      "mixed": "everything else, and every type with no DEV gold to cover",
+      "open": "dev_verbatim_share_pct <= 60.0 OR (train_mentions >= 50 AND novelty_ratio >= 0.35)",
+      "roles": {
+        "coverage": "decides -- a card pays exactly when DEV gold is inside it",
+        "reuse": "disqualifies, but only where the ratio is estimable (>= 50 TRAIN mentions)",
+        "size": "checked, not capped: the enumerability question is asked of the per-intent card SET against the arm's own measured prompt headroom, below"
+      },
+      "status": "OPERATIVE -- the views of question 2 are built on this"
+    },
+    "mf10-novelty-v1": {
+      "closed": "novelty_ratio <= 0.1 AND dev_verbatim_share_pct >= 85.0",
+      "defect": "the novelty ratio is a RATE ESTIMATE bounded from below by 1 / mentions, so a rare type cannot have a low one: alarm_type has four distinct surface forms and nine TRAIN mentions, and this rule calls it open. The defect is in the statistic, not in the corpus, and it is reported rather than repaired in silence",
+      "mixed": "everything else",
+      "open": "novelty_ratio >= 0.35 OR dev_verbatim_share_pct <= 60.0",
+      "status": "DECLARED BEFORE THE READ, and reported because it is WRONG"
+    },
+    "novelty_ratio": "distinct TRAIN surface forms / TRAIN mentions",
+    "operative": "mf10-cardability-v2"
+  },
+  "schema": "saea-slurp-mf10-type-classes-v1",
+  "sources": {
+    "dev_verbatim_share": "READ from docs/checks/speech-aware-evidence-acquisition/2026-09-08-mf9-slurp-slot-gap-audit/value-headroom.json; never recomputed from DEV text",
+    "intent_slot_schema": {
+      "intents": 60,
+      "min_share": 0.02,
+      "schema_id": "slurp-intent-slot-schema-v1",
+      "source_identity_hash": "545847bb95a9423005c71bdcc3fa74af55a3a1b6ae91409ba4070fd35bf92fef",
+      "source_split": "train",
+      "utterance_count": 11514
+    },
+    "mf9_value_headroom_sha256": "a4477141cd323678c8a76b55aec07c0d36874f265ef4eea4f508f4d274715534",
+    "train_material": "data.slurp.load_slurp_train_material (TRAIN only)",
+    "umbrella_lock": "/mnt/d/chao_workspace/docs/datasets.lock.json"
+  },
+  "token_cost": {
+    "is_a_tokenizer_measurement": false,
+    "note": "a cell that ever flies a card must measure its own envelope through the serving /apply-template + /tokenize seam, as KC-S1b did",
+    "proxy": "ceil(whitespace tokens * 1.3)"
+  },
+  "worst_intent": {
+    "block_types": [
+      "media_type",
+      "date",
+      "person",
+      "relation",
+      "time"
+    ],
+    "card_chars": 8918,
+    "card_token_proxy": 2010,
+    "carded_closed_types": [
+      "media_type",
+      "date",
+      "relation"
+    ],
+    "intent": "social_query",
+    "share_of_np4_slot_pct": 12.27,
+    "share_of_np8_slot_pct": 24.54,
+    "slot_tokens_np4": 16384,
+    "slot_tokens_np8": 8192
+  }
+}

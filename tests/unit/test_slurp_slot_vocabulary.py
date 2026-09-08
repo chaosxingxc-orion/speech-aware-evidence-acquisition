@@ -14,11 +14,14 @@ from speech_aware_evidence_acquisition.analysis.slurp_slot_vocabulary import (
     CLOSED_MAX_NOVELTY,
     CLOSED_MIN_VERBATIM_PCT,
     CONTAINMENT_MIN_LENGTH,
+    NOVELTY_MIN_MENTIONS,
     OPEN_MAX_VERBATIM_PCT,
     OPEN_MIN_NOVELTY,
     SLOT_CLASS_CLOSED,
     SLOT_CLASS_MIXED,
     SLOT_CLASS_OPEN,
+    SLOT_CLASS_RULE_V1,
+    SLOT_CLASS_RULE_V2,
     SLOT_CLASSES,
     TOKEN_PROXY_FACTOR,
     SlotVocabularyError,
@@ -54,6 +57,12 @@ def test_token_proxy_refuses_a_non_string():
 # ---------------------------------------------------------------------------
 
 
+def test_the_rule_ids_are_pinned():
+    assert SLOT_CLASS_RULE_V1 == "mf10-novelty-v1"
+    assert SLOT_CLASS_RULE_V2 == "mf10-cardability-v2"
+    assert NOVELTY_MIN_MENTIONS == 50
+
+
 def test_thresholds_are_the_declared_ones_and_cannot_overlap():
     assert (CLOSED_MAX_NOVELTY, CLOSED_MIN_VERBATIM_PCT) == (0.10, 85.0)
     assert (OPEN_MIN_NOVELTY, OPEN_MAX_VERBATIM_PCT) == (0.35, 60.0)
@@ -68,14 +77,16 @@ def test_a_small_reused_vocabulary_dev_gold_stays_inside_is_closed():
         {"transport_type": (31, 100.0)},
     )
     assert stats[0].slot_class == SLOT_CLASS_CLOSED
+    assert stats[0].rule == SLOT_CLASS_RULE_V2
     assert stats[0].distinct_fillers == 3
     assert stats[0].train_mentions == 100
     assert stats[0].novelty_ratio == pytest.approx(0.03)
 
 
 def test_a_new_form_per_mention_is_open_even_on_perfect_coverage():
-    forms = {f"name-{n}": 1 for n in range(40)}
+    forms = {f"name-{n}": 1 for n in range(60)}
     stats = classify_slot_types({"person": forms}, {"person": (56, 99.0)})
+    assert stats[0].train_mentions >= NOVELTY_MIN_MENTIONS
     assert stats[0].slot_class == SLOT_CLASS_OPEN
 
 
@@ -84,19 +95,62 @@ def test_poor_dev_coverage_alone_is_enough_to_be_open():
     stats = classify_slot_types({"news_topic": forms}, {"news_topic": (27, 40.7)})
     assert stats[0].novelty_ratio == pytest.approx(0.05)
     assert stats[0].slot_class == SLOT_CLASS_OPEN
+    assert "outside the TRAIN vocabulary" in stats[0].class_basis
 
 
 def test_the_middle_ground_is_reported_as_mixed_not_forced():
-    forms = {f"f-{n}": 5 for n in range(20)}  # novelty 0.2, neither rule fires
+    forms = {f"f-{n}": 5 for n in range(20)}  # coverage between the two floors
     stats = classify_slot_types({"food_type": forms}, {"food_type": (42, 66.7)})
     assert stats[0].slot_class == SLOT_CLASS_MIXED
 
 
-def test_a_type_with_no_dev_gold_is_classified_on_train_alone_and_says_so():
+def test_the_novelty_disqualifier_needs_an_estimable_ratio():
+    """The defect v1 has and v2 does not: a four-form vocabulary seen nine
+    times has a ratio of 0.44 because it was seen nine times."""
+
+    counts = {"alarm_type": {"a": 3, "b": 3, "c": 2, "d": 1}}
+    verbatim = {"alarm_type": (2, 100.0)}
+    assert counts["alarm_type"].__len__() / 9 > OPEN_MIN_NOVELTY
+    v2 = classify_slot_types(counts, verbatim, rule=SLOT_CLASS_RULE_V2)
+    v1 = classify_slot_types(counts, verbatim, rule=SLOT_CLASS_RULE_V1)
+    assert v2[0].slot_class == SLOT_CLASS_CLOSED
+    assert v1[0].slot_class == SLOT_CLASS_OPEN
+    assert "not estimable" in v2[0].class_basis
+
+
+def test_the_disqualifier_does_fire_once_the_ratio_is_estimable():
+    forms = {f"f-{n}": 1 for n in range(40)}
+    forms["common"] = 60  # 100 mentions, 41 forms, ratio 0.41
+    stats = classify_slot_types({"personal_info": forms}, {"personal_info": (4, 100.0)})
+    assert stats[0].train_mentions >= NOVELTY_MIN_MENTIONS
+    assert stats[0].slot_class == SLOT_CLASS_OPEN
+    assert "not a vocabulary" in stats[0].class_basis
+
+
+def test_an_unknown_rule_is_refused():
+    with pytest.raises(SlotVocabularyError):
+        classify_slot_types({"date": {"monday": 1}}, {}, rule="mf10-vibes-v3")
+
+
+def test_both_rules_partition_the_types():
+    counts = {
+        "a": {"x": 90, "y": 10},
+        "b": {f"f{n}": 1 for n in range(80)},
+        "c": {"p": 50, "q": 50},
+    }
+    verbatim = {"a": (10, 100.0), "b": (10, 20.0), "c": (10, 70.0)}
+    for rule in (SLOT_CLASS_RULE_V1, SLOT_CLASS_RULE_V2):
+        stats = classify_slot_types(counts, verbatim, rule=rule)
+        assert {stat.entity_type for stat in stats} == set(counts)
+        assert all(stat.slot_class in SLOT_CLASSES for stat in stats)
+        assert all(stat.rule == rule for stat in stats)
+
+
+def test_a_type_with_no_dev_gold_has_nothing_for_a_card_to_cover():
     stats = classify_slot_types({"joke_type": {"funny": 40, "silly": 10}}, {})
     assert stats[0].dev_gold_mentions == 0
     assert stats[0].dev_verbatim_share_pct is None
-    assert stats[0].slot_class == SLOT_CLASS_CLOSED
+    assert stats[0].slot_class == SLOT_CLASS_MIXED
     assert "train-only" in stats[0].class_basis
 
 
@@ -121,8 +175,10 @@ def test_stats_json_carries_every_input_so_a_reader_can_reclassify():
     assert document["train_mentions"] == 10
     assert document["distinct_train_fillers"] == 2
     assert document["novelty_ratio"] == 0.2
+    assert document["novelty_ratio_is_estimable"] is False
     assert document["dev_verbatim_share_pct"] == 90.57
-    assert document["slot_class"] == SLOT_CLASS_MIXED
+    assert document["rule"] == SLOT_CLASS_RULE_V2
+    assert document["slot_class"] == SLOT_CLASS_CLOSED
 
 
 # ---------------------------------------------------------------------------
