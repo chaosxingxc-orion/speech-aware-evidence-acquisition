@@ -74,6 +74,38 @@ it is reported.
 Nothing here decides anything and nothing here licenses a flight. It builds a
 transport unit and writes receipts; flying it needs the obs seam, its own
 preregistration, its own exposure row and the owner's GO.
+
+OBS-E1 UNIT PLAN v2 (coordinator's decision, 2026-09-08)
+---------------------------------------------------------
+v1's rule 4 keeps a sub-1.0-s sliver as its own unit whenever both its
+neighbours belong to a different diarized speaker -- rule 1 ("never cross a
+diarized speaker change") admits no exception, so a backchannel and a bare
+diarizer artifact are indistinguishable and both are kept and flagged
+``short-kept``. The v1 receipt shows the cost: 166 of 5,288 units are under
+1.0 s, all of them ``short-kept``, and the shortest is 0.001 s -- a 16-sample
+sliver that, wrapped in the 2.0-second delivered tail, would cost one whole
+contact to say nothing. The coordinator's ruling: "a 16-sample unit wrapped
+in a 2-second tail is a diarizer artifact, not a transport unit."
+
+Plan v2 (schema :data:`PLAN_SCHEMA_V2`, built by :func:`plan_units_v2`)
+keeps rules 1-3 and 5 of v1 BYTE FOR BYTE (:func:`_base_spans` is the one
+piece of code both builders call) and replaces rule 4 with ONE exception to
+rule 1: a span shorter than :data:`MIN_UNIT_SECONDS` now merges into
+whichever ADJACENT unit is LONGER, of either speaker, ties going to the
+PRECEDING neighbour -- crossing a diarized speaker change if that is the
+only way to absorb it. The 90 s cap still holds: a merge that would exceed
+it tries the other neighbour, and a sliver with no admissible neighbour on
+either side is kept and flagged ``short-kept``, exactly as in v1, and is
+expected to be rare to none. The merged unit's speaker facts are recomputed
+over its own new span (the same ``window_speakers`` call v1 already makes),
+so its ``speaker``/``speaker_share``/``speaker_count`` already count the
+absorbed sliver; :class:`UnitV2` additionally records every absorbed sliver
+(``absorbed_units``: span, original speaker, whether absorbing it crossed a
+speaker change) so a later reader never has to re-derive what a merge did
+from the final span alone. :func:`plan_units` (v1) is untouched: it still
+calls the same :func:`_base_spans` helper and its own unchanged
+:func:`_merge_short`, so a v1 build reproduces the committed
+``e21-speaker-turn-units-v1.json`` byte for byte.
 """
 
 from __future__ import annotations
@@ -112,6 +144,11 @@ TAIL_SILENCE_SECONDS = 2.0
 UNIT_ID_SEPARATOR = "#u"
 
 PLAN_SCHEMA = "saea-e21-speaker-turn-units-v1"
+
+#: The coordinator's 2026-09-08 rule-4 replacement (module docstring, "OBS-E1
+#: UNIT PLAN v2" section). Built by :func:`plan_units_v2`; v1's own schema and
+#: builder are untouched.
+PLAN_SCHEMA_V2 = "saea-e21-speaker-turn-units-v2"
 
 #: Cut kinds, reported per boundary so a verdict can separate a clean cut from one
 #: the audio refused to give.
@@ -375,6 +412,29 @@ class Unit:
         }
 
 
+@dataclass(frozen=True)
+class UnitV2(Unit):
+    """A v2 unit: everything :class:`Unit` carries, plus every sub-1.0-s
+    sliver the coordinator's rule 4 (module docstring, "OBS-E1 UNIT PLAN v2")
+    absorbed into it. Empty for a unit no merge ever touched.
+
+    Each entry of ``absorbed_units`` is ``{"start_seconds", "end_seconds",
+    "duration_seconds", "speaker", "crossed_speaker_change"}`` -- the
+    sliver's OWN span and dominant speaker before it was absorbed, and
+    whether absorbing it crossed a diarized speaker change. The surviving
+    unit's own ``speaker``/``speaker_share``/``speaker_count`` are computed
+    the same way v1's are, over the merged span, so they already count every
+    absorbed sliver; this field is a record of the merge, not a correction.
+    """
+
+    absorbed_units: tuple[dict[str, object], ...] = ()
+
+    def as_dict(self) -> dict[str, object]:
+        document = super().as_dict()
+        document["absorbed_units"] = [dict(item) for item in self.absorbed_units]
+        return document
+
+
 def turns(segments: Sequence[SpeakerSegment]) -> tuple[tuple[str, float, float], ...]:
     """Consecutive same-speaker segments collapsed into ``(speaker, start, end)``."""
 
@@ -477,19 +537,21 @@ def _cap_split(
     return sorted(output, key=lambda span: span[0])
 
 
-def plan_units(
+def _base_spans(
     sample_id: str,
     segments: Sequence[SpeakerSegment],
     duration_seconds: float,
     pauses: Sequence[Pause],
-    active,
-    frame_seconds: float,
     *,
-    max_seconds: float = MAX_UNIT_SECONDS,
-    min_seconds: float = MIN_UNIT_SECONDS,
-    snap_radius: float = SNAP_RADIUS_SECONDS,
-) -> tuple[Unit, ...]:
-    """The five rules, applied in order, to one call. Returns a TILING."""
+    max_seconds: float,
+    min_seconds: float,
+    snap_radius: float,
+) -> list[tuple[float, float, str, str, tuple[str, ...]]]:
+    """Rules 1-3, shared by every plan builder (v1 and v2 alike): the
+    diarized turn boundaries (rule 1), each snapped onto a nearby pause or
+    left at the turn change (rule 2), then split at the 90 s cap (rule 3).
+    Rule 4 -- the minimum -- is where the builders diverge and is applied by
+    the caller, on the spans this returns."""
 
     if duration_seconds <= 0:
         raise SpeakerTurnUnitError(f"call {sample_id!r} has non-positive duration")
@@ -521,7 +583,32 @@ def plan_units(
     spans.append((cursor, duration_seconds, entry_cut, CUT_CALL_END, ()))
 
     # Rule 3: the cap.
-    spans = _cap_split(spans, pauses, max_seconds=max_seconds, min_seconds=min_seconds)
+    return _cap_split(spans, pauses, max_seconds=max_seconds, min_seconds=min_seconds)
+
+
+def plan_units(
+    sample_id: str,
+    segments: Sequence[SpeakerSegment],
+    duration_seconds: float,
+    pauses: Sequence[Pause],
+    active,
+    frame_seconds: float,
+    *,
+    max_seconds: float = MAX_UNIT_SECONDS,
+    min_seconds: float = MIN_UNIT_SECONDS,
+    snap_radius: float = SNAP_RADIUS_SECONDS,
+) -> tuple[Unit, ...]:
+    """The five rules, applied in order, to one call. Returns a TILING."""
+
+    spans = _base_spans(
+        sample_id,
+        segments,
+        duration_seconds,
+        pauses,
+        max_seconds=max_seconds,
+        min_seconds=min_seconds,
+        snap_radius=snap_radius,
+    )
 
     # Rule 4: the minimum, merged only where rule 1 survives it.
     spans = _merge_short(
@@ -614,6 +701,174 @@ def _merge_short(
             working[index][4] = tuple(sorted(set(tuple(flags) + ("short-kept",))))
             index += 1
     return [(a, b, c, d, tuple(e)) for a, b, c, d, e in working]
+
+
+#: ``(sliver_start, sliver_end, sliver_speaker, crossed_speaker_change)``.
+#: ``sliver_speaker`` is ``str | None`` at runtime; left as ``object`` here so
+#: this module-level alias needs no forward reference.
+_AbsorbedSliver = tuple[float, float, object, bool]
+_SpanV2 = tuple[float, float, str, str, tuple[str, ...], tuple[_AbsorbedSliver, ...]]
+
+
+def _merge_short_v2(
+    spans: Sequence[tuple[float, float, str, str, tuple[str, ...]]],
+    segments: Sequence[SpeakerSegment],
+    sample_id: str,
+    *,
+    max_seconds: float,
+    min_seconds: float,
+) -> list[_SpanV2]:
+    """Rule 4, v2 (module docstring, "OBS-E1 UNIT PLAN v2"): a short span
+    merges into whichever ADJACENT span is LONGER -- of either speaker --
+    ties going to the PRECEDING neighbour (index - 1 always sorts before
+    index + 1, so a plain stable sort by duration already gives that tie
+    break). This is the one, explicit exception to rule 1's "never cross a
+    diarized speaker change".
+
+    The 90 s cap still holds: a candidate neighbour whose merge would exceed
+    it is dropped before the longer-wins comparison, so the OTHER neighbour
+    is tried instead; a span with no admissible neighbour on either side
+    keeps its sliver and is flagged ``short-kept``, exactly as v1 flags a
+    backchannel it cannot merge.
+
+    Every merge is recorded as an ``(sliver_start, sliver_end,
+    sliver_speaker, crossed_speaker_change)`` tuple on the surviving span, so
+    the final unit can report every sliver it absorbed. A span that absorbed
+    at least one crossing sliver is flagged ``cross-speaker-merge``; one
+    whose absorptions were all same-speaker (exactly what v1 would also have
+    merged) is flagged ``same-speaker-merge`` instead -- the two are mutually
+    exclusive per unit, so a receipt can just sum ``flags``.
+    """
+
+    working: list[list[object]] = [list(span) + [tuple()] for span in spans]
+    index = 0
+    while index < len(working):
+        start, end, start_cut, end_cut, flags, absorbed = working[index]
+        if end - start >= min_seconds - _EPSILON:
+            index += 1
+            continue
+        sliver_speaker = _dominant(segments, sample_id, start, end)
+        candidates: list[tuple[int, float]] = []
+        for neighbour in (index - 1, index + 1):
+            if not 0 <= neighbour < len(working):
+                continue
+            n_start, n_end = working[neighbour][0], working[neighbour][1]
+            if max(n_end, end) - min(n_start, start) <= max_seconds + _EPSILON:
+                candidates.append((neighbour, n_end - n_start))
+        if not candidates:
+            working[index][4] = tuple(sorted(set(tuple(flags) + ("short-kept",))))
+            index += 1
+            continue
+        # The LONGER neighbour wins; a tie goes to the smaller index, which is
+        # always the PRECEDING one (index - 1 < index + 1).
+        candidates.sort(key=lambda item: (-item[1], item[0]))
+        neighbour, _duration = candidates[0]
+        n_start, n_end, n_start_cut, n_end_cut, n_flags, n_absorbed = working[neighbour]
+        neighbour_speaker = _dominant(segments, sample_id, n_start, n_end)
+        crossed = sliver_speaker is None or sliver_speaker != neighbour_speaker
+        record: _AbsorbedSliver = (start, end, sliver_speaker, crossed)
+        preceding = neighbour < index
+        combined_start = min(n_start, start)
+        combined_end = max(n_end, end)
+        combined_start_cut = n_start_cut if preceding else start_cut
+        combined_end_cut = end_cut if preceding else n_end_cut
+        combined_flags = tuple(sorted(set(tuple(flags) + tuple(n_flags) + ("short-merged",))))
+        combined_absorbed = (
+            tuple(n_absorbed) + (record,) if preceding else (record,) + tuple(n_absorbed)
+        )
+        combined = [
+            combined_start,
+            combined_end,
+            combined_start_cut,
+            combined_end_cut,
+            combined_flags,
+            combined_absorbed,
+        ]
+        low = min(index, neighbour)
+        working[low : low + 2] = [combined]
+        # Rewind to the merged span's own new left neighbour: a merge can
+        # leave that neighbour, or the merged span itself, still short.
+        index = max(low - 1, 0)
+
+    result: list[_SpanV2] = []
+    for start, end, start_cut, end_cut, flags, absorbed in working:
+        if "short-merged" in flags:
+            crossed_any = any(item[3] for item in absorbed)
+            flags = tuple(
+                sorted(
+                    set(flags) | {"cross-speaker-merge" if crossed_any else "same-speaker-merge"}
+                )
+            )
+        result.append((start, end, start_cut, end_cut, flags, tuple(absorbed)))
+    return result
+
+
+def plan_units_v2(
+    sample_id: str,
+    segments: Sequence[SpeakerSegment],
+    duration_seconds: float,
+    pauses: Sequence[Pause],
+    active,
+    frame_seconds: float,
+    *,
+    max_seconds: float = MAX_UNIT_SECONDS,
+    min_seconds: float = MIN_UNIT_SECONDS,
+    snap_radius: float = SNAP_RADIUS_SECONDS,
+) -> tuple[UnitV2, ...]:
+    """The v2 plan (coordinator's decision, 2026-09-08; module docstring,
+    "OBS-E1 UNIT PLAN v2"). Rules 1-3 and 5 are v1's, byte for byte
+    (:func:`_base_spans`); rule 4 is :func:`_merge_short_v2`. Returns a
+    TILING, proved by the same :func:`assert_tiles` v1 uses."""
+
+    spans = _base_spans(
+        sample_id,
+        segments,
+        duration_seconds,
+        pauses,
+        max_seconds=max_seconds,
+        min_seconds=min_seconds,
+        snap_radius=snap_radius,
+    )
+    merged = _merge_short_v2(
+        spans, segments, sample_id, max_seconds=max_seconds, min_seconds=min_seconds
+    )
+
+    units: list[UnitV2] = []
+    for index, (start, end, start_cut, end_cut, flags, absorbed) in enumerate(merged, start=1):
+        facts = window_speakers(
+            segments,
+            window_id=unit_id(sample_id, index),
+            window_index=index,
+            start_seconds=start,
+            end_seconds=end,
+        )
+        units.append(
+            UnitV2(
+                sample_id=sample_id,
+                unit_index=index,
+                start_seconds=start,
+                end_seconds=end,
+                speaker=facts.dominant_speaker,
+                speaker_share=facts.dominant_share,
+                speaker_count=facts.speaker_count,
+                start_cut=start_cut,
+                end_cut=end_cut,
+                ends_active=ends_on_active_frame(active, frame_seconds, end),
+                flags=flags,
+                absorbed_units=tuple(
+                    {
+                        "start_seconds": round(a_start, 6),
+                        "end_seconds": round(a_end, 6),
+                        "duration_seconds": round(a_end - a_start, 6),
+                        "speaker": a_speaker,
+                        "crossed_speaker_change": bool(a_crossed),
+                    }
+                    for a_start, a_end, a_speaker, a_crossed in absorbed
+                ),
+            )
+        )
+    assert_tiles(units, duration_seconds)
+    return tuple(units)
 
 
 def assert_tiles(units: Sequence[Unit], duration_seconds: float) -> None:
@@ -830,6 +1085,11 @@ STUDY_SLUG = "speech-aware-evidence-acquisition"
 EXPOSURE_ROW = "SAEA-E21-MF-SPEAKER-TURN-UNITS-V1"
 SUMMARY_SCHEMA = "saea-e21-speaker-turn-units-summary-v1"
 
+#: v2's own exposure row and summary schema (module docstring, "OBS-E1 UNIT
+#: PLAN v2"); v1's are untouched above.
+EXPOSURE_ROW_V2 = "SAEA-E21-MF-SPEAKER-TURN-UNITS-V2"
+SUMMARY_SCHEMA_V2 = "saea-e21-speaker-turn-units-summary-v2"
+
 REFERENCE_ATTRIBUTION_NOTE = (
     "interpolated from the sealed per-window reference-word COUNTS and window "
     "timings of SAEA-E21-MF-WINDOW-PAIRING-V1; exact at every window boundary, "
@@ -860,6 +1120,19 @@ def rules_block() -> dict[str, object]:
     }
 
 
+def rules_block_v2() -> dict[str, object]:
+    """v1's rule settings, plus the name of the rule that replaces v1's rule
+    4 (the coordinator's 2026-09-08 decision, module docstring "OBS-E1 UNIT
+    PLAN v2"). ``min_unit_seconds`` itself is unchanged -- only what happens
+    to a span under it moves."""
+
+    block = rules_block()
+    block["min_unit_merge_rule"] = (
+        "v2-longer-neighbour-either-speaker-ties-preceding-cap-preserved"
+    )
+    return block
+
+
 def plan_document(
     *,
     carrier_lock_key: str,
@@ -870,20 +1143,29 @@ def plan_document(
     window_rows_sha256: str,
     calls: Sequence[Mapping[str, object]],
     corpus: Mapping[str, object],
+    schema: str = PLAN_SCHEMA,
+    exposure_row: str = EXPOSURE_ROW,
+    rules: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
-    """The hash-pinned unit plan: units, never audio."""
+    """The hash-pinned unit plan: units, never audio.
+
+    ``schema``/``exposure_row``/``rules`` default to v1's, so every existing
+    call site reproduces its bytes exactly; a v2 build passes
+    :data:`PLAN_SCHEMA_V2`, :data:`EXPOSURE_ROW_V2` and :func:`rules_block_v2`
+    explicitly.
+    """
 
     return {
-        "schema": PLAN_SCHEMA,
+        "schema": schema,
         "study": STUDY_SLUG,
-        "exposure_row": EXPOSURE_ROW,
+        "exposure_row": exposure_row,
         "carrier_lock_key": carrier_lock_key,
         "split_identity_hash": split_identity_hash,
         "source_run_id": source_run_id,
         "source_attempt_id": source_attempt_id,
         "diarization_run_id": diarization_run_id,
         "window_rows_sha256": window_rows_sha256,
-        "rules": rules_block(),
+        "rules": dict(rules) if rules is not None else rules_block(),
         "reference_word_attribution": REFERENCE_ATTRIBUTION_NOTE,
         "zero_contact": ZERO_CONTACT_NOTE,
         "corpus": dict(corpus),
@@ -898,16 +1180,20 @@ def summary_document(
     elapsed_seconds: float,
     corpus: Mapping[str, object],
     per_call: Sequence[Mapping[str, object]],
+    schema: str = SUMMARY_SCHEMA,
+    exposure_row: str = EXPOSURE_ROW,
+    rules: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
-    """The committed receipt beside the plan."""
+    """The committed receipt beside the plan. Same default-preserving shape
+    as :func:`plan_document`."""
 
     return {
-        "schema": SUMMARY_SCHEMA,
+        "schema": schema,
         "study": STUDY_SLUG,
-        "exposure_row": EXPOSURE_ROW,
+        "exposure_row": exposure_row,
         "plan_path": plan_path,
         "plan_sha256": plan_sha256,
-        "rules": rules_block(),
+        "rules": dict(rules) if rules is not None else rules_block(),
         "zero_contact": ZERO_CONTACT_NOTE,
         "elapsed_seconds": round(float(elapsed_seconds), 3),
         "corpus": dict(corpus),
@@ -925,11 +1211,13 @@ __all__ = [
     "MIN_UNIT_SECONDS",
     "PAUSE_MIN_SECONDS",
     "PLAN_SCHEMA",
+    "PLAN_SCHEMA_V2",
     "SNAP_RADIUS_SECONDS",
     "TAIL_SILENCE_SECONDS",
     "Pause",
     "SpeakerTurnUnitError",
     "Unit",
+    "UnitV2",
     "activate",
     "activity_from_sealed_slices",
     "assert_tiles",
@@ -941,8 +1229,10 @@ __all__ = [
     "pauses_from_activity",
     "plan_document",
     "plan_units",
+    "plan_units_v2",
     "reference_word_partition",
     "rules_block",
+    "rules_block_v2",
     "snap_to_pause",
     "summary_document",
     "turn_boundaries",
