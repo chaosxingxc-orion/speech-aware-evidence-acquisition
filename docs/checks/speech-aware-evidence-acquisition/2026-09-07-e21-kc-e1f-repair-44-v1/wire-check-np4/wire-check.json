@@ -1,0 +1,198 @@
+{
+  "cells": {
+    "E21-kc-e1f-brief-repair": {
+      "attempt_id": "attempt-20260908T034904Z-8fab4e",
+      "attempt_state": "FINALIZED",
+      "baseline_fragment": "e21-kc-e1f-brief-repair",
+      "bundle_attempt_state": "FINALIZED",
+      "calls": 4,
+      "cell_id": "E21-kc-e1f-brief-repair",
+      "config_hash": "b80b6a779269233caf8e9287d3d6b1c3cf7e75971c258dcc2bd75c1d2555fd66",
+      "contacts": 61,
+      "cost_records": 61,
+      "driver_run_id": "SAEA-E21-KC-E1F-WIRE-CHECK-V1-e21-kc-e1f-brief-repair-np4",
+      "evidence_source": "conec-class-lists",
+      "manifest_sha256": "2a88762d1b2ee6420bd4e1eda185785783a2e1512090ed709c0fa111937a0ac2",
+      "outputs_sha256": "99502e9a9ddcb5b120e332509b95bf02bb2032c0717439e67b8ea2a2a5edfb1c",
+      "payload_binding_stage": {
+        "bound": true,
+        "carrier_lock_key": "earnings21-original",
+        "carrier_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/earnings21-22/earnings21",
+        "checked_every_row": true,
+        "dataset_fragment": "e21-kc-e1-wire-check-4",
+        "declared_derived_media_roots": [],
+        "failures": {},
+        "model_contacts": 0,
+        "rows_checked": [
+          "4384683",
+          "4386541",
+          "4387332",
+          "4392809"
+        ],
+        "rows_total": 4,
+        "sockets_opened": 0
+      },
+      "policy": "obs-repair-loop",
+      "predecessor_binding": {
+        "relpath": "receipts/e21-predecessor-full44-direct-baseline-v2.json",
+        "sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a"
+      },
+      "repair_frame_sha256": "10cafa714e4efcdf0b13190e6c50080e739de09c791878b919bf45e7585c070e",
+      "repair_ledger": {
+        "refusal_reasons": {
+          "anchor_ratio_below_floor": 61,
+          "empty_predecessor": 0,
+          "empty_response": 0,
+          "substituted_fraction_above_ceiling": 0
+        },
+        "rejected_opcodes": {
+          "deletion": 2,
+          "insertion": 1,
+          "oversized_replace": 0,
+          "unbalanced_replace": 91
+        },
+        "windows": 61,
+        "windows_changed": 0
+      },
+      "repair_properties": {
+        "a_canned_response_delivers_the_predecessor_byte_for_byte": true,
+        "delivered_token_count_equals_the_predecessors": true,
+        "every_window_records_a_delivery_and_a_complete_ledger": true,
+        "instruction_equals_the_base_plus_the_framed_predecessor": true,
+        "stitched_row_equals_the_sealed_comparator_hypothesis": true
+      },
+      "scorers_with_aggregates": [
+        "asr-wer-whisper",
+        "conec-entity-wer-official",
+        "cost",
+        "numeric-value-accuracy-v1",
+        "semantic-high-impact-error-rate-v1"
+      ],
+      "task_instruction_sha256": "67472995f594bcd5b4500f0c9d7d4c11a7a2cb9a5714ccb9c13be2002e9ccdbe",
+      "trace_sha256": "8489fd177ed8a9130796ca66a172797f449b21cef93aff6fc5943f53886d2e74",
+      "windows_per_call": {
+        "4384683": 17,
+        "4386541": 13,
+        "4387332": 15,
+        "4392809": 16
+      },
+      "zero_contact": {
+        "every_sealed_response_is_the_canned_dry_run_text": true,
+        "session_receipt_is_the_dry_run_placeholder": true
+      }
+    },
+    "E21-ku-e1fc-placebo-repair": {
+      "attempt_id": "attempt-20260908T035017Z-ac6a33",
+      "attempt_state": "FINALIZED",
+      "baseline_fragment": "e21-ku-e1fc-placebo-repair",
+      "bundle_attempt_state": "FINALIZED",
+      "calls": 4,
+      "cell_id": "E21-ku-e1fc-placebo-repair",
+      "config_hash": "cb4cbdc06cb9db581d0a92c4b78ec760d53c7154a1d556d0abcb269dc9c6d141",
+      "contacts": 61,
+      "cost_records": 61,
+      "driver_run_id": "SAEA-E21-KC-E1F-WIRE-CHECK-V1-e21-ku-e1fc-placebo-repair-np4",
+      "evidence_source": "conec-class-lists-placebo-token-matched",
+      "manifest_sha256": "6796ce683339f24e30a2c01a3f439811474bd5c6916ed5d9b402c4f479cbb09e",
+      "outputs_sha256": "4cd098c740feef964950c976becc62ee9d165167ae2294c6904c85b5cb19820b",
+      "payload_binding_stage": {
+        "bound": true,
+        "carrier_lock_key": "earnings21-original",
+        "carrier_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/earnings21-22/earnings21",
+        "checked_every_row": true,
+        "dataset_fragment": "e21-kc-e1-wire-check-4",
+        "declared_derived_media_roots": [],
+        "failures": {},
+        "model_contacts": 0,
+        "rows_checked": [
+          "4384683",
+          "4386541",
+          "4387332",
+          "4392809"
+        ],
+        "rows_total": 4,
+        "sockets_opened": 0
+      },
+      "policy": "obs-repair-loop",
+      "predecessor_binding": {
+        "relpath": "receipts/e21-predecessor-full44-direct-baseline-v2.json",
+        "sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a"
+      },
+      "repair_frame_sha256": "10cafa714e4efcdf0b13190e6c50080e739de09c791878b919bf45e7585c070e",
+      "repair_ledger": {
+        "refusal_reasons": {
+          "anchor_ratio_below_floor": 61,
+          "empty_predecessor": 0,
+          "empty_response": 0,
+          "substituted_fraction_above_ceiling": 0
+        },
+        "rejected_opcodes": {
+          "deletion": 2,
+          "insertion": 1,
+          "oversized_replace": 0,
+          "unbalanced_replace": 91
+        },
+        "windows": 61,
+        "windows_changed": 0
+      },
+      "repair_properties": {
+        "a_canned_response_delivers_the_predecessor_byte_for_byte": true,
+        "delivered_token_count_equals_the_predecessors": true,
+        "every_window_records_a_delivery_and_a_complete_ledger": true,
+        "instruction_equals_the_base_plus_the_framed_predecessor": true,
+        "stitched_row_equals_the_sealed_comparator_hypothesis": true
+      },
+      "scorers_with_aggregates": [
+        "asr-wer-whisper",
+        "conec-entity-wer-official",
+        "cost",
+        "numeric-value-accuracy-v1",
+        "semantic-high-impact-error-rate-v1"
+      ],
+      "task_instruction_sha256": "67472995f594bcd5b4500f0c9d7d4c11a7a2cb9a5714ccb9c13be2002e9ccdbe",
+      "trace_sha256": "6b892a5c2167e9cc8f1b672d188b2738b1e3bfd4200d04f068aca74fccebf7cc",
+      "windows_per_call": {
+        "4384683": 17,
+        "4386541": 13,
+        "4387332": 15,
+        "4392809": 16
+      },
+      "zero_contact": {
+        "every_sealed_response_is_the_canned_dry_run_text": true,
+        "session_receipt_is_the_dry_run_placeholder": true
+      }
+    }
+  },
+  "experiment_fragment": "e21-kc-e1f-repair-44-v1",
+  "failures": [],
+  "flight_run_id": "SAEA-E21-KC-E1F-REPAIR-44-V1",
+  "generated_at": "2026-09-08T03:51:21.204569+00:00",
+  "one_factor": {
+    "different_config_hash": true,
+    "different_evidence_source": true,
+    "same_contact_count": true,
+    "same_policy": true,
+    "same_predecessor_binding": true,
+    "same_repair_frame": true,
+    "same_task_instruction": true,
+    "same_windows_per_call": true
+  },
+  "resident_processes_not_contacted": [
+    "148748 /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8080 -m /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf --mmproj /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf -c 36864 -np 4 -fa on -ngl 999 -ctk q8_0 -ctv q8_0"
+  ],
+  "result": "PASS",
+  "run_id": "SAEA-E21-KC-E1F-WIRE-CHECK-V1",
+  "schema": "saea-e21-kc-e1f-wire-check-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "b2f530834ce5fd21fb73184a890acbe5a7f719f1",
+  "what_this_does_not_certify": "it certifies that the harness assembles, seals and scores the right request, that the payloads BIND through the real carrier root, and that a useless pass-2 answer cannot move the transcript. It does NOT certify the geometry -- that is the prompt fit in SERVER mode, run on the geometry the cells name -- and it says nothing about what the frozen core does with a real request",
+  "why_a_resident_server_is_no_longer_a_refusal": "the owner's 2026-09-07 always-on serving ruling keeps the core resident per geometry and has agents attach rather than spawn, so 'no server on the host' is not a property a model-free check can demand. The two direct proofs above replace it",
+  "wire_dataset_fragment": "e21-kc-e1-wire-check-4",
+  "wire_sample_ids": [
+    "4386541",
+    "4387332",
+    "4392809",
+    "4384683"
+  ],
+  "zero_contact": "no model, server, socket, GPU or network contact. Audio IS decoded and sliced (that is the point of a dry run through the real OBS tiling) and the five declared scorers DO run over canned responses. Proved from the sealed artifacts: the session receipt is the dry-run placeholder and every sealed per-slice MODEL_RESPONSE is the canned string"
+}
