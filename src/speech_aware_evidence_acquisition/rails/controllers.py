@@ -135,6 +135,7 @@ from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
 from ..core.base import AGENT_CONTROLLERS, RESPONSE_FORMATS, JudgeVerdict
+from ..core.frozen_historical import frozen_agent_controller
 from .errors import RailsError
 from .knowledge import (
     AgentStateArtifact,
@@ -1097,6 +1098,42 @@ def register_phase_programs_v1() -> None:
 
 
 register_phase_programs_v1()
+
+
+# --- WAVE R7: the two frozen-historical controller_policy_id values ---------
+#
+# ``configs/experiment/a2t-g5-exhaustive-family-fixed16-v1.json`` and its G6
+# sibling declare ``frozen_components.controller_policy_id``, which
+# scripts/checks/engineering_base_check.py resolves in AGENT_CONTROLLERS (not
+# in POLICIES, where the same two ids also appear as the baseline fragment's
+# ``policy``). Both sealed cells flew from a rails/probes launcher whose
+# controller class is one of the 33 out-of-base controllers the September audit
+# retired; neither id has, or should have, a live controller factory.
+#
+# They register as ``core.base.FrozenHistoricalComponent`` for the same reason
+# and with the same discipline as their POLICIES twins in core/policies.py: the
+# name RESOLVES so the base accounts for it, and every use REFUSES with the
+# sealed receipt's path. See core/frozen_historical.py.
+
+
+def register_frozen_historical_controllers_r7() -> None:
+    """Idempotently register the two retired A2T ``controller_policy_id``
+    values as frozen-historical entries (never as runnable factories)."""
+
+    registered = AGENT_CONTROLLERS.names()
+    if "saea-a2t-g5-plan-compile-execute-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "saea-a2t-g5-plan-compile-execute-v1",
+            frozen_agent_controller("saea-a2t-g5-plan-compile-execute-v1"),
+        )
+    if "saea-a2t-g6-exhaustive-family-sweep-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "saea-a2t-g6-exhaustive-family-sweep-v1",
+            frozen_agent_controller("saea-a2t-g6-exhaustive-family-sweep-v1"),
+        )
+
+
+register_frozen_historical_controllers_r7()
 
 
 # -- registered response formats (E1, 2026-09-05) -----------------------------

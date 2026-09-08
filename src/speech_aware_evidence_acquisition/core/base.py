@@ -997,3 +997,84 @@ class SampleContext:
     # "fixed-legal-context-replay" do, e0.d2_leakage.ARM_VISIBLE_FIELDS).
     exemplar_bank: Sequence[Mapping[str, str]] | None = None
     extras: dict[str, object] = field(default_factory=dict)
+
+
+# ---------------------------------------------------------------------------
+# Frozen-historical components (WAVE R7, owner Decision 12-F, 2026-09-08).
+#
+# The engineering-base ratchet's ``unregistered_config_values`` rule listed 36
+# ``policy``/``evidence_source``/``controller_policy_id`` values that resolved
+# in NO ``core.base`` registry. Every one of them belongs to an Audio2Tool
+# AgentLoop cell that FLEW, sealed a receipt under ``docs/checks/`` and is
+# cited by ``docs/exposure-ledger.md`` -- so the fragment carrying the name may
+# not be rewritten or archived (study ``CLAUDE.md``: immutable records are
+# superseded, never edited), and the name may not be pointed at some live
+# function that never produced those bytes.
+#
+# A ``FrozenHistoricalComponent`` is the third answer. It RESOLVES, so the
+# config value is a name the base knows and the gate can read from source; it
+# carries the fragment and the sealed receipt that consumed it, so a reader of
+# the registry is one hop from the bytes; and it REFUSES every use, so nothing
+# can accidentally fly a retired probe launcher's id on the shared harness and
+# claim it is the same cell. "Registered" here means "accounted for", never
+# "runnable".
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class FrozenHistoricalComponent:
+    """A config id that names a SEALED flight and no live implementation.
+
+    Resolvable, never runnable. Any attempt to call it, or to read any
+    attribute other than its own provenance fields, raises :class:`CoreError`
+    naming the fragment and the sealed receipt instead.
+    """
+
+    component_id: str
+    registry_kind: str
+    fragment: str
+    receipt: str
+    note: str = ""
+
+    def validate(self) -> "FrozenHistoricalComponent":
+        for name in ("component_id", "registry_kind", "fragment", "receipt"):
+            value = getattr(self, name)
+            if not isinstance(value, str) or not value.strip():
+                raise CoreError(
+                    f"FrozenHistoricalComponent.{name} must be non-empty text"
+                )
+        if not isinstance(self.note, str):
+            raise CoreError("FrozenHistoricalComponent.note must be text")
+        return self
+
+    def as_json(self) -> dict[str, object]:
+        self.validate()
+        return {
+            "component_id": self.component_id,
+            "registry_kind": self.registry_kind,
+            "fragment": self.fragment,
+            "receipt": self.receipt,
+            "note": self.note,
+            "runnable": False,
+        }
+
+    def _refuse(self, what: str) -> "CoreError":
+        return CoreError(
+            f"{self.registry_kind} {self.component_id!r} is FROZEN-HISTORICAL: it "
+            f"names the sealed cell under {self.receipt} (declared by "
+            f"{self.fragment}) and has no live implementation on today's "
+            f"engineering base, so {what} is refused. Re-express the cell as a "
+            "registered phase program if it must fly again; never resurrect the "
+            "retired probe launcher."
+        )
+
+    def __call__(self, *args: object, **kwargs: object) -> object:
+        raise self._refuse("calling it")
+
+    def __getattr__(self, name: str) -> object:
+        # Dunder/private lookups must keep raising AttributeError so copy,
+        # pickle and dataclass machinery behave normally; a real component-like
+        # attribute access is the misuse this type exists to catch.
+        if name.startswith("_"):
+            raise AttributeError(name)
+        raise self._refuse(f"reading attribute {name!r}")
