@@ -1,0 +1,22 @@
+{
+  "false_flags_on_correct_rows": 0,
+  "flagged": 42,
+  "flagged_rows_still_wrong_after_projection_v2": 25,
+  "flagged_share_of_rows_pct": 4.2,
+  "gold_intents_outside_the_closed_list": [],
+  "judge": "deterministic: parse the response, then compare its (scenario, action) against the 60 TRAIN-mined legal pairs. Reads no gold, calls no model, and is the cheapest component an agent SYSTEM can put in front of a core revise.",
+  "lock_path": "/mnt/d/chao_workspace/docs/datasets.lock.json",
+  "precision_pct": 100.0,
+  "projected_errors": 269,
+  "raw_errors": 286,
+  "reading": "every SLURP gold intent is one of the 60 legal pairs, so a row the judge flags CANNOT be correct: precision is 100 % by construction and the false-flag count is structurally zero. Its recall is the ceiling of what deterministic legality can intercept before any core contact is spent.",
+  "recall_over_raw_errors_pct": 14.69,
+  "row_id": "SAEA-SLURP-MF8-SPEECH-TO-KNOWLEDGE-AUDIT-V1",
+  "rows": 1000,
+  "schema": "saea-mf8-legality-judge-v1",
+  "tiers": {
+    "action-illegal-for-scenario": 18,
+    "scenario-not-legal": 21,
+    "unparsed": 3
+  }
+}

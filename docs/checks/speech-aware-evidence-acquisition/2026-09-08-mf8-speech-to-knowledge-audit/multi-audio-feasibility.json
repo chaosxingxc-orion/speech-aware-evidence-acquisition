@@ -1,0 +1,111 @@
+{
+  "audio_root_relpath": "datasets/slurp",
+  "boundary": "container headers only; no audio sample is decoded, no server is started and no tokenizer is loaded. Text volume is reported in CHARACTERS, never estimated tokens.",
+  "budget": {
+    "k=3": {
+      "added_audio_tokens_mean": 126.4,
+      "added_audio_tokens_worst_case": 741,
+      "fits_slot_at_np8": true,
+      "prompt_tokens_mean": 2316.5,
+      "prompt_tokens_worst_case": 3056.0,
+      "slot_headroom_factor_mean": 3.54
+    },
+    "k=5": {
+      "added_audio_tokens_mean": 210.6,
+      "added_audio_tokens_worst_case": 1235,
+      "fits_slot_at_np8": true,
+      "prompt_tokens_mean": 2400.8,
+      "prompt_tokens_worst_case": 3550.0,
+      "slot_headroom_factor_mean": 3.41
+    },
+    "k=8": {
+      "added_audio_tokens_mean": 337.0,
+      "added_audio_tokens_worst_case": 1976,
+      "fits_slot_at_np8": true,
+      "prompt_tokens_mean": 2527.1,
+      "prompt_tokens_worst_case": 4291.0,
+      "slot_headroom_factor_mean": 3.24
+    }
+  },
+  "comparator_realized": {
+    "calls": 1000,
+    "completion_tokens_total": 26495,
+    "contacts_per_second": 4.43,
+    "fixed_text_tokens_mean": 2146.0,
+    "gpu_hours": 0.105,
+    "prompt_tokens_mean": 2190.16,
+    "prompt_tokens_total": 2190161,
+    "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1",
+    "source": "the sealed run manifest and its exposure-ledger row",
+    "wall_seconds": 225.5
+  },
+  "dev1000_query": {
+    "audio_tokens": {
+      "max": 169.0,
+      "mean": 44.161,
+      "median": 39.0,
+      "min": 13.0,
+      "p25": 39.0,
+      "p75": 52.0,
+      "p90": 65.0
+    },
+    "audio_tokens_total": 44161,
+    "rows": 1000,
+    "seconds": {
+      "max": 12.032,
+      "mean": 2.8847936875,
+      "median": 2.687625,
+      "min": 0.6399375,
+      "p25": 2.04775,
+      "p75": 3.4555625,
+      "p90": 4.41
+    },
+    "seconds_total": 2884.7937
+  },
+  "encoder_rate": {
+    "chunk_seconds": 1.0,
+    "source": "tools/mtmd/clip.cpp PROJECTOR_TYPE_QWEN3A (llama.cpp-featcache 04ccc72a)",
+    "tokens_per_chunk": 13
+  },
+  "geometry": {
+    "config": "configs/model/q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64.json",
+    "context": 65536,
+    "slots": 8,
+    "tokens_per_slot": 8192
+  },
+  "lock_path": "/mnt/d/chao_workspace/docs/datasets.lock.json",
+  "row_id": "SAEA-SLURP-MF8-SPEECH-TO-KNOWLEDGE-AUDIT-V1",
+  "same_speaker_exemplar_pool": {
+    "audio_tokens": {
+      "max": 247.0,
+      "mean": 42.11879660581126,
+      "median": 39.0,
+      "min": 13.0,
+      "p25": 26.0,
+      "p75": 52.0,
+      "p90": 65.0
+    },
+    "distinct_speaker_intent_pairs": 823,
+    "recordings": 15556,
+    "seconds": {
+      "max": 18.685375,
+      "mean": 2.7495091845590127,
+      "median": 2.496,
+      "min": 0.5119375,
+      "p25": 1.91975,
+      "p75": 3.264,
+      "p90": 4.288
+    },
+    "seconds_total": 42771.3649,
+    "sentence_characters": {
+      "max": 135.0,
+      "mean": 33.19535870403703,
+      "median": 31.0,
+      "min": 1.0,
+      "p25": 22.0,
+      "p75": 42.0,
+      "p90": 54.0
+    }
+  },
+  "schema": "saea-mf8-multi-audio-feasibility-v1"
+}
