@@ -112,7 +112,7 @@
       "per entity class, with reference-word counts, beside ConEC Table 2 rows 1 / 5 / 8 and beside KC-E1's own per-class table",
       "all 44, the construction 34 and the evaluation 10, reported apart",
       "the repair ledger: windows refused by reason, windows changed, accepted substitutions, substituted tokens, and rejected opcodes by class -- all four classes reported even at zero",
-      "the delivered-vs-predecessor operation table: substitutions, deletions and insertions against the comparator's 13,098 / 5,701 / 10,700, where deletions and insertions must be UNCHANGED by construction and a difference is a defect report, not a result",
+      "the delivered-vs-comparator operation table: substitutions, deletions and insertions against the comparator's 13,098 / 5,701 / 10,700. The delivery is substitution-only in RAW whitespace-token space by construction; the Whisper normalizer is not a per-token map, so a substituted surface form may normalize to a different number of words and the normalized deletion/insertion counts can move by that delta alone. Every such move is reported with the substitution that caused it, and a move that cannot be attributed to a substituted span is a defect report, not a result (preregistration section 5.1)",
       "by sector (9 levels) and sample rate (5 levels), natural mixture and equal-stratum weighting",
       "throughput: windows per minute, GPU seconds, wall, realized realtime factor, prompt and completion tokens against the comparator's 1,935,965 / 439,532 and KC-E1's 2,907,274 / 423,115"
     ]
@@ -138,7 +138,7 @@
       "numeric-value accuracy not worse: call-pooled CI90 lower bound on (KC-E1f - comparator) >= 0",
       "over-generation not worse: insertions per reference word against the comparator's 10,700 / 359,765",
       "the negation-critical error rate reported with its taxonomy id, advisory only",
-      "delivery integrity: deletions and insertions IDENTICAL to the comparator's on every window -- a construction check, not a statistical one, and a failure aborts the read"
+      "delivery integrity: for every window the delivered raw text equals the sealed predecessor outside the accepted substitution spans and carries the identical whitespace-token count -- a construction check verified from the sealed trace, not a statistical one, and a failure aborts the read"
     ],
     "claim_surface": "discovery data, no superiority, generality or Stage-3 claim, no knob tuned on the evaluation ten.",
     "not_authorized": "no Earnings-22 contact, no confirmatory read, no retrieval variant, no third pass, no paper-scale work.",
