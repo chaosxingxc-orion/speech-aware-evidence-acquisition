@@ -3,7 +3,7 @@
   "cells": [
     {
       "arm": "speech-feature-query",
-      "baseline_fragment": "slurp-direct-closed-list",
+      "baseline_fragment": "slurp-direct-closed-list-tail2s",
       "cell_id": "closed-list-tail2s-smoke-4",
       "dataset_fragment": "slurp-speech-native-dev1000-tail2s-smoke4",
       "model_fragment": "q4km-mmproj-free-speech-native-np8-ts2-packets-max64"
