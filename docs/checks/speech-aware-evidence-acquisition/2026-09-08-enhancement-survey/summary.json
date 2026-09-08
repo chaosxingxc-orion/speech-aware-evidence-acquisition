@@ -1135,6 +1135,20 @@
       "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1"
     },
     "paired_channel_acoustics": {
+      "channel_time_alignment": {
+        "abs_duration_delta_seconds": {
+          "max": 3.52,
+          "mean": 0.13999999999999999,
+          "median": 0.06000000000000005,
+          "min": 0.0,
+          "n": 766,
+          "p10": 0.0,
+          "p90": 0.45999999999999996
+        },
+        "note": "the two channel files of one recording session are NOT frame aligned: they are separately trimmed renditions of the same utterance by the same speaker. A study can pair them by utterance, never by sample.",
+        "share_within_0p02_s": 0.2741514360313316,
+        "share_within_0p10_s": 0.6762402088772846
+      },
       "headset_minus_far_field": {
         "active_share": {
           "max": 0.08762838468720824,

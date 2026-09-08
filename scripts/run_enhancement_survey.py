@@ -728,6 +728,7 @@ def _slurp_paired_acoustics(
     csv_rows: list[dict[str, Any]] = []
     twinned: set[str] = set()
     deltas: dict[str, list[float]] = {}
+    alignment: list[float] = []
     per_channel_rows: dict[str, list[dict[str, float]]] = {"headset": [], "far_field": []}
     missing_twins = 0
     for sample_id in flown:
@@ -754,6 +755,7 @@ def _slurp_paired_acoustics(
         )
         for key in ("peak_dbfs", "active_share", "floor_dbfs", "speech_floor_margin_db"):
             deltas.setdefault(key, []).append(pair["headset"][key] - pair["far_field"][key])
+        alignment.append(abs(pair["headset"]["seconds"] - pair["far_field"]["seconds"]))
 
     return (
         {
@@ -774,6 +776,25 @@ def _slurp_paired_acoustics(
             },
             "headset_minus_far_field": {
                 key: describe(values) for key, values in sorted(deltas.items())
+            },
+            "channel_time_alignment": {
+                "note": (
+                    "the two channel files of one recording session are NOT frame "
+                    "aligned: they are separately trimmed renditions of the same "
+                    "utterance by the same speaker. A study can pair them by "
+                    "utterance, never by sample."
+                ),
+                "abs_duration_delta_seconds": describe(alignment),
+                "share_within_0p02_s": (
+                    sum(1 for value in alignment if value <= 0.02) / len(alignment)
+                    if alignment
+                    else 0.0
+                ),
+                "share_within_0p10_s": (
+                    sum(1 for value in alignment if value <= 0.10) / len(alignment)
+                    if alignment
+                    else 0.0
+                ),
             },
         },
         csv_rows,
