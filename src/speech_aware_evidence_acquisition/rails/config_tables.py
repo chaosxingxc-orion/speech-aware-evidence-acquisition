@@ -7,10 +7,11 @@ design note's admission gate (``docs/readiness/
 2026-09-08-agent-system-episode-and-core-pressure-v1.md`` section 8) requires
 that **module ON versus module OFF is one config key on one harness, never a
 second code path**. Section 7 of the assessment measured how far that is from
-true today: of the seven harness modules, exactly two -- the silence tail and
-(as a pair of keys) the unit plan -- are one key; the other five need a
-``policy`` change, a scorer change or a policy subclass to turn off, which
-makes the OFF arm a different code path and therefore not a twin.
+true today: of the seven harness modules exactly one is cleanly one key (the
+silence tail) and one is nearly so (the slot schema, whose OFF arm still
+changes the program id and the contact count); the other five need a
+``policy`` change, a ``scorers`` change or a policy subclass to turn off,
+which makes the OFF arm a different code path and therefore not a twin.
 
 This module closes that gap by giving every module a home in one of four
 config tables, each of which is:
@@ -89,7 +90,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 from ..core.base import JUDGES, CoreError
 from ..core.config import NULL_ARM_TABLE_KEYS
@@ -782,6 +783,62 @@ def config_key_diff(
     )
 
 
+def switch_key(on: Mapping[str, object], off: Mapping[str, object]) -> str:
+    """The ONE config key that distinguishes two arms, or a refusal.
+
+    A key here is a dotted path, and an object-valued key changes several
+    leaves at once (``observe.<phase>.unit_plan`` moves both its ``relpath``
+    and its ``sha256``). So the machine form of "one config key" is: every
+    leaf on which the two composed configs differ lies under ONE common
+    dotted path, and that path resolves in at least one of the two arms.
+
+    That is exactly the property the design note's admission gate needs and
+    exactly what today's flat spellings lack: ``obs_unit_plan`` and
+    ``obs_unit_plan_sha256`` share no dotted prefix, and neither do a
+    ``policy`` swap and the post-processor pair that rides with it, so both
+    are refused here by construction rather than by opinion.
+
+    Raises :class:`ConfigTableError` when the arms are identical, or when
+    their difference is more than one key.
+    """
+
+    diff = config_key_diff(on, off)
+    if not diff:
+        raise ConfigTableError(
+            "the two arms compose to the same config; an ON/OFF pair that moves "
+            "no key is not a contrast"
+        )
+    segments = [key.split(".") for key in diff]
+    shared: list[str] = []
+    for index in range(min(len(parts) for parts in segments)):
+        candidate = segments[0][index]
+        if any(parts[index] != candidate for parts in segments):
+            break
+        shared.append(candidate)
+    if not shared:
+        raise ConfigTableError(
+            f"the two arms differ in {len(diff)} unrelated config keys {list(diff)}; "
+            "a module whose OFF arm moves more than one key is not one switch, and "
+            "its ON/OFF pair is not a twin"
+        )
+    path = ".".join(shared)
+    if not any(_resolves(values, shared) for values in (on, off)):
+        raise ConfigTableError(
+            f"the shared path {path!r} of the changed keys {list(diff)} resolves in "
+            "neither arm"
+        )
+    return path
+
+
+def _resolves(values: Mapping[str, object], path: Sequence[str]) -> bool:
+    cursor: object = values
+    for segment in path:
+        if not isinstance(cursor, Mapping) or segment not in cursor:
+            return False
+        cursor = cursor[segment]
+    return True
+
+
 def table_entry_keys(table: str) -> tuple[str, ...]:
     """The entry keys ``table`` admits, sorted -- what a switch declaration
     in ``docs/receipts/harness-admission.json`` must name."""
@@ -818,6 +875,7 @@ __all__ = [
     "ToolkitSelection",
     "config_key_diff",
     "flatten_config",
+    "switch_key",
     "load_config_tables",
     "load_judges_table",
     "load_knowledge_views_table",
