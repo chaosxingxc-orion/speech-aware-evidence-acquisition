@@ -97,3 +97,82 @@ Sections 2 to 4 locate it; section 5 prices the four repairs against it.
 `S 597 / D 83`. The measured split is **`S 573 / D 83`**: 573 + 83 = 656 = 22.48886 % × 2,917, which
 is the sealed figure, and 597 + 83 = 680 is not. The deletion figure 83 is right and is the same one
 the KC-E1f verdict quotes as its reachable PERSON floor (`83 / 2917 = 2.846 %`).
+
+---
+
+## 2. Position: the harm sits at the unit edge, and 93.4 % of it is within three seconds of one
+
+Every PERSON reference word is binned by its distance to the **nearest boundary of the span it was
+charged to** — nearest rather than "from the end", because the instrument charges a deletion to the
+span its hypothesis cursor stands in, so a name dropped at the end of unit *k* surfaces at the start
+of unit *k+1*; the nearest-boundary distance is invariant to that side. Distances from the start and
+from the end are reported separately in §4 so the asymmetry stays visible.
+
+**Binned on the CELL's own unit boundaries. This is the table.**
+
+| distance to the nearest unit boundary | PERSON words | comparator | cell | improvement | excess errors | share of the 61 |
+|---|---:|---:|---:|---:|---:|---:|
+| **0–1 s** | 592 | 23.649 | **29.223** | **−5.574** | **+33** | **54.1 %** |
+| **1–3 s** | 785 | 22.675 | **25.732** | **−3.057** | **+24** | **39.3 %** |
+| 3–10 s | 887 | 22.999 | 23.563 | −0.564 | +5 | 8.2 % |
+| **> 10 s** | 653 | 20.521 | **20.368** | **+0.153** | **−1** | **−1.6 %** |
+
+**93.4 % of the harm is within three seconds of a unit boundary, and beyond ten seconds there is no
+harm at all** — the cell is, if anything, one error better there. The gradient is monotone across all
+four bins.
+
+**The control is in the same table, in the comparator column.** Across those four bins the
+comparator's own PERSON WER is nearly flat — 23.649 / 22.675 / 22.999 / 20.521, a 3.1-point spread —
+so the words the cell puts near a boundary are **not intrinsically harder words**. The cell's spread
+over the same words is 29.223 → 20.368, **8.9 points**. The extra spread is what the transport unit
+added.
+
+**And the comparator's own boundaries carry none of it.** Binning the same 2,917 words by distance to
+the nearest **90-second window** boundary instead:
+
+| distance to the nearest window boundary | PERSON words | comparator | cell | improvement | excess errors | share |
+|---|---:|---:|---:|---:|---:|---:|
+| 0–1 s | 96 | 33.333 | 36.458 | −3.125 | +3 | 4.9 % |
+| 1–3 s | 138 | 26.087 | 26.087 | +0.000 | 0 | 0.0 % |
+| 3–10 s | 376 | 22.074 | 21.011 | +1.064 | −4 | −6.6 % |
+| **> 10 s** | **2,307** | 21.890 | 24.577 | −2.687 | **+62** | **101.6 %** |
+
+Read this pair carefully, because it says two different things. **First**, a boundary is intrinsically
+a hard place for a name *in both arms*: the comparator's own PERSON WER at its own window edges is
+**33.3 %** against **21.9 %** in mid-window. **Second**, the cell's harm does not live at the
+comparator's edges — 101.6 % of the excess lands in the bin that is more than ten seconds from any
+90-second boundary. The harm is attached to the **cell's** boundaries, not to boundaries in general
+and not to the words themselves.
+
+### 2.1 The cut essentially never goes through a name
+
+A boundary that fell inside a multi-word name would be the most direct mechanism available, and it is
+measured exactly — a mention is SPLIT in an arm when its reference words fall in more than one of
+that arm's spans, which needs no timing at all.
+
+| | PERSON mentions | multi-word mentions | split across spans | words in split mentions | errors there |
+|---|---:|---:|---:|---:|---:|
+| comparator (1,593 windows) | 2,212 | 656 | **4** | 9 | 5 |
+| **cell (5,122 units)** | 2,212 | 656 | **1** | 2 | 1 |
+
+**One multi-word PERSON mention out of 656 is cut by a unit boundary** — fewer than the comparator's
+four, because a speaker-turn cut lands in a pause by construction. So the harm is **beside** the
+name, not **through** it. Whatever the unit boundary does to a name, it does it without touching the
+name's own audio.
+
+### 2.2 The gradient is a SHORT-UNIT effect wearing a boundary's clothes
+
+A short unit puts every one of its words near a boundary, so the pooled gradient above cannot by
+itself separate "near a boundary" from "in a short unit". Holding the unit's duration class fixed
+separates them, and the answer is unambiguous.
+
+| unit duration class | 0–1 s | 1–3 s | 3–10 s | > 10 s |
+|---|---|---|---|---|
+| **< 10 s** (680 words) | 237 w, **−10.127**, +24 | 307 w, **−7.818**, +24 | 136 w, +0.000, 0 | — |
+| **10–60 s** (1,424 words) | 241 w, −3.734, +9 | 370 w, −0.270, +1 | 560 w, −0.893, +5 | 253 w, −1.976, +5 |
+| **≥ 60 s** (813 words) | 114 w, **+0.000**, **0** | 108 w, +0.926, −1 | 191 w, +0.000, 0 | 400 w, +1.500, −6 |
+
+**Inside a unit of sixty seconds or more, a PERSON word within one second of the boundary costs
+exactly nothing** — 114 words, zero excess errors, at the distance where the pooled table shows
+−5.574. **Inside a unit under ten seconds, the same distance costs −10.127.** The boundary is not the
+agent. The short unit is, and §3 measures it directly.
