@@ -1,9 +1,13 @@
 # OBS-E1 — the Earnings-21 transport unit becomes the speaker turn
 
-**Status: PREREGISTERED, NOT AUTHORIZED TO FLY, AND NOT YET COMPOSABLE.** The cell needs three
-things it does not have: the obs seam of §8 implemented (it cannot be, until `wt/ts2y`'s tail knob
-merges — §8.0), its own exposure row, and the owner's GO. Nothing in this document is an
-authorization, and the drafted fragments of §9 are a launch record, not a permission.
+**Status (2026-09-08): PREREGISTERED, COMPOSABLE, AND STILL NOT AUTHORIZED TO FLY.** The obs seam
+of §8 has landed and the cell now composes; the two things it still lacks are **its own exposure row
+and the owner's GO**. Nothing in this document is an authorization, and the fragments of §9 are a
+launch record, not a permission. The superseded status line read: *"PREREGISTERED, NOT AUTHORIZED TO
+FLY, AND NOT YET COMPOSABLE — the cell needs three things it does not have: the obs seam of §8
+implemented (it cannot be, until `wt/ts2y`'s tail knob merges — §8.0), its own exposure row, and the
+owner's GO."* See the dated update below; **no rule, margin, stratum, budget or decision criterion in
+this document is changed by it.**
 
 Owner thesis, 2026-09-07: **cut the speech by SPEAKER first, then understand per speaker.** The
 measurement behind it is already sealed — a fixed 90-second cut has no reason to land in a pause and
@@ -18,6 +22,102 @@ does not.
 | execution profile | `bounded-discovery-probe` |
 | split role | `discovery` |
 | program context | `docs/readiness/2026-09-05-three-dimension-experiment-program.md` (the OBS dimension) |
+
+---
+
+## Update — 2026-09-08: the seam landed, and what is left
+
+**This section records facts and closes preconditions. It changes no rule and no budget:** §5's
+equal-contact statement, §6's decision rule and −0.30-point margin, §7's 5,800 calls / 165,000 speech
+seconds / 3.5 GPU-hours against their 6,000 / 170,000 / 4.0 ceilings, §8's spec and §10's claim
+surface all stand exactly as written.
+
+**The seam is implemented.** `wt/ts2y`'s tail knob and its one encoder merged, so §8.0's sequencing
+condition is met and §8 was built to. `reproduction.obs_loop.ObsLoopConfig` knows `obs_unit_plan` and
+`obs_unit_plan_sha256`, both defaulting to `null`; both cut sites of the registered `obs-agent-loop`
+policy consume the plan's units in `unit_index` order through the SAME
+`reproduction.obs_audio.encode_slice` and the SAME `obs_slice_tail_silence_seconds` knob; the OBS
+record carries `obs_unit_id`, `obs_unit_speaker` and `obs_unit_end_cut` beside the unit bounds; and
+`saea-obs-derivation-v1` names the plan it was cut by and records `boundary_mode` `"unit-plan"`. Two
+things §8 did not spell out are recorded here rather than left to a reader. First, §8.2's items 3 and
+4 — a roster call the plan does not cover, and a plan block whose `decoded_duration_seconds`
+disagrees with the runtime decode — cannot be decided by `from_values`, which sees neither the roster
+nor the audio; they are enforced by `UnitPlan.units_for`, called once per sample **before that
+sample's first window is cut**, which is the fail-closed property §8.2 asks for. Second, the
+openJiuwen executor's `window_frames` is clock-derived by construction, so it **refuses** a unit plan
+by name rather than silently cutting fixed windows for a config that asked for units; the cell's own
+`obs_batch_samples 1` puts it on the plain policy, where `obs_batch_slices 8` stays legal exactly as
+§8.2 argues.
+
+**§9's fragments compose, and the receipt says so with numbers.** Model-free row
+`SAEA-E21-MF-OBS-E1-SEAM-V1`, receipt
+`docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-obs-e1-seam/`, **result PASS with zero
+failures, zero model contacts and zero sockets**, study commit `aaf926eb`.
+
+| | |
+|---|---|
+| composed config hash | `06e1eb28a5b3fcce31deb9191db5114cb859dae5f584380ee2c5b7c20659fdfc` |
+| composed protocol hash | `cb5e964fb82a00a7b7d15506d03ebed619b8f72318b4cfea02b5fe36f9bdc331` |
+| split identity | `fcc1b0bc…d69e`, unchanged |
+| plan pin | `fed5188b…`, matching the baseline fragment's `obs_unit_plan_sha256` |
+| units loaded and re-tiled | **5,288 over 44 calls**, against the comparator's 1,593 windows |
+| unit seconds | min **0.001**, median **16.06**, mean **26.73**, max **90.00** |
+| cut / delivered seconds | **141,345.852687** / **151,921.852687**, the §2 figures to the digit |
+| coverage | 44/44 calls carry units; 44/44 plan durations equal that call's own sealed 90-second window total |
+| payload-binding stage | BOUND, rows `4320211` and `4397829` of 44 |
+
+**§8.6's falsifier holds, on real bytes, 4 of 4.** The contact-free dry run cut **172 units over four
+calls** — 4386541 (34), 4387332 (51), 4392809 (49) and the no-pause call 4366522 (38) — from PCM
+reconstructed out of the comparator's own sealed 90-second slices, through the real policy, the real
+`SliceRegistry` chain and the real `TraceSink`. Every unit reproduced its planned span with
+`audio_seconds` still equal to it, `iteration = unit_index - 1`, exactly one `tail-silence-2s`
+transform, `pre_sha256` chaining to the untailed cut, and the `bare-core` D2-frozen ten as the whole
+payload key set; and concatenating each call's delivered slices with the 2.0-second tails removed
+reproduced that call's **committed `saea-diarization-v1` `audio_sha256`** exactly. Byte-identity in
+the other direction is proved too: with the keys `null`, replaying call 4386541's own 13 sealed
+windows through the seam-carrying cutter reproduces every one of that call's committed
+`source_audio_sha256` values, and the key-absent and explicitly-`null` runs agree byte for byte on
+media, records, trace and outcome on both executor paths (`tests/unit/test_obs_unit_plan.py`).
+
+**One property named before any score is read, not after.** The plan's shortest unit is **0.001 s**,
+17 units are under 0.1 s and 166 under 1.0 s, all flagged `short-kept`. A flight therefore sends some
+16-sample cuts under a 2.0-second tail. This is a property of the model-free plan — §4's `<1 s`
+stratum already counts 166 of them, and §10 fixed the 1.0-second minimum before any score existed —
+not a decision this seam makes, and §4's unit-length stratum is where the verdict reports it.
+
+**Preconditions, restated (§9's list, as it now stands).**
+
+| §9 precondition | state |
+|---|---|
+| the obs seam of §8, with its byte-level falsifier passing | **CLOSED 2026-09-08** — seam landed; falsifier 4/4 on real bytes |
+| a 4-row dry run of the composed cell | **CLOSED 2026-09-08** — four calls, 172 units, contact-free, PASS |
+| this cell's own exposure row, registered with `consumed = no` before the first contact | **OPEN** — `SAEA-E21-MF-OBS-E1-SEAM-V1` covers the model-free check only and authorizes nothing |
+| the owner's GO | **OPEN** |
+
+**The flight command, once those two close.** The cell is `E21-obs-e1-speaker-turn-units` of
+`configs/experiment/e21-obs-e1-speaker-turn-units-v1.json`, and it attaches to the coordinator's
+resident session rather than starting one (owner's 2026-09-07 always-on serving ruling), which is how
+`SAEA-E21-FULL44-TAIL2S-V1` flew on this same geometry:
+
+```
+saea-driver run \
+  --model q4km-e21-buf90-mmproj-gpu-04ccc72a-np6 \
+  --dataset earnings21-discovery \
+  --baseline e21-units-obse1-scored7 \
+  --experiment e21-obs-e1-speaker-turn-units-v1 \
+  --plan <the ExecutionPlan file: bounded-discovery-probe, discovery, 5,800 calls,
+          165,000 speech audio seconds, 3.5 GPU-hours -- section 7, unchanged> \
+  --run-dir $SPEECHRL_DATA_DIR/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1 \
+  --runtime-root /home/chao \
+  --session-receipt <the resident -c 36864 -np 6 session's receipt>
+```
+
+Environment as every Earnings-21 flight on this geometry: WSL2 `Ubuntu-24.04`,
+`source ~/.venvs/speechrl/bin/activate`, `PYTHONDONTWRITEBYTECODE=1`, `PYTHONPATH=<checkout>/src`,
+`SPEECHRL_DATA_DIR` as pinned, no `LLAMA_MTMD_FEAT_CACHE_DIR`. `scripts/run_arm_sequence.sh` is
+deliberately **not** used: it starts a server, and this flight attaches. §7's stop rules are
+unchanged — the smoke's measured rate is projected to the full pass and the flight stops and reports
+if it projects past 4.0 GPU-hours.
 
 ---
 
