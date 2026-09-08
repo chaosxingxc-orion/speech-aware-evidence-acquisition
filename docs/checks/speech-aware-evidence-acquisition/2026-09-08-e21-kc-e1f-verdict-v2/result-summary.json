@@ -1,0 +1,369 @@
+{
+ "arms": {
+  "comparator": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+  "kc-e1f": "SAEA-E21-KC-E1F-REPAIR-44-V1",
+  "ku-e1fc": "SAEA-E21-KU-E1FC-PLACEBO-REPAIR-44-V1"
+ },
+ "decides": "SAEA-E21-KC-E1F-REPAIR-44-V1",
+ "elapsed_seconds": 5.7,
+ "exposure_row": "SAEA-E21-KC-E1F-VERDICT-V2",
+ "failed_guards": [],
+ "guards": [
+  {
+   "gates": true,
+   "guard": "delivery integrity (construction)",
+   "measured": {
+    "attribution_verdict": {
+     "kc-e1f": "PASS",
+     "ku-e1fc": "PASS"
+    },
+    "violations": 0,
+    "windows_checked": 1593
+   },
+   "v1_test": "for every window the delivered raw text equals the sealed predecessor outside the accepted substitution spans and carries the identical whitespace-token count -- it ABORTS THE READ rather than producing a number",
+   "v1_verdict": "PASS",
+   "v2_test": "UNCHANGED from v1: a construction guarantee has no margin. For every window the delivered raw text equals the sealed predecessor outside the accepted substitution spans and carries the identical whitespace-token count; it ABORTS THE READ rather than producing a number",
+   "v2_verdict": "PASS"
+  },
+  {
+   "allowed_bound_pp": 0.057930157320667905,
+   "gates": true,
+   "guard": "corpus WER non-inferiority",
+   "harmful_bound_pp": -0.0293591586612315,
+   "harmful_side": "upper bound",
+   "margin_pp": 0.057930157320667905,
+   "margin_source": {
+    "margin": 0.057930157320667905,
+    "null_interval": [
+     -0.08501511398883133,
+     0.030845200652504484
+    ],
+    "source": "SAEA-E21-FULL44-NULL-REPLICATE-V1 null table, corpus WER"
+   },
+   "measured": {
+    "ci_high": -0.000293591586612315,
+    "ci_low": -0.0006146446978997979,
+    "point_estimate": -0.0004502939418787183
+   },
+   "point_estimate_pp": -0.04502939418787183,
+   "slack_pp": 0.0872893159818994,
+   "v1_test": "call-clustered CI90 UPPER bound on (KC-E1f - comparator) <= 0",
+   "v1_verdict": "PASS",
+   "v2_test": "call-clustered CI90 UPPER bound on (KC-E1f - comparator) corpus WER <= +delta, delta = the Earnings-21 own-null replicate's measured call-clustered CI90 half-width on corpus WER",
+   "v2_verdict": "PASS"
+  },
+  {
+   "allowed_bound_pp": -0.1565054007985242,
+   "gates": true,
+   "guard": "numeric-value accuracy not worse (call-pooled)",
+   "harmful_bound_pp": -0.02122477569200587,
+   "harmful_side": "lower bound",
+   "margin_pp": 0.1565054007985242,
+   "margin_source": {
+    "margin": 0.1565054007985242,
+    "null_interval": [
+     -0.18758103496081163,
+     0.12542976663623678
+    ],
+    "source": "SAEA-E21-FULL44-NULL-REPLICATE-V1 null table, numeric-value accuracy"
+   },
+   "measured": {
+    "ci_high": 0.0005121671717636222,
+    "ci_low": -0.0002122477569200587,
+    "point_estimate": 0.00010273268954186232
+   },
+   "point_estimate_pp": 0.010273268954186232,
+   "slack_pp": 0.13528062510651834,
+   "v1_test": "CI90 LOWER bound on (KC-E1f - comparator) accuracy >= 0",
+   "v1_verdict": "FAIL",
+   "v2_test": "call-clustered CI90 LOWER bound on (KC-E1f - comparator) call-pooled numeric-value accuracy >= -delta, delta = the Earnings-21 own-null replicate's measured call-clustered CI90 half-width on numeric-value accuracy",
+   "v2_verdict": "PASS"
+  },
+  {
+   "allowed_bound_pp": 0.022178082063638506,
+   "gates": true,
+   "guard": "over-generation not worse",
+   "harmful_bound_pp": 0.0025526163360232827,
+   "harmful_side": "upper bound",
+   "margin_pp": 0.022178082063638506,
+   "margin_source": {
+    "margin": 0.022178082063638506,
+    "null_interval": [
+     -0.013564796941611324,
+     0.030791367185665684
+    ],
+    "source": "computed here from SAEA-E21-FULL44-NULL-REPLICATE-V1's own per-window rows, through the same instrument; v1 had no margin for this quantity and the null cell's published table does not carry it"
+   },
+   "measured": {
+    "ci_high": 2.5526163360232828e-05,
+    "ci_low": -1.9871928470912946e-05,
+    "point_estimate": 2.779592233818906e-06
+   },
+   "point_estimate_pp": 0.0002779592233818906,
+   "slack_pp": 0.019625465727615223,
+   "v1_test": "call-clustered CI90 UPPER bound on (KC-E1f - comparator) insertions per reference word <= 0",
+   "v1_verdict": "FAIL",
+   "v2_test": "call-clustered CI90 UPPER bound on (KC-E1f - comparator) insertions per reference word <= +delta_ins, delta_ins = the half-width of the null replicate's OWN call-clustered CI90 on the SAME quantity, computed from its per-window rows through this same instrument",
+   "v2_verdict": "PASS"
+  },
+  {
+   "gates": false,
+   "guard": "negation-critical rate not worse",
+   "margin_source": {
+    "excludes_zero_under_the_null": true,
+    "margin": 0.0014814754710809955,
+    "null_interval": [
+     0.0008049151393207787,
+     0.0037678660814827697
+    ],
+    "source": "SAEA-E21-FULL44-NULL-REPLICATE-V1 null table, semantic high-impact rate -- NOT USED AS A MARGIN: its own null excludes zero, so the guard stays advisory"
+   },
+   "measured": {
+    "ci_high": 0.0,
+    "ci_low": -8.03406887367899e-06,
+    "point_estimate": -2.7795922338192855e-06
+   },
+   "v1_test": "advisory point estimate only; gates nothing",
+   "v1_verdict": "ADVISORY",
+   "v2_test": "STAYS ADVISORY, now for a measured reason: this metric's own same-request null EXCLUDES ZERO, so no 'does not rise' clause is answerable on this carrier at any margin",
+   "v2_verdict": "ADVISORY"
+  }
+ ],
+ "identity": {
+  "arm_identity_anchors": {
+   "comparator": {
+    "attempt_id": "attempt-20260904T233816Z-bcd338",
+    "checks_failed": 0,
+    "checks_total": 30,
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "verdict": "PASS"
+   },
+   "kc-e1f": {
+    "attempt_id": "attempt-20260908T040832Z-ecda9c",
+    "checks_failed": 0,
+    "checks_total": 30,
+    "run_id": "SAEA-E21-KC-E1F-REPAIR-44-V1",
+    "verdict": "PASS"
+   },
+   "ku-e1fc": {
+    "attempt_id": "attempt-20260908T072231Z-ec8a5b",
+    "checks_failed": 0,
+    "checks_total": 30,
+    "run_id": "SAEA-E21-KU-E1FC-PLACEBO-REPAIR-44-V1",
+    "verdict": "PASS"
+   }
+  },
+  "no_number_moved": {
+   "fields_only_in_v1": [],
+   "fields_only_in_v2": [],
+   "fields_that_moved": [],
+   "note": "the v1 receipt's own decision block against the freshly recomputed one; identical draws, identical rows, identical estimator -- a single moved digit here would mean the recomputation is not the v1 read",
+   "numeric_fields_compared": 28,
+   "verdict": "PASS"
+  },
+  "null_summary": {
+   "exposure_row": "SAEA-E21-FULL44-NULL-REPLICATE-V1",
+   "path": "/mnt/d/chao_workspace/saea-worktrees/wt-kce1fv2/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-full44-null-replicate-v1/verdict/result-summary.json",
+   "sha256": "fcad10381d37f5194b3f66c3e552969ac80d53a7dbb0c877a8c123721a84e537"
+  },
+  "recomputed_summary": {
+   "path": "/mnt/d/chao_workspace/saea-worktrees/wt-kce1fv2/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict-v2/recomputed/result-summary.json",
+   "sha256": "b7039509e7372e04eadb1ad7ad19c46fce0b9bdce37cd24f9ee6dafc9ba14690"
+  },
+  "v1_summary": {
+   "path": "/mnt/d/chao_workspace/saea-worktrees/wt-kce1fv2/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict/result-summary.json",
+   "sha256": "8bf2a2358686cc46a85fdede1a62d8e1b01d6bcb8f0e12df638edea859fd2142"
+  }
+ },
+ "margins": {
+  "conec_person_wer_percent": {
+   "margin": 0.2500900348816897,
+   "null_interval": [
+    -0.24338355294363578,
+    0.2567965168197436
+   ],
+   "source": "SAEA-E21-FULL44-NULL-REPLICATE-V1 null table, ConEC PERSON -- REPORTED, GATES NOTHING"
+  },
+  "corpus_wer_percent": {
+   "margin": 0.057930157320667905,
+   "null_interval": [
+    -0.08501511398883133,
+    0.030845200652504484
+   ],
+   "source": "SAEA-E21-FULL44-NULL-REPLICATE-V1 null table, corpus WER"
+  },
+  "insertions_per_reference_word": {
+   "margin": 0.022178082063638506,
+   "null_interval": [
+    -0.013564796941611324,
+    0.030791367185665684
+   ],
+   "source": "computed here from SAEA-E21-FULL44-NULL-REPLICATE-V1's own per-window rows, through the same instrument; v1 had no margin for this quantity and the null cell's published table does not carry it"
+  },
+  "numeric_value_accuracy_percent": {
+   "margin": 0.1565054007985242,
+   "null_interval": [
+    -0.18758103496081163,
+    0.12542976663623678
+   ],
+   "source": "SAEA-E21-FULL44-NULL-REPLICATE-V1 null table, numeric-value accuracy"
+  },
+  "semantic_high_impact_error_rate_percent": {
+   "excludes_zero_under_the_null": true,
+   "margin": 0.0014814754710809955,
+   "null_interval": [
+    0.0008049151393207787,
+    0.0037678660814827697
+   ],
+   "source": "SAEA-E21-FULL44-NULL-REPLICATE-V1 null table, semantic high-impact rate -- NOT USED AS A MARGIN: its own null excludes zero, so the guard stays advisory"
+  }
+ },
+ "null_band_gate": {
+  "calls": 44,
+  "calls_whose_reference_word_total_moved": [],
+  "comparator_rows": {
+   "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-WINDOW-PAIRING-V1/kce1f-v2-window-rows-comparator.json",
+   "sha256": "98d431f24f6d94a4f08c1830ca08ed271106d33d660ac40d0fa93a1c3d7db144",
+   "windows": 1593
+  },
+  "corpus_reference_words": {
+   "comparator": 359765,
+   "null_replicate": 359765
+  },
+  "note": "the per-window reference-word attribution follows the alignment and moves when the hypothesis moves; the per-CALL total is the reference's own length and may not move, and the call is the bootstrap cluster",
+  "null_instrument_anchor": {
+   "checks": [
+    {
+     "field": "point",
+     "published_by_the_null_cell": -0.0200130640834999,
+     "reproduced_here": -0.0200130640834999,
+     "verdict": "PASS"
+    },
+    {
+     "field": "ci_low",
+     "published_by_the_null_cell": -0.08501511398883133,
+     "reproduced_here": -0.08501511398883133,
+     "verdict": "PASS"
+    },
+    {
+     "field": "ci_high",
+     "published_by_the_null_cell": 0.030845200652504484,
+     "reproduced_here": 0.030845200652504484,
+     "verdict": "PASS"
+    },
+    {
+     "field": "sigma_hat",
+     "published_by_the_null_cell": 0.03590926385732335,
+     "reproduced_here": 0.03590926385732335,
+     "verdict": "PASS"
+    },
+    {
+     "field": "ci90_half_width",
+     "published_by_the_null_cell": 0.057930157320667905,
+     "reproduced_here": 0.057930157320667905,
+     "verdict": "PASS"
+    }
+   ],
+   "note": "the same two row files, through this same instrument, must reproduce the null cell's OWN published corpus-WER interval to the digit before the over-generation band computed from them may be used as a margin",
+   "verdict": "PASS"
+  },
+  "null_rows": {
+   "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/window-rows-replicate.json",
+   "sha256": "456ab9031ccde85200c9bfe64099412dddfafc96a8dc2897a9154ea2748e9891",
+   "windows": 1593
+  },
+  "windows_paired": 1593,
+  "windows_whose_reference_word_attribution_moved": 68
+ },
+ "over_generation_null_band": {
+  "ci90_half_width": 0.022178082063638506,
+  "ci_high": 0.030791367185665684,
+  "ci_level": 0.9,
+  "ci_low": -0.013564796941611324,
+  "comparator_insertions": 10700,
+  "n": 1593,
+  "point": 0.008616735924840135,
+  "point_estimate": 0.008616735924840135,
+  "reference_words": 359765,
+  "replicate_insertions": 10731,
+  "replicates": 10000,
+  "seed": 20260903,
+  "sigma_hat": 0.013500691338118568
+ },
+ "owner_decision": "umbrella owner record Decision 9 of 2026-09-08, item 1 (re-decide the sealed KC-E1f pair under non-inferiority guards whose margins come from the Earnings-21 own-null replicate, with the v1 REJECTED verdict left standing beside it) and item 3 (every 'not worse' guard is a non-inferiority test with a margin fixed from the carrier's own null)",
+ "pairing": {
+  "calls": 44,
+  "ci_level": 0.9,
+  "cluster": "call",
+  "estimator": "pooled ratio, sum(numerator) / sum(denominator) over the resampled units",
+  "n_replicates": 10000,
+  "seed": 20260903,
+  "unit": "fixed 90-second window",
+  "windows": 1593
+ },
+ "primary": {
+  "vs_comparator": {
+   "ci90_pp": [
+    2.652777983469271,
+    4.855306157550738
+   ],
+   "lower_bound_exceeds_the_person_null_half_width": true,
+   "lower_bound_in_person_null_half_widths": 10.607291828817662,
+   "measured": {
+    "ci_high": 0.048553061575507386,
+    "ci_level": 0.9,
+    "ci_low": 0.02652777983469271,
+    "n_replicates": 10000,
+    "point_estimate": 0.03736715803908125,
+    "seed": 20260903,
+    "sigma_hat": 0.006728270199152773
+   },
+   "note": "the multiple of the null half-width is REPORTED, never a threshold: the primary's own bar is unchanged at zero",
+   "person_null_half_width_pp": 0.2500900348816897,
+   "point_estimate_pp": 3.736715803908125,
+   "required": "call-clustered CI90 lower bound > 0 -- UNCHANGED from v1",
+   "verdict": "MET"
+  },
+  "vs_ku_e1fc": {
+   "ci90_pp": [
+    2.751615339759469,
+    4.958365560040582
+   ],
+   "lower_bound_exceeds_the_person_null_half_width": true,
+   "lower_bound_in_person_null_half_widths": 11.002498924282122,
+   "measured": {
+    "ci_high": 0.04958365560040582,
+    "ci_level": 0.9,
+    "ci_low": 0.02751615339759469,
+    "n_replicates": 10000,
+    "point_estimate": 0.03839561193006516,
+    "seed": 20260903,
+    "sigma_hat": 0.006709462819170819
+   },
+   "note": "the multiple of the null half-width is REPORTED, never a threshold: the primary's own bar is unchanged at zero",
+   "person_null_half_width_pp": 0.2500900348816897,
+   "point_estimate_pp": 3.839561193006516,
+   "required": "call-clustered CI90 lower bound > 0 -- UNCHANGED from v1",
+   "verdict": "MET"
+  }
+ },
+ "rule": {
+  "guards": "every 'not worse' guard becomes a non-inferiority test: the CI90 bound on the HARMFUL side must not exceed that metric's margin, and the margin is the half-width of the Earnings-21 own-null replicate's own call-clustered CI90 on the same metric",
+  "primary": "UNCHANGED: call-clustered CI90 lower bound on the PERSON entity-WER reduction > 0 against the sealed comparator AND against KU-E1fc",
+  "stated_before_any_number": "docs/readiness/2026-09-08-e21-kc-e1f-repair-pass-v2-redecision.md section 2, committed before this script was first run",
+  "unchanged": [
+   "roster: all 44 discovery calls",
+   "pairing unit: the fixed 90-second window (1,593)",
+   "bootstrap cluster: the call (44)",
+   "estimator: the pooled ratio sum(numerator)/sum(denominator)",
+   "seed 20260903, 10,000 replicates, CI90",
+   "both weightings reported: natural mixture and equal stratum"
+  ],
+  "verdict_map": "ADMITTED iff the primary is met on both legs and every gating guard holds; NULL if either primary lower bound includes zero; REJECTED if any gating guard fails"
+ },
+ "schema": "saea-e21-kc-e1f-v2-redecision-v1",
+ "study": "speech-aware-evidence-acquisition",
+ "supersedes_nothing": "SAEA-E21-KC-E1F-VERDICT-V1 stays on record; this is a SECOND decision of the SAME sealed bytes under a different rule, not an amendment of the first",
+ "verdict": "ADMITTED",
+ "zero_contact": "no model, GPU, tool, embedding, tokenizer, network, audio-decode or paid-API contact; no arm re-flown and no reference transcript opened here"
+}

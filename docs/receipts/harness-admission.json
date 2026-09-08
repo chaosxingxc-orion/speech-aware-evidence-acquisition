@@ -1,0 +1,55 @@
+{
+  "created_by": "docs/readiness/2026-09-08-e21-kc-e1f-repair-pass-v2-redecision.md section 9",
+  "gate": "docs/readiness/2026-09-08-agent-system-episode-and-core-pressure-v1.md section 8: every harness module -- a planner rule, an observe mode, a knowledge view, a judge, a tool -- carries a per-carrier admission receipt before it may enter the default plan. The contrast is module ON versus module OFF in the same harness on the same roster (one config key, never a second code path), paired with the carrier's cluster structure, n >= 400, cluster bootstrap, CI90; the guard is non-inferiority with the margin taken from the carrier's own null (family rule of 2026-09-08).",
+  "note": "This table is a LIVING RECEIPT and it is opened with exactly the one module this note had the authority to decide. The other first entries listed in the design note's section 8 are not transcribed here: each needs its own decided row and its own evidence pin, and copying them in from a prose table would manufacture receipts that no verdict issued.",
+  "schema": "saea-harness-admission-v1",
+  "status_values": {
+    "ADMITTED": "a gain on the carrier's primary metric, disjoint from the carrier's own null, with every gating guard non-inferior at the measured margin",
+    "HARMFUL": "a gating guard fails; stays in the record as a documented negative and never enters a plan",
+    "NEUTRAL": "no harm and no gain; may enter the default plan",
+    "PENDING": "registered, not yet decided"
+  },
+  "entries": [
+    {
+      "carrier": "earnings21-original",
+      "comparator": {
+        "attempt_id": "attempt-20260904T233816Z-bcd338",
+        "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2"
+      },
+      "date": "2026-09-08",
+      "evidence": {
+        "arm": {
+          "attempt_id": "attempt-20260908T040832Z-ecda9c",
+          "run_id": "SAEA-E21-KC-E1F-REPAIR-44-V1"
+        },
+        "form_twin": {
+          "attempt_id": "attempt-20260908T072231Z-ec8a5b",
+          "run_id": "SAEA-E21-KU-E1FC-PLACEBO-REPAIR-44-V1"
+        },
+        "guards": "corpus WER UB -0.02936 <= +0.05793; numeric-value accuracy (call-pooled) LB -0.02122 >= -0.15651; over-generation UB +0.00255 <= +0.02218; delivery integrity 0 violations on 1,593 windows; the semantic high-impact guard stays advisory because its own null excludes zero. Every gating guard passes under both weightings.",
+        "margins_from": {
+          "attempt_id": "attempt-20260908T113102Z-bdde07",
+          "note": "the margins are that cell's own measured call-clustered CI90 half-widths; the over-generation margin was computed from its per-window rows through the same instrument and is anchored against its published corpus-WER interval",
+          "run_id": "SAEA-E21-FULL44-NULL-REPLICATE-V1"
+        },
+        "primary": "PERSON entity WER reduction, call-clustered CI90, 44 call clusters, 1,593 paired 90-second windows: +3.737 [+2.653, +4.855] against the sealed comparator and +3.840 [+2.752, +4.958] against the token-matched twin; disjoint from the carrier's own PERSON null interval [-0.24338, +0.25680], 10.61 null half-widths at the lower bound",
+        "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict-v2/",
+        "verdict_note": "docs/readiness/2026-09-08-e21-kc-e1f-repair-pass-v2-redecision.md"
+      },
+      "module": "substitution-only repair with the ConEC brief",
+      "not_admitted_for": [
+        "corpus WER, ORG entity WER, non-entity WER and numeric-value accuracy: every one of those movements is INSIDE this carrier's own replicate noise and none is a demonstrated effect. The module is non-inferior on them, not better.",
+        "the Earnings-21 evaluation ten (342 paired windows, below the program's n >= 400 rule) and the test split, neither of which this row touches",
+        "any other carrier: SLURP and Audio2Tool have no measured null and none of these margins travels to them"
+      ],
+      "provisional": {
+        "reason": "this is a RE-DECISION of already-sealed bytes under a new rule, not a second sample; a re-decision replicates nothing by itself",
+        "requirement": "before any candidate freeze, any citation of this effect as an admitted effect, or any promotion of this module into the default plan: a second independent pass of the KC-E1f arm on the same 44-call roster and the same 1,593 windows, re-read against the null's measured intervals, whose PERSON effect is again disjoint from [-0.24338, +0.25680]",
+        "state": "UNMET"
+      },
+      "row": "SAEA-E21-KC-E1F-VERDICT-V2",
+      "status": "ADMITTED",
+      "supersedes_nothing": "SAEA-E21-KC-E1F-VERDICT-V1 decided the same sealed bytes REJECTED under margin-less guards and stays on record beside this entry"
+    }
+  ]
+}

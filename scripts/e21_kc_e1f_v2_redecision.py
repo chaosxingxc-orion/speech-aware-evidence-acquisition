@@ -505,6 +505,10 @@ def main(argv: list[str] | None = None) -> int:
             entry["v2_verdict"] = row["verdict"] if plan["gates"] else "ADVISORY"
             if plan["margin_key"] is not None:
                 entry["margin_source"] = margins[plan["margin_key"]]
+            # A construction guard gates without a margin: it either held on every
+            # window or the read should already have aborted upstream.
+            if plan["gates"] and entry["v2_verdict"] != "PASS":
+                failed.append(name)
         else:
             margin_key = plan["margin_key"] or "insertions_per_reference_word"
             margin = margins[margin_key]["margin"]

@@ -197,7 +197,7 @@ carries a per-carrier admission receipt before it may enter the default plan:
 | silence-tail observe mode | Earnings-21 | carrier-specific: gain on the WER anchor, HARMFUL on PERSON | `SAEA-E21-FULL44-TAIL2S-V1` |
 | legal-label projection judge | SLURP | ADMITTED | projection v2 re-lock, +1.70 intent |
 | TRAIN slot schema view + two-stage Solve | SLURP | ADMITTED | KC-S1b, SLU-F1 +10.11 |
-| substitution-only repair (Reviewer + constrained Solve) | Earnings-21 | primary gain; guards pending the v2 re-decision | KC-E1f |
+| substitution-only repair (Reviewer + constrained Solve) | Earnings-21 | **ADMITTED**, provisional — replication UNMET | KC-E1f, v2 re-decision (`SAEA-E21-KC-E1F-VERDICT-V2`); the guards are no longer pending and the entry is in `docs/receipts/harness-admission.json` |
 | whole-prompt brief view | Earnings-21 | HARMFUL | KC-E1 |
 | embedder intent retrieval view | SLURP | NEUTRAL at best; excluded | MF-7b |
 | speaker-turn-unit observe mode | Earnings-21 | pending | OBS-E1 in the queue |
