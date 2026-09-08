@@ -801,11 +801,33 @@ def main() -> int:
     counts: Counter[str] = Counter()
     per_cell: dict[str, Any] = {}
     try:
-        client = _LoopbackPromptAuditClient(str(values_a["base_url"]))
+        # Keyword-only, exactly as scripts/e21_kc_e1_prompt_fit.py constructs
+        # it: this client takes host/port/timeout, never a base URL. Host and
+        # port come from the ATTACHED session receipt rather than from the
+        # config string, so the measurement is provably against the process
+        # attach_session just verified.
+        client = _LoopbackPromptAuditClient(
+            host=session.host, port=session.port, timeout_seconds=600.0
+        )
         props = client.request_json("GET", "/props", None)
         counts["GET /props"] += 1
         media_marker = str(props["media_marker"])
+        # The live server's OWN account of the slot it serves. The identity
+        # assertion above already compared this against the fragment, but a
+        # fit that certified a slot the server does not actually honour would
+        # be worthless paper, so it is re-read here from /props directly.
+        live_slot_ctx = (props.get("default_generation_settings") or {}).get("n_ctx")
+        if int(live_slot_ctx) < slot_tokens:
+            raise SystemExit(
+                "resident slot n_ctx %s is smaller than the fragment's declared %d; "
+                "refusing to certify a fit the server cannot honour"
+                % (live_slot_ctx, slot_tokens)
+            )
         chat_template_sha256 = sha256_text(str(props.get("chat_template", "")))
+        log(
+            "props OK: %s slots x %s tokens, media marker %r"
+            % (props.get("total_slots"), live_slot_ctx, media_marker)
+        )
 
         for cell_id in cell_ids:
             values = dict(composed_by_cell[cell_id].values)
@@ -955,6 +977,8 @@ def main() -> int:
         "geometry": {
             "slots": slots,
             "slot_tokens": slot_tokens,
+            "live_slot_n_ctx": live_slot_ctx,
+            "live_total_slots": props.get("total_slots"),
             "context_tokens": slots * slot_tokens,
             "max_tokens": max_tokens,
             "media_marker": media_marker,
