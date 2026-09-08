@@ -163,6 +163,34 @@ def test_audio_prompt_tokens_charges_whole_one_second_chunks() -> None:
         audit.audio_prompt_tokens(-0.5)
 
 
+LEGAL_SCENARIOS = frozenset({"iot", "music"})
+LEGAL_PAIRS = frozenset({("iot", "hue_lightoff"), ("music", "query")})
+
+
+def test_judge_verdict_passes_a_legal_pair() -> None:
+    assert (
+        audit.judge_verdict("iot", "hue_lightoff", True, LEGAL_SCENARIOS, LEGAL_PAIRS)
+        is None
+    )
+
+
+def test_judge_verdict_names_the_tier_it_flags() -> None:
+    assert (
+        audit.judge_verdict(None, None, False, LEGAL_SCENARIOS, LEGAL_PAIRS) == "unparsed"
+    )
+    assert (
+        audit.judge_verdict(None, "query", True, LEGAL_SCENARIOS, LEGAL_PAIRS) == "no-label"
+    )
+    assert (
+        audit.judge_verdict("locations", "query", True, LEGAL_SCENARIOS, LEGAL_PAIRS)
+        == "scenario-not-legal"
+    )
+    assert (
+        audit.judge_verdict("iot", "query", True, LEGAL_SCENARIOS, LEGAL_PAIRS)
+        == "action-illegal-for-scenario"
+    )
+
+
 def test_recall_at_reads_only_the_first_k() -> None:
     candidates = ("a", "b", "c", "d")
     assert audit.recall_at(candidates, "a", 1) is True

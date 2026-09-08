@@ -30,6 +30,11 @@ preregister a cell.** Every cell sketched in section 5 is a *price*, not a regis
   split-usage philosophy, and it is already the source of every knowledge receipt in this repo.
 * No new speech identity opens. Every DEV-1000 row here has already been contacted; every TRAIN
   utterance read here is already inside the sealed knowledge-build closure.
+* **The query stays speech-only.** Every arm priced here sends the row's own recording and nothing
+  derived from it in text — no ASR, no transcript, no draft of the row's own words — under the
+  owner's 2026-09-06 rule. What an exemplar contributes is TRAIN GOLD TEXT, which is *knowledge*
+  about a different utterance the system already holds, never a transcript of the query. The two
+  are separated by whose speech they describe, and any arm that blurs that line is out of scope.
 * Audio *headers* (frame count, sample rate) may be read for duration arithmetic; **no audio
   sample is decoded** and no waveform is opened.
 
@@ -234,6 +239,23 @@ Recall of the gold intent, **error rows (n = 269)**:
 | (c) `q-speech-nemotron-fused` distinct intents | 70.26 | 74.72 | 77.32 | — |
 | **(b) top-3 with (c) appended**, capped at 8 | — | — | **86.62** | — |
 
+**Narrowing ratio — what the system decides before the core is asked.** A candidate set of k out of
+the 60 legal intents removes `1 - k/60` of the decision from the core; that fraction is the part of
+the answer the SYSTEM produced, and it belongs beside every recall number:
+
+| k offered | narrowing ratio (k / 60) | decision removed from the core | (c) recall on errors | (c) recall on all rows |
+|---|---|---|---|---|
+| 3 | **5.00 %** | 95.00 % | 72.86 | 85.30 |
+| 5 | **8.33 %** | 91.67 % | 80.67 | 90.10 |
+| 8 | **13.33 %** | 86.67 % | 83.64 | 91.70 |
+| (b) alone, mean 3.47 labels | **5.78 %** | 94.22 % | 34.57 (at 5) | 81.00 (at 5) |
+| the closed list as it flies today | 100 % | 0 % | — | — |
+
+The comparator today hands the core all 60 labels and 2,146 tokens of inventory and asks it to pick
+one. **An 8-way candidate set is a 7.5× narrowing that still contains the gold on 83.64 % of the
+rows the core currently gets wrong.** That is the trade the agent system is buying, and it is
+visible only when the ratio is printed beside the recall.
+
 And on **all 1,000 rows**, which is the population an actual cell would run over:
 
 | candidate source | @3 | @5 | @8 |
@@ -259,6 +281,35 @@ And on **all 1,000 rows**, which is the population an actual cell would run over
    recoverable by a perfect matcher over an 8-way candidate set. Against 73.10 that is a ceiling of
    about **96.4 intent** — an upper bound no mechanism will reach, stated so the next cell is
    measured against a real headroom rather than against 100.
+
+### 2.5 The deterministic legality judge — free, exact, and small
+
+Source: `legality-judge.json`. The cheapest thing an agent system can put in front of a core
+revise is a rule that reads the core's own output against the TRAIN-mined closed list and decides
+whether to escalate. No gold, no model, no embedding.
+
+| tier | rows flagged |
+|---|---|
+| predicted scenario is not a legal scenario name | **21** |
+| action is illegal for the (legal) scenario named | **18** |
+| response did not parse | **3** |
+| **total flagged** | **42 of 1,000 (4.20 %)** |
+
+* **Precision 100.00 %, false flags on correct rows: 0.** Not a measurement artefact — a structural
+  fact this read verified rather than assumed: **zero** DEV-1000 gold intents lie outside the 60
+  TRAIN pairs, so a row naming an illegal pair *cannot* be correct. The judge can never cost the
+  system a right answer.
+* **Recall over the raw errors: 14.69 %** (42 of the 286 errors the unprojected labels make).
+* **17 of the 42 are already repaired for free** by `slurp-legal-label-projection-v2`; **25 remain
+  wrong** and are the rows a core revise would actually be spent on.
+
+**The honest reading is that the judge is exact and small.** It intercepts 4.2 % of rows at zero
+risk and, after the projection that already ships, leaves 25 rows worth escalating — **2.5 % of the
+roster and 9.3 % of the error mass**. A system built on legality alone tops out there. Its value is
+not the 25 rows: it is that a 100 %-precision gate lets an expensive arm run on 4.2 % of rows
+instead of 100 %, and the same escalate-only-when-flagged shape is what any *richer* judge
+(candidate-set disagreement, neighbour-vote disagreement) would reuse. Those richer judges are not
+measured here and are not proposed.
 
 Note the inversion between the two populations: the **fused** key is the better candidate source on
 all rows (93.40 at 8) and the **speech-only** key is better on the *error* rows (83.64 against
