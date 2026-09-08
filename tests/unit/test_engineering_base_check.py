@@ -336,6 +336,12 @@ def test_regex_extraction_agrees_with_package_import():
         # E22 cell (b) (2026-09-06): the per-sample decoding_params.max_tokens
         # rules, registered from the same canonical core/policies.py file.
         "MAX_TOKENS_POLICIES": set(core_base.MAX_TOKENS_POLICIES.names()),
+        # Owner Decision 11-B change #1 (2026-09-08): the Reviewer's judges,
+        # registered from the same canonical core/policies.py file. Empty
+        # until the first judge lands, and the agreement still has to hold --
+        # a registry the regex side knows about and the import side does not
+        # is exactly the drift this test exists to catch.
+        "JUDGES": set(core_base.JUDGES.names()),
     }
 
     assert regex_registered == import_registered
@@ -463,3 +469,61 @@ def test_real_repo_passes_or_warns_only_given_committed_baseline(capsys):
         "engineering base check FAILed on paths not explained by concurrent "
         f"uncommitted edits: {unexplained}; dirty paths were {sorted(dirty_paths)}"
     )
+
+
+# ---------------------------------------------------------------------------
+# The ``judges`` rule (owner Decision 11-B change #1, 2026-09-08): every
+# judge id a config declares must resolve in ``core.base.JUDGES``, at any
+# depth -- today under a baseline fragment's ``phase_review`` block.
+# ---------------------------------------------------------------------------
+
+
+def _make_judges_repo(root: Path, *, judge_ids: list[str], registered: list[str]) -> None:
+    """A synthetic tree whose ONLY offender source is the ``judges`` rule."""
+
+    registrations = "\n".join(
+        f'JUDGES.register("{judge_id}", object())' for judge_id in registered
+    )
+    _write(
+        root / "src/speech_aware_evidence_acquisition/core/policies.py",
+        f'"""Synthetic canonical registration site."""\n{registrations}\n',
+    )
+    _write(
+        root / "configs/baseline/reviewed.json",
+        json.dumps(
+            {
+                "arm": "synthetic",
+                "phase_review": {"draft": {"judges": judge_ids, "on_flag": "record"}},
+            },
+            indent=2,
+        ),
+    )
+
+
+def test_judges_key_is_checked_at_any_depth_against_the_judges_registry(tmp_path, capsys):
+    _make_judges_repo(tmp_path, judge_ids=["known-judge", "ghost-judge"], registered=["known-judge"])
+    baseline_path = tmp_path / "baseline.json"
+    baseline_path.write_text(json.dumps({"rules": {}}), encoding="utf-8")
+
+    exit_code, report = _run(tmp_path, baseline_path, capsys)
+
+    assert exit_code == 1
+    assert report["new_offenders"] == [
+        "unregistered_config_values: "
+        "configs/baseline/reviewed.json::phase_review.draft.judges[1]=ghost-judge"
+    ]
+    assert "judges" in report["config_keys_found"]
+    assert report["registered_names"]["JUDGES"] == ["known-judge"]
+
+
+def test_a_fully_registered_judges_list_is_not_an_offender(tmp_path, capsys):
+    _make_judges_repo(
+        tmp_path, judge_ids=["known-judge"], registered=["known-judge", "spare-judge"]
+    )
+    baseline_path = tmp_path / "baseline.json"
+    baseline_path.write_text(json.dumps({"rules": {}}), encoding="utf-8")
+
+    exit_code, report = _run(tmp_path, baseline_path, capsys)
+
+    assert exit_code == 0
+    assert report["passed"] is True

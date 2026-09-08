@@ -10,6 +10,7 @@ from .base import (
     CARRIERS,
     EVIDENCE_SOURCES,
     INSTRUCTION_FILLS,
+    JUDGES,
     KNOWLEDGE_BUILDERS,
     KNOWLEDGE_FUSERS,
     KNOWLEDGE_RANKERS,
@@ -48,6 +49,7 @@ from .tracking import (
 
 __all__ = [
     "AGENT_CONTROLLERS", "CARRIERS", "EVIDENCE_SOURCES", "INSTRUCTION_FILLS",
+    "JUDGES",
     "KNOWLEDGE_BUILDERS", "KNOWLEDGE_FUSERS", "KNOWLEDGE_RANKERS",
     "POLICIES", "SCORERS", "TRANSPORTS",
     "LEDGER_COLUMNS", "BundleError", "ComposedConfig", "ConfigError", "CoreError",

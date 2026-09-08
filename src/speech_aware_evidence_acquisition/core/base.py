@@ -12,9 +12,9 @@ from __future__ import annotations
 
 import math
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields as dataclass_fields
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import Mapping, Protocol, Sequence, runtime_checkable
 
 from ..contracts import assert_information_boundary
 
@@ -108,6 +108,362 @@ RESPONSE_FORMATS = Registry("response format")
 # rule. Populated from ``core/policies.py``, one of the canonical
 # registration sites ``scripts/checks/engineering_base_check.py`` reads.
 RESPONSE_POSTPROCESSORS = Registry("response postprocessor")
+
+
+# ---------------------------------------------------------------------------
+# Judges: the Reviewer seat of the four-agent loop (owner Decision 11-B/11-C,
+# 2026-09-08; ``docs/readiness/2026-09-08-openjiuwen-implementation-assessment
+# -v1.md`` change #1, and the design note's section 2 Reviewer row).
+#
+# OWNER DECISION 11-C, stated once and enforced below rather than asked for:
+# **the Reviewer is CRITICISM ONLY.** A judge SCORES and FLAGS; it never
+# proposes a revision. Its whole output is a typed verdict -- a score, flags
+# carrying span/field references, and reasons -- consumed by the Planner's
+# loop decision and by the Solver's constrained revise. No judge may emit
+# replacement text, and that is a property of the TYPE, not of a convention:
+# :func:`assert_criticism_only` refuses a verdict type carrying any field that
+# could hold text longer than one reason, and :meth:`JudgeVerdict.validate`
+# caps every text field at :data:`MAX_JUDGE_TEXT_CHARS`. Answer authority
+# stays with the frozen core (study CLAUDE.md research boundary); a judge that
+# could hand back a rewritten answer would be a second answering LLM wearing a
+# reviewer's name.
+# ---------------------------------------------------------------------------
+
+
+class JudgeError(CoreError):
+    """A judge, a judge registration, or a judge verdict is malformed."""
+
+
+#: Every severity a flag may declare, weakest first. ``block`` says the draft
+#: violates a hard rule the harness itself can check; ``warn`` says the judge
+#: suspects an error; ``info`` is bookkeeping a receipt may count. Severity
+#: NEVER decides anything on its own -- the Planner's ``on_flag`` rule does
+#: (``rails.phase_review``).
+JUDGE_FLAG_SEVERITIES = ("info", "warn", "block")
+
+#: The one length every piece of judge-authored text is capped at. A reason
+#: is a sentence, not a rewrite: 240 characters cannot carry a replacement
+#: transcript, a repaired tool call or a re-answered slot frame, which is
+#: exactly the structural half of Decision 11-C.
+MAX_JUDGE_TEXT_CHARS = 240
+
+_JUDGE_SCALAR_ATOMS = frozenset({"str", "int", "float", "bool"})
+_JUDGE_CONTAINER_ATOMS = frozenset({"tuple"})
+
+
+def _split_top_level(text: str, separator: str) -> list[str]:
+    """Split ``text`` on ``separator`` at bracket depth 0."""
+
+    parts: list[str] = []
+    depth = 0
+    current: list[str] = []
+    for char in text:
+        if char in "[(":
+            depth += 1
+        elif char in "])":
+            depth -= 1
+        if char == separator and depth == 0:
+            parts.append("".join(current))
+            current = []
+            continue
+        current.append(char)
+    parts.append("".join(current))
+    return parts
+
+
+def _annotation_atoms(annotation: str) -> set[str]:
+    """Every type name mentioned by a dataclass field's SOURCE annotation.
+
+    ``from __future__ import annotations`` is in force everywhere in this
+    package, so ``dataclasses.fields(...)[i].type`` is the annotation's text.
+    Reading the text rather than resolving the object is deliberate: the
+    structural proof below must hold without importing anything a judge
+    module might drag in, and it must refuse an annotation it cannot
+    understand instead of silently passing it.
+    """
+
+    text = annotation.strip()
+    if not text:
+        return set()
+    atoms: set[str] = set()
+    for alternative in _split_top_level(text, "|"):
+        alternative = alternative.strip()
+        if not alternative or alternative == "None":
+            continue
+        if alternative.endswith("]") and "[" in alternative:
+            outer = alternative[: alternative.index("[")].strip()
+            inner = alternative[alternative.index("[") + 1 : -1]
+            atoms.add(outer)
+            for part in _split_top_level(inner, ","):
+                part = part.strip()
+                if part in ("", "..."):
+                    continue
+                atoms |= _annotation_atoms(part)
+        else:
+            atoms.add(alternative)
+    return atoms
+
+
+def assert_criticism_only(verdict_type: type, *, proven: Sequence[type] = ()) -> type:
+    """Refuse a verdict type that could carry a proposed revision.
+
+    The check is structural, over the type's own declared fields:
+
+    * every field's annotation may mention only a scalar
+      (:data:`_JUDGE_SCALAR_ATOMS`), ``tuple`` and its element types, or a
+      type already PROVEN criticism-only by an earlier call (``proven``).
+      An ``object``/``Mapping``/``Any`` field is refused outright, because a
+      mapping can carry a whole rewritten answer under any key at all.
+    * every field that can hold a ``str`` must be named in the type's own
+      ``BOUNDED_TEXT_FIELDS``, and :meth:`JudgeVerdict.validate` caps each of
+      those at :data:`MAX_JUDGE_TEXT_CHARS`.
+
+    So a judge cannot return replacement text through ANY field, and adding
+    such a field later fails this assertion at import time rather than
+    reopening Decision 11-C by accident.
+    """
+
+    bounded = frozenset(getattr(verdict_type, "BOUNDED_TEXT_FIELDS", ()))
+    proven_names = {kind.__name__ for kind in proven}
+    for entry in dataclass_fields(verdict_type):
+        atoms = _annotation_atoms(str(entry.type))
+        unknown = sorted(
+            atom
+            for atom in atoms
+            if atom not in _JUDGE_SCALAR_ATOMS
+            and atom not in _JUDGE_CONTAINER_ATOMS
+            and atom not in proven_names
+        )
+        if unknown:
+            raise JudgeError(
+                f"{verdict_type.__name__}.{entry.name} is annotated {entry.type!r}, "
+                f"which names {unknown} -- a criticism-only verdict may carry only "
+                f"{sorted(_JUDGE_SCALAR_ATOMS)}, tuples of those, and types already "
+                "proven criticism-only; anything else could carry a proposed revision "
+                "(owner Decision 11-C)"
+            )
+        if "str" in atoms and entry.name not in bounded:
+            raise JudgeError(
+                f"{verdict_type.__name__}.{entry.name} can carry text but is not "
+                f"declared in {verdict_type.__name__}.BOUNDED_TEXT_FIELDS, so nothing "
+                f"caps it at {MAX_JUDGE_TEXT_CHARS} characters; a judge scores and "
+                "flags and never proposes a revision (owner Decision 11-C)"
+            )
+    return verdict_type
+
+
+def _require_bounded_text(value: object, *, field_name: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise JudgeError(f"{field_name} must be non-empty text, got {value!r}")
+    if len(value) > MAX_JUDGE_TEXT_CHARS:
+        raise JudgeError(
+            f"{field_name} is {len(value)} characters, over the "
+            f"{MAX_JUDGE_TEXT_CHARS}-character cap; a judge writes a reason, never a "
+            "replacement (owner Decision 11-C)"
+        )
+    return value
+
+
+@dataclass(frozen=True)
+class JudgeFlag:
+    """One criticism, pointing at where in the draft it applies.
+
+    ``code`` is the machine-readable flag name a Planner rule and a receipt
+    both key on; ``reason`` is the human sentence. ``field_ref`` names a
+    structured location inside the draft (``"entities[2].type"``,
+    ``"intent.scenario"``) and ``span`` a half-open ``(start, end)`` WORD
+    index pair over the draft's own whitespace tokens -- the same convention
+    ``core.replay_signals.flag_spans`` and ``core.flag_sources`` already use.
+    Both are references INTO the draft, never content: a flag says where to
+    look, and the Solver decides what to do under the system's constraints.
+    """
+
+    BOUNDED_TEXT_FIELDS = ("code", "severity", "reason", "field_ref")
+
+    code: str
+    severity: str
+    reason: str
+    field_ref: str | None = None
+    span: tuple[int, int] | None = None
+
+    def validate(self) -> "JudgeFlag":
+        _require_bounded_text(self.code, field_name="JudgeFlag.code")
+        if self.severity not in JUDGE_FLAG_SEVERITIES:
+            raise JudgeError(
+                f"JudgeFlag.severity must be one of {list(JUDGE_FLAG_SEVERITIES)}, "
+                f"got {self.severity!r}"
+            )
+        _require_bounded_text(self.reason, field_name="JudgeFlag.reason")
+        if self.field_ref is not None:
+            _require_bounded_text(self.field_ref, field_name="JudgeFlag.field_ref")
+        if self.span is not None:
+            if (
+                not isinstance(self.span, tuple)
+                or len(self.span) != 2
+                or any(
+                    isinstance(bound, bool) or not isinstance(bound, int)
+                    for bound in self.span
+                )
+            ):
+                raise JudgeError(
+                    f"JudgeFlag.span must be a (start, end) int pair, got {self.span!r}"
+                )
+            start, end = self.span
+            if start < 0 or end <= start:
+                raise JudgeError(
+                    f"JudgeFlag.span must be a non-empty half-open range, got {self.span!r}"
+                )
+        return self
+
+    def as_json(self) -> dict[str, object]:
+        self.validate()
+        return {
+            "code": self.code,
+            "severity": self.severity,
+            "reason": self.reason,
+            "field_ref": self.field_ref,
+            "span": list(self.span) if self.span is not None else None,
+        }
+
+
+assert_criticism_only(JudgeFlag)
+
+
+@dataclass(frozen=True)
+class JudgeVerdict:
+    """What one judge returns for one draft: a score, flags and reasons.
+
+    ``score`` is optional and, when given, lies in ``[0.0, 1.0]`` with 1.0
+    meaning "nothing to criticise" -- a judge that only flags returns
+    ``None`` rather than inventing a number. ``flags`` is the payload the
+    Planner's ``on_flag`` rule and the Solver's constrained revise both read.
+    ``reasons`` carries whole-draft remarks that belong to no single span.
+
+    Nothing here can hold a rewritten draft: see
+    :func:`assert_criticism_only`, asserted on this type at import.
+    """
+
+    BOUNDED_TEXT_FIELDS = ("judge_id", "version", "reasons")
+
+    judge_id: str
+    version: str
+    score: float | None = None
+    flags: tuple[JudgeFlag, ...] = ()
+    reasons: tuple[str, ...] = ()
+
+    def validate(self) -> "JudgeVerdict":
+        _require_bounded_text(self.judge_id, field_name="JudgeVerdict.judge_id")
+        _require_bounded_text(self.version, field_name="JudgeVerdict.version")
+        if self.score is not None:
+            if isinstance(self.score, bool) or not isinstance(self.score, (int, float)):
+                raise JudgeError(
+                    f"JudgeVerdict.score must be a number or None, got {self.score!r}"
+                )
+            if not math.isfinite(float(self.score)) or not 0.0 <= float(self.score) <= 1.0:
+                raise JudgeError(
+                    f"JudgeVerdict.score must be a finite value in [0, 1], got "
+                    f"{self.score!r}"
+                )
+        if not isinstance(self.flags, tuple):
+            raise JudgeError("JudgeVerdict.flags must be a tuple of JudgeFlag")
+        for flag in self.flags:
+            if not isinstance(flag, JudgeFlag):
+                raise JudgeError("JudgeVerdict.flags entries must be JudgeFlag")
+            flag.validate()
+        if not isinstance(self.reasons, tuple):
+            raise JudgeError("JudgeVerdict.reasons must be a tuple of strings")
+        for index, reason in enumerate(self.reasons):
+            _require_bounded_text(reason, field_name=f"JudgeVerdict.reasons[{index}]")
+        return self
+
+    @property
+    def flagged(self) -> bool:
+        return bool(self.flags)
+
+    def as_json(self) -> dict[str, object]:
+        self.validate()
+        return {
+            "judge_id": self.judge_id,
+            "version": self.version,
+            "score": None if self.score is None else float(self.score),
+            "flags": [flag.as_json() for flag in self.flags],
+            "reasons": list(self.reasons),
+        }
+
+
+assert_criticism_only(JudgeVerdict, proven=(JudgeFlag,))
+
+
+@runtime_checkable
+class Judge(Protocol):
+    """The Reviewer seat's one shape.
+
+    ``id`` and ``version`` are receipt-able identity (the version is what a
+    preregistration and an admission receipt quote). The call takes the
+    DRAFT the Solver just produced, the phase MATERIAL the judge was given
+    by config, and the row STATE, and returns one :class:`JudgeVerdict`.
+    ``criticism_only`` is ``True`` for every registered judge and is checked
+    at registration; the structural half of that promise lives in
+    :func:`assert_criticism_only`.
+
+    A judge is stateless and deterministic: the same three inputs must give
+    the same verdict, in this process and in the next one.
+    """
+
+    id: str
+    version: str
+    criticism_only: bool
+
+    def __call__(
+        self,
+        draft: str,
+        material: Mapping[str, object],
+        state: Mapping[str, object],
+    ) -> JudgeVerdict: ...
+
+
+def assert_judge(entry: object, *, name: str) -> object:
+    """Refuse anything that is not a criticism-only, callable, identified judge."""
+
+    if not callable(entry):
+        raise JudgeError(f"judge {name!r} must be callable")
+    for attribute in ("id", "version"):
+        value = getattr(entry, attribute, None)
+        _require_bounded_text(value, field_name=f"judge {name!r}.{attribute}")
+    if getattr(entry, "id") != name:
+        raise JudgeError(
+            f"judge registered as {name!r} declares id {getattr(entry, 'id')!r}; the "
+            "registry name and the judge's own id are one identity"
+        )
+    if getattr(entry, "criticism_only", None) is not True:
+        raise JudgeError(
+            f"judge {name!r} must declare criticism_only=True; a judge scores and "
+            "flags and never proposes a revision (owner Decision 11-C)"
+        )
+    return entry
+
+
+class JudgeRegistry(Registry):
+    """The one registry whose entries are checked at registration time.
+
+    Every other seam in this module registers whatever it is handed; a judge
+    is different because Decision 11-C is a rule about what a registered
+    entry may DO, and the cheapest place to hold that rule is the door.
+    """
+
+    def register(self, name: str, entry: object) -> object:
+        assert_judge(entry, name=name)
+        return super().register(name, entry)
+
+
+#: The Reviewer's registry (owner Decision 11-B change #1). A ``judges`` list
+#: in ``configs/`` -- today under a baseline fragment's ``phase_review``
+#: block, parsed by ``rails.phase_review`` -- names ids that must resolve
+#: here, exactly as ``policy`` / ``evidence_source`` / ``scorers`` resolve in
+#: their own registries, and ``scripts/checks/engineering_base_check.py``
+#: reads that resolution from source. Populated from ``core/policies.py``,
+#: one of the canonical registration sites that check knows about.
+JUDGES = JudgeRegistry("judge")
 
 
 class RepairAlignmentError(CoreError):
