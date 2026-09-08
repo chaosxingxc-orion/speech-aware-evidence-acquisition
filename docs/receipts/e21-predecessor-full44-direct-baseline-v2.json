@@ -1,0 +1,464 @@
+{
+  "artifact": {
+    "bytes": 2905994,
+    "relpath": "derived/e21-predecessor/SAEA-E21-FULL44-DIRECT-BASELINE-V2/attempt-20260904T233816Z-bcd338/window-hypotheses.json",
+    "root": "SPEECHRL_DATA_DIR",
+    "sha256": "1522f656a8e01b223f3ca65aec9d035e599eecaf8225c8a9fce930b933de8c64"
+  },
+  "attempt_id": "attempt-20260904T233816Z-bcd338",
+  "built_by": "scripts/build_e21_predecessor_snapshot.py",
+  "calls": 44,
+  "carrier_lock_key": "earnings21-original",
+  "content_free": "this receipt carries hashes, counts and distributions only. Not one hypothesis character is committed: the per-window text is model output and lives with the sealed outputs under SPEECHRL_DATA_DIR",
+  "distributions": {
+    "window_completion_tokens": {
+      "count": 1593,
+      "max": 445,
+      "median": 280.0,
+      "min": 3,
+      "p90": 329,
+      "p95": 344,
+      "p99": 382,
+      "total": 439532
+    },
+    "window_prompt_tokens": {
+      "count": 1593,
+      "max": 1232,
+      "median": 1232.0,
+      "min": 75,
+      "p90": 1232,
+      "p95": 1232,
+      "p99": 1232,
+      "total": 1935965
+    },
+    "window_text_chars": {
+      "count": 1593,
+      "max": 1941,
+      "median": 1370.0,
+      "min": 2,
+      "p90": 1584,
+      "p95": 1644,
+      "p99": 1744,
+      "total": 2129095
+    },
+    "window_text_whitespace_tokens": {
+      "count": 1593,
+      "max": 370,
+      "median": 238.0,
+      "min": 1,
+      "p90": 281,
+      "p95": 293,
+      "p99": 315,
+      "total": 372488
+    },
+    "windows_per_call": {
+      "count": 44,
+      "max": 64,
+      "median": 37.0,
+      "min": 13,
+      "p90": 51,
+      "p95": 55,
+      "p99": 64,
+      "total": 1593
+    }
+  },
+  "exposure_row": "SAEA-E21-MF-PREDECESSOR-SNAPSHOT-V1",
+  "generated_at": "2026-09-08T00:26:25.621601+00:00",
+  "identity_anchors": {
+    "calls": {
+      "check": "PASS",
+      "measured": 44,
+      "sealed": 44
+    },
+    "completion_tokens_total": {
+      "check": "PASS",
+      "measured": 439532,
+      "sealed": 439532
+    },
+    "prompt_tokens_total": {
+      "check": "PASS",
+      "measured": 1935965,
+      "sealed": 1935965
+    },
+    "saturated_windows": {
+      "check": "PASS",
+      "measured": 0,
+      "sealed": 0
+    },
+    "stitch_rebuilds_sealed_outputs_byte_for_byte": "PASS",
+    "windows": {
+      "check": "PASS",
+      "measured": 1593,
+      "sealed": 1593
+    }
+  },
+  "per_call": [
+    {
+      "completion_tokens": 10586,
+      "max_window_completion_tokens": 339,
+      "sample_id": "4320211",
+      "saturated_windows": 0,
+      "text_chars": 53345,
+      "windows": 37
+    },
+    {
+      "completion_tokens": 7892,
+      "max_window_completion_tokens": 323,
+      "sample_id": "4330115",
+      "saturated_windows": 0,
+      "text_chars": 40617,
+      "windows": 28
+    },
+    {
+      "completion_tokens": 17972,
+      "max_window_completion_tokens": 346,
+      "sample_id": "4341191",
+      "saturated_windows": 0,
+      "text_chars": 85018,
+      "windows": 64
+    },
+    {
+      "completion_tokens": 8622,
+      "max_window_completion_tokens": 359,
+      "sample_id": "4344338",
+      "saturated_windows": 0,
+      "text_chars": 41214,
+      "windows": 31
+    },
+    {
+      "completion_tokens": 10989,
+      "max_window_completion_tokens": 417,
+      "sample_id": "4344866",
+      "saturated_windows": 0,
+      "text_chars": 53781,
+      "windows": 37
+    },
+    {
+      "completion_tokens": 13084,
+      "max_window_completion_tokens": 381,
+      "sample_id": "4346818",
+      "saturated_windows": 0,
+      "text_chars": 63245,
+      "windows": 45
+    },
+    {
+      "completion_tokens": 12520,
+      "max_window_completion_tokens": 306,
+      "sample_id": "4346923",
+      "saturated_windows": 0,
+      "text_chars": 59993,
+      "windows": 53
+    },
+    {
+      "completion_tokens": 14278,
+      "max_window_completion_tokens": 343,
+      "sample_id": "4359732",
+      "saturated_windows": 0,
+      "text_chars": 66511,
+      "windows": 55
+    },
+    {
+      "completion_tokens": 12089,
+      "max_window_completion_tokens": 360,
+      "sample_id": "4359971",
+      "saturated_windows": 0,
+      "text_chars": 55190,
+      "windows": 42
+    },
+    {
+      "completion_tokens": 12530,
+      "max_window_completion_tokens": 393,
+      "sample_id": "4360366",
+      "saturated_windows": 0,
+      "text_chars": 62878,
+      "windows": 44
+    },
+    {
+      "completion_tokens": 11829,
+      "max_window_completion_tokens": 384,
+      "sample_id": "4360674",
+      "saturated_windows": 0,
+      "text_chars": 61134,
+      "windows": 40
+    },
+    {
+      "completion_tokens": 14079,
+      "max_window_completion_tokens": 355,
+      "sample_id": "4360717",
+      "saturated_windows": 0,
+      "text_chars": 65427,
+      "windows": 51
+    },
+    {
+      "completion_tokens": 10962,
+      "max_window_completion_tokens": 329,
+      "sample_id": "4361631",
+      "saturated_windows": 0,
+      "text_chars": 52379,
+      "windows": 50
+    },
+    {
+      "completion_tokens": 16694,
+      "max_window_completion_tokens": 334,
+      "sample_id": "4363614",
+      "saturated_windows": 0,
+      "text_chars": 80695,
+      "windows": 63
+    },
+    {
+      "completion_tokens": 9988,
+      "max_window_completion_tokens": 294,
+      "sample_id": "4364366",
+      "saturated_windows": 0,
+      "text_chars": 48610,
+      "windows": 39
+    },
+    {
+      "completion_tokens": 14139,
+      "max_window_completion_tokens": 370,
+      "sample_id": "4365024",
+      "saturated_windows": 0,
+      "text_chars": 70197,
+      "windows": 49
+    },
+    {
+      "completion_tokens": 8095,
+      "max_window_completion_tokens": 374,
+      "sample_id": "4365948",
+      "saturated_windows": 0,
+      "text_chars": 41584,
+      "windows": 28
+    },
+    {
+      "completion_tokens": 12132,
+      "max_window_completion_tokens": 406,
+      "sample_id": "4366302",
+      "saturated_windows": 0,
+      "text_chars": 56557,
+      "windows": 40
+    },
+    {
+      "completion_tokens": 13657,
+      "max_window_completion_tokens": 393,
+      "sample_id": "4366429",
+      "saturated_windows": 0,
+      "text_chars": 64488,
+      "windows": 45
+    },
+    {
+      "completion_tokens": 5278,
+      "max_window_completion_tokens": 322,
+      "sample_id": "4366522",
+      "saturated_windows": 0,
+      "text_chars": 25666,
+      "windows": 21
+    },
+    {
+      "completion_tokens": 7892,
+      "max_window_completion_tokens": 359,
+      "sample_id": "4366893",
+      "saturated_windows": 0,
+      "text_chars": 37746,
+      "windows": 27
+    },
+    {
+      "completion_tokens": 5285,
+      "max_window_completion_tokens": 339,
+      "sample_id": "4367318",
+      "saturated_windows": 0,
+      "text_chars": 26695,
+      "windows": 20
+    },
+    {
+      "completion_tokens": 8666,
+      "max_window_completion_tokens": 334,
+      "sample_id": "4367535",
+      "saturated_windows": 0,
+      "text_chars": 41736,
+      "windows": 36
+    },
+    {
+      "completion_tokens": 13873,
+      "max_window_completion_tokens": 350,
+      "sample_id": "4368670",
+      "saturated_windows": 0,
+      "text_chars": 61855,
+      "windows": 47
+    },
+    {
+      "completion_tokens": 6095,
+      "max_window_completion_tokens": 298,
+      "sample_id": "4374910",
+      "saturated_windows": 0,
+      "text_chars": 27634,
+      "windows": 23
+    },
+    {
+      "completion_tokens": 11691,
+      "max_window_completion_tokens": 445,
+      "sample_id": "4375653",
+      "saturated_windows": 0,
+      "text_chars": 56772,
+      "windows": 39
+    },
+    {
+      "completion_tokens": 12801,
+      "max_window_completion_tokens": 374,
+      "sample_id": "4382825",
+      "saturated_windows": 0,
+      "text_chars": 60142,
+      "windows": 43
+    },
+    {
+      "completion_tokens": 10483,
+      "max_window_completion_tokens": 338,
+      "sample_id": "4383161",
+      "saturated_windows": 0,
+      "text_chars": 53527,
+      "windows": 38
+    },
+    {
+      "completion_tokens": 7946,
+      "max_window_completion_tokens": 378,
+      "sample_id": "4384198",
+      "saturated_windows": 0,
+      "text_chars": 39503,
+      "windows": 30
+    },
+    {
+      "completion_tokens": 4414,
+      "max_window_completion_tokens": 304,
+      "sample_id": "4384683",
+      "saturated_windows": 0,
+      "text_chars": 22296,
+      "windows": 17
+    },
+    {
+      "completion_tokens": 10064,
+      "max_window_completion_tokens": 356,
+      "sample_id": "4384744",
+      "saturated_windows": 0,
+      "text_chars": 47611,
+      "windows": 37
+    },
+    {
+      "completion_tokens": 12352,
+      "max_window_completion_tokens": 330,
+      "sample_id": "4384964",
+      "saturated_windows": 0,
+      "text_chars": 57247,
+      "windows": 45
+    },
+    {
+      "completion_tokens": 8120,
+      "max_window_completion_tokens": 352,
+      "sample_id": "4385072",
+      "saturated_windows": 0,
+      "text_chars": 38563,
+      "windows": 29
+    },
+    {
+      "completion_tokens": 13919,
+      "max_window_completion_tokens": 357,
+      "sample_id": "4385388",
+      "saturated_windows": 0,
+      "text_chars": 67438,
+      "windows": 49
+    },
+    {
+      "completion_tokens": 10739,
+      "max_window_completion_tokens": 387,
+      "sample_id": "4385939",
+      "saturated_windows": 0,
+      "text_chars": 50352,
+      "windows": 34
+    },
+    {
+      "completion_tokens": 3397,
+      "max_window_completion_tokens": 319,
+      "sample_id": "4386541",
+      "saturated_windows": 0,
+      "text_chars": 17004,
+      "windows": 13
+    },
+    {
+      "completion_tokens": 4676,
+      "max_window_completion_tokens": 348,
+      "sample_id": "4387332",
+      "saturated_windows": 0,
+      "text_chars": 24577,
+      "windows": 15
+    },
+    {
+      "completion_tokens": 4577,
+      "max_window_completion_tokens": 330,
+      "sample_id": "4387383",
+      "saturated_windows": 0,
+      "text_chars": 22703,
+      "windows": 24
+    },
+    {
+      "completion_tokens": 7311,
+      "max_window_completion_tokens": 341,
+      "sample_id": "4387865",
+      "saturated_windows": 0,
+      "text_chars": 35646,
+      "windows": 25
+    },
+    {
+      "completion_tokens": 5131,
+      "max_window_completion_tokens": 288,
+      "sample_id": "4389907",
+      "saturated_windows": 0,
+      "text_chars": 26758,
+      "windows": 23
+    },
+    {
+      "completion_tokens": 4884,
+      "max_window_completion_tokens": 386,
+      "sample_id": "4392809",
+      "saturated_windows": 0,
+      "text_chars": 24906,
+      "windows": 16
+    },
+    {
+      "completion_tokens": 4497,
+      "max_window_completion_tokens": 314,
+      "sample_id": "4394084",
+      "saturated_windows": 0,
+      "text_chars": 22797,
+      "windows": 20
+    },
+    {
+      "completion_tokens": 9440,
+      "max_window_completion_tokens": 393,
+      "sample_id": "4397800",
+      "saturated_windows": 0,
+      "text_chars": 47746,
+      "windows": 31
+    },
+    {
+      "completion_tokens": 13864,
+      "max_window_completion_tokens": 335,
+      "sample_id": "4397829",
+      "saturated_windows": 0,
+      "text_chars": 69312,
+      "windows": 50
+    }
+  ],
+  "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+  "saturated_windows": 0,
+  "schema": "saea-e21-predecessor-binding-v1",
+  "source": {
+    "manifest_sha256": "1fc51a879c4034e7c59c897f3319a60b4b59d607f8f8c6cb61fbb1668535bb42",
+    "outputs_sha256": "7d4732066d61fccff5bf0829779c24138edcf003e4338933c398416459bbe00d",
+    "trace_sha256": "c657260e0d392f084feee0dd09b23e9c7eac56c6288c15e6b05bb808378795dd"
+  },
+  "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "0763345f172180627641f330a86f543c23fdfe1d",
+  "why_completion_tokens_matter": "the pass-1 hypothesis rides in a KC-E1f pass-2 request, so its own completion-token count IS that request's added text cost, measured by the flight server on the flight tokenizer. The prompt fit projects the worst request from this distribution rather than from a characters-per-token guess",
+  "window_text_sha256_chain": "e08188478f8bcccb60d77d9ea7045f87ef73f38e0a7e5fe087101311afd4a600",
+  "windows": 1593,
+  "zero_contact": "no model, GPU, server, tokenizer, tool, embedder, network or audio-decode contact; three sealed files read (run manifest, outputs.jsonl, trace.jsonl) and no reference transcript, wer_tags, gold label or scorer opened"
+}

@@ -1,0 +1,694 @@
+{
+  "committed_configuration": {
+    "brief_max_entries_per_class": 12,
+    "completion_ceiling": 1024,
+    "fits_strictly": true,
+    "fits_under_study_rule": false,
+    "frame_tokens_assumed": 120,
+    "margin_factor": 1.764,
+    "text_token_distribution": {
+      "count": 1593,
+      "max": 1287,
+      "median": 1067.0,
+      "min": 635,
+      "p90": 1183,
+      "p95": 1212
+    },
+    "worst_required_tokens": 3483,
+    "worst_text_tokens": 1287,
+    "worst_window_id": "4360366#w0036"
+  },
+  "flight_run_id": "SAEA-E21-KC-E1F-REPAIR-44-V1",
+  "frame_sensitivity": [
+    {
+      "brief_max_entries_per_class": 12,
+      "completion_ceiling": 1024,
+      "fits_strictly": true,
+      "fits_under_study_rule": false,
+      "frame_tokens_assumed": 0,
+      "margin_factor": 1.8269,
+      "text_token_distribution": {
+        "count": 1593,
+        "max": 1167,
+        "median": 947.0,
+        "min": 515,
+        "p90": 1063,
+        "p95": 1092
+      },
+      "worst_required_tokens": 3363,
+      "worst_text_tokens": 1167,
+      "worst_window_id": "4360366#w0036"
+    },
+    {
+      "brief_max_entries_per_class": 12,
+      "completion_ceiling": 1024,
+      "fits_strictly": true,
+      "fits_under_study_rule": false,
+      "frame_tokens_assumed": 40,
+      "margin_factor": 1.8055,
+      "text_token_distribution": {
+        "count": 1593,
+        "max": 1207,
+        "median": 987.0,
+        "min": 555,
+        "p90": 1103,
+        "p95": 1132
+      },
+      "worst_required_tokens": 3403,
+      "worst_text_tokens": 1207,
+      "worst_window_id": "4360366#w0036"
+    },
+    {
+      "brief_max_entries_per_class": 12,
+      "completion_ceiling": 1024,
+      "fits_strictly": true,
+      "fits_under_study_rule": false,
+      "frame_tokens_assumed": 80,
+      "margin_factor": 1.7845,
+      "text_token_distribution": {
+        "count": 1593,
+        "max": 1247,
+        "median": 1027.0,
+        "min": 595,
+        "p90": 1143,
+        "p95": 1172
+      },
+      "worst_required_tokens": 3443,
+      "worst_text_tokens": 1247,
+      "worst_window_id": "4360366#w0036"
+    },
+    {
+      "brief_max_entries_per_class": 12,
+      "completion_ceiling": 1024,
+      "fits_strictly": true,
+      "fits_under_study_rule": false,
+      "frame_tokens_assumed": 120,
+      "margin_factor": 1.764,
+      "text_token_distribution": {
+        "count": 1593,
+        "max": 1287,
+        "median": 1067.0,
+        "min": 635,
+        "p90": 1183,
+        "p95": 1212
+      },
+      "worst_required_tokens": 3483,
+      "worst_text_tokens": 1287,
+      "worst_window_id": "4360366#w0036"
+    },
+    {
+      "brief_max_entries_per_class": 12,
+      "completion_ceiling": 1024,
+      "fits_strictly": true,
+      "fits_under_study_rule": false,
+      "frame_tokens_assumed": 160,
+      "margin_factor": 1.744,
+      "text_token_distribution": {
+        "count": 1593,
+        "max": 1327,
+        "median": 1107.0,
+        "min": 675,
+        "p90": 1223,
+        "p95": 1252
+      },
+      "worst_required_tokens": 3523,
+      "worst_text_tokens": 1327,
+      "worst_window_id": "4360366#w0036"
+    }
+  ],
+  "generated_at": "2026-09-08T01:04:59.021478+00:00",
+  "geometry": {
+    "context_tokens": 36864,
+    "max_tokens": 1024,
+    "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+    "rule": "slot_tokens >= 2 * worst_required, with worst_required = speech + text + max_tokens + 2",
+    "slot_tokens": 6144,
+    "slots": 6,
+    "worst_speech_tokens": 1170
+  },
+  "headline": "at the committed cap 12 and the declared 6144-token slot the projected worst request is 3483 tokens, a margin factor of 1.764 against the rule's 2.0 -- it fits STRICTLY and FAILS the margin rule. The LARGEST legal -np that satisfies the rule at this cap is 4",
+  "inputs": {
+    "kc_e1_prompt_fit": {
+      "brief_token_distribution_at_cap": {
+        "count": 44,
+        "max": 676,
+        "median": 451.5,
+        "min": 275,
+        "p90": 574,
+        "p95": 595
+      },
+      "fixed_envelope_overhead_tokens": 179,
+      "measured_worst_required_tokens": 3051,
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/prompt-fit/prompt-fit.json",
+      "sha256": "465a4200f4b6f0df3df627cc39bb3ae979d0c0fe711347b0d87732e237209c81"
+    },
+    "predecessor_binding": {
+      "pass1_completion_token_distribution": {
+        "count": 1593,
+        "max": 445,
+        "median": 280.0,
+        "min": 3,
+        "p90": 329,
+        "p95": 344
+      },
+      "relpath": "receipts/e21-predecessor-full44-direct-baseline-v2.json",
+      "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+      "sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a",
+      "windows": 1593
+    },
+    "repair_frame": {
+      "id": "e21-entity-repair-frame-v1",
+      "note": "the frame is a fixed string; its FLIGHT-tokenizer cost is unknown until the fit runs, so the projection reports a grid",
+      "sha256": "10cafa714e4efcdf0b13190e6c50080e739de09c791878b919bf45e7585c070e",
+      "whitespace_tokens": 36
+    }
+  },
+  "lever_1_slot_sweep": {
+    "at": "cap 12, frame 120, completion ceiling 1024",
+    "rows": [
+      {
+        "divides_context_evenly": true,
+        "fits_strictly": true,
+        "fits_under_study_rule": true,
+        "legal_geometry": true,
+        "margin_factor": 5.292,
+        "nominal_slot_tokens": 18432.0,
+        "np": 2,
+        "slot_is_multiple_of_512": true,
+        "slot_tokens": 18432
+      },
+      {
+        "divides_context_evenly": true,
+        "fits_strictly": true,
+        "fits_under_study_rule": true,
+        "legal_geometry": true,
+        "margin_factor": 3.528,
+        "nominal_slot_tokens": 12288.0,
+        "np": 3,
+        "slot_is_multiple_of_512": true,
+        "slot_tokens": 12288
+      },
+      {
+        "divides_context_evenly": true,
+        "fits_strictly": true,
+        "fits_under_study_rule": true,
+        "legal_geometry": true,
+        "margin_factor": 2.646,
+        "nominal_slot_tokens": 9216.0,
+        "np": 4,
+        "slot_is_multiple_of_512": true,
+        "slot_tokens": 9216
+      },
+      {
+        "divides_context_evenly": false,
+        "fits_strictly": false,
+        "fits_under_study_rule": false,
+        "legal_geometry": false,
+        "margin_factor": 2.1166,
+        "nominal_slot_tokens": 7372.8,
+        "np": 5,
+        "slot_is_multiple_of_512": false,
+        "slot_tokens": 7372
+      },
+      {
+        "divides_context_evenly": true,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "legal_geometry": true,
+        "margin_factor": 1.764,
+        "nominal_slot_tokens": 6144.0,
+        "np": 6,
+        "slot_is_multiple_of_512": true,
+        "slot_tokens": 6144
+      },
+      {
+        "divides_context_evenly": true,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "legal_geometry": true,
+        "margin_factor": 1.323,
+        "nominal_slot_tokens": 4608.0,
+        "np": 8,
+        "slot_is_multiple_of_512": true,
+        "slot_tokens": 4608
+      },
+      {
+        "divides_context_evenly": true,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "legal_geometry": true,
+        "margin_factor": 1.176,
+        "nominal_slot_tokens": 4096.0,
+        "np": 9,
+        "slot_is_multiple_of_512": true,
+        "slot_tokens": 4096
+      },
+      {
+        "divides_context_evenly": true,
+        "fits_strictly": false,
+        "fits_under_study_rule": false,
+        "legal_geometry": true,
+        "margin_factor": 0.882,
+        "nominal_slot_tokens": 3072.0,
+        "np": 12,
+        "slot_is_multiple_of_512": true,
+        "slot_tokens": 3072
+      }
+    ]
+  },
+  "lever_2_completion_ceiling": {
+    "note": "a pass-2 answer re-emits a text of known length; a ceiling above the sealed pass-1 maximum truncates nothing pass 1 produced, and core.repair_alignment refuses anything much longer regardless. Lowering it changes decoding_params and therefore the arm, so it is an option the owner takes, never a silent one",
+    "rows": [
+      {
+        "brief_max_entries_per_class": 12,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.764,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1287,
+          "median": 1067.0,
+          "min": 635,
+          "p90": 1183,
+          "p95": 1212
+        },
+        "worst_required_tokens": 3483,
+        "worst_text_tokens": 1287,
+        "worst_window_id": "4360366#w0036"
+      },
+      {
+        "brief_max_entries_per_class": 12,
+        "completion_ceiling": 896,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.8313,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1287,
+          "median": 1067.0,
+          "min": 635,
+          "p90": 1183,
+          "p95": 1212
+        },
+        "worst_required_tokens": 3355,
+        "worst_text_tokens": 1287,
+        "worst_window_id": "4360366#w0036"
+      },
+      {
+        "brief_max_entries_per_class": 12,
+        "completion_ceiling": 768,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.9039,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1287,
+          "median": 1067.0,
+          "min": 635,
+          "p90": 1183,
+          "p95": 1212
+        },
+        "worst_required_tokens": 3227,
+        "worst_text_tokens": 1287,
+        "worst_window_id": "4360366#w0036"
+      },
+      {
+        "brief_max_entries_per_class": 12,
+        "completion_ceiling": 704,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.9425,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1287,
+          "median": 1067.0,
+          "min": 635,
+          "p90": 1183,
+          "p95": 1212
+        },
+        "worst_required_tokens": 3163,
+        "worst_text_tokens": 1287,
+        "worst_window_id": "4360366#w0036"
+      },
+      {
+        "brief_max_entries_per_class": 12,
+        "completion_ceiling": 640,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.9826,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1287,
+          "median": 1067.0,
+          "min": 635,
+          "p90": 1183,
+          "p95": 1212
+        },
+        "worst_required_tokens": 3099,
+        "worst_text_tokens": 1287,
+        "worst_window_id": "4360366#w0036"
+      },
+      {
+        "brief_max_entries_per_class": 12,
+        "completion_ceiling": 576,
+        "fits_strictly": true,
+        "fits_under_study_rule": true,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 2.0244,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1287,
+          "median": 1067.0,
+          "min": 635,
+          "p90": 1183,
+          "p95": 1212
+        },
+        "worst_required_tokens": 3035,
+        "worst_text_tokens": 1287,
+        "worst_window_id": "4360366#w0036"
+      },
+      {
+        "brief_max_entries_per_class": 12,
+        "completion_ceiling": 512,
+        "fits_strictly": true,
+        "fits_under_study_rule": true,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 2.068,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1287,
+          "median": 1067.0,
+          "min": 635,
+          "p90": 1183,
+          "p95": 1212
+        },
+        "worst_required_tokens": 2971,
+        "worst_text_tokens": 1287,
+        "worst_window_id": "4360366#w0036"
+      }
+    ],
+    "sealed_pass1_max_completion_tokens": 445
+  },
+  "lever_3_cap_sweep": {
+    "note": "the same grid KC-E1's fit swept, at this cell's frame and ceiling. Caps other than the committed one use the KC-E1 sweep's WORST per-cap brief rather than a per-call one, so these rows are an upper bound and strictly conservative",
+    "rows": [
+      {
+        "brief_max_entries_per_class": 128,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.5197,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1847,
+          "median": 1682.0,
+          "min": 1405,
+          "p90": 1731,
+          "p95": 1746
+        },
+        "worst_required_tokens": 4043,
+        "worst_text_tokens": 1847,
+        "worst_window_id": "4375653#w0024"
+      },
+      {
+        "brief_max_entries_per_class": 96,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.5543,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1757,
+          "median": 1592.0,
+          "min": 1315,
+          "p90": 1641,
+          "p95": 1656
+        },
+        "worst_required_tokens": 3953,
+        "worst_text_tokens": 1757,
+        "worst_window_id": "4375653#w0024"
+      },
+      {
+        "brief_max_entries_per_class": 64,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.5802,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1692,
+          "median": 1527.0,
+          "min": 1250,
+          "p90": 1576,
+          "p95": 1591
+        },
+        "worst_required_tokens": 3888,
+        "worst_text_tokens": 1692,
+        "worst_window_id": "4375653#w0024"
+      },
+      {
+        "brief_max_entries_per_class": 48,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.5983,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1648,
+          "median": 1483.0,
+          "min": 1206,
+          "p90": 1532,
+          "p95": 1547
+        },
+        "worst_required_tokens": 3844,
+        "worst_text_tokens": 1648,
+        "worst_window_id": "4375653#w0024"
+      },
+      {
+        "brief_max_entries_per_class": 32,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.6164,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1605,
+          "median": 1440.0,
+          "min": 1163,
+          "p90": 1489,
+          "p95": 1504
+        },
+        "worst_required_tokens": 3801,
+        "worst_text_tokens": 1605,
+        "worst_window_id": "4375653#w0024"
+      },
+      {
+        "brief_max_entries_per_class": 24,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.6241,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1587,
+          "median": 1422.0,
+          "min": 1145,
+          "p90": 1471,
+          "p95": 1486
+        },
+        "worst_required_tokens": 3783,
+        "worst_text_tokens": 1587,
+        "worst_window_id": "4375653#w0024"
+      },
+      {
+        "brief_max_entries_per_class": 20,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.6288,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1576,
+          "median": 1411.0,
+          "min": 1134,
+          "p90": 1460,
+          "p95": 1475
+        },
+        "worst_required_tokens": 3772,
+        "worst_text_tokens": 1576,
+        "worst_window_id": "4375653#w0024"
+      },
+      {
+        "brief_max_entries_per_class": 16,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.6529,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1521,
+          "median": 1356.0,
+          "min": 1079,
+          "p90": 1405,
+          "p95": 1420
+        },
+        "worst_required_tokens": 3717,
+        "worst_text_tokens": 1521,
+        "worst_window_id": "4375653#w0024"
+      },
+      {
+        "brief_max_entries_per_class": 12,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.764,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1287,
+          "median": 1067.0,
+          "min": 635,
+          "p90": 1183,
+          "p95": 1212
+        },
+        "worst_required_tokens": 3483,
+        "worst_text_tokens": 1287,
+        "worst_window_id": "4360366#w0036"
+      },
+      {
+        "brief_max_entries_per_class": 10,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.7283,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1359,
+          "median": 1194.0,
+          "min": 917,
+          "p90": 1243,
+          "p95": 1258
+        },
+        "worst_required_tokens": 3555,
+        "worst_text_tokens": 1359,
+        "worst_window_id": "4375653#w0024"
+      },
+      {
+        "brief_max_entries_per_class": 8,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.7559,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1303,
+          "median": 1138.0,
+          "min": 861,
+          "p90": 1187,
+          "p95": 1202
+        },
+        "worst_required_tokens": 3499,
+        "worst_text_tokens": 1303,
+        "worst_window_id": "4375653#w0024"
+      },
+      {
+        "brief_max_entries_per_class": 6,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.7981,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1221,
+          "median": 1056.0,
+          "min": 779,
+          "p90": 1105,
+          "p95": 1120
+        },
+        "worst_required_tokens": 3417,
+        "worst_text_tokens": 1221,
+        "worst_window_id": "4375653#w0024"
+      },
+      {
+        "brief_max_entries_per_class": 4,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.8384,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1146,
+          "median": 981.0,
+          "min": 704,
+          "p90": 1030,
+          "p95": 1045
+        },
+        "worst_required_tokens": 3342,
+        "worst_text_tokens": 1146,
+        "worst_window_id": "4375653#w0024"
+      },
+      {
+        "brief_max_entries_per_class": 2,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.8905,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 1054,
+          "median": 889.0,
+          "min": 612,
+          "p90": 938,
+          "p95": 953
+        },
+        "worst_required_tokens": 3250,
+        "worst_text_tokens": 1054,
+        "worst_window_id": "4375653#w0024"
+      },
+      {
+        "brief_max_entries_per_class": 1,
+        "completion_ceiling": 1024,
+        "fits_strictly": true,
+        "fits_under_study_rule": false,
+        "frame_tokens_assumed": 120,
+        "margin_factor": 1.923,
+        "text_token_distribution": {
+          "count": 1593,
+          "max": 999,
+          "median": 834.0,
+          "min": 557,
+          "p90": 883,
+          "p95": 898
+        },
+        "worst_required_tokens": 3195,
+        "worst_text_tokens": 999,
+        "worst_window_id": "4375653#w0024"
+      }
+    ]
+  },
+  "run_id": "SAEA-E21-MF-KC-E1F-FIT-PROJECTION-V1",
+  "schema": "saea-e21-kc-e1f-prompt-fit-projection-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "6a12264a0830e0f813d4efd3424b814a8338c7f3",
+  "what_this_is_not": "a fit. Token counts are not additive across a chat template's joins, so this projects from two measurements and cannot certify a geometry. The default mode of this script certifies; that mode needs a resident server and is the flight agent's step",
+  "zero_contact": "no model, GPU, server, tokenizer, tool, embedder, network or audio-decode contact. Two committed receipts are read (the KC-E1 prompt fit's measured brief envelope and this cell's predecessor binding) plus the verified snapshot artifact; nothing is rendered and nothing is tokenized"
+}

@@ -95,6 +95,29 @@ KNOWLEDGE_PROVIDERS = Registry("knowledge provider")
 # shape and the same reason as INSTRUCTION_FILLS above (a real schema over
 # the 152-tool registry is far too large for a config fragment).
 RESPONSE_FORMATS = Registry("response format")
+# KC-E1f (2026-09-07): named, config-pinned rules that turn a RESPONSE into
+# the text a run actually delivers. RESPONSE_FORMATS above renders a
+# structured-decoding SCHEMA and constrains what the core may emit; this is
+# the other side of the same seam -- what the harness does with what the core
+# emitted -- and it exists because the KC-E1 verdict's named next step needs a
+# delivery that can differ from a sealed predecessor by SUBSTITUTIONS ONLY,
+# which is a property of an alignment rule and not of any JSON schema. An
+# entry is a factory ``(**params) -> (predecessor_text, response_text) ->
+# outcome``, the same shape ``rails.phase_material.PHASE_STATE_FILLS`` uses,
+# so the parameters ride in the composed config hash and no launcher owns the
+# rule. Populated from ``core/policies.py``, one of the canonical
+# registration sites ``scripts/checks/engineering_base_check.py`` reads.
+RESPONSE_POSTPROCESSORS = Registry("response postprocessor")
+
+
+class RepairAlignmentError(CoreError):
+    """A substitution-only delivery rule refuses.
+
+    Raised for a caller's bad parameters and for a violated token-count
+    invariant -- never for model output, which is always a named REFUSAL that
+    delivers the predecessor verbatim (``core.repair_alignment``).
+    """
+
 
 _REQUIRED_PROVENANCE = ("lock_key", "relpath", "sha256")
 

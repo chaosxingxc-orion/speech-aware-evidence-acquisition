@@ -600,7 +600,7 @@ class ObsAgentLoopPolicy:
     def _slice_parallel_pass(
         self, ctx, cfg, registry, data_root, sample, rate, pcm, duration,
         parent_sha256, engine_descriptor, evidence, max_tokens,
-        *, allow_empty_evidence: bool = False,
+        *, allow_empty_evidence: bool = False, window_hook=None,
     ):
         """Phases of the slice-level dispatch (owner's slice-batching
         direction, 2026-08-12; legality enforced fail-closed in
@@ -624,7 +624,31 @@ class ObsAgentLoopPolicy:
         legitimately empty ``derived-candidates`` materialization
         (``evidence_empty_by_materialization``, computed in ``run_sample``) --
         every OTHER call keeps today's behaviour (an evidence-bearing arm
-        still refuses an empty ``evidence``)."""
+        still refuses an empty ``evidence``).
+
+        ``window_hook`` (keyword-only, default ``None`` -- KC-E1f, 2026-09-07):
+        the ONE seam a second-pass policy needs and this pass did not have.
+        ``None`` is byte-identical to every run before it. A hook is an object
+        with two methods, both called once per window, and neither may touch
+        anything else:
+
+        * ``instruction(iteration, record, default)`` -> the rendered
+          ``task_instruction`` for THAT window's request. Everything else about
+          the request -- the arm, the evidence, the decoding params, the slice
+          -- is unchanged, so a per-window instruction rides exactly where
+          ``OBS_TAIL_FRAME_V1`` already rides and the arm's D2-frozen field set
+          is untouched.
+        * ``accept(iteration, record, transcript, saturated, skipped)`` ->
+          ``(delivered_text, extra_obs_fields)``. This is where a substitution
+          -only delivery rule replaces a raw response with what the run will
+          actually stitch. It is called for EVERY window, saturated and skipped
+          ones included, because "what this window contributes" is precisely
+          the decision such a policy exists to make. Its extra fields are
+          merged into the window's own OBS record, so what was delivered and
+          why is in the sealed trace beside what was said.
+
+        The hook never changes the request count, the slice cutting, the retry
+        or skip semantics, the stitch chain or the outcome shape."""
 
         from concurrent.futures import ThreadPoolExecutor
 
@@ -704,12 +728,24 @@ class ObsAgentLoopPolicy:
             if slot is not None:
                 decoding_params["id_slot"] = slot
 
-            def _payload(rid, _slice_ref=slice_ref, _params=decoding_params):
+            instruction = (
+                ctx.task_instruction
+                if window_hook is None
+                else window_hook.instruction(
+                    iteration=win_iteration,
+                    record=record,
+                    default=ctx.task_instruction,
+                )
+            )
+
+            def _payload(
+                rid, _slice_ref=slice_ref, _params=decoding_params, _instruction=instruction
+            ):
                 return build_arm_payload(
                     ctx.arm,
                     _slice_ref,
                     rid,
-                    ctx.task_instruction,
+                    _instruction,
                     _params,
                     evidence=evidence,
                     retrieval_query=ctx.retrieval_query,
@@ -767,6 +803,15 @@ class ObsAgentLoopPolicy:
             if saturated:
                 saturated_count += 1
             transcript = "" if (skipped or saturated) else response.text.strip()
+            hook_fields: dict[str, object] = {}
+            if window_hook is not None:
+                transcript, hook_fields = window_hook.accept(
+                    iteration=win_iteration,
+                    record=record,
+                    transcript=transcript,
+                    saturated=saturated,
+                    skipped=skipped,
+                )
             ctx.sink.emit(
                 "OBS",
                 f"{request_id}/obs",
@@ -798,6 +843,7 @@ class ObsAgentLoopPolicy:
                     # order AFTER concurrent completion; MODEL records
                     # interleave in arrival order, chained by id.
                     "obs_dispatch": "slice-parallel",
+                    **hook_fields,
                 },
             )
             accepted_spans.append(transcript)
@@ -919,6 +965,7 @@ class ObsAgentLoopPolicy:
                 ctx, cfg, registry, data_root, sample, rate, pcm, duration,
                 parent_sha256, engine_descriptor, evidence, max_tokens,
                 allow_empty_evidence=evidence_empty_by_materialization,
+                window_hook=self._window_hook(ctx, cfg, data_root, sample),
             )
             cursor = duration
 
@@ -1242,6 +1289,20 @@ class ObsAgentLoopPolicy:
             saturated_slices=saturated_count,
             skipped_slices=skipped_count,
         )
+
+    def _window_hook(self, ctx, cfg, data_root, sample):
+        """This policy's per-window hook, or ``None``.
+
+        ``None`` here, always: ``obs-agent-loop`` sends one bare request per
+        window and delivers what came back. A second-pass policy overrides
+        THIS and nothing else -- ``run_sample``, the slice cutting, the retry
+        and skip semantics, the stitch and the outcome are shared verbatim, so
+        a repair pass cannot drift from the pass it is repairing (the owner's
+        2026-09-03 "one base, thin derivations" rule, and the same reason
+        ``reproduction.replay_loop`` calls ``_slice_parallel_pass`` rather than
+        reimplementing it)."""
+
+        return None
 
     @staticmethod
     def _next_trim(

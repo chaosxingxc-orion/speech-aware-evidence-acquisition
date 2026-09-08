@@ -188,6 +188,17 @@ def stitched_windows_from_trace(trace_path: Path | str) -> dict[str, tuple[Windo
     so re-admits exactly the text ``obs_loop`` excluded. The recovered span's
     ``text`` is therefore forced to ``""`` here too, and ``saturated=True`` is
     carried on the span so the drop is a named covariate, not a silent one.
+
+    A POLICY THAT DELIVERS SOMETHING OTHER THAN THE RAW RESPONSE (KC-E1f, 2026-
+    09-07): ``reproduction.repair_loop`` stitches a substitution-only delivery,
+    not the pass-2 text, and a refused window delivers its sealed pass-1
+    hypothesis rather than the empty string -- including when the pass-2 decode
+    saturated. Such a policy records the exact span it contributed in its own
+    OBS record as ``obs_delivered_text``, and this reader PREFERS that field
+    whenever a trace carries it. The rule is key-gated and strictly additive: no
+    trace written before that policy existed carries the key, so every sealed
+    run reads byte for byte as it did before, and ``assert_stitch_reproduces_
+    outputs`` remains the proof either way.
     """
 
     path = Path(trace_path)
@@ -199,6 +210,7 @@ def stitched_windows_from_trace(trace_path: Path | str) -> dict[str, tuple[Windo
     slice_sample: dict[str, str] = {}
     slice_audio: dict[str, float] = {}
     slice_text: dict[str, str] = {}
+    slice_delivered: dict[str, str] = {}
     slice_bounds: dict[str, tuple[int, float, float, bool]] = {}
     stitch_order: list[list[str]] = []
 
@@ -235,6 +247,8 @@ def stitched_windows_from_trace(trace_path: Path | str) -> dict[str, tuple[Windo
                 float(payload["obs_window_end_seconds"]),
                 bool(payload.get("obs_saturated", False)),
             )
+            if "obs_delivered_text" in payload:
+                slice_delivered[base] = str(payload["obs_delivered_text"])
 
     windows: dict[str, tuple[WindowSpan, ...]] = {}
     for ids in stitch_order:
@@ -255,8 +269,13 @@ def stitched_windows_from_trace(trace_path: Path | str) -> dict[str, tuple[Windo
             # A saturated slice's raw MODEL_RESPONSE text is fully traced for
             # audit but was never stitched (module docstring above): force the
             # recovered span empty exactly as obs_loop's own accepted_spans
-            # entry is, rather than reading the raw text back in.
-            text = "" if saturated else slice_text[request_id].strip()
+            # entry is, rather than reading the raw text back in. A policy that
+            # DELIVERED something else said so in its own OBS record, and that
+            # is what was stitched -- saturation included.
+            if request_id in slice_delivered:
+                text = slice_delivered[request_id]
+            else:
+                text = "" if saturated else slice_text[request_id].strip()
             spans.append(
                 WindowSpan(
                     sample_id=sample_id,

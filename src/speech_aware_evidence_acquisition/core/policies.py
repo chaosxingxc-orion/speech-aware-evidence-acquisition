@@ -24,6 +24,7 @@ from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
 from .base import (
     MAX_TOKENS_POLICIES,
     POLICIES,
+    RESPONSE_POSTPROCESSORS,
     CoreError,
     EvidenceItem,
     Registry,
@@ -642,3 +643,37 @@ from ..reproduction.replay_loop import (  # noqa: E402
 )
 
 POLICIES.register(OBS_REPLAY_LOOP_POLICY_NAME, ObsReplayLoopPolicy())
+
+# e21-entity-repair-substitutions-v1 (KC-E1f, 2026-09-07): the ONE registered
+# rule that turns a second-pass response into a delivered hypothesis which can
+# differ from its sealed pass-1 predecessor by bounded, token-count-preserving
+# SUBSTITUTIONS only. Registers HERE for the same reason every policy above
+# does: this module is a canonical core.base registration site, so a baseline
+# fragment's ``response_postprocessor`` id resolves the way its ``policy`` and
+# ``evidence_source`` ids do and scripts/checks/engineering_base_check.py can
+# read the registered name set from source. The rule itself lives in
+# core/repair_alignment.py with its refusal table.
+from .repair_alignment import (  # noqa: E402
+    E21_ENTITY_REPAIR_SUBSTITUTIONS_V1,
+    entity_repair_substitutions_v1,
+)
+
+RESPONSE_POSTPROCESSORS.register(
+    E21_ENTITY_REPAIR_SUBSTITUTIONS_V1, entity_repair_substitutions_v1
+)
+
+# obs-repair-loop (KC-E1f second-pass entity repair, 2026-09-07): the same
+# fixed 90-second tiling as obs-agent-loop, one contact per window, but each
+# request carries that window's SEALED pass-1 hypothesis and what the run
+# stitches is the substitution-only delivery core.repair_alignment computes --
+# so a pass that repairs names cannot delete or insert a word. It subclasses
+# ObsAgentLoopPolicy and overrides ONE method (_window_hook); registers here
+# for the same reason obs-agent-loop, obs-agent-loop-ojw and obs-replay-loop
+# do -- this module is the one policy-registration site run_experiment
+# resolves names through.
+from ..reproduction.repair_loop import (  # noqa: E402
+    OBS_REPAIR_LOOP_POLICY_NAME,
+    ObsRepairLoopPolicy,
+)
+
+POLICIES.register(OBS_REPAIR_LOOP_POLICY_NAME, ObsRepairLoopPolicy())

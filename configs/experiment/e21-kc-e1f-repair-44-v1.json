@@ -1,0 +1,148 @@
+{
+  "experiment_id": "SAEA-E21-KC-E1F-REPAIR-44-V1",
+  "schema": "saea-e21-kc-e1f-repair-experiment-v1",
+  "date": "2026-09-07",
+  "execution_profile": "bounded-discovery-probe",
+  "status": "PREREGISTERED, NOT AUTHORIZED TO FLY. Preregistration: docs/readiness/2026-09-07-e21-kc-e1f-brief-repair-pass-v1-preregistration.md. Owner GO is PENDING and the prompt fit (section 7 precondition) is OPEN -- the projection there says the named serving geometry does NOT satisfy the study's margin rule for this cell, so the fit decides the geometry before anything flies.",
+  "purpose": "KC-E1f (knowledge consumption, USE axis) on Earnings-21: the SAME capped ConEC pre-meeting brief KC-E1 supplied, consumed as a SECOND-PASS ENTITY REPAIR instead of a whole-prompt supply. KC-E1's primary was met on both legs -- PERSON entity WER 22.489 -> 18.341, +4.148 pp with a call-clustered CI90 lower bound of +2.633 -- and the cell was still REJECTED, because the brief bought 152 PERSON substitutions with 2,242 extra non-entity deletions and both the corpus-WER and numeric guards failed. The one factor here is therefore the CONSUMPTION FORM, not the knowledge: pass 1 is not re-flown (the sealed comparator supplies each window's hypothesis through a content-free snapshot binding), pass 2 sees the window's audio, that hypothesis and the same cap-12 brief, and a registered response post-processor admits SUBSTITUTIONS only -- so the deletion profile is the comparator's by construction and the guard KC-E1 failed cannot be failed the same way.",
+  "population": {
+    "carrier": "earnings21-original",
+    "split_name": "discovery",
+    "dataset_fragment": "earnings21-discovery-conec-names",
+    "split_role": "discovery",
+    "count": 44,
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "receipt": "docs/receipts/splits.json",
+    "audio_seconds_one_pass": 141348.532,
+    "audio_hours_one_pass": 39.263,
+    "fixed_90s_windows_one_pass": 1593,
+    "selection": "no draw: the whole frozen earnings21-original discovery split -- the same 44 calls, the same 1,593 fixed 90-second windows and the same split identity KC-E1, KU-E1c and the sealed comparator all flew. The E5 split (34 kb-construction, 10 r4-e21-sub10 evaluation) is a REPORTING split; an evaluation claim quotes the ten's column only and the ten carry 342 paired windows, below the program's n >= 400 rule.",
+    "estimand": "per-entity-class ConEC-mirror entity WER, pooled over the reported roster, paired at the 90-second window and clustered at the call against the sealed comparator and against the form twin."
+  },
+  "predecessor": {
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "attempt": "attempt-20260904T233816Z-bcd338",
+    "binding_receipt": "docs/receipts/e21-predecessor-full44-direct-baseline-v2.json",
+    "binding_receipt_sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a",
+    "windows": 1593,
+    "calls": 44,
+    "saturated_windows": 0,
+    "why_it_is_not_reflown": "the comparator already decoded every one of these windows, and its bytes ARE pass 1. Re-flying pass 1 would double the contacts, spend a second pass of GPU hours, and -- because greedy decoding on llama-server is not bitwise reproducible across batch compositions -- would produce a pass 1 that is NOT the arm this cell is paired against. Binding the sealed one makes the comparison exact and the cell cost one contact per window.",
+    "what_the_binding_commits": "a content-free receipt: the artifact's path, size and sha256, the sealed manifest/outputs/trace hashes, the counts, and a chain hash over (window_id, text_sha256). The per-window hypotheses are model output and live under SPEECHRL_DATA_DIR with the sealed outputs, never in Git."
+  },
+  "comparator": {
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "attempt": "attempt-20260904T233816Z-bcd338",
+    "rows": [
+      "SAEA-E21-MF-AGENTIC-METRIC-BASELINE-V1 (asr-wer-whisper, conec-entity-wer-official, numeric-value-accuracy-v1)",
+      "SAEA-E21-MF-SEMANTIC-IMPACT-BASELINE-V1 (semantic-high-impact-error-rate-v1)"
+    ],
+    "all_44": {
+      "corpus_wer_percent": 8.2,
+      "conec_person_entity_wer_percent": 22.489,
+      "conec_org_entity_wer_percent": 17.213,
+      "numeric_value_accuracy_percent": 90.73,
+      "negation_critical_error_rate_percent": 0.0278,
+      "substitutions": 13098,
+      "deletions": 5701,
+      "insertions": 10700,
+      "reference_words": 359765
+    },
+    "why_it_is_also_the_equal_contact_control": "the comparator sends ONE contact per window and no pass-2 contact at all; KC-E1f sends one pass-2 contact per window over the comparator's own delivered text. The pair therefore isolates the pass-2 contact plus the brief, and the twin below isolates the brief's content net of that contact.",
+    "pairing_rule": "docs/readiness/2026-09-06-earnings-agentic-metric-baseline-v1.md section 7 and the KC-E1 verdict's own instrument: the fixed 90-second window is the paired unit (1,593), the call is the bootstrap cluster (44), the estimator is the pooled ratio through analysis.paired.resampled_statistic with cluster_of=analysis.e21_window_pairing.call_of, seed 20260903, 10,000 replicates, CI90."
+  },
+  "cells": [
+    {
+      "cell_id": "E21-kc-e1f-brief-repair",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-kc-e1f-brief-repair",
+      "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "arm": "fixed-legal-context",
+      "policy": "obs-repair-loop",
+      "evidence": "conec-class-lists at brief_max_entries_per_class 12 -- byte-identical to KC-E1's own committed fragment, because the cell's claim is that the SAME knowledge consumed differently behaves differently. Changing the cap would confound the form with the content.",
+      "obs": "fixed 90-second windows, no VAD trim, no overlap, no rolling tail, no preprocessing -- byte-identical to the comparator's and KC-E1's OBS protocol, and enforced fail-closed by the policy (a model-chosen boundary or a trimmed buffer would not tile the audio the sealed predecessor decoded).",
+      "serving_geometry": "-c 36864 -np 6, 6,144 tokens per slot, bf16 mmproj resident on the GPU -- SUBJECT TO THE PROMPT FIT, which the preregistration's section 7 projects will refuse it for this cell.",
+      "audio_path": "raw audio through the bf16 mmproj on the GPU; no feature cache"
+    },
+    {
+      "cell_id": "E21-ku-e1fc-placebo-repair",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-ku-e1fc-placebo-repair",
+      "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "arm": "fixed-legal-context",
+      "policy": "obs-repair-loop",
+      "evidence": "conec-class-lists-placebo-token-matched -- the form twin, replaying the same hash-pinned pad plan KU-E1c flew, so the twin's brief is token-equal to the arm's line by line and call by call on the flight tokenizer. Same class labels, same entry count, every entity token replaced by a position-chosen neutral placeholder.",
+      "obs": "identical to the cell above",
+      "serving_geometry": "identical to the cell above",
+      "audio_path": "identical to the cell above"
+    }
+  ],
+  "one_factor": {
+    "between_the_two_cells": "the brief's CONTENT. The two baseline fragments differ in exactly two keys, evidence_source and the twin's own pad-plan byte pin; the policy, the arm, the predecessor binding, the repair frame, the response post-processor and its parameters, the task instruction, the scorers, the OBS protocol, the cap and every decoding parameter are byte-identical.",
+    "against_the_sealed_comparator": "TWO things move and this document says so rather than hiding it: a second contact per window exists at all, and that contact carries the brief plus a repair instruction. The comparator contrast is therefore reported as repair-pass-plus-brief; the CONTENT attribution comes from the twin, which pays the identical contact.",
+    "against_kc_e1": "the consumption FORM, at identical knowledge. KC-E1 and KC-E1f supply the same cap-12 brief built from the same two ConEC files by the same transform; they differ in whether the brief conditions the only decode or edits a sealed one. That contrast is reported as a cross-cell reading, never as this cell's decision."
+  },
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "prompt_order": "evidence-first-system-v3 (from the model fragment): the evidence blocks precede the audio, and the pass-1 hypothesis rides at the END of the rendered task_instruction inside the frozen frame e21-entity-repair-frame-v1 -- exactly where reproduction.obs_loop's own OBS_TAIL_FRAME_V1 conditioned tail rides. It is model output, framed as model output, never a reference transcript, and it lands verbatim in the sealed MODEL_REQUEST record.",
+    "contacts_per_item": "ONE per 90-second window; 1,593 windows over 44 calls per cell. Pass 1 is read, not flown.",
+    "delivery_rule": "core.base.RESPONSE_POSTPROCESSORS entry e21-entity-repair-substitutions-v1 (core.repair_alignment): whitespace-token alignment against the sealed pass-1 hypothesis, accepting a replace only when both sides carry the same token count and that count is <= 4; insertions, deletions and unbalanced or oversized replaces are rejected without changing a byte; an empty response, an anchor ratio below 0.60 or accepted substitutions covering more than 10 % of the pass-1 tokens refuse the whole response and deliver pass 1 verbatim. The delivered token count equals the predecessor's on every window, asserted in code.",
+    "harness": "core.driver.run_experiment_bundled through the same committed launcher path the comparator and KC-E1 flew; the registered core.base policy obs-repair-loop is ObsAgentLoopPolicy with ONE method overridden."
+  },
+  "evaluation": {
+    "manifest_scorers": [
+      "asr-wer-whisper",
+      "conec-entity-wer-official",
+      "numeric-value-accuracy-v1",
+      "semantic-high-impact-error-rate-v1",
+      "cost"
+    ],
+    "paper_facing_scorer": "conec-entity-wer-official",
+    "paper_facing_metric": "ConEC-mirror entity WER per entity type, PERSON first; corpus WER stays the anchor and the harm check",
+    "scored_complete_manifests": 2,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "mandatory_slices": [
+      "per entity class, with reference-word counts, beside ConEC Table 2 rows 1 / 5 / 8 and beside KC-E1's own per-class table",
+      "all 44, the construction 34 and the evaluation 10, reported apart",
+      "the repair ledger: windows refused by reason, windows changed, accepted substitutions, substituted tokens, and rejected opcodes by class -- all four classes reported even at zero",
+      "the delivered-vs-comparator operation table: substitutions, deletions and insertions against the comparator's 13,098 / 5,701 / 10,700. The delivery is substitution-only in RAW whitespace-token space by construction; the Whisper normalizer is not a per-token map, so a substituted surface form may normalize to a different number of words and the normalized deletion/insertion counts can move by that delta alone. Every such move is reported with the substitution that caused it, and a move that cannot be attributed to a substituted span is a defect report, not a result (preregistration section 5.1)",
+      "by sector (9 levels) and sample rate (5 levels), natural mixture and equal-stratum weighting",
+      "throughput: windows per minute, GPU seconds, wall, realized realtime factor, prompt and completion tokens against the comparator's 1,935,965 / 439,532 and KC-E1's 2,907,274 / 423,115"
+    ]
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 3500,
+    "planned_gpu_hours": 2.4,
+    "planned_speech_audio_seconds": 300000
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "1,593 windows + 157 of retry headroom = 1,750 per cell, x 2 cells = 3,500. The comparator realized exactly 1,593 for one pass at this tiling and KC-E1 realized 1,593 as well.",
+    "planned_speech_audio_seconds": "141,348.532 realized per pass x 2 cells = 282,697, rounded up to 300,000 with retry headroom -- the same audio per pass as KC-E1, because the tiling is the same and pass 1 is not re-flown.",
+    "planned_gpu_hours": "KC-E1 realized 0.9948 GPU-h for one pass of 1,593 windows at this geometry with the cap-12 brief in the prompt; KC-E1f adds the pass-1 hypothesis (a measured 3 / 280 / 445 flight tokens per window, min / median / max) to the same prefill and decodes a re-emission rather than a fresh transcript. 0.9948 x 1.2 = 1.194 per cell, rounded to 1.2, so 2.4 for the pair. Re-measured on the preflight; the flight STOPS and reports if the measured rate projects past 2.4.",
+    "paid_api_spend": 0,
+    "budget_is_run_cumulative": "core/model/adapter.py enforces planned_model_calls and planned_speech_audio_seconds across ALL attempts of a run id; a successor plan must cover prior durable spend plus its own worst case."
+  },
+  "decision": {
+    "primary": "ConEC-mirror PERSON entity WER on the reported roster: ADMITTED if the call-clustered CI90 lower bound on the reduction (comparator - KC-E1f) is > 0 AND the same lower bound against KU-E1fc is > 0.",
+    "guards": [
+      "corpus WER non-inferiority: the call-clustered CI90 upper bound on (KC-E1f - comparator) must be <= 0",
+      "numeric-value accuracy not worse: call-pooled CI90 lower bound on (KC-E1f - comparator) >= 0",
+      "over-generation not worse: insertions per reference word against the comparator's 10,700 / 359,765",
+      "the negation-critical error rate reported with its taxonomy id, advisory only",
+      "delivery integrity: for every window the delivered raw text equals the sealed predecessor outside the accepted substitution spans and carries the identical whitespace-token count -- a construction check verified from the sealed trace, not a statistical one, and a failure aborts the read"
+    ],
+    "claim_surface": "discovery data, no superiority, generality or Stage-3 claim, no knob tuned on the evaluation ten.",
+    "not_authorized": "no Earnings-22 contact, no confirmatory read, no retrieval variant, no third pass, no paper-scale work.",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}
