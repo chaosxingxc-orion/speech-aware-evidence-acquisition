@@ -270,8 +270,8 @@ Two existing assertions were updated because the facts they pinned changed on pu
 
 | rule | left | the wave that clears it |
 |---|---:|---|
-| `probe_modules` | 36 | per carrier, and only after that carrier's cells are expressible as phase programs. The A2T G-series probes (16 of the 36) are the largest block and are now reachable-in-principle: their config ids resolve, their renderers are catalog tools, and `phase-hard-validity-repair-v1` shows the shape a G-series fold takes. |
-| `controller_classes_outside_controllers` | 30 | 21 are launcher copies inside kept receipts and leave only when their receipts' citations are superseded; 8 are probe-module controllers and leave with their probes; 1 is `rails/runner.py::AgentController`, which is the Protocol itself and is not an offender in substance. |
+| `probe_modules` | 36 | per carrier, and only after that carrier's cells are expressible as phase programs. The Audio2Tool probes are 25 of the 36 (the G3-G8 series alone is 10) and are the largest block; they are now reachable-in-principle, because their config ids resolve, their renderers are catalog tools, and `phase-hard-validity-repair-v1` shows the shape a G-series fold takes. |
+| `controller_classes_outside_controllers` | 30 | **19** are launcher copies inside kept receipts and leave only when their receipts' citations are superseded; **10** are probe-module controllers and leave with their probes; **1** is `rails/runner.py::AgentController`, which is the Protocol itself and is not an offender in substance. |
 | `adapter_subclasses_outside_adapters` | 8 | 6 are probe-module adapters (with their probes); 2 are launcher copies (with their launchers). |
 | `launcher_dirs` | 42 | disposal-paced, four candidates named in the archive index; the gate already blocks growth. |
 
