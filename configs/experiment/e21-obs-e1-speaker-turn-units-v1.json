@@ -5,7 +5,8 @@
   "execution_profile": "bounded-discovery-probe",
   "status": "PREREGISTERED AND COMPOSABLE — NOT AUTHORIZED TO FLY",
   "seam_landed": "2026-09-08. The obs seam of section 8 of the preregistration landed: obs_unit_plan and obs_unit_plan_sha256 are known keys on the registered obs-agent-loop policy, the cutter consumes the hash-pinned plan's speaker-turn units at both of its cut sites, and every refusal of section 8.2 fires fail-closed before a window is cut. The composition, the composed hashes, the contact-free request half and the payload-binding stage are recorded in docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-obs-e1-seam/ under the model-free exposure row SAEA-E21-MF-OBS-E1-SEAM-V1 (zero model contacts). This file remains a launch record, never a permission.",
-  "purpose": "Owner thesis, 2026-09-07: cut the speech by SPEAKER first, then understand per speaker. The sealed full-44 direct baseline transports each call as ceil(D/90) fixed 90-second windows, and the cross-carrier silence-tail preregistration measured what that costs: 1,043 of the 1,593 windows (65.5 %) end on an ACTIVE frame and 1,088 of the 1,549 interior ones (70.2 %) end within 20 ms of active speech, while only 645 (40.5 %) carry exactly one speaker. This cell replaces the transport unit -- and nothing else -- with the hash-pinned speaker-turn unit plan, whose 5,288 units end mid-speech 11.7 % of the time and carry exactly one speaker 76.1 % of the time. Preregistration: docs/readiness/2026-09-07-e21-obs-speaker-turn-units-v1-preregistration.md.",
+  "experiment_re_pinned_to_v2": "2026-09-08. The coordinator's decision, under the owner's OBS-E1 GO: this cell now pins the v2 unit plan (schema saea-e21-speaker-turn-units-v2), which replaces v1's rule 4 with the minimum-duration merge described in the baseline fragment's own baseline_re_pinned_to_v2 field. reproduction.obs_loop.OBS_UNIT_PLAN_SCHEMAS accepts both schemas, so this re-pin changes only this cell's own composed identity, not v1's. Re-verified LOADS in docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-obs-e1-seam-v2/ (exposure row SAEA-E21-MF-OBS-E1-SEAM-V1, ATTEMPT 2).",
+  "purpose": "Owner thesis, 2026-09-07: cut the speech by SPEAKER first, then understand per speaker. The sealed full-44 direct baseline transports each call as ceil(D/90) fixed 90-second windows, and the cross-carrier silence-tail preregistration measured what that costs: 1,043 of the 1,593 windows (65.5 %) end on an ACTIVE frame and 1,088 of the 1,549 interior ones (70.2 %) end within 20 ms of active speech, while only 645 (40.5 %) carry exactly one speaker. This cell replaces the transport unit -- and nothing else -- with the hash-pinned v2 speaker-turn unit plan, whose 5,122 units end mid-speech 11.0 % of the time and carry exactly one speaker 76.1 % of the time, with zero units left under the 1.0 s minimum (v1's own 5,288-unit plan carried 166). Preregistration: docs/readiness/2026-09-07-e21-obs-speaker-turn-units-v1-preregistration.md (see the dated 2026-09-08 v2 addendum).",
   "population": {
     "carrier": "earnings21-original",
     "split_name": "discovery",
@@ -15,12 +16,14 @@
     "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
     "receipt": "docs/receipts/splits.json",
     "audio_seconds_cut": 141345.852687,
-    "audio_seconds_delivered": 151921.852688,
-    "speaker_turn_units_one_pass": 5288,
+    "audio_seconds_delivered": 151589.852688,
+    "speaker_turn_units_one_pass": 5122,
     "fixed_90s_windows_one_pass": 1593,
-    "unit_plan": "docs/receipts/obs/e21-speaker-turn-units-v1.json",
-    "unit_plan_sha256": "fed5188b86d672b2d2a9c8f1b55dc51fe5712776fc06cc938dc759854d52026a",
-    "unit_plan_exposure_row": "SAEA-E21-MF-SPEAKER-TURN-UNITS-V1",
+    "unit_plan": "docs/receipts/obs/e21-speaker-turn-units-v2.json",
+    "unit_plan_sha256": "0f5f013959b89fa0acc3bb366324e701cbe3a022f7b29ef3e364d621d98eb03b",
+    "unit_plan_exposure_row": "SAEA-E21-MF-SPEAKER-TURN-UNITS-V2",
+    "unit_plan_schema": "saea-e21-speaker-turn-units-v2",
+    "unit_plan_predecessor": "docs/receipts/obs/e21-speaker-turn-units-v1.json (SAEA-E21-MF-SPEAKER-TURN-UNITS-V1, 5,288 units, 166 under 1.0 s) -- superseded as the candidate transport unit, not deleted",
     "selection": "no draw: the whole frozen earnings21-original discovery split, the comparator's own population, already exposed many times over.",
     "estimand": "the pooled delta, comparator minus cell, of ConEC-mirror PERSON entity WER and of corpus WER, over all 44 calls.",
     "strata": "diarization dominance (dominated / shared at 0.60, the PRIMARY stratum because the tool's speaker_count saturates at four), speaker count (0/1/2/>=3), unit length (<1 s / 1-10 s / 10-60 s / >=60 s), cut kind (pause / turn-boundary / forced-cap-split / call-end), the no-pause call 4366522 reported apart, and the release's own sector (9 levels) and sample rate (5 levels)."
@@ -45,7 +48,7 @@
     "seed": 20260803,
     "max_tokens": 1024,
     "id_slot": "per-sample",
-    "contacts_per_item": "one per speaker-turn unit; 5,288 units over 44 calls",
+    "contacts_per_item": "one per speaker-turn unit; 5,122 units over 44 calls (v2 plan)",
     "slot_fit": "unchanged and needing no re-certification: no unit exceeds 90 s (analysis.e21_speaker_turn_units.assert_tiles refuses a plan that contains one), so the worst request is still the 2,258-token 90-second window the slot receipt certified at 2.72x against the 6,144-token slot.",
     "harness": "core.driver.run_experiment_bundled through scripts/run_arm_sequence.sh -- the same committed launcher path the sealed comparator flew, with the same registered core.base policy obs-agent-loop. The unit plan is a THIN derivation on that policy, not a new base: no module under rails/probes, no TaskAdapter or controller subclass, no launcher directory.",
     "instruction": "byte-identical to the sealed SAEA-E21-FULL44-DIRECT-BASELINE-V2 arm (configs/baseline/e21-buf90-zero-locked-scored4.json task_instruction)"
@@ -63,7 +66,7 @@
     "no_arm_is_reflown": "the comparator is the sealed run's own outputs, scored by the same registered functions; nothing is re-flown to produce it."
   },
   "pairing": {
-    "unit": "the CALL -- 44 clusters. The comparator's 1,593 windows and this cell's 5,288 units do not align one to one and no construction makes them, so the call's pooled metrics are the only level at which both arms produce a complete comparable quantity.",
+    "unit": "the CALL -- 44 clusters. The comparator's 1,593 windows and this cell's 5,122 units do not align one to one and no construction makes them, so the call's pooled metrics are the only level at which both arms produce a complete comparable quantity.",
     "statistic": "analysis.paired.resampled_statistic on the pooled ratio sum(numerator)/sum(denominator) over the resampled call ids",
     "seed": 20260903,
     "n_replicates": 10000,
@@ -86,7 +89,7 @@
       "the remaining seven ConEC classes and the non-entity rate"
     ],
     "falsifier_before_any_score": "concatenating a call's unit slices with the 2.0-second tails removed must reproduce that call's sealed concatenated audio_sha256 from saea-diarization-v1, which holds if and only if the units tile and the cut is byte-exact against the sealed slices. A disagreement stops the cell before it is scored.",
-    "equal_contact_question": "A contact-matched control is IMPOSSIBLE BY CONSTRUCTION and is declared so before the flight: a call cut at its speaker turns yields 5,288 pieces, and there is no way to cut it into speaker-turn units and into 1,593 of them. The contrast therefore confounds boundary placement, speaker purity and contact count/length, both arms report contacts and delivered audio seconds in the verdict's first table, and the verdict states the confound in the same paragraph as the headline number. The control that WOULD separate contact count -- a fixed-window arm at obs_buffer_seconds 26.73, 5,288 windows, call it OBS-E1b -- is named as the follow-up and is deliberately NOT registered: two experiments in flight is forbidden.",
+    "equal_contact_question": "A contact-matched control is IMPOSSIBLE BY CONSTRUCTION and is declared so before the flight: a call cut at its speaker turns yields 5,122 pieces (v2 plan), and there is no way to cut it into speaker-turn units and into 1,593 of them. The contrast therefore confounds boundary placement, speaker purity and contact count/length, both arms report contacts and delivered audio seconds in the verdict's first table, and the verdict states the confound in the same paragraph as the headline number. The control that WOULD separate contact count -- a fixed-window arm at obs_buffer_seconds 27.60, 5,122 windows, call it OBS-E1b -- is named as the follow-up and is deliberately NOT registered: two experiments in flight is forbidden.",
     "claim_surface": "Discovery data. No superiority, generality or Stage-3 claim, and no paper-facing effectiveness claim at all (see pairing.power_limitation). No knob tuned on the evaluation ten: the plan's five rules were fixed model-free before any score existed. No Earnings-22 contact, no fstalign install, no diarizer re-run, no speaker naming.",
     "test_tuning": false,
     "paper_scale": false
@@ -111,7 +114,7 @@
       "the per-call table for all 44 calls, with units, delivered seconds and every metric",
       "the per-stratum table on every one of the six strata, natural mixture and equal-stratum weighted",
       "call 4366522 reported apart: zero detected pauses, all 38 units ending on an active frame",
-      "the 166 short-kept units under 1.0 s and the 21 units attributed no reference word, reported as their own stratum",
+      "zero units remain under 1.0 s on the v2 plan (v1's own 166 short-kept units are superseded), and the 1 unit attributed no reference word, reported as its own stratum",
       "contacts and delivered audio seconds per arm, in the first table",
       "throughput: units per minute, GPU seconds, wall, realized realtime factor, prompt and completion tokens"
     ]
@@ -119,14 +122,15 @@
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
     "split_role": "discovery",
-    "planned_model_calls": 5800,
-    "planned_gpu_hours": 3.5,
-    "planned_speech_audio_seconds": 165000
+    "planned_model_calls": 5635,
+    "planned_gpu_hours": 3.4,
+    "planned_speech_audio_seconds": 167000
   },
   "execution_plan_basis": {
-    "planned_model_calls": "5,288 speaker-turn units over the 44 calls, plus 512 of headroom for obs_slice_retry_max=1 retries; the registered exposure ceiling is 6,000.",
-    "planned_speech_audio_seconds": "151,921.853 s delivered (141,345.853 cut plus 5,288 x 2.0 s of tail), rounded up with retry headroom to 165,000; the registered exposure ceiling is 170,000.",
-    "planned_gpu_hours": "BRACKETED, not guessed. The comparator realized 3,504.4 GPU-seconds (0.973 GPU-h) for 1,593 contacts over 141,345.85 s at this exact geometry, 40.3x realtime. Audio-proportional gives 0.973 x 151,921.853 / 141,345.853 = 1.05 GPU-h (the floor, if cost tracks encoded seconds); contact-proportional gives 0.973 x 5,288 / 1,593 = 3.23 GPU-h (the ceiling, if cost tracks requests). Prompt tokens rise about 23 % (1.94 M to roughly 2.38 M) and completion tokens are roughly conserved, so the truth is between. 3.5 planned against a 4.0 ceiling covers the pessimistic bracket; the projection is re-measured on the smoke and the flight STOPS and reports if the measured rate projects past 4.0.",
+    "recomputed_for_v2": "2026-09-08. These three figures are recomputed for the v2 plan (5,122 units, not v1's 5,288); the formula is unchanged from v1's own -- only the unit count and delivered-audio input move. The registered ceilings (6,000 calls / 170,000 speech seconds / 4.0 GPU-h) are UNCHANGED: v2 needs strictly less of every one of the three than v1 did, so v1's ceilings already bound it with more margin than they bounded v1.",
+    "planned_model_calls": "the v2 unit count plus 10 % retry headroom: ceil(5,122 x 1.10) = 5,635 (513 calls of headroom for obs_slice_retry_max=1 retries); the registered exposure ceiling stays 6,000.",
+    "planned_speech_audio_seconds": "151,589.853 s delivered (141,345.853 cut plus 5,122 x 2.0 s of tail) x 1.10 retry headroom = 166,748.838, rounded up to 167,000; the registered exposure ceiling stays 170,000.",
+    "planned_gpu_hours": "BRACKETED, not guessed, by the SAME formula v1 used, scaled by v2's own delivered audio and contact count against the comparator's realized 0.9734 GPU-h for 1,593 contacts over 141,345.85 s (0.973 GPU-h, 3,504.4 GPU-seconds) at this exact geometry, 40.3x realtime. Audio-proportional gives 0.9734 x 151,589.853 / 141,345.853 = 1.044 GPU-h (the floor, if cost tracks encoded seconds); contact-proportional gives 0.9734 x 5,122 / 1,593 = 3.130 GPU-h (the ceiling, if cost tracks requests) -- both strictly below v1's own 1.05 / 3.23 brackets, since v2 has fewer units and less delivered audio than v1 on the same 44 calls. 3.4 planned (the same 1.083x margin v1 applied to its own contact-proportional ceiling of 3.23 to reach 3.5) against the unchanged 4.0 ceiling covers the pessimistic bracket with more room than v1 had; the projection is re-measured on the smoke and the flight STOPS and reports if the measured rate projects past 4.0.",
     "paid_api_spend": 0,
     "budget_is_run_cumulative": "core/model/adapter.py enforces planned_model_calls and planned_speech_audio_seconds across ALL attempts of a run id, so a partially spent attempt cannot be re-run under this id and the one permitted recovery would take a fresh run id and a fresh exposure row.",
     "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are the exposure-ledger row's calls / speech audio seconds / gpu hours cells, which the gate requires to be at least these planned values."

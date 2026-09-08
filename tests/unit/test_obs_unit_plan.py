@@ -53,6 +53,8 @@ from speech_aware_evidence_acquisition.reproduction.obs_audio import (
 from speech_aware_evidence_acquisition.reproduction.obs_loop import (
     OBS_UNIT_PLAN_BOUNDARY_MODE,
     OBS_UNIT_PLAN_SCHEMA,
+    OBS_UNIT_PLAN_SCHEMA_V2,
+    OBS_UNIT_PLAN_SCHEMAS,
     ObsLoopConfig,
     ObsLoopError,
 )
@@ -284,6 +286,25 @@ class TestRefusals:
         document = _plan_document(duration=100.0, edges=[40.0], schema="some-other-plan-v9")
         with pytest.raises(ObsLoopError, match="declares schema"):
             _load(tmp_path, document)
+
+    def test_a_v2_schema_plan_loads_exactly_like_a_v1_one(self, tmp_path) -> None:
+        """OBS-E1 v2 (the coordinator's 2026-09-08 minimum-duration rule): the
+        seam accepts EITHER schema, v1's own default default stays accepted,
+        and v2's extra per-unit ``absorbed_units`` key -- unknown to this
+        loader's narrow ``PlannedUnit`` view -- is harmless."""
+
+        assert OBS_UNIT_PLAN_SCHEMA in OBS_UNIT_PLAN_SCHEMAS
+        assert OBS_UNIT_PLAN_SCHEMA_V2 in OBS_UNIT_PLAN_SCHEMAS
+        assert OBS_UNIT_PLAN_SCHEMA != OBS_UNIT_PLAN_SCHEMA_V2
+
+        document = _plan_document(duration=100.0, edges=[40.0], schema=OBS_UNIT_PLAN_SCHEMA_V2)
+        document["calls"][0]["units"][0]["absorbed_units"] = [
+            {"start_seconds": 39.5, "end_seconds": 40.0, "speaker": "speaker_2"}
+        ]
+        config = _load(tmp_path, document)
+        assert config.unit_plan is not None
+        assert config.unit_plan.schema == OBS_UNIT_PLAN_SCHEMA_V2
+        assert config.unit_plan.unit_count == 2
 
     def test_a_call_with_no_units_is_refused(self, tmp_path) -> None:
         document = _plan_document(duration=100.0, edges=[40.0])

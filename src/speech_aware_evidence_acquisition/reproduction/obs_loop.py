@@ -71,10 +71,11 @@ Unit plan (OBS-E1 obs seam, 2026-09-08; the module comment above
 :class:`PlannedUnit` carries the full statement): ``obs_unit_plan`` +
 ``obs_unit_plan_sha256``, both defaulting to ``None``, replace the
 clock-derived fixed windows with the hash-pinned SPEAKER-TURN UNITS of a
-``saea-e21-speaker-turn-units-v1`` plan. The same encoder, the same tail
-knob, the same span-equals-audio_seconds rail, the same retry, skip, stitch
-and outcome -- only where the cut lands moves, and with the keys null
-nothing moves at all.
+``saea-e21-speaker-turn-units-v1`` (v1) or ``saea-e21-speaker-turn-units-v2``
+(v2, the coordinator's 2026-09-08 minimum-duration merge rule) plan --
+:data:`OBS_UNIT_PLAN_SCHEMAS`. The same encoder, the same tail knob, the same
+span-equals-audio_seconds rail, the same retry, skip, stitch and outcome --
+only where the cut lands moves, and with the keys null nothing moves at all.
 """
 
 from __future__ import annotations
@@ -148,12 +149,18 @@ _KNOWN_OBS_KEYS = frozenset(
 )
 _EPSILON_SECONDS = 1e-6
 
-#: The one plan schema this seam consumes (OBS-E1, 2026-09-08). A plan
-#: declaring anything else is refused before a window is cut: the loader
-#: re-derives the tiling property through the plan builder's OWN proof
+#: The plan schemas this seam consumes (OBS-E1, 2026-09-08 for v1; 2026-09-08
+#: for v2's coordinator minimum-duration rule). A plan declaring anything else
+#: is refused before a window is cut: the loader re-derives the tiling
+#: property through the plan builder's OWN proof
 #: (``analysis.e21_speaker_turn_units.assert_tiles``), which is meaningful
-#: only for units this schema's shape describes.
+#: only for units one of these schemas' shape describes. ``OBS_UNIT_PLAN_SCHEMA``
+#: (singular) stays v1's own string -- unchanged, so every existing caller that
+#: names it (a synthetic test plan's default, a v1 fragment's pin) keeps
+#: naming v1 -- and is one member of the accepted set below, not replaced by it.
 OBS_UNIT_PLAN_SCHEMA = "saea-e21-speaker-turn-units-v1"
+OBS_UNIT_PLAN_SCHEMA_V2 = "saea-e21-speaker-turn-units-v2"
+OBS_UNIT_PLAN_SCHEMAS = frozenset({OBS_UNIT_PLAN_SCHEMA, OBS_UNIT_PLAN_SCHEMA_V2})
 
 #: What the ``saea-obs-derivation-v1`` receipt records in ``boundary_mode``
 #: when a plan supplied the cut (preregistration section 8.4). The ADVANCE
@@ -473,10 +480,10 @@ def _load_unit_plan(
     if not isinstance(document, Mapping):
         raise ObsLoopError(f"obs_unit_plan {relpath!r} must be a JSON object")
     schema = document.get("schema")
-    if schema != OBS_UNIT_PLAN_SCHEMA:
+    if schema not in OBS_UNIT_PLAN_SCHEMAS:
         raise ObsLoopError(
-            f"obs_unit_plan {relpath!r} declares schema {schema!r}, not "
-            f"{OBS_UNIT_PLAN_SCHEMA!r}; this seam consumes that schema only"
+            f"obs_unit_plan {relpath!r} declares schema {schema!r}, not one of "
+            f"{sorted(OBS_UNIT_PLAN_SCHEMAS)!r}; this seam consumes those schemas only"
         )
     blocks = document.get("calls")
     if not isinstance(blocks, list) or not blocks:
