@@ -66,6 +66,7 @@ import hashlib
 import io
 import json
 import os
+import shutil
 import statistics
 import subprocess
 import sys
@@ -409,7 +410,15 @@ def main() -> int:
         for call in load_json(DIARIZATION_INPUTS)["calls"]
     }
     expected_fields = set(ARM_VISIBLE_FIELDS[str(values["arm"])])
+    # This check's OWN throwaway scratch, under the controlled data root and
+    # never under docs/checks. Wiped before each invocation on purpose: a
+    # TraceSink refuses to overwrite a prior attempt's trace, and re-running a
+    # model-free check must not require an operator to remember to clean up.
+    # The guard keeps that rmtree pinned to this run id and nothing else.
     scratch = root / "runs" / RUN_ID
+    if scratch.name != RUN_ID or scratch.parent.name != "runs":  # pragma: no cover
+        raise SystemExit(f"refusing to clear {scratch}")
+    shutil.rmtree(scratch, ignore_errors=True)
     scratch.mkdir(parents=True, exist_ok=True)
     per_call: list[dict[str, Any]] = []
 
