@@ -209,6 +209,23 @@ SLOT_AFFINITY_SENTINEL = "per-sample"
 #: policy and ``reproduction.ojw.runner`` already do.
 SEQUENTIAL_DISPATCH_SLOT = 0
 
+#: The bundle contract's own outputs field set (``core.bundle.outputs.
+#: _REQUIRED_OUTPUTS_FIELDS``), named here so the Earnings dispatch can prove
+#: the obs driver's sealed rows already satisfy it rather than rebuild them.
+_OBS_OUTPUTS_FIELDS = frozenset(
+    {
+        "request_id",
+        "sample_id",
+        "carrier_lock_key",
+        "arm",
+        "text",
+        "admitted",
+        "request_sha256",
+        "response_sha256",
+        "response_text_sha256",
+    }
+)
+
 #: A model (or baseline) fragment normally declares
 #: ``decoding_params.max_tokens`` as a plain integer and every request of the
 #: cell carries that same one. It may instead declare an OBJECT -- ``{"policy":
@@ -790,6 +807,13 @@ class FlightRuntime:
         transport_factory: Callable[..., object] | None = None,
         gate_factory: Callable[..., object] = FrozenCoreGate.for_study_repo,
         rails_runner: Callable[..., object] = run_rails_experiment,
+        # The Earnings carrier's runner (owner Decision 12-F item #9,
+        # 2026-09-08). ``None`` -- the default -- resolves lazily to
+        # ``core.driver.run.run_experiment``, the ONE obs harness; the seam
+        # exists so a wiring proof can drive :meth:`run_phases` over a fake
+        # transport without importing librosa, exactly as ``rails_runner``
+        # and ``phase_runner`` do for their own dispatches.
+        obs_runner: Callable[..., object] | None = None,
         phase_runner: Callable[..., object] = run_program,
         continuous_phase_runner: Callable[..., object] = run_continuous_program,
         score_batch: Callable[..., Mapping[str, object]] = run_score_batch,
@@ -850,6 +874,7 @@ class FlightRuntime:
         self._transport_factory = transport_factory
         self._gate_factory = gate_factory
         self._rails_runner = rails_runner
+        self._obs_runner = obs_runner
         self._phase_runner = phase_runner
         self._continuous_phase_runner = continuous_phase_runner
         self._score_batch = score_batch
@@ -907,6 +932,11 @@ class FlightRuntime:
         # ``<run_id>.phases.json`` so a two-contact cell's first-phase
         # responses stay auditable beside the answer that was sealed.
         self._phase_summaries: tuple[object, ...] = ()
+        # Set only by the Earnings/obs dispatch: the ``core.base.RunResult``
+        # the obs driver returned, carrying that run's own arm, trace
+        # manifest hash and measured cost. ``seal`` reads it instead of
+        # closing a client the obs path never built.
+        self._obs_result: RunResult | None = None
         self._phase_program_material: Mapping[str, object] | None = None
         self._phase_material_receipt: Mapping[str, object] | None = None
         # E6: what the baseline fragment's ``phase_supply`` resolved to --
@@ -1510,15 +1540,24 @@ class FlightRuntime:
         per-sample predecessor state and state fill -- are part of what it
         sends. For ``policy == "fixed"`` nothing changed: one direct
         ``assemble_prompt`` over the representative row, exactly as before.
+
+        An OBS policy has one phase and one instruction per window, and its
+        speech term is a WINDOW rather than a whole call: an Earnings call is
+        40-75 minutes but never reaches the core as one request. Estimating
+        the whole call here would refuse every legal Earnings flight on a
+        context ceiling no request of it ever approaches, so the speech term
+        is the configured buffer -- which is exactly what one window carries,
+        and is capped by the same knob a unit plan is cut under.
         """
 
         representative = samples[0]
         baseline_values = self._composed.values
         policy = baseline_values.get("policy")
+        obs_policy = policy in self._obs_policy_names()
         phase_names: tuple[str, ...]
         phase_payloads: Mapping[str, bytes] = {}
-        if policy == "fixed":
-            phase_names = ("direct",)
+        if policy == "fixed" or obs_policy:
+            phase_names = ("obs-window",) if obs_policy else ("direct",)
         else:
             program = default_phase_program(str(policy))
             phase_names = program.phase_names()
@@ -1543,12 +1582,17 @@ class FlightRuntime:
             speech_tokens = 1
         else:
             messages = self._adapter.assemble_prompt(representative, None)
+            # An obs window, not the whole call (docstring above): the
+            # configured buffer plus whatever silence tail the fragment
+            # appends, which is precisely what one slice delivers.
+            audio_seconds = (
+                float(baseline_values.get("obs_buffer_seconds", 60.0))
+                + float(baseline_values.get("obs_slice_tail_silence_seconds", 0.0))
+                if obs_policy
+                else float(getattr(representative, "audio_seconds", 1.0))
+            )
             speech_tokens = max(
-                1,
-                round(
-                    float(getattr(representative, "audio_seconds", 1.0))
-                    * self._speech_tokens_per_second
-                ),
+                1, round(audio_seconds * self._speech_tokens_per_second)
             )
         payload_bytes = json.dumps(
             list(messages), ensure_ascii=False, sort_keys=True
@@ -3094,6 +3138,145 @@ class FlightRuntime:
             serial,
         )
 
+    def _obs_policy_names(self) -> tuple[str, ...]:
+        """The obs policies this harness dispatches through the obs driver.
+
+        Function-local import: this module must not pull
+        ``reproduction.obs_loop`` (librosa, the VAD engines) into every
+        flight's import graph, and ``reproduction.ojw`` must stay behind the
+        D2 lazy seam. Names only -- nothing openjiuwen-dependent is touched.
+        """
+
+        from ...reproduction.obs_loop import (  # noqa: PLC0415
+            OBS_LOOP_POLICY_NAME,
+        )
+        from ...reproduction.ojw import OJW_OBS_POLICY_NAMES  # noqa: PLC0415
+        from ...reproduction.repair_loop import (  # noqa: PLC0415
+            OBS_REPAIR_LOOP_POLICY_NAME,
+        )
+
+        return (
+            OBS_LOOP_POLICY_NAME,
+            OBS_REPAIR_LOOP_POLICY_NAME,
+            *OJW_OBS_POLICY_NAMES,
+        )
+
+    def _dispatch_obs_policy(
+        self, plan: ExecutionPlan
+    ) -> tuple[list[Mapping[str, object]], int, str, dict[str, object], RunResult]:
+        """The Earnings carrier's dispatch: one whole-call sample -> N
+        buffer-slice contacts -> one stitched hypothesis, run by the obs
+        driver (owner Decision 12-F item #9, 2026-09-08).
+
+        **This stage delegates; it does not reimplement.** ``core.driver.
+        run_experiment`` is the ONE obs harness -- it resolves the run's
+        evidence through ``core.evidence`` and proves its D1 identity and
+        derivation chain, builds the per-run ``core.model.SliceRegistry`` the
+        adapter enforces slice binding against, constructs the single
+        ``core.model.FrozenCoreAdapter`` that reserves this attempt, emits the
+        per-sample OBS/ORG/SUPPLY preamble, runs the prefetch pipeline when
+        the fragment declares one, writes ``<run_id>.outputs.jsonl`` in the
+        bundle contract's own field set, and closes its trace sink. A second
+        copy of any of that inside this class would be exactly the parallel
+        harness the owner's 2026-09-03 rule forbids, and would make an
+        Earnings number produced here incomparable with the sealed Earnings
+        numbers produced there.
+
+        What FlightRuntime contributes is the envelope the obs driver never
+        had: preflight (composition, split identity, the ExecutionPlan, the
+        gate, the exposure-row re-check, the clean-tree assertion, the
+        prompt-budget assessment), preprocess, serve/attach to the resident
+        always-on session (E7), then seal and score once through
+        ``core.scoring_batch``.
+
+        Two deliberate differences from the phase-program dispatch:
+
+        * **No ``FrozenCoreClient``.** The obs policy's single door is the
+          adapter's ``request``; the client is the rails ``messages`` shim
+          over that same adapter, and building one here would open the
+          attempt twice.
+        * **The ``id_slot`` sentinel is NOT pre-resolved.** ``_decoding_params``
+          collapses it to slot 0 because the phase harness dispatches one
+          contact at a time; the obs executors resolve it themselves, per
+          sample, from the run's dispatch pool -- which is the whole point of
+          per-sample slot affinity. The composed value therefore reaches the
+          driver exactly as the fragment wrote it.
+        """
+
+        from ..driver.run import run_experiment  # noqa: PLC0415 (cycle guard)
+
+        if self._transport is None:
+            raise FlightStageOrderError(
+                "an obs-policy dispatch requires serve() to have bound a transport"
+            )
+        run_dir = self._run_dir()
+        run_dir.mkdir(parents=True, exist_ok=True)
+        obs_runner = self._obs_runner if self._obs_runner is not None else run_experiment
+        result = obs_runner(
+            self._composed,
+            plan,
+            self._gate,
+            self._lock,
+            self._data_root,
+            run_dir,
+            self._transport,
+            repo_root=self._repo_root,
+        )
+        rows = self._rows_from_obs_outputs(result)
+        cost = dict(result.cost)
+        calls_used = cost.get("calls_used")
+        contact_count = int(calls_used) if isinstance(calls_used, (int, float)) else len(rows)
+        dispatch = {
+            # The obs driver's own shape, read back from the composed config
+            # rather than guessed: how many samples of lookahead it kept, how
+            # wide the run's dispatch pool was, and which executor cut.
+            "dispatch": "obs-loop",
+            "workers": int(self._composed.values.get("obs_batch_slices", 1) or 1),
+            "obs_prefetch_depth": int(self._composed.values.get("obs_prefetch_depth", 0) or 0),
+            "obs_batch_samples": int(self._composed.values.get("obs_batch_samples", 1) or 1),
+            "contacts_per_sample": (
+                contact_count / len(rows) if rows else 0.0
+            ),
+            "queue_depth": (
+                "the obs driver's own: obs_prefetch_depth samples of lookahead "
+                "over a run-wide ObsDispatcher"
+            ),
+        }
+        return rows, contact_count, "obs-loop", dispatch, result
+
+    def _rows_from_obs_outputs(self, result: RunResult) -> list[Mapping[str, object]]:
+        """Read the obs driver's own sealed outputs rows back.
+
+        ``core.driver.run.run_experiment`` writes exactly the field set
+        ``core.bundle.outputs`` requires -- request_id, sample_id,
+        carrier_lock_key, arm, text, admitted and the three identity hashes,
+        the last three being the STITCH descriptors the obs policy computed
+        over that sample's own per-window requests and responses. They are
+        read back rather than rebuilt, because rebuilding them here would
+        mean a second opinion about what a stitched hypothesis' identity is.
+        """
+
+        rows: list[Mapping[str, object]] = []
+        text = Path(result.outputs_path).read_text(encoding="utf-8")
+        for number, line in enumerate(text.splitlines(), start=1):
+            if not line.strip():
+                continue
+            try:
+                row = json.loads(line)
+            except ValueError as error:
+                raise FlightRuntimeError(
+                    f"obs outputs line {number} is not JSON: {error}"
+                ) from error
+            missing = sorted(_OBS_OUTPUTS_FIELDS - set(row))
+            if missing:
+                raise FlightRuntimeError(
+                    f"obs outputs line {number} lacks {missing}; the obs driver is "
+                    "the authority for a stitched hypothesis' identity and this "
+                    "stage refuses to invent it"
+                )
+            rows.append(row)
+        return rows
+
     def _dispatch_phase_program(
         self, client: object, plan: ExecutionPlan, policy: str
     ) -> tuple[
@@ -3312,6 +3495,15 @@ class FlightRuntime:
         self._assert_phase_supply_is_legal_for(policy)
         self._assert_phase_review_is_legal_for(policy)
 
+        # The Earnings carrier (owner Decision 12-F item #9, 2026-09-08). An
+        # obs policy is dispatched through the obs driver and builds NO
+        # FrozenCoreClient: that client is the rails ``messages`` shim over
+        # the same FrozenCoreAdapter the obs driver constructs, and building
+        # one here would open this attempt twice
+        # (:meth:`_dispatch_obs_policy`).
+        if policy in self._obs_policy_names():
+            return self._run_obs_phases(policy)
+
         client_kwargs = self.frozen_core_client_kwargs()
         client = self._client_factory(**client_kwargs)
         self._client = client
@@ -3427,6 +3619,96 @@ class FlightRuntime:
             "dispatch": dispatch,
             "serving_slots": slots,
             "occupancy_slots": occupancy_slots,
+        }
+        require_mandatory_throughput_fields(
+            "run_phases", payload, ("contacts_per_second", "tokens_per_second")
+        )
+        return self.receipts.record("run_phases", payload)
+
+    def _run_obs_phases(self, policy: str) -> Mapping[str, object]:
+        """``run_phases`` for the Earnings carrier: the obs driver's run,
+        recorded in this harness's own receipt shape.
+
+        The throughput line is MEASURED here rather than estimated: the obs
+        driver's cost block carries this run's real ``calls_used``,
+        ``completion_tokens_total`` and ``latency_seconds_total``, so
+        ``tokens_per_second`` is the flight's actual completion rate and not
+        the contact-rate-times-ceiling upper bound the phase path has to
+        settle for.
+        """
+
+        started = self._clock()
+        (
+            self._output_rows,
+            contact_count,
+            policy_kind,
+            dispatch,
+            result,
+        ) = self._dispatch_obs_policy(self._plan)
+        ended = self._clock()
+        self._obs_result = result
+        self._contact_window = (started, ended)
+        wall_seconds = max(ended - started, 1e-9)
+
+        cost = dict(result.cost)
+
+        def _number(name: str) -> float:
+            value = cost.get(name)
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                return 0.0
+            return float(value)
+
+        completion_tokens = _number("completion_tokens_total")
+        latency_total = _number("latency_seconds_total")
+        contacts_per_second = contact_count / wall_seconds
+        average_latency = latency_total / contact_count if contact_count else 0.0
+        slots = int(self._adapter.serving_geometry()["slots"])
+        occupancy_slots = int(dispatch.get("workers") or slots)
+        slot_occupancy = (
+            latency_total / (wall_seconds * occupancy_slots) if occupancy_slots > 0 else 0.0
+        )
+        decoding = self._composed.values.get("decoding_params") or {}
+        payload = {
+            "policy": policy,
+            "policy_kind": policy_kind,
+            "arm": result.arm,
+            "id_slot": decoding.get("id_slot"),
+            "id_slot_resolution": (
+                f"{SLOT_AFFINITY_SENTINEL!r} sentinel passed through UNRESOLVED: the "
+                "obs executors resolve it per sample from the run's own dispatch "
+                "pool, which is what per-sample slot affinity means"
+                if decoding.get("id_slot") == SLOT_AFFINITY_SENTINEL
+                else "declared by the model fragment; no sentinel to resolve"
+            ),
+            "max_tokens": decoding.get("max_tokens"),
+            "max_tokens_resolution": (
+                "one integer declared by the fragment; the obs loop reads it per "
+                "slice for its own decode-cap saturation check"
+            ),
+            "wall_seconds": wall_seconds,
+            "contact_window": {"from": started, "to": ended},
+            "contact_count": contact_count,
+            "phases": [],
+            "phase_material": None,
+            "phase_supply": None,
+            "phase_review": None,
+            "contacts_per_second": contacts_per_second,
+            "average_latency_seconds": average_latency,
+            "slot_occupancy": slot_occupancy,
+            # MEASURED, not an upper bound: the obs driver's adapter counted
+            # every completion token this run actually spent.
+            "tokens_per_second": completion_tokens / wall_seconds,
+            "tokens_per_second_basis": "measured_completion_tokens_over_dispatch_wall",
+            "response_arrival": None,
+            "dispatch": dispatch,
+            "serving_slots": slots,
+            "occupancy_slots": occupancy_slots,
+            # The obs driver's own aggregates, carried into the receipt so a
+            # closure reports holes beside quality (module comment above
+            # reproduction.obs_loop.SLICE_RETRYABLE_EXCEPTIONS).
+            "obs_saturated_slice_count": cost.get("saturated_slice_count"),
+            "obs_skipped_slice_count": cost.get("skipped_slice_count"),
+            "obs_trace_manifest_hash": result.trace_manifest_hash,
         }
         require_mandatory_throughput_fields(
             "run_phases", payload, ("contacts_per_second", "tokens_per_second")
@@ -4013,6 +4295,17 @@ class FlightRuntime:
         rows: list[Mapping[str, object]] = []
         for row in self._output_rows:
             sample_id = str(row.get("sample_id"))
+            # The Earnings/obs dispatch reads its rows back from the obs
+            # driver's own sealed outputs, which ARE this contract's field
+            # set: the three hashes there are the STITCH descriptors the obs
+            # policy computed over that sample's per-window requests and
+            # responses, and no client timing exists (or could) for a
+            # multi-window stitch. Passed through unchanged, because a second
+            # opinion about a stitched hypothesis' identity is exactly what
+            # this stage must not have.
+            if not (_OBS_OUTPUTS_FIELDS - set(row)):
+                rows.append(dict(row))
+                continue
             timing = timing_by_sample.get(sample_id)
             if timing is None:
                 raise FlightRuntimeError(
@@ -4129,7 +4422,19 @@ class FlightRuntime:
                 newline="\n",
             )
 
-        close_receipt = self._client.close()
+        if self._obs_result is not None:
+            # The Earnings/obs dispatch: the obs driver already closed its own
+            # sink and returned this run's arm, trace manifest hash and
+            # MEASURED cost. There is no client to close -- building one would
+            # have opened this attempt twice -- so the close receipt is that
+            # RunResult, read rather than recomputed.
+            close_receipt = {
+                "arm": self._obs_result.arm,
+                "trace_manifest_hash": self._obs_result.trace_manifest_hash,
+                "cost": self._obs_result.cost,
+            }
+        else:
+            close_receipt = self._client.close()
         result = RunResult(
             run_id=self._plan.run_id,
             arm=close_receipt["arm"],
