@@ -1,0 +1,46 @@
+{
+  "boundary": "candidate sets are built from the arm's OWN sealed prediction and the pinned speech vectors; no gold label enters their construction. Gold is used only to report whether the set contains it.",
+  "designs": {
+    "k3-neighbours-only": {
+      "gold_candidate_covered_by_any_speaker": 853,
+      "gold_candidate_covered_by_own_speaker": 806,
+      "gold_in_candidate_set_on_errors_pct": 72.86,
+      "gold_in_candidate_set_pct": 85.3,
+      "k": 3,
+      "narrowing_ratio_pct": 5.0,
+      "rows_with_every_candidate_covered_by_own_speaker": 835,
+      "rows_with_every_candidate_covered_by_own_speaker_new500": 426,
+      "same_speaker_exemplar_coverage_of_candidates_pct": 93.27,
+      "scenario_lead": 0
+    },
+    "k5-neighbours-only": {
+      "gold_candidate_covered_by_any_speaker": 901,
+      "gold_candidate_covered_by_own_speaker": 852,
+      "gold_in_candidate_set_on_errors_pct": 80.67,
+      "gold_in_candidate_set_pct": 90.1,
+      "k": 5,
+      "narrowing_ratio_pct": 8.33,
+      "rows_with_every_candidate_covered_by_own_speaker": 765,
+      "rows_with_every_candidate_covered_by_own_speaker_new500": 388,
+      "same_speaker_exemplar_coverage_of_candidates_pct": 93.09,
+      "scenario_lead": 0
+    },
+    "k8-scenario3-plus-neighbours": {
+      "gold_candidate_covered_by_any_speaker": 958,
+      "gold_candidate_covered_by_own_speaker": 902,
+      "gold_in_candidate_set_on_errors_pct": 86.62,
+      "gold_in_candidate_set_pct": 95.8,
+      "k": 8,
+      "narrowing_ratio_pct": 13.33,
+      "rows_with_every_candidate_covered_by_own_speaker": 658,
+      "rows_with_every_candidate_covered_by_own_speaker_new500": 341,
+      "same_speaker_exemplar_coverage_of_candidates_pct": 92.14,
+      "scenario_lead": 3
+    }
+  },
+  "lock_path": "/mnt/d/chao_workspace/docs/datasets.lock.json",
+  "rarest_intent_train_recordings": 6,
+  "row_id": "SAEA-SLURP-MF8-SPEECH-TO-KNOWLEDGE-AUDIT-V1",
+  "schema": "saea-mf8-cell-family-price-v1",
+  "status": "PRICED, NOT PREREGISTERED. No cell is admitted, promoted or registered here."
+}

@@ -1208,6 +1208,191 @@ def command_state(args: argparse.Namespace) -> int:
     return 0
 
 
+# ---------------------------------------------------------------------------
+# Question 5 -- the priced (NOT preregistered) KU-S4 family.
+# ---------------------------------------------------------------------------
+
+
+def compose_candidates(
+    scenario_candidates: Sequence[str],
+    neighbour_candidates: Sequence[str],
+    k: int,
+    *,
+    scenario_lead: int,
+) -> tuple[str, ...]:
+    """The gold-free candidate set an arm would actually offer.
+
+    ``scenario_lead`` entries come from the PREDICTED scenario's legal list
+    (TRAIN prior first); the rest are filled from the speech-vector neighbours
+    in cosine rank order, skipping repeats. Both halves are built without the
+    gold label, which is the whole point of the design.
+    """
+
+    if k <= 0:
+        raise ValueError("candidate count must be positive")
+    if scenario_lead < 0:
+        raise ValueError("scenario lead must be non-negative")
+    chosen: list[str] = []
+    for intent in scenario_candidates[: min(scenario_lead, k)]:
+        if intent not in chosen:
+            chosen.append(intent)
+    for intent in neighbour_candidates:
+        if len(chosen) >= k:
+            break
+        if intent not in chosen:
+            chosen.append(intent)
+    return tuple(chosen[:k])
+
+
+def command_family(args: argparse.Namespace) -> int:
+    import numpy as np
+
+    from speech_aware_evidence_acquisition.data.slurp import (
+        _governed_roots,
+        _slurp_speaker_index,
+        load_slurp_split,
+        load_slurp_train_material,
+    )
+    from speech_aware_evidence_acquisition.reproduction.slurp_official_eval import (
+        load_legal_intent_inventory,
+    )
+    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (
+        parse_slu_response,
+        project_slu_label_v2,
+    )
+
+    lock, root, lock_path = resolve_lock_and_root()
+    _, _, metadata_dir = _governed_roots(lock, root)
+    speakers_by_file = _slurp_speaker_index(metadata_dir)
+    inventory = load_legal_intent_inventory(lock, root)
+    train = load_slurp_train_material(lock, root)
+
+    intent_by_utterance: dict[str, str] = {}
+    speaker_intent_recordings: dict[tuple[str, str], int] = defaultdict(int)
+    intent_recordings: dict[str, int] = defaultdict(int)
+    for utterance in train:
+        intent = f"{utterance.scenario}_{utterance.action}"
+        intent_by_utterance[utterance.utterance_id] = intent
+        for recording in utterance.recordings:
+            speaker_intent_recordings[(recording.speaker_id, intent)] += 1
+            intent_recordings[intent] += 1
+
+    devel = {record.sample_id: record for record in load_slurp_split(lock, root, "devel")}
+    roster = roster_sample_ids(REPO_ROOT / DEV1000_CONFIG)
+    texts = read_sealed_outputs(root / SEALED_COMPARATOR_OUTPUTS)
+    new500_receipt = json.loads((REPO_ROOT / NEW500_RECEIPT).read_text(encoding="utf-8"))
+    new500 = {str(item["id"]) for item in new500_receipt["items"]}
+
+    scenario_candidates: dict[str, tuple[str, ...]] = {}
+    for scenario in inventory.scenarios:
+        ranked = sorted(
+            inventory.actions_by_scenario[scenario],
+            key=lambda candidate: (-inventory.prior(scenario, candidate), candidate),
+        )
+        scenario_candidates[scenario] = tuple(f"{scenario}_{action}" for action in ranked)
+
+    vector_dir = root / SEALED_VECTOR_DIR
+    key_ids, key_matrix = _load_vectors(vector_dir / "facet-vectors.jsonl")
+    key_intents = [intent_by_utterance[key_id.rsplit(":", 1)[-1]] for key_id in key_ids]
+    query_ids, query_matrix = _load_vectors(vector_dir / "query-vectors-speech.jsonl")
+    position_of = {identity: index for index, identity in enumerate(query_ids)}
+    top = np.argsort(-(query_matrix @ key_matrix.T), axis=1)[:, :50]
+
+    designs = {
+        "k3-neighbours-only": {"k": 3, "scenario_lead": 0},
+        "k5-neighbours-only": {"k": 5, "scenario_lead": 0},
+        "k8-scenario3-plus-neighbours": {"k": 8, "scenario_lead": 3},
+    }
+    measured: dict[str, dict[str, object]] = {}
+    for name, spec in designs.items():
+        k = int(spec["k"])
+        lead = int(spec["scenario_lead"])
+        gold_in_set = 0
+        gold_in_set_errors = 0
+        covered_fractions: list[float] = []
+        fully_covered = 0
+        fully_covered_new500 = 0
+        gold_candidate_has_same_speaker_exemplar = 0
+        gold_candidate_has_any_exemplar = 0
+        errors = 0
+        for sample_id in roster:
+            record = devel[sample_id]
+            scenario, action, _entities, parsed = parse_slu_response(texts[sample_id])
+            projection = project_slu_label_v2(scenario, action, inventory, parsed=parsed)
+            is_error = projection.projected_intent != record.intent
+            errors += int(is_error)
+            neighbours = ordered_candidates(
+                [
+                    (key_intents[int(column)], 0.0)
+                    for column in top[position_of[sample_id]]
+                ]
+            )
+            candidates = compose_candidates(
+                scenario_candidates.get(str(projection.scenario), ()),
+                neighbours,
+                k,
+                scenario_lead=lead,
+            )
+            speaker = speakers_by_file[recording_filename(sample_id)]
+            covered = sum(
+                1
+                for intent in candidates
+                if speaker_intent_recordings.get((speaker, intent), 0) > 0
+            )
+            covered_fractions.append(covered / len(candidates))
+            is_fully_covered = covered == len(candidates)
+            fully_covered += int(is_fully_covered)
+            fully_covered_new500 += int(is_fully_covered and sample_id in new500)
+            if record.intent in candidates:
+                gold_in_set += 1
+                gold_in_set_errors += int(is_error)
+                gold_candidate_has_same_speaker_exemplar += int(
+                    speaker_intent_recordings.get((speaker, record.intent), 0) > 0
+                )
+                gold_candidate_has_any_exemplar += int(
+                    intent_recordings.get(record.intent, 0) > 0
+                )
+        measured[name] = {
+            "k": k,
+            "scenario_lead": lead,
+            "narrowing_ratio_pct": round(100.0 * k / 60, 2),
+            "gold_in_candidate_set_pct": round(100.0 * gold_in_set / len(roster), 2),
+            "gold_in_candidate_set_on_errors_pct": round(
+                100.0 * gold_in_set_errors / errors, 2
+            ),
+            "same_speaker_exemplar_coverage_of_candidates_pct": round(
+                100.0 * sum(covered_fractions) / len(covered_fractions), 2
+            ),
+            "rows_with_every_candidate_covered_by_own_speaker": fully_covered,
+            "rows_with_every_candidate_covered_by_own_speaker_new500": fully_covered_new500,
+            "gold_candidate_covered_by_own_speaker": gold_candidate_has_same_speaker_exemplar,
+            "gold_candidate_covered_by_any_speaker": gold_candidate_has_any_exemplar,
+        }
+
+    result = {
+        "schema": "saea-mf8-cell-family-price-v1",
+        "row_id": ROW_ID,
+        "lock_path": str(lock_path),
+        "status": "PRICED, NOT PREREGISTERED. No cell is admitted, promoted or registered here.",
+        "rarest_intent_train_recordings": min(intent_recordings.values()),
+        "designs": measured,
+        "boundary": (
+            "candidate sets are built from the arm's OWN sealed prediction and the pinned speech "
+            "vectors; no gold label enters their construction. Gold is used only to report "
+            "whether the set contains it."
+        ),
+    }
+
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "cell-family-price.json").write_text(
+        json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="MF-8 speech-to-knowledge audit (model-free)")
     parser.add_argument(
@@ -1230,6 +1415,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "judge", help="the deterministic legality judge's reach and precision"
     )
     subparsers.add_parser("state", help="question 4: the state-knowledge inventory")
+    subparsers.add_parser("family", help="question 5: price the KU-S4 family (never registers it)")
     args = parser.parse_args(argv)
     if args.command == "speakers":
         return command_speakers(args)
@@ -1241,6 +1427,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return command_judge(args)
     if args.command == "state":
         return command_state(args)
+    if args.command == "family":
+        return command_family(args)
     parser.error(f"unknown command {args.command!r}")
     return 2
 

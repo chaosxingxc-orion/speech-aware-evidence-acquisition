@@ -219,6 +219,36 @@ def test_jsonl_field_names_refuses_a_non_object_row(tmp_path: Path) -> None:
         audit.jsonl_field_names(path)
 
 
+def test_compose_candidates_leads_with_the_scenario_then_fills() -> None:
+    scenario = ("iot_hue_lightoff", "iot_hue_lighton", "iot_wemo_on")
+    neighbours = ("music_query", "iot_hue_lightoff", "play_music")
+    assert audit.compose_candidates(scenario, neighbours, 5, scenario_lead=3) == (
+        "iot_hue_lightoff",
+        "iot_hue_lighton",
+        "iot_wemo_on",
+        "music_query",
+        "play_music",
+    )
+    # scenario_lead 0 is the neighbours-only design.
+    assert audit.compose_candidates(scenario, neighbours, 2, scenario_lead=0) == (
+        "music_query",
+        "iot_hue_lightoff",
+    )
+    # the lead never exceeds k, and an empty scenario list is legal.
+    assert audit.compose_candidates((), neighbours, 2, scenario_lead=3) == (
+        "music_query",
+        "iot_hue_lightoff",
+    )
+    assert len(audit.compose_candidates(scenario, neighbours, 1, scenario_lead=3)) == 1
+
+
+def test_compose_candidates_refuses_a_nonsense_shape() -> None:
+    with pytest.raises(ValueError):
+        audit.compose_candidates(("a",), ("b",), 0, scenario_lead=1)
+    with pytest.raises(ValueError):
+        audit.compose_candidates(("a",), ("b",), 3, scenario_lead=-1)
+
+
 def test_recall_at_reads_only_the_first_k() -> None:
     candidates = ("a", "b", "c", "d")
     assert audit.recall_at(candidates, "a", 1) is True

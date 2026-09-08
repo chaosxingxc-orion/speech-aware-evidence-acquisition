@@ -502,4 +502,140 @@ inside one 769-utterance scenario carrying 3.35 % of the error mass. **Pricing i
 perfect `iot` state block cannot move the pooled intent number by more than about 0.9 pp.**
 
 
-## 5. The priced cell family — PENDING
+## 5. The priced cell family — KU-S4a / b / c
+
+Source: `cell-family-price.json`. **PRICED, NOT PREREGISTERED.** Nothing below is admitted,
+promoted or registered; no owner decision is anticipated and no cell is flyable on the strength of
+this note.
+
+### 5.0 The system, stated as a system
+
+The family is not "a bigger prompt". It is a three-component agent system in which the CORE is the
+smallest part:
+
+1. **Narrowing (system, 0 core calls).** The row's own speech vector retrieves TRAIN neighbours;
+   their distinct intents, optionally led by the predicted scenario's legal list, become a k-way
+   candidate set. This removes `1 - k/60` of the label space before the core is asked anything.
+2. **Legality judge (system, 0 core calls, 100 % precision).** Section 2.5. It decides 4.2 % of
+   rows outright and can gate whether an expensive arm runs at all.
+3. **Core (1 call per row).** Given the query recording, k candidate labels, and k typed exemplars,
+   it picks one. **The query stays speech-only: the row's own recording and nothing derived from
+   it in text.** The exemplars' TRAIN gold text is knowledge about OTHER utterances the system
+   already holds — never a transcript of the query.
+
+### 5.1 The three arms
+
+| arm | what the core additionally sees | the factor it isolates |
+|---|---|---|
+| **KU-S4a** | k candidate labels + for each, ONE audio clip of **this row's own speaker** producing that intent, as a typed `key`-role packet | dimension 2: same-speaker speech-domain knowledge |
+| **KU-S4b** (speaker twin) | the same k labels + the same count of clips of the same intents by **other speakers** | isolates *whose* voice it is; everything else identical |
+| **KU-S4c** (modality twin) | the same k labels + each exemplar's **TRAIN gold sentence text** instead of its audio | isolates *audio against text* at equal exemplar count |
+
+Each is a single-contact cell paired against the SEALED comparator
+(`SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1`, intent 73.10 / SLU-F1 35.80,
+`slurp-slu-official-projected-v2`), never against a re-flown control.
+
+### 5.2 Is it constructible? Measured, per k
+
+| design | narrowing | gold in the set (all rows) | gold in the set (errors) | candidates with a same-speaker clip | rows where EVERY candidate has one | ... of which NEW500 |
+|---|---|---|---|---|---|---|
+| k = 3, neighbours only | 5.00 % | 85.30 | 72.86 | **93.27 %** | **835** | **426** |
+| k = 5, neighbours only | 8.33 % | 90.10 | 80.67 | **93.09 %** | **765** | **388** |
+| k = 8, scenario top-3 + neighbours | 13.33 % | **95.80** | **86.62** | **92.14 %** | **658** | **341** |
+
+The rarest of the 60 intents still has **6 TRAIN recordings**, so the OTHER-speaker twin (KU-S4b)
+and the text twin (KU-S4c) are constructible on **every** row at every k. Only KU-S4a has a
+coverage problem, and it is now quantified rather than assumed.
+
+**The design decision this forces, stated before anyone likes an answer.** About **7–8 % of
+candidate slots have no same-speaker clip**, so KU-S4a needs a declared fallback and every option
+costs something:
+
+* *fill with another speaker's clip* — blurs KU-S4a into KU-S4b on 7 % of slots, which is exactly
+  the factor under test;
+* *drop the clip and keep the label as text* — mixes modalities, which is exactly KU-S4c's factor;
+* *shrink k for that row* — makes the narrowing ratio row-dependent, so the arm and its twins no
+  longer offer the same decision.
+
+**The only clean reading is the fully-covered stratum**, and the power rule decides which k is
+usable: at **k = 3 the clean stratum is 426 NEW500 rows and clears the n ≥ 400 rule**; at k = 5 it
+is 388 and at k = 8 it is 341, both **below** it. So a paired effectiveness claim on the clean
+stratum is only available at k = 3 — where the gold is in the set on 72.86 % of the failures rather
+than 86.62 %. **The k that maximises reach and the k that survives the power rule are not the same
+k**, and that trade is the single most important thing this audit found about the design.
+
+### 5.3 Core pressure, per arm (coordinator addendum, 2026-09-08)
+
+Prompt tokens from section 3.4; GPU-h scaled from the comparator's realized 0.105 GPU-h / 1,000
+calls, which is 98.8 % prefill (2,190,161 prompt tokens against 26,495 completion) and therefore
+scales with prompt volume.
+
+| arm (k = 5) | core calls / DEV row | prompt tokens / row (mean) | query audio | exemplar audio | typed candidates | contacts | GPU-h | metered speech seconds |
+|---|---|---|---|---|---|---|---|---|
+| sealed comparator | 1 | 2,190 | 44 | — | — | 0 (sealed) | 0 (sealed) | 0 (sealed) |
+| **KU-S4a** | **1** | **2,401** | 44 | **211** | ~50 | 1,000 | **≈ 0.115** | **≈ 16,633** |
+| **KU-S4b** | **1** | **2,401** | 44 | **211** | ~50 | 1,000 | **≈ 0.115** | **≈ 16,633** |
+| **KU-S4c** | **1** | **≈ 2,240** | 44 | 0 | ~50 + 166 characters | 1,000 | **≈ 0.107** | **2,885** |
+
+At k = 3 the audio arms are ≈ 2,316 tokens / 0.111 GPU-h; at k = 8, ≈ 2,527 tokens / 0.121 GPU-h.
+**The whole family is ≈ 3,000 contacts and ≈ 0.34 GPU-h** — about three times the comparator's own
+flight, and small. The expensive line is not GPU: it is **metered speech seconds**. Each audio arm
+re-delivers 5 × 2.75 s of exemplar audio per row, so it books ≈ 16,633 seconds against the
+comparator's 2,885 — **5.8× the audio budget for the same 1,000 contacts**, and that is the number
+a budget registration has to carry. One-time, amortized across every row and every future round:
+the same-speaker exemplar pool is ≤ 15,556 recordings / 42,771 s of encoder packets (the packet
+build's own GPU-h must come from a packet-build receipt; this audit does not pin it).
+
+**Decision share.** The comparator hands the core 60 labels and 2,146 tokens of inventory and the
+core decides everything. Under this family the SYSTEM decides:
+
+* the **narrowing**: 91.67 % of the label space at k = 5 (86.67 % at k = 8, 95.00 % at k = 3),
+  at zero core calls, from the row's own speech;
+* the **judge**: 4.2 % of rows outright, at 100 % precision;
+* and the core keeps **one call per row**, choosing among 5 labels instead of 60.
+
+A judge-gated variant — run the comparator, escalate only the 4.2 % it flags — costs
+**1.042 core calls per row** instead of 2, but its ceiling is the judge's 25 residual rows
+(+2.5 pp), so it is a cheap *deployment* shape, not a way to test dimension 2.
+
+### 5.4 The measurement rule, and the floor it has to clear
+
+* **Population**: DEV-1000, decision on the unexposed NEW500 (n = 500 ≥ 400); the fully-covered
+  stratum is a pre-declared secondary read and only clears the power rule at k = 3.
+* **Comparator**: the sealed rows, never a re-flight — greedy decoding is not bitwise reproducible
+  across batch shapes on this runtime.
+* **The greedy-noise floor, which is the number that should govern expectations.** EVO-S1 round 1
+  measured on this carrier and this build that **286 of 1,019 byte-identically prompted rows
+  (28.1 %) returned different text anyway**. Any claim read off a handful of moved rows sits below
+  the noise. Only a CI90 on 500 unexposed rows carries a verdict.
+* **Family rule (non-inferiority, imported margin ±0.60 pp** — the Earnings-22 null's own
+  half-width, imported because SLURP has never had its own null measured, and the verdict must say
+  so):
+  * **KU-S4a is the primary and the only arm that can be ADMITTED.** Intent CI90 lower bound
+    > +0.60 pp on NEW500, point estimate positive.
+  * **SLU-F1, scenario and action non-inferior** at a CI90 lower bound above −0.60 pp.
+  * **Per-scenario harm bound**: no scenario loses more than 3.0 pp of intent, at most 2 of 18
+    losing anything (SLURP's own EVO-S1 rule).
+  * **KU-S4b and KU-S4c are ATTRIBUTION, never admission.** They are read on the same rows and
+    never pooled with the primary, never selected after the fact, and neither can rescue KU-S4a.
+    `KU-S4a − KU-S4b` is the speaker effect; `KU-S4a − KU-S4c` is the modality effect.
+  * **The modality contrast carries a known confound**: at 33.2 characters per TRAIN sentence the
+    text arm costs roughly a quarter of the audio arm per exemplar (section 3.4), so supplied
+    volume must be reported as a covariate and the contrast may not be claimed as token-matched.
+* **The ceiling, so nobody measures against 100.** With a perfect matcher over the k = 8 set the
+  reachable intent is ≈ 96.4; at k = 5 ≈ 94.7; at k = 3 ≈ 92.8. Realistic movement is a fraction of
+  the gap between 73.10 and those numbers, and MF-7b's lesson stands: a mechanism that merely ties
+  the comparator changes nothing.
+
+### 5.5 What this audit recommends be decided before anything flies
+
+Three open questions, each a decision rather than a measurement, and none of them this note's to
+make:
+
+1. **k = 3 (clean stratum clears power, 72.86 % reach) or k = 8 (86.62 % reach, clean stratum
+   fails power)?** They cannot both be had.
+2. **KU-S4a's fallback rule for the 7–8 % uncovered candidate slots** — each option contaminates a
+   different factor, and the choice must be registered before the arm is built.
+3. **Whether 16,633 metered speech seconds per audio arm is a price worth paying** for a mechanism
+   whose ceiling is bounded by an 86.62 % candidate recall and whose carrier has a 28.1 % greedy
+   flip floor.
