@@ -839,6 +839,43 @@ def _resolves(values: Mapping[str, object], path: Sequence[str]) -> bool:
     return True
 
 
+def resolve_switch_key(table: str, key: str) -> str:
+    """The table entry key a ``switch.key`` declaration names, or a refusal.
+
+    ``docs/receipts/harness-admission.json`` records, per admitted module,
+    the ONE config key that switches it -- as a dotted path whose phase
+    segment may be the placeholder ``<phase>`` because a module's admission
+    is about the module, not about one program's phase names. The path must
+    start with its table and must name one of that table's entry keys
+    somewhere after it, which is what makes "the key resolves in a table" a
+    machine question:
+
+    * ``observe.<phase>.tail_silence_seconds`` -> ``tail_silence_seconds``
+    * ``knowledge_views.<phase>.material.state_fill`` -> ``material``
+    * ``judges.<phase>.judges`` -> ``judges``
+    * ``toolkits.task_type`` -> ``task_type``
+    """
+
+    if table not in CONFIG_TABLE_NAMES:
+        raise ConfigTableError(
+            f"unknown config table {table!r}; the tables are {list(CONFIG_TABLE_NAMES)}"
+        )
+    segments = key.split(".") if isinstance(key, str) else []
+    if not segments or segments[0] != table:
+        raise ConfigTableError(
+            f"switch key {key!r} does not start with its table {table!r}; a switch "
+            "that names no table is not one config key"
+        )
+    entry_keys = table_entry_keys(table)
+    named = [segment for segment in segments[1:] if segment in entry_keys]
+    if not named:
+        raise ConfigTableError(
+            f"switch key {key!r} names no entry of the {table!r} table; its entry "
+            f"keys are {list(entry_keys)}"
+        )
+    return named[0]
+
+
 def table_entry_keys(table: str) -> tuple[str, ...]:
     """The entry keys ``table`` admits, sorted -- what a switch declaration
     in ``docs/receipts/harness-admission.json`` must name."""
@@ -881,6 +918,7 @@ __all__ = [
     "load_knowledge_views_table",
     "load_observe_table",
     "load_toolkits_table",
+    "resolve_switch_key",
     "table_entry_keys",
     "unwrap_judges",
     "unwrap_knowledge_views",

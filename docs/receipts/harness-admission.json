@@ -2,7 +2,14 @@
   "created_by": "docs/readiness/2026-09-08-e21-kc-e1f-repair-pass-v2-redecision.md section 9",
   "gate": "docs/readiness/2026-09-08-agent-system-episode-and-core-pressure-v1.md section 8: every harness module -- a planner rule, an observe mode, a knowledge view, a judge, a tool -- carries a per-carrier admission receipt before it may enter the default plan. The contrast is module ON versus module OFF in the same harness on the same roster (one config key, never a second code path), paired with the carrier's cluster structure, n >= 400, cluster bootstrap, CI90; the guard is non-inferiority with the margin taken from the carrier's own null (family rule of 2026-09-08).",
   "note": "This table is a LIVING RECEIPT and it is opened with exactly the one module this note had the authority to decide. The other first entries listed in the design note's section 8 are not transcribed here: each needs its own decided row and its own evidence pin, and copying them in from a prose table would manufacture receipts that no verdict issued.",
-  "schema": "saea-harness-admission-v1",
+  "schema": "saea-harness-admission-v2",
+  "schema_history": {
+    "saea-harness-admission-v1": "opened 2026-09-08 by docs/readiness/2026-09-08-e21-kc-e1f-repair-pass-v2-redecision.md section 9 with one decided entry.",
+    "saea-harness-admission-v2": "WAVE W4 (owner Decision 11-B change #6, 2026-09-08) adds, per entry, the config table and key that switch the module, plus the default_plans list the gate's last two rules read. NO verdict, number, status, evidence pin or provisional obligation was changed: v2 only records, for a module already decided, WHERE its one config key lives. Enforced by scripts/checks/harness_admission_check.py."
+  },
+  "switch_rule": "Every entry names the ONE config key that switches its module ON and OFF, as {table, key, on, off}. 'table' is one of the four config tables (rails.config_tables.CONFIG_TABLE_NAMES: judges, knowledge_views, observe, toolkits); 'key' is a dotted path that starts with that table and names one of its entry keys, with '<phase>' as the placeholder for a program's phase because a module's admission is about the module and not about one program's phase names; 'off' is the table's null arm, which composes to the same config hash as the table being absent (core.config.drop_null_arms), which is what makes the OFF arm a twin of the pre-table baseline rather than a third cell identity. 'proof' names the test that composes both arms and asserts they differ in exactly that one key.",
+  "default_plans": [],
+  "default_plans_note": "EMPTY, and that is the current state of the program rather than an omission. A default plan is a committed config fragment a carrier flies by default; a module may enter one only once it holds an admission receipt whose obligations are met. The single entry below is ADMITTED but PROVISIONAL with its replication UNMET, and its own verdict note fixed the consequence before the verdict was known: 'until then NO candidate freeze, NO citation of this as an admitted effect and NO entry into the default plan'. So no plan may carry it yet, and scripts/checks/harness_admission_check.py is what keeps that true: it refuses a HARMFUL module in any default plan, refuses a module whose provisional obligation is UNMET in any default plan, and requires every other ADMITTED or NEUTRAL module to appear in at least one default plan for its carrier.",
   "status_values": {
     "ADMITTED": "a gain on the carrier's primary metric, disjoint from the carrier's own null, with every gating guard non-inferior at the measured margin",
     "HARMFUL": "a gating guard fails; stays in the record as a documented negative and never enters a plan",
@@ -49,7 +56,17 @@
       },
       "row": "SAEA-E21-KC-E1F-VERDICT-V2",
       "status": "ADMITTED",
-      "supersedes_nothing": "SAEA-E21-KC-E1F-VERDICT-V1 decided the same sealed bytes REJECTED under margin-less guards and stays on record beside this entry"
+      "supersedes_nothing": "SAEA-E21-KC-E1F-VERDICT-V1 decided the same sealed bytes REJECTED under margin-less guards and stays on record beside this entry",
+      "switch": {
+        "added_by": "WAVE W4, 2026-09-08, docs/readiness/2026-09-08-ojw-wave-w4-config-tables-v1.md",
+        "key": "judges.<phase>.judges",
+        "off": null,
+        "on": ["e21-substitution-alignment-flag-v1"],
+        "proof": "tests/unit/test_config_table_module_switches.py::test_repair_alignment_is_one_key_in_the_judges_table",
+        "table": "judges",
+        "what_flew": "The sealed KC-E1f arm did NOT fly through this key. It flew the obs-repair-loop policy with response_postprocessor 'e21-entity-repair-substitutions-v1' and its params, whose OFF arm was a different policy id -- exactly the defect change #6 removes. This field records the form the module takes from now on, not the form its evidence was produced in; the admission's evidence is the sealed bytes named under 'evidence'.",
+        "why_this_table": "Owner Decision 11-C, 2026-09-08: the Reviewer SCORES and FLAGS and never proposes a revision, and the design note names 'e21-entity-repair-substitutions-v1's refusal reasons' among the frozen checks behind the Reviewer. The module therefore splits along the line the decision already draws: its criticism half -- the alignment rule that decides which proposed edits are legal and refuses the rest -- is the registered judge 'e21-substitution-alignment-flag-v1', whose JudgeVerdict structurally cannot carry replacement text (core.base.assert_criticism_only); its delivery half stays a Solver-side constraint on the revise phase. Not 'observe' (it reads a response, never the audio) and not 'knowledge_views' (it supplies the phase with nothing)."
+      }
     }
   ]
 }
