@@ -226,6 +226,59 @@ class SpeechNativeProfileError(RuntimeError):
     """A profile input, flight, or receipt failed closed."""
 
 
+#: The two speech-native agent executors, in the ONE spelling each has. The
+#: 2026-09-08 openJiuwen assessment, section 5.4 item 3: "name the executor
+#: explicitly, in one spelling" -- a cell that does not name its executor
+#: cannot state which harness produced its number.
+SPEECH_NATIVE_AGENT_EXECUTOR_IDS = frozenset(
+    {"legacy-contact-dag-v1", "openjiuwen-workflow-v1"}
+)
+SPEECH_NATIVE_AGENT_EXECUTOR_KEY = "speech_native_agent_executor_id"
+
+
+def resolve_speech_native_agent_executor_id(values: Mapping[str, object]) -> str:
+    """This cell's speech-native agent executor, named or refused.
+
+    **Executor retirement (owner Decision 12-F item #9, 2026-09-08).** The
+    silent default to ``legacy-contact-dag-v1`` is GONE. Thirty-two
+    speech-native baselines reached that executor by declaring nothing at
+    all, so no cell among them could say which harness produced its number;
+    every one of them now names it, and a fragment that does not is refused
+    here -- before any packet is promoted and before any contact is spent.
+
+    ``legacy-contact-dag-v1`` remains ADMITTED, and that is not a
+    half-measure. The openJiuwen speech-native executor is an M1/M2
+    one-or-two-contact vertical slice; none of those 32 baselines composes
+    into it (M0/M3/M5-M11, ceilings 1-20), so re-pointing them would refuse
+    them rather than port them. What RETIRES the legacy path is that it can
+    no longer be reached by accident: its remaining users are exactly the
+    fragments that spell it, and shrinking that list is the per-carrier
+    phase-program work ``configs/baseline/slurp-phase-direct-only-v1.json``
+    already demonstrates for the simplest of them.
+
+    One resolver for both call sites -- the profile flight and
+    finalize-from-disk -- so the two can never disagree about what a cell
+    declared.
+    """
+
+    if SPEECH_NATIVE_AGENT_EXECUTOR_KEY not in values:
+        raise SpeechNativeProfileError(
+            f"{SPEECH_NATIVE_AGENT_EXECUTOR_KEY} is required: the silent default "
+            "to 'legacy-contact-dag-v1' was retired on 2026-09-08 (owner Decision "
+            "12-F), because a cell that does not name its executor cannot state "
+            "which harness produced its number. Declare 'openjiuwen-workflow-v1' "
+            "(the M1/M2 speech-native agent graph) or 'legacy-contact-dag-v1' "
+            "(the retiring contact DAG) in the baseline fragment"
+        )
+    executor_id = values[SPEECH_NATIVE_AGENT_EXECUTOR_KEY]
+    if executor_id not in SPEECH_NATIVE_AGENT_EXECUTOR_IDS:
+        raise SpeechNativeProfileError(
+            f"{SPEECH_NATIVE_AGENT_EXECUTOR_KEY} must be 'legacy-contact-dag-v1' "
+            "or 'openjiuwen-workflow-v1'"
+        )
+    return str(executor_id)
+
+
 def _m11_reader_contract_from_values(
     values: Mapping[str, object], matcher_policy_id: object
 ) -> tuple[str | None, dict[str, object] | None]:
@@ -11792,17 +11845,7 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
         "key-text-shuffle-v1",
     }:
         raise SpeechNativeProfileError("unknown speech-native mechanism control")
-    agent_executor_id = values.get(
-        "speech_native_agent_executor_id", "legacy-contact-dag-v1"
-    )
-    if agent_executor_id not in {
-        "legacy-contact-dag-v1",
-        "openjiuwen-workflow-v1",
-    }:
-        raise SpeechNativeProfileError(
-            "speech_native_agent_executor_id must be 'legacy-contact-dag-v1' "
-            "or 'openjiuwen-workflow-v1'"
-        )
+    agent_executor_id = resolve_speech_native_agent_executor_id(values)
     tasks = build_profile_tasks(
         samples=gate_view.samples,
         packet_bindings=packet_bindings,
@@ -13095,13 +13138,15 @@ def _finalize_from_disk_profile_identity(
             "finalize-from-disk supports only the matched mechanism control; a "
             "swap or shuffle control's task mapping cannot be rebuilt label-blind"
         )
-    agent_executor_id = values.get(
-        "speech_native_agent_executor_id", "legacy-contact-dag-v1"
-    )
-    if agent_executor_id != "legacy-contact-dag-v1":
-        raise SpeechNativeProfileError(
-            "finalize-from-disk supports only the legacy contact-DAG executor"
-        )
+    # Executor retirement (owner Decision 12-F item #9, 2026-09-08): the
+    # silent default is gone here too, for the same reason -- a rebuilt
+    # manifest must say which harness produced the outputs it is rebuilding
+    # from. This function contacts nothing (it re-derives a finalized manifest
+    # from an attempt's own on-disk artifacts), so it accepts the same two
+    # spellings the profile path does rather than pinning the legacy one:
+    # refusing a fragment that has since named its executor explicitly would
+    # strand exactly the attempts this retirement moves.
+    agent_executor_id = resolve_speech_native_agent_executor_id(values)
     binding_relpath = _require_string(values, "speech_native_binding")
     binding_path = (repo_root / binding_relpath).resolve()
     binding_sha256 = _require_string(values, "speech_native_binding_file_sha256")
