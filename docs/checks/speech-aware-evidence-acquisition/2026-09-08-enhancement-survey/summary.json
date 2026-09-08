@@ -1,0 +1,1309 @@
+{
+  "acoustic_statistic": {
+    "absolute_floor_dbfs": -55.0,
+    "frame_ms": 20,
+    "note": "a crude frame-energy gate, not a VAD and not an SNR. speech_floor_margin_db is the median ACTIVE frame level minus the 10th-percentile frame level of the same clip; it ranks conditions and does not measure noise power. No carrier here has a clean reference, so a true SNR cannot be computed for any of them.",
+    "peak_drop_db": 30.0
+  },
+  "audio2tool": {
+    "frozen_400": {
+      "n": 400,
+      "roster": "docs/receipts/rosters/a2t-calibration-400-16k-v1.json",
+      "sample_rate_hz_counts": {
+        "24000": 400
+      },
+      "split_identity_hash": "292b7220abc5e44325c01aad555d3813aa24cb4db8f5d6e414fded836d7f12b0",
+      "strata_counts": {
+        "tier1_direct": 50,
+        "tier2_parametric": 50,
+        "tier3_multi_intent": 50,
+        "tier4_implicit": 50,
+        "tier5_needle": 50,
+        "tier6_correction": 50,
+        "tier7_multiturn": 50,
+        "tier8_intent_blending": 50
+      }
+    },
+    "frozen_400_acoustics": {
+      "tier1_direct": {
+        "active_share": {
+          "max": 0.9333333333333333,
+          "mean": 0.7543292736913788,
+          "median": 0.7453687821612349,
+          "min": 0.46226415094339623,
+          "n": 50,
+          "p10": 0.5770175438596491,
+          "p90": 0.9072781655034896
+        },
+        "floor_dbfs": {
+          "max": -35.72176896583485,
+          "mean": -63.590489261325956,
+          "median": -60.12189521350005,
+          "min": -240.0,
+          "n": 50,
+          "p10": -85.60145336848464,
+          "p90": -39.96327310712397
+        },
+        "peak_dbfs": {
+          "max": -5.03166238470102,
+          "mean": -16.146417131757744,
+          "median": -13.845581673627404,
+          "min": -36.71942868771318,
+          "n": 50,
+          "p10": -29.529835778544467,
+          "p90": -8.53420743435731
+        },
+        "seconds": {
+          "max": 3.96,
+          "mean": 2.0328,
+          "median": 2.04,
+          "min": 0.6,
+          "n": 50,
+          "p10": 1.232,
+          "p90": 3.0
+        },
+        "share_below_absolute_floor": {
+          "max": 0.5094339622641509,
+          "mean": 0.16966406017820648,
+          "median": 0.15463371579876434,
+          "min": 0.0,
+          "n": 50,
+          "p10": 0.018524251805985555,
+          "p90": 0.34183183183183186
+        },
+        "speech_floor_margin_db": {
+          "max": 212.81955365079506,
+          "mean": 38.41493122326724,
+          "median": 31.407438463319323,
+          "min": 11.850154245656817,
+          "n": 50,
+          "p10": 18.516173291634736,
+          "p90": 56.38708246681799
+        }
+      },
+      "tier2_parametric": {
+        "active_share": {
+          "max": 0.9885057471264368,
+          "mean": 0.7994927658951214,
+          "median": 0.8068421052631578,
+          "min": 0.6097560975609756,
+          "n": 50,
+          "p10": 0.6872887386586017,
+          "p90": 0.9388448393711553
+        },
+        "floor_dbfs": {
+          "max": -33.681801380228514,
+          "mean": -55.721174505037006,
+          "median": -53.25420816795177,
+          "min": -94.18337927574964,
+          "n": 50,
+          "p10": -68.63926753556704,
+          "p90": -41.722069976443336
+        },
+        "peak_dbfs": {
+          "max": -5.083502552373566,
+          "mean": -17.059663124769596,
+          "median": -14.904177459321069,
+          "min": -36.79362379887778,
+          "n": 50,
+          "p10": -29.53032232797959,
+          "p90": -9.604264624175341
+        },
+        "seconds": {
+          "max": 7.08,
+          "mean": 3.3072000000000004,
+          "median": 3.12,
+          "min": 1.24,
+          "n": 50,
+          "p10": 1.944,
+          "p90": 5.008
+        },
+        "share_below_absolute_floor": {
+          "max": 0.3902439024390244,
+          "mean": 0.11716312761813669,
+          "median": 0.09269863994273443,
+          "min": 0.0,
+          "n": 50,
+          "p10": 0.011468423091824873,
+          "p90": 0.25622941000299493
+        },
+        "speech_floor_margin_db": {
+          "max": 73.54604894628017,
+          "mean": 28.009664739886535,
+          "median": 26.452930162686094,
+          "min": 13.89733364411287,
+          "n": 50,
+          "p10": 16.766177523134658,
+          "p90": 37.758928050789834
+        }
+      },
+      "tier3_multi_intent": {
+        "active_share": {
+          "max": 0.987603305785124,
+          "mean": 0.8232678222415762,
+          "median": 0.8334747006818256,
+          "min": 0.5714285714285714,
+          "n": 50,
+          "p10": 0.7038815981335667,
+          "p90": 0.9466320130595411
+        },
+        "floor_dbfs": {
+          "max": -30.54329179813338,
+          "mean": -51.5781819129937,
+          "median": -50.298390189128654,
+          "min": -87.11954038449325,
+          "n": 50,
+          "p10": -65.29442762064551,
+          "p90": -39.21390798523591
+        },
+        "peak_dbfs": {
+          "max": -6.153693316298869,
+          "mean": -15.177694304877104,
+          "median": -13.673478847786177,
+          "min": -30.58154265456618,
+          "n": 50,
+          "p10": -25.114768291564282,
+          "p90": -8.877053679921818
+        },
+        "seconds": {
+          "max": 8.92,
+          "mean": 5.0868,
+          "median": 4.88,
+          "min": 2.04,
+          "n": 50,
+          "p10": 3.5440000000000005,
+          "p90": 7.168
+        },
+        "share_below_absolute_floor": {
+          "max": 0.4036697247706422,
+          "mean": 0.09081114679234302,
+          "median": 0.06890492045874955,
+          "min": 0.0,
+          "n": 50,
+          "p10": 0.00854073199527745,
+          "p90": 0.18826429980276138
+        },
+        "speech_floor_margin_db": {
+          "max": 59.00520817215531,
+          "mean": 24.931122588808176,
+          "median": 22.925583208791977,
+          "min": 10.683398013893374,
+          "n": 50,
+          "p10": 16.269909209036527,
+          "p90": 38.32198384414613
+        }
+      },
+      "tier4_implicit": {
+        "active_share": {
+          "max": 0.972972972972973,
+          "mean": 0.8236901201566428,
+          "median": 0.8288557383764594,
+          "min": 0.5945945945945946,
+          "n": 50,
+          "p10": 0.6941176470588235,
+          "p90": 0.9404552845528455
+        },
+        "floor_dbfs": {
+          "max": -31.36262968818204,
+          "mean": -54.74383069435639,
+          "median": -52.00549979646879,
+          "min": -91.32479351824645,
+          "n": 50,
+          "p10": -73.39498534710884,
+          "p90": -40.534446819505845
+        },
+        "peak_dbfs": {
+          "max": -7.081947365702553,
+          "mean": -16.46806903669632,
+          "median": -16.0944163825703,
+          "min": -34.43405708799093,
+          "n": 50,
+          "p10": -23.543009815325274,
+          "p90": -9.08081747633993
+        },
+        "seconds": {
+          "max": 5.16,
+          "mean": 2.7251999999999996,
+          "median": 2.52,
+          "min": 1.16,
+          "n": 50,
+          "p10": 1.48,
+          "p90": 4.072000000000001
+        },
+        "share_below_absolute_floor": {
+          "max": 0.37755102040816324,
+          "mean": 0.10569726480996053,
+          "median": 0.07997295303663635,
+          "min": 0.0,
+          "n": 50,
+          "p10": 0.01513703796831783,
+          "p90": 0.24444444444444444
+        },
+        "speech_floor_margin_db": {
+          "max": 64.58623843875475,
+          "mean": 28.91668860700228,
+          "median": 26.189388462960355,
+          "min": 5.491914507868557,
+          "n": 50,
+          "p10": 17.156761516463906,
+          "p90": 44.262058083374114
+        }
+      },
+      "tier5_needle": {
+        "active_share": {
+          "max": 0.9871244635193133,
+          "mean": 0.8090730071982505,
+          "median": 0.8297791146628356,
+          "min": 0.5923344947735192,
+          "n": 50,
+          "p10": 0.6836925188743994,
+          "p90": 0.9406660940085646
+        },
+        "floor_dbfs": {
+          "max": -33.08703784604819,
+          "mean": -54.98028222443907,
+          "median": -55.53830575892485,
+          "min": -82.71229383354773,
+          "n": 50,
+          "p10": -67.97085426066332,
+          "p90": -41.00734479821364
+        },
+        "peak_dbfs": {
+          "max": -5.060541529814686,
+          "mean": -16.90878360086234,
+          "median": -14.236212469032765,
+          "min": -36.14033150197723,
+          "n": 50,
+          "p10": -27.980647063327076,
+          "p90": -9.022197050140853
+        },
+        "seconds": {
+          "max": 14.68,
+          "mean": 10.9072,
+          "median": 11.16,
+          "min": 6.2,
+          "n": 50,
+          "p10": 8.296,
+          "p90": 13.288
+        },
+        "share_below_absolute_floor": {
+          "max": 0.376271186440678,
+          "mean": 0.11853903405438496,
+          "median": 0.10359110844547736,
+          "min": 0.0,
+          "n": 50,
+          "p10": 0.012527596305474207,
+          "p90": 0.2614248214871643
+        },
+        "speech_floor_margin_db": {
+          "max": 56.44230843845421,
+          "mean": 26.85220801380907,
+          "median": 26.470296465068238,
+          "min": 7.655601384021331,
+          "n": 50,
+          "p10": 13.114273635042647,
+          "p90": 41.00885754120952
+        }
+      },
+      "tier6_correction": {
+        "active_share": {
+          "max": 0.9848484848484849,
+          "mean": 0.7896561947381013,
+          "median": 0.8003362585089806,
+          "min": 0.5894736842105263,
+          "n": 50,
+          "p10": 0.6554028436018957,
+          "p90": 0.8960888459681313
+        },
+        "floor_dbfs": {
+          "max": -30.646120720480347,
+          "mean": -58.132965748192994,
+          "median": -54.380147697144295,
+          "min": -240.0,
+          "n": 50,
+          "p10": -67.85811286222683,
+          "p90": -38.9734589062979
+        },
+        "peak_dbfs": {
+          "max": -4.344147163408522,
+          "mean": -14.482569983361365,
+          "median": -12.146645792318644,
+          "min": -35.71193759761697,
+          "n": 50,
+          "p10": -26.032512817737093,
+          "p90": -7.842964906444888
+        },
+        "seconds": {
+          "max": 8.14,
+          "mean": 5.222799999999999,
+          "median": 5.050000000000001,
+          "min": 3.08,
+          "n": 50,
+          "p10": 3.784,
+          "p90": 6.720000000000001
+        },
+        "share_below_absolute_floor": {
+          "max": 0.29473684210526313,
+          "mean": 0.11189817931333287,
+          "median": 0.09475440830343018,
+          "min": 0.0,
+          "n": 50,
+          "p10": 0.010004151100041513,
+          "p90": 0.23739109773483288
+        },
+        "speech_floor_margin_db": {
+          "max": 216.64875871090643,
+          "mean": 33.06566882130865,
+          "median": 28.362796705027378,
+          "min": 9.59539272486532,
+          "n": 50,
+          "p10": 17.38880131973501,
+          "p90": 40.707157700884494
+        }
+      },
+      "tier7_multiturn": {
+        "active_share": {
+          "max": 0.9873417721518988,
+          "mean": 0.7850143417504921,
+          "median": 0.7813330113499155,
+          "min": 0.4666666666666667,
+          "n": 50,
+          "p10": 0.6366790009250692,
+          "p90": 0.9288177339901478
+        },
+        "floor_dbfs": {
+          "max": -34.33509669219511,
+          "mean": -61.51258539839709,
+          "median": -57.55936220420686,
+          "min": -240.0,
+          "n": 50,
+          "p10": -75.07993582488221,
+          "p90": -45.09963543793264
+        },
+        "peak_dbfs": {
+          "max": -5.094007556547711,
+          "mean": -18.359075063296334,
+          "median": -17.589974375923397,
+          "min": -39.555813001112966,
+          "n": 50,
+          "p10": -26.897372118864062,
+          "p90": -9.877622983669001
+        },
+        "seconds": {
+          "max": 35.7,
+          "mean": 7.151599999999999,
+          "median": 4.48,
+          "min": 1.0,
+          "n": 50,
+          "p10": 1.658,
+          "p90": 14.224000000000016
+        },
+        "share_below_absolute_floor": {
+          "max": 0.5074626865671642,
+          "mean": 0.14311530628599456,
+          "median": 0.13101001210254154,
+          "min": 0.0,
+          "n": 50,
+          "p10": 0.004761437266836837,
+          "p90": 0.2988190513371072
+        },
+        "speech_floor_margin_db": {
+          "max": 204.07351929133873,
+          "mean": 32.76537916663903,
+          "median": 27.711479830555547,
+          "min": 12.048036537071077,
+          "n": 50,
+          "p10": 14.487670555814544,
+          "p90": 43.59084785509492
+        }
+      },
+      "tier8_intent_blending": {
+        "active_share": {
+          "max": 0.9941520467836257,
+          "mean": 0.9128332965085139,
+          "median": 0.9121370209827765,
+          "min": 0.7837837837837838,
+          "n": 50,
+          "p10": 0.8517180497079995,
+          "p90": 0.9825672594619242
+        },
+        "floor_dbfs": {
+          "max": -29.96619855324212,
+          "mean": -42.21755279054495,
+          "median": -42.5948429485306,
+          "min": -87.50817767933157,
+          "n": 50,
+          "p10": -51.656148208019076,
+          "p90": -32.86183798264895
+        },
+        "peak_dbfs": {
+          "max": -6.2326042808425255,
+          "mean": -13.253050802529508,
+          "median": -12.307844850136515,
+          "min": -28.45110843409656,
+          "n": 50,
+          "p10": -19.496560593908505,
+          "p90": -8.44613460603153
+        },
+        "seconds": {
+          "max": 15.4,
+          "mean": 6.6272,
+          "median": 6.2,
+          "min": 3.4,
+          "n": 50,
+          "p10": 4.256,
+          "p90": 8.728000000000002
+        },
+        "share_below_absolute_floor": {
+          "max": 0.12972972972972974,
+          "mean": 0.027754195823834565,
+          "median": 0.017333475207490956,
+          "min": 0.0,
+          "n": 50,
+          "p10": 0.0,
+          "p90": 0.08048573048573048
+        },
+        "speech_floor_margin_db": {
+          "max": 60.85771644560134,
+          "mean": 18.15025821453476,
+          "median": 17.800724941812515,
+          "min": 7.755600244990617,
+          "n": 50,
+          "p10": 12.046786624622829,
+          "p90": 23.188793503157246
+        }
+      }
+    },
+    "frozen_400_calibration_per_tier": {
+      "source_key": null,
+      "table": {}
+    },
+    "official_populations": {
+      "a2t-tier1-official-population-500": {
+        "n_items": 489,
+        "receipt": "docs/receipts/probe-samples/a2t-tier1-official-population-500.json",
+        "split_identity_hash": "89515aac56db4acc7eaf11537bb62ce0388a49fb3616a45d984a0f50aa2903db",
+        "strata_counts": {
+          "tier1_direct": 489
+        }
+      },
+      "a2t-tier258-official-population-1500": {
+        "n_items": 1423,
+        "receipt": "docs/receipts/probe-samples/a2t-tier258-official-population-1500.json",
+        "split_identity_hash": "3a03e75e9131657741061f64450d337d69f120addb6a6c740a607ddecc028b73",
+        "strata_counts": {
+          "tier2_parametric": 488,
+          "tier5_needle": 485,
+          "tier8_intent_blending": 450
+        }
+      },
+      "a2t-tier3467-official-population-2000": {
+        "n_items": 1954,
+        "receipt": "docs/receipts/probe-samples/a2t-tier3467-official-population-2000.json",
+        "split_identity_hash": "4da261f6c7161cbeffd82a58fe4718d83346bcbd894560a254cab6def2e6cceb",
+        "strata_counts": {
+          "tier3_multi_intent": 486,
+          "tier4_implicit": 480,
+          "tier6_correction": 491,
+          "tier7_multiturn": 497
+        }
+      }
+    },
+    "per_tier_official_scorer": {
+      "tier1_direct": {
+        "domain_counts": {
+          "smart_car": 41,
+          "smart_home": 368,
+          "wearables": 91
+        },
+        "exact_match_pct": 10.2,
+        "outcome": "FAIL",
+        "paper_tool_accuracy_pct": 92.4,
+        "per_domain_tool_accuracy_pct": {
+          "smart_car": 92.6829268292683,
+          "smart_home": 55.70652173913044,
+          "wearables": 93.4065934065934
+        },
+        "samples": 500,
+        "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier1-official-population-v1/result-summary.json",
+        "tool_accuracy_ci90": [
+          62.03003995807159,
+          69.00204274547734
+        ],
+        "tool_accuracy_equal_domain_pct": 80.59868065833071,
+        "tool_accuracy_natural_mixture_pct": 65.60000000000001,
+        "tool_accuracy_pct": 65.6,
+        "wearables_minus_smart_home_pp": 37.700071667462964
+      },
+      "tier2_parametric": {
+        "domain_counts": {
+          "smart_car": 22,
+          "smart_home": 370,
+          "wearables": 108
+        },
+        "exact_match_pct": 31.2,
+        "outcome": "FAIL",
+        "paper_tool_accuracy_pct": 84.6,
+        "per_domain_tool_accuracy_pct": {
+          "smart_car": 86.36363636363636,
+          "smart_home": 74.5945945945946,
+          "wearables": 95.37037037037037
+        },
+        "samples": 500,
+        "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier258-official-population-v1/result-summary.json",
+        "tool_accuracy_ci90": [
+          76.4801486446468,
+          82.40123904926655
+        ],
+        "tool_accuracy_equal_domain_pct": 85.44286710953378,
+        "tool_accuracy_natural_mixture_pct": 79.60000000000001,
+        "tool_accuracy_pct": 79.6,
+        "wearables_minus_smart_home_pp": 20.77577577577577
+      },
+      "tier3_multi_intent": {
+        "domain_counts": {
+          "smart_car": 41,
+          "smart_home": 368,
+          "wearables": 91
+        },
+        "exact_match_pct": 19.4,
+        "outcome": "FAIL",
+        "paper_tool_accuracy_pct": 74.7,
+        "per_domain_tool_accuracy_pct": {
+          "smart_car": 82.92682926829268,
+          "smart_home": 59.51086956521739,
+          "wearables": 79.12087912087912
+        },
+        "samples": 500,
+        "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier3467-official-population-v1/result-summary.json",
+        "tool_accuracy_ci90": [
+          61.419200991224955,
+          68.4193400698798
+        ],
+        "tool_accuracy_equal_domain_pct": 73.85285931812973,
+        "tool_accuracy_natural_mixture_pct": 65.0,
+        "tool_accuracy_pct": 65.0,
+        "wearables_minus_smart_home_pp": 19.610009555661733
+      },
+      "tier4_implicit": {
+        "domain_counts": {
+          "smart_car": 35,
+          "smart_home": 375,
+          "wearables": 90
+        },
+        "exact_match_pct": 6.4,
+        "outcome": "FAIL",
+        "paper_tool_accuracy_pct": 33.4,
+        "per_domain_tool_accuracy_pct": {
+          "smart_car": 28.571428571428573,
+          "smart_home": 21.6,
+          "wearables": 55.55555555555556
+        },
+        "samples": 500,
+        "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier3467-official-population-v1/result-summary.json",
+        "tool_accuracy_ci90": [
+          25.01415376523775,
+          31.62049989262335
+        ],
+        "tool_accuracy_equal_domain_pct": 35.24232804232805,
+        "tool_accuracy_natural_mixture_pct": 28.199999999999996,
+        "tool_accuracy_pct": 28.2,
+        "wearables_minus_smart_home_pp": 33.955555555555556
+      },
+      "tier5_needle": {
+        "domain_counts": {
+          "smart_car": 41,
+          "smart_home": 368,
+          "wearables": 91
+        },
+        "exact_match_pct": 22.8,
+        "outcome": "FAIL",
+        "paper_tool_accuracy_pct": 90.6,
+        "per_domain_tool_accuracy_pct": {
+          "smart_car": 97.5609756097561,
+          "smart_home": 75.0,
+          "wearables": 96.7032967032967
+        },
+        "samples": 500,
+        "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier258-official-population-v1/result-summary.json",
+        "tool_accuracy_ci90": [
+          77.73995794204545,
+          83.52851303675631
+        ],
+        "tool_accuracy_equal_domain_pct": 89.75475743768426,
+        "tool_accuracy_natural_mixture_pct": 80.80000000000001,
+        "tool_accuracy_pct": 80.8,
+        "wearables_minus_smart_home_pp": 21.7032967032967
+      },
+      "tier6_correction": {
+        "domain_counts": {
+          "smart_car": 41,
+          "smart_home": 368,
+          "wearables": 91
+        },
+        "exact_match_pct": 24.0,
+        "outcome": "FAIL",
+        "paper_tool_accuracy_pct": 81.5,
+        "per_domain_tool_accuracy_pct": {
+          "smart_car": 87.8048780487805,
+          "smart_home": 70.1086956521739,
+          "wearables": 93.4065934065934
+        },
+        "samples": 500,
+        "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier3467-official-population-v1/result-summary.json",
+        "tool_accuracy_ci90": [
+          72.51603144138043,
+          78.8062591837197
+        ],
+        "tool_accuracy_equal_domain_pct": 83.77338903584926,
+        "tool_accuracy_natural_mixture_pct": 75.8,
+        "tool_accuracy_pct": 75.8,
+        "wearables_minus_smart_home_pp": 23.297897754419495
+      },
+      "tier7_multiturn": {
+        "domain_counts": {
+          "smart_car": 36,
+          "smart_home": 380,
+          "wearables": 84
+        },
+        "exact_match_pct": 10.4,
+        "outcome": "FAIL",
+        "paper_tool_accuracy_pct": 54.6,
+        "per_domain_tool_accuracy_pct": {
+          "smart_car": 55.55555555555556,
+          "smart_home": 42.63157894736842,
+          "wearables": 77.38095238095238
+        },
+        "samples": 500,
+        "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier3467-official-population-v1/result-summary.json",
+        "tool_accuracy_ci90": [
+          45.73539814464701,
+          53.07106021290879
+        ],
+        "tool_accuracy_equal_domain_pct": 58.52269562795879,
+        "tool_accuracy_natural_mixture_pct": 49.4,
+        "tool_accuracy_pct": 49.4,
+        "wearables_minus_smart_home_pp": 34.74937343358396
+      },
+      "tier8_intent_blending": {
+        "domain_counts": {
+          "smart_car": 94,
+          "smart_home": 195,
+          "wearables": 211
+        },
+        "exact_match_pct": 22.4,
+        "outcome": "ALIGNED",
+        "paper_tool_accuracy_pct": 41.7,
+        "per_domain_tool_accuracy_pct": {
+          "smart_car": 55.319148936170215,
+          "smart_home": 29.743589743589745,
+          "wearables": 58.76777251184834
+        },
+        "samples": 500,
+        "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier258-official-population-v1/result-summary.json",
+        "tool_accuracy_ci90": [
+          43.15660801268629,
+          50.47783656094469
+        ],
+        "tool_accuracy_equal_domain_pct": 47.9435037305361,
+        "tool_accuracy_natural_mixture_pct": 46.800000000000004,
+        "tool_accuracy_pct": 46.8,
+        "wearables_minus_smart_home_pp": 29.024182768258598
+      }
+    }
+  },
+  "authority": "owner Decision 12-H, 2026-09-08",
+  "contacts": {
+    "audio_seconds_delivered": 0,
+    "embedding": 0,
+    "gpu_hours": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api_spend": 0,
+    "tool": 0
+  },
+  "earnings": {
+    "carriers": {
+      "earnings21-original": {
+        "audio_hours": 39.26348111111111,
+        "duration_seconds": {
+          "max": 5740.64,
+          "mean": 3212.4666363636366,
+          "median": 3280.652,
+          "min": 1097.1,
+          "n": 44,
+          "p10": 1731.9896,
+          "p90": 4499.7488
+        },
+        "files": 44,
+        "sample_rate_hz_counts": {
+          "11025": 5,
+          "16000": 6,
+          "22050": 5,
+          "24000": 21,
+          "44100": 7
+        }
+      },
+      "earnings22-original": {
+        "audio_hours": 118.89472222222223,
+        "duration_seconds": {
+          "max": 7407.0,
+          "mean": 3424.168,
+          "median": 3552.0,
+          "min": 875.0,
+          "n": 125,
+          "p10": 1675.4,
+          "p90": 4943.799999999999
+        },
+        "files": 125,
+        "sample_rate_hz_counts": {
+          "11025": 5,
+          "16000": 29,
+          "22050": 17,
+          "24000": 64,
+          "32000": 1,
+          "44100": 7,
+          "48000": 1,
+          "8000": 1
+        }
+      }
+    },
+    "earnings21_sampled_slice_acoustics": {
+      "active_share": {
+        "max": 1.0,
+        "mean": 0.6747977724162183,
+        "median": 0.6692222222222222,
+        "min": 0.2773333333333333,
+        "n": 132,
+        "p10": 0.5625111111111111,
+        "p90": 0.8003333333333333
+      },
+      "floor_dbfs": {
+        "max": -33.09258632202666,
+        "mean": -64.06710680906191,
+        "median": -62.18380451014231,
+        "min": -240.0,
+        "n": 132,
+        "p10": -73.56466641984265,
+        "p90": -44.110262149476185
+      },
+      "peak_dbfs": {
+        "max": -1.6505544639252012,
+        "mean": -12.193396040260891,
+        "median": -10.77338919366217,
+        "min": -26.651578888558358,
+        "n": 132,
+        "p10": -20.765894076776533,
+        "p90": -4.317525341722433
+      },
+      "seconds": {
+        "max": 90.0,
+        "mean": 87.76560606060606,
+        "median": 90.0,
+        "min": 2.56,
+        "n": 132,
+        "p10": 90.0,
+        "p90": 90.0
+      },
+      "seed": 20260908,
+      "slices_measured": 132,
+      "slices_per_call": 3,
+      "source_run": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+      "speech_floor_margin_db": {
+        "max": 203.4980557547967,
+        "mean": 37.79498098854129,
+        "median": 35.81117809018556,
+        "min": 0.516261290440454,
+        "n": 132,
+        "p10": 22.585458609819785,
+        "p90": 47.37984968675983
+      }
+    },
+    "earnings22_sealed_clip_margins": {
+      "active_share": {
+        "max": 1.0,
+        "mean": 0.7277960677376615,
+        "median": 0.759422,
+        "min": 0.026661,
+        "n": 6038,
+        "p10": 0.47722829999999994,
+        "p90": 0.9235404
+      },
+      "clips": 6038,
+      "leading_silence_seconds": {
+        "max": 2.46,
+        "mean": 0.046439218284200064,
+        "median": 0.04,
+        "min": 0.0,
+        "n": 6038,
+        "p10": 0.0,
+        "p90": 0.1
+      },
+      "peak_dbfs": {
+        "max": -3.548116,
+        "mean": -16.60682237827095,
+        "median": -15.458021500000001,
+        "min": -49.135807,
+        "n": 6038,
+        "p10": -27.4420985,
+        "p90": -9.245987
+      },
+      "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-e22-clip-boundary-audit/per-clip-table.csv",
+      "trailing_silence_seconds": {
+        "max": 3.66,
+        "mean": 0.018155018217952967,
+        "median": 0.0,
+        "min": 0.0,
+        "n": 6038,
+        "p10": 0.0,
+        "p90": 0.04
+      }
+    }
+  },
+  "enhancement_ceilings": {
+    "audio2tool": {
+      "clean_counterpart_exists": false,
+      "clean_counterpart_note": "the release ships ONE mixed.wav per tier-8 item and no isolated foreground rendition, so 'the degraded rows scored as if clean' cannot be computed on this corpus at all -- only bounded.",
+      "degraded_condition": "tier8_intent_blending (foreground + competing background utterance in one wav)",
+      "degraded_share_of_union": 0.125,
+      "degraded_tool_accuracy_pct": 46.8,
+      "device_domain_gap_pp": {
+        "clean_tiers_max": 37.700071667462964,
+        "clean_tiers_median": 23.297897754419495,
+        "note": "wearables minus smart_home tool accuracy. Present on every tier, with and without a background talker, which is what says the dominant error axis is device-domain disambiguation and not the acoustic condition.",
+        "tier8": 29.024182768258598
+      },
+      "flown_rows_per_tier": {
+        "tier1_direct": 500,
+        "tier2_parametric": 500,
+        "tier3_multi_intent": 500,
+        "tier4_implicit": 500,
+        "tier5_needle": 500,
+        "tier6_correction": 500,
+        "tier7_multiturn": 500,
+        "tier8_intent_blending": 500
+      },
+      "flown_union_rows": 4000,
+      "unreachable_upper_bound_note": "what a PERFECT tier-8 score would add to the union's natural-mixture accuracy. It is an arithmetic bound, never a target: tier 8 is the one tier already ALIGNED against the published row.",
+      "unreachable_upper_bound_on_union_pp": 6.65
+    },
+    "earnings": {
+      "clean_counterpart_exists": false,
+      "degraded_condition": null,
+      "earnings21_sample_rate_hz_counts": {
+        "11025": 5,
+        "16000": 6,
+        "22050": 5,
+        "24000": 21,
+        "44100": 7
+      },
+      "earnings22_sample_rate_hz_counts": {
+        "11025": 5,
+        "16000": 29,
+        "22050": 17,
+        "24000": 64,
+        "32000": 1,
+        "44100": 7,
+        "48000": 1,
+        "8000": 1
+      },
+      "note": "neither Earnings carrier ships a second channel or a clean reference rendition of the same audio, so no clean-versus-degraded contrast and no 'scored as if clean' ceiling exists here. What IS measurable is sample-rate heterogeneity (a bandwidth and resampling question) and clip-boundary bleed (a segmentation question); neither is what a denoiser does."
+    },
+    "slurp": {
+      "clean_counterpart_exists": true,
+      "degraded_condition": "far-field channel ('.flac'), against its own simultaneous close-talk twin ('-headset.flac')",
+      "degraded_share_of_roster": 0.522,
+      "headset_minus_far_field_intent_ci90": [
+        -5.200968357883242,
+        5.294599018003268
+      ],
+      "headset_minus_far_field_intent_pp": 0.09001636661211876,
+      "headset_minus_far_field_slu_f1_ci90": [
+        -2.4509571947110995,
+        7.453215128324494
+      ],
+      "headset_minus_far_field_slu_f1_pp": 2.5387161114328904,
+      "measured_on": "the 766 DEV-1000 utterances whose session has BOTH channel files, where the roster's own rule chose between them at random",
+      "note": "a PERFECT enhancer that turned every far-field row into its own headset twin could buy at most the channel gap on the far-field share. Both gaps' CI90s contain zero at this roster size.",
+      "roster_ceiling_intent_pp": 0.04698854337152599,
+      "roster_ceiling_slu_f1_pp": 1.3252098101679688
+    }
+  },
+  "execution_profile": "model-free-check",
+  "exposure_row": "SAEA-MF-ENHANCEMENT-SURVEY-V1",
+  "local_enhancer_inventory": {
+    "lock_matches": [],
+    "lock_model_keys": [
+      "diar-sortformer-4spk-v2",
+      "mms-fa-torchaudio",
+      "nemotron3-nano-omni-nvfp4",
+      "omni-embed-nemotron-3b",
+      "qwen3-embedding-0.6b-gguf",
+      "qwen3-omni-30b-a3b-instruct-gguf",
+      "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+      "spkrec-ecapa-voxceleb",
+      "whisper-large-v3"
+    ],
+    "markers": [
+      "enhance",
+      "denois",
+      "dereverb",
+      "deepfilter",
+      "demucs",
+      "sepformer",
+      "cleanunet",
+      "metricgan",
+      "sgmse",
+      "voicefixer",
+      "clearvoice",
+      "frcrn",
+      "mossformer",
+      "nsnet",
+      "dccrn",
+      "fullsubnet",
+      "gtcrn",
+      "resemble",
+      "separation"
+    ],
+    "on_disk_matches": [],
+    "on_disk_model_dirs": [
+      "campplus-zh",
+      "clap-htsat-unfused",
+      "clsp",
+      "dasheng",
+      "diar-sortformer-4spk-v2",
+      "emotion2vec-plus-large",
+      "emotion2vec-s",
+      "eres2netv2-zh",
+      "gemma-4-e4b-it-gguf",
+      "glap",
+      "lco-embedding-omni-3b-gguf",
+      "lco-embedding-omni-7b-gguf",
+      "meralion-2-gguf",
+      "meralion-speech-encoder-2",
+      "minicpm-o-4_5-gguf",
+      "nemotron3-nano-omni-nvfp4",
+      "omni-embed-nemotron-3b",
+      "qwen3-embedding-0.6b-gguf",
+      "qwen3-omni-30b-a3b-instruct-gguf",
+      "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+      "redimnet-b6",
+      "sense",
+      "sensevoice-small",
+      "speech-tools",
+      "voxtral-mini-3b-2507-gguf",
+      "wavlm-base-plus",
+      "wavlm-large",
+      "whisper-large-v3"
+    ]
+  },
+  "schema": "saea-enhancement-observe-mode-survey-v1",
+  "slurp": {
+    "channel_counts": {
+      "far_field": 522,
+      "headset": 478
+    },
+    "comparator": {
+      "anchors": {
+        "identity_check_passed": true,
+        "intent_projected_v2_pct": 73.1,
+        "intent_unprojected_pct": 71.4,
+        "published_intent_projected_v2_pct": 73.1,
+        "published_intent_unprojected_pct": 71.4,
+        "published_slu_f1_pct": 35.8,
+        "slu_f1_pct": 35.8020063510733
+      },
+      "attempt_id": "attempt-20260905T060424Z-2c5596",
+      "channel_contrasts": {
+        "all_1000": {
+          "ci_level": 0.9,
+          "definition": "far_field minus headset, percentage points",
+          "metrics": {
+            "intent_raw": {
+              "ci90": [
+                -2.53210214976194,
+                6.879719136247772
+              ],
+              "delta_pp": 2.1209060741595636
+            },
+            "intent_v2": {
+              "ci90": [
+                -3.6311499062184422,
+                5.589861972779281
+              ],
+              "delta_pp": 0.9690761313903664
+            },
+            "slu_f1": {
+              "ci90": [
+                -4.9399540586282,
+                3.720743906416431
+              ],
+              "delta_pp": -0.6932904406522482
+            }
+          },
+          "n_far_field": 522,
+          "n_headset": 478,
+          "replicates": 10000,
+          "seed": 20260908,
+          "unpaired": true
+        },
+        "twin_available_only": {
+          "ci_level": 0.9,
+          "definition": "far_field minus headset, percentage points",
+          "metrics": {
+            "intent_raw": {
+              "ci90": [
+                -5.294599018003268,
+                5.428737043098736
+              ],
+              "delta_pp": -0.03273322422258218
+            },
+            "intent_v2": {
+              "ci90": [
+                -5.294599018003268,
+                5.200968357883242
+              ],
+              "delta_pp": -0.09001636661211876
+            },
+            "slu_f1": {
+              "ci90": [
+                -7.453215128324494,
+                2.4509571947110995
+              ],
+              "delta_pp": -2.5387161114328904
+            }
+          },
+          "n_far_field": 390,
+          "n_headset": 376,
+          "replicates": 10000,
+          "seed": 20260908,
+          "unpaired": true
+        }
+      },
+      "per_channel": {
+        "far_field": {
+          "intent_projected_v2_pct": 73.5632183908046,
+          "intent_unprojected_pct": 72.41379310344827,
+          "n": 522,
+          "slu_f1_pct": 35.47097140555812,
+          "slu_precision_pct": 46.34530194847059,
+          "slu_recall_pct": 28.72987484573098
+        },
+        "headset": {
+          "intent_projected_v2_pct": 72.59414225941423,
+          "intent_unprojected_pct": 70.2928870292887,
+          "n": 478,
+          "slu_f1_pct": 36.16426184621036,
+          "slu_precision_pct": 46.908110787285885,
+          "slu_recall_pct": 29.42479681896959
+        },
+        "pooled": {
+          "intent_projected_v2_pct": 73.1,
+          "intent_unprojected_pct": 71.4,
+          "n": 1000,
+          "slu_f1_pct": 35.8020063510733,
+          "slu_precision_pct": 46.615057294000394,
+          "slu_recall_pct": 29.060901160284118
+        }
+      },
+      "per_channel_twin_available_only": {
+        "far_field": {
+          "intent_projected_v2_pct": 73.84615384615384,
+          "intent_unprojected_pct": 72.3076923076923,
+          "n": 390,
+          "slu_f1_pct": 33.4536880038903,
+          "slu_precision_pct": 43.40236590880091,
+          "slu_recall_pct": 27.215385191218054
+        },
+        "headset": {
+          "intent_projected_v2_pct": 73.93617021276596,
+          "intent_unprojected_pct": 72.34042553191489,
+          "n": 376,
+          "slu_f1_pct": 35.992404115323204,
+          "slu_precision_pct": 47.20258732546297,
+          "slu_recall_pct": 29.08498574419426
+        },
+        "pooled": {
+          "intent_projected_v2_pct": 73.89033942558747,
+          "intent_unprojected_pct": 72.32375979112271,
+          "n": 766,
+          "slu_f1_pct": 34.7539766876295,
+          "slu_precision_pct": 45.3385317005865,
+          "slu_recall_pct": 28.176096248849074
+        }
+      },
+      "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1"
+    },
+    "paired_channel_acoustics": {
+      "channel_time_alignment": {
+        "abs_duration_delta_seconds": {
+          "max": 3.52,
+          "mean": 0.13999999999999999,
+          "median": 0.06000000000000005,
+          "min": 0.0,
+          "n": 766,
+          "p10": 0.0,
+          "p90": 0.45999999999999996
+        },
+        "note": "the two channel files of one recording session are NOT frame aligned: they are separately trimmed renditions of the same utterance by the same speaker. A study can pair them by utterance, never by sample.",
+        "share_within_0p02_s": 0.2741514360313316,
+        "share_within_0p10_s": 0.6762402088772846
+      },
+      "headset_minus_far_field": {
+        "active_share": {
+          "max": 0.08762838468720824,
+          "mean": -0.2526641523735036,
+          "median": -0.24097367049009388,
+          "min": -0.85,
+          "n": 766,
+          "p10": -0.4376732776283775,
+          "p90": -0.0758005316554482
+        },
+        "floor_dbfs": {
+          "max": 3.1595020263743194,
+          "mean": -33.44701346803679,
+          "median": -26.623145702622885,
+          "min": -80.22456828449032,
+          "n": 766,
+          "p10": -66.11019425933213,
+          "p90": -12.37688983443805
+        },
+        "peak_dbfs": {
+          "max": 6.073368231074809,
+          "mean": -1.1376582959021553,
+          "median": -1.1089306798199798,
+          "min": -11.498902781512523,
+          "n": 766,
+          "p10": -3.5026007972123008,
+          "p90": 1.2454481404162445
+        },
+        "speech_floor_margin_db": {
+          "max": 74.53530382404854,
+          "mean": 32.07619094549101,
+          "median": 24.08366980174162,
+          "min": -4.785454990447889,
+          "n": 766,
+          "p10": 9.649992452655821,
+          "p90": 67.59941178854402
+        }
+      },
+      "per_channel": {
+        "far_field": {
+          "active_share": {
+            "max": 1.0,
+            "mean": 0.9511241584110376,
+            "median": 1.0,
+            "min": 0.22627737226277372,
+            "n": 766,
+            "p10": 0.7857847689807291,
+            "p90": 1.0
+          },
+          "floor_dbfs": {
+            "max": -15.750779274467018,
+            "mean": -33.44566612322351,
+            "median": -32.53041619359137,
+            "min": -58.49959000426686,
+            "n": 766,
+            "p10": -43.39235413832975,
+            "p90": -25.194242065239862
+          },
+          "peak_dbfs": {
+            "max": -6.921178816255647,
+            "mean": -9.971634862061643,
+            "median": -9.940005683337986,
+            "min": -17.992412786710194,
+            "n": 766,
+            "p10": -11.62960869085982,
+            "p90": -8.308231336790643
+          },
+          "seconds": {
+            "max": 13.16,
+            "mean": 2.867728459530026,
+            "median": 2.68,
+            "min": 0.62,
+            "n": 766,
+            "p10": 1.52,
+            "p90": 4.34
+          },
+          "speech_floor_margin_db": {
+            "max": 40.36174152464977,
+            "mean": 10.577586799244235,
+            "median": 8.810441251337302,
+            "min": 1.828608053294385,
+            "n": 766,
+            "p10": 4.036535693673978,
+            "p90": 20.247427280131493
+          }
+        },
+        "headset": {
+          "active_share": {
+            "max": 0.9618320610687023,
+            "mean": 0.6984600060375341,
+            "median": 0.7146847565841979,
+            "min": 0.15,
+            "n": 766,
+            "p10": 0.5086232530478739,
+            "p90": 0.8639455782312925
+          },
+          "floor_dbfs": {
+            "max": -32.8404604830875,
+            "mean": -66.8926795912603,
+            "median": -61.51424230636481,
+            "min": -96.66818128508366,
+            "n": 766,
+            "p10": -96.22235995855625,
+            "p90": -44.274359566064504
+          },
+          "peak_dbfs": {
+            "max": -7.00208957654472,
+            "mean": -11.1092931579638,
+            "median": -10.846798819083112,
+            "min": -22.818101762796093,
+            "n": 766,
+            "p10": -13.43479736218582,
+            "p90": -9.011336460920251
+          },
+          "seconds": {
+            "max": 12.02,
+            "mean": 2.8661096605744127,
+            "median": 2.62,
+            "min": 0.82,
+            "n": 766,
+            "p10": 1.6,
+            "p90": 4.34
+          },
+          "speech_floor_margin_db": {
+            "max": 81.78987953700151,
+            "mean": 42.653777744735244,
+            "median": 36.231347310918665,
+            "min": 5.197945225339964,
+            "n": 766,
+            "p10": 19.01262949637296,
+            "p90": 75.90950131634733
+          }
+        }
+      },
+      "utterances_paired": 766,
+      "utterances_without_twin": 234
+    },
+    "roster": "docs/receipts/probe-samples/DEV-1000.json",
+    "split_identity_hash": "9fb44e3384b8ad8e0d8f825b88eb0a3051c218b699975051d8a0481aabc0243b",
+    "twin_availability": {
+      "by_flown_channel": {
+        "far_field": {
+          "with_twin": 390,
+          "without_twin": 132
+        },
+        "headset": {
+          "with_twin": 376,
+          "without_twin": 102
+        }
+      },
+      "note": "a SLURP real recording session writes two files -- the close-talk '-headset.flac' and the far-field '.flac'. Where both exist the roster's own selection rule picked one of them at random, which makes the channel a randomized assignment on that subset.",
+      "utterances_with_both_channels": 766,
+      "utterances_with_one_channel_only": 234
+    }
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+}
