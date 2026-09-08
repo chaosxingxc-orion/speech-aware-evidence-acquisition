@@ -271,6 +271,14 @@ def _finalize_sample(ctx: SampleContext, state: ObsSampleState) -> SampleOutcome
             # TestEquivalence in tests/unit/test_obs_loop_ojw.py fingerprints.
             "unit_plan_path": cfg.unit_plan_relpath,
             "unit_plan_sha256": cfg.unit_plan_sha256,
+            # OBS-E1b: which rule decided what this run stitched. Null on every
+            # clock-cut and every v1/v2 run -- the plain policy's own value,
+            # verbatim, for the same fingerprint reason as the keys above.
+            "text_ownership": (
+                obs_loop.OWNERSHIP_PROTOCOL
+                if cfg.unit_plan is not None and cfg.unit_plan.has_context
+                else None
+            ),
             "condition_tail_chars": cfg.condition_tail_chars,
             "trims": state.trim_events,
             "slices": [record.trace_view() for record in state.slice_records],
