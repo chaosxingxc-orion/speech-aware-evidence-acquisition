@@ -451,12 +451,22 @@ transport seam.
 
 | assertion | result |
 |---|---|
-| model contacts | **0** on every arm |
-| dispatch | `phase-program`, `program_id` `phase-slots-given-intent-v1`, one phase `slots`, `contacts_per_sample` 1, `supplied_phases` `[]` |
-| resolved system message | sha256 `4073f79e…37db` on every arm — **byte-identical to KC-S1b's own** |
-| containment at contact time | `rails.runner._assert_agent_control_excludes_knowledge_payloads` raised on none of the 28 contacts |
-| four distinct request bodies per arm | yes, each with its own speech packet re-verified |
-| typed knowledge blocks | **0** on every row — correct: a KV view is instruction-side, not traced supply |
+| model contacts | **0** on every arm (the receipt's 4 calls and 15.011 audio seconds are the FAKE transport's, metered because the meter cannot tell) |
+| dispatch | `phase-program`, `program_id` `phase-slots-given-intent-v1` — KC-S1b's own program, no new policy id — one phase `slots`, rows 4, contacts 4, `contacts_per_sample` 1 |
+| `supplied_phases` / `seeded_supply_phases` | **empty**, `phase_supply` `null`, on every arm |
+| resolved system message | sha256 `4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db` on **all seven** arms — byte-identical to KC-S1b's own |
+| the arm's static DIRECTIVE | sha256 `221ed0d343b0a543eda98008312938da25bde204a131efe8427ea8e3934a5e1f`, 841 characters, on **all seven** arms — fold C1 stated as an identity |
+| containment at contact time | `rails.runner._assert_agent_control_excludes_knowledge_payloads` raised on **none of the 28 contacts**, against 11,863 protected payloads |
+| four distinct request bodies per arm | yes, each with its own speech packet re-verified; 18 payload keys, equal to the arm's visible fields |
+| config and protocol hashes | **distinct per arm** — `fill_params` rides the config hash |
+| typed knowledge blocks | **0** on every row — correct: a KV view is instruction-side, not traced supply. This is where KV-4 reads non-zero |
+| seal and score | **OK** on every arm: 4 canonical output rows and all four declared scorers running to completion over the complete manifest. No score there is a measurement — the transport answers with a canned string |
+
+**The pre-flight cost of a KV view, measured.** The state fill mines TRAIN once per run inside
+`_resolved_state_fills`, before the first contact: 6.2 s of dispatch wall for KV-0, which skips the
+mining, against 8.8–11.0 s for the six views that build cards, descriptions or exemplars — about
+**3 to 5 seconds, once, for a whole flight**. That is the operational contrast with KV-4, whose
+retrieval seed costs 0.68–0.71 h of single-threaded CPU per arm.
 
 Engineering: `python scripts/checks/engineering_base_check.py` **PASS**; `ruff` clean; the family
 adds **one** module (`rails/slurp_knowledge_views.py`, pure renderers) and **one** registered state
