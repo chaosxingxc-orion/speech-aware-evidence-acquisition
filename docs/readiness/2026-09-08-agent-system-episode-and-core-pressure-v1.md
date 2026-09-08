@@ -109,3 +109,52 @@ reported number.
 From this note on, a preregistration carries: the episode table of section 2 for the cell; the core-pressure
 covariates of section 3 in its reporting list; the judge inventory it uses with each judge's registry id and its
 model-free precision/recall receipt where one exists; and the non-inferiority margins with their source row.
+
+## 7. Tools: what the four agents call, and how they are supplied through openJiuwen
+
+The owner's third instruction of the day: analyse the tools -- some task-specific, some general -- that the agent
+system calls, abstract them, and supply them uniformly; and design and implement on the openJiuwen framework.
+
+**Principle.** A tool is anything an agent calls that is not the frozen core. The core is the Solver behind the
+single-door component (`FrozenCoreASR` wrapping `core.model.FrozenCoreAdapter`; adoption memo 2026-08-08), never a
+tool. Every tool is pinned and logged (the charter's frozen tool-level clause); a tool that changes bytes leaves a
+derivation record (the tail and the 16 kHz media already do); scorers are evaluation instruments and never run
+inside the loop. Knowledge stores (class lists, schemas, KB facets, exemplar indexes, state) are not tools; tools
+read and build them.
+
+**General tools (carrier-independent), by the agent that calls them.**
+
+| family | existing in the repo | named, not built |
+|---|---|---|
+| audio I/O and standardization (Observer) | librosa decode, resampling to 16 kHz, the silence tail, slice cutting and encoding (`obs_audio.encode_slice`), duration and energy margins | -- |
+| segmentation (Observer) | Sortformer diarization (pinned tool row), the energy pause detector, the speaker-turn unit planner v2 | -- |
+| enhancement (Observer) | none | a pinned local enhancer with a derivation record; testbed = the Audio2Tool noisy tier; candidate survey first |
+| selective listening (Observer) | the replay loop's flagged spans and re-cut with context | the re-listen mode wired to the Reviewer's flags |
+| embedding and retrieval (Observer/Reviewer, keyed by speech) | local encoders (Omni-Embed-Nemotron, LCO-Embedding-Omni, Qwen3-Embedding, GLAP), sealed-vector retrieval, KB facet and dense-centroid providers | the same-speaker exemplar index (MF-8); openJiuwen `core/retrieval` indexing and reranking may host the index, the query stays speech |
+| deterministic judges (Reviewer) | legal-label projection, schema conformance, numeric-format check, substitution-only alignment (`core.repair_alignment`), span surgery, flag sources and replay signals, containment and echo checks | brief-name near-miss detector, decode-confidence signals from the trace, acoustic re-check through a pinned embedder |
+| budget and tokenization (Planner) | the live `/tokenize` prompt fit, `rails.context_budget`, `core.evidence_budget` | a per-episode core-call budget enforced by the Planner |
+| serving and transport (system service) | the resident session with monitor, the featcache packet sidecar, the flight lock | -- |
+| tracing, ledger, receipts (system service) | the trace sink, the exposure ledger, MANIFEST receipts | -- |
+
+**Task tools (carrier-specific).** SLURP: the closed intent list and its legality rule, the TRAIN slot schema per
+intent, the slot-filler view, the official scorer (evaluation only). Earnings: the ConEC class lists and the
+pre-meeting brief renderer, the participant-roster supplement, the ConEC entity-WER mirror and the Whisper
+normalizer (evaluation only), the ESB reference conventions, the boundary-bleed detector. Audio2Tool: the 152-tool
+registry and its domain grouping, the call-string parser, the `a2t-toolcall` scorer (evaluation only), the
+contrast notes. Meetings (future): speaker roles from diarization plus the brief, the agenda.
+
+**Uniform supply through openJiuwen.** Each tool is registered as a `LocalFunction` (the framework's `Tool` base in
+`core/foundation/tool`) in the framework's tool manager, with a manifest the Planner reads: id and pinned hash;
+typed inputs and outputs; side effects (bytes changed -> derivation record required); cost class (CPU, GPU,
+contacts); the axis it serves (OBS / ORG / SUPPLY / USE); scope (general or carrier); the ledger row type it needs.
+Observe modes become toolkits selected per task type, which is the framework's own pattern
+(`core/controller/modules/intent_toolkits.py`). The loop stays the workflow graph already proven trace-equivalent
+(`reproduction/ojw`: `LoopGroup`, `AdvancedLoopComponent`); tool nodes are added to it; the framework's LLM clients,
+MCP and RESTful tools stay uninstantiated (paid API 0, no cloud). Red lines of the adoption memo unchanged: single
+door, no `openjiuwen` in `pyproject.toml`, deterministic equivalence of the wrapped tools against direct calls.
+
+**First model-free build (named, not scheduled):** the tool manifest and catalog (`rails/tools.py` mapping to
+`LocalFunction`), the first eight wrapped tools (diarization, tail and resample, unit planner, legality
+projection, repair alignment, flagged-span detector, speech-keyed retrieval, prompt-fit tokenizer), the Planner's
+toolkit table per task type (meeting / command / tool-call), and the equivalence test (wrapped output == direct
+output, byte for byte).
