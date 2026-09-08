@@ -1,0 +1,6102 @@
+{
+ "claim_surface": "Discovery data. No superiority, generality, published-comparison or Stage-3 claim, and no paper-facing effectiveness claim at all. No knob tuned on the evaluation ten: the plan's rules were fixed model-free before any score existed. No Earnings-22 contact, no fstalign install, no diarizer re-run, no speaker naming, no OBS-E1b contact-matched control.",
+ "comparator": {
+  "attempt_id": "attempt-20260904T233816Z-bcd338",
+  "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2"
+ },
+ "contacts_and_audio": {
+  "cell": {
+   "attempt_id": null,
+   "contacts": 5122,
+   "cut_audio_seconds": 141345.852687,
+   "delivered_audio_seconds": 151589.852687,
+   "gpu_hours": null,
+   "mean_unit_seconds": 27.5958,
+   "run_id": "SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1",
+   "transport_unit": "speaker-turn unit (v2 plan)"
+  },
+  "comparator": {
+   "attempt_id": "attempt-20260904T233816Z-bcd338",
+   "contacts": 1593,
+   "cut_audio_seconds": 141345.852687,
+   "delivered_audio_seconds": 141345.852687,
+   "gpu_hours": 0.9734,
+   "mean_unit_seconds": 88.7293,
+   "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+   "transport_unit": "fixed 90-second window"
+  },
+  "equal_contact_statement": "A contact-matched control is IMPOSSIBLE BY CONSTRUCTION and was declared so before the flight (section 5): a call cut at its speaker turns yields 5,122 pieces and there is no way to cut it into speaker-turn units AND into 1,593 of them. The contrast is the TRANSPORT UNIT AS A WHOLE and it confounds boundary placement (11.0 % of unit cuts land mid-speech against 65.5 % of window cuts), speaker purity (76.1 % single-speaker units against 40.5 %) and contact count/length (5,122 x 27.60 s against 1,593 x 88.73 s). The control that WOULD separate contact count -- a fixed-window arm at obs_buffer_seconds 27.60, OBS-E1b -- is named as the follow-up and is deliberately not registered."
+ },
+ "decision": {
+  "delta_corpus_wer_ci90": [
+   0.9252913544660756,
+   1.174511406774117
+  ],
+  "delta_person_ci90": [
+   -3.1701161159392903,
+   -1.097764311303227
+  ],
+  "harm": true,
+  "label": "REJECTED",
+  "no_effect": false,
+  "non_inferiority_margin_points": -0.3,
+  "rule_source": "section 6 of the preregistration, unchanged",
+  "verdict": "HARM",
+  "win": false,
+  "win_entity_only": false
+ },
+ "exposure_row": "SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1",
+ "falsifier": {
+  "calls": 44,
+  "failures": [],
+  "result": "PASS",
+  "units": 5122
+ },
+ "identity_anchor": {
+  "anchors": {
+   "conec_non_entity_wer_percent": {
+    "agrees": true,
+    "recomputed": 4.730375807919667,
+    "sealed": 4.73
+   },
+   "conec_overall_wer_percent": {
+    "agrees": true,
+    "recomputed": 8.19951913054355,
+    "sealed": 8.2
+   },
+   "conec_person_wer_percent": {
+    "agrees": true,
+    "recomputed": 22.488858416181007,
+    "sealed": 22.5
+   },
+   "corpus_wer_percent": {
+    "agrees": true,
+    "recomputed": 8.19951913054355,
+    "sealed": 8.1995
+   },
+   "numeric_value_accuracy_percent": {
+    "agrees": true,
+    "recomputed": 90.73351140332854,
+    "sealed": 90.7335
+   },
+   "semantic_high_impact_error_rate_percent": {
+    "agrees": true,
+    "recomputed": 0.027795922338192988,
+    "sealed": 0.0278
+   }
+  },
+  "result": "PASS"
+ },
+ "metrics": {
+  "conec_event_wer_percent": {
+   "cell": 2.42914979757085,
+   "ci_level": 0.9,
+   "clusters": 44,
+   "comparator": 2.42914979757085,
+   "equal_stratum_cell": 2.9513438769337137,
+   "equal_stratum_comparator": 2.9059258564606676,
+   "improvement_ci90_high": 0.4166666666666667,
+   "improvement_ci90_low": -0.516818141316939,
+   "improvement_point": 0.0,
+   "lower_is_better": true,
+   "metric": "conec_event_wer_percent",
+   "movement_cell_minus_comparator": 0.0,
+   "replicates": 10000,
+   "seed": 20260903,
+   "sigma_hat": 0.28566394090285085
+  },
+  "conec_fac_wer_percent": {
+   "cell": 17.21311475409836,
+   "ci_level": 0.9,
+   "clusters": 44,
+   "comparator": 21.311475409836067,
+   "equal_stratum_cell": 19.17748917748918,
+   "equal_stratum_comparator": 28.463203463203463,
+   "improvement_ci90_high": 8.421052631578949,
+   "improvement_ci90_low": 1.0416666666666679,
+   "improvement_point": 4.098360655737707,
+   "lower_is_better": true,
+   "metric": "conec_fac_wer_percent",
+   "movement_cell_minus_comparator": -4.098360655737707,
+   "replicates": 10000,
+   "seed": 20260903,
+   "sigma_hat": 2.29117689544038
+  },
+  "conec_gpe_wer_percent": {
+   "cell": 19.583604424202992,
+   "ci_level": 0.9,
+   "clusters": 44,
+   "comparator": 18.67273910214704,
+   "equal_stratum_cell": 21.554706495821645,
+   "equal_stratum_comparator": 21.575783015769186,
+   "improvement_ci90_high": 0.673977452363146,
+   "improvement_ci90_low": -2.2808493589743604,
+   "improvement_point": -0.910865322055951,
+   "lower_is_better": true,
+   "metric": "conec_gpe_wer_percent",
+   "movement_cell_minus_comparator": 0.910865322055951,
+   "replicates": 10000,
+   "seed": 20260903,
+   "sigma_hat": 0.8936380430143136
+  },
+  "conec_loc_wer_percent": {
+   "cell": 3.5051546391752577,
+   "ci_level": 0.9,
+   "clusters": 44,
+   "comparator": 2.4742268041237114,
+   "equal_stratum_cell": 5.850563909774436,
+   "equal_stratum_comparator": 3.994360902255639,
+   "improvement_ci90_high": 0.0,
+   "improvement_ci90_low": -2.2624434389140275,
+   "improvement_point": -1.0309278350515463,
+   "lower_is_better": true,
+   "metric": "conec_loc_wer_percent",
+   "movement_cell_minus_comparator": 1.0309278350515463,
+   "replicates": 10000,
+   "seed": 20260903,
+   "sigma_hat": 0.6878247642115859
+  },
+  "conec_non_entity_wer_percent": {
+   "abs_movement_over_half_width": 0.22836342501444232,
+   "cell": 4.715589276149982,
+   "ci_level": 0.9,
+   "clusters": 44,
+   "comparator": 4.730375807919667,
+   "disjoint_from_own_null": false,
+   "equal_stratum_cell": 4.524978623685763,
+   "equal_stratum_comparator": 4.521586081987699,
+   "improvement_ci90_high": 0.1397090900052154,
+   "improvement_ci90_low": -0.10139402541741349,
+   "improvement_point": 0.01478653176968514,
+   "lower_is_better": true,
+   "metric": "conec_non_entity_wer_percent",
+   "movement_cell_minus_comparator": -0.01478653176968514,
+   "non_inferior_at_own_null_margin": false,
+   "own_null_half_width": 0.06475,
+   "own_null_margin_advisory": false,
+   "replicates": 10000,
+   "seed": 20260903,
+   "sigma_hat": 0.07363760184963096
+  },
+  "conec_norp_wer_percent": {
+   "cell": 10.169491525423728,
+   "ci_level": 0.9,
+   "clusters": 44,
+   "comparator": 9.745762711864407,
+   "equal_stratum_cell": 14.41356004025637,
+   "equal_stratum_comparator": 14.299274325970655,
+   "improvement_ci90_high": 0.0,
+   "improvement_ci90_low": -1.1070110701107012,
+   "improvement_point": -0.4237288135593218,
+   "lower_is_better": true,
+   "metric": "conec_norp_wer_percent",
+   "movement_cell_minus_comparator": 0.4237288135593218,
+   "replicates": 10000,
+   "seed": 20260903,
+   "sigma_hat": 0.38488447412177784
+  },
+  "conec_org_wer_percent": {
+   "abs_movement_over_half_width": 1.4160470715158566,
+   "cell": 16.708686683474674,
+   "ci_level": 0.9,
+   "clusters": 44,
+   "comparator": 17.212926885170756,
+   "disjoint_from_own_null": false,
+   "equal_stratum_cell": 18.6753453111525,
+   "equal_stratum_comparator": 18.69275866649916,
+   "improvement_ci90_high": 1.5750083536576522,
+   "improvement_ci90_low": -0.5743174410042078,
+   "improvement_point": 0.5042402016960814,
+   "lower_is_better": true,
+   "metric": "conec_org_wer_percent",
+   "movement_cell_minus_comparator": -0.5042402016960814,
+   "non_inferior_at_own_null_margin": false,
+   "own_null_half_width": 0.35609,
+   "own_null_margin_advisory": false,
+   "replicates": 10000,
+   "seed": 20260903,
+   "sigma_hat": 0.6506066193400777
+  },
+  "conec_overall_wer_percent": {
+   "abs_movement_over_half_width": 18.10357586431938,
+   "cell": 7.150778980723528,
+   "ci_level": 0.9,
+   "clusters": 44,
+   "comparator": 8.19951913054355,
+   "disjoint_from_own_null": true,
+   "equal_stratum_cell": 6.989313726224167,
+   "equal_stratum_comparator": 8.003641006407829,
+   "improvement_ci90_high": 1.174511406774117,
+   "improvement_ci90_low": 0.9252913544660756,
+   "improvement_point": 1.0487401498200217,
+   "lower_is_better": true,
+   "metric": "conec_overall_wer_percent",
+   "movement_cell_minus_comparator": -1.0487401498200217,
+   "non_inferior_at_own_null_margin": true,
+   "own_null_half_width": 0.05793,
+   "own_null_margin_advisory": false,
+   "replicates": 10000,
+   "seed": 20260903,
+   "sigma_hat": 0.07553494066913284
+  },
+  "conec_person_wer_percent": {
+   "abs_movement_over_half_width": 8.361748084025379,
+   "cell": 24.580047994514914,
+   "ci_level": 0.9,
+   "clusters": 44,
+   "comparator": 22.488858416181007,
+   "disjoint_from_own_null": true,
+   "equal_stratum_cell": 24.758125408909095,
+   "equal_stratum_comparator": 22.01317686264394,
+   "improvement_ci90_high": -1.097764311303227,
+   "improvement_ci90_low": -3.1701161159392903,
+   "improvement_point": -2.091189578333907,
+   "lower_is_better": true,
+   "metric": "conec_person_wer_percent",
+   "movement_cell_minus_comparator": 2.091189578333907,
+   "non_inferior_at_own_null_margin": false,
+   "own_null_half_width": 0.25009,
+   "own_null_margin_advisory": false,
+   "replicates": 10000,
+   "seed": 20260903,
+   "sigma_hat": 0.6299872712239949
+  },
+  "conec_product_wer_percent": {
+   "cell": 18.71794871794872,
+   "ci_level": 0.9,
+   "clusters": 44,
+   "comparator": 19.23076923076923,
+   "equal_stratum_cell": 24.766365347418958,
+   "equal_stratum_comparator": 25.24118464763348,
+   "improvement_ci90_high": 3.0675631148698486,
+   "improvement_ci90_low": -1.9657470641722616,
+   "improvement_point": 0.512820512820511,
+   "lower_is_better": true,
+   "metric": "conec_product_wer_percent",
+   "movement_cell_minus_comparator": -0.512820512820511,
+   "replicates": 10000,
+   "seed": 20260903,
+   "sigma_hat": 1.550566300894317
+  },
+  "corpus_wer_percent": {
+   "abs_movement_over_half_width": 18.10357586431938,
+   "cell": 7.150778980723528,
+   "ci_level": 0.9,
+   "clusters": 44,
+   "comparator": 8.19951913054355,
+   "disjoint_from_own_null": true,
+   "equal_stratum_cell": 6.989313726224167,
+   "equal_stratum_comparator": 8.003641006407829,
+   "improvement_ci90_high": 1.174511406774117,
+   "improvement_ci90_low": 0.9252913544660756,
+   "improvement_point": 1.0487401498200217,
+   "lower_is_better": true,
+   "metric": "corpus_wer_percent",
+   "movement_cell_minus_comparator": -1.0487401498200217,
+   "non_inferior_at_own_null_margin": true,
+   "own_null_half_width": 0.05793,
+   "own_null_margin_advisory": false,
+   "replicates": 10000,
+   "seed": 20260903,
+   "sigma_hat": 0.07553494066913284
+  },
+  "numeric_value_accuracy_percent": {
+   "abs_movement_over_half_width": 1.2471542401727702,
+   "cell": 90.92870351345798,
+   "ci_level": 0.9,
+   "clusters": 44,
+   "comparator": 90.73351140332854,
+   "disjoint_from_own_null": false,
+   "equal_stratum_cell": 91.28465141970365,
+   "equal_stratum_comparator": 90.97869673299954,
+   "improvement_ci90_high": 0.48323355025848724,
+   "improvement_ci90_low": -0.10840552630089142,
+   "improvement_point": 0.19519211012944027,
+   "lower_is_better": false,
+   "metric": "numeric_value_accuracy_percent",
+   "movement_cell_minus_comparator": 0.19519211012944027,
+   "non_inferior_at_own_null_margin": true,
+   "own_null_half_width": 0.15651,
+   "own_null_margin_advisory": false,
+   "replicates": 10000,
+   "seed": 20260903,
+   "sigma_hat": 0.18040993160964308
+  },
+  "semantic_high_impact_error_rate_percent": {
+   "abs_movement_over_half_width": 0.5634308582066148,
+   "cell": 0.0269620446680472,
+   "ci_level": 0.9,
+   "clusters": 44,
+   "comparator": 0.027795922338192988,
+   "disjoint_from_own_null": false,
+   "equal_stratum_cell": 0.022936773461227498,
+   "equal_stratum_comparator": 0.022670922434934352,
+   "improvement_ci90_high": 0.005531219726187204,
+   "improvement_ci90_low": -0.003267653380793449,
+   "improvement_point": 0.0008338776701457898,
+   "lower_is_better": true,
+   "metric": "semantic_high_impact_error_rate_percent",
+   "movement_cell_minus_comparator": -0.0008338776701457898,
+   "non_inferior_at_own_null_margin": false,
+   "own_null_half_width": 0.00148,
+   "own_null_margin_advisory": true,
+   "replicates": 10000,
+   "seed": 20260903,
+   "sigma_hat": 0.002679349231173343
+  }
+ },
+ "no_pause_call": {
+  "features": {
+   "cut_seconds": 1817.730625,
+   "delivered_seconds": 1889.730625,
+   "dominated_share": 1.0,
+   "dominated_units": 36,
+   "forced_cap_split_cuts": 13,
+   "pause_cut_share": 0.0,
+   "pause_cuts": 0,
+   "shared_units": 0,
+   "silent_units": 0,
+   "single_speaker_units": 31,
+   "turn_boundary_cuts": 22,
+   "unit_seconds_max": 90.0,
+   "unit_seconds_mean": 50.4925,
+   "unit_seconds_median": 45.8795,
+   "unit_seconds_min": 2.16,
+   "units": 36,
+   "units_10_to_60s": 14,
+   "units_no_reference_word": 0,
+   "units_over_60s": 16,
+   "units_under_1s": 0,
+   "windows": 21
+  },
+  "metrics": {
+   "conec_event_wer_percent": {
+    "cell": 11.904761904761905,
+    "comparator": 9.523809523809524,
+    "improvement": -2.3809523809523814
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 2.4390243902439024,
+    "comparator": 2.3242467718794835,
+    "improvement": -0.11477761836441891
+   },
+   "conec_norp_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null
+   },
+   "conec_org_wer_percent": {
+    "cell": 32.291666666666664,
+    "comparator": 42.708333333333336,
+    "improvement": 10.416666666666671
+   },
+   "conec_overall_wer_percent": {
+    "cell": 5.869512490904681,
+    "comparator": 7.22774678632064,
+    "improvement": 1.3582342954159596
+   },
+   "conec_person_wer_percent": {
+    "cell": 22.22222222222222,
+    "comparator": 11.11111111111111,
+    "improvement": -11.11111111111111
+   },
+   "conec_product_wer_percent": {
+    "cell": 61.111111111111114,
+    "comparator": 61.111111111111114,
+    "improvement": 0.0
+   },
+   "corpus_wer_percent": {
+    "cell": 5.869512490904681,
+    "comparator": 7.22774678632064,
+    "improvement": 1.3582342954159596
+   },
+   "numeric_value_accuracy_percent": {
+    "cell": 88.57142857142857,
+    "comparator": 89.28571428571429,
+    "improvement": -0.7142857142857224
+   },
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0
+   }
+  },
+  "never_pooled_away": true,
+  "sample_id": "4366522",
+  "why_apart": "zero detected pauses of 300 ms or more over 1,817.7 s; every one of its units ends on an active frame, so it is the one call where the transport unit cannot buy a silent boundary"
+ },
+ "own_null_margins": {
+  "advisory": [
+   "semantic_high_impact_error_rate_percent"
+  ],
+  "half_widths": {
+   "conec_non_entity_wer_percent": 0.06475,
+   "conec_org_wer_percent": 0.35609,
+   "conec_overall_wer_percent": 0.05793,
+   "conec_person_wer_percent": 0.25009,
+   "corpus_wer_percent": 0.05793,
+   "numeric_value_accuracy_percent": 0.15651,
+   "semantic_high_impact_error_rate_percent": 0.00148
+  },
+  "note": "the per-metric Earnings-21 non-inferiority margin is the half-width of that cell's own call-clustered CI90; the semantic one is ADVISORY because that null's interval excludes zero",
+  "source": "SAEA-E21-FULL44-NULL-REPLICATE-V1"
+ },
+ "pairing": {
+  "ci_level": 0.9,
+  "clusters": 44,
+  "power_limitation": "n = 44 clusters is BELOW the program's n >= 400 rule for a paired effectiveness claim. This cell reports an interval and a direction and makes NO paper-facing effectiveness claim.",
+  "replicates": 10000,
+  "seed": 20260903,
+  "unit": "the CALL"
+ },
+ "per_call": [
+  {
+   "conec_event_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_fac_wer_percent": {
+    "cell": 42.857142857142854,
+    "comparator": 42.857142857142854,
+    "improvement": 0.0,
+    "reference_words": 7
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 7.142857142857143,
+    "comparator": 4.761904761904762,
+    "improvement": -2.3809523809523814,
+    "reference_words": 42
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 30
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 3.910614525139665,
+    "comparator": 4.087750374710451,
+    "improvement": 0.17713584957078599,
+    "reference_words": 7339
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 5
+   },
+   "conec_org_wer_percent": {
+    "cell": 23.68421052631579,
+    "comparator": 28.94736842105263,
+    "improvement": 5.263157894736839,
+    "reference_words": 38
+   },
+   "conec_overall_wer_percent": {
+    "cell": 5.868788193243399,
+    "comparator": 7.160152196471809,
+    "improvement": 1.2913640032284093,
+    "reference_words": 8673
+   },
+   "conec_person_wer_percent": {
+    "cell": 27.419354838709676,
+    "comparator": 22.580645161290324,
+    "improvement": -4.838709677419352,
+    "reference_words": 62
+   },
+   "conec_product_wer_percent": {
+    "cell": 41.1764705882353,
+    "comparator": 41.1764705882353,
+    "improvement": 0.0,
+    "reference_words": 17
+   },
+   "corpus_wer_percent": {
+    "cell": 5.868788193243399,
+    "comparator": 7.160152196471809,
+    "improvement": 1.2913640032284093,
+    "reference_words": 8673
+   },
+   "cut_seconds": 3285.816,
+   "delivered_seconds": 3535.816,
+   "dominated_share": 0.944,
+   "dominated_units": 118,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 91.54929577464789,
+    "comparator": 90.49295774647888,
+    "improvement": 1.0563380281690087,
+    "reference_words": 284
+   },
+   "pause_cut_share": 0.936,
+   "pause_cuts": 117,
+   "sample_id": "4320211",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 8673
+   },
+   "shared_units": 5,
+   "silent_units": 2,
+   "single_speaker_units": 105,
+   "turn_boundary_cuts": 7,
+   "unit_seconds_max": 89.27,
+   "unit_seconds_mean": 26.2865,
+   "unit_seconds_median": 17.54,
+   "unit_seconds_min": 1.081,
+   "units": 125,
+   "units_10_to_60s": 54,
+   "units_no_reference_word": 0,
+   "units_over_60s": 18,
+   "units_under_1s": 0,
+   "windows": 37
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 6
+   },
+   "conec_fac_wer_percent": {
+    "cell": 0.0,
+    "comparator": 100.0,
+    "improvement": 100.0,
+    "reference_words": 1
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 35.483870967741936,
+    "comparator": 35.483870967741936,
+    "improvement": 0.0,
+    "reference_words": 93
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 8
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 4.308071039212239,
+    "comparator": 4.571830490592579,
+    "improvement": 0.2637594513803405,
+    "reference_words": 5687
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 6
+   },
+   "conec_org_wer_percent": {
+    "cell": 21.428571428571427,
+    "comparator": 28.571428571428573,
+    "improvement": 7.142857142857146,
+    "reference_words": 42
+   },
+   "conec_overall_wer_percent": {
+    "cell": 6.004828002414001,
+    "comparator": 7.166566083283041,
+    "improvement": 1.16173808086904,
+    "reference_words": 6628
+   },
+   "conec_person_wer_percent": {
+    "cell": 22.22222222222222,
+    "comparator": 17.77777777777778,
+    "improvement": -4.444444444444443,
+    "reference_words": 45
+   },
+   "conec_product_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "corpus_wer_percent": {
+    "cell": 6.004828002414001,
+    "comparator": 7.166566083283041,
+    "improvement": 1.16173808086904,
+    "reference_words": 6628
+   },
+   "cut_seconds": 2458.872,
+   "delivered_seconds": 2602.872,
+   "dominated_share": 0.9861,
+   "dominated_units": 71,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 95.45454545454545,
+    "comparator": 94.15584415584415,
+    "improvement": 1.2987012987013031,
+    "reference_words": 154
+   },
+   "pause_cut_share": 0.9167,
+   "pause_cuts": 66,
+   "sample_id": "4330115",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.030175015087507542,
+    "comparator": 0.030175015087507542,
+    "improvement": 0.0,
+    "reference_words": 6628
+   },
+   "shared_units": 1,
+   "silent_units": 0,
+   "single_speaker_units": 63,
+   "turn_boundary_cuts": 5,
+   "unit_seconds_max": 89.64,
+   "unit_seconds_mean": 34.151,
+   "unit_seconds_median": 31.51,
+   "unit_seconds_min": 1.194,
+   "units": 72,
+   "units_10_to_60s": 41,
+   "units_no_reference_word": 0,
+   "units_over_60s": 12,
+   "units_under_1s": 0,
+   "windows": 28
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 1.0638297872340425,
+    "improvement": 1.0638297872340425,
+    "reference_words": 94
+   },
+   "conec_fac_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 6
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 32.142857142857146,
+    "comparator": 35.714285714285715,
+    "improvement": 3.5714285714285694,
+    "reference_words": 28
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 7
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 4.9161364950838635,
+    "comparator": 4.750888209534826,
+    "improvement": -0.1652482855490378,
+    "reference_words": 12103
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "conec_org_wer_percent": {
+    "cell": 13.173652694610778,
+    "comparator": 14.970059880239521,
+    "improvement": 1.796407185628743,
+    "reference_words": 167
+   },
+   "conec_overall_wer_percent": {
+    "cell": 6.677670036448663,
+    "comparator": 7.8055154391032255,
+    "improvement": 1.1278454026545628,
+    "reference_words": 14541
+   },
+   "conec_person_wer_percent": {
+    "cell": 20.833333333333332,
+    "comparator": 19.166666666666668,
+    "improvement": -1.6666666666666643,
+    "reference_words": 120
+   },
+   "conec_product_wer_percent": {
+    "cell": 50.0,
+    "comparator": 50.0,
+    "improvement": 0.0,
+    "reference_words": 4
+   },
+   "corpus_wer_percent": {
+    "cell": 6.677670036448663,
+    "comparator": 7.8055154391032255,
+    "improvement": 1.1278454026545628,
+    "reference_words": 14541
+   },
+   "cut_seconds": 5740.608,
+   "delivered_seconds": 6180.608,
+   "dominated_share": 0.9,
+   "dominated_units": 198,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 92.90617848970251,
+    "comparator": 92.44851258581235,
+    "improvement": 0.4576659038901596,
+    "reference_words": 437
+   },
+   "pause_cut_share": 0.9045,
+   "pause_cuts": 199,
+   "sample_id": "4341191",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.03438553056873667,
+    "comparator": 0.02750842445498934,
+    "improvement": -0.006877106113747332,
+    "reference_words": 14541
+   },
+   "shared_units": 18,
+   "silent_units": 4,
+   "single_speaker_units": 154,
+   "turn_boundary_cuts": 20,
+   "unit_seconds_max": 87.96,
+   "unit_seconds_mean": 26.0937,
+   "unit_seconds_median": 14.79,
+   "unit_seconds_min": 1.17,
+   "units": 220,
+   "units_10_to_60s": 86,
+   "units_no_reference_word": 0,
+   "units_over_60s": 32,
+   "units_under_1s": 0,
+   "windows": 64
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 16.666666666666668,
+    "comparator": 16.666666666666668,
+    "improvement": 0.0,
+    "reference_words": 18
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 17
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 2.320534223706177,
+    "comparator": 2.036727879799666,
+    "improvement": -0.28380634390651105,
+    "reference_words": 5990
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4
+   },
+   "conec_org_wer_percent": {
+    "cell": 12.658227848101266,
+    "comparator": 13.924050632911392,
+    "improvement": 1.2658227848101262,
+    "reference_words": 79
+   },
+   "conec_overall_wer_percent": {
+    "cell": 3.9303196084077165,
+    "comparator": 4.722142240138209,
+    "improvement": 0.7918226317304922,
+    "reference_words": 6946
+   },
+   "conec_person_wer_percent": {
+    "cell": 27.522935779816514,
+    "comparator": 19.26605504587156,
+    "improvement": -8.256880733944953,
+    "reference_words": 109
+   },
+   "conec_product_wer_percent": {
+    "cell": 14.285714285714286,
+    "comparator": 14.285714285714286,
+    "improvement": 0.0,
+    "reference_words": 7
+   },
+   "corpus_wer_percent": {
+    "cell": 3.9303196084077165,
+    "comparator": 4.722142240138209,
+    "improvement": 0.7918226317304922,
+    "reference_words": 6946
+   },
+   "cut_seconds": 2720.914313,
+   "delivered_seconds": 2900.914313,
+   "dominated_share": 0.9889,
+   "dominated_units": 89,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 97.58064516129032,
+    "comparator": 97.58064516129032,
+    "improvement": 0.0,
+    "reference_words": 124
+   },
+   "pause_cut_share": 0.8889,
+   "pause_cuts": 80,
+   "sample_id": "4344338",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.014396775122372588,
+    "comparator": 0.014396775122372588,
+    "improvement": 0.0,
+    "reference_words": 6946
+   },
+   "shared_units": 1,
+   "silent_units": 0,
+   "single_speaker_units": 76,
+   "turn_boundary_cuts": 9,
+   "unit_seconds_max": 83.81,
+   "unit_seconds_mean": 30.2324,
+   "unit_seconds_median": 24.905,
+   "unit_seconds_min": 1.26,
+   "units": 90,
+   "units_10_to_60s": 46,
+   "units_no_reference_word": 0,
+   "units_over_60s": 15,
+   "units_under_1s": 0,
+   "windows": 31
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 29
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 6
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 3.3206106870229006,
+    "comparator": 3.1806615776081424,
+    "improvement": -0.13994910941475824,
+    "reference_words": 7860
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_org_wer_percent": {
+    "cell": 10.596026490066226,
+    "comparator": 11.258278145695364,
+    "improvement": 0.662251655629138,
+    "reference_words": 151
+   },
+   "conec_overall_wer_percent": {
+    "cell": 5.11500547645126,
+    "comparator": 6.11171960569551,
+    "improvement": 0.9967141292442498,
+    "reference_words": 9130
+   },
+   "conec_person_wer_percent": {
+    "cell": 19.736842105263158,
+    "comparator": 22.36842105263158,
+    "improvement": 2.6315789473684212,
+    "reference_words": 76
+   },
+   "conec_product_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "corpus_wer_percent": {
+    "cell": 5.11500547645126,
+    "comparator": 6.11171960569551,
+    "improvement": 0.9967141292442498,
+    "reference_words": 9130
+   },
+   "cut_seconds": 3275.424,
+   "delivered_seconds": 3573.424,
+   "dominated_share": 0.9597,
+   "dominated_units": 143,
+   "forced_cap_split_cuts": 2,
+   "numeric_value_accuracy_percent": {
+    "cell": 93.25153374233129,
+    "comparator": 92.63803680981596,
+    "improvement": 0.6134969325153321,
+    "reference_words": 163
+   },
+   "pause_cut_share": 0.7315,
+   "pause_cuts": 109,
+   "sample_id": "4344866",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 9130
+   },
+   "shared_units": 6,
+   "silent_units": 0,
+   "single_speaker_units": 106,
+   "turn_boundary_cuts": 37,
+   "unit_seconds_max": 90.0,
+   "unit_seconds_mean": 21.9827,
+   "unit_seconds_median": 11.28,
+   "unit_seconds_min": 1.071,
+   "units": 149,
+   "units_10_to_60s": 62,
+   "units_no_reference_word": 0,
+   "units_over_60s": 16,
+   "units_under_1s": 0,
+   "windows": 37
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_fac_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 19.444444444444443,
+    "comparator": 16.666666666666668,
+    "improvement": -2.777777777777775,
+    "reference_words": 36
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 10
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 6.96956799319004,
+    "comparator": 8.03362417535646,
+    "improvement": 1.0640561821664196,
+    "reference_words": 9398
+   },
+   "conec_norp_wer_percent": {
+    "cell": 33.333333333333336,
+    "comparator": 33.333333333333336,
+    "improvement": 0.0,
+    "reference_words": 3
+   },
+   "conec_org_wer_percent": {
+    "cell": 19.81981981981982,
+    "comparator": 20.72072072072072,
+    "improvement": 0.9009009009009006,
+    "reference_words": 111
+   },
+   "conec_overall_wer_percent": {
+    "cell": 8.688913202042304,
+    "comparator": 10.950036469730124,
+    "improvement": 2.26112326768782,
+    "reference_words": 10968
+   },
+   "conec_person_wer_percent": {
+    "cell": 27.77777777777778,
+    "comparator": 26.38888888888889,
+    "improvement": -1.3888888888888893,
+    "reference_words": 72
+   },
+   "conec_product_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 7
+   },
+   "corpus_wer_percent": {
+    "cell": 8.688913202042304,
+    "comparator": 10.950036469730124,
+    "improvement": 2.26112326768782,
+    "reference_words": 10968
+   },
+   "cut_seconds": 3971.974937,
+   "delivered_seconds": 4211.974937,
+   "dominated_share": 0.9833,
+   "dominated_units": 118,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 93.14641744548287,
+    "comparator": 91.90031152647975,
+    "improvement": 1.2461059190031136,
+    "reference_words": 321
+   },
+   "pause_cut_share": 0.9333,
+   "pause_cuts": 112,
+   "sample_id": "4346818",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.05470459518599562,
+    "comparator": 0.0638220277169949,
+    "improvement": 0.009117432530999274,
+    "reference_words": 10968
+   },
+   "shared_units": 1,
+   "silent_units": 1,
+   "single_speaker_units": 112,
+   "turn_boundary_cuts": 7,
+   "unit_seconds_max": 89.93,
+   "unit_seconds_mean": 33.0998,
+   "unit_seconds_median": 26.82,
+   "unit_seconds_min": 1.3,
+   "units": 120,
+   "units_10_to_60s": 59,
+   "units_no_reference_word": 0,
+   "units_over_60s": 25,
+   "units_under_1s": 0,
+   "windows": 45
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 50.0,
+    "comparator": 50.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "conec_fac_wer_percent": {
+    "cell": 13.333333333333334,
+    "comparator": 13.333333333333334,
+    "improvement": 0.0,
+    "reference_words": 15
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 22.65193370165746,
+    "comparator": 20.441988950276244,
+    "improvement": -2.209944751381215,
+    "reference_words": 181
+   },
+   "conec_loc_wer_percent": {
+    "cell": 6.25,
+    "comparator": 6.25,
+    "improvement": 0.0,
+    "reference_words": 32
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 12.437347010141043,
+    "comparator": 13.17169833313906,
+    "improvement": 0.7343513229980179,
+    "reference_words": 8579
+   },
+   "conec_norp_wer_percent": {
+    "cell": 20.0,
+    "comparator": 20.0,
+    "improvement": 0.0,
+    "reference_words": 10
+   },
+   "conec_org_wer_percent": {
+    "cell": 28.94736842105263,
+    "comparator": 34.21052631578947,
+    "improvement": 5.2631578947368425,
+    "reference_words": 38
+   },
+   "conec_overall_wer_percent": {
+    "cell": 17.581551197398245,
+    "comparator": 18.94155908150192,
+    "improvement": 1.360007884103677,
+    "reference_words": 10147
+   },
+   "conec_person_wer_percent": {
+    "cell": 34.61538461538461,
+    "comparator": 35.38461538461539,
+    "improvement": 0.7692307692307736,
+    "reference_words": 130
+   },
+   "conec_product_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4
+   },
+   "corpus_wer_percent": {
+    "cell": 17.581551197398245,
+    "comparator": 18.94155908150192,
+    "improvement": 1.360007884103677,
+    "reference_words": 10147
+   },
+   "cut_seconds": 4709.376,
+   "delivered_seconds": 5109.376,
+   "dominated_share": 0.935,
+   "dominated_units": 187,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 89.55223880597015,
+    "comparator": 88.80597014925372,
+    "improvement": 0.7462686567164241,
+    "reference_words": 268
+   },
+   "pause_cut_share": 0.89,
+   "pause_cuts": 178,
+   "sample_id": "4346923",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.10840642554449591,
+    "comparator": 0.09855129594954173,
+    "improvement": -0.009855129594954173,
+    "reference_words": 10147
+   },
+   "shared_units": 11,
+   "silent_units": 2,
+   "single_speaker_units": 144,
+   "turn_boundary_cuts": 21,
+   "unit_seconds_max": 87.81,
+   "unit_seconds_mean": 23.5469,
+   "unit_seconds_median": 12.565,
+   "unit_seconds_min": 1.03,
+   "units": 200,
+   "units_10_to_60s": 91,
+   "units_no_reference_word": 0,
+   "units_over_60s": 25,
+   "units_under_1s": 0,
+   "windows": 53
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 12
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 10.526315789473685,
+    "comparator": 26.31578947368421,
+    "improvement": 15.789473684210524,
+    "reference_words": 19
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 28
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 3.709879116298458,
+    "comparator": 3.4910379324718632,
+    "improvement": -0.21884118382659468,
+    "reference_words": 9596
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 8
+   },
+   "conec_org_wer_percent": {
+    "cell": 12.574850299401197,
+    "comparator": 10.179640718562874,
+    "improvement": -2.3952095808383227,
+    "reference_words": 167
+   },
+   "conec_overall_wer_percent": {
+    "cell": 6.100406117687721,
+    "comparator": 6.921282294996976,
+    "improvement": 0.8208761773092546,
+    "reference_words": 11573
+   },
+   "conec_person_wer_percent": {
+    "cell": 35.9375,
+    "comparator": 26.5625,
+    "improvement": -9.375,
+    "reference_words": 64
+   },
+   "conec_product_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "corpus_wer_percent": {
+    "cell": 6.100406117687721,
+    "comparator": 6.921282294996976,
+    "improvement": 0.8208761773092546,
+    "reference_words": 11573
+   },
+   "cut_seconds": 4887.001938,
+   "delivered_seconds": 5255.001938,
+   "dominated_share": 0.9565,
+   "dominated_units": 176,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 88.56382978723404,
+    "comparator": 89.36170212765957,
+    "improvement": -0.7978723404255277,
+    "reference_words": 376
+   },
+   "pause_cut_share": 0.8533,
+   "pause_cuts": 157,
+   "sample_id": "4359732",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.034563207465652813,
+    "comparator": 0.07776721679771882,
+    "improvement": 0.04320400933206601,
+    "reference_words": 11573
+   },
+   "shared_units": 6,
+   "silent_units": 2,
+   "single_speaker_units": 130,
+   "turn_boundary_cuts": 26,
+   "unit_seconds_max": 86.83,
+   "unit_seconds_mean": 26.5598,
+   "unit_seconds_median": 14.31,
+   "unit_seconds_min": 1.04,
+   "units": 184,
+   "units_10_to_60s": 69,
+   "units_no_reference_word": 0,
+   "units_over_60s": 33,
+   "units_under_1s": 0,
+   "windows": 55
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 16
+   },
+   "conec_fac_wer_percent": {
+    "cell": 33.333333333333336,
+    "comparator": 33.333333333333336,
+    "improvement": 0.0,
+    "reference_words": 6
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 11.428571428571429,
+    "comparator": 14.285714285714286,
+    "improvement": 2.8571428571428577,
+    "reference_words": 35
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 24
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 3.1429666538903795,
+    "comparator": 3.130190366679443,
+    "improvement": -0.012776287210936488,
+    "reference_words": 7827
+   },
+   "conec_norp_wer_percent": {
+    "cell": 10.0,
+    "comparator": 10.0,
+    "improvement": 0.0,
+    "reference_words": 20
+   },
+   "conec_org_wer_percent": {
+    "cell": 7.608695652173913,
+    "comparator": 8.695652173913043,
+    "improvement": 1.08695652173913,
+    "reference_words": 92
+   },
+   "conec_overall_wer_percent": {
+    "cell": 4.888005024073687,
+    "comparator": 5.777684739376178,
+    "improvement": 0.8896797153024911,
+    "reference_words": 9554
+   },
+   "conec_person_wer_percent": {
+    "cell": 34.146341463414636,
+    "comparator": 26.829268292682926,
+    "improvement": -7.31707317073171,
+    "reference_words": 82
+   },
+   "conec_product_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "corpus_wer_percent": {
+    "cell": 4.888005024073687,
+    "comparator": 5.777684739376178,
+    "improvement": 0.8896797153024911,
+    "reference_words": 9554
+   },
+   "cut_seconds": 3759.912,
+   "delivered_seconds": 4057.912,
+   "dominated_share": 0.9463,
+   "dominated_units": 141,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 90.58823529411765,
+    "comparator": 90.29411764705883,
+    "improvement": 0.29411764705882604,
+    "reference_words": 340
+   },
+   "pause_cut_share": 0.9128,
+   "pause_cuts": 136,
+   "sample_id": "4359971",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.052334100900146535,
+    "comparator": 0.04186728072011723,
+    "improvement": -0.010466820180029306,
+    "reference_words": 9554
+   },
+   "shared_units": 8,
+   "silent_units": 0,
+   "single_speaker_units": 107,
+   "turn_boundary_cuts": 12,
+   "unit_seconds_max": 88.4,
+   "unit_seconds_mean": 25.2343,
+   "unit_seconds_median": 12.46,
+   "unit_seconds_min": 1.06,
+   "units": 149,
+   "units_10_to_60s": 59,
+   "units_no_reference_word": 0,
+   "units_over_60s": 19,
+   "units_under_1s": 0,
+   "windows": 42
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 67
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 41.1764705882353,
+    "comparator": 41.1764705882353,
+    "improvement": 0.0,
+    "reference_words": 17
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 2.7867573291717758,
+    "comparator": 2.9874038568721435,
+    "improvement": 0.20064652770036773,
+    "reference_words": 8971
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 3
+   },
+   "conec_org_wer_percent": {
+    "cell": 26.785714285714285,
+    "comparator": 23.214285714285715,
+    "improvement": -3.5714285714285694,
+    "reference_words": 56
+   },
+   "conec_overall_wer_percent": {
+    "cell": 4.508626441711944,
+    "comparator": 5.785911733867124,
+    "improvement": 1.27728529215518,
+    "reference_words": 10491
+   },
+   "conec_person_wer_percent": {
+    "cell": 25.252525252525253,
+    "comparator": 22.22222222222222,
+    "improvement": -3.030303030303031,
+    "reference_words": 99
+   },
+   "conec_product_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "corpus_wer_percent": {
+    "cell": 4.508626441711944,
+    "comparator": 5.785911733867124,
+    "improvement": 1.27728529215518,
+    "reference_words": 10491
+   },
+   "cut_seconds": 3906.72,
+   "delivered_seconds": 4210.72,
+   "dominated_share": 0.9934,
+   "dominated_units": 151,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 91.69811320754717,
+    "comparator": 90.56603773584905,
+    "improvement": 1.1320754716981156,
+    "reference_words": 265
+   },
+   "pause_cut_share": 0.8487,
+   "pause_cuts": 129,
+   "sample_id": "4360366",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.019063959584405682,
+    "comparator": 0.019063959584405682,
+    "improvement": 0.0,
+    "reference_words": 10491
+   },
+   "shared_units": 1,
+   "silent_units": 0,
+   "single_speaker_units": 126,
+   "turn_boundary_cuts": 22,
+   "unit_seconds_max": 89.63,
+   "unit_seconds_mean": 25.7021,
+   "unit_seconds_median": 17.34,
+   "unit_seconds_min": 1.051,
+   "units": 152,
+   "units_10_to_60s": 69,
+   "units_no_reference_word": 0,
+   "units_over_60s": 20,
+   "units_under_1s": 0,
+   "windows": 44
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 21.05263157894737,
+    "comparator": 21.05263157894737,
+    "improvement": 0.0,
+    "reference_words": 19
+   },
+   "conec_fac_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 13
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 8.695652173913043,
+    "comparator": 8.695652173913043,
+    "improvement": 0.0,
+    "reference_words": 23
+   },
+   "conec_loc_wer_percent": {
+    "cell": 16.666666666666668,
+    "comparator": 8.333333333333334,
+    "improvement": -8.333333333333334,
+    "reference_words": 12
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 4.68990261404408,
+    "comparator": 4.472065607380831,
+    "improvement": -0.2178370066632489,
+    "reference_words": 7804
+   },
+   "conec_norp_wer_percent": {
+    "cell": 100.0,
+    "comparator": 100.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_org_wer_percent": {
+    "cell": 5.958549222797927,
+    "comparator": 6.217616580310881,
+    "improvement": 0.2590673575129534,
+    "reference_words": 386
+   },
+   "conec_overall_wer_percent": {
+    "cell": 7.125641831709106,
+    "comparator": 8.18400922141884,
+    "improvement": 1.0583673897097343,
+    "reference_words": 9543
+   },
+   "conec_person_wer_percent": {
+    "cell": 32.0,
+    "comparator": 32.0,
+    "improvement": 0.0,
+    "reference_words": 50
+   },
+   "conec_product_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "corpus_wer_percent": {
+    "cell": 7.125641831709106,
+    "comparator": 8.18400922141884,
+    "improvement": 1.0583673897097343,
+    "reference_words": 9543
+   },
+   "cut_seconds": 3594.97575,
+   "delivered_seconds": 3780.97575,
+   "dominated_share": 0.9785,
+   "dominated_units": 91,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 85.66552901023891,
+    "comparator": 85.32423208191126,
+    "improvement": 0.341296928327651,
+    "reference_words": 293
+   },
+   "pause_cut_share": 0.9032,
+   "pause_cuts": 84,
+   "sample_id": "4360674",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.020957770093262076,
+    "comparator": 0.020957770093262076,
+    "improvement": 0.0,
+    "reference_words": 9543
+   },
+   "shared_units": 2,
+   "silent_units": 0,
+   "single_speaker_units": 80,
+   "turn_boundary_cuts": 8,
+   "unit_seconds_max": 89.88,
+   "unit_seconds_mean": 38.6557,
+   "unit_seconds_median": 35.19,
+   "unit_seconds_min": 1.661,
+   "units": 93,
+   "units_10_to_60s": 42,
+   "units_no_reference_word": 0,
+   "units_over_60s": 28,
+   "units_under_1s": 0,
+   "windows": 40
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 9
+   },
+   "conec_fac_wer_percent": {
+    "cell": 50.0,
+    "comparator": 75.0,
+    "improvement": 25.0,
+    "reference_words": 4
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 10.344827586206897,
+    "comparator": 10.344827586206897,
+    "improvement": 0.0,
+    "reference_words": 58
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 16
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 6.2366634335596505,
+    "comparator": 5.33462657613967,
+    "improvement": -0.9020368574199802,
+    "reference_words": 10310
+   },
+   "conec_norp_wer_percent": {
+    "cell": 4.0,
+    "comparator": 0.0,
+    "improvement": -4.0,
+    "reference_words": 25
+   },
+   "conec_org_wer_percent": {
+    "cell": 32.121212121212125,
+    "comparator": 30.303030303030305,
+    "improvement": -1.8181818181818201,
+    "reference_words": 165
+   },
+   "conec_overall_wer_percent": {
+    "cell": 8.033915379449295,
+    "comparator": 8.40329079919409,
+    "improvement": 0.36937541974479515,
+    "reference_words": 11912
+   },
+   "conec_person_wer_percent": {
+    "cell": 34.65346534653465,
+    "comparator": 28.712871287128714,
+    "improvement": -5.940594059405939,
+    "reference_words": 101
+   },
+   "conec_product_wer_percent": {
+    "cell": 60.0,
+    "comparator": 40.0,
+    "improvement": -20.0,
+    "reference_words": 5
+   },
+   "corpus_wer_percent": {
+    "cell": 8.033915379449295,
+    "comparator": 8.40329079919409,
+    "improvement": 0.36937541974479515,
+    "reference_words": 11912
+   },
+   "cut_seconds": 4511.28,
+   "delivered_seconds": 4825.28,
+   "dominated_share": 0.9554,
+   "dominated_units": 150,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 88.0952380952381,
+    "comparator": 88.88888888888889,
+    "improvement": -0.7936507936507837,
+    "reference_words": 126
+   },
+   "pause_cut_share": 0.8599,
+   "pause_cuts": 135,
+   "sample_id": "4360717",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.04197447951645399,
+    "comparator": 0.04197447951645399,
+    "improvement": 0.0,
+    "reference_words": 11912
+   },
+   "shared_units": 7,
+   "silent_units": 0,
+   "single_speaker_units": 115,
+   "turn_boundary_cuts": 21,
+   "unit_seconds_max": 89.874,
+   "unit_seconds_mean": 28.7343,
+   "unit_seconds_median": 23.38,
+   "unit_seconds_min": 1.091,
+   "units": 157,
+   "units_10_to_60s": 64,
+   "units_no_reference_word": 0,
+   "units_over_60s": 28,
+   "units_under_1s": 0,
+   "windows": 51
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 13
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 11.842105263157896,
+    "comparator": 3.9473684210526314,
+    "improvement": -7.894736842105264,
+    "reference_words": 76
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 25
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 4.055851063829787,
+    "comparator": 4.10904255319149,
+    "improvement": 0.05319148936170226,
+    "reference_words": 7520
+   },
+   "conec_norp_wer_percent": {
+    "cell": 20.689655172413794,
+    "comparator": 20.689655172413794,
+    "improvement": 0.0,
+    "reference_words": 29
+   },
+   "conec_org_wer_percent": {
+    "cell": 19.01840490797546,
+    "comparator": 17.177914110429448,
+    "improvement": -1.8404907975460105,
+    "reference_words": 163
+   },
+   "conec_overall_wer_percent": {
+    "cell": 6.358640798474823,
+    "comparator": 7.255803521363688,
+    "improvement": 0.8971627228888641,
+    "reference_words": 8917
+   },
+   "conec_person_wer_percent": {
+    "cell": 16.25,
+    "comparator": 17.5,
+    "improvement": 1.25,
+    "reference_words": 80
+   },
+   "conec_product_wer_percent": {
+    "cell": 50.0,
+    "comparator": 50.0,
+    "improvement": 0.0,
+    "reference_words": 10
+   },
+   "corpus_wer_percent": {
+    "cell": 6.358640798474823,
+    "comparator": 7.255803521363688,
+    "improvement": 0.8971627228888641,
+    "reference_words": 8917
+   },
+   "cut_seconds": 4411.428625,
+   "delivered_seconds": 4647.428625,
+   "dominated_share": 0.9237,
+   "dominated_units": 109,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 86.18181818181819,
+    "comparator": 86.9090909090909,
+    "improvement": -0.7272727272727195,
+    "reference_words": 275
+   },
+   "pause_cut_share": 0.9322,
+   "pause_cuts": 110,
+   "sample_id": "4361631",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0224290680722216,
+    "comparator": 0.0112145340361108,
+    "improvement": -0.0112145340361108,
+    "reference_words": 8917
+   },
+   "shared_units": 0,
+   "silent_units": 9,
+   "single_speaker_units": 98,
+   "turn_boundary_cuts": 7,
+   "unit_seconds_max": 88.205,
+   "unit_seconds_mean": 37.385,
+   "unit_seconds_median": 34.68,
+   "unit_seconds_min": 1.446,
+   "units": 118,
+   "units_10_to_60s": 67,
+   "units_no_reference_word": 0,
+   "units_over_60s": 26,
+   "units_under_1s": 0,
+   "windows": 50
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 12
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 15.789473684210526,
+    "comparator": 21.05263157894737,
+    "improvement": 5.263157894736844,
+    "reference_words": 19
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 8.419976137719448,
+    "comparator": 8.454065109936936,
+    "improvement": 0.03408897221748752,
+    "reference_words": 11734
+   },
+   "conec_norp_wer_percent": {
+    "cell": 25.0,
+    "comparator": 25.0,
+    "improvement": 0.0,
+    "reference_words": 12
+   },
+   "conec_org_wer_percent": {
+    "cell": 27.142857142857142,
+    "comparator": 24.285714285714285,
+    "improvement": -2.8571428571428577,
+    "reference_words": 70
+   },
+   "conec_overall_wer_percent": {
+    "cell": 13.87846961740435,
+    "comparator": 14.838709677419354,
+    "improvement": 0.9602400600150034,
+    "reference_words": 13330
+   },
+   "conec_person_wer_percent": {
+    "cell": 30.232558139534884,
+    "comparator": 23.25581395348837,
+    "improvement": -6.976744186046513,
+    "reference_words": 43
+   },
+   "conec_product_wer_percent": {
+    "cell": 100.0,
+    "comparator": 100.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "corpus_wer_percent": {
+    "cell": 13.87846961740435,
+    "comparator": 14.838709677419354,
+    "improvement": 0.9602400600150034,
+    "reference_words": 13330
+   },
+   "cut_seconds": 5587.226125,
+   "delivered_seconds": 5947.226125,
+   "dominated_share": 0.9556,
+   "dominated_units": 172,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 91.14285714285714,
+    "comparator": 91.71428571428571,
+    "improvement": -0.5714285714285694,
+    "reference_words": 350
+   },
+   "pause_cut_share": 0.9444,
+   "pause_cuts": 170,
+   "sample_id": "4363614",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.07501875468867217,
+    "comparator": 0.06751687921980495,
+    "improvement": -0.007501875468867214,
+    "reference_words": 13330
+   },
+   "shared_units": 5,
+   "silent_units": 3,
+   "single_speaker_units": 153,
+   "turn_boundary_cuts": 9,
+   "unit_seconds_max": 89.5,
+   "unit_seconds_mean": 31.0401,
+   "unit_seconds_median": 23.31,
+   "unit_seconds_min": 1.15,
+   "units": 180,
+   "units_10_to_60s": 79,
+   "units_no_reference_word": 0,
+   "units_over_60s": 38,
+   "units_under_1s": 0,
+   "windows": 63
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 32.35294117647059,
+    "comparator": 30.88235294117647,
+    "improvement": -1.470588235294116,
+    "reference_words": 68
+   },
+   "conec_loc_wer_percent": {
+    "cell": 8.333333333333334,
+    "comparator": 8.333333333333334,
+    "improvement": 0.0,
+    "reference_words": 12
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 5.761973875181423,
+    "comparator": 5.703918722786647,
+    "improvement": -0.05805515239477543,
+    "reference_words": 6890
+   },
+   "conec_norp_wer_percent": {
+    "cell": 6.451612903225806,
+    "comparator": 6.451612903225806,
+    "improvement": 0.0,
+    "reference_words": 31
+   },
+   "conec_org_wer_percent": {
+    "cell": 34.905660377358494,
+    "comparator": 29.245283018867923,
+    "improvement": -5.660377358490571,
+    "reference_words": 106
+   },
+   "conec_overall_wer_percent": {
+    "cell": 9.454061251664447,
+    "comparator": 10.18036557317516,
+    "improvement": 0.7263043215107139,
+    "reference_words": 8261
+   },
+   "conec_person_wer_percent": {
+    "cell": 26.38888888888889,
+    "comparator": 22.916666666666668,
+    "improvement": -3.4722222222222214,
+    "reference_words": 144
+   },
+   "conec_product_wer_percent": {
+    "cell": 26.31578947368421,
+    "comparator": 10.526315789473685,
+    "improvement": -15.789473684210524,
+    "reference_words": 19
+   },
+   "corpus_wer_percent": {
+    "cell": 9.454061251664447,
+    "comparator": 10.18036557317516,
+    "improvement": 0.7263043215107139,
+    "reference_words": 8261
+   },
+   "cut_seconds": 3506.002687,
+   "delivered_seconds": 3710.002687,
+   "dominated_share": 1.0,
+   "dominated_units": 102,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 91.82692307692308,
+    "comparator": 91.34615384615384,
+    "improvement": 0.4807692307692406,
+    "reference_words": 208
+   },
+   "pause_cut_share": 0.9608,
+   "pause_cuts": 98,
+   "sample_id": "4364366",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.01210507202517855,
+    "comparator": 0.01210507202517855,
+    "improvement": 0.0,
+    "reference_words": 8261
+   },
+   "shared_units": 0,
+   "silent_units": 0,
+   "single_speaker_units": 96,
+   "turn_boundary_cuts": 3,
+   "unit_seconds_max": 85.34,
+   "unit_seconds_mean": 34.3726,
+   "unit_seconds_median": 27.575,
+   "unit_seconds_min": 4.28,
+   "units": 102,
+   "units_10_to_60s": 79,
+   "units_no_reference_word": 0,
+   "units_over_60s": 16,
+   "units_under_1s": 0,
+   "windows": 39
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4
+   },
+   "conec_fac_wer_percent": {
+    "cell": 50.0,
+    "comparator": 100.0,
+    "improvement": 50.0,
+    "reference_words": 2
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 5.555555555555555,
+    "comparator": 9.25925925925926,
+    "improvement": 3.703703703703704,
+    "reference_words": 54
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 10
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 3.820248368764471,
+    "comparator": 3.9254893706588088,
+    "improvement": 0.10524100189433794,
+    "reference_words": 9502
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4
+   },
+   "conec_org_wer_percent": {
+    "cell": 15.422885572139304,
+    "comparator": 21.393034825870647,
+    "improvement": 5.970149253731343,
+    "reference_words": 201
+   },
+   "conec_overall_wer_percent": {
+    "cell": 5.462365591397849,
+    "comparator": 6.90752688172043,
+    "improvement": 1.4451612903225808,
+    "reference_words": 11625
+   },
+   "conec_person_wer_percent": {
+    "cell": 17.857142857142858,
+    "comparator": 19.642857142857142,
+    "improvement": 1.7857142857142847,
+    "reference_words": 56
+   },
+   "conec_product_wer_percent": {
+    "cell": 100.0,
+    "comparator": 100.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "corpus_wer_percent": {
+    "cell": 5.462365591397849,
+    "comparator": 6.90752688172043,
+    "improvement": 1.4451612903225808,
+    "reference_words": 11625
+   },
+   "cut_seconds": 4328.676,
+   "delivered_seconds": 4584.676,
+   "dominated_share": 0.9609,
+   "dominated_units": 123,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 90.71428571428571,
+    "comparator": 93.33333333333333,
+    "improvement": -2.6190476190476204,
+    "reference_words": 420
+   },
+   "pause_cut_share": 0.9531,
+   "pause_cuts": 122,
+   "sample_id": "4365024",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.043010752688172046,
+    "comparator": 0.034408602150537634,
+    "improvement": -0.008602150537634412,
+    "reference_words": 11625
+   },
+   "shared_units": 5,
+   "silent_units": 0,
+   "single_speaker_units": 106,
+   "turn_boundary_cuts": 5,
+   "unit_seconds_max": 88.61,
+   "unit_seconds_mean": 33.8178,
+   "unit_seconds_median": 27.495,
+   "unit_seconds_min": 1.09,
+   "units": 128,
+   "units_10_to_60s": 56,
+   "units_no_reference_word": 0,
+   "units_over_60s": 32,
+   "units_under_1s": 0,
+   "windows": 49
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 2.6315789473684212,
+    "comparator": 2.6315789473684212,
+    "improvement": 0.0,
+    "reference_words": 76
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 28.0,
+    "comparator": 28.0,
+    "improvement": 0.0,
+    "reference_words": 25
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 78
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 1.6873725199332468,
+    "comparator": 1.5946597441127388,
+    "improvement": -0.09271277582050796,
+    "reference_words": 5393
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 5
+   },
+   "conec_org_wer_percent": {
+    "cell": 25.0,
+    "comparator": 14.705882352941176,
+    "improvement": -10.294117647058824,
+    "reference_words": 68
+   },
+   "conec_overall_wer_percent": {
+    "cell": 3.7440334128878283,
+    "comparator": 4.4898568019093075,
+    "improvement": 0.7458233890214792,
+    "reference_words": 6704
+   },
+   "conec_person_wer_percent": {
+    "cell": 11.764705882352942,
+    "comparator": 11.764705882352942,
+    "improvement": 0.0,
+    "reference_words": 51
+   },
+   "conec_product_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "corpus_wer_percent": {
+    "cell": 3.7440334128878283,
+    "comparator": 4.4898568019093075,
+    "improvement": 0.7458233890214792,
+    "reference_words": 6704
+   },
+   "cut_seconds": 2518.987812,
+   "delivered_seconds": 2698.987812,
+   "dominated_share": 0.9889,
+   "dominated_units": 89,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 88.38174273858921,
+    "comparator": 87.96680497925311,
+    "improvement": 0.4149377593360981,
+    "reference_words": 241
+   },
+   "pause_cut_share": 0.7889,
+   "pause_cuts": 71,
+   "sample_id": "4365948",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 6704
+   },
+   "shared_units": 0,
+   "silent_units": 1,
+   "single_speaker_units": 63,
+   "turn_boundary_cuts": 18,
+   "unit_seconds_max": 86.84,
+   "unit_seconds_mean": 27.9888,
+   "unit_seconds_median": 21.51,
+   "unit_seconds_min": 1.201,
+   "units": 90,
+   "units_10_to_60s": 43,
+   "units_no_reference_word": 0,
+   "units_over_60s": 15,
+   "units_under_1s": 0,
+   "windows": 28
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 10
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 11.11111111111111,
+    "comparator": 11.11111111111111,
+    "improvement": 0.0,
+    "reference_words": 36
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 3.060857039971192,
+    "comparator": 2.8808066258552394,
+    "improvement": -0.18005041411595268,
+    "reference_words": 8331
+   },
+   "conec_norp_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_org_wer_percent": {
+    "cell": 14.705882352941176,
+    "comparator": 25.49019607843137,
+    "improvement": 10.784313725490195,
+    "reference_words": 102
+   },
+   "conec_overall_wer_percent": {
+    "cell": 4.823729152102267,
+    "comparator": 5.802456806152002,
+    "improvement": 0.9787276540497354,
+    "reference_words": 10013
+   },
+   "conec_person_wer_percent": {
+    "cell": 12.244897959183673,
+    "comparator": 10.204081632653061,
+    "improvement": -2.040816326530612,
+    "reference_words": 98
+   },
+   "conec_product_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "corpus_wer_percent": {
+    "cell": 4.823729152102267,
+    "comparator": 5.802456806152002,
+    "improvement": 0.9787276540497354,
+    "reference_words": 10013
+   },
+   "cut_seconds": 3595.011687,
+   "delivered_seconds": 3895.011687,
+   "dominated_share": 0.96,
+   "dominated_units": 144,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 89.16256157635468,
+    "comparator": 88.66995073891626,
+    "improvement": 0.49261083743841994,
+    "reference_words": 203
+   },
+   "pause_cut_share": 0.8867,
+   "pause_cuts": 133,
+   "sample_id": "4366302",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 10013
+   },
+   "shared_units": 5,
+   "silent_units": 1,
+   "single_speaker_units": 110,
+   "turn_boundary_cuts": 16,
+   "unit_seconds_max": 89.13,
+   "unit_seconds_mean": 23.9667,
+   "unit_seconds_median": 13.7455,
+   "unit_seconds_min": 1.08,
+   "units": 150,
+   "units_10_to_60s": 66,
+   "units_no_reference_word": 0,
+   "units_over_60s": 19,
+   "units_under_1s": 0,
+   "windows": 40
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 6
+   },
+   "conec_fac_wer_percent": {
+    "cell": 100.0,
+    "comparator": 100.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 37.5,
+    "comparator": 35.0,
+    "improvement": -2.5,
+    "reference_words": 40
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 8.333333333333334,
+    "improvement": 8.333333333333334,
+    "reference_words": 12
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 3.9573979325467263,
+    "comparator": 3.8007726845567507,
+    "improvement": -0.15662524798997568,
+    "reference_words": 9577
+   },
+   "conec_norp_wer_percent": {
+    "cell": 25.0,
+    "comparator": 25.0,
+    "improvement": 0.0,
+    "reference_words": 4
+   },
+   "conec_org_wer_percent": {
+    "cell": 20.87912087912088,
+    "comparator": 25.274725274725274,
+    "improvement": 4.395604395604394,
+    "reference_words": 91
+   },
+   "conec_overall_wer_percent": {
+    "cell": 5.431225121627598,
+    "comparator": 6.54577620521893,
+    "improvement": 1.1145510835913317,
+    "reference_words": 11305
+   },
+   "conec_person_wer_percent": {
+    "cell": 13.008130081300813,
+    "comparator": 14.634146341463415,
+    "improvement": 1.6260162601626025,
+    "reference_words": 123
+   },
+   "conec_product_wer_percent": {
+    "cell": 71.42857142857143,
+    "comparator": 71.42857142857143,
+    "improvement": 0.0,
+    "reference_words": 7
+   },
+   "corpus_wer_percent": {
+    "cell": 5.431225121627598,
+    "comparator": 6.54577620521893,
+    "improvement": 1.1145510835913317,
+    "reference_words": 11305
+   },
+   "cut_seconds": 4010.480937,
+   "delivered_seconds": 4256.480937,
+   "dominated_share": 0.9919,
+   "dominated_units": 122,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 84.0909090909091,
+    "comparator": 84.0909090909091,
+    "improvement": 0.0,
+    "reference_words": 220
+   },
+   "pause_cut_share": 0.9512,
+   "pause_cuts": 117,
+   "sample_id": "4366429",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 11305
+   },
+   "shared_units": 1,
+   "silent_units": 0,
+   "single_speaker_units": 114,
+   "turn_boundary_cuts": 5,
+   "unit_seconds_max": 89.0,
+   "unit_seconds_mean": 32.6055,
+   "unit_seconds_median": 24.63,
+   "unit_seconds_min": 1.001,
+   "units": 123,
+   "units_10_to_60s": 50,
+   "units_no_reference_word": 0,
+   "units_over_60s": 29,
+   "units_under_1s": 0,
+   "windows": 45
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 11.904761904761905,
+    "comparator": 9.523809523809524,
+    "improvement": -2.3809523809523814,
+    "reference_words": 42
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 14
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 2.4390243902439024,
+    "comparator": 2.3242467718794835,
+    "improvement": -0.11477761836441891,
+    "reference_words": 3485
+   },
+   "conec_norp_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_org_wer_percent": {
+    "cell": 32.291666666666664,
+    "comparator": 42.708333333333336,
+    "improvement": 10.416666666666671,
+    "reference_words": 96
+   },
+   "conec_overall_wer_percent": {
+    "cell": 5.869512490904681,
+    "comparator": 7.22774678632064,
+    "improvement": 1.3582342954159596,
+    "reference_words": 4123
+   },
+   "conec_person_wer_percent": {
+    "cell": 22.22222222222222,
+    "comparator": 11.11111111111111,
+    "improvement": -11.11111111111111,
+    "reference_words": 27
+   },
+   "conec_product_wer_percent": {
+    "cell": 61.111111111111114,
+    "comparator": 61.111111111111114,
+    "improvement": 0.0,
+    "reference_words": 18
+   },
+   "corpus_wer_percent": {
+    "cell": 5.869512490904681,
+    "comparator": 7.22774678632064,
+    "improvement": 1.3582342954159596,
+    "reference_words": 4123
+   },
+   "cut_seconds": 1817.730625,
+   "delivered_seconds": 1889.730625,
+   "dominated_share": 1.0,
+   "dominated_units": 36,
+   "forced_cap_split_cuts": 13,
+   "numeric_value_accuracy_percent": {
+    "cell": 88.57142857142857,
+    "comparator": 89.28571428571429,
+    "improvement": -0.7142857142857224,
+    "reference_words": 140
+   },
+   "pause_cut_share": 0.0,
+   "pause_cuts": 0,
+   "sample_id": "4366522",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4123
+   },
+   "shared_units": 0,
+   "silent_units": 0,
+   "single_speaker_units": 31,
+   "turn_boundary_cuts": 22,
+   "unit_seconds_max": 90.0,
+   "unit_seconds_mean": 50.4925,
+   "unit_seconds_median": 45.8795,
+   "unit_seconds_min": 2.16,
+   "units": 36,
+   "units_10_to_60s": 14,
+   "units_no_reference_word": 0,
+   "units_over_60s": 16,
+   "units_under_1s": 0,
+   "windows": 21
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_fac_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 5
+   },
+   "conec_loc_wer_percent": {
+    "cell": 42.857142857142854,
+    "comparator": 42.857142857142854,
+    "improvement": 0.0,
+    "reference_words": 7
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 4.869533259830945,
+    "comparator": 4.796030871003308,
+    "improvement": -0.07350238882763716,
+    "reference_words": 5442
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_org_wer_percent": {
+    "cell": 32.0,
+    "comparator": 20.0,
+    "improvement": -12.0,
+    "reference_words": 50
+   },
+   "conec_overall_wer_percent": {
+    "cell": 7.136150234741784,
+    "comparator": 7.668231611893583,
+    "improvement": 0.5320813771517994,
+    "reference_words": 6390
+   },
+   "conec_person_wer_percent": {
+    "cell": 11.320754716981131,
+    "comparator": 16.9811320754717,
+    "improvement": 5.6603773584905674,
+    "reference_words": 53
+   },
+   "conec_product_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "corpus_wer_percent": {
+    "cell": 7.136150234741784,
+    "comparator": 7.668231611893583,
+    "improvement": 0.5320813771517994,
+    "reference_words": 6390
+   },
+   "cut_seconds": 2366.352,
+   "delivered_seconds": 2554.352,
+   "dominated_share": 0.9787,
+   "dominated_units": 92,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 94.20289855072464,
+    "comparator": 92.27053140096618,
+    "improvement": 1.9323671497584627,
+    "reference_words": 207
+   },
+   "pause_cut_share": 0.7872,
+   "pause_cuts": 74,
+   "sample_id": "4366893",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.01564945226917058,
+    "comparator": 0.01564945226917058,
+    "improvement": 0.0,
+    "reference_words": 6390
+   },
+   "shared_units": 2,
+   "silent_units": 0,
+   "single_speaker_units": 58,
+   "turn_boundary_cuts": 19,
+   "unit_seconds_max": 85.949,
+   "unit_seconds_mean": 25.174,
+   "unit_seconds_median": 15.57,
+   "unit_seconds_min": 1.381,
+   "units": 94,
+   "units_10_to_60s": 40,
+   "units_no_reference_word": 0,
+   "units_over_60s": 14,
+   "units_under_1s": 0,
+   "windows": 27
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 6
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 100.0,
+    "comparator": 100.0,
+    "improvement": 0.0,
+    "reference_words": 7
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 3.3413525795241914,
+    "comparator": 3.1542368350708365,
+    "improvement": -0.18711574445335488,
+    "reference_words": 3741
+   },
+   "conec_norp_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_org_wer_percent": {
+    "cell": 30.107526881720432,
+    "comparator": 26.881720430107528,
+    "improvement": -3.225806451612904,
+    "reference_words": 93
+   },
+   "conec_overall_wer_percent": {
+    "cell": 6.8118628359592215,
+    "comparator": 7.020389249304912,
+    "improvement": 0.2085264133456901,
+    "reference_words": 4316
+   },
+   "conec_person_wer_percent": {
+    "cell": 16.129032258064516,
+    "comparator": 16.129032258064516,
+    "improvement": 0.0,
+    "reference_words": 31
+   },
+   "conec_product_wer_percent": {
+    "cell": 84.61538461538461,
+    "comparator": 69.23076923076923,
+    "improvement": -15.384615384615387,
+    "reference_words": 13
+   },
+   "corpus_wer_percent": {
+    "cell": 6.8118628359592215,
+    "comparator": 7.020389249304912,
+    "improvement": 0.2085264133456901,
+    "reference_words": 4316
+   },
+   "cut_seconds": 1720.8,
+   "delivered_seconds": 1840.8,
+   "dominated_share": 0.95,
+   "dominated_units": 57,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 98.85057471264368,
+    "comparator": 98.85057471264368,
+    "improvement": 0.0,
+    "reference_words": 87
+   },
+   "pause_cut_share": 0.8667,
+   "pause_cuts": 52,
+   "sample_id": "4367318",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4316
+   },
+   "shared_units": 2,
+   "silent_units": 1,
+   "single_speaker_units": 41,
+   "turn_boundary_cuts": 7,
+   "unit_seconds_max": 88.26,
+   "unit_seconds_mean": 28.68,
+   "unit_seconds_median": 19.4925,
+   "unit_seconds_min": 1.351,
+   "units": 60,
+   "units_10_to_60s": 29,
+   "units_no_reference_word": 0,
+   "units_over_60s": 10,
+   "units_under_1s": 0,
+   "windows": 20
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_fac_wer_percent": {
+    "cell": 0.0,
+    "comparator": 20.0,
+    "improvement": 20.0,
+    "reference_words": 10
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 20.0,
+    "comparator": 10.0,
+    "improvement": -10.0,
+    "reference_words": 10
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 6.624605678233438,
+    "comparator": 6.691017765233273,
+    "improvement": 0.06641208699983459,
+    "reference_words": 6023
+   },
+   "conec_norp_wer_percent": {
+    "cell": 20.0,
+    "comparator": 20.0,
+    "improvement": 0.0,
+    "reference_words": 5
+   },
+   "conec_org_wer_percent": {
+    "cell": 21.428571428571427,
+    "comparator": 25.0,
+    "improvement": 3.571428571428573,
+    "reference_words": 112
+   },
+   "conec_overall_wer_percent": {
+    "cell": 10.037604859704947,
+    "comparator": 11.426091987272201,
+    "improvement": 1.3884871275672541,
+    "reference_words": 6914
+   },
+   "conec_person_wer_percent": {
+    "cell": 27.536231884057973,
+    "comparator": 31.884057971014492,
+    "improvement": 4.34782608695652,
+    "reference_words": 69
+   },
+   "conec_product_wer_percent": {
+    "cell": 0.0,
+    "comparator": 15.384615384615385,
+    "improvement": 15.384615384615385,
+    "reference_words": 13
+   },
+   "corpus_wer_percent": {
+    "cell": 10.037604859704947,
+    "comparator": 11.426091987272201,
+    "improvement": 1.3884871275672541,
+    "reference_words": 6914
+   },
+   "cut_seconds": 3175.296,
+   "delivered_seconds": 3399.296,
+   "dominated_share": 0.9554,
+   "dominated_units": 107,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 93.95348837209302,
+    "comparator": 93.48837209302326,
+    "improvement": 0.46511627906976116,
+    "reference_words": 215
+   },
+   "pause_cut_share": 0.8839,
+   "pause_cuts": 99,
+   "sample_id": "4367535",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.028926815157651144,
+    "improvement": 0.028926815157651144,
+    "reference_words": 6914
+   },
+   "shared_units": 3,
+   "silent_units": 2,
+   "single_speaker_units": 83,
+   "turn_boundary_cuts": 12,
+   "unit_seconds_max": 89.36,
+   "unit_seconds_mean": 28.3509,
+   "unit_seconds_median": 18.54,
+   "unit_seconds_min": 1.071,
+   "units": 112,
+   "units_10_to_60s": 44,
+   "units_no_reference_word": 0,
+   "units_over_60s": 21,
+   "units_under_1s": 0,
+   "windows": 36
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 3
+   },
+   "conec_fac_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 30.90909090909091,
+    "comparator": 23.636363636363637,
+    "improvement": -7.272727272727273,
+    "reference_words": 55
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 6
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 5.12610211195407,
+    "comparator": 6.694689358212016,
+    "improvement": 1.5685872462579455,
+    "reference_words": 9754
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 14
+   },
+   "conec_org_wer_percent": {
+    "cell": 16.964285714285715,
+    "comparator": 16.071428571428573,
+    "improvement": -0.8928571428571423,
+    "reference_words": 112
+   },
+   "conec_overall_wer_percent": {
+    "cell": 7.881817370347228,
+    "comparator": 10.095510131214853,
+    "improvement": 2.213692760867625,
+    "reference_words": 11203
+   },
+   "conec_person_wer_percent": {
+    "cell": 35.80246913580247,
+    "comparator": 39.50617283950617,
+    "improvement": 3.7037037037037024,
+    "reference_words": 81
+   },
+   "conec_product_wer_percent": {
+    "cell": 11.11111111111111,
+    "comparator": 33.333333333333336,
+    "improvement": 22.222222222222225,
+    "reference_words": 9
+   },
+   "corpus_wer_percent": {
+    "cell": 7.881817370347228,
+    "comparator": 10.095510131214853,
+    "improvement": 2.213692760867625,
+    "reference_words": 11203
+   },
+   "cut_seconds": 4221.988625,
+   "delivered_seconds": 4507.988625,
+   "dominated_share": 0.979,
+   "dominated_units": 140,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 95.05703422053232,
+    "comparator": 93.5361216730038,
+    "improvement": 1.5209125475285106,
+    "reference_words": 263
+   },
+   "pause_cut_share": 0.9301,
+   "pause_cuts": 133,
+   "sample_id": "4368670",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.03570472194947782,
+    "comparator": 0.098187985361064,
+    "improvement": 0.062483263411586186,
+    "reference_words": 11203
+   },
+   "shared_units": 1,
+   "silent_units": 2,
+   "single_speaker_units": 121,
+   "turn_boundary_cuts": 9,
+   "unit_seconds_max": 89.98,
+   "unit_seconds_mean": 29.5244,
+   "unit_seconds_median": 20.63,
+   "unit_seconds_min": 1.14,
+   "units": 143,
+   "units_10_to_60s": 58,
+   "units_no_reference_word": 0,
+   "units_over_60s": 27,
+   "units_under_1s": 0,
+   "windows": 47
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_fac_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 84.61538461538461,
+    "comparator": 84.61538461538461,
+    "improvement": 0.0,
+    "reference_words": 13
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 5
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 2.443398341179108,
+    "comparator": 2.33131584846447,
+    "improvement": -0.112082492714638,
+    "reference_words": 4461
+   },
+   "conec_norp_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_org_wer_percent": {
+    "cell": 32.78688524590164,
+    "comparator": 31.147540983606557,
+    "improvement": -1.6393442622950793,
+    "reference_words": 61
+   },
+   "conec_overall_wer_percent": {
+    "cell": 4.59256248729933,
+    "comparator": 5.872790083316399,
+    "improvement": 1.2802275960170695,
+    "reference_words": 4921
+   },
+   "conec_person_wer_percent": {
+    "cell": 7.142857142857143,
+    "comparator": 0.0,
+    "improvement": -7.142857142857143,
+    "reference_words": 14
+   },
+   "conec_product_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "corpus_wer_percent": {
+    "cell": 4.59256248729933,
+    "comparator": 5.872790083316399,
+    "improvement": 1.2802275960170695,
+    "reference_words": 4921
+   },
+   "cut_seconds": 2028.504,
+   "delivered_seconds": 2154.504,
+   "dominated_share": 1.0,
+   "dominated_units": 63,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 83.72093023255815,
+    "comparator": 81.3953488372093,
+    "improvement": 2.3255813953488484,
+    "reference_words": 43
+   },
+   "pause_cut_share": 0.8889,
+   "pause_cuts": 56,
+   "sample_id": "4374910",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0203210729526519,
+    "comparator": 0.0203210729526519,
+    "improvement": 0.0,
+    "reference_words": 4921
+   },
+   "shared_units": 0,
+   "silent_units": 0,
+   "single_speaker_units": 53,
+   "turn_boundary_cuts": 6,
+   "unit_seconds_max": 89.72,
+   "unit_seconds_mean": 32.1985,
+   "unit_seconds_median": 25.07,
+   "unit_seconds_min": 1.359,
+   "units": 63,
+   "units_10_to_60s": 35,
+   "units_no_reference_word": 0,
+   "units_over_60s": 12,
+   "units_under_1s": 0,
+   "windows": 23
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 56.25,
+    "comparator": 56.25,
+    "improvement": 0.0,
+    "reference_words": 16
+   },
+   "conec_loc_wer_percent": {
+    "cell": 50.0,
+    "comparator": 50.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 4.232477788746298,
+    "comparator": 4.084402764067128,
+    "improvement": -0.14807502467917022,
+    "reference_words": 8104
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_org_wer_percent": {
+    "cell": 8.37696335078534,
+    "comparator": 10.471204188481675,
+    "improvement": 2.0942408376963346,
+    "reference_words": 191
+   },
+   "conec_overall_wer_percent": {
+    "cell": 6.656820339698281,
+    "comparator": 7.986074480430426,
+    "improvement": 1.3292541407321448,
+    "reference_words": 9479
+   },
+   "conec_person_wer_percent": {
+    "cell": 22.22222222222222,
+    "comparator": 20.634920634920636,
+    "improvement": -1.5873015873015852,
+    "reference_words": 63
+   },
+   "conec_product_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 11
+   },
+   "corpus_wer_percent": {
+    "cell": 6.656820339698281,
+    "comparator": 7.986074480430426,
+    "improvement": 1.3292541407321448,
+    "reference_words": 9479
+   },
+   "cut_seconds": 3472.152,
+   "delivered_seconds": 3712.152,
+   "dominated_share": 0.9917,
+   "dominated_units": 119,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 90.73359073359073,
+    "comparator": 90.73359073359073,
+    "improvement": 0.0,
+    "reference_words": 259
+   },
+   "pause_cut_share": 0.7583,
+   "pause_cuts": 91,
+   "sample_id": "4375653",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.010549636037556704,
+    "comparator": 0.010549636037556704,
+    "improvement": 0.0,
+    "reference_words": 9479
+   },
+   "shared_units": 1,
+   "silent_units": 0,
+   "single_speaker_units": 96,
+   "turn_boundary_cuts": 28,
+   "unit_seconds_max": 89.56,
+   "unit_seconds_mean": 28.9346,
+   "unit_seconds_median": 18.575,
+   "unit_seconds_min": 1.13,
+   "units": 120,
+   "units_10_to_60s": 56,
+   "units_no_reference_word": 0,
+   "units_over_60s": 22,
+   "units_under_1s": 0,
+   "windows": 39
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 6
+   },
+   "conec_fac_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 18.42105263157895,
+    "comparator": 7.894736842105263,
+    "improvement": -10.526315789473685,
+    "reference_words": 76
+   },
+   "conec_loc_wer_percent": {
+    "cell": 6.25,
+    "comparator": 0.0,
+    "improvement": -6.25,
+    "reference_words": 32
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 6.548431105047749,
+    "comparator": 6.400636653024102,
+    "improvement": -0.14779445202364716,
+    "reference_words": 8796
+   },
+   "conec_norp_wer_percent": {
+    "cell": 40.0,
+    "comparator": 40.0,
+    "improvement": 0.0,
+    "reference_words": 5
+   },
+   "conec_org_wer_percent": {
+    "cell": 10.75268817204301,
+    "comparator": 7.526881720430108,
+    "improvement": -3.225806451612902,
+    "reference_words": 93
+   },
+   "conec_overall_wer_percent": {
+    "cell": 9.758147352693996,
+    "comparator": 10.62657577738351,
+    "improvement": 0.8684284246895135,
+    "reference_words": 10709
+   },
+   "conec_person_wer_percent": {
+    "cell": 21.58273381294964,
+    "comparator": 21.58273381294964,
+    "improvement": 0.0,
+    "reference_words": 139
+   },
+   "conec_product_wer_percent": {
+    "cell": 18.181818181818183,
+    "comparator": 18.181818181818183,
+    "improvement": 0.0,
+    "reference_words": 11
+   },
+   "corpus_wer_percent": {
+    "cell": 9.758147352693996,
+    "comparator": 10.62657577738351,
+    "improvement": 0.8684284246895135,
+    "reference_words": 10709
+   },
+   "cut_seconds": 3795.109687,
+   "delivered_seconds": 4075.109687,
+   "dominated_share": 0.9286,
+   "dominated_units": 130,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 87.62376237623762,
+    "comparator": 87.62376237623762,
+    "improvement": 0.0,
+    "reference_words": 202
+   },
+   "pause_cut_share": 0.8,
+   "pause_cuts": 112,
+   "sample_id": "4382825",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.06536558035297413,
+    "comparator": 0.046689700252124385,
+    "improvement": -0.018675880100849744,
+    "reference_words": 10709
+   },
+   "shared_units": 6,
+   "silent_units": 4,
+   "single_speaker_units": 102,
+   "turn_boundary_cuts": 27,
+   "unit_seconds_max": 88.979,
+   "unit_seconds_mean": 27.1079,
+   "unit_seconds_median": 17.015,
+   "unit_seconds_min": 1.131,
+   "units": 140,
+   "units_10_to_60s": 69,
+   "units_no_reference_word": 0,
+   "units_over_60s": 20,
+   "units_under_1s": 0,
+   "windows": 43
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 30
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 17.857142857142858,
+    "comparator": 26.19047619047619,
+    "improvement": 8.333333333333332,
+    "reference_words": 84
+   },
+   "conec_loc_wer_percent": {
+    "cell": 14.285714285714286,
+    "comparator": 0.0,
+    "improvement": -14.285714285714286,
+    "reference_words": 14
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 5.603448275862069,
+    "comparator": 5.4858934169279,
+    "improvement": -0.11755485893416928,
+    "reference_words": 7656
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 12
+   },
+   "conec_org_wer_percent": {
+    "cell": 20.512820512820515,
+    "comparator": 14.102564102564102,
+    "improvement": -6.410256410256412,
+    "reference_words": 78
+   },
+   "conec_overall_wer_percent": {
+    "cell": 7.27986539540101,
+    "comparator": 8.244531688166012,
+    "improvement": 0.9646662927650018,
+    "reference_words": 8915
+   },
+   "conec_person_wer_percent": {
+    "cell": 34.09090909090909,
+    "comparator": 22.727272727272727,
+    "improvement": -11.363636363636367,
+    "reference_words": 44
+   },
+   "conec_product_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "corpus_wer_percent": {
+    "cell": 7.27986539540101,
+    "comparator": 8.244531688166012,
+    "improvement": 0.9646662927650018,
+    "reference_words": 8915
+   },
+   "cut_seconds": 3376.68,
+   "delivered_seconds": 3604.68,
+   "dominated_share": 0.9737,
+   "dominated_units": 111,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 90.67357512953367,
+    "comparator": 90.67357512953367,
+    "improvement": 0.0,
+    "reference_words": 193
+   },
+   "pause_cut_share": 0.9123,
+   "pause_cuts": 104,
+   "sample_id": "4383161",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.044868199663488505,
+    "comparator": 0.044868199663488505,
+    "improvement": 0.0,
+    "reference_words": 8915
+   },
+   "shared_units": 1,
+   "silent_units": 2,
+   "single_speaker_units": 93,
+   "turn_boundary_cuts": 9,
+   "unit_seconds_max": 85.75,
+   "unit_seconds_mean": 29.62,
+   "unit_seconds_median": 21.905,
+   "unit_seconds_min": 1.17,
+   "units": 114,
+   "units_10_to_60s": 52,
+   "units_no_reference_word": 0,
+   "units_over_60s": 18,
+   "units_under_1s": 0,
+   "windows": 38
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_fac_wer_percent": {
+    "cell": 42.857142857142854,
+    "comparator": 42.857142857142854,
+    "improvement": 0.0,
+    "reference_words": 7
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 8.333333333333334,
+    "comparator": 8.333333333333334,
+    "improvement": 0.0,
+    "reference_words": 36
+   },
+   "conec_loc_wer_percent": {
+    "cell": 6.25,
+    "comparator": 6.25,
+    "improvement": 0.0,
+    "reference_words": 16
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 5.055775458798129,
+    "comparator": 4.875854623965455,
+    "improvement": -0.17992083483267418,
+    "reference_words": 5558
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "conec_org_wer_percent": {
+    "cell": 7.594936708860759,
+    "comparator": 7.594936708860759,
+    "improvement": 0.0,
+    "reference_words": 79
+   },
+   "conec_overall_wer_percent": {
+    "cell": 7.94762484774665,
+    "comparator": 8.023751522533496,
+    "improvement": 0.07612667478684632,
+    "reference_words": 6568
+   },
+   "conec_person_wer_percent": {
+    "cell": 9.523809523809524,
+    "comparator": 6.349206349206349,
+    "improvement": -3.174603174603175,
+    "reference_words": 63
+   },
+   "conec_product_wer_percent": {
+    "cell": 20.0,
+    "comparator": 0.0,
+    "improvement": -20.0,
+    "reference_words": 5
+   },
+   "corpus_wer_percent": {
+    "cell": 7.94762484774665,
+    "comparator": 8.023751522533496,
+    "improvement": 0.07612667478684632,
+    "reference_words": 6568
+   },
+   "cut_seconds": 2636.343937,
+   "delivered_seconds": 2868.343937,
+   "dominated_share": 0.9569,
+   "dominated_units": 111,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 89.39393939393939,
+    "comparator": 87.37373737373737,
+    "improvement": 2.0202020202020208,
+    "reference_words": 198
+   },
+   "pause_cut_share": 0.8276,
+   "pause_cuts": 96,
+   "sample_id": "4384198",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.030450669914738125,
+    "comparator": 0.015225334957369063,
+    "improvement": -0.015225334957369063,
+    "reference_words": 6568
+   },
+   "shared_units": 3,
+   "silent_units": 2,
+   "single_speaker_units": 70,
+   "turn_boundary_cuts": 19,
+   "unit_seconds_max": 86.01,
+   "unit_seconds_mean": 22.7271,
+   "unit_seconds_median": 9.4555,
+   "unit_seconds_min": 1.041,
+   "units": 116,
+   "units_10_to_60s": 41,
+   "units_no_reference_word": 1,
+   "units_over_60s": 16,
+   "units_under_1s": 0,
+   "windows": 30
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 9
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 20
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 11
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 2.260458839406208,
+    "comparator": 2.4628879892037787,
+    "improvement": 0.20242914979757076,
+    "reference_words": 2964
+   },
+   "conec_norp_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_org_wer_percent": {
+    "cell": 9.615384615384615,
+    "comparator": 9.615384615384615,
+    "improvement": 0.0,
+    "reference_words": 52
+   },
+   "conec_overall_wer_percent": {
+    "cell": 4.952960708356392,
+    "comparator": 6.640841173215274,
+    "improvement": 1.6878804648588819,
+    "reference_words": 3614
+   },
+   "conec_person_wer_percent": {
+    "cell": 34.0,
+    "comparator": 30.0,
+    "improvement": -4.0,
+    "reference_words": 50
+   },
+   "conec_product_wer_percent": {
+    "cell": 40.0,
+    "comparator": 60.0,
+    "improvement": 20.0,
+    "reference_words": 10
+   },
+   "corpus_wer_percent": {
+    "cell": 4.952960708356392,
+    "comparator": 6.640841173215274,
+    "improvement": 1.6878804648588819,
+    "reference_words": 3614
+   },
+   "cut_seconds": 1476.744,
+   "delivered_seconds": 1600.744,
+   "dominated_share": 0.9194,
+   "dominated_units": 57,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 92.92929292929293,
+    "comparator": 92.92929292929293,
+    "improvement": 0.0,
+    "reference_words": 99
+   },
+   "pause_cut_share": 0.7581,
+   "pause_cuts": 47,
+   "sample_id": "4384683",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 3614
+   },
+   "shared_units": 2,
+   "silent_units": 3,
+   "single_speaker_units": 44,
+   "turn_boundary_cuts": 14,
+   "unit_seconds_max": 84.27,
+   "unit_seconds_mean": 23.8185,
+   "unit_seconds_median": 12.262,
+   "unit_seconds_min": 1.1,
+   "units": 62,
+   "units_10_to_60s": 27,
+   "units_no_reference_word": 0,
+   "units_over_60s": 7,
+   "units_under_1s": 0,
+   "windows": 17
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_fac_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 61.904761904761905,
+    "comparator": 57.142857142857146,
+    "improvement": -4.761904761904759,
+    "reference_words": 21
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 10
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 6.090547116944403,
+    "comparator": 5.736617018138918,
+    "improvement": -0.35393009880548565,
+    "reference_words": 6781
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4
+   },
+   "conec_org_wer_percent": {
+    "cell": 13.157894736842104,
+    "comparator": 9.210526315789474,
+    "improvement": -3.94736842105263,
+    "reference_words": 76
+   },
+   "conec_overall_wer_percent": {
+    "cell": 9.000613120784795,
+    "comparator": 9.221336603310853,
+    "improvement": 0.22072348252605778,
+    "reference_words": 8155
+   },
+   "conec_person_wer_percent": {
+    "cell": 22.5,
+    "comparator": 15.0,
+    "improvement": -7.5,
+    "reference_words": 40
+   },
+   "conec_product_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 3
+   },
+   "corpus_wer_percent": {
+    "cell": 9.000613120784795,
+    "comparator": 9.221336603310853,
+    "improvement": 0.22072348252605778,
+    "reference_words": 8155
+   },
+   "cut_seconds": 3271.968,
+   "delivered_seconds": 3531.968,
+   "dominated_share": 0.9615,
+   "dominated_units": 125,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 89.23076923076923,
+    "comparator": 90.76923076923077,
+    "improvement": -1.5384615384615472,
+    "reference_words": 325
+   },
+   "pause_cut_share": 0.8308,
+   "pause_cuts": 108,
+   "sample_id": "4384744",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.012262415695892091,
+    "comparator": 0.012262415695892091,
+    "improvement": 0.0,
+    "reference_words": 8155
+   },
+   "shared_units": 4,
+   "silent_units": 1,
+   "single_speaker_units": 83,
+   "turn_boundary_cuts": 21,
+   "unit_seconds_max": 89.91,
+   "unit_seconds_mean": 25.169,
+   "unit_seconds_median": 12.1395,
+   "unit_seconds_min": 1.04,
+   "units": 130,
+   "units_10_to_60s": 53,
+   "units_no_reference_word": 0,
+   "units_over_60s": 19,
+   "units_under_1s": 0,
+   "windows": 37
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 4.237288135593221,
+    "comparator": 2.542372881355932,
+    "improvement": -1.6949152542372885,
+    "reference_words": 118
+   },
+   "conec_loc_wer_percent": {
+    "cell": 7.142857142857143,
+    "comparator": 7.142857142857143,
+    "improvement": 0.0,
+    "reference_words": 14
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 4.6240734204024,
+    "comparator": 4.435815978350394,
+    "improvement": -0.18825744205200579,
+    "reference_words": 8499
+   },
+   "conec_norp_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_org_wer_percent": {
+    "cell": 6.0109289617486334,
+    "comparator": 7.6502732240437155,
+    "improvement": 1.639344262295082,
+    "reference_words": 183
+   },
+   "conec_overall_wer_percent": {
+    "cell": 7.095859904848669,
+    "comparator": 8.087863144042919,
+    "improvement": 0.9920032391942497,
+    "reference_words": 9879
+   },
+   "conec_person_wer_percent": {
+    "cell": 20.21276595744681,
+    "comparator": 23.404255319148938,
+    "improvement": 3.1914893617021285,
+    "reference_words": 94
+   },
+   "conec_product_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "corpus_wer_percent": {
+    "cell": 7.095859904848669,
+    "comparator": 8.087863144042919,
+    "improvement": 0.9920032391942497,
+    "reference_words": 9879
+   },
+   "cut_seconds": 4022.592,
+   "delivered_seconds": 4356.592,
+   "dominated_share": 0.9581,
+   "dominated_units": 160,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 91.5,
+    "comparator": 92.5,
+    "improvement": -1.0,
+    "reference_words": 200
+   },
+   "pause_cut_share": 0.8024,
+   "pause_cuts": 134,
+   "sample_id": "4384964",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.04048992813037757,
+    "comparator": 0.04048992813037757,
+    "improvement": 0.0,
+    "reference_words": 9879
+   },
+   "shared_units": 5,
+   "silent_units": 2,
+   "single_speaker_units": 127,
+   "turn_boundary_cuts": 32,
+   "unit_seconds_max": 89.54,
+   "unit_seconds_mean": 24.0874,
+   "unit_seconds_median": 8.96,
+   "unit_seconds_min": 1.041,
+   "units": 167,
+   "units_10_to_60s": 53,
+   "units_no_reference_word": 0,
+   "units_over_60s": 25,
+   "units_under_1s": 0,
+   "windows": 45
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 11.11111111111111,
+    "comparator": 22.22222222222222,
+    "improvement": 11.11111111111111,
+    "reference_words": 9
+   },
+   "conec_loc_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 2.544066872614937,
+    "comparator": 2.2169725604215884,
+    "improvement": -0.3270943121933487,
+    "reference_words": 5503
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 3
+   },
+   "conec_org_wer_percent": {
+    "cell": 35.55555555555556,
+    "comparator": 20.0,
+    "improvement": -15.555555555555557,
+    "reference_words": 45
+   },
+   "conec_overall_wer_percent": {
+    "cell": 4.922839506172839,
+    "comparator": 5.308641975308642,
+    "improvement": 0.3858024691358022,
+    "reference_words": 6480
+   },
+   "conec_person_wer_percent": {
+    "cell": 13.88888888888889,
+    "comparator": 13.88888888888889,
+    "improvement": 0.0,
+    "reference_words": 36
+   },
+   "conec_product_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 13
+   },
+   "corpus_wer_percent": {
+    "cell": 4.922839506172839,
+    "comparator": 5.308641975308642,
+    "improvement": 0.3858024691358022,
+    "reference_words": 6480
+   },
+   "cut_seconds": 2559.986,
+   "delivered_seconds": 2811.986,
+   "dominated_share": 0.8889,
+   "dominated_units": 112,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 95.41666666666667,
+    "comparator": 95.0,
+    "improvement": 0.4166666666666714,
+    "reference_words": 240
+   },
+   "pause_cut_share": 0.8095,
+   "pause_cuts": 102,
+   "sample_id": "4385072",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 6480
+   },
+   "shared_units": 10,
+   "silent_units": 4,
+   "single_speaker_units": 72,
+   "turn_boundary_cuts": 23,
+   "unit_seconds_max": 87.82,
+   "unit_seconds_mean": 20.3173,
+   "unit_seconds_median": 9.098,
+   "unit_seconds_min": 1.071,
+   "units": 126,
+   "units_10_to_60s": 42,
+   "units_no_reference_word": 0,
+   "units_over_60s": 16,
+   "units_under_1s": 0,
+   "windows": 29
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 20.689655172413794,
+    "comparator": 20.689655172413794,
+    "improvement": 0.0,
+    "reference_words": 29
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 12
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 2.218154409389469,
+    "comparator": 2.2827608484979005,
+    "improvement": 0.06460643910843133,
+    "reference_words": 9287
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 5
+   },
+   "conec_org_wer_percent": {
+    "cell": 5.426356589147287,
+    "comparator": 10.077519379844961,
+    "improvement": 4.651162790697675,
+    "reference_words": 129
+   },
+   "conec_overall_wer_percent": {
+    "cell": 4.674295774647887,
+    "comparator": 6.25,
+    "improvement": 1.575704225352113,
+    "reference_words": 11360
+   },
+   "conec_person_wer_percent": {
+    "cell": 21.951219512195124,
+    "comparator": 21.951219512195124,
+    "improvement": 0.0,
+    "reference_words": 82
+   },
+   "conec_product_wer_percent": {
+    "cell": 6.8493150684931505,
+    "comparator": 5.47945205479452,
+    "improvement": -1.3698630136986303,
+    "reference_words": 73
+   },
+   "corpus_wer_percent": {
+    "cell": 4.674295774647887,
+    "comparator": 6.25,
+    "improvement": 1.575704225352113,
+    "reference_words": 11360
+   },
+   "cut_seconds": 4346.006,
+   "delivered_seconds": 4636.006,
+   "dominated_share": 0.9586,
+   "dominated_units": 139,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 80.56537102473499,
+    "comparator": 80.21201413427562,
+    "improvement": 0.35335689045936647,
+    "reference_words": 283
+   },
+   "pause_cut_share": 0.8345,
+   "pause_cuts": 121,
+   "sample_id": "4385388",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 11360
+   },
+   "shared_units": 6,
+   "silent_units": 0,
+   "single_speaker_units": 110,
+   "turn_boundary_cuts": 23,
+   "unit_seconds_max": 86.22,
+   "unit_seconds_mean": 29.9725,
+   "unit_seconds_median": 24.52,
+   "unit_seconds_min": 1.021,
+   "units": 145,
+   "units_10_to_60s": 66,
+   "units_no_reference_word": 0,
+   "units_over_60s": 26,
+   "units_under_1s": 0,
+   "windows": 49
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 19
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 13
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 8
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 2.4101043948962495,
+    "comparator": 2.461657430081196,
+    "improvement": 0.051553035184946694,
+    "reference_words": 7759
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "conec_org_wer_percent": {
+    "cell": 13.793103448275861,
+    "comparator": 8.620689655172415,
+    "improvement": -5.172413793103447,
+    "reference_words": 58
+   },
+   "conec_overall_wer_percent": {
+    "cell": 4.137855339699264,
+    "comparator": 5.015914828229612,
+    "improvement": 0.8780594885303481,
+    "reference_words": 9111
+   },
+   "conec_person_wer_percent": {
+    "cell": 26.470588235294116,
+    "comparator": 25.0,
+    "improvement": -1.470588235294116,
+    "reference_words": 68
+   },
+   "conec_product_wer_percent": {
+    "cell": 9.75609756097561,
+    "comparator": 12.195121951219512,
+    "improvement": 2.439024390243903,
+    "reference_words": 41
+   },
+   "corpus_wer_percent": {
+    "cell": 4.137855339699264,
+    "comparator": 5.015914828229612,
+    "improvement": 0.8780594885303481,
+    "reference_words": 9111
+   },
+   "cut_seconds": 3049.8,
+   "delivered_seconds": 3353.8,
+   "dominated_share": 0.9934,
+   "dominated_units": 151,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 95.91836734693878,
+    "comparator": 95.91836734693878,
+    "improvement": 0.0,
+    "reference_words": 98
+   },
+   "pause_cut_share": 0.8289,
+   "pause_cuts": 126,
+   "sample_id": "4385939",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.010975743606629349,
+    "comparator": 0.010975743606629349,
+    "improvement": 0.0,
+    "reference_words": 9111
+   },
+   "shared_units": 1,
+   "silent_units": 0,
+   "single_speaker_units": 110,
+   "turn_boundary_cuts": 25,
+   "unit_seconds_max": 87.11,
+   "unit_seconds_mean": 20.0645,
+   "unit_seconds_median": 10.52,
+   "unit_seconds_min": 1.055,
+   "units": 152,
+   "units_10_to_60s": 68,
+   "units_no_reference_word": 0,
+   "units_over_60s": 10,
+   "units_under_1s": 0,
+   "windows": 34
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_fac_wer_percent": {
+    "cell": 14.285714285714286,
+    "comparator": 14.285714285714286,
+    "improvement": 0.0,
+    "reference_words": 7
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 14
+   },
+   "conec_loc_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 2.974628171478565,
+    "comparator": 3.237095363079615,
+    "improvement": 0.2624671916010497,
+    "reference_words": 2286
+   },
+   "conec_norp_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_org_wer_percent": {
+    "cell": 15.384615384615385,
+    "comparator": 15.384615384615385,
+    "improvement": 0.0,
+    "reference_words": 26
+   },
+   "conec_overall_wer_percent": {
+    "cell": 4.702424687729611,
+    "comparator": 6.355620867009552,
+    "improvement": 1.6531961792799414,
+    "reference_words": 2722
+   },
+   "conec_person_wer_percent": {
+    "cell": 30.434782608695652,
+    "comparator": 26.08695652173913,
+    "improvement": -4.347826086956523,
+    "reference_words": 23
+   },
+   "conec_product_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 10
+   },
+   "corpus_wer_percent": {
+    "cell": 4.702424687729611,
+    "comparator": 6.355620867009552,
+    "improvement": 1.6531961792799414,
+    "reference_words": 2722
+   },
+   "cut_seconds": 1097.1,
+   "delivered_seconds": 1163.1,
+   "dominated_share": 1.0,
+   "dominated_units": 33,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 93.45794392523365,
+    "comparator": 92.5233644859813,
+    "improvement": 0.9345794392523459,
+    "reference_words": 107
+   },
+   "pause_cut_share": 0.9394,
+   "pause_cuts": 31,
+   "sample_id": "4386541",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2722
+   },
+   "shared_units": 0,
+   "silent_units": 0,
+   "single_speaker_units": 27,
+   "turn_boundary_cuts": 1,
+   "unit_seconds_max": 86.75,
+   "unit_seconds_mean": 33.2455,
+   "unit_seconds_median": 28.07,
+   "unit_seconds_min": 1.5,
+   "units": 33,
+   "units_10_to_60s": 19,
+   "units_no_reference_word": 0,
+   "units_over_60s": 7,
+   "units_under_1s": 0,
+   "windows": 13
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 12.5,
+    "comparator": 12.5,
+    "improvement": 0.0,
+    "reference_words": 8
+   },
+   "conec_loc_wer_percent": {
+    "cell": 50.0,
+    "comparator": 0.0,
+    "improvement": -50.0,
+    "reference_words": 2
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 4.664895187481547,
+    "comparator": 4.487747268969589,
+    "improvement": -0.17714791851195777,
+    "reference_words": 3387
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_org_wer_percent": {
+    "cell": 4.761904761904762,
+    "comparator": 7.142857142857143,
+    "improvement": 2.3809523809523814,
+    "reference_words": 42
+   },
+   "conec_overall_wer_percent": {
+    "cell": 5.781637717121588,
+    "comparator": 6.277915632754342,
+    "improvement": 0.4962779156327546,
+    "reference_words": 4030
+   },
+   "conec_person_wer_percent": {
+    "cell": 29.032258064516128,
+    "comparator": 19.35483870967742,
+    "improvement": -9.677419354838708,
+    "reference_words": 31
+   },
+   "conec_product_wer_percent": {
+    "cell": 20.0,
+    "comparator": 20.0,
+    "improvement": 0.0,
+    "reference_words": 10
+   },
+   "corpus_wer_percent": {
+    "cell": 5.781637717121588,
+    "comparator": 6.277915632754342,
+    "improvement": 0.4962779156327546,
+    "reference_words": 4030
+   },
+   "cut_seconds": 1310.16,
+   "delivered_seconds": 1410.16,
+   "dominated_share": 0.94,
+   "dominated_units": 47,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 95.45454545454545,
+    "comparator": 92.42424242424242,
+    "improvement": 3.030303030303031,
+    "reference_words": 132
+   },
+   "pause_cut_share": 0.86,
+   "pause_cuts": 43,
+   "sample_id": "4387332",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4030
+   },
+   "shared_units": 2,
+   "silent_units": 1,
+   "single_speaker_units": 39,
+   "turn_boundary_cuts": 6,
+   "unit_seconds_max": 84.28,
+   "unit_seconds_mean": 26.2032,
+   "unit_seconds_median": 15.8325,
+   "unit_seconds_min": 1.09,
+   "units": 50,
+   "units_10_to_60s": 21,
+   "units_no_reference_word": 0,
+   "units_over_60s": 9,
+   "units_under_1s": 0,
+   "windows": 15
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "conec_fac_wer_percent": {
+    "cell": 22.727272727272727,
+    "comparator": 22.727272727272727,
+    "improvement": 0.0,
+    "reference_words": 22
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 8.0,
+    "comparator": 8.0,
+    "improvement": 0.0,
+    "reference_words": 25
+   },
+   "conec_loc_wer_percent": {
+    "cell": 14.285714285714286,
+    "comparator": 14.285714285714286,
+    "improvement": 0.0,
+    "reference_words": 7
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 4.959481361426256,
+    "comparator": 4.1491085899513775,
+    "improvement": -0.8103727714748787,
+    "reference_words": 3085
+   },
+   "conec_norp_wer_percent": {
+    "cell": 100.0,
+    "comparator": 100.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_org_wer_percent": {
+    "cell": 19.51219512195122,
+    "comparator": 19.51219512195122,
+    "improvement": 0.0,
+    "reference_words": 41
+   },
+   "conec_overall_wer_percent": {
+    "cell": 6.971677559912854,
+    "comparator": 6.699346405228758,
+    "improvement": -0.2723311546840961,
+    "reference_words": 3672
+   },
+   "conec_person_wer_percent": {
+    "cell": 25.925925925925927,
+    "comparator": 22.22222222222222,
+    "improvement": -3.703703703703706,
+    "reference_words": 27
+   },
+   "conec_product_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "corpus_wer_percent": {
+    "cell": 6.971677559912854,
+    "comparator": 6.699346405228758,
+    "improvement": -0.2723311546840961,
+    "reference_words": 3672
+   },
+   "cut_seconds": 2158.053937,
+   "delivered_seconds": 2374.053937,
+   "dominated_share": 0.963,
+   "dominated_units": 104,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 96.59863945578232,
+    "comparator": 95.91836734693878,
+    "improvement": 0.6802721088435391,
+    "reference_words": 147
+   },
+   "pause_cut_share": 0.6481,
+   "pause_cuts": 70,
+   "sample_id": "4387383",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.054466230936819175,
+    "comparator": 0.0,
+    "improvement": -0.054466230936819175,
+    "reference_words": 3672
+   },
+   "shared_units": 0,
+   "silent_units": 4,
+   "single_speaker_units": 77,
+   "turn_boundary_cuts": 37,
+   "unit_seconds_max": 89.32,
+   "unit_seconds_mean": 19.982,
+   "unit_seconds_median": 14.533,
+   "unit_seconds_min": 1.28,
+   "units": 108,
+   "units_10_to_60s": 66,
+   "units_no_reference_word": 0,
+   "units_over_60s": 5,
+   "units_under_1s": 0,
+   "windows": 24
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_fac_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 36.36363636363637,
+    "comparator": 31.818181818181817,
+    "improvement": -4.54545454545455,
+    "reference_words": 22
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 5.425553944916132,
+    "comparator": 5.363429281424725,
+    "improvement": -0.06212466349140655,
+    "reference_words": 4829
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_org_wer_percent": {
+    "cell": 14.492753623188406,
+    "comparator": 24.63768115942029,
+    "improvement": 10.144927536231883,
+    "reference_words": 69
+   },
+   "conec_overall_wer_percent": {
+    "cell": 7.346731970950853,
+    "comparator": 8.765411248099984,
+    "improvement": 1.4186792771491303,
+    "reference_words": 5921
+   },
+   "conec_person_wer_percent": {
+    "cell": 10.0,
+    "comparator": 10.0,
+    "improvement": 0.0,
+    "reference_words": 30
+   },
+   "conec_product_wer_percent": {
+    "cell": 0.0,
+    "comparator": 20.0,
+    "improvement": 20.0,
+    "reference_words": 5
+   },
+   "corpus_wer_percent": {
+    "cell": 7.346731970950853,
+    "comparator": 8.765411248099984,
+    "improvement": 1.4186792771491303,
+    "reference_words": 5921
+   },
+   "cut_seconds": 2162.573063,
+   "delivered_seconds": 2324.573063,
+   "dominated_share": 0.9383,
+   "dominated_units": 76,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 85.41033434650456,
+    "comparator": 84.4984802431611,
+    "improvement": 0.9118541033434582,
+    "reference_words": 329
+   },
+   "pause_cut_share": 0.7778,
+   "pause_cuts": 63,
+   "sample_id": "4387865",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.01688903901368012,
+    "comparator": 0.01688903901368012,
+    "improvement": 0.0,
+    "reference_words": 5921
+   },
+   "shared_units": 5,
+   "silent_units": 0,
+   "single_speaker_units": 60,
+   "turn_boundary_cuts": 17,
+   "unit_seconds_max": 85.85,
+   "unit_seconds_mean": 26.6984,
+   "unit_seconds_median": 17.581,
+   "unit_seconds_min": 1.13,
+   "units": 81,
+   "units_10_to_60s": 38,
+   "units_no_reference_word": 0,
+   "units_over_60s": 11,
+   "units_under_1s": 0,
+   "windows": 25
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 7.6923076923076925,
+    "comparator": 7.6923076923076925,
+    "improvement": 0.0,
+    "reference_words": 13
+   },
+   "conec_loc_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 6.235154394299287,
+    "comparator": 6.65083135391924,
+    "improvement": 0.41567695961995277,
+    "reference_words": 3368
+   },
+   "conec_norp_wer_percent": {
+    "cell": 100.0,
+    "comparator": 100.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_org_wer_percent": {
+    "cell": 41.1764705882353,
+    "comparator": 32.35294117647059,
+    "improvement": -8.82352941176471,
+    "reference_words": 34
+   },
+   "conec_overall_wer_percent": {
+    "cell": 12.430238457635719,
+    "comparator": 13.140537798072044,
+    "improvement": 0.7102993404363254,
+    "reference_words": 3942
+   },
+   "conec_person_wer_percent": {
+    "cell": 48.57142857142857,
+    "comparator": 31.428571428571427,
+    "improvement": -17.142857142857142,
+    "reference_words": 35
+   },
+   "conec_product_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "corpus_wer_percent": {
+    "cell": 12.430238457635719,
+    "comparator": 13.140537798072044,
+    "improvement": 0.7102993404363254,
+    "reference_words": 3942
+   },
+   "cut_seconds": 2058.816,
+   "delivered_seconds": 2190.816,
+   "dominated_share": 1.0,
+   "dominated_units": 66,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 91.7910447761194,
+    "comparator": 91.04477611940298,
+    "improvement": 0.7462686567164241,
+    "reference_words": 134
+   },
+   "pause_cut_share": 0.9545,
+   "pause_cuts": 63,
+   "sample_id": "4389907",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 3942
+   },
+   "shared_units": 0,
+   "silent_units": 0,
+   "single_speaker_units": 55,
+   "turn_boundary_cuts": 2,
+   "unit_seconds_max": 88.08,
+   "unit_seconds_mean": 31.1942,
+   "unit_seconds_median": 21.24,
+   "unit_seconds_min": 1.15,
+   "units": 66,
+   "units_10_to_60s": 26,
+   "units_no_reference_word": 0,
+   "units_over_60s": 15,
+   "units_under_1s": 0,
+   "windows": 23
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 13
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 50.0,
+    "comparator": 50.0,
+    "improvement": 0.0,
+    "reference_words": 6
+   },
+   "conec_loc_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 2.2172949002217295,
+    "comparator": 1.9955654101995566,
+    "improvement": -0.2217294900221729,
+    "reference_words": 3608
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 1
+   },
+   "conec_org_wer_percent": {
+    "cell": 2.5641025641025643,
+    "comparator": 7.6923076923076925,
+    "improvement": 5.128205128205128,
+    "reference_words": 39
+   },
+   "conec_overall_wer_percent": {
+    "cell": 3.0399607746996815,
+    "comparator": 4.192203971561657,
+    "improvement": 1.1522431968619755,
+    "reference_words": 4079
+   },
+   "conec_person_wer_percent": {
+    "cell": 14.285714285714286,
+    "comparator": 17.857142857142858,
+    "improvement": 3.571428571428571,
+    "reference_words": 28
+   },
+   "conec_product_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "corpus_wer_percent": {
+    "cell": 3.0399607746996815,
+    "comparator": 4.192203971561657,
+    "improvement": 1.1522431968619755,
+    "reference_words": 4079
+   },
+   "cut_seconds": 1438.008,
+   "delivered_seconds": 1534.008,
+   "dominated_share": 1.0,
+   "dominated_units": 48,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 93.13725490196079,
+    "comparator": 95.09803921568627,
+    "improvement": -1.9607843137254832,
+    "reference_words": 102
+   },
+   "pause_cut_share": 0.8958,
+   "pause_cuts": 43,
+   "sample_id": "4392809",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4079
+   },
+   "shared_units": 0,
+   "silent_units": 0,
+   "single_speaker_units": 40,
+   "turn_boundary_cuts": 4,
+   "unit_seconds_max": 86.35,
+   "unit_seconds_mean": 29.9585,
+   "unit_seconds_median": 24.76,
+   "unit_seconds_min": 2.011,
+   "units": 48,
+   "units_10_to_60s": 32,
+   "units_no_reference_word": 0,
+   "units_over_60s": 7,
+   "units_under_1s": 0,
+   "windows": 16
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 25.0,
+    "comparator": 25.0,
+    "improvement": 0.0,
+    "reference_words": 4
+   },
+   "conec_loc_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 6.909336029659589,
+    "comparator": 7.212672733400741,
+    "improvement": 0.3033367037411523,
+    "reference_words": 2967
+   },
+   "conec_norp_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_org_wer_percent": {
+    "cell": 20.0,
+    "comparator": 21.818181818181817,
+    "improvement": 1.8181818181818166,
+    "reference_words": 110
+   },
+   "conec_overall_wer_percent": {
+    "cell": 10.561056105610561,
+    "comparator": 12.156215621562156,
+    "improvement": 1.595159515951595,
+    "reference_words": 3636
+   },
+   "conec_person_wer_percent": {
+    "cell": 67.74193548387096,
+    "comparator": 64.51612903225806,
+    "improvement": -3.225806451612897,
+    "reference_words": 31
+   },
+   "conec_product_wer_percent": {
+    "cell": 7.6923076923076925,
+    "comparator": 15.384615384615385,
+    "improvement": 7.6923076923076925,
+    "reference_words": 26
+   },
+   "corpus_wer_percent": {
+    "cell": 10.561056105610561,
+    "comparator": 12.156215621562156,
+    "improvement": 1.595159515951595,
+    "reference_words": 3636
+   },
+   "cut_seconds": 1758.024,
+   "delivered_seconds": 1862.024,
+   "dominated_share": 0.9808,
+   "dominated_units": 51,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 87.31343283582089,
+    "comparator": 87.31343283582089,
+    "improvement": 0.0,
+    "reference_words": 134
+   },
+   "pause_cut_share": 0.9038,
+   "pause_cuts": 47,
+   "sample_id": "4394084",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.027502750275027504,
+    "comparator": 0.027502750275027504,
+    "improvement": 0.0,
+    "reference_words": 3636
+   },
+   "shared_units": 1,
+   "silent_units": 0,
+   "single_speaker_units": 43,
+   "turn_boundary_cuts": 4,
+   "unit_seconds_max": 82.43,
+   "unit_seconds_mean": 33.8082,
+   "unit_seconds_median": 23.8875,
+   "unit_seconds_min": 1.351,
+   "units": 52,
+   "units_10_to_60s": 24,
+   "units_no_reference_word": 0,
+   "units_over_60s": 13,
+   "units_under_1s": 0,
+   "windows": 20
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_fac_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 16.666666666666668,
+    "comparator": 25.0,
+    "improvement": 8.333333333333332,
+    "reference_words": 12
+   },
+   "conec_loc_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 4.90832972426736,
+    "comparator": 4.706222029738703,
+    "improvement": -0.20210769452865662,
+    "reference_words": 6927
+   },
+   "conec_norp_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 4
+   },
+   "conec_org_wer_percent": {
+    "cell": 12.0,
+    "comparator": 14.666666666666666,
+    "improvement": 2.666666666666666,
+    "reference_words": 75
+   },
+   "conec_overall_wer_percent": {
+    "cell": 7.338183642749624,
+    "comparator": 7.839939789262418,
+    "improvement": 0.5017561465127942,
+    "reference_words": 7972
+   },
+   "conec_person_wer_percent": {
+    "cell": 25.0,
+    "comparator": 20.833333333333332,
+    "improvement": -4.166666666666668,
+    "reference_words": 48
+   },
+   "conec_product_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 7
+   },
+   "corpus_wer_percent": {
+    "cell": 7.338183642749624,
+    "comparator": 7.839939789262418,
+    "improvement": 0.5017561465127942,
+    "reference_words": 7972
+   },
+   "cut_seconds": 2771.64,
+   "delivered_seconds": 2997.64,
+   "dominated_share": 0.9646,
+   "dominated_units": 109,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 98.32402234636872,
+    "comparator": 97.76536312849161,
+    "improvement": 0.558659217877107,
+    "reference_words": 179
+   },
+   "pause_cut_share": 0.7699,
+   "pause_cuts": 87,
+   "sample_id": "4397800",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.025087807325639738,
+    "comparator": 0.012543903662819869,
+    "improvement": -0.012543903662819869,
+    "reference_words": 7972
+   },
+   "shared_units": 3,
+   "silent_units": 1,
+   "single_speaker_units": 74,
+   "turn_boundary_cuts": 25,
+   "unit_seconds_max": 87.62,
+   "unit_seconds_mean": 24.5278,
+   "unit_seconds_median": 11.495,
+   "unit_seconds_min": 1.031,
+   "units": 113,
+   "units_10_to_60s": 39,
+   "units_no_reference_word": 0,
+   "units_over_60s": 19,
+   "units_under_1s": 0,
+   "windows": 31
+  },
+  {
+   "conec_event_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 2
+   },
+   "conec_fac_wer_percent": {
+    "cell": 33.333333333333336,
+    "comparator": 33.333333333333336,
+    "improvement": 0.0,
+    "reference_words": 3
+   },
+   "conec_gpe_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 10
+   },
+   "conec_loc_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_non_entity_wer_percent": {
+    "cell": 4.860103626943006,
+    "comparator": 4.994818652849741,
+    "improvement": 0.13471502590673534,
+    "reference_words": 9650
+   },
+   "conec_norp_wer_percent": {
+    "cell": null,
+    "comparator": null,
+    "improvement": null,
+    "reference_words": 0
+   },
+   "conec_org_wer_percent": {
+    "cell": 23.015873015873016,
+    "comparator": 23.80952380952381,
+    "improvement": 0.7936507936507944,
+    "reference_words": 126
+   },
+   "conec_overall_wer_percent": {
+    "cell": 6.925305011849381,
+    "comparator": 8.066356534714298,
+    "improvement": 1.1410515228649176,
+    "reference_words": 11393
+   },
+   "conec_person_wer_percent": {
+    "cell": 21.904761904761905,
+    "comparator": 20.952380952380953,
+    "improvement": -0.9523809523809526,
+    "reference_words": 105
+   },
+   "conec_product_wer_percent": {
+    "cell": 0.0,
+    "comparator": 0.0,
+    "improvement": 0.0,
+    "reference_words": 25
+   },
+   "corpus_wer_percent": {
+    "cell": 6.925305011849381,
+    "comparator": 8.066356534714298,
+    "improvement": 1.1410515228649176,
+    "reference_words": 11393
+   },
+   "cut_seconds": 4472.736,
+   "delivered_seconds": 4850.736,
+   "dominated_share": 0.9418,
+   "dominated_units": 178,
+   "forced_cap_split_cuts": 0,
+   "numeric_value_accuracy_percent": {
+    "cell": 97.14285714285714,
+    "comparator": 97.42857142857143,
+    "improvement": -0.2857142857142918,
+    "reference_words": 350
+   },
+   "pause_cut_share": 0.8571,
+   "pause_cuts": 162,
+   "sample_id": "4397829",
+   "semantic_high_impact_error_rate_percent": {
+    "cell": 0.03510927762661283,
+    "comparator": 0.03510927762661283,
+    "improvement": 0.0,
+    "reference_words": 11393
+   },
+   "shared_units": 6,
+   "silent_units": 5,
+   "single_speaker_units": 131,
+   "turn_boundary_cuts": 26,
+   "unit_seconds_max": 89.34,
+   "unit_seconds_mean": 23.6653,
+   "unit_seconds_median": 13.961,
+   "unit_seconds_min": 1.021,
+   "units": 189,
+   "units_10_to_60s": 90,
+   "units_no_reference_word": 0,
+   "units_over_60s": 21,
+   "units_under_1s": 0,
+   "windows": 50
+  }
+ ],
+ "plan_properties": {
+  "units": 5122,
+  "units_no_reference_word": 1,
+  "units_under_1s": 0
+ },
+ "preregistration": "docs/readiness/2026-09-07-e21-obs-speaker-turn-units-v1-preregistration.md",
+ "run_id": "SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1",
+ "saves_harms_ties_by_call": {
+  "conec_org_wer_percent": {
+   "harms": 17,
+   "n": 44,
+   "saves": 23,
+   "ties": 4
+  },
+  "conec_person_wer_percent": {
+   "harms": 27,
+   "n": 44,
+   "saves": 10,
+   "ties": 7
+  },
+  "corpus_wer_percent": {
+   "harms": 1,
+   "n": 44,
+   "saves": 43,
+   "ties": 0
+  }
+ },
+ "schema": "saea-e21-obs-e1-verdict-v1",
+ "strata": {
+  "dominated_share_tertile": [
+   {
+    "calls": 15,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 21.856728125817927,
+     "cell_natural": 20.976027397260275,
+     "comparator_equal_stratum": 21.723479367870016,
+     "comparator_natural": 21.404109589041095,
+     "improvement_ci90": [
+      -1.9417475728155331,
+      2.6139603519179753
+     ],
+     "improvement_natural": 0.4280821917808204
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 26.201929110479306,
+     "cell_natural": 25.0,
+     "comparator_equal_stratum": 22.10701962739911,
+     "comparator_natural": 21.673819742489272,
+     "improvement_ci90": [
+      -5.284210792569437,
+      -1.5967836277274414
+     ],
+     "improvement_natural": -3.326180257510728
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 6.250162514935531,
+     "cell_natural": 6.141352743040768,
+     "comparator_equal_stratum": 7.452517302921625,
+     "comparator_natural": 7.354136822950947,
+     "improvement_ci90": [
+      1.0198731346299024,
+      1.4440448412012505
+     ],
+     "improvement_natural": 1.212784079910179
+    },
+    "stratum": "HIGH"
+   },
+   {
+    "calls": 14,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 19.59170016982728,
+     "cell_natural": 19.845559845559844,
+     "comparator_equal_stratum": 19.922757148726994,
+     "comparator_natural": 20.0,
+     "improvement_ci90": [
+      -1.5281394882245203,
+      1.9143497100942164
+     ],
+     "improvement_natural": 0.1544401544401559
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 24.42798474361543,
+     "cell_natural": 25.703564727954973,
+     "comparator_equal_stratum": 22.426142813239995,
+     "comparator_natural": 24.015009380863038,
+     "improvement_ci90": [
+      -3.2786885245901622,
+      -0.2840774705427034
+     ],
+     "improvement_natural": -1.6885553470919348
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 7.567547185135524,
+     "cell_natural": 7.891838355205301,
+     "comparator_equal_stratum": 8.534016382504577,
+     "comparator_natural": 8.866044518062516,
+     "improvement_ci90": [
+      0.8052435597560275,
+      1.1359732011236756
+     ],
+     "improvement_natural": 0.9742061628572154
+    },
+    "stratum": "LOW"
+   },
+   {
+    "calls": 15,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 14.638697961723947,
+     "cell_natural": 11.947368421052632,
+     "comparator_equal_stratum": 14.51403938171566,
+     "comparator_natural": 12.736842105263158,
+     "improvement_ci90": [
+      -0.9651148125535649,
+      2.474261283315519
+     ],
+     "improvement_natural": 0.7894736842105257
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 23.622452994946308,
+     "cell_natural": 22.850924918389556,
+     "comparator_equal_stratum": 21.53389921066578,
+     "comparator_natural": 21.545157780195865,
+     "improvement_ci90": [
+      -3.4665122029673117,
+      0.5633961605030398
+     ],
+     "improvement_natural": -1.3057671381936906
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 7.188780375862204,
+     "cell_natural": 7.276355075792375,
+     "comparator_equal_stratum": 8.059747692203734,
+     "comparator_natural": 8.266105879650896,
+     "improvement_ci90": [
+      0.7509240300179288,
+      1.2191292190846166
+     ],
+     "improvement_natural": 0.989750803858521
+    },
+    "stratum": "MID"
+   }
+  ],
+  "mean_unit_seconds_tertile": [
+   {
+    "calls": 15,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 21.620006111553867,
+     "cell_natural": 17.5366568914956,
+     "comparator_equal_stratum": 22.68664133980212,
+     "comparator_natural": 19.00293255131965,
+     "improvement_ci90": [
+      -0.24686616528040517,
+      3.3367944387836905
+     ],
+     "improvement_natural": 1.4662756598240492
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 27.42160675253024,
+     "cell_natural": 25.26766595289079,
+     "comparator_equal_stratum": 23.23174622819258,
+     "comparator_natural": 22.26980728051392,
+     "improvement_ci90": [
+      -5.191755092867579,
+      -1.1607142857142883
+     ],
+     "improvement_natural": -2.9978586723768714
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 7.277637001931333,
+     "cell_natural": 7.402708349192655,
+     "comparator_equal_stratum": 8.51692313531657,
+     "comparator_natural": 8.647770813773503,
+     "improvement_ci90": [
+      1.0569447560877598,
+      1.45828456778982
+     ],
+     "improvement_natural": 1.2450624645808483
+    },
+    "stratum": "HIGH"
+   },
+   {
+    "calls": 14,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 16.72241750576612,
+     "cell_natural": 14.297945205479452,
+     "comparator_equal_stratum": 15.738203487944423,
+     "comparator_natural": 14.469178082191782,
+     "improvement_ci90": [
+      -2.2182931977406737,
+      2.298079765394365
+     ],
+     "improvement_natural": 0.17123287671232923
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 22.24935437831103,
+     "cell_natural": 22.88659793814433,
+     "comparator_equal_stratum": 20.67270039308824,
+     "comparator_natural": 21.75257731958763,
+     "improvement_ci90": [
+      -2.7777777777777786,
+      0.3275288138019911
+     ],
+     "improvement_natural": -1.1340206185567006
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 7.059811480491979,
+     "cell_natural": 7.2440621709880615,
+     "comparator_equal_stratum": 7.8004031300332475,
+     "comparator_natural": 8.040828708577955,
+     "improvement_ci90": [
+      0.6089122977203865,
+      0.9624024210329265
+     ],
+     "improvement_natural": 0.7967665375898934
+    },
+    "stratum": "LOW"
+   },
+   {
+    "calls": 15,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 17.553417129111757,
+     "cell_natural": 17.651006711409394,
+     "comparator_equal_stratum": 17.456460826513954,
+     "comparator_natural": 17.315436241610737,
+     "improvement_ci90": [
+      -2.011150671492844,
+      1.3333333333333321
+     ],
+     "improvement_natural": -0.33557046979865746
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 24.436163693846144,
+     "cell_natural": 25.567620927936822,
+     "comparator_equal_stratum": 22.045718868680623,
+     "comparator_natural": 23.39585389930898,
+     "improvement_ci90": [
+      -4.032374267918565,
+      -0.4361338959745888
+     ],
+     "improvement_natural": -2.1717670286278405
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 6.635192546533711,
+     "cell_natural": 6.839950563880735,
+     "comparator_equal_stratum": 7.680047562115362,
+     "comparator_natural": 7.927545187702766,
+     "improvement_ci90": [
+      0.879817161472328,
+      1.3113912259874603
+     ],
+     "improvement_natural": 1.0875946238220306
+    },
+    "stratum": "MID"
+   }
+  ],
+  "pause_cut_share_tertile": [
+   {
+    "calls": 15,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 21.14147141339333,
+     "cell_natural": 19.50034698126301,
+     "comparator_equal_stratum": 21.267442155748167,
+     "comparator_natural": 20.05551700208189,
+     "improvement_ci90": [
+      -1.304153283155152,
+      2.3059332962718746
+     ],
+     "improvement_natural": 0.5551700208188777
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 30.185151632868788,
+     "cell_natural": 26.80115273775216,
+     "comparator_equal_stratum": 26.330522229408647,
+     "comparator_natural": 24.111431316042268,
+     "improvement_ci90": [
+      -4.687591588511138,
+      -0.9460737937559143
+     ],
+     "improvement_natural": -2.689721421709894
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 7.704557923701016,
+     "cell_natural": 7.658322157651617,
+     "comparator_equal_stratum": 8.972036859525769,
+     "comparator_natural": 8.934585009685591,
+     "improvement_ci90": [
+      1.067154978497521,
+      1.5082039553669333
+     ],
+     "improvement_natural": 1.276262852033974
+    },
+    "stratum": "HIGH"
+   },
+   {
+    "calls": 14,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 16.970871622466163,
+     "cell_natural": 14.308553157474021,
+     "comparator_equal_stratum": 15.640600492312952,
+     "comparator_natural": 14.388489208633093,
+     "improvement_ci90": [
+      -2.646051630959877,
+      2.3469951516518193
+     ],
+     "improvement_natural": 0.07993605115907165
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 19.562247106668327,
+     "cell_natural": 19.87878787878788,
+     "comparator_equal_stratum": 18.295780763016953,
+     "comparator_natural": 19.393939393939394,
+     "improvement_ci90": [
+      -1.9746657178010885,
+      0.8333333333333323
+     ],
+     "improvement_natural": -0.4848484848484844
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 6.356671627701069,
+     "cell_natural": 6.4820755473574465,
+     "comparator_equal_stratum": 7.177993939253862,
+     "comparator_natural": 7.3171465233779776,
+     "improvement_ci90": [
+      0.6479190390136076,
+      1.0073795391349316
+     ],
+     "improvement_natural": 0.835070976020531
+    },
+    "stratum": "LOW"
+   },
+   {
+    "calls": 15,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 17.800061318352256,
+     "cell_natural": 16.098144823459005,
+     "comparator_equal_stratum": 18.966756139823943,
+     "comparator_natural": 16.87612208258528,
+     "improvement_ci90": [
+      -0.6161826851737636,
+      2.5398786452565494
+     ],
+     "improvement_natural": 0.7779772591262741
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 24.18058560037412,
+     "cell_natural": 26.070409134157945,
+     "comparator_equal_stratum": 21.16540118886442,
+     "comparator_natural": 23.311132254995243,
+     "improvement_ci90": [
+      -4.642872497236211,
+      -0.9965538786756128
+     ],
+     "improvement_natural": -2.7592768791627016
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 6.864535487368874,
+     "cell_natural": 7.1395069677963,
+     "comparator_equal_stratum": 7.805849082633588,
+     "comparator_natural": 8.114918954154842,
+     "improvement_ci90": [
+      0.7909435309536741,
+      1.1519539236251233
+     ],
+     "improvement_natural": 0.9754119863585418
+    },
+    "stratum": "MID"
+   }
+  ],
+  "sample_rate_hz": [
+   {
+    "calls": 5,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 20.463928037204358,
+     "cell_natural": 14.959568733153638,
+     "comparator_equal_stratum": 21.02140315300682,
+     "comparator_natural": 15.09433962264151,
+     "improvement_ci90": [
+      -2.4547803617571056,
+      3.2558139534883743
+     ],
+     "improvement_natural": 0.13477088948787141
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 25.279844961240308,
+     "cell_natural": 26.548672566371682,
+     "comparator_equal_stratum": 22.912273901808785,
+     "comparator_natural": 23.893805309734514,
+     "improvement_ci90": [
+      -4.029304029304029,
+      -0.7299270072992705
+     ],
+     "improvement_natural": -2.654867256637168
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 9.298763574754213,
+     "cell_natural": 9.784894737938071,
+     "comparator_equal_stratum": 10.583706437968692,
+     "comparator_natural": 11.078025112966703,
+     "improvement_ci90": [
+      0.9195308349339992,
+      1.7658872140532313
+     ],
+     "improvement_natural": 1.2931303750286318
+    },
+    "stratum": "11025"
+   },
+   {
+    "calls": 6,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 20.818794019108235,
+     "cell_natural": 18.7624750499002,
+     "comparator_equal_stratum": 20.33614744337447,
+     "comparator_natural": 20.159680638722556,
+     "improvement_ci90": [
+      -4.123711340206185,
+      4.474002418379687
+     ],
+     "improvement_natural": 1.3972055888223558
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 30.745000047012535,
+     "cell_natural": 29.42942942942943,
+     "comparator_equal_stratum": 29.601948359490237,
+     "comparator_natural": 29.42942942942943,
+     "improvement_ci90": [
+      -3.0612244897959187,
+      2.156334231805932
+     ],
+     "improvement_natural": 0.0
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 9.074026822943807,
+     "cell_natural": 9.656707674282366,
+     "comparator_equal_stratum": 10.208415111166415,
+     "comparator_natural": 10.736965436438195,
+     "improvement_ci90": [
+      0.6840010486427222,
+      1.4499805371739978
+     ],
+     "improvement_natural": 1.0802577621558296
+    },
+    "stratum": "16000"
+   },
+   {
+    "calls": 5,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 22.55731048217581,
+     "cell_natural": 22.083333333333332,
+     "comparator_equal_stratum": 22.03515069801675,
+     "comparator_natural": 21.875,
+     "improvement_ci90": [
+      -4.461942257217849,
+      4.700854700854702
+     ],
+     "improvement_natural": -0.20833333333333215
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 22.393064633260714,
+     "cell_natural": 22.93233082706767,
+     "comparator_equal_stratum": 20.42084241103849,
+     "comparator_natural": 22.93233082706767,
+     "improvement_ci90": [
+      -3.7735849056603783,
+      2.0348837209302317
+     ],
+     "improvement_natural": 0.0
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 6.1651363265054835,
+     "cell_natural": 6.352003235217655,
+     "comparator_equal_stratum": 7.153652729207449,
+     "comparator_natural": 7.5767642046275165,
+     "improvement_ci90": [
+      0.5467336683417088,
+      1.7678802529729207
+     ],
+     "improvement_natural": 1.2247609694098616
+    },
+    "stratum": "22050"
+   },
+   {
+    "calls": 21,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 18.909722577597343,
+     "cell_natural": 17.36842105263158,
+     "comparator_equal_stratum": 18.338751280801507,
+     "comparator_natural": 17.36842105263158,
+     "improvement_ci90": [
+      -1.3356262219563786,
+      1.0901965375165168
+     ],
+     "improvement_natural": 0.0
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 24.98817824134117,
+     "cell_natural": 25.595695618754803,
+     "comparator_equal_stratum": 21.607265120991258,
+     "comparator_natural": 22.9054573405073,
+     "improvement_ci90": [
+      -4.359442725959252,
+      -1.1289840957253254
+     ],
+     "improvement_natural": -2.6902382782475023
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 6.338114073094676,
+     "cell_natural": 6.346174702061769,
+     "comparator_equal_stratum": 7.301472996792482,
+     "comparator_natural": 7.319821176810826,
+     "improvement_ci90": [
+      0.8414839996936008,
+      1.0908880799745517
+     ],
+     "improvement_natural": 0.9736464747490565
+    },
+    "stratum": "24000"
+   },
+   {
+    "calls": 7,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 12.08458040708794,
+     "cell_natural": 11.891891891891891,
+     "comparator_equal_stratum": 14.295421501966675,
+     "comparator_natural": 13.91891891891892,
+     "improvement_ci90": [
+      -0.7556675062972289,
+      5.143721633888049
+     ],
+     "improvement_natural": 2.027027027027028
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 20.253032381322186,
+     "cell_natural": 19.911504424778762,
+     "comparator_equal_stratum": 17.221420384905592,
+     "comparator_natural": 17.404129793510325,
+     "improvement_ci90": [
+      -5.233102517202336,
+      -0.28776978417266363
+     ],
+     "improvement_natural": -2.507374631268437
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 6.095106853559119,
+     "cell_natural": 6.095744370125887,
+     "comparator_equal_stratum": 6.984569263774731,
+     "comparator_natural": 7.046470193065981,
+     "improvement_ci90": [
+      0.7038011603208316,
+      1.1708073267245949
+     ],
+     "improvement_natural": 0.9507258229400941
+    },
+    "stratum": "44100"
+   }
+  ],
+  "sector": [
+   {
+    "calls": 5,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 22.454746632957225,
+     "cell_natural": 23.035230352303522,
+     "comparator_equal_stratum": 16.218686341524766,
+     "comparator_natural": 17.073170731707318,
+     "improvement_ci90": [
+      -9.027777777777779,
+      -3.225806451612902
+     ],
+     "improvement_natural": -5.962059620596204
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 21.011416660234524,
+     "cell_natural": 22.19679633867277,
+     "comparator_equal_stratum": 20.64904768748819,
+     "comparator_natural": 21.28146453089245,
+     "improvement_ci90": [
+      -2.7272727272727266,
+      1.550387596899224
+     ],
+     "improvement_natural": -0.9153318077803192
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 7.009070592068889,
+     "cell_natural": 7.601322944111217,
+     "comparator_equal_stratum": 7.921174187515367,
+     "comparator_natural": 8.436571556701608,
+     "improvement_ci90": [
+      0.6697099745783559,
+      1.1072942552258453
+     ],
+     "improvement_natural": 0.8352486125903908
+    },
+    "stratum": "Basic Materials"
+   },
+   {
+    "calls": 4,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 15.211938389646265,
+     "cell_natural": 15.659955257270694,
+     "comparator_equal_stratum": 16.842575247335347,
+     "comparator_natural": 17.225950782997764,
+     "improvement_ci90": [
+      1.1009174311926593,
+      2.0661157024793386
+     ],
+     "improvement_natural": 1.56599552572707
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 23.815257754477937,
+     "cell_natural": 23.56020942408377,
+     "comparator_equal_stratum": 20.05460899956313,
+     "comparator_natural": 19.895287958115183,
+     "improvement_ci90": [
+      -6.487695749440718,
+      -1.3774104683195603
+     ],
+     "improvement_natural": -3.664921465968586
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 6.217869574863846,
+     "cell_natural": 6.4084989718985605,
+     "comparator_equal_stratum": 7.108488500804538,
+     "comparator_natural": 7.360716733574856,
+     "improvement_ci90": [
+      0.7080347786683276,
+      1.1305801948524064
+     ],
+     "improvement_natural": 0.9522177616762955
+    },
+    "stratum": "Conglomerate"
+   },
+   {
+    "calls": 5,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 19.107540639554315,
+     "cell_natural": 19.871794871794872,
+     "comparator_equal_stratum": 18.410234372332884,
+     "comparator_natural": 19.23076923076923,
+     "improvement_ci90": [
+      -4.13793103448276,
+      2.6699029126213585
+     ],
+     "improvement_natural": -0.6410256410256423
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 28.917107404728533,
+     "cell_natural": 28.8515406162465,
+     "comparator_equal_stratum": 24.194401737577376,
+     "comparator_natural": 24.649859943977592,
+     "improvement_ci90": [
+      -7.0287539936102235,
+      -1.724137931034484
+     ],
+     "improvement_natural": -4.201680672268907
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 5.9989440164881715,
+     "cell_natural": 6.049508715054731,
+     "comparator_equal_stratum": 7.014777902412305,
+     "comparator_natural": 7.052090212323147,
+     "improvement_ci90": [
+      0.669752782428839,
+      1.3461577566748684
+     ],
+     "improvement_natural": 1.002581497268416
+    },
+    "stratum": "Consumer Goods"
+   },
+   {
+    "calls": 5,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 24.186706829873092,
+     "cell_natural": 23.333333333333332,
+     "comparator_equal_stratum": 24.72998643679783,
+     "comparator_natural": 25.151515151515152,
+     "improvement_ci90": [
+      -2.7303754266211584,
+      6.727828746177373
+     ],
+     "improvement_natural": 1.8181818181818201
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 20.15975288400538,
+     "cell_natural": 20.640569395017792,
+     "comparator_equal_stratum": 15.580868006117175,
+     "comparator_natural": 17.081850533807827,
+     "improvement_ci90": [
+      -5.599999999999998,
+      -2.6128266033254164
+     ],
+     "improvement_natural": -3.5587188612099645
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 6.955013051686149,
+     "cell_natural": 7.749781978457115,
+     "comparator_equal_stratum": 7.799842941196728,
+     "comparator_natural": 8.723218705069884,
+     "improvement_ci90": [
+      0.6408629441624365,
+      1.182225845902975
+     ],
+     "improvement_natural": 0.9734367266127695
+    },
+    "stratum": "Financial"
+   },
+   {
+    "calls": 5,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 22.61676984137295,
+     "cell_natural": 20.240137221269297,
+     "comparator_equal_stratum": 26.067196645329563,
+     "comparator_natural": 23.499142367066895,
+     "improvement_ci90": [
+      0.882352941176471,
+      6.429780033840945
+     ],
+     "improvement_natural": 3.259005145797598
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 20.22356773357355,
+     "cell_natural": 19.169329073482427,
+     "comparator_equal_stratum": 18.878653663314832,
+     "comparator_natural": 19.488817891373802,
+     "improvement_ci90": [
+      -3.28638497652582,
+      2.4096385542168655
+     ],
+     "improvement_natural": 0.31948881789137573
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 6.961405129578945,
+     "cell_natural": 6.848935993579987,
+     "comparator_equal_stratum": 8.041215741709422,
+     "comparator_natural": 7.991808949276365,
+     "improvement_ci90": [
+      0.8271077908217714,
+      1.3482619145319177
+     ],
+     "improvement_natural": 1.1428729556963777
+    },
+    "stratum": "Healthcare"
+   },
+   {
+    "calls": 5,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 17.07987840609571,
+     "cell_natural": 15.193370165745856,
+     "comparator_equal_stratum": 19.958652898142514,
+     "comparator_natural": 17.12707182320442,
+     "improvement_ci90": [
+      0.7772020725388593,
+      4.18410041841004
+     ],
+     "improvement_natural": 1.933701657458565
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 25.657107120521754,
+     "cell_natural": 27.806122448979593,
+     "comparator_equal_stratum": 22.545951338634264,
+     "comparator_natural": 25.255102040816325,
+     "improvement_ci90": [
+      -5.373134328358212,
+      -0.44543429844097915
+     ],
+     "improvement_natural": -2.551020408163268
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 9.022184454734978,
+     "cell_natural": 9.401573008093013,
+     "comparator_equal_stratum": 10.171919579284951,
+     "comparator_natural": 10.662259204377065,
+     "improvement_ci90": [
+      0.692705725254549,
+      1.7384026781444275
+     ],
+     "improvement_natural": 1.2606861962840519
+    },
+    "stratum": "Industrial Goods"
+   },
+   {
+    "calls": 5,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 10.141671716432644,
+     "cell_natural": 12.421052631578947,
+     "comparator_equal_stratum": 12.358491152842749,
+     "comparator_natural": 14.736842105263158,
+     "improvement_ci90": [
+      -1.4117647058823533,
+      5.514157973174369
+     ],
+     "improvement_natural": 2.3157894736842106
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 25.509479563213784,
+     "cell_natural": 26.237623762376238,
+     "comparator_equal_stratum": 21.90085904628331,
+     "comparator_natural": 22.277227722772277,
+     "improvement_ci90": [
+      -8.13953488372093,
+      0.6329113924050631
+     ],
+     "improvement_natural": -3.9603960396039604
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 5.01735897772729,
+     "cell_natural": 5.366011343266038,
+     "comparator_equal_stratum": 6.130909929608592,
+     "comparator_natural": 6.46801257750742,
+     "improvement_ci90": [
+      0.8105399669889177,
+      1.3917374743627304
+     ],
+     "improvement_natural": 1.1020012342413823
+    },
+    "stratum": "Services"
+   },
+   {
+    "calls": 5,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 24.876534900764273,
+     "cell_natural": 21.55688622754491,
+     "comparator_equal_stratum": 21.603866093972435,
+     "comparator_natural": 20.35928143712575,
+     "improvement_ci90": [
+      -7.88530465949821,
+      3.8461538461538467
+     ],
+     "improvement_natural": -1.1976047904191631
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 32.540450588837686,
+     "cell_natural": 31.976744186046513,
+     "comparator_equal_stratum": 26.966717869943675,
+     "comparator_natural": 26.162790697674417,
+     "improvement_ci90": [
+      -10.90909090909091,
+      -1.2658227848101262
+     ],
+     "improvement_natural": -5.813953488372096
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 8.852295832230954,
+     "cell_natural": 8.395535650813962,
+     "comparator_equal_stratum": 9.718428649270736,
+     "comparator_natural": 9.152626715006754,
+     "improvement_ci90": [
+      0.3961713079436695,
+      1.2145941073207762
+     ],
+     "improvement_natural": 0.7570910641927924
+    },
+    "stratum": "Technology"
+   },
+   {
+    "calls": 5,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 11.709639059374792,
+     "cell_natural": 10.050251256281408,
+     "comparator_equal_stratum": 11.675102126381596,
+     "comparator_natural": 10.150753768844222,
+     "improvement_ci90": [
+      -0.76923076923077,
+      0.8538899430740043
+     ],
+     "improvement_natural": 0.10050251256281406
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 24.800415439702487,
+     "cell_natural": 24.146981627296586,
+     "comparator_equal_stratum": 26.955769842257336,
+     "comparator_natural": 26.509186351706038,
+     "improvement_ci90": [
+      1.366120218579237,
+      3.186274509803919
+     ],
+     "improvement_natural": 2.3622047244094517
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 6.715393076366217,
+     "cell_natural": 6.775969756738988,
+     "comparator_equal_stratum": 7.946981124747163,
+     "comparator_natural": 8.0456936226167,
+     "improvement_ci90": [
+      0.9570835055358584,
+      1.759374105524282
+     ],
+     "improvement_natural": 1.2697238658777117
+    },
+    "stratum": "Utilities"
+   }
+  ],
+  "units_per_call_tertile": [
+   {
+    "calls": 15,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 16.6412996907602,
+     "cell_natural": 15.389116442363955,
+     "comparator_equal_stratum": 17.090913331740367,
+     "comparator_natural": 15.974253949678175,
+     "improvement_ci90": [
+      -0.8219258520419241,
+      2.1290033533874535
+     ],
+     "improvement_natural": 0.5851375073142204
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 26.371825784908285,
+     "cell_natural": 25.904486251808972,
+     "comparator_equal_stratum": 24.473548195217983,
+     "comparator_natural": 24.384949348769897,
+     "improvement_ci90": [
+      -3.0013692500983713,
+      -0.1569429789570324
+     ],
+     "improvement_natural": -1.519536903039075
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 7.472043946454257,
+     "cell_natural": 7.596169057963078,
+     "comparator_equal_stratum": 8.568690039526105,
+     "comparator_natural": 8.694461684494907,
+     "improvement_ci90": [
+      0.9376689174652547,
+      1.2807128195537825
+     ],
+     "improvement_natural": 1.0982926265318298
+    },
+    "stratum": "HIGH"
+   },
+   {
+    "calls": 14,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 19.159047059370742,
+     "cell_natural": 16.374269005847953,
+     "comparator_equal_stratum": 20.200038705276928,
+     "comparator_natural": 17.46031746031746,
+     "improvement_ci90": [
+      -1.0468573674667474,
+      3.537414965986393
+     ],
+     "improvement_natural": 1.0860484544695055
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 26.64786389441151,
+     "cell_natural": 27.38738738738739,
+     "comparator_equal_stratum": 21.94945147318334,
+     "comparator_natural": 22.52252252252252,
+     "improvement_ci90": [
+      -7.113899312070047,
+      -2.4690342755035757
+     ],
+     "improvement_natural": -4.864864864864867
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 6.20669793512045,
+     "cell_natural": 6.097715289982426,
+     "comparator_equal_stratum": 7.300874769854739,
+     "comparator_natural": 7.157820738137082,
+     "improvement_ci90": [
+      0.8963269277209049,
+      1.2255142202394997
+     ],
+     "improvement_natural": 1.0601054481546566
+    },
+    "stratum": "LOW"
+   },
+   {
+    "calls": 15,
+    "conec_org_wer_percent": {
+     "cell_equal_stratum": 20.25793596654111,
+     "cell_natural": 18.531228551818806,
+     "comparator_equal_stratum": 18.8878092983987,
+     "comparator_natural": 18.462594371997255,
+     "improvement_ci90": [
+      -2.5151836930585723,
+      1.9174084148785009
+     ],
+     "improvement_natural": -0.06863417982155084
+    },
+    "conec_person_wer_percent": {
+     "cell_equal_stratum": 21.380669113107654,
+     "cell_natural": 21.122448979591837,
+     "comparator_equal_stratum": 19.61228256023312,
+     "comparator_natural": 19.79591836734694,
+     "improvement_ci90": [
+      -3.0528117359413187,
+      0.2823002320239272
+     ],
+     "improvement_natural": -1.3265306122448983
+    },
+    "corpus_wer_percent": {
+     "cell_equal_stratum": 7.237024911024213,
+     "cell_natural": 7.164464897742449,
+     "comparator_equal_stratum": 8.094507127405768,
+     "comparator_natural": 8.141181392504867,
+     "improvement_ci90": [
+      0.7084487347460616,
+      1.2332209025691727
+     ],
+     "improvement_natural": 0.9767164947624183
+    },
+    "stratum": "MID"
+   }
+  ]
+ },
+ "study": "speech-aware-evidence-acquisition",
+ "unit_grain_distribution": {
+  "cut_kind": [
+   {
+    "errors": 88,
+    "reference_words": 1170,
+    "stratum": "call-end",
+    "units": 44,
+    "wer_percent_equal_stratum": 9.6718,
+    "wer_percent_natural_mixture": 7.521367521367521
+   },
+   {
+    "errors": 146,
+    "reference_words": 3115,
+    "stratum": "forced-cap-split",
+    "units": 15,
+    "wer_percent_equal_stratum": 4.7489,
+    "wer_percent_natural_mixture": 4.686998394863563
+   },
+   {
+    "errors": 23815,
+    "reference_words": 335985,
+    "stratum": "pause",
+    "units": 4387,
+    "wer_percent_equal_stratum": 10.9119,
+    "wer_percent_natural_mixture": 7.0881140527106865
+   },
+   {
+    "errors": 1677,
+    "reference_words": 19495,
+    "stratum": "turn-boundary",
+    "units": 676,
+    "wer_percent_equal_stratum": 15.4127,
+    "wer_percent_natural_mixture": 8.602205693767633
+   }
+  ],
+  "dominance": [
+   {
+    "errors": 25326,
+    "reference_words": 357857,
+    "stratum": "dominated",
+    "units": 4916,
+    "wer_percent_equal_stratum": 10.6774,
+    "wer_percent_natural_mixture": 7.077128573704021
+   },
+   {
+    "errors": 322,
+    "reference_words": 1638,
+    "stratum": "shared",
+    "units": 147,
+    "wer_percent_equal_stratum": 35.3559,
+    "wer_percent_natural_mixture": 19.65811965811966
+   },
+   {
+    "errors": 78,
+    "reference_words": 270,
+    "stratum": "silent",
+    "units": 59,
+    "wer_percent_equal_stratum": 22.822,
+    "wer_percent_natural_mixture": 28.88888888888889
+   }
+  ],
+  "reference_word_presence": [
+   {
+    "errors": 25716,
+    "reference_words": 359765,
+    "stratum": "has-reference-word",
+    "units": 5121,
+    "wer_percent_equal_stratum": 11.4587,
+    "wer_percent_natural_mixture": 7.147999388489708
+   },
+   {
+    "errors": 10,
+    "reference_words": 0,
+    "stratum": "no-reference-word",
+    "units": 1,
+    "wer_percent_equal_stratum": null,
+    "wer_percent_natural_mixture": null
+   }
+  ],
+  "speaker_count": [
+   {
+    "errors": 78,
+    "reference_words": 270,
+    "stratum": "speakers=0",
+    "units": 59,
+    "wer_percent_equal_stratum": 22.822,
+    "wer_percent_natural_mixture": 28.88888888888889
+   },
+   {
+    "errors": 20984,
+    "reference_words": 307602,
+    "stratum": "speakers=1",
+    "units": 3898,
+    "wer_percent_equal_stratum": 9.9765,
+    "wer_percent_natural_mixture": 6.821802198945391
+   },
+   {
+    "errors": 4490,
+    "reference_words": 50483,
+    "stratum": "speakers=2",
+    "units": 1126,
+    "wer_percent_equal_stratum": 15.9668,
+    "wer_percent_natural_mixture": 8.894083156706218
+   },
+   {
+    "errors": 174,
+    "reference_words": 1410,
+    "stratum": "speakers>=3",
+    "units": 39,
+    "wer_percent_equal_stratum": 19.6735,
+    "wer_percent_natural_mixture": 12.340425531914894
+   }
+  ],
+  "unit_length": [
+   {
+    "errors": 2635,
+    "reference_words": 20980,
+    "stratum": "1-10s",
+    "units": 2006,
+    "wer_percent_equal_stratum": 17.4633,
+    "wer_percent_natural_mixture": 12.559580552907532
+   },
+   {
+    "errors": 13148,
+    "reference_words": 181746,
+    "stratum": "10-60s",
+    "units": 2284,
+    "wer_percent_equal_stratum": 8.1458,
+    "wer_percent_natural_mixture": 7.2342720059863765
+   },
+   {
+    "errors": 9943,
+    "reference_words": 157039,
+    "stratum": ">=60s",
+    "units": 832,
+    "wer_percent_equal_stratum": 6.5049,
+    "wer_percent_natural_mixture": 6.331548214137889
+   }
+  ]
+ }
+}

@@ -1,0 +1,138 @@
+{
+ "run_id": "SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1",
+ "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1",
+ "bundles": [
+  {
+   "job_id": "corpus-wer-anchor",
+   "scorer": "asr-wer-whisper",
+   "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-corpus-wer-anchor/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.run-manifest.json",
+   "manifest_sha256": "1c0cd620cf458722ae42832a66f31ce4c8eaccd9d46203ace683d070ed449a6b",
+   "artifacts": {
+    "outputs": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.outputs.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-corpus-wer-anchor/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.outputs.jsonl",
+     "sha256": "e743ddc4e5ebf3695989f46d6fde26a7140d963b1b401d2686f8eca7a4c0542d"
+    },
+    "raw_trace": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-corpus-wer-anchor/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace.jsonl",
+     "sha256": "f70d6635b0ae62041edc415e73288523453fd49e3b824b13577a1e7d1c54f8d5"
+    },
+    "trace_manifest": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace-manifest.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-corpus-wer-anchor/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace-manifest.json",
+     "sha256": "9501ebc1766d8cb28427f8bf517c8fdd2d8e9b72349c75bc8aa8f43768acc0c9"
+    },
+    "scores": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.scores.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-corpus-wer-anchor/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.scores.json",
+     "sha256": "eead19e988615737d8c175975e64a407d9da4c2184bbc1168fe05ed89dfb940f"
+    },
+    "session_receipt": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np6-c36864-20260908/session-receipt.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-corpus-wer-anchor/session-receipt.json",
+     "sha256": "de3ff63066262a3d5e6593fa579b0cc43c572048dc212594ed8b12e3aa02e7fc"
+    }
+   }
+  },
+  {
+   "job_id": "conec-entity-wer",
+   "scorer": "conec-entity-wer-official",
+   "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-conec-entity-wer/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.run-manifest.json",
+   "manifest_sha256": "a39dc1f2b2901dca31d06737b218f217d5b15684f192bd7e2b34fc88eb267f6e",
+   "artifacts": {
+    "outputs": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.outputs.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-conec-entity-wer/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.outputs.jsonl",
+     "sha256": "e743ddc4e5ebf3695989f46d6fde26a7140d963b1b401d2686f8eca7a4c0542d"
+    },
+    "raw_trace": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-conec-entity-wer/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace.jsonl",
+     "sha256": "f70d6635b0ae62041edc415e73288523453fd49e3b824b13577a1e7d1c54f8d5"
+    },
+    "trace_manifest": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace-manifest.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-conec-entity-wer/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace-manifest.json",
+     "sha256": "9501ebc1766d8cb28427f8bf517c8fdd2d8e9b72349c75bc8aa8f43768acc0c9"
+    },
+    "scores": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.scores.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-conec-entity-wer/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.scores.json",
+     "sha256": "eead19e988615737d8c175975e64a407d9da4c2184bbc1168fe05ed89dfb940f"
+    },
+    "session_receipt": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np6-c36864-20260908/session-receipt.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-conec-entity-wer/session-receipt.json",
+     "sha256": "de3ff63066262a3d5e6593fa579b0cc43c572048dc212594ed8b12e3aa02e7fc"
+    }
+   }
+  },
+  {
+   "job_id": "numeric-value-accuracy",
+   "scorer": "numeric-value-accuracy-v1",
+   "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-numeric-value-accuracy/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.run-manifest.json",
+   "manifest_sha256": "91d1be18f8a754d8609f5d64cf79ab0572759db0e70663a50aa512ed01832f6a",
+   "artifacts": {
+    "outputs": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.outputs.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-numeric-value-accuracy/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.outputs.jsonl",
+     "sha256": "e743ddc4e5ebf3695989f46d6fde26a7140d963b1b401d2686f8eca7a4c0542d"
+    },
+    "raw_trace": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-numeric-value-accuracy/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace.jsonl",
+     "sha256": "f70d6635b0ae62041edc415e73288523453fd49e3b824b13577a1e7d1c54f8d5"
+    },
+    "trace_manifest": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace-manifest.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-numeric-value-accuracy/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace-manifest.json",
+     "sha256": "9501ebc1766d8cb28427f8bf517c8fdd2d8e9b72349c75bc8aa8f43768acc0c9"
+    },
+    "scores": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.scores.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-numeric-value-accuracy/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.scores.json",
+     "sha256": "eead19e988615737d8c175975e64a407d9da4c2184bbc1168fe05ed89dfb940f"
+    },
+    "session_receipt": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np6-c36864-20260908/session-receipt.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-numeric-value-accuracy/session-receipt.json",
+     "sha256": "de3ff63066262a3d5e6593fa579b0cc43c572048dc212594ed8b12e3aa02e7fc"
+    }
+   }
+  },
+  {
+   "job_id": "semantic-high-impact",
+   "scorer": "semantic-high-impact-error-rate-v1",
+   "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-semantic-high-impact/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.run-manifest.json",
+   "manifest_sha256": "c8b35e448ed188bb8f828c40d0a7f8b80a0a838107b1fe9260cb7f5920b7fc3f",
+   "artifacts": {
+    "outputs": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.outputs.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-semantic-high-impact/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.outputs.jsonl",
+     "sha256": "e743ddc4e5ebf3695989f46d6fde26a7140d963b1b401d2686f8eca7a4c0542d"
+    },
+    "raw_trace": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-semantic-high-impact/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace.jsonl",
+     "sha256": "f70d6635b0ae62041edc415e73288523453fd49e3b824b13577a1e7d1c54f8d5"
+    },
+    "trace_manifest": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace-manifest.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-semantic-high-impact/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.trace-manifest.json",
+     "sha256": "9501ebc1766d8cb28427f8bf517c8fdd2d8e9b72349c75bc8aa8f43768acc0c9"
+    },
+    "scores": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.scores.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-semantic-high-impact/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1.scores.json",
+     "sha256": "eead19e988615737d8c175975e64a407d9da4c2184bbc1168fe05ed89dfb940f"
+    },
+    "session_receipt": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np6-c36864-20260908/session-receipt.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/scoring-read-SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/rescore-semantic-high-impact/session-receipt.json",
+     "sha256": "de3ff63066262a3d5e6593fa579b0cc43c572048dc212594ed8b12e3aa02e7fc"
+    }
+   }
+  }
+ ]
+}

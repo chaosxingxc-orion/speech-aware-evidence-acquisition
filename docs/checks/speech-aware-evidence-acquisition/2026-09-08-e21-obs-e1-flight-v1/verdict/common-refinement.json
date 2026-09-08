@@ -1,0 +1,314 @@
+{
+ "comparator": {
+  "attempt_id": "attempt-20260904T233816Z-bcd338",
+  "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2"
+ },
+ "conservation": {
+  "cell_errors": 25726,
+  "cell_reference_words": 359765,
+  "comparator_errors": 29499,
+  "comparator_reference_words": 359765
+ },
+ "corpus_wer": {
+  "cell": 7.150778980723528,
+  "clusters": 1593,
+  "comparator": 8.19951913054355,
+  "improvement_ci90": [
+   0.9252913544660756,
+   1.174511406774117
+  ],
+  "improvement_point": 1.0487401498200217,
+  "windows": 1593
+ },
+ "org": {
+  "cell": 16.708686683474674,
+  "clusters": 1593,
+  "comparator": 17.212926885170756,
+  "improvement_ci90": [
+   -0.5743174410042078,
+   1.5750083536576522
+  ],
+  "improvement_point": 0.5042402016960814,
+  "windows": 1593
+ },
+ "per_window_strata": {
+  "dominance": [
+   {
+    "corpus_wer": {
+     "cell": 6.920993802366369,
+     "clusters": 1461,
+     "comparator": 8.02511768233947,
+     "improvement_ci90": [
+      0.9753963912629734,
+      1.233685844782218
+     ],
+     "improvement_point": 1.104123879973101,
+     "windows": 1461
+    },
+    "equal_stratum_cell_wer": 7.01521864902035,
+    "equal_stratum_comparator_wer": 8.129104489123227,
+    "harms": 279,
+    "person": {
+     "cell": 24.18426103646833,
+     "clusters": 1461,
+     "comparator": 21.919385796545107,
+     "improvement_ci90": [
+      -3.470283207020344,
+      -1.140706286163119
+     ],
+     "improvement_point": -2.2648752399232244,
+     "windows": 1461
+    },
+    "saves": 1019,
+    "stratum": "all-dominated",
+    "ties": 163,
+    "windows": 1461
+   },
+   {
+    "corpus_wer": {
+     "cell": 9.710179155841965,
+     "clusters": 127,
+     "comparator": 10.14204257903438,
+     "improvement_ci90": [
+      0.12563310788183485,
+      0.7475685347888058
+     ],
+     "improvement_point": 0.43186342319241433,
+     "windows": 127
+    },
+    "equal_stratum_cell_wer": 10.067039948334171,
+    "equal_stratum_comparator_wer": 10.52468967780748,
+    "harms": 47,
+    "person": {
+     "cell": 27.884615384615383,
+     "clusters": 127,
+     "comparator": 27.243589743589745,
+     "improvement_ci90": [
+      -4.49438202247191,
+      2.7681660899653977
+     ],
+     "improvement_point": -0.6410256410256387,
+     "windows": 127
+    },
+    "saves": 66,
+    "stratum": "any-shared",
+    "ties": 14,
+    "windows": 127
+   }
+  ],
+  "unit_length": [
+   {
+    "corpus_wer": {
+     "cell": 0.0,
+     "clusters": 1,
+     "comparator": 36.36363636363637,
+     "improvement_ci90": [
+      36.36363636363637,
+      36.36363636363637
+     ],
+     "improvement_point": 36.36363636363637,
+     "windows": 1
+    },
+    "equal_stratum_cell_wer": 0.0,
+    "equal_stratum_comparator_wer": 36.36363636363637,
+    "harms": 0,
+    "person": {
+     "cell": 0.0,
+     "clusters": 1,
+     "comparator": 0.0,
+     "improvement_ci90": [
+      0.0,
+      0.0
+     ],
+     "improvement_point": 0.0,
+     "windows": 1
+    },
+    "saves": 1,
+    "stratum": "all units < 10 s",
+    "ties": 0,
+    "windows": 1
+   },
+   {
+    "corpus_wer": {
+     "cell": 7.603895835912674,
+     "clusters": 429,
+     "comparator": 8.581981758903883,
+     "improvement_ci90": [
+      0.702015305083265,
+      1.318640409570729
+     ],
+     "improvement_point": 0.9780859229912089,
+     "windows": 429
+    },
+    "equal_stratum_cell_wer": 7.559888329570214,
+    "equal_stratum_comparator_wer": 8.485290421290305,
+    "harms": 111,
+    "person": {
+     "cell": 26.239669421487605,
+     "clusters": 429,
+     "comparator": 23.450413223140497,
+     "improvement_ci90": [
+      -4.609612164154708,
+      -1.0161570936196187
+     ],
+     "improvement_point": -2.7892561983471076,
+     "windows": 429
+    },
+    "saves": 259,
+    "stratum": "longest unit 10-60 s",
+    "ties": 59,
+    "windows": 429
+   },
+   {
+    "corpus_wer": {
+     "cell": 6.983982041623864,
+     "clusters": 1158,
+     "comparator": 8.057299395046227,
+     "improvement_ci90": [
+      0.9494932793897457,
+      1.203618122759969
+     ],
+     "improvement_point": 1.0733173534223637,
+     "windows": 1158
+    },
+    "equal_stratum_cell_wer": 7.154193805070424,
+    "equal_stratum_comparator_wer": 8.23549569999431,
+    "harms": 215,
+    "person": {
+     "cell": 23.755772190867113,
+     "clusters": 1158,
+     "comparator": 22.011287839917905,
+     "improvement_ci90": [
+      -3.0476290568776148,
+      -0.5577869551331275
+     ],
+     "improvement_point": -1.7444843509492074,
+     "windows": 1158
+    },
+    "saves": 825,
+    "stratum": "longest unit >= 60 s",
+    "ties": 118,
+    "windows": 1158
+   }
+  ],
+  "units_bucket": [
+   {
+    "corpus_wer": {
+     "cell": 0.0,
+     "clusters": 2,
+     "comparator": 17.647058823529413,
+     "improvement_ci90": [
+      8.695652173913043,
+      36.36363636363637
+     ],
+     "improvement_point": 17.647058823529413,
+     "windows": 2
+    },
+    "equal_stratum_cell_wer": 0.0,
+    "equal_stratum_comparator_wer": 22.529644268774703,
+    "harms": 0,
+    "person": {
+     "cell": 0.0,
+     "clusters": 2,
+     "comparator": 0.0,
+     "improvement_ci90": [
+      0.0,
+      0.0
+     ],
+     "improvement_point": 0.0,
+     "windows": 2
+    },
+    "saves": 2,
+    "stratum": "1 unit",
+    "ties": 0,
+    "windows": 2
+   },
+   {
+    "corpus_wer": {
+     "cell": 6.508048729653408,
+     "clusters": 1091,
+     "comparator": 7.6678504436098525,
+     "improvement_ci90": [
+      1.0407408143535317,
+      1.285518458876506
+     ],
+     "improvement_point": 1.159801713956444,
+     "windows": 1091
+    },
+    "equal_stratum_cell_wer": 6.614889597238222,
+    "equal_stratum_comparator_wer": 7.764645556457785,
+    "harms": 176,
+    "person": {
+     "cell": 21.496512365250474,
+     "clusters": 1091,
+     "comparator": 20.608750792644262,
+     "improvement_ci90": [
+      -2.216650238002817,
+      0.42949240471656497
+     ],
+     "improvement_point": -0.8877615726062125,
+     "windows": 1091
+    },
+    "saves": 794,
+    "stratum": "2-4 units",
+    "ties": 121,
+    "windows": 1091
+   },
+   {
+    "corpus_wer": {
+     "cell": 8.520089712606708,
+     "clusters": 495,
+     "comparator": 9.327677034615853,
+     "improvement_ci90": [
+      0.5708698972770554,
+      1.07405438333889
+     ],
+     "improvement_point": 0.8075873220091445,
+     "windows": 495
+    },
+    "equal_stratum_cell_wer": 8.708896907212669,
+    "equal_stratum_comparator_wer": 9.48882759001534,
+    "harms": 150,
+    "person": {
+     "cell": 28.208955223880597,
+     "clusters": 495,
+     "comparator": 24.70149253731343,
+     "improvement_ci90": [
+      -5.065903933434193,
+      -1.9909802249139896
+     ],
+     "improvement_point": -3.507462686567166,
+     "windows": 495
+    },
+    "saves": 289,
+    "stratum": ">=5 units",
+    "ties": 56,
+    "windows": 495
+   }
+  ]
+ },
+ "person": {
+  "cell": 24.580047994514914,
+  "clusters": 1593,
+  "comparator": 22.488858416181007,
+  "improvement_ci90": [
+   -3.1701161159392903,
+   -1.097764311303227
+  ],
+  "improvement_point": -2.091189578333907,
+  "windows": 1593
+ },
+ "run_id": "SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1",
+ "saves_harms_ties": {
+  "convention": "a window is a SAVE when the cell makes strictly fewer whole-string alignment errors than the comparator on that window's own reference range",
+  "harms": 326,
+  "n": 1588,
+  "saves": 1085,
+  "ties": 177
+ },
+ "schema": "saea-e21-obs-e1-common-refinement-v1",
+ "study": "speech-aware-evidence-acquisition",
+ "what_this_is": "section 4's preregistered SECONDARY read: BOTH arms' alignment operations charged to the SEALED 90-second window grid by REFERENCE index. It buys a saves / harms / ties count and the per-window strata, NOT power; the honest interval is the primary's 44-cluster one.",
+ "windows_total": 1593,
+ "windows_with_reference_words": 1588
+}
