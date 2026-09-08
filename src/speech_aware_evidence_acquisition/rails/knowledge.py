@@ -8,7 +8,12 @@ accidentally mixed together:
 * USE consumes that frozen snapshot from a disjoint DEV query partition.
   Every :class:`QueryState` keeps the original speech-feature packet bound;
   agent state and previously retrieved values are auxiliary references, never
-  a replacement text-only query.
+  a replacement text-only query. Since 2026-09-08 the packet may ADVANCE
+  within a trajectory, but only to a :class:`SpeechPacketDerivation` of the
+  packet the trajectory started from -- a re-cut span, an enhanced copy, or a
+  re-encoded unit of the SAME media. The rule that motivated the freeze is
+  untouched: the query is still this sample's own speech, never agent text,
+  and never audio the original media does not contain.
 
 The contracts deliberately do not prescribe one task, one label vocabulary,
 or one retrieval implementation.  A key is a collection of independently
@@ -37,6 +42,7 @@ RANK_RESULT_VERSION = "knowledge-rank-result-v1"
 FUSION_DECISION_VERSION = "knowledge-fusion-decision-v1"
 AGENT_STEP_TRANSITION_VERSION = "knowledge-agent-step-transition-v1"
 AGENT_STATE_ARTIFACT_VERSION = "knowledge-agent-state-artifact-v1"
+SPEECH_PACKET_DERIVATION_VERSION = "knowledge-speech-packet-derivation-v1"
 
 AGENT_ACTION_KINDS = frozenset(
     {
@@ -47,9 +53,28 @@ AGENT_ACTION_KINDS = frozenset(
         "contrast",
         "verify",
         "backtrack",
+        # OBS, not SUPPLY: the trajectory keeps listening to the SAME parent
+        # media through a registered derivation of its original speech packet
+        # (see :class:`SpeechPacketDerivation`). A relisten carries no
+        # knowledge delta at all -- it moves the observation and nothing else.
+        "relisten",
     }
 )
 _SUPPLY_ACTION_KINDS = frozenset({"acquire", "expand", "contrast"})
+
+# The closed list of ways a successor speech packet may differ from the
+# trajectory's original one. Every entry names a transform of the SAME parent
+# media that adds no new content: a narrower span of it, a pinned enhancement
+# of it, or the same span re-encoded. Anything that would introduce audio the
+# original media does not contain has no entry here and can therefore never be
+# spelled on a transition.
+SPEECH_PACKET_DERIVATION_KINDS = frozenset(
+    {
+        "recut-span",  # a re-cut span of the same media (selective re-listen)
+        "enhanced-copy",  # a pinned frozen enhancer applied to the same media
+        "reencoded-unit",  # the same audio re-encoded (rate, unit boundaries)
+    }
+)
 
 TRAIN_PARTITION_ROLE = "train"
 EXTERNAL_GOVERNED_PARTITION_ROLE = "external-governed"
@@ -914,6 +939,115 @@ class AgentStateArtifact:
 
 
 @dataclass(frozen=True)
+class SpeechPacketDerivation:
+    """One registered derivation of a trajectory's ORIGINAL speech packet.
+
+    The standing rule is that a DEV query is this sample's own speech and can
+    never become agent text (:meth:`QueryState.validate`). Until 2026-09-08
+    that rule was enforced by freezing ``speech_packet_id``/
+    ``speech_packet_sha256`` for the whole trajectory, which also made a
+    SELECTIVE RE-LISTEN -- listening again, more closely, to a span of the
+    same call -- unexpressible (assessment
+    ``2026-09-08-openjiuwen-implementation-assessment-v1.md`` §2.3).
+
+    This record is the narrow relaxation. It admits a successor packet only
+    when the successor is a transform, drawn from
+    :data:`SPEECH_PACKET_DERIVATION_KINDS`, of the packet the trajectory
+    STARTED from -- never of an intermediate derived packet, so a trajectory
+    can never drift away from its own media one derivation at a time, and
+    never of anything else, so foreign audio has no path in. Identity only:
+    this module reads no bytes and no filesystem (module docstring). The BYTE
+    chain is the separate, unchanged rail --
+    ``core.model.slices.SliceRegistry`` re-measures the parent media and the
+    cut file, exactly as ``obs-replay-loop`` already does for its re-cut
+    windows -- and ``rails.observe`` is what wires the two together.
+
+    ``derivation_params_hash`` is the canonical hash of the parameters that
+    governed the transform (the flagged span, the context margin, the kind),
+    so two derivations that claim the same output from different parameters
+    cannot both verify -- the same discipline
+    ``core.evidence_derivation.canonical_params_hash`` applies to derived
+    evidence text.
+    """
+
+    parent_packet_id: str
+    parent_packet_sha256: str
+    derived_packet_id: str
+    derived_packet_sha256: str
+    derivation_kind: str
+    derivation_params_hash: str
+    derivation_version: str = SPEECH_PACKET_DERIVATION_VERSION
+
+    def validate(self) -> "SpeechPacketDerivation":
+        _require_text(self.parent_packet_id, field="SpeechPacketDerivation.parent_packet_id")
+        _require_text(
+            self.derived_packet_id, field="SpeechPacketDerivation.derived_packet_id"
+        )
+        _require_sha256(
+            self.parent_packet_sha256,
+            field="SpeechPacketDerivation.parent_packet_sha256",
+        )
+        _require_sha256(
+            self.derived_packet_sha256,
+            field="SpeechPacketDerivation.derived_packet_sha256",
+        )
+        _require_sha256(
+            self.derivation_params_hash,
+            field="SpeechPacketDerivation.derivation_params_hash",
+        )
+        if self.derivation_version != SPEECH_PACKET_DERIVATION_VERSION:
+            raise RailsError(
+                "SpeechPacketDerivation.derivation_version must be "
+                f"{SPEECH_PACKET_DERIVATION_VERSION!r}"
+            )
+        if self.derivation_kind not in SPEECH_PACKET_DERIVATION_KINDS:
+            raise RailsError(
+                "SpeechPacketDerivation.derivation_kind must be one of "
+                f"{sorted(SPEECH_PACKET_DERIVATION_KINDS)}"
+            )
+        if self.derived_packet_id == self.parent_packet_id:
+            raise RailsError(
+                "a speech-packet derivation must produce a NEW packet id; reusing "
+                "the parent's id would make the derivation unaddressable"
+            )
+        if self.derived_packet_sha256 == self.parent_packet_sha256:
+            raise RailsError(
+                "a speech-packet derivation whose output hashes to its parent "
+                "derived nothing; refused"
+            )
+        return self
+
+    def as_json(self) -> dict[str, object]:
+        self.validate()
+        return {
+            "derivation_version": self.derivation_version,
+            "parent_packet_id": self.parent_packet_id,
+            "parent_packet_sha256": self.parent_packet_sha256,
+            "derived_packet_id": self.derived_packet_id,
+            "derived_packet_sha256": self.derived_packet_sha256,
+            "derivation_kind": self.derivation_kind,
+            "derivation_params_hash": self.derivation_params_hash,
+        }
+
+    def content_hash(self) -> str:
+        return content_hash(self.as_json())
+
+    @classmethod
+    def from_json(cls, document: Mapping[str, object]) -> "SpeechPacketDerivation":
+        return cls(
+            parent_packet_id=document["parent_packet_id"],
+            parent_packet_sha256=document["parent_packet_sha256"],
+            derived_packet_id=document["derived_packet_id"],
+            derived_packet_sha256=document["derived_packet_sha256"],
+            derivation_kind=document["derivation_kind"],
+            derivation_params_hash=document["derivation_params_hash"],
+            derivation_version=document.get(
+                "derivation_version", SPEECH_PACKET_DERIVATION_VERSION
+            ),
+        ).validate()
+
+
+@dataclass(frozen=True)
 class AgentStepTransition:
     """One speech-bound external AgentLoop decision and its information delta.
 
@@ -936,6 +1070,12 @@ class AgentStepTransition:
     new_facet_ids: tuple[str, ...] = ()
     used_facet_ids: tuple[str, ...] = ()
     dropped_facet_ids: tuple[str, ...] = ()
+    # OBS delta, present ONLY on a ``relisten`` step: the registered
+    # derivation that moves the observation from the trajectory's original
+    # speech packet to a re-cut/enhanced/re-encoded packet of the same media.
+    # ``None`` -- every step this repository has ever run -- keeps the
+    # transition's JSON and hash byte-identical to before the field existed.
+    speech_packet_derivation: "SpeechPacketDerivation | None" = None
     transition_version: str = AGENT_STEP_TRANSITION_VERSION
 
     def validate(self) -> "AgentStepTransition":
@@ -985,6 +1125,36 @@ class AgentStepTransition:
             )
         if set(self.new_facet_ids) & set(self.dropped_facet_ids):
             raise RailsError("AgentStepTransition cannot add and drop the same facet")
+
+        # The derivation record and the ``relisten`` kind are one object: a
+        # step that moves the observation says so in its action_kind, and a
+        # step that says ``relisten`` proves the move. Neither half is legal
+        # alone -- which is what lets any reader of a trace decide, from
+        # action_kind ALONE, whether the observation moved.
+        if self.speech_packet_derivation is not None:
+            if not isinstance(self.speech_packet_derivation, SpeechPacketDerivation):
+                raise RailsError(
+                    "AgentStepTransition.speech_packet_derivation must be a "
+                    "SpeechPacketDerivation"
+                )
+            if self.action_kind != "relisten":
+                raise RailsError(
+                    "only a 'relisten' AgentStepTransition may carry a speech-packet "
+                    f"derivation, got action_kind {self.action_kind!r}"
+                )
+            self.speech_packet_derivation.validate()
+        elif self.action_kind == "relisten":
+            raise RailsError(
+                "a 'relisten' AgentStepTransition requires its speech-packet "
+                "derivation record; an unregistered observation change is refused"
+            )
+        if self.action_kind == "relisten" and (
+            self.new_agent_state_ids or self.used_value_ids or self.used_facet_ids
+        ):
+            raise RailsError(
+                "relisten changes only the observation: it cannot create agent "
+                "state or claim knowledge use"
+            )
 
         if self.action_kind == "stop":
             if self.next_query_state_sha256 is not None or any(
@@ -1054,7 +1224,7 @@ class AgentStepTransition:
 
     def as_json(self) -> dict[str, object]:
         self.validate()
-        return {
+        document: dict[str, object] = {
             "transition_version": self.transition_version,
             "snapshot_sha256": self.snapshot_sha256,
             "prior_query_state_sha256": self.prior_query_state_sha256,
@@ -1070,12 +1240,22 @@ class AgentStepTransition:
             "used_facet_ids": list(self.used_facet_ids),
             "dropped_facet_ids": list(self.dropped_facet_ids),
         }
+        # Emitted only when a derivation exists, so every transition this
+        # repository has already sealed keeps its exact JSON bytes and its
+        # exact content hash (the "today's steps unchanged byte for byte"
+        # requirement of the 2026-09-08 change list, item 3).
+        if self.speech_packet_derivation is not None:
+            document["speech_packet_derivation"] = (
+                self.speech_packet_derivation.as_json()
+            )
+        return document
 
     def content_hash(self) -> str:
         return content_hash(self.as_json())
 
     @classmethod
     def from_json(cls, document: Mapping[str, object]) -> "AgentStepTransition":
+        derivation_document = document.get("speech_packet_derivation")
         return cls(
             snapshot_sha256=document["snapshot_sha256"],
             prior_query_state_sha256=document["prior_query_state_sha256"],
@@ -1090,10 +1270,92 @@ class AgentStepTransition:
             new_facet_ids=tuple(document.get("new_facet_ids", [])),
             used_facet_ids=tuple(document.get("used_facet_ids", [])),
             dropped_facet_ids=tuple(document.get("dropped_facet_ids", [])),
+            speech_packet_derivation=(
+                None
+                if derivation_document is None
+                else SpeechPacketDerivation.from_json(derivation_document)
+            ),
             transition_version=document.get(
                 "transition_version", AGENT_STEP_TRANSITION_VERSION
             ),
         ).validate()
+
+
+def _assert_speech_packet_binding(
+    *,
+    prior_query_state: QueryState,
+    next_query_state: QueryState,
+    transition: AgentStepTransition,
+    origin_speech_packet: tuple[str, str] | None,
+) -> None:
+    """The observation half of :func:`assert_agent_step_binding`.
+
+    Two outcomes, and only two. The successor either keeps the prior step's
+    exact packet -- the historical rule, the case every sealed run took, and
+    the case in which a derivation record would be a lie and is refused -- or
+    it carries a :class:`SpeechPacketDerivation` whose parent is the
+    trajectory's ORIGINAL packet and whose output is exactly the successor's
+    packet. An unregistered swap falls through to the historical refusal,
+    word for word, so a trace reader (and every existing test that matches on
+    it) sees the same sentence it always did.
+    """
+
+    if origin_speech_packet is None:
+        origin = (
+            prior_query_state.speech_packet_id,
+            prior_query_state.speech_packet_sha256,
+        )
+    else:
+        if (
+            not isinstance(origin_speech_packet, tuple)
+            or len(origin_speech_packet) != 2
+        ):
+            raise RailsError(
+                "origin_speech_packet must be a (packet_id, packet_sha256) pair"
+            )
+        origin = (
+            _require_text(
+                origin_speech_packet[0], field="origin_speech_packet.packet_id"
+            ),
+            _require_sha256(
+                origin_speech_packet[1], field="origin_speech_packet.packet_sha256"
+            ),
+        )
+    prior_packet = (
+        prior_query_state.speech_packet_id,
+        prior_query_state.speech_packet_sha256,
+    )
+    next_packet = (
+        next_query_state.speech_packet_id,
+        next_query_state.speech_packet_sha256,
+    )
+    derivation = transition.speech_packet_derivation
+    if next_packet == prior_packet:
+        if derivation is not None:
+            raise RailsError(
+                "a speech-packet derivation that derives nothing is refused: the "
+                "successor QueryState carries the prior step's own packet"
+            )
+        return
+    if derivation is None:
+        raise RailsError(
+            "AgentStepTransition must keep the same original speech packet and "
+            "DEV query binding across every step"
+        )
+    derivation.validate()
+    if (derivation.parent_packet_id, derivation.parent_packet_sha256) != origin:
+        raise RailsError(
+            "a speech-packet derivation must chain to this trajectory's ORIGINAL "
+            f"speech packet {origin[0]!r}/{origin[1][:12]}..., but names parent "
+            f"{derivation.parent_packet_id!r}/{derivation.parent_packet_sha256[:12]}..."
+        )
+    if (derivation.derived_packet_id, derivation.derived_packet_sha256) != next_packet:
+        raise RailsError(
+            "the speech-packet derivation does not produce the successor "
+            f"QueryState's packet: derivation yields {derivation.derived_packet_id!r}"
+            f"/{derivation.derived_packet_sha256[:12]}..., the successor binds "
+            f"{next_packet[0]!r}/{next_packet[1][:12]}..."
+        )
 
 
 def assert_agent_step_binding(
@@ -1103,8 +1365,21 @@ def assert_agent_step_binding(
     next_query_state: QueryState | None,
     transition: AgentStepTransition,
     snapshot_sha256: str | None = None,
+    origin_speech_packet: tuple[str, str] | None = None,
 ) -> None:
     """Prove one Agent step preserves speech and reports its exact delta.
+
+    ``origin_speech_packet`` is the ``(packet_id, packet_sha256)`` this
+    trajectory STARTED from -- the only packet a registered derivation may
+    name as its parent. ``None``, the default and every caller written before
+    2026-09-08, means "the prior step's own packet", which reproduces the
+    historical rule exactly: with no derivation on the transition the packet
+    is frozen for the whole trajectory, and the refusal message is unchanged.
+    A driver that runs an Observer step (``rails.observe``) passes the
+    trajectory's initial packet here, so a second re-listen still chains to
+    the ORIGINAL media rather than to the first re-listen's own cut -- the
+    successor ``QueryState`` itself carries no origin field, so no controller
+    has to learn to propagate one.
 
     ``snapshot_sha256``, when given, must be the caller's own already-computed
     ``snapshot.content_hash()`` (only format-checked here, not recomputed
@@ -1150,8 +1425,6 @@ def assert_agent_step_binding(
 
     stable_query_fields = (
         "query_sample_id",
-        "speech_packet_id",
-        "speech_packet_sha256",
         "use_split_identity_hash",
         "use_partition_role",
         "query_source",
@@ -1164,6 +1437,12 @@ def assert_agent_step_binding(
             "AgentStepTransition must keep the same original speech packet and "
             "DEV query binding across every step"
         )
+    _assert_speech_packet_binding(
+        prior_query_state=prior_query_state,
+        next_query_state=next_query_state,
+        transition=transition,
+        origin_speech_packet=origin_speech_packet,
+    )
     if next_query_state.loop_step != prior_query_state.loop_step + 1:
         raise RailsError(
             "AgentStepTransition successor loop_step must increment by exactly one"
@@ -1369,6 +1648,9 @@ __all__ = [
     "RANK_RESULT_VERSION",
     "RankResult",
     "RankedFacet",
+    "SPEECH_PACKET_DERIVATION_KINDS",
+    "SPEECH_PACKET_DERIVATION_VERSION",
+    "SpeechPacketDerivation",
     "TRAIN_PARTITION_ROLE",
     "ValueBundle",
     "assert_agent_step_binding",
