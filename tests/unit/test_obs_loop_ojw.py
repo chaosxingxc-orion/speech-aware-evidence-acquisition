@@ -67,6 +67,15 @@ from speech_aware_evidence_acquisition.reproduction.ojw import OJW_POLICY_NAME  
 from speech_aware_evidence_acquisition.reproduction.ojw.components import (  # noqa: E402
     FrozenCoreASR,
 )
+from speech_aware_evidence_acquisition.reproduction.ojw.policy import (  # noqa: E402
+    ObsAgentLoopOjwPolicy,
+)
+from speech_aware_evidence_acquisition.reproduction import repair_loop  # noqa: E402
+from speech_aware_evidence_acquisition.reproduction.repair_loop import (  # noqa: E402
+    OBS_REPAIR_LOOP_OJW_POLICY_NAME,
+    ObsRepairLoopOjwPolicy,
+    build_repair_window_hook,
+)
 
 from test_obs_loop_policy import (  # noqa: E402
     RUN_ID,
@@ -209,6 +218,56 @@ def _scenario(name):
             values=_plan_values(PLAN_RELPATH, hashlib.sha256(raw).hexdigest()),
             plan_bytes=raw,
         )
+    if name == "window-hook":
+        # KC-E1f's per-window seam (drift #2 of the 2026-09-08 openJiuwen
+        # assessment, closed by the Decision 12-F port). The hook moves BOTH
+        # legs a second-pass policy needs -- what each window is asked (a
+        # per-window instruction suffix that lands verbatim in that window's
+        # request payload) and what each window delivers (a rewritten span
+        # plus its own OBS fields) -- so equality of payloads, OBS records,
+        # stitched text and outcome here is exactly the statement that the
+        # openJiuwen graph runs the same seam as the plain policy's own
+        # sequential cutter. Fixed boundaries, no tail and no trim: the
+        # legality every hook consumer declares, and the regime in which the
+        # accepted span and the stripped transcript are the same string.
+        values = _config_values(
+            obs_buffer_seconds=50,
+            obs_min_advance_seconds=50,
+            obs_max_advance_seconds=50,
+            obs_fallback_advance_seconds=50,
+            obs_silence_snap_seconds=0,
+            obs_boundary_mode="fixed",
+            obs_vad_trim_min_seconds=0,
+            obs_condition_tail_chars=0,
+        )
+        values.pop("obs_boundary_prompt")
+        return dict(
+            pcm=_noise(150.0),
+            texts=["raw one", "raw two", "raw three"],
+            values=values,
+            window_hook=True,
+        )
+    if name == "window-hook-skip":
+        # The same seam over a window the core never answered. Call #2 and
+        # its retry both time out, so that window reaches the hook as the
+        # empty string with ``skipped=True`` -- which is precisely the case a
+        # substitution-only delivery rule exists to answer, and precisely the
+        # case in which a graph that skipped the hook would still look right
+        # on the other two windows.
+        values = _fixed_mode_skip_values(
+            obs_buffer_seconds=50,
+            obs_min_advance_seconds=50,
+            obs_max_advance_seconds=50,
+            obs_fallback_advance_seconds=50,
+            obs_condition_tail_chars=0,
+        )
+        return dict(
+            pcm=_noise(150.0),
+            texts=["raw one", "raw two", "raw three"],
+            values=values,
+            flaky_calls=(2, 3),
+            window_hook=True,
+        )
     if name == "retry-exhausted-skip":
         # Task 2 (2026-08-09): call #2 AND its retry (#3) both time out --
         # exhausted, skipped (never aborted) -- both executors must reach
@@ -238,10 +297,56 @@ SCENARIOS = (
     "retry-flaky",
     "retry-exhausted-skip",
     "unit-plan",
+    "window-hook",
+    "window-hook-skip",
 )
+
+#: The policy classes whose ``_window_hook`` a hooked scenario overrides --
+#: one per executor, the SAME method name and the SAME signature, which is
+#: what makes one test hook serve both sides.
+_HOOKED_POLICY_CLASSES = (obs_loop.ObsAgentLoopPolicy, ObsAgentLoopOjwPolicy)
+
+
+class _ScenarioWindowHook:
+    """A deterministic stand-in for ``reproduction.repair_loop``'s own hook.
+
+    It moves both legs the seam has -- the rendered instruction of every
+    window's request and the text that window delivers into the stitch, plus
+    its own OBS fields -- from values that depend only on the window's own
+    iteration and cut bounds. Nothing here reads a clock, a file or a sealed
+    receipt, so the plain executor and the openJiuwen executor building one
+    each still produce identical bytes."""
+
+    def __init__(self) -> None:
+        self.seen: list[tuple[int, bool, bool]] = []
+
+    def instruction(self, *, iteration, record, default):
+        return f"{default}\n\nWINDOW {iteration} [{record.start_seconds}]"
+
+    def accept(self, *, iteration, record, transcript, saturated, skipped):
+        self.seen.append((iteration, bool(saturated), bool(skipped)))
+        delivered = f"delivered {iteration}: {transcript}".strip()
+        return delivered, {
+            "obs_scenario_hook": True,
+            "obs_scenario_hook_iteration": iteration,
+            "obs_scenario_hook_skipped": bool(skipped),
+            "obs_scenario_hook_raw_chars": len(transcript),
+        }
 
 
 def _run(tmp_path, monkeypatch, policy_name, scenario):
+    if scenario.get("window_hook"):
+        # One fresh hook per executor: the plain and the ojw run each build
+        # their own, exactly as a real per-sample hook is built, and their
+        # byte equality is then a statement about the two executors rather
+        # than about a shared mutable object.
+        hook = _ScenarioWindowHook()
+        for policy_class in _HOOKED_POLICY_CLASSES:
+            monkeypatch.setattr(
+                policy_class,
+                "_window_hook",
+                lambda self, ctx, cfg, data_root, sample, _hook=hook: _hook,
+            )
     world = _World(
         tmp_path,
         monkeypatch,
@@ -387,6 +492,97 @@ class TestSingleDoor:
     def test_frozen_core_asr_requires_an_injected_callable(self):
         with pytest.raises(ObsLoopError, match="callable adapter request"):
             FrozenCoreASR(adapter_request=None, state=None)
+
+
+class TestWindowHook:
+    """The seam itself, asserted DIRECTLY on the openJiuwen executor rather
+    than only inferred from ``TestEquivalence``.
+
+    Equivalence over a hooked scenario is a strong statement only if the hook
+    really ran on the graph: two executors that both ignored it would agree
+    just as loudly. So this class pins, on the ojw side alone, that every
+    window's request carried the hook's instruction, that the stitch is the
+    hook's delivered text (never the raw response), that the hook's own fields
+    reached the OBS records, and that the default really is ``None``."""
+
+    def test_the_default_hook_is_none_on_both_executors(self, tmp_path):
+        for policy in (obs_loop.ObsAgentLoopPolicy(), ObsAgentLoopOjwPolicy()):
+            assert policy._window_hook(None, None, tmp_path, None) is None
+
+    def test_the_graph_renders_and_delivers_through_the_hook(
+        self, tmp_path, monkeypatch
+    ):
+        scenario = _scenario("window-hook")
+        hook = _ScenarioWindowHook()
+        monkeypatch.setattr(
+            ObsAgentLoopOjwPolicy,
+            "_window_hook",
+            lambda self, ctx, cfg, data_root, sample: hook,
+        )
+        world = _World(
+            tmp_path,
+            monkeypatch,
+            pcm=scenario["pcm"],
+            texts=list(scenario["texts"]),
+            values=dict(scenario["values"]),
+        )
+        outcome = POLICIES.resolve(OJW_POLICY_NAME).run_sample(world.ctx)
+
+        assert [entry[0] for entry in hook.seen] == [0, 1, 2]
+        # the instruction leg: every window's request carries the hook's text
+        for index, payload in enumerate(world.adapter.payloads):
+            assert payload["task_instruction"].endswith(f"WINDOW {index} [{index * 50.0}]")
+        # the delivery leg: the stitch is what the hook returned, and the raw
+        # response text ("raw one" ...) never reaches it unprefixed
+        assert outcome.text == (
+            "delivered 0: raw one delivered 1: raw two delivered 2: raw three"
+        )
+        obs = _obs_payloads(world)
+        for index in range(3):
+            record = obs[f"req-0001-i{index:04d}/obs"]
+            assert record["obs_scenario_hook"] is True
+            assert record["obs_scenario_hook_iteration"] == index
+            assert record["obs_scenario_hook_skipped"] is False
+            assert record["obs_accepted_chars"] == len(
+                f"delivered {index}: {scenario['texts'][index]}"
+            )
+
+    def test_the_repair_sibling_registers_and_shares_one_hook_builder(
+        self, monkeypatch
+    ):
+        """``obs-repair-loop-ojw`` is a THIN derivation: it resolves in the
+        one policy registry, it IS the ojw policy plus two methods, and its
+        hook comes from the same module-level builder the plain repair policy
+        calls -- so there is no second repair implementation to drift."""
+
+        policy = POLICIES.resolve(OBS_REPAIR_LOOP_OJW_POLICY_NAME)
+        assert isinstance(policy, ObsRepairLoopOjwPolicy)
+        assert isinstance(policy, ObsAgentLoopOjwPolicy)
+        assert build_repair_window_hook.__module__.endswith("reproduction.repair_loop")
+
+        sentinel = object()
+        calls: list[tuple] = []
+        monkeypatch.setattr(
+            repair_loop,
+            "build_repair_window_hook",
+            lambda ctx, cfg, data_root, sample: (
+                calls.append((ctx, cfg, data_root, sample)) or sentinel
+            ),
+        )
+        for resolved in (
+            POLICIES.resolve(OBS_REPAIR_LOOP_OJW_POLICY_NAME),
+            POLICIES.resolve("obs-repair-loop"),
+        ):
+            assert resolved._window_hook("ctx", "cfg", "root", "sample") is sentinel
+        assert calls == [("ctx", "cfg", "root", "sample")] * 2
+
+    def test_the_repair_sibling_refuses_a_config_with_no_predecessor(self, tmp_path, monkeypatch):
+        world = _World(
+            tmp_path, monkeypatch, pcm=_noise(50.0), texts=["x"],
+            values=_scenario("window-hook")["values"],
+        )
+        with pytest.raises(ObsLoopError, match="predecessor_snapshot"):
+            POLICIES.resolve(OBS_REPAIR_LOOP_OJW_POLICY_NAME).run_sample(world.ctx)
 
 
 class TestSaturation:

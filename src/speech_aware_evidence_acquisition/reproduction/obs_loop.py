@@ -1614,6 +1614,13 @@ class ObsAgentLoopPolicy:
             # one above describes a cutter that is not running.
             max_iterations = len(plan_units) + 8
 
+        # The per-window hook (KC-E1f, 2026-09-07), resolved ONCE per sample
+        # ABOVE the dispatch decision (2026-09-08 ojw port): BOTH cutters now
+        # carry the hook, so which one runs is a throughput choice and never a
+        # semantic one. ``None`` -- ``obs-agent-loop``'s own answer, always --
+        # is byte-identical to every run before the seam existed.
+        window_hook = self._window_hook(ctx, cfg, data_root, sample)
+
         # Slice-level dispatch (2026-08-12): when the config proves iteration
         # independence (from_values: fixed windows + no tail + no trim),
         # phases 1-3 below replace the sequential loop; setting the cursor to
@@ -1628,7 +1635,7 @@ class ObsAgentLoopPolicy:
                 ctx, cfg, registry, data_root, sample, rate, pcm, duration,
                 parent_sha256, engine_descriptor, evidence, max_tokens,
                 allow_empty_evidence=evidence_empty_by_materialization,
-                window_hook=self._window_hook(ctx, cfg, data_root, sample),
+                window_hook=window_hook,
                 # The run's dispatcher, supplied by core.driver.run_experiment
                 # only when obs_prefetch_depth > 0; absent (None) for every
                 # config written before 2026-09-08, and the pass then takes
@@ -1719,6 +1726,17 @@ class ObsAgentLoopPolicy:
                 instruction = f"{instruction}\n\n{cfg.boundary_prompt_text}"
             if tail:
                 instruction = f"{instruction}\n\n{OBS_TAIL_FRAME_V1.format(tail=tail)}"
+            # The per-window hook's instruction leg (2026-09-08 ojw port).
+            # It rides on the FULLY rendered instruction -- after the boundary
+            # template and after the conditioned tail -- which is the only
+            # placement the slice-parallel pass and the openJiuwen executor can
+            # share: under the fixed-boundary, zero-tail legality every hook
+            # consumer declares, all three sites hand the hook exactly
+            # ``ctx.task_instruction``, so one seam is one string everywhere.
+            if window_hook is not None:
+                instruction = window_hook.instruction(
+                    iteration=iteration, record=record, default=instruction
+                )
 
             slice_ref = SampleRef(
                 carrier_lock_key=sample.carrier_lock_key,
@@ -1818,6 +1836,25 @@ class ObsAgentLoopPolicy:
                 resolution["advance"] = advance
                 accepted, dropped = accept_up_to_boundary(transcript, advance / slice_seconds)
 
+            # The per-window hook's delivery leg (2026-09-08 ojw port). It is
+            # handed the ACCEPTED span -- what this window would contribute --
+            # and returns what it actually contributes, plus the fields that
+            # say why. Called for EVERY window, saturated and skipped ones
+            # included, exactly as on the slice-parallel pass: "what this
+            # window contributes" is precisely the decision such a policy
+            # exists to make. Under the fixed-boundary legality every hook
+            # consumer declares, ``accepted`` IS the stripped transcript the
+            # parallel pass hands its own hook, so the two legs are one seam.
+            hook_fields: dict[str, object] = {}
+            if window_hook is not None:
+                accepted, hook_fields = window_hook.accept(
+                    iteration=iteration,
+                    record=record,
+                    transcript=accepted,
+                    saturated=saturated,
+                    skipped=skipped,
+                )
+
             ctx.sink.emit(
                 "OBS",
                 f"{request_id}/obs",
@@ -1866,6 +1903,11 @@ class ObsAgentLoopPolicy:
                     # slice-parallel path's own, so the two executors' traces
                     # cannot diverge in what a unit says about itself.
                     **_unit_trace_fields(unit),
+                    # The hook's own fields, merged last and in the same
+                    # position as on the slice-parallel pass, so what was
+                    # delivered and why sits in the sealed trace beside what
+                    # was said. Empty without a hook.
+                    **hook_fields,
                 },
             )
             accepted_spans.append(accepted.strip())
@@ -1999,7 +2041,16 @@ class ObsAgentLoopPolicy:
         a repair pass cannot drift from the pass it is repairing (the owner's
         2026-09-03 "one base, thin derivations" rule, and the same reason
         ``reproduction.replay_loop`` calls ``_slice_parallel_pass`` rather than
-        reimplementing it)."""
+        reimplementing it).
+
+        Since the 2026-09-08 openJiuwen port BOTH of this policy's cutters run
+        the hook -- the slice-parallel pass (which has had it since
+        2026-09-07) and the sequential loop -- and so does the openJiuwen
+        executor's sequential graph (``reproduction.ojw.components``). Which
+        cutter runs is therefore a throughput choice and never a semantic one,
+        which is what lets the plain SEQUENTIAL path be the byte-exact
+        reference trajectory for the ojw graph's ``window-hook`` equivalence
+        scenario."""
 
         return None
 
