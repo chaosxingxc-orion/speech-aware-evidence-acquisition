@@ -27,8 +27,35 @@ from ..tracing import TraceSink
 from . import FrozenCoreError
 from .binding import _PayloadBindingMixin
 from .lifecycle import _AttemptLifecycleMixin
-from .request_types import ALLOWED_DECODING_KEYS, CoreResponse, _canonical
+from .request_types import (
+    ALLOWED_DECODING_KEYS,
+    MAX_TOP_LOGPROBS,
+    CoreResponse,
+    _canonical,
+)
 from .slices import SliceRegistry
+
+
+def _logprobs_sha256(logprobs: object) -> str:
+    """sha256 of the canonical JSON form of a transport-forwarded
+    ``choices[0].logprobs`` object (2026-09-08 logprob-as-judge probe).
+
+    Same canonicalization every other identity cell in this study uses
+    (``request_types._canonical``: ``ensure_ascii=False``, ``sort_keys=True``,
+    tight separators) so a MODEL_LOGPROBS record is re-verifiable from its own
+    ``logprobs`` field alone. Fail-closed on an unserializable object: the
+    record must never carry a hash that nothing can recompute.
+    """
+
+    try:
+        blob = json.dumps(
+            logprobs, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+    except (TypeError, ValueError) as error:
+        raise FrozenCoreError(
+            f"transport forwarded a non-serializable logprobs object: {error}"
+        ) from error
+    return hashlib.sha256(blob).hexdigest()
 
 
 class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
@@ -195,6 +222,45 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
                         "decoding_params response_format type must be json_object or "
                         "json_schema"
                     )
+            # Decode-confidence request (2026-09-08 logprob-as-judge probe).
+            # `logprobs`/`top_logprobs` have been in ALLOWED_DECODING_KEYS
+            # since the 2026-08-13 obs-replay-loop policy, but their VALUES
+            # were never shape-checked here: a config typo reached the wire and
+            # was refused by the server -- after this method had already
+            # metered the call and durably recorded it as spent (the
+            # record_usage-before-transport order below is deliberate and
+            # unchanged). The two rules are the pinned server's own, restated
+            # on this side of the wire so the refusal is free:
+            # llama.cpp 04ccc72a `tools/server/server-common.cpp:1525-1529`
+            # reads `logprobs` as a BOOLEAN and maps a true value to
+            # `n_probs = top_logprobs` (defaulting to 20), and `:1530-1531`
+            # raises "top_logprobs requires logprobs to be set to true" for a
+            # `top_logprobs` sent without it.
+            if "logprobs" in decoding_params:
+                logprobs_requested = decoding_params["logprobs"]
+                if not isinstance(logprobs_requested, bool):
+                    raise FrozenCoreError(
+                        "decoding_params logprobs must be a bool, got "
+                        f"{logprobs_requested!r} — llama-server reads this field as a "
+                        "boolean and maps a true value to n_probs"
+                    )
+            if "top_logprobs" in decoding_params:
+                top_logprobs = decoding_params["top_logprobs"]
+                if (
+                    isinstance(top_logprobs, bool)
+                    or not isinstance(top_logprobs, int)
+                    or not 1 <= top_logprobs <= MAX_TOP_LOGPROBS
+                ):
+                    raise FrozenCoreError(
+                        "decoding_params top_logprobs must be an integer in "
+                        f"[1, {MAX_TOP_LOGPROBS}], got {top_logprobs!r}"
+                    )
+                if decoding_params.get("logprobs") is not True:
+                    raise FrozenCoreError(
+                        "decoding_params top_logprobs requires logprobs: true — the "
+                        "pinned llama-server refuses the pair itself, but only after "
+                        "this call has been metered"
+                    )
         assert_information_boundary(dict(payload))
         audio_seconds = payload["audio_seconds"]
         if (
@@ -336,6 +402,33 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
                 "usage": usage,
             },
         )
+        # Decode-confidence trace (2026-09-08 logprob-as-judge probe): the raw
+        # per-token distribution the server returned, recorded as its OWN
+        # hashed record on its OWN channel beside MODEL_RESPONSE rather than as
+        # a MODEL_RESPONSE field. That placement is the byte-identity
+        # guarantee: a run that never sets decoding_params.logprobs gets no
+        # logprobs key on the choice (transport.py's own guard), keeps this
+        # branch unentered, and keeps every MODEL_RESPONSE record, every
+        # trace-manifest entry and every outputs row exactly as they were
+        # before this record existed. `requested_top_logprobs` is None when the
+        # request asked for logprobs without naming a k -- the server then
+        # applies its own default of 20 (server-common.cpp:1529) and the reader
+        # must not silently assume a number the request never sent.
+        if logprobs is not None:
+            declared = payload.get("decoding_params")
+            self._sink.emit(
+                "MODEL_LOGPROBS",
+                f"{request_id}/logprobs",
+                {
+                    "logprobs": logprobs,
+                    "logprobs_sha256": _logprobs_sha256(logprobs),
+                    "requested_top_logprobs": (
+                        declared.get("top_logprobs")
+                        if isinstance(declared, Mapping)
+                        else None
+                    ),
+                },
+            )
         # Post-transport aggregate counters: += on plain ints/floats races
         # under worker-thread concurrency exactly like the budget section;
         # same lock, held only for the increments.

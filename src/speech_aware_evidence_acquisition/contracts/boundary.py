@@ -39,6 +39,17 @@ TRACE_CHANNELS = (
     "USE",
     "MODEL_REQUEST",
     "MODEL_RESPONSE",
+    # Decode-confidence channel (2026-09-08 logprob-as-judge probe): the raw
+    # per-token distribution the frozen core returned for ONE request, hashed
+    # like every other record and emitted only when that request actually
+    # asked for it (``decoding_params.logprobs``). It is deliberately its own
+    # channel rather than a MODEL_RESPONSE field: every sealed run that never
+    # asked for logprobs keeps a byte-identical MODEL_RESPONSE record and a
+    # byte-identical trace manifest. Like MODEL_REQUEST/MODEL_RESPONSE/TOOL/
+    # COST it carries no research-axis prefix (_CHANNEL_PREFIX below), because
+    # a decode-confidence signal is core provenance, not an OBS/ORG/SUPPLY/USE
+    # observation -- what a Reviewer judge later DERIVES from it is.
+    "MODEL_LOGPROBS",
     "TOOL",
     "COST",
     # obs-replay-loop policy (reproduction.replay_loop): a fifth research-axis

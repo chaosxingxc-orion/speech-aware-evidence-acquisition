@@ -2378,3 +2378,145 @@ def test_a_payload_without_construction_targets_still_sends_its_audio(tmp_path):
     transport(json.dumps(_boundary_payload(tmp_path)).encode("utf-8"))
     user = [m for m in captured["body"]["messages"] if m["role"] == "user"]
     assert [part["type"] for part in user[0]["content"]] == ["input_audio"]
+
+
+# ---------------------------------------------------------------------------
+# Decode-confidence request/response shape (2026-09-08 logprob-as-judge probe).
+#
+# The study talks to llama-server's OpenAI-compatible /v1/chat/completions
+# endpoint (``LlamaServerTransport.__init__`` builds exactly that URL), NOT the
+# native /completion endpoint -- so the request field is ``logprobs`` +
+# ``top_logprobs`` and the response field is ``choices[0].logprobs``, never
+# ``n_probs`` and never ``completion_probabilities``. On the pinned build
+# (llama.cpp 04ccc72a) ``tools/server/server-common.cpp:1525-1529`` is what
+# translates the former into the latter's ``n_probs``.
+# ---------------------------------------------------------------------------
+
+
+def _canned_logprobs_response(k=2):
+    """A chat response carrying the pinned server's own logprobs shape:
+    ``choices[0].logprobs.content[]``, each entry ``{id, token, bytes,
+    logprob, top_logprobs[]}`` (``tools/server/server-task.cpp:456-460`` builds
+    the object, ``:306-325`` builds each entry, ``:287-302`` each alternative).
+    """
+
+    def alternative(token, logprob):
+        return {
+            "id": abs(hash(token)) % 100000,
+            "token": token,
+            "bytes": list(token.encode("utf-8")),
+            "logprob": logprob,
+        }
+
+    content = []
+    for index, token in enumerate(("hello", " world")):
+        entry = dict(alternative(token, -0.1 - index))
+        entry["top_logprobs"] = [
+            alternative(token, -0.1 - index),
+            *[alternative(f"alt{rank}", -3.0 - rank) for rank in range(1, k)],
+        ]
+        content.append(entry)
+    return json.dumps(
+        {
+            "choices": [
+                {
+                    "message": {"content": "hello world"},
+                    "logprobs": {"content": content},
+                }
+            ],
+            "usage": {"prompt_tokens": 7, "completion_tokens": 2},
+        }
+    ).encode()
+
+
+def test_the_request_body_carries_no_logprobs_key_unless_the_config_declares_one(tmp_path):
+    """Byte identity: the wire bytes of a request whose decoding_params never
+    name logprobs are exactly what they were before the probe existed."""
+
+    captured = {}
+
+    def post(url, body):
+        captured["raw"] = body
+        return _canned_response()
+
+    transport = _transport(_base_url(), tmp_path, post=post)
+    transport(json.dumps(_boundary_payload(tmp_path)).encode())
+    body = json.loads(captured["raw"])
+    assert "logprobs" not in body
+    assert "top_logprobs" not in body
+    assert "n_probs" not in body
+
+
+def test_declaring_the_decoding_keys_puts_exactly_them_on_the_wire(tmp_path):
+    """The only difference from the byte-identical baseline body above is the
+    two declared decoding keys -- no other field moves, and nothing is renamed
+    to the native endpoint's ``n_probs`` on this side of the wire."""
+
+    bodies = {}
+
+    def post(url, body):
+        bodies[len(bodies)] = json.loads(body)
+        return _canned_response()
+
+    transport = _transport(_base_url(), tmp_path, post=post)
+    transport(json.dumps(_boundary_payload(tmp_path)).encode())
+    transport(
+        json.dumps(
+            _boundary_payload(
+                tmp_path,
+                decoding_params={
+                    "temperature": 0,
+                    "seed": 20260803,
+                    "logprobs": True,
+                    "top_logprobs": 5,
+                },
+            )
+        ).encode()
+    )
+    baseline, probe = bodies[0], bodies[1]
+    assert probe["logprobs"] is True
+    assert probe["top_logprobs"] == 5
+    assert set(probe) - set(baseline) == {"logprobs", "top_logprobs"}
+    assert all(probe[key] == baseline[key] for key in baseline)
+
+
+def test_the_response_envelope_is_byte_identical_without_a_logprobs_choice(tmp_path):
+    """The pre-existing strict-equality contract: a server choice with no
+    ``logprobs`` key adds no envelope key."""
+
+    transport = _transport(
+        _base_url(), tmp_path, post=lambda url, body: _canned_response()
+    )
+    raw = transport(json.dumps(_boundary_payload(tmp_path)).encode())
+    assert json.loads(raw) == {
+        "text": "hello world",
+        "usage": {"prompt_tokens": 7, "completion_tokens": 2},
+    }
+
+
+def test_a_logprobs_choice_is_forwarded_verbatim_into_the_envelope(tmp_path):
+    """The transport neither reshapes nor summarizes the distribution: whatever
+    the server put on ``choices[0].logprobs`` is what the adapter receives."""
+
+    raw_response = _canned_logprobs_response(k=5)
+    transport = _transport(
+        _base_url(), tmp_path, post=lambda url, body: raw_response
+    )
+    payload = _boundary_payload(
+        tmp_path,
+        decoding_params={
+            "temperature": 0,
+            "seed": 20260803,
+            "logprobs": True,
+            "top_logprobs": 5,
+        },
+    )
+    envelope = json.loads(transport(json.dumps(payload).encode()))
+    expected = json.loads(raw_response)["choices"][0]["logprobs"]
+    assert envelope["logprobs"] == expected
+    assert envelope["text"] == "hello world"
+    assert [entry["token"] for entry in envelope["logprobs"]["content"]] == [
+        "hello",
+        " world",
+    ]
+    assert len(envelope["logprobs"]["content"][0]["top_logprobs"]) == 5
