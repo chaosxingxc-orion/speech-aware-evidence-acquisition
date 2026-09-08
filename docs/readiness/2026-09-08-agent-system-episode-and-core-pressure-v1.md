@@ -1,4 +1,4 @@
-# The agent system, its episode, and the core-pressure covariates (design note, 2026-09-08)
+# The agent system: four agents in one loop, and the core-pressure covariates (design note, 2026-09-08, revision 2)
 
 **Status: DESIGN NOTE, model-free, no cell registered.** It restates how every Stage-2 cell from here on is
 specified, after the owner's correction of 2026-09-08. Nothing in it changes a sealed result, a comparator or a
@@ -23,23 +23,40 @@ The sealed record agrees with the correction, cell for cell:
 The pattern: gains appear when the *system* narrows the problem and constrains the edit, and losses appear when the
 core is handed the open problem plus more context.
 
-## 2. The episode every cell must state
+## 2. Revision 2 (same day): four agents in one loop, with a planner
 
-A cell is specified as one episode of the control plane around the frozen core. Each step names who performs it.
-The core performs only the two generative steps, each on a narrowed sub-problem.
+The owner's second correction: the first draft of this note read as a pipeline of many functions; the system
+must converge to a FEW named agents calling each other in a loop, with a planning mode, and with observation
+modes chosen per task (a meeting task calls speaker diarization; a noisy input calls enhancement; the loop
+listens selectively to the key audio worth improving). The seven-step table of the first draft is therefore
+folded into four agents. Knowledge is not an agent: it is the store the agents consult (the three dimensions:
+text-domain knowledge, same-speaker speech exemplars, state).
 
-| step | performer | what it does | existing seam |
+| agent | performer | responsibility | today's seam |
 |---|---|---|---|
-| OBSERVE | system | chooses the transport unit and its standardization (speaker-turn units, tail, sample rate); decides what to listen to | `reproduction.obs_loop` (unit plan, tail knob) |
-| NARROW | system | turns the open question into a k-way choice or a span-bounded edit using state knowledge (legal intents, device inventory, session state, speaker roles, the brief) and indexed exemplars | `rails.phase_supply`, `core.class_lists`, the KB views |
-| DRAFT | core | answers the narrowed question | phase programs (`rails.controllers.EvidenceAgentController`) |
-| JUDGE | system | deterministic checks and pinned frozen tools score the draft and flag spans: legality, schema, numeric consistency, brief mismatch, acoustic re-check | registered scorers / post-processors in `core.base`; `replay_loop` flagged spans |
-| ACQUIRE | system | fetches evidence only for flagged spans: speech-keyed retrieval, re-listening to the span, same-speaker exemplars | `acquire` transitions of the controller; `phase_supply` sealed-vectors |
-| REVISE | core | a constrained edit of the flagged spans only (substitutions, legal-set projection, schema fill) | `window_hook` seam; `e21-entity-repair-substitutions-v1` |
-| COMMIT | system | accepts or falls back per span; records the cost | the repair ledger; the trace |
+| **Planner** | system | from the task type and the state, picks the observe mode(s), the knowledge views to supply, the budget of core calls, and when to stop; a rule table now, the object the evolution loop optimizes in Stage 3 | phase programs and their config; `LoopConfig` |
+| **Observer** | system + pinned tools | executes the observe mode: input standardization (rate, tail), unit choice (speaker-turn units via diarization for meetings; fixed windows otherwise), enhancement when the input is noisy, and SELECTIVE LISTENING: re-listening only to spans the Reviewer flagged, with more context | `reproduction.obs_loop` (unit plan, tail knob), the Sortformer diarization tool row, the replay loop's flagged spans |
+| **Solver** | the frozen core | the only answering agent: a draft, then constrained revisions, always on the narrowed problem with the supplied knowledge | `EvidenceAgentController` phases, `window_hook`, the post-processors |
+| **Reviewer** | system judges (deterministic checks, pinned frozen tools; later the core in a critic phase that flags but never answers) | scores the draft against knowledge and state, flags spans, and returns the decision to the Planner: loop (acquire, re-listen, revise) or commit | registered scorers and post-processors in `core.base`; `e21-entity-repair-substitutions-v1`; the legal-label projection |
 
-A cell may skip steps, but the preregistration must say which steps run, who performs them, and how many core
-calls the episode spends per unit.
+The loop: **Plan -> Observe -> Solve -> Review -> (Plan again with the flags, within budget) -> Commit.**
+Every carrier runs the same loop; what differs per carrier lives in three mode tables, never in a new pipeline
+(one base, thin adapters):
+
+| mode table | entries today | entries named, not built |
+|---|---|---|
+| observe modes | fixed 90-s windows; speaker-turn units (diarization); silence tail; 16 kHz standardization; ESB clips through the slice path | enhancement for noisy input (a pinned frozen enhancer with a derivation record, testbed = the Audio2Tool noisy tier); selective re-listen of flagged spans with context |
+| knowledge views | class lists / brief; TRAIN slot schema per intent; KB facets; slot fillers; the derived-candidates bank | same-speaker exemplar index (MF-8); device inventory and legal-intent state; speaker roles from diarization + brief |
+| judges | legal-label projection; schema conformance; substitution-only delivery rule; numeric-format checks | brief-name near-miss detector; decode-confidence signals from the sealed trace; acoustic re-check through a pinned embedder; the core-as-critic phase (after owner confirmation) |
+
+Read against the sealed record: KC-E1f is this loop with the Reviewer and the selective re-listen switched off
+(Plan fixed, Observe = fixed windows, Solve = sealed draft then constrained revise). KC-S1b is a two-stage Solve.
+OBS-E1 is an observe mode. The E22 encoding fix and the tails are observe-mode standardization. The first cell
+that runs the WHOLE loop is the Earnings-21 cell after KC-E1f (section 5).
+
+Experimental discipline is unchanged: a cell still moves one factor. In loop terms, a factor is one agent's
+mode or one mode-table entry, and its twin is the same loop with that entry replaced by its form control
+(the Reviewer switched off; other-speaker exemplars; a token-matched placebo view).
 
 ## 3. Core-pressure covariates, reported by every verdict
 
@@ -81,7 +98,7 @@ same-speaker exemplars; a legality judge commits. MF-8 prices the narrowing (rec
 candidate source) before any flight; the oracle-candidate arm measures the core's matching alone, the real-candidate
 arm measures the system. Twins: other-speaker exemplars (speaker effect) and text exemplars (modality effect).
 
-**Earnings-21 line (the cell after KC-E1f).** The episode adds the two steps KC-E1f skipped: JUDGE flags spans
+**Earnings-21 line (the cell after KC-E1f).** The first whole-loop cell: Plan (meeting task -> diarization units, brief as state), Observe (speaker-turn units), Solve (draft), Review (judges flag spans: numeric-format mismatch, brief-name near-miss, low-confidence decode signals), Observe again (selective re-listen of the flagged spans with context), Solve (constrained revise), Commit. In the first draft's words: the episode adds the two steps KC-E1f skipped: JUDGE flags spans
 (numeric-format mismatch, brief-name near-miss, low-confidence decode signals available in the sealed trace) and
 ACQUIRE re-listens to the flagged span with the relevant brief entries; REVISE stays substitution-only. The core's
 calls concentrate on flagged spans instead of all 1,593 windows; the expected core-pressure reduction is itself a
