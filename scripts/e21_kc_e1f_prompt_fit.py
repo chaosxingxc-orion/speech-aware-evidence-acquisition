@@ -75,7 +75,6 @@ import os
 import statistics
 import subprocess
 import sys
-import time
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -606,7 +605,11 @@ def main() -> int:
         d1_evidence_supplement_sha256,
         d1_media_supplement_relpath,
         d1_media_supplement_sha256,
+        fragment_hash,
         model_materialization_root,
+        read_fragment,
+        resolve_runtime_receipt_path,
+        runtime_receipt_relpath,
     )
     from speech_aware_evidence_acquisition.core.driver.speech_native import (
         _LoopbackPromptAuditClient,
@@ -618,9 +621,15 @@ def main() -> int:
         load_predecessor_binding,
     )
     from speech_aware_evidence_acquisition.core.session import (
+        attach_session,
+        build_server_command,
         load_runtime_receipt,
-        start_session,
-        stop_session,
+    )
+    from speech_aware_evidence_acquisition.core.session.serving import (
+        SESSION_RECEIPT_NAME,
+        assert_identity_matches,
+        find_resident_session,
+        serving_identity,
     )
     from speech_aware_evidence_acquisition.data.lock import (
         data_root,
@@ -716,23 +725,78 @@ def main() -> int:
         values_a["server_args"], slots=slots, context_tokens=slots * slot_tokens
     )
     port = int(str(values_a["base_url"]).rsplit(":", 1)[-1])
-    started_at = time.time()
-    session = start_session(
+    host = "127.0.0.1"
+
+    # ATTACH, NEVER SPAWN (owner rule 2026-09-07; docs/readiness/
+    # 2026-09-07-always-on-serving-operating-note.md). This script used to
+    # start its own llama-server and stop it in a finally block. Under
+    # always-on serving that is wrong twice over: the coordinator's resident
+    # server already owns the port, and stopping a session this script does
+    # not own would take the core away from every other queued flight. So it
+    # does exactly what core.flight.FlightRuntime.serve does -- find the ONE
+    # resident serving session, require it to be serving THIS cell's
+    # identity, bind through core.session.attach_session (which
+    # independently re-verifies loopback, the runtime-receipt-pinned binary
+    # and GGUF set, that the pid is alive right now and that it owns the
+    # listening socket), and never stop it. No resident session, or one
+    # serving something else, is a refusal rather than a second spawn.
+    resident = find_resident_session(root)
+    if resident is None:
+        raise SystemExit(
+            "no resident serving session under %s: this fit attaches and never "
+            "spawns, so the coordinator must start the session for this cell's "
+            "geometry first" % (root / "serving")
+        )
+    session_dir, session_document = resident
+    session_dir = Path(session_dir)
+    command = build_server_command(
         runtime_root=RUNTIME_ROOT,
         data_root=root,
         runtime_receipt=runtime_receipt,
-        host="127.0.0.1",
+        host=host,
         port=port,
-        session_id="%s-%s" % (args.run_id, plan.attempt_id),
-        extra_argv=extra_argv,
+        extra_argv=tuple(extra_argv),
         extra_env=dict(values_a.get("server_env", {})),
-        receipt_path=run_dir / "session.receipt.json",
-        server_log_path=run_dir / "session.server.log",
         role=str(runtime_receipt.get("role", "legacy")),
         model_root=(Path(configured_model_root) if configured_model_root else None),
-        ready_timeout_seconds=1800.0,
     )
-    log("server up in %.1fs: pid=%s" % (time.time() - started_at, session.pid))
+    model_argv = list(command.argv)
+    required_identity = serving_identity(
+        model_fragment=model,
+        model_fragment_sha256=fragment_hash(read_fragment(REPO, "model", model)),
+        runtime_receipt_relpath=runtime_receipt_relpath(values_a),
+        runtime_receipt_sha256=sha256_file(resolve_runtime_receipt_path(REPO, values_a)),
+        binary_path=command.binary_path,
+        binary_sha256=command.binary_sha256,
+        model_files=[
+            {"path": entry.path, "sha256": entry.sha256} for entry in command.model_files
+        ],
+        session_role=str(runtime_receipt.get("role", "legacy")),
+        model_root=configured_model_root,
+        server_argv=command.argv,
+        server_env=dict(values_a.get("server_env", {})),
+        host=host,
+        port=port,
+        props={
+            "total_slots": slots,
+            "default_generation_settings": {"n_ctx": slot_tokens},
+            "model_path": (
+                model_argv[model_argv.index("-m") + 1] if "-m" in model_argv else None
+            ),
+        },
+    )
+    assert_identity_matches(session_document, required_identity)
+    session = attach_session(
+        session_dir / SESSION_RECEIPT_NAME,
+        runtime_receipt=runtime_receipt,
+        runtime_root=RUNTIME_ROOT,
+    )
+    serving_session_id = str(session_document.get("session_id"))
+    log(
+        "attached to resident serving session %s (pid %s, %d slots x %d tokens); "
+        "this script starts and stops nothing"
+        % (serving_session_id, session.pid, slots, slot_tokens)
+    )
 
     counts: Counter[str] = Counter()
     per_cell: dict[str, Any] = {}
@@ -874,7 +938,10 @@ def main() -> int:
                 )
             )
     finally:
-        stop_session(session, receipt_path=run_dir / "session.stop-receipt.json")
+        # Deliberately no teardown: the session belongs to the coordinator's
+        # foreground wrapper and outlives this script (E7b, two guards in
+        # FlightRuntime.stop_serving say the same thing for a flight).
+        pass
 
     document = {
         "schema": "saea-e21-kc-e1f-prompt-fit-v1",
@@ -894,6 +961,17 @@ def main() -> int:
             "chat_template_sha256": chat_template_sha256,
         },
         "predecessor_binding": {"relpath": relpath, "sha256": digest},
+        "serving_session": {
+            "session_id": serving_session_id,
+            "session_dir": str(session_dir),
+            "pid": session.pid,
+            "host": session.host,
+            "port": session.port,
+            "attached": True,
+            "started_by_this_script": False,
+            "stopped_by_this_script": False,
+            "identity_fields_asserted": sorted(required_identity),
+        },
         "cells": per_cell,
         "route_counts": dict(counts),
         "generated_tokens": 0,

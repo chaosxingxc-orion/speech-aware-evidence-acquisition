@@ -75,7 +75,7 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, NamedTuple, Sequence
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
@@ -117,6 +117,46 @@ from speech_aware_evidence_acquisition.core.repair_alignment import (  # noqa: E
     REFUSAL_REASONS,
     REJECTION_CLASSES,
 )
+
+
+class _RosterAudioRef(NamedTuple):
+    """The one field ``rails.core_client.build_payload_binding`` reads off a
+    sample's ``audio_ref`` (``.path``). A ``NamedTuple`` and not a
+    ``@dataclass`` for the reason ``scripts/e21_kc_e1_wire_check.py`` states
+    at its own copy: this module is loadable via bare ``importlib.util.
+    exec_module`` without a prior ``sys.modules`` registration, and
+    ``dataclasses._process_class`` reads ``sys.modules[cls.__module__]``
+    unconditionally under ``from __future__ import annotations``."""
+
+    path: str
+
+
+class _RosterSample(NamedTuple):
+    """The minimal ``rails.task_adapter.TaskSample`` duck type (sample_id /
+    audio_ref.path / audio_seconds) built directly from this cell's own
+    flight-roster-receipt row -- never a second load, so the payload-binding
+    stage checks exactly the media identity the roster itself re-hashed."""
+
+    sample_id: str
+    audio_ref: _RosterAudioRef
+    audio_seconds: float
+
+
+def roster_binding_samples(
+    roster: Mapping[str, Any], sample_ids: Sequence[str]
+) -> tuple[_RosterSample, ...]:
+    by_id = {str(call["sample_id"]): call for call in roster["calls"]}
+    missing = [sample_id for sample_id in sample_ids if sample_id not in by_id]
+    if missing:
+        raise SystemExit("flight roster receipt lacks sample id(s) %r" % (missing,))
+    return tuple(
+        _RosterSample(
+            sample_id=sample_id,
+            audio_ref=_RosterAudioRef(path=str(by_id[sample_id]["media_relpath"])),
+            audio_seconds=float(by_id[sample_id]["audio_seconds"]),
+        )
+        for sample_id in sample_ids
+    )
 
 
 def log(message: str) -> None:
@@ -177,7 +217,10 @@ def main() -> int:
     ):
         raise SystemExit("package resolves to %s, not this checkout" % (_pkg.__file__,))
 
-    from speech_aware_evidence_acquisition.core.base import EVIDENCE_SOURCES
+    from speech_aware_evidence_acquisition.core.base import (
+        EVIDENCE_SOURCES,
+        declared_derived_media_roots,
+    )
     from speech_aware_evidence_acquisition.core.bundle import verify_bundle
     from speech_aware_evidence_acquisition.core.config import compose
     from speech_aware_evidence_acquisition.core.predecessor_snapshot import (
@@ -185,11 +228,13 @@ def main() -> int:
         load_predecessor_binding,
     )
     from speech_aware_evidence_acquisition.data.lock import (
+        asset_dir,
         data_root,
         load_lock,
         umbrella_lock_path,
     )
     from speech_aware_evidence_acquisition.e0.d2_leakage import ARM_VISIBLE_FIELDS
+    from speech_aware_evidence_acquisition.rails.core_client import payload_binding_stage
     from speech_aware_evidence_acquisition.reproduction.repair_loop import REPAIR_FRAMES
 
     dirty = git("status", "--porcelain")
@@ -475,6 +520,38 @@ def main() -> int:
             failures.append("%s: %d COST record(s) for %d contacts"
                             % (cell_id, cost_records, len(requests)))
 
+        # ---------------- payload-binding stage ----------------
+        # docs/readiness/2026-09-07-derived-media-confinement-v1.md section 5,
+        # and section 7.3 of this cell's own preregistration, which named this
+        # stage as PENDING the wt/wirepay merge rather than skipping it. The
+        # shared rails.core_client.payload_binding_stage runs over this cell's
+        # own real roster rows, through the REAL carrier root (never a
+        # per-script carrier_root_resolver swap) plus whatever derived media
+        # roots the dataset fragment declares -- so a cell is reported
+        # wire-ready only if its payloads actually BIND. Zero sockets, zero
+        # servers, zero model contacts.
+        binding_stage = payload_binding_stage(
+            dataset_fragment=args.dataset,
+            carrier_lock_key=str(values["carrier_lock_key"]),
+            samples=roster_binding_samples(roster, sorted(expected_by_sample)),
+            data_root=root,
+            carrier_root=asset_dir(lock, str(values["carrier_lock_key"]), root),
+            derived_media_roots=declared_derived_media_roots(values, root),
+        )
+        if not binding_stage.bound:
+            failures.append(
+                "%s: payload-binding stage did not bind: %r"
+                % (cell_id, binding_stage.failures)
+            )
+        log(
+            "  payload-binding stage: %s (%d/%d row(s) checked)"
+            % (
+                "PASS" if binding_stage.bound else "FAIL",
+                len(binding_stage.rows_checked),
+                binding_stage.rows_total,
+            )
+        )
+
         # ---------------- repair half ----------------
         by_request = {str(payload["request_id"]): payload for payload in requests}
         repair_props = {
@@ -573,6 +650,7 @@ def main() -> int:
             "windows_per_call": window_counts,
             "cost_records": cost_records,
             "zero_contact": zero_contact,
+            "payload_binding_stage": binding_stage.as_receipt(),
             "repair_properties": repair_props,
             "repair_ledger": ledger,
             "scorers_with_aggregates": scored,
@@ -643,10 +721,11 @@ def main() -> int:
         "result": "PASS" if not failures else "FAIL",
         "what_this_does_not_certify": (
             "it certifies that the harness assembles, seals and scores the right "
-            "request, and that a useless pass-2 answer cannot move the transcript. It "
-            "does NOT certify the geometry (that is the prompt fit, and the projection "
-            "says the declared slot fails the margin rule), and it says nothing about "
-            "what the frozen core does with a real request"
+            "request, that the payloads BIND through the real carrier root, and that "
+            "a useless pass-2 answer cannot move the transcript. It does NOT certify "
+            "the geometry -- that is the prompt fit in SERVER mode, run on the "
+            "geometry the cells name -- and it says nothing about what the frozen "
+            "core does with a real request"
         ),
     }
     out_dir = Path(args.out_dir)
