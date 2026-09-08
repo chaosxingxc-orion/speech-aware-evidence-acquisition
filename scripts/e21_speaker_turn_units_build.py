@@ -11,6 +11,13 @@ from the per-window reference-word COUNTS of the sealed window-pairing rows.
 
 Writes `docs/receipts/obs/e21-speaker-turn-units-v1.json` (units, not audio) and
 `<out-dir>/unit-plan-summary.json`; `README.md` is written by hand beside it.
+
+`--schema-version v2` (default `v1`, unchanged in every other respect) builds the
+coordinator's 2026-09-08 plan instead: same sealed diarization and window-row
+inputs, `analysis.e21_speaker_turn_units.plan_units_v2` in place of `plan_units`,
+exposure row `SAEA-E21-MF-SPEAKER-TURN-UNITS-V2`, and
+`docs/receipts/obs/e21-speaker-turn-units-v2.json` as the default plan path. The
+v1 code path (the default) is untouched by this flag.
 """
 
 from __future__ import annotations
@@ -33,7 +40,6 @@ from speech_aware_evidence_acquisition.reproduction.diarization import (  # noqa
 
 BASELINE_RUN = "SAEA-E21-FULL44-DIRECT-BASELINE-V2"
 BASELINE_ATTEMPT = "attempt-20260904T233816Z-bcd338"
-DEFAULT_PLAN = REPO_ROOT / "docs/receipts/obs/e21-speaker-turn-units-v1.json"
 
 
 def _write(path: Path, document: dict) -> None:
@@ -48,11 +54,16 @@ def main() -> int:
     parser.add_argument("--data-root", default=os.environ.get("SPEECHRL_DATA_DIR", ""), type=Path)
     parser.add_argument("--diarization", required=True, type=Path)
     parser.add_argument("--window-rows", required=True, type=Path)
-    parser.add_argument("--plan-out", type=Path, default=DEFAULT_PLAN)
+    parser.add_argument("--schema-version", choices=("v1", "v2"), default="v1")
+    parser.add_argument("--plan-out", type=Path, default=None)
     parser.add_argument("--out-dir", required=True, type=Path)
     args = parser.parse_args()
     if not args.data_root or not Path(args.data_root).is_dir():
         raise SystemExit("--data-root (or SPEECHRL_DATA_DIR) must name the data root")
+    plan_out = args.plan_out or (
+        REPO_ROOT / f"docs/receipts/obs/e21-speaker-turn-units-{args.schema_version}.json"
+    )
+    build_units = stu.plan_units if args.schema_version == "v1" else stu.plan_units_v2
     data_root, started = Path(args.data_root), time.time()
 
     artifact = load_diarization(args.diarization)
@@ -74,7 +85,7 @@ def main() -> int:
         window_count = len(derivation["slices"])
         active, frame_seconds = stu.activity_from_sealed_slices(data_root, derivation["slices"])
         pauses = stu.pauses_from_activity(active, frame_seconds)
-        units = stu.plan_units(
+        units = build_units(
             sample_id,
             artifact.calls[sample_id].segments,
             duration,
@@ -105,29 +116,34 @@ def main() -> int:
         print(f"{sample_id}: {len(units)} units, {window_count} windows", flush=True)
 
     pooled = stu.corpus_summary(summaries)
-    _write(
-        args.plan_out,
-        stu.plan_document(
-            carrier_lock_key=artifact.carrier_lock_key,
-            split_identity_hash=rows_document["split_identity_hash"],
-            source_run_id=BASELINE_RUN,
-            source_attempt_id=BASELINE_ATTEMPT,
-            diarization_run_id=artifact.run_id,
-            window_rows_sha256=hashlib.sha256(Path(args.window_rows).read_bytes()).hexdigest(),
-            calls=calls,
-            corpus=pooled,
-        ),
+    plan_kwargs: dict[str, object] = dict(
+        carrier_lock_key=artifact.carrier_lock_key,
+        split_identity_hash=rows_document["split_identity_hash"],
+        source_run_id=BASELINE_RUN,
+        source_attempt_id=BASELINE_ATTEMPT,
+        diarization_run_id=artifact.run_id,
+        window_rows_sha256=hashlib.sha256(Path(args.window_rows).read_bytes()).hexdigest(),
+        calls=calls,
+        corpus=pooled,
     )
-    _write(
-        args.out_dir / "unit-plan-summary.json",
-        stu.summary_document(
-            plan_path=str(args.plan_out.relative_to(REPO_ROOT)).replace("\\", "/"),
-            plan_sha256=hashlib.sha256(args.plan_out.read_bytes()).hexdigest(),
-            elapsed_seconds=time.time() - started,
-            corpus=pooled,
-            per_call=summaries,
-        ),
+    summary_kwargs: dict[str, object] = dict(
+        plan_path=str(plan_out.relative_to(REPO_ROOT)).replace("\\", "/"),
+        elapsed_seconds=time.time() - started,
+        corpus=pooled,
+        per_call=summaries,
     )
+    if args.schema_version == "v2":
+        plan_kwargs.update(
+            schema=stu.PLAN_SCHEMA_V2, exposure_row=stu.EXPOSURE_ROW_V2, rules=stu.rules_block_v2()
+        )
+        summary_kwargs.update(
+            schema=stu.SUMMARY_SCHEMA_V2,
+            exposure_row=stu.EXPOSURE_ROW_V2,
+            rules=stu.rules_block_v2(),
+        )
+    _write(plan_out, stu.plan_document(**plan_kwargs))
+    summary_kwargs["plan_sha256"] = hashlib.sha256(plan_out.read_bytes()).hexdigest()
+    _write(args.out_dir / "unit-plan-summary.json", stu.summary_document(**summary_kwargs))
     print(json.dumps(pooled, indent=2, sort_keys=True))
     return 0
 
