@@ -1830,9 +1830,11 @@ def command_ladder(args: argparse.Namespace) -> int:
             both=cards_both,
             note=(
                 "priced on BOTH per-type tables, unrestricted oracle on the 18 "
-                "closed types. Part of what a card repairs is surface form, which "
-                "the normalized metric has already forgiven, so the card's gain "
-                "shrinks under it while its recall half does not"
+                "closed types. The gain does NOT shrink under the normalized "
+                "metric, and the split says why: 480 of the 565 mass units this "
+                "card repairs are MISSING and only 85 are surface. A vocabulary "
+                "card is a RECALL module that also happens to fix spelling, not a "
+                "spelling module -- which is the opposite of rung 1"
             ),
         ),
         ceiling_rung(

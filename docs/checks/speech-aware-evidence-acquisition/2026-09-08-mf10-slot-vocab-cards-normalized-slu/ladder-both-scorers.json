@@ -72,7 +72,7 @@
     "tokenizer": 0,
     "tool": 0
   },
-  "generated_at": "2026-09-08T15:18:26.236482+00:00",
+  "generated_at": "2026-09-08T15:23:39.244868+00:00",
   "mf9_ladder_reference": {
     "receipt": "docs/checks/.../2026-09-08-mf9-slurp-slot-gap-audit/improvement-ladder.json",
     "schema": "saea-slurp-mf9-improvement-ladder-v1"
@@ -197,7 +197,7 @@
       "n": "4v",
       "normalized": {
         "gain": 18.69,
-        "note": "priced on BOTH per-type tables, unrestricted oracle on the 18 closed types. Part of what a card repairs is surface form, which the normalized metric has already forgiven, so the card's gain shrinks under it while its recall half does not",
+        "note": "priced on BOTH per-type tables, unrestricted oracle on the 18 closed types. The gain does NOT shrink under the normalized metric, and the split says why: 480 of the 565 mass units this card repairs are MISSING and only 85 are surface. A vocabulary card is a RECALL module that also happens to fix spelling, not a spelling module -- which is the opposite of rung 1",
         "official_gain_for_comparison": 18.64,
         "slu_f1": 63.78
       },
