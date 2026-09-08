@@ -66,6 +66,15 @@ OBS trace) and aggregated per run (``saturated_slice_count``'s sibling,
 block), bounded per sample by ``obs_slice_skip_max`` (default 1; exceeding
 it IS fatal). This deliberately changes what a run's WER means, so the
 manifest -- not only a trace -- always carries the count.
+
+Unit plan (OBS-E1 obs seam, 2026-09-08; the module comment above
+:class:`PlannedUnit` carries the full statement): ``obs_unit_plan`` +
+``obs_unit_plan_sha256``, both defaulting to ``None``, replace the
+clock-derived fixed windows with the hash-pinned SPEAKER-TURN UNITS of a
+``saea-e21-speaker-turn-units-v1`` plan. The same encoder, the same tail
+knob, the same span-equals-audio_seconds rail, the same retry, skip, stitch
+and outcome -- only where the cut lands moves, and with the keys null
+nothing moves at all.
 """
 
 from __future__ import annotations
@@ -133,9 +142,26 @@ _KNOWN_OBS_KEYS = frozenset(
         "obs_batch_samples",
         "obs_batch_slices",
         "obs_slice_tail_silence_seconds",
+        "obs_unit_plan",
+        "obs_unit_plan_sha256",
     }
 )
 _EPSILON_SECONDS = 1e-6
+
+#: The one plan schema this seam consumes (OBS-E1, 2026-09-08). A plan
+#: declaring anything else is refused before a window is cut: the loader
+#: re-derives the tiling property through the plan builder's OWN proof
+#: (``analysis.e21_speaker_turn_units.assert_tiles``), which is meaningful
+#: only for units this schema's shape describes.
+OBS_UNIT_PLAN_SCHEMA = "saea-e21-speaker-turn-units-v1"
+
+#: What the ``saea-obs-derivation-v1`` receipt records in ``boundary_mode``
+#: when a plan supplied the cut (preregistration section 8.4). The ADVANCE
+#: semantics are still ``fixed`` -- every unit position is known before the
+#: first contact -- so the config's own ``obs_boundary_mode`` stays ``fixed``
+#: and the OBS trace records keep saying so; this name distinguishes the
+#: RECEIPT of a plan-cut run from the receipt of a clock-cut one.
+OBS_UNIT_PLAN_BOUNDARY_MODE = "unit-plan"
 
 # Bounded per-slice retry (live E-001 finding, 2026-08-08): one slice request
 # hung server-side for the full transport socket timeout and the whole
@@ -299,6 +325,296 @@ def _number(values: Mapping[str, object], key: str, default: float) -> float:
     return float(value)
 
 
+# ---------------------------------------------------------------------------
+# The unit plan (OBS-E1 obs seam, 2026-09-08)
+# ---------------------------------------------------------------------------
+#
+# Section 8 of docs/readiness/2026-09-07-e21-obs-speaker-turn-units-v1-
+# preregistration.md. TWO thin keys on the already-registered obs-agent-loop
+# policy -- ``obs_unit_plan`` (a repo-relative path) and
+# ``obs_unit_plan_sha256`` (the byte pin) -- both defaulting to None, which
+# reproduces the fixed-window cutter byte for byte. When they are set the
+# cutter stops cutting ceil(D / buffer) windows off the clock and consumes
+# the plan's SPEAKER-TURN UNITS instead. Nothing else moves: the same
+# obs_audio.encode_slice, the same tail knob, the same SliceRecord spans, the
+# same retry/skip/stitch seams, the same registered policy name. No new base,
+# no module under rails/probes, no controller subclass (2026-09-03
+# engineering-base rules).
+#
+# The plan is DATA, not code: every position in it is fixed before the first
+# contact, which is precisely the independence condition from_values already
+# requires for obs_batch_slices > 1 -- so slice batching stays legal under a
+# plan, for the same reason and by the same argument.
+
+
+@dataclass(frozen=True)
+class PlannedUnit:
+    """One speaker-turn unit as the cutter consumes it.
+
+    A deliberately narrow view of the plan's much richer per-unit record: the
+    span the cut needs, plus the three facts the OBS trace must carry so a
+    later paired read can pool by call (``unit_id``) and stratify by speaker
+    and by how the unit ended. Everything else in the plan file (dominance
+    shares, reference-word ranges, flags) is a REPORTING concern of
+    ``analysis.e21_speaker_turn_units`` and is deliberately not carried into
+    the runtime.
+    """
+
+    unit_id: str
+    unit_index: int
+    start_seconds: float
+    end_seconds: float
+    speaker: str | None
+    end_cut: str
+
+    @property
+    def duration_seconds(self) -> float:
+        return self.end_seconds - self.start_seconds
+
+
+@dataclass(frozen=True)
+class UnitPlan:
+    """A loaded, hash-pinned, tiling-proved unit plan."""
+
+    relpath: str
+    sha256: str
+    schema: str
+    units_by_sample: Mapping[str, tuple[PlannedUnit, ...]]
+    duration_by_sample: Mapping[str, float]
+
+    @property
+    def unit_count(self) -> int:
+        return sum(len(units) for units in self.units_by_sample.values())
+
+    def units_for(
+        self, sample_id: str, decoded_duration_seconds: float
+    ) -> tuple[PlannedUnit, ...]:
+        """This call's units, or a refusal -- called ONCE per sample, before
+        that sample's first window is cut.
+
+        The two refusals that can only be made here, with the roster and the
+        decoded parent in hand (preregistration section 8.2 items 3 and 4):
+        a roster call the plan has no block for, and a plan block cut against
+        different audio than the runtime just decoded. The decode is the
+        authority; a plan whose duration disagrees describes a different
+        measurement and must never be silently stretched onto this one.
+        """
+
+        units = self.units_by_sample.get(sample_id)
+        if units is None:
+            raise ObsLoopError(
+                f"unit plan {self.relpath!r} has no block for roster sample "
+                f"{sample_id!r}; refusing to fall back to fixed windows for a call "
+                f"the plan does not cover (plan covers "
+                f"{len(self.units_by_sample)} calls)"
+            )
+        declared = self.duration_by_sample[sample_id]
+        if abs(declared - float(decoded_duration_seconds)) > 1e-6:
+            raise ObsLoopError(
+                f"unit plan {self.relpath!r} declares {declared} s of decoded audio "
+                f"for sample {sample_id!r} but the runtime decode is "
+                f"{decoded_duration_seconds} s; the decode is the authority and a "
+                "plan cut against different audio is a different measurement"
+            )
+        return units
+
+
+def _plan_number(unit: Mapping[str, object], key: str, where: str) -> float:
+    value = unit.get(key)
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+        raise ObsLoopError(f"unit plan {where}: {key} must be a finite number, got {value!r}")
+    return float(value)
+
+
+def _load_unit_plan(
+    repo_root: Path, relpath: str, expected_sha256: str, buffer_seconds: float
+) -> UnitPlan:
+    """Read, pin, validate and RE-PROVE a unit plan -- fail-closed, before a
+    single window is cut (preregistration section 8.2).
+
+    The loader never trusts the file's own claims. It re-derives the tiling
+    property through ``analysis.e21_speaker_turn_units.assert_tiles`` -- the
+    plan builder's own proof obligation, run again here on the bytes actually
+    loaded -- so a hand-edited plan that still hashes to its pin is impossible
+    and a plan that hashes to something else never reaches the proof at all.
+    """
+
+    # Function-local, exactly as this module's other heavy imports are: the
+    # analysis package is a reader over run bundles and has no business in
+    # the runtime import graph of a policy that may never see a plan.
+    from ..analysis.e21_speaker_turn_units import (  # noqa: PLC0415
+        Unit,
+        SpeakerTurnUnitError,
+        assert_tiles,
+        unit_id as mint_unit_id,
+    )
+
+    path = Path(repo_root) / relpath
+    if not path.is_file():
+        raise ObsLoopError(
+            f"obs_unit_plan {relpath!r} does not resolve to a file under the repo "
+            f"root ({path}); a missing plan is never a fall-back to fixed windows"
+        )
+    try:
+        raw = path.read_bytes()
+    except OSError as error:
+        raise ObsLoopError(f"cannot read obs_unit_plan {path}: {error}") from error
+    actual_sha256 = hashlib.sha256(raw).hexdigest()
+    if actual_sha256 != expected_sha256:
+        raise ObsLoopError(
+            f"obs_unit_plan {relpath!r} hashes to {actual_sha256} but "
+            f"obs_unit_plan_sha256 pins {expected_sha256}; the plan fixes every "
+            "unit position before the first contact and must be the pinned bytes"
+        )
+    try:
+        document = json.loads(raw.decode("utf-8"))
+    except (UnicodeError, ValueError) as error:
+        raise ObsLoopError(f"obs_unit_plan {relpath!r} is not readable JSON: {error}") from error
+    if not isinstance(document, Mapping):
+        raise ObsLoopError(f"obs_unit_plan {relpath!r} must be a JSON object")
+    schema = document.get("schema")
+    if schema != OBS_UNIT_PLAN_SCHEMA:
+        raise ObsLoopError(
+            f"obs_unit_plan {relpath!r} declares schema {schema!r}, not "
+            f"{OBS_UNIT_PLAN_SCHEMA!r}; this seam consumes that schema only"
+        )
+    blocks = document.get("calls")
+    if not isinstance(blocks, list) or not blocks:
+        raise ObsLoopError(f"obs_unit_plan {relpath!r} carries no 'calls' list")
+
+    units_by_sample: dict[str, tuple[PlannedUnit, ...]] = {}
+    duration_by_sample: dict[str, float] = {}
+    seen_unit_ids: set[str] = set()
+    for block in blocks:
+        if not isinstance(block, Mapping):
+            raise ObsLoopError(f"obs_unit_plan {relpath!r}: every call block must be an object")
+        sample_id = block.get("sample_id")
+        if not isinstance(sample_id, str) or not sample_id:
+            raise ObsLoopError(
+                f"obs_unit_plan {relpath!r}: a call block has sample_id {sample_id!r}"
+            )
+        duration = _plan_number(block, "decoded_duration_seconds", f"call {sample_id!r}")
+        raw_units = block.get("units")
+        if not isinstance(raw_units, list) or not raw_units:
+            raise ObsLoopError(
+                f"obs_unit_plan {relpath!r}: call {sample_id!r} carries no units; a "
+                "call in the plan with nothing to cut is a broken plan, never a "
+                "silent fall-back to fixed windows"
+            )
+        planned: list[PlannedUnit] = []
+        rebuilt: list[Unit] = []
+        for position, entry in enumerate(raw_units, start=1):
+            where = f"call {sample_id!r} unit #{position}"
+            if not isinstance(entry, Mapping):
+                raise ObsLoopError(f"obs_unit_plan {relpath!r}: {where} is not an object")
+            index = entry.get("unit_index")
+            if isinstance(index, bool) or not isinstance(index, int) or index != position:
+                raise ObsLoopError(
+                    f"obs_unit_plan {relpath!r}: {where} declares unit_index {index!r}; "
+                    "units must be listed in unit_index order, numbered from 1"
+                )
+            identifier = entry.get("unit_id")
+            minted = mint_unit_id(sample_id, index)
+            if identifier != minted:
+                raise ObsLoopError(
+                    f"obs_unit_plan {relpath!r}: {where} declares unit_id "
+                    f"{identifier!r}, not the minted {minted!r}"
+                )
+            if identifier in seen_unit_ids:
+                # The single collision refusal, and the only reachable one:
+                # ids are MINTED from (sample_id, unit_index) and indices are
+                # required to run 1..N in order, so two units can share an id
+                # only when the same call carries two blocks. A colliding id
+                # would make two contacts indistinguishable in the trace and
+                # unpoolable in the paired read.
+                raise ObsLoopError(
+                    f"obs_unit_plan {relpath!r}: unit id {identifier!r} appears twice "
+                    f"(call {sample_id!r} carries more than one block?)"
+                )
+            seen_unit_ids.add(identifier)
+            start_seconds = _plan_number(entry, "start_seconds", where)
+            end_seconds = _plan_number(entry, "end_seconds", where)
+            if start_seconds < -1e-9 or end_seconds > duration + 1e-6:
+                raise ObsLoopError(
+                    f"obs_unit_plan {relpath!r}: {where} spans "
+                    f"[{start_seconds}, {end_seconds}) which lies outside its call's "
+                    f"own {duration} s of audio"
+                )
+            if end_seconds - start_seconds > buffer_seconds + 1e-6:
+                raise ObsLoopError(
+                    f"obs_unit_plan {relpath!r}: {where} is "
+                    f"{end_seconds - start_seconds} s, longer than the slot's audio "
+                    f"budget obs_buffer_seconds={buffer_seconds}"
+                )
+            speaker = entry.get("speaker")
+            if speaker is not None and not isinstance(speaker, str):
+                raise ObsLoopError(
+                    f"obs_unit_plan {relpath!r}: {where} declares speaker {speaker!r}"
+                )
+            end_cut = entry.get("end_cut")
+            if not isinstance(end_cut, str) or not end_cut:
+                raise ObsLoopError(
+                    f"obs_unit_plan {relpath!r}: {where} declares end_cut {end_cut!r}"
+                )
+            planned.append(
+                PlannedUnit(
+                    unit_id=identifier,
+                    unit_index=index,
+                    start_seconds=start_seconds,
+                    end_seconds=end_seconds,
+                    speaker=speaker,
+                    end_cut=end_cut,
+                )
+            )
+            rebuilt.append(
+                Unit(
+                    sample_id=sample_id,
+                    unit_index=index,
+                    start_seconds=start_seconds,
+                    end_seconds=end_seconds,
+                    speaker=speaker,
+                    speaker_share=0.0,
+                    speaker_count=0,
+                    start_cut=str(entry.get("start_cut", "")),
+                    end_cut=end_cut,
+                    ends_active=bool(entry.get("ends_on_active_frame", False)),
+                    flags=(),
+                )
+            )
+        try:
+            assert_tiles(rebuilt, duration)
+        except SpeakerTurnUnitError as error:
+            raise ObsLoopError(
+                f"obs_unit_plan {relpath!r}: call {sample_id!r} does not tile its own "
+                f"{duration} s: {error}"
+            ) from error
+        units_by_sample[sample_id] = tuple(planned)
+        duration_by_sample[sample_id] = duration
+    return UnitPlan(
+        relpath=relpath,
+        sha256=actual_sha256,
+        schema=str(schema),
+        units_by_sample=units_by_sample,
+        duration_by_sample=duration_by_sample,
+    )
+
+
+def _unit_trace_fields(unit: PlannedUnit | None) -> dict[str, object]:
+    """The three fields section 8.3 adds to a plan-cut OBS record, or nothing
+    at all on the fixed-window path -- so a run with the keys null emits the
+    historical record shape byte for byte. The unit's BOUNDS already ride in
+    ``obs_window_start_seconds`` / ``obs_window_end_seconds``, which under a
+    plan are the unit's own span."""
+
+    if unit is None:
+        return {}
+    return {
+        "obs_unit_id": unit.unit_id,
+        "obs_unit_speaker": unit.speaker,
+        "obs_unit_end_cut": unit.end_cut,
+    }
+
+
 @dataclass(frozen=True)
 class ObsLoopConfig:
     """Validated obs-loop knobs (all flow into config_hash -> protocol_hash
@@ -323,6 +639,9 @@ class ObsLoopConfig:
     batch_samples: int
     batch_slices: int
     slice_tail_silence_seconds: float
+    unit_plan_relpath: str | None = None
+    unit_plan_sha256: str | None = None
+    unit_plan: UnitPlan | None = None
 
     @classmethod
     def from_values(cls, values: Mapping[str, object], repo_root: Path) -> "ObsLoopConfig":
@@ -463,6 +782,58 @@ class ObsLoopConfig:
                     "obs_batch_slices > 1 requires obs_vad_trim_min_seconds 0 — "
                     "runtime trim spans would move window positions"
                 )
+        # The unit plan (OBS-E1 obs seam, preregistration section 8.1/8.2).
+        # Both keys default to None and BOTH must move together: one without
+        # the other is a config that either names bytes it does not pin or
+        # pins bytes it does not name, and neither is admissible for a file
+        # that fixes every cut position before the first contact.
+        plan_relpath = values.get("obs_unit_plan")
+        plan_sha256 = values.get("obs_unit_plan_sha256")
+        if (plan_relpath is None) != (plan_sha256 is None):
+            raise ObsLoopError(
+                "obs_unit_plan and obs_unit_plan_sha256 must be set together "
+                f"(got obs_unit_plan={plan_relpath!r}, "
+                f"obs_unit_plan_sha256={plan_sha256!r}); a plan without its byte pin "
+                "is not a plan, and a pin without a plan cuts nothing"
+            )
+        unit_plan: UnitPlan | None = None
+        if plan_relpath is not None:
+            if not isinstance(plan_relpath, str) or not plan_relpath.strip():
+                raise ObsLoopError(
+                    f"obs_unit_plan must be a repo-relative path string, got "
+                    f"{plan_relpath!r}"
+                )
+            if not isinstance(plan_sha256, str) or len(plan_sha256) != 64:
+                raise ObsLoopError(
+                    f"obs_unit_plan_sha256 must be a 64-character SHA-256 hex digest, "
+                    f"got {plan_sha256!r}"
+                )
+            # The three knobs a plan is incompatible with, refused here rather
+            # than discovered at the cut. The plan fixes every unit position
+            # up front; a model-declared boundary, a rolling transcript tail or
+            # a runtime VAD trim would each make unit k+1 depend on unit k and
+            # destroy exactly the independence the plan asserts (the same
+            # argument obs_batch_slices > 1 already rests on, which is why
+            # slice batching stays LEGAL under a plan).
+            if mode != "fixed":
+                raise ObsLoopError(
+                    "obs_unit_plan requires obs_boundary_mode 'fixed' — the plan "
+                    f"fixes every unit position before the first contact, got {mode!r}"
+                )
+            if tail_chars != 0:
+                raise ObsLoopError(
+                    "obs_unit_plan requires obs_condition_tail_chars 0 — a rolling "
+                    "tail feeds unit k's transcript into unit k+1's prompt and "
+                    "destroys the independence the plan asserts"
+                )
+            if trim_min != 0:
+                raise ObsLoopError(
+                    "obs_unit_plan requires obs_vad_trim_min_seconds 0 — runtime trim "
+                    "spans would move positions the plan already fixed"
+                )
+            unit_plan = _load_unit_plan(
+                Path(repo_root), plan_relpath, plan_sha256, buffer_seconds
+            )
         prompt_relpath = values.get("obs_boundary_prompt")
         prompt_text: str | None = None
         prompt_sha256: str | None = None
@@ -500,6 +871,9 @@ class ObsLoopConfig:
             batch_samples=batch_samples,
             batch_slices=batch_slices,
             slice_tail_silence_seconds=tail_silence,
+            unit_plan_relpath=plan_relpath,
+            unit_plan_sha256=plan_sha256,
+            unit_plan=unit_plan,
         )
 
 
@@ -654,18 +1028,39 @@ class ObsAgentLoopPolicy:
 
         from ..core.policies import build_arm_payload
 
-        windows: list[tuple[int, SliceRecord, bool, float, str | None]] = []
+        # The unit plan, resolved ONCE per sample before the first cut (OBS-E1
+        # obs seam, preregistration section 8.3). ``None`` is the historical
+        # fixed-window cutter, byte for byte.
+        plan_units = (
+            None
+            if cfg.unit_plan is None
+            else cfg.unit_plan.units_for(sample.sample_id, duration)
+        )
+
+        windows: list[tuple[int, SliceRecord, bool, float, str | None, PlannedUnit | None]] = []
         slice_records: list[SliceRecord] = []
         cursor = 0.0
         iteration = 0
         while cursor < duration - _EPSILON_SECONDS:
-            start_frame = int(round(cursor * rate))
-            end_frame = min(int(round((cursor + cfg.buffer_seconds) * rate)), len(pcm))
+            unit = None
+            if plan_units is not None:
+                if iteration >= len(plan_units):
+                    break
+                unit = plan_units[iteration]
+                start_frame = int(round(unit.start_seconds * rate))
+                end_frame = min(int(round(unit.end_seconds * rate)), len(pcm))
+            else:
+                start_frame = int(round(cursor * rate))
+                end_frame = min(int(round((cursor + cfg.buffer_seconds) * rate)), len(pcm))
             if end_frame <= start_frame:
                 break
             slice_samples = pcm[start_frame:end_frame]
             slice_seconds = (end_frame - start_frame) / rate
-            is_final = end_frame >= len(pcm)
+            is_final = (
+                iteration == len(plan_units) - 1
+                if plan_units is not None
+                else end_frame >= len(pcm)
+            )
             raw_bytes, transforms, pre_sha256 = encode_slice(
                 slice_samples,
                 rate,
@@ -694,7 +1089,7 @@ class ObsAgentLoopPolicy:
             )
             registry.register(record)
             slice_records.append(record)
-            windows.append((iteration, record, is_final, slice_seconds, pre_sha256))
+            windows.append((iteration, record, is_final, slice_seconds, pre_sha256, unit))
             cursor = record.start_seconds + slice_seconds
             iteration += 1
 
@@ -711,7 +1106,7 @@ class ObsAgentLoopPolicy:
         free_slots = list(range(cfg.batch_slices))
 
         def request_one(window):
-            win_iteration, record, _is_final, slice_seconds, _pre = window
+            win_iteration, record, _is_final, slice_seconds, _pre, _unit = window
             slice_ref = SampleRef(
                 carrier_lock_key=sample.carrier_lock_key,
                 sample_id=sample.sample_id,
@@ -798,7 +1193,7 @@ class ObsAgentLoopPolicy:
         saturated_count = 0
         skipped_count = 0
         for window, result in zip(windows, results):
-            win_iteration, record, is_final, slice_seconds, pre_sha256 = window
+            win_iteration, record, is_final, slice_seconds, pre_sha256, unit = window
             request_id, response, retry_of, saturated, skipped = result
             if saturated:
                 saturated_count += 1
@@ -843,6 +1238,12 @@ class ObsAgentLoopPolicy:
                     # order AFTER concurrent completion; MODEL records
                     # interleave in arrival order, chained by id.
                     "obs_dispatch": "slice-parallel",
+                    # Unit-plan fields, present only when a plan supplied this
+                    # cut (preregistration section 8.3): the unit's id, its
+                    # speaker and how it ended, beside the bounds already
+                    # carried above -- what analysis.e21_window_pairing and
+                    # analysis.e21_speaker_turn_units need to pool per call.
+                    **_unit_trace_fields(unit),
                     **hook_fields,
                 },
             )
@@ -951,6 +1352,21 @@ class ObsAgentLoopPolicy:
         )
         max_iterations = math.ceil(duration / max(effective_min, 1e-9)) + len(trim_spans) + 8
 
+        # The unit plan, resolved ONCE per sample before the first cut (OBS-E1
+        # obs seam, preregistration section 8.3). Resolved HERE, above the
+        # dispatch decision, so a roster call the plan does not cover or a
+        # plan cut against different audio refuses before either executor path
+        # writes a byte. ``None`` is the historical fixed-window cutter.
+        plan_units = (
+            None
+            if cfg.unit_plan is None
+            else cfg.unit_plan.units_for(sample.sample_id, duration)
+        )
+        if plan_units is not None:
+            # The plan's own length IS the iteration bound; the clock-derived
+            # one above describes a cutter that is not running.
+            max_iterations = len(plan_units) + 8
+
         # Slice-level dispatch (2026-08-12): when the config proves iteration
         # independence (from_values: fixed windows + no tail + no trim),
         # phases 1-3 below replace the sequential loop; setting the cursor to
@@ -992,13 +1408,25 @@ class ObsAgentLoopPolicy:
                 cursor = new_cursor
                 continue
 
-            start_frame = int(round(cursor * rate))
-            end_frame = min(int(round((cursor + cfg.buffer_seconds) * rate)), len(pcm))
+            unit = None
+            if plan_units is not None:
+                if iteration >= len(plan_units):
+                    break
+                unit = plan_units[iteration]
+                start_frame = int(round(unit.start_seconds * rate))
+                end_frame = min(int(round(unit.end_seconds * rate)), len(pcm))
+            else:
+                start_frame = int(round(cursor * rate))
+                end_frame = min(int(round((cursor + cfg.buffer_seconds) * rate)), len(pcm))
             if end_frame <= start_frame:
                 break
             slice_samples = pcm[start_frame:end_frame]
             slice_seconds = (end_frame - start_frame) / rate
-            is_final = end_frame >= len(pcm)
+            is_final = (
+                iteration == len(plan_units) - 1
+                if plan_units is not None
+                else end_frame >= len(pcm)
+            )
             raw_bytes, transforms, pre_sha256 = encode_slice(
                 slice_samples,
                 rate,
@@ -1181,6 +1609,11 @@ class ObsAgentLoopPolicy:
                     # honest hole -- counted and reported here, next to
                     # obs_retry_of/obs_saturated, never scored silently.
                     "obs_skipped": skipped,
+                    # Unit-plan fields (preregistration section 8.3), present
+                    # only when a plan supplied this cut -- identical to the
+                    # slice-parallel path's own, so the two executors' traces
+                    # cannot diverge in what a unit says about itself.
+                    **_unit_trace_fields(unit),
                 },
             )
             accepted_spans.append(accepted.strip())
@@ -1224,9 +1657,23 @@ class ObsAgentLoopPolicy:
                 "parent_sha256": parent_sha256,
                 "decoded_duration_seconds": duration,
                 "vad_engine": engine_descriptor,
-                "boundary_mode": cfg.boundary_mode,
+                # Under a plan the advance semantics are still `fixed` (every
+                # position was known before the first contact) but the cut came
+                # from the plan, and a sealed run must say which
+                # (preregistration section 8.4).
+                "boundary_mode": (
+                    OBS_UNIT_PLAN_BOUNDARY_MODE
+                    if cfg.unit_plan is not None
+                    else cfg.boundary_mode
+                ),
                 "boundary_prompt_relpath": cfg.boundary_prompt_relpath,
                 "boundary_prompt_sha256": cfg.boundary_prompt_sha256,
+                # The plan this run was cut by, named and pinned, so a later
+                # reader re-derives the units instead of guessing them. Null on
+                # every fixed-window run, exactly as boundary_prompt_* is null
+                # on every fixed-boundary one.
+                "unit_plan_path": cfg.unit_plan_relpath,
+                "unit_plan_sha256": cfg.unit_plan_sha256,
                 "condition_tail_chars": cfg.condition_tail_chars,
                 "trims": trim_events,
                 "slices": [record.trace_view() for record in slice_records],
