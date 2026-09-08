@@ -1362,6 +1362,24 @@ def command_normalized(args: argparse.Namespace) -> int:
     surface_after = 0.0
     mass_before = 0.0
     mass_after = 0.0
+    tp_after = 0.0
+    # The SAME attribution MF-9 publishes, per type, with the normalizer applied
+    # to both sides -- so question 4 can re-price every ceiling rung under the
+    # normalized metric instead of asserting which way it would move.
+    normalized_loss_table: dict[str, dict[str, float]] = defaultdict(
+        lambda: {
+            "gold_mentions": 0.0,
+            "exact_matches": 0.0,
+            "surface_pairs": 0.0,
+            "missing": 0.0,
+            "spurious": 0.0,
+            "type_swaps": 0.0,
+            "missing_mass": 0.0,
+            "surface_mass": 0.0,
+            "spurious_mass": 0.0,
+            "type_swap_mass": 0.0,
+        }
+    )
     for sample_id in roster:
         gold_entities = tuple(gold[sample_id].entities)
         predicted = tuple(kc_parsed[sample_id][2])
@@ -1371,6 +1389,44 @@ def command_normalized(args: argparse.Namespace) -> int:
         surface_after += after["surface_mass"]
         mass_before += before["mass"]
         mass_after += after["mass"]
+        tp_after += after["tp"]
+        for entity in gold_entities:
+            normalized_loss_table[str(entity.type)]["gold_mentions"] += 1.0
+        for pair in after["surface_pairs"]:
+            block = 2.0 * (
+                float(pair["word_distance"]) + float(pair["char_distance"])
+            )
+            row = normalized_loss_table[str(pair["type"])]
+            row["surface_mass"] += block
+            if block == 0.0:
+                row["exact_matches"] += 1.0
+            else:
+                row["surface_pairs"] += 1.0
+        for swap in after["type_swaps"]:
+            row = normalized_loss_table[str(swap["gold_type"])]
+            row["type_swap_mass"] += 4.0
+            row["type_swaps"] += 1.0
+        for entity_type, _filler in after["spurious"]:
+            row = normalized_loss_table[str(entity_type)]
+            row["spurious_mass"] += 2.0
+            row["spurious"] += 1.0
+        for entity_type, _filler in after["missing"]:
+            row = normalized_loss_table[str(entity_type)]
+            row["missing_mass"] += 2.0
+            row["missing"] += 1.0
+    for row in normalized_loss_table.values():
+        row["total_mass"] = (
+            row["missing_mass"]
+            + row["surface_mass"]
+            + row["spurious_mass"]
+            + row["type_swap_mass"]
+        )
+    attributed = sum(row["total_mass"] for row in normalized_loss_table.values())
+    if abs(attributed - mass_after) > 1e-6:
+        raise SystemExit(
+            f"the NORMALIZED per-type attribution does not close: {attributed} "
+            f"against {mass_after}"
+        )
 
     per_type_official = _per_type_strict(gold, kc_parsed, roster)
     per_type_normalized = _per_type_strict(gold, kc_parsed, roster, normalize=normalize)
@@ -1553,6 +1609,22 @@ def command_normalized(args: argparse.Namespace) -> int:
             else 0.0,
             "total_loss_mass_official": round(mass_before, 3),
             "total_loss_mass_normalized": round(mass_after, 3),
+            "true_positive_mass_normalized": round(tp_after, 3),
+        },
+        "normalized_loss_table": {
+            "what_it_is": (
+                "MF-9's per-type loss attribution, recomputed with the normalizer "
+                "applied to gold and prediction alike, so question 4 can RE-PRICE "
+                "every ceiling rung under the normalized metric rather than assert "
+                "which way it would move. The per-type masses close against the "
+                "corpus total, or this read raises"
+            ),
+            "true_positive_mass": round(tp_after, 3),
+            "loss_mass": round(mass_after, 3),
+            "per_entity_type": {
+                entity_type: {key: round(value, 3) for key, value in sorted(row.items())}
+                for entity_type, row in sorted(normalized_loss_table.items())
+            },
         },
         "per_entity_type_strict": {
             "official": per_type_official,
@@ -1656,114 +1728,124 @@ def command_ladder(args: argparse.Namespace) -> int:
     # the normalized metric the base moves and the surface mass shrinks, so a
     # module aimed at surface loses most of its ceiling and a module aimed at
     # recall keeps its own.
-    normalized_surface_removed = float(
-        normalized["surface_form_mass"]["surface_mass_removed"]
-    )
+    normalized_table = normalized["normalized_loss_table"]
+    normalized_per_type = {
+        entity_type: {key: float(value) for key, value in row.items()}
+        for entity_type, row in normalized_table["per_entity_type"].items()
+    }
     normalized_totals = {
-        "true_positive_mass": totals["true_positive_mass"],
-        "loss_mass": totals["loss_mass"] - normalized_surface_removed,
+        "true_positive_mass": float(normalized_table["true_positive_mass"]),
+        "loss_mass": float(normalized_table["loss_mass"]),
         "slu_f1": normalized_base,
     }
-    all_missing = sum(row["missing_mass"] for row in per_type.values())
-    all_surface = sum(row["surface_mass"] for row in per_type.values())
-    residual_surface = max(0.0, all_surface - normalized_surface_removed)
+    if abs(ceiling_slu_f1(normalized_totals, 0.0, 0.0) - normalized_base) > 0.01:
+        raise SystemExit(
+            "the normalized loss table does not rebuild the normalized base"
+        )
 
+    def under_both(types: Sequence[str], *, missing: bool, surface: bool) -> dict:
+        """One counterfactual, priced under BOTH metrics from their own tables."""
+
+        def price(table, totals):
+            m = sum(table.get(name, {}).get("missing_mass", 0.0) for name in types)
+            s = sum(table.get(name, {}).get("surface_mass", 0.0) for name in types)
+            m = m if missing else 0.0
+            s = s if surface else 0.0
+            return {
+                "slu_f1": ceiling_slu_f1(totals, m, s),
+                "gain": round(ceiling_slu_f1(totals, m, s) - totals["slu_f1"], 2),
+                "missing_mass_repaired": round(m, 3),
+                "surface_mass_repaired": round(s, 3),
+            }
+
+        return {
+            "official": price(per_type, totals),
+            "normalized": price(normalized_per_type, normalized_totals),
+        }
+
+    all_types = sorted(set(per_type) | set(normalized_per_type))
     ceilings = {
-        "surface_perfect": {
-            "official": ceiling_slu_f1(totals, 0.0, all_surface),
-            "normalized": ceiling_slu_f1(normalized_totals, 0.0, residual_surface),
-        },
-        "no_missing": {
-            "official": ceiling_slu_f1(totals, all_missing, 0.0),
-            "normalized": ceiling_slu_f1(normalized_totals, all_missing, 0.0),
-        },
+        "surface_perfect": under_both(all_types, missing=False, surface=True),
+        "no_missing": under_both(all_types, missing=True, surface=False),
     }
+
+    classes = read_json(out_dir / "type-classes.json")["classes"]
+    closed_types = tuple(classes["CLOSED/FORMAT"])
 
     cards_view = views["views"]["KU-S3v-cards-closed"]
     combined_view = views["views"]["combined-cards-plus-retrieval"]
+
+    def ceiling_rung(number, module, official_slu, *, both=None, note=None):
+        entry = {
+            "n": number,
+            "module": module,
+            "measured": False,
+            "official": {
+                "slu_f1": official_slu,
+                "gain": round(official_slu - official_base, 2),
+            },
+        }
+        if both is not None:
+            entry["normalized"] = {
+                "slu_f1": both["normalized"]["slu_f1"],
+                "gain": both["normalized"]["gain"],
+                "official_gain_for_comparison": both["official"]["gain"],
+            }
+        else:
+            entry["normalized"] = {"slu_f1": None, "gain": None}
+        if note:
+            entry["normalized"]["note"] = note
+        return entry
+
+    cards_both = under_both(closed_types, missing=True, surface=True)
     rungs = [
         {"n": 1, **rung1},
-        {
-            "n": 2,
-            "module": "constrained decoding, structure + 55-type enum (MF-9 section 3)",
-            "measured": False,
-            "official": {"slu_f1": 45.16, "gain": round(45.16 - official_base, 2)},
-            "normalized": {
-                "slu_f1": None,
-                "gain": None,
-                "note": (
-                    "the 3 unparsed rows carry 10 gold mentions and the normalizer "
-                    "does not touch a row that never parsed, so this rung's ceiling "
-                    "is unchanged in KIND under either metric; it is left unpriced "
-                    "rather than restated from a counterfactual this audit did not "
-                    "re-run"
-                ),
-            },
-        },
-        {
-            "n": 3,
-            "module": "intent narrowing -> better block selection (MF-9 section 1.2)",
-            "measured": False,
-            "official": {"slu_f1": 48.40, "gain": round(48.40 - official_base, 2)},
-            "normalized": {
-                "slu_f1": None,
-                "gain": None,
-                "note": "a recall channel; the normalizer does not touch it",
-            },
-        },
-        {
-            "n": 4,
-            "module": "retrieved fillers, KU-S3 (MF-9 section 4.2)",
-            "measured": False,
-            "official": {"slu_f1": 58.06, "gain": round(58.06 - official_base, 2)},
-            "normalized": {
-                "slu_f1": None,
-                "gain": None,
-                "note": "a recall channel; the normalizer does not touch it",
-            },
-        },
-        {
-            "n": "4v",
-            "module": (
-                "MF-10 KU-S3v static vocabulary cards on the CLOSED/FORMAT types "
-                "(vocabulary-limited oracle)"
+        ceiling_rung(
+            2,
+            "constrained decoding, structure + 55-type enum (MF-9 section 3)",
+            45.16,
+            note=(
+                "the 3 unparsed rows carry 10 gold mentions and the normalizer never "
+                "touches a row that did not parse, so this rung is a pure RECALL "
+                "channel and its gain does not depend on the metric's spelling "
+                "tolerance"
             ),
-            "measured": False,
-            "official": {
-                "slu_f1": cards_view["reachable_slu_f1_vocabulary_limited"]["slu_f1"],
-                "gain": cards_view["reachable_slu_f1_vocabulary_limited"]["gain"],
-            },
-            "normalized": {
-                "slu_f1": None,
-                "gain": None,
-                "note": (
-                    "part of what a card repairs is surface form, which the "
-                    "normalized metric has already forgiven; the card's SURFACE half "
-                    "therefore shrinks under it while its RECALL half does not"
-                ),
-            },
-        },
-        {
-            "n": "4c",
-            "module": "MF-10 combined view: cards on closed + KU-S3 retrieval on open",
-            "measured": False,
-            "official": {
-                "slu_f1": combined_view["reachable_slu_f1_bound"]["slu_f1"],
-                "gain": combined_view["reachable_slu_f1_bound"]["gain"],
-            },
-            "normalized": {"slu_f1": None, "gain": None},
-        },
-        {
-            "n": 6,
-            "module": "targeted slot re-ask on judge-flagged rows (MF-9 section 5.2)",
-            "measured": False,
-            "official": {"slu_f1": 72.87, "gain": round(72.87 - official_base, 2)},
-            "normalized": {
-                "slu_f1": None,
-                "gain": None,
-                "note": "a recall channel; the normalizer does not touch it",
-            },
-        },
+        ),
+        ceiling_rung(
+            3,
+            "intent narrowing -> better block selection (MF-9 section 1.2)",
+            48.40,
+            note="a recall channel; the normalizer does not touch it",
+        ),
+        ceiling_rung(
+            4,
+            "retrieved fillers, KU-S3 (MF-9 section 4.2)",
+            58.06,
+            note="a recall channel; the normalizer does not touch it",
+        ),
+        ceiling_rung(
+            "4v",
+            "MF-10 KU-S3v static vocabulary cards on the CLOSED/FORMAT types",
+            cards_view["reachable_slu_f1_unrestricted"]["slu_f1"],
+            both=cards_both,
+            note=(
+                "priced on BOTH per-type tables, unrestricted oracle on the 18 "
+                "closed types. Part of what a card repairs is surface form, which "
+                "the normalized metric has already forgiven, so the card's gain "
+                "shrinks under it while its recall half does not"
+            ),
+        ),
+        ceiling_rung(
+            "4c",
+            "MF-10 combined view: cards on closed + KU-S3 retrieval on open",
+            combined_view["reachable_slu_f1_bound"]["slu_f1"],
+        ),
+        ceiling_rung(
+            6,
+            "targeted slot re-ask on judge-flagged rows (MF-9 section 5.2)",
+            72.87,
+            note="a recall channel; the normalizer does not touch it",
+        ),
     ]
 
     document = {
@@ -1786,6 +1868,8 @@ def command_ladder(args: argparse.Namespace) -> int:
             "normalized_minus_official": round(normalized_base - official_base, 2),
         },
         "ceilings_under_both": ceilings,
+        "normalized_base_rebuilds": True,
+        "closed_types_priced": list(closed_types),
         "rungs": rungs,
         "admission_primary": {
             "recommendation": (
@@ -1831,10 +1915,23 @@ def command_ladder(args: argparse.Namespace) -> int:
         f"({document['base']['normalized_minus_official']:+.2f})"
     )
     for rung in rungs:
+        normalized_slu = rung["normalized"]["slu_f1"]
         print(
             f"  rung {rung['n']}: official {rung['official']['slu_f1']} "
             f"(+{rung['official']['gain']})"
+            + (
+                f" | normalized {normalized_slu} (+{rung['normalized']['gain']})"
+                if normalized_slu is not None
+                else ""
+            )
         )
+    print(
+        "  ceilings: surface-perfect "
+        f"{ceilings['surface_perfect']['official']['slu_f1']} official vs "
+        f"{ceilings['surface_perfect']['normalized']['slu_f1']} normalized; "
+        f"no-missing {ceilings['no_missing']['official']['slu_f1']} vs "
+        f"{ceilings['no_missing']['normalized']['slu_f1']}"
+    )
     return 0
 
 def build_parser() -> argparse.ArgumentParser:
