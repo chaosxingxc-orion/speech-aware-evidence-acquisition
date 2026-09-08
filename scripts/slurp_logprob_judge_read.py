@@ -511,7 +511,8 @@ def precision_recall_curve(
     for threshold in thresholds:
         flagged = {key for key, value in scores.items() if value >= threshold}
         point = dict(precision_recall(flagged, errors))
-        point["threshold"] = threshold
+        point["flag_score_threshold"] = threshold
+        point["statistic_cutoff"] = -threshold
         curve.append(point)
     return curve
 
@@ -702,7 +703,14 @@ def analyse(
         document["operating_point"][target] = {
             "statistic": primary,
             "requested_budget": flag_budget,
-            "threshold": threshold,
+            # The flag score is the NEGATED statistic (higher = less
+            # confident), so both are reported: the threshold the flag applies,
+            # and the cutoff in the statistic's own units, which is the number a
+            # reader of a logprob wants. Non-finite (the whole population
+            # flagged) is reported as null rather than as JSON's non-standard
+            # -Infinity literal.
+            "flag_score_threshold": threshold if math.isfinite(threshold) else None,
+            "statistic_cutoff": -threshold if math.isfinite(threshold) else None,
             "confidence": precision_recall(flagged, errors),
             "schema_judge": precision_recall(schema_flagged, errors),
             "legality_judge": precision_recall(legality_flagged, errors),

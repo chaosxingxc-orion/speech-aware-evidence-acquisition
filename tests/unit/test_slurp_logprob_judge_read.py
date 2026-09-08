@@ -288,7 +288,8 @@ def test_the_curve_walks_every_distinct_threshold_monotonically():
     scores = {"a": 3.0, "b": 2.0, "c": 2.0, "d": 1.0}
     errors = {"a": True, "b": False, "c": True, "d": False}
     curve = READ.precision_recall_curve(scores, errors)
-    assert [point["threshold"] for point in curve] == [3.0, 2.0, 1.0]
+    assert [point["flag_score_threshold"] for point in curve] == [3.0, 2.0, 1.0]
+    assert [point["statistic_cutoff"] for point in curve] == [-3.0, -2.0, -1.0]
     assert [point["flagged"] for point in curve] == [1, 3, 4]
     assert [point["caught"] for point in curve] == [1, 2, 2]
     # Recall never falls as the threshold drops.
