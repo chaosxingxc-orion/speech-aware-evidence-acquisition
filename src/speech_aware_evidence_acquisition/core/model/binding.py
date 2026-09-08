@@ -12,7 +12,7 @@ from __future__ import annotations
 from typing import Mapping
 
 from . import FrozenCoreError
-from .paths import _normalized_relative_path, _resolve_confined
+from .paths import _normalized_relative_path, _resolve_confined, _resolve_confined_any
 
 
 class _PayloadBindingMixin:
@@ -115,10 +115,41 @@ class _PayloadBindingMixin:
                     "never merely some other file that happens to live under the same "
                     "root (I4 exact media-relpath binding)"
                 )
-        _resolve_confined(
+        # DERIVED-MEDIA CONFINEMENT (2026-09-07). The carrier root is not always
+        # the only place this run's OWN verified media lives: a derived media
+        # variant of the carrier (the ``@ts2`` silence-tail populations, the
+        # 16 kHz input-rate populations, the ESB utterance cuts) is written under
+        # its own ``<data_root>/derived/<variant>/`` root, and its dataset
+        # fragment declares that root plus the hash-pinned D1 media supplement
+        # that vouches for every file under it. Confining to ``carrier_root``
+        # ALONE therefore refused every such row the moment a real request was
+        # built, on every construction site that had no per-script workaround:
+        # ``core.driver.run_experiment``, the speech-native profile (what packet
+        # preprocessing runs through -- where the SLURP ``@ts2`` promotion lost
+        # 4/4 contacts on 2026-09-07 with nothing reaching the wire), and
+        # ``core.flight.FlightRuntime``'s default ``asset_dir`` resolver. The
+        # preflights and the zero-socket wire checks passed throughout, because
+        # neither ever builds a payload.
+        #
+        # Accepting those declared roots does NOT re-open the decoy hole
+        # IMPORTANT A above closes, for one reason: this widening happens
+        # strictly AFTER the I4 exact-relpath check. By the time control reaches
+        # here the payload's media_relpath has already been proven EQUAL to the
+        # one string this run's verified split holds for this exact sample id --
+        # so the set of files a payload can name is unchanged at exactly one
+        # (its own), whatever roots are legal. Confinement's remaining job is
+        # what it always was: prove that one string cannot resolve, through
+        # symlinks and all, outside the controlled trees this run is bound to.
+        # A root only enters that set through ``core.base.
+        # declared_derived_media_roots``, which refuses anything that is not a
+        # named variant directory strictly beneath ``<data_root>/derived/`` and
+        # anything a fragment declares without its paired, hash-pinned D1 media
+        # supplement -- so the widening is per-fragment, hash-anchored and, for
+        # every fragment that declares no such key, empty.
+        _resolve_confined_any(
             binding.data_root,
             relative,
-            binding.carrier_root,
+            (binding.carrier_root, *binding.derived_media_roots),
             "payload media_relpath",
             strict=True,
         )
