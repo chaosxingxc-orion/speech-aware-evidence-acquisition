@@ -262,4 +262,9 @@ def test_cards_for_returns_the_subset_and_not_the_whole_catalog():
     assert len(cards) < len(tools.catalog_ids())
     assert all(card.properties["system_invoked"] is True for card in cards)
 
-    assert table.cards_for("tool-call", "reviewer") == []
+    # WAVE R7 (2026-09-08): the tool-call reviewer row is no longer empty --
+    # it carries the hard-validity check that used to be a private branch
+    # inside the retired A2T repair controller.
+    reviewer_cards = table.cards_for("tool-call", "reviewer")
+    assert [card.id for card in reviewer_cards] == ["saea-tool-a2t-hard-validity-v1"]
+    assert len(reviewer_cards) < len(tools.catalog_ids())

@@ -80,7 +80,19 @@ EXPECTED_TOOL_IDS = (
 
 
 def test_the_catalog_holds_exactly_the_eight_wrapped_tools():
-    assert tuple(tools.catalog_ids()) == EXPECTED_TOOL_IDS
+    """W3's eight, still exactly themselves.
+
+    WAVE R7 (2026-09-08) registered the eighteen ``rails/a2t_*`` renderers Group
+    A named, so the catalog is no longer only these eight -- but the eight this
+    file tests are unchanged, and everything else in the catalog is an
+    ``a2t``-scoped renderer covered by ``test_a2t_renderer_tools.py``.
+    """
+
+    registered = tuple(tools.catalog_ids())
+    assert set(EXPECTED_TOOL_IDS) <= set(registered)
+    others = set(registered) - set(EXPECTED_TOOL_IDS)
+    assert all(tool_id.startswith("saea-tool-a2t-") for tool_id in others), sorted(others)
+    assert len(others) == 18
 
 
 def test_every_registered_manifest_is_system_invoked_and_complete():

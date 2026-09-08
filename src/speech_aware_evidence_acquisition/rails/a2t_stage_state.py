@@ -2,6 +2,17 @@
 
 The envelope stores only canonical parsed state. It never stores a raw model
 response, cumulative history, labels, references, or test annotations.
+
+WAVE R7 (owner Decision 12-F, 2026-09-08): this module is registered, unchanged,
+in the SYSTEM-invoked tool catalog. ``build_select_stage_envelope`` is catalog id
+``saea-tool-a2t-select-stage-envelope-v1`` on the ``ORG`` axis, scope
+``carrier:audio2tool``, wrapped as
+a passthrough by ``rails/tool_wrappers/a2t_renderers.py``; the manifest pins
+the sha256 of that entry point's own source, so editing its body without
+re-pinning fails the catalog check. Nothing here was rebuilt or re-signed for that --
+the reuse map's verdict was "Register, do not rebuild" -- and
+``tests/unit/test_a2t_renderer_tools.py`` asserts the wrapped output is the
+direct output.
 """
 
 from __future__ import annotations

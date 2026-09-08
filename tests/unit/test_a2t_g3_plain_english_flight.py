@@ -7,9 +7,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from speech_aware_evidence_acquisition.rails.a2t_hard_validity import (
-    HARD_VALIDITY_POLICY_ID,
-    HardValidityRepairController,
+from speech_aware_evidence_acquisition.rails.controllers import (
+    HARD_VALIDITY_PROGRAM_ID,
+    EvidenceAgentController,
 )
 from speech_aware_evidence_acquisition.rails.probes.a2t_g3_plain_english_flight import (
     G3_MATCHED_USE_PHASE,
@@ -429,7 +429,8 @@ def test_m0_and_agent_phases_bind_fresh_openjiuwen_calls_and_contact_caps(
         controller = kwargs["controller_registry"].resolve(kwargs["controller_policy_id"])(
             sample_ids[0]
         )
-        assert isinstance(controller, HardValidityRepairController)
+        assert isinstance(controller, EvidenceAgentController)
+        assert controller.program.program_id == HARD_VALIDITY_PROGRAM_ID
         return _summary(sample_ids, "use", contacts=2)
 
     summary = run_g3_agent_phase(
@@ -450,7 +451,7 @@ def test_m0_and_agent_phases_bind_fresh_openjiuwen_calls_and_contact_caps(
     assert len(summary.results) == 40
     assert agent_calls[0]["agent_executor_id"] == "openjiuwen-workflow-v1"
     assert agent_calls[0]["max_contacts"] == 2
-    assert agent_calls[0]["controller_policy_id"] == HARD_VALIDITY_POLICY_ID
+    assert agent_calls[0]["controller_policy_id"] == HARD_VALIDITY_PROGRAM_ID
     assert agent_calls[0]["bootstrap_facet_ids"] == ()
     assert agent_calls[0]["bootstrap_value_ids"] == ()
 

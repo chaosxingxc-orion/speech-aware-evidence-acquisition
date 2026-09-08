@@ -1,8 +1,47 @@
-"""Gold-free hard-validity repair for Audio2Tool AgentLoop contacts.
+"""Gold-free hard-validity checking for Audio2Tool AgentLoop contacts.
 
 This module implements only deterministic, deployment-visible validity checks.
 It deliberately excludes semantic confidence, reward, tier identity, expected call
 count, and every other training-free decision variable.
+
+WAVE R7 (owner Decision 12-F, 2026-09-08): FOLDED ONTO THE BASE
+---------------------------------------------------------------
+
+``HardValidityRepairController`` used to live here -- an ``AgentController``
+outside ``rails/controllers.py``, listed by the engineering-base ratchet, that
+sequenced a draft contact and a conditional repair contact and branched on
+``QueryState.loop_step == 0`` / ``== 1`` to decide which was which. The whole
+of that sequencing is now the registered phase program
+``phase-hard-validity-repair-v1`` walked by
+``rails.controllers.EvidenceAgentController``, built by
+``rails.controllers.make_hard_validity_phase_controller``. **The hard-coded
+``loop_step`` is gone**: the phase index decides which phase is running, which
+is what let W2 relax the observation invariant without this module noticing.
+
+What stayed here is what always belonged here: the pure, deterministic
+functions. :func:`validate_hard_validity` is unchanged, byte for byte. The
+bounded repair report this module used to seal from inside a controller is now
+:func:`hard_validity_repair_state_view`, a registered
+``core.base.PHASE_STATE_VIEWS`` entry -- a pure ``(response_text) ->
+state_content`` function, so the state the repair contact reads is named,
+hashable and config-reachable instead of being a branch nobody could switch
+off. The two instruction constants are unchanged and are what the folded
+program's material renders.
+
+The module therefore imports nothing from ``rails.knowledge`` or
+``rails.runner`` any more, which is what lets ``rails.controllers`` import the
+view from here without a cycle.
+
+WAVE R7 (owner Decision 12-F, 2026-09-08): this module is registered, unchanged,
+in the SYSTEM-invoked tool catalog. ``validate_hard_validity`` is catalog id
+``saea-tool-a2t-hard-validity-v1`` on the ``USE`` axis, scope
+``carrier:audio2tool``, wrapped as
+a passthrough by ``rails/tool_wrappers/a2t_renderers.py``; the manifest pins
+the sha256 of that entry point's own source, so editing its body without
+re-pinning fails the catalog check. Nothing here was rebuilt or re-signed for that --
+the reuse map's verdict was "Register, do not rebuild" -- and
+``tests/unit/test_a2t_renderer_tools.py`` asserts the wrapped output is the
+direct output.
 """
 
 from __future__ import annotations
@@ -14,14 +53,6 @@ from dataclasses import dataclass
 from typing import Literal, Mapping, Sequence
 
 from ..reproduction.toolcall_scoring import ToolCall, parse_tool_calls_text
-from .knowledge import AgentStateArtifact, AgentStepTransition, QueryState
-from .runner import (
-    AgentContact,
-    AgentContactPlan,
-    AgentLoopAdvance,
-    AgentResponse,
-    AgentRuntimeContext,
-)
 
 HARD_VALIDITY_POLICY_ID = "hard_validity_v1"
 DRAFT_CONTACT_ID = "hard-validity-draft"
@@ -496,160 +527,36 @@ def _bounded_repair_state_content(
     return content
 
 
-def _stop(context: AgentRuntimeContext, contact_id: str) -> AgentLoopAdvance:
-    return AgentLoopAdvance(
-        transition=AgentStepTransition(
-            snapshot_sha256=context.knowledge_snapshot_sha256,
-            prior_query_state_sha256=context.query_state.content_hash(),
-            next_query_state_sha256=None,
-            action_kind="stop",
-            action_target_refs=(),
-            new_value_ids=(),
-            used_value_ids=(),
-            dropped_value_ids=(),
-            new_agent_state_ids=(),
-            dropped_agent_state_ids=(),
-        ).validate(),
-        next_query_state=None,
-        new_agent_states=(),
-        next_contact=None,
-        final_response_contact_id=contact_id,
-    )
+#: The registered ``core.base.PHASE_STATE_VIEWS`` id for the bounded repair
+#: report. A phase program declaring it seals, as that phase's state, exactly
+#: the document ``HardValidityRepairController`` used to seal from inside its
+#: own ``advance`` -- same builder, same 8192-byte cap, same binary search over
+#: the stored draft prefix, byte for byte.
+HARD_VALIDITY_REPAIR_STATE_VIEW_V1 = "a2t-hard-validity-repair-report-v1"
 
 
-class HardValidityRepairController:
-    """Allow one same-core repair contact after a hard-invalid draft."""
+def hard_validity_repair_state_view(
+    response_text: str, registry_rows: Sequence[Mapping[str, str]]
+) -> str:
+    """The bounded repair report for one draft, as sealed state content.
 
-    def __init__(
-        self,
-        *,
-        registry_rows: Sequence[Mapping[str, str]],
-        key_representation_id: str,
-        matcher_policy_id: str,
-        decoding_params: Mapping[str, object],
-    ) -> None:
-        self._registry_rows = tuple(dict(row) for row in registry_rows)
-        _registry_index(self._registry_rows)
-        self._key_representation_id = key_representation_id
-        self._matcher_policy_id = matcher_policy_id
-        self._decoding_params = dict(decoding_params)
+    Pure: it reads the draft text and the pinned registry rows and nothing
+    else -- no gold, no sample, no manifest, no network. A VALID draft still
+    renders a report (``status: "valid"``, no violations); the folded program
+    never reaches this phase-to-phase transition for a valid draft, because its
+    stop policy ends the trajectory on the draft itself, exactly as the retired
+    controller did.
+    """
 
-    def _contact(
-        self,
-        state: QueryState,
-        *,
-        contact_id: str,
-        purpose: str,
-        instruction: str,
-    ) -> AgentContactPlan:
-        return AgentContactPlan(
-            contact_id=contact_id,
-            query_state_sha256=state.content_hash(),
-            purpose=purpose,
-            instruction=instruction,
-            key_representation_id=self._key_representation_id,
-            matcher_policy_id=self._matcher_policy_id,
-            decoding_params=self._decoding_params,
-        ).validate()
-
-    def initial_contact(self, context: AgentRuntimeContext) -> AgentContact:
-        if context.query_state.loop_step != 0:
-            raise ValueError(
-                "hard-validity controller requires loop step zero initially"
-            )
-        return self._contact(
-            context.query_state,
-            contact_id=DRAFT_CONTACT_ID,
-            purpose="Produce the task tool-call draft from speech and G3 knowledge.",
-            instruction=DRAFT_INSTRUCTION,
-        )
-
-    def advance(
-        self,
-        context: AgentRuntimeContext,
-        contact: AgentContact,
-        response_text: AgentResponse,
-    ) -> AgentLoopAdvance:
-        if not isinstance(contact, AgentContactPlan) or not isinstance(
-            response_text, str
-        ):
-            raise ValueError(
-                "hard-validity controller requires one contact and one string response"
-            )
-
-        if (
-            context.query_state.loop_step == 0
-            and contact.contact_id == DRAFT_CONTACT_ID
-        ):
-            report = validate_hard_validity(response_text, self._registry_rows)
-            if report.status == "valid":
-                return _stop(context, DRAFT_CONTACT_ID)
-
-            response_sha256 = _sha256_text(response_text)
-            state_id = (
-                f"state:hard-validity:{context.sample_id}:"
-                f"{context.query_state.content_hash()[:12]}"
-            )
-            state_content = _bounded_repair_state_content(report, response_text)
-            state = AgentStateArtifact(
-                state_id=state_id,
-                state_kind=HARD_VALIDITY_STATE_KIND,
-                content=state_content,
-                source_query_state_sha256=context.query_state.content_hash(),
-                source_response_sha256=response_sha256,
-                producer_policy_id=HARD_VALIDITY_POLICY_ID,
-                cited_value_ids=(),
-            ).validate()
-            next_state = QueryState(
-                query_id=context.query_state.query_id,
-                query_sample_id=context.query_state.query_sample_id,
-                speech_packet_id=context.query_state.speech_packet_id,
-                speech_packet_sha256=context.query_state.speech_packet_sha256,
-                use_split_identity_hash=context.query_state.use_split_identity_hash,
-                loop_step=1,
-                visible_facet_ids=context.query_state.visible_facet_ids,
-                agent_state_ids=context.query_state.agent_state_ids + (state_id,),
-                retrieved_value_ids=context.query_state.retrieved_value_ids,
-            ).validate()
-            transition = AgentStepTransition(
-                snapshot_sha256=context.knowledge_snapshot_sha256,
-                prior_query_state_sha256=context.query_state.content_hash(),
-                next_query_state_sha256=next_state.content_hash(),
-                action_kind="organize",
-                action_target_refs=(f"agent-state:{state_id}",),
-                new_value_ids=(),
-                used_value_ids=(),
-                dropped_value_ids=(),
-                new_agent_state_ids=(state_id,),
-                dropped_agent_state_ids=(),
-            ).validate()
-            return AgentLoopAdvance(
-                transition=transition,
-                next_query_state=next_state,
-                new_agent_states=(state,),
-                next_contact=self._contact(
-                    next_state,
-                    contact_id=REPAIR_CONTACT_ID,
-                    purpose="Repair one hard-invalid tool-call draft.",
-                    instruction=REPAIR_INSTRUCTION,
-                ),
-            )
-
-        if (
-            context.query_state.loop_step == 1
-            and contact.contact_id == REPAIR_CONTACT_ID
-        ):
-            return _stop(context, REPAIR_CONTACT_ID)
-
-        raise ValueError(
-            "hard-validity controller received an invalid contact sequence"
-        )
+    report = validate_hard_validity(response_text, registry_rows)
+    return _bounded_repair_state_content(report, response_text)
 
 
 __all__ = [
     "DRAFT_CONTACT_ID",
     "DRAFT_INSTRUCTION",
     "HARD_VALIDITY_POLICY_ID",
+    "HARD_VALIDITY_REPAIR_STATE_VIEW_V1",
     "HARD_VALIDITY_STATE_KIND",
     "MAX_AGENT_STATE_UTF8_BYTES",
     "MAX_SERIALIZED_VIOLATIONS",
@@ -657,8 +564,8 @@ __all__ = [
     "MAX_TOOL_CALLS",
     "REPAIR_CONTACT_ID",
     "REPAIR_INSTRUCTION",
-    "HardValidityRepairController",
     "HardValidityReport",
     "HardValidityViolation",
+    "hard_validity_repair_state_view",
     "validate_hard_validity",
 ]

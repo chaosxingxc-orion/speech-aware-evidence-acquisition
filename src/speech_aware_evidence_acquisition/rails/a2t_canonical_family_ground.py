@@ -4,6 +4,17 @@ The renderer is a thin model-facing view over the frozen G5 contract corpus.
 It adds no examples, evaluation rows, task values, retrieval, ranking, or learned
 policy.  Every family is paired with a strict response schema that permits an
 empty array when the speech requests no action from that family.
+
+WAVE R7 (owner Decision 12-F, 2026-09-08): this module is registered, unchanged,
+in the SYSTEM-invoked tool catalog. ``CanonicalFamilyGround.render_family`` is catalog id
+``saea-tool-a2t-canonical-family-ground-v1`` on the ``SUPPLY`` axis, scope
+``carrier:audio2tool``, wrapped as
+a passthrough by ``rails/tool_wrappers/a2t_renderers.py``; the manifest pins
+the sha256 of that entry point's own source, so editing its body without
+re-pinning fails the catalog check. Nothing here was rebuilt or re-signed for that --
+the reuse map's verdict was "Register, do not rebuild" -- and
+``tests/unit/test_a2t_renderer_tools.py`` asserts the wrapped output is the
+direct output.
 """
 
 from __future__ import annotations

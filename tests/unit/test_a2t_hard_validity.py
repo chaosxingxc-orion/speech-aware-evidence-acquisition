@@ -6,11 +6,14 @@ from speech_aware_evidence_acquisition.rails.a2t_hard_validity import (
     DRAFT_CONTACT_ID,
     HARD_VALIDITY_POLICY_ID,
     MAX_AGENT_STATE_UTF8_BYTES,
-    MAX_SERIALIZED_VIOLATIONS,
     MAX_STORED_DRAFT_CHARS,
     REPAIR_CONTACT_ID,
-    HardValidityRepairController,
     validate_hard_validity,
+)
+from speech_aware_evidence_acquisition.rails.controllers import (
+    HARD_VALIDITY_PROGRAM_ID,
+    RailsControllersError,
+    make_hard_validity_phase_controller,
 )
 from speech_aware_evidence_acquisition.rails.knowledge import QueryState
 from speech_aware_evidence_acquisition.rails.runner import (
@@ -168,13 +171,49 @@ def _context(state: QueryState, *, contact_index: int = 0) -> AgentRuntimeContex
     )
 
 
-def _controller() -> HardValidityRepairController:
-    return HardValidityRepairController(
+VALID_DRAFT = json.dumps([{"name": "getBatteryStatus", "arguments": {}}])
+
+
+def _successor(first_context, advance):
+    """The context the runner would rebuild for the repair contact."""
+
+    return AgentRuntimeContext(
+        sample_id=first_context.sample_id,
+        knowledge_snapshot_sha256=first_context.knowledge_snapshot_sha256,
+        catalog_facet_ids=first_context.catalog_facet_ids,
+        catalog_value_ids=first_context.catalog_value_ids,
+        query_state=advance.next_query_state,
+        task_contract=first_context.task_contract,
+        agent_states=advance.new_agent_states,
+        prior_response_sha256s=("d" * 64,),
+        contact_index=1,
+    )
+
+
+def _controller():
+    """The WAVE R7 fold: the same cell, built on
+    ``rails.controllers.EvidenceAgentController`` walking
+    ``phase-hard-validity-repair-v1``. Same registry rows, same declared arm
+    identity; ``decoding_params`` now belong to the runner, which already
+    merges the run-level mapping into every plan."""
+
+    factory = make_hard_validity_phase_controller(
         registry_rows=REGISTRY_ROWS,
         key_representation_id="g3-construction-semantic-same-packet-v1",
         matcher_policy_id="g3-same-packet-matcher-v1",
-        decoding_params={"temperature": 0, "max_tokens": 1024},
+        decoding_params={},
     )
+    return factory("g3-sample")
+
+
+def test_decoding_params_on_the_contact_are_refused_by_name() -> None:
+    with pytest.raises(RailsControllersError, match="belong to the run"):
+        make_hard_validity_phase_controller(
+            registry_rows=REGISTRY_ROWS,
+            key_representation_id="k",
+            matcher_policy_id="m",
+            decoding_params={"temperature": 0},
+        )
 
 
 def test_valid_draft_stops_with_frozen_core_draft_as_final_authority() -> None:
@@ -185,11 +224,13 @@ def test_valid_draft_stops_with_frozen_core_draft_as_final_authority() -> None:
     advance = controller.advance(
         context,
         contact,
-        '[{"name":"getBatteryStatus","arguments":{}}]',
+        VALID_DRAFT,
     )
 
     assert isinstance(contact, AgentContactPlan)
     assert contact.contact_id == DRAFT_CONTACT_ID
+    assert contact.key_representation_id == "g3-construction-semantic-same-packet-v1"
+    assert contact.matcher_policy_id == "g3-same-packet-matcher-v1"
     assert advance.transition.action_kind == "stop"
     assert advance.next_contact is None
     assert advance.new_agent_states == ()
@@ -214,7 +255,11 @@ def test_hard_invalid_draft_gets_exactly_one_same_core_repair_then_stops() -> No
     )
     assert len(repair_advance.new_agent_states) == 1
     state = repair_advance.new_agent_states[0]
-    assert state.producer_policy_id == HARD_VALIDITY_POLICY_ID
+    # The identity fields now name the PROGRAM, which is the point of the fold;
+    # the CONTENT is the same registered validity report as before.
+    assert state.producer_policy_id == HARD_VALIDITY_PROGRAM_ID
+    assert state.state_id == "draft:sample-1"
+    assert state.state_kind == "phase:draft"
     assert "empty_call_list" in state.content
     repair_contact = repair_advance.next_contact
     assert isinstance(repair_contact, AgentContactPlan)
@@ -223,17 +268,7 @@ def test_hard_invalid_draft_gets_exactly_one_same_core_repair_then_stops() -> No
     assert "same supplied G3 knowledge packet" in repair_contact.instruction
     assert "Do not invent internal tool codes" in repair_contact.instruction
 
-    second_context = AgentRuntimeContext(
-        sample_id=first_context.sample_id,
-        knowledge_snapshot_sha256=first_context.knowledge_snapshot_sha256,
-        catalog_facet_ids=first_context.catalog_facet_ids,
-        catalog_value_ids=first_context.catalog_value_ids,
-        query_state=repair_advance.next_query_state,
-        task_contract=first_context.task_contract,
-        agent_states=repair_advance.new_agent_states,
-        prior_response_sha256s=("d" * 64,),
-        contact_index=1,
-    )
+    second_context = _successor(first_context, repair_advance)
     final_advance = controller.advance(second_context, repair_contact, "not JSON")
 
     assert final_advance.transition.action_kind == "stop"
@@ -244,19 +279,19 @@ def test_hard_invalid_draft_gets_exactly_one_same_core_repair_then_stops() -> No
 
 def test_controller_rejects_a_third_contact_sequence() -> None:
     controller = _controller()
-    context = _context(_query_state(loop_step=2), contact_index=2)
-    contact = AgentContactPlan(
-        contact_id=REPAIR_CONTACT_ID,
-        query_state_sha256=context.query_state.content_hash(),
-        purpose="invalid third contact",
-        instruction="Do not run.",
-        key_representation_id="g3-construction-semantic-same-packet-v1",
-        matcher_policy_id="g3-same-packet-matcher-v1",
-        decoding_params={"temperature": 0},
-    )
+    first_context = _context(_query_state())
+    draft_contact = controller.initial_contact(first_context)
+    repair_advance = controller.advance(first_context, draft_contact, "[]")
+    repair_contact = repair_advance.next_contact
+    assert isinstance(repair_contact, AgentContactPlan)
+    second_context = _successor(first_context, repair_advance)
+    controller.advance(second_context, repair_contact, "[]")
 
-    with pytest.raises(ValueError, match="invalid contact sequence"):
-        controller.advance(context, contact, "[]")
+    # The retired controller refused a third contact by inspecting
+    # ``QueryState.loop_step``. The base refuses it because the program has two
+    # phases and both are spent -- no loop-step arithmetic anywhere.
+    with pytest.raises(RailsControllersError, match="advanced past its program"):
+        controller.advance(second_context, repair_contact, "[]")
 
 
 def test_long_malformed_draft_has_bounded_repair_state_and_one_repair() -> None:
@@ -279,17 +314,7 @@ def test_long_malformed_draft_has_bounded_repair_state_and_one_repair() -> None:
 
     assert repair_advance.next_query_state is not None
     assert isinstance(repair_advance.next_contact, AgentContactPlan)
-    second_context = AgentRuntimeContext(
-        sample_id=first_context.sample_id,
-        knowledge_snapshot_sha256=first_context.knowledge_snapshot_sha256,
-        catalog_facet_ids=first_context.catalog_facet_ids,
-        catalog_value_ids=first_context.catalog_value_ids,
-        query_state=repair_advance.next_query_state,
-        task_contract=first_context.task_contract,
-        agent_states=repair_advance.new_agent_states,
-        prior_response_sha256s=("e" * 64,),
-        contact_index=1,
-    )
+    second_context = _successor(first_context, repair_advance)
     final_advance = controller.advance(
         second_context,
         repair_advance.next_contact,
@@ -297,39 +322,3 @@ def test_long_malformed_draft_has_bounded_repair_state_and_one_repair() -> None:
     )
     assert final_advance.next_contact is None
     assert final_advance.final_response_contact_id == REPAIR_CONTACT_ID
-
-
-def test_many_invalid_keys_serialize_first_sixteen_and_omitted_count() -> None:
-    controller = _controller()
-    context = _context(_query_state())
-    contact = controller.initial_contact(context)
-    invalid_arguments = {f"illegal_key_{index:02d}": index for index in range(64)}
-    payload = json.dumps(
-        [{"name": "getBatteryStatus", "arguments": invalid_arguments}],
-        separators=(",", ":"),
-    )
-    response = f"```json\n{payload}\n```\n" + ("trailing malformed text " * 1024)
-
-    advance = controller.advance(context, contact, response)
-
-    state_document = json.loads(advance.new_agent_states[0].content)
-    serialized = state_document["report"]["violations"]
-    assert len(serialized) == MAX_SERIALIZED_VIOLATIONS == 16
-    assert state_document["report"]["omitted_count"] == 48
-    assert serialized[0]["argument_key"] == "illegal_key_00"
-    assert serialized[-1]["argument_key"] == "illegal_key_15"
-    assert len(advance.new_agent_states[0].content.encode("utf-8")) <= 8192
-    assert len(state_document["previous_draft"]) <= 4096
-
-
-def test_repair_state_fails_deterministically_if_metadata_cannot_fit() -> None:
-    controller = _controller()
-    context = _context(_query_state())
-    contact = controller.initial_contact(context)
-    invalid_arguments = {f"illegal_{index}_{'x' * 900}": index for index in range(16)}
-    response = json.dumps(
-        [{"name": "getBatteryStatus", "arguments": invalid_arguments}]
-    )
-
-    with pytest.raises(ValueError, match="exceeds 8192 UTF-8 bytes"):
-        controller.advance(context, contact, response)

@@ -697,12 +697,14 @@ POLICIES.register(OBS_REPAIR_LOOP_POLICY_NAME, ObsRepairLoopPolicy())
 # and declaring criticism_only=True -- a judge scores and flags and never
 # proposes a revision (owner Decision 11-C).
 from .judges import (  # noqa: E402
+    A2T_HARD_VALIDITY_JUDGE_V1,
     E21_SUBSTITUTION_ALIGNMENT_JUDGE_V1,
     EARNINGS_NUMERIC_FORMAT_JUDGE_V1,
     REPLAY_LOGPROB_JUDGE_V1,
     ROSTER_BAND_JUDGE_V1,
     SLURP_LEGAL_LABEL_JUDGE_V1,
     SLURP_SLOT_SCHEMA_JUDGE_V1,
+    A2tHardValidityJudge,
     EarningsNumericFormatJudge,
     ReplayLogprobJudge,
     RosterBandJudge,
@@ -717,6 +719,11 @@ JUDGES.register(EARNINGS_NUMERIC_FORMAT_JUDGE_V1, EarningsNumericFormatJudge())
 JUDGES.register(E21_SUBSTITUTION_ALIGNMENT_JUDGE_V1, SubstitutionAlignmentJudge())
 JUDGES.register(REPLAY_LOGPROB_JUDGE_V1, ReplayLogprobJudge())
 JUDGES.register(ROSTER_BAND_JUDGE_V1, RosterBandJudge())
+# WAVE R7 (2026-09-08): the seventh judge. It wraps the same frozen
+# ``validate_hard_validity`` the retired A2T repair controller consulted in
+# private, so a cell can now DECLARE the check instead of inheriting it from
+# a controller class nobody could switch off.
+JUDGES.register(A2T_HARD_VALIDITY_JUDGE_V1, A2tHardValidityJudge())
 
 # --- WAVE R7: the frozen-historical A2T AgentLoop policy ids ----------------
 #

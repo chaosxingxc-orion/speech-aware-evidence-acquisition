@@ -108,6 +108,22 @@ RESPONSE_FORMATS = Registry("response format")
 # rule. Populated from ``core/policies.py``, one of the canonical
 # registration sites ``scripts/checks/engineering_base_check.py`` reads.
 RESPONSE_POSTPROCESSORS = Registry("response postprocessor")
+# WAVE R7 (owner Decision 12-F, 2026-09-08): named KNOWLEDGE VIEWS a phase
+# program may apply to its own sealed answer. An entry is a pure
+# ``(response_text) -> state_content`` function: what the phase SEALS as its
+# ``rails.knowledge.AgentStateArtifact`` content, and therefore what the next
+# phase reads. Absent -- every cell written before R7 -- the phase seals the
+# raw response, byte-identically to before this registry existed.
+#
+# It exists because folding ``rails.a2t_hard_validity``'s retired repair
+# controller onto ``rails.controllers.EvidenceAgentController`` had to keep the
+# bytes the repair contact reads: that controller sealed a DERIVED state (a
+# bounded, deterministic validity report over its own draft), not the draft. A
+# view is the registered, hashable name for that derivation -- the same
+# one-Registry discipline every other pluggable dimension above uses, and the
+# reason the derivation is no longer a hard-coded branch inside a controller.
+# Entries are populated from ``rails/controllers.py``.
+PHASE_STATE_VIEWS = Registry("phase state view")
 
 
 # ---------------------------------------------------------------------------

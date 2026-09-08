@@ -6,7 +6,11 @@ guard (docs/readiness/2026-08-09-exploration-plan.md section 3b).
 import pytest
 
 from speech_aware_evidence_acquisition.core import evidence  # noqa: F401 (registration)
-from speech_aware_evidence_acquisition.core.base import EVIDENCE_SOURCES, EvidenceError
+from speech_aware_evidence_acquisition.core.base import (
+    EVIDENCE_SOURCES,
+    EvidenceError,
+    FrozenHistoricalComponent,
+)
 from speech_aware_evidence_acquisition.core.bias_lists import (
     DEFAULT_BIAS_LIST_MAX_ENTRIES,
     _assert_no_oracle_overlap,
@@ -361,8 +365,16 @@ def test_no_registered_evidence_source_can_return_oracle_content(bias_list_world
     lock = load_lock(bias_list_world.lock_path)
     checked = []
     for name in EVIDENCE_SOURCES.names():
+        source = EVIDENCE_SOURCES.resolve(name)
+        if isinstance(source, FrozenHistoricalComponent):
+            # WAVE R7 (2026-09-08): a retired Audio2Tool AgentLoop id resolves so
+            # the base can account for it and REFUSES every call, so it cannot
+            # leak anything -- there is nothing to call. Skipped by TYPE rather
+            # than by catching its refusal, so a live source that started
+            # raising CoreError could never hide here.
+            continue
         try:
-            items = EVIDENCE_SOURCES.resolve(name)(
+            items = source(
                 lock, bias_list_world.data_root, bias_list_world.sample_id, "earnings21-original"
             )
         except (EvidenceError, OracleEvidenceError):
@@ -619,8 +631,16 @@ def test_oracle_list_is_unreachable_through_any_registered_transforms_wiring(bia
     oracle_relpath = bias_list_relpath(lock, "oracle_list.txt")
     checked = []
     for name in EVIDENCE_SOURCES.names():
+        source = EVIDENCE_SOURCES.resolve(name)
+        if isinstance(source, FrozenHistoricalComponent):
+            # WAVE R7 (2026-09-08): a retired Audio2Tool AgentLoop id resolves so
+            # the base can account for it and REFUSES every call, so it cannot
+            # leak anything -- there is nothing to call. Skipped by TYPE rather
+            # than by catching its refusal, so a live source that started
+            # raising CoreError could never hide here.
+            continue
         try:
-            items = EVIDENCE_SOURCES.resolve(name)(
+            items = source(
                 lock, bias_list_world.data_root, bias_list_world.sample_id, "earnings21-original"
             )
         except (EvidenceError, OracleEvidenceError):

@@ -134,7 +134,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
-from ..core.base import AGENT_CONTROLLERS, RESPONSE_FORMATS, JudgeVerdict
+from ..core.base import (
+    AGENT_CONTROLLERS,
+    PHASE_STATE_VIEWS,
+    RESPONSE_FORMATS,
+    JudgeVerdict,
+)
 from ..core.frozen_historical import frozen_agent_controller
 from .errors import RailsError
 from .knowledge import (
@@ -468,6 +473,28 @@ StopPolicy = Callable[[AgentRuntimeContext, Sequence[str]], bool]
 ReviewForPhase = Callable[
     [str, AgentRuntimeContext, str], Sequence["JudgeVerdict"]
 ]
+#: WAVE R7 (owner Decision 12-F, 2026-09-08): a phase's KNOWLEDGE VIEW of its
+#: own answer. ``state_view_for_phase(phase_name, response_text) -> str``
+#: returns what that phase SEALS as its :class:`~.knowledge.AgentStateArtifact`
+#: content, which is also what the next phase reads. ``None`` -- the default,
+#: and every caller written before R7 -- seals the raw response and is
+#: byte-identical to before the seam existed.
+#:
+#: It exists because a retired controller
+#: (``rails.a2t_hard_validity.HardValidityRepairController``) sealed a DERIVED
+#: state -- a bounded, deterministic validity report over its own draft -- and
+#: folding it onto this base without the seam would have changed the bytes the
+#: repair contact reads. A view is a pure ``(text) -> text`` function
+#: registered in ``core.base.PHASE_STATE_VIEWS``; it never reads gold, the
+#: sample, or anything outside the response it is given.
+StateViewForPhase = Callable[[str, str], str]
+#: WAVE R7: a cell's own ``(key_representation_id, matcher_policy_id)``, either
+#: one pair for the whole trajectory or one per phase. It exists so two arms of
+#: one cell can share a phase program and still be different arms -- the G3
+#: matched and shuffled arms differ in exactly the matcher id -- and so a folded
+#: cell keeps the identity its sealed receipts already carry. ``None`` keeps the
+#: program-derived default and is byte-identical to before the seam existed.
+ContactIdentity = tuple[str, str] | Mapping[str, tuple[str, str]]
 
 
 class EvidenceAgentController:
@@ -522,6 +549,8 @@ class EvidenceAgentController:
         supply_for_phase: SupplyForPhase | None = None,
         stop_policy: StopPolicy | None = None,
         review_for_phase: ReviewForPhase | None = None,
+        state_view_for_phase: StateViewForPhase | None = None,
+        contact_identity: ContactIdentity | None = None,
     ) -> None:
         program.validate()
         if not callable(material_for_phase):
@@ -540,11 +569,45 @@ class EvidenceAgentController:
             raise RailsControllersError(
                 "EvidenceAgentController review_for_phase must be callable or None"
             )
+        if state_view_for_phase is not None and not callable(state_view_for_phase):
+            raise RailsControllersError(
+                "EvidenceAgentController state_view_for_phase must be callable or None"
+            )
+        if contact_identity is not None:
+            pairs = (
+                list(contact_identity.values())
+                if isinstance(contact_identity, Mapping)
+                else [contact_identity]
+            )
+            if isinstance(contact_identity, Mapping):
+                declared = set(contact_identity)
+                phases = set(program.phase_names())
+                if declared != phases:
+                    raise RailsControllersError(
+                        "EvidenceAgentController contact_identity, when given per "
+                        f"phase, must name every phase exactly once: expected "
+                        f"{sorted(phases)}, got {sorted(declared)}"
+                    )
+            for pair in pairs:
+                if (
+                    not isinstance(pair, tuple)
+                    or len(pair) != 2
+                    or not all(
+                        isinstance(part, str) and part.strip() for part in pair
+                    )
+                ):
+                    raise RailsControllersError(
+                        "EvidenceAgentController contact_identity must be a "
+                        "(key_representation_id, matcher_policy_id) pair of "
+                        "non-empty strings, a per-phase mapping of them, or None"
+                    )
         self._program = program
         self._material_for_phase = material_for_phase
         self._supply_for_phase = supply_for_phase
         self._stop_policy = stop_policy
         self._review_for_phase = review_for_phase
+        self._state_view_for_phase = state_view_for_phase
+        self._contact_identity = contact_identity
         self._sealed: dict[str, AgentStateArtifact] = {}
         self._reviews: dict[str, tuple[JudgeVerdict, ...]] = {}
         self._completed: list[str] = []
@@ -600,13 +663,26 @@ class EvidenceAgentController:
         if material.response_format is not None:
             decoding_params["response_format"] = dict(material.response_format)
         self._pending_contact_id = material.contact_id
+        # WAVE R7: a cell may declare its OWN key-representation / matcher
+        # identity instead of the program-derived default. It exists for the
+        # folds: two arms of one cell can share a phase program and still be
+        # different arms (the G3 matched and shuffled arms differ in exactly
+        # this string), and a receipt that collapsed them would be describing
+        # one cell where there were two. ``None`` is the pre-R7 default and is
+        # byte-identical to it.
+        key_representation_id = f"{self._program.program_id}:{phase.name}"
+        matcher_policy_id = self._program.program_id
+        if isinstance(self._contact_identity, Mapping):
+            key_representation_id, matcher_policy_id = self._contact_identity[phase.name]
+        elif self._contact_identity is not None:
+            key_representation_id, matcher_policy_id = self._contact_identity
         return AgentContactPlan(
             contact_id=material.contact_id,
             query_state_sha256=context.query_state.content_hash(),
             purpose=phase.purpose,
             instruction=instruction,
-            key_representation_id=f"{self._program.program_id}:{phase.name}",
-            matcher_policy_id=self._program.program_id,
+            key_representation_id=key_representation_id,
+            matcher_policy_id=matcher_policy_id,
             decoding_params=decoding_params,
         ).validate()
 
@@ -642,10 +718,17 @@ class EvidenceAgentController:
                 "EvidenceAgentController.advance received an out-of-sequence contact"
             )
         response_sha256 = hashlib.sha256(response_text.encode("utf-8")).hexdigest()
+        # WAVE R7: what this phase SEALS may be a registered VIEW of the raw
+        # response rather than the raw response itself (class docstring,
+        # "Knowledge views"). ``None`` -- every caller written before R7 --
+        # seals the raw bytes, which is byte-identical to before this seam
+        # existed. ``source_response_sha256`` always hashes the RAW response,
+        # so a view can never disguise which bytes the core returned.
+        state_content = self._resolve_state_view(phase, response_text)
         artifact = AgentStateArtifact(
             state_id=f"{phase.name}:{context.sample_id}",
             state_kind=f"phase:{phase.name}",
-            content=response_text,
+            content=state_content,
             source_query_state_sha256=context.query_state.content_hash(),
             source_response_sha256=response_sha256,
             producer_policy_id=self._program.program_id,
@@ -661,7 +744,8 @@ class EvidenceAgentController:
         # the answer that was actually given, and every judge of every
         # reviewed phase runs exactly once per row. Criticism only: what
         # comes back is recorded and steers nothing (class docstring).
-        self._resolve_review(phase, context, response_text, artifact, response_sha256)
+        staged = self._review_context(context, artifact, response_sha256)
+        self._resolve_review(phase, staged, response_text)
 
         is_last = index + 1 >= len(self._program.phases)
         should_stop = is_last
@@ -670,7 +754,17 @@ class EvidenceAgentController:
             and self._program.stop_rule == "stop-policy-optional-early-exit"
             and self._stop_policy is not None
         ):
-            should_stop = bool(self._stop_policy(context, tuple(self._completed)))
+            # WAVE R7: the stop policy sees the STAGED context -- this phase's
+            # own just-sealed state appended, the query_state unchanged -- the
+            # same context ``supply_for_phase`` and the Reviewer already
+            # receive. It is a strict superset of what it saw before (one more
+            # entry in ``agent_states`` and in ``prior_response_sha256s``), and
+            # it is what an early exit conditioned on the answer just given
+            # needs: ``KbAlphaBlendController`` reads its direct-decode
+            # response before deciding to skip the evidence contact, and
+            # ``a2t-hard-validity-repair-v1`` reads its draft before deciding
+            # to skip the repair contact.
+            should_stop = bool(self._stop_policy(staged, tuple(self._completed)))
 
         # E6: the supply decision for the NEXT phase is taken HERE, on the
         # wave that just completed, because that is the only wave whose
@@ -681,12 +775,7 @@ class EvidenceAgentController:
         # validates them against exactly that state).
         supply: PhaseSupply | None = None
         if not should_stop:
-            supply = self._resolve_supply(
-                self._program.phases[index + 1],
-                context,
-                artifact,
-                response_sha256,
-            )
+            supply = self._resolve_supply(self._program.phases[index + 1], staged)
             if supply is not None and supply.retain_prior:
                 if self._program.stop_rule != "stop-policy-optional-early-exit":
                     raise RailsControllersError(
@@ -816,13 +905,31 @@ class EvidenceAgentController:
             contact_index=context.contact_index,
         )
 
+    def _resolve_state_view(self, phase: PhaseSpec, response_text: str) -> str:
+        """What this phase seals: the raw response, or the registered view of
+        it (:data:`StateViewForPhase`).
+
+        Fail-closed on anything that is not non-empty text, for the same reason
+        every other injected callable here is type-checked: a view that
+        returned ``None`` would silently seal nothing, and the next phase would
+        read an empty state instead of refusing.
+        """
+
+        if self._state_view_for_phase is None:
+            return response_text
+        content = self._state_view_for_phase(phase.name, response_text)
+        if not isinstance(content, str) or not content:
+            raise RailsControllersError(
+                f"state_view_for_phase({phase.name!r}) must return non-empty text, "
+                f"got {type(content).__name__}"
+            )
+        return content
+
     def _resolve_review(
         self,
         phase: PhaseSpec,
-        context: AgentRuntimeContext,
+        staged: AgentRuntimeContext,
         response_text: str,
-        artifact: AgentStateArtifact,
-        response_sha256: str,
     ) -> tuple[JudgeVerdict, ...]:
         """Call ``review_for_phase`` for the phase that just answered and
         type-check what comes back.
@@ -837,11 +944,7 @@ class EvidenceAgentController:
 
         if self._review_for_phase is None:
             return ()
-        verdicts = self._review_for_phase(
-            phase.name,
-            self._review_context(context, artifact, response_sha256),
-            response_text,
-        )
+        verdicts = self._review_for_phase(phase.name, staged, response_text)
         if verdicts is None:
             verdicts = ()
         if isinstance(verdicts, (str, bytes, Mapping)) or not isinstance(
@@ -867,9 +970,7 @@ class EvidenceAgentController:
     def _resolve_supply(
         self,
         next_phase: PhaseSpec,
-        context: AgentRuntimeContext,
-        artifact: AgentStateArtifact,
-        response_sha256: str,
+        staged: AgentRuntimeContext,
     ) -> "PhaseSupply | None":
         """Call ``supply_for_phase`` for ``next_phase`` and type-check it.
 
@@ -882,10 +983,7 @@ class EvidenceAgentController:
 
         if self._supply_for_phase is None:
             return None
-        supply = self._supply_for_phase(
-            next_phase.name,
-            self._review_context(context, artifact, response_sha256),
-        )
+        supply = self._supply_for_phase(next_phase.name, staged)
         if supply is None:
             return None
         if isinstance(supply, SupplyPacket):
@@ -1011,6 +1109,13 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-slots-given-intent-supplied-v1": (
         "phase-slots-given-intent-supplied-v1.json"
     ),
+    # WAVE R7, 2026-09-08: the fold of the retired
+    # ``rails.a2t_hard_validity.HardValidityRepairController``. ``draft`` then,
+    # only when the draft is hard-invalid, ``repair`` -- the early exit is the
+    # ``stop_policy`` seam reading the draft's own registered validity report,
+    # so the phase index decides which phase runs and the retired controller's
+    # hard-coded ``QueryState.loop_step`` branch is gone.
+    "phase-hard-validity-repair-v1": "phase-hard-validity-repair-v1.json",
 }
 
 _LOADED_PROGRAMS: dict[str, PhaseProgram] = {}
@@ -1088,6 +1193,13 @@ def register_phase_programs_v1() -> None:
             "phase-slots-given-intent-supplied-v1",
             default_controller_factory(
                 default_phase_program("phase-slots-given-intent-supplied-v1")
+            ),
+        )
+    if "phase-hard-validity-repair-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-hard-validity-repair-v1",
+            default_controller_factory(
+                default_phase_program("phase-hard-validity-repair-v1")
             ),
         )
     unregistered = set(_PROGRAM_CONFIG_FILENAMES) - set(AGENT_CONTROLLERS.names())
@@ -1222,6 +1334,148 @@ def register_response_formats_v1() -> None:
 register_response_formats_v1()
 
 
+# -- WAVE R7: the hard-validity repair fold ----------------------------------
+#
+# ``rails.a2t_hard_validity.HardValidityRepairController`` was an
+# ``AgentController`` outside this module -- one of the 33 the September audit
+# counted -- that sequenced a draft contact and a conditional repair contact
+# and branched on ``QueryState.loop_step`` to tell them apart. It is gone. What
+# replaces it is this file's own base walking ``phase-hard-validity-repair-v1``
+# with three registered, switchable seams:
+#
+# * ``material_for_phase`` renders the two instruction constants, which
+#   ``rails.a2t_hard_validity`` still owns, unchanged;
+# * ``state_view_for_phase`` seals the bounded validity report as the draft
+#   phase's state -- the ONE thing the retired controller did that the raw
+#   response could not express, now a registered
+#   ``core.base.PHASE_STATE_VIEWS`` id instead of a branch inside a controller;
+# * ``stop_policy`` ends the trajectory on a VALID draft, which is the same
+#   early exit the retired controller took, now taken by the base's own
+#   ``stop-policy-optional-early-exit`` rule.
+#
+# ``tests/unit/test_a2t_hard_validity_fold.py`` proves the wire equivalence
+# against the sealed G3 flight: same contact sequence, same control-turn bytes,
+# same sealed-state bytes, same final answer, on the flight's own responses.
+
+from .a2t_hard_validity import (  # noqa: E402  (registration block: see above)
+    DRAFT_CONTACT_ID,
+    DRAFT_INSTRUCTION,
+    REPAIR_CONTACT_ID,
+    REPAIR_INSTRUCTION,
+    hard_validity_repair_state_view,
+)
+
+HARD_VALIDITY_PROGRAM_ID = "phase-hard-validity-repair-v1"
+
+
+def hard_validity_repair_state_view_v1(
+    registry_rows: Sequence[Mapping[str, str]],
+) -> Callable[[str], str]:
+    """The registered ``PHASE_STATE_VIEWS`` factory: bind the pinned registry
+    rows, get the pure ``(response_text) -> state_content`` view."""
+
+    rows = tuple(dict(row) for row in registry_rows)
+
+    def view(response_text: str) -> str:
+        return hard_validity_repair_state_view(response_text, rows)
+
+    return view
+
+
+def register_phase_state_views_v1() -> None:
+    """Idempotently register this wave's ``core.base.PHASE_STATE_VIEWS`` ids
+    (same shape and re-entrancy discipline as
+    :func:`register_response_formats_v1`)."""
+
+    # A literal id inside its own ``register`` call, so the engineering-base
+    # gate can read the registered name set from this file's source.
+    if "a2t-hard-validity-repair-report-v1" not in PHASE_STATE_VIEWS.names():
+        PHASE_STATE_VIEWS.register(
+            "a2t-hard-validity-repair-report-v1", hard_validity_repair_state_view_v1
+        )
+
+
+register_phase_state_views_v1()
+
+
+def make_hard_validity_phase_controller(
+    *,
+    registry_rows: Sequence[Mapping[str, str]],
+    key_representation_id: str,
+    matcher_policy_id: str,
+    decoding_params: Mapping[str, object],
+) -> Callable[[str], EvidenceAgentController]:
+    """The fold: a ``Callable[[str], AgentController]`` factory that reproduces
+    the retired ``HardValidityRepairController`` on this module's base.
+
+    Takes the same four constructor arguments the retired controller took, so a
+    caller swaps one name and keeps its own identity strings. Note that
+    ``key_representation_id`` and ``matcher_policy_id`` are carried into the
+    dispatched plan exactly as they were: they are that cell's declared
+    identity, not this base's, and a receipt that renamed them would be
+    describing a different cell.
+    """
+
+    program = default_phase_program(HARD_VALIDITY_PROGRAM_ID)
+    rows = tuple(dict(row) for row in registry_rows)
+    view = hard_validity_repair_state_view_v1(rows)
+    params = dict(decoding_params)
+    instructions = {"draft": DRAFT_INSTRUCTION, "repair": REPAIR_INSTRUCTION}
+    contact_ids = {"draft": DRAFT_CONTACT_ID, "repair": REPAIR_CONTACT_ID}
+
+    def material_for_phase(
+        phase_name: str, _context: AgentRuntimeContext
+    ) -> PhaseMaterial:
+        phase = program.phase(phase_name)
+        return PhaseMaterial(
+            instruction=instructions[phase_name],
+            response_format=None,
+            contact_id=contact_ids[phase_name],
+            purpose=phase.purpose,
+        ).validate()
+
+    def state_view_for_phase(phase_name: str, response_text: str) -> str:
+        # Only the draft's state is ever read by a later phase; the repair
+        # phase is terminal, so its own state is sealed as the raw answer.
+        if phase_name != "draft":
+            return response_text
+        return view(response_text)
+
+    def stop_policy(context: AgentRuntimeContext, completed: Sequence[str]) -> bool:
+        if tuple(completed) != ("draft",):
+            return False
+        # The staged context carries the draft's just-sealed state (WAVE R7's
+        # stop-policy change); its content is the registered validity report,
+        # so the early exit reads exactly what the retired controller read.
+        sealed = context.agent_states[-1]
+        return json.loads(sealed.content)["report"]["status"] == "valid"
+
+    if params:
+        # The retired controller put its decoding params on every contact plan;
+        # ``rails.runner`` merges a plan's params OVER the run-level ones
+        # (:func:`rails.runner._run_agent_trajectory`), and the G3 flight handed
+        # the SAME mapping to both, so carrying them here would be a no-op that
+        # only made the two look different. Refuse a mapping that is not that
+        # no-op rather than silently dropping a real override.
+        raise RailsControllersError(
+            "make_hard_validity_phase_controller: decoding_params belong to the "
+            "run, not to the contact -- rails.runner merges the run-level "
+            "mapping into every plan already. Pass {} and set them on the "
+            f"runner; got {sorted(params)}"
+        )
+
+    def factory(_sample_id: str) -> EvidenceAgentController:
+        return EvidenceAgentController(
+            program=program,
+            material_for_phase=material_for_phase,
+            stop_policy=stop_policy,
+            state_view_for_phase=state_view_for_phase,
+            contact_identity=(key_representation_id, matcher_policy_id),
+        )
+
+    return factory
+
+
 __all__ = [
     "DEFAULT_PROGRAM_CONFIG_DIR",
     "PHASE_KNOWLEDGE_KINDS",
@@ -1233,14 +1487,19 @@ __all__ = [
     "PhaseSpec",
     "PhaseSupply",
     "RailsControllersError",
+    "HARD_VALIDITY_PROGRAM_ID",
+    "ContactIdentity",
     "ReviewForPhase",
+    "StateViewForPhase",
     "StopPolicy",
     "SupplyForPhase",
     "default_controller_factory",
     "default_phase_program",
     "fill_response_format_v1",
     "load_phase_program",
+    "make_hard_validity_phase_controller",
     "register_phase_programs_v1",
+    "register_phase_state_views_v1",
     "register_response_formats_v1",
     "registered_program_ids",
     "select_response_format_v1",

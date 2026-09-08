@@ -5,6 +5,17 @@ This module is the common supply boundary after that nomination: it verifies the
 frozen G5 contract corpus and qualified compatibility rules, then exposes only
 the selected public contracts and an exact structured-response grammar.  It
 does not read speech, examples, samples, labels, scores, or concrete task values.
+
+WAVE R7 (owner Decision 12-F, 2026-09-08): this module is registered, unchanged,
+in the SYSTEM-invoked tool catalog. ``SelectedToolDecisionGround.build`` is catalog id
+``saea-tool-a2t-selected-tool-ground-v1`` on the ``SUPPLY`` axis, scope
+``carrier:audio2tool``, wrapped as
+a passthrough by ``rails/tool_wrappers/a2t_renderers.py``; the manifest pins
+the sha256 of that entry point's own source, so editing its body without
+re-pinning fails the catalog check. Nothing here was rebuilt or re-signed for that --
+the reuse map's verdict was "Register, do not rebuild" -- and
+``tests/unit/test_a2t_renderer_tools.py`` asserts the wrapped output is the
+direct output.
 """
 
 from __future__ import annotations

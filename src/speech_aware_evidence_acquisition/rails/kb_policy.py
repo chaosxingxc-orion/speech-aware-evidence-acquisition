@@ -93,6 +93,22 @@ from .knowledge import (
 )
 from .runner import AgentContactPlan, AgentController, AgentLoopAdvance, AgentRuntimeContext
 
+#: WAVE R7: the two CONTROL turns of ``saea-kb-alpha-blend-v1``, lifted out of
+#: ``KbAlphaBlendController`` verbatim so the fold below and the controller
+#: send the same bytes. Changing either changes both, which is the point.
+_ALPHA_BLEND_INSTRUCTIONS = {
+    "direct": (
+        "Decide under the task contract already given above. Answer "
+        "using only the speech query; no external knowledge has been "
+        "supplied yet."
+    ),
+    "evidence": (
+        "Decide under the task contract already given above, now "
+        "considering the retrieved evidence. Answer using the speech "
+        "query together with the supplied knowledge evidence."
+    ),
+}
+
 RANK_POLICY_ID = "saea-rank-wcos-prior-agree-v1"
 FUSE_POLICY_ID = "saea-fuse-supplyfilter-v1"
 CONTROLLER_POLICY_ID = "saea-kb-alpha-blend-v1"
@@ -780,6 +796,103 @@ def _argmax_labels(blended: Mapping[str, float]) -> tuple[str, ...]:
     )
 
 
+@dataclass(frozen=True)
+class AlphaBlendDecision:
+    """One row's whole ``saea-kb-alpha-blend-v1`` acquire decision.
+
+    WAVE R7 (owner Decision 12-F, 2026-09-08): this used to live inside
+    :meth:`KbAlphaBlendController._advance_after_direct`, which is why the
+    decision could not be reached from the shared base at all. It is now a
+    module-level function over the same frozen organs
+    (:func:`multidim_recall`, the registered ranker and fuser,
+    :func:`_fused_label_scores`, :func:`_blend_scores`, :func:`_argmax_labels`),
+    called by BOTH the retired-shape controller and
+    :func:`make_kb_alpha_blend_phase_controller_factory`'s seams on
+    ``rails.controllers.EvidenceAgentController``. The two therefore cannot
+    diverge: there is one body, not two.
+
+    ``retain_direct`` is the retain-primary shortcut -- the four ways the
+    direct-decode answer already stands and no evidence contact is spent: no
+    snapshot or no label targets, nothing recalled, nothing fused, or the
+    direct label uniquely winning the pre-evidence blend.
+    """
+
+    direct_label: str | None
+    rank_result: RankResult | None
+    fusion_decision: FusionDecision | None
+    best_labels: tuple[str, ...]
+    retain_direct: bool
+    retain_reason: str
+
+
+def compute_alpha_blend_decision(
+    *,
+    response_text: str,
+    snapshot: KnowledgeSnapshot | None,
+    snapshot_sha256: str,
+    query_state: QueryState,
+    query_vectors: Mapping[str, Sequence[float] | None],
+    facet_vectors: Callable[[str], Mapping[str, Sequence[float]]],
+    normalizer: Normalizer,
+    ranker: Callable[..., RankResult],
+    fuser: Callable[..., FusionDecision],
+    alpha: float,
+    top_k_per_dimension: int,
+    label_targets: Mapping[str, str],
+    values_by_id: Mapping[str, "ValueBundle"],
+) -> AlphaBlendDecision:
+    """The ONE alpha-blend decision body (see :class:`AlphaBlendDecision`)."""
+
+    direct_label = normalizer(response_text, label_targets)
+    if snapshot is None or not label_targets:
+        return AlphaBlendDecision(
+            direct_label, None, None, (), True, "no-snapshot-or-no-label-targets"
+        )
+    recall_scores = multidim_recall(
+        snapshot, query_vectors, facet_vectors, top_k_per_dimension
+    )
+    if not recall_scores:
+        return AlphaBlendDecision(direct_label, None, None, (), True, "no-recall")
+    rank_result = ranker(
+        snapshot_sha256=snapshot_sha256,
+        query_state=query_state,
+        recall_scores=recall_scores,
+    )
+    fusion_decision = fuser(
+        snapshot=snapshot,
+        snapshot_sha256=snapshot_sha256,
+        query_state=query_state,
+        rank_result=rank_result,
+        recall_scores=recall_scores,
+    )
+    if not fusion_decision.selected_value_ids:
+        return AlphaBlendDecision(
+            direct_label, rank_result, fusion_decision, (), True, "no-fused-values"
+        )
+    fused_label_scores = _fused_label_scores(
+        label_targets, values_by_id, fusion_decision.selected_value_ids, rank_result
+    )
+    blended = _blend_scores(label_targets, fused_label_scores, direct_label, alpha)
+    best_labels = _argmax_labels(blended)
+    if best_labels == (direct_label,):
+        # Retain-primary safety default: the direct-decode label uniquely wins
+        # the blend without needing evidence at all -- no tie, nothing to
+        # break. A TIE that merely INCLUDES the direct label is dispatched, so
+        # "tie-break by the evidence-decode answer" has a real answer to
+        # consult.
+        return AlphaBlendDecision(
+            direct_label,
+            rank_result,
+            fusion_decision,
+            best_labels,
+            True,
+            "direct-label-uniquely-wins-the-blend",
+        )
+    return AlphaBlendDecision(
+        direct_label, rank_result, fusion_decision, best_labels, False, ""
+    )
+
+
 class KbAlphaBlendController:
     """The :data:`CONTROLLER_POLICY_ID` controller (module docstring stage 4).
 
@@ -904,58 +1017,27 @@ class KbAlphaBlendController:
         contact: AgentContactPlan,
         response_text: str,
     ) -> AgentLoopAdvance:
-        self._direct_label = self._normalizer(response_text, self._label_targets)
-
-        if self._snapshot is None or not self._label_targets:
-            return self._stop(context, contact)
-
-        recall_scores = multidim_recall(
-            self._snapshot, self._query_vectors, self._facet_vectors, self._top_k
-        )
-        if not recall_scores:
-            return self._stop(context, contact)
-
-        rank_result = self._ranker(
-            snapshot_sha256=context.knowledge_snapshot_sha256,
-            query_state=context.query_state,
-            recall_scores=recall_scores,
-        )
-        fusion_decision = self._fuser(
+        decision = compute_alpha_blend_decision(
+            response_text=response_text,
             snapshot=self._snapshot,
             snapshot_sha256=context.knowledge_snapshot_sha256,
             query_state=context.query_state,
-            rank_result=rank_result,
-            recall_scores=recall_scores,
+            query_vectors=self._query_vectors,
+            facet_vectors=self._facet_vectors,
+            normalizer=self._normalizer,
+            ranker=self._ranker,
+            fuser=self._fuser,
+            alpha=self._alpha,
+            top_k_per_dimension=self._top_k,
+            label_targets=self._label_targets,
+            values_by_id=self._values_by_id,
         )
-        if not fusion_decision.selected_value_ids:
+        self._direct_label = decision.direct_label
+        if decision.retain_direct:
             return self._stop(context, contact)
-
-        fused_label_scores = _fused_label_scores(
-            self._label_targets,
-            self._values_by_id,
-            fusion_decision.selected_value_ids,
-            rank_result,
-        )
-        blended = _blend_scores(
-            self._label_targets, fused_label_scores, self._direct_label, self._alpha
-        )
-        best_labels = _argmax_labels(blended)
-
-        if best_labels == (self._direct_label,):
-            # Retain-primary safety default (module docstring): the
-            # direct-decode label uniquely wins the blend without needing
-            # evidence at all -- no tie, nothing to break.
-            # rails.runner._resolve_final_agent_response can only ever
-            # select the response of the contact that JUST completed, so
-            # "retain the direct-decode response" is realized here, before
-            # an evidence-conditioned contact is ever dispatched, rather
-            # than by re-selecting an earlier wave later (structurally
-            # impossible once a later wave has run). A TIE that merely
-            # includes direct_label among several best_labels is NOT
-            # retained here -- it is dispatched to evidence-decode so
-            # "tie-break by the evidence-decode answer" (module docstring)
-            # has a real answer to consult; see _advance_after_evidence.
-            return self._stop(context, contact)
+        rank_result = decision.rank_result
+        fusion_decision = decision.fusion_decision
+        best_labels = decision.best_labels
 
         self._pending_best_labels = best_labels
 
@@ -1105,6 +1187,209 @@ def make_kb_alpha_blend_controller_factory(
     return factory
 
 
+# --- WAVE R7: the alpha-blend fold onto rails.controllers -------------------
+#
+# ``KbAlphaBlendController`` above is the migration source the owner rule keeps
+# "until disposal". This is the disposal path: the SAME decision
+# (:func:`compute_alpha_blend_decision`, one body, called by both) expressed as
+# the two seams ``rails.controllers.EvidenceAgentController`` already exposes,
+# on the ``phase-direct-evidence-alpha-blend-v1`` program that was written for
+# exactly this shape.
+#
+# ``stop_policy`` is the retain-primary shortcut and ``supply_for_phase`` is the
+# acquire; both read the STAGED context WAVE R7 gives them, which carries the
+# direct phase's just-sealed answer -- the one thing the base could not see
+# before, and the reason this decision had to live inside a controller class.
+#
+# ONE stated behavioural delta, and it is the standardization rather than a
+# side effect: the base SEALS the direct answer as an
+# ``AgentStateArtifact`` and carries it on the successor ``QueryState``, so the
+# evidence contact sees it as an agent-state turn. The retired controller sealed
+# nothing and the evidence contact saw only the retrieved values. Every other
+# phase program in this repository traces its own answers that way, and a cell
+# that wants the old shape is asking for an untraced intermediate answer.
+# ``tests/unit/test_kb_alpha_blend_fold.py`` proves the decision equivalence
+# branch by branch and pins this delta.
+DIRECT_PHASE_NAME = "direct"
+EVIDENCE_PHASE_NAME = "evidence"
+ALPHA_BLEND_PROGRAM_ID = "phase-direct-evidence-alpha-blend-v1"
+ALPHA_BLEND_ACTION_TARGET_REF = "kb-policy-v1:recall-rank-fuse"
+_ALPHA_BLEND_CONTACT_IDS = {
+    DIRECT_PHASE_NAME: _DIRECT_CONTACT_ID,
+    EVIDENCE_PHASE_NAME: _EVIDENCE_CONTACT_ID,
+}
+
+
+def make_kb_alpha_blend_phase_controller_factory(
+    *,
+    snapshot: KnowledgeSnapshot,
+    query_vectors_by_sample: Mapping[str, Mapping[str, Sequence[float] | None]] | None = None,
+    facet_vectors: Callable[[str], Mapping[str, Sequence[float]]] | None = None,
+    normalizer: Normalizer | None = None,
+    config: Mapping[str, object] | None = None,
+    rank_weights: RankWeights | None = None,
+    fuse_knobs: FuseKnobs | None = None,
+    alpha: float | None = None,
+    top_k_per_dimension: int | None = None,
+    instructions: Mapping[str, str] | None = None,
+) -> Callable[[str], AgentController]:
+    """The WAVE R7 fold: ``saea-kb-alpha-blend-v1``'s decision, on the base.
+
+    Same keywords as :func:`make_kb_alpha_blend_controller_factory`, plus an
+    optional ``instructions`` override for the two phases; the defaults are the
+    retired controller's own two instruction strings, byte for byte, so the
+    CONTROL turns are unchanged.
+    """
+
+    from .controllers import (  # noqa: PLC0415  (import cycle: controllers has no kb_policy dependency, but this keeps module import order free)
+        EvidenceAgentController,
+        PhaseSupply,
+        default_phase_program,
+    )
+    from .material import PhaseMaterial
+
+    snapshot.validate()
+    resolved = _resolve_alpha_blend_knobs(
+        config=config,
+        rank_weights=rank_weights,
+        fuse_knobs=fuse_knobs,
+        alpha=alpha,
+        top_k_per_dimension=top_k_per_dimension,
+        normalizer=normalizer,
+        query_vectors_by_sample=query_vectors_by_sample,
+        facet_vectors=facet_vectors,
+    )
+    program = default_phase_program(ALPHA_BLEND_PROGRAM_ID)
+    label_targets = _label_identities(snapshot)
+    values_by_id = {value.value_id: value for value in snapshot.values}
+    texts = dict(_ALPHA_BLEND_INSTRUCTIONS)
+    if instructions is not None:
+        unknown = set(instructions) - set(texts)
+        if unknown:
+            raise RailsError(
+                f"alpha-blend fold: unknown phase instruction(s) {sorted(unknown)}"
+            )
+        texts.update({str(k): str(v) for k, v in instructions.items()})
+
+    def factory(sample_id: str) -> AgentController:
+        cached: dict[str, AlphaBlendDecision] = {}
+
+        def decide(context: AgentRuntimeContext) -> AlphaBlendDecision:
+            if DIRECT_PHASE_NAME not in cached:
+                cached[DIRECT_PHASE_NAME] = compute_alpha_blend_decision(
+                    response_text=context.agent_states[-1].content,
+                    snapshot=snapshot,
+                    snapshot_sha256=context.knowledge_snapshot_sha256,
+                    query_state=context.query_state,
+                    query_vectors=resolved["query_vectors_by_sample"].get(sample_id, {}),
+                    facet_vectors=resolved["facet_vectors"],
+                    normalizer=resolved["normalizer"],
+                    ranker=resolved["ranker"],
+                    fuser=resolved["fuser"],
+                    alpha=resolved["alpha"],
+                    top_k_per_dimension=resolved["top_k"],
+                    label_targets=label_targets,
+                    values_by_id=values_by_id,
+                )
+            return cached[DIRECT_PHASE_NAME]
+
+        def material_for_phase(
+            phase_name: str, _context: AgentRuntimeContext
+        ) -> PhaseMaterial:
+            phase = program.phase(phase_name)
+            return PhaseMaterial(
+                instruction=texts[phase_name],
+                response_format=None,
+                contact_id=_ALPHA_BLEND_CONTACT_IDS[phase_name],
+                purpose=phase.purpose,
+            ).validate()
+
+        def stop_policy(
+            context: AgentRuntimeContext, completed: Sequence[str]
+        ) -> bool:
+            if tuple(completed) != (DIRECT_PHASE_NAME,):
+                return False
+            return decide(context).retain_direct
+
+        def supply_for_phase(
+            next_phase_name: str, context: AgentRuntimeContext
+        ) -> "PhaseSupply | None":
+            if next_phase_name != EVIDENCE_PHASE_NAME:
+                return None
+            decision = decide(context)
+            if decision.retain_direct:
+                return None
+            return PhaseSupply(
+                rank_result=decision.rank_result,
+                fusion_decision=decision.fusion_decision,
+                action_target_ref=ALPHA_BLEND_ACTION_TARGET_REF,
+            ).validate()
+
+        return EvidenceAgentController(
+            program=program,
+            material_for_phase=material_for_phase,
+            supply_for_phase=supply_for_phase,
+            stop_policy=stop_policy,
+            contact_identity={
+                DIRECT_PHASE_NAME: (
+                    f"{CONTROLLER_POLICY_ID}:{DIRECT_PHASE_NAME}",
+                    CONTROLLER_POLICY_ID,
+                ),
+                EVIDENCE_PHASE_NAME: (
+                    f"{CONTROLLER_POLICY_ID}:{EVIDENCE_PHASE_NAME}",
+                    CONTROLLER_POLICY_ID,
+                ),
+            },
+        )
+
+    return factory
+
+
+def _resolve_alpha_blend_knobs(
+    *,
+    config: Mapping[str, object] | None,
+    rank_weights: RankWeights | None,
+    fuse_knobs: FuseKnobs | None,
+    alpha: float | None,
+    top_k_per_dimension: int | None,
+    normalizer: Normalizer | None,
+    query_vectors_by_sample: Mapping[str, Mapping[str, Sequence[float] | None]] | None,
+    facet_vectors: Callable[[str], Mapping[str, Sequence[float]]] | None,
+) -> dict[str, object]:
+    """The knob resolution :func:`make_kb_alpha_blend_controller_factory`
+    performs, factored out so both factories resolve identically."""
+
+    needs_config = config is None and any(
+        value is None for value in (rank_weights, fuse_knobs, alpha, top_k_per_dimension)
+    )
+    resolved_config = (
+        config if config is not None else (load_policy_config() if needs_config else None)
+    )
+    resolved_weights = (
+        rank_weights if rank_weights is not None else rank_weights_from_config(resolved_config)
+    )
+    resolved_knobs = (
+        fuse_knobs if fuse_knobs is not None else fuse_knobs_from_config(resolved_config)
+    )
+    return {
+        "weights": resolved_weights,
+        "knobs": resolved_knobs,
+        "alpha": alpha if alpha is not None else alpha_from_config(resolved_config),
+        "top_k": (
+            top_k_per_dimension
+            if top_k_per_dimension is not None
+            else top_k_per_dimension_from_config(resolved_config)
+        ),
+        "normalizer": normalizer if normalizer is not None else default_label_normalizer,
+        "query_vectors_by_sample": dict(query_vectors_by_sample or {}),
+        "facet_vectors": (
+            facet_vectors if facet_vectors is not None else (lambda facet_id: {})
+        ),
+        "ranker": rank_wcos_prior_agree_factory(resolved_weights),
+        "fuser": fuse_supplyfilter_factory(resolved_knobs),
+    }
+
+
 def _default_controller_factory(sample_id: str) -> AgentController:
     """Module-level default entry for ``AGENT_CONTROLLERS[CONTROLLER_POLICY_ID]``
     (module docstring "Registry vs. run-time binding")."""
@@ -1154,7 +1439,9 @@ __all__ = [
     "fuse_knobs_from_config",
     "fuse_supplyfilter_factory",
     "load_policy_config",
+    "compute_alpha_blend_decision",
     "make_kb_alpha_blend_controller_factory",
+    "make_kb_alpha_blend_phase_controller_factory",
     "multidim_recall",
     "rank_weights_from_config",
     "rank_wcos_prior_agree_factory",
