@@ -265,3 +265,90 @@ where the names are.
 **The v2 sliver merges are not implicated.** Only 101 PERSON words sit in a unit that absorbed a
 sliver, and they carry 4 of the 61 excess errors. Plan v2's one change from v1 is neither the cause
 of the harm nor a defence against it.
+
+---
+
+## 4. Tail or boundary? Neither count — the per-tail cost is not a constant
+
+The question is whether the PERSON loss scales with the number of **tails** (one 2.0-second silence
+per contact, a decoding effect) or with the number of transport **boundaries** (a segmentation
+effect). The family carries exactly one measurement that separates them.
+
+| cell | contacts | tails | transport boundaries added | PERSON improvement | points per tail |
+|---|---:|---:|---:|---:|---:|
+| comparator | 1,593 | 0 | 0 | — | — |
+| **`SAEA-E21-FULL44-TAIL2S-V1`** | 1,593 | **1,593** | **0** | **−0.6856** [−1.3467, −0.1314] | **−0.00043038** |
+| **OBS-E1** | 5,122 | **5,122** | **+3,529** | **−2.0912** [−3.1701, −1.0978] | **−0.00040828** |
+
+**The tail cell is the discriminating point: it added 1,593 tails and zero boundaries, and it lost
+PERSON anyway.** Scaling its per-tail cost to OBS-E1's 5,122 tails predicts **−2.2044** against an
+observed **−2.0912** — the tail-proportional model **explains 105.4 %** of the harm, leaving a
+residual of **+0.113 points** for the 3,529 extra boundaries. On the pooled arithmetic there is no
+room for a boundary term at all.
+
+**And the pooled arithmetic is misleading, which is the actual finding.** Every unit carries exactly
+one tail, so "per tail" and "per unit" are the same column — and that column is not flat:
+
+| unit duration class | units = tails | share of tails | PERSON words | excess errors | **excess errors per tail** |
+|---|---:|---:|---:|---:|---:|
+| **< 10 s** | 2,006 | 39.2 % | 680 | **+48** | **+0.02393** |
+| 10–60 s | 2,284 | 44.6 % | 1,424 | +20 | +0.00876 |
+| **≥ 60 s** | 832 | 16.2 % | 813 | **−7** | **−0.00841** |
+
+**A tail on a short unit costs 2.7 times what a tail on a medium unit costs, and a tail on a unit of
+sixty seconds or more has a NEGATIVE cost.** A per-tail constant is refused by the cell's own data;
+the aggregate agreement with the tail-proportional prediction is an accident of mixture, not a law.
+The same refusal applies to the boundary count from the other direction: the 832 boundaries of the
+long units carry **−7** excess errors between them.
+
+### 4.1 The in-cell positional test, and what it says about "closing the segment early"
+
+The hypothesis behind the tail is that the model, told by two seconds of silence that the segment is
+over, closes early and drops the trailing names. That predicts an **end-side** concentration.
+
+| position within the unit | PERSON words | comparator | cell | improvement | excess | share |
+|---|---:|---:|---:|---:|---:|---:|
+| **within 2.0 s of the unit END** | 450 | 25.111 | **30.444** | **−5.333** | **+24** | 39.3 % |
+| elsewhere (end measure) | 2,467 | 22.011 | 23.510 | −1.500 | +37 | 60.7 % |
+| **within 2.0 s of the unit START** | 667 | 23.088 | **27.436** | **−4.348** | **+29** | 47.5 % |
+| elsewhere (start measure) | 2,250 | 22.311 | 23.733 | −1.422 | +32 | 52.5 % |
+| within 2.0 s of the 90-second WINDOW end (comparator's own) | 72 | 26.389 | 26.389 | +0.000 | **0** | 0.0 % |
+
+**Both edges are damaged, and the end only slightly more than the start.** Per word, the last two
+seconds carry 0.0533 excess errors and the first two seconds 0.0435, against 0.0150 in the interior —
+the end is 1.2 times the start, not five times. A pure "closes early and drops the trailing name"
+mechanism cannot produce a start-side effect of that size. What both edges share is not the tail; it
+is **missing context**: at the start of a unit the model has no preceding speech to condition on, and
+at the end it has no following speech.
+
+### 4.2 The deleted names, counted where they fell
+
+| | words | at a span edge | share | base rate over all PERSON words |
+|---|---:|---:|---:|---:|
+| **cell PERSON deletions**, first or last reference word of the unit | 98 | **17** | **17.3 %** | 9.4 %, so **1.85 times** |
+| cell PERSON deletions, within 2 reference words of a unit edge | 98 | 33 | 33.7 % | — |
+| cell PERSON deletions, within 2.0 derived s of the unit END | 98 | 22 | 22.4 % | 15.4 %, so **1.46 times** |
+| **comparator PERSON deletions**, first or last word of the window | 83 | **1** | **1.2 %** | 1.3 %, so **0.95 times** |
+| comparator PERSON deletions, within 2.0 derived s of the window END | 83 | **0** | 0.0 % | — |
+
+**A deleted PERSON word in the cell is 1.85 times over-represented at a unit edge; in the comparator
+it is exactly at base rate.** So the cell does drop trailing and leading names more often than chance
+— that part of the tail story survives — but it accounts for **17 of 98** deletions, and deletions are
+only **15 of the 61** excess errors. Attributing the end-of-unit excess proportionally, the
+"closes early" mechanism can carry at most about **5 of the 61** excess errors, under 8 % of the harm.
+
+### 4.3 The answer
+
+**Neither count. The driver is the short unit, and both the tail count and the boundary count are
+proxies for it.**
+
+* The **tail count** predicts the pooled number almost exactly (105.4 %) and is refused by the cell's
+  own stratification: the per-tail cost varies 2.8 times across duration classes and **changes sign**.
+* The **boundary count** is refused outright: the 3,529 extra boundaries leave a residual of +0.113
+  points, and the long units' 832 boundaries carry −7 excess errors.
+* The **short unit** explains it directly: 78.7 % of the harm on 23.3 % of the PERSON words, monotone
+  in duration from −14.545 under 3 s to +0.861 at 60 s or more, with the damage on both edges of the
+  unit and only 1.2 times worse on the tail side.
+* The **tail is still not innocent**: `SAEA-E21-FULL44-TAIL2S-V1` lost 0.6856 PERSON points with the
+  boundaries held fixed, so a tail costs PERSON on its own. Its cost is simply not a constant per
+  tail, and on this transport unit it is dominated by the duration effect.
