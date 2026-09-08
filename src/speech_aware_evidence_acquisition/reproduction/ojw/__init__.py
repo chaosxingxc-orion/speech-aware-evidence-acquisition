@@ -35,6 +35,19 @@ from __future__ import annotations
 from importlib.metadata import PackageNotFoundError, version
 
 OJW_POLICY_NAME = "obs-agent-loop-ojw"
+#: The KC-E1f repair sibling (owner Decision 12-F, 2026-09-08). Its class
+#: lives in ``reproduction.repair_loop`` beside the plain policy's, but the
+#: NAME lives here, with ``OJW_POLICY_NAME``, so the modules that must reason
+#: about "which policies run on the openJiuwen executor" -- the prefetch
+#: legality in ``reproduction.obs_loop`` and the driver's pipeline guard --
+#: read one constant instead of repeating a string.
+OJW_REPAIR_POLICY_NAME = "obs-repair-loop-ojw"
+#: Every policy whose per-sample loop is the openJiuwen graph. The graph owns
+#: one ``ObsSampleState`` per sample -- its own cursor, its own accepted
+#: spans, its own session -- so two samples may overlap under the driver's
+#: prefetch pipeline whatever the boundary mode, which is the one thing the
+#: plain policy's SEQUENTIAL cutter cannot say about itself.
+OJW_OBS_POLICY_NAMES = (OJW_POLICY_NAME, OJW_REPAIR_POLICY_NAME)
 PINNED_OPENJIUWEN_VERSION = "0.1.16.post2"
 
 # Per-sample workflow execution ceiling (real-run blocker, 2026-08-08): the

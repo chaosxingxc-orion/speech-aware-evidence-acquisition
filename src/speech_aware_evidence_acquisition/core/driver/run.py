@@ -97,20 +97,33 @@ def _obs_pipeline(values: Mapping[str, object], policy_name: str, batch_size: in
     * the depth is an integer >= 0 (``reproduction.obs_loop.
       resolve_prefetch_depth``, the same validator the policy's own config
       object uses, so the two can never disagree);
-    * only the slice-parallel ``obs-agent-loop`` policy is pipelined -- it is
-      the one policy whose windows are provably independent of each other
-      (fixed positions, no rolling tail, no runtime trim), which is exactly
-      what makes overlapping two samples safe;
+    * only an obs policy is pipelined, and only for a reason each one can
+      state about itself. ``obs-agent-loop`` qualifies through its
+      slice-parallel pass, whose windows are provably independent (fixed
+      positions, no rolling tail, no runtime trim). The openJiuwen executors
+      (``obs-agent-loop-ojw`` and its KC-E1f sibling, owner Decision 12-F,
+      2026-09-08) qualify for a different reason: their per-sample loop is a
+      workflow over that sample's OWN ``ObsSampleState`` and its own session,
+      so two samples overlap without sharing a cursor at any boundary mode.
+      Any other policy is refused;
     * ``obs_batch_samples`` must be 1 -- the sample-batch executor already owns
       sample-level concurrency and its own slot pool, and two schedulers would
-      multiply the in-flight request count.
+      multiply the in-flight request count;
+    * on the openJiuwen executors the dispatch width must cover the lookahead.
+      That graph sends ONE request at a time per sample, so the run's
+      in-flight ceiling is exactly ``depth + 1``; a narrower dispatcher would
+      silently serialize the samples the pipeline just paid to prefetch, and
+      a pipeline that cannot pipeline is a defect worth refusing rather than
+      measuring.
     """
 
     from ...reproduction.obs_loop import (
         OBS_LOOP_POLICY_NAME,
         build_run_dispatcher,
+        resolve_dispatch_width,
         resolve_prefetch_depth,
     )
+    from ...reproduction.ojw import OJW_OBS_POLICY_NAMES
 
     try:
         depth = resolve_prefetch_depth(values)
@@ -118,11 +131,13 @@ def _obs_pipeline(values: Mapping[str, object], policy_name: str, batch_size: in
         raise CoreError(str(error)) from error
     if depth == 0:
         return 0, None
-    if policy_name != OBS_LOOP_POLICY_NAME:
+    pipelined = (OBS_LOOP_POLICY_NAME, *OJW_OBS_POLICY_NAMES)
+    if policy_name not in pipelined:
         raise CoreError(
-            f"config obs_prefetch_depth={depth} is only defined for policy "
-            f"{OBS_LOOP_POLICY_NAME!r} (its windows are the ones proven "
-            f"independent), but this run declares {policy_name!r}"
+            f"config obs_prefetch_depth={depth} is only defined for the obs "
+            f"policies {list(pipelined)} (whose per-sample work is provably "
+            f"independent of the next sample's), but this run declares "
+            f"{policy_name!r}"
         )
     if batch_size != 1:
         raise CoreError(
@@ -132,8 +147,17 @@ def _obs_pipeline(values: Mapping[str, object], policy_name: str, batch_size: in
         )
     try:
         dispatcher = build_run_dispatcher(values)
+        width = resolve_dispatch_width(values)
     except Exception as error:  # ObsLoopError -- surfaced as a driver refusal
         raise CoreError(str(error)) from error
+    if policy_name in OJW_OBS_POLICY_NAMES and width < depth + 1:
+        raise CoreError(
+            f"config obs_prefetch_depth={depth} on policy {policy_name!r} needs a "
+            f"dispatch width of at least {depth + 1}, but obs_batch_slices and "
+            f"serving_geometry.slots resolve to {width}; the openJiuwen obs graph "
+            "sends one request per sample at a time, so a narrower pool would "
+            "serialize exactly the samples the prefetch just cut"
+        )
     return depth, dispatcher
 
 

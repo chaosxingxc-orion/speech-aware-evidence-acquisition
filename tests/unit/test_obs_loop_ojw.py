@@ -1324,3 +1324,221 @@ class TestSpeechAgentWorkflowScheduling:
             )
 
         assert admitted == [0, 1, 2, 3]
+
+
+# ---------------------------------------------------------------------------
+# The cross-call pipeline property (owner Decision 12-F, 2026-09-08)
+# ---------------------------------------------------------------------------
+#
+# The plain path bought its throughput on 2026-09-08 with two halves of one
+# mechanism (docs/readiness/2026-09-08-e21-obs-pipeline-v1.md): PREFETCH --
+# the driver keeps ``obs_prefetch_depth`` samples of lookahead in flight, so
+# the next call's decode/cut runs while this call's windows are still being
+# answered -- and SLOT-SATURATING DISPATCH -- one ``ObsDispatcher`` for the
+# whole run, so sample N+1's first request occupies the slot sample N's tail
+# is releasing. The port REUSES both halves rather than growing parallel
+# components inside the graph: the driver's pipelined loop calls
+# ``policy.run_sample`` on a worker per sample exactly as it does for the
+# plain policy, and ``runner.execute_obs_workflow`` holds ONE slot of the
+# run's dispatcher for the whole of a sample's model phase (that graph sends
+# one request at a time per sample, so a per-sample hold is both the
+# in-flight bound and the ``id_slot="per-sample"`` affinity itself).
+#
+# What the port therefore does NOT carry, stated rather than discovered
+# later: intra-sample slice parallelism. The plain policy's
+# ``_slice_parallel_pass`` puts ``obs_batch_slices`` windows of ONE call in
+# flight; this graph puts one. The run's in-flight ceiling on the ojw path is
+# ``obs_prefetch_depth + 1``, which is why the driver refuses a dispatch
+# width narrower than that, and why a flight that wants the sealed
+# comparator's 8-wide occupancy declares depth 7 rather than slice width 8.
+
+from test_obs_pipeline import (  # noqa: E402
+    _CountingTransport,
+    _OverlapTransport,
+    _fly,
+    _obs_records,
+    _request_payload_sha256s,
+    _static_transport,
+    _trace_documents,
+    _trace_lines_modulo_latency,
+    _values,
+    pipeline_repo,  # noqa: F401 (fixture, registered by this import)
+)
+
+_OJW_PIPELINE_VALUES = dict(policy=OJW_POLICY_NAME, obs_batch_slices=4)
+
+
+def _load_ojw_runner():
+    from speech_aware_evidence_acquisition.reproduction.ojw import runner
+
+    return runner
+
+
+class TestPipelineLegality:
+    """What the config and driver layers will and will not admit, decided
+    before a byte of audio is cut."""
+
+    def test_the_graph_needs_no_slice_width_but_the_plain_cutter_does(self, tmp_path):
+        """The plain policy's sequential cutter is refused a pipeline because
+        its cursor is ``run_sample``-local; the openJiuwen executors are
+        admitted because every loop-carried value of a sample lives in that
+        sample's own ``ObsSampleState`` and its own workflow session."""
+
+        with pytest.raises(ObsLoopError, match="obs_batch_slices > 1"):
+            obs_loop.ObsLoopConfig.from_values(
+                _values(obs_prefetch_depth=1, obs_batch_slices=1), tmp_path
+            )
+        for policy_name in (OJW_POLICY_NAME, OBS_REPAIR_LOOP_OJW_POLICY_NAME):
+            cfg = obs_loop.ObsLoopConfig.from_values(
+                _values(
+                    obs_prefetch_depth=1,
+                    obs_batch_slices=1,
+                    policy=policy_name,
+                    serving_geometry={"slots": 6},
+                ),
+                tmp_path,
+            )
+            assert cfg.prefetch_depth == 1
+
+    def test_two_schedulers_never_compose(self, tmp_path):
+        """``obs_batch_samples`` is the graph's OWN sample-level concurrency
+        with its own slot pool; the prefetch pipeline is the driver's. The
+        config layer refuses the pair, and the batch runner refuses a
+        dispatcher that reached it anyway -- a silently ignored dispatcher
+        would look exactly like a working one."""
+
+        with pytest.raises(ObsLoopError, match="obs_batch_samples 1"):
+            obs_loop.ObsLoopConfig.from_values(
+                _values(
+                    obs_prefetch_depth=1, obs_batch_samples=2, policy=OJW_POLICY_NAME
+                ),
+                tmp_path,
+            )
+
+        class _Ctx:
+            extras = {"obs_dispatcher": obs_loop.ObsDispatcher(2)}
+
+        with pytest.raises(ObsLoopError, match="cannot run under the driver"):
+            _load_ojw_runner().execute_obs_batch(
+                [_Ctx()],
+                prepare=lambda ctx: None,
+                finalize=lambda ctx, state: None,
+                batch_size=2,
+                workflow_timeout_seconds=60.0,
+            )
+
+    def test_the_driver_refuses_a_width_narrower_than_the_lookahead(
+        self, synthetic_world, pipeline_repo, tmp_path  # noqa: F811 (the imported fixture, by name)
+    ):
+        """One request per sample means the run's in-flight ceiling IS
+        ``depth + 1``; a narrower pool would serialize exactly the samples the
+        prefetch just cut, which is a defect worth refusing rather than
+        measuring."""
+
+        from speech_aware_evidence_acquisition.core.base import CoreError
+
+        lock, repo_root = pipeline_repo
+        with pytest.raises(CoreError, match="dispatch width of at least 3"):
+            _fly(
+                synthetic_world,
+                repo_root,
+                lock,
+                tmp_path / "narrow",
+                _static_transport,
+                "SAEA-E-000-ojw-narrow",
+                obs_prefetch_depth=2,
+                obs_batch_slices=2,
+                policy=OJW_POLICY_NAME,
+            )
+
+
+class TestPipelineOnTheGraph:
+    """Depth 0 is the graph this executor has always run; depth 1 asks the
+    frozen core for exactly the same things, in a different order."""
+
+    def test_depth_zero_is_byte_identical_to_declaring_nothing(
+        self, synthetic_world, pipeline_repo, tmp_path  # noqa: F811 (the imported fixture, by name)
+    ):
+        lock, repo_root = pipeline_repo
+        run_id = "SAEA-E-000-ojw-zero"
+        silent_dir = tmp_path / "silent"
+        zero_dir = tmp_path / "zero"
+        silent = _fly(
+            synthetic_world, repo_root, lock, silent_dir, _static_transport, run_id,
+            attempt_suffix="silent", **_OJW_PIPELINE_VALUES,
+        )
+        zero = _fly(
+            synthetic_world, repo_root, lock, zero_dir, _static_transport, run_id,
+            attempt_suffix="zero", obs_prefetch_depth=0, **_OJW_PIPELINE_VALUES,
+        )
+        assert _trace_lines_modulo_latency(
+            silent_dir, run_id
+        ) == _trace_lines_modulo_latency(zero_dir, run_id)
+        assert silent.outputs_path.read_bytes() == zero.outputs_path.read_bytes()
+
+    def test_depth_one_sends_the_same_payload_set_and_overlaps_two_calls(
+        self, synthetic_world, pipeline_repo, tmp_path  # noqa: F811 (the imported fixture, by name)
+    ):
+        """The property the port had to carry: the SAME set of request
+        payloads and the SAME per-sample OBS records at depth 0 and depth 1,
+        with two different calls genuinely in flight at once."""
+
+        lock, repo_root = pipeline_repo
+        run_id = "SAEA-E-000-ojw-one"
+        zero_dir = tmp_path / "zero"
+        one_dir = tmp_path / "one"
+        zero = _fly(
+            synthetic_world, repo_root, lock, zero_dir, _static_transport, run_id,
+            attempt_suffix="seq", **_OJW_PIPELINE_VALUES,
+        )
+        overlap = _OverlapTransport()
+        one = _fly(
+            synthetic_world, repo_root, lock, one_dir, overlap, run_id,
+            attempt_suffix="pipe", obs_prefetch_depth=1, **_OJW_PIPELINE_VALUES,
+        )
+
+        zero_documents = _trace_documents(zero_dir, run_id)
+        one_documents = _trace_documents(one_dir, run_id)
+        assert _request_payload_sha256s(zero_documents) == _request_payload_sha256s(
+            one_documents
+        ), "the pipeline moved a request byte"
+        assert _obs_records(zero_documents) == _obs_records(one_documents)
+        assert zero.outputs_path.read_bytes() == one.outputs_path.read_bytes()
+        assert zero.cost["calls_used"] == one.cost["calls_used"] == 6
+        assert overlap.saw_two_samples.is_set(), "the pipeline never overlapped two calls"
+        assert overlap.max_distinct_samples >= 2
+
+    def test_a_call_holds_one_slot_for_its_whole_life(
+        self, synthetic_world, pipeline_repo, tmp_path  # noqa: F811 (the imported fixture, by name)
+    ):
+        """The affinity claim, measured on the wire: the pool bounds the
+        in-flight count, no two live requests share an ``id_slot``, and each
+        call's windows all carry the SAME slot integer -- the strongest form
+        of ``id_slot='per-sample'``, and the form the plain policy's pipelined
+        path cannot offer because one sample there spans the whole pool."""
+
+        lock, repo_root = pipeline_repo
+        run_id = "SAEA-E-000-ojw-slots"
+        transport = _CountingTransport()
+        result = _fly(
+            synthetic_world, repo_root, lock, tmp_path / "slots", transport, run_id,
+            obs_prefetch_depth=1, policy=OJW_POLICY_NAME, obs_batch_slices=2,
+            decoding_params={
+                "temperature": 0, "seed": 20260803, "id_slot": "per-sample",
+            },
+        )
+        assert result.cost["calls_used"] == 6
+        assert transport.peak_in_flight <= 2
+        assert transport.peak_in_flight >= 2, "the pipeline never dispatched concurrently"
+        assert transport.max_duplicate_slot == 1, "two live requests shared one id_slot"
+        assert transport.slots_seen <= {0, 1}
+
+        slots_by_call: dict[str, set] = {}
+        for document in _trace_documents(tmp_path / "slots", run_id):
+            if document["channel"] != "MODEL_REQUEST" or "-i" not in document["record_id"]:
+                continue
+            call = document["record_id"].split("-i")[0]
+            slot = dict(document["payload"].get("decoding_params") or {}).get("id_slot")
+            slots_by_call.setdefault(call, set()).add(slot)
+        assert len(slots_by_call) == 3
+        assert all(len(slots) == 1 for slots in slots_by_call.values()), slots_by_call

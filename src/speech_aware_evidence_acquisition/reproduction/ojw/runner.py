@@ -218,17 +218,46 @@ def execute_obs_workflow(
     state: ObsSampleState, adapter_request, workflow_timeout_seconds: float
 ) -> None:
     """Build the graph and drive it to completion. Synchronous wrapper: the
-    driver's per-sample loop is synchronous and strictly sequential, so the
-    framework's async engine runs to completion inside ``asyncio.run`` —
-    one fresh event loop, workflow and session per sample.
-    ``workflow_timeout_seconds`` is the fragment-declared per-sample ceiling
+    driver's per-sample loop is synchronous, so the framework's async engine
+    runs to completion inside ``asyncio.run`` — one fresh event loop,
+    workflow and session per sample. ``workflow_timeout_seconds`` is the
+    fragment-declared per-sample ceiling
     (``policy.workflow_timeout_seconds``); a framework timeout kill (error
     100101) is translated into an actionable ``ObsLoopError`` naming the
-    knob (inside ``_build_and_invoke``, shared with the batch path)."""
+    knob (inside ``_build_and_invoke``, shared with the batch path).
 
-    # Sequential single-sample execution: slot 0 is trivially free.
-    _resolve_slot_affinity(state, 0)
-    asyncio.run(_build_and_invoke(state, adapter_request, workflow_timeout_seconds))
+    THE RUN'S DISPATCHER (obs-pipeline throughput fix, ported to this
+    executor by owner Decision 12-F, 2026-09-08). ``state.dispatcher`` is
+    ``None`` for every config written before the knob existed, and this
+    function then behaves exactly as it always has: strictly one sample at a
+    time, slot 0 trivially free. When ``core.driver.run_experiment`` runs the
+    prefetch pipeline it hands every sample the RUN's
+    ``reproduction.obs_loop.ObsDispatcher``, and one slot of that pool is
+    held for the whole of THIS sample's model phase:
+
+    * it is the in-flight bound -- this graph sends one request at a time per
+      sample, so "samples holding a slot" and "requests in flight" are the
+      same number, and the pool's width caps both;
+    * it is also the ``id_slot="per-sample"`` affinity itself, in its
+      strongest form: the integer is taken once and held until the sample
+      settles, so every slice of one call really does land on one
+      llama-server slot (the plain policy's pipelined path can only resolve
+      the sentinel PER REQUEST, because one sample there spans the pool);
+    * it is acquired AFTER ``policy._prepare_state`` has decoded and cut, so
+      the next call's CPU phase overlaps this call's requests -- which is the
+      whole point of the prefetch, and the reason the acquire is here rather
+      than around ``run_sample``.
+    """
+
+    dispatcher = state.dispatcher
+    if dispatcher is None:
+        # Sequential single-sample execution: slot 0 is trivially free.
+        _resolve_slot_affinity(state, 0)
+        asyncio.run(_build_and_invoke(state, adapter_request, workflow_timeout_seconds))
+        return
+    with dispatcher.dispatch_slot() as slot:
+        _resolve_slot_affinity(state, slot)
+        asyncio.run(_build_and_invoke(state, adapter_request, workflow_timeout_seconds))
 
 
 def execute_obs_batch(
@@ -259,6 +288,21 @@ def execute_obs_batch(
     land in that sample's buffer."""
 
     contexts = list(contexts)
+
+    # Two schedulers must never compose silently (the same rule
+    # ObsLoopConfig.from_values and core.driver.run_experiment both enforce
+    # from their own side): this path owns sample-level concurrency and its
+    # own free-slot pool, so a run dispatcher reaching it would mean the
+    # driver's prefetch pipeline and this semaphore were both live. Refused
+    # here too, because a silently ignored dispatcher would look exactly like
+    # a working one.
+    if any(getattr(ctx, "extras", {}).get("obs_dispatcher") is not None for ctx in contexts):
+        raise ObsLoopError(
+            "the openJiuwen sample-batch executor cannot run under the driver's "
+            "prefetch dispatcher: obs_batch_samples > 1 already owns sample-level "
+            "concurrency and its own slot pool; set obs_prefetch_depth 0 or "
+            "obs_batch_samples 1"
+        )
 
     async def _run_all():
         semaphore = asyncio.Semaphore(batch_size)

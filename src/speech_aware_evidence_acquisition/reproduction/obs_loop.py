@@ -113,6 +113,13 @@ from .obs_audio import (
     vad_transitions,
 )
 
+# Names only. ``reproduction.ojw.__init__`` imports nothing from this module
+# (its openjiuwen-dependent siblings do, behind policy.py's lazy seam), so
+# reading the ojw policy names here is a constant lookup and not a cycle --
+# and it is what keeps "which executors are pipelinable" from being a string
+# repeated in two files.
+from .ojw import OJW_OBS_POLICY_NAMES
+
 OBS_LOOP_POLICY_NAME = "obs-agent-loop"
 OBS_DERIVATION_SCHEMA = "saea-obs-derivation-v1"
 SLICE_SAMPLE_RATE_HZ = 16000
@@ -806,15 +813,31 @@ class ObsLoopConfig:
         # still being answered.
         prefetch_depth = resolve_prefetch_depth(values)
         if prefetch_depth > 0:
-            # The pipeline drives the slice-parallel pass and nothing else:
-            # the sequential cutter re-reads the previous window's answer to
-            # place the next cut, so overlapping two samples there would
-            # overlap two cursors as well.
-            if batch_slices <= 1:
+            # On the PLAIN policy the pipeline drives the slice-parallel pass
+            # and nothing else: that policy's own sequential cutter re-reads
+            # the previous window's answer to place the next cut, and it does
+            # so on `run_sample`'s local `cursor`, so overlapping two samples
+            # there would overlap two cursors as well.
+            #
+            # The openJiuwen executor is exempt, and NOT because its cutter is
+            # parallel -- it is strictly sequential per sample. It is exempt
+            # because every one of its loop-carried values (cursor, iteration,
+            # accepted spans, session) lives in that sample's OWN
+            # ``ObsSampleState`` and its own workflow session, so two samples
+            # overlap without sharing anything at any boundary mode. What the
+            # pipeline buys there is the same two things it buys here: the
+            # next call's decode/VAD runs off the critical path, and the run's
+            # shared ObsDispatcher keeps the request slots occupied across a
+            # call boundary (owner Decision 12-F port, 2026-09-08).
+            if batch_slices <= 1 and str(values.get("policy", "")) not in (
+                OJW_OBS_POLICY_NAMES
+            ):
                 raise ObsLoopError(
                     "obs_prefetch_depth > 0 requires obs_batch_slices > 1 — "
                     "the prefetch pipeline overlaps the SLICE-PARALLEL pass, and "
-                    "the sequential cutter's cursor is not independent"
+                    "the plain sequential cutter's cursor is not independent "
+                    f"(policies whose per-sample loop IS self-contained, and "
+                    f"therefore need no slice width: {list(OJW_OBS_POLICY_NAMES)})"
                 )
             # Two concurrency planes must never compose silently: the ojw
             # executor's run_samples already runs obs_batch_samples samples at

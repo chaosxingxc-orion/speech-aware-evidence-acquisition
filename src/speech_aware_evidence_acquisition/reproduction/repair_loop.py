@@ -81,13 +81,30 @@ from ..core.predecessor_snapshot import (
 )
 from ..core.repair_alignment import RepairOutcome
 from .obs_loop import ObsAgentLoopPolicy, ObsLoopError
+from .ojw import OJW_REPAIR_POLICY_NAME
 from .ojw.policy import ObsAgentLoopOjwPolicy
 
 OBS_REPAIR_LOOP_POLICY_NAME = "obs-repair-loop"
 #: The openJiuwen sibling (owner Decision 12-F, 2026-09-08). Same config keys,
 #: same predecessor binding, same delivery rule -- the executor is the only
 #: difference, and it is named rather than inferred.
+#:
+#: The literal is written HERE, beside the class it names, because
+#: ``scripts/checks/engineering_base_check.py`` reads the registered policy
+#: names out of source and a name resolved through an alias is a name the
+#: check cannot see. ``reproduction.ojw`` writes it a second time, so that the
+#: prefetch legality and the driver's pipeline guard -- which must reason
+#: about "which executors are the graph" WITHOUT importing anything
+#: openjiuwen-dependent -- can read one tuple. The two spellings are compared
+#: at import, fail-closed, so they cannot drift.
 OBS_REPAIR_LOOP_OJW_POLICY_NAME = "obs-repair-loop-ojw"
+if OBS_REPAIR_LOOP_OJW_POLICY_NAME != OJW_REPAIR_POLICY_NAME:  # pragma: no cover
+    raise ImportError(
+        "the openJiuwen repair policy name disagrees between "
+        f"reproduction.repair_loop ({OBS_REPAIR_LOOP_OJW_POLICY_NAME!r}) and "
+        f"reproduction.ojw ({OJW_REPAIR_POLICY_NAME!r}); one of them would "
+        "silently stop matching the registered policy"
+    )
 
 #: Frozen framings for the appended pass-1 hypothesis, selected BY NAME from a
 #: config fragment so the arm and its token-matched twin cannot differ here and
