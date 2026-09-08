@@ -1,0 +1,420 @@
+{
+  "assumptions": [
+    "per-request service times are held fixed across arms; they were measured with the server mostly saturated, so the predicted gain is an upper bound on the scheduling component, not a guarantee",
+    "the per-call CPU phase is held fixed; prefetch moves it off the critical path, it does not make it cheaper",
+    "requests are assigned to slots greedily in sample order, the order the driver submits them; the server's own scheduler is modelled only by its slot count",
+    "the depth-1 arm's ~100 % modelled slot occupancy is the MODEL's ceiling, not a promise: it assumes a window is always ready the instant a slot frees. The measured bound that survives every assumption is measured_ceiling, computed from the sealed attempt's own idle seconds",
+    "greedy decoding is not bitwise reproducible across batch compositions, so a pipelined re-fly of a sealed cell will differ in text; the E21 own-null replicate is the measurement of that noise"
+  ],
+  "authorizes": "nothing. No contact, no server, no scoring and no Stage-3 activity; no committed fragment is flipped to a non-zero depth by this receipt.",
+  "contacts": 0,
+  "cpu_phase_seconds": {
+    "assumption": "the first call has no measured predecessor gap, so it takes the median of the 43 that do",
+    "first_sample_assumed": 17.901495000000068,
+    "measured_boundaries": 43
+  },
+  "date": "2026-09-08",
+  "deltas": {
+    "depth1_vs_depth0": {
+      "mean_slot_utilisation_pct_after": 99.91328450375221,
+      "mean_slot_utilisation_pct_before": 81.28829083467362,
+      "wall_reduction_pct": 18.57650470465134,
+      "wall_seconds_saved": 958.8100239999985,
+      "windows_per_minute_after": 22.74305076470795,
+      "windows_per_minute_before": 18.518186869420735,
+      "windows_per_minute_gain_pct": 22.814673623710828,
+      "zero_busy_share_pct_after": 0.0,
+      "zero_busy_share_pct_before": 16.1053937767836
+    }
+  },
+  "execution_profile": "model-free-check",
+  "geometry": {
+    "dispatch_slots": 6,
+    "source": "configs/model/q4km-e21-buf90-mmproj-gpu-04ccc72a-np6.json serving_geometry.slots"
+  },
+  "inputs": {
+    "attempt_id": "attempt-20260904T233816Z-bcd338",
+    "audio_seconds_metered": 141345.8526875,
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "server_log_bytes": 46391144,
+    "server_log_sha256": "e010930fb755d1d100d47b2fbc04f4b03bb25076031d3998753ec5fdc7664c47",
+    "trace_bytes": 7771044,
+    "trace_sha256": "c657260e0d392f084feee0dd09b23e9c7eac56c6288c15e6b05bb808378795dd"
+  },
+  "measured": {
+    "all_slots_busy_share_pct": 65.40507605405537,
+    "call_boundary_gaps": {
+      "count": 43,
+      "max_seconds": 36.315946,
+      "mean_seconds": 19.264713744185972,
+      "median_seconds": 17.901495000000068,
+      "min_seconds": 5.11506399999962,
+      "share_of_zero_busy_pct": 99.98174956997718,
+      "total_seconds": 828.3826909999968
+    },
+    "mean_busy_slots": 4.663950033042343,
+    "mean_slot_utilisation_pct": 77.73250055070572,
+    "per_sample": [
+      {
+        "first_launch_seconds": 46.515123,
+        "last_release_seconds": 154.09624,
+        "sample_id": "req-0001",
+        "service_seconds_total": 587.3628199999999,
+        "windows": 37
+      },
+      {
+        "first_launch_seconds": 171.780721,
+        "last_release_seconds": 249.82888400000002,
+        "sample_id": "req-0002",
+        "service_seconds_total": 432.337888,
+        "windows": 28
+      },
+      {
+        "first_launch_seconds": 286.14483,
+        "last_release_seconds": 467.36983000000004,
+        "sample_id": "req-0003",
+        "service_seconds_total": 1036.4166980000002,
+        "windows": 64
+      },
+      {
+        "first_launch_seconds": 483.575699,
+        "last_release_seconds": 573.2104820000001,
+        "sample_id": "req-0004",
+        "service_seconds_total": 481.60211000000095,
+        "windows": 31
+      },
+      {
+        "first_launch_seconds": 593.610217,
+        "last_release_seconds": 703.0020659999999,
+        "sample_id": "req-0005",
+        "service_seconds_total": 606.8252660000003,
+        "windows": 37
+      },
+      {
+        "first_launch_seconds": 718.553868,
+        "last_release_seconds": 852.060884,
+        "sample_id": "req-0006",
+        "service_seconds_total": 729.9288790000002,
+        "windows": 45
+      },
+      {
+        "first_launch_seconds": 873.549822,
+        "last_release_seconds": 1012.7269679999999,
+        "sample_id": "req-0007",
+        "service_seconds_total": 792.4692990000008,
+        "windows": 53
+      },
+      {
+        "first_launch_seconds": 1047.890243,
+        "last_release_seconds": 1198.173664,
+        "sample_id": "req-0008",
+        "service_seconds_total": 842.8659450000011,
+        "windows": 55
+      },
+      {
+        "first_launch_seconds": 1223.9444919999999,
+        "last_release_seconds": 1343.6994320000001,
+        "sample_id": "req-0009",
+        "service_seconds_total": 682.6745679999985,
+        "windows": 42
+      },
+      {
+        "first_launch_seconds": 1371.652566,
+        "last_release_seconds": 1496.308773,
+        "sample_id": "req-0010",
+        "service_seconds_total": 703.6147290000004,
+        "windows": 44
+      },
+      {
+        "first_launch_seconds": 1511.91363,
+        "last_release_seconds": 1630.5609339999999,
+        "sample_id": "req-0011",
+        "service_seconds_total": 678.843149,
+        "windows": 40
+      },
+      {
+        "first_launch_seconds": 1661.1950239999999,
+        "last_release_seconds": 1804.522187,
+        "sample_id": "req-0012",
+        "service_seconds_total": 817.5053810000009,
+        "windows": 51
+      },
+      {
+        "first_launch_seconds": 1834.717803,
+        "last_release_seconds": 1959.497722,
+        "sample_id": "req-0013",
+        "service_seconds_total": 692.0597430000009,
+        "windows": 50
+      },
+      {
+        "first_launch_seconds": 1980.9463979999998,
+        "last_release_seconds": 2152.0284309999997,
+        "sample_id": "req-0014",
+        "service_seconds_total": 960.8063470000009,
+        "windows": 63
+      },
+      {
+        "first_launch_seconds": 2166.666628,
+        "last_release_seconds": 2275.575367,
+        "sample_id": "req-0015",
+        "service_seconds_total": 601.9437830000024,
+        "windows": 39
+      },
+      {
+        "first_launch_seconds": 2294.4301229999996,
+        "last_release_seconds": 2436.48067,
+        "sample_id": "req-0016",
+        "service_seconds_total": 804.4185039999979,
+        "windows": 49
+      },
+      {
+        "first_launch_seconds": 2454.382165,
+        "last_release_seconds": 2536.963577,
+        "sample_id": "req-0017",
+        "service_seconds_total": 455.505846,
+        "windows": 28
+      },
+      {
+        "first_launch_seconds": 2559.445884,
+        "last_release_seconds": 2683.949265,
+        "sample_id": "req-0018",
+        "service_seconds_total": 660.590622000002,
+        "windows": 40
+      },
+      {
+        "first_launch_seconds": 2711.913119,
+        "last_release_seconds": 2846.0467649999996,
+        "sample_id": "req-0019",
+        "service_seconds_total": 756.1908410000001,
+        "windows": 45
+      },
+      {
+        "first_launch_seconds": 2856.452905,
+        "last_release_seconds": 2915.094231,
+        "sample_id": "req-0020",
+        "service_seconds_total": 304.96732900000006,
+        "windows": 21
+      },
+      {
+        "first_launch_seconds": 2928.3637049999998,
+        "last_release_seconds": 3006.436217,
+        "sample_id": "req-0021",
+        "service_seconds_total": 429.94412999999986,
+        "windows": 27
+      },
+      {
+        "first_launch_seconds": 3017.479516,
+        "last_release_seconds": 3076.88483,
+        "sample_id": "req-0022",
+        "service_seconds_total": 300.3873889999986,
+        "windows": 20
+      },
+      {
+        "first_launch_seconds": 3098.623291,
+        "last_release_seconds": 3194.060503,
+        "sample_id": "req-0023",
+        "service_seconds_total": 530.9248550000016,
+        "windows": 36
+      },
+      {
+        "first_launch_seconds": 3221.881206,
+        "last_release_seconds": 3365.842157,
+        "sample_id": "req-0024",
+        "service_seconds_total": 773.6372300000035,
+        "windows": 47
+      },
+      {
+        "first_launch_seconds": 3377.978397,
+        "last_release_seconds": 3444.471067,
+        "sample_id": "req-0025",
+        "service_seconds_total": 327.2486890000023,
+        "windows": 23
+      },
+      {
+        "first_launch_seconds": 3467.809302,
+        "last_release_seconds": 3582.75096,
+        "sample_id": "req-0026",
+        "service_seconds_total": 646.4224640000002,
+        "windows": 39
+      },
+      {
+        "first_launch_seconds": 3610.214453,
+        "last_release_seconds": 3736.474622,
+        "sample_id": "req-0027",
+        "service_seconds_total": 697.5422119999989,
+        "windows": 43
+      },
+      {
+        "first_launch_seconds": 3759.104802,
+        "last_release_seconds": 3866.482766,
+        "sample_id": "req-0028",
+        "service_seconds_total": 599.6380510000013,
+        "windows": 38
+      },
+      {
+        "first_launch_seconds": 3883.924846,
+        "last_release_seconds": 3971.215318,
+        "sample_id": "req-0029",
+        "service_seconds_total": 467.61450800000057,
+        "windows": 30
+      },
+      {
+        "first_launch_seconds": 3980.318764,
+        "last_release_seconds": 4033.6370300000003,
+        "sample_id": "req-0030",
+        "service_seconds_total": 254.48660900000004,
+        "windows": 17
+      },
+      {
+        "first_launch_seconds": 4048.168309,
+        "last_release_seconds": 4151.756183,
+        "sample_id": "req-0031",
+        "service_seconds_total": 574.7869479999968,
+        "windows": 37
+      },
+      {
+        "first_launch_seconds": 4177.697341,
+        "last_release_seconds": 4301.570113,
+        "sample_id": "req-0032",
+        "service_seconds_total": 703.8172319999985,
+        "windows": 45
+      },
+      {
+        "first_launch_seconds": 4316.630279,
+        "last_release_seconds": 4402.258194,
+        "sample_id": "req-0033",
+        "service_seconds_total": 472.62097300000187,
+        "windows": 29
+      },
+      {
+        "first_launch_seconds": 4433.810892,
+        "last_release_seconds": 4576.595869000001,
+        "sample_id": "req-0034",
+        "service_seconds_total": 792.9659779999965,
+        "windows": 49
+      },
+      {
+        "first_launch_seconds": 4594.292969,
+        "last_release_seconds": 4698.075952,
+        "sample_id": "req-0035",
+        "service_seconds_total": 561.1221729999997,
+        "windows": 34
+      },
+      {
+        "first_launch_seconds": 4703.191016,
+        "last_release_seconds": 4740.152412,
+        "sample_id": "req-0036",
+        "service_seconds_total": 181.94440699999905,
+        "windows": 13
+      },
+      {
+        "first_launch_seconds": 4749.317075,
+        "last_release_seconds": 4797.863263,
+        "sample_id": "req-0037",
+        "service_seconds_total": 250.82492300000285,
+        "windows": 15
+      },
+      {
+        "first_launch_seconds": 4810.246584,
+        "last_release_seconds": 4869.557767,
+        "sample_id": "req-0038",
+        "service_seconds_total": 314.4102589999993,
+        "windows": 24
+      },
+      {
+        "first_launch_seconds": 4876.357223,
+        "last_release_seconds": 4950.870782,
+        "sample_id": "req-0039",
+        "service_seconds_total": 394.9483199999986,
+        "windows": 25
+      },
+      {
+        "first_launch_seconds": 4962.852002,
+        "last_release_seconds": 5021.977772,
+        "sample_id": "req-0040",
+        "service_seconds_total": 342.3175949999995,
+        "windows": 23
+      },
+      {
+        "first_launch_seconds": 5031.174396,
+        "last_release_seconds": 5085.066901,
+        "sample_id": "req-0041",
+        "service_seconds_total": 260.58466999999564,
+        "windows": 16
+      },
+      {
+        "first_launch_seconds": 5093.491138,
+        "last_release_seconds": 5145.009585,
+        "sample_id": "req-0042",
+        "service_seconds_total": 274.1466559999999,
+        "windows": 20
+      },
+      {
+        "first_launch_seconds": 5164.980713999999,
+        "last_release_seconds": 5256.1709710000005,
+        "sample_id": "req-0043",
+        "service_seconds_total": 502.86553100000765,
+        "windows": 31
+      },
+      {
+        "first_launch_seconds": 5284.08594,
+        "last_release_seconds": 5425.310483,
+        "sample_id": "req-0044",
+        "service_seconds_total": 802.3012479999934,
+        "windows": 50
+      }
+    ],
+    "samples": 44,
+    "wall_seconds": 5378.79536,
+    "windows": 1593,
+    "windows_per_minute": 17.769778101392575,
+    "zero_busy_seconds": 828.5339019999967,
+    "zero_busy_share_pct": 15.40370745764897
+  },
+  "measured_ceiling": {
+    "basis": "the sealed attempt's own wall minus its own zero-busy seconds; measured, not simulated",
+    "wall_seconds": 4550.261458000004,
+    "windows_per_minute": 21.005386367844167,
+    "windows_per_minute_gain_pct": 18.208489987829537
+  },
+  "model_fidelity": {
+    "depth0_predicted_wall_seconds": 5161.412435999995,
+    "depth0_predicted_windows_per_minute": 18.518186869420735,
+    "depth0_wall_error_pct": -4.041479726419728,
+    "measured_wall_seconds": 5378.79536,
+    "measured_windows_per_minute": 17.769778101392575
+  },
+  "purpose": "Quantify, model-free, what obs_prefetch_depth would have bought the sealed Earnings-21 comparator: the measured slot occupancy and call- boundary idle of that attempt, replayed through a simulated dispatcher at prefetch depth 0 and 1.",
+  "schema": "saea-obs-pipeline-dry-run-v1",
+  "service_seconds": {
+    "count": 1593,
+    "max": 25.94179699999995,
+    "mean": 15.747917637790335,
+    "median": 15.933011000000079,
+    "min": 0.2035399999999754
+  },
+  "simulated": [
+    {
+      "dispatch_slots": 6,
+      "mean_busy_slots": 4.877297450080417,
+      "mean_slot_utilisation_pct": 81.28829083467362,
+      "prefetch_depth": 0,
+      "wall_seconds": 5161.412435999995,
+      "windows": 1593,
+      "windows_per_minute": 18.518186869420735,
+      "zero_busy_seconds": 828.3826909999968,
+      "zero_busy_share_pct": 16.1053937767836
+    },
+    {
+      "dispatch_slots": 6,
+      "mean_busy_slots": 5.9947970702251325,
+      "mean_slot_utilisation_pct": 99.91328450375221,
+      "prefetch_depth": 1,
+      "wall_seconds": 4202.602411999997,
+      "windows": 1593,
+      "windows_per_minute": 22.74305076470795,
+      "zero_busy_seconds": 0.0,
+      "zero_busy_share_pct": 0.0
+    }
+  ]
+}
