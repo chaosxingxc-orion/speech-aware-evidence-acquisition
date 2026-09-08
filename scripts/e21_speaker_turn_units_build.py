@@ -57,6 +57,39 @@ def _write(path: Path, document: dict) -> None:
     )
 
 
+def _uniform_units(sample_id: str, duration: float, seconds: float) -> list[dict]:
+    """``ceil(duration / seconds)`` equal clock units, in the shape a plan
+    block carries. The last one absorbs the remainder, exactly as the fixed
+    window cutter's last window does."""
+
+    import math
+
+    count = max(1, math.ceil(duration / seconds))
+    units: list[dict] = []
+    for index in range(1, count + 1):
+        start = min(duration, (index - 1) * seconds)
+        end = duration if index == count else min(duration, index * seconds)
+        units.append(
+            {
+                "unit_id": stu.unit_id(sample_id, index),
+                "sample_id": sample_id,
+                "unit_index": index,
+                "start_seconds": round(start, 6),
+                "end_seconds": round(end, 6),
+                "duration_seconds": round(end - start, 6),
+                "speaker": None,
+                "speaker_share": 0.0,
+                "speaker_count": 0,
+                "start_cut": stu.CUT_CALL_START if index == 1 else "clock",
+                "end_cut": stu.CUT_CALL_END if index == count else "clock",
+                "ends_on_active_frame": False,
+                "flags": ["uniform-clock-unit"],
+                "absorbed_units": [],
+            }
+        )
+    return units
+
+
 def _build_v3(args, plan_out: Path) -> int:
     """v3: the committed v2 plan, re-read at its pin, with context bounds."""
 
@@ -79,6 +112,14 @@ def _build_v3(args, plan_out: Path) -> int:
         sample_id = str(block["sample_id"])
         duration = float(block["decoded_duration_seconds"])
         inherited = [dict(entry) for entry in block["units"]]
+        if args.uniform_seconds:
+            # The OBS-E1b FORM TWIN. Same call, same context rule, same
+            # ownership stitch, same delivered seconds -- the ONE thing that
+            # moves is where the boundaries are: the clock instead of the
+            # diarized speaker turns. The turns it inherits are replaced by
+            # equal clock units of ``--uniform-seconds``, so nothing about
+            # this call's audio, duration or identity changes.
+            inherited = _uniform_units(sample_id, duration, float(args.uniform_seconds))
         units = stu.add_context(
             [
                 stu.UnitV2(
@@ -103,15 +144,39 @@ def _build_v3(args, plan_out: Path) -> int:
             margin=float(args.context_margin_seconds),
             min_delivered=float(args.min_delivered_seconds),
         )
-        ranges = [tuple(entry["reference_word_range"]) for entry in inherited]
+        # The twin's units are new, so they carry no reference-word range: the
+        # sealed per-window counts were partitioned over the SPEAKER turns and
+        # re-interpolating them onto clock units would invent an attribution
+        # nothing measured. The plan loader never reads the field, and the
+        # twin's own verdict reads reference words from the scorer.
+        ranges = (
+            None
+            if args.uniform_seconds
+            else [tuple(entry["reference_word_range"]) for entry in inherited]
+        )
         summary = stu.call_summary(
             sample_id, units, duration, int(block["windows"]), ranges
         )
         summaries.append(summary)
-        emitted = [
-            dict(unit.as_dict(), reference_word_range=[low, high])
-            for unit, (low, high) in zip(units, ranges)
-        ]
+        emitted = (
+            [unit.as_dict() for unit in units]
+            if ranges is None
+            else [
+                dict(unit.as_dict(), reference_word_range=[low, high])
+                for unit, (low, high) in zip(units, ranges)
+            ]
+        )
+        identity_keys = (
+            "speaker",
+            "speaker_count",
+            "start_cut",
+            "end_cut",
+            "ends_on_active_frame",
+            "unit_id",
+            "unit_index",
+            "flags",
+            "absorbed_units",
+        ) + (() if ranges is None else ("reference_word_range",))
         for before, after in zip(inherited, emitted):
             # Exact for identity and structure; 1e-6 for the seconds, because
             # a v2 file stores each field rounded to six places and
@@ -122,18 +187,7 @@ def _build_v3(args, plan_out: Path) -> int:
                     raise SystemExit(
                         f"call {sample_id}: v3 moved {key} on {before['unit_id']}"
                     )
-            for key in (
-                "speaker",
-                "speaker_count",
-                "start_cut",
-                "end_cut",
-                "ends_on_active_frame",
-                "unit_id",
-                "unit_index",
-                "flags",
-                "absorbed_units",
-                "reference_word_range",
-            ):
+            for key in identity_keys:
                 if before[key] != after[key]:
                     raise SystemExit(
                         f"call {sample_id}: v3 moved {key} on {before['unit_id']}"
@@ -170,10 +224,26 @@ def _build_v3(args, plan_out: Path) -> int:
                 "sha256": digest,
                 "schema": str(document["schema"]),
                 "exposure_row": str(document["exposure_row"]),
-                "turns_are_unchanged": (
-                    "every unit's span, speaker facts, cut kinds, flags, absorbed "
-                    "slivers and reference-word range are this file's, asserted "
-                    "field by field by the builder before the plan was written"
+                **(
+                    {
+                        "uniform_seconds": float(args.uniform_seconds),
+                        "turns_are_replaced": (
+                            "the OBS-E1b FORM TWIN: this plan inherits only the "
+                            "call roster and each call's decoded duration from the "
+                            "source plan; its units are equal clock units, so the "
+                            "one thing that differs from the arm is where the "
+                            "boundaries are"
+                        ),
+                    }
+                    if args.uniform_seconds
+                    else {
+                        "turns_are_unchanged": (
+                            "every unit's span, speaker facts, cut kinds, flags, "
+                            "absorbed slivers and reference-word range are this "
+                            "file's, asserted field by field by the builder before "
+                            "the plan was written"
+                        )
+                    }
                 ),
             },
             **shared,
@@ -182,7 +252,7 @@ def _build_v3(args, plan_out: Path) -> int:
     _write(
         args.out_dir / "unit-plan-summary.json",
         stu.summary_document(
-            plan_path=str(plan_out.relative_to(REPO_ROOT)).replace("\\", "/"),
+            plan_path=str(plan_out.resolve().relative_to(REPO_ROOT)).replace("\\", "/"),
             plan_sha256=hashlib.sha256(plan_out.read_bytes()).hexdigest(),
             elapsed_seconds=time.time() - started,
             corpus=pooled,
@@ -209,6 +279,16 @@ def main() -> int:
     )
     parser.add_argument(
         "--min-delivered-seconds", type=float, default=stu.MIN_DELIVERED_CUT_SECONDS
+    )
+    parser.add_argument(
+        "--uniform-seconds",
+        type=float,
+        default=0.0,
+        help=(
+            "OBS-E1b FORM TWIN (v3 only): replace the inherited speaker turns "
+            "with equal clock units of this length before adding context, so "
+            "the twin differs from the arm in boundary placement and nothing else"
+        ),
     )
     parser.add_argument("--plan-out", type=Path, default=None)
     parser.add_argument("--out-dir", required=True, type=Path)
@@ -288,7 +368,7 @@ def main() -> int:
         corpus=pooled,
     )
     summary_kwargs: dict[str, object] = dict(
-        plan_path=str(plan_out.relative_to(REPO_ROOT)).replace("\\", "/"),
+        plan_path=str(plan_out.resolve().relative_to(REPO_ROOT)).replace("\\", "/"),
         elapsed_seconds=time.time() - started,
         corpus=pooled,
         per_call=summaries,

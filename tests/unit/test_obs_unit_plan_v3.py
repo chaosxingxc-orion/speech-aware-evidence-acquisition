@@ -184,6 +184,26 @@ class TestContextDelivery:
                 record.end_seconds - record.start_seconds
             )
 
+    def test_the_last_unit_is_cut_even_when_an_earlier_cut_reached_the_call_end(
+        self, tmp_path, monkeypatch
+    ):
+        """Regression, caught by the OBS-E1b wire check on calls 4387332 and
+        4392809: a context-bearing unit's cut runs PAST its turn, so the
+        cursor can reach the call's end while units remain. A clock loop
+        condition dropped the last one silently -- 49 contacts for 50 planned
+        units, and a falsifier that failed only afterwards. The plan's own
+        length is the loop bound now."""
+
+        # Unit 3 ends at the call end, so unit 2's cut (80 + 5) already
+        # reaches past where a clock condition would stop.
+        world, outcome = _run(tmp_path / "last", monkeypatch, _v3())
+        payloads = list(_obs_payloads(world).values())
+        assert len(payloads) == 3
+        assert len(world.adapter.payloads) == 3
+        assert payloads[-1]["obs_final_window"] is True
+        assert payloads[-1]["obs_unit_turn_end_seconds"] == DURATION
+        assert outcome.text.split()[-1] == "3"
+
     def test_every_unit_declares_what_it_delivered_and_the_run_stitches_that(
         self, tmp_path, monkeypatch
     ):

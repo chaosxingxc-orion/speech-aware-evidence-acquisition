@@ -1404,11 +1404,22 @@ class ObsAgentLoopPolicy:
         slice_records: list[SliceRecord] = []
         cursor = 0.0
         iteration = 0
-        while cursor < duration - _EPSILON_SECONDS:
-            unit = None
+        while True:
+            # Under a plan the PLAN's length is the loop bound, not the clock.
+            # OBS-E1b made that distinction load-bearing: a context-bearing
+            # unit's cut runs PAST its turn, so the cursor can reach the call's
+            # end while units remain, and a clock condition would silently drop
+            # the last one. For a v1/v2 plan the two conditions coincide (the
+            # cut IS the turn and the turns tile), so this is byte-identical
+            # for every plan written before v3 and for the clock cutter, whose
+            # branch below still advances and stops on the cursor.
             if plan_units is not None:
                 if iteration >= len(plan_units):
                     break
+            elif cursor >= duration - _EPSILON_SECONDS:
+                break
+            unit = None
+            if plan_units is not None:
                 unit = plan_units[iteration]
                 # OBS-E1b: the cut is the unit's DELIVERED span, which on a
                 # v1/v2 plan IS its turn (PlannedUnit.cut_*_seconds) -- so this
