@@ -58,6 +58,16 @@ TRACE_CHANNELS = (
     # conventions" (the policy's own design brief): namespaced exactly like
     # OBS/ORG/SUPPLY/USE below, never sharing their prefix.
     "REPLAY",
+    # The Reviewer seat of the four-agent loop (owner Decision 11-B/11-C,
+    # 2026-09-08; ``rails.phase_review``): one record per reviewed row
+    # carrying the judges' typed verdicts -- score, flags with their span and
+    # field references, reasons. A sixth research-axis channel for the same
+    # reason REPLAY is a fifth: a review verdict is neither an observation,
+    # an organization, a supply nor a use, and folding it into one of those
+    # namespaces would make two authorities for one decision. Criticism only
+    # by construction: ``core.base.JudgeVerdict`` cannot carry replacement
+    # text, so a REVIEW record cannot either.
+    "REVIEW",
 )
 _CHANNEL_PREFIX = {
     "OBS": "obs_",
@@ -65,6 +75,7 @@ _CHANNEL_PREFIX = {
     "SUPPLY": "supply_",
     "USE": "use_",
     "REPLAY": "replay_",
+    "REVIEW": "review_",
 }
 _DATE = re.compile(r"\d{4}-\d{2}-\d{2}\Z")
 

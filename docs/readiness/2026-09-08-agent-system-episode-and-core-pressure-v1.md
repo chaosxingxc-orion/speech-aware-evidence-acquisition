@@ -37,7 +37,7 @@ text-domain knowledge, same-speaker speech exemplars, state).
 | **Planner** | system | from the task type and the state, picks the observe mode(s), the knowledge views to supply, the budget of core calls, and when to stop; a rule table now, the object the evolution loop optimizes in Stage 3 | phase programs and their config; `LoopConfig` |
 | **Observer** | system + pinned tools | executes the observe mode: input standardization (rate, tail), unit choice (speaker-turn units via diarization for meetings; fixed windows otherwise), enhancement when the input is noisy, and SELECTIVE LISTENING: re-listening only to spans the Reviewer flagged, with more context | `reproduction.obs_loop` (unit plan, tail knob), the Sortformer diarization tool row, the replay loop's flagged spans |
 | **Solver** | the frozen core | the only answering agent: a draft, then constrained revisions, always on the narrowed problem with the supplied knowledge | `EvidenceAgentController` phases, `window_hook`, the post-processors |
-| **Reviewer** | system judges (deterministic checks, pinned frozen tools; later the core in a critic phase that flags but never answers) | scores the draft against knowledge and state, flags spans, and returns the decision to the Planner: loop (acquire, re-listen, revise) or commit | registered scorers and post-processors in `core.base`; `e21-entity-repair-substitutions-v1`; the legal-label projection |
+| **Reviewer** | system judges (deterministic checks, pinned frozen tools; later the core in a critic phase that flags but never answers) | **CRITICISM ONLY (owner Decision 11-C, 2026-09-08): it SCORES and FLAGS, it never proposes a revision.** It scores the draft against knowledge and state, flags spans and fields, and returns a typed verdict to the Planner, whose loop decision is loop (acquire, re-listen, revise) or commit; the revision itself belongs to the Solver, under the system's constraints | judges registered in `core.base.JUDGES` behind the `Judge` protocol, whose `JudgeVerdict` type structurally cannot carry replacement text (`core.base.assert_criticism_only`); the seam is `rails.phase_review` on `EvidenceAgentController`; the frozen checks behind it are the legal-label projection's legality rule, the slot schema-conformance rule, the numeric-format rule, `e21-entity-repair-substitutions-v1`'s refusal reasons, and the `core.replay_signals` / `core.flag_sources` flag sources |
 
 The loop: **Plan -> Observe -> Solve -> Review -> (Plan again with the flags, within budget) -> Commit.**
 Every carrier runs the same loop; what differs per carrier lives in three mode tables, never in a new pipeline
@@ -89,6 +89,25 @@ non-inferiority guards with margins from the carrier's own null (family rule of 
 Order of work: deterministic and tool judges first, because their precision and recall can be measured
 model-free on sealed outputs (which flagged spans are real errors; which real errors were flagged); the
 core-as-critic phase needs a flight and comes after.
+
+**Owner Decision 11-C, 2026-09-08 (amends condition 3 above).** *The Reviewer is CRITICISM ONLY: it
+scores and flags, and it never proposes a revision; revisions belong to the Solver, under the
+system's constraints.* This supersedes the reading of condition 3(c) that let a core-as-critic phase
+"flag **and propose**" -- a critic phase may flag, score and give reasons, and nothing else. A
+judge's whole output is a typed verdict: a score, flags carrying span and field references into the
+draft, and reasons. That verdict is consumed by the Planner's loop decision and by the Solver's
+constrained revise; no judge may emit replacement text.
+
+The `JUDGES` protocol enforces this **structurally**, not by convention. Every registered judge
+returns a `core.base.JudgeVerdict`, and `core.base.assert_criticism_only` -- asserted on that type at
+import -- refuses any verdict field that could carry text longer than one reason: a field may hold a
+scalar, a tuple of scalars, or a type already proven criticism-only, and every text-bearing field is
+capped at `MAX_JUDGE_TEXT_CHARS` (240). A mapping or object field is refused outright, because a
+mapping can smuggle a whole rewritten answer under any key. `core.base.JudgeRegistry.register`
+additionally refuses an entry that does not declare `criticism_only=True`. So the boundary this note
+argued for in prose -- answer authority stays with the frozen core, a judge is not a second
+answering LLM -- is now a property of the type, and re-opening it costs an import-time failure
+rather than a review comment.
 
 ## 5. What this changes in the two lines in preparation
 

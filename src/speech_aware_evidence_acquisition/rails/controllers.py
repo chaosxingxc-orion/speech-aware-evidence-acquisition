@@ -39,7 +39,26 @@ Two pieces:
   ``phase-direct-evidence-alpha-blend-v1``: a caller-injected policy mirrors
   ``KbAlphaBlendController``'s own "the direct-decode label already wins,
   skip the evidence contact" shortcut, without this module re-implementing
-  that ranking/fusion decision).
+  that ranking/fusion decision). An optional ``review_for_phase`` callable
+  is the Reviewer seat of the four-agent loop (owner Decision 11-B change #1,
+  2026-09-08): after each phase's response is sealed it hands the sealed
+  bytes to that phase's registered judges and records their
+  ``core.base.JudgeVerdict`` tuple. It steers nothing -- see "Criticism only"
+  below -- and ``rails.phase_review`` builds it from a baseline fragment's
+  ``phase_review`` block.
+
+Criticism only (owner Decision 11-C, 2026-09-08)
+-------------------------------------------------
+
+**A judge SCORES and FLAGS; it never proposes a revision.** The verdicts
+``review_for_phase`` returns are recorded on the controller and traced by
+``rails.phase_review``; not one byte this controller sends depends on them.
+The transition, the successor ``QueryState`` and the next contact are
+identical whether ``review_for_phase`` is ``None`` or returns a hundred
+flags, which is precisely what makes a judge's admission receipt one config
+key against its null arm instead of a second code path. Acting on a flag
+(the design's ``on_flag: "loop"``) needs ``rails.runner``'s state-id and
+contact-id rails relaxed first, and is refused by name until then.
 
 Traced supply (E6, 2026-09-06)
 -----------------------------
@@ -99,7 +118,8 @@ registry at import time, with a snapshot-free, always-safe default factory
 per phase rather than reading any per-run injected material) -- the same
 "maximally conservative default" shape ``kb_policy``'s own module docstring
 describes. A real flight builds its OWN richer ``material_for_phase`` (and
-optionally ``supply_for_phase``/``stop_policy``) and passes a fresh
+optionally ``supply_for_phase``/``stop_policy``/``review_for_phase``) and
+passes a fresh
 ``core.base.Registry`` as ``controller_registry=`` to
 ``rails.runner.run_speech_native_agent_loop`` (or, more commonly, calls
 ``rails.phase_runner.run_agent_phase``/``run_program``, which build that
@@ -114,7 +134,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
-from ..core.base import AGENT_CONTROLLERS, RESPONSE_FORMATS
+from ..core.base import AGENT_CONTROLLERS, RESPONSE_FORMATS, JudgeVerdict
 from .errors import RailsError
 from .knowledge import (
     AgentStateArtifact,
@@ -439,6 +459,14 @@ class PhaseSupply:
 MaterialForPhase = Callable[[str, AgentRuntimeContext], PhaseMaterial]
 SupplyForPhase = Callable[[str, AgentRuntimeContext], "PhaseSupply | None"]
 StopPolicy = Callable[[AgentRuntimeContext, Sequence[str]], bool]
+#: The Reviewer seat (owner Decision 11-B change #1 / 11-C, 2026-09-08):
+#: ``review_for_phase(completed_phase_name, context, response_text)`` returns
+#: the judges' :class:`~..core.base.JudgeVerdict` tuple for the phase that
+#: just answered. ``rails.phase_review.build_review_for_phase`` builds one
+#: from config; ``None`` is today's behaviour, unchanged.
+ReviewForPhase = Callable[
+    [str, AgentRuntimeContext, str], Sequence["JudgeVerdict"]
+]
 
 
 class EvidenceAgentController:
@@ -457,6 +485,27 @@ class EvidenceAgentController:
     only after a NON-FINAL phase, with the tuple of phase names completed so
     far; returning ``True`` stops the program on that phase's own response.
 
+    ``review_for_phase(completed_phase_name, context, response_text)`` is the
+    Reviewer seat (owner Decision 11-B change #1, 2026-09-08). It is called
+    once per phase, AFTER that phase's response is sealed as an
+    :class:`~.knowledge.AgentStateArtifact` and BEFORE the stop decision, with
+    a context carrying the just-sealed state and the UNCHANGED
+    ``query_state`` -- the same synthetic context ``supply_for_phase``
+    receives, for the same reason. It returns a sequence of
+    ``core.base.JudgeVerdict``; this controller type-checks and records them
+    and does nothing else with them.
+
+    **Nothing this controller sends depends on a verdict.** Owner Decision
+    11-C: a judge SCORES and FLAGS and never proposes a revision, so the
+    verdicts are criticism, not control. The transition, the successor
+    ``QueryState`` and the next contact are byte-identical whether
+    ``review_for_phase`` is ``None`` or returns a hundred flags -- which is
+    what lets a judge's admission receipt be one config key against its null
+    arm rather than a second code path. Acting on a flag (the design's
+    ``on_flag: "loop"``) is a change to ``rails.runner``'s state-id and
+    contact-id rails, refused by name in ``rails.phase_review`` until that
+    lands.
+
     One instance is bound to exactly one sample's trajectory (mirroring
     every other controller in this study --
     ``rails.runner._run_agent_trajectory`` builds one controller per sample
@@ -471,6 +520,7 @@ class EvidenceAgentController:
         material_for_phase: MaterialForPhase,
         supply_for_phase: SupplyForPhase | None = None,
         stop_policy: StopPolicy | None = None,
+        review_for_phase: ReviewForPhase | None = None,
     ) -> None:
         program.validate()
         if not callable(material_for_phase):
@@ -485,11 +535,17 @@ class EvidenceAgentController:
             raise RailsControllersError(
                 "EvidenceAgentController stop_policy must be callable or None"
             )
+        if review_for_phase is not None and not callable(review_for_phase):
+            raise RailsControllersError(
+                "EvidenceAgentController review_for_phase must be callable or None"
+            )
         self._program = program
         self._material_for_phase = material_for_phase
         self._supply_for_phase = supply_for_phase
         self._stop_policy = stop_policy
+        self._review_for_phase = review_for_phase
         self._sealed: dict[str, AgentStateArtifact] = {}
+        self._reviews: dict[str, tuple[JudgeVerdict, ...]] = {}
         self._completed: list[str] = []
         self._pending_contact_id: str | None = None
         self._initial_dispatched = False
@@ -504,6 +560,18 @@ class EvidenceAgentController:
         name -- observability/testing only, never consulted by the runner."""
 
         return dict(self._sealed)
+
+    @property
+    def review_verdicts(self) -> Mapping[str, tuple[JudgeVerdict, ...]]:
+        """This sample's own judge verdicts so far, keyed by phase name.
+
+        Observability only, exactly like :attr:`sealed_states`: the runner
+        never consults it, and nothing this controller sends depends on it
+        (owner Decision 11-C -- the Reviewer criticises, it does not steer).
+        Empty for every controller built without ``review_for_phase``.
+        """
+
+        return dict(self._reviews)
 
     def _dispatch(self, phase: PhaseSpec, context: AgentRuntimeContext) -> AgentContactPlan:
         material = self._material_for_phase(phase.name, context)
@@ -585,6 +653,14 @@ class EvidenceAgentController:
         self._sealed[phase.name] = artifact
         self._completed.append(phase.name)
         self._pending_contact_id = None
+
+        # The Reviewer seat (owner Decision 11-B change #1, 2026-09-08): the
+        # judges read the phase's SEALED bytes, here, before the stop
+        # decision and before any supply decision -- so a verdict is about
+        # the answer that was actually given, and every judge of every
+        # reviewed phase runs exactly once per row. Criticism only: what
+        # comes back is recorded and steers nothing (class docstring).
+        self._resolve_review(phase, context, response_text, artifact, response_sha256)
 
         is_last = index + 1 >= len(self._program.phases)
         should_stop = is_last
@@ -714,6 +790,79 @@ class EvidenceAgentController:
             fusion_decision=None if supply is None else supply.fusion_decision,
         )
 
+    def _review_context(
+        self,
+        context: AgentRuntimeContext,
+        artifact: AgentStateArtifact,
+        response_sha256: str,
+    ) -> AgentRuntimeContext:
+        """The "as of the answer just sealed" context both the Reviewer and
+        the supply decision see: this phase's own state appended, the
+        ``query_state`` UNCHANGED (a decision or a criticism is about the
+        state that produced the answer, not about its successor)."""
+
+        return AgentRuntimeContext(
+            sample_id=context.sample_id,
+            knowledge_snapshot_sha256=context.knowledge_snapshot_sha256,
+            catalog_facet_ids=context.catalog_facet_ids,
+            catalog_value_ids=context.catalog_value_ids,
+            query_state=context.query_state,
+            task_contract=context.task_contract,
+            agent_states=context.agent_states + (artifact,),
+            prior_response_sha256s=(
+                context.prior_response_sha256s + (response_sha256,)
+            ),
+            contact_index=context.contact_index,
+        )
+
+    def _resolve_review(
+        self,
+        phase: PhaseSpec,
+        context: AgentRuntimeContext,
+        response_text: str,
+        artifact: AgentStateArtifact,
+        response_sha256: str,
+    ) -> tuple[JudgeVerdict, ...]:
+        """Call ``review_for_phase`` for the phase that just answered and
+        type-check what comes back.
+
+        Fail-closed on anything that is not a sequence of validated
+        ``core.base.JudgeVerdict``: a judge that returns a string, a mapping
+        or a rewritten draft is exactly the Decision 11-C violation the
+        verdict type exists to make unrepresentable, and a controller that
+        quietly accepted it would reopen the ruling in the one place nobody
+        reads.
+        """
+
+        if self._review_for_phase is None:
+            return ()
+        verdicts = self._review_for_phase(
+            phase.name,
+            self._review_context(context, artifact, response_sha256),
+            response_text,
+        )
+        if verdicts is None:
+            verdicts = ()
+        if isinstance(verdicts, (str, bytes, Mapping)) or not isinstance(
+            verdicts, Sequence
+        ):
+            raise RailsControllersError(
+                "review_for_phase must return a sequence of core.base.JudgeVerdict, "
+                f"got {type(verdicts).__name__}"
+            )
+        recorded: list[JudgeVerdict] = []
+        for verdict in verdicts:
+            if not isinstance(verdict, JudgeVerdict):
+                raise RailsControllersError(
+                    "review_for_phase entries must be core.base.JudgeVerdict; a judge "
+                    "scores and flags and never proposes a revision (owner Decision "
+                    "11-C)"
+                )
+            verdict.validate()
+            recorded.append(verdict)
+        self._reviews[phase.name] = tuple(recorded)
+        return tuple(recorded)
+
     def _resolve_supply(
         self,
         next_phase: PhaseSpec,
@@ -734,19 +883,7 @@ class EvidenceAgentController:
             return None
         supply = self._supply_for_phase(
             next_phase.name,
-            AgentRuntimeContext(
-                sample_id=context.sample_id,
-                knowledge_snapshot_sha256=context.knowledge_snapshot_sha256,
-                catalog_facet_ids=context.catalog_facet_ids,
-                catalog_value_ids=context.catalog_value_ids,
-                query_state=context.query_state,
-                task_contract=context.task_contract,
-                agent_states=context.agent_states + (artifact,),
-                prior_response_sha256s=(
-                    context.prior_response_sha256s + (response_sha256,)
-                ),
-                contact_index=context.contact_index,
-            ),
+            self._review_context(context, artifact, response_sha256),
         )
         if supply is None:
             return None
@@ -1059,6 +1196,7 @@ __all__ = [
     "PhaseSpec",
     "PhaseSupply",
     "RailsControllersError",
+    "ReviewForPhase",
     "StopPolicy",
     "SupplyForPhase",
     "default_controller_factory",

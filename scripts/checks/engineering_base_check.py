@@ -7,8 +7,8 @@ Study ``CLAUDE.md`` section "Engineering base and experiment rules (owner,
 ``rails/adapters/`` / ``rails/controllers.py`` / ``rails/kb_policy.py``
 (the migration source, allowed until disposal), no ``launcher/`` directory
 under ``docs/checks/``, and every ``policy`` / ``evidence_source`` /
-``scorers`` value (plus the knowledge-plane policy-chain ids) in ``configs/``
-must resolve in a ``core.base`` registry.
+``scorers`` / ``judges`` value (plus the knowledge-plane policy-chain ids) in
+``configs/`` must resolve in a ``core.base`` registry.
 
 The September tree already violates every one of these rules at scale, so
 this check runs in RATCHET mode: a committed baseline
@@ -29,7 +29,7 @@ Two tree-reading modes share every rule's detection logic:
   baseline. Refuses if git is unavailable.
 
 Registered names for ``policy`` / ``evidence_source`` / ``scorers`` /
-knowledge-plane ids are resolved WITHOUT importing the (torch-dependent)
+``judges`` / knowledge-plane ids are resolved WITHOUT importing the (torch-dependent)
 package: a regex scan of the five canonical ``core.base`` population sites
 (``core/policies.py``, ``core/evidence.py``, ``core/scorers.py``,
 ``rails/kb_policy.py``, ``rails/knowledge_build.py``,
@@ -110,6 +110,25 @@ TOP_LEVEL_STRING_KEYS = {
 }
 TOP_LEVEL_LIST_KEY = ("scorers", "SCORERS")
 
+# config key -> core.base registry variable, for a LIST of ids matched at ANY
+# depth/path in the JSON document. ``scorers`` above is top-level only because
+# that is where the arm-program shape puts it; a ``judges`` list is declared
+# per PHASE, inside a baseline fragment's ``phase_review`` object
+# (``rails.phase_review``), so the parent object name would have to be
+# hard-coded to find it -- the same reason NESTED_ID_KEYS is an any-depth
+# search. Matching at any depth also catches a future top-level ``judges``
+# list (the design note's own "judges config table with a null arm") without a
+# second rule.
+#
+# Owner Decision 11-B change #1, 2026-09-08: every ``judges`` value in
+# ``configs/`` must resolve in ``core.base.JUDGES``, exactly as every
+# ``policy`` / ``evidence_source`` / ``scorers`` value resolves in its own
+# registry. An unregistered judge id is the same defect class as an
+# unregistered policy id: a config that reads as if it reviews and does not.
+NESTED_LIST_ID_KEYS = {
+    "judges": "JUDGES",
+}
+
 # config key -> core.base registry variable, matched at ANY depth/path in the
 # JSON document (observed nested under e.g. "kb_campaign_policy_chain" /
 # "kb_campaign_knowledge_snapshot" -- the parent object name is not stable
@@ -168,6 +187,7 @@ ALL_REGISTRY_VARS = (
     {var for vars_ in TOP_LEVEL_STRING_KEYS.values() for var in vars_}
     | {TOP_LEVEL_LIST_KEY[1]}
     | set(NESTED_ID_KEYS.values())
+    | set(NESTED_LIST_ID_KEYS.values())
     | {MAX_TOKENS_POLICY_VAR}
 )
 
@@ -495,6 +515,21 @@ def _walk_nested_id_keys(node: object, path_prefix: str = ""):
             yield from _walk_nested_id_keys(item, f"{path_prefix}[{index}]")
 
 
+def _walk_nested_list_id_keys(node: object, path_prefix: str = ""):
+    """``(dotted path, key, value)`` for every :data:`NESTED_LIST_ID_KEYS` key
+    at any depth -- the list counterpart of :func:`_walk_nested_id_keys`."""
+
+    if isinstance(node, dict):
+        for key, value in node.items():
+            here = f"{path_prefix}.{key}" if path_prefix else key
+            if key in NESTED_LIST_ID_KEYS:
+                yield here, key, value
+            yield from _walk_nested_list_id_keys(value, here)
+    elif isinstance(node, list):
+        for index, item in enumerate(node):
+            yield from _walk_nested_list_id_keys(item, f"{path_prefix}[{index}]")
+
+
 def rule_unregistered_config_values(
     reader: TreeReader, registered: Mapping[str, set[str]]
 ) -> tuple[list[str], list[str]]:
@@ -537,6 +572,15 @@ def rule_unregistered_config_values(
                 var = NESTED_ID_KEYS[key]
                 if value not in registered[var]:
                     offenders.append(f"{relpath}::{dotted_path}={value}")
+
+            for dotted_path, key, value in _walk_nested_list_id_keys(doc):
+                if not isinstance(value, list):
+                    continue
+                keys_found.add(key)
+                var = NESTED_LIST_ID_KEYS[key]
+                for index, entry in enumerate(value):
+                    if isinstance(entry, str) and entry not in registered[var]:
+                        offenders.append(f"{relpath}::{dotted_path}[{index}]={entry}")
 
     # The per-sample max_tokens rule, matched by PATH (see
     # DECODING_PARAMS_KEY's own comment for why not by bare key name).

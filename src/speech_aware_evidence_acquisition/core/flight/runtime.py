@@ -915,6 +915,14 @@ class FlightRuntime:
         # KnowledgeSnapshot alone.
         self._phase_supply_receipt: Mapping[str, object] | None = None
         self._phase_supply_providers: Mapping[str, object] | None = None
+        # W1 (owner Decision 11-B change #1, 2026-09-08): what the baseline
+        # fragment's ``phase_review`` resolved to -- the spec plus the flag
+        # counts the judges raised -- and the injection seam for the carrier
+        # material a judge needs and no config fragment can hold (a legal
+        # label inventory, a per-intent slot block, a candidate roster). Same
+        # shape and same reason as the two phase_supply fields above.
+        self._phase_review_receipt: Mapping[str, object] | None = None
+        self._phase_review_material: Mapping[str, object] | None = None
         self._promotion_receipt: Mapping[str, object] | None = None
         self._construction_material: ProposerMaterial | None = None
         self._owns_session = False
@@ -3122,6 +3130,8 @@ class FlightRuntime:
             sink = TraceBuffer(plan.run_id)
         supply_for_phase = binding.get("supply_for_phase")
         supply_specs = binding.get("supply_specs") or {}
+        review_for_phase = binding.get("review_for_phase")
+        review_specs = binding.get("review_specs") or {}
         facet_seed, value_seed = self._phase_supply_seeds(
             program, binding, supply_specs, plan
         )
@@ -3150,6 +3160,7 @@ class FlightRuntime:
                     decoding_params=self._phase_decoding_params(),
                     material_for_phase=binding["material_for_phase"],
                     supply_for_phase=supply_for_phase,
+                    review_for_phase=review_for_phase,
                     bootstrap_facet_ids=facet_seed.get(program.phase_names()[0], ()),
                     bootstrap_value_ids=value_seed.get(program.phase_names()[0], ()),
                 ),
@@ -3168,8 +3179,17 @@ class FlightRuntime:
                 decoding_params=self._phase_decoding_params(),
                 material_for_phase=binding["material_for_phase"],
                 supply_for_phase=supply_for_phase,
+                review_for_phase=review_for_phase,
                 bootstrap_facet_ids_by_phase=facet_seed,
                 bootstrap_value_ids_by_phase=value_seed,
+            )
+        if review_specs:
+            from ...rails.phase_review import (  # noqa: PLC0415 (cycle guard)
+                phase_review_receipt,
+            )
+
+            self._phase_review_receipt = phase_review_receipt(
+                review_specs, review_for_phase
             )
         flush = getattr(client, "flush_trace_buffer", None)
         if isinstance(sink, TraceBuffer) and callable(flush):
@@ -3206,6 +3226,10 @@ class FlightRuntime:
             ),
             "supplied_phases": sorted(supply_specs),
             "seeded_supply_phases": sorted(set(facet_seed) | set(value_seed)),
+            # W1: which phases this flight REVIEWED. Criticism only -- a
+            # reviewed phase sends the same bytes as an unreviewed one
+            # (owner Decision 11-C), so this is provenance, not a mode.
+            "reviewed_phases": sorted(review_specs),
         }
         return rows, contact_count, "phase-program", dispatch, phase_receipt
 
@@ -3286,6 +3310,7 @@ class FlightRuntime:
         if not isinstance(policy, str) or not policy:
             raise FlightRuntimeError("baseline fragment must declare a non-empty 'policy'")
         self._assert_phase_supply_is_legal_for(policy)
+        self._assert_phase_review_is_legal_for(policy)
 
         client_kwargs = self.frozen_core_client_kwargs()
         client = self._client_factory(**client_kwargs)
@@ -3386,6 +3411,13 @@ class FlightRuntime:
             # and never any snapshot content. None for a cell that supplies
             # nothing.
             "phase_supply": self._phase_supply_receipt,
+            # W1 (owner Decision 11-B change #1): which phases this flight
+            # REVIEWED, with which judge ids and versions, how many rows each
+            # judge read, how many it flagged and at what severity -- never a
+            # draft and never a flag's reason in bulk (the per-row detail is
+            # in the REVIEW trace records). None for a cell that reviews
+            # nothing, which is every cell written before this wave.
+            "phase_review": self._phase_review_receipt,
             "contacts_per_second": contacts_per_second,
             "average_latency_seconds": average_latency,
             "slot_occupancy": slot_occupancy,
@@ -3432,6 +3464,22 @@ class FlightRuntime:
             assert_phase_supply_queries_carry_speech(self._composed.values)
         except PhaseSupplyError as error:
             raise FlightRuntimeError(str(error)) from None
+
+    def _assert_phase_review_is_legal_for(self, policy: str) -> None:
+        """A ``policy == "fixed"`` direct arm runs no phase program, so a
+        ``phase_review`` block on it is dead config that would review
+        nothing while reading as if it reviewed. Refused, loudly, before any
+        contact -- the same rule and the same reason as
+        :meth:`_assert_phase_supply_is_legal_for`.
+        """
+
+        declared = self._composed.values.get("phase_review")
+        if policy == "fixed" and declared:
+            raise FlightRuntimeError(
+                "baseline fragment declares 'phase_review' but policy is 'fixed'; a "
+                "direct arm runs no phase program and would review nothing. Declare a "
+                "phase-program policy, or drop the phase_review block"
+            )
 
     def _phase_decoding_params(self) -> Mapping[str, object]:
         """The run-level decoding params a PHASE program may carry.
@@ -3611,6 +3659,7 @@ class FlightRuntime:
             specs, static_text, formats
         )
         supply_for_phase, supply_specs = self._resolve_phase_supply(program, snapshot)
+        review_for_phase, review_specs = self._resolve_phase_review(program)
         return {
             "knowledge_snapshot": snapshot,
             "speech_packet_bindings": self.speech_packet_bindings(),
@@ -3623,7 +3672,74 @@ class FlightRuntime:
             ),
             "supply_for_phase": supply_for_phase,
             "supply_specs": supply_specs,
+            "review_for_phase": review_for_phase,
+            "review_specs": review_specs,
             "trace_sink": client,
+        }
+
+    def _resolve_phase_review(
+        self, program: object
+    ) -> tuple[object | None, Mapping[str, object]]:
+        """Resolve the baseline fragment's ``phase_review`` into the
+        ``review_for_phase`` callable ``rails.controllers`` consults (owner
+        Decision 11-B change #1, 2026-09-08).
+
+        Config only, and fail-closed before any contact: every judge id must
+        resolve in ``core.base.JUDGES``, every reviewed phase must be one the
+        program declares, and ``on_flag: "loop"`` is refused by name until
+        ``rails.runner``'s state-id/contact-id rails admit a re-ask
+        (``rails.phase_review.LOOP_REFUSAL_REASON``).
+
+        Returns ``(None, {})`` for a fragment that reviews nothing -- which
+        is byte-identical to every cell written before this wave.
+        """
+
+        from ...rails.phase_review import (  # noqa: PLC0415 (cycle guard)
+            PhaseReviewError,
+            build_review_for_phase,
+            load_phase_review_specs,
+            phase_review_receipt,
+        )
+
+        try:
+            specs = load_phase_review_specs(self._composed.values, program)
+        except PhaseReviewError as error:
+            raise FlightRuntimeError(str(error)) from None
+        if not specs:
+            self._phase_review_receipt = None
+            return None, {}
+        review_for_phase = build_review_for_phase(
+            specs, extra_material=self._phase_review_material
+        )
+        # The pre-flight receipt: the spec, with zero rows reviewed. It is
+        # replaced after dispatch by the same call over the reviewer that
+        # actually ran, so a receipt exists even if the flight dies mid-roster.
+        self._phase_review_receipt = phase_review_receipt(specs)
+        return review_for_phase, specs
+
+    def bind_phase_review_material(
+        self, material: Mapping[str, Mapping[str, Mapping[str, object]]]
+    ) -> None:
+        """Inject ``{phase: {judge_id: material}}`` for the judges of a
+        reviewed phase.
+
+        A judge's own knobs ride the config fragment's
+        ``phase_review.<phase>.params`` and therefore the config hash; the
+        CARRIER material a judge reads -- a legal ``(scenario, action)``
+        inventory, a per-intent slot-type block, a candidate roster -- is far
+        too large for a fragment, exactly as a knowledge provider's artifact
+        is (:meth:`bind_phase_supply_providers`). This seam supplies that
+        material, never the judge's identity: the id still has to resolve in
+        ``core.base.JUDGES``, and a config param wins any key collision.
+        """
+
+        if not isinstance(material, Mapping) or not material:
+            raise FlightRuntimeError(
+                "bind_phase_review_material needs a non-empty "
+                "{phase: {judge_id: material}} mapping"
+            )
+        self._phase_review_material = {
+            str(phase): dict(entry or {}) for phase, entry in material.items()
         }
 
     def _resolve_phase_supply(
@@ -3739,6 +3855,7 @@ class FlightRuntime:
         speech_packet_bindings: Mapping[str, Mapping[str, object]],
         material_for_phase: Callable[..., object],
         supply_for_phase: Callable[..., object] | None = None,
+        review_for_phase: Callable[..., object] | None = None,
         trace_sink: object | None = None,
     ) -> None:
         """Bind the caller-supplied, genuinely task-specific material a
@@ -3755,6 +3872,8 @@ class FlightRuntime:
             "material_for_phase": material_for_phase,
             "supply_for_phase": supply_for_phase,
             "supply_specs": {},
+            "review_for_phase": review_for_phase,
+            "review_specs": {},
             "trace_sink": trace_sink,
         }
 
@@ -4469,6 +4588,7 @@ class FlightRuntime:
             "phases": phase_receipt,
             "phase_material": self._phase_material_receipt,
             "phase_supply": self._phase_supply_receipt,
+            "phase_review": self._phase_review_receipt,
             # E6: how many TYPED knowledge blocks each request carried, in
             # request order -- the observable proof that a supplied phase's
             # knowledge travelled the traced channel and not the control
