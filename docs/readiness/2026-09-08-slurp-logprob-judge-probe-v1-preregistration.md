@@ -279,7 +279,9 @@ re-registration, per the standing rule; a second failure stops the flight.
 statistics point at the scenario/action value characters and no others), the margin (top-1 minus
 top-2, and `None` when k < 2), AUROC (perfect, inverted, all-ties, one tie straddling the boundary
 at 0.875, an empty class), the flag budget (the least-confident rows, boundary ties included, a
-budget above the population, a refused non-positive budget), precision and recall denominators, the
+budget above the population, a refused non-positive budget), the bootstrap's resampling
+multiplicity (a row drawn twice counts twice, which a set-based statistic would silently lose and
+which would narrow the CI the rule's second arm turns on), precision and recall denominators, the
 curve's monotone recall, both judges on clean/unparsed/out-of-vocabulary/repeated-type/illegal-pair
 rows, the three-way join and its four refusals, the union's monotonicity, and the admission rule on
 eight cases including both boundaries.
