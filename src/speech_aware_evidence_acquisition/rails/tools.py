@@ -970,6 +970,7 @@ PROMPT_FIT_TOKENS_MANIFEST = ToolManifest(
 )
 
 from .tool_wrappers import (  # noqa: E402  (registration block: see above)
+    a2t_renderers as _a2t_renderers,
     diarization as _diarization,
     flagged_spans as _flagged_spans,
     legal_label_projection as _legal_label_projection,
@@ -1017,6 +1018,373 @@ TOOL_CATALOG.register(
     "saea-tool-prompt-fit-tokens-v1",
     build_tool_entry(PROMPT_FIT_TOKENS_MANIFEST, _prompt_fit_tokens.prompt_fit_request_tool),
 )
+
+
+# --- WAVE R7: the eighteen rails/a2t_* renderers -----------------------------
+#
+# Group A of the reuse map (assessment section 6.1) named every ``rails/a2t_*``
+# module a task tool or knowledge view "in the design's own section 7 sense",
+# on the strength of their own docstrings ("reads no manifests, audio,
+# evaluation fields, model output, scorer, or network service"), and its
+# verdict was **"Register, do not rebuild."**
+#
+# Nothing was rebuilt. ``rails/tool_wrappers/a2t_renderers.py`` holds eighteen
+# PASSTHROUGH wrappers -- arguments forwarded unchanged, the wrapped function's
+# own return value in ``ToolResult.result`` -- and
+# ``tests/unit/test_a2t_renderer_tools.py`` asserts that identity per renderer
+# against a direct call, plus the pin, the axis, the scope and the coverage of
+# every ``rails/a2t_*.py`` module in the tree.
+#
+# The ``inputs``/``outputs`` spellings below are the wrapped functions' OWN
+# annotations, read off their signatures rather than restated, for the same
+# reason the eight tools above spell Python types and not JSON ones: these are
+# system-invoked over native objects and a JSON type would claim a decoding
+# contract that does not exist.
+
+A2T_CANONICAL_FAMILY_GROUND_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-canonical-family-ground-v1',
+    description='Render the value-safe canonical Audio2Tool ground for ONE action family.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_canonical_family_ground:CanonicalFamilyGround.render_family',
+    pinned_sha256="1b6f84896b9b697c295793dcd7883026187b37f6a8da9240373182133a1917c0",
+    inputs={'family_tag': 'str'},
+    outputs={'result': 'str'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='SUPPLY',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_CONSTRUCTION_EXAMPLE_GROUND_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-construction-example-ground-v1',
+    description='Build the query-independent construction-example family ground.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_construction_example_ground:build_construction_example_family_ground',
+    pinned_sha256="2359584bf348b4780943f69e8bea2b39ece587318fb61ce1e077abd70294afd4",
+    inputs={'construction_rows': 'Sequence[A2tKbRow]', 'g5_corpus_path': 'Path', 'forbidden_query_blocks': 'Collection[int]', 'forbidden_source_ids': 'Collection[str]', 'max_examples_per_tool': 'int', 'max_family_ascii_bytes': 'int', 'max_total_ascii_bytes': 'int'},
+    outputs={'result': 'ConstructionExampleGround'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='SUPPLY',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_CONSTRUCTION_SEMANTIC_GROUND_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-construction-semantic-ground-v1',
+    description='Build construction-conditioned Audio2Tool semantics without source text.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_construction_semantic_ground:build_construction_semantic_ground',
+    pinned_sha256="65d407f0b79154d9e8671bedbe0a08b196389417d2ad7c201810f6c263ec37f9",
+    inputs={'registry_rows': 'Sequence[Mapping[str, str]]', 'construction_rows': 'Sequence[A2tKbRow]', 'max_utf8_bytes': 'int', 'max_cues_per_pair': 'int'},
+    outputs={'result': 'ConstructionSemanticGroundArtifact'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='SUPPLY',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_EXECUTABLE_GROUND_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-executable-ground-v1',
+    description='Build the compact, task-wide, values-stripped executable handbook.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_executable_ground:build_executable_ground',
+    pinned_sha256="8efe54f2a1676744bea33e9e86b1ed53dd9b95021f0049209945f6ab810d4c16",
+    inputs={'registry_rows': 'Sequence[Mapping[str, str]]', 'construction_rows': 'Sequence[A2tKbRow]', 'max_utf8_bytes': 'int'},
+    outputs={'result': 'ExecutableGroundArtifact'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='SUPPLY',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_GROUND_PROMPT_ENVELOPES_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-ground-prompt-envelopes-v1',
+    description='Build the exact prompt envelopes the executable ground must fit inside.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_executable_ground_prompt_fit:build_ground_envelopes',
+    pinned_sha256="48abf19eb610d87c1a265eecb610974e4d1f9ccbc664ce3dd1ac0fdd4f76a5f8",
+    inputs={'handbook_text': 'str'},
+    outputs={'result': 'tuple[GroundPromptEnvelope, ...]'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='USE',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_EXECUTABLE_SEMANTIC_CARDS_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-executable-semantic-cards-v1',
+    description='Build the deterministic, label-free executable semantic card corpus.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_executable_semantic_cards:build_executable_semantic_card_corpus',
+    pinned_sha256="0dca111e4562ca42973f2b1aa7f444036419f481ac8ecaab79c68ce5fe6de239",
+    inputs={'registry_rows': 'Sequence[Mapping[str, str]]', 'construction_rows': 'Sequence[A2tKbRow]', 'compatibility_rules': 'Sequence[CompatibilityRule]', 'forbidden_example_literals': 'Sequence[str] | set[str] | frozenset[str]', 'max_utf8_bytes': 'int'},
+    outputs={'result': 'ExecutableSemanticCardCorpus'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='SUPPLY',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_FROZEN_SEMANTIC_ASSETS_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-frozen-semantic-assets-v1',
+    description='Load the frozen, label-free semantic runtime assets at their pinned hashes.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_frozen_semantic_assets:load_frozen_semantic_runtime_assets',
+    pinned_sha256="961334919e9ea3b21fd8f58f472afe55f91da60ae985d7884cff590266333ede",
+    inputs={'repo': 'Path', 'data_root': 'Path', 'receipt_relpath': 'Path'},
+    outputs={'result': 'FrozenSemanticRuntimeAssets'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='SUPPLY',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='tool-contact',
+)
+
+A2T_HARD_VALIDITY_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-hard-validity-v1',
+    description='Check a tool-call draft for deterministic, deployment-visible invalidity.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_hard_validity:validate_hard_validity',
+    pinned_sha256="51498b3ff3a13e358d116a08a97855423af0c2e3708459673ec558a0e68e076e",
+    inputs={'response_text': 'str', 'registry_rows': 'Sequence[Mapping[str, str]]'},
+    outputs={'result': 'HardValidityReport'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='USE',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_OBSERVATION_STATE_ORGANIZER_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-observation-state-organizer-v1',
+    description='Organize sealed ASCII OBS into task-blind structured dialogue state.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_observation_state_organizer:organize_sealed_observation',
+    pinned_sha256="2b5ab56501966c525f9b92187a500480cc53bb38bf1d3127386103a72af8bdf1",
+    inputs={'sealed_observation_text': 'str'},
+    outputs={'result': 'StructuredDialogueStateArtifact'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='ORG',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_PLAIN_ENGLISH_RETRIEVAL_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-plain-english-retrieval-v1',
+    description='Retrieve the hierarchical plain-English knowledge packets for one observation.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_plain_english_cards:retrieve_plain_english_packets',
+    pinned_sha256="31ddfe1736a3da58ae335eb98aa00f8e1d2a3e52b85c8922a506eef6bbe90a52",
+    inputs={'observation_text': 'str', 'corpus': 'PlainEnglishCardCorpus', 'detailed_tool_limit': 'int', 'behavior_card_limit': 'int', 'shuffle_seed': 'int', 'observation_character_cap': 'int', 'packet_utf8_byte_cap': 'int'},
+    outputs={'result': 'PlainEnglishPacketRoute'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='SUPPLY',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_CALL_ARRAY_RESPONSE_FORMAT_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-call-array-response-format-v1',
+    description='Render the strict JSON-Schema response format for a routed tool subset.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_response_schema:audio2tool_call_array_response_format',
+    pinned_sha256="53fdb8cb202d4d56435a59c8d1585b8afa2e968e17330f7861b89f4a49191f6c",
+    inputs={'registry_rows': 'Sequence[Mapping[str, str]]', 'selected_cards': 'Sequence[ToolSemanticCard]', 'schema_name': 'str', 'min_calls': 'int', 'max_calls': 'int'},
+    outputs={'result': 'dict[str, object]'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='USE',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_SELECT_FILL_FACTORIAL_BINDING_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-select-fill-factorial-binding-v1',
+    description="Bind the SELECT/FILL factorial cell's predecessor selector states.",
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_select_fill_factorial:bind_factorial_predecessors',
+    pinned_sha256="016970d5bdb810581439151dc31ce48b0ba0c6b82aa5274cd5f2264abef9bfef",
+    inputs={'selector_states': 'Mapping[str, Mapping[str, StageStateEnvelope]]', 'sample_ids': 'Sequence[str]', 'expected_ground_sha256': 'Mapping[str, Mapping[str, str]]', 'split_identity_sha256': 'str', 'expected_row_count': 'int'},
+    outputs={'result': 'tuple[FactorialPredecessorBinding, ...]'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='ORG',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_ROUTING_KNOWLEDGE_GROUND_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-routing-knowledge-ground-v1',
+    description='Build the selection-scoped routing knowledge ground.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_select_fill_ground:build_routing_knowledge_ground',
+    pinned_sha256="845edb342336a0526961bb78b8a18331568f632aa16598077e9581a2e86f5fa1",
+    inputs={'corpus': 'ExecutableSemanticCardCorpus', 'candidate_tool_names': 'Sequence[str]', 'byte_cap': 'int'},
+    outputs={'result': 'RoutingKnowledgeGround'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='SUPPLY',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_SELECTED_TOOL_GROUND_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-selected-tool-ground-v1',
+    description='Render the compact, value-safe decision cards for the selected tools.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_selected_tool_ground:SelectedToolDecisionGround.build',
+    pinned_sha256="592c49b796447d40bb222c7d6df44d52d04f5973de1f682db7e50f77e1319a0b",
+    inputs={'selected_tool_names': 'Sequence[str]'},
+    outputs={'result': 'SelectedToolDecisionPacket'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='SUPPLY',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_SEMANTIC_MICROGROUND_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-semantic-microground-v1',
+    description='Route bounded executable semantic cards without gold or learned control.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_semantic_microground:route_semantic_microground',
+    pinned_sha256="9fa2d3245ddccc79435a4dd094c2406a64525f975b9c85e24fc3dbb476a90cb8",
+    inputs={'corpus': 'ExecutableSemanticCardCorpus', 'structured_state': 'Mapping[str, object] | None', 'observation': 'str | None', 'max_utf8_bytes': 'int'},
+    outputs={'result': 'SemanticMicrogroundRoute'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='SUPPLY',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_SEMANTIC_RANKING_FUSION_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-semantic-ranking-fusion-v1',
+    description='Fuse the frozen tool-tier semantic rankings by reciprocal rank.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_semantic_router:fuse_semantic_rankings',
+    pinned_sha256="52dbdefedd33f6b3834f399f4c32af70468734899736a42cf8c53b1068aa1a2a",
+    inputs={'rankings': 'Sequence[SemanticRanking]', 'top_k': 'int', 'source_names': 'Sequence[str]', 'constant': 'int'},
+    outputs={'result': 'FusedSemanticRanking'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='SUPPLY',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_SELECT_STAGE_ENVELOPE_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-select-stage-envelope-v1',
+    description='Build the canonical, hash-bound SELECT stage-state envelope.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_stage_state:build_select_stage_envelope',
+    pinned_sha256="bb69effa9baaa7ac7bf0be8102c0938ae25529870d19ba4c885816bb64977313",
+    inputs={'sample_identity_sha256': 'str', 'split_identity_sha256': 'str', 'speech_packet_sha256': 'str', 'source_query_state_sha256': 'str', 'source_response_sha256': 'str', 'observation_state_sha256': 'str', 'observation_source_response_sha256': 'str', 'source_request_body_sha256': 'str', 'candidate_tool_names': 'Sequence[str]', 'ground_sha256': 'str', 'response_schema_sha256': 'str', 'predecessor_envelope_sha256': 'str | None', 'occurrences': 'Sequence[SelectOccurrence]'},
+    outputs={'result': 'StageStateEnvelope'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='ORG',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+A2T_STRUCTURED_DIALOGUE_STATE_V1_MANIFEST = ToolManifest(
+    tool_id='saea-tool-a2t-structured-dialogue-state-v1',
+    description='Derive strict, task-blind dialogue state from sealed Audio2Tool OBS.',
+    source_ref='speech_aware_evidence_acquisition.rails.a2t_structured_dialogue_state:build_structured_dialogue_state',
+    pinned_sha256="db2fef183ac12970908d873ba9cbc9687c71f7f639c37007b4053fde0623b085",
+    inputs={'sealed_observation_text': 'str', 'turns': 'Sequence[ObservationTurnSpan]', 'current_request': 'StateValue', 'active_actions': 'Sequence[StateValue]', 'superseded_actions': 'Sequence[StateValue]', 'superseded_values': 'Sequence[StateValue]', 'irrelevant_context': 'Sequence[StateValue]'},
+    outputs={'result': 'StructuredDialogueStateArtifact'},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis='ORG',
+    scope=f"{CARRIER_SCOPE_PREFIX}audio2tool",
+    ledger_row_type='none',
+)
+
+TOOL_CATALOG.register(
+    'saea-tool-a2t-canonical-family-ground-v1',
+    build_tool_entry(A2T_CANONICAL_FAMILY_GROUND_V1_MANIFEST, _a2t_renderers.render_family_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-construction-example-ground-v1',
+    build_tool_entry(A2T_CONSTRUCTION_EXAMPLE_GROUND_V1_MANIFEST, _a2t_renderers.build_construction_example_family_ground_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-construction-semantic-ground-v1',
+    build_tool_entry(A2T_CONSTRUCTION_SEMANTIC_GROUND_V1_MANIFEST, _a2t_renderers.build_construction_semantic_ground_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-executable-ground-v1',
+    build_tool_entry(A2T_EXECUTABLE_GROUND_V1_MANIFEST, _a2t_renderers.build_executable_ground_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-ground-prompt-envelopes-v1',
+    build_tool_entry(A2T_GROUND_PROMPT_ENVELOPES_V1_MANIFEST, _a2t_renderers.build_ground_envelopes_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-executable-semantic-cards-v1',
+    build_tool_entry(A2T_EXECUTABLE_SEMANTIC_CARDS_V1_MANIFEST, _a2t_renderers.build_executable_semantic_card_corpus_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-frozen-semantic-assets-v1',
+    build_tool_entry(A2T_FROZEN_SEMANTIC_ASSETS_V1_MANIFEST, _a2t_renderers.load_frozen_semantic_runtime_assets_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-hard-validity-v1',
+    build_tool_entry(A2T_HARD_VALIDITY_V1_MANIFEST, _a2t_renderers.validate_hard_validity_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-observation-state-organizer-v1',
+    build_tool_entry(A2T_OBSERVATION_STATE_ORGANIZER_V1_MANIFEST, _a2t_renderers.organize_sealed_observation_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-plain-english-retrieval-v1',
+    build_tool_entry(A2T_PLAIN_ENGLISH_RETRIEVAL_V1_MANIFEST, _a2t_renderers.retrieve_plain_english_packets_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-call-array-response-format-v1',
+    build_tool_entry(A2T_CALL_ARRAY_RESPONSE_FORMAT_V1_MANIFEST, _a2t_renderers.audio2tool_call_array_response_format_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-select-fill-factorial-binding-v1',
+    build_tool_entry(A2T_SELECT_FILL_FACTORIAL_BINDING_V1_MANIFEST, _a2t_renderers.bind_factorial_predecessors_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-routing-knowledge-ground-v1',
+    build_tool_entry(A2T_ROUTING_KNOWLEDGE_GROUND_V1_MANIFEST, _a2t_renderers.build_routing_knowledge_ground_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-selected-tool-ground-v1',
+    build_tool_entry(A2T_SELECTED_TOOL_GROUND_V1_MANIFEST, _a2t_renderers.build_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-semantic-microground-v1',
+    build_tool_entry(A2T_SEMANTIC_MICROGROUND_V1_MANIFEST, _a2t_renderers.route_semantic_microground_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-semantic-ranking-fusion-v1',
+    build_tool_entry(A2T_SEMANTIC_RANKING_FUSION_V1_MANIFEST, _a2t_renderers.fuse_semantic_rankings_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-select-stage-envelope-v1',
+    build_tool_entry(A2T_SELECT_STAGE_ENVELOPE_V1_MANIFEST, _a2t_renderers.build_select_stage_envelope_tool),
+)
+TOOL_CATALOG.register(
+    'saea-tool-a2t-structured-dialogue-state-v1',
+    build_tool_entry(A2T_STRUCTURED_DIALOGUE_STATE_V1_MANIFEST, _a2t_renderers.build_structured_dialogue_state_tool),
+)
+
+# --- end WAVE R7 -------------------------------------------------------------
 
 assert_catalog_consistent()
 

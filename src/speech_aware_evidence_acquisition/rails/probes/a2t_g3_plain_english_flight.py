@@ -18,7 +18,10 @@ from pathlib import Path
 
 from ...analysis import training_free_a2t_self_transcript_cascade as selftx
 from ...core.base import Registry
-from ..a2t_hard_validity import HARD_VALIDITY_POLICY_ID, HardValidityRepairController
+from ..controllers import (
+    HARD_VALIDITY_PROGRAM_ID,
+    make_hard_validity_phase_controller,
+)
 from ..a2t_plain_english_cards import (
     MAX_DETAILED_TOOLS,
     PlainEnglishCardCorpus,
@@ -588,7 +591,16 @@ def run_g3_agent_phase(
     else:
         if not registry_rows:
             raise G3PilotFlightError("G3 USE requires public registry rows for repair")
-        controller_policy_id = HARD_VALIDITY_POLICY_ID
+        # WAVE R7 (2026-09-08): the retired HardValidityRepairController's
+        # sequencing is now the registered ``phase-hard-validity-repair-v1``
+        # program on rails.controllers.EvidenceAgentController. Same two
+        # contact ids, same two instructions, same sealed validity report, same
+        # early exit on a valid draft, same declared arm identity; what changed
+        # is that the phase index -- not a hard-coded QueryState.loop_step --
+        # says which phase is running. ``decoding_params`` are handed to the
+        # runner only: it already merges the run-level mapping into every plan,
+        # and this flight passes the SAME mapping to both.
+        controller_policy_id = HARD_VALIDITY_PROGRAM_ID
         max_contacts = 2
         matcher_policy_id = (
             _MATCHED_POLICY_ID
@@ -597,11 +609,11 @@ def run_g3_agent_phase(
         )
         controller_registry.register(
             controller_policy_id,
-            lambda _sample_id: HardValidityRepairController(
+            make_hard_validity_phase_controller(
                 registry_rows=registry_rows,
                 key_representation_id=_USE_KEY_REPRESENTATION_ID,
                 matcher_policy_id=matcher_policy_id,
-                decoding_params=decoding_params,
+                decoding_params={},
             ),
         )
     summary = agent_runner(

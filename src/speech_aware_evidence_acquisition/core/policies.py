@@ -697,12 +697,14 @@ POLICIES.register(OBS_REPAIR_LOOP_POLICY_NAME, ObsRepairLoopPolicy())
 # and declaring criticism_only=True -- a judge scores and flags and never
 # proposes a revision (owner Decision 11-C).
 from .judges import (  # noqa: E402
+    A2T_HARD_VALIDITY_JUDGE_V1,
     E21_SUBSTITUTION_ALIGNMENT_JUDGE_V1,
     EARNINGS_NUMERIC_FORMAT_JUDGE_V1,
     REPLAY_LOGPROB_JUDGE_V1,
     ROSTER_BAND_JUDGE_V1,
     SLURP_LEGAL_LABEL_JUDGE_V1,
     SLURP_SLOT_SCHEMA_JUDGE_V1,
+    A2tHardValidityJudge,
     EarningsNumericFormatJudge,
     ReplayLogprobJudge,
     RosterBandJudge,
@@ -717,3 +719,97 @@ JUDGES.register(EARNINGS_NUMERIC_FORMAT_JUDGE_V1, EarningsNumericFormatJudge())
 JUDGES.register(E21_SUBSTITUTION_ALIGNMENT_JUDGE_V1, SubstitutionAlignmentJudge())
 JUDGES.register(REPLAY_LOGPROB_JUDGE_V1, ReplayLogprobJudge())
 JUDGES.register(ROSTER_BAND_JUDGE_V1, RosterBandJudge())
+# WAVE R7 (2026-09-08): the seventh judge. It wraps the same frozen
+# ``validate_hard_validity`` the retired A2T repair controller consulted in
+# private, so a cell can now DECLARE the check instead of inheriting it from
+# a controller class nobody could switch off.
+JUDGES.register(A2T_HARD_VALIDITY_JUDGE_V1, A2tHardValidityJudge())
+
+# --- WAVE R7: the frozen-historical A2T AgentLoop policy ids ----------------
+#
+# Group C of the reuse map (assessment §6.3): seventeen ``policy`` values that
+# every Audio2Tool AgentLoop baseline fragment declares and that resolved in NO
+# core.base registry. They are NOT registrations of live behaviour -- see
+# core/frozen_historical.py for the scan that established that 28 of the 31
+# Group C ids appear nowhere in src/ at all, and that every fragment carrying
+# one is cited by a sealed receipt and therefore may not be archived or edited.
+#
+# Each entry RESOLVES (so the engineering-base gate can read the name out of
+# this canonical registration site, as it does for every other component id)
+# and REFUSES every use, naming the fragment and the sealed receipt instead. An
+# A2T cell that must fly again is re-expressed as a registered phase program on
+# rails.controllers.EvidenceAgentController -- never by resurrecting the probe
+# launcher this name used to reach.
+#
+# The ids are STRING LITERALS at the call, for the same reason
+# rails/tools.py's registration block spells its ids out: the gate reads this
+# file's SOURCE without importing the package.
+from .frozen_historical import frozen_policy  # noqa: E402
+
+POLICIES.register(
+    "fixed-construction-semantic-ground-v2",
+    frozen_policy("fixed-construction-semantic-ground-v2"),
+)
+POLICIES.register(
+    "training-free-contract-preserving-self-transcript-cascade-v2",
+    frozen_policy("training-free-contract-preserving-self-transcript-cascade-v2"),
+)
+POLICIES.register(
+    "fixed-full-executable-ground-qualification-v1",
+    frozen_policy("fixed-full-executable-ground-qualification-v1"),
+)
+POLICIES.register(
+    "training-free-factor-top1-v1", frozen_policy("training-free-factor-top1-v1")
+)
+POLICIES.register(
+    "a2t-g3-plain-english-k32-hard-validity-v1",
+    frozen_policy("a2t-g3-plain-english-k32-hard-validity-v1"),
+)
+POLICIES.register(
+    "saea-a2t-g4-executable-microground-single-contact-v1",
+    frozen_policy("saea-a2t-g4-executable-microground-single-contact-v1"),
+)
+POLICIES.register(
+    "saea-a2t-g5-plan-compile-execute-v1",
+    frozen_policy("saea-a2t-g5-plan-compile-execute-v1"),
+)
+POLICIES.register(
+    "saea-a2t-g6-exhaustive-family-sweep-v1",
+    frozen_policy("saea-a2t-g6-exhaustive-family-sweep-v1"),
+)
+POLICIES.register(
+    "saea-a2t-g7-multimodal-exhaustive-example-ground-v2",
+    frozen_policy("saea-a2t-g7-multimodal-exhaustive-example-ground-v2"),
+)
+POLICIES.register(
+    "saea-a2t-g8-action-support-reachability-v1",
+    frozen_policy("saea-a2t-g8-action-support-reachability-v1"),
+)
+POLICIES.register(
+    "saea-a2t-g8b-action-support-reachability-v1",
+    frozen_policy("saea-a2t-g8b-action-support-reachability-v1"),
+)
+POLICIES.register(
+    "saea-a2t-g8c-action-support-reachability-v1",
+    frozen_policy("saea-a2t-g8c-action-support-reachability-v1"),
+)
+POLICIES.register(
+    "native-structured-action-screen-v1",
+    frozen_policy("native-structured-action-screen-v1"),
+)
+POLICIES.register(
+    "training-free-self-consistency-v1",
+    frozen_policy("training-free-self-consistency-v1"),
+)
+POLICIES.register(
+    "training-free-self-transcript-cascade-v1",
+    frozen_policy("training-free-self-transcript-cascade-v1"),
+)
+POLICIES.register(
+    "semantic-agentloop-select-fill-top32-v1",
+    frozen_policy("semantic-agentloop-select-fill-top32-v1"),
+)
+POLICIES.register(
+    "semantic-agentloop-top16-v1", frozen_policy("semantic-agentloop-top16-v1")
+)
+# --- end WAVE R7 -----------------------------------------------------------

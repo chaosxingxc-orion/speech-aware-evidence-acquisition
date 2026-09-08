@@ -1347,3 +1347,92 @@ EVIDENCE_SOURCES.register(
     "e22-metadata-brief-deranged-token-matched",
     _e22_metadata_brief_deranged_token_matched,
 )
+
+# --- WAVE R7: the frozen-historical A2T AgentLoop evidence-source ids -------
+#
+# Group C of the reuse map (assessment §6.3), the evidence half: fourteen
+# ``evidence_source`` values declared by the Audio2Tool AgentLoop baseline
+# fragments and resolving in NO core.base registry.
+#
+# They are deliberately NOT pointed at a live renderer. An EVIDENCE_SOURCES
+# entry above is ``(sample, carrier_lock_key, values) -> EvidenceItem`` reading
+# ConEC/E22 material off disk; the Audio2Tool "evidence sources" are handbook
+# renderers of an entirely different shape that a probe launcher assembled, so
+# binding one of these names to a renderer would claim a protocol the sealed
+# flight never used. What each id gets instead is a
+# ``core.base.FrozenHistoricalComponent``: it RESOLVES, so the fragment's value
+# is a name this base accounts for and the engineering-base gate reads it out
+# of this canonical registration site; it carries the fragment and the sealed
+# receipt that consumed it; and it REFUSES every call. See
+# core/frozen_historical.py for the full scan and the disposition rule.
+from .frozen_historical import frozen_evidence_source  # noqa: E402
+
+EVIDENCE_SOURCES.register(
+    "query-independent-construction-semantic-handbook",
+    frozen_evidence_source("query-independent-construction-semantic-handbook"),
+)
+EVIDENCE_SOURCES.register(
+    "same-core-self-transcript-content-bm25-top5",
+    frozen_evidence_source("same-core-self-transcript-content-bm25-top5"),
+)
+EVIDENCE_SOURCES.register(
+    "query-independent-full-executable-handbook",
+    frozen_evidence_source("query-independent-full-executable-handbook"),
+)
+EVIDENCE_SOURCES.register(
+    "semantic-factor-registry-top1-stripped",
+    frozen_evidence_source("semantic-factor-registry-top1-stripped"),
+)
+EVIDENCE_SOURCES.register(
+    "task-blind-English-OBS-to-construction-BM25-k32",
+    frozen_evidence_source("task-blind-English-OBS-to-construction-BM25-k32"),
+)
+EVIDENCE_SOURCES.register(
+    "sealed-English-state-to-deterministic-semantic-microground",
+    frozen_evidence_source("sealed-English-state-to-deterministic-semantic-microground"),
+)
+EVIDENCE_SOURCES.register(
+    "closed-English-family-taxonomy-to-deterministic-full-unranked-family-contract-bundle",
+    frozen_evidence_source(
+        "closed-English-family-taxonomy-to-deterministic-full-unranked-family-contract-bundle"
+    ),
+)
+EVIDENCE_SOURCES.register(
+    "exhaustive-family-local-reference-scan-then-evidence-bound-resolution",
+    frozen_evidence_source(
+        "exhaustive-family-local-reference-scan-then-evidence-bound-resolution"
+    ),
+)
+EVIDENCE_SOURCES.register(
+    "exhaustive-construction-example-family-assessment",
+    frozen_evidence_source("exhaustive-construction-example-family-assessment"),
+)
+EVIDENCE_SOURCES.register(
+    "shared-g7-normalized-assessments-with-complete-macro-actions",
+    frozen_evidence_source(
+        "shared-g7-normalized-assessments-with-complete-macro-actions"
+    ),
+)
+EVIDENCE_SOURCES.register(
+    "paired-complete-registry-or-values-stripped-executable-handbook",
+    frozen_evidence_source(
+        "paired-complete-registry-or-values-stripped-executable-handbook"
+    ),
+)
+EVIDENCE_SOURCES.register(
+    "registry-resolved-union-stripped",
+    frozen_evidence_source("registry-resolved-union-stripped"),
+)
+EVIDENCE_SOURCES.register(
+    "local-qwen3-embedding-transcript-to-build-only-tool-tier-centroids",
+    frozen_evidence_source(
+        "local-qwen3-embedding-transcript-to-build-only-tool-tier-centroids"
+    ),
+)
+EVIDENCE_SOURCES.register(
+    "local-qwen3-embedding-tool-tier-centroids-and-same-core-retrieval-query",
+    frozen_evidence_source(
+        "local-qwen3-embedding-tool-tier-centroids-and-same-core-retrieval-query"
+    ),
+)
+# --- end WAVE R7 -----------------------------------------------------------

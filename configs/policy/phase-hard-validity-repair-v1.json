@@ -1,0 +1,22 @@
+{
+  "schema": "saea-phase-program-v1",
+  "program_id": "phase-hard-validity-repair-v1",
+  "phases": [
+    {
+      "name": "draft",
+      "purpose": "Produce the task tool-call draft from speech and G3 knowledge.",
+      "knowledge": "none",
+      "response_format_id": null,
+      "barrier": false
+    },
+    {
+      "name": "repair",
+      "purpose": "Repair one hard-invalid tool-call draft.",
+      "knowledge": "none",
+      "response_format_id": null,
+      "barrier": false
+    }
+  ],
+  "max_contacts": 2,
+  "stop_rule": "stop-policy-optional-early-exit"
+}

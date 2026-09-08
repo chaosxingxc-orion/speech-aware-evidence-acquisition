@@ -60,7 +60,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Mapping, Sequence
 
-from .base import JudgeError, JudgeFlag, JudgeVerdict
+from .base import (
+    MAX_JUDGE_TEXT_CHARS,
+    JudgeError,
+    JudgeFlag,
+    JudgeVerdict,
+)
 
 #: Registered ids, as literals, so
 #: ``scripts/checks/engineering_base_check.py`` can read the registered name
@@ -71,6 +76,9 @@ EARNINGS_NUMERIC_FORMAT_JUDGE_V1 = "earnings-numeric-format-flag-v1"
 E21_SUBSTITUTION_ALIGNMENT_JUDGE_V1 = "e21-substitution-alignment-flag-v1"
 REPLAY_LOGPROB_JUDGE_V1 = "replay-logprob-flag-v1"
 ROSTER_BAND_JUDGE_V1 = "roster-band-flag-v1"
+#: WAVE R7 (2026-09-08): the deterministic Audio2Tool hard-validity check,
+#: which was a controller's private branch until the fold.
+A2T_HARD_VALIDITY_JUDGE_V1 = "a2t-hard-validity-flag-v1"
 
 
 def _lookup(
@@ -605,13 +613,97 @@ class RosterBandJudge:
         ).validate()
 
 
+@dataclass(frozen=True)
+class A2tHardValidityJudge:
+    """FLAGS the deterministic, deployment-visible invalidity of a tool-call
+    draft.
+
+    Wraps ``rails.a2t_hard_validity.validate_hard_validity`` unchanged. That
+    function used to be reachable only from inside
+    ``HardValidityRepairController``'s own ``advance`` -- it decided, in
+    private, whether a second contact was spent -- and WAVE R7 folded that
+    controller onto ``rails.controllers.EvidenceAgentController``. The
+    sequencing became a phase program and the report became a registered
+    knowledge view; this judge is the third piece: the same findings, declared,
+    versioned and counted, on any cell that wants to SEE them without acting on
+    them.
+
+    Its own docstring already described a Reviewer: "only deterministic,
+    deployment-visible validity checks ... deliberately excludes semantic
+    confidence, reward, tier identity". Every
+    ``HardValidityViolation.code`` becomes a flag code verbatim, at severity
+    ``block`` -- a hard-invalid call cannot be dispatched at all, which is a
+    different class of finding from a merely suspicious one. Score is 1.0 for a
+    valid draft and 0.0 for a hard-invalid one; there is no middle, because the
+    underlying rule has no middle.
+
+    Reads ``registry_rows`` (the pinned public Audio2Tool tool registry) from
+    material or state, and NOTHING else -- no gold, no expected call count, no
+    tier. Decision 11-C holds by construction: a violation names the offending
+    call index, tool name and argument key, and never the value that would fix
+    them.
+    """
+
+    id: str = A2T_HARD_VALIDITY_JUDGE_V1
+    version: str = "1.0.0"
+    criticism_only: bool = True
+
+    def __call__(
+        self,
+        draft: str,
+        material: Mapping[str, object],
+        state: Mapping[str, object],
+    ) -> JudgeVerdict:
+        from ..rails.a2t_hard_validity import (  # noqa: PLC0415 (import cost)
+            validate_hard_validity,
+        )
+
+        rows = _lookup("registry_rows", material, state, judge_id=self.id)
+        if not isinstance(rows, Sequence) or isinstance(rows, (str, bytes)):
+            raise JudgeError(
+                f"{self.id}: registry_rows must be a sequence of registry row "
+                f"mappings, got {type(rows).__name__}"
+            )
+        report = validate_hard_validity(draft, tuple(rows))
+        flags = tuple(
+            JudgeFlag(
+                code=violation.code,
+                severity="block",
+                reason=violation.message[:MAX_JUDGE_TEXT_CHARS],
+                field_ref=_violation_field_ref(violation),
+            )
+            for violation in report.violations
+        )
+        return JudgeVerdict(
+            judge_id=self.id,
+            version=self.version,
+            score=1.0 if report.status == "valid" else 0.0,
+            flags=flags,
+        ).validate()
+
+
+def _violation_field_ref(violation: object) -> str | None:
+    """``calls[i].arguments.key`` -- a LOCATION in the draft, never a value."""
+
+    index = getattr(violation, "call_index", None)
+    if index is None:
+        return None
+    ref = f"calls[{index}]"
+    key = getattr(violation, "argument_key", None)
+    if key:
+        ref = f"{ref}.arguments.{key}"
+    return ref[:MAX_JUDGE_TEXT_CHARS]
+
+
 __all__ = [
+    "A2T_HARD_VALIDITY_JUDGE_V1",
     "EARNINGS_NUMERIC_FORMAT_JUDGE_V1",
     "E21_SUBSTITUTION_ALIGNMENT_JUDGE_V1",
     "REPLAY_LOGPROB_JUDGE_V1",
     "ROSTER_BAND_JUDGE_V1",
     "SLURP_LEGAL_LABEL_JUDGE_V1",
     "SLURP_SLOT_SCHEMA_JUDGE_V1",
+    "A2tHardValidityJudge",
     "EarningsNumericFormatJudge",
     "ReplayLogprobJudge",
     "RosterBandJudge",
