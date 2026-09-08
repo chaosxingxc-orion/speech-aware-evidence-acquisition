@@ -1,0 +1,423 @@
+{
+  "class_artifact": {
+    "closed": [
+      "alarm_type",
+      "app_name",
+      "color_type",
+      "currency_name",
+      "date",
+      "device_type",
+      "email_folder",
+      "house_place",
+      "meal_type",
+      "media_type",
+      "movie_type",
+      "order_type",
+      "relation",
+      "timeofday",
+      "transport_agency",
+      "transport_name",
+      "transport_type",
+      "weather_descriptor"
+    ],
+    "relpath": "docs/receipts/knowledge/slurp-kv-slot-type-classes-v1.json",
+    "sha256": "b08ebe096448d20170c2dbb8d9c01ad01625955a6e258a9a3a697ccb47d21c61"
+  },
+  "contacts": {
+    "audio_decode_calls": 0,
+    "cuda_visible_devices": "",
+    "embedding_calls": 0,
+    "frozen_core_calls": 0,
+    "gpu_hours": 0.0,
+    "judge_calls": 0,
+    "network_calls": 0,
+    "paid_api_spend": 0.0,
+    "retriever_calls": 0,
+    "tokenizer_calls": 0
+  },
+  "containment": {
+    "c1_view_payloads_inside_the_arms_directive": {
+      "cards": {
+        "inside_the_directive": 0,
+        "payloads": 124
+      },
+      "cards-twin": {
+        "inside_the_directive": 0,
+        "payloads": 124
+      },
+      "descriptions": {
+        "inside_the_directive": 0,
+        "payloads": 313
+      },
+      "descriptions-twin": {
+        "inside_the_directive": 0,
+        "payloads": 313
+      },
+      "examples-free": {
+        "inside_the_directive": 0,
+        "payloads": 0
+      },
+      "fewshot": {
+        "inside_the_directive": 0,
+        "payloads": 183
+      },
+      "fewshot-twin": {
+        "inside_the_directive": 0,
+        "payloads": 183
+      }
+    },
+    "c2_bound_snapshot_payloads_inside_the_instruction": {
+      "cards": {
+        "blocks_checked": 61,
+        "blocks_colliding": 0,
+        "examples": []
+      },
+      "cards-twin": {
+        "blocks_checked": 61,
+        "blocks_colliding": 0,
+        "examples": []
+      },
+      "descriptions": {
+        "blocks_checked": 61,
+        "blocks_colliding": 0,
+        "examples": []
+      },
+      "descriptions-twin": {
+        "blocks_checked": 61,
+        "blocks_colliding": 0,
+        "examples": []
+      },
+      "examples-free": {
+        "blocks_checked": 61,
+        "blocks_colliding": 0,
+        "examples": []
+      },
+      "fewshot": {
+        "blocks_checked": 61,
+        "blocks_colliding": 0,
+        "examples": []
+      },
+      "fewshot-twin": {
+        "blocks_checked": 61,
+        "blocks_colliding": 0,
+        "examples": []
+      },
+      "kc-s1b-admitted-block": {
+        "blocks_checked": 61,
+        "blocks_colliding": 0,
+        "examples": []
+      }
+    },
+    "c2_state_half_cited_not_recomputed": {
+      "facet_representations_vs_the_1000_sealed_states": 78,
+      "note": "This row opens no sealed DEV output. The KV fragments bind the same size-full-label-prior-speaker snapshot KC-S1b bound, whose content dimension is excluded, so the 78 belongs to a snapshot no KV cell binds and is quoted only to say which half of the instruction was not re-measured here.",
+      "source": "KC-S1b deviation 1, restated in the KU-S3 preregistration",
+      "value_contents_vs_the_1000_sealed_states": 0
+    },
+    "c3_cross_channel_reported_not_hidden": {
+      "cards": {
+        "inside_the_instruction_that_carries_them": 124,
+        "payloads": 124
+      },
+      "cards-twin": {
+        "inside_the_instruction_that_carries_them": 124,
+        "payloads": 124
+      },
+      "descriptions": {
+        "inside_the_instruction_that_carries_them": 313,
+        "payloads": 313
+      },
+      "descriptions-twin": {
+        "inside_the_instruction_that_carries_them": 313,
+        "payloads": 313
+      },
+      "examples-free": {
+        "inside_the_instruction_that_carries_them": 0,
+        "payloads": 0
+      },
+      "fewshot": {
+        "inside_the_instruction_that_carries_them": 183,
+        "payloads": 183
+      },
+      "fewshot-twin": {
+        "inside_the_instruction_that_carries_them": 183,
+        "payloads": 183
+      }
+    }
+  },
+  "cost": {
+    "cards": {
+      "block_token_proxy_max": 2148,
+      "block_token_proxy_median": 1542,
+      "block_token_proxy_min": 102,
+      "cell": "KV-2",
+      "fallback_block_token_proxy": 6471,
+      "intents": 60,
+      "intents_carrying_no_view_block": 7,
+      "view_token_proxy_max": 2010,
+      "view_token_proxy_median": 1432,
+      "view_token_proxy_min": 0,
+      "worst_intent": "social_query"
+    },
+    "cards-twin": {
+      "block_token_proxy_max": 2148,
+      "block_token_proxy_median": 588,
+      "block_token_proxy_min": 102,
+      "cell": "KV-2",
+      "fallback_block_token_proxy": 6471,
+      "intents": 60,
+      "intents_carrying_no_view_block": 7,
+      "view_token_proxy_max": 2010,
+      "view_token_proxy_median": 468,
+      "view_token_proxy_min": 0,
+      "worst_intent": "social_query"
+    },
+    "descriptions": {
+      "block_token_proxy_max": 650,
+      "block_token_proxy_median": 436,
+      "block_token_proxy_min": 231,
+      "cell": "KV-1",
+      "fallback_block_token_proxy": 5585,
+      "intents": 60,
+      "intents_carrying_no_view_block": 0,
+      "view_token_proxy_max": 476,
+      "view_token_proxy_median": 298,
+      "view_token_proxy_min": 129,
+      "worst_intent": "music_query"
+    },
+    "descriptions-twin": {
+      "block_token_proxy_max": 650,
+      "block_token_proxy_median": 436,
+      "block_token_proxy_min": 223,
+      "cell": "KV-1",
+      "fallback_block_token_proxy": 5585,
+      "intents": 60,
+      "intents_carrying_no_view_block": 0,
+      "view_token_proxy_max": 476,
+      "view_token_proxy_median": 298,
+      "view_token_proxy_min": 121,
+      "worst_intent": "music_query"
+    },
+    "examples-free": {
+      "block_token_proxy_max": 175,
+      "block_token_proxy_median": 138,
+      "block_token_proxy_min": 102,
+      "cell": "KV-0",
+      "fallback_block_token_proxy": 3158,
+      "intents": 60,
+      "intents_carrying_no_view_block": 60,
+      "view_token_proxy_max": 0,
+      "view_token_proxy_median": 0,
+      "view_token_proxy_min": 0,
+      "worst_intent": "music_query"
+    },
+    "fewshot": {
+      "block_token_proxy_max": 328,
+      "block_token_proxy_median": 250,
+      "block_token_proxy_min": 192,
+      "cell": "KV-3",
+      "fallback_block_token_proxy": 3308,
+      "intents": 60,
+      "intents_carrying_no_view_block": 0,
+      "view_token_proxy_max": 181,
+      "view_token_proxy_median": 117,
+      "view_token_proxy_min": 90,
+      "worst_intent": "transport_taxi"
+    },
+    "fewshot-twin": {
+      "block_token_proxy_max": 314,
+      "block_token_proxy_median": 251,
+      "block_token_proxy_min": 199,
+      "cell": "KV-3",
+      "fallback_block_token_proxy": 3308,
+      "intents": 60,
+      "intents_carrying_no_view_block": 0,
+      "view_token_proxy_max": 185,
+      "view_token_proxy_median": 116,
+      "view_token_proxy_min": 89,
+      "worst_intent": "transport_query"
+    },
+    "kc-s1b-admitted-block": {
+      "block_token_proxy_max": 251,
+      "block_token_proxy_median": 177.0,
+      "block_token_proxy_min": 110,
+      "cell": "KC-S1b",
+      "fallback_block_token_proxy": 5353,
+      "intents": 60
+    }
+  },
+  "exemplar_material": {
+    "donor_never_self_donates": true,
+    "donors_crossing_a_scenario": [
+      "news_query",
+      "weather_query"
+    ],
+    "intents_scored": 60,
+    "intents_with_fewer_than_k": 0,
+    "k": 3,
+    "listed_type_coverage_full_arm": 51,
+    "listed_type_coverage_full_twin": 19,
+    "listed_type_coverage_mean_arm": 0.9648,
+    "listed_type_coverage_mean_twin": 0.6477,
+    "seed": 20260903,
+    "train_utterances_per_intent_max": 810,
+    "train_utterances_per_intent_median": 130,
+    "train_utterances_per_intent_min": 4
+  },
+  "generated_at": "2026-09-08T17:08:29.050208+00:00",
+  "kc_s1b_admitted_block_for_alarm_set": "Slot schema measured on the TRAIN split, one block per intent. A block names the entity types that intent draws its slots from, how much of the intent's slot mentions each type carries, and fillers heard with that type. Use a type only when the speech supports it, and write each filler exactly as it was spoken, in lower case, without translating, expanding, abbreviating or reordering it.\n== alarm_set == 182 TRAIN utterances, 248 slot mentions\n- time (56.9 percent of slot mentions): seven thirty am; seven pm; five pm; an hour; one hour from now\n- date (21.8 percent of slot mentions): thursday; next week 's; friday; tomorrow; tuesday\n- timeofday (9.7 percent of slot mentions): afternoon; noon; morning; next morning; evening\n- event_name (8.5 percent of slot mentions): dentist appointment; meeting; train; early adopters program; concert",
+  "mf10_identity_anchors": {
+    "card_surface_forms": {
+      "published": 842,
+      "reproduced": 842
+    },
+    "closed_types": {
+      "published": 18,
+      "reproduced": 18
+    },
+    "intents_rotating_in_place_at_zero_delta": {
+      "published": 39,
+      "reproduced": 39
+    },
+    "intents_that_cannot_rotate_in_place": {
+      "published": 14,
+      "reproduced": 14
+    },
+    "per_intent_card_token_proxy_median": {
+      "published": 1432,
+      "reproduced": 1432
+    },
+    "what_this_is": "MF-10's own published card figures, RE-DERIVED here from the same TRAIN bytes through the same library. They must reproduce exactly, or this family is not built on the measurement it cites.",
+    "worst_intent_card_token_proxy": {
+      "published": 2010,
+      "published_intent": "social_query",
+      "reproduced": 2010,
+      "reproduced_intent": "social_query"
+    }
+  },
+  "row_id": "SAEA-SLURP-MF-KV-VIEWS-PREP-V1",
+  "schema": "saea-slurp-kv-views-prep-v1",
+  "sources": {
+    "bound_snapshot": {
+      "declared_content_hash": "07f94807d173b2f2bdda9dcd95b21354e018234a208a76683d0ca4989d9ffa65",
+      "file_sha256": "d45f6bf21a28b5e251b6f2df9d8b2d6578fb12c88953034737df3138fd9f86f7",
+      "measured_content_hash": "07f94807d173b2f2bdda9dcd95b21354e018234a208a76683d0ca4989d9ffa65",
+      "note": "The identity a fragment pins is the snapshot's content_hash(), which core.flight.FlightRuntime._load_knowledge_snapshot checks; the file sha256 is recorded beside it and is a different quantity.",
+      "protected_payloads": 11863,
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-label-prior-speaker/snapshot.json"
+    },
+    "directive": {
+      "relpath": "configs/probes/slurp_phase_slots.txt",
+      "sha256": "221ed0d343b0a543eda98008312938da25bde204a131efe8427ea8e3934a5e1f"
+    },
+    "intent_slot_schema": {
+      "content_hash": "732e500af3870216c7b311369f6f190ffdb0365e497d84cf211f478036757dcc",
+      "intents": 60,
+      "min_share": 0.02,
+      "schema_id": "slurp-intent-slot-schema-v1",
+      "source_identity_hash": "545847bb95a9423005c71bdcc3fa74af55a3a1b6ae91409ba4070fd35bf92fef",
+      "source_split": "train",
+      "utterance_count": 11514
+    },
+    "mf10_type_classes": {
+      "class_counts": {
+        "CLOSED/FORMAT": 18,
+        "MIXED": 8,
+        "OPEN/PROPER-NOUN": 29
+      },
+      "path": "docs/checks/speech-aware-evidence-acquisition/2026-09-08-mf10-slot-vocab-cards-normalized-slu/type-classes.json",
+      "rule": "mf10-cardability-v2",
+      "sha256": "6faca2f7ac9b47f759692655572b41ed27d2277d12f353dccc30e50350d0fbc5",
+      "types": 55
+    },
+    "train_material": "data.slurp.load_slurp_train_material (TRAIN only)",
+    "umbrella_lock": "/mnt/d/chao_workspace/docs/datasets.lock.json"
+  },
+  "token_cost_basis": "STATED PROXY: whitespace tokens x 1.3, rounded up (analysis.slurp_slot_vocabulary.token_proxy). No tokenizer was called. A cell that flies a view measures its own envelope through the serving /apply-template + /tokenize seam, as KC-S1b did.",
+  "twin_volume_match": {
+    "cards": {
+      "abs_char_delta_max": 4891,
+      "abs_char_delta_max_over_rotating_intents": 0,
+      "abs_char_delta_mean": 788.736,
+      "intents_matching_to_the_character": 39,
+      "intents_that_cannot_rotate_in_place": 14,
+      "intents_with_a_view_block": 53,
+      "matched_by": "construction (per-intent rotation)",
+      "pooled_intents": [
+        "audio_volume_down",
+        "cooking_query",
+        "cooking_recipe",
+        "datetime_query",
+        "email_addcontact",
+        "email_querycontact",
+        "general_greet",
+        "lists_createoradd",
+        "lists_query",
+        "play_music",
+        "play_podcasts",
+        "qa_maths",
+        "social_post",
+        "takeaway_query"
+      ],
+      "pooled_types": [
+        "transport_name"
+      ]
+    },
+    "descriptions": {
+      "abs_char_delta_max": 46,
+      "abs_char_delta_max_over_rotating_intents": 0,
+      "abs_char_delta_mean": 2.15,
+      "intents_matching_to_the_character": 55,
+      "intents_that_cannot_rotate_in_place": 5,
+      "intents_with_a_view_block": 60,
+      "matched_by": "construction (per-intent rotation)",
+      "pooled_intents": [
+        "audio_volume_other",
+        "general_greet",
+        "music_dislikeness",
+        "play_game",
+        "qa_definition"
+      ],
+      "pooled_types": [
+        "definition_word",
+        "game_name",
+        "game_type",
+        "sport_type",
+        "transport_name"
+      ]
+    },
+    "fewshot": {
+      "abs_char_delta_max": 327,
+      "abs_char_delta_max_over_rotating_intents": 327,
+      "abs_char_delta_mean": 95.1,
+      "intents_matching_to_the_character": 0,
+      "intents_that_cannot_rotate_in_place": 0,
+      "intents_with_a_view_block": 60,
+      "matched_by": "measurement (a donor intent's sentences are other sentences)",
+      "pooled_intents": [],
+      "pooled_types": null
+    }
+  },
+  "worked_examples": {
+    "cards": {
+      "arm": "Slot schema measured on the TRAIN split, one block per intent. A block names the entity types that intent draws its slots from and how much of the intent's slot mentions each type carries. Use a type only when the speech supports it, and write each filler exactly as it was spoken, in lower case, without translating, expanding, abbreviating or reordering it.\n== alarm_set == 182 TRAIN utterances, 248 slot mentions\n- time (56.9 percent of slot mentions)\n- date (21.8 percent of slot mentions)\n- timeofday (9.7 percent of slot mentions)\n- event_name (8.5 percent of slot mentions)\n\nSlot value cards measured on the TRAIN split. A card names one slot type and every surface form the corpus has used for it, with how often, written the way the corpus writes it. Use a form only when the speech supports it, and write it exactly as the card spells it.\n- date: today (524); tomorrow (221); this week (93); friday (70); tuesday (58); today 's (53); this weekend (47); monday (46); thursday (44); next week (40); saturday (40); wednesday (34); yesterday (29); this month (23); sunday (22); tomorrow 's (19); march (15); this year (14); this week 's (10); todays (8); next month (7); tomorrows (7); twenty second (7); last week (6); weekend (6); april first (5); last month (5); last night (5); mondays (5); one thousand nine hundred and ninety (5); february twelfth (4); fifteenth (4); friday 's (4); month (4); next day (4); sundays (4); twelveth (4); april (3); every sunday (3); fifteenth march (3); fifth march (3); first of february twenty seventeen (3); july fourth (3); july three (3); march fifth (3); may fifth (3); next sunday (3); next week 's (3); tenth (3); this weeks (3); twenty ninth (3); yesterday 's (3); april fourteenth (2); april fourth (2); december (2); earlier today (2); everyday (2); february (2); fifth april (2); january second (2); january twenty five (2); july (2); june (2); last day (2); march nineteenth (2); march one (2); march seven (2); march twentieth two thousand and seventeen (2); march twenty seventh (2); march twenty third (2); may (2); next three sundays (2); next year (2); october first (2); one day before (2); the month (2); the twenty second (2); third (2); thirteenth (2); this friday (2); this saturday (2); this sunday (2); three days (2); tuesday 's (2); tuesdays (2); twelfth (2); twelveth july (2); twentieth (2); twentieth october (2); twenty fourth (2); twenty sixth (2); twenty third (2); twenty third march (2); two thousand (2); two thousand and seventeen (2); week (2); yesterdays (2); a week ago (1); after some days (1); after two days (1); all days (1); april fifteenth (1); april second (1); april seven (1); august fifteenth (1); august twenty one (1); birthday (1); coming week (1); date (1); day after (1); day after tomorrow (1); day before (1); day of the week (1); dec twenty sixth (1); december fifth (1); december twenty five two thousand and seventeen (1); easter (1); eighteen may (1); eighteenth (1); eighth july (1); eighth november (1); eleven march (1); end of the month (1); every friday (1); every monday (1); every month (1); every other wednesday (1); every two days from now (1); every week day (1); february four nineteen seventy two (1); fifteenth of this month (1); fifth (1); fifth december (1); first fifteen days (1); first friday of next month (1); first january (1); first of april (1); first of january (1); five day (1); five days (1); four april (1); fourteenth (1); fourth (1); fourth monday of march (1); fourth october (1); friday april fourteenth (1); friday the thirteenth (1); friday this year (1); fridays (1); in two weeks (1); january nineteenth (1); january one and january twelve (1); january the third (1); july seventh (1); july thirtieth (1); july two (1); june first (1); june third (1); last friday (1); last friday of the month (1); last year (1); mar twenty five (1); march eleventh (1); march fifteenth (1); march first (1); march fourth two thousand and seventeenth (1); march nineteen (1); march seventh (1); march sixteen (1); march sixteenth (1); march sixth (1); march tenth (1); march third (1); march thirtieth (1); march three (1); march twenty (1); march twenty first (1); march twenty five (1); march twenty four (1); march twenty four two thousand and seventeen (1); march twenty second (1); march twenty seven (1); may fifth two thousand and seventeen (1); may one (1); may one and december thirty one (1); may seventh (1); may twenty two (1); may two (1); memorial day (1); memorial day weekend (1); monday 's (1); monday morning (1); monday through friday (1); next day 's (1); next eight days (1); next few days (1); next free day (1); next monday night (1); next month 's (1); next saturdays (1); next two sundays (1); next two weeks (1); next week sunday (1); next weeks (1); night before (1); ninth (1); ninth february two thousand and seventeen (1); november fourteenth (1); one month and two days (1); one thousand nine hundred and seventy (1); one thousand nine hundred and seventy two (1); one thousand nine hundred and sixty eight (1); one week from now (1); past week (1); rest of the year (1); school week (1); second january (1); second saturday (1); september four (1); september twenty two (1); seven days (1); sixth of june two thousand seventeen (1); sunday 's (1); ten july (1); tenth november (1); tenth of march two thousand seventeen (1); the fifteenth (1); the first day of next month (1); the following monday (1); the past week (1); the third monday of this month (1); the thirty first (1); the twenty fifth (1); the twenty first of march two thousand and seventeen (1); the twenty fourth (1); the twenty sixth (1); the twenty third (1); third march (1); third of april (1); third week of this month (1); thirteen october of this year (1); thirteenth july (1); thirtieth of march (1); thirty first of march twenty seventeen (1); this coming week (1); this day (1); this monday (1); this month 's (1); this wednesday (1); three days from now (1); thursday tomorrow (1); thursdays (1); tomorrow night (1); tonight (1); tuesday the twenty first (1); twentieth of february (1); twenty eighth (1); twenty fifth (1); twenty first april (1); twenty first of may (1); twenty fourth march (1); twenty ninth march (1); twenty one january two thousand and seventeen (1); twenty one march (1); twenty second april (1); twenty second march (1); twenty seventh of march twenty seventeen (1); twenty six march (1); twenty third may (1); twenty third of march twenty seventeen (1); twenty third of may (1); twenty three of march (1); twenty two june (1); twenty two march (1); two days (1); two days from now (1); two hundred pm (1); two saturdays from now (1); two thousand and fourteen (1); two wednesdays back from today (1); until may twenty fifth (1); wednesday next week (1); week from today (1); weekdays (1); weekend after next (1); weekend three weeks from now (1); weekends and holidays (1); weekly (1); year two thousand and eighteen (1)\n- timeofday: morning (88); tonight (61); noon (25); evening (20); afternoon (16); this afternoon (15); this evening (6); night (4); tonight 's (2); next morning (1); this am (1)",
+      "intent": "alarm_set",
+      "twin": "Slot schema measured on the TRAIN split, one block per intent. A block names the entity types that intent draws its slots from and how much of the intent's slot mentions each type carries. Use a type only when the speech supports it, and write each filler exactly as it was spoken, in lower case, without translating, expanding, abbreviating or reordering it.\n== alarm_set == 182 TRAIN utterances, 248 slot mentions\n- time (56.9 percent of slot mentions)\n- date (21.8 percent of slot mentions)\n- timeofday (9.7 percent of slot mentions)\n- event_name (8.5 percent of slot mentions)\n\nSlot value cards measured on the TRAIN split. A card names one slot type and every surface form the corpus has used for it, with how often, written the way the corpus writes it. Use a form only when the speech supports it, and write it exactly as the card spells it.\n- timeofday: morning (88); tonight (61); noon (25); evening (20); afternoon (16); this afternoon (15); this evening (6); night (4); tonight 's (2); next morning (1); this am (1)\n- date: today (524); tomorrow (221); this week (93); friday (70); tuesday (58); today 's (53); this weekend (47); monday (46); thursday (44); next week (40); saturday (40); wednesday (34); yesterday (29); this month (23); sunday (22); tomorrow 's (19); march (15); this year (14); this week 's (10); todays (8); next month (7); tomorrows (7); twenty second (7); last week (6); weekend (6); april first (5); last month (5); last night (5); mondays (5); one thousand nine hundred and ninety (5); february twelfth (4); fifteenth (4); friday 's (4); month (4); next day (4); sundays (4); twelveth (4); april (3); every sunday (3); fifteenth march (3); fifth march (3); first of february twenty seventeen (3); july fourth (3); july three (3); march fifth (3); may fifth (3); next sunday (3); next week 's (3); tenth (3); this weeks (3); twenty ninth (3); yesterday 's (3); april fourteenth (2); april fourth (2); december (2); earlier today (2); everyday (2); february (2); fifth april (2); january second (2); january twenty five (2); july (2); june (2); last day (2); march nineteenth (2); march one (2); march seven (2); march twentieth two thousand and seventeen (2); march twenty seventh (2); march twenty third (2); may (2); next three sundays (2); next year (2); october first (2); one day before (2); the month (2); the twenty second (2); third (2); thirteenth (2); this friday (2); this saturday (2); this sunday (2); three days (2); tuesday 's (2); tuesdays (2); twelfth (2); twelveth july (2); twentieth (2); twentieth october (2); twenty fourth (2); twenty sixth (2); twenty third (2); twenty third march (2); two thousand (2); two thousand and seventeen (2); week (2); yesterdays (2); a week ago (1); after some days (1); after two days (1); all days (1); april fifteenth (1); april second (1); april seven (1); august fifteenth (1); august twenty one (1); birthday (1); coming week (1); date (1); day after (1); day after tomorrow (1); day before (1); day of the week (1); dec twenty sixth (1); december fifth (1); december twenty five two thousand and seventeen (1); easter (1); eighteen may (1); eighteenth (1); eighth july (1); eighth november (1); eleven march (1); end of the month (1); every friday (1); every monday (1); every month (1); every other wednesday (1); every two days from now (1); every week day (1); february four nineteen seventy two (1); fifteenth of this month (1); fifth (1); fifth december (1); first fifteen days (1); first friday of next month (1); first january (1); first of april (1); first of january (1); five day (1); five days (1); four april (1); fourteenth (1); fourth (1); fourth monday of march (1); fourth october (1); friday april fourteenth (1); friday the thirteenth (1); friday this year (1); fridays (1); in two weeks (1); january nineteenth (1); january one and january twelve (1); january the third (1); july seventh (1); july thirtieth (1); july two (1); june first (1); june third (1); last friday (1); last friday of the month (1); last year (1); mar twenty five (1); march eleventh (1); march fifteenth (1); march first (1); march fourth two thousand and seventeenth (1); march nineteen (1); march seventh (1); march sixteen (1); march sixteenth (1); march sixth (1); march tenth (1); march third (1); march thirtieth (1); march three (1); march twenty (1); march twenty first (1); march twenty five (1); march twenty four (1); march twenty four two thousand and seventeen (1); march twenty second (1); march twenty seven (1); may fifth two thousand and seventeen (1); may one (1); may one and december thirty one (1); may seventh (1); may twenty two (1); may two (1); memorial day (1); memorial day weekend (1); monday 's (1); monday morning (1); monday through friday (1); next day 's (1); next eight days (1); next few days (1); next free day (1); next monday night (1); next month 's (1); next saturdays (1); next two sundays (1); next two weeks (1); next week sunday (1); next weeks (1); night before (1); ninth (1); ninth february two thousand and seventeen (1); november fourteenth (1); one month and two days (1); one thousand nine hundred and seventy (1); one thousand nine hundred and seventy two (1); one thousand nine hundred and sixty eight (1); one week from now (1); past week (1); rest of the year (1); school week (1); second january (1); second saturday (1); september four (1); september twenty two (1); seven days (1); sixth of june two thousand seventeen (1); sunday 's (1); ten july (1); tenth november (1); tenth of march two thousand seventeen (1); the fifteenth (1); the first day of next month (1); the following monday (1); the past week (1); the third monday of this month (1); the thirty first (1); the twenty fifth (1); the twenty first of march two thousand and seventeen (1); the twenty fourth (1); the twenty sixth (1); the twenty third (1); third march (1); third of april (1); third week of this month (1); thirteen october of this year (1); thirteenth july (1); thirtieth of march (1); thirty first of march twenty seventeen (1); this coming week (1); this day (1); this monday (1); this month 's (1); this wednesday (1); three days from now (1); thursday tomorrow (1); thursdays (1); tomorrow night (1); tonight (1); tuesday the twenty first (1); twentieth of february (1); twenty eighth (1); twenty fifth (1); twenty first april (1); twenty first of may (1); twenty fourth march (1); twenty ninth march (1); twenty one january two thousand and seventeen (1); twenty one march (1); twenty second april (1); twenty second march (1); twenty seventh of march twenty seventeen (1); twenty six march (1); twenty third may (1); twenty third of march twenty seventeen (1); twenty third of may (1); twenty three of march (1); twenty two june (1); twenty two march (1); two days (1); two days from now (1); two hundred pm (1); two saturdays from now (1); two thousand and fourteen (1); two wednesdays back from today (1); until may twenty fifth (1); wednesday next week (1); week from today (1); weekdays (1); weekend after next (1); weekend three weeks from now (1); weekends and holidays (1); weekly (1); year two thousand and eighteen (1)"
+    },
+    "descriptions": {
+      "arm": "Slot schema measured on the TRAIN split, one block per intent. A block names the entity types that intent draws its slots from and how much of the intent's slot mentions each type carries. Use a type only when the speech supports it, and write each filler exactly as it was spoken, in lower case, without translating, expanding, abbreviating or reordering it.\n== alarm_set == 182 TRAIN utterances, 248 slot mentions\n- time (56.9 percent of slot mentions)\n- date (21.8 percent of slot mentions)\n- timeofday (9.7 percent of slot mentions)\n- event_name (8.5 percent of slot mentions)\n\nSlot type descriptions measured on the TRAIN split. A description says what kind of value a type holds and how the corpus writes it -- how many distinct surface forms it uses, how long they are, whether it writes digits, and how concentrated the type is on its most frequent form. It names no filler; use it to judge whether a type fits what you heard.\n- time: a partly closed vocabulary; 237 distinct TRAIN forms over 799 mentions; typically 2 words (1 to 9); written without digits; its most frequent form carries 5.4 percent of them\n- date: a closed vocabulary the corpus re-uses; 289 distinct TRAIN forms over 1823 mentions; typically 1 word (1 to 9); written without digits; its most frequent form carries 28.7 percent of them\n- timeofday: a closed vocabulary the corpus re-uses; 11 distinct TRAIN forms over 239 mentions; typically 1 word (1 to 2); written without digits; its most frequent form carries 36.8 percent of them\n- event_name: an open class the corpus keeps minting new forms for; 351 distinct TRAIN forms over 1000 mentions; typically 1 word (1 to 7); written without digits; its most frequent form carries 27.9 percent of them",
+      "intent": "alarm_set",
+      "twin": "Slot schema measured on the TRAIN split, one block per intent. A block names the entity types that intent draws its slots from and how much of the intent's slot mentions each type carries. Use a type only when the speech supports it, and write each filler exactly as it was spoken, in lower case, without translating, expanding, abbreviating or reordering it.\n== alarm_set == 182 TRAIN utterances, 248 slot mentions\n- time (56.9 percent of slot mentions)\n- date (21.8 percent of slot mentions)\n- timeofday (9.7 percent of slot mentions)\n- event_name (8.5 percent of slot mentions)\n\nSlot type descriptions measured on the TRAIN split. A description says what kind of value a type holds and how the corpus writes it -- how many distinct surface forms it uses, how long they are, whether it writes digits, and how concentrated the type is on its most frequent form. It names no filler; use it to judge whether a type fits what you heard.\n- timeofday: a closed vocabulary the corpus re-uses; 11 distinct TRAIN forms over 239 mentions; typically 1 word (1 to 2); written without digits; its most frequent form carries 36.8 percent of them\n- event_name: an open class the corpus keeps minting new forms for; 351 distinct TRAIN forms over 1000 mentions; typically 1 word (1 to 7); written without digits; its most frequent form carries 27.9 percent of them\n- date: a closed vocabulary the corpus re-uses; 289 distinct TRAIN forms over 1823 mentions; typically 1 word (1 to 9); written without digits; its most frequent form carries 28.7 percent of them\n- time: a partly closed vocabulary; 237 distinct TRAIN forms over 799 mentions; typically 2 words (1 to 9); written without digits; its most frequent form carries 5.4 percent of them"
+    },
+    "examples-free": {
+      "arm": "Slot schema measured on the TRAIN split, one block per intent. A block names the entity types that intent draws its slots from and how much of the intent's slot mentions each type carries. Use a type only when the speech supports it, and write each filler exactly as it was spoken, in lower case, without translating, expanding, abbreviating or reordering it.\n== alarm_set == 182 TRAIN utterances, 248 slot mentions\n- time (56.9 percent of slot mentions)\n- date (21.8 percent of slot mentions)\n- timeofday (9.7 percent of slot mentions)\n- event_name (8.5 percent of slot mentions)",
+      "intent": "alarm_set",
+      "twin": null
+    },
+    "fewshot": {
+      "arm": "Slot schema measured on the TRAIN split, one block per intent. A block names the entity types that intent draws its slots from and how much of the intent's slot mentions each type carries. Use a type only when the speech supports it, and write each filler exactly as it was spoken, in lower case, without translating, expanding, abbreviating or reordering it.\n== alarm_set == 182 TRAIN utterances, 248 slot mentions\n- time (56.9 percent of slot mentions)\n- date (21.8 percent of slot mentions)\n- timeofday (9.7 percent of slot mentions)\n- event_name (8.5 percent of slot mentions)\n\nWorked TRAIN examples for this intent. Each line is one utterance the corpus recorded and the slots it carries, written the way the corpus writes them. They are OTHER utterances, never the one you are hearing; use them for the shape of an answer, never for its content.\n1. \"set alarm for saturday morning soccer practice at eight am\" -> date=saturday; timeofday=morning; event_name=soccer practice; time=eight am\n2. \"wake me up on friday at five in the morning i need to catch the train\" -> date=friday; time=five; timeofday=morning; event_name=train\n3. \"put an alarm and wake me up at six am tomorrow morning\" -> time=six am; date=tomorrow; timeofday=morning",
+      "intent": "alarm_set",
+      "twin": "Slot schema measured on the TRAIN split, one block per intent. A block names the entity types that intent draws its slots from and how much of the intent's slot mentions each type carries. Use a type only when the speech supports it, and write each filler exactly as it was spoken, in lower case, without translating, expanding, abbreviating or reordering it.\n== alarm_set == 182 TRAIN utterances, 248 slot mentions\n- time (56.9 percent of slot mentions)\n- date (21.8 percent of slot mentions)\n- timeofday (9.7 percent of slot mentions)\n- event_name (8.5 percent of slot mentions)\n\nWorked TRAIN examples for this intent. Each line is one utterance the corpus recorded and the slots it carries, written the way the corpus writes them. They are OTHER utterances, never the one you are hearing; use them for the shape of an answer, never for its content.\n1. \"what time is my alarm set for tomorrow morning\" -> date=tomorrow; timeofday=morning\n2. \"do i have alarms set before six in the morning\" -> time=before six; timeofday=morning\n3. \"please let me know the alarm kept for tuesday's meeting\" -> date=tuesday 's; event_name=meeting"
+    }
+  }
+}

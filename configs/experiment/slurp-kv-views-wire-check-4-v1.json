@@ -1,0 +1,91 @@
+{
+  "budget_basis": "ZERO SPENT, and the plan cells exist only because the metering runs on the FAKE transport too. 7 cells x 4 rows = 28 requests built, doubled to 56 so the check can be re-run once inside one run id; 7 x 15.011 = 105.1 audio seconds accounted, ceiling 240; 0.3 GPU hours nominal. NOTHING IS ACTUALLY SPENT: the transport is core.flight.runtime.WireCheckTransport, which never opens a socket, and the realized frozen-core contacts are 0. The seven REGISTERED KV flights do not share this run id -- each has its own experiment fragment, its own plan, its own exposure row and its own single recovery allowance.",
+  "cells": [
+    {
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-kv0-examples-free-v1",
+      "cell_id": "kv0-examples-free",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64"
+    },
+    {
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-kv1-descriptions-v1",
+      "cell_id": "kv1-descriptions",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64"
+    },
+    {
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-kv1-descriptions-twin-v1",
+      "cell_id": "kv1-descriptions-twin",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64"
+    },
+    {
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-kv2-cards-v1",
+      "cell_id": "kv2-cards",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64"
+    },
+    {
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-kv2-cards-twin-v1",
+      "cell_id": "kv2-cards-twin",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64"
+    },
+    {
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-kv3-fewshot-v1",
+      "cell_id": "kv3-fewshot",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64"
+    },
+    {
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-kv3-fewshot-twin-v1",
+      "cell_id": "kv3-fewshot-twin",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64"
+    }
+  ],
+  "comparator": "None. This fragment makes no contrast; the KV comparators are named in each cell's own registered experiment fragment.",
+  "date": "2026-09-08",
+  "decision": {
+    "paper_scale": false,
+    "test_tuning": false
+  },
+  "decision_rule": "There is none: a wire check has no decision. It passes or it refuses, and the refusal is the finding.",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.3,
+    "planned_model_calls": 56,
+    "planned_speech_audio_seconds": 240,
+    "split_role": "dev"
+  },
+  "experiment_id": "SAEA-SLURP-KV-VIEWS-WIRE-CHECK-4-V1",
+  "fragment_kind": "saea-slurp-slot-stage-experiment-v1",
+  "gate": "PASS requires, for EACH of the seven cells: 4 of 4 requests built; exactly ONE phase in the run_phases receipt with rows 4 and contacts 4; every payload's last history turn role == control; the resolved system message byte-identical to KC-S1b's own; the contact instruction equal, on every row, to the KV-0 arm's instruction with that view's block substituted for KV-0's; and rails.runner's own containment fold raising on none of them.",
+  "never_fly_this_fragment": "THIS FRAGMENT IS FOR --wire-check AND --dry-run ONLY. It has no exposure-ledger row and must never be run with --run: a real transport under it would spend contacts nothing has registered. The seven registered KV experiment fragments are the ones that fly.",
+  "population": "Four rows of the frozen DEV-1000 runtime view, named in the populations block above, contacted zero times.",
+  "populations": [
+    {
+      "audio_seconds_one_pass": 15.011,
+      "basis": "The SAME four rows the sealed closed-list wiring proof, the MF-5 SLURP phase smoke and the KC-S1 smoke all flew: the first four DEV-1000 sample ids in sorted order. Named HERE, in the registered fragment, rather than on a command line, so a check can never quietly touch four different rows than the ones its exposure row names (the SAEA-E22-ESB precedent). No contact is made against them here.",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "ids": [
+        "slurp:devel:000011:audio-1497266596",
+        "slurp:devel:000053:audio-1498758443",
+        "slurp:devel:000058:audio-1488637952",
+        "slurp:devel:000068:audio-1488550098"
+      ],
+      "split_id": "DEV-1000-KV-WIRE-4"
+    }
+  ],
+  "preregistration": "docs/readiness/2026-09-08-slurp-slot-knowledge-views-kv-v1-preregistration.md",
+  "purpose": "FOUR-ROW REQUEST-HALF WIRE CHECK of all seven KV arms, before any of them is registered to fly. Zero model contacts and zero sockets: core.flight.runtime.WireCheckGate and WireCheckTransport stand in for the gate and the transport, and everything between them is real -- the real core.config.compose, the real roster with every media file re-hashed, the real knowledge-snapshot load and hash verification, the real sealed-manifest predecessor binding, the real phase program, the real KV state fill reading TRAIN, the real containment fold on every contact instruction, and the real request build through the payload-binding stage. Its responses are the transport's canned string and are not a measurement of anything.",
+  "split_id": "DEV-1000-KV-WIRE-4",
+  "what_is_not_read": "No wire-check output is a task measurement. The responses are core.flight.runtime.WireCheckTransport's canned string; no comparator, verdict or admission is touched."
+}
