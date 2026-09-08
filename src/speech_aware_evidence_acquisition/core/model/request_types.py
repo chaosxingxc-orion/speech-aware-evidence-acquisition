@@ -60,6 +60,17 @@ ALLOWED_DECODING_KEYS = frozenset(
     }
 )
 
+#: Upper bound this adapter accepts for ``decoding_params.top_logprobs``
+#: (2026-09-08 logprob-as-judge probe). The pinned llama-server does not cap
+#: the value itself -- ``tools/server/server-schema.cpp:175-177`` registers
+#: ``n_probs`` with no hard limits -- but its OpenAI-compatible layer defaults
+#: the field to 20 when ``logprobs: true`` arrives without it
+#: (``tools/server/server-common.cpp:1529``), and 20 is the OpenAI contract's
+#: own ceiling. Asking for more is a per-token full-vocabulary sort the study
+#: has no use for, so the adapter refuses it here, before the call is metered,
+#: rather than letting a config typo buy an expensive request.
+MAX_TOP_LOGPROBS = 20
+
 
 @dataclass(frozen=True)
 class CoreResponse:
