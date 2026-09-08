@@ -242,6 +242,23 @@ HARMFUL module — or one whose provisional obligation is still UNMET — armed 
 empty today: the one decided module is ADMITTED provisionally with its replication UNMET, and its own
 verdict note barred it from the default plan until a second independent pass.
 
+**2026-09-08, ON MERGE: a FIFTH switch class, `run`, and the first default plan.** W4 was written
+beside the cross-call dispatcher's admission cell and neither could see the other. Merging them
+found the gap: the v2 schema required every entry to name one of the four config tables, and the
+dispatcher's one config key is `obs_prefetch_depth` — flat, read by `core.driver.run` and
+`reproduction.obs_loop`, per-RUN where the four tables are per-PHASE. The tables are not widened.
+`rails.config_tables` gains a fifth switch class instead, `run`, whose keys are a CLOSED allowlist
+(`RUN_LEVEL_SWITCH_KEYS`, today `{obs_prefetch_depth}`) and whose null arm is the key absent or the
+driver's documented default of 0. Being outside the tables is not free: a `run` entry owes a
+`falsifier` — `{"kind": "request-bytes-identical", "receipt": <dir>}` — and the check re-hashes that
+receipt's `MANIFEST.sha256` rather than believing the path. That is the whole licence: a module that
+moves one byte of the request cannot produce such a falsifier and belongs in a table. The dispatcher
+has one (1,593 of 1,593 slices byte-identical, `prompt_tokens_total` 1,935,965 to the digit), so it
+is admitted to the class and, being NEUTRAL with no blocking obligation, `default_plans` gains its
+first entry: `configs/baseline/e21-buf90-zero-locked-scored4-prefetch1.json` for
+`earnings21-original`, which is the sealed comparator's own fragment plus that one key. The KC-E1f
+repair stays barred exactly as W4 wrote it. No verdict, number, status or evidence pin moved.
+
 **First entries, from the sealed record (2026-09-08):**
 
 | module | carrier | status | evidence |

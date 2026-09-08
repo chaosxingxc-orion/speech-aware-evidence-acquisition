@@ -5,11 +5,20 @@
   "schema": "saea-harness-admission-v2",
   "schema_history": {
     "saea-harness-admission-v1": "opened 2026-09-08 by docs/readiness/2026-09-08-e21-kc-e1f-repair-pass-v2-redecision.md section 9 with one decided entry.",
-    "saea-harness-admission-v2": "WAVE W4 (owner Decision 11-B change #6, 2026-09-08) adds, per entry, the config table and key that switch the module, plus the default_plans list the gate's last two rules read. NO verdict, number, status, evidence pin or provisional obligation was changed: v2 only records, for a module already decided, WHERE its one config key lives. Enforced by scripts/checks/harness_admission_check.py."
+    "saea-harness-admission-v2": "WAVE W4 (owner Decision 11-B change #6, 2026-09-08) adds, per entry, the config table and key that switch the module, plus the default_plans list the gate's last two rules read. NO verdict, number, status, evidence pin or provisional obligation was changed: v2 only records, for a module already decided, WHERE its one config key lives. Enforced by scripts/checks/harness_admission_check.py. EXTENDED 2026-09-08 on merge, when W4 met master's cross-call dispatcher: the switch vocabulary gains a fifth class, 'run', for a module whose one config key is a per-run driver knob rather than a per-phase table entry. The schema NAME is unchanged and the field 'switch_classes' is the version marker; no verdict, number, status, evidence pin or provisional obligation moved."
   },
-  "switch_rule": "Every entry names the ONE config key that switches its module ON and OFF, as {table, key, on, off}. 'table' is one of the four config tables (rails.config_tables.CONFIG_TABLE_NAMES: judges, knowledge_views, observe, toolkits); 'key' is a dotted path that starts with that table and names one of its entry keys, with '<phase>' as the placeholder for a program's phase because a module's admission is about the module and not about one program's phase names; 'off' is the table's null arm, which composes to the same config hash as the table being absent (core.config.drop_null_arms), which is what makes the OFF arm a twin of the pre-table baseline rather than a third cell identity. 'proof' names the test that composes both arms and asserts they differ in exactly that one key.",
-  "default_plans": [],
-  "default_plans_note": "EMPTY, and that is the current state of the program rather than an omission. A default plan is a committed config fragment a carrier flies by default; a module may enter one only once it holds an admission receipt whose obligations are met. The single entry below is ADMITTED but PROVISIONAL with its replication UNMET, and its own verdict note fixed the consequence before the verdict was known: 'until then NO candidate freeze, NO citation of this as an admitted effect and NO entry into the default plan'. So no plan may carry it yet, and scripts/checks/harness_admission_check.py is what keeps that true: it refuses a HARMFUL module in any default plan, refuses a module whose provisional obligation is UNMET in any default plan, and requires every other ADMITTED or NEUTRAL module to appear in at least one default plan for its carrier.",
+  "switch_rule": "Every entry names the ONE config key that switches its module ON and OFF, as {table, key, on, off}. 'table' is one of the four config tables (rails.config_tables.CONFIG_TABLE_NAMES: judges, knowledge_views, observe, toolkits); 'key' is a dotted path that starts with that table and names one of its entry keys, with '<phase>' as the placeholder for a program's phase because a module's admission is about the module and not about one program's phase names; 'off' is the table's null arm, which composes to the same config hash as the table being absent (core.config.drop_null_arms), which is what makes the OFF arm a twin of the pre-table baseline rather than a third cell identity. 'proof' names the test that composes both arms and asserts they differ in exactly that one key. A FIFTH class, 'run', covers a module that is one config key and has no table entry because it is per-run and the four tables are per-phase: 'key' is the FLAT config key the fragment carries, it must be on the closed allowlist rails.config_tables.RUN_LEVEL_SWITCH_KEYS, 'off' is the key absent or the driver's documented default, and the entry owes a 'falsifier' -- kind 'request-bytes-identical' plus the receipt that proved it -- whose MANIFEST.sha256 the check re-verifies. That falsifier is the whole licence for being outside the tables: a module that moves one byte of the request cannot produce one and belongs in a table.",
+  "default_plans": [
+    {
+      "carrier": "earnings21-original",
+      "config": "configs/baseline/e21-buf90-zero-locked-scored4-prefetch1.json",
+      "modules": [
+        "cross-call dispatcher (obs_prefetch_depth 1)"
+      ],
+      "note": "the sealed comparator plus the one NEUTRAL scheduling module; the KC-E1f repair stays out until its replication is met. The fragment differs from the comparator's own configs/baseline/e21-buf90-zero-locked-scored4.json in exactly one key, obs_prefetch_depth, which is what makes it the comparator plus one module rather than a second baseline."
+    }
+  ],
+  "default_plans_note": "ONE plan, for Earnings-21, added 2026-09-08 on merge. It carries exactly one decided module: the cross-call dispatcher, whose verdict (docs/readiness/2026-09-08-e21-dispatcher-admission-v1-verdict.md) states 'NEUTRAL -- ADMITTED TO THE DEFAULT PLAN AS A NO-HARM MODULE' and licenses turning it on for Earnings-21 cells at this geometry. The other entry below is ADMITTED but PROVISIONAL with its replication UNMET, and its own verdict note fixed the consequence before the verdict was known: 'until then NO candidate freeze, NO citation of this as an admitted effect and NO entry into the default plan'. So it may not enter this plan, and scripts/checks/harness_admission_check.py is what keeps that true: it refuses a HARMFUL module in any default plan, refuses a module whose provisional obligation is UNMET in any default plan, and requires every other ADMITTED or NEUTRAL module to appear in at least one default plan for its carrier.",
   "status_values": {
     "ADMITTED": "a gain on the carrier's primary metric, disjoint from the carrier's own null, with every gating guard non-inferior at the measured margin",
     "HARMFUL": "a gating guard fails; stays in the record as a documented negative and never enters a plan",
@@ -61,7 +70,9 @@
         "added_by": "WAVE W4, 2026-09-08, docs/readiness/2026-09-08-ojw-wave-w4-config-tables-v1.md",
         "key": "judges.<phase>.judges",
         "off": null,
-        "on": ["e21-substitution-alignment-flag-v1"],
+        "on": [
+          "e21-substitution-alignment-flag-v1"
+        ],
         "proof": "tests/unit/test_config_table_module_switches.py::test_repair_alignment_is_one_key_in_the_judges_table",
         "table": "judges",
         "what_flew": "The sealed KC-E1f arm did NOT fly through this key. It flew the obs-repair-loop policy with response_postprocessor 'e21-entity-repair-substitutions-v1' and its params, whose OFF arm was a different policy id -- exactly the defect change #6 removes. This field records the form the module takes from now on, not the form its evidence was produced in; the admission's evidence is the sealed bytes named under 'evidence'.",
@@ -107,7 +118,29 @@
         "the Earnings-21 test split, which this row does not touch"
       ],
       "row": "SAEA-E21-FULL44-DISPATCH-ADMISSION-V1",
-      "status": "NEUTRAL"
+      "status": "NEUTRAL",
+      "switch": {
+        "added_by": "merge of wt/ojw-w4 into master, 2026-09-08; the run switch class, docs/readiness/2026-09-08-ojw-wave-w4-config-tables-v1.md",
+        "falsifier": {
+          "kind": "request-bytes-identical",
+          "note": "the cell's own falsifier, run before any score file was opened: all 1,593 emitted SliceRecords equal the sealed comparator's on sha256, bytes, span, sample rate and parent hash, preprocess empty on both sides, prompt_tokens_total 1,935,965 to the digit. That is what puts this module outside the four per-phase tables rather than in one of them.",
+          "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-dispatch-admission-v1"
+        },
+        "key": "obs_prefetch_depth",
+        "off": 0,
+        "on": 1,
+        "proof": "tests/unit/test_config_table_module_switches.py::test_the_cross_call_dispatcher_is_one_run_level_key",
+        "table": "run",
+        "what_flew": "The sealed arm DID fly through this key: configs/baseline/e21-buf90-zero-locked-scored4-prefetch1.json is the comparator's own baseline fragment plus obs_prefetch_depth 1, and the proof test diffs those two committed fragments.",
+        "why_this_class": "obs_prefetch_depth is read flat by core.driver.run and reproduction.obs_loop and decides how many samples of lookahead the driver keeps in flight. It is per-RUN, while observe, knowledge_views, judges and toolkits are per-PHASE and each of them changes the request the frozen core sees. This one provably changes no request byte, which is both why it has no table entry and why it is allowed to have none."
+      }
     }
+  ],
+  "switch_classes": [
+    "judges",
+    "knowledge_views",
+    "observe",
+    "toolkits",
+    "run"
   ]
 }

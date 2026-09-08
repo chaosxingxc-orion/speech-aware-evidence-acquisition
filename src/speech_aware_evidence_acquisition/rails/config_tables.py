@@ -158,6 +158,38 @@ _RELISTEN_KEYS = frozenset(
 #: ONE cell identity rather than three.
 NULL_ARMS: tuple[object, ...] = (None, {})
 
+#: The FIFTH switch class, added 2026-09-08 when WAVE W4 met the cross-call
+#: dispatcher on ``master``. The four tables above are per-PHASE: they say what
+#: a phase observes, is supplied with, is judged by and may call, and every one
+#: of them changes the request the frozen core sees. A module can also be one
+#: config key and still have no table entry, because it is per-RUN and changes
+#: no request at all -- a scheduler. ``obs_prefetch_depth`` is the first: it is
+#: read flat by ``core.driver.run`` and ``reproduction.obs_loop``, it decides
+#: how many samples of lookahead the driver keeps, and its admission cell
+#: proved every emitted slice byte-identical to the comparator's.
+#:
+#: The class is deliberately a CLOSED allowlist rather than "any flat key".
+#: A module that changes the request must earn a table entry; the run class
+#: exists for the ones that provably do not, and admitting a new key to it is
+#: a code change with a test, not a receipt edit.
+RUN_SWITCH_CLASS = "run"
+
+#: Every switch class a ``docs/receipts/harness-admission.json`` entry may
+#: name: the four config tables, plus ``run``. NOT the same tuple as
+#: :data:`CONFIG_TABLE_NAMES`, which is the hashing rule's own list and must
+#: keep naming exactly the four tables.
+SWITCH_CLASS_NAMES = CONFIG_TABLE_NAMES + (RUN_SWITCH_CLASS,)
+
+#: The per-run driver keys the ``run`` class admits.
+RUN_LEVEL_SWITCH_KEYS = frozenset({"obs_prefetch_depth"})
+
+#: The ``run`` class's null arm, in the two spellings a fragment may use: the
+#: key absent, or the driver's own documented default. ``obs_prefetch_depth``
+#: defaults to 0 and 0 means the strictly sequential path every config before
+#: 2026-09-08 ran, so ``0`` and "no key" are one cell identity exactly as a
+#: table's ``None``/``{}`` are.
+RUN_NULL_ARMS: tuple[object, ...] = (None, 0)
+
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
@@ -876,6 +908,43 @@ def resolve_switch_key(table: str, key: str) -> str:
     return named[0]
 
 
+def resolve_run_switch_key(key: str) -> str:
+    """The per-run driver key a ``run``-class ``switch.key`` names, or a refusal.
+
+    Unlike a table key this one is FLAT -- ``obs_prefetch_depth``, not
+    ``run.obs_prefetch_depth`` -- because that is the spelling the fragment
+    actually carries and a switch declaration that does not match the bytes
+    is not a switch. The allowlist is closed on purpose (see
+    :data:`RUN_LEVEL_SWITCH_KEYS`).
+    """
+
+    if not isinstance(key, str) or not key.strip():
+        raise ConfigTableError("a run-level switch key must be a non-empty string")
+    if "." in key:
+        raise ConfigTableError(
+            f"run-level switch key {key!r} is dotted; a run-level key is a FLAT "
+            "config key, which is the spelling the fragment carries"
+        )
+    if key not in RUN_LEVEL_SWITCH_KEYS:
+        raise ConfigTableError(
+            f"run-level switch key {key!r} is not admitted; the run class is a "
+            f"closed allowlist {sorted(RUN_LEVEL_SWITCH_KEYS)} and a module that "
+            "changes the request the core sees belongs in a config table, not here"
+        )
+    return key
+
+
+def is_run_null_arm(value: object) -> bool:
+    """Whether ``value`` is the ``run`` class's null arm (absent, or the
+    driver's documented default)."""
+
+    if value is None:
+        return True
+    if isinstance(value, bool):
+        return False
+    return isinstance(value, int) and value == 0
+
+
 def table_entry_keys(table: str) -> tuple[str, ...]:
     """The entry keys ``table`` admits, sorted -- what a switch declaration
     in ``docs/receipts/harness-admission.json`` must name."""
@@ -901,6 +970,10 @@ __all__ = [
     "LEGACY_OBSERVE_KEYS",
     "NULL_ARMS",
     "OBSERVE_TABLE",
+    "RUN_LEVEL_SWITCH_KEYS",
+    "RUN_NULL_ARMS",
+    "RUN_SWITCH_CLASS",
+    "SWITCH_CLASS_NAMES",
     "TOOLKITS_TABLE",
     "WRAPPED_FLAT_KEYS",
     "ConfigTableError",
@@ -918,6 +991,8 @@ __all__ = [
     "load_knowledge_views_table",
     "load_observe_table",
     "load_toolkits_table",
+    "is_run_null_arm",
+    "resolve_run_switch_key",
     "resolve_switch_key",
     "table_entry_keys",
     "unwrap_judges",

@@ -15,6 +15,7 @@ Loaded via ``importlib.util`` for the reason the other check tests give:
 from __future__ import annotations
 
 import copy
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -112,14 +113,34 @@ def test_the_committed_receipt_passes():
     assert result["passed"] is True
 
 
-def test_the_committed_receipts_only_module_is_barred_from_every_plan():
+def test_the_committed_receipts_repair_module_is_barred_from_every_plan():
     """Its verdict note fixed the consequence before the verdict was known:
-    an UNMET replication obligation means no entry into the default plan."""
+    an UNMET replication obligation means no entry into the default plan.
 
-    (row,) = hac.evaluate(REPO_ROOT)["entries"]
+    Two modules are decided since the 2026-09-08 merge; before it there was
+    one, and this case is that one."""
+
+    rows = {row["module"]: row for row in hac.evaluate(REPO_ROOT)["entries"]}
+    row = rows["substitution-only repair with the ConEC brief"]
     assert row["blocked"] is True
     assert row["blocked_reason"] == "provisional obligation UNMET"
     assert row["in_default_plans"] == []
+
+
+def test_the_committed_receipts_scheduler_module_reaches_its_carriers_plan():
+    """The other side of the same rule: a NEUTRAL module with no blocking
+    obligation must reach a default plan for its own carrier, and the
+    dispatcher's verdict admitted it to one."""
+
+    rows = {row["module"]: row for row in hac.evaluate(REPO_ROOT)["entries"]}
+    row = rows["cross-call dispatcher (obs_prefetch_depth 1)"]
+    assert row["blocked"] is False
+    assert row["status"] == "NEUTRAL"
+    assert row["table"] == hac.RUN_SWITCH_CLASS
+    assert row["switch_key"] == "obs_prefetch_depth"
+    assert row["in_default_plans"] == [
+        "configs/baseline/e21-buf90-zero-locked-scored4-prefetch1.json"
+    ]
 
 
 def test_the_committed_receipts_switch_names_a_real_table_key_and_a_real_test():
@@ -151,7 +172,7 @@ def test_a_switch_naming_no_config_table_fails(tmp_path):
     entry = _entry()
     entry["switch"]["table"] = "modes"
     result = _run(tmp_path, _receipt([entry]))
-    assert any("the config tables are" in failure for failure in result["failures"])
+    assert any("the switch classes are" in failure for failure in result["failures"])
 
 
 def test_a_key_that_names_no_entry_of_its_table_fails(tmp_path):
@@ -381,3 +402,187 @@ def _write(root: Path, document: dict) -> Path:
     path = root / "receipt.json"
     path.write_text(json.dumps(document), encoding="utf-8")
     return path
+
+
+# ---------------------------------------------------------------------------
+# Rule 4: the run switch class -- one config key, no table, no request moved
+#
+# Added 2026-09-08 on the merge of WAVE W4 into master, where the v2 schema
+# met the cross-call dispatcher: a scheduler is one config key and has no
+# per-phase table entry, because the four tables are per-phase and it is
+# per-run. Every case below runs against a SYNTHETIC repo root, so the
+# committed receipt is never mutated and the falsifier bytes are the case's
+# own.
+# ---------------------------------------------------------------------------
+
+RUN_PROOF = (
+    "tests/unit/test_config_table_module_switches.py"
+    "::test_the_cross_call_dispatcher_is_one_run_level_key"
+)
+
+
+def _falsifier_receipt(tmp_path, relpath="docs/checks/dispatch", digest=None):
+    """A receipt directory with a MANIFEST the check can re-hash. Pass
+    ``digest`` to seed one that does not verify."""
+
+    directory = tmp_path / relpath
+    directory.mkdir(parents=True, exist_ok=True)
+    body = b"1,593 of 1,593 slices byte-identical\n"
+    (directory / "README.md").write_bytes(body)
+    listed = digest or hashlib.sha256(body).hexdigest()
+    (directory / "MANIFEST.sha256").write_text(
+        f"{listed} *README.md\n", encoding="utf-8"
+    )
+    return relpath
+
+
+def _run_entry(tmp_path, receipt_relpath="docs/checks/dispatch", **switch_overrides):
+    switch = {
+        "falsifier": {"kind": "request-bytes-identical", "receipt": receipt_relpath},
+        "key": "obs_prefetch_depth",
+        "off": 0,
+        "on": 1,
+        "proof": RUN_PROOF,
+        "table": "run",
+    }
+    switch.update(switch_overrides)
+    proof_relpath, _, proof_name = RUN_PROOF.partition("::")
+    proof = tmp_path / proof_relpath
+    proof.parent.mkdir(parents=True, exist_ok=True)
+    proof.write_text(f"def {proof_name}():\n    pass\n", encoding="utf-8")
+    return _entry(
+        carrier="earnings21-original",
+        module="a scheduler",
+        status="NEUTRAL",
+        switch=switch,
+    )
+
+
+def _run_plan(tmp_path, fragment=None):
+    relpath = "configs/baseline/plan.json"
+    path = tmp_path / relpath
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps({"obs_prefetch_depth": 1} if fragment is None else fragment),
+        encoding="utf-8",
+    )
+    return relpath
+
+
+def _evaluate(tmp_path, document):
+    return hac.evaluate(tmp_path, _write(tmp_path, document))
+
+
+def test_a_run_class_switch_with_a_verifying_falsifier_and_a_plan_passes(tmp_path):
+    _falsifier_receipt(tmp_path)
+    plan = _run_plan(tmp_path)
+    result = _evaluate(
+        tmp_path,
+        _receipt(
+            [_run_entry(tmp_path)],
+            [{"carrier": "earnings21-original", "config": plan}],
+        ),
+    )
+    assert result["failures"] == []
+    assert result["entries"][0]["table"] == "run"
+    assert result["entries"][0]["switch_key"] == "obs_prefetch_depth"
+    assert result["entries"][0]["in_default_plans"] == [plan]
+
+
+def test_a_run_key_outside_the_closed_allowlist_fails(tmp_path):
+    _falsifier_receipt(tmp_path)
+    result = _evaluate(
+        tmp_path, _receipt([_run_entry(tmp_path, key="obs_batch_slices")])
+    )
+    assert any("closed allowlist" in failure for failure in result["failures"])
+
+
+def test_a_dotted_run_key_fails(tmp_path):
+    _falsifier_receipt(tmp_path)
+    result = _evaluate(
+        tmp_path, _receipt([_run_entry(tmp_path, key="run.obs_prefetch_depth")])
+    )
+    assert any("is dotted" in failure for failure in result["failures"])
+
+
+def test_a_run_entry_without_a_falsifier_fails(tmp_path):
+    _falsifier_receipt(tmp_path)
+    entry = _run_entry(tmp_path)
+    del entry["switch"]["falsifier"]
+    result = _evaluate(tmp_path, _receipt([entry]))
+    assert any(
+        "owes a falsifier proving it changed no request byte" in failure
+        for failure in result["failures"]
+    )
+
+
+def test_a_run_falsifier_of_another_kind_fails(tmp_path):
+    _falsifier_receipt(tmp_path)
+    entry = _run_entry(tmp_path)
+    entry["switch"]["falsifier"]["kind"] = "somebody looked at it"
+    result = _evaluate(tmp_path, _receipt([entry]))
+    assert any("accepts only" in failure for failure in result["failures"])
+
+
+def test_a_run_falsifier_naming_no_receipt_directory_fails(tmp_path):
+    result = _evaluate(
+        tmp_path,
+        _receipt([_run_entry(tmp_path, receipt_relpath="docs/checks/nothing-here")]),
+    )
+    assert any(
+        "not a directory in this repository" in failure
+        for failure in result["failures"]
+    )
+
+
+def test_a_run_falsifier_whose_manifest_does_not_verify_fails(tmp_path):
+    """A named receipt whose bytes moved proves nothing, so the check
+    re-hashes the manifest instead of believing the path."""
+
+    _falsifier_receipt(tmp_path, digest="0" * 64)
+    result = _evaluate(tmp_path, _receipt([_run_entry(tmp_path)]))
+    assert any(
+        "does not match its listed sha256" in failure for failure in result["failures"]
+    )
+
+
+def test_a_run_off_arm_that_is_not_the_null_arm_fails(tmp_path):
+    _falsifier_receipt(tmp_path)
+    result = _evaluate(tmp_path, _receipt([_run_entry(tmp_path, off=1)]))
+    assert any("third cell identity" in failure for failure in result["failures"])
+
+
+def test_a_plan_that_leaves_the_run_key_at_its_default_does_not_arm_it(tmp_path):
+    _falsifier_receipt(tmp_path)
+    plan = _run_plan(tmp_path, {"obs_prefetch_depth": 0})
+    result = _evaluate(
+        tmp_path,
+        _receipt(
+            [_run_entry(tmp_path)],
+            [{"carrier": "earnings21-original", "config": plan}],
+        ),
+    )
+    assert any("no default plan for" in failure for failure in result["failures"])
+
+
+def test_a_harmful_run_module_armed_in_a_plan_fails(tmp_path):
+    _falsifier_receipt(tmp_path)
+    plan = _run_plan(tmp_path)
+    entry = _run_entry(tmp_path)
+    entry["status"] = "HARMFUL"
+    result = _evaluate(
+        tmp_path,
+        _receipt([entry], [{"carrier": "earnings21-original", "config": plan}]),
+    )
+    assert any("status HARMFUL" in failure for failure in result["failures"])
+
+
+def test_switch_classes_naming_a_class_the_check_cannot_enforce_fails(tmp_path):
+    document = _receipt([_entry()])
+    document["switch_classes"] = ["judges", "vibes"]
+    result = _run(tmp_path, document)
+    assert any("'switch_classes' is" in failure for failure in result["failures"])
+
+
+def test_the_committed_receipt_declares_the_switch_classes_this_check_knows():
+    assert _committed()["switch_classes"] == list(hac.SWITCH_CLASS_NAMES)

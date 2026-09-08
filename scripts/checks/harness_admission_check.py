@@ -26,6 +26,18 @@ checked:
    that consequence before the verdict was known ("until then ... NO entry
    into the default plan"), and a rule that lives only in prose is not a rule.
 
+4. **A module outside the four config tables changed no request.** Added
+   2026-09-08, when W4's v2 schema met ``master``'s cross-call dispatcher: a
+   scheduler is one config key and has no per-phase table entry, because it
+   is per-RUN and the four tables are per-phase. Such an entry declares
+   ``switch.table`` ``"run"``, its key must be on the closed allowlist
+   ``rails.config_tables.RUN_LEVEL_SWITCH_KEYS``, and it must carry a
+   ``switch.falsifier`` -- ``{"kind": "request-bytes-identical", "receipt":
+   "<receipt dir>"}`` -- whose receipt directory exists and whose
+   ``MANIFEST.sha256`` verifies here. That falsifier is the whole licence for
+   being outside the tables: a module that moves one byte of the request
+   cannot produce one, and belongs in a table.
+
 A "default plan" is a committed config fragment the receipt itself names in
 ``default_plans`` -- declared, never inferred, because an experimental ON arm
 is a config fragment carrying a table too and reading those as default plans
@@ -39,6 +51,7 @@ Flags: ``--repo-root``, ``--receipt``, ``--json``.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -50,7 +63,12 @@ sys.path.insert(0, str(REPO_ROOT_DEFAULT / "src"))
 from speech_aware_evidence_acquisition.rails.config_tables import (  # noqa: E402
     CONFIG_TABLE_NAMES,
     NULL_ARMS,
+    RUN_NULL_ARMS,
+    RUN_SWITCH_CLASS,
+    SWITCH_CLASS_NAMES,
     ConfigTableError,
+    is_run_null_arm,
+    resolve_run_switch_key,
     resolve_switch_key,
 )
 
@@ -73,6 +91,15 @@ REQUIRED_TOP_LEVEL = (
 )
 REQUIRED_ENTRY_KEYS = ("carrier", "evidence", "module", "row", "status", "switch")
 REQUIRED_SWITCH_KEYS = ("key", "off", "on", "proof", "table")
+
+#: What a ``run``-class switch owes on top of :data:`REQUIRED_SWITCH_KEYS`.
+REQUIRED_RUN_SWITCH_KEYS = ("falsifier",)
+
+#: The only falsifier kind the ``run`` class accepts. It is not a label: the
+#: check verifies the named receipt's ``MANIFEST.sha256`` before believing it.
+RUN_FALSIFIER_KIND = "request-bytes-identical"
+
+MANIFEST_NAME = "MANIFEST.sha256"
 
 
 class HarnessAdmissionCheckError(RuntimeError):
@@ -104,9 +131,13 @@ def _switch_present(fragment: Mapping[str, Any], table: str, entry_key: str) -> 
     """Whether ``fragment`` arms ``entry_key`` of ``table`` with a non-null arm.
 
     The table's own null arm is not "present": that is the OFF arm, and a
-    plan declaring it is a plan the module is switched off in.
+    plan declaring it is a plan the module is switched off in. A ``run``-class
+    key is FLAT, so it is looked for at the fragment's top level and its null
+    arm is the key's absence or the driver's documented default.
     """
 
+    if table == RUN_SWITCH_CLASS:
+        return entry_key in fragment and not is_run_null_arm(fragment.get(entry_key))
     block = fragment.get(table)
     if any(block == arm for arm in NULL_ARMS) or not isinstance(block, Mapping):
         return False
@@ -133,10 +164,12 @@ def _check_switch(entry: Mapping[str, Any], repo_root: Path, where: str) -> list
         failures.append(f"{where}.switch is missing {missing}")
         return failures
     table = switch["table"]
+    if table == RUN_SWITCH_CLASS:
+        return _check_run_switch(switch, repo_root, where)
     if table not in CONFIG_TABLE_NAMES:
         failures.append(
-            f"{where}.switch.table is {table!r}; the config tables are "
-            f"{list(CONFIG_TABLE_NAMES)}"
+            f"{where}.switch.table is {table!r}; the switch classes are "
+            f"{list(SWITCH_CLASS_NAMES)}"
         )
         return failures
     try:
@@ -154,6 +187,103 @@ def _check_switch(entry: Mapping[str, Any], repo_root: Path, where: str) -> list
         failures.append(f"{where}.switch.on is the null arm; an ON arm must arm something")
     failures.extend(_check_proof(switch["proof"], repo_root, where))
     return failures
+
+
+def _check_run_switch(switch: Mapping[str, Any], repo_root: Path, where: str) -> list[str]:
+    """Rule 4: a per-run scheduling key, on the closed allowlist, whose entry
+    proves it changed no request byte.
+
+    Everything the table classes owe is still owed -- one key, a null OFF arm,
+    an ON arm that arms something, a ``proof`` test that exists -- and the
+    falsifier is owed on top, because being outside the four tables is exactly
+    the claim that this module never reaches the core's request.
+    """
+
+    failures: list[str] = []
+    missing = sorted(set(REQUIRED_RUN_SWITCH_KEYS) - set(switch))
+    if missing:
+        failures.append(
+            f"{where}.switch is run-class and is missing {missing}; a module outside "
+            "the four config tables owes a falsifier proving it changed no request byte"
+        )
+    try:
+        resolve_run_switch_key(switch["key"])
+    except ConfigTableError as error:
+        failures.append(f"{where}.switch.key: {error}")
+    if not is_run_null_arm(switch["off"]):
+        failures.append(
+            f"{where}.switch.off is {switch['off']!r}; the OFF arm of a run-level "
+            f"module must be its null arm ({list(RUN_NULL_ARMS)}) -- the key absent "
+            "or the driver's documented default -- so that OFF is a twin of the "
+            "pre-knob baseline rather than a third cell identity"
+        )
+    if is_run_null_arm(switch["on"]):
+        failures.append(f"{where}.switch.on is the null arm; an ON arm must arm something")
+    failures.extend(_check_proof(switch["proof"], repo_root, where))
+    if not missing:
+        failures.extend(_check_falsifier(switch["falsifier"], repo_root, where))
+    return failures
+
+
+def _check_falsifier(falsifier: object, repo_root: Path, where: str) -> list[str]:
+    """The run class's licence, verified rather than believed."""
+
+    if not isinstance(falsifier, Mapping):
+        return [f"{where}.switch.falsifier must be an object with 'kind' and 'receipt'"]
+    missing = sorted({"kind", "receipt"} - set(falsifier))
+    if missing:
+        return [f"{where}.switch.falsifier is missing {missing}"]
+    if falsifier["kind"] != RUN_FALSIFIER_KIND:
+        return [
+            f"{where}.switch.falsifier.kind is {falsifier['kind']!r}; the run class "
+            f"accepts only {RUN_FALSIFIER_KIND!r}"
+        ]
+    directory = repo_root / str(falsifier["receipt"])
+    if not directory.is_dir():
+        return [
+            f"{where}.switch.falsifier.receipt names {falsifier['receipt']}, which is "
+            "not a directory in this repository"
+        ]
+    return _verify_manifest(directory, f"{where}.switch.falsifier.receipt")
+
+
+def _verify_manifest(directory: Path, where: str) -> list[str]:
+    """``MANIFEST.sha256`` over ``directory``, re-hashed here.
+
+    The repository's own convention: one ``<sha256> *<relpath>`` line per file,
+    the manifest itself excluded. A named receipt whose bytes moved is not a
+    proof of anything, so this is fail-closed on a missing, malformed, short or
+    mismatching manifest.
+    """
+
+    manifest = directory / MANIFEST_NAME
+    if not manifest.is_file():
+        return [f"{where}: {directory.name} carries no {MANIFEST_NAME}"]
+    try:
+        lines = manifest.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeError) as error:
+        return [f"{where}: cannot read {MANIFEST_NAME}: {error}"]
+    problems: list[str] = []
+    listed = 0
+    for line in lines:
+        if not line.strip():
+            continue
+        digest, _, relpath = line.partition(" *")
+        if not relpath or len(digest) != 64:
+            problems.append(f"malformed line {line!r}")
+            continue
+        listed += 1
+        target = directory / relpath
+        if not target.is_file():
+            problems.append(f"{relpath} is listed and missing")
+            continue
+        if hashlib.sha256(target.read_bytes()).hexdigest() != digest:
+            problems.append(f"{relpath} does not match its listed sha256")
+    if not listed:
+        problems.append(f"{MANIFEST_NAME} carries zero entries")
+    if problems:
+        return [f"{where}: {MANIFEST_NAME} does not verify: " + "; ".join(problems)]
+    return []
 
 
 def _check_proof(proof: object, repo_root: Path, where: str) -> list[str]:
@@ -217,6 +347,14 @@ def evaluate(repo_root: Path, receipt_path: Path | None = None) -> dict[str, Any
         failures.append(
             f"schema is {document.get('schema')!r}, expected {EXPECTED_SCHEMA!r}"
         )
+    classes = document.get("switch_classes")
+    if classes is not None and list(classes) != list(SWITCH_CLASS_NAMES):
+        failures.append(
+            f"'switch_classes' is {list(classes)}; this check knows "
+            f"{list(SWITCH_CLASS_NAMES)}. The field is the receipt's own version "
+            "marker for the switch vocabulary, and a receipt that names a class "
+            "this check cannot enforce is a receipt nobody is checking"
+        )
     statuses = document.get("status_values")
     known_statuses = set(statuses) if isinstance(statuses, Mapping) else set()
 
@@ -258,6 +396,8 @@ def evaluate(repo_root: Path, receipt_path: Path | None = None) -> dict[str, Any
         entry_key = None
         if not switch_failures and table in CONFIG_TABLE_NAMES:
             entry_key = resolve_switch_key(table, entry["switch"]["key"])
+        elif not switch_failures and table == RUN_SWITCH_CLASS:
+            entry_key = resolve_run_switch_key(entry["switch"]["key"])
 
         carrying = (
             [

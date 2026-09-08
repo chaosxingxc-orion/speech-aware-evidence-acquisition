@@ -24,14 +24,18 @@ pins the two runner rails that block the loop-back which would replace it.
 """
 
 import json
+from pathlib import Path
 
 import pytest
 
 from speech_aware_evidence_acquisition.core.config import compose
 from speech_aware_evidence_acquisition.rails.config_tables import (
+    RUN_LEVEL_SWITCH_KEYS,
     ConfigTableError,
     config_key_diff,
+    is_run_null_arm,
     load_config_tables,
+    resolve_run_switch_key,
     switch_key,
 )
 from speech_aware_evidence_acquisition.rails.controllers import (
@@ -40,6 +44,8 @@ from speech_aware_evidence_acquisition.rails.controllers import (
 )
 from speech_aware_evidence_acquisition.rails.phase_review import LOOP_REFUSAL_REASON
 from speech_aware_evidence_acquisition.rails.phase_supply import load_phase_supply_specs
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 SHA = "b" * 64
 
@@ -491,3 +497,55 @@ def test_a_module_cannot_be_switched_by_two_spellings_at_once(tmp_path):
     )
     with pytest.raises(ConfigTableError, match="two spellings of one switch"):
         load_config_tables(composed.values, program)
+
+
+# ---------------------------------------------------------------------------
+# 8. the cross-call dispatcher -- obs_prefetch_depth, the RUN switch class
+#
+# Not one of the assessment's seven. It arrived from the other side, on
+# master, while WAVE W4 was being written, and it is the case the four tables
+# cannot hold: one config key, no per-phase entry, and no request byte moved.
+# Its admission (SAEA-E21-FULL44-DISPATCH-ADMISSION-V1, NEUTRAL) is the reason
+# rails.config_tables carries a fifth switch class.
+#
+# The proof runs on the COMMITTED bytes of both arms rather than on synthetic
+# fragments, because the dispatcher's own sealed cell flew exactly these two.
+# ---------------------------------------------------------------------------
+
+
+def _committed_baseline(name):
+    path = REPO_ROOT / "configs" / "baseline" / f"{name}.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def test_the_cross_call_dispatcher_is_one_run_level_key(tmp_path):
+    off_bytes = _committed_baseline("e21-buf90-zero-locked-scored4")
+    on_bytes = _committed_baseline("e21-buf90-zero-locked-scored4-prefetch1")
+
+    on = _compose_arm(tmp_path, "on", on_bytes)
+    off = _compose_arm(tmp_path, "off", off_bytes)
+    assert on.config_hash != off.config_hash
+    assert switch_key(on.values, off.values) == "obs_prefetch_depth"
+
+    # The OFF arm is the key's ABSENCE, which is the driver's documented
+    # default of 0 -- so OFF is a twin of the pre-knob baseline, not a third
+    # cell identity.
+    assert "obs_prefetch_depth" not in off_bytes
+    assert is_run_null_arm(off_bytes.get("obs_prefetch_depth")) is True
+    assert is_run_null_arm(0) is True
+    assert is_run_null_arm(on_bytes["obs_prefetch_depth"]) is False
+
+
+def test_the_run_switch_class_is_a_closed_allowlist():
+    """A flat key is not admitted to the run class by being flat. Every other
+    obs knob on that same fragment is refused, because a module that changes
+    the request the core sees belongs in a config table."""
+
+    assert set(RUN_LEVEL_SWITCH_KEYS) == {"obs_prefetch_depth"}
+    assert resolve_run_switch_key("obs_prefetch_depth") == "obs_prefetch_depth"
+    for refused in ("obs_batch_slices", "obs_boundary_mode", "obs_buffer_seconds"):
+        with pytest.raises(ConfigTableError, match="closed allowlist"):
+            resolve_run_switch_key(refused)
+    with pytest.raises(ConfigTableError, match="is dotted"):
+        resolve_run_switch_key("run.obs_prefetch_depth")
+
