@@ -1,0 +1,184 @@
+{
+ "artifacts": {
+  "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-TAIL2S-SMOKE-V1/attempt-20260907T230846Z-e2f699/SAEA-E21-FULL44-TAIL2S-SMOKE-V1.run-manifest.json",
+  "manifest_sha256": "68c82ceca89dbf53b0257a8c15ed16db0448b424ee395ca2e457832f8a152505",
+  "outputs": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-TAIL2S-SMOKE-V1/attempt-20260907T230846Z-e2f699/SAEA-E21-FULL44-TAIL2S-SMOKE-V1.outputs.jsonl",
+  "outputs_sha256": "8399a263a4d919e01aff24842caa1ab9ef581d3a7faad7a4254e60a0738f741c",
+  "plan": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-TAIL2S-SMOKE-V1/attempt-20260907T230846Z-e2f699/SAEA-E21-FULL44-TAIL2S-SMOKE-V1.plan.json",
+  "plan_sha256": "4a0441d060bca5269b0f1f99f0e6c7e103770731151e54fb41bbf42c13771fa6",
+  "scores": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-TAIL2S-SMOKE-V1/attempt-20260907T230846Z-e2f699/SAEA-E21-FULL44-TAIL2S-SMOKE-V1.scores.json",
+  "scores_sha256": "db2d505fbaa210240cdb4f4cda05d45bdd89c40852486bce0b9909264d64024e",
+  "trace": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-TAIL2S-SMOKE-V1/attempt-20260907T230846Z-e2f699/SAEA-E21-FULL44-TAIL2S-SMOKE-V1.trace.jsonl",
+  "trace_sha256": "7783f290c918843b18abefa628d9ddda1df62e4cd404dc5469178c7cbbbe6afd"
+ },
+ "attempt_id": "attempt-20260907T230846Z-e2f699",
+ "config_hash": "64e3df5175c9a5a8f48a39f23bcaa5b10e90422b46c431fc79588e37de73c437",
+ "cost": {
+  "audio_seconds_used": 1097.1,
+  "calls_used": 13,
+  "comparator_gpu_hours": 0.9734,
+  "completion_tokens_total": 3363,
+  "cpu_seconds": 23.779999999999998,
+  "delivered_audio_seconds": 1123.1,
+  "gate_setup_seconds": 14.956496317998244,
+  "gpu_hours": 0.008,
+  "gpu_seconds": 28.88288725237042,
+  "kc_e1_gpu_hours": 0.9948,
+  "ku_e1c_gpu_hours": 1.0087,
+  "latency_seconds_total": 229.66137412700118,
+  "peak_vram_mib": 22726.0,
+  "prompt_tokens_total": 15405,
+  "registered_calls": 1750,
+  "registered_gpu_hours": 1.2,
+  "registered_speech_audio_seconds": 150000
+ },
+ "decides_nothing": "This receipt reports the flight. The paired contrast, the intervals and the section 4.3 verdict live in verdict/result-summary.json and in the verdict note.",
+ "legality": {
+  "declaration_warning": null,
+  "evidence_materialization_id": null,
+  "legality_tier": null,
+  "oracle_lineage_materialization": false,
+  "reference_source": null,
+  "span_source": null
+ },
+ "media_falsifier": {
+  "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-TAIL2S-SMOKE-V1/attempt-20260907T230846Z-e2f699",
+  "calls_checked": 1,
+  "chain_disagreements": 0,
+  "chain_examples": [],
+  "cut_seconds_total": 1097.1,
+  "delivered_bytes_total": 35939772,
+  "delivered_seconds_total": 1123.1,
+  "disagreeing_rows": 0,
+  "disagreements": [],
+  "pre_sha256_chain_checked": 13,
+  "run_id": "SAEA-E21-FULL44-TAIL2S-SMOKE-V1",
+  "saturated_slice_count": 0,
+  "saturated_windows": [],
+  "schema": "saea-e21-tail2s-falsifier-v1",
+  "skipped_slice_count": 0,
+  "verdict": "PASS",
+  "windows_checked": 13,
+  "windows_expected": 13
+ },
+ "plan": {
+  "attempt_id": "attempt-20260907T230846Z-e2f699",
+  "carrier_lock_key": "earnings21-original",
+  "execution_profile": "baseline-reproduction",
+  "planned_gpu_hours": 0.05,
+  "planned_model_calls": 20,
+  "planned_speech_audio_seconds": 1400,
+  "protocol_hash": "6a57165d8a1c2114de7cf6337de6351cf1c41c4ca7518e4c5b9d3cb065aa25b8",
+  "run_id": "SAEA-E21-FULL44-TAIL2S-SMOKE-V1",
+  "schema": "saea-execution-plan-v1",
+  "split_identity_hash": "ea8022dfcba86d57498b42630147b6b0f516e476f3a30428b5a62a6ad8bf8ecc",
+  "split_role": "discovery",
+  "study": "speech-aware-evidence-acquisition"
+ },
+ "protocol_hash": "6a57165d8a1c2114de7cf6337de6351cf1c41c4ca7518e4c5b9d3cb065aa25b8",
+ "run_id": "SAEA-E21-FULL44-TAIL2S-SMOKE-V1",
+ "saturation": {
+  "comparator_saturated_slice_count": 0,
+  "kc_e1_saturated_slice_count": 2,
+  "ku_e1c_saturated_slice_count": 2,
+  "max_tokens": 1024,
+  "rule": "reproduction.obs_loop: a slice whose completion reaches the decode cap is a TRUNCATED decode, not a transcript end, so it contributes the empty string to the stitched hypothesis and is counted instead of scored silently.",
+  "saturated_slice_count": 0,
+  "saturated_windows": [],
+  "skipped_slice_count": 0
+ },
+ "schema": "saea-e21-tail2s-flight-receipt-v1",
+ "scorers": [
+  "asr-wer-whisper",
+  "conec-entity-wer-official",
+  "numeric-value-accuracy-v1",
+  "semantic-high-impact-error-rate-v1",
+  "asr-wer",
+  "entity-wer",
+  "cost"
+ ],
+ "serving": {
+  "flight_started_a_server": false,
+  "flight_stopped_a_server": false,
+  "geometry": {
+   "server_c": 36864,
+   "server_np": 6,
+   "slot_tokens": 6144,
+   "slots": 6
+  },
+  "mode": "attached-serving-session",
+  "monitor_summary": {
+   "active_seconds": 24.16240692138672,
+   "first_sample_at": 1788822537.9664097,
+   "host_free_gb_last": 15.413082122802734,
+   "host_free_gb_min": 13.957698822021484,
+   "host_free_gb_min_at": 1788822574.436699,
+   "host_memory_samples": 5,
+   "last_sample_at": 1788822587.5986335,
+   "mean_power_watts": 57.989999999999995,
+   "mean_utilization_percent": 47.6,
+   "parked_definition": "every slot idle AND nvidia-smi utilization.gpu < 5%",
+   "parked_fraction": 0.5131709794613495,
+   "parked_seconds": 25.46981692314148,
+   "peak_power_watts": 91.74,
+   "requests_delta": 12.0,
+   "sample_count": 5,
+   "schema": "saea-serving-monitor-summary-v1",
+   "tokens_delta": null,
+   "vm_available_gb_min": 26.700927734375,
+   "vmmem_ws_gb_max": 37.514827728271484,
+   "wall_seconds": 49.6322238445282,
+   "window": {
+    "from": 1788822528.0,
+    "to": 1788822596.0
+   }
+  },
+  "monitor_summary_basis": "scripts/serving_monitor.py's own summarizer over the attempt's run wall window 1788822528-1788822596; core.driver.run_experiment_bundled writes no session-attach receipt (that is core.flight.FlightRuntime's artifact and this carrier's 90-second OBS tiling cannot go through it), so head and tail idle count as parked against this flight rather than being hidden.",
+  "session_id": "e21-np6-c36864-20260907b",
+  "session_receipt": {
+   "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np6-c36864-20260907b/session-receipt.json",
+   "sha256": "dced0a9e253ebed9f62530e38ccee66a5635761d25c37a507d1d4e8e89ac5d0b"
+  }
+ },
+ "split": {
+  "carrier_lock_key": "earnings21-original",
+  "count": 1,
+  "identity_hash": "ea8022dfcba86d57498b42630147b6b0f516e476f3a30428b5a62a6ad8bf8ecc",
+  "ids": [
+   "4386541"
+  ],
+  "name": "e21-full44-tail2s-smoke-1-sample",
+  "role": "discovery"
+ },
+ "status": "COMPLETED",
+ "study": "speech-aware-evidence-acquisition",
+ "study_commit": "81f2b1e9617e66d8cd58dab22052033cb9bed0d0",
+ "study_repo_dirt": [],
+ "throughput": {
+  "comparator_windows_per_minute": 16.38,
+  "kc_e1_windows_per_minute": 16.244,
+  "ku_e1c_windows_per_minute": 16.482,
+  "realized_realtime_factor": 37.98,
+  "realtime_factor_convention": "metered cut audio seconds divided by the manifest's own nvidia-smi busy-time seconds -- the convention the KC-E1 and KU-E1c receipts use",
+  "run_wall_minutes": 1.13,
+  "run_wall_seconds": 68.0,
+  "wall_clock_realtime_factor": 16.52,
+  "windows_per_minute": 11.471
+ },
+ "tokens": {
+  "completion_total": 3363,
+  "prompt_max": 1258,
+  "prompt_median": 1258,
+  "prompt_min": 309,
+  "prompt_total": 15405,
+  "slot_tokens": 6144,
+  "worst_request_margin_factor": 4.8839
+ },
+ "windows": {
+  "calls": 1,
+  "per_call": {
+   "4386541": 13
+  },
+  "windows": 13
+ }
+}

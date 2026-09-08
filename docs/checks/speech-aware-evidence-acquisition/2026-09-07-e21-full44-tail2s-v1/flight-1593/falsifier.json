@@ -1,0 +1,31 @@
+{
+  "schema": "saea-e21-tail2s-falsifier-v1",
+  "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-TAIL2S-V1/attempt-20260907T231248Z-00f13c",
+  "run_id": "SAEA-E21-FULL44-TAIL2S-V1",
+  "calls_checked": 44,
+  "windows_checked": 1593,
+  "windows_expected": 1593,
+  "disagreeing_rows": 0,
+  "disagreements": [],
+  "pre_sha256_chain_checked": 1593,
+  "chain_disagreements": 0,
+  "chain_examples": [],
+  "saturated_slice_count": 1,
+  "saturated_windows": [
+    {
+      "window_id": "4346818#w0035",
+      "sample_id": "4346818",
+      "window_index": 35,
+      "window_seconds": [
+        3060.0,
+        3150.0
+      ],
+      "accepted_chars": 0
+    }
+  ],
+  "skipped_slice_count": 0,
+  "cut_seconds_total": 141345.852688,
+  "delivered_seconds_total": 144531.852688,
+  "delivered_bytes_total": 4625089378,
+  "verdict": "PASS"
+}

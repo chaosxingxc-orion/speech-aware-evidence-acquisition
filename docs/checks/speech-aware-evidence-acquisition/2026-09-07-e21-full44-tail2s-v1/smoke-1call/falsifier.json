@@ -1,0 +1,20 @@
+{
+  "schema": "saea-e21-tail2s-falsifier-v1",
+  "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-TAIL2S-SMOKE-V1/attempt-20260907T230846Z-e2f699",
+  "run_id": "SAEA-E21-FULL44-TAIL2S-SMOKE-V1",
+  "calls_checked": 1,
+  "windows_checked": 13,
+  "windows_expected": 13,
+  "disagreeing_rows": 0,
+  "disagreements": [],
+  "pre_sha256_chain_checked": 13,
+  "chain_disagreements": 0,
+  "chain_examples": [],
+  "saturated_slice_count": 0,
+  "saturated_windows": [],
+  "skipped_slice_count": 0,
+  "cut_seconds_total": 1097.1,
+  "delivered_seconds_total": 1123.1,
+  "delivered_bytes_total": 35939772,
+  "verdict": "PASS"
+}

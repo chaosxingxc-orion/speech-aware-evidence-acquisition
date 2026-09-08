@@ -1,0 +1,88 @@
+{
+ "status": "OK",
+ "windows_left": 1593,
+ "windows_right": 1593,
+ "windows_paired": 1593,
+ "span_misaligned": 0,
+ "span_misaligned_examples": [],
+ "saturated_left": [],
+ "saturated_right": [
+  "4346818#w0035"
+ ],
+ "corpus_wer_window_level_stratified_by_call_ci90": {
+  "point": -0.9281058468722643,
+  "ci_low": -1.0632461536883924,
+  "ci_high": -0.7781854925042669,
+  "sigma_hat": 0.08853317837317416,
+  "n": 1593,
+  "replicates": 10000,
+  "seed": 20260903,
+  "ci_level": 0.9
+ },
+ "corpus_wer_window_level_clustered_by_call_ci90": {
+  "point": -0.9281058468722643,
+  "ci_low": -1.0513791180391707,
+  "ci_high": -0.7948705619847256,
+  "sigma_hat": 0.07889407716528754,
+  "n": 1593,
+  "replicates": 10000,
+  "seed": 20260903,
+  "ci_level": 0.9
+ },
+ "mechanism_slices": {
+  "interior_ends_within_20ms_of_speech": {
+   "n": 1088,
+   "comparator_wer_percent": 8.200672061335622,
+   "cell_wer_percent": 7.222716809829728,
+   "delta": -0.977955251505894,
+   "clustered_by_call_ci90": {
+    "point": -0.977955251505894,
+    "ci_low": -1.1609098285704842,
+    "ci_high": -0.7736844174508735,
+    "sigma_hat": 0.1181359738530159,
+    "n": 1088,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   }
+  },
+  "already_carries_2s_or_more": {
+   "n": 39,
+   "comparator_wer_percent": 8.302664507581333,
+   "cell_wer_percent": 7.935806831566549,
+   "delta": -0.36685767601478414,
+   "clustered_by_call_ci90": {
+    "point": -0.36685767601478414,
+    "ci_low": -0.7584542048989005,
+    "ci_high": -0.017824506265283105,
+    "sigma_hat": 0.22485876504244756,
+    "n": 39,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   }
+  },
+  "remainder": {
+   "n": 466,
+   "comparator_wer_percent": 8.18997972777295,
+   "cell_wer_percent": 7.345063557481637,
+   "delta": -0.844916170291313,
+   "clustered_by_call_ci90": {
+    "point": -0.844916170291313,
+    "ci_low": -0.9353299465103951,
+    "ci_high": -0.7529816567249654,
+    "sigma_hat": 0.055491572453791764,
+    "n": 466,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   }
+  }
+ },
+ "clause_3": {
+  "rule": "section 4.3 item 3: the per-window contrast is LARGER on the interior windows that end within 20 ms of active speech than on the windows that already carry 2.0 s or more of trailing silence",
+  "interior_delta": -0.977955251505894,
+  "already_silent_delta": -0.36685767601478414,
+  "verdict": "PASS"
+ }
+}

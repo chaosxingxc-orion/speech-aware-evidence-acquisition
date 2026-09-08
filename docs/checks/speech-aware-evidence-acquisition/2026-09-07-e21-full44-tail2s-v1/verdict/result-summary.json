@@ -1,0 +1,1584 @@
+{
+ "schema": "saea-e21-tail2s-verdict-v1",
+ "study": "speech-aware-evidence-acquisition",
+ "exposure_row": "SAEA-E21-FULL44-TAIL2S-V1",
+ "cell": "SAEA-E21-FULL44-TAIL2S-V1",
+ "comparator": {
+  "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+  "attempt_id": "attempt-20260904T233816Z-bcd338"
+ },
+ "carrier_lock_key": "earnings21-original",
+ "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+ "calls_paired": 44,
+ "sign_convention": "every delta is cell minus comparator",
+ "statistics": {
+  "module": "analysis.paired.resampled_statistic",
+  "seed": 20260903,
+  "replicates": 10000,
+  "ci_level": 0.9,
+  "honest_interval": "call-clustered (44 clusters); section 2",
+  "optimistic_interval": "window-level stratified by call; section 2 labels it a bound"
+ },
+ "null": {
+  "measured_on_this_carrier": false,
+  "imported_from": "Earnings-22 same-request null, 1,432 rows",
+  "point": -0.0844,
+  "ci90": [
+   -0.2356,
+   0.0692
+  ],
+  "imported_margin_half_width": 0.1524,
+  "note": "Section 3: no same-request null has been measured on Earnings-21. The clause-1 threshold of -0.2356 and the clause-2 margin of 0.1524 points are IMPORTED from Earnings-22, not measured here, and measuring this carrier's own null is the named next cell."
+ },
+ "identity_gate": {
+  "verdict": "PASS",
+  "checks": [
+   {
+    "check": "corpus_wer_percent",
+    "actual": 8.1995,
+    "expected": 8.1995,
+    "verdict": "PASS"
+   },
+   {
+    "check": "substitutions",
+    "actual": 13098,
+    "expected": 13098,
+    "verdict": "PASS"
+   },
+   {
+    "check": "deletions",
+    "actual": 5701,
+    "expected": 5701,
+    "verdict": "PASS"
+   },
+   {
+    "check": "insertions",
+    "actual": 10700,
+    "expected": 10700,
+    "verdict": "PASS"
+   },
+   {
+    "check": "reference_words",
+    "actual": 359765,
+    "expected": 359765,
+    "verdict": "PASS"
+   },
+   {
+    "check": "conec_overall_wer_percent",
+    "actual": 8.2,
+    "expected": 8.2,
+    "verdict": "PASS"
+   },
+   {
+    "check": "conec_non_entity_wer_percent",
+    "actual": 4.73,
+    "expected": 4.73,
+    "verdict": "PASS"
+   },
+   {
+    "check": "numeric_value_accuracy_percent",
+    "actual": 90.7335,
+    "expected": 90.7335,
+    "verdict": "PASS"
+   },
+   {
+    "check": "semantic_high_impact_error_rate_percent",
+    "actual": 0.0278,
+    "expected": 0.0278,
+    "verdict": "PASS"
+   }
+  ],
+  "basis": "the sealed comparator's own committed score receipts, re-pooled from its 44 per-call rows; no arm is re-flown and no scorer is re-run"
+ },
+ "metrics": {
+  "corpus_wer_percent": {
+   "lower_is_better": true,
+   "comparator": 8.19951913054355,
+   "cell": 7.2714132836712855,
+   "delta": -0.9281058468722643,
+   "call_clustered_ci90": {
+    "point": -0.9281058468722643,
+    "ci_low": -1.0513791180391707,
+    "ci_high": -0.7948705619847256,
+    "sigma_hat": 0.07889407716528754,
+    "n": 44,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   },
+   "natural_mixture": {
+    "comparator": 8.19951913054355,
+    "cell": 7.2714132836712855,
+    "delta": -0.9281058468722643
+   },
+   "equal_stratum": {
+    "comparator": 8.003641006407829,
+    "cell": 7.063780080626429,
+    "delta": -0.9398609257814003
+   }
+  },
+  "conec_overall_wer_percent": {
+   "lower_is_better": true,
+   "comparator": 8.19951913054355,
+   "cell": 7.2714132836712855,
+   "delta": -0.9281058468722643,
+   "call_clustered_ci90": {
+    "point": -0.9281058468722643,
+    "ci_low": -1.0513791180391707,
+    "ci_high": -0.7948705619847256,
+    "sigma_hat": 0.07889407716528754,
+    "n": 44,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   },
+   "natural_mixture": {
+    "comparator": 8.19951913054355,
+    "cell": 7.2714132836712855,
+    "delta": -0.9281058468722643
+   },
+   "equal_stratum": {
+    "comparator": 8.003641006407829,
+    "cell": 7.063780080626429,
+    "delta": -0.9398609257814003
+   }
+  },
+  "conec_non_entity_wer_percent": {
+   "lower_is_better": true,
+   "comparator": 4.730375807919667,
+   "cell": 4.833552940712579,
+   "delta": 0.1031771327929123,
+   "call_clustered_ci90": {
+    "point": 0.1031771327929123,
+    "ci_low": -0.03504831174613111,
+    "ci_high": 0.2492903949229528,
+    "sigma_hat": 0.08624608497694927,
+    "n": 44,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   },
+   "natural_mixture": {
+    "comparator": 4.730375807919667,
+    "cell": 4.833552940712579,
+    "delta": 0.1031771327929123
+   },
+   "equal_stratum": {
+    "comparator": 4.521586081987699,
+    "cell": 4.624248311478758,
+    "delta": 0.10266222949105863
+   }
+  },
+  "conec_person_wer_percent": {
+   "lower_is_better": true,
+   "comparator": 22.488858416181007,
+   "cell": 23.1744943435036,
+   "delta": 0.6856359273225934,
+   "call_clustered_ci90": {
+    "point": 0.6856359273225934,
+    "ci_low": 0.1314038869433313,
+    "ci_high": 1.3466959349848926,
+    "sigma_hat": 0.3727163538422353,
+    "n": 44,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   },
+   "natural_mixture": {
+    "comparator": 22.488858416181007,
+    "cell": 23.1744943435036,
+    "delta": 0.6856359273225934
+   },
+   "equal_stratum": {
+    "comparator": 22.01317686264394,
+    "cell": 22.9016545130379,
+    "delta": 0.8884776503939591
+   }
+  },
+  "conec_org_wer_percent": {
+   "lower_is_better": true,
+   "comparator": 17.212926885170756,
+   "cell": 16.8691267476507,
+   "delta": -0.34380013752005567,
+   "call_clustered_ci90": {
+    "point": -0.34380013752005567,
+    "ci_low": -0.9607483444831421,
+    "ci_high": 0.26511837889685674,
+    "sigma_hat": 0.37323034976198083,
+    "n": 44,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   },
+   "natural_mixture": {
+    "comparator": 17.212926885170756,
+    "cell": 16.8691267476507,
+    "delta": -0.34380013752005567
+   },
+   "equal_stratum": {
+    "comparator": 18.69275866649916,
+    "cell": 18.57621166537721,
+    "delta": -0.11654700112195115
+   }
+  },
+  "numeric_value_accuracy_percent": {
+   "lower_is_better": false,
+   "comparator": 90.73351140332854,
+   "cell": 90.77460447914527,
+   "delta": 0.041093075816732494,
+   "call_clustered_ci90": {
+    "point": 0.041093075816732494,
+    "ci_low": -0.20743063691601904,
+    "ci_high": 0.2877257755565124,
+    "sigma_hat": 0.14915973036831356,
+    "n": 44,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   },
+   "natural_mixture": {
+    "comparator": 90.73351140332854,
+    "cell": 90.77460447914527,
+    "delta": 0.041093075816732494
+   },
+   "equal_stratum": {
+    "comparator": 90.97869673299954,
+    "cell": 91.28964441213063,
+    "delta": 0.31094767913108967
+   }
+  },
+  "semantic_high_impact_error_rate_percent": {
+   "lower_is_better": true,
+   "comparator": 0.027795922338192988,
+   "cell": 0.0269620446680472,
+   "delta": -0.0008338776701457898,
+   "call_clustered_ci90": {
+    "point": -0.0008338776701457898,
+    "ci_low": -0.004209465928704281,
+    "ci_high": 0.001987002590689237,
+    "sigma_hat": 0.0019210578446152702,
+    "n": 44,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   },
+   "natural_mixture": {
+    "comparator": 0.027795922338192988,
+    "cell": 0.0269620446680472,
+    "delta": -0.0008338776701457898
+   },
+   "equal_stratum": {
+    "comparator": 0.022670922434934352,
+    "cell": 0.022559288812285645,
+    "delta": -0.00011163362264870677
+   }
+  }
+ },
+ "per_call": [
+  {
+   "sample_id": "4320211",
+   "sector": "Consumer Goods",
+   "sample_rate_hz": "24000",
+   "windows": 37,
+   "comparator_wer_percent": 7.160152196471809,
+   "cell_wer_percent": 6.214689265536723,
+   "comparator_sdi": [
+    286,
+    104,
+    231
+   ],
+   "cell_sdi": [
+    286,
+    108,
+    145
+   ],
+   "reference_words": 8673,
+   "comparator_numeric_accuracy_percent": 90.49295774647888,
+   "cell_numeric_accuracy_percent": 90.49295774647888,
+   "wer_delta": -0.9454629309350855
+  },
+  {
+   "sample_id": "4330115",
+   "sector": "Industrial Goods",
+   "sample_rate_hz": "24000",
+   "windows": 28,
+   "comparator_wer_percent": 7.166566083283041,
+   "cell_wer_percent": 6.578153289076645,
+   "comparator_sdi": [
+    261,
+    72,
+    142
+   ],
+   "cell_sdi": [
+    250,
+    86,
+    100
+   ],
+   "reference_words": 6628,
+   "comparator_numeric_accuracy_percent": 94.15584415584415,
+   "cell_numeric_accuracy_percent": 95.45454545454545,
+   "wer_delta": -0.5884127942063966
+  },
+  {
+   "sample_id": "4341191",
+   "sector": "Conglomerate",
+   "sample_rate_hz": "24000",
+   "windows": 64,
+   "comparator_wer_percent": 7.8055154391032255,
+   "cell_wer_percent": 6.918368750429819,
+   "comparator_sdi": [
+    492,
+    242,
+    401
+   ],
+   "cell_sdi": [
+    493,
+    266,
+    247
+   ],
+   "reference_words": 14541,
+   "comparator_numeric_accuracy_percent": 92.44851258581235,
+   "cell_numeric_accuracy_percent": 92.67734553775743,
+   "wer_delta": -0.8871466886734067
+  },
+  {
+   "sample_id": "4344338",
+   "sector": "Conglomerate",
+   "sample_rate_hz": "44100",
+   "windows": 31,
+   "comparator_wer_percent": 4.722142240138209,
+   "cell_wer_percent": 3.7143679815721278,
+   "comparator_sdi": [
+    123,
+    55,
+    150
+   ],
+   "cell_sdi": [
+    117,
+    59,
+    82
+   ],
+   "reference_words": 6946,
+   "comparator_numeric_accuracy_percent": 97.58064516129032,
+   "cell_numeric_accuracy_percent": 97.58064516129032,
+   "wer_delta": -1.007774258566081
+  },
+  {
+   "sample_id": "4344866",
+   "sector": "Utilities",
+   "sample_rate_hz": "24000",
+   "windows": 37,
+   "comparator_wer_percent": 6.11171960569551,
+   "cell_wer_percent": 5.290251916757941,
+   "comparator_sdi": [
+    219,
+    94,
+    245
+   ],
+   "cell_sdi": [
+    219,
+    95,
+    169
+   ],
+   "reference_words": 9130,
+   "comparator_numeric_accuracy_percent": 92.63803680981596,
+   "cell_numeric_accuracy_percent": 92.63803680981596,
+   "wer_delta": -0.8214676889375685
+  },
+  {
+   "sample_id": "4346818",
+   "sector": "Industrial Goods",
+   "sample_rate_hz": "11025",
+   "windows": 45,
+   "comparator_wer_percent": 10.950036469730124,
+   "cell_wer_percent": 11.752370532458059,
+   "comparator_sdi": [
+    542,
+    362,
+    297
+   ],
+   "cell_sdi": [
+    521,
+    604,
+    164
+   ],
+   "reference_words": 10968,
+   "comparator_numeric_accuracy_percent": 91.90031152647975,
+   "cell_numeric_accuracy_percent": 91.58878504672897,
+   "wer_delta": 0.802334062727935
+  },
+  {
+   "sample_id": "4346923",
+   "sector": "Industrial Goods",
+   "sample_rate_hz": "16000",
+   "windows": 53,
+   "comparator_wer_percent": 18.94155908150192,
+   "cell_wer_percent": 17.66039223415788,
+   "comparator_sdi": [
+    917,
+    426,
+    579
+   ],
+   "cell_sdi": [
+    911,
+    426,
+    455
+   ],
+   "reference_words": 10147,
+   "comparator_numeric_accuracy_percent": 88.80597014925372,
+   "cell_numeric_accuracy_percent": 88.80597014925372,
+   "wer_delta": -1.2811668473440427
+  },
+  {
+   "sample_id": "4359732",
+   "sector": "Services",
+   "sample_rate_hz": "44100",
+   "windows": 55,
+   "comparator_wer_percent": 6.921282294996976,
+   "cell_wer_percent": 5.823900457962499,
+   "comparator_sdi": [
+    352,
+    179,
+    270
+   ],
+   "cell_sdi": [
+    337,
+    209,
+    128
+   ],
+   "reference_words": 11573,
+   "comparator_numeric_accuracy_percent": 89.36170212765957,
+   "cell_numeric_accuracy_percent": 89.36170212765957,
+   "wer_delta": -1.0973818370344768
+  },
+  {
+   "sample_id": "4359971",
+   "sector": "Industrial Goods",
+   "sample_rate_hz": "24000",
+   "windows": 42,
+   "comparator_wer_percent": 5.777684739376178,
+   "cell_wer_percent": 4.856604563533598,
+   "comparator_sdi": [
+    226,
+    122,
+    204
+   ],
+   "cell_sdi": [
+    218,
+    124,
+    122
+   ],
+   "reference_words": 9554,
+   "comparator_numeric_accuracy_percent": 90.29411764705883,
+   "cell_numeric_accuracy_percent": 90.29411764705883,
+   "wer_delta": -0.9210801758425795
+  },
+  {
+   "sample_id": "4360366",
+   "sector": "Financial",
+   "sample_rate_hz": "24000",
+   "windows": 44,
+   "comparator_wer_percent": 5.785911733867124,
+   "cell_wer_percent": 4.794585835478029,
+   "comparator_sdi": [
+    241,
+    112,
+    254
+   ],
+   "cell_sdi": [
+    238,
+    119,
+    146
+   ],
+   "reference_words": 10491,
+   "comparator_numeric_accuracy_percent": 90.56603773584905,
+   "cell_numeric_accuracy_percent": 90.94339622641509,
+   "wer_delta": -0.9913258983890954
+  },
+  {
+   "sample_id": "4360674",
+   "sector": "Utilities",
+   "sample_rate_hz": "11025",
+   "windows": 40,
+   "comparator_wer_percent": 8.18400922141884,
+   "cell_wer_percent": 7.125641831709106,
+   "comparator_sdi": [
+    361,
+    122,
+    298
+   ],
+   "cell_sdi": [
+    359,
+    128,
+    193
+   ],
+   "reference_words": 9543,
+   "comparator_numeric_accuracy_percent": 85.32423208191126,
+   "cell_numeric_accuracy_percent": 85.32423208191126,
+   "wer_delta": -1.0583673897097343
+  },
+  {
+   "sample_id": "4360717",
+   "sector": "Consumer Goods",
+   "sample_rate_hz": "24000",
+   "windows": 51,
+   "comparator_wer_percent": 8.40329079919409,
+   "cell_wer_percent": 7.521826729348556,
+   "comparator_sdi": [
+    440,
+    308,
+    253
+   ],
+   "cell_sdi": [
+    435,
+    331,
+    130
+   ],
+   "reference_words": 11912,
+   "comparator_numeric_accuracy_percent": 88.88888888888889,
+   "cell_numeric_accuracy_percent": 88.0952380952381,
+   "wer_delta": -0.8814640698455349
+  },
+  {
+   "sample_id": "4361631",
+   "sector": "Utilities",
+   "sample_rate_hz": "22050",
+   "windows": 50,
+   "comparator_wer_percent": 7.255803521363688,
+   "cell_wer_percent": 6.280139060222048,
+   "comparator_sdi": [
+    283,
+    155,
+    209
+   ],
+   "cell_sdi": [
+    270,
+    180,
+    110
+   ],
+   "reference_words": 8917,
+   "comparator_numeric_accuracy_percent": 86.9090909090909,
+   "cell_numeric_accuracy_percent": 85.81818181818181,
+   "wer_delta": -0.9756644611416396
+  },
+  {
+   "sample_id": "4363614",
+   "sector": "Financial",
+   "sample_rate_hz": "11025",
+   "windows": 63,
+   "comparator_wer_percent": 14.838709677419354,
+   "cell_wer_percent": 13.938484621155288,
+   "comparator_sdi": [
+    778,
+    339,
+    861
+   ],
+   "cell_sdi": [
+    776,
+    344,
+    738
+   ],
+   "reference_words": 13330,
+   "comparator_numeric_accuracy_percent": 91.71428571428571,
+   "cell_numeric_accuracy_percent": 91.42857142857143,
+   "wer_delta": -0.9002250562640661
+  },
+  {
+   "sample_id": "4364366",
+   "sector": "Basic Materials",
+   "sample_rate_hz": "11025",
+   "windows": 39,
+   "comparator_wer_percent": 10.18036557317516,
+   "cell_wer_percent": 9.27248517128677,
+   "comparator_sdi": [
+    447,
+    103,
+    291
+   ],
+   "cell_sdi": [
+    451,
+    106,
+    209
+   ],
+   "reference_words": 8261,
+   "comparator_numeric_accuracy_percent": 91.34615384615384,
+   "cell_numeric_accuracy_percent": 91.34615384615384,
+   "wer_delta": -0.9078804018883915
+  },
+  {
+   "sample_id": "4365024",
+   "sector": "Services",
+   "sample_rate_hz": "16000",
+   "windows": 49,
+   "comparator_wer_percent": 6.90752688172043,
+   "cell_wer_percent": 5.823655913978494,
+   "comparator_sdi": [
+    348,
+    172,
+    283
+   ],
+   "cell_sdi": [
+    338,
+    184,
+    155
+   ],
+   "reference_words": 11625,
+   "comparator_numeric_accuracy_percent": 93.33333333333333,
+   "cell_numeric_accuracy_percent": 93.0952380952381,
+   "wer_delta": -1.0838709677419356
+  },
+  {
+   "sample_id": "4365948",
+   "sector": "Basic Materials",
+   "sample_rate_hz": "22050",
+   "windows": 28,
+   "comparator_wer_percent": 4.4898568019093075,
+   "cell_wer_percent": 3.3562052505966586,
+   "comparator_sdi": [
+    123,
+    38,
+    140
+   ],
+   "cell_sdi": [
+    125,
+    42,
+    58
+   ],
+   "reference_words": 6704,
+   "comparator_numeric_accuracy_percent": 87.96680497925311,
+   "cell_numeric_accuracy_percent": 88.38174273858921,
+   "wer_delta": -1.1336515513126488
+  },
+  {
+   "sample_id": "4366302",
+   "sector": "Financial",
+   "sample_rate_hz": "44100",
+   "windows": 40,
+   "comparator_wer_percent": 5.802456806152002,
+   "cell_wer_percent": 6.042145211225407,
+   "comparator_sdi": [
+    257,
+    90,
+    234
+   ],
+   "cell_sdi": [
+    253,
+    197,
+    155
+   ],
+   "reference_words": 10013,
+   "comparator_numeric_accuracy_percent": 88.66995073891626,
+   "cell_numeric_accuracy_percent": 87.6847290640394,
+   "wer_delta": 0.23968840507340428
+  },
+  {
+   "sample_id": "4366429",
+   "sector": "Healthcare",
+   "sample_rate_hz": "44100",
+   "windows": 45,
+   "comparator_wer_percent": 6.54577620521893,
+   "cell_wer_percent": 5.625829279080053,
+   "comparator_sdi": [
+    270,
+    216,
+    254
+   ],
+   "cell_sdi": [
+    251,
+    240,
+    145
+   ],
+   "reference_words": 11305,
+   "comparator_numeric_accuracy_percent": 84.0909090909091,
+   "cell_numeric_accuracy_percent": 84.0909090909091,
+   "wer_delta": -0.9199469261388771
+  },
+  {
+   "sample_id": "4366522",
+   "sector": "Healthcare",
+   "sample_rate_hz": "22050",
+   "windows": 21,
+   "comparator_wer_percent": 7.22774678632064,
+   "cell_wer_percent": 5.457191365510551,
+   "comparator_sdi": [
+    147,
+    34,
+    117
+   ],
+   "cell_sdi": [
+    128,
+    34,
+    63
+   ],
+   "reference_words": 4123,
+   "comparator_numeric_accuracy_percent": 89.28571428571429,
+   "cell_numeric_accuracy_percent": 92.14285714285714,
+   "wer_delta": -1.7705554208100898
+  },
+  {
+   "sample_id": "4366893",
+   "sector": "Basic Materials",
+   "sample_rate_hz": "16000",
+   "windows": 27,
+   "comparator_wer_percent": 7.668231611893583,
+   "cell_wer_percent": 6.901408450704225,
+   "comparator_sdi": [
+    221,
+    93,
+    176
+   ],
+   "cell_sdi": [
+    217,
+    108,
+    116
+   ],
+   "reference_words": 6390,
+   "comparator_numeric_accuracy_percent": 92.27053140096618,
+   "cell_numeric_accuracy_percent": 93.71980676328502,
+   "wer_delta": -0.7668231611893583
+  },
+  {
+   "sample_id": "4367318",
+   "sector": "Healthcare",
+   "sample_rate_hz": "24000",
+   "windows": 20,
+   "comparator_wer_percent": 7.020389249304912,
+   "cell_wer_percent": 6.093605189990732,
+   "comparator_sdi": [
+    157,
+    43,
+    103
+   ],
+   "cell_sdi": [
+    157,
+    46,
+    60
+   ],
+   "reference_words": 4316,
+   "comparator_numeric_accuracy_percent": 98.85057471264368,
+   "cell_numeric_accuracy_percent": 98.85057471264368,
+   "wer_delta": -0.9267840593141798
+  },
+  {
+   "sample_id": "4367535",
+   "sector": "Healthcare",
+   "sample_rate_hz": "24000",
+   "windows": 36,
+   "comparator_wer_percent": 11.426091987272201,
+   "cell_wer_percent": 10.052068267283772,
+   "comparator_sdi": [
+    409,
+    111,
+    270
+   ],
+   "cell_sdi": [
+    392,
+    116,
+    187
+   ],
+   "reference_words": 6914,
+   "comparator_numeric_accuracy_percent": 93.48837209302326,
+   "cell_numeric_accuracy_percent": 93.95348837209302,
+   "wer_delta": -1.374023719988429
+  },
+  {
+   "sample_id": "4368670",
+   "sector": "Utilities",
+   "sample_rate_hz": "22050",
+   "windows": 47,
+   "comparator_wer_percent": 10.095510131214853,
+   "cell_wer_percent": 7.926448272784076,
+   "comparator_sdi": [
+    482,
+    320,
+    329
+   ],
+   "cell_sdi": [
+    486,
+    136,
+    266
+   ],
+   "reference_words": 11203,
+   "comparator_numeric_accuracy_percent": 93.5361216730038,
+   "cell_numeric_accuracy_percent": 94.67680608365019,
+   "wer_delta": -2.1690618584307773
+  },
+  {
+   "sample_id": "4374910",
+   "sector": "Financial",
+   "sample_rate_hz": "24000",
+   "windows": 23,
+   "comparator_wer_percent": 5.872790083316399,
+   "cell_wer_percent": 4.59256248729933,
+   "comparator_sdi": [
+    107,
+    43,
+    139
+   ],
+   "cell_sdi": [
+    109,
+    43,
+    74
+   ],
+   "reference_words": 4921,
+   "comparator_numeric_accuracy_percent": 81.3953488372093,
+   "cell_numeric_accuracy_percent": 88.37209302325581,
+   "wer_delta": -1.2802275960170695
+  },
+  {
+   "sample_id": "4375653",
+   "sector": "Healthcare",
+   "sample_rate_hz": "24000",
+   "windows": 39,
+   "comparator_wer_percent": 7.986074480430426,
+   "cell_wer_percent": 6.793965608186517,
+   "comparator_sdi": [
+    337,
+    100,
+    320
+   ],
+   "cell_sdi": [
+    337,
+    104,
+    203
+   ],
+   "reference_words": 9479,
+   "comparator_numeric_accuracy_percent": 90.73359073359073,
+   "cell_numeric_accuracy_percent": 90.73359073359073,
+   "wer_delta": -1.1921088722439084
+  },
+  {
+   "sample_id": "4382825",
+   "sector": "Basic Materials",
+   "sample_rate_hz": "44100",
+   "windows": 43,
+   "comparator_wer_percent": 10.62657577738351,
+   "cell_wer_percent": 9.646092072088898,
+   "comparator_sdi": [
+    463,
+    263,
+    412
+   ],
+   "cell_sdi": [
+    470,
+    273,
+    290
+   ],
+   "reference_words": 10709,
+   "comparator_numeric_accuracy_percent": 87.62376237623762,
+   "cell_numeric_accuracy_percent": 86.13861386138613,
+   "wer_delta": -0.9804837052946116
+  },
+  {
+   "sample_id": "4383161",
+   "sector": "Consumer Goods",
+   "sample_rate_hz": "24000",
+   "windows": 38,
+   "comparator_wer_percent": 8.244531688166012,
+   "cell_wer_percent": 7.291082445316881,
+   "comparator_sdi": [
+    407,
+    124,
+    204
+   ],
+   "cell_sdi": [
+    402,
+    138,
+    110
+   ],
+   "reference_words": 8915,
+   "comparator_numeric_accuracy_percent": 90.67357512953367,
+   "cell_numeric_accuracy_percent": 90.15544041450777,
+   "wer_delta": -0.9534492428491301
+  },
+  {
+   "sample_id": "4384198",
+   "sector": "Industrial Goods",
+   "sample_rate_hz": "44100",
+   "windows": 30,
+   "comparator_wer_percent": 8.023751522533496,
+   "cell_wer_percent": 7.338611449451888,
+   "comparator_sdi": [
+    265,
+    62,
+    200
+   ],
+   "cell_sdi": [
+    262,
+    65,
+    155
+   ],
+   "reference_words": 6568,
+   "comparator_numeric_accuracy_percent": 87.37373737373737,
+   "cell_numeric_accuracy_percent": 87.37373737373737,
+   "wer_delta": -0.685140073081608
+  },
+  {
+   "sample_id": "4384683",
+   "sector": "Basic Materials",
+   "sample_rate_hz": "24000",
+   "windows": 17,
+   "comparator_wer_percent": 6.640841173215274,
+   "cell_wer_percent": 5.644714997232983,
+   "comparator_sdi": [
+    83,
+    32,
+    125
+   ],
+   "cell_sdi": [
+    88,
+    33,
+    83
+   ],
+   "reference_words": 3614,
+   "comparator_numeric_accuracy_percent": 92.92929292929293,
+   "cell_numeric_accuracy_percent": 92.92929292929293,
+   "wer_delta": -0.9961261759822913
+  },
+  {
+   "sample_id": "4384744",
+   "sector": "Technology",
+   "sample_rate_hz": "16000",
+   "windows": 37,
+   "comparator_wer_percent": 9.221336603310853,
+   "cell_wer_percent": 8.436541998773759,
+   "comparator_sdi": [
+    354,
+    155,
+    243
+   ],
+   "cell_sdi": [
+    355,
+    157,
+    176
+   ],
+   "reference_words": 8155,
+   "comparator_numeric_accuracy_percent": 90.76923076923077,
+   "cell_numeric_accuracy_percent": 89.53846153846153,
+   "wer_delta": -0.7847946045370939
+  },
+  {
+   "sample_id": "4384964",
+   "sector": "Utilities",
+   "sample_rate_hz": "24000",
+   "windows": 45,
+   "comparator_wer_percent": 8.087863144042919,
+   "cell_wer_percent": 6.98451260249013,
+   "comparator_sdi": [
+    317,
+    148,
+    334
+   ],
+   "cell_sdi": [
+    313,
+    159,
+    218
+   ],
+   "reference_words": 9879,
+   "comparator_numeric_accuracy_percent": 92.5,
+   "cell_numeric_accuracy_percent": 92.5,
+   "wer_delta": -1.1033505415527882
+  },
+  {
+   "sample_id": "4385072",
+   "sector": "Technology",
+   "sample_rate_hz": "24000",
+   "windows": 29,
+   "comparator_wer_percent": 5.308641975308642,
+   "cell_wer_percent": 4.506172839506172,
+   "comparator_sdi": [
+    116,
+    58,
+    170
+   ],
+   "cell_sdi": [
+    112,
+    63,
+    117
+   ],
+   "reference_words": 6480,
+   "comparator_numeric_accuracy_percent": 95.0,
+   "cell_numeric_accuracy_percent": 95.0,
+   "wer_delta": -0.8024691358024691
+  },
+  {
+   "sample_id": "4385388",
+   "sector": "Consumer Goods",
+   "sample_rate_hz": "44100",
+   "windows": 49,
+   "comparator_wer_percent": 6.25,
+   "cell_wer_percent": 4.797535211267606,
+   "comparator_sdi": [
+    267,
+    83,
+    360
+   ],
+   "cell_sdi": [
+    265,
+    80,
+    200
+   ],
+   "reference_words": 11360,
+   "comparator_numeric_accuracy_percent": 80.21201413427562,
+   "cell_numeric_accuracy_percent": 80.21201413427562,
+   "wer_delta": -1.452464788732394
+  },
+  {
+   "sample_id": "4385939",
+   "sector": "Consumer Goods",
+   "sample_rate_hz": "24000",
+   "windows": 34,
+   "comparator_wer_percent": 5.015914828229612,
+   "cell_wer_percent": 4.247612775765558,
+   "comparator_sdi": [
+    183,
+    93,
+    181
+   ],
+   "cell_sdi": [
+    172,
+    102,
+    113
+   ],
+   "reference_words": 9111,
+   "comparator_numeric_accuracy_percent": 95.91836734693878,
+   "cell_numeric_accuracy_percent": 95.91836734693878,
+   "wer_delta": -0.7683020524640547
+  },
+  {
+   "sample_id": "4386541",
+   "sector": "Services",
+   "sample_rate_hz": "16000",
+   "windows": 13,
+   "comparator_wer_percent": 6.355620867009552,
+   "cell_wer_percent": 5.106539309331374,
+   "comparator_sdi": [
+    65,
+    34,
+    74
+   ],
+   "cell_sdi": [
+    63,
+    34,
+    42
+   ],
+   "reference_words": 2722,
+   "comparator_numeric_accuracy_percent": 92.5233644859813,
+   "cell_numeric_accuracy_percent": 94.39252336448598,
+   "wer_delta": -1.2490815576781786
+  },
+  {
+   "sample_id": "4387332",
+   "sector": "Services",
+   "sample_rate_hz": "24000",
+   "windows": 15,
+   "comparator_wer_percent": 6.277915632754342,
+   "cell_wer_percent": 5.5334987593052105,
+   "comparator_sdi": [
+    125,
+    52,
+    76
+   ],
+   "cell_sdi": [
+    122,
+    54,
+    47
+   ],
+   "reference_words": 4030,
+   "comparator_numeric_accuracy_percent": 92.42424242424242,
+   "cell_numeric_accuracy_percent": 93.93939393939394,
+   "wer_delta": -0.7444168734491319
+  },
+  {
+   "sample_id": "4387383",
+   "sector": "Financial",
+   "sample_rate_hz": "22050",
+   "windows": 24,
+   "comparator_wer_percent": 6.699346405228758,
+   "cell_wer_percent": 5.773420479302832,
+   "comparator_sdi": [
+    124,
+    41,
+    81
+   ],
+   "cell_sdi": [
+    124,
+    43,
+    45
+   ],
+   "reference_words": 3672,
+   "comparator_numeric_accuracy_percent": 95.91836734693878,
+   "cell_numeric_accuracy_percent": 95.91836734693878,
+   "wer_delta": -0.9259259259259265
+  },
+  {
+   "sample_id": "4387865",
+   "sector": "Technology",
+   "sample_rate_hz": "11025",
+   "windows": 25,
+   "comparator_wer_percent": 8.765411248099984,
+   "cell_wer_percent": 8.562742779935821,
+   "comparator_sdi": [
+    236,
+    118,
+    165
+   ],
+   "cell_sdi": [
+    243,
+    150,
+    114
+   ],
+   "reference_words": 5921,
+   "comparator_numeric_accuracy_percent": 84.4984802431611,
+   "cell_numeric_accuracy_percent": 81.7629179331307,
+   "wer_delta": -0.20266846816416262
+  },
+  {
+   "sample_id": "4389907",
+   "sector": "Technology",
+   "sample_rate_hz": "24000",
+   "windows": 23,
+   "comparator_wer_percent": 13.140537798072044,
+   "cell_wer_percent": 12.379502790461695,
+   "comparator_sdi": [
+    235,
+    40,
+    243
+   ],
+   "cell_sdi": [
+    238,
+    42,
+    208
+   ],
+   "reference_words": 3942,
+   "comparator_numeric_accuracy_percent": 91.04477611940298,
+   "cell_numeric_accuracy_percent": 92.53731343283582,
+   "wer_delta": -0.7610350076103494
+  },
+  {
+   "sample_id": "4392809",
+   "sector": "Services",
+   "sample_rate_hz": "24000",
+   "windows": 16,
+   "comparator_wer_percent": 4.192203971561657,
+   "cell_wer_percent": 3.0889924000980633,
+   "comparator_sdi": [
+    60,
+    32,
+    79
+   ],
+   "cell_sdi": [
+    57,
+    37,
+    32
+   ],
+   "reference_words": 4079,
+   "comparator_numeric_accuracy_percent": 95.09803921568627,
+   "cell_numeric_accuracy_percent": 95.09803921568627,
+   "wer_delta": -1.1032115714635937
+  },
+  {
+   "sample_id": "4394084",
+   "sector": "Technology",
+   "sample_rate_hz": "16000",
+   "windows": 20,
+   "comparator_wer_percent": 12.156215621562156,
+   "cell_wer_percent": 10.973597359735974,
+   "comparator_sdi": [
+    214,
+    85,
+    143
+   ],
+   "cell_sdi": [
+    214,
+    87,
+    98
+   ],
+   "reference_words": 3636,
+   "comparator_numeric_accuracy_percent": 87.31343283582089,
+   "cell_numeric_accuracy_percent": 90.29850746268657,
+   "wer_delta": -1.1826182618261818
+  },
+  {
+   "sample_id": "4397800",
+   "sector": "Conglomerate",
+   "sample_rate_hz": "24000",
+   "windows": 31,
+   "comparator_wer_percent": 7.839939789262418,
+   "cell_wer_percent": 6.9869543401906675,
+   "comparator_sdi": [
+    290,
+    107,
+    228
+   ],
+   "cell_sdi": [
+    291,
+    112,
+    154
+   ],
+   "reference_words": 7972,
+   "comparator_numeric_accuracy_percent": 97.76536312849161,
+   "cell_numeric_accuracy_percent": 97.76536312849161,
+   "wer_delta": -0.8529854490717508
+  },
+  {
+   "sample_id": "4397829",
+   "sector": "Conglomerate",
+   "sample_rate_hz": "24000",
+   "windows": 50,
+   "comparator_wer_percent": 8.066356534714298,
+   "cell_wer_percent": 7.100851399982445,
+   "comparator_sdi": [
+    468,
+    119,
+    332
+   ],
+   "cell_sdi": [
+    466,
+    128,
+    215
+   ],
+   "reference_words": 11393,
+   "comparator_numeric_accuracy_percent": 97.42857142857143,
+   "cell_numeric_accuracy_percent": 97.71428571428571,
+   "wer_delta": -0.9655051347318535
+  }
+ ],
+ "error_structure": {
+  "comparator": {
+   "substitutions": 13098,
+   "deletions": 5701,
+   "insertions": 10700,
+   "reference_words": 359765,
+   "errors": 29499,
+   "substitution_plus_deletion": 18799,
+   "insertion_share_of_errors": 0.3627241601410217
+  },
+  "cell": {
+   "substitutions": 12931,
+   "deletions": 6192,
+   "insertions": 7037,
+   "reference_words": 359765,
+   "errors": 26160,
+   "substitution_plus_deletion": 19123,
+   "insertion_share_of_errors": 0.2689984709480122
+  },
+  "change": {
+   "substitutions": -167,
+   "deletions": 491,
+   "insertions": -3663,
+   "errors": -3339,
+   "substitution_plus_deletion": 324,
+   "reference_words": 0
+  },
+  "insertion_share_change_pp": -9.37256891930095,
+  "reading": "The ConEC entity buckets and the __NON_ENTITY__ bucket exclude insertions (fstalign's RecordTagWer cannot attribute an insertion to a tag), so they see only the substitution-plus-deletion block. Corpus WER counts all three. That is why the two families of metric move in opposite directions here."
+ },
+ "per_stratum": {
+  "by_sector": {
+   "Basic Materials": {
+    "calls": 5,
+    "reference_words": 35678,
+    "comparator_wer_percent": 8.436571556701608,
+    "cell_wer_percent": 7.480800493301194,
+    "delta": -0.9557710634004142
+   },
+   "Conglomerate": {
+    "calls": 4,
+    "reference_words": 40852,
+    "comparator_wer_percent": 7.360716733574856,
+    "cell_wer_percent": 6.437873298736904,
+    "delta": -0.9228434348379517
+   },
+   "Consumer Goods": {
+    "calls": 5,
+    "reference_words": 49971,
+    "comparator_wer_percent": 7.052090212323147,
+    "cell_wer_percent": 6.037501751015589,
+    "delta": -1.0145884613075582
+   },
+   "Financial": {
+    "calls": 5,
+    "reference_words": 42427,
+    "comparator_wer_percent": 8.723218705069884,
+    "cell_wer_percent": 8.023192778183704,
+    "delta": -0.7000259268861804
+   },
+   "Healthcare": {
+    "calls": 5,
+    "reference_words": 36137,
+    "comparator_wer_percent": 7.991808949276365,
+    "cell_wer_percent": 6.815729031186872,
+    "delta": -1.176079918089493
+   },
+   "Industrial Goods": {
+    "calls": 5,
+    "reference_words": 43865,
+    "comparator_wer_percent": 10.662259204377065,
+    "cell_wer_percent": 10.17439872335575,
+    "delta": -0.48786048102131474
+   },
+   "Services": {
+    "calls": 5,
+    "reference_words": 34029,
+    "comparator_wer_percent": 6.46801257750742,
+    "cell_wer_percent": 5.404214052719739,
+    "delta": -1.063798524787681
+   },
+   "Technology": {
+    "calls": 5,
+    "reference_words": 28134,
+    "comparator_wer_percent": 9.152626715006754,
+    "cell_wer_percent": 8.438188668514965,
+    "delta": -0.7144380464917894
+   },
+   "Utilities": {
+    "calls": 5,
+    "reference_words": 48672,
+    "comparator_wer_percent": 8.0456936226167,
+    "cell_wer_percent": 6.7821334648257725,
+    "delta": -1.263560157790927
+   }
+  },
+  "by_sample_rate_hz": {
+   "11025": {
+    "calls": 5,
+    "reference_words": 48023,
+    "comparator_wer_percent": 11.078025112966703,
+    "cell_wer_percent": 10.619911292505675,
+    "delta": -0.458113820461028
+   },
+   "16000": {
+    "calls": 6,
+    "reference_words": 42675,
+    "comparator_wer_percent": 10.736965436438195,
+    "cell_wer_percent": 9.69185705916813,
+    "delta": -1.045108377270065
+   },
+   "22050": {
+    "calls": 5,
+    "reference_words": 34619,
+    "comparator_wer_percent": 7.5767642046275165,
+    "cell_wer_percent": 6.094918975129264,
+    "delta": -1.4818452294982523
+   },
+   "24000": {
+    "calls": 21,
+    "reference_words": 165974,
+    "comparator_wer_percent": 7.319821176810826,
+    "cell_wer_percent": 6.375094894381047,
+    "delta": -0.9447262824297784
+   },
+   "44100": {
+    "calls": 7,
+    "reference_words": 68474,
+    "comparator_wer_percent": 7.046470193065981,
+    "cell_wer_percent": 6.181908461605865,
+    "delta": -0.8645617314601166
+   }
+  }
+ },
+ "windows": {
+  "status": "OK",
+  "windows_left": 1593,
+  "windows_right": 1593,
+  "windows_paired": 1593,
+  "span_misaligned": 0,
+  "span_misaligned_examples": [],
+  "saturated_left": [],
+  "saturated_right": [
+   "4346818#w0035"
+  ],
+  "corpus_wer_window_level_stratified_by_call_ci90": {
+   "point": -0.9281058468722643,
+   "ci_low": -1.0632461536883924,
+   "ci_high": -0.7781854925042669,
+   "sigma_hat": 0.08853317837317416,
+   "n": 1593,
+   "replicates": 10000,
+   "seed": 20260903,
+   "ci_level": 0.9
+  },
+  "corpus_wer_window_level_clustered_by_call_ci90": {
+   "point": -0.9281058468722643,
+   "ci_low": -1.0513791180391707,
+   "ci_high": -0.7948705619847256,
+   "sigma_hat": 0.07889407716528754,
+   "n": 1593,
+   "replicates": 10000,
+   "seed": 20260903,
+   "ci_level": 0.9
+  },
+  "mechanism_slices": {
+   "interior_ends_within_20ms_of_speech": {
+    "n": 1088,
+    "comparator_wer_percent": 8.200672061335622,
+    "cell_wer_percent": 7.222716809829728,
+    "delta": -0.977955251505894,
+    "clustered_by_call_ci90": {
+     "point": -0.977955251505894,
+     "ci_low": -1.1609098285704842,
+     "ci_high": -0.7736844174508735,
+     "sigma_hat": 0.1181359738530159,
+     "n": 1088,
+     "replicates": 10000,
+     "seed": 20260903,
+     "ci_level": 0.9
+    }
+   },
+   "already_carries_2s_or_more": {
+    "n": 39,
+    "comparator_wer_percent": 8.302664507581333,
+    "cell_wer_percent": 7.935806831566549,
+    "delta": -0.36685767601478414,
+    "clustered_by_call_ci90": {
+     "point": -0.36685767601478414,
+     "ci_low": -0.7584542048989005,
+     "ci_high": -0.017824506265283105,
+     "sigma_hat": 0.22485876504244756,
+     "n": 39,
+     "replicates": 10000,
+     "seed": 20260903,
+     "ci_level": 0.9
+    }
+   },
+   "remainder": {
+    "n": 466,
+    "comparator_wer_percent": 8.18997972777295,
+    "cell_wer_percent": 7.345063557481637,
+    "delta": -0.844916170291313,
+    "clustered_by_call_ci90": {
+     "point": -0.844916170291313,
+     "ci_low": -0.9353299465103951,
+     "ci_high": -0.7529816567249654,
+     "sigma_hat": 0.055491572453791764,
+     "n": 466,
+     "replicates": 10000,
+     "seed": 20260903,
+     "ci_level": 0.9
+    }
+   }
+  },
+  "clause_3": {
+   "rule": "section 4.3 item 3: the per-window contrast is LARGER on the interior windows that end within 20 ms of active speech than on the windows that already carry 2.0 s or more of trailing silence",
+   "interior_delta": -0.977955251505894,
+   "already_silent_delta": -0.36685767601478414,
+   "verdict": "PASS"
+  }
+ },
+ "decision": {
+  "rule_source": "docs/readiness/2026-09-07-cross-carrier-silence-tail-v1-preregistration.md section 4.3, quoted verbatim above each clause before it is applied",
+  "clause_1_corpus_wer": {
+   "rule": "ADMITTED clause 1 -- Corpus WER, and it must beat the null. The CI90 upper bound on the delta is < -0.2356, below zero and disjoint from the Earnings-22 same-request null's interval, which is the closest measured null this carrier has and is labelled as imported.",
+   "delta": -0.9281058468722643,
+   "ci90": [
+    -1.0513791180391707,
+    -0.7948705619847256
+   ],
+   "threshold_upper_bound_below": -0.2356,
+   "point_negative": true,
+   "verdict": "PASS"
+  },
+  "clause_2_no_agentic_metric_worsens": {
+   "rule": "ADMITTED clause 2 -- No agentic metric worsens. numeric-value-accuracy-v1 and conec-entity-wer-official (overall and non-entity) are non-inferior at their own CI90, and semantic-high-impact-error-rate-v1 does not rise. Its sealed 0.02780 % is a STRICT LOWER BOUND on the true content-impact rate and this verdict repeats that when it uses it.",
+   "margin": 0.1524,
+   "margin_basis": "IMPORTED, not measured: section 3 says a carrier with no measured null uses zero plus a margin equal to the Earnings-22 null's own half-width on the same scale. Earnings-21 has no measured same-request null.",
+   "metrics": [
+    {
+     "metric": "numeric_value_accuracy_percent",
+     "lower_is_better": false,
+     "comparator": 90.73351140332854,
+     "cell": 90.77460447914527,
+     "delta": 0.041093075816732494,
+     "ci90": [
+      -0.20743063691601904,
+      0.2877257755565124
+     ],
+     "non_inferiority_test": "CI90 lower -0.20743 > -0.1524",
+     "excludes_zero": false,
+     "harm_demonstrated": false,
+     "improvement_demonstrated": false,
+     "reading": "interval straddles zero: neither a demonstrated harm nor a demonstrated improvement",
+     "verdict": "FAIL",
+     "why_not": "the CI90 is WIDER than the imported margin, so non-inferiority cannot be established at that margin; this is a statement about the margin and the interval, not a measured worsening"
+    },
+    {
+     "metric": "conec_overall_wer_percent",
+     "lower_is_better": true,
+     "comparator": 8.19951913054355,
+     "cell": 7.2714132836712855,
+     "delta": -0.9281058468722643,
+     "ci90": [
+      -1.0513791180391707,
+      -0.7948705619847256
+     ],
+     "non_inferiority_test": "CI90 upper -0.79487 < +0.1524",
+     "excludes_zero": true,
+     "harm_demonstrated": false,
+     "improvement_demonstrated": true,
+     "reading": "improvement demonstrated",
+     "verdict": "PASS",
+     "why_not": null
+    },
+    {
+     "metric": "conec_non_entity_wer_percent",
+     "lower_is_better": true,
+     "comparator": 4.730375807919667,
+     "cell": 4.833552940712579,
+     "delta": 0.1031771327929123,
+     "ci90": [
+      -0.03504831174613111,
+      0.2492903949229528
+     ],
+     "non_inferiority_test": "CI90 upper 0.24929 < +0.1524",
+     "excludes_zero": false,
+     "harm_demonstrated": false,
+     "improvement_demonstrated": false,
+     "reading": "interval straddles zero: neither a demonstrated harm nor a demonstrated improvement",
+     "verdict": "FAIL",
+     "why_not": "the CI90 is WIDER than the imported margin, so non-inferiority cannot be established at that margin; this is a statement about the margin and the interval, not a measured worsening"
+    },
+    {
+     "metric": "semantic_high_impact_error_rate_percent",
+     "lower_is_better": true,
+     "comparator": 0.027795922338192988,
+     "cell": 0.0269620446680472,
+     "delta": -0.0008338776701457898,
+     "ci90": [
+      -0.004209465928704281,
+      0.001987002590689237
+     ],
+     "non_inferiority_test": "CI90 upper 0.00199 < +0.1524",
+     "excludes_zero": false,
+     "harm_demonstrated": false,
+     "improvement_demonstrated": false,
+     "reading": "interval straddles zero: neither a demonstrated harm nor a demonstrated improvement",
+     "verdict": "PASS",
+     "why_not": null
+    }
+   ],
+   "any_harm_demonstrated": false,
+   "metrics_failing_non_inferiority": [
+    "numeric_value_accuracy_percent",
+    "conec_non_entity_wer_percent"
+   ],
+   "verdict": "FAIL"
+  },
+  "clause_3_mechanism_concentration": {
+   "rule": "section 4.3 item 3: the per-window contrast is LARGER on the interior windows that end within 20 ms of active speech than on the windows that already carry 2.0 s or more of trailing silence",
+   "interior_delta": -0.977955251505894,
+   "already_silent_delta": -0.36685767601478414,
+   "verdict": "PASS"
+  },
+  "verdict": "NOT ADMITTED"
+ },
+ "prediction_check": {
+  "section_5": "Earnings-21: largest effect, same direction, smaller in size than Earnings-22's. Predicted corpus-WER delta -0.2 to -1.5 points from the sealed 8.1995.",
+  "predicted_range": [
+   -1.5,
+   -0.2
+  ],
+  "observed_delta": -0.9281058468722643,
+  "inside_predicted_range": true
+ }
+}
