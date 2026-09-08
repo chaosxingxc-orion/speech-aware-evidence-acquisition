@@ -710,6 +710,7 @@ POLICIES.register(OBS_REPAIR_LOOP_OJW_POLICY_NAME, ObsRepairLoopOjwPolicy())
 # proposes a revision (owner Decision 11-C).
 from .judges import (  # noqa: E402
     A2T_HARD_VALIDITY_JUDGE_V1,
+    E21_BRIEF_NAME_NEAR_MISS_JUDGE_V1,
     E21_SUBSTITUTION_ALIGNMENT_JUDGE_V1,
     EARNINGS_NUMERIC_FORMAT_JUDGE_V1,
     REPLAY_LOGPROB_JUDGE_V1,
@@ -717,6 +718,7 @@ from .judges import (  # noqa: E402
     SLURP_LEGAL_LABEL_JUDGE_V1,
     SLURP_SLOT_SCHEMA_JUDGE_V1,
     A2tHardValidityJudge,
+    BriefNameNearMissJudge,
     EarningsNumericFormatJudge,
     ReplayLogprobJudge,
     RosterBandJudge,
@@ -825,3 +827,8 @@ POLICIES.register(
     "semantic-agentloop-top16-v1", frozen_policy("semantic-agentloop-top16-v1")
 )
 # --- end WAVE R7 -----------------------------------------------------------
+
+# e21-brief-name-near-miss-v1 (E21-LOOP-1, 2026-09-08): the design note's
+# "brief-name near-miss detector", the one judge in that table that had no
+# implementation. Registered here for the same reason the six above are.
+JUDGES.register(E21_BRIEF_NAME_NEAR_MISS_JUDGE_V1, BriefNameNearMissJudge())

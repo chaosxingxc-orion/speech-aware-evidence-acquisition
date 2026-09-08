@@ -60,6 +60,37 @@ record says what the harness did with it.
 instrument that decomposed KC-E1 decomposes this cell too, with no sealed run
 of any other cell reading differently.
 
+The third thing the hook does, under a SELECTIVE RE-LISTEN plan (E21-LOOP-1)
+-----------------------------------------------------------------------------
+``obs_unit_plan`` pointing at a ``saea-e21-relisten-plan-v1`` document turns
+the same policy into the whole loop the design note names. The plan carries one
+unit per FLAGGED window -- a narrower span of that window, widened by a context
+margin and floored at a minimum length -- so the cutter contacts the flagged
+windows and nothing else, and each contact hears less audio than KC-E1f's did.
+
+Three consequences, all handled here rather than in the base:
+
+* **The instruction carries the matching text, not the whole window's.** A
+  contact that hears ten seconds of a ninety-second window may not be handed
+  that window's whole pass-1 transcript and told to return it word for word:
+  it would have to invent the eighty seconds it never heard, and the delivery
+  rule would refuse the result. The frame therefore carries the pass-1 words of
+  the re-cut span alone -- the half-open range the plan fixed and this hook
+  re-derives nothing about.
+* **The delivery re-seats the repaired sub-span in its window.** The rule runs
+  over the sub-span, and what the window contributes is its predecessor with
+  that range replaced. Token count is preserved for the range by the rule and
+  therefore for the window.
+* **Unflagged windows are delivered, not dropped.** The stitch must still be
+  the whole call. Each unit contributes the predecessor text of every window
+  between the previous unit's parent and its own, then its own repaired
+  window; the last unit also contributes every window after it. So a selective
+  run's stitched hypothesis covers exactly the same windows the comparator's
+  does, and the paired read is unchanged.
+
+Without such a plan not one byte of the above runs, and this policy is
+KC-E1f's, exactly.
+
 What this policy is NOT
 -----------------------
 It does not re-fly pass 1 (``core.predecessor_snapshot`` binds the comparator's
@@ -80,7 +111,11 @@ from ..core.predecessor_snapshot import (
     load_predecessor_binding,
 )
 from ..core.repair_alignment import RepairOutcome
-from .obs_loop import ObsAgentLoopPolicy, ObsLoopError
+from .obs_loop import (
+    OBS_RELISTEN_PLAN_SCHEMA,
+    ObsAgentLoopPolicy,
+    ObsLoopError,
+)
 from .ojw import OJW_REPAIR_POLICY_NAME
 from .ojw.policy import ObsAgentLoopOjwPolicy
 
@@ -152,65 +187,177 @@ class RepairWindowHook:
 
     Constructed per sample, holds no cross-sample state, and refuses at
     construction time if this call's cut windows and its sealed predecessor
-    windows do not line up one for one on their audio bounds.
+    windows do not line up -- one for one on their audio bounds without a
+    re-listen plan, and by containment in the named parent window with one.
     """
 
     #: Bounds are floats produced by the same arithmetic in both passes; this
     #: is an exactness tolerance, not a matching window.
     BOUNDS_TOLERANCE_SECONDS = 1e-6
 
-    def __init__(self, *, sample_id: str, predecessors, frame: str, rule):
+    def __init__(self, *, sample_id: str, predecessors, frame: str, rule, units=None):
         self._sample_id = sample_id
         self._predecessors = tuple(predecessors)
         self._frame = frame
         self._rule = rule
+        #: The selective re-listen plan's units for THIS call, in cut order,
+        #: or ``None`` on the KC-E1f path (module docstring). Every unit of a
+        #: re-listen plan names its parent window and the predecessor word
+        #: range the cut corresponds to; the loader has already proved both.
+        self._units = None if units is None else tuple(units)
         self.outcomes: list[RepairOutcome] = []
+        #: Windows this call delivered from the predecessor with no contact of
+        #: their own -- the core-pressure covariate the selective loop exists
+        #: to move.
+        self.uncontacted_windows = 0
+        self._delivered_through = 0
+
+    # -- window resolution --------------------------------------------------
+
+    def _unit(self, iteration: int):
+        if self._units is None:
+            return None
+        if iteration >= len(self._units):
+            raise ObsLoopError(
+                f"sample {self._sample_id!r} cut unit {iteration} but its re-listen "
+                f"plan carries only {len(self._units)}"
+            )
+        unit = self._units[iteration]
+        if unit.parent_window_index is None:
+            raise ObsLoopError(
+                f"sample {self._sample_id!r} unit {iteration} names no parent window; "
+                "obs-repair-loop consumes a selective plan only through "
+                "saea-e21-relisten-plan-v1, whose loader requires one"
+            )
+        return unit
+
+    def _predecessor_index(self, iteration: int) -> int:
+        unit = self._unit(iteration)
+        if unit is None:
+            return iteration
+        # Plan window indices are 1-based, matching the ``<sample>#w0001``
+        # window ids the pairing instrument mints; the snapshot's tuple is in
+        # stitch order.
+        return int(unit.parent_window_index) - 1
 
     def _predecessor(self, iteration: int, record):
-        if iteration >= len(self._predecessors):
+        index = self._predecessor_index(iteration)
+        if index < 0 or index >= len(self._predecessors):
             raise ObsLoopError(
                 f"sample {self._sample_id!r} cut window {iteration} but its sealed "
                 f"predecessor carries only {len(self._predecessors)}; refusing to "
                 "repair a window the comparator never decoded"
             )
-        predecessor = self._predecessors[iteration]
-        for name, cut, sealed in (
-            ("start", record.start_seconds, predecessor.start_seconds),
-            ("end", record.end_seconds, predecessor.end_seconds),
+        predecessor = self._predecessors[index]
+        if self._units is None:
+            for name, cut, sealed in (
+                ("start", record.start_seconds, predecessor.start_seconds),
+                ("end", record.end_seconds, predecessor.end_seconds),
+            ):
+                if abs(float(cut) - float(sealed)) > self.BOUNDS_TOLERANCE_SECONDS:
+                    raise ObsLoopError(
+                        f"sample {self._sample_id!r} window {iteration}: cut {name} "
+                        f"{cut} does not match the sealed predecessor's {sealed}; the "
+                        "two passes are not tiling the same audio"
+                    )
+            return predecessor
+        if (
+            float(record.start_seconds) < float(predecessor.start_seconds)
+            - self.BOUNDS_TOLERANCE_SECONDS
+            or float(record.end_seconds) > float(predecessor.end_seconds)
+            + self.BOUNDS_TOLERANCE_SECONDS
         ):
-            if abs(float(cut) - float(sealed)) > self.BOUNDS_TOLERANCE_SECONDS:
-                raise ObsLoopError(
-                    f"sample {self._sample_id!r} window {iteration}: cut {name} "
-                    f"{cut} does not match the sealed predecessor's {sealed}; the "
-                    "two passes are not tiling the same audio"
-                )
+            raise ObsLoopError(
+                f"sample {self._sample_id!r} unit {iteration}: the re-cut "
+                f"[{record.start_seconds}, {record.end_seconds}) leaves its parent "
+                f"window's [{predecessor.start_seconds}, {predecessor.end_seconds}); "
+                "a re-listen is a narrower look at audio the comparator decoded"
+            )
         return predecessor
+
+    def _word_range(self, iteration: int, predecessor) -> tuple[int, int]:
+        unit = self._unit(iteration)
+        words = predecessor.text.split()
+        if unit is None:
+            return (0, len(words))
+        start = int(unit.predecessor_word_start or 0)
+        end = int(unit.predecessor_word_end or 0)
+        if start < 0 or end <= start or end > len(words):
+            raise ObsLoopError(
+                f"sample {self._sample_id!r} unit {iteration}: the plan names "
+                f"predecessor words [{start}, {end}) but window "
+                f"{predecessor.window_id!r} carries {len(words)}; the plan was built "
+                "against a different pass-1 text"
+            )
+        return (start, end)
+
+    # -- the two seams the base calls --------------------------------------
 
     def instruction(self, *, iteration: int, record, default: str) -> str:
         predecessor = self._predecessor(iteration, record)
+        start, end = self._word_range(iteration, predecessor)
+        words = predecessor.text.split()
+        shown = predecessor.text if self._units is None else " ".join(words[start:end])
         return "%s\n\n%s" % (
             default,
-            self._frame.format(predecessor=predecessor.text),
+            self._frame.format(predecessor=shown),
         )
 
     def accept(self, *, iteration: int, record, transcript: str, saturated: bool, skipped: bool):
         predecessor = self._predecessor(iteration, record)
+        start, end = self._word_range(iteration, predecessor)
+        words = predecessor.text.split()
+        target = predecessor.text if self._units is None else " ".join(words[start:end])
         # A saturated or skipped pass-2 decode reaches here as the empty string
         # (the base policy's quarantine). The rule reads that as an empty
         # response and refuses it, which delivers pass 1 -- the honest answer,
         # because this window HAS a transcript and it is the comparator's.
-        outcome = self._rule(predecessor.text, transcript)
+        outcome = self._rule(target, transcript)
         self.outcomes.append(outcome)
+        window_text = outcome.text
         fields: dict[str, object] = {
             "obs_repair": True,
-            "obs_delivered_text": outcome.text,
             "obs_repair_predecessor_window_id": predecessor.window_id,
             "obs_repair_predecessor_text_sha256": predecessor.text_sha256,
             "obs_repair_pass2_saturated": bool(saturated),
             "obs_repair_pass2_skipped": bool(skipped),
         }
+        if self._units is not None:
+            window_text = " ".join(
+                [*words[:start], *outcome.text.split(), *words[end:]]
+            )
+            index = self._predecessor_index(iteration)
+            gap = [
+                self._predecessors[position].text
+                for position in range(self._delivered_through, index)
+            ]
+            trailing: list[str] = []
+            if iteration == len(self._units) - 1:
+                trailing = [
+                    self._predecessors[position].text
+                    for position in range(index + 1, len(self._predecessors))
+                ]
+            self.uncontacted_windows += len(gap) + len(trailing)
+            self._delivered_through = index + 1
+            delivered = " ".join(
+                span for span in [*gap, window_text, *trailing] if span
+            )
+            fields.update(
+                {
+                    "obs_relisten": True,
+                    "obs_relisten_window_text": window_text,
+                    "obs_relisten_predecessor_word_start": start,
+                    "obs_relisten_predecessor_word_end": end,
+                    "obs_relisten_backfilled_windows": len(gap) + len(trailing),
+                    "obs_relisten_recut_seconds": float(record.end_seconds)
+                    - float(record.start_seconds),
+                }
+            )
+        else:
+            delivered = window_text
+        fields["obs_delivered_text"] = delivered
         fields.update(outcome.trace_view())
-        return outcome.text, fields
+        return delivered, fields
 
 
 def assert_repair_config(config_values: object) -> Mapping[str, object]:
@@ -289,11 +436,29 @@ def build_repair_window_hook(ctx, cfg, data_root, sample) -> "RepairWindowHook":
         predecessors = snapshot.for_sample(sample.sample_id)
     except PredecessorSnapshotError as error:
         raise ObsLoopError(str(error)) from error
+
+    # A SELECTIVE RE-LISTEN plan (module docstring) is the one thing that
+    # turns this hook from KC-E1f's into the loop's. Its units are already
+    # loaded, pinned and proved by the base's own plan loader; what the
+    # hook needs is the per-sample slice of them, in cut order. It is
+    # resolved HERE, in the builder both policies call, so the plain and the
+    # openJiuwen executor get the same units from the same bytes.
+    units = None
+    if cfg.unit_plan is not None and cfg.unit_plan.schema == OBS_RELISTEN_PLAN_SCHEMA:
+        units = cfg.unit_plan.units_by_sample.get(sample.sample_id)
+        if not units:
+            raise ObsLoopError(
+                f"selective re-listen plan {cfg.unit_plan.relpath!r} has no units "
+                f"for roster call {sample.sample_id!r}; a call with nothing to "
+                "re-hear cannot be flown by this policy, because its stitch would "
+                "carry no contact at all"
+            )
     return RepairWindowHook(
         sample_id=sample.sample_id,
         predecessors=predecessors,
         frame=frame,
         rule=rule,
+        units=units,
     )
 
 

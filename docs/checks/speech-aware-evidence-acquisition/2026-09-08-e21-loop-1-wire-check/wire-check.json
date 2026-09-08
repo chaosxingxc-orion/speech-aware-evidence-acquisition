@@ -1,0 +1,152 @@
+{
+  "authorizes": "nothing. This receipt records a composition, a plan proof, a rendered request and a payload binding. E21-LOOP-1 still needs the owner's GO to fly and does not have it.",
+  "execution_profile": "model-free-check",
+  "exposure_row": "SAEA-E21-MF-LOOP-1-PREP-V1",
+  "failures": [],
+  "functional_diff_arm_vs_twin": [
+    "obs_unit_plan",
+    "obs_unit_plan_sha256",
+    "window_observe",
+    "window_review"
+  ],
+  "identities": {
+    "E21-loop-1-relisten-repair": {
+      "config_hash": "58f175b796076a2dac3ef6dbef1d0b5737cfad149732bfe8fa2325ae215128d2",
+      "protocol_hash": "504e61aa0b16799d80b6670b866f30d3209c4ac301c448fafa9c6204b6f2c8ee",
+      "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e"
+    },
+    "E21-loop-1c-random-flag-twin": {
+      "config_hash": "f9437a9deac0a1239b381e4e1c1630a8f210da514d8dce1ea636f41668b2e7e8",
+      "protocol_hash": "1868bcb3423d690c903a539cfefb17290202711ce6106edcfd5dde8db890e9b2",
+      "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e"
+    }
+  },
+  "kc_e1f": {
+    "config_hash": "05777ca3a3abdc75cd105021fe2104a639440d0ffd4ca2654ad18e50123b3e5f",
+    "functional_diff_arm_vs_kc_e1f": [
+      "obs_unit_plan",
+      "obs_unit_plan_sha256",
+      "window_observe",
+      "window_review"
+    ]
+  },
+  "payload_binding": {
+    "bound": true,
+    "failures": [],
+    "rows_checked": [
+      "4320211",
+      "4397829"
+    ],
+    "rows_total": 44
+  },
+  "plans": {
+    "E21-loop-1-relisten-repair": {
+      "calls": 44,
+      "flag_source": "judges",
+      "judges": [
+        "e21-brief-name-near-miss-v1",
+        "earnings-numeric-format-flag-v1"
+      ],
+      "mean_recut_seconds": 25.567433,
+      "min_recut_seconds": 10.264706,
+      "recut_seconds": 15340.460005,
+      "relpath": "docs/receipts/obs/e21-relisten-plan-v1.json",
+      "sha256": "b9c9a0e671638c7b6e29ba1a24c8c8e368602e2ee6863b25ecf783111ad995e3",
+      "units": 600
+    },
+    "E21-loop-1c-random-flag-twin": {
+      "calls": 44,
+      "flag_source": "seeded-random",
+      "judges": [
+        "e21-brief-name-near-miss-v1",
+        "earnings-numeric-format-flag-v1"
+      ],
+      "mean_recut_seconds": 25.567433,
+      "min_recut_seconds": 10.264706,
+      "recut_seconds": 15340.460005,
+      "relpath": "docs/receipts/obs/e21-relisten-twin-plan-v1.json",
+      "sha256": "92fc51444581f220064b62a144e27a4fe670647728c004cd27f161473845fccc",
+      "units": 600,
+      "windows_coinciding_with_a_flagged_one": 291
+    }
+  },
+  "preregistration": "docs/readiness/2026-09-08-e21-loop-1-v1-preregistration.md",
+  "request_half": [
+    {
+      "instruction_carries_its_own_span": true,
+      "refused_delivery_equals_the_sealed_hypothesis": true,
+      "sample_id": "4320211",
+      "sealed_hypothesis_sha256": "4becdf3374e378d8b004800951d869eb6a93a38a92bb3e46287bca0d17c07a8c",
+      "uncontacted_windows": 25,
+      "units": 12,
+      "windows": 37
+    },
+    {
+      "instruction_carries_its_own_span": true,
+      "refused_delivery_equals_the_sealed_hypothesis": true,
+      "sample_id": "4330115",
+      "sealed_hypothesis_sha256": "c917fa7c917af7ced5ee9d995bd5731d7228e59b0003a5ff4e4951d26f942d44",
+      "uncontacted_windows": 11,
+      "units": 17,
+      "windows": 28
+    },
+    {
+      "instruction_carries_its_own_span": true,
+      "refused_delivery_equals_the_sealed_hypothesis": true,
+      "sample_id": "4341191",
+      "sealed_hypothesis_sha256": "65789603934b1e4fbf425297434945f5e8fc630f767991b1fe295f7860e18167",
+      "uncontacted_windows": 30,
+      "units": 34,
+      "windows": 64
+    },
+    {
+      "instruction_carries_its_own_span": true,
+      "refused_delivery_equals_the_sealed_hypothesis": true,
+      "sample_id": "4344338",
+      "sealed_hypothesis_sha256": "87fb02d4547eca28f0b13229d9a5c0a97f34927f61c5c9629be31df8ecd789b8",
+      "uncontacted_windows": 24,
+      "units": 7,
+      "windows": 31
+    }
+  ],
+  "result": "PASS",
+  "run_id": "SAEA-E21-MF-LOOP-1-PREP-V1",
+  "schema": "saea-e21-loop-1-wire-check-v1",
+  "serving_geometry": {
+    "arm_model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+    "arm_server_args": [
+      "-c",
+      "36864",
+      "-np",
+      "6",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "kc_e1f_model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np4",
+    "kc_e1f_server_args": [
+      "-c",
+      "36864",
+      "-np",
+      "4",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "twin_model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6"
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "013ccb07f6af22a5c5f9fefd3ab2262b60c765dc",
+  "study_repo_dirt": "",
+  "zero_contact": "No frozen core, server, socket, GPU, tokenizer, embedder, network or paid API. Nothing here constructs a transport, gate, attempt store or FrozenCoreAdapter; no audio file is opened and no MP3 is decoded, so the pinned absence of ffmpeg is preserved. The only bytes read are the committed fragments and plans, the sealed comparator's own outputs.jsonl, and the hash-verified predecessor artifact."
+}

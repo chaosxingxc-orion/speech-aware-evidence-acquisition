@@ -79,6 +79,7 @@ ROSTER_BAND_JUDGE_V1 = "roster-band-flag-v1"
 #: WAVE R7 (2026-09-08): the deterministic Audio2Tool hard-validity check,
 #: which was a controller's private branch until the fold.
 A2T_HARD_VALIDITY_JUDGE_V1 = "a2t-hard-validity-flag-v1"
+E21_BRIEF_NAME_NEAR_MISS_JUDGE_V1 = "e21-brief-name-near-miss-v1"
 
 
 def _lookup(
@@ -695,15 +696,250 @@ def _violation_field_ref(violation: object) -> str | None:
     return ref[:MAX_JUDGE_TEXT_CHARS]
 
 
+#: The near-miss judge's frozen band (:class:`BriefNameNearMissJudge`). A
+#: distance of exactly 0 is the draft already carrying the brief's own form
+#: -- correct, never a criticism -- and anything above the ceiling is a
+#: different word rather than a corrupted one. The ceiling is a quarter of
+#: the longer form under ``core.flag_sources``' own weighted cost table, so
+#: "culp"/"calp" (0.125) is in and "culp"/"altec" is not.
+BRIEF_NEAR_MISS_MAX_DISTANCE = 0.25
+
+#: Draft words shorter than this never anchor a near-miss query -- the same
+#: floor ``core.flag_sources.MIN_CANDIDATE_WORD_LENGTH`` puts on the
+#: CANDIDATE side: at three characters a single substitution is already a
+#: third of the form, so short words band-match everything.
+BRIEF_NEAR_MISS_MIN_WORD_LENGTH = 3
+
+
+@dataclass(frozen=True)
+class BriefNameNearMissJudge:
+    """FLAGS a draft span that is a NEAR MISS of a PERSON/ORG brief entry.
+
+    The design note's "brief-name near-miss detector"
+    (``docs/readiness/2026-09-08-agent-system-episode-and-core-pressure-v1.md``
+    section 2, judges table, "named, not built"), built for E21-LOOP-1 and
+    deliberately NOT the same object as :class:`RosterBandJudge`:
+
+    * its candidate set is the ConEC **pre-meeting brief's PERSON and ORG
+      classes** -- the participant roster's own names and the organizations
+      that roster labels -- not an arm's whole evidence candidate list;
+    * it selects by DISTANCE alone inside a tight band ``(0,
+      BRIEF_NEAR_MISS_MAX_DISTANCE]``, with no df-rarity weighting, no
+      name-likeness prior and no ``max_spans`` truncation, so its flag count
+      is a property of the draft and the brief rather than of a budget;
+    * an EXACT match is never flagged. "Within a small edit distance of a
+      brief entry **but not equal**" is the whole rule: a draft that already
+      carries the brief's form is right, and criticising it would flag every
+      correctly transcribed name in the call.
+
+    The distance itself is not new logic: it is
+    ``core.flag_sources.weighted_grapheme_distance``, the frozen weighted
+    grapheme cost table (vowel/vowel 0.5, voiced-unvoiced pair 0.6, other
+    substitution and indel 1.0, normalized by the longer form), and the
+    candidate decomposition is that module's own
+    :func:`~core.flag_sources.candidate_word_forms` /
+    :func:`~core.flag_sources.candidate_bigram_forms`. One distance
+    authority, two judges.
+
+    **The flag names the span and the CLASS, never the entry** (Decision
+    11-C, and the same reading :class:`RosterBandJudge` records): the brief
+    entry a span nearly matches is exactly what a repair would substitute.
+    The Solver reads the brief through its own traced knowledge supply and
+    the Observer re-listens to the span; what this judge contributes is
+    where to look and which kind of name to expect.
+
+    Reads from material or state: ``person_terms`` and ``org_terms``
+    (required sequences -- an absent one is a wiring defect, and a judge
+    that silently reported "nothing to criticise" would be worse than a
+    stop), plus optional ``words`` (defaulting to the draft's own whitespace
+    split), ``max_distance`` (default
+    :data:`BRIEF_NEAR_MISS_MAX_DISTANCE`) and ``min_word_length`` (default
+    :data:`BRIEF_NEAR_MISS_MIN_WORD_LENGTH`). Score is the share of words
+    outside a flagged span.
+    """
+
+    id: str = E21_BRIEF_NAME_NEAR_MISS_JUDGE_V1
+    version: str = "1.0.0"
+    criticism_only: bool = True
+
+    def __call__(
+        self,
+        draft: str,
+        material: Mapping[str, object],
+        state: Mapping[str, object],
+    ) -> JudgeVerdict:
+        from .flag_sources import (  # noqa: PLC0415 (import cost)
+            STOPWORDS,
+            candidate_bigram_forms,
+            candidate_word_forms,
+            weighted_grapheme_distance,
+        )
+        from .retrieval import normalize_term  # noqa: PLC0415 (import cost)
+
+        classes: list[tuple[str, Sequence[object]]] = []
+        for key, code in (("person_terms", "PERSON"), ("org_terms", "ORG")):
+            terms = _lookup(key, material, state, judge_id=self.id)
+            if isinstance(terms, (str, bytes)) or not isinstance(terms, Sequence):
+                raise JudgeError(
+                    f"judge {self.id!r}: {key!r} must be a sequence of brief entries, "
+                    f"got {type(terms).__name__}"
+                )
+            classes.append((code, terms))
+
+        words = _lookup(
+            "words", material, state, judge_id=self.id, required=False, default=None
+        )
+        if words is None:
+            words = draft.split()
+        words = list(words)
+        max_distance = float(
+            _lookup(
+                "max_distance",
+                material,
+                state,
+                judge_id=self.id,
+                required=False,
+                default=BRIEF_NEAR_MISS_MAX_DISTANCE,
+            )
+        )
+        min_word_length = int(
+            _lookup(
+                "min_word_length",
+                material,
+                state,
+                judge_id=self.id,
+                required=False,
+                default=BRIEF_NEAR_MISS_MIN_WORD_LENGTH,
+            )
+        )
+        if not 0.0 < max_distance <= 1.0:
+            raise JudgeError(
+                f"judge {self.id!r}: 'max_distance' must lie in (0, 1], got "
+                f"{max_distance!r}"
+            )
+        if min_word_length < 1:
+            raise JudgeError(
+                f"judge {self.id!r}: 'min_word_length' must be >= 1, got "
+                f"{min_word_length!r}"
+            )
+
+        unigram_targets: dict[str, str] = {}
+        bigram_targets: dict[str, str] = {}
+        for code, terms in classes:
+            for term in terms:
+                forms = candidate_word_forms(str(term))
+                for form in forms:
+                    unigram_targets.setdefault(form, code)
+                for form in candidate_bigram_forms(forms):
+                    bigram_targets.setdefault(form, code)
+
+        normalized = [normalize_term(word) for word in words]
+
+        def eligible(index: int) -> bool:
+            form = normalized[index]
+            return bool(form) and form not in STOPWORDS and len(form) >= min_word_length
+
+        cache: dict[tuple[str, bool], tuple[str, float] | None] = {}
+
+        def nearest(
+            text: str, targets: Mapping[str, str]
+        ) -> tuple[str, float] | None:
+            best: tuple[str, float] | None = None
+            length = len(text)
+            for target, code in targets.items():
+                if abs(len(target) - length) > max_distance * max(len(target), length):
+                    continue
+                distance = weighted_grapheme_distance(text, target)
+                if distance <= 0.0 or distance > max_distance:
+                    continue
+                if (
+                    best is None
+                    or distance < best[1]
+                    or (distance == best[1] and code < best[0])
+                ):
+                    best = (code, distance)
+            return best
+
+        def lookup(text: str, *, allow_bigram: bool) -> tuple[str, float] | None:
+            key = (text, allow_bigram)
+            if key not in cache:
+                found = nearest(text, unigram_targets)
+                if allow_bigram:
+                    second = nearest(text, bigram_targets)
+                    if second is not None and (found is None or second[1] < found[1]):
+                        found = second
+                cache[key] = found
+            return cache[key]
+
+        def exact(text: str, *, allow_bigram: bool) -> bool:
+            """The draft span already IS a brief form -- correct, never a
+            criticism, whatever else happens to sit near it."""
+
+            if text in unigram_targets:
+                return True
+            return allow_bigram and text in bigram_targets
+
+        found: list[tuple[float, int, int, str]] = []
+        for index in range(len(words)):
+            if not eligible(index):
+                continue
+            form = normalized[index]
+            if not exact(form, allow_bigram=False):
+                match = lookup(form, allow_bigram=False)
+                if match is not None:
+                    found.append((match[1], index, index + 1, match[0]))
+            if index + 1 < len(words) and eligible(index + 1):
+                window = f"{form} {normalized[index + 1]}"
+                if not exact(window, allow_bigram=True):
+                    match = lookup(window, allow_bigram=True)
+                    if match is not None:
+                        found.append((match[1], index, index + 2, match[0]))
+
+        selected: list[tuple[float, int, int, str]] = []
+        for entry in sorted(found, key=lambda item: (item[0], item[1], item[2])):
+            if any(entry[1] < chosen[2] and chosen[1] < entry[2] for chosen in selected):
+                continue
+            selected.append(entry)
+        selected.sort(key=lambda item: (item[1], item[2]))
+
+        flags = tuple(
+            JudgeFlag(
+                code=f"brief_{code.lower()}_name_near_miss",
+                severity="warn",
+                reason=(
+                    f"this span is within {distance:.3f} weighted grapheme distance "
+                    f"of a {code} entry of this call's pre-meeting brief and is not "
+                    "equal to it"
+                ),
+                field_ref="transcript",
+                span=(start, end),
+            )
+            for distance, start, end, code in selected
+        )
+        flagged_words = sum(end - start for _d, start, end, _c in selected)
+        total = len(words)
+        score = 1.0 if not total else _clamped(1.0 - flagged_words / total)
+        return JudgeVerdict(
+            judge_id=self.id,
+            version=self.version,
+            score=score,
+            flags=flags,
+        ).validate()
+
+
 __all__ = [
     "A2T_HARD_VALIDITY_JUDGE_V1",
+    "BRIEF_NEAR_MISS_MAX_DISTANCE",
+    "BRIEF_NEAR_MISS_MIN_WORD_LENGTH",
     "EARNINGS_NUMERIC_FORMAT_JUDGE_V1",
+    "E21_BRIEF_NAME_NEAR_MISS_JUDGE_V1",
     "E21_SUBSTITUTION_ALIGNMENT_JUDGE_V1",
     "REPLAY_LOGPROB_JUDGE_V1",
     "ROSTER_BAND_JUDGE_V1",
     "SLURP_LEGAL_LABEL_JUDGE_V1",
     "SLURP_SLOT_SCHEMA_JUDGE_V1",
     "A2tHardValidityJudge",
+    "BriefNameNearMissJudge",
     "EarningsNumericFormatJudge",
     "ReplayLogprobJudge",
     "RosterBandJudge",

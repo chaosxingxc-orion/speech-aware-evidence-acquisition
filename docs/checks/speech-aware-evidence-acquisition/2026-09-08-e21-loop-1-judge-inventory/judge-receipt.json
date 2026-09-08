@@ -1,0 +1,683 @@
+{
+  "contact_budget": {
+    "contacts_per_window": 0.5831763967357187,
+    "flagged_windows": 929,
+    "kc_e1f_contacts": 1593,
+    "share_of_kc_e1f": 0.5831763967357187,
+    "windows": 1593
+  },
+  "contacts": {
+    "audio_decode": 0,
+    "embedder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api_usd": 0,
+    "server": 0,
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "elapsed_seconds": 1410.641,
+  "exposure_row": "SAEA-E21-MF-LOOP-1-PREP-V1",
+  "flag_codes": {
+    "brief_org_name_near_miss": 1102,
+    "brief_person_name_near_miss": 941,
+    "numeric_format_mismatch": 123
+  },
+  "generated_utc": "2026-09-08T20:14:40Z",
+  "identity_anchor": [
+    {
+      "actual": 1593,
+      "check": "windows",
+      "expected": 1593,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 44,
+      "check": "calls",
+      "expected": 44,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 13098,
+      "check": "substitutions",
+      "expected": 13098,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 5701,
+      "check": "deletions",
+      "expected": 5701,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 10700,
+      "check": "insertions",
+      "expected": 10700,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 359765,
+      "check": "reference_words",
+      "expected": 359765,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 2917,
+      "check": "person_reference_words",
+      "expected": 2917,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 22.489,
+      "check": "person_entity_wer_percent",
+      "expected": 22.489,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 4363,
+      "check": "org_reference_words",
+      "expected": 4363,
+      "verdict": "PASS"
+    },
+    {
+      "actual": 17.213,
+      "check": "org_entity_wer_percent",
+      "expected": 17.213,
+      "verdict": "PASS"
+    }
+  ],
+  "identity_anchor_verdict": "PASS",
+  "judges": {
+    "e21-brief-name-near-miss-v1": {
+      "flagged_normalized_words": 2234,
+      "flagged_spans": 2021,
+      "flagged_spans_hitting_a_person_org_substitution": 168,
+      "flagged_window_share": 0.5599497802887633,
+      "flagged_windows": 892,
+      "flagged_windows_carrying_a_person_org_substitution": 421,
+      "person_org_substitutions_covered": 178,
+      "person_org_substitutions_in_a_flagged_window": 828,
+      "span_precision": 0.08312716476991588,
+      "substitution_recall": 0.1420590582601756,
+      "substitution_recall_including_deletions": 0.12651030561478321,
+      "version": "1.0.0",
+      "window_precision": 0.47197309417040356,
+      "window_recall": 0.6608140462889066,
+      "window_recall_of_windows": 0.6246290801186943
+    },
+    "e21-substitution-alignment-flag-v1": {
+      "flagged_normalized_words": 0,
+      "flagged_spans": 0,
+      "flagged_spans_hitting_a_person_org_substitution": 0,
+      "flagged_window_share": 0.0,
+      "flagged_windows": 0,
+      "flagged_windows_carrying_a_person_org_substitution": 0,
+      "person_org_substitutions_covered": 0,
+      "person_org_substitutions_in_a_flagged_window": 0,
+      "span_precision": null,
+      "substitution_recall": 0.0,
+      "substitution_recall_including_deletions": 0.0,
+      "version": "1.0.0",
+      "window_precision": null,
+      "window_recall": 0.0,
+      "window_recall_of_windows": 0.0
+    },
+    "earnings-numeric-format-flag-v1": {
+      "flagged_normalized_words": 123,
+      "flagged_spans": 123,
+      "flagged_spans_hitting_a_person_org_substitution": 0,
+      "flagged_window_share": 0.054613935969868174,
+      "flagged_windows": 87,
+      "flagged_windows_carrying_a_person_org_substitution": 34,
+      "person_org_substitutions_covered": 0,
+      "person_org_substitutions_in_a_flagged_window": 59,
+      "span_precision": 0.0,
+      "substitution_recall": 0.0,
+      "substitution_recall_including_deletions": 0.0,
+      "version": "1.0.0",
+      "window_precision": 0.39080459770114945,
+      "window_recall": 0.047086991221069435,
+      "window_recall_of_windows": 0.050445103857566766
+    },
+    "inventory": {
+      "flagged_normalized_words": 2357,
+      "flagged_spans": 2144,
+      "flagged_spans_hitting_a_person_org_substitution": 168,
+      "flagged_window_share": 0.5831763967357187,
+      "flagged_windows": 929,
+      "flagged_windows_carrying_a_person_org_substitution": 435,
+      "person_org_substitutions_covered": 178,
+      "person_org_substitutions_in_a_flagged_window": 845,
+      "span_precision": 0.07835820895522388,
+      "substitution_recall": 0.1420590582601756,
+      "substitution_recall_including_deletions": 0.12651030561478321,
+      "version": null,
+      "window_precision": 0.4682454251883746,
+      "window_recall": 0.6743814844373504,
+      "window_recall_of_windows": 0.6454005934718101
+    }
+  },
+  "near_miss_distance_ladder": {
+    "0.10": {
+      "flagged_spans": 100,
+      "flagged_spans_hitting_a_person_org_substitution": 49,
+      "flagged_window_share": 0.05398618957940992,
+      "flagged_windows": 86,
+      "flagged_windows_carrying_a_person_org_substitution": 69,
+      "person_org_substitutions_covered": 50,
+      "person_org_substitutions_in_a_flagged_window": 180,
+      "span_precision": 0.49,
+      "substitution_recall": 0.03990422984836393,
+      "window_precision": 0.8023255813953488,
+      "window_recall": 0.14365522745411013
+    },
+    "0.15": {
+      "flagged_spans": 385,
+      "flagged_spans_hitting_a_person_org_substitution": 82,
+      "flagged_window_share": 0.1694915254237288,
+      "flagged_windows": 270,
+      "flagged_windows_carrying_a_person_org_substitution": 157,
+      "person_org_substitutions_covered": 85,
+      "person_org_substitutions_in_a_flagged_window": 340,
+      "span_precision": 0.21298701298701297,
+      "substitution_recall": 0.06783719074221868,
+      "window_precision": 0.5814814814814815,
+      "window_recall": 0.2713487629688747
+    },
+    "0.20": {
+      "flagged_spans": 912,
+      "flagged_spans_hitting_a_person_org_substitution": 139,
+      "flagged_window_share": 0.3352165725047081,
+      "flagged_windows": 534,
+      "flagged_windows_carrying_a_person_org_substitution": 283,
+      "person_org_substitutions_covered": 146,
+      "person_org_substitutions_in_a_flagged_window": 596,
+      "span_precision": 0.1524122807017544,
+      "substitution_recall": 0.11652035115722266,
+      "window_precision": 0.5299625468164794,
+      "window_recall": 0.475658419792498
+    },
+    "0.25": {
+      "flagged_spans": 2021,
+      "flagged_spans_hitting_a_person_org_substitution": 168,
+      "flagged_window_share": 0.5599497802887633,
+      "flagged_windows": 892,
+      "flagged_windows_carrying_a_person_org_substitution": 421,
+      "person_org_substitutions_covered": 178,
+      "person_org_substitutions_in_a_flagged_window": 828,
+      "span_precision": 0.08312716476991588,
+      "substitution_recall": 0.1420590582601756,
+      "window_precision": 0.47197309417040356,
+      "window_recall": 0.6608140462889066
+    },
+    "0.30": {
+      "flagged_spans": 3053,
+      "flagged_spans_hitting_a_person_org_substitution": 190,
+      "flagged_window_share": 0.7150031387319523,
+      "flagged_windows": 1139,
+      "flagged_windows_carrying_a_person_org_substitution": 520,
+      "person_org_substitutions_covered": 200,
+      "person_org_substitutions_in_a_flagged_window": 993,
+      "span_precision": 0.06223386832623649,
+      "substitution_recall": 0.1596169193934557,
+      "window_precision": 0.456540825285338,
+      "window_recall": 0.7924980047885076
+    },
+    "0.35": {
+      "flagged_spans": 4530,
+      "flagged_spans_hitting_a_person_org_substitution": 214,
+      "flagged_window_share": 0.8298807281858129,
+      "flagged_windows": 1322,
+      "flagged_windows_carrying_a_person_org_substitution": 583,
+      "person_org_substitutions_covered": 225,
+      "person_org_substitutions_in_a_flagged_window": 1102,
+      "span_precision": 0.047240618101545256,
+      "substitution_recall": 0.17956903431763768,
+      "window_precision": 0.4409984871406959,
+      "window_recall": 0.879489225857941
+    },
+    "0.45": {
+      "flagged_spans": 19503,
+      "flagged_spans_hitting_a_person_org_substitution": 314,
+      "flagged_window_share": 0.9893283113622097,
+      "flagged_windows": 1576,
+      "flagged_windows_carrying_a_person_org_substitution": 671,
+      "person_org_substitutions_covered": 329,
+      "person_org_substitutions_in_a_flagged_window": 1248,
+      "span_precision": 0.016100087166077012,
+      "substitution_recall": 0.26256983240223464,
+      "window_precision": 0.42576142131979694,
+      "window_recall": 0.9960095770151636
+    }
+  },
+  "per_call": [
+    {
+      "brief_org_entries": 6,
+      "brief_person_entries": 9,
+      "flagged_windows": 18,
+      "person_org_substitutions": 20,
+      "person_org_substitutions_covered": 3,
+      "sample_id": "4320211",
+      "windows": 37
+    },
+    {
+      "brief_org_entries": 3,
+      "brief_person_entries": 7,
+      "flagged_windows": 20,
+      "person_org_substitutions": 20,
+      "person_org_substitutions_covered": 5,
+      "sample_id": "4330115",
+      "windows": 28
+    },
+    {
+      "brief_org_entries": 10,
+      "brief_person_entries": 12,
+      "flagged_windows": 49,
+      "person_org_substitutions": 33,
+      "person_org_substitutions_covered": 4,
+      "sample_id": "4341191",
+      "windows": 64
+    },
+    {
+      "brief_org_entries": 4,
+      "brief_person_entries": 7,
+      "flagged_windows": 13,
+      "person_org_substitutions": 31,
+      "person_org_substitutions_covered": 1,
+      "sample_id": "4344338",
+      "windows": 31
+    },
+    {
+      "brief_org_entries": 6,
+      "brief_person_entries": 9,
+      "flagged_windows": 29,
+      "person_org_substitutions": 31,
+      "person_org_substitutions_covered": 9,
+      "sample_id": "4344866",
+      "windows": 37
+    },
+    {
+      "brief_org_entries": 11,
+      "brief_person_entries": 12,
+      "flagged_windows": 38,
+      "person_org_substitutions": 35,
+      "person_org_substitutions_covered": 2,
+      "sample_id": "4346818",
+      "windows": 45
+    },
+    {
+      "brief_org_entries": 12,
+      "brief_person_entries": 12,
+      "flagged_windows": 40,
+      "person_org_substitutions": 49,
+      "person_org_substitutions_covered": 10,
+      "sample_id": "4346923",
+      "windows": 53
+    },
+    {
+      "brief_org_entries": 9,
+      "brief_person_entries": 11,
+      "flagged_windows": 41,
+      "person_org_substitutions": 29,
+      "person_org_substitutions_covered": 7,
+      "sample_id": "4359732",
+      "windows": 55
+    },
+    {
+      "brief_org_entries": 5,
+      "brief_person_entries": 9,
+      "flagged_windows": 33,
+      "person_org_substitutions": 25,
+      "person_org_substitutions_covered": 5,
+      "sample_id": "4359971",
+      "windows": 42
+    },
+    {
+      "brief_org_entries": 8,
+      "brief_person_entries": 12,
+      "flagged_windows": 12,
+      "person_org_substitutions": 32,
+      "person_org_substitutions_covered": 9,
+      "sample_id": "4360366",
+      "windows": 44
+    },
+    {
+      "brief_org_entries": 5,
+      "brief_person_entries": 8,
+      "flagged_windows": 14,
+      "person_org_substitutions": 31,
+      "person_org_substitutions_covered": 2,
+      "sample_id": "4360674",
+      "windows": 40
+    },
+    {
+      "brief_org_entries": 12,
+      "brief_person_entries": 12,
+      "flagged_windows": 31,
+      "person_org_substitutions": 64,
+      "person_org_substitutions_covered": 6,
+      "sample_id": "4360717",
+      "windows": 51
+    },
+    {
+      "brief_org_entries": 7,
+      "brief_person_entries": 10,
+      "flagged_windows": 17,
+      "person_org_substitutions": 40,
+      "person_org_substitutions_covered": 5,
+      "sample_id": "4361631",
+      "windows": 50
+    },
+    {
+      "brief_org_entries": 9,
+      "brief_person_entries": 12,
+      "flagged_windows": 34,
+      "person_org_substitutions": 23,
+      "person_org_substitutions_covered": 4,
+      "sample_id": "4363614",
+      "windows": 63
+    },
+    {
+      "brief_org_entries": 11,
+      "brief_person_entries": 12,
+      "flagged_windows": 18,
+      "person_org_substitutions": 60,
+      "person_org_substitutions_covered": 4,
+      "sample_id": "4364366",
+      "windows": 39
+    },
+    {
+      "brief_org_entries": 8,
+      "brief_person_entries": 12,
+      "flagged_windows": 24,
+      "person_org_substitutions": 48,
+      "person_org_substitutions_covered": 1,
+      "sample_id": "4365024",
+      "windows": 49
+    },
+    {
+      "brief_org_entries": 2,
+      "brief_person_entries": 5,
+      "flagged_windows": 19,
+      "person_org_substitutions": 16,
+      "person_org_substitutions_covered": 4,
+      "sample_id": "4365948",
+      "windows": 28
+    },
+    {
+      "brief_org_entries": 8,
+      "brief_person_entries": 12,
+      "flagged_windows": 26,
+      "person_org_substitutions": 35,
+      "person_org_substitutions_covered": 3,
+      "sample_id": "4366302",
+      "windows": 40
+    },
+    {
+      "brief_org_entries": 9,
+      "brief_person_entries": 12,
+      "flagged_windows": 33,
+      "person_org_substitutions": 35,
+      "person_org_substitutions_covered": 1,
+      "sample_id": "4366429",
+      "windows": 45
+    },
+    {
+      "brief_org_entries": 2,
+      "brief_person_entries": 4,
+      "flagged_windows": 3,
+      "person_org_substitutions": 43,
+      "person_org_substitutions_covered": 2,
+      "sample_id": "4366522",
+      "windows": 21
+    },
+    {
+      "brief_org_entries": 5,
+      "brief_person_entries": 8,
+      "flagged_windows": 17,
+      "person_org_substitutions": 19,
+      "person_org_substitutions_covered": 5,
+      "sample_id": "4366893",
+      "windows": 27
+    },
+    {
+      "brief_org_entries": 3,
+      "brief_person_entries": 6,
+      "flagged_windows": 10,
+      "person_org_substitutions": 29,
+      "person_org_substitutions_covered": 4,
+      "sample_id": "4367318",
+      "windows": 20
+    },
+    {
+      "brief_org_entries": 5,
+      "brief_person_entries": 11,
+      "flagged_windows": 24,
+      "person_org_substitutions": 46,
+      "person_org_substitutions_covered": 1,
+      "sample_id": "4367535",
+      "windows": 36
+    },
+    {
+      "brief_org_entries": 12,
+      "brief_person_entries": 12,
+      "flagged_windows": 46,
+      "person_org_substitutions": 45,
+      "person_org_substitutions_covered": 11,
+      "sample_id": "4368670",
+      "windows": 47
+    },
+    {
+      "brief_org_entries": 1,
+      "brief_person_entries": 2,
+      "flagged_windows": 2,
+      "person_org_substitutions": 19,
+      "person_org_substitutions_covered": 0,
+      "sample_id": "4374910",
+      "windows": 23
+    },
+    {
+      "brief_org_entries": 5,
+      "brief_person_entries": 9,
+      "flagged_windows": 14,
+      "person_org_substitutions": 29,
+      "person_org_substitutions_covered": 4,
+      "sample_id": "4375653",
+      "windows": 39
+    },
+    {
+      "brief_org_entries": 12,
+      "brief_person_entries": 12,
+      "flagged_windows": 32,
+      "person_org_substitutions": 34,
+      "person_org_substitutions_covered": 8,
+      "sample_id": "4382825",
+      "windows": 43
+    },
+    {
+      "brief_org_entries": 7,
+      "brief_person_entries": 10,
+      "flagged_windows": 11,
+      "person_org_substitutions": 18,
+      "person_org_substitutions_covered": 5,
+      "sample_id": "4383161",
+      "windows": 38
+    },
+    {
+      "brief_org_entries": 3,
+      "brief_person_entries": 6,
+      "flagged_windows": 7,
+      "person_org_substitutions": 7,
+      "person_org_substitutions_covered": 0,
+      "sample_id": "4384198",
+      "windows": 30
+    },
+    {
+      "brief_org_entries": 2,
+      "brief_person_entries": 7,
+      "flagged_windows": 8,
+      "person_org_substitutions": 19,
+      "person_org_substitutions_covered": 6,
+      "sample_id": "4384683",
+      "windows": 17
+    },
+    {
+      "brief_org_entries": 6,
+      "brief_person_entries": 8,
+      "flagged_windows": 20,
+      "person_org_substitutions": 13,
+      "person_org_substitutions_covered": 3,
+      "sample_id": "4384744",
+      "windows": 37
+    },
+    {
+      "brief_org_entries": 12,
+      "brief_person_entries": 12,
+      "flagged_windows": 23,
+      "person_org_substitutions": 32,
+      "person_org_substitutions_covered": 6,
+      "sample_id": "4384964",
+      "windows": 45
+    },
+    {
+      "brief_org_entries": 6,
+      "brief_person_entries": 9,
+      "flagged_windows": 13,
+      "person_org_substitutions": 14,
+      "person_org_substitutions_covered": 1,
+      "sample_id": "4385072",
+      "windows": 29
+    },
+    {
+      "brief_org_entries": 8,
+      "brief_person_entries": 11,
+      "flagged_windows": 41,
+      "person_org_substitutions": 30,
+      "person_org_substitutions_covered": 6,
+      "sample_id": "4385388",
+      "windows": 49
+    },
+    {
+      "brief_org_entries": 12,
+      "brief_person_entries": 12,
+      "flagged_windows": 29,
+      "person_org_substitutions": 20,
+      "person_org_substitutions_covered": 7,
+      "sample_id": "4385939",
+      "windows": 34
+    },
+    {
+      "brief_org_entries": 1,
+      "brief_person_entries": 4,
+      "flagged_windows": 8,
+      "person_org_substitutions": 10,
+      "person_org_substitutions_covered": 4,
+      "sample_id": "4386541",
+      "windows": 13
+    },
+    {
+      "brief_org_entries": 1,
+      "brief_person_entries": 4,
+      "flagged_windows": 5,
+      "person_org_substitutions": 9,
+      "person_org_substitutions_covered": 2,
+      "sample_id": "4387332",
+      "windows": 15
+    },
+    {
+      "brief_org_entries": 2,
+      "brief_person_entries": 5,
+      "flagged_windows": 17,
+      "person_org_substitutions": 11,
+      "person_org_substitutions_covered": 4,
+      "sample_id": "4387383",
+      "windows": 24
+    },
+    {
+      "brief_org_entries": 2,
+      "brief_person_entries": 4,
+      "flagged_windows": 20,
+      "person_org_substitutions": 19,
+      "person_org_substitutions_covered": 2,
+      "sample_id": "4387865",
+      "windows": 25
+    },
+    {
+      "brief_org_entries": 3,
+      "brief_person_entries": 6,
+      "flagged_windows": 2,
+      "person_org_substitutions": 21,
+      "person_org_substitutions_covered": 0,
+      "sample_id": "4389907",
+      "windows": 23
+    },
+    {
+      "brief_org_entries": 2,
+      "brief_person_entries": 5,
+      "flagged_windows": 5,
+      "person_org_substitutions": 8,
+      "person_org_substitutions_covered": 1,
+      "sample_id": "4392809",
+      "windows": 16
+    },
+    {
+      "brief_org_entries": 1,
+      "brief_person_entries": 4,
+      "flagged_windows": 5,
+      "person_org_substitutions": 38,
+      "person_org_substitutions_covered": 2,
+      "sample_id": "4394084",
+      "windows": 20
+    },
+    {
+      "brief_org_entries": 5,
+      "brief_person_entries": 8,
+      "flagged_windows": 21,
+      "person_org_substitutions": 18,
+      "person_org_substitutions_covered": 2,
+      "sample_id": "4397800",
+      "windows": 31
+    },
+    {
+      "brief_org_entries": 8,
+      "brief_person_entries": 12,
+      "flagged_windows": 37,
+      "person_org_substitutions": 45,
+      "person_org_substitutions_covered": 7,
+      "sample_id": "4397829",
+      "windows": 50
+    }
+  ],
+  "schema": "saea-e21-loop-judge-receipt-v1",
+  "source": {
+    "attempt_id": "attempt-20260904T233816Z-bcd338",
+    "brief_max_entries_per_class": 12,
+    "outputs_sha256": "7d4732066d61fccff5bf0829779c24138edcf003e4338933c398416459bbe00d",
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "trace_sha256": "c657260e0d392f084feee0dd09b23e9c7eac56c6288c15e6b05bb808378795dd"
+  },
+  "totals": {
+    "brief_org_entries": 271,
+    "brief_person_entries": 386,
+    "calls": 44,
+    "deletions": 5701,
+    "empty_windows": 0,
+    "insertions": 10700,
+    "normalization_word_delta": 18,
+    "normalized_hypothesis_words": 364764,
+    "person_org_deletions": 154,
+    "person_org_substitutions": 1253,
+    "raw_draft_words": 372488,
+    "reference_words": 359765,
+    "substitutions": 13098,
+    "windows": 1593,
+    "windows_carrying_a_person_org_substitution": 674,
+    "windows_whose_local_normalization_disagrees": 17
+  },
+  "truth_definition": {
+    "excluded": "PERSON/ORG deletions consume no hypothesis word, so no span-based judge reading the draft can point at one; they are counted and reported, and recall is given both without and with them in the denominator",
+    "insertions": "never reach an entity bucket at all (fstalign attributes no insertion to a tag)",
+    "positive": "an OP_SUBSTITUTION whose reference word carries a PERSON or ORG entity id, in the sealed comparator's own ConEC alignment"
+  }
+}

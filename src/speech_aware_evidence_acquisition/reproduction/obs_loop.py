@@ -172,7 +172,19 @@ _EPSILON_SECONDS = 1e-6
 #: naming v1 -- and is one member of the accepted set below, not replaced by it.
 OBS_UNIT_PLAN_SCHEMA = "saea-e21-speaker-turn-units-v1"
 OBS_UNIT_PLAN_SCHEMA_V2 = "saea-e21-speaker-turn-units-v2"
-OBS_UNIT_PLAN_SCHEMAS = frozenset({OBS_UNIT_PLAN_SCHEMA, OBS_UNIT_PLAN_SCHEMA_V2})
+#: E21-LOOP-1's SELECTIVE RE-LISTEN plan (``analysis.e21_relisten_plan``). It
+#: rides the same two config keys and the same cutter as a speaker-turn plan
+#: -- the cutter's job is "consume the positions this plan fixed", which is
+#: identical either way -- but carries a DIFFERENT proof obligation, because a
+#: re-listen plan deliberately does not tile its call: it covers only the
+#: windows the Reviewer criticised, each unit a narrower span of one of them.
+#: A separate schema rather than a flag, so the loader can never guess which
+#: proof to apply.
+OBS_RELISTEN_PLAN_SCHEMA = "saea-e21-relisten-plan-v1"
+
+OBS_UNIT_PLAN_SCHEMAS = frozenset(
+    {OBS_UNIT_PLAN_SCHEMA, OBS_UNIT_PLAN_SCHEMA_V2, OBS_RELISTEN_PLAN_SCHEMA}
+)
 
 #: What the ``saea-obs-derivation-v1`` receipt records in ``boundary_mode``
 #: when a plan supplied the cut (preregistration section 8.4). The ADVANCE
@@ -385,6 +397,14 @@ class PlannedUnit:
     end_seconds: float
     speaker: str | None
     end_cut: str
+    #: E21-LOOP-1 (selective re-listen plans only): which fixed 90-second
+    #: window of the sealed comparator this unit is a narrower cut OF, and
+    #: which half-open word range of that window's pass-1 text the cut
+    #: corresponds to. ``None`` on every speaker-turn plan, which is what
+    #: keeps those plans' runtime behaviour byte-identical.
+    parent_window_index: int | None = None
+    predecessor_word_start: int | None = None
+    predecessor_word_end: int | None = None
 
     @property
     def duration_seconds(self) -> float:
@@ -445,6 +465,15 @@ def _plan_number(unit: Mapping[str, object], key: str, where: str) -> float:
     return float(value)
 
 
+def _plan_int(unit: Mapping[str, object], key: str, where: str) -> int:
+    value = unit.get(key)
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        raise ObsLoopError(
+            f"unit plan {where}: {key} must be a non-negative integer, got {value!r}"
+        )
+    return int(value)
+
+
 def _load_unit_plan(
     repo_root: Path, relpath: str, expected_sha256: str, buffer_seconds: float
 ) -> UnitPlan:
@@ -461,6 +490,12 @@ def _load_unit_plan(
     # Function-local, exactly as this module's other heavy imports are: the
     # analysis package is a reader over run bundles and has no business in
     # the runtime import graph of a policy that may never see a plan.
+    from ..analysis.e21_relisten_plan import (  # noqa: PLC0415
+        ParentWindow,
+        RelistenPlanError,
+        RelistenUnit,
+        assert_relisten_units,
+    )
     from ..analysis.e21_speaker_turn_units import (  # noqa: PLC0415
         Unit,
         SpeakerTurnUnitError,
@@ -497,6 +532,7 @@ def _load_unit_plan(
             f"obs_unit_plan {relpath!r} declares schema {schema!r}, not one of "
             f"{sorted(OBS_UNIT_PLAN_SCHEMAS)!r}; this seam consumes those schemas only"
         )
+    relisten = schema == OBS_RELISTEN_PLAN_SCHEMA
     blocks = document.get("calls")
     if not isinstance(blocks, list) or not blocks:
         raise ObsLoopError(f"obs_unit_plan {relpath!r} carries no 'calls' list")
@@ -575,6 +611,26 @@ def _load_unit_plan(
                 raise ObsLoopError(
                     f"obs_unit_plan {relpath!r}: {where} declares end_cut {end_cut!r}"
                 )
+            parent_index: int | None = None
+            word_start: int | None = None
+            word_end: int | None = None
+            if relisten:
+                parent_index = _plan_int(entry, "parent_window_index", where)
+                word_start = _plan_int(entry, "predecessor_word_start", where)
+                word_end = _plan_int(entry, "predecessor_word_end", where)
+            elif any(
+                key in entry
+                for key in (
+                    "parent_window_index",
+                    "predecessor_word_start",
+                    "predecessor_word_end",
+                )
+            ):
+                raise ObsLoopError(
+                    f"obs_unit_plan {relpath!r}: {where} carries a re-listen field "
+                    f"under schema {schema!r}; those keys belong to "
+                    f"{OBS_RELISTEN_PLAN_SCHEMA!r} alone"
+                )
             planned.append(
                 PlannedUnit(
                     unit_id=identifier,
@@ -583,8 +639,13 @@ def _load_unit_plan(
                     end_seconds=end_seconds,
                     speaker=speaker,
                     end_cut=end_cut,
+                    parent_window_index=parent_index,
+                    predecessor_word_start=word_start,
+                    predecessor_word_end=word_end,
                 )
             )
+            if relisten:
+                continue
             rebuilt.append(
                 Unit(
                     sample_id=sample_id,
@@ -600,13 +661,61 @@ def _load_unit_plan(
                     flags=(),
                 )
             )
-        try:
-            assert_tiles(rebuilt, duration)
-        except SpeakerTurnUnitError as error:
-            raise ObsLoopError(
-                f"obs_unit_plan {relpath!r}: call {sample_id!r} does not tile its own "
-                f"{duration} s: {error}"
-            ) from error
+        if relisten:
+            raw_windows = block.get("parent_windows")
+            if not isinstance(raw_windows, list) or not raw_windows:
+                raise ObsLoopError(
+                    f"obs_unit_plan {relpath!r}: call {sample_id!r} declares no "
+                    "'parent_windows'; a re-listen plan proves containment in the "
+                    "comparator's own windows and cannot do so without them"
+                )
+            parents: list[ParentWindow] = []
+            for position, entry in enumerate(raw_windows, start=1):
+                where = f"call {sample_id!r} parent window #{position}"
+                if not isinstance(entry, Mapping):
+                    raise ObsLoopError(
+                        f"obs_unit_plan {relpath!r}: {where} is not an object"
+                    )
+                parents.append(
+                    ParentWindow(
+                        window_index=_plan_int(entry, "window_index", where),
+                        start_seconds=_plan_number(entry, "start_seconds", where),
+                        end_seconds=_plan_number(entry, "end_seconds", where),
+                        draft_words=_plan_int(entry, "draft_words", where),
+                    )
+                )
+            try:
+                assert_relisten_units(
+                    [
+                        RelistenUnit(
+                            sample_id=sample_id,
+                            unit_index=unit.unit_index,
+                            parent_window_index=int(unit.parent_window_index or 0),
+                            start_seconds=unit.start_seconds,
+                            end_seconds=unit.end_seconds,
+                            predecessor_word_start=int(unit.predecessor_word_start or 0),
+                            predecessor_word_end=int(unit.predecessor_word_end or 0),
+                        )
+                        for unit in planned
+                    ],
+                    parents,
+                    min_seconds=float(
+                        document.get("min_relisten_seconds", 0.0) or 0.0
+                    ),
+                )
+            except RelistenPlanError as error:
+                raise ObsLoopError(
+                    f"obs_unit_plan {relpath!r}: call {sample_id!r} is not a legal "
+                    f"selective re-listen plan: {error}"
+                ) from error
+        else:
+            try:
+                assert_tiles(rebuilt, duration)
+            except SpeakerTurnUnitError as error:
+                raise ObsLoopError(
+                    f"obs_unit_plan {relpath!r}: call {sample_id!r} does not tile its "
+                    f"own {duration} s: {error}"
+                ) from error
         units_by_sample[sample_id] = tuple(planned)
         duration_by_sample[sample_id] = duration
     return UnitPlan(
@@ -627,11 +736,20 @@ def _unit_trace_fields(unit: PlannedUnit | None) -> dict[str, object]:
 
     if unit is None:
         return {}
-    return {
+    fields: dict[str, object] = {
         "obs_unit_id": unit.unit_id,
         "obs_unit_speaker": unit.speaker,
         "obs_unit_end_cut": unit.end_cut,
     }
+    if unit.parent_window_index is not None:
+        # E21-LOOP-1: a re-listen unit is a narrower cut of ONE of the
+        # comparator's own fixed windows, and a paired read charges it back to
+        # that window. Emitted only when a re-listen plan supplied the cut, so
+        # every speaker-turn plan's record keeps its exact three-key shape.
+        fields["obs_relisten_parent_window_index"] = unit.parent_window_index
+        fields["obs_relisten_predecessor_word_start"] = unit.predecessor_word_start
+        fields["obs_relisten_predecessor_word_end"] = unit.predecessor_word_end
+    return fields
 
 
 @dataclass(frozen=True)

@@ -29,6 +29,7 @@ _ALL_IDS = (
     cj.E21_SUBSTITUTION_ALIGNMENT_JUDGE_V1,
     cj.REPLAY_LOGPROB_JUDGE_V1,
     cj.ROSTER_BAND_JUDGE_V1,
+    cj.E21_BRIEF_NAME_NEAR_MISS_JUDGE_V1,
 )
 
 _INVENTORY = {
@@ -58,7 +59,7 @@ def test_every_judge_is_registered_identified_and_criticism_only(judge_id):
     assert isinstance(judge.version, str) and judge.version.strip()
 
 
-def test_the_six_registered_ids_are_exactly_the_ones_this_module_names():
+def test_the_registered_ids_are_exactly_the_ones_this_module_names():
     assert set(_ALL_IDS) <= set(JUDGES.names())
 
 

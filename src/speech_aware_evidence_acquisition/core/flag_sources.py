@@ -210,6 +210,27 @@ def _decompose_candidate_words(term: str) -> list[str]:
     return words
 
 
+def candidate_word_forms(term: str) -> list[str]:
+    """Public name for :func:`_decompose_candidate_words`.
+
+    The frozen decomposition, unchanged and not copied: a second judge that
+    matches draft spans against named entities must anchor on the SAME word
+    forms this module's own band matcher anchors on, or two flag sources
+    would disagree about what a candidate term even contains. Added for
+    ``core.judges.BriefNameNearMissJudge`` (E21-LOOP-1), which is the first
+    caller outside this module.
+    """
+
+    return _decompose_candidate_words(term)
+
+
+def candidate_bigram_forms(words: Sequence[str]) -> list[str]:
+    """Public name for :func:`_candidate_bigrams`, for the same reason as
+    :func:`candidate_word_forms`."""
+
+    return _candidate_bigrams(words)
+
+
 def _candidate_bigrams(words: Sequence[str]) -> list[str]:
     """Adjacent (i, i+1) pairs of already-decomposed candidate words
     (D7 fix), space-joined -- the granularity a 2-word draft window matches

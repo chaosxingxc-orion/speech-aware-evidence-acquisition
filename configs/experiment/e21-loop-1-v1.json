@@ -1,0 +1,166 @@
+{
+  "experiment_id": "SAEA-E21-LOOP-1-V1",
+  "schema": "saea-e21-loop-experiment-v1",
+  "date": "2026-09-08",
+  "execution_profile": "bounded-discovery-probe",
+  "status": "PREREGISTERED, MODEL-FREE PREPARATION COMPLETE, NOT YET AUTHORIZED TO FLY. Preregistration: docs/readiness/2026-09-08-e21-loop-1-v1-preregistration.md. Owner Decision 12-G of 2026-09-08 is a GO for the MODEL-FREE preparation only and fixes the sequence: this cell flies after the SLURP line. The serving geometry named below is a PROJECTION and is decided by a prompt fit in SERVER mode before the first flight contact, exactly as KC-E1f's was.",
+  "purpose": "E21-LOOP-1, the first cell that runs the design note's WHOLE loop on Earnings-21 (docs/readiness/2026-09-08-agent-system-episode-and-core-pressure-v1.md section 5). Plan (meeting task) -> Observe (the sealed comparator's fixed 90-second windows, supplied through the KC-E1f predecessor binding, no contact) -> Review (two registered gold-free judges flag spans of that sealed draft) -> Observe again (SELECTIVE RE-LISTEN: a re-cut of each flagged window, the union of its flagged spans widened by 5.0 s on each side, floored at 10.0 s and clamped to the window) -> Solve (the frozen substitution-only repair over the re-cut span's own pass-1 words, on the FLAGGED windows only) -> Commit (an unflagged window delivers its predecessor verbatim and spends nothing). The ONE factor against KC-E1f is the Reviewer plus the selective re-listen: KC-E1f repaired every one of the 1,593 windows with the full 90 seconds and the whole window's pass-1 text.",
+  "population": {
+    "carrier": "earnings21-original",
+    "split_name": "discovery",
+    "dataset_fragment": "earnings21-discovery-conec-names",
+    "split_role": "discovery",
+    "count": 44,
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "receipt": "docs/receipts/splits.json",
+    "fixed_90s_windows_one_pass": 1593,
+    "contacted_windows_one_pass": 600,
+    "audio_seconds_delivered_one_pass": 15340.5,
+    "selection": "no draw: the whole frozen earnings21-original discovery split -- the same 44 calls, the same 1,593 fixed 90-second windows and the same split identity the sealed comparator, KC-E1, KU-E1c, KC-E1f and the null replicate all flew. The E5 split (34 kb-construction, 10 r4-e21-sub10 evaluation) is a REPORTING split; the evaluation ten carry 342 paired windows, below the program's n >= 400 rule, and are reported apart and descriptively.",
+    "estimand": "per-entity-class ConEC-mirror entity WER, pooled over all 44 calls, paired at the 90-second window and clustered at the call. EVERY window is delivered by both arms -- a flagged one repaired, an unflagged one from the predecessor -- so the paired read is over the same 1,593 units as KC-E1f's, never over the contacted subset."
+  },
+  "predecessor": {
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "attempt": "attempt-20260904T233816Z-bcd338",
+    "binding_receipt": "docs/receipts/e21-predecessor-full44-direct-baseline-v2.json",
+    "binding_receipt_sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a",
+    "windows": 1593,
+    "calls": 44,
+    "why_it_is_not_reflown": "KC-E1f's reason, unchanged: the comparator already decoded every one of these windows and its bytes ARE pass 1. Re-flying pass 1 would double the contacts and -- because greedy decoding on llama-server is not bitwise reproducible across batch compositions -- would produce a pass 1 that is NOT the arm this cell is paired against.",
+    "what_it_additionally_carries_here": "the DRAFT the Reviewer criticised. The selective plan's flags were computed model-free on these exact sealed per-window hypotheses, so the binding is what makes the plan and the flight describe the same text; a binding that failed to verify would invalidate the plan as well as the repair."
+  },
+  "comparators": {
+    "sealed_direct_baseline": {
+      "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+      "attempt": "attempt-20260904T233816Z-bcd338",
+      "corpus_wer_percent": 8.19952,
+      "conec_person_entity_wer_percent": 22.48886,
+      "conec_org_entity_wer_percent": 17.21293,
+      "numeric_value_accuracy_percent": 90.73351,
+      "substitutions": 13098,
+      "deletions": 5701,
+      "insertions": 10700,
+      "reference_words": 359765,
+      "contacts": 1593
+    },
+    "kc_e1f": {
+      "run_id": "SAEA-E21-KC-E1F-REPAIR-44-V1",
+      "attempt": "attempt-20260908T040832Z-ecda9c",
+      "conec_person_entity_wer_percent": 18.752,
+      "corpus_wer_percent": 8.154,
+      "contacts": 1593,
+      "prompt_tokens": 3550695,
+      "completion_tokens": 434219,
+      "realized_gpu_hours": 1.1093,
+      "status": "ADMITTED provisionally under the v2 rule, replication UNMET. Quoted here as a COMPARATOR and a price input, never as an admitted effect, and this cell's admission cannot discharge that replication obligation."
+    },
+    "own_null": {
+      "run_id": "SAEA-E21-FULL44-NULL-REPLICATE-V1",
+      "person_half_width": 0.25009,
+      "person_null_interval": [-0.24338, 0.2568],
+      "corpus_wer_half_width": 0.05793,
+      "numeric_half_width": 0.15651,
+      "insertions_half_width": 0.022178,
+      "why_it_is_here": "every non-inferiority margin in the decision rule is the half-width of this cell's own call-clustered CI90 on the same metric (family rule of 2026-09-08). No margin is imported and none is chosen after seeing a result."
+    },
+    "pairing_rule": "the fixed 90-second window is the paired unit (1,593), the call is the bootstrap cluster (44), the estimator is the pooled ratio through analysis.paired.resampled_statistic with cluster_of=analysis.e21_window_pairing.call_of, seed 20260903, 10,000 replicates, CI90, reported under both weightings."
+  },
+  "cells": [
+    {
+      "cell_id": "E21-loop-1-relisten-repair",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-loop-1-relisten-repair",
+      "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "arm": "fixed-legal-context",
+      "policy": "obs-repair-loop",
+      "evidence": "conec-class-lists at brief_max_entries_per_class 12 -- byte-identical to KC-E1's and KC-E1f's own committed fragment, because the cell's claim is about WHICH WINDOWS the same knowledge is spent on, not about the knowledge.",
+      "obs": "the sealed comparator's fixed 90-second tiling, re-cut per FLAGGED window by the hash-pinned selective plan docs/receipts/obs/e21-relisten-plan-v1.json (600 units over 44 calls, 15,340.5 s delivered against the comparator's 141,345.85 s). An unflagged window is never cut and never contacted.",
+      "reviewer": "e21-brief-name-near-miss-v1 at max_distance 0.20 and earnings-numeric-format-flag-v1, both registered in core.base.JUDGES, both gold-free, priced model-free in docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-loop-1-judge-inventory/.",
+      "serving_geometry": "PROJECTED -c 36864 -np 6, 6,144 tokens per slot, bf16 mmproj resident on the GPU. Every request is strictly smaller than KC-E1f's (a re-cut instead of 90 s of audio, a sub-span instead of the whole window's pass-1 text, the same cap-12 brief), whose worst realized request was 3,504 tokens at a 9,216-token slot. The prompt fit in SERVER mode certifies or moves this before the first flight contact.",
+      "audio_path": "raw audio through the bf16 mmproj on the GPU; no feature cache"
+    },
+    {
+      "cell_id": "E21-loop-1c-random-flag-twin",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-loop-1c-random-flag-twin",
+      "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "arm": "fixed-legal-context",
+      "policy": "obs-repair-loop",
+      "evidence": "identical to the cell above",
+      "obs": "the same tiling re-cut by docs/receipts/obs/e21-relisten-twin-plan-v1.json: per call the same NUMBER of windows the judges flagged and the same multiset of re-cut DURATIONS, at windows and offsets a seeded RNG (20260903) chose. 600 units over 44 calls, 15,340.5 s delivered -- the arm's own figures, matched per call and asserted by the wire check.",
+      "reviewer": "the same two judges, consumed for their per-call COUNT and DURATIONS only. The twin carries none of their targeting.",
+      "serving_geometry": "identical to the cell above",
+      "audio_path": "identical to the cell above"
+    }
+  ],
+  "one_factor": {
+    "between_the_two_cells": "WHERE the loop listens. The two baseline fragments differ in exactly two composed keys -- obs_unit_plan and obs_unit_plan_sha256 -- plus the two declaration blocks that record which plan is which. Contacts per call, delivered audio per call and the re-cut duration multiset per call are identical by construction and checked.",
+    "against_kc_e1f": "the Reviewer plus the selective re-listen. KC-E1f contacted 1,593 windows with 141,345.85 s of audio; this cell contacts 600 with 15,340.5 s. Everything else is byte for byte KC-E1f's.",
+    "against_the_sealed_comparator": "TWO things move and this document says so rather than hiding it: a second contact exists at all on 600 of the 1,593 windows, and that contact carries the brief, a re-cut and a repair instruction. The comparator contrast is therefore reported as selective-repair-plus-brief; the TARGETING attribution comes from the twin."
+  },
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "prompt_order": "evidence-first-system-v3: the evidence blocks precede the audio, and the re-cut span's own pass-1 words ride at the END of the rendered task_instruction inside the frozen frame e21-entity-repair-frame-v1 -- model output, framed as model output, never a reference transcript.",
+    "contacts_per_item": "ONE per FLAGGED window; 600 flagged windows over 44 calls per cell, against 1,593 windows total.",
+    "delivery_rule": "core.base.RESPONSE_POSTPROCESSORS entry e21-entity-repair-substitutions-v1 with max_span_tokens 4, min_anchor_ratio 0.6 and max_substituted_fraction 0.1 -- KC-E1f's own parameters, byte for byte. It runs over the RE-CUT SPAN's pass-1 words; the repaired span is re-seated in its window, and the window's whitespace-token count is preserved because the rule preserves the span's.",
+    "harness": "core.driver.run_experiment_bundled through the same committed launcher path the comparator, KC-E1 and KC-E1f flew; the registered core.base policy obs-repair-loop, which subclasses ObsAgentLoopPolicy and overrides one method."
+  },
+  "evaluation": {
+    "manifest_scorers": [
+      "asr-wer-whisper",
+      "conec-entity-wer-official",
+      "numeric-value-accuracy-v1",
+      "semantic-high-impact-error-rate-v1",
+      "cost"
+    ],
+    "paper_facing_scorer": "conec-entity-wer-official",
+    "paper_facing_metric": "ConEC-mirror entity WER per entity type, PERSON first; corpus WER stays the anchor and the harm check",
+    "scored_complete_manifests": 2,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "mandatory_slices": [
+      "per entity class, with reference-word counts, beside KC-E1f's and the sealed comparator's own per-class tables",
+      "all 44, the construction 34 and the evaluation 10, reported apart",
+      "the repair ledger: windows refused by reason, windows changed, accepted substitutions, substituted tokens, and rejected opcodes by class -- all four classes reported even at zero",
+      "the LOOP ledger: windows flagged, windows contacted, windows back-filled from the predecessor, re-cut seconds per contact (min/median/mean/max), and flags that led to an accepted substitution",
+      "the delivered-vs-comparator operation table against 13,098 / 5,701 / 10,700",
+      "by sector (9 levels) and sample rate (5 levels), natural mixture and equal-stratum weighting",
+      "throughput: contacts per minute, GPU seconds, wall, realized realtime factor, prompt and completion tokens against KC-E1f's 3,550,695 / 434,219 and the comparator's 1,935,965 / 439,532"
+    ]
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 1440,
+    "planned_gpu_hours": 0.7,
+    "planned_speech_audio_seconds": 37000
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "600 flagged windows x 1.2 retry headroom = 720 per cell, x 2 cells = 1,440. The flagged-window count is not an estimate: it is the exact number of units in the pinned plans, which the wire check reads back out of the composed config.",
+    "planned_speech_audio_seconds": "15,340.5 s realized per pass x 1.2 = 18,409 per cell, x 2 cells = 36,818, rounded up to 37,000. That is 10.9 % of KC-E1f's audio per pass.",
+    "planned_gpu_hours": "bracketed by the two proportionalities KC-E1f's own realized 1.1093 GPU-h for 1,593 contacts over 141,345.85 s admits: audio-proportional 1.1093 x 15,340.5 / 141,345.85 = 0.120 GPU-h (the floor) and contact-proportional 1.1093 x 600 / 1,593 = 0.418 (the ceiling). The brief is a per-contact prefill cost and the audio is the per-second one, so the truth sits between; 0.418 x 1.2 x 2 cells = 1.00, and 0.7 is registered as the plan with 1.0 as the stop. Re-measured on the preflight; the flight STOPS and reports if the measured rate projects past the registered figure.",
+    "paid_api_spend": 0,
+    "budget_is_run_cumulative": "core/model/adapter.py enforces planned_model_calls and planned_speech_audio_seconds across ALL attempts of a run id; a successor plan must cover prior durable spend plus its own worst case."
+  },
+  "decision": {
+    "primary": "ConEC-mirror PERSON entity WER on all 44 calls: ADMITTED if the call-clustered CI90 lower bound on the reduction (comparator - E21-LOOP-1) is > 0 AND the cell is non-inferior to KC-E1f at the margin this carrier measured for itself, LB(E21-LOOP-1 - KC-E1f) >= -0.25009, AND realized core calls are at most 50 % of KC-E1f's 1,593. ADMITTED AS AN IMPROVEMENT if in addition LB(E21-LOOP-1 - KC-E1f) > 0.",
+    "attribution_leg": "LB(E21-LOOP-1 - twin) > 0 on PERSON. Gating for the CLAIM, not for the admission: if this interval includes zero the cell may still be ADMITTED, and the verdict may say the loop helped but may NOT say the Reviewer's targeting is why.",
+    "guards": [
+      "delivery integrity: every window's delivered text equals its sealed predecessor outside the accepted substitution spans, with the identical whitespace-token count -- a construction check that ABORTS the read",
+      "window coverage: every one of the 1,593 windows is delivered exactly once, contacted or back-filled -- a construction check that ABORTS the read",
+      "corpus WER non-inferiority: UB(E21-LOOP-1 - comparator) <= +0.05793",
+      "numeric-value accuracy non-inferiority, call-pooled: LB(E21-LOOP-1 - comparator) >= -0.15651",
+      "over-generation non-inferiority: UB(E21-LOOP-1 - comparator) on insertions per reference word <= +0.02218",
+      "the negation-critical error rate reported with its taxonomy id, advisory only -- the null's own interval on it excludes zero, so the clause is unanswerable on this carrier"
+    ],
+    "claim_surface": "discovery data, no superiority, generality or Stage-3 claim, no knob tuned on the evaluation ten, no Earnings-22 contact.",
+    "not_authorized": "no confirmatory read, no retrieval variant, no third pass, no core-as-critic phase, no paper-scale work.",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}
