@@ -2290,9 +2290,26 @@ def command_ladder(args: argparse.Namespace) -> int:
             "slu_f1_ceiling": ceiling(
                 2.0 * missing_by_flag["any"], 2.0 * missing_by_flag["any"]
             ),
-            "silent_only_ceiling": ceiling(
-                2.0 * missing_by_flag["silent"], 2.0 * missing_by_flag["silent"]
-            ),
+            "per_judge_ceiling": {
+                name: {
+                    "rows": len(flags[name]),
+                    "unmatched_gold_mentions": missing_by_flag[name],
+                    "precision_pct": percent(productive_by_flag[name], len(flags[name])),
+                    "slu_f1_ceiling": ceiling(
+                        2.0 * missing_by_flag[name], 2.0 * missing_by_flag[name]
+                    ),
+                    "gpu_hours": gpu_hours(len(flags[name]) / len(roster)),
+                    "ceiling_gain_per_gpu_hour": round(
+                        (
+                            ceiling(2.0 * missing_by_flag[name], 2.0 * missing_by_flag[name])
+                            - base_slu
+                        )
+                        / max(1e-9, gpu_hours(len(flags[name]) / len(roster))),
+                        1,
+                    ),
+                }
+                for name in sorted(flags)
+            },
             "contacts": len(flags["any"]),
             "gpu_hours": gpu_hours(len(flags["any"]) / len(roster)),
             "note": (

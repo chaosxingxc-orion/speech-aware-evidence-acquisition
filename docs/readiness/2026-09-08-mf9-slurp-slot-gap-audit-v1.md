@@ -522,3 +522,154 @@ threshold. MF-8 found the same-speaker *intent* supply anti-correlated with dema
 side it is not — the thin types are `order_type` (5.6 % at >= 5), `music_genre` (8.3 %) and
 `news_topic` (22.2 %), none of them a large share of the loss. If the KU-S4 family is ever pointed
 at slots, availability is not what would bind it.
+
+---
+
+## 5. The improvement ladder, priced
+
+Receipt: `improvement-ladder.json`. **PRICED, NOT PREREGISTERED.** Nothing below is admitted,
+promoted or registered; no owner decision is anticipated and no cell is flyable on the strength of
+this note.
+
+Costs are scaled from KC-S1b's own realized flight — 1,000 contacts in 735.9 s, about **0.20
+GPU-h** — because every module here is one contact per row on the same geometry.
+
+### 5.1 The judges, and how sharp each one is
+
+Three deterministic judges can be built today from what this audit already computed. Each flags
+rows without a model and without gold. **Precision** is the share of flagged rows that actually
+carry an unmatched gold mention — the share where an extra contact could do anything at all.
+
+| judge | what it fires on | rows flagged | of which carry unmatched gold | **precision** | unmatched gold mentions reached |
+|---|---|---|---|---|---|
+| **schema** (§3) | unparsed, or a type the row's own block did not list, or a repeated type | **86 (8.6 %)** | 62 | **72.09 %** | 88 |
+| **value** (§2) | a predicted filler further than τ = 0.20 from any TRAIN surface form of its type | 293 (29.3 %) | 165 | 56.31 % | 217 |
+| **silent** | the row parsed and predicted no entity at all | 394 (39.4 %) | 155 | **39.34 %** | 190 |
+| union | any of the three | 714 (71.4 %) | 334 | 46.78 % | **428 of 527** |
+
+**The silent judge is the trap.** 239 of the 394 rows it flags are *correctly* silent — the row
+genuinely has no gold slot (§4). Firing an extra contact on all of them spends 394 calls to reach
+190 gold mentions at 39 % precision. **The schema judge is the sharp one**: 8.6 % of the roster,
+72 % precision, and it is free.
+
+### 5.2 The ladder
+
+`ceiling` is what the module could reach if it delivered its own oracle; only rung 1 is a
+**measured** number. `gain / GPU-h` is therefore a **ceiling** ratio, not an expectation, and it is
+printed so the ordering is visible rather than asserted.
+
+| # | module | SLU-F1 | gain | contacts | GPU-h | gain / GPU-h | measured? |
+|---|---|---|---|---|---|---|---|
+| 1 | **value projection** (§2), scoring-side | **45.09** | **+0.74** | **0** | **0** | free | **MEASURED**, CI90 [+0.47, +1.10] on NEW500 |
+| 2 | constrained decoding, structure + 55-type enum (§3) | 45.16 | +0.81 | 1,000 | 0.20 | 4.0 | ceiling |
+| 3 | intent narrowing → better block selection (§1.2) | 48.40 | +4.05 | 1,000 | 0.20 | 20.2 | ceiling |
+| 4 | **retrieved fillers, KU-S3** (§4.2) | **58.06** | **+13.71** | 1,000 | 0.20 | **68.5** | ceiling |
+| 5 | same-speaker slot exemplars (KU-S4 on slots) | — | — | 1,000 | 0.20 | — | availability only |
+| 6 | **targeted slot re-ask on judge-flagged rows** | **72.87** | **+28.52** | **714** | **0.143** | **199.4** | ceiling |
+
+And rung 6 by which judge gates it, which is the sharpest thing in this whole note:
+
+| judge gating the re-ask | rows | precision | unmatched gold reached | ceiling | GPU-h | **gain / GPU-h** |
+|---|---|---|---|---|---|---|
+| **schema** alone | **86** | **72.09 %** | 88 | 51.21 | **0.017** | **403.5** |
+| value alone | 293 | 56.31 % | 217 | 60.25 | 0.059 | 269.5 |
+| union of all three | 714 | 46.78 % | 428 | 72.87 | 0.143 | 199.4 |
+| silent alone | 394 | 39.34 % | 190 | 58.45 | 0.079 | 178.5 |
+
+Notes that belong beside each number, not in a footnote:
+
+* **Rung 1** is the only measured row, and its verdict is in §2.4: real, below the re-lock bar,
+  and it costs nothing because it is a post-processor over already-sealed bytes.
+* **Rung 2**'s ceiling is small *because the arm is already well-behaved*: zero of 682 predicted
+  mentions violate the 55-type vocabulary, so the enum guarantees rather than repairs, and all it
+  can recover is the 3 unparsed rows' 10 gold mentions. It is still worth one config key.
+* **Rung 3** assumes perfect intent **and** that all 51 newly-legal gold mentions are then filled
+  exactly. Real intent narrowing tops out near 96.4 by MF-8's own candidate-recall ceiling.
+  **The coordinator reports a cell named KU-S4N as already GO; this repository carries no
+  preregistration or owner record under that name**, so this rung prices the mechanism and does not
+  confirm its authorization.
+* **Rung 4** is the strongest single-contact module and it is **already preregistered and flyable**
+  (`docs/readiness/2026-09-07-slurp-consumption-ku-s3-v1-preregistration.md`). Its ceiling is an
+  oracle reader of the supplied block.
+* **Rung 6** is the highest ceiling per GPU-hour and the least trustworthy number in the table: it
+  assumes every re-asked row then answers every missed gold mention exactly. Its real value is the
+  *shape* — an extra contact on 71 % of rows instead of 100 %, gated by judges that cost nothing.
+
+### 5.3 Reading the ladder honestly
+
+**The ordering by ceiling-per-GPU-hour and the ordering by admission are not the same.**
+
+By ceiling per GPU-hour: re-ask (199) > retrieval (68.5) > intent narrowing (20.2) > constrained
+decoding (4.0), with the projection free and off the scale.
+
+By admission order — one mechanism in flight, a successor admitted only after its predecessor is
+replicated or root-caused (owner 2026-09-03):
+
+1. **KU-S3 retrieved fillers.** Already registered, already has its comparator, its twin and its
+   vectors, and it is aimed at the 45 % category. Second-highest ceiling, and the only rung that
+   needs no new seam and no new decision.
+2. **Constrained decoding, structural.** One config key; it can ride the next flight's own
+   contacts rather than buying its own, and it removes a failure mode permanently.
+3. **The targeted re-ask, gated by the SCHEMA judge alone** — not the union and not the silent
+   judge. 86 rows, 72 % precision, 0.017 GPU-h, and the best ceiling-per-GPU-hour in the note at
+   **403.5**. If a two-contact shape cannot pay for itself on the sharpest 8.6 % of the roster, it
+   will not pay for itself on 71 %.
+4. **Intent narrowing**, whose SLU-F1 channel is 51 gold mentions wide and whose real value is on
+   the intent column this metric does not read.
+5. **Same-speaker slot exemplars**, last, because availability is proved and value is not.
+
+### 5.4 Where this actually tops out, against the published lines
+
+Published SLURP lines, all of them the official **TEST** split and a natural mixture. DEV-1000 is a
+scenario-stratified **dev** roster and no published prompt-only SLU-F1 computed with this script
+exists for any audio LLM, so **none of these is a like-for-like target and none is claimed as one.**
+
+| line | SLU-F1 | KC-S1b's distance | distance from the best rung ceiling (72.87) |
+|---|---|---|---|
+| ChatGPT over oracle transcripts (**a different metric**) | 12–13 | +31 | — |
+| **WHISMA zero-shot** | **63.3** | **−18.95** | **+9.57** |
+| trained pipelines, 2020 paper | 69.5–70.8 | −25.2 to −26.5 | +2.1 to +3.4 |
+| WHISMA supervised reference | 69.9 | −25.55 | +2.97 |
+| CTI | 71.1 | −26.75 | +1.77 |
+| SFT Qwen2-Audio-7B | 76.75 | −32.40 | **−3.88** |
+| NLU over **gold transcripts** | 78.19 | −33.84 | −5.32 |
+
+**If every module delivered its ceiling.** The rungs overlap heavily — rung 6's oracle already
+contains most of rungs 3 and 4 — so they do not add. The meaningful composite is the arithmetic
+ceiling of the loss decomposition itself, and it says something worth stating plainly:
+
+* **Answering every unmatched gold mention exactly, and changing nothing else, gives SLU-F1 78.04.**
+  That is the recall ceiling of this arm, and it lands **0.15 points below the published NLU number
+  over gold transcripts (78.19)**. A prompt-side system that solved recall perfectly and left
+  precision and normalization exactly as they are would be at the gold-transcript NLU line, and no
+  further.
+* Removing every remaining loss category on top of that gives 100.0, which is a tautology and is
+  reported as one.
+* **Nothing in this ladder, at its own oracle, reaches the SFT line 76.75.** The best individual
+  rung ceiling is 72.87 and it assumes a perfect answer on 714 re-asked rows.
+* The realistic reading: KC-S1b is at **44.35**; the one measured module moves it to **45.09**; the
+  strongest registered module has an oracle at **58.06** and will deliver a fraction of it. **A
+  crossing of WHISMA's 63.3 is not reachable from this decomposition by any single module**, and
+  claiming otherwise would require the re-ask oracle to be taken at face value.
+
+### 5.5 What every one of these would inherit
+
+* **Population** DEV-1000, decision on the unexposed NEW500 (n = 500 ≥ 400, owner 2026-09-03).
+* **Comparator** the sealed KC-S1b rows, never a re-flight — greedy decoding is not bitwise
+  reproducible across batch shapes on this runtime.
+* **The greedy-noise floor**, which should govern expectations: EVO-S1 round 1 measured **286 of
+  1,019 byte-identically prompted rows (28.1 %)** returning different text anyway on this carrier
+  and this build. A claim read off a handful of moved rows sits below the noise; only a CI90 on 500
+  unexposed rows carries a verdict.
+* **Per-stratum reporting** with the harm bound, as every SLURP cell in this study already does.
+
+---
+
+## 6. What this note does and does not do
+
+It answers the owner's question with five numbers and one ordering. It **admits nothing, promotes
+nothing, preregisters no cell, opens no roster, draws no split, re-locks no comparator and reaches
+no superiority, generalization or Stage-3 conclusion.** The value-projection rule it introduces is
+tested and registered as a module; it is **not** wired into any scorer id and no verdict is
+re-scored through it. The one decision it puts in front of the owner is whether rung 4 (KU-S3, the
+registered cell) should be the next thing to fly, and that decision is the owner's alone.
