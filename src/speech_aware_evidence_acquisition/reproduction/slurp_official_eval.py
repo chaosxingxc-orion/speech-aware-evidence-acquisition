@@ -957,6 +957,194 @@ def score_slurp_outputs_official_projected_v2_train(
     )
 
 
+
+# ---------------------------------------------------------------------------
+# THE NORMALIZED SLU SCORER -- ``slurp-slu-f1-normalized-v1``.
+#
+# The Whisper-normalizer analogue for slot values, and it sits beside the
+# official number in exactly the way ``asr-wer-whisper`` sits beside
+# ``asr-wer``: this function runs the REAL, unmodified official ``evaluate.py``
+# on the RAW inputs first, reports its numbers unchanged, checks the port
+# against them, and only then reports a SECOND set of numbers computed with
+# ``reproduction.slurp_slot_normalizer`` applied SYMMETRICALLY to the gold and
+# the predicted filler. The official column is never overwritten and never
+# recomputed; a caller that reads only ``aggregate["official"]`` gets byte-for-
+# byte what ``score_slurp_outputs_official`` would have given it.
+#
+# Why the normalized half cannot go through the subprocess: the pinned
+# ``evaluate.py`` reads its gold from the corpus file, so a normalizer that
+# must touch the GOLD side has no seam there. It therefore runs through the
+# study's own per-sample port, whose identity with the official script is
+# asserted on every call at ``_IDENTITY_TOLERANCE`` and which MF-9 already
+# re-anchored from the same sealed bytes. That assertion is the licence for
+# the normalized column: the same code path, one string rewrite apart.
+# ---------------------------------------------------------------------------
+
+
+def score_slurp_outputs_slu_normalized(
+    outputs_path: Path,
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    split_id: str = "devel",
+    allow_heldout: bool = False,
+    per_rule: bool = True,
+) -> dict[str, object]:
+    """Score one run's outputs BOTH ways -- officially, and under the pinned
+    slot normalizer applied to gold and prediction alike.
+
+    Registered as the ``"slurp-slu-f1-normalized-v1"`` ``core.base.SCORERS``
+    entry with the uniform ``scorer(outputs_path, lock, root)`` signature.
+
+    The returned document is ``score_slurp_outputs_official``'s, with three
+    additions and no removals:
+
+    * ``aggregate["normalized"]`` -- the micro metrics under the full rule set,
+      plus the rule identity, the TRAIN inventory identity and the learned
+      leading-token list;
+    * ``aggregate["normalized_per_rule"]`` (when ``per_rule``) -- the same
+      micro metrics under each cumulative PREFIX of the rule tuple, so a
+      receipt prices ``R0``, ``R0+R1``, ``R0+R1+R2`` and the whole rule
+      separately;
+    * ``per_sample[i]["normalized"]`` -- the per-sample metric dict under the
+      full rule set, keyed exactly like the official one, so
+      ``analysis.paired.paired_contrast`` reads either scorer through the same
+      metric names.
+
+    ``aggregate["normalized"]["false_merges"]`` is the audit that keeps the
+    normalized number honest: how many DISTINCT gold surface forms of one slot
+    type this corpus collapses onto a shared normalized string. A normalizer
+    that merged genuinely different values would inflate the metric, and the
+    count is reported whether it is zero or not.
+    """
+
+    from .slurp_slot_normalizer import (  # noqa: PLC0415 (import cost)
+        SLURP_SLOT_NORMALIZER_ID,
+        SLURP_SLOT_NORMALIZER_RULES,
+        SLURP_SLU_NORMALIZED_SCORER_ID,
+        load_slot_normalizer_inventory,
+        normalize_slot_entities,
+    )
+
+    document = score_slurp_outputs_official(
+        outputs_path,
+        lock,
+        root,
+        split_id=split_id,
+        allow_heldout=allow_heldout,
+    )
+    if not document["aggregate"]["identity_check"]["passed"]:  # type: ignore[index]
+        raise SlurpOfficialEvalError(
+            "the port disagrees with the official evaluate.py on these outputs; "
+            "the normalized column is not computed on a broken identity"
+        )
+
+    inventory = load_slot_normalizer_inventory(lock, root)
+    gold_records = load_slurp_split(lock, root, split_id, allow_heldout=allow_heldout)
+    gold_by_id = {record.sample_id: record for record in gold_records}
+
+    text = Path(outputs_path).read_text(encoding="utf-8")
+    lines = [line for line in text.split("\n") if line.strip()]
+    parsed_rows: list[tuple[str, str | None, str | None, list[SlotEntity]]] = []
+    for line in lines:
+        row = json.loads(line)
+        sample_id = str(row["sample_id"])
+        scenario, action, entities, _parsed = parse_slu_response(str(row["text"]))
+        parsed_rows.append((sample_id, scenario, action, entities))
+
+    prefixes: list[tuple[str, ...]] = (
+        [
+            SLURP_SLOT_NORMALIZER_RULES[: n + 1]
+            for n in range(len(SLURP_SLOT_NORMALIZER_RULES))
+        ]
+        if per_rule
+        else [SLURP_SLOT_NORMALIZER_RULES]
+    )
+    by_prefix: dict[tuple[str, ...], list[SluScore]] = {}
+    per_sample_full: dict[str, dict[str, object]] = {}
+    for prefix in prefixes:
+        gold_cache: dict[tuple[str, str], str] = {}
+        pred_cache: dict[tuple[str, str], str] = {}
+        scores: list[SluScore] = []
+        for sample_id, scenario, action, entities in parsed_rows:
+            gold_record = gold_by_id[published_sample_key(sample_id)]
+            score = score_slu(
+                gold_scenario=gold_record.scenario,
+                gold_action=gold_record.action,
+                gold_entities=normalize_slot_entities(
+                    gold_record.entities, inventory, rules=prefix, cache=gold_cache
+                ),
+                predicted_scenario=scenario,
+                predicted_action=action,
+                predicted_entities=normalize_slot_entities(
+                    entities, inventory, rules=prefix, cache=pred_cache
+                ),
+            )
+            scores.append(score)
+            if prefix == SLURP_SLOT_NORMALIZER_RULES:
+                per_sample_full[sample_id] = score.as_metrics_dict()
+        by_prefix[prefix] = scores
+
+    def _micro(scores: Sequence[SluScore]) -> dict[str, float]:
+        aggregate = _aggregate_slu_score(scores)
+        slu_p, slu_r, slu_f1_measure = aggregate.slu_f1
+        span_p, span_r, span_f1_measure = aggregate.slot_f1_exact
+        _wp, _wr, word_f1 = aggregate.slu_f1_word
+        _cp, _cr, char_f1 = aggregate.slu_f1_char
+        return {
+            "samples": len(scores),
+            "slu_f1": slu_f1_measure,
+            "slu_f1_precision": slu_p,
+            "slu_f1_recall": slu_r,
+            "span_f1": span_f1_measure,
+            "span_f1_precision": span_p,
+            "span_f1_recall": span_r,
+            "word_f1": word_f1,
+            "char_f1": char_f1,
+        }
+
+    # The false-merge audit: distinct gold surface forms of ONE type that the
+    # normalizer collapses onto a shared string. Reported whether zero or not.
+    merged: dict[str, dict[str, list[str]]] = {}
+    merge_cache: dict[tuple[str, str], str] = {}
+    for record in gold_records:
+        for entity in record.entities:
+            normalized = normalize_slot_entities(
+                (entity,),
+                inventory,
+                rules=SLURP_SLOT_NORMALIZER_RULES,
+                cache=merge_cache,
+            )[0].filler
+            bucket = merged.setdefault(str(entity.type), {}).setdefault(normalized, [])
+            if entity.filler not in bucket:
+                bucket.append(entity.filler)
+    false_merges = {
+        f"{entity_type}:{normalized}": sorted(sources)
+        for entity_type, buckets in sorted(merged.items())
+        for normalized, sources in sorted(buckets.items())
+        if len(sources) > 1
+    }
+
+    for entry in document["per_sample"]:  # type: ignore[index]
+        entry["normalized"] = per_sample_full[str(entry["sample_id"])]
+
+    document["aggregate"]["normalized"] = {  # type: ignore[index]
+        "scorer_id": SLURP_SLU_NORMALIZED_SCORER_ID,
+        "normalizer_id": SLURP_SLOT_NORMALIZER_ID,
+        "rules": list(SLURP_SLOT_NORMALIZER_RULES),
+        "applies_to": "gold and prediction alike, before the official distance blocks",
+        "replaces_official": False,
+        "inventory": inventory.as_json(),
+        "micro": _micro(by_prefix[SLURP_SLOT_NORMALIZER_RULES]),
+        "false_merges": false_merges,
+        "false_merge_count": len(false_merges),
+    }
+    if per_rule:
+        document["aggregate"]["normalized_per_rule"] = {  # type: ignore[index]
+            "+".join(prefix): _micro(scores) for prefix, scores in by_prefix.items()
+        }
+    return document
+
 __all__ = [
     "SLURP_OFFICIAL_COMMIT",
     "SLURP_OFFICIAL_SCORER_VERSION",
@@ -972,5 +1160,6 @@ __all__ = [
     "score_slurp_outputs_official_projected_v2_train",
     "score_slurp_outputs_official_projected",
     "score_slurp_outputs_official_projected_v2",
+    "score_slurp_outputs_slu_normalized",
     "write_official_inputs",
 ]
