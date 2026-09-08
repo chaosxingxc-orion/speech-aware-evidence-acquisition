@@ -116,7 +116,7 @@
       "worst_window_id": "4360366#w0036"
     }
   ],
-  "generated_at": "2026-09-08T00:47:10.022437+00:00",
+  "generated_at": "2026-09-08T01:04:59.021478+00:00",
   "geometry": {
     "context_tokens": 36864,
     "max_tokens": 1024,
@@ -688,7 +688,7 @@
   "run_id": "SAEA-E21-MF-KC-E1F-FIT-PROJECTION-V1",
   "schema": "saea-e21-kc-e1f-prompt-fit-projection-v1",
   "study": "speech-aware-evidence-acquisition",
-  "study_commit": "3da1cce3c3c6137219c28ab4be67dfa76d47a2d0",
+  "study_commit": "6a12264a0830e0f813d4efd3424b814a8338c7f3",
   "what_this_is_not": "a fit. Token counts are not additive across a chat template's joins, so this projects from two measurements and cannot certify a geometry. The default mode of this script certifies; that mode needs a resident server and is the flight agent's step",
   "zero_contact": "no model, GPU, server, tokenizer, tool, embedder, network or audio-decode contact. Two committed receipts are read (the KC-E1 prompt fit's measured brief envelope and this cell's predecessor binding) plus the verified snapshot artifact; nothing is rendered and nothing is tokenized"
 }
