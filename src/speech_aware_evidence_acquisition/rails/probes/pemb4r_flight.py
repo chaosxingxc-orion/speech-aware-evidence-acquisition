@@ -792,10 +792,48 @@ def binding_config_sha256(lock: Mapping[str, object]) -> str:
     return hashlib.sha256(canonical).hexdigest()
 
 
-# Pinned against the umbrella lock's own content for the four model keys AT
-# THE TIME this module was written (mirrors rails.probes.pemb3m_flight.
-# BINDING_CONFIG_SHA256's own drift-detection role).
-BINDING_CONFIG_SHA256 = "a193f63422ae4c990911752f3d14f37400c57d73cc4908af84d698dd3ccce17a"
+# HISTORICAL. Pinned against the umbrella lock's own content for the four
+# model keys as it stood when this module was written and when the
+# 2026-08-20 P-EMB-4R flight sealed (docs/checks/speech-aware-evidence-
+# acquisition/2026-08-20-pemb4r-flight/{flight-receipt,flight-state,
+# config-values}.json all carry this exact value under
+# "binding_config_sha256"). Kept ONLY so those sealed receipts stay
+# readable against a named constant -- no live code checks against this
+# value any more; see BINDING_CONFIG_SHA256 below for the constant
+# assert_binding_config_sha256 actually enforces.
+BINDING_CONFIG_SHA256_AT_FLIGHT = "a193f63422ae4c990911752f3d14f37400c57d73cc4908af84d698dd3ccce17a"
+
+# Re-pinned 2026-09-08 against umbrella commit faebc8f (owner Decision 11-D:
+# "commit the pending umbrella changes AND re-pin the study's P-EMB
+# hashes", chosen over reverting the lock; mirrors rails.probes.
+# pemb3m_flight.BINDING_CONFIG_SHA256's own re-pin note). The umbrella
+# lock's own entry for one of these four keys -- lco-embedding-omni-3b-
+# gguf -- changed in that commit: from an unresolved local candidate
+# (source.kind "observed-local", id UNRESOLVED_LOCAL_SOURCE, revision
+# UNRESOLVED_LOCAL_REVISION, lifecycle LOCAL_CANDIDATE, aggregate-only
+# verification) to a resolved HF source (marksverdhei/LCO-Embedding-Omni-
+# 3B-GGUF, revision af8a36fbb6e7629c9dbcb218478c6b1477b36e09, lifecycle
+# AUXILIARY, profile speech-aware-tools, 3 verified files with real
+# per-file sha256). lco-embedding-omni-7b-gguf, glap and
+# qwen3-embedding-0.6b-gguf are byte-identical across the two lock
+# commits -- this is NOT incidental lock growth riding along; it is the
+# bound model's own identity becoming resolved, so the digest change is
+# deliberate reviewed content, never silently absorbed drift.
+#
+# The lock's PRE-faebc8f entry for lco-embedding-omni-3b-gguf carried no
+# per-file sha256 at all (only an aggregate size_bytes/files count), so
+# the lock's own metadata cannot prove the model bytes are identical
+# across the two commits -- only that the aggregate size moved by 1,462
+# bytes (6238572624 -> 6238571162) as the file count dropped 5 -> 3. (For
+# context, not a substitute for that proof: the sealed 2026-08-20
+# P-EMB-3M/P-EMB-4R flight receipts independently hashed the local
+# LCO-Embedding-Omni-3B-Q8_0.gguf and its mmproj file at flight time --
+# before the lock carried any per-file hash for this model -- and both
+# measured hashes equal the two GGUF hashes the resolved lock entry now
+# pins; the entry's third file, README.md, was never independently hashed
+# by either flight.) Any future reuse of this embedder must re-verify
+# against the resolved lock entry rather than lean on this note.
+BINDING_CONFIG_SHA256 = "c45a10ae3b2459662e13a71399837987c8e963ee97bb8ebeba8da3b8a52cb25e"
 
 
 def assert_binding_config_sha256(lock: Mapping[str, object]) -> None:
@@ -1531,6 +1569,7 @@ __all__ = [
     "BANK_TOTAL_N",
     "BINDING_CONFIG_SCHEMA",
     "BINDING_CONFIG_SHA256",
+    "BINDING_CONFIG_SHA256_AT_FLIGHT",
     "CEILING_AUDIO_SECONDS",
     "CEILING_CALLS",
     "CEILING_GPU_HOURS",

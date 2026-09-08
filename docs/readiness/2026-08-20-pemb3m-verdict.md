@@ -273,3 +273,25 @@ distribution. Comparators (0.7833 / 0.8167 / 0.1333 / 0.0500) are **cited** from
 co-measured. Gold scenarios were used scoring-side only and never entered a runtime path. SLURP audio
 CC BY-NC 4.0 carried. No test split was touched. No superiority, generalization, deployment, or
 paper-scale claim attaches to any number in this document.
+
+## 9. Addendum (2026-09-08): binding-config sha256 re-pinned, this flight's evidence unchanged
+
+Umbrella commit `faebc8f` (owner Decision 11-D: commit the pending umbrella lock changes and
+re-pin the study's P-EMB hashes, chosen over reverting the lock) resolved the umbrella lock's
+`lco-embedding-omni-3b-gguf` entry from an unresolved local candidate (`LOCAL_CANDIDATE`,
+`UNRESOLVED_LOCAL_SOURCE`) to a real Hugging Face source (`marksverdhei/LCO-Embedding-Omni-3B-GGUF`
+@ `af8a36fbb6e7629c9dbcb218478c6b1477b36e09`, lifecycle `AUXILIARY`, 3 verified files with per-file
+sha256; `glap`/`clsp`/`qwen3-embedding-0.6b-gguf` unchanged). `rails.probes.pemb3m_flight.
+BINDING_CONFIG_SHA256` was re-pinned to the digest this resolved entry now produces; the prior
+digest is preserved as `BINDING_CONFIG_SHA256_AT_FLIGHT` and still matches this flight's own sealed
+`flight-receipt.json`/`config-values.json` `binding_config_sha256` field verbatim (test
+`test_binding_config_sha256_at_flight_matches_the_sealed_pemb3m_receipt`) — **this flight was not
+re-run and its evidence above is unchanged.** The lock's pre-`faebc8f` entry carried no per-file
+sha256 for this model (only an aggregate size/file count, which moved by 1,462 bytes as the file
+count dropped 5 → 3), so the lock's own metadata alone cannot prove the model bytes are identical
+across the two lock versions; corroborating, not certifying, this flight's own
+`model_file_measurements` independently hashed `LCO-Embedding-Omni-3B-Q8_0.gguf` and its mmproj
+file at flight time, before the lock carried any per-file hash, and both measured values equal the
+two GGUF hashes the resolved entry now pins (its third file, `README.md`, was never independently
+hashed here). Any future reuse of this embedder must re-verify against the resolved lock entry
+rather than lean on this note.
