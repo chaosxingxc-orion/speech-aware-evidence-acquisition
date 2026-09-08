@@ -15,6 +15,7 @@ import pytest
 
 from speech_aware_evidence_acquisition.reproduction.slurp_scoring import SlotEntity
 from speech_aware_evidence_acquisition.reproduction.slurp_slot_normalizer import (
+    LEADING_TOKEN_CANDIDATES,
     LEADING_TOKEN_MIN_WITNESSES,
     MERIDIEM_JOINS,
     SLURP_SLOT_NORMALIZER_ID,
@@ -172,35 +173,79 @@ def test_meridiem_table_is_the_two_forms_and_nothing_else():
 
 
 def test_learn_requires_the_corpus_to_witness_the_pair():
-    tokens, counts, _examples = learn_leading_prepositions(
+    admitted, _rejected, counts, _examples = learn_leading_prepositions(
         {"date": {"on monday", "monday", "on tuesday", "tuesday"}}, min_witnesses=2
     )
-    assert tokens == ("on",)
+    assert admitted == ("on",)
     assert counts["on"] == 2
 
 
 def test_learn_refuses_a_token_below_the_witness_floor():
-    tokens, _counts, _examples = learn_leading_prepositions(
+    admitted, _rejected, _counts, _examples = learn_leading_prepositions(
         {"date": {"on monday", "monday"}}, min_witnesses=2
     )
-    assert tokens == ()
+    assert admitted == ()
 
 
 def test_learn_counts_only_pairs_whose_remainder_is_the_same_type():
-    tokens, _counts, _examples = learn_leading_prepositions(
+    admitted, _rejected, _counts, _examples = learn_leading_prepositions(
         {"date": {"on monday"}, "time": {"monday"}}, min_witnesses=1
     )
-    assert tokens == ()
+    assert admitted == ()
 
 
 def test_learn_orders_by_descending_witness_count_then_name():
-    tokens, _counts, _examples = learn_leading_prepositions(
-        {
-            "date": {"on a", "a", "on b", "b", "at c", "c"},
-        },
-        min_witnesses=1,
+    admitted, _rejected, _counts, _examples = learn_leading_prepositions(
+        {"date": {"on a", "a", "on b", "b", "at c", "c"}}, min_witnesses=1
     )
-    assert tokens == ("on", "at")
+    assert admitted == ("on", "at")
+
+
+def test_the_candidate_set_is_declared_and_the_corpus_only_confirms():
+    """The defect the false-merge audit caught: the corpus witnesses `next`
+    exactly as faithfully as it witnesses `the`, and stripping it merges
+    `next week` with `last week`."""
+
+    fillers = {
+        "date": {
+            "next week",
+            "last week",
+            "this week",
+            "week",
+            "the month",
+            "month",
+            "the year",
+            "year",
+            "the day",
+            "day",
+        }
+    }
+    admitted, rejected, counts, _examples = learn_leading_prepositions(
+        fillers, min_witnesses=3
+    )
+    assert "next" not in admitted
+    assert "the" in admitted
+    assert "next" in rejected or counts.get("next", 0) < 3
+    unrestricted, no_rejects, _c, _e = learn_leading_prepositions(
+        fillers, min_witnesses=1, candidates=None
+    )
+    assert "next" in unrestricted
+    assert no_rejects == ()
+
+
+def test_the_candidate_set_is_the_declared_function_words():
+    assert LEADING_TOKEN_CANDIDATES == (
+        "a",
+        "an",
+        "at",
+        "by",
+        "for",
+        "in",
+        "of",
+        "on",
+        "the",
+        "to",
+    )
 
 
 def test_learn_refuses_a_bad_floor():
@@ -271,6 +316,22 @@ def test_inventory_counts_utterances_not_mentions():
     assert inventory.utterance_count == 2
     assert inventory.distinct_fillers == 2
     assert inventory.entity_types == ("date",)
+
+
+def test_inventory_json_carries_the_rejected_tokens_as_evidence():
+    inventory = _inventory(
+        ("date", "next week"),
+        ("date", "last week"),
+        ("date", "this week"),
+        ("date", "week"),
+        min_witnesses=1,
+    )
+    document = inventory.as_json()
+    assert "next" in document["rejected_tokens"]
+    assert "next" not in document["leading_tokens"]
+    assert document["candidate_set"] == list(LEADING_TOKEN_CANDIDATES)
+    assert document["rejected_token_witnesses"]["next"] >= 1
+    assert "next week" in str(document["rejected_token_examples"]["next"])
 
 
 def test_inventory_json_carries_the_rule_and_the_evidence():

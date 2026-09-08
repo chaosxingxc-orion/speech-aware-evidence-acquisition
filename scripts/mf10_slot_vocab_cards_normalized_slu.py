@@ -1375,6 +1375,31 @@ def command_normalized(args: argparse.Namespace) -> int:
     per_type_official = _per_type_strict(gold, kc_parsed, roster)
     per_type_normalized = _per_type_strict(gold, kc_parsed, roster, normalize=normalize)
 
+    # The evidence for R3's declared candidate set: the SAME rung with the
+    # semantic filter dropped, and the gold values it collapses. This is the
+    # measurement that made the filter a rule instead of a preference, and it is
+    # reported rather than described.
+    unrestricted = load_slot_normalizer_inventory(lock, root, candidates=None)
+    unrestricted_cache: dict[tuple[str, str], str] = {}
+    merged: dict[str, dict[str, list[str]]] = defaultdict(lambda: defaultdict(list))
+    for record in gold.values():
+        for entity in record.entities:
+            image = normalize_slot_entities(
+                (entity,),
+                unrestricted,
+                rules=SLURP_SLOT_NORMALIZER_RULES,
+                cache=unrestricted_cache,
+            )[0].filler
+            bucket = merged[str(entity.type)][image]
+            if entity.filler not in bucket:
+                bucket.append(entity.filler)
+    unrestricted_merges = {
+        f"{entity_type}:{image}": sorted(sources)
+        for entity_type, buckets in sorted(merged.items())
+        for image, sources in sorted(buckets.items())
+        if len(sources) > 1
+    }
+
     arms_table: dict[str, dict] = {}
     for name in arms:
         official = mf9.official_block(scored[name])
@@ -1461,6 +1486,35 @@ def command_normalized(args: argparse.Namespace) -> int:
             "inventory": normalized_block["inventory"],
             "false_merge_count": normalized_block["false_merge_count"],
             "false_merges": normalized_block["false_merges"],
+            "r3_candidate_filter_evidence": {
+                "what_it_is": (
+                    "the SAME R3 rung with its declared candidate set dropped, so "
+                    "the token list comes from the corpus alone. This is the version "
+                    "this audit built first; the false-merge audit below is what "
+                    "refused it"
+                ),
+                "tokens_the_corpus_alone_admits": list(unrestricted.leading_tokens),
+                "tokens_the_candidate_set_rejects": list(
+                    normalized_block["inventory"]["rejected_tokens"]
+                ),
+                "false_merge_count": len(unrestricted_merges),
+                "false_merges": unrestricted_merges,
+                "verdict": (
+                    "REFUSED. A metric that maps `next week`, `last week`, "
+                    "`this week` and `one week` onto `week` does not clarify the "
+                    "score, it forgives a real error. No corpus statistic separates "
+                    "`next` from `on`, so the candidate set is declared and the "
+                    "corpus only confirms"
+                ),
+            },
+            "on_wednesday_is_not_repaired": (
+                "MF-9 section 1.4's `on wednesday` -> `wednesday` example is NOT "
+                "repaired by this rule: `on` is in the declared candidate set but "
+                "TRAIN never carries `on X` and `X` as fillers of the same type, so "
+                "the confirmation floor refuses it at zero witnesses. The rule "
+                "declines to act where the corpus gives it no evidence, and the "
+                "residual is charged to the arm rather than forgiven"
+            ),
         },
         "sources": {
             "umbrella_lock": str(lock_path),

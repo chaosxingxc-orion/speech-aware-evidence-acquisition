@@ -65,17 +65,35 @@ becomes ``am`` / ``pm``.
   and runs AFTER R1 precisely so that the period spelling has already become
   the space spelling and one rule catches every form.
 
-``R3`` -- **the leading-preposition strip, learned from TRAIN.** A value whose
-first token is in a TRAIN-learned strippable list loses that token, but ONLY
-when what remains is itself a TRAIN filler of the SAME slot type
-(:func:`learn_leading_prepositions`, :class:`SlotNormalizerInventory`). The
-list is not an English function-word constant: a token qualifies only when the
-corpus itself demonstrates, on at least
-:data:`LEADING_TOKEN_MIN_WITNESSES` distinct same-type pairs, that ``w x`` and
-``x`` are both attested fillers of that type. This is the ``on wednesday`` /
-``wednesday`` and ``the olive garden`` / ``olive garden`` class of MF-9
-section 1.4, and the same-type-membership guard is what stops it from eating
-the first word of a value that merely starts with a preposition.
+``R3`` -- **the leading-preposition strip.** A value whose first token is a
+strippable one loses that token, but ONLY when what remains is itself a TRAIN
+filler of the SAME slot type (:func:`learn_leading_prepositions`,
+:class:`SlotNormalizerInventory`). This is the ``on wednesday`` / ``wednesday``
+and ``the olive garden`` / ``olive garden`` class of MF-9 section 1.4, and the
+same-type-membership guard is what stops it from eating the first word of a
+value that merely starts with a preposition.
+
+  **Semantics proposes and the corpus confirms -- in that order, and the order
+  was learned the hard way.** The first version of this rung took the token
+  list from TRAIN alone: any leading token the corpus witnessed on at least
+  :data:`LEADING_TOKEN_MIN_WITNESSES` distinct same-type ``(w x, x)`` pairs was
+  strippable. Run over SLURP that admits ``the`` and ``in`` -- and also
+  ``next``, ``last``, ``this``, ``after``, ``before``, ``every``, ``march``,
+  ``april`` and ``5th``, because the corpus witnesses those pairs just as
+  faithfully. The scorer's own **false-merge audit** then reported 17 collapsed
+  gold values, and they were not artefacts: ``next week``, ``last week``,
+  ``this week`` and ``one week`` had all become ``week``. A metric that forgives
+  the difference between next week and last week is not a cleaner metric, it is
+  a broken one.
+
+  No corpus statistic separates ``on`` from ``next``: both are leading tokens
+  the corpus attests, and only one of them carries meaning. So the candidate
+  set is a DECLARED, closed list of semantically empty English function words
+  (:data:`LEADING_TOKEN_CANDIDATES`) and the corpus's job is to CONFIRM that a
+  candidate is attested at the witness floor, never to discover the list. The
+  tokens TRAIN witnesses but the candidate set excludes are kept on the
+  inventory as ``rejected_tokens``, so the finding stays readable rather than
+  becoming a silent threshold.
 
 Boundary. The inventory is mined from ``train.jsonl`` and from nothing else --
 :func:`load_slot_normalizer_inventory` refuses any other split by name, the
@@ -125,9 +143,26 @@ SLURP_SLOT_NORMALIZER_RULES: tuple[str, ...] = (
     "R3-train-leading-preposition",
 )
 
-#: How many distinct same-type TRAIN witness pairs a token needs before it is
-#: allowed into the R3 strippable list. Declared before the list was read.
+#: How many distinct same-type TRAIN witness pairs a candidate token needs
+#: before it is admitted to the R3 strippable list.
 LEADING_TOKEN_MIN_WITNESSES = 3
+
+#: The DECLARED candidate set R3 draws from: English articles and prepositions
+#: that carry no meaning of their own in a slot value. The corpus confirms which
+#: of these it actually attests; it never proposes a token of its own, because
+#: no corpus statistic separates ``on`` from ``next`` (module docstring).
+LEADING_TOKEN_CANDIDATES: tuple[str, ...] = (
+    "a",
+    "an",
+    "at",
+    "by",
+    "for",
+    "in",
+    "of",
+    "on",
+    "the",
+    "to",
+)
 
 #: The meridiem forms R2 canonicalizes onto. Keyed by the SPLIT spelling the
 #: Whisper rung leaves behind, valued by the corpus's own joined spelling.
@@ -191,6 +226,7 @@ class SlotNormalizerInventory:
     min_witnesses: int
     fillers: Mapping[str, frozenset[str]]
     leading_tokens: tuple[str, ...]
+    rejected_tokens: tuple[str, ...]
     witnesses: Mapping[str, int]
     witness_examples: Mapping[str, tuple[str, ...]]
     source_identity_hash: str
@@ -220,6 +256,21 @@ class SlotNormalizerInventory:
                 token: list(self.witness_examples.get(token, ()))
                 for token in self.leading_tokens
             },
+            "candidate_set": list(LEADING_TOKEN_CANDIDATES),
+            "rejected_tokens": list(self.rejected_tokens),
+            "rejected_token_witnesses": {
+                token: self.witnesses[token] for token in self.rejected_tokens
+            },
+            "rejected_token_examples": {
+                token: list(self.witness_examples.get(token, ()))
+                for token in self.rejected_tokens
+            },
+            "why_rejected": (
+                "the corpus witnesses these leading tokens at the floor, but they "
+                "carry meaning: stripping them merges `next week` with `last week`. "
+                "No corpus statistic separates them from `on` and `the`, so the "
+                "candidate set is declared and the corpus only confirms"
+            ),
         }
 
 
@@ -227,24 +278,32 @@ def learn_leading_prepositions(
     fillers_by_type: Mapping[str, Iterable[str]],
     *,
     min_witnesses: int = LEADING_TOKEN_MIN_WITNESSES,
-) -> tuple[tuple[str, ...], dict[str, int], dict[str, tuple[str, ...]]]:
-    """The ``R3`` strippable list, learned from TRAIN fillers alone.
+    candidates: Sequence[str] | None = LEADING_TOKEN_CANDIDATES,
+) -> tuple[tuple[str, ...], tuple[str, ...], dict[str, int], dict[str, tuple[str, ...]]]:
+    """The ``R3`` strippable list: declared candidates, corpus-confirmed.
 
-    A token ``w`` qualifies when the corpus carries at least ``min_witnesses``
-    DISTINCT same-type pairs ``(w x, x)`` -- a multi-token filler beginning
-    with ``w`` whose remainder is itself an attested filler of the same type.
-    The corpus is what says a leading token is droppable; no English
-    function-word list is consulted, and nothing outside ``fillers_by_type``
-    is read.
+    A token is ADMITTED when it is in ``candidates`` and the corpus carries at
+    least ``min_witnesses`` DISTINCT same-type pairs ``(w x, x)`` -- a
+    multi-token filler beginning with ``w`` whose remainder is itself an
+    attested filler of the same type.
 
-    Returns ``(tokens, witness counts, up to three witness examples each)``,
-    tokens sorted by descending witness count then lexicographically.
+    ``candidates=None`` drops the semantic filter and returns whatever the
+    corpus witnesses. That variant is what the module docstring calls the first
+    version of this rung: it is kept so the finding it produced stays
+    reproducible, and it is NOT the default, because it strips ``next`` from
+    ``next week``.
+
+    Returns ``(admitted, rejected, witness counts, up to three witness examples
+    each)``. ``rejected`` is the tokens the corpus witnesses at the floor that
+    the candidate set excludes -- the evidence for why the filter exists. Both
+    lists are sorted by descending witness count then lexicographically.
     """
 
     if isinstance(min_witnesses, bool) or not isinstance(min_witnesses, int):
         raise SlurpSlotNormalizerError("min_witnesses must be an int")
     if min_witnesses < 1:
         raise SlurpSlotNormalizerError("min_witnesses must be at least 1")
+    allowed = None if candidates is None else {str(token) for token in candidates}
     witnesses: dict[str, set[tuple[str, str]]] = {}
     for entity_type, values in fillers_by_type.items():
         present = set(values)
@@ -256,20 +315,24 @@ def learn_leading_prepositions(
             if remainder in present:
                 witnesses.setdefault(head, set()).add((str(entity_type), value))
     counts = {token: len(pairs) for token, pairs in witnesses.items()}
-    tokens = tuple(
-        sorted(
-            (token for token, count in counts.items() if count >= min_witnesses),
-            key=lambda token: (-counts[token], token),
-        )
+    at_floor = sorted(
+        (token for token, count in counts.items() if count >= min_witnesses),
+        key=lambda token: (-counts[token], token),
+    )
+    admitted = tuple(
+        token for token in at_floor if allowed is None or token in allowed
+    )
+    rejected = tuple(
+        token for token in at_floor if allowed is not None and token not in allowed
     )
     examples = {
         token: tuple(
             f"{entity_type}: {value}"
             for entity_type, value in sorted(witnesses[token])[:3]
         )
-        for token in tokens
+        for token in at_floor
     }
-    return tokens, counts, examples
+    return admitted, rejected, counts, examples
 
 
 def build_slot_normalizer_inventory(
@@ -277,6 +340,7 @@ def build_slot_normalizer_inventory(
     *,
     source_split: str = "train",
     min_witnesses: int = LEADING_TOKEN_MIN_WITNESSES,
+    candidates: Sequence[str] | None = LEADING_TOKEN_CANDIDATES,
 ) -> SlotNormalizerInventory:
     """Mine the ``R3`` inventory from loaded TRAIN material.
 
@@ -304,8 +368,8 @@ def build_slot_normalizer_inventory(
                 continue
             grouped.setdefault(entity_type, set()).add(normalized)
             raw_pairs.add((entity_type, normalized))
-    tokens, counts, examples = learn_leading_prepositions(
-        grouped, min_witnesses=min_witnesses
+    tokens, rejected, counts, examples = learn_leading_prepositions(
+        grouped, min_witnesses=min_witnesses, candidates=candidates
     )
     identity = hashlib.sha256(
         "\n".join(
@@ -323,6 +387,7 @@ def build_slot_normalizer_inventory(
             }
         ),
         leading_tokens=tokens,
+        rejected_tokens=rejected,
         witnesses=MappingProxyType(dict(sorted(counts.items()))),
         witness_examples=MappingProxyType(dict(sorted(examples.items()))),
         source_identity_hash=identity,
@@ -335,6 +400,7 @@ def load_slot_normalizer_inventory(
     *,
     source_split: str = "train",
     min_witnesses: int = LEADING_TOKEN_MIN_WITNESSES,
+    candidates: Sequence[str] | None = LEADING_TOKEN_CANDIDATES,
 ) -> SlotNormalizerInventory:
     """The production entry point: mine the inventory from ``train.jsonl``.
 
@@ -354,7 +420,10 @@ def load_slot_normalizer_inventory(
 
     material = load_slurp_train_material(lock, root)
     return build_slot_normalizer_inventory(
-        material, source_split=source_split, min_witnesses=min_witnesses
+        material,
+        source_split=source_split,
+        min_witnesses=min_witnesses,
+        candidates=candidates,
     )
 
 
@@ -455,6 +524,7 @@ def normalize_slot_entities(
 
 
 __all__ = [
+    "LEADING_TOKEN_CANDIDATES",
     "LEADING_TOKEN_MIN_WITNESSES",
     "MERIDIEM_JOINS",
     "SLURP_SLOT_NORMALIZER_ID",
