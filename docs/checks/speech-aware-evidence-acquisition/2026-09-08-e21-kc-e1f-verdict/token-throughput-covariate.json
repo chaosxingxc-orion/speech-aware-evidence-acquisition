@@ -1,0 +1,203 @@
+{
+ "cost": {
+  "kc-e1f": {
+   "audio_seconds_used": 141345.8526875,
+   "calls_used": 1593,
+   "comparator_gpu_hours": 0.9734,
+   "completion_tokens_total": 434219,
+   "cpu_seconds": 335.76,
+   "gate_setup_seconds": 17.949859165004455,
+   "gpu_hours": 1.1093,
+   "gpu_seconds": 3993.3186535991313,
+   "kc_e1_gpu_hours": 0.9948,
+   "latency_seconds_total": 36424.37668244488,
+   "monitor_wall_hours": 1.7358,
+   "peak_vram_mib": 22728.0,
+   "prompt_tokens_total": 3550695,
+   "registered_calls": 1750,
+   "registered_gpu_hours": 1.2,
+   "registered_gpu_hours_basis": "the preregistration's section 6 figure, KC-E1's realized 0.9948 GPU-h at SIX slots times 1.2. This cell flies at FOUR slots under the owner's own GPU-order delegation, which does the same total work with less batching, so the sampler figure is reported against that ceiling under both conventions rather than blended or hidden",
+   "registered_speech_audio_seconds": 150000
+  },
+  "ku-e1fc": {
+   "audio_seconds_used": 141345.8526875,
+   "calls_used": 1593,
+   "comparator_gpu_hours": 0.9734,
+   "completion_tokens_total": 439049,
+   "cpu_seconds": 358.19,
+   "gate_setup_seconds": 20.289830761001213,
+   "gpu_hours": 1.1656,
+   "gpu_seconds": 4196.266385173803,
+   "kc_e1_gpu_hours": 0.9948,
+   "latency_seconds_total": 38187.338311576204,
+   "monitor_wall_hours": 1.7639,
+   "peak_vram_mib": 22728.0,
+   "prompt_tokens_total": 3561846,
+   "registered_calls": 1750,
+   "registered_gpu_hours": 1.2,
+   "registered_gpu_hours_basis": "the preregistration's section 6 figure, KC-E1's realized 0.9948 GPU-h at SIX slots times 1.2. This cell flies at FOUR slots under the owner's own GPU-order delegation, which does the same total work with less batching, so the sampler figure is reported against that ceiling under both conventions rather than blended or hidden",
+   "registered_speech_audio_seconds": 150000
+  }
+ },
+ "note": "the twin was matched to the arm on the FLIGHT tokenizer, per line and per window; what is left is the constant `[evidence <id>] ` header residual of the two evidence blocks, +7 tokens, measured on the requests that actually flew rather than projected",
+ "serving": {
+  "kc-e1f": {
+   "geometry": {
+    "server_c": 36864,
+    "server_np": 4,
+    "slot_tokens": 9216,
+    "slots": 4
+   },
+   "monitor_summary": {
+    "active_seconds": 5394.774713516235,
+    "first_sample_at": 1788840542.7056594,
+    "host_free_gb_last": 20.236553192138672,
+    "host_free_gb_min": 17.12322998046875,
+    "host_free_gb_min_at": 1788842843.7249577,
+    "host_memory_samples": 534,
+    "last_sample_at": 1788846774.6373074,
+    "mean_power_watts": 78.69091760299625,
+    "mean_utilization_percent": 63.172284644194754,
+    "parked_definition": "every slot idle AND nvidia-smi utilization.gpu < 5%",
+    "parked_fraction": 0.13433345899521562,
+    "parked_seconds": 837.1569344997406,
+    "peak_power_watts": 102.74,
+    "requests_delta": 1531.0,
+    "sample_count": 534,
+    "schema": "saea-serving-monitor-summary-v1",
+    "tokens_delta": null,
+    "vm_available_gb_min": 30.442157745361328,
+    "vmmem_ws_gb_max": 33.80390548706055,
+    "wall_seconds": 6231.931648015976,
+    "window": {
+     "from": 1788840537.0,
+     "to": 1788846786.0
+    }
+   },
+   "session_id": "e21-np4-c36864-20260908"
+  },
+  "ku-e1fc": {
+   "geometry": {
+    "server_c": 36864,
+    "server_np": 4,
+    "slot_tokens": 9216,
+    "slots": 4
+   },
+   "monitor_summary": {
+    "active_seconds": 5380.270180225372,
+    "first_sample_at": 1788852180.910888,
+    "host_free_gb_last": 17.56930160522461,
+    "host_free_gb_min": 13.66250991821289,
+    "host_free_gb_min_at": 1788857539.6404223,
+    "host_memory_samples": 566,
+    "last_sample_at": 1788858515.009629,
+    "mean_power_watts": 76.38000000000001,
+    "mean_utilization_percent": 63.553003533568905,
+    "parked_definition": "every slot idle AND nvidia-smi utilization.gpu < 5%",
+    "parked_fraction": 0.15058631066909514,
+    "parked_seconds": 953.8285608291626,
+    "peak_power_watts": 107.06,
+    "requests_delta": 1552.0,
+    "sample_count": 566,
+    "schema": "saea-serving-monitor-summary-v1",
+    "tokens_delta": null,
+    "vm_available_gb_min": 29.396099090576172,
+    "vmmem_ws_gb_max": 37.052650451660156,
+    "wall_seconds": 6334.098741054535,
+    "window": {
+     "from": 1788852173.0,
+     "to": 1788858523.0
+    }
+   },
+   "session_id": "e21-np4-c36864-20260908"
+  }
+ },
+ "sources": {
+  "kc-e1f": {
+   "path": "/mnt/d/chao_workspace/saea-worktrees/wt-kce1fverdict/docs/checks/speech-aware-evidence-acquisition/2026-09-07-e21-kc-e1f-repair-44-v1/flight/flight-receipt.json",
+   "sha256": "231df71e69f653dfd8df99398c6f33caef1610426cd5a5299548a0d6281086f0"
+  },
+  "ku-e1fc": {
+   "path": "/mnt/d/chao_workspace/saea-worktrees/wt-kce1fverdict/docs/checks/speech-aware-evidence-acquisition/2026-09-07-e21-kc-e1f-repair-44-v1/flight-twin/flight-receipt.json",
+   "sha256": "1153d51fde929e78e89eb14effbaec18cb1e84fb2489cc38f00fac86c801c13c"
+  }
+ },
+ "throughput": {
+  "kc-e1f": {
+   "comparator_windows_per_minute": 16.38,
+   "kc_e1_windows_per_minute": 16.244,
+   "realized_realtime_factor": 35.4,
+   "realtime_factor_convention": "metered cut audio seconds divided by the manifest's own nvidia-smi busy-time seconds -- the convention the KC-E1 and tail2s receipts use",
+   "run_wall_minutes": 104.15,
+   "run_wall_seconds": 6249.0,
+   "slot_count_note": "KC-E1 and the comparator flew at -np 6; this cell flies at -np 4, so a windows-per-minute comparison against them carries a serving change as well as a protocol one",
+   "windows_per_minute": 15.295
+  },
+  "ku-e1fc": {
+   "comparator_windows_per_minute": 16.38,
+   "kc_e1_windows_per_minute": 16.244,
+   "realized_realtime_factor": 33.68,
+   "realtime_factor_convention": "metered cut audio seconds divided by the manifest's own nvidia-smi busy-time seconds -- the convention the KC-E1 and tail2s receipts use",
+   "run_wall_minutes": 105.83,
+   "run_wall_seconds": 6350.0,
+   "slot_count_note": "KC-E1 and the comparator flew at -np 6; this cell flies at -np 4, so a windows-per-minute comparison against them carries a serving change as well as a protocol one",
+   "windows_per_minute": 15.052
+  }
+ },
+ "token_match_measured_by_the_flight": {
+  "basis": "each cell's own COST record joined to its OBS record through the shared request id, so the count is the flight server's own, on the flight tokenizer, including the identical speech tokens of the identical audio",
+  "constant_delta": 7,
+  "delta_histogram": {
+   "7": 1593
+  },
+  "delta_max": 7,
+  "delta_median": 7,
+  "delta_min": 7,
+  "matches_the_prompt_fit": true,
+  "paired_run_id": "SAEA-E21-KC-E1F-REPAIR-44-V1",
+  "paired_trace": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-KC-E1F-REPAIR-44-V1/attempt-20260908T040832Z-ecda9c/SAEA-E21-KC-E1F-REPAIR-44-V1.trace.jsonl",
+  "prompt_fit_expected_delta": 7,
+  "windows_matched": 1593,
+  "windows_paired_cell": 1593,
+  "windows_this_cell": 1593,
+  "windows_unmatched": []
+ },
+ "tokens": {
+  "kc-e1f": {
+   "comparator_completion_total": 439532,
+   "comparator_prompt_total": 1935965,
+   "completion_max": 1024,
+   "completion_median": 277,
+   "completion_min": 3,
+   "completion_total": 434219,
+   "kc_e1_completion_total": 423115,
+   "kc_e1_prompt_total": 2907274,
+   "max_tokens": 1024,
+   "prompt_max": 2480,
+   "prompt_median": 2260,
+   "prompt_min": 683,
+   "prompt_total": 3550695,
+   "slot_tokens": 9216,
+   "worst_realized_margin_factor": 2.6301,
+   "worst_realized_request_tokens": 3504
+  },
+  "ku-e1fc": {
+   "comparator_completion_total": 439532,
+   "comparator_prompt_total": 1935965,
+   "completion_max": 1024,
+   "completion_median": 278,
+   "completion_min": 3,
+   "completion_total": 439049,
+   "kc_e1_completion_total": 423115,
+   "kc_e1_prompt_total": 2907274,
+   "max_tokens": 1024,
+   "prompt_max": 2487,
+   "prompt_median": 2267,
+   "prompt_min": 690,
+   "prompt_total": 3561846,
+   "slot_tokens": 9216,
+   "worst_realized_margin_factor": 2.6249,
+   "worst_realized_request_tokens": 3511
+  }
+ }
+}
