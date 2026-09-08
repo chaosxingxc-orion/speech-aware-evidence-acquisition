@@ -534,6 +534,269 @@ def to_local_function(tool_id: str) -> Any:
     return LocalFunction(card=card, func=entry.body)
 
 
+# ---------------------------------------------------------------------------
+# The eight manifests, and the registration block.
+#
+# The ids below are STRING LITERALS at the ``TOOL_CATALOG.register`` call
+# because ``scripts/checks/engineering_base_check.py`` reads the registered
+# set out of this file's source WITHOUT importing the package -- the same
+# discipline every other canonical registration site follows.
+# :func:`assert_catalog_consistent` then proves each literal agrees with its
+# own manifest.
+#
+# Every entry passes through :func:`build_tool_entry`, which is where the
+# system-invoked marker is enforced; ``scripts/checks/tool_catalog_check.py``
+# fails if a registration ever bypasses it.
+# ---------------------------------------------------------------------------
+
+DIARIZATION_ARTIFACT_MANIFEST = ToolManifest(
+    tool_id="saea-tool-diarization-artifact-v1",
+    description=(
+        "Read and re-derive one sealed saea-diarization-v1 artifact: who spoke "
+        "when, per call, from the pinned Sortformer pass. OBS observation only "
+        "-- never evidence, never an answer."
+    ),
+    source_ref="speech_aware_evidence_acquisition.reproduction.diarization:load_diarization",
+    pinned_sha256="8dfb36f772250d8cd1c146178834946f50ba8e3f26c00fefd606e358dde87afa",
+    inputs={"path": "pathlib.Path | str", "dry_run": "bool"},
+    outputs={"artifact": "reproduction.diarization.DiarizationArtifact | DiarizationReadPlan"},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis="OBS",
+    scope=GENERAL_SCOPE,
+    ledger_row_type="tool-contact",
+)
+
+SLICE_ENCODE_MANIFEST = ToolManifest(
+    tool_id="saea-tool-slice-encode-v1",
+    description=(
+        "Turn one already-cut speech window into the bytes that go on the wire: "
+        "raw cut, then rms-norm when declared, then the silence tail. The one "
+        "place the transform order is decided."
+    ),
+    source_ref="speech_aware_evidence_acquisition.reproduction.obs_audio:encode_slice",
+    pinned_sha256="20b53a38e119b90a14b953e37aab7bb49bfae5db135d722cd4badff720adca54",
+    inputs={
+        "slice_samples": "Sequence[int]",
+        "sample_rate_hz": "int",
+        "preprocess": "Sequence[str]",
+        "rms_target_dbfs": "float",
+        "tail_silence_seconds": "float",
+    },
+    outputs={
+        "wav_bytes": "bytes",
+        "transforms": "tuple[str, ...]",
+        "pre_sha256": "str | None",
+    },
+    changes_bytes=True,
+    derivation_record="saea-slice-derivation-v1",
+    cost_class="cpu",
+    axis="OBS",
+    scope=GENERAL_SCOPE,
+    ledger_row_type="none",
+)
+
+SPEAKER_TURN_UNITS_MANIFEST = ToolManifest(
+    tool_id="saea-tool-speaker-turn-units-v2",
+    description=(
+        "Plan a call's speaker-turn units (OBS-E1 unit plan v2): a proved "
+        "tiling of [0, duration) snapped to pauses and speaker changes."
+    ),
+    source_ref="speech_aware_evidence_acquisition.analysis.e21_speaker_turn_units:plan_units_v2",
+    pinned_sha256="f143b844e2dbf72f488663ba9d7a3beca7d6c78df82b574d14a257f2f2978c81",
+    inputs={
+        "sample_id": "str",
+        "segments": "Sequence[SpeakerSegment]",
+        "duration_seconds": "float",
+        "pauses": "Sequence[Pause]",
+        "active": "Sequence[bool]",
+        "frame_seconds": "float",
+        "max_seconds": "float",
+        "min_seconds": "float",
+        "snap_radius": "float",
+    },
+    outputs={"units": "tuple[analysis.e21_speaker_turn_units.UnitV2, ...]"},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis="OBS",
+    scope=f"{CARRIER_SCOPE_PREFIX}earnings21",
+    ledger_row_type="none",
+)
+
+LEGAL_LABEL_PROJECTION_MANIFEST = ToolManifest(
+    tool_id="saea-tool-legal-label-projection-v2",
+    description=(
+        "Map an illegal SLURP (scenario, action) pair onto the nearest legal "
+        "one under slurp-legal-label-projection-v2. Entities are never touched "
+        "and an unparsed response stays unparsed."
+    ),
+    source_ref="speech_aware_evidence_acquisition.reproduction.slurp_scoring:project_slu_label_v2",
+    pinned_sha256="d51bfd464df9491092e14a2c3f05b7c69a263f4aa61cc7f8cec308501a14de2f",
+    inputs={
+        "scenario": "str | None",
+        "action": "str | None",
+        "inventory": "reproduction.slurp_scoring.LegalIntentInventory",
+        "parsed": "bool",
+    },
+    outputs={"projection": "reproduction.slurp_scoring.LabelProjection"},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis="USE",
+    scope=f"{CARRIER_SCOPE_PREFIX}slurp",
+    ledger_row_type="none",
+)
+
+REPAIR_ALIGNMENT_MANIFEST = ToolManifest(
+    tool_id="saea-tool-repair-alignment-v1",
+    description=(
+        "Accept a pass-2 delivery only when it differs from its predecessor by "
+        "substitutions only, within the span/anchor/fraction bounds; otherwise "
+        "refuse and deliver the predecessor verbatim."
+    ),
+    source_ref="speech_aware_evidence_acquisition.core.repair_alignment:accept_entity_repair",
+    pinned_sha256="b648388b31a1e00cfb1c66a581f8c1c973380499bba755a9a61cd1a5a540b8d2",
+    inputs={
+        "predecessor_text": "str",
+        "response_text": "str",
+        "max_span_tokens": "int",
+        "min_anchor_ratio": "float",
+        "max_substituted_fraction": "float",
+    },
+    outputs={"outcome": "core.repair_alignment.RepairOutcome"},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis="USE",
+    scope=GENERAL_SCOPE,
+    ledger_row_type="none",
+)
+
+FLAGGED_SPANS_MANIFEST = ToolManifest(
+    tool_id="saea-tool-flagged-spans-v1",
+    description=(
+        "Detect the spans of a draft that deserve a second listen, from one of "
+        "two pinned sources: low token-logprob runs, or roster-band near "
+        "misses. Non-overlapping, ascending start order."
+    ),
+    source_ref="speech_aware_evidence_acquisition.core.replay_signals:flag_spans",
+    pinned_sha256="edcb9c65f87aa57257317549f0633a9cddd904f20cc57c176686443e70cca334",
+    inputs={"source": "str", "args": "tuple", "kwargs": "dict"},
+    outputs={"spans": "list[tuple[int, int]] | list[core.flag_sources.RosterBandFlag]"},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis="OBS",
+    scope=GENERAL_SCOPE,
+    ledger_row_type="none",
+)
+
+SEALED_VECTOR_QUERY_MANIFEST = ToolManifest(
+    tool_id="saea-tool-sealed-vector-query-v1",
+    description=(
+        "Load the receipt-pinned sealed query/facet vectors a supplied phase "
+        "ranks the frozen knowledge snapshot against. The query signal is "
+        "speech, declared by the fragment and embedded before the flight."
+    ),
+    source_ref="speech_aware_evidence_acquisition.rails.phase_supply:load_sealed_vectors",
+    pinned_sha256="8a64a4de71970d01ac8cb4b98a29a7fe4efdcfdd6e417bc986409c3d0b4afc5d",
+    inputs={
+        "path": "pathlib.Path",
+        "expected_sha256": "str",
+        "dimensions": "Sequence[str]",
+    },
+    outputs={"vectors": "Mapping[str, Mapping[str, tuple[float, ...]]]"},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis="SUPPLY",
+    scope=GENERAL_SCOPE,
+    ledger_row_type="tool-contact",
+)
+
+PROMPT_FIT_TOKENS_MANIFEST = ToolManifest(
+    tool_id="saea-tool-prompt-fit-tokens-v1",
+    description=(
+        "Measure a request on the FLIGHT tokenizer through the resident "
+        "server's non-generative routes (/props, /apply-template, /tokenize). "
+        "No token is generated and no answer is read."
+    ),
+    source_ref=(
+        "speech_aware_evidence_acquisition.core.driver.speech_native:"
+        "_LoopbackPromptAuditClient.request_json"
+    ),
+    pinned_sha256="b08a5d35c3a8c850a7fbf2a8265f6774798aa21a357a2fd70a7e7b0359c1cf04",
+    inputs={
+        "client": "core.driver.speech_native._LoopbackPromptAuditClient",
+        "method": "str",
+        "path": "str",
+        "payload": "Mapping[str, object] | None",
+    },
+    outputs={"document": "Mapping[str, object]"},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="contact",
+    axis="USE",
+    scope=GENERAL_SCOPE,
+    ledger_row_type="service-contact",
+    parallel_safe=False,
+    stateless=False,
+)
+
+from .tool_wrappers import (  # noqa: E402  (registration block: see above)
+    diarization as _diarization,
+    flagged_spans as _flagged_spans,
+    legal_label_projection as _legal_label_projection,
+    prompt_fit_tokens as _prompt_fit_tokens,
+    repair_alignment as _repair_alignment,
+    sealed_vector_query as _sealed_vector_query,
+    slice_encode as _slice_encode,
+    speaker_turn_units as _speaker_turn_units,
+)
+
+TOOL_CATALOG.register(
+    "saea-tool-diarization-artifact-v1",
+    build_tool_entry(DIARIZATION_ARTIFACT_MANIFEST, _diarization.load_diarization_tool),
+)
+TOOL_CATALOG.register(
+    "saea-tool-slice-encode-v1",
+    build_tool_entry(SLICE_ENCODE_MANIFEST, _slice_encode.encode_slice_tool),
+)
+TOOL_CATALOG.register(
+    "saea-tool-speaker-turn-units-v2",
+    build_tool_entry(SPEAKER_TURN_UNITS_MANIFEST, _speaker_turn_units.plan_units_v2_tool),
+)
+TOOL_CATALOG.register(
+    "saea-tool-legal-label-projection-v2",
+    build_tool_entry(
+        LEGAL_LABEL_PROJECTION_MANIFEST,
+        _legal_label_projection.project_slu_label_v2_tool,
+    ),
+)
+TOOL_CATALOG.register(
+    "saea-tool-repair-alignment-v1",
+    build_tool_entry(REPAIR_ALIGNMENT_MANIFEST, _repair_alignment.accept_entity_repair_tool),
+)
+TOOL_CATALOG.register(
+    "saea-tool-flagged-spans-v1",
+    build_tool_entry(FLAGGED_SPANS_MANIFEST, _flagged_spans.flagged_spans_tool),
+)
+TOOL_CATALOG.register(
+    "saea-tool-sealed-vector-query-v1",
+    build_tool_entry(
+        SEALED_VECTOR_QUERY_MANIFEST, _sealed_vector_query.load_sealed_vectors_tool
+    ),
+)
+TOOL_CATALOG.register(
+    "saea-tool-prompt-fit-tokens-v1",
+    build_tool_entry(PROMPT_FIT_TOKENS_MANIFEST, _prompt_fit_tokens.prompt_fit_request_tool),
+)
+
+assert_catalog_consistent()
+
+
 __all__ = [
     "CARRIER_SCOPE_PREFIX",
     "COST_CLASSES",
