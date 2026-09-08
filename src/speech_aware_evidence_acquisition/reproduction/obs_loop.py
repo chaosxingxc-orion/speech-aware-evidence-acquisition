@@ -112,6 +112,7 @@ from .obs_audio import (
     tail_silence_samples,
     vad_transitions,
 )
+from .obs_ownership import OWNERSHIP_PROTOCOL
 
 # Names only. ``reproduction.ojw.__init__`` imports nothing from this module
 # (its openjiuwen-dependent siblings do, behind policy.py's lazy seam), so
@@ -182,8 +183,19 @@ OBS_UNIT_PLAN_SCHEMA_V2 = "saea-e21-speaker-turn-units-v2"
 #: proof to apply.
 OBS_RELISTEN_PLAN_SCHEMA = "saea-e21-relisten-plan-v1"
 
+#: OBS-E1b, 2026-09-08. v2's turns, each carrying the bounds of the audio
+#: DELIVERED for it. A v3 plan is the only one whose delivered cut differs from
+#: its turn, and therefore the only one for which the run stitches something
+#: other than the raw response.
+OBS_UNIT_PLAN_SCHEMA_V3 = "saea-e21-speaker-turn-units-v3"
+
 OBS_UNIT_PLAN_SCHEMAS = frozenset(
-    {OBS_UNIT_PLAN_SCHEMA, OBS_UNIT_PLAN_SCHEMA_V2, OBS_RELISTEN_PLAN_SCHEMA}
+    {
+        OBS_UNIT_PLAN_SCHEMA,
+        OBS_UNIT_PLAN_SCHEMA_V2,
+        OBS_UNIT_PLAN_SCHEMA_V3,
+        OBS_RELISTEN_PLAN_SCHEMA,
+    }
 )
 
 #: What the ``saea-obs-derivation-v1`` receipt records in ``boundary_mode``
@@ -405,10 +417,39 @@ class PlannedUnit:
     parent_window_index: int | None = None
     predecessor_word_start: int | None = None
     predecessor_word_end: int | None = None
+    #: OBS-E1b (plan v3): the bounds of the audio actually DELIVERED for this
+    #: unit -- its turn widened by the plan's context rule. ``None`` on a v1 or
+    #: v2 plan, where the delivered cut IS the turn and nothing below it moves.
+    context_start_seconds: float | None = None
+    context_end_seconds: float | None = None
 
     @property
     def duration_seconds(self) -> float:
         return self.end_seconds - self.start_seconds
+
+    @property
+    def has_context(self) -> bool:
+        return self.context_start_seconds is not None
+
+    @property
+    def cut_start_seconds(self) -> float:
+        """Where the cutter starts. The turn's own start without context."""
+
+        return (
+            self.start_seconds
+            if self.context_start_seconds is None
+            else self.context_start_seconds
+        )
+
+    @property
+    def cut_end_seconds(self) -> float:
+        """Where the cutter stops. The turn's own end without context."""
+
+        return (
+            self.end_seconds
+            if self.context_end_seconds is None
+            else self.context_end_seconds
+        )
 
 
 @dataclass(frozen=True)
@@ -424,6 +465,13 @@ class UnitPlan:
     @property
     def unit_count(self) -> int:
         return sum(len(units) for units in self.units_by_sample.values())
+
+    @property
+    def has_context(self) -> bool:
+        """True for a v3 plan: units are delivered with context and the text
+        the run stitches is decided by ``reproduction.obs_ownership``."""
+
+        return self.schema == OBS_UNIT_PLAN_SCHEMA_V3
 
     def units_for(
         self, sample_id: str, decoded_duration_seconds: float
@@ -497,8 +545,11 @@ def _load_unit_plan(
         assert_relisten_units,
     )
     from ..analysis.e21_speaker_turn_units import (  # noqa: PLC0415
-        Unit,
+        MIN_DELIVERED_CUT_SECONDS,
         SpeakerTurnUnitError,
+        Unit,
+        UnitV3,
+        assert_context,
         assert_tiles,
         unit_id as mint_unit_id,
     )
@@ -595,10 +646,49 @@ def _load_unit_plan(
                     f"[{start_seconds}, {end_seconds}) which lies outside its call's "
                     f"own {duration} s of audio"
                 )
-            if end_seconds - start_seconds > buffer_seconds + 1e-6:
+            # OBS-E1b: on a v3 plan the bounds the cutter uses are the
+            # DELIVERED ones, so every check below is made against those. On a
+            # v1/v2 plan they ARE the turn's bounds and nothing here moves.
+            context_start: float | None = None
+            context_end: float | None = None
+            if schema == OBS_UNIT_PLAN_SCHEMA_V3:
+                context_start = _plan_number(entry, "context_start_seconds", where)
+                context_end = _plan_number(entry, "context_end_seconds", where)
+                if context_start < -1e-6 or context_end > duration + 1e-6:
+                    raise ObsLoopError(
+                        f"obs_unit_plan {relpath!r}: {where} delivers "
+                        f"[{context_start}, {context_end}) which lies outside its "
+                        f"call's own {duration} s of audio"
+                    )
+                if (
+                    context_start > start_seconds + 1e-6
+                    or context_end < end_seconds - 1e-6
+                ):
+                    raise ObsLoopError(
+                        f"obs_unit_plan {relpath!r}: {where} delivers "
+                        f"[{context_start}, {context_end}) which does not cover its "
+                        f"own turn [{start_seconds}, {end_seconds})"
+                    )
+                floor = min(MIN_DELIVERED_CUT_SECONDS, duration)
+                if context_end - context_start < floor - 1e-6:
+                    raise ObsLoopError(
+                        f"obs_unit_plan {relpath!r}: {where} delivers "
+                        f"{context_end - context_start} s, under the {floor} s "
+                        "minimum a context-bearing plan promises"
+                    )
+            elif any(key in entry for key in ("context_start_seconds", "context_end_seconds")):
                 raise ObsLoopError(
-                    f"obs_unit_plan {relpath!r}: {where} is "
-                    f"{end_seconds - start_seconds} s, longer than the slot's audio "
+                    f"obs_unit_plan {relpath!r}: {where} carries context bounds but the "
+                    f"plan declares schema {schema!r}; only {OBS_UNIT_PLAN_SCHEMA_V3!r} "
+                    "delivers context, and a plan that hides it would be cut one way "
+                    "and stitched another"
+                )
+            cut_start = start_seconds if context_start is None else context_start
+            cut_end = end_seconds if context_end is None else context_end
+            if cut_end - cut_start > buffer_seconds + 1e-6:
+                raise ObsLoopError(
+                    f"obs_unit_plan {relpath!r}: {where} delivers "
+                    f"{cut_end - cut_start} s, longer than the slot's audio "
                     f"budget obs_buffer_seconds={buffer_seconds}"
                 )
             speaker = entry.get("speaker")
@@ -642,23 +732,35 @@ def _load_unit_plan(
                     parent_window_index=parent_index,
                     predecessor_word_start=word_start,
                     predecessor_word_end=word_end,
+                    context_start_seconds=context_start,
+                    context_end_seconds=context_end,
                 )
             )
             if relisten:
+                # A re-listen plan does not tile its call, so it builds no
+                # speaker-turn Unit and takes the containment proof below
+                # instead of assert_tiles.
                 continue
+            common = {
+                "sample_id": sample_id,
+                "unit_index": index,
+                "start_seconds": start_seconds,
+                "end_seconds": end_seconds,
+                "speaker": speaker,
+                "speaker_share": 0.0,
+                "speaker_count": 0,
+                "start_cut": str(entry.get("start_cut", "")),
+                "end_cut": end_cut,
+                "ends_active": bool(entry.get("ends_on_active_frame", False)),
+                "flags": (),
+            }
             rebuilt.append(
-                Unit(
-                    sample_id=sample_id,
-                    unit_index=index,
-                    start_seconds=start_seconds,
-                    end_seconds=end_seconds,
-                    speaker=speaker,
-                    speaker_share=0.0,
-                    speaker_count=0,
-                    start_cut=str(entry.get("start_cut", "")),
-                    end_cut=end_cut,
-                    ends_active=bool(entry.get("ends_on_active_frame", False)),
-                    flags=(),
+                Unit(**common)
+                if context_start is None
+                else UnitV3(
+                    **common,
+                    context_start_seconds=context_start,
+                    context_end_seconds=context_end,
                 )
             )
         if relisten:
@@ -711,6 +813,14 @@ def _load_unit_plan(
         else:
             try:
                 assert_tiles(rebuilt, duration)
+                if schema == OBS_UNIT_PLAN_SCHEMA_V3:
+                    # The plan builder's OWN context proof, re-run here on the
+                    # bytes actually loaded -- the same discipline assert_tiles
+                    # is applied under. Its load-bearing clause is the last
+                    # one: every turn boundary lies inside the audio BOTH of
+                    # its units received, which is what makes the overlap the
+                    # ownership stitch aligns on exist at all.
+                    assert_context(rebuilt, duration)
             except SpeakerTurnUnitError as error:
                 raise ObsLoopError(
                     f"obs_unit_plan {relpath!r}: call {sample_id!r} does not tile its "
@@ -749,6 +859,18 @@ def _unit_trace_fields(unit: PlannedUnit | None) -> dict[str, object]:
         fields["obs_relisten_parent_window_index"] = unit.parent_window_index
         fields["obs_relisten_predecessor_word_start"] = unit.predecessor_word_start
         fields["obs_relisten_predecessor_word_end"] = unit.predecessor_word_end
+    if unit.has_context:
+        # OBS-E1b. Under a v3 plan ``obs_window_start/end_seconds`` are the
+        # DELIVERED cut -- they must be, because they are the SliceRecord's own
+        # span and the registry refuses a record whose audio_seconds disagrees
+        # with it. The TURN is what the stitched text is supposed to describe,
+        # so it is carried beside them rather than lost.
+        fields.update(
+            obs_unit_turn_start_seconds=unit.start_seconds,
+            obs_unit_turn_end_seconds=unit.end_seconds,
+            obs_unit_context_left_seconds=unit.start_seconds - unit.cut_start_seconds,
+            obs_unit_context_right_seconds=unit.cut_end_seconds - unit.end_seconds,
+        )
     return fields
 
 
@@ -1018,6 +1140,22 @@ class ObsLoopConfig:
             unit_plan = _load_unit_plan(
                 Path(repo_root), plan_relpath, plan_sha256, buffer_seconds
             )
+            if unit_plan.has_context and batch_slices <= 1:
+                # OBS-E1b. The ownership stitch resolves each boundary from
+                # BOTH of its units' responses, so it needs the whole call's
+                # answers before the first OBS record is written -- which only
+                # the slice-parallel pass has (it gathers every result, then
+                # emits). The sequential loop emits as it goes and would have
+                # to withhold its records or amend them afterwards; neither is
+                # worth a second code path, so a context-bearing plan is
+                # refused here rather than half-supported there.
+                raise ObsLoopError(
+                    f"obs_unit_plan {plan_relpath!r} declares schema "
+                    f"{unit_plan.schema!r}, whose units are delivered with context "
+                    "and whose text ownership is resolved across the whole call; "
+                    "that requires obs_batch_slices > 1 (the slice-parallel pass), "
+                    f"got {batch_slices}"
+                )
         prompt_relpath = values.get("obs_boundary_prompt")
         prompt_text: str | None = None
         prompt_sha256: str | None = None
@@ -1413,14 +1551,28 @@ class ObsAgentLoopPolicy:
         slice_records: list[SliceRecord] = []
         cursor = 0.0
         iteration = 0
-        while cursor < duration - _EPSILON_SECONDS:
-            unit = None
+        while True:
+            # Under a plan the PLAN's length is the loop bound, not the clock.
+            # OBS-E1b made that distinction load-bearing: a context-bearing
+            # unit's cut runs PAST its turn, so the cursor can reach the call's
+            # end while units remain, and a clock condition would silently drop
+            # the last one. For a v1/v2 plan the two conditions coincide (the
+            # cut IS the turn and the turns tile), so this is byte-identical
+            # for every plan written before v3 and for the clock cutter, whose
+            # branch below still advances and stops on the cursor.
             if plan_units is not None:
                 if iteration >= len(plan_units):
                     break
+            elif cursor >= duration - _EPSILON_SECONDS:
+                break
+            unit = None
+            if plan_units is not None:
                 unit = plan_units[iteration]
-                start_frame = int(round(unit.start_seconds * rate))
-                end_frame = min(int(round(unit.end_seconds * rate)), len(pcm))
+                # OBS-E1b: the cut is the unit's DELIVERED span, which on a
+                # v1/v2 plan IS its turn (PlannedUnit.cut_*_seconds) -- so this
+                # line is byte-identical for every plan written before v3.
+                start_frame = int(round(unit.cut_start_seconds * rate))
+                end_frame = min(int(round(unit.cut_end_seconds * rate)), len(pcm))
             else:
                 start_frame = int(round(cursor * rate))
                 end_frame = min(int(round((cursor + cfg.buffer_seconds) * rate)), len(pcm))
@@ -1580,21 +1732,44 @@ class ObsAgentLoopPolicy:
         iteration_response_sha256s: list[str] = []
         saturated_count = 0
         skipped_count = 0
+
+        # Phase 2.5, and ONLY on a context-bearing plan: what each unit
+        # CONTRIBUTES. Every window's answer is already in hand -- that is what
+        # phase 2 gathered -- and the ownership stitch needs both neighbours of
+        # every boundary at once, so it runs here, once per call, before the
+        # first OBS record is written. With no plan, or a v1/v2 plan, this
+        # block is skipped entirely and every line below it behaves as it has
+        # since 2026-08-12.
+        transcripts: list[str] = []
+        hook_field_list: list[dict[str, object]] = []
         for window, result in zip(windows, results):
-            win_iteration, record, is_final, slice_seconds, pre_sha256, unit = window
-            request_id, response, retry_of, saturated, skipped = result
-            if saturated:
-                saturated_count += 1
+            win_iteration, record, _is_final, _slice_seconds, _pre, _unit = window
+            _request_id, response, _retry_of, saturated, skipped = result
             transcript = "" if (skipped or saturated) else response.text.strip()
-            hook_fields: dict[str, object] = {}
+            fields: dict[str, object] = {}
             if window_hook is not None:
-                transcript, hook_fields = window_hook.accept(
+                transcript, fields = window_hook.accept(
                     iteration=win_iteration,
                     record=record,
                     transcript=transcript,
                     saturated=saturated,
                     skipped=skipped,
                 )
+            transcripts.append(transcript)
+            hook_field_list.append(fields)
+        ownership_fields = self._resolve_ownership(windows, transcripts)
+
+        for position, (window, result) in enumerate(zip(windows, results)):
+            win_iteration, record, is_final, slice_seconds, pre_sha256, unit = window
+            request_id, response, retry_of, saturated, skipped = result
+            if saturated:
+                saturated_count += 1
+            transcript = transcripts[position]
+            hook_fields = dict(hook_field_list[position])
+            if ownership_fields is not None:
+                owned = ownership_fields[position]
+                transcript = str(owned["obs_delivered_text"])
+                hook_fields.update(owned)
             ctx.sink.emit(
                 "OBS",
                 f"{request_id}/obs",
@@ -1813,8 +1988,11 @@ class ObsAgentLoopPolicy:
                 if iteration >= len(plan_units):
                     break
                 unit = plan_units[iteration]
-                start_frame = int(round(unit.start_seconds * rate))
-                end_frame = min(int(round(unit.end_seconds * rate)), len(pcm))
+                # OBS-E1b: the cut is the unit's DELIVERED span, which on a
+                # v1/v2 plan IS its turn (PlannedUnit.cut_*_seconds) -- so this
+                # line is byte-identical for every plan written before v3.
+                start_frame = int(round(unit.cut_start_seconds * rate))
+                end_frame = min(int(round(unit.cut_end_seconds * rate)), len(pcm))
             else:
                 start_frame = int(round(cursor * rate))
                 end_frame = min(int(round((cursor + cfg.buffer_seconds) * rate)), len(pcm))
@@ -2109,6 +2287,14 @@ class ObsAgentLoopPolicy:
                 # on every fixed-boundary one.
                 "unit_plan_path": cfg.unit_plan_relpath,
                 "unit_plan_sha256": cfg.unit_plan_sha256,
+                # OBS-E1b: which rule decided what this run stitched. Null on
+                # every clock-cut and every v1/v2 run, where the stitch is the
+                # responses themselves.
+                "text_ownership": (
+                    OWNERSHIP_PROTOCOL
+                    if cfg.unit_plan is not None and cfg.unit_plan.has_context
+                    else None
+                ),
                 "condition_tail_chars": cfg.condition_tail_chars,
                 "trims": trim_events,
                 "slices": [record.trace_view() for record in slice_records],
@@ -2171,6 +2357,41 @@ class ObsAgentLoopPolicy:
             saturated_slices=saturated_count,
             skipped_slices=skipped_count,
         )
+
+    @staticmethod
+    def _resolve_ownership(windows, transcripts):
+        """OBS-E1b: what each context-delivered unit contributes, or ``None``.
+
+        ``None`` -- returned whenever the cut came from the clock or from a
+        v1/v2 plan -- is the historical behaviour byte for byte: the run
+        stitches the responses themselves. Under a v3 plan every boundary is
+        resolved on the overlap both of its units received
+        (``reproduction.obs_ownership``, whose module docstring carries the
+        rule and whose proof is
+        ``docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-obs-e1b-stitch-proof/``),
+        and each unit's OBS record then carries what it actually delivered
+        beside what the core actually said.
+        """
+
+        units = [window[5] for window in windows]
+        if not units or any(unit is None or not unit.has_context for unit in units):
+            return None
+        from .obs_ownership import OwnershipUnit, resolve_ownership  # noqa: PLC0415
+
+        decisions = resolve_ownership(
+            [
+                OwnershipUnit(
+                    unit_id=unit.unit_id,
+                    turn_start_seconds=unit.start_seconds,
+                    turn_end_seconds=unit.end_seconds,
+                    context_start_seconds=unit.cut_start_seconds,
+                    context_end_seconds=unit.cut_end_seconds,
+                    text=transcript,
+                )
+                for unit, transcript in zip(units, transcripts)
+            ]
+        )
+        return [decision.trace_fields() for decision in decisions]
 
     def _window_hook(self, ctx, cfg, data_root, sample):
         """This policy's per-window hook, or ``None``.

@@ -106,6 +106,36 @@ from the final span alone. :func:`plan_units` (v1) is untouched: it still
 calls the same :func:`_base_spans` helper and its own unchanged
 :func:`_merge_short`, so a v1 build reproduces the committed
 ``e21-speaker-turn-units-v1.json`` byte for byte.
+
+OBS-E1b UNIT PLAN v3
+--------------------
+The coordinator's 2026-09-08 decision on the PERSON harm decomposition
+(``docs/readiness/2026-09-08-e21-obs-e1-person-harm-decomposition-v1.md``).
+That read charged 78.7 % of OBS-E1's excess PERSON error to units under ten
+seconds, found the damage on BOTH edges of a unit rather than only the tail
+side, and named the mechanism that matches such a failure: the short unit
+removed the model's conditioning, and a context margin gives it back.
+
+**v3 changes no turn.** It is a DERIVATION of the committed v2 plan: the same
+spans, the same speaker facts, the same cut kinds, the same flags, the same
+absorbed slivers, the same :func:`assert_tiles` proof. What it adds is, per
+unit, the bounds of the audio actually DELIVERED for it -- the turn widened by
+:func:`context_bounds` -- so a unit is sent as ``[left context | the turn |
+right context]`` while the STITCHED TEXT stays the turn's own transcription.
+Deciding which words are the turn's own is not this module's job: the
+neighbouring units transcribe the overlap too, and
+``reproduction.obs_ownership`` resolves each boundary on that duplication,
+with no timestamp and no forced aligner.
+
+The rule has three parts and one cap (:func:`context_bounds`): a nominal
+:data:`CONTEXT_MARGIN_SECONDS` on each side, a floor of
+:data:`MIN_DELIVERED_CUT_SECONDS` so a SHORT turn is given MORE context rather
+than less, and a ceiling of :data:`MAX_DELIVERED_CUT_SECONDS` -- which is
+:data:`MAX_UNIT_SECONDS`, so a long unit receives less context or none and no
+delivered cut ever leaves the slot the receipt already certified. The
+measurement supports the ceiling directly: units of sixty seconds or more were
+BETTER in OBS-E1 than in the comparator, so they are the units that need
+nothing.
 """
 
 from __future__ import annotations
@@ -149,6 +179,30 @@ PLAN_SCHEMA = "saea-e21-speaker-turn-units-v1"
 #: UNIT PLAN v2" section). Built by :func:`plan_units_v2`; v1's own schema and
 #: builder are untouched.
 PLAN_SCHEMA_V2 = "saea-e21-speaker-turn-units-v2"
+
+#: OBS-E1b (module docstring, "OBS-E1b UNIT PLAN v3"). v2's TURNS, unchanged,
+#: each carrying the bounds of the audio that will actually be delivered for it.
+PLAN_SCHEMA_V3 = "saea-e21-speaker-turn-units-v3"
+
+#: The nominal context margin on each side of a turn, in seconds. 5.0 s is the
+#: middle of the three the PERSON harm decomposition priced (+3 / +5 / +10,
+#: section 5 (a)) and the one whose worst request the same section measured at
+#: 1,323 tokens against a 6,144-token slot.
+CONTEXT_MARGIN_SECONDS = 5.0
+
+#: A delivered cut is never shorter than this: a short turn is given MORE
+#: context, never less, because the sub-10-second unit is exactly the stratum
+#: the decomposition charged with 78.7 % of the harm.
+MIN_DELIVERED_CUT_SECONDS = 10.0
+
+#: And never longer than this. It is :data:`MAX_UNIT_SECONDS`, deliberately:
+#: the slot receipt certified the 90-second window and
+#: ``reproduction.obs_loop._load_unit_plan`` already refuses a plan whose span
+#: exceeds ``obs_buffer_seconds``. Capping the DELIVERED cut at the same number
+#: means a long unit receives less context or none -- which is also what the
+#: measurement asks for, since units of 60 s or more carry NEGATIVE excess
+#: error -- and no re-certification of the slot is needed.
+MAX_DELIVERED_CUT_SECONDS = MAX_UNIT_SECONDS
 
 #: Cut kinds, reported per boundary so a verdict can separate a clean cut from one
 #: the audio refused to give.
@@ -433,6 +487,237 @@ class UnitV2(Unit):
         document = super().as_dict()
         document["absorbed_units"] = [dict(item) for item in self.absorbed_units]
         return document
+
+
+@dataclass(frozen=True)
+class UnitV3(UnitV2):
+    """A v3 unit: a v2 unit plus the bounds of the audio DELIVERED for it.
+
+    The TURN is still ``[start_seconds, end_seconds)`` and is what
+    :func:`assert_tiles` proves and what the stitched text is supposed to
+    describe. ``[context_start_seconds, context_end_seconds)`` is what the
+    cutter actually cuts -- the turn widened by :func:`context_bounds` -- and
+    it OVERLAPS the neighbouring units by construction, which is the whole
+    point: the region either side of a boundary is transcribed twice, once by
+    each neighbour, and ``reproduction.obs_ownership`` uses that duplication to
+    decide which unit owns each word without ever asking for a timestamp.
+    """
+
+    context_start_seconds: float = 0.0
+    context_end_seconds: float = 0.0
+
+    @property
+    def context_left_seconds(self) -> float:
+        return self.start_seconds - self.context_start_seconds
+
+    @property
+    def context_right_seconds(self) -> float:
+        return self.context_end_seconds - self.end_seconds
+
+    @property
+    def delivered_cut_seconds(self) -> float:
+        """The audio CUT for this unit -- turn plus context, tail excluded."""
+
+        return self.context_end_seconds - self.context_start_seconds
+
+    @property
+    def delivered_seconds(self) -> float:
+        """What the request carries: the cut plus the silence tail."""
+
+        return self.delivered_cut_seconds + TAIL_SILENCE_SECONDS
+
+    def as_dict(self) -> dict[str, object]:
+        document = super().as_dict()
+        document.update(
+            context_start_seconds=round(self.context_start_seconds, 6),
+            context_end_seconds=round(self.context_end_seconds, 6),
+            context_left_seconds=round(self.context_left_seconds, 6),
+            context_right_seconds=round(self.context_right_seconds, 6),
+            delivered_cut_seconds=round(self.delivered_cut_seconds, 6),
+            delivered_seconds=round(self.delivered_seconds, 6),
+        )
+        return document
+
+
+def context_bounds(
+    start_seconds: float,
+    end_seconds: float,
+    duration_seconds: float,
+    *,
+    margin: float = CONTEXT_MARGIN_SECONDS,
+    min_delivered: float = MIN_DELIVERED_CUT_SECONDS,
+    max_delivered: float = MAX_DELIVERED_CUT_SECONDS,
+) -> tuple[float, float]:
+    """The delivered-cut bounds of one turn, by one deterministic rule.
+
+    1. The target delivered cut is ``turn + 2 * margin``, raised to
+       ``min_delivered`` when the turn is short, and capped at
+       ``min(max_delivered, duration)`` -- the cap is what makes a long unit
+       receive less context or none, and what keeps every delivered cut inside
+       the slot the receipt already certified.
+    2. The extra seconds are split EVENLY between the two sides.
+    3. A side that runs out of call absorbs what it can and hands the rest to
+       the other side, so the target is met whenever the call is long enough
+       to meet it -- which the cap guarantees.
+
+    Returns ``(context_start, context_end)``; equal to ``(start, end)`` exactly
+    when the turn already fills the budget.
+    """
+
+    turn = end_seconds - start_seconds
+    if turn <= 0:
+        raise SpeakerTurnUnitError(
+            f"a turn must be a positive interval, got [{start_seconds}, {end_seconds})"
+        )
+    if duration_seconds < turn - _EPSILON:
+        raise SpeakerTurnUnitError(
+            f"a turn of {turn} s cannot sit in a call of {duration_seconds} s"
+        )
+    if margin < 0 or min_delivered < 0 or max_delivered <= 0:
+        raise SpeakerTurnUnitError(
+            "context margins must be non-negative and the cap positive, got "
+            f"margin={margin}, min_delivered={min_delivered}, max_delivered={max_delivered}"
+        )
+    budget = min(max_delivered, duration_seconds)
+    target = min(max(turn + 2.0 * margin, min_delivered), budget)
+    extra = target - turn
+    if extra <= _EPSILON:
+        return start_seconds, end_seconds
+    left = right = 0.5 * extra
+    room_left = start_seconds
+    room_right = duration_seconds - end_seconds
+    if left > room_left:
+        right += left - room_left
+        left = room_left
+    if right > room_right:
+        left = min(room_left, left + (right - room_right))
+        right = room_right
+    return start_seconds - left, end_seconds + right
+
+
+def add_context(
+    units: Sequence[Unit],
+    duration_seconds: float,
+    *,
+    margin: float = CONTEXT_MARGIN_SECONDS,
+    min_delivered: float = MIN_DELIVERED_CUT_SECONDS,
+    max_delivered: float = MAX_DELIVERED_CUT_SECONDS,
+) -> tuple[UnitV3, ...]:
+    """Plan v3 from plan v2: the SAME turns, each given its context bounds.
+
+    Nothing about a turn moves -- not its span, not its speaker facts, not its
+    cut kinds, not its flags, not its absorbed slivers. This function only
+    widens what will be delivered for it, and re-proves both the inherited
+    tiling and the new context invariants before returning.
+    """
+
+    assert_tiles(units, duration_seconds)
+    widened: list[UnitV3] = []
+    for unit in units:
+        context_start, context_end = context_bounds(
+            unit.start_seconds,
+            unit.end_seconds,
+            duration_seconds,
+            margin=margin,
+            min_delivered=min_delivered,
+            max_delivered=max_delivered,
+        )
+        widened.append(
+            UnitV3(
+                sample_id=unit.sample_id,
+                unit_index=unit.unit_index,
+                start_seconds=unit.start_seconds,
+                end_seconds=unit.end_seconds,
+                speaker=unit.speaker,
+                speaker_share=unit.speaker_share,
+                speaker_count=unit.speaker_count,
+                start_cut=unit.start_cut,
+                end_cut=unit.end_cut,
+                ends_active=unit.ends_active,
+                flags=unit.flags,
+                absorbed_units=(
+                    unit.absorbed_units if isinstance(unit, UnitV2) else ()
+                ),
+                context_start_seconds=context_start,
+                context_end_seconds=context_end,
+            )
+        )
+    assert_context(
+        widened,
+        duration_seconds,
+        min_delivered=min_delivered,
+        max_delivered=max_delivered,
+    )
+    return tuple(widened)
+
+
+def assert_context(
+    units: Sequence[UnitV3],
+    duration_seconds: float,
+    *,
+    min_delivered: float = MIN_DELIVERED_CUT_SECONDS,
+    max_delivered: float = MAX_DELIVERED_CUT_SECONDS,
+) -> None:
+    """The v3 proof obligation, beside :func:`assert_tiles`'s.
+
+    Five properties, each a refusal rather than a repair: the context stays
+    inside the call, it covers its own turn, the delivered cut meets the
+    minimum (or the whole call is shorter than it), it stays under the cap,
+    and -- the one the ownership stitch actually needs -- **each boundary lies
+    inside the audio BOTH of its units received**, so the region around it is
+    transcribed twice and can be aligned.
+
+    Note what is deliberately NOT asserted: that the context bounds are
+    ordered across units. They are not, and need not be. A long turn at the
+    start of a call has no room on its left and spends its whole margin on the
+    right, so its delivered span can swallow the next, much shorter unit's
+    entirely (measured on the real plan: call 4320211's first two units). The
+    stitch resolves each boundary from ITS OWN pair of units, so extra
+    coverage costs delivered seconds and nothing else.
+    """
+
+    if not units:
+        raise SpeakerTurnUnitError("a call must carry at least one unit")
+    floor = min(min_delivered, duration_seconds)
+    for unit in units:
+        if unit.context_start_seconds < -1e-6:
+            raise SpeakerTurnUnitError(
+                f"unit {unit.identifier} starts its context at "
+                f"{unit.context_start_seconds}, before the call"
+            )
+        if unit.context_end_seconds > duration_seconds + 1e-6:
+            raise SpeakerTurnUnitError(
+                f"unit {unit.identifier} ends its context at "
+                f"{unit.context_end_seconds}, past the call's {duration_seconds} s"
+            )
+        if unit.context_start_seconds > unit.start_seconds + 1e-6:
+            raise SpeakerTurnUnitError(
+                f"unit {unit.identifier} does not deliver its own turn's start"
+            )
+        if unit.context_end_seconds < unit.end_seconds - 1e-6:
+            raise SpeakerTurnUnitError(
+                f"unit {unit.identifier} does not deliver its own turn's end"
+            )
+        if unit.delivered_cut_seconds < floor - 1e-6:
+            raise SpeakerTurnUnitError(
+                f"unit {unit.identifier} delivers {unit.delivered_cut_seconds} s, "
+                f"under the {floor} s minimum"
+            )
+        if unit.delivered_cut_seconds > max_delivered + 1e-6:
+            raise SpeakerTurnUnitError(
+                f"unit {unit.identifier} delivers {unit.delivered_cut_seconds} s, "
+                f"over the {max_delivered} s cap"
+            )
+    for previous, following in zip(units, units[1:]):
+        boundary = previous.end_seconds
+        low = max(previous.context_start_seconds, following.context_start_seconds)
+        high = min(previous.context_end_seconds, following.context_end_seconds)
+        if not (low - 1e-6 <= boundary <= high + 1e-6):
+            raise SpeakerTurnUnitError(
+                f"the boundary at {boundary} between {previous.identifier} and "
+                f"{following.identifier} is not inside the audio both received "
+                f"([{low}, {high}])"
+            )
 
 
 def turns(segments: Sequence[SpeakerSegment]) -> tuple[tuple[str, float, float], ...]:
@@ -1029,7 +1314,65 @@ def call_summary(
             _quantile(sorted(float(c) for c in counts), 0.50), 6
         )
         summary["units_with_no_reference_words"] = sum(1 for c in counts if c == 0)
+    if units and all(isinstance(unit, UnitV3) for unit in units):
+        summary.update(_context_summary(units))  # type: ignore[arg-type]
     return summary
+
+
+def _context_summary(units: Sequence[UnitV3]) -> dict[str, object]:
+    """The v3-only block of :func:`call_summary`: what the context costs and
+    where it had to be trimmed. Strictly additive -- a v1 or v2 plan's summary
+    never carries these keys, so its committed bytes are untouched."""
+
+    # NOTE ON TWO NAMES. The base summary's ``delivered_seconds`` keeps its
+    # v1/v2 meaning -- the TURNS plus their tails, which is exactly what
+    # OBS-E1 delivered -- so a v3 receipt can be read against v2's without a
+    # conversion. ``context_delivered_seconds`` is what a v3 flight would
+    # actually send: turns, context and tails.
+    cuts = sorted(unit.delivered_cut_seconds for unit in units)
+    cut_total = sum(cuts)
+    context_total = sum(
+        unit.context_left_seconds + unit.context_right_seconds for unit in units
+    )
+    return {
+        "context_seconds": round(context_total, 6),
+        "delivered_cut_seconds": round(cut_total, 6),
+        "context_delivered_seconds": round(
+            cut_total + TAIL_SILENCE_SECONDS * len(units), 6
+        ),
+        "delivered_cut_min": round(cuts[0], 6),
+        "delivered_cut_median": round(_quantile(cuts, 0.50), 6),
+        "delivered_cut_max": round(cuts[-1], 6),
+        "delivered_cut_mean": round(cut_total / len(units), 6),
+        "units_without_context": sum(
+            1
+            for unit in units
+            if unit.context_left_seconds + unit.context_right_seconds < 1e-6
+        ),
+        "units_context_clamped_left": sum(
+            1
+            for unit in units
+            if unit.context_left_seconds < unit.context_right_seconds - 1e-6
+        ),
+        "units_context_clamped_right": sum(
+            1
+            for unit in units
+            if unit.context_right_seconds < unit.context_left_seconds - 1e-6
+        ),
+        "units_raised_to_minimum": sum(
+            1
+            for unit in units
+            if unit.duration_seconds + 2.0 * CONTEXT_MARGIN_SECONDS
+            < MIN_DELIVERED_CUT_SECONDS - 1e-6
+        ),
+        "units_capped": sum(
+            1
+            for unit in units
+            if unit.delivered_cut_seconds > MAX_DELIVERED_CUT_SECONDS - 1e-6
+            and unit.duration_seconds + 2.0 * CONTEXT_MARGIN_SECONDS
+            > MAX_DELIVERED_CUT_SECONDS + 1e-6
+        ),
+    }
 
 
 def corpus_summary(per_call: Iterable[Mapping[str, object]]) -> dict[str, object]:
@@ -1074,6 +1417,45 @@ def corpus_summary(per_call: Iterable[Mapping[str, object]]) -> dict[str, object
             int(row.get("units_with_no_reference_words", 0)) for row in rows
         ),
         "flags": dict(sorted(flags.items())),
+        **(
+            _context_corpus(rows, total_units)
+            if all("delivered_cut_seconds" in row for row in rows)
+            else {}
+        ),
+    }
+
+
+def _context_corpus(
+    rows: Sequence[Mapping[str, object]], total_units: int
+) -> dict[str, object]:
+    """The v3-only block of :func:`corpus_summary`, pooled the same way: sum
+    the counts, divide once. Absent unless every call carried context."""
+
+    cut = sum(float(row["delivered_cut_seconds"]) for row in rows)
+    context = sum(float(row["context_seconds"]) for row in rows)
+    tailed = cut + TAIL_SILENCE_SECONDS * total_units
+    window_delivered = sum(float(row["window_delivered_seconds"]) for row in rows)
+    return {
+        "context_seconds": round(context, 6),
+        "delivered_cut_seconds": round(cut, 6),
+        "context_delivered_seconds": round(tailed, 6),
+        "delivered_cut_mean": round(cut / total_units, 6) if total_units else 0.0,
+        "delivered_vs_window_share": (
+            round(tailed / window_delivered, 8) if window_delivered else 0.0
+        ),
+        "units_without_context": sum(
+            int(row.get("units_without_context", 0)) for row in rows
+        ),
+        "units_context_clamped_left": sum(
+            int(row.get("units_context_clamped_left", 0)) for row in rows
+        ),
+        "units_context_clamped_right": sum(
+            int(row.get("units_context_clamped_right", 0)) for row in rows
+        ),
+        "units_raised_to_minimum": sum(
+            int(row.get("units_raised_to_minimum", 0)) for row in rows
+        ),
+        "units_capped": sum(int(row.get("units_capped", 0)) for row in rows),
     }
 
 
@@ -1089,6 +1471,10 @@ SUMMARY_SCHEMA = "saea-e21-speaker-turn-units-summary-v1"
 #: PLAN v2"); v1's are untouched above.
 EXPOSURE_ROW_V2 = "SAEA-E21-MF-SPEAKER-TURN-UNITS-V2"
 SUMMARY_SCHEMA_V2 = "saea-e21-speaker-turn-units-summary-v2"
+
+#: v3's own (OBS-E1b, 2026-09-08); v1's and v2's are untouched above.
+EXPOSURE_ROW_V3 = "SAEA-E21-MF-SPEAKER-TURN-UNITS-V3"
+SUMMARY_SCHEMA_V3 = "saea-e21-speaker-turn-units-summary-v3"
 
 REFERENCE_ATTRIBUTION_NOTE = (
     "interpolated from the sealed per-window reference-word COUNTS and window "
@@ -1133,6 +1519,28 @@ def rules_block_v2() -> dict[str, object]:
     return block
 
 
+def rules_block_v3() -> dict[str, object]:
+    """v2's rule settings, plus the context rule that is v3's whole content.
+    Every v2 number is unchanged, because v3 moves no turn."""
+
+    block = rules_block_v2()
+    block.update(
+        context_margin_seconds=CONTEXT_MARGIN_SECONDS,
+        min_delivered_cut_seconds=MIN_DELIVERED_CUT_SECONDS,
+        max_delivered_cut_seconds=MAX_DELIVERED_CUT_SECONDS,
+        context_rule=(
+            "v3-symmetric-margin-clamped-to-call-raised-to-minimum-capped-at-"
+            "the-certified-slot"
+        ),
+        text_ownership=(
+            "saea-obs-context-ownership-v1: the delivered text of a unit is its "
+            "OWN turn's transcription only; each boundary is resolved once, on "
+            "the overlap both neighbours transcribed"
+        ),
+    )
+    return block
+
+
 def plan_document(
     *,
     carrier_lock_key: str,
@@ -1146,6 +1554,7 @@ def plan_document(
     schema: str = PLAN_SCHEMA,
     exposure_row: str = EXPOSURE_ROW,
     rules: Mapping[str, object] | None = None,
+    source_plan: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
     """The hash-pinned unit plan: units, never audio.
 
@@ -1153,6 +1562,10 @@ def plan_document(
     call site reproduces its bytes exactly; a v2 build passes
     :data:`PLAN_SCHEMA_V2`, :data:`EXPOSURE_ROW_V2` and :func:`rules_block_v2`
     explicitly.
+
+    ``source_plan`` (v3 only, omitted otherwise) names the committed plan this
+    one was DERIVED from, by path and sha256, so a reader can prove that v3's
+    turns are v2's turns without re-cutting anything.
     """
 
     return {
@@ -1170,6 +1583,7 @@ def plan_document(
         "zero_contact": ZERO_CONTACT_NOTE,
         "corpus": dict(corpus),
         "calls": [dict(call) for call in calls],
+        **({"source_plan": dict(source_plan)} if source_plan is not None else {}),
     }
 
 
@@ -1202,25 +1616,33 @@ def summary_document(
 
 
 __all__ = [
+    "CONTEXT_MARGIN_SECONDS",
     "CUT_CALL_END",
     "CUT_CALL_START",
     "CUT_FORCED",
     "CUT_PAUSE",
     "CUT_TURN_BOUNDARY",
+    "MAX_DELIVERED_CUT_SECONDS",
     "MAX_UNIT_SECONDS",
+    "MIN_DELIVERED_CUT_SECONDS",
     "MIN_UNIT_SECONDS",
     "PAUSE_MIN_SECONDS",
     "PLAN_SCHEMA",
     "PLAN_SCHEMA_V2",
+    "PLAN_SCHEMA_V3",
     "SNAP_RADIUS_SECONDS",
     "TAIL_SILENCE_SECONDS",
     "Pause",
     "SpeakerTurnUnitError",
     "Unit",
     "UnitV2",
+    "UnitV3",
     "activate",
     "activity_from_sealed_slices",
+    "add_context",
+    "assert_context",
     "assert_tiles",
+    "context_bounds",
     "call_of",
     "call_summary",
     "corpus_summary",
@@ -1233,6 +1655,7 @@ __all__ = [
     "reference_word_partition",
     "rules_block",
     "rules_block_v2",
+    "rules_block_v3",
     "snap_to_pause",
     "summary_document",
     "turn_boundaries",
