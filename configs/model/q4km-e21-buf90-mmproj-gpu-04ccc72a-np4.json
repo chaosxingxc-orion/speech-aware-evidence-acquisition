@@ -1,0 +1,43 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-featcache-04ccc72a.json",
+  "server_args": [
+    "-c",
+    "36864",
+    "-np",
+    "4",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "serving_geometry": {
+    "slots": 4,
+    "slot_tokens": 9216,
+    "max_tokens": 1024
+  },
+  "recovery_basis": "The recovery geometry for SAEA-E21-FULL44-DIRECT-BASELINE-V2, after V1 died 47 min 51 s in with 'CUDA error: an illegal memory access was encountered' at ggml-cuda.cu:104 inside ggml_backend_cuda_synchronize, having completed 925 of 1,593 windows and 22 of 44 calls. The whole V1 run sat at the edge of this card: llama-server started with 23,119 MiB free of 24,462 and the run reported 23,396 MiB used device-wide, about 1 GB of headroom, with eight slots decoding while a ninth-of-a-second mmproj encode allocated its own compute buffer. This fragment removes that edge in the one way that leaves the request bytes untouched: SLOT SIZE IS UNCHANGED at 6,144 tokens (the size the window-fit receipt certified at x2.72 over the 2,258-token worst request, and a multiple of 512 so the server's own rounding cannot move it), and only the slot COUNT drops, 8 to 6. 36,864 = 6 x 6,144, which frees 12,288 tokens of q8_0 KV -- about 640 MiB at this model's 48 layers x 4 KV heads x 128 dims -- and cuts peak concurrent activation by a quarter.",
+  "geometry_basis": "The sibling fragment q4km-e21-buf90-mmproj-gpu-04ccc72a-np6, served four slots wide instead of six, and NOTHING ELSE: -c stays 36,864, so the only change is that 36,864 = 4 x 9,216 rather than 6 x 6,144. It exists because of a measurement, not a preference. The KC-E1f repair pass (docs/readiness/2026-09-07-e21-kc-e1f-brief-repair-pass-v1-preregistration.md section 7.1, receipt docs/checks/speech-aware-evidence-acquisition/2026-09-07-e21-kc-e1f-repair-44-v1/prompt-fit/projection.json, run id SAEA-E21-MF-KC-E1F-FIT-PROJECTION-V1) carries a pass-1 hypothesis inside every pass-2 request, and its projected worst request is 3,483 tokens at the committed cap of 12 (worst window 4360366#w0036, worst text 1,287 tokens, 1,170 speech tokens, the 1,024-token completion ceiling, 2 special tokens and a 120-token frame allowance). Against the 6,144-token slot of the np6 fragment that FITS STRICTLY and FAILS this family's own rule slot_tokens >= 2 x worst_required, at a margin factor of 1.764, and NO brief cap rescues it -- cap 1 still reads 1.923 -- because what the slot cannot afford is the pass-1 hypothesis, not the brief. The frame allowance does not rescue it either: the receipt's sensitivity grid runs 1.827 at frame 0 down to 1.744 at frame 160. A 9,216-token slot gives 2.646 and clears the rule with room. -np 5 is not available at this context (36,864 / 5 = 7,372.8, which is not a multiple of 512, so the server's own rounding would move the slot); -np 3 (12,288, factor 3.528) and -np 2 (18,432, 5.292) clear it too and give up more parallelism, so 4 is the widest legal slot count that satisfies the rule. WHAT THIS DOES NOT CHANGE: not one byte of any request. Slot count is how many requests share the context, not what a request contains, so decoding_params, prompt_order, the audio path (bf16 mmproj resident, no --no-mmproj-offload), the feature-cache decision (no LLAMA_MTMD_FEAT_CACHE_DIR, the legacy 26 GB cache left untouched and unread) and the GGML_CUDA_DISABLE_GRAPHS=1 hardening are all carried over unchanged, and recovery_basis above is kept verbatim as the inherited rationale for the -c 36,864 context and that hardening. The cost is throughput: two fewer concurrent slots. The KV footprint does not grow -- 4 x 9,216 is the same 36,864 tokens of q8_0 KV that 6 x 6,144 was -- so the memory headroom the np6 recovery bought is preserved exactly.",
+  "audio_path_basis": "Unchanged from q4km-e21-buf90-mmproj-gpu-04ccc72a: --no-mmproj-offload is absent, so the bf16 mmproj sha256 f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883 stays resident on the GPU and every 90-second window is encoded there.",
+  "feature_cache_basis": "server_env carries no LLAMA_MTMD_FEAT_CACHE_DIR, exactly as the V1 fragment: the legacy 26 GB /home/chao/feat-cache/q4km cache holds build-5d9dfcb58 encoder outputs for these very slices and is left untouched and unread, so this number stays homogeneous on 04ccc72a. With feat_dir unset the server's feature cache is fully inert and holds no feature RAM.",
+  "graphs_basis": "GGML_CUDA_DISABLE_GRAPHS=1 is set as hardening, not as a diagnosis. The V1 abort surfaced at a cudaStreamSynchronize, which is where an asynchronous illegal access is always reported, so the stack does not discriminate between a memory-pressure fault and a CUDA-graph fault; no log line implicates graphs, and the pinned build honours the variable (ggml/src/ggml-cuda/common.cuh: disable_cuda_graphs_due_to_env). Because the flight rules allow exactly one recovery, both plausible causes are removed in the same step and the recovery deliberately does not separate them -- neither knob changes a single request byte, so neither can move the number. The cost is throughput: this repository measured graphs worth about 34 % of decode rate at batch > 1, and 6 slots instead of 8 costs a further quarter, so the recovery is budgeted at the V1 measured 19.25 windows per minute x 0.66 x 0.75 = 9.5 per minute, which puts 1,593 windows at about 2.8 hours against the 4.0-hour ceiling.",
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample"
+  },
+  "decoding_basis": "Byte-identical to the sealed SAEA-E-005B-N10-zero arm and to the V1 fragment: greedy (temperature 0), max_tokens 1024, id_slot per-sample, seed 20260803 (inert under greedy). Only server args and server env differ, and both are serving identity, not request identity.",
+  "prompt_order": "evidence-first-system-v3",
+  "server_env": {
+    "GGML_CUDA_DISABLE_GRAPHS": "1"
+  }
+}
