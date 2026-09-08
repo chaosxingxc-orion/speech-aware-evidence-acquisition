@@ -22,6 +22,7 @@ from ..data.loader import SampleRef
 from ..data.lock import load_lock, umbrella_lock_path
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
 from .base import (
+    JUDGES,
     MAX_TOKENS_POLICIES,
     POLICIES,
     RESPONSE_POSTPROCESSORS,
@@ -677,3 +678,42 @@ from ..reproduction.repair_loop import (  # noqa: E402
 )
 
 POLICIES.register(OBS_REPAIR_LOOP_POLICY_NAME, ObsRepairLoopPolicy())
+
+# The Reviewer's judges (owner Decision 11-B change #2, 2026-09-08). They
+# register HERE for the same reason every policy and the one response
+# postprocessor above do: this module is a canonical core.base registration
+# site, so a baseline fragment's ``phase_review.<phase>.judges`` ids resolve
+# the way its ``policy`` and ``evidence_source`` ids do and
+# scripts/checks/engineering_base_check.py can read the registered name set
+# from source. The judges themselves live in core/judges.py, each a thin
+# adapter over a FROZEN function that already shipped -- the legal-label
+# parser and inventory, the MF-9 slot schema rule, the Earnings numeric-format
+# classification, the substitution-only alignment's refusal table, the replay
+# decode-confidence flag source and the roster-band near-miss detector. No
+# rule is added or changed by registering them; what is added is that a cell
+# can now DECLARE one and a receipt can quote its version.
+#
+# core.base.JudgeRegistry checks each entry at the door: callable, identified,
+# and declaring criticism_only=True -- a judge scores and flags and never
+# proposes a revision (owner Decision 11-C).
+from .judges import (  # noqa: E402
+    E21_SUBSTITUTION_ALIGNMENT_JUDGE_V1,
+    EARNINGS_NUMERIC_FORMAT_JUDGE_V1,
+    REPLAY_LOGPROB_JUDGE_V1,
+    ROSTER_BAND_JUDGE_V1,
+    SLURP_LEGAL_LABEL_JUDGE_V1,
+    SLURP_SLOT_SCHEMA_JUDGE_V1,
+    EarningsNumericFormatJudge,
+    ReplayLogprobJudge,
+    RosterBandJudge,
+    SlurpLegalLabelJudge,
+    SlurpSlotSchemaJudge,
+    SubstitutionAlignmentJudge,
+)
+
+JUDGES.register(SLURP_LEGAL_LABEL_JUDGE_V1, SlurpLegalLabelJudge())
+JUDGES.register(SLURP_SLOT_SCHEMA_JUDGE_V1, SlurpSlotSchemaJudge())
+JUDGES.register(EARNINGS_NUMERIC_FORMAT_JUDGE_V1, EarningsNumericFormatJudge())
+JUDGES.register(E21_SUBSTITUTION_ALIGNMENT_JUDGE_V1, SubstitutionAlignmentJudge())
+JUDGES.register(REPLAY_LOGPROB_JUDGE_V1, ReplayLogprobJudge())
+JUDGES.register(ROSTER_BAND_JUDGE_V1, RosterBandJudge())
