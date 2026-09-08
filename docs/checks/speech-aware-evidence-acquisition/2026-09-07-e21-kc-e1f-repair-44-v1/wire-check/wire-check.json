@@ -1,19 +1,19 @@
 {
   "cells": {
     "E21-kc-e1f-brief-repair": {
-      "attempt_id": "attempt-20260908T005728Z-ee4b99",
+      "attempt_id": "attempt-20260908T010557Z-d60b41",
       "attempt_state": "FINALIZED",
       "baseline_fragment": "e21-kc-e1f-brief-repair",
       "bundle_attempt_state": "FINALIZED",
       "calls": 4,
       "cell_id": "E21-kc-e1f-brief-repair",
-      "config_hash": "cea23066436d47fe5848a88e5dc9417b3c6aa179f240979c1ef408e692d1cf0d",
+      "config_hash": "0bf4ab76a9aaa077f6cdc675133fa845b8d4a2913eb70b02be898fd4e59b3831",
       "contacts": 61,
       "cost_records": 61,
-      "driver_run_id": "SAEA-E21-KC-E1F-WIRE-CHECK-V1-e21-kc-e1f-brief-repair-c",
+      "driver_run_id": "SAEA-E21-KC-E1F-WIRE-CHECK-V1-e21-kc-e1f-brief-repair-d",
       "evidence_source": "conec-class-lists",
-      "manifest_sha256": "8e6c23fce73471b5a88dccfcefcbfda4a7376f58e7ec658e1a60aa538b624bc1",
-      "outputs_sha256": "56ff4a1be8905f54c4ea7206b78d92431de3b9f57cff513e0b9d519b247e25eb",
+      "manifest_sha256": "250beb8aaeec3ec581543f8c0c6156c917b790f6cfa196df380a26ffc325c840",
+      "outputs_sha256": "59893e95f638ded4a49d189f12f32a1fadf8626b3c712948423c43e53f026e1f",
       "policy": "obs-repair-loop",
       "predecessor_binding": {
         "relpath": "receipts/e21-predecessor-full44-direct-baseline-v2.json",
@@ -51,7 +51,7 @@
         "semantic-high-impact-error-rate-v1"
       ],
       "task_instruction_sha256": "67472995f594bcd5b4500f0c9d7d4c11a7a2cb9a5714ccb9c13be2002e9ccdbe",
-      "trace_sha256": "4ed9b92fe2e6a53c07d54df6ce36e029af4c126f5f60d61c3051603dbd282713",
+      "trace_sha256": "490827e25f1fd9b333ec87faa44ae99c0ee6a1222d7937fc09f1eba5ef486298",
       "windows_per_call": {
         "4384683": 17,
         "4386541": 13,
@@ -64,19 +64,19 @@
       }
     },
     "E21-ku-e1fc-placebo-repair": {
-      "attempt_id": "attempt-20260908T005848Z-74d000",
+      "attempt_id": "attempt-20260908T010703Z-1c4db1",
       "attempt_state": "FINALIZED",
       "baseline_fragment": "e21-ku-e1fc-placebo-repair",
       "bundle_attempt_state": "FINALIZED",
       "calls": 4,
       "cell_id": "E21-ku-e1fc-placebo-repair",
-      "config_hash": "8ccebeef398e51fdb7b4d1bea99b84a939482b2e54d0e5d902b009c3d3646a5a",
+      "config_hash": "f6878aa9600da8dbbfc7b6f0a2a263e96a8e4412f6c514d5fe9bb83988a54c42",
       "contacts": 61,
       "cost_records": 61,
-      "driver_run_id": "SAEA-E21-KC-E1F-WIRE-CHECK-V1-e21-ku-e1fc-placebo-repair-c",
+      "driver_run_id": "SAEA-E21-KC-E1F-WIRE-CHECK-V1-e21-ku-e1fc-placebo-repair-d",
       "evidence_source": "conec-class-lists-placebo-token-matched",
-      "manifest_sha256": "6b67cfeec06d78b17666ff8274b7920779a487c32db54b6ed5725788532bda06",
-      "outputs_sha256": "405b4a074be27dc16f57f1c6227c2bc23220eaf9691f4af9cdf84bbe031f187d",
+      "manifest_sha256": "37d933a4a0158d57ff5314be132f619548fcc291047efffde2b10ee22e265cfd",
+      "outputs_sha256": "d2b1d20b77d388cbcb9158a70ce8d5f5593bee529395df71c2fa1073ccb4792f",
       "policy": "obs-repair-loop",
       "predecessor_binding": {
         "relpath": "receipts/e21-predecessor-full44-direct-baseline-v2.json",
@@ -114,7 +114,7 @@
         "semantic-high-impact-error-rate-v1"
       ],
       "task_instruction_sha256": "67472995f594bcd5b4500f0c9d7d4c11a7a2cb9a5714ccb9c13be2002e9ccdbe",
-      "trace_sha256": "643d14851bab8c5a463b51b06dcb92c133052b23aed9a7351fb6dd891de7242b",
+      "trace_sha256": "d9e3514723a0ab8297ee166ed46ca336449c235bd79e2963b638c2373e1147f2",
       "windows_per_call": {
         "4384683": 17,
         "4386541": 13,
@@ -130,7 +130,7 @@
   "experiment_fragment": "e21-kc-e1f-repair-44-v1",
   "failures": [],
   "flight_run_id": "SAEA-E21-KC-E1F-REPAIR-44-V1",
-  "generated_at": "2026-09-08T01:00:05.351547+00:00",
+  "generated_at": "2026-09-08T01:08:09.883350+00:00",
   "one_factor": {
     "different_config_hash": true,
     "different_evidence_source": true,
@@ -148,7 +148,7 @@
   "run_id": "SAEA-E21-KC-E1F-WIRE-CHECK-V1",
   "schema": "saea-e21-kc-e1f-wire-check-v1",
   "study": "speech-aware-evidence-acquisition",
-  "study_commit": "66c8727d1fd8d1669c6fde8ae8cb707b897bc3cb",
+  "study_commit": "825d2eef203c2ef032c25d07f24ce5e68f9226f1",
   "what_this_does_not_certify": "it certifies that the harness assembles, seals and scores the right request, and that a useless pass-2 answer cannot move the transcript. It does NOT certify the geometry (that is the prompt fit, and the projection says the declared slot fails the margin rule), and it says nothing about what the frozen core does with a real request",
   "why_a_resident_server_is_no_longer_a_refusal": "the owner's 2026-09-07 always-on serving ruling keeps the core resident per geometry and has agents attach rather than spawn, so 'no server on the host' is not a property a model-free check can demand. The two direct proofs above replace it",
   "wire_dataset_fragment": "e21-kc-e1-wire-check-4",
