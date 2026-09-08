@@ -1,0 +1,93 @@
+{
+ "schema": "saea-e21-attempt-slot-occupancy-v1",
+ "label": "SAEA-E21-FULL44-NULL-REPLICATE-V1 (depth 0, attached)",
+ "session_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np6-c36864-20260908",
+ "session_started_at": "2026-09-08T11:05:25.200414+00:00",
+ "session_start_epoch": 1788865525.200414,
+ "contact_window": {
+  "from": 1788867062.0,
+  "to": 1788872655.0,
+  "seconds": 5593.0
+ },
+ "tasks_in_window": 1593,
+ "expected_windows": 1593,
+ "task_count_matches_expected": true,
+ "tasks_launched_in_window_never_released": 0,
+ "first_launch_epoch": 1788867109.1206589,
+ "last_release_epoch": 1788872651.939797,
+ "span_seconds": 5542.819138050079,
+ "windows_per_minute_over_span": 17.243932666658196,
+ "windows_per_minute_over_contact_window": 17.08921866618988,
+ "mean_busy_slots": 4.525864775583849,
+ "mean_slot_utilisation_pct": 75.43107959306415,
+ "zero_busy_share_pct": 17.550449738478722,
+ "zero_busy_seconds": 972.7896869182587,
+ "all_slots_busy_share_pct": 62.38495082001178,
+ "zero_busy_runs": {
+  "count_at_least_1s": 43,
+  "total_seconds_at_least_1s": 972.6276588439941,
+  "longest": [
+   {
+    "seconds": 41.699,
+    "from_offset_seconds": 2985.384
+   },
+   {
+    "seconds": 40.638,
+    "from_offset_seconds": 4475.152
+   },
+   {
+    "seconds": 37.83,
+    "from_offset_seconds": 971.275
+   },
+   {
+    "seconds": 36.775,
+    "from_offset_seconds": 207.528
+   },
+   {
+    "seconds": 36.27,
+    "from_offset_seconds": 3206.415
+   },
+   {
+    "seconds": 33.074,
+    "from_offset_seconds": 3611.84
+   },
+   {
+    "seconds": 32.68,
+    "from_offset_seconds": 4210.863
+   },
+   {
+    "seconds": 30.99,
+    "from_offset_seconds": 5372.553
+   },
+   {
+    "seconds": 29.897,
+    "from_offset_seconds": 1595.006
+   },
+   {
+    "seconds": 28.957,
+    "from_offset_seconds": 1768.561
+   },
+   {
+    "seconds": 28.854,
+    "from_offset_seconds": 2654.061
+   },
+   {
+    "seconds": 28.145,
+    "from_offset_seconds": 1159.043
+   },
+   {
+    "seconds": 27.74,
+    "from_offset_seconds": 3774.403
+   },
+   {
+    "seconds": 27.72,
+    "from_offset_seconds": 3465.365
+   },
+   {
+    "seconds": 27.447,
+    "from_offset_seconds": 1309.438
+   }
+  ]
+ },
+ "basis": "obs_pipeline_dry_run.parse_stamp / _LAUNCH / _RELEASE / occupancy, applied to the resident session's own server.log over this attempt's contact window. Stamps are llama.cpp's own microsecond clock, converted to epoch through session.json started_at; a task counts for this attempt only if BOTH its launch and its release fall inside the window."
+}

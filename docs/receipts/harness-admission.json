@@ -50,6 +50,47 @@
       "row": "SAEA-E21-KC-E1F-VERDICT-V2",
       "status": "ADMITTED",
       "supersedes_nothing": "SAEA-E21-KC-E1F-VERDICT-V1 decided the same sealed bytes REJECTED under margin-less guards and stays on record beside this entry"
+    },
+    {
+      "carrier": "earnings21-original",
+      "comparator": {
+        "attempt_id": "attempt-20260904T233816Z-bcd338",
+        "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2"
+      },
+      "date": "2026-09-08",
+      "evidence": {
+        "advisory": "semantic-high-impact-error-rate-v1 is ADVISORY AND NEVER GATING on this carrier, removed from the gate by section 4 of the preregistration BEFORE any number existed because its own same-request null excludes zero. It moved +0.00222 [+0.00110, +0.00343] against the comparator, 1.5x its margin -- and EXACTLY +0.00000 [-0.00088, +0.00086] against the depth-0 own-null replicate, whose high-impact mass this cell reproduces word for word (108 of 359,765 on both arms, against the comparator's 100). If it were gating the status would be HARMFUL, and verdict/result-summary.json records that as admission.status_if_advisory_were_gating.",
+        "arm": {
+          "attempt_id": "attempt-20260908T191537Z-ba0a08",
+          "run_id": "SAEA-E21-FULL44-DISPATCH-ADMISSION-V1"
+        },
+        "falsifier": "the request did not move: all 1,593 emitted SliceRecords equal the sealed comparator's on sha256, bytes, span, sample rate and parent hash, preprocess empty on both sides, prompt_tokens_total 1,935,965 and metered audio 141,345.8526875 s identical to the digit -- so the only channel open to this module is scheduling",
+        "guards": "conec_non_entity_wer_percent -0.00263 [-0.01994, +0.01574] against margin 0.06475 (inside); conec_org_wer_percent -0.32088 [-0.88314, +0.19584] against margin 0.35609 (inside); conec_overall_wer_percent +0.00778 [-0.02329, +0.03856] against margin 0.05793 (inside); conec_person_wer_percent +0.20569 [-0.07995, +0.51951] against margin 0.25009 (inside); corpus_wer_percent +0.00778 [-0.02329, +0.03856] against margin 0.05793 (inside); numeric_value_accuracy_percent -0.05137 [-0.19511, +0.09794] against margin 0.15651 (inside)",
+        "margins_from": {
+          "attempt_id": "attempt-20260908T113102Z-bdde07",
+          "note": "this carrier's own measured call-clustered CI90 half-widths. The caveat travels with them: that null measured the noise of re-flying at depth 0, where a decode batch can only mix windows of one call",
+          "run_id": "SAEA-E21-FULL44-NULL-REPLICATE-V1"
+        },
+        "primary": "corpus WER (asr-wer-whisper), call-clustered CI90, 44 call clusters, 1,593 paired 90-second windows: +0.00778 [-0.02329, +0.03856] against the sealed comparator and +0.02780 [-0.02052, +0.09427] against the depth-0 own-null replicate",
+        "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-dispatch-admission-v1/",
+        "residual": "the module removed 82 % of this carrier's boundary idle, not all of it: 10 of the 43 call boundaries still drain the pool (177.5 s of 972.6 s), all of them where a short call precedes a long decode phase that one sample of lookahead cannot cover. The signed +18-23 % throughput prediction FAILED at +16.96 % for exactly that reason; depth >= 2 is the named follow-up and holds no receipt",
+        "second_arm": {
+          "attempt_id": "attempt-20260908T113102Z-bdde07",
+          "note": "the depth-0 own-null replicate, flown on the same resident session, is the like-for-like arm; the two pairings AGREE on the status",
+          "run_id": "SAEA-E21-FULL44-NULL-REPLICATE-V1"
+        },
+        "throughput": "vs_comparator_own_server: 17.770 -> 20.168 windows/min (+13.49 %), zero-slot share 15.40 % -> 3.75 %, mean slot use 77.73 % -> 91.93 %; vs_null_replicate_same_session: 17.244 -> 20.168 windows/min (+16.96 %), zero-slot share 17.55 % -> 3.75 %, mean slot use 75.43 % -> 91.93 %",
+        "verdict_note": "docs/readiness/2026-09-08-e21-dispatcher-admission-v1-verdict.md"
+      },
+      "module": "cross-call dispatcher (obs_prefetch_depth 1)",
+      "not_admitted_for": [
+        "any quality claim whatsoever: this module is a scheduler, the request bytes are provably unchanged, and a NEUTRAL result is a licence to USE it, never evidence about knowledge, evidence supply or the agent layer",
+        "any other carrier: SLURP and Audio2Tool have no measured null, so these margins do not travel and the dispatcher's admission there is a separate receipt",
+        "obs_prefetch_depth >= 2, which was not flown",
+        "the Earnings-21 test split, which this row does not touch"
+      ],
+      "row": "SAEA-E21-FULL44-DISPATCH-ADMISSION-V1",
+      "status": "NEUTRAL"
     }
   ]
 }

@@ -1,0 +1,138 @@
+{
+ "run_id": "SAEA-E21-FULL44-DISPATCH-ADMISSION-V1",
+ "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08",
+ "bundles": [
+  {
+   "job_id": "corpus-wer-anchor",
+   "scorer": "asr-wer-whisper",
+   "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-corpus-wer-anchor/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.run-manifest.json",
+   "manifest_sha256": "809818ac41b9fd7d89ee879e8ae354f79e75e5cf798f0ed20add1dd73ca22b51",
+   "artifacts": {
+    "outputs": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.outputs.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-corpus-wer-anchor/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.outputs.jsonl",
+     "sha256": "0d574b54d25f7beb18eed0f6be39e71d80809202a4186da7e7e0b01a6bc599c2"
+    },
+    "raw_trace": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-corpus-wer-anchor/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace.jsonl",
+     "sha256": "dea081d538c77aaecd20d921778be46f3844b95e6d5cc16283f781dbddc4118b"
+    },
+    "trace_manifest": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace-manifest.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-corpus-wer-anchor/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace-manifest.json",
+     "sha256": "44e7490bc5727eaef5100562a114738f405443f3c54ef6a931384e04c44ef895"
+    },
+    "scores": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.scores.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-corpus-wer-anchor/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.scores.json",
+     "sha256": "9bf3dbcb3d22730c1516737fbd7d16f43a55d85998ff18f819ab74157a72ea18"
+    },
+    "session_receipt": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np6-c36864-20260908/session-receipt.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-corpus-wer-anchor/session-receipt.json",
+     "sha256": "de3ff63066262a3d5e6593fa579b0cc43c572048dc212594ed8b12e3aa02e7fc"
+    }
+   }
+  },
+  {
+   "job_id": "conec-entity-wer",
+   "scorer": "conec-entity-wer-official",
+   "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-conec-entity-wer/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.run-manifest.json",
+   "manifest_sha256": "a4eb6f9b106bd1238c7dabb5cbcfd0b060db2f784f795f294337dc2b17344e39",
+   "artifacts": {
+    "outputs": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.outputs.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-conec-entity-wer/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.outputs.jsonl",
+     "sha256": "0d574b54d25f7beb18eed0f6be39e71d80809202a4186da7e7e0b01a6bc599c2"
+    },
+    "raw_trace": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-conec-entity-wer/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace.jsonl",
+     "sha256": "dea081d538c77aaecd20d921778be46f3844b95e6d5cc16283f781dbddc4118b"
+    },
+    "trace_manifest": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace-manifest.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-conec-entity-wer/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace-manifest.json",
+     "sha256": "44e7490bc5727eaef5100562a114738f405443f3c54ef6a931384e04c44ef895"
+    },
+    "scores": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.scores.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-conec-entity-wer/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.scores.json",
+     "sha256": "9bf3dbcb3d22730c1516737fbd7d16f43a55d85998ff18f819ab74157a72ea18"
+    },
+    "session_receipt": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np6-c36864-20260908/session-receipt.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-conec-entity-wer/session-receipt.json",
+     "sha256": "de3ff63066262a3d5e6593fa579b0cc43c572048dc212594ed8b12e3aa02e7fc"
+    }
+   }
+  },
+  {
+   "job_id": "numeric-value-accuracy",
+   "scorer": "numeric-value-accuracy-v1",
+   "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-numeric-value-accuracy/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.run-manifest.json",
+   "manifest_sha256": "c3d0d0796f7973a5c2ec5de037bbf1785c1246deae4d5c5b28c2e53a4eac21e8",
+   "artifacts": {
+    "outputs": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.outputs.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-numeric-value-accuracy/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.outputs.jsonl",
+     "sha256": "0d574b54d25f7beb18eed0f6be39e71d80809202a4186da7e7e0b01a6bc599c2"
+    },
+    "raw_trace": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-numeric-value-accuracy/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace.jsonl",
+     "sha256": "dea081d538c77aaecd20d921778be46f3844b95e6d5cc16283f781dbddc4118b"
+    },
+    "trace_manifest": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace-manifest.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-numeric-value-accuracy/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace-manifest.json",
+     "sha256": "44e7490bc5727eaef5100562a114738f405443f3c54ef6a931384e04c44ef895"
+    },
+    "scores": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.scores.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-numeric-value-accuracy/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.scores.json",
+     "sha256": "9bf3dbcb3d22730c1516737fbd7d16f43a55d85998ff18f819ab74157a72ea18"
+    },
+    "session_receipt": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np6-c36864-20260908/session-receipt.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-numeric-value-accuracy/session-receipt.json",
+     "sha256": "de3ff63066262a3d5e6593fa579b0cc43c572048dc212594ed8b12e3aa02e7fc"
+    }
+   }
+  },
+  {
+   "job_id": "semantic-high-impact",
+   "scorer": "semantic-high-impact-error-rate-v1",
+   "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-semantic-high-impact/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.run-manifest.json",
+   "manifest_sha256": "599bf76826eb5088afc2ab440317383665571ea86b8c0f50abe6da6ed173f233",
+   "artifacts": {
+    "outputs": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.outputs.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-semantic-high-impact/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.outputs.jsonl",
+     "sha256": "0d574b54d25f7beb18eed0f6be39e71d80809202a4186da7e7e0b01a6bc599c2"
+    },
+    "raw_trace": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-semantic-high-impact/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace.jsonl",
+     "sha256": "dea081d538c77aaecd20d921778be46f3844b95e6d5cc16283f781dbddc4118b"
+    },
+    "trace_manifest": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace-manifest.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-semantic-high-impact/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.trace-manifest.json",
+     "sha256": "44e7490bc5727eaef5100562a114738f405443f3c54ef6a931384e04c44ef895"
+    },
+    "scores": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/attempt-20260908T191537Z-ba0a08/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.scores.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-semantic-high-impact/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1.scores.json",
+     "sha256": "9bf3dbcb3d22730c1516737fbd7d16f43a55d85998ff18f819ab74157a72ea18"
+    },
+    "session_receipt": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np6-c36864-20260908/session-receipt.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DISPATCH-ADMISSION-V1/analysis/rescore/rescore-semantic-high-impact/session-receipt.json",
+     "sha256": "de3ff63066262a3d5e6593fa579b0cc43c572048dc212594ed8b12e3aa02e7fc"
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,73 @@
+{
+ "schema": "saea-e21-attempt-slot-occupancy-v1",
+ "label": "SAEA-E21-FULL44-DISPATCH-ADMISSION-V1 (depth 1, attached)",
+ "session_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np6-c36864-20260908",
+ "session_started_at": "2026-09-08T11:05:25.200414+00:00",
+ "session_start_epoch": 1788865525.200414,
+ "contact_window": {
+  "from": 1788894937.0,
+  "to": 1788899735.0,
+  "seconds": 4798.0
+ },
+ "tasks_in_window": 1593,
+ "expected_windows": 1593,
+ "task_count_matches_expected": true,
+ "tasks_launched_in_window_never_released": 0,
+ "first_launch_epoch": 1788894982.928073,
+ "last_release_epoch": 1788899722.200306,
+ "span_seconds": 4739.272233009338,
+ "windows_per_minute_over_span": 20.167653449886064,
+ "windows_per_minute_over_contact_window": 19.92080033347228,
+ "mean_busy_slots": 5.51559408040772,
+ "mean_slot_utilisation_pct": 91.92656800679532,
+ "zero_busy_share_pct": 3.7457002446671597,
+ "zero_busy_seconds": 177.51893162727356,
+ "all_slots_busy_share_pct": 80.41678487529377,
+ "zero_busy_runs": {
+  "count_at_least_1s": 10,
+  "total_seconds_at_least_1s": 177.46223878860474,
+  "longest": [
+   {
+    "seconds": 39.275,
+    "from_offset_seconds": 2699.06
+   },
+   {
+    "seconds": 37.123,
+    "from_offset_seconds": 754.914
+   },
+   {
+    "seconds": 25.304,
+    "from_offset_seconds": 3302.809
+   },
+   {
+    "seconds": 22.485,
+    "from_offset_seconds": 191.925
+   },
+   {
+    "seconds": 18.489,
+    "from_offset_seconds": 492.347
+   },
+   {
+    "seconds": 12.912,
+    "from_offset_seconds": 4165.146
+   },
+   {
+    "seconds": 11.125,
+    "from_offset_seconds": 3045.959
+   },
+   {
+    "seconds": 7.974,
+    "from_offset_seconds": 3880.892
+   },
+   {
+    "seconds": 1.742,
+    "from_offset_seconds": 3567.881
+   },
+   {
+    "seconds": 1.033,
+    "from_offset_seconds": 4509.848
+   }
+  ]
+ },
+ "basis": "obs_pipeline_dry_run.parse_stamp / _LAUNCH / _RELEASE / occupancy, applied to the resident session's own server.log over this attempt's contact window. Stamps are llama.cpp's own microsecond clock, converted to epoch through session.json started_at; a task counts for this attempt only if BOTH its launch and its release fall inside the window."
+}
