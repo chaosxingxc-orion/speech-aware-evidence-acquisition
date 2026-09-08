@@ -155,7 +155,12 @@ def main() -> int:
     parser.add_argument("--dataset", default=WIRE_DATASET)
     parser.add_argument("--run-id", default=RUN_ID)
     parser.add_argument("--driver-run-id-suffix", default="a")
-    parser.add_argument("--tracking-uri", default="file:./mlruns-wire-check")
+    # ``./mlruns`` and not ``./mlruns-wire-check``: the driver refuses to run
+    # against a dirty study repo (a manifest must bind the exact commit that
+    # produced it), and ``.gitignore`` ignores ``mlruns/`` but not a sibling
+    # name -- so a store under any other name makes the FIRST cell's own
+    # tracking directory dirty the tree and abort the SECOND cell.
+    parser.add_argument("--tracking-uri", default="file:./mlruns")
     parser.add_argument("--allow-dirty", action="store_true")
     args = parser.parse_args()
 
