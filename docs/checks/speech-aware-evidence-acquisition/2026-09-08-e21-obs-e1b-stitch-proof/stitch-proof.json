@@ -416,7 +416,7 @@
   "run_id": "SAEA-E21-MF-OBS-E1B-SEAM-V1",
   "schema": "saea-e21-obs-e1b-stitch-proof-v1",
   "study": "speech-aware-evidence-acquisition",
-  "study_commit": "5bb04d34e33d2019c5cd1998118a3d23630a0d1d",
+  "study_commit": "d0bf65f9f57d9093b754b166ab5a59aa9585270f",
   "verdict_rule": "PASS iff (a) the zero-margin identity is exact on all 44 calls -- the seam's own falsifier, and the only property that must hold with no tolerance at all -- and (b) at plan v3's operating margin the corpus keeps at least 99.9 % of the sealed hypothesis's characters with no OwnershipError raised. The per-call byte identity and the per-unit exactness are REPORTED, not gated: a cut displaced by a word moves that word between two neighbours and changes no corpus metric.",
   "zero_contact": "No frozen core, GPU, server, socket, tokenizer, tool, embedder, network or paid API, and no forced aligner: the chosen protocol needs none, which is one of the reasons it was chosen. No audio byte is decoded anywhere in this script -- the inputs are three sealed trace/outputs pairs and one committed plan."
 }
