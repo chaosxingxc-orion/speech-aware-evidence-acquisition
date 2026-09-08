@@ -191,6 +191,34 @@ def test_judge_verdict_names_the_tier_it_flags() -> None:
     )
 
 
+def test_jsonl_field_names_counts_keys_and_never_values(tmp_path: Path) -> None:
+    path = tmp_path / "split.jsonl"
+    path.write_text(
+        '{"slurp_id": 1, "sentence": "secret words"}\n'
+        "\n"
+        '{"slurp_id": 2, "scenario": "iot"}\n',
+        encoding="utf-8",
+    )
+    assert audit.jsonl_field_names(path) == {
+        "__rows__": 2,
+        "scenario": 1,
+        "sentence": 1,
+        "slurp_id": 2,
+    }
+    assert audit.jsonl_field_names(path, limit=1) == {
+        "__rows__": 1,
+        "sentence": 1,
+        "slurp_id": 1,
+    }
+
+
+def test_jsonl_field_names_refuses_a_non_object_row(tmp_path: Path) -> None:
+    path = tmp_path / "bad.jsonl"
+    path.write_text("[1, 2]\n", encoding="utf-8")
+    with pytest.raises(ValueError):
+        audit.jsonl_field_names(path)
+
+
 def test_recall_at_reads_only_the_first_k() -> None:
     candidates = ("a", "b", "c", "d")
     assert audit.recall_at(candidates, "a", 1) is True

@@ -979,6 +979,235 @@ def command_judge(args: argparse.Namespace) -> int:
     return 0
 
 
+# ---------------------------------------------------------------------------
+# Question 4 -- what "state" a home assistant legitimately holds beforehand.
+# ---------------------------------------------------------------------------
+
+#: Entity types that name a THING the assistant would already have on record --
+#: a device, a place, a medium, an app, a person, a list. Chosen by what the
+#: type NAMES, before any count was looked at, and reported as a partition of
+#: the 55 TRAIN types rather than as a selection.
+STATE_BEARING_TYPE_HINTS = (
+    "device_type",
+    "house_place",
+    "player_setting",
+    "media_type",
+    "app_name",
+    "playlist_name",
+    "list_name",
+    "person",
+    "personal_info",
+    "email_address",
+    "podcast_name",
+    "artist_name",
+    "song_name",
+    "radio_name",
+    "audiobook_name",
+    "game_name",
+    "business_name",
+    "business_type",
+    "transport_type",
+    "transport_name",
+    "transport_agency",
+    "news_topic",
+    "food_type",
+    "drink_type",
+    "coffee_type",
+    "music_genre",
+    "joke_type",
+    "movie_name",
+    "movie_type",
+    "sport_type",
+    "currency_name",
+    "place_name",
+    "house_type",
+    "cooking_type",
+    "alarm_type",
+    "weather_descriptor",
+)
+
+
+def jsonl_field_names(path: Path, limit: int | None = None) -> dict[str, int]:
+    """Top-level KEY NAMES and their row counts -- never a value.
+
+    This is how the audit establishes that SLURP has no prior-turn/session/
+    dialogue field without reading one word of any utterance.
+    """
+
+    counts: Counter[str] = Counter()
+    rows = 0
+    with Path(path).open(encoding="utf-8") as handle:
+        for line in handle:
+            stripped = line.strip()
+            if not stripped:
+                continue
+            rows += 1
+            record = json.loads(stripped)
+            if not isinstance(record, Mapping):
+                raise ValueError(f"{path}: a row is not a JSON object")
+            counts.update(record.keys())
+            if limit is not None and rows >= limit:
+                break
+    return {"__rows__": rows} | dict(sorted(counts.items()))
+
+
+def command_state(args: argparse.Namespace) -> int:
+    from speech_aware_evidence_acquisition.data.slurp import (
+        _governed_roots,
+        load_slurp_intent_slot_schema,
+        load_slurp_ontology,
+        load_slurp_train_material,
+    )
+
+    lock, root, lock_path = resolve_lock_and_root()
+    _, _, metadata_dir = _governed_roots(lock, root)
+
+    field_names = {
+        split: jsonl_field_names(metadata_dir / f"{split}.jsonl")
+        for split in ("train", "devel")
+    }
+    speaker_metadata = json.loads(
+        (metadata_dir / "metadata.json").read_text(encoding="utf-8")
+    )
+    speaker_entry_fields: Counter[str] = Counter()
+    recording_fields: Counter[str] = Counter()
+    for entry in speaker_metadata.values():
+        if not isinstance(entry, Mapping):
+            continue
+        speaker_entry_fields.update(entry.keys())
+        recordings = entry.get("recordings")
+        if isinstance(recordings, Mapping):
+            for recording in recordings.values():
+                if isinstance(recording, Mapping):
+                    recording_fields.update(recording.keys())
+
+    ontology = load_slurp_ontology(lock, root)
+    schema = load_slurp_intent_slot_schema(lock, root)
+    train = load_slurp_train_material(lock, root)
+
+    per_scenario: dict[str, dict[str, object]] = {}
+    fillers_by_type: dict[str, set[str]] = defaultdict(set)
+    for utterance in train:
+        bucket = per_scenario.setdefault(
+            utterance.scenario,
+            {"utterances": 0, "types": defaultdict(set)},
+        )
+        bucket["utterances"] = int(bucket["utterances"]) + 1
+        for entity in utterance.entities:
+            bucket["types"][entity.type].add(entity.filler)  # type: ignore[index]
+            fillers_by_type[entity.type].add(entity.filler)
+
+    scenario_inventory = {
+        scenario: {
+            "train_utterances": data["utterances"],
+            "legal_actions": len(ontology.actions_by_scenario.get(scenario, ())),
+            "entity_types": len(data["types"]),  # type: ignore[arg-type]
+            "distinct_fillers": sum(
+                len(values) for values in data["types"].values()  # type: ignore[union-attr]
+            ),
+            "largest_types": [
+                {"entity_type": name, "distinct_fillers": len(values)}
+                for name, values in sorted(
+                    data["types"].items(),  # type: ignore[union-attr]
+                    key=lambda item: (-len(item[1]), item[0]),
+                )[:5]
+            ],
+        }
+        for scenario, data in sorted(per_scenario.items())
+    }
+
+    state_bearing = {
+        name: len(values)
+        for name, values in sorted(fillers_by_type.items())
+        if name in STATE_BEARING_TYPE_HINTS
+    }
+    non_state = {
+        name: len(values)
+        for name, values in sorted(fillers_by_type.items())
+        if name not in STATE_BEARING_TYPE_HINTS
+    }
+
+    result = {
+        "schema": "saea-mf8-state-inventory-v1",
+        "row_id": ROW_ID,
+        "lock_path": str(lock_path),
+        "boundary": (
+            "field NAMES and TRAIN gold entity values only. No devel sentence text is read; the "
+            "devel column is a key-name census, never a value."
+        ),
+        "prior_turn_context": {
+            "record_field_names": field_names,
+            "speaker_metadata_entry_fields": dict(sorted(speaker_entry_fields.items())),
+            "speaker_metadata_recording_fields": dict(sorted(recording_fields.items())),
+            "verdict": (
+                "SLURP carries NO dialogue, session, turn-index, history or prior-turn field on "
+                "either split, and no timestamp beyond the recording id. Every utterance is a "
+                "cold single turn. 'Prior-turn context' as state DOES NOT EXIST on this carrier "
+                "and cannot be manufactured without inventing it."
+            ),
+        },
+        "closed_label_space": {
+            "scenarios": len(ontology.actions_by_scenario),
+            "legal_pairs": len(schema.intents),
+            "entity_types": len(fillers_by_type),
+            "already_rendered_by": [
+                "data.slurp.render_slurp_closed_label_inventory",
+                "data.slurp.render_slurp_label_inventory",
+            ],
+            "already_in_the_comparator_prompt": True,
+        },
+        "device_and_entity_inventory": {
+            "distinct_fillers_total": sum(len(values) for values in fillers_by_type.values()),
+            "state_bearing_types": state_bearing,
+            "state_bearing_type_count": len(state_bearing),
+            "state_bearing_filler_count": sum(state_bearing.values()),
+            "other_types": non_state,
+            "other_type_count": len(non_state),
+            "note": (
+                "the type partition is by what the type NAMES (a device, a place, a medium, a "
+                "person, a named work), fixed before any count was read; it is reported as a "
+                "partition, not a selection."
+            ),
+        },
+        "per_scenario": scenario_inventory,
+        "existing_knowledge_receipts": {
+            "docs/receipts/knowledge/slurp-intent-slot-schema-v1.json": (
+                "per-intent entity types with counts, shares and 5 example fillers -- the state "
+                "fill KC-S1b already flies (slurp-intent-slot-schema-for-state)"
+            ),
+            "docs/receipts/knowledge/slurp-kb-size-full.json": (
+                "the full 11,514-utterance content datastore and its coverage report"
+            ),
+            "docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers.json": (
+                "the slot-fillers KB view KU-S3 consumes"
+            ),
+            "docs/receipts/knowledge/slurp-kb-size-full-label-prior-speaker.json": (
+                "label prior plus the SPEAKER histogram -- the only speaker-aware knowledge "
+                "artifact this study already holds"
+            ),
+            "docs/receipts/knowledge/slurp-kb-size-full-embeddings.json": (
+                "the embedded content facets"
+            ),
+            "docs/receipts/knowledge/slurp-evo-decontamination-v1.json": (
+                "the DEV-1000 6-gram digest gate every candidate filler is validated against"
+            ),
+            "$SPEECHRL_DATA_DIR/vectors/slurp-kus3/": (
+                "sealed Nemotron key and query vectors (receipt "
+                "docs/checks/.../2026-09-07-slurp-kus3-vectors/)"
+            ),
+        },
+    }
+
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "state-inventory.json").write_text(
+        json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="MF-8 speech-to-knowledge audit (model-free)")
     parser.add_argument(
@@ -1000,6 +1229,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     subparsers.add_parser(
         "judge", help="the deterministic legality judge's reach and precision"
     )
+    subparsers.add_parser("state", help="question 4: the state-knowledge inventory")
     args = parser.parse_args(argv)
     if args.command == "speakers":
         return command_speakers(args)
@@ -1009,6 +1239,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return command_feasibility(args)
     if args.command == "judge":
         return command_judge(args)
+    if args.command == "state":
+        return command_state(args)
     parser.error(f"unknown command {args.command!r}")
     return 2
 

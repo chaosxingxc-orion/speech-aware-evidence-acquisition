@@ -1,0 +1,640 @@
+{
+  "boundary": "field NAMES and TRAIN gold entity values only. No devel sentence text is read; the devel column is a key-name census, never a value.",
+  "closed_label_space": {
+    "already_in_the_comparator_prompt": true,
+    "already_rendered_by": [
+      "data.slurp.render_slurp_closed_label_inventory",
+      "data.slurp.render_slurp_label_inventory"
+    ],
+    "entity_types": 55,
+    "legal_pairs": 60,
+    "scenarios": 18
+  },
+  "device_and_entity_inventory": {
+    "distinct_fillers_total": 4157,
+    "note": "the type partition is by what the type NAMES (a device, a place, a medium, a person, a named work), fixed before any count was read; it is reported as a partition, not a selection.",
+    "other_type_count": 20,
+    "other_types": {
+      "audiobook_author": 6,
+      "change_amount": 37,
+      "color_type": 25,
+      "date": 289,
+      "definition_word": 179,
+      "email_folder": 5,
+      "event_name": 351,
+      "game_type": 1,
+      "general_frequency": 32,
+      "ingredient": 16,
+      "meal_type": 5,
+      "music_album": 1,
+      "music_descriptor": 40,
+      "order_type": 18,
+      "podcast_descriptor": 18,
+      "relation": 81,
+      "time": 237,
+      "time_zone": 21,
+      "timeofday": 11,
+      "transport_descriptor": 8
+    },
+    "state_bearing_filler_count": 2776,
+    "state_bearing_type_count": 35,
+    "state_bearing_types": {
+      "alarm_type": 4,
+      "app_name": 14,
+      "artist_name": 130,
+      "audiobook_name": 59,
+      "business_name": 213,
+      "business_type": 63,
+      "coffee_type": 15,
+      "cooking_type": 11,
+      "currency_name": 52,
+      "device_type": 75,
+      "drink_type": 8,
+      "email_address": 23,
+      "food_type": 156,
+      "game_name": 62,
+      "house_place": 38,
+      "joke_type": 16,
+      "list_name": 79,
+      "media_type": 91,
+      "movie_name": 11,
+      "movie_type": 9,
+      "music_genre": 56,
+      "news_topic": 122,
+      "person": 468,
+      "personal_info": 41,
+      "place_name": 482,
+      "player_setting": 47,
+      "playlist_name": 48,
+      "podcast_name": 45,
+      "radio_name": 106,
+      "song_name": 103,
+      "sport_type": 4,
+      "transport_agency": 3,
+      "transport_name": 8,
+      "transport_type": 10,
+      "weather_descriptor": 104
+    }
+  },
+  "existing_knowledge_receipts": {
+    "$SPEECHRL_DATA_DIR/vectors/slurp-kus3/": "sealed Nemotron key and query vectors (receipt docs/checks/.../2026-09-07-slurp-kus3-vectors/)",
+    "docs/receipts/knowledge/slurp-evo-decontamination-v1.json": "the DEV-1000 6-gram digest gate every candidate filler is validated against",
+    "docs/receipts/knowledge/slurp-intent-slot-schema-v1.json": "per-intent entity types with counts, shares and 5 example fillers -- the state fill KC-S1b already flies (slurp-intent-slot-schema-for-state)",
+    "docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers.json": "the slot-fillers KB view KU-S3 consumes",
+    "docs/receipts/knowledge/slurp-kb-size-full-embeddings.json": "the embedded content facets",
+    "docs/receipts/knowledge/slurp-kb-size-full-label-prior-speaker.json": "label prior plus the SPEAKER histogram -- the only speaker-aware knowledge artifact this study already holds",
+    "docs/receipts/knowledge/slurp-kb-size-full.json": "the full 11,514-utterance content datastore and its coverage report"
+  },
+  "lock_path": "/mnt/d/chao_workspace/docs/datasets.lock.json",
+  "per_scenario": {
+    "alarm": {
+      "distinct_fillers": 123,
+      "entity_types": 11,
+      "largest_types": [
+        {
+          "distinct_fillers": 65,
+          "entity_type": "time"
+        },
+        {
+          "distinct_fillers": 24,
+          "entity_type": "date"
+        },
+        {
+          "distinct_fillers": 14,
+          "entity_type": "event_name"
+        },
+        {
+          "distinct_fillers": 7,
+          "entity_type": "timeofday"
+        },
+        {
+          "distinct_fillers": 4,
+          "entity_type": "alarm_type"
+        }
+      ],
+      "legal_actions": 3,
+      "train_utterances": 390
+    },
+    "audio": {
+      "distinct_fillers": 52,
+      "entity_types": 7,
+      "largest_types": [
+        {
+          "distinct_fillers": 25,
+          "entity_type": "change_amount"
+        },
+        {
+          "distinct_fillers": 17,
+          "entity_type": "time"
+        },
+        {
+          "distinct_fillers": 6,
+          "entity_type": "device_type"
+        },
+        {
+          "distinct_fillers": 1,
+          "entity_type": "event_name"
+        },
+        {
+          "distinct_fillers": 1,
+          "entity_type": "media_type"
+        }
+      ],
+      "legal_actions": 4,
+      "train_utterances": 290
+    },
+    "calendar": {
+      "distinct_fillers": 879,
+      "entity_types": 20,
+      "largest_types": [
+        {
+          "distinct_fillers": 291,
+          "entity_type": "event_name"
+        },
+        {
+          "distinct_fillers": 195,
+          "entity_type": "date"
+        },
+        {
+          "distinct_fillers": 119,
+          "entity_type": "person"
+        },
+        {
+          "distinct_fillers": 119,
+          "entity_type": "time"
+        },
+        {
+          "distinct_fillers": 51,
+          "entity_type": "place_name"
+        }
+      ],
+      "legal_actions": 3,
+      "train_utterances": 1688
+    },
+    "cooking": {
+      "distinct_fillers": 134,
+      "entity_types": 9,
+      "largest_types": [
+        {
+          "distinct_fillers": 95,
+          "entity_type": "food_type"
+        },
+        {
+          "distinct_fillers": 16,
+          "entity_type": "ingredient"
+        },
+        {
+          "distinct_fillers": 11,
+          "entity_type": "cooking_type"
+        },
+        {
+          "distinct_fillers": 4,
+          "entity_type": "drink_type"
+        },
+        {
+          "distinct_fillers": 4,
+          "entity_type": "meal_type"
+        }
+      ],
+      "legal_actions": 2,
+      "train_utterances": 211
+    },
+    "datetime": {
+      "distinct_fillers": 201,
+      "entity_types": 7,
+      "largest_types": [
+        {
+          "distinct_fillers": 77,
+          "entity_type": "place_name"
+        },
+        {
+          "distinct_fillers": 68,
+          "entity_type": "date"
+        },
+        {
+          "distinct_fillers": 23,
+          "entity_type": "time"
+        },
+        {
+          "distinct_fillers": 21,
+          "entity_type": "time_zone"
+        },
+        {
+          "distinct_fillers": 10,
+          "entity_type": "event_name"
+        }
+      ],
+      "legal_actions": 2,
+      "train_utterances": 402
+    },
+    "email": {
+      "distinct_fillers": 385,
+      "entity_types": 17,
+      "largest_types": [
+        {
+          "distinct_fillers": 210,
+          "entity_type": "person"
+        },
+        {
+          "distinct_fillers": 41,
+          "entity_type": "relation"
+        },
+        {
+          "distinct_fillers": 36,
+          "entity_type": "personal_info"
+        },
+        {
+          "distinct_fillers": 23,
+          "entity_type": "email_address"
+        },
+        {
+          "distinct_fillers": 20,
+          "entity_type": "date"
+        }
+      ],
+      "legal_actions": 4,
+      "train_utterances": 953
+    },
+    "general": {
+      "distinct_fillers": 102,
+      "entity_types": 17,
+      "largest_types": [
+        {
+          "distinct_fillers": 16,
+          "entity_type": "joke_type"
+        },
+        {
+          "distinct_fillers": 15,
+          "entity_type": "person"
+        },
+        {
+          "distinct_fillers": 14,
+          "entity_type": "date"
+        },
+        {
+          "distinct_fillers": 14,
+          "entity_type": "place_name"
+        },
+        {
+          "distinct_fillers": 8,
+          "entity_type": "event_name"
+        }
+      ],
+      "legal_actions": 3,
+      "train_utterances": 652
+    },
+    "iot": {
+      "distinct_fillers": 173,
+      "entity_types": 13,
+      "largest_types": [
+        {
+          "distinct_fillers": 58,
+          "entity_type": "device_type"
+        },
+        {
+          "distinct_fillers": 38,
+          "entity_type": "house_place"
+        },
+        {
+          "distinct_fillers": 25,
+          "entity_type": "color_type"
+        },
+        {
+          "distinct_fillers": 15,
+          "entity_type": "coffee_type"
+        },
+        {
+          "distinct_fillers": 15,
+          "entity_type": "time"
+        }
+      ],
+      "legal_actions": 9,
+      "train_utterances": 769
+    },
+    "lists": {
+      "distinct_fillers": 117,
+      "entity_types": 16,
+      "largest_types": [
+        {
+          "distinct_fillers": 76,
+          "entity_type": "list_name"
+        },
+        {
+          "distinct_fillers": 11,
+          "entity_type": "date"
+        },
+        {
+          "distinct_fillers": 7,
+          "entity_type": "person"
+        },
+        {
+          "distinct_fillers": 5,
+          "entity_type": "event_name"
+        },
+        {
+          "distinct_fillers": 3,
+          "entity_type": "relation"
+        }
+      ],
+      "legal_actions": 3,
+      "train_utterances": 539
+    },
+    "music": {
+      "distinct_fillers": 66,
+      "entity_types": 13,
+      "largest_types": [
+        {
+          "distinct_fillers": 15,
+          "entity_type": "artist_name"
+        },
+        {
+          "distinct_fillers": 12,
+          "entity_type": "music_genre"
+        },
+        {
+          "distinct_fillers": 12,
+          "entity_type": "player_setting"
+        },
+        {
+          "distinct_fillers": 6,
+          "entity_type": "song_name"
+        },
+        {
+          "distinct_fillers": 5,
+          "entity_type": "media_type"
+        }
+      ],
+      "legal_actions": 4,
+      "train_utterances": 332
+    },
+    "news": {
+      "distinct_fillers": 237,
+      "entity_types": 10,
+      "largest_types": [
+        {
+          "distinct_fillers": 118,
+          "entity_type": "news_topic"
+        },
+        {
+          "distinct_fillers": 61,
+          "entity_type": "media_type"
+        },
+        {
+          "distinct_fillers": 28,
+          "entity_type": "place_name"
+        },
+        {
+          "distinct_fillers": 9,
+          "entity_type": "date"
+        },
+        {
+          "distinct_fillers": 9,
+          "entity_type": "time"
+        }
+      ],
+      "legal_actions": 1,
+      "train_utterances": 503
+    },
+    "play": {
+      "distinct_fillers": 761,
+      "entity_types": 25,
+      "largest_types": [
+        {
+          "distinct_fillers": 119,
+          "entity_type": "artist_name"
+        },
+        {
+          "distinct_fillers": 106,
+          "entity_type": "radio_name"
+        },
+        {
+          "distinct_fillers": 97,
+          "entity_type": "song_name"
+        },
+        {
+          "distinct_fillers": 62,
+          "entity_type": "game_name"
+        },
+        {
+          "distinct_fillers": 59,
+          "entity_type": "audiobook_name"
+        }
+      ],
+      "legal_actions": 5,
+      "train_utterances": 1377
+    },
+    "qa": {
+      "distinct_fillers": 560,
+      "entity_types": 13,
+      "largest_types": [
+        {
+          "distinct_fillers": 179,
+          "entity_type": "definition_word"
+        },
+        {
+          "distinct_fillers": 141,
+          "entity_type": "person"
+        },
+        {
+          "distinct_fillers": 98,
+          "entity_type": "place_name"
+        },
+        {
+          "distinct_fillers": 65,
+          "entity_type": "business_name"
+        },
+        {
+          "distinct_fillers": 51,
+          "entity_type": "currency_name"
+        }
+      ],
+      "legal_actions": 5,
+      "train_utterances": 1183
+    },
+    "recommendation": {
+      "distinct_fillers": 223,
+      "entity_types": 14,
+      "largest_types": [
+        {
+          "distinct_fillers": 77,
+          "entity_type": "place_name"
+        },
+        {
+          "distinct_fillers": 60,
+          "entity_type": "business_type"
+        },
+        {
+          "distinct_fillers": 27,
+          "entity_type": "event_name"
+        },
+        {
+          "distinct_fillers": 15,
+          "entity_type": "food_type"
+        },
+        {
+          "distinct_fillers": 9,
+          "entity_type": "date"
+        }
+      ],
+      "legal_actions": 3,
+      "train_utterances": 433
+    },
+    "social": {
+      "distinct_fillers": 155,
+      "entity_types": 13,
+      "largest_types": [
+        {
+          "distinct_fillers": 91,
+          "entity_type": "business_name"
+        },
+        {
+          "distinct_fillers": 17,
+          "entity_type": "media_type"
+        },
+        {
+          "distinct_fillers": 17,
+          "entity_type": "person"
+        },
+        {
+          "distinct_fillers": 7,
+          "entity_type": "relation"
+        },
+        {
+          "distinct_fillers": 6,
+          "entity_type": "date"
+        }
+      ],
+      "legal_actions": 2,
+      "train_utterances": 391
+    },
+    "takeaway": {
+      "distinct_fillers": 149,
+      "entity_types": 13,
+      "largest_types": [
+        {
+          "distinct_fillers": 57,
+          "entity_type": "food_type"
+        },
+        {
+          "distinct_fillers": 56,
+          "entity_type": "business_name"
+        },
+        {
+          "distinct_fillers": 18,
+          "entity_type": "order_type"
+        },
+        {
+          "distinct_fillers": 4,
+          "entity_type": "time"
+        },
+        {
+          "distinct_fillers": 3,
+          "entity_type": "business_type"
+        }
+      ],
+      "legal_actions": 2,
+      "train_utterances": 257
+    },
+    "transport": {
+      "distinct_fillers": 304,
+      "entity_types": 16,
+      "largest_types": [
+        {
+          "distinct_fillers": 188,
+          "entity_type": "place_name"
+        },
+        {
+          "distinct_fillers": 32,
+          "entity_type": "time"
+        },
+        {
+          "distinct_fillers": 26,
+          "entity_type": "date"
+        },
+        {
+          "distinct_fillers": 10,
+          "entity_type": "transport_type"
+        },
+        {
+          "distinct_fillers": 8,
+          "entity_type": "business_name"
+        }
+      ],
+      "legal_actions": 4,
+      "train_utterances": 571
+    },
+    "weather": {
+      "distinct_fillers": 263,
+      "entity_types": 8,
+      "largest_types": [
+        {
+          "distinct_fillers": 104,
+          "entity_type": "weather_descriptor"
+        },
+        {
+          "distinct_fillers": 82,
+          "entity_type": "place_name"
+        },
+        {
+          "distinct_fillers": 37,
+          "entity_type": "date"
+        },
+        {
+          "distinct_fillers": 26,
+          "entity_type": "time"
+        },
+        {
+          "distinct_fillers": 9,
+          "entity_type": "timeofday"
+        }
+      ],
+      "legal_actions": 1,
+      "train_utterances": 573
+    }
+  },
+  "prior_turn_context": {
+    "record_field_names": {
+      "devel": {
+        "__rows__": 2033,
+        "action": 2033,
+        "entities": 2033,
+        "intent": 2033,
+        "recordings": 2033,
+        "scenario": 2033,
+        "sentence": 2033,
+        "sentence_annotation": 2033,
+        "slurp_id": 2033,
+        "tokens": 2033
+      },
+      "train": {
+        "__rows__": 11514,
+        "action": 11514,
+        "entities": 11514,
+        "intent": 11514,
+        "recordings": 11514,
+        "scenario": 11514,
+        "sentence": 11514,
+        "sentence_annotation": 11514,
+        "slurp_id": 11514,
+        "tokens": 11514
+      }
+    },
+    "speaker_metadata_entry_fields": {
+      "nlub_id": 16521,
+      "recordings": 16521,
+      "sentence_normalised": 16521,
+      "sentence_original": 16521,
+      "status": 16521,
+      "userid_amt": 16521
+    },
+    "speaker_metadata_recording_fields": {
+      "ansid": 72396,
+      "recid": 72396,
+      "status": 72396,
+      "usrid": 72396
+    },
+    "verdict": "SLURP carries NO dialogue, session, turn-index, history or prior-turn field on either split, and no timestamp beyond the recording id. Every utterance is a cold single turn. 'Prior-turn context' as state DOES NOT EXIST on this carrier and cannot be manufactured without inventing it."
+  },
+  "row_id": "SAEA-SLURP-MF8-SPEECH-TO-KNOWLEDGE-AUDIT-V1",
+  "schema": "saea-mf8-state-inventory-v1"
+}

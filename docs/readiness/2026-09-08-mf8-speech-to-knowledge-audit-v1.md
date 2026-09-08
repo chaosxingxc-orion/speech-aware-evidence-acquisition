@@ -409,6 +409,97 @@ confounded prompt volume, it must be reported as a covariate, and a token-matche
 have to pad the text arm rather than trim the audio one.
 
 
-## 4. State knowledge inventory — PENDING
+## 4. State knowledge inventory for SLURP
+
+Source: `state-inventory.json`, from `scripts/mf8_speech_to_knowledge_audit.py state`. The devel
+column is a **key-name census** — `jsonl_field_names` counts top-level keys and never reads a
+value — and the TRAIN column is gold entity values, which are construction knowledge.
+
+### 4.1 Prior-turn context — IT DOES NOT EXIST, and this is the finding
+
+Every record on both splits carries exactly nine fields: `slurp_id`, `scenario`, `action`,
+`intent`, `entities`, `tokens`, `sentence`, `sentence_annotation`, `recordings` — 11,514 TRAIN rows
+and 2,033 devel rows, no exceptions. The release's `metadata.json` carries `nlub_id`,
+`userid_amt`, `status`, `sentence_original`, `sentence_normalised` and `recordings` per prompt
+(16,521 prompts), and `usrid`, `recid`, `ansid`, `status` per recording (72,396 recordings).
+
+**There is no dialogue id, no session id, no turn index, no history array and no timestamp
+anywhere.** SLURP is a cold single-turn corpus. The owner's third dimension — "state knowledge
+that raises business performance" — therefore has **no conversational half on this carrier**, and
+any arm that claims one would be inventing it. That is a scoping fact worth stating loudly, because
+it is the cheapest way to keep a future cell honest: on SLURP, "state" can only mean *standing*
+state, never *episodic* state.
+
+### 4.2 What standing state a home assistant legitimately holds
+
+Three things exist, and all three are already TRAIN-derived and hash-pinned:
+
+**(i) The closed label space.** 18 scenarios, **60 legal `(scenario, action)` pairs**, 55 entity
+types. Already rendered by `data.slurp.render_slurp_closed_label_inventory` and **already inside
+the comparator's own 2,146-token instruction** — so this half of "state" is not headroom; it is the
+baseline.
+
+**(ii) The device / entity inventory.** 4,157 distinct TRAIN filler values over 55 types. Split by
+what the type NAMES (a partition fixed before any count was read, not a selection):
+
+* **standing-state types — 35 types, 2,776 distinct fillers**: `place_name` 482, `person` 468,
+  `business_name` 213, `food_type` 156, `artist_name` 130, `news_topic` 122, `radio_name` 106,
+  `weather_descriptor` 104, `song_name` 103, `media_type` 91, `list_name` 79, **`device_type` 75**,
+  `business_type` 63, `game_name` 62, `audiobook_name` 59, `music_genre` 56, `currency_name` 52,
+  `playlist_name` 48, `player_setting` 47, `podcast_name` 45, `personal_info` 41, **`house_place`
+  38**, `email_address` 23, `joke_type` 16, `coffee_type` 15, `app_name` 14, `cooking_type` 11,
+  `movie_name` 11, `transport_type` 10, `movie_type` 9, `drink_type` 8, `transport_name` 8,
+  `alarm_type` 4, `sport_type` 4, `transport_agency` 3.
+* **utterance-local types — 20 types, 1,381 fillers**: `event_name` 351, `date` 289, `time` 237,
+  `definition_word` 179, `relation` 81, `music_descriptor` 40, `change_amount` 37,
+  `general_frequency` 32, `color_type` 25, `time_zone` 21, and ten smaller ones. These are what the
+  *utterance* says, not what the assistant *has*, and putting them in a state block would be
+  supplying the answer's own material.
+
+**The literal home-assistant device inventory is small and real: 75 device types across 38 house
+places, inside a 769-utterance `iot` scenario with 9 legal actions.** That is the one place where
+"state" in the owner's business sense has a concrete referent on this carrier.
+
+**(iii) Per-scenario mass**, which is what a state block would actually be sized against:
+
+| scenario | TRAIN utterances | legal actions | entity types | distinct fillers | largest type |
+|---|---|---|---|---|---|
+| `calendar` | 1,688 | 3 | 20 | 879 | `event_name` (291) |
+| `play` | 1,377 | 5 | 25 | 761 | `artist_name` (119) |
+| `qa` | 1,183 | 5 | 13 | 560 | `definition_word` (179) |
+| `email` | 953 | 4 | 17 | 385 | `person` (210) |
+| `iot` | 769 | **9** | 13 | 173 | `device_type` (58) |
+| `general` | 652 | 3 | 17 | 102 | `joke_type` (16) |
+| `weather` | 573 | 1 | 8 | 263 | `weather_descriptor` (104) |
+| `transport` | 571 | 4 | 16 | 304 | `place_name` (188) |
+| `lists` | 539 | 3 | 16 | 117 | `list_name` (76) |
+| `news` | 503 | 1 | 10 | 237 | `news_topic` (118) |
+| `recommendation` | 433 | 3 | 14 | 223 | `place_name` (77) |
+| `datetime` | 402 | 2 | 7 | 201 | `place_name` (77) |
+| `social` | 391 | 2 | 13 | 155 | `business_name` (91) |
+| `alarm` | 390 | 3 | 11 | 123 | `time` (65) |
+| `music` | 332 | 4 | 13 | 66 | `artist_name` (15) |
+| `audio` | 290 | 4 | 7 | 52 | `change_amount` (25) |
+| `takeaway` | 257 | 2 | 13 | 149 | `food_type` (57) |
+| `cooking` | 211 | 2 | 9 | 134 | `food_type` (95) |
+
+### 4.3 What already exists as a knowledge receipt here
+
+| receipt | what it already holds |
+|---|---|
+| `docs/receipts/knowledge/slurp-intent-slot-schema-v1.json` | per-intent entity types with counts, shares and 5 example fillers — **already flown as the state fill** `slurp-intent-slot-schema-for-state` by KC-S1b |
+| `docs/receipts/knowledge/slurp-kb-size-full.json` | the full 11,514-utterance content datastore and its coverage report |
+| `docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers.json` | the slot-fillers KB view KU-S3 consumes |
+| `docs/receipts/knowledge/slurp-kb-size-full-label-prior-speaker.json` | the label prior **plus the speaker histogram** — 151 speakers, top speaker 5.21 % — the only speaker-aware knowledge artifact this study already holds |
+| `docs/receipts/knowledge/slurp-kb-size-full-embeddings.json` | the embedded content facets |
+| `docs/receipts/knowledge/slurp-evo-decontamination-v1.json` | the DEV-1000 6-gram digest gate every candidate filler is validated against |
+| `$SPEECHRL_DATA_DIR/vectors/slurp-kus3/` (receipt `docs/checks/.../2026-09-07-slurp-kus3-vectors/`) | the sealed Nemotron key and query vectors, 11,514 × 2048 keys and three 1,000-row query sets |
+
+**So dimension 3 is the dimension with the LEAST unbuilt work and the least headroom.** The closed
+list is already in the prompt, the per-intent slot schema is already flown as state, and the only
+genuinely unused standing state is the device/place inventory — 75 device types and 38 house places
+inside one 769-utterance scenario carrying 3.35 % of the error mass. **Pricing it honestly: even a
+perfect `iot` state block cannot move the pooled intent number by more than about 0.9 pp.**
+
 
 ## 5. The priced cell family — PENDING
