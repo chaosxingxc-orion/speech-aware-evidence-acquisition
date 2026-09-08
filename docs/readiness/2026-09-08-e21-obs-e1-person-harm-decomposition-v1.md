@@ -335,7 +335,8 @@ at the end it has no following speech.
 it is exactly at base rate.** So the cell does drop trailing and leading names more often than chance
 — that part of the tail story survives — but it accounts for **17 of 98** deletions, and deletions are
 only **15 of the 61** excess errors. Attributing the end-of-unit excess proportionally, the
-"closes early" mechanism can carry at most about **5 of the 61** excess errors, under 8 % of the harm.
+"closes early" mechanism can carry at most about **5 of the 61** excess errors, roughly 8 % of the
+harm.
 
 ### 4.3 The answer
 
