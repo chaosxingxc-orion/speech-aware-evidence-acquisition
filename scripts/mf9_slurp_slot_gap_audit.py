@@ -117,6 +117,14 @@ PAIRED_METRICS = (
 #: 0.1 to 0.4.
 PROJECTION_THRESHOLDS = (0.0, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40)
 
+#: Two rule families. ``rule`` is the committed projection alone. ``normalized``
+#: adds a NORMALIZATION FLOOR under it: a filler the projection does not move is
+#: still emitted in the corpus's own surface convention. The floor is free and
+#: needs no inventory, and it exists because the official script lower-cases the
+#: gold side and deliberately does not lower-case the prediction side, so a
+#: correctly heard span written in title case pays a word distance of 1.0.
+PROJECTION_FAMILIES = ("rule", "normalized")
+
 
 # ---------------------------------------------------------------------------
 # Shared I/O
@@ -934,12 +942,17 @@ def command_decompose(args: argparse.Namespace) -> int:
 def command_projection(args: argparse.Namespace) -> int:
     from speech_aware_evidence_acquisition.data.slurp import load_slurp_split
     from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (
+        SlotEntity,
         parse_slu_response,
     )
     from speech_aware_evidence_acquisition.reproduction.slurp_value_projection import (
         SLURP_VALUE_PROJECTION_ID,
+        VALUE_BRANCH_NO_INVENTORY,
+        VALUE_BRANCH_TOO_FAR,
+        ValueProjection,
         branch_counts,
         load_value_projection_inventory,
+        normalize_filler,
         project_slu_entities,
     )
 
@@ -964,8 +977,11 @@ def command_projection(args: argparse.Namespace) -> int:
         branch_tables: dict[str, dict[str, int]] = {}
         changed_examples: dict[str, list[dict[str, object]]] = {}
         changed_counts: dict[str, dict[str, int]] = {}
-        for threshold in (None, *PROJECTION_THRESHOLDS):
-            name = "baseline" if threshold is None else f"tau-{threshold:.2f}"
+        plans: list[tuple[str, str | None, float | None]] = [("baseline", None, None)]
+        for family in PROJECTION_FAMILIES:
+            for threshold in PROJECTION_THRESHOLDS:
+                plans.append((f"{family}-tau-{threshold:.2f}", family, threshold))
+        for name, family, threshold in plans:
             rows = []
             outcomes_all = []
             changed_rows = 0
@@ -976,12 +992,41 @@ def command_projection(args: argparse.Namespace) -> int:
                 if not parsed:
                     rows.append({"sample_id": sample_id, "text": texts[sample_id]})
                     continue
-                if threshold is None:
+                if family is None or threshold is None:
                     projected = entities
                 else:
                     projected, outcomes = project_slu_entities(
                         entities, inventory, threshold=threshold, nearest_cache=cache
                     )
+                    if family == "normalized":
+                        # The normalization FLOOR: a filler the projection left
+                        # alone is still emitted in the corpus's own surface
+                        # convention (case-folded, whitespace collapsed). The
+                        # official script lower-cases the gold side and not the
+                        # prediction side, so this half of the repair costs
+                        # nothing and needs no inventory at all.
+                        projected = tuple(
+                            SlotEntity(type=entity.type, filler=normalize_filler(entity.filler))
+                            if outcome.branch
+                            in (VALUE_BRANCH_TOO_FAR, VALUE_BRANCH_NO_INVENTORY)
+                            else entity
+                            for entity, outcome in zip(projected, outcomes)
+                        )
+                        outcomes = tuple(
+                            outcome
+                            if outcome.branch
+                            not in (VALUE_BRANCH_TOO_FAR, VALUE_BRANCH_NO_INVENTORY)
+                            else ValueProjection(
+                                entity_type=outcome.entity_type,
+                                source_filler=outcome.source_filler,
+                                projected_filler=normalize_filler(outcome.source_filler),
+                                branch=outcome.branch,
+                                distance=outcome.distance,
+                                changed=normalize_filler(outcome.source_filler)
+                                != outcome.source_filler,
+                            )
+                            for outcome in outcomes
+                        )
                     outcomes_all.extend(outcomes)
                     row_changed = [o for o in outcomes if o.changed]
                     if row_changed:
@@ -1006,7 +1051,7 @@ def command_projection(args: argparse.Namespace) -> int:
                     }
                 )
             arms[name] = write_outputs(rows, workdir / f"{name}.outputs.jsonl")
-            if threshold is not None:
+            if family is not None:
                 branch_tables[name] = branch_counts(outcomes_all)
                 changed_examples[name] = examples
                 changed_counts[name] = {
@@ -1032,32 +1077,35 @@ def command_projection(args: argparse.Namespace) -> int:
 
     baseline_samples = by_sample(scored["baseline"])
     table: list[dict[str, object]] = []
-    for threshold in PROJECTION_THRESHOLDS:
-        name = f"tau-{threshold:.2f}"
-        official = official_block(scored[name])
-        entry: dict[str, object] = {
-            "threshold": threshold,
-            "official": official,
-            "delta_vs_baseline": {
-                metric: round(
-                    float(official[metric]) - float(baseline_official[metric]), 2
+    for family in PROJECTION_FAMILIES:
+        for threshold in PROJECTION_THRESHOLDS:
+            name = f"{family}-tau-{threshold:.2f}"
+            official = official_block(scored[name])
+            entry: dict[str, object] = {
+                "family": family,
+                "threshold": threshold,
+                "official": official,
+                "delta_vs_baseline": {
+                    metric: round(
+                        float(official[metric]) - float(baseline_official[metric]), 2
+                    )
+                    for metric in ("entities_strict", "word_f1", "char_f1", "slu_f1")
+                },
+                "branch_counts": branch_tables[name],
+                "changed": changed_counts[name],
+                "paired": {},
+            }
+            right = by_sample(scored[name])
+            for population, ids in pops.items():
+                entry["paired"][population] = contrast_block(
+                    baseline_samples, right, ids, stratum_of
                 )
-                for metric in ("entities_strict", "word_f1", "char_f1", "slu_f1")
-            },
-            "branch_counts": branch_tables[name],
-            "changed": changed_counts[name],
-            "paired": {},
-        }
-        right = by_sample(scored[name])
-        for population, ids in pops.items():
-            entry["paired"][population] = contrast_block(
-                baseline_samples, right, ids, stratum_of
-            )
-        table.append(entry)
+            table.append(entry)
 
     best = max(table, key=lambda entry: entry["official"]["slu_f1"])
     best_pooled = best["paired"]["pooled_1000"]["slu_f1_f1"]
     best_new500 = best["paired"]["new500"]["slu_f1_f1"]
+    best_name = f"{best['family']}-tau-{best['threshold']:.2f}"
     relock_candidate = bool(
         float(best["delta_vs_baseline"]["slu_f1"]) >= 1.0
         and float(best_pooled["ci90_pp"][0]) > 0.0
@@ -1105,22 +1153,33 @@ def command_projection(args: argparse.Namespace) -> int:
         },
         "sweep": table,
         "best_threshold": best["threshold"],
+        "best_family": best["family"],
+        "families": {
+            "rule": "the committed rule alone: a filler the projection does not move keeps "
+            "its own bytes",
+            "normalized": "the same rule over a NORMALIZATION FLOOR -- a filler the "
+            "projection does not move is still emitted case-folded with whitespace "
+            "collapsed, which is the corpus's own surface convention and needs no "
+            "inventory at all",
+        },
         "relock_candidate": relock_candidate,
         "relock_rule_if_taken": (
             "the comparator's slot arm becomes the sealed KC-S1b rows PLUS "
-            f"{SLURP_VALUE_PROJECTION_ID} at threshold {best['threshold']:.2f}, scored "
+            f"{SLURP_VALUE_PROJECTION_ID} at threshold {best['threshold']:.2f} in family "
+            f"{best['family']!r}, scored "
             "through a registered scorer id that applies it between the parse and the "
             "official prediction file -- the exact shape "
             "slurp-slu-official-projected-v2 already has for labels. OWNER GO REQUIRED; "
             "this read does not re-lock anything"
         ),
-        "examples": changed_examples.get(f"tau-{best['threshold']:.2f}", [])[:80],
+        "examples": changed_examples.get(best_name, [])[:80],
     }
     write_json(out_dir / "value-projection.json", document)
     summary = dict(document)
     summary.pop("examples")
     summary["sweep"] = [
         {
+            "family": entry["family"],
             "threshold": entry["threshold"],
             "slu_f1": entry["official"]["slu_f1"],
             "delta": entry["delta_vs_baseline"],
@@ -1137,6 +1196,830 @@ def command_projection(args: argparse.Namespace) -> int:
     return 0
 
 
+# ---------------------------------------------------------------------------
+# Question 3 -- schema conformance and constrained decoding
+# ---------------------------------------------------------------------------
+
+
+#: The transport and pinned-server seam, read from source. Every entry is
+#: ``(path, line span, what it establishes)``; the paths under ``tools/`` and
+#: ``common/`` are the PINNED llama.cpp build the runtime receipt names,
+#: ``/home/chao/llama.cpp-featcache`` at commit
+#: ``04ccc72a2207347ca76161b93fd9d846dd0a8675``.
+CONSTRAINED_DECODING_CITATIONS = (
+    (
+        "src/speech_aware_evidence_acquisition/core/model/request_types.py",
+        "33",
+        "response_format is one of the exact decoding_params keys the frozen core "
+        "accepts, described in its own comment as llama-server's OpenAI-compatible "
+        "schema-constrained decoding",
+    ),
+    (
+        "src/speech_aware_evidence_acquisition/core/model/adapter.py",
+        "172-197",
+        "the adapter validates the wrapper before the transport sees it: json_object "
+        "with a mapping schema, or json_schema with a mapping json_schema.schema; any "
+        "other type is refused",
+    ),
+    (
+        "src/speech_aware_evidence_acquisition/core/model/transport.py",
+        "878-884",
+        "every decoding_params key is copied verbatim onto the chat-completions body, "
+        "refusing only a key that would collide with the constructed body",
+    ),
+    (
+        "src/speech_aware_evidence_acquisition/rails/controllers.py",
+        "531-532",
+        "decoding_params['response_format'] = dict(material.response_format) -- the "
+        "phase's resolved format becomes the request's decoding parameter",
+    ),
+    (
+        "src/speech_aware_evidence_acquisition/rails/phase_material.py",
+        "613-637",
+        "resolve_response_formats renders one document per PHASE through "
+        "core.base.RESPONSE_FORMATS, from (lock, root, **fill_params) -- there is no "
+        "sample argument, so a PER-SAMPLE schema is not reachable through this seam",
+    ),
+    (
+        "src/speech_aware_evidence_acquisition/core/base.py",
+        "88-97",
+        "RESPONSE_FORMATS is the one registry a config's response_format_id resolves "
+        "in, the same one-Registry discipline every other component id uses",
+    ),
+    (
+        "src/speech_aware_evidence_acquisition/rails/a2t_response_schema.py",
+        "449-524, 636-717",
+        "the precedent: audio2tool_selection_response_format and "
+        "audio2tool_outer_call_array_response_format build real exact-name enum schemas "
+        "over the pinned 152-tool registry",
+    ),
+    (
+        "tools/server/server-common.cpp (pinned llama.cpp 04ccc72a)",
+        "1280-1300",
+        "the server reads json_schema and grammar off the request body, refuses both at "
+        "once, and maps an OpenAI response_format of type json_object or json_schema "
+        "onto that same json_schema",
+    ),
+    (
+        "tools/server/server-schema.cpp (pinned llama.cpp 04ccc72a)",
+        "246-277",
+        "the json_schema request field carries grammar as an ALIAS; a schema is "
+        "converted with json_schema_to_grammar(schema) at :256 and installed as "
+        "COMMON_GRAMMAR_TYPE_OUTPUT_FORMAT, and a raw GBNF grammar string is installed "
+        "as COMMON_GRAMMAR_TYPE_USER",
+    ),
+    (
+        "common/json-schema-to-grammar.cpp (pinned llama.cpp 04ccc72a)",
+        "1158",
+        "json_schema_to_grammar itself -- the conversion is in the build, not a "
+        "server-side approximation",
+    ),
+)
+
+
+def command_schema(args: argparse.Namespace) -> int:
+    import inspect
+
+    from speech_aware_evidence_acquisition.core.base import RESPONSE_FORMATS
+    from speech_aware_evidence_acquisition.core.model.request_types import (
+        ALLOWED_DECODING_KEYS,
+    )
+    from speech_aware_evidence_acquisition.data.slurp import (
+        load_slurp_intent_slot_schema,
+        load_slurp_ontology,
+        load_slurp_split,
+    )
+    from speech_aware_evidence_acquisition.rails.phase_material import (
+        resolve_response_formats,
+    )
+    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (
+        parse_slu_response,
+    )
+
+    lock, root, lock_path = resolve_lock_and_root()
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    roster = roster_sample_ids(REPO_ROOT / DEV1000_CONFIG)
+    gold = {record.sample_id: record for record in load_slurp_split(lock, root, "devel")}
+    texts = read_sealed_outputs(sealed_outputs_path(root, KC_S1B_RUN, KC_S1B_ATTEMPT))
+    ontology = load_slurp_ontology(lock, root)
+    schema = load_slurp_intent_slot_schema(lock, root)
+    vocabulary = set(ontology.entity_types)
+    full_block_types = {
+        entity_type
+        for profile in schema.intents.values()
+        for entity_type in profile.entity_types
+    }
+
+    fit_document = read_json(REPO_ROOT / KC_S1B_PROMPT_FIT)
+    fit_rows = {
+        row["sample_id"]: row for row in fit_document["rows"] if row["cell_id"] == "kc-s1b"
+    }
+    blocks = fit_document["schema_blocks"]
+    if (
+        blocks["full_schema_fallback_rows"]
+        != KC_S1B_SCHEMA_ANCHORS["full_schema_fallback_rows"]
+        or blocks["distinct_intents_used"] != KC_S1B_SCHEMA_ANCHORS["distinct_intents_used"]
+    ):
+        raise SystemExit("the prompt-fit receipt no longer reproduces its own block accounting")
+    fallback_ids = set(blocks["full_schema_fallback_sample_ids"])
+    if len(fallback_ids) != KC_S1B_SCHEMA_ANCHORS["full_schema_fallback_rows"]:
+        raise SystemExit("the fallback id list disagrees with its own count")
+
+    rows: dict[str, dict] = {}
+    counts = {
+        "unparsed": 0,
+        "fenced_or_prefixed_text": 0,
+        "illegal_type_for_block": 0,
+        "unknown_type": 0,
+        "duplicate_type": 0,
+        "fully_conforming": 0,
+    }
+    mention_counts = {"total": 0, "illegal_for_block": 0, "unknown": 0}
+    illegal_by_type: Counter[str] = Counter()
+    gold_duplicate_rows = 0
+    for sample_id in roster:
+        text = texts[sample_id]
+        scenario, action, entities, parsed = parse_slu_response(text)
+        fit = fit_rows[sample_id]
+        fallback = bool(fit["schema_full_fallback"])
+        if fallback != (sample_id in fallback_ids):
+            raise SystemExit(f"{sample_id}: prompt-fit row and fallback id list disagree")
+        block_types = (
+            full_block_types
+            if fallback
+            else set(schema.intents[fit["schema_block_intent"]].entity_types)
+        )
+        types = [entity.type for entity in entities]
+        illegal = [t for t in types if t not in block_types]
+        unknown = [t for t in types if t not in vocabulary]
+        duplicated = sorted({t for t, n in Counter(types).items() if n > 1})
+        gold_types = [entity.type for entity in gold[sample_id].entities]
+        if len(set(gold_types)) != len(gold_types):
+            gold_duplicate_rows += 1
+        mention_counts["total"] += len(types)
+        mention_counts["illegal_for_block"] += len(illegal)
+        mention_counts["unknown"] += len(unknown)
+        for entity_type in illegal:
+            illegal_by_type[entity_type] += 1
+        if not parsed:
+            counts["unparsed"] += 1
+        if text.strip() != text.strip().strip("`") or "```" in text:
+            counts["fenced_or_prefixed_text"] += 1
+        if illegal:
+            counts["illegal_type_for_block"] += 1
+        if unknown:
+            counts["unknown_type"] += 1
+        if duplicated:
+            counts["duplicate_type"] += 1
+        if parsed and not illegal and not duplicated:
+            counts["fully_conforming"] += 1
+        rows[sample_id] = {
+            "parsed": parsed,
+            "fallback": fallback,
+            "block_intent": fit["schema_block_intent"],
+            "types": types,
+            "illegal": sorted(set(illegal)),
+            "unknown": sorted(set(unknown)),
+            "duplicated": duplicated,
+            "entities": entities,
+            "scenario": scenario,
+            "action": action,
+        }
+
+    violating = sorted(
+        sample_id
+        for sample_id, row in rows.items()
+        if row["illegal"] or not row["parsed"] or row["duplicated"]
+    )
+    conforming = sorted(set(roster) - set(violating))
+
+    # An "illegal" type is one the row's per-intent BLOCK did not list, not one
+    # SLURP does not have: the block keeps types holding at least 2 % of the
+    # intent's TRAIN slot mass, so a rare but REAL type is illegal by
+    # construction. This counts how often the model was right anyway, and how
+    # much gold a hard constraint to the block would put out of reach.
+    illegal_but_in_gold = 0
+    gold_mentions_outside_block = 0
+    unparsed_ids = sorted(sid for sid, row in rows.items() if not row["parsed"])
+    unparsed_gold_mentions = 0
+    for sample_id in roster:
+        row = rows[sample_id]
+        gold_pairs = {
+            (entity.type, entity.filler) for entity in gold[sample_id].entities
+        }
+        illegal_types = set(row["illegal"])
+        for entity in row["entities"]:
+            if entity.type in illegal_types and (entity.type, entity.filler) in gold_pairs:
+                illegal_but_in_gold += 1
+        block_types = (
+            full_block_types
+            if row["fallback"]
+            else set(schema.intents[row["block_intent"]].entity_types)
+        )
+        gold_mentions_outside_block += sum(
+            1 for entity in gold[sample_id].entities if entity.type not in block_types
+        )
+        if not row["parsed"]:
+            unparsed_gold_mentions += len(gold[sample_id].entities)
+
+    workdir = Path(tempfile.mkdtemp(prefix="saea-mf9-schema-", dir=str(root)))
+    try:
+        baseline_rows = []
+        suppressed_rows = []
+        unknown_suppressed_rows = []
+        for sample_id in roster:
+            row = rows[sample_id]
+            if not row["parsed"]:
+                for bucket in (baseline_rows, suppressed_rows, unknown_suppressed_rows):
+                    bucket.append({"sample_id": sample_id, "text": texts[sample_id]})
+                continue
+            baseline_rows.append(
+                {
+                    "sample_id": sample_id,
+                    "text": prediction_text(row["scenario"], row["action"], row["entities"]),
+                }
+            )
+            illegal_types = set(row["illegal"])
+            suppressed_rows.append(
+                {
+                    "sample_id": sample_id,
+                    "text": prediction_text(
+                        row["scenario"],
+                        row["action"],
+                        [e for e in row["entities"] if e.type not in illegal_types],
+                    ),
+                }
+            )
+            unknown_types = set(row["unknown"])
+            unknown_suppressed_rows.append(
+                {
+                    "sample_id": sample_id,
+                    "text": prediction_text(
+                        row["scenario"],
+                        row["action"],
+                        [e for e in row["entities"] if e.type not in unknown_types],
+                    ),
+                }
+            )
+        paths = {
+            "baseline": write_outputs(baseline_rows, workdir / "baseline.outputs.jsonl"),
+            "illegal_suppressed": write_outputs(
+                suppressed_rows, workdir / "illegal-suppressed.outputs.jsonl"
+            ),
+            "unknown_suppressed": write_outputs(
+                unknown_suppressed_rows, workdir / "unknown-suppressed.outputs.jsonl"
+            ),
+        }
+        with ThreadPoolExecutor(max_workers=3) as pool:
+            scored = dict(
+                zip(
+                    paths,
+                    pool.map(lambda path: score_outputs(path, lock, root), paths.values()),
+                )
+            )
+    finally:
+        shutil.rmtree(workdir, ignore_errors=True)
+
+    baseline_official = official_block(scored["baseline"])
+    assert_published(baseline_official, KC_S1B_PUBLISHED, "KC-S1b re-emitted (schema arm)")
+    baseline_samples = by_sample(scored["baseline"])
+
+    def slu_over(ids, samples):
+        tp = sum(samples[sid]["slu_f1_word_tp"] + samples[sid]["slu_f1_char_tp"] for sid in ids)
+        fp = sum(samples[sid]["slu_f1_word_fp"] + samples[sid]["slu_f1_char_fp"] for sid in ids)
+        fn = sum(samples[sid]["slu_f1_word_fn"] + samples[sid]["slu_f1_char_fn"] for sid in ids)
+        return {
+            "n": len(ids),
+            "slu_f1": round(100.0 * _f1(tp, fp, fn), 2),
+            "loss_mass": round(fp + fn, 3),
+        }
+
+    def stratum_of(sample_id: str) -> str:
+        return gold[sample_id].scenario
+
+    declared = []
+    for path in sorted((REPO_ROOT / "configs/baseline").glob("slurp-*.json")):
+        body = path.read_text(encoding="utf-8")
+        if "response_format_id" in body and '"response_format_id": null' not in body:
+            declared.append(str(path.relative_to(REPO_ROOT)).replace("\\", "/"))
+
+    document = {
+        "schema": "saea-slurp-mf9-schema-conformance-v1",
+        "row_id": ROW_ID,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "contacts": {
+            "model": 0,
+            "gpu_hours": 0,
+            "tool": 0,
+            "embedding": 0,
+            "network": 0,
+            "audio_decode": 0,
+        },
+        "sources": {
+            "umbrella_lock": str(lock_path),
+            "sealed_outputs_sha256": sha256_file(
+                sealed_outputs_path(root, KC_S1B_RUN, KC_S1B_ATTEMPT)
+            ),
+            "prompt_fit_receipt": KC_S1B_PROMPT_FIT,
+            "intent_slot_schema_content_hash": schema.content_hash(),
+        },
+        "identity_anchors": {
+            "prompt_fit_schema_blocks": KC_S1B_SCHEMA_ANCHORS,
+            "baseline_reemitted": baseline_official,
+        },
+        "vocabulary": {
+            "slurp_entity_types": len(vocabulary),
+            "types_listed_by_at_least_one_intent_block": len(full_block_types),
+            "full_schema_fallback_rows": len(fallback_ids),
+        },
+        "conformance": {
+            "rows": counts,
+            "mentions": mention_counts,
+            "rows_fully_conforming_pct": percent(counts["fully_conforming"], len(roster)),
+            "illegal_mentions_by_type": dict(illegal_by_type.most_common()),
+            "gold_rows_carrying_two_mentions_of_one_type": gold_duplicate_rows,
+        },
+        "what_the_violating_rows_lose": {
+            "violating": slu_over(violating, baseline_samples),
+            "conforming": slu_over(conforming, baseline_samples),
+            "unparsed_sample_ids": unparsed_ids,
+            "unparsed_gold_mentions": unparsed_gold_mentions,
+        },
+        "the_block_is_not_a_superset_of_the_gold": {
+            "note": (
+                "a per-intent block lists the types holding at least 2 % of that intent's "
+                "TRAIN slot mass, so a rare but REAL type is 'illegal' by construction. "
+                "Constraining decoding to the block would therefore put reachable gold out "
+                "of reach, and that cost is measured rather than assumed"
+            ),
+            "illegal_mentions_that_matched_gold_exactly": illegal_but_in_gold,
+            "gold_mentions_whose_type_the_block_did_not_list": gold_mentions_outside_block,
+        },
+        "suppression_counterfactuals": {
+            "note": (
+                "a scoring-side LOWER bound on what a grammar constraint buys: the "
+                "constraint would force a LEGAL type rather than delete the mention, so "
+                "deleting it can only under-state the gain on recall while over-stating "
+                "it on precision. Reported as a bound, never as the module's value"
+            ),
+            "baseline": baseline_official,
+            "illegal_for_block_suppressed": official_block(scored["illegal_suppressed"]),
+            "unknown_type_suppressed": official_block(scored["unknown_suppressed"]),
+            "paired_illegal_suppressed_pooled": contrast_block(
+                baseline_samples,
+                by_sample(scored["illegal_suppressed"]),
+                sorted(roster),
+                stratum_of,
+            ),
+        },
+        "constrained_decoding": {
+            "verdict": (
+                "AVAILABLE AND WIRED END TO END for a PHASE-LEVEL, sample-independent "
+                "schema, and turning it on is one config key: a phase's "
+                "response_format_id. NOT reachable for a PER-SAMPLE schema, which is what "
+                "KC-S1b's per-intent block would need -- resolve_response_formats renders "
+                "one document per phase from (lock, root, **fill_params) and never sees a "
+                "sample"
+            ),
+            "response_format_in_allowed_decoding_keys": "response_format"
+            in ALLOWED_DECODING_KEYS,
+            "registered_response_format_ids": sorted(RESPONSE_FORMATS.names()),
+            "resolve_response_formats_parameters": sorted(
+                inspect.signature(resolve_response_formats).parameters
+            ),
+            "slurp_configs_declaring_a_response_format": declared,
+            "citations": [
+                {"path": path, "lines": lines, "establishes": what}
+                for path, lines, what in CONSTRAINED_DECODING_CITATIONS
+            ],
+            "what_is_missing_for_a_per_intent_schema": (
+                "one seam, the same shape rails.phase_material.PHASE_STATE_FILLS already "
+                "has: a per-sample response format resolved beside the per-sample state "
+                "fill. Today PhaseMaterial.response_format is filled from a phase-level "
+                "mapping inside build_material_for_phase; a PHASE_RESPONSE_FILLS registry "
+                "keyed the same way would put a per-row schema on the wire with no change "
+                "to the transport, the adapter, or the server"
+            ),
+        },
+    }
+    write_json(out_dir / "schema-conformance.json", document)
+    print(json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# Question 4 -- knowledge headroom for VALUES
+# ---------------------------------------------------------------------------
+
+
+def recording_filename(sample_id: str) -> str:
+    """``slurp:devel:000011:audio-1497266596`` to ``audio-1497266596.flac``."""
+
+    parts = sample_id.split(":")
+    if len(parts) != 4 or not parts[3]:
+        raise SystemExit(f"not a SLURP sample id: {sample_id!r}")
+    return f"{parts[3]}.flac"
+
+
+def load_dimension_vectors(path: Path, dimension: str = "content"):
+    """``(ids, matrix)`` from a sealed ``{"id", "vectors": {...}}`` JSONL.
+
+    The sealed KU-S3 vector files carry one named dimension per row, which is
+    a different interchange shape from ``analysis.slurp_retrieval_key_audit``'s
+    single-``vector`` schema; everything downstream (normalisation, cosine,
+    top-k) is that module's own code.
+    """
+
+    import numpy as np
+
+    ids: list[str] = []
+    rows: list[list[float]] = []
+    with Path(path).open(encoding="utf-8") as handle:
+        for line_no, line in enumerate(handle, start=1):
+            stripped = line.strip()
+            if not stripped:
+                continue
+            record = json.loads(stripped)
+            identity = record.get("id")
+            vectors = record.get("vectors")
+            if not isinstance(identity, str) or not isinstance(vectors, Mapping):
+                raise SystemExit(f"{path} line {line_no}: malformed sealed vector row")
+            vector = vectors.get(dimension)
+            if not isinstance(vector, list) or not vector:
+                raise SystemExit(f"{path} line {line_no}: no {dimension!r} vector")
+            ids.append(identity)
+            rows.append(vector)
+    if len(set(ids)) != len(ids):
+        raise SystemExit(f"{path}: duplicate ids")
+    return tuple(ids), np.asarray(rows, dtype=np.float64)
+
+
+def command_headroom(args: argparse.Namespace) -> int:
+    from speech_aware_evidence_acquisition.analysis.slurp_retrieval_key_audit import (
+        cosine_matrix,
+        top_k_indices,
+    )
+    from speech_aware_evidence_acquisition.data.slurp import (
+        _governed_roots,
+        _slurp_speaker_index,
+        load_slurp_split,
+        load_slurp_train_material,
+    )
+    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (
+        SlotEntity,
+        parse_slu_response,
+    )
+    from speech_aware_evidence_acquisition.reproduction.slurp_value_projection import (
+        build_value_projection_inventory,
+        normalize_filler,
+    )
+
+    lock, root, lock_path = resolve_lock_and_root()
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    roster = roster_sample_ids(REPO_ROOT / DEV1000_CONFIG)
+    pops = populations(roster)
+    gold = {record.sample_id: record for record in load_slurp_split(lock, root, "devel")}
+    train = load_slurp_train_material(lock, root)
+    inventory = build_value_projection_inventory(train)
+    _, _, metadata_dir = _governed_roots(lock, root)
+    speaker_of_file = _slurp_speaker_index(metadata_dir)
+
+    # --- (a) does TRAIN already carry the DEV gold VALUE? ------------------
+    per_type: dict[str, dict[str, float]] = defaultdict(
+        lambda: {
+            "gold_mentions": 0.0,
+            "verbatim_same_type": 0.0,
+            "verbatim_any_type": 0.0,
+            "distinct_gold_values": 0.0,
+            "distinct_verbatim": 0.0,
+        }
+    )
+    any_type_index: dict[str, set[str]] = defaultdict(set)
+    for (entity_type, filler) in inventory.counts:
+        any_type_index[filler].add(entity_type)
+    distinct_gold: dict[str, set[str]] = defaultdict(set)
+    distinct_hit: dict[str, set[str]] = defaultdict(set)
+    for sample_id in roster:
+        for entity in gold[sample_id].entities:
+            value = normalize_filler(entity.filler)
+            row = per_type[entity.type]
+            row["gold_mentions"] += 1
+            distinct_gold[entity.type].add(value)
+            if value in inventory.fillers.get(entity.type, ()) or (
+                entity.type in any_type_index.get(value, set())
+            ):
+                row["verbatim_same_type"] += 1
+                distinct_hit[entity.type].add(value)
+            if value in any_type_index:
+                row["verbatim_any_type"] += 1
+    for entity_type, row in per_type.items():
+        row["distinct_gold_values"] = float(len(distinct_gold[entity_type]))
+        row["distinct_verbatim"] = float(len(distinct_hit[entity_type]))
+
+    state = read_json(REPO_ROOT / MF8_STATE_INVENTORY)
+    partition = _mf8_type_partition(state)
+
+    # --- (b) the KU-S3 retrieved top-5 ceiling -----------------------------
+    query_ids, queries = load_dimension_vectors(
+        root / SEALED_VECTOR_DIR / "query-vectors-speech.jsonl"
+    )
+    facet_ids, keys = load_dimension_vectors(root / SEALED_VECTOR_DIR / "facet-vectors.jsonl")
+    entities_by_utterance = {
+        utterance.utterance_id: tuple(
+            (entity.type, entity.filler) for entity in utterance.entities
+        )
+        for utterance in train
+    }
+    key_entities = []
+    for facet_id in facet_ids:
+        suffix = facet_id.rsplit(":", 1)[-1]
+        utterance_id = f"slurp:train:{int(suffix):06d}"
+        if utterance_id not in entities_by_utterance:
+            raise SystemExit(f"sealed facet {facet_id!r} has no TRAIN utterance")
+        key_entities.append(set(entities_by_utterance[utterance_id]))
+    query_position = {sample_id: index for index, sample_id in enumerate(query_ids)}
+    if any(sample_id not in query_position for sample_id in roster):
+        raise SystemExit("the sealed speech query set does not cover the DEV-1000 roster")
+
+    order = [query_position[sample_id] for sample_id in roster]
+    scores = cosine_matrix(queries[order], keys)
+    neighbours = top_k_indices(scores, args.k)
+
+    retrieved: dict[str, set[tuple[str, str]]] = {}
+    recall_rows: dict[str, float] = {}
+    per_type_retrieved: dict[str, dict[str, float]] = defaultdict(
+        lambda: {"gold_mentions": 0.0, "in_retrieved": 0.0}
+    )
+    for position, sample_id in enumerate(roster):
+        available: set[tuple[str, str]] = set()
+        for index in neighbours[position]:
+            available |= key_entities[int(index)]
+        retrieved[sample_id] = available
+        gold_pairs = {(entity.type, entity.filler) for entity in gold[sample_id].entities}
+        if gold_pairs:
+            recall_rows[sample_id] = len(gold_pairs & available) / len(gold_pairs)
+        for entity in gold[sample_id].entities:
+            bucket = per_type_retrieved[entity.type]
+            bucket["gold_mentions"] += 1
+            if (entity.type, entity.filler) in available:
+                bucket["in_retrieved"] += 1
+
+    filler_recall = {
+        name: round(
+            100.0
+            * sum(recall_rows[sid] for sid in ids if sid in recall_rows)
+            / max(1, sum(1 for sid in ids if sid in recall_rows)),
+            2,
+        )
+        for name, ids in pops.items()
+    }
+    for name, expected in MF7B_FILLER_RECALL_ANCHORS.items():
+        if abs(filler_recall[name] - expected) > 0.005:
+            raise SystemExit(
+                f"IDENTITY ANCHOR FAILED: filler recall@{args.k} on {name} is "
+                f"{filler_recall[name]}, MF-7b published {expected}"
+            )
+
+    # --- the retrieved-filler oracle ceiling -------------------------------
+    texts = read_sealed_outputs(sealed_outputs_path(root, KC_S1B_RUN, KC_S1B_ATTEMPT))
+    workdir = Path(tempfile.mkdtemp(prefix="saea-mf9-headroom-", dir=str(root)))
+    try:
+        baseline_rows = []
+        oracle_rows = []
+        added = 0
+        for sample_id in roster:
+            scenario, action, entities, parsed = parse_slu_response(texts[sample_id])
+            if not parsed:
+                baseline_rows.append({"sample_id": sample_id, "text": texts[sample_id]})
+                oracle_rows.append({"sample_id": sample_id, "text": texts[sample_id]})
+                continue
+            baseline_rows.append(
+                {"sample_id": sample_id, "text": prediction_text(scenario, action, entities)}
+            )
+            have = {(entity.type, entity.filler) for entity in entities}
+            extra = [
+                SlotEntity(type=entity.type, filler=entity.filler)
+                for entity in gold[sample_id].entities
+                if (entity.type, entity.filler) in retrieved[sample_id]
+                and (entity.type, entity.filler) not in have
+            ]
+            added += len(extra)
+            oracle_rows.append(
+                {
+                    "sample_id": sample_id,
+                    "text": prediction_text(scenario, action, list(entities) + extra),
+                }
+            )
+        paths = {
+            "baseline": write_outputs(baseline_rows, workdir / "baseline.outputs.jsonl"),
+            "retrieved_oracle": write_outputs(
+                oracle_rows, workdir / "retrieved-oracle.outputs.jsonl"
+            ),
+        }
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            scored = dict(
+                zip(
+                    paths,
+                    pool.map(lambda path: score_outputs(path, lock, root), paths.values()),
+                )
+            )
+    finally:
+        shutil.rmtree(workdir, ignore_errors=True)
+    baseline_official = official_block(scored["baseline"])
+    assert_published(baseline_official, KC_S1B_PUBLISHED, "KC-S1b re-emitted (headroom arm)")
+
+    # --- (c) same-speaker slot exemplars -----------------------------------
+    speaker_types: dict[str, Counter] = defaultdict(Counter)
+    for utterance in train:
+        types = {entity.type for entity in utterance.entities}
+        speakers = {recording.speaker_id for recording in utterance.recordings}
+        for speaker in speakers:
+            for entity_type in types:
+                speaker_types[speaker][entity_type] += 1
+
+    thresholds = (1, 3, 5)
+    pair_counts = {f">={threshold}": 0 for threshold in thresholds}
+    row_counts = {f">={threshold}": 0 for threshold in thresholds}
+    pairs_total = 0
+    rows_with_gold = 0
+    rows_without_speaker = 0
+    per_type_speaker: dict[str, dict[str, float]] = defaultdict(
+        lambda: {"pairs": 0.0, **{f">={t}": 0.0 for t in thresholds}}
+    )
+    for sample_id in roster:
+        speaker = speaker_of_file.get(recording_filename(sample_id))
+        gold_types = sorted({entity.type for entity in gold[sample_id].entities})
+        if not gold_types:
+            continue
+        rows_with_gold += 1
+        if speaker is None:
+            rows_without_speaker += 1
+        available = speaker_types.get(speaker or "", Counter())
+        per_row = {}
+        for entity_type in gold_types:
+            pairs_total += 1
+            count = int(available.get(entity_type, 0))
+            per_row[entity_type] = count
+            bucket = per_type_speaker[entity_type]
+            bucket["pairs"] += 1
+            for threshold in thresholds:
+                if count >= threshold:
+                    pair_counts[f">={threshold}"] += 1
+                    bucket[f">={threshold}"] += 1
+        for threshold in thresholds:
+            if all(count >= threshold for count in per_row.values()):
+                row_counts[f">={threshold}"] += 1
+
+    ranked = sorted(per_type.items(), key=lambda item: -item[1]["gold_mentions"])
+    type_table = [
+        {
+            "entity_type": entity_type,
+            "gold_mentions": int(values["gold_mentions"]),
+            "distinct_gold_values": int(values["distinct_gold_values"]),
+            "verbatim_in_train_same_type": int(values["verbatim_same_type"]),
+            "verbatim_share_pct": percent(values["verbatim_same_type"], values["gold_mentions"]),
+            "distinct_values_in_train": int(values["distinct_verbatim"]),
+            "train_surface_forms": len(inventory.fillers.get(entity_type, ())),
+            "mf8_partition": partition.get(entity_type, "unclassified"),
+            "in_retrieved_top_k": int(per_type_retrieved[entity_type]["in_retrieved"]),
+            "retrieved_share_pct": percent(
+                per_type_retrieved[entity_type]["in_retrieved"], values["gold_mentions"]
+            ),
+            "same_speaker_pairs_ge_1_pct": percent(
+                per_type_speaker[entity_type][">=1"], per_type_speaker[entity_type]["pairs"]
+            ),
+            "same_speaker_pairs_ge_5_pct": percent(
+                per_type_speaker[entity_type][">=5"], per_type_speaker[entity_type]["pairs"]
+            ),
+        }
+        for entity_type, values in ranked
+    ]
+
+    partition_totals = {"standing": {"gold": 0, "verbatim": 0}, "utterance-local": {"gold": 0, "verbatim": 0}, "unclassified": {"gold": 0, "verbatim": 0}}
+    for entity_type, values in per_type.items():
+        bucket = partition_totals[partition.get(entity_type, "unclassified")]
+        bucket["gold"] += int(values["gold_mentions"])
+        bucket["verbatim"] += int(values["verbatim_same_type"])
+
+    document = {
+        "schema": "saea-slurp-mf9-value-headroom-v1",
+        "row_id": ROW_ID,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "contacts": {
+            "model": 0,
+            "gpu_hours": 0,
+            "tool": 0,
+            "embedding": 0,
+            "network": 0,
+            "audio_decode": 0,
+        },
+        "sources": {
+            "umbrella_lock": str(lock_path),
+            "train_inventory": inventory.as_json(),
+            "sealed_query_vectors": str(root / SEALED_VECTOR_DIR / "query-vectors-speech.jsonl"),
+            "sealed_facet_vectors": str(root / SEALED_VECTOR_DIR / "facet-vectors.jsonl"),
+            "mf8_state_inventory": MF8_STATE_INVENTORY,
+        },
+        "identity_anchors": {
+            "filler_recall_at_k": filler_recall,
+            "mf7b_published": MF7B_FILLER_RECALL_ANCHORS,
+            "baseline_reemitted": baseline_official,
+        },
+        "train_verbatim_coverage": {
+            "gold_mentions": int(sum(v["gold_mentions"] for v in per_type.values())),
+            "verbatim_same_type": int(sum(v["verbatim_same_type"] for v in per_type.values())),
+            "verbatim_any_type": int(sum(v["verbatim_any_type"] for v in per_type.values())),
+            "share_same_type_pct": percent(
+                sum(v["verbatim_same_type"] for v in per_type.values()),
+                sum(v["gold_mentions"] for v in per_type.values()),
+            ),
+            "by_mf8_partition": partition_totals,
+        },
+        "retrieved_top_k": {
+            "k": args.k,
+            "key": "q-speech-nemotron (the sealed KU-S3 speech query), cosine over the "
+            "11,514 TRAIN content facets",
+            "filler_recall_pct": filler_recall,
+            "gold_mentions_in_retrieved_union": int(
+                sum(v["in_retrieved"] for v in per_type_retrieved.values())
+            ),
+            "oracle_added_mentions": added,
+            "oracle_ceiling": official_block(scored["retrieved_oracle"]),
+            "oracle_note": (
+                "an UPPER BOUND, and a generous one: the arm keeps every mention it "
+                "already made and additionally emits every gold value the retrieval "
+                "supplied. A real consumption cell has to find those values in the "
+                "supplied block and no mechanism reaches this"
+            ),
+        },
+        "same_speaker_slot_exemplars": {
+            "unit": "one (DEV row, gold slot TYPE) pair; the count is TRAIN utterances by "
+            "that row's own speaker carrying that slot type",
+            "rows_with_at_least_one_gold_entity": rows_with_gold,
+            "rows_whose_speaker_is_absent_from_train": rows_without_speaker,
+            "pairs": pairs_total,
+            "pairs_at_threshold": pair_counts,
+            "pairs_at_threshold_pct": {
+                key: percent(value, pairs_total) for key, value in pair_counts.items()
+            },
+            "rows_where_every_gold_type_reaches": row_counts,
+            "rows_where_every_gold_type_reaches_pct": {
+                key: percent(value, rows_with_gold) for key, value in row_counts.items()
+            },
+        },
+        "per_entity_type": type_table,
+    }
+    write_json(out_dir / "value-headroom.json", document)
+    summary = dict(document)
+    summary["per_entity_type"] = type_table[:15]
+    print(json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0
+
+
+def _mf8_type_partition(state: Mapping[str, object]) -> dict[str, str]:
+    """MF-8's own standing-state / utterance-local split of the 55 entity types.
+
+    Read out of that audit's committed receipt rather than re-derived, so the
+    two notes cannot drift apart. The partition was fixed there BEFORE any count
+    was read; this audit only reuses it.
+    """
+
+    def collect(node: object, out: dict[str, str], label: str | None) -> None:
+        if isinstance(node, Mapping):
+            for key, value in node.items():
+                if key in {"standing_state", "standing", "standing_state_types"}:
+                    collect(value, out, "standing")
+                elif key in {"utterance_local", "utterance_local_types"}:
+                    collect(value, out, "utterance-local")
+                else:
+                    collect(value, out, label)
+            if label is not None and all(
+                isinstance(value, (int, float)) for value in node.values()
+            ):
+                for key in node:
+                    out[str(key)] = label
+        elif isinstance(node, list) and label is not None:
+            for item in node:
+                if isinstance(item, str):
+                    out[item] = label
+                elif isinstance(item, Mapping):
+                    name = item.get("entity_type") or item.get("type") or item.get("name")
+                    if isinstance(name, str):
+                        out[name] = label
+
+    out: dict[str, str] = {}
+    collect(state, out, None)
+    if not out:
+        raise SystemExit(
+            f"{MF8_STATE_INVENTORY} carries no standing / utterance-local type partition"
+        )
+    return out
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -1151,6 +2034,13 @@ def build_parser() -> argparse.ArgumentParser:
     projection = subparsers.add_parser("projection", help="question 2")
     projection.add_argument("--workers", type=int, default=3)
     projection.set_defaults(func=command_projection)
+
+    schema = subparsers.add_parser("schema", help="question 3")
+    schema.set_defaults(func=command_schema)
+
+    headroom = subparsers.add_parser("headroom", help="question 4")
+    headroom.add_argument("--k", type=int, default=5)
+    headroom.set_defaults(func=command_headroom)
 
     return parser
 

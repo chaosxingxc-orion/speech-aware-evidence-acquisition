@@ -213,3 +213,105 @@ that makes the arm **answer more slots** can reach the twenties.
 | **unexposed NEW500** | 500 | **47.82** | 1,012.61 |
 
 The decision population is the unexposed NEW500, as it is for every SLURP cell in this study.
+
+---
+
+## 3. Schema conformance, and whether the wire can constrain it
+
+Receipt: `schema-conformance.json`. The reference each row is judged against is **the per-intent
+block that row actually received**, taken from KC-S1b's own committed prompt-fit receipt
+(`schema_block_intent` / `schema_full_fallback` per row) — not a block chosen after the fact. That
+receipt's own accounting reproduces: **42** full-schema fallback rows over **58** distinct intents,
+and every one of the 42 ids matches its per-row flag.
+
+### 3.1 What the sealed slot outputs violate
+
+| violation | rows | mentions |
+|---|---|---|
+| response did not parse | **3** | — (those rows carry **10** gold mentions) |
+| a slot type the row's **block did not list** | **72** | **73** of 682 (10.7 %) |
+| a slot type outside SLURP's **55-type vocabulary** | **0** | **0** |
+| the same type twice in one row | 11 | — |
+| **fully conforming** | **914 (91.4 %)** | |
+
+**The model never invents a type.** Zero of 682 predicted mentions name something outside the
+55-type vocabulary, on an arm whose prompt lists only that intent's few types. Whatever the slot
+layer's problem is, it is not a vocabulary problem, and a 55-type enum would be a *guarantee*
+rather than a repair.
+
+The 86 violating rows score **SLU-F1 33.44** against **46.43** on the 914 conforming ones — a
+13-point spread that is mostly selection (a row the model half-heard is the row it also mis-types).
+
+Illegal-for-block mentions concentrate in exactly the types section 1.3 found over-generating:
+`transport_name` 17, `alarm_type` 9, `ingredient` 7, `email_address` 6, `list_name` 5,
+`cooking_type` 4.
+
+### 3.2 The block is **not** a superset of the gold, and that is the finding
+
+A per-intent block lists the types holding at least 2 % of that intent's TRAIN slot mass, so a rare
+but real type is "illegal" **by construction**. Measured, not assumed:
+
+* **8 of the 73** illegal mentions matched a gold slot **exactly**.
+* **81 of 950** gold mentions carry a type the block sent did not list. (The same 81 section 1.2
+  found from the other direction — an independent cross-check that the two reads agree.)
+
+So the suppression counterfactual cuts both ways, and both numbers belong in the same sentence:
+
+| view | entities strict | Word-F1 | Char-F1 | **SLU-F1** |
+|---|---|---|---|---|
+| KC-S1b | 31.37 | 41.58 | 47.51 | **44.35** |
+| every **block-illegal** mention suppressed | 31.82 | 42.10 | 48.26 | **44.97** (+0.62) |
+| every **vocabulary-illegal** mention suppressed | 31.37 | 41.58 | 47.51 | **44.35** (+0.00) |
+
+Corpus micro says **+0.62**; the paired per-sample read on the same rows says **−0.47 pp**
+(CI90 [−0.86, −0.11], 16 saves / **12 harms**, pooled 1,000). Both are true, and the disagreement is
+the point: suppression removes more false-positive mass than it removes true positives *in
+aggregate*, while making a dozen individual rows strictly worse. **A hard grammar constraint to the
+per-intent block would buy a corpus point and cost real answers**, and it would put 81 gold mentions
+permanently out of reach.
+
+### 3.3 Is grammar-constrained decoding available? **Yes — end to end, and it is one config key**
+
+Verified by source reading, no server started. Study side, this repository:
+
+| file | lines | what it establishes |
+|---|---|---|
+| `core/model/request_types.py` | 33 | `response_format` is one of the exact `decoding_params` keys the frozen core accepts — the comment there already calls it "llama-server's OpenAI-compatible schema-constrained decoding" |
+| `core/model/adapter.py` | 172–197 | the adapter validates the wrapper: `json_object` with a mapping `schema`, or `json_schema` with a mapping `json_schema.schema`; anything else is refused |
+| `core/model/transport.py` | 878–884 | every `decoding_params` key is copied verbatim onto the chat-completions body |
+| `rails/controllers.py` | 531–532 | `decoding_params["response_format"] = dict(material.response_format)` |
+| `rails/phase_material.py` | 613–637 | `resolve_response_formats(specs, lock, root)` renders one document **per phase** through `core.base.RESPONSE_FORMATS` |
+| `core/base.py` | 88–97 | `RESPONSE_FORMATS` is the one registry a config's `response_format_id` resolves in |
+| `rails/a2t_response_schema.py` | 449–524, 636–717 | the working precedent: real exact-name enum schemas over the pinned 152-tool registry |
+
+Server side, the **pinned** llama.cpp build `/home/chao/llama.cpp-featcache` at
+`04ccc72a2207347ca76161b93fd9d846dd0a8675` — the commit the runtime receipt names:
+
+| file | lines | what it establishes |
+|---|---|---|
+| `tools/server/server-common.cpp` | 1280–1300 | the server reads `json_schema` and `grammar` off the body, refuses both at once, and maps an OpenAI `response_format` of type `json_object` or `json_schema` onto that same `json_schema` |
+| `tools/server/server-schema.cpp` | 246–277 | the `json_schema` request field carries **`grammar` as an alias**; a schema is converted at `:256` by `json_schema_to_grammar(schema)` and installed as `COMMON_GRAMMAR_TYPE_OUTPUT_FORMAT`, a raw GBNF string as `COMMON_GRAMMAR_TYPE_USER` |
+| `common/json-schema-to-grammar.cpp` | 1158 | the converter is in the build, not a server-side approximation |
+
+Live checks in the same read: `"response_format" in ALLOWED_DECODING_KEYS` is **true**; the
+registered ids are exactly `select-response-v1` and `fill-response-v1` (both Audio2Tool); and
+**no SLURP config declares one** — every `response_format_id` in `configs/baseline/slurp-*.json` is
+`null`. So the seam is built, exercised on another carrier, and simply not turned on here.
+
+**What is missing, precisely.** `resolve_response_formats` takes `(specs, lock, root)` and **never
+sees a sample**, so a *per-sample* schema — which is what KC-S1b's per-intent block would be — is
+not reachable. The seam that would reach it already has a twin: `PHASE_STATE_FILLS` resolves a
+per-sample state fill inside `build_material_for_phase`, and a `PHASE_RESPONSE_FILLS` registry keyed
+the same way would put a per-row schema on the wire with **no change to the transport, the adapter,
+or the server**.
+
+### 3.4 Priced as a cell
+
+| module | admission test | what it can buy | cost |
+|---|---|---|---|
+| **structure + 55-type enum**, phase-level | one config key `response_format_id` on the `slots` phase, module on/off against the sealed rows | at most **+0.81 SLU-F1** (45.16) — it can only repair the 3 unparsed rows' 10 gold mentions, because 0 mentions violate the vocabulary today | 1,000 contacts, ≈ 0.20 GPU-h, one config fragment, no new module |
+| **per-intent enum**, per sample | needs the `PHASE_RESPONSE_FILLS` seam first | corpus +0.62 / per-sample **−0.47**, and 81 gold mentions put out of reach | a new registry seam plus the flight |
+
+**Neither is a headline module.** The structural one is worth turning on because it is one key and
+removes a failure mode; the per-intent one is measured here so that nobody builds it on the
+assumption that it would help.
