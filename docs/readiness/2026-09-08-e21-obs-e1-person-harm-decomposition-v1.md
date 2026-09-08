@@ -176,3 +176,92 @@ separates them, and the answer is unambiguous.
 exactly nothing** — 114 words, zero excess errors, at the distance where the pooled table shows
 −5.574. **Inside a unit under ten seconds, the same distance costs −10.127.** The boundary is not the
 agent. The short unit is, and §3 measures it directly.
+
+---
+
+## 3. Unit properties: it is duration, and the verdict's call-level reading inverts at the unit grain
+
+Every PERSON reference word carries the properties of the plan-v2 unit it fell in, taken from the
+committed unit plan (`docs/receipts/obs/e21-speaker-turn-units-v2.json`) and cross-checked against
+the flown span to 1e-6 s on all 5,122 units before any table was built.
+
+### 3.1 Duration — the whole story
+
+| unit duration | PERSON words | comparator | cell | improvement | excess errors | share of the 61 |
+|---|---:|---:|---:|---:|---:|---:|
+| **< 10 s** | 680 | 25.735 | **32.794** | **−7.059** | **+48** | **78.7 %** |
+| 10–60 s | 1,424 | 21.910 | 23.315 | −1.404 | +20 | 32.8 % |
+| **≥ 60 s** | 813 | 20.787 | **19.926** | **+0.861** | **−7** | **−11.5 %** |
+
+**Units under ten seconds hold 23.3 % of the PERSON words and 78.7 % of the harm. Units of sixty
+seconds or more are BETTER in the cell than in the comparator, by seven errors.** The finer ladder is
+monotone in duration with no exception:
+
+| unit duration | PERSON words | comparator | cell | improvement | excess errors | share |
+|---|---:|---:|---:|---:|---:|---:|
+| **< 3 s** | 110 | 24.545 | **39.091** | **−14.545** | **+16** | 26.2 % |
+| 3–5 s | 128 | 27.344 | 32.812 | −5.469 | +7 | 11.5 % |
+| 5–10 s | 442 | 25.566 | 31.222 | −5.656 | +25 | 41.0 % |
+| 10–30 s | 669 | 22.571 | 25.112 | −2.541 | +17 | 27.9 % |
+| 30–60 s | 755 | 21.325 | 21.722 | −0.397 | +3 | 4.9 % |
+| ≥ 60 s | 813 | 20.787 | 19.926 | **+0.861** | **−7** | −11.5 % |
+
+**PERSON words are four times over-represented in short units.** Units of 1–10 s are 39.2 % of the
+5,122 units and carry only 5.8 % of the corpus reference words, but **23.3 %** of the PERSON
+reference words. That is what a turn-taking moment is made of — an introduction, a hand-over, "thank
+you, next question from" — and it is exactly the material the speaker-turn cut isolates into its own
+short contact.
+
+### 3.2 End cut, and ending mid-speech
+
+| unit end cut | PERSON words | comparator | cell | improvement | excess errors | share |
+|---|---:|---:|---:|---:|---:|---:|
+| pause | 2,668 | 22.639 | 24.175 | −1.537 | +41 | 67.2 % |
+| **turn-boundary** (no admissible pause) | 229 | 20.961 | **29.694** | **−8.734** | **+20** | **32.8 %** |
+| forced-cap-split | 17 | 23.529 | 23.529 | +0.000 | 0 | 0.0 % |
+| call-end | 3 | 0.000 | 0.000 | +0.000 | 0 | 0.0 % |
+
+| does the unit end on an active frame? | PERSON words | comparator | cell | improvement | excess | share |
+|---|---:|---:|---:|---:|---:|---:|
+| **ends mid-speech** | 192 | 22.396 | **32.812** | **−10.417** | **+20** | 32.8 % |
+| ends in a pause | 2,725 | 22.495 | 24.000 | −1.505 | +41 | 67.2 % |
+
+**A unit that ends mid-speech costs seven times as much per word as one that ends in a pause**
+(−10.417 against −1.505). Only 564 of the 5,122 units (11.0 %) end mid-speech and they carry 6.6 % of
+the PERSON words, yet they account for a third of the harm. This is the one property that is not a
+restatement of duration: it is the plan's own rule 2 failing to find a pause.
+
+### 3.3 The two properties the verdict named — and both invert at the unit grain
+
+The OBS-E1 verdict's §4 reported, from **call-level tertiles**, that "the purer the call's units, the
+larger the PERSON loss" and that "longer units help corpus WER more and hurt PERSON more". At the
+**unit** grain, on the same sealed data:
+
+| property | verdict's call-level reading | measured at the unit grain |
+|---|---|---|
+| **speaker purity** | purer hurts PERSON more | **flat.** 1 speaker: 2,421 w, −2.065. 2 speakers: 479 w, −2.296. Share = 1.00: 2,431 w, −2.057. Share 0.80–1.00: 417 w, −0.959. **No gradient in either direction.** |
+| **unit length** | longer hurts PERSON more | **the opposite, decisively.** −14.545 under 3 s rising monotonically to **+0.861** at ≥ 60 s. |
+
+**Neither call-level statement is wrong and neither is a mechanism.** A call whose units are long on
+average is a call with few speaker changes, and its PERSON words still sit in the short units it does
+have; the tertile is a property of the call, not of the unit the name was transported in. This note
+does not amend the verdict — its tables are correct at the grain they declare — but any successor
+design must be built on the unit-grain table, because that is the grain a transport rule acts at.
+
+### 3.4 The two remaining properties
+
+| property | PERSON words | comparator | cell | improvement | excess | share |
+|---|---:|---:|---:|---:|---:|---:|
+| **speaker changed from the previous unit** | 1,936 | 22.056 | 24.793 | **−2.738** | **+53** | **86.9 %** |
+| same speaker as the previous unit (or first) | 981 | 23.344 | 24.159 | −0.815 | +8 | 13.1 % |
+| absorbed ≥ 1 v2 sliver | 101 | 19.802 | 23.762 | −3.960 | +4 | 6.6 % |
+| absorbed none | 2,816 | 22.585 | 24.609 | −2.024 | +57 | 93.4 % |
+
+**A unit that opens after a speaker change carries 86.9 % of the harm on 66.4 % of the words**, at
+more than three times the per-word rate of a unit continuing the same speaker. That is the same
+finding as §3.1 seen from another side: a speaker change is what creates a short unit, and it is
+where the names are.
+
+**The v2 sliver merges are not implicated.** Only 101 PERSON words sit in a unit that absorbed a
+sliver, and they carry 4 of the 61 excess errors. Plan v2's one change from v1 is neither the cause
+of the harm nor a defence against it.
