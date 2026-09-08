@@ -34,6 +34,20 @@ through the ``obs_loop`` module object so test monkeypatches apply to both
 executors identically), and the loop-internal steps live in
 ``components.py`` calling the same ``obs_audio``/``core.model.slices``
 primitives. What differs is orchestration only.
+
+Unit plan (OBS-E1), 2026-09-08: this executor consumes ``obs_unit_plan``
+instead of refusing it. Drift #1 of the 2026-09-08 openJiuwen assessment
+recorded the refusal as an honest fail-closed stop-gap -- the executor's
+window came from a clock, so a plan reaching it would have been silently
+ignored -- and the port that closes it is three lines of state
+(``state.ObsSampleState.plan_units`` plus a plan-aware ``window_frames``),
+the plain policy's own ``is_final`` form in ``FeedBuffer``, the plain
+policy's own ``_unit_trace_fields`` in ``AcceptAdvance``, and the plain
+policy's own ``units_for``/``max_iterations``/``boundary_mode``
+substitutions here. No unit-plan logic is reimplemented: every decision is
+made by a function ``reproduction.obs_loop`` already owns, and the
+``unit-plan`` scenario of ``tests/unit/test_obs_loop_ojw.py``'s equivalence
+suite proves the two executors deliver the same media, records and bytes.
 """
 
 from __future__ import annotations
@@ -51,6 +65,7 @@ from .. import obs_loop
 from ..obs_audio import nonspeech_spans, vad_transitions
 from ..obs_loop import (
     OBS_DERIVATION_SCHEMA,
+    OBS_UNIT_PLAN_BOUNDARY_MODE,
     SLICE_SAMPLE_RATE_HZ,
     ObsLoopConfig,
     ObsLoopError,
@@ -126,22 +141,6 @@ def _prepare_state(ctx: SampleContext, cfg: ObsLoopConfig) -> ObsSampleState:
     shared mutable state, so the batch runner may call it from a worker
     thread."""
 
-    # The OBS-E1 unit plan is implemented on the PLAIN policy's two cut sites
-    # only (preregistration section 8.3). This executor cuts through
-    # ``ObsSampleState.window_frames``, which is clock-derived by
-    # construction, so a plan reaching here would be SILENTLY ignored and the
-    # two executors would deliver different media for the same config. Refused
-    # instead, named, before the parent is decoded.
-    if cfg.unit_plan is not None:
-        raise ObsLoopError(
-            f"{OJW_POLICY_NAME} does not implement obs_unit_plan: the unit-plan cut "
-            "lives on the obs-agent-loop policy's own two cut sites, and this "
-            "executor's window_frames is clock-derived. Fly a unit-plan cell with "
-            "obs_batch_samples 1 (the plain policy, which supports obs_batch_slices "
-            "> 1 under a plan), or extend this executor deliberately -- never let it "
-            "cut fixed windows for a config that asked for units"
-        )
-
     registry, data_root, _, _, _ = _context_facts(ctx)
     sample: SampleRef = ctx.sample
     rate = SLICE_SAMPLE_RATE_HZ
@@ -171,6 +170,23 @@ def _prepare_state(ctx: SampleContext, cfg: ObsLoopConfig) -> ObsSampleState:
     )
     max_iterations = math.ceil(duration / max(effective_min, 1e-9)) + len(trim_spans) + 8
 
+    # The unit plan, resolved ONCE per sample before the first cut (OBS-E1
+    # preregistration section 8.3) -- through the SAME ``UnitPlan.units_for``
+    # the plain policy calls at both of ITS cut sites, so a roster call the
+    # plan does not cover, or a plan cut against different audio, refuses here
+    # with the identical message before either executor writes a byte.
+    # ``None`` is the historical fixed-window cutter, byte for byte.
+    plan_units = (
+        None
+        if cfg.unit_plan is None
+        else cfg.unit_plan.units_for(sample.sample_id, duration)
+    )
+    if plan_units is not None:
+        # The plan's own length IS the iteration bound; the clock-derived one
+        # above describes a cutter that is not running. Exactly the plain
+        # policy's own substitution.
+        max_iterations = len(plan_units) + 8
+
     return ObsSampleState(
         cfg=cfg,
         pcm=pcm,
@@ -192,6 +208,7 @@ def _prepare_state(ctx: SampleContext, cfg: ObsLoopConfig) -> ObsSampleState:
         sink=ctx.sink,
         effective_min=effective_min,
         max_iterations=max_iterations,
+        plan_units=plan_units,
     )
 
 
@@ -237,14 +254,21 @@ def _finalize_sample(ctx: SampleContext, state: ObsSampleState) -> SampleOutcome
             "parent_sha256": state.parent_sha256,
             "decoded_duration_seconds": state.duration,
             "vad_engine": state.engine_descriptor,
-            "boundary_mode": cfg.boundary_mode,
+            # Under a plan the advance semantics are still `fixed` (every
+            # position was known before the first contact) but the cut came
+            # from the plan, and a sealed run must say which (preregistration
+            # section 8.4) -- the plain policy's own distinction, verbatim.
+            "boundary_mode": (
+                OBS_UNIT_PLAN_BOUNDARY_MODE
+                if cfg.unit_plan is not None
+                else cfg.boundary_mode
+            ),
             "boundary_prompt_relpath": cfg.boundary_prompt_relpath,
             "boundary_prompt_sha256": cfg.boundary_prompt_sha256,
-            # Always null on this executor -- ``_prepare_state`` refuses a
-            # unit plan outright -- but present so the two executors'
-            # ``saea-obs-derivation-v1`` receipts stay key for key identical,
-            # which is what TestEquivalence in tests/unit/test_obs_loop_ojw.py
-            # fingerprints.
+            # The plan this run was cut by, named and pinned; null on every
+            # fixed-window run, and key for key identical to the plain
+            # policy's own ``saea-obs-derivation-v1`` receipt, which is what
+            # TestEquivalence in tests/unit/test_obs_loop_ojw.py fingerprints.
             "unit_plan_path": cfg.unit_plan_relpath,
             "unit_plan_sha256": cfg.unit_plan_sha256,
             "condition_tail_chars": cfg.condition_tail_chars,

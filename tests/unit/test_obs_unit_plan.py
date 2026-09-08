@@ -40,6 +40,7 @@ import hashlib
 import json
 import wave
 from array import array
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -566,16 +567,24 @@ def test_null_keys_are_byte_identical_to_the_historical_path(
 
 
 # ---------------------------------------------------------------------------
-# 5. The other executor refuses rather than diverging
+# 5. The other executor consumes the plan through the same functions
 # ---------------------------------------------------------------------------
 
 
-def test_the_ojw_executor_refuses_a_unit_plan_rather_than_cutting_windows(
+def test_the_ojw_executor_cuts_the_plan_units_not_the_clock(
     tmp_path, monkeypatch
 ) -> None:
-    """``ObsSampleState.window_frames`` is clock-derived by construction, so a
-    plan reaching that executor would be silently ignored and the two
-    executors would deliver different media for the same config."""
+    """Drift #1 of the 2026-09-08 openJiuwen assessment, closed the same day.
+
+    ``ObsSampleState.window_frames`` used to be clock-derived by construction,
+    so a plan reaching that executor would have been silently ignored and the
+    two executors would have delivered different media for the same config;
+    the refusal that stood in its place was an honest stop-gap, not a design.
+    The port consumes the plan through the SAME ``UnitPlan.units_for`` the
+    plain policy calls, and the byte-level proof that the two executors agree
+    is the ``unit-plan`` scenario of ``tests/unit/test_obs_loop_ojw.py``'s
+    equivalence suite; this test pins the state the port introduces.
+    """
 
     policy = pytest.importorskip(
         "speech_aware_evidence_acquisition.reproduction.ojw.policy"
@@ -585,7 +594,40 @@ def test_the_ojw_executor_refuses_a_unit_plan_rather_than_cutting_windows(
     config = ObsLoopConfig.from_values(
         world.ctx.extras["config_values"], world.repo_root
     )
-    with pytest.raises(ObsLoopError, match="does not implement obs_unit_plan"):
+    state = policy._prepare_state(world.ctx, config)
+
+    assert state.plan_units is not None
+    assert [unit.unit_index for unit in state.plan_units] == [1, 2]
+    assert [unit.end_seconds for unit in state.plan_units] == [40.0, 100.0]
+    # The plan's own length is the iteration bound; the clock-derived one
+    # describes a cutter that is not running.
+    assert state.max_iterations == len(state.plan_units) + 8
+    # The first window is the first UNIT, not the first 90 clock-seconds.
+    assert state.window_frames() == (0, int(round(40.0 * state.rate)))
+    # An exhausted plan is a degenerate window, which is how the loop exits.
+    state.iteration = len(state.plan_units)
+    assert state.window_frames() == (0, 0)
+    assert state.should_continue() is False
+    assert state.unit_for(0) is state.plan_units[0]
+
+
+def test_the_ojw_executor_refuses_a_roster_call_the_plan_does_not_cover(
+    tmp_path, monkeypatch
+) -> None:
+    """The refusals stay where they were: ``units_for`` is called once per
+    sample on BOTH executors, so a call the plan has no block for stops the
+    ojw path with the identical message, before the parent is decoded."""
+
+    policy = pytest.importorskip(
+        "speech_aware_evidence_acquisition.reproduction.ojw.policy"
+    )
+    document = _plan_document(sample_id="other-call", duration=100.0, edges=[40.0])
+    world = _plan_world(tmp_path, monkeypatch, pcm=_noise(100.0), document=document)
+    world.ctx.sample = replace(world.ctx.sample, sample_id="uncovered-call")
+    config = ObsLoopConfig.from_values(
+        world.ctx.extras["config_values"], world.repo_root
+    )
+    with pytest.raises(ObsLoopError, match="has no block for roster sample"):
         policy._prepare_state(world.ctx, config)
 
 
