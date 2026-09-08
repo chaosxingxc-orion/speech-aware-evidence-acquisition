@@ -1,0 +1,2290 @@
+{
+ "cell": {
+  "attempt_id": "attempt-20260908T150858Z-c597a8",
+  "run_id": "SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1"
+ },
+ "claim_surface": "Discovery data at n = 44 clusters, below the program's n >= 400 rule. Nothing here is a decision, a preregistration or a GO; OBS-E1 stays REJECTED and no successor cell is registered by this read.",
+ "comparator": {
+  "attempt_id": "attempt-20260904T233816Z-bcd338",
+  "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2"
+ },
+ "entity_class": "PERSON",
+ "exposure_row": "SAEA-E21-MF-OBS-E1-HARM-DECOMPOSITION-V1",
+ "identity_anchor": [
+  {
+   "arm": "comparator",
+   "deletions": 83,
+   "measured_reference_words": 2917,
+   "measured_wer_percent": 22.48886,
+   "sealed_reference_words": 2917,
+   "sealed_wer_percent": 22.48886,
+   "substitutions": 573,
+   "verdict": "PASS"
+  },
+  {
+   "arm": "cell",
+   "deletions": 98,
+   "measured_reference_words": 2917,
+   "measured_wer_percent": 24.58005,
+   "sealed_reference_words": 2917,
+   "sealed_wer_percent": 24.58005,
+   "substitutions": 619,
+   "verdict": "PASS"
+  }
+ ],
+ "position_provenance": "distances in reference WORDS are exact, from each arm's own charged alignment; distances in SECONDS are DERIVED by the containing span's own local rate (span seconds / span reference words) because the Earnings-21 reference layer ships no word timestamps -- an attribution, never a timestamped alignment",
+ "q1_substitutions_versus_deletions": {
+  "calls_where_deletions_fell": 11,
+  "calls_where_deletions_rose": 18,
+  "calls_where_substitutions_fell": 9,
+  "calls_where_substitutions_rose": 23,
+  "corpus": {
+   "cell": {
+    "deletions": 98,
+    "errors": 717,
+    "reference_words": 2917,
+    "substitutions": 619,
+    "wer_percent": 24.580047994514914
+   },
+   "comparator": {
+    "deletions": 83,
+    "errors": 656,
+    "reference_words": 2917,
+    "substitutions": 573,
+    "wer_percent": 22.488858416181007
+   }
+  },
+  "deletion_rate": {
+   "cell_percent": 3.3596160438806995,
+   "clusters": 44,
+   "comparator_percent": 2.8453890983887558,
+   "improvement_ci90": [
+    -1.024679044621202,
+    -0.030426140310321554
+   ],
+   "improvement_point": -0.5142269454919437
+  },
+  "error_rate": {
+   "cell_percent": 24.580047994514914,
+   "clusters": 44,
+   "comparator_percent": 22.488858416181007,
+   "improvement_ci90": [
+    -3.1701161159392903,
+    -1.097764311303227
+   ],
+   "improvement_point": -2.091189578333907
+  },
+  "excess_deletions": 15,
+  "excess_errors": 61,
+  "excess_substitutions": 46,
+  "per_call": [
+   {
+    "cell_deletions": 5,
+    "cell_errors": 17,
+    "cell_substitutions": 12,
+    "comparator_deletions": 4,
+    "comparator_errors": 14,
+    "comparator_substitutions": 10,
+    "delta_deletions": 1,
+    "delta_errors": 3,
+    "delta_substitutions": 2,
+    "person_reference_words": 62,
+    "sample_id": "4320211"
+   },
+   {
+    "cell_deletions": 2,
+    "cell_errors": 10,
+    "cell_substitutions": 8,
+    "comparator_deletions": 0,
+    "comparator_errors": 8,
+    "comparator_substitutions": 8,
+    "delta_deletions": 2,
+    "delta_errors": 2,
+    "delta_substitutions": 0,
+    "person_reference_words": 45,
+    "sample_id": "4330115"
+   },
+   {
+    "cell_deletions": 11,
+    "cell_errors": 25,
+    "cell_substitutions": 14,
+    "comparator_deletions": 12,
+    "comparator_errors": 23,
+    "comparator_substitutions": 11,
+    "delta_deletions": -1,
+    "delta_errors": 2,
+    "delta_substitutions": 3,
+    "person_reference_words": 120,
+    "sample_id": "4341191"
+   },
+   {
+    "cell_deletions": 3,
+    "cell_errors": 30,
+    "cell_substitutions": 27,
+    "comparator_deletions": 1,
+    "comparator_errors": 21,
+    "comparator_substitutions": 20,
+    "delta_deletions": 2,
+    "delta_errors": 9,
+    "delta_substitutions": 7,
+    "person_reference_words": 109,
+    "sample_id": "4344338"
+   },
+   {
+    "cell_deletions": 1,
+    "cell_errors": 15,
+    "cell_substitutions": 14,
+    "comparator_deletions": 2,
+    "comparator_errors": 17,
+    "comparator_substitutions": 15,
+    "delta_deletions": -1,
+    "delta_errors": -2,
+    "delta_substitutions": -1,
+    "person_reference_words": 76,
+    "sample_id": "4344866"
+   },
+   {
+    "cell_deletions": 1,
+    "cell_errors": 20,
+    "cell_substitutions": 19,
+    "comparator_deletions": 2,
+    "comparator_errors": 19,
+    "comparator_substitutions": 17,
+    "delta_deletions": -1,
+    "delta_errors": 1,
+    "delta_substitutions": 2,
+    "person_reference_words": 72,
+    "sample_id": "4346818"
+   },
+   {
+    "cell_deletions": 5,
+    "cell_errors": 45,
+    "cell_substitutions": 40,
+    "comparator_deletions": 8,
+    "comparator_errors": 46,
+    "comparator_substitutions": 38,
+    "delta_deletions": -3,
+    "delta_errors": -1,
+    "delta_substitutions": 2,
+    "person_reference_words": 130,
+    "sample_id": "4346923"
+   },
+   {
+    "cell_deletions": 2,
+    "cell_errors": 23,
+    "cell_substitutions": 21,
+    "comparator_deletions": 4,
+    "comparator_errors": 17,
+    "comparator_substitutions": 13,
+    "delta_deletions": -2,
+    "delta_errors": 6,
+    "delta_substitutions": 8,
+    "person_reference_words": 64,
+    "sample_id": "4359732"
+   },
+   {
+    "cell_deletions": 5,
+    "cell_errors": 28,
+    "cell_substitutions": 23,
+    "comparator_deletions": 3,
+    "comparator_errors": 22,
+    "comparator_substitutions": 19,
+    "delta_deletions": 2,
+    "delta_errors": 6,
+    "delta_substitutions": 4,
+    "person_reference_words": 82,
+    "sample_id": "4359971"
+   },
+   {
+    "cell_deletions": 3,
+    "cell_errors": 25,
+    "cell_substitutions": 22,
+    "comparator_deletions": 2,
+    "comparator_errors": 22,
+    "comparator_substitutions": 20,
+    "delta_deletions": 1,
+    "delta_errors": 3,
+    "delta_substitutions": 2,
+    "person_reference_words": 99,
+    "sample_id": "4360366"
+   },
+   {
+    "cell_deletions": 3,
+    "cell_errors": 16,
+    "cell_substitutions": 13,
+    "comparator_deletions": 3,
+    "comparator_errors": 16,
+    "comparator_substitutions": 13,
+    "delta_deletions": 0,
+    "delta_errors": 0,
+    "delta_substitutions": 0,
+    "person_reference_words": 50,
+    "sample_id": "4360674"
+   },
+   {
+    "cell_deletions": 8,
+    "cell_errors": 35,
+    "cell_substitutions": 27,
+    "comparator_deletions": 5,
+    "comparator_errors": 29,
+    "comparator_substitutions": 24,
+    "delta_deletions": 3,
+    "delta_errors": 6,
+    "delta_substitutions": 3,
+    "person_reference_words": 101,
+    "sample_id": "4360717"
+   },
+   {
+    "cell_deletions": 0,
+    "cell_errors": 13,
+    "cell_substitutions": 13,
+    "comparator_deletions": 1,
+    "comparator_errors": 14,
+    "comparator_substitutions": 13,
+    "delta_deletions": -1,
+    "delta_errors": -1,
+    "delta_substitutions": 0,
+    "person_reference_words": 80,
+    "sample_id": "4361631"
+   },
+   {
+    "cell_deletions": 2,
+    "cell_errors": 13,
+    "cell_substitutions": 11,
+    "comparator_deletions": 2,
+    "comparator_errors": 10,
+    "comparator_substitutions": 8,
+    "delta_deletions": 0,
+    "delta_errors": 3,
+    "delta_substitutions": 3,
+    "person_reference_words": 43,
+    "sample_id": "4363614"
+   },
+   {
+    "cell_deletions": 2,
+    "cell_errors": 38,
+    "cell_substitutions": 36,
+    "comparator_deletions": 2,
+    "comparator_errors": 33,
+    "comparator_substitutions": 31,
+    "delta_deletions": 0,
+    "delta_errors": 5,
+    "delta_substitutions": 5,
+    "person_reference_words": 144,
+    "sample_id": "4364366"
+   },
+   {
+    "cell_deletions": 1,
+    "cell_errors": 10,
+    "cell_substitutions": 9,
+    "comparator_deletions": 3,
+    "comparator_errors": 11,
+    "comparator_substitutions": 8,
+    "delta_deletions": -2,
+    "delta_errors": -1,
+    "delta_substitutions": 1,
+    "person_reference_words": 56,
+    "sample_id": "4365024"
+   },
+   {
+    "cell_deletions": 0,
+    "cell_errors": 6,
+    "cell_substitutions": 6,
+    "comparator_deletions": 0,
+    "comparator_errors": 6,
+    "comparator_substitutions": 6,
+    "delta_deletions": 0,
+    "delta_errors": 0,
+    "delta_substitutions": 0,
+    "person_reference_words": 51,
+    "sample_id": "4365948"
+   },
+   {
+    "cell_deletions": 2,
+    "cell_errors": 12,
+    "cell_substitutions": 10,
+    "comparator_deletions": 0,
+    "comparator_errors": 10,
+    "comparator_substitutions": 10,
+    "delta_deletions": 2,
+    "delta_errors": 2,
+    "delta_substitutions": 0,
+    "person_reference_words": 98,
+    "sample_id": "4366302"
+   },
+   {
+    "cell_deletions": 5,
+    "cell_errors": 16,
+    "cell_substitutions": 11,
+    "comparator_deletions": 4,
+    "comparator_errors": 18,
+    "comparator_substitutions": 14,
+    "delta_deletions": 1,
+    "delta_errors": -2,
+    "delta_substitutions": -3,
+    "person_reference_words": 123,
+    "sample_id": "4366429"
+   },
+   {
+    "cell_deletions": 0,
+    "cell_errors": 6,
+    "cell_substitutions": 6,
+    "comparator_deletions": 0,
+    "comparator_errors": 3,
+    "comparator_substitutions": 3,
+    "delta_deletions": 0,
+    "delta_errors": 3,
+    "delta_substitutions": 3,
+    "person_reference_words": 27,
+    "sample_id": "4366522"
+   },
+   {
+    "cell_deletions": 0,
+    "cell_errors": 6,
+    "cell_substitutions": 6,
+    "comparator_deletions": 0,
+    "comparator_errors": 9,
+    "comparator_substitutions": 9,
+    "delta_deletions": 0,
+    "delta_errors": -3,
+    "delta_substitutions": -3,
+    "person_reference_words": 53,
+    "sample_id": "4366893"
+   },
+   {
+    "cell_deletions": 0,
+    "cell_errors": 5,
+    "cell_substitutions": 5,
+    "comparator_deletions": 0,
+    "comparator_errors": 5,
+    "comparator_substitutions": 5,
+    "delta_deletions": 0,
+    "delta_errors": 0,
+    "delta_substitutions": 0,
+    "person_reference_words": 31,
+    "sample_id": "4367318"
+   },
+   {
+    "cell_deletions": 3,
+    "cell_errors": 19,
+    "cell_substitutions": 16,
+    "comparator_deletions": 4,
+    "comparator_errors": 22,
+    "comparator_substitutions": 18,
+    "delta_deletions": -1,
+    "delta_errors": -3,
+    "delta_substitutions": -2,
+    "person_reference_words": 69,
+    "sample_id": "4367535"
+   },
+   {
+    "cell_deletions": 3,
+    "cell_errors": 29,
+    "cell_substitutions": 26,
+    "comparator_deletions": 4,
+    "comparator_errors": 32,
+    "comparator_substitutions": 28,
+    "delta_deletions": -1,
+    "delta_errors": -3,
+    "delta_substitutions": -2,
+    "person_reference_words": 81,
+    "sample_id": "4368670"
+   },
+   {
+    "cell_deletions": 0,
+    "cell_errors": 1,
+    "cell_substitutions": 1,
+    "comparator_deletions": 0,
+    "comparator_errors": 0,
+    "comparator_substitutions": 0,
+    "delta_deletions": 0,
+    "delta_errors": 1,
+    "delta_substitutions": 1,
+    "person_reference_words": 14,
+    "sample_id": "4374910"
+   },
+   {
+    "cell_deletions": 1,
+    "cell_errors": 14,
+    "cell_substitutions": 13,
+    "comparator_deletions": 0,
+    "comparator_errors": 13,
+    "comparator_substitutions": 13,
+    "delta_deletions": 1,
+    "delta_errors": 1,
+    "delta_substitutions": 0,
+    "person_reference_words": 63,
+    "sample_id": "4375653"
+   },
+   {
+    "cell_deletions": 5,
+    "cell_errors": 30,
+    "cell_substitutions": 25,
+    "comparator_deletions": 3,
+    "comparator_errors": 30,
+    "comparator_substitutions": 27,
+    "delta_deletions": 2,
+    "delta_errors": 0,
+    "delta_substitutions": -2,
+    "person_reference_words": 139,
+    "sample_id": "4382825"
+   },
+   {
+    "cell_deletions": 3,
+    "cell_errors": 15,
+    "cell_substitutions": 12,
+    "comparator_deletions": 1,
+    "comparator_errors": 10,
+    "comparator_substitutions": 9,
+    "delta_deletions": 2,
+    "delta_errors": 5,
+    "delta_substitutions": 3,
+    "person_reference_words": 44,
+    "sample_id": "4383161"
+   },
+   {
+    "cell_deletions": 3,
+    "cell_errors": 6,
+    "cell_substitutions": 3,
+    "comparator_deletions": 1,
+    "comparator_errors": 4,
+    "comparator_substitutions": 3,
+    "delta_deletions": 2,
+    "delta_errors": 2,
+    "delta_substitutions": 0,
+    "person_reference_words": 63,
+    "sample_id": "4384198"
+   },
+   {
+    "cell_deletions": 1,
+    "cell_errors": 17,
+    "cell_substitutions": 16,
+    "comparator_deletions": 0,
+    "comparator_errors": 15,
+    "comparator_substitutions": 15,
+    "delta_deletions": 1,
+    "delta_errors": 2,
+    "delta_substitutions": 1,
+    "person_reference_words": 50,
+    "sample_id": "4384683"
+   },
+   {
+    "cell_deletions": 1,
+    "cell_errors": 9,
+    "cell_substitutions": 8,
+    "comparator_deletions": 0,
+    "comparator_errors": 6,
+    "comparator_substitutions": 6,
+    "delta_deletions": 1,
+    "delta_errors": 3,
+    "delta_substitutions": 2,
+    "person_reference_words": 40,
+    "sample_id": "4384744"
+   },
+   {
+    "cell_deletions": 3,
+    "cell_errors": 19,
+    "cell_substitutions": 16,
+    "comparator_deletions": 3,
+    "comparator_errors": 22,
+    "comparator_substitutions": 19,
+    "delta_deletions": 0,
+    "delta_errors": -3,
+    "delta_substitutions": -3,
+    "person_reference_words": 94,
+    "sample_id": "4384964"
+   },
+   {
+    "cell_deletions": 0,
+    "cell_errors": 5,
+    "cell_substitutions": 5,
+    "comparator_deletions": 0,
+    "comparator_errors": 5,
+    "comparator_substitutions": 5,
+    "delta_deletions": 0,
+    "delta_errors": 0,
+    "delta_substitutions": 0,
+    "person_reference_words": 36,
+    "sample_id": "4385072"
+   },
+   {
+    "cell_deletions": 0,
+    "cell_errors": 18,
+    "cell_substitutions": 18,
+    "comparator_deletions": 1,
+    "comparator_errors": 18,
+    "comparator_substitutions": 17,
+    "delta_deletions": -1,
+    "delta_errors": 0,
+    "delta_substitutions": 1,
+    "person_reference_words": 82,
+    "sample_id": "4385388"
+   },
+   {
+    "cell_deletions": 1,
+    "cell_errors": 18,
+    "cell_substitutions": 17,
+    "comparator_deletions": 1,
+    "comparator_errors": 17,
+    "comparator_substitutions": 16,
+    "delta_deletions": 0,
+    "delta_errors": 1,
+    "delta_substitutions": 1,
+    "person_reference_words": 68,
+    "sample_id": "4385939"
+   },
+   {
+    "cell_deletions": 1,
+    "cell_errors": 7,
+    "cell_substitutions": 6,
+    "comparator_deletions": 0,
+    "comparator_errors": 6,
+    "comparator_substitutions": 6,
+    "delta_deletions": 1,
+    "delta_errors": 1,
+    "delta_substitutions": 0,
+    "person_reference_words": 23,
+    "sample_id": "4386541"
+   },
+   {
+    "cell_deletions": 3,
+    "cell_errors": 9,
+    "cell_substitutions": 6,
+    "comparator_deletions": 0,
+    "comparator_errors": 6,
+    "comparator_substitutions": 6,
+    "delta_deletions": 3,
+    "delta_errors": 3,
+    "delta_substitutions": 0,
+    "person_reference_words": 31,
+    "sample_id": "4387332"
+   },
+   {
+    "cell_deletions": 1,
+    "cell_errors": 7,
+    "cell_substitutions": 6,
+    "comparator_deletions": 1,
+    "comparator_errors": 6,
+    "comparator_substitutions": 5,
+    "delta_deletions": 0,
+    "delta_errors": 1,
+    "delta_substitutions": 1,
+    "person_reference_words": 27,
+    "sample_id": "4387383"
+   },
+   {
+    "cell_deletions": 0,
+    "cell_errors": 3,
+    "cell_substitutions": 3,
+    "comparator_deletions": 0,
+    "comparator_errors": 3,
+    "comparator_substitutions": 3,
+    "delta_deletions": 0,
+    "delta_errors": 0,
+    "delta_substitutions": 0,
+    "person_reference_words": 30,
+    "sample_id": "4387865"
+   },
+   {
+    "cell_deletions": 0,
+    "cell_errors": 17,
+    "cell_substitutions": 17,
+    "comparator_deletions": 1,
+    "comparator_errors": 11,
+    "comparator_substitutions": 10,
+    "delta_deletions": -1,
+    "delta_errors": 6,
+    "delta_substitutions": 7,
+    "person_reference_words": 35,
+    "sample_id": "4389907"
+   },
+   {
+    "cell_deletions": 1,
+    "cell_errors": 4,
+    "cell_substitutions": 3,
+    "comparator_deletions": 0,
+    "comparator_errors": 5,
+    "comparator_substitutions": 5,
+    "delta_deletions": 1,
+    "delta_errors": -1,
+    "delta_substitutions": -2,
+    "person_reference_words": 28,
+    "sample_id": "4392809"
+   },
+   {
+    "cell_deletions": 1,
+    "cell_errors": 21,
+    "cell_substitutions": 20,
+    "comparator_deletions": 1,
+    "comparator_errors": 20,
+    "comparator_substitutions": 19,
+    "delta_deletions": 0,
+    "delta_errors": 1,
+    "delta_substitutions": 1,
+    "person_reference_words": 31,
+    "sample_id": "4394084"
+   },
+   {
+    "cell_deletions": 1,
+    "cell_errors": 12,
+    "cell_substitutions": 11,
+    "comparator_deletions": 1,
+    "comparator_errors": 10,
+    "comparator_substitutions": 9,
+    "delta_deletions": 0,
+    "delta_errors": 2,
+    "delta_substitutions": 2,
+    "person_reference_words": 48,
+    "sample_id": "4397800"
+   },
+   {
+    "cell_deletions": 5,
+    "cell_errors": 23,
+    "cell_substitutions": 18,
+    "comparator_deletions": 3,
+    "comparator_errors": 22,
+    "comparator_substitutions": 19,
+    "delta_deletions": 2,
+    "delta_errors": 1,
+    "delta_substitutions": -1,
+    "person_reference_words": 105,
+    "sample_id": "4397829"
+   }
+  ],
+  "substitution_rate": {
+   "cell_percent": 21.220431950634215,
+   "clusters": 44,
+   "comparator_percent": 19.643469317792253,
+   "improvement_ci90": [
+    -2.58677376790184,
+    -0.6683602321233959
+   ],
+   "improvement_point": -1.576962632841962
+  }
+ },
+ "q2_position": {
+  "boundary_bins_within_duration_class": {
+   "unit 10-60 s": [
+    {
+     "cell": {
+      "deletions": 10,
+      "errors": 60,
+      "reference_words": 241,
+      "substitutions": 50
+     },
+     "cell_wer_percent": 24.896265560165975,
+     "comparator": {
+      "deletions": 6,
+      "errors": 51,
+      "reference_words": 241,
+      "substitutions": 45
+     },
+     "comparator_wer_percent": 21.16182572614108,
+     "excess_errors": 9,
+     "excess_share_percent": 14.754098360655737,
+     "improvement_points": -3.734439834024897,
+     "stratum": "0-1 s",
+     "words": 241
+    },
+    {
+     "cell": {
+      "deletions": 10,
+      "errors": 85,
+      "reference_words": 370,
+      "substitutions": 75
+     },
+     "cell_wer_percent": 22.972972972972972,
+     "comparator": {
+      "deletions": 10,
+      "errors": 84,
+      "reference_words": 370,
+      "substitutions": 74
+     },
+     "comparator_wer_percent": 22.7027027027027,
+     "excess_errors": 1,
+     "excess_share_percent": 1.639344262295082,
+     "improvement_points": -0.2702702702702702,
+     "stratum": "1-3 s",
+     "words": 370
+    },
+    {
+     "cell": {
+      "deletions": 11,
+      "errors": 127,
+      "reference_words": 560,
+      "substitutions": 116
+     },
+     "cell_wer_percent": 22.678571428571427,
+     "comparator": {
+      "deletions": 11,
+      "errors": 122,
+      "reference_words": 560,
+      "substitutions": 111
+     },
+     "comparator_wer_percent": 21.785714285714285,
+     "excess_errors": 5,
+     "excess_share_percent": 8.19672131147541,
+     "improvement_points": -0.8928571428571423,
+     "stratum": "3-10 s",
+     "words": 560
+    },
+    {
+     "cell": {
+      "deletions": 6,
+      "errors": 60,
+      "reference_words": 253,
+      "substitutions": 54
+     },
+     "cell_wer_percent": 23.715415019762847,
+     "comparator": {
+      "deletions": 6,
+      "errors": 55,
+      "reference_words": 253,
+      "substitutions": 49
+     },
+     "comparator_wer_percent": 21.73913043478261,
+     "excess_errors": 5,
+     "excess_share_percent": 8.19672131147541,
+     "improvement_points": -1.9762845849802382,
+     "stratum": ">10 s",
+     "words": 253
+    }
+   ],
+   "unit < 10 s": [
+    {
+     "cell": {
+      "deletions": 28,
+      "errors": 90,
+      "reference_words": 237,
+      "substitutions": 62
+     },
+     "cell_wer_percent": 37.9746835443038,
+     "comparator": {
+      "deletions": 17,
+      "errors": 66,
+      "reference_words": 237,
+      "substitutions": 49
+     },
+     "comparator_wer_percent": 27.848101265822784,
+     "excess_errors": 24,
+     "excess_share_percent": 39.34426229508197,
+     "improvement_points": -10.126582278481017,
+     "stratum": "0-1 s",
+     "words": 237
+    },
+    {
+     "cell": {
+      "deletions": 10,
+      "errors": 94,
+      "reference_words": 307,
+      "substitutions": 84
+     },
+     "cell_wer_percent": 30.618892508143322,
+     "comparator": {
+      "deletions": 9,
+      "errors": 70,
+      "reference_words": 307,
+      "substitutions": 61
+     },
+     "comparator_wer_percent": 22.80130293159609,
+     "excess_errors": 24,
+     "excess_share_percent": 39.34426229508197,
+     "improvement_points": -7.817589576547231,
+     "stratum": "1-3 s",
+     "words": 307
+    },
+    {
+     "cell": {
+      "deletions": 1,
+      "errors": 39,
+      "reference_words": 136,
+      "substitutions": 38
+     },
+     "cell_wer_percent": 28.676470588235293,
+     "comparator": {
+      "deletions": 1,
+      "errors": 39,
+      "reference_words": 136,
+      "substitutions": 38
+     },
+     "comparator_wer_percent": 28.676470588235293,
+     "excess_errors": 0,
+     "excess_share_percent": 0.0,
+     "improvement_points": 0.0,
+     "stratum": "3-10 s",
+     "words": 136
+    }
+   ],
+   "unit >= 60 s": [
+    {
+     "cell": {
+      "deletions": 4,
+      "errors": 23,
+      "reference_words": 114,
+      "substitutions": 19
+     },
+     "cell_wer_percent": 20.17543859649123,
+     "comparator": {
+      "deletions": 3,
+      "errors": 23,
+      "reference_words": 114,
+      "substitutions": 20
+     },
+     "comparator_wer_percent": 20.17543859649123,
+     "excess_errors": 0,
+     "excess_share_percent": 0.0,
+     "improvement_points": 0.0,
+     "stratum": "0-1 s",
+     "words": 114
+    },
+    {
+     "cell": {
+      "deletions": 5,
+      "errors": 23,
+      "reference_words": 108,
+      "substitutions": 18
+     },
+     "cell_wer_percent": 21.296296296296298,
+     "comparator": {
+      "deletions": 6,
+      "errors": 24,
+      "reference_words": 108,
+      "substitutions": 18
+     },
+     "comparator_wer_percent": 22.22222222222222,
+     "excess_errors": -1,
+     "excess_share_percent": -1.639344262295082,
+     "improvement_points": 0.9259259259259238,
+     "stratum": "1-3 s",
+     "words": 108
+    },
+    {
+     "cell": {
+      "deletions": 4,
+      "errors": 43,
+      "reference_words": 191,
+      "substitutions": 39
+     },
+     "cell_wer_percent": 22.513089005235603,
+     "comparator": {
+      "deletions": 3,
+      "errors": 43,
+      "reference_words": 191,
+      "substitutions": 40
+     },
+     "comparator_wer_percent": 22.513089005235603,
+     "excess_errors": 0,
+     "excess_share_percent": 0.0,
+     "improvement_points": 0.0,
+     "stratum": "3-10 s",
+     "words": 191
+    },
+    {
+     "cell": {
+      "deletions": 9,
+      "errors": 73,
+      "reference_words": 400,
+      "substitutions": 64
+     },
+     "cell_wer_percent": 18.25,
+     "comparator": {
+      "deletions": 11,
+      "errors": 79,
+      "reference_words": 400,
+      "substitutions": 68
+     },
+     "comparator_wer_percent": 19.75,
+     "excess_errors": -6,
+     "excess_share_percent": -9.836065573770492,
+     "improvement_points": 1.5,
+     "stratum": ">10 s",
+     "words": 400
+    }
+   ]
+  },
+  "cell_boundary_bins_seconds": [
+   {
+    "cell": {
+     "deletions": 42,
+     "errors": 173,
+     "reference_words": 592,
+     "substitutions": 131
+    },
+    "cell_wer_percent": 29.222972972972972,
+    "comparator": {
+     "deletions": 26,
+     "errors": 140,
+     "reference_words": 592,
+     "substitutions": 114
+    },
+    "comparator_wer_percent": 23.64864864864865,
+    "excess_errors": 33,
+    "excess_share_percent": 54.09836065573771,
+    "improvement_points": -5.574324324324323,
+    "stratum": "0-1 s",
+    "words": 592
+   },
+   {
+    "cell": {
+     "deletions": 25,
+     "errors": 202,
+     "reference_words": 785,
+     "substitutions": 177
+    },
+    "cell_wer_percent": 25.73248407643312,
+    "comparator": {
+     "deletions": 25,
+     "errors": 178,
+     "reference_words": 785,
+     "substitutions": 153
+    },
+    "comparator_wer_percent": 22.67515923566879,
+    "excess_errors": 24,
+    "excess_share_percent": 39.34426229508197,
+    "improvement_points": -3.0573248407643305,
+    "stratum": "1-3 s",
+    "words": 785
+   },
+   {
+    "cell": {
+     "deletions": 16,
+     "errors": 209,
+     "reference_words": 887,
+     "substitutions": 193
+    },
+    "cell_wer_percent": 23.562570462232244,
+    "comparator": {
+     "deletions": 15,
+     "errors": 204,
+     "reference_words": 887,
+     "substitutions": 189
+    },
+    "comparator_wer_percent": 22.998872604284102,
+    "excess_errors": 5,
+    "excess_share_percent": 8.19672131147541,
+    "improvement_points": -0.5636978579481422,
+    "stratum": "3-10 s",
+    "words": 887
+   },
+   {
+    "cell": {
+     "deletions": 15,
+     "errors": 133,
+     "reference_words": 653,
+     "substitutions": 118
+    },
+    "cell_wer_percent": 20.367534456355283,
+    "comparator": {
+     "deletions": 17,
+     "errors": 134,
+     "reference_words": 653,
+     "substitutions": 117
+    },
+    "comparator_wer_percent": 20.520673813169985,
+    "excess_errors": -1,
+    "excess_share_percent": -1.639344262295082,
+    "improvement_points": 0.1531393568147017,
+    "stratum": ">10 s",
+    "words": 653
+   }
+  ],
+  "cell_boundary_bins_words": [
+   {
+    "cell": {
+     "deletions": 17,
+     "errors": 83,
+     "reference_words": 273,
+     "substitutions": 66
+    },
+    "cell_wer_percent": 30.4029304029304,
+    "comparator": {
+     "deletions": 10,
+     "errors": 69,
+     "reference_words": 273,
+     "substitutions": 59
+    },
+    "comparator_wer_percent": 25.274725274725274,
+    "excess_errors": 14,
+    "excess_share_percent": 22.950819672131146,
+    "improvement_points": -5.128205128205128,
+    "stratum": "0 words (on the boundary)",
+    "words": 273
+   },
+   {
+    "cell": {
+     "deletions": 16,
+     "errors": 60,
+     "reference_words": 222,
+     "substitutions": 44
+    },
+    "cell_wer_percent": 27.027027027027028,
+    "comparator": {
+     "deletions": 11,
+     "errors": 45,
+     "reference_words": 222,
+     "substitutions": 34
+    },
+    "comparator_wer_percent": 20.27027027027027,
+    "excess_errors": 15,
+    "excess_share_percent": 24.59016393442623,
+    "improvement_points": -6.756756756756758,
+    "stratum": "1 word",
+    "words": 222
+   },
+   {
+    "cell": {
+     "deletions": 18,
+     "errors": 97,
+     "reference_words": 369,
+     "substitutions": 79
+    },
+    "cell_wer_percent": 26.287262872628727,
+    "comparator": {
+     "deletions": 16,
+     "errors": 97,
+     "reference_words": 369,
+     "substitutions": 81
+    },
+    "comparator_wer_percent": 26.287262872628727,
+    "excess_errors": 0,
+    "excess_share_percent": 0.0,
+    "improvement_points": 0.0,
+    "stratum": "2-3 words",
+    "words": 369
+   },
+   {
+    "cell": {
+     "deletions": 19,
+     "errors": 205,
+     "reference_words": 811,
+     "substitutions": 186
+    },
+    "cell_wer_percent": 25.27743526510481,
+    "comparator": {
+     "deletions": 16,
+     "errors": 178,
+     "reference_words": 811,
+     "substitutions": 162
+    },
+    "comparator_wer_percent": 21.948212083847103,
+    "excess_errors": 27,
+    "excess_share_percent": 44.26229508196721,
+    "improvement_points": -3.3292231812577064,
+    "stratum": "4-9 words",
+    "words": 811
+   },
+   {
+    "cell": {
+     "deletions": 28,
+     "errors": 272,
+     "reference_words": 1242,
+     "substitutions": 244
+    },
+    "cell_wer_percent": 21.900161030595815,
+    "comparator": {
+     "deletions": 30,
+     "errors": 267,
+     "reference_words": 1242,
+     "substitutions": 237
+    },
+    "comparator_wer_percent": 21.497584541062803,
+    "excess_errors": 5,
+    "excess_share_percent": 8.19672131147541,
+    "improvement_points": -0.4025764895330113,
+    "stratum": ">= 10 words",
+    "words": 1242
+   }
+  ],
+  "comparator_boundary_bins_seconds": [
+   {
+    "cell": {
+     "deletions": 4,
+     "errors": 35,
+     "reference_words": 96,
+     "substitutions": 31
+    },
+    "cell_wer_percent": 36.458333333333336,
+    "comparator": {
+     "deletions": 1,
+     "errors": 32,
+     "reference_words": 96,
+     "substitutions": 31
+    },
+    "comparator_wer_percent": 33.333333333333336,
+    "excess_errors": 3,
+    "excess_share_percent": 4.918032786885246,
+    "improvement_points": -3.125,
+    "stratum": "0-1 s",
+    "words": 96
+   },
+   {
+    "cell": {
+     "deletions": 2,
+     "errors": 36,
+     "reference_words": 138,
+     "substitutions": 34
+    },
+    "cell_wer_percent": 26.08695652173913,
+    "comparator": {
+     "deletions": 6,
+     "errors": 36,
+     "reference_words": 138,
+     "substitutions": 30
+    },
+    "comparator_wer_percent": 26.08695652173913,
+    "excess_errors": 0,
+    "excess_share_percent": 0.0,
+    "improvement_points": 0.0,
+    "stratum": "1-3 s",
+    "words": 138
+   },
+   {
+    "cell": {
+     "deletions": 10,
+     "errors": 79,
+     "reference_words": 376,
+     "substitutions": 69
+    },
+    "cell_wer_percent": 21.01063829787234,
+    "comparator": {
+     "deletions": 11,
+     "errors": 83,
+     "reference_words": 376,
+     "substitutions": 72
+    },
+    "comparator_wer_percent": 22.074468085106382,
+    "excess_errors": -4,
+    "excess_share_percent": -6.557377049180328,
+    "improvement_points": 1.0638297872340416,
+    "stratum": "3-10 s",
+    "words": 376
+   },
+   {
+    "cell": {
+     "deletions": 82,
+     "errors": 567,
+     "reference_words": 2307,
+     "substitutions": 485
+    },
+    "cell_wer_percent": 24.57737321196359,
+    "comparator": {
+     "deletions": 65,
+     "errors": 505,
+     "reference_words": 2307,
+     "substitutions": 440
+    },
+    "comparator_wer_percent": 21.889900303424362,
+    "excess_errors": 62,
+    "excess_share_percent": 101.63934426229508,
+    "improvement_points": -2.6874729085392275,
+    "stratum": ">10 s",
+    "words": 2307
+   }
+  ],
+  "comparator_boundary_bins_words": [
+   {
+    "cell": {
+     "deletions": 3,
+     "errors": 15,
+     "reference_words": 37,
+     "substitutions": 12
+    },
+    "cell_wer_percent": 40.54054054054054,
+    "comparator": {
+     "deletions": 1,
+     "errors": 13,
+     "reference_words": 37,
+     "substitutions": 12
+    },
+    "comparator_wer_percent": 35.13513513513514,
+    "excess_errors": 2,
+    "excess_share_percent": 3.278688524590164,
+    "improvement_points": -5.4054054054054035,
+    "stratum": "0 words (on the boundary)",
+    "words": 37
+   },
+   {
+    "cell": {
+     "deletions": 1,
+     "errors": 13,
+     "reference_words": 37,
+     "substitutions": 12
+    },
+    "cell_wer_percent": 35.13513513513514,
+    "comparator": {
+     "deletions": 0,
+     "errors": 13,
+     "reference_words": 37,
+     "substitutions": 13
+    },
+    "comparator_wer_percent": 35.13513513513514,
+    "excess_errors": 0,
+    "excess_share_percent": 0.0,
+    "improvement_points": 0.0,
+    "stratum": "1 word",
+    "words": 37
+   },
+   {
+    "cell": {
+     "deletions": 0,
+     "errors": 14,
+     "reference_words": 63,
+     "substitutions": 14
+    },
+    "cell_wer_percent": 22.22222222222222,
+    "comparator": {
+     "deletions": 3,
+     "errors": 17,
+     "reference_words": 63,
+     "substitutions": 14
+    },
+    "comparator_wer_percent": 26.984126984126984,
+    "excess_errors": -3,
+    "excess_share_percent": -4.918032786885246,
+    "improvement_points": 4.761904761904763,
+    "stratum": "2-3 words",
+    "words": 63
+   },
+   {
+    "cell": {
+     "deletions": 4,
+     "errors": 38,
+     "reference_words": 148,
+     "substitutions": 34
+    },
+    "cell_wer_percent": 25.675675675675677,
+    "comparator": {
+     "deletions": 3,
+     "errors": 36,
+     "reference_words": 148,
+     "substitutions": 33
+    },
+    "comparator_wer_percent": 24.324324324324323,
+    "excess_errors": 2,
+    "excess_share_percent": 3.278688524590164,
+    "improvement_points": -1.3513513513513544,
+    "stratum": "4-9 words",
+    "words": 148
+   },
+   {
+    "cell": {
+     "deletions": 90,
+     "errors": 637,
+     "reference_words": 2632,
+     "substitutions": 547
+    },
+    "cell_wer_percent": 24.20212765957447,
+    "comparator": {
+     "deletions": 76,
+     "errors": 577,
+     "reference_words": 2632,
+     "substitutions": 501
+    },
+    "comparator_wer_percent": 21.922492401215806,
+    "excess_errors": 60,
+    "excess_share_percent": 98.36065573770492,
+    "improvement_points": -2.279635258358663,
+    "stratum": ">= 10 words",
+    "words": 2632
+   }
+  ],
+  "mention_split": {
+   "cell": {
+    "mentions_total": 2212,
+    "multiword_mentions": 656,
+    "split_across_spans": {
+     "errors": 1,
+     "mentions": 1,
+     "wer_percent": 50.0,
+     "words": 2
+    },
+    "within_one_span": {
+     "errors": 368,
+     "mentions": 655,
+     "wer_percent": 27.078734363502576,
+     "words": 1359
+    }
+   },
+   "comparator": {
+    "mentions_total": 2212,
+    "multiword_mentions": 656,
+    "split_across_spans": {
+     "errors": 5,
+     "mentions": 4,
+     "wer_percent": 55.55555555555556,
+     "words": 9
+    },
+    "within_one_span": {
+     "errors": 329,
+     "mentions": 652,
+     "wer_percent": 24.33431952662722,
+     "words": 1352
+    }
+   }
+  }
+ },
+ "q3_unit_properties": {
+  "unit_absorbed_bucket": [
+   {
+    "cell": {
+     "deletions": 4,
+     "errors": 24,
+     "reference_words": 101,
+     "substitutions": 20
+    },
+    "cell_wer_percent": 23.762376237623762,
+    "comparator": {
+     "deletions": 3,
+     "errors": 20,
+     "reference_words": 101,
+     "substitutions": 17
+    },
+    "comparator_wer_percent": 19.801980198019802,
+    "excess_errors": 4,
+    "excess_share_percent": 6.557377049180328,
+    "improvement_points": -3.9603960396039604,
+    "stratum": "absorbed >= 1 sliver",
+    "words": 101
+   },
+   {
+    "cell": {
+     "deletions": 94,
+     "errors": 693,
+     "reference_words": 2816,
+     "substitutions": 599
+    },
+    "cell_wer_percent": 24.609375,
+    "comparator": {
+     "deletions": 80,
+     "errors": 636,
+     "reference_words": 2816,
+     "substitutions": 556
+    },
+    "comparator_wer_percent": 22.585227272727273,
+    "excess_errors": 57,
+    "excess_share_percent": 93.44262295081967,
+    "improvement_points": -2.0241477272727266,
+    "stratum": "absorbed none",
+    "words": 2816
+   }
+  ],
+  "unit_duration_bucket": [
+   {
+    "cell": {
+     "deletions": 37,
+     "errors": 332,
+     "reference_words": 1424,
+     "substitutions": 295
+    },
+    "cell_wer_percent": 23.314606741573034,
+    "comparator": {
+     "deletions": 33,
+     "errors": 312,
+     "reference_words": 1424,
+     "substitutions": 279
+    },
+    "comparator_wer_percent": 21.910112359550563,
+    "excess_errors": 20,
+    "excess_share_percent": 32.78688524590164,
+    "improvement_points": -1.4044943820224702,
+    "stratum": "unit 10-60 s",
+    "words": 1424
+   },
+   {
+    "cell": {
+     "deletions": 39,
+     "errors": 223,
+     "reference_words": 680,
+     "substitutions": 184
+    },
+    "cell_wer_percent": 32.794117647058826,
+    "comparator": {
+     "deletions": 27,
+     "errors": 175,
+     "reference_words": 680,
+     "substitutions": 148
+    },
+    "comparator_wer_percent": 25.735294117647058,
+    "excess_errors": 48,
+    "excess_share_percent": 78.68852459016394,
+    "improvement_points": -7.058823529411768,
+    "stratum": "unit < 10 s",
+    "words": 680
+   },
+   {
+    "cell": {
+     "deletions": 22,
+     "errors": 162,
+     "reference_words": 813,
+     "substitutions": 140
+    },
+    "cell_wer_percent": 19.92619926199262,
+    "comparator": {
+     "deletions": 23,
+     "errors": 169,
+     "reference_words": 813,
+     "substitutions": 146
+    },
+    "comparator_wer_percent": 20.78720787207872,
+    "excess_errors": -7,
+    "excess_share_percent": -11.475409836065573,
+    "improvement_points": 0.8610086100861025,
+    "stratum": "unit >= 60 s",
+    "words": 813
+   }
+  ],
+  "unit_end_cut": [
+   {
+    "cell": {
+     "deletions": 0,
+     "errors": 0,
+     "reference_words": 3,
+     "substitutions": 0
+    },
+    "cell_wer_percent": 0.0,
+    "comparator": {
+     "deletions": 0,
+     "errors": 0,
+     "reference_words": 3,
+     "substitutions": 0
+    },
+    "comparator_wer_percent": 0.0,
+    "excess_errors": 0,
+    "excess_share_percent": 0.0,
+    "improvement_points": 0.0,
+    "stratum": "call-end",
+    "words": 3
+   },
+   {
+    "cell": {
+     "deletions": 0,
+     "errors": 4,
+     "reference_words": 17,
+     "substitutions": 4
+    },
+    "cell_wer_percent": 23.529411764705884,
+    "comparator": {
+     "deletions": 0,
+     "errors": 4,
+     "reference_words": 17,
+     "substitutions": 4
+    },
+    "comparator_wer_percent": 23.529411764705884,
+    "excess_errors": 0,
+    "excess_share_percent": 0.0,
+    "improvement_points": 0.0,
+    "stratum": "forced-cap-split",
+    "words": 17
+   },
+   {
+    "cell": {
+     "deletions": 83,
+     "errors": 645,
+     "reference_words": 2668,
+     "substitutions": 562
+    },
+    "cell_wer_percent": 24.175412293853075,
+    "comparator": {
+     "deletions": 78,
+     "errors": 604,
+     "reference_words": 2668,
+     "substitutions": 526
+    },
+    "comparator_wer_percent": 22.638680659670165,
+    "excess_errors": 41,
+    "excess_share_percent": 67.21311475409836,
+    "improvement_points": -1.5367316341829103,
+    "stratum": "pause",
+    "words": 2668
+   },
+   {
+    "cell": {
+     "deletions": 15,
+     "errors": 68,
+     "reference_words": 229,
+     "substitutions": 53
+    },
+    "cell_wer_percent": 29.694323144104803,
+    "comparator": {
+     "deletions": 5,
+     "errors": 48,
+     "reference_words": 229,
+     "substitutions": 43
+    },
+    "comparator_wer_percent": 20.96069868995633,
+    "excess_errors": 20,
+    "excess_share_percent": 32.78688524590164,
+    "improvement_points": -8.733624454148472,
+    "stratum": "turn-boundary",
+    "words": 229
+   }
+  ],
+  "unit_ends_active_bucket": [
+   {
+    "cell": {
+     "deletions": 84,
+     "errors": 654,
+     "reference_words": 2725,
+     "substitutions": 570
+    },
+    "cell_wer_percent": 24.0,
+    "comparator": {
+     "deletions": 78,
+     "errors": 613,
+     "reference_words": 2725,
+     "substitutions": 535
+    },
+    "comparator_wer_percent": 22.495412844036696,
+    "excess_errors": 41,
+    "excess_share_percent": 67.21311475409836,
+    "improvement_points": -1.5045871559633035,
+    "stratum": "unit ends in a pause (loses its tail under candidate b)",
+    "words": 2725
+   },
+   {
+    "cell": {
+     "deletions": 14,
+     "errors": 63,
+     "reference_words": 192,
+     "substitutions": 49
+    },
+    "cell_wer_percent": 32.8125,
+    "comparator": {
+     "deletions": 5,
+     "errors": 43,
+     "reference_words": 192,
+     "substitutions": 38
+    },
+    "comparator_wer_percent": 22.395833333333332,
+    "excess_errors": 20,
+    "excess_share_percent": 32.78688524590164,
+    "improvement_points": -10.416666666666668,
+    "stratum": "unit ends mid-speech (keeps its tail under candidate b)",
+    "words": 192
+   }
+  ],
+  "unit_fine_duration_bucket": [
+   {
+    "cell": {
+     "deletions": 16,
+     "errors": 168,
+     "reference_words": 669,
+     "substitutions": 152
+    },
+    "cell_wer_percent": 25.112107623318387,
+    "comparator": {
+     "deletions": 13,
+     "errors": 151,
+     "reference_words": 669,
+     "substitutions": 138
+    },
+    "comparator_wer_percent": 22.57100149476831,
+    "excess_errors": 17,
+    "excess_share_percent": 27.868852459016395,
+    "improvement_points": -2.5411061285500764,
+    "stratum": "unit 10-30 s",
+    "words": 669
+   },
+   {
+    "cell": {
+     "deletions": 11,
+     "errors": 42,
+     "reference_words": 128,
+     "substitutions": 31
+    },
+    "cell_wer_percent": 32.8125,
+    "comparator": {
+     "deletions": 10,
+     "errors": 35,
+     "reference_words": 128,
+     "substitutions": 25
+    },
+    "comparator_wer_percent": 27.34375,
+    "excess_errors": 7,
+    "excess_share_percent": 11.475409836065573,
+    "improvement_points": -5.46875,
+    "stratum": "unit 3-5 s",
+    "words": 128
+   },
+   {
+    "cell": {
+     "deletions": 21,
+     "errors": 164,
+     "reference_words": 755,
+     "substitutions": 143
+    },
+    "cell_wer_percent": 21.721854304635762,
+    "comparator": {
+     "deletions": 20,
+     "errors": 161,
+     "reference_words": 755,
+     "substitutions": 141
+    },
+    "comparator_wer_percent": 21.32450331125828,
+    "excess_errors": 3,
+    "excess_share_percent": 4.918032786885246,
+    "improvement_points": -0.3973509933774828,
+    "stratum": "unit 30-60 s",
+    "words": 755
+   },
+   {
+    "cell": {
+     "deletions": 13,
+     "errors": 138,
+     "reference_words": 442,
+     "substitutions": 125
+    },
+    "cell_wer_percent": 31.221719457013574,
+    "comparator": {
+     "deletions": 11,
+     "errors": 113,
+     "reference_words": 442,
+     "substitutions": 102
+    },
+    "comparator_wer_percent": 25.56561085972851,
+    "excess_errors": 25,
+    "excess_share_percent": 40.98360655737705,
+    "improvement_points": -5.6561085972850655,
+    "stratum": "unit 5-10 s",
+    "words": 442
+   },
+   {
+    "cell": {
+     "deletions": 15,
+     "errors": 43,
+     "reference_words": 110,
+     "substitutions": 28
+    },
+    "cell_wer_percent": 39.09090909090909,
+    "comparator": {
+     "deletions": 6,
+     "errors": 27,
+     "reference_words": 110,
+     "substitutions": 21
+    },
+    "comparator_wer_percent": 24.545454545454547,
+    "excess_errors": 16,
+    "excess_share_percent": 26.229508196721312,
+    "improvement_points": -14.545454545454547,
+    "stratum": "unit < 3 s",
+    "words": 110
+   },
+   {
+    "cell": {
+     "deletions": 22,
+     "errors": 162,
+     "reference_words": 813,
+     "substitutions": 140
+    },
+    "cell_wer_percent": 19.92619926199262,
+    "comparator": {
+     "deletions": 23,
+     "errors": 169,
+     "reference_words": 813,
+     "substitutions": 146
+    },
+    "comparator_wer_percent": 20.78720787207872,
+    "excess_errors": -7,
+    "excess_share_percent": -11.475409836065573,
+    "improvement_points": 0.8610086100861025,
+    "stratum": "unit >= 60 s",
+    "words": 813
+   }
+  ],
+  "unit_purity_bucket": [
+   {
+    "cell": {
+     "deletions": 1,
+     "errors": 1,
+     "reference_words": 1,
+     "substitutions": 0
+    },
+    "cell_wer_percent": 100.0,
+    "comparator": {
+     "deletions": 0,
+     "errors": 0,
+     "reference_words": 1,
+     "substitutions": 0
+    },
+    "comparator_wer_percent": 0.0,
+    "excess_errors": 1,
+    "excess_share_percent": 1.639344262295082,
+    "improvement_points": -100.0,
+    "stratum": "speakers = 0 (silent)",
+    "words": 1
+   },
+   {
+    "cell": {
+     "deletions": 73,
+     "errors": 579,
+     "reference_words": 2421,
+     "substitutions": 506
+    },
+    "cell_wer_percent": 23.915737298636927,
+    "comparator": {
+     "deletions": 65,
+     "errors": 529,
+     "reference_words": 2421,
+     "substitutions": 464
+    },
+    "comparator_wer_percent": 21.85047501032631,
+    "excess_errors": 50,
+    "excess_share_percent": 81.9672131147541,
+    "improvement_points": -2.065262288310617,
+    "stratum": "speakers = 1 (pure)",
+    "words": 2421
+   },
+   {
+    "cell": {
+     "deletions": 21,
+     "errors": 131,
+     "reference_words": 479,
+     "substitutions": 110
+    },
+    "cell_wer_percent": 27.34864300626305,
+    "comparator": {
+     "deletions": 14,
+     "errors": 120,
+     "reference_words": 479,
+     "substitutions": 106
+    },
+    "comparator_wer_percent": 25.052192066805844,
+    "excess_errors": 11,
+    "excess_share_percent": 18.0327868852459,
+    "improvement_points": -2.2964509394572055,
+    "stratum": "speakers = 2",
+    "words": 479
+   },
+   {
+    "cell": {
+     "deletions": 3,
+     "errors": 6,
+     "reference_words": 16,
+     "substitutions": 3
+    },
+    "cell_wer_percent": 37.5,
+    "comparator": {
+     "deletions": 4,
+     "errors": 7,
+     "reference_words": 16,
+     "substitutions": 3
+    },
+    "comparator_wer_percent": 43.75,
+    "excess_errors": -1,
+    "excess_share_percent": -1.639344262295082,
+    "improvement_points": 6.25,
+    "stratum": "speakers >= 3",
+    "words": 16
+   }
+  ],
+  "unit_share_bucket": [
+   {
+    "cell": {
+     "deletions": 3,
+     "errors": 16,
+     "reference_words": 52,
+     "substitutions": 13
+    },
+    "cell_wer_percent": 30.76923076923077,
+    "comparator": {
+     "deletions": 3,
+     "errors": 11,
+     "reference_words": 52,
+     "substitutions": 8
+    },
+    "comparator_wer_percent": 21.153846153846153,
+    "excess_errors": 5,
+    "excess_share_percent": 8.19672131147541,
+    "improvement_points": -9.615384615384617,
+    "stratum": "share 0.60-0.80",
+    "words": 52
+   },
+   {
+    "cell": {
+     "deletions": 16,
+     "errors": 111,
+     "reference_words": 417,
+     "substitutions": 95
+    },
+    "cell_wer_percent": 26.618705035971225,
+    "comparator": {
+     "deletions": 11,
+     "errors": 107,
+     "reference_words": 417,
+     "substitutions": 96
+    },
+    "comparator_wer_percent": 25.65947242206235,
+    "excess_errors": 4,
+    "excess_share_percent": 6.557377049180328,
+    "improvement_points": -0.959232613908874,
+    "stratum": "share 0.80-1.00",
+    "words": 417
+   },
+   {
+    "cell": {
+     "deletions": 6,
+     "errors": 9,
+     "reference_words": 17,
+     "substitutions": 3
+    },
+    "cell_wer_percent": 52.94117647058823,
+    "comparator": {
+     "deletions": 4,
+     "errors": 7,
+     "reference_words": 17,
+     "substitutions": 3
+    },
+    "comparator_wer_percent": 41.1764705882353,
+    "excess_errors": 2,
+    "excess_share_percent": 3.278688524590164,
+    "improvement_points": -11.764705882352935,
+    "stratum": "share < 0.60",
+    "words": 17
+   },
+   {
+    "cell": {
+     "deletions": 73,
+     "errors": 581,
+     "reference_words": 2431,
+     "substitutions": 508
+    },
+    "cell_wer_percent": 23.899629781982725,
+    "comparator": {
+     "deletions": 65,
+     "errors": 531,
+     "reference_words": 2431,
+     "substitutions": 466
+    },
+    "comparator_wer_percent": 21.842863019333606,
+    "excess_errors": 50,
+    "excess_share_percent": 81.9672131147541,
+    "improvement_points": -2.0567667626491186,
+    "stratum": "share = 1.00",
+    "words": 2431
+   }
+  ],
+  "unit_speaker_change_bucket": [
+   {
+    "cell": {
+     "deletions": 30,
+     "errors": 237,
+     "reference_words": 981,
+     "substitutions": 207
+    },
+    "cell_wer_percent": 24.159021406727827,
+    "comparator": {
+     "deletions": 30,
+     "errors": 229,
+     "reference_words": 981,
+     "substitutions": 199
+    },
+    "comparator_wer_percent": 23.343527013251784,
+    "excess_errors": 8,
+    "excess_share_percent": 13.114754098360656,
+    "improvement_points": -0.8154943934760439,
+    "stratum": "same speaker as previous unit (or first)",
+    "words": 981
+   },
+   {
+    "cell": {
+     "deletions": 68,
+     "errors": 480,
+     "reference_words": 1936,
+     "substitutions": 412
+    },
+    "cell_wer_percent": 24.793388429752067,
+    "comparator": {
+     "deletions": 53,
+     "errors": 427,
+     "reference_words": 1936,
+     "substitutions": 374
+    },
+    "comparator_wer_percent": 22.055785123966942,
+    "excess_errors": 53,
+    "excess_share_percent": 86.88524590163935,
+    "improvement_points": -2.7376033057851252,
+    "stratum": "speaker changed from previous unit",
+    "words": 1936
+   }
+  ]
+ },
+ "q4_tail_versus_unit": {
+  "cell_head_reach": [
+   {
+    "cell": {
+     "deletions": 47,
+     "errors": 534,
+     "reference_words": 2250,
+     "substitutions": 487
+    },
+    "cell_wer_percent": 23.733333333333334,
+    "comparator": {
+     "deletions": 52,
+     "errors": 502,
+     "reference_words": 2250,
+     "substitutions": 450
+    },
+    "comparator_wer_percent": 22.31111111111111,
+    "excess_errors": 32,
+    "excess_share_percent": 52.459016393442624,
+    "improvement_points": -1.4222222222222243,
+    "stratum": "elsewhere in the unit",
+    "words": 2250
+   },
+   {
+    "cell": {
+     "deletions": 51,
+     "errors": 183,
+     "reference_words": 667,
+     "substitutions": 132
+    },
+    "cell_wer_percent": 27.436281859070466,
+    "comparator": {
+     "deletions": 31,
+     "errors": 154,
+     "reference_words": 667,
+     "substitutions": 123
+    },
+    "comparator_wer_percent": 23.088455772113942,
+    "excess_errors": 29,
+    "excess_share_percent": 47.540983606557376,
+    "improvement_points": -4.347826086956523,
+    "stratum": "within 2 s of the unit start",
+    "words": 667
+   }
+  ],
+  "cell_tail_reach": [
+   {
+    "cell": {
+     "deletions": 76,
+     "errors": 580,
+     "reference_words": 2467,
+     "substitutions": 504
+    },
+    "cell_wer_percent": 23.510336441021483,
+    "comparator": {
+     "deletions": 68,
+     "errors": 543,
+     "reference_words": 2467,
+     "substitutions": 475
+    },
+    "comparator_wer_percent": 22.01053911633563,
+    "excess_errors": 37,
+    "excess_share_percent": 60.65573770491803,
+    "improvement_points": -1.4997973246858542,
+    "stratum": "elsewhere in the unit",
+    "words": 2467
+   },
+   {
+    "cell": {
+     "deletions": 22,
+     "errors": 137,
+     "reference_words": 450,
+     "substitutions": 115
+    },
+    "cell_wer_percent": 30.444444444444443,
+    "comparator": {
+     "deletions": 15,
+     "errors": 113,
+     "reference_words": 450,
+     "substitutions": 98
+    },
+    "comparator_wer_percent": 25.11111111111111,
+    "excess_errors": 24,
+    "excess_share_percent": 39.34426229508197,
+    "improvement_points": -5.333333333333332,
+    "stratum": "within 2 s of the unit end",
+    "words": 450
+   }
+  ],
+  "comparator_tail_reach": [
+   {
+    "cell": {
+     "deletions": 97,
+     "errors": 698,
+     "reference_words": 2845,
+     "substitutions": 601
+    },
+    "cell_wer_percent": 24.534270650263622,
+    "comparator": {
+     "deletions": 83,
+     "errors": 637,
+     "reference_words": 2845,
+     "substitutions": 554
+    },
+    "comparator_wer_percent": 22.390158172231985,
+    "excess_errors": 61,
+    "excess_share_percent": 100.0,
+    "improvement_points": -2.144112478031637,
+    "stratum": "elsewhere in the window",
+    "words": 2845
+   },
+   {
+    "cell": {
+     "deletions": 1,
+     "errors": 19,
+     "reference_words": 72,
+     "substitutions": 18
+    },
+    "cell_wer_percent": 26.38888888888889,
+    "comparator": {
+     "deletions": 0,
+     "errors": 19,
+     "reference_words": 72,
+     "substitutions": 19
+    },
+    "comparator_wer_percent": 26.38888888888889,
+    "excess_errors": 0,
+    "excess_share_percent": 0.0,
+    "improvement_points": 0.0,
+    "stratum": "within 2 s of the window end",
+    "words": 72
+   }
+  ],
+  "deletion_position": {
+   "base_rate_all_person_words": {
+    "cell: on a unit edge": {
+     "at_edge": 273,
+     "share_percent": 9.358930407953377,
+     "words": 2917
+    },
+    "cell: within 2.0 derived seconds of the unit end": {
+     "at_edge": 450,
+     "share_percent": 15.426808364758314,
+     "words": 2917
+    },
+    "comparator: on a window edge": {
+     "at_edge": 37,
+     "share_percent": 1.2684264655467947,
+     "words": 2917
+    }
+   },
+   "cell_deletions": {
+    "last or first reference word of its unit": {
+     "at_edge": 17,
+     "share_percent": 17.346938775510203,
+     "words": 98
+    },
+    "within 2 reference words of a unit edge": {
+     "at_edge": 33,
+     "share_percent": 33.673469387755105,
+     "words": 98
+    },
+    "within 2.0 derived seconds of the unit end": {
+     "at_edge": 22,
+     "share_percent": 22.448979591836736,
+     "words": 98
+    }
+   },
+   "comparator_deletions_at_window_edges": {
+    "last or first reference word of its window": {
+     "at_edge": 1,
+     "share_percent": 1.2048192771084338,
+     "words": 83
+    },
+    "within 2.0 derived seconds of the window end": {
+     "at_edge": 0,
+     "share_percent": 0.0,
+     "words": 83
+    }
+   }
+  },
+  "per_tail_by_duration_class": {
+   "reading": "Every unit carries exactly one tail, so 'per tail' and 'per unit' are the same column here. A steep column means the tail count is a proxy rather than a cause.",
+   "table": [
+    {
+     "excess_errors": 48,
+     "excess_errors_per_person_word": 0.07058823529411765,
+     "excess_errors_per_tail": 0.023928215353938187,
+     "person_reference_words": 680,
+     "person_words_share_percent": 23.311621528968118,
+     "stratum": "unit < 10 s",
+     "units_and_tails": 2006,
+     "units_share_percent": 39.164388910581806
+    },
+    {
+     "excess_errors": 20,
+     "excess_errors_per_person_word": 0.014044943820224719,
+     "excess_errors_per_tail": 0.008756567425569177,
+     "person_reference_words": 1424,
+     "person_words_share_percent": 48.81727802536853,
+     "stratum": "unit 10-60 s",
+     "units_and_tails": 2284,
+     "units_share_percent": 44.59195626708317
+    },
+    {
+     "excess_errors": -7,
+     "excess_errors_per_person_word": -0.008610086100861008,
+     "excess_errors_per_tail": -0.008413461538461538,
+     "person_reference_words": 813,
+     "person_words_share_percent": 27.87110044566335,
+     "stratum": "unit >= 60 s",
+     "units_and_tails": 832,
+     "units_share_percent": 16.243654822335024
+    }
+   ],
+   "units_total": 5122
+  },
+  "proportionality": {
+   "cell_tails": 5122,
+   "cell_transport_boundaries_added": 3529,
+   "observed_person_improvement_points": -2.091189578333907,
+   "points_per_tail_obs_e1": -0.00040827598171298455,
+   "points_per_tail_tail_cell": -0.00043038292529817954,
+   "reading": "The tail cell holds the transport unit fixed and adds one tail per window, so it prices a tail with zero new boundaries. Scaling its per-tail cost to OBS-E1's 5,122 tails predicts the observed PERSON movement; what the 3,529 extra transport boundaries add on top is the residual.",
+   "residual_points": 0.11323176504336852,
+   "tail_cell": {
+    "person_ci90": [
+     -1.3467,
+     -0.1314
+    ],
+    "person_improvement_points": -0.6856,
+    "person_wer_percent": 23.1745,
+    "run_id": "SAEA-E21-FULL44-TAIL2S-V1",
+    "tails": 1593,
+    "transport_boundaries_added": 0
+   },
+   "tail_model_explains_percent": 105.414705879205,
+   "tail_proportional_prediction_points": -2.2044213433772755
+  }
+ },
+ "q5_successor_pricing": {
+  "a_context_margin": [
+   {
+    "candidate": "(a) context margin +3 s of preceding audio, text discarded",
+    "contacts": 5122,
+    "cost_model": "audio-proportional; the margin is delivered, never metered as new speech",
+    "delivered_audio_seconds": 166955.852687,
+    "delivered_versus_cell_percent": 110.13656239361049,
+    "extra_prompt_tokens": 199758,
+    "projected_gpu_hours": 1.1737,
+    "projected_prompt_tokens": 2455570,
+    "projected_wall_minutes": 109.5,
+    "slot_tokens": 6144,
+    "worst_request_tokens_projected": 1297
+   },
+   {
+    "candidate": "(a) context margin +5 s of preceding audio, text discarded",
+    "contacts": 5122,
+    "cost_model": "audio-proportional; the margin is delivered, never metered as new speech",
+    "delivered_audio_seconds": 177199.852687,
+    "delivered_versus_cell_percent": 116.8942706560175,
+    "extra_prompt_tokens": 332930,
+    "projected_gpu_hours": 1.2457,
+    "projected_prompt_tokens": 2588742,
+    "projected_wall_minutes": 116.2,
+    "slot_tokens": 6144,
+    "worst_request_tokens_projected": 1323
+   },
+   {
+    "candidate": "(a) context margin +10 s of preceding audio, text discarded",
+    "contacts": 5122,
+    "cost_model": "audio-proportional; the margin is delivered, never metered as new speech",
+    "delivered_audio_seconds": 202809.852687,
+    "delivered_versus_cell_percent": 133.788541312035,
+    "extra_prompt_tokens": 665860,
+    "projected_gpu_hours": 1.4258,
+    "projected_prompt_tokens": 2921672,
+    "projected_wall_minutes": 133.0,
+    "slot_tokens": 6144,
+    "worst_request_tokens_projected": 1388
+   }
+  ],
+  "b_tail_only_where_mid_speech": {
+   "candidate": "(b) tail only where the unit ends mid-speech",
+   "contacts": 5122,
+   "cost_model": "audio-proportional; the cut total and the contact count are both invariant",
+   "delivered_audio_seconds": 142473.852687,
+   "delivered_versus_cell_percent": 93.98640486918174,
+   "projected_gpu_hours": 1.0016,
+   "projected_wall_minutes": 93.4,
+   "share_percent": 11.011323701679032,
+   "tails_removed": 4558,
+   "units_ending_on_an_active_frame": 564,
+   "units_total": 5122
+  },
+  "c_minimum_unit_duration": [
+   {
+    "candidate": "(c) minimum unit duration raised to 3 s",
+    "contacts": 4395,
+    "cost_model": "audio-proportional; the cut total is invariant, only the tail count moves",
+    "delivered_audio_seconds": 150135.852687,
+    "delivered_versus_cell_percent": 99.04083289598401,
+    "mean_unit_seconds": 32.161,
+    "projected_gpu_hours": 1.0555,
+    "projected_wall_minutes": 98.4,
+    "units_removed": 727
+   },
+   {
+    "candidate": "(c) minimum unit duration raised to 5 s",
+    "contacts": 3854,
+    "cost_model": "audio-proportional; the cut total is invariant, only the tail count moves",
+    "delivered_audio_seconds": 149053.852687,
+    "delivered_versus_cell_percent": 98.32706480344942,
+    "mean_unit_seconds": 36.675,
+    "projected_gpu_hours": 1.0479,
+    "projected_wall_minutes": 97.7,
+    "units_removed": 1268
+   },
+   {
+    "candidate": "(c) minimum unit duration raised to 10 s",
+    "contacts": 3154,
+    "cost_model": "audio-proportional; the cut total is invariant, only the tail count moves",
+    "delivered_audio_seconds": 147653.852687,
+    "delivered_versus_cell_percent": 97.40352013658395,
+    "mean_unit_seconds": 44.815,
+    "projected_gpu_hours": 1.038,
+    "projected_wall_minutes": 96.8,
+    "units_removed": 1968
+   }
+  ],
+  "cell_realized": {
+   "contacts": 5122,
+   "cut_audio_seconds": 141345.852687,
+   "delivered_audio_seconds": 151589.852687,
+   "gpu_hours": 1.0657,
+   "prompt_tokens": 2255812,
+   "wall_minutes": 99.4
+  },
+  "d_repair_pass_on_units": {
+   "candidate": "(d) KC-E1f second-pass entity repair on top of the units",
+   "contacts": 10244,
+   "cost_model": "two passes over the same media; pass 2 carries the audio, the brief and pass 1",
+   "delivered_audio_seconds": 303179.705374,
+   "delivered_versus_cell_percent": 200.0,
+   "measured_on_windows": {
+    "contacts": 1593,
+    "gpu_hours": 1.1093,
+    "person_ci90": [
+     2.653,
+     4.855
+    ],
+    "person_improvement_points": 3.737,
+    "person_wer_percent": 18.752,
+    "prompt_tokens": 3550695,
+    "reachable_floor_percent": 2.8453890983887558,
+    "run_id": "SAEA-E21-KC-E1F-REPAIR-44-V1"
+   },
+   "projected_gpu_hours": 2.1314,
+   "projected_prompt_tokens": 9703492,
+   "projected_wall_minutes": 198.8,
+   "second_pass_only_gpu_hours": 1.2145
+  },
+  "e_contact_matched_control": {
+   "buffer_seconds": 27.5958,
+   "candidate": "(control) fixed 27.60-second windows -- the preregistration's own OBS-E1b",
+   "contacts": 5145,
+   "contacts_versus_cell": 23,
+   "cost_model": "audio-proportional; the same media convention as the cell, the transport unit fixed",
+   "delivered_audio_seconds": 151635.852687,
+   "delivered_versus_cell_percent": 100.03034503905414,
+   "projected_gpu_hours": 1.066,
+   "projected_wall_minutes": 99.4,
+   "separates": "factor 3 (contact count and length) from factors 1 and 2 (boundary placement and speaker purity); it is a CONTROL, not a repair, and it answers a different question from candidates (a)-(d)"
+  },
+  "what_this_is": "DESIGN ONLY, priced under the OBS-E1 verdict's own audio-proportional cost model. No candidate is registered, preregistered or authorized here, and OBS-E1 stays REJECTED."
+ },
+ "schema": "saea-e21-obs-e1-person-harm-decomposition-v1",
+ "study": "speech-aware-evidence-acquisition",
+ "zero_contact": "no model, GPU, tool, embedding, tokenizer, network, audio-decode or paid-API contact; references and wer_tags reached only through the registered scoring path's own loaders"
+}
