@@ -63,7 +63,13 @@ from ..contracts import (
 )
 from ..core.base import PayloadBindingContext
 from ..core.flight_lock import read_flight_lock
-from ..core.model import FrozenCoreAdapter, SliceRegistry, load_speech_feature_packets
+from ..core.model import (
+    FrozenCoreAdapter,
+    FrozenCoreError,
+    SliceRegistry,
+    load_speech_feature_packets,
+)
+from ..core.model.binding import _PayloadBindingMixin
 from ..core.model.slices import SliceRecord
 from ..core.tracing import DispatchingSink, TraceBuffer, TraceSink
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
@@ -461,6 +467,168 @@ def build_payload_binding(
         media_relpaths=media_relpaths,
         derived_media_roots=tuple(Path(root) for root in derived_media_roots),
     ).validate()
+
+
+#: A cell whose roster is this small or smaller is cheap enough to check EVERY
+#: row's payload binding; above it, only the first and last row are checked
+#: (see :func:`payload_binding_stage`). Chosen well above the largest
+#: "-smoke4" population (4 rows) and well below the smallest full population
+#: (400 rows), so the distinction tracks "smoke vs. full", not some incidental
+#: roster size.
+PAYLOAD_BINDING_STAGE_CHEAP_ROW_LIMIT = 16
+
+
+@dataclass(frozen=True)
+class PayloadBindingStageResult:
+    """Receipt of one :func:`payload_binding_stage` run.
+
+    ``bound`` is ``True`` only when every row named in ``rows_checked`` bound
+    without refusal; ``failures`` carries the refusal message for each row
+    that did not, keyed by sample id, and is empty exactly when ``bound`` is
+    ``True``. ``rows_checked`` is a strict subset of the cell's roster
+    (:data:`PAYLOAD_BINDING_STAGE_CHEAP_ROW_LIMIT`); ``rows_total`` is the
+    roster's own size, so a receipt reader can tell "checked every row" from
+    "checked the two endpoints" without recomputing the threshold."""
+
+    dataset_fragment: str
+    carrier_lock_key: str
+    carrier_root: Path
+    derived_media_roots: tuple[Path, ...]
+    rows_checked: tuple[str, ...]
+    rows_total: int
+    bound: bool
+    failures: Mapping[str, str]
+    model_contacts: int = 0
+    sockets_opened: int = 0
+
+    def as_receipt(self) -> dict[str, object]:
+        """JSON-safe view for a wire-check receipt document."""
+
+        return {
+            "dataset_fragment": self.dataset_fragment,
+            "carrier_lock_key": self.carrier_lock_key,
+            "carrier_root": str(self.carrier_root),
+            "declared_derived_media_roots": [str(root) for root in self.derived_media_roots],
+            "rows_checked": list(self.rows_checked),
+            "rows_total": self.rows_total,
+            "checked_every_row": self.rows_total <= len(self.rows_checked),
+            "bound": self.bound,
+            "failures": dict(self.failures),
+            "model_contacts": self.model_contacts,
+            "sockets_opened": self.sockets_opened,
+        }
+
+
+class _PayloadBindingStagePlan:
+    """The one attribute :meth:`core.model.binding._PayloadBindingMixin.
+    _enforce_payload_binding` reads off ``self._plan`` -- a real
+    ``contracts.ExecutionPlan`` is not needed here, only the field the method
+    actually compares against the payload's own ``carrier_lock_key``."""
+
+    __slots__ = ("carrier_lock_key",)
+
+    def __init__(self, carrier_lock_key: str) -> None:
+        self.carrier_lock_key = carrier_lock_key
+
+
+class _PayloadBindingStageProbe(_PayloadBindingMixin):
+    """The production ``_enforce_payload_binding``, bound to a real binding
+    context and nothing else.
+
+    Deliberately NOT a :class:`~core.model.FrozenCoreAdapter`: constructing
+    one opens a durable attempt against the shared data root and requires a
+    live gate and transport, neither of which a model-free stage may
+    construct. This mirrors
+    ``scripts/checks/derived_media_confinement_check.py``'s own
+    ``_BindingProbe`` -- the method under proof is the unmodified mixin
+    function the adapter itself inherits, so the code path is the real one;
+    only the attempt/transport lifecycle around it is absent, and no socket
+    is ever touched."""
+
+    def __init__(self, binding: PayloadBindingContext, carrier_lock_key: str) -> None:
+        self._binding = binding
+        self._plan = _PayloadBindingStagePlan(carrier_lock_key)
+        self._slice_registry = None
+
+
+def _payload_binding_stage_rows(samples: Sequence[object]) -> tuple[object, ...]:
+    if not samples:
+        raise FrozenCoreClientError("payload_binding_stage requires at least one sample")
+    if len(samples) <= PAYLOAD_BINDING_STAGE_CHEAP_ROW_LIMIT:
+        return tuple(samples)
+    return (samples[0], samples[-1])
+
+
+def payload_binding_stage(
+    *,
+    dataset_fragment: str,
+    carrier_lock_key: str,
+    samples: Sequence[object],
+    data_root: Path,
+    carrier_root: Path,
+    derived_media_roots: Sequence[Path] = (),
+    sample_rate_prober: Callable[[Path], int] = _probe_sample_rate_hz,
+) -> PayloadBindingStageResult:
+    """The shared payload-binding stage every wire check now runs between its
+    request half and its seal half
+    (``docs/readiness/2026-09-07-derived-media-confinement-v1.md`` section 5).
+
+    Builds ONE real :class:`~core.base.PayloadBindingContext` through
+    :func:`build_payload_binding` -- the identical construction
+    ``core.driver.run_experiment``, ``core.driver.speech_native`` and
+    ``core.flight.FlightRuntime`` themselves use, over the REAL carrier root
+    (never a per-script ``carrier_root_resolver`` swap) plus this fragment's
+    own declared derived media roots -- and drives the production
+    ``core.model.binding._enforce_payload_binding`` against a synthetic
+    payload carrying exactly the binding's own verified facts, for at least
+    the first and last roster row (every row when there are
+    :data:`PAYLOAD_BINDING_STAGE_CHEAP_ROW_LIMIT` or fewer).
+
+    Zero sockets, zero servers, zero model contacts: no transport, gate or
+    attempt store is ever constructed, here or in anything this function
+    calls -- only ``PayloadBindingContext`` construction (pure, plus a
+    per-sample audio-header probe) and one in-process method call per row
+    checked. A row that does not bind is recorded in the result's
+    ``failures``, never raised: the caller decides whether that refusal was
+    the point (a synthetic undeclared-root cell) or a wire-readiness defect
+    (a real cell)."""
+
+    binding = build_payload_binding(
+        carrier_lock_key=carrier_lock_key,
+        samples=samples,
+        data_root=data_root,
+        carrier_root=carrier_root,
+        derived_media_roots=derived_media_roots,
+        sample_rate_prober=sample_rate_prober,
+    )
+    probe = _PayloadBindingStageProbe(binding, carrier_lock_key)
+    checked = _payload_binding_stage_rows(samples)
+    failures: dict[str, str] = {}
+    for sample in checked:
+        sample_id = sample.sample_id
+        audio_seconds, sample_rate_hz = binding.sample_facts[sample_id]
+        payload = {
+            "carrier_lock_key": carrier_lock_key,
+            "sample_id": sample_id,
+            "speech_ref": f"{carrier_lock_key}/{sample_id}",
+            "media_relpath": binding.media_relpaths[sample_id],
+            "audio_seconds": audio_seconds,
+            "sample_rate_hz": sample_rate_hz,
+        }
+        try:
+            probe._enforce_payload_binding(payload, audio_seconds)
+        except FrozenCoreError as error:
+            failures[sample_id] = str(error)
+    return PayloadBindingStageResult(
+        dataset_fragment=dataset_fragment,
+        carrier_lock_key=carrier_lock_key,
+        carrier_root=Path(carrier_root),
+        derived_media_roots=tuple(Path(root) for root in derived_media_roots),
+        rows_checked=tuple(sample.sample_id for sample in checked),
+        rows_total=len(samples),
+        bound=not failures,
+        failures=failures,
+    )
 
 
 def build_slice_registry(

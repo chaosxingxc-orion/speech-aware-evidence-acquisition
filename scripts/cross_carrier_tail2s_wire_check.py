@@ -159,6 +159,128 @@ def _scratch_receipt(cell: dict[str, Any]) -> Path:
     return directory / f"{cell['cell']}.wire-check.json"
 
 
+def _load_flight_module(name: str):
+    """Import a flight script by path -- the shared venv ships an unrelated
+    top-level ``scripts`` package that shadows this repository's namespace
+    directory, so ``import scripts.flights...`` is not reliable here (same
+    reasoning, same fix, as ``scripts/checks/derived_media_confinement_check.
+    py``'s own loader of the same name)."""
+
+    import importlib.util  # noqa: PLC0415
+
+    path = REPO / "scripts" / "flights" / f"{name}.py"
+    spec = importlib.util.spec_from_file_location(f"_saea_flight_{name}", path)
+    if spec is None or spec.loader is None:
+        raise SystemExit(f"cannot load flight module {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def payload_binding_stage_for_cell(cell: dict[str, Any]) -> dict[str, Any]:
+    """The shared ``rails.core_client.payload_binding_stage`` for one cell's
+    own real roster rows -- the mandatory stage this receipt now runs BETWEEN
+    the request half (``preflight``) and the seal half (``wire_check``'s own
+    ``seal_and_score``): a cell is wire-ready only if its payloads BIND.
+
+    Loads ONLY the rows the stage itself will check (every row for a "-smoke4"
+    cell, else the first and last of the fragment's own declared order) --
+    never the whole 400/1000-row population -- through that carrier's own
+    flight-script roster loader (real media, re-hashed against the roster's
+    own record), and drives the binding through the REAL carrier root
+    (``data.lock.asset_dir``, never the flight script's own
+    ``carrier_root_resolver`` swap) plus this fragment's own declared derived
+    media roots. See docs/readiness/2026-09-07-derived-media-confinement-v1.md
+    section 5.
+    """
+
+    from speech_aware_evidence_acquisition.core.base import (  # noqa: PLC0415
+        declared_derived_media_roots,
+    )
+    from speech_aware_evidence_acquisition.data.lock import (  # noqa: PLC0415
+        asset_dir,
+        data_root,
+        load_lock,
+        umbrella_lock_path,
+    )
+    from speech_aware_evidence_acquisition.rails.core_client import (  # noqa: PLC0415
+        PAYLOAD_BINDING_STAGE_CHEAP_ROW_LIMIT,
+        payload_binding_stage,
+    )
+
+    dataset = str(cell["dataset"])
+    values = json.loads((REPO / "configs" / "dataset" / f"{dataset}.json").read_text(
+        encoding="utf-8"
+    ))
+    carrier_lock_key = str(values["carrier_lock_key"])
+    lock = load_lock(umbrella_lock_path())
+    root = data_root()
+    carrier_root = asset_dir(lock, carrier_lock_key, root)
+    derived_media_roots = declared_derived_media_roots(values, root)
+
+    if cell["carrier"] == "slurp":
+        items = values["items"]
+        all_ids = [str(item["sample_id"]) for item in items]
+        wanted = (
+            all_ids
+            if len(all_ids) <= PAYLOAD_BINDING_STAGE_CHEAP_ROW_LIMIT
+            else [all_ids[0], all_ids[-1]]
+        )
+        module = _load_flight_module("run_slurp_closed_list_cell")
+        samples = module.roster_samples(
+            values, root, limit_sample_ids=wanted, workers=4
+        )
+        rows_total = len(all_ids)
+    else:
+        roster_path = REPO / str(values["a2t_calibration_subset_receipt"])
+        receipt = json.loads(roster_path.read_text(encoding="utf-8"))
+        module = _load_flight_module("run_calibration_cell")
+        # The full-400 and "-smoke4" A2T dataset fragments SHARE one 400-row
+        # roster receipt; the smoke restriction to 4 ids lives in the
+        # EXPERIMENT fragment's own "populations" entry, read exactly as
+        # run_calibration_cell.py's CLI itself reads it -- never assume the
+        # receipt's own item count is this cell's population size.
+        experiment_doc = json.loads(
+            (REPO / "configs" / "experiment" / f"{cell['experiment']}.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        all_ids = module.population_ids(experiment_doc, dataset) or [
+            str(item["sample_id"]) for item in receipt["items"]
+        ]
+        wanted = (
+            all_ids
+            if len(all_ids) <= PAYLOAD_BINDING_STAGE_CHEAP_ROW_LIMIT
+            else [all_ids[0], all_ids[-1]]
+        )
+        samples = module.roster_samples(
+            roster_path,
+            str(values["a2t_calibration_subset_receipt_sha256"]),
+            root,
+            limit_sample_ids=wanted,
+            media_prefix=str(values.get("a2t_calibration_derived_subdir", "")) or None,
+        )
+        rows_total = len(all_ids)
+
+    result = payload_binding_stage(
+        dataset_fragment=dataset,
+        carrier_lock_key=carrier_lock_key,
+        samples=samples,
+        data_root=root,
+        carrier_root=carrier_root,
+        derived_media_roots=derived_media_roots,
+    )
+    receipt = dict(result.as_receipt())
+    # The stage's own ``rows_total`` counts only the rows THIS CALL loaded
+    # (never the whole 400/1000-row population, to keep the stage cheap);
+    # ``fragment_row_count`` is the fragment's own full roster size, so a
+    # receipt reader can tell "checked every row of a 4-row smoke cell" from
+    # "checked 2 of a 400-row cell's own rows" without recomputing either.
+    receipt["fragment_row_count"] = rows_total
+    receipt["checked_every_row"] = rows_total <= len(result.rows_checked)
+    return receipt
+
+
 def run_mode(cell: dict[str, Any], mode: str) -> dict[str, Any]:
     env = dict(os.environ)
     env["PYTHONDONTWRITEBYTECODE"] = "1"
@@ -227,6 +349,11 @@ def build() -> dict[str, Any]:
     for cell in CELLS:
         row = {key: cell[key] for key in ("carrier", "experiment", "dataset", "cell", "rows")}
         row["preflight"] = run_mode(cell, "dry-run")
+        # The mandatory payload-binding stage: BETWEEN the request half
+        # (preflight, above) and the seal half (wire_check's own
+        # seal_and_score, below). Zero sockets, zero servers, zero model
+        # contacts -- see payload_binding_stage_for_cell's own docstring.
+        row["payload_binding_stage"] = payload_binding_stage_for_cell(cell)
         row["wire_check"] = run_mode(cell, "wire-check")
         results.append(row)
     return {
@@ -280,6 +407,18 @@ def main() -> int:
     args = parser.parse_args()
     receipt = build()
     for row in receipt["cells"]:
+        stage = row["payload_binding_stage"]
+        print(
+            "%-11s %-34s %-10s %s  rows_checked=%d/%d"
+            % (
+                row["carrier"],
+                row["cell"],
+                "binding_stage",
+                "BOUND" if stage["bound"] else "NOT BOUND",
+                len(stage["rows_checked"]),
+                stage["fragment_row_count"],
+            )
+        )
         for mode in ("preflight", "wire_check"):
             result = row[mode]
             print(
@@ -298,8 +437,11 @@ def main() -> int:
         for mode in ("preflight", "wire_check")
         if row[mode]["stop_class"] == "UNEXPECTED"
     ]
+    not_bound = [row["cell"] for row in receipt["cells"] if not row["payload_binding_stage"]["bound"]]
     if unexpected:
         print("UNEXPECTED STOPS: %r" % (unexpected,))
+    if not_bound:
+        print("PAYLOAD-BINDING STAGE FAILED (cell not wire-ready): %r" % (not_bound,))
     if args.write:
         OUT_DIR.mkdir(parents=True, exist_ok=True)
         payload = (
@@ -310,7 +452,7 @@ def main() -> int:
         print("receipt written: %s" % (OUT_DIR / "wire-check.json"))
     else:
         print("(print only; pass --write to land the receipt)")
-    return 1 if unexpected else 0
+    return 1 if (unexpected or not_bound) else 0
 
 
 if __name__ == "__main__":
