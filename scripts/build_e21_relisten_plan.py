@@ -16,14 +16,15 @@ window's judge flags, widened by the context margin on each side, floored at
 the minimum length and clamped to the window, with the half-open range of the
 window's own pass-1 words the cut corresponds to.
 
-``--plan twin`` -- the FORM CONTROL. Per call it draws, from a seeded RNG, the
-same NUMBER of windows the judges flagged, and gives the i-th of them the same
-re-cut DURATION the judges' i-th unit had, placed at a uniformly random offset
-inside its window. So the twin matches the arm on contacts per call, on
-delivered audio per call and on the re-cut length distribution, and differs on
-exactly one thing: **where it listens.** That is the control for "fewer,
-targeted contacts": if the arm's gain survives against it, targeting is what
-bought the gain; if it does not, the gain was the second look.
+``--plan twin`` -- the FORM CONTROL. Per call it takes the SAME MULTISET of
+re-cut durations the judges' plan produced and places them longest first, each
+into a uniformly random unused window of that call able to carry it, at a
+uniformly random offset inside it (seeded RNG). So the twin matches the arm on
+contacts per call, on delivered audio per call and on the re-cut duration
+multiset per call, and differs on exactly one thing: **where it listens.** That
+is the control for "fewer, targeted contacts": if the arm's gain survives
+against it, targeting is what bought the gain; if it does not, the gain was the
+second look.
 
 Usage (WSL2)::
 
