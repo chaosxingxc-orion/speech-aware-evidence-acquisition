@@ -1,0 +1,46 @@
+{
+ "schema": "saea-e21-null-replicate-falsifier-v1",
+ "run_id": "SAEA-E21-FULL44-NULL-REPLICATE-V1",
+ "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07",
+ "comparator": {
+  "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+  "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-DIRECT-BASELINE-V2/attempt-20260904T233816Z-bcd338"
+ },
+ "windows_expected": 1593,
+ "windows_checked": 1593,
+ "sealed_windows": 1593,
+ "calls_checked": 44,
+ "compared_fields": [
+  "sha256",
+  "bytes",
+  "audio_seconds",
+  "start_seconds",
+  "end_seconds",
+  "sample_rate_hz",
+  "parent_sha256",
+  "preprocess"
+ ],
+ "fields_not_compared": [
+  "media_relpath (carries the run id)",
+  "iteration"
+ ],
+ "disagreeing_rows": 0,
+ "disagreements": [],
+ "wire": {
+  "prompt_tokens_total": 1935965,
+  "sealed_prompt_tokens_total": 1935965,
+  "prompt_tokens_identical": true,
+  "completion_tokens_total": 439342,
+  "sealed_completion_tokens_total": 439532,
+  "calls_used": 1593,
+  "audio_seconds_used": 141345.8526875,
+  "sealed_audio_seconds_used": 141345.8526875,
+  "audio_seconds_identical": true
+ },
+ "saturated_slice_count": 0,
+ "saturated_windows": [],
+ "skipped_slice_count": 0,
+ "skipped_windows": [],
+ "verdict": "PASS",
+ "rule": "Section 2 of docs/readiness/2026-09-08-e21-own-null-replicate-v1-preregistration.md: every emitted SliceRecord equals the sealed comparator's own for that window id on every compared field, and prompt_tokens_total equals the comparator's 1,935,965 exactly. Zero disagreeing rows, or the cell is void and no score is read."
+}

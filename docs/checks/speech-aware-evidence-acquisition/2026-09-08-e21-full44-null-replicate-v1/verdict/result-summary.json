@@ -1,0 +1,1877 @@
+{
+ "schema": "saea-e21-null-replicate-verdict-v1",
+ "study": "speech-aware-evidence-acquisition",
+ "exposure_row": "SAEA-E21-FULL44-NULL-REPLICATE-V1",
+ "cell": "SAEA-E21-FULL44-NULL-REPLICATE-V1",
+ "comparator": {
+  "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+  "attempt_id": "attempt-20260904T233816Z-bcd338"
+ },
+ "carrier_lock_key": "earnings21-original",
+ "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+ "calls_paired": 44,
+ "decides_nothing": "This is a REPLICATE, not a cell with a factor: the same request, twice. It admits and refutes nothing. Its output is the null distribution and the per-metric margins section 4 of the preregistration derives from it.",
+ "sign_convention": "every delta is replicate minus comparator",
+ "statistics": {
+  "module": "analysis.paired.resampled_statistic",
+  "seed": 20260903,
+  "replicates": 10000,
+  "ci_level": 0.9,
+  "honest_interval": "call-clustered (44 clusters)",
+  "optimistic_interval": "window-level stratified by call"
+ },
+ "falsifier": {
+  "verdict": "PASS",
+  "windows_checked": 1593,
+  "sealed_windows": 1593,
+  "calls_checked": 44,
+  "disagreeing_rows": 0,
+  "wire": {
+   "prompt_tokens_total": 1935965,
+   "sealed_prompt_tokens_total": 1935965,
+   "prompt_tokens_identical": true,
+   "completion_tokens_total": 439342,
+   "sealed_completion_tokens_total": 439532,
+   "calls_used": 1593,
+   "audio_seconds_used": 141345.8526875,
+   "sealed_audio_seconds_used": 141345.8526875,
+   "audio_seconds_identical": true
+  },
+  "saturated_slice_count": 0,
+  "saturated_windows": [],
+  "skipped_slice_count": 0,
+  "compared_fields": [
+   "sha256",
+   "bytes",
+   "audio_seconds",
+   "start_seconds",
+   "end_seconds",
+   "sample_rate_hz",
+   "parent_sha256",
+   "preprocess"
+  ]
+ },
+ "identity_gate": {
+  "verdict": "PASS",
+  "checks": [
+   {
+    "check": "corpus_wer_percent",
+    "actual": 8.1995,
+    "expected": 8.1995,
+    "verdict": "PASS"
+   },
+   {
+    "check": "substitutions",
+    "actual": 13098,
+    "expected": 13098,
+    "verdict": "PASS"
+   },
+   {
+    "check": "deletions",
+    "actual": 5701,
+    "expected": 5701,
+    "verdict": "PASS"
+   },
+   {
+    "check": "insertions",
+    "actual": 10700,
+    "expected": 10700,
+    "verdict": "PASS"
+   },
+   {
+    "check": "reference_words",
+    "actual": 359765,
+    "expected": 359765,
+    "verdict": "PASS"
+   },
+   {
+    "check": "conec_overall_wer_percent",
+    "actual": 8.2,
+    "expected": 8.2,
+    "verdict": "PASS"
+   },
+   {
+    "check": "conec_non_entity_wer_percent",
+    "actual": 4.73,
+    "expected": 4.73,
+    "verdict": "PASS"
+   },
+   {
+    "check": "numeric_value_accuracy_percent",
+    "actual": 90.7335,
+    "expected": 90.7335,
+    "verdict": "PASS"
+   },
+   {
+    "check": "semantic_high_impact_error_rate_percent",
+    "actual": 0.0278,
+    "expected": 0.0278,
+    "verdict": "PASS"
+   }
+  ],
+  "basis": "the sealed comparator's own committed score receipts, re-pooled from its 44 per-call rows; no arm is re-flown and no scorer is re-run"
+ },
+ "null_table": {
+  "corpus_wer_percent": {
+   "lower_is_better": true,
+   "comparator": 8.19951913054355,
+   "replicate": 8.17950606646005,
+   "delta": -0.0200130640834999,
+   "call_clustered_ci90": {
+    "point": -0.0200130640834999,
+    "ci_low": -0.08501511398883133,
+    "ci_high": 0.030845200652504484,
+    "sigma_hat": 0.03590926385732335,
+    "n": 44,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   },
+   "ci90_half_width": 0.057930157320667905,
+   "measured_margin": 0.057930157320667905,
+   "imported_margin_it_replaces": 0.1524,
+   "measured_margin_is_wider_than_imported": false,
+   "excludes_zero": false,
+   "equal_stratum": {
+    "comparator": 8.003641006407829,
+    "replicate": 7.985216831279001
+   }
+  },
+  "conec_overall_wer_percent": {
+   "lower_is_better": true,
+   "comparator": 8.19951913054355,
+   "replicate": 8.17950606646005,
+   "delta": -0.0200130640834999,
+   "call_clustered_ci90": {
+    "point": -0.0200130640834999,
+    "ci_low": -0.08501511398883133,
+    "ci_high": 0.030845200652504484,
+    "sigma_hat": 0.03590926385732335,
+    "n": 44,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   },
+   "ci90_half_width": 0.057930157320667905,
+   "measured_margin": 0.057930157320667905,
+   "imported_margin_it_replaces": 0.1524,
+   "measured_margin_is_wider_than_imported": false,
+   "excludes_zero": false,
+   "equal_stratum": {
+    "comparator": 8.003641006407829,
+    "replicate": 7.985216831279001
+   }
+  },
+  "conec_non_entity_wer_percent": {
+   "lower_is_better": true,
+   "comparator": 4.730375807919667,
+   "replicate": 4.693902362887777,
+   "delta": -0.03647344503188954,
+   "call_clustered_ci90": {
+    "point": -0.03647344503188954,
+    "ci_low": -0.11374711475308619,
+    "ci_high": 0.01575359249561643,
+    "sigma_hat": 0.04086137541139323,
+    "n": 44,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   },
+   "ci90_half_width": 0.0647503536243513,
+   "measured_margin": 0.0647503536243513,
+   "imported_margin_it_replaces": 0.1524,
+   "measured_margin_is_wider_than_imported": false,
+   "excludes_zero": false,
+   "equal_stratum": {
+    "comparator": 4.521586081987699,
+    "replicate": 4.488599651135197
+   }
+  },
+  "conec_person_wer_percent": {
+   "lower_is_better": true,
+   "comparator": 22.488858416181007,
+   "replicate": 22.488858416181007,
+   "delta": 0.0,
+   "call_clustered_ci90": {
+    "point": 0.0,
+    "ci_low": -0.24338355294363578,
+    "ci_high": 0.2567965168197436,
+    "sigma_hat": 0.1528743663519748,
+    "n": 44,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   },
+   "ci90_half_width": 0.2500900348816897,
+   "measured_margin": 0.2500900348816897,
+   "imported_margin_it_replaces": 0.1524,
+   "measured_margin_is_wider_than_imported": true,
+   "excludes_zero": false,
+   "equal_stratum": {
+    "comparator": 22.01317686264394,
+    "replicate": 22.105931663568896
+   }
+  },
+  "conec_org_wer_percent": {
+   "lower_is_better": true,
+   "comparator": 17.212926885170756,
+   "replicate": 17.12124684849874,
+   "delta": -0.09168003667201674,
+   "call_clustered_ci90": {
+    "point": -0.09168003667201674,
+    "ci_low": -0.4431333876530067,
+    "ci_high": 0.26904066314257663,
+    "sigma_hat": 0.21913321800438088,
+    "n": 44,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   },
+   "ci90_half_width": 0.3560870253977917,
+   "measured_margin": 0.3560870253977917,
+   "imported_margin_it_replaces": 0.1524,
+   "measured_margin_is_wider_than_imported": true,
+   "excludes_zero": false,
+   "equal_stratum": {
+    "comparator": 18.69275866649916,
+    "replicate": 18.59990162106681
+   }
+  },
+  "numeric_value_accuracy_percent": {
+   "lower_is_better": false,
+   "comparator": 90.73351140332854,
+   "replicate": 90.702691596466,
+   "delta": -0.030819806862538712,
+   "call_clustered_ci90": {
+    "point": -0.030819806862538712,
+    "ci_low": -0.18758103496081163,
+    "ci_high": 0.12542976663623678,
+    "sigma_hat": 0.09575248958143015,
+    "n": 44,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   },
+   "ci90_half_width": 0.1565054007985242,
+   "measured_margin": 0.1565054007985242,
+   "imported_margin_it_replaces": 0.1524,
+   "measured_margin_is_wider_than_imported": true,
+   "excludes_zero": false,
+   "equal_stratum": {
+    "comparator": 90.97869673299954,
+    "replicate": 91.00592371705554
+   }
+  },
+  "semantic_high_impact_error_rate_percent": {
+   "lower_is_better": true,
+   "comparator": 0.027795922338192988,
+   "replicate": 0.030019596125248425,
+   "delta": 0.002223673787055437,
+   "call_clustered_ci90": {
+    "point": 0.002223673787055437,
+    "ci_low": 0.0008049151393207787,
+    "ci_high": 0.0037678660814827697,
+    "sigma_hat": 0.0009152642192989113,
+    "n": 44,
+    "replicates": 10000,
+    "seed": 20260903,
+    "ci_level": 0.9
+   },
+   "ci90_half_width": 0.0014814754710809955,
+   "measured_margin": 0.0014814754710809955,
+   "imported_margin_it_replaces": 0.1524,
+   "measured_margin_is_wider_than_imported": false,
+   "excludes_zero": true,
+   "equal_stratum": {
+    "comparator": 0.022670922434934352,
+    "replicate": 0.025250937459819114
+   }
+  }
+ },
+ "margin_rule": {
+  "rule": "Section 4: for each metric the Earnings-21 non-inferiority margin becomes the half-width of this null's own call-clustered CI90, margin_m = (ci_high_m - ci_low_m) / 2, replacing the imported Earnings-22 half-width of 0.1524 for THIS CARRIER ONLY. A future Earnings-21 cell demonstrates an effect on metric m iff its CI90 is disjoint from this null's MEASURED interval, not merely from zero.",
+  "measured_by": "SAEA-E21-FULL44-NULL-REPLICATE-V1",
+  "margins": {
+   "corpus_wer_percent": {
+    "margin": 0.057930157320667905,
+    "null_ci90": [
+     -0.08501511398883133,
+     0.030845200652504484
+    ],
+    "null_point": -0.0200130640834999
+   },
+   "conec_overall_wer_percent": {
+    "margin": 0.057930157320667905,
+    "null_ci90": [
+     -0.08501511398883133,
+     0.030845200652504484
+    ],
+    "null_point": -0.0200130640834999
+   },
+   "conec_non_entity_wer_percent": {
+    "margin": 0.0647503536243513,
+    "null_ci90": [
+     -0.11374711475308619,
+     0.01575359249561643
+    ],
+    "null_point": -0.03647344503188954
+   },
+   "conec_person_wer_percent": {
+    "margin": 0.2500900348816897,
+    "null_ci90": [
+     -0.24338355294363578,
+     0.2567965168197436
+    ],
+    "null_point": 0.0
+   },
+   "conec_org_wer_percent": {
+    "margin": 0.3560870253977917,
+    "null_ci90": [
+     -0.4431333876530067,
+     0.26904066314257663
+    ],
+    "null_point": -0.09168003667201674
+   },
+   "numeric_value_accuracy_percent": {
+    "margin": 0.1565054007985242,
+    "null_ci90": [
+     -0.18758103496081163,
+     0.12542976663623678
+    ],
+    "null_point": -0.030819806862538712
+   },
+   "semantic_high_impact_error_rate_percent": {
+    "margin": 0.0014814754710809955,
+    "null_ci90": [
+     0.0008049151393207787,
+     0.0037678660814827697
+    ],
+    "null_point": 0.002223673787055437
+   }
+  },
+  "caveat": "A single replicate measures this null with 44 clusters and no more. The interval is itself uncertain; it is a better margin than an imported one, not an exact one, and every verdict that uses it must name this cell."
+ },
+ "per_call": [
+  {
+   "sample_id": "4320211",
+   "sector": "Consumer Goods",
+   "sample_rate_hz": "24000",
+   "windows": 37,
+   "comparator_wer_percent": 7.160152196471809,
+   "replicate_wer_percent": 7.137092124985587,
+   "comparator_sdi": [
+    286,
+    104,
+    231
+   ],
+   "replicate_sdi": [
+    287,
+    106,
+    226
+   ],
+   "reference_words": 8673,
+   "comparator_numeric_accuracy_percent": 90.49295774647888,
+   "replicate_numeric_accuracy_percent": 90.14084507042253,
+   "wer_delta": -0.023060071486221467
+  },
+  {
+   "sample_id": "4330115",
+   "sector": "Industrial Goods",
+   "sample_rate_hz": "24000",
+   "windows": 28,
+   "comparator_wer_percent": 7.166566083283041,
+   "replicate_wer_percent": 7.136391068195534,
+   "comparator_sdi": [
+    261,
+    72,
+    142
+   ],
+   "replicate_sdi": [
+    256,
+    71,
+    146
+   ],
+   "reference_words": 6628,
+   "comparator_numeric_accuracy_percent": 94.15584415584415,
+   "replicate_numeric_accuracy_percent": 94.8051948051948,
+   "wer_delta": -0.030175015087507084
+  },
+  {
+   "sample_id": "4341191",
+   "sector": "Conglomerate",
+   "sample_rate_hz": "24000",
+   "windows": 64,
+   "comparator_wer_percent": 7.8055154391032255,
+   "replicate_wer_percent": 7.798638332989478,
+   "comparator_sdi": [
+    492,
+    242,
+    401
+   ],
+   "replicate_sdi": [
+    494,
+    255,
+    385
+   ],
+   "reference_words": 14541,
+   "comparator_numeric_accuracy_percent": 92.44851258581235,
+   "replicate_numeric_accuracy_percent": 93.13501144164759,
+   "wer_delta": -0.006877106113747367
+  },
+  {
+   "sample_id": "4344338",
+   "sector": "Conglomerate",
+   "sample_rate_hz": "44100",
+   "windows": 31,
+   "comparator_wer_percent": 4.722142240138209,
+   "replicate_wer_percent": 4.650158364526346,
+   "comparator_sdi": [
+    123,
+    55,
+    150
+   ],
+   "replicate_sdi": [
+    120,
+    54,
+    149
+   ],
+   "reference_words": 6946,
+   "comparator_numeric_accuracy_percent": 97.58064516129032,
+   "replicate_numeric_accuracy_percent": 97.58064516129032,
+   "wer_delta": -0.07198387561186248
+  },
+  {
+   "sample_id": "4344866",
+   "sector": "Utilities",
+   "sample_rate_hz": "24000",
+   "windows": 37,
+   "comparator_wer_percent": 6.11171960569551,
+   "replicate_wer_percent": 6.188389923329682,
+   "comparator_sdi": [
+    219,
+    94,
+    245
+   ],
+   "replicate_sdi": [
+    222,
+    96,
+    247
+   ],
+   "reference_words": 9130,
+   "comparator_numeric_accuracy_percent": 92.63803680981596,
+   "replicate_numeric_accuracy_percent": 92.63803680981596,
+   "wer_delta": 0.07667031763417231
+  },
+  {
+   "sample_id": "4346818",
+   "sector": "Industrial Goods",
+   "sample_rate_hz": "11025",
+   "windows": 45,
+   "comparator_wer_percent": 10.950036469730124,
+   "replicate_wer_percent": 9.88329686360321,
+   "comparator_sdi": [
+    542,
+    362,
+    297
+   ],
+   "replicate_sdi": [
+    552,
+    214,
+    318
+   ],
+   "reference_words": 10968,
+   "comparator_numeric_accuracy_percent": 91.90031152647975,
+   "replicate_numeric_accuracy_percent": 92.83489096573209,
+   "wer_delta": -1.066739606126914
+  },
+  {
+   "sample_id": "4346923",
+   "sector": "Industrial Goods",
+   "sample_rate_hz": "16000",
+   "windows": 53,
+   "comparator_wer_percent": 18.94155908150192,
+   "replicate_wer_percent": 18.84300778555238,
+   "comparator_sdi": [
+    917,
+    426,
+    579
+   ],
+   "replicate_sdi": [
+    921,
+    426,
+    565
+   ],
+   "reference_words": 10147,
+   "comparator_numeric_accuracy_percent": 88.80597014925372,
+   "replicate_numeric_accuracy_percent": 89.17910447761194,
+   "wer_delta": -0.09855129594954093
+  },
+  {
+   "sample_id": "4359732",
+   "sector": "Services",
+   "sample_rate_hz": "44100",
+   "windows": 55,
+   "comparator_wer_percent": 6.921282294996976,
+   "replicate_wer_percent": 7.068175926726,
+   "comparator_sdi": [
+    352,
+    179,
+    270
+   ],
+   "replicate_sdi": [
+    348,
+    194,
+    276
+   ],
+   "reference_words": 11573,
+   "comparator_numeric_accuracy_percent": 89.36170212765957,
+   "replicate_numeric_accuracy_percent": 89.09574468085107,
+   "wer_delta": 0.14689363172902414
+  },
+  {
+   "sample_id": "4359971",
+   "sector": "Industrial Goods",
+   "sample_rate_hz": "24000",
+   "windows": 42,
+   "comparator_wer_percent": 5.777684739376178,
+   "replicate_wer_percent": 5.788151559556207,
+   "comparator_sdi": [
+    226,
+    122,
+    204
+   ],
+   "replicate_sdi": [
+    232,
+    116,
+    205
+   ],
+   "reference_words": 9554,
+   "comparator_numeric_accuracy_percent": 90.29411764705883,
+   "replicate_numeric_accuracy_percent": 90.29411764705883,
+   "wer_delta": 0.010466820180028868
+  },
+  {
+   "sample_id": "4360366",
+   "sector": "Financial",
+   "sample_rate_hz": "24000",
+   "windows": 44,
+   "comparator_wer_percent": 5.785911733867124,
+   "replicate_wer_percent": 5.928891430750167,
+   "comparator_sdi": [
+    241,
+    112,
+    254
+   ],
+   "replicate_sdi": [
+    238,
+    114,
+    270
+   ],
+   "reference_words": 10491,
+   "comparator_numeric_accuracy_percent": 90.56603773584905,
+   "replicate_numeric_accuracy_percent": 90.56603773584905,
+   "wer_delta": 0.14297969688304324
+  },
+  {
+   "sample_id": "4360674",
+   "sector": "Utilities",
+   "sample_rate_hz": "11025",
+   "windows": 40,
+   "comparator_wer_percent": 8.18400922141884,
+   "replicate_wer_percent": 8.257361416745258,
+   "comparator_sdi": [
+    361,
+    122,
+    298
+   ],
+   "replicate_sdi": [
+    361,
+    121,
+    306
+   ],
+   "reference_words": 9543,
+   "comparator_numeric_accuracy_percent": 85.32423208191126,
+   "replicate_numeric_accuracy_percent": 84.98293515358361,
+   "wer_delta": 0.07335219532641801
+  },
+  {
+   "sample_id": "4360717",
+   "sector": "Consumer Goods",
+   "sample_rate_hz": "24000",
+   "windows": 51,
+   "comparator_wer_percent": 8.40329079919409,
+   "replicate_wer_percent": 8.478844862323708,
+   "comparator_sdi": [
+    440,
+    308,
+    253
+   ],
+   "replicate_sdi": [
+    454,
+    308,
+    248
+   ],
+   "reference_words": 11912,
+   "comparator_numeric_accuracy_percent": 88.88888888888889,
+   "replicate_numeric_accuracy_percent": 88.88888888888889,
+   "wer_delta": 0.07555406312961743
+  },
+  {
+   "sample_id": "4361631",
+   "sector": "Utilities",
+   "sample_rate_hz": "22050",
+   "windows": 50,
+   "comparator_wer_percent": 7.255803521363688,
+   "replicate_wer_percent": 7.28944712347202,
+   "comparator_sdi": [
+    283,
+    155,
+    209
+   ],
+   "replicate_sdi": [
+    289,
+    151,
+    210
+   ],
+   "reference_words": 8917,
+   "comparator_numeric_accuracy_percent": 86.9090909090909,
+   "replicate_numeric_accuracy_percent": 86.18181818181819,
+   "wer_delta": 0.033643602108332615
+  },
+  {
+   "sample_id": "4363614",
+   "sector": "Financial",
+   "sample_rate_hz": "11025",
+   "windows": 63,
+   "comparator_wer_percent": 14.838709677419354,
+   "replicate_wer_percent": 14.936234058514628,
+   "comparator_sdi": [
+    778,
+    339,
+    861
+   ],
+   "replicate_sdi": [
+    775,
+    354,
+    862
+   ],
+   "reference_words": 13330,
+   "comparator_numeric_accuracy_percent": 91.71428571428571,
+   "replicate_numeric_accuracy_percent": 91.14285714285714,
+   "wer_delta": 0.09752438109527439
+  },
+  {
+   "sample_id": "4364366",
+   "sector": "Basic Materials",
+   "sample_rate_hz": "11025",
+   "windows": 39,
+   "comparator_wer_percent": 10.18036557317516,
+   "replicate_wer_percent": 10.26510107735141,
+   "comparator_sdi": [
+    447,
+    103,
+    291
+   ],
+   "replicate_sdi": [
+    448,
+    101,
+    299
+   ],
+   "reference_words": 8261,
+   "comparator_numeric_accuracy_percent": 91.34615384615384,
+   "replicate_numeric_accuracy_percent": 91.34615384615384,
+   "wer_delta": 0.08473550417624942
+  },
+  {
+   "sample_id": "4365024",
+   "sector": "Services",
+   "sample_rate_hz": "16000",
+   "windows": 49,
+   "comparator_wer_percent": 6.90752688172043,
+   "replicate_wer_percent": 6.881720430107527,
+   "comparator_sdi": [
+    348,
+    172,
+    283
+   ],
+   "replicate_sdi": [
+    343,
+    175,
+    282
+   ],
+   "reference_words": 11625,
+   "comparator_numeric_accuracy_percent": 93.33333333333333,
+   "replicate_numeric_accuracy_percent": 93.33333333333333,
+   "wer_delta": -0.025806451612902848
+  },
+  {
+   "sample_id": "4365948",
+   "sector": "Basic Materials",
+   "sample_rate_hz": "22050",
+   "windows": 28,
+   "comparator_wer_percent": 4.4898568019093075,
+   "replicate_wer_percent": 4.534606205250597,
+   "comparator_sdi": [
+    123,
+    38,
+    140
+   ],
+   "replicate_sdi": [
+    125,
+    35,
+    144
+   ],
+   "reference_words": 6704,
+   "comparator_numeric_accuracy_percent": 87.96680497925311,
+   "replicate_numeric_accuracy_percent": 87.96680497925311,
+   "wer_delta": 0.04474940334128963
+  },
+  {
+   "sample_id": "4366302",
+   "sector": "Financial",
+   "sample_rate_hz": "44100",
+   "windows": 40,
+   "comparator_wer_percent": 5.802456806152002,
+   "replicate_wer_percent": 5.82243083990812,
+   "comparator_sdi": [
+    257,
+    90,
+    234
+   ],
+   "replicate_sdi": [
+    258,
+    85,
+    240
+   ],
+   "reference_words": 10013,
+   "comparator_numeric_accuracy_percent": 88.66995073891626,
+   "replicate_numeric_accuracy_percent": 88.66995073891626,
+   "wer_delta": 0.019974033756117393
+  },
+  {
+   "sample_id": "4366429",
+   "sector": "Healthcare",
+   "sample_rate_hz": "44100",
+   "windows": 45,
+   "comparator_wer_percent": 6.54577620521893,
+   "replicate_wer_percent": 6.563467492260062,
+   "comparator_sdi": [
+    270,
+    216,
+    254
+   ],
+   "replicate_sdi": [
+    271,
+    211,
+    260
+   ],
+   "reference_words": 11305,
+   "comparator_numeric_accuracy_percent": 84.0909090909091,
+   "replicate_numeric_accuracy_percent": 84.0909090909091,
+   "wer_delta": 0.01769128704113232
+  },
+  {
+   "sample_id": "4366522",
+   "sector": "Healthcare",
+   "sample_rate_hz": "22050",
+   "windows": 21,
+   "comparator_wer_percent": 7.22774678632064,
+   "replicate_wer_percent": 7.276255154014067,
+   "comparator_sdi": [
+    147,
+    34,
+    117
+   ],
+   "replicate_sdi": [
+    152,
+    34,
+    114
+   ],
+   "reference_words": 4123,
+   "comparator_numeric_accuracy_percent": 89.28571428571429,
+   "replicate_numeric_accuracy_percent": 85.71428571428571,
+   "wer_delta": 0.04850836769342681
+  },
+  {
+   "sample_id": "4366893",
+   "sector": "Basic Materials",
+   "sample_rate_hz": "16000",
+   "windows": 27,
+   "comparator_wer_percent": 7.668231611893583,
+   "replicate_wer_percent": 7.699530516431925,
+   "comparator_sdi": [
+    221,
+    93,
+    176
+   ],
+   "replicate_sdi": [
+    220,
+    92,
+    180
+   ],
+   "reference_words": 6390,
+   "comparator_numeric_accuracy_percent": 92.27053140096618,
+   "replicate_numeric_accuracy_percent": 93.71980676328502,
+   "wer_delta": 0.03129890453834161
+  },
+  {
+   "sample_id": "4367318",
+   "sector": "Healthcare",
+   "sample_rate_hz": "24000",
+   "windows": 20,
+   "comparator_wer_percent": 7.020389249304912,
+   "replicate_wer_percent": 7.136237256719184,
+   "comparator_sdi": [
+    157,
+    43,
+    103
+   ],
+   "replicate_sdi": [
+    163,
+    42,
+    103
+   ],
+   "reference_words": 4316,
+   "comparator_numeric_accuracy_percent": 98.85057471264368,
+   "replicate_numeric_accuracy_percent": 98.85057471264368,
+   "wer_delta": 0.11584800741427248
+  },
+  {
+   "sample_id": "4367535",
+   "sector": "Healthcare",
+   "sample_rate_hz": "24000",
+   "windows": 36,
+   "comparator_wer_percent": 11.426091987272201,
+   "replicate_wer_percent": 11.064506797801561,
+   "comparator_sdi": [
+    409,
+    111,
+    270
+   ],
+   "replicate_sdi": [
+    400,
+    113,
+    252
+   ],
+   "reference_words": 6914,
+   "comparator_numeric_accuracy_percent": 93.48837209302326,
+   "replicate_numeric_accuracy_percent": 93.95348837209302,
+   "wer_delta": -0.3615851894706399
+  },
+  {
+   "sample_id": "4368670",
+   "sector": "Utilities",
+   "sample_rate_hz": "22050",
+   "windows": 47,
+   "comparator_wer_percent": 10.095510131214853,
+   "replicate_wer_percent": 10.104436311702223,
+   "comparator_sdi": [
+    482,
+    320,
+    329
+   ],
+   "replicate_sdi": [
+    477,
+    323,
+    332
+   ],
+   "reference_words": 11203,
+   "comparator_numeric_accuracy_percent": 93.5361216730038,
+   "replicate_numeric_accuracy_percent": 93.91634980988593,
+   "wer_delta": 0.008926180487369706
+  },
+  {
+   "sample_id": "4374910",
+   "sector": "Financial",
+   "sample_rate_hz": "24000",
+   "windows": 23,
+   "comparator_wer_percent": 5.872790083316399,
+   "replicate_wer_percent": 5.730542572647836,
+   "comparator_sdi": [
+    107,
+    43,
+    139
+   ],
+   "replicate_sdi": [
+    107,
+    41,
+    134
+   ],
+   "reference_words": 4921,
+   "comparator_numeric_accuracy_percent": 81.3953488372093,
+   "replicate_numeric_accuracy_percent": 86.04651162790698,
+   "wer_delta": -0.14224751066856367
+  },
+  {
+   "sample_id": "4375653",
+   "sector": "Healthcare",
+   "sample_rate_hz": "24000",
+   "windows": 39,
+   "comparator_wer_percent": 7.986074480430426,
+   "replicate_wer_percent": 8.102120476843549,
+   "comparator_sdi": [
+    337,
+    100,
+    320
+   ],
+   "replicate_sdi": [
+    345,
+    101,
+    322
+   ],
+   "reference_words": 9479,
+   "comparator_numeric_accuracy_percent": 90.73359073359073,
+   "replicate_numeric_accuracy_percent": 90.73359073359073,
+   "wer_delta": 0.1160459964131233
+  },
+  {
+   "sample_id": "4382825",
+   "sector": "Basic Materials",
+   "sample_rate_hz": "44100",
+   "windows": 43,
+   "comparator_wer_percent": 10.62657577738351,
+   "replicate_wer_percent": 10.673265477635633,
+   "comparator_sdi": [
+    463,
+    263,
+    412
+   ],
+   "replicate_sdi": [
+    456,
+    267,
+    420
+   ],
+   "reference_words": 10709,
+   "comparator_numeric_accuracy_percent": 87.62376237623762,
+   "replicate_numeric_accuracy_percent": 87.12871287128714,
+   "wer_delta": 0.0466897002521236
+  },
+  {
+   "sample_id": "4383161",
+   "sector": "Consumer Goods",
+   "sample_rate_hz": "24000",
+   "windows": 38,
+   "comparator_wer_percent": 8.244531688166012,
+   "replicate_wer_percent": 8.27818283791363,
+   "comparator_sdi": [
+    407,
+    124,
+    204
+   ],
+   "replicate_sdi": [
+    407,
+    125,
+    206
+   ],
+   "reference_words": 8915,
+   "comparator_numeric_accuracy_percent": 90.67357512953367,
+   "replicate_numeric_accuracy_percent": 90.15544041450777,
+   "wer_delta": 0.03365114974761774
+  },
+  {
+   "sample_id": "4384198",
+   "sector": "Industrial Goods",
+   "sample_rate_hz": "44100",
+   "windows": 30,
+   "comparator_wer_percent": 8.023751522533496,
+   "replicate_wer_percent": 8.008526187576127,
+   "comparator_sdi": [
+    265,
+    62,
+    200
+   ],
+   "replicate_sdi": [
+    261,
+    63,
+    202
+   ],
+   "reference_words": 6568,
+   "comparator_numeric_accuracy_percent": 87.37373737373737,
+   "replicate_numeric_accuracy_percent": 87.37373737373737,
+   "wer_delta": -0.01522533495736944
+  },
+  {
+   "sample_id": "4384683",
+   "sector": "Basic Materials",
+   "sample_rate_hz": "24000",
+   "windows": 17,
+   "comparator_wer_percent": 6.640841173215274,
+   "replicate_wer_percent": 6.585500830105147,
+   "comparator_sdi": [
+    83,
+    32,
+    125
+   ],
+   "replicate_sdi": [
+    82,
+    33,
+    123
+   ],
+   "reference_words": 3614,
+   "comparator_numeric_accuracy_percent": 92.92929292929293,
+   "replicate_numeric_accuracy_percent": 92.92929292929293,
+   "wer_delta": -0.055340343110127144
+  },
+  {
+   "sample_id": "4384744",
+   "sector": "Technology",
+   "sample_rate_hz": "16000",
+   "windows": 37,
+   "comparator_wer_percent": 9.221336603310853,
+   "replicate_wer_percent": 9.454322501532802,
+   "comparator_sdi": [
+    354,
+    155,
+    243
+   ],
+   "replicate_sdi": [
+    360,
+    156,
+    255
+   ],
+   "reference_words": 8155,
+   "comparator_numeric_accuracy_percent": 90.76923076923077,
+   "replicate_numeric_accuracy_percent": 89.84615384615384,
+   "wer_delta": 0.23298589822194948
+  },
+  {
+   "sample_id": "4384964",
+   "sector": "Utilities",
+   "sample_rate_hz": "24000",
+   "windows": 45,
+   "comparator_wer_percent": 8.087863144042919,
+   "replicate_wer_percent": 8.097985626075515,
+   "comparator_sdi": [
+    317,
+    148,
+    334
+   ],
+   "replicate_sdi": [
+    323,
+    140,
+    337
+   ],
+   "reference_words": 9879,
+   "comparator_numeric_accuracy_percent": 92.5,
+   "replicate_numeric_accuracy_percent": 92.5,
+   "wer_delta": 0.010122482032596025
+  },
+  {
+   "sample_id": "4385072",
+   "sector": "Technology",
+   "sample_rate_hz": "24000",
+   "windows": 29,
+   "comparator_wer_percent": 5.308641975308642,
+   "replicate_wer_percent": 5.138888888888889,
+   "comparator_sdi": [
+    116,
+    58,
+    170
+   ],
+   "replicate_sdi": [
+    111,
+    59,
+    163
+   ],
+   "reference_words": 6480,
+   "comparator_numeric_accuracy_percent": 95.0,
+   "replicate_numeric_accuracy_percent": 95.0,
+   "wer_delta": -0.16975308641975229
+  },
+  {
+   "sample_id": "4385388",
+   "sector": "Consumer Goods",
+   "sample_rate_hz": "44100",
+   "windows": 49,
+   "comparator_wer_percent": 6.25,
+   "replicate_wer_percent": 6.012323943661972,
+   "comparator_sdi": [
+    267,
+    83,
+    360
+   ],
+   "replicate_sdi": [
+    264,
+    71,
+    348
+   ],
+   "reference_words": 11360,
+   "comparator_numeric_accuracy_percent": 80.21201413427562,
+   "replicate_numeric_accuracy_percent": 79.85865724381625,
+   "wer_delta": -0.23767605633802802
+  },
+  {
+   "sample_id": "4385939",
+   "sector": "Consumer Goods",
+   "sample_rate_hz": "24000",
+   "windows": 34,
+   "comparator_wer_percent": 5.015914828229612,
+   "replicate_wer_percent": 4.982987597409725,
+   "comparator_sdi": [
+    183,
+    93,
+    181
+   ],
+   "replicate_sdi": [
+    180,
+    95,
+    179
+   ],
+   "reference_words": 9111,
+   "comparator_numeric_accuracy_percent": 95.91836734693878,
+   "replicate_numeric_accuracy_percent": 95.91836734693878,
+   "wer_delta": -0.032927230819887576
+  },
+  {
+   "sample_id": "4386541",
+   "sector": "Services",
+   "sample_rate_hz": "16000",
+   "windows": 13,
+   "comparator_wer_percent": 6.355620867009552,
+   "replicate_wer_percent": 6.318883174136664,
+   "comparator_sdi": [
+    65,
+    34,
+    74
+   ],
+   "replicate_sdi": [
+    64,
+    34,
+    74
+   ],
+   "reference_words": 2722,
+   "comparator_numeric_accuracy_percent": 92.5233644859813,
+   "replicate_numeric_accuracy_percent": 93.45794392523365,
+   "wer_delta": -0.03673769287288842
+  },
+  {
+   "sample_id": "4387332",
+   "sector": "Services",
+   "sample_rate_hz": "24000",
+   "windows": 15,
+   "comparator_wer_percent": 6.277915632754342,
+   "replicate_wer_percent": 6.327543424317618,
+   "comparator_sdi": [
+    125,
+    52,
+    76
+   ],
+   "replicate_sdi": [
+    125,
+    53,
+    77
+   ],
+   "reference_words": 4030,
+   "comparator_numeric_accuracy_percent": 92.42424242424242,
+   "replicate_numeric_accuracy_percent": 92.42424242424242,
+   "wer_delta": 0.04962779156327546
+  },
+  {
+   "sample_id": "4387383",
+   "sector": "Financial",
+   "sample_rate_hz": "22050",
+   "windows": 24,
+   "comparator_wer_percent": 6.699346405228758,
+   "replicate_wer_percent": 6.672113289760349,
+   "comparator_sdi": [
+    124,
+    41,
+    81
+   ],
+   "replicate_sdi": [
+    124,
+    40,
+    81
+   ],
+   "reference_words": 3672,
+   "comparator_numeric_accuracy_percent": 95.91836734693878,
+   "replicate_numeric_accuracy_percent": 95.91836734693878,
+   "wer_delta": -0.027233115468409785
+  },
+  {
+   "sample_id": "4387865",
+   "sector": "Technology",
+   "sample_rate_hz": "11025",
+   "windows": 25,
+   "comparator_wer_percent": 8.765411248099984,
+   "replicate_wer_percent": 8.866745482182063,
+   "comparator_sdi": [
+    236,
+    118,
+    165
+   ],
+   "replicate_sdi": [
+    238,
+    119,
+    168
+   ],
+   "reference_words": 5921,
+   "comparator_numeric_accuracy_percent": 84.4984802431611,
+   "replicate_numeric_accuracy_percent": 84.4984802431611,
+   "wer_delta": 0.10133423408207953
+  },
+  {
+   "sample_id": "4389907",
+   "sector": "Technology",
+   "sample_rate_hz": "24000",
+   "windows": 23,
+   "comparator_wer_percent": 13.140537798072044,
+   "replicate_wer_percent": 13.36884830035515,
+   "comparator_sdi": [
+    235,
+    40,
+    243
+   ],
+   "replicate_sdi": [
+    239,
+    38,
+    250
+   ],
+   "reference_words": 3942,
+   "comparator_numeric_accuracy_percent": 91.04477611940298,
+   "replicate_numeric_accuracy_percent": 89.55223880597015,
+   "wer_delta": 0.22831050228310623
+  },
+  {
+   "sample_id": "4392809",
+   "sector": "Services",
+   "sample_rate_hz": "24000",
+   "windows": 16,
+   "comparator_wer_percent": 4.192203971561657,
+   "replicate_wer_percent": 4.143172346163276,
+   "comparator_sdi": [
+    60,
+    32,
+    79
+   ],
+   "replicate_sdi": [
+    60,
+    33,
+    76
+   ],
+   "reference_words": 4079,
+   "comparator_numeric_accuracy_percent": 95.09803921568627,
+   "replicate_numeric_accuracy_percent": 95.09803921568627,
+   "wer_delta": -0.04903162539838135
+  },
+  {
+   "sample_id": "4394084",
+   "sector": "Technology",
+   "sample_rate_hz": "16000",
+   "windows": 20,
+   "comparator_wer_percent": 12.156215621562156,
+   "replicate_wer_percent": 11.881188118811881,
+   "comparator_sdi": [
+    214,
+    85,
+    143
+   ],
+   "replicate_sdi": [
+    215,
+    81,
+    136
+   ],
+   "reference_words": 3636,
+   "comparator_numeric_accuracy_percent": 87.31343283582089,
+   "replicate_numeric_accuracy_percent": 87.31343283582089,
+   "wer_delta": -0.2750275027502749
+  },
+  {
+   "sample_id": "4397800",
+   "sector": "Conglomerate",
+   "sample_rate_hz": "24000",
+   "windows": 31,
+   "comparator_wer_percent": 7.839939789262418,
+   "replicate_wer_percent": 7.890115403913698,
+   "comparator_sdi": [
+    290,
+    107,
+    228
+   ],
+   "replicate_sdi": [
+    291,
+    110,
+    228
+   ],
+   "reference_words": 7972,
+   "comparator_numeric_accuracy_percent": 97.76536312849161,
+   "replicate_numeric_accuracy_percent": 97.76536312849161,
+   "wer_delta": 0.05017561465127951
+  },
+  {
+   "sample_id": "4397829",
+   "sector": "Conglomerate",
+   "sample_rate_hz": "24000",
+   "windows": 50,
+   "comparator_wer_percent": 8.066356534714298,
+   "replicate_wer_percent": 8.083911173527605,
+   "comparator_sdi": [
+    468,
+    119,
+    332
+   ],
+   "replicate_sdi": [
+    468,
+    120,
+    333
+   ],
+   "reference_words": 11393,
+   "comparator_numeric_accuracy_percent": 97.42857142857143,
+   "replicate_numeric_accuracy_percent": 97.71428571428571,
+   "wer_delta": 0.017554638813306767
+  }
+ ],
+ "per_call_spread": {
+  "calls_better": 18,
+  "calls_worse": 26,
+  "calls_identical": 0,
+  "min_delta": -1.066739606126914,
+  "max_delta": 0.23298589822194948,
+  "largest_absolute_delta_call": "4346818"
+ },
+ "error_structure": {
+  "comparator": {
+   "substitutions": 13098,
+   "deletions": 5701,
+   "insertions": 10700,
+   "reference_words": 359765,
+   "errors": 29499,
+   "substitution_plus_deletion": 18799
+  },
+  "replicate": {
+   "substitutions": 13126,
+   "deletions": 5570,
+   "insertions": 10731,
+   "reference_words": 359765,
+   "errors": 29427,
+   "substitution_plus_deletion": 18696
+  },
+  "change": {
+   "substitutions": 28,
+   "deletions": -131,
+   "insertions": 31,
+   "reference_words": 0,
+   "errors": -72,
+   "substitution_plus_deletion": -103
+  }
+ },
+ "per_stratum": {
+  "by_sector": {
+   "Basic Materials": {
+    "calls": 5,
+    "reference_words": 35678,
+    "comparator_wer_percent": 8.436571556701608,
+    "replicate_wer_percent": 8.478614272100454,
+    "delta": 0.0420427153988463
+   },
+   "Conglomerate": {
+    "calls": 4,
+    "reference_words": 40852,
+    "comparator_wer_percent": 7.360716733574856,
+    "replicate_wer_percent": 7.360716733574856,
+    "delta": 0.0
+   },
+   "Consumer Goods": {
+    "calls": 5,
+    "reference_words": 49971,
+    "comparator_wer_percent": 7.052090212323147,
+    "replicate_wer_percent": 7.012066998859338,
+    "delta": -0.04002321346380899
+   },
+   "Financial": {
+    "calls": 5,
+    "reference_words": 42427,
+    "comparator_wer_percent": 8.723218705069884,
+    "replicate_wer_percent": 8.775072477431824,
+    "delta": 0.05185377236193922
+   },
+   "Healthcare": {
+    "calls": 5,
+    "reference_words": 36137,
+    "comparator_wer_percent": 7.991808949276365,
+    "replicate_wer_percent": 7.9779727149459,
+    "delta": -0.01383623433046477
+   },
+   "Industrial Goods": {
+    "calls": 5,
+    "reference_words": 43865,
+    "comparator_wer_percent": 10.662259204377065,
+    "replicate_wer_percent": 10.368175082639917,
+    "delta": -0.29408412173714815
+   },
+   "Services": {
+    "calls": 5,
+    "reference_words": 34029,
+    "comparator_wer_percent": 6.46801257750742,
+    "replicate_wer_percent": 6.506215286961122,
+    "delta": 0.03820270945370119
+   },
+   "Technology": {
+    "calls": 5,
+    "reference_words": 28134,
+    "comparator_wer_percent": 9.152626715006754,
+    "replicate_wer_percent": 9.198834150849505,
+    "delta": 0.04620743584275111
+   },
+   "Utilities": {
+    "calls": 5,
+    "reference_words": 48672,
+    "comparator_wer_percent": 8.0456936226167,
+    "replicate_wer_percent": 8.084730440499671,
+    "delta": 0.03903681788297142
+   }
+  },
+  "by_sample_rate_hz": {
+   "11025": {
+    "calls": 5,
+    "reference_words": 48023,
+    "comparator_wer_percent": 11.078025112966703,
+    "replicate_wer_percent": 10.903108926972493,
+    "delta": -0.17491618599420988
+   },
+   "16000": {
+    "calls": 6,
+    "reference_words": 42675,
+    "comparator_wer_percent": 10.736965436438195,
+    "replicate_wer_percent": 10.729935559461042,
+    "delta": -0.007029876977153293
+   },
+   "22050": {
+    "calls": 5,
+    "reference_words": 34619,
+    "comparator_wer_percent": 7.5767642046275165,
+    "replicate_wer_percent": 7.599872902163551,
+    "delta": 0.02310869753603484
+   },
+   "24000": {
+    "calls": 21,
+    "reference_words": 165974,
+    "comparator_wer_percent": 7.319821176810826,
+    "replicate_wer_percent": 7.328256232903949,
+    "delta": 0.00843505609312345
+   },
+   "44100": {
+    "calls": 7,
+    "reference_words": 68474,
+    "comparator_wer_percent": 7.046470193065981,
+    "replicate_wer_percent": 7.036247334754798,
+    "delta": -0.010222858311183636
+   }
+  }
+ },
+ "window_reaggregation": {
+  "comparator": {
+   "arm": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+   "totals": {
+    "windows": 1593,
+    "calls": 44,
+    "substitutions": 13098,
+    "deletions": 5701,
+    "insertions": 10700,
+    "reference_words": 359765,
+    "errors": 29499,
+    "corpus_wer_percent": 8.19951913054355
+   },
+   "checks": [
+    {
+     "check": "windows",
+     "actual": 1593,
+     "expected": 1593,
+     "verdict": "PASS"
+    },
+    {
+     "check": "calls",
+     "actual": 44,
+     "expected": 44,
+     "verdict": "PASS"
+    },
+    {
+     "check": "substitutions",
+     "actual": 13098,
+     "expected": 13098,
+     "verdict": "PASS"
+    },
+    {
+     "check": "deletions",
+     "actual": 5701,
+     "expected": 5701,
+     "verdict": "PASS"
+    },
+    {
+     "check": "insertions",
+     "actual": 10700,
+     "expected": 10700,
+     "verdict": "PASS"
+    },
+    {
+     "check": "reference_words",
+     "actual": 359765,
+     "expected": 359765,
+     "verdict": "PASS"
+    }
+   ],
+   "verdict": "PASS"
+  },
+  "replicate": {
+   "arm": "SAEA-E21-FULL44-NULL-REPLICATE-V1",
+   "totals": {
+    "windows": 1593,
+    "calls": 44,
+    "substitutions": 13126,
+    "deletions": 5570,
+    "insertions": 10731,
+    "reference_words": 359765,
+    "errors": 29427,
+    "corpus_wer_percent": 8.17950606646005
+   },
+   "checks": [
+    {
+     "check": "windows",
+     "actual": 1593,
+     "expected": 1593,
+     "verdict": "PASS"
+    },
+    {
+     "check": "calls",
+     "actual": 44,
+     "expected": 44,
+     "verdict": "PASS"
+    },
+    {
+     "check": "substitutions",
+     "actual": 13126,
+     "expected": 13126,
+     "verdict": "PASS"
+    },
+    {
+     "check": "deletions",
+     "actual": 5570,
+     "expected": 5570,
+     "verdict": "PASS"
+    },
+    {
+     "check": "insertions",
+     "actual": 10731,
+     "expected": 10731,
+     "verdict": "PASS"
+    },
+    {
+     "check": "reference_words",
+     "actual": 359765,
+     "expected": 359765,
+     "verdict": "PASS"
+    }
+   ],
+   "verdict": "PASS"
+  }
+ },
+ "windows": {
+  "status": "OK",
+  "windows_left": 1593,
+  "windows_right": 1593,
+  "windows_paired": 1593,
+  "span_misaligned": 0,
+  "span_misaligned_examples": [],
+  "saturated_comparator": [],
+  "saturated_replicate": [],
+  "corpus_wer_window_level_clustered_by_call_ci90": {
+   "point": -0.0200130640834999,
+   "ci_low": -0.08501511398883133,
+   "ci_high": 0.030845200652504484,
+   "sigma_hat": 0.03590926385732335,
+   "n": 1593,
+   "replicates": 10000,
+   "seed": 20260903,
+   "ci_level": 0.9,
+   "ci90_half_width": 0.057930157320667905
+  },
+  "corpus_wer_window_level_stratified_by_call_ci90": {
+   "point": -0.0200130640834999,
+   "ci_low": -0.1139932512803073,
+   "ci_high": 0.06228175241686671,
+   "sigma_hat": 0.05319343234262069,
+   "n": 1593,
+   "replicates": 10000,
+   "seed": 20260903,
+   "ci_level": 0.9,
+   "ci90_half_width": 0.088137501848587
+  },
+  "windows_with_a_different_operation_count": 634,
+  "window_operation_identity_rate": 0.6020087884494665
+ },
+ "text_identity": {
+  "windows_paired": 1593,
+  "accepted_span_identical": 540,
+  "accepted_span_identity_rate": 0.3389830508474576,
+  "raw_completion_identical": 540,
+  "raw_completion_identity_rate": 0.3389830508474576,
+  "windows_differing": 1053,
+  "calls_with_every_window_identical": [],
+  "per_call": {
+   "4320211": {
+    "windows": 37,
+    "identical": 14,
+    "identity_rate": 0.3783783783783784
+   },
+   "4330115": {
+    "windows": 28,
+    "identical": 10,
+    "identity_rate": 0.35714285714285715
+   },
+   "4341191": {
+    "windows": 64,
+    "identical": 17,
+    "identity_rate": 0.265625
+   },
+   "4344338": {
+    "windows": 31,
+    "identical": 6,
+    "identity_rate": 0.1935483870967742
+   },
+   "4344866": {
+    "windows": 37,
+    "identical": 13,
+    "identity_rate": 0.35135135135135137
+   },
+   "4346818": {
+    "windows": 45,
+    "identical": 15,
+    "identity_rate": 0.3333333333333333
+   },
+   "4346923": {
+    "windows": 53,
+    "identical": 18,
+    "identity_rate": 0.33962264150943394
+   },
+   "4359732": {
+    "windows": 55,
+    "identical": 17,
+    "identity_rate": 0.3090909090909091
+   },
+   "4359971": {
+    "windows": 42,
+    "identical": 13,
+    "identity_rate": 0.30952380952380953
+   },
+   "4360366": {
+    "windows": 44,
+    "identical": 16,
+    "identity_rate": 0.36363636363636365
+   },
+   "4360674": {
+    "windows": 40,
+    "identical": 20,
+    "identity_rate": 0.5
+   },
+   "4360717": {
+    "windows": 51,
+    "identical": 13,
+    "identity_rate": 0.2549019607843137
+   },
+   "4361631": {
+    "windows": 50,
+    "identical": 17,
+    "identity_rate": 0.34
+   },
+   "4363614": {
+    "windows": 63,
+    "identical": 18,
+    "identity_rate": 0.2857142857142857
+   },
+   "4364366": {
+    "windows": 39,
+    "identical": 11,
+    "identity_rate": 0.28205128205128205
+   },
+   "4365024": {
+    "windows": 49,
+    "identical": 21,
+    "identity_rate": 0.42857142857142855
+   },
+   "4365948": {
+    "windows": 28,
+    "identical": 9,
+    "identity_rate": 0.32142857142857145
+   },
+   "4366302": {
+    "windows": 40,
+    "identical": 13,
+    "identity_rate": 0.325
+   },
+   "4366429": {
+    "windows": 45,
+    "identical": 17,
+    "identity_rate": 0.37777777777777777
+   },
+   "4366522": {
+    "windows": 21,
+    "identical": 7,
+    "identity_rate": 0.3333333333333333
+   },
+   "4366893": {
+    "windows": 27,
+    "identical": 10,
+    "identity_rate": 0.37037037037037035
+   },
+   "4367318": {
+    "windows": 20,
+    "identical": 8,
+    "identity_rate": 0.4
+   },
+   "4367535": {
+    "windows": 36,
+    "identical": 9,
+    "identity_rate": 0.25
+   },
+   "4368670": {
+    "windows": 47,
+    "identical": 13,
+    "identity_rate": 0.2765957446808511
+   },
+   "4374910": {
+    "windows": 23,
+    "identical": 6,
+    "identity_rate": 0.2608695652173913
+   },
+   "4375653": {
+    "windows": 39,
+    "identical": 13,
+    "identity_rate": 0.3333333333333333
+   },
+   "4382825": {
+    "windows": 43,
+    "identical": 15,
+    "identity_rate": 0.3488372093023256
+   },
+   "4383161": {
+    "windows": 38,
+    "identical": 8,
+    "identity_rate": 0.21052631578947367
+   },
+   "4384198": {
+    "windows": 30,
+    "identical": 18,
+    "identity_rate": 0.6
+   },
+   "4384683": {
+    "windows": 17,
+    "identical": 7,
+    "identity_rate": 0.4117647058823529
+   },
+   "4384744": {
+    "windows": 37,
+    "identical": 16,
+    "identity_rate": 0.43243243243243246
+   },
+   "4384964": {
+    "windows": 45,
+    "identical": 12,
+    "identity_rate": 0.26666666666666666
+   },
+   "4385072": {
+    "windows": 29,
+    "identical": 10,
+    "identity_rate": 0.3448275862068966
+   },
+   "4385388": {
+    "windows": 49,
+    "identical": 17,
+    "identity_rate": 0.3469387755102041
+   },
+   "4385939": {
+    "windows": 34,
+    "identical": 13,
+    "identity_rate": 0.38235294117647056
+   },
+   "4386541": {
+    "windows": 13,
+    "identical": 6,
+    "identity_rate": 0.46153846153846156
+   },
+   "4387332": {
+    "windows": 15,
+    "identical": 6,
+    "identity_rate": 0.4
+   },
+   "4387383": {
+    "windows": 24,
+    "identical": 14,
+    "identity_rate": 0.5833333333333334
+   },
+   "4387865": {
+    "windows": 25,
+    "identical": 9,
+    "identity_rate": 0.36
+   },
+   "4389907": {
+    "windows": 23,
+    "identical": 8,
+    "identity_rate": 0.34782608695652173
+   },
+   "4392809": {
+    "windows": 16,
+    "identical": 7,
+    "identity_rate": 0.4375
+   },
+   "4394084": {
+    "windows": 20,
+    "identical": 6,
+    "identity_rate": 0.3
+   },
+   "4397800": {
+    "windows": 31,
+    "identical": 8,
+    "identity_rate": 0.25806451612903225
+   },
+   "4397829": {
+    "windows": 50,
+    "identical": 16,
+    "identity_rate": 0.32
+   }
+  },
+  "basis": "accepted span = analysis.e21_window_pairing.WindowSpan.text, which is what reproduction.obs_loop actually stitched (a decode-cap-saturated window contributes the empty string). raw completion = the window's own MODEL_RESPONSE text before that quarantine."
+ },
+ "prediction_check": {
+  "corpus_wer_delta": {
+   "predicted_range": [
+    -0.35,
+    0.35
+   ],
+   "observed": -0.0200130640834999,
+   "held": true
+  },
+  "ci90_half_width_wider_than_the_imported_margin": {
+   "predicted": true,
+   "imported_margin": 0.1524,
+   "observed": 0.057930157320667905,
+   "held": false
+  },
+  "text_identity_rate_below_60_percent": {
+   "predicted_below": 0.6,
+   "observed": 0.3389830508474576,
+   "held": true
+  },
+  "saturation_between_0_and_2": {
+   "predicted_range": [
+    0,
+    2
+   ],
+   "observed": 0,
+   "observed_windows": [],
+   "comparator_saturated": 0,
+   "held": true
+  },
+  "both_tail_cell_clause_2_failures_have_null_half_widths_above_the_imported_margin": {
+   "metrics": [
+    "numeric_value_accuracy_percent",
+    "conec_non_entity_wer_percent"
+   ],
+   "observed": {
+    "numeric_value_accuracy_percent": 0.1565054007985242,
+    "conec_non_entity_wer_percent": 0.0647503536243513
+   },
+   "imported_margin": 0.1524,
+   "held": false
+  }
+ }
+}

@@ -1,0 +1,138 @@
+{
+ "run_id": "SAEA-E21-FULL44-NULL-REPLICATE-V1",
+ "attempt_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07",
+ "bundles": [
+  {
+   "job_id": "corpus-wer-anchor",
+   "scorer": "asr-wer-whisper",
+   "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-corpus-wer-anchor/SAEA-E21-FULL44-NULL-REPLICATE-V1.run-manifest.json",
+   "manifest_sha256": "cff94fb6e9a6fb3facdf7547d47b1506ab43088a45e13a96508f44bfc06f6aa6",
+   "artifacts": {
+    "outputs": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.outputs.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-corpus-wer-anchor/SAEA-E21-FULL44-NULL-REPLICATE-V1.outputs.jsonl",
+     "sha256": "80616dcf220d7c541a57830838e7e5a8d0fd11be95fc4e7e20e1c9f0a13007c3"
+    },
+    "raw_trace": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-corpus-wer-anchor/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace.jsonl",
+     "sha256": "3e363c24fd4d40f201a5e4073f64a71f3ae68360ff798f396c228aff8341b68f"
+    },
+    "trace_manifest": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace-manifest.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-corpus-wer-anchor/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace-manifest.json",
+     "sha256": "02a769be1159941d77a67d183311ccb67a47c06ad202312aa0947a05ca878027"
+    },
+    "scores": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.scores.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-corpus-wer-anchor/SAEA-E21-FULL44-NULL-REPLICATE-V1.scores.json",
+     "sha256": "f07f55a627ab0818a53f5ce9a6ae23442f968a70b5f42fad5bafa127abaf72e2"
+    },
+    "session_receipt": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np6-c36864-20260908/session-receipt.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-corpus-wer-anchor/session-receipt.json",
+     "sha256": "de3ff63066262a3d5e6593fa579b0cc43c572048dc212594ed8b12e3aa02e7fc"
+    }
+   }
+  },
+  {
+   "job_id": "conec-entity-wer",
+   "scorer": "conec-entity-wer-official",
+   "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-conec-entity-wer/SAEA-E21-FULL44-NULL-REPLICATE-V1.run-manifest.json",
+   "manifest_sha256": "eef419e1a1e7b7b141969ffd0989c05f0b721c3089d65bcdd649d88b3938ec79",
+   "artifacts": {
+    "outputs": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.outputs.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-conec-entity-wer/SAEA-E21-FULL44-NULL-REPLICATE-V1.outputs.jsonl",
+     "sha256": "80616dcf220d7c541a57830838e7e5a8d0fd11be95fc4e7e20e1c9f0a13007c3"
+    },
+    "raw_trace": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-conec-entity-wer/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace.jsonl",
+     "sha256": "3e363c24fd4d40f201a5e4073f64a71f3ae68360ff798f396c228aff8341b68f"
+    },
+    "trace_manifest": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace-manifest.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-conec-entity-wer/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace-manifest.json",
+     "sha256": "02a769be1159941d77a67d183311ccb67a47c06ad202312aa0947a05ca878027"
+    },
+    "scores": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.scores.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-conec-entity-wer/SAEA-E21-FULL44-NULL-REPLICATE-V1.scores.json",
+     "sha256": "f07f55a627ab0818a53f5ce9a6ae23442f968a70b5f42fad5bafa127abaf72e2"
+    },
+    "session_receipt": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np6-c36864-20260908/session-receipt.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-conec-entity-wer/session-receipt.json",
+     "sha256": "de3ff63066262a3d5e6593fa579b0cc43c572048dc212594ed8b12e3aa02e7fc"
+    }
+   }
+  },
+  {
+   "job_id": "numeric-value-accuracy",
+   "scorer": "numeric-value-accuracy-v1",
+   "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-numeric-value-accuracy/SAEA-E21-FULL44-NULL-REPLICATE-V1.run-manifest.json",
+   "manifest_sha256": "a1f4b7ffe48a15bacf1ceb3c0db8f29e7b36afbd58d2f052af1842d47aea4ffc",
+   "artifacts": {
+    "outputs": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.outputs.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-numeric-value-accuracy/SAEA-E21-FULL44-NULL-REPLICATE-V1.outputs.jsonl",
+     "sha256": "80616dcf220d7c541a57830838e7e5a8d0fd11be95fc4e7e20e1c9f0a13007c3"
+    },
+    "raw_trace": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-numeric-value-accuracy/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace.jsonl",
+     "sha256": "3e363c24fd4d40f201a5e4073f64a71f3ae68360ff798f396c228aff8341b68f"
+    },
+    "trace_manifest": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace-manifest.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-numeric-value-accuracy/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace-manifest.json",
+     "sha256": "02a769be1159941d77a67d183311ccb67a47c06ad202312aa0947a05ca878027"
+    },
+    "scores": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.scores.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-numeric-value-accuracy/SAEA-E21-FULL44-NULL-REPLICATE-V1.scores.json",
+     "sha256": "f07f55a627ab0818a53f5ce9a6ae23442f968a70b5f42fad5bafa127abaf72e2"
+    },
+    "session_receipt": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np6-c36864-20260908/session-receipt.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-numeric-value-accuracy/session-receipt.json",
+     "sha256": "de3ff63066262a3d5e6593fa579b0cc43c572048dc212594ed8b12e3aa02e7fc"
+    }
+   }
+  },
+  {
+   "job_id": "semantic-high-impact",
+   "scorer": "semantic-high-impact-error-rate-v1",
+   "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-semantic-high-impact/SAEA-E21-FULL44-NULL-REPLICATE-V1.run-manifest.json",
+   "manifest_sha256": "3293568347273e2b9d7f8a18c3d854db4373cf228abfb552fa71a20d49065c13",
+   "artifacts": {
+    "outputs": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.outputs.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-semantic-high-impact/SAEA-E21-FULL44-NULL-REPLICATE-V1.outputs.jsonl",
+     "sha256": "80616dcf220d7c541a57830838e7e5a8d0fd11be95fc4e7e20e1c9f0a13007c3"
+    },
+    "raw_trace": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace.jsonl",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-semantic-high-impact/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace.jsonl",
+     "sha256": "3e363c24fd4d40f201a5e4073f64a71f3ae68360ff798f396c228aff8341b68f"
+    },
+    "trace_manifest": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace-manifest.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-semantic-high-impact/SAEA-E21-FULL44-NULL-REPLICATE-V1.trace-manifest.json",
+     "sha256": "02a769be1159941d77a67d183311ccb67a47c06ad202312aa0947a05ca878027"
+    },
+    "scores": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/attempt-20260908T113102Z-bdde07/SAEA-E21-FULL44-NULL-REPLICATE-V1.scores.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-semantic-high-impact/SAEA-E21-FULL44-NULL-REPLICATE-V1.scores.json",
+     "sha256": "f07f55a627ab0818a53f5ce9a6ae23442f968a70b5f42fad5bafa127abaf72e2"
+    },
+    "session_receipt": {
+     "sealed_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np6-c36864-20260908/session-receipt.json",
+     "copy_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-FULL44-NULL-REPLICATE-V1/analysis/rescore/rescore-semantic-high-impact/session-receipt.json",
+     "sha256": "de3ff63066262a3d5e6593fa579b0cc43c572048dc212594ed8b12e3aa02e7fc"
+    }
+   }
+  }
+ ]
+}
