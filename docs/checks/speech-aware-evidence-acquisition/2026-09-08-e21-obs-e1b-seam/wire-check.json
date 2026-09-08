@@ -485,6 +485,6 @@
   "schema": "saea-e21-obs-e1b-seam-wire-check-v1",
   "sockets_opened": 0,
   "study": "speech-aware-evidence-acquisition",
-  "study_commit": "40410e03e635779ae817aa13758e818d5125128b",
+  "study_commit": "6defcbb099d1b329374f02054a067be9274325c2",
   "zero_contact": "No frozen core, server, socket, GPU, tokenizer, embedder, network, paid API or forced aligner. Nothing here constructs a transport, gate, attempt store or FrozenCoreAdapter; the policy's adapter is a local scripted object that records payloads and returns a fixed overlapping vocabulary, so every 'contact' reported is simulated by construction. No MP3 decode and no resample, so the pinned absence of ffmpeg is preserved: the only audio read is a local PCM read of the sealed obs-slices the comparator itself wrote."
 }
