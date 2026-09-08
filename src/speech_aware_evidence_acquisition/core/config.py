@@ -36,6 +36,41 @@ DEFAULT_RUNTIME_RECEIPT_RELPATH = "receipts/runtime.json"
 _DRIVE_PREFIX = re.compile(r"^[A-Za-z]:")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
+# WAVE W4 (owner Decision 11-B change #6, 2026-09-08). The four config TABLES
+# a harness module's ON/OFF switch lives in (``rails.config_tables``, which
+# asserts it names exactly these four). Each has a NULL ARM, and the design
+# note's admission gate (``docs/readiness/
+# 2026-09-08-agent-system-episode-and-core-pressure-v1.md`` section 8) requires
+# the contrast to be "module ON versus module OFF in the same harness on the
+# same roster (one config key, never a second code path)". That is only true
+# if the OFF arm and a fragment that never mentioned the table are the SAME
+# CELL: a config hash that moved when a table was written out as ``null``
+# would make the OFF arm a third cell identity, and the paired arm would no
+# longer be a twin of the pre-table baseline.
+#
+# So a table key whose value is its null arm is dropped BEFORE hashing, and
+# dropped from the composed ``values`` too (a consumer reading ``values.get
+# ("observe")`` gets ``None`` either way, which is what it already means).
+# The rule is deliberately NARROW -- these four keys only, never a general
+# "drop every null" -- because elsewhere in this study an explicit ``null``
+# is a real declaration: ``d1_media_supplement``, for one, is refused unless
+# it and its sha256 are BOTH present or BOTH absent, and a blanket rule would
+# quietly erase that pairing.
+#
+# No committed fragment's hash moves under this rule: no fragment under
+# ``configs/{model,dataset,baseline,experiment}/`` carries any of these four
+# keys with a null arm (proved by
+# ``tests/unit/test_config_tables.py::test_no_committed_fragment_declares_a_
+# null_arm_so_no_existing_config_hash_moves``).
+NULL_ARM_TABLE_KEYS = ("judges", "knowledge_views", "observe", "toolkits")
+
+# The two spellings of a null arm. ``{}`` is included because the loaders
+# already treat an empty object exactly as they treat an absent block
+# (``rails.phase_review.load_phase_review_specs`` has since E6's own pattern);
+# leaving the hash to disagree with the semantics would put two identities on
+# one cell.
+_NULL_ARM_VALUES: tuple[object, ...] = (None, {})
+
 
 class ConfigError(RuntimeError):
     """A config fragment is missing, unreadable, or collides with another."""
@@ -72,6 +107,23 @@ class ComposedConfig:
     values: Mapping[str, object]
     config_hash: str
     fragments: Mapping[str, str]
+
+
+def drop_null_arms(values: Mapping[str, object]) -> dict[str, object]:
+    """``values`` without any :data:`NULL_ARM_TABLE_KEYS` key that carries its
+    null arm (``null`` or ``{}``).
+
+    The one place the null-arm rule is implemented, so the composed hash, the
+    composed ``values`` and a single fragment's own hash can never disagree
+    about it. A mapping that declares none of the four table keys comes back
+    unchanged, which is every fragment committed before WAVE W4.
+    """
+
+    return {
+        key: value
+        for key, value in values.items()
+        if not (key in NULL_ARM_TABLE_KEYS and any(value == arm for arm in _NULL_ARM_VALUES))
+    }
 
 
 def _canonical_hash(document: Mapping[str, object]) -> str:
@@ -123,9 +175,10 @@ def read_fragment(repo_root: Path, kind: str, name: str) -> dict[str, object]:
 
 def fragment_hash(fragment: Mapping[str, object]) -> str:
     """The canonical SHA-256 of ONE fragment's own object -- the same
-    canonicalization :func:`compose` applies to the merged four."""
+    canonicalization :func:`compose` applies to the merged four, including
+    the WAVE W4 null-arm rule (:func:`drop_null_arms`)."""
 
-    return _canonical_hash(dict(fragment))
+    return _canonical_hash(drop_null_arms(fragment))
 
 
 def compose(
@@ -143,7 +196,14 @@ def compose(
                 )
             merged[key] = value
             origins[key] = kind
-    return ComposedConfig(values=merged, config_hash=_canonical_hash(merged), fragments=names)
+    # WAVE W4: a table key carrying its null arm is dropped here -- AFTER the
+    # cross-fragment collision check above, so declaring "observe": null in
+    # one fragment and an observe table in another is still the collision it
+    # is, and not silently resolved in the table's favour.
+    composed = drop_null_arms(merged)
+    return ComposedConfig(
+        values=composed, config_hash=_canonical_hash(composed), fragments=names
+    )
 
 
 def runtime_receipt_relpath(values: Mapping[str, object]) -> str:
