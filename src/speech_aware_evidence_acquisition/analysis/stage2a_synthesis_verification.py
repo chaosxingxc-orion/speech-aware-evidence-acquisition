@@ -56,6 +56,32 @@ at the last commit carrying them) and asserts against the LIVE tree that the
 repaired expressions are present and the defective ones are gone. The finding
 was true when it was made; the code it was made about has changed.
 
+A FIFTH CHECK, ADDED 2026-09-08 WHEN A LOCKED ARTIFACT'S BYTES MOVED UNDER A
+PROVEN-EQUIVALENT REFACTOR. WAVE R7 (fold commit ``02486939``, merged to
+master as ``f45db5aa``; ``docs/readiness/2026-09-08-ojw-r7-rails-
+standardization-v1.md`` section 3.2) hoisted the whole
+``saea-kb-alpha-blend-v1`` acquire decision out of
+``KbAlphaBlendController._advance_after_direct`` into the module-level
+``rails.kb_policy.compute_alpha_blend_decision``, now called by BOTH the
+retained controller and the new phase-program factory, and proved
+branch-by-branch behaviourally equivalent to the retired shape by
+``tests/unit/test_kb_alpha_blend_fold.py``. That changed ``kb_policy.py``'s
+bytes -- and only that file; ``configs/policy/kb-policy-v1-dev100.json`` is
+byte-identical -- so the digest :data:`FILE_DIGESTS` names for it no longer
+matches the live tree. Per the 2026-09-08 P-EMB re-pin rule (umbrella
+Decision 11-D): a behaviour-equivalent refactor of a locked artifact re-pins
+the LIVE check; it does not freeze the check against bytes the tree no
+longer carries, and it does not rewrite what was actually locked at
+synthesis time. So the value the synthesis locked stays published,
+unmodified, as :data:`FILE_DIGESTS_AT_SYNTHESIS`, and
+:func:`verify_file_digests_at_synthesis` asserts it against the five sealed
+2026-08-25 receipts (``gold_absence``, ``oracle_bound``, ``cross_carrier``,
+``field_level``, ``degeneracy``) that independently recorded it, the same way
+:data:`SOURCE_CLAIMS_AT_3F131AFD` above is a frozen historical record rather
+than a live assertion. ANY FUTURE STAGE-2A CLAIM that cites "the
+kb_policy.py digest the synthesis locked" must cite
+:data:`FILE_DIGESTS_AT_SYNTHESIS`, not the live :data:`FILE_DIGESTS`.
+
 FAIL-CLOSED. Every mismatch raises :class:`SynthesisVerificationError`. A
 verification module that returns a report saying "3 of 214 failed" invites the
 reader to skip the three.
@@ -993,10 +1019,17 @@ SOURCE_CLAIMS_MUST_BE_ABSENT: tuple[tuple[str, str], ...] = (
 )
 
 
-#: Live repository files the synthesis names by digest. Checking these closes a
-#: gap the receipts cannot: a receipt records what a file hashed to WHEN THE
-#: ROW RAN, and the synthesis asserts what the locked artifacts hash to NOW.
-FILE_DIGESTS: tuple[tuple[str, str], ...] = (
+#: The two artifacts EXACTLY AS THE 2026-08-25 SYNTHESIS LOCKED THEM. Never
+#: edit this tuple to track a later refactor -- it is the historical record,
+#: and five sealed 2026-08-25 receipts (``gold_absence``, ``oracle_bound``,
+#: ``cross_carrier``, ``field_level``, ``degeneracy``; see
+#: :data:`_KB_POLICY_DIGEST_AT_SYNTHESIS_PATHS`) independently recorded the
+#: ``kb_policy.py`` value under their own ``artifact_hashes`` block, so it is
+#: not merely restated here -- :func:`verify_file_digests_at_synthesis` checks
+#: it against them. See the module docstring's dated paragraph on the
+#: 2026-09-08 FILE_DIGESTS split for why this tuple exists separately from the
+#: live :data:`FILE_DIGESTS` below.
+FILE_DIGESTS_AT_SYNTHESIS: tuple[tuple[str, str], ...] = (
     (
         "configs/policy/kb-policy-v1-dev100.json",
         "d68afd2cfb6e12d9cbd9d3fbcf0daf3f81f6ed8be9b2a75c4f8ffb234011a919",
@@ -1005,6 +1038,50 @@ FILE_DIGESTS: tuple[tuple[str, str], ...] = (
         "src/speech_aware_evidence_acquisition/rails/kb_policy.py",
         "2a1c3d75e747db10f723044b05c08d232e1edf47f125d0889c1d2565ba1019af",
     ),
+)
+
+#: Live repository files the synthesis names by digest. Checking these closes a
+#: gap the receipts cannot: a receipt records what a file hashed to WHEN THE
+#: ROW RAN, and the synthesis asserts what the locked artifacts hash to NOW.
+#:
+#: 2026-09-08 RE-PIN: WAVE R7 (fold commit ``02486939``, merged as
+#: ``f45db5aa``) hoisted ``KbAlphaBlendController``'s acquire decision into
+#: the module-level ``rails.kb_policy.compute_alpha_blend_decision``, proved
+#: behaviour-equivalent branch by branch against the retired shape by
+#: ``tests/unit/test_kb_alpha_blend_fold.py``
+#: (``docs/readiness/2026-09-08-ojw-r7-rails-standardization-v1.md`` section
+#: 3.2). That changed ``kb_policy.py``'s bytes; the config fragment below is
+#: untouched. The live pin moves to the equivalence-proven bytes;
+#: :data:`FILE_DIGESTS_AT_SYNTHESIS` above keeps the value the five sealed
+#: 2026-08-25 receipts actually recorded.
+FILE_DIGESTS: tuple[tuple[str, str], ...] = (
+    (
+        "configs/policy/kb-policy-v1-dev100.json",
+        "d68afd2cfb6e12d9cbd9d3fbcf0daf3f81f6ed8be9b2a75c4f8ffb234011a919",
+    ),
+    (
+        "src/speech_aware_evidence_acquisition/rails/kb_policy.py",
+        "06368d7ad109cd3c22de126cd5cece5619a0fc73c48bb62b1e953644032a96e6",
+    ),
+)
+
+#: Which receipt, and at what JSON path inside it, independently records
+#: kb_policy.py's digest at synthesis time. Five of the eleven :data:`RECEIPTS`
+#: carry it -- the 2026-08-25 A2T-carrier analyses that read the alpha-blend
+#: policy module -- each under an ``artifact_hashes`` block, but the path to
+#: that block is not uniform: ``field_level`` namespaces every artifact hash
+#: key under an ``a2t:`` prefix, and ``degeneracy`` nests its A2T
+#: ``artifact_hashes`` block one level down, under ``a2t_control`` (it also
+#: has a SEPARATE ``slurp/artifact_hashes`` block that does not carry
+#: kb_policy.py at all). Used only to assert
+#: :data:`FILE_DIGESTS_AT_SYNTHESIS` against what was actually sealed -- never
+#: to derive a live expectation.
+_KB_POLICY_DIGEST_AT_SYNTHESIS_PATHS: tuple[tuple[str, str], ...] = (
+    ("gold_absence", "artifact_hashes/kb_policy.py"),
+    ("oracle_bound", "artifact_hashes/kb_policy.py"),
+    ("cross_carrier", "artifact_hashes/kb_policy.py"),
+    ("field_level", "artifact_hashes/a2t:kb_policy.py"),
+    ("degeneracy", "a2t_control/artifact_hashes/kb_policy.py"),
 )
 
 
@@ -1035,6 +1112,52 @@ def verify_file_digests(repo_root: Path) -> dict[str, Any]:
             + "\n  ".join(failures)
         )
     return {"file_digests": rows, "file_digests_verified": len(rows)}
+
+
+def verify_file_digests_at_synthesis(documents: Mapping[str, Any]) -> dict[str, Any]:
+    """Assert :data:`FILE_DIGESTS_AT_SYNTHESIS` against the five sealed
+    2026-08-25 receipts that independently recorded kb_policy.py's digest.
+
+    2026-09-08 RE-PIN (module docstring's dated paragraph; see the comment on
+    :data:`FILE_DIGESTS`). Since WAVE R7's equivalence-proven fold moved the
+    live pin off the synthesis-time value, that value is no longer a live-tree
+    assertion -- it must instead be pinned against the record that actually
+    carries it, the same way :data:`SOURCE_CLAIMS_AT_3F131AFD` is a frozen
+    historical block asserted against its own anchor commit rather than
+    merely restated prose. Nothing here opens a new file: ``documents`` is the
+    already-verified, already-parsed receipt set :func:`load_receipts` builds
+    from the SAME :data:`RECEIPTS` digests :func:`verify_receipts` re-hashes."""
+
+    expected = dict(FILE_DIGESTS_AT_SYNTHESIS)[
+        "src/speech_aware_evidence_acquisition/rails/kb_policy.py"
+    ]
+
+    rows: list[dict[str, Any]] = []
+    failures: list[str] = []
+    for receipt_key, path in _KB_POLICY_DIGEST_AT_SYNTHESIS_PATHS:
+        if receipt_key not in documents:  # pragma: no cover - declaration error
+            raise SynthesisVerificationError(
+                f"FILE_DIGESTS_AT_SYNTHESIS check names unknown receipt {receipt_key!r}"
+            )
+        measured = _walk(documents[receipt_key], path, receipt_key=receipt_key)
+        matches = measured == expected
+        if not matches:
+            failures.append(
+                f"{receipt_key}/{path}: receipt carries {measured!r}, "
+                f"FILE_DIGESTS_AT_SYNTHESIS carries {expected!r}"
+            )
+        rows.append(
+            {"receipt": receipt_key, "path": path, "measured_sha256": measured, "matches": matches}
+        )
+    if failures:
+        raise SynthesisVerificationError(
+            "FILE_DIGESTS_AT_SYNTHESIS does not match a receipt that independently "
+            "recorded kb_policy.py's digest at synthesis time:\n  " + "\n  ".join(failures)
+        )
+    return {
+        "file_digests_at_synthesis": rows,
+        "file_digests_at_synthesis_verified": len(rows),
+    }
 
 
 def verify_source_claims(repo_root: Path) -> dict[str, Any]:
@@ -1142,6 +1265,7 @@ def run(*, repo_root: Path, out_path: Path | None = None) -> dict[str, Any]:
     claims_block = verify_claims(documents)
     derived_block = verify_derived_claims(documents)
     digest_block = verify_file_digests(repo_root)
+    digest_at_synthesis_block = verify_file_digests_at_synthesis(documents)
     source_block = verify_source_claims(repo_root)
 
     synthesis = repo_root / SYNTHESIS_RELPATH
@@ -1180,6 +1304,7 @@ def run(*, repo_root: Path, out_path: Path | None = None) -> dict[str, Any]:
         **claims_block,
         **derived_block,
         **digest_block,
+        **digest_at_synthesis_block,
         **source_block,
         "hard_stop": (
             "SYNTHESIS TIER. This module changes no knob, writes nothing under configs/, "

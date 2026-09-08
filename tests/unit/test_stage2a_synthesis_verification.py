@@ -165,6 +165,47 @@ class TestAgainstTheCommittedReceipts:
         assert block["file_digests_verified"] == len(sv.FILE_DIGESTS)
         assert all(row["matches"] for row in block["file_digests"])
 
+    def test_the_synthesis_time_digest_matches_the_five_receipts_that_recorded_it(
+        self,
+    ) -> None:
+        """2026-09-08 re-pin (WAVE R7 folded kb_policy.py, module docstring's
+        dated paragraph): FILE_DIGESTS_AT_SYNTHESIS is no longer asserted
+        against the live tree -- verify_file_digests above now carries the
+        live pin -- but it must still match what the five sealed 2026-08-25
+        receipts that independently recorded kb_policy.py's digest actually
+        carry, so the historical record cannot itself quietly drift."""
+
+        documents = sv.load_receipts(REPO_ROOT)
+        block = sv.verify_file_digests_at_synthesis(documents)
+        assert block["file_digests_at_synthesis_verified"] == len(
+            sv._KB_POLICY_DIGEST_AT_SYNTHESIS_PATHS
+        )
+        assert all(row["matches"] for row in block["file_digests_at_synthesis"])
+        historical_kb_policy_digest = dict(sv.FILE_DIGESTS_AT_SYNTHESIS)[
+            "src/speech_aware_evidence_acquisition/rails/kb_policy.py"
+        ]
+        assert all(
+            row["measured_sha256"] == historical_kb_policy_digest
+            for row in block["file_digests_at_synthesis"]
+        )
+
+    def test_the_live_pin_and_the_synthesis_time_pin_have_diverged_on_kb_policy(
+        self,
+    ) -> None:
+        """Pins the fact the 2026-09-08 re-pin exists to record: the live
+        kb_policy.py digest and the digest the synthesis actually locked are
+        now two different values, on purpose, because the file's bytes moved
+        under a proven-equivalent refactor (WAVE R7) after the synthesis ran.
+        The config fragment beside it did not move."""
+
+        live = dict(sv.FILE_DIGESTS)
+        historical = dict(sv.FILE_DIGESTS_AT_SYNTHESIS)
+        assert set(live) == set(historical)
+        kb_policy_path = "src/speech_aware_evidence_acquisition/rails/kb_policy.py"
+        config_path = "configs/policy/kb-policy-v1-dev100.json"
+        assert live[kb_policy_path] != historical[kb_policy_path]
+        assert live[config_path] == historical[config_path]
+
     def test_both_builders_now_condition_their_prior_on_the_conditioning_event(
         self,
     ) -> None:
