@@ -5,6 +5,27 @@
       "cell": "R-official-tail2s-smoke-4",
       "dataset": "audio2tool-calibration-400-tail2s-smoke4",
       "experiment": "a2t-official-protocol-tail2s-400-smoke-v1",
+      "payload_binding_stage": {
+        "bound": true,
+        "carrier_lock_key": "audio2tool",
+        "carrier_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool",
+        "checked_every_row": true,
+        "dataset_fragment": "audio2tool-calibration-400-tail2s-smoke4",
+        "declared_derived_media_roots": [
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/a2t-calibration-400-tail2s-v1"
+        ],
+        "failures": {},
+        "fragment_row_count": 4,
+        "model_contacts": 0,
+        "rows_checked": [
+          "tier1_direct:000045@ts2",
+          "tier2_parametric:000045@ts2",
+          "tier3_multi_intent:000078@ts2",
+          "tier4_implicit:000141@ts2"
+        ],
+        "rows_total": 4,
+        "sockets_opened": 0
+      },
       "preflight": {
         "mode": "dry-run",
         "model_contacts": 0,
@@ -14,24 +35,23 @@
         "seal_and_score": null,
         "stdout_tail": [],
         "stop_class": "gate-not-authorized",
-        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-A2T-OFFICIAL-PROTOCOL-TAIL2S-SMOKE-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-ts2y/docs/exposure-ledger.md (rows are written before results are read)"
+        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-A2T-OFFICIAL-PROTOCOL-TAIL2S-SMOKE-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/exposure-ledger.md (rows are written before results are read)"
       },
       "rows": 4,
       "wire_check": {
         "mode": "wire-check",
         "model_contacts": 0,
         "opened_a_socket": false,
-        "reached_the_end": false,
+        "reached_the_end": true,
         "returncode": 0,
-        "seal_and_score": "REFUSED",
+        "seal_and_score": "OK",
         "stdout_tail": [
           "wire check: R-official-tail2s-smoke-4",
-          "arm=bare-core contacts=4 payload_keys=10 tool_schemas=0 id_slot=2 packets_verified=0 seal_and_score=REFUSED",
-          "seal/score refused: BundleError: study repo /mnt/d/chao_workspace/saea-worktrees/wt-ts2y HEAD moved during the flight: the flight lock recorded study_head 'd5e260042b5114161cbdb956f3a0fdadc8d29e95' at launch, HEAD is now '1308486fc5cfde3584d7727c0bf69568e899e83a'; refusing to bind a COMPLETED manifest to a commit the flight never ran under, even though the working tree's own dirt is confined outside the load-bearing surface",
-          "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s-smoke-4.wire-check.json (sha256 2290edaf444b)"
+          "arm=bare-core contacts=4 payload_keys=10 tool_schemas=0 id_slot=0 packets_verified=0 seal_and_score=OK",
+          "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s-smoke-4.wire-check.json (sha256 6fc1f4fc330c)"
         ],
-        "stop_class": "seal-and-score-not-ok",
-        "stopped_at": "arm=bare-core contacts=4 payload_keys=10 tool_schemas=0 id_slot=2 packets_verified=0 seal_and_score=REFUSED"
+        "stop_class": "none",
+        "stopped_at": "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s-smoke-4.wire-check.json (sha256 6fc1f4fc330c)"
       }
     },
     {
@@ -39,6 +59,25 @@
       "cell": "R-official-tail2s",
       "dataset": "audio2tool-calibration-400-tail2s",
       "experiment": "a2t-official-protocol-tail2s-400-v1",
+      "payload_binding_stage": {
+        "bound": true,
+        "carrier_lock_key": "audio2tool",
+        "carrier_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool",
+        "checked_every_row": false,
+        "dataset_fragment": "audio2tool-calibration-400-tail2s",
+        "declared_derived_media_roots": [
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/a2t-calibration-400-tail2s-v1"
+        ],
+        "failures": {},
+        "fragment_row_count": 400,
+        "model_contacts": 0,
+        "rows_checked": [
+          "tier1_direct:000045@ts2",
+          "tier8_intent_blending:000772@ts2"
+        ],
+        "rows_total": 2,
+        "sockets_opened": 0
+      },
       "preflight": {
         "mode": "dry-run",
         "model_contacts": 0,
@@ -48,24 +87,23 @@
         "seal_and_score": null,
         "stdout_tail": [],
         "stop_class": "gate-not-authorized",
-        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-A2T-OFFICIAL-PROTOCOL-TAIL2S-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-ts2y/docs/exposure-ledger.md (rows are written before results are read)"
+        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-A2T-OFFICIAL-PROTOCOL-TAIL2S-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/exposure-ledger.md (rows are written before results are read)"
       },
       "rows": 400,
       "wire_check": {
         "mode": "wire-check",
         "model_contacts": 0,
         "opened_a_socket": false,
-        "reached_the_end": false,
+        "reached_the_end": true,
         "returncode": 0,
-        "seal_and_score": "REFUSED",
+        "seal_and_score": "OK",
         "stdout_tail": [
           "wire check: R-official-tail2s",
-          "arm=bare-core contacts=400 payload_keys=10 tool_schemas=0 id_slot=1 packets_verified=0 seal_and_score=REFUSED",
-          "seal/score refused: BundleError: study repo /mnt/d/chao_workspace/saea-worktrees/wt-ts2y HEAD moved during the flight: the flight lock recorded study_head 'd5e260042b5114161cbdb956f3a0fdadc8d29e95' at launch, HEAD is now '1308486fc5cfde3584d7727c0bf69568e899e83a'; refusing to bind a COMPLETED manifest to a commit the flight never ran under, even though the working tree's own dirt is confined outside the load-bearing surface",
-          "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s.wire-check.json (sha256 31a4ef21e75c)"
+          "arm=bare-core contacts=400 payload_keys=10 tool_schemas=0 id_slot=1 packets_verified=0 seal_and_score=OK",
+          "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s.wire-check.json (sha256 189512193d2d)"
         ],
-        "stop_class": "seal-and-score-not-ok",
-        "stopped_at": "arm=bare-core contacts=400 payload_keys=10 tool_schemas=0 id_slot=1 packets_verified=0 seal_and_score=REFUSED"
+        "stop_class": "none",
+        "stopped_at": "wire-check receipt written: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/cross-carrier-ts2/R-official-tail2s.wire-check.json (sha256 189512193d2d)"
       }
     },
     {
@@ -73,6 +111,27 @@
       "cell": "closed-list-tail2s-smoke-4",
       "dataset": "slurp-speech-native-dev1000-tail2s-smoke4",
       "experiment": "slurp-dev1000-closed-list-tail2s-smoke-4-v1",
+      "payload_binding_stage": {
+        "bound": true,
+        "carrier_lock_key": "slurp",
+        "carrier_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp",
+        "checked_every_row": true,
+        "dataset_fragment": "slurp-speech-native-dev1000-tail2s-smoke4",
+        "declared_derived_media_roots": [
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/slurp-dev1000-tail2s-v1"
+        ],
+        "failures": {},
+        "fragment_row_count": 4,
+        "model_contacts": 0,
+        "rows_checked": [
+          "slurp:devel:000011:audio-1497266596@ts2",
+          "slurp:devel:000053:audio-1498758443@ts2",
+          "slurp:devel:000058:audio-1488637952@ts2",
+          "slurp:devel:000068:audio-1488550098@ts2"
+        ],
+        "rows_total": 4,
+        "sockets_opened": 0
+      },
       "preflight": {
         "mode": "dry-run",
         "model_contacts": 0,
@@ -82,27 +141,30 @@
         "seal_and_score": null,
         "stdout_tail": [
           "instruction: 7583 chars = sealed M0 5747 + suffix 1836 (4073f79ef25c4796)",
-          "roster: 4 samples, config hash e1837235f2099ce2799c251ad6a5a7e074c65375d81f800dab10397fabb047bc",
+          "roster: 4 samples, config hash ea3e4378295cab081fdab0c895cf2d2afe26bd418be7256da24b645b4feed22a",
           "dry run: preflight only, no server, no contact"
         ],
         "stop_class": "gate-not-authorized",
-        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-ts2y/docs/exposure-ledger.md (rows are written before results are read)"
+        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/exposure-ledger.md (rows are written before results are read)"
       },
       "rows": 4,
       "wire_check": {
         "mode": "wire-check",
         "model_contacts": 0,
         "opened_a_socket": false,
-        "reached_the_end": false,
-        "returncode": 1,
-        "seal_and_score": null,
+        "reached_the_end": true,
+        "returncode": 0,
+        "seal_and_score": "OK",
         "stdout_tail": [
-          "instruction: 7583 chars = sealed M0 5747 + suffix 1836 (4073f79ef25c4796)",
-          "roster: 4 samples, config hash e1837235f2099ce2799c251ad6a5a7e074c65375d81f800dab10397fabb047bc",
-          "wire check: whole request path, fake gate and transport, zero sockets"
+          "},",
+          "\"model_contacts\": 0,",
+          "\"schema\": \"saea-slurp-closed-list-wire-check-v1\",",
+          "\"servers_started\": 0,",
+          "\"study\": \"speech-aware-evidence-acquisition\"",
+          "}"
         ],
-        "stop_class": "slurp-packet-root-missing",
-        "stopped_at": "speech_aware_evidence_acquisition.core.flight.runtime.FlightRuntimeError: model fragment speech_feature_root /home/chao/feat-cache/slurp-dev1000-ts2-packets-04ccc72a disagrees with the promotion receipt's feature_root /home/chao/feat-cache/slurp-q4km-packets-04ccc72a; refusing to serve packets from a root this flight's identity does not pin"
+        "stop_class": "none",
+        "stopped_at": "}"
       }
     },
     {
@@ -110,6 +172,25 @@
       "cell": "closed-list-tail2s",
       "dataset": "slurp-speech-native-dev1000-tail2s",
       "experiment": "slurp-dev1000-closed-list-tail2s-v1",
+      "payload_binding_stage": {
+        "bound": true,
+        "carrier_lock_key": "slurp",
+        "carrier_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp",
+        "checked_every_row": false,
+        "dataset_fragment": "slurp-speech-native-dev1000-tail2s",
+        "declared_derived_media_roots": [
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/slurp-dev1000-tail2s-v1"
+        ],
+        "failures": {},
+        "fragment_row_count": 1000,
+        "model_contacts": 0,
+        "rows_checked": [
+          "slurp:devel:000011:audio-1497266596@ts2",
+          "slurp:devel:017167:audio-1498573910@ts2"
+        ],
+        "rows_total": 2,
+        "sockets_opened": 0
+      },
       "preflight": {
         "mode": "dry-run",
         "model_contacts": 0,
@@ -119,27 +200,30 @@
         "seal_and_score": null,
         "stdout_tail": [
           "instruction: 7583 chars = sealed M0 5747 + suffix 1836 (4073f79ef25c4796)",
-          "roster: 1000 samples, config hash 6643cfb2f988851a1df030cb0877275bb42affbcd85d0ee103ca99b24fcc9ddb",
+          "roster: 1000 samples, config hash 47b97f57542997842b52a04f3c024366d5024e3f87a618e6d81057516caf6791",
           "dry run: preflight only, no server, no contact"
         ],
         "stop_class": "gate-not-authorized",
-        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/saea-worktrees/wt-ts2y/docs/exposure-ledger.md (rows are written before results are read)"
+        "stopped_at": "speech_aware_evidence_acquisition.contracts.errors.GateClosed: model touch refused: run 'SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-V1' has no pre-registered exposure row in /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/exposure-ledger.md (rows are written before results are read)"
       },
       "rows": 1000,
       "wire_check": {
         "mode": "wire-check",
         "model_contacts": 0,
         "opened_a_socket": false,
-        "reached_the_end": false,
-        "returncode": 1,
-        "seal_and_score": null,
+        "reached_the_end": true,
+        "returncode": 0,
+        "seal_and_score": "OK",
         "stdout_tail": [
-          "instruction: 7583 chars = sealed M0 5747 + suffix 1836 (4073f79ef25c4796)",
-          "roster: 1000 samples, config hash 6643cfb2f988851a1df030cb0877275bb42affbcd85d0ee103ca99b24fcc9ddb",
-          "wire check: whole request path, fake gate and transport, zero sockets"
+          "},",
+          "\"model_contacts\": 0,",
+          "\"schema\": \"saea-slurp-closed-list-wire-check-v1\",",
+          "\"servers_started\": 0,",
+          "\"study\": \"speech-aware-evidence-acquisition\"",
+          "}"
         ],
-        "stop_class": "slurp-packet-root-missing",
-        "stopped_at": "speech_aware_evidence_acquisition.core.flight.runtime.FlightRuntimeError: model fragment speech_feature_root /home/chao/feat-cache/slurp-dev1000-ts2-packets-04ccc72a disagrees with the promotion receipt's feature_root /home/chao/feat-cache/slurp-q4km-packets-04ccc72a; refusing to serve packets from a root this flight's identity does not pin"
+        "stop_class": "none",
+        "stopped_at": "}"
       }
     }
   ],
@@ -164,8 +248,8 @@
     "configs/dataset/slurp-speech-native-dev1000-tail2s.json": "0fa702fc2276a411c5267e59b1c260ec6f455e57a944b5badd305c86db55bb9f",
     "configs/experiment/a2t-official-protocol-tail2s-400-smoke-v1.json": "1aa7581ed71a1c539afaca1d44e5e3a76d49bb61a3f132f0cc0f1ae2e614a1a6",
     "configs/experiment/a2t-official-protocol-tail2s-400-v1.json": "31205938b75551a92c9762d6830ebcfe394276b88c388fd8aca8711317454504",
-    "configs/experiment/slurp-dev1000-closed-list-tail2s-smoke-4-v1.json": "049f51663d676acc03d01fa40dd6f8ff020f563acad7442941f48e1606a34f88",
-    "configs/experiment/slurp-dev1000-closed-list-tail2s-v1.json": "0e64b7074a6b879ced1b822c8613376d2c20165584934d85c87cf57d57632dd7",
+    "configs/experiment/slurp-dev1000-closed-list-tail2s-smoke-4-v1.json": "7d5d142184face57af3150fa0101bc0f07c80903409b2b3860c1b17312746b64",
+    "configs/experiment/slurp-dev1000-closed-list-tail2s-v1.json": "b2a6b891bb3b2227324b54fad378dfb4d67ebda30c82adf23904d1dd51c54075",
     "configs/model/q4km-mmproj-free-speech-native-np8-ts2-packets-max64.json": "64f6208da250b8f29f3a0a04204837fdd2f371b69a9e36c4696590cb92468b7b"
   },
   "preregistration": "docs/readiness/2026-09-07-cross-carrier-silence-tail-v1-preregistration.md",
