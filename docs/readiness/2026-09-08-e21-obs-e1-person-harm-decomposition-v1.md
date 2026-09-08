@@ -352,3 +352,160 @@ proxies for it.**
 * The **tail is still not innocent**: `SAEA-E21-FULL44-TAIL2S-V1` lost 0.6856 PERSON points with the
   boundaries held fixed, so a tail costs PERSON on its own. Its cost is simply not a constant per
   tail, and on this transport unit it is dominated by the duration effect.
+
+---
+
+## 5. The OBS-E1b hypothesis table — design only, priced, with each candidate's addressable share
+
+**Nothing in this section is registered, preregistered or authorized.** OBS-E1 stays REJECTED, one
+experiment stays in flight, and every figure below is a projection under a stated model, never a
+measurement. The GPU model is the OBS-E1 verdict's own §7 finding — on this carrier and geometry the
+cost tracks **encoded seconds, not requests**, its realized 1.0657 GPU-h landing 2 % above the
+audio-proportional floor while the contact-proportional ceiling over-predicted by 2.9× — so every
+projection here brackets from the audio side.
+
+**"Addressable share" means the share of the measured 61 excess PERSON errors that sits in the
+stratum the candidate acts on.** It is a **ceiling**, not a prediction: a mechanism that reaches a
+stratum still has to work there, and none of these has been measured on this transport unit.
+
+| candidate | contacts | delivered audio | GPU-h (proj.) | wall (proj.) | prompt tokens (proj.) | **addressable share of the 61** | what the measurement says |
+|---|---:|---:|---:|---:|---:|---:|---|
+| **OBS-E1 as flown** | 5,122 | 151,590 s | 1.0657 | 99.4 min | 2,255,812 | — | −2.0912 PERSON, +1.0487 corpus WER |
+| **(a) context margin +3 s** | 5,122 | 166,956 s | **1.174** | 109 min | 2,455,570 | **≤ 93.4 %** | the 0–3 s excess (57 of 61) |
+| **(a) context margin +5 s** | 5,122 | 177,200 s | **1.246** | 116 min | 2,588,742 | **≤ 93.4 %** | worst request 1,323 of a 6,144 slot (4.6×) |
+| **(a) context margin +10 s** | 5,122 | 202,810 s | **1.426** | 133 min | 2,921,672 | **≤ 93.4 %** | worst request 1,388 (4.4×) |
+| **(b) tail only on mid-speech ends** | 5,122 | 142,474 s | **1.002** | 93 min | ~2,196,000 | **≤ 67.2 %** | removes 4,558 of 5,122 tails |
+| **(c) minimum unit 3 s** | 4,395 | 150,136 s | **1.056** | 98 min | ~2,220,000 | **≤ 26.2 %** | absorbs the 110 words under 3 s |
+| **(c) minimum unit 5 s** | 3,854 | 149,054 s | **1.048** | 98 min | ~2,205,000 | **≤ 37.7 %** | absorbs everything under 5 s |
+| **(c) minimum unit 10 s** | 3,154 | 147,654 s | **1.038** | 97 min | ~2,190,000 | **≤ 78.7 %** | absorbs everything under 10 s |
+| **(d) KC-E1f repair on the units** | **10,244** | 303,180 s | **2.131** | 199 min | **9,703,492** | **≤ 75.4 %** | the substitution half only |
+| *(control) fixed 27.60-s windows* | 5,145 | 151,636 s | 1.066 | 99 min | ~2,256,000 | *not a repair* | the preregistration's own OBS-E1b |
+
+### (a) Units with a context margin — deliver +N s of preceding audio, discard its text
+
+**Addressable: ≤ 93.4 %** (57 of the 61 excess errors sit within three seconds of a unit boundary),
+and §4.1 says why the mechanism matches the failure: **both edges are damaged, not just the tail
+side**, which is what a missing-context failure looks like and not what a truncate-at-the-tail failure
+looks like. A margin restores the conditioning the short unit removed, and §2.1 confirms it does not
+have to protect the name's own audio — the cut goes through a name once in 656.
+
+**Price: the most expensive of the three cheap options** — +10 % to +34 % delivered audio for a
+margin of 3 to 10 seconds, 1.17 to 1.43 GPU-h, 109 to 133 minutes. Contacts are unchanged at 5,122
+and the slot is never at risk (the worst request grows from 1,258 to 1,388 tokens against 6,144, a
+4.4× margin), so no re-certification is needed.
+
+**The unpriced half is the mechanism, and it is the real cost.** Discarding the margin's text is not
+free: the model transcribes what it hears, so the pass must identify and drop the prefix. W2's
+re-listen makes the *audio* cheap; it does not make the *text discard* automatic. Options are a
+prompt instruction (unverified, and this repository has no measurement of instruction compliance on
+this core for a partial-transcription task), an overlap-and-merge alignment (a new mechanism with its
+own failure modes), or delivering the margin and accepting the duplication into the stitch (which
+would move corpus WER and break the one metric this cell actually won). **A cell for (a) needs its
+own model-free wire check on the discard rule before it needs a GPU.**
+
+### (b) No tail except where the unit ends mid-speech
+
+**Addressable: ≤ 67.2 %** — the 41 excess errors on the 2,725 PERSON words in pause-ended units, the
+only units that would lose their tail. **But this is the worst-targeted candidate of the four**: those
+units carry the harm at **−1.505 per word**, the lowest density in the table, while the 564 units that
+would *keep* their tail carry it at **−10.417 per word**. The candidate removes the tail from exactly
+the places it is doing the least damage.
+
+**Price: the cheapest thing on the list, and it saves money** — 1.002 GPU-h against the cell's 1.0657
+(−6 %), 93 minutes against 99, contacts unchanged, cut audio unchanged. 4,558 tails removed, 564 kept.
+
+**Read it against §4.** A per-tail constant would make this candidate worth 4,558 × 0.00043 = 1.96
+points, 94 % of the harm. The cell's own stratification refuses that constant, and the density figures
+above are why. **(b) is cheap enough to be worth flying as a diagnostic — it is the clean test of
+whether the tail matters at all on this transport unit — but it should not be sold as the repair.**
+
+### (c) Minimum unit duration raised
+
+**Addressable: 26.2 % at 3 s, 37.7 % at 5 s, 78.7 % at 10 s** — the cumulative excess in the duration
+ladder of §3.1, which is monotone, so the share is a direct read of the threshold. At 10 s the
+candidate absorbs the entire stratum that carries the harm.
+
+**Price: it is free, and slightly cheaper than the cell** — merging every unit under 10 s into its
+longer neighbour (plan v2's own rule 4, re-run at the larger threshold) leaves **3,154 units** of the
+5,122, 1.038 GPU-h and 97 minutes; at 5 s, 3,854 units and 1.048 GPU-h; at 3 s, 4,395 units and 1.056.
+The cut total is invariant by construction — only the tail count moves — so nothing about the media
+identity changes.
+
+**Two costs the price table cannot show.** First, this candidate **gives back the thing OBS-E1 bought**:
+at a 10-second minimum the mean unit is 44.8 s, halfway back to the 88.7-second window, and the
+corpus-WER gain that was worth +1.0487 points is not measured at that mixture. Second, merging past
+a diarized speaker change is what rule 4 already permits, and at a 10-second threshold it would do so
+1,968 times, which dissolves the owner's thesis — cut by speaker first — on exactly the turn-taking
+moments the thesis is about. **A 3-to-5-second threshold keeps the thesis and buys a quarter to a
+third of the harm; a 10-second threshold buys four fifths and is a different experiment.**
+
+### (d) The repair pass (KC-E1f) on top of the units
+
+**Addressable: ≤ 75.4 %** — the 46 excess **substitutions**. `reproduction.repair_loop` delivers a
+substitution-only splice by construction, so it **cannot** touch the 15 excess deletions; the reachable
+PERSON floor on this transport unit is the cell's own deletion rate, `98 / 2917 = 3.360 %`, against
+the comparator's `83 / 2917 = 2.846 %`. §1's finding — that three quarters of the harm is
+substitution — is what makes this candidate plausible at all, and §1 is also what caps it.
+
+**Its measured effect on the 90-second windows is larger than the harm it would repair**: KC-E1f took
+PERSON from 22.489 to **18.752**, an improvement of **+3.737 [+2.653, +4.855]**, against a harm of
+2.091. That is a reason to price it, not a reason to expect it: the brief was measured on 1,593
+90-second windows and has never been consumed at a 27.6-second unit.
+
+**Price: by far the most expensive, and the cost is superlinear in the transport unit** — **10,244
+contacts** (two passes), 2.131 GPU-h, 199 minutes, and **9.7 million prompt tokens against the cell's
+2.26 million**. The reason is structural and worth stating plainly: **the brief is a per-contact cost.**
+KC-E1f spent about 1,014 tokens of brief per window on 1,593 windows; the same brief on 5,122 units
+costs 3.2× that, and it now dominates the request — a unit's own audio is only about 440 prompt
+tokens. A finer transport unit makes knowledge supply proportionally more expensive, and that is a
+general property of this architecture, not a detail of this cell.
+
+**And KC-E1f is itself REJECTED** (`docs/readiness/2026-09-08-e21-kc-e1f-repair-pass-v1-verdict.md`,
+on two guards that failed on one matched value in 9,734 and one insertion in 10,700). A rejected cell
+contributes no admitted effect; its PERSON reduction is quoted here as a **price input**, never as an
+effect this table claims.
+
+### 5.1 What the four candidates do NOT include, and the honest ranking
+
+**The measurement points at a fifth thing none of the four does: stop making short units.** §3.1 and
+§4.3 agree that the harm is the sub-10-second unit, and the two candidates that act on it directly are
+(c) — by removing short units — and (a) — by giving them back the context their shortness removed.
+(b) acts on the tail, which §4 shows is real but not the driver. (d) acts on the output, after the
+damage, and pays three times the cell's cost to do it.
+
+**Ranked by addressable share per GPU-hour, on this measurement alone:**
+
+| | addressable | GPU-h | share per GPU-h | note |
+|---|---:|---:|---:|---|
+| **(c) minimum 10 s** | 78.7 % | 1.038 | **75.8** | but gives back the corpus-WER gain and the speaker thesis |
+| **(a) margin +3 s** | ≤ 93.4 % | 1.174 | **79.6** | the discard rule is unbuilt and unpriced |
+| **(b) no tail on pause ends** | ≤ 67.2 % | 1.002 | 67.1 | targets the lowest-density stratum; a clean diagnostic |
+| **(c) minimum 5 s** | 37.7 % | 1.048 | 36.0 | keeps the speaker thesis |
+| **(d) repair pass** | ≤ 75.4 % | 2.131 | 35.4 | substitutions only; the brief is a per-contact cost |
+
+**The ranking is not a recommendation.** Three things would change it and none is measured: whether
+(a)'s discard rule can be built at all, whether (c) at 10 s keeps the corpus-WER gain, and whether the
+brief transfers to a 27.6-second unit. What this decomposition licenses is a **model-free** next step —
+a wire check on (a)'s discard rule, and a rebuild of the plan at a 3-to-5-second minimum to see what
+the mixture does to the unit-grain table — neither of which needs a contact.
+
+---
+
+## 6. What this note cannot conclude
+
+* **Nothing about OBS-E1's status.** It stays REJECTED under its own preregistered rule. This note
+  re-reads the sealed data; it amends no verdict and reverses no decision.
+* **Nothing paper-facing, in either direction.** n = 44 clusters, below the program's `n >= 400`
+  rule; the strata below the top level are thin (the smallest carries 16 PERSON words) and carry no
+  intervals of their own. Every stratum table here is a **descriptive decomposition of a measured
+  61-error difference**, not an effect estimate.
+* **No causal claim about the mechanism inside the core.** The read locates the harm in a stratum; it
+  cannot say what the model did, and no instrument here reads a decode's reason.
+* **Nothing about ORG, GPE or any other class.** The instrument is class-parametric and was run on
+  PERSON only, because PERSON is the class the cell was aimed at.
+* **The seconds columns are derived, everywhere.** The reference layer has no timestamps (§0); the
+  reference-word columns are the exact ones and the seconds columns are an attribution at a median
+  0.388-second resolution. Any reading that needs finer than one reference word is not supported.
+* **The successor prices are projections**, under the audio-proportional model the OBS-E1 verdict
+  established for this carrier and geometry, and would need their own preregistration, their own
+  exposure row and the owner's GO before any of them flies.
