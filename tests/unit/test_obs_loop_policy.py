@@ -139,13 +139,22 @@ class _World:
         arm="bare-core",
         usages=None,
         decoding_params=None,
+        sample_id=SAMPLE_ID,
     ):
+        # ``sample_id`` (OBS-E1 obs seam, 2026-09-08): every world before it
+        # was the one synthetic call, and a unit plan is keyed BY call -- a
+        # data-backed falsifier that replays a real sealed call needs that
+        # call's own id here. Defaults to SAMPLE_ID, so every world built
+        # before this parameter existed is unchanged.
+        self.sample_id = str(sample_id)
+        parent_relpath = PARENT_RELPATH.replace(SAMPLE_ID, self.sample_id)
+        self.parent_relpath = parent_relpath
         self.data_root = tmp_path / "data"
         self.run_dir = tmp_path / "run"
         self.repo_root = tmp_path / "repo"
-        parent = self.data_root / PARENT_RELPATH
+        parent = self.data_root / parent_relpath
         parent.parent.mkdir(parents=True)
-        parent.write_bytes(b"fake-mp3-bytes-for-" + SAMPLE_ID.encode())
+        parent.write_bytes(b"fake-mp3-bytes-for-" + self.sample_id.encode())
         template = self.repo_root / "configs" / TEMPLATE_RELPATH
         template.parent.mkdir(parents=True)
         template.write_text(
@@ -157,15 +166,15 @@ class _World:
         self.registry = SliceRegistry(
             data_root=self.data_root,
             run_id=RUN_ID,
-            parent_facts={SAMPLE_ID: (PARENT_RELPATH, self.duration)},
+            parent_facts={self.sample_id: (parent_relpath, self.duration)},
         )
         self.adapter = _ScriptedAdapter(texts, usages=usages)
         self.sink = TraceSink(self.run_dir, RUN_ID)
         self.ctx = SampleContext(
             sample=SampleRef(
                 carrier_lock_key="earnings21-original",
-                sample_id=SAMPLE_ID,
-                media_relpath=PARENT_RELPATH,
+                sample_id=self.sample_id,
+                media_relpath=parent_relpath,
                 audio_seconds=self.duration,
                 sample_rate_hz=RATE,
             ),

@@ -17,10 +17,12 @@
 # greedy decoding, same build, same audio path and the same instruction byte for
 # byte as the sealed comparator SAEA-E21-FULL44-DIRECT-BASELINE-V2. ONE factor
 # moves: the TRANSPORT UNIT. Instead of ceil(D/90) fixed windows off the clock,
-# the OBS loop cuts each call into the hash-pinned plan's speaker-turn units --
-# 5,288 over the 44 calls against 1,593 windows, 11.7 % of them ending on an
-# active frame against 65.5 %, 76.1 % of them carrying exactly one speaker
-# against 40.5 %.
+# the OBS loop cuts each call into the hash-pinned v2 plan's speaker-turn
+# units (schema saea-e21-speaker-turn-units-v2, re-pinned 2026-09-08 under
+# the coordinator's minimum-duration merge rule) -- 5,122 over the 44 calls
+# against 1,593 windows, 11.0 % of them ending on an active frame against
+# 65.5 %, 76.1 % of them carrying exactly one speaker against 40.5 %, and
+# ZERO left under the 1.0 s minimum (v1's own 5,288-unit plan carried 166).
 #
 # The units and the windows do NOT align one to one, so the cell pairs at the
 # CALL (44 clusters, seed 20260903, CI90) and makes no paper-facing
@@ -32,7 +34,7 @@
 # --experiment e21-obs-e1-speaker-turn-units-v1
 # --model q4km-e21-buf90-mmproj-gpu-04ccc72a-np6
 # --execution-profile bounded-discovery-probe
-# --planned-model-calls 5800 --planned-gpu-hours 3.5
-# --planned-speech-audio-seconds 165000
+# --planned-model-calls 5635 --planned-gpu-hours 3.4
+# --planned-speech-audio-seconds 167000
 # run_id:baseline_fragment
 SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1:e21-units-obse1-scored7

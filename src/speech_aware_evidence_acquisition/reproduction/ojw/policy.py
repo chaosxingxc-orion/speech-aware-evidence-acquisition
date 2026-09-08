@@ -126,6 +126,22 @@ def _prepare_state(ctx: SampleContext, cfg: ObsLoopConfig) -> ObsSampleState:
     shared mutable state, so the batch runner may call it from a worker
     thread."""
 
+    # The OBS-E1 unit plan is implemented on the PLAIN policy's two cut sites
+    # only (preregistration section 8.3). This executor cuts through
+    # ``ObsSampleState.window_frames``, which is clock-derived by
+    # construction, so a plan reaching here would be SILENTLY ignored and the
+    # two executors would deliver different media for the same config. Refused
+    # instead, named, before the parent is decoded.
+    if cfg.unit_plan is not None:
+        raise ObsLoopError(
+            f"{OJW_POLICY_NAME} does not implement obs_unit_plan: the unit-plan cut "
+            "lives on the obs-agent-loop policy's own two cut sites, and this "
+            "executor's window_frames is clock-derived. Fly a unit-plan cell with "
+            "obs_batch_samples 1 (the plain policy, which supports obs_batch_slices "
+            "> 1 under a plan), or extend this executor deliberately -- never let it "
+            "cut fixed windows for a config that asked for units"
+        )
+
     registry, data_root, _, _, _ = _context_facts(ctx)
     sample: SampleRef = ctx.sample
     rate = SLICE_SAMPLE_RATE_HZ
@@ -224,6 +240,13 @@ def _finalize_sample(ctx: SampleContext, state: ObsSampleState) -> SampleOutcome
             "boundary_mode": cfg.boundary_mode,
             "boundary_prompt_relpath": cfg.boundary_prompt_relpath,
             "boundary_prompt_sha256": cfg.boundary_prompt_sha256,
+            # Always null on this executor -- ``_prepare_state`` refuses a
+            # unit plan outright -- but present so the two executors'
+            # ``saea-obs-derivation-v1`` receipts stay key for key identical,
+            # which is what TestEquivalence in tests/unit/test_obs_loop_ojw.py
+            # fingerprints.
+            "unit_plan_path": cfg.unit_plan_relpath,
+            "unit_plan_sha256": cfg.unit_plan_sha256,
             "condition_tail_chars": cfg.condition_tail_chars,
             "trims": state.trim_events,
             "slices": [record.trace_view() for record in state.slice_records],

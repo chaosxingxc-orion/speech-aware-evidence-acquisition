@@ -51,6 +51,13 @@ def _plan(segments, spans, duration, **kwargs):
     return stu.plan_units("CALL", segments, duration, pauses, active, frame_seconds, **kwargs)
 
 
+def _plan_v2(segments, spans, duration, **kwargs):
+    samples = _pcm(spans, duration)
+    active, _levels, frame_seconds = _activity(samples, duration)
+    pauses = stu.pauses_from_activity(active, frame_seconds)
+    return stu.plan_units_v2("CALL", segments, duration, pauses, active, frame_seconds, **kwargs)
+
+
 # ---------------------------------------------------------------------------
 # identity helpers
 # ---------------------------------------------------------------------------
@@ -356,6 +363,257 @@ def test_a_merge_that_would_break_the_cap_is_refused():
     segments = [SpeakerSegment(0.0, 91.0, "speaker_0")]
     units = _plan(segments, [(0.0, 89.6), (90.1, 91.0)], duration)
     assert all(unit.duration_seconds <= stu.MAX_UNIT_SECONDS + 1e-6 for unit in units)
+
+
+# ---------------------------------------------------------------------------
+# rule 4, v2 -- the coordinator's 2026-09-08 minimum (module docstring,
+# "OBS-E1 UNIT PLAN v2"): a short span merges into whichever neighbour is
+# LONGER, either speaker, ties to the preceding neighbour; v1's builder is
+# untouched, so the very same scenario is exercised through both.
+# ---------------------------------------------------------------------------
+
+
+def test_v1_keeps_a_cross_speaker_sliver_but_v2_merges_it_into_the_longer_neighbour():
+    duration = 60.0
+    segments = [
+        SpeakerSegment(0.0, 25.0, "speaker_0"),
+        SpeakerSegment(25.3, 25.7, "speaker_1"),
+        SpeakerSegment(26.0, 60.0, "speaker_2"),
+    ]
+    spans = [(0.0, 60.0)]
+
+    v1_units = _plan(segments, spans, duration)
+    v1_short = [unit for unit in v1_units if unit.duration_seconds < stu.MIN_UNIT_SECONDS]
+    assert v1_short and all("short-kept" in unit.flags for unit in v1_short)
+
+    v2_units = _plan_v2(segments, spans, duration)
+    assert not any(unit.duration_seconds < stu.MIN_UNIT_SECONDS for unit in v2_units)
+    assert len(v2_units) == 2
+    # speaker_2's span (25.85-60.0, 34.15 s) is longer than speaker_0's
+    # (0-25.15, 25.15 s), so the sliver merges into speaker_2's unit.
+    merged = v2_units[1]
+    assert merged.speaker == "speaker_2"
+    assert "cross-speaker-merge" in merged.flags
+    assert "short-merged" in merged.flags
+    assert "same-speaker-merge" not in merged.flags
+    assert len(merged.absorbed_units) == 1
+    absorbed = merged.absorbed_units[0]
+    assert absorbed["speaker"] == "speaker_1"
+    assert absorbed["crossed_speaker_change"] is True
+    assert absorbed["duration_seconds"] == pytest.approx(0.7, abs=0.05)
+    stu.assert_tiles(v2_units, duration)
+
+
+def test_v2_purity_is_recomputed_to_count_the_absorbed_sliver():
+    duration = 60.0
+    segments = [
+        SpeakerSegment(0.0, 25.0, "speaker_0"),
+        SpeakerSegment(25.3, 25.7, "speaker_1"),
+        SpeakerSegment(26.0, 60.0, "speaker_2"),
+    ]
+    v2_units = _plan_v2(segments, [(0.0, 60.0)], duration)
+    merged = v2_units[1]
+    assert merged.speaker_count == 2
+    assert merged.speaker_share < 1.0
+    # The recount is over the merged span [25.15, 60.0), by the SAME
+    # attributed-time formula every unit's speaker_share uses (never wall
+    # clock): speaker_1 contributes its full 0.4 s (25.3-25.7), speaker_2
+    # its full 34.0 s (26.0-60.0), so the dominant share is 34.0 / 34.4,
+    # not 1.0 -- the sliver it absorbed is counted, not discarded.
+    assert merged.speaker_share == pytest.approx(34.0 / 34.4, abs=1e-9)
+
+
+def test_v2_prefers_the_longer_same_speaker_neighbour_where_v1_always_takes_the_preceding_one():
+    # Both neighbours are the SAME speaker, so rule 1 is not at stake for
+    # either version -- only the neighbour CHOICE differs. v1's ``_merge_short``
+    # tries the preceding neighbour first and stops there; v2 compares
+    # durations and merges into the following, longer one instead.
+    segments = [SpeakerSegment(0.0, 100.0, "speaker_0")]
+    spans = [
+        (0.0, 10.0, stu.CUT_PAUSE, stu.CUT_PAUSE, ()),
+        (10.0, 10.5, stu.CUT_PAUSE, stu.CUT_PAUSE, ()),
+        (10.5, 100.0, stu.CUT_PAUSE, stu.CUT_PAUSE, ()),
+    ]
+    v1_merged = stu._merge_short(spans, segments, "CALL", max_seconds=90.0, min_seconds=1.0)
+    assert len(v1_merged) == 2
+    assert v1_merged[0][:2] == (0.0, 10.5)
+    assert "short-merged" in v1_merged[0][4]
+
+    v2_merged = stu._merge_short_v2(spans, segments, "CALL", max_seconds=90.0, min_seconds=1.0)
+    assert len(v2_merged) == 2
+    assert v2_merged[0][:2] == (0.0, 10.0)
+    assert v2_merged[1][:2] == (10.0, 100.0)
+    flags = v2_merged[1][4]
+    assert "same-speaker-merge" in flags
+    assert "cross-speaker-merge" not in flags
+    absorbed = v2_merged[1][5]
+    assert absorbed == ((10.0, 10.5, "speaker_0", False),)
+
+
+def test_v2_an_edge_sliver_merges_inward():
+    duration = 40.6
+    segments = [
+        SpeakerSegment(0.4, 0.6, "speaker_0"),
+        SpeakerSegment(1.0, 40.6, "speaker_1"),
+    ]
+    # Continuous tone over the whole call: no pause exists to compete with
+    # the one turn boundary, so the only cut is at 0.8 (the gap's midpoint)
+    # and the leading [0, 0.8) piece is a genuine call-edge sliver.
+    units = _plan_v2(segments, [(0.0, 40.6)], duration)
+    assert not any(unit.duration_seconds < stu.MIN_UNIT_SECONDS for unit in units)
+    assert len(units) == 1
+    assert units[0].speaker == "speaker_1"
+    assert "short-merged" in units[0].flags
+    assert len(units[0].absorbed_units) == 1
+    assert units[0].absorbed_units[0]["start_seconds"] == pytest.approx(0.0)
+    assert units[0].absorbed_units[0]["end_seconds"] == pytest.approx(0.8)
+    stu.assert_tiles(units, duration)
+
+
+def test_v2_tie_break_goes_to_the_preceding_neighbour():
+    segments = [SpeakerSegment(0.0, 40.6, "speaker_0")]
+    spans = [
+        (0.0, 20.0, stu.CUT_PAUSE, stu.CUT_PAUSE, ()),
+        (20.0, 20.6, stu.CUT_PAUSE, stu.CUT_PAUSE, ()),
+        (20.6, 40.6, stu.CUT_PAUSE, stu.CUT_PAUSE, ()),
+    ]
+    merged = stu._merge_short_v2(
+        spans, segments, "CALL", max_seconds=stu.MAX_UNIT_SECONDS, min_seconds=stu.MIN_UNIT_SECONDS
+    )
+    assert len(merged) == 2
+    assert merged[0][:2] == (0.0, 20.6)
+    assert merged[1][:2] == (20.6, 40.6)
+
+
+def test_v2_cap_still_holds_and_tries_the_other_neighbour():
+    # The preceding neighbour is longer (89.9 s) but merging into it would
+    # exceed the 90 s cap; the shorter following neighbour (5.0 s) is tried
+    # instead and admits the merge.
+    segments = [SpeakerSegment(0.0, 95.2, "speaker_0")]
+    spans = [
+        (0.0, 89.9, stu.CUT_PAUSE, stu.CUT_PAUSE, ()),
+        (89.9, 90.2, stu.CUT_PAUSE, stu.CUT_PAUSE, ()),
+        (90.2, 95.2, stu.CUT_PAUSE, stu.CUT_PAUSE, ()),
+    ]
+    merged = stu._merge_short_v2(
+        spans, segments, "CALL", max_seconds=stu.MAX_UNIT_SECONDS, min_seconds=stu.MIN_UNIT_SECONDS
+    )
+    assert len(merged) == 2
+    assert merged[0][:2] == (0.0, 89.9)
+    assert merged[1][:2] == (89.9, 95.2)
+    assert all(end - start <= stu.MAX_UNIT_SECONDS + 1e-6 for start, end, *_ in merged)
+
+
+def test_v2_both_neighbours_over_cap_keeps_the_sliver_short_kept():
+    segments = [SpeakerSegment(0.0, 180.1, "speaker_0")]
+    spans = [
+        (0.0, 89.9, stu.CUT_PAUSE, stu.CUT_PAUSE, ()),
+        (89.9, 90.2, stu.CUT_PAUSE, stu.CUT_PAUSE, ()),
+        (90.2, 180.1, stu.CUT_PAUSE, stu.CUT_PAUSE, ()),
+    ]
+    merged = stu._merge_short_v2(
+        spans, segments, "CALL", max_seconds=stu.MAX_UNIT_SECONDS, min_seconds=stu.MIN_UNIT_SECONDS
+    )
+    assert len(merged) == 3
+    kept = merged[1]
+    assert kept[:2] == (89.9, 90.2)
+    assert "short-kept" in kept[4]
+    assert "short-merged" not in kept[4]
+
+
+def test_unit_as_dict_carries_no_absorbed_units_key_but_unit_v2_does():
+    kwargs = dict(
+        sample_id="CALL",
+        unit_index=1,
+        start_seconds=0.0,
+        end_seconds=10.0,
+        speaker="speaker_0",
+        speaker_share=1.0,
+        speaker_count=1,
+        start_cut=stu.CUT_CALL_START,
+        end_cut=stu.CUT_CALL_END,
+        ends_active=False,
+        flags=(),
+    )
+    assert "absorbed_units" not in stu.Unit(**kwargs).as_dict()
+    v2_unit = stu.UnitV2(**kwargs, absorbed_units=({"start_seconds": 1.0},))
+    document = v2_unit.as_dict()
+    assert document["absorbed_units"] == [{"start_seconds": 1.0}]
+
+
+def test_rules_block_v2_names_the_new_rule_and_leaves_v1s_untouched():
+    v1_rules = stu.rules_block()
+    v2_rules = stu.rules_block_v2()
+    assert "min_unit_merge_rule" not in v1_rules
+    assert v2_rules["min_unit_merge_rule"]
+    assert {key: v2_rules[key] for key in v1_rules} == v1_rules
+
+
+def test_plan_document_and_summary_document_default_to_v1_but_accept_v2_overrides():
+    v1_document = stu.plan_document(
+        carrier_lock_key="k",
+        split_identity_hash="h",
+        source_run_id="r",
+        source_attempt_id="a",
+        diarization_run_id="d",
+        window_rows_sha256="w",
+        calls=[],
+        corpus={},
+    )
+    assert v1_document["schema"] == stu.PLAN_SCHEMA
+    assert v1_document["exposure_row"] == stu.EXPOSURE_ROW
+    assert "min_unit_merge_rule" not in v1_document["rules"]
+
+    v2_document = stu.plan_document(
+        carrier_lock_key="k",
+        split_identity_hash="h",
+        source_run_id="r",
+        source_attempt_id="a",
+        diarization_run_id="d",
+        window_rows_sha256="w",
+        calls=[],
+        corpus={},
+        schema=stu.PLAN_SCHEMA_V2,
+        exposure_row=stu.EXPOSURE_ROW_V2,
+        rules=stu.rules_block_v2(),
+    )
+    assert v2_document["schema"] == stu.PLAN_SCHEMA_V2
+    assert v2_document["exposure_row"] == stu.EXPOSURE_ROW_V2
+    assert v2_document["rules"]["min_unit_merge_rule"]
+
+    v1_summary = stu.summary_document(
+        plan_path="p", plan_sha256="s", elapsed_seconds=1.0, corpus={}, per_call=[]
+    )
+    assert v1_summary["schema"] == stu.SUMMARY_SCHEMA
+    assert v1_summary["exposure_row"] == stu.EXPOSURE_ROW
+
+    v2_summary = stu.summary_document(
+        plan_path="p",
+        plan_sha256="s",
+        elapsed_seconds=1.0,
+        corpus={},
+        per_call=[],
+        schema=stu.SUMMARY_SCHEMA_V2,
+        exposure_row=stu.EXPOSURE_ROW_V2,
+        rules=stu.rules_block_v2(),
+    )
+    assert v2_summary["schema"] == stu.SUMMARY_SCHEMA_V2
+    assert v2_summary["exposure_row"] == stu.EXPOSURE_ROW_V2
+
+
+def test_v2_call_summary_reports_merges_via_the_generic_flag_counts():
+    duration = 60.0
+    segments = [
+        SpeakerSegment(0.0, 25.0, "speaker_0"),
+        SpeakerSegment(25.3, 25.7, "speaker_1"),
+        SpeakerSegment(26.0, 60.0, "speaker_2"),
+    ]
+    units = _plan_v2(segments, [(0.0, 60.0)], duration)
+    summary = stu.call_summary("CALL", units, duration, window_count=1)
+    assert summary["units_under_1s"] == 0
+    assert summary["flags"].get("cross-speaker-merge") == 1
+    assert summary["flags"].get("short-merged") == 1
+    assert "short-kept" not in summary["flags"]
 
 
 # ---------------------------------------------------------------------------
