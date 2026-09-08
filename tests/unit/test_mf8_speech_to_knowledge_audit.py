@@ -102,3 +102,57 @@ def test_quantiles_are_nearest_rank_and_stable() -> None:
 def test_at_least_counts_are_monotone() -> None:
     counts = audit.at_least_counts([0, 1, 3, 5, 8], (1, 3, 5, 8))
     assert counts == {">=1": 4, ">=3": 3, ">=5": 2, ">=8": 1}
+
+
+def _outputs_file(tmp_path: Path, rows: list[dict[str, object]]) -> Path:
+    path = tmp_path / "outputs.jsonl"
+    path.write_text(
+        "\n".join(json.dumps(row) for row in rows) + "\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def test_read_sealed_outputs_maps_sample_id_to_text(tmp_path: Path) -> None:
+    path = _outputs_file(
+        tmp_path,
+        [{"sample_id": "a", "text": "{}"}, {"sample_id": "b", "text": "x"}],
+    )
+    assert audit.read_sealed_outputs(path) == {"a": "{}", "b": "x"}
+
+
+def test_read_sealed_outputs_fails_closed(tmp_path: Path) -> None:
+    with pytest.raises(ValueError):
+        audit.read_sealed_outputs(_outputs_file(tmp_path, [{"sample_id": "a"}]))
+    with pytest.raises(ValueError):
+        audit.read_sealed_outputs(
+            _outputs_file(tmp_path, [{"sample_id": "a", "text": "1"}] * 2)
+        )
+    empty = tmp_path / "empty.jsonl"
+    empty.write_text("\n\n", encoding="utf-8")
+    with pytest.raises(ValueError):
+        audit.read_sealed_outputs(empty)
+
+
+def test_sealed_outputs_carry_logprobs_is_a_substring_test(tmp_path: Path) -> None:
+    plain = tmp_path / "plain.jsonl"
+    plain.write_text('{"sample_id": "a", "text": "x"}\n', encoding="utf-8")
+    assert audit.sealed_outputs_carry_logprobs(plain) is False
+    with_probs = tmp_path / "probs.jsonl"
+    with_probs.write_text('{"logprobs": {"content": []}}\n', encoding="utf-8")
+    assert audit.sealed_outputs_carry_logprobs(with_probs) is True
+
+
+def test_ordered_candidates_dedupes_in_rank_order() -> None:
+    assert audit.ordered_candidates(
+        [("a", 0.9), ("b", 0.8), ("a", 0.7), ("c", 0.1)]
+    ) == ("a", "b", "c")
+    assert audit.ordered_candidates([]) == ()
+
+
+def test_recall_at_reads_only_the_first_k() -> None:
+    candidates = ("a", "b", "c", "d")
+    assert audit.recall_at(candidates, "a", 1) is True
+    assert audit.recall_at(candidates, "c", 2) is False
+    assert audit.recall_at(candidates, "c", 3) is True
+    assert audit.recall_at(candidates, "z", 4) is False
