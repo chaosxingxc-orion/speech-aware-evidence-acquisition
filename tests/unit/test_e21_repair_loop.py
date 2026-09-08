@@ -268,6 +268,152 @@ class TestHook:
 
 
 # ---------------------------------------------------------------------------
+# 2b. The hook under a SELECTIVE RE-LISTEN plan (E21-LOOP-1).
+# ---------------------------------------------------------------------------
+
+
+W1 = "good morning everyone and welcome i will hand over to Brett Ponton our chief now"
+W2 = "revenue grew eleven percent in the quarter and margins held steady overall"
+W3 = "with that we will take your questions from the analysts on the line"
+
+RELISTEN_WINDOWS = (
+    _Predecessor("4000001#w0001", 0.0, 45.0, W1),
+    _Predecessor("4000001#w0002", 45.0, 90.0, W2),
+    _Predecessor("4000001#w0003", 90.0, 135.0, W3),
+)
+
+
+def _plan_unit(index, parent, start, end, word_start, word_end):
+    return obs_loop.PlannedUnit(
+        unit_id=f"4000001#u{index:04d}",
+        unit_index=index,
+        start_seconds=start,
+        end_seconds=end,
+        speaker=None,
+        end_cut="recut",
+        parent_window_index=parent,
+        predecessor_word_start=word_start,
+        predecessor_word_end=word_end,
+    )
+
+
+class TestSelectiveRelistenHook:
+    """One unit per FLAGGED window: the contact hears a narrower cut, is shown
+    the matching words of its own pass-1 text, and the windows nobody
+    criticised are delivered from the predecessor without a contact."""
+
+    def _hook(self, units):
+        return _hook(predecessors=RELISTEN_WINDOWS, units=units)
+
+    def test_the_instruction_carries_the_recut_span_words_not_the_whole_window(self):
+        hook = self._hook([_plan_unit(1, 1, 10.0, 25.0, 4, 15)])
+        rendered = hook.instruction(
+            iteration=0, record=_Record(10.0, 25.0), default="Base instruction."
+        )
+        assert '"welcome i will hand over to Brett Ponton our chief now"' in rendered
+        assert "good morning" not in rendered
+
+    def test_the_repaired_subspan_is_reseated_in_its_own_window(self):
+        hook = self._hook([_plan_unit(1, 1, 10.0, 25.0, 4, 15)])
+        delivered, fields = hook.accept(
+            iteration=0,
+            record=_Record(10.0, 25.0),
+            transcript="welcome i will hand over to Brett Ponten our chief now",
+            saturated=False,
+            skipped=False,
+        )
+        assert fields["obs_repair_substitutions"] == 1
+        assert fields["obs_relisten_window_text"] == W1.replace("Ponton", "Ponten")
+        assert fields["obs_relisten_predecessor_word_start"] == 4
+        assert fields["obs_relisten_predecessor_word_end"] == 15
+        assert fields["obs_relisten_recut_seconds"] == 15.0
+        # Window 1 is the only unit, so this delivery also back-fills the two
+        # windows nobody criticised.
+        assert delivered == " ".join([W1.replace("Ponton", "Ponten"), W2, W3])
+        assert fields["obs_relisten_backfilled_windows"] == 2
+        assert hook.uncontacted_windows == 2
+
+    def test_the_gap_before_a_flagged_window_is_delivered_by_that_unit(self):
+        hook = self._hook([_plan_unit(1, 2, 50.0, 70.0, 0, 12)])
+        delivered, _fields = hook.accept(
+            iteration=0,
+            record=_Record(50.0, 70.0),
+            transcript=W2,
+            saturated=False,
+            skipped=False,
+        )
+        assert delivered == " ".join([W1, W2, W3])
+
+    def test_two_units_partition_the_call_between_them(self):
+        hook = self._hook(
+            [
+                _plan_unit(1, 1, 10.0, 25.0, 4, 15),
+                _plan_unit(2, 3, 95.0, 115.0, 0, 13),
+            ]
+        )
+        first, _ = hook.accept(
+            iteration=0, record=_Record(10.0, 25.0),
+            transcript="welcome i will hand over to Brett Ponten our chief now",
+            saturated=False, skipped=False,
+        )
+        second, _ = hook.accept(
+            iteration=1, record=_Record(95.0, 115.0),
+            transcript=W3, saturated=False, skipped=False,
+        )
+        assert f"{first} {second}" == " ".join(
+            [W1.replace("Ponton", "Ponten"), W2, W3]
+        )
+        assert hook.uncontacted_windows == 1
+
+    def test_a_refused_response_still_delivers_the_whole_call(self):
+        hook = self._hook([_plan_unit(1, 2, 50.0, 70.0, 0, 12)])
+        delivered, fields = hook.accept(
+            iteration=0, record=_Record(50.0, 70.0),
+            transcript="", saturated=True, skipped=False,
+        )
+        assert fields["obs_repair_refused"] is True
+        assert delivered == " ".join([W1, W2, W3])
+
+    def test_a_recut_that_leaves_its_parent_window_is_refused(self):
+        hook = self._hook([_plan_unit(1, 1, 10.0, 60.0, 4, 15)])
+        with pytest.raises(ObsLoopError, match="narrower look"):
+            hook.instruction(
+                iteration=0, record=_Record(10.0, 60.0), default="Base instruction."
+            )
+
+    def test_a_word_range_the_predecessor_cannot_carry_is_refused(self):
+        hook = self._hook([_plan_unit(1, 1, 10.0, 25.0, 4, 99)])
+        with pytest.raises(ObsLoopError, match="built against a different pass-1 text"):
+            hook.instruction(
+                iteration=0, record=_Record(10.0, 25.0), default="Base instruction."
+            )
+
+    def test_a_unit_beyond_the_plan_refuses(self):
+        hook = self._hook([_plan_unit(1, 1, 10.0, 25.0, 4, 15)])
+        with pytest.raises(ObsLoopError, match="carries only 1"):
+            hook.instruction(
+                iteration=1, record=_Record(10.0, 25.0), default="Base instruction."
+            )
+
+    def test_without_a_plan_the_hook_is_kc_e1fs_byte_for_byte(self):
+        """The null arm: no units, no re-listen field anywhere, and the whole
+        window's own text on the wire and in the delivery."""
+
+        hook = _hook(predecessors=RELISTEN_WINDOWS)
+        rendered = hook.instruction(
+            iteration=0, record=_Record(0.0, 45.0), default="Base instruction."
+        )
+        assert f'"{W1}"' in rendered
+        delivered, fields = hook.accept(
+            iteration=0, record=_Record(0.0, 45.0),
+            transcript=W1.replace("Ponton", "Ponten"), saturated=False, skipped=False,
+        )
+        assert delivered == W1.replace("Ponton", "Ponten")
+        assert not [key for key in fields if key.startswith("obs_relisten")]
+        assert hook.uncontacted_windows == 0
+
+
+# ---------------------------------------------------------------------------
 # 3. The whole policy, through the real driver.
 # ---------------------------------------------------------------------------
 
