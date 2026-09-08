@@ -1,0 +1,272 @@
+{
+  "conformance": {
+    "gold_rows_carrying_two_mentions_of_one_type": 30,
+    "illegal_mentions_by_type": {
+      "alarm_type": 9,
+      "app_name": 1,
+      "coffee_type": 1,
+      "color_type": 1,
+      "cooking_type": 4,
+      "date": 1,
+      "definition_word": 1,
+      "device_type": 1,
+      "drink_type": 1,
+      "email_address": 6,
+      "email_folder": 1,
+      "general_frequency": 2,
+      "ingredient": 7,
+      "list_name": 5,
+      "meal_type": 1,
+      "music_descriptor": 3,
+      "person": 2,
+      "personal_info": 2,
+      "place_name": 2,
+      "playlist_name": 1,
+      "sport_type": 2,
+      "timeofday": 1,
+      "transport_descriptor": 1,
+      "transport_name": 17
+    },
+    "mentions": {
+      "illegal_for_block": 73,
+      "total": 682,
+      "unknown": 0
+    },
+    "rows": {
+      "duplicate_type": 11,
+      "fenced_or_prefixed_text": 0,
+      "fully_conforming": 914,
+      "illegal_type_for_block": 72,
+      "unknown_type": 0,
+      "unparsed": 3
+    },
+    "rows_fully_conforming_pct": 91.4
+  },
+  "constrained_decoding": {
+    "citations": [
+      {
+        "establishes": "response_format is one of the exact decoding_params keys the frozen core accepts, described in its own comment as llama-server's OpenAI-compatible schema-constrained decoding",
+        "lines": "33",
+        "path": "src/speech_aware_evidence_acquisition/core/model/request_types.py"
+      },
+      {
+        "establishes": "the adapter validates the wrapper before the transport sees it: json_object with a mapping schema, or json_schema with a mapping json_schema.schema; any other type is refused",
+        "lines": "172-197",
+        "path": "src/speech_aware_evidence_acquisition/core/model/adapter.py"
+      },
+      {
+        "establishes": "every decoding_params key is copied verbatim onto the chat-completions body, refusing only a key that would collide with the constructed body",
+        "lines": "878-884",
+        "path": "src/speech_aware_evidence_acquisition/core/model/transport.py"
+      },
+      {
+        "establishes": "decoding_params['response_format'] = dict(material.response_format) -- the phase's resolved format becomes the request's decoding parameter",
+        "lines": "531-532",
+        "path": "src/speech_aware_evidence_acquisition/rails/controllers.py"
+      },
+      {
+        "establishes": "resolve_response_formats renders one document per PHASE through core.base.RESPONSE_FORMATS, from (lock, root, **fill_params) -- there is no sample argument, so a PER-SAMPLE schema is not reachable through this seam",
+        "lines": "613-637",
+        "path": "src/speech_aware_evidence_acquisition/rails/phase_material.py"
+      },
+      {
+        "establishes": "RESPONSE_FORMATS is the one registry a config's response_format_id resolves in, the same one-Registry discipline every other component id uses",
+        "lines": "88-97",
+        "path": "src/speech_aware_evidence_acquisition/core/base.py"
+      },
+      {
+        "establishes": "the precedent: audio2tool_selection_response_format and audio2tool_outer_call_array_response_format build real exact-name enum schemas over the pinned 152-tool registry",
+        "lines": "449-524, 636-717",
+        "path": "src/speech_aware_evidence_acquisition/rails/a2t_response_schema.py"
+      },
+      {
+        "establishes": "the server reads json_schema and grammar off the request body, refuses both at once, and maps an OpenAI response_format of type json_object or json_schema onto that same json_schema",
+        "lines": "1280-1300",
+        "path": "tools/server/server-common.cpp (pinned llama.cpp 04ccc72a)"
+      },
+      {
+        "establishes": "the json_schema request field carries grammar as an ALIAS; a schema is converted with json_schema_to_grammar(schema) at :256 and installed as COMMON_GRAMMAR_TYPE_OUTPUT_FORMAT, and a raw GBNF grammar string is installed as COMMON_GRAMMAR_TYPE_USER",
+        "lines": "246-277",
+        "path": "tools/server/server-schema.cpp (pinned llama.cpp 04ccc72a)"
+      },
+      {
+        "establishes": "json_schema_to_grammar itself -- the conversion is in the build, not a server-side approximation",
+        "lines": "1158",
+        "path": "common/json-schema-to-grammar.cpp (pinned llama.cpp 04ccc72a)"
+      }
+    ],
+    "registered_response_format_ids": [
+      "fill-response-v1",
+      "select-response-v1"
+    ],
+    "resolve_response_formats_parameters": [
+      "lock",
+      "root",
+      "specs"
+    ],
+    "response_format_in_allowed_decoding_keys": true,
+    "slurp_configs_declaring_a_response_format": [],
+    "verdict": "AVAILABLE AND WIRED END TO END for a PHASE-LEVEL, sample-independent schema, and turning it on is one config key: a phase's response_format_id. NOT reachable for a PER-SAMPLE schema, which is what KC-S1b's per-intent block would need -- resolve_response_formats renders one document per phase from (lock, root, **fill_params) and never sees a sample",
+    "what_is_missing_for_a_per_intent_schema": "one seam, the same shape rails.phase_material.PHASE_STATE_FILLS already has: a per-sample response format resolved beside the per-sample state fill. Today PhaseMaterial.response_format is filled from a phase-level mapping inside build_material_for_phase; a PHASE_RESPONSE_FILLS registry keyed the same way would put a per-row schema on the wire with no change to the transport, the adapter, or the server"
+  },
+  "contacts": {
+    "audio_decode": 0,
+    "embedding": 0,
+    "gpu_hours": 0,
+    "model": 0,
+    "network": 0,
+    "tool": 0
+  },
+  "generated_at": "2026-09-08T13:26:10.904473+00:00",
+  "identity_anchors": {
+    "baseline_reemitted": {
+      "action": 33.3,
+      "char_f1": 47.51,
+      "entities_strict": 31.37,
+      "identity_check_passed": true,
+      "intent": 32.1,
+      "samples": 1000,
+      "scenario": 36.0,
+      "slu_f1": 44.35,
+      "unparsed": 3,
+      "word_f1": 41.58
+    },
+    "prompt_fit_schema_blocks": {
+      "distinct_intents_used": 58,
+      "full_schema_fallback_rows": 42
+    }
+  },
+  "row_id": "SAEA-SLURP-MF9-SLOT-GAP-AUDIT-V1",
+  "schema": "saea-slurp-mf9-schema-conformance-v1",
+  "sources": {
+    "intent_slot_schema_content_hash": "732e500af3870216c7b311369f6f190ffdb0365e497d84cf211f478036757dcc",
+    "prompt_fit_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-slurp-slot-stage-kc-s1-v1/prompt-fit.json",
+    "sealed_outputs_sha256": "8dfeb906026057daa604bbe3d52b7dc9aeeccb8028f8fc46e5126bc9c0c97f8c",
+    "umbrella_lock": "/mnt/d/chao_workspace/docs/datasets.lock.json"
+  },
+  "suppression_counterfactuals": {
+    "baseline": {
+      "action": 33.3,
+      "char_f1": 47.51,
+      "entities_strict": 31.37,
+      "identity_check_passed": true,
+      "intent": 32.1,
+      "samples": 1000,
+      "scenario": 36.0,
+      "slu_f1": 44.35,
+      "unparsed": 3,
+      "word_f1": 41.58
+    },
+    "illegal_for_block_suppressed": {
+      "action": 33.3,
+      "char_f1": 48.26,
+      "entities_strict": 31.82,
+      "identity_check_passed": true,
+      "intent": 32.1,
+      "samples": 1000,
+      "scenario": 36.0,
+      "slu_f1": 44.97,
+      "unparsed": 3,
+      "word_f1": 42.1
+    },
+    "note": "a scoring-side LOWER bound on what a grammar constraint buys: the constraint would force a LEGAL type rather than delete the mention, so deleting it can only under-state the gain on recall while over-stating it on precision. Reported as a bound, never as the module's value",
+    "paired_illegal_suppressed_pooled": {
+      "slot_f1_exact_f1": {
+        "ci90_pp": [
+          -0.8,
+          -0.07
+        ],
+        "delta_pp": -0.41,
+        "harms": 8,
+        "left_pct": 20.76,
+        "n": 1000,
+        "right_pct": 20.35,
+        "saves": 11,
+        "sign_test_p": 0.6476058959960938,
+        "ties": 981
+      },
+      "slu_f1_char_f1": {
+        "ci90_pp": [
+          -0.89,
+          -0.12
+        ],
+        "delta_pp": -0.49,
+        "harms": 12,
+        "left_pct": 30.05,
+        "n": 1000,
+        "right_pct": 29.57,
+        "saves": 16,
+        "sign_test_p": 0.5715881884098053,
+        "ties": 972
+      },
+      "slu_f1_f1": {
+        "ci90_pp": [
+          -0.86,
+          -0.11
+        ],
+        "delta_pp": -0.47,
+        "harms": 12,
+        "left_pct": 28.45,
+        "n": 1000,
+        "right_pct": 27.99,
+        "saves": 16,
+        "sign_test_p": 0.5715881884098053,
+        "ties": 972
+      },
+      "slu_f1_word_f1": {
+        "ci90_pp": [
+          -0.84,
+          -0.11
+        ],
+        "delta_pp": -0.45,
+        "harms": 11,
+        "left_pct": 27.44,
+        "n": 1000,
+        "right_pct": 26.99,
+        "saves": 17,
+        "sign_test_p": 0.34492845088243484,
+        "ties": 972
+      }
+    },
+    "unknown_type_suppressed": {
+      "action": 33.3,
+      "char_f1": 47.51,
+      "entities_strict": 31.37,
+      "identity_check_passed": true,
+      "intent": 32.1,
+      "samples": 1000,
+      "scenario": 36.0,
+      "slu_f1": 44.35,
+      "unparsed": 3,
+      "word_f1": 41.58
+    }
+  },
+  "the_block_is_not_a_superset_of_the_gold": {
+    "gold_mentions_whose_type_the_block_did_not_list": 81,
+    "illegal_mentions_that_matched_gold_exactly": 8,
+    "note": "a per-intent block lists the types holding at least 2 % of that intent's TRAIN slot mass, so a rare but REAL type is 'illegal' by construction. Constraining decoding to the block would therefore put reachable gold out of reach, and that cost is measured rather than assumed"
+  },
+  "vocabulary": {
+    "full_schema_fallback_rows": 42,
+    "slurp_entity_types": 55,
+    "types_listed_by_at_least_one_intent_block": 52
+  },
+  "what_the_violating_rows_lose": {
+    "conforming": {
+      "loss_mass": 1717.058,
+      "n": 914,
+      "slu_f1": 46.43
+    },
+    "unparsed_gold_mentions": 10,
+    "unparsed_sample_ids": [
+      "slurp:devel:003704:audio-1494511949",
+      "slurp:devel:008655:audio-1502895086-headset",
+      "slurp:devel:012888:audio-1501692031-headset"
+    ],
+    "violating": {
+      "loss_mass": 406.027,
+      "n": 86,
+      "slu_f1": 33.44
+    }
+  }
+}

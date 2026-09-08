@@ -1,0 +1,250 @@
+{
+  "baseline": {
+    "arm": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1",
+    "cost": {
+      "audio_seconds": 2884.7937,
+      "contacts": 1000,
+      "gpu_hours": 0.2
+    },
+    "loss_mass": 2123.085,
+    "slu_f1": 44.35,
+    "true_positive_mass": 846.0
+  },
+  "contacts": {
+    "audio_decode": 0,
+    "embedding": 0,
+    "gpu_hours": 0,
+    "model": 0,
+    "network": 0,
+    "tool": 0
+  },
+  "contacts_per_row": {
+    "constrained_decoding": 1.0,
+    "intent_narrowing": 1.0,
+    "retrieved_fillers": 1.0,
+    "same_speaker_exemplars": 1.0,
+    "targeted_reask": 0.714,
+    "value_projection": 0.0
+  },
+  "generated_at": "2026-09-08T13:53:40.186382+00:00",
+  "if_every_module_delivered_its_ceiling": {
+    "note": "not a sum of the rungs: the rungs overlap, and this row is the arithmetic ceiling of the whole decomposition -- every missing gold answered, every type swap re-typed, every surface form exact, every spurious mention withheld",
+    "slu_f1": 100.0
+  },
+  "judges": {
+    "definitions": {
+      "any": "the union",
+      "schema_violating": "unparsed, or a type the row's own block did not list, or the same type twice",
+      "silent": "the row parsed and predicted NO entity at all",
+      "value_suspect": "at least one predicted filler whose nearest TRAIN surface form of that type is further than the flag threshold, or whose type has no TRAIN inventory at all"
+    },
+    "dev_rows_with_no_gold_entity_at_all": 333,
+    "flag_threshold": 0.2,
+    "precision_pct": {
+      "any": 46.78,
+      "schema_violating": 72.09,
+      "silent": 39.34,
+      "value_suspect": 56.31
+    },
+    "rows": {
+      "any": 714,
+      "schema_violating": 86,
+      "silent": 394,
+      "value_suspect": 293
+    },
+    "rows_carrying_unmatched_gold": {
+      "any": 334,
+      "schema_violating": 62,
+      "silent": 155,
+      "value_suspect": 165
+    },
+    "rows_pct": {
+      "any": 71.4,
+      "schema_violating": 8.6,
+      "silent": 39.4,
+      "value_suspect": 29.3
+    },
+    "silent_judge_note": "a third of the roster carries no gold slot at all, so a judge that fires on silence is mostly firing on rows that are RIGHT to be silent; its precision is what decides whether an extra contact is worth spending",
+    "silent_rows_that_are_correctly_silent": 239
+  },
+  "measurement_rules_any_of_these_would_inherit": {
+    "comparator": "the SEALED KC-S1b rows, never a re-flight",
+    "greedy_noise_floor": "EVO-S1 round 1 measured 286 of 1,019 byte-identically prompted rows (28.1 %) returning different text on this carrier and this build; a claim read off a handful of moved rows sits below the noise",
+    "population": "DEV-1000, decision on the unexposed NEW500 (n = 500 >= 400)",
+    "power": "paired effectiveness needs n >= 400 (owner 2026-09-03)"
+  },
+  "published_lines": {
+    "CTI": 71.1,
+    "ChatGPT over oracle transcripts (slot F1, a DIFFERENT metric)": [
+      12.0,
+      13.0
+    ],
+    "NLU over gold transcripts": 78.19,
+    "SFT Qwen2-Audio-7B": 76.75,
+    "WHISMA supervised reference": 69.9,
+    "WHISMA zero-shot": 63.3,
+    "trained pipelines (2020 paper)": [
+      69.5,
+      70.8
+    ]
+  },
+  "row_id": "SAEA-SLURP-MF9-SLOT-GAP-AUDIT-V1",
+  "rungs": [
+    {
+      "contacts": 0,
+      "gain": 0.76,
+      "gain_per_gpu_hour": null,
+      "gpu_hours": 0.0,
+      "measured_not_ceiling": true,
+      "module": "value projection (question 2)",
+      "paired_ci90_new500": [
+        0.26,
+        0.99
+      ],
+      "rung": 1,
+      "slu_f1": 45.11,
+      "status": "MEASURED. Clears its own CI bar but NOT the 1-point bar this audit set for a re-lock candidate",
+      "what_it_is": "a deterministic scoring-side post-processor over the SEALED rows -- no contact, no GPU, no flight"
+    },
+    {
+      "ceiling_gain": 0.81,
+      "ceiling_gain_per_gpu_hour": 4.0,
+      "contacts": 1000,
+      "gpu_hours": 0.2,
+      "measured_not_ceiling": false,
+      "module": "constrained decoding, structure + 55-type enum (question 3)",
+      "rung": 2,
+      "slu_f1_ceiling": 45.16,
+      "what_it_is": "one config key on the slots phase: `response_format_id`",
+      "why_the_ceiling_is_small": "zero of 682 predicted mentions violate the 55-type vocabulary, so the enum is a guarantee rather than a repair; all it can recover is the 3 unparsed rows' 10 gold mentions"
+    },
+    {
+      "ceiling_gain": 4.05,
+      "ceiling_gain_per_gpu_hour": 20.2,
+      "contacts": 1000,
+      "gpu_hours": 0.2,
+      "measured_not_ceiling": false,
+      "module": "intent narrowing applied to block selection (question 1a)",
+      "rung": 3,
+      "slu_f1_ceiling": 48.4,
+      "what_it_is": "a better predicted intent selects a better per-intent schema block; the coordinator reports a cell under the name KU-S4N as already GO, and THIS REPOSITORY CARRIES NO PREREGISTRATION OR OWNER RECORD UNDER THAT NAME, so this rung prices the mechanism and does not confirm its authorization",
+      "why_the_ceiling_is_an_oracle": "it assumes PERFECT intent AND that every one of the 51 newly-legal gold mentions is then filled exactly. Real intent narrowing tops out around 96.4 by MF-8's own candidate-recall ceiling, and the slot stage would still have to fill them"
+    },
+    {
+      "ceiling_gain": 13.71,
+      "ceiling_gain_per_gpu_hour": 68.5,
+      "contacts": 1000,
+      "gpu_hours": 0.2,
+      "measured_not_ceiling": false,
+      "module": "retrieved fillers, KU-S3 (question 4)",
+      "rung": 4,
+      "slu_f1_ceiling": 58.06,
+      "what_it_is": "the row's own SPEECH vector retrieves the top-5 TRAIN utterances and their slot fillers are supplied as typed content; already preregistered and flyable",
+      "why_the_ceiling_is_an_oracle": "the arm keeps every mention it already made AND emits every gold value the retrieval supplied; a real consumption cell has to find them"
+    },
+    {
+      "availability": {
+        "pairs": 919,
+        "pairs_at_threshold": {
+          ">=1": 879,
+          ">=3": 780,
+          ">=5": 667
+        },
+        "pairs_at_threshold_pct": {
+          ">=1": 95.65,
+          ">=3": 84.87,
+          ">=5": 72.58
+        },
+        "rows_where_every_gold_type_reaches": {
+          ">=1": 628,
+          ">=3": 534,
+          ">=5": 433
+        },
+        "rows_where_every_gold_type_reaches_pct": {
+          ">=1": 94.15,
+          ">=3": 80.06,
+          ">=5": 64.92
+        },
+        "rows_whose_speaker_is_absent_from_train": 0,
+        "rows_with_at_least_one_gold_entity": 667,
+        "unit": "one (DEV row, gold slot TYPE) pair; the count is TRAIN utterances by that row's own speaker carrying that slot type"
+      },
+      "contacts": 1000,
+      "gpu_hours": 0.2,
+      "measured_not_ceiling": false,
+      "module": "same-speaker slot exemplars (KU-S4 applied to slots)",
+      "note": "no scoring ceiling is claimed: this is a SUPPLY channel, and this audit measures only whether the supply exists",
+      "rung": 5,
+      "slu_f1_ceiling": null,
+      "what_it_is": "the same-speaker exemplar supply MF-8 priced for intent, pointed at the slot stage"
+    },
+    {
+      "ceiling_gain": 28.52,
+      "ceiling_gain_per_gpu_hour": 199.4,
+      "contacts": 714,
+      "flagged_rows": {
+        "any": 714,
+        "schema_violating": 86,
+        "silent": 394,
+        "value_suspect": 293
+      },
+      "gpu_hours": 0.143,
+      "measured_not_ceiling": false,
+      "module": "targeted slot re-ask on judge-flagged rows (Observer selective listening)",
+      "note": "the ceiling assumes every re-asked row then answers every missed gold mention exactly, which nothing does. It is here to say which judge points at the most gold per contact, not to promise a number",
+      "per_judge_ceiling": {
+        "any": {
+          "ceiling_gain_per_gpu_hour": 199.4,
+          "gpu_hours": 0.143,
+          "precision_pct": 46.78,
+          "rows": 714,
+          "slu_f1_ceiling": 72.87,
+          "unmatched_gold_mentions": 428
+        },
+        "schema_violating": {
+          "ceiling_gain_per_gpu_hour": 403.5,
+          "gpu_hours": 0.017,
+          "precision_pct": 72.09,
+          "rows": 86,
+          "slu_f1_ceiling": 51.21,
+          "unmatched_gold_mentions": 88
+        },
+        "silent": {
+          "ceiling_gain_per_gpu_hour": 178.5,
+          "gpu_hours": 0.079,
+          "precision_pct": 39.34,
+          "rows": 394,
+          "slu_f1_ceiling": 58.45,
+          "unmatched_gold_mentions": 190
+        },
+        "value_suspect": {
+          "ceiling_gain_per_gpu_hour": 269.5,
+          "gpu_hours": 0.059,
+          "precision_pct": 56.31,
+          "rows": 293,
+          "slu_f1_ceiling": 60.25,
+          "unmatched_gold_mentions": 217
+        }
+      },
+      "rung": 6,
+      "slu_f1_ceiling": 72.87,
+      "unmatched_gold_mentions_on_flagged_rows": {
+        "any": 428,
+        "schema_violating": 88,
+        "silent": 190,
+        "value_suspect": 217
+      },
+      "unmatched_gold_mentions_total": 527,
+      "what_it_is": "one EXTRA contact on flagged rows only; the judges are question 3's schema judge, question 2's value judge, and the free silent-row judge"
+    }
+  ],
+  "schema": "saea-slurp-mf9-improvement-ladder-v1",
+  "sources": {
+    "loss_decomposition": "loss-decomposition.json",
+    "schema_conformance": "schema-conformance.json",
+    "umbrella_lock": "/mnt/d/chao_workspace/docs/datasets.lock.json",
+    "value_headroom": "value-headroom.json",
+    "value_projection": "value-projection.json"
+  },
+  "status": "PRICED, NOT PREREGISTERED. No cell below is admitted, promoted or registered; no owner decision is anticipated and nothing here is flyable on the strength of this note"
+}
