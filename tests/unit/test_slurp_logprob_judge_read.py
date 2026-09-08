@@ -247,6 +247,43 @@ def test_precision_and_recall_are_percentages_of_the_right_denominators():
     }
 
 
+def test_the_bootstrap_precision_keeps_the_resampling_multiplicity():
+    """``resampled_statistic`` hands its statistic a sequence in which ids
+    REPEAT. Collapsing to a set would throw the resampling away and narrow the
+    CI, so a row drawn twice must count twice."""
+
+    scores = {"a": 5.0, "b": 4.0, "c": 1.0, "d": 0.0}
+    errors = {"a": True, "b": False, "c": False, "d": False}
+    # The full population, budget 2: "a" and "b", one of which is an error.
+    assert READ.precision_at_budget_over_sequence(
+        ["a", "b", "c", "d"], scores=scores, errors=errors, budget=2, population=4
+    ) == pytest.approx(50.0)
+    # A replicate that draws "b" four times: the budget rescales to 2 of 4 and
+    # both drawn entries are the same non-error row -- 0 %, not 50 %.
+    assert READ.precision_at_budget_over_sequence(
+        ["b", "b", "b", "b"], scores=scores, errors=errors, budget=2, population=4
+    ) == pytest.approx(0.0)
+    # A replicate that draws the error row twice: both top entries are "a".
+    assert READ.precision_at_budget_over_sequence(
+        ["a", "a", "c", "d"], scores=scores, errors=errors, budget=2, population=4
+    ) == pytest.approx(100.0)
+
+
+def test_the_bootstrap_precision_rescales_the_budget_and_never_returns_nothing():
+    scores = {"a": 5.0, "b": 4.0}
+    errors = {"a": True, "b": True}
+    # A one-row replicate against a 1,000-row population still flags one row.
+    assert READ.precision_at_budget_over_sequence(
+        ["b"], scores=scores, errors=errors, budget=86, population=1000
+    ) == pytest.approx(100.0)
+    assert (
+        READ.precision_at_budget_over_sequence(
+            [], scores=scores, errors=errors, budget=86, population=1000
+        )
+        == 0.0
+    )
+
+
 def test_the_curve_walks_every_distinct_threshold_monotonically():
     scores = {"a": 3.0, "b": 2.0, "c": 2.0, "d": 1.0}
     errors = {"a": True, "b": False, "c": True, "d": False}

@@ -275,7 +275,7 @@ re-registration, per the standing rule; a second failure stops the flight.
 ## 6. The read script, written and tested before the flight
 
 `scripts/slurp_logprob_judge_read.py`, unit-tested on **synthetic traces** in
-`tests/unit/test_slurp_logprob_judge_read.py` (38 tests): the token-stream alignment (the intent
+`tests/unit/test_slurp_logprob_judge_read.py` (40 tests): the token-stream alignment (the intent
 statistics point at the scenario/action value characters and no others), the margin (top-1 minus
 top-2, and `None` when k < 2), AUROC (perfect, inverted, all-ties, one tie straddling the boundary
 at 0.875, an empty class), the flag budget (the least-confident rows, boundary ties included, a

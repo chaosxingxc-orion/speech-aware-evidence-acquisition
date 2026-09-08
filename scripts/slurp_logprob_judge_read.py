@@ -464,6 +464,42 @@ def precision_recall(
     }
 
 
+def precision_at_budget_over_sequence(
+    ids: Sequence[str],
+    *,
+    scores: Mapping[str, float],
+    errors: Mapping[str, bool],
+    budget: int,
+    population: int,
+) -> float:
+    """Precision at the flag budget over a RESAMPLED id sequence.
+
+    ``analysis.paired.resampled_statistic`` hands its statistic a sequence in
+    which ids REPEAT -- a cluster drawn twice contributes its members twice --
+    and its own docstring says a statistic must therefore work over the
+    sequence rather than over ``set(ids)``. Collapsing to a set here would
+    silently throw the resampling away and produce a CI that is too narrow, so
+    every step below keeps the multiplicity: the ranking, the budget, the
+    threshold and the precision.
+
+    The budget is RESCALED to the replicate's own size, so a replicate that
+    draws fewer rows flags proportionally fewer of them. Boundary ties are
+    included, exactly as in :func:`flag_at_budget`.
+    """
+
+    scored = sorted(
+        ((scores[sample_id], sample_id) for sample_id in ids),
+        key=lambda item: (-item[0], item[1]),
+    )
+    if not scored or population <= 0:
+        return 0.0
+    scaled = min(max(1, round(budget * len(scored) / population)), len(scored))
+    threshold = scored[scaled - 1][0]
+    drawn = [sample_id for value, sample_id in scored if value >= threshold]
+    hits = sum(1 for sample_id in drawn if errors.get(sample_id, False))
+    return 100.0 * hits / len(drawn)
+
+
 def precision_recall_curve(
     scores: Mapping[str, float], errors: Mapping[str, bool]
 ) -> list[dict[str, float | int]]:
@@ -680,18 +716,19 @@ def analyse(
     # -- the verdict ---------------------------------------------------------
     intent_auroc = document["auroc"]["intent_error"].get(primary, {})
 
+    intent_errors = {
+        sample_id: bool(rows[sample_id]["labels"]["intent_error"])
+        for sample_id in sample_ids
+    }
+
     def precision_over(ids: Sequence[str]) -> float:
-        subset = {sample_id: flag_score[sample_id] for sample_id in set(ids)}
-        if not subset:
-            return 0.0
-        drawn, _ = flag_at_budget(
-            subset, max(1, round(flag_budget * len(subset) / max(len(flag_score), 1)))
+        return precision_at_budget_over_sequence(
+            ids,
+            scores=flag_score,
+            errors=intent_errors,
+            budget=flag_budget,
+            population=len(flag_score),
         )
-        errors = {
-            sample_id: bool(rows[sample_id]["labels"]["intent_error"])
-            for sample_id in subset
-        }
-        return float(precision_recall(drawn, errors)["precision"])
 
     precision_boot = resampled_statistic(
         sample_ids=usable,
