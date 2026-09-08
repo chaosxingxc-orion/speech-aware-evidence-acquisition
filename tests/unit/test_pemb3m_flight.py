@@ -205,6 +205,27 @@ def test_assert_binding_config_sha256_refuses_a_drifted_lock():
         f.assert_binding_config_sha256(drifted)
 
 
+def test_binding_config_sha256_at_flight_matches_the_sealed_pemb3m_receipt():
+    """The 2026-09-08 re-pin (umbrella commit faebc8f, owner Decision 11-D)
+    changes the LIVE ``BINDING_CONFIG_SHA256`` because the umbrella lock's
+    own ``lco-embedding-omni-3b-gguf`` entry was resolved from an unresolved
+    local candidate to a real HF source -- it does not touch, and cannot
+    touch, the already-sealed 2026-08-20 P-EMB-3M flight's own evidence.
+    Read the sealed receipt directly (never recomputed) so a future edit to
+    ``BINDING_CONFIG_SHA256_AT_FLIGHT`` that drifted from what was actually
+    sealed would be caught here, not discovered by an auditor."""
+    receipt_path = (
+        REPO_ROOT
+        / "docs"
+        / "checks"
+        / "speech-aware-evidence-acquisition"
+        / "2026-08-20-pemb3m-flight"
+        / "flight-receipt.json"
+    )
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert receipt["binding_config_sha256"] == f.BINDING_CONFIG_SHA256_AT_FLIGHT
+
+
 def test_build_binding_config_document_covers_every_arm_and_the_t0_pin():
     document = f.build_binding_config_document(_synthetic_lock())
     assert document["split_identity_hash"] == f.EXPECTED_SPLIT_IDENTITY_HASH
