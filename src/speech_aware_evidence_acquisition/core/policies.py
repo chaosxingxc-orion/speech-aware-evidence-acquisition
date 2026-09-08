@@ -661,3 +661,19 @@ from .repair_alignment import (  # noqa: E402
 RESPONSE_POSTPROCESSORS.register(
     E21_ENTITY_REPAIR_SUBSTITUTIONS_V1, entity_repair_substitutions_v1
 )
+
+# obs-repair-loop (KC-E1f second-pass entity repair, 2026-09-07): the same
+# fixed 90-second tiling as obs-agent-loop, one contact per window, but each
+# request carries that window's SEALED pass-1 hypothesis and what the run
+# stitches is the substitution-only delivery core.repair_alignment computes --
+# so a pass that repairs names cannot delete or insert a word. It subclasses
+# ObsAgentLoopPolicy and overrides ONE method (_window_hook); registers here
+# for the same reason obs-agent-loop, obs-agent-loop-ojw and obs-replay-loop
+# do -- this module is the one policy-registration site run_experiment
+# resolves names through.
+from ..reproduction.repair_loop import (  # noqa: E402
+    OBS_REPAIR_LOOP_POLICY_NAME,
+    ObsRepairLoopPolicy,
+)
+
+POLICIES.register(OBS_REPAIR_LOOP_POLICY_NAME, ObsRepairLoopPolicy())

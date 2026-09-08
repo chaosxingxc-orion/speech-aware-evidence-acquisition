@@ -194,20 +194,27 @@ class RepairOutcome:
     def trace_view(self) -> dict[str, object]:
         """The audit block a policy puts in its per-window OBS record.
 
+        Every key carries the ``obs_`` prefix because
+        ``contracts.boundary.TraceRecord`` refuses an OBS payload key without
+        it -- the OBS / ORG / SUPPLY / USE namespaces are disjoint by contract,
+        and a delivery decision made about an observation belongs to OBS.
+
         Deliberately carries no surface forms: the delivered TEXT is already
-        traced once by the policy, and a second copy of every repaired name
-        in a different record would make two authorities for one byte.
+        traced once by the policy, and a second copy of every repaired name in
+        a different record would make two authorities for one byte.
         """
 
         return {
-            "repair_refused": self.refused,
-            "repair_refusal_reason": self.refusal_reason,
-            "repair_substitutions": len(self.substitutions),
-            "repair_substituted_tokens": self.substituted_tokens,
-            "repair_predecessor_tokens": self.predecessor_tokens,
-            "repair_response_tokens": self.response_tokens,
-            "repair_anchor_tokens": self.anchor_tokens,
-            "repair_rejected": {name: int(self.rejected.get(name, 0)) for name in REJECTION_CLASSES},
+            "obs_repair_refused": self.refused,
+            "obs_repair_refusal_reason": self.refusal_reason,
+            "obs_repair_substitutions": len(self.substitutions),
+            "obs_repair_substituted_tokens": self.substituted_tokens,
+            "obs_repair_predecessor_tokens": self.predecessor_tokens,
+            "obs_repair_response_tokens": self.response_tokens,
+            "obs_repair_anchor_tokens": self.anchor_tokens,
+            "obs_repair_rejected": {
+                name: int(self.rejected.get(name, 0)) for name in REJECTION_CLASSES
+            },
         }
 
 

@@ -270,5 +270,5 @@ class TestSummary:
         outcome = accept_entity_repair(PASS1, PASS1.replace("Ponton", "Pontone"))
         view = outcome.trace_view()
         assert "Pontone" not in repr(view)
-        assert view["repair_substitutions"] == 1
-        assert view["repair_refused"] is False
+        assert view["obs_repair_substitutions"] == 1
+        assert view["obs_repair_refused"] is False
