@@ -697,12 +697,14 @@ POLICIES.register(OBS_REPAIR_LOOP_POLICY_NAME, ObsRepairLoopPolicy())
 # and declaring criticism_only=True -- a judge scores and flags and never
 # proposes a revision (owner Decision 11-C).
 from .judges import (  # noqa: E402
+    E21_BRIEF_NAME_NEAR_MISS_JUDGE_V1,
     E21_SUBSTITUTION_ALIGNMENT_JUDGE_V1,
     EARNINGS_NUMERIC_FORMAT_JUDGE_V1,
     REPLAY_LOGPROB_JUDGE_V1,
     ROSTER_BAND_JUDGE_V1,
     SLURP_LEGAL_LABEL_JUDGE_V1,
     SLURP_SLOT_SCHEMA_JUDGE_V1,
+    BriefNameNearMissJudge,
     EarningsNumericFormatJudge,
     ReplayLogprobJudge,
     RosterBandJudge,
@@ -717,3 +719,8 @@ JUDGES.register(EARNINGS_NUMERIC_FORMAT_JUDGE_V1, EarningsNumericFormatJudge())
 JUDGES.register(E21_SUBSTITUTION_ALIGNMENT_JUDGE_V1, SubstitutionAlignmentJudge())
 JUDGES.register(REPLAY_LOGPROB_JUDGE_V1, ReplayLogprobJudge())
 JUDGES.register(ROSTER_BAND_JUDGE_V1, RosterBandJudge())
+
+# e21-brief-name-near-miss-v1 (E21-LOOP-1, 2026-09-08): the design note's
+# "brief-name near-miss detector", the one judge in that table that had no
+# implementation. Registered here for the same reason the six above are.
+JUDGES.register(E21_BRIEF_NAME_NEAR_MISS_JUDGE_V1, BriefNameNearMissJudge())
