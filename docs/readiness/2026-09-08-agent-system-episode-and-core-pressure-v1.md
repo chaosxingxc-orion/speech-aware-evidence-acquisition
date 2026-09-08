@@ -49,6 +49,31 @@ Every carrier runs the same loop; what differs per carrier lives in three mode t
 | knowledge views | class lists / brief; TRAIN slot schema per intent; KB facets; slot fillers; the derived-candidates bank | same-speaker exemplar index (MF-8); device inventory and legal-intent state; speaker roles from diarization + brief |
 | judges | legal-label projection; schema conformance; substitution-only delivery rule; numeric-format checks | brief-name near-miss detector; decode-confidence signals from the sealed trace; acoustic re-check through a pinned embedder; the core-as-critic phase (after owner confirmation) |
 
+**2026-09-08, WAVE W4 (owner Decision 11-B change #6): the three mode tables are FOUR CONFIG TABLES with a
+null arm, and a fourth table joins them.** Above, a "mode table" is prose. In config it is now `observe`
+(per phase: silence tail, speaker-turn unit plan, selective re-listen with its margin, budget, derivation
+kind and flag source), `knowledge_views` (per phase: the `phase_material` entry whose `state_fill` IS the
+view, and the `phase_supply` entry that IS the retrieval provider), `judges` (per phase: W1's `phase_review`
+entry), and — new, from W3's catalog — `toolkits` (which task-type toolkit row is armed, for which agent
+roles). `knowledge_views` and `judges` WRAP the blocks E1/E6/W1 already ship without changing a byte of
+them and delegate to their existing loaders; a fragment declares the flat block or the table, never both.
+The knowledge table is spelled `knowledge_views`, not `knowledge`, because `knowledge` is already a
+top-level object in `configs/experiment/a2t-g3-plain-english-v1.json` and `core.config.compose` refuses a
+key two fragments define.
+
+Every table has a **null arm**, and the null arm composes to the SAME config hash as the table being absent
+(`core.config.drop_null_arms`; `"observe": null`, `"observe": {}` and no `observe` key are one cell
+identity, not three). That is what makes section 8's "module ON versus module OFF in the same harness, one
+config key, never a second code path" true rather than aspirational: the OFF arm is a twin of the pre-table
+baseline instead of a third cell. Six of the seven modules the implementation assessment tabulated now move
+exactly one key, proved by composing both arms and diffing the flattened config
+(`tests/unit/test_config_table_module_switches.py`). The seventh, the `obs-repair-loop` window hook, still
+has no config key at all and stays outside until the E21 obs path moves onto `FlightRuntime` (assessment
+changes #8/#9). Two corrections this wave owes the assessment: the substitution-only repair rule belongs in
+`judges` (Decision 11-C splits it — the alignment rule that refuses illegal edits is the judge, the delivery
+is a Solver constraint), and the retrieval provider needs NO `PhaseSpec.knowledge: "optional"` relaxation,
+because `"supplied"` already means the phase MAY be supplied and one program id already carries both arms.
+
 Read against the sealed record: KC-E1f is this loop with the Reviewer and the selective re-listen switched off
 (Plan fixed, Observe = fixed windows, Solve = sealed draft then constrained revise). KC-S1b is a two-stage Solve.
 OBS-E1 is an observe mode. The E22 encoding fix and the tails are observe-mode standardization. The first cell
@@ -207,6 +232,15 @@ carries a per-carrier admission receipt before it may enter the default plan:
 - modules are admitted one at a time; a combined plan is tested at scale only after every module in it holds a
   receipt; the admission table is a living receipt (`docs/receipts/harness-admission.json`) mirrored as a row on
   the umbrella page.
+
+**2026-09-08, WAVE W4: three of these bullets are now enforced rather than written down.** The receipt is at
+schema `saea-harness-admission-v2`: every entry names the config table and the key that switch its module,
+and `default_plans` names the plans a module may enter. `scripts/checks/harness_admission_check.py`
+(model-free) refuses a switch whose key resolves in no table or whose OFF arm is not that table's null arm,
+refuses an ADMITTED or NEUTRAL module that reaches no default plan for its own carrier, and refuses a
+HARMFUL module — or one whose provisional obligation is still UNMET — armed in any plan. `default_plans` is
+empty today: the one decided module is ADMITTED provisionally with its replication UNMET, and its own
+verdict note barred it from the default plan until a second independent pass.
 
 **First entries, from the sealed record (2026-09-08):**
 
