@@ -3,8 +3,8 @@
   "schema": "saea-e21-obs-e1-speaker-turn-units-experiment-v1",
   "date": "2026-09-07",
   "execution_profile": "bounded-discovery-probe",
-  "status": "DRAFT — NOT AUTHORIZED, AND NOT COMPOSABLE UNTIL THE OBS SEAM LANDS",
-  "does_not_compose_yet": "The baseline fragment this cell names carries obs_unit_plan, obs_unit_plan_sha256 and obs_slice_tail_silence_seconds, and reproduction.obs_loop.ObsLoopConfig.from_values rejects every unknown obs_ key fail-closed. So this cell REFUSES to compose on today's tree, by design. The seam is specified in docs/readiness/2026-09-07-e21-obs-speaker-turn-units-v1-preregistration.md section 8 and is implemented after wt/ts2y's tail knob merges, because the cutter calls its encoder. This file is committed now only so the composition is reviewable before the seam is written; it is a launch record, never a permission.",
+  "status": "PREREGISTERED AND COMPOSABLE — NOT AUTHORIZED TO FLY",
+  "seam_landed": "2026-09-08. The obs seam of section 8 of the preregistration landed: obs_unit_plan and obs_unit_plan_sha256 are known keys on the registered obs-agent-loop policy, the cutter consumes the hash-pinned plan's speaker-turn units at both of its cut sites, and every refusal of section 8.2 fires fail-closed before a window is cut. The composition, the composed hashes, the contact-free request half and the payload-binding stage are recorded in docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-obs-e1-seam/ under the model-free exposure row SAEA-E21-MF-OBS-E1-SEAM-V1 (zero model contacts). This file remains a launch record, never a permission.",
   "purpose": "Owner thesis, 2026-09-07: cut the speech by SPEAKER first, then understand per speaker. The sealed full-44 direct baseline transports each call as ceil(D/90) fixed 90-second windows, and the cross-carrier silence-tail preregistration measured what that costs: 1,043 of the 1,593 windows (65.5 %) end on an ACTIVE frame and 1,088 of the 1,549 interior ones (70.2 %) end within 20 ms of active speech, while only 645 (40.5 %) carry exactly one speaker. This cell replaces the transport unit -- and nothing else -- with the hash-pinned speaker-turn unit plan, whose 5,288 units end mid-speech 11.7 % of the time and carry exactly one speaker 76.1 % of the time. Preregistration: docs/readiness/2026-09-07-e21-obs-speaker-turn-units-v1-preregistration.md.",
   "population": {
     "carrier": "earnings21-original",
@@ -132,8 +132,8 @@
     "ceilings_live_in_the_exposure_row": "contracts.ExecutionPlan carries no ceiling field; the registered ceilings are the exposure-ledger row's calls / speech audio seconds / gpu hours cells, which the gate requires to be at least these planned values."
   },
   "preconditions": [
-    "the obs seam of the preregistration's section 8, implemented AFTER wt/ts2y's tail knob merges, with its own byte-level falsifier passing",
-    "a 4-row dry run of the composed cell",
+    "CLOSED 2026-09-08: the obs seam of the preregistration's section 8, implemented after wt/ts2y's tail knob merged, with its own byte-level falsifier passing (tests/unit/test_obs_unit_plan.py, and the receipt named in composes_since)",
+    "CLOSED 2026-09-08: a 4-row dry run of the composed cell, contact-free, in that same receipt",
     "this cell's own exposure row, registered and committed with consumed = no before the first contact",
     "the owner's GO"
   ],
