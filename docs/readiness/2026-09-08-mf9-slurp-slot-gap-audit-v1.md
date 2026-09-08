@@ -418,3 +418,107 @@ or the server**.
 **Neither is a headline module.** The structural one is worth turning on because it is one key and
 removes a failure mode; the per-intent one is measured here so that nobody builds it on the
 assumption that it would help.
+
+---
+
+## 4. Knowledge headroom for values
+
+Receipt: `value-headroom.json`. Identity anchor, fail-closed and passed: MF-7b's own filler
+recall@5 for the sealed speech key reproduces from the KU-S3 floats at **43.46 (NEW500)** and
+**41.90 (pooled)**, and OLD500 at 40.21 — the numbers that audit published, from vectors this read
+re-read and never recomputed.
+
+**One structural fact first, because everything else in this section turns on it: 333 of the
+1,000 DEV rows carry no gold slot at all.** The 950 gold mentions live on 667 rows. A third of this
+roster is a *correct silence*, and any mechanism that pushes the slot layer to answer more has to
+be told where not to.
+
+### 4.1 Does TRAIN already carry the value? Mostly yes — and not where you would guess
+
+| population | gold mentions | verbatim in the TRAIN filler set **of the same type** | share |
+|---|---|---|---|
+| all | 950 | **724** | **76.21 %** |
+| MF-8 **standing-state** types (35) | 577 | 417 | 72.27 % |
+| MF-8 **utterance-local** types (20) | 373 | 307 | **82.31 %** |
+
+**The partition inverts.** MF-8 called `date`, `time`, `event_name` and `definition_word`
+"utterance-local — what the utterance says, not what the assistant has", and warned that putting
+them in a state block would be supplying the answer's own material. Measured against DEV gold, they
+are the types TRAIN covers *best*: SLURP's dates and times are a small, closed, spoken vocabulary
+(`tomorrow`, `friday`, `nine am`), while `place_name` and `person` are open proper nouns
+(482 and 468 TRAIN surface forms and still only 75.4 % and 57.1 % coverage). The correct reading is
+not that a state block should supply dates; it is that **"utterance-local" is a statement about
+provenance, not about vocabulary size**, and the two must not be conflated when a supply block is
+designed.
+
+Per type, ranked by gold mass. `verb%` is the verbatim share, `retr%` the share the KU-S3 top-5
+already puts in front of the model, and the last two columns are same-speaker exemplar
+availability.
+
+| entity type | MF-8 partition | gold | distinct | verbatim | verb% | TRAIN forms | retrieved | retr% | spk>=1 | spk>=5 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `date` | utterance-local | 159 | 55 | 144 | **90.6** | 289 | 80 | 50.3 | 100.0 | 99.3 |
+| `place_name` | standing | 118 | 89 | 89 | 75.4 | 482 | 35 | 29.7 | 100.0 | 96.3 |
+| `media_type` | standing | 70 | 23 | 61 | 87.1 | 91 | 39 | 55.7 | 100.0 | 85.3 |
+| `time` | utterance-local | 67 | 47 | 55 | 82.1 | 237 | 12 | **17.9** | 98.5 | 92.3 |
+| `person` | standing | 56 | 54 | 32 | **57.1** | 468 | 14 | 25.0 | 100.0 | 100.0 |
+| `food_type` | standing | 42 | 31 | 28 | 66.7 | 156 | 20 | 47.6 | 97.5 | 62.5 |
+| `event_name` | utterance-local | 42 | 26 | 29 | 69.0 | 351 | 14 | 33.3 | 100.0 | 100.0 |
+| `business_name` | standing | 36 | 31 | 24 | 66.7 | 213 | 11 | 30.6 | 94.4 | 83.3 |
+| `transport_type` | standing | 31 | 3 | 31 | **100.0** | 10 | 30 | **96.8** | 96.8 | 71.0 |
+| `business_type` | standing | 28 | 18 | 22 | 78.6 | 63 | 13 | 46.4 | 96.4 | 42.9 |
+| `weather_descriptor` | standing | 27 | 14 | 27 | **100.0** | 104 | 22 | 81.5 | 100.0 | 66.7 |
+| `news_topic` | standing | 27 | 24 | 11 | **40.7** | 122 | 5 | 18.5 | 92.6 | 22.2 |
+| `timeofday` | utterance-local | 22 | 4 | 22 | **100.0** | 11 | 7 | 31.8 | 100.0 | 40.9 |
+| `device_type` | standing | 22 | 13 | 21 | 95.5 | 75 | 13 | 59.1 | 95.5 | 50.0 |
+| `list_name` | standing | 19 | 15 | 9 | 47.4 | 79 | 7 | 36.8 | 94.7 | 63.2 |
+| `order_type` | utterance-local | 18 | 6 | 18 | **100.0** | 18 | 11 | 61.1 | 94.4 | 5.6 |
+| `relation` | utterance-local | 14 | 10 | 13 | 92.9 | 81 | 8 | 57.1 | 92.9 | 57.1 |
+| `definition_word` | utterance-local | 14 | 14 | 2 | **14.3** | 179 | 2 | 14.3 | 92.9 | 35.7 |
+| `song_name` | standing | 7 | 7 | 0 | **0.0** | 103 | 0 | 0.0 | 57.1 | 42.9 |
+
+Read the two extremes together and the design decision writes itself. `transport_type`,
+`weather_descriptor`, `timeofday` and `order_type` are **closed vocabularies TRAIN carries whole**
+— for these a supply block is an enumeration, and section 1.3 shows `transport_type` losing 20 of
+its 31 gold mentions to pure non-answering. `person`, `news_topic`, `definition_word` and
+`song_name` are **open** — for these no amount of TRAIN filler supply helps, because the value was
+never seen.
+
+### 4.2 What the KU-S3 retrieved top-5 could reach
+
+The sealed `q-speech-nemotron` query vector against the 11,514 TRAIN content facets, k = 5 — the
+exact artifact KU-S3 is registered to consume.
+
+* **390 of 950** gold mentions (41.1 %) appear as a `(type, filler)` pair inside the retrieved
+  union.
+* Filler recall@5 per row: **41.90** pooled, **43.46** NEW500.
+* **Oracle ceiling: SLU-F1 58.06** (entities strict 53.46, Word-F1 54.74, Char-F1 61.81), adding
+  246 mentions the arm did not already carry.
+
+**That ceiling is generous and must be read as such**: it lets the arm keep every mention it
+already made *and* emit every gold value the retrieval supplied, which is a perfect reader of the
+supplied block. No consumption cell reaches it. What it does say is that **retrieval is the only
+priced module whose ceiling is in the fifties**, because it is the only one aimed at the category
+carrying 45 % of the loss.
+
+Per type, retrieval is strong exactly where the vocabulary is closed (`transport_type` 96.8 %,
+`weather_descriptor` 81.5 %) and weak where it is open (`definition_word` 14.3 %, `song_name`
+0.0 %) — the same split as 4.1, which is a consistency check rather than a coincidence: a retriever
+can only supply what TRAIN contains.
+
+### 4.3 Same-speaker slot exemplars
+
+The unit is one **(DEV row, gold slot type)** pair, and the count is TRAIN utterances **by that
+row's own speaker** carrying that slot type. 919 pairs over the 667 rows that have gold.
+
+| threshold | pairs | share | rows where **every** gold type reaches it | share |
+|---|---|---|---|---|
+| >= 1 | 879 | **95.65 %** | 628 | **94.15 %** |
+| >= 3 | 780 | 84.87 % | 534 | 80.06 % |
+| >= 5 | 667 | 72.58 % | 433 | 64.92 % |
+
+**Zero rows have a speaker absent from TRAIN**, and the supply is nearly total at the >= 1
+threshold. MF-8 found the same-speaker *intent* supply anti-correlated with demand; on the **slot**
+side it is not — the thin types are `order_type` (5.6 % at >= 5), `music_genre` (8.3 %) and
+`news_topic` (22.2 %), none of them a large share of the loss. If the KU-S4 family is ever pointed
+at slots, availability is not what would bind it.
