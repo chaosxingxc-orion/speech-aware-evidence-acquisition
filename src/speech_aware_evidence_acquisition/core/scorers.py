@@ -700,6 +700,7 @@ from ..reproduction.slurp_official_eval import (  # noqa: E402
     score_slurp_outputs_official_projected_v2,
     score_slurp_outputs_official_projected_v2_train,
     score_slurp_outputs_official_train,
+    score_slurp_outputs_slu_normalized,
 )
 
 SCORERS.register("slurp-slu", score_slurp_outputs_official)
@@ -774,6 +775,34 @@ SCORERS.register(
     "slurp-slu-official-projected-v2-train",
     score_slurp_outputs_official_projected_v2_train,
 )
+
+
+# ---------------------------------------------------------------------------
+# The NORMALIZED SLU scorer (MF-10, readiness note
+# docs/readiness/2026-09-08-mf10-slot-vocabulary-cards-and-normalized-slu-v1.md):
+# the Whisper-normalizer analogue for slot VALUES.
+#
+# It is registered here for exactly the reason ``asr-wer-whisper`` is
+# registered beside ``asr-wer`` one block below, and with exactly the same
+# standing: an ADDITIONAL, field-convention number reported SIDE BY SIDE with
+# the primary, never a replacement for it. The paper-facing SLURP number stays
+# the official ``evaluate.py`` one -- and this scorer proves that on every
+# call, because it RUNS the official subprocess on the raw inputs first,
+# reports its numbers unchanged, refuses to compute anything if the port
+# disagrees with them, and only then adds a ``normalized`` block computed with
+# ``reproduction.slurp_slot_normalizer`` applied SYMMETRICALLY to the gold and
+# the predicted filler.
+#
+# Symmetry is what makes it a metric rather than a mechanism: an arm cannot
+# gain under it by writing its answers differently from the corpus, only by
+# saying the same thing the corpus says. The one rung with a corpus dependency
+# (the leading-token strip) is learned from TRAIN fillers alone.
+#
+# Not in ``REFERENCE_READING_SCORERS``: like every ``slurp-slu*`` id, its gold
+# comes from ``data.slurp``, never from ``data.references``.
+# ---------------------------------------------------------------------------
+
+SCORERS.register("slurp-slu-f1-normalized-v1", score_slurp_outputs_slu_normalized)
 
 
 # ---------------------------------------------------------------------------

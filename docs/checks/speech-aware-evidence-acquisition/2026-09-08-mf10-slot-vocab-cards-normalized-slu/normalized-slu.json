@@ -1,0 +1,2983 @@
+{
+  "arms": {
+    "comparator": {
+      "normalized": {
+        "char_f1": 38.49,
+        "entities_strict": 24.98,
+        "slu_f1": 36.43,
+        "word_f1": 34.58
+      },
+      "normalized_minus_official": {
+        "char_f1": 0.29,
+        "entities_strict": 3.07,
+        "slu_f1": 0.63,
+        "word_f1": 0.89
+      },
+      "official": {
+        "action": 73.9,
+        "char_f1": 38.2,
+        "entities_strict": 21.91,
+        "identity_check_passed": true,
+        "intent": 71.4,
+        "samples": 1000,
+        "scenario": 81.0,
+        "slu_f1": 35.8,
+        "unparsed": 3,
+        "word_f1": 33.69
+      },
+      "per_rule": {
+        "R0-case-whitespace": {
+          "char_f1": 38.31,
+          "entities_strict": 23.11,
+          "slu_f1": 36.03,
+          "word_f1": 34.01
+        },
+        "R0-case-whitespace+R1-whisper-english": {
+          "char_f1": 38.35,
+          "entities_strict": 23.25,
+          "slu_f1": 36.02,
+          "word_f1": 33.96
+        },
+        "R0-case-whitespace+R1-whisper-english+R2-meridiem-join": {
+          "char_f1": 38.45,
+          "entities_strict": 24.58,
+          "slu_f1": 36.37,
+          "word_f1": 34.5
+        },
+        "R0-case-whitespace+R1-whisper-english+R2-meridiem-join+R3-train-leading-preposition": {
+          "char_f1": 38.49,
+          "entities_strict": 24.98,
+          "slu_f1": 36.43,
+          "word_f1": 34.58
+        }
+      }
+    },
+    "kc_s1b": {
+      "normalized": {
+        "char_f1": 47.85,
+        "entities_strict": 34.44,
+        "slu_f1": 45.09,
+        "word_f1": 42.62
+      },
+      "normalized_minus_official": {
+        "char_f1": 0.34,
+        "entities_strict": 3.07,
+        "slu_f1": 0.74,
+        "word_f1": 1.04
+      },
+      "official": {
+        "action": 33.3,
+        "char_f1": 47.51,
+        "entities_strict": 31.37,
+        "identity_check_passed": true,
+        "intent": 32.1,
+        "samples": 1000,
+        "scenario": 36.0,
+        "slu_f1": 44.35,
+        "unparsed": 3,
+        "word_f1": 41.58
+      },
+      "per_rule": {
+        "R0-case-whitespace": {
+          "char_f1": 47.58,
+          "entities_strict": 32.23,
+          "slu_f1": 44.54,
+          "word_f1": 41.87
+        },
+        "R0-case-whitespace+R1-whisper-english": {
+          "char_f1": 47.66,
+          "entities_strict": 32.6,
+          "slu_f1": 44.54,
+          "word_f1": 41.8
+        },
+        "R0-case-whitespace+R1-whisper-english+R2-meridiem-join": {
+          "char_f1": 47.8,
+          "entities_strict": 34.07,
+          "slu_f1": 45.02,
+          "word_f1": 42.54
+        },
+        "R0-case-whitespace+R1-whisper-english+R2-meridiem-join+R3-train-leading-preposition": {
+          "char_f1": 47.85,
+          "entities_strict": 34.44,
+          "slu_f1": 45.09,
+          "word_f1": 42.62
+        }
+      }
+    },
+    "kc_s1b_value_projected": {
+      "normalized": {
+        "char_f1": 47.89,
+        "entities_strict": 35.29,
+        "slu_f1": 45.24,
+        "word_f1": 42.86
+      },
+      "normalized_minus_official": {
+        "char_f1": 0.15,
+        "entities_strict": 0.61,
+        "slu_f1": 0.15,
+        "word_f1": 0.15
+      },
+      "official": {
+        "action": 33.3,
+        "char_f1": 47.74,
+        "entities_strict": 34.68,
+        "identity_check_passed": true,
+        "intent": 32.1,
+        "samples": 1000,
+        "scenario": 36.0,
+        "slu_f1": 45.09,
+        "unparsed": 3,
+        "word_f1": 42.71
+      },
+      "per_rule": {
+        "R0-case-whitespace": {
+          "char_f1": 47.74,
+          "entities_strict": 34.68,
+          "slu_f1": 45.09,
+          "word_f1": 42.71
+        },
+        "R0-case-whitespace+R1-whisper-english": {
+          "char_f1": 47.83,
+          "entities_strict": 34.93,
+          "slu_f1": 45.05,
+          "word_f1": 42.58
+        },
+        "R0-case-whitespace+R1-whisper-english+R2-meridiem-join": {
+          "char_f1": 47.84,
+          "entities_strict": 34.93,
+          "slu_f1": 45.17,
+          "word_f1": 42.77
+        },
+        "R0-case-whitespace+R1-whisper-english+R2-meridiem-join+R3-train-leading-preposition": {
+          "char_f1": 47.89,
+          "entities_strict": 35.29,
+          "slu_f1": 45.24,
+          "word_f1": 42.86
+        }
+      }
+    }
+  },
+  "contacts": {
+    "audio_decode": 0,
+    "embedding": 0,
+    "gpu_hours": 0.0,
+    "model": 0,
+    "network": 0,
+    "note": "the only subprocess is the pinned official SLURP evaluate.py, which is the scorer and not a model; every token figure is the stated whitespace x 1.3 proxy and no tokenizer was called",
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "generated_at": "2026-09-08T15:18:26.018095+00:00",
+  "identity_anchors": {
+    "all_passed": true,
+    "comparator_official": {
+      "action": 73.9,
+      "char_f1": 38.2,
+      "entities_strict": 21.91,
+      "identity_check_passed": true,
+      "intent": 71.4,
+      "samples": 1000,
+      "scenario": 81.0,
+      "slu_f1": 35.8,
+      "unparsed": 3,
+      "word_f1": 33.69
+    },
+    "kc_s1b_official": {
+      "action": 33.3,
+      "char_f1": 47.51,
+      "entities_strict": 31.37,
+      "identity_check_passed": true,
+      "intent": 32.1,
+      "samples": 1000,
+      "scenario": 36.0,
+      "slu_f1": 44.35,
+      "unparsed": 3,
+      "word_f1": 41.58
+    },
+    "value_projected_official_slu_f1": 45.09
+  },
+  "normalized_loss_table": {
+    "loss_mass": 2060.898,
+    "per_entity_type": {
+      "alarm_type": {
+        "exact_matches": 1.0,
+        "gold_mentions": 2.0,
+        "missing": 1.0,
+        "missing_mass": 2.0,
+        "spurious": 16.0,
+        "spurious_mass": 32.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 34.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "app_name": {
+        "exact_matches": 0.0,
+        "gold_mentions": 2.0,
+        "missing": 1.0,
+        "missing_mass": 2.0,
+        "spurious": 0.0,
+        "spurious_mass": 0.0,
+        "surface_mass": 3.412,
+        "surface_pairs": 1.0,
+        "total_mass": 5.412,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "artist_name": {
+        "exact_matches": 7.0,
+        "gold_mentions": 14.0,
+        "missing": 3.0,
+        "missing_mass": 6.0,
+        "spurious": 2.0,
+        "spurious_mass": 4.0,
+        "surface_mass": 16.421,
+        "surface_pairs": 4.0,
+        "total_mass": 26.421,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "audiobook_author": {
+        "exact_matches": 0.0,
+        "gold_mentions": 1.0,
+        "missing": 1.0,
+        "missing_mass": 2.0,
+        "spurious": 0.0,
+        "spurious_mass": 0.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 2.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "audiobook_name": {
+        "exact_matches": 0.0,
+        "gold_mentions": 2.0,
+        "missing": 1.0,
+        "missing_mass": 2.0,
+        "spurious": 1.0,
+        "spurious_mass": 2.0,
+        "surface_mass": 9.444,
+        "surface_pairs": 1.0,
+        "total_mass": 13.444,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "business_name": {
+        "exact_matches": 6.0,
+        "gold_mentions": 36.0,
+        "missing": 20.0,
+        "missing_mass": 40.0,
+        "spurious": 5.0,
+        "spurious_mass": 10.0,
+        "surface_mass": 28.412,
+        "surface_pairs": 10.0,
+        "total_mass": 78.412,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "business_type": {
+        "exact_matches": 9.0,
+        "gold_mentions": 28.0,
+        "missing": 13.0,
+        "missing_mass": 26.0,
+        "spurious": 1.0,
+        "spurious_mass": 2.0,
+        "surface_mass": 17.214,
+        "surface_pairs": 6.0,
+        "total_mass": 45.214,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "change_amount": {
+        "exact_matches": 1.0,
+        "gold_mentions": 3.0,
+        "missing": 2.0,
+        "missing_mass": 4.0,
+        "spurious": 2.0,
+        "spurious_mass": 4.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 8.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "coffee_type": {
+        "exact_matches": 2.0,
+        "gold_mentions": 2.0,
+        "missing": 0.0,
+        "missing_mass": 0.0,
+        "spurious": 2.0,
+        "spurious_mass": 4.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 4.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "color_type": {
+        "exact_matches": 4.0,
+        "gold_mentions": 7.0,
+        "missing": 1.0,
+        "missing_mass": 2.0,
+        "spurious": 4.0,
+        "spurious_mass": 8.0,
+        "surface_mass": 8.894,
+        "surface_pairs": 2.0,
+        "total_mass": 18.894,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "cooking_type": {
+        "exact_matches": 1.0,
+        "gold_mentions": 2.0,
+        "missing": 0.0,
+        "missing_mass": 0.0,
+        "spurious": 4.0,
+        "spurious_mass": 8.0,
+        "surface_mass": 4.0,
+        "surface_pairs": 1.0,
+        "total_mass": 12.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "currency_name": {
+        "exact_matches": 3.0,
+        "gold_mentions": 8.0,
+        "missing": 1.0,
+        "missing_mass": 2.0,
+        "spurious": 1.0,
+        "spurious_mass": 2.0,
+        "surface_mass": 12.267,
+        "surface_pairs": 4.0,
+        "total_mass": 16.267,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "date": {
+        "exact_matches": 35.0,
+        "gold_mentions": 159.0,
+        "missing": 110.0,
+        "missing_mass": 220.0,
+        "spurious": 4.0,
+        "spurious_mass": 8.0,
+        "surface_mass": 16.973,
+        "surface_pairs": 8.0,
+        "total_mass": 268.973,
+        "type_swap_mass": 24.0,
+        "type_swaps": 6.0
+      },
+      "definition_word": {
+        "exact_matches": 9.0,
+        "gold_mentions": 14.0,
+        "missing": 2.0,
+        "missing_mass": 4.0,
+        "spurious": 5.0,
+        "spurious_mass": 10.0,
+        "surface_mass": 7.279,
+        "surface_pairs": 3.0,
+        "total_mass": 21.279,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "device_type": {
+        "exact_matches": 12.0,
+        "gold_mentions": 22.0,
+        "missing": 7.0,
+        "missing_mass": 14.0,
+        "spurious": 8.0,
+        "spurious_mass": 16.0,
+        "surface_mass": 8.133,
+        "surface_pairs": 2.0,
+        "total_mass": 42.133,
+        "type_swap_mass": 4.0,
+        "type_swaps": 1.0
+      },
+      "drink_type": {
+        "exact_matches": 1.0,
+        "gold_mentions": 2.0,
+        "missing": 0.0,
+        "missing_mass": 0.0,
+        "spurious": 0.0,
+        "spurious_mass": 0.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 4.0,
+        "type_swap_mass": 4.0,
+        "type_swaps": 1.0
+      },
+      "email_address": {
+        "exact_matches": 0.0,
+        "gold_mentions": 2.0,
+        "missing": 0.0,
+        "missing_mass": 0.0,
+        "spurious": 6.0,
+        "spurious_mass": 12.0,
+        "surface_mass": 2.553,
+        "surface_pairs": 2.0,
+        "total_mass": 14.553,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "email_folder": {
+        "exact_matches": 3.0,
+        "gold_mentions": 3.0,
+        "missing": 0.0,
+        "missing_mass": 0.0,
+        "spurious": 5.0,
+        "spurious_mass": 10.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 10.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "event_name": {
+        "exact_matches": 2.0,
+        "gold_mentions": 42.0,
+        "missing": 34.0,
+        "missing_mass": 68.0,
+        "spurious": 1.0,
+        "spurious_mass": 2.0,
+        "surface_mass": 19.532,
+        "surface_pairs": 6.0,
+        "total_mass": 89.532,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "food_type": {
+        "exact_matches": 13.0,
+        "gold_mentions": 42.0,
+        "missing": 18.0,
+        "missing_mass": 36.0,
+        "spurious": 6.0,
+        "spurious_mass": 12.0,
+        "surface_mass": 29.635,
+        "surface_pairs": 10.0,
+        "total_mass": 81.635,
+        "type_swap_mass": 4.0,
+        "type_swaps": 1.0
+      },
+      "game_name": {
+        "exact_matches": 5.0,
+        "gold_mentions": 6.0,
+        "missing": 0.0,
+        "missing_mass": 0.0,
+        "spurious": 1.0,
+        "spurious_mass": 2.0,
+        "surface_mass": 1.8,
+        "surface_pairs": 1.0,
+        "total_mass": 3.8,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "general_frequency": {
+        "exact_matches": 3.0,
+        "gold_mentions": 5.0,
+        "missing": 2.0,
+        "missing_mass": 4.0,
+        "spurious": 1.0,
+        "spurious_mass": 2.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 6.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "house_place": {
+        "exact_matches": 6.0,
+        "gold_mentions": 7.0,
+        "missing": 1.0,
+        "missing_mass": 2.0,
+        "spurious": 3.0,
+        "spurious_mass": 6.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 8.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "ingredient": {
+        "exact_matches": 3.0,
+        "gold_mentions": 4.0,
+        "missing": 0.0,
+        "missing_mass": 0.0,
+        "spurious": 9.0,
+        "spurious_mass": 18.0,
+        "surface_mass": 0.81,
+        "surface_pairs": 1.0,
+        "total_mass": 18.81,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "joke_type": {
+        "exact_matches": 1.0,
+        "gold_mentions": 2.0,
+        "missing": 0.0,
+        "missing_mass": 0.0,
+        "spurious": 6.0,
+        "spurious_mass": 12.0,
+        "surface_mass": 3.556,
+        "surface_pairs": 1.0,
+        "total_mass": 15.556,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "list_name": {
+        "exact_matches": 6.0,
+        "gold_mentions": 19.0,
+        "missing": 4.0,
+        "missing_mass": 8.0,
+        "spurious": 17.0,
+        "spurious_mass": 34.0,
+        "surface_mass": 27.679,
+        "surface_pairs": 8.0,
+        "total_mass": 73.679,
+        "type_swap_mass": 4.0,
+        "type_swaps": 1.0
+      },
+      "meal_type": {
+        "exact_matches": 0.0,
+        "gold_mentions": 2.0,
+        "missing": 2.0,
+        "missing_mass": 4.0,
+        "spurious": 3.0,
+        "spurious_mass": 6.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 10.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "media_type": {
+        "exact_matches": 26.0,
+        "gold_mentions": 70.0,
+        "missing": 38.0,
+        "missing_mass": 76.0,
+        "spurious": 7.0,
+        "spurious_mass": 14.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 114.0,
+        "type_swap_mass": 24.0,
+        "type_swaps": 6.0
+      },
+      "movie_name": {
+        "exact_matches": 0.0,
+        "gold_mentions": 2.0,
+        "missing": 1.0,
+        "missing_mass": 2.0,
+        "spurious": 0.0,
+        "spurious_mass": 0.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 6.0,
+        "type_swap_mass": 4.0,
+        "type_swaps": 1.0
+      },
+      "movie_type": {
+        "exact_matches": 0.0,
+        "gold_mentions": 1.0,
+        "missing": 1.0,
+        "missing_mass": 2.0,
+        "spurious": 1.0,
+        "spurious_mass": 2.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 4.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "music_descriptor": {
+        "exact_matches": 0.0,
+        "gold_mentions": 3.0,
+        "missing": 3.0,
+        "missing_mass": 6.0,
+        "spurious": 7.0,
+        "spurious_mass": 14.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 20.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "music_genre": {
+        "exact_matches": 4.0,
+        "gold_mentions": 13.0,
+        "missing": 4.0,
+        "missing_mass": 8.0,
+        "spurious": 0.0,
+        "spurious_mass": 0.0,
+        "surface_mass": 9.592,
+        "surface_pairs": 3.0,
+        "total_mass": 25.592,
+        "type_swap_mass": 8.0,
+        "type_swaps": 2.0
+      },
+      "news_topic": {
+        "exact_matches": 7.0,
+        "gold_mentions": 27.0,
+        "missing": 9.0,
+        "missing_mass": 18.0,
+        "spurious": 4.0,
+        "spurious_mass": 8.0,
+        "surface_mass": 31.742,
+        "surface_pairs": 11.0,
+        "total_mass": 57.742,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "order_type": {
+        "exact_matches": 4.0,
+        "gold_mentions": 18.0,
+        "missing": 10.0,
+        "missing_mass": 20.0,
+        "spurious": 4.0,
+        "spurious_mass": 8.0,
+        "surface_mass": 12.25,
+        "surface_pairs": 4.0,
+        "total_mass": 40.25,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "person": {
+        "exact_matches": 10.0,
+        "gold_mentions": 56.0,
+        "missing": 26.0,
+        "missing_mass": 52.0,
+        "spurious": 10.0,
+        "spurious_mass": 20.0,
+        "surface_mass": 20.014,
+        "surface_pairs": 10.0,
+        "total_mass": 132.014,
+        "type_swap_mass": 40.0,
+        "type_swaps": 10.0
+      },
+      "personal_info": {
+        "exact_matches": 0.0,
+        "gold_mentions": 4.0,
+        "missing": 4.0,
+        "missing_mass": 8.0,
+        "spurious": 3.0,
+        "spurious_mass": 6.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 14.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "place_name": {
+        "exact_matches": 37.0,
+        "gold_mentions": 118.0,
+        "missing": 56.0,
+        "missing_mass": 112.0,
+        "spurious": 5.0,
+        "spurious_mass": 10.0,
+        "surface_mass": 57.039,
+        "surface_pairs": 14.0,
+        "total_mass": 223.039,
+        "type_swap_mass": 44.0,
+        "type_swaps": 11.0
+      },
+      "player_setting": {
+        "exact_matches": 1.0,
+        "gold_mentions": 9.0,
+        "missing": 3.0,
+        "missing_mass": 6.0,
+        "spurious": 6.0,
+        "spurious_mass": 12.0,
+        "surface_mass": 45.26,
+        "surface_pairs": 5.0,
+        "total_mass": 63.26,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "playlist_name": {
+        "exact_matches": 0.0,
+        "gold_mentions": 1.0,
+        "missing": 1.0,
+        "missing_mass": 2.0,
+        "spurious": 3.0,
+        "spurious_mass": 6.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 8.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "podcast_descriptor": {
+        "exact_matches": 2.0,
+        "gold_mentions": 5.0,
+        "missing": 2.0,
+        "missing_mass": 4.0,
+        "spurious": 2.0,
+        "spurious_mass": 4.0,
+        "surface_mass": 2.857,
+        "surface_pairs": 1.0,
+        "total_mass": 10.857,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "podcast_name": {
+        "exact_matches": 1.0,
+        "gold_mentions": 3.0,
+        "missing": 1.0,
+        "missing_mass": 2.0,
+        "spurious": 0.0,
+        "spurious_mass": 0.0,
+        "surface_mass": 2.4,
+        "surface_pairs": 1.0,
+        "total_mass": 4.4,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "radio_name": {
+        "exact_matches": 4.0,
+        "gold_mentions": 5.0,
+        "missing": 0.0,
+        "missing_mass": 0.0,
+        "spurious": 2.0,
+        "spurious_mass": 4.0,
+        "surface_mass": 1.235,
+        "surface_pairs": 1.0,
+        "total_mass": 5.235,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "relation": {
+        "exact_matches": 3.0,
+        "gold_mentions": 14.0,
+        "missing": 8.0,
+        "missing_mass": 16.0,
+        "spurious": 3.0,
+        "spurious_mass": 6.0,
+        "surface_mass": 7.867,
+        "surface_pairs": 3.0,
+        "total_mass": 29.867,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "song_name": {
+        "exact_matches": 4.0,
+        "gold_mentions": 7.0,
+        "missing": 1.0,
+        "missing_mass": 2.0,
+        "spurious": 2.0,
+        "spurious_mass": 4.0,
+        "surface_mass": 3.111,
+        "surface_pairs": 1.0,
+        "total_mass": 13.111,
+        "type_swap_mass": 4.0,
+        "type_swaps": 1.0
+      },
+      "sport_type": {
+        "exact_matches": 0.0,
+        "gold_mentions": 0.0,
+        "missing": 0.0,
+        "missing_mass": 0.0,
+        "spurious": 2.0,
+        "spurious_mass": 4.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 4.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "time": {
+        "exact_matches": 20.0,
+        "gold_mentions": 67.0,
+        "missing": 29.0,
+        "missing_mass": 58.0,
+        "spurious": 9.0,
+        "spurious_mass": 18.0,
+        "surface_mass": 68.448,
+        "surface_pairs": 14.0,
+        "total_mass": 160.448,
+        "type_swap_mass": 16.0,
+        "type_swaps": 4.0
+      },
+      "time_zone": {
+        "exact_matches": 4.0,
+        "gold_mentions": 4.0,
+        "missing": 0.0,
+        "missing_mass": 0.0,
+        "spurious": 6.0,
+        "spurious_mass": 12.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 12.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "timeofday": {
+        "exact_matches": 4.0,
+        "gold_mentions": 22.0,
+        "missing": 14.0,
+        "missing_mass": 28.0,
+        "spurious": 0.0,
+        "spurious_mass": 0.0,
+        "surface_mass": 9.069,
+        "surface_pairs": 3.0,
+        "total_mass": 41.069,
+        "type_swap_mass": 4.0,
+        "type_swaps": 1.0
+      },
+      "transport_agency": {
+        "exact_matches": 3.0,
+        "gold_mentions": 4.0,
+        "missing": 1.0,
+        "missing_mass": 2.0,
+        "spurious": 0.0,
+        "spurious_mass": 0.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 2.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "transport_descriptor": {
+        "exact_matches": 0.0,
+        "gold_mentions": 0.0,
+        "missing": 0.0,
+        "missing_mass": 0.0,
+        "spurious": 2.0,
+        "spurious_mass": 4.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 4.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "transport_name": {
+        "exact_matches": 1.0,
+        "gold_mentions": 1.0,
+        "missing": 0.0,
+        "missing_mass": 0.0,
+        "spurious": 12.0,
+        "spurious_mass": 24.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 24.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      },
+      "transport_type": {
+        "exact_matches": 9.0,
+        "gold_mentions": 31.0,
+        "missing": 20.0,
+        "missing_mass": 40.0,
+        "spurious": 5.0,
+        "spurious_mass": 10.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 58.0,
+        "type_swap_mass": 8.0,
+        "type_swaps": 2.0
+      },
+      "weather_descriptor": {
+        "exact_matches": 4.0,
+        "gold_mentions": 27.0,
+        "missing": 23.0,
+        "missing_mass": 46.0,
+        "spurious": 3.0,
+        "spurious_mass": 6.0,
+        "surface_mass": 0.0,
+        "surface_pairs": 0.0,
+        "total_mass": 52.0,
+        "type_swap_mass": 0.0,
+        "type_swaps": 0.0
+      }
+    },
+    "true_positive_mass": 846.0,
+    "what_it_is": "MF-9's per-type loss attribution, recomputed with the normalizer applied to gold and prediction alike, so question 4 can RE-PRICE every ceiling rung under the normalized metric rather than assert which way it would move. The per-type masses close against the corpus total, or this read raises"
+  },
+  "paired": {
+    "by_population": {
+      "new500": {
+        "kc_s1b_minus_comparator_normalized": {
+          "slot_f1_exact_f1": {
+            "ci90_pp": [
+              8.29,
+              12.45
+            ],
+            "delta_pp": 10.36,
+            "harms": 2,
+            "left_pct": 16.74,
+            "n": 500,
+            "right_pct": 27.1,
+            "saves": 61,
+            "sign_test_p": 4.373671563806525e-16,
+            "ties": 437
+          },
+          "slu_f1_char_f1": {
+            "ci90_pp": [
+              8.92,
+              13.31
+            ],
+            "delta_pp": 11.09,
+            "harms": 6,
+            "left_pct": 22.76,
+            "n": 500,
+            "right_pct": 33.85,
+            "saves": 69,
+            "sign_test_p": 1.1641661378765454e-14,
+            "ties": 425
+          },
+          "slu_f1_f1": {
+            "ci90_pp": [
+              8.83,
+              13.17
+            ],
+            "delta_pp": 10.96,
+            "harms": 6,
+            "left_pct": 21.81,
+            "n": 500,
+            "right_pct": 32.77,
+            "saves": 69,
+            "sign_test_p": 1.1641661378765454e-14,
+            "ties": 425
+          },
+          "slu_f1_word_f1": {
+            "ci90_pp": [
+              8.79,
+              12.98
+            ],
+            "delta_pp": 10.88,
+            "harms": 6,
+            "left_pct": 21.22,
+            "n": 500,
+            "right_pct": 32.1,
+            "saves": 69,
+            "sign_test_p": 1.1641661378765454e-14,
+            "ties": 425
+          }
+        },
+        "kc_s1b_minus_comparator_official": {
+          "slot_f1_exact_f1": {
+            "ci90_pp": [
+              8.07,
+              12.18
+            ],
+            "delta_pp": 10.11,
+            "harms": 2,
+            "left_pct": 14.49,
+            "n": 500,
+            "right_pct": 24.6,
+            "saves": 60,
+            "sign_test_p": 8.474124180146703e-16,
+            "ties": 438
+          },
+          "slu_f1_char_f1": {
+            "ci90_pp": [
+              8.89,
+              13.24
+            ],
+            "delta_pp": 11.04,
+            "harms": 6,
+            "left_pct": 22.42,
+            "n": 500,
+            "right_pct": 33.46,
+            "saves": 71,
+            "sign_test_p": 3.418320890290292e-15,
+            "ties": 423
+          },
+          "slu_f1_f1": {
+            "ci90_pp": [
+              8.75,
+              13.03
+            ],
+            "delta_pp": 10.85,
+            "harms": 6,
+            "left_pct": 21.05,
+            "n": 500,
+            "right_pct": 31.89,
+            "saves": 71,
+            "sign_test_p": 3.418320890290292e-15,
+            "ties": 423
+          },
+          "slu_f1_word_f1": {
+            "ci90_pp": [
+              8.66,
+              12.8
+            ],
+            "delta_pp": 10.72,
+            "harms": 6,
+            "left_pct": 20.19,
+            "n": 500,
+            "right_pct": 30.91,
+            "saves": 71,
+            "sign_test_p": 3.418320890290292e-15,
+            "ties": 423
+          }
+        },
+        "kc_s1b_normalized_minus_official": {
+          "slot_f1_exact_f1": {
+            "ci90_pp": [
+              1.57,
+              3.5
+            ],
+            "delta_pp": 2.5,
+            "harms": 0,
+            "left_pct": 24.6,
+            "n": 500,
+            "right_pct": 27.1,
+            "saves": 16,
+            "sign_test_p": 3.0517578125e-05,
+            "ties": 484
+          },
+          "slu_f1_char_f1": {
+            "ci90_pp": [
+              0.19,
+              0.62
+            ],
+            "delta_pp": 0.39,
+            "harms": 8,
+            "left_pct": 33.46,
+            "n": 500,
+            "right_pct": 33.85,
+            "saves": 23,
+            "sign_test_p": 0.010673840530216694,
+            "ties": 469
+          },
+          "slu_f1_f1": {
+            "ci90_pp": [
+              0.56,
+              1.22
+            ],
+            "delta_pp": 0.87,
+            "harms": 6,
+            "left_pct": 31.89,
+            "n": 500,
+            "right_pct": 32.77,
+            "saves": 25,
+            "sign_test_p": 0.0008779102936387062,
+            "ties": 469
+          },
+          "slu_f1_word_f1": {
+            "ci90_pp": [
+              0.77,
+              1.62
+            ],
+            "delta_pp": 1.18,
+            "harms": 3,
+            "left_pct": 30.91,
+            "n": 500,
+            "right_pct": 32.1,
+            "saves": 22,
+            "sign_test_p": 0.00015652179718017578,
+            "ties": 475
+          }
+        },
+        "projected_minus_kc_s1b_normalized": {
+          "slot_f1_exact_f1": {
+            "ci90_pp": [
+              0.13,
+              0.93
+            ],
+            "delta_pp": 0.47,
+            "harms": 0,
+            "left_pct": 27.1,
+            "n": 500,
+            "right_pct": 27.57,
+            "saves": 3,
+            "sign_test_p": 0.25,
+            "ties": 497
+          },
+          "slu_f1_char_f1": {
+            "ci90_pp": [
+              -0.0,
+              0.12
+            ],
+            "delta_pp": 0.05,
+            "harms": 1,
+            "left_pct": 33.85,
+            "n": 500,
+            "right_pct": 33.9,
+            "saves": 4,
+            "sign_test_p": 0.375,
+            "ties": 495
+          },
+          "slu_f1_f1": {
+            "ci90_pp": [
+              -0.02,
+              0.27
+            ],
+            "delta_pp": 0.11,
+            "harms": 2,
+            "left_pct": 32.77,
+            "n": 500,
+            "right_pct": 32.87,
+            "saves": 3,
+            "sign_test_p": 1.0,
+            "ties": 495
+          },
+          "slu_f1_word_f1": {
+            "ci90_pp": [
+              -0.04,
+              0.38
+            ],
+            "delta_pp": 0.15,
+            "harms": 2,
+            "left_pct": 32.1,
+            "n": 500,
+            "right_pct": 32.24,
+            "saves": 3,
+            "sign_test_p": 1.0,
+            "ties": 495
+          }
+        },
+        "projected_minus_kc_s1b_official": {
+          "slot_f1_exact_f1": {
+            "ci90_pp": [
+              1.5,
+              3.47
+            ],
+            "delta_pp": 2.43,
+            "harms": 0,
+            "left_pct": 24.6,
+            "n": 500,
+            "right_pct": 27.03,
+            "saves": 16,
+            "sign_test_p": 3.0517578125e-05,
+            "ties": 484
+          },
+          "slu_f1_char_f1": {
+            "ci90_pp": [
+              0.16,
+              0.38
+            ],
+            "delta_pp": 0.27,
+            "harms": 1,
+            "left_pct": 33.46,
+            "n": 500,
+            "right_pct": 33.73,
+            "saves": 19,
+            "sign_test_p": 4.00543212890625e-05,
+            "ties": 480
+          },
+          "slu_f1_f1": {
+            "ci90_pp": [
+              0.47,
+              1.1
+            ],
+            "delta_pp": 0.78,
+            "harms": 1,
+            "left_pct": 31.89,
+            "n": 500,
+            "right_pct": 32.67,
+            "saves": 19,
+            "sign_test_p": 4.00543212890625e-05,
+            "ties": 480
+          },
+          "slu_f1_word_f1": {
+            "ci90_pp": [
+              0.68,
+              1.55
+            ],
+            "delta_pp": 1.1,
+            "harms": 1,
+            "left_pct": 30.91,
+            "n": 500,
+            "right_pct": 32.01,
+            "saves": 18,
+            "sign_test_p": 7.62939453125e-05,
+            "ties": 481
+          }
+        }
+      },
+      "old500": {
+        "kc_s1b_minus_comparator_normalized": {
+          "slot_f1_exact_f1": {
+            "ci90_pp": [
+              3.97,
+              7.47
+            ],
+            "delta_pp": 5.7,
+            "harms": 5,
+            "left_pct": 12.5,
+            "n": 500,
+            "right_pct": 18.2,
+            "saves": 38,
+            "sign_test_p": 2.4995097192004323e-07,
+            "ties": 457
+          },
+          "slu_f1_char_f1": {
+            "ci90_pp": [
+              5.12,
+              8.73
+            ],
+            "delta_pp": 6.86,
+            "harms": 6,
+            "left_pct": 20.09,
+            "n": 500,
+            "right_pct": 26.95,
+            "saves": 48,
+            "sign_test_p": 3.256530156647841e-09,
+            "ties": 446
+          },
+          "slu_f1_f1": {
+            "ci90_pp": [
+              4.92,
+              8.51
+            ],
+            "delta_pp": 6.66,
+            "harms": 7,
+            "left_pct": 18.9,
+            "n": 500,
+            "right_pct": 25.56,
+            "saves": 47,
+            "sign_test_p": 2.2918642095248742e-08,
+            "ties": 446
+          },
+          "slu_f1_word_f1": {
+            "ci90_pp": [
+              4.79,
+              8.32
+            ],
+            "delta_pp": 6.54,
+            "harms": 7,
+            "left_pct": 18.15,
+            "n": 500,
+            "right_pct": 24.69,
+            "saves": 47,
+            "sign_test_p": 2.2918642095248742e-08,
+            "ties": 446
+          }
+        },
+        "kc_s1b_minus_comparator_official": {
+          "slot_f1_exact_f1": {
+            "ci90_pp": [
+              3.8,
+              7.23
+            ],
+            "delta_pp": 5.5,
+            "harms": 5,
+            "left_pct": 11.42,
+            "n": 500,
+            "right_pct": 16.92,
+            "saves": 37,
+            "sign_test_p": 4.4337048166198656e-07,
+            "ties": 458
+          },
+          "slu_f1_char_f1": {
+            "ci90_pp": [
+              5.08,
+              8.67
+            ],
+            "delta_pp": 6.81,
+            "harms": 6,
+            "left_pct": 19.83,
+            "n": 500,
+            "right_pct": 26.64,
+            "saves": 48,
+            "sign_test_p": 3.256530156647841e-09,
+            "ties": 446
+          },
+          "slu_f1_f1": {
+            "ci90_pp": [
+              4.86,
+              8.39
+            ],
+            "delta_pp": 6.57,
+            "harms": 7,
+            "left_pct": 18.45,
+            "n": 500,
+            "right_pct": 25.01,
+            "saves": 47,
+            "sign_test_p": 2.2918642095248742e-08,
+            "ties": 446
+          },
+          "slu_f1_word_f1": {
+            "ci90_pp": [
+              4.7,
+              8.18
+            ],
+            "delta_pp": 6.42,
+            "harms": 7,
+            "left_pct": 17.55,
+            "n": 500,
+            "right_pct": 23.97,
+            "saves": 47,
+            "sign_test_p": 2.2918642095248742e-08,
+            "ties": 446
+          }
+        },
+        "kc_s1b_normalized_minus_official": {
+          "slot_f1_exact_f1": {
+            "ci90_pp": [
+              0.6,
+              2.08
+            ],
+            "delta_pp": 1.28,
+            "harms": 0,
+            "left_pct": 16.92,
+            "n": 500,
+            "right_pct": 18.2,
+            "saves": 8,
+            "sign_test_p": 0.0078125,
+            "ties": 492
+          },
+          "slu_f1_char_f1": {
+            "ci90_pp": [
+              0.15,
+              0.49
+            ],
+            "delta_pp": 0.31,
+            "harms": 8,
+            "left_pct": 26.64,
+            "n": 500,
+            "right_pct": 26.95,
+            "saves": 18,
+            "sign_test_p": 0.07551869750022888,
+            "ties": 474
+          },
+          "slu_f1_f1": {
+            "ci90_pp": [
+              0.28,
+              0.84
+            ],
+            "delta_pp": 0.55,
+            "harms": 7,
+            "left_pct": 25.01,
+            "n": 500,
+            "right_pct": 25.56,
+            "saves": 19,
+            "sign_test_p": 0.028959274291992188,
+            "ties": 474
+          },
+          "slu_f1_word_f1": {
+            "ci90_pp": [
+              0.37,
+              1.11
+            ],
+            "delta_pp": 0.71,
+            "harms": 4,
+            "left_pct": 23.97,
+            "n": 500,
+            "right_pct": 24.69,
+            "saves": 14,
+            "sign_test_p": 0.0308837890625,
+            "ties": 482
+          }
+        },
+        "projected_minus_kc_s1b_normalized": {
+          "slot_f1_exact_f1": {
+            "ci90_pp": [
+              0.13,
+              1.13
+            ],
+            "delta_pp": 0.6,
+            "harms": 0,
+            "left_pct": 18.2,
+            "n": 500,
+            "right_pct": 18.8,
+            "saves": 4,
+            "sign_test_p": 0.125,
+            "ties": 496
+          },
+          "slu_f1_char_f1": {
+            "ci90_pp": [
+              0.01,
+              0.09
+            ],
+            "delta_pp": 0.05,
+            "harms": 0,
+            "left_pct": 26.95,
+            "n": 500,
+            "right_pct": 27.0,
+            "saves": 4,
+            "sign_test_p": 0.125,
+            "ties": 496
+          },
+          "slu_f1_f1": {
+            "ci90_pp": [
+              0.04,
+              0.32
+            ],
+            "delta_pp": 0.17,
+            "harms": 0,
+            "left_pct": 25.56,
+            "n": 500,
+            "right_pct": 25.73,
+            "saves": 4,
+            "sign_test_p": 0.125,
+            "ties": 496
+          },
+          "slu_f1_word_f1": {
+            "ci90_pp": [
+              0.05,
+              0.47
+            ],
+            "delta_pp": 0.24,
+            "harms": 0,
+            "left_pct": 24.69,
+            "n": 500,
+            "right_pct": 24.93,
+            "saves": 4,
+            "sign_test_p": 0.125,
+            "ties": 496
+          }
+        },
+        "projected_minus_kc_s1b_official": {
+          "slot_f1_exact_f1": {
+            "ci90_pp": [
+              0.8,
+              2.41
+            ],
+            "delta_pp": 1.55,
+            "harms": 0,
+            "left_pct": 16.92,
+            "n": 500,
+            "right_pct": 18.47,
+            "saves": 10,
+            "sign_test_p": 0.001953125,
+            "ties": 490
+          },
+          "slu_f1_char_f1": {
+            "ci90_pp": [
+              0.11,
+              0.31
+            ],
+            "delta_pp": 0.2,
+            "harms": 0,
+            "left_pct": 26.64,
+            "n": 500,
+            "right_pct": 26.84,
+            "saves": 13,
+            "sign_test_p": 0.000244140625,
+            "ties": 487
+          },
+          "slu_f1_f1": {
+            "ci90_pp": [
+              0.28,
+              0.8
+            ],
+            "delta_pp": 0.52,
+            "harms": 0,
+            "left_pct": 25.01,
+            "n": 500,
+            "right_pct": 25.54,
+            "saves": 13,
+            "sign_test_p": 0.000244140625,
+            "ties": 487
+          },
+          "slu_f1_word_f1": {
+            "ci90_pp": [
+              0.39,
+              1.11
+            ],
+            "delta_pp": 0.73,
+            "harms": 0,
+            "left_pct": 23.97,
+            "n": 500,
+            "right_pct": 24.7,
+            "saves": 12,
+            "sign_test_p": 0.00048828125,
+            "ties": 488
+          }
+        }
+      },
+      "pooled_1000": {
+        "kc_s1b_minus_comparator_normalized": {
+          "slot_f1_exact_f1": {
+            "ci90_pp": [
+              6.68,
+              9.42
+            ],
+            "delta_pp": 8.03,
+            "harms": 7,
+            "left_pct": 14.62,
+            "n": 1000,
+            "right_pct": 22.65,
+            "saves": 99,
+            "sign_test_p": 6.454479575071315e-22,
+            "ties": 894
+          },
+          "slu_f1_char_f1": {
+            "ci90_pp": [
+              7.55,
+              10.43
+            ],
+            "delta_pp": 8.98,
+            "harms": 12,
+            "left_pct": 21.42,
+            "n": 1000,
+            "right_pct": 30.4,
+            "saves": 117,
+            "sign_test_p": 8.548137373828939e-23,
+            "ties": 871
+          },
+          "slu_f1_f1": {
+            "ci90_pp": [
+              7.41,
+              10.23
+            ],
+            "delta_pp": 8.81,
+            "harms": 13,
+            "left_pct": 20.36,
+            "n": 1000,
+            "right_pct": 29.17,
+            "saves": 116,
+            "sign_test_p": 7.773637554307045e-22,
+            "ties": 871
+          },
+          "slu_f1_word_f1": {
+            "ci90_pp": [
+              7.33,
+              10.1
+            ],
+            "delta_pp": 8.71,
+            "harms": 13,
+            "left_pct": 19.69,
+            "n": 1000,
+            "right_pct": 28.39,
+            "saves": 116,
+            "sign_test_p": 7.773637554307045e-22,
+            "ties": 871
+          }
+        },
+        "kc_s1b_minus_comparator_official": {
+          "slot_f1_exact_f1": {
+            "ci90_pp": [
+              6.48,
+              9.15
+            ],
+            "delta_pp": 7.8,
+            "harms": 7,
+            "left_pct": 12.96,
+            "n": 1000,
+            "right_pct": 20.76,
+            "saves": 97,
+            "sign_test_p": 2.253920747846914e-21,
+            "ties": 896
+          },
+          "slu_f1_char_f1": {
+            "ci90_pp": [
+              7.51,
+              10.38
+            ],
+            "delta_pp": 8.92,
+            "harms": 12,
+            "left_pct": 21.13,
+            "n": 1000,
+            "right_pct": 30.05,
+            "saves": 119,
+            "sign_test_p": 2.587003859247397e-23,
+            "ties": 869
+          },
+          "slu_f1_f1": {
+            "ci90_pp": [
+              7.32,
+              10.11
+            ],
+            "delta_pp": 8.71,
+            "harms": 13,
+            "left_pct": 19.75,
+            "n": 1000,
+            "right_pct": 28.45,
+            "saves": 118,
+            "sign_test_p": 2.3923301411438164e-22,
+            "ties": 869
+          },
+          "slu_f1_word_f1": {
+            "ci90_pp": [
+              7.21,
+              9.95
+            ],
+            "delta_pp": 8.57,
+            "harms": 13,
+            "left_pct": 18.87,
+            "n": 1000,
+            "right_pct": 27.44,
+            "saves": 118,
+            "sign_test_p": 2.3923301411438164e-22,
+            "ties": 869
+          }
+        },
+        "kc_s1b_normalized_minus_official": {
+          "slot_f1_exact_f1": {
+            "ci90_pp": [
+              1.28,
+              2.55
+            ],
+            "delta_pp": 1.89,
+            "harms": 0,
+            "left_pct": 20.76,
+            "n": 1000,
+            "right_pct": 22.65,
+            "saves": 24,
+            "sign_test_p": 1.1920928955078125e-07,
+            "ties": 976
+          },
+          "slu_f1_char_f1": {
+            "ci90_pp": [
+              0.21,
+              0.49
+            ],
+            "delta_pp": 0.35,
+            "harms": 16,
+            "left_pct": 30.05,
+            "n": 1000,
+            "right_pct": 30.4,
+            "saves": 41,
+            "sign_test_p": 0.0012635594724354632,
+            "ties": 943
+          },
+          "slu_f1_f1": {
+            "ci90_pp": [
+              0.49,
+              0.94
+            ],
+            "delta_pp": 0.71,
+            "harms": 13,
+            "left_pct": 28.45,
+            "n": 1000,
+            "right_pct": 29.17,
+            "saves": 44,
+            "sign_test_p": 4.710437609395379e-05,
+            "ties": 943
+          },
+          "slu_f1_word_f1": {
+            "ci90_pp": [
+              0.67,
+              1.25
+            ],
+            "delta_pp": 0.95,
+            "harms": 7,
+            "left_pct": 27.44,
+            "n": 1000,
+            "right_pct": 28.39,
+            "saves": 36,
+            "sign_test_p": 8.963039363152348e-06,
+            "ties": 957
+          }
+        },
+        "projected_minus_kc_s1b_normalized": {
+          "slot_f1_exact_f1": {
+            "ci90_pp": [
+              0.2,
+              0.87
+            ],
+            "delta_pp": 0.53,
+            "harms": 0,
+            "left_pct": 22.65,
+            "n": 1000,
+            "right_pct": 23.19,
+            "saves": 7,
+            "sign_test_p": 0.015625,
+            "ties": 993
+          },
+          "slu_f1_char_f1": {
+            "ci90_pp": [
+              0.02,
+              0.09
+            ],
+            "delta_pp": 0.05,
+            "harms": 1,
+            "left_pct": 30.4,
+            "n": 1000,
+            "right_pct": 30.45,
+            "saves": 8,
+            "sign_test_p": 0.0390625,
+            "ties": 991
+          },
+          "slu_f1_f1": {
+            "ci90_pp": [
+              0.04,
+              0.25
+            ],
+            "delta_pp": 0.14,
+            "harms": 2,
+            "left_pct": 29.17,
+            "n": 1000,
+            "right_pct": 29.3,
+            "saves": 7,
+            "sign_test_p": 0.1796875,
+            "ties": 991
+          },
+          "slu_f1_word_f1": {
+            "ci90_pp": [
+              0.05,
+              0.35
+            ],
+            "delta_pp": 0.19,
+            "harms": 2,
+            "left_pct": 28.39,
+            "n": 1000,
+            "right_pct": 28.58,
+            "saves": 7,
+            "sign_test_p": 0.1796875,
+            "ties": 991
+          }
+        },
+        "projected_minus_kc_s1b_official": {
+          "slot_f1_exact_f1": {
+            "ci90_pp": [
+              1.36,
+              2.65
+            ],
+            "delta_pp": 1.99,
+            "harms": 0,
+            "left_pct": 20.76,
+            "n": 1000,
+            "right_pct": 22.75,
+            "saves": 26,
+            "sign_test_p": 2.9802322387695312e-08,
+            "ties": 974
+          },
+          "slu_f1_char_f1": {
+            "ci90_pp": [
+              0.16,
+              0.31
+            ],
+            "delta_pp": 0.24,
+            "harms": 1,
+            "left_pct": 30.05,
+            "n": 1000,
+            "right_pct": 30.29,
+            "saves": 32,
+            "sign_test_p": 7.916241884231567e-09,
+            "ties": 967
+          },
+          "slu_f1_f1": {
+            "ci90_pp": [
+              0.45,
+              0.87
+            ],
+            "delta_pp": 0.65,
+            "harms": 1,
+            "left_pct": 28.45,
+            "n": 1000,
+            "right_pct": 29.1,
+            "saves": 32,
+            "sign_test_p": 7.916241884231567e-09,
+            "ties": 967
+          },
+          "slu_f1_word_f1": {
+            "ci90_pp": [
+              0.63,
+              1.2
+            ],
+            "delta_pp": 0.91,
+            "harms": 1,
+            "left_pct": 27.44,
+            "n": 1000,
+            "right_pct": 28.35,
+            "saves": 30,
+            "sign_test_p": 2.9802322387695312e-08,
+            "ties": 969
+          }
+        }
+      }
+    },
+    "design": {
+      "ci_level": 0.9,
+      "decision_population": "new500 (unexposed)",
+      "replicates": 10000,
+      "seed": 20260903,
+      "strata": "gold scenario"
+    }
+  },
+  "per_entity_type_strict": {
+    "delta_f1_pct": {
+      "alarm_type": 0.0,
+      "app_name": 0.0,
+      "artist_name": 7.14,
+      "audiobook_author": 0.0,
+      "audiobook_name": 0.0,
+      "business_name": 6.56,
+      "business_type": 0.0,
+      "change_amount": 0.0,
+      "coffee_type": 0.0,
+      "color_type": 0.0,
+      "cooking_type": 0.0,
+      "currency_name": 0.0,
+      "date": 2.9,
+      "definition_word": 0.0,
+      "device_type": 0.0,
+      "drink_type": 0.0,
+      "email_address": 0.0,
+      "email_folder": 0.0,
+      "event_name": 3.92,
+      "food_type": 0.0,
+      "game_name": 0.0,
+      "general_frequency": 20.0,
+      "house_place": 0.0,
+      "ingredient": 0.0,
+      "joke_type": 0.0,
+      "list_name": 0.0,
+      "meal_type": 0.0,
+      "media_type": 0.0,
+      "movie_name": 0.0,
+      "movie_type": 0.0,
+      "music_descriptor": 0.0,
+      "music_genre": 0.0,
+      "news_topic": 0.0,
+      "order_type": 0.0,
+      "person": 0.0,
+      "personal_info": 0.0,
+      "place_name": 2.3,
+      "player_setting": 0.0,
+      "playlist_name": 0.0,
+      "podcast_descriptor": 0.0,
+      "podcast_name": 0.0,
+      "radio_name": 16.67,
+      "relation": 0.0,
+      "song_name": 13.33,
+      "sport_type": 0.0,
+      "time": 22.41,
+      "time_zone": 0.0,
+      "timeofday": 0.0,
+      "transport_agency": 0.0,
+      "transport_descriptor": 0.0,
+      "transport_name": 0.0,
+      "transport_type": 0.0,
+      "weather_descriptor": 0.0
+    },
+    "normalized": {
+      "alarm_type": {
+        "f1_pct": 9.52,
+        "fn": 1.0,
+        "fp": 18.0,
+        "gold": 2.0,
+        "tp": 1.0
+      },
+      "app_name": {
+        "f1_pct": 0.0,
+        "fn": 2.0,
+        "fp": 2.0,
+        "gold": 2.0,
+        "tp": 0.0
+      },
+      "artist_name": {
+        "f1_pct": 50.0,
+        "fn": 7.0,
+        "fp": 7.0,
+        "gold": 14.0,
+        "tp": 7.0
+      },
+      "audiobook_author": {
+        "f1_pct": 0.0,
+        "fn": 1.0,
+        "fp": 0.0,
+        "gold": 1.0,
+        "tp": 0.0
+      },
+      "audiobook_name": {
+        "f1_pct": 0.0,
+        "fn": 2.0,
+        "fp": 3.0,
+        "gold": 2.0,
+        "tp": 0.0
+      },
+      "business_name": {
+        "f1_pct": 19.67,
+        "fn": 30.0,
+        "fp": 19.0,
+        "gold": 36.0,
+        "tp": 6.0
+      },
+      "business_type": {
+        "f1_pct": 40.91,
+        "fn": 19.0,
+        "fp": 7.0,
+        "gold": 28.0,
+        "tp": 9.0
+      },
+      "change_amount": {
+        "f1_pct": 33.33,
+        "fn": 2.0,
+        "fp": 2.0,
+        "gold": 3.0,
+        "tp": 1.0
+      },
+      "coffee_type": {
+        "f1_pct": 66.67,
+        "fn": 0.0,
+        "fp": 2.0,
+        "gold": 2.0,
+        "tp": 2.0
+      },
+      "color_type": {
+        "f1_pct": 47.06,
+        "fn": 3.0,
+        "fp": 6.0,
+        "gold": 7.0,
+        "tp": 4.0
+      },
+      "cooking_type": {
+        "f1_pct": 25.0,
+        "fn": 1.0,
+        "fp": 5.0,
+        "gold": 2.0,
+        "tp": 1.0
+      },
+      "currency_name": {
+        "f1_pct": 37.5,
+        "fn": 5.0,
+        "fp": 5.0,
+        "gold": 8.0,
+        "tp": 3.0
+      },
+      "date": {
+        "f1_pct": 33.82,
+        "fn": 124.0,
+        "fp": 13.0,
+        "gold": 159.0,
+        "tp": 35.0
+      },
+      "definition_word": {
+        "f1_pct": 54.55,
+        "fn": 5.0,
+        "fp": 10.0,
+        "gold": 14.0,
+        "tp": 9.0
+      },
+      "device_type": {
+        "f1_pct": 54.55,
+        "fn": 10.0,
+        "fp": 10.0,
+        "gold": 22.0,
+        "tp": 12.0
+      },
+      "drink_type": {
+        "f1_pct": 66.67,
+        "fn": 1.0,
+        "fp": 0.0,
+        "gold": 2.0,
+        "tp": 1.0
+      },
+      "email_address": {
+        "f1_pct": 0.0,
+        "fn": 2.0,
+        "fp": 15.0,
+        "gold": 2.0,
+        "tp": 0.0
+      },
+      "email_folder": {
+        "f1_pct": 54.55,
+        "fn": 0.0,
+        "fp": 5.0,
+        "gold": 3.0,
+        "tp": 3.0
+      },
+      "event_name": {
+        "f1_pct": 7.84,
+        "fn": 40.0,
+        "fp": 7.0,
+        "gold": 42.0,
+        "tp": 2.0
+      },
+      "food_type": {
+        "f1_pct": 36.62,
+        "fn": 29.0,
+        "fp": 16.0,
+        "gold": 42.0,
+        "tp": 13.0
+      },
+      "game_name": {
+        "f1_pct": 76.92,
+        "fn": 1.0,
+        "fp": 2.0,
+        "gold": 6.0,
+        "tp": 5.0
+      },
+      "general_frequency": {
+        "f1_pct": 60.0,
+        "fn": 2.0,
+        "fp": 2.0,
+        "gold": 5.0,
+        "tp": 3.0
+      },
+      "house_place": {
+        "f1_pct": 70.59,
+        "fn": 1.0,
+        "fp": 4.0,
+        "gold": 7.0,
+        "tp": 6.0
+      },
+      "ingredient": {
+        "f1_pct": 31.58,
+        "fn": 1.0,
+        "fp": 12.0,
+        "gold": 4.0,
+        "tp": 3.0
+      },
+      "joke_type": {
+        "f1_pct": 20.0,
+        "fn": 1.0,
+        "fp": 7.0,
+        "gold": 2.0,
+        "tp": 1.0
+      },
+      "list_name": {
+        "f1_pct": 24.0,
+        "fn": 13.0,
+        "fp": 25.0,
+        "gold": 19.0,
+        "tp": 6.0
+      },
+      "meal_type": {
+        "f1_pct": 0.0,
+        "fn": 2.0,
+        "fp": 3.0,
+        "gold": 2.0,
+        "tp": 0.0
+      },
+      "media_type": {
+        "f1_pct": 50.49,
+        "fn": 44.0,
+        "fp": 7.0,
+        "gold": 70.0,
+        "tp": 26.0
+      },
+      "movie_name": {
+        "f1_pct": 0.0,
+        "fn": 2.0,
+        "fp": 0.0,
+        "gold": 2.0,
+        "tp": 0.0
+      },
+      "movie_type": {
+        "f1_pct": 0.0,
+        "fn": 1.0,
+        "fp": 1.0,
+        "gold": 1.0,
+        "tp": 0.0
+      },
+      "music_descriptor": {
+        "f1_pct": 0.0,
+        "fn": 3.0,
+        "fp": 10.0,
+        "gold": 3.0,
+        "tp": 0.0
+      },
+      "music_genre": {
+        "f1_pct": 40.0,
+        "fn": 9.0,
+        "fp": 3.0,
+        "gold": 13.0,
+        "tp": 4.0
+      },
+      "news_topic": {
+        "f1_pct": 26.92,
+        "fn": 20.0,
+        "fp": 18.0,
+        "gold": 27.0,
+        "tp": 7.0
+      },
+      "order_type": {
+        "f1_pct": 26.67,
+        "fn": 14.0,
+        "fp": 8.0,
+        "gold": 18.0,
+        "tp": 4.0
+      },
+      "person": {
+        "f1_pct": 23.26,
+        "fn": 46.0,
+        "fp": 20.0,
+        "gold": 56.0,
+        "tp": 10.0
+      },
+      "personal_info": {
+        "f1_pct": 0.0,
+        "fn": 4.0,
+        "fp": 3.0,
+        "gold": 4.0,
+        "tp": 0.0
+      },
+      "place_name": {
+        "f1_pct": 42.53,
+        "fn": 81.0,
+        "fp": 19.0,
+        "gold": 118.0,
+        "tp": 37.0
+      },
+      "player_setting": {
+        "f1_pct": 9.52,
+        "fn": 8.0,
+        "fp": 11.0,
+        "gold": 9.0,
+        "tp": 1.0
+      },
+      "playlist_name": {
+        "f1_pct": 0.0,
+        "fn": 1.0,
+        "fp": 3.0,
+        "gold": 1.0,
+        "tp": 0.0
+      },
+      "podcast_descriptor": {
+        "f1_pct": 40.0,
+        "fn": 3.0,
+        "fp": 3.0,
+        "gold": 5.0,
+        "tp": 2.0
+      },
+      "podcast_name": {
+        "f1_pct": 40.0,
+        "fn": 2.0,
+        "fp": 1.0,
+        "gold": 3.0,
+        "tp": 1.0
+      },
+      "radio_name": {
+        "f1_pct": 66.67,
+        "fn": 1.0,
+        "fp": 3.0,
+        "gold": 5.0,
+        "tp": 4.0
+      },
+      "relation": {
+        "f1_pct": 26.09,
+        "fn": 11.0,
+        "fp": 6.0,
+        "gold": 14.0,
+        "tp": 3.0
+      },
+      "song_name": {
+        "f1_pct": 53.33,
+        "fn": 3.0,
+        "fp": 4.0,
+        "gold": 7.0,
+        "tp": 4.0
+      },
+      "sport_type": {
+        "f1_pct": 0.0,
+        "fn": 0.0,
+        "fp": 2.0,
+        "gold": 0.0,
+        "tp": 0.0
+      },
+      "time": {
+        "f1_pct": 34.48,
+        "fn": 47.0,
+        "fp": 29.0,
+        "gold": 67.0,
+        "tp": 20.0
+      },
+      "time_zone": {
+        "f1_pct": 36.36,
+        "fn": 0.0,
+        "fp": 14.0,
+        "gold": 4.0,
+        "tp": 4.0
+      },
+      "timeofday": {
+        "f1_pct": 27.59,
+        "fn": 18.0,
+        "fp": 3.0,
+        "gold": 22.0,
+        "tp": 4.0
+      },
+      "transport_agency": {
+        "f1_pct": 85.71,
+        "fn": 1.0,
+        "fp": 0.0,
+        "gold": 4.0,
+        "tp": 3.0
+      },
+      "transport_descriptor": {
+        "f1_pct": 0.0,
+        "fn": 0.0,
+        "fp": 2.0,
+        "gold": 0.0,
+        "tp": 0.0
+      },
+      "transport_name": {
+        "f1_pct": 11.11,
+        "fn": 0.0,
+        "fp": 16.0,
+        "gold": 1.0,
+        "tp": 1.0
+      },
+      "transport_type": {
+        "f1_pct": 40.0,
+        "fn": 22.0,
+        "fp": 5.0,
+        "gold": 31.0,
+        "tp": 9.0
+      },
+      "weather_descriptor": {
+        "f1_pct": 23.53,
+        "fn": 23.0,
+        "fp": 3.0,
+        "gold": 27.0,
+        "tp": 4.0
+      }
+    },
+    "official": {
+      "alarm_type": {
+        "f1_pct": 9.52,
+        "fn": 1.0,
+        "fp": 18.0,
+        "gold": 2.0,
+        "tp": 1.0
+      },
+      "app_name": {
+        "f1_pct": 0.0,
+        "fn": 2.0,
+        "fp": 2.0,
+        "gold": 2.0,
+        "tp": 0.0
+      },
+      "artist_name": {
+        "f1_pct": 42.86,
+        "fn": 8.0,
+        "fp": 8.0,
+        "gold": 14.0,
+        "tp": 6.0
+      },
+      "audiobook_author": {
+        "f1_pct": 0.0,
+        "fn": 1.0,
+        "fp": 0.0,
+        "gold": 1.0,
+        "tp": 0.0
+      },
+      "audiobook_name": {
+        "f1_pct": 0.0,
+        "fn": 2.0,
+        "fp": 3.0,
+        "gold": 2.0,
+        "tp": 0.0
+      },
+      "business_name": {
+        "f1_pct": 13.11,
+        "fn": 32.0,
+        "fp": 21.0,
+        "gold": 36.0,
+        "tp": 4.0
+      },
+      "business_type": {
+        "f1_pct": 40.91,
+        "fn": 19.0,
+        "fp": 7.0,
+        "gold": 28.0,
+        "tp": 9.0
+      },
+      "change_amount": {
+        "f1_pct": 33.33,
+        "fn": 2.0,
+        "fp": 2.0,
+        "gold": 3.0,
+        "tp": 1.0
+      },
+      "coffee_type": {
+        "f1_pct": 66.67,
+        "fn": 0.0,
+        "fp": 2.0,
+        "gold": 2.0,
+        "tp": 2.0
+      },
+      "color_type": {
+        "f1_pct": 47.06,
+        "fn": 3.0,
+        "fp": 6.0,
+        "gold": 7.0,
+        "tp": 4.0
+      },
+      "cooking_type": {
+        "f1_pct": 25.0,
+        "fn": 1.0,
+        "fp": 5.0,
+        "gold": 2.0,
+        "tp": 1.0
+      },
+      "currency_name": {
+        "f1_pct": 37.5,
+        "fn": 5.0,
+        "fp": 5.0,
+        "gold": 8.0,
+        "tp": 3.0
+      },
+      "date": {
+        "f1_pct": 30.92,
+        "fn": 127.0,
+        "fp": 16.0,
+        "gold": 159.0,
+        "tp": 32.0
+      },
+      "definition_word": {
+        "f1_pct": 54.55,
+        "fn": 5.0,
+        "fp": 10.0,
+        "gold": 14.0,
+        "tp": 9.0
+      },
+      "device_type": {
+        "f1_pct": 54.55,
+        "fn": 10.0,
+        "fp": 10.0,
+        "gold": 22.0,
+        "tp": 12.0
+      },
+      "drink_type": {
+        "f1_pct": 66.67,
+        "fn": 1.0,
+        "fp": 0.0,
+        "gold": 2.0,
+        "tp": 1.0
+      },
+      "email_address": {
+        "f1_pct": 0.0,
+        "fn": 2.0,
+        "fp": 15.0,
+        "gold": 2.0,
+        "tp": 0.0
+      },
+      "email_folder": {
+        "f1_pct": 54.55,
+        "fn": 0.0,
+        "fp": 5.0,
+        "gold": 3.0,
+        "tp": 3.0
+      },
+      "event_name": {
+        "f1_pct": 3.92,
+        "fn": 41.0,
+        "fp": 8.0,
+        "gold": 42.0,
+        "tp": 1.0
+      },
+      "food_type": {
+        "f1_pct": 36.62,
+        "fn": 29.0,
+        "fp": 16.0,
+        "gold": 42.0,
+        "tp": 13.0
+      },
+      "game_name": {
+        "f1_pct": 76.92,
+        "fn": 1.0,
+        "fp": 2.0,
+        "gold": 6.0,
+        "tp": 5.0
+      },
+      "general_frequency": {
+        "f1_pct": 40.0,
+        "fn": 3.0,
+        "fp": 3.0,
+        "gold": 5.0,
+        "tp": 2.0
+      },
+      "house_place": {
+        "f1_pct": 70.59,
+        "fn": 1.0,
+        "fp": 4.0,
+        "gold": 7.0,
+        "tp": 6.0
+      },
+      "ingredient": {
+        "f1_pct": 31.58,
+        "fn": 1.0,
+        "fp": 12.0,
+        "gold": 4.0,
+        "tp": 3.0
+      },
+      "joke_type": {
+        "f1_pct": 20.0,
+        "fn": 1.0,
+        "fp": 7.0,
+        "gold": 2.0,
+        "tp": 1.0
+      },
+      "list_name": {
+        "f1_pct": 24.0,
+        "fn": 13.0,
+        "fp": 25.0,
+        "gold": 19.0,
+        "tp": 6.0
+      },
+      "meal_type": {
+        "f1_pct": 0.0,
+        "fn": 2.0,
+        "fp": 3.0,
+        "gold": 2.0,
+        "tp": 0.0
+      },
+      "media_type": {
+        "f1_pct": 50.49,
+        "fn": 44.0,
+        "fp": 7.0,
+        "gold": 70.0,
+        "tp": 26.0
+      },
+      "movie_name": {
+        "f1_pct": 0.0,
+        "fn": 2.0,
+        "fp": 0.0,
+        "gold": 2.0,
+        "tp": 0.0
+      },
+      "movie_type": {
+        "f1_pct": 0.0,
+        "fn": 1.0,
+        "fp": 1.0,
+        "gold": 1.0,
+        "tp": 0.0
+      },
+      "music_descriptor": {
+        "f1_pct": 0.0,
+        "fn": 3.0,
+        "fp": 10.0,
+        "gold": 3.0,
+        "tp": 0.0
+      },
+      "music_genre": {
+        "f1_pct": 40.0,
+        "fn": 9.0,
+        "fp": 3.0,
+        "gold": 13.0,
+        "tp": 4.0
+      },
+      "news_topic": {
+        "f1_pct": 26.92,
+        "fn": 20.0,
+        "fp": 18.0,
+        "gold": 27.0,
+        "tp": 7.0
+      },
+      "order_type": {
+        "f1_pct": 26.67,
+        "fn": 14.0,
+        "fp": 8.0,
+        "gold": 18.0,
+        "tp": 4.0
+      },
+      "person": {
+        "f1_pct": 23.26,
+        "fn": 46.0,
+        "fp": 20.0,
+        "gold": 56.0,
+        "tp": 10.0
+      },
+      "personal_info": {
+        "f1_pct": 0.0,
+        "fn": 4.0,
+        "fp": 3.0,
+        "gold": 4.0,
+        "tp": 0.0
+      },
+      "place_name": {
+        "f1_pct": 40.23,
+        "fn": 83.0,
+        "fp": 21.0,
+        "gold": 118.0,
+        "tp": 35.0
+      },
+      "player_setting": {
+        "f1_pct": 9.52,
+        "fn": 8.0,
+        "fp": 11.0,
+        "gold": 9.0,
+        "tp": 1.0
+      },
+      "playlist_name": {
+        "f1_pct": 0.0,
+        "fn": 1.0,
+        "fp": 3.0,
+        "gold": 1.0,
+        "tp": 0.0
+      },
+      "podcast_descriptor": {
+        "f1_pct": 40.0,
+        "fn": 3.0,
+        "fp": 3.0,
+        "gold": 5.0,
+        "tp": 2.0
+      },
+      "podcast_name": {
+        "f1_pct": 40.0,
+        "fn": 2.0,
+        "fp": 1.0,
+        "gold": 3.0,
+        "tp": 1.0
+      },
+      "radio_name": {
+        "f1_pct": 50.0,
+        "fn": 2.0,
+        "fp": 4.0,
+        "gold": 5.0,
+        "tp": 3.0
+      },
+      "relation": {
+        "f1_pct": 26.09,
+        "fn": 11.0,
+        "fp": 6.0,
+        "gold": 14.0,
+        "tp": 3.0
+      },
+      "song_name": {
+        "f1_pct": 40.0,
+        "fn": 4.0,
+        "fp": 5.0,
+        "gold": 7.0,
+        "tp": 3.0
+      },
+      "sport_type": {
+        "f1_pct": 0.0,
+        "fn": 0.0,
+        "fp": 2.0,
+        "gold": 0.0,
+        "tp": 0.0
+      },
+      "time": {
+        "f1_pct": 12.07,
+        "fn": 60.0,
+        "fp": 42.0,
+        "gold": 67.0,
+        "tp": 7.0
+      },
+      "time_zone": {
+        "f1_pct": 36.36,
+        "fn": 0.0,
+        "fp": 14.0,
+        "gold": 4.0,
+        "tp": 4.0
+      },
+      "timeofday": {
+        "f1_pct": 27.59,
+        "fn": 18.0,
+        "fp": 3.0,
+        "gold": 22.0,
+        "tp": 4.0
+      },
+      "transport_agency": {
+        "f1_pct": 85.71,
+        "fn": 1.0,
+        "fp": 0.0,
+        "gold": 4.0,
+        "tp": 3.0
+      },
+      "transport_descriptor": {
+        "f1_pct": 0.0,
+        "fn": 0.0,
+        "fp": 2.0,
+        "gold": 0.0,
+        "tp": 0.0
+      },
+      "transport_name": {
+        "f1_pct": 11.11,
+        "fn": 0.0,
+        "fp": 16.0,
+        "gold": 1.0,
+        "tp": 1.0
+      },
+      "transport_type": {
+        "f1_pct": 40.0,
+        "fn": 22.0,
+        "fp": 5.0,
+        "gold": 31.0,
+        "tp": 9.0
+      },
+      "weather_descriptor": {
+        "f1_pct": 23.53,
+        "fn": 23.0,
+        "fp": 3.0,
+        "gold": 27.0,
+        "tp": 4.0
+      }
+    }
+  },
+  "row_id": "SAEA-SLURP-MF10-VOCAB-CARDS-NORMALIZED-SLU-V1",
+  "schema": "saea-slurp-mf10-normalized-slu-v1",
+  "scorer": {
+    "applies_to": "gold AND prediction, before the official distance blocks",
+    "false_merge_count": 2,
+    "false_merges": {
+      "date:15th": [
+        "fifteenth",
+        "the fifteenth"
+      ],
+      "date:day after": [
+        "day after",
+        "the day after"
+      ]
+    },
+    "id": "slurp-slu-f1-normalized-v1",
+    "inventory": {
+      "candidate_set": [
+        "a",
+        "an",
+        "at",
+        "by",
+        "for",
+        "in",
+        "of",
+        "on",
+        "the",
+        "to"
+      ],
+      "distinct_normalized_fillers": 4147,
+      "entity_types": 55,
+      "leading_token_examples": {
+        "in": [
+          "time: in 10 minutes",
+          "time: in 10 seconds",
+          "time: in 15 minutes"
+        ],
+        "the": [
+          "date: the 15th",
+          "date: the 22nd",
+          "date: the 23rd"
+        ]
+      },
+      "leading_token_witnesses": {
+        "in": 6,
+        "the": 18
+      },
+      "leading_tokens": [
+        "the",
+        "in"
+      ],
+      "min_witnesses": 3,
+      "normalizer_id": "saea-slurp-slot-normalizer-v1",
+      "rejected_token_examples": {
+        "5th": [
+          "date: 5th april",
+          "date: 5th december",
+          "date: 5th march"
+        ],
+        "after": [
+          "date: after 2 days",
+          "time: after 10 pm",
+          "time: after 2 pm"
+        ],
+        "april": [
+          "date: april 14th",
+          "date: april 15th",
+          "date: april 4th"
+        ],
+        "before": [
+          "time: before 6",
+          "time: before 6 pm",
+          "time: before 7 am"
+        ],
+        "cheese": [
+          "food_type: cheese burger",
+          "food_type: cheese pizza",
+          "food_type: cheese sandwich"
+        ],
+        "coffee": [
+          "business_type: coffee shop",
+          "device_type: coffee machine",
+          "place_name: coffee house"
+        ],
+        "every": [
+          "date: every 2 days from now",
+          "date: every friday",
+          "date: every monday"
+        ],
+        "happy": [
+          "event_name: happy anniversary",
+          "event_name: happy birthday",
+          "event_name: happy new year"
+        ],
+        "home": [
+          "personal_info: home address",
+          "personal_info: home phone number",
+          "place_name: home town"
+        ],
+        "last": [
+          "date: last friday",
+          "date: last month",
+          "date: last week"
+        ],
+        "lunch": [
+          "event_name: lunch appointment",
+          "event_name: lunch date",
+          "event_name: lunch meeting"
+        ],
+        "march": [
+          "date: march 10th",
+          "date: march 15th",
+          "date: march 22nd"
+        ],
+        "my": [
+          "event_name: my appointments",
+          "event_name: my birthday",
+          "house_place: my room"
+        ],
+        "new": [
+          "place_name: new delhi",
+          "place_name: new jersey",
+          "place_name: new york"
+        ],
+        "next": [
+          "date: next month",
+          "date: next sunday",
+          "date: next week"
+        ],
+        "office": [
+          "event_name: office meeting",
+          "event_name: office party",
+          "personal_info: office address"
+        ],
+        "one": [
+          "date: one day before",
+          "device_type: one light",
+          "song_name: one love"
+        ],
+        "robot": [
+          "device_type: robot cleaner",
+          "device_type: robot vacuum",
+          "device_type: robot vacuum cleaner"
+        ],
+        "smart": [
+          "device_type: smart lamp",
+          "device_type: smart plug",
+          "device_type: smart plug socket"
+        ],
+        "south": [
+          "place_name: south america",
+          "place_name: south asia",
+          "place_name: south sacramento"
+        ],
+        "this": [
+          "date: this coming week",
+          "date: this friday",
+          "date: this monday"
+        ],
+        "wemo": [
+          "device_type: wemo plug",
+          "device_type: wemo plug socket",
+          "device_type: wemo socket"
+        ],
+        "whole": [
+          "food_type: whole chicken",
+          "house_place: whole house",
+          "time: whole week"
+        ],
+        "work": [
+          "event_name: work meeting",
+          "event_name: work party",
+          "personal_info: work email"
+        ]
+      },
+      "rejected_token_witnesses": {
+        "5th": 4,
+        "after": 10,
+        "april": 3,
+        "before": 4,
+        "cheese": 3,
+        "coffee": 3,
+        "every": 5,
+        "happy": 3,
+        "home": 3,
+        "last": 7,
+        "lunch": 3,
+        "march": 6,
+        "my": 9,
+        "new": 3,
+        "next": 11,
+        "office": 4,
+        "one": 4,
+        "robot": 3,
+        "smart": 4,
+        "south": 3,
+        "this": 17,
+        "wemo": 3,
+        "whole": 3,
+        "work": 4
+      },
+      "rejected_tokens": [
+        "this",
+        "next",
+        "after",
+        "my",
+        "last",
+        "march",
+        "every",
+        "5th",
+        "before",
+        "office",
+        "one",
+        "smart",
+        "work",
+        "april",
+        "cheese",
+        "coffee",
+        "happy",
+        "home",
+        "lunch",
+        "new",
+        "robot",
+        "south",
+        "wemo",
+        "whole"
+      ],
+      "source_identity_hash": "4ba1e0569bc76c288097fe92d37c112f486d9ed2391c5662982c737d7c559d50",
+      "source_split": "train",
+      "utterance_count": 11514,
+      "why_rejected": "the corpus witnesses these leading tokens at the floor, but they carry meaning: stripping them merges `next week` with `last week`. No corpus statistic separates them from `on` and `the`, so the candidate set is declared and the corpus only confirms"
+    },
+    "normalizer_id": "saea-slurp-slot-normalizer-v1",
+    "on_wednesday_is_not_repaired": "MF-9 section 1.4's `on wednesday` -> `wednesday` example is NOT repaired by this rule: `on` is in the declared candidate set but TRAIN never carries `on X` and `X` as fillers of the same type, so the confirmation floor refuses it at zero witnesses. The rule declines to act where the corpus gives it no evidence, and the residual is charged to the arm rather than forgiven",
+    "r3_candidate_filter_evidence": {
+      "false_merge_count": 17,
+      "false_merges": {
+        "date:15th": [
+          "fifteenth",
+          "the fifteenth"
+        ],
+        "date:april": [
+          "april",
+          "fifth april"
+        ],
+        "date:day after": [
+          "day after",
+          "the day after"
+        ],
+        "date:friday": [
+          "after friday",
+          "every friday",
+          "friday",
+          "this friday"
+        ],
+        "date:month": [
+          "next month",
+          "the month",
+          "this month"
+        ],
+        "date:saturday": [
+          "saturday",
+          "this saturday"
+        ],
+        "date:week": [
+          "last week",
+          "next week",
+          "one week",
+          "this week"
+        ],
+        "device_type:plug socket": [
+          "smart plug socket",
+          "wemo plug socket"
+        ],
+        "device_type:vacuum": [
+          "robot vacuum",
+          "vacuum"
+        ],
+        "device_type:vacuum cleaner": [
+          "robot vacuum cleaner",
+          "vacuum cleaner"
+        ],
+        "event_name:birthday": [
+          "birthday",
+          "my birthday"
+        ],
+        "event_name:holiday": [
+          "holiday",
+          "my holiday"
+        ],
+        "time:10 am": [
+          "after ten am",
+          "ten am"
+        ],
+        "time:2 hours": [
+          "last two hours",
+          "two hours"
+        ],
+        "time:5 minutes": [
+          "five minutes",
+          "last five minutes"
+        ],
+        "time:hour": [
+          "next hour",
+          "one hour"
+        ],
+        "timeofday:afternoon": [
+          "afternoon",
+          "this afternoon"
+        ]
+      },
+      "tokens_the_candidate_set_rejects": [
+        "this",
+        "next",
+        "after",
+        "my",
+        "last",
+        "march",
+        "every",
+        "5th",
+        "before",
+        "office",
+        "one",
+        "smart",
+        "work",
+        "april",
+        "cheese",
+        "coffee",
+        "happy",
+        "home",
+        "lunch",
+        "new",
+        "robot",
+        "south",
+        "wemo",
+        "whole"
+      ],
+      "tokens_the_corpus_alone_admits": [
+        "the",
+        "this",
+        "next",
+        "after",
+        "my",
+        "last",
+        "in",
+        "march",
+        "every",
+        "5th",
+        "before",
+        "office",
+        "one",
+        "smart",
+        "work",
+        "april",
+        "cheese",
+        "coffee",
+        "happy",
+        "home",
+        "lunch",
+        "new",
+        "robot",
+        "south",
+        "wemo",
+        "whole"
+      ],
+      "verdict": "REFUSED. A metric that maps `next week`, `last week`, `this week` and `one week` onto `week` does not clarify the score, it forgives a real error. No corpus statistic separates `next` from `on`, so the candidate set is declared and the corpus only confirms",
+      "what_it_is": "the SAME R3 rung with its declared candidate set dropped, so the token list comes from the corpus alone. This is the version this audit built first; the false-merge audit below is what refused it"
+    },
+    "replaces_the_official_number": false,
+    "reporting_rule": "the paper-facing SLURP number stays the official evaluate.py one; the normalized number is reported BESIDE it, exactly as asr-wer-whisper sits beside raw asr-wer. No verdict, lock or admission in this repository is restated under it",
+    "rules": [
+      "R0-case-whitespace",
+      "R1-whisper-english",
+      "R2-meridiem-join",
+      "R3-train-leading-preposition"
+    ]
+  },
+  "sources": {
+    "comparator_outputs_sha256": "34fda7fa51410e0f4f7e8ba7c35f867c32f53c244de63af5386860486fcb885b",
+    "kc_s1b_outputs_sha256": "8dfeb906026057daa604bbe3d52b7dc9aeeccb8028f8fc46e5126bc9c0c97f8c",
+    "umbrella_lock": "/mnt/d/chao_workspace/docs/datasets.lock.json",
+    "value_projection": {
+      "family": "normalized",
+      "inventory_identity_hash": "bd8f75cec0c7c671f94210a872639f4bc1c0a904d79f6d9ae826817e9b650315",
+      "projection_id": "slurp-value-projection-v1",
+      "threshold": 0.2
+    }
+  },
+  "surface_form_mass": {
+    "surface_mass_normalized": 488.898,
+    "surface_mass_official": 551.085,
+    "surface_mass_removed": 62.187,
+    "surface_mass_removed_pct": 11.28,
+    "total_loss_mass_normalized": 2060.898,
+    "total_loss_mass_official": 2123.085,
+    "true_positive_mass_normalized": 846.0,
+    "what_it_is": "MF-9's own attribution engine re-run over the SAME sealed KC-S1b rows with the normalizer applied to gold and prediction alike"
+  }
+}

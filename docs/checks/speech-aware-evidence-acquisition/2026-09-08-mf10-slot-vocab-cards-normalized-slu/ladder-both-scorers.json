@@ -1,0 +1,245 @@
+{
+  "admission_primary": {
+    "disagreement_rule": "a module whose two columns disagree in SIGN is NOT admitted on the strength of either; the disagreement is itself the finding and is reported with the per-type table that produced it",
+    "precedent": "asr-wer-whisper beside asr-wer, Earnings-21/22",
+    "recommendation": "the OFFICIAL SLU-F1 stays the primary for admitting a slot module; the normalized SLU-F1 is the SECONDARY and must AGREE IN SIGN",
+    "why_normalized_is_reported_beside_it": "the official metric charges a full word distance of 1.0 for a pure case or spacing difference, so a module can look effective by repairing spelling and a module aimed at RECALL can look weaker than it is. The normalized column separates the two: a gain that survives it is a gain in what was heard, and a gain that vanishes under it was a gain in how it was written",
+    "why_official_is_primary": "it is the dataset's standard scorer at a pinned commit, it is the number every published SLURP line is stated in, and every verdict and lock in this repository already stands on it. A study that moved its primary to a metric of its own making after seeing the gap would be choosing the metric that flatters it"
+  },
+  "base": {
+    "arm": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1",
+    "normalized_minus_official": 0.74,
+    "normalized_slu_f1": 45.09,
+    "official_slu_f1": 44.35
+  },
+  "ceilings_under_both": {
+    "no_missing": {
+      "normalized": {
+        "gain": 31.5,
+        "missing_mass_repaired": 958.0,
+        "slu_f1": 76.59,
+        "surface_mass_repaired": 0.0
+      },
+      "official": {
+        "gain": 31.4,
+        "missing_mass_repaired": 964.0,
+        "slu_f1": 75.75,
+        "surface_mass_repaired": 0.0
+      }
+    },
+    "surface_perfect": {
+      "normalized": {
+        "gain": 6.75,
+        "missing_mass_repaired": 0.0,
+        "slu_f1": 51.84,
+        "surface_mass_repaired": 488.898
+      },
+      "official": {
+        "gain": 7.49,
+        "missing_mass_repaired": 0.0,
+        "slu_f1": 51.84,
+        "surface_mass_repaired": 551.087
+      }
+    }
+  },
+  "closed_types_priced": [
+    "alarm_type",
+    "app_name",
+    "color_type",
+    "currency_name",
+    "date",
+    "device_type",
+    "email_folder",
+    "house_place",
+    "meal_type",
+    "media_type",
+    "movie_type",
+    "order_type",
+    "relation",
+    "timeofday",
+    "transport_agency",
+    "transport_name",
+    "transport_type",
+    "weather_descriptor"
+  ],
+  "contacts": {
+    "audio_decode": 0,
+    "embedding": 0,
+    "gpu_hours": 0.0,
+    "model": 0,
+    "network": 0,
+    "note": "the only subprocess is the pinned official SLURP evaluate.py, which is the scorer and not a model; every token figure is the stated whitespace x 1.3 proxy and no tokenizer was called",
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "generated_at": "2026-09-08T15:23:39.244868+00:00",
+  "mf9_ladder_reference": {
+    "receipt": "docs/checks/.../2026-09-08-mf9-slurp-slot-gap-audit/improvement-ladder.json",
+    "schema": "saea-slurp-mf9-improvement-ladder-v1"
+  },
+  "normalized_base_rebuilds": true,
+  "row_id": "SAEA-SLURP-MF10-VOCAB-CARDS-NORMALIZED-SLU-V1",
+  "rungs": [
+    {
+      "measured": true,
+      "module": "value projection (MF-9 section 2), scoring-side",
+      "n": 1,
+      "normalized": {
+        "gain": 0.15,
+        "paired_new500": {
+          "ci90_pp": [
+            -0.02,
+            0.27
+          ],
+          "delta_pp": 0.11,
+          "harms": 2,
+          "left_pct": 32.77,
+          "n": 500,
+          "right_pct": 32.87,
+          "saves": 3,
+          "sign_test_p": 1.0,
+          "ties": 495
+        },
+        "paired_pooled_1000": {
+          "ci90_pp": [
+            0.04,
+            0.25
+          ],
+          "delta_pp": 0.14,
+          "harms": 2,
+          "left_pct": 29.17,
+          "n": 1000,
+          "right_pct": 29.3,
+          "saves": 7,
+          "sign_test_p": 0.1796875,
+          "ties": 991
+        },
+        "slu_f1": 45.24
+      },
+      "official": {
+        "gain": 0.74,
+        "paired_new500": {
+          "ci90_pp": [
+            0.47,
+            1.1
+          ],
+          "delta_pp": 0.78,
+          "harms": 1,
+          "left_pct": 31.89,
+          "n": 500,
+          "right_pct": 32.67,
+          "saves": 19,
+          "sign_test_p": 4.00543212890625e-05,
+          "ties": 480
+        },
+        "paired_pooled_1000": {
+          "ci90_pp": [
+            0.45,
+            0.87
+          ],
+          "delta_pp": 0.65,
+          "harms": 1,
+          "left_pct": 28.45,
+          "n": 1000,
+          "right_pct": 29.1,
+          "saves": 32,
+          "sign_test_p": 7.916241884231567e-09,
+          "ties": 967
+        },
+        "slu_f1": 45.09
+      }
+    },
+    {
+      "measured": false,
+      "module": "constrained decoding, structure + 55-type enum (MF-9 section 3)",
+      "n": 2,
+      "normalized": {
+        "gain": null,
+        "note": "the 3 unparsed rows carry 10 gold mentions and the normalizer never touches a row that did not parse, so this rung is a pure RECALL channel and its gain does not depend on the metric's spelling tolerance",
+        "slu_f1": null
+      },
+      "official": {
+        "gain": 0.81,
+        "slu_f1": 45.16
+      }
+    },
+    {
+      "measured": false,
+      "module": "intent narrowing -> better block selection (MF-9 section 1.2)",
+      "n": 3,
+      "normalized": {
+        "gain": null,
+        "note": "a recall channel; the normalizer does not touch it",
+        "slu_f1": null
+      },
+      "official": {
+        "gain": 4.05,
+        "slu_f1": 48.4
+      }
+    },
+    {
+      "measured": false,
+      "module": "retrieved fillers, KU-S3 (MF-9 section 4.2)",
+      "n": 4,
+      "normalized": {
+        "gain": null,
+        "note": "a recall channel; the normalizer does not touch it",
+        "slu_f1": null
+      },
+      "official": {
+        "gain": 13.71,
+        "slu_f1": 58.06
+      }
+    },
+    {
+      "measured": false,
+      "module": "MF-10 KU-S3v static vocabulary cards on the CLOSED/FORMAT types",
+      "n": "4v",
+      "normalized": {
+        "gain": 18.69,
+        "note": "priced on BOTH per-type tables, unrestricted oracle on the 18 closed types. The gain does NOT shrink under the normalized metric, and the split says why: 480 of the 565 mass units this card repairs are MISSING and only 85 are surface. A vocabulary card is a RECALL module that also happens to fix spelling, not a spelling module -- which is the opposite of rung 1",
+        "official_gain_for_comparison": 18.64,
+        "slu_f1": 63.78
+      },
+      "official": {
+        "gain": 18.64,
+        "slu_f1": 62.99
+      }
+    },
+    {
+      "measured": false,
+      "module": "MF-10 combined view: cards on closed + KU-S3 retrieval on open",
+      "n": "4c",
+      "normalized": {
+        "gain": null,
+        "slu_f1": null
+      },
+      "official": {
+        "gain": 24.86,
+        "slu_f1": 69.21
+      }
+    },
+    {
+      "measured": false,
+      "module": "targeted slot re-ask on judge-flagged rows (MF-9 section 5.2)",
+      "n": 6,
+      "normalized": {
+        "gain": null,
+        "note": "a recall channel; the normalizer does not touch it",
+        "slu_f1": null
+      },
+      "official": {
+        "gain": 28.52,
+        "slu_f1": 72.87
+      }
+    }
+  ],
+  "schema": "saea-slurp-mf10-ladder-both-scorers-v1",
+  "sources": {
+    "knowledge_views_sha256": "93c8a634564a979f58313e141f915256b8fa84e3e60f78fb27091634ca53d491",
+    "mf9_improvement_ladder_sha256": "ec87bc9da0b7bc02938f922ffa01111d51f47a21722df9c267723282f0f22440",
+    "normalized_slu_sha256": "b20abbb0ebc0878b46fb7802aa1c85b4a810cb62d3cc1dfa36f4e9fa5d354c67"
+  },
+  "status": "PRICED, NOT PREREGISTERED. Admits nothing, promotes nothing.",
+  "what_this_is_not": "no rung is admitted, promoted or preregistered; the ceilings are oracles and overlap heavily, so they do not add; no superiority, generalization or Stage-3 conclusion is reached"
+}
