@@ -1,0 +1,572 @@
+{
+ "constant_residual_twin_minus_arm": [
+  7
+ ],
+ "per_call_brief_text_tokens": [
+  {
+   "kc_e1_text_tokens_max": 649,
+   "kc_e1_text_tokens_min": 636,
+   "ku_e1c_text_tokens_max": 656,
+   "ku_e1c_text_tokens_min": 643,
+   "sample_id": "4320211",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 660,
+   "kc_e1_text_tokens_min": 647,
+   "ku_e1c_text_tokens_max": 667,
+   "ku_e1c_text_tokens_min": 654,
+   "sample_id": "4330115",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 731,
+   "kc_e1_text_tokens_min": 718,
+   "ku_e1c_text_tokens_max": 738,
+   "ku_e1c_text_tokens_min": 725,
+   "sample_id": "4341191",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 591,
+   "kc_e1_text_tokens_min": 578,
+   "ku_e1c_text_tokens_max": 598,
+   "ku_e1c_text_tokens_min": 585,
+   "sample_id": "4344338",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 690,
+   "kc_e1_text_tokens_min": 677,
+   "ku_e1c_text_tokens_max": 697,
+   "ku_e1c_text_tokens_min": 684,
+   "sample_id": "4344866",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 734,
+   "kc_e1_text_tokens_min": 721,
+   "ku_e1c_text_tokens_max": 741,
+   "ku_e1c_text_tokens_min": 728,
+   "sample_id": "4346818",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 870,
+   "kc_e1_text_tokens_min": 857,
+   "ku_e1c_text_tokens_max": 877,
+   "ku_e1c_text_tokens_min": 864,
+   "sample_id": "4346923",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 720,
+   "kc_e1_text_tokens_min": 707,
+   "ku_e1c_text_tokens_max": 727,
+   "ku_e1c_text_tokens_min": 714,
+   "sample_id": "4359732",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 611,
+   "kc_e1_text_tokens_min": 598,
+   "ku_e1c_text_tokens_max": 618,
+   "ku_e1c_text_tokens_min": 605,
+   "sample_id": "4359971",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 789,
+   "kc_e1_text_tokens_min": 776,
+   "ku_e1c_text_tokens_max": 796,
+   "ku_e1c_text_tokens_min": 783,
+   "sample_id": "4360366",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 642,
+   "kc_e1_text_tokens_min": 629,
+   "ku_e1c_text_tokens_max": 649,
+   "ku_e1c_text_tokens_min": 636,
+   "sample_id": "4360674",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 773,
+   "kc_e1_text_tokens_min": 760,
+   "ku_e1c_text_tokens_max": 780,
+   "ku_e1c_text_tokens_min": 767,
+   "sample_id": "4360717",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 720,
+   "kc_e1_text_tokens_min": 707,
+   "ku_e1c_text_tokens_max": 727,
+   "ku_e1c_text_tokens_min": 714,
+   "sample_id": "4361631",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 723,
+   "kc_e1_text_tokens_min": 710,
+   "ku_e1c_text_tokens_max": 730,
+   "ku_e1c_text_tokens_min": 717,
+   "sample_id": "4363614",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 730,
+   "kc_e1_text_tokens_min": 717,
+   "ku_e1c_text_tokens_max": 737,
+   "ku_e1c_text_tokens_min": 724,
+   "sample_id": "4364366",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 685,
+   "kc_e1_text_tokens_min": 672,
+   "ku_e1c_text_tokens_max": 692,
+   "ku_e1c_text_tokens_min": 679,
+   "sample_id": "4365024",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 532,
+   "kc_e1_text_tokens_min": 519,
+   "ku_e1c_text_tokens_max": 539,
+   "ku_e1c_text_tokens_min": 526,
+   "sample_id": "4365948",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 688,
+   "kc_e1_text_tokens_min": 675,
+   "ku_e1c_text_tokens_max": 695,
+   "ku_e1c_text_tokens_min": 682,
+   "sample_id": "4366302",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 711,
+   "kc_e1_text_tokens_min": 698,
+   "ku_e1c_text_tokens_max": 718,
+   "ku_e1c_text_tokens_min": 705,
+   "sample_id": "4366429",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 521,
+   "kc_e1_text_tokens_min": 508,
+   "ku_e1c_text_tokens_max": 528,
+   "ku_e1c_text_tokens_min": 515,
+   "sample_id": "4366522",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 596,
+   "kc_e1_text_tokens_min": 583,
+   "ku_e1c_text_tokens_max": 603,
+   "ku_e1c_text_tokens_min": 590,
+   "sample_id": "4366893",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 575,
+   "kc_e1_text_tokens_min": 562,
+   "ku_e1c_text_tokens_max": 582,
+   "ku_e1c_text_tokens_min": 569,
+   "sample_id": "4367318",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 642,
+   "kc_e1_text_tokens_min": 629,
+   "ku_e1c_text_tokens_max": 649,
+   "ku_e1c_text_tokens_min": 636,
+   "sample_id": "4367535",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 816,
+   "kc_e1_text_tokens_min": 803,
+   "ku_e1c_text_tokens_max": 823,
+   "ku_e1c_text_tokens_min": 810,
+   "sample_id": "4368670",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 469,
+   "kc_e1_text_tokens_min": 456,
+   "ku_e1c_text_tokens_max": 476,
+   "ku_e1c_text_tokens_min": 463,
+   "sample_id": "4374910",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 615,
+   "kc_e1_text_tokens_min": 602,
+   "ku_e1c_text_tokens_max": 622,
+   "ku_e1c_text_tokens_min": 609,
+   "sample_id": "4375653",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 742,
+   "kc_e1_text_tokens_min": 729,
+   "ku_e1c_text_tokens_max": 749,
+   "ku_e1c_text_tokens_min": 736,
+   "sample_id": "4382825",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 679,
+   "kc_e1_text_tokens_min": 666,
+   "ku_e1c_text_tokens_max": 686,
+   "ku_e1c_text_tokens_min": 673,
+   "sample_id": "4383161",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 529,
+   "kc_e1_text_tokens_min": 516,
+   "ku_e1c_text_tokens_max": 536,
+   "ku_e1c_text_tokens_min": 523,
+   "sample_id": "4384198",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 562,
+   "kc_e1_text_tokens_min": 549,
+   "ku_e1c_text_tokens_max": 569,
+   "ku_e1c_text_tokens_min": 556,
+   "sample_id": "4384683",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 592,
+   "kc_e1_text_tokens_min": 579,
+   "ku_e1c_text_tokens_max": 599,
+   "ku_e1c_text_tokens_min": 586,
+   "sample_id": "4384744",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 740,
+   "kc_e1_text_tokens_min": 727,
+   "ku_e1c_text_tokens_max": 747,
+   "ku_e1c_text_tokens_min": 734,
+   "sample_id": "4384964",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 620,
+   "kc_e1_text_tokens_min": 607,
+   "ku_e1c_text_tokens_max": 627,
+   "ku_e1c_text_tokens_min": 614,
+   "sample_id": "4385072",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 682,
+   "kc_e1_text_tokens_min": 669,
+   "ku_e1c_text_tokens_max": 689,
+   "ku_e1c_text_tokens_min": 676,
+   "sample_id": "4385388",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 768,
+   "kc_e1_text_tokens_min": 755,
+   "ku_e1c_text_tokens_max": 775,
+   "ku_e1c_text_tokens_min": 762,
+   "sample_id": "4385939",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 500,
+   "kc_e1_text_tokens_min": 487,
+   "ku_e1c_text_tokens_max": 507,
+   "ku_e1c_text_tokens_min": 494,
+   "sample_id": "4386541",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 498,
+   "kc_e1_text_tokens_min": 485,
+   "ku_e1c_text_tokens_max": 505,
+   "ku_e1c_text_tokens_min": 492,
+   "sample_id": "4387332",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 519,
+   "kc_e1_text_tokens_min": 506,
+   "ku_e1c_text_tokens_max": 526,
+   "ku_e1c_text_tokens_min": 513,
+   "sample_id": "4387383",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 515,
+   "kc_e1_text_tokens_min": 502,
+   "ku_e1c_text_tokens_max": 522,
+   "ku_e1c_text_tokens_min": 509,
+   "sample_id": "4387865",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 572,
+   "kc_e1_text_tokens_min": 559,
+   "ku_e1c_text_tokens_max": 579,
+   "ku_e1c_text_tokens_min": 566,
+   "sample_id": "4389907",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 532,
+   "kc_e1_text_tokens_min": 519,
+   "ku_e1c_text_tokens_max": 539,
+   "ku_e1c_text_tokens_min": 526,
+   "sample_id": "4392809",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 485,
+   "kc_e1_text_tokens_min": 472,
+   "ku_e1c_text_tokens_max": 492,
+   "ku_e1c_text_tokens_min": 479,
+   "sample_id": "4394084",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 587,
+   "kc_e1_text_tokens_min": 574,
+   "ku_e1c_text_tokens_max": 594,
+   "ku_e1c_text_tokens_min": 581,
+   "sample_id": "4397800",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  },
+  {
+   "kc_e1_text_tokens_max": 705,
+   "kc_e1_text_tokens_min": 692,
+   "ku_e1c_text_tokens_max": 712,
+   "ku_e1c_text_tokens_min": 699,
+   "sample_id": "4397829",
+   "twin_minus_arm_max": 7,
+   "twin_minus_arm_min": 7
+  }
+ ],
+ "saturation_reported_by_the_flights": {
+  "kc-e1": {
+   "comparator_saturated_slice_count": 0,
+   "max_tokens": 1024,
+   "rule": "reproduction.obs_loop: a slice whose completion reaches the decode cap is a TRUNCATED decode, not a transcript end, so it contributes the empty string to the stitched hypothesis and is counted instead of scored silently (obs_saturated true, obs_accepted_chars 0)",
+   "saturated_slice_count": 2,
+   "skipped_slice_count": 0,
+   "what_it_costs_the_measurement": "2 of 1,593 windows -- 180 s of 141,345.85, or 0.127 % of the audio -- carry no transcript, which lands in this cell's deletions and is one of the reasons its corpus WER moved. Both windows ran far past the typical ~1,550-char window (5,426 and 4,195 raw chars) before the cap stopped them, so the finding is over-generation under the brief, not a lost window at random. Reported, never repaired: the sealed hypothesis is what the OBS rule produced.",
+   "windows": [
+    {
+     "accepted_chars": 0,
+     "obs_iteration": 22,
+     "obs_record": "req-0012-i0022/obs",
+     "raw_response_chars": 5426,
+     "sample_id": "4360717",
+     "window_seconds": [
+      1980.0,
+      2070.0
+     ]
+    },
+    {
+     "accepted_chars": 0,
+     "obs_iteration": 26,
+     "obs_record": "req-0014-i0026/obs",
+     "raw_response_chars": 4195,
+     "sample_id": "4363614",
+     "window_seconds": [
+      2340.0,
+      2430.0
+     ]
+    }
+   ]
+  },
+  "ku-e1c": {
+   "comparator_saturated_slice_count": 0,
+   "kc_e1_saturated_slice_count": 2,
+   "manifest_cost_saturated_sample_ids": [
+    "4384683",
+    "4397829"
+   ],
+   "manifest_cost_saturated_slice_count": 2,
+   "max_tokens": 1024,
+   "rule": "reproduction.obs_loop: a slice whose completion reaches the decode cap is a TRUNCATED decode, not a transcript end, so it contributes the empty string to the stitched hypothesis and is counted instead of scored silently (obs_saturated true, obs_accepted_chars 0)",
+   "saturated_slice_count": 2,
+   "skipped_slice_count": 0,
+   "trace_and_manifest_agree": true,
+   "windows": [
+    {
+     "accepted_chars": 0,
+     "obs_iteration": 14,
+     "obs_record": "req-0030-i0014/obs",
+     "raw_response_chars": 2425,
+     "sample_id": "4384683",
+     "window_seconds": [
+      1260.0,
+      1350.0
+     ]
+    },
+    {
+     "accepted_chars": 0,
+     "obs_iteration": 4,
+     "obs_record": "req-0044-i0004/obs",
+     "raw_response_chars": 6040,
+     "sample_id": "4397829",
+     "window_seconds": [
+      360.0,
+      450.0
+     ]
+    }
+   ]
+  }
+ },
+ "sources": {
+  "kc-e1": {
+   "path": "/mnt/d/chao_workspace/saea-worktrees/wt-verdict/docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/flight/flight-receipt.json",
+   "sha256": "04e302820aba88d23b23e6cbcedfb08d19e94b3f4f1bcbd1dba9236c1f10c096"
+  },
+  "ku-e1c": {
+   "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/flight-placebo/flight-receipt.json",
+   "sha256": "11f1be7afe52607ff7b3eb822f593fc908898bd099481d3873973e1ae2d9e842"
+  }
+ },
+ "totals": {
+  "kc-e1": {
+   "audio_seconds_used": 141345.8526875,
+   "comparator_completion_tokens": 439532,
+   "comparator_prompt_tokens": 1935965,
+   "completion_tokens": 423115,
+   "gpu_hours": 0.9948,
+   "gpu_seconds": 3581.430167366449,
+   "peak_vram_mib": 22726.0,
+   "per_window_prompt_min_median_max": [
+    541,
+    1855,
+    2040
+   ],
+   "per_window_text_min_median_max": [
+    456,
+    688,
+    870
+   ],
+   "prompt_tokens": 2907274,
+   "throughput": {
+    "realized_realtime_factor": 39.47,
+    "run_wall_seconds": 5884.0,
+    "wall_minutes": 98.07,
+    "wall_seconds": 5884.0,
+    "wall_seconds_including_finalize": 7412.0,
+    "windows_per_minute": 16.244
+   }
+  },
+  "ku-e1c": {
+   "audio_seconds_used": 141345.8526875,
+   "comparator_gpu_hours": 0.9734,
+   "completion_tokens": 430779,
+   "fit_reference": {
+    "arm_per_window_text_tokens": {
+     "max": 855,
+     "median": 673.0,
+     "min": 454
+    },
+    "brief_tokens_equal_on_every_call": true,
+    "constant_residual_twin_minus_arm": 7,
+    "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/placebo-token-match/placebo-token-match.json",
+    "twin_per_window_text_tokens": {
+     "max": 862,
+     "median": 680.0,
+     "min": 461
+    },
+    "worst_required_after_padding": 3058
+   },
+   "gpu_hours": 1.0087,
+   "gpu_seconds": 3631.3984271056343,
+   "margin_factor": 2.0007,
+   "peak_vram_mib": 22726.0,
+   "per_window_completion": {
+    "count": 1593,
+    "max": 1024,
+    "median": 274,
+    "min": 2,
+    "p90": 321,
+    "p95": 333
+   },
+   "per_window_prompt": {
+    "count": 1593,
+    "max": 2047,
+    "median": 1862,
+    "min": 548,
+    "p90": 1950,
+    "p95": 1993
+   },
+   "prompt_tokens": 2918425,
+   "slot_tokens": 6144,
+   "throughput": {
+    "finalize_seconds": 1637.0,
+    "kc_e1_realized_realtime_factor": 39.47,
+    "kc_e1_run_wall_seconds": 5884.0,
+    "kc_e1_windows_per_minute": 16.244,
+    "realized_realtime_factor": 38.92,
+    "run_exited_at": "2026-09-07T21:46:54Z",
+    "run_started_at": "2026-09-07T20:10:15Z",
+    "run_wall_minutes": 96.65,
+    "run_wall_seconds": 5799.0,
+    "score_batch_seconds": 1528.0,
+    "windows_per_minute": 16.482
+   },
+   "worst_realized_request": 3071
+  }
+ }
+}

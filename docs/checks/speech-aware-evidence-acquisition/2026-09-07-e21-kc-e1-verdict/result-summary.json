@@ -1,0 +1,4900 @@
+{
+ "arms": {
+  "comparator": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+  "kc-e1": "SAEA-E21-KC-E1-BRIEF-44-V1",
+  "ku-e1c": "SAEA-E21-KU-E1C-PLACEBO-44-V1"
+ },
+ "contrasts": {
+  "content": {
+   "left_arm": "ku-e1c",
+   "left_run_id": "SAEA-E21-KU-E1C-PLACEBO-44-V1",
+   "metrics": {
+    "corpus_wer": {
+     "delta_right_minus_left": 0.003821939321501544,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.0007075152530134257,
+      "ci_level": 0.9,
+      "ci_low": -0.006725944915710328,
+      "n_replicates": 10000,
+      "point_estimate": -0.0030357947690889233,
+      "seed": 20260903,
+      "sigma_hat": 0.0022606036700270255
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.003821939321501544,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.0835378649952052,
+     "metric": "corpus_wer",
+     "natural_mixture_call_clustered": {
+      "ci_high": -0.00045038985464418576,
+      "ci_level": 0.9,
+      "ci_low": -0.0074184291991038495,
+      "n_replicates": 10000,
+      "point_estimate": -0.003821939321501544,
+      "seed": 20260903,
+      "sigma_hat": 0.0021202601178435046
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": -0.0010065011163727891,
+      "ci_level": 0.9,
+      "ci_low": -0.0069325489950705,
+      "n_replicates": 10000,
+      "point_estimate": -0.003821939321501544,
+      "seed": 20260903,
+      "sigma_hat": 0.0017975207775303074
+     },
+     "note": "pooled (S + D + I) / reference words -- the ConEC __ALL__ bucket and asr-wer-whisper agree on it",
+     "right_pooled": 0.08735980431670674
+    },
+    "entity_wer_EVENT": {
+     "delta_right_minus_left": 0.0,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.008994708994708995,
+      "ci_level": 0.9,
+      "ci_low": -0.021576471136265707,
+      "n_replicates": 10000,
+      "point_estimate": -0.0043350918259208795,
+      "seed": 20260903,
+      "sigma_hat": 0.009587153553218496
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.0,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.024291497975708502,
+     "metric": "entity_wer_EVENT",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.007462686567164173,
+      "ci_level": 0.9,
+      "ci_low": -0.006614633769806185,
+      "n_replicates": 10000,
+      "point_estimate": -0.0,
+      "seed": 20260903,
+      "sigma_hat": 0.004366043995674682
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror EVENT entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.024291497975708502
+    },
+    "entity_wer_FAC": {
+     "delta_right_minus_left": 0.008196721311475391,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.046218487394957986,
+      "ci_level": 0.9,
+      "ci_low": -0.11764705882352941,
+      "n_replicates": 10000,
+      "point_estimate": -0.022108843537414966,
+      "seed": 20260903,
+      "sigma_hat": 0.051534432399486074
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.008196721311475391,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.20491803278688525,
+     "metric": "entity_wer_FAC",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.04839492640150319,
+      "ci_level": 0.9,
+      "ci_low": -0.08411214953271026,
+      "n_replicates": 10000,
+      "point_estimate": -0.008196721311475391,
+      "seed": 20260903,
+      "sigma_hat": 0.04141397189133817
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror FAC entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.21311475409836064
+    },
+    "entity_wer_GPE": {
+     "delta_right_minus_left": -0.0019518542615484802,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.02715540165773629,
+      "ci_level": 0.9,
+      "ci_low": -0.012744353388483627,
+      "n_replicates": 10000,
+      "point_estimate": 0.006777303563328742,
+      "seed": 20260903,
+      "sigma_hat": 0.012143251838978368
+     },
+     "higher_is_better": false,
+     "improvement_point": 0.0019518542615484802,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.19713728041639558,
+     "metric": "entity_wer_GPE",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.022082018927444796,
+      "ci_level": 0.9,
+      "ci_low": -0.018762172860533517,
+      "n_replicates": 10000,
+      "point_estimate": 0.0019518542615484802,
+      "seed": 20260903,
+      "sigma_hat": 0.012567168354997974
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror GPE entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.1951854261548471
+    },
+    "entity_wer_LOC": {
+     "delta_right_minus_left": -0.006185567010309281,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.01179029304029304,
+      "ci_level": 0.9,
+      "ci_low": 0.0,
+      "n_replicates": 10000,
+      "point_estimate": 0.004581766917293233,
+      "seed": 20260903,
+      "sigma_hat": 0.003790284805046757
+     },
+     "higher_is_better": false,
+     "improvement_point": 0.006185567010309281,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.032989690721649485,
+     "metric": "entity_wer_LOC",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.015087183560787564,
+      "ci_level": 0.9,
+      "ci_low": -0.0,
+      "n_replicates": 10000,
+      "point_estimate": 0.006185567010309281,
+      "seed": 20260903,
+      "sigma_hat": 0.004681905589223014
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror LOC entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.026804123711340205
+    },
+    "entity_wer_NORP": {
+     "delta_right_minus_left": 0.0211864406779661,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": -0.00293885448916412,
+      "ci_level": 0.9,
+      "ci_low": -0.05942857142857143,
+      "n_replicates": 10000,
+      "point_estimate": -0.028,
+      "seed": 20260903,
+      "sigma_hat": 0.01745634016514534
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.0211864406779661,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.09745762711864407,
+     "metric": "entity_wer_NORP",
+     "natural_mixture_call_clustered": {
+      "ci_high": -0.0,
+      "ci_level": 0.9,
+      "ci_low": -0.04678362573099415,
+      "n_replicates": 10000,
+      "point_estimate": -0.0211864406779661,
+      "seed": 20260903,
+      "sigma_hat": 0.01425927332576445
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror NORP entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.11864406779661017
+    },
+    "entity_wer_ORG": {
+     "delta_right_minus_left": -0.0025212010084804115,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.014949486109446351,
+      "ci_level": 0.9,
+      "ci_low": -0.01759342076049262,
+      "n_replicates": 10000,
+      "point_estimate": -0.0010549547910259265,
+      "seed": 20260903,
+      "sigma_hat": 0.009876181677643342
+     },
+     "higher_is_better": false,
+     "improvement_point": 0.0025212010084804115,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.1824432729773092,
+     "metric": "entity_wer_ORG",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.01393661766876909,
+      "ci_level": 0.9,
+      "ci_low": -0.010017560213925731,
+      "n_replicates": 10000,
+      "point_estimate": 0.0025212010084804115,
+      "seed": 20260903,
+      "sigma_hat": 0.007253801953811757
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": 0.013279318011878849,
+      "ci_level": 0.9,
+      "ci_low": -0.008221767990897112,
+      "n_replicates": 10000,
+      "point_estimate": 0.0025212010084804115,
+      "seed": 20260903,
+      "sigma_hat": 0.00651827735681198
+     },
+     "note": "ConEC-mirror ORG entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.17992207196882878
+    },
+    "entity_wer_PERSON": {
+     "delta_right_minus_left": -0.05382242029482345,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.08098840940021952,
+      "ci_level": 0.9,
+      "ci_low": 0.0448108434301929,
+      "n_replicates": 10000,
+      "point_estimate": 0.062459377386634214,
+      "seed": 20260903,
+      "sigma_hat": 0.010915618024655944
+     },
+     "higher_is_better": false,
+     "improvement_point": 0.05382242029482345,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.23723003085361674,
+     "metric": "entity_wer_PERSON",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.06988537585124086,
+      "ci_level": 0.9,
+      "ci_low": 0.039135831408917465,
+      "n_replicates": 10000,
+      "point_estimate": 0.05382242029482345,
+      "seed": 20260903,
+      "sigma_hat": 0.009288062095278883
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": 0.06665940752105921,
+      "ci_level": 0.9,
+      "ci_low": 0.04090202355363432,
+      "n_replicates": 10000,
+      "point_estimate": 0.05382242029482345,
+      "seed": 20260903,
+      "sigma_hat": 0.00789158911227377
+     },
+     "note": "ConEC-mirror PERSON entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.1834076105587933
+    },
+    "entity_wer_PRODUCT": {
+     "delta_right_minus_left": -0.015384615384615385,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.0313971615575161,
+      "ci_level": 0.9,
+      "ci_low": -0.03443559334601151,
+      "n_replicates": 10000,
+      "point_estimate": -4.385299671889149e-05,
+      "seed": 20260903,
+      "sigma_hat": 0.020154202624020436
+     },
+     "higher_is_better": false,
+     "improvement_point": 0.015384615384615385,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.18205128205128204,
+     "metric": "entity_wer_PRODUCT",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.03990659644139344,
+      "ci_level": 0.9,
+      "ci_low": -0.014815913836685374,
+      "n_replicates": 10000,
+      "point_estimate": 0.015384615384615385,
+      "seed": 20260903,
+      "sigma_hat": 0.01686822853530286
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror PRODUCT entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.16666666666666666
+    },
+    "insertions_per_reference_word": {
+     "delta_right_minus_left": -0.0009061470682250918,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.0013416342127446162,
+      "ci_level": 0.9,
+      "ci_low": 0.00025382444590192773,
+      "n_replicates": 10000,
+      "point_estimate": 0.0008103586952247225,
+      "seed": 20260903,
+      "sigma_hat": 0.0003311916982915957
+     },
+     "higher_is_better": false,
+     "improvement_point": 0.0009061470682250918,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.028740983697691548,
+     "metric": "insertions_per_reference_word",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.0014777341336576037,
+      "ci_level": 0.9,
+      "ci_low": 0.00032747922842437136,
+      "n_replicates": 10000,
+      "point_estimate": 0.0009061470682250918,
+      "seed": 20260903,
+      "sigma_hat": 0.0003487382529164865
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": 0.0014343530768316257,
+      "ci_level": 0.9,
+      "ci_low": 0.00031144008601460886,
+      "n_replicates": 10000,
+      "point_estimate": 0.0009061470682250918,
+      "seed": 20260903,
+      "sigma_hat": 0.0003439229982800789
+     },
+     "note": "the over-generation guard: a brief that gets read aloud shows up here first",
+     "right_pooled": 0.027834836629466456
+    },
+    "negation_critical_rate": {
+     "delta_right_minus_left": 3.0575514572012304e-05,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 5.889702755628825e-05,
+      "ci_level": 0.9,
+      "ci_low": -5.636130612363757e-05,
+      "n_replicates": 10000,
+      "point_estimate": -5.741974013004981e-06,
+      "seed": 20260903,
+      "sigma_hat": 3.547699658368378e-05
+     },
+     "higher_is_better": false,
+     "improvement_point": -3.0575514572012304e-05,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.00030297555348630353,
+     "metric": "negation_critical_rate",
+     "natural_mixture_call_clustered": {
+      "ci_high": 1.3784745044880596e-05,
+      "ci_level": 0.9,
+      "ci_low": -7.263095967776347e-05,
+      "n_replicates": 10000,
+      "point_estimate": -3.0575514572012304e-05,
+      "seed": 20260903,
+      "sigma_hat": 2.6100036894603388e-05
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": 9.233398339100406e-06,
+      "ci_level": 0.9,
+      "ci_low": -6.868311035373726e-05,
+      "n_replicates": 10000,
+      "point_estimate": -3.0575514572012304e-05,
+      "seed": 20260903,
+      "sigma_hat": 2.3942207172091425e-05
+     },
+     "note": "HIGH-impact reference words / reference words; advisory only (100 HIGH words on all 44)",
+     "right_pooled": 0.00033355106805831584
+    },
+    "non_entity_wer": {
+     "delta_right_minus_left": 0.005431586003397618,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": -0.0006587100002769988,
+      "ci_level": 0.9,
+      "ci_low": -0.008119747322920215,
+      "n_replicates": 10000,
+      "point_estimate": -0.004436608524392773,
+      "seed": 20260903,
+      "sigma_hat": 0.0022703523686961823
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.005431586003397618,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.04964331599475571,
+     "metric": "non_entity_wer",
+     "natural_mixture_call_clustered": {
+      "ci_high": -0.001965441890111106,
+      "ci_level": 0.9,
+      "ci_low": -0.009137648362505482,
+      "n_replicates": 10000,
+      "point_estimate": -0.005431586003397618,
+      "seed": 20260903,
+      "sigma_hat": 0.002202499188856517
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": -0.002515286274567126,
+      "ci_level": 0.9,
+      "ci_low": -0.008651214295956227,
+      "n_replicates": 10000,
+      "point_estimate": -0.005431586003397618,
+      "seed": 20260903,
+      "sigma_hat": 0.0018540148503306815
+     },
+     "note": "pooled (S + D) / non-entity reference words; insertions are unattributable and excluded",
+     "right_pooled": 0.055074901998153326
+    },
+    "numeric_accuracy_call_pooled": {
+     "delta_right_minus_left": -0.007499486336552286,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": -0.0023563274321015196,
+      "ci_level": 0.9,
+      "ci_low": -0.014122510460478905,
+      "n_replicates": 10000,
+      "point_estimate": -0.007925357465796607,
+      "seed": 20260903,
+      "sigma_hat": 0.0035757829423123536
+     },
+     "higher_is_better": true,
+     "improvement_point": -0.007499486336552286,
+     "left_pooled": 0.9093897678241216,
+     "metric": "numeric_accuracy_call_pooled",
+     "natural_mixture_call_clustered": {
+      "ci_high": -0.001013166093877438,
+      "ci_level": 0.9,
+      "ci_low": -0.015028598223212591,
+      "n_replicates": 10000,
+      "point_estimate": -0.007499486336552286,
+      "seed": 20260903,
+      "sigma_hat": 0.004284321780980123
+     },
+     "note": "the GUARD figure: bag-matched per call, the unit the comparator's published 90.73 was computed at; delta = KC-E1 minus comparator, higher is better",
+     "right_pooled": 0.9018902814875693
+    },
+    "numeric_accuracy_window": {
+     "delta_right_minus_left": -0.009245942058763057,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": -0.004040839952286132,
+      "ci_level": 0.9,
+      "ci_low": -0.01611657723621881,
+      "n_replicates": 10000,
+      "point_estimate": -0.009782393872470775,
+      "seed": 20260903,
+      "sigma_hat": 0.0036982600213350475
+     },
+     "higher_is_better": true,
+     "improvement_point": -0.009245942058763057,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.902095746866653,
+     "metric": "numeric_accuracy_window",
+     "natural_mixture_call_clustered": {
+      "ci_high": -0.0022119243202795656,
+      "ci_level": 0.9,
+      "ci_low": -0.01704776826636389,
+      "n_replicates": 10000,
+      "point_estimate": -0.009245942058763057,
+      "seed": 20260903,
+      "sigma_hat": 0.004539348772802334
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": -0.003043844039684407,
+      "ci_level": 0.9,
+      "ci_low": -0.015913788825864972,
+      "n_replicates": 10000,
+      "point_estimate": -0.009245942058763057,
+      "seed": 20260903,
+      "sigma_hat": 0.003897104212942068
+     },
+     "note": "WINDOW-pooled numeric-value accuracy -- a DIAGNOSTIC; the guard is the call-pooled figure",
+     "right_pooled": 0.8928498048078899
+    },
+    "unlabelled_wer": {
+     "delta_right_minus_left": -0.0006761325219742931,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.0014746926487117966,
+      "ci_level": 0.9,
+      "ci_low": -0.017116980665399628,
+      "n_replicates": 10000,
+      "point_estimate": -0.007814438563119001,
+      "seed": 20260903,
+      "sigma_hat": 0.005677418799540401
+     },
+     "higher_is_better": false,
+     "improvement_point": 0.0006761325219742931,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.14063556457065585,
+     "metric": "unlabelled_wer",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.014640403059479418,
+      "ci_level": 0.9,
+      "ci_low": -0.013314073194709786,
+      "n_replicates": 10000,
+      "point_estimate": 0.0006761325219742931,
+      "seed": 20260903,
+      "sigma_hat": 0.008397380562965531
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "pooled (S + D) / unlabelled reference words -- the normalization-transfer residue, reported not claimed",
+     "right_pooled": 0.13995943204868155
+    }
+   },
+   "reading": "KC-E1 vs KU-E1c -- the one factor, the brief's CONTENT",
+   "right_arm": "kc-e1",
+   "right_run_id": "SAEA-E21-KC-E1-BRIEF-44-V1"
+  },
+  "form": {
+   "left_arm": "comparator",
+   "left_run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+   "metrics": {
+    "corpus_wer": {
+     "delta_right_minus_left": 0.001542673689769708,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.00015136636747320922,
+      "ci_level": 0.9,
+      "ci_low": -0.0041959154167211755,
+      "n_replicates": 10000,
+      "point_estimate": -0.0018507639990241812,
+      "seed": 20260903,
+      "sigma_hat": 0.001335863242669976
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.001542673689769708,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.08199519130543549,
+     "metric": "corpus_wer",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.000380770435002866,
+      "ci_level": 0.9,
+      "ci_low": -0.0035256663327471816,
+      "n_replicates": 10000,
+      "point_estimate": -0.001542673689769708,
+      "seed": 20260903,
+      "sigma_hat": 0.0011870939797715566
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": 0.00023921109144381454,
+      "ci_level": 0.9,
+      "ci_low": -0.003370152095416325,
+      "n_replicates": 10000,
+      "point_estimate": -0.001542673689769708,
+      "seed": 20260903,
+      "sigma_hat": 0.0011068246354258482
+     },
+     "note": "pooled (S + D + I) / reference words -- the ConEC __ALL__ bucket and asr-wer-whisper agree on it",
+     "right_pooled": 0.0835378649952052
+    },
+    "entity_wer_EVENT": {
+     "delta_right_minus_left": 0.0,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.0007880220646178092,
+      "ci_level": 0.9,
+      "ci_low": -0.01075268817204301,
+      "n_replicates": 10000,
+      "point_estimate": -0.0034645797668541615,
+      "seed": 20260903,
+      "sigma_hat": 0.0037803414353435325
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.0,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.024291497975708502,
+     "metric": "entity_wer_EVENT",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.003947628458498018,
+      "ci_level": 0.9,
+      "ci_low": -0.0058997050147492625,
+      "n_replicates": 10000,
+      "point_estimate": -0.0,
+      "seed": 20260903,
+      "sigma_hat": 0.003049705049384889
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror EVENT entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.024291497975708502
+    },
+    "entity_wer_FAC": {
+     "delta_right_minus_left": -0.008196721311475391,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.13333333333333333,
+      "ci_level": 0.9,
+      "ci_low": -0.01515151515151515,
+      "n_replicates": 10000,
+      "point_estimate": 0.04285714285714286,
+      "seed": 20260903,
+      "sigma_hat": 0.04833465110952565
+     },
+     "higher_is_better": false,
+     "improvement_point": 0.008196721311475391,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.21311475409836064,
+     "metric": "entity_wer_FAC",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.033057851239669395,
+      "ci_level": 0.9,
+      "ci_low": -0.015625,
+      "n_replicates": 10000,
+      "point_estimate": 0.008196721311475391,
+      "seed": 20260903,
+      "sigma_hat": 0.014993530502129752
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror FAC entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.20491803278688525
+    },
+    "entity_wer_GPE": {
+     "delta_right_minus_left": 0.010409889394925181,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.052746238169011625,
+      "ci_level": 0.9,
+      "ci_low": -0.018087215474813484,
+      "n_replicates": 10000,
+      "point_estimate": 0.015510486552005572,
+      "seed": 20260903,
+      "sigma_hat": 0.021679336186440468
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.010409889394925181,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.1867273910214704,
+     "metric": "entity_wer_GPE",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.02384927546504913,
+      "ci_level": 0.9,
+      "ci_low": -0.040988385500154656,
+      "n_replicates": 10000,
+      "point_estimate": -0.010409889394925181,
+      "seed": 20260903,
+      "sigma_hat": 0.01952110259262996
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror GPE entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.19713728041639558
+    },
+    "entity_wer_LOC": {
+     "delta_right_minus_left": 0.008247422680412373,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.002252252252252252,
+      "ci_level": 0.9,
+      "ci_low": -0.017895299145299148,
+      "n_replicates": 10000,
+      "point_estimate": -0.0067747493734335845,
+      "seed": 20260903,
+      "sigma_hat": 0.006162605474834728
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.008247422680412373,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.024742268041237112,
+     "metric": "entity_wer_LOC",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.0017732071098345962,
+      "ci_level": 0.9,
+      "ci_low": -0.020689655172413793,
+      "n_replicates": 10000,
+      "point_estimate": -0.008247422680412373,
+      "seed": 20260903,
+      "sigma_hat": 0.006703688974293961
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror LOC entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.032989690721649485
+    },
+    "entity_wer_NORP": {
+     "delta_right_minus_left": 0.0,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.0,
+      "ci_level": 0.9,
+      "ci_low": 0.0,
+      "n_replicates": 10000,
+      "point_estimate": 0.0,
+      "seed": 20260903,
+      "sigma_hat": 0.0
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.0,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.09745762711864407,
+     "metric": "entity_wer_NORP",
+     "natural_mixture_call_clustered": {
+      "ci_high": -0.0,
+      "ci_level": 0.9,
+      "ci_low": -0.0,
+      "n_replicates": 10000,
+      "point_estimate": -0.0,
+      "seed": 20260903,
+      "sigma_hat": 0.0
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror NORP entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.09745762711864407
+    },
+    "entity_wer_ORG": {
+     "delta_right_minus_left": 0.010314004125601656,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": -0.0010471430235234702,
+      "ci_level": 0.9,
+      "ci_low": -0.029607962115098894,
+      "n_replicates": 10000,
+      "point_estimate": -0.014982170373710961,
+      "seed": 20260903,
+      "sigma_hat": 0.008687123434751544
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.010314004125601656,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.17212926885170754,
+     "metric": "entity_wer_ORG",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.0036876932920843525,
+      "ci_level": 0.9,
+      "ci_low": -0.023927457828147054,
+      "n_replicates": 10000,
+      "point_estimate": -0.010314004125601656,
+      "seed": 20260903,
+      "sigma_hat": 0.008392583985339295
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": 0.0008061404371760321,
+      "ci_level": 0.9,
+      "ci_low": -0.021686377770093163,
+      "n_replicates": 10000,
+      "point_estimate": -0.010314004125601656,
+      "seed": 20260903,
+      "sigma_hat": 0.006785316681550303
+     },
+     "note": "ConEC-mirror ORG entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.1824432729773092
+    },
+    "entity_wer_PERSON": {
+     "delta_right_minus_left": 0.012341446691806673,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": -0.00846990938776296,
+      "ci_level": 0.9,
+      "ci_low": -0.026938846713556532,
+      "n_replicates": 10000,
+      "point_estimate": -0.01746671634938343,
+      "seed": 20260903,
+      "sigma_hat": 0.005624020215163262
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.012341446691806673,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.22488858416181007,
+     "metric": "entity_wer_PERSON",
+     "natural_mixture_call_clustered": {
+      "ci_high": -0.00484420687517282,
+      "ci_level": 0.9,
+      "ci_low": -0.02033164976347998,
+      "n_replicates": 10000,
+      "point_estimate": -0.012341446691806673,
+      "seed": 20260903,
+      "sigma_hat": 0.004673256080208694
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": -0.0033716595553282586,
+      "ci_level": 0.9,
+      "ci_low": -0.021579522030497685,
+      "n_replicates": 10000,
+      "point_estimate": -0.012341446691806673,
+      "seed": 20260903,
+      "sigma_hat": 0.005546168204526684
+     },
+     "note": "ConEC-mirror PERSON entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.23723003085361674
+    },
+    "entity_wer_PRODUCT": {
+     "delta_right_minus_left": -0.010256410256410275,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.05411355826809253,
+      "ci_level": 0.9,
+      "ci_low": -0.011095144701923094,
+      "n_replicates": 10000,
+      "point_estimate": 0.02023397991622644,
+      "seed": 20260903,
+      "sigma_hat": 0.019778682111648068
+     },
+     "higher_is_better": false,
+     "improvement_point": 0.010256410256410275,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.19230769230769232,
+     "metric": "entity_wer_PRODUCT",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.04182509505703422,
+      "ci_level": 0.9,
+      "ci_low": -0.015308079753640581,
+      "n_replicates": 10000,
+      "point_estimate": 0.010256410256410275,
+      "seed": 20260903,
+      "sigma_hat": 0.017585163347389913
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror PRODUCT entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.18205128205128204
+    },
+    "insertions_per_reference_word": {
+     "delta_right_minus_left": -0.0010006532041749484,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.0018061264597105822,
+      "ci_level": 0.9,
+      "ci_low": 0.0005289695096746426,
+      "n_replicates": 10000,
+      "point_estimate": 0.0011593158010148057,
+      "seed": 20260903,
+      "sigma_hat": 0.00038830921900642285
+     },
+     "higher_is_better": false,
+     "improvement_point": 0.0010006532041749484,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.029741636901866497,
+     "metric": "insertions_per_reference_word",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.00149087241502525,
+      "ci_level": 0.9,
+      "ci_low": 0.0005019808867870513,
+      "n_replicates": 10000,
+      "point_estimate": 0.0010006532041749484,
+      "seed": 20260903,
+      "sigma_hat": 0.0003007507363073407
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": 0.0015138503328688776,
+      "ci_level": 0.9,
+      "ci_low": 0.00048737302596175487,
+      "n_replicates": 10000,
+      "point_estimate": 0.0010006532041749484,
+      "seed": 20260903,
+      "sigma_hat": 0.00031103081053473656
+     },
+     "note": "the over-generation guard: a brief that gets read aloud shows up here first",
+     "right_pooled": 0.028740983697691548
+    },
+    "negation_critical_rate": {
+     "delta_right_minus_left": 2.501633010437368e-05,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": -8.842847163590944e-07,
+      "ci_level": 0.9,
+      "ci_low": -0.0001118840535424623,
+      "n_replicates": 10000,
+      "point_estimate": -4.894451033282661e-05,
+      "seed": 20260903,
+      "sigma_hat": 3.4095304838769324e-05
+     },
+     "higher_is_better": false,
+     "improvement_point": -2.501633010437368e-05,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.00027795922338192986,
+     "metric": "negation_critical_rate",
+     "natural_mixture_call_clustered": {
+      "ci_high": 8.725658699377868e-06,
+      "ci_level": 0.9,
+      "ci_low": -6.204235231098785e-05,
+      "n_replicates": 10000,
+      "point_estimate": -2.501633010437368e-05,
+      "seed": 20260903,
+      "sigma_hat": 2.169215900498928e-05
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": 1.6217938510811093e-05,
+      "ci_level": 0.9,
+      "ci_low": -6.63970692116418e-05,
+      "n_replicates": 10000,
+      "point_estimate": -2.501633010437368e-05,
+      "seed": 20260903,
+      "sigma_hat": 2.4852889755822963e-05
+     },
+     "note": "HIGH-impact reference words / reference words; advisory only (100 HIGH words on all 44)",
+     "right_pooled": 0.00030297555348630353
+    },
+    "non_entity_wer": {
+     "delta_right_minus_left": 0.0023395579155590443,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": -0.0008000715599233898,
+      "ci_level": 0.9,
+      "ci_low": -0.005387758230726261,
+      "n_replicates": 10000,
+      "point_estimate": -0.0028560760158111566,
+      "seed": 20260903,
+      "sigma_hat": 0.0014148922210291453
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.0023395579155590443,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.047303758079196664,
+     "metric": "non_entity_wer",
+     "natural_mixture_call_clustered": {
+      "ci_high": -0.0003579659587825409,
+      "ci_level": 0.9,
+      "ci_low": -0.004390634398796548,
+      "n_replicates": 10000,
+      "point_estimate": -0.0023395579155590443,
+      "seed": 20260903,
+      "sigma_hat": 0.0012326494867172535
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": -0.0005351397786347127,
+      "ci_level": 0.9,
+      "ci_low": -0.004175255615873311,
+      "n_replicates": 10000,
+      "point_estimate": -0.0023395579155590443,
+      "seed": 20260903,
+      "sigma_hat": 0.001113888546982239
+     },
+     "note": "pooled (S + D) / non-entity reference words; insertions are unattributable and excluded",
+     "right_pooled": 0.04964331599475571
+    },
+    "numeric_accuracy_call_pooled": {
+     "delta_right_minus_left": 0.0020546537908362472,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.006936575036389759,
+      "ci_level": 0.9,
+      "ci_low": -0.002473241663944882,
+      "n_replicates": 10000,
+      "point_estimate": 0.00221768671559624,
+      "seed": 20260903,
+      "sigma_hat": 0.002875068764488997
+     },
+     "higher_is_better": true,
+     "improvement_point": 0.0020546537908362472,
+     "left_pooled": 0.9073351140332854,
+     "metric": "numeric_accuracy_call_pooled",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.007117514493401699,
+      "ci_level": 0.9,
+      "ci_low": -0.0032209999827529875,
+      "n_replicates": 10000,
+      "point_estimate": 0.0020546537908362472,
+      "seed": 20260903,
+      "sigma_hat": 0.0031394683958527693
+     },
+     "note": "the GUARD figure: bag-matched per call, the unit the comparator's published 90.73 was computed at; delta = KC-E1 minus comparator, higher is better",
+     "right_pooled": 0.9093897678241216
+    },
+    "numeric_accuracy_window": {
+     "delta_right_minus_left": 0.002260119169919861,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.007138281361270814,
+      "ci_level": 0.9,
+      "ci_low": -0.002433756028782039,
+      "n_replicates": 10000,
+      "point_estimate": 0.002345497700946429,
+      "seed": 20260903,
+      "sigma_hat": 0.0029180052840298587
+     },
+     "higher_is_better": true,
+     "improvement_point": 0.002260119169919861,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.8998356276967331,
+     "metric": "numeric_accuracy_window",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.007645868878361826,
+      "ci_level": 0.9,
+      "ci_low": -0.0032975631108101535,
+      "n_replicates": 10000,
+      "point_estimate": 0.002260119169919861,
+      "seed": 20260903,
+      "sigma_hat": 0.0033169865433697707
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": 0.0074182639850798055,
+      "ci_level": 0.9,
+      "ci_low": -0.0028128655653155946,
+      "n_replicates": 10000,
+      "point_estimate": 0.002260119169919861,
+      "seed": 20260903,
+      "sigma_hat": 0.003127992700522333
+     },
+     "note": "WINDOW-pooled numeric-value accuracy -- a DIAGNOSTIC; the guard is the call-pooled figure",
+     "right_pooled": 0.902095746866653
+    },
+    "unlabelled_wer": {
+     "delta_right_minus_left": 0.012170385395537525,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.006723674384679979,
+      "ci_level": 0.9,
+      "ci_low": -0.012945562083161175,
+      "n_replicates": 10000,
+      "point_estimate": -0.003276090935846139,
+      "seed": 20260903,
+      "sigma_hat": 0.0060552085236120394
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.012170385395537525,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.12846517917511832,
+     "metric": "unlabelled_wer",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.0007320644216691069,
+      "ci_level": 0.9,
+      "ci_low": -0.025266083453179395,
+      "n_replicates": 10000,
+      "point_estimate": -0.012170385395537525,
+      "seed": 20260903,
+      "sigma_hat": 0.007948874858826558
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "pooled (S + D) / unlabelled reference words -- the normalization-transfer residue, reported not claimed",
+     "right_pooled": 0.14063556457065585
+    }
+   },
+   "reading": "KU-E1c vs the sealed comparator -- the form effect alone",
+   "right_arm": "ku-e1c",
+   "right_run_id": "SAEA-E21-KU-E1C-PLACEBO-44-V1"
+  },
+  "total": {
+   "left_arm": "comparator",
+   "left_run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+   "metrics": {
+    "corpus_wer": {
+     "delta_right_minus_left": 0.005364613011271252,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": -0.0017764876751403893,
+      "ci_level": 0.9,
+      "ci_low": -0.008318791534707524,
+      "n_replicates": 10000,
+      "point_estimate": -0.004886558768113105,
+      "seed": 20260903,
+      "sigma_hat": 0.0019699690103769474
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.005364613011271252,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.08199519130543549,
+     "metric": "corpus_wer",
+     "natural_mixture_call_clustered": {
+      "ci_high": -0.0019508828831669397,
+      "ci_level": 0.9,
+      "ci_low": -0.00917157034593963,
+      "n_replicates": 10000,
+      "point_estimate": -0.005364613011271252,
+      "seed": 20260903,
+      "sigma_hat": 0.0021904169421114545
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": -0.002550076379098036,
+      "ci_level": 0.9,
+      "ci_low": -0.008360973840312967,
+      "n_replicates": 10000,
+      "point_estimate": -0.005364613011271252,
+      "seed": 20260903,
+      "sigma_hat": 0.0017968100428417085
+     },
+     "note": "pooled (S + D + I) / reference words -- the ConEC __ALL__ bucket and asr-wer-whisper agree on it",
+     "right_pooled": 0.08735980431670674
+    },
+    "entity_wer_EVENT": {
+     "delta_right_minus_left": 0.0,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.0017006802721088435,
+      "ci_level": 0.9,
+      "ci_low": -0.024206349206349207,
+      "n_replicates": 10000,
+      "point_estimate": -0.007799671592775041,
+      "seed": 20260903,
+      "sigma_hat": 0.008582345016741039
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.0,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.024291497975708502,
+     "metric": "entity_wer_EVENT",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.0045662100456621,
+      "ci_level": 0.9,
+      "ci_low": -0.005747126436781609,
+      "n_replicates": 10000,
+      "point_estimate": -0.0,
+      "seed": 20260903,
+      "sigma_hat": 0.003202849681257332
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror EVENT entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.024291497975708502
+    },
+    "entity_wer_FAC": {
+     "delta_right_minus_left": 0.0,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.1372725885225885,
+      "ci_level": 0.9,
+      "ci_low": -0.09667019400352735,
+      "n_replicates": 10000,
+      "point_estimate": 0.02074829931972788,
+      "seed": 20260903,
+      "sigma_hat": 0.07136288106835693
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.0,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.21311475409836064,
+     "metric": "entity_wer_FAC",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.06173475881379652,
+      "ci_level": 0.9,
+      "ci_low": -0.07865168539325842,
+      "n_replicates": 10000,
+      "point_estimate": -0.0,
+      "seed": 20260903,
+      "sigma_hat": 0.04398515389034578
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror FAC entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.21311475409836064
+    },
+    "entity_wer_GPE": {
+     "delta_right_minus_left": 0.008458035133376701,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.06311953947262022,
+      "ci_level": 0.9,
+      "ci_low": -0.017774428226630543,
+      "n_replicates": 10000,
+      "point_estimate": 0.02228779011533432,
+      "seed": 20260903,
+      "sigma_hat": 0.024867404539014207
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.008458035133376701,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.1867273910214704,
+     "metric": "entity_wer_GPE",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.03040879191139811,
+      "ci_level": 0.9,
+      "ci_low": -0.041666666666666685,
+      "n_replicates": 10000,
+      "point_estimate": -0.008458035133376701,
+      "seed": 20260903,
+      "sigma_hat": 0.021914634741436036
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror GPE entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.1951854261548471
+    },
+    "entity_wer_LOC": {
+     "delta_right_minus_left": 0.0020618556701030924,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.0046296296296296285,
+      "ci_level": 0.9,
+      "ci_low": -0.010964912280701754,
+      "n_replicates": 10000,
+      "point_estimate": -0.0021929824561403516,
+      "seed": 20260903,
+      "sigma_hat": 0.004924871388708227
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.0020618556701030924,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.024742268041237112,
+     "metric": "entity_wer_LOC",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.004761904761904761,
+      "ci_level": 0.9,
+      "ci_low": -0.011038137401973338,
+      "n_replicates": 10000,
+      "point_estimate": -0.0020618556701030924,
+      "seed": 20260903,
+      "sigma_hat": 0.004862321084127472
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror LOC entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.026804123711340205
+    },
+    "entity_wer_NORP": {
+     "delta_right_minus_left": 0.0211864406779661,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": -0.00293885448916412,
+      "ci_level": 0.9,
+      "ci_low": -0.05942857142857143,
+      "n_replicates": 10000,
+      "point_estimate": -0.028,
+      "seed": 20260903,
+      "sigma_hat": 0.01745634016514534
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.0211864406779661,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.09745762711864407,
+     "metric": "entity_wer_NORP",
+     "natural_mixture_call_clustered": {
+      "ci_high": -0.0,
+      "ci_level": 0.9,
+      "ci_low": -0.04678362573099415,
+      "n_replicates": 10000,
+      "point_estimate": -0.0211864406779661,
+      "seed": 20260903,
+      "sigma_hat": 0.01425927332576445
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror NORP entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.11864406779661017
+    },
+    "entity_wer_ORG": {
+     "delta_right_minus_left": 0.007792803117121244,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.0031707985679087503,
+      "ci_level": 0.9,
+      "ci_low": -0.03706382002646727,
+      "n_replicates": 10000,
+      "point_estimate": -0.016037125164736883,
+      "seed": 20260903,
+      "sigma_hat": 0.012225032838812908
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.007792803117121244,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.17212926885170754,
+     "metric": "entity_wer_ORG",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.00838112990382306,
+      "ci_level": 0.9,
+      "ci_low": -0.0252955672472182,
+      "n_replicates": 10000,
+      "point_estimate": -0.007792803117121244,
+      "seed": 20260903,
+      "sigma_hat": 0.010335459692047466
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": 0.005898591042235722,
+      "ci_level": 0.9,
+      "ci_low": -0.02176313023514134,
+      "n_replicates": 10000,
+      "point_estimate": -0.007792803117121244,
+      "seed": 20260903,
+      "sigma_hat": 0.008442431046097817
+     },
+     "note": "ConEC-mirror ORG entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.17992207196882878
+    },
+    "entity_wer_PERSON": {
+     "delta_right_minus_left": -0.04148097360301678,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.06504755211939577,
+      "ci_level": 0.9,
+      "ci_low": 0.025861185139756788,
+      "n_replicates": 10000,
+      "point_estimate": 0.044992661037250775,
+      "seed": 20260903,
+      "sigma_hat": 0.011843590058939982
+     },
+     "higher_is_better": false,
+     "improvement_point": 0.04148097360301678,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.22488858416181007,
+     "metric": "entity_wer_PERSON",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.05739895592972976,
+      "ci_level": 0.9,
+      "ci_low": 0.026331747026749647,
+      "n_replicates": 10000,
+      "point_estimate": 0.04148097360301678,
+      "seed": 20260903,
+      "sigma_hat": 0.009387107965793664
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": 0.054736689408951995,
+      "ci_level": 0.9,
+      "ci_low": 0.028139103015259938,
+      "n_replicates": 10000,
+      "point_estimate": 0.04148097360301678,
+      "seed": 20260903,
+      "sigma_hat": 0.00808737194218934
+     },
+     "note": "ConEC-mirror PERSON entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.1834076105587933
+    },
+    "entity_wer_PRODUCT": {
+     "delta_right_minus_left": -0.02564102564102566,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.057826621111815794,
+      "ci_level": 0.9,
+      "ci_low": -0.017167053306042686,
+      "n_replicates": 10000,
+      "point_estimate": 0.020190126919507542,
+      "seed": 20260903,
+      "sigma_hat": 0.022999207055654624
+     },
+     "higher_is_better": false,
+     "improvement_point": 0.02564102564102566,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.19230769230769232,
+     "metric": "entity_wer_PRODUCT",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.060240963855421686,
+      "ci_level": 0.9,
+      "ci_low": -0.007042253521126751,
+      "n_replicates": 10000,
+      "point_estimate": 0.02564102564102566,
+      "seed": 20260903,
+      "sigma_hat": 0.020542839142924655
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "ConEC-mirror PRODUCT entity WER: pooled (S + D) / tagged reference words",
+     "right_pooled": 0.16666666666666666
+    },
+    "insertions_per_reference_word": {
+     "delta_right_minus_left": -0.0019068002724000402,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": 0.002627795191921904,
+      "ci_level": 0.9,
+      "ci_low": 0.001293145914549594,
+      "n_replicates": 10000,
+      "point_estimate": 0.001969674496239528,
+      "seed": 20260903,
+      "sigma_hat": 0.0004076761278200945
+     },
+     "higher_is_better": false,
+     "improvement_point": 0.0019068002724000402,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.029741636901866497,
+     "metric": "insertions_per_reference_word",
+     "natural_mixture_call_clustered": {
+      "ci_high": 0.002558853534910351,
+      "ci_level": 0.9,
+      "ci_low": 0.0012341431973967114,
+      "n_replicates": 10000,
+      "point_estimate": 0.0019068002724000402,
+      "seed": 20260903,
+      "sigma_hat": 0.0004031346018566136
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": 0.002564951946590467,
+      "ci_level": 0.9,
+      "ci_low": 0.0012031049143015316,
+      "n_replicates": 10000,
+      "point_estimate": 0.0019068002724000402,
+      "seed": 20260903,
+      "sigma_hat": 0.00041221738626286825
+     },
+     "note": "the over-generation guard: a brief that gets read aloud shows up here first",
+     "right_pooled": 0.027834836629466456
+    },
+    "negation_critical_rate": {
+     "delta_right_minus_left": 5.559184467638598e-05,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": -1.3094835555120302e-05,
+      "ci_level": 0.9,
+      "ci_low": -9.434832892161297e-05,
+      "n_replicates": 10000,
+      "point_estimate": -5.468648434583158e-05,
+      "seed": 20260903,
+      "sigma_hat": 2.4874633331070204e-05
+     },
+     "higher_is_better": false,
+     "improvement_point": -5.559184467638598e-05,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.00027795922338192986,
+     "metric": "negation_critical_rate",
+     "natural_mixture_call_clustered": {
+      "ci_high": -2.796583235096837e-06,
+      "ci_level": 0.9,
+      "ci_low": -0.00010558230082784977,
+      "n_replicates": 10000,
+      "point_estimate": -5.559184467638598e-05,
+      "seed": 20260903,
+      "sigma_hat": 3.13474639642112e-05
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": -1.199437400271894e-05,
+      "ci_level": 0.9,
+      "ci_low": -9.729610710724287e-05,
+      "n_replicates": 10000,
+      "point_estimate": -5.559184467638598e-05,
+      "seed": 20260903,
+      "sigma_hat": 2.5383105478117926e-05
+     },
+     "note": "HIGH-impact reference words / reference words; advisory only (100 HIGH words on all 44)",
+     "right_pooled": 0.00033355106805831584
+    },
+    "non_entity_wer": {
+     "delta_right_minus_left": 0.007771143918956662,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": -0.00422074768977289,
+      "ci_level": 0.9,
+      "ci_low": -0.01067766808588405,
+      "n_replicates": 10000,
+      "point_estimate": -0.007292684540203928,
+      "seed": 20260903,
+      "sigma_hat": 0.0019589950685408525
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.007771143918956662,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.047303758079196664,
+     "metric": "non_entity_wer",
+     "natural_mixture_call_clustered": {
+      "ci_high": -0.004084042441914263,
+      "ci_level": 0.9,
+      "ci_low": -0.011884185821366137,
+      "n_replicates": 10000,
+      "point_estimate": -0.007771143918956662,
+      "seed": 20260903,
+      "sigma_hat": 0.0023742688769637153
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": -0.004790205408596293,
+      "ci_level": 0.9,
+      "ci_low": -0.010992561474677446,
+      "n_replicates": 10000,
+      "point_estimate": -0.007771143918956662,
+      "seed": 20260903,
+      "sigma_hat": 0.0018813054540949324
+     },
+     "note": "pooled (S + D) / non-entity reference words; insertions are unattributable and excluded",
+     "right_pooled": 0.055074901998153326
+    },
+    "numeric_accuracy_call_pooled": {
+     "delta_right_minus_left": -0.0054448325457160385,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": -0.0009439585697074511,
+      "ci_level": 0.9,
+      "ci_low": -0.010880562109753996,
+      "n_replicates": 10000,
+      "point_estimate": -0.005707670750200367,
+      "seed": 20260903,
+      "sigma_hat": 0.003002387900616902
+     },
+     "higher_is_better": true,
+     "improvement_point": -0.0054448325457160385,
+     "left_pooled": 0.9073351140332854,
+     "metric": "numeric_accuracy_call_pooled",
+     "natural_mixture_call_clustered": {
+      "ci_high": -0.00040727806612894673,
+      "ci_level": 0.9,
+      "ci_low": -0.01104465860903337,
+      "n_replicates": 10000,
+      "point_estimate": -0.0054448325457160385,
+      "seed": 20260903,
+      "sigma_hat": 0.0032408272593725074
+     },
+     "note": "the GUARD figure: bag-matched per call, the unit the comparator's published 90.73 was computed at; delta = KC-E1 minus comparator, higher is better",
+     "right_pooled": 0.9018902814875693
+    },
+    "numeric_accuracy_window": {
+     "delta_right_minus_left": -0.006985822888843196,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": -0.002479992600810864,
+      "ci_level": 0.9,
+      "ci_low": -0.012789062654698815,
+      "n_replicates": 10000,
+      "point_estimate": -0.007436896171524346,
+      "seed": 20260903,
+      "sigma_hat": 0.003140992973168265
+     },
+     "higher_is_better": true,
+     "improvement_point": -0.006985822888843196,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.8998356276967331,
+     "metric": "numeric_accuracy_window",
+     "natural_mixture_call_clustered": {
+      "ci_high": -0.001867066206327494,
+      "ci_level": 0.9,
+      "ci_low": -0.012804734912182859,
+      "n_replicates": 10000,
+      "point_estimate": -0.006985822888843196,
+      "seed": 20260903,
+      "sigma_hat": 0.0033407155128701
+     },
+     "natural_mixture_window_level_OPTIMISTIC": {
+      "ci_high": -0.001818203033542815,
+      "ci_level": 0.9,
+      "ci_low": -0.012682915246908961,
+      "n_replicates": 10000,
+      "point_estimate": -0.006985822888843196,
+      "seed": 20260903,
+      "sigma_hat": 0.0033289408536969537
+     },
+     "note": "WINDOW-pooled numeric-value accuracy -- a DIAGNOSTIC; the guard is the call-pooled figure",
+     "right_pooled": 0.8928498048078899
+    },
+    "unlabelled_wer": {
+     "delta_right_minus_left": 0.011494252873563232,
+     "equal_stratum_per_call_clustered": {
+      "ci_high": -0.002391169812127485,
+      "ci_level": 0.9,
+      "ci_low": -0.019562519931714522,
+      "n_replicates": 10000,
+      "point_estimate": -0.011090529498965137,
+      "seed": 20260903,
+      "sigma_hat": 0.005219101649171053
+     },
+     "higher_is_better": false,
+     "improvement_point": -0.011494252873563232,
+     "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+     "left_pooled": 0.12846517917511832,
+     "metric": "unlabelled_wer",
+     "natural_mixture_call_clustered": {
+      "ci_high": -0.004249028786979354,
+      "ci_level": 0.9,
+      "ci_low": -0.019022026381101207,
+      "n_replicates": 10000,
+      "point_estimate": -0.011494252873563232,
+      "seed": 20260903,
+      "sigma_hat": 0.004453058436104045
+     },
+     "natural_mixture_window_level_OPTIMISTIC": null,
+     "note": "pooled (S + D) / unlabelled reference words -- the normalization-transfer residue, reported not claimed",
+     "right_pooled": 0.13995943204868155
+    }
+   },
+   "reading": "KC-E1 vs the sealed comparator -- moves evidence AND instruction",
+   "right_arm": "kc-e1",
+   "right_run_id": "SAEA-E21-KC-E1-BRIEF-44-V1"
+  }
+ },
+ "decides": "SAEA-E21-KC-E1-BRIEF-44-V1",
+ "descriptive_window_level": {
+  "content": {
+   "corpus_wer": {
+    "all_windows": {
+     "harms": 522,
+     "mean_of_per_window_differences_NOT_THE_DECISION_INTERVAL": {
+      "ci_high": 0.0003363480982506531,
+      "ci_low": -0.005229901405997614,
+      "point_estimate": -0.0022905996166768168
+     },
+     "n": 1593,
+     "saves": 593,
+     "sign_test_p": 0.0360053411569946,
+     "ties": 478
+    },
+    "windows_carrying_the_denominator": {
+     "harms": 522,
+     "n": 1589,
+     "saves": 593,
+     "sign_test_p": 0.0360053411569946,
+     "ties": 474
+    }
+   },
+   "entity_wer_PERSON": {
+    "all_windows": {
+     "harms": 61,
+     "mean_of_per_window_differences_NOT_THE_DECISION_INTERVAL": {
+      "ci_high": 0.03014348878495898,
+      "ci_low": 0.01507601473435167,
+      "point_estimate": 0.022391752273306434
+     },
+     "n": 1593,
+     "saves": 161,
+     "sign_test_p": 1.3734639605507627e-11,
+     "ties": 1371
+    },
+    "windows_carrying_the_denominator": {
+     "harms": 61,
+     "n": 933,
+     "saves": 161,
+     "sign_test_p": 1.3734639605507627e-11,
+     "ties": 711
+    }
+   }
+  },
+  "form": {
+   "corpus_wer": {
+    "all_windows": {
+     "harms": 615,
+     "mean_of_per_window_differences_NOT_THE_DECISION_INTERVAL": {
+      "ci_high": 0.00038447718646237347,
+      "ci_low": -0.0032248884636593192,
+      "point_estimate": -0.0013516767523841107
+     },
+     "n": 1593,
+     "saves": 639,
+     "sign_test_p": 0.5160314878951981,
+     "ties": 339
+    },
+    "windows_carrying_the_denominator": {
+     "harms": 615,
+     "n": 1589,
+     "saves": 639,
+     "sign_test_p": 0.5160314878951981,
+     "ties": 335
+    }
+   },
+   "entity_wer_PERSON": {
+    "all_windows": {
+     "harms": 77,
+     "mean_of_per_window_differences_NOT_THE_DECISION_INTERVAL": {
+      "ci_high": -0.004225100156856574,
+      "ci_low": -0.013859065733984996,
+      "point_estimate": -0.008989185760917352
+     },
+     "n": 1593,
+     "saves": 50,
+     "sign_test_p": 0.020680784018917542,
+     "ties": 1466
+    },
+    "windows_carrying_the_denominator": {
+     "harms": 77,
+     "n": 930,
+     "saves": 50,
+     "sign_test_p": 0.020680784018917542,
+     "ties": 803
+    }
+   }
+  },
+  "total": {
+   "corpus_wer": {
+    "all_windows": {
+     "harms": 613,
+     "mean_of_per_window_differences_NOT_THE_DECISION_INTERVAL": {
+      "ci_high": -0.0009164540796331247,
+      "ci_low": -0.006689524137185066,
+      "point_estimate": -0.003642276369060922
+     },
+     "n": 1593,
+     "saves": 710,
+     "sign_test_p": 0.008283043262449644,
+     "ties": 270
+    },
+    "windows_carrying_the_denominator": {
+     "harms": 613,
+     "n": 1589,
+     "saves": 710,
+     "sign_test_p": 0.008283043262449644,
+     "ties": 266
+    }
+   },
+   "entity_wer_PERSON": {
+    "all_windows": {
+     "harms": 82,
+     "mean_of_per_window_differences_NOT_THE_DECISION_INTERVAL": {
+      "ci_high": 0.021790599535017878,
+      "ci_low": 0.005126662401118254,
+      "point_estimate": 0.013402566512389094
+     },
+     "n": 1593,
+     "saves": 152,
+     "sign_test_p": 5.551988454796027e-06,
+     "ties": 1359
+    },
+    "windows_carrying_the_denominator": {
+     "harms": 82,
+     "n": 935,
+     "saves": 152,
+     "sign_test_p": 5.551988454796027e-06,
+     "ties": 701
+    }
+   }
+  }
+ },
+ "elapsed_seconds": 319.1,
+ "exposure_row": "SAEA-E21-KC-E1-VERDICT-V1",
+ "identity_anchors": {
+  "comparator": {
+   "checks_failed": 0,
+   "checks_total": 30,
+   "corpus_wer_percent": 8.1995,
+   "deletions": 5701,
+   "failed_checks": [],
+   "insertions": 10700,
+   "path": "/mnt/d/chao_workspace/saea-worktrees/wt-verdict/docs/checks/speech-aware-evidence-acquisition/2026-09-07-e21-kc-e1-verdict/reaggregation/comparator/reaggregation.json",
+   "per_call_numeric": [
+    {
+     "call_numeric_expected": 284,
+     "call_numeric_matched": 257,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4320211",
+     "window_numeric_matched": 256,
+     "windows": 37
+    },
+    {
+     "call_numeric_expected": 154,
+     "call_numeric_matched": 145,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4330115",
+     "window_numeric_matched": 145,
+     "windows": 28
+    },
+    {
+     "call_numeric_expected": 437,
+     "call_numeric_matched": 404,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4341191",
+     "window_numeric_matched": 402,
+     "windows": 64
+    },
+    {
+     "call_numeric_expected": 124,
+     "call_numeric_matched": 121,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4344338",
+     "window_numeric_matched": 121,
+     "windows": 31
+    },
+    {
+     "call_numeric_expected": 163,
+     "call_numeric_matched": 151,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4344866",
+     "window_numeric_matched": 150,
+     "windows": 37
+    },
+    {
+     "call_numeric_expected": 321,
+     "call_numeric_matched": 295,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4346818",
+     "window_numeric_matched": 293,
+     "windows": 45
+    },
+    {
+     "call_numeric_expected": 268,
+     "call_numeric_matched": 238,
+     "numeric_matched_shortfall": 5,
+     "sample_id": "4346923",
+     "window_numeric_matched": 233,
+     "windows": 53
+    },
+    {
+     "call_numeric_expected": 376,
+     "call_numeric_matched": 336,
+     "numeric_matched_shortfall": 6,
+     "sample_id": "4359732",
+     "window_numeric_matched": 330,
+     "windows": 55
+    },
+    {
+     "call_numeric_expected": 340,
+     "call_numeric_matched": 307,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4359971",
+     "window_numeric_matched": 305,
+     "windows": 42
+    },
+    {
+     "call_numeric_expected": 265,
+     "call_numeric_matched": 240,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4360366",
+     "window_numeric_matched": 238,
+     "windows": 44
+    },
+    {
+     "call_numeric_expected": 293,
+     "call_numeric_matched": 250,
+     "numeric_matched_shortfall": 5,
+     "sample_id": "4360674",
+     "window_numeric_matched": 245,
+     "windows": 40
+    },
+    {
+     "call_numeric_expected": 126,
+     "call_numeric_matched": 112,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4360717",
+     "window_numeric_matched": 111,
+     "windows": 51
+    },
+    {
+     "call_numeric_expected": 275,
+     "call_numeric_matched": 239,
+     "numeric_matched_shortfall": 5,
+     "sample_id": "4361631",
+     "window_numeric_matched": 234,
+     "windows": 50
+    },
+    {
+     "call_numeric_expected": 350,
+     "call_numeric_matched": 321,
+     "numeric_matched_shortfall": 3,
+     "sample_id": "4363614",
+     "window_numeric_matched": 318,
+     "windows": 63
+    },
+    {
+     "call_numeric_expected": 208,
+     "call_numeric_matched": 190,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4364366",
+     "window_numeric_matched": 189,
+     "windows": 39
+    },
+    {
+     "call_numeric_expected": 420,
+     "call_numeric_matched": 392,
+     "numeric_matched_shortfall": 6,
+     "sample_id": "4365024",
+     "window_numeric_matched": 386,
+     "windows": 49
+    },
+    {
+     "call_numeric_expected": 241,
+     "call_numeric_matched": 212,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4365948",
+     "window_numeric_matched": 212,
+     "windows": 28
+    },
+    {
+     "call_numeric_expected": 203,
+     "call_numeric_matched": 180,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4366302",
+     "window_numeric_matched": 179,
+     "windows": 40
+    },
+    {
+     "call_numeric_expected": 220,
+     "call_numeric_matched": 185,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4366429",
+     "window_numeric_matched": 185,
+     "windows": 45
+    },
+    {
+     "call_numeric_expected": 140,
+     "call_numeric_matched": 125,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4366522",
+     "window_numeric_matched": 125,
+     "windows": 21
+    },
+    {
+     "call_numeric_expected": 207,
+     "call_numeric_matched": 191,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4366893",
+     "window_numeric_matched": 191,
+     "windows": 27
+    },
+    {
+     "call_numeric_expected": 87,
+     "call_numeric_matched": 86,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4367318",
+     "window_numeric_matched": 86,
+     "windows": 20
+    },
+    {
+     "call_numeric_expected": 215,
+     "call_numeric_matched": 201,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4367535",
+     "window_numeric_matched": 200,
+     "windows": 36
+    },
+    {
+     "call_numeric_expected": 263,
+     "call_numeric_matched": 246,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4368670",
+     "window_numeric_matched": 246,
+     "windows": 47
+    },
+    {
+     "call_numeric_expected": 43,
+     "call_numeric_matched": 35,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4374910",
+     "window_numeric_matched": 35,
+     "windows": 23
+    },
+    {
+     "call_numeric_expected": 259,
+     "call_numeric_matched": 235,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4375653",
+     "window_numeric_matched": 234,
+     "windows": 39
+    },
+    {
+     "call_numeric_expected": 202,
+     "call_numeric_matched": 177,
+     "numeric_matched_shortfall": 4,
+     "sample_id": "4382825",
+     "window_numeric_matched": 173,
+     "windows": 43
+    },
+    {
+     "call_numeric_expected": 193,
+     "call_numeric_matched": 175,
+     "numeric_matched_shortfall": 3,
+     "sample_id": "4383161",
+     "window_numeric_matched": 172,
+     "windows": 38
+    },
+    {
+     "call_numeric_expected": 198,
+     "call_numeric_matched": 173,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4384198",
+     "window_numeric_matched": 173,
+     "windows": 30
+    },
+    {
+     "call_numeric_expected": 99,
+     "call_numeric_matched": 92,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4384683",
+     "window_numeric_matched": 92,
+     "windows": 17
+    },
+    {
+     "call_numeric_expected": 325,
+     "call_numeric_matched": 295,
+     "numeric_matched_shortfall": 8,
+     "sample_id": "4384744",
+     "window_numeric_matched": 287,
+     "windows": 37
+    },
+    {
+     "call_numeric_expected": 200,
+     "call_numeric_matched": 185,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4384964",
+     "window_numeric_matched": 183,
+     "windows": 45
+    },
+    {
+     "call_numeric_expected": 240,
+     "call_numeric_matched": 228,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4385072",
+     "window_numeric_matched": 227,
+     "windows": 29
+    },
+    {
+     "call_numeric_expected": 283,
+     "call_numeric_matched": 227,
+     "numeric_matched_shortfall": 3,
+     "sample_id": "4385388",
+     "window_numeric_matched": 224,
+     "windows": 49
+    },
+    {
+     "call_numeric_expected": 98,
+     "call_numeric_matched": 94,
+     "numeric_matched_shortfall": 3,
+     "sample_id": "4385939",
+     "window_numeric_matched": 91,
+     "windows": 34
+    },
+    {
+     "call_numeric_expected": 107,
+     "call_numeric_matched": 99,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4386541",
+     "window_numeric_matched": 99,
+     "windows": 13
+    },
+    {
+     "call_numeric_expected": 132,
+     "call_numeric_matched": 122,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4387332",
+     "window_numeric_matched": 122,
+     "windows": 15
+    },
+    {
+     "call_numeric_expected": 147,
+     "call_numeric_matched": 141,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4387383",
+     "window_numeric_matched": 140,
+     "windows": 24
+    },
+    {
+     "call_numeric_expected": 329,
+     "call_numeric_matched": 278,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4387865",
+     "window_numeric_matched": 278,
+     "windows": 25
+    },
+    {
+     "call_numeric_expected": 134,
+     "call_numeric_matched": 122,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4389907",
+     "window_numeric_matched": 120,
+     "windows": 23
+    },
+    {
+     "call_numeric_expected": 102,
+     "call_numeric_matched": 97,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4392809",
+     "window_numeric_matched": 97,
+     "windows": 16
+    },
+    {
+     "call_numeric_expected": 134,
+     "call_numeric_matched": 117,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4394084",
+     "window_numeric_matched": 117,
+     "windows": 20
+    },
+    {
+     "call_numeric_expected": 179,
+     "call_numeric_matched": 175,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4397800",
+     "window_numeric_matched": 175,
+     "windows": 31
+    },
+    {
+     "call_numeric_expected": 350,
+     "call_numeric_matched": 341,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4397829",
+     "window_numeric_matched": 340,
+     "windows": 50
+    }
+   ],
+   "reference_words": 359765,
+   "rows_sha256": "814af1e40133212c93bd9d4dd03c928a7b9efc56c19d8f26997df3130b8e9dcb",
+   "sha256": "cb036c69e7537f8c146bc04dd467e33231430d5765508ff877972159688f48af",
+   "source_attempt_id": "attempt-20260904T233816Z-bcd338",
+   "source_run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+   "substitutions": 13098,
+   "verdict": "PASS"
+  },
+  "kc-e1": {
+   "checks_failed": 0,
+   "checks_total": 30,
+   "corpus_wer_percent": 8.736,
+   "deletions": 8393,
+   "failed_checks": [],
+   "insertions": 10014,
+   "path": "/mnt/d/chao_workspace/saea-worktrees/wt-verdict/docs/checks/speech-aware-evidence-acquisition/2026-09-07-e21-kc-e1-verdict/reaggregation/kc-e1/reaggregation.json",
+   "per_call_numeric": [
+    {
+     "call_numeric_expected": 284,
+     "call_numeric_matched": 256,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4320211",
+     "window_numeric_matched": 255,
+     "windows": 37
+    },
+    {
+     "call_numeric_expected": 154,
+     "call_numeric_matched": 136,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4330115",
+     "window_numeric_matched": 136,
+     "windows": 28
+    },
+    {
+     "call_numeric_expected": 437,
+     "call_numeric_matched": 407,
+     "numeric_matched_shortfall": 3,
+     "sample_id": "4341191",
+     "window_numeric_matched": 404,
+     "windows": 64
+    },
+    {
+     "call_numeric_expected": 124,
+     "call_numeric_matched": 121,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4344338",
+     "window_numeric_matched": 120,
+     "windows": 31
+    },
+    {
+     "call_numeric_expected": 163,
+     "call_numeric_matched": 151,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4344866",
+     "window_numeric_matched": 150,
+     "windows": 37
+    },
+    {
+     "call_numeric_expected": 321,
+     "call_numeric_matched": 303,
+     "numeric_matched_shortfall": 4,
+     "sample_id": "4346818",
+     "window_numeric_matched": 299,
+     "windows": 45
+    },
+    {
+     "call_numeric_expected": 268,
+     "call_numeric_matched": 237,
+     "numeric_matched_shortfall": 5,
+     "sample_id": "4346923",
+     "window_numeric_matched": 232,
+     "windows": 53
+    },
+    {
+     "call_numeric_expected": 376,
+     "call_numeric_matched": 337,
+     "numeric_matched_shortfall": 7,
+     "sample_id": "4359732",
+     "window_numeric_matched": 330,
+     "windows": 55
+    },
+    {
+     "call_numeric_expected": 340,
+     "call_numeric_matched": 305,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4359971",
+     "window_numeric_matched": 304,
+     "windows": 42
+    },
+    {
+     "call_numeric_expected": 265,
+     "call_numeric_matched": 240,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4360366",
+     "window_numeric_matched": 238,
+     "windows": 44
+    },
+    {
+     "call_numeric_expected": 293,
+     "call_numeric_matched": 250,
+     "numeric_matched_shortfall": 5,
+     "sample_id": "4360674",
+     "window_numeric_matched": 245,
+     "windows": 40
+    },
+    {
+     "call_numeric_expected": 126,
+     "call_numeric_matched": 111,
+     "numeric_matched_shortfall": 4,
+     "sample_id": "4360717",
+     "window_numeric_matched": 107,
+     "windows": 51
+    },
+    {
+     "call_numeric_expected": 275,
+     "call_numeric_matched": 242,
+     "numeric_matched_shortfall": 5,
+     "sample_id": "4361631",
+     "window_numeric_matched": 237,
+     "windows": 50
+    },
+    {
+     "call_numeric_expected": 350,
+     "call_numeric_matched": 315,
+     "numeric_matched_shortfall": 6,
+     "sample_id": "4363614",
+     "window_numeric_matched": 309,
+     "windows": 63
+    },
+    {
+     "call_numeric_expected": 208,
+     "call_numeric_matched": 191,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4364366",
+     "window_numeric_matched": 189,
+     "windows": 39
+    },
+    {
+     "call_numeric_expected": 420,
+     "call_numeric_matched": 390,
+     "numeric_matched_shortfall": 5,
+     "sample_id": "4365024",
+     "window_numeric_matched": 385,
+     "windows": 49
+    },
+    {
+     "call_numeric_expected": 241,
+     "call_numeric_matched": 210,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4365948",
+     "window_numeric_matched": 210,
+     "windows": 28
+    },
+    {
+     "call_numeric_expected": 203,
+     "call_numeric_matched": 179,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4366302",
+     "window_numeric_matched": 178,
+     "windows": 40
+    },
+    {
+     "call_numeric_expected": 220,
+     "call_numeric_matched": 188,
+     "numeric_matched_shortfall": 3,
+     "sample_id": "4366429",
+     "window_numeric_matched": 185,
+     "windows": 45
+    },
+    {
+     "call_numeric_expected": 140,
+     "call_numeric_matched": 119,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4366522",
+     "window_numeric_matched": 119,
+     "windows": 21
+    },
+    {
+     "call_numeric_expected": 207,
+     "call_numeric_matched": 179,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4366893",
+     "window_numeric_matched": 177,
+     "windows": 27
+    },
+    {
+     "call_numeric_expected": 87,
+     "call_numeric_matched": 85,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4367318",
+     "window_numeric_matched": 85,
+     "windows": 20
+    },
+    {
+     "call_numeric_expected": 215,
+     "call_numeric_matched": 204,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4367535",
+     "window_numeric_matched": 202,
+     "windows": 36
+    },
+    {
+     "call_numeric_expected": 263,
+     "call_numeric_matched": 250,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4368670",
+     "window_numeric_matched": 248,
+     "windows": 47
+    },
+    {
+     "call_numeric_expected": 43,
+     "call_numeric_matched": 35,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4374910",
+     "window_numeric_matched": 35,
+     "windows": 23
+    },
+    {
+     "call_numeric_expected": 259,
+     "call_numeric_matched": 228,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4375653",
+     "window_numeric_matched": 226,
+     "windows": 39
+    },
+    {
+     "call_numeric_expected": 202,
+     "call_numeric_matched": 177,
+     "numeric_matched_shortfall": 4,
+     "sample_id": "4382825",
+     "window_numeric_matched": 173,
+     "windows": 43
+    },
+    {
+     "call_numeric_expected": 193,
+     "call_numeric_matched": 174,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4383161",
+     "window_numeric_matched": 173,
+     "windows": 38
+    },
+    {
+     "call_numeric_expected": 198,
+     "call_numeric_matched": 173,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4384198",
+     "window_numeric_matched": 172,
+     "windows": 30
+    },
+    {
+     "call_numeric_expected": 99,
+     "call_numeric_matched": 92,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4384683",
+     "window_numeric_matched": 92,
+     "windows": 17
+    },
+    {
+     "call_numeric_expected": 325,
+     "call_numeric_matched": 293,
+     "numeric_matched_shortfall": 5,
+     "sample_id": "4384744",
+     "window_numeric_matched": 288,
+     "windows": 37
+    },
+    {
+     "call_numeric_expected": 200,
+     "call_numeric_matched": 179,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4384964",
+     "window_numeric_matched": 178,
+     "windows": 45
+    },
+    {
+     "call_numeric_expected": 240,
+     "call_numeric_matched": 233,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4385072",
+     "window_numeric_matched": 232,
+     "windows": 29
+    },
+    {
+     "call_numeric_expected": 283,
+     "call_numeric_matched": 225,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4385388",
+     "window_numeric_matched": 223,
+     "windows": 49
+    },
+    {
+     "call_numeric_expected": 98,
+     "call_numeric_matched": 93,
+     "numeric_matched_shortfall": 4,
+     "sample_id": "4385939",
+     "window_numeric_matched": 89,
+     "windows": 34
+    },
+    {
+     "call_numeric_expected": 107,
+     "call_numeric_matched": 100,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4386541",
+     "window_numeric_matched": 100,
+     "windows": 13
+    },
+    {
+     "call_numeric_expected": 132,
+     "call_numeric_matched": 122,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4387332",
+     "window_numeric_matched": 122,
+     "windows": 15
+    },
+    {
+     "call_numeric_expected": 147,
+     "call_numeric_matched": 140,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4387383",
+     "window_numeric_matched": 139,
+     "windows": 24
+    },
+    {
+     "call_numeric_expected": 329,
+     "call_numeric_matched": 256,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4387865",
+     "window_numeric_matched": 255,
+     "windows": 25
+    },
+    {
+     "call_numeric_expected": 134,
+     "call_numeric_matched": 123,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4389907",
+     "window_numeric_matched": 122,
+     "windows": 23
+    },
+    {
+     "call_numeric_expected": 102,
+     "call_numeric_matched": 95,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4392809",
+     "window_numeric_matched": 95,
+     "windows": 16
+    },
+    {
+     "call_numeric_expected": 134,
+     "call_numeric_matched": 121,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4394084",
+     "window_numeric_matched": 121,
+     "windows": 20
+    },
+    {
+     "call_numeric_expected": 179,
+     "call_numeric_matched": 175,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4397800",
+     "window_numeric_matched": 175,
+     "windows": 31
+    },
+    {
+     "call_numeric_expected": 350,
+     "call_numeric_matched": 339,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4397829",
+     "window_numeric_matched": 337,
+     "windows": 50
+    }
+   ],
+   "reference_words": 359765,
+   "rows_sha256": "83115849b39f8aba83eb388953a009bcbc191ebfb315b634c6df26c96ec5bdd2",
+   "sha256": "dc9997b41fd29344aa4046bb3e2540d6e2c9c4cea55b7bf893dde6839a3185a6",
+   "source_attempt_id": "attempt-20260907T171238Z-f02eef",
+   "source_run_id": "SAEA-E21-KC-E1-BRIEF-44-V1",
+   "substitutions": 13022,
+   "verdict": "PASS"
+  },
+  "ku-e1c": {
+   "checks_failed": 0,
+   "checks_total": 30,
+   "corpus_wer_percent": 8.3538,
+   "deletions": 6460,
+   "failed_checks": [],
+   "insertions": 10340,
+   "path": "/mnt/d/chao_workspace/saea-worktrees/wt-verdict/docs/checks/speech-aware-evidence-acquisition/2026-09-07-e21-kc-e1-verdict/reaggregation/ku-e1c/reaggregation.json",
+   "per_call_numeric": [
+    {
+     "call_numeric_expected": 284,
+     "call_numeric_matched": 256,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4320211",
+     "window_numeric_matched": 255,
+     "windows": 37
+    },
+    {
+     "call_numeric_expected": 154,
+     "call_numeric_matched": 144,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4330115",
+     "window_numeric_matched": 144,
+     "windows": 28
+    },
+    {
+     "call_numeric_expected": 437,
+     "call_numeric_matched": 407,
+     "numeric_matched_shortfall": 3,
+     "sample_id": "4341191",
+     "window_numeric_matched": 404,
+     "windows": 64
+    },
+    {
+     "call_numeric_expected": 124,
+     "call_numeric_matched": 121,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4344338",
+     "window_numeric_matched": 121,
+     "windows": 31
+    },
+    {
+     "call_numeric_expected": 163,
+     "call_numeric_matched": 151,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4344866",
+     "window_numeric_matched": 150,
+     "windows": 37
+    },
+    {
+     "call_numeric_expected": 321,
+     "call_numeric_matched": 301,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4346818",
+     "window_numeric_matched": 300,
+     "windows": 45
+    },
+    {
+     "call_numeric_expected": 268,
+     "call_numeric_matched": 247,
+     "numeric_matched_shortfall": 3,
+     "sample_id": "4346923",
+     "window_numeric_matched": 244,
+     "windows": 53
+    },
+    {
+     "call_numeric_expected": 376,
+     "call_numeric_matched": 339,
+     "numeric_matched_shortfall": 5,
+     "sample_id": "4359732",
+     "window_numeric_matched": 334,
+     "windows": 55
+    },
+    {
+     "call_numeric_expected": 340,
+     "call_numeric_matched": 293,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4359971",
+     "window_numeric_matched": 292,
+     "windows": 42
+    },
+    {
+     "call_numeric_expected": 265,
+     "call_numeric_matched": 241,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4360366",
+     "window_numeric_matched": 239,
+     "windows": 44
+    },
+    {
+     "call_numeric_expected": 293,
+     "call_numeric_matched": 251,
+     "numeric_matched_shortfall": 5,
+     "sample_id": "4360674",
+     "window_numeric_matched": 246,
+     "windows": 40
+    },
+    {
+     "call_numeric_expected": 126,
+     "call_numeric_matched": 111,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4360717",
+     "window_numeric_matched": 109,
+     "windows": 51
+    },
+    {
+     "call_numeric_expected": 275,
+     "call_numeric_matched": 243,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4361631",
+     "window_numeric_matched": 242,
+     "windows": 50
+    },
+    {
+     "call_numeric_expected": 350,
+     "call_numeric_matched": 316,
+     "numeric_matched_shortfall": 4,
+     "sample_id": "4363614",
+     "window_numeric_matched": 312,
+     "windows": 63
+    },
+    {
+     "call_numeric_expected": 208,
+     "call_numeric_matched": 191,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4364366",
+     "window_numeric_matched": 189,
+     "windows": 39
+    },
+    {
+     "call_numeric_expected": 420,
+     "call_numeric_matched": 382,
+     "numeric_matched_shortfall": 8,
+     "sample_id": "4365024",
+     "window_numeric_matched": 374,
+     "windows": 49
+    },
+    {
+     "call_numeric_expected": 241,
+     "call_numeric_matched": 211,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4365948",
+     "window_numeric_matched": 211,
+     "windows": 28
+    },
+    {
+     "call_numeric_expected": 203,
+     "call_numeric_matched": 182,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4366302",
+     "window_numeric_matched": 182,
+     "windows": 40
+    },
+    {
+     "call_numeric_expected": 220,
+     "call_numeric_matched": 189,
+     "numeric_matched_shortfall": 3,
+     "sample_id": "4366429",
+     "window_numeric_matched": 186,
+     "windows": 45
+    },
+    {
+     "call_numeric_expected": 140,
+     "call_numeric_matched": 118,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4366522",
+     "window_numeric_matched": 118,
+     "windows": 21
+    },
+    {
+     "call_numeric_expected": 207,
+     "call_numeric_matched": 197,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4366893",
+     "window_numeric_matched": 195,
+     "windows": 27
+    },
+    {
+     "call_numeric_expected": 87,
+     "call_numeric_matched": 86,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4367318",
+     "window_numeric_matched": 86,
+     "windows": 20
+    },
+    {
+     "call_numeric_expected": 215,
+     "call_numeric_matched": 201,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4367535",
+     "window_numeric_matched": 200,
+     "windows": 36
+    },
+    {
+     "call_numeric_expected": 263,
+     "call_numeric_matched": 256,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4368670",
+     "window_numeric_matched": 255,
+     "windows": 47
+    },
+    {
+     "call_numeric_expected": 43,
+     "call_numeric_matched": 35,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4374910",
+     "window_numeric_matched": 35,
+     "windows": 23
+    },
+    {
+     "call_numeric_expected": 259,
+     "call_numeric_matched": 235,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4375653",
+     "window_numeric_matched": 235,
+     "windows": 39
+    },
+    {
+     "call_numeric_expected": 202,
+     "call_numeric_matched": 179,
+     "numeric_matched_shortfall": 3,
+     "sample_id": "4382825",
+     "window_numeric_matched": 176,
+     "windows": 43
+    },
+    {
+     "call_numeric_expected": 193,
+     "call_numeric_matched": 174,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4383161",
+     "window_numeric_matched": 172,
+     "windows": 38
+    },
+    {
+     "call_numeric_expected": 198,
+     "call_numeric_matched": 174,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4384198",
+     "window_numeric_matched": 173,
+     "windows": 30
+    },
+    {
+     "call_numeric_expected": 99,
+     "call_numeric_matched": 90,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4384683",
+     "window_numeric_matched": 90,
+     "windows": 17
+    },
+    {
+     "call_numeric_expected": 325,
+     "call_numeric_matched": 297,
+     "numeric_matched_shortfall": 7,
+     "sample_id": "4384744",
+     "window_numeric_matched": 290,
+     "windows": 37
+    },
+    {
+     "call_numeric_expected": 200,
+     "call_numeric_matched": 180,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4384964",
+     "window_numeric_matched": 180,
+     "windows": 45
+    },
+    {
+     "call_numeric_expected": 240,
+     "call_numeric_matched": 232,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4385072",
+     "window_numeric_matched": 231,
+     "windows": 29
+    },
+    {
+     "call_numeric_expected": 283,
+     "call_numeric_matched": 227,
+     "numeric_matched_shortfall": 2,
+     "sample_id": "4385388",
+     "window_numeric_matched": 225,
+     "windows": 49
+    },
+    {
+     "call_numeric_expected": 98,
+     "call_numeric_matched": 92,
+     "numeric_matched_shortfall": 3,
+     "sample_id": "4385939",
+     "window_numeric_matched": 89,
+     "windows": 34
+    },
+    {
+     "call_numeric_expected": 107,
+     "call_numeric_matched": 104,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4386541",
+     "window_numeric_matched": 104,
+     "windows": 13
+    },
+    {
+     "call_numeric_expected": 132,
+     "call_numeric_matched": 123,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4387332",
+     "window_numeric_matched": 122,
+     "windows": 15
+    },
+    {
+     "call_numeric_expected": 147,
+     "call_numeric_matched": 142,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4387383",
+     "window_numeric_matched": 141,
+     "windows": 24
+    },
+    {
+     "call_numeric_expected": 329,
+     "call_numeric_matched": 286,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4387865",
+     "window_numeric_matched": 286,
+     "windows": 25
+    },
+    {
+     "call_numeric_expected": 134,
+     "call_numeric_matched": 121,
+     "numeric_matched_shortfall": 1,
+     "sample_id": "4389907",
+     "window_numeric_matched": 120,
+     "windows": 23
+    },
+    {
+     "call_numeric_expected": 102,
+     "call_numeric_matched": 97,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4392809",
+     "window_numeric_matched": 97,
+     "windows": 16
+    },
+    {
+     "call_numeric_expected": 134,
+     "call_numeric_matched": 121,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4394084",
+     "window_numeric_matched": 121,
+     "windows": 20
+    },
+    {
+     "call_numeric_expected": 179,
+     "call_numeric_matched": 177,
+     "numeric_matched_shortfall": 0,
+     "sample_id": "4397800",
+     "window_numeric_matched": 177,
+     "windows": 31
+    },
+    {
+     "call_numeric_expected": 350,
+     "call_numeric_matched": 332,
+     "numeric_matched_shortfall": 3,
+     "sample_id": "4397829",
+     "window_numeric_matched": 329,
+     "windows": 50
+    }
+   ],
+   "reference_words": 359765,
+   "rows_sha256": "3e156ba55d472bca387f8bc826e960ff814e4e3a0129c583da38d8d7ecceabda",
+   "sha256": "ae18f2fb13ac5d4afa812c06370a0df7c43b2a19ea955e2c7493a58e3443b84c",
+   "source_attempt_id": "attempt-20260907T200859Z-251383",
+   "source_run_id": "SAEA-E21-KU-E1C-PLACEBO-44-V1",
+   "substitutions": 13254,
+   "verdict": "PASS"
+  }
+ },
+ "pairing": {
+  "calls": 44,
+  "ci_level": 0.9,
+  "cluster": "call",
+  "estimator": "pooled ratio, sum(numerator) / sum(denominator) over the resampled units",
+  "n_replicates": 10000,
+  "seed": 20260903,
+  "unit": "fixed 90-second window",
+  "windows": 1593
+ },
+ "per_call": [
+  {
+   "comparator_corpus_wer_percent": 7.160152196471809,
+   "comparator_person_entity_wer_percent": 22.580645161290324,
+   "comparator_person_reference_words": 62,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 7.021791767554479,
+   "kc-e1_person_entity_wer_percent": 20.967741935483872,
+   "kc-e1_person_reference_words": 62,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 7.229332410930474,
+   "ku-e1c_person_entity_wer_percent": 20.967741935483872,
+   "ku-e1c_person_reference_words": 62,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4320211",
+   "windows": 37
+  },
+  {
+   "comparator_corpus_wer_percent": 7.166566083283041,
+   "comparator_person_entity_wer_percent": 17.77777777777778,
+   "comparator_person_reference_words": 45,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 10.229330114665057,
+   "kc-e1_person_entity_wer_percent": 8.88888888888889,
+   "kc-e1_person_reference_words": 45,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 7.2872661436330715,
+   "ku-e1c_person_entity_wer_percent": 20.0,
+   "ku-e1c_person_reference_words": 45,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "eval",
+   "sample_id": "4330115",
+   "windows": 28
+  },
+  {
+   "comparator_corpus_wer_percent": 7.8055154391032255,
+   "comparator_person_entity_wer_percent": 19.166666666666668,
+   "comparator_person_reference_words": 120,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 8.018705728629392,
+   "kc-e1_person_entity_wer_percent": 18.333333333333332,
+   "kc-e1_person_reference_words": 120,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 8.252527336496803,
+   "ku-e1c_person_entity_wer_percent": 21.666666666666668,
+   "ku-e1c_person_reference_words": 120,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4341191",
+   "windows": 64
+  },
+  {
+   "comparator_corpus_wer_percent": 4.722142240138209,
+   "comparator_person_entity_wer_percent": 19.26605504587156,
+   "comparator_person_reference_words": 109,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 4.923697091851425,
+   "kc-e1_person_entity_wer_percent": 19.26605504587156,
+   "kc-e1_person_reference_words": 109,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 4.722142240138209,
+   "ku-e1c_person_entity_wer_percent": 18.34862385321101,
+   "ku-e1c_person_reference_words": 109,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4344338",
+   "windows": 31
+  },
+  {
+   "comparator_corpus_wer_percent": 6.11171960569551,
+   "comparator_person_entity_wer_percent": 22.36842105263158,
+   "comparator_person_reference_words": 76,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 6.451259583789704,
+   "kc-e1_person_entity_wer_percent": 7.894736842105263,
+   "kc-e1_person_reference_words": 76,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 6.19934282584885,
+   "ku-e1c_person_entity_wer_percent": 17.105263157894736,
+   "ku-e1c_person_reference_words": 76,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4344866",
+   "windows": 37
+  },
+  {
+   "comparator_corpus_wer_percent": 10.950036469730124,
+   "comparator_person_entity_wer_percent": 26.38888888888889,
+   "comparator_person_reference_words": 72,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 10.99562363238512,
+   "kc-e1_person_entity_wer_percent": 26.38888888888889,
+   "kc-e1_person_reference_words": 72,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 9.518599562363239,
+   "ku-e1c_person_entity_wer_percent": 29.166666666666668,
+   "ku-e1c_person_reference_words": 72,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4346818",
+   "windows": 45
+  },
+  {
+   "comparator_corpus_wer_percent": 18.94155908150192,
+   "comparator_person_entity_wer_percent": 35.38461538461539,
+   "comparator_person_reference_words": 130,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 18.705035971223023,
+   "kc-e1_person_entity_wer_percent": 30.0,
+   "kc-e1_person_reference_words": 130,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 18.350251305804672,
+   "ku-e1c_person_entity_wer_percent": 36.15384615384615,
+   "ku-e1c_person_reference_words": 130,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4346923",
+   "windows": 53
+  },
+  {
+   "comparator_corpus_wer_percent": 6.921282294996976,
+   "comparator_person_entity_wer_percent": 26.5625,
+   "comparator_person_reference_words": 64,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 6.955845502462629,
+   "kc-e1_person_entity_wer_percent": 7.8125,
+   "kc-e1_person_reference_words": 64,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 7.240991964054264,
+   "ku-e1c_person_entity_wer_percent": 31.25,
+   "ku-e1c_person_reference_words": 64,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4359732",
+   "windows": 55
+  },
+  {
+   "comparator_corpus_wer_percent": 5.777684739376178,
+   "comparator_person_entity_wer_percent": 26.829268292682926,
+   "comparator_person_reference_words": 82,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 5.317144651454888,
+   "kc-e1_person_entity_wer_percent": 18.29268292682927,
+   "kc-e1_person_reference_words": 82,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 6.301025748377643,
+   "ku-e1c_person_entity_wer_percent": 31.70731707317073,
+   "ku-e1c_person_reference_words": 82,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4359971",
+   "windows": 42
+  },
+  {
+   "comparator_corpus_wer_percent": 5.785911733867124,
+   "comparator_person_entity_wer_percent": 22.22222222222222,
+   "comparator_person_reference_words": 99,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 5.547612239062053,
+   "kc-e1_person_entity_wer_percent": 13.131313131313131,
+   "kc-e1_person_reference_words": 99,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 5.471356400724431,
+   "ku-e1c_person_entity_wer_percent": 18.181818181818183,
+   "ku-e1c_person_reference_words": 99,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4360366",
+   "windows": 44
+  },
+  {
+   "comparator_corpus_wer_percent": 8.18400922141884,
+   "comparator_person_entity_wer_percent": 32.0,
+   "comparator_person_reference_words": 50,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 8.194488106465473,
+   "kc-e1_person_entity_wer_percent": 32.0,
+   "kc-e1_person_reference_words": 50,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 8.519333542911035,
+   "ku-e1c_person_entity_wer_percent": 32.0,
+   "ku-e1c_person_reference_words": 50,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4360674",
+   "windows": 40
+  },
+  {
+   "comparator_corpus_wer_percent": 8.40329079919409,
+   "comparator_person_entity_wer_percent": 28.712871287128714,
+   "comparator_person_reference_words": 101,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 13.196776359973136,
+   "kc-e1_person_entity_wer_percent": 28.712871287128714,
+   "kc-e1_person_reference_words": 101,
+   "kc-e1_saturated_windows": 1,
+   "ku-e1c_corpus_wer_percent": 8.755876427132304,
+   "ku-e1c_person_entity_wer_percent": 31.683168316831683,
+   "ku-e1c_person_reference_words": 101,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4360717",
+   "windows": 51
+  },
+  {
+   "comparator_corpus_wer_percent": 7.255803521363688,
+   "comparator_person_entity_wer_percent": 17.5,
+   "comparator_person_reference_words": 80,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 8.029606369855333,
+   "kc-e1_person_entity_wer_percent": 10.0,
+   "kc-e1_person_reference_words": 80,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 7.278232589435909,
+   "ku-e1c_person_entity_wer_percent": 15.0,
+   "ku-e1c_person_reference_words": 80,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4361631",
+   "windows": 50
+  },
+  {
+   "comparator_corpus_wer_percent": 14.838709677419354,
+   "comparator_person_entity_wer_percent": 23.25581395348837,
+   "comparator_person_reference_words": 43,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 17.314328582145535,
+   "kc-e1_person_entity_wer_percent": 25.58139534883721,
+   "kc-e1_person_reference_words": 43,
+   "kc-e1_saturated_windows": 1,
+   "ku-e1c_corpus_wer_percent": 16.54913728432108,
+   "ku-e1c_person_entity_wer_percent": 32.55813953488372,
+   "ku-e1c_person_reference_words": 43,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4363614",
+   "windows": 63
+  },
+  {
+   "comparator_corpus_wer_percent": 10.18036557317516,
+   "comparator_person_entity_wer_percent": 22.916666666666668,
+   "comparator_person_reference_words": 144,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 10.144050357099625,
+   "kc-e1_person_entity_wer_percent": 22.22222222222222,
+   "kc-e1_person_reference_words": 144,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 10.119840213049267,
+   "ku-e1c_person_entity_wer_percent": 22.916666666666668,
+   "ku-e1c_person_reference_words": 144,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4364366",
+   "windows": 39
+  },
+  {
+   "comparator_corpus_wer_percent": 6.90752688172043,
+   "comparator_person_entity_wer_percent": 19.642857142857142,
+   "comparator_person_reference_words": 56,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 6.606451612903226,
+   "kc-e1_person_entity_wer_percent": 14.285714285714286,
+   "kc-e1_person_reference_words": 56,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 6.769892473118279,
+   "ku-e1c_person_entity_wer_percent": 16.071428571428573,
+   "ku-e1c_person_reference_words": 56,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "eval",
+   "sample_id": "4365024",
+   "windows": 49
+  },
+  {
+   "comparator_corpus_wer_percent": 4.4898568019093075,
+   "comparator_person_entity_wer_percent": 11.764705882352942,
+   "comparator_person_reference_words": 51,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 4.340692124105012,
+   "kc-e1_person_entity_wer_percent": 5.882352941176471,
+   "kc-e1_person_reference_words": 51,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 4.683770883054892,
+   "ku-e1c_person_entity_wer_percent": 11.764705882352942,
+   "ku-e1c_person_reference_words": 51,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "eval",
+   "sample_id": "4365948",
+   "windows": 28
+  },
+  {
+   "comparator_corpus_wer_percent": 5.802456806152002,
+   "comparator_person_entity_wer_percent": 10.204081632653061,
+   "comparator_person_reference_words": 98,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 5.5128333166883055,
+   "kc-e1_person_entity_wer_percent": 15.306122448979592,
+   "kc-e1_person_reference_words": 98,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 5.532807350444422,
+   "ku-e1c_person_entity_wer_percent": 11.224489795918368,
+   "ku-e1c_person_reference_words": 98,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4366302",
+   "windows": 40
+  },
+  {
+   "comparator_corpus_wer_percent": 6.54577620521893,
+   "comparator_person_entity_wer_percent": 14.634146341463415,
+   "comparator_person_reference_words": 123,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 6.74922600619195,
+   "kc-e1_person_entity_wer_percent": 13.008130081300813,
+   "kc-e1_person_reference_words": 123,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 7.0057496682883675,
+   "ku-e1c_person_entity_wer_percent": 17.88617886178862,
+   "ku-e1c_person_reference_words": 123,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "eval",
+   "sample_id": "4366429",
+   "windows": 45
+  },
+  {
+   "comparator_corpus_wer_percent": 7.22774678632064,
+   "comparator_person_entity_wer_percent": 11.11111111111111,
+   "comparator_person_reference_words": 27,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 6.209071064758671,
+   "kc-e1_person_entity_wer_percent": 11.11111111111111,
+   "kc-e1_person_reference_words": 27,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 6.451612903225806,
+   "ku-e1c_person_entity_wer_percent": 18.51851851851852,
+   "ku-e1c_person_reference_words": 27,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "eval",
+   "sample_id": "4366522",
+   "windows": 21
+  },
+  {
+   "comparator_corpus_wer_percent": 7.668231611893583,
+   "comparator_person_entity_wer_percent": 16.9811320754717,
+   "comparator_person_reference_words": 53,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 10.625978090766823,
+   "kc-e1_person_entity_wer_percent": 7.547169811320755,
+   "kc-e1_person_reference_words": 53,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 7.777777777777778,
+   "ku-e1c_person_entity_wer_percent": 15.09433962264151,
+   "ku-e1c_person_reference_words": 53,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4366893",
+   "windows": 27
+  },
+  {
+   "comparator_corpus_wer_percent": 7.020389249304912,
+   "comparator_person_entity_wer_percent": 16.129032258064516,
+   "comparator_person_reference_words": 31,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 7.414272474513439,
+   "kc-e1_person_entity_wer_percent": 25.806451612903224,
+   "kc-e1_person_reference_words": 31,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 7.645968489341984,
+   "ku-e1c_person_entity_wer_percent": 19.35483870967742,
+   "ku-e1c_person_reference_words": 31,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4367318",
+   "windows": 20
+  },
+  {
+   "comparator_corpus_wer_percent": 11.426091987272201,
+   "comparator_person_entity_wer_percent": 31.884057971014492,
+   "comparator_person_reference_words": 69,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 11.671969916112236,
+   "kc-e1_person_entity_wer_percent": 18.840579710144926,
+   "kc-e1_person_reference_words": 69,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 11.816603991900491,
+   "ku-e1c_person_entity_wer_percent": 30.434782608695652,
+   "ku-e1c_person_reference_words": 69,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4367535",
+   "windows": 36
+  },
+  {
+   "comparator_corpus_wer_percent": 10.095510131214853,
+   "comparator_person_entity_wer_percent": 39.50617283950617,
+   "comparator_person_reference_words": 81,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 8.604837989824155,
+   "kc-e1_person_entity_wer_percent": 37.03703703703704,
+   "kc-e1_person_reference_words": 81,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 8.711952155672588,
+   "ku-e1c_person_entity_wer_percent": 38.27160493827161,
+   "ku-e1c_person_reference_words": 81,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4368670",
+   "windows": 47
+  },
+  {
+   "comparator_corpus_wer_percent": 5.872790083316399,
+   "comparator_person_entity_wer_percent": 0.0,
+   "comparator_person_reference_words": 14,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 5.2631578947368425,
+   "kc-e1_person_entity_wer_percent": 7.142857142857143,
+   "kc-e1_person_reference_words": 14,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 5.425726478358057,
+   "ku-e1c_person_entity_wer_percent": 7.142857142857143,
+   "ku-e1c_person_reference_words": 14,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4374910",
+   "windows": 23
+  },
+  {
+   "comparator_corpus_wer_percent": 7.986074480430426,
+   "comparator_person_entity_wer_percent": 20.634920634920636,
+   "comparator_person_reference_words": 63,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 10.18039877624222,
+   "kc-e1_person_entity_wer_percent": 15.873015873015873,
+   "kc-e1_person_reference_words": 63,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 7.722333579491507,
+   "ku-e1c_person_entity_wer_percent": 23.80952380952381,
+   "ku-e1c_person_reference_words": 63,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4375653",
+   "windows": 39
+  },
+  {
+   "comparator_corpus_wer_percent": 10.62657577738351,
+   "comparator_person_entity_wer_percent": 21.58273381294964,
+   "comparator_person_reference_words": 139,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 11.504342142123448,
+   "kc-e1_person_entity_wer_percent": 20.863309352517987,
+   "kc-e1_person_reference_words": 139,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 10.981417499299654,
+   "ku-e1c_person_entity_wer_percent": 21.58273381294964,
+   "ku-e1c_person_reference_words": 139,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4382825",
+   "windows": 43
+  },
+  {
+   "comparator_corpus_wer_percent": 8.244531688166012,
+   "comparator_person_entity_wer_percent": 22.727272727272727,
+   "comparator_person_reference_words": 44,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 9.736399326977004,
+   "kc-e1_person_entity_wer_percent": 13.636363636363637,
+   "kc-e1_person_reference_words": 44,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 8.311833987661245,
+   "ku-e1c_person_entity_wer_percent": 25.0,
+   "ku-e1c_person_reference_words": 44,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4383161",
+   "windows": 38
+  },
+  {
+   "comparator_corpus_wer_percent": 8.023751522533496,
+   "comparator_person_entity_wer_percent": 6.349206349206349,
+   "comparator_person_reference_words": 63,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 9.333130328867234,
+   "kc-e1_person_entity_wer_percent": 14.285714285714286,
+   "kc-e1_person_reference_words": 63,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 8.328258221680876,
+   "ku-e1c_person_entity_wer_percent": 9.523809523809524,
+   "ku-e1c_person_reference_words": 63,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4384198",
+   "windows": 30
+  },
+  {
+   "comparator_corpus_wer_percent": 6.640841173215274,
+   "comparator_person_entity_wer_percent": 30.0,
+   "comparator_person_reference_words": 50,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 5.810736026563364,
+   "kc-e1_person_entity_wer_percent": 16.0,
+   "kc-e1_person_reference_words": 50,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 11.40011068068622,
+   "ku-e1c_person_entity_wer_percent": 38.0,
+   "ku-e1c_person_reference_words": 50,
+   "ku-e1c_saturated_windows": 1,
+   "roster": "constr",
+   "sample_id": "4384683",
+   "windows": 17
+  },
+  {
+   "comparator_corpus_wer_percent": 9.221336603310853,
+   "comparator_person_entity_wer_percent": 15.0,
+   "comparator_person_reference_words": 40,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 10.300429184549357,
+   "kc-e1_person_entity_wer_percent": 15.0,
+   "kc-e1_person_reference_words": 40,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 9.429797670141017,
+   "ku-e1c_person_entity_wer_percent": 22.5,
+   "ku-e1c_person_reference_words": 40,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4384744",
+   "windows": 37
+  },
+  {
+   "comparator_corpus_wer_percent": 8.087863144042919,
+   "comparator_person_entity_wer_percent": 23.404255319148938,
+   "comparator_person_reference_words": 94,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 8.189087964368863,
+   "kc-e1_person_entity_wer_percent": 15.957446808510639,
+   "kc-e1_person_reference_words": 94,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 8.027128251847353,
+   "ku-e1c_person_entity_wer_percent": 23.404255319148938,
+   "ku-e1c_person_reference_words": 94,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "eval",
+   "sample_id": "4384964",
+   "windows": 45
+  },
+  {
+   "comparator_corpus_wer_percent": 5.308641975308642,
+   "comparator_person_entity_wer_percent": 13.88888888888889,
+   "comparator_person_reference_words": 36,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 5.910493827160494,
+   "kc-e1_person_entity_wer_percent": 16.666666666666668,
+   "kc-e1_person_reference_words": 36,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 5.555555555555555,
+   "ku-e1c_person_entity_wer_percent": 16.666666666666668,
+   "ku-e1c_person_reference_words": 36,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "eval",
+   "sample_id": "4385072",
+   "windows": 29
+  },
+  {
+   "comparator_corpus_wer_percent": 6.25,
+   "comparator_person_entity_wer_percent": 21.951219512195124,
+   "comparator_person_reference_words": 82,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 5.669014084507042,
+   "kc-e1_person_entity_wer_percent": 14.634146341463415,
+   "kc-e1_person_reference_words": 82,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 5.85387323943662,
+   "ku-e1c_person_entity_wer_percent": 21.951219512195124,
+   "ku-e1c_person_reference_words": 82,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4385388",
+   "windows": 49
+  },
+  {
+   "comparator_corpus_wer_percent": 5.015914828229612,
+   "comparator_person_entity_wer_percent": 25.0,
+   "comparator_person_reference_words": 68,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 5.454944572494787,
+   "kc-e1_person_entity_wer_percent": 29.41176470588235,
+   "kc-e1_person_reference_words": 68,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 5.345187136428493,
+   "ku-e1c_person_entity_wer_percent": 30.88235294117647,
+   "ku-e1c_person_reference_words": 68,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4385939",
+   "windows": 34
+  },
+  {
+   "comparator_corpus_wer_percent": 6.355620867009552,
+   "comparator_person_entity_wer_percent": 26.08695652173913,
+   "comparator_person_reference_words": 23,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 6.171932402645114,
+   "kc-e1_person_entity_wer_percent": 8.695652173913043,
+   "kc-e1_person_reference_words": 23,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 5.878030859662013,
+   "ku-e1c_person_entity_wer_percent": 26.08695652173913,
+   "ku-e1c_person_reference_words": 23,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4386541",
+   "windows": 13
+  },
+  {
+   "comparator_corpus_wer_percent": 6.277915632754342,
+   "comparator_person_entity_wer_percent": 19.35483870967742,
+   "comparator_person_reference_words": 31,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 6.650124069478908,
+   "kc-e1_person_entity_wer_percent": 16.129032258064516,
+   "kc-e1_person_reference_words": 31,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 6.550868486352357,
+   "ku-e1c_person_entity_wer_percent": 19.35483870967742,
+   "ku-e1c_person_reference_words": 31,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4387332",
+   "windows": 15
+  },
+  {
+   "comparator_corpus_wer_percent": 6.699346405228758,
+   "comparator_person_entity_wer_percent": 22.22222222222222,
+   "comparator_person_reference_words": 27,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 6.862745098039215,
+   "kc-e1_person_entity_wer_percent": 7.407407407407407,
+   "kc-e1_person_reference_words": 27,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 7.135076252723311,
+   "ku-e1c_person_entity_wer_percent": 18.51851851851852,
+   "ku-e1c_person_reference_words": 27,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "eval",
+   "sample_id": "4387383",
+   "windows": 24
+  },
+  {
+   "comparator_corpus_wer_percent": 8.765411248099984,
+   "comparator_person_entity_wer_percent": 10.0,
+   "comparator_person_reference_words": 30,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 13.004560040533693,
+   "kc-e1_person_entity_wer_percent": 16.666666666666668,
+   "kc-e1_person_reference_words": 30,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 9.103192028373586,
+   "ku-e1c_person_entity_wer_percent": 23.333333333333332,
+   "ku-e1c_person_reference_words": 30,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4387865",
+   "windows": 25
+  },
+  {
+   "comparator_corpus_wer_percent": 13.140537798072044,
+   "comparator_person_entity_wer_percent": 31.428571428571427,
+   "comparator_person_reference_words": 35,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 12.6078132927448,
+   "kc-e1_person_entity_wer_percent": 22.857142857142858,
+   "kc-e1_person_reference_words": 35,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 12.810755961440893,
+   "ku-e1c_person_entity_wer_percent": 34.285714285714285,
+   "ku-e1c_person_reference_words": 35,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "eval",
+   "sample_id": "4389907",
+   "windows": 23
+  },
+  {
+   "comparator_corpus_wer_percent": 4.192203971561657,
+   "comparator_person_entity_wer_percent": 17.857142857142858,
+   "comparator_person_reference_words": 28,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 4.584456974748713,
+   "kc-e1_person_entity_wer_percent": 17.857142857142858,
+   "kc-e1_person_reference_words": 28,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 4.167688158862466,
+   "ku-e1c_person_entity_wer_percent": 17.857142857142858,
+   "ku-e1c_person_reference_words": 28,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4392809",
+   "windows": 16
+  },
+  {
+   "comparator_corpus_wer_percent": 12.156215621562156,
+   "comparator_person_entity_wer_percent": 64.51612903225806,
+   "comparator_person_reference_words": 31,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 11.633663366336634,
+   "kc-e1_person_entity_wer_percent": 32.25806451612903,
+   "kc-e1_person_reference_words": 31,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 12.128712871287128,
+   "ku-e1c_person_entity_wer_percent": 64.51612903225806,
+   "ku-e1c_person_reference_words": 31,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4394084",
+   "windows": 20
+  },
+  {
+   "comparator_corpus_wer_percent": 7.839939789262418,
+   "comparator_person_entity_wer_percent": 20.833333333333332,
+   "comparator_person_reference_words": 48,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 8.166081284495736,
+   "kc-e1_person_entity_wer_percent": 16.666666666666668,
+   "kc-e1_person_reference_words": 48,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 8.354239839438033,
+   "ku-e1c_person_entity_wer_percent": 20.833333333333332,
+   "ku-e1c_person_reference_words": 48,
+   "ku-e1c_saturated_windows": 0,
+   "roster": "constr",
+   "sample_id": "4397800",
+   "windows": 31
+  },
+  {
+   "comparator_corpus_wer_percent": 8.066356534714298,
+   "comparator_person_entity_wer_percent": 20.952380952380953,
+   "comparator_person_reference_words": 105,
+   "comparator_saturated_windows": 0,
+   "kc-e1_corpus_wer_percent": 7.846923549547968,
+   "kc-e1_person_entity_wer_percent": 14.285714285714286,
+   "kc-e1_person_reference_words": 105,
+   "kc-e1_saturated_windows": 0,
+   "ku-e1c_corpus_wer_percent": 9.60238743087861,
+   "ku-e1c_person_entity_wer_percent": 22.857142857142858,
+   "ku-e1c_person_reference_words": 105,
+   "ku-e1c_saturated_windows": 1,
+   "roster": "eval",
+   "sample_id": "4397829",
+   "windows": 50
+  }
+ ],
+ "preregistration": "docs/readiness/2026-09-06-e21-kc-e1-pre-meeting-brief-v2-preregistration.md",
+ "roster_halves": {
+  "constr": {
+   "calls": 34,
+   "pooled_percent": {
+    "corpus_wer": {
+     "comparator": 8.470004999753533,
+     "kc-e1": 9.097438858647813,
+     "ku-e1c": 8.590421598935263
+    },
+    "entity_wer_ORG": {
+     "comparator": 16.0069848661234,
+     "kc-e1": 18.247962747380676,
+     "ku-e1c": 17.636786961583237
+    },
+    "entity_wer_PERSON": {
+     "comparator": 23.46850733390854,
+     "kc-e1": 19.628990509059534,
+     "ku-e1c": 24.67644521138913
+    }
+   },
+   "windows": 1251
+  },
+  "eval": {
+   "calls": 10,
+   "pooled_percent": {
+    "corpus_wer": {
+     "comparator": 7.185383691304406,
+     "kc-e1": 7.380760650024422,
+     "ku-e1c": 7.466568098110916
+    },
+    "entity_wer_ORG": {
+     "comparator": 21.68284789644013,
+     "kc-e1": 17.044228694714132,
+     "ku-e1c": 20.496224379719525
+    },
+    "entity_wer_PERSON": {
+     "comparator": 18.697829716193656,
+     "kc-e1": 13.35559265442404,
+     "ku-e1c": 20.03338898163606
+    }
+   },
+   "windows": 342
+  }
+ },
+ "rows_files": {
+  "comparator": {
+   "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-WINDOW-PAIRING-V1/verdict-v1-window-rows-comparator.json",
+   "rows": 1593,
+   "sha256": "814af1e40133212c93bd9d4dd03c928a7b9efc56c19d8f26997df3130b8e9dcb",
+   "source_attempt_id": "attempt-20260904T233816Z-bcd338"
+  },
+  "kc-e1": {
+   "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-WINDOW-PAIRING-V1/verdict-v1-window-rows-kc-e1.json",
+   "rows": 1593,
+   "sha256": "83115849b39f8aba83eb388953a009bcbc191ebfb315b634c6df26c96ec5bdd2",
+   "source_attempt_id": "attempt-20260907T171238Z-f02eef"
+  },
+  "ku-e1c": {
+   "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-WINDOW-PAIRING-V1/verdict-v1-window-rows-ku-e1c.json",
+   "rows": 1593,
+   "sha256": "3e156ba55d472bca387f8bc826e960ff814e4e3a0129c583da38d8d7ecceabda",
+   "source_attempt_id": "attempt-20260907T200859Z-251383"
+  }
+ },
+ "saturation": {
+  "calls_after_excluding_those_calls": 40,
+  "calls_carrying_a_saturated_window": [
+   "4360717",
+   "4363614",
+   "4384683",
+   "4397829"
+  ],
+  "note": "The two treated arms saturated two windows each on FOUR DISJOINT calls, so the covariate is balanced in count and carried by different calls in each arm. A saturated window contributes the empty string to its arm's stitched hypothesis (reproduction.obs_loop's own quarantine), so it is charged no operation at all and its reference words fall out of that arm's totals as deletions charged to the neighbouring window's cursor. The sensitivity excludes the UNION from all three arms and is reported beside the primary, never in place of it. Two exclusions are reported, because the window-level one is nearly vacuous: a saturated window is charged NO reference word (it stitched nothing), so its untranscribed reference mass has already landed on the NEIGHBOURING window's deletion cursor and dropping the window cannot remove it. The CALL-level exclusion drops the whole cluster the saturated slice sits in, from all three arms, and is the one that actually bounds the covariate.",
+  "per_arm": {
+   "comparator": {
+    "count": 0,
+    "windows": []
+   },
+   "kc-e1": {
+    "count": 2,
+    "windows": [
+     {
+      "end_seconds": 2070.0,
+      "hypothesis_words_charged": 0,
+      "reference_words_charged": 0,
+      "sample_id": "4360717",
+      "start_seconds": 1980.0,
+      "window_id": "4360717#w0023"
+     },
+     {
+      "end_seconds": 2430.0,
+      "hypothesis_words_charged": 0,
+      "reference_words_charged": 0,
+      "sample_id": "4363614",
+      "start_seconds": 2340.0,
+      "window_id": "4363614#w0027"
+     }
+    ]
+   },
+   "ku-e1c": {
+    "count": 2,
+    "windows": [
+     {
+      "end_seconds": 1350.0,
+      "hypothesis_words_charged": 0,
+      "reference_words_charged": 0,
+      "sample_id": "4384683",
+      "start_seconds": 1260.0,
+      "window_id": "4384683#w0015"
+     },
+     {
+      "end_seconds": 450.0,
+      "hypothesis_words_charged": 0,
+      "reference_words_charged": 0,
+      "sample_id": "4397829",
+      "start_seconds": 360.0,
+      "window_id": "4397829#w0005"
+     }
+    ]
+   }
+  },
+  "union_excluded_by_the_sensitivity": [
+   "4360717#w0023",
+   "4363614#w0027",
+   "4384683#w0015",
+   "4397829#w0005"
+  ],
+  "windows_after_excluding_those_calls": 1412,
+  "windows_after_exclusion": 1589
+ },
+ "saturation_sensitivity": {
+  "content": {
+   "corpus_wer": {
+    "delta_right_minus_left": 0.003822202072905123,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": 0.0011079087271862738,
+     "ci_level": 0.9,
+     "ci_low": -0.006655527254691697,
+     "n_replicates": 10000,
+     "point_estimate": -0.002858270987710991,
+     "seed": 20260903,
+     "sigma_hat": 0.002353822247638644
+    },
+    "higher_is_better": false,
+    "improvement_point": -0.003822202072905123,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.08350842820924556,
+    "metric": "corpus_wer",
+    "natural_mixture_call_clustered": {
+     "ci_high": -0.0004245925660468657,
+     "ci_level": 0.9,
+     "ci_low": -0.007387557828986748,
+     "n_replicates": 10000,
+     "point_estimate": -0.003822202072905123,
+     "seed": 20260903,
+     "sigma_hat": 0.002111159026178877
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": -0.0009336913605049785,
+     "ci_level": 0.9,
+     "ci_low": -0.006854455366734783,
+     "n_replicates": 10000,
+     "point_estimate": -0.003822202072905123,
+     "seed": 20260903,
+     "sigma_hat": 0.0017965231256960982
+    },
+    "note": "pooled (S + D + I) / reference words -- the ConEC __ALL__ bucket and asr-wer-whisper agree on it",
+    "right_pooled": 0.08733063028215068
+   },
+   "entity_wer_PERSON": {
+    "delta_right_minus_left": -0.05471919519527732,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": 0.08322035491237742,
+     "ci_level": 0.9,
+     "ci_low": 0.04571949212256625,
+     "n_replicates": 10000,
+     "point_estimate": 0.06397223190100364,
+     "seed": 20260903,
+     "sigma_hat": 0.011322131713845508
+    },
+    "higher_is_better": false,
+    "improvement_point": 0.05471919519527732,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.23747426218256693,
+    "metric": "entity_wer_PERSON",
+    "natural_mixture_call_clustered": {
+     "ci_high": 0.07129989605648351,
+     "ci_level": 0.9,
+     "ci_low": 0.03974253104000913,
+     "n_replicates": 10000,
+     "point_estimate": 0.05471919519527732,
+     "seed": 20260903,
+     "sigma_hat": 0.009562425802139255
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": 0.0676743604101096,
+     "ci_level": 0.9,
+     "ci_low": 0.04138653632556787,
+     "n_replicates": 10000,
+     "point_estimate": 0.05471919519527732,
+     "seed": 20260903,
+     "sigma_hat": 0.007974945335243098
+    },
+    "note": "ConEC-mirror PERSON entity WER: pooled (S + D) / tagged reference words",
+    "right_pooled": 0.1827550669872896
+   },
+   "insertions_per_reference_word": {
+    "delta_right_minus_left": -0.0009392534662502859,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": 0.0013982736218214695,
+     "ci_level": 0.9,
+     "ci_low": 0.0003104494339108601,
+     "n_replicates": 10000,
+     "point_estimate": 0.000864006885644503,
+     "seed": 20260903,
+     "sigma_hat": 0.0003326557374967964
+    },
+    "higher_is_better": false,
+    "improvement_point": 0.0009392534662502859,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.028773074257852832,
+    "metric": "insertions_per_reference_word",
+    "natural_mixture_call_clustered": {
+     "ci_high": 0.0015263260013834515,
+     "ci_level": 0.9,
+     "ci_low": 0.00035326019156220695,
+     "n_replicates": 10000,
+     "point_estimate": 0.0009392534662502859,
+     "seed": 20260903,
+     "sigma_hat": 0.0003567631782575381
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": 0.0014766212462481493,
+     "ci_level": 0.9,
+     "ci_low": 0.00035365608391208,
+     "n_replicates": 10000,
+     "point_estimate": 0.0009392534662502859,
+     "seed": 20260903,
+     "sigma_hat": 0.0003405513593888818
+    },
+    "note": "the over-generation guard: a brief that gets read aloud shows up here first",
+    "right_pooled": 0.027833820791602546
+   }
+  },
+  "form": {
+   "corpus_wer": {
+    "delta_right_minus_left": 0.0015911841013748068,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": 0.00013064848306887494,
+     "ci_level": 0.9,
+     "ci_low": -0.004678111807368998,
+     "n_replicates": 10000,
+     "point_estimate": -0.0020361798359848065,
+     "seed": 20260903,
+     "sigma_hat": 0.0014839050107446664
+    },
+    "higher_is_better": false,
+    "improvement_point": -0.0015911841013748068,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.08191724410787075,
+    "metric": "corpus_wer",
+    "natural_mixture_call_clustered": {
+     "ci_high": 0.0003545202174319951,
+     "ci_level": 0.9,
+     "ci_low": -0.003602409318487888,
+     "n_replicates": 10000,
+     "point_estimate": -0.0015911841013748068,
+     "seed": 20260903,
+     "sigma_hat": 0.0012043324563855262
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": 0.00019449324067984588,
+     "ci_level": 0.9,
+     "ci_low": -0.00341840935888705,
+     "n_replicates": 10000,
+     "point_estimate": -0.0015911841013748068,
+     "seed": 20260903,
+     "sigma_hat": 0.001103344458118547
+    },
+    "note": "pooled (S + D + I) / reference words -- the ConEC __ALL__ bucket and asr-wer-whisper agree on it",
+    "right_pooled": 0.08350842820924556
+   },
+   "entity_wer_PERSON": {
+    "delta_right_minus_left": 0.012577425868949332,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": -0.008597490814539326,
+     "ci_level": 0.9,
+     "ci_low": -0.027486796922115923,
+     "n_replicates": 10000,
+     "point_estimate": -0.017783334726547792,
+     "seed": 20260903,
+     "sigma_hat": 0.00572491344853038
+    },
+    "higher_is_better": false,
+    "improvement_point": -0.012577425868949332,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.2248968363136176,
+    "metric": "entity_wer_PERSON",
+    "natural_mixture_call_clustered": {
+     "ci_high": -0.0049174448981966525,
+     "ci_level": 0.9,
+     "ci_low": -0.020691936172116912,
+     "n_replicates": 10000,
+     "point_estimate": -0.012577425868949332,
+     "seed": 20260903,
+     "sigma_hat": 0.004768321388070855
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": -0.0038808403686480383,
+     "ci_level": 0.9,
+     "ci_low": -0.021880953484678674,
+     "n_replicates": 10000,
+     "point_estimate": -0.012577425868949332,
+     "seed": 20260903,
+     "sigma_hat": 0.005433203146766186
+    },
+    "note": "ConEC-mirror PERSON entity WER: pooled (S + D) / tagged reference words",
+    "right_pooled": 0.23747426218256693
+   },
+   "insertions_per_reference_word": {
+    "delta_right_minus_left": -0.0009863925737572318,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": 0.0017396445213553287,
+     "ci_level": 0.9,
+     "ci_low": 0.0005133884215837856,
+     "n_replicates": 10000,
+     "point_estimate": 0.0011237206896895094,
+     "seed": 20260903,
+     "sigma_hat": 0.00037227269199804913
+    },
+    "higher_is_better": false,
+    "improvement_point": 0.0009863925737572318,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.029759466831610064,
+    "metric": "insertions_per_reference_word",
+    "natural_mixture_call_clustered": {
+     "ci_high": 0.0014640892131135767,
+     "ci_level": 0.9,
+     "ci_low": 0.0004995196439950269,
+     "n_replicates": 10000,
+     "point_estimate": 0.0009863925737572318,
+     "seed": 20260903,
+     "sigma_hat": 0.00029405494862347277
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": 0.0015008255568651086,
+     "ci_level": 0.9,
+     "ci_low": 0.0004664556528585381,
+     "n_replicates": 10000,
+     "point_estimate": 0.0009863925737572318,
+     "seed": 20260903,
+     "sigma_hat": 0.00031294018914001305
+    },
+    "note": "the over-generation guard: a brief that gets read aloud shows up here first",
+    "right_pooled": 0.028773074257852832
+   }
+  },
+  "total": {
+   "corpus_wer": {
+    "delta_right_minus_left": 0.00541338617427993,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": -0.0017925127967609662,
+     "ci_level": 0.9,
+     "ci_low": -0.008307729299127386,
+     "n_replicates": 10000,
+     "point_estimate": -0.004894450823695797,
+     "seed": 20260903,
+     "sigma_hat": 0.0019594383400552175
+    },
+    "higher_is_better": false,
+    "improvement_point": -0.00541338617427993,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.08191724410787075,
+    "metric": "corpus_wer",
+    "natural_mixture_call_clustered": {
+     "ci_high": -0.001984278603292173,
+     "ci_level": 0.9,
+     "ci_low": -0.009228228253318538,
+     "n_replicates": 10000,
+     "point_estimate": -0.00541338617427993,
+     "seed": 20260903,
+     "sigma_hat": 0.0021893910053245465
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": -0.002517587952663833,
+     "ci_level": 0.9,
+     "ci_low": -0.008406407327262487,
+     "n_replicates": 10000,
+     "point_estimate": -0.00541338617427993,
+     "seed": 20260903,
+     "sigma_hat": 0.0017941208563081181
+    },
+    "note": "pooled (S + D + I) / reference words -- the ConEC __ALL__ bucket and asr-wer-whisper agree on it",
+    "right_pooled": 0.08733063028215068
+   },
+   "entity_wer_PERSON": {
+    "delta_right_minus_left": -0.04214176932632799,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": 0.0663405757225947,
+     "ci_level": 0.9,
+     "ci_low": 0.026975447227482886,
+     "n_replicates": 10000,
+     "point_estimate": 0.046188897174455845,
+     "seed": 20260903,
+     "sigma_hat": 0.011986441378129797
+    },
+    "higher_is_better": false,
+    "improvement_point": 0.04214176932632799,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.2248968363136176,
+    "metric": "entity_wer_PERSON",
+    "natural_mixture_call_clustered": {
+     "ci_high": 0.05831961502695045,
+     "ci_level": 0.9,
+     "ci_low": 0.026877691974016127,
+     "n_replicates": 10000,
+     "point_estimate": 0.04214176932632799,
+     "seed": 20260903,
+     "sigma_hat": 0.009483315282161684
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": 0.05531507493690095,
+     "ci_level": 0.9,
+     "ci_low": 0.029029879208958737,
+     "n_replicates": 10000,
+     "point_estimate": 0.04214176932632799,
+     "seed": 20260903,
+     "sigma_hat": 0.008018551687321926
+    },
+    "note": "ConEC-mirror PERSON entity WER: pooled (S + D) / tagged reference words",
+    "right_pooled": 0.1827550669872896
+   },
+   "insertions_per_reference_word": {
+    "delta_right_minus_left": -0.0019256460400075177,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": 0.002655310278361164,
+     "ci_level": 0.9,
+     "ci_low": 0.0013046698139733692,
+     "n_replicates": 10000,
+     "point_estimate": 0.0019877275753340125,
+     "seed": 20260903,
+     "sigma_hat": 0.00041274494334283483
+    },
+    "higher_is_better": false,
+    "improvement_point": 0.0019256460400075177,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.029759466831610064,
+    "metric": "insertions_per_reference_word",
+    "natural_mixture_call_clustered": {
+     "ci_high": 0.0025895584208580724,
+     "ci_level": 0.9,
+     "ci_low": 0.0012435045729748465,
+     "n_replicates": 10000,
+     "point_estimate": 0.0019256460400075177,
+     "seed": 20260903,
+     "sigma_hat": 0.0004103199551622272
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": 0.0025889567227077707,
+     "ci_level": 0.9,
+     "ci_low": 0.0012260617623748467,
+     "n_replicates": 10000,
+     "point_estimate": 0.0019256460400075177,
+     "seed": 20260903,
+     "sigma_hat": 0.00041854990538314757
+    },
+    "note": "the over-generation guard: a brief that gets read aloud shows up here first",
+    "right_pooled": 0.027833820791602546
+   }
+  }
+ },
+ "saturation_sensitivity_saturated_calls_excluded": {
+  "content": {
+   "corpus_wer": {
+    "delta_right_minus_left": 0.0035866748457041298,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": -0.0013121659065020428,
+     "ci_level": 0.9,
+     "ci_low": -0.006750325712526649,
+     "n_replicates": 10000,
+     "point_estimate": -0.003874061072194869,
+     "seed": 20260903,
+     "sigma_hat": 0.0016462797578999098
+    },
+    "higher_is_better": false,
+    "improvement_point": -0.0035866748457041298,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.07917913343932698,
+    "metric": "corpus_wer",
+    "natural_mixture_call_clustered": {
+     "ci_high": -0.0012070572870549103,
+     "ci_level": 0.9,
+     "ci_low": -0.0063100237323580055,
+     "n_replicates": 10000,
+     "point_estimate": -0.0035866748457041298,
+     "seed": 20260903,
+     "sigma_hat": 0.0015415190760064098
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": -0.0013182364681131613,
+     "ci_level": 0.9,
+     "ci_low": -0.006131994907580855,
+     "n_replicates": 10000,
+     "point_estimate": -0.0035866748457041298,
+     "seed": 20260903,
+     "sigma_hat": 0.0014739537684745393
+    },
+    "note": "pooled (S + D + I) / reference words -- the ConEC __ALL__ bucket and asr-wer-whisper agree on it",
+    "right_pooled": 0.0827658082850311
+   },
+   "entity_wer_PERSON": {
+    "delta_right_minus_left": -0.05003819709702062,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": 0.07814156939509331,
+     "ci_level": 0.9,
+     "ci_low": 0.0406987667292123,
+     "n_replicates": 10000,
+     "point_estimate": 0.05857569767850311,
+     "seed": 20260903,
+     "sigma_hat": 0.011383945542894545
+    },
+    "higher_is_better": false,
+    "improvement_point": 0.05003819709702062,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.23032849503437738,
+    "metric": "entity_wer_PERSON",
+    "natural_mixture_call_clustered": {
+     "ci_high": 0.066914653618977,
+     "ci_level": 0.9,
+     "ci_low": 0.035194122671778,
+     "n_replicates": 10000,
+     "point_estimate": 0.05003819709702062,
+     "seed": 20260903,
+     "sigma_hat": 0.009591458193030726
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": 0.0635525055760021,
+     "ci_level": 0.9,
+     "ci_low": 0.036583694942639015,
+     "n_replicates": 10000,
+     "point_estimate": 0.05003819709702062,
+     "seed": 20260903,
+     "sigma_hat": 0.008248109633136765
+    },
+    "note": "ConEC-mirror PERSON entity WER: pooled (S + D) / tagged reference words",
+    "right_pooled": 0.18029029793735676
+   },
+   "insertions_per_reference_word": {
+    "delta_right_minus_left": -0.0007260982235631382,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": 0.0012734302140032531,
+     "ci_level": 0.9,
+     "ci_low": 0.0001950864172136691,
+     "n_replicates": 10000,
+     "point_estimate": 0.0007593667426690483,
+     "seed": 20260903,
+     "sigma_hat": 0.0003268808389582802
+    },
+    "higher_is_better": false,
+    "improvement_point": 0.0007260982235631382,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.0276605866372889,
+    "metric": "insertions_per_reference_word",
+    "natural_mixture_call_clustered": {
+     "ci_high": 0.0012285513454377659,
+     "ci_level": 0.9,
+     "ci_low": 0.00018557755277988914,
+     "n_replicates": 10000,
+     "point_estimate": 0.0007260982235631382,
+     "seed": 20260903,
+     "sigma_hat": 0.00031966245846690394
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": 0.0012580914996908384,
+     "ci_level": 0.9,
+     "ci_low": 0.00011285799743767,
+     "n_replicates": 10000,
+     "point_estimate": 0.0007260982235631382,
+     "seed": 20260903,
+     "sigma_hat": 0.00035282178552291734
+    },
+    "note": "the over-generation guard: a brief that gets read aloud shows up here first",
+    "right_pooled": 0.02693448841372576
+   }
+  },
+  "form": {
+   "corpus_wer": {
+    "delta_right_minus_left": -0.00019404349077981053,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": 0.0012776786286285723,
+     "ci_level": 0.9,
+     "ci_low": -0.0010991450547461511,
+     "n_replicates": 10000,
+     "point_estimate": 5.3738010692200475e-05,
+     "seed": 20260903,
+     "sigma_hat": 0.0007203459340569111
+    },
+    "higher_is_better": false,
+    "improvement_point": 0.00019404349077981053,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.07937317693010679,
+    "metric": "corpus_wer",
+    "natural_mixture_call_clustered": {
+     "ci_high": 0.0016816562359705017,
+     "ci_level": 0.9,
+     "ci_low": -0.001169068332530636,
+     "n_replicates": 10000,
+     "point_estimate": 0.00019404349077981053,
+     "seed": 20260903,
+     "sigma_hat": 0.0008653320885583207
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": 0.0017300982072422301,
+     "ci_level": 0.9,
+     "ci_low": -0.001215699754805591,
+     "n_replicates": 10000,
+     "point_estimate": 0.00019404349077981053,
+     "seed": 20260903,
+     "sigma_hat": 0.0008998205218010035
+    },
+    "note": "pooled (S + D + I) / reference words -- the ConEC __ALL__ bucket and asr-wer-whisper agree on it",
+    "right_pooled": 0.07917913343932698
+   },
+   "entity_wer_PERSON": {
+    "delta_right_minus_left": 0.008785332314744071,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": -0.004588189125645824,
+     "ci_level": 0.9,
+     "ci_low": -0.023305218234401497,
+     "n_replicates": 10000,
+     "point_estimate": -0.013669041855356714,
+     "seed": 20260903,
+     "sigma_hat": 0.0056752252514413295
+    },
+    "higher_is_better": false,
+    "improvement_point": -0.008785332314744071,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.2215431627196333,
+    "metric": "entity_wer_PERSON",
+    "natural_mixture_call_clustered": {
+     "ci_high": -0.00113440942930162,
+     "ci_level": 0.9,
+     "ci_low": -0.016936171220543257,
+     "n_replicates": 10000,
+     "point_estimate": -0.008785332314744071,
+     "seed": 20260903,
+     "sigma_hat": 0.0047614937418985325
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": 0.00011625059381703394,
+     "ci_level": 0.9,
+     "ci_low": -0.018053784651202307,
+     "n_replicates": 10000,
+     "point_estimate": -0.008785332314744071,
+     "seed": 20260903,
+     "sigma_hat": 0.005559458136963814
+    },
+    "note": "ConEC-mirror PERSON entity WER: pooled (S + D) / tagged reference words",
+    "right_pooled": 0.23032849503437738
+   },
+   "insertions_per_reference_word": {
+    "delta_right_minus_left": -0.0009107525131761794,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": 0.001618979949606842,
+     "ci_level": 0.9,
+     "ci_low": 0.00035523216792142896,
+     "n_replicates": 10000,
+     "point_estimate": 0.000985453055941549,
+     "seed": 20260903,
+     "sigma_hat": 0.0003828812413061314
+    },
+    "higher_is_better": false,
+    "improvement_point": 0.0009107525131761794,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.02857133915046508,
+    "metric": "insertions_per_reference_word",
+    "natural_mixture_call_clustered": {
+     "ci_high": 0.0014264528868356346,
+     "ci_level": 0.9,
+     "ci_low": 0.0003741870271872096,
+     "n_replicates": 10000,
+     "point_estimate": 0.0009107525131761794,
+     "seed": 20260903,
+     "sigma_hat": 0.0003192986371152277
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": 0.0014573589316540874,
+     "ci_level": 0.9,
+     "ci_low": 0.00036432561447297563,
+     "n_replicates": 10000,
+     "point_estimate": 0.0009107525131761794,
+     "seed": 20260903,
+     "sigma_hat": 0.00033248757997921766
+    },
+    "note": "the over-generation guard: a brief that gets read aloud shows up here first",
+    "right_pooled": 0.0276605866372889
+   }
+  },
+  "total": {
+   "corpus_wer": {
+    "delta_right_minus_left": 0.0033926313549243192,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": -0.0010826281872016313,
+     "ci_level": 0.9,
+     "ci_low": -0.006848147662417508,
+     "n_replicates": 10000,
+     "point_estimate": -0.003820323061502669,
+     "seed": 20260903,
+     "sigma_hat": 0.0017555998413899647
+    },
+    "higher_is_better": false,
+    "improvement_point": -0.0033926313549243192,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.07937317693010679,
+    "metric": "corpus_wer",
+    "natural_mixture_call_clustered": {
+     "ci_high": -0.0009060009758841206,
+     "ci_level": 0.9,
+     "ci_low": -0.006194355905223697,
+     "n_replicates": 10000,
+     "point_estimate": -0.0033926313549243192,
+     "seed": 20260903,
+     "sigma_hat": 0.0016120966293160588
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": -0.0007558379760822983,
+     "ci_level": 0.9,
+     "ci_low": -0.006244011647798653,
+     "n_replicates": 10000,
+     "point_estimate": -0.0033926313549243192,
+     "seed": 20260903,
+     "sigma_hat": 0.0016603470143892395
+    },
+    "note": "pooled (S + D + I) / reference words -- the ConEC __ALL__ bucket and asr-wer-whisper agree on it",
+    "right_pooled": 0.0827658082850311
+   },
+   "entity_wer_PERSON": {
+    "delta_right_minus_left": -0.04125286478227655,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": 0.06664783387413613,
+     "ci_level": 0.9,
+     "ci_low": 0.024608666840785543,
+     "n_replicates": 10000,
+     "point_estimate": 0.044906655823146395,
+     "seed": 20260903,
+     "sigma_hat": 0.012732795238177217
+    },
+    "higher_is_better": false,
+    "improvement_point": 0.04125286478227655,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.2215431627196333,
+    "metric": "entity_wer_PERSON",
+    "natural_mixture_call_clustered": {
+     "ci_high": 0.05852815655167876,
+     "ci_level": 0.9,
+     "ci_low": 0.02524371921262871,
+     "n_replicates": 10000,
+     "point_estimate": 0.04125286478227655,
+     "seed": 20260903,
+     "sigma_hat": 0.010083644812136177
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": 0.05523212096701647,
+     "ci_level": 0.9,
+     "ci_low": 0.027081805748162432,
+     "n_replicates": 10000,
+     "point_estimate": 0.04125286478227655,
+     "seed": 20260903,
+     "sigma_hat": 0.00854313881619916
+    },
+    "note": "ConEC-mirror PERSON entity WER: pooled (S + D) / tagged reference words",
+    "right_pooled": 0.18029029793735676
+   },
+   "insertions_per_reference_word": {
+    "delta_right_minus_left": -0.0016368507367393176,
+    "equal_stratum_per_call_clustered": {
+     "ci_high": 0.0024029300787527606,
+     "ci_level": 0.9,
+     "ci_low": 0.001060568300333147,
+     "n_replicates": 10000,
+     "point_estimate": 0.0017448197986105972,
+     "seed": 20260903,
+     "sigma_hat": 0.0004069836698391048
+    },
+    "higher_is_better": false,
+    "improvement_point": 0.0016368507367393176,
+    "improvement_sign_convention": "positive = the RIGHT arm is better on this metric",
+    "left_pooled": 0.02857133915046508,
+    "metric": "insertions_per_reference_word",
+    "natural_mixture_call_clustered": {
+     "ci_high": 0.002239273859180875,
+     "ci_level": 0.9,
+     "ci_low": 0.0009985970136570617,
+     "n_replicates": 10000,
+     "point_estimate": 0.0016368507367393176,
+     "seed": 20260903,
+     "sigma_hat": 0.00037618557070473116
+    },
+    "natural_mixture_window_level_OPTIMISTIC": {
+     "ci_high": 0.0023399686324007884,
+     "ci_level": 0.9,
+     "ci_low": 0.0008910069711895162,
+     "n_replicates": 10000,
+     "point_estimate": 0.0016368507367393176,
+     "seed": 20260903,
+     "sigma_hat": 0.0004367904740179126
+    },
+    "note": "the over-generation guard: a brief that gets read aloud shows up here first",
+    "right_pooled": 0.02693448841372576
+   }
+  }
+ },
+ "schema": "saea-e21-kc-e1-verdict-v1",
+ "study": "speech-aware-evidence-acquisition",
+ "token_throughput_covariate": {
+  "constant_residual_twin_minus_arm": [
+   7
+  ],
+  "per_call_brief_text_tokens": [
+   {
+    "kc_e1_text_tokens_max": 649,
+    "kc_e1_text_tokens_min": 636,
+    "ku_e1c_text_tokens_max": 656,
+    "ku_e1c_text_tokens_min": 643,
+    "sample_id": "4320211",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 660,
+    "kc_e1_text_tokens_min": 647,
+    "ku_e1c_text_tokens_max": 667,
+    "ku_e1c_text_tokens_min": 654,
+    "sample_id": "4330115",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 731,
+    "kc_e1_text_tokens_min": 718,
+    "ku_e1c_text_tokens_max": 738,
+    "ku_e1c_text_tokens_min": 725,
+    "sample_id": "4341191",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 591,
+    "kc_e1_text_tokens_min": 578,
+    "ku_e1c_text_tokens_max": 598,
+    "ku_e1c_text_tokens_min": 585,
+    "sample_id": "4344338",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 690,
+    "kc_e1_text_tokens_min": 677,
+    "ku_e1c_text_tokens_max": 697,
+    "ku_e1c_text_tokens_min": 684,
+    "sample_id": "4344866",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 734,
+    "kc_e1_text_tokens_min": 721,
+    "ku_e1c_text_tokens_max": 741,
+    "ku_e1c_text_tokens_min": 728,
+    "sample_id": "4346818",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 870,
+    "kc_e1_text_tokens_min": 857,
+    "ku_e1c_text_tokens_max": 877,
+    "ku_e1c_text_tokens_min": 864,
+    "sample_id": "4346923",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 720,
+    "kc_e1_text_tokens_min": 707,
+    "ku_e1c_text_tokens_max": 727,
+    "ku_e1c_text_tokens_min": 714,
+    "sample_id": "4359732",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 611,
+    "kc_e1_text_tokens_min": 598,
+    "ku_e1c_text_tokens_max": 618,
+    "ku_e1c_text_tokens_min": 605,
+    "sample_id": "4359971",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 789,
+    "kc_e1_text_tokens_min": 776,
+    "ku_e1c_text_tokens_max": 796,
+    "ku_e1c_text_tokens_min": 783,
+    "sample_id": "4360366",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 642,
+    "kc_e1_text_tokens_min": 629,
+    "ku_e1c_text_tokens_max": 649,
+    "ku_e1c_text_tokens_min": 636,
+    "sample_id": "4360674",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 773,
+    "kc_e1_text_tokens_min": 760,
+    "ku_e1c_text_tokens_max": 780,
+    "ku_e1c_text_tokens_min": 767,
+    "sample_id": "4360717",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 720,
+    "kc_e1_text_tokens_min": 707,
+    "ku_e1c_text_tokens_max": 727,
+    "ku_e1c_text_tokens_min": 714,
+    "sample_id": "4361631",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 723,
+    "kc_e1_text_tokens_min": 710,
+    "ku_e1c_text_tokens_max": 730,
+    "ku_e1c_text_tokens_min": 717,
+    "sample_id": "4363614",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 730,
+    "kc_e1_text_tokens_min": 717,
+    "ku_e1c_text_tokens_max": 737,
+    "ku_e1c_text_tokens_min": 724,
+    "sample_id": "4364366",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 685,
+    "kc_e1_text_tokens_min": 672,
+    "ku_e1c_text_tokens_max": 692,
+    "ku_e1c_text_tokens_min": 679,
+    "sample_id": "4365024",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 532,
+    "kc_e1_text_tokens_min": 519,
+    "ku_e1c_text_tokens_max": 539,
+    "ku_e1c_text_tokens_min": 526,
+    "sample_id": "4365948",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 688,
+    "kc_e1_text_tokens_min": 675,
+    "ku_e1c_text_tokens_max": 695,
+    "ku_e1c_text_tokens_min": 682,
+    "sample_id": "4366302",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 711,
+    "kc_e1_text_tokens_min": 698,
+    "ku_e1c_text_tokens_max": 718,
+    "ku_e1c_text_tokens_min": 705,
+    "sample_id": "4366429",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 521,
+    "kc_e1_text_tokens_min": 508,
+    "ku_e1c_text_tokens_max": 528,
+    "ku_e1c_text_tokens_min": 515,
+    "sample_id": "4366522",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 596,
+    "kc_e1_text_tokens_min": 583,
+    "ku_e1c_text_tokens_max": 603,
+    "ku_e1c_text_tokens_min": 590,
+    "sample_id": "4366893",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 575,
+    "kc_e1_text_tokens_min": 562,
+    "ku_e1c_text_tokens_max": 582,
+    "ku_e1c_text_tokens_min": 569,
+    "sample_id": "4367318",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 642,
+    "kc_e1_text_tokens_min": 629,
+    "ku_e1c_text_tokens_max": 649,
+    "ku_e1c_text_tokens_min": 636,
+    "sample_id": "4367535",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 816,
+    "kc_e1_text_tokens_min": 803,
+    "ku_e1c_text_tokens_max": 823,
+    "ku_e1c_text_tokens_min": 810,
+    "sample_id": "4368670",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 469,
+    "kc_e1_text_tokens_min": 456,
+    "ku_e1c_text_tokens_max": 476,
+    "ku_e1c_text_tokens_min": 463,
+    "sample_id": "4374910",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 615,
+    "kc_e1_text_tokens_min": 602,
+    "ku_e1c_text_tokens_max": 622,
+    "ku_e1c_text_tokens_min": 609,
+    "sample_id": "4375653",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 742,
+    "kc_e1_text_tokens_min": 729,
+    "ku_e1c_text_tokens_max": 749,
+    "ku_e1c_text_tokens_min": 736,
+    "sample_id": "4382825",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 679,
+    "kc_e1_text_tokens_min": 666,
+    "ku_e1c_text_tokens_max": 686,
+    "ku_e1c_text_tokens_min": 673,
+    "sample_id": "4383161",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 529,
+    "kc_e1_text_tokens_min": 516,
+    "ku_e1c_text_tokens_max": 536,
+    "ku_e1c_text_tokens_min": 523,
+    "sample_id": "4384198",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 562,
+    "kc_e1_text_tokens_min": 549,
+    "ku_e1c_text_tokens_max": 569,
+    "ku_e1c_text_tokens_min": 556,
+    "sample_id": "4384683",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 592,
+    "kc_e1_text_tokens_min": 579,
+    "ku_e1c_text_tokens_max": 599,
+    "ku_e1c_text_tokens_min": 586,
+    "sample_id": "4384744",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 740,
+    "kc_e1_text_tokens_min": 727,
+    "ku_e1c_text_tokens_max": 747,
+    "ku_e1c_text_tokens_min": 734,
+    "sample_id": "4384964",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 620,
+    "kc_e1_text_tokens_min": 607,
+    "ku_e1c_text_tokens_max": 627,
+    "ku_e1c_text_tokens_min": 614,
+    "sample_id": "4385072",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 682,
+    "kc_e1_text_tokens_min": 669,
+    "ku_e1c_text_tokens_max": 689,
+    "ku_e1c_text_tokens_min": 676,
+    "sample_id": "4385388",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 768,
+    "kc_e1_text_tokens_min": 755,
+    "ku_e1c_text_tokens_max": 775,
+    "ku_e1c_text_tokens_min": 762,
+    "sample_id": "4385939",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 500,
+    "kc_e1_text_tokens_min": 487,
+    "ku_e1c_text_tokens_max": 507,
+    "ku_e1c_text_tokens_min": 494,
+    "sample_id": "4386541",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 498,
+    "kc_e1_text_tokens_min": 485,
+    "ku_e1c_text_tokens_max": 505,
+    "ku_e1c_text_tokens_min": 492,
+    "sample_id": "4387332",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 519,
+    "kc_e1_text_tokens_min": 506,
+    "ku_e1c_text_tokens_max": 526,
+    "ku_e1c_text_tokens_min": 513,
+    "sample_id": "4387383",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 515,
+    "kc_e1_text_tokens_min": 502,
+    "ku_e1c_text_tokens_max": 522,
+    "ku_e1c_text_tokens_min": 509,
+    "sample_id": "4387865",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 572,
+    "kc_e1_text_tokens_min": 559,
+    "ku_e1c_text_tokens_max": 579,
+    "ku_e1c_text_tokens_min": 566,
+    "sample_id": "4389907",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 532,
+    "kc_e1_text_tokens_min": 519,
+    "ku_e1c_text_tokens_max": 539,
+    "ku_e1c_text_tokens_min": 526,
+    "sample_id": "4392809",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 485,
+    "kc_e1_text_tokens_min": 472,
+    "ku_e1c_text_tokens_max": 492,
+    "ku_e1c_text_tokens_min": 479,
+    "sample_id": "4394084",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 587,
+    "kc_e1_text_tokens_min": 574,
+    "ku_e1c_text_tokens_max": 594,
+    "ku_e1c_text_tokens_min": 581,
+    "sample_id": "4397800",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   },
+   {
+    "kc_e1_text_tokens_max": 705,
+    "kc_e1_text_tokens_min": 692,
+    "ku_e1c_text_tokens_max": 712,
+    "ku_e1c_text_tokens_min": 699,
+    "sample_id": "4397829",
+    "twin_minus_arm_max": 7,
+    "twin_minus_arm_min": 7
+   }
+  ],
+  "saturation_reported_by_the_flights": {
+   "kc-e1": {
+    "comparator_saturated_slice_count": 0,
+    "max_tokens": 1024,
+    "rule": "reproduction.obs_loop: a slice whose completion reaches the decode cap is a TRUNCATED decode, not a transcript end, so it contributes the empty string to the stitched hypothesis and is counted instead of scored silently (obs_saturated true, obs_accepted_chars 0)",
+    "saturated_slice_count": 2,
+    "skipped_slice_count": 0,
+    "what_it_costs_the_measurement": "2 of 1,593 windows -- 180 s of 141,345.85, or 0.127 % of the audio -- carry no transcript, which lands in this cell's deletions and is one of the reasons its corpus WER moved. Both windows ran far past the typical ~1,550-char window (5,426 and 4,195 raw chars) before the cap stopped them, so the finding is over-generation under the brief, not a lost window at random. Reported, never repaired: the sealed hypothesis is what the OBS rule produced.",
+    "windows": [
+     {
+      "accepted_chars": 0,
+      "obs_iteration": 22,
+      "obs_record": "req-0012-i0022/obs",
+      "raw_response_chars": 5426,
+      "sample_id": "4360717",
+      "window_seconds": [
+       1980.0,
+       2070.0
+      ]
+     },
+     {
+      "accepted_chars": 0,
+      "obs_iteration": 26,
+      "obs_record": "req-0014-i0026/obs",
+      "raw_response_chars": 4195,
+      "sample_id": "4363614",
+      "window_seconds": [
+       2340.0,
+       2430.0
+      ]
+     }
+    ]
+   },
+   "ku-e1c": {
+    "comparator_saturated_slice_count": 0,
+    "kc_e1_saturated_slice_count": 2,
+    "manifest_cost_saturated_sample_ids": [
+     "4384683",
+     "4397829"
+    ],
+    "manifest_cost_saturated_slice_count": 2,
+    "max_tokens": 1024,
+    "rule": "reproduction.obs_loop: a slice whose completion reaches the decode cap is a TRUNCATED decode, not a transcript end, so it contributes the empty string to the stitched hypothesis and is counted instead of scored silently (obs_saturated true, obs_accepted_chars 0)",
+    "saturated_slice_count": 2,
+    "skipped_slice_count": 0,
+    "trace_and_manifest_agree": true,
+    "windows": [
+     {
+      "accepted_chars": 0,
+      "obs_iteration": 14,
+      "obs_record": "req-0030-i0014/obs",
+      "raw_response_chars": 2425,
+      "sample_id": "4384683",
+      "window_seconds": [
+       1260.0,
+       1350.0
+      ]
+     },
+     {
+      "accepted_chars": 0,
+      "obs_iteration": 4,
+      "obs_record": "req-0044-i0004/obs",
+      "raw_response_chars": 6040,
+      "sample_id": "4397829",
+      "window_seconds": [
+       360.0,
+       450.0
+      ]
+     }
+    ]
+   }
+  },
+  "sources": {
+   "kc-e1": {
+    "path": "/mnt/d/chao_workspace/saea-worktrees/wt-verdict/docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/flight/flight-receipt.json",
+    "sha256": "04e302820aba88d23b23e6cbcedfb08d19e94b3f4f1bcbd1dba9236c1f10c096"
+   },
+   "ku-e1c": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/flight-placebo/flight-receipt.json",
+    "sha256": "11f1be7afe52607ff7b3eb822f593fc908898bd099481d3873973e1ae2d9e842"
+   }
+  },
+  "totals": {
+   "kc-e1": {
+    "audio_seconds_used": 141345.8526875,
+    "comparator_completion_tokens": 439532,
+    "comparator_prompt_tokens": 1935965,
+    "completion_tokens": 423115,
+    "gpu_hours": 0.9948,
+    "gpu_seconds": 3581.430167366449,
+    "peak_vram_mib": 22726.0,
+    "per_window_prompt_min_median_max": [
+     541,
+     1855,
+     2040
+    ],
+    "per_window_text_min_median_max": [
+     456,
+     688,
+     870
+    ],
+    "prompt_tokens": 2907274,
+    "throughput": {
+     "realized_realtime_factor": 39.47,
+     "run_wall_seconds": 5884.0,
+     "wall_minutes": 98.07,
+     "wall_seconds": 5884.0,
+     "wall_seconds_including_finalize": 7412.0,
+     "windows_per_minute": 16.244
+    }
+   },
+   "ku-e1c": {
+    "audio_seconds_used": 141345.8526875,
+    "comparator_gpu_hours": 0.9734,
+    "completion_tokens": 430779,
+    "fit_reference": {
+     "arm_per_window_text_tokens": {
+      "max": 855,
+      "median": 673.0,
+      "min": 454
+     },
+     "brief_tokens_equal_on_every_call": true,
+     "constant_residual_twin_minus_arm": 7,
+     "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-kc-e1-brief-44-v1/placebo-token-match/placebo-token-match.json",
+     "twin_per_window_text_tokens": {
+      "max": 862,
+      "median": 680.0,
+      "min": 461
+     },
+     "worst_required_after_padding": 3058
+    },
+    "gpu_hours": 1.0087,
+    "gpu_seconds": 3631.3984271056343,
+    "margin_factor": 2.0007,
+    "peak_vram_mib": 22726.0,
+    "per_window_completion": {
+     "count": 1593,
+     "max": 1024,
+     "median": 274,
+     "min": 2,
+     "p90": 321,
+     "p95": 333
+    },
+    "per_window_prompt": {
+     "count": 1593,
+     "max": 2047,
+     "median": 1862,
+     "min": 548,
+     "p90": 1950,
+     "p95": 1993
+    },
+    "prompt_tokens": 2918425,
+    "slot_tokens": 6144,
+    "throughput": {
+     "finalize_seconds": 1637.0,
+     "kc_e1_realized_realtime_factor": 39.47,
+     "kc_e1_run_wall_seconds": 5884.0,
+     "kc_e1_windows_per_minute": 16.244,
+     "realized_realtime_factor": 38.92,
+     "run_exited_at": "2026-09-07T21:46:54Z",
+     "run_started_at": "2026-09-07T20:10:15Z",
+     "run_wall_minutes": 96.65,
+     "run_wall_seconds": 5799.0,
+     "score_batch_seconds": 1528.0,
+     "windows_per_minute": 16.482
+    },
+    "worst_realized_request": 3071
+   }
+  }
+ },
+ "zero_contact": "no model, GPU, tool, embedding, tokenizer, network, audio-decode or paid-API contact; no reference transcript is opened by this script"
+}

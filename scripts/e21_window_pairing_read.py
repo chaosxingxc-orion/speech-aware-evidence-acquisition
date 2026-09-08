@@ -158,7 +158,78 @@ SEALED_PROFILES: dict[str, dict[str, object]] = {
             "negation_critical_high_insertions": 43,
         },
     },
+    # KU-E1c, the token-matched form twin
+    # (docs/checks/.../2026-09-06-e21-kc-e1-brief-44-v1/flight-placebo/), sealed
+    # with two of its 1,593 windows saturated at the 1,024-token decode cap --
+    # a DIFFERENT two calls from KC-E1's, which is why the pair's saturation is a
+    # per-arm covariate and never a shared exclusion.
+    #
+    # `attempt_at_run_root` records the closure's own placement deviation:
+    # `saea-driver run --run-dir` writes straight into the directory it is given
+    # and this flight passed the run ROOT where KC-E1 passed an attempt-named
+    # subdirectory, so this attempt's sealed artifacts sit at
+    # $SPEECHRL_DATA_DIR/runs/<run id>/ rather than one level deeper. Placement
+    # only: the manifest, outputs and trace are still named by run id and hashed
+    # in the flight receipt, and no protocol, metric or datum moves. The attempt
+    # id is still recorded, so the receipt names the attempt it decomposed.
+    "SAEA-E21-KU-E1C-PLACEBO-44-V1": {
+        "attempt_id": "attempt-20260907T200859Z-251383",
+        "attempt_at_run_root": True,
+        "sealed": {
+            "corpus_wer_percent": 8.354,
+            "substitutions": 13254,
+            "deletions": 6460,
+            "insertions": 10340,
+            "reference_words": 359765,
+            "windows": 1593,
+            "calls": 44,
+            "entity_wer_percent": {
+                "PERSON": 23.72,
+                "ORG": 18.24,
+                "GPE": 19.71,
+                "LOC": 3.30,
+                "PRODUCT": 18.21,
+                "EVENT": 2.43,
+                "NORP": 9.75,
+                "FAC": 20.49,
+            },
+            "entity_reference_words": {
+                "PERSON": 2917,
+                "ORG": 4363,
+                "GPE": 1537,
+                "LOC": 485,
+                "PRODUCT": 390,
+                "EVENT": 494,
+                "NORP": 236,
+                "FAC": 122,
+            },
+            "non_entity_wer_percent": 4.964,
+            "unlabelled_reference_words": 1479,
+            "numeric_expected": 9734,
+            "numeric_matched": 8852,
+            "negation_critical_high_reference_words": 109,
+            "negation_critical_high_insertions": 44,
+        },
+    },
 }
+
+#: The eight ConEC-published classes, plus the two residual buckets, whose
+#: per-window ``(substitutions, deletions, reference words)`` every row carries
+#: so a paired read can pool ANY of them over a resampled set of calls without
+#: re-running this decomposition once per class. Purely additive: no existing
+#: row key, no check and no aggregate moves.
+ROW_BUCKETS: tuple[str, ...] = (
+    "PERSON",
+    "ORG",
+    "GPE",
+    "LOC",
+    "PRODUCT",
+    "EVENT",
+    "NORP",
+    "FAC",
+    conec.NON_ENTITY_BUCKET,
+    conec.UNLABELLED_BUCKET,
+)
 
 DEFAULT_DATA_ROOT = Path(
     os.environ.get(
@@ -213,7 +284,8 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     started = time.time()
-    attempt_dir = args.data_root / "runs" / args.run_id / attempt_id
+    run_dir = args.data_root / "runs" / args.run_id
+    attempt_dir = run_dir if profile.get("attempt_at_run_root") else run_dir / attempt_id
     outputs_path = attempt_dir / f"{args.run_id}.outputs.jsonl"
     trace_path = attempt_dir / f"{args.run_id}.trace.jsonl"
 
@@ -307,6 +379,14 @@ def main(argv: list[str] | None = None) -> int:
                     ],
                     "negation_critical_error_rate": impact["high_impact_error_rate"],
                     "negation_critical_insertions": impact["high_impact_insertions"],
+                    "entity_class_counts": {
+                        name: [
+                            int(buckets.get(name, {}).get("substitutions", 0)),
+                            int(buckets.get(name, {}).get("deletions", 0)),
+                            int(buckets.get(name, {}).get("reference_words", 0)),
+                        ]
+                        for name in ROW_BUCKETS
+                    },
                 }
             )
             rows.append(row)
@@ -318,6 +398,7 @@ def main(argv: list[str] | None = None) -> int:
             {
                 "sample_id": sample_id,
                 "windows": len(spans),
+                "call_numeric_expected": call_numeric["expected_numeric_words"],
                 "call_numeric_matched": call_numeric["matched_numeric_words"],
                 "window_numeric_matched": window_matched,
                 "numeric_matched_shortfall": int(call_numeric["matched_numeric_words"])
