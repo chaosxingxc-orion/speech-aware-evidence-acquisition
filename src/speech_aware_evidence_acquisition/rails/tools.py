@@ -79,10 +79,13 @@ from __future__ import annotations
 import hashlib
 import importlib
 import inspect
+import json
 from dataclasses import dataclass, replace
-from typing import Any, Callable, Mapping
+from pathlib import Path
+from typing import Any, Callable, Mapping, Sequence
 
 from ..core.base import Registry
+from ..e0.artifacts import REPO_ROOT
 from .errors import RailsError
 
 
@@ -535,6 +538,227 @@ def to_local_function(tool_id: str) -> Any:
 
 
 # ---------------------------------------------------------------------------
+# Toolkits per task type (design note section 7: "Observe modes become
+# toolkits selected per task type, which is the framework's own pattern").
+#
+# The framework's ``core/controller/modules/intent_toolkits.IntentToolkits``
+# keeps a ``name -> schema`` mapping and exposes
+# ``get_openai_tool_schemas(choices)`` to hand a SUBSET to a caller. This is
+# that pattern, with two differences that matter here:
+#
+# 1. the subset is chosen by TASK TYPE and AGENT ROLE from a config table,
+#    never by a model, and the table is data in ``configs/`` so a change to a
+#    carrier's toolkit rides in the composed config hash;
+# 2. it is fail-closed. The framework's own implementation of that method
+#    ignores its ``choices`` argument and returns everything
+#    (``intent_toolkits.py``, last three lines of the installed 0.1.16.post2),
+#    which is precisely the failure mode a toolkit exists to prevent. An
+#    unknown task type, an unknown role, an unknown tool id, or a
+#    carrier-scoped tool offered to the wrong carrier's task type all REFUSE.
+#
+# No framework client is instantiated to build a toolkit; ``cards_for`` only
+# reaches openJiuwen when a caller asks for actual ``ToolCard`` objects.
+# ---------------------------------------------------------------------------
+
+#: The three agents that may call a catalog tool. The Solver is absent by
+#: construction: the Solver IS the frozen core behind the single door, and the
+#: core never calls a tool (module docstring).
+TOOLKIT_ROLES = ("planner", "observer", "reviewer")
+
+#: The three task types the design note names.
+TASK_TYPES = ("meeting", "command", "tool-call")
+
+#: Which carriers each task type covers. A ``carrier:<id>``-scoped tool may
+#: only appear in a task type whose carriers include it -- the SLURP legality
+#: judge cannot end up in the meeting toolkit by a copy-paste.
+TASK_TYPE_CARRIERS = {
+    "meeting": ("conec", "earnings21", "earnings22"),
+    "command": ("slurp",),
+    "tool-call": ("audio2tool",),
+}
+
+TOOLKIT_SCHEMA = "saea-task-toolkits-v1"
+
+#: The committed table, relative to the repository root.
+TOOLKIT_CONFIG_RELPATH = "configs/toolkit/task-toolkits-v1.json"
+
+
+@dataclass(frozen=True)
+class Toolkit:
+    """One task type's toolkit: which tool ids each agent role may call."""
+
+    task_type: str
+    tools_by_role: Mapping[str, tuple[str, ...]]
+
+    def tools_for(self, role: str) -> tuple[str, ...]:
+        """The tool ids ``role`` may call; refuses an unknown role."""
+
+        if role not in TOOLKIT_ROLES:
+            raise ToolCatalogError(
+                f"unknown agent role {role!r}; the roles that may call a tool are "
+                f"{TOOLKIT_ROLES} (the Solver is the frozen core and calls none)"
+            )
+        return self.tools_by_role[role]
+
+    def entries_for(self, role: str) -> tuple[ToolEntry, ...]:
+        """The catalog entries ``role`` may call, in table order."""
+
+        return tuple(resolve_tool(tool_id) for tool_id in self.tools_for(role))
+
+    def may_call(self, role: str, tool_id: str) -> bool:
+        return tool_id in self.tools_for(role)
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "task_type": self.task_type,
+            "tools_by_role": {role: list(ids) for role, ids in self.tools_by_role.items()},
+        }
+
+
+@dataclass(frozen=True)
+class ToolkitTable:
+    """The whole table: task type -> :class:`Toolkit`."""
+
+    schema: str
+    toolkits: Mapping[str, Toolkit]
+
+    def for_task(self, task_type: str) -> Toolkit:
+        """The toolkit for ``task_type``; refuses an unknown one."""
+
+        try:
+            return self.toolkits[task_type]
+        except KeyError:
+            raise ToolCatalogError(
+                f"unknown task type {task_type!r}; the table declares "
+                f"{sorted(self.toolkits)}"
+            ) from None
+
+    def cards_for(self, task_type: str, role: str) -> list[Any]:
+        """The framework ``ToolCard`` objects ``role`` may call for
+        ``task_type`` -- the ``get_openai_tool_schemas(choices)`` analogue,
+        with the subset actually applied."""
+
+        return [
+            to_tool_card(tool_id) for tool_id in self.for_task(task_type).tools_for(role)
+        ]
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "schema": self.schema,
+            "toolkits": {
+                task_type: toolkit.as_dict()
+                for task_type, toolkit in sorted(self.toolkits.items())
+            },
+        }
+
+
+def _toolkit_role_ids(
+    values: object, *, task_type: str, role: str, carriers: Sequence[str]
+) -> tuple[str, ...]:
+    if not isinstance(values, Mapping):
+        raise ToolCatalogError(
+            f"toolkit {task_type!r} role {role!r} must be an object carrying a "
+            "'tools' list"
+        )
+    ids = values.get("tools")
+    if not isinstance(ids, list):
+        raise ToolCatalogError(
+            f"toolkit {task_type!r} role {role!r} must declare a 'tools' list"
+        )
+    seen: list[str] = []
+    for entry in ids:
+        if not isinstance(entry, str) or not entry:
+            raise ToolCatalogError(
+                f"toolkit {task_type!r} role {role!r}: tool id {entry!r} is not text"
+            )
+        if entry in seen:
+            raise ToolCatalogError(
+                f"toolkit {task_type!r} role {role!r} repeats tool id {entry!r}"
+            )
+        manifest = resolve_tool(entry).manifest  # refuses an unregistered id
+        if manifest.scope != GENERAL_SCOPE:
+            carrier = manifest.scope[len(CARRIER_SCOPE_PREFIX):]
+            if carrier not in carriers:
+                raise ToolCatalogError(
+                    f"toolkit {task_type!r} offers {entry!r}, which is scoped to "
+                    f"carrier {carrier!r}; that task type covers {tuple(carriers)}"
+                )
+        seen.append(entry)
+    return tuple(seen)
+
+
+def parse_toolkit_table(document: object) -> ToolkitTable:
+    """Validate a toolkit table document, fail-closed on every field."""
+
+    if not isinstance(document, Mapping):
+        raise ToolCatalogError("a toolkit table must be a JSON object")
+    schema = document.get("schema")
+    if schema != TOOLKIT_SCHEMA:
+        raise ToolCatalogError(
+            f"toolkit table schema must be {TOOLKIT_SCHEMA!r}, got {schema!r}"
+        )
+    declared = document.get("toolkits")
+    if not isinstance(declared, Mapping) or not declared:
+        raise ToolCatalogError("a toolkit table must declare a non-empty 'toolkits' object")
+    unknown = sorted(set(declared) - set(TASK_TYPES))
+    if unknown:
+        raise ToolCatalogError(
+            f"toolkit table declares unknown task type(s) {unknown}; the design "
+            f"note names {TASK_TYPES}"
+        )
+    missing = sorted(set(TASK_TYPES) - set(declared))
+    if missing:
+        raise ToolCatalogError(f"toolkit table declares no toolkit for {missing}")
+
+    toolkits: dict[str, Toolkit] = {}
+    for task_type in TASK_TYPES:
+        roles = declared[task_type]
+        if not isinstance(roles, Mapping):
+            raise ToolCatalogError(f"toolkit {task_type!r} must be an object of roles")
+        unknown_roles = sorted(set(roles) - set(TOOLKIT_ROLES))
+        if unknown_roles:
+            raise ToolCatalogError(
+                f"toolkit {task_type!r} declares unknown role(s) {unknown_roles}; a "
+                f"tool may be called by {TOOLKIT_ROLES}"
+            )
+        missing_roles = sorted(set(TOOLKIT_ROLES) - set(roles))
+        if missing_roles:
+            raise ToolCatalogError(
+                f"toolkit {task_type!r} declares no {missing_roles} role; declare an "
+                "empty 'tools' list to say a role calls nothing yet"
+            )
+        carriers = TASK_TYPE_CARRIERS[task_type]
+        toolkits[task_type] = Toolkit(
+            task_type=task_type,
+            tools_by_role={
+                role: _toolkit_role_ids(
+                    roles[role], task_type=task_type, role=role, carriers=carriers
+                )
+                for role in TOOLKIT_ROLES
+            },
+        )
+    return ToolkitTable(schema=TOOLKIT_SCHEMA, toolkits=toolkits)
+
+
+def load_toolkit_table(path: Path | str) -> ToolkitTable:
+    """Read and validate one toolkit table from disk."""
+
+    file_path = Path(path)
+    try:
+        document = json.loads(file_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise ToolCatalogError(f"cannot read toolkit table {file_path}: {error}") from error
+    return parse_toolkit_table(document)
+
+
+def default_toolkit_table(repo_root: Path | None = None) -> ToolkitTable:
+    """The committed table at :data:`TOOLKIT_CONFIG_RELPATH`."""
+
+    root = Path(repo_root) if repo_root is not None else REPO_ROOT
+    return load_toolkit_table(root / TOOLKIT_CONFIG_RELPATH)
+
+
+# ---------------------------------------------------------------------------
 # The eight manifests, and the registration block.
 #
 # The ids below are STRING LITERALS at the ``TOOL_CATALOG.register`` call
@@ -805,6 +1029,11 @@ __all__ = [
     "INVOCATION",
     "LEDGER_ROW_TYPES",
     "LOCKED_CARRIERS",
+    "TASK_TYPES",
+    "TASK_TYPE_CARRIERS",
+    "TOOLKIT_CONFIG_RELPATH",
+    "TOOLKIT_ROLES",
+    "TOOLKIT_SCHEMA",
     "TOOL_AXES",
     "TOOL_CATALOG",
     "TOOL_ID_PREFIX",
@@ -812,11 +1041,16 @@ __all__ = [
     "ToolEntry",
     "ToolManifest",
     "ToolResult",
+    "Toolkit",
+    "ToolkitTable",
     "assert_catalog_consistent",
     "assert_pinned_hash",
     "build_tool_entry",
     "catalog_ids",
+    "default_toolkit_table",
     "load_source_target",
+    "load_toolkit_table",
+    "parse_toolkit_table",
     "resolve_tool",
     "source_sha256",
     "to_local_function",
