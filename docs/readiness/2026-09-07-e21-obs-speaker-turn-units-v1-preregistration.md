@@ -121,6 +121,94 @@ if it projects past 4.0 GPU-hours.
 
 ---
 
+## Update — 2026-09-08 (v2): the coordinator's minimum-duration rule, re-pinned and re-verified
+
+**This section records facts and re-pins one input. It changes no RULE**: §5's equal-contact
+statement, §6's decision rule and −0.30-point margin, and §8's spec and §10's claim surface all stand
+exactly as written, applied now to a different plan. What moves is which plan the fragments name and
+the NUMBERS that follow from it — every count in §§1–4 and §7 that names `5,288`, `26.73`, `16.06`,
+`151,921.853`, `166` or the flight command's `5,800 / 165,000 / 3.5` is v1's own, superseded here, not
+edited there.
+
+**The coordinator's decision (2026-09-08, under the owner's OBS-E1 GO):** *"a 16-sample unit wrapped
+in a 2-second tail is a diarizer artifact, not a transport unit."* Plan v2
+(`analysis.e21_speaker_turn_units.plan_units_v2`, schema `saea-e21-speaker-turn-units-v2`) keeps v1's
+rules 1–3 and 5 byte for byte and replaces v1's rule 4 — a short span kept unless a SAME-speaker
+neighbour is reachable across a non-turn-change boundary — with one explicit exception to rule 1: **a
+span under 1.0 s merges into whichever ADJACENT unit is LONGER, of EITHER speaker, ties going to the
+PRECEDING neighbour**; the 90 s cap still holds (a merge that would break it tries the other
+neighbour, and a sliver with no admissible neighbour on either side keeps its sliver and is flagged
+`short-kept`, same as v1). Built model-free from the identical two sealed inputs v1 used (exposure row
+`SAEA-E21-MF-SPEAKER-TURN-UNITS-V2`, receipt
+`docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-speaker-turn-units-v2/`); a v1 rebuild
+against those same inputs reproduced the committed v1 plan byte for byte (`fed5188b86d6...`) before
+v2 was cut.
+
+**The new counts.** 5,122 units over the 44 calls (v1: 5,288, −166). Unit seconds min **1.001**
+(v1: 0.001), median **17.775** (16.060), mean **27.596** (26.730), max **90.000** unchanged.
+**Units under 1.0 s remaining: 0 of 5,122** — v1's own 166, all `short-kept`, are now zero. 166
+pre-merge slivers absorbed into 166 surviving units — 153 flagged `cross-speaker-merge`, 13
+`same-speaker-merge` — with 174 total absorbed-sliver records (159 units absorbed one, 6 absorbed
+two, 1 absorbed three: a cascade). Cut audio is exactly conserved, **141,345.852687 s**, identical to
+v1 and to the sealed 1,593-window total; delivered audio is **151,589.852688 s** (v1:
+151,921.852688), a delta of exactly `−166 × 2.0 s = −332.000 s`. Purity mean rises slightly, 0.9431 →
+0.9506. §4's strata are recomputed at the v2 grain in the same receipt (dominance 4,916/147/+59
+silent; speakers 0/1/2/≥3 = 59/3,898/1,126/39; length `<1s/1–10s/10–60s/≥60s` = 0/2,006/2,284/832; cut
+kind pause/turn-boundary/forced-cap-split/call-end = 4,387/676/15/44, the latter two identical to v1
+by construction since rules 1–3 are shared). The no-pause call `4366522` carries 36 units, not 38: a
+0.966 s same-speaker sliver and a 0.646 s sliver that crossed a speaker change both merged into their
+respective longer neighbours; all 36 still end on an active frame.
+
+**Re-pinned and re-verified.** `configs/baseline/e21-units-obse1-scored7.json`'s `obs_unit_plan` /
+`obs_unit_plan_sha256` now name the v2 plan (`0f5f013959b89fa0acc3bb366324e701cbe3a022f7b29ef3e364d621d98eb03b`,
+was `fed5188b86d672b2d2a9c8f1b55dc51fe5712776fc06cc938dc759854d52026a`).
+`reproduction.obs_loop.OBS_UNIT_PLAN_SCHEMAS` now accepts **both**
+`saea-e21-speaker-turn-units-v1` and `-v2`, so v1's own receipts, fragments and tests are unaffected
+by this re-pin. §8.2's refusals, the falsifier and the payload-binding stage were all re-run against
+the re-pinned fragments and PASS again:
+
+| | v1 (2026-09-08) | v2 (2026-09-08) |
+|---|---|---|
+| composed config hash | `06e1eb28a5b3fcce31deb9191db5114cb859dae5f584380ee2c5b7c20659fdfc` | `4e5549ee9eed1187251439cfaf4dc2b3a4da6d54ef842e6b7993cb4c4907b027` |
+| composed protocol hash | `cb5e964fb82a00a7b7d15506d03ebed619b8f72318b4cfea02b5fe36f9bdc331` | `39b7cc2c4b071467bd876ca686ffd119ba2168563a568e32100a238b1b60d314` |
+| units loaded and re-tiled | 5,288 / 44 calls | **5,122 / 44 calls** |
+| coverage | 44/44 calls, 44/44 durations | 44/44 calls, 44/44 durations |
+| dry-run units (4386541/4387332/4392809/4366522) | 34/51/49/38 = 172 | **33/50/48/36 = 167** |
+| §6 falsifier | PASS 4/4 | **PASS 4/4** |
+| payload-binding stage | BOUND, rows `4320211`/`4397829` | **BOUND, rows `4320211`/`4397829`** |
+| study commit | `aaf926eb` | `b537a594` |
+
+Receipt: `docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-obs-e1-seam-v2/` (`wire-check.json`,
+`MANIFEST.sha256`), same schema `saea-e21-obs-e1-seam-wire-check-v1`, result **PASS**, zero failures,
+zero contacts. This does **not** open a second exposure row: it is a dated **ATTEMPT 2** entry folded
+into the SAME row `SAEA-E21-MF-OBS-E1-SEAM-V1` v1's wire check closed under, in
+`docs/exposure-ledger.md`.
+
+**The contact budget, recomputed by the same formula v1 used.** `planned_model_calls` = the v2 unit
+count plus 10 % retry headroom = `ceil(5,122 × 1.10) = 5,635` (against the unchanged registered
+ceiling of 6,000). `planned_speech_audio_seconds` = v2's own delivered audio times the same 10 %
+headroom = `151,589.852688 × 1.10 = 166,748.838`, rounded up to **167,000** (unchanged ceiling
+170,000). `planned_gpu_hours`: BRACKETED from the comparator's realized **0.9734 GPU-h** for 1,593
+contacts over 141,345.85 s at this exact geometry, scaled by v2's OWN delivered audio and contact
+count — audio-proportional `0.9734 × 151,589.853 / 141,345.853 = 1.044` GPU-h (the floor), contact-
+proportional `0.9734 × 5,122 / 1,593 = 3.130` GPU-h (the ceiling), both strictly below v1's own
+1.05 / 3.23 brackets because v2 has fewer, though individually slightly longer, units than v1 over the
+same 44 calls. Applying the same margin v1 applied to its own contact-proportional ceiling
+(`3.5 / 3.23 = 1.083×`) gives `3.130 × 1.083 = 3.4` GPU-h planned, against the **unchanged 4.0-hour
+ceiling** — v2 needs strictly less of all three registered quantities than v1 did, so v1's ceilings
+already bound v2 with more margin than they bounded v1, and none of the three registered ceilings
+moves. `configs/experiment/e21-obs-e1-speaker-turn-units-v1.json`'s `execution_plan` /
+`execution_plan_basis` carry these three recomputed figures and the formula that produced them; the
+flight command block above is v1's own historical record and is superseded by this paragraph's
+numbers, not rewritten in place.
+
+**Preconditions, restated again.** The two items §9 already recorded CLOSED (the obs seam, the 4-row
+dry run) are re-closed against the v2 plan by the table above; the two still OPEN are unchanged by
+this update: this cell's own exposure row (still none, `SAEA-E21-MF-OBS-E1-SEAM-V1` covers the
+model-free checks only and authorizes nothing) and the owner's GO.
+
+---
+
 ## 1. The one factor
 
 OBS-E1 is the sealed full-44 direct baseline with **the transport unit replaced and nothing else**.
