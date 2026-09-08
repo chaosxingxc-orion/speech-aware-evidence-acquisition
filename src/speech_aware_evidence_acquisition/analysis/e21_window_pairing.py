@@ -18,7 +18,14 @@ that stitch is in the sealed trace: each slice's own ``MODEL_RESPONSE`` text, th
 stitch record's ``stitched_request_ids`` in slice order, and each slice's
 ``OBS`` window bounds. So the per-window hypothesis is RECOVERED, never re-derived
 -- and :func:`assert_stitch_reproduces_outputs` proves the recovery byte for byte
-against the sealed ``outputs.jsonl`` before anything is measured.
+against the sealed ``outputs.jsonl`` before anything is measured. One slice class
+is the exception to "each slice's own MODEL_RESPONSE text": a slice whose decode
+saturated ``obs_loop``'s token cap keeps its raw ``MODEL_RESPONSE`` in the trace
+for audit, but ``obs_loop`` itself replaced its contribution to ``accepted_spans``
+with ``""`` before the join (its own ``obs_saturated`` flag says so). The recovery
+follows the join, not the raw text: such a window's recovered ``text`` is ``""``
+and ``WindowSpan.saturated`` is ``True``, which is what keeps the byte-for-byte
+proof honest on a call that saturated at least one slice.
 
 The one real difficulty is that the scorers normalize the WHOLE stitched string at
 once (``reproduction.conec_entity_scoring.hypothesis_whisper_words``), and the
@@ -119,7 +126,17 @@ def call_of(identifier: str) -> str:
 
 @dataclass(frozen=True)
 class WindowSpan:
-    """One 90-second window as the sealed run actually emitted it."""
+    """One 90-second window as the sealed run actually emitted it.
+
+    ``saturated`` is ``True`` when this slice's decode hit ``reproduction.
+    obs_loop``'s ``max_tokens`` cap (the trace's own ``obs_saturated``): such a
+    slice is a runaway repetition, not a transcript, and ``obs_loop`` drops it
+    from the stitched hypothesis (module comment above ``_slice_saturated``,
+    "Saturation QUARANTINE"). ``text`` already reflects that -- it is forced
+    empty at construction time, never the raw ``MODEL_RESPONSE`` -- and the
+    flag is kept on the span so a saturated window stays a named, countable
+    covariate of the pairing rather than a silently vanished one.
+    """
 
     sample_id: str
     window_index: int
@@ -128,6 +145,7 @@ class WindowSpan:
     end_seconds: float
     audio_seconds: float
     text: str
+    saturated: bool = False
 
     @property
     def identifier(self) -> str:
@@ -142,6 +160,7 @@ class WindowSpan:
             "start_seconds": self.start_seconds,
             "end_seconds": self.end_seconds,
             "audio_seconds": self.audio_seconds,
+            "saturated": self.saturated,
         }
 
 
@@ -155,10 +174,20 @@ def stitched_windows_from_trace(trace_path: Path | str) -> dict[str, tuple[Windo
 
     Reads only what the run itself recorded: the per-slice ``MODEL_REQUEST``
     payload (sample id, audio seconds), the per-slice ``OBS`` record (window
-    bounds, iteration), the per-slice ``MODEL_RESPONSE`` text, and the per-call
-    stitch ``MODEL_REQUEST``'s ``stitched_request_ids``, which is the authority on
-    WHICH slices contributed and in what order (a skipped slice never appears in
-    it, exactly as ``reproduction.obs_loop`` records).
+    bounds, iteration, ``obs_saturated``), the per-slice ``MODEL_RESPONSE`` text,
+    and the per-call stitch ``MODEL_REQUEST``'s ``stitched_request_ids``, which is
+    the authority on WHICH slices contributed and in what order (a skipped slice
+    never appears in it, exactly as ``reproduction.obs_loop`` records).
+
+    A slice whose ``obs_saturated`` is true stayed IN ``stitched_request_ids``
+    (only a skip removes a slice from the stitch) but contributed nothing to the
+    stitched text: ``obs_loop`` replaces its transcript with ``""`` before joining
+    (module comment above, "Saturation QUARANTINE"). The raw ``MODEL_RESPONSE``
+    text is still fully traced for audit, but it is never what was actually
+    stitched, so this reader must not read it as the window's hypothesis -- doing
+    so re-admits exactly the text ``obs_loop`` excluded. The recovered span's
+    ``text`` is therefore forced to ``""`` here too, and ``saturated=True`` is
+    carried on the span so the drop is a named covariate, not a silent one.
     """
 
     path = Path(trace_path)
@@ -170,7 +199,7 @@ def stitched_windows_from_trace(trace_path: Path | str) -> dict[str, tuple[Windo
     slice_sample: dict[str, str] = {}
     slice_audio: dict[str, float] = {}
     slice_text: dict[str, str] = {}
-    slice_bounds: dict[str, tuple[int, float, float]] = {}
+    slice_bounds: dict[str, tuple[int, float, float, bool]] = {}
     stitch_order: list[list[str]] = []
 
     for number, line in enumerate(lines, start=1):
@@ -204,6 +233,7 @@ def stitched_windows_from_trace(trace_path: Path | str) -> dict[str, tuple[Windo
                 int(payload["obs_iteration"]),
                 float(payload["obs_window_start_seconds"]),
                 float(payload["obs_window_end_seconds"]),
+                bool(payload.get("obs_saturated", False)),
             )
 
     windows: dict[str, tuple[WindowSpan, ...]] = {}
@@ -221,7 +251,12 @@ def stitched_windows_from_trace(trace_path: Path | str) -> dict[str, tuple[Windo
                 raise WindowPairingError(
                     f"stitched request {request_id!r} has no response or no OBS record"
                 )
-            _iteration, start, end = slice_bounds[request_id]
+            _iteration, start, end, saturated = slice_bounds[request_id]
+            # A saturated slice's raw MODEL_RESPONSE text is fully traced for
+            # audit but was never stitched (module docstring above): force the
+            # recovered span empty exactly as obs_loop's own accepted_spans
+            # entry is, rather than reading the raw text back in.
+            text = "" if saturated else slice_text[request_id].strip()
             spans.append(
                 WindowSpan(
                     sample_id=sample_id,
@@ -230,7 +265,8 @@ def stitched_windows_from_trace(trace_path: Path | str) -> dict[str, tuple[Windo
                     start_seconds=start,
                     end_seconds=end,
                     audio_seconds=slice_audio[request_id],
-                    text=slice_text[request_id].strip(),
+                    text=text,
+                    saturated=saturated,
                 )
             )
         windows[sample_id] = tuple(spans)

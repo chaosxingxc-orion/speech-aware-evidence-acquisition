@@ -61,15 +61,32 @@ def test_call_of_refuses_a_bare_sample_id():
 # ---------------------------------------------------------------------------
 
 
-def _trace_lines(sample_id: str, spans, *, skipped: str | None = None) -> list[str]:
+def _trace_lines(
+    sample_id: str,
+    spans,
+    *,
+    skipped: str | None = None,
+    saturated: str | None = None,
+    raw_saturated_text: str = "",
+) -> list[str]:
     """A trace shaped exactly like ``reproduction.obs_loop`` emits: per-slice
-    request / OBS / response records, then the per-call stitch pair."""
+    request / OBS / response records, then the per-call stitch pair.
+
+    ``saturated`` names one request id whose ``OBS`` record carries
+    ``obs_saturated: true`` -- exactly what ``obs_loop`` writes for a slice whose
+    decode hit the token cap (module comment above ``_slice_saturated``). Its
+    ``MODEL_RESPONSE`` is still written in full (``raw_saturated_text``, standing
+    in for the raw runaway-repetition text obs_loop fully traces for audit) so a
+    reader that ignores ``obs_saturated`` would recover the wrong window text; the
+    slice stays in ``stitched_request_ids`` because only a skip removes one.
+    """
 
     lines: list[dict] = []
     request_ids = []
     for index, (text, start, end) in enumerate(spans, start=1):
         request_id = f"req-0001-i{index:04d}"
         request_ids.append(request_id)
+        is_saturated = request_id == saturated
         lines.append(
             {
                 "channel": "MODEL_REQUEST",
@@ -91,6 +108,7 @@ def _trace_lines(sample_id: str, spans, *, skipped: str | None = None) -> list[s
                     "obs_iteration": index,
                     "obs_window_start_seconds": start,
                     "obs_window_end_seconds": end,
+                    "obs_saturated": is_saturated,
                 },
             }
         )
@@ -98,7 +116,7 @@ def _trace_lines(sample_id: str, spans, *, skipped: str | None = None) -> list[s
             {
                 "channel": "MODEL_RESPONSE",
                 "record_id": f"{request_id}/response",
-                "payload": {"text": text},
+                "payload": {"text": raw_saturated_text if is_saturated else text},
             }
         )
     contributing = [rid for rid in request_ids if rid != skipped]
@@ -137,6 +155,7 @@ def test_the_trace_recovers_every_window_in_stitch_order(tmp_path):
     assert [span.window_index for span in spans] == [1, 2, 3]
     assert spans[-1].audio_seconds == pytest.approx(25.0)
     assert spans[0].identifier == "4320211#w0001"
+    assert [span.saturated for span in spans] == [False, False, False]
 
 
 def test_a_slice_the_stitch_never_used_is_not_a_window(tmp_path):
@@ -147,6 +166,56 @@ def test_a_slice_the_stitch_never_used_is_not_a_window(tmp_path):
     path = _write_trace(tmp_path, _trace_lines("4320211", SPANS, skipped="req-0001-i0002"))
     spans = stitched_windows_from_trace(path)["4320211"]
     assert [span.text for span in spans] == ["hello there", "tail"]
+
+
+# ---------------------------------------------------------------------------
+# The KC-E1 defect: a saturated slice's raw MODEL_RESPONSE must never be
+# re-admitted as the window's text -- obs_loop dropped it from the stitch, and
+# the recovery has to follow the join, not the raw trace (module docstring).
+# ---------------------------------------------------------------------------
+
+
+def test_a_saturated_slice_contributes_no_text_and_stays_a_window(tmp_path):
+    huge_raw_text = "the the the the the " * 400  # stands in for a runaway decode
+    path = _write_trace(
+        tmp_path,
+        _trace_lines(
+            "4320211",
+            SPANS,
+            saturated="req-0001-i0002",
+            raw_saturated_text=huge_raw_text,
+        ),
+    )
+    spans = stitched_windows_from_trace(path)["4320211"]
+    # Still three windows -- unlike a skip, a saturation never removes the
+    # slice from stitched_request_ids -- but the middle one's text is empty,
+    # never the raw response, and it alone carries the flag.
+    assert [span.window_index for span in spans] == [1, 2, 3]
+    assert [span.text for span in spans] == ["hello there", "", "tail"]
+    assert [span.saturated for span in spans] == [False, True, False]
+
+
+def test_a_saturated_window_still_rebuilds_the_sealed_hypothesis_byte_for_byte(tmp_path):
+    """The whole exactness proof (module docstring, ``assert_stitch_reproduces_
+    outputs``) has to hold on a call that saturated: the sealed hypothesis
+    ``obs_loop`` actually emitted already dropped the saturated slice's text, so
+    the recovered spans -- text forced empty, not re-admitted -- must rebuild it
+    exactly, the same rule ``stitched_text`` states (empty spans join to nothing,
+    module docstring above)."""
+
+    huge_raw_text = "the the the the the " * 400
+    path = _write_trace(
+        tmp_path,
+        _trace_lines(
+            "4320211",
+            SPANS,
+            saturated="req-0001-i0002",
+            raw_saturated_text=huge_raw_text,
+        ),
+    )
+    windows = stitched_windows_from_trace(path)
+    sealed_hypothesis = "hello there tail"  # what obs_loop actually stitched
+    assert_stitch_reproduces_outputs(windows, {"4320211": sealed_hypothesis})
 
 
 def test_a_stitch_naming_a_request_with_no_response_refuses(tmp_path):
