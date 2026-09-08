@@ -48,6 +48,18 @@ substitutions here. No unit-plan logic is reimplemented: every decision is
 made by a function ``reproduction.obs_loop`` already owns, and the
 ``unit-plan`` scenario of ``tests/unit/test_obs_loop_ojw.py``'s equivalence
 suite proves the two executors deliver the same media, records and bytes.
+
+Window hook (KC-E1f), 2026-09-08, owner Decision 12-F: drift #2 of the same
+assessment is closed the same way. ``_window_hook`` below has the plain
+policy's exact signature and its exact default (``None``); ``_prepare_state``
+carries the resolved hook into ``ObsSampleState``; ``FrozenCoreASR`` renders
+the window instruction through it and ``AcceptAdvance`` delivers the window's
+span through it. No hook LOGIC is implemented here --
+``reproduction.repair_loop`` owns the one builder both executors call, and
+``obs-repair-loop-ojw`` is two overridden methods over this class. The
+``window-hook`` scenario of the equivalence suite compares this graph against
+the plain policy's SEQUENTIAL cutter, which gained the same site in the same
+change, so a hooked run is byte-identical across executors.
 """
 
 from __future__ import annotations
@@ -134,12 +146,19 @@ def _context_facts(ctx: SampleContext) -> tuple[SliceRegistry, Path, Path, Path,
     return registry, data_root, run_dir, repo_root, config_values
 
 
-def _prepare_state(ctx: SampleContext, cfg: ObsLoopConfig) -> ObsSampleState:
+def _prepare_state(
+    ctx: SampleContext, cfg: ObsLoopConfig, window_hook: object | None = None
+) -> ObsSampleState:
     """Decode the parent, run VAD, and build the per-sample loop state —
     exactly the plain policy's pre-loop section, via the same ``obs_loop``
     module functions (monkeypatch-compatible). CPU/decoder-bound and free of
     shared mutable state, so the batch runner may call it from a worker
-    thread."""
+    thread.
+
+    ``window_hook`` is this sample's per-window hook, resolved by the calling
+    policy's own ``_window_hook`` (the SAME method name and the SAME shape the
+    plain policy uses). ``None`` -- the base executor's answer, always -- is
+    byte-identical to every run before the seam existed."""
 
     registry, data_root, _, _, _ = _context_facts(ctx)
     sample: SampleRef = ctx.sample
@@ -209,6 +228,12 @@ def _prepare_state(ctx: SampleContext, cfg: ObsLoopConfig) -> ObsSampleState:
         effective_min=effective_min,
         max_iterations=max_iterations,
         plan_units=plan_units,
+        window_hook=window_hook,
+        # The run's shared dispatch-slot pool, supplied by
+        # ``core.driver.run_experiment`` only when ``obs_prefetch_depth > 0``;
+        # absent (None) for every config written before 2026-09-08, and the
+        # runner then takes its historical per-sample slot arithmetic.
+        dispatcher=ctx.extras.get("obs_dispatcher"),
     )
 
 
@@ -343,17 +368,33 @@ class ObsAgentLoopOjwPolicy:
     ``SampleContext`` exactly as for the plain policy."""
 
     def run_sample(self, ctx: SampleContext) -> SampleOutcome:
-        _, _, _, repo_root, config_values = _context_facts(ctx)
+        _, data_root, _, repo_root, config_values = _context_facts(ctx)
         runner = _load_runner()
         cfg = ObsLoopConfig.from_values(config_values, repo_root)
         timeout_seconds = workflow_timeout_seconds(config_values)
-        state = _prepare_state(ctx, cfg)
+        state = _prepare_state(
+            ctx, cfg, self._window_hook(ctx, cfg, data_root, ctx.sample)
+        )
         runner.execute_obs_workflow(
             state,
             adapter_request=ctx.adapter.request,
             workflow_timeout_seconds=timeout_seconds,
         )
         return _finalize_sample(ctx, state)
+
+    def _window_hook(self, ctx, cfg, data_root, sample):
+        """This executor's per-window hook, or ``None``.
+
+        ``None`` here, always, for exactly the reason
+        ``reproduction.obs_loop.ObsAgentLoopPolicy._window_hook`` gives: this
+        policy sends one bare request per window and delivers what came back.
+        A second-pass executor overrides THIS and nothing else -- the graph,
+        the cut, the retry and skip semantics, the stitch and the outcome are
+        shared verbatim (``reproduction.repair_loop.ObsRepairLoopOjwPolicy``).
+        The signature is deliberately the plain policy's, so one hook builder
+        serves both executors."""
+
+        return None
 
     def run_samples(self, contexts: Sequence[SampleContext]) -> list[SampleOutcome]:
         """The batch seam ``core.driver.run_experiment`` dispatches to when
@@ -369,13 +410,15 @@ class ObsAgentLoopOjwPolicy:
             return []
         for ctx in contexts:
             _context_facts(ctx)  # fail-closed before any work
-        _, _, _, repo_root, config_values = _context_facts(contexts[0])
+        _, data_root, _, repo_root, config_values = _context_facts(contexts[0])
         runner = _load_runner()
         cfg = ObsLoopConfig.from_values(config_values, repo_root)
         timeout_seconds = workflow_timeout_seconds(config_values)
         return runner.execute_obs_batch(
             contexts,
-            prepare=lambda ctx: _prepare_state(ctx, cfg),
+            prepare=lambda ctx: _prepare_state(
+                ctx, cfg, self._window_hook(ctx, cfg, data_root, ctx.sample)
+            ),
             finalize=_finalize_sample,
             batch_size=cfg.batch_samples,
             workflow_timeout_seconds=timeout_seconds,

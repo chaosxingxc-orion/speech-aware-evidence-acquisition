@@ -7,13 +7,21 @@ comparator's transcript and let the brief change only names in it.
 
 This policy is that cell's harness, and it is deliberately the SMALLEST thing
 that can be. It subclasses ``reproduction.obs_loop.ObsAgentLoopPolicy`` and
-overrides exactly one method, ``_window_hook``. Everything else -- the fixed
-90-second tiling, the slice cutting and derivation registration, the
-slice-parallel dispatch, the bounded retry, the skip bound, the saturation
+overrides ``_window_hook`` plus a per-sample legality check. Everything else
+-- the fixed 90-second tiling, the slice cutting and derivation registration,
+the slice-parallel dispatch, the bounded retry, the skip bound, the saturation
 detector, the OBS records, the stitch descriptor and the outcome -- is the base
 policy's own code, running unchanged. A repair pass that drifted from the pass
 it repairs would make its own paired contrast meaningless, so it does not get
 its own copy of any of it (owner rule, 2026-09-03: one base, thin derivations).
+
+Two executors, one policy (owner Decision 12-F, 2026-09-08). Since the
+Earnings obs path was ported onto the openJiuwen graph, this module registers
+TWO policies -- ``obs-repair-loop`` on the plain executor and
+``obs-repair-loop-ojw`` on the openJiuwen one -- and both resolve their hook
+through the same module-level :func:`build_repair_window_hook` and their
+legality through the same :func:`assert_repair_config`. Nothing about what a
+repair pass MEANS lives in either class.
 
 The two things the hook does
 ----------------------------
@@ -73,8 +81,30 @@ from ..core.predecessor_snapshot import (
 )
 from ..core.repair_alignment import RepairOutcome
 from .obs_loop import ObsAgentLoopPolicy, ObsLoopError
+from .ojw import OJW_REPAIR_POLICY_NAME
+from .ojw.policy import ObsAgentLoopOjwPolicy
 
 OBS_REPAIR_LOOP_POLICY_NAME = "obs-repair-loop"
+#: The openJiuwen sibling (owner Decision 12-F, 2026-09-08). Same config keys,
+#: same predecessor binding, same delivery rule -- the executor is the only
+#: difference, and it is named rather than inferred.
+#:
+#: The literal is written HERE, beside the class it names, because
+#: ``scripts/checks/engineering_base_check.py`` reads the registered policy
+#: names out of source and a name resolved through an alias is a name the
+#: check cannot see. ``reproduction.ojw`` writes it a second time, so that the
+#: prefetch legality and the driver's pipeline guard -- which must reason
+#: about "which executors are the graph" WITHOUT importing anything
+#: openjiuwen-dependent -- can read one tuple. The two spellings are compared
+#: at import, fail-closed, so they cannot drift.
+OBS_REPAIR_LOOP_OJW_POLICY_NAME = "obs-repair-loop-ojw"
+if OBS_REPAIR_LOOP_OJW_POLICY_NAME != OJW_REPAIR_POLICY_NAME:  # pragma: no cover
+    raise ImportError(
+        "the openJiuwen repair policy name disagrees between "
+        f"reproduction.repair_loop ({OBS_REPAIR_LOOP_OJW_POLICY_NAME!r}) and "
+        f"reproduction.ojw ({OJW_REPAIR_POLICY_NAME!r}); one of them would "
+        "silently stop matching the registered policy"
+    )
 
 #: Frozen framings for the appended pass-1 hypothesis, selected BY NAME from a
 #: config fragment so the arm and its token-matched twin cannot differ here and
@@ -183,100 +213,149 @@ class RepairWindowHook:
         return outcome.text, fields
 
 
+def assert_repair_config(config_values: object) -> Mapping[str, object]:
+    """The fail-closed legality every repair executor shares, checked ONCE per
+    sample before any audio is cut rather than at the first window."""
+
+    if not isinstance(config_values, Mapping):
+        raise ObsLoopError(
+            "obs-repair-loop needs SampleContext.extras['config_values']; it is "
+            "supplied only by core.driver.run_experiment"
+        )
+    missing = [key for key in REQUIRED_CONFIG_KEYS if not config_values.get(key)]
+    if missing:
+        raise ObsLoopError(
+            f"obs-repair-loop requires the config keys {missing}; a repair pass "
+            "with no sealed predecessor or no delivery rule is just a second "
+            "unconstrained decode"
+        )
+    return config_values
+
+
+def build_repair_window_hook(ctx, cfg, data_root, sample) -> "RepairWindowHook":
+    """This sample's repair hook, built identically for every executor.
+
+    Both the plain policy's two cutters and the openJiuwen executor's graph
+    resolve their hook through THIS function, so a repair pass cannot mean one
+    thing on one harness and another on the next (owner rule 2026-09-03: one
+    base, thin derivations). The three refusals below are the independence the
+    predecessor binding rests on; the fourth -- ``obs_batch_slices > 1`` --
+    was retired on 2026-09-08 when the sequential cutters gained the hook
+    site, because the dispatch shape no longer decides whether a window gets
+    its own predecessor.
+    """
+
+    if cfg.boundary_mode != "fixed":
+        raise ObsLoopError(
+            "obs-repair-loop requires obs_boundary_mode 'fixed': a model-chosen "
+            "boundary would tile different audio from the sealed predecessor"
+        )
+    if cfg.condition_tail_chars:
+        raise ObsLoopError(
+            "obs-repair-loop requires obs_condition_tail_chars 0: this pass "
+            "already carries the predecessor, and a second conditioned tail "
+            "would put two transcripts in one request"
+        )
+    if cfg.vad_trim_min_seconds:
+        raise ObsLoopError(
+            "obs-repair-loop requires obs_vad_trim_min_seconds 0: a trimmed "
+            "buffer does not tile the audio the sealed predecessor decoded"
+        )
+
+    config_values = ctx.extras["config_values"]
+    repo_root = Path(ctx.extras["repo_root"])
+    relpath, digest = binding_from_values(config_values)
+    snapshot = _bound_snapshot(
+        str(repo_root / "docs" / relpath), str(Path(data_root)), digest
+    )
+
+    frame_id = str(config_values.get("repair_frame", "e21-entity-repair-frame-v1"))
+    try:
+        frame = REPAIR_FRAMES[frame_id]
+    except KeyError:
+        raise ObsLoopError(
+            f"unknown repair_frame {frame_id!r}; registered: {sorted(REPAIR_FRAMES)}"
+        ) from None
+
+    rule_id = str(config_values["response_postprocessor"])
+    params = config_values.get("response_postprocessor_params") or {}
+    if not isinstance(params, Mapping):
+        raise ObsLoopError(
+            f"response_postprocessor_params must be an object, got {params!r}"
+        )
+    rule = RESPONSE_POSTPROCESSORS.resolve(rule_id)(**dict(params))
+
+    try:
+        predecessors = snapshot.for_sample(sample.sample_id)
+    except PredecessorSnapshotError as error:
+        raise ObsLoopError(str(error)) from error
+    return RepairWindowHook(
+        sample_id=sample.sample_id,
+        predecessors=predecessors,
+        frame=frame,
+        rule=rule,
+    )
+
+
 class ObsRepairLoopPolicy(ObsAgentLoopPolicy):
     """``obs-agent-loop`` with a sealed predecessor and a delivery rule."""
 
     def run_sample(self, ctx: SampleContext) -> SampleOutcome:
         # Nothing is overridden here: the base runs the whole sample. The
-        # override exists so the fail-closed legality check below happens once
-        # per sample, BEFORE any audio is cut, rather than at the first window.
-        config_values = ctx.extras.get("config_values")
-        if not isinstance(config_values, Mapping):
-            raise ObsLoopError(
-                "obs-repair-loop needs SampleContext.extras['config_values']; it is "
-                "supplied only by core.driver.run_experiment"
-            )
-        missing = [key for key in REQUIRED_CONFIG_KEYS if not config_values.get(key)]
-        if missing:
-            raise ObsLoopError(
-                f"obs-repair-loop requires the config keys {missing}; a repair pass "
-                "with no sealed predecessor or no delivery rule is just a second "
-                "unconstrained decode"
-            )
+        # override exists so the fail-closed legality check happens once per
+        # sample, BEFORE any audio is cut, rather than at the first window.
+        assert_repair_config(ctx.extras.get("config_values"))
         return super().run_sample(ctx)
 
     def _window_hook(self, ctx, cfg, data_root, sample):
-        if cfg.batch_slices <= 1:
-            raise ObsLoopError(
-                "obs-repair-loop requires obs_batch_slices > 1: the repair pass is "
-                "window-independent by construction and the sequential path does not "
-                "run the hook that supplies each window its own predecessor"
-            )
-        if cfg.boundary_mode != "fixed":
-            raise ObsLoopError(
-                "obs-repair-loop requires obs_boundary_mode 'fixed': a model-chosen "
-                "boundary would tile different audio from the sealed predecessor"
-            )
-        if cfg.condition_tail_chars:
-            raise ObsLoopError(
-                "obs-repair-loop requires obs_condition_tail_chars 0: this pass "
-                "already carries the predecessor, and a second conditioned tail "
-                "would put two transcripts in one request"
-            )
-        if cfg.vad_trim_min_seconds:
-            raise ObsLoopError(
-                "obs-repair-loop requires obs_vad_trim_min_seconds 0: a trimmed "
-                "buffer does not tile the audio the sealed predecessor decoded"
-            )
+        return build_repair_window_hook(ctx, cfg, data_root, sample)
 
-        config_values = ctx.extras["config_values"]
-        repo_root = Path(ctx.extras["repo_root"])
-        relpath, digest = binding_from_values(config_values)
-        snapshot = _bound_snapshot(
-            str(repo_root / "docs" / relpath), str(Path(data_root)), digest
-        )
 
-        frame_id = str(config_values.get("repair_frame", "e21-entity-repair-frame-v1"))
-        try:
-            frame = REPAIR_FRAMES[frame_id]
-        except KeyError:
-            raise ObsLoopError(
-                f"unknown repair_frame {frame_id!r}; registered: {sorted(REPAIR_FRAMES)}"
-            ) from None
+class ObsRepairLoopOjwPolicy(ObsAgentLoopOjwPolicy):
+    """The openJiuwen sibling of :class:`ObsRepairLoopPolicy`.
 
-        rule_id = str(config_values["response_postprocessor"])
-        params = config_values.get("response_postprocessor_params") or {}
-        if not isinstance(params, Mapping):
-            raise ObsLoopError(
-                f"response_postprocessor_params must be an object, got {params!r}"
-            )
-        rule = RESPONSE_POSTPROCESSORS.resolve(rule_id)(**dict(params))
+    Owner Decision 12-F (2026-09-08): the Earnings obs path is PORTED onto the
+    openJiuwen graph, so every mechanism that rides the plain policy needs a
+    graph-side seat. This class is what that costs for KC-E1f: two overridden
+    methods over ``ObsAgentLoopOjwPolicy``, calling the SAME
+    :func:`assert_repair_config` and :func:`build_repair_window_hook` the plain
+    policy calls. There is no second predecessor loader, no second frame table,
+    no second delivery rule and no second legality check -- which is what makes
+    the ``window-hook`` equivalence scenario a statement about the two
+    executors rather than about two implementations of one policy.
+    """
 
-        try:
-            predecessors = snapshot.for_sample(sample.sample_id)
-        except PredecessorSnapshotError as error:
-            raise ObsLoopError(str(error)) from error
-        return RepairWindowHook(
-            sample_id=sample.sample_id,
-            predecessors=predecessors,
-            frame=frame,
-            rule=rule,
-        )
+    def run_sample(self, ctx: SampleContext) -> SampleOutcome:
+        assert_repair_config(ctx.extras.get("config_values"))
+        return super().run_sample(ctx)
+
+    def run_samples(self, contexts):
+        for ctx in contexts:
+            assert_repair_config(ctx.extras.get("config_values"))
+        return super().run_samples(contexts)
+
+    def _window_hook(self, ctx, cfg, data_root, sample):
+        return build_repair_window_hook(ctx, cfg, data_root, sample)
 
 
 # NOTE the registration is NOT here. ``core/policies.py`` is the one canonical
 # core.base policy-registration site the owner rule names and
-# scripts/checks/engineering_base_check.py reads, so ``obs-repair-loop``
-# registers there beside ``obs-agent-loop`` and ``obs-replay-loop``, exactly as
+# scripts/checks/engineering_base_check.py reads, so ``obs-repair-loop`` and
+# ``obs-repair-loop-ojw`` register there beside ``obs-agent-loop``,
+# ``obs-agent-loop-ojw`` and ``obs-replay-loop``, exactly as
 # ``reproduction.replay_loop`` does.
 
 
 __all__ = [
     "CONFIG_KEYS",
     "REQUIRED_CONFIG_KEYS",
+    "OBS_REPAIR_LOOP_OJW_POLICY_NAME",
     "OBS_REPAIR_LOOP_POLICY_NAME",
     "REPAIR_FRAMES",
     "REPAIR_FRAME_V1",
+    "ObsRepairLoopOjwPolicy",
     "ObsRepairLoopPolicy",
     "RepairWindowHook",
+    "assert_repair_config",
+    "build_repair_window_hook",
 ]

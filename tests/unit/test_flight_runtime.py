@@ -3694,3 +3694,277 @@ def test_stop_serving_refuses_outright_if_a_flight_ever_claims_an_attached_sessi
     runtime._owns_session = True  # the bug this guard is here to survive
     with pytest.raises(FlightRuntimeError, match="always-on serving session"):
         runtime.stop_serving()
+
+
+# ---------------------------------------------------------------------------
+# The Earnings carrier path (owner Decision 12-F item #9, 2026-09-08)
+# ---------------------------------------------------------------------------
+#
+# Earnings used to be the one carrier outside this harness: it flew on plain
+# Python through ``core.driver.run.run_experiment`` with its own receipt
+# shape, while SLURP and Audio2Tool flew here. #9 moves it inside WITHOUT
+# giving it a second obs implementation -- ``run_phases`` dispatches an obs
+# policy through the SAME obs driver, and this harness contributes the
+# envelope that driver never had (preflight, preprocess, attach to the
+# resident session, seal, score once through core.scoring_batch).
+#
+# What these tests pin is exactly that: the branch is taken for every
+# registered obs policy, the driver receives THIS flight's own composed
+# config / plan / gate / lock / data root / run dir / transport, no
+# FrozenCoreClient is built (it would open the attempt a second time), the
+# sealed rows are the driver's own rows unmodified, and seal reads the
+# driver's RunResult instead of closing a client the obs path never had.
+
+_OBS_BASELINE_EXTRA: dict[str, object] = {
+    "obs_buffer_seconds": 90,
+    "obs_min_advance_seconds": 20,
+    "obs_max_advance_seconds": 55,
+    "obs_boundary_mode": "fixed",
+    "obs_vad_trim_min_seconds": 0,
+    "obs_condition_tail_chars": 0,
+    "obs_batch_samples": 1,
+    "obs_batch_slices": 8,
+    "obs_prefetch_depth": 1,
+}
+
+_OBS_ROWS = (
+    {
+        "request_id": "req-0001",
+        "sample_id": "s1",
+        "carrier_lock_key": "fake-carrier",
+        "arm": "test-arm",
+        "text": "stitched one",
+        "admitted": True,
+        "request_sha256": "a" * 64,
+        "response_sha256": "b" * 64,
+        "response_text_sha256": "c" * 64,
+    },
+    {
+        "request_id": "req-0002",
+        "sample_id": "s2",
+        "carrier_lock_key": "fake-carrier",
+        "arm": "test-arm",
+        "text": "stitched two",
+        "admitted": True,
+        "request_sha256": "d" * 64,
+        "response_sha256": "e" * 64,
+        "response_text_sha256": "f" * 64,
+    },
+)
+
+
+def _fake_obs_runner(seen: dict):
+    """Stand in for ``core.driver.run.run_experiment`` and record exactly
+    what the flight handed it. Writes the outputs file the real driver
+    writes, in the real driver's own field set and byte shape."""
+
+    from speech_aware_evidence_acquisition.core.base import RunResult
+
+    def _runner(composed, plan, gate, lock, root, run_dir, transport, *, repo_root):
+        seen.update(
+            composed=composed,
+            plan=plan,
+            gate=gate,
+            lock=lock,
+            root=root,
+            run_dir=run_dir,
+            transport=transport,
+            repo_root=repo_root,
+        )
+        outputs_path = Path(run_dir) / f"{plan.run_id}.outputs.jsonl"
+        outputs_path.parent.mkdir(parents=True, exist_ok=True)
+        with outputs_path.open("w", encoding="utf-8") as handle:
+            for row in _OBS_ROWS:
+                handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+        return RunResult(
+            run_id=plan.run_id,
+            arm=composed.values["arm"],
+            outputs_path=outputs_path,
+            trace_manifest_hash="9" * 64,
+            cost={
+                "calls_used": 6,
+                "audio_seconds_used": 540.0,
+                "latency_seconds_total": 3.0,
+                "completion_tokens_total": 1200,
+                "saturated_slice_count": 0,
+                "skipped_slice_count": 1,
+            },
+        )
+
+    return _runner
+
+
+def _obs_runtime(tmp_path, seen, *, policy="obs-agent-loop-ojw", **overrides):
+    kwargs = dict(
+        happy_path=True,
+        config_kwargs={
+            "policy": policy,
+            "baseline_extra": dict(_OBS_BASELINE_EXTRA),
+        },
+        obs_runner=_fake_obs_runner(seen),
+    )
+    kwargs.update(overrides)
+    return _make_runtime(tmp_path, **kwargs)
+
+
+@pytest.mark.parametrize(
+    "policy",
+    ("obs-agent-loop", "obs-agent-loop-ojw", "obs-repair-loop", "obs-repair-loop-ojw"),
+)
+def test_run_phases_routes_every_obs_policy_through_the_obs_driver(tmp_path, policy):
+    """All four registered obs policies -- the two executors times the two
+    passes -- reach the obs driver, and none of them reaches the rails
+    runner, the phase runner or the client factory."""
+
+    calls = {"rails_runner": 0, "phase_runner": 0, "client_factory": 0}
+
+    def _rails(**kwargs):
+        calls["rails_runner"] += 1
+        return _fake_rails_runner(**kwargs)
+
+    def _phases(**kwargs):
+        calls["phase_runner"] += 1
+        return _fake_phase_runner(**kwargs)
+
+    def _client(**kwargs):
+        calls["client_factory"] += 1
+        return _FakeClient(**kwargs)
+
+    seen: dict = {}
+    runtime = _obs_runtime(
+        tmp_path, seen, policy=policy,
+        rails_runner=_rails, phase_runner=_phases, client_factory=_client,
+    )
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    receipt = runtime.run_phases()
+
+    assert calls == {"rails_runner": 0, "phase_runner": 0, "client_factory": 0}
+    assert receipt["policy"] == policy
+    assert receipt["policy_kind"] == "obs-loop"
+    assert receipt["contact_count"] == 6
+    assert receipt["dispatch"]["dispatch"] == "obs-loop"
+    assert receipt["dispatch"]["obs_prefetch_depth"] == 1
+    assert receipt["obs_skipped_slice_count"] == 1
+
+
+def test_the_obs_driver_receives_this_flights_own_objects(tmp_path):
+    """"Same harness for every arm" is a claim about identity, not about
+    similarity: the driver must be handed the flight's OWN composed config,
+    ExecutionPlan, gate, lock, data root, run dir and transport -- never a
+    second copy resolved here."""
+
+    seen: dict = {}
+    runtime = _obs_runtime(tmp_path, seen)
+    runtime.preflight()
+    runtime.preprocess()
+    serve_receipt = runtime.serve()
+    runtime.run_phases()
+
+    assert seen["composed"] is runtime._composed
+    assert seen["plan"] is runtime.plan
+    assert seen["gate"] is runtime._gate
+    assert seen["lock"] is runtime._lock
+    assert Path(seen["root"]) == runtime._data_root
+    assert Path(seen["repo_root"]) == runtime._repo_root
+    assert seen["transport"] is runtime._transport
+    assert serve_receipt is not None
+
+
+def test_the_sentinel_reaches_the_obs_driver_unresolved(tmp_path):
+    """``_decoding_params`` collapses ``id_slot='per-sample'`` to slot 0
+    because the phase harness dispatches one contact at a time. The obs
+    executors resolve it themselves, per sample, from the run's dispatch
+    pool -- so the composed value must reach the driver exactly as the
+    fragment wrote it, and the receipt must say so rather than claim a
+    resolution that did not happen."""
+
+    seen: dict = {}
+    runtime = _obs_runtime(
+        tmp_path,
+        seen,
+        config_kwargs={
+            "policy": "obs-agent-loop-ojw",
+            "baseline_extra": dict(_OBS_BASELINE_EXTRA),
+            "model_extra": {
+                "model_lock_key": "fake-lock",
+                "transport": "fake",
+                "decoding_params": {"temperature": 0, "id_slot": "per-sample"},
+            },
+        },
+    )
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    receipt = runtime.run_phases()
+
+    composed_decoding = seen["composed"].values["decoding_params"]
+    assert composed_decoding["id_slot"] == "per-sample"
+    assert receipt["id_slot"] == "per-sample"
+    assert "UNRESOLVED" in receipt["id_slot_resolution"]
+
+
+def test_seal_writes_the_obs_drivers_own_rows_and_reads_its_run_result(tmp_path):
+    """The obs driver is the authority for a stitched hypothesis' identity:
+    its three hashes are STITCH descriptors over a sample's per-window
+    requests and responses, and no client timing exists (or could) for a
+    multi-window stitch. seal must pass them through and must not try to
+    close a client the obs path never built."""
+
+    seen: dict = {}
+    runtime = _obs_runtime(tmp_path, seen)
+    runtime.run_all()
+
+    assert runtime.receipts.completed_stages() == (
+        "preflight", "preprocess", "serve", "run_phases", "seal", "score",
+    )
+    seal = runtime.receipts.as_json()["stages"]["seal"]
+    assert seal["outputs_row_count"] == 2
+    assert seal["trace_manifest_hash"] == "9" * 64
+    assert seal["cost"]["calls_used"] == 6
+    sealed = [
+        json.loads(line)
+        for line in Path(seal["outputs_path"]).read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    assert sealed == [dict(row) for row in _OBS_ROWS]
+
+
+def test_an_obs_dispatch_refuses_without_a_transport(tmp_path):
+    seen: dict = {}
+    runtime = _obs_runtime(tmp_path, seen)
+    runtime.preflight()
+    runtime.preprocess()
+    with pytest.raises(FlightStageOrderError):
+        runtime.run_phases()
+
+
+def test_the_prompt_budget_estimates_a_window_not_a_whole_call(tmp_path):
+    """An Earnings call is 40-75 minutes and never reaches the core as one
+    request. Estimating the whole call would refuse every legal Earnings
+    flight on a ceiling no request of it approaches, so the speech term is
+    the configured buffer plus its silence tail -- one window."""
+
+    seen: dict = {}
+    runtime = _obs_runtime(tmp_path, seen)
+    receipt = runtime.preflight()
+    (budget,) = receipt["prompt_budget"]
+    assert budget["phase"] == "obs-window"
+    # 90 s buffer + 2 s tail at the declared 14.4 tokens/s.
+    runtime_two = _obs_runtime(
+        tmp_path / "second",
+        {},
+        run_id="SAEA-TEST-RUN-002",
+        config_kwargs={
+            "policy": "obs-agent-loop-ojw",
+            "baseline_extra": {
+                **_OBS_BASELINE_EXTRA,
+                "obs_slice_tail_silence_seconds": 2.0,
+            },
+        },
+    )
+    receipt_two = runtime_two.preflight()
+    (budget_two,) = receipt_two["prompt_budget"]
+    assert budget_two["breakdown"]["speech_feature_tokens"] > budget["breakdown"]["speech_feature_tokens"]
+    assert budget_two["breakdown"]["speech_feature_tokens"] == round(92.0 * 14.4)

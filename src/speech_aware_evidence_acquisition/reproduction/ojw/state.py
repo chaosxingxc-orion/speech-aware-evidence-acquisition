@@ -94,6 +94,22 @@ class ObsSampleState:
     # ``policy._prepare_state``; ``None`` is the clock-derived fixed-window
     # cutter every sealed run took, byte for byte.
     plan_units: tuple[PlannedUnit, ...] | None = None
+    # This sample's per-window hook (KC-E1f; drift #2 of the 2026-09-08
+    # openJiuwen assessment, closed by the Decision 12-F port), resolved once
+    # by ``policy._prepare_state`` through the SAME policy method the plain
+    # executor calls. ``None`` -- ``obs-agent-loop-ojw``'s own answer, always
+    # -- leaves every byte of this graph exactly where it was. A hook is
+    # consumed in two places and nowhere else: ``FrozenCoreASR`` renders the
+    # window's instruction through ``hook.instruction`` and ``AcceptAdvance``
+    # delivers the window's span through ``hook.accept``.
+    window_hook: object | None = None
+    # The RUN's shared dispatch-slot pool
+    # (``reproduction.obs_loop.ObsDispatcher``) when the driver's prefetch
+    # pipeline is on, else ``None``. Held for the whole SAMPLE by
+    # ``runner.execute_obs_workflow`` -- this graph sends one request at a
+    # time per sample, so a per-sample hold is both the in-flight bound and
+    # the ``id_slot="per-sample"`` affinity the sentinel asks for.
+    dispatcher: object | None = None
 
     # -- loop-carried state (single writer per field; see components.py) ----
     cursor: float = 0.0
@@ -194,6 +210,31 @@ class ObsSampleState:
             int(round((self.cursor + self.cfg.buffer_seconds) * self.rate)), len(self.pcm)
         )
         return start_frame, end_frame
+
+    def slice_record_for(self, iteration: int) -> SliceRecord:
+        """The ``SliceRecord`` ``FeedBuffer`` cut for one iteration.
+
+        Read from THIS driver-side state for the same reason ``unit_for``
+        is: a ``SliceRecord`` is a run object, not framework session state,
+        and the graph's ``${node.field}`` channel carries only the JSON
+        ``slice_spec``. ``FeedBuffer`` appends exactly one record per round,
+        in iteration order, so the index IS the iteration -- asserted rather
+        than assumed, because a hook that repaired the wrong window would be
+        a silent defect."""
+
+        if not 0 <= iteration < len(self.slice_records):
+            raise IndexError(
+                f"iteration {iteration} has no cut slice record "
+                f"(this sample has cut {len(self.slice_records)})"
+            )
+        record = self.slice_records[iteration]
+        if record.iteration != iteration:
+            raise IndexError(
+                f"slice record at index {iteration} reports iteration "
+                f"{record.iteration}; the cut order and the loop counter have "
+                "diverged"
+            )
+        return record
 
     def unit_for(self, iteration: int) -> PlannedUnit | None:
         """The unit that supplied one iteration's window, or ``None`` on the

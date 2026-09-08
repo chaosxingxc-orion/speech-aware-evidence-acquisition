@@ -673,11 +673,23 @@ RESPONSE_POSTPROCESSORS.register(
 # do -- this module is the one policy-registration site run_experiment
 # resolves names through.
 from ..reproduction.repair_loop import (  # noqa: E402
+    OBS_REPAIR_LOOP_OJW_POLICY_NAME,
     OBS_REPAIR_LOOP_POLICY_NAME,
+    ObsRepairLoopOjwPolicy,
     ObsRepairLoopPolicy,
 )
 
 POLICIES.register(OBS_REPAIR_LOOP_POLICY_NAME, ObsRepairLoopPolicy())
+
+# obs-repair-loop-ojw (owner Decision 12-F, 2026-09-08): the same repair pass
+# on the openJiuwen executor. The Earnings obs path is being PORTED onto the
+# openJiuwen graph, so the one mechanism that rides the plain policy's
+# _window_hook needs a graph-side seat; the sibling class overrides the same
+# two methods over ObsAgentLoopOjwPolicy and calls the SAME hook builder and
+# the SAME legality check, so there is no second repair implementation to
+# drift. Registration is free of openjiuwen imports for exactly the reason
+# obs-agent-loop-ojw's is (D2 zero-dependency gate).
+POLICIES.register(OBS_REPAIR_LOOP_OJW_POLICY_NAME, ObsRepairLoopOjwPolicy())
 
 # The Reviewer's judges (owner Decision 11-B change #2, 2026-09-08). They
 # register HERE for the same reason every policy and the one response

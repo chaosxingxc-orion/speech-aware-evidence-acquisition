@@ -232,6 +232,20 @@ class FrozenCoreASR(WorkflowComponent):
             instruction = f"{instruction}\n\n{cfg.boundary_prompt_text}"
         if tail:
             instruction = f"{instruction}\n\n{OBS_TAIL_FRAME_V1.format(tail=tail)}"
+        # The per-window hook's instruction leg (KC-E1f; drift #2 of the
+        # 2026-09-08 assessment, closed by the Decision 12-F port). It rides on
+        # the FULLY rendered instruction -- after the boundary template and
+        # after the conditioned tail -- which is exactly where the plain
+        # policy's own two cutters call it, so one seam is one string on every
+        # executor. The record comes from the driver-side state
+        # (``ObsSampleState.slice_record_for``: a SliceRecord is a run object
+        # and the framework channel carries only the JSON slice_spec).
+        if state.window_hook is not None:
+            instruction = state.window_hook.instruction(
+                iteration=slice_spec["iteration"],
+                record=state.slice_record_for(slice_spec["iteration"]),
+                default=instruction,
+            )
 
         slice_ref = SampleRef(
             carrier_lock_key=sample_view["carrier_lock_key"],
@@ -416,6 +430,24 @@ class AcceptAdvance(WorkflowComponent):
         saturated = inputs["saturated"]
         # Task 2 (2026-08-09): also never None, same discipline as saturated.
         skipped = inputs["skipped"]
+        # The per-window hook's delivery leg (KC-E1f; drift #2 of the
+        # 2026-09-08 assessment, closed by the Decision 12-F port). Handed the
+        # ACCEPTED span -- what this window would contribute -- it returns what
+        # the run actually stitches plus the fields that say why, and it is
+        # called for EVERY window, saturated and skipped ones included, exactly
+        # as on the plain policy's two cutters. Under the fixed-boundary,
+        # zero-tail legality every hook consumer declares, ``accepted`` IS the
+        # stripped transcript the slice-parallel pass hands its own hook, so
+        # the three sites are one seam and not three.
+        hook_fields: dict[str, object] = {}
+        if state.window_hook is not None:
+            accepted, hook_fields = state.window_hook.accept(
+                iteration=slice_spec["iteration"],
+                record=state.slice_record_for(slice_spec["iteration"]),
+                transcript=accepted,
+                saturated=saturated,
+                skipped=skipped,
+            )
         state.sink.emit(
             "OBS",
             f"{request_id}/obs",
@@ -463,6 +495,11 @@ class AcceptAdvance(WorkflowComponent):
                 # is legitimately None, and the framework's state merge
                 # DELETES None-valued keys).
                 **_unit_trace_fields(state.unit_for(slice_spec["iteration"])),
+                # The hook's own fields, merged last and in the same position
+                # as on the plain policy's two cutters, so what was delivered
+                # and why sits in the sealed trace beside what was said. Empty
+                # without a hook -- which is every run this executor has flown.
+                **hook_fields,
             },
         )
         span = accepted.strip()
