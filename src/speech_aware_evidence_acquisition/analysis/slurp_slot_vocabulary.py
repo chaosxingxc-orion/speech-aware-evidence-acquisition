@@ -375,6 +375,7 @@ def price_intent_cards(
     cards: Mapping[str, VocabularyCard],
     *,
     header: str = CARD_HEADER,
+    remap: Mapping[str, Mapping[str, str]] | None = None,
 ) -> tuple[IntentCardCost, ...]:
     """Price one card set per intent: the cards for the CLOSED types that
     intent's own schema block lists, and nothing else.
@@ -383,11 +384,22 @@ def price_intent_cards(
     lists; ``cards`` maps a closed entity type to its card. A type the block
     lists but no card covers is simply skipped -- that is the open half, which
     KU-S3's retrieval keeps.
+
+    ``remap`` prices the TWIN through the same function rather than through a
+    second one: it is :func:`derange_card_mapping`'s per-intent mapping, and a
+    type listed by the intent takes the card of the type the mapping names.
+    Nothing else changes, which is what makes the twin's volume comparable to
+    the arm's by construction on every intent that could rotate in place.
     """
 
     out: list[IntentCardCost] = []
     for intent, types in sorted(block_types.items()):
-        selected = [cards[name] for name in types if name in cards]
+        substitution = (remap or {}).get(str(intent), {})
+        selected = [
+            cards[substitution.get(name, name)]
+            for name in types
+            if substitution.get(name, name) in cards and name in cards
+        ]
         text = render_card_set(selected, header=header)
         out.append(
             IntentCardCost(
@@ -403,59 +415,103 @@ def price_intent_cards(
 
 def derange_card_mapping(
     block_types: Mapping[str, Sequence[str]], carded: Iterable[str]
-) -> dict[str, str]:
-    """The TWIN's type -> vocabulary mapping: a within-intent rotation.
+) -> dict[str, dict[str, str]]:
+    """The TWIN's per-intent type -> vocabulary mapping.
 
-    The twin is the control the owner's 2026-09-06 ruling asks for -- a card of
-    the same size whose vocabularies are attached to the wrong types -- and it
-    is **token-matched by construction rather than by a cap**: rotating an
-    intent's carded types among themselves leaves the intent's card set holding
-    exactly the same multiset of vocabularies, so its rendered volume is
-    identical to the arm's, character for character, whatever the vocabularies
-    happen to be.
+    The twin is the control the owner's 2026-09-06 ruling asks for -- a card set
+    of the same size whose vocabularies are attached to the wrong types -- and
+    the mapping is **per intent**, which is the whole reason it is token-matched
+    BY CONSTRUCTION rather than by a cap: rotating an intent's carded types
+    among themselves leaves that intent's card set holding exactly the same
+    MULTISET of vocabularies, so its rendered volume is identical to the arm's,
+    character for character, whatever the vocabularies happen to be. A single
+    GLOBAL mapping cannot do that -- a type reached from two intents would carry
+    one intent's rotation into the other -- which is why this returns a mapping
+    per intent instead of one map.
 
-    Types whose intent lists only ONE carded type cannot rotate inside it; they
-    are pooled across intents and rotated among themselves, which is the same
-    resolution KU-S3's own derangement uses for its singleton scenario buckets.
-    A type reached from several intents keeps the FIRST assignment in sorted
-    intent order, so the mapping is a pure function of the inputs.
+    An intent that lists exactly ONE carded type cannot rotate inside itself:
+    any twin of a single card is a different vocabulary of a different size.
+    Those types, and any carded type no block lists at all (its share stays
+    under every intent's own floor), are pooled and rotated among themselves --
+    the resolution KU-S3's own derangement uses for its singleton scenario
+    buckets -- and such an intent's volume difference is a covariate the caller
+    reports rather than a match it can claim.
 
-    Returns ``{type: the type whose vocabulary it receives}``. Raises if any
-    type would keep its own vocabulary.
+    Returns ``{intent: {type: the type whose vocabulary it receives}}`` for
+    every intent listing at least one carded type. Raises if any type would
+    keep its own vocabulary.
     """
 
     carded_set = {str(name) for name in carded}
-    mapping: dict[str, str] = {}
-    singletons: list[str] = []
+    if len(carded_set) < 2:
+        raise SlotVocabularyError("a single carded type cannot be deranged")
+    per_intent: dict[str, dict[str, str]] = {}
+    orphans: set[str] = set()
     for intent in sorted(block_types):
-        present = [name for name in block_types[intent] if str(name) in carded_set]
-        present = sorted({str(name) for name in present})
-        if len(present) < 2:
-            singletons.extend(name for name in present if name not in mapping)
+        present = sorted(
+            {str(name) for name in block_types[intent] if str(name) in carded_set}
+        )
+        if not present:
             continue
-        for offset, name in enumerate(present):
-            if name in mapping:
-                continue
-            mapping[name] = present[(offset + 1) % len(present)]
-    pool = sorted({name for name in singletons if name not in mapping})
+        if len(present) == 1:
+            orphans.add(present[0])
+            per_intent[str(intent)] = {}
+            continue
+        per_intent[str(intent)] = {
+            name: present[(offset + 1) % len(present)]
+            for offset, name in enumerate(present)
+        }
+    orphans |= carded_set - {
+        name for mapping in per_intent.values() for name in mapping
+    }
+    pool = sorted(orphans)
+    pool_map: dict[str, str] = {}
     if len(pool) == 1:
-        # One orphan cannot be deranged inside a pool of one; give it the
-        # vocabulary of the lexicographically first OTHER carded type, and take
-        # that type's own partner as the orphan's donor is never itself.
-        orphan = pool[0]
-        others = sorted(carded_set - {orphan})
-        if not others:
-            raise SlotVocabularyError("a single carded type cannot be deranged")
-        mapping[orphan] = others[0]
+        others = sorted(carded_set - {pool[0]})
+        pool_map[pool[0]] = others[0]
     else:
         for offset, name in enumerate(pool):
-            mapping[name] = pool[(offset + 1) % len(pool)]
-    for name in sorted(carded_set):
-        if name not in mapping:
-            raise SlotVocabularyError(f"{name!r} was never assigned a twin vocabulary")
-        if mapping[name] == name:
-            raise SlotVocabularyError(f"{name!r} kept its own vocabulary in the twin")
-    return mapping
+            pool_map[name] = pool[(offset + 1) % len(pool)]
+    for intent in sorted(block_types):
+        present = sorted(
+            {str(name) for name in block_types[intent] if str(name) in carded_set}
+        )
+        if len(present) == 1:
+            per_intent[str(intent)] = {present[0]: pool_map[present[0]]}
+    for intent, mapping in per_intent.items():
+        for name, donor in mapping.items():
+            if name == donor:
+                raise SlotVocabularyError(
+                    f"{name!r} kept its own vocabulary in intent {intent!r}"
+                )
+    assigned = {name for mapping in per_intent.values() for name in mapping} | set(
+        pool_map
+    )
+    missing = sorted(carded_set - assigned)
+    if missing:
+        raise SlotVocabularyError(
+            f"{missing[0]!r} was never assigned a twin vocabulary"
+        )
+    return dict(sorted(per_intent.items()))
+
+
+def twin_pool_types(
+    block_types: Mapping[str, Sequence[str]], carded: Iterable[str]
+) -> tuple[str, ...]:
+    """The carded types the twin has to pool rather than rotate in place.
+
+    These are the ones whose intents list a single carded type, or that no block
+    lists at all; an intent built only from them cannot be volume-matched, and
+    the caller reports that as a covariate.
+    """
+
+    carded_set = {str(name) for name in carded}
+    pooled: set[str] = set(carded_set)
+    for intent in block_types:
+        present = {str(name) for name in block_types[intent] if str(name) in carded_set}
+        if len(present) >= 2:
+            pooled -= present
+    return tuple(sorted(pooled))
 
 
 def containment_collisions(
@@ -509,6 +565,7 @@ __all__ = [
     "containment_collisions",
     "derange_card_mapping",
     "price_intent_cards",
+    "twin_pool_types",
     "render_card_set",
     "token_proxy",
 ]

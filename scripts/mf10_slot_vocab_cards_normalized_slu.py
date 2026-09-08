@@ -703,6 +703,7 @@ def command_views(args: argparse.Namespace) -> int:
         price_intent_cards,
         render_card_set,
         token_proxy,
+        twin_pool_types,
     )
     from speech_aware_evidence_acquisition.data.slurp import (
         load_slurp_intent_slot_schema,
@@ -756,18 +757,26 @@ def command_views(args: argparse.Namespace) -> int:
 
     # --- the twin, token-matched by construction --------------------------
     twin_map = derange_card_mapping(block_types, cards)
-    twin_cards = {
-        name: build_vocabulary_card(name, dict(counts[twin_map[name]]))
-        for name in cards
-    }
-    twin_priced = price_intent_cards(block_types, twin_cards)
+    twin_priced = price_intent_cards(block_types, cards, remap=twin_map)
+    pooled = twin_pool_types(block_types, cards)
     arm_by_intent = {cost.intent: cost for cost in priced}
     twin_by_intent = {cost.intent: cost for cost in twin_priced}
+    rotatable = sorted(
+        intent for intent, mapping in twin_map.items() if len(mapping) >= 2
+    )
     volume_mismatches = sorted(
         intent
-        for intent in arm_by_intent
+        for intent in rotatable
         if arm_by_intent[intent].char_count != twin_by_intent[intent].char_count
     )
+    pooled_intents = sorted(
+        intent for intent, mapping in twin_map.items() if len(mapping) == 1
+    )
+    pooled_volume_delta = {
+        intent: twin_by_intent[intent].char_count - arm_by_intent[intent].char_count
+        for intent in pooled_intents
+        if twin_by_intent[intent].char_count != arm_by_intent[intent].char_count
+    }
 
     # --- containment, on the instruction the cell would actually send ------
     roster = mf9.roster_sample_ids(REPO_ROOT / mf9.DEV1000_CONFIG)
@@ -783,33 +792,87 @@ def command_views(args: argparse.Namespace) -> int:
     directive = (REPO_ROOT / "configs/probes/slurp_phase_slots.txt").read_text(
         encoding="utf-8"
     )
+    # The RESOLUTION variant: the same per-intent schema block with its own five
+    # example fillers dropped. `examples_per_type=0` is a parameter the loader
+    # already takes, so this is the schema block the study would send if the
+    # card became the one place a filler is written, not a new renderer.
+    schema_no_examples = load_slurp_intent_slot_schema(lock, root, examples_per_type=0)
     full_block_text = render_slurp_intent_slot_schema(schema)
+    full_block_no_examples = render_slurp_intent_slot_schema(schema_no_examples)
     block_text_cache: dict[str, str] = {}
+    block_no_examples_cache: dict[str, str] = {}
     card_payloads = sorted(
         {form for card in cards.values() for form, _count in card.forms}
     )
     checked_payloads = [
         payload for payload in card_payloads if len(payload) >= CONTAINMENT_MIN_LENGTH
     ]
-    rows_with_collisions = 0
+    directive_hits = containment_collisions(checked_payloads, directive)
+    surfaces = {
+        "directive": 0,
+        "sealed_state": 0,
+        "schema_block": 0,
+        "schema_block_without_examples": 0,
+        "whole_instruction": 0,
+        "whole_instruction_without_schema_examples": 0,
+    }
     collision_examples: dict[str, int] = {}
+    residual_examples: dict[str, int] = {}
     schema_example_overlap = 0
     for sample_id in roster:
         fit = fit_rows[sample_id]
         if bool(fit["schema_full_fallback"]):
-            block = full_block_text
+            block, block_bare = full_block_text, full_block_no_examples
         else:
             intent = str(fit["schema_block_intent"])
             block = block_text_cache.get(intent)
             if block is None:
                 block = render_slurp_intent_slot_schema(schema, intents=(intent,))
                 block_text_cache[intent] = block
-        instruction = f"{directive}\n{states[sample_id]}\n{block}"
+            block_bare = block_no_examples_cache.get(intent)
+            if block_bare is None:
+                block_bare = render_slurp_intent_slot_schema(
+                    schema_no_examples, intents=(intent,)
+                )
+                block_no_examples_cache[intent] = block_bare
+        state = states[sample_id]
+        instruction = f"{directive}\n{state}\n{block}"
+        instruction_bare = f"{directive}\n{state}\n{block_bare}"
+        if directive_hits:
+            surfaces["directive"] += 1
+        if containment_collisions(checked_payloads, state):
+            surfaces["sealed_state"] += 1
+        if containment_collisions(checked_payloads, block):
+            surfaces["schema_block"] += 1
+        if containment_collisions(checked_payloads, block_bare):
+            surfaces["schema_block_without_examples"] += 1
         hits = containment_collisions(checked_payloads, instruction)
         if hits:
-            rows_with_collisions += 1
+            surfaces["whole_instruction"] += 1
             for hit in hits:
                 collision_examples[hit] = collision_examples.get(hit, 0) + 1
+        residual = containment_collisions(checked_payloads, instruction_bare)
+        if residual:
+            surfaces["whole_instruction_without_schema_examples"] += 1
+            for hit in residual:
+                residual_examples[hit] = residual_examples.get(hit, 0) + 1
+    rows_with_collisions = surfaces["whole_instruction"]
+    # A residual collision is a LEAK only if it is not a substring of the block's
+    # own structural vocabulary: the schema prints entity TYPE names and intent
+    # names, so a card form like `audiobook` matches inside `audiobook_name` and
+    # `takeaway` inside `takeaway_order`. That is a false positive of a raw
+    # substring rule, the same class MF-8 and KU-S3 already recorded, and it is
+    # counted rather than argued.
+    structural = " ".join(
+        sorted(
+            {name for profile in schema.intents.values() for name in profile.entity_types}
+            | set(schema.intents)
+        )
+    )
+    structural = f"{structural} {structural.replace('_', ' ')}"
+    structural_residual = sorted(
+        form for form in residual_examples if form in structural
+    )
     # How much of that is the schema block's own five example fillers, which a
     # card would restate: the number that decides how the view must be rendered.
     for intent, profile in schema.intents.items():
@@ -959,28 +1022,66 @@ def command_views(args: argparse.Namespace) -> int:
             "top_collisions": dict(
                 sorted(collision_examples.items(), key=lambda kv: (-kv[1], kv[0]))[:20]
             ),
+            "containment_decomposition_rows": surfaces,
             "schema_block_example_fillers_a_card_would_restate": schema_example_overlap,
+            "resolution": {
+                "what_it_is": (
+                    "the SAME per-intent schema block with its five example fillers "
+                    "dropped (`examples_per_type=0`, a parameter the loader already "
+                    "takes), so the card becomes the ONE place a filler is written "
+                    "instead of the second place"
+                ),
+                "rows_still_colliding": surfaces[
+                    "whole_instruction_without_schema_examples"
+                ],
+                "distinct_forms_still_colliding": len(residual_examples),
+                "top_residual_collisions": dict(
+                    sorted(residual_examples.items(), key=lambda kv: (-kv[1], kv[0]))[:20]
+                ),
+                "residual_forms_that_are_substrings_of_a_type_or_intent_name": (
+                    structural_residual
+                ),
+                "note": (
+                    "what survives the resolution is the SEALED STATE, which carries "
+                    "the previous phase's own predicted fillers -- a row whose intent "
+                    "response happened to name a value the card also carries. That is "
+                    "a property of the two-contact shape, not of the card, and it is "
+                    "the same false-positive class MF-8 and KU-S3 already recorded "
+                    "for a raw-substring rule over one- and two-word English"
+                ),
+            },
             "verdict": (
                 "CLEAN -- no card form of 8 characters or more occurs in the "
                 "instruction"
                 if rows_with_collisions == 0
-                else "COLLIDES -- the view must drop the schema block's own example "
-                "fillers, or the card must not be sent beside them"
+                else "COLLIDES AS SENT -- a card cannot be shipped beside a schema "
+                "block that already prints example fillers; the view must send the "
+                "block WITHOUT its examples, and the residual is reported above"
             ),
         },
         "twin": {
             "rule": (
                 "saea-mf10-within-intent-card-derangement-v1: an intent's carded "
-                "types are rotated among themselves, so the block holds the same "
-                "MULTISET of vocabularies and is token-matched by construction "
-                "rather than by a cap; intents carrying one carded type are pooled "
-                "and rotated among themselves, as KU-S3's own derangement does for "
-                "its singleton scenario buckets"
+                "types are rotated among THEMSELVES, so that intent's block holds "
+                "the same MULTISET of vocabularies and is token-matched by "
+                "construction rather than by a cap. The mapping is per intent for "
+                "exactly this reason -- one global map would carry an intent's "
+                "rotation into another intent that shares a type and break the "
+                "match. An intent listing a single carded type cannot rotate in "
+                "place, and neither can a carded type no block lists at all; both "
+                "are pooled and rotated among themselves, as KU-S3's derangement "
+                "does for its singleton scenario buckets, and the volume difference "
+                "that leaves is reported as a covariate rather than claimed as a "
+                "match"
             ),
-            "mapping": dict(sorted(twin_map.items())),
+            "mapping_per_intent": twin_map,
             "types_keeping_their_own_vocabulary": 0,
+            "intents_rotating_in_place": len(rotatable),
             "intents_whose_volume_differs_from_the_arm": volume_mismatches,
-            "token_matched_by_construction": not volume_mismatches,
+            "token_matched_by_construction_on_rotating_intents": not volume_mismatches,
+            "pooled_types": list(pooled),
+            "pooled_intents": pooled_intents,
+            "pooled_intent_volume_delta_chars": pooled_volume_delta,
         },
         "what_this_is_not": (
             "no cell is preregistered, no roster is opened, no owner decision is "
@@ -999,10 +1100,17 @@ def command_views(args: argparse.Namespace) -> int:
         )
         print(f"  {name}: reachable SLU-F1 {reach.get('slu_f1')} ({reach.get('gain')})")
     print(
-        f"  containment: {rows_with_collisions} of {len(roster)} rows collide; "
-        f"{schema_example_overlap} schema example fillers a card would restate"
+        f"  containment: {rows_with_collisions} of {len(roster)} rows collide as "
+        f"sent ({schema_example_overlap} schema example fillers a card restates); "
+        f"{surfaces['whole_instruction_without_schema_examples']} still collide "
+        "with the examples dropped"
     )
-    print(f"  twin token-matched by construction: {not volume_mismatches}")
+    print(
+        f"  twin: {len(rotatable)} intents rotate in place, "
+        f"{len(volume_mismatches)} of them differ in volume; "
+        f"{len(pooled_intents)} pooled intents, "
+        f"{len(pooled_volume_delta)} of them differ"
+    )
     return 0
 
 

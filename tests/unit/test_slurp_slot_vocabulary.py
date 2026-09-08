@@ -32,6 +32,7 @@ from speech_aware_evidence_acquisition.analysis.slurp_slot_vocabulary import (
     price_intent_cards,
     render_card_set,
     token_proxy,
+    twin_pool_types,
 )
 
 
@@ -257,9 +258,21 @@ def test_the_twin_rotates_within_an_intent_and_keeps_the_multiset():
     mapping = derange_card_mapping(
         {"alarm_set": ["date", "time", "timeofday"]}, ["date", "time", "timeofday"]
     )
-    assert set(mapping) == {"date", "time", "timeofday"}
-    assert set(mapping.values()) == {"date", "time", "timeofday"}
-    assert all(key != value for key, value in mapping.items())
+    rotation = mapping["alarm_set"]
+    assert set(rotation) == {"date", "time", "timeofday"}
+    assert set(rotation.values()) == {"date", "time", "timeofday"}
+    assert all(key != value for key, value in rotation.items())
+
+
+def test_the_twin_is_per_intent_so_a_shared_type_cannot_break_the_match():
+    """One GLOBAL map would carry intent A's rotation into intent B and change
+    B's volume; a per-intent map cannot."""
+
+    mapping = derange_card_mapping(
+        {"i1": ["a", "b"], "i2": ["b", "c"]}, ["a", "b", "c"]
+    )
+    assert set(mapping["i1"].values()) == {"a", "b"}
+    assert set(mapping["i2"].values()) == {"b", "c"}
 
 
 def test_the_twin_pools_singleton_intents_the_way_ku_s3_does():
@@ -267,8 +280,11 @@ def test_the_twin_pools_singleton_intents_the_way_ku_s3_does():
         {"a_one": ["date"], "b_one": ["time"], "c_one": ["timeofday"]},
         ["date", "time", "timeofday"],
     )
-    assert set(mapping.values()) == {"date", "time", "timeofday"}
-    assert all(key != value for key, value in mapping.items())
+    donors = {intent: next(iter(rot.values())) for intent, rot in mapping.items()}
+    assert set(donors.values()) == {"date", "time", "timeofday"}
+    assert all(
+        next(iter(mapping[intent])) != donor for intent, donor in donors.items()
+    )
 
 
 def test_the_twin_never_hands_a_type_its_own_vocabulary():
@@ -276,8 +292,17 @@ def test_the_twin_never_hands_a_type_its_own_vocabulary():
         {"i1": ["a", "b"], "i2": ["b", "c"], "i3": ["c"], "i4": ["d"]},
         ["a", "b", "c", "d"],
     )
-    assert all(key != value for key, value in mapping.items())
-    assert set(mapping) == {"a", "b", "c", "d"}
+    for rotation in mapping.values():
+        assert all(key != value for key, value in rotation.items())
+
+
+def test_a_carded_type_no_block_lists_is_still_deranged():
+    """Its share stays under every intent's own floor, so it appears in no
+    block; it joins the pool rather than raising."""
+
+    mapping = derange_card_mapping({"i1": ["a", "b"]}, ["a", "b", "c"])
+    assert set(mapping) == {"i1"}
+    assert twin_pool_types({"i1": ["a", "b"]}, ["a", "b", "c"]) == ("c",)
 
 
 def test_a_lone_carded_type_cannot_be_deranged():
@@ -290,6 +315,23 @@ def test_the_twin_is_a_pure_function_of_its_inputs():
     first = derange_card_mapping(blocks, ["a", "b", "c"])
     second = derange_card_mapping(dict(reversed(list(blocks.items()))), ["c", "b", "a"])
     assert first == second
+
+
+def test_the_twin_prices_to_the_same_volume_on_a_rotating_intent():
+    cards = {
+        "date": build_vocabulary_card("date", {"monday": 2, "friday": 1}),
+        "time": build_vocabulary_card("time", {"nine am": 3}),
+        "timeofday": build_vocabulary_card("timeofday", {"morning": 5, "noon": 1}),
+    }
+    blocks = {"alarm_set": ["date", "time", "timeofday"]}
+    mapping = derange_card_mapping(blocks, cards)
+    arm = price_intent_cards(blocks, cards)[0]
+    twin = price_intent_cards(blocks, cards, remap=mapping)[0]
+    assert twin.char_count == arm.char_count
+    assert twin.token_proxy == arm.token_proxy
+    assert twin.closed_types != arm.closed_types or set(twin.closed_types) == set(
+        arm.closed_types
+    )
 
 
 # ---------------------------------------------------------------------------
