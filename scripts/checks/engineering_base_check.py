@@ -7,7 +7,8 @@ Study ``CLAUDE.md`` section "Engineering base and experiment rules (owner,
 ``rails/adapters/`` / ``rails/controllers.py`` / ``rails/kb_policy.py``
 (the migration source, allowed until disposal), no ``launcher/`` directory
 under ``docs/checks/``, and every ``policy`` / ``evidence_source`` /
-``scorers`` / ``judges`` value (plus the knowledge-plane policy-chain ids) in
+``scorers`` / ``judges`` value (plus the knowledge-plane policy-chain ids,
+and -- WAVE W3, 2026-09-08 -- every ``tools`` list of catalog ids) in
 ``configs/`` must resolve in a ``core.base`` registry.
 
 The September tree already violates every one of these rules at scale, so
@@ -63,6 +64,7 @@ ADAPTERS_DIR = f"{PACKAGE_ROOT}/rails/adapters"
 CONTROLLERS_MODULE = f"{PACKAGE_ROOT}/rails/controllers.py"
 KB_POLICY_MODULE = f"{PACKAGE_ROOT}/rails/kb_policy.py"
 KNOWLEDGE_PROVIDER_MODULE = f"{PACKAGE_ROOT}/rails/knowledge_provider.py"
+TOOLS_MODULE = f"{PACKAGE_ROOT}/rails/tools.py"
 DOCS_CHECKS_DIR = "docs/checks"
 CONFIG_DIRS = ("configs/baseline", "configs/experiment")
 LAUNCHER_DIR_NAME = "launcher"
@@ -93,6 +95,11 @@ CANONICAL_REGISTRY_FILES = (
     # site, exactly as rails/kb_policy.py is for the ranker/fuser ids it
     # registers beside their implementations.
     KNOWLEDGE_PROVIDER_MODULE,
+    # WAVE W3 (2026-09-08): the tool catalog registers every pinned,
+    # SYSTEM-invoked tool into TOOL_CATALOG from rails/tools.py, beside the
+    # manifests, for the same reason the provider ids register beside the
+    # provider classes. See the "WAVE W3" block below for the config rule.
+    TOOLS_MODULE,
 )
 
 # config key -> core.base registry variable, top-level only (the flat
@@ -183,12 +190,37 @@ MAX_TOKENS_POLICY_KEY = "policy"
 MAX_TOKENS_POLICY_VAR = "MAX_TOKENS_POLICIES"
 DECODING_CONFIG_DIRS = ("configs/model", *CONFIG_DIRS)
 
+# --- WAVE W3 (tool catalog, 2026-09-08) ------------------------------------
+# Every ``tools`` LIST in ``configs/`` names catalog ids and must resolve in
+# ``rails.tools.TOOL_CATALOG`` (registered from TOOLS_MODULE above), exactly as
+# every ``policy`` / ``evidence_source`` / ``scorers`` value must resolve in its
+# own ``core.base`` registry. The toolkit table that carries these lists is
+# ``configs/toolkit/task-toolkits-v1.json`` (task type -> role -> tools).
+#
+# LIST-shaped, deliberately, and for the same kind of reason the max_tokens rule
+# above is matched by PATH rather than by bare key name: ``configs/knowledge/
+# a2t-kc-a1/targets-*.json`` already carry a ``tools`` key whose value is an
+# OBJECT of Audio2Tool function names with per-function notes. That is carrier
+# PAYLOAD -- the 152-tool registry the task itself is about -- not a list of
+# catalog ids, and turning it into an offender would be checking the wrong
+# object. A ``tools`` list of catalog ids and a ``tools`` object of Audio2Tool
+# function names are two different things that happen to share a spelling.
+#
+# The scan covers ALL of ``configs/`` at any depth, not just CONFIG_DIRS: a
+# toolkit table is not a baseline or an experiment fragment and lives in its own
+# directory.
+TOOL_LIST_KEY = "tools"
+TOOL_REGISTRY_VAR = "TOOL_CATALOG"
+TOOL_CONFIG_ROOT = "configs"
+# --- end WAVE W3 -----------------------------------------------------------
+
 ALL_REGISTRY_VARS = (
     {var for vars_ in TOP_LEVEL_STRING_KEYS.values() for var in vars_}
     | {TOP_LEVEL_LIST_KEY[1]}
     | set(NESTED_ID_KEYS.values())
     | set(NESTED_LIST_ID_KEYS.values())
     | {MAX_TOKENS_POLICY_VAR}
+    | {TOOL_REGISTRY_VAR}  # WAVE W3
 )
 
 RATCHETED_RULES = (
@@ -530,6 +562,51 @@ def _walk_nested_list_id_keys(node: object, path_prefix: str = ""):
             yield from _walk_nested_list_id_keys(item, f"{path_prefix}[{index}]")
 
 
+# --- WAVE W3 (tool catalog, 2026-09-08) ------------------------------------
+
+
+def _walk_tool_lists(node: object, path_prefix: str = ""):
+    """Yield ``(dotted path, list)`` for every ``tools`` LIST at any depth
+    (see the WAVE W3 constants block for why lists only)."""
+
+    if isinstance(node, dict):
+        for key, value in node.items():
+            here = f"{path_prefix}.{key}" if path_prefix else key
+            if key == TOOL_LIST_KEY and isinstance(value, list):
+                yield here, value
+            yield from _walk_tool_lists(value, here)
+    elif isinstance(node, list):
+        for index, item in enumerate(node):
+            yield from _walk_tool_lists(item, f"{path_prefix}[{index}]")
+
+
+def rule_unregistered_tool_ids(
+    reader: TreeReader, registered: Mapping[str, set[str]]
+) -> tuple[list[str], list[str]]:
+    """Every ``tools`` list value under ``configs/`` must resolve in
+    ``rails.tools.TOOL_CATALOG``. Returns (sorted offenders, sorted keys seen)."""
+
+    offenders: list[str] = []
+    keys_found: set[str] = set()
+    known = registered[TOOL_REGISTRY_VAR]
+    for relpath in reader.list_files(prefix=TOOL_CONFIG_ROOT):
+        if not relpath.endswith(".json"):
+            continue
+        try:
+            doc = json.loads(reader.read_text(relpath))
+        except json.JSONDecodeError as exc:
+            raise EngineeringBaseError(f"cannot parse JSON {relpath}: {exc}") from exc
+        for dotted_path, values in _walk_tool_lists(doc):
+            keys_found.add(TOOL_LIST_KEY)
+            for index, entry in enumerate(values):
+                if not isinstance(entry, str) or entry not in known:
+                    offenders.append(f"{relpath}::{dotted_path}[{index}]={entry}")
+    return sorted(offenders), sorted(keys_found)
+
+
+# --- end WAVE W3 -----------------------------------------------------------
+
+
 def rule_unregistered_config_values(
     reader: TreeReader, registered: Mapping[str, set[str]]
 ) -> tuple[list[str], list[str]]:
@@ -634,6 +711,11 @@ def rule_adapter_line_budget(reader: TreeReader) -> tuple[list[str], dict[str, i
 def evaluate(reader: TreeReader, baseline_doc: Mapping[str, object] | None) -> dict:
     registered = build_registered_names(reader)
     config_offenders, config_keys_found = rule_unregistered_config_values(reader, registered)
+    # --- WAVE W3 (tool catalog, 2026-09-08): the same rule, one more registry.
+    tool_offenders, tool_keys_found = rule_unregistered_tool_ids(reader, registered)
+    config_offenders = sorted(set(config_offenders) | set(tool_offenders))
+    config_keys_found = sorted(set(config_keys_found) | set(tool_keys_found))
+    # --- end WAVE W3 -------------------------------------------------------
     adapter_offenders, adapter_line_counts = rule_adapter_line_budget(reader)
 
     raw = {

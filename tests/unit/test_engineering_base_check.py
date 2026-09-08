@@ -313,6 +313,12 @@ def test_regex_extraction_agrees_with_package_import():
         from speech_aware_evidence_acquisition.rails import (
             knowledge_provider as _knowledge_provider,  # noqa: F401
         )
+
+        # WAVE W3 (2026-09-08): rails/tools.py is a canonical registration
+        # site for TOOL_CATALOG, so the same rule applies to it. The registry
+        # object lives in rails.tools rather than core.base (that module's own
+        # docstring says why), so it is read from there below.
+        from speech_aware_evidence_acquisition.rails import tools as _tools
     except ImportError as exc:
         pytest.skip(f"package not importable in this environment: {exc}")
 
@@ -342,6 +348,9 @@ def test_regex_extraction_agrees_with_package_import():
         # a registry the regex side knows about and the import side does not
         # is exactly the drift this test exists to catch.
         "JUDGES": set(core_base.JUDGES.names()),
+        # WAVE W3 (2026-09-08): the pinned, system-invoked tool catalog a
+        # ``tools`` list in configs/ resolves against.
+        "TOOL_CATALOG": set(_tools.TOOL_CATALOG.names()),
     }
 
     assert regex_registered == import_registered
@@ -394,6 +403,68 @@ def test_a_per_sample_max_tokens_policy_id_must_resolve(tmp_path):
     ]
     assert "decoding_params.max_tokens.policy" in keys_found
     assert "policy" in keys_found
+
+
+# --- WAVE W3 (tool catalog, 2026-09-08) ------------------------------------
+
+
+def test_a_toolkit_tools_list_must_resolve_in_the_tool_catalog(tmp_path):
+    """Every ``tools`` LIST anywhere under ``configs/`` names catalog ids and
+    must resolve in ``rails.tools.TOOL_CATALOG``.
+
+    Two things this test pins beside the happy path. The scan covers ALL of
+    ``configs/``, not just the baseline/experiment fragment dirs, because a
+    toolkit table is neither. And a ``tools`` OBJECT is skipped: the
+    Audio2Tool construction targets under ``configs/knowledge/`` already carry
+    one, whose keys are the carrier's own 152 function names -- task payload,
+    not catalog ids -- and turning that into an offender would be checking the
+    wrong object.
+    """
+
+    _write(
+        tmp_path / "configs/toolkit/task-toolkits-v1.json",
+        json.dumps(
+            {
+                "toolkits": {
+                    "meeting": {
+                        "observer": {"tools": ["saea-tool-known-v1"]},
+                        "reviewer": {"tools": ["saea-tool-unknown-v1"]},
+                    }
+                }
+            }
+        ),
+    )
+    _write(
+        tmp_path / "configs/knowledge/a2t/targets.json",
+        json.dumps({"targets": [{"tools": {"getLightState": {"note": "payload"}}}]}),
+    )
+
+    registered = {var: set() for var in ebc.ALL_REGISTRY_VARS}
+    registered["TOOL_CATALOG"] = {"saea-tool-known-v1"}
+    offenders, keys_found = ebc.rule_unregistered_tool_ids(
+        ebc.LiveTreeReader(tmp_path), registered
+    )
+
+    assert offenders == [
+        "configs/toolkit/task-toolkits-v1.json::"
+        "toolkits.meeting.reviewer.tools[0]=saea-tool-unknown-v1"
+    ]
+    assert keys_found == ["tools"]
+
+
+def test_a_non_string_tool_entry_is_an_offender(tmp_path):
+    _write(
+        tmp_path / "configs/toolkit/broken.json",
+        json.dumps({"toolkits": {"command": {"observer": {"tools": [7]}}}}),
+    )
+    registered = {var: set() for var in ebc.ALL_REGISTRY_VARS}
+    offenders, _ = ebc.rule_unregistered_tool_ids(ebc.LiveTreeReader(tmp_path), registered)
+    assert offenders == [
+        "configs/toolkit/broken.json::toolkits.command.observer.tools[0]=7"
+    ]
+
+
+# --- end WAVE W3 -----------------------------------------------------------
 
 
 # ---------------------------------------------------------------------------
