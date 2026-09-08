@@ -339,11 +339,22 @@ def main(argv: list[str] | None = None) -> int:
     comparator_rows = window_rows(args.comparator_window_rows)
     null_rows = window_rows(args.null_window_rows)
     shared = sorted(set(comparator_rows) & set(null_rows))
-    mismatched_reference_words = [
+    # A window's reference-word ATTRIBUTION follows the alignment, so it moves when
+    # the hypothesis moves; what may not move is the CALL's own reference length,
+    # because the call is the bootstrap cluster and the reference is fixed. Gate on
+    # the call, report the window churn.
+    moved_windows = [
         wid
         for wid in shared
         if comparator_rows[wid]["reference_words"] != null_rows[wid]["reference_words"]
     ]
+    per_call: dict[str, list[int]] = {}
+    for wid in shared:
+        call = wp.call_of(wid)
+        totals = per_call.setdefault(call, [0, 0])
+        totals[0] += comparator_rows[wid]["reference_words"]
+        totals[1] += null_rows[wid]["reference_words"]
+    mismatched_calls = sorted(call for call, (a, b) in per_call.items() if a != b)
     gate = {
         "comparator_rows": {
             "path": str(args.comparator_window_rows),
@@ -356,12 +367,25 @@ def main(argv: list[str] | None = None) -> int:
             "windows": len(null_rows),
         },
         "windows_paired": len(shared),
-        "windows_with_a_different_reference_word_count": len(mismatched_reference_words),
+        "calls": len(per_call),
+        "calls_whose_reference_word_total_moved": mismatched_calls,
+        "windows_whose_reference_word_attribution_moved": len(moved_windows),
+        "corpus_reference_words": {
+            "comparator": sum(row["reference_words"] for row in comparator_rows.values()),
+            "null_replicate": sum(row["reference_words"] for row in null_rows.values()),
+        },
+        "note": (
+            "the per-window reference-word attribution follows the alignment and "
+            "moves when the hypothesis moves; the per-CALL total is the reference's "
+            "own length and may not move, and the call is the bootstrap cluster"
+        ),
     }
     if (
         len(shared) != len(comparator_rows)
         or len(shared) != len(null_rows)
-        or mismatched_reference_words
+        or mismatched_calls
+        or gate["corpus_reference_words"]["comparator"]
+        != gate["corpus_reference_words"]["null_replicate"]
     ):
         raise SystemExit(f"the null band's row gate failed: {json.dumps(gate)}")
 
