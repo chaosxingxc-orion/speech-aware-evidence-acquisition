@@ -685,6 +685,300 @@ def command_comparator(args: argparse.Namespace) -> int:
     return 0
 
 
+# ---------------------------------------------------------------------------
+# Question 3 -- multi-audio prompt feasibility and its token cost.
+# ---------------------------------------------------------------------------
+
+#: Qwen3-Omni audio encoder rate, from the pinned llama.cpp source itself:
+#: ``tools/mtmd/clip.cpp`` PROJECTOR_TYPE_QWEN3A -- "chunk_size=100 frames ->
+#: 3x stride-2 conv2d -> 13 tokens per chunk", i.e. 13 tokens per 100 mel
+#: frames = 13 tokens per second, allocated in whole one-second blocks.
+AUDIO_TOKENS_PER_CHUNK = 13
+AUDIO_CHUNK_SECONDS = 1.0
+
+#: `configs/model/q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64.json`
+SLURP_PACKET_CONTEXT = 65536
+SLURP_PACKET_SLOTS = 8
+
+
+def audio_prompt_tokens(seconds: float) -> int:
+    """Prompt tokens one clip costs through the Qwen3-Omni audio encoder.
+
+    The encoder emits :data:`AUDIO_TOKENS_PER_CHUNK` tokens per whole
+    100-mel-frame chunk and the mel is padded up to a whole chunk, so a clip
+    is charged by the CEILING of its second count -- the same arithmetic the
+    Earnings-21 tail probe measured on the wire (2.0 s of appended silence
+    cost exactly 26 tokens per window, 1,593 windows, no residue).
+    """
+
+    if seconds < 0:
+        raise ValueError("audio seconds must be non-negative")
+    import math
+
+    chunks = math.ceil(seconds / AUDIO_CHUNK_SECONDS)
+    return int(chunks * AUDIO_TOKENS_PER_CHUNK)
+
+
+def _measure_seconds(paths: Sequence[Path], workers: int = 16) -> tuple[float, ...]:
+    """Container-header durations only -- no audio sample is decoded."""
+
+    import soundfile
+    from concurrent.futures import ThreadPoolExecutor
+
+    def probe(path: Path) -> float:
+        info = soundfile.info(str(path))
+        return float(info.frames) / float(info.samplerate)
+
+    if not paths:
+        return ()
+    with ThreadPoolExecutor(max_workers=min(workers, len(paths))) as pool:
+        return tuple(pool.map(probe, paths))
+
+
+def command_feasibility(args: argparse.Namespace) -> int:
+    from speech_aware_evidence_acquisition.data.slurp import (
+        _governed_roots,
+        _slurp_speaker_index,
+        load_slurp_split,
+        load_slurp_train_material,
+    )
+
+    lock, root, lock_path = resolve_lock_and_root()
+    audio_root_relpath, _audio_root, metadata_dir = _governed_roots(lock, root)
+    speakers_by_file = _slurp_speaker_index(metadata_dir)
+    train = load_slurp_train_material(lock, root)
+    devel = {record.sample_id: record for record in load_slurp_split(lock, root, "devel")}
+    roster = roster_sample_ids(REPO_ROOT / DEV1000_CONFIG)
+
+    # The exemplar pool that a same-speaker cell would actually draw from:
+    # every TRAIN recording whose (speaker, intent) matches some DEV-1000 row's
+    # (speaker, gold intent).
+    wanted = {
+        (speakers_by_file[recording_filename(sample_id)], devel[sample_id].intent)
+        for sample_id in roster
+    }
+    pool_paths: list[Path] = []
+    pool_sentence_chars: list[int] = []
+    for utterance in train:
+        intent = f"{utterance.scenario}_{utterance.action}"
+        for recording in utterance.recordings:
+            if (recording.speaker_id, intent) in wanted:
+                pool_paths.append(root / recording.media_relpath)
+                pool_sentence_chars.append(len(utterance.sentence))
+    pool_seconds = _measure_seconds(pool_paths, workers=args.workers)
+
+    query_seconds = [devel[sample_id].audio_seconds for sample_id in roster]
+    query_tokens = [audio_prompt_tokens(value) for value in query_seconds]
+    exemplar_tokens = [audio_prompt_tokens(value) for value in pool_seconds]
+    mean_exemplar_tokens = sum(exemplar_tokens) / len(exemplar_tokens)
+
+    # The sealed comparator's own realized prompt volume, from its run manifest.
+    comparator_prompt_tokens_total = 2190161
+    comparator_calls = 1000
+    comparator_prompt_mean = comparator_prompt_tokens_total / comparator_calls
+    fixed_text_tokens = comparator_prompt_mean - (sum(query_tokens) / len(query_tokens))
+
+    slot_tokens = SLURP_PACKET_CONTEXT // SLURP_PACKET_SLOTS
+    budget: dict[str, object] = {}
+    for k in (3, 5, 8):
+        added_audio = k * mean_exemplar_tokens
+        worst_added_audio = k * max(exemplar_tokens)
+        budget[f"k={k}"] = {
+            "added_audio_tokens_mean": round(added_audio, 1),
+            "added_audio_tokens_worst_case": worst_added_audio,
+            "prompt_tokens_mean": round(comparator_prompt_mean + added_audio, 1),
+            "prompt_tokens_worst_case": round(
+                fixed_text_tokens + max(query_tokens) + worst_added_audio, 1
+            ),
+            "slot_headroom_factor_mean": round(
+                slot_tokens / (comparator_prompt_mean + added_audio), 2
+            ),
+            "fits_slot_at_np8": bool(
+                fixed_text_tokens + max(query_tokens) + worst_added_audio < slot_tokens
+            ),
+        }
+
+    result: dict[str, object] = {
+        "schema": "saea-mf8-multi-audio-feasibility-v1",
+        "row_id": ROW_ID,
+        "lock_path": str(lock_path),
+        "audio_root_relpath": audio_root_relpath,
+        "boundary": (
+            "container headers only; no audio sample is decoded, no server is started and no "
+            "tokenizer is loaded. Text volume is reported in CHARACTERS, never estimated tokens."
+        ),
+        "encoder_rate": {
+            "tokens_per_chunk": AUDIO_TOKENS_PER_CHUNK,
+            "chunk_seconds": AUDIO_CHUNK_SECONDS,
+            "source": "tools/mtmd/clip.cpp PROJECTOR_TYPE_QWEN3A (llama.cpp-featcache 04ccc72a)",
+        },
+        "geometry": {
+            "context": SLURP_PACKET_CONTEXT,
+            "slots": SLURP_PACKET_SLOTS,
+            "tokens_per_slot": slot_tokens,
+            "config": (
+                "configs/model/"
+                "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64.json"
+            ),
+        },
+        "dev1000_query": {
+            "rows": len(query_seconds),
+            "seconds": quantiles(query_seconds),
+            "seconds_total": round(sum(query_seconds), 4),
+            "audio_tokens": quantiles(query_tokens),
+            "audio_tokens_total": sum(query_tokens),
+        },
+        "same_speaker_exemplar_pool": {
+            "recordings": len(pool_seconds),
+            "distinct_speaker_intent_pairs": len(wanted),
+            "seconds": quantiles(pool_seconds),
+            "seconds_total": round(sum(pool_seconds), 4),
+            "audio_tokens": quantiles(exemplar_tokens),
+            "sentence_characters": quantiles(pool_sentence_chars),
+        },
+        "comparator_realized": {
+            "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1",
+            "calls": comparator_calls,
+            "prompt_tokens_total": comparator_prompt_tokens_total,
+            "prompt_tokens_mean": round(comparator_prompt_mean, 2),
+            "completion_tokens_total": 26495,
+            "fixed_text_tokens_mean": round(fixed_text_tokens, 1),
+            "wall_seconds": 225.5,
+            "contacts_per_second": 4.43,
+            "gpu_hours": 0.105,
+            "source": "the sealed run manifest and its exposure-ledger row",
+        },
+        "budget": budget,
+    }
+
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "multi-audio-feasibility.json").write_text(
+        json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# The deterministic legality judge -- an agent-SYSTEM component, not a prompt.
+# ---------------------------------------------------------------------------
+
+
+def judge_verdict(
+    scenario: str | None,
+    action: str | None,
+    parsed: bool,
+    legal_scenarios: frozenset[str],
+    legal_pairs: frozenset[tuple[str, str]],
+) -> str | None:
+    """Which deterministic legality tier flags this RAW response, if any.
+
+    ``None`` means the judge passes the row through untouched. The judge reads
+    the model's own output and the TRAIN-mined closed list, and nothing else --
+    no gold, no score, no second model.
+    """
+
+    if not parsed:
+        return "unparsed"
+    if scenario is None or action is None:
+        return "no-label"
+    if (scenario, action) in legal_pairs:
+        return None
+    if scenario not in legal_scenarios:
+        return "scenario-not-legal"
+    return "action-illegal-for-scenario"
+
+
+def command_judge(args: argparse.Namespace) -> int:
+    from speech_aware_evidence_acquisition.data.slurp import load_slurp_split
+    from speech_aware_evidence_acquisition.reproduction.slurp_official_eval import (
+        load_legal_intent_inventory,
+    )
+    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (
+        parse_slu_response,
+        project_slu_label_v2,
+    )
+
+    lock, root, lock_path = resolve_lock_and_root()
+    inventory = load_legal_intent_inventory(lock, root)
+    legal_scenarios = frozenset(inventory.scenarios)
+    legal_pairs = inventory.pairs
+
+    devel = {record.sample_id: record for record in load_slurp_split(lock, root, "devel")}
+    roster = roster_sample_ids(REPO_ROOT / DEV1000_CONFIG)
+    texts = read_sealed_outputs(root / SEALED_COMPARATOR_OUTPUTS)
+
+    gold_outside_closed_list = sorted(
+        {devel[sample_id].intent for sample_id in roster}
+        - {f"{scenario}_{action}" for scenario, action in legal_pairs}
+    )
+
+    tiers: Counter[str] = Counter()
+    flagged_and_raw_wrong = 0
+    flagged_and_raw_right = 0
+    raw_wrong = 0
+    projected_wrong = 0
+    flagged_still_wrong_after_projection = 0
+    for sample_id in roster:
+        record = devel[sample_id]
+        scenario, action, _entities, parsed = parse_slu_response(texts[sample_id])
+        raw_intent = (
+            f"{scenario}_{action}" if parsed and scenario and action else None
+        )
+        projected = project_slu_label_v2(scenario, action, inventory, parsed=parsed)
+        verdict = judge_verdict(scenario, action, parsed, legal_scenarios, legal_pairs)
+        raw_is_wrong = raw_intent != record.intent
+        raw_wrong += int(raw_is_wrong)
+        projected_wrong += int(projected.projected_intent != record.intent)
+        if verdict is not None:
+            tiers[verdict] += 1
+            flagged_and_raw_wrong += int(raw_is_wrong)
+            flagged_and_raw_right += int(not raw_is_wrong)
+            flagged_still_wrong_after_projection += int(
+                projected.projected_intent != record.intent
+            )
+
+    flagged = sum(tiers.values())
+    result = {
+        "schema": "saea-mf8-legality-judge-v1",
+        "row_id": ROW_ID,
+        "lock_path": str(lock_path),
+        "judge": (
+            "deterministic: parse the response, then compare its (scenario, action) against the "
+            "60 TRAIN-mined legal pairs. Reads no gold, calls no model, and is the cheapest "
+            "component an agent SYSTEM can put in front of a core revise."
+        ),
+        "rows": len(roster),
+        "gold_intents_outside_the_closed_list": gold_outside_closed_list,
+        "flagged": flagged,
+        "flagged_share_of_rows_pct": round(100.0 * flagged / len(roster), 2),
+        "tiers": dict(sorted(tiers.items())),
+        "raw_errors": raw_wrong,
+        "projected_errors": projected_wrong,
+        "recall_over_raw_errors_pct": round(100.0 * flagged_and_raw_wrong / raw_wrong, 2),
+        "precision_pct": round(100.0 * flagged_and_raw_wrong / flagged, 2),
+        "false_flags_on_correct_rows": flagged_and_raw_right,
+        "flagged_rows_still_wrong_after_projection_v2": flagged_still_wrong_after_projection,
+        "reading": (
+            "every SLURP gold intent is one of the 60 legal pairs, so a row the judge flags "
+            "CANNOT be correct: precision is 100 % by construction and the false-flag count is "
+            "structurally zero. Its recall is the ceiling of what deterministic legality can "
+            "intercept before any core contact is spent."
+        ),
+    }
+
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "legality-judge.json").write_text(
+        json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="MF-8 speech-to-knowledge audit (model-free)")
     parser.add_argument(
@@ -699,11 +993,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         "comparator", help="question 2: comparator failure and candidate reach"
     )
     comparator.add_argument("--neighbour-depth", type=int, default=50)
+    feasibility = subparsers.add_parser(
+        "feasibility", help="question 3: multi-audio prompt cost and geometry fit"
+    )
+    feasibility.add_argument("--workers", type=int, default=16)
+    subparsers.add_parser(
+        "judge", help="the deterministic legality judge's reach and precision"
+    )
     args = parser.parse_args(argv)
     if args.command == "speakers":
         return command_speakers(args)
     if args.command == "comparator":
         return command_comparator(args)
+    if args.command == "feasibility":
+        return command_feasibility(args)
+    if args.command == "judge":
+        return command_judge(args)
     parser.error(f"unknown command {args.command!r}")
     return 2
 

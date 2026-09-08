@@ -268,7 +268,95 @@ purpose is to repair the arm, the plain speech key is the right one** — which 
 KU-S3 registered, for a different reason.
 
 
-## 3. Multi-audio prompt feasibility — PENDING
+## 3. Multi-audio prompt feasibility — VERDICT: both routes already carry it
+
+Source reading against the PINNED build only: `/home/chao/llama.cpp-featcache` at
+`04ccc72a2207347ca76161b93fd9d846dd0a8675`, the commit the runtime receipt names. **No server was
+started, no model was loaded, no request was sent.** Cost arithmetic:
+`multi-audio-feasibility.json`, from container headers alone.
+
+### 3.1 The featcache PACKET route already binds N packets per request — and it was built to
+
+This is the stronger finding, because it needs no new transport and no new patch.
+
+**Study side.** `core/model/transport.py:712-771` reads `speech_feature_parts` as a **list**;
+each entry must carry exactly `{packet_id, sha256, role}` with `role` in `{"query", "key"}`
+(`:730-741`), every entry is validated by `load_speech_feature_packets` (`:749-761`), and the only
+cardinality constraint is **exactly one `query`** (`:762-766`). `core/policies.py:192-221` enforces
+the same shape at arm-construction time. So a request already means "one query clip plus any number
+of KEY clips", and the word the code uses for a non-query audio packet is literally `key`.
+
+**Server side, pinned build.** `tools/server/server-common.cpp`:
+* `:1362-1387` — a `content[]` part of type `input_speech_features` is validated
+  (exact `packet_id`/`sha256`/`role` keys, `role` in `{query,key}`), pushed onto
+  `speech_feature_descriptors` (`:1384`) and **replaced by a media marker** (`:1385-1386`). One
+  part, one marker; N parts, N markers.
+* `:1408-1418` — after the content loop: exactly one `query` descriptor
+  (`:1414`), and packets may not be mixed with raw media (`:1417`).
+* `:1482-1483` — the descriptor array is forwarded to the slot as `speech_feature_descriptors`.
+* `process_speech_feature_prompt` (`:996-1066`) loads **one packet per descriptor** (`:1021-1024`),
+  then walks the prompt marker by marker and splices each packet's chunks in order
+  (`:1039-1063`), raising if the prompt has more markers than descriptors (`:1052`) or fewer
+  (`:1065`). `server-context.cpp:4269-4280` is the caller.
+
+**Verdict: N audio clips per request on the packet route is a SUPPORTED, ALREADY-EXERCISED path**
+— `rails/probes/pslu_flight.py:1982` builds `"role": "key"` descriptors, and
+`tests/unit/test_llama_server_transport.py:470,543,791` covers multi-packet requests. What binds
+today's SLURP cells to one packet is the CELL's own payload construction
+(`core/policies.py:371` passes `[dict(query)]`), not the transport and not the server.
+
+### 3.2 The raw-audio mmproj route also carries N clips
+
+`tools/mtmd/mtmd.cpp:843-873` — the tokenizer splits the prompt on `ctx->media_marker`
+(`:853-856`) and consumes **one bitmap per marker** (`:857-861`), then asserts marker count equals
+bitmap count (`:866-873`). `tools/server/server-common.cpp:1347-1361` turns every OpenAI
+`input_audio` content part into a marker and appends its bytes to `out_files`, so an N-clip chat
+request is N markers and N bitmaps; `process_mtmd_prompt` (`:699-726`) is where they meet. The
+interleaving is free: text may sit between clips, because the split is on marker positions.
+
+**So the mechanism is not blocked at any layer.** What differs is COST: the raw route pays one
+mmproj encode per clip per request, while the packet route reuses a pre-materialized packet, which
+is exactly the featcache's reason to exist. For a design that shows the SAME exemplar clip to many
+rows, the packet route is strictly better — each exemplar is encoded once, ever.
+
+### 3.3 The encoder rate, from the source rather than from folklore
+
+`tools/mtmd/clip.cpp:3398-3403`, `PROJECTOR_TYPE_QWEN3A`:
+`chunk_size = 100` mel frames, `tokens_per_chunk = 13`,
+`n_patches = (nx / chunk_size) * tokens_per_chunk`. Mel runs at 100 frames per second, so
+**13 prompt tokens per second of audio, allocated in whole one-second blocks** — which is the same
+constant the Earnings-21 tail probe measured on the wire (2.0 s of appended silence cost exactly
+1,593 × 26 tokens, no residue).
+
+### 3.4 The cost, measured
+
+DEV-1000 query clips: 2,884.7937 s total, **44.16 audio tokens per row at the mean** (median 39,
+p90 65, max 169). The sealed comparator's realized prompt is **2,190.16 tokens per row**, so the
+fixed instruction is **2,146 tokens** and the query audio is 2 % of the prompt.
+
+The same-speaker exemplar pool actually available to this design — every TRAIN recording whose
+(speaker, intent) matches some DEV-1000 row's (speaker, gold intent) — is **15,556 recordings over
+823 distinct (speaker, intent) pairs**, 42,771.36 s in total, **2.75 s / 42.1 tokens at the mean**
+(median 39 tokens, p90 65, max 247).
+
+| k exemplar clips | added audio tokens (mean) | prompt tokens (mean) | prompt tokens (worst case) | slot headroom at −c 65536 −np 8 | fits 8,192-token slot |
+|---|---|---|---|---|---|
+| 3 | **126.4** | 2,316.5 | 3,056 | **3.54×** | yes |
+| 5 | **210.6** | 2,400.8 | 3,550 | **3.41×** | yes |
+| 8 | **337.0** | 2,527.1 | 4,291 | **3.24×** | yes |
+
+**Every k this audit was asked about fits the existing SLURP geometry with more than 3× headroom,
+and the worst-case row at k = 8 uses 52 % of one slot.** No geometry change, no context increase,
+no slot reduction. At k = 8 the audio is 13 % of the prompt and the instruction is still 85 % of it.
+
+**One number that changes a design decision.** The exemplars' TRAIN gold SENTENCES are
+**33.2 characters at the mean** (median 31, max 135) — roughly 8–10 tokens each. So the text twin
+(KU-S4c) costs about **a quarter** of what the audio arm costs per exemplar, and the two arms are
+**NOT token-matched by construction**. Under the owner's 2026-09-06 ruling the lock is a form twin
+rather than a token count, so this does not sink the twin — but the modality contrast has a
+confounded prompt volume, it must be reported as a covariate, and a token-matched variant would
+have to pad the text arm rather than trim the audio one.
+
 
 ## 4. State knowledge inventory — PENDING
 

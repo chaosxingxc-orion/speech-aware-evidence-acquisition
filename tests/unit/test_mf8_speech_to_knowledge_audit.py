@@ -150,6 +150,19 @@ def test_ordered_candidates_dedupes_in_rank_order() -> None:
     assert audit.ordered_candidates([]) == ()
 
 
+def test_audio_prompt_tokens_charges_whole_one_second_chunks() -> None:
+    assert audit.audio_prompt_tokens(0.0) == 0
+    assert audit.audio_prompt_tokens(0.001) == 13
+    assert audit.audio_prompt_tokens(1.0) == 13
+    assert audit.audio_prompt_tokens(1.0001) == 26
+    assert audit.audio_prompt_tokens(2.0) == 26
+    # the Earnings-21 wire anchor: 90 s of buffered audio, 2.0 s of appended
+    # silence, 26 tokens of difference per window and no residue.
+    assert audit.audio_prompt_tokens(92.0) - audit.audio_prompt_tokens(90.0) == 26
+    with pytest.raises(ValueError):
+        audit.audio_prompt_tokens(-0.5)
+
+
 def test_recall_at_reads_only_the_first_k() -> None:
     candidates = ("a", "b", "c", "d")
     assert audit.recall_at(candidates, "a", 1) is True
