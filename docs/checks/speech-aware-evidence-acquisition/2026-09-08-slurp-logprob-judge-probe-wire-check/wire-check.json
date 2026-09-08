@@ -1,0 +1,258 @@
+{
+  "body": {
+    "proved_by": [
+      "tests/unit/test_llama_server_transport.py::test_the_request_body_carries_no_logprobs_key_unless_the_config_declares_one",
+      "tests/unit/test_llama_server_transport.py::test_declaring_the_decoding_keys_puts_exactly_them_on_the_wire",
+      "tests/unit/test_llama_server_transport.py::test_a_logprobs_choice_is_forwarded_verbatim_into_the_envelope",
+      "tests/unit/test_model_logprobs_trace.py"
+    ],
+    "pytest_returncode": 0,
+    "pytest_summary": "19 passed",
+    "status": "PASS",
+    "why_not_here": "core.model.transport.LlamaServerTransport verifies an attested live session (pid, binary image and listening socket) at construction, so it cannot be built inside a model-free check; the committed unit tests build it against a self-attesting local process and a fake post().",
+    "wire_keys": {
+      "endpoint": "/v1/chat/completions (OpenAI-compatible), never /completion",
+      "request": [
+        "logprobs",
+        "top_logprobs"
+      ],
+      "response": "choices[0].logprobs.content[]",
+      "server_translation": "llama.cpp-featcache 04ccc72a tools/server/server-common.cpp:1525-1529 maps logprobs/top_logprobs onto the native n_probs"
+    }
+  },
+  "config": {
+    "config_keys_moved": [
+      "budget_basis",
+      "cells",
+      "decoding_params",
+      "execution_plan",
+      "experiment_id",
+      "purpose"
+    ],
+    "config_keys_only_comparator": [
+      "closed_list_authority",
+      "comparator",
+      "decision_rule"
+    ],
+    "config_keys_only_probe": [
+      "declared_protocol_change",
+      "one_key_basis",
+      "preregistration",
+      "profile_basis",
+      "read_script",
+      "wire_check_script"
+    ],
+    "decoding_params_added": {
+      "logprobs": true,
+      "top_logprobs": 5
+    },
+    "decoding_params_changed": [],
+    "decoding_params_removed": [],
+    "hashes": {
+      "comparator": {
+        "config_hash": "6be064ba49d4b3b8b430aa063b4fef46a898ce5a0b3702fe35c4896d5d1b894f",
+        "fragments": {
+          "baseline": "slurp-direct-closed-list",
+          "dataset": "slurp-speech-native-dev1000",
+          "experiment": "slurp-dev1000-closed-list-direct-v1",
+          "model": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64"
+        },
+        "protocol_hash_against_a_fixed_split": "159dc0eab0fa0da42533aacb5cf8113989fe4feda1829d15a08d1eca92573737"
+      },
+      "probe": {
+        "config_hash": "15670eaafa88c16b47cb33487d343b21394986017911eb62a1ead2727711e587",
+        "fragments": {
+          "baseline": "slurp-direct-closed-list",
+          "dataset": "slurp-speech-native-dev1000",
+          "experiment": "slurp-dev1000-closed-list-logprob-v1",
+          "model": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64-logprobs5"
+        },
+        "protocol_hash_against_a_fixed_split": "bceed4f0fae36cac9c3ec0f8452479e6fa3944df74a25e4b977874903f2f3b8a"
+      }
+    },
+    "model_fragments": {
+      "comparator": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+      "probe": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64-logprobs5"
+    },
+    "problems": [],
+    "shared_fragments": {
+      "arm": "speech-feature-query",
+      "baseline": "slurp-direct-closed-list",
+      "dataset": "slurp-speech-native-dev1000"
+    },
+    "split_identity_stand_in": "0000000000000000000000000000000000000000000000000000000000000000",
+    "status": "PASS"
+  },
+  "halves": {
+    "body": "PASS",
+    "config": "PASS",
+    "payload": "PASS"
+  },
+  "model_contacts": 0,
+  "payload": {
+    "note": "protocol_payload_sha256 is the identity of the CANONICAL BOUNDARY PAYLOAD that crossed the adapter/transport seam, with the two run-local values stripped. It differs between the two arms by construction -- that is the probe -- and the field-by-field diff above is what says the difference is only the decoding keys. The flight receipts' own request_body_sha256 and id_slot are deliberately NOT mirrored here: they carry the allocated slot and would make this receipt irreproducible while proving nothing.",
+    "problems": [],
+    "receipts": {
+      "comparator": {
+        "arm": "speech-feature-query",
+        "config_hash": "200b951f57e92d335c293072f2137564f6e8eb73c8bcaa58da1c9dc2d88e6891",
+        "contact_count": 4,
+        "max_tokens": 64,
+        "model_contacts": 0,
+        "payload_keys": [
+          "audio_seconds",
+          "carrier_lock_key",
+          "decoding_params",
+          "evidence_provenance",
+          "history",
+          "key_representation_id",
+          "matcher_policy_id",
+          "media_relpath",
+          "mmproj_loaded",
+          "query_source",
+          "request_id",
+          "sample_id",
+          "sample_rate_hz",
+          "speech_feature_parts",
+          "speech_packet_sha256",
+          "speech_ref",
+          "supplied_evidence",
+          "task_instruction"
+        ],
+        "protocol_hash": "9a7b9bd6a82170e09abaf396f4b061496f5ec673d79bebf98d3831a58c47f73c",
+        "sample_count": 4,
+        "speech_packets_verified": {
+          "slurp:devel:000011:audio-1497266596": "941bc845a89289f24804f4b6eb5ee5faa3610330b10dcce4f0f3b09e00e1a70c",
+          "slurp:devel:000053:audio-1498758443": "754cd2d6c61af416739772cd526cbad71185b53f24476f2aeb205ec2322ade58",
+          "slurp:devel:000058:audio-1488637952": "5263292c33f339368f2a6d22a1de316c1b3fcfd57b32c1f0411c18b6fdf5e586",
+          "slurp:devel:000068:audio-1488550098": "bdf7e46b17917151e77c07d6c0cf34566305834ba138bcf68bc93eac9092410f"
+        },
+        "split_id": "DEV-1000-SMOKE-4",
+        "split_identity_hash": "e335c74149794af0f2301954b6e92cde2a4134d65ebe6069173a1a556b7a04b3"
+      },
+      "probe": {
+        "arm": "speech-feature-query",
+        "config_hash": "329032e1930804b50d6eca375e328dba78720b5e5001761697906df68c5f975d",
+        "contact_count": 4,
+        "max_tokens": 64,
+        "model_contacts": 0,
+        "payload_keys": [
+          "audio_seconds",
+          "carrier_lock_key",
+          "decoding_params",
+          "evidence_provenance",
+          "history",
+          "key_representation_id",
+          "matcher_policy_id",
+          "media_relpath",
+          "mmproj_loaded",
+          "query_source",
+          "request_id",
+          "sample_id",
+          "sample_rate_hz",
+          "speech_feature_parts",
+          "speech_packet_sha256",
+          "speech_ref",
+          "supplied_evidence",
+          "task_instruction"
+        ],
+        "protocol_hash": "680a490147dc95f674451ac6897e022dea38f80017d79202ae2b4a748cfc7d19",
+        "sample_count": 4,
+        "speech_packets_verified": {
+          "slurp:devel:000011:audio-1497266596": "941bc845a89289f24804f4b6eb5ee5faa3610330b10dcce4f0f3b09e00e1a70c",
+          "slurp:devel:000053:audio-1498758443": "754cd2d6c61af416739772cd526cbad71185b53f24476f2aeb205ec2322ade58",
+          "slurp:devel:000058:audio-1488637952": "5263292c33f339368f2a6d22a1de316c1b3fcfd57b32c1f0411c18b6fdf5e586",
+          "slurp:devel:000068:audio-1488550098": "bdf7e46b17917151e77c07d6c0cf34566305834ba138bcf68bc93eac9092410f"
+        },
+        "split_id": "DEV-1000-SMOKE-4",
+        "split_identity_hash": "e335c74149794af0f2301954b6e92cde2a4134d65ebe6069173a1a556b7a04b3"
+      }
+    },
+    "requests": [
+      {
+        "decoding_params_added": {
+          "logprobs": true,
+          "top_logprobs": 5
+        },
+        "decoding_params_changed": [],
+        "fields_moved": [
+          "decoding_params"
+        ],
+        "protocol_payload_sha256": {
+          "comparator": "cf5bf99edd35da88152284a36eebf2a5a805b729985005dee9457464ac7cfed8",
+          "probe": "ece3a1265905dbeda62df8a25e7d806e52b0bc8ad1486c505795c7b227e88377"
+        },
+        "sample_id": "slurp:devel:000011:audio-1497266596",
+        "task_instruction_identical": true,
+        "task_instruction_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db"
+      },
+      {
+        "decoding_params_added": {
+          "logprobs": true,
+          "top_logprobs": 5
+        },
+        "decoding_params_changed": [],
+        "fields_moved": [
+          "decoding_params"
+        ],
+        "protocol_payload_sha256": {
+          "comparator": "c4bef42ee8826fe665441495fac19aae90a6c7e434f8781761537f92d7352b6c",
+          "probe": "8f1cd0221da4103f927b80d953ae77bbc7f9a4e325bb782d69d80d7d95935c7d"
+        },
+        "sample_id": "slurp:devel:000053:audio-1498758443",
+        "task_instruction_identical": true,
+        "task_instruction_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db"
+      },
+      {
+        "decoding_params_added": {
+          "logprobs": true,
+          "top_logprobs": 5
+        },
+        "decoding_params_changed": [],
+        "fields_moved": [
+          "decoding_params"
+        ],
+        "protocol_payload_sha256": {
+          "comparator": "45b5f4c1883e8a1852d7695dce98d1c6f9b718f1ea5c3b8e30f669e616ceb18e",
+          "probe": "2162b6cb57ec2b73ff9b95ae5a7b4ec11967db7db0caa8df7660709fc668ea40"
+        },
+        "sample_id": "slurp:devel:000058:audio-1488637952",
+        "task_instruction_identical": true,
+        "task_instruction_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db"
+      },
+      {
+        "decoding_params_added": {
+          "logprobs": true,
+          "top_logprobs": 5
+        },
+        "decoding_params_changed": [],
+        "fields_moved": [
+          "decoding_params"
+        ],
+        "protocol_payload_sha256": {
+          "comparator": "1b88d6a7e1b68e139f6d6a626a6249db27221f28ee4d88c962421358388620f5",
+          "probe": "b19e6d65b8ee05eb4ebecbef2b36d369ab416e743903ec7053dfdd2f7d6e1668"
+        },
+        "sample_id": "slurp:devel:000068:audio-1488550098",
+        "task_instruction_identical": true,
+        "task_instruction_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db"
+      }
+    ],
+    "run_local_exemptions": {
+      "decoding_keys": [
+        "id_slot"
+      ],
+      "payload_fields": [
+        "request_id"
+      ],
+      "why": "both differ between any two runs of the SAME config -- request_id is the flight's dispatch-order counter and id_slot is the per-sample server slot the batch executor allocated in that run -- so a difference in either is not a protocol difference. Each is reported per request rather than hidden."
+    },
+    "status": "PASS"
+  },
+  "question": "does the SLURP logprob probe arm differ from the sealed closed-list comparator by exactly the declared decoding keys, and nothing else",
+  "schema": "saea-slurp-logprob-wire-check-v1",
+  "servers_started": 0,
+  "sockets_opened": 0,
+  "status": "PASS",
+  "study": "speech-aware-evidence-acquisition"
+}

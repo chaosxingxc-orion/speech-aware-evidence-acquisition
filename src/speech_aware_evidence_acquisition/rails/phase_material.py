@@ -364,6 +364,337 @@ PHASE_STATE_FILLS.register(
 )
 
 
+def _kv_class_table(relpath: object, sha256: object) -> dict[str, str]:
+    """``{entity_type: slot class}`` from a committed, hash-pinned artifact.
+
+    The KV family's CLOSED/MIXED/OPEN split is MF-10's measurement, not a
+    quantity a flight may recompute: its coverage statistic is read out of
+    MF-9's committed receipt, and re-deriving it inside a fill would make a
+    cell's block depend on which receipts happened to be on disk. So it
+    enters exactly as EVO-S1's evolved schema does -- a relative path plus a
+    sha256 re-checked over the file's own bytes, both inside the config hash.
+    """
+
+    from ..data.lock import REPO_ROOT  # noqa: PLC0415 (cycle guard, lazily paid)
+
+    if not isinstance(relpath, str) or not relpath.strip():
+        raise PhaseMaterialError(
+            "slurp-slot-knowledge-view-for-state needs a class_artifact_relpath for "
+            "the descriptions and cards views"
+        )
+    if not isinstance(sha256, str) or not re.fullmatch(r"[0-9a-f]{64}", sha256):
+        raise PhaseMaterialError(
+            "slurp-slot-knowledge-view-for-state needs a sha256 hex "
+            "class_artifact_sha256"
+        )
+    if Path(relpath).is_absolute() or ".." in Path(relpath).parts:
+        raise PhaseMaterialError(
+            f"class_artifact_relpath {relpath!r} is not a plain relative path"
+        )
+    path = Path(REPO_ROOT) / relpath
+    try:
+        raw = path.read_bytes()
+    except OSError as error:
+        raise PhaseMaterialError(f"KV slot-class artifact missing: {path}") from error
+    measured = hashlib.sha256(raw).hexdigest()
+    if measured != sha256:
+        raise PhaseMaterialError(
+            f"KV slot-class artifact {relpath} hashes to {measured}, not the {sha256} "
+            "its fragment names"
+        )
+    try:
+        document = json.loads(raw.decode("utf-8"))
+    except (UnicodeError, json.JSONDecodeError) as error:
+        raise PhaseMaterialError(
+            f"KV slot-class artifact {relpath} is not JSON: {error}"
+        ) from error
+    table = document.get("slot_class_by_type") if isinstance(document, dict) else None
+    if not isinstance(table, dict) or not table:
+        raise PhaseMaterialError(
+            f"KV slot-class artifact {relpath} carries no 'slot_class_by_type' object"
+        )
+    return {str(name): str(value) for name, value in sorted(table.items())}
+
+
+def _slurp_slot_knowledge_view_state_fill(
+    *,
+    view: str,
+    twin: bool = False,
+    class_artifact_relpath: object = None,
+    class_artifact_sha256: object = None,
+    k: object = None,
+    seed: object = None,
+    projection: str | None = None,
+    **provenance: object,
+):
+    """Factory for ``"slurp-slot-knowledge-view-for-state"`` (the KV family).
+
+    A sibling of ``"slurp-intent-slot-schema-for-state"`` and deliberately
+    nothing more: same selection rule (the intent parsed out of the SEALED
+    closed-list response), same one-block-per-row shape, same FULL-schema
+    fallback when the response does not parse or names a (scenario, action)
+    pair TRAIN never carries, same pure per-sample SUFFIX position. The single
+    difference is WHAT the block says -- ``rails.slurp_knowledge_views``
+    renders the example-free schema and, for a view above KV-0, one further
+    block of TRAIN knowledge.
+
+    ``view`` is one of ``rails.slurp_knowledge_views.KV_VIEWS``; ``twin``
+    selects that view's form control. ``class_artifact_relpath`` /
+    ``class_artifact_sha256`` pin the CLOSED/MIXED/OPEN table the
+    ``descriptions`` and ``cards`` views need (:func:`_kv_class_table`); the
+    ``examples-free`` and ``fewshot`` views take none. ``k`` and ``seed``
+    default to the module's declared ``FEWSHOT_K`` / ``FEWSHOT_SEED`` and are
+    inside the config hash whenever a fragment states them. ``projection`` is
+    the same per-arm block-selection switch every SLURP state fill takes, and
+    the KV family declares NONE for the same reason KU-S3 does: its comparator
+    chose its blocks from unprojected bytes.
+
+    Every block is rendered ONCE per intent at factory time (sixty intents
+    plus the fallback), so the per-row fill is a dictionary lookup and a
+    1,000-row flight pays for the TRAIN mining once. ``fill.counts`` carries
+    the per-read ``rows``/``fallback`` tally every SLURP verdict reports.
+    """
+
+    from collections import Counter, defaultdict  # noqa: PLC0415
+
+    from ..analysis.slurp_slot_vocabulary import (  # noqa: PLC0415 (cycle guard)
+        SLOT_CLASS_CLOSED,
+        build_vocabulary_card,
+    )
+    from ..data.lock import (  # noqa: PLC0415 (cycle guard, and lazily paid)
+        data_root,
+        load_lock,
+        umbrella_lock_path,
+    )
+    from ..data.slurp import (  # noqa: PLC0415 (cycle guard)
+        load_slurp_intent_slot_schema,
+        load_slurp_train_material,
+        slurp_intent_from_state_content,
+    )
+    from .slurp_knowledge_views import (  # noqa: PLC0415 (cycle guard)
+        FEWSHOT_K,
+        FEWSHOT_SEED,
+        KV_VIEW_CARDS,
+        KV_VIEW_DESCRIPTIONS,
+        KV_VIEW_EXAMPLES_FREE,
+        KV_VIEW_FEWSHOT,
+        Exemplar,
+        assert_view,
+        build_type_description,
+        compose_view,
+        derange_card_mapping,
+        derange_description_mapping,
+        donor_intent_mapping,
+        render_examples_free_block,
+        select_exemplars,
+    )
+
+    resolved_view = assert_view(view)
+    if not isinstance(twin, bool):
+        raise PhaseMaterialError("slurp-slot-knowledge-view-for-state twin must be bool")
+    exemplar_k = FEWSHOT_K if k is None else k
+    if isinstance(exemplar_k, bool) or not isinstance(exemplar_k, int) or exemplar_k <= 0:
+        raise PhaseMaterialError(
+            f"slurp-slot-knowledge-view-for-state k must be a positive int, got {k!r}"
+        )
+    exemplar_seed = FEWSHOT_SEED if seed is None else seed
+    if isinstance(exemplar_seed, bool) or not isinstance(exemplar_seed, int):
+        raise PhaseMaterialError(
+            f"slurp-slot-knowledge-view-for-state seed must be an int, got {seed!r}"
+        )
+
+    lock = load_lock(umbrella_lock_path())
+    root = data_root()
+    schema = load_slurp_intent_slot_schema(lock, root)
+    intents = tuple(schema.intent_ids)
+    block_types = {
+        intent: tuple(schema.intents[intent].entity_types) for intent in intents
+    }
+    utterances = {intent: schema.intents[intent].n for intent in intents}
+    mentions = {intent: schema.intents[intent].mentions for intent in intents}
+    type_tables = {intent: schema.intents[intent].types for intent in intents}
+    fallback_types = tuple(
+        sorted({name for types in block_types.values() for name in types})
+    )
+
+    schema_by_intent = {
+        intent: render_examples_free_block(
+            type_tables,
+            intents=(intent,),
+            utterances=utterances,
+            mentions=mentions,
+            min_share=schema.min_share,
+        )
+        for intent in intents
+    }
+    fallback_schema = render_examples_free_block(
+        type_tables,
+        intents=intents,
+        utterances=utterances,
+        mentions=mentions,
+        min_share=schema.min_share,
+    )
+
+    cards_by_type: dict[str, object] = {}
+    descriptions_by_type: dict[str, object] = {}
+    exemplars_by_intent: dict[str, tuple[object, ...]] = {}
+    fallback_exemplars: tuple[object, ...] = ()
+    if resolved_view != KV_VIEW_EXAMPLES_FREE:
+        train = load_slurp_train_material(lock, root)
+        if resolved_view in (KV_VIEW_DESCRIPTIONS, KV_VIEW_CARDS):
+            classes = _kv_class_table(class_artifact_relpath, class_artifact_sha256)
+            forms: dict[str, Counter] = defaultdict(Counter)
+            for utterance in train:
+                for entity in utterance.entities:
+                    name = str(entity.type).strip()
+                    filler = str(entity.filler).strip()
+                    if name and filler:
+                        forms[name][filler] += 1
+            if resolved_view == KV_VIEW_CARDS:
+                cards_by_type = {
+                    name: build_vocabulary_card(name, dict(table))
+                    for name, table in sorted(forms.items())
+                    if classes.get(name) == SLOT_CLASS_CLOSED
+                }
+            else:
+                descriptions_by_type = {
+                    name: build_type_description(
+                        name, dict(table), slot_class=classes[name]
+                    )
+                    for name, table in sorted(forms.items())
+                    if name in classes
+                }
+        else:
+            pool_by_intent: dict[str, list[object]] = defaultdict(list)
+            whole_pool: list[object] = []
+            for utterance in train:
+                exemplar = Exemplar(
+                    utterance_id=utterance.utterance_id,
+                    sentence=utterance.sentence.strip(),
+                    slots=tuple(
+                        (str(entity.type), str(entity.filler))
+                        for entity in utterance.entities
+                        if str(entity.type).strip() and str(entity.filler).strip()
+                    ),
+                )
+                pool_by_intent[f"{utterance.scenario}_{utterance.action}"].append(
+                    exemplar
+                )
+                whole_pool.append(exemplar)
+            donors = (
+                donor_intent_mapping(
+                    {
+                        scenario: sorted(
+                            {
+                                intent
+                                for intent in intents
+                                if intent.startswith(f"{scenario}_")
+                            }
+                        )
+                        for scenario in sorted(
+                            {intent.split("_", 1)[0] for intent in intents}
+                        )
+                    }
+                )
+                if twin
+                else {}
+            )
+            for intent in intents:
+                source = donors.get(intent, intent) if twin else intent
+                exemplars_by_intent[intent] = select_exemplars(
+                    pool_by_intent.get(source, ()),
+                    block_types[intent],
+                    k=exemplar_k,
+                    seed=exemplar_seed,
+                )
+            fallback_exemplars = select_exemplars(
+                whole_pool, fallback_types, k=exemplar_k, seed=exemplar_seed
+            )
+
+    card_remap = (
+        derange_card_mapping(block_types, cards_by_type)
+        if twin and resolved_view == KV_VIEW_CARDS
+        else {}
+    )
+    description_remap = (
+        derange_description_mapping(block_types, descriptions_by_type)
+        if twin and resolved_view == KV_VIEW_DESCRIPTIONS
+        else {}
+    )
+
+    def _material(intent: str | None) -> dict[str, object]:
+        types = fallback_types if intent is None else block_types[intent]
+        substitution: Mapping[str, str] = {}
+        if resolved_view == KV_VIEW_CARDS:
+            substitution = card_remap.get(intent or "", {}) if intent else {}
+            return {
+                "cards": [
+                    cards_by_type[substitution.get(name, name)]
+                    for name in types
+                    if name in cards_by_type
+                    and substitution.get(name, name) in cards_by_type
+                ]
+            }
+        if resolved_view == KV_VIEW_DESCRIPTIONS:
+            substitution = description_remap.get(intent or "", {}) if intent else {}
+            return {
+                "descriptions": [
+                    descriptions_by_type[substitution.get(name, name)]
+                    for name in types
+                    if name in descriptions_by_type
+                    and substitution.get(name, name) in descriptions_by_type
+                ]
+            }
+        if resolved_view == KV_VIEW_FEWSHOT:
+            return {
+                "exemplars": list(
+                    fallback_exemplars
+                    if intent is None
+                    else exemplars_by_intent.get(intent, ())
+                )
+            }
+        return {}
+
+    rendered_by_intent = {
+        intent: compose_view(
+            intent=intent,
+            view=resolved_view,
+            twin=twin,
+            schema_text=schema_by_intent[intent],
+            **_material(intent),
+        ).text
+        for intent in intents
+    }
+    rendered_fallback = compose_view(
+        intent=None,
+        view=resolved_view,
+        twin=twin,
+        schema_text=fallback_schema,
+        **_material(None),
+    ).text
+
+    project = _slurp_intent_projection(projection)
+    counts = {"rows": 0, "fallback": 0}
+
+    def fill(state_content: str) -> str:
+        intent = slurp_intent_from_state_content(state_content, projection=project)
+        counts["rows"] += 1
+        if intent is not None and intent in rendered_by_intent:
+            return rendered_by_intent[intent]
+        counts["fallback"] += 1
+        return rendered_fallback
+
+    fill.counts = counts  # type: ignore[attr-defined]
+    fill.view = resolved_view  # type: ignore[attr-defined]
+    fill.twin = twin  # type: ignore[attr-defined]
+    return fill
+
+
+PHASE_STATE_FILLS.register(
+    "slurp-slot-knowledge-view-for-state", _slurp_slot_knowledge_view_state_fill
+)
+
+
 class PhaseMaterialError(RailsError):
     """A ``phase_material`` config fragment, or the material built from it,
     is invalid."""

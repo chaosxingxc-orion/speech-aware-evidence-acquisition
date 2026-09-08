@@ -1,0 +1,444 @@
+{
+  "baseline": {
+    "arm": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1",
+    "loss_mass": 2123.085,
+    "slu_f1": 44.35,
+    "true_positive_mass": 846.0
+  },
+  "class_sizes": {
+    "CLOSED/FORMAT": 18,
+    "MIXED": 8,
+    "OPEN/PROPER-NOUN": 29
+  },
+  "contacts": {
+    "audio_decode": 0,
+    "embedding": 0,
+    "gpu_hours": 0.0,
+    "model": 0,
+    "network": 0,
+    "note": "the only subprocess is the pinned official SLURP evaluate.py, which is the scorer and not a model; every token figure is the stated whitespace x 1.3 proxy and no tokenizer was called",
+    "tokenizer": 0,
+    "tool": 0
+  },
+  "containment": {
+    "card_forms_at_or_above_floor": 556,
+    "card_forms_total": 837,
+    "containment_decomposition_rows": {
+      "directive": 0,
+      "schema_block": 899,
+      "schema_block_without_examples": 83,
+      "sealed_state": 94,
+      "whole_instruction": 902,
+      "whole_instruction_without_schema_examples": 128
+    },
+    "distinct_colliding_forms": 168,
+    "instruction": "directive + sealed closed-list state + per-intent schema block",
+    "resolution": {
+      "distinct_forms_still_colliding": 50,
+      "note": "what survives the resolution is the SEALED STATE, which carries the previous phase's own predicted fillers -- a row whose intent response happened to name a value the card also carries. That is a property of the two-contact shape, not of the card, and it is the same false-positive class MF-8 and KU-S3 already recorded for a raw-substring rule over one- and two-word English",
+      "residual_forms_that_are_substrings_of_a_type_or_intent_name": [
+        "audiobook",
+        "takeaway"
+      ],
+      "rows_still_colliding": 128,
+      "top_residual_collisions": {
+        "afternoon": 1,
+        "all lights": 1,
+        "american dollar": 1,
+        "audio book": 1,
+        "audiobook": 43,
+        "bathroom": 1,
+        "birthday": 1,
+        "carryout": 7,
+        "colleague": 1,
+        "computer": 1,
+        "coworker": 2,
+        "day after": 2,
+        "living room": 3,
+        "next week": 2,
+        "plug socket": 3,
+        "takeaway": 82,
+        "tomorrow": 8,
+        "twenty second": 2,
+        "wemo plug": 3,
+        "wemo plug socket": 3
+      },
+      "what_it_is": "the SAME per-intent schema block with its five example fillers dropped (`examples_per_type=0`, a parameter the loader already takes), so the card becomes the ONE place a filler is written instead of the second place"
+    },
+    "rows_checked": 1000,
+    "rows_with_a_collision": 902,
+    "rule": "the raw-substring rule rails.runner._assert_agent_control_excludes_knowledge_payloads applies to a bound snapshot, at its own 8-character floor, run here BEFORE anything is built",
+    "schema_block_example_fillers_a_card_would_restate": 194,
+    "top_collisions": {
+      "afternoon": 199,
+      "birthday": 155,
+      "breakfast": 114,
+      "facebook": 155,
+      "girlfriend": 125,
+      "next week": 190,
+      "seven days": 108,
+      "stay sunny": 108,
+      "this afternoon": 153,
+      "this week": 282,
+      "this weekend": 110,
+      "this year": 164,
+      "thursday": 113,
+      "today 's": 310,
+      "tomorrow": 266,
+      "too hot for pants": 108,
+      "two thousand": 133,
+      "two thousand and seventeen": 100,
+      "warm clothes": 108,
+      "yesterday": 208
+    },
+    "verdict": "COLLIDES AS SENT -- a card cannot be shipped beside a schema block that already prints example fillers; the view must send the block WITHOUT its examples, and the residual is reported above"
+  },
+  "generated_at": "2026-09-08T14:55:05.967136+00:00",
+  "retrieval_bound_consistency": {
+    "bound_holds": true,
+    "global_upper_bound_slu_f1": 69.24,
+    "mf9_measured_oracle_slu_f1": 58.06,
+    "what_it_is": "the global version of the retrieval upper bound, checked against MF-9's own MEASURED KU-S3 oracle: a bound that came out below the measured oracle would be wrong"
+  },
+  "row_id": "SAEA-SLURP-MF10-VOCAB-CARDS-NORMALIZED-SLU-V1",
+  "schema": "saea-slurp-mf10-knowledge-views-v1",
+  "sources": {
+    "kc_s1b_prompt_fit": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-slurp-slot-stage-kc-s1-v1/prompt-fit.json",
+    "mf9_loss_decomposition_sha256": "e4c38169886f83ee57bec4eda81f55249f8d093eb9a0e89101bf0d92a1e1de1f",
+    "mf9_value_headroom_sha256": "a4477141cd323678c8a76b55aec07c0d36874f265ef4eea4f508f4d274715534",
+    "sealed_closed_list_states": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.outputs.jsonl",
+    "type_classes_sha256": "6faca2f7ac9b47f759692655572b41ed27d2277d12f353dccc30e50350d0fbc5",
+    "umbrella_lock": "/mnt/d/chao_workspace/docs/datasets.lock.json"
+  },
+  "status": "PRICED, NOT PREREGISTERED. Admits nothing, promotes nothing.",
+  "twin": {
+    "intents_rotating_in_place": 39,
+    "intents_whose_volume_differs_from_the_arm": [],
+    "mapping_per_intent": {
+      "alarm_query": {
+        "alarm_type": "date",
+        "date": "timeofday",
+        "timeofday": "alarm_type"
+      },
+      "alarm_remove": {
+        "alarm_type": "date",
+        "date": "timeofday",
+        "timeofday": "alarm_type"
+      },
+      "alarm_set": {
+        "date": "timeofday",
+        "timeofday": "date"
+      },
+      "audio_volume_down": {
+        "device_type": "meal_type"
+      },
+      "audio_volume_mute": {
+        "device_type": "timeofday",
+        "timeofday": "device_type"
+      },
+      "audio_volume_up": {
+        "device_type": "media_type",
+        "media_type": "device_type"
+      },
+      "calendar_query": {
+        "date": "relation",
+        "relation": "timeofday",
+        "timeofday": "date"
+      },
+      "calendar_remove": {
+        "date": "meal_type",
+        "meal_type": "date"
+      },
+      "calendar_set": {
+        "date": "relation",
+        "relation": "timeofday",
+        "timeofday": "date"
+      },
+      "cooking_query": {
+        "meal_type": "media_type"
+      },
+      "cooking_recipe": {
+        "meal_type": "media_type"
+      },
+      "datetime_query": {
+        "date": "device_type"
+      },
+      "email_addcontact": {
+        "relation": "transport_name"
+      },
+      "email_query": {
+        "date": "email_folder",
+        "email_folder": "relation",
+        "relation": "date"
+      },
+      "email_querycontact": {
+        "relation": "transport_name"
+      },
+      "email_sendemail": {
+        "date": "relation",
+        "relation": "timeofday",
+        "timeofday": "date"
+      },
+      "general_greet": {
+        "date": "device_type"
+      },
+      "general_joke": {
+        "date": "relation",
+        "relation": "date"
+      },
+      "general_quirky": {
+        "date": "meal_type",
+        "meal_type": "relation",
+        "relation": "date"
+      },
+      "iot_cleaning": {
+        "device_type": "house_place",
+        "house_place": "device_type"
+      },
+      "iot_coffee": {
+        "date": "device_type",
+        "device_type": "date"
+      },
+      "iot_hue_lightchange": {
+        "color_type": "house_place",
+        "house_place": "color_type"
+      },
+      "iot_hue_lightdim": {
+        "color_type": "device_type",
+        "device_type": "house_place",
+        "house_place": "color_type"
+      },
+      "iot_hue_lightoff": {
+        "device_type": "house_place",
+        "house_place": "device_type"
+      },
+      "iot_hue_lighton": {
+        "device_type": "house_place",
+        "house_place": "device_type"
+      },
+      "iot_hue_lightup": {
+        "device_type": "house_place",
+        "house_place": "device_type"
+      },
+      "iot_wemo_off": {
+        "device_type": "house_place",
+        "house_place": "device_type"
+      },
+      "iot_wemo_on": {
+        "device_type": "house_place",
+        "house_place": "device_type"
+      },
+      "lists_createoradd": {
+        "date": "device_type"
+      },
+      "lists_query": {
+        "date": "device_type"
+      },
+      "lists_remove": {
+        "date": "relation",
+        "relation": "date"
+      },
+      "music_likeness": {
+        "app_name": "date",
+        "date": "app_name"
+      },
+      "music_query": {
+        "date": "media_type",
+        "media_type": "timeofday",
+        "timeofday": "date"
+      },
+      "music_settings": {
+        "device_type": "media_type",
+        "media_type": "device_type"
+      },
+      "news_query": {
+        "date": "media_type",
+        "media_type": "date"
+      },
+      "play_audiobook": {
+        "app_name": "media_type",
+        "media_type": "app_name"
+      },
+      "play_music": {
+        "date": "device_type"
+      },
+      "play_podcasts": {
+        "date": "device_type"
+      },
+      "play_radio": {
+        "app_name": "device_type",
+        "device_type": "app_name"
+      },
+      "qa_currency": {
+        "currency_name": "date",
+        "date": "currency_name"
+      },
+      "qa_maths": {
+        "date": "device_type"
+      },
+      "qa_stock": {
+        "currency_name": "date",
+        "date": "currency_name"
+      },
+      "recommendation_events": {
+        "date": "timeofday",
+        "timeofday": "date"
+      },
+      "recommendation_movies": {
+        "date": "movie_type",
+        "movie_type": "timeofday",
+        "timeofday": "date"
+      },
+      "social_post": {
+        "media_type": "order_type"
+      },
+      "social_query": {
+        "date": "media_type",
+        "media_type": "relation",
+        "relation": "date"
+      },
+      "takeaway_order": {
+        "meal_type": "order_type",
+        "order_type": "meal_type"
+      },
+      "takeaway_query": {
+        "order_type": "relation"
+      },
+      "transport_query": {
+        "date": "transport_type",
+        "transport_type": "date"
+      },
+      "transport_taxi": {
+        "date": "timeofday",
+        "timeofday": "transport_agency",
+        "transport_agency": "transport_type",
+        "transport_type": "date"
+      },
+      "transport_ticket": {
+        "date": "timeofday",
+        "timeofday": "transport_type",
+        "transport_type": "date"
+      },
+      "transport_traffic": {
+        "date": "timeofday",
+        "timeofday": "date"
+      },
+      "weather_query": {
+        "date": "timeofday",
+        "timeofday": "weather_descriptor",
+        "weather_descriptor": "date"
+      }
+    },
+    "pooled_intent_volume_delta_chars": {
+      "audio_volume_down": -1160,
+      "cooking_query": 1267,
+      "cooking_recipe": 1267,
+      "datetime_query": -4891,
+      "email_addcontact": -959,
+      "email_querycontact": -959,
+      "general_greet": -4891,
+      "lists_createoradd": -4891,
+      "lists_query": -4891,
+      "play_music": -4891,
+      "play_podcasts": -4891,
+      "qa_maths": -4891,
+      "social_post": -1062,
+      "takeaway_query": 892
+    },
+    "pooled_intents": [
+      "audio_volume_down",
+      "cooking_query",
+      "cooking_recipe",
+      "datetime_query",
+      "email_addcontact",
+      "email_querycontact",
+      "general_greet",
+      "lists_createoradd",
+      "lists_query",
+      "play_music",
+      "play_podcasts",
+      "qa_maths",
+      "social_post",
+      "takeaway_query"
+    ],
+    "pooled_types": [
+      "transport_name"
+    ],
+    "rule": "saea-mf10-within-intent-card-derangement-v1: an intent's carded types are rotated among THEMSELVES, so that intent's block holds the same MULTISET of vocabularies and is token-matched by construction rather than by a cap. The mapping is per intent for exactly this reason -- one global map would carry an intent's rotation into another intent that shares a type and break the match. An intent listing a single carded type cannot rotate in place, and neither can a carded type no block lists at all; both are pooled and rotated among themselves, as KU-S3's derangement does for its singleton scenario buckets, and the volume difference that leaves is reported as a covariate rather than claimed as a match",
+    "token_matched_by_construction_on_rotating_intents": true,
+    "types_keeping_their_own_vocabulary": 0
+  },
+  "views": {
+    "KU-S3-retrieval-open": {
+      "reachable_slu_f1_bound": {
+        "gain": 8.9,
+        "gold_mentions_newly_answered": 110.0,
+        "is_an_upper_bound": true,
+        "missing_mass_repaired": 220.0,
+        "slu_f1": 53.25,
+        "surface_mass_repaired": 31.447,
+        "types": 29
+      },
+      "retrieval_contacts": 0,
+      "seed_gpu_hours": 0.85,
+      "token_cost_proxy": {
+        "measured_chars_per_row": {
+          "blocks_per_row": 5,
+          "max": 570,
+          "min": 354,
+          "p50": 422
+        },
+        "per_row": 106
+      },
+      "types_supplied": 29,
+      "what_it_is": "KU-S3 exactly as preregistered -- the speech-keyed top-5 TRAIN neighbour fillers as typed content -- restricted here to the OPEN/PROPER-NOUN types, which are the ones a card cannot enumerate"
+    },
+    "KU-S3v-cards-closed": {
+      "reachable_slu_f1_unrestricted": {
+        "gain": 18.64,
+        "gold_mentions_newly_answered": 240.0,
+        "missing_mass_repaired": 480.0,
+        "slu_f1": 62.99,
+        "surface_mass_repaired": 85.209,
+        "types": 18,
+        "vocabulary_limited": false
+      },
+      "reachable_slu_f1_vocabulary_limited": {
+        "gain": 17.46,
+        "gold_mentions_newly_answered": 223.3,
+        "missing_mass_repaired": 446.622,
+        "slu_f1": 61.81,
+        "surface_mass_repaired": 79.253,
+        "types": 18,
+        "vocabulary_limited": true
+      },
+      "retrieval_contacts": 0,
+      "seed_gpu_hours": 0.0,
+      "token_cost_proxy": {
+        "all_cards_at_once": 3357,
+        "median_intent": 1432,
+        "worst_intent": 2010
+      },
+      "types_supplied": 18,
+      "what_it_is": "a per-intent STATIC slot value card for the CLOSED/FORMAT types, rendered as typed content beside the schema block: the whole TRAIN vocabulary with counts, deterministic, no retrieval, no query, no vector and no echo risk from a retrieved neighbour"
+    },
+    "combined-cards-plus-retrieval": {
+      "reachable_slu_f1_bound": {
+        "gain": 24.86,
+        "is_an_upper_bound": true,
+        "missing_mass_repaired": 666.622,
+        "note": "the two halves act on DISJOINT type sets, so their repaired masses add exactly; the result is still an oracle bound",
+        "slu_f1": 69.21,
+        "surface_mass_repaired": 110.7
+      },
+      "retrieval_contacts": 0,
+      "seed_gpu_hours": 0.85,
+      "token_cost_proxy": {
+        "worst_intent": 2116
+      },
+      "types_supplied": 47,
+      "what_it_is": "cards for the CLOSED types and the retrieved top-5 for the OPEN ones, in one supplied block"
+    }
+  },
+  "what_this_is_not": "no cell is preregistered, no roster is opened, no owner decision is anticipated and every reachable number here is an ORACLE: it assumes a perfect reader of the supplied block. A card supplies a vocabulary, never a decision, and cannot make the core answer a slot it did not hear"
+}

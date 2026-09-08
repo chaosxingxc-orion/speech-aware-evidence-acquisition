@@ -1,0 +1,61 @@
+{
+  "schema": "saea-task-toolkits-v1",
+  "note": "Which catalog tools each agent role may call, per task type (design note 2026-09-08 section 7; loader rails.tools.load_toolkit_table). Every id resolves in rails.tools.TOOL_CATALOG and is checked by scripts/checks/engineering_base_check.py. The Solver has no row: the Solver is the frozen core behind the single door and calls no tool. An empty list means that role calls nothing yet, which is a statement, not an omission.",
+  "toolkits": {
+    "meeting": {
+      "planner": {
+        "tools": [
+          "saea-tool-prompt-fit-tokens-v1"
+        ]
+      },
+      "observer": {
+        "tools": [
+          "saea-tool-diarization-artifact-v1",
+          "saea-tool-speaker-turn-units-v2",
+          "saea-tool-slice-encode-v1",
+          "saea-tool-flagged-spans-v1"
+        ]
+      },
+      "reviewer": {
+        "tools": [
+          "saea-tool-flagged-spans-v1",
+          "saea-tool-repair-alignment-v1"
+        ]
+      }
+    },
+    "command": {
+      "planner": {
+        "tools": [
+          "saea-tool-prompt-fit-tokens-v1"
+        ]
+      },
+      "observer": {
+        "tools": [
+          "saea-tool-slice-encode-v1",
+          "saea-tool-sealed-vector-query-v1"
+        ]
+      },
+      "reviewer": {
+        "tools": [
+          "saea-tool-legal-label-projection-v2"
+        ]
+      }
+    },
+    "tool-call": {
+      "planner": {
+        "tools": [
+          "saea-tool-prompt-fit-tokens-v1"
+        ]
+      },
+      "observer": {
+        "tools": [
+          "saea-tool-slice-encode-v1",
+          "saea-tool-sealed-vector-query-v1"
+        ]
+      },
+      "reviewer": {
+        "tools": []
+      }
+    }
+  }
+}

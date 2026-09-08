@@ -1,0 +1,217 @@
+{
+  "boundary": "zero model contacts: the only fakes are the gate and the transport (core.flight.runtime.WireCheckGate / WireCheckTransport, which never opens a socket). Any score below is computed over the transport's canned response and is not a measurement of anything.",
+  "cells": [
+    {
+      "arm": "speech-feature-query",
+      "attempt_aborted": true,
+      "attempt_id": "attempt-wire-check-1788888412747",
+      "cell_id": "kv1-descriptions",
+      "config_hash": "0a9e355554711a69e3f9be393ed470f4fafcd0bfd8749e15fa6d54a4f26eb034",
+      "construction_draws": [],
+      "construction_proposer_arm": false,
+      "contact_count": 4,
+      "contacts_per_sample": 1,
+      "cost": {
+        "audio_seconds_used": 15.011000000000001,
+        "calls_used": 4,
+        "completion_tokens_total": 4,
+        "latency_seconds_total": 0.0002490540064172819,
+        "prompt_tokens_total": 4,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "dispatch": {
+        "barrier": "whole-roster per phase (rails.phase_runner.run_program)",
+        "contacts_per_sample": 1,
+        "dispatch": "phase-program",
+        "material_source": "baseline fragment phase_material (rails.phase_material)",
+        "phase_names": [
+          "slots"
+        ],
+        "program_id": "phase-slots-given-intent-v1",
+        "seeded_supply_phases": [],
+        "supplied_phases": []
+      },
+      "flight_run_id": "SAEA-SLURP-KV-VIEWS-WIRE-CHECK-4-V1",
+      "gate": "core.flight.runtime.WireCheckGate (authorizes nothing real)",
+      "id_slot": 0,
+      "max_tokens": 64,
+      "max_tokens_per_sample": null,
+      "max_tokens_policy": null,
+      "max_tokens_rule": null,
+      "model_contacts": 0,
+      "native_tools_arm": false,
+      "payload_keys": [
+        "audio_seconds",
+        "carrier_lock_key",
+        "decoding_params",
+        "evidence_provenance",
+        "history",
+        "key_representation_id",
+        "matcher_policy_id",
+        "media_relpath",
+        "mmproj_loaded",
+        "query_source",
+        "request_id",
+        "sample_id",
+        "sample_rate_hz",
+        "speech_feature_parts",
+        "speech_packet_sha256",
+        "speech_ref",
+        "supplied_evidence",
+        "task_instruction"
+      ],
+      "payload_keys_equal_arm_visible_fields": true,
+      "payload_to_wire_tools_mapping": "payload tool_schemas -> request body 'tools' is core.model.transport.LlamaServerTransport's own step, covered by tests/unit/test_native_tools_arm.py's transport section; this check asserts at the transport seam, where the payload is what crosses",
+      "phase_material": {
+        "phases": [
+          {
+            "instruction_chars": 841,
+            "instruction_sha256": "221ed0d343b0a543eda98008312938da25bde204a131efe8427ea8e3934a5e1f",
+            "response_format_sha256": null,
+            "spec": {
+              "fill_params": {
+                "class_artifact_relpath": "docs/receipts/knowledge/slurp-kv-slot-type-classes-v1.json",
+                "class_artifact_sha256": "b08ebe096448d20170c2dbb8d9c01ad01625955a6e258a9a3a697ccb47d21c61",
+                "twin": false,
+                "view": "descriptions"
+              },
+              "instruction_fill": null,
+              "instruction_template": "probes/slurp_phase_slots.txt",
+              "phase": "slots",
+              "predecessor_binding": "sealed-manifest",
+              "predecessor_source": {
+                "manifest_relpath": "runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
+                "manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c",
+                "producer_policy_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1"
+              },
+              "purpose": "slot-extraction-given-intent",
+              "response_format_id": null,
+              "state_fill": "slurp-slot-knowledge-view-for-state"
+            }
+          }
+        ],
+        "schema": "saea-phase-material-v1"
+      },
+      "phase_supply": null,
+      "phases": [
+        {
+          "contacts": 4,
+          "phase": "phase-slots-given-intent-v1:slots",
+          "rows": 4
+        }
+      ],
+      "policy": "phase-slots-given-intent-v1",
+      "policy_kind": "phase-program",
+      "protocol_hash": "bb897bd2e023719fc1ed53199ab30192e4de0ece4cb871c2e6ff361eb21046db",
+      "request_body_sha256": [
+        "591ae94f4e69b292d6829e8a69b896e7460c631e2ef8bc50b30d7b73dc8cd871",
+        "4669a2124ac48dcfb6a4c6cc3da9c100429998054a1dc609402662853017cc5d",
+        "426b804479f5fb14b88e5bb124088c098b66645ca47c660fa9a8756b5a352aa0",
+        "347b6a5ef04f2176c96033114912e900dd4d0f533646ed8cfa93867d9788ed33"
+      ],
+      "response_arrival": {
+        "basis": "rails.core_client.RequestTiming.native_tool_calls, set from core.model.CoreResponse.tool_calls; None means the response envelope carried no tool_calls key at all, i.e. the model answered as text",
+        "native_tool_calls_total": 0,
+        "rows_answered_as_text": 4,
+        "rows_total": 4,
+        "rows_with_native_tool_calls": 0
+      },
+      "sample_count": 4,
+      "schema": "saea-flight-wire-check-v1",
+      "seal_and_score": {
+        "ledger_surface_validated": true,
+        "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/WIRECHECK-SAEA-SLURP-KV-VIEWS-WIRE-CHECK-4-V1-1788888412747/attempt-wire-check-1788888412747/WIRECHECK-SAEA-SLURP-KV-VIEWS-WIRE-CHECK-4-V1-1788888412747.run-manifest.json",
+        "manifest_sha256": "137417c93dabc1a5530104ebafef2b8b8f536a04b60884daf7aec059c8e1e262",
+        "numbers_are_meaningless": "these scores are computed over WireCheckTransport's canned response, not over any model output; they prove the scoring link runs and nothing else",
+        "outputs_row_count": 4,
+        "score_result": {
+          "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+          "effective_max_workers": 1,
+          "elapsed_seconds": 120.4294717110024,
+          "failed": 0,
+          "job_count": 1,
+          "jobs": [
+            {
+              "elapsed_seconds": 120.4112595320039,
+              "error": null,
+              "index": 0,
+              "job_id": "attempt-wire-check-1788888412747",
+              "ledger_cells": null,
+              "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/WIRECHECK-SAEA-SLURP-KV-VIEWS-WIRE-CHECK-4-V1-1788888412747/attempt-wire-check-1788888412747/WIRECHECK-SAEA-SLURP-KV-VIEWS-WIRE-CHECK-4-V1-1788888412747.run-manifest.json",
+              "operation": "score",
+              "result_file": "attempt-wire-check-1788888412747.score.json",
+              "result_sha256": "40d993c5f733a317f4433d6e2245a5659b4a9561b2fb5aa195d10cf3ae274f78",
+              "returncode": 0,
+              "status": "succeeded",
+              "stderr_log": "attempt-wire-check-1788888412747.stderr.log",
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stdout_log": null
+            }
+          ],
+          "operation": "score",
+          "parallelism_boundary": "one-complete-verified-manifest-per-process",
+          "requested_max_workers": 1,
+          "schema": "saea-parallel-score-batch-v1",
+          "succeeded": 1
+        },
+        "scorers": [
+          "slurp-slu-official",
+          "slurp-slu-f1-normalized-v1",
+          "slurp-slu",
+          "cost"
+        ],
+        "status": "OK",
+        "verified_attempt_state": "OPENED"
+      },
+      "speech_packets_verified": {
+        "slurp:devel:000011:audio-1497266596": "941bc845a89289f24804f4b6eb5ee5faa3610330b10dcce4f0f3b09e00e1a70c",
+        "slurp:devel:000053:audio-1498758443": "754cd2d6c61af416739772cd526cbad71185b53f24476f2aeb205ec2322ade58",
+        "slurp:devel:000058:audio-1488637952": "5263292c33f339368f2a6d22a1de316c1b3fcfd57b32c1f0411c18b6fdf5e586",
+        "slurp:devel:000068:audio-1488550098": "bdf7e46b17917151e77c07d6c0cf34566305834ba138bcf68bc93eac9092410f"
+      },
+      "split_id": "DEV-1000-KV-WIRE-4",
+      "split_identity_hash": "e335c74149794af0f2301954b6e92cde2a4134d65ebe6069173a1a556b7a04b3",
+      "tool_schemas_count": 0,
+      "trace_manifest_hash": "202e79555b118050dce5d284e267a098ba74a8c0545ac69001c3c21f46288925",
+      "transport": "core.flight.runtime.WireCheckTransport (never opens a socket)",
+      "typed_knowledge_blocks": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "typed_knowledge_blocks_total": 0,
+      "wall_seconds": 9.919302701950073,
+      "wire_check_run_id": "WIRECHECK-SAEA-SLURP-KV-VIEWS-WIRE-CHECK-4-V1-1788888412747"
+    }
+  ],
+  "cells_checked": [
+    "kv1-descriptions"
+  ],
+  "flight_run_id": "SAEA-SLURP-KV-VIEWS-WIRE-CHECK-4-V1",
+  "generated_at": "2026-09-08T17:29:18.756556+00:00",
+  "identity": {
+    "added_suffix_chars": 1836,
+    "added_suffix_sha256": "46ee018e1bd2392c0e3654ddeacf4b7f32209da2a0c00cd7e658afe50ca0dda3",
+    "config_hash": "0a9e355554711a69e3f9be393ed470f4fafcd0bfd8749e15fa6d54a4f26eb034",
+    "instruction_fill": "slurp-label-inventory",
+    "instruction_template": "probes/slurp_direct_closed_list.txt",
+    "relation": "resolved == sealed_m0_instruction + suffix",
+    "resolved_instruction_chars": 7583,
+    "resolved_instruction_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db",
+    "roster_view_sha256": "e148dbbcbda5b5145de9d3270f8bf7d6fb83fd00c7533f5ffa0fea1735fa0e87",
+    "sample_count": 4,
+    "sealed_m0_instruction_chars": 5747,
+    "sealed_m0_instruction_sha256": "cef527896e9beef5774305e01dc29192fc2d5ca89fba5143e82f0b91a7cb86b8",
+    "serving_geometry": {
+      "max_tokens": 64,
+      "slot_tokens": 16384,
+      "slots": 4
+    }
+  },
+  "model_contacts": 0,
+  "schema": "saea-slurp-closed-list-wire-check-v1",
+  "servers_started": 0,
+  "study": "speech-aware-evidence-acquisition"
+}

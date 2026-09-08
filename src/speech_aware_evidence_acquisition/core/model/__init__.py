@@ -43,7 +43,12 @@ from .slices import (  # noqa: E402
     SliceRegistry,
 )
 from .binding import _PayloadBindingMixin  # noqa: E402
-from .request_types import ALLOWED_DECODING_KEYS, CoreResponse, _canonical  # noqa: E402
+from .request_types import (  # noqa: E402
+    ALLOWED_DECODING_KEYS,
+    MAX_TOP_LOGPROBS,
+    CoreResponse,
+    _canonical,
+)
 from .lifecycle import _AttemptLifecycleMixin  # noqa: E402
 from .adapter import FrozenCoreAdapter  # noqa: E402
 from .transport import (  # noqa: E402
@@ -70,6 +75,7 @@ from .speech_features import (  # noqa: E402
 
 __all__ = [
     "ALLOWED_DECODING_KEYS",
+    "MAX_TOP_LOGPROBS",
     "CoreResponse",
     "FrozenCoreAdapter",
     "FrozenCoreError",

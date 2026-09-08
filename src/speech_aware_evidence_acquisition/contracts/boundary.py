@@ -39,6 +39,17 @@ TRACE_CHANNELS = (
     "USE",
     "MODEL_REQUEST",
     "MODEL_RESPONSE",
+    # Decode-confidence channel (2026-09-08 logprob-as-judge probe): the raw
+    # per-token distribution the frozen core returned for ONE request, hashed
+    # like every other record and emitted only when that request actually
+    # asked for it (``decoding_params.logprobs``). It is deliberately its own
+    # channel rather than a MODEL_RESPONSE field: every sealed run that never
+    # asked for logprobs keeps a byte-identical MODEL_RESPONSE record and a
+    # byte-identical trace manifest. Like MODEL_REQUEST/MODEL_RESPONSE/TOOL/
+    # COST it carries no research-axis prefix (_CHANNEL_PREFIX below), because
+    # a decode-confidence signal is core provenance, not an OBS/ORG/SUPPLY/USE
+    # observation -- what a Reviewer judge later DERIVES from it is.
+    "MODEL_LOGPROBS",
     "TOOL",
     "COST",
     # obs-replay-loop policy (reproduction.replay_loop): a fifth research-axis
@@ -47,6 +58,16 @@ TRACE_CHANNELS = (
     # conventions" (the policy's own design brief): namespaced exactly like
     # OBS/ORG/SUPPLY/USE below, never sharing their prefix.
     "REPLAY",
+    # The Reviewer seat of the four-agent loop (owner Decision 11-B/11-C,
+    # 2026-09-08; ``rails.phase_review``): one record per reviewed row
+    # carrying the judges' typed verdicts -- score, flags with their span and
+    # field references, reasons. A sixth research-axis channel for the same
+    # reason REPLAY is a fifth: a review verdict is neither an observation,
+    # an organization, a supply nor a use, and folding it into one of those
+    # namespaces would make two authorities for one decision. Criticism only
+    # by construction: ``core.base.JudgeVerdict`` cannot carry replacement
+    # text, so a REVIEW record cannot either.
+    "REVIEW",
 )
 _CHANNEL_PREFIX = {
     "OBS": "obs_",
@@ -54,6 +75,7 @@ _CHANNEL_PREFIX = {
     "SUPPLY": "supply_",
     "USE": "use_",
     "REPLAY": "replay_",
+    "REVIEW": "review_",
 }
 _DATE = re.compile(r"\d{4}-\d{2}-\d{2}\Z")
 

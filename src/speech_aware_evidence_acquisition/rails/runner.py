@@ -17,7 +17,7 @@ from __future__ import annotations
 import hashlib
 from collections import deque
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from queue import Queue
 from typing import Callable, Generic, Hashable, Mapping, Protocol, Sequence, TypeVar
@@ -43,6 +43,7 @@ from .knowledge import (
     assert_knowledge_use_binding,
 )
 from .obs import ObsPacket, default_obs_packet
+from .observe import ObserveStep
 from .supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
 from .task_adapter import TaskAdapter, TaskSample
 
@@ -416,6 +417,114 @@ def _agent_wave_record(
     )
 
 
+def _rebind_contact(contact: AgentContact, query_state_sha256: str) -> AgentContact:
+    """The controller's own contact, re-bound to an observed QueryState.
+
+    Only ``query_state_sha256`` moves: the contact id, purpose, instruction,
+    key representation, matcher policy and decoding params stay exactly what
+    the controller authored. The Observer changes WHAT the next contact
+    listens to, never WHAT it is asked.
+    """
+
+    if isinstance(contact, AgentContactPlan):
+        return replace(contact, query_state_sha256=query_state_sha256).validate()
+    return replace(
+        contact,
+        query_state_sha256=query_state_sha256,
+        contacts=tuple(
+            replace(plan, query_state_sha256=query_state_sha256)
+            for plan in contact.contacts
+        ),
+    ).validate()
+
+
+def _observe_relisten(
+    *,
+    observe_step: ObserveStep,
+    snapshot: KnowledgeSnapshot,
+    snapshot_sha256: str,
+    sample_id: str,
+    record_base: str,
+    origin_packet: tuple[str, str],
+    wave_index: int,
+    relisten_index: int,
+    query_state: QueryState,
+    sink: AgentTraceSink,
+) -> tuple[QueryState, AgentStepTransition] | None:
+    """One optional Observer step between the wave that just settled and the
+    wave about to be prepared.
+
+    Returns ``None`` -- and touches nothing -- when the Reviewer flagged
+    nothing for this (sample, wave) or every flag has already been
+    re-listened to, which is why an absent ``observe_step`` and a silent
+    Reviewer produce the identical graph. Otherwise it cuts the flagged span
+    with its context margin through ``rails.observe`` (the replay loop's own
+    re-cut and slice registry), records the move as a ``relisten``
+    ``AgentStepTransition`` carrying the derivation, proves it through
+    ``assert_agent_step_binding`` against the trajectory's ORIGINAL packet,
+    and emits the OBS trace record. The caller re-binds the controller's next
+    contact to the successor state and dispatches it.
+
+    The step spends no model contact, so it is bounded by the Observer's own
+    ``max_relistens_per_sample`` rather than by ``max_contacts``.
+    """
+
+    observation = observe_step.observe(
+        sample_id=sample_id,
+        wave_index=wave_index,
+        origin_packet=origin_packet,
+        relisten_index=relisten_index,
+    )
+    if observation is None:
+        return None
+    derivation = observation.derivation
+    next_query_state = QueryState(
+        query_id=f"{query_state.query_id}:relisten{relisten_index:04d}",
+        query_sample_id=query_state.query_sample_id,
+        speech_packet_id=derivation.derived_packet_id,
+        speech_packet_sha256=derivation.derived_packet_sha256,
+        use_split_identity_hash=query_state.use_split_identity_hash,
+        loop_step=query_state.loop_step + 1,
+        visible_facet_ids=query_state.visible_facet_ids,
+        agent_state_ids=query_state.agent_state_ids,
+        retrieved_value_ids=query_state.retrieved_value_ids,
+        use_partition_role=query_state.use_partition_role,
+        query_source=query_state.query_source,
+    ).validate()
+    transition = AgentStepTransition(
+        snapshot_sha256=snapshot_sha256,
+        prior_query_state_sha256=query_state.content_hash(),
+        next_query_state_sha256=next_query_state.content_hash(),
+        action_kind="relisten",
+        action_target_refs=(derivation.derived_packet_id,),
+        new_value_ids=(),
+        used_value_ids=(),
+        dropped_value_ids=(),
+        new_agent_state_ids=(),
+        dropped_agent_state_ids=(),
+        speech_packet_derivation=derivation,
+    ).validate()
+    assert_agent_step_binding(
+        snapshot=snapshot,
+        prior_query_state=query_state,
+        next_query_state=next_query_state,
+        transition=transition,
+        snapshot_sha256=snapshot_sha256,
+        origin_speech_packet=origin_packet,
+    )
+    sink.emit(
+        "OBS",
+        f"{record_base}/relisten{relisten_index:04d}",
+        {
+            "obs_wave_index": wave_index,
+            "obs_prior_query_state_sha256": transition.prior_query_state_sha256,
+            "obs_next_query_state_sha256": transition.next_query_state_sha256,
+            **observation.trace_payload(),
+        },
+    )
+    return next_query_state, transition
+
+
 def _validate_agent_knowledge_decision(
     *,
     snapshot: KnowledgeSnapshot,
@@ -742,6 +851,10 @@ class _ContactAgentState:
     seen_contact_ids: set[str] = field(default_factory=set)
     wave_index: int = 0
     scheduled_contacts: int = 0
+    # Observer steps taken for this sample so far (rails.observe): bounded by
+    # the Observer's own budget, never by max_contacts -- a re-listen spends
+    # no model contact.
+    relisten_count: int = 0
     current_contact: AgentContact | None = None
     current_context: AgentRuntimeContext | None = None
     current_nodes: tuple[_AgentContactNode, ...] = ()
@@ -1206,6 +1319,8 @@ def _run_agent_trajectory(
     slot_id: int,
     base_decoding_params: Mapping[str, object] | None,
     trace_buffer: TraceBuffer,
+    observe_step: ObserveStep | None = None,
+    record_namespace: str | None = None,
 ) -> _AgentRuntimeOutcome:
     controller = controller_factory(prepared.sample.sample_id)
     if not callable(getattr(controller, "initial_contact", None)) or not callable(
@@ -1216,6 +1331,14 @@ def _run_agent_trajectory(
         )
 
     query_state = prepared.initial_query_state
+    origin_packet = (
+        prepared.initial_query_state.speech_packet_id,
+        prepared.initial_query_state.speech_packet_sha256,
+    )
+    observe_record_base = _agent_record_base(
+        prepared.sample.sample_id, record_namespace
+    )
+    relisten_count = 0
     state_store: dict[str, AgentStateArtifact] = {}
     response_sha256s: list[str] = []
     contacts: list[AgentContactRecord] = []
@@ -1302,6 +1425,7 @@ def _run_agent_trajectory(
             next_query_state=advance.next_query_state,
             transition=advance.transition,
             snapshot_sha256=snapshot_sha256,
+            origin_speech_packet=origin_packet,
         )
         _validate_new_agent_states(
             artifacts=advance.new_agent_states,
@@ -1373,6 +1497,24 @@ def _run_agent_trajectory(
             )
         query_state = advance.next_query_state
         contact = advance.next_contact
+        if observe_step is not None:
+            observed = _observe_relisten(
+                observe_step=observe_step,
+                snapshot=snapshot,
+                snapshot_sha256=snapshot_sha256,
+                sample_id=prepared.sample.sample_id,
+                record_base=observe_record_base,
+                origin_packet=origin_packet,
+                wave_index=contact_index,
+                relisten_index=relisten_count,
+                query_state=query_state,
+                sink=trace_buffer,
+            )
+            if observed is not None:
+                query_state, relisten_transition = observed
+                transitions.append(relisten_transition)
+                contact = _rebind_contact(contact, query_state.content_hash())
+                relisten_count += 1
 
     raise RailsRunnerError(
         f"Agent trajectory exceeded its {max_contacts}-contact ceiling"
@@ -1395,6 +1537,8 @@ def _run_agent_openjiuwen(
     base_decoding_params: Mapping[str, object] | None,
     trace_sink: AgentTraceSink,
     run_id: str,
+    observe_step: ObserveStep | None = None,
+    record_namespace: str | None = None,
 ) -> tuple[_AgentRuntimeOutcome, ...]:
     """Run the speech AgentLoop on the pinned openJiuwen workflow engine."""
 
@@ -1653,6 +1797,10 @@ def _run_agent_openjiuwen(
             next_query_state=advance.next_query_state,
             transition=advance.transition,
             snapshot_sha256=snapshot_sha256,
+            origin_speech_packet=(
+                state.prepared.initial_query_state.speech_packet_id,
+                state.prepared.initial_query_state.speech_packet_sha256,
+            ),
         )
         _validate_new_agent_states(
             artifacts=advance.new_agent_states,
@@ -1720,8 +1868,42 @@ def _run_agent_openjiuwen(
                 "successor QueryState Agent state ids do not match materialized state"
             )
         state.query_state = advance.next_query_state
+        settled_wave_index = state.wave_index
         state.wave_index += 1
-        schedule_wave(state, advance.next_contact)
+        next_contact = advance.next_contact
+        if observe_step is not None:
+            # One buffer per observation, keyed BELOW this wave's branch 0 so
+            # ``combine_trace_buffers``' sorted merge reads "observe, then
+            # contact" -- the order the step actually runs in. Registered only
+            # when an observation happened, so a silent Reviewer leaves the
+            # buffer map exactly as it is today.
+            observe_buffer = TraceBuffer(run_id)
+            observed = _observe_relisten(
+                observe_step=observe_step,
+                snapshot=snapshot,
+                snapshot_sha256=snapshot_sha256,
+                sample_id=state.prepared.sample.sample_id,
+                record_base=_agent_record_base(
+                    state.prepared.sample.sample_id, record_namespace
+                ),
+                origin_packet=(
+                    state.prepared.initial_query_state.speech_packet_id,
+                    state.prepared.initial_query_state.speech_packet_sha256,
+                ),
+                wave_index=settled_wave_index,
+                relisten_index=state.relisten_count,
+                query_state=state.query_state,
+                sink=observe_buffer,
+            )
+            if observed is not None:
+                state.trace_buffers[(state.wave_index, -1)] = observe_buffer
+                state.query_state, relisten_transition = observed
+                state.transitions.append(relisten_transition)
+                next_contact = _rebind_contact(
+                    next_contact, state.query_state.content_hash()
+                )
+                state.relisten_count += 1
+        schedule_wave(state, next_contact)
         publish_workflow_state(state, session)
 
     def flush_partial_traces() -> None:
@@ -1915,6 +2097,7 @@ def run_speech_native_agent_loop(
     decoding_params: Mapping[str, object] | None = None,
     controller_registry: Registry = AGENT_CONTROLLERS,
     trace_record_namespace: str | None = None,
+    observe_step: ObserveStep | None = None,
 ) -> AgentLoopSummary:
     """Run a bounded, batched, speech-native AgentLoop over one DEV split.
 
@@ -1926,6 +2109,16 @@ def run_speech_native_agent_loop(
     :class:`AgentRuntimeContext`, which deliberately excludes the adapter's
     gold-bearing sample object. All trajectories complete before ``score`` or
     ``extract_consumption`` is called.
+
+    ``observe_step`` is the OPTIONAL Observer seam (``rails.observe``): between
+    the wave that just settled and the wave about to be prepared, it turns the
+    previous wave's REVIEW flags into a re-listen of the flagged span with a
+    configured context margin, registers the derivation, and re-binds the
+    controller's next contact to the observed ``QueryState``. ``None`` -- the
+    default, and the ``observe: null`` arm of the config table -- runs exactly
+    today's graph: no step, no record, no changed byte. Both executors call the
+    same helper, so the ``reference-trajectory-v1`` equivalence oracle keeps
+    covering the seam.
     """
 
     plan.validate()
@@ -2103,6 +2296,8 @@ def run_speech_native_agent_loop(
                 base_decoding_params=decoding_params,
                 trace_sink=trace_sink,
                 run_id=plan.run_id,
+                observe_step=observe_step,
+                record_namespace=trace_record_namespace,
             )
         )
     else:
@@ -2128,6 +2323,8 @@ def run_speech_native_agent_loop(
                     slot_id=slot_id,
                     base_decoding_params=decoding_params,
                     trace_buffer=trace_buffer,
+                    observe_step=observe_step,
+                    record_namespace=trace_record_namespace,
                 )
             finally:
                 set_current_trace_buffer(None)

@@ -81,6 +81,12 @@ from test_obs_loop_policy import (  # noqa: E402
     _obs_payloads,
     _silence,
 )
+from test_obs_unit_plan import (  # noqa: E402
+    PLAN_RELPATH,
+    _plan_bytes,
+    _plan_document,
+    _plan_values,
+)
 
 
 def _scenario(name):
@@ -186,6 +192,23 @@ def _scenario(name):
             values=_config_values(obs_condition_tail_chars=4000),
             flaky_calls=(2,),
         )
+    if name == "unit-plan":
+        # OBS-E1 speaker-turn units (drift #1 of the 2026-09-08 openJiuwen
+        # assessment, closed the same day). The plan replaces the clock with
+        # three units of unequal length, so a clock-derived cutter on either
+        # side would deliver different media, different slice bytes and
+        # different derivation records -- which is exactly what this scenario
+        # puts through the equivalence harness rather than asserting
+        # separately. A plan forces fixed boundary mode, zero tail and zero
+        # trim at config-load time, so those knobs are not free here.
+        document = _plan_document(duration=150.0, edges=[40.0, 95.0])
+        raw = _plan_bytes(document)
+        return dict(
+            pcm=_noise(150.0),
+            texts=["unit one", "unit two", "unit three"],
+            values=_plan_values(PLAN_RELPATH, hashlib.sha256(raw).hexdigest()),
+            plan_bytes=raw,
+        )
     if name == "retry-exhausted-skip":
         # Task 2 (2026-08-09): call #2 AND its retry (#3) both time out --
         # exhausted, skipped (never aborted) -- both executors must reach
@@ -214,6 +237,7 @@ SCENARIOS = (
     "fallback-boundary",
     "retry-flaky",
     "retry-exhausted-skip",
+    "unit-plan",
 )
 
 
@@ -227,6 +251,12 @@ def _run(tmp_path, monkeypatch, policy_name, scenario):
         evidence=scenario.get("evidence"),
         arm=scenario.get("arm", "bare-core"),
     )
+    if scenario.get("plan_bytes"):
+        # The unit plan is a hash-pinned repo file; install it under THIS
+        # world's own repo root before the config resolves it.
+        path = world.repo_root / PLAN_RELPATH
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(scenario["plan_bytes"])
     if scenario.get("flaky_calls"):
         world.ctx.adapter = _FlakyAdapter(world.adapter, scenario["flaky_calls"])
     outcome = POLICIES.resolve(policy_name).run_sample(world.ctx)

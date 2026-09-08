@@ -1,0 +1,32 @@
+{
+  "budget_basis": "1,000 registered contacts plus 8 canaries, ceiling 1,050; 2,884.7937 audio seconds in one pass, ceiling 3,000; GPU hours planned about 0.20 at -np 4, ceiling 1.0; tool, embedding and paid-API contacts 0 -- a KV view is deterministic and has NO pre-flight retrieval seed, which is the whole operational difference from KU-S3's 0.68 to 0.71 h of single-threaded CPU per arm. Plan cells are RUN-CUMULATIVE across every attempt of this run id and at most one recovery re-registration is permitted.",
+  "cells": [
+    {
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-kv1-descriptions-v1",
+      "cell_id": "kv1-descriptions",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64"
+    }
+  ],
+  "comparator": "SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1 (the family base); the form twin is SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1.",
+  "date": "2026-09-08",
+  "decision": {
+    "paper_scale": false,
+    "test_tuning": false
+  },
+  "decision_rule": "ADMITTED iff, on the unexposed NEW500, the paired per-sample OFFICIAL SLU-F1 CI90 lower bound is above 0 against the sealed KV-0 rows AND above 0 against the form twin SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1, with the normalized secondary slurp-slu-f1-normalized-v1 AGREEING IN SIGN on both (MF-10 section 4.1). NULL if any interval includes 0. HARMFUL if an upper bound is below 0. The twin contrast is read twice: on the whole roster, and on the construction-fixed stratum of rows whose predicted intent rotates its view in place, where the twin is volume-matched to the character. Intent is identical by construction and asserted row by row; a non-zero intent delta is a defect, not a result.",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1050,
+    "planned_speech_audio_seconds": 3000,
+    "split_role": "dev"
+  },
+  "experiment_id": "SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1",
+  "fragment_kind": "saea-slurp-slot-stage-experiment-v1",
+  "population": "The whole frozen DEV-1000 runtime view, id for id, at split identity hash 8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84 -- the roster the sealed closed-list direct baseline, KC-S1a, KC-S1b and KU-S1c already flew. No new draw and no new exposure. The decision population is the unexposed NEW500; pooled 1,000 and the prior-exposed DEV-500 are reported beside it.",
+  "preregistration": "docs/readiness/2026-09-08-slurp-slot-knowledge-views-kv-v1-preregistration.md",
+  "purpose": "Cell KV-1: KV-0 plus one TRAIN-derived description line per listed type. It asks whether telling the core WHAT KIND of value a type holds -- with no value at all -- moves the slot score, at about a fifth of KV-2's token cost.",
+  "split_id": "DEV-1000"
+}

@@ -65,7 +65,12 @@ from ..obs_audio import (
     parse_boundary_response,
     resolve_advance,
 )
-from ..obs_loop import OBS_TAIL_FRAME_V1, ObsLoopError, request_slice_with_retry
+from ..obs_loop import (
+    OBS_TAIL_FRAME_V1,
+    ObsLoopError,
+    _unit_trace_fields,
+    request_slice_with_retry,
+)
 from . import OpenJiuwenExecutorError
 from .state import ObsSampleState
 
@@ -133,7 +138,14 @@ class FeedBuffer(WorkflowComponent):
             )
         slice_samples = state.pcm[start_frame:end_frame]
         slice_seconds = (end_frame - start_frame) / state.rate
-        is_final = end_frame >= len(state.pcm)
+        # Under a unit plan the LAST UNIT is the final window, not the end of
+        # the decoded parent (the plan's own last unit may stop short of it).
+        # Exactly the plain policy's own two forms, at both of its cut sites.
+        is_final = (
+            state.iteration == len(state.plan_units) - 1
+            if state.plan_units is not None
+            else end_frame >= len(state.pcm)
+        )
         raw_bytes, transforms, pre_sha256 = encode_slice(
             slice_samples,
             state.rate,
@@ -443,6 +455,14 @@ class AcceptAdvance(WorkflowComponent):
                 # stops the loop, so the audit trail is complete right up to
                 # the refusal.
                 "obs_skipped": skipped,
+                # Unit-plan fields (OBS-E1 preregistration section 8.3),
+                # present only when a plan supplied this cut -- the SAME
+                # ``obs_loop._unit_trace_fields`` the plain policy calls, over
+                # the unit read from the driver-side state rather than from
+                # session state (``ObsSampleState.unit_for``: a unit's speaker
+                # is legitimately None, and the framework's state merge
+                # DELETES None-valued keys).
+                **_unit_trace_fields(state.unit_for(slice_spec["iteration"])),
             },
         )
         span = accepted.strip()
