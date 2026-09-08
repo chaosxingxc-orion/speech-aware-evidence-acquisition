@@ -216,6 +216,109 @@ The decision population is the unexposed NEW500, as it is for every SLURP cell i
 
 ---
 
+## 2. The value-projection judge, priced model-free
+
+Receipt: `value-projection.json`. Rule: `reproduction.slurp_value_projection`, id
+`slurp-value-projection-v1`, 21 unit tests.
+
+### 2.1 The rule, stated exactly
+
+> Project a predicted slot filler onto the nearest TRAIN surface form **of the same slot type**
+> when the official scorer's own normalized character distance is at or below the threshold. The
+> comparison string is the prediction case-folded with whitespace collapsed; ties break on the
+> larger TRAIN mention count, then lexicographically. The rule never changes a slot type, never
+> invents a filler, and never deletes a prediction.
+
+It is the same-type sibling of the admitted legal-label projection, and it is scoring-side in the
+same sense: it runs strictly between the parse and the official prediction file. Its inventory is
+**4,157 distinct `(type, filler)` pairs over 55 types**, mined from TRAIN and only TRAIN
+(`load_value_projection_inventory` refuses any other split by name; identity hash
+`bd8f75ce…0315`).
+
+**Two families, because the repair has two halves.**
+
+* **`rule`** — the projection alone. A filler it does not move keeps its own bytes.
+* **`normalized`** — the same rule over a **normalization floor**: a filler the projection does not
+  move is still emitted case-folded with whitespace collapsed. The floor is free, needs no
+  inventory at all, and exists because the official script lower-cases the gold side and
+  deliberately does **not** lower-case the prediction side (section 1.4). A system choosing to emit
+  the corpus's own surface convention is a system output choice, not a change to the scorer.
+
+### 2.2 The sweep
+
+Every arm is the complete 1,000-row roster through the pinned official `evaluate.py`, never
+sharded. Paired deltas are per-sample official scores, stratified bootstrap N = 10,000,
+seed 20260903, CI90, strata = gold scenario. The τ = 0.00 anchor is not a no-op: it fires only on an
+exact match after case folding.
+
+| family | τ | SLU-F1 | ΔSLU-F1 | ΔWord-F1 | ΔChar-F1 | Δentities strict | rows changed | values changed | saves | harms | CI90 pooled | CI90 NEW500 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| rule | 0.00 | 44.43 | +0.08 | +0.13 | +0.03 | +0.37 | 4 | 4 | 4 | 0 | [+0.01, +0.16] | [+0.00, +0.11] |
+| rule | 0.10 | 44.53 | +0.18 | +0.27 | +0.07 | +0.74 | 11 | 11 | 9 | 1 | [+0.06, +0.27] | [−0.02, +0.16] |
+| rule | 0.15 | 44.89 | +0.54 | +0.84 | +0.16 | +2.33 | 27 | 27 | 24 | 1 | [+0.30, +0.66] | [+0.31, +0.81] |
+| rule | 0.20 | 45.01 | +0.66 | +1.01 | +0.20 | +2.82 | 33 | 33 | 28 | 1 | [+0.37, +0.77] | [+0.39, +0.96] |
+| rule | 0.25 | 44.94 | +0.59 | +0.92 | +0.17 | +2.94 | 47 | 47 | 31 | 7 | [+0.33, +0.74] | [+0.34, +0.96] |
+| rule | 0.30 | 45.00 | +0.65 | +1.02 | +0.17 | +3.19 | 62 | 63 | 35 | 11 | [+0.31, +0.76] | [+0.31, +0.94] |
+| rule | 0.35 | 45.06 | +0.71 | +1.15 | +0.14 | +3.19 | 77 | 79 | 40 | 17 | [+0.29, +0.78] | [+0.20, +0.90] |
+| rule | 0.40 | 45.05 | +0.70 | +1.14 | +0.14 | +3.43 | 104 | 107 | 48 | 24 | [+0.29, +0.82] | [+0.12, +0.85] |
+| normalized | 0.00 | 44.54 | +0.19 | +0.29 | +0.07 | +0.86 | 12 | 13 | 9 | **0** | [+0.07, +0.29] | [+0.03, +0.32] |
+| normalized | 0.10 | 44.61 | +0.26 | +0.39 | +0.10 | +1.23 | 18 | 19 | 13 | 1 | [+0.12, +0.38] | [+0.03, +0.35] |
+| normalized | 0.15 | 44.97 | +0.62 | +0.96 | +0.19 | +2.82 | 34 | 35 | 28 | 1 | [+0.37, +0.76] | [+0.39, +0.96] |
+| **normalized** | **0.20** | **45.09** | **+0.74** | **+1.13** | **+0.23** | **+3.31** | **40** | **41** | **32** | **1** | **[+0.45, +0.87]** | **[+0.47, +1.10]** |
+| normalized | 0.25 | 45.02 | +0.67 | +1.03 | +0.20 | +3.31 | 53 | 54 | 34 | 7 | [+0.38, +0.82] | [+0.40, +1.06] |
+| normalized | 0.30 | 45.05 | +0.70 | +1.11 | +0.19 | +3.43 | 67 | 68 | 37 | 11 | [+0.36, +0.83] | [+0.36, +1.04] |
+| normalized | 0.35 | **45.11** | +0.76 | +1.24 | +0.16 | +3.43 | 82 | 84 | 42 | 17 | [+0.34, +0.84] | [+0.26, +0.99] |
+| normalized | 0.40 | 45.08 | +0.73 | +1.18 | +0.15 | +3.56 | 108 | 111 | 49 | 24 | [+0.30, +0.84] | [+0.12, +0.85] |
+
+**The operating point is `normalized` at τ = 0.20**, not the arithmetic maximum at τ = 0.35. It
+reaches within 0.02 SLU-F1 of the maximum, has the **tightest confidence interval in the table** on
+both populations, and pays **one harm instead of seventeen**. Above 0.20 the rule starts rewriting
+values that were merely unusual rather than merely mis-spelled, and every extra harm above that
+point is a real answer destroyed.
+
+At that point the branches are: **338 mentions already an exact TRAIN surface form**, 4 repaired by
+case folding, **29 projected**, 311 too far to touch (of which 8 are still lower-cased by the
+floor). 41 values changed on 40 of 1,000 rows.
+
+### 2.3 What it is worth, and what it is not
+
+| metric | KC-S1b | projected | delta (corpus) | paired pooled | paired NEW500 |
+|---|---|---|---|---|---|
+| **SLU-F1** | 44.35 | **45.09** | **+0.74** | +0.65, CI90 [+0.45, +0.87], 32 saves / **1 harm** | +0.78, CI90 [+0.47, +1.10] |
+| Word-F1 | 41.58 | 42.71 | +1.13 | +0.91, CI90 [+0.63, +1.20] | +1.10, CI90 [+0.68, +1.55] |
+| Char-F1 | 47.51 | 47.74 | +0.23 | +0.24, CI90 [+0.16, +0.31] | +0.27, CI90 [+0.16, +0.38] |
+| **entities strict** | 31.37 | **34.68** | **+3.31** | +1.99, CI90 [+1.36, +2.65], 26 saves / **0 harms** | +2.43, CI90 [+1.50, +3.47] |
+
+**The exact-match metric moves four and a half times as much as the headline one, and that is the
+whole story of this section.** SLU-F1 already pays partial credit for `six a m` against `six am`;
+strict entity F1 pays nothing. So a normalization repair is worth **+3.31 points of strict entity
+F1** and only **+0.74** of SLU-F1 — which is the precise, quantitative answer to "how much SLU-F1 is
+lost to normalization": **about three quarters of a point, no more.** Word-F1 moves +1.13 because
+word distance is the metric that charges a full 1.0 for a pure case or spacing difference.
+
+The repairs read exactly as section 1.4 predicted: `six a m` → `six am`, `three p m` → `three pm`,
+`ten a m` → `ten am`, `p f changs` → `pf changs`, `on wednesday` → `wednesday`,
+`the olive garden` → `olive garden`, `Orlando` → `orlando`. The single harm, and the harms that
+appear above τ = 0.20, read just as clearly: `six hundred a m` → `six hundred pm`, `cst` → `ist`,
+`chinese restaurant` → `shop restaurant`. The rule cannot tell an unusual value from a mis-spelled
+one, and the threshold is the only thing standing between the two.
+
+### 2.4 Verdict on the re-lock question
+
+**NOT a re-lock candidate.** The bar this audit set before running it was **≥ 1 SLU-F1 point with a
+CI90 lower bound above zero**; the best arm delivers **+0.76** at its maximum and **+0.74** at its
+honest operating point. The lower bound clears zero comfortably on both populations, so the effect
+is real — it is simply too small for the bar, and nothing here is proposed for a re-lock.
+
+If the owner ever wanted it, the exact rule is written and tested, and the shape is the one
+`slurp-slu-official-projected-v2` already has: a registered scorer id that applies
+`slurp-value-projection-v1` at τ = 0.20 in the `normalized` family between the parse and the
+official prediction file. **That would require owner GO, and this note does not ask for it.** The
+one thing worth flagging on its own merits is the **normalization floor at τ = 0.00**: +0.19 SLU-F1
+and +0.86 strict entity F1 for **zero harms**, no inventory, and no threshold to defend.
+
+---
+
 ## 3. Schema conformance, and whether the wire can constrain it
 
 Receipt: `schema-conformance.json`. The reference each row is judged against is **the per-intent

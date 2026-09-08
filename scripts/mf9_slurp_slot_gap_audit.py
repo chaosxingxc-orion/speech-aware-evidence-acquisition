@@ -1734,10 +1734,14 @@ def command_headroom(args: argparse.Namespace) -> int:
         )
         for utterance in train
     }
+    # ``rails.knowledge_build`` mints a content facet as
+    # ``facet:content:{KbRow.utterance_id}``, and ``KbRow.utterance_id`` is
+    # ``SlurpTrainMaterial.utterance_id``, which is the bare ``str(slurp_id)``
+    # (``data.slurp.load_slurp_train_material``). So the suffix is that id
+    # verbatim, and the join is exact rather than reformatted.
     key_entities = []
     for facet_id in facet_ids:
-        suffix = facet_id.rsplit(":", 1)[-1]
-        utterance_id = f"slurp:train:{int(suffix):06d}"
+        utterance_id = facet_id.rsplit(":", 1)[-1]
         if utterance_id not in entities_by_utterance:
             raise SystemExit(f"sealed facet {facet_id!r} has no TRAIN utterance")
         key_entities.append(set(entities_by_utterance[utterance_id]))
@@ -1984,40 +1988,422 @@ def _mf8_type_partition(state: Mapping[str, object]) -> dict[str, str]:
     """MF-8's own standing-state / utterance-local split of the 55 entity types.
 
     Read out of that audit's committed receipt rather than re-derived, so the
-    two notes cannot drift apart. The partition was fixed there BEFORE any count
-    was read; this audit only reuses it.
+    two notes cannot drift apart. MF-8 fixed the partition BEFORE any count was
+    read and names it ``state_bearing_types`` (35 types the assistant can
+    legitimately HOLD) against ``other_types`` (20 the utterance itself says);
+    this audit only reuses those two lists.
     """
 
-    def collect(node: object, out: dict[str, str], label: str | None) -> None:
-        if isinstance(node, Mapping):
-            for key, value in node.items():
-                if key in {"standing_state", "standing", "standing_state_types"}:
-                    collect(value, out, "standing")
-                elif key in {"utterance_local", "utterance_local_types"}:
-                    collect(value, out, "utterance-local")
-                else:
-                    collect(value, out, label)
-            if label is not None and all(
-                isinstance(value, (int, float)) for value in node.values()
-            ):
-                for key in node:
-                    out[str(key)] = label
-        elif isinstance(node, list) and label is not None:
-            for item in node:
-                if isinstance(item, str):
-                    out[item] = label
-                elif isinstance(item, Mapping):
-                    name = item.get("entity_type") or item.get("type") or item.get("name")
-                    if isinstance(name, str):
-                        out[name] = label
-
-    out: dict[str, str] = {}
-    collect(state, out, None)
-    if not out:
+    inventory = state.get("device_and_entity_inventory")
+    if not isinstance(inventory, Mapping):
+        raise SystemExit(f"{MF8_STATE_INVENTORY} carries no device_and_entity_inventory")
+    standing = inventory.get("state_bearing_types")
+    local = inventory.get("other_types")
+    if not isinstance(standing, Mapping) or not isinstance(local, Mapping):
         raise SystemExit(
-            f"{MF8_STATE_INVENTORY} carries no standing / utterance-local type partition"
+            f"{MF8_STATE_INVENTORY} carries no state_bearing_types / other_types partition"
         )
+    if len(standing) != int(inventory["state_bearing_type_count"]) or len(local) != int(
+        inventory["other_type_count"]
+    ):
+        raise SystemExit(f"{MF8_STATE_INVENTORY}: the partition disagrees with its own counts")
+    out = {str(name): "standing" for name in standing}
+    out.update({str(name): "utterance-local" for name in local})
+    if len(out) != len(standing) + len(local):
+        raise SystemExit(f"{MF8_STATE_INVENTORY}: a type is in both halves of the partition")
     return out
+
+
+# ---------------------------------------------------------------------------
+# Question 5 -- the priced improvement ladder
+# ---------------------------------------------------------------------------
+
+
+#: KC-S1b's own realized cost, from its verdict's section 9: 1,000 contacts in
+#: 735.9 s for about 0.20 GPU-h. Every module below is priced against it,
+#: because every module below is one contact per row on the same geometry.
+KC_S1B_COST = {"contacts": 1000, "gpu_hours": 0.20, "audio_seconds": 2884.7937}
+
+#: The published SLURP lines this ladder is measured against
+#: (umbrella `published-baselines.md`, SLURP section). Every one is the official
+#: TEST split and a natural mixture; DEV-1000 is a scenario-stratified dev
+#: roster, so NONE of these is a like-for-like target and none is claimed as one.
+PUBLISHED_SLURP_LINES = {
+    "trained pipelines (2020 paper)": [69.5, 70.8],
+    "CTI": 71.1,
+    "SFT Qwen2-Audio-7B": 76.75,
+    "WHISMA zero-shot": 63.3,
+    "WHISMA supervised reference": 69.9,
+    "NLU over gold transcripts": 78.19,
+    "ChatGPT over oracle transcripts (slot F1, a DIFFERENT metric)": [12.0, 13.0],
+}
+
+
+def command_ladder(args: argparse.Namespace) -> int:
+    from speech_aware_evidence_acquisition.data.slurp import (
+        load_slurp_intent_slot_schema,
+        load_slurp_split,
+    )
+    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (
+        parse_slu_response,
+    )
+    from speech_aware_evidence_acquisition.reproduction.slurp_value_projection import (
+        VALUE_BRANCH_NO_INVENTORY,
+        VALUE_BRANCH_TOO_FAR,
+        load_value_projection_inventory,
+        project_slu_entities,
+    )
+
+    lock, root, lock_path = resolve_lock_and_root()
+    out_dir = Path(args.out_dir)
+    decomposition = read_json(out_dir / "loss-decomposition.json")
+    projection = read_json(out_dir / "value-projection.json")
+    conformance = read_json(out_dir / "schema-conformance.json")
+    headroom = read_json(out_dir / "value-headroom.json")
+
+    tp = float(decomposition["corpus"]["true_positive_mass"])
+    mass = float(decomposition["corpus"]["loss_mass"])
+    base_slu = float(decomposition["corpus"]["slu_f1"])
+
+    def ceiling(delta_tp: float, delta_mass: float) -> float:
+        remaining = mass - delta_mass
+        return round(100.0 * _f1(tp + delta_tp, remaining / 2.0, remaining / 2.0), 2)
+
+    # --- the judges, and what they flag -----------------------------------
+    roster = roster_sample_ids(REPO_ROOT / DEV1000_CONFIG)
+    gold = {record.sample_id: record for record in load_slurp_split(lock, root, "devel")}
+    texts = read_sealed_outputs(sealed_outputs_path(root, KC_S1B_RUN, KC_S1B_ATTEMPT))
+    inventory = load_value_projection_inventory(lock, root)
+    schema = load_slurp_intent_slot_schema(lock, root)
+    fit_rows = {
+        row["sample_id"]: row
+        for row in read_json(REPO_ROOT / KC_S1B_PROMPT_FIT)["rows"]
+        if row["cell_id"] == "kc-s1b"
+    }
+    full_block_types = {
+        entity_type
+        for profile in schema.intents.values()
+        for entity_type in profile.entity_types
+    }
+
+    cache: dict[tuple[str, str], tuple[str, float] | None] = {}
+    flags: dict[str, set[str]] = {
+        "silent": set(),
+        "schema_violating": set(),
+        "value_suspect": set(),
+    }
+    missing_by_flag: dict[str, int] = {}
+    for sample_id in roster:
+        _, _, entities, parsed = parse_slu_response(texts[sample_id])
+        fit = fit_rows[sample_id]
+        block_types = (
+            full_block_types
+            if bool(fit["schema_full_fallback"])
+            else set(schema.intents[fit["schema_block_intent"]].entity_types)
+        )
+        if parsed and not entities:
+            flags["silent"].add(sample_id)
+        types = [entity.type for entity in entities]
+        if (
+            not parsed
+            or any(entity_type not in block_types for entity_type in types)
+            or len(set(types)) != len(types)
+        ):
+            flags["schema_violating"].add(sample_id)
+        if entities:
+            _, outcomes = project_slu_entities(
+                entities, inventory, threshold=args.flag_threshold, nearest_cache=cache
+            )
+            if any(
+                outcome.branch in (VALUE_BRANCH_TOO_FAR, VALUE_BRANCH_NO_INVENTORY)
+                for outcome in outcomes
+            ):
+                flags["value_suspect"].add(sample_id)
+
+    flags["any"] = flags["silent"] | flags["schema_violating"] | flags["value_suspect"]
+
+    # The gold mentions a re-ask on each flagged set could in principle recover:
+    # a gold mention on a flagged row that the arm did not match at all.
+    unmatched_gold_rows: dict[str, int] = {}
+    for sample_id in roster:
+        _, _, entities, _ = parse_slu_response(texts[sample_id])
+        have = Counter(entity.type for entity in entities)
+        unmatched = 0
+        for entity in gold[sample_id].entities:
+            if have[entity.type] > 0:
+                have[entity.type] -= 1
+            else:
+                unmatched += 1
+        unmatched_gold_rows[sample_id] = unmatched
+    productive_by_flag: dict[str, int] = {}
+    for name, ids in flags.items():
+        missing_by_flag[name] = sum(unmatched_gold_rows[sid] for sid in ids)
+        productive_by_flag[name] = sum(1 for sid in ids if unmatched_gold_rows[sid] > 0)
+    rows_with_no_gold = sum(1 for sid in roster if not gold[sid].entities)
+    silent_with_no_gold = sum(1 for sid in flags["silent"] if not gold[sid].entities)
+
+    total_missing = sum(unmatched_gold_rows.values())
+    if total_missing != int(decomposition["categories"]["missing"]["count"]) + int(
+        decomposition["categories"]["type_swap"]["count"]
+    ):
+        raise SystemExit(
+            "the flag read's unmatched-gold count does not agree with the decomposition"
+        )
+
+    best = next(
+        entry
+        for entry in projection["sweep"]
+        if entry["family"] == projection["best_family"]
+        and abs(float(entry["threshold"]) - float(projection["best_threshold"])) < 1e-9
+    )
+
+    contacts_per_row = {
+        "intent_narrowing": 1.0,
+        "value_projection": 0.0,
+        "constrained_decoding": 1.0,
+        "retrieved_fillers": 1.0,
+        "same_speaker_exemplars": 1.0,
+        "targeted_reask": round(len(flags["any"]) / len(roster), 3),
+    }
+
+    def gpu_hours(rate: float) -> float:
+        return round(KC_S1B_COST["gpu_hours"] * rate, 3)
+
+    rungs = [
+        {
+            "rung": 1,
+            "module": "value projection (question 2)",
+            "what_it_is": (
+                "a deterministic scoring-side post-processor over the SEALED rows -- no "
+                "contact, no GPU, no flight"
+            ),
+            "measured_not_ceiling": True,
+            "slu_f1": best["official"]["slu_f1"],
+            "gain": best["delta_vs_baseline"]["slu_f1"],
+            "paired_ci90_new500": best["paired"]["new500"]["slu_f1_f1"]["ci90_pp"],
+            "contacts": 0,
+            "gpu_hours": 0.0,
+            "gain_per_gpu_hour": None,
+            "status": (
+                "MEASURED. Clears its own CI bar but NOT the 1-point bar this audit set "
+                "for a re-lock candidate"
+                if not projection["relock_candidate"]
+                else "MEASURED and clears the re-lock bar; OWNER GO REQUIRED"
+            ),
+        },
+        {
+            "rung": 2,
+            "module": "constrained decoding, structure + 55-type enum (question 3)",
+            "what_it_is": "one config key on the slots phase: `response_format_id`",
+            "measured_not_ceiling": False,
+            "slu_f1_ceiling": ceiling(
+                2.0 * int(conformance["what_the_violating_rows_lose"]["unparsed_gold_mentions"]),
+                2.0 * int(conformance["what_the_violating_rows_lose"]["unparsed_gold_mentions"]),
+            ),
+            "ceiling_gain": None,
+            "contacts": KC_S1B_COST["contacts"],
+            "gpu_hours": gpu_hours(1.0),
+            "why_the_ceiling_is_small": (
+                "zero of 682 predicted mentions violate the 55-type vocabulary, so the "
+                "enum is a guarantee rather than a repair; all it can recover is the 3 "
+                "unparsed rows' 10 gold mentions"
+            ),
+        },
+        {
+            "rung": 3,
+            "module": "intent narrowing applied to block selection (question 1a)",
+            "what_it_is": (
+                "a better predicted intent selects a better per-intent schema block; the "
+                "coordinator reports a cell under the name KU-S4N as already GO, and THIS "
+                "REPOSITORY CARRIES NO PREREGISTRATION OR OWNER RECORD UNDER THAT NAME, so "
+                "this rung prices the mechanism and does not confirm its authorization"
+            ),
+            "measured_not_ceiling": False,
+            "slu_f1_ceiling": ceiling(
+                2.0
+                * int(
+                    decomposition["intent_as_schema_selector"][
+                        "of_those_present_in_the_gold_intents_block"
+                    ]
+                ),
+                2.0
+                * int(
+                    decomposition["intent_as_schema_selector"][
+                        "of_those_present_in_the_gold_intents_block"
+                    ]
+                ),
+            ),
+            "contacts": KC_S1B_COST["contacts"],
+            "gpu_hours": gpu_hours(1.0),
+            "why_the_ceiling_is_an_oracle": (
+                "it assumes PERFECT intent AND that every one of the 51 newly-legal gold "
+                "mentions is then filled exactly. Real intent narrowing tops out around "
+                "96.4 by MF-8's own candidate-recall ceiling, and the slot stage would "
+                "still have to fill them"
+            ),
+        },
+        {
+            "rung": 4,
+            "module": "retrieved fillers, KU-S3 (question 4)",
+            "what_it_is": (
+                "the row's own SPEECH vector retrieves the top-5 TRAIN utterances and "
+                "their slot fillers are supplied as typed content; already preregistered "
+                "and flyable"
+            ),
+            "measured_not_ceiling": False,
+            "slu_f1_ceiling": headroom["retrieved_top_k"]["oracle_ceiling"]["slu_f1"],
+            "contacts": KC_S1B_COST["contacts"],
+            "gpu_hours": gpu_hours(1.0),
+            "why_the_ceiling_is_an_oracle": (
+                "the arm keeps every mention it already made AND emits every gold value "
+                "the retrieval supplied; a real consumption cell has to find them"
+            ),
+        },
+        {
+            "rung": 5,
+            "module": "same-speaker slot exemplars (KU-S4 applied to slots)",
+            "what_it_is": (
+                "the same-speaker exemplar supply MF-8 priced for intent, pointed at the "
+                "slot stage"
+            ),
+            "measured_not_ceiling": False,
+            "slu_f1_ceiling": None,
+            "availability": headroom["same_speaker_slot_exemplars"],
+            "contacts": KC_S1B_COST["contacts"],
+            "gpu_hours": gpu_hours(1.0),
+            "note": (
+                "no scoring ceiling is claimed: this is a SUPPLY channel, and this audit "
+                "measures only whether the supply exists"
+            ),
+        },
+        {
+            "rung": 6,
+            "module": "targeted slot re-ask on judge-flagged rows (Observer selective listening)",
+            "what_it_is": (
+                "one EXTRA contact on flagged rows only; the judges are question 3's "
+                "schema judge, question 2's value judge, and the free silent-row judge"
+            ),
+            "measured_not_ceiling": False,
+            "flagged_rows": {name: len(ids) for name, ids in sorted(flags.items())},
+            "unmatched_gold_mentions_on_flagged_rows": missing_by_flag,
+            "unmatched_gold_mentions_total": total_missing,
+            "slu_f1_ceiling": ceiling(
+                2.0 * missing_by_flag["any"], 2.0 * missing_by_flag["any"]
+            ),
+            "silent_only_ceiling": ceiling(
+                2.0 * missing_by_flag["silent"], 2.0 * missing_by_flag["silent"]
+            ),
+            "contacts": len(flags["any"]),
+            "gpu_hours": gpu_hours(len(flags["any"]) / len(roster)),
+            "note": (
+                "the ceiling assumes every re-asked row then answers every missed gold "
+                "mention exactly, which nothing does. It is here to say which judge points "
+                "at the most gold per contact, not to promise a number"
+            ),
+        },
+    ]
+    for rung in rungs:
+        if rung.get("slu_f1_ceiling") is not None:
+            rung["ceiling_gain"] = round(float(rung["slu_f1_ceiling"]) - base_slu, 2)
+            hours = float(rung["gpu_hours"] or 0.0)
+            rung["ceiling_gain_per_gpu_hour"] = (
+                round(float(rung["ceiling_gain"]) / hours, 1) if hours else None
+            )
+
+    everything = ceiling(
+        2.0
+        * (
+            int(decomposition["categories"]["missing"]["count"])
+            + int(decomposition["categories"]["type_swap"]["count"])
+        ),
+        mass,
+    )
+
+    document = {
+        "schema": "saea-slurp-mf9-improvement-ladder-v1",
+        "row_id": ROW_ID,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "contacts": {
+            "model": 0,
+            "gpu_hours": 0,
+            "tool": 0,
+            "embedding": 0,
+            "network": 0,
+            "audio_decode": 0,
+        },
+        "status": (
+            "PRICED, NOT PREREGISTERED. No cell below is admitted, promoted or registered; "
+            "no owner decision is anticipated and nothing here is flyable on the strength "
+            "of this note"
+        ),
+        "sources": {
+            "umbrella_lock": str(lock_path),
+            "loss_decomposition": "loss-decomposition.json",
+            "value_projection": "value-projection.json",
+            "schema_conformance": "schema-conformance.json",
+            "value_headroom": "value-headroom.json",
+        },
+        "baseline": {
+            "arm": KC_S1B_RUN,
+            "slu_f1": base_slu,
+            "true_positive_mass": tp,
+            "loss_mass": mass,
+            "cost": KC_S1B_COST,
+        },
+        "judges": {
+            "flag_threshold": args.flag_threshold,
+            "definitions": {
+                "silent": "the row parsed and predicted NO entity at all",
+                "schema_violating": "unparsed, or a type the row's own block did not list, "
+                "or the same type twice",
+                "value_suspect": "at least one predicted filler whose nearest TRAIN surface "
+                "form of that type is further than the flag threshold, or whose type has no "
+                "TRAIN inventory at all",
+                "any": "the union",
+            },
+            "rows": {name: len(ids) for name, ids in sorted(flags.items())},
+            "rows_pct": {
+                name: percent(len(ids), len(roster)) for name, ids in sorted(flags.items())
+            },
+            "rows_carrying_unmatched_gold": productive_by_flag,
+            "precision_pct": {
+                name: percent(productive_by_flag[name], len(ids))
+                for name, ids in sorted(flags.items())
+            },
+            "dev_rows_with_no_gold_entity_at_all": rows_with_no_gold,
+            "silent_rows_that_are_correctly_silent": silent_with_no_gold,
+            "silent_judge_note": (
+                "a third of the roster carries no gold slot at all, so a judge that fires "
+                "on silence is mostly firing on rows that are RIGHT to be silent; its "
+                "precision is what decides whether an extra contact is worth spending"
+            ),
+        },
+        "contacts_per_row": contacts_per_row,
+        "rungs": rungs,
+        "if_every_module_delivered_its_ceiling": {
+            "note": (
+                "not a sum of the rungs: the rungs overlap, and this row is the arithmetic "
+                "ceiling of the whole decomposition -- every missing gold answered, every "
+                "type swap re-typed, every surface form exact, every spurious mention "
+                "withheld"
+            ),
+            "slu_f1": everything,
+        },
+        "published_lines": PUBLISHED_SLURP_LINES,
+        "measurement_rules_any_of_these_would_inherit": {
+            "population": "DEV-1000, decision on the unexposed NEW500 (n = 500 >= 400)",
+            "comparator": "the SEALED KC-S1b rows, never a re-flight",
+            "greedy_noise_floor": (
+                "EVO-S1 round 1 measured 286 of 1,019 byte-identically prompted rows "
+                "(28.1 %) returning different text on this carrier and this build; a claim "
+                "read off a handful of moved rows sits below the noise"
+            ),
+            "power": "paired effectiveness needs n >= 400 (owner 2026-09-03)",
+        },
+    }
+    write_json(out_dir / "improvement-ladder.json", document)
+    print(json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True))
+    return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -2041,6 +2427,10 @@ def build_parser() -> argparse.ArgumentParser:
     headroom = subparsers.add_parser("headroom", help="question 4")
     headroom.add_argument("--k", type=int, default=5)
     headroom.set_defaults(func=command_headroom)
+
+    ladder = subparsers.add_parser("ladder", help="question 5")
+    ladder.add_argument("--flag-threshold", type=float, default=0.20)
+    ladder.set_defaults(func=command_ladder)
 
     return parser
 
