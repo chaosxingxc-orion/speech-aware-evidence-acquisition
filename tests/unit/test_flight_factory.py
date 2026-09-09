@@ -203,3 +203,158 @@ def test_legacy_slurp_wrapper_reexports_shared_adapter_loader_and_binder():
     assert namespace["ClosedListSlurpAdapter"] is RuntimeSlurpAdapter
     assert namespace["roster_samples"] is roster_samples
     assert namespace["_bind_ku_s4_material"] is bind_runtime_material
+
+
+
+def test_builtin_task_adapters_registers_earnings21_and_slurp():
+    from speech_aware_evidence_acquisition.core.base import TASK_ADAPTERS
+    from speech_aware_evidence_acquisition.core.flight.factory import (
+        register_builtin_task_adapters,
+    )
+
+    register_builtin_task_adapters()
+    assert "slurp" in TASK_ADAPTERS.names()
+    assert "earnings21-original" in TASK_ADAPTERS.names()
+
+
+def test_window_fit_inputs_bind_window_sources_and_payload_boundary(tmp_path):
+    from types import SimpleNamespace
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+
+    runtime = object.__new__(FlightRuntime)
+    runtime.preparation_context = lambda: {
+        "values": {"arm": "bare-core"},
+        "split_identity_hash": "0" * 64,
+        "runtime_receipt": {"sha256": "receipt"},
+        "required_identity": {"sha256": "identity"},
+    }
+    batch = SimpleNamespace(
+        source_bindings=(
+            {"sample_id": "e21:c1", "media_relpath": "derived/obs-slices/fit-run/windows/c1.wav", "sha256": "a"},
+        ),
+    )
+    first = runtime.request_fit_inputs(
+        [{"sample_id": "e21:c1", "media_relpath": "derived/obs-slices/fit-run/windows/c1.wav"}],
+        window_batch=batch,
+    )
+    batch.source_bindings = (
+        {"sample_id": "e21:c1", "media_relpath": "derived/obs-slices/fit-run/windows/c1.wav", "sha256": "changed"},
+    )
+    second = runtime.request_fit_inputs(
+        [{"sample_id": "e21:c1", "media_relpath": "windows/c1.wav"}],
+        window_batch=batch,
+    )
+    assert first["sources"]["window_sources"][0]["sha256"] == "a"
+    assert first["sources"]["window_sources"][0]["media_relpath"] == (
+        "derived/obs-slices/<run-id>/windows/c1.wav"
+    )
+    assert first != second
+    other_run = runtime.request_fit_inputs(
+        [{"sample_id": "e21:c1", "media_relpath": "derived/obs-slices/generation-run/windows/c1.wav"}],
+        window_batch=SimpleNamespace(
+            source_bindings=(
+                {"sample_id": "e21:c1", "media_relpath": "derived/obs-slices/generation-run/windows/c1.wav", "sha256": "a"},
+            ),
+        ),
+    )
+    assert first == other_run
+    arbitrary_path = runtime.request_fit_inputs(
+        [{"sample_id": "e21:c1", "media_relpath": "windows/c1.wav"}],
+        window_batch=SimpleNamespace(
+            source_bindings=(
+                {"sample_id": "e21:c1", "media_relpath": "windows/c1.wav", "sha256": "a"},
+            ),
+        ),
+    )
+    assert first != arbitrary_path
+    changed_window = runtime.request_fit_inputs(
+        [{"sample_id": "e21:c1", "media_relpath": "windows/changed.wav"}],
+        window_batch=batch,
+    )
+    assert first["sources"]["boundary_sha256"] != changed_window["sources"]["boundary_sha256"]
+
+
+def test_window_fit_refuses_non_raw_or_adaptive_adapter():
+    from types import SimpleNamespace
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    from speech_aware_evidence_acquisition.core.preparation import PreparationError
+
+    runtime = object.__new__(FlightRuntime)
+    runtime._prepare = lambda: (
+        {"policy": "obs-agent-loop-ojw"},
+        "earnings21-original",
+        "discovery",
+        "identity",
+    )
+    runtime._adapter = SimpleNamespace(
+        preprocess_plan=lambda: {"kind": "adaptive-windows"},
+    )
+    with pytest.raises(PreparationError, match="raw-speech-windows"):
+        runtime.materialize_window_batch()
+
+
+
+def test_prepared_window_fit_accepts_matching_receipt_and_rejects_changed_source(
+    tmp_path, monkeypatch
+):
+    from types import SimpleNamespace
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    from speech_aware_evidence_acquisition.core.preparation import PreparationError
+    import hashlib
+
+    receipt = tmp_path / "fit.json"
+    receipt.write_text("fit", encoding="utf-8")
+    digest = hashlib.sha256(receipt.read_bytes()).hexdigest()
+    batch = SimpleNamespace(
+        payloads=(
+            {"sample_id": "e21:c1", "media_relpath": "windows/c1.wav"},
+            {"sample_id": "e21:c1", "media_relpath": "windows/c2.wav"},
+        ),
+        request_keys=("e21:c1#w0001", "e21:c1#w0002"),
+        source_bindings=(
+            {"sample_id": "e21:c1", "media_relpath": "derived/obs-slices/fit-run/windows/c1.wav", "sha256": "a"},
+            {"sample_id": "e21:c1", "media_relpath": "windows/c2.wav", "sha256": "b"},
+        ),
+    )
+    runtime = object.__new__(FlightRuntime)
+    runtime._data_root = tmp_path
+    runtime._adapter = SimpleNamespace(
+        preprocess_plan=lambda: {"kind": "raw-speech-windows"},
+    )
+    runtime._prepare = lambda: ({}, "earnings21-original", "discovery", "identity")
+    runtime.materialize_window_batch = lambda: batch
+    runtime.request_fit_inputs = lambda payloads, *, window_batch: {
+        "window_sources": list(window_batch.source_bindings)
+    }
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.core.preparation.load_artifact",
+        lambda path, expected_sha256, kind, inputs: {
+            "every_request_fits": True,
+            "rows": [
+                {"request_key": key, "fits": True}
+                for key in batch.request_keys
+            ],
+            "sample_count": 2,
+        },
+    )
+
+    accepted = runtime._verify_prepared_request_fit(
+        {"relpath": "fit.json", "sha256": digest}
+    )
+    assert accepted["every_request_fits"] is True
+    assert accepted["sample_count"] == 2
+
+    batch.source_bindings = (
+        {"sample_id": "e21:c1", "media_relpath": "derived/obs-slices/fit-run/windows/c1.wav", "sha256": "changed"},
+        batch.source_bindings[1],
+    )
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.core.preparation.load_artifact",
+        lambda path, expected_sha256, kind, inputs: (_ for _ in ()).throw(
+            PreparationError("window source binding changed")
+        ),
+    )
+    with pytest.raises(PreparationError, match="source binding changed"):
+        runtime._verify_prepared_request_fit(
+            {"relpath": "fit.json", "sha256": digest}
+        )

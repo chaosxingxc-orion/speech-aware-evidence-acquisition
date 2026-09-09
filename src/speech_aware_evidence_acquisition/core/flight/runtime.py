@@ -3577,14 +3577,16 @@ class FlightRuntime:
 
     def preparation_context(self):
         """Resolve a fit context without preflight's circular fit-pin check."""
-        values, _carrier, _split, identity = self._prepare()
+        values, carrier, _split, identity = self._prepare()
         receipt = self._runtime_receipt_loader(
             resolve_runtime_receipt_path(self._repo_root, values))
+        preparation_plan = self._build_execution_plan(values, carrier, identity)
         return {
             "values": values, "split_identity_hash": identity,
             "data_root": self._data_root, "runtime_root": self._runtime_root,
             "run_id": self._run_id, "attempt_id": self.attempt_id,
             "geometry": dict(self._adapter.serving_geometry()),
+            "execution_plan": preparation_plan,
             "sample_ids": [sample.sample_id for sample in self._samples],
             "runtime_receipt": receipt,
             "required_identity": self.session_required_identity(),
@@ -3617,7 +3619,99 @@ class FlightRuntime:
         require_clean_study_repo(self._repo_root)
         return plan
 
-    def request_fit_inputs(self, payloads):
+    def materialize_request_fit_batch(self, *, execution_plan=None):
+        """Return raw E21 fit requests, or ``None`` for phase-program fits.
+
+        The shared preparation fitter calls this before it decides how to
+        render a request. Keeping the dispatch here makes root-coordinated
+        and attach-only fits bind the same request builder and source facts.
+        """
+        if self._adapter.preprocess_plan().get("kind") != "raw-speech-windows":
+            return None
+        return self.materialize_window_batch(execution_plan=execution_plan)
+
+    def materialize_window_batch(self, *, execution_plan=None):
+        """Build the configured E21 raw-window requests without model contact."""
+        from ..base import SampleContext
+        from ..model.slices import SliceRegistry
+        from ..preparation import PreparationError
+        from ..preparation_windows import materialize_window_requests
+        from ...reproduction.window_controller import (
+            PROGRAM_KEY,
+            build_controller_window_hook,
+        )
+        from ...reproduction.repair_loop import build_repair_window_hook
+
+        values, _carrier, _split, _identity = self._prepare()
+        if self._adapter.preprocess_plan().get("kind") != "raw-speech-windows":
+            raise PreparationError(
+                "window fit requires the E21 raw-speech-windows adapter"
+            )
+        if not isinstance(self._adapter, TaskAdapter):
+            raise PreparationError("window fit requires the prepared runtime adapter")
+        if values.get("policy") not in (
+            "obs-agent-loop-ojw",
+            "obs-repair-loop-ojw",
+        ):
+            raise PreparationError(
+                "window fit refuses unsupported live or adaptive policies"
+            )
+        if values.get("evidence_source", "none") not in (None, "none"):
+            raise PreparationError(
+                "window fit refuses evidence-bearing arms until shared evidence "
+                "materialization is available"
+            )
+        plan = execution_plan or self._plan
+        if values.get(PROGRAM_KEY) and plan is None:
+            raise PreparationError("window fit requires the authorized execution plan")
+        registry = SliceRegistry(
+            data_root=self._data_root,
+            run_id=self._run_id,
+            parent_facts={
+                sample.sample_id: (sample.media_relpath, sample.audio_seconds)
+                for sample in self._samples
+            },
+        )
+        contexts = []
+        for sample in self._samples:
+            contexts.append(
+                SampleContext(
+                    sample=sample,
+                    evidence=[],
+                    adapter=self._adapter,
+                    sink=object(),
+                    arm=str(values["arm"]),
+                    task_instruction=self._adapter.instruction(sample),
+                    decoding_params=dict(values.get("decoding_params", {})),
+                    request_id_base=f"{self._run_id}-{sample.sample_id}",
+                    extras={
+                        "slice_registry": registry,
+                        "data_root": self._data_root,
+                        "run_dir": self._run_dir(),
+                        "repo_root": self._repo_root,
+                        "config_values": values,
+                        "execution_plan": plan,
+                        "obs_dispatcher": None,
+                    },
+                )
+            )
+
+        def hook_factory(ctx, cfg, root, sample):
+            delegate = None
+            if values["policy"] == "obs-repair-loop-ojw":
+                delegate = build_repair_window_hook(ctx, cfg, root, sample)
+            if values.get(PROGRAM_KEY):
+                return build_controller_window_hook(ctx, cfg, delegate)
+            return delegate
+
+        return materialize_window_requests(
+            contexts,
+            expected_sample_ids=[sample.sample_id for sample in self._samples],
+            hook_factory=hook_factory,
+        )
+
+
+    def request_fit_inputs(self, payloads, *, window_batch=None):
         from .. import preparation, preparation_fit
         from .. import config as config_module
         from ..model import transport
@@ -3627,25 +3721,43 @@ class FlightRuntime:
         from ...rails import core_client
 
         context = self.preparation_context()
-        return artifact_inputs(
-            config=context["values"], split_identity_hash=context["split_identity_hash"],
-            sources={
-                "boundary_sha256": preparation_fit.boundary_identity(payloads),
-                "runtime_receipt": context["runtime_receipt"],
-                "required_identity": context["required_identity"],
-                "implementation": {
-                    "runtime": _sha256_file(Path(__file__)),
-                    "transport": _sha256_file(Path(transport.__file__)),
-                    "preparation_fit": _sha256_file(Path(preparation_fit.__file__)),
-                    "preparation": _sha256_file(Path(preparation.__file__)),
-                    "runtime": _sha256_file(Path(__file__)),
-                    "config": _sha256_file(Path(config_module.__file__)),
-                    "runtime_view": _sha256_file(Path(runtime_view.__file__)),
-                    "core_client": _sha256_file(Path(core_client.__file__)),
-                    "speech_features": _sha256_file(Path(speech_features.__file__)),
-                },
+        sources = {
+            "boundary_sha256": preparation_fit.boundary_identity(
+                payloads, window_routes=window_batch is not None
+            ),
+            "runtime_receipt": context["runtime_receipt"],
+            "required_identity": context["required_identity"],
+            "implementation": {
+                "runtime": _sha256_file(Path(__file__)),
+                "transport": _sha256_file(Path(transport.__file__)),
+                "preparation_fit": _sha256_file(Path(preparation_fit.__file__)),
+                "preparation": _sha256_file(Path(preparation.__file__)),
+                "config": _sha256_file(Path(config_module.__file__)),
+                "runtime_view": _sha256_file(Path(runtime_view.__file__)),
+                "core_client": _sha256_file(Path(core_client.__file__)),
+                "speech_features": _sha256_file(Path(speech_features.__file__)),
+
             },
+        }
+        if window_batch is not None:
+            from ...reproduction import obs_loop, repair_loop
+            from .. import preparation_windows
+            sources.update(
+                window_sources=list(
+                    preparation_fit.canonical_window_sources(window_batch.source_bindings)
+                ),
+                window_measurement="resident-multimodal-input-tokens",
+                window_implementation={
+                    module.__name__: _sha256_file(Path(module.__file__))
+                    for module in (obs_loop, repair_loop, preparation_windows)
+                },
+            )
+        return artifact_inputs(
+            config=context["values"],
+            split_identity_hash=context["split_identity_hash"],
+            sources=sources,
         )
+
 
     def _verify_prepared_request_fit(self, pin):
         from ..preparation import PreparationError, load_artifact
@@ -3657,21 +3769,44 @@ class FlightRuntime:
             self._data_root, _normalized_relative_path(pin["relpath"], "prepared fit"),
             self._data_root, "prepared fit", strict=True,
         )
-        payloads = self.materialize_phase_requests()
-        result = load_artifact(path, expected_sha256=pin["sha256"], kind="request-fit",
-                               inputs=self.request_fit_inputs(payloads))
+        self._prepare()
+        window_batch = None
+        if self._adapter.preprocess_plan().get("kind") == "raw-speech-windows":
+            window_batch = self.materialize_window_batch()
+        if window_batch is not None:
+            payloads = window_batch.payloads
+        else:
+            payloads = self.materialize_phase_requests()
+        result = load_artifact(
+            path,
+            expected_sha256=pin["sha256"],
+            kind="request-fit",
+            inputs=self.request_fit_inputs(payloads, window_batch=window_batch),
+        )
         if not isinstance(result, dict) or result.get("every_request_fits") is not True:
             raise PreparationError("prepared request fit did not pass every row")
         rows = result.get("rows")
-        expected = {payload["sample_id"] for payload in payloads}
-        if (not isinstance(rows, list) or len(rows) != len(expected)
-                or any(not isinstance(row, dict) or row.get("fits") is not True for row in rows)
-                or {row.get("sample_id") for row in rows} != expected
-                or result.get("sample_count") != len(expected)):
+        expected = (
+            set(window_batch.request_keys)
+            if window_batch is not None
+            else {payload["sample_id"] for payload in payloads}
+        )
+        row_key = "request_key" if window_batch is not None else "sample_id"
+        if (
+            not isinstance(rows, list)
+            or len(rows) != len(expected)
+            or any(not isinstance(row, dict) or row.get("fits") is not True for row in rows)
+            or {row.get(row_key) for row in rows} != expected
+            or result.get("sample_count") != len(expected)
+        ):
             raise PreparationError("prepared request fit does not certify the full roster")
-        return {"schema": "saea-prepared-request-fit-check-v1",
-                "sample_count": len(expected), "every_request_fits": True,
-                "sha256": pin["sha256"], "relpath": pin["relpath"]}
+        return {
+            "schema": "saea-prepared-request-fit-check-v1",
+            "sample_count": len(expected),
+            "every_request_fits": True,
+            "sha256": pin["sha256"],
+            "relpath": pin["relpath"],
+        }
 
     def materialize_phase_requests(self, *, max_workers: int = 1):
         """Return every real boundary payload for a single-phase fit.

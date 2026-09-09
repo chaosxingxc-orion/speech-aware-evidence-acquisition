@@ -6,7 +6,7 @@ import json
 from dataclasses import dataclass
 from collections import Counter
 from collections.abc import Callable, Mapping, Sequence
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from .preparation import PreparationError, canonical_bytes, digest, measure_request
 
@@ -79,12 +79,40 @@ def packet_token_counts(
     return tuple(sum(chunk.n_tokens for chunk in packet.chunks) for packet in packets)
 
 
-def boundary_identity(payloads: Sequence[Mapping[str, object]]) -> str:
+def _canonical_window_route_path(value: object) -> object:
+    if not isinstance(value, str):
+        return value
+    parts = PurePosixPath(value).parts
+    if len(parts) >= 4 and parts[:2] == ("derived", "obs-slices") and parts[2]:
+        return "/".join((*parts[:2], "<run-id>", *parts[3:]))
+    return value
+
+
+def canonical_window_sources(
+    source_bindings: Sequence[Mapping[str, object]],
+) -> tuple[dict[str, object], ...]:
+    """Normalize only the run-owned slice path; retain all source facts."""
+    return tuple(
+        {
+            **source,
+            "media_relpath": _canonical_window_route_path(source.get("media_relpath")),
+        }
+        for source in source_bindings
+    )
+
+
+def boundary_identity(
+    payloads: Sequence[Mapping[str, object]], *, window_routes: bool = False
+) -> str:
     # These two routing values never enter the prompt; worker assignment may
     # change them. Completion limits and every model-visible field stay bound.
     normalized = []
     for payload in payloads:
         row = {k: v for k, v in payload.items() if k != "request_id"}
+        if window_routes:
+            row["media_relpath"] = _canonical_window_route_path(
+                row.get("media_relpath")
+            )
         if isinstance(row.get("decoding_params"), Mapping):
             row["decoding_params"] = {
                 k: v for k, v in row["decoding_params"].items() if k != "id_slot"
@@ -253,28 +281,26 @@ def fit_phase_runtime(
     if prepared_phase is not None:
         payloads, inputs = _consume_phase_fit(runtime, prepared_phase, context)
     else:
+        # The runtime dispatches raw windows before any service attachment.
+        # Frozen phase batches bypass rematerialization and remain source-bound.
+        if window_batch is None:
+            materialize = getattr(runtime, "materialize_request_fit_batch", None)
+            if callable(materialize):
+                window_batch = materialize(
+                    execution_plan=context.get("execution_plan")
+                )
         payloads = (
             runtime.materialize_phase_requests()
             if window_batch is None
             else window_batch.payloads
         )
-        inputs = runtime.request_fit_inputs(payloads)
-    if window_batch is not None:
-        from ..reproduction import obs_loop, repair_loop
-        from . import preparation_windows
-        import hashlib
+        inputs = (
+            runtime.request_fit_inputs(payloads)
+            if window_batch is None
+            else runtime.request_fit_inputs(payloads, window_batch=window_batch)
+        )
 
-        inputs = {
-            **inputs,
-            "window_sources": list(window_batch.source_bindings),
-            "window_measurement": "resident-multimodal-input-tokens",
-            "window_implementation": {
-                module.__name__: hashlib.sha256(
-                    Path(module.__file__).read_bytes()
-                ).hexdigest()
-                for module in (obs_loop, repair_loop, preparation_windows)
-            },
-        }
+    if window_batch is not None:
         if {p["sample_id"] for p in payloads} != set(context["sample_ids"]):
             raise PreparationError("window fit does not cover the runtime call roster")
     path = Path(path)

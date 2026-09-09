@@ -29,6 +29,7 @@ def setup_runtime(tmp_path):
         }
     ]
     runtime._samples = [SimpleNamespace(sample_id="s1")]
+    runtime._adapter = SimpleNamespace(preprocess_plan=lambda: {})
     runtime._phase_program_material = None
     snapshot = SimpleNamespace(
         content_hash=lambda: "a" * 64,
@@ -171,7 +172,7 @@ def test_actual_fit_pin_verifier_binds_all_rows(tmp_path, failure):
     runtime, _binding, _program = setup_runtime(tmp_path)
     payloads = [{"sample_id": "s1"}]
     runtime.materialize_phase_requests = lambda: payloads
-    runtime.request_fit_inputs = lambda p: {"boundary": p}
+    runtime.request_fit_inputs = lambda p, **kwargs: {"boundary": p}
     output = {
         "rows": [{"sample_id": "s1", "fits": True}],
         "sample_count": 1,
