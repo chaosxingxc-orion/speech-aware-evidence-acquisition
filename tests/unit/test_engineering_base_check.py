@@ -598,3 +598,34 @@ def test_a_fully_registered_judges_list_is_not_an_offender(tmp_path, capsys):
 
     assert exit_code == 0
     assert report["passed"] is True
+
+
+def test_subclass_detector_resolves_aliases_transitive_imports_and_unrelated_names(tmp_path):
+    """Subclass detection follows imports while keeping same-named locals isolated."""
+
+    _write(tmp_path / "src/speech_aware_evidence_acquisition/rails/task_adapter.py", "class TaskAdapter: pass\n")
+    _write(tmp_path / "src/speech_aware_evidence_acquisition/rails/controllers.py", "class EvidenceAgentController: pass\n")
+    _write(tmp_path / "src/speech_aware_evidence_acquisition/rails/adapters/base.py", "from ..task_adapter import TaskAdapter as AdapterBase\nclass SharedAdapter(AdapterBase): pass\n")
+    _write(tmp_path / "scripts/ordinary.py", "from speech_aware_evidence_acquisition.rails.adapters.base import SharedAdapter as SA\nclass ScriptAdapter(SA): pass\nclass TaskAdapter: pass\nclass Unrelated(TaskAdapter): pass\n")
+    _write(tmp_path / "scripts/controller_child.py", "from speech_aware_evidence_acquisition.rails.controllers import EvidenceAgentController as EAC\nclass Child(EAC): pass\n")
+
+    reader = ebc.LiveTreeReader(tmp_path)
+    assert ebc.find_subclasses(reader, "speech_aware_evidence_acquisition.rails.task_adapter", "TaskAdapter") == [
+        "scripts/ordinary.py::ScriptAdapter",
+        "src/speech_aware_evidence_acquisition/rails/adapters/base.py::SharedAdapter",
+    ]
+    assert ebc.find_subclasses(reader, "speech_aware_evidence_acquisition.rails.controllers", "EvidenceAgentController") == [
+        "scripts/controller_child.py::Child",
+    ]
+
+
+def test_subclass_detector_reports_allowed_class_exported_to_script(tmp_path):
+    _write(tmp_path / "src/speech_aware_evidence_acquisition/rails/task_adapter.py", "class TaskAdapter: pass\n")
+    _write(tmp_path / "src/speech_aware_evidence_acquisition/rails/adapters/allowed.py", "from ..task_adapter import TaskAdapter\nclass AllowedAdapter(TaskAdapter): pass\n")
+    _write(tmp_path / "flights/run.py", "from speech_aware_evidence_acquisition.rails.adapters.allowed import AllowedAdapter\nclass FlightAdapter(AllowedAdapter): pass\n")
+
+    reader = ebc.LiveTreeReader(tmp_path)
+    assert ebc.find_subclasses(reader, "speech_aware_evidence_acquisition.rails.task_adapter", "TaskAdapter") == [
+        "flights/run.py::FlightAdapter",
+        "src/speech_aware_evidence_acquisition/rails/adapters/allowed.py::AllowedAdapter",
+    ]
