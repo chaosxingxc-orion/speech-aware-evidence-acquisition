@@ -1,0 +1,99 @@
+{
+  "arms": {
+    "COMPARATOR": {
+      "attempt_id": "attempt-20260905T060424Z-2c5596",
+      "cost": {
+        "audio_seconds_used": 2884.793687499999,
+        "calls_used": 1000,
+        "completion_tokens_total": 26495,
+        "latency_seconds_total": 1621.6773367080023,
+        "prompt_tokens_total": 2190161,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+      },
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
+      "manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c",
+      "outputs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.outputs.jsonl",
+      "outputs_sha256": "34fda7fa51410e0f4f7e8ba7c35f867c32f53c244de63af5386860486fcb885b",
+      "protocol_hash": "7e83a70508068d1a1c2512cabbc91b8417821ae5796038c2bc6fa4950bb951b2",
+      "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1",
+      "status": "COMPLETED",
+      "study_commit": "aae0a90d1a6fd3bb858e9b1ec011ad2c168bd336"
+    },
+    "REPLICATE": {
+      "attempt_id": "attempt-20260909T043847Z-f4306e",
+      "cost": {
+        "audio_seconds_used": 2884.793687499999,
+        "calls_used": 1000,
+        "completion_tokens_total": 26570,
+        "latency_seconds_total": 1695.3172696060028,
+        "prompt_tokens_total": 2190161,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      },
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-NULL-REPLICATE-V1/attempt-20260909T043847Z-f4306e/SAEA-SLURP-DEV1000-NULL-REPLICATE-V1.run-manifest.json",
+      "manifest_sha256": "e229d1d3ff652378a1c133b548b0c63abdb7672b5f57612c501b5067366282b1",
+      "outputs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-NULL-REPLICATE-V1/attempt-20260909T043847Z-f4306e/SAEA-SLURP-DEV1000-NULL-REPLICATE-V1.outputs.jsonl",
+      "outputs_sha256": "e34e18b2986bb3eea2387a69e34a1d6cdbe5f7400cf83d93f2a424344f381a87",
+      "protocol_hash": "7e83a70508068d1a1c2512cabbc91b8417821ae5796038c2bc6fa4950bb951b2",
+      "run_id": "SAEA-SLURP-DEV1000-NULL-REPLICATE-V1",
+      "status": "COMPLETED",
+      "study_commit": "c6e8e95ae49e3cc0d56155cb224cd35e1715cdc4"
+    }
+  },
+  "checks_passed_per_row": {
+    "audio_seconds": 1000,
+    "mmproj_loaded_false": 1000,
+    "no_variant_suffix": 1000,
+    "prompt_tokens": 1000,
+    "request_identity_sha256": 1000,
+    "speech_packet_sha256": 1000,
+    "task_instruction_sha256": 1000
+  },
+  "contacts": {
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "network": 0,
+    "paid_api_spend": 0,
+    "servers_started": 0
+  },
+  "disagreeing_row_count": 0,
+  "disagreeing_rows": [],
+  "excluded_scheduling_fields": [
+    "request_id",
+    "decoding_params.id_slot"
+  ],
+  "generated_at": "2026-09-09T04:46:38.596938+00:00",
+  "manifest_cost_checks": {
+    "audio_seconds_used": {
+      "actual": 2884.793687499999,
+      "equal": true,
+      "expected": 2884.793687499999
+    },
+    "calls_used": {
+      "actual": 1000,
+      "equal": true,
+      "expected": 1000
+    },
+    "prompt_tokens_total": {
+      "actual": 2190161,
+      "equal": true,
+      "expected": 2190161
+    }
+  },
+  "passed": true,
+  "preregistration": "docs/readiness/2026-09-09-slurp-own-null-replicate-v1-preregistration.md",
+  "prompt_token_delta_histogram": {
+    "0": 1000
+  },
+  "prompt_tokens_total": {
+    "comparator": 2190161,
+    "replicate": 2190161
+  },
+  "row": "SAEA-SLURP-DEV1000-NULL-REPLICATE-V1",
+  "rows_extra": [],
+  "rows_missing": [],
+  "rows_paired": 1000,
+  "schema": "saea-slurp-own-null-replicate-v1-falsifier-v1",
+  "section": "2 -- the falsifier, before any score file is opened"
+}

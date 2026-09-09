@@ -1,0 +1,610 @@
+{
+  "contacts": {
+    "frozen_core": 0,
+    "gpu_hours": 0,
+    "network": 0,
+    "paid_api_spend": 0,
+    "servers_started": 0
+  },
+  "falsifier": {
+    "checks_passed_per_row": {
+      "audio_seconds": 1000,
+      "mmproj_loaded_false": 1000,
+      "no_variant_suffix": 1000,
+      "prompt_tokens": 1000,
+      "request_identity_sha256": 1000,
+      "speech_packet_sha256": 1000,
+      "task_instruction_sha256": 1000
+    },
+    "disagreeing_row_count": 0,
+    "manifest_cost_checks": {
+      "audio_seconds_used": {
+        "actual": 2884.793687499999,
+        "equal": true,
+        "expected": 2884.793687499999
+      },
+      "calls_used": {
+        "actual": 1000,
+        "equal": true,
+        "expected": 1000
+      },
+      "prompt_tokens_total": {
+        "actual": 2190161,
+        "equal": true,
+        "expected": 2190161
+      }
+    },
+    "passed": true,
+    "prompt_token_delta_histogram": {
+      "0": 1000
+    },
+    "prompt_tokens_total": {
+      "comparator": 2190161,
+      "replicate": 2190161
+    },
+    "rows_extra": 0,
+    "rows_missing": 0,
+    "rows_paired": 1000
+  },
+  "flip_rates": {
+    "clusters_with_a_flip": 84,
+    "imported_floor_being_replaced": {
+      "measurement": "286 of 1,019 byte-identically prompted rows (28.1 %) returned different text anyway",
+      "rate_pct": 28.1,
+      "source": "docs/readiness/2026-09-06-slurp-evo-s1-round-1-verdict.md section 1"
+    },
+    "parse_success_flips": 3,
+    "parsed_label_flip_rate_pct": 5.9,
+    "parsed_label_flips": 59,
+    "parsed_slot_set_flip_rate_pct": 14.4,
+    "parsed_slot_set_flips": 144,
+    "projected_intent_flip_rate_pct": 5.2,
+    "projected_intent_flips": 52,
+    "raw_completion_flip_rate_pct": 17.9,
+    "raw_completion_flips": 179,
+    "raw_completion_identical": 821,
+    "raw_completion_identity_rate_pct": 82.1,
+    "rows": 1000
+  },
+  "identity_gate": {
+    "action": {
+      "actual": 74.6,
+      "equal": true,
+      "expected": 74.6
+    },
+    "char_f1": {
+      "actual": 38.2,
+      "equal": true,
+      "expected": 38.2
+    },
+    "entities_strict": {
+      "actual": 21.91,
+      "equal": true,
+      "expected": 21.91
+    },
+    "identity_check_passed": {
+      "actual": true,
+      "equal": true,
+      "expected": true
+    },
+    "intent": {
+      "actual": 73.1,
+      "equal": true,
+      "expected": 73.1
+    },
+    "scenario": {
+      "actual": 82.6,
+      "equal": true,
+      "expected": 82.6
+    },
+    "slu_f1": {
+      "actual": 35.8,
+      "equal": true,
+      "expected": 35.8
+    },
+    "unparsed": {
+      "actual": 3,
+      "equal": true,
+      "expected": 3
+    },
+    "word_f1": {
+      "actual": 33.69,
+      "equal": true,
+      "expected": 33.69
+    }
+  },
+  "identity_gate_passed": true,
+  "manifests": {
+    "COMPARATOR": {
+      "attempt_id": "attempt-20260905T060424Z-2c5596",
+      "cost": {
+        "audio_seconds_used": 2884.793687499999,
+        "calls_used": 1000,
+        "completion_tokens_total": 26495,
+        "latency_seconds_total": 1621.6773367080023,
+        "prompt_tokens_total": 2190161,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "fe843e1b4789d3f3b47731ddf5b1bb42d430b05afe74292afc9ca0a6368e2864"
+      },
+      "derived_manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.own-null-replicate-v1-read.run-manifest.json",
+      "derived_manifest_scorers": [
+        "slurp-slu-official-projected-v2",
+        "slurp-slu-f1-normalized-v1"
+      ],
+      "derived_manifest_sha256": "f017156d6f4509f927598ef9c926e9f5d1139aaf8d9fea7580b48b4cda2738b9",
+      "protocol_hash": "7e83a70508068d1a1c2512cabbc91b8417821ae5796038c2bc6fa4950bb951b2",
+      "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1",
+      "score_file": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-NULL-REPLICATE-V1/own-null-read-score-batch/comparator.score.json",
+      "score_file_sha256": "b418ee8f02fe06d1fa21e0c55bd2074ae81edaa6980c648c2cbfb16e8a4773a4",
+      "sealed_manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
+      "sealed_manifest_scorers": [
+        "slurp-slu-official",
+        "slurp-slu",
+        "cost"
+      ],
+      "sealed_manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c",
+      "status": "COMPLETED",
+      "study_commit": "aae0a90d1a6fd3bb858e9b1ec011ad2c168bd336"
+    },
+    "REPLICATE": {
+      "attempt_id": "attempt-20260909T043847Z-f4306e",
+      "cost": {
+        "audio_seconds_used": 2884.793687499999,
+        "calls_used": 1000,
+        "completion_tokens_total": 26570,
+        "latency_seconds_total": 1695.3172696060028,
+        "prompt_tokens_total": 2190161,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      },
+      "derived_manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-NULL-REPLICATE-V1/attempt-20260909T043847Z-f4306e/SAEA-SLURP-DEV1000-NULL-REPLICATE-V1.own-null-replicate-v1-read.run-manifest.json",
+      "derived_manifest_scorers": [
+        "slurp-slu-official-projected-v2",
+        "slurp-slu-f1-normalized-v1"
+      ],
+      "derived_manifest_sha256": "60764114f7d302e2d3cec02f01406393d71a19cfe92ddd2b835cc67690c9f5d0",
+      "protocol_hash": "7e83a70508068d1a1c2512cabbc91b8417821ae5796038c2bc6fa4950bb951b2",
+      "run_id": "SAEA-SLURP-DEV1000-NULL-REPLICATE-V1",
+      "score_file": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-NULL-REPLICATE-V1/own-null-read-score-batch/replicate.score.json",
+      "score_file_sha256": "b9c5d47185164e7a2d2c380bfe82e4a5f7d104fda362d173e76523e60421eb39",
+      "sealed_manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-NULL-REPLICATE-V1/attempt-20260909T043847Z-f4306e/SAEA-SLURP-DEV1000-NULL-REPLICATE-V1.run-manifest.json",
+      "sealed_manifest_scorers": [
+        "slurp-slu-official",
+        "slurp-slu",
+        "cost"
+      ],
+      "sealed_manifest_sha256": "e229d1d3ff652378a1c133b548b0c63abdb7672b5f57612c501b5067366282b1",
+      "status": "COMPLETED",
+      "study_commit": "c6e8e95ae49e3cc0d56155cb224cd35e1715cdc4"
+    }
+  },
+  "margins": {
+    "micro_char_f1": {
+      "delta_pp": 0.1033,
+      "estimand": "micro (pooled) F1, the paper-facing figure",
+      "margin_pp": 1.2743,
+      "null_interval_pp": [
+        -1.1904,
+        1.3582
+      ]
+    },
+    "micro_entities_strict": {
+      "delta_pp": 0.7562,
+      "estimand": "micro (pooled) F1, the paper-facing figure",
+      "margin_pp": 1.2607,
+      "null_interval_pp": [
+        -0.5225,
+        1.9988
+      ]
+    },
+    "micro_slu_f1": {
+      "delta_pp": 0.2873,
+      "estimand": "micro (pooled) F1, the paper-facing figure",
+      "margin_pp": 1.1804,
+      "null_interval_pp": [
+        -0.9088,
+        1.4521
+      ]
+    },
+    "micro_word_f1": {
+      "delta_pp": 0.43,
+      "estimand": "micro (pooled) F1, the paper-facing figure",
+      "margin_pp": 1.1317,
+      "null_interval_pp": [
+        -0.7093,
+        1.5541
+      ]
+    },
+    "per_row_action_exact": {
+      "delta_pp": 0.4,
+      "estimand": "mean of the per-row value",
+      "margin_pp": 0.979,
+      "null_interval_pp": [
+        -0.5882,
+        1.3699
+      ]
+    },
+    "per_row_scenario_action_exact": {
+      "delta_pp": 0.5,
+      "estimand": "mean of the per-row value",
+      "margin_pp": 0.9195,
+      "null_interval_pp": [
+        -0.4049,
+        1.4341
+      ]
+    },
+    "per_row_scenario_exact": {
+      "delta_pp": 0.4,
+      "estimand": "mean of the per-row value",
+      "margin_pp": 0.8255,
+      "null_interval_pp": [
+        -0.4188,
+        1.2322
+      ]
+    },
+    "per_row_slot_f1_exact_f1": {
+      "delta_pp": 0.2848,
+      "estimand": "mean of the per-row value",
+      "margin_pp": 0.7696,
+      "null_interval_pp": [
+        -0.5063,
+        1.0329
+      ]
+    },
+    "per_row_slu_f1_char_f1": {
+      "delta_pp": 0.0599,
+      "estimand": "mean of the per-row value",
+      "margin_pp": 0.8743,
+      "null_interval_pp": [
+        -0.8437,
+        0.905
+      ]
+    },
+    "per_row_slu_f1_f1": {
+      "delta_pp": 0.1393,
+      "estimand": "mean of the per-row value",
+      "margin_pp": 0.8188,
+      "null_interval_pp": [
+        -0.6963,
+        0.9413
+      ]
+    },
+    "per_row_slu_f1_word_f1": {
+      "delta_pp": 0.1879,
+      "estimand": "mean of the per-row value",
+      "margin_pp": 0.7983,
+      "null_interval_pp": [
+        -0.6313,
+        0.9653
+      ]
+    }
+  },
+  "normalized": {
+    "COMPARATOR": {
+      "char_f1": 38.49,
+      "false_merge_count": 2,
+      "normalizer_id": "saea-slurp-slot-normalizer-v1",
+      "samples": 1000,
+      "slu_f1": 36.43,
+      "span_f1": 24.98,
+      "word_f1": 34.58
+    },
+    "REPLICATE": {
+      "char_f1": 38.58,
+      "false_merge_count": 2,
+      "normalizer_id": "saea-slurp-slot-normalizer-v1",
+      "samples": 1000,
+      "slu_f1": 36.63,
+      "span_f1": 25.6,
+      "word_f1": 34.86
+    }
+  },
+  "null_table_micro_official": {
+    "char_f1": {
+      "clustered_by_speaker_ci90_pp": [
+        -1.1904,
+        1.3582
+      ],
+      "clustered_by_speaker_half_width_pp": 1.2743,
+      "comparator_pct": 38.2007,
+      "delta_pp": 0.1033,
+      "replicate_pct": 38.304,
+      "stratified_by_scenario_ci90_pp": [
+        -1.0958,
+        1.3089
+      ],
+      "stratified_by_scenario_half_width_pp": 1.2024
+    },
+    "entities_strict": {
+      "clustered_by_speaker_ci90_pp": [
+        -0.5225,
+        1.9988
+      ],
+      "clustered_by_speaker_half_width_pp": 1.2607,
+      "comparator_pct": 21.9105,
+      "delta_pp": 0.7562,
+      "replicate_pct": 22.6667,
+      "stratified_by_scenario_ci90_pp": [
+        -0.5208,
+        2.0538
+      ],
+      "stratified_by_scenario_half_width_pp": 1.2873
+    },
+    "slu_f1": {
+      "clustered_by_speaker_ci90_pp": [
+        -0.9088,
+        1.4521
+      ],
+      "clustered_by_speaker_half_width_pp": 1.1804,
+      "comparator_pct": 35.802,
+      "delta_pp": 0.2873,
+      "replicate_pct": 36.0893,
+      "stratified_by_scenario_ci90_pp": [
+        -0.8003,
+        1.4046
+      ],
+      "stratified_by_scenario_half_width_pp": 1.1025
+    },
+    "word_f1": {
+      "clustered_by_speaker_ci90_pp": [
+        -0.7093,
+        1.5541
+      ],
+      "clustered_by_speaker_half_width_pp": 1.1317,
+      "comparator_pct": 33.6868,
+      "delta_pp": 0.43,
+      "replicate_pct": 34.1168,
+      "stratified_by_scenario_ci90_pp": [
+        -0.5935,
+        1.505
+      ],
+      "stratified_by_scenario_half_width_pp": 1.0493
+    }
+  },
+  "null_table_per_row_official": {
+    "action_exact": {
+      "clustered_by_speaker_ci90_pp": [
+        -0.5882,
+        1.3699
+      ],
+      "clustered_by_speaker_half_width_pp": 0.979,
+      "comparator_pct": 74.6,
+      "delta_pp": 0.4,
+      "harms": 15,
+      "n": 1000,
+      "replicate_pct": 75.0,
+      "saves": 19,
+      "sign_test_p": 0.6075913612730801,
+      "stratified_by_scenario_ci90_pp": [
+        -0.5,
+        1.3
+      ],
+      "stratified_by_scenario_half_width_pp": 0.9,
+      "ties": 966
+    },
+    "scenario_action_exact": {
+      "clustered_by_speaker_ci90_pp": [
+        -0.4049,
+        1.4341
+      ],
+      "clustered_by_speaker_half_width_pp": 0.9195,
+      "comparator_pct": 73.1,
+      "delta_pp": 0.5,
+      "harms": 13,
+      "n": 1000,
+      "replicate_pct": 73.6,
+      "saves": 18,
+      "sign_test_p": 0.47312965989112854,
+      "stratified_by_scenario_ci90_pp": [
+        -0.4,
+        1.4
+      ],
+      "stratified_by_scenario_half_width_pp": 0.9,
+      "ties": 969
+    },
+    "scenario_exact": {
+      "clustered_by_speaker_ci90_pp": [
+        -0.4188,
+        1.2322
+      ],
+      "clustered_by_speaker_half_width_pp": 0.8255,
+      "comparator_pct": 82.6,
+      "delta_pp": 0.4,
+      "harms": 11,
+      "n": 1000,
+      "replicate_pct": 83.0,
+      "saves": 15,
+      "sign_test_p": 0.557197093963623,
+      "stratified_by_scenario_ci90_pp": [
+        -0.4,
+        1.2
+      ],
+      "stratified_by_scenario_half_width_pp": 0.8,
+      "ties": 974
+    },
+    "slot_f1_exact_f1": {
+      "clustered_by_speaker_ci90_pp": [
+        -0.5063,
+        1.0329
+      ],
+      "clustered_by_speaker_half_width_pp": 0.7696,
+      "comparator_pct": 12.9593,
+      "delta_pp": 0.2848,
+      "harms": 17,
+      "n": 1000,
+      "replicate_pct": 13.244,
+      "saves": 24,
+      "sign_test_p": 0.34888887944907765,
+      "stratified_by_scenario_ci90_pp": [
+        -0.5186,
+        1.0981
+      ],
+      "stratified_by_scenario_half_width_pp": 0.8084,
+      "ties": 959
+    },
+    "slu_f1_char_f1": {
+      "clustered_by_speaker_ci90_pp": [
+        -0.8437,
+        0.905
+      ],
+      "clustered_by_speaker_half_width_pp": 0.8743,
+      "comparator_pct": 21.1274,
+      "delta_pp": 0.0599,
+      "harms": 31,
+      "n": 1000,
+      "replicate_pct": 21.1872,
+      "saves": 45,
+      "sign_test_p": 0.1353851052994308,
+      "stratified_by_scenario_ci90_pp": [
+        -0.8029,
+        0.9452
+      ],
+      "stratified_by_scenario_half_width_pp": 0.874,
+      "ties": 924
+    },
+    "slu_f1_f1": {
+      "clustered_by_speaker_ci90_pp": [
+        -0.6963,
+        0.9413
+      ],
+      "clustered_by_speaker_half_width_pp": 0.8188,
+      "comparator_pct": 19.7464,
+      "delta_pp": 0.1393,
+      "harms": 33,
+      "n": 1000,
+      "replicate_pct": 19.8857,
+      "saves": 43,
+      "sign_test_p": 0.3018724904870077,
+      "stratified_by_scenario_ci90_pp": [
+        -0.6764,
+        0.9633
+      ],
+      "stratified_by_scenario_half_width_pp": 0.8198,
+      "ties": 924
+    },
+    "slu_f1_word_f1": {
+      "clustered_by_speaker_ci90_pp": [
+        -0.6313,
+        0.9653
+      ],
+      "clustered_by_speaker_half_width_pp": 0.7983,
+      "comparator_pct": 18.8716,
+      "delta_pp": 0.1879,
+      "harms": 34,
+      "n": 1000,
+      "replicate_pct": 19.0595,
+      "saves": 39,
+      "sign_test_p": 0.6399729317539424,
+      "stratified_by_scenario_ci90_pp": [
+        -0.61,
+        0.9868
+      ],
+      "stratified_by_scenario_half_width_pp": 0.7984,
+      "ties": 927
+    }
+  },
+  "official": {
+    "COMPARATOR": {
+      "action": 74.6,
+      "char_f1": 38.2,
+      "entities_strict": 21.91,
+      "identity_check_passed": true,
+      "identity_check_slu_f1_abs_diff": 0.0,
+      "intent": 73.1,
+      "samples": 1000,
+      "scenario": 82.6,
+      "slu_f1": 35.8,
+      "unparsed": 3,
+      "word_f1": 33.69
+    },
+    "REPLICATE": {
+      "action": 75.0,
+      "char_f1": 38.3,
+      "entities_strict": 22.67,
+      "identity_check_passed": true,
+      "identity_check_slu_f1_abs_diff": 0.0,
+      "intent": 73.6,
+      "samples": 1000,
+      "scenario": 83.0,
+      "slu_f1": 36.09,
+      "unparsed": 4,
+      "word_f1": 34.12
+    }
+  },
+  "per_cluster": {
+    "clusters": 124,
+    "clusters_moved": {
+      "scenario_action_exact": 22,
+      "slu_f1_f1": 54
+    },
+    "largest": 55,
+    "median": 6
+  },
+  "population": {
+    "largest_cluster": 55,
+    "median_cluster": 6,
+    "paired_rows": 1000,
+    "scenarios": 18,
+    "speaker_clusters": 124
+  },
+  "preregistration": "docs/readiness/2026-09-09-slurp-own-null-replicate-v1-preregistration.md",
+  "row": "SAEA-SLURP-DEV1000-NULL-REPLICATE-V1",
+  "schema": "saea-slurp-own-null-replicate-v1-result-summary-v1",
+  "score_batch": {
+    "failed": 0,
+    "include_per_sample": true,
+    "jobs": [
+      "replicate",
+      "comparator"
+    ],
+    "output_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-NULL-REPLICATE-V1/own-null-read-score-batch",
+    "sharded": false,
+    "succeeded": 2
+  },
+  "silence_tail_reread": {
+    "cell": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-V1",
+    "clause_1_at_measured_margin": {
+      "lower_bound_pp": 0.1934,
+      "measured_margin_pp": 0.9195,
+      "passes": false,
+      "rule": "the intent CI90 lower bound must exceed the measured margin"
+    },
+    "intent_effect_disjoint_from_null": false,
+    "intent_effect_in_null_half_widths": 1.41,
+    "measured_margins": {
+      "intent_null_interval_pp": [
+        -0.4049,
+        1.4341
+      ],
+      "intent_per_row_half_width_pp": 0.9195,
+      "slu_f1_micro_half_width_pp": 1.1804,
+      "slu_f1_micro_null_interval_pp": [
+        -0.9088,
+        1.4521
+      ]
+    },
+    "note": "a re-reading of already-sealed numbers against a new reference. The tail cell is NOT re-flown and NOT re-scored, and its NOT ADMITTED status is not reopened by this cell.",
+    "sealed": {
+      "action_ci90_clustered_pp": [
+        -0.0987,
+        2.1102
+      ],
+      "clause_1_imported_bar_pp": 0.6,
+      "intent_ci90_clustered_pp": [
+        0.1934,
+        2.4262
+      ],
+      "intent_delta_pp": 1.3,
+      "scenario_ci90_clustered_pp": [
+        -0.6921,
+        1.4085
+      ],
+      "slu_f1_per_row_ci90_clustered_pp": [
+        0.1455,
+        2.4788
+      ]
+    },
+    "verdict_document": "docs/readiness/2026-09-09-slurp-silence-tail-v1-verdict.md"
+  },
+  "there_is_no_verdict": "This cell has no factor. It admits and refutes nothing, and carries no ADMITTED / NOT-ADMITTED line. Its whole output is a table of intervals."
+}

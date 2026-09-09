@@ -1,0 +1,26 @@
+{
+  "active_seconds": 221.13789796829224,
+  "first_sample_at": 1788928767.7582908,
+  "host_free_gb_last": 26.978843688964844,
+  "host_free_gb_min": 26.90903091430664,
+  "host_free_gb_min_at": 1788928944.1271756,
+  "host_memory_samples": 21,
+  "last_sample_at": 1788928988.8961887,
+  "mean_power_watts": 88.1247619047619,
+  "mean_utilization_percent": 79.0952380952381,
+  "parked_definition": "every slot idle AND nvidia-smi utilization.gpu < 5%",
+  "parked_fraction": 0.0,
+  "parked_seconds": 0.0,
+  "peak_power_watts": 94.47,
+  "requests_delta": 160.0,
+  "sample_count": 21,
+  "schema": "saea-serving-monitor-summary-v1",
+  "tokens_delta": null,
+  "vm_available_gb_min": 40.80059814453125,
+  "vmmem_ws_gb_max": 21.959552764892578,
+  "wall_seconds": 221.13789796829224,
+  "window": {
+    "from": 1788928762.7206738,
+    "to": 1788928992.0987716
+  }
+}

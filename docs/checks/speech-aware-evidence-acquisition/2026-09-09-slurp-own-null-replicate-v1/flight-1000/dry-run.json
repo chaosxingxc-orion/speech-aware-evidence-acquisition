@@ -1,0 +1,75 @@
+{
+  "attempt_aborted": false,
+  "attempt_id": "attempt-20260909T043741Z-f4306e",
+  "cell_id": "closed-list-direct",
+  "generated_at": "2026-09-09T04:38:20.135353+00:00",
+  "identity": {
+    "added_suffix_chars": 1836,
+    "added_suffix_sha256": "46ee018e1bd2392c0e3654ddeacf4b7f32209da2a0c00cd7e658afe50ca0dda3",
+    "config_hash": "6be064ba49d4b3b8b430aa063b4fef46a898ce5a0b3702fe35c4896d5d1b894f",
+    "instruction_fill": "slurp-label-inventory",
+    "instruction_template": "probes/slurp_direct_closed_list.txt",
+    "relation": "resolved == sealed_m0_instruction + suffix",
+    "resolved_instruction_chars": 7583,
+    "resolved_instruction_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db",
+    "roster_view_sha256": "e148dbbcbda5b5145de9d3270f8bf7d6fb83fd00c7533f5ffa0fea1735fa0e87",
+    "sample_count": 1000,
+    "sealed_m0_instruction_chars": 5747,
+    "sealed_m0_instruction_sha256": "cef527896e9beef5774305e01dc29192fc2d5ca89fba5143e82f0b91a7cb86b8",
+    "serving_geometry": {
+      "max_tokens": 64,
+      "slot_tokens": 8192,
+      "slots": 8
+    }
+  },
+  "model_contacts": 0,
+  "preflight": {
+    "attempt_id": "attempt-20260909T043741Z-f4306e",
+    "attempt_reservation": "deferred to core.model.adapter.FrozenCoreAdapter",
+    "carrier_lock_key": "slurp",
+    "config_hash": "6be064ba49d4b3b8b430aa063b4fef46a898ce5a0b3702fe35c4896d5d1b894f",
+    "phase_prompt_fit": null,
+    "prompt_budget": [
+      {
+        "breakdown": {
+          "completion_token_ceiling": 64,
+          "rendered_text_tokens": 2140,
+          "required_window_tokens": 2256,
+          "special_token_reserve": 2,
+          "speech_feature_packet_tokens": [
+            [
+              "slurp:devel:000011:audio-1497266596",
+              50
+            ]
+          ],
+          "speech_feature_tokens": 50
+        },
+        "compaction_pass": 0,
+        "decision": "ALLOW",
+        "dropped_identifiers": [],
+        "operational_margin_tokens": 22320,
+        "operational_reserve_tokens": 8192,
+        "payload_sha256": "a8efdd8fcfeb5ec04405e49ef6ea4cdb4f41c1be62b1f1269f0e052b123e8fdb",
+        "phase": "direct",
+        "physical_margin_tokens": 30512,
+        "slot_limit_tokens": 32768
+      }
+    ],
+    "protocol_hash": "7e83a70508068d1a1c2512cabbc91b8417821ae5796038c2bc6fa4950bb951b2",
+    "run_id": "SAEA-SLURP-DEV1000-NULL-REPLICATE-V1",
+    "sample_count": 1000,
+    "serving_geometry": {
+      "max_tokens": 64,
+      "slot_tokens": 8192,
+      "slots": 8
+    },
+    "split_id": "DEV-1000",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "stage": "preflight",
+    "stage_hash": "52a380c8cda656e74cdee6f506800cb5d6b93099822a17aaeb705227ac19bd45",
+    "study_commit": "c6e8e95ae49e3cc0d56155cb224cd35e1715cdc4"
+  },
+  "run_id": "SAEA-SLURP-DEV1000-NULL-REPLICATE-V1",
+  "schema": "saea-slurp-closed-list-dry-run-v1",
+  "study": "speech-aware-evidence-acquisition"
+}
