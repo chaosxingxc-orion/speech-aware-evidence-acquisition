@@ -107,6 +107,12 @@ class _WideCompletionFakeAdapter(_FakeAdapter):
     SERVING_MAX_TOKENS = 256
 
 
+class _LegacyWideBudgetFakeAdapter(_FakeAdapter):
+    """A legacy adapter whose historical reserve exceeds the model request cap."""
+
+    SERVING_MAX_TOKENS = 512
+
+
 class _FakeGate:
     def __init__(self) -> None:
         self.calls = 0
@@ -3064,6 +3070,7 @@ class _EchoingDecodingClient(_TransportDrivingClient):
 
 
 def _cap_runtime(tmp_path, max_tokens, **kwargs):
+    adapter_cls = kwargs.pop("adapter_cls", _TwoDurationAdapter)
     config_kwargs = {
         "arm": "bare-core",
         "policy": "fixed",
@@ -3079,7 +3086,7 @@ def _cap_runtime(tmp_path, max_tokens, **kwargs):
     config_kwargs.update(kwargs.pop("config_kwargs", {}))
     return _wire_runtime(
         tmp_path,
-        adapter_cls=_TwoDurationAdapter,
+        adapter_cls=adapter_cls,
         client_factory=_EchoingDecodingClient,
         config_kwargs=config_kwargs,
         **kwargs,
@@ -3113,6 +3120,22 @@ def test_request_completion_override_changes_payload_and_preflight_reserve(tmp_p
     assert base_receipt["request_body_sha256"] != wide_receipt["request_body_sha256"]
     budget = widened._assess_prompt_budget(widened._samples)
     assert budget[0]["breakdown"]["completion_token_ceiling"] == 256
+
+
+def test_completion_override_preserves_the_legacy_adapter_reserve_when_absent(tmp_path):
+    legacy = _cap_runtime(tmp_path / "legacy", 64, adapter_cls=_LegacyWideBudgetFakeAdapter)
+    overridden = _cap_runtime(
+        tmp_path / "override", 64, adapter_cls=_LegacyWideBudgetFakeAdapter,
+        config_kwargs={
+            "arm": "bare-core", "policy": "fixed",
+            "model_extra": {"decoding_params": {"max_tokens": 64}},
+            "experiment_extra": {"request_decoding_overrides": {"max_tokens": 256}},
+        },
+    )
+    legacy._prepare()
+    overridden._prepare()
+    assert legacy._completion_token_ceiling() == 512
+    assert overridden._completion_token_ceiling() == 256
 
 
 @pytest.mark.parametrize(

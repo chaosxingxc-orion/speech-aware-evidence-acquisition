@@ -2678,6 +2678,8 @@ class FlightRuntime:
 
     def _completion_token_ceiling(self) -> int:
         """Return the configured request cap used by preflight and fitting."""
+        if self._composed.values.get("request_decoding_overrides") is None:
+            return int(self._adapter.serving_geometry()["max_tokens"])
         decoding = self._decoding_params() or {}
         maximum = decoding.get("max_tokens")
         if isinstance(maximum, int) and not isinstance(maximum, bool) and maximum > 0:
@@ -3588,8 +3590,10 @@ class FlightRuntime:
 
     def request_fit_inputs(self, payloads):
         from .. import preparation, preparation_fit
+        from .. import config as config_module
         from ..model import transport
         from ..preparation import artifact_inputs
+        from ...rails.adapters import runtime_view
 
         context = self.preparation_context()
         return artifact_inputs(
@@ -3603,6 +3607,8 @@ class FlightRuntime:
                     "transport": _sha256_file(Path(transport.__file__)),
                     "preparation_fit": _sha256_file(Path(preparation_fit.__file__)),
                     "preparation": _sha256_file(Path(preparation.__file__)),
+                    "config": _sha256_file(Path(config_module.__file__)),
+                    "runtime_view": _sha256_file(Path(runtime_view.__file__)),
                 },
             },
         )
