@@ -68,7 +68,11 @@ def run(config_path: Path, output: Path, *, verifier=verify_bundle):
         if name in results:
             raise ValueError("duplicate contrast")
         results[name] = {}
-        for population, ids in populations.items():
+        selected = contrast.get("populations", list(populations))
+        if not selected or len(selected) != len(set(selected)) or not set(selected) <= set(populations):
+            raise ValueError("contrast population selection is invalid")
+        for population in selected:
+            ids = populations[population]
             results[name][population] = {
                 scorer: {
                     metric: compare(

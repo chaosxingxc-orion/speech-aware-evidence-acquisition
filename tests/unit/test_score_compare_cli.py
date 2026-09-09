@@ -56,6 +56,10 @@ def test_analysis_verifies_inputs_and_keeps_source_hashes(tmp_path):
     assert result["results"]["right_minus_left"]["NEW500"]["official"]["m"]["scenario_stratified"]["delta"] == 1
     with pytest.raises(FileExistsError):
         run(path, tmp_path / "out.json", verifier=lambda _: None)
+    config["analysis"]["contrasts"][0]["populations"] = ["NEW500"]
+    write(path.name, config)
+    selected = run(path, tmp_path / "selected.json", verifier=lambda _: None)
+    assert set(selected["results"]["right_minus_left"]) == {"NEW500"}
     config["analysis"]["inputs"]["left"]["manifest"] = inputs["right"]["manifest"]
     write(path.name, config)
     with pytest.raises(ValueError, match="identity mismatch"):
