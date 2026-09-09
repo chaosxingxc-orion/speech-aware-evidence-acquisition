@@ -1,6 +1,7 @@
 """Config-driven SLURP adapter over the shared label-free frozen runtime view."""
 from __future__ import annotations
 
+import re
 from typing import Mapping
 
 from ...core.base import TASK_ADAPTERS
@@ -13,6 +14,19 @@ from .runtime_view import (
 from .slurp import SlurpAdapter, SlurpSample
 
 
+_REGISTERED_DEV_SPLIT = re.compile(r"DEV-[0-9]+(?:-[A-Za-z0-9]+)*$")
+
+
+def _allowed_runtime_split(split_id: str) -> bool:
+    return split_id in {"devel", "discovery"} or bool(_REGISTERED_DEV_SPLIT.fullmatch(split_id))
+
+
+def _assert_devel_sample_id(sample_id: str) -> None:
+    parts = sample_id.split(":")
+    if len(parts) < 3 or parts[0] != "slurp" or parts[1] != "devel":
+        raise RuntimeViewError("runtime SLURP view contains a non-devel sample")
+
+
 def roster_samples(values, data_root_path, *, limit_sample_ids=None, workers=16):
     """Build only media-scoped samples, retaining the historical wrapper call shape."""
     rows = load_runtime_view(values, data_root_path, sample_ids=limit_sample_ids, workers=workers)
@@ -20,8 +34,7 @@ def roster_samples(values, data_root_path, *, limit_sample_ids=None, workers=16)
     for item in rows:
         sample_id = item["sample_id"]
         parts = sample_id.split(":")
-        if len(parts) < 3 or parts[0] != "slurp" or parts[1] != "devel":
-            raise RuntimeViewError("runtime SLURP view contains a non-devel sample")
+        _assert_devel_sample_id(sample_id)
         samples.append(SlurpSample(
             sample_id=sample_id, audio_ref=AudioRef(
                 path=item["media_relpath"], sha256=item["audio_sha256"],
@@ -40,13 +53,17 @@ class RuntimeSlurpAdapter(SlurpAdapter):
         serving_slots=None, serving_slot_tokens=None, serving_max_tokens=None,
     ):
         super().__init__(lock, root, repo_root=repo_root)
-        if split_id not in {"devel", "discovery"}:
-            raise RuntimeViewError("runtime SLURP adapter only admits discovery/devel")
+        if not _allowed_runtime_split(split_id):
+            raise RuntimeViewError(
+                "runtime SLURP adapter only admits discovery/devel or registered DEV roster labels"
+            )
         self._split_id = split_id
         if not isinstance(instruction_text, str) or not instruction_text:
             raise RuntimeViewError("runtime SLURP requires a config-resolved instruction")
         self._instruction_text = instruction_text
         self._samples = tuple(samples)
+        for sample in self._samples:
+            _assert_devel_sample_id(sample.sample_id)
         if any(sample.scenario or sample.action or sample.intent or sample.entities for sample in samples):
             raise RuntimeViewError("runtime SLURP samples must contain no gold labels")
         for name, value in (
