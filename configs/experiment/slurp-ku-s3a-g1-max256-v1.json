@@ -1,7 +1,7 @@
 {
   "experiment_id": "SAEA-SLURP-KU-S3A-G1-MAX256-V1",
   "fragment_kind": "saea-slurp-consumption-experiment-v1",
-  "migration_status": "HELD: owner-approved max_tokens256 KU-S3a successor configuration; no contact is authorized by this fragment",
+  "migration_status": "HELD: owner-approved 256 tokens KU-S3a successor configuration; no contact is authorized by this fragment",
   "date": "2026-09-09",
   "purpose": "G1 KU-S3a same-profile preparation. Preserve the original speech-keyed KU-S3 generation semantics and budgets while moving the cell onto the shared fit/generation campaign stages. The historical NEW500 is exposed; report it as the decision population only after the registered read.",
   "split_id": "DEV-1000",
@@ -20,7 +20,7 @@
     "kc_s1b_comparator": {
       "manifest_relpath": "runs/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1/attempt-20260906T025102Z-af6b04/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.run-manifest.json",
       "manifest_sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08",
-      "binding": "sealed KC-S1b comparison rows; not a runtime state source"
+      "binding": "descriptive cross-cap anchor only; it does not supply primary inference or runtime state"
     },
     "snapshot_receipt": {
       "repo_relpath": "docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers.json",
@@ -92,16 +92,16 @@
     "planned_speech_audio_seconds": 3000
   },
   "execution_plan_basis": {
-    "generation": "Owner-approved max_tokens256 generation ceiling: 1,000 roster contacts plus up to 50 registered overhead contacts, 3,000 audio seconds and 2.0 GPU-hours. Final exposure registration remains pending root source and preparation review.",
+    "generation": "Owner-approved 256 tokens generation ceiling for the 1,000 target rows, with at most 50 contacts of registered fixed overhead if separately bound. This ceiling does not authorize extra probes, adaptive repeats, or an additional full sweep. Final exposure registration remains pending root source and preparation review.",
     "fit": "The shared full-roster fitter actual endpoint sequence is 1 GET /props + 1,000 POST /apply-template + 2,000 POST /tokenize = 3,001 tokenizer contacts. This fit budget is separate from the 1,050 generation ceiling."
   },
-  "comparator": "KC-S1b sealed manifest 088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08; KV-0 is harmful retrospective evidence and is not a replacement comparison base.",
+  "comparator": "The sealed KC-S1b manifest is a descriptive cross-cap anchor only; primary inference is the max256 speech-query arm minus the matched max256 no-retrieval control and minus the max256 form twin. KV-0 remains harmful retrospective evidence and is not a replacement base.",
   "decision_rule": "Use the inherited KU-S3 rule only after the registered read: report KU-S3a minus the matched no-retrieval control and minus the form twin on historically exposed NEW500, with OLD500 and pooled DEV-1000 separately; retain natural-mixture and equal-strata analyses.",
   "cells": [
     {
       "cell_id": "ku-s3a-g1-max256-fit",
       "run_id": "SAEA-SLURP-KU-S3A-G1-MAX256-FIT-V1",
-      "attempt_id": "PENDING-REGISTERED-KU-S3A-G1-FIT-ATTEMPT-ID",
+      "attempt_id": "PENDING-REGISTERED-KU-S3A-G1-MAX256-FIT-ATTEMPT-ID",
       "allowed_execution_stages": [
         "check",
         "wire-check",
@@ -120,7 +120,7 @@
     {
       "cell_id": "ku-s3a-g1-max256-generation",
       "run_id": "SAEA-SLURP-KU-S3A-G1-MAX256-V1",
-      "attempt_id": "PENDING-REGISTERED-KU-S3A-G1-GENERATION-ATTEMPT-ID",
+      "attempt_id": "PENDING-REGISTERED-KU-S3A-G1-MAX256-GENERATION-ATTEMPT-ID",
       "allowed_execution_stages": [
         "check",
         "wire-check",
@@ -165,5 +165,19 @@
     ],
     "engineering_limit": "No effectiveness claim is permitted from the four-row engineering arms; this max256 configuration is the full-roster successor.",
     "reasoning": "No reasoning prompt or frozen-weight switch."
+  },
+  "preserve_wire_responses": true,
+  "primary_inference": {
+    "contrasts": [
+      "KU-S3a max256 minus matched no-retrieval control max256",
+      "KU-S3a max256 minus matched form twin max256"
+    ],
+    "guard": "Both inherited paired per-row SLU-F1 CI90 lower bounds must exceed zero on historically exposed NEW500 before an incremental retrieval claim is considered.",
+    "safeguards": [
+      "report OLD500 and pooled DEV-1000 separately",
+      "report natural-mixture and equal-scenario weighting",
+      "retain original scenario-stratified bootstrap with seed 20260903 and speaker-cluster sensitivity",
+      "the four-row engineering arms do not establish effectiveness"
+    ]
   }
 }
