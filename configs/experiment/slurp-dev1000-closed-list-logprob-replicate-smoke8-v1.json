@@ -1,0 +1,41 @@
+{
+  "experiment_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-REPLICATE-SMOKE-8-V1",
+  "purpose": "EIGHT-ROW SMOKE for SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-REPLICATE-V1. Same baseline fragment, same model fragment, same dataset fragment, same arm, same packets, same instruction -- eight samples instead of one thousand. EIGHT, not four, and the number is the reason: the serving geometry is -np 8 and the model fragment's id_slot policy is per-sample, so eight rows touch every slot of the resident server exactly once. It re-proves, on this pass and not on a four-month-old one, the precondition the predecessor's own smoke established: that the pinned llama-server returns a choices[0].logprobs object on the SPEECH-FEATURE PACKET route with five alternatives per generated token, and that a MODEL_LOGPROBS record lands with a recomputable logprobs_sha256. Its own exposure row, its own run id, its own attempt accounting; its numbers are a wiring proof and are never reported as a result and never read by the frozen judge.",
+  "split_id": "DEV-1000-SMOKE-8",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "dev",
+    "planned_model_calls": 12,
+    "planned_gpu_hours": 0.05,
+    "planned_speech_audio_seconds": 60
+  },
+  "cells": [
+    {
+      "cell_id": "closed-list-logprob-replicate-smoke",
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-direct-closed-list",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64-logprobs5",
+      "dataset_fragment": "slurp-speech-native-dev1000"
+    }
+  ],
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "split_id": "DEV-1000-SMOKE-8",
+      "ids": [
+        "slurp:devel:000011:audio-1497266596",
+        "slurp:devel:000053:audio-1498758443",
+        "slurp:devel:000058:audio-1488637952",
+        "slurp:devel:000068:audio-1488550098",
+        "slurp:devel:000074:audio-1501772398",
+        "slurp:devel:000090:audio-1498567209",
+        "slurp:devel:000109:audio-1497882612",
+        "slurp:devel:000113:audio-1497366340"
+      ],
+      "basis": "The first EIGHT DEV-1000 sample ids in sorted order -- the predecessor smoke's own four (configs/experiment/slurp-dev1000-closed-list-logprob-smoke-4-v1.json) followed by the next four in the same order. Named HERE in the registered fragment so a smoke can never quietly fly eight different rows than the ones its exposure row names."
+    }
+  ],
+  "acceptance": "The smoke passes when all eight rows return a choices[0].logprobs object, every generated token carries a top_logprobs list of exactly five entries whose first entry is the sampled token, eight MODEL_LOGPROBS records land in the trace with recomputable logprobs_sha256 and requested_top_logprobs 5, and each row's answer reconstructed from its own token stream is a prefix of its sealed text -- the one alignment the frozen judge depends on. It fails, and the 1,000-row cell does not fly, if any row returns no object, if the alternatives are truncated below five on a token whose vocabulary could supply them, or if any reconstruction is not a prefix.",
+  "budget_basis": "8 contacts plus margin for one permitted recovery within the same run id = 12 planned model calls. The eight rows' own audio is under 30 seconds; 60 is the rounded ceiling. GPU hours 0.05 covers eight contacts against a resident server; this family attaches to serving and never starts or stops it. Paid API spend 0. Plan cells are RUN-CUMULATIVE across every attempt of this run id.",
+  "preregistration": "docs/readiness/2026-09-09-slurp-label-token-logprob-judge-lp2-v1-preregistration.md"
+}

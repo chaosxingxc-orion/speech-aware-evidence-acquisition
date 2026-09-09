@@ -57,6 +57,7 @@ registers these) stays as light as it already was.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from typing import Mapping, Sequence
 
@@ -80,6 +81,9 @@ ROSTER_BAND_JUDGE_V1 = "roster-band-flag-v1"
 #: which was a controller's private branch until the fold.
 A2T_HARD_VALIDITY_JUDGE_V1 = "a2t-hard-validity-flag-v1"
 E21_BRIEF_NAME_NEAR_MISS_JUDGE_V1 = "e21-brief-name-near-miss-v1"
+#: LP-2 (2026-09-09): the LABEL-TOKEN successor of the failed whole-answer
+#: logprob flag. See :class:`SlurpIntentTokenLogprobJudge`.
+SLURP_INTENT_TOKEN_LOGPROB_JUDGE_V1 = "slurp-intent-token-logprob-flag-v1"
 
 
 def _lookup(
@@ -924,6 +928,362 @@ class BriefNameNearMissJudge:
             version=self.version,
             score=score,
             flags=flags,
+        ).validate()
+
+
+#: The two label-token statistics this judge can turn on, each oriented so
+#: that a LOWER value means LESS confident. Both are means/minima over the
+#: tokens of the SCENARIO and ACTION values only -- the label the row is
+#: scored on -- and neither can see a brace, a quote or an entity list.
+SLURP_INTENT_LABEL_FIELDS = ("scenario", "action")
+SLURP_INTENT_LOGPROB_STATISTICS = (
+    "intent_mean_token_logprob",
+    "intent_min_token_logprob",
+)
+
+#: The FROZEN thresholds, fixed from the sealed outputs of
+#: ``SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1`` before this judge could be
+#: read on anything, and quoted from the committed verdict receipt
+#: ``docs/checks/speech-aware-evidence-acquisition/
+#: 2026-09-09-slurp-logprob-judge-probe-v1/verdict/result-summary.json``
+#: (field ``successor_diagnostic_NOT_PREREGISTERED.operating_points``). Each
+#: is the value that flags exactly **86** of that arm's 1,000 rows -- the same
+#: flag budget the failed probe's rule used, so the successor is read at the
+#: predecessor's operating point rather than at a budget chosen to flatter it.
+#:
+#: These numbers were chosen AFTER the probe's data existed. That is why they
+#: are frozen here as constants rather than recomputed per read, and why the
+#: preregistration ``docs/readiness/
+#: 2026-09-09-slurp-label-token-logprob-judge-lp2-v1-preregistration.md``
+#: sends the DECISION to a fresh replicate read under this frozen rule.
+SLURP_INTENT_MEAN_TOKEN_LOGPROB_FLOOR = -0.2675283079346116
+SLURP_INTENT_MIN_TOKEN_LOGPROB_FLOOR = -0.5693119168281555
+
+SLURP_INTENT_LOGPROB_FLOORS = {
+    "intent_mean_token_logprob": SLURP_INTENT_MEAN_TOKEN_LOGPROB_FLOOR,
+    "intent_min_token_logprob": SLURP_INTENT_MIN_TOKEN_LOGPROB_FLOOR,
+}
+
+#: The chosen statistic, named here rather than in a caller: the mean over the
+#: label tokens. On the design read it reaches 75.58 % precision at 86 flags
+#: against ``intent_min_token_logprob``'s 72.09 %, and AUROC 0.8497 against
+#: 0.8446 -- and, unlike the minimum, it does not sit on the predecessor bar's
+#: own value to three decimals.
+SLURP_INTENT_LOGPROB_DEFAULT_STATISTIC = "intent_mean_token_logprob"
+
+
+def _logprobs_object(value: object, *, judge_id: str) -> Mapping[str, object]:
+    """The ``{"content": [...]}`` object, from any of the three shapes a
+    caller can honestly be holding.
+
+    A ``MODEL_LOGPROBS`` trace record is
+    ``{"channel": ..., "payload": {"logprobs": {"content": [...]}, ...}}``,
+    its payload is ``{"logprobs": {...}, "logprobs_sha256": ...}``, and the
+    response envelope's own field is the innermost object. All three are
+    accepted and unwrapped in that order; anything else is refused, because
+    guessing at a fourth shape is how a judge ends up scoring the wrong row.
+    """
+
+    if not isinstance(value, Mapping):
+        raise JudgeError(
+            f"judge {judge_id!r}: 'logprobs' must be the row's MODEL_LOGPROBS record, "
+            f"its payload, or the logprobs object itself, got {type(value).__name__}"
+        )
+    payload = value.get("payload")
+    if isinstance(payload, Mapping) and "logprobs" in payload:
+        value = payload
+    inner = value.get("logprobs")
+    if isinstance(inner, Mapping):
+        value = inner
+    if "content" not in value:
+        raise JudgeError(
+            f"judge {judge_id!r}: the logprobs object carries no 'content' list; the "
+            "server returned no per-token distribution for this row"
+        )
+    return value
+
+
+def _generated_tokens(
+    logprobs: Mapping[str, object], *, judge_id: str
+) -> list[tuple[str, float]]:
+    """``[(token_text, logprob), ...]`` in generation order.
+
+    llama-server's chat endpoint shape on the pinned build 04ccc72a
+    (``tools/server/server-task.cpp:456-460``). Only GENERATED tokens appear;
+    the prompt's tokens never carry probabilities on this build, which is why
+    every statistic below is a statistic of the ANSWER.
+    """
+
+    content = logprobs.get("content")
+    if not isinstance(content, list) or not content:
+        raise JudgeError(
+            f"judge {judge_id!r}: the logprobs object carries no non-empty 'content' "
+            "list"
+        )
+    tokens: list[tuple[str, float]] = []
+    for index, item in enumerate(content):
+        if not isinstance(item, Mapping):
+            raise JudgeError(
+                f"judge {judge_id!r}: logprobs content[{index}] is not an object"
+            )
+        value = item.get("logprob")
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise JudgeError(
+                f"judge {judge_id!r}: logprobs content[{index}] carries no numeric "
+                "logprob"
+            )
+        tokens.append((str(item.get("token", "")), float(value)))
+    return tokens
+
+
+def _json_string_value_span(text: str, key: str) -> tuple[int, int] | None:
+    """Character span of the JSON string VALUE of ``key`` inside ``text``.
+
+    A literal scan, not a JSON walk, and deliberately so: the statistic has to
+    point at a region of the GENERATED TOKEN STREAM, and only the raw text
+    preserves the offsets the stream is aligned to. Returns ``None`` when the
+    key is absent or did not receive a quoted string value -- an answer this
+    judge cannot locate a label in, which it says out loud rather than
+    scoring.
+
+    This is the same rule ``scripts/slurp_logprob_judge_read.py::_value_span``
+    applied to the probe's sealed trace; the LP-2 design read asserts the two
+    agree on all 1,000 sealed rows rather than trusting the restatement.
+    """
+
+    needle = f'"{key}"'
+    at = text.find(needle)
+    if at < 0:
+        return None
+    cursor = at + len(needle)
+    while cursor < len(text) and text[cursor] in " \t\r\n":
+        cursor += 1
+    if cursor >= len(text) or text[cursor] != ":":
+        return None
+    cursor += 1
+    while cursor < len(text) and text[cursor] in " \t\r\n":
+        cursor += 1
+    if cursor >= len(text) or text[cursor] != '"':
+        return None
+    start = cursor + 1
+    end = start
+    while end < len(text):
+        if text[end] == "\\":
+            end += 2
+            continue
+        if text[end] == '"':
+            return (start, end)
+        end += 1
+    return None
+
+
+@dataclass(frozen=True)
+class SlurpIntentTokenLogprobJudge:
+    """FLAGS a SLURP row whose own LABEL TOKENS decoded with low confidence.
+
+    The preregistered successor of :class:`ReplayLogprobJudge`'s whole-answer
+    reading, which was flown as ``SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1``
+    and came back **NOT ADMITTED** (``docs/readiness/
+    2026-09-09-slurp-logprob-judge-probe-v1-verdict.md``): the primary
+    ``min_token_logprob`` reached AUROC 0.6935 and 51.16 % precision at 86
+    flags, because **491 of that arm's 1,000 rows put their least-confident
+    token on JSON punctuation** -- ``" []"`` alone on 208 -- so the statistic
+    spent its ranking budget on the model's hesitation about how many entities
+    to emit, which is a formatting decision.
+
+    This judge asks the same question of a different region. It reconstructs
+    the answer from the token stream itself, locates the ``scenario`` and
+    ``action`` JSON string VALUES **in that reconstruction, by span, never by
+    gold**, and takes a mean (or a minimum) over exactly the tokens that
+    overlap them. A brace, a quote and an empty entity list cannot enter the
+    statistic at all.
+
+    **Criticism only** (owner Decision 11-C), and one degree stricter than the
+    type requires: the flag names the ROW and the FIELD whose label token is
+    least confident -- ``intent.scenario`` or ``intent.action`` -- and never a
+    replacement label, never a nearest legal pair, and never one of the
+    alternatives the ``top_logprobs`` list happens to carry. The alternatives
+    are exactly what a repair would substitute; this judge reads their PARENT
+    token's confidence and discards them.
+
+    **The threshold is frozen, and it was chosen after the data existed.**
+    :data:`SLURP_INTENT_LOGPROB_FLOORS` carries the value that flags 86 of the
+    probe arm's 1,000 rows for each statistic, quoted from that flight's
+    committed receipt. That provenance is the reason the LP-2 preregistration
+    sends the DECISION to a fresh replicate of the same cell, read under this
+    frozen rule, rather than to the sealed rows the threshold was read off.
+
+    Reads from ``state`` first, then ``material``:
+
+    * ``logprobs`` (required) -- the row's ``MODEL_LOGPROBS`` record, its
+      payload, or the logprobs object itself (:func:`_logprobs_object`);
+    * ``statistic`` (optional) -- one of
+      :data:`SLURP_INTENT_LOGPROB_STATISTICS`, default
+      :data:`SLURP_INTENT_LOGPROB_DEFAULT_STATISTIC`;
+    * ``threshold`` (optional) -- default the frozen floor of the chosen
+      statistic. A row is flagged when the statistic is **at or below** it:
+      boundary ties are INCLUDED, because a threshold cannot split identical
+      evidence, which is the same rule the probe's own flag budget used.
+
+    Score is ``exp(statistic)`` -- the geometric-mean probability of the label
+    tokens for the mean, the least confident label token's probability for the
+    minimum. It is a real quantity in ``[0, 1]``, not a calibration this study
+    has not earned, and 1.0 means "nothing to criticise" as the protocol says.
+    """
+
+    id: str = SLURP_INTENT_TOKEN_LOGPROB_JUDGE_V1
+    version: str = "1.0.0"
+    criticism_only: bool = True
+
+    def statistics(
+        self, draft: str, logprobs: Mapping[str, object]
+    ) -> dict[str, object]:
+        """Both label-token statistics for one row, and where they come from.
+
+        Public because the model-free design read and the confirmation read
+        measure precision and recall from exactly these numbers, and a second
+        implementation of the alignment is exactly the drift the engineering
+        base rule exists to forbid.
+        """
+
+        obj = _logprobs_object(logprobs, judge_id=self.id)
+        tokens = _generated_tokens(obj, judge_id=self.id)
+        text = "".join(token for token, _logprob in tokens)
+        if not draft.startswith(text):
+            raise JudgeError(
+                f"judge {self.id!r}: the token stream rebuilds "
+                f"{len(text)} characters that are not a prefix of the {len(draft)}-"
+                "character draft, so every span statistic would be aligned to a "
+                "different string than the one being judged"
+            )
+
+        offsets: list[tuple[int, int]] = []
+        cursor = 0
+        for token, _logprob in tokens:
+            offsets.append((cursor, cursor + len(token)))
+            cursor += len(token)
+
+        located: dict[str, tuple[int, int]] = {}
+        values: list[tuple[str, float]] = []
+        for field in SLURP_INTENT_LABEL_FIELDS:
+            span = _json_string_value_span(text, field)
+            if span is None:
+                continue
+            located[field] = span
+            low, high = span
+            for (token, logprob), (start, end) in zip(tokens, offsets):
+                if start < high and end > low:
+                    values.append((field, logprob))
+
+        if not values:
+            return {
+                "located_fields": tuple(sorted(located)),
+                "label_token_count": 0,
+                "intent_mean_token_logprob": None,
+                "intent_min_token_logprob": None,
+                "least_confident_field": None,
+                "reconstructed_prefix_only": text != draft,
+            }
+        logprobs_only = [logprob for _field, logprob in values]
+        least = min(values, key=lambda entry: (entry[1], entry[0]))
+        return {
+            "located_fields": tuple(sorted(located)),
+            "label_token_count": len(values),
+            "intent_mean_token_logprob": sum(logprobs_only) / len(logprobs_only),
+            "intent_min_token_logprob": min(logprobs_only),
+            "least_confident_field": least[0],
+            "reconstructed_prefix_only": text != draft,
+        }
+
+    def __call__(
+        self,
+        draft: str,
+        material: Mapping[str, object],
+        state: Mapping[str, object],
+    ) -> JudgeVerdict:
+        statistic = str(
+            _lookup(
+                "statistic",
+                material,
+                state,
+                judge_id=self.id,
+                required=False,
+                default=SLURP_INTENT_LOGPROB_DEFAULT_STATISTIC,
+            )
+        )
+        if statistic not in SLURP_INTENT_LOGPROB_STATISTICS:
+            raise JudgeError(
+                f"judge {self.id!r}: 'statistic' must be one of "
+                f"{list(SLURP_INTENT_LOGPROB_STATISTICS)}, got {statistic!r}"
+            )
+        threshold = float(
+            _lookup(
+                "threshold",
+                material,
+                state,
+                judge_id=self.id,
+                required=False,
+                default=SLURP_INTENT_LOGPROB_FLOORS[statistic],
+            )
+        )
+        if not math.isfinite(threshold) or threshold > 0.0:
+            raise JudgeError(
+                f"judge {self.id!r}: 'threshold' must be a finite logprob floor at or "
+                f"below zero, got {threshold!r}"
+            )
+
+        measured = self.statistics(
+            draft, _lookup("logprobs", material, state, judge_id=self.id)
+        )
+        value = measured[statistic]
+        if value is None:
+            # NOT "nothing to criticise": the token stream carries no locatable
+            # scenario or action value at all, so the one thing this judge
+            # measures is missing from the row it was pointed at. Saying so is
+            # the module docstring's rule (a silent pass is worse than a loud
+            # finding), and the code is distinct so a receipt can count the two
+            # kinds of flag apart.
+            return JudgeVerdict(
+                judge_id=self.id,
+                version=self.version,
+                score=None,
+                flags=(
+                    JudgeFlag(
+                        code="intent_label_tokens_not_located",
+                        severity="warn",
+                        reason=(
+                            "the generated token stream carries no locatable scenario "
+                            "or action string value, so its label confidence cannot be "
+                            "measured"
+                        ),
+                        field_ref="intent",
+                    ),
+                ),
+            ).validate()
+
+        value = float(value)
+        score = _clamped(math.exp(value))
+        if value > threshold:
+            return JudgeVerdict(
+                judge_id=self.id, version=self.version, score=score
+            ).validate()
+        field = str(measured["least_confident_field"])
+        return JudgeVerdict(
+            judge_id=self.id,
+            version=self.version,
+            score=score,
+            flags=(
+                JudgeFlag(
+                    code="low_intent_label_confidence",
+                    severity="warn",
+                    reason=(
+                        f"the {int(measured['label_token_count'])} scenario/action "
+                        f"label token(s) decoded at {statistic} {value:.4f}, at or "
+                        f"below the frozen floor {threshold:.4f}"
+                    ),
+                    field_ref=f"intent.{field}",
+                ),
+            ),
         ).validate()
 
 

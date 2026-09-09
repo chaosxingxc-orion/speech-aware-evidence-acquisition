@@ -727,6 +727,7 @@ from .judges import (  # noqa: E402
     EARNINGS_NUMERIC_FORMAT_JUDGE_V1,
     REPLAY_LOGPROB_JUDGE_V1,
     ROSTER_BAND_JUDGE_V1,
+    SLURP_INTENT_TOKEN_LOGPROB_JUDGE_V1,
     SLURP_LEGAL_LABEL_JUDGE_V1,
     SLURP_SLOT_SCHEMA_JUDGE_V1,
     A2tHardValidityJudge,
@@ -734,6 +735,7 @@ from .judges import (  # noqa: E402
     EarningsNumericFormatJudge,
     ReplayLogprobJudge,
     RosterBandJudge,
+    SlurpIntentTokenLogprobJudge,
     SlurpLegalLabelJudge,
     SlurpSlotSchemaJudge,
     SubstitutionAlignmentJudge,
@@ -750,6 +752,18 @@ JUDGES.register(ROSTER_BAND_JUDGE_V1, RosterBandJudge())
 # private, so a cell can now DECLARE the check instead of inheriting it from
 # a controller class nobody could switch off.
 JUDGES.register(A2T_HARD_VALIDITY_JUDGE_V1, A2tHardValidityJudge())
+
+# LP-2 (2026-09-09): the ninth judge, and the first registered here whose
+# threshold is a FROZEN NUMBER READ OFF SEALED DATA rather than a rule with no
+# free parameter. It is the preregistered successor of the whole-answer
+# ``replay-logprob-flag-v1`` reading, which flew as
+# ``SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1`` and came back NOT ADMITTED
+# because 491 of 1,000 rows put their least-confident token on JSON
+# punctuation. Registering it makes the successor DECLARABLE and its version
+# quotable; it decides nothing, and the decision is the fresh replicate read
+# of ``docs/readiness/
+# 2026-09-09-slurp-label-token-logprob-judge-lp2-v1-preregistration.md``.
+JUDGES.register(SLURP_INTENT_TOKEN_LOGPROB_JUDGE_V1, SlurpIntentTokenLogprobJudge())
 
 # --- WAVE R7: the frozen-historical A2T AgentLoop policy ids ----------------
 #
