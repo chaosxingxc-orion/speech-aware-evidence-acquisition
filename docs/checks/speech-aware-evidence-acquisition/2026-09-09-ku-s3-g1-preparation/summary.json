@@ -1,0 +1,45 @@
+{
+  "arms": {
+    "speech": {
+      "artifact_sha256": "ed618b7bedb7d82fd18589b637ac4bf7fb54827b97076d7defa04c2df8050f50",
+      "elapsed_seconds": 169.08288711299974,
+      "ordered_selection_equal": true,
+      "rows": 1000,
+      "runner_supply_bytes_equal": true,
+      "selected_rows": 1000,
+      "selection_output_sha256": "dba7c4a3b4a7808f7ba06d5090024b3cc1ed7b596df0a8ae0b60f0def5238866",
+      "supply_sha256": "77d33a45db4b7880e92acfd7e378a199610938b201cacdada473596b07108154",
+      "warm_producer_invocations": 0,
+      "warm_runtime_verified": true
+    },
+    "twin": {
+      "artifact_sha256": "d8232176528e1d375b766b42c3365a851c1f6482628040595f0859162aff5aa1",
+      "elapsed_seconds": 170.42479534700396,
+      "ordered_selection_equal": true,
+      "rows": 1000,
+      "runner_supply_bytes_equal": true,
+      "selected_rows": 1000,
+      "selection_output_sha256": "70eee1947f34484132ed39875aeabb028d1808ce8fcf80165c04e2b5411a7d69",
+      "supply_sha256": "e82ea1847d001dadf76ed13d64d22eca0db26de4a00ddde96c417c855f795da1",
+      "warm_producer_invocations": 0,
+      "warm_runtime_verified": true
+    }
+  },
+  "audit_report_sha256": "df96ac46c8af283501b6eff4cbd27c1cdb2f3da0d3c8806ad7e6e3b5e57987e8",
+  "audit_script_data_relpath": "analysis/SAEA-SLURP-KU-S3-G1-PREPARE-V1/audit.py",
+  "audit_script_sha256": "bf960df5bf2bddc8dad454279b3fb5c324b3a7323769b64c8df7cacda745168d",
+  "complete": true,
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "historical_algorithm_commit": "1d3fc08f",
+  "historical_module_sha256": "aae9c0d965ad630a488ade0682f7ca59d795097821e1959028d3cd36eee58913",
+  "initial_production_timing": "The original redirected temporary logs were not retained across WSL lifetime. Do not infer measured production duration from file timestamps. Verification durations are measured independently.",
+  "method": "Execute the unchanged historical serial selection function in eight independent roster chunks over the real shared provider; compare ordered selections and actual runner SupplyPacket bytes.",
+  "registered_run_id": "SAEA-SLURP-KU-S3-G1-PREPARE-V1",
+  "schema": "saea-full-preparation-parity-v1"
+}

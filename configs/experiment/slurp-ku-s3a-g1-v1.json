@@ -149,5 +149,9 @@
     "repo_relpath": "docs/superpowers/plans/experiment-handoff/OWNER-KUS3-SCHEMA-003.md",
     "schema_basis": "original KC-S1b examples retained",
     "claim": "incremental retrieval supply; not replacement of schema examples"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-KU-S3-G1-PREPARE-V1/speech-supply.json",
+    "sha256": "ed618b7bedb7d82fd18589b637ac4bf7fb54827b97076d7defa04c2df8050f50"
   }
 }

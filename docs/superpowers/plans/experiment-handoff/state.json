@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 5,
+  "generation": 6,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "07f7e0d1bb77a164e9c44191e21d868ba41d6964",
-  "updated_at_utc": "2026-09-09T13:44:53.820710+00:00",
-  "next_action": "KV seven-run recovery is closed with KC-S1b retained. Complete KC-S1b whole-roster request parity, register separate fit and generation, freeze the WSL execution checkout and certify actual request fit. Prepare KU-S3a/twin and E21 raw-window configuration wiring in isolated cloud-assisted worktrees. No resident service is loaded and no new model/tokenizer/encoder contact has occurred.",
+  "snapshot_commit": "bb9ac1e835b2c4e65c8dd220516d89be8d0cd56a",
+  "updated_at_utc": "2026-09-09T14:40:01.385429+00:00",
+  "next_action": "Owner KU-S3 schema decision recorded: retain KC-S1b examples. Both full-roster retrieval artifacts have passed historical selection and rendered-supply parity and are configuration-pinned. KC-S1b full request parity and fit registration are complete; review the shared root fit coordinator, then run the registered real tokenizer fit. No new model/tokenizer/encoder contact or resident service yet.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002."
 }

@@ -1,6 +1,6 @@
 # Owner-directed Stage-2 continuation
 
-Status: **owner-directed execution**, generation 5. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 6. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -44,8 +44,11 @@ KV1 and KV3 are null-compatible, and KV2 fails its rotating-twin sign guard. Pre
 historical missing predecessor decision and do not retroactively admit KV successors.
 See the [KV family report](../../../checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md).
 
-KC-S1b's complete 1,000-row contact-free OpenJiuwen execution check passed. Whole-roster
-request equivalence, prospective exposure registration and real fit still block generation.
+KC-S1b's complete 1,000-row contact-free OpenJiuwen execution and historical request
+equivalence checks passed. The tokenizer exposure and structured plan are registered; real
+fit and final generation registration still block generation. Both KU-S3 retrieval artifacts
+passed full-roster historical selection and actual rendered-supply parity with zero contacts,
+and are configuration-pinned under OWNER-KUS3-SCHEMA-003 (original examples retained).
 The transitive AST inventory helper is implemented; broader rule enforcement remains pending
 migration of historical mutable entry points. E21 actual-window CLI wiring, complete DR replay,
 bounded live controller transitions and the later configuration families remain unfinished.
