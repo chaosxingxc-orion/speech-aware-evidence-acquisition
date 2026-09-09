@@ -70,6 +70,100 @@ class HandoffCheckTests(unittest.TestCase):
     def inspect(self):
         return handoff.inspect_handoff(self.root)
 
+    def owner_recovery(self):
+        self.state.update({
+            "generation": 2,
+            "phase": "owner_directed_recovery",
+            "execution_owner": "Codex",
+            "response_status": "unavailable",
+            "owner_decision_id": "OWNER-RECOVERY-001",
+            "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-RECOVERY-001.md",
+            "next_action": "Reconstruct history and merge verified completed work",
+        })
+        self.write_state()
+        decision = self.root / self.state["owner_decision_path"]
+        decision.write_text(
+            "# Synthetic owner recovery decision\n"
+            "Decision ID: OWNER-RECOVERY-001\n"
+            f"Request ID: {self.state['request_id']}\n"
+            "Owner decision: AUTHORIZE_RECOVERY\n"
+            "Execution owner: Codex\n"
+            "Scope: RECONSTRUCTION_AND_MERGE_ONLY\n"
+            "Launch allowed: false\n"
+            "Synthetic private owner text must not appear in the report.\n",
+            encoding="utf-8",
+        )
+        return decision
+
+    def cli_report(self):
+        with redirect_stdout(io.StringIO()) as captured:
+            result = handoff.main(["--repo-root", str(self.root)])
+        return result, json.loads(captured.getvalue())
+
+    def test_owner_recovery_cli_accepts_no_reply_without_granting_launch(self):
+        decision = self.owner_recovery()
+        before = {path: path.read_bytes() for path in (
+            decision, self.root / handoff.STATE_PATH, self.root / self.state["request_path"],
+        )}
+        result, report = self.cli_report()
+        self.assertEqual(result, 0)
+        self.assertEqual(report["status"], "OWNER_DIRECTED_RECOVERY")
+        self.assertEqual(report["execution_owner"], "Codex")
+        self.assertFalse(report["launch_allowed"])
+        self.assertEqual(report["execution_authority"], "NOT_EVALUATED")
+        self.assertNotIn("private owner text", json.dumps(report))
+        self.assertEqual(before, {path: path.read_bytes() for path in before})
+
+    def test_owner_recovery_preserves_pending_reply_without_requiring_completion(self):
+        self.owner_recovery()
+        self.reply("PENDING")
+        reply = self.root / self.state["response_path"]
+        before = reply.read_bytes()
+        self.assertEqual(self.cli_report()[1]["status"], "OWNER_DIRECTED_RECOVERY")
+        self.assertEqual(reply.read_bytes(), before)
+
+    def test_owner_recovery_cli_requires_explicit_local_authorization(self):
+        decision = self.owner_recovery()
+        valid = decision.read_text(encoding="utf-8")
+        for marker in (
+            "Decision ID: OWNER-RECOVERY-001", f"Request ID: {self.state['request_id']}",
+            "Owner decision: AUTHORIZE_RECOVERY", "Execution owner: Codex",
+            "Scope: RECONSTRUCTION_AND_MERGE_ONLY", "Launch allowed: false",
+        ):
+            for replacement in ("", marker + "\n" + marker, marker + " wrong"):
+                with self.subTest(marker=marker, replacement=replacement):
+                    decision.write_text(valid.replace(marker, replacement), encoding="utf-8")
+                    result, report = self.cli_report()
+                    self.assertEqual(result, 1)
+                    self.assertEqual(report["status"], "INVALID")
+        decision.unlink()
+        self.assertEqual(self.cli_report()[0], 1)
+
+    def test_owner_recovery_refuses_launch_and_inconsistent_state(self):
+        self.owner_recovery()
+        for field, value in (
+            ("launch_allowed", True), ("response_status", "awaiting_reply"),
+            ("execution_owner", "Fable5.1"), ("coordinator", "Fable5.1"),
+            ("generation", 1), ("owner_decision_id", "../wrong"),
+        ):
+            with self.subTest(field=field):
+                previous = self.state[field]
+                self.state[field] = value
+                self.write_state()
+                self.assertEqual(self.cli_report()[0], 1)
+                self.state[field] = previous
+
+    def test_owner_recovery_decision_path_is_confined_and_distinct(self):
+        self.owner_recovery()
+        for value in (
+            "../outside.md", r"C:\outside.md", self.state["request_path"],
+            self.state["response_path"], handoff.STATE_PATH, None,
+        ):
+            with self.subTest(value=value):
+                self.state["owner_decision_path"] = value
+                self.write_state()
+                self.assertEqual(self.inspect()["status"], "INVALID")
+
     def test_missing_and_pending_reply_are_legitimate_waiting_states(self):
         self.assertEqual(self.inspect()["status"], "WAITING_FOR_REPLY")
         self.reply("PENDING")
