@@ -3522,14 +3522,16 @@ class FlightRuntime:
 
     def preparation_context(self):
         """Resolve a fit context without preflight's circular fit-pin check."""
-        values, _carrier, _split, identity = self._prepare()
+        values, carrier, _split, identity = self._prepare()
         receipt = self._runtime_receipt_loader(
             resolve_runtime_receipt_path(self._repo_root, values))
+        preparation_plan = self._build_execution_plan(values, carrier, identity)
         return {
             "values": values, "split_identity_hash": identity,
             "data_root": self._data_root, "runtime_root": self._runtime_root,
             "run_id": self._run_id, "attempt_id": self.attempt_id,
             "geometry": dict(self._adapter.serving_geometry()),
+            "execution_plan": preparation_plan,
             "sample_ids": [sample.sample_id for sample in self._samples],
             "runtime_receipt": receipt,
             "required_identity": self.session_required_identity(),
@@ -3619,9 +3621,11 @@ class FlightRuntime:
                     extras={
                         "slice_registry": registry,
                         "data_root": self._data_root,
+                        "run_dir": self._run_dir(),
                         "repo_root": self._repo_root,
                         "config_values": values,
                         "execution_plan": plan,
+                        "obs_dispatcher": None,
                     },
                 )
             )
@@ -3648,7 +3652,9 @@ class FlightRuntime:
 
         context = self.preparation_context()
         sources = {
-            "boundary_sha256": preparation_fit.boundary_identity(payloads),
+            "boundary_sha256": preparation_fit.boundary_identity(
+                payloads, window_routes=window_batch is not None
+            ),
             "runtime_receipt": context["runtime_receipt"],
             "required_identity": context["required_identity"],
             "implementation": {
@@ -3662,7 +3668,9 @@ class FlightRuntime:
             from ...reproduction import obs_loop, repair_loop
             from .. import preparation_windows
             sources.update(
-                window_sources=list(window_batch.source_bindings),
+                window_sources=list(
+                    preparation_fit.canonical_window_sources(window_batch.source_bindings)
+                ),
                 window_measurement="resident-multimodal-input-tokens",
                 window_implementation={
                     module.__name__: _sha256_file(Path(module.__file__))

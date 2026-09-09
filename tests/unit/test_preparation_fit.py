@@ -162,7 +162,7 @@ def fit_fixture(tmp_path):
     runtime = SimpleNamespace(
         preparation_context=lambda: context,
         materialize_phase_requests=lambda: payloads,
-        request_fit_inputs=lambda p: artifact_inputs(
+        request_fit_inputs=lambda p, **kwargs: artifact_inputs(
             config={}, split_identity_hash="a" * 64, sources={"boundary": p}
         ),
         authorize_preparation_contacts=Mock(),
@@ -328,3 +328,8 @@ def test_window_batch_fit_uses_real_multimodal_count_route(tmp_path):
         ("GET", "/props"),
         ("POST", "/v1/chat/completions/input_tokens"),
     ]
+    authorization_calls = runtime.authorize_preparation_contacts.call_count
+    client.calls.clear()
+    assert fit_phase_runtime(runtime, path, window_batch=batch, **kwargs)["cache"] == "warm"
+    assert runtime.authorize_preparation_contacts.call_count == authorization_calls
+    assert client.calls == []

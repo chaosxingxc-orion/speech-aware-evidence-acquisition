@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections import Counter
 from collections.abc import Callable, Mapping, Sequence
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from .preparation import PreparationError, canonical_bytes, digest, measure_request
 
@@ -77,12 +77,40 @@ def packet_token_counts(
     return tuple(sum(chunk.n_tokens for chunk in packet.chunks) for packet in packets)
 
 
-def boundary_identity(payloads: Sequence[Mapping[str, object]]) -> str:
+def _canonical_window_route_path(value: object) -> object:
+    if not isinstance(value, str):
+        return value
+    parts = PurePosixPath(value).parts
+    if len(parts) >= 4 and parts[:2] == ("derived", "obs-slices") and parts[2]:
+        return "/".join((*parts[:2], "<run-id>", *parts[3:]))
+    return value
+
+
+def canonical_window_sources(
+    source_bindings: Sequence[Mapping[str, object]],
+) -> tuple[dict[str, object], ...]:
+    """Normalize only the run-owned slice path; retain all source facts."""
+    return tuple(
+        {
+            **source,
+            "media_relpath": _canonical_window_route_path(source.get("media_relpath")),
+        }
+        for source in source_bindings
+    )
+
+
+def boundary_identity(
+    payloads: Sequence[Mapping[str, object]], *, window_routes: bool = False
+) -> str:
     # These two routing values never enter the prompt; worker assignment may
     # change them. Completion limits and every model-visible field stay bound.
     normalized = []
     for payload in payloads:
         row = {k: v for k, v in payload.items() if k != "request_id"}
+        if window_routes:
+            row["media_relpath"] = _canonical_window_route_path(
+                row.get("media_relpath")
+            )
         if isinstance(row.get("decoding_params"), Mapping):
             row["decoding_params"] = {
                 k: v for k, v in row["decoding_params"].items() if k != "id_slot"
@@ -193,15 +221,10 @@ def fit_phase_runtime(
         if window_batch is None
         else window_batch.payloads
     )
-    if window_batch is None:
-        inputs = runtime.request_fit_inputs(payloads)
-    else:
-        try:
-            inputs = runtime.request_fit_inputs(payloads, window_batch=window_batch)
-        except TypeError as error:
-            if "window_batch" not in str(error):
-                raise
-            inputs = runtime.request_fit_inputs(payloads)
+    inputs = runtime.request_fit_inputs(
+        payloads,
+        window_batch=window_batch,
+    )
     if window_batch is not None:
         if {p["sample_id"] for p in payloads} != set(context["sample_ids"]):
             raise PreparationError("window fit does not cover the runtime call roster")

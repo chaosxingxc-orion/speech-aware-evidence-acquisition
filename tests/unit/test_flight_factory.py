@@ -226,22 +226,43 @@ def test_window_fit_inputs_bind_window_sources_and_payload_boundary(tmp_path):
     }
     batch = SimpleNamespace(
         source_bindings=(
-            {"sample_id": "e21:c1", "media_relpath": "windows/c1.wav", "sha256": "a"},
+            {"sample_id": "e21:c1", "media_relpath": "derived/obs-slices/fit-run/windows/c1.wav", "sha256": "a"},
         ),
     )
     first = runtime.request_fit_inputs(
-        [{"sample_id": "e21:c1", "media_relpath": "windows/c1.wav"}],
+        [{"sample_id": "e21:c1", "media_relpath": "derived/obs-slices/fit-run/windows/c1.wav"}],
         window_batch=batch,
     )
     batch.source_bindings = (
-        {"sample_id": "e21:c1", "media_relpath": "windows/c1.wav", "sha256": "changed"},
+        {"sample_id": "e21:c1", "media_relpath": "derived/obs-slices/fit-run/windows/c1.wav", "sha256": "changed"},
     )
     second = runtime.request_fit_inputs(
         [{"sample_id": "e21:c1", "media_relpath": "windows/c1.wav"}],
         window_batch=batch,
     )
     assert first["sources"]["window_sources"][0]["sha256"] == "a"
+    assert first["sources"]["window_sources"][0]["media_relpath"] == (
+        "derived/obs-slices/<run-id>/windows/c1.wav"
+    )
     assert first != second
+    other_run = runtime.request_fit_inputs(
+        [{"sample_id": "e21:c1", "media_relpath": "derived/obs-slices/generation-run/windows/c1.wav"}],
+        window_batch=SimpleNamespace(
+            source_bindings=(
+                {"sample_id": "e21:c1", "media_relpath": "derived/obs-slices/generation-run/windows/c1.wav", "sha256": "a"},
+            ),
+        ),
+    )
+    assert first == other_run
+    arbitrary_path = runtime.request_fit_inputs(
+        [{"sample_id": "e21:c1", "media_relpath": "windows/c1.wav"}],
+        window_batch=SimpleNamespace(
+            source_bindings=(
+                {"sample_id": "e21:c1", "media_relpath": "windows/c1.wav", "sha256": "a"},
+            ),
+        ),
+    )
+    assert first != arbitrary_path
     changed_window = runtime.request_fit_inputs(
         [{"sample_id": "e21:c1", "media_relpath": "windows/changed.wav"}],
         window_batch=batch,
@@ -287,7 +308,7 @@ def test_prepared_window_fit_accepts_matching_receipt_and_rejects_changed_source
         ),
         request_keys=("e21:c1#w0001", "e21:c1#w0002"),
         source_bindings=(
-            {"sample_id": "e21:c1", "media_relpath": "windows/c1.wav", "sha256": "a"},
+            {"sample_id": "e21:c1", "media_relpath": "derived/obs-slices/fit-run/windows/c1.wav", "sha256": "a"},
             {"sample_id": "e21:c1", "media_relpath": "windows/c2.wav", "sha256": "b"},
         ),
     )
@@ -320,7 +341,7 @@ def test_prepared_window_fit_accepts_matching_receipt_and_rejects_changed_source
     assert accepted["sample_count"] == 2
 
     batch.source_bindings = (
-        {"sample_id": "e21:c1", "media_relpath": "windows/c1.wav", "sha256": "changed"},
+        {"sample_id": "e21:c1", "media_relpath": "derived/obs-slices/fit-run/windows/c1.wav", "sha256": "changed"},
         batch.source_bindings[1],
     )
     monkeypatch.setattr(
