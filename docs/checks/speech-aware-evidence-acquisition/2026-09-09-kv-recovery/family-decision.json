@@ -1,0 +1,32 @@
+{
+  "analysis_kind": "retrospective-recovery",
+  "cell_results": {
+    "kv0": "HARMFUL",
+    "kv1": "NULL_COMPATIBLE",
+    "kv2": "NOT_ADMITTED_ROTATING_TWIN_GATE_FAILED",
+    "kv3": "NULL_COMPATIBLE"
+  },
+  "experiment_id": "SAEA-SLURP-KV-FAMILY-RECOVERY-READ-V1",
+  "ku_s3_comparator": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1",
+  "ku_s3b_status": "PARKED",
+  "new_kv_generation_authorized": false,
+  "reason": "KV0 is harmful. Historical successors cannot be retrospectively admitted. KV2 gains over the weakened base but fails its rotating-stratum twin sign gate; KV1 and KV3 do not show positive primary intervals.",
+  "schema": "saea-scientific-decision-v1",
+  "sources": [
+    {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/kv0-decision.json",
+      "sha256": "23be400445ac586166d1fa17e4eea96b5f577f0a1efea3bd54cd4123c2e4d62b"
+    },
+    {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/family-contrasts.json",
+      "sha256": "890d6fbee8e28460641e4c5f132a1c271043db798ae155c4f5aada6c47db9429"
+    },
+    {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/family-bookkeeping.json",
+      "sha256": "723087a3295d5473f527b365dc2db71f632c9826adaf34a0cf407b4dd974f685"
+    }
+  ],
+  "status": "DECIDED",
+  "successor_precondition_satisfied": false,
+  "verdict": "RETAIN_KC_S1B_FALLBACK"
+}

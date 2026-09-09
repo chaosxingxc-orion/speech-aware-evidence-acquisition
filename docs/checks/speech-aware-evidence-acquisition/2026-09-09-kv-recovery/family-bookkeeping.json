@@ -1,0 +1,399 @@
+{
+  "config_sha256": "3ea3193f24616d51aef3b2798c4062bdc97bcbb8d203fe89ff5adf737bb1c4d8",
+  "field_pointers": {
+    "cost": "/scores/cost/aggregate",
+    "normalized_micro_f1": "/scores/slurp-slu-f1-normalized-v1/aggregate/normalized/micro/slu_f1",
+    "official_micro_f1": "/scores/slurp-slu-official/aggregate/official/slu_f1",
+    "parsed_rows": "sum(/scores/slurp-slu-official/per_sample/*/parsed)"
+  },
+  "model_calls_added": 0,
+  "runs": {
+    "kv0": {
+      "admitted_rows": 1000,
+      "cost": {
+        "audio_seconds_used": 2884.793687499999,
+        "calls_used": 1000,
+        "completion_tokens_total": 22725,
+        "latency_seconds_total": 1509.26703029099,
+        "prompt_tokens_total": 2774082,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      },
+      "counter_limit": "These counters were not exposed by inspected score/manifest receipts. Do not infer zero. Original traces remain addressable.",
+      "normalized_micro_f1": 0.42544446333879976,
+      "normalized_new500_means": {
+        "slot_f1_exact_f1": 0.22154761904761905,
+        "slu_f1_char_f1": 0.2918402348027781,
+        "slu_f1_f1": 0.2806299648109681,
+        "slu_f1_word_f1": 0.27372459907242513
+      },
+      "official_micro_f1": 0.41753463765573023,
+      "official_new500_means": {
+        "slot_f1_exact_f1": 0.19854761904761906,
+        "slu_f1_char_f1": 0.2882734388359245,
+        "slu_f1_f1": 0.27265978362709536,
+        "slu_f1_word_f1": 0.26293513298295906
+      },
+      "outputs_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1.outputs.jsonl",
+        "sha256": "52e2cb19ff1873a054cab9c1001b40f913b29542cc254e085030c39f868ea9ef"
+      },
+      "parsed_rows": 998,
+      "retry_counter": null,
+      "saturation_counter": null,
+      "schema_fallback_counter": null,
+      "scored_rows": 1000,
+      "sources": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1.run-manifest.json",
+          "sha256": "ffd1d3ee543dc73a0802600a9812f8cfe888cdb4bd6456c0667b57d6229ed9c7"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/score-batch/attempt-20260909T062500Z-74bfac.score.json",
+          "sha256": "14b91511df514393412fae84f98c7e72e5576fd33b13753a5616b225949671ba"
+        },
+        "scorers": {
+          "normalized": "slurp-slu-f1-normalized-v1",
+          "official": "slurp-slu-official"
+        }
+      },
+      "status": "COMPLETED",
+      "trace_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1.trace.jsonl",
+        "sha256": "662669c9884762a50f81a63610b849f973581e9f7df232e7ab07a315074b1021"
+      }
+    },
+    "kv1": {
+      "admitted_rows": 1000,
+      "cost": {
+        "audio_seconds_used": 2884.793687499999,
+        "calls_used": 1000,
+        "completion_tokens_total": 24880,
+        "latency_seconds_total": 2147.9269903280147,
+        "prompt_tokens_total": 3211393,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      },
+      "counter_limit": "These counters were not exposed by inspected score/manifest receipts. Do not infer zero. Original traces remain addressable.",
+      "normalized_micro_f1": 0.4106390923805662,
+      "normalized_new500_means": {
+        "slot_f1_exact_f1": 0.21921428571428572,
+        "slu_f1_char_f1": 0.28242594732286214,
+        "slu_f1_f1": 0.27243444983057036,
+        "slu_f1_word_f1": 0.26624840859623466
+      },
+      "official_micro_f1": 0.4030580525486341,
+      "official_new500_means": {
+        "slot_f1_exact_f1": 0.19388095238095238,
+        "slu_f1_char_f1": 0.27812841050763043,
+        "slu_f1_f1": 0.26396784232856424,
+        "slu_f1_word_f1": 0.25511132345914955
+      },
+      "outputs_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1/attempt-20260909T074825Z-0d2278/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1.outputs.jsonl",
+        "sha256": "f54949fa37c86c92d5b756f15eeb5105e3aa7ff0d8da0583e8f8af4b9b771ce0"
+      },
+      "parsed_rows": 997,
+      "retry_counter": null,
+      "saturation_counter": null,
+      "schema_fallback_counter": null,
+      "scored_rows": 1000,
+      "sources": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1/attempt-20260909T074825Z-0d2278/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1.run-manifest.json",
+          "sha256": "905bc56a617942fae4f1719fbbd95d653f57b8b5f542a4a3a1e2286e0577ac98"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1/attempt-20260909T074825Z-0d2278/score-batch/attempt-20260909T074825Z-0d2278.score.json",
+          "sha256": "d1f6d5837921b04c6ee82a024b354f0dc4a7ebe1d52b937639194bd8fc4fc0e3"
+        },
+        "scorers": {
+          "normalized": "slurp-slu-f1-normalized-v1",
+          "official": "slurp-slu-official"
+        }
+      },
+      "status": "COMPLETED",
+      "trace_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1/attempt-20260909T074825Z-0d2278/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1.trace.jsonl",
+        "sha256": "6427908c937df1cc0b4a95c13d970ef24452798dafb508cb7d41b74657acba20"
+      }
+    },
+    "kv1t": {
+      "admitted_rows": 1000,
+      "cost": {
+        "audio_seconds_used": 2884.793687499999,
+        "calls_used": 1000,
+        "completion_tokens_total": 24514,
+        "latency_seconds_total": 2252.1277430988775,
+        "prompt_tokens_total": 3211258,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      },
+      "counter_limit": "These counters were not exposed by inspected score/manifest receipts. Do not infer zero. Original traces remain addressable.",
+      "normalized_micro_f1": 0.4120442020394707,
+      "normalized_new500_means": {
+        "slot_f1_exact_f1": 0.2253190476190476,
+        "slu_f1_char_f1": 0.2903583974720414,
+        "slu_f1_f1": 0.2801486443573701,
+        "slu_f1_word_f1": 0.27380396415179026
+      },
+      "official_micro_f1": 0.40488711259483334,
+      "official_new500_means": {
+        "slot_f1_exact_f1": 0.20131904761904762,
+        "slu_f1_char_f1": 0.28666206097403435,
+        "slu_f1_f1": 0.2722467610190277,
+        "slu_f1_word_f1": 0.26322402187184796
+      },
+      "outputs_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1/attempt-20260909T081235Z-583048/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1.outputs.jsonl",
+        "sha256": "1c35f472253e0de3a436d894d4bfd1b04090a9ced5e313bc9282f6f18d5378e3"
+      },
+      "parsed_rows": 998,
+      "retry_counter": null,
+      "saturation_counter": null,
+      "schema_fallback_counter": null,
+      "scored_rows": 1000,
+      "sources": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1/attempt-20260909T081235Z-583048/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1.run-manifest.json",
+          "sha256": "89c2c0d281e49741796b78a10feef29b58453530752270ec674d0f3733687e02"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1/attempt-20260909T081235Z-583048/score-batch/attempt-20260909T081235Z-583048.score.json",
+          "sha256": "747bcf373838865b210d6c1a9ede2fdac384e15d983ccd8f28efbc419ed5750e"
+        },
+        "scorers": {
+          "normalized": "slurp-slu-f1-normalized-v1",
+          "official": "slurp-slu-official"
+        }
+      },
+      "status": "COMPLETED",
+      "trace_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1/attempt-20260909T081235Z-583048/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1.trace.jsonl",
+        "sha256": "f1d482e83d4cdc217fad83e3e915325f4fb9a37ca0eda3eacb49b95da22b22bd"
+      }
+    },
+    "kv2": {
+      "admitted_rows": 1000,
+      "cost": {
+        "audio_seconds_used": 2884.7936874999987,
+        "calls_used": 1000,
+        "completion_tokens_total": 27791,
+        "latency_seconds_total": 3886.3932659909915,
+        "prompt_tokens_total": 4438995,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      },
+      "counter_limit": "These counters were not exposed by inspected score/manifest receipts. Do not infer zero. Original traces remain addressable.",
+      "normalized_micro_f1": 0.48721551784083045,
+      "normalized_new500_means": {
+        "slot_f1_exact_f1": 0.29188095238095235,
+        "slu_f1_char_f1": 0.362231190449875,
+        "slu_f1_f1": 0.3522476871079963,
+        "slu_f1_word_f1": 0.3458579324057585
+      },
+      "official_micro_f1": 0.4791021489168398,
+      "official_new500_means": {
+        "slot_f1_exact_f1": 0.26821428571428574,
+        "slu_f1_char_f1": 0.358724940014384,
+        "slu_f1_f1": 0.3442528904504092,
+        "slu_f1_word_f1": 0.33502560917343527
+      },
+      "outputs_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-DEV1000-V1/attempt-20260909T064623Z-2a0ef7/SAEA-SLURP-KV2-CARDS-DEV1000-V1.outputs.jsonl",
+        "sha256": "79f83f25405761588304a374301126e6ced9dc2eb1dc63061f08b4a3655f56d4"
+      },
+      "parsed_rows": 998,
+      "retry_counter": null,
+      "saturation_counter": null,
+      "schema_fallback_counter": null,
+      "scored_rows": 1000,
+      "sources": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-DEV1000-V1/attempt-20260909T064623Z-2a0ef7/SAEA-SLURP-KV2-CARDS-DEV1000-V1.run-manifest.json",
+          "sha256": "ab94ac4139b14348d899f86919cf6a8278f5f4d6e9b4e587ba239cff64095e24"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-DEV1000-V1/attempt-20260909T064623Z-2a0ef7/score-batch/attempt-20260909T064623Z-2a0ef7.score.json",
+          "sha256": "a44182438ea3d4dc3a9b9e1e64f5ad3444f9d9d3899dd3422eaabdee5423bda6"
+        },
+        "scorers": {
+          "normalized": "slurp-slu-f1-normalized-v1",
+          "official": "slurp-slu-official"
+        }
+      },
+      "status": "COMPLETED",
+      "trace_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-DEV1000-V1/attempt-20260909T064623Z-2a0ef7/SAEA-SLURP-KV2-CARDS-DEV1000-V1.trace.jsonl",
+        "sha256": "6b3e7f97aeef35109ed8445e495a2afdbcdd9edb8eff78d5a580617db50f8b1a"
+      }
+    },
+    "kv2t": {
+      "admitted_rows": 1000,
+      "cost": {
+        "audio_seconds_used": 2884.793687499999,
+        "calls_used": 1000,
+        "completion_tokens_total": 27700,
+        "latency_seconds_total": 3574.557752911118,
+        "prompt_tokens_total": 4265703,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      },
+      "counter_limit": "These counters were not exposed by inspected score/manifest receipts. Do not infer zero. Original traces remain addressable.",
+      "normalized_micro_f1": 0.4723899269332422,
+      "normalized_new500_means": {
+        "slot_f1_exact_f1": 0.27281428571428573,
+        "slu_f1_char_f1": 0.34870638303998863,
+        "slu_f1_f1": 0.3370116632785226,
+        "slu_f1_word_f1": 0.3297245990724252
+      },
+      "official_micro_f1": 0.463148725806119,
+      "official_new500_means": {
+        "slot_f1_exact_f1": 0.24314761904761906,
+        "slu_f1_char_f1": 0.3437971074205531,
+        "slu_f1_f1": 0.32711333904425777,
+        "slu_f1_word_f1": 0.31662560917343524
+      },
+      "outputs_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1/attempt-20260909T071753Z-548ca4/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1.outputs.jsonl",
+        "sha256": "d34975291ef9c3ed67880ae5d967cb43bfd4d134df224530b77cbeec10dff2fc"
+      },
+      "parsed_rows": 997,
+      "retry_counter": null,
+      "saturation_counter": null,
+      "schema_fallback_counter": null,
+      "scored_rows": 1000,
+      "sources": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1/attempt-20260909T071753Z-548ca4/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1.run-manifest.json",
+          "sha256": "cd374a9f4965ad9b08f7cd92c5def266366198db00f4b252b40c4a2cbc5955dc"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1/attempt-20260909T071753Z-548ca4/score-batch/attempt-20260909T071753Z-548ca4.score.json",
+          "sha256": "eef55ef812f885711eb1a474866fe36325d4e523fdd4e615bce969ff0c957207"
+        },
+        "scorers": {
+          "normalized": "slurp-slu-f1-normalized-v1",
+          "official": "slurp-slu-official"
+        }
+      },
+      "status": "COMPLETED",
+      "trace_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1/attempt-20260909T071753Z-548ca4/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1.trace.jsonl",
+        "sha256": "ee7d4da2df9d471bd136685cd330370fd7d16e691d9db9c6891dcad846e30b38"
+      }
+    },
+    "kv3": {
+      "admitted_rows": 1000,
+      "cost": {
+        "audio_seconds_used": 2884.793687499999,
+        "calls_used": 1000,
+        "completion_tokens_total": 18536,
+        "latency_seconds_total": 1639.601742506049,
+        "prompt_tokens_total": 2921785,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      },
+      "counter_limit": "These counters were not exposed by inspected score/manifest receipts. Do not infer zero. Original traces remain addressable.",
+      "normalized_micro_f1": 0.4211646431122551,
+      "normalized_new500_means": {
+        "slot_f1_exact_f1": 0.22808095238095238,
+        "slu_f1_char_f1": 0.2958666240475993,
+        "slu_f1_f1": 0.285365064409423,
+        "slu_f1_word_f1": 0.278881741929568
+      },
+      "official_micro_f1": 0.41440785059159324,
+      "official_new500_means": {
+        "slot_f1_exact_f1": 0.20641428571428572,
+        "slu_f1_char_f1": 0.29280254418184887,
+        "slu_f1_f1": 0.2778730975125018,
+        "slu_f1_word_f1": 0.2685684663162924
+      },
+      "outputs_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1/attempt-20260909T083938Z-401fca/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1.outputs.jsonl",
+        "sha256": "a7bab2364af1ee30777f148741ed0b214dac24f3917737f62b25bdac9237d7f7"
+      },
+      "parsed_rows": 997,
+      "retry_counter": null,
+      "saturation_counter": null,
+      "schema_fallback_counter": null,
+      "scored_rows": 1000,
+      "sources": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1/attempt-20260909T083938Z-401fca/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1.run-manifest.json",
+          "sha256": "bd50da773c977d6f07a2ab1f2b12228517b005f45e622fd2d3a7d9591eb49e75"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1/attempt-20260909T083938Z-401fca/score-batch/attempt-20260909T083938Z-401fca.score.json",
+          "sha256": "8af9562a181a72c815ddfee92713be5a6f75d11bc106425503193894a31226e1"
+        },
+        "scorers": {
+          "normalized": "slurp-slu-f1-normalized-v1",
+          "official": "slurp-slu-official"
+        }
+      },
+      "status": "COMPLETED",
+      "trace_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1/attempt-20260909T083938Z-401fca/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1.trace.jsonl",
+        "sha256": "d0f98d4fefdab853f77d0812af60e356db7fc132e1e765aa3e933610927035d5"
+      }
+    },
+    "kv3t": {
+      "admitted_rows": 1000,
+      "cost": {
+        "audio_seconds_used": 2884.7936874999987,
+        "calls_used": 1000,
+        "completion_tokens_total": 18093,
+        "latency_seconds_total": 1573.7308250199858,
+        "prompt_tokens_total": 2911623,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      },
+      "counter_limit": "These counters were not exposed by inspected score/manifest receipts. Do not infer zero. Original traces remain addressable.",
+      "normalized_micro_f1": 0.4180345014680565,
+      "normalized_new500_means": {
+        "slot_f1_exact_f1": 0.22308095238095238,
+        "slu_f1_char_f1": 0.2892777670786449,
+        "slu_f1_f1": 0.27851745430490604,
+        "slu_f1_word_f1": 0.2718579324057585
+      },
+      "official_micro_f1": 0.4109797328830348,
+      "official_new500_means": {
+        "slot_f1_exact_f1": 0.19508095238095238,
+        "slu_f1_char_f1": 0.28523935996062605,
+        "slu_f1_f1": 0.26911448580983977,
+        "slu_f1_word_f1": 0.2590668790147051
+      },
+      "outputs_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1/attempt-20260909T090318Z-b9657d/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1.outputs.jsonl",
+        "sha256": "2dbfa54d2ae50f0c2008ae6589152e23a068fb9ffec925b8b7606f1bcbe07025"
+      },
+      "parsed_rows": 997,
+      "retry_counter": null,
+      "saturation_counter": null,
+      "schema_fallback_counter": null,
+      "scored_rows": 1000,
+      "sources": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1/attempt-20260909T090318Z-b9657d/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1.run-manifest.json",
+          "sha256": "1f2c2f41dd26dd539f885dc74950db15dc687a12b4fcd0568f0a0e486f3bd869"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1/attempt-20260909T090318Z-b9657d/score-batch/attempt-20260909T090318Z-b9657d.score.json",
+          "sha256": "5190b2f91dfb7658fb783177c1289f40323fa3d46e7b38205f852f577a030552"
+        },
+        "scorers": {
+          "normalized": "slurp-slu-f1-normalized-v1",
+          "official": "slurp-slu-official"
+        }
+      },
+      "status": "COMPLETED",
+      "trace_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1/attempt-20260909T090318Z-b9657d/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1.trace.jsonl",
+        "sha256": "12d46d71d78069d58d1dd4f5bc7fd52c5cd60a21d682709cfad8cbdeda9f558c"
+      }
+    }
+  },
+  "schema": "saea-kv-recovery-bookkeeping-v1",
+  "scorer_invocations_added": 0
+}
