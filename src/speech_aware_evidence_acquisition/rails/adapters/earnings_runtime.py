@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Mapping
 
 from ...core.base import CoreError
-from ...core.config import read_fragment
+from ...core.config import effective_request_decoding_params, read_fragment
 from ...reproduction.window_controller import validate_window_controller
 from ..hashing import content_hash
 from .earnings import Earnings21Adapter
@@ -55,7 +55,7 @@ class Earnings21RuntimeAdapter(Earnings21Adapter):
                 "E21 runtime requires explicit positive integer serving_geometry"
             )
         if (
-            values.get("decoding_params", {}).get("max_tokens")
+            (effective_request_decoding_params(values) or {}).get("max_tokens")
             != geometry["max_tokens"]
         ):
             raise CoreError(

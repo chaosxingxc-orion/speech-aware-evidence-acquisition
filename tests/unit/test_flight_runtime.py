@@ -101,6 +101,12 @@ class _WideFakeAdapter(_FakeAdapter):
     SERVING_MAX_TOKENS = 32
 
 
+class _WideCompletionFakeAdapter(_FakeAdapter):
+    """The same resident service dimensions with a wider request ceiling."""
+
+    SERVING_MAX_TOKENS = 256
+
+
 class _FakeGate:
     def __init__(self) -> None:
         self.calls = 0
@@ -348,6 +354,7 @@ def _write_configs(
     execution_plan_present: bool = True,
     model_extra: Mapping[str, object] | None = None,
     baseline_extra: Mapping[str, object] | None = None,
+    experiment_extra: Mapping[str, object] | None = None,
 ) -> None:
     model_document: dict[str, object] = {"model_lock_key": "fake-lock", "transport": "fake"}
     model_document.update(dict(model_extra or {}))
@@ -371,6 +378,7 @@ def _write_configs(
         if execution_plan_overrides:
             execution_plan.update(execution_plan_overrides)
         experiment_document["execution_plan"] = execution_plan
+    experiment_document.update(dict(experiment_extra or {}))
     _write_json(repo_root / "configs" / "experiment" / "e.json", experiment_document)
 
 
@@ -653,6 +661,35 @@ def test_serve_reuses_a_matching_geometry_without_a_fresh_spawn(tmp_path):
     assert calls["starts"] == 1
     assert receipt["reused"] is True
     assert receipt["reused_from_attempt_id"] == "attempt-a"
+
+
+def test_serve_reuses_same_resident_for_a_different_completion_ceiling(tmp_path):
+    calls = {"starts": 0}
+
+    def _counting_session_starter(**kwargs):
+        calls["starts"] += 1
+        return _FakeSession(str(kwargs["session_id"]))
+
+    repo_a = _make_repo(tmp_path / "a", "SAEA-TEST-A")
+    repo_b = _make_repo(tmp_path / "b", "SAEA-TEST-B")
+    owner = _make_runtime(
+        tmp_path, run_id="SAEA-TEST-A", attempt_id="attempt-a", happy_path=True,
+        repo_root=repo_a, session_starter=_counting_session_starter,
+    )
+    borrower = _make_runtime(
+        tmp_path, run_id="SAEA-TEST-B", attempt_id="attempt-b", happy_path=True,
+        repo_root=repo_b, adapter_cls=_WideCompletionFakeAdapter,
+        session_starter=_counting_session_starter,
+    )
+    owner.preflight()
+    owner.preprocess()
+    owner.serve()
+    borrower.preflight()
+    borrower.preprocess()
+    assert borrower.serving_profile_fingerprint() == owner.serving_profile_fingerprint()
+    receipt = borrower.serve(reuse=owner)
+    assert calls["starts"] == 1
+    assert receipt["reused"] is True
 
 
 # ---------------------------------------------------------------------------
@@ -3027,10 +3064,32 @@ class _EchoingDecodingClient(_TransportDrivingClient):
 
 
 def _cap_runtime(tmp_path, max_tokens, **kwargs):
+    config_kwargs = {
+        "arm": "bare-core",
+        "policy": "fixed",
+        "model_extra": {
+            "decoding_params": {
+                "temperature": 0,
+                "seed": 20260803,
+                "max_tokens": max_tokens,
+                "id_slot": "per-sample",
+            }
+        },
+    }
+    config_kwargs.update(kwargs.pop("config_kwargs", {}))
     return _wire_runtime(
         tmp_path,
         adapter_cls=_TwoDurationAdapter,
         client_factory=_EchoingDecodingClient,
+        config_kwargs=config_kwargs,
+        **kwargs,
+    )
+
+
+def test_request_completion_override_changes_payload_and_preflight_reserve(tmp_path):
+    baseline = _cap_runtime(tmp_path / "base", 64)
+    widened = _cap_runtime(
+        tmp_path / "wide", 64,
         config_kwargs={
             "arm": "bare-core",
             "policy": "fixed",
@@ -3038,13 +3097,42 @@ def _cap_runtime(tmp_path, max_tokens, **kwargs):
                 "decoding_params": {
                     "temperature": 0,
                     "seed": 20260803,
-                    "max_tokens": max_tokens,
+                    "max_tokens": 64,
                     "id_slot": "per-sample",
                 }
             },
+            "experiment_extra": {"request_decoding_overrides": {"max_tokens": 256}},
         },
-        **kwargs,
     )
+    base_receipt = baseline.wire_check(seal_and_score=False)
+    wide_receipt = widened.wire_check(seal_and_score=False)
+    assert base_receipt["max_tokens"] == 64
+    assert wide_receipt["max_tokens"] == 256
+    assert baseline._completion_token_ceiling() == 64
+    assert widened._completion_token_ceiling() == 256
+    assert base_receipt["request_body_sha256"] != wide_receipt["request_body_sha256"]
+    budget = widened._assess_prompt_budget(widened._samples)
+    assert budget[0]["breakdown"]["completion_token_ceiling"] == 256
+
+
+@pytest.mark.parametrize(
+    "override",
+    [{"temperature": 1}, {"max_tokens": True}, {"max_tokens": 0}],
+)
+def test_request_completion_override_refuses_unknown_boolean_or_nonpositive(tmp_path, override):
+    runtime = _cap_runtime(
+        tmp_path,
+        64,
+        config_kwargs={
+            "arm": "bare-core",
+            "policy": "fixed",
+            "model_extra": {"decoding_params": {"max_tokens": 64}},
+            "experiment_extra": {"request_decoding_overrides": override},
+        },
+    )
+    runtime._prepare()
+    with pytest.raises(Exception, match="request_decoding_overrides"):
+        runtime._decoding_params()
 
 
 def test_a_plain_integer_max_tokens_is_handed_on_by_identity(tmp_path):

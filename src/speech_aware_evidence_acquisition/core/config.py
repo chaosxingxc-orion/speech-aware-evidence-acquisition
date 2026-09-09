@@ -76,6 +76,47 @@ class ConfigError(RuntimeError):
     """A config fragment is missing, unreadable, or collides with another."""
 
 
+def effective_request_decoding_params(values: Mapping[str, object]) -> object:
+    """Resolve the experiment-scoped completion cap without changing service identity.
+
+    ``request_decoding_overrides`` is intentionally limited to one request
+    field. It changes bytes sent to the frozen core and the fit reserve, while
+    server geometry and the model identity remain those of the model fragment.
+    """
+    declared = values.get("decoding_params")
+    override = values.get("request_decoding_overrides")
+    if override is None:
+        return declared
+    if not isinstance(override, Mapping) or set(override) != {"max_tokens"}:
+        raise ConfigError(
+            "request_decoding_overrides must contain exactly the supported "
+            "field 'max_tokens'"
+        )
+    maximum = override["max_tokens"]
+    if isinstance(maximum, bool) or not isinstance(maximum, int) or maximum <= 0:
+        raise ConfigError(
+            "request_decoding_overrides.max_tokens must be a positive integer"
+        )
+    if declared is None:
+        resolved: dict[str, object] = {}
+    elif isinstance(declared, Mapping):
+        resolved = dict(declared)
+    else:
+        raise ConfigError("decoding_params must be a mapping when declared")
+    resolved["max_tokens"] = maximum
+    return resolved
+
+
+def effective_request_values(values: Mapping[str, object]) -> Mapping[str, object]:
+    """Return values with a declared request completion cap applied purely."""
+    decoded = effective_request_decoding_params(values)
+    if values.get("request_decoding_overrides") is None:
+        return values
+    resolved = dict(values)
+    resolved["decoding_params"] = decoded
+    return resolved
+
+
 def _reject_duplicate_keys(fragment_path: Path):
     """``object_pairs_hook`` factory (M-5 fix): a human reading a JSON
     fragment top-to-bottom sees the FIRST value for a repeated key, but
