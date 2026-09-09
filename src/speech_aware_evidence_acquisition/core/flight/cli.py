@@ -24,6 +24,7 @@ def main(argv=None) -> int:
     parser.add_argument("--lease-token-file", type=Path)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--contact-cap", type=int)
+    parser.add_argument("--workers", type=int, default=1)
     args = parser.parse_args(argv)
     if args.mode in {"worker", "prompt-fit"} and (
         not args.expected_session_id or args.lease_token_file is None
@@ -88,7 +89,10 @@ def main(argv=None) -> int:
         elif args.mode == "wire-check":
             result = runtime.wire_check(seal_and_score=False)
         elif args.mode == "prepare-supply":
-            result = runtime.prepare_phase_supply(args.output)
+            if args.workers == 1:
+                result = runtime.prepare_phase_supply(args.output)
+            else:
+                result = runtime.prepare_phase_supply(args.output, max_workers=args.workers)
         elif args.mode == "prompt-fit":
             from ..preparation_fit import fit_phase_runtime
             result = fit_phase_runtime(

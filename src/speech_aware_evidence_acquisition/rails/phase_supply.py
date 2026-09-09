@@ -884,6 +884,48 @@ def _provider_factory(
 SEED_QUERY_ID_PREFIX = "phase-supply-seed"
 
 
+
+_BOOTSTRAP_WORKER_STATE = None
+
+
+def _bootstrap_worker_init():
+    if _BOOTSTRAP_WORKER_STATE is None:
+        raise RuntimeError("bootstrap worker state was not initialized")
+
+
+def _bootstrap_one(task):
+    sample_id, query_vectors, descriptor = task
+    spec, provider, split_identity_hash = _BOOTSTRAP_WORKER_STATE
+    seed_state = QueryState(
+        query_id=f"{SEED_QUERY_ID_PREFIX}:{spec.phase}:{sample_id}",
+        query_sample_id=sample_id,
+        speech_packet_id=str(descriptor["packet_id"]),
+        speech_packet_sha256=str(descriptor["sha256"]),
+        use_split_identity_hash=split_identity_hash,
+    ).validate()
+    ranking = provider.candidates(
+        {"query_state": seed_state, "query_vectors": dict(query_vectors)},
+        k=spec.k,
+    )
+    fusion_decision = provider.fuse([ranking], k=spec.k, policy_id=spec.fuse_policy)
+    return (
+        sample_id,
+        tuple(fusion_decision.supporting_facet_ids)
+        if spec.expose_facets
+        else (),
+        tuple(fusion_decision.selected_value_ids),
+    )
+
+
+def _validate_bootstrap_workers(workers: int, *, lease_metadata_present: bool = False) -> int:
+    if isinstance(workers, bool) or not isinstance(workers, int) or not 1 <= workers <= 20:
+        raise PhaseSupplyError("workers must be an integer from 1 through 20")
+    if workers > 8 and lease_metadata_present:
+        return 8
+    return workers
+
+
+
 def build_bootstrap_selection(
     spec: PhaseSupplySpec,
     *,
@@ -891,51 +933,50 @@ def build_bootstrap_selection(
     query_vectors_by_sample: Mapping[str, Mapping[str, tuple[float, ...]]],
     speech_packet_bindings: Mapping[str, Mapping[str, object]],
     split_identity_hash: str,
+    workers: int = 1,
+    lease_metadata_present: bool = False,
 ) -> tuple[dict[str, tuple[str, ...]], dict[str, tuple[str, ...]]]:
-    """``({sample: facet_ids}, {sample: value_ids})`` for a supplied FIRST
-    phase, decided BEFORE the flight.
+    """Return deterministic bootstrap selections, optionally using fork workers."""
+    global _BOOTSTRAP_WORKER_STATE
+    workers = _validate_bootstrap_workers(workers, lease_metadata_present=lease_metadata_present)
+    tasks = [
+        (sample_id, query_vectors_by_sample[sample_id], speech_packet_bindings[sample_id])
+        for sample_id in sorted(speech_packet_bindings)
+        if query_vectors_by_sample.get(sample_id)
+    ]
+    if not tasks:
+        return {}, {}
 
-    A first phase has no preceding ``advance``, so no wave can carry an
-    ``acquire`` transition for it (``rails.controllers``, "Traced supply").
-    Its selection is therefore decided here -- a pure function of the pinned
-    query vectors, the frozen snapshot and the pinned knobs, so it is
-    reproducible from the config hash plus two sha256s -- and seeded into
-    each sample's initial ``QueryState`` through ``rails.runner``'s
-    ``bootstrap_value_ids`` mapping form. It still reaches the model ONLY as
-    typed content blocks with ``evidence_id``/``source_uri``/
-    ``knowledge_role``, and the SUPPLY trace record reports it per sample.
+    if workers == 1:
+        rows = []
+        for task in tasks:
+            _BOOTSTRAP_WORKER_STATE = (spec, provider, split_identity_hash)
+            rows.append(_bootstrap_one(task))
+    else:
+        import sys
+        if sys.platform != "linux":
+            raise PhaseSupplyError(
+                "parallel bootstrap selection requires Linux/WSL fork semantics"
+            )
+        import multiprocessing
+        from concurrent.futures import ProcessPoolExecutor
 
-    What this route does NOT get, stated plainly: an ``acquire`` transition
-    and therefore an ``assert_knowledge_use_binding`` call at contact time.
-    The compensating evidence is that the decision is pre-flight and
-    hash-pinned rather than runtime and unrecorded.
-    """
+        _BOOTSTRAP_WORKER_STATE = (spec, provider, split_identity_hash)
+        context = multiprocessing.get_context("fork")
+        with ProcessPoolExecutor(
+            max_workers=workers,
+            mp_context=context,
+            initializer=_bootstrap_worker_init,
+        ) as pool:
+            rows = list(pool.map(_bootstrap_one, tasks))
 
     facets: dict[str, tuple[str, ...]] = {}
     values: dict[str, tuple[str, ...]] = {}
-    for sample_id in sorted(speech_packet_bindings):
-        query_vectors = query_vectors_by_sample.get(sample_id)
-        if not query_vectors:
-            continue
-        descriptor = speech_packet_bindings[sample_id]
-        seed_state = QueryState(
-            query_id=f"{SEED_QUERY_ID_PREFIX}:{spec.phase}:{sample_id}",
-            query_sample_id=sample_id,
-            speech_packet_id=str(descriptor["packet_id"]),
-            speech_packet_sha256=str(descriptor["sha256"]),
-            use_split_identity_hash=split_identity_hash,
-        ).validate()
-        ranking = provider.candidates(
-            {"query_state": seed_state, "query_vectors": dict(query_vectors)},
-            k=spec.k,
-        )
-        fusion_decision = provider.fuse(
-            [ranking], k=spec.k, policy_id=spec.fuse_policy
-        )
-        if fusion_decision.selected_value_ids:
-            values[sample_id] = tuple(fusion_decision.selected_value_ids)
-        if spec.expose_facets and fusion_decision.supporting_facet_ids:
-            facets[sample_id] = tuple(fusion_decision.supporting_facet_ids)
+    for sample_id, facet_ids, value_ids in sorted(rows, key=lambda row: row[0]):
+        if value_ids:
+            values[sample_id] = value_ids
+        if spec.expose_facets and facet_ids:
+            facets[sample_id] = facet_ids
     return facets, values
 
 
