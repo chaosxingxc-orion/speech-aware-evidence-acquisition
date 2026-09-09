@@ -1,0 +1,120 @@
+{
+  "experiment_id": "SAEA-SLURP-KU-S3-FILLERS-SPEECH-DEV1000-V1",
+  "fragment_kind": "saea-slurp-consumption-experiment-v1",
+  "migration_status": "HELD: successor configuration migration only; no contact is authorized by this fragment",
+  "date": "2026-09-09",
+  "purpose": "G1 KU-S3a same-profile preparation. Preserve the original speech-keyed KU-S3 generation semantics and budgets while moving the cell onto the shared fit/generation campaign stages. The historical NEW500 is exposed; report it as the decision population only after the registered read.",
+  "split_id": "DEV-1000",
+  "population": {
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "decision_population": "historically exposed NEW500; no fresh holdout is claimed",
+    "roster": "the frozen DEV-1000 runtime view, id for id"
+  },
+  "source_pins": {
+    "runtime_predecessor": {
+      "manifest_relpath": "runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
+      "manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c",
+      "binding": "baseline.phase_material.slots.predecessor_source; unchanged runtime state source"
+    },
+    "kc_s1b_comparator": {
+      "manifest_relpath": "runs/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1/attempt-20260906T025102Z-af6b04/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.run-manifest.json",
+      "manifest_sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08",
+      "binding": "sealed KC-S1b comparison rows; not a runtime state source"
+    },
+    "snapshot_receipt": {
+      "repo_relpath": "docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers.json",
+      "sha256": "2abda571900bfcb5bf4a384eac1cb858fa8841ab3873d034b862c85671af443c"
+    },
+    "vector_receipt": {
+      "repo_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-kus3-vectors/vectors.json",
+      "sha256": "3c213ad4f4787e32d92fe30dd1119395817a73ba48d46cbed292a8f471aa86e5"
+    },
+    "vector_inputs": {
+      "facet_relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+      "facet_sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+      "query_relpath": "vectors/slurp-kus3/query-vectors-speech.jsonl",
+      "query_sha256": "99b2e1700a058640a12c86fb261e3fc1898cd99004b0157366682b2a048b2e7c"
+    }
+  },
+  "preparation_source_receipts": [
+    {
+      "root": "repository",
+      "relpath": "docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers.json",
+      "sha256": "2abda571900bfcb5bf4a384eac1cb858fa8841ab3873d034b862c85671af443c"
+    },
+    {
+      "root": "repository",
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-kus3-vectors/vectors.json",
+      "sha256": "3c213ad4f4787e32d92fe30dd1119395817a73ba48d46cbed292a8f471aa86e5"
+    }
+  ],
+  "prepared_phase_supply": {
+    "relpath": "PENDING-KU-S3A-G1-PREPARED-PHASE-SUPPLY.json",
+    "sha256": "PENDING-REGISTERED-PHASE-SUPPLY-SHA256",
+    "status": "PENDING: root must produce and register the persistent full-roster seed artifact before generation"
+  },
+  "prepared_supply_inputs": {
+    "provider": "kb-facet-v1",
+    "dimension": "content",
+    "k": 5,
+    "tau": 0.0,
+    "fuse_coverage": {"m": 5, "c": 5, "top_l": 5},
+    "rank_policy": "saea-rank-wcos-prior-agree-v1",
+    "rank_weights": {"w_cos": 1.0, "w_prior": 0.0, "w_agree": 0.0},
+    "query_vector": "vectors/slurp-kus3/query-vectors-speech.jsonl",
+    "facet_vectors": "vectors/slurp-kus3/facet-vectors.jsonl",
+    "snapshot": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers/snapshot.json",
+    "required_binding": "The persistent artifact must bind the exact split identity, snapshot and vector receipt/source hashes, query/facet files, packet promotion receipt, policy supply spec and implementation hashes. No duration proxy or re-embedding is acceptable."
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "dev",
+    "planned_model_calls": 1050,
+    "planned_gpu_hours": 2.0,
+    "planned_speech_audio_seconds": 3000
+  },
+  "execution_plan_basis": {
+    "generation": "Original KU-S3a budget: 1,000 roster contacts plus 8 canaries, 3,000 audio seconds and 2.0 GPU-hours ceiling; run-cumulative and one recovery re-registration remain in force.",
+    "fit": "Shared full-roster fitter proposal: 3,001 tokenizer endpoints = 1 GET /props + 1,000 POST /apply-template + 2,000 POST /tokenize. This is separate from the 1,050 generation cap and measures the actual supplied-evidence request body for every row."
+  },
+  "comparator": "KC-S1b sealed manifest 088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08; KV-0 is harmful retrospective evidence and is not a replacement comparison base.",
+  "decision_rule": "Use the existing KU-S3 rule only after the registered read: paired per-sample SLU-F1 CI90 lower bound above zero against KC-S1b on the historically exposed NEW500, and KU-S3a minus the form twin lower bound above zero. Report OLD500 and pooled DEV-1000 separately; do not call NEW500 unexposed.",
+  "cells": [
+    {
+      "cell_id": "ku-s3a-g1-fit",
+      "run_id": "PENDING-KU-S3A-G1-FIT-RUN-ID",
+      "attempt_id": "PENDING-KU-S3A-G1-FIT-ATTEMPT-ID",
+      "allowed_execution_stages": ["check", "wire-check", "prompt-fit"],
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-supplied-fillers-speech-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "readiness": {
+        "state": "held",
+        "reason": "Fit and persistent supply preparation require root exposure registration, final attempt identity, source receipt verification and a 3,001-endpoint tokenizer authorization.",
+        "requirements": []
+      }
+    },
+    {
+      "cell_id": "ku-s3a-g1-generation",
+      "run_id": "SAEA-SLURP-KU-S3-FILLERS-SPEECH-DEV1000-V1",
+      "attempt_id": "PENDING-KU-S3A-G1-GENERATION-ATTEMPT-ID",
+      "allowed_execution_stages": ["check", "wire-check", "prepare-supply", "worker", "campaign"],
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-supplied-fillers-speech-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "readiness": {
+        "state": "held",
+        "reason": "Generation remains held until the fit cell and persistent phase-supply artifact are verified under the exact source bindings.",
+        "depends_on": [{"run_id": "PENDING-KU-S3A-G1-FIT-RUN-ID", "required_state": "prepared"}],
+        "requirements": [
+          {"kind": "preparation", "relpath": "PENDING-KU-S3A-G1-PREPARED-PHASE-SUPPLY.json", "sha256": "PENDING-REGISTERED-PHASE-SUPPLY-SHA256", "reason": "full-roster phase-supply seed"},
+          {"kind": "preparation", "relpath": "PENDING-KU-S3A-G1-PROMPT-FIT.json", "sha256": "PENDING-REGISTERED-PROMPT-FIT-SHA256", "reason": "full-roster actual request fit"}
+        ]
+      }
+    }
+  ],
+  "decision": {"test_tuning": false, "paper_scale": false}
+}
