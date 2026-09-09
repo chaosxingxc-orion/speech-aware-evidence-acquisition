@@ -706,10 +706,22 @@ def score_bundle(
     scorer_names = bundle.manifest.get("scorers")
     if not isinstance(scorer_names, list) or not scorer_names:
         raise ScoringPhaseError("run manifest carries no configured scorers to run")
+    from copy import deepcopy
+
     results: dict[str, object] = {}
+    scored_callables: dict[int, object] = {}
     for name in scorer_names:
         scorer_fn = SCORERS.resolve(str(name))
-        results[str(name)] = scorer_fn(bundle.outputs_path, lock, root)
+        identity = id(scorer_fn)
+        if identity in scored_callables:
+            # Aliases retain independent result values without launching the
+            # identical official evaluator twice. Distinct partials/configured
+            # callable instances intentionally retain distinct invocations.
+            results[str(name)] = deepcopy(scored_callables[identity])
+        else:
+            result = scorer_fn(bundle.outputs_path, lock, root)
+            scored_callables[identity] = result
+            results[str(name)] = result
     return results
 
 
