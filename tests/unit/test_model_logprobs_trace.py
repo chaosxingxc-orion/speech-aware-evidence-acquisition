@@ -133,10 +133,14 @@ def _server_logprobs(k=5):
 def _transport(*, logprobs=None, wire_response=None):
     def transport(request_bytes):
         assert isinstance(request_bytes, bytes)
-        envelope = {
-            "text": "hello world",
-            "usage": {"prompt_tokens": 5, "completion_tokens": 2},
-        }
+        envelope = (
+            {}
+            if wire_response is not None and "wire_response_error" in wire_response
+            else {
+                "text": "hello world",
+                "usage": {"prompt_tokens": 5, "completion_tokens": 2},
+            }
+        )
         if logprobs is not None:
             envelope["logprobs"] = logprobs
         if wire_response is not None:
@@ -245,6 +249,23 @@ def test_opt_in_wire_response_record_preserves_exact_bytes_and_finish_reason(tmp
         "response_sha256", "response_text_sha256", "text", "usage"
     }
     assert sink.manifest()["req-1/wire-response"]
+
+
+def test_malformed_http_response_is_traced_before_failure(tmp_path):
+    raw = b"not-json-response"
+    wire = {
+        "wire_response_b64": __import__("base64").b64encode(raw).decode("ascii"),
+        "wire_response_sha256": hashlib.sha256(raw).hexdigest(),
+        "wire_finish_reason": None,
+        "wire_response_error": "Expecting value",
+    }
+    adapter, _ = _adapter(tmp_path, run_dir="bad-http", wire_response=wire)
+    with pytest.raises(FrozenCoreError, match="malformed response"):
+        adapter.request(_payload())
+    records = {record["record_id"]: record for record in _trace_records(tmp_path, "bad-http")}
+    assert records["req-1/wire-response"]["payload"]["response_b64"] == wire["wire_response_b64"]
+    assert records["req-1/wire-response"]["payload"]["finish_reason"] is None
+    assert "req-1/response" not in records
 
 
 def test_malformed_wire_response_hash_fails_closed(tmp_path):

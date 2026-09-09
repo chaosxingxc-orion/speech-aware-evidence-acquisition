@@ -2352,6 +2352,21 @@ def test_opt_in_wire_response_keeps_exact_bytes_and_finish_reason(tmp_path):
     assert envelope["text"] == "hello"
 
 
+def test_opt_in_malformed_http_response_returns_provenance_envelope(tmp_path):
+    raw = b"malformed-http-json"
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=lambda _url, _body: raw,
+        preserve_wire_responses=True,
+    )
+    envelope = json.loads(transport(json.dumps(_boundary_payload(tmp_path)).encode()))
+    assert "text" not in envelope
+    assert envelope["wire_response_b64"] == base64.b64encode(raw).decode("ascii")
+    assert envelope["wire_response_sha256"] == hashlib.sha256(raw).hexdigest()
+    assert envelope["wire_finish_reason"] is None
+
+
 def test_wire_response_capture_flag_must_be_boolean(tmp_path):
     with pytest.raises(SessionError, match="preserve_wire_responses must be a bool"):
         _transport(

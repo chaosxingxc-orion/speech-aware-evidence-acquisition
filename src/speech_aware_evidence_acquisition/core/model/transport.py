@@ -970,6 +970,18 @@ class LlamaServerTransport:
                 if not isinstance(v, Mapping)
             }
         except (KeyError, TypeError, ValueError, IndexError, UnicodeError) as error:
+            if self._preserve_wire_responses:
+                # Return a provenance-only envelope so the adapter can emit
+                # the exact received bytes before re-raising the historical
+                # malformed-response failure. It has no model-visible text.
+                return json.dumps(
+                    {
+                        "wire_response_b64": base64.b64encode(raw).decode("ascii"),
+                        "wire_response_sha256": hashlib.sha256(raw).hexdigest(),
+                        "wire_finish_reason": None,
+                        "wire_response_error": str(error),
+                    }
+                ).encode("utf-8")
             raise FrozenCoreError(
                 f"transport returned a malformed response: {error}"
             ) from error
@@ -977,7 +989,8 @@ class LlamaServerTransport:
         if self._preserve_wire_responses:
             # Keep the server bytes exactly as received. The adapter validates
             # the envelope and emits these fields on a separate trace channel;
-            # MODEL_RESPONSE remains the historical normalized record.
+            # MODEL_RESPONSE keeps its historical text/usage shape; its
+            # normalized-envelope hash necessarily includes these opt-in fields.
             envelope["wire_response_b64"] = base64.b64encode(raw).decode("ascii")
             envelope["wire_response_sha256"] = hashlib.sha256(raw).hexdigest()
             envelope["wire_finish_reason"] = (
