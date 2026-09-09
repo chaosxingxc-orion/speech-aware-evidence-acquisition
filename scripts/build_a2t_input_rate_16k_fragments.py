@@ -262,10 +262,23 @@ def dataset_fragment(
         # this key through the carrier_root_resolver seam FlightRuntime already
         # exposes.
         "a2t_calibration_derived_subdir": str(cell["derived_subdir"]),
+        # BOTH SPELLINGS, AND THEY MUST AGREE. The carrier-prefixed pair is
+        # what ``core.base.declared_derived_media_roots`` reads to vouch for
+        # the derived root above; the PLAIN pair is what ``core.config.
+        # d1_media_supplement_relpath`` -- and therefore the media IDENTITY
+        # gate ``core.flight.FlightRuntime.preflight`` constructs -- reads.
+        # Emitting only the prefixed pair satisfied confinement and left the
+        # identity gate seeing no supplement, so every roster id was refused
+        # as outside D1's closure at the first real request (2026-09-09,
+        # docs/readiness/2026-09-09-a2t-derived-media-d1-declaration-fix-v1.md).
+        # ``core.config.assert_d1_media_supplement_spellings_agree`` now
+        # refuses any fragment where these four values disagree.
         "a2t_calibration_d1_media_supplement": str(cell["supplement"]).removeprefix("docs/"),
         "a2t_calibration_d1_media_supplement_sha256": sha256_file(
             REPO / str(cell["supplement"])
         ),
+        "d1_media_supplement": str(cell["supplement"]).removeprefix("docs/"),
+        "d1_media_supplement_sha256": sha256_file(REPO / str(cell["supplement"])),
         "a2t_calibration_d1_basis": (
             "Unlike the sealed frozen 400 -- whose ids are inside the base D1 closure and "
             "which therefore declares NO supplement -- these ids are new media that "

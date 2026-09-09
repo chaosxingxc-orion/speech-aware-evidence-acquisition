@@ -233,9 +233,79 @@ def runtime_receipt_relpath(values: Mapping[str, object]) -> str:
     return value
 
 
+# A CARRIER-PREFIXED ALIAS of the plain D1 media-supplement pair, e.g.
+# ``a2t_calibration_d1_media_supplement`` +
+# ``a2t_calibration_d1_media_supplement_sha256``. Two readers of the same
+# fragment disagreed about which spelling is the declaration, and a cell died
+# of it (2026-09-09, ``docs/readiness/
+# 2026-09-09-a2t-derived-media-d1-declaration-fix-v1.md``): ``core.base.
+# declared_derived_media_roots`` reads the PREFIXED pair to widen payload
+# confinement, while ``core.flight.FlightRuntime.preflight`` builds the media
+# IDENTITY gate from the PLAIN pair only. Six Audio2Tool derived-media
+# fragments carried the prefixed pair alone, so confinement was satisfied and
+# the identity gate saw no supplement at all -- every roster id refused as
+# "outside D1's identity closure" at the first real request.
+#
+# The rule below makes that state unrepresentable rather than merely fixed:
+# a prefixed spelling that is a REAL declaration must be matched, value for
+# value, by the plain pair the gate actually reads.
+_D1_MEDIA_SUPPLEMENT_ALIAS = re.compile(r"^[a-z0-9]+(?:_[a-z0-9]+)*_d1_media_supplement$")
+
+
+def assert_d1_media_supplement_spellings_agree(values: Mapping[str, object]) -> None:
+    """Refuse a config whose carrier-prefixed D1 media supplement disagrees
+    with -- or is not accompanied by -- the plain pair the gate reads.
+
+    A prefixed key is a real DECLARATION exactly when its own
+    ``..._sha256`` companion is a lowercase 64-hex digest; that is the same
+    discriminator ``core.base._assert_d1_media_supplement`` already uses, and
+    it is what tells a declaration apart from the several fragments that
+    carry a prefixed key as PROSE explaining why they need no supplement
+    (``audio2tool-calibration-400.json``: "none, by design ..."). Prose is
+    inert here, as it is there.
+
+    For every real prefixed declaration, two things must hold:
+
+    1. the plain ``d1_media_supplement`` / ``d1_media_supplement_sha256``
+       pair must be present -- a fragment that declares a supplement ONLY
+       under a prefixed key is refused, because the identity gate would
+       silently see no supplement at all; and
+    2. both halves must be equal to the prefixed values -- when both
+       spellings exist they name the same artifact and the same bytes, or
+       the fragment is refused.
+    """
+
+    plain_path = values.get("d1_media_supplement")
+    plain_digest = values.get("d1_media_supplement_sha256")
+    for key in sorted(values):
+        if _D1_MEDIA_SUPPLEMENT_ALIAS.fullmatch(key) is None:
+            continue
+        digest_key = f"{key}_sha256"
+        alias_digest = values.get(digest_key)
+        if not isinstance(alias_digest, str) or _SHA256.fullmatch(alias_digest) is None:
+            continue
+        alias_path = values.get(key)
+        if plain_path is None and plain_digest is None:
+            raise ConfigError(
+                f"config declares a D1 media supplement under {key!r} + {digest_key!r} "
+                "but not under the plain d1_media_supplement / "
+                "d1_media_supplement_sha256 pair; the media identity gate reads ONLY "
+                "the plain pair, so a prefixed-only declaration widens payload "
+                "confinement while leaving every sample outside D1's identity closure"
+            )
+        if alias_path != plain_path or alias_digest != plain_digest:
+            raise ConfigError(
+                f"config declares the D1 media supplement twice and the two spellings "
+                f"disagree: {key!r}={alias_path!r} / {digest_key!r}={alias_digest!r} "
+                f"against d1_media_supplement={plain_path!r} / "
+                f"d1_media_supplement_sha256={plain_digest!r}"
+            )
+
+
 def _d1_media_supplement_pair(
     values: Mapping[str, object],
 ) -> tuple[object | None, object | None]:
+    assert_d1_media_supplement_spellings_agree(values)
     path = values.get("d1_media_supplement")
     digest = values.get("d1_media_supplement_sha256")
     if (path is None) != (digest is None):

@@ -402,8 +402,22 @@ def a2t_dataset(view: Mapping[str, Any], *, subset: Sequence[str] | None) -> dic
         # this key through the carrier_root_resolver seam FlightRuntime already
         # exposes and run_e22_esb_cell.py already uses.
         "a2t_calibration_derived_subdir": "derived/a2t-calibration-400-tail2s-v1",
+        # BOTH SPELLINGS, AND THEY MUST AGREE. The carrier-prefixed pair is
+        # what ``core.base.declared_derived_media_roots`` reads to vouch for
+        # the derived root above; the PLAIN pair is what ``core.config.
+        # d1_media_supplement_relpath`` -- and therefore the media IDENTITY
+        # gate ``core.flight.FlightRuntime.preflight`` constructs -- reads.
+        # The SLURP view above has always carried the plain pair; this
+        # Audio2Tool fragment carried only the prefixed one, which satisfied
+        # confinement and left the identity gate seeing no supplement at all
+        # (2026-09-09, docs/readiness/
+        # 2026-09-09-a2t-derived-media-d1-declaration-fix-v1.md).
+        # ``core.config.assert_d1_media_supplement_spellings_agree`` now
+        # refuses any fragment where these four values disagree.
         "a2t_calibration_d1_media_supplement": supplement.removeprefix("docs/"),
         "a2t_calibration_d1_media_supplement_sha256": sha256_file(REPO / supplement),
+        "d1_media_supplement": supplement.removeprefix("docs/"),
+        "d1_media_supplement_sha256": sha256_file(REPO / supplement),
         "a2t_calibration_d1_basis": (
             "Unlike the sealed frozen 400 -- whose ids are inside the base D1 closure and "
             "which therefore declares NO supplement -- the @ts2 ids are new media that "

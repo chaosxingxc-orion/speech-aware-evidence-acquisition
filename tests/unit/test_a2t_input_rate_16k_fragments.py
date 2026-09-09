@@ -223,10 +223,59 @@ def test_the_seal_half_is_reported_as_pending_against_a_named_change() -> None:
         ]
 
 
+#: The four ``@16k`` / ``@16k+ts2`` dataset fragments MOVED on 2026-09-09, and
+#: the sealed 2026-09-07 receipt is never rewritten to hide it. Each gained the
+#: plain ``d1_media_supplement`` / ``d1_media_supplement_sha256`` pair the media
+#: identity gate reads -- the D1 declaration fix of ``docs/readiness/
+#: 2026-09-09-a2t-derived-media-d1-declaration-fix-v1.md``. The pre-fix digest
+#: is recorded here so the receipt stays pinned to a KNOWN document rather than
+#: to "whatever differs today", and every fragment NOT listed must still match
+#: the live bytes exactly.
+SUPERSEDED_BY_THE_D1_DECLARATION_FIX = {
+    "configs/dataset/audio2tool-calibration-400-16k.json": (
+        "8f4595aa5ba4c6f6472f288b1558cea9e1eac39f5e0417213fd38485e1f6177c"
+    ),
+    "configs/dataset/audio2tool-calibration-400-16k-smoke4.json": (
+        "569c7beae971b9f9ef99697e8b35e309ef5e56ae8fe3b8809d597541578c1ca3"
+    ),
+    "configs/dataset/audio2tool-calibration-400-16k-tail2s.json": (
+        "1b9902199bfbcc18d5e5868f04a13a40c572ad46ee96c6fbeec934628766264f"
+    ),
+    "configs/dataset/audio2tool-calibration-400-16k-tail2s-smoke4.json": (
+        "d3c86ee422b8e28d173689f54cc1a5a16ad376046bb53fc96716be1e162355fe"
+    ),
+}
+
+
 def test_the_receipt_pins_the_fragments_it_drove() -> None:
     assert set(RECEIPT["fragments"]) == set(WIRE.FRAGMENTS)
     for relpath, digest in RECEIPT["fragments"].items():
+        if relpath in SUPERSEDED_BY_THE_D1_DECLARATION_FIX:
+            assert digest == SUPERSEDED_BY_THE_D1_DECLARATION_FIX[relpath], relpath
+            continue
         assert hashlib.sha256((REPO / relpath).read_bytes()).hexdigest() == digest
+
+
+@pytest.mark.parametrize("relpath", sorted(SUPERSEDED_BY_THE_D1_DECLARATION_FIX))
+def test_every_superseded_fragment_moved_for_exactly_the_declaration_fix(
+    relpath: str,
+) -> None:
+    """The supersession above is bounded: each listed fragment now declares the
+    D1 media supplement under BOTH spellings, in agreement -- the plain pair the
+    identity gate reads and the carrier-prefixed pair
+    ``core.base.declared_derived_media_roots`` reads."""
+
+    values = json.loads((REPO / relpath).read_text(encoding="utf-8"))
+    assert (
+        values["d1_media_supplement"] == values["a2t_calibration_d1_media_supplement"]
+    )
+    assert (
+        values["d1_media_supplement_sha256"]
+        == values["a2t_calibration_d1_media_supplement_sha256"]
+    )
+    assert hashlib.sha256((REPO / relpath).read_bytes()).hexdigest() != (
+        SUPERSEDED_BY_THE_D1_DECLARATION_FIX[relpath]
+    )
 
 
 def test_wire_check_manifest_reproduces() -> None:

@@ -17,5 +17,7 @@
   "a2t_calibration_subset_receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-a2t-calibration-400-tail2s-media/roster/flight-roster-receipt.json",
   "a2t_calibration_subset_receipt_sha256": "683f124e9dcda27bc14f5e3eafb454d46a636d94bcb95689df039ce7b3227db2",
   "carrier_lock_key": "audio2tool",
+  "d1_media_supplement": "receipts/artifacts/d1-a2t-calibration-400-tail2s.json",
+  "d1_media_supplement_sha256": "4bfc77f06a7d92ea6f0b57c6ed4823996d4bc218ed56bf894f01cc4d0d885693",
   "split_id": "A2T-CALIBRATION-400-TS2-SMOKE-4"
 }

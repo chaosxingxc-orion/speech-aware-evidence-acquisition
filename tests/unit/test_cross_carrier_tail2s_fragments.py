@@ -361,10 +361,51 @@ def test_every_wire_check_stop_is_one_of_the_named_preconditions() -> None:
             assert entry["reached_the_end"] is False, cell
 
 
+#: The two Audio2Tool ``@ts2`` dataset fragments MOVED on 2026-09-09, and the
+#: sealed 2026-09-07 receipt is never rewritten to hide it. Each gained the
+#: plain ``d1_media_supplement`` / ``d1_media_supplement_sha256`` pair the media
+#: identity gate reads -- the D1 declaration fix of ``docs/readiness/
+#: 2026-09-09-a2t-derived-media-d1-declaration-fix-v1.md``. The SLURP ``@ts2``
+#: view always carried the plain pair and is deliberately NOT here: it must
+#: still match the live bytes exactly, which is what makes this list a bound on
+#: the change rather than an excuse for it.
+SUPERSEDED_BY_THE_D1_DECLARATION_FIX = {
+    "configs/dataset/audio2tool-calibration-400-tail2s.json": (
+        "c06eaabd4b88c0511adf2b0d5d936fe0be54d1f4b101b2451b06f4a68acac9d9"
+    ),
+    "configs/dataset/audio2tool-calibration-400-tail2s-smoke4.json": (
+        "6970b65bf38b1bad9ce12eefde963b8edbc2264c6ca907450b68012373ad5d25"
+    ),
+}
+
+
 def test_wire_check_receipt_pins_the_fragments_it_drove() -> None:
     receipt = json.loads(WIRE.read_text(encoding="utf-8"))
     for relpath, digest in receipt["fragments"].items():
+        if relpath in SUPERSEDED_BY_THE_D1_DECLARATION_FIX:
+            assert digest == SUPERSEDED_BY_THE_D1_DECLARATION_FIX[relpath], relpath
+            continue
         assert hashlib.sha256((REPO / relpath).read_bytes()).hexdigest() == digest, relpath
+
+
+@pytest.mark.parametrize("relpath", sorted(SUPERSEDED_BY_THE_D1_DECLARATION_FIX))
+def test_every_superseded_fragment_moved_for_exactly_the_declaration_fix(
+    relpath: str,
+) -> None:
+    """The supersession above is bounded: each listed fragment now declares the
+    D1 media supplement under BOTH spellings, in agreement."""
+
+    values = _json(relpath)
+    assert (
+        values["d1_media_supplement"] == values["a2t_calibration_d1_media_supplement"]
+    )
+    assert (
+        values["d1_media_supplement_sha256"]
+        == values["a2t_calibration_d1_media_supplement_sha256"]
+    )
+    assert hashlib.sha256((REPO / relpath).read_bytes()).hexdigest() != (
+        SUPERSEDED_BY_THE_D1_DECLARATION_FIX[relpath]
+    )
 
 
 def test_wire_check_receipt_says_why_earnings21_has_no_cell() -> None:

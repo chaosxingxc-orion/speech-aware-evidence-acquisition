@@ -22,8 +22,109 @@ from .identifiers import _SHA256
 from .receipts import _resolve_under, _safe_relative_path
 
 
+def _no_d1_media_identity(sample_id: str, carrier_lock_key: str) -> str:
+    """THE refusal sentence for a sample outside D1's media identity closure.
+
+    One authority for the wording, because two callers now raise it:
+    :meth:`_MediaIdentityMixin.verify_media_identity`, at model-touch time,
+    over the facts the run's binding actually named; and
+    :meth:`_MediaIdentityMixin.assert_media_identity_closure`, ahead of any
+    contact, over a whole roster. A wire check that reports a different
+    sentence than the one the flight will die of is a wire check that has
+    not proved the flight.
+    """
+
+    return (
+        f"sample {sample_id!r} (carrier {carrier_lock_key!r}) has no D1-recorded "
+        "media identity; a sample outside D1's identity closure can never be "
+        "sent to the frozen core"
+    )
+
+
 class _MediaIdentityMixin(_D1IdentityLookupMixin):
     """``verify_media_identity`` and its bitrate-plausibility helper."""
+
+    def _d1_base_media_records(
+        self, carrier_lock_key: str
+    ) -> tuple[str, dict[str, tuple[int, str]]]:
+        """``(identity_carrier, {sample_id: (bytes, sha256)})`` from the
+        immutable D1 identity artifact's own media layer.
+
+        Extracted verbatim from :meth:`verify_media_identity` (no behaviour
+        change) so :meth:`media_identity_closure_ids` can read the SAME
+        manifest through the SAME carrier aliasing without re-implementing
+        either.
+        """
+
+        identity_carrier = resolve_media_identity_carrier(carrier_lock_key)
+        document = self._load(self._d1_identity_artifact_path(), "D1 identity artifact")
+        carriers = document.get("carriers")
+        carrier_doc = carriers.get(identity_carrier) if isinstance(carriers, Mapping) else None
+        if not isinstance(carrier_doc, Mapping):
+            raise GateClosed(
+                f"D1 identity artifact has no per-sample media identity for carrier "
+                f"{identity_carrier!r} (plan carrier {carrier_lock_key!r}); model touch refused"
+            )
+        layers = carrier_doc.get("layers")
+        media_layer = layers.get("media") if isinstance(layers, Mapping) else None
+        manifest_entries = media_layer.get("manifest") if isinstance(media_layer, Mapping) else None
+        if not isinstance(manifest_entries, list) or not manifest_entries:
+            raise GateClosed(
+                f"D1 identity artifact carrier {identity_carrier!r} lacks a media manifest; "
+                "model touch refused"
+            )
+        recorded: dict[str, tuple[int, str]] = {}
+        for entry in manifest_entries:
+            if not isinstance(entry, Mapping):
+                raise GateClosed("D1 media manifest entry is not an object")
+            sample_id = entry.get("id")
+            rec_bytes = entry.get("bytes")
+            rec_sha = entry.get("sha256")
+            if (
+                not isinstance(sample_id, str)
+                or not sample_id
+                or isinstance(rec_bytes, bool)
+                or not isinstance(rec_bytes, int)
+                or rec_bytes <= 0
+                or not isinstance(rec_sha, str)
+                or _SHA256.fullmatch(rec_sha) is None
+            ):
+                raise GateClosed(f"D1 media manifest entry is malformed: {entry!r}")
+            recorded[sample_id] = (rec_bytes, rec_sha)
+        return identity_carrier, recorded
+
+    def media_identity_closure_ids(self, carrier_lock_key: str) -> frozenset[str]:
+        """Every sample id THIS gate's D1 closure carries for ``carrier_lock_key``
+        -- the base D1 media manifest's ids plus this gate's configured D1 media
+        supplement's, if it has one.
+
+        The cheap half of :meth:`verify_media_identity`: membership only, no
+        media file is opened, so a whole 400- or 1,000-row roster can be
+        checked ahead of any contact. Both documents are still verified as
+        strictly as the expensive path verifies them -- the supplement's own
+        digest, its parent-D1 binding, its manifest hash and its per-entry
+        shape all go through ``_d1_media_supplement_records`` unchanged.
+        """
+
+        identity_carrier, recorded = self._d1_base_media_records(carrier_lock_key)
+        supplemented = self._d1_media_supplement_records(identity_carrier, recorded)
+        return frozenset(recorded) | frozenset(supplemented)
+
+    def assert_media_identity_closure(self, carrier_lock_key: str, sample_ids) -> None:
+        """Refuse if ANY id in ``sample_ids`` is outside
+        :meth:`media_identity_closure_ids`, with the same sentence
+        :meth:`verify_media_identity` refuses with.
+
+        A roster-wide precondition, not a substitute: this proves every id is
+        DECLARED, while ``verify_media_identity`` proves the bytes on disk are
+        the declared ones. A wire check runs this over the whole roster and
+        ``verify_media_identity`` over the rows it actually loads.
+        """
+
+        closure = self.media_identity_closure_ids(carrier_lock_key)
+        for sample_id in sample_ids:
+            if sample_id not in closure:
+                raise GateClosed(_no_d1_media_identity(str(sample_id), carrier_lock_key))
 
     # I-4 (external-threat-model review): a documented, generous MP3 bitrate
     # plausibility band, derived empirically from the two core carriers'
@@ -274,42 +375,7 @@ class _MediaIdentityMixin(_D1IdentityLookupMixin):
                 "verify_media_identity requires a non-empty sample_id -> "
                 "(media_relpath, audio_seconds) mapping"
             )
-        identity_carrier = resolve_media_identity_carrier(carrier_lock_key)
-        document = self._load(self._d1_identity_artifact_path(), "D1 identity artifact")
-        carriers = document.get("carriers")
-        carrier_doc = carriers.get(identity_carrier) if isinstance(carriers, Mapping) else None
-        if not isinstance(carrier_doc, Mapping):
-            raise GateClosed(
-                f"D1 identity artifact has no per-sample media identity for carrier "
-                f"{identity_carrier!r} (plan carrier {carrier_lock_key!r}); model touch refused"
-            )
-        layers = carrier_doc.get("layers")
-        media_layer = layers.get("media") if isinstance(layers, Mapping) else None
-        manifest_entries = media_layer.get("manifest") if isinstance(media_layer, Mapping) else None
-        if not isinstance(manifest_entries, list) or not manifest_entries:
-            raise GateClosed(
-                f"D1 identity artifact carrier {identity_carrier!r} lacks a media manifest; "
-                "model touch refused"
-            )
-        recorded: dict[str, tuple[int, str]] = {}
-        for entry in manifest_entries:
-            if not isinstance(entry, Mapping):
-                raise GateClosed("D1 media manifest entry is not an object")
-            sample_id = entry.get("id")
-            rec_bytes = entry.get("bytes")
-            rec_sha = entry.get("sha256")
-            if (
-                not isinstance(sample_id, str)
-                or not sample_id
-                or isinstance(rec_bytes, bool)
-                or not isinstance(rec_bytes, int)
-                or rec_bytes <= 0
-                or not isinstance(rec_sha, str)
-                or _SHA256.fullmatch(rec_sha) is None
-            ):
-                raise GateClosed(f"D1 media manifest entry is malformed: {entry!r}")
-            recorded[sample_id] = (rec_bytes, rec_sha)
-
+        identity_carrier, recorded = self._d1_base_media_records(carrier_lock_key)
         supplemented = self._d1_media_supplement_records(identity_carrier, recorded)
 
         for sample_id, fact in media_facts.items():
@@ -326,9 +392,7 @@ class _MediaIdentityMixin(_D1IdentityLookupMixin):
             supplement_fact = supplemented.get(sample_id)
             if d1_fact is None and supplement_fact is None:
                 raise GateClosed(
-                    f"sample {sample_id!r} (carrier {carrier_lock_key!r}) has no D1-recorded "
-                    "media identity; a sample outside D1's identity closure can never be "
-                    "sent to the frozen core"
+                    _no_d1_media_identity(sample_id, carrier_lock_key)
                 )
             relative = _safe_relative_path(relpath, f"media_facts[{sample_id!r}] media relpath")
             if supplement_fact is not None:
