@@ -14,7 +14,7 @@ from .lease import WorkerExecutionPolicy
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=[
-        "check", "wire-check", "prepare-supply", "prompt-fit", "worker", "campaign",
+        "check", "wire-check", "prepare-supply", "prompt-fit", "coordinate-fit", "worker", "campaign",
     ])
     for name in ("repo-root", "data-root", "runtime-root", "lock-path", "experiment"):
         parser.add_argument("--" + name, required=True)
@@ -36,6 +36,11 @@ def main(argv=None) -> int:
         parser.error("preparation modes require --output")
     if args.mode == "prompt-fit" and (args.contact_cap is None or args.contact_cap < 1):
         parser.error("prompt-fit requires a positive registered --contact-cap")
+    if args.mode == "coordinate-fit" and (
+        not args.owner or not args.expected_session_id or args.output is None
+        or args.contact_cap is None or args.contact_cap < 1
+    ):
+        parser.error("coordinate-fit requires --owner, --expected-session-id, --output and a positive --contact-cap")
     if args.mode != "campaign" and not args.cell:
         parser.error("single-worker modes require --cell")
     repo, root = Path(args.repo_root).resolve(), Path(args.data_root).resolve()
@@ -51,7 +56,7 @@ def main(argv=None) -> int:
             parser.error("cell is not declared by the experiment")
     if args.mode != "campaign":
         for cell in cells:
-            cell.assert_mode(args.mode)
+            cell.assert_mode("prompt-fit" if args.mode == "coordinate-fit" else args.mode)
     policy = None
     if args.mode in {"worker", "prompt-fit"}:
         document = json.loads(args.lease_token_file.read_text(encoding="utf-8"))
@@ -80,7 +85,14 @@ def main(argv=None) -> int:
                 raise CampaignError(state.reason)
             if args.mode == "worker" and cells[0].dependencies():
                 raise CampaignError("dependent workers require coordinator queue admission")
-        if args.mode == "check":
+        if args.mode == "coordinate-fit":
+            from .coordinator import coordinate_fit
+            result = coordinate_fit(
+                runtime, repo_root=repo, data_root=root, runtime_root=Path(args.runtime_root),
+                output=args.output, owner=args.owner, expected_session_id=args.expected_session_id,
+                contact_cap=args.contact_cap, model_fragment=cells[0].document["model_fragment"],
+            )
+        elif args.mode == "check":
             result = {
                 "preflight": runtime.preflight(),
                 "scientific_readiness": {"state": state.state, "reason": state.reason},
