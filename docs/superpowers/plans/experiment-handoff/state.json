@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 10,
+  "generation": 11,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "0bea8e29bdbd732256a0d345af43aaf9bf0ecf60",
-  "updated_at_utc": "2026-09-09T17:00:31.171200+00:00",
-  "next_action": "Final max256 control/speech/twin configurations and all six attempts are fixed. Both full-roster retrieval artifacts pass ordered selection, rendered supply and zero-recomputation warm checks. Three separate 3001-endpoint capacity plans are committed. Root batch coordinator is materializing actual requests from frozen WSL checkout /home/chao/saea-worktrees/g1-max256-runtime before starting session slurp-g1-max256-np4-20260909-root. Generation remains held pending all three fit receipts and separate final registration. No owner question is pending.",
+  "snapshot_commit": "27810cc2fade57086259f3795324de71c167866c",
+  "updated_at_utc": "2026-09-09T17:44:03.123888+00:00",
+  "next_action": "All three full-roster max256 fits passed (9003 tokenizer endpoints, zero generation in fits). The registered control/speech/twin campaign is active on frozen WSL checkout /home/chao/saea-worktrees/g1-max256-runtime at 024eb00a559ff383411d4ebdc43b731806098fb9, attached to root session slurp-g1-max256-np4-20260909-root. Inspect launch, lease, run and monitor receipts for progress; no comparative read until all three seal. Canonical master now includes reviewed actual E21 window fit integration and held E21 DR/KU-S4N successor configurations; do not update the active frozen checkout. No owner question is pending.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-KUS3-BUDGET-005"
