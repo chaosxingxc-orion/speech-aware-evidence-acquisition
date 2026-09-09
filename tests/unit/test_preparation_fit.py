@@ -258,3 +258,73 @@ def test_boundary_identity_ignores_only_nonprompt_routing():
     assert boundary_identity(original) == boundary_identity(changed)
     changed[0]["decoding_params"]["max_tokens"] = 6
     assert boundary_identity(original) != boundary_identity(changed)
+
+
+def test_window_requests_keep_parent_identity_and_require_every_window():
+    from speech_aware_evidence_acquisition.core.preparation import (
+        measure_multimodal_request,
+    )
+
+    payloads = [
+        {"sample_id": "call", "media_relpath": "i0.wav", "speech": []},
+        {"sample_id": "call", "media_relpath": "i1.wav", "speech": []},
+    ]
+
+    class CountClient:
+        def request_json(self, method, path, payload):
+            assert path == "/v1/chat/completions/input_tokens"
+            return {"input_tokens": 10}
+
+    result = fit_requests(
+        payloads,
+        expected_sample_ids=["i0.wav", "i1.wav"],
+        request_key=lambda p: p["media_relpath"],
+        request_measure=measure_multimodal_request,
+        transport=Renderer(),
+        client=CountClient(),
+        speech_counts=lambda p: (),
+        media_marker="<m>",
+        slot_tokens=40,
+        fit_multiple=2,
+    )
+    assert [row["sample_id"] for row in result["rows"]] == ["call", "call"]
+    assert [row["request_key"] for row in result["rows"]] == ["i0.wav", "i1.wav"]
+    assert result["every_request_fits"]
+
+
+def test_window_batch_fit_uses_real_multimodal_count_route(tmp_path):
+    from speech_aware_evidence_acquisition.core.preparation_fit import fit_phase_runtime
+    from speech_aware_evidence_acquisition.core.preparation_windows import (
+        WindowRequestBatch,
+    )
+
+    runtime, _policy, _attach, client, kwargs = fit_fixture(tmp_path)
+    payloads = ({"sample_id": "s1", "media_relpath": "slice.wav", "speech": []},)
+    batch = WindowRequestBatch(
+        payloads, ("s1#w0001",), ({"sample_id": "s1", "media_relpath": "slice.wav"},)
+    )
+    original = client.request_json
+
+    def count(method, path, payload):
+        if path == "/v1/chat/completions/input_tokens":
+            client.calls.append((method, path))
+            return {"input_tokens": 2}
+        return original(method, path, payload)
+
+    client.request_json = count
+    runtime.materialize_phase_requests = lambda: pytest.fail(
+        "window fit used phase fake transport"
+    )
+    kwargs["speech_counter"] = lambda p: pytest.fail(
+        "window fit estimated speech tokens"
+    )
+    path = tmp_path / "window-fit.json"
+    fit_phase_runtime(runtime, path, window_batch=batch, **kwargs)
+    output = json.loads(path.read_bytes())["output"]
+    assert output["rows"][0]["request_key"] == "s1#w0001"
+    assert output["rows"][0]["fit_multiple"] == 2.0
+    assert output["rows"][0]["measurement"] == "resident-multimodal-input-tokens"
+    assert client.calls == [
+        ("GET", "/props"),
+        ("POST", "/v1/chat/completions/input_tokens"),
+    ]

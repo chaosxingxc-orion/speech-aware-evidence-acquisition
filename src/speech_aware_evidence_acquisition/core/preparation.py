@@ -1,8 +1,8 @@
 """Shared immutable preparation artifacts and actual-envelope token measurement.
 
 Prepared bytes are local artifacts, never authorization for a model contact.
-Receipt pins are excluded from the input-config digest to avoid self-reference;
-every other config value remains bound. Endpoint access is supplied only by an
+Receipt pins and per-cell readiness records are excluded from the input-config
+digest to avoid self-reference; every model/request configuration remains bound. Endpoint access is supplied only by an
 already-attested caller. Template/tokenizer and multimodal input-count routes
 measure requests without generation.
 """
@@ -53,10 +53,20 @@ def artifact_inputs(
         c not in "0123456789abcdef" for c in split_identity_hash
     ):
         raise PreparationError("split identity must be a lowercase SHA256")
+    normalized = {k: v for k, v in config.items() if k not in _RECEIPT_KEYS}
+    # Admission records may acquire THIS artifact's digest after preparation.
+    # Remove only that operational field, never a cell's actual fragments,
+    # model parameters, or other configuration. The composed protocol hash
+    # remains separate and continues to bind the complete campaign document.
+    if isinstance(normalized.get("cells"), list):
+        normalized["cells"] = [
+            {k: v for k, v in cell.items() if k != "readiness"}
+            if isinstance(cell, Mapping)
+            else cell
+            for cell in normalized["cells"]
+        ]
     return {
-        "config_sha256": digest(
-            {k: v for k, v in config.items() if k not in _RECEIPT_KEYS}
-        ),
+        "config_sha256": digest(normalized),
         "split_identity_hash": split_identity_hash,
         "sources": dict(sources),
     }
@@ -287,3 +297,56 @@ def verify_source_receipts(pins, *, repo_root: Path, data_root: Path):
                 "frozen source receipt is not valid and confined"
             ) from error
     return pins
+
+
+def measure_multimodal_request(
+    client,
+    body: Mapping[str, object],
+    *,
+    slot_tokens: int,
+    fit_multiple: float = 1.0,
+    special_tokens: int = 2,
+):
+    """Count the complete actual request on the resident mmproj tokenizer.
+
+    The pinned server's input_tokens route uses its own chat parser and
+    multimodal tokenizer, including the supplied WAV. It never queues a
+    generation. Missing capability is a refusal, never a duration estimate.
+    The study's additional reserve and margin remain separately visible.
+    """
+    maximum = body.get("max_tokens")
+    for value in (maximum, slot_tokens, special_tokens):
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            raise PreparationError("token counts must be nonnegative integers")
+    if (
+        slot_tokens == 0
+        or not math.isfinite(fit_multiple)
+        or fit_multiple < 1
+        or "messages" not in body
+    ):
+        raise PreparationError("invalid multimodal fit request")
+    try:
+        response = client.request_json(
+            "POST", "/v1/chat/completions/input_tokens", dict(body)
+        )
+    except Exception as error:
+        raise PreparationError(
+            "multimodal count capability unavailable; FIT_READY refused"
+        ) from error
+    count = response.get("input_tokens") if isinstance(response, Mapping) else None
+    if isinstance(count, bool) or not isinstance(count, int) or count < 0:
+        raise PreparationError("multimodal count capability returned no valid count")
+    required = count + maximum + special_tokens
+    margin = slot_tokens - math.ceil(fit_multiple * required)
+    return {
+        "request_body_sha256": digest(body),
+        "measured_prompt_tokens": count,
+        "measurement": "resident-multimodal-input-tokens",
+        "maximum_completion_tokens": maximum,
+        "special_tokens": special_tokens,
+        "required_tokens": required,
+        "slot_tokens": slot_tokens,
+        "fit_multiple": fit_multiple,
+        "margin_tokens": margin,
+        "fits": margin >= 0,
+    }

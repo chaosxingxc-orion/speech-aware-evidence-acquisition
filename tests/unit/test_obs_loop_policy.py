@@ -1380,3 +1380,70 @@ class TestDeltaCandidatesSeam:
         assert len(world.adapter.payloads) == 3
         for payload in world.adapter.payloads:
             assert payload["delta_candidates"] == []
+
+
+def test_prepared_windows_and_payloads_match_live_parallel_requests(tmp_path, monkeypatch):
+    pcm = _noise(90)
+    values = _config_values(obs_boundary_mode="fixed", obs_vad_trim_min_seconds=0,
+                            obs_condition_tail_chars=0, obs_batch_slices=3)
+    world = _World(tmp_path, monkeypatch, pcm=pcm, texts=["first", "second"], values=values)
+    cfg = ObsLoopConfig.from_values(values, world.repo_root)
+    windows, records = obs_loop.materialize_fixed_windows(
+        cfg, world.registry, world.data_root, world.ctx.sample, RATE, pcm, 90,
+        hashlib.sha256((world.data_root / world.parent_relpath).read_bytes()).hexdigest())
+    prepared = []
+    for window in windows:
+        rid, factory = obs_loop.window_request_factory(
+            world.ctx, window, sample=world.ctx.sample, rate=RATE, evidence=None)
+        prepared.append(factory(rid))
+    assert not world.adapter.payloads
+    assert len(records) == 2
+    assert [r.audio_seconds for r in records] == [60, 30]
+    assert all((world.data_root / r.media_relpath).is_file() for r in records)
+    world.ctx.extras["slice_registry"] = SliceRegistry(
+        data_root=world.data_root, run_id=RUN_ID,
+        parent_facts={SAMPLE_ID: (world.parent_relpath, world.duration)})
+    world.run()
+    assert sorted(prepared, key=lambda p: p["request_id"]) == sorted(
+        world.adapter.payloads, key=lambda p: p["request_id"])
+
+
+def test_repair_fit_materializes_all_actual_windows_without_response_or_accept(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+    from speech_aware_evidence_acquisition.core.preparation_windows import materialize_window_requests
+    from speech_aware_evidence_acquisition.reproduction.repair_loop import RepairWindowHook
+    pcm = _noise(90)
+    values = _config_values(obs_boundary_mode="fixed", obs_vad_trim_min_seconds=0,
+                            obs_batch_slices=3, obs_condition_tail_chars=0)
+    world = _World(tmp_path, monkeypatch, pcm=pcm, texts=[], values=values)
+    hook = RepairWindowHook(
+        sample_id=SAMPLE_ID,
+        predecessors=[SimpleNamespace(start_seconds=0, end_seconds=60, text="draft first"),
+                      SimpleNamespace(start_seconds=60, end_seconds=90, text="draft final")],
+        frame="Correct this draft: {predecessor}",
+        rule=lambda *args: pytest.fail("fit must never deliver a fabricated response"))
+    batch = materialize_window_requests(
+        [world.ctx], expected_sample_ids=[SAMPLE_ID],
+        hook_factory=lambda *args: hook)
+    assert len(batch.payloads) == 2
+    assert batch.request_keys == (f"{SAMPLE_ID}#w0001", f"{SAMPLE_ID}#w0002")
+    assert "draft first" in batch.payloads[0]["task_instruction"]
+    assert "draft final" in batch.payloads[1]["task_instruction"]
+    assert not world.adapter.payloads
+    assert not hook.outcomes
+    for payload, source in zip(batch.payloads, batch.source_bindings, strict=True):
+        raw = (world.data_root / payload["media_relpath"]).read_bytes()
+        assert hashlib.sha256(raw).hexdigest() == source["sha256"]
+        assert source["parent_sha256"] == hashlib.sha256(
+            (world.data_root / world.parent_relpath).read_bytes()).hexdigest()
+        assert batch.request_key(payload) in batch.request_keys
+
+
+def test_window_fit_refuses_missing_call_or_dependent_geometry(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core.preparation import PreparationError
+    from speech_aware_evidence_acquisition.core.preparation_windows import materialize_window_requests
+    world = _World(tmp_path, monkeypatch, pcm=_noise(5), texts=[])
+    with pytest.raises(PreparationError, match="roster"):
+        materialize_window_requests([world.ctx], expected_sample_ids=["foreign"])
+    with pytest.raises(PreparationError, match="independent"):
+        materialize_window_requests([world.ctx], expected_sample_ids=[SAMPLE_ID])
