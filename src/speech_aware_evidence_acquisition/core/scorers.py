@@ -537,17 +537,35 @@ def _assert_scoring_entry_gate(
     placeholder (``FrozenCoreGate.for_study_repo``'s own ``repo_root``
     argument, reused for all three positions).
 
-    ``repo_root`` additionally gates a plain clean-tree check
-    (``core.bundle.require_clean_study_repo`` -- the SAME rule the run path
-    already enforces before spending any budget). The D3 freeze covers only
-    ``scoring/*.py``: ``score_asr_outputs`` also imports
+    ``repo_root`` additionally gates a clean-tree check over the LOAD-BEARING
+    SURFACE (``core.bundle.git_commit.require_clean_load_bearing_surface`` --
+    ``src/``, ``configs/``, ``docs/arms/``, ``scripts/``). The D3 freeze
+    covers only ``scoring/*.py``: ``score_asr_outputs`` also imports
     ``data.references.reference_tokens``, which lives OUTSIDE that frozen
     package, so an uncommitted edit there would defeat the freeze check
-    alone. Unlike the E0/scope check, this DOES take ``repo_root`` as an
-    explicit parameter (default ``REPO_ROOT``, matching
+    alone -- and ``src/`` is inside the load-bearing surface, so that hole is
+    closed exactly as before. Unlike the E0/scope check, this DOES take
+    ``repo_root`` as an explicit parameter (default ``REPO_ROOT``, matching
     ``run_experiment_bundled``'s own convention) so tests can point it at an
     isolated synthetic repo rather than depending on this checkout's own
     ambient git status.
+
+    IMPORTANT 3 (2026-09-09, the seal/score symmetry repair). This check used
+    to be ``core.bundle.require_clean_study_repo``, which refuses ANY dirt.
+    That was the launch-time rule, and applying it here contradicted the
+    2026-08-16 flight-protection fix on the other half of the same seal: a
+    COMPLETED manifest binds its commit through
+    ``_study_commit_for_completed_manifest``, which tolerates and RECORDS
+    dirt confined outside the load-bearing surface. From that commit onward a
+    run could therefore seal COMPLETED over a stray readiness note and then
+    be permanently unscoreable and unfinalizable on the same tree -- the
+    2026-08-16 incident, moved one step later, and measured as the Audio2Tool
+    wire checks' ``seal_and_score = SCORING_FAILED`` on 2026-09-09. Both
+    halves now share ONE rule, so whatever seals can be scored. Nothing whose
+    bytes can change a score became tolerable: every such file lives under
+    ``src/``, ``configs/``, ``docs/arms/`` or ``scripts/`` and still refuses,
+    and ``require_clean_study_repo`` itself is untouched and still strict
+    where it belongs, at launch, before any budget is spent.
 
     Order matters here: the E0/D3 freeze (and carrier scope) check runs
     BEFORE the clean-tree check, deliberately -- an uncommitted edit to a
@@ -578,15 +596,15 @@ def _assert_scoring_entry_gate(
     imported ``scoring/`` from), the D1 reference-IDENTITY receipt is a data
     fact, not a code-identity fact -- pointing it at an isolated synthetic
     ``repo_root``/``docs/receipts`` for test isolation is exactly as sound as
-    ``require_clean_study_repo(repo_root)`` already treats its own git-status
-    check, and every real caller's ``repo_root`` defaults to the same
+    ``require_clean_load_bearing_surface(repo_root)`` already treats its own
+    git-status check, and every real caller's ``repo_root`` defaults to the same
     ``REPO_ROOT`` regardless (``score_bundle``'s own default, matching
     ``finalize_bundle``/``run_experiment_bundled``).
     """
 
     from ..contracts import FrozenCoreGate
     from ..data.references import ReferenceError, reference_file_relpath
-    from .bundle import require_clean_study_repo
+    from .bundle.git_commit import require_clean_load_bearing_surface
 
     plan_meta = bundle.manifest.get("plan")
     carrier_lock_key = (
@@ -628,7 +646,7 @@ def _assert_scoring_entry_gate(
         reference_gate = FrozenCoreGate.for_study_repo(Path(repo_root), Path(root), Path(repo_root))
         reference_gate.verify_reference_identity(carrier_lock_key, reference_facts)
 
-    require_clean_study_repo(Path(repo_root))
+    require_clean_load_bearing_surface(Path(repo_root))
 
 
 def score_bundle(

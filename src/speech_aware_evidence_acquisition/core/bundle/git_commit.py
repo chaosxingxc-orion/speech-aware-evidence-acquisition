@@ -10,17 +10,35 @@ COMPLETED-manifest build time, destroying 156 minutes of already-spent
 inference -- ``run_experiment_bundled`` forced the attempt to ABORTED and I7
 forbids ever finalizing an ABORTED manifest as COMPLETED afterward, so the
 real, complete outputs on disk became permanently unfinalizable. The launch-
-time preflight (``require_clean_study_repo``, called by
-``core.driver.run_experiment_bundled`` BEFORE any budget is spent, and again
-by ``core.scorers._assert_scoring_entry_gate`` at scoring time) is UNCHANGED
-by this fix and stays fully strict -- refusing early, before compute is
-spent, is exactly the right behaviour there. What changed is narrower:
-:func:`_study_commit_for_completed_manifest`, used ONLY for the COMPLETED-
-manifest's own ``study_commit`` bind (the step that actually fired in the
-incident, well after compute was already spent), now tolerates dirt CONFINED
-outside :data:`LOAD_BEARING_SURFACE_PREFIXES` -- code, config fragments, arm
-files, and launch scripts still refuse outright; a stray edit to a wiki page,
-a readiness note, or any other governance document does not.
+time preflight (:func:`require_clean_study_repo`, called by
+``core.driver.run_experiment_bundled`` BEFORE any budget is spent) is
+UNCHANGED by that fix and stays fully strict -- refusing early, before
+compute is spent, is exactly the right behaviour there. What changed is
+narrower: :func:`_study_commit_for_completed_manifest`, used ONLY for the
+COMPLETED-manifest's own ``study_commit`` bind (the step that actually fired
+in the incident, well after compute was already spent), tolerates dirt
+CONFINED outside :data:`LOAD_BEARING_SURFACE_PREFIXES` -- code, config
+fragments, arm files, and launch scripts still refuse outright; a stray edit
+to a wiki page, a readiness note, or any other governance document does not.
+
+SCORING-SIDE SYMMETRY (2026-09-09). That narrowing was applied to the SEAL
+half only. The SCORE half -- ``core.scorers._assert_scoring_entry_gate``,
+reached by ``score_bundle``/``finalize_bundle``/``saea-driver score
+--manifest`` -- kept calling :func:`require_clean_study_repo`, so from the
+2026-08-16 commit onward a manifest could seal COMPLETED over a stray
+governance document and then be UNSCOREABLE and UNFINALIZABLE on the very
+same tree: the incident, moved one step later. The measured symptom was the
+Audio2Tool wire checks' ``seal_and_score = SCORING_FAILED`` / "official
+scorer exited with status 1" over an untracked readiness note (receipt:
+``docs/checks/speech-aware-evidence-acquisition/
+2026-09-09-a2t-official-scorer-seal-and-score-diagnosis/``). The two halves
+now share ONE rule, :func:`require_clean_load_bearing_surface`: whatever
+seals can be scored, and whatever the seal refuses the score refuses too.
+The guarantee the scoring gate exists for is untouched, because every file
+whose bytes can change a score -- the driver's own ``src/`` (including
+``data/references.py``, which the D3 freeze over ``scoring/*.py`` does not
+cover), the composed ``configs/``, ``docs/arms/`` and ``scripts/`` -- is
+inside the load-bearing surface and still refuses.
 """
 
 from __future__ import annotations
@@ -124,30 +142,30 @@ def _dirty_relpaths(porcelain: str) -> list[str]:
     return paths
 
 
-def _study_commit_for_completed_manifest(repo_root: Path, data_root: Path) -> tuple[str, list[str]]:
-    """Read the study repo's commit for a COMPLETED manifest, tolerating
-    dirt CONFINED outside :data:`LOAD_BEARING_SURFACE_PREFIXES` (see this
-    module's own docstring for the incident this repairs).
+def require_clean_load_bearing_surface(repo_root: Path) -> tuple[str, list[str]]:
+    """The ONE rule both halves of a seal share: refuse dirt inside
+    :data:`LOAD_BEARING_SURFACE_PREFIXES`, tolerate and REPORT dirt outside
+    it.
 
-    Refuses (:class:`BundleError`) when:
+    Refuses (:class:`BundleError`) when ``git status``/``git rev-parse``
+    themselves fail -- mirroring :func:`_study_commit`'s own refusal,
+    unchanged -- or when any dirty path falls inside the load-bearing
+    surface: code, config fragments, arm files and launch scripts describe
+    WHAT the run executed and what computes its score, so dirt there is
+    exactly the "the commit is a lie" case :func:`_study_commit`'s docstring
+    already refuses, and this function refuses it identically.
 
-    - ``git status``/``git rev-parse`` themselves fail -- mirrors
-      :func:`_study_commit`'s own refusal, unchanged;
-    - any dirty path falls inside the load-bearing surface -- code, config,
-      arm files, or launch scripts describe WHAT the run executed, so dirt
-      there is exactly the "the commit is a lie" case :func:`_study_commit`'s
-      docstring already refuses, and this function refuses it identically;
-    - a flight lock exists under ``data_root/locks/flight.lock`` (written at
-      launch by ``scripts/run_arm_sequence.sh``) whose recorded
-      ``study_head`` no longer matches the tree's CURRENT HEAD -- a HEAD
-      MOVE during the flight is a different code identity underneath the
-      run, not mere dirt, and the load-bearing-surface carve-out was never
-      meant to tolerate that.
+    Otherwise returns ``(commit, non_load_bearing_dirty_paths)``, the second
+    element empty on a genuinely clean tree.
 
-    Otherwise returns ``(commit, non_load_bearing_dirty_paths)``: the second
-    element is empty on a genuinely clean tree, and is recorded onto the
-    manifest by the caller for auditability -- never silently dropped."""
+    Used by :func:`_study_commit_for_completed_manifest` (which adds the
+    flight-lock HEAD-move check on top) when a COMPLETED manifest binds its
+    commit, and by ``core.scorers._assert_scoring_entry_gate`` when that
+    manifest is scored. Sharing it is the point: a manifest that sealed can
+    always be scored and finalized on the same tree, and a tree the seal
+    refuses is refused at scoring too."""
 
+    repo_root = Path(repo_root)
     code, porcelain, stderr = _git(repo_root, "status", "--porcelain")
     if code != 0:
         raise BundleError(f"cannot read git status for {repo_root}: {stderr}")
@@ -167,6 +185,36 @@ def _study_commit_for_completed_manifest(repo_root: Path, data_root: Path) -> tu
     code, commit, stderr = _git(repo_root, "rev-parse", "HEAD")
     if code != 0 or not commit:
         raise BundleError(f"cannot read the study repo's HEAD commit at {repo_root}: {stderr}")
+
+    return commit, non_load_bearing_dirty
+
+
+def _study_commit_for_completed_manifest(repo_root: Path, data_root: Path) -> tuple[str, list[str]]:
+    """Read the study repo's commit for a COMPLETED manifest, tolerating
+    dirt CONFINED outside :data:`LOAD_BEARING_SURFACE_PREFIXES` (see this
+    module's own docstring for the incident this repairs).
+
+    Refuses (:class:`BundleError`) when:
+
+    - ``git status``/``git rev-parse`` themselves fail, or any dirty path
+      falls inside the load-bearing surface -- both are
+      :func:`require_clean_load_bearing_surface`, the rule this function now
+      shares with the scoring entry gate rather than spelling out a second
+      time;
+    - a flight lock exists under ``data_root/locks/flight.lock`` (written at
+      launch by ``scripts/run_arm_sequence.sh``) whose recorded
+      ``study_head`` no longer matches the tree's CURRENT HEAD -- a HEAD
+      MOVE during the flight is a different code identity underneath the
+      run, not mere dirt, and the load-bearing-surface carve-out was never
+      meant to tolerate that. This check is build-time only: it is about the
+      flight that produced the outputs, not about the process that scores
+      them afterwards.
+
+    Otherwise returns ``(commit, non_load_bearing_dirty_paths)``: the second
+    element is empty on a genuinely clean tree, and is recorded onto the
+    manifest by the caller for auditability -- never silently dropped."""
+
+    commit, non_load_bearing_dirty = require_clean_load_bearing_surface(Path(repo_root))
 
     lock = read_flight_lock(data_root)
     if lock is not None:
@@ -194,7 +242,16 @@ def require_clean_study_repo(repo_root: Path) -> str:
     forever, since the raising `build_manifest` call sat outside the
     try/except that would otherwise have aborted it. Returns the commit for
     convenience (unused by the caller today); raises :class:`BundleError`
-    exactly as ``_study_commit`` does."""
+    exactly as ``_study_commit`` does.
+
+    This is the LAUNCH-TIME rule and stays maximally strict: refusing on any
+    dirt at all, before a single call or audio-second is spent, costs
+    nothing and is what keeps a flight's commit honest. It is deliberately
+    NOT the rule the SCORING entry gate applies (2026-09-09) -- by the time
+    scoring runs the compute is already spent and the manifest already
+    sealed, so that gate uses :func:`require_clean_load_bearing_surface`, the
+    same rule the COMPLETED bind uses, and this module's own docstring says
+    why."""
 
     return _study_commit(Path(repo_root))
 

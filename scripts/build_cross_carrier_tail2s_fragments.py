@@ -288,7 +288,16 @@ def slurp_experiment(*, smoke: bool, smoke_ids_: Sequence[str]) -> dict:
             {
                 "cell_id": "closed-list-tail2s" + ("-smoke-4" if smoke else ""),
                 "arm": "speech-feature-query",
-                "baseline_fragment": "slurp-direct-closed-list",
+                # NOT the comparator's own "slurp-direct-closed-list" (which is
+                # what this generator first emitted): the @ts2 packets exist
+                # now, and c1f63599 pinned their promotion receipt into a
+                # dedicated baseline fragment -- byte for byte the sealed
+                # DEV-1000 closed-list arm except that receipt (+sha256) and
+                # two per-cell speech-feature identity ids. Pointing the cells
+                # at it is what keeps the media contrast single-factor. That
+                # was a hand edit to the two committed fragments; re-pointing
+                # the generator is what makes --write reproduce them again.
+                "baseline_fragment": "slurp-direct-closed-list-tail2s",
                 "model_fragment": "q4km-mmproj-free-speech-native-np8-ts2-packets-max64",
                 "dataset_fragment": dataset,
             }
@@ -402,8 +411,22 @@ def a2t_dataset(view: Mapping[str, Any], *, subset: Sequence[str] | None) -> dic
         # this key through the carrier_root_resolver seam FlightRuntime already
         # exposes and run_e22_esb_cell.py already uses.
         "a2t_calibration_derived_subdir": "derived/a2t-calibration-400-tail2s-v1",
+        # BOTH SPELLINGS, AND THEY MUST AGREE. The carrier-prefixed pair is
+        # what ``core.base.declared_derived_media_roots`` reads to vouch for
+        # the derived root above; the PLAIN pair is what ``core.config.
+        # d1_media_supplement_relpath`` -- and therefore the media IDENTITY
+        # gate ``core.flight.FlightRuntime.preflight`` constructs -- reads.
+        # The SLURP view above has always carried the plain pair; this
+        # Audio2Tool fragment carried only the prefixed one, which satisfied
+        # confinement and left the identity gate seeing no supplement at all
+        # (2026-09-09, docs/readiness/
+        # 2026-09-09-a2t-derived-media-d1-declaration-fix-v1.md).
+        # ``core.config.assert_d1_media_supplement_spellings_agree`` now
+        # refuses any fragment where these four values disagree.
         "a2t_calibration_d1_media_supplement": supplement.removeprefix("docs/"),
         "a2t_calibration_d1_media_supplement_sha256": sha256_file(REPO / supplement),
+        "d1_media_supplement": supplement.removeprefix("docs/"),
+        "d1_media_supplement_sha256": sha256_file(REPO / supplement),
         "a2t_calibration_d1_basis": (
             "Unlike the sealed frozen 400 -- whose ids are inside the base D1 closure and "
             "which therefore declares NO supplement -- the @ts2 ids are new media that "

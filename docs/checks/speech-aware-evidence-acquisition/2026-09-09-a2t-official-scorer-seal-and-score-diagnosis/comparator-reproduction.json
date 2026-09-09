@@ -1,0 +1,46 @@
+{
+  "aggregate": {
+    "exact_match": 0.2025,
+    "gold_version": "a2t-gold-official-release-loader",
+    "multi_tool_all_match": 0.0,
+    "multi_tool_f1": 0.3907142857142857,
+    "multi_tool_precision": 0.65,
+    "multi_tool_recall": 0.2836666666666667,
+    "multi_tool_samples": 100,
+    "official_commit": "b9d5383ca30945fbafb965a04bea40117e1e8a82",
+    "official_metrics_blob_sha1": "d98277bcf69795c9a0ae54e538c170abfd8c51ca",
+    "param_correct_keys": 139,
+    "param_exact_match": 0.2275,
+    "param_f1": 0.3164642857142857,
+    "param_f1_micro": 0.2738916256157636,
+    "param_gold_keys": 454,
+    "param_precision": 0.3145833333333333,
+    "param_precision_micro": 0.24777183600713013,
+    "param_predicted_keys": 561,
+    "param_recall": 0.4775,
+    "param_recall_micro": 0.30616740088105726,
+    "parse_failures": 1,
+    "parse_rate": 0.9975,
+    "rows_with_multiple_call_matches": 52,
+    "samples": 400,
+    "scorer_version": "a2t-scorer-official-b9d5383c",
+    "tool_accuracy": 0.61
+  },
+  "per_tier_tool_accuracy": {
+    "tier1_direct": 0.6,
+    "tier2_parametric": 0.74,
+    "tier3_multi_intent": 0.72,
+    "tier4_implicit": 0.28,
+    "tier5_needle": 0.78,
+    "tier6_correction": 0.84,
+    "tier7_multiturn": 0.58,
+    "tier8_intent_blending": 0.34
+  },
+  "scorers_that_ran": [
+    "a2t-toolcall",
+    "a2t-toolcall-official",
+    "a2t-toolcall-v2",
+    "cost"
+  ],
+  "verified": true
+}

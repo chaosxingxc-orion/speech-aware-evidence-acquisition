@@ -1,0 +1,49 @@
+# attempt-wire-check-1788928634707 (cell R-official-tail2s-smoke-4, cross-carrier @ts2)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix/src/speech_aware_evidence_acquisition/core/driver/__main__.py", line 22, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix/src/speech_aware_evidence_acquisition/core/driver/cli.py", line 1304, in main
+    return args.func(args)
+           ^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix/src/speech_aware_evidence_acquisition/core/driver/cli.py", line 529, in _cli_score
+    results = score_bundle(bundle, lock, root)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix/src/speech_aware_evidence_acquisition/core/scorers.py", line 669, in score_bundle
+    _assert_scoring_entry_gate(bundle, lock, root, repo_root)
+  File "/mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix/src/speech_aware_evidence_acquisition/core/scorers.py", line 631, in _assert_scoring_entry_gate
+    require_clean_study_repo(Path(repo_root))
+  File "/mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix/src/speech_aware_evidence_acquisition/core/bundle/git_commit.py", line 199, in require_clean_study_repo
+    return _study_commit(Path(repo_root))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix/src/speech_aware_evidence_acquisition/core/bundle/git_commit.py", line 78, in _study_commit
+    raise BundleError(
+speech_aware_evidence_acquisition.core.bundle.BundleError: study repo /mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix has uncommitted changes; a run manifest must bind the exact commit that produced the run, never a dirty tree:
+?? docs/readiness/2026-09-09-a2t-derived-media-d1-declaration-fix-v1.md
+
+# attempt-wire-check-1788927408776 (cell R-official-16k-tail2s, input-rate @16k+ts2)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix/src/speech_aware_evidence_acquisition/core/driver/__main__.py", line 22, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix/src/speech_aware_evidence_acquisition/core/driver/cli.py", line 1304, in main
+    return args.func(args)
+           ^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix/src/speech_aware_evidence_acquisition/core/driver/cli.py", line 529, in _cli_score
+    results = score_bundle(bundle, lock, root)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix/src/speech_aware_evidence_acquisition/core/scorers.py", line 669, in score_bundle
+    _assert_scoring_entry_gate(bundle, lock, root, repo_root)
+  File "/mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix/src/speech_aware_evidence_acquisition/core/scorers.py", line 631, in _assert_scoring_entry_gate
+    require_clean_study_repo(Path(repo_root))
+  File "/mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix/src/speech_aware_evidence_acquisition/core/bundle/git_commit.py", line 199, in require_clean_study_repo
+    return _study_commit(Path(repo_root))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix/src/speech_aware_evidence_acquisition/core/bundle/git_commit.py", line 78, in _study_commit
+    raise BundleError(
+speech_aware_evidence_acquisition.core.bundle.BundleError: study repo /mnt/d/chao_workspace/saea-worktrees/wt-a2t-d1fix has uncommitted changes; a run manifest must bind the exact commit that produced the run, never a dirty tree:
+?? docs/readiness/2026-09-09-a2t-derived-media-d1-declaration-fix-v1.md

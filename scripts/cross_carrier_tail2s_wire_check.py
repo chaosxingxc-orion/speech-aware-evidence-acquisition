@@ -146,9 +146,12 @@ def undated(lines: Sequence[str]) -> list[str]:
 #: is harmless when a cell stops early, and it was fatal the first time the
 #: gold-id rail let one get all the way to ``seal_and_score``: the smoke cell's
 #: receipt landed in the tree, the tree went dirty, and the NEXT cell's scoring
-#: correctly refused a COMPLETED manifest on a dirty tree
-#: (``core.bundle.require_clean_study_repo``). The receipt is a by-product of a
-#: contactless check, not evidence, so it is redirected OUT of the repo -- under
+#: refused a COMPLETED manifest over it. (Since 2026-09-09 the scoring entry
+#: gate applies the SAME load-bearing-surface rule the COMPLETED bind applies --
+#: ``core.bundle.git_commit.require_clean_load_bearing_surface`` -- so a stray
+#: ``docs/checks/`` by-product no longer stops a score. The redirection stands
+#: on its own merit regardless: the receipt is a by-product of a contactless
+#: check, not evidence.) It goes OUT of the repo -- under
 #: ``$SPEECHRL_DATA_DIR``, where large by-products already live -- and this
 #: script's own receipt stays the single committed record.
 def _scratch_receipt(cell: dict[str, Any]) -> Path:
@@ -177,26 +180,42 @@ def _load_flight_module(name: str):
     return module
 
 
-def payload_binding_stage_for_cell(cell: dict[str, Any]) -> dict[str, Any]:
-    """The shared ``rails.core_client.payload_binding_stage`` for one cell's
-    own real roster rows -- the mandatory stage this receipt now runs BETWEEN
-    the request half (``preflight``) and the seal half (``wire_check``'s own
-    ``seal_and_score``): a cell is wire-ready only if its payloads BIND.
+def stages_for_cell(cell: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """The two shared contactless stages for one cell's own real roster rows --
+    ``rails.core_client.payload_binding_stage`` and
+    ``rails.core_client.media_identity_stage`` -- run BETWEEN the request half
+    (``preflight``) and the seal half (``wire_check``'s own
+    ``seal_and_score``). **A cell is wire-ready only if it BINDS and is
+    IDENTITY-CLOSED.**
 
-    Loads ONLY the rows the stage itself will check (every row for a "-smoke4"
-    cell, else the first and last of the fragment's own declared order) --
-    never the whole 400/1000-row population -- through that carrier's own
-    flight-script roster loader (real media, re-hashed against the roster's
-    own record), and drives the binding through the REAL carrier root
-    (``data.lock.asset_dir``, never the flight script's own
+    Loads ONLY the rows the binding stage itself will check (every row for a
+    "-smoke4" cell, else the first and last of the fragment's own declared
+    order) -- never the whole 400/1000-row population -- through that
+    carrier's own flight-script roster loader (real media, re-hashed against
+    the roster's own record), and drives the binding through the REAL carrier
+    root (``data.lock.asset_dir``, never the flight script's own
     ``carrier_root_resolver`` swap) plus this fragment's own declared derived
     media roots. See docs/readiness/2026-09-07-derived-media-confinement-v1.md
     section 5.
+
+    THE MEDIA-IDENTITY STAGE closes the third blind spot of
+    docs/readiness/2026-09-09-a2t-derived-media-d1-declaration-fix-v1.md: this
+    check's binding stage read the CARRIER-PREFIXED supplement key for the
+    Audio2Tool cells while the real gate reads the PLAIN one, so both A2T
+    ``@ts2`` cells reported BOUND while the identity gate saw no supplement at
+    all. The identity stage constructs the REAL ``contracts.FrozenCoreGate``
+    exactly as ``FlightRuntime.preflight`` constructs it, over the COMPOSED
+    config (all four fragments, so it reads what the flight reads), and
+    asserts every roster id is inside D1's identity closure plus the loaded
+    rows' bytes. The SLURP ``@ts2`` cells go through the same stage, which is
+    how their (already correct) plain-pair declaration becomes evidence rather
+    than an assumption. Zero sockets, zero servers, zero model contacts.
     """
 
     from speech_aware_evidence_acquisition.core.base import (  # noqa: PLC0415
         declared_derived_media_roots,
     )
+    from speech_aware_evidence_acquisition.core.config import compose  # noqa: PLC0415
     from speech_aware_evidence_acquisition.data.lock import (  # noqa: PLC0415
         asset_dir,
         data_root,
@@ -205,6 +224,7 @@ def payload_binding_stage_for_cell(cell: dict[str, Any]) -> dict[str, Any]:
     )
     from speech_aware_evidence_acquisition.rails.core_client import (  # noqa: PLC0415
         PAYLOAD_BINDING_STAGE_CHEAP_ROW_LIMIT,
+        media_identity_stage,
         payload_binding_stage,
     )
 
@@ -217,6 +237,11 @@ def payload_binding_stage_for_cell(cell: dict[str, Any]) -> dict[str, Any]:
     root = data_root()
     carrier_root = asset_dir(lock, carrier_lock_key, root)
     derived_media_roots = declared_derived_media_roots(values, root)
+    experiment_doc = json.loads(
+        (REPO / "configs" / "experiment" / f"{cell['experiment']}.json").read_text(
+            encoding="utf-8"
+        )
+    )
 
     if cell["carrier"] == "slurp":
         items = values["items"]
@@ -240,11 +265,6 @@ def payload_binding_stage_for_cell(cell: dict[str, Any]) -> dict[str, Any]:
         # EXPERIMENT fragment's own "populations" entry, read exactly as
         # run_calibration_cell.py's CLI itself reads it -- never assume the
         # receipt's own item count is this cell's population size.
-        experiment_doc = json.loads(
-            (REPO / "configs" / "experiment" / f"{cell['experiment']}.json").read_text(
-                encoding="utf-8"
-            )
-        )
         all_ids = module.population_ids(experiment_doc, dataset) or [
             str(item["sample_id"]) for item in receipt["items"]
         ]
@@ -270,15 +290,45 @@ def payload_binding_stage_for_cell(cell: dict[str, Any]) -> dict[str, Any]:
         carrier_root=carrier_root,
         derived_media_roots=derived_media_roots,
     )
-    receipt = dict(result.as_receipt())
+    binding = dict(result.as_receipt())
     # The stage's own ``rows_total`` counts only the rows THIS CALL loaded
     # (never the whole 400/1000-row population, to keep the stage cheap);
     # ``fragment_row_count`` is the fragment's own full roster size, so a
     # receipt reader can tell "checked every row of a 4-row smoke cell" from
     # "checked 2 of a 400-row cell's own rows" without recomputing either.
-    receipt["fragment_row_count"] = rows_total
-    receipt["checked_every_row"] = rows_total <= len(result.rows_checked)
-    return receipt
+    binding["fragment_row_count"] = rows_total
+    binding["checked_every_row"] = rows_total <= len(result.rows_checked)
+
+    # The gate reads the COMPOSED config, not the dataset fragment alone --
+    # ``runtime_receipt_relpath`` and ``model_lock_key`` live in the model
+    # fragment. Compose exactly as each runner's own ``build_runtime`` does,
+    # off this cell's own declared model/baseline fragments.
+    cell_doc = next(
+        item
+        for item in experiment_doc["cells"]
+        if str(item["cell_id"]) == str(cell["cell"])
+    )
+    composed = compose(
+        REPO,
+        str(cell_doc["model_fragment"]),
+        dataset,
+        str(cell_doc["baseline_fragment"]),
+        str(cell["experiment"]),
+    )
+    identity = media_identity_stage(
+        dataset_fragment=dataset,
+        carrier_lock_key=carrier_lock_key,
+        values=composed.values,
+        repo_root=REPO,
+        data_root=root,
+        runtime_root=module.RUNTIME_ROOT,
+        roster_sample_ids=all_ids,
+        samples=samples,
+    )
+    return {
+        "payload_binding_stage": binding,
+        "media_identity_stage": dict(identity.as_receipt()),
+    }
 
 
 def run_mode(cell: dict[str, Any], mode: str) -> dict[str, Any]:
@@ -349,11 +399,11 @@ def build() -> dict[str, Any]:
     for cell in CELLS:
         row = {key: cell[key] for key in ("carrier", "experiment", "dataset", "cell", "rows")}
         row["preflight"] = run_mode(cell, "dry-run")
-        # The mandatory payload-binding stage: BETWEEN the request half
+        # The two mandatory contactless stages: BETWEEN the request half
         # (preflight, above) and the seal half (wire_check's own
         # seal_and_score, below). Zero sockets, zero servers, zero model
-        # contacts -- see payload_binding_stage_for_cell's own docstring.
-        row["payload_binding_stage"] = payload_binding_stage_for_cell(cell)
+        # contacts -- see stages_for_cell's own docstring.
+        row.update(stages_for_cell(cell))
         row["wire_check"] = run_mode(cell, "wire-check")
         results.append(row)
     return {
@@ -371,6 +421,16 @@ def build() -> dict[str, Any]:
             "paid_api_spend": 0,
         },
         "expected_stops": EXPECTED_STOPS,
+        "wire_ready_rule": (
+            "a cell is wire-ready only if it BINDS and is IDENTITY-CLOSED. The "
+            "payload_binding_stage proves media-path confinement; the "
+            "media_identity_stage constructs the REAL contracts.FrozenCoreGate "
+            "exactly as core.flight.FlightRuntime.preflight constructs it and "
+            "proves every roster id is inside D1's media identity closure plus "
+            "the loaded rows' bytes. The two read DIFFERENT config keys, which "
+            "is why a green binding stage alone was not evidence "
+            "(docs/readiness/2026-09-09-a2t-derived-media-d1-declaration-fix-v1.md)"
+        ),
         "seal_and_score_rule": (
             "a run that exits 0 is green only when the runner's own "
             "seal_and_score line says OK; any other status is recorded as "
@@ -419,6 +479,20 @@ def main() -> int:
                 stage["fragment_row_count"],
             )
         )
+        identity = row["media_identity_stage"]
+        print(
+            "%-11s %-34s %-10s %s  roster=%d closure=%d verified=%d%s"
+            % (
+                row["carrier"],
+                row["cell"],
+                "identity",
+                "IDENTITY-CLOSED" if identity["identity_closed"] else "NOT CLOSED",
+                identity["roster_ids_checked"],
+                identity["closure_ids"],
+                len(identity["rows_verified"]),
+                "" if identity["identity_closed"] else "  %s" % identity["refusal"],
+            )
+        )
         for mode in ("preflight", "wire_check"):
             result = row[mode]
             print(
@@ -438,10 +512,17 @@ def main() -> int:
         if row[mode]["stop_class"] == "UNEXPECTED"
     ]
     not_bound = [row["cell"] for row in receipt["cells"] if not row["payload_binding_stage"]["bound"]]
+    not_closed = [
+        row["cell"]
+        for row in receipt["cells"]
+        if not row["media_identity_stage"]["identity_closed"]
+    ]
     if unexpected:
         print("UNEXPECTED STOPS: %r" % (unexpected,))
     if not_bound:
         print("PAYLOAD-BINDING STAGE FAILED (cell not wire-ready): %r" % (not_bound,))
+    if not_closed:
+        print("MEDIA-IDENTITY STAGE FAILED (cell not wire-ready): %r" % (not_closed,))
     if args.write:
         OUT_DIR.mkdir(parents=True, exist_ok=True)
         payload = (
@@ -452,7 +533,7 @@ def main() -> int:
         print("receipt written: %s" % (OUT_DIR / "wire-check.json"))
     else:
         print("(print only; pass --write to land the receipt)")
-    return 1 if (unexpected or not_bound) else 0
+    return 1 if (unexpected or not_bound or not_closed) else 0
 
 
 if __name__ == "__main__":

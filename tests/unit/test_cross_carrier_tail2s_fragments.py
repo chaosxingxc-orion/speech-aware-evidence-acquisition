@@ -304,16 +304,26 @@ def test_wire_check_receipt_records_zero_contacts_on_every_cell() -> None:
 def test_every_wire_check_stop_is_one_of_the_named_preconditions() -> None:
     """No surprises: each cell stops where the preregistration says it stops.
 
-    UPDATED 2026-09-07, when the gold-id rail of section 6.2 landed. Both
-    Audio2Tool cells used to stop at ``a2t-gold-id-rail-missing``; they now run
-    the whole request path, so what this test pins is no longer a fixed stop
-    name but the two properties that actually matter: SLURP is still blocked on
-    its packet root, and an Audio2Tool cell that exits 0 is only green when its
-    own ``seal_and_score`` line says so. Which of the two admissible Audio2Tool
-    states a given receipt records is an ENVIRONMENT fact -- whether another
-    flight held the flight lock while the check ran -- so it is not pinned
-    here; the preregistration's section 6 names the measurement and the commit
-    it was taken at.
+    UPDATED 2026-09-07, when the gold-id rail of section 6.2 landed: both
+    Audio2Tool cells used to stop at ``a2t-gold-id-rail-missing`` and now run
+    the whole request path.
+
+    UPDATED AGAIN 2026-09-09. SLURP used to stop at
+    ``slurp-packet-root-missing``, and the condition this test's own comment
+    named as the release -- "the encode of section 1.2 has run and the cell's
+    baseline fragment pins the new promotion receipt" -- happened in
+    ``c1f63599``: SAEA-SN-DEV1000-TS2-PREPROCESS-V1 promoted all 1,000 @ts2
+    packets and both SLURP experiment fragments moved to the
+    ``slurp-direct-closed-list-tail2s`` baseline. The receipt ``cf566cb6``
+    landed records all four cells reaching the seal. So the assertion is no
+    longer carrier-specific: it is ONE rule for every cell, the one that
+    actually matters.
+
+    A cell that exits 0 is green only when its own ``seal_and_score`` line says
+    OK. Which of the two admissible states a given receipt records is an
+    ENVIRONMENT fact -- whether another flight held the flight lock while the
+    check ran -- so it is not pinned here; the preregistration's section 6
+    names the measurement and the commit it was taken at.
     """
 
     receipt = json.loads(WIRE.read_text(encoding="utf-8"))
@@ -329,16 +339,11 @@ def test_every_wire_check_stop_is_one_of_the_named_preconditions() -> None:
     )
     by_cell = {row["cell"]: row["wire_check"] for row in receipt["cells"]}
 
-    # SLURP: unchanged, and it stays this way until the encode of section 1.2
-    # has run and the cell's baseline fragment pins the new promotion receipt.
-    for cell in ("closed-list-tail2s-smoke-4", "closed-list-tail2s"):
-        assert by_cell[cell]["stop_class"] == "slurp-packet-root-missing", cell
-        assert by_cell[cell]["seal_and_score"] is None, cell
-
-    # Audio2Tool: the rail is in, so no cell may stop there any more.
-    for cell in ("R-official-tail2s-smoke-4", "R-official-tail2s"):
-        entry = by_cell[cell]
+    for cell, entry in by_cell.items():
+        # Audio2Tool: the gold-id rail is in. SLURP: the @ts2 packets are
+        # promoted and pinned. Neither cell may stop at its old blocker.
         assert entry["stop_class"] != "a2t-gold-id-rail-missing", cell
+        assert entry["stop_class"] != "slurp-packet-root-missing", cell
         # A green here REQUIRES the seal to have said OK: a run that exits 0
         # with a refused or failed seal is recorded as its own stop class, so
         # "none" can never hide the link section 8 item 4 exists to prove.
@@ -348,11 +353,13 @@ def test_every_wire_check_stop_is_one_of_the_named_preconditions() -> None:
         else:
             # REFUSED is the only non-OK status this test tolerates, and the
             # distinction is the whole point. core.flight refuses to BUILD a
-            # COMPLETED manifest at all when the tree is dirty or another
-            # flight holds $SPEECHRL_DATA_DIR/locks/flight.lock, and it RECORDS
-            # that refusal rather than raising -- so this check can be re-run
-            # during someone else's campaign without either lying about the
-            # result or touching their lock. SCORING_FAILED is the opposite: a
+            # COMPLETED manifest at all when the load-bearing surface (src/,
+            # configs/, docs/arms/, scripts/) is dirty or another flight holds
+            # $SPEECHRL_DATA_DIR/locks/flight.lock with a different HEAD, and it
+            # RECORDS that refusal rather than raising -- so this check can be
+            # re-run during someone else's campaign without either lying about
+            # the result or touching their lock. SCORING_FAILED is the
+            # opposite: a
             # manifest that sealed COMPLETED and then would not score, which is
             # exactly what section 8 item 4 exists to catch and is never
             # tolerated here.
@@ -361,10 +368,51 @@ def test_every_wire_check_stop_is_one_of_the_named_preconditions() -> None:
             assert entry["reached_the_end"] is False, cell
 
 
+#: The two Audio2Tool ``@ts2`` dataset fragments MOVED on 2026-09-09, and the
+#: sealed 2026-09-07 receipt is never rewritten to hide it. Each gained the
+#: plain ``d1_media_supplement`` / ``d1_media_supplement_sha256`` pair the media
+#: identity gate reads -- the D1 declaration fix of ``docs/readiness/
+#: 2026-09-09-a2t-derived-media-d1-declaration-fix-v1.md``. The SLURP ``@ts2``
+#: view always carried the plain pair and is deliberately NOT here: it must
+#: still match the live bytes exactly, which is what makes this list a bound on
+#: the change rather than an excuse for it.
+SUPERSEDED_BY_THE_D1_DECLARATION_FIX = {
+    "configs/dataset/audio2tool-calibration-400-tail2s.json": (
+        "c06eaabd4b88c0511adf2b0d5d936fe0be54d1f4b101b2451b06f4a68acac9d9"
+    ),
+    "configs/dataset/audio2tool-calibration-400-tail2s-smoke4.json": (
+        "6970b65bf38b1bad9ce12eefde963b8edbc2264c6ca907450b68012373ad5d25"
+    ),
+}
+
+
 def test_wire_check_receipt_pins_the_fragments_it_drove() -> None:
     receipt = json.loads(WIRE.read_text(encoding="utf-8"))
     for relpath, digest in receipt["fragments"].items():
+        if relpath in SUPERSEDED_BY_THE_D1_DECLARATION_FIX:
+            assert digest == SUPERSEDED_BY_THE_D1_DECLARATION_FIX[relpath], relpath
+            continue
         assert hashlib.sha256((REPO / relpath).read_bytes()).hexdigest() == digest, relpath
+
+
+@pytest.mark.parametrize("relpath", sorted(SUPERSEDED_BY_THE_D1_DECLARATION_FIX))
+def test_every_superseded_fragment_moved_for_exactly_the_declaration_fix(
+    relpath: str,
+) -> None:
+    """The supersession above is bounded: each listed fragment now declares the
+    D1 media supplement under BOTH spellings, in agreement."""
+
+    values = _json(relpath)
+    assert (
+        values["d1_media_supplement"] == values["a2t_calibration_d1_media_supplement"]
+    )
+    assert (
+        values["d1_media_supplement_sha256"]
+        == values["a2t_calibration_d1_media_supplement_sha256"]
+    )
+    assert hashlib.sha256((REPO / relpath).read_bytes()).hexdigest() != (
+        SUPERSEDED_BY_THE_D1_DECLARATION_FIX[relpath]
+    )
 
 
 def test_wire_check_receipt_says_why_earnings21_has_no_cell() -> None:
