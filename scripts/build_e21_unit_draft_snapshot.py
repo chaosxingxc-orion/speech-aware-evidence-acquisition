@@ -385,13 +385,31 @@ def main() -> int:
         call_units = 0
         call_chars = 0
         call_draft_tokens = 0
+        call_owned_tokens = 0
         for draft in call_drafts:
             window = window_by_id[draft.window_id]
+
+            def unit_completion(unit_id: str) -> int:
+                return int(
+                    unit_costs.get(unit_by_id[unit_id].request_id, {}).get(
+                        "completion_tokens"
+                    )
+                    or 0
+                )
+
+            # The DRAFT's own cost counts only the units whose text is IN the
+            # draft. A saturated unit spent its 1,024-token cap and contributed
+            # the empty string (obs_loop's quarantine), so charging its tokens
+            # to a prompt fit would inflate three windows by a whole cap.
             draft_completion = sum(
-                int(unit_costs.get(unit_by_id[unit_id].request_id, {}).get(
-                    "completion_tokens"
-                ) or 0)
+                unit_completion(unit_id)
                 for unit_id in draft.unit_ids
+                if unit_by_id[unit_id].text
+            )
+            # The conserved figure, kept beside it so the receipt can prove the
+            # partition covers the sealed run's own token total exactly.
+            owned_completion = sum(
+                unit_completion(unit_id) for unit_id in draft.unit_ids
             )
             rows.append(
                 {
@@ -412,10 +430,11 @@ def main() -> int:
                     "text_whitespace_tokens": len(draft.text.split()),
                     # ``completion_tokens`` is the DRAFT's own measured cost:
                     # the sum of the sealed OBS-E1 completion-token counts of
-                    # the units this window owns. The prompt fit projects the
-                    # pass-2 request from it, so it must be the draft's cost
-                    # and not the comparator's.
+                    # the units whose text is in this window's draft. The
+                    # prompt fit projects the pass-2 request from it, so it
+                    # must be the draft's cost and not the comparator's.
                     "completion_tokens": draft_completion,
+                    "owned_unit_completion_tokens": owned_completion,
                     # ``prompt_tokens`` stays the COMPARATOR's own pass-1
                     # request cost for this window -- the audio-plus-envelope
                     # baseline the fit subtracts its instruction from.
@@ -438,6 +457,7 @@ def main() -> int:
             call_units += draft.unit_count
             call_chars += len(draft.text)
             call_draft_tokens += draft_completion
+            call_owned_tokens += owned_completion
             if draft.empty:
                 empty_windows.append(
                     {
@@ -456,6 +476,7 @@ def main() -> int:
                 "units": call_units,
                 "draft_chars": call_chars,
                 "draft_completion_tokens": call_draft_tokens,
+                "owned_unit_completion_tokens": call_owned_tokens,
                 "windows_owning_no_unit": sum(1 for d in call_drafts if d.empty),
             }
         )
@@ -471,15 +492,24 @@ def main() -> int:
             f"{EXPECTED[args.window_run_id]['spans']}"
         )
     draft_completion_total = sum(int(row["completion_tokens"]) for row in rows)
-    if draft_completion_total != EXPECTED[args.draft_run_id]["completion_tokens"]:
+    owned_completion_total = sum(int(row["owned_unit_completion_tokens"]) for row in rows)
+    if owned_completion_total != EXPECTED[args.draft_run_id]["completion_tokens"]:
         raise SystemExit(
-            f"the per-window draft token sums reach {draft_completion_total}, the unit "
-            f"run recorded {EXPECTED[args.draft_run_id]['completion_tokens']}"
+            f"the owned-unit token sums reach {owned_completion_total}, the unit run "
+            f"recorded {EXPECTED[args.draft_run_id]['completion_tokens']}"
         )
     log(
-        "ownership PASS: %d units over %d windows, %d window(s) own none, draft "
-        "completion tokens conserved at %d"
-        % (owned_units, len(rows), len(empty_windows), draft_completion_total)
+        "ownership PASS: %d units over %d windows, %d window(s) own none, owned-unit "
+        "completion tokens conserved at %d (of which %d are in a draft; the %d "
+        "difference is the saturated units' quarantined output)"
+        % (
+            owned_units,
+            len(rows),
+            len(empty_windows),
+            owned_completion_total,
+            draft_completion_total,
+            owned_completion_total - draft_completion_total,
+        )
     )
 
     # ---- the artifact -------------------------------------------------------
@@ -592,7 +622,10 @@ def main() -> int:
             "ownership_is_a_monotone_partition_of_the_units": "PASS",
             "drafts_rebuild_the_sealed_obs_e1_hypotheses_byte_for_byte": "PASS",
             "units_owned": owned_units,
-            "draft_completion_tokens_conserved": draft_completion_total,
+            "owned_unit_completion_tokens_conserved": owned_completion_total,
+            "draft_completion_tokens": draft_completion_total,
+            "quarantined_saturated_unit_tokens": owned_completion_total
+            - draft_completion_total,
         },
         "ownership": {
             "units_per_window": {
@@ -617,6 +650,9 @@ def main() -> int:
             ),
             "window_draft_completion_tokens": distribution(
                 [int(r["completion_tokens"]) for r in rows]
+            ),
+            "window_owned_unit_completion_tokens": distribution(
+                [int(r["owned_unit_completion_tokens"]) for r in rows]
             ),
             "comparator_window_prompt_tokens": distribution(
                 [int(r["prompt_tokens"] or 0) for r in rows]
