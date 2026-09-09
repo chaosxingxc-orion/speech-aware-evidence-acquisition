@@ -534,6 +534,10 @@ class EvidenceAgentController:
     contact-id rails, refused by name in ``rails.phase_review`` until that
     lands.
 
+    ``state_namespace`` optionally qualifies state identities when independent
+    window trajectories share one call-level sample. It changes only state ids;
+    instructions, contacts and the scientific sample roster stay unchanged.
+
     One instance is bound to exactly one sample's trajectory (mirroring
     every other controller in this study --
     ``rails.runner._run_agent_trajectory`` builds one controller per sample
@@ -551,6 +555,7 @@ class EvidenceAgentController:
         review_for_phase: ReviewForPhase | None = None,
         state_view_for_phase: StateViewForPhase | None = None,
         contact_identity: ContactIdentity | None = None,
+        state_namespace: str | None = None,
     ) -> None:
         program.validate()
         if not callable(material_for_phase):
@@ -601,6 +606,11 @@ class EvidenceAgentController:
                         "(key_representation_id, matcher_policy_id) pair of "
                         "non-empty strings, a per-phase mapping of them, or None"
                     )
+        if state_namespace is not None and (
+            not isinstance(state_namespace, str) or not state_namespace.strip()
+        ):
+            raise RailsControllersError("state_namespace must be a non-empty string or None")
+        self._state_namespace = state_namespace
         self._program = program
         self._material_for_phase = material_for_phase
         self._supply_for_phase = supply_for_phase
@@ -726,7 +736,11 @@ class EvidenceAgentController:
         # so a view can never disguise which bytes the core returned.
         state_content = self._resolve_state_view(phase, response_text)
         artifact = AgentStateArtifact(
-            state_id=f"{phase.name}:{context.sample_id}",
+            state_id=(
+                f"{self._state_namespace}:{phase.name}:{context.sample_id}"
+                if self._state_namespace is not None
+                else f"{phase.name}:{context.sample_id}"
+            ),
             state_kind=f"phase:{phase.name}",
             content=state_content,
             source_query_state_sha256=context.query_state.content_hash(),
@@ -826,6 +840,7 @@ class EvidenceAgentController:
             query_sample_id=context.query_state.query_sample_id,
             speech_packet_id=context.query_state.speech_packet_id,
             speech_packet_sha256=context.query_state.speech_packet_sha256,
+            query_source=context.query_state.query_source,
             use_split_identity_hash=context.query_state.use_split_identity_hash,
             loop_step=context.query_state.loop_step + 1,
             visible_facet_ids=(

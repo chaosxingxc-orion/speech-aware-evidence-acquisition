@@ -139,6 +139,7 @@ OBS_TAIL_FRAME_V1 = (
 _ALLOWED_PREPROCESS = ("rms-norm",)
 _KNOWN_OBS_KEYS = frozenset(
     {
+        "obs_controller_program",
         "obs_buffer_seconds",
         "obs_min_advance_seconds",
         "obs_max_advance_seconds",
@@ -1744,6 +1745,12 @@ class ObsAgentLoopPolicy:
             )
             fields: dict[str, object] = {}
             if window_hook is not None:
+                from .window_controller import record_controller_terminal
+
+                record_controller_terminal(
+                    window_hook, iteration=win_iteration, request_id=_request_id,
+                    response=response, saturated=saturated, skipped=skipped,
+                )
                 transcript, fields = window_hook.accept(
                     iteration=win_iteration,
                     record=record,
@@ -1931,7 +1938,11 @@ class ObsAgentLoopPolicy:
         # carry the hook, so which one runs is a throughput choice and never a
         # semantic one. ``None`` -- ``obs-agent-loop``'s own answer, always --
         # is byte-identical to every run before the seam existed.
-        window_hook = self._window_hook(ctx, cfg, data_root, sample)
+        from .window_controller import build_controller_window_hook
+
+        window_hook = build_controller_window_hook(
+            ctx, cfg, self._window_hook(ctx, cfg, data_root, sample)
+        )
 
         # Slice-level dispatch (2026-08-12): when the config proves iteration
         # independence (from_values: fixed windows + no tail + no trim),
@@ -2162,6 +2173,12 @@ class ObsAgentLoopPolicy:
             # parallel pass hands its own hook, so the two legs are one seam.
             hook_fields: dict[str, object] = {}
             if window_hook is not None:
+                from .window_controller import record_controller_terminal
+
+                record_controller_terminal(
+                    window_hook, iteration=iteration, request_id=request_id,
+                    response=response, saturated=saturated, skipped=skipped,
+                )
                 accepted, hook_fields = window_hook.accept(
                     iteration=iteration,
                     record=record,

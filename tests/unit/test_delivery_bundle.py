@@ -457,3 +457,20 @@ def test_unregistered_cell_and_repository_output_refuse_before_writes(
             derivative_cell_id="free",
             output_dir=kwargs["repo_root"] / "derived",
         )
+
+
+def test_current_controller_generation_replays_without_replacing_its_trace(
+    generation, tmp_path
+):
+    parent, kwargs = generation(
+        policy="obs-repair-loop-ojw", obs_controller_program="phase-direct-only-v1"
+    )
+    original = verify_bundle(parent)
+    assert (
+        sum(rid.endswith("/window-controller") for rid in original.trace_records) == 6
+    )
+    derived = verify_bundle(_build(tmp_path, kwargs))
+    assert derived.trace_records == original.trace_records
+    assert [row["text"] for row in derived.outputs_rows] == [
+        row["text"] for row in original.outputs_rows
+    ]

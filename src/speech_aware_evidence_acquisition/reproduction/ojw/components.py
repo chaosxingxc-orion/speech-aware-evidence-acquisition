@@ -302,6 +302,12 @@ class FrozenCoreASR(WorkflowComponent):
             cfg.slice_retry_max,
             max_tokens,
         )
+        from ..window_controller import record_controller_terminal
+
+        record_controller_terminal(
+            self._state.window_hook, iteration=slice_spec["iteration"],
+            request_id=request_id, response=response, saturated=saturated, skipped=skipped,
+        )
         # Task 2 (2026-08-09): a skipped slice has no response at all -- the
         # framework's own state-merge convention would DELETE a None-valued
         # key (BoundaryResolve's own comment below), so this returns real,

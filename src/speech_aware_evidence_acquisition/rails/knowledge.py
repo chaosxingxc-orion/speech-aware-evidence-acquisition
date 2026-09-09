@@ -601,7 +601,12 @@ class KnowledgeSnapshot:
 
 @dataclass(frozen=True)
 class QueryState:
-    """A DEV use-time query with speech permanently bound as the primary input."""
+    """A DEV use-time query bound to encoded speech features or raw speech audio.
+
+    ``speech_audio`` names hash-bound audio bytes used by a single-phase
+    window controller. It does not authorize feature-only runners to accept
+    raw-audio history; each transport still enforces its own typed boundary.
+    """
 
     query_id: str
     query_sample_id: str
@@ -631,9 +636,9 @@ class QueryState:
             raise RailsError(
                 "QueryState.use_partition_role must be 'dev' for Stage-2 USE/OPTIMIZE"
             )
-        if self.query_source != "speech_features":
+        if self.query_source not in ("speech_features", "speech_audio"):
             raise RailsError(
-                "QueryState.query_source must be 'speech_features'; agent state or "
+                "QueryState.query_source must bind 'speech_features' or 'speech_audio'; agent state or "
                 "generated text cannot replace the original speech query"
             )
         if self.query_state_version != QUERY_STATE_VERSION:
