@@ -75,6 +75,7 @@ from __future__ import annotations
 
 import json
 import math
+import threading
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
@@ -234,17 +235,109 @@ def alpha_from_config(config: Mapping[str, object]) -> float:
 # ---------------------------------------------------------------------------
 
 
+def _l2_norm(vector: Sequence[float]) -> float:
+    """The L2 norm of ``vector`` in the ONE arithmetic every cosine in this
+    module is built from: ``math.sqrt`` of the builtin ``sum`` of the squares
+    in the vector's own element order. :func:`_cosine` and the cached path
+    inside :func:`multidim_recall` both come here, so a norm computed once
+    and reused is the SAME float as a norm recomputed for every pair (the
+    KU-S3 preregistration's section 5 "bit-exact 3x")."""
+
+    return math.sqrt(sum(float(x) * float(x) for x in vector))
+
+
+def _cosine_with_norms(
+    a: Sequence[float], b: Sequence[float], norm_a: float, norm_b: float
+) -> float:
+    """``dot(a, b) / (norm_a * norm_b)``, ``0.0`` when either norm is not
+    positive. The caller guarantees ``a`` and ``b`` are non-empty sequences
+    of one length and that each norm is :func:`_l2_norm` of its vector."""
+
+    if norm_a <= 0.0 or norm_b <= 0.0:
+        return 0.0
+    dot = sum(float(x) * float(y) for x, y in zip(a, b))
+    return dot / (norm_a * norm_b)
+
+
 def _cosine(a: Sequence[float], b: Sequence[float]) -> float:
+    """Cosine of ONE pair, both norms computed here. This is the reference
+    every vectorised analysis in this repository pins itself to, and its
+    value is bitwise the value :func:`multidim_recall` scores through the
+    key-norm cache below: same guards, same :func:`_l2_norm`, same
+    :func:`_cosine_with_norms`."""
+
     if not isinstance(a, Sequence) or not isinstance(b, Sequence):
         return 0.0
     if len(a) != len(b) or len(a) == 0:
         return 0.0
-    dot = sum(float(x) * float(y) for x, y in zip(a, b))
-    norm_a = math.sqrt(sum(float(x) * float(x) for x in a))
-    norm_b = math.sqrt(sum(float(y) * float(y) for y in b))
-    if norm_a <= 0.0 or norm_b <= 0.0:
-        return 0.0
-    return dot / (norm_a * norm_b)
+    return _cosine_with_norms(a, b, _l2_norm(a), _l2_norm(b))
+
+
+class _KeyNormCache:
+    """L2 norms of KEY vectors, each computed once per vector OBJECT.
+
+    WHY (KU-S3 preregistration, section 5). :func:`multidim_recall` scores
+    every content facet of the bound snapshot for every sample -- 11,514
+    vectors of 2,048 floats on SLURP -- and the per-pair :func:`_cosine`
+    recomputed BOTH L2 norms for every pair, which priced the pre-flight seed
+    at a measured 2.28 s per sample of single-threaded CPU while the resident
+    serving session idled. The key vectors do not change between samples, so
+    their norms are the same floats every time; caching them removes two of
+    the three passes per pair and changes no value, because :func:`_l2_norm`
+    is the one norm arithmetic and a float computed once is the float
+    computed again. Sharding, approximating and reducing ``k`` are the fixes
+    the preregistration forbids; this is the one it names.
+
+    KEYED BY the vector object's identity (``id``), with the object itself
+    held in the entry so a hit is a hit on the SAME object: an ``id`` recycled
+    after garbage collection can never alias another vector. Only immutable
+    ``tuple`` vectors are cached (``rails.phase_supply.load_sealed_vectors``
+    yields tuples); a ``list`` is recomputed on every call exactly as before,
+    so an in-place mutation between calls can never return a stale norm.
+
+    SCOPED TO one key set. After a recall that touched key vectors,
+    :meth:`retain` keeps exactly the vectors that recall touched and drops
+    every other entry, so the cache holds one key file's norms -- the flight's
+    bound snapshot -- and never accumulates across key sets or pins more than
+    the most recent one. Concurrent recalls over the same key set touch the
+    same objects and retain the same entries; a miss under any interleaving
+    recomputes the identical float. The lock only serialises mutation.
+    """
+
+    __slots__ = ("_entries", "_lock")
+
+    def __init__(self) -> None:
+        self._entries: dict[int, tuple[tuple[float, ...], float]] = {}
+        self._lock = threading.Lock()
+
+    def norm(self, vector: Sequence[float]) -> float:
+        if type(vector) is not tuple:
+            return _l2_norm(vector)
+        key = id(vector)
+        entry = self._entries.get(key)
+        if entry is not None and entry[0] is vector:
+            return entry[1]
+        value = _l2_norm(vector)
+        with self._lock:
+            self._entries[key] = (vector, value)
+        return value
+
+    def retain(self, touched: set[int]) -> None:
+        with self._lock:
+            if touched != self._entries.keys():
+                self._entries = {
+                    key: entry for key, entry in self._entries.items() if key in touched
+                }
+
+    def __len__(self) -> int:
+        return len(self._entries)
+
+
+#: The one key-norm cache :func:`multidim_recall` consults. Module-level
+#: because the provider that calls recall (``rails.knowledge_provider.
+#: KbFacetProvider``) is rebuilt per decision while the key vectors it is
+#: handed are the same objects for the whole flight.
+_KEY_NORMS = _KeyNormCache()
 
 
 def _facet_prior_mass(
@@ -294,6 +387,7 @@ def multidim_recall(
 
     dimensions = sorted({facet.dimension for facet in snapshot.facets})
     recalled: dict[str, dict[str, float]] = {}
+    touched: set[int] = set()
     for dimension in dimensions:
         dim_facets = sorted(
             (facet for facet in snapshot.facets if facet.dimension == dimension),
@@ -309,6 +403,12 @@ def multidim_recall(
             query_vector = query_vectors.get(dimension)
             if query_vector is None:
                 continue
+            # The query norm ONCE per query and dimension, each key norm ONCE
+            # per key vector across every query (:data:`_KEY_NORMS`). The
+            # guards are :func:`_cosine`'s own, in its order: a pair it would
+            # have scored 0.0 is skipped here, and 0.0 was never admitted.
+            query_is_vector = isinstance(query_vector, Sequence) and len(query_vector) > 0
+            query_norm = _l2_norm(query_vector) if query_is_vector else 0.0
             for facet in dim_facets:
                 candidate_vectors = facet_vectors(facet.facet_id)
                 if not isinstance(candidate_vectors, Mapping):
@@ -318,12 +418,23 @@ def multidim_recall(
                 facet_vector = candidate_vectors.get(dimension)
                 if facet_vector is None:
                     continue
-                score = _cosine(query_vector, facet_vector)
+                if (
+                    not query_is_vector
+                    or not isinstance(facet_vector, Sequence)
+                    or len(facet_vector) != len(query_vector)
+                ):
+                    continue
+                score = _cosine_with_norms(
+                    query_vector, facet_vector, query_norm, _KEY_NORMS.norm(facet_vector)
+                )
+                touched.add(id(facet_vector))
                 if score > 0.0:
                     scored.append((score, facet.facet_id))
         scored.sort(key=lambda item: (-item[0], item[1]))
         for score, facet_id in scored[:top_k_per_dimension]:
             recalled.setdefault(facet_id, {})[dimension] = score
+    if touched:
+        _KEY_NORMS.retain(touched)
     return recalled
 
 
