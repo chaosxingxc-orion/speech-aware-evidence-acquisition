@@ -288,7 +288,16 @@ def slurp_experiment(*, smoke: bool, smoke_ids_: Sequence[str]) -> dict:
             {
                 "cell_id": "closed-list-tail2s" + ("-smoke-4" if smoke else ""),
                 "arm": "speech-feature-query",
-                "baseline_fragment": "slurp-direct-closed-list",
+                # NOT the comparator's own "slurp-direct-closed-list" (which is
+                # what this generator first emitted): the @ts2 packets exist
+                # now, and c1f63599 pinned their promotion receipt into a
+                # dedicated baseline fragment -- byte for byte the sealed
+                # DEV-1000 closed-list arm except that receipt (+sha256) and
+                # two per-cell speech-feature identity ids. Pointing the cells
+                # at it is what keeps the media contrast single-factor. That
+                # was a hand edit to the two committed fragments; re-pointing
+                # the generator is what makes --write reproduce them again.
+                "baseline_fragment": "slurp-direct-closed-list-tail2s",
                 "model_fragment": "q4km-mmproj-free-speech-native-np8-ts2-packets-max64",
                 "dataset_fragment": dataset,
             }
