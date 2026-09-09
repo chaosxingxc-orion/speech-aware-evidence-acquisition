@@ -37,6 +37,34 @@ from .request_types import (
 from .slices import SliceRegistry
 
 
+def _wire_provenance(parsed: object) -> dict[str, object] | None:
+    """Validate and normalize transport-supplied exact wire provenance."""
+
+    if not isinstance(parsed, Mapping):
+        return None
+    b64 = parsed.get("wire_response_b64")
+    digest = parsed.get("wire_response_sha256")
+    if b64 is None and digest is None:
+        if "wire_finish_reason" in parsed:
+            raise FrozenCoreError(
+                "transport returned finish reason without wire response provenance"
+            )
+        return None
+    if not isinstance(b64, str) or not isinstance(digest, str) or len(digest) != 64:
+        raise FrozenCoreError("transport returned malformed wire response provenance")
+    try:
+        wire_bytes = base64.b64decode(b64, validate=True)
+    except (ValueError, TypeError):
+        raise FrozenCoreError("transport returned malformed wire response base64") from None
+    if hashlib.sha256(wire_bytes).hexdigest() != digest:
+        raise FrozenCoreError("transport wire response hash does not match its bytes")
+    return {
+        "response_b64": b64,
+        "response_sha256": digest,
+        "finish_reason": parsed.get("wire_finish_reason"),
+    }
+
+
 def _logprobs_sha256(logprobs: object) -> str:
     """sha256 of the canonical JSON form of a transport-forwarded
     ``choices[0].logprobs`` object (2026-09-08 logprob-as-judge probe).
@@ -364,53 +392,31 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
         response_bytes = self._transport(request_bytes)
         latency = time.monotonic() - started
         response_sha256 = hashlib.sha256(response_bytes).hexdigest()
+        wire_provenance: dict[str, object] | None = None
+        parsed: object = None
         try:
             parsed = json.loads(response_bytes.decode("utf-8"))
-            text = parsed["text"]
-            usage = {str(k): int(v) for k, v in dict(parsed.get("usage", {})).items()}
-            # obs-replay-loop policy (reproduction.replay_loop, 2026-08-13):
-            # optional, transport-forwarded raw logprobs object -- absent on
-            # every pre-existing/default request (transport.py only adds the
-            # key when the server's own choice carried one), so `.get`
-            # keeps this None and CoreResponse.logprobs stays at its
-            # byte-identical default for every caller that never reads it.
-            logprobs = parsed.get("logprobs")
-            # Native tool calls (2026-09-04), read exactly like logprobs
-            # above: the transport adds this key ONLY when the server's own
-            # message carried a non-empty tool_calls list, so `.get` keeps
-            # it None for every text answer and every non-native arm. Read
-            # here and nowhere else -- this is the one place the response
-            # envelope is parsed. The sealed outputs and trace contracts are
-            # deliberately untouched: this is provenance for the run
-            # receipt, not a new audited payload field.
-            tool_calls = parsed.get("tool_calls")
-            wire_response_b64 = parsed.get("wire_response_b64")
-            wire_response_sha256 = parsed.get("wire_response_sha256")
-            wire_finish_reason = parsed.get("wire_finish_reason")
-            if wire_response_b64 is not None or wire_response_sha256 is not None:
-                if (
-                    not isinstance(wire_response_b64, str)
-                    or not isinstance(wire_response_sha256, str)
-                    or len(wire_response_sha256) != 64
-                ):
-                    raise FrozenCoreError(
-                        "transport returned malformed wire response provenance"
-                    )
-                try:
-                    wire_bytes = base64.b64decode(wire_response_b64, validate=True)
-                except (ValueError, TypeError):
-                    raise FrozenCoreError(
-                        "transport returned malformed wire response base64"
-                    ) from None
-                if hashlib.sha256(wire_bytes).hexdigest() != wire_response_sha256:
-                    raise FrozenCoreError(
-                        "transport wire response hash does not match its bytes"
-                    )
-            elif "wire_finish_reason" in parsed:
-                raise FrozenCoreError(
-                    "transport returned finish reason without wire response provenance"
-                )
+            wire_provenance = _wire_provenance(parsed)
+            text = parsed["text"]  # type: ignore[index]
+            usage = {
+                str(k): int(v)
+                for k, v in dict(parsed.get("usage", {})).items()  # type: ignore[union-attr]
+            }
+            # Optional transport-forwarded provenance stays outside the
+            # normalized MODEL_RESPONSE payload.
+            logprobs = parsed.get("logprobs")  # type: ignore[union-attr]
+            tool_calls = parsed.get("tool_calls")  # type: ignore[union-attr]
         except (KeyError, TypeError, ValueError, UnicodeError) as error:
+            if wire_provenance is not None:
+                self._sink.emit(
+                    "MODEL_WIRE_RESPONSE",
+                    f"{request_id}/wire-response",
+                    {
+                        "request_id": request_id,
+                        "sample_id": payload["sample_id"],
+                        **wire_provenance,
+                    },
+                )
             raise FrozenCoreError(
                 f"transport returned a malformed response: {error}"
             ) from error
@@ -441,16 +447,14 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
         # request asked for logprobs without naming a k -- the server then
         # applies its own default of 20 (server-common.cpp:1529) and the reader
         # must not silently assume a number the request never sent.
-        if wire_response_b64 is not None:
+        if wire_provenance is not None:
             self._sink.emit(
                 "MODEL_WIRE_RESPONSE",
                 f"{request_id}/wire-response",
                 {
                     "request_id": request_id,
                     "sample_id": payload["sample_id"],
-                    "response_b64": wire_response_b64,
-                    "response_sha256": wire_response_sha256,
-                    "finish_reason": wire_finish_reason,
+                    **wire_provenance,
                 },
             )
         if logprobs is not None:
