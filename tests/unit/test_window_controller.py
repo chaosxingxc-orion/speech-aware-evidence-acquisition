@@ -237,3 +237,64 @@ def test_controller_requires_real_plan_and_one_bound_terminal_response():
     )
     with pytest.raises(WindowControllerError, match="authoritative"):
         hook.accept(iteration=0, record=record, transcript="", skipped=True)
+
+
+def test_controller_context_records_ordered_evidence_without_changing_window_instruction():
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.contracts import ExecutionPlan
+    from speech_aware_evidence_acquisition.core.base import EvidenceItem
+    from speech_aware_evidence_acquisition.core.tracing import TraceBuffer
+    from speech_aware_evidence_acquisition.reproduction.window_controller import (
+        ControllerWindowHook,
+        _NULL_KNOWLEDGE,
+    )
+
+    plan = ExecutionPlan(
+        run_id="SAEA-E-000-synthetic",
+        execution_profile="bounded-discovery-probe",
+        carrier_lock_key="earnings21-original",
+        split_role="discovery",
+        split_identity_hash="a" * 64,
+        planned_model_calls=1,
+        planned_gpu_hours=1,
+        planned_speech_audio_seconds=1,
+        protocol_hash="b" * 64,
+        attempt_id="attempt-synthetic",
+    )
+
+    def hook_for(evidence):
+        ctx = SimpleNamespace(
+            extras={"execution_plan": plan},
+            evidence=evidence,
+            sample=SimpleNamespace(sample_id="call"),
+            request_id_base="req-1",
+            task_instruction="Transcribe.",
+            sink=TraceBuffer("synthetic"),
+        )
+        return ControllerWindowHook(ctx)
+
+    record = SimpleNamespace(sha256="c" * 64, media_relpath="derived/window.wav")
+    empty = hook_for([])
+    assert empty.instruction(iteration=0, record=record, default="Transcribe.") == "Transcribe."
+    assert empty._windows[0].knowledge == _NULL_KNOWLEDGE
+    first = EvidenceItem("first", "source://one", "one", {"lock_key": "x", "relpath": "x", "sha256": "a" * 64})
+    second = EvidenceItem("second", "source://two", "two", {"lock_key": "x", "relpath": "y", "sha256": "b" * 64})
+    bound = hook_for([first, second])
+    assert bound.instruction(iteration=0, record=record, default="Transcribe.") == "Transcribe."
+    knowledge = bound._windows[0].knowledge
+    assert knowledge["schema"] == "saea-window-controller-context-v2"
+    assert knowledge["knowledge"] == "external-evidence"
+    assert [item["evidence_id"] for item in knowledge["items"]] == ["first", "second"]
+    bound.terminal(
+        iteration=0,
+        request_id="req-1-i0000",
+        response=None,
+        skipped=True,
+        saturated=False,
+    )
+    bound.accept(iteration=0, record=record, transcript="", skipped=True)
+    assert bound._ctx.sink.records[-1][2]["use_context"] == knowledge
+    changed = hook_for([replace(first, content="changed"), second])
+    changed.instruction(iteration=0, record=record, default="Transcribe.")
+    assert changed._windows[0].context.knowledge_snapshot_sha256 != bound._windows[0].context.knowledge_snapshot_sha256

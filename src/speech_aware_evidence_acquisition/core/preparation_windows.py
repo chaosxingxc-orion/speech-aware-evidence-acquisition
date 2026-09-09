@@ -8,7 +8,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import TYPE_CHECKING, Mapping, Sequence
+
+if TYPE_CHECKING:
+    from .driver.run import EvidenceBinding
 
 from .preparation import PreparationError
 
@@ -18,6 +21,7 @@ class WindowRequestBatch:
     payloads: tuple[Mapping[str, object], ...]
     request_keys: tuple[str, ...]
     source_bindings: tuple[Mapping[str, object], ...]
+    evidence_binding: EvidenceBinding | None = None
 
     def request_key(self, payload):
         identity = (payload["sample_id"], payload["media_relpath"])
@@ -28,7 +32,8 @@ class WindowRequestBatch:
 
 
 def materialize_window_requests(
-    contexts: Sequence[object], *, expected_sample_ids: Sequence[str], hook_factory=None
+    contexts: Sequence[object], *, expected_sample_ids: Sequence[str], hook_factory=None,
+    evidence_binding: EvidenceBinding | None = None,
 ) -> WindowRequestBatch:
     """Prepare the entire verified call roster without opening a model client."""
     from ..reproduction import obs_loop
@@ -98,4 +103,6 @@ def materialize_window_requests(
             sources.append(record.trace_view())
     if not payloads:
         raise PreparationError("window fit materialized no requests")
-    return WindowRequestBatch(tuple(payloads), tuple(keys), tuple(sources))
+    return WindowRequestBatch(
+        tuple(payloads), tuple(keys), tuple(sources), evidence_binding=evidence_binding
+    )

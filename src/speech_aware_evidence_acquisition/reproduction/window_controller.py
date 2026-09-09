@@ -26,6 +26,30 @@ DIRECT_PROGRAM = "phase-direct-only-v1"
 _NULL_KNOWLEDGE = {"schema": "saea-window-controller-context-v1", "knowledge": "none"}
 
 
+def _controller_knowledge(ctx):
+    """Hash the actual external evidence a window carries, when present."""
+    evidence = tuple(getattr(ctx, "evidence", ()))
+    if not evidence:
+        return _NULL_KNOWLEDGE
+    return {
+        "schema": "saea-window-controller-context-v2",
+        "knowledge": "external-evidence",
+        "items": [
+            {
+                "evidence_id": item.evidence_id,
+                "source_uri": item.source_uri,
+                "content_sha256": hashlib.sha256(item.content.encode("utf-8")).hexdigest(),
+                "derivation_identity_sha256": (
+                    content_hash(item.derivation.trace_view())
+                    if item.derivation is not None
+                    else None
+                ),
+            }
+            for item in evidence
+        ],
+    }
+
+
 class WindowControllerError(CoreError):
     """An unsupported controller bridge or inconsistent terminal binding refuses."""
 
@@ -75,6 +99,7 @@ class _Window:
     context: AgentRuntimeContext
     contact: object
     slice_sha256: str
+    knowledge: Mapping[str, object]
     raw_response: str | None = None
     terminal_request_id: str | None = None
     skipped: bool = False
@@ -123,9 +148,10 @@ class ControllerWindowHook:
             use_split_identity_hash=self._split_hash,
             query_source="speech_audio",
         ).validate()
+        knowledge = _controller_knowledge(self._ctx)
         context = AgentRuntimeContext(
             sample_id=self._ctx.sample.sample_id,
-            knowledge_snapshot_sha256=content_hash(_NULL_KNOWLEDGE),
+            knowledge_snapshot_sha256=content_hash(knowledge),
             catalog_facet_ids=(),
             catalog_value_ids=(),
             query_state=query,
@@ -141,7 +167,9 @@ class ControllerWindowHook:
             state_namespace=query.query_id,
         )
         contact = controller.initial_contact(context)
-        self._windows[iteration] = _Window(controller, context, contact, record.sha256)
+        self._windows[iteration] = _Window(
+            controller, context, contact, record.sha256, knowledge
+        )
         return contact.instruction
 
     def terminal(self, *, iteration, request_id, response, skipped, saturated):
@@ -208,7 +236,7 @@ class ControllerWindowHook:
             {
                 "use_program_id": self._program.program_id,
                 "use_program_sha256": content_hash(self._program.as_json()),
-                "use_context": dict(_NULL_KNOWLEDGE),
+                "use_context": dict(window.knowledge),
                 "use_query_state": window.context.query_state.as_json(),
                 "use_contact": window.contact.as_json(),
                 "use_terminal_request_id": window.terminal_request_id,

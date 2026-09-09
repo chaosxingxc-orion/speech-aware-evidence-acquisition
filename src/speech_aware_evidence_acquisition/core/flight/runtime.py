@@ -3656,11 +3656,13 @@ class FlightRuntime:
             raise PreparationError(
                 "window fit refuses unsupported live or adaptive policies"
             )
-        if values.get("evidence_source", "none") not in (None, "none"):
-            raise PreparationError(
-                "window fit refuses evidence-bearing arms until shared evidence "
-                "materialization is available"
-            )
+        if values.get("evidence_mismatch", False):
+            raise PreparationError("window fit refuses rotated evidence mismatch")
+        from ..driver.run import materialize_evidence_binding
+        evidence_binding = materialize_evidence_binding(
+            self._lock, self._data_root, self._samples, values,
+            evidence_budget_bytes=int(values.get("evidence_budget_bytes", 0)),
+        )
         plan = execution_plan or self._plan
         if values.get(PROGRAM_KEY) and plan is None:
             raise PreparationError("window fit requires the authorized execution plan")
@@ -3677,7 +3679,7 @@ class FlightRuntime:
             contexts.append(
                 SampleContext(
                     sample=sample,
-                    evidence=[],
+                    evidence=evidence_binding.evidence_by_sample.get(sample.sample_id, ()),
                     adapter=self._adapter,
                     sink=object(),
                     arm=str(values["arm"]),
@@ -3708,6 +3710,7 @@ class FlightRuntime:
             contexts,
             expected_sample_ids=[sample.sample_id for sample in self._samples],
             hook_factory=hook_factory,
+            evidence_binding=evidence_binding,
         )
 
 
@@ -3740,17 +3743,60 @@ class FlightRuntime:
             },
         }
         if window_batch is not None:
-            from ...reproduction import obs_loop, repair_loop
-            from .. import preparation_windows
+            from ...reproduction import obs_loop, repair_loop, window_controller
+            from .. import class_lists, evidence, evidence_derivation, preparation_windows
+            from ..driver import run as driver_run
+            from ..driver.run import (
+                evidence_binding_identity,
+                materialize_evidence_binding,
+            )
+
+            sources["window_implementation"] = {
+                module.__name__: _sha256_file(Path(module.__file__))
+                for module in (obs_loop, repair_loop, preparation_windows)
+            }
+            prepared_binding = getattr(window_batch, "evidence_binding", None)
+            if prepared_binding is None:
+                if context["values"].get("evidence_source", "none") not in (None, "none"):
+                    from ..preparation import PreparationError
+
+                    raise PreparationError(
+                        "evidence-bearing window batch lacks its materialized evidence binding"
+                    )
+            else:
+                current_binding = materialize_evidence_binding(
+                    self._lock,
+                    self._data_root,
+                    self._samples,
+                    context["values"],
+                    evidence_budget_bytes=int(context["values"].get("evidence_budget_bytes", 0)),
+                )
+                evidence_sources = evidence_binding_identity(prepared_binding)
+                if evidence_binding_identity(current_binding) != evidence_sources:
+                    from ..preparation import PreparationError
+
+                    raise PreparationError(
+                        "window evidence sources changed after payload materialization"
+                    )
+                if any(evidence_sources.values()):
+                    sources["window_evidence"] = evidence_sources
+                    sources["window_implementation"].update(
+                        {
+                            module.__name__: _sha256_file(Path(module.__file__))
+                            for module in (
+                                window_controller,
+                                driver_run,
+                                evidence,
+                                class_lists,
+                                evidence_derivation,
+                            )
+                        }
+                    )
             sources.update(
                 window_sources=list(
                     preparation_fit.canonical_window_sources(window_batch.source_bindings)
                 ),
                 window_measurement="resident-multimodal-input-tokens",
-                window_implementation={
-                    module.__name__: _sha256_file(Path(module.__file__))
-                    for module in (obs_loop, repair_loop, preparation_windows)
-                },
             )
         return artifact_inputs(
             config=context["values"],

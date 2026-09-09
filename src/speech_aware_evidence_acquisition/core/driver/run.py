@@ -11,8 +11,10 @@ exactly what ``run_experiment`` folds back in.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import time
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
@@ -25,6 +27,7 @@ from ..base import (
     POLICIES,
     CoreError,
     EvidenceError,
+    EvidenceItem,
     PayloadBindingContext,
     declared_derived_media_roots,
     RunResult,
@@ -358,6 +361,187 @@ _NO_SAMPLER_PROVIDED_REASON = (
 )
 
 
+
+@dataclass(frozen=True)
+class EvidenceBinding:
+    evidence_by_sample: Mapping[str, Sequence[EvidenceItem]]
+    evidence_relpaths: Mapping[str, str | tuple[str, ...]]
+    evidence_contents: Mapping[str, bytes | tuple[bytes, ...]]
+    derivation_registry: DerivedEvidenceRegistry
+
+
+def evidence_binding_identity(binding: EvidenceBinding) -> dict[str, object]:
+    """Return the immutable source and derivation facts behind supplied evidence."""
+    return {
+        sample_id: [
+            {
+                "evidence_id": item.evidence_id,
+                "source_uri": item.source_uri,
+                "content_sha256": hashlib.sha256(item.content.encode("utf-8")).hexdigest(),
+                "derivation": (
+                    item.derivation.trace_view() if item.derivation is not None else None
+                ),
+                "derivation_source_sha256": (
+                    hashlib.sha256(item.derivation_source_bytes).hexdigest()
+                    if item.derivation_source_bytes is not None
+                    else None
+                ),
+            }
+            for item in items
+        ]
+        for sample_id, items in sorted(binding.evidence_by_sample.items())
+    }
+
+
+def materialize_evidence_binding(lock, root, samples, values, *, evidence_budget_bytes):
+    """Build the live evidence binding with its D1 and derivation checks."""
+    source = EVIDENCE_SOURCES.resolve(str(values.get("evidence_source", "none")))
+    # R0 repair refactor stage 2 (part B): every evidence source now takes
+    # the sample's own carrier_lock_key explicitly (core.evidence module
+    # docstring) so a carrier-aware source (e.g. conec-contexts) can
+    # resolve its layout via that carrier's own CarrierDescriptor instead
+    # of guessing/hardcoding a single carrier's path.
+    # B-2a (core.evidence module docstring): every evidence source ALSO
+    # takes this run's composed config `values` (optional on the
+    # function signature -- every pre-existing source ignores it), the
+    # SAME `values` mapping `resolve_task_instruction` above already
+    # reads knobs from, so a source-specific knob (e.g. `conec-bias-
+    # list`'s `bias_list_max_entries`) is config plumbing only, never a
+    # new call site.
+    evidence_by_sample = {
+        s.sample_id: source(lock, root, s.sample_id, s.carrier_lock_key, values)
+        for s in samples
+    }
+    # IMPORTANT 1 (external-threat-model review round 4): the D1
+    # evidence-identity rail's facts (core.model.lifecycle's own
+    # verify_evidence_identity call), built from the ORIGINAL
+    # (pre-rotation) evidence_by_sample -- i.e. exactly the sample ids
+    # this run's evidence source itself supplied non-empty evidence for,
+    # using each sample's OWN D1-recorded evidence file
+    # (core.evidence.evidence_file_relpath -- never hand-coded, module
+    # docstring). Computed BEFORE any evidence_mismatch/rotated_mismatch
+    # reassignment below so this checks the byte-integrity of the
+    # evidence CORPUS the run's evidence source drew from, independent of
+    # which sample a later negative-control experiment happens to route
+    # that content to (see gate_evidence_identity's own docstring for why
+    # this scoping is deliberate, not an oversight).
+    # 2026-09-06 (KC-E1): accumulated per item, not assigned per sample.
+    # ``conec-class-lists`` returns TWO carrier-bound items per call and the
+    # old ``evidence_relpaths[sid] = record.source_relpath`` kept only the
+    # last one, so the participant-roster half of the pre-meeting brief was
+    # never identity-checked at all. Single-item sources still produce a
+    # plain ``str`` value below, byte-identical to before.
+    evidence_relpath_lists: dict[str, list[str]] = {}
+    # IMPROVEMENT (fifth external-threat-model review): the SAME
+    # already-read content, keyed identically to evidence_relpaths --
+    # gives the D1 evidence-identity rail something to check that is
+    # bound to the bytes this run will actually put in the prompt,
+    # rather than a second, later read of the file (see
+    # contracts.gate_evidence_identity's own module docstring for the
+    # check<->send race this closes). Built here, from exactly the same
+    # evidence_by_sample this loop already reads for evidence_relpaths --
+    # never a fresh disk read.
+    evidence_content_lists: dict[str, list[bytes]] = {}
+    # Derivation-chain rail (2026-08-09, docs/readiness/2026-08-09-conec-
+    # evidence-shape.md "Blocking gap"): a fresh registry per run, no
+    # shared state across runs (mirrors core.model.slices.SliceRegistry).
+    # Every sample's evidence item(s) must carry a DerivedEvidenceRecord
+    # this registry can independently re-verify -- source bytes actually
+    # read, a registered pinned transform, params matching THIS run's own
+    # config, and the content this run will actually send re-hashing to
+    # the claimed derived_sha256 -- before this run is allowed to
+    # proceed. Computed BEFORE any evidence_mismatch/rotated_mismatch
+    # reassignment below, same discipline as the (unchanged) D1
+    # evidence-identity facts just below: this checks the derivation
+    # integrity of the evidence CORPUS the run's evidence source itself
+    # produced, independent of which sample a later negative-control
+    # experiment happens to route that content to.
+    derivation_registry = DerivedEvidenceRegistry()
+    for s in samples:
+        items = evidence_by_sample[s.sample_id]
+        if not items:
+            continue
+        for item in items:
+            record = item.derivation
+            if record is None:
+                raise CoreError(
+                    f"evidence source {values.get('evidence_source')!r} returned "
+                    f"evidence for sample {s.sample_id!r} with no derivation "
+                    "record; identity can never be proven for evidence that does "
+                    "not chain to a verified source (docs/readiness/2026-08-09-"
+                    "conec-evidence-shape.md)"
+                )
+            if record.sample_id != s.sample_id:
+                raise CoreError(
+                    f"evidence derivation record sample_id {record.sample_id!r} "
+                    f"does not match the sample it was returned for "
+                    f"({s.sample_id!r})"
+                )
+            try:
+                params = resolve_declared_transform_params(record.transform_name, values)
+            except EvidenceError as error:
+                raise CoreError(
+                    f"cannot resolve declared params for evidence transform "
+                    f"{record.transform_name!r} (sample {s.sample_id!r}): {error}"
+                ) from error
+            try:
+                derivation_registry.register(
+                    record,
+                    source_content=item.derivation_source_bytes,
+                    derived_content=item.content.encode("utf-8"),
+                    params=params,
+                )
+            except EvidenceError as error:
+                raise CoreError(
+                    f"evidence derivation chain refused for sample "
+                    f"{s.sample_id!r}: {error}"
+                ) from error
+            if record.carrier_bound:
+                # IMPORTANT 1 (external-threat-model review round 4,
+                # UNCHANGED rail): re-verify exactly the SOURCE facts a
+                # carrier_bound record chains to against D1's frozen
+                # per-sample identity -- never the derived/transformed
+                # content (the blocking gap docs/readiness/2026-08-09-
+                # conec-evidence-shape.md recorded, and core.evidence_
+                # derivation's own module docstring, condition 1). A
+                # carrier_bound=False record (core.base.
+                # DerivedEvidenceRecord docstring) has no D1 anchor at
+                # all and is deliberately excluded here -- its identity
+                # rests solely on the self-verified chain above.
+                evidence_relpath_lists.setdefault(s.sample_id, []).append(
+                    record.source_relpath
+                )
+                evidence_content_lists.setdefault(s.sample_id, []).append(
+                    item.derivation_source_bytes
+                )
+    # One file stays a bare value; several become an ordered tuple whose
+    # i-th relpath pairs with the i-th content (core.base.
+    # PayloadBindingContext.evidence_relpaths).
+    evidence_relpaths: dict[str, str | tuple[str, ...]] = {
+        sample_id: (paths[0] if len(paths) == 1 else tuple(paths))
+        for sample_id, paths in evidence_relpath_lists.items()
+    }
+    evidence_contents: dict[str, bytes | tuple[bytes, ...]] = {
+        sample_id: (blobs[0] if len(blobs) == 1 else tuple(blobs))
+        for sample_id, blobs in evidence_content_lists.items()
+    }
+    if values.get("evidence_mismatch", False):
+        evidence_by_sample = rotated_mismatch(evidence_by_sample)
+    # SUPPLY dose knob (continued from the composition-time validation
+    # above): applied ONCE per sample, HERE -- before _emit_sample_
+    # preamble's OBS/ORG/SUPPLY byte accounting below and before ANY
+    # policy's per-slice fan-out (obs-agent-loop sends N requests per
+    # sample; this dict is built once, so every one of them reads the
+    # SAME already-truncated content). Applied AFTER the derivation
+    # -chain registry above (which must see each source's untouched,
+    # self-verified content) and AFTER evidence_mismatch rotation (so a
+    # mismatched-evidence negative control is budgeted exactly like a
+    # normal run). budget_bytes<=0 is unlimited and returns
+    # evidence_by_sample untouched -- byte-identical prompts.
+    evidence_by_sample = apply_evidence_budget(evidence_by_sample, evidence_budget_bytes)
+    return EvidenceBinding(evidence_by_sample, evidence_relpaths, evidence_contents, derivation_registry)
+
+
 def run_experiment(
     composed: ComposedConfig,
     plan: ExecutionPlan,
@@ -469,150 +653,12 @@ def run_experiment(
         else:
             exemplar_manifest = None
             exemplar_bank_by_sample = {}
-        source = EVIDENCE_SOURCES.resolve(str(values.get("evidence_source", "none")))
-        # R0 repair refactor stage 2 (part B): every evidence source now takes
-        # the sample's own carrier_lock_key explicitly (core.evidence module
-        # docstring) so a carrier-aware source (e.g. conec-contexts) can
-        # resolve its layout via that carrier's own CarrierDescriptor instead
-        # of guessing/hardcoding a single carrier's path.
-        # B-2a (core.evidence module docstring): every evidence source ALSO
-        # takes this run's composed config `values` (optional on the
-        # function signature -- every pre-existing source ignores it), the
-        # SAME `values` mapping `resolve_task_instruction` above already
-        # reads knobs from, so a source-specific knob (e.g. `conec-bias-
-        # list`'s `bias_list_max_entries`) is config plumbing only, never a
-        # new call site.
-        evidence_by_sample = {
-            s.sample_id: source(lock, root, s.sample_id, s.carrier_lock_key, values)
-            for s in samples
-        }
-        # IMPORTANT 1 (external-threat-model review round 4): the D1
-        # evidence-identity rail's facts (core.model.lifecycle's own
-        # verify_evidence_identity call), built from the ORIGINAL
-        # (pre-rotation) evidence_by_sample -- i.e. exactly the sample ids
-        # this run's evidence source itself supplied non-empty evidence for,
-        # using each sample's OWN D1-recorded evidence file
-        # (core.evidence.evidence_file_relpath -- never hand-coded, module
-        # docstring). Computed BEFORE any evidence_mismatch/rotated_mismatch
-        # reassignment below so this checks the byte-integrity of the
-        # evidence CORPUS the run's evidence source drew from, independent of
-        # which sample a later negative-control experiment happens to route
-        # that content to (see gate_evidence_identity's own docstring for why
-        # this scoping is deliberate, not an oversight).
-        # 2026-09-06 (KC-E1): accumulated per item, not assigned per sample.
-        # ``conec-class-lists`` returns TWO carrier-bound items per call and the
-        # old ``evidence_relpaths[sid] = record.source_relpath`` kept only the
-        # last one, so the participant-roster half of the pre-meeting brief was
-        # never identity-checked at all. Single-item sources still produce a
-        # plain ``str`` value below, byte-identical to before.
-        evidence_relpath_lists: dict[str, list[str]] = {}
-        # IMPROVEMENT (fifth external-threat-model review): the SAME
-        # already-read content, keyed identically to evidence_relpaths --
-        # gives the D1 evidence-identity rail something to check that is
-        # bound to the bytes this run will actually put in the prompt,
-        # rather than a second, later read of the file (see
-        # contracts.gate_evidence_identity's own module docstring for the
-        # check<->send race this closes). Built here, from exactly the same
-        # evidence_by_sample this loop already reads for evidence_relpaths --
-        # never a fresh disk read.
-        evidence_content_lists: dict[str, list[bytes]] = {}
-        # Derivation-chain rail (2026-08-09, docs/readiness/2026-08-09-conec-
-        # evidence-shape.md "Blocking gap"): a fresh registry per run, no
-        # shared state across runs (mirrors core.model.slices.SliceRegistry).
-        # Every sample's evidence item(s) must carry a DerivedEvidenceRecord
-        # this registry can independently re-verify -- source bytes actually
-        # read, a registered pinned transform, params matching THIS run's own
-        # config, and the content this run will actually send re-hashing to
-        # the claimed derived_sha256 -- before this run is allowed to
-        # proceed. Computed BEFORE any evidence_mismatch/rotated_mismatch
-        # reassignment below, same discipline as the (unchanged) D1
-        # evidence-identity facts just below: this checks the derivation
-        # integrity of the evidence CORPUS the run's evidence source itself
-        # produced, independent of which sample a later negative-control
-        # experiment happens to route that content to.
-        derivation_registry = DerivedEvidenceRegistry()
-        for s in samples:
-            items = evidence_by_sample[s.sample_id]
-            if not items:
-                continue
-            for item in items:
-                record = item.derivation
-                if record is None:
-                    raise CoreError(
-                        f"evidence source {values.get('evidence_source')!r} returned "
-                        f"evidence for sample {s.sample_id!r} with no derivation "
-                        "record; identity can never be proven for evidence that does "
-                        "not chain to a verified source (docs/readiness/2026-08-09-"
-                        "conec-evidence-shape.md)"
-                    )
-                if record.sample_id != s.sample_id:
-                    raise CoreError(
-                        f"evidence derivation record sample_id {record.sample_id!r} "
-                        f"does not match the sample it was returned for "
-                        f"({s.sample_id!r})"
-                    )
-                try:
-                    params = resolve_declared_transform_params(record.transform_name, values)
-                except EvidenceError as error:
-                    raise CoreError(
-                        f"cannot resolve declared params for evidence transform "
-                        f"{record.transform_name!r} (sample {s.sample_id!r}): {error}"
-                    ) from error
-                try:
-                    derivation_registry.register(
-                        record,
-                        source_content=item.derivation_source_bytes,
-                        derived_content=item.content.encode("utf-8"),
-                        params=params,
-                    )
-                except EvidenceError as error:
-                    raise CoreError(
-                        f"evidence derivation chain refused for sample "
-                        f"{s.sample_id!r}: {error}"
-                    ) from error
-                if record.carrier_bound:
-                    # IMPORTANT 1 (external-threat-model review round 4,
-                    # UNCHANGED rail): re-verify exactly the SOURCE facts a
-                    # carrier_bound record chains to against D1's frozen
-                    # per-sample identity -- never the derived/transformed
-                    # content (the blocking gap docs/readiness/2026-08-09-
-                    # conec-evidence-shape.md recorded, and core.evidence_
-                    # derivation's own module docstring, condition 1). A
-                    # carrier_bound=False record (core.base.
-                    # DerivedEvidenceRecord docstring) has no D1 anchor at
-                    # all and is deliberately excluded here -- its identity
-                    # rests solely on the self-verified chain above.
-                    evidence_relpath_lists.setdefault(s.sample_id, []).append(
-                        record.source_relpath
-                    )
-                    evidence_content_lists.setdefault(s.sample_id, []).append(
-                        item.derivation_source_bytes
-                    )
-        # One file stays a bare value; several become an ordered tuple whose
-        # i-th relpath pairs with the i-th content (core.base.
-        # PayloadBindingContext.evidence_relpaths).
-        evidence_relpaths: dict[str, str | tuple[str, ...]] = {
-            sample_id: (paths[0] if len(paths) == 1 else tuple(paths))
-            for sample_id, paths in evidence_relpath_lists.items()
-        }
-        evidence_contents: dict[str, bytes | tuple[bytes, ...]] = {
-            sample_id: (blobs[0] if len(blobs) == 1 else tuple(blobs))
-            for sample_id, blobs in evidence_content_lists.items()
-        }
-        if values.get("evidence_mismatch", False):
-            evidence_by_sample = rotated_mismatch(evidence_by_sample)
-        # SUPPLY dose knob (continued from the composition-time validation
-        # above): applied ONCE per sample, HERE -- before _emit_sample_
-        # preamble's OBS/ORG/SUPPLY byte accounting below and before ANY
-        # policy's per-slice fan-out (obs-agent-loop sends N requests per
-        # sample; this dict is built once, so every one of them reads the
-        # SAME already-truncated content). Applied AFTER the derivation
-        # -chain registry above (which must see each source's untouched,
-        # self-verified content) and AFTER evidence_mismatch rotation (so a
-        # mismatched-evidence negative control is budgeted exactly like a
-        # normal run). budget_bytes<=0 is unlimited and returns
-        # evidence_by_sample untouched -- byte-identical prompts.
-        evidence_by_sample = apply_evidence_budget(evidence_by_sample, evidence_budget_bytes)
+        evidence_binding = materialize_evidence_binding(
+            lock, root, samples, values, evidence_budget_bytes=evidence_budget_bytes
+        )
+        evidence_by_sample = evidence_binding.evidence_by_sample
+        evidence_relpaths = evidence_binding.evidence_relpaths
+        evidence_contents = evidence_binding.evidence_contents
         policy = POLICIES.resolve(str(values["policy"]))
         # Sample batching (owner directive 2026-08-08): resolved and checked
         # HERE, before the adapter construction below reserves the one-time

@@ -15,6 +15,7 @@ from __future__ import annotations
 import hashlib
 import json
 import pathlib
+from types import SimpleNamespace
 
 import pytest
 
@@ -656,3 +657,209 @@ def test_the_token_matched_source_refuses_a_call_the_plan_never_measured(
                 },
             },
         )
+
+
+def test_shared_live_evidence_binding_matches_the_registered_class_list_source(synthetic_world):
+    from speech_aware_evidence_acquisition.core.driver.run import materialize_evidence_binding
+
+    lock = _install(synthetic_world)
+    sample = SimpleNamespace(sample_id=CALL, carrier_lock_key="earnings21-original")
+    binding = materialize_evidence_binding(
+        lock, synthetic_world.data_root, [sample], {"evidence_source": "conec-class-lists"},
+        evidence_budget_bytes=0,
+    )
+    expected = _conec_class_lists(
+        lock, synthetic_world.data_root, CALL, "earnings21-original",
+        {"evidence_source": "conec-class-lists"},
+    )
+    actual = binding.evidence_by_sample[CALL]
+    assert [item.evidence_id for item in actual] == [item.evidence_id for item in expected]
+    assert [item.content for item in actual] == [item.content for item in expected]
+    assert binding.evidence_relpaths[CALL] == tuple(
+        item.derivation.source_relpath for item in expected
+    )
+
+
+def test_shared_live_evidence_binding_refuses_the_wrong_conec_carrier(synthetic_world):
+    from speech_aware_evidence_acquisition.core.driver.run import materialize_evidence_binding
+
+    lock = _install(synthetic_world)
+    sample = SimpleNamespace(sample_id=CALL, carrier_lock_key="earnings22-original")
+    with pytest.raises(Exception, match="ConEC|context|carrier"):
+        materialize_evidence_binding(
+            lock, synthetic_world.data_root, [sample], {"evidence_source": "conec-class-lists"},
+            evidence_budget_bytes=0,
+        )
+
+
+def test_shared_binding_changes_when_the_pinned_conec_source_bytes_drift(synthetic_world):
+    from speech_aware_evidence_acquisition.core.driver.run import materialize_evidence_binding
+
+    lock = _install(synthetic_world)
+    sample = SimpleNamespace(sample_id=CALL, carrier_lock_key="earnings21-original")
+    values = {"evidence_source": "conec-class-lists"}
+    before = materialize_evidence_binding(
+        lock, synthetic_world.data_root, [sample], values, evidence_budget_bytes=0
+    )
+    (_conec_dir(synthetic_world) / f"{CALL}.txt").write_text(
+        DOCUMENT + "\nrevision 1", encoding="utf-8"
+    )
+    after = materialize_evidence_binding(
+        load_lock(synthetic_world.lock_path), synthetic_world.data_root, [sample],
+        values, evidence_budget_bytes=0
+    )
+    assert before.evidence_by_sample[CALL][1].content != after.evidence_by_sample[CALL][1].content
+    assert before.evidence_contents[CALL] != after.evidence_contents[CALL]
+
+
+def test_window_fit_inputs_refuse_evidence_source_drift_after_materialization(synthetic_world):
+    from speech_aware_evidence_acquisition.core.driver.run import materialize_evidence_binding
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    from speech_aware_evidence_acquisition.core.preparation import PreparationError
+    from speech_aware_evidence_acquisition.core.preparation_windows import WindowRequestBatch
+
+    lock = _install(synthetic_world)
+    sample = SimpleNamespace(sample_id=CALL, carrier_lock_key="earnings21-original")
+    values = {"evidence_source": "conec-class-lists"}
+    binding = materialize_evidence_binding(
+        lock, synthetic_world.data_root, [sample], values, evidence_budget_bytes=0
+    )
+    runtime = SimpleNamespace(
+        _lock=lock,
+        _data_root=synthetic_world.data_root,
+        _samples=[sample],
+        preparation_context=lambda: {
+            "values": values,
+            "split_identity_hash": "a" * 64,
+            "runtime_receipt": {"schema": "synthetic"},
+            "required_identity": {"schema": "synthetic"},
+        },
+    )
+    batch = WindowRequestBatch(
+        ({"sample_id": CALL, "media_relpath": "derived/obs-slices/fit-run/windows/window.wav", "speech": []},),
+        (f"{CALL}#w0001",),
+        ({"sample_id": CALL, "media_relpath": "derived/obs-slices/fit-run/windows/window.wav"},),
+        evidence_binding=binding,
+    )
+    admitted = FlightRuntime.request_fit_inputs(runtime, batch.payloads, window_batch=batch)
+    assert admitted["sources"]["window_evidence"]
+    context_path = _conec_dir(synthetic_world) / f"{CALL}.txt"
+    context_path.write_text(DOCUMENT + "\nrevision 1", encoding="utf-8")
+    with pytest.raises(
+        PreparationError, match="window evidence sources changed after payload materialization"
+    ):
+        FlightRuntime.request_fit_inputs(runtime, batch.payloads, window_batch=batch)
+
+
+def test_real_window_fit_materialization_matches_registered_live_factory_with_conec(
+    synthetic_world, monkeypatch
+):
+    from array import array
+
+    from speech_aware_evidence_acquisition.core.base import SampleContext
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    from speech_aware_evidence_acquisition.core.model.slices import SliceRegistry
+    from speech_aware_evidence_acquisition.data.loader import SampleRef
+    from speech_aware_evidence_acquisition.rails.task_adapter import TaskAdapter
+    from speech_aware_evidence_acquisition.reproduction import obs_loop
+
+    class WindowAdapter(TaskAdapter):
+        def preprocess_plan(self):
+            return {"kind": "raw-speech-windows"}
+
+        def instruction(self, sample):
+            return "Transcribe the speech verbatim."
+
+        def load_split(self, split_id):
+            return ()
+
+        def build_task_contract(self, sample, obs):
+            return "synthetic contract"
+
+        def gold(self, sample):
+            return None
+
+        def score_response(self, gold, response):
+            return {}
+
+    lock = _install(synthetic_world)
+    parent_relpath = f"earnings21/audio/{CALL}.wav"
+    parent = synthetic_world.data_root / parent_relpath
+    parent.parent.mkdir(parents=True, exist_ok=True)
+    parent.write_bytes(b"synthetic speech carrier")
+    pcm = array("h", [0]) * (16_000 * 90)
+    monkeypatch.setattr(obs_loop, "decode_parent_pcm", lambda path, rate: pcm)
+    sample = SampleRef(
+        carrier_lock_key="earnings21-original",
+        sample_id=CALL,
+        media_relpath=parent_relpath,
+        audio_seconds=90.0,
+        sample_rate_hz=16_000,
+    )
+    values = {
+        "arm": "fixed-legal-context",
+        "policy": "obs-agent-loop-ojw",
+        "evidence_source": "conec-class-lists",
+        "obs_buffer_seconds": 60,
+        "obs_min_advance_seconds": 20,
+        "obs_max_advance_seconds": 55,
+        "obs_silence_snap_seconds": 2.0,
+        "obs_fallback_advance_seconds": 50,
+        "obs_boundary_mode": "fixed",
+        "obs_vad": "energy",
+        "obs_vad_trim_min_seconds": 0,
+        "obs_preprocess": [],
+        "obs_condition_tail_chars": 0,
+        "obs_batch_slices": 2,
+        "decoding_params": {"temperature": 0, "max_tokens": 64},
+    }
+    runtime = object.__new__(FlightRuntime)
+    runtime._adapter = WindowAdapter()
+    runtime._lock = lock
+    runtime._data_root = synthetic_world.data_root
+    runtime._samples = [sample]
+    runtime._run_id = "SAEA-E-000-fit-parity"
+    runtime._attempt_id = "attempt-synthetic"
+    runtime._explicit_run_dir = synthetic_world.data_root / "runs" / "fit"
+    runtime._repo_root = synthetic_world.data_root / "repo"
+    runtime._plan = None
+    runtime._prepare = lambda: (values, "earnings21-original", "discovery", "identity")
+    batch = runtime.materialize_window_batch()
+    assert batch.evidence_binding is not None
+    evidence = batch.evidence_binding.evidence_by_sample[CALL]
+    assert [item.evidence_id for item in evidence] == [
+        "conec-class-lists-roster/4320211",
+        "conec-class-lists-document/4320211",
+    ]
+
+    registry = SliceRegistry(
+        data_root=synthetic_world.data_root,
+        run_id="SAEA-E-000-fit-parity",
+        parent_facts={CALL: (parent_relpath, 90.0)},
+    )
+    cfg = obs_loop.ObsLoopConfig.from_values(values, runtime._repo_root)
+    windows, _records = obs_loop.materialize_fixed_windows(
+        cfg,
+        registry,
+        synthetic_world.data_root,
+        sample,
+        16_000,
+        pcm,
+        90.0,
+        hashlib.sha256(parent.read_bytes()).hexdigest(),
+    )
+    live_context = SampleContext(
+        sample=sample,
+        evidence=evidence,
+        adapter=runtime._adapter,
+        sink=object(),
+        arm=values["arm"],
+        task_instruction=runtime._adapter.instruction(sample),
+        decoding_params=values["decoding_params"],
+        request_id_base=f"{runtime._run_id}-{CALL}",
+        extras={"config_values": values},
+    )
+    request_id, factory = obs_loop.window_request_factory(
+        live_context, windows[0], sample=sample, rate=16_000, evidence=evidence
+    )
+    assert batch.payloads[0] == factory(request_id)
