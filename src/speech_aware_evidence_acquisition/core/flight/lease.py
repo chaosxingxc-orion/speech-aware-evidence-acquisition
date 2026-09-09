@@ -131,8 +131,15 @@ class GenerationLease:
     def __enter__(self) -> GenerationLease:
         return self
 
-    def __exit__(self, *_exc) -> None:
-        self.release()
+    def __exit__(self, exc_type, *_exc) -> None:
+        if exc_type is None:
+            self.release()
+        elif self._descriptor is not None:
+            # An interrupted contact may still be executing in the resident
+            # server. Preserve metadata until root proves contact quiescence.
+            descriptor, self._descriptor = self._descriptor, None
+            fcntl.flock(descriptor, fcntl.LOCK_UN)
+            os.close(descriptor)
 
 
 @dataclass(frozen=True)

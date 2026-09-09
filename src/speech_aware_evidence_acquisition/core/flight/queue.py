@@ -117,7 +117,10 @@ class FlightQueue:
             if future is None or not future.done():
                 continue
             try:
-                future.result()
+                result = future.result()
+                batch = result.get("result", result) if isinstance(result, Mapping) else {}
+                if isinstance(batch, Mapping) and batch.get("failed", 0):
+                    raise FlightQueueError("official score batch reported failed jobs")
             except Exception as error:  # noqa: BLE001 -- retain explicit failure metadata
                 self._states[entry.flight.run_id] = FlightReadiness(
                     "failed", f"official scoring failed: {type(error).__name__}: {error}",

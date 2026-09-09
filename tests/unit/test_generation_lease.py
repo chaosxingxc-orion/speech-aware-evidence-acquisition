@@ -108,3 +108,12 @@ def test_worker_policy_requires_explicit_identity_and_attach_only():
     ]:
         with pytest.raises(GenerationLeaseError):
             WorkerExecutionPolicy(**kwargs)
+
+
+def test_exception_preserves_lease_for_contact_quiescence_reconciliation(tmp_path):
+    with pytest.raises(RuntimeError, match="contact failed"):
+        with acquire(tmp_path):
+            raise RuntimeError("contact failed with terminal state unknown")
+    assert (tmp_path / "locks/flight.lock").is_file()
+    with pytest.raises(GenerationLeaseError, match="unreconciled"):
+        acquire(tmp_path)

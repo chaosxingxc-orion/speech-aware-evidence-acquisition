@@ -88,3 +88,17 @@ def test_root_context_covers_serving_through_seal_but_releases_before_score(tmp_
     queue.drain_scores()
     assert not active
     assert queue.states["owned"].state == "scored"
+
+
+def test_returned_scoring_failure_never_satisfies_a_dependency(tmp_path):
+    first = _make_flight(tmp_path, run_id="first", attempt_id="a")
+    dependent = _make_flight(tmp_path, run_id="dependent", attempt_id="b")
+    first.score = lambda **kwargs: {"result": {"failed": 1, "succeeded": 0}}
+    queue = FlightQueue(
+        [first, dependent],
+        dependencies={"dependent": [FlightDependency("first", "scored")]},
+    )
+    queue.run(max_flights=1)
+    queue.drain_scores()
+    assert queue.states["first"].state == "failed"
+    assert queue.next_ready() is None
