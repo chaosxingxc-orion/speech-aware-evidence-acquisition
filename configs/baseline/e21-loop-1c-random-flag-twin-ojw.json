@@ -1,0 +1,74 @@
+{
+  "arm": "fixed-legal-context",
+  "policy": "obs-repair-loop-ojw",
+  "evidence_source": "conec-class-lists",
+  "evidence_mismatch": false,
+  "brief_max_entries_per_class": 12,
+  "predecessor_snapshot": {
+    "receipt_relpath": "receipts/e21-predecessor-full44-direct-baseline-v2.json",
+    "receipt_sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a"
+  },
+  "repair_frame": "e21-entity-repair-frame-v1",
+  "response_postprocessor": "e21-entity-repair-substitutions-v1",
+  "response_postprocessor_params": {
+    "max_span_tokens": 4,
+    "min_anchor_ratio": 0.6,
+    "max_substituted_fraction": 0.1
+  },
+  "scorers": [
+    "asr-wer-whisper",
+    "conec-entity-wer-official",
+    "numeric-value-accuracy-v1",
+    "semantic-high-impact-error-rate-v1",
+    "cost"
+  ],
+  "task_instruction": "The reference material above is a pre-meeting brief for this call, built only from the call's own published participant roster and press-release documents: participants and their roles, the organizations and divisions the roster names, company and ticker candidates, product and segment candidates, and other document terms. Where an entry shows a form in brackets after \"normalized:\", that is the spelling the measurement compares against. Below it, a first-pass transcript of this same audio window is given. Return that first-pass transcript again, word for word, changing it ONLY where the audio and the reference material together show that a named entity -- a person, organization, place, product, event or other proper name -- is spelled or identified wrongly; replace the wrong name with the right one in place. Do not add words, do not remove words, do not re-order or re-punctuate, and do not change any word that is not part of a name. Never insert a listed word you do not clearly hear in the audio. If nothing needs correcting, return the transcript unchanged. Output only the transcript text.",
+  "obs_buffer_seconds": 90,
+  "obs_min_advance_seconds": 20,
+  "obs_max_advance_seconds": 55,
+  "obs_silence_snap_seconds": 2.0,
+  "obs_fallback_advance_seconds": 50,
+  "obs_boundary_mode": "fixed",
+  "obs_vad": "energy",
+  "obs_vad_trim_min_seconds": 0,
+  "obs_preprocess": [],
+  "obs_condition_tail_chars": 0,
+  "obs_slice_retry_max": 1,
+  "obs_slice_skip_max": 1,
+  "obs_batch_samples": 1,
+  "obs_batch_slices": 8,
+  "obs_unit_plan": "docs/receipts/obs/e21-relisten-twin-plan-v1.json",
+  "obs_unit_plan_sha256": "92fc51444581f220064b62a144e27a4fe670647728c004cd27f161473845fccc",
+  "window_review": {
+    "judges": [
+      "e21-brief-name-near-miss-v1",
+      "earnings-numeric-format-flag-v1"
+    ],
+    "params": {
+      "e21-brief-name-near-miss-v1": {
+        "max_distance": 0.2
+      }
+    },
+    "on_flag": "recut-and-contact",
+    "used_for": "count-and-duration-only"
+  },
+  "window_observe": {
+    "context_margin_seconds": 5.0,
+    "min_relisten_seconds": 10.0,
+    "derivation_kind": "recut-span",
+    "flag_source": "seeded-random",
+    "seed": 20260903
+  },
+  "what_this_is": "E21-LOOP-1's FORM TWIN. Byte for byte configs/baseline/e21-loop-1-relisten-repair.json except for the plan it pins, and the plan differs in exactly one thing: WHERE it listens. Per call it takes the SAME MULTISET of re-cut durations the judges' plan produced and places them longest first, each into a uniformly random unused window of that call able to carry it, at a uniformly random offset inside it (seeded RNG, 20260903). So the twin pays the identical contact count per call, delivers the identical audio seconds per call and carries the identical re-cut duration multiset per call -- all three asserted by the wire check on 44 of 44 calls -- and carries none of the Reviewer's targeting.",
+  "why_window_review_and_window_observe_are_here": "They are not consumed at run time -- the pinned plan already fixes every position, which is what makes slice batching legal -- but they are not decoration either: the wire check asserts that every value here EQUALS the plan document's own flag_source, context_margin_seconds, min_relisten_seconds and judge list, so a fragment that claims one Reviewer and pins a plan built by another is refused before any contact. The judge ids additionally resolve in core.base.JUDGES through scripts/checks/engineering_base_check.py's any-depth 'judges' rule, exactly as a phase_review block's do.",
+  "on_flag_vocabulary_note": "'recut-and-contact' is this fragment's own word for what the plan encodes and is NOT rails.phase_review's on_flag vocabulary, whose 'loop' value stays refused by name. Nothing loops here: the criticism is computed once, model-free, on a sealed draft, and what it decides is which windows are CONTACTED AT ALL -- a selection made before the first request, never a re-ask after one.",
+  "why_the_delivery_parameters_are_unchanged": "min_anchor_ratio 0.6 and max_substituted_fraction 0.1 are RATIOS, and the unit they are computed over moves from the whole 90-second window to the re-cut span. That is a consequence of the factor, not a second factor: the rule is byte-identical and its relative strictness is unchanged. In absolute terms it becomes tighter per contact -- roughly two substituted tokens on a twenty-five-word span where a hundred-and-eighty-word window allowed eighteen -- which is reported as a covariate, never tuned.",
+  "plan_pin_basis": "obs_unit_plan_sha256 is the SHA-256 of the committed plan file and the seam refuses to load bytes that disagree with it. The plan is model-free (exposure row SAEA-E21-MF-LOOP-1-PREP-V1): it was built by scripts/build_e21_relisten_plan.py from the sealed comparator's own per-window drafts, the ConEC participant rosters through the registered reader, and the two registered gold-free judges -- no reference transcript, no wer_tags sidecar and no score file. Its loader re-proves, per call and on the bytes actually loaded, that every unit lies inside its named parent window, clears the refusal-to-shrink floor, names a non-empty word range inside that window's own pass-1 text, and that the units are one per flagged window in ascending order.",
+  "why_the_window_keys_stay": "obs_buffer_seconds 90 and the advance keys are left at KC-E1f's values rather than removed. Under a plan they are inert, and deleting them would make this fragment differ from the arm it is measured against in keys the cell does not vary. obs_buffer_seconds also remains the cap every re-cut was built under, so the two numbers cannot silently disagree. obs_boundary_mode stays 'fixed' because the plan fixes every position before the first contact, which is the independence condition slice batching requires.",
+  "composes_but_is_not_permission": "This fragment composing is not a GO. E21-LOOP-1 needs its own exposure row and the owner's authorization to fly, and neither is granted by this file. Owner Decision 12-G of 2026-09-08 authorized the MODEL-FREE preparation only, and the cell flies after the SLURP line.",
+  "why_this_is_the_right_control": "The claim E21-LOOP-1 makes is that FEWER, TARGETED contacts beat KC-E1f's every-window repair. Two things could produce a gain: hearing a narrower span again at all, and hearing the RIGHT narrower span. The comparator pair (the sealed direct baseline and KC-E1f) prices the first; this twin prices the second. If the arm's PERSON gain survives against the twin, the Reviewer's targeting is what bought it; if it does not, the second look is, and the judges are decoration the receipt already priced at their own precision.",
+  "why_the_judges_still_appear": "The twin's plan is built FROM the judges' output -- their per-call count and their re-cut durations -- and from nothing else about them, which is what makes it a form control rather than a different cell. window_review is declared here so the wire check can assert that both plans were built from the same criticism, and 'used_for' records that this arm consumes only the count and the durations.",
+  "why_longest_first": "A call's last window is usually shorter than 90 s. A naive uniform draw would quietly clip a long duration into it, making the twin cheaper than the arm on the one axis it exists to hold fixed. Placing longest first into a window able to carry the duration makes the two multisets EQUAL rather than approximately equal, which is what the wire check then asserts.",
+  "obs_controller_program": "phase-direct-only-v1",
+  "ojw_workflow_timeout_seconds": 21600
+}
