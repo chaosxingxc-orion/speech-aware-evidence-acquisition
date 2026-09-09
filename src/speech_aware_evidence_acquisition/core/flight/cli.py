@@ -164,6 +164,14 @@ def main(argv=None) -> int:
             # independently. A standalone worker never owns the service or lease.
             result = runtime.seal()
     print(json.dumps(result, sort_keys=True, default=str))
+    if args.mode == "campaign" and isinstance(result, dict):
+        states = result.get("states", {})
+        if any(
+            isinstance(state, dict)
+            and state.get("state") in {"failed", "preflight-failed"}
+            for state in states.values()
+        ):
+            return 1
     return 0
 
 

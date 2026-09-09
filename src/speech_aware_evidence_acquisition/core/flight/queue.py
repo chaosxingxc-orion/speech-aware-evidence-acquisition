@@ -82,6 +82,10 @@ class FlightQueue:
             self.add(flight)
         self.dry_run = bool(dry_run)
         self._preflighted: set[int] = set()
+        # A preflight refusal is terminal for this queue invocation. Keep it
+        # separate from successful preflights so repeated readiness polls do
+        # not rebuild the same request roster while another flight proceeds.
+        self._preflight_failed: set[int] = set()
         self._served_geometry: Mapping[str, object] | None = None
         self._served_profile: str | None = None
         self._served_flight: FlightRuntime | None = None
@@ -141,7 +145,7 @@ class FlightQueue:
         return FlightReadiness.ready()
 
     def _ensure_preflighted(self, flight: FlightRuntime) -> None:
-        if id(flight) not in self._preflighted:
+        if id(flight) not in self._preflighted and id(flight) not in self._preflight_failed:
             flight.preflight()
             self._preflighted.add(id(flight))
 
@@ -149,6 +153,10 @@ class FlightQueue:
         self._refresh_scores()
         ready: list[FlightRuntime] = []
         for flight in self._pending:
+            if id(flight) in self._preflight_failed:
+                # Preserve the terminal refusal across polling passes; the
+                # readiness callback must not overwrite it with ``ready``.
+                continue
             state = self._dependency_state(flight)
             if state.state == "ready":
                 try:
@@ -162,9 +170,12 @@ class FlightQueue:
             self._states[flight.run_id] = state
         fallback = None
         for flight in ready:
+            if id(flight) in self._preflight_failed:
+                continue
             try:
                 self._ensure_preflighted(flight)
             except Exception as error:  # noqa: BLE001 -- preflight is a readiness refusal
+                self._preflight_failed.add(id(flight))
                 self._states[flight.run_id] = FlightReadiness(
                     "preflight-failed", f"{type(error).__name__}: {error}"
                 )

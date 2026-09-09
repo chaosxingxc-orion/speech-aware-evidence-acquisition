@@ -449,3 +449,44 @@ def test_shared_fit_dispatches_raw_window_batch_before_attachment(tmp_path):
         ("GET", "/props"),
         ("POST", "/v1/chat/completions/input_tokens"),
     ]
+
+
+def test_capacity_identity_normalizes_only_owned_supply_trace_routes():
+    from copy import deepcopy
+    from speech_aware_evidence_acquisition.core.preparation_fit import boundary_identity
+    from speech_aware_evidence_acquisition.core.preparation import PreparationError
+
+    first = {
+        "sample_id": "sample", "request_id": "flight-0001",
+        "decoding_params": {"id_slot": 0, "max_tokens": 256},
+        "evidence_provenance": [
+            {"lock_key": "rails-supply", "relpath": "rails-message/flight-0001/0", "sha256": "a" * 64},
+            {"lock_key": "rails-supply", "relpath": "rails-message/flight-0001/1", "sha256": "b" * 64},
+        ],
+        "supplied_evidence": [{"content": "first"}, {"content": "second"}],
+    }
+    second = deepcopy(first)
+    second["request_id"] = "flight-0039"
+    second["decoding_params"]["id_slot"] = 3
+    for index, source in enumerate(second["evidence_provenance"]):
+        source["relpath"] = f"rails-message/flight-0039/{index}"
+    original = deepcopy(first)
+    assert boundary_identity([first]) == boundary_identity([second])
+    assert first == original
+    for mutate in (
+        lambda value: value["evidence_provenance"][0].update(sha256="c" * 64),
+        lambda value: value["supplied_evidence"].reverse(),
+        lambda value: value["decoding_params"].update(max_tokens=64),
+    ):
+        changed = deepcopy(second)
+        mutate(changed)
+        assert boundary_identity([first]) != boundary_identity([changed])
+    wrong_owner = deepcopy(second)
+    wrong_owner["evidence_provenance"][0]["relpath"] = "rails-message/another-request/0"
+    with pytest.raises(PreparationError, match="not bound to this request"):
+        boundary_identity([wrong_owner])
+    external = deepcopy(first)
+    external["evidence_provenance"][0]["lock_key"] = "carrier-source"
+    changed = deepcopy(external)
+    changed["evidence_provenance"][0]["relpath"] = "different-source"
+    assert boundary_identity([external]) != boundary_identity([changed])

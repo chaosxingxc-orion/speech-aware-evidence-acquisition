@@ -85,6 +85,42 @@ def test_worker_cli_requires_root_capability_before_runtime_build(monkeypatch):
               "--cell", "c"])
 
 
+@pytest.mark.parametrize(
+    "state, expected_exit",
+    [
+        ("failed", 1),
+        ("preflight-failed", 1),
+        ("held", 0),
+        ("preparation-pending", 0),
+        ("scored", 0),
+    ],
+)
+def test_campaign_cli_exit_reflects_generation_failure(tmp_path, monkeypatch, state, expected_exit):
+    from speech_aware_evidence_acquisition.core.flight import cli
+
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    monkeypatch.setattr(cli, "__file__", str(repo / "src/package/core/flight/cli.py"))
+    monkeypatch.setattr(cli, "load_campaign_cells", lambda *args: (cell(),))
+    monkeypatch.setattr(cli, "build_flight_runtime", lambda *args, **kwargs: object())
+    monkeypatch.setattr(
+        cli, "run_campaign",
+        lambda *args, **kwargs: {
+            "schema": "saea-campaign-status-v1",
+            "states": {_SERVING_RUN_ID: {"state": state, "reason": "test state"}},
+            "pending": [], "completed": [],
+        },
+    )
+
+    result = cli.main([
+        "campaign", "--repo-root", str(repo), "--data-root", str(tmp_path),
+        "--runtime-root", str(tmp_path), "--lock-path", str(tmp_path / "lock"),
+        "--experiment", "e", "--owner", "root", "--expected-session-id", "serving-test",
+    ])
+
+    assert result == expected_exit
+
+
 def test_config_loader_rejects_duplicate_or_empty_cells(tmp_path):
     from speech_aware_evidence_acquisition.core.flight.campaign import load_campaign_cells
     directory = tmp_path / "configs/experiment"

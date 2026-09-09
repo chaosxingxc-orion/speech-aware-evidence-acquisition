@@ -37,7 +37,8 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 from ...data.lock import REPO_ROOT
-from ...data.slurp import SLURP_LOCK_KEY, load_slurp_ontology, load_slurp_split, render_slurp_ontology
+from ...data.slurp import SLURP_LOCK_KEY, load_slurp_split
+from ...data.slurp_contract_cache import load_cached_slurp_contract
 from ...reproduction.slurp_scoring import SlotEntity, parse_slu_response, score_slu
 from ..obs import AudioRef, ObsPacket
 from ..task_adapter import TaskAdapter
@@ -137,8 +138,7 @@ class SlurpAdapter(TaskAdapter):
         ``train_synthetic`` only (``data.slurp.load_slurp_ontology``), never
         from ``sample``'s own gold fields."""
 
-        ontology = load_slurp_ontology(self._lock, self._root)
-        return render_slurp_ontology(ontology)
+        return load_cached_slurp_contract(self._lock, self._root)
 
     def instruction(self, sample: SlurpSample) -> str:
         """Fixed task instruction -- gold-leak boundary (module docstring):

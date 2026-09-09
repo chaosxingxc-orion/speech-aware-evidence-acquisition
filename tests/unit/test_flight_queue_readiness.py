@@ -145,3 +145,24 @@ def test_first_preflight_failure_allows_next_registered_candidate(tmp_path):
     queue = FlightQueue([first, later], dry_run=True)
     assert queue.next_ready() is later
     assert queue.states["first"].state == "preflight-failed"
+
+
+def test_preflight_failure_is_terminal_across_repeated_polls(tmp_path):
+    flight = _make_flight(tmp_path, run_id="broken-once", attempt_id="a")
+    ready = _make_flight(tmp_path, run_id="independent", attempt_id="b")
+    calls = []
+
+    def fail():
+        calls.append("preflight")
+        raise ValueError("request roster unavailable")
+
+    flight.preflight = fail
+    queue = FlightQueue([flight, ready], dry_run=True)
+
+    assert queue.next_ready() is ready
+    completed = queue.run(max_flights=1)
+    assert completed[0].flight is ready
+    assert queue.next_ready() is None
+    assert queue.next_ready() is None
+    assert calls == ["preflight"]
+    assert queue.states["broken-once"].state == "preflight-failed"

@@ -1,0 +1,87 @@
+{
+  "schema": "saea-ku-s3-preflight-refusal-v1",
+  "created_at": "2026-09-09T23:37:41.856017+00:00",
+  "campaign": "ku-s3-max256-campaign-v1",
+  "completed_control": {
+    "run_id": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-V1",
+    "attempt_id": "attempt-20260909T164321Z-a9c5ef",
+    "state": "FINALIZED",
+    "actual_generation_calls": 1000
+  },
+  "failed_generation_calls": {
+    "speech": 0,
+    "twin": 0
+  },
+  "named_components": [
+    "core.preparation_fit.boundary_identity: volatile request-owned supply provenance routes were not normalized",
+    "rails.adapters.slurp.SlurpAdapter.build_task_contract: repeated TRAIN ontology parsing per query",
+    "core.flight.queue: failed preflights were attempted again while draining scoring"
+  ],
+  "preflight_repeats_per_arm": 2,
+  "normalized_full_roster_proof": [
+    {
+      "arm": "SAEA-SLURP-KU-S3A-G1-MAX256",
+      "fit_trace": {
+        "relpath": "wire-check/WIRECHECK-SAEA-SLURP-KU-S3A-G1-MAX256-FIT-V1-1788973468475/attempt-wire-check-1788973468475/WIRECHECK-SAEA-SLURP-KU-S3A-G1-MAX256-FIT-V1-1788973468475.trace.jsonl",
+        "sha256": "0f65cb56c1f2650fec8b30fe4f7b3d7fd0a1fd3c0a3091cc4e5ff9d7d4f2f794",
+        "rows": 1000
+      },
+      "checks": [
+        {
+          "trace_relpath": "wire-check/WIRECHECK-SAEA-SLURP-KU-S3A-G1-MAX256-V1-1788976452647/attempt-wire-check-1788976452647/WIRECHECK-SAEA-SLURP-KU-S3A-G1-MAX256-V1-1788976452647.trace.jsonl",
+          "sha256": "51612a09954c8dcc9bc2f8670588ce7392debfdbdc234762c8396d2e80b8fd5a",
+          "rows": 1000,
+          "normalized_boundary_sha256": "fade869c47c60609135a4b94b0b5a3cc2e43a0d8bcfcc79741309aba20148493"
+        },
+        {
+          "trace_relpath": "wire-check/WIRECHECK-SAEA-SLURP-KU-S3A-G1-MAX256-V1-1788977190062/attempt-wire-check-1788977190062/WIRECHECK-SAEA-SLURP-KU-S3A-G1-MAX256-V1-1788977190062.trace.jsonl",
+          "sha256": "55c0bbab8992631c524f426d54fe5e4b1e24a5fe9746c833e2adfd252e4fe2f5",
+          "rows": 1000,
+          "normalized_boundary_sha256": "fade869c47c60609135a4b94b0b5a3cc2e43a0d8bcfcc79741309aba20148493"
+        }
+      ]
+    },
+    {
+      "arm": "SAEA-SLURP-KU-S3A-TWIN-G1-MAX256",
+      "fit_trace": {
+        "relpath": "wire-check/WIRECHECK-SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-FIT-V1-1788973821616/attempt-wire-check-1788973821616/WIRECHECK-SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-FIT-V1-1788973821616.trace.jsonl",
+        "sha256": "2619ae14322c215984ac450f754fcb633a5af3e4cf2b97536b717deba0cbb765",
+        "rows": 1000
+      },
+      "checks": [
+        {
+          "trace_relpath": "wire-check/WIRECHECK-SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-V1-1788976807215/attempt-wire-check-1788976807215/WIRECHECK-SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-V1-1788976807215.trace.jsonl",
+          "sha256": "8d89b8ed07fac8d7c135c736ff77f3e90e34008119e426ec6dfc6550ccc8d060",
+          "rows": 1000,
+          "normalized_boundary_sha256": "bc0773a8ec3f1d4a404676d40833c3baee9bdaa49a013771fc1fb1773569b1db"
+        },
+        {
+          "trace_relpath": "wire-check/WIRECHECK-SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-V1-1788977572852/attempt-wire-check-1788977572852/WIRECHECK-SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-V1-1788977572852.trace.jsonl",
+          "sha256": "9ac5a29e33c4660fc1691abafa4dc2ba24e45893f8cdcfb8e74613519b6ed68c",
+          "rows": 1000,
+          "normalized_boundary_sha256": "bc0773a8ec3f1d4a404676d40833c3baee9bdaa49a013771fc1fb1773569b1db"
+        }
+      ]
+    }
+  ],
+  "diagnostic_sources": [
+    {
+      "relpath": "coordination/ku-s3-max256-preflight-input-diagnosis-v1.json",
+      "sha256": "7e9c37fc413fa8b2d9ca24d4e7d3b2834a65617fc1eb5968fd1b6e250f6ae7bb"
+    },
+    {
+      "relpath": "coordination/ku-s3-max256-boundary-diagnosis-v1.json",
+      "sha256": "ef1d556835f2e266fb4d7ac0a21b2909205bc0f34b7e4ad05fa5b83c8a5b9eb6"
+    }
+  ],
+  "service_stop_receipt": {
+    "relpath": "serving/slurp-g1-max256-np4-20260909-root/session-stop.json",
+    "sha256": "f98e61e58e58a89c1b1b198af182ac6be0d86e8cf1c59de23cbe8285a9109b59"
+  },
+  "comparative_outcome_read": false,
+  "new_model_contacts_in_this_verification": 0,
+  "tests": {
+    "root_targeted_preparation_and_cache_passed": 33
+  },
+  "recovery_owner_decision": "OWNER-KUS3-RECOVERY-006"
+}

@@ -109,6 +109,21 @@ def boundary_identity(
     normalized = []
     for payload in payloads:
         row = {k: v for k, v in payload.items() if k != "request_id"}
+        provenance = payload.get("evidence_provenance")
+        if isinstance(provenance, list):
+            normalized_provenance = []
+            for index, source in enumerate(provenance):
+                if isinstance(source, Mapping) and source.get("lock_key") == "rails-supply":
+                    # This is a trace address minted from the concurrently assigned
+                    # request ID, not a model-visible evidence source. Validate its
+                    # exact ownership before replacing only the routing segment.
+                    request_id = payload.get("request_id")
+                    expected = f"rails-message/{request_id}/{index}"
+                    if not isinstance(request_id, str) or not request_id or source.get("relpath") != expected:
+                        raise PreparationError("rails supply provenance is not bound to this request")
+                    source = {**source, "relpath": f"rails-message/<request>/{index}"}
+                normalized_provenance.append(source)
+            row["evidence_provenance"] = normalized_provenance
         if window_routes:
             row["media_relpath"] = _canonical_window_route_path(
                 row.get("media_relpath")
