@@ -1,0 +1,190 @@
+{
+  "experiment_id": "SAEA-E21-DRAFT-THEN-REFRESH-DR1-V1",
+  "schema": "saea-e21-draft-then-refresh-experiment-v1",
+  "date": "2026-09-09",
+  "execution_profile": "bounded-discovery-probe",
+  "status": "PREREGISTERED AND PREPARED, NOT AUTHORIZED TO FLY. Preregistration: docs/readiness/2026-09-09-e21-draft-then-refresh-dr1-v1-preregistration.md. Owner Decision 13-J of 2026-09-09 asked for the family and authorized the MODEL-FREE preparation only; the three flight rows do not exist and must be registered, with consumed = no, before the first contact. The serving geometry named below is a PROJECTION: the prompt fit in SERVER mode (scripts/e21_dr1_prompt_fit.py, run id SAEA-E21-DR1-PROMPT-FIT-V1) certifies or replaces it before the first flight contact, under the same pre-fixed lever order KC-E1f's fit used.",
+  "purpose": "DRAFT THEN REFRESH. The Observe stage uses the SHORT speech to draft quickly and the Plan stage hands the model the LONG speech together with that draft, once. Pass 1 is the sealed SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1 -- 5,122 speaker-turn units over the same 44 calls, NOT re-flown -- stitched onto the sealed comparator's 1,593 fixed 90-second windows by saea-e21-unit-draft-majority-overlap-v1 and bound content-free, exactly as KC-E1f bound the comparator's own windows. Pass 2 gives each window its whole 90 seconds of audio plus that window's stitched unit-draft as typed content and asks for the window's final transcript: ONE contact per window, 1,593 per arm. The family exists because OBS-E1 bought +1.0487 points of corpus WER and sold 2.0912 points of ConEC-mirror PERSON entity WER, and the model-free decomposition located 78.7 % of that harm in units under ten seconds and named the failure a CONDITIONING failure rather than a truncation one. DR-1 is the second of the two ways to give a short unit back its context: OBS-E1b gives it more AUDIO, DR-1 gives the long window the short unit's TEXT.",
+  "population": {
+    "carrier": "earnings21-original",
+    "split_name": "discovery",
+    "dataset_fragment": "earnings21-discovery-conec-names",
+    "split_role": "discovery",
+    "count": 44,
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "receipt": "docs/receipts/splits.json",
+    "audio_seconds_one_pass": 141348.532,
+    "audio_hours_one_pass": 39.263,
+    "fixed_90s_windows_one_pass": 1593,
+    "selection": "no draw: the whole frozen earnings21-original discovery split -- the same 44 calls, the same 1,593 fixed 90-second windows and the same split identity the sealed comparator, KC-E1, KC-E1f and OBS-E1 all flew. The E5 split (34 kb-construction, 10 r4-e21-sub10 evaluation) is a REPORTING split; the ten carry 342 paired windows, below the program's n >= 400 rule, and are reported apart and descriptively with no interval quoted.",
+    "estimand": "corpus WER and per-entity-class ConEC-mirror entity WER, pooled over the reported roster, paired at the 90-second window and clustered at the call against the sealed comparator, against OBS-E1 and against KC-E1f."
+  },
+  "predecessors": {
+    "unit_draft": {
+      "run_id": "SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1",
+      "attempt": "attempt-20260908T150858Z-c597a8",
+      "binding_receipt": "docs/receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json",
+      "binding_receipt_sha256": "40f466951acce38f13343ddea9357d15efe6eaacc660f9a126f51e81d48f241d",
+      "windows": 1593,
+      "calls": 44,
+      "units_owned": 5122,
+      "windows_owning_no_unit": 2,
+      "stitch_rule": "saea-e21-unit-draft-majority-overlap-v1",
+      "proof": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-e21-dr1-unit-draft-stitch/",
+      "why_it_is_not_reflown": "OBS-E1 already decoded every one of these units, and its bytes ARE the draft. Re-flying pass 1 would double the contacts, spend a second 1.07 GPU-h, and -- because greedy decoding on llama-server is not bitwise reproducible across batch compositions -- would produce a draft that is NOT the arm the family is read against."
+    },
+    "self_draft": {
+      "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+      "attempt": "attempt-20260904T233816Z-bcd338",
+      "binding_receipt": "docs/receipts/e21-predecessor-full44-direct-baseline-v2.json",
+      "binding_receipt_sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a",
+      "windows": 1593,
+      "calls": 44,
+      "why_it_is_the_twin": "the DR-1s draft is the comparator's own sealed hypothesis for the same window: a long-window draft refreshed with the same long window. It isolates the draft's SOURCE, which is the only thing DR-1c claims."
+    }
+  },
+  "comparator": {
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "attempt": "attempt-20260904T233816Z-bcd338",
+    "rows": [
+      "SAEA-E21-MF-AGENTIC-METRIC-BASELINE-V1 (asr-wer-whisper, conec-entity-wer-official, numeric-value-accuracy-v1)",
+      "SAEA-E21-MF-SEMANTIC-IMPACT-BASELINE-V1 (semantic-high-impact-error-rate-v1)"
+    ],
+    "all_44": {
+      "corpus_wer_percent": 8.19952,
+      "conec_person_entity_wer_percent": 22.48886,
+      "conec_org_entity_wer_percent": 17.21293,
+      "conec_non_entity_wer_percent": 4.73038,
+      "numeric_value_accuracy_percent": 90.73351,
+      "semantic_high_impact_error_rate_percent": 0.0278,
+      "substitutions": 13098,
+      "deletions": 5701,
+      "insertions": 10700,
+      "reference_words": 359765
+    },
+    "secondary_comparators": {
+      "SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1": "corpus WER 7.15078, PERSON 24.58005. Does the refresh recover the names the units lost? REJECTED under its own rule and quoted as a comparator, never as an admitted effect.",
+      "SAEA-E21-KC-E1F-REPAIR-44-V1": "corpus WER 8.1545, PERSON 18.752. Is a knowledge-free refresh competitive with the brief repair? ADMITTED provisionally with its replication UNMET, so it is quoted as a comparator and this family cannot discharge its replication."
+    },
+    "pairing_rule": "the fixed 90-second window is the paired unit (1,593), the call is the bootstrap cluster (44), the estimator is the pooled ratio through analysis.paired.resampled_statistic with cluster_of=analysis.e21_window_pairing.call_of, seed 20260903, 10,000 replicates, CI90, both weightings."
+  },
+  "cells": [
+    {
+      "cell_id": "E21-dr1c-draft-refresh-constrained",
+      "order": 1,
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-dr1c-draft-refresh-constrained",
+      "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "arm": "bare-core",
+      "policy": "obs-repair-loop",
+      "predecessor": "unit_draft",
+      "delivery": "e21-entity-repair-substitutions-v1 at KC-E1f's own committed parameters (4 / 0.60 / 0.10)",
+      "obs": "fixed 90-second windows, no VAD trim, no overlap, no rolling tail, no preprocessing -- byte-identical to the comparator's, KC-E1's and KC-E1f's OBS protocol, and enforced fail-closed by the policy.",
+      "serving_geometry": "-c 36864 -np 6, 6,144 tokens per slot, bf16 mmproj resident on the GPU. PROJECTED; the prompt fit decides.",
+      "audio_path": "raw audio through the bf16 mmproj on the GPU; no feature cache"
+    },
+    {
+      "cell_id": "E21-dr1f-draft-refresh-free",
+      "order": 2,
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-dr1f-draft-refresh-free",
+      "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "arm": "bare-core",
+      "policy": "obs-repair-loop",
+      "predecessor": "unit_draft",
+      "delivery": "e21-free-refresh-delivery-v1 -- the response verbatim, with only the two whole-response refusals the constrained rule shares",
+      "obs": "identical to the cell above",
+      "serving_geometry": "identical to the cell above",
+      "audio_path": "identical to the cell above"
+    },
+    {
+      "cell_id": "E21-dr1s-self-draft-twin",
+      "order": 3,
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-dr1s-self-draft-twin",
+      "model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "arm": "bare-core",
+      "policy": "obs-repair-loop",
+      "predecessor": "self_draft",
+      "delivery": "identical to DR-1c",
+      "obs": "identical to the cells above",
+      "serving_geometry": "identical to the cells above",
+      "audio_path": "identical to the cells above"
+    }
+  ],
+  "one_factor": {
+    "dr1c_vs_dr1f": "the DELIVERY RULE, and nothing else. The two baseline fragments carry the identical key set and differ in exactly two values: response_postprocessor and response_postprocessor_params. Same draft, same frame, same instruction, same audio, same decoding parameters, same scorers, same OBS protocol.",
+    "dr1c_vs_dr1s": "the DRAFT's SOURCE. The two fragments differ in exactly one key, predecessor_snapshot. The frame's wording is neutral about where the draft came from precisely so that the twin does not also change what the model was told.",
+    "against_the_sealed_comparator": "TWO things move and this document says so rather than hiding it: a second contact per window exists at all, and that contact carries a draft. The comparator contrast is therefore reported as refresh-pass-plus-draft; the SOURCE attribution comes from the DR-1s twin, which pays the identical contact.",
+    "against_obs_e1": "the transport unit is given back the long window. OBS-E1 delivered 5,122 short units and stitched their text; DR-1 delivers 1,593 long windows and shows them that same text. Reported as a cross-cell reading, never as this family's decision.",
+    "against_kc_e1f": "the knowledge. KC-E1f's second pass carried the cap-12 ConEC brief and an entity-repair instruction over the comparator's own draft; DR-1s carries no evidence at all over the same draft. Reported as a cross-cell reading."
+  },
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "prompt_order": "evidence-first-system-v3 (from the model fragment). There is no evidence block: the draft rides at the END of the rendered task_instruction inside the frozen frame e21-draft-refresh-frame-v1, exactly where reproduction.obs_loop's own OBS_TAIL_FRAME_V1 conditioned tail rides. It is model output, framed as model output, never a reference transcript, and it lands verbatim in the sealed MODEL_REQUEST record.",
+    "payload_fields": "the D2-frozen bare-core field set, unchanged. No new key reaches the wire.",
+    "contacts_per_item": "ONE per 90-second window; 1,593 windows over 44 calls per cell. Pass 1 is read, not flown.",
+    "harness": "core.driver.run_experiment_bundled through the same committed launcher path the comparator, KC-E1 and KC-E1f flew; the registered core.base policy obs-repair-loop is ObsAgentLoopPolicy with ONE method overridden."
+  },
+  "evaluation": {
+    "manifest_scorers": [
+      "asr-wer-whisper",
+      "conec-entity-wer-official",
+      "numeric-value-accuracy-v1",
+      "semantic-high-impact-error-rate-v1",
+      "cost"
+    ],
+    "paper_facing_scorer": "conec-entity-wer-official",
+    "paper_facing_metric": "corpus WER is the primary here, with ConEC-mirror PERSON entity WER as the non-inferiority half; the family exists to keep OBS-E1's corpus-WER gain without its PERSON loss",
+    "scored_complete_manifests": 3,
+    "whole_manifest_jobs_only": true,
+    "dataset_sharding": false,
+    "shard_metric_averaging": false,
+    "mandatory_slices": [
+      "per entity class, with reference-word counts, beside the comparator's, OBS-E1's and KC-E1f's own per-class tables",
+      "all 44, the construction 34 and the evaluation 10, reported apart",
+      "the delivery ledger: windows refused by reason, windows changed, accepted substitutions, substituted tokens, and rejected opcodes by class -- all four classes reported even at zero, for BOTH delivery rules, so the two arms' edit profiles sit in one table",
+      "the delivered-vs-comparator operation table: substitutions, deletions and insertions against the comparator's 13,098 / 5,701 / 10,700. DR-1c is substitution-only in RAW whitespace-token space by construction and every normalized move must be attributed to a substituted span; DR-1f is NOT, and its deletion and insertion counts are the measurement",
+      "the draft length distributions of the unit-draft and the self-draft arms, in whitespace tokens and in flight tokens, so the twin's token match is reported as a measurement and never asserted",
+      "by sector (9 levels) and sample rate (5 levels), natural mixture and equal-stratum weighting",
+      "the OBS-E1 harm strata, re-read on the delivered text: unit duration class, distance to the nearest unit boundary, and end-cut kind, so the family says WHETHER the refresh reached the stratum that carried the 61 excess PERSON errors",
+      "core-pressure covariates: contacts per window and per call, prompt and completion tokens against the comparator's 1,935,965 / 439,532 and KC-E1f's 3,550,695 / 434,219, delivered audio seconds, and the share of the final transcript the control plane delivered unchanged"
+    ]
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 5250,
+    "planned_gpu_hours": 3.6,
+    "planned_speech_audio_seconds": 450000
+  },
+  "execution_plan_basis": {
+    "planned_model_calls": "1,593 windows + 157 of retry headroom = 1,750 per cell, x 3 cells = 5,250. The comparator, KC-E1, KC-E1f and the null replicate each realized exactly 1,593 for one pass at this tiling.",
+    "planned_speech_audio_seconds": "141,348.532 realized per pass, rounded up to 150,000 with retry headroom, x 3 cells = 450,000. The tiling is the comparator's and pass 1 is not re-flown, so the audio per pass is the comparator's own.",
+    "planned_gpu_hours": "KC-E1f realized 1.1093 GPU-h by the manifest's own nvidia-smi sampler for one pass of 1,593 windows at this tiling, with a cap-12 brief in the prompt that DR-1 does not carry; the projection is therefore 1.1093 per cell and 3.33 for the family, registered at 1.2 per cell and 3.6 for headroom -- KC-E1f's own registered per-cell figure. Re-measured on the preflight; a flight STOPS and reports if the measured rate projects past its own cell ceiling.",
+    "paid_api_spend": 0,
+    "budget_is_run_cumulative": "core/model/adapter.py enforces planned_model_calls and planned_speech_audio_seconds across ALL attempts of a run id; a successor plan must cover prior durable spend plus its own worst case."
+  },
+  "decision": {
+    "order": "DR-1c, then DR-1f, then DR-1s. One experiment in flight; the order is fixed here so it cannot be chosen after a number exists.",
+    "primary": "corpus WER on the reported roster: ADMITTED as an observe-plus-refresh module if the call-clustered CI90 lower bound on the reduction (comparator - cell) is > 0 AND ConEC-mirror PERSON entity WER is non-inferior to the comparator at this carrier's own margin, LB(cell - comparator) >= -0.25009. ADMITTED AS AN IMPROVEMENT if PERSON also improves with LB > 0.",
+    "guards": [
+      "delivery integrity (DR-1c and DR-1s only): every window's delivered text equals its bound draft outside the accepted substitution spans and carries the identical whitespace-token count -- a construction check that ABORTS the read",
+      "window coverage: every one of the 1,593 windows is delivered exactly once -- a construction check that ABORTS the read",
+      "corpus WER is the primary here and is not also a guard",
+      "ConEC non-entity WER: UB(cell - comparator) <= +0.06475",
+      "numeric-value accuracy, call-pooled: LB(cell - comparator) >= -0.15651",
+      "over-generation, insertions per reference word: UB(cell - comparator) <= +0.02218",
+      "the negation-critical / semantic high-impact rate reported with its taxonomy id, advisory only"
+    ],
+    "claim_surface": "discovery data, no superiority, generality or Stage-3 claim, no knob tuned on the evaluation ten, n = 44 clusters and therefore no paper-facing effectiveness claim.",
+    "not_authorized": "no Earnings-22 contact, no confirmatory read, no retrieval variant, no third pass, no OBS-E1b flight, no paper-scale work.",
+    "test_tuning": false,
+    "paper_scale": false
+  }
+}

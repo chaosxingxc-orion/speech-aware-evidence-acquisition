@@ -1,0 +1,40 @@
+{
+  "arm": "bare-core",
+  "policy": "obs-repair-loop",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "predecessor_snapshot": {
+    "receipt_relpath": "receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json",
+    "receipt_sha256": "40f466951acce38f13343ddea9357d15efe6eaacc660f9a126f51e81d48f241d"
+  },
+  "repair_frame": "e21-draft-refresh-frame-v1",
+  "response_postprocessor": "e21-entity-repair-substitutions-v1",
+  "response_postprocessor_params": {
+    "max_span_tokens": 4,
+    "min_anchor_ratio": 0.6,
+    "max_substituted_fraction": 0.1
+  },
+  "scorers": [
+    "asr-wer-whisper",
+    "conec-entity-wer-official",
+    "numeric-value-accuracy-v1",
+    "semantic-high-impact-error-rate-v1",
+    "cost"
+  ],
+  "task_instruction": "A draft transcript of this same audio window follows below. Listen to the audio and produce the final transcript of the window: keep the draft's words wherever the audio confirms them, and correct them wherever it does not. Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+  "obs_buffer_seconds": 90,
+  "obs_min_advance_seconds": 20,
+  "obs_max_advance_seconds": 55,
+  "obs_silence_snap_seconds": 2.0,
+  "obs_fallback_advance_seconds": 50,
+  "obs_boundary_mode": "fixed",
+  "obs_vad": "energy",
+  "obs_vad_trim_min_seconds": 0,
+  "obs_preprocess": [],
+  "obs_condition_tail_chars": 0,
+  "obs_slice_retry_max": 1,
+  "obs_slice_skip_max": 1,
+  "obs_batch_samples": 1,
+  "obs_batch_slices": 8,
+  "what_this_is": "DR-1c, the CONSTRAINED refresh (owner Decision 13-J, 2026-09-09). Pass 1 is the sealed OBS-E1 speaker-turn units, not re-flown, stitched per sealed 90-second window by saea-e21-unit-draft-majority-overlap-v1 and bound content-free. Pass 2 hears the window's whole 90 seconds, is shown that window's stitched unit-draft as typed content, and is asked for the window's final transcript; the delivery then passes through the registered substitution-only rule against the draft, so a refresh cannot delete or insert a word and the draft's insertion collapse is kept by construction. The three delivery parameters are KC-E1f's own committed values, unchanged: they were fixed before this contrast and moving them would both tune a knob and add a second factor against KC-E1f. Every key below except predecessor_snapshot, response_postprocessor and response_postprocessor_params is byte-identical across the three DR-1 cells, and the OBS block, the decoding parameters and the scorer list are byte-identical to the sealed comparator's e21-buf90-zero-locked-scored4 and to KC-E1f's own fragment. arm is bare-core: DR-1 supplies NO external knowledge, so the request carries exactly the comparator's D2-frozen bare-core payload field set and the draft rides at the end of the rendered task_instruction inside the frozen frame e21-draft-refresh-frame-v1, where obs_loop's own conditioned tail rides. No new key reaches the wire. The task_instruction's last three sentences are the comparator's whole instruction, byte for byte; the one sentence before them is what makes this a refresh."
+}
