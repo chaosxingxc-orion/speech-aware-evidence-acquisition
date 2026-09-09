@@ -99,6 +99,11 @@ def declared_readiness(cell: CampaignCell, data_root: Path) -> FlightReadiness:
     for item in readiness.get("requirements", ()):
         if item.get("kind") not in {"preparation", "decision"}:
             raise CampaignError("readiness requirements must be preparation or decision receipts")
+        if item.get("kind") == "decision" and (
+            not isinstance(item.get("expected_decision_id"), str)
+            or not item["expected_decision_id"].strip()
+        ):
+            raise CampaignError("decision readiness requirements need expected_decision_id")
         relative, digest = item.get("relpath"), item.get("sha256")
         if not isinstance(relative, str) or not isinstance(digest, str) or not re.fullmatch("[0-9a-f]{64}", digest):
             raise CampaignError("readiness requirements need a relative path and SHA-256")
@@ -113,6 +118,35 @@ def declared_readiness(cell: CampaignCell, data_root: Path) -> FlightReadiness:
             actual = hashlib.file_digest(handle, "sha256").hexdigest()
         if actual != digest:
             return FlightReadiness(state, f"{reason}: hash mismatch for {relative}")
+        if item["kind"] == "decision":
+            try:
+                receipt = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError) as error:
+                return FlightReadiness("held", f"{reason}: invalid decision receipt {relative}: {error}")
+            if not isinstance(receipt, Mapping):
+                return FlightReadiness("held", f"{reason}: decision receipt {relative} must be an object")
+            if receipt.get("schema") != "saea-campaign-decision-v1":
+                return FlightReadiness("held", f"{reason}: decision receipt schema is not saea-campaign-decision-v1")
+            decision_id = receipt.get("decision_id")
+            if not isinstance(decision_id, str) or not decision_id.strip():
+                return FlightReadiness("held", f"{reason}: decision receipt has no nonempty decision_id")
+            if decision_id != item["expected_decision_id"]:
+                return FlightReadiness(
+                    "held",
+                    f"{reason}: expected decision {item['expected_decision_id']!r}, got {decision_id!r}",
+                )
+            if receipt.get("status") != "decided":
+                return FlightReadiness("held", f"{reason}: decision status is {receipt.get('status')!r}, not 'decided'")
+            eligible = receipt.get("eligible_run_ids")
+            if (
+                not isinstance(eligible, list)
+                or not eligible
+                or any(not isinstance(run_id, str) or not run_id.strip() for run_id in eligible)
+                or len(set(eligible)) != len(eligible)
+            ):
+                return FlightReadiness("held", f"{reason}: eligible_run_ids must be unique nonempty strings")
+            if cell.run_id not in eligible:
+                return FlightReadiness("held", f"{reason}: run {cell.run_id!r} is not eligible in decision receipt")
     return FlightReadiness.ready()
 
 
