@@ -1,6 +1,8 @@
 # Owner-authorized Stage-2 continuation
 
 Decision ID: OWNER-CONTINUATION-002
+Request ID: SAEA-HANDOFF-20260909-01
+Per-flight gates: required
 Owner decision: IMPLEMENT_ACCEPTED_CONTINUATION_PLAN
 Execution owner: Codex
 Scope: BOUNDED_STAGE2_SLURP_E21_CONTINUATION

@@ -95,6 +95,33 @@ class HandoffCheckTests(unittest.TestCase):
         )
         return decision
 
+    def owner_continuation(self):
+        decision = self.owner_recovery()
+        text = decision.read_text().replace(
+            "Owner decision: AUTHORIZE_RECOVERY",
+            "Owner decision: IMPLEMENT_ACCEPTED_CONTINUATION_PLAN",
+        ).replace(
+            "Scope: RECONSTRUCTION_AND_MERGE_ONLY",
+            "Scope: BOUNDED_STAGE2_SLURP_E21_CONTINUATION",
+        ).replace("Launch allowed: false", "Per-flight gates: required")
+        decision.write_text(text)
+        self.state["phase"] = "owner_directed_execution"
+        self.state["generation"] = 4
+        self.write_state()
+        return decision
+
+    def test_explicit_continuation_is_recorded_without_granting_launch(self):
+        self.owner_continuation()
+        report = self.inspect()
+        self.assertEqual(report["status"], "OWNER_DIRECTED_EXECUTION")
+        self.assertFalse(report["launch_allowed"])
+        self.assertEqual(report["execution_authority"], "NOT_EVALUATED")
+
+    def test_continuation_refuses_missing_per_flight_gates(self):
+        decision = self.owner_continuation()
+        decision.write_text(decision.read_text().replace("Per-flight gates: required", ""))
+        self.assertEqual(self.inspect()["status"], "INVALID")
+
     def cli_report(self):
         with redirect_stdout(io.StringIO()) as captured:
             result = handoff.main(["--repo-root", str(self.root)])

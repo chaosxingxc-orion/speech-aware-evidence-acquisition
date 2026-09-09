@@ -1,69 +1,42 @@
-# Owner-directed experiment recovery
+# Owner-directed Stage-2 continuation
 
-Status: **owner-directed recovery**, generation 3. Codex is the recovery coordinator
-and execution owner under [OWNER-RECOVERY-001.md](OWNER-RECOVERY-001.md). The current
-phase permits reconstruction and merging; `launch_allowed` remains **false**.
+Status: **owner-directed execution**, generation 4. Codex coordinates implementation and
+owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
+The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
-The owner reports that Fable5.1 has exhausted its weekly quota and cannot reply.
-The owner and Codex will reconstruct the work from GitHub history and unmerged
-worktrees, organize the plan, and merge completed work into the default branch,
-`master`. This direction replaces waiting for a response. It is not a Fable5.1 release.
+Fable5.1 is unavailable. The earlier request/reply and recovery-only decision remain
+historical records; no reply or release is invented. Completed integrations are recorded
+in [RECOVERY-PLAN.md](RECOVERY-PLAN.md). The owner has now explicitly authorized implementing
+the accepted SLURP/Earnings21 plan, including bounded experiments after their own gates.
 
-## Recovery protocol
+## Coordination
 
-1. Inspect the current Git references, commit history and Windows worktree inventory.
-   Preserve all uncommitted changes. Distinguish completed branches from unfinished
-   work and explicitly parked historical experiments.
-2. Recover existing artifacts before creating replacements, particularly the Stage-2
-   results ledger and prepared integration branches. Use each branch's recorded
-   decisions, receipts and tests to establish what is complete.
-3. Test completed changes through the shared engineering base, then merge verified
-   work serially into `master`. Keep ongoing work isolated and record remaining gaps.
-4. Reconcile the exposure ledger, attempt metadata and scientific verdicts separately.
-   The latest metadata audit reports **no active experiment** and **seven KV arms
-   finalized and scored at `2afb4b5c`**, awaiting scientific closure. Do not rerun them
-   merely because an older handoff note calls KV-0 the next flight.
-5. Update this state after a durable coordination decision and increment its generation.
-   Re-read live metadata before a later operational step. An idle process snapshot is
-   not launch permission; the existing experiment contracts and runtime locks apply.
+Run all implementation, tests, preparation, inference and scoring in WSL Ubuntu-24.04.
+The root owns the resident service. One experiment worker generates at a time; other agents
+prepare eligible work and score complete sealed manifests. Keep flight worktrees frozen and
+integrate tested changes serially between flights. Preserve unfinished historical worktrees.
 
-The detailed recovered inventory and work plan are maintained in
-[RECOVERY-PLAN.md](RECOVERY-PLAN.md). This README defines coordination; it does not
-replace the scientific results ledger or a preregistration.
+Use the existing results ledger for scientific status. Use state.json for coordination and
+the shared runtime receipts for live ownership/readiness. Update state at durable boundaries;
+a stale process snapshot does not establish present readiness.
 
-Generation 3 records completed local integration at `557e6f10` and routes the next
-step to KV closure and the preserved packet dependency. The accompanying results
-ledger and integration receipts are documentation successors to that code snapshot.
+Run the read-only check:
 
-## Local state check
+    python scripts/checks/experiment_handoff_check.py
 
-Run the read-only checker at the start of a continuation:
+It recognizes OWNER_DIRECTED_EXECUTION only when the local owner decision records the
+accepted bounded scope and mandatory per-flight gates. The check still returns
+execution_authority=NOT_EVALUATED and launch_allowed=false: these fields mean this
+coordination check does not grant a launch. They do not override the owner's continuation
+instruction. The actual ExecutionPlan, exposure, runtime, attempt and budget gates decide
+each contact. Recovery and original reply-exchange states remain supported.
 
-```bash
-python scripts/checks/experiment_handoff_check.py
-```
+## Current implementation
 
-Use WSL2 `Ubuntu-24.04` and the `~/.venvs/speechrl` environment. The checker reports
-`OWNER_DIRECTED_RECOVERY` only when generation 2 or later records Codex ownership,
-an unavailable reply, `launch_allowed: false`, and an explicit matching local owner
-decision restricted to reconstruction and merging. A missing, conflicting or
-malformed decision reports `INVALID`. The original `WAITING_FOR_REPLY` and
-`REPLY_READY` states remain supported for an ordinary exchange.
+Three isolated WSL branches implement shared serving/queue, prepared artifacts/request fit,
+and deterministic delivery/scoring. Root owns analysis, protocol amendments and integration.
+The null-only NEW500 calibration is completed without model or scorer invocation; KV closure
+uses existing finalized evidence only. No experiment service was started during preparation.
 
-The check reads coordination files and Git metadata only. It does not read experiment
-outputs, contact a model or server, acquire a runtime lock, change state, or authorize
-a flight. `execution_authority` remains `NOT_EVALUATED` in every report. There is no
-background poller.
-
-## Preserved exchange
-
-[REQUEST-001.md](REQUEST-001.md) and [RESPONSE-001.md](RESPONSE-001.md) remain unchanged
-as the original exchange, including the pending reply marker. Codex does not fill in
-Fable5.1's reply or mark it complete. The original
-[verification receipt](../../../checks/speech-aware-evidence-acquisition/2026-09-09-fable51-codex-handoff/verification.json)
-records the earlier waiting phase and is preserved unchanged. Current phase and
-ownership are recorded in [state.json](state.json) and the owner decision above.
-
-All authored documents and coordination messages remain English. Dataset identity
-still comes from the umbrella lock; discovery/confirmatory isolation, one experiment
-in flight, zero paid API spend and the Stage-2 research boundary are unchanged.
+Every authored file and model-facing message is English. Dataset identity remains in the
+umbrella lock; no new test/confirmatory exposure, paid API spend or Stage-3 execution is admitted.

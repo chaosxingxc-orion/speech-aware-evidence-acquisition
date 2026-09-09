@@ -95,9 +95,9 @@ def _validate_state(state: object, root: Path) -> tuple[Path, Path]:
     if type(state.get("generation")) is not int or state["generation"] < 1:
         raise ValueError("generation must be a positive integer")
     phase = state.get("phase")
-    if phase not in ("awaiting_fable_reply", "owner_directed_recovery"):
-        raise ValueError("phase must be awaiting_fable_reply or owner_directed_recovery")
-    expected_response = "unavailable" if phase == "owner_directed_recovery" else "awaiting_reply"
+    if phase not in ("awaiting_fable_reply", "owner_directed_recovery", "owner_directed_execution"):
+        raise ValueError("phase must be awaiting_fable_reply, owner_directed_recovery or owner_directed_execution")
+    expected_response = "awaiting_reply" if phase == "awaiting_fable_reply" else "unavailable"
     if state.get("response_status") != expected_response:
         raise ValueError(f"response_status must be {expected_response} for this phase")
     if state.get("launch_allowed") is not False:
@@ -153,6 +153,11 @@ def _validate_owner_recovery(state: dict, root: Path, request: Path, response: P
         "Scope": "RECONSTRUCTION_AND_MERGE_ONLY",
         "Launch allowed": "false",
     }
+    if state["phase"] == "owner_directed_execution":
+        markers.update({"Owner decision": "IMPLEMENT_ACCEPTED_CONTINUATION_PLAN",
+                        "Scope": "BOUNDED_STAGE2_SLURP_E21_CONTINUATION",
+                        "Per-flight gates": "required"})
+        markers.pop("Launch allowed")
     for marker, expected in markers.items():
         values = re.findall(
             rf"^\s*(?:#{{1,6}} +)?{re.escape(marker)}: ([^\r\n]+?)\s*$",
@@ -212,11 +217,11 @@ def inspect_handoff(repo_root: Path) -> dict:
             report["warnings"].append("Current HEAD differs from the handoff snapshot; reconcile newer changes.")
         if report["dirty_file_counts"]["total"]:
             report["warnings"].append("The working tree has local changes; preserve and reconcile them.")
-        if state["phase"] == "owner_directed_recovery":
+        if state["phase"] in ("owner_directed_recovery", "owner_directed_execution"):
             _validate_owner_recovery(state, root, request, response)
             report["execution_owner"] = state["execution_owner"]
             report["owner_decision_path"] = state["owner_decision_path"]
-            report["status"] = "OWNER_DIRECTED_RECOVERY"
+            report["status"] = state["phase"].upper()
         else:
             report["status"] = _reply_status(response, state["request_id"], report["warnings"])
     except (json.JSONDecodeError, UnicodeError):
