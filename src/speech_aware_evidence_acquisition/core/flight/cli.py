@@ -91,8 +91,17 @@ def main(argv=None) -> int:
             result = runtime.prepare_phase_supply(args.output)
         elif args.mode == "prompt-fit":
             from ..preparation_fit import fit_phase_runtime
+            window_batch = None
+            if runtime.adapter.preprocess_plan().get("kind") == "raw-speech-windows":
+                plan = runtime.authorize_preparation_contacts(
+                    contact_cap=args.contact_cap
+                )
+                window_batch = runtime.materialize_window_batch(
+                    execution_plan=plan
+                )
             result = fit_phase_runtime(
                 runtime, args.output, policy=policy, contact_cap=args.contact_cap,
+                window_batch=window_batch,
             )
         else:
             runtime.preflight()

@@ -193,23 +193,8 @@ def fit_phase_runtime(
         if window_batch is None
         else window_batch.payloads
     )
-    inputs = runtime.request_fit_inputs(payloads)
+    inputs = runtime.request_fit_inputs(payloads, window_batch=window_batch)
     if window_batch is not None:
-        from ..reproduction import obs_loop, repair_loop
-        from . import preparation_windows
-        import hashlib
-
-        inputs = {
-            **inputs,
-            "window_sources": list(window_batch.source_bindings),
-            "window_measurement": "resident-multimodal-input-tokens",
-            "window_implementation": {
-                module.__name__: hashlib.sha256(
-                    Path(module.__file__).read_bytes()
-                ).hexdigest()
-                for module in (obs_loop, repair_loop, preparation_windows)
-            },
-        }
         if {p["sample_id"] for p in payloads} != set(context["sample_ids"]):
             raise PreparationError("window fit does not cover the runtime call roster")
     path = Path(path)

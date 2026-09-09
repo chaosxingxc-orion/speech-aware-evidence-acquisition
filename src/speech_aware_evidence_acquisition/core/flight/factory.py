@@ -16,8 +16,10 @@ from .runtime import FlightRuntime
 
 
 def register_builtin_task_adapters() -> None:
-    from ...rails.adapters.slurp_runtime import register_runtime_adapter
-    register_runtime_adapter()
+    from ...rails.adapters.slurp_runtime import register_runtime_adapter as register_slurp_runtime_adapter
+    from ...rails.adapters.earnings_runtime import register_runtime_adapter as register_earnings_runtime_adapter
+    register_slurp_runtime_adapter()
+    register_earnings_runtime_adapter()
 
 
 def build_flight_runtime(
