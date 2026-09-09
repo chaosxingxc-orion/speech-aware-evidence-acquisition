@@ -1,0 +1,82 @@
+{
+  "experiment_id": "SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX64-V1",
+  "date": "2026-09-09",
+  "purpose": "Owner-requested four-row engineering comparison of output completeness and cost; no accuracy/effectiveness claim and no automatic scale-up.",
+  "split_id": "DEV-4-BUDGET",
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "ids": [
+        "slurp:devel:003704:audio-1494511949",
+        "slurp:devel:008655:audio-1502895086-headset",
+        "slurp:devel:012627:audio-1494418708",
+        "slurp:devel:002003:audio-1490199797"
+      ],
+      "selection_rule": "Two historical KC-S1b at-cap rows sorted by sample ID, longest non-cap then median non-cap; metadata-audit pinned before new outputs.",
+      "metadata_audit_relpath": "analysis/SAEA-SLURP-OUTPUT-BUDGET-METADATA-AUDIT-V1/root-audit.json",
+      "metadata_audit_sha256": "1c1fd8230ebd6d4b7dd707b7b0ecb5ed02a1a22a6715fc98fdce89cbe134086c"
+    }
+  ],
+  "preserve_wire_responses": true,
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "dev",
+    "planned_model_calls": 4,
+    "planned_gpu_hours": 0.1,
+    "planned_speech_audio_seconds": 19
+  },
+  "cells": [
+    {
+      "cell_id": "output-budget-max64-fit",
+      "run_id": "SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX64-FIT-V1",
+      "attempt_id": "attempt-20260909T152049Z-595c18",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit"
+      ],
+      "arm": "speech-feature-query",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "baseline_fragment": "slurp-phase-slots-given-intent-schema-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "readiness": {
+        "state": "held",
+        "reason": "Shared completion override and wire-response capture must be reviewed; full four-row real fit and final registration required.",
+        "requirements": []
+      }
+    },
+    {
+      "cell_id": "output-budget-max64-generation",
+      "run_id": "SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX64-V1",
+      "attempt_id": "attempt-20260909T152049Z-7e7a4d",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "worker"
+      ],
+      "arm": "speech-feature-query",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "baseline_fragment": "slurp-phase-slots-given-intent-schema-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "readiness": {
+        "state": "held",
+        "reason": "Shared completion override and wire-response capture must be reviewed; full four-row real fit and final registration required.",
+        "requirements": []
+      }
+    }
+  ],
+  "engineering_readout": {
+    "population": 4,
+    "accuracy_inference": false,
+    "compare": [
+      "completion_tokens",
+      "exact_at_cap",
+      "finish_reason_when_present",
+      "structural_parse_validity",
+      "wall_seconds",
+      "same_response_prefix"
+    ],
+    "interpretation": "Chosen edge cases are not a representative efficacy roster. At-cap is distinct from confirmed truncation. Raising maximum is permission to finish, not a token target. Stop after the two registered four-row arms.",
+    "reasoning": "No reasoning prompt or frozen weight change in this comparison."
+  }
+}

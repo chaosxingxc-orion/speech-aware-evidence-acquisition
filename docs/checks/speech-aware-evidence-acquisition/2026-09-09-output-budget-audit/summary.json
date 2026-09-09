@@ -1,0 +1,298 @@
+{
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "kc_selected_controls": {
+    "at_cap_available": 4,
+    "non_cap_count": 996,
+    "rows": [
+      {
+        "completion_tokens": 64,
+        "sample_id": "slurp:devel:003704:audio-1494511949"
+      },
+      {
+        "completion_tokens": 64,
+        "sample_id": "slurp:devel:008655:audio-1502895086-headset"
+      },
+      {
+        "completion_tokens": 63,
+        "sample_id": "slurp:devel:012627:audio-1494418708"
+      },
+      {
+        "completion_tokens": 20,
+        "sample_id": "slurp:devel:002003:audio-1490199797"
+      }
+    ],
+    "rule": "sort risk descending then sample_id; two at-cap if available, longest non-cap, median non-cap"
+  },
+  "runs": {
+    "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1": {
+      "calls": 1000,
+      "cap": 64,
+      "cap_source": "All1000 hash-verified MODEL_REQUEST decoding_params.max_tokens values equal64",
+      "completion_token_count": 1000,
+      "completion_token_quantiles": {
+        "1": 6.0,
+        "25": 18.0,
+        "50": 20.0,
+        "75": 32.0,
+        "90": 35.0,
+        "95": 38.05,
+        "99": 61.0
+      },
+      "completion_tokens_total": 21607,
+      "exact_at_cap_count": 4,
+      "finish_stop_fields_seen": [],
+      "finish_stop_metadata_available": false,
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1/attempt-20260906T025102Z-af6b04/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.run-manifest.json",
+      "manifest_sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08",
+      "phase_schema_ids": [
+        "phase-slots-given-intent-v1:slots"
+      ],
+      "retry_metadata_available": false,
+      "root_verified_request_cap_counts": {
+        "64": 1000
+      },
+      "sample_ids_available": 1000,
+      "schema_validity_status": null,
+      "status": "COMPLETED",
+      "trace_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1/attempt-20260906T025102Z-af6b04/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.trace.jsonl",
+      "trace_sha256": "2fd8d53905aea72a4e632b45203cc0221d363cf3ae65017128d9e2a7c2134107"
+    },
+    "SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1": {
+      "calls": 1000,
+      "cap": 64,
+      "cap_source": "All1000 hash-verified MODEL_REQUEST decoding_params.max_tokens values equal64",
+      "completion_token_count": 1000,
+      "completion_token_quantiles": {
+        "1": 6.0,
+        "25": 18.0,
+        "50": 20.0,
+        "75": 32.0,
+        "90": 34.0,
+        "95": 36.05,
+        "99": 51.09
+      },
+      "completion_tokens_total": 22725,
+      "exact_at_cap_count": 3,
+      "finish_stop_fields_seen": [],
+      "finish_stop_metadata_available": false,
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1.run-manifest.json",
+      "manifest_sha256": "ffd1d3ee543dc73a0802600a9812f8cfe888cdb4bd6456c0667b57d6229ed9c7",
+      "phase_schema_ids": [
+        "phase-slots-given-intent-v1:slots"
+      ],
+      "retry_metadata_available": false,
+      "root_verified_request_cap_counts": {
+        "64": 1000
+      },
+      "sample_ids_available": 1000,
+      "schema_validity_status": null,
+      "status": "COMPLETED",
+      "trace_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1.trace.jsonl",
+      "trace_sha256": "662669c9884762a50f81a63610b849f973581e9f7df232e7ab07a315074b1021"
+    },
+    "SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1": {
+      "calls": 1000,
+      "cap": 64,
+      "cap_source": "All1000 hash-verified MODEL_REQUEST decoding_params.max_tokens values equal64",
+      "completion_token_count": 1000,
+      "completion_token_quantiles": {
+        "1": 6.0,
+        "25": 18.0,
+        "50": 20.0,
+        "75": 33.0,
+        "90": 35.0,
+        "95": 46.0,
+        "99": 61.01
+      },
+      "completion_tokens_total": 24880,
+      "exact_at_cap_count": 4,
+      "finish_stop_fields_seen": [],
+      "finish_stop_metadata_available": false,
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1/attempt-20260909T074825Z-0d2278/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1.run-manifest.json",
+      "manifest_sha256": "905bc56a617942fae4f1719fbbd95d653f57b8b5f542a4a3a1e2286e0577ac98",
+      "phase_schema_ids": [
+        "phase-slots-given-intent-v1:slots"
+      ],
+      "retry_metadata_available": false,
+      "root_verified_request_cap_counts": {
+        "64": 1000
+      },
+      "sample_ids_available": 1000,
+      "schema_validity_status": null,
+      "status": "COMPLETED",
+      "trace_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1/attempt-20260909T074825Z-0d2278/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1.trace.jsonl",
+      "trace_sha256": "6427908c937df1cc0b4a95c13d970ef24452798dafb508cb7d41b74657acba20"
+    },
+    "SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1": {
+      "calls": 1000,
+      "cap": 64,
+      "cap_source": "All1000 hash-verified MODEL_REQUEST decoding_params.max_tokens values equal64",
+      "completion_token_count": 1000,
+      "completion_token_quantiles": {
+        "1": 6.0,
+        "25": 18.0,
+        "50": 20.0,
+        "75": 33.0,
+        "90": 35.0,
+        "95": 46.0,
+        "99": 61.0
+      },
+      "completion_tokens_total": 24514,
+      "exact_at_cap_count": 3,
+      "finish_stop_fields_seen": [],
+      "finish_stop_metadata_available": false,
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1/attempt-20260909T081235Z-583048/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1.run-manifest.json",
+      "manifest_sha256": "89c2c0d281e49741796b78a10feef29b58453530752270ec674d0f3733687e02",
+      "phase_schema_ids": [
+        "phase-slots-given-intent-v1:slots"
+      ],
+      "retry_metadata_available": false,
+      "root_verified_request_cap_counts": {
+        "64": 1000
+      },
+      "sample_ids_available": 1000,
+      "schema_validity_status": null,
+      "status": "COMPLETED",
+      "trace_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1/attempt-20260909T081235Z-583048/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1.trace.jsonl",
+      "trace_sha256": "f1d482e83d4cdc217fad83e3e915325f4fb9a37ca0eda3eacb49b95da22b22bd"
+    },
+    "SAEA-SLURP-KV2-CARDS-DEV1000-V1": {
+      "calls": 1000,
+      "cap": 64,
+      "cap_source": "All1000 hash-verified MODEL_REQUEST decoding_params.max_tokens values equal64",
+      "completion_token_count": 1000,
+      "completion_token_quantiles": {
+        "1": 6.0,
+        "25": 19.0,
+        "50": 31.0,
+        "75": 33.0,
+        "90": 35.0,
+        "95": 47.0,
+        "99": 61.0
+      },
+      "completion_tokens_total": 27791,
+      "exact_at_cap_count": 3,
+      "finish_stop_fields_seen": [],
+      "finish_stop_metadata_available": false,
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-DEV1000-V1/attempt-20260909T064623Z-2a0ef7/SAEA-SLURP-KV2-CARDS-DEV1000-V1.run-manifest.json",
+      "manifest_sha256": "ab94ac4139b14348d899f86919cf6a8278f5f4d6e9b4e587ba239cff64095e24",
+      "phase_schema_ids": [
+        "phase-slots-given-intent-v1:slots"
+      ],
+      "retry_metadata_available": false,
+      "root_verified_request_cap_counts": {
+        "64": 1000
+      },
+      "sample_ids_available": 1000,
+      "schema_validity_status": null,
+      "status": "COMPLETED",
+      "trace_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-DEV1000-V1/attempt-20260909T064623Z-2a0ef7/SAEA-SLURP-KV2-CARDS-DEV1000-V1.trace.jsonl",
+      "trace_sha256": "6b3e7f97aeef35109ed8445e495a2afdbcdd9edb8eff78d5a580617db50f8b1a"
+    },
+    "SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1": {
+      "calls": 1000,
+      "cap": 64,
+      "cap_source": "All1000 hash-verified MODEL_REQUEST decoding_params.max_tokens values equal64",
+      "completion_token_count": 1000,
+      "completion_token_quantiles": {
+        "1": 6.0,
+        "25": 19.0,
+        "50": 31.0,
+        "75": 33.0,
+        "90": 35.0,
+        "95": 47.0,
+        "99": 61.0
+      },
+      "completion_tokens_total": 27700,
+      "exact_at_cap_count": 4,
+      "finish_stop_fields_seen": [],
+      "finish_stop_metadata_available": false,
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1/attempt-20260909T071753Z-548ca4/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1.run-manifest.json",
+      "manifest_sha256": "cd374a9f4965ad9b08f7cd92c5def266366198db00f4b252b40c4a2cbc5955dc",
+      "phase_schema_ids": [
+        "phase-slots-given-intent-v1:slots"
+      ],
+      "retry_metadata_available": false,
+      "root_verified_request_cap_counts": {
+        "64": 1000
+      },
+      "sample_ids_available": 1000,
+      "schema_validity_status": null,
+      "status": "COMPLETED",
+      "trace_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1/attempt-20260909T071753Z-548ca4/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1.trace.jsonl",
+      "trace_sha256": "ee7d4da2df9d471bd136685cd330370fd7d16e691d9db9c6891dcad846e30b38"
+    },
+    "SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1": {
+      "calls": 1000,
+      "cap": 64,
+      "cap_source": "All1000 hash-verified MODEL_REQUEST decoding_params.max_tokens values equal64",
+      "completion_token_count": 1000,
+      "completion_token_quantiles": {
+        "1": 6.0,
+        "25": 6.0,
+        "50": 19.0,
+        "75": 22.0,
+        "90": 34.0,
+        "95": 36.05,
+        "99": 51.1
+      },
+      "completion_tokens_total": 18536,
+      "exact_at_cap_count": 4,
+      "finish_stop_fields_seen": [],
+      "finish_stop_metadata_available": false,
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1/attempt-20260909T083938Z-401fca/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1.run-manifest.json",
+      "manifest_sha256": "bd50da773c977d6f07a2ab1f2b12228517b005f45e622fd2d3a7d9591eb49e75",
+      "phase_schema_ids": [
+        "phase-slots-given-intent-v1:slots"
+      ],
+      "retry_metadata_available": false,
+      "root_verified_request_cap_counts": {
+        "64": 1000
+      },
+      "sample_ids_available": 1000,
+      "schema_validity_status": null,
+      "status": "COMPLETED",
+      "trace_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1/attempt-20260909T083938Z-401fca/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1.trace.jsonl",
+      "trace_sha256": "d0f98d4fefdab853f77d0812af60e356db7fc132e1e765aa3e933610927035d5"
+    },
+    "SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1": {
+      "calls": 1000,
+      "cap": 64,
+      "cap_source": "All1000 hash-verified MODEL_REQUEST decoding_params.max_tokens values equal64",
+      "completion_token_count": 1000,
+      "completion_token_quantiles": {
+        "1": 6.0,
+        "25": 6.0,
+        "50": 19.0,
+        "75": 22.0,
+        "90": 34.0,
+        "95": 36.0,
+        "99": 50.01
+      },
+      "completion_tokens_total": 18093,
+      "exact_at_cap_count": 3,
+      "finish_stop_fields_seen": [],
+      "finish_stop_metadata_available": false,
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1/attempt-20260909T090318Z-b9657d/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1.run-manifest.json",
+      "manifest_sha256": "1f2c2f41dd26dd539f885dc74950db15dc687a12b4fcd0568f0a0e486f3bd869",
+      "phase_schema_ids": [
+        "phase-slots-given-intent-v1:slots"
+      ],
+      "retry_metadata_available": false,
+      "root_verified_request_cap_counts": {
+        "64": 1000
+      },
+      "sample_ids_available": 1000,
+      "schema_validity_status": null,
+      "status": "COMPLETED",
+      "trace_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1/attempt-20260909T090318Z-b9657d/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1.trace.jsonl",
+      "trace_sha256": "12d46d71d78069d58d1dd4f5bc7fd52c5cd60a21d682709cfad8cbdeda9f558c"
+    }
+  }
+}
