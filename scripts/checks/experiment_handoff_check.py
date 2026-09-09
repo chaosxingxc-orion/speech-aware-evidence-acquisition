@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Inspect a file-based handoff without granting execution or changing its state.
 
-Only local handoff files and Git metadata are read. A complete reply means it
-is ready for human/agent review, never that any experiment may be launched.
+Only local handoff files and Git metadata are read. A complete reply is ready
+for review; an explicit owner decision can instead authorize reconstruction
+and merging when a reply is unavailable. Neither state grants experiment launch.
 """
 
 from __future__ import annotations
@@ -93,12 +94,14 @@ def _validate_state(state: object, root: Path) -> tuple[Path, Path]:
         raise ValueError("schema_version must be 1")
     if type(state.get("generation")) is not int or state["generation"] < 1:
         raise ValueError("generation must be a positive integer")
-    if state.get("phase") != "awaiting_fable_reply":
-        raise ValueError("only the awaiting_fable_reply phase is supported")
-    if state.get("response_status") != "awaiting_reply":
-        raise ValueError("response_status must be awaiting_reply for this phase")
+    phase = state.get("phase")
+    if phase not in ("awaiting_fable_reply", "owner_directed_recovery"):
+        raise ValueError("phase must be awaiting_fable_reply or owner_directed_recovery")
+    expected_response = "unavailable" if phase == "owner_directed_recovery" else "awaiting_reply"
+    if state.get("response_status") != expected_response:
+        raise ValueError(f"response_status must be {expected_response} for this phase")
     if state.get("launch_allowed") is not False:
-        raise ValueError("launch_allowed must be false during the awaiting phase")
+        raise ValueError("launch_allowed must be false during handoff or owner recovery")
     for field in ("coordinator", "execution_owner", "request_id", "next_action"):
         if not isinstance(state.get(field), str) or not state[field].strip():
             raise ValueError(f"{field} must be a nonempty string")
@@ -123,6 +126,41 @@ def _validate_state(state: object, root: Path) -> tuple[Path, Path]:
     if response.exists() and not response.is_file():
         raise ValueError("response path exists but is not a regular file")
     return request, response
+
+
+def _validate_owner_recovery(state: dict, root: Path, request: Path, response: Path) -> None:
+    """Require a bounded owner decision, without treating it as a Fable release."""
+    if state["generation"] < 2:
+        raise ValueError("owner recovery must supersede the initial handoff generation")
+    if state["coordinator"] != "Codex" or state["execution_owner"] != "Codex":
+        raise ValueError("owner recovery coordinator and execution_owner must be Codex")
+    decision_id = state.get("owner_decision_id")
+    if not isinstance(decision_id, str) or not re.fullmatch(
+        r"[A-Za-z0-9][A-Za-z0-9._-]*", decision_id
+    ):
+        raise ValueError("owner_decision_id must be a nonempty identifier")
+    decision = _confined_path(root, state.get("owner_decision_path"))
+    if decision in (request, response, _confined_path(root, STATE_PATH)):
+        raise ValueError("owner decision must be distinct from state, request and response")
+    if not decision.is_file():
+        raise ValueError("owner decision file is missing or is not a regular file")
+    content = decision.read_text(encoding="utf-8")
+    markers = {
+        "Decision ID": decision_id,
+        "Request ID": state["request_id"],
+        "Owner decision": "AUTHORIZE_RECOVERY",
+        "Execution owner": "Codex",
+        "Scope": "RECONSTRUCTION_AND_MERGE_ONLY",
+        "Launch allowed": "false",
+    }
+    for marker, expected in markers.items():
+        values = re.findall(
+            rf"^\s*(?:#{{1,6}} +)?{re.escape(marker)}: ([^\r\n]+?)\s*$",
+            content,
+            re.MULTILINE,
+        )
+        if values != [expected]:
+            raise ValueError(f"owner decision requires one exact {marker} marker")
 
 
 def _reply_status(response: Path, request_id: str, warnings: list[str]) -> str:
@@ -158,6 +196,7 @@ def inspect_handoff(repo_root: Path) -> dict:
         "warnings": [],
         "errors": [],
         "execution_authority": "NOT_EVALUATED",
+        "launch_allowed": False,
     }
     try:
         report.update(_git_snapshot(root))
@@ -165,7 +204,7 @@ def inspect_handoff(repo_root: Path) -> dict:
             _confined_path(root, STATE_PATH).read_text(encoding="utf-8"),
             object_pairs_hook=_unique_object,
         )
-        _, response = _validate_state(state, root)
+        request, response = _validate_state(state, root)
         report["request_id"] = state["request_id"]
         report["generation"] = state["generation"]
         report["snapshot_commit"] = state["snapshot_commit"]
@@ -173,7 +212,13 @@ def inspect_handoff(repo_root: Path) -> dict:
             report["warnings"].append("Current HEAD differs from the handoff snapshot; reconcile newer changes.")
         if report["dirty_file_counts"]["total"]:
             report["warnings"].append("The working tree has local changes; preserve and reconcile them.")
-        report["status"] = _reply_status(response, state["request_id"], report["warnings"])
+        if state["phase"] == "owner_directed_recovery":
+            _validate_owner_recovery(state, root, request, response)
+            report["execution_owner"] = state["execution_owner"]
+            report["owner_decision_path"] = state["owner_decision_path"]
+            report["status"] = "OWNER_DIRECTED_RECOVERY"
+        else:
+            report["status"] = _reply_status(response, state["request_id"], report["warnings"])
     except (json.JSONDecodeError, UnicodeError):
         report["errors"].append("A handoff file is not valid UTF-8 text or valid state JSON.")
     except ValueError as exc:
