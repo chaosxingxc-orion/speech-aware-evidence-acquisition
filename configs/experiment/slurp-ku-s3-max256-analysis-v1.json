@@ -1,0 +1,100 @@
+{
+  "experiment_id": "SAEA-SLURP-KU-S3-MAX256-READOUT-V1",
+  "execution_profile": "model-free-check",
+  "analysis": {
+    "full_roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+    },
+    "metrics": [
+      "slot_f1_exact_f1",
+      "slu_f1_f1"
+    ],
+    "n_replicates": 10000,
+    "roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    },
+    "seed": 20260903,
+    "inputs": {
+      "control": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-V1/attempt-20260909T164321Z-a9c5ef/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-V1.run-manifest.json",
+          "sha256": "PENDING-SEALED-FINALIZED-MANIFEST"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-V1/official-finalize/attempt-20260909T164321Z-a9c5ef.score.json",
+          "sha256": "PENDING-COMPLETE-OFFICIAL-SCORE"
+        },
+        "scorers": {
+          "entity_metrics": "slurp-slu-official"
+        }
+      },
+      "speech": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KU-S3A-G1-MAX256-V1/attempt-20260909T164321Z-77997e/SAEA-SLURP-KU-S3A-G1-MAX256-V1.run-manifest.json",
+          "sha256": "PENDING-SEALED-FINALIZED-MANIFEST"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KU-S3A-G1-MAX256-V1/official-finalize/attempt-20260909T164321Z-77997e.score.json",
+          "sha256": "PENDING-COMPLETE-OFFICIAL-SCORE"
+        },
+        "scorers": {
+          "entity_metrics": "slurp-slu-official"
+        }
+      },
+      "twin": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-V1/attempt-20260909T164321Z-d09106/SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-V1.run-manifest.json",
+          "sha256": "PENDING-SEALED-FINALIZED-MANIFEST"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-V1/official-finalize/attempt-20260909T164321Z-d09106.score.json",
+          "sha256": "PENDING-COMPLETE-OFFICIAL-SCORE"
+        },
+        "scorers": {
+          "entity_metrics": "slurp-slu-official"
+        }
+      }
+    },
+    "contrasts": [
+      {
+        "left": "control",
+        "right": "speech",
+        "name": "speech_minus_matched_control",
+        "scorers": [
+          "entity_metrics"
+        ]
+      },
+      {
+        "left": "twin",
+        "right": "speech",
+        "name": "speech_minus_form_twin",
+        "scorers": [
+          "entity_metrics"
+        ]
+      },
+      {
+        "left": "control",
+        "right": "twin",
+        "name": "form_twin_minus_matched_control_descriptive",
+        "scorers": [
+          "entity_metrics"
+        ]
+      }
+    ]
+  },
+  "binding_state": "HELD until all three generations are sealed and their one complete official score job is finalized. Replace only pending source hashes before invoking the shared read-only entry.",
+  "estimator_interpretation": "Preserve the inherited KU-S3 scenario-stratified primary, 10000 replicates, seed 20260903 plus the shared fixed metric offset, CI90. Speaker-clustered estimates are sensitivity. All two primary per-row SLU-F1 CI90 lower bounds on historically exposed NEW500 must exceed zero. Report OLD500/pooled and natural/equal-scenario weights.",
+  "metric_interpretation": "slot_f1_exact_f1 and slu_f1_f1 here are means of per-row F1. Report standard scorer aggregate micro separately using retained counts; never call a row mean micro F1.",
+  "primary_contrasts": [
+    "speech_minus_matched_control",
+    "speech_minus_form_twin"
+  ],
+  "lineage": "All three use the same max256 completion ceiling and original KC-S1b examples. The completed max64 KC repeat is only a separate descriptive historical comparison.",
+  "preregistration": "docs/readiness/2026-09-09-ku-s3-max256-readout.md"
+}

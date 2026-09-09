@@ -3,7 +3,7 @@
 Decision ID: OWNER-KUS3-BUDGET-005  
 Date: 2026-09-09  
 Scope: KU-S3a, matched form twin, and matched no-retrieval control  
-Status: owner-approved configuration successor; exposure remains HELD
+Status: owner-approved configuration successor; generation remains gated by registered evidence
 
 This narrow successor records the owner approval linked to OWNER-BUDGET-PROBE-004: retain the
 original example-bearing KC-S1b schema and add a matched no-retrieval control while moving all
@@ -19,6 +19,7 @@ and pooled DEV-1000 are reported separately. The four-row max64/max256 engineeri
 descriptive and cannot establish effectiveness. No reasoning or frozen-weight change is
 approved, and no extra full sweep is authorized.
 
-The three successor fragments are HELD. Root must bind fresh source-bound prompt-fit and, for
-the retrieval arms, persistent phase-supply artifacts before any exposure registration. No
-attempt IDs, protocol hashes, or prepared artifact hashes are asserted here.
+Register tokenizer contacts before performing a fit. Bind persistent phase-supply artifacts
+for the retrieval arms first, then bind passing source-bound prompt-fit receipts before
+generation registration. This decision grants the bounded scope; per-flight records carry the
+actual attempt IDs, protocol hashes and prepared artifact hashes.
