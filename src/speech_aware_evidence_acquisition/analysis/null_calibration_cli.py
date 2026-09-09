@@ -27,8 +27,15 @@ def pinned_json(binding: dict) -> dict:
 def rows_for(document: dict, scorer: str, fields: tuple[str, ...]) -> dict:
     if document.get("verified") is not True:
         raise ValueError("unverified score job")
+    # Complete finalization jobs retain the score path plus inline score_details;
+    # read-only score jobs carry the same data directly under scores.
+    scores = document.get("scores")
+    if isinstance(scores, str):
+        scores = document.get("score_details")
+    if not isinstance(scores, dict):
+        raise ValueError("score job has no retained per-sample score details")
     rows = {}
-    for row in document["scores"][scorer]["per_sample"]:
+    for row in scores[scorer]["per_sample"]:
         sid = published_sample_key(row["sample_id"])
         if sid in rows:
             raise ValueError("duplicate published sample ID")

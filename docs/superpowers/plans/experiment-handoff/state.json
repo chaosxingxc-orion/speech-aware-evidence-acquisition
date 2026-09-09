@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 7,
+  "generation": 8,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,10 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "0805094f",
-  "updated_at_utc": "2026-09-09T15:24:30.207433+00:00",
-  "next_action": "G1 root-owned resident decoder and10-second monitor active. KC-S1b fit passed all1000 rows with6314-token minimum margin and3001 tokenizer contacts. Generation separately registered and root lease issued to worker using frozen sibling checkout saea-g1-runtime at0805094f. Main prepares owner-approved four-row64/256 engineering check. KU-S3 prepared artifacts pinned; later fits remain registered but unconsumed. E21 and KU-S4 successor changes isolated pending root review. No pending owner question.",
+  "snapshot_commit": "8a1cdcbf",
+  "updated_at_utc": "2026-09-09T16:13:36.681472+00:00",
+  "next_action": "KC-S1b original64 repeat sealed and scored exactly once with1000 per-sample rows; paired analysis in progress. Four-case64/256 engineering pair complete: two verified truncations at64 resolve at77/79 under256. Owner approved OWNER-KUS3-BUDGET-005: KU-S3a, twin and new no-retrieval control all256, preserving original examples. Three successor configs are held pending root review, fresh preparation, actual full-roster fit and registration. Resident service explicitly stopped after the pair; monitor stopped. No owner question remains pending.",
   "launch_allowed": false,
-  "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002."
+  "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
+  "latest_owner_decision_id": "OWNER-KUS3-BUDGET-005"
 }

@@ -1,0 +1,92 @@
+{
+  "contacts": {
+    "encoding_calls": 0,
+    "fit_tokenizer_endpoints": 26,
+    "generation_calls": 8,
+    "scorer_invocations": 0
+  },
+  "cost": {
+    "256": {
+      "audio_seconds_used": 18.4945625,
+      "calls_used": 4,
+      "completion_tokens_total": 239,
+      "latency_seconds_total": 6.5010927870025625,
+      "prompt_tokens_total": 25282,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+    },
+    "64": {
+      "audio_seconds_used": 18.4945625,
+      "calls_used": 4,
+      "completion_tokens_total": 211,
+      "latency_seconds_total": 32.380509397000424,
+      "prompt_tokens_total": 25282,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+    }
+  },
+  "future_owner_decision": "OWNER-KUS3-BUDGET-005: use256 for KU-S3a, twin and a new matched1000-row no-retrieval control; original64 repeat retained.",
+  "generation_commit": "8a1cdcbf",
+  "interpretation": {
+    "phase_contract": "All eight raw responses repeat scenario/action although the phase requests entities only; increasing the cap does not repair that contract mismatch.",
+    "reasoning": "No reasoning or weight change was made; this experiment cannot estimate reasoning benefit.",
+    "scope": "Four purposively selected historical cases; engineering evidence, not a random accuracy sample.",
+    "timing": "Order and prompt-cache state differ. The256 arm has nearly complete prompt-cache hits; latency is descriptive, not evidence of a cap-induced speedup.",
+    "truncation": "Two length-limited and malformed completions at64 become complete JSON at77 and79 tokens under256. Other completions remain byte-identical at20 and63 tokens."
+  },
+  "request_parity": {
+    "payloads_equal_except_allowed": true,
+    "sample_count": 4
+  },
+  "rows": [
+    {
+      "entities_only_contract_max256": false,
+      "entities_only_contract_max64": false,
+      "max256_json": true,
+      "max256_stop": "stop",
+      "max256_tokens": 20,
+      "max64_json": true,
+      "max64_stop": "stop",
+      "max64_tokens": 20,
+      "sample_id": "slurp:devel:002003:audio-1490199797"
+    },
+    {
+      "entities_only_contract_max256": false,
+      "entities_only_contract_max64": false,
+      "max256_json": true,
+      "max256_stop": "stop",
+      "max256_tokens": 77,
+      "max64_json": false,
+      "max64_stop": "length",
+      "max64_tokens": 64,
+      "sample_id": "slurp:devel:003704:audio-1494511949"
+    },
+    {
+      "entities_only_contract_max256": false,
+      "entities_only_contract_max64": false,
+      "max256_json": true,
+      "max256_stop": "stop",
+      "max256_tokens": 79,
+      "max64_json": false,
+      "max64_stop": "length",
+      "max64_tokens": 64,
+      "sample_id": "slurp:devel:008655:audio-1502895086-headset"
+    },
+    {
+      "entities_only_contract_max256": false,
+      "entities_only_contract_max64": false,
+      "max256_json": true,
+      "max256_stop": "stop",
+      "max256_tokens": 63,
+      "max64_json": true,
+      "max64_stop": "stop",
+      "max64_tokens": 63,
+      "sample_id": "slurp:devel:012627:audio-1494418708"
+    }
+  ],
+  "schema": "saea-output-budget-engineering-summary-v1",
+  "source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-OUTPUT-BUDGET-FOUR-ROW-READOUT-V1/readout.json",
+    "sha256": "29bfd2d7c0152054b95b320adc05c7aa318e7e46927946716da5ab21247eb227"
+  }
+}

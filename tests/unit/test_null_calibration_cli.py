@@ -150,3 +150,17 @@ def test_normalized_rows_and_duplicate_refusal():
     document["scores"]["s"]["per_sample"] *= 2
     with pytest.raises(ValueError):
         rows_for(document, "s", ("m",))
+
+
+def test_rows_for_consumes_finalization_retained_statistics():
+    from speech_aware_evidence_acquisition.analysis.null_calibration_cli import rows_for
+    statistics = {"official": {"per_sample": [{"sample_id": "s", "f1": 0.5}]}}
+    inline = {"verified": True, "scores": statistics}
+    finalized = {"verified": True, "scores": "/sealed/run.scores.json", "score_details": statistics}
+    assert rows_for(inline, "official", ("f1",)) == rows_for(finalized, "official", ("f1",))
+
+
+def test_rows_for_does_not_treat_a_score_path_as_statistics():
+    from speech_aware_evidence_acquisition.analysis.null_calibration_cli import rows_for
+    with pytest.raises(ValueError, match="retained per-sample"):
+        rows_for({"verified": True, "scores": "/sealed/run.scores.json"}, "official", ("f1",))
