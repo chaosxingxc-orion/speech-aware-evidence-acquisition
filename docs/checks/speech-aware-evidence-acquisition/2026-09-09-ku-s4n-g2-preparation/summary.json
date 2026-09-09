@@ -1,0 +1,59 @@
+{
+  "arms": {
+    "N": {
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V1/candidates-supply.json",
+        "sha256": "8ebf325e02dae858f4171ddb914fa2a6a8c07e15c187b7dbf7e3e9c4b5bb369c"
+      },
+      "config_sha256": "a4f25e92f1d68648b1245e0146062cd11e76e89208347ae57ea3bfa0355a3819",
+      "elapsed_seconds": 20.040794070009724,
+      "maximum_candidates": 8,
+      "minimum_candidates": 1,
+      "ordered_selection_equal_to_bank": true,
+      "output_sha256": "237fcd29f38b88ac7536b9ed614ad6ec76fb6b0cd96ad874fc2df9e552a9006c",
+      "rows": 1000,
+      "runner_supply_bytes_equal": true,
+      "runner_supply_sha256": "e75b923d68bf4880108d47330c00d69cc9bb41476c6ab530f25742b96617277a",
+      "runtime_bootstrap_calls": 0,
+      "warm_producer_calls": 0
+    },
+    "twin": {
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V1/twin-supply.json",
+        "sha256": "e4facbaed68ff398ad1843ccb44652a4b6c3c26e183a75f0bdf2a391c364383b"
+      },
+      "config_sha256": "acd73aea2bad348155ef868328bd83fabc02dcb0f86e6a2aada45dce6b552558",
+      "elapsed_seconds": 20.313686473993585,
+      "maximum_candidates": 8,
+      "minimum_candidates": 1,
+      "ordered_selection_equal_to_bank": true,
+      "output_sha256": "b0fb40cc287228b3ce60cefea6cf4a1626987e77ee44ff77178a276b74f730fa",
+      "rows": 1000,
+      "runner_supply_bytes_equal": true,
+      "runner_supply_sha256": "72f4f224a321fea58673b1ab197b2e8c5187e9628828078db9d6e0d84a2d1486",
+      "runtime_bootstrap_calls": 0,
+      "warm_producer_calls": 0
+    }
+  },
+  "complete": true,
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "initial_refusal": {
+    "artifact_created": false,
+    "contacts": 0,
+    "fixed_at": "78cfc59c",
+    "reason": "missing executable preparation_source_receipts"
+  },
+  "recorded_at": "2026-09-09T17:53:32.171698+00:00",
+  "schema": "saea-prepared-candidate-parity-v1",
+  "source_report": {
+    "relpath": "analysis/SAEA-SLURP-KU-S4N-G2-PREPARE-V1/parity.json",
+    "sha256": "a94f96bb9013bdd8d2c727588b97f489226c8199dade8bff50f592102e01d619"
+  },
+  "status": "DATA_READY; full request fitting and scientific admission remain pending"
+}
