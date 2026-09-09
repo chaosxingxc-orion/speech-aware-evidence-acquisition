@@ -2520,3 +2520,15 @@ def test_a_logprobs_choice_is_forwarded_verbatim_into_the_envelope(tmp_path):
         " world",
     ]
     assert len(envelope["logprobs"]["content"][0]["top_logprobs"]) == 5
+
+
+def test_preparation_render_is_exact_send_body_and_never_posts(tmp_path):
+    captured = []
+    transport = _transport(_base_url(), tmp_path,
+                           post=lambda url, body: captured.append(json.loads(body)) or _canned_response())
+    payload = json.dumps(_boundary_payload(tmp_path, decoding_params={"max_tokens": 64, "temperature": 0})).encode()
+    prepared = transport.render_request(payload)
+    assert captured == []
+    transport(payload)
+    assert captured == [prepared]
+    assert prepared["max_tokens"] == 64

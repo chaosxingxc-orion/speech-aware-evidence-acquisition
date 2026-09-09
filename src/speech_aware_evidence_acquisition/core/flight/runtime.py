@@ -1357,6 +1357,8 @@ class FlightRuntime:
         )
 
         values = self._composed.values
+        if values.get("prepared_request_fit") is not None:
+            return self._verify_prepared_request_fit(values["prepared_request_fit"])
         relpath = values.get("prompt_fit_receipt")
         expected_sha256 = values.get("prompt_fit_receipt_sha256")
         if relpath is None and expected_sha256 is None:
@@ -3518,6 +3520,215 @@ class FlightRuntime:
         }
         return rows, contact_count, "phase-program", dispatch, phase_receipt
 
+    def preparation_context(self):
+        """Resolve a fit context without preflight's circular fit-pin check."""
+        values, _carrier, _split, identity = self._prepare()
+        receipt = self._runtime_receipt_loader(
+            resolve_runtime_receipt_path(self._repo_root, values))
+        return {
+            "values": values, "split_identity_hash": identity,
+            "data_root": self._data_root, "runtime_root": self._runtime_root,
+            "run_id": self._run_id, "attempt_id": self.attempt_id,
+            "geometry": dict(self._adapter.serving_geometry()),
+            "sample_ids": [sample.sample_id for sample in self._samples],
+            "runtime_receipt": receipt,
+            "required_identity": self.session_required_identity(),
+        }
+
+    def authorize_preparation_contacts(self, *, contact_cap: int):
+        """Apply the normal committed plan/exposure gate before tokenizer access."""
+        from dataclasses import replace
+        from ..preparation import PreparationError
+
+        values, carrier, _split, identity = self._prepare()
+        if (isinstance(contact_cap, bool) or not isinstance(contact_cap, int) or contact_cap < 1):
+            raise PreparationError("fit contact cap must be a positive integer")
+        # Tokenizer and generation are separately registered runs. Keep the
+        # actual config/protocol/split but require the explicitly requested
+        # tokenizer cap to match its own exposure row at the normal gate.
+        plan = replace(self._build_execution_plan(values, carrier, identity),
+                       planned_model_calls=contact_cap).validate()
+        configured_root = model_materialization_root(values)
+        gate = self._gate_factory(
+            self._repo_root, self._data_root, self._runtime_root,
+            runtime_receipt_relpath=runtime_receipt_relpath(values),
+            expected_model_lock_key=model_lock_key(values),
+            model_root=Path(configured_root) if configured_root is not None else None,
+            d1_media_supplement_relpath=d1_media_supplement_relpath(values),
+            d1_media_supplement_sha256=d1_media_supplement_sha256(values),
+        )
+        self._gate_touch(gate, plan)
+        self._require_exposure_row_unconsumed(plan.run_id)
+        require_clean_study_repo(self._repo_root)
+        return plan
+
+    def request_fit_inputs(self, payloads):
+        from .. import preparation, preparation_fit
+        from ..model import transport
+        from ..preparation import artifact_inputs
+
+        context = self.preparation_context()
+        return artifact_inputs(
+            config=context["values"], split_identity_hash=context["split_identity_hash"],
+            sources={
+                "boundary_sha256": preparation_fit.boundary_identity(payloads),
+                "runtime_receipt": context["runtime_receipt"],
+                "required_identity": context["required_identity"],
+                "implementation": {
+                    "runtime": _sha256_file(Path(__file__)),
+                    "transport": _sha256_file(Path(transport.__file__)),
+                    "preparation_fit": _sha256_file(Path(preparation_fit.__file__)),
+                    "preparation": _sha256_file(Path(preparation.__file__)),
+                },
+            },
+        )
+
+    def _verify_prepared_request_fit(self, pin):
+        from ..preparation import PreparationError, load_artifact
+        from ..model.paths import _normalized_relative_path, _resolve_confined
+
+        if not isinstance(pin, Mapping) or set(pin) != {"relpath", "sha256"}:
+            raise PreparationError("prepared_request_fit requires relpath and sha256")
+        path = _resolve_confined(
+            self._data_root, _normalized_relative_path(pin["relpath"], "prepared fit"),
+            self._data_root, "prepared fit", strict=True,
+        )
+        payloads = self.materialize_phase_requests()
+        result = load_artifact(path, expected_sha256=pin["sha256"], kind="request-fit",
+                               inputs=self.request_fit_inputs(payloads))
+        if not isinstance(result, dict) or result.get("every_request_fits") is not True:
+            raise PreparationError("prepared request fit did not pass every row")
+        rows = result.get("rows")
+        expected = {payload["sample_id"] for payload in payloads}
+        if (not isinstance(rows, list) or len(rows) != len(expected)
+                or any(not isinstance(row, dict) or row.get("fits") is not True for row in rows)
+                or {row.get("sample_id") for row in rows} != expected
+                or result.get("sample_count") != len(expected)):
+            raise PreparationError("prepared request fit does not certify the full roster")
+        return {"schema": "saea-prepared-request-fit-check-v1",
+                "sample_count": len(expected), "every_request_fits": True,
+                "sha256": pin["sha256"], "relpath": pin["relpath"]}
+
+    def materialize_phase_requests(self, *, max_workers: int = 1):
+        """Return every real boundary payload for a single-phase fit.
+
+        The normal controller, adapter, supplied seeds, and payload binding
+        execute against a contact-free transport. Multi-phase programs are
+        refused because a later prompt could depend on a fake predecessor.
+        Payloads remain in memory and the wire-check attempt is aborted.
+        """
+        from ..preparation import PreparationError
+
+        values, _carrier, _split, _identity = self._prepare()
+        program = default_phase_program(str(values["policy"]))
+        if len(program.phase_names()) != 1:
+            raise PreparationError("actual fit requires one phase with sealed predecessors")
+        payloads = []
+        prior_client = getattr(self, "_client", None)
+        prior_outputs = getattr(self, "_output_rows", None)
+        try:
+            self.wire_check(
+                seal_and_score=False, max_workers=max_workers,
+                request_payload_observer=payloads.append,
+            )
+        finally:
+            self._client = prior_client
+            self._output_rows = prior_outputs
+        expected = [sample.sample_id for sample in self._samples]
+        actual = [payload.get("sample_id") for payload in payloads]
+        if len(set(actual)) != len(actual) or set(actual) != set(expected):
+            raise PreparationError("actual request materialization must cover the full roster")
+        return tuple(payloads)
+
+    def _phase_seed_inputs(self, binding, spec, split_identity_hash):
+        """Bind prepared selections to the same frozen inputs used by dispatch."""
+        from ..preparation import artifact_inputs, verify_source_receipts
+        from ...rails import kb_policy, knowledge_provider, phase_supply
+
+        return artifact_inputs(
+            config=self._composed.values, split_identity_hash=split_identity_hash,
+            sources={
+                "frozen_source_receipts": verify_source_receipts(
+                    self._composed.values.get("preparation_source_receipts"),
+                    repo_root=self._repo_root, data_root=self._data_root,
+                ),
+                "snapshot": binding["knowledge_snapshot"].content_hash(),
+                "supply_spec": spec.as_json(),
+                "packets": dict(binding["speech_packet_bindings"]),
+                "implementation": {
+                    **{module.__name__: _sha256_file(Path(module.__file__))
+                       for module in (kb_policy, knowledge_provider, phase_supply)},
+                    "runtime": _sha256_file(Path(__file__)),
+                },
+            },
+        )
+
+    def prepare_phase_supply(self, path: Path) -> Mapping[str, object]:
+        """Persist the real first-phase selection offline for reuse at dispatch.
+
+        No server, tokenizer, gate, attempt, or inference contact is opened.
+        Existing vector/snapshot bindings are verified by the normal resolver.
+        """
+        from types import SimpleNamespace
+        from ..preparation import PreparationError, prepare_artifact
+
+        values, _carrier, _split, identity = self._prepare()
+        program = default_phase_program(str(values["policy"]))
+        binding = self._phase_program_material
+        if binding is None:
+            binding = self._default_phase_program_binding(program, None)
+        specs = binding.get("supply_specs") or {}
+        first = program.phase_names()[0]
+        if first not in specs:
+            raise PreparationError("program has no supplied first phase to prepare")
+        inputs = self._phase_seed_inputs(binding, specs[first], identity)
+
+        def produce():
+            facets, selected = self._phase_supply_seeds(
+                program, binding, specs, SimpleNamespace(split_identity_hash=identity)
+            )
+            return {"facets": facets, "values": selected}
+
+        return prepare_artifact(path, kind="phase-supply", inputs=inputs, producer=produce)
+
+    def _load_phase_supply_seed(self, pin, binding, spec, split_identity_hash):
+        from ..preparation import PreparationError, load_artifact
+        from ..model.paths import _normalized_relative_path, _resolve_confined
+
+        if not isinstance(pin, Mapping) or set(pin) != {"relpath", "sha256"}:
+            raise PreparationError("prepared_phase_supply requires relpath and sha256")
+        relative = _normalized_relative_path(pin["relpath"], "prepared phase supply")
+        path = _resolve_confined(self._data_root, relative, self._data_root,
+                                 "prepared phase supply", strict=True)
+        output = load_artifact(
+            path, expected_sha256=pin["sha256"], kind="phase-supply",
+            inputs=self._phase_seed_inputs(binding, spec, split_identity_hash),
+        )
+        if not isinstance(output, dict) or set(output) != {"facets", "values"}:
+            raise PreparationError("prepared phase selection shape mismatch")
+        allowed_rows = set(binding["speech_packet_bindings"])
+        snapshot = binding["knowledge_snapshot"]
+        results = []
+        for name, allowed in (
+            ("facets", {f.facet_id for f in snapshot.facets}),
+            ("values", {v.value_id for v in snapshot.values}),
+        ):
+            phases = output[name]
+            if not isinstance(phases, dict) or set(phases) - {spec.phase}:
+                raise PreparationError("prepared phase selection contains another phase")
+            decoded = {}
+            for phase, rows in phases.items():
+                if not isinstance(rows, dict) or set(rows) - allowed_rows:
+                    raise PreparationError("prepared phase selection contains another row")
+                decoded[phase] = {}
+                for sid, ids in rows.items():
+                    if (not isinstance(ids, list) or any(not isinstance(i, str) for i in ids)
+                            or len(ids) != len(set(ids)) or set(ids) - allowed):
+                        raise PreparationError("prepared phase selection contains unknown IDs")
+                    decoded[phase][sid] = tuple(ids)
+            results.append(decoded)
+        return tuple(results)
+
     def _phase_supply_seeds(
         self,
         program: object,
@@ -3551,6 +3762,11 @@ class FlightRuntime:
         spec = supply_specs.get(first_phase)
         if spec is None:
             return {}, {}
+        prepared = self._composed.values.get("prepared_phase_supply")
+        if prepared is not None:
+            return self._load_phase_supply_seed(
+                prepared, binding, spec, plan.split_identity_hash
+            )
         supply_for_phase = binding.get("supply_for_phase")
         factories = getattr(supply_for_phase, "provider_factories", {}) or {}
         query_tables = getattr(supply_for_phase, "query_tables", {}) or {}
@@ -4712,6 +4928,7 @@ class FlightRuntime:
         max_workers: int = 1,
         workers: int | None = None,
         response_text: str = WIRE_CHECK_RESPONSE_TEXT,
+        request_payload_observer: Callable[[Mapping[str, object]], None] | None = None,
     ) -> Mapping[str, object]:
         """Drive this flight's ENTIRE request path against a fake transport,
         with zero model contacts, and return a receipt.
@@ -4966,6 +5183,9 @@ class FlightRuntime:
             wire_attempt_id,
             reason="wire check: contact-free wiring proof, no model was ever reached",
         )
+        if request_payload_observer is not None:
+            for payload in transport.payloads:
+                request_payload_observer(json.loads(json.dumps(payload)))
         first = transport.payloads[0] if transport.payloads else {}
         return {
             "schema": "saea-flight-wire-check-v1",
