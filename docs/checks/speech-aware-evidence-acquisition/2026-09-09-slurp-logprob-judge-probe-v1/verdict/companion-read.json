@@ -1,0 +1,240 @@
+{
+  "minimum_token_region": {
+    "by_label": {
+      "correct": {
+        "action_value": 36,
+        "filler_value": 159,
+        "json_punctuation": 420,
+        "other": 64,
+        "scenario_value": 56
+      },
+      "error": {
+        "action_value": 60,
+        "filler_value": 52,
+        "json_punctuation": 71,
+        "other": 18,
+        "scenario_value": 64
+      }
+    },
+    "counts": {
+      "action_value": 96,
+      "filler_value": 211,
+      "json_punctuation": 491,
+      "other": 82,
+      "scenario_value": 120
+    },
+    "definition": "the region of the reconstructed answer that the row's LOWEST-logprob generated token falls in: the scenario value, the action value, a filler value, a JSON key, JSON punctuation, or other",
+    "top_tokens": [
+      [
+        " []",
+        208
+      ],
+      [
+        "{\"",
+        164
+      ],
+      [
+        " [{\"",
+        75
+      ],
+      [
+        "query",
+        29
+      ],
+      [
+        "general",
+        28
+      ],
+      [
+        "\"}",
+        26
+      ],
+      [
+        "music",
+        19
+      ],
+      [
+        "time",
+        13
+      ],
+      [
+        "quir",
+        12
+      ],
+      [
+        "recommend",
+        12
+      ],
+      [
+        "\"},",
+        11
+      ],
+      [
+        "place",
+        10
+      ],
+      [
+        "li",
+        9
+      ],
+      [
+        "qa",
+        9
+      ],
+      [
+        "the",
+        9
+      ]
+    ]
+  },
+  "model_contacts": 0,
+  "n": 1000,
+  "per_scenario": [
+    {
+      "intent_errors": 6,
+      "intent_mean_token_logprob": 0.9872,
+      "intent_min_token_logprob": 0.9936,
+      "min_token_logprob": 0.6026,
+      "n": 58,
+      "scenario": "alarm"
+    },
+    {
+      "intent_errors": 8,
+      "intent_mean_token_logprob": 0.9489,
+      "intent_min_token_logprob": 0.9261,
+      "min_token_logprob": 0.9034,
+      "n": 30,
+      "scenario": "audio"
+    },
+    {
+      "intent_errors": 20,
+      "intent_mean_token_logprob": 0.8232,
+      "intent_min_token_logprob": 0.8305,
+      "min_token_logprob": 0.6451,
+      "n": 61,
+      "scenario": "calendar"
+    },
+    {
+      "intent_errors": 15,
+      "intent_mean_token_logprob": 0.8091,
+      "intent_min_token_logprob": 0.7909,
+      "min_token_logprob": 0.5879,
+      "n": 37,
+      "scenario": "cooking"
+    },
+    {
+      "intent_errors": 11,
+      "intent_mean_token_logprob": 0.8782,
+      "intent_min_token_logprob": 0.8745,
+      "min_token_logprob": 0.7727,
+      "n": 61,
+      "scenario": "datetime"
+    },
+    {
+      "intent_errors": 9,
+      "intent_mean_token_logprob": 0.8568,
+      "intent_min_token_logprob": 0.8504,
+      "min_token_logprob": 0.6303,
+      "n": 61,
+      "scenario": "email"
+    },
+    {
+      "intent_errors": 37,
+      "intent_mean_token_logprob": 0.5338,
+      "intent_min_token_logprob": 0.5315,
+      "min_token_logprob": 0.5023,
+      "n": 61,
+      "scenario": "general"
+    },
+    {
+      "intent_errors": 9,
+      "intent_mean_token_logprob": 0.9423,
+      "intent_min_token_logprob": 0.9423,
+      "min_token_logprob": 0.7735,
+      "n": 61,
+      "scenario": "iot"
+    },
+    {
+      "intent_errors": 8,
+      "intent_mean_token_logprob": 0.9255,
+      "intent_min_token_logprob": 0.9423,
+      "min_token_logprob": 0.8293,
+      "n": 60,
+      "scenario": "lists"
+    },
+    {
+      "intent_errors": 11,
+      "intent_mean_token_logprob": 0.7295,
+      "intent_min_token_logprob": 0.7364,
+      "min_token_logprob": 0.8,
+      "n": 51,
+      "scenario": "music"
+    },
+    {
+      "intent_errors": 13,
+      "intent_mean_token_logprob": 0.9034,
+      "intent_min_token_logprob": 0.8969,
+      "min_token_logprob": 0.7365,
+      "n": 60,
+      "scenario": "news"
+    },
+    {
+      "intent_errors": 36,
+      "intent_mean_token_logprob": 0.8993,
+      "intent_min_token_logprob": 0.8727,
+      "min_token_logprob": 0.7141,
+      "n": 60,
+      "scenario": "play"
+    },
+    {
+      "intent_errors": 24,
+      "intent_mean_token_logprob": 0.8495,
+      "intent_min_token_logprob": 0.8472,
+      "min_token_logprob": 0.7488,
+      "n": 60,
+      "scenario": "qa"
+    },
+    {
+      "intent_errors": 17,
+      "intent_mean_token_logprob": 0.6224,
+      "intent_min_token_logprob": 0.5992,
+      "min_token_logprob": 0.6689,
+      "n": 60,
+      "scenario": "recommendation"
+    },
+    {
+      "intent_errors": 10,
+      "intent_mean_token_logprob": 0.938,
+      "intent_min_token_logprob": 0.948,
+      "min_token_logprob": 0.804,
+      "n": 60,
+      "scenario": "social"
+    },
+    {
+      "intent_errors": 11,
+      "intent_mean_token_logprob": 0.8182,
+      "intent_min_token_logprob": 0.8166,
+      "min_token_logprob": 0.763,
+      "n": 39,
+      "scenario": "takeaway"
+    },
+    {
+      "intent_errors": 16,
+      "intent_mean_token_logprob": 0.8509,
+      "intent_min_token_logprob": 0.831,
+      "min_token_logprob": 0.5341,
+      "n": 60,
+      "scenario": "transport"
+    },
+    {
+      "intent_errors": 4,
+      "intent_mean_token_logprob": 0.9955,
+      "intent_min_token_logprob": 1.0,
+      "min_token_logprob": 0.9866,
+      "n": 60,
+      "scenario": "weather"
+    }
+  ],
+  "per_scenario_caveat": "a per-stratum reading is not admissible without its own replicate (SAEA-SLURP-DEV1000-NULL-REPLICATE-V1 moved intent by -5.13 to +5.41 pp across these same 18 scenarios with nothing changed)",
+  "schema": "saea-slurp-logprob-companion-read-v1"
+}

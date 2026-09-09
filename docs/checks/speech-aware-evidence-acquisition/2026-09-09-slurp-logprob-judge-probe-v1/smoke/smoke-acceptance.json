@@ -1,0 +1,66 @@
+{
+  "acceptance": "PASS",
+  "failures": [],
+  "model_logprobs_records": 4,
+  "outputs": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-SMOKE-4-V1/attempt-20260909T051251Z-1f2c58/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-SMOKE-4-V1.outputs.jsonl",
+  "rows": [
+    {
+      "first_alt_is_sampled_token": true,
+      "generated_tokens": 34,
+      "logprobs_sha256_recomputes": true,
+      "min_token_logprob": -0.7737092971801758,
+      "reconstruction_equals_sealed_text": true,
+      "request_id": "slurpcl-0001",
+      "requested_top_logprobs": 5,
+      "sample_id": "slurp:devel:000011:audio-1497266596",
+      "sealed_text": "{\"scenario\": \"iot\", \"action\": \"hue_lightoff\", \"entities\": [{\"type\": \"device_type\", \"filler\": \"the lights\"}]}",
+      "top_logprobs_counts": [
+        5
+      ]
+    },
+    {
+      "first_alt_is_sampled_token": true,
+      "generated_tokens": 32,
+      "logprobs_sha256_recomputes": true,
+      "min_token_logprob": -0.1831805408000946,
+      "reconstruction_equals_sealed_text": true,
+      "request_id": "slurpcl-0002",
+      "requested_top_logprobs": 5,
+      "sample_id": "slurp:devel:000053:audio-1498758443",
+      "sealed_text": "{\"scenario\": \"takeaway\", \"action\": \"query\", \"entities\": [{\"type\": \"order_type\", \"filler\": \"deliver\"}]}",
+      "top_logprobs_counts": [
+        5
+      ]
+    },
+    {
+      "first_alt_is_sampled_token": true,
+      "generated_tokens": 48,
+      "logprobs_sha256_recomputes": true,
+      "min_token_logprob": -1.271967887878418,
+      "reconstruction_equals_sealed_text": true,
+      "request_id": "slurpcl-0004",
+      "requested_top_logprobs": 5,
+      "sample_id": "slurp:devel:000058:audio-1488637952",
+      "sealed_text": "{\"scenario\": \"takeaway\", \"action\": \"query\", \"entities\": [{\"type\": \"order_type\", \"filler\": \"takeaways\"}, {\"type\": \"place_name\", \"filler\": \"grass market\"}]}",
+      "top_logprobs_counts": [
+        5
+      ]
+    },
+    {
+      "first_alt_is_sampled_token": true,
+      "generated_tokens": 48,
+      "logprobs_sha256_recomputes": true,
+      "min_token_logprob": -0.8127380609512329,
+      "reconstruction_equals_sealed_text": true,
+      "request_id": "slurpcl-0003",
+      "requested_top_logprobs": 5,
+      "sample_id": "slurp:devel:000068:audio-1488550098",
+      "sealed_text": "{\"scenario\": \"music\", \"action\": \"query\", \"entities\": [{\"type\": \"song_name\", \"filler\": \"bassanona\"}, {\"type\": \"artist_name\", \"filler\": \"queen\"}]}",
+      "top_logprobs_counts": [
+        5
+      ]
+    }
+  ],
+  "sealed_rows": 4,
+  "trace": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-SMOKE-4-V1/attempt-20260909T051251Z-1f2c58/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-SMOKE-4-V1.trace.jsonl"
+}

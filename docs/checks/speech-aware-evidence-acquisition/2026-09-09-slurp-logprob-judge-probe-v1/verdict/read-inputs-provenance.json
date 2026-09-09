@@ -1,0 +1,28 @@
+{
+  "clusters": {
+    "distinct_speakers": 124,
+    "join": "sample id 'slurp:<split>:<utt>:<stem>' -> '<stem>.flac', the filename data.slurp.load_slurp_split itself keys the speaker index by",
+    "path": "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/62b2d346-98b9-4cf6-a6b9-45874290076d/scratchpad/slurp-logprob/clusters.json",
+    "reader": "data.slurp._slurp_speaker_index (recordings[...]['usrid'])",
+    "rows": 1000,
+    "sha256": "9d6ec916a02dbcbe7464282450f814eef9bc2b47541ebc4bb5df949c8b11f9c1",
+    "source": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp/metadata/metadata.json",
+    "source_sha256": "be7943d576c0b79b34ae32796e5c9474bd3d4d123bb35e38f73497f4a429fb83",
+    "unresolved": []
+  },
+  "label_inventory": {
+    "entity_types": 55,
+    "legal_pairs": 60,
+    "path": "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/62b2d346-98b9-4cf6-a6b9-45874290076d/scratchpad/slurp-logprob/label-inventory.json",
+    "provenance": "TRAIN alone; no devel or test label reaches either half",
+    "reader": "data.slurp.load_slurp_ontology(include_synthetic=False).entity_types and reproduction.slurp_official_eval.load_legal_intent_inventory(...).pairs",
+    "sha256": "faedea31126710078580f0d1270c829330e4870ab467b7a5805a4448809dbc8d"
+  },
+  "model_contacts": 0,
+  "roster": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1/attempt-20260909T052142Z-07ca9c/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1.outputs.jsonl",
+    "rows": 1000,
+    "sha256": "44a9e5b6fd29a8eb66c28b6f9707b056281ee033d7a65582dd66c6aac0329921"
+  },
+  "schema": "saea-slurp-logprob-read-inputs-v1"
+}

@@ -1,0 +1,594 @@
+{
+  "normalized": {
+    "aggregate": {
+      "evaluator_commit": "8eb16545762be97ace75334109d73824217311f1",
+      "identity_check": {
+        "passed": true,
+        "slu_f1_abs_diff": 0.0,
+        "span_f1_abs_diff": 0.0,
+        "tolerance": 1e-06
+      },
+      "normalized": {
+        "applies_to": "gold and prediction alike, before the official distance blocks",
+        "false_merge_count": 2,
+        "false_merges": {
+          "date:15th": [
+            "fifteenth",
+            "the fifteenth"
+          ],
+          "date:day after": [
+            "day after",
+            "the day after"
+          ]
+        },
+        "inventory": {
+          "candidate_set": [
+            "a",
+            "an",
+            "at",
+            "by",
+            "for",
+            "in",
+            "of",
+            "on",
+            "the",
+            "to"
+          ],
+          "distinct_normalized_fillers": 4147,
+          "entity_types": 55,
+          "leading_token_examples": {
+            "in": [
+              "time: in 10 minutes",
+              "time: in 10 seconds",
+              "time: in 15 minutes"
+            ],
+            "the": [
+              "date: the 15th",
+              "date: the 22nd",
+              "date: the 23rd"
+            ]
+          },
+          "leading_token_witnesses": {
+            "in": 6,
+            "the": 18
+          },
+          "leading_tokens": [
+            "the",
+            "in"
+          ],
+          "min_witnesses": 3,
+          "normalizer_id": "saea-slurp-slot-normalizer-v1",
+          "rejected_token_examples": {
+            "5th": [
+              "date: 5th april",
+              "date: 5th december",
+              "date: 5th march"
+            ],
+            "after": [
+              "date: after 2 days",
+              "time: after 10 pm",
+              "time: after 2 pm"
+            ],
+            "april": [
+              "date: april 14th",
+              "date: april 15th",
+              "date: april 4th"
+            ],
+            "before": [
+              "time: before 6",
+              "time: before 6 pm",
+              "time: before 7 am"
+            ],
+            "cheese": [
+              "food_type: cheese burger",
+              "food_type: cheese pizza",
+              "food_type: cheese sandwich"
+            ],
+            "coffee": [
+              "business_type: coffee shop",
+              "device_type: coffee machine",
+              "place_name: coffee house"
+            ],
+            "every": [
+              "date: every 2 days from now",
+              "date: every friday",
+              "date: every monday"
+            ],
+            "happy": [
+              "event_name: happy anniversary",
+              "event_name: happy birthday",
+              "event_name: happy new year"
+            ],
+            "home": [
+              "personal_info: home address",
+              "personal_info: home phone number",
+              "place_name: home town"
+            ],
+            "last": [
+              "date: last friday",
+              "date: last month",
+              "date: last week"
+            ],
+            "lunch": [
+              "event_name: lunch appointment",
+              "event_name: lunch date",
+              "event_name: lunch meeting"
+            ],
+            "march": [
+              "date: march 10th",
+              "date: march 15th",
+              "date: march 22nd"
+            ],
+            "my": [
+              "event_name: my appointments",
+              "event_name: my birthday",
+              "house_place: my room"
+            ],
+            "new": [
+              "place_name: new delhi",
+              "place_name: new jersey",
+              "place_name: new york"
+            ],
+            "next": [
+              "date: next month",
+              "date: next sunday",
+              "date: next week"
+            ],
+            "office": [
+              "event_name: office meeting",
+              "event_name: office party",
+              "personal_info: office address"
+            ],
+            "one": [
+              "date: one day before",
+              "device_type: one light",
+              "song_name: one love"
+            ],
+            "robot": [
+              "device_type: robot cleaner",
+              "device_type: robot vacuum",
+              "device_type: robot vacuum cleaner"
+            ],
+            "smart": [
+              "device_type: smart lamp",
+              "device_type: smart plug",
+              "device_type: smart plug socket"
+            ],
+            "south": [
+              "place_name: south america",
+              "place_name: south asia",
+              "place_name: south sacramento"
+            ],
+            "this": [
+              "date: this coming week",
+              "date: this friday",
+              "date: this monday"
+            ],
+            "wemo": [
+              "device_type: wemo plug",
+              "device_type: wemo plug socket",
+              "device_type: wemo socket"
+            ],
+            "whole": [
+              "food_type: whole chicken",
+              "house_place: whole house",
+              "time: whole week"
+            ],
+            "work": [
+              "event_name: work meeting",
+              "event_name: work party",
+              "personal_info: work email"
+            ]
+          },
+          "rejected_token_witnesses": {
+            "5th": 4,
+            "after": 10,
+            "april": 3,
+            "before": 4,
+            "cheese": 3,
+            "coffee": 3,
+            "every": 5,
+            "happy": 3,
+            "home": 3,
+            "last": 7,
+            "lunch": 3,
+            "march": 6,
+            "my": 9,
+            "new": 3,
+            "next": 11,
+            "office": 4,
+            "one": 4,
+            "robot": 3,
+            "smart": 4,
+            "south": 3,
+            "this": 17,
+            "wemo": 3,
+            "whole": 3,
+            "work": 4
+          },
+          "rejected_tokens": [
+            "this",
+            "next",
+            "after",
+            "my",
+            "last",
+            "march",
+            "every",
+            "5th",
+            "before",
+            "office",
+            "one",
+            "smart",
+            "work",
+            "april",
+            "cheese",
+            "coffee",
+            "happy",
+            "home",
+            "lunch",
+            "new",
+            "robot",
+            "south",
+            "wemo",
+            "whole"
+          ],
+          "source_identity_hash": "4ba1e0569bc76c288097fe92d37c112f486d9ed2391c5662982c737d7c559d50",
+          "source_split": "train",
+          "utterance_count": 11514,
+          "why_rejected": "the corpus witnesses these leading tokens at the floor, but they carry meaning: stripping them merges `next week` with `last week`. No corpus statistic separates them from `on` and `the`, so the candidate set is declared and the corpus only confirms"
+        },
+        "micro": {
+          "char_f1": 0.3930893362969493,
+          "samples": 1000,
+          "slu_f1": 0.37336439979528835,
+          "slu_f1_precision": 0.4885151458865988,
+          "slu_f1_recall": 0.30214422689551634,
+          "span_f1": 0.26782145236509,
+          "span_f1_precision": 0.3647912885662432,
+          "span_f1_recall": 0.21157894736842106,
+          "word_f1": 0.35552444230540853
+        },
+        "normalizer_id": "saea-slurp-slot-normalizer-v1",
+        "replaces_official": false,
+        "rules": [
+          "R0-case-whitespace",
+          "R1-whisper-english",
+          "R2-meridiem-join",
+          "R3-train-leading-preposition"
+        ],
+        "scorer_id": "slurp-slu-f1-normalized-v1"
+      },
+      "normalized_per_rule": {
+        "R0-case-whitespace": {
+          "char_f1": 0.3910157832904247,
+          "samples": 1000,
+          "slu_f1": 0.3695663011511141,
+          "slu_f1_precision": 0.48203333910665475,
+          "slu_f1_recall": 0.2996520860852711,
+          "span_f1": 0.24783477681545632,
+          "span_f1_precision": 0.33756805807622503,
+          "span_f1_recall": 0.1957894736842105,
+          "word_f1": 0.3503476991493844
+        },
+        "R0-case-whitespace+R1-whisper-english": {
+          "char_f1": 0.3915195115627936,
+          "samples": 1000,
+          "slu_f1": 0.3694236754675219,
+          "slu_f1_precision": 0.4817907249366551,
+          "slu_f1_recall": 0.29955831275667827,
+          "span_f1": 0.2491672218520986,
+          "span_f1_precision": 0.3393829401088929,
+          "span_f1_recall": 0.1968421052631579,
+          "word_f1": 0.34968861237312415
+        },
+        "R0-case-whitespace+R1-whisper-english+R2-meridiem-join": {
+          "char_f1": 0.39241104111630526,
+          "samples": 1000,
+          "slu_f1": 0.3724352720324879,
+          "slu_f1_precision": 0.4869257484789371,
+          "slu_f1_recall": 0.30153546924490504,
+          "span_f1": 0.2611592271818788,
+          "span_f1_precision": 0.35571687840290384,
+          "span_f1_recall": 0.2063157894736842,
+          "word_f1": 0.3543947314313485
+        },
+        "R0-case-whitespace+R1-whisper-english+R2-meridiem-join+R3-train-leading-preposition": {
+          "char_f1": 0.3930893362969493,
+          "samples": 1000,
+          "slu_f1": 0.37336439979528835,
+          "slu_f1_precision": 0.4885151458865988,
+          "slu_f1_recall": 0.30214422689551634,
+          "span_f1": 0.26782145236509,
+          "span_f1_precision": 0.3647912885662432,
+          "span_f1_recall": 0.21157894736842106,
+          "word_f1": 0.35552444230540853
+        }
+      },
+      "official": {
+        "action_accuracy": 0.744,
+        "command": [
+          "/home/chao/.venvs/slurp-official-eval/bin/python",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/evaluation/evaluate.py",
+          "-g",
+          "/tmp/saea-slurp-official-luicw38l/gold.jsonl",
+          "-p",
+          "/tmp/saea-slurp-official-luicw38l/predictions.jsonl",
+          "--average",
+          "micro",
+          "--errors",
+          "--table-layout",
+          "csv"
+        ],
+        "intent_accuracy": 0.721,
+        "raw": {
+          "action": {
+            "f_measure": 0.744,
+            "fn": 256.0,
+            "fp": 256.0,
+            "official_label": "Action",
+            "precision": 0.744,
+            "recall": 0.744,
+            "tp": 744.0
+          },
+          "entities": {
+            "f_measure": 0.2331778814123917,
+            "fn": 775.0,
+            "fp": 376.0,
+            "official_label": "Entities",
+            "precision": 0.3176043557168784,
+            "recall": 0.18421052631578946,
+            "tp": 175.0
+          },
+          "entities_distance_char": {
+            "f_measure": 0.3895864707936369,
+            "fn": 694.6164624281437,
+            "fp": 295.61646242814334,
+            "official_label": "Entities (distance char)",
+            "precision": 0.5166636600091936,
+            "recall": 0.3126804398582297,
+            "tp": 316.0
+          },
+          "entities_distance_word": {
+            "f_measure": 0.34631612915010074,
+            "fn": 795.9611111111111,
+            "fp": 396.96111111111117,
+            "official_label": "Entities (distance word)",
+            "precision": 0.44322193044657254,
+            "recall": 0.28418260031076226,
+            "tp": 316.0
+          },
+          "intent": {
+            "f_measure": 0.721,
+            "fn": 279.0,
+            "fp": 279.0,
+            "official_label": "Intent (scen_act)",
+            "precision": 0.721,
+            "recall": 0.721,
+            "tp": 721.0
+          },
+          "scenario": {
+            "f_measure": 0.817,
+            "fn": 183.0,
+            "fp": 183.0,
+            "official_label": "Scenario",
+            "precision": 0.817,
+            "recall": 0.817,
+            "tp": 817.0
+          },
+          "slu_f1": {
+            "f_measure": 0.3666791734254404,
+            "fn": 1490.5775735392547,
+            "fp": 692.5775735392544,
+            "official_label": "Slu f1",
+            "precision": 0.47713324808248414,
+            "recall": 0.2977511907591593,
+            "tp": 632.0
+          }
+        },
+        "scenario_accuracy": 0.817,
+        "slu_f1": 0.3666791734254404,
+        "span_f1": 0.2331778814123917,
+        "stdout": "Scenario,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.817,0.817,0.817,817.0,183.0,183.0 \n\nAction,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.744,0.744,0.744,744.0,256.0,256.0 \n\nIntent (scen_act),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.721,0.721,0.721,721.0,279.0,279.0 \n\nEntities,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.3176043557168784,0.18421052631578946,0.2331778814123917,175.0,376.0,775.0 \n\nEntities (distance word),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.44322193044657254,0.28418260031076226,0.34631612915010074,316.0,396.96111111111117,795.9611111111111 \n\nEntities (distance char),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.5166636600091936,0.3126804398582297,0.3895864707936369,316.0,295.61646242814334,694.6164624281437 \n\nSlu f1,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.47713324808248414,0.2977511907591593,0.3666791734254404,632.0,692.5775735392544,1490.5775735392547 \n\n"
+      },
+      "official_environment_receipt": "docs/receipts/environments/slurp-official-eval.json",
+      "official_python": "/home/chao/.venvs/slurp-official-eval/bin/python",
+      "port_micro": {
+        "action_accuracy": 0.744,
+        "intent_accuracy": 0.721,
+        "samples": 1000,
+        "scenario_accuracy": 0.817,
+        "slu_f1": 0.3666791734254404,
+        "slu_f1_precision": 0.47713324808248414,
+        "slu_f1_recall": 0.2977511907591593,
+        "span_f1": 0.2331778814123917,
+        "span_f1_precision": 0.3176043557168784,
+        "span_f1_recall": 0.18421052631578946
+      },
+      "port_scorer_version": "slurp-scorer-v1",
+      "projection": {
+        "applied": false,
+        "projection_id": null
+      },
+      "samples": 1000,
+      "scorer_version": "slurp-official-8eb16545",
+      "split_id": "devel"
+    }
+  },
+  "official": {
+    "aggregate": {
+      "evaluator_commit": "8eb16545762be97ace75334109d73824217311f1",
+      "identity_check": {
+        "passed": true,
+        "slu_f1_abs_diff": 0.0,
+        "span_f1_abs_diff": 0.0,
+        "tolerance": 1e-06
+      },
+      "official": {
+        "action_accuracy": 0.75,
+        "command": [
+          "/home/chao/.venvs/slurp-official-eval/bin/python",
+          "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/repos/slurp/scripts/evaluation/evaluate.py",
+          "-g",
+          "/tmp/saea-slurp-official-57axnnpg/gold.jsonl",
+          "-p",
+          "/tmp/saea-slurp-official-57axnnpg/predictions.jsonl",
+          "--average",
+          "micro",
+          "--errors",
+          "--table-layout",
+          "csv"
+        ],
+        "intent_accuracy": 0.735,
+        "raw": {
+          "action": {
+            "f_measure": 0.75,
+            "fn": 250.0,
+            "fp": 250.0,
+            "official_label": "Action",
+            "precision": 0.75,
+            "recall": 0.75,
+            "tp": 750.0
+          },
+          "entities": {
+            "f_measure": 0.2331778814123917,
+            "fn": 775.0,
+            "fp": 376.0,
+            "official_label": "Entities",
+            "precision": 0.3176043557168784,
+            "recall": 0.18421052631578946,
+            "tp": 175.0
+          },
+          "entities_distance_char": {
+            "f_measure": 0.3895864707936369,
+            "fn": 694.6164624281437,
+            "fp": 295.61646242814334,
+            "official_label": "Entities (distance char)",
+            "precision": 0.5166636600091936,
+            "recall": 0.3126804398582297,
+            "tp": 316.0
+          },
+          "entities_distance_word": {
+            "f_measure": 0.34631612915010074,
+            "fn": 795.9611111111111,
+            "fp": 396.96111111111117,
+            "official_label": "Entities (distance word)",
+            "precision": 0.44322193044657254,
+            "recall": 0.28418260031076226,
+            "tp": 316.0
+          },
+          "intent": {
+            "f_measure": 0.735,
+            "fn": 265.0,
+            "fp": 265.0,
+            "official_label": "Intent (scen_act)",
+            "precision": 0.735,
+            "recall": 0.735,
+            "tp": 735.0
+          },
+          "scenario": {
+            "f_measure": 0.8289999999999998,
+            "fn": 171.0,
+            "fp": 171.0,
+            "official_label": "Scenario",
+            "precision": 0.829,
+            "recall": 0.829,
+            "tp": 829.0
+          },
+          "slu_f1": {
+            "f_measure": 0.3666791734254404,
+            "fn": 1490.5775735392544,
+            "fp": 692.5775735392543,
+            "official_label": "Slu f1",
+            "precision": 0.47713324808248414,
+            "recall": 0.2977511907591593,
+            "tp": 632.0
+          }
+        },
+        "scenario_accuracy": 0.8289999999999998,
+        "slu_f1": 0.3666791734254404,
+        "span_f1": 0.2331778814123917,
+        "stdout": "Scenario,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.829,0.829,0.8289999999999998,829.0,171.0,171.0 \n\nAction,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.75,0.75,0.75,750.0,250.0,250.0 \n\nIntent (scen_act),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.735,0.735,0.735,735.0,265.0,265.0 \n\nEntities,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.3176043557168784,0.18421052631578946,0.2331778814123917,175.0,376.0,775.0 \n\nEntities (distance word),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.44322193044657254,0.28418260031076226,0.34631612915010074,316.0,396.96111111111117,795.9611111111111 \n\nEntities (distance char),Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.5166636600091936,0.3126804398582297,0.3895864707936369,316.0,295.61646242814334,694.6164624281437 \n\nSlu f1,Precision,Recall,F-Measure,TP,FP,FN\nOVERALL,0.47713324808248414,0.2977511907591593,0.3666791734254404,632.0,692.5775735392543,1490.5775735392544 \n\n"
+      },
+      "official_environment_receipt": "docs/receipts/environments/slurp-official-eval.json",
+      "official_python": "/home/chao/.venvs/slurp-official-eval/bin/python",
+      "port_micro": {
+        "action_accuracy": 0.75,
+        "intent_accuracy": 0.735,
+        "samples": 1000,
+        "scenario_accuracy": 0.829,
+        "slu_f1": 0.3666791734254404,
+        "slu_f1_precision": 0.47713324808248414,
+        "slu_f1_recall": 0.2977511907591593,
+        "span_f1": 0.2331778814123917,
+        "span_f1_precision": 0.3176043557168784,
+        "span_f1_recall": 0.18421052631578946
+      },
+      "port_scorer_version": "slurp-scorer-v1",
+      "projection": {
+        "applied": true,
+        "branch_counts": {
+          "already-legal": 958,
+          "edit-distance": 24,
+          "no-label": 0,
+          "promote": 15,
+          "unparsed": 3
+        },
+        "counts": {
+          "changed": 39,
+          "eligible": 997,
+          "ineligible": 3,
+          "unchanged": 958
+        },
+        "legal_intents": 60,
+        "legal_scenarios": 18,
+        "map": {
+          "audio_play -> audio_volume_up": 5,
+          "calendar_createoradd -> calendar_remove": 2,
+          "datetime_set -> datetime_query": 1,
+          "events_query -> recommendation_events": 8,
+          "general_query -> general_quirky": 2,
+          "general_quicky -> general_quirky": 1,
+          "general_settings -> general_quirky": 1,
+          "iot_hue_lightdown -> iot_hue_lighton": 1,
+          "locations_query -> recommendation_locations": 7,
+          "music_play -> music_query": 3,
+          "music_remove -> music_query": 1,
+          "music_volume_up -> music_query": 1,
+          "play_player_setting -> play_podcasts": 1,
+          "play_query -> play_music": 1,
+          "qa_convert -> qa_currency": 2,
+          "sport_query -> iot_coffee": 1,
+          "sports_query -> iot_coffee": 1
+        },
+        "map_by_branch": {
+          "edit-distance": {
+            "audio_play -> audio_volume_up": 5,
+            "calendar_createoradd -> calendar_remove": 2,
+            "datetime_set -> datetime_query": 1,
+            "general_query -> general_quirky": 2,
+            "general_quicky -> general_quirky": 1,
+            "general_settings -> general_quirky": 1,
+            "iot_hue_lightdown -> iot_hue_lighton": 1,
+            "music_play -> music_query": 3,
+            "music_remove -> music_query": 1,
+            "music_volume_up -> music_query": 1,
+            "play_player_setting -> play_podcasts": 1,
+            "play_query -> play_music": 1,
+            "qa_convert -> qa_currency": 2,
+            "sport_query -> iot_coffee": 1,
+            "sports_query -> iot_coffee": 1
+          },
+          "promote": {
+            "events_query -> recommendation_events": 8,
+            "locations_query -> recommendation_locations": 7
+          }
+        },
+        "projection_id": "slurp-legal-label-projection-v2",
+        "projection_version": "v2"
+      },
+      "samples": 1000,
+      "scorer_version": "slurp-official-8eb16545",
+      "split_id": "devel"
+    }
+  }
+}

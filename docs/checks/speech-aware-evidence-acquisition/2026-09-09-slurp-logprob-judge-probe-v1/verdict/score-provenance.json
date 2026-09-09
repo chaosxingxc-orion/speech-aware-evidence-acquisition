@@ -1,0 +1,57 @@
+{
+  "batch": {
+    "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+    "effective_max_workers": 1,
+    "elapsed_seconds": 130.0569635819993,
+    "failed": 0,
+    "job_count": 1,
+    "jobs": [
+      {
+        "elapsed_seconds": 130.01782972100045,
+        "error": null,
+        "index": 0,
+        "job_id": "logprob",
+        "ledger_cells": null,
+        "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1/attempt-20260909T052142Z-07ca9c/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1.logprob-judge-probe-v1-read.run-manifest.json",
+        "operation": "score",
+        "result_file": "logprob.score.json",
+        "result_sha256": "80ba8fa13727574ccae37db50e7c638b4872bde42e17a19dfeeeebf8ecb35262",
+        "returncode": 0,
+        "status": "succeeded",
+        "stderr_log": "logprob.stderr.log",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_log": null
+      }
+    ],
+    "operation": "score",
+    "parallelism_boundary": "one-complete-verified-manifest-per-process",
+    "requested_max_workers": 1,
+    "schema": "saea-parallel-score-batch-v1",
+    "succeeded": 1
+  },
+  "derived_manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1/attempt-20260909T052142Z-07ca9c/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1.logprob-judge-probe-v1-read.run-manifest.json",
+  "derived_manifest_scorers": [
+    "slurp-slu-official-projected-v2",
+    "slurp-slu-f1-normalized-v1"
+  ],
+  "derived_manifest_sha256": "a7b5aa675999520fef3b41960cabeb7bff1e263af12cb04c7be9ff12599190d5",
+  "include_per_sample": true,
+  "jobs": 1,
+  "model_contacts": 0,
+  "per_sample_path": "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/62b2d346-98b9-4cf6-a6b9-45874290076d/scratchpad/slurp-logprob/per-sample.json",
+  "per_sample_rows": 1000,
+  "per_sample_sha256": "936e0512ff5152623d75aa57c81a89dc5b60da959620a98cf6e57e91504a8cf0",
+  "schema": "saea-slurp-logprob-score-v1",
+  "score_file": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1/attempt-20260909T052142Z-07ca9c/logprob-judge-read-score-batch/logprob.score.json",
+  "score_file_sha256": "80ba8fa13727574ccae37db50e7c638b4872bde42e17a19dfeeeebf8ecb35262",
+  "sealed_manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1/attempt-20260909T052142Z-07ca9c/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1.run-manifest.json",
+  "sealed_manifest_scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "sealed_manifest_sha256": "9d8b22352e976e4fc5a30777cf03be25481e3f53db04d9b6fc5cdee58270545c",
+  "sealed_manifest_status": "COMPLETED",
+  "sealed_manifest_study_commit": "7489a15dccb3a998688300e84ebbc2ae4e215f08",
+  "sharded": false
+}

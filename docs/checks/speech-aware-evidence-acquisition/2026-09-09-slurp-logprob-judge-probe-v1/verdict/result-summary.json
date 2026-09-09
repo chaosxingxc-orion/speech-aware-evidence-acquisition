@@ -1,0 +1,714 @@
+{
+  "arm_own_official_numbers": {
+    "action": 75.0,
+    "entities_strict": 23.32,
+    "intent": 73.5,
+    "note": "THIS ARM'S OWN numbers under slurp-slu-official-projected-v2. They are NEVER a comparator, are never read against the locked 73.10 / 35.80, and the probe makes no SLURP accuracy claim",
+    "scenario": 82.9,
+    "slu_f1": 36.67
+  },
+  "attempt_id": "attempt-20260909T052142Z-07ca9c",
+  "auroc": {
+    "intent_error": {
+      "first_intent_token_margin": {
+        "auroc": 0.7868771659607239,
+        "ci90": [
+          0.7591689780028769,
+          0.8131288239205984
+        ],
+        "n": 1000,
+        "sigma_hat": 0.016652886594285144,
+        "status": "OK"
+      },
+      "intent_mean_token_logprob": {
+        "auroc": 0.8496624310101399,
+        "ci90": [
+          0.8262485701685098,
+          0.8728652027987744
+        ],
+        "n": 1000,
+        "sigma_hat": 0.01417922909949675,
+        "status": "OK"
+      },
+      "intent_min_token_logprob": {
+        "auroc": 0.8446284174046977,
+        "ci90": [
+          0.8211314797006172,
+          0.8683044600631376
+        ],
+        "n": 1000,
+        "sigma_hat": 0.014217265949888336,
+        "status": "OK"
+      },
+      "mean_token_logprob": {
+        "auroc": 0.7363727377743551,
+        "ci90": [
+          0.710427173761789,
+          0.7629051989854486
+        ],
+        "n": 1000,
+        "sigma_hat": 0.016023257127399507,
+        "status": "OK"
+      },
+      "min_token_logprob": {
+        "auroc": 0.6935232961108971,
+        "ci90": [
+          0.6659786873941856,
+          0.7202089606455999
+        ],
+        "n": 1000,
+        "sigma_hat": 0.016538601638017337,
+        "status": "OK"
+      }
+    },
+    "slot_error": {
+      "first_intent_token_margin": {
+        "auroc": 0.47680943556348393,
+        "ci90": [
+          0.44621637513092266,
+          0.5089289875386799
+        ],
+        "n": 1000,
+        "sigma_hat": 0.019003078260566235,
+        "status": "OK"
+      },
+      "intent_mean_token_logprob": {
+        "auroc": 0.47949825940871854,
+        "ci90": [
+          0.4497448745382345,
+          0.5097387796855849
+        ],
+        "n": 1000,
+        "sigma_hat": 0.018275015800290097,
+        "status": "OK"
+      },
+      "intent_min_token_logprob": {
+        "auroc": 0.47392793432515284,
+        "ci90": [
+          0.44417090478066273,
+          0.5040518662175145
+        ],
+        "n": 1000,
+        "sigma_hat": 0.018174109952192836,
+        "status": "OK"
+      },
+      "mean_token_logprob": {
+        "auroc": 0.6391044181575711,
+        "ci90": [
+          0.611829601791945,
+          0.6659262509159224
+        ],
+        "n": 1000,
+        "sigma_hat": 0.01655721643372253,
+        "status": "OK"
+      },
+      "min_token_logprob": {
+        "auroc": 0.6534101733663555,
+        "ci90": [
+          0.6262101615437542,
+          0.6804022313655761
+        ],
+        "n": 1000,
+        "sigma_hat": 0.016506812074504516,
+        "status": "OK"
+      }
+    }
+  },
+  "cost": {
+    "against_the_greedy_replicate_null": {
+      "gpu_hours_delta_percent": 8.35,
+      "mean_latency_delta_percent": 5.3,
+      "mean_latency_delta_seconds": 0.0898,
+      "meaningfulness": "the null's own verdict fixes ~5 % as the floor below which a SLURP wall-clock or GPU-hour comparison is not meaningful (byte-identical work spread 1.7 %). The measured cost is ABOVE that floor.",
+      "null_gpu_hours": 0.0637,
+      "null_mean_request_latency_seconds": 1.695,
+      "null_rows_per_minute": 261.6,
+      "null_wall_seconds": 229.378,
+      "reference": "SAEA-SLURP-DEV1000-NULL-REPLICATE-V1, attempt-20260909T043847Z-f4306e",
+      "throughput_delta_rows_per_minute": -20.13,
+      "wall_delta_percent": 8.33,
+      "why_this_reference": "the null flew the SAME 1,000 requests on the SAME geometry with NO decoding parameter added, so it is the only wall-clock number on this carrier that differs from this arm by the factor under test and nothing else"
+    },
+    "against_the_sealed_comparator": {
+      "comparator_gpu_hours_approx": 0.105,
+      "comparator_wall_seconds": 225.5,
+      "reference": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1, attempt-20260905T060424Z-2c5596",
+      "wall_delta_percent": 10.19
+    },
+    "budget": {
+      "calls_used": 1000,
+      "planned_gpu_hours": 0.5,
+      "planned_model_calls": 1050,
+      "planned_speech_audio_seconds": 3000,
+      "smoke_calls_used": 4,
+      "smoke_planned_model_calls": 12
+    },
+    "completion_tokens_total": 26530,
+    "contacts": 1000,
+    "contacts_per_second": 4.0246,
+    "gpu_hours": 0.069,
+    "mean_request_latency_seconds": 1.7848,
+    "metered_speech_seconds": 2884.793687499999,
+    "paid_api_spend": 0,
+    "prompt_tokens_total": 2190161,
+    "rows_per_minute": 241.47,
+    "slot_occupancy": 0.8979,
+    "trace_growth": {
+      "note": "the second cost of the parameter is on disk, not on the card: the sealed trace carries the full five-alternative distribution for every generated token",
+      "null_trace_bytes_approx": 10000000,
+      "trace_bytes": 23308319
+    },
+    "wall_seconds": 248.474
+  },
+  "identity": {
+    "config_hash": "15670eaafa88c16b47cb33487d343b21394986017911eb62a1ead2727711e587",
+    "instruction_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db",
+    "protocol_hash": "bf6e602d3b6e5609e28d27b26a0c2065be61b4f07c46bdae3a3e30a718b83c68",
+    "roster_view_sha256": "e148dbbcbda5b5145de9d3270f8bf7d6fb83fd00c7533f5ffa0fea1735fa0e87",
+    "split_id": "DEV-1000",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "wire_check_predicted_config_hash_prefix": "15670eaa"
+  },
+  "labels": {
+    "clusters": 124,
+    "intent_error_rows": 265,
+    "n": 1000
+  },
+  "manifest_status": "COMPLETED",
+  "minimum_token_region": {
+    "by_label": {
+      "correct": {
+        "action_value": 36,
+        "filler_value": 159,
+        "json_punctuation": 420,
+        "other": 64,
+        "scenario_value": 56
+      },
+      "error": {
+        "action_value": 60,
+        "filler_value": 52,
+        "json_punctuation": 71,
+        "other": 18,
+        "scenario_value": 64
+      }
+    },
+    "counts": {
+      "action_value": 96,
+      "filler_value": 211,
+      "json_punctuation": 491,
+      "other": 82,
+      "scenario_value": 120
+    },
+    "definition": "the region of the reconstructed answer that the row's LOWEST-logprob generated token falls in: the scenario value, the action value, a filler value, a JSON key, JSON punctuation, or other",
+    "top_tokens": [
+      [
+        " []",
+        208
+      ],
+      [
+        "{\"",
+        164
+      ],
+      [
+        " [{\"",
+        75
+      ],
+      [
+        "query",
+        29
+      ],
+      [
+        "general",
+        28
+      ],
+      [
+        "\"}",
+        26
+      ],
+      [
+        "music",
+        19
+      ],
+      [
+        "time",
+        13
+      ],
+      [
+        "quir",
+        12
+      ],
+      [
+        "recommend",
+        12
+      ],
+      [
+        "\"},",
+        11
+      ],
+      [
+        "place",
+        10
+      ],
+      [
+        "li",
+        9
+      ],
+      [
+        "qa",
+        9
+      ],
+      [
+        "the",
+        9
+      ]
+    ]
+  },
+  "model_contacts_of_this_read": 0,
+  "operating_point_86_flags": {
+    "intent_error": {
+      "confidence": {
+        "caught": 44,
+        "errors": 265,
+        "flagged": 86,
+        "precision": 51.16279069767442,
+        "recall": 16.60377358490566
+      },
+      "flag_score_threshold": 0.7921726703643799,
+      "legality_judge": {
+        "caught": 28,
+        "errors": 265,
+        "flagged": 42,
+        "precision": 66.66666666666667,
+        "recall": 10.566037735849056
+      },
+      "requested_budget": 86,
+      "schema_judge": {
+        "caught": 4,
+        "errors": 265,
+        "flagged": 13,
+        "precision": 30.76923076923077,
+        "recall": 1.509433962264151
+      },
+      "statistic": "min_token_logprob",
+      "statistic_cutoff": -0.7921726703643799,
+      "union_all_three": {
+        "caught": 62,
+        "errors": 265,
+        "flagged": 123,
+        "precision": 50.40650406504065,
+        "recall": 23.39622641509434
+      },
+      "union_confidence_schema": {
+        "caught": 46,
+        "errors": 265,
+        "flagged": 97,
+        "precision": 47.422680412371136,
+        "recall": 17.358490566037737
+      }
+    },
+    "slot_error": {
+      "confidence": {
+        "caught": 69,
+        "errors": 638,
+        "flagged": 86,
+        "precision": 80.23255813953489,
+        "recall": 10.815047021943574
+      },
+      "flag_score_threshold": 0.7921726703643799,
+      "legality_judge": {
+        "caught": 29,
+        "errors": 638,
+        "flagged": 42,
+        "precision": 69.04761904761905,
+        "recall": 4.545454545454546
+      },
+      "requested_budget": 86,
+      "schema_judge": {
+        "caught": 9,
+        "errors": 638,
+        "flagged": 13,
+        "precision": 69.23076923076923,
+        "recall": 1.4106583072100314
+      },
+      "statistic": "min_token_logprob",
+      "statistic_cutoff": -0.7921726703643799,
+      "union_all_three": {
+        "caught": 93,
+        "errors": 638,
+        "flagged": 123,
+        "precision": 75.60975609756098,
+        "recall": 14.576802507836991
+      },
+      "union_confidence_schema": {
+        "caught": 76,
+        "errors": 638,
+        "flagged": 97,
+        "precision": 78.35051546391753,
+        "recall": 11.912225705329154
+      }
+    },
+    "unmatched_gold": {
+      "confidence": {
+        "caught": 56,
+        "errors": 559,
+        "flagged": 86,
+        "precision": 65.11627906976744,
+        "recall": 10.01788908765653
+      },
+      "flag_score_threshold": 0.7921726703643799,
+      "legality_judge": {
+        "caught": 26,
+        "errors": 559,
+        "flagged": 42,
+        "precision": 61.904761904761905,
+        "recall": 4.651162790697675
+      },
+      "requested_budget": 86,
+      "schema_judge": {
+        "caught": 9,
+        "errors": 559,
+        "flagged": 13,
+        "precision": 69.23076923076923,
+        "recall": 1.6100178890876566
+      },
+      "statistic": "min_token_logprob",
+      "statistic_cutoff": -0.7921726703643799,
+      "union_all_three": {
+        "caught": 78,
+        "errors": 559,
+        "flagged": 123,
+        "precision": 63.41463414634146,
+        "recall": 13.953488372093023
+      },
+      "union_confidence_schema": {
+        "caught": 63,
+        "errors": 559,
+        "flagged": 97,
+        "precision": 64.94845360824742,
+        "recall": 11.270125223613595
+      }
+    }
+  },
+  "per_scenario": [
+    {
+      "intent_errors": 6,
+      "intent_mean_token_logprob": 0.9872,
+      "intent_min_token_logprob": 0.9936,
+      "min_token_logprob": 0.6026,
+      "n": 58,
+      "scenario": "alarm"
+    },
+    {
+      "intent_errors": 8,
+      "intent_mean_token_logprob": 0.9489,
+      "intent_min_token_logprob": 0.9261,
+      "min_token_logprob": 0.9034,
+      "n": 30,
+      "scenario": "audio"
+    },
+    {
+      "intent_errors": 20,
+      "intent_mean_token_logprob": 0.8232,
+      "intent_min_token_logprob": 0.8305,
+      "min_token_logprob": 0.6451,
+      "n": 61,
+      "scenario": "calendar"
+    },
+    {
+      "intent_errors": 15,
+      "intent_mean_token_logprob": 0.8091,
+      "intent_min_token_logprob": 0.7909,
+      "min_token_logprob": 0.5879,
+      "n": 37,
+      "scenario": "cooking"
+    },
+    {
+      "intent_errors": 11,
+      "intent_mean_token_logprob": 0.8782,
+      "intent_min_token_logprob": 0.8745,
+      "min_token_logprob": 0.7727,
+      "n": 61,
+      "scenario": "datetime"
+    },
+    {
+      "intent_errors": 9,
+      "intent_mean_token_logprob": 0.8568,
+      "intent_min_token_logprob": 0.8504,
+      "min_token_logprob": 0.6303,
+      "n": 61,
+      "scenario": "email"
+    },
+    {
+      "intent_errors": 37,
+      "intent_mean_token_logprob": 0.5338,
+      "intent_min_token_logprob": 0.5315,
+      "min_token_logprob": 0.5023,
+      "n": 61,
+      "scenario": "general"
+    },
+    {
+      "intent_errors": 9,
+      "intent_mean_token_logprob": 0.9423,
+      "intent_min_token_logprob": 0.9423,
+      "min_token_logprob": 0.7735,
+      "n": 61,
+      "scenario": "iot"
+    },
+    {
+      "intent_errors": 8,
+      "intent_mean_token_logprob": 0.9255,
+      "intent_min_token_logprob": 0.9423,
+      "min_token_logprob": 0.8293,
+      "n": 60,
+      "scenario": "lists"
+    },
+    {
+      "intent_errors": 11,
+      "intent_mean_token_logprob": 0.7295,
+      "intent_min_token_logprob": 0.7364,
+      "min_token_logprob": 0.8,
+      "n": 51,
+      "scenario": "music"
+    },
+    {
+      "intent_errors": 13,
+      "intent_mean_token_logprob": 0.9034,
+      "intent_min_token_logprob": 0.8969,
+      "min_token_logprob": 0.7365,
+      "n": 60,
+      "scenario": "news"
+    },
+    {
+      "intent_errors": 36,
+      "intent_mean_token_logprob": 0.8993,
+      "intent_min_token_logprob": 0.8727,
+      "min_token_logprob": 0.7141,
+      "n": 60,
+      "scenario": "play"
+    },
+    {
+      "intent_errors": 24,
+      "intent_mean_token_logprob": 0.8495,
+      "intent_min_token_logprob": 0.8472,
+      "min_token_logprob": 0.7488,
+      "n": 60,
+      "scenario": "qa"
+    },
+    {
+      "intent_errors": 17,
+      "intent_mean_token_logprob": 0.6224,
+      "intent_min_token_logprob": 0.5992,
+      "min_token_logprob": 0.6689,
+      "n": 60,
+      "scenario": "recommendation"
+    },
+    {
+      "intent_errors": 10,
+      "intent_mean_token_logprob": 0.938,
+      "intent_min_token_logprob": 0.948,
+      "min_token_logprob": 0.804,
+      "n": 60,
+      "scenario": "social"
+    },
+    {
+      "intent_errors": 11,
+      "intent_mean_token_logprob": 0.8182,
+      "intent_min_token_logprob": 0.8166,
+      "min_token_logprob": 0.763,
+      "n": 39,
+      "scenario": "takeaway"
+    },
+    {
+      "intent_errors": 16,
+      "intent_mean_token_logprob": 0.8509,
+      "intent_min_token_logprob": 0.831,
+      "min_token_logprob": 0.5341,
+      "n": 60,
+      "scenario": "transport"
+    },
+    {
+      "intent_errors": 4,
+      "intent_mean_token_logprob": 0.9955,
+      "intent_min_token_logprob": 1.0,
+      "min_token_logprob": 0.9866,
+      "n": 60,
+      "scenario": "weather"
+    }
+  ],
+  "per_scenario_caveat": "a per-stratum reading is not admissible without its own replicate (SAEA-SLURP-DEV1000-NULL-REPLICATE-V1 moved intent by -5.13 to +5.41 pp across these same 18 scenarios with nothing changed)",
+  "precision_at_budget_bootstrap": {
+    "ci90": [
+      42.52873563218391,
+      59.09090909090909
+    ],
+    "note": "the flag budget is rescaled to each replicate's own size, so a replicate that draws fewer rows flags proportionally fewer of them",
+    "precision": 51.16279069767442
+  },
+  "read_inputs": {
+    "clusters": {
+      "distinct_speakers": 124,
+      "join": "sample id 'slurp:<split>:<utt>:<stem>' -> '<stem>.flac', the filename data.slurp.load_slurp_split itself keys the speaker index by",
+      "path": "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/62b2d346-98b9-4cf6-a6b9-45874290076d/scratchpad/slurp-logprob/clusters.json",
+      "reader": "data.slurp._slurp_speaker_index (recordings[...]['usrid'])",
+      "rows": 1000,
+      "sha256": "9d6ec916a02dbcbe7464282450f814eef9bc2b47541ebc4bb5df949c8b11f9c1",
+      "source": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp/metadata/metadata.json",
+      "source_sha256": "be7943d576c0b79b34ae32796e5c9474bd3d4d123bb35e38f73497f4a429fb83",
+      "unresolved": []
+    },
+    "label_inventory": {
+      "entity_types": 55,
+      "legal_pairs": 60,
+      "path": "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/62b2d346-98b9-4cf6-a6b9-45874290076d/scratchpad/slurp-logprob/label-inventory.json",
+      "provenance": "TRAIN alone; no devel or test label reaches either half",
+      "reader": "data.slurp.load_slurp_ontology(include_synthetic=False).entity_types and reproduction.slurp_official_eval.load_legal_intent_inventory(...).pairs",
+      "sha256": "faedea31126710078580f0d1270c829330e4870ab467b7a5805a4448809dbc8d"
+    },
+    "model_contacts": 0,
+    "roster": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1/attempt-20260909T052142Z-07ca9c/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1.outputs.jsonl",
+      "rows": 1000,
+      "sha256": "44a9e5b6fd29a8eb66c28b6f9707b056281ee033d7a65582dd66c6aac0329921"
+    },
+    "schema": "saea-slurp-logprob-read-inputs-v1"
+  },
+  "row": "SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1",
+  "schema": "saea-slurp-logprob-judge-probe-v1-result-summary-v1",
+  "scoring": {
+    "batch": {
+      "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+      "effective_max_workers": 1,
+      "elapsed_seconds": 130.0569635819993,
+      "failed": 0,
+      "job_count": 1,
+      "jobs": [
+        {
+          "elapsed_seconds": 130.01782972100045,
+          "error": null,
+          "index": 0,
+          "job_id": "logprob",
+          "ledger_cells": null,
+          "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1/attempt-20260909T052142Z-07ca9c/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1.logprob-judge-probe-v1-read.run-manifest.json",
+          "operation": "score",
+          "result_file": "logprob.score.json",
+          "result_sha256": "80ba8fa13727574ccae37db50e7c638b4872bde42e17a19dfeeeebf8ecb35262",
+          "returncode": 0,
+          "status": "succeeded",
+          "stderr_log": "logprob.stderr.log",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_log": null
+        }
+      ],
+      "operation": "score",
+      "parallelism_boundary": "one-complete-verified-manifest-per-process",
+      "requested_max_workers": 1,
+      "schema": "saea-parallel-score-batch-v1",
+      "succeeded": 1
+    },
+    "derived_manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1/attempt-20260909T052142Z-07ca9c/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1.logprob-judge-probe-v1-read.run-manifest.json",
+    "derived_manifest_scorers": [
+      "slurp-slu-official-projected-v2",
+      "slurp-slu-f1-normalized-v1"
+    ],
+    "derived_manifest_sha256": "a7b5aa675999520fef3b41960cabeb7bff1e263af12cb04c7be9ff12599190d5",
+    "include_per_sample": true,
+    "jobs": 1,
+    "model_contacts": 0,
+    "per_sample_path": "/mnt/c/Users/35686/AppData/Local/Temp/claude/D--chao-workspace-exploring-l4-intelligence-studies-speech-aware-evidence-acquisition/62b2d346-98b9-4cf6-a6b9-45874290076d/scratchpad/slurp-logprob/per-sample.json",
+    "per_sample_rows": 1000,
+    "per_sample_sha256": "936e0512ff5152623d75aa57c81a89dc5b60da959620a98cf6e57e91504a8cf0",
+    "schema": "saea-slurp-logprob-score-v1",
+    "score_file": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1/attempt-20260909T052142Z-07ca9c/logprob-judge-read-score-batch/logprob.score.json",
+    "score_file_sha256": "80ba8fa13727574ccae37db50e7c638b4872bde42e17a19dfeeeebf8ecb35262",
+    "sealed_manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1/attempt-20260909T052142Z-07ca9c/SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1.run-manifest.json",
+    "sealed_manifest_scorers": [
+      "slurp-slu-official",
+      "slurp-slu",
+      "cost"
+    ],
+    "sealed_manifest_sha256": "9d8b22352e976e4fc5a30777cf03be25481e3f53db04d9b6fc5cdee58270545c",
+    "sealed_manifest_status": "COMPLETED",
+    "sealed_manifest_study_commit": "7489a15dccb3a998688300e84ebbc2ae4e215f08",
+    "sharded": false
+  },
+  "serving": {
+    "session_id": "slurp-np8-logprob-c65536-20260909",
+    "session_reused": true,
+    "session_source": "attached-serving-session",
+    "stop_serving": null
+  },
+  "serving_monitor_summary": {
+    "active_seconds": 235.0108082294464,
+    "first_sample_at": 1788931387.5500388,
+    "host_free_gb_last": 23.895095825195312,
+    "host_free_gb_min": 23.895095825195312,
+    "host_free_gb_min_at": 1788931622.560847,
+    "host_memory_samples": 22,
+    "last_sample_at": 1788931622.560847,
+    "mean_power_watts": 82.84545454545454,
+    "mean_utilization_percent": 71.9090909090909,
+    "parked_definition": "every slot idle AND nvidia-smi utilization.gpu < 5%",
+    "parked_fraction": 0.0,
+    "parked_seconds": 0.0,
+    "peak_power_watts": 85.79,
+    "requests_delta": 168.0,
+    "sample_count": 22,
+    "schema": "saea-serving-monitor-summary-v1",
+    "tokens_delta": null,
+    "vm_available_gb_min": 40.4825553894043,
+    "vmmem_ws_gb_max": 24.244430541992188,
+    "wall_seconds": 235.0108082294464,
+    "window": {
+      "from": 1788931379.2043276,
+      "to": 1788931627.6785717
+    }
+  },
+  "smoke": {
+    "acceptance": "PASS",
+    "attempt_id": "attempt-20260909T051251Z-1f2c58",
+    "generated_tokens": 162,
+    "model_logprobs_records": 4,
+    "rows": 4,
+    "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-SMOKE-4-V1",
+    "top_logprobs_counts": [
+      5
+    ]
+  },
+  "study_commit": "7489a15dccb3a998688300e84ebbc2ae4e215f08",
+  "study_repo_dirt": [],
+  "successor_diagnostic_NOT_PREREGISTERED": {
+    "operating_points": {
+      "intent_mean_token_logprob": {
+        "flagged": 86,
+        "intent_error": {
+          "caught": 65,
+          "errors": 265,
+          "flagged": 86,
+          "precision": 75.5813953488372,
+          "recall": 24.528301886792452
+        },
+        "statistic_cutoff": -0.2675283079346116
+      },
+      "intent_min_token_logprob": {
+        "flagged": 86,
+        "intent_error": {
+          "caught": 62,
+          "errors": 265,
+          "flagged": 86,
+          "precision": 72.09302325581395,
+          "recall": 23.39622641509434
+        },
+        "statistic_cutoff": -0.5693119168281555
+      }
+    },
+    "warning": "NOT PART OF THE VERDICT AND NOT PREREGISTERED. Section 4.1 fixes min_token_logprob as THE primary and says the operating point and the verdict use it. These operating points for the intent-span statistics are computed AFTER the numbers exist and are recorded only so a SUCCESSOR preregistration can name its primary in advance with a price attached. They may not be quoted as this probe's result"
+  },
+  "token_stream_mismatches": [],
+  "verdict": "NOT ADMITTED",
+  "verdict_detail": {
+    "admitted": false,
+    "by_auroc": false,
+    "by_precision": false,
+    "rule": "ADMITTED if AUROC >= 0.75 for intent error with cluster-bootstrap CI90 lower bound >= 0.7, OR if precision at 86 flags exceeds the schema judge's 72.09 % with CI90 lower bound above it; otherwise NOT ADMITTED and the re-ask module falls back to the deterministic judges"
+  }
+}
