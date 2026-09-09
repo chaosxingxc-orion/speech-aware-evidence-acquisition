@@ -1109,6 +1109,15 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-slots-given-intent-supplied-v1": (
         "phase-slots-given-intent-supplied-v1.json"
     ),
+    # KU-S4N, 2026-09-09: ``phase-direct-only-v1``'s single direct-decode
+    # phase with ``knowledge: "supplied"``, which is what
+    # ``rails.phase_supply.load_phase_supply_specs`` requires before a
+    # baseline fragment may supply it. A second program id rather than a flag
+    # on the first, for the reason the slots pair states above: the phase's
+    # ``knowledge`` value rides the config hash and is part of what the cell
+    # IS, so the unsupplied direct program and the narrowing cell must never
+    # resolve to the same program object.
+    "phase-direct-only-supplied-v1": "phase-direct-only-supplied-v1.json",
     # WAVE R7, 2026-09-08: the fold of the retired
     # ``rails.a2t_hard_validity.HardValidityRepairController``. ``draft`` then,
     # only when the draft is hard-invalid, ``repair`` -- the early exit is the
@@ -1193,6 +1202,13 @@ def register_phase_programs_v1() -> None:
             "phase-slots-given-intent-supplied-v1",
             default_controller_factory(
                 default_phase_program("phase-slots-given-intent-supplied-v1")
+            ),
+        )
+    if "phase-direct-only-supplied-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-direct-only-supplied-v1",
+            default_controller_factory(
+                default_phase_program("phase-direct-only-supplied-v1")
             ),
         )
     if "phase-hard-validity-repair-v1" not in registered:

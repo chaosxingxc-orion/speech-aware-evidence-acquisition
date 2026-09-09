@@ -52,6 +52,11 @@ _EXPECTED_PROGRAM_SHAPES = {
     # phase declaring knowledge "supplied". Two program ids rather than a flag
     # on one, because a phase's knowledge value rides the config hash.
     "phase-slots-given-intent-supplied-v1": (("slots",), 1, "always-run-full-program"),
+    # KU-S4N, 2026-09-09: phase-direct-only-v1's single direct-decode phase
+    # with knowledge "supplied", for the same reason the slots pair exists --
+    # the phase's knowledge value rides the config hash, so the unsupplied
+    # direct program and the narrowing cell must not resolve to one object.
+    "phase-direct-only-supplied-v1": (("direct",), 1, "always-run-full-program"),
     # WAVE R7, 2026-09-08: the fold of the retired
     # rails.a2t_hard_validity.HardValidityRepairController -- draft, then the
     # repair contact only when the draft is hard-invalid, so the early exit is

@@ -1,0 +1,33 @@
+{
+  "budget_basis": "1,000 registered contacts plus 8 canaries, ceiling 1,050; 2,884.7937 audio seconds in one pass, ceiling 3,000; GPU hours planned about 0.11 at -np 8, ceiling 1.0; tool, embedding and paid-API contacts 0. The twin draw is already inside the single candidate-bank file the arm binds, so this cell adds no preparation cost at all. Plan cells are RUN-CUMULATIVE across every attempt of this run id and at most one recovery re-registration is permitted.",
+  "cells": [
+    {
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-direct-candidates-kus4n-twin-v1",
+      "cell_id": "kus4n-candidates-twin",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64"
+    }
+  ],
+  "comparator": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1, attempt attempt-20260905T060424Z-2c5596, sealed rows. This cell is a CONTROL, not an arm: it is never admitted on its own and its number is only ever read as KU-S4N minus KU-S4N-t.",
+  "date": "2026-09-09",
+  "decision": {
+    "paper_scale": false,
+    "test_tuning": false
+  },
+  "decision_rule": "There is no admission rule for a twin. It is read twice and only twice: as the denominator of KU-S4N's mechanism contrast, and -- against the sealed comparator -- as the measurement of what SUPPLYING EIGHT WRONG LABELS costs, which is the number that says whether the form itself moves the core. A twin that BEATS the comparator is the finding, and it would mean the family is measuring supply volume rather than supply content.",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1050,
+    "planned_speech_audio_seconds": 3000,
+    "split_role": "dev"
+  },
+  "experiment_id": "SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V1",
+  "fragment_kind": "saea-slurp-intent-stage-experiment-v1",
+  "population": "The whole frozen DEV-1000 runtime view, id for id, at split identity hash 8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84. No new draw and no new exposure.",
+  "preregistration": "docs/readiness/2026-09-09-slurp-intent-ku-s4-family-v1-preregistration.md",
+  "preparation_row": "SAEA-SLURP-MF-KU-S4-PREP-V1, receipt docs/checks/speech-aware-evidence-acquisition/2026-09-09-slurp-kus4-prep/",
+  "purpose": "Cell KU-S4N-t: the FORM TWIN of KU-S4N. Same program, same control turn, same supply channel, same block template, the same number of blocks per row -- drawn at random from the legal intents KU-S4N did NOT choose. It contains the gold intent on 0.60 percent of rows against KU-S4N's 95.80, measured model-free before either cell flies.",
+  "split_id": "DEV-1000"
+}

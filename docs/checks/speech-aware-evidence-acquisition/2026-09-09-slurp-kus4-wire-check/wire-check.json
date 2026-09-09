@@ -1,0 +1,455 @@
+{
+  "body": {
+    "proved_by": [
+      "tests/unit/test_llama_server_transport.py",
+      "tests/unit/test_slurp_intent_candidates.py"
+    ],
+    "pytest_returncode": 0,
+    "pytest_summary": "114 passed, 1 skipped",
+    "status": "PASS",
+    "why_not_here": "core.model.transport.LlamaServerTransport verifies an attested live session (pid, binary image and listening socket) at construction, so it cannot be built inside a model-free check; the committed unit tests build it against a self-attesting local process and a fake post(), and three of them already cover multi-packet requests."
+  },
+  "halves": {
+    "body": "PASS",
+    "multipacket": "PASS",
+    "request": "PASS"
+  },
+  "model_contacts": 0,
+  "multipacket": {
+    "descriptors": 9,
+    "k_keys": 8,
+    "key_packet_ids": [
+      "slurp/train/000223/audio-1488560641",
+      "slurp/train/000288/audio-1502308700-headset",
+      "slurp/train/000293/audio-1490370363",
+      "slurp/train/000305/audio-1488637803",
+      "slurp/train/000394/audio-1502891680-headset",
+      "slurp/train/000463/audio-1500979543",
+      "slurp/train/000573/audio--1504195254-headset",
+      "slurp/train/000664/audio-1497866882-headset"
+    ],
+    "key_packets_are_shape_stand_ins": "REAL, already-promoted TRAIN encoder packets from TRAIN90-promotion.json, used to prove the SHAPE. The KU-S4a exemplar plan's own recordings are not promoted -- 162 of 2,742 -- which is the precondition the preparation receipt prices and the preregistration makes a blocking clause.",
+    "model_contacts": 0,
+    "payload_field_set": [
+      "audio_seconds",
+      "carrier_lock_key",
+      "decoding_params",
+      "evidence_provenance",
+      "history",
+      "key_representation_id",
+      "matcher_policy_id",
+      "media_relpath",
+      "mmproj_loaded",
+      "query_source",
+      "request_id",
+      "sample_id",
+      "sample_rate_hz",
+      "speech_feature_parts",
+      "speech_packet_sha256",
+      "speech_ref",
+      "supplied_evidence",
+      "task_instruction"
+    ],
+    "problems": [],
+    "query_packet_id": "slurp/devel/000011/audio-1497266596",
+    "sockets_opened": 0,
+    "stages": {
+      "client_parse_speech_feature_messages": 9,
+      "media_identity_packets_loaded": 9,
+      "policy_build_arm_payload": "PASS",
+      "policy_refusals": {
+        "two_queries": "speech-feature arm requires exactly one query packet",
+        "unknown_role": "speech-feature packet role must be query or key",
+        "zero_queries": "speech-feature arm requires exactly one query packet"
+      },
+      "transport_content_markers": 9
+    },
+    "status": "PASS"
+  },
+  "question": "does the KU-S4N arm differ from the sealed closed-list comparator by exactly the supplied candidate blocks plus the phase program's control turn, does its twin ship the same form with disjoint candidates, and does a one-query-plus-k-keys request compose through the real policy, the real client parser, the real transport ordering and the real media-identity stage",
+  "request": {
+    "cells": {
+      "kus4n-candidates": {
+        "arm": "speech-feature-query",
+        "candidate_bank": {
+          "k": 8,
+          "phase": "direct",
+          "relpath": "derived/slurp-kus4/candidate-bank-k8-v1.jsonl",
+          "rows": 1000,
+          "selection": "candidates",
+          "sha256": "a4458e77b648132d9d38c66d6b2ddf54fddf66924db6c6b780c59abf104c541f"
+        },
+        "config_hash": "7278ad743329a3d71a6e112778e815474e4753dd5bde48345e4490391de683fe",
+        "contact_count": 4,
+        "contacts_per_sample": 1,
+        "control_turn_sha256": [
+          "d02f194c3c8a8375a15c28f7ca874f30bd2ad34d60e8ff9cdbc654572ebf9d50"
+        ],
+        "model_contacts": 0,
+        "payload_keys": [
+          "audio_seconds",
+          "carrier_lock_key",
+          "decoding_params",
+          "evidence_provenance",
+          "history",
+          "key_representation_id",
+          "matcher_policy_id",
+          "media_relpath",
+          "mmproj_loaded",
+          "query_source",
+          "request_id",
+          "sample_id",
+          "sample_rate_hz",
+          "speech_feature_parts",
+          "speech_packet_sha256",
+          "speech_ref",
+          "supplied_evidence",
+          "task_instruction"
+        ],
+        "phase_review": {
+          "criticism_only": true,
+          "on_flag_vocabulary": [
+            "record",
+            "loop"
+          ],
+          "phases": [
+            {
+              "judges": {
+                "slurp-legal-label-flag-v1": {
+                  "by_severity": {
+                    "block": 4
+                  },
+                  "flags": 4,
+                  "rows_flagged": 4,
+                  "version": "1.0.0"
+                }
+              },
+              "rows_flagged": 4,
+              "rows_reviewed": 4,
+              "spec": {
+                "judge_versions": {
+                  "slurp-legal-label-flag-v1": "1.0.0"
+                },
+                "judges": [
+                  "slurp-legal-label-flag-v1"
+                ],
+                "on_flag": "record",
+                "params": {},
+                "phase": "direct"
+              }
+            }
+          ],
+          "schema": "saea-phase-review-v1"
+        },
+        "phase_supply": {
+          "phases": [
+            {
+              "facet_vector_rows": 0,
+              "query_signal_modality": "speech",
+              "query_vector_rows": 1000,
+              "spec": {
+                "alpha": null,
+                "dimensions": [
+                  "content"
+                ],
+                "expose_facets": false,
+                "facet_source": null,
+                "fuse_coverage": null,
+                "fuse_policy": "saea-slurp-intent-candidate-passthrough-v1",
+                "k": 8,
+                "phase": "direct",
+                "provider": "slurp-intent-candidates-v1",
+                "query_source": {
+                  "embedded_signal": "speech: Omni-Embed-Nemotron-3B over the DEV-1000 recording of this row, prompt 'query: ' through the encoder's own sentence_transformers.jinja wrapper, mean-pooled over the attention mask and L2-normalised. Set q-speech-nemotron of the sealed 2026-09-06 MF-7b pass. It is the SAME vector whose cosine against the 11,514 sealed TRAIN facet vectors produced the neighbour half of this cell's candidate bank; no text of any kind enters it.",
+                  "kind": "sealed-vectors",
+                  "relpath": "vectors/slurp-kus3/query-vectors-speech.jsonl",
+                  "sha256": "99b2e1700a058640a12c86fb261e3fc1898cd99004b0157366682b2a048b2e7c",
+                  "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+                },
+                "rank_policy": "saea-slurp-intent-candidate-bank-v1",
+                "rank_weights": null,
+                "tau": 0.0
+              }
+            }
+          ],
+          "query_signal_vocabulary": [
+            "speech",
+            "speech+state"
+          ],
+          "schema": "saea-phase-supply-v2"
+        },
+        "phases": [
+          {
+            "contacts": 4,
+            "phase": "phase-direct-only-supplied-v1:direct",
+            "rows": 4
+          }
+        ],
+        "policy": "phase-direct-only-supplied-v1",
+        "policy_kind": "phase-program",
+        "protocol_hash": "8c232ef6e0669f270408edfabd2befa5460e69a048d2ef76b4f9fd374c9b6d5a",
+        "review_material": {
+          "direct": [
+            "slurp-legal-label-flag-v1"
+          ]
+        },
+        "sample_count": 4,
+        "speech_packets_verified": {
+          "slurp:devel:000011:audio-1497266596": "941bc845a89289f24804f4b6eb5ee5faa3610330b10dcce4f0f3b09e00e1a70c",
+          "slurp:devel:000053:audio-1498758443": "754cd2d6c61af416739772cd526cbad71185b53f24476f2aeb205ec2322ade58",
+          "slurp:devel:000058:audio-1488637952": "5263292c33f339368f2a6d22a1de316c1b3fcfd57b32c1f0411c18b6fdf5e586",
+          "slurp:devel:000068:audio-1488550098": "bdf7e46b17917151e77c07d6c0cf34566305834ba138bcf68bc93eac9092410f"
+        },
+        "split_id": "DEV-1000-KUS4-WIRE-4",
+        "split_identity_hash": "e335c74149794af0f2301954b6e92cde2a4134d65ebe6069173a1a556b7a04b3",
+        "supplied_block_counts": {
+          "slurp:devel:000011:audio-1497266596": 5,
+          "slurp:devel:000053:audio-1498758443": 8,
+          "slurp:devel:000058:audio-1488637952": 8,
+          "slurp:devel:000068:audio-1488550098": 7
+        },
+        "supplied_evidence_ids": {
+          "slurp:devel:000011:audio-1497266596": [
+            "value:intent-candidate:iot_coffee",
+            "value:intent-candidate:iot_hue_lightchange",
+            "value:intent-candidate:iot_hue_lightdim",
+            "value:intent-candidate:iot_hue_lightoff",
+            "value:intent-candidate:iot_hue_lighton"
+          ],
+          "slurp:devel:000053:audio-1498758443": [
+            "value:intent-candidate:cooking_recipe",
+            "value:intent-candidate:general_quirky",
+            "value:intent-candidate:music_query",
+            "value:intent-candidate:play_music",
+            "value:intent-candidate:play_podcasts",
+            "value:intent-candidate:recommendation_locations",
+            "value:intent-candidate:takeaway_order",
+            "value:intent-candidate:takeaway_query"
+          ],
+          "slurp:devel:000058:audio-1488637952": [
+            "value:intent-candidate:alarm_remove",
+            "value:intent-candidate:audio_volume_mute",
+            "value:intent-candidate:calendar_remove",
+            "value:intent-candidate:calendar_set",
+            "value:intent-candidate:iot_cleaning",
+            "value:intent-candidate:iot_coffee",
+            "value:intent-candidate:takeaway_order",
+            "value:intent-candidate:takeaway_query"
+          ],
+          "slurp:devel:000068:audio-1488550098": [
+            "value:intent-candidate:music_likeness",
+            "value:intent-candidate:music_query",
+            "value:intent-candidate:music_settings",
+            "value:intent-candidate:play_audiobook",
+            "value:intent-candidate:play_music",
+            "value:intent-candidate:play_podcasts",
+            "value:intent-candidate:play_radio"
+          ]
+        },
+        "system_message_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db",
+        "typed_knowledge_blocks_sorted": [
+          5,
+          7,
+          8,
+          8
+        ],
+        "typed_knowledge_blocks_total": 28
+      },
+      "kus4n-candidates-twin": {
+        "arm": "speech-feature-query",
+        "candidate_bank": {
+          "k": 8,
+          "phase": "direct",
+          "relpath": "derived/slurp-kus4/candidate-bank-k8-v1.jsonl",
+          "rows": 1000,
+          "selection": "twin_candidates",
+          "sha256": "a4458e77b648132d9d38c66d6b2ddf54fddf66924db6c6b780c59abf104c541f"
+        },
+        "config_hash": "7dca3c19553f93693e57ebca12ab7f03bb3c2bb85fd53a7f5e32c6b5b8658ce8",
+        "contact_count": 4,
+        "contacts_per_sample": 1,
+        "control_turn_sha256": [
+          "d02f194c3c8a8375a15c28f7ca874f30bd2ad34d60e8ff9cdbc654572ebf9d50"
+        ],
+        "model_contacts": 0,
+        "payload_keys": [
+          "audio_seconds",
+          "carrier_lock_key",
+          "decoding_params",
+          "evidence_provenance",
+          "history",
+          "key_representation_id",
+          "matcher_policy_id",
+          "media_relpath",
+          "mmproj_loaded",
+          "query_source",
+          "request_id",
+          "sample_id",
+          "sample_rate_hz",
+          "speech_feature_parts",
+          "speech_packet_sha256",
+          "speech_ref",
+          "supplied_evidence",
+          "task_instruction"
+        ],
+        "phase_review": {
+          "criticism_only": true,
+          "on_flag_vocabulary": [
+            "record",
+            "loop"
+          ],
+          "phases": [
+            {
+              "judges": {
+                "slurp-legal-label-flag-v1": {
+                  "by_severity": {
+                    "block": 4
+                  },
+                  "flags": 4,
+                  "rows_flagged": 4,
+                  "version": "1.0.0"
+                }
+              },
+              "rows_flagged": 4,
+              "rows_reviewed": 4,
+              "spec": {
+                "judge_versions": {
+                  "slurp-legal-label-flag-v1": "1.0.0"
+                },
+                "judges": [
+                  "slurp-legal-label-flag-v1"
+                ],
+                "on_flag": "record",
+                "params": {},
+                "phase": "direct"
+              }
+            }
+          ],
+          "schema": "saea-phase-review-v1"
+        },
+        "phase_supply": {
+          "phases": [
+            {
+              "facet_vector_rows": 0,
+              "query_signal_modality": "speech",
+              "query_vector_rows": 1000,
+              "spec": {
+                "alpha": null,
+                "dimensions": [
+                  "content"
+                ],
+                "expose_facets": false,
+                "facet_source": null,
+                "fuse_coverage": null,
+                "fuse_policy": "saea-slurp-intent-candidate-passthrough-v1",
+                "k": 8,
+                "phase": "direct",
+                "provider": "slurp-intent-candidates-v1",
+                "query_source": {
+                  "embedded_signal": "speech: Omni-Embed-Nemotron-3B over the DEV-1000 recording of this row, prompt 'query: ' through the encoder's own sentence_transformers.jinja wrapper, mean-pooled over the attention mask and L2-normalised. Set q-speech-nemotron of the sealed 2026-09-06 MF-7b pass. It is the SAME vector whose cosine against the 11,514 sealed TRAIN facet vectors produced the neighbour half of this cell's candidate bank; no text of any kind enters it.",
+                  "kind": "sealed-vectors",
+                  "relpath": "vectors/slurp-kus3/query-vectors-speech.jsonl",
+                  "sha256": "99b2e1700a058640a12c86fb261e3fc1898cd99004b0157366682b2a048b2e7c",
+                  "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+                },
+                "rank_policy": "saea-slurp-intent-candidate-bank-v1",
+                "rank_weights": null,
+                "tau": 0.0
+              }
+            }
+          ],
+          "query_signal_vocabulary": [
+            "speech",
+            "speech+state"
+          ],
+          "schema": "saea-phase-supply-v2"
+        },
+        "phases": [
+          {
+            "contacts": 4,
+            "phase": "phase-direct-only-supplied-v1:direct",
+            "rows": 4
+          }
+        ],
+        "policy": "phase-direct-only-supplied-v1",
+        "policy_kind": "phase-program",
+        "protocol_hash": "991791218c0414a84a41df93497e66641ee114095fe7b105146b36971e53ca74",
+        "review_material": {
+          "direct": [
+            "slurp-legal-label-flag-v1"
+          ]
+        },
+        "sample_count": 4,
+        "speech_packets_verified": {
+          "slurp:devel:000011:audio-1497266596": "941bc845a89289f24804f4b6eb5ee5faa3610330b10dcce4f0f3b09e00e1a70c",
+          "slurp:devel:000053:audio-1498758443": "754cd2d6c61af416739772cd526cbad71185b53f24476f2aeb205ec2322ade58",
+          "slurp:devel:000058:audio-1488637952": "5263292c33f339368f2a6d22a1de316c1b3fcfd57b32c1f0411c18b6fdf5e586",
+          "slurp:devel:000068:audio-1488550098": "bdf7e46b17917151e77c07d6c0cf34566305834ba138bcf68bc93eac9092410f"
+        },
+        "split_id": "DEV-1000-KUS4-WIRE-4",
+        "split_identity_hash": "e335c74149794af0f2301954b6e92cde2a4134d65ebe6069173a1a556b7a04b3",
+        "supplied_block_counts": {
+          "slurp:devel:000011:audio-1497266596": 5,
+          "slurp:devel:000053:audio-1498758443": 8,
+          "slurp:devel:000058:audio-1488637952": 8,
+          "slurp:devel:000068:audio-1488550098": 7
+        },
+        "supplied_evidence_ids": {
+          "slurp:devel:000011:audio-1497266596": [
+            "value:intent-candidate:alarm_set",
+            "value:intent-candidate:datetime_convert",
+            "value:intent-candidate:general_greet",
+            "value:intent-candidate:general_joke",
+            "value:intent-candidate:play_audiobook"
+          ],
+          "slurp:devel:000053:audio-1498758443": [
+            "value:intent-candidate:audio_volume_up",
+            "value:intent-candidate:calendar_remove",
+            "value:intent-candidate:datetime_query",
+            "value:intent-candidate:email_addcontact",
+            "value:intent-candidate:email_sendemail",
+            "value:intent-candidate:iot_cleaning",
+            "value:intent-candidate:iot_coffee",
+            "value:intent-candidate:weather_query"
+          ],
+          "slurp:devel:000058:audio-1488637952": [
+            "value:intent-candidate:datetime_query",
+            "value:intent-candidate:email_querycontact",
+            "value:intent-candidate:iot_hue_lightup",
+            "value:intent-candidate:music_settings",
+            "value:intent-candidate:play_audiobook",
+            "value:intent-candidate:play_podcasts",
+            "value:intent-candidate:qa_currency",
+            "value:intent-candidate:transport_query"
+          ],
+          "slurp:devel:000068:audio-1488550098": [
+            "value:intent-candidate:cooking_query",
+            "value:intent-candidate:general_joke",
+            "value:intent-candidate:iot_hue_lightdim",
+            "value:intent-candidate:iot_hue_lighton",
+            "value:intent-candidate:lists_query",
+            "value:intent-candidate:news_query",
+            "value:intent-candidate:transport_ticket"
+          ]
+        },
+        "system_message_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db",
+        "typed_knowledge_blocks_sorted": [
+          5,
+          7,
+          8,
+          8
+        ],
+        "typed_knowledge_blocks_total": 28
+      }
+    },
+    "experiment": "slurp-kus4-wire-check-4-v1",
+    "problems": [],
+    "status": "PASS"
+  },
+  "row_id": "SAEA-SLURP-MF-KU-S4-PREP-V1",
+  "schema": "saea-slurp-kus4-wire-check-v1",
+  "servers_started": 0,
+  "sockets_opened": 0,
+  "status": "PASS",
+  "study": "speech-aware-evidence-acquisition"
+}
