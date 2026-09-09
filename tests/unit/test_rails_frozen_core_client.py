@@ -11,7 +11,7 @@ import hashlib
 import json
 import struct
 import wave
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 import pytest
@@ -385,6 +385,27 @@ def test_prevalidated_packet_set_skips_constructor_scan(
     assert not prepared.matches(
         feature_root, {"s1": bindings["s1"]}, _binding(world)
     )
+
+
+def test_prevalidated_packet_set_rejects_a_different_audio_root(tmp_path):
+    world = _World(tmp_path)
+    feature_root, _packet, bindings = _speech_feature_world(world, tmp_path)
+    from speech_aware_evidence_acquisition.rails import core_client
+
+    prepared = core_client.validate_speech_packet_set(feature_root, bindings, _binding(world))
+    other_root = tmp_path / "other-audio-root"
+    other_root.mkdir()
+    assert not prepared.matches(feature_root, bindings, replace(_binding(world), data_root=other_root))
+
+
+def test_prevalidated_packet_set_rejects_unsupported_arm(tmp_path):
+    world = _World(tmp_path)
+    feature_root, _packet, bindings = _speech_feature_world(world, tmp_path)
+    from speech_aware_evidence_acquisition.rails import core_client
+
+    prepared = core_client.validate_speech_packet_set(feature_root, bindings, _binding(world))
+    with pytest.raises(FrozenCoreClientError, match="only valid"):
+        _client(world, tmp_path, validated_packet_set=prepared)
 
 
 def test_prevalidated_packet_set_rejects_mismatched_bindings(tmp_path):

@@ -273,14 +273,15 @@ DEFAULT_RAILS_ARM = "fixed-legal-context"
 class ValidatedSpeechPacketSet:
     """Immutable whole-roster packet validation prepared before serving.
 
-    This object is intentionally not serializable input. It can only be
-    produced by :func:`validate_speech_packet_set`, which reads and verifies
-    the packet chunks and bound audio bytes through the existing routines.
+    This object is an in-memory cache value. Callers must obtain it from
+    :func:`validate_speech_packet_set`; the client independently verifies its
+    bindings before using it and always revalidates request packet bytes.
     """
 
     feature_root: Path
     bindings: tuple[tuple[str, str, str], ...]
     media_relpaths: tuple[tuple[str, str], ...]
+    data_root: Path
     packets: tuple[SpeechFeaturePacketV1, ...]
     decoder_gguf_sha256: str
     n_embd: int
@@ -310,8 +311,13 @@ class ValidatedSpeechPacketSet:
             for sample_id, entry in packet_bindings.items()
         ))
         media = tuple(sorted(binding.media_relpaths.items()))
+        try:
+            data_root = Path(binding.data_root).resolve(strict=True)
+        except OSError:
+            return False
         return (
             root == self.feature_root
+            and data_root == self.data_root
             and expected == self.bindings
             and media == self.media_relpaths
             and {sample_id for sample_id, _, _ in self.bindings}
@@ -323,8 +329,12 @@ def validate_speech_packet_set(
     feature_root: Path,
     packet_bindings: Mapping[str, Mapping[str, str]],
     binding: PayloadBindingContext,
+    *,
+    workers: int = 8,
 ) -> ValidatedSpeechPacketSet:
-    """Validate every bound packet and audio file using the existing loaders."""
+    """Validate every bound packet and audio file using the shared loaders."""
+    if isinstance(workers, bool) or not isinstance(workers, int) or workers <= 0:
+        raise FrozenCoreClientError("speech packet validation workers must be positive")
     try:
         root = Path(feature_root).resolve(strict=True)
     except OSError as error:
@@ -343,18 +353,27 @@ def validate_speech_packet_set(
             raise FrozenCoreClientError(f"speech packet binding for {sample_id!r} is malformed")
         descriptors.append({"packet_id": packet_id, "sha256": sha256})
         bindings.append((sample_id, packet_id, sha256))
-    packets = load_speech_feature_packets(root, tuple(descriptors), workers=8)
-    for sample_id, packet in zip(ordered, packets, strict=True):
+    packets = load_speech_feature_packets(root, tuple(descriptors), workers=workers)
+
+    def audio_sha256(sample_id: str) -> str:
         audio_path = Path(binding.data_root) / binding.media_relpaths[sample_id]
-        if packet.audio_sha256 != hashlib.sha256(audio_path.read_bytes()).hexdigest():
+        return hashlib.sha256(audio_path.read_bytes()).hexdigest()
+
+    with ThreadPoolExecutor(
+        max_workers=min(workers, len(ordered)), thread_name_prefix="saea-speech-audio"
+    ) as pool:
+        audio_sha256s = tuple(pool.map(audio_sha256, ordered))
+    for sample_id, packet, audio_digest in zip(ordered, packets, audio_sha256s, strict=True):
+        if packet.audio_sha256 != audio_digest:
             raise FrozenCoreClientError(f"speech packet bound to {sample_id!r} does not match its audio bytes")
     decoders = {packet.decoder_gguf_sha256 for packet in packets}
     dimensions = {chunk.n_embd for packet in packets for chunk in packet.chunks}
     if len(decoders) != 1 or len(dimensions) != 1:
         raise FrozenCoreClientError("speech packet bindings must share one decoder identity and dimension")
     return ValidatedSpeechPacketSet(
-        root, tuple(bindings), tuple(sorted(binding.media_relpaths.items())), packets,
-        next(iter(decoders)), next(iter(dimensions)),
+        root, tuple(bindings), tuple(sorted(binding.media_relpaths.items())),
+        Path(binding.data_root).resolve(strict=True), packets, next(iter(decoders)),
+        next(iter(dimensions)),
     )
 
 
@@ -1372,69 +1391,21 @@ class FrozenCoreClient:
                     "speech-feature-query requires speech_feature_root and complete "
                     "speech_packet_bindings"
                 )
-            try:
-                root = Path(speech_feature_root).resolve(strict=True)
-            except OSError as error:
-                raise FrozenCoreClientError(
-                    f"speech_feature_root is unavailable: {error}"
-                ) from error
-            if not root.is_dir():
-                raise FrozenCoreClientError("speech_feature_root must be a directory")
-            if set(speech_packet_bindings) != set(binding.allowed_sample_ids):
-                raise FrozenCoreClientError(
-                    "speech_packet_bindings must materialize every target sample before inference"
-                )
-            verified: dict[str, dict[str, str]] = {}
-            ordered_sample_ids = tuple(sorted(speech_packet_bindings))
-            ordered_descriptors: list[dict[str, object]] = []
-            for sample_id in ordered_sample_ids:
-                descriptor = speech_packet_bindings[sample_id]
-                if not isinstance(descriptor, Mapping) or set(descriptor) != {
-                    "packet_id",
-                    "sha256",
-                }:
-                    raise FrozenCoreClientError(
-                        f"speech packet binding for {sample_id!r} must have exact "
-                        "packet_id/sha256 keys"
-                    )
-                ordered_descriptors.append(dict(descriptor))
-            packets = load_speech_feature_packets(
-                root,
-                tuple(ordered_descriptors),
-                workers=8,
+            prepared = validate_speech_packet_set(
+                speech_feature_root, speech_packet_bindings, binding, workers=8
             )
-
-            def audio_sha256(sample_id: str) -> str:
-                audio_path = Path(binding.data_root) / binding.media_relpaths[sample_id]
-                return hashlib.sha256(audio_path.read_bytes()).hexdigest()
-
-            with ThreadPoolExecutor(
-                max_workers=min(8, len(ordered_sample_ids)),
-                thread_name_prefix="saea-speech-audio",
-            ) as pool:
-                audio_sha256s = tuple(pool.map(audio_sha256, ordered_sample_ids))
-            for sample_id, packet, audio_digest in zip(
-                ordered_sample_ids, packets, audio_sha256s, strict=True
-            ):
-                if packet.audio_sha256 != audio_digest:
-                    raise FrozenCoreClientError(
-                        f"speech packet bound to {sample_id!r} does not match its audio bytes"
-                    )
-                verified[sample_id] = {
-                    "packet_id": packet.packet_id,
-                    "sha256": packet.packet_sha256,
-                }
-            decoder_hashes = {packet.decoder_gguf_sha256 for packet in packets}
-            dimensions = {chunk.n_embd for packet in packets for chunk in packet.chunks}
-            if len(decoder_hashes) != 1 or len(dimensions) != 1:
-                raise FrozenCoreClientError(
-                    "speech packet bindings must share one decoder identity and dimension"
-                )
-            self._speech_feature_root = root
-            self._speech_packet_bindings = verified
-            self._speech_decoder_gguf_sha256 = next(iter(decoder_hashes))
-            self._speech_n_embd = next(iter(dimensions))
-        elif speech_feature_root is not None or speech_packet_bindings is not None:
+            self._speech_feature_root = prepared.feature_root
+            self._speech_packet_bindings = {
+                sample_id: {"packet_id": packet_id, "sha256": sha256}
+                for sample_id, packet_id, sha256 in prepared.bindings
+            }
+            self._speech_decoder_gguf_sha256 = prepared.decoder_gguf_sha256
+            self._speech_n_embd = prepared.n_embd
+        elif (
+            speech_feature_root is not None
+            or speech_packet_bindings is not None
+            or validated_packet_set is not None
+        ):
             raise FrozenCoreClientError(
                 "speech feature bindings are only valid for the speech-feature-query arm"
             )

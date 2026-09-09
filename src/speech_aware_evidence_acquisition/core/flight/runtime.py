@@ -2025,7 +2025,8 @@ class FlightRuntime:
             if isinstance(binding, PayloadBindingContext):
                 validation_started = self._clock()
                 self._validated_packet_set = validate_speech_packet_set(
-                    self._speech_feature_root(), self.speech_packet_bindings(), binding
+                    self._speech_feature_root(), self.speech_packet_bindings(), binding,
+                    workers=resolved_workers,
                 )
                 packet_validation_seconds = max(
                     self._clock() - validation_started, 1e-9
