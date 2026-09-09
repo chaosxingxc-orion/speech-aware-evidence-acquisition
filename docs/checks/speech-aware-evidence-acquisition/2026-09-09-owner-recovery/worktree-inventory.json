@@ -1,0 +1,418 @@
+{
+  "schema": "saea-owner-recovery-worktree-inventory-v1",
+  "observed_at_utc": "2026-09-09T11:15:49.8623823Z",
+  "integrated_master": "557e6f10d85ce62e6ce79fd9a6e8ef7b433ce798",
+  "scope": "Git metadata only. No worktree was pruned or deleted. Main documentation is pending its recovery receipt commit.",
+  "worktrees": [
+    {
+      "path": "D:/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition",
+      "branch": "master",
+      "tip": "557e6f10d85ce62e6ce79fd9a6e8ef7b433ce798",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": [
+        " M docs/results/stage2-results-ledger.json",
+        " M docs/results/stage2-results-ledger.md",
+        " M docs/superpowers/plans/experiment-handoff/README.md",
+        " M docs/superpowers/plans/experiment-handoff/state.json",
+        "?? docs/checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/engineering-base-check.json",
+        "?? docs/checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/handoff-check.json",
+        "?? docs/checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/harness-admission-check.json",
+        "?? docs/checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/results-ledger-check.json",
+        "?? docs/checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/runtime-snapshot.json",
+        "?? docs/checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/runtime-source-hashes.json",
+        "?? docs/superpowers/plans/experiment-handoff/RECOVERY-PLAN.md"
+      ]
+    },
+    {
+      "path": "/tmp/saea-baseline-532cbb43",
+      "branch": [],
+      "tip": "532cbb434dc3f696711abaad13c75fb256b43354",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": false,
+      "status_porcelain": []
+    },
+    {
+      "path": "C:/Users/35686/.codex/worktrees/9555/speech-aware-evidence-acquisition",
+      "branch": "codex/stage2-speech-native-agentloop",
+      "tip": "5c8f32c11a505130e049183450fcfda3af981e8e",
+      "ancestor_of_integrated_master": false,
+      "accessible_from_windows": true,
+      "status_porcelain": [
+        " M src/speech_aware_evidence_acquisition/rails/late_interaction_engine.py",
+        " M src/speech_aware_evidence_acquisition/rails/runner.py",
+        " M src/speech_aware_evidence_acquisition/rails/scientific_controller.py",
+        " M tests/unit/test_late_interaction_action_engine.py",
+        " M tests/unit/test_scientific_controller.py"
+      ]
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-a2t-d1fix",
+      "branch": "wt/a2t-d1fix",
+      "tip": "480a6e2659c9194d45793b762cc773f4801b4d19",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-a2t-scorer",
+      "branch": "wt/a2t-scorer",
+      "tip": "0b07c75a52802ef8e3bd5a708e9d9ef34614aee0",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-a2t16k",
+      "branch": "wt/a2t16k",
+      "tip": "8b9ca3f78db19b7bef91ee44272c2fe084e776d5",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-a2tgq",
+      "branch": "wt/a2tgq",
+      "tip": "73a55f638363d765b6b0a2d1786792d1df6e79c6",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-agentsys",
+      "branch": "wt/agentsys",
+      "tip": "f237860858992e42ee5365970b3c840027b6494c",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-codex-owner-recovery",
+      "branch": "codex/owner-recovery",
+      "tip": "6771fea28618f2ebe7149656e062e7a35dd116ac",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-confine",
+      "branch": "wt/confine",
+      "tip": "f3f6945040527bf1d5ad7130ce9ec9d89b0e8871",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-dr1",
+      "branch": "wt/dr1",
+      "tip": "0b026360a37794679c2289c82e8ccd90f602398f",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-e21loop",
+      "branch": "wt/e21loop",
+      "tip": "3fe634110834abd339cda36735a665a0659897f5",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-e7c",
+      "branch": "wt/e7c",
+      "tip": "adfea47ad5f045e5d697227d479d9e18f55f1343",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-enhance",
+      "branch": "wt/enhance",
+      "tip": "7bd54ed000098f9bfa491091cbbac97a660c70a9",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-kce1f",
+      "branch": "wt/kce1f",
+      "tip": "f8e047e3e29963cdb8cb06de8b76645ccf16cbf1",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-kce1fv2",
+      "branch": "wt/kce1fv2",
+      "tip": "f25632831d3be44babb4a2517861814199413aad",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-kce1fverdict",
+      "branch": "wt/kce1fverdict",
+      "tip": "d43e4abd204a8cbd225c0436fbb063c05e8e2c95",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-kce2",
+      "branch": "wt/kce2",
+      "tip": "a8d5056b81e524e0580ce5a74bec2975d79d697d",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-kus3",
+      "branch": "wt/kus3",
+      "tip": "3aedf9efd3fd2c997609bf736a253b1cafb8f468",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-kus3seed",
+      "branch": "wt/kus3seed",
+      "tip": "4279a314fe5c3b4c645f27949dd934a0ee6441e0",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-kus3v",
+      "branch": "wt/kus3v",
+      "tip": "110874c90ea67430a9922c14c2a8b1b6e0230ae8",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-kus4",
+      "branch": "wt/kus4",
+      "tip": "b93c07d33ff8710b021a8b466e4c0e4f44383f75",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-kus4pk",
+      "branch": "wt/kus4pk",
+      "tip": "39172782c6992db4e50e3154e68de46344884f58",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": [
+        "?? configs/dataset/slurp-speech-native-kus4-exemplars-7489.json",
+        "?? configs/experiment/slurp-kus4-exemplar-packets-preprocess.json",
+        "?? docs/receipts/artifacts/d1-slurp-kus4-exemplars-v1.json",
+        "?? docs/receipts/probe-samples/SLURP-KUS4-EXEMPLARS-V1.json",
+        "?? docs/receipts/rosters/slurp-kus4-exemplars-v1.json",
+        "?? scripts/slurp_kus4_exemplar_packets.py",
+        "?? tests/unit/test_slurp_kus4_exemplar_packets.py"
+      ]
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-logprob",
+      "branch": "wt/logprob",
+      "tip": "0b23322f164135492b447c11548c69781ef3987f",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-lp2",
+      "branch": "wt/lp2",
+      "tip": "f2e3f20cad7321e7a67b474cc2969388a7ad33a3",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-mf10",
+      "branch": "wt/mf10",
+      "tip": "e79f4fe3031093e82fc5ab47d6647088b17e511d",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-mf8",
+      "branch": "wt/mf8",
+      "tip": "45043e5eaeaeb2d06777e31e927c97c954ce9e0f",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-mf9",
+      "branch": "wt/mf9",
+      "tip": "97785a4507ed038979354ac69f8a0a3475e6225a",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-obse1",
+      "branch": "wt/obse1",
+      "tip": "009af93e3d41e50daa8a06e603313ab5e43dd408",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-obse1b",
+      "branch": "wt/obse1b",
+      "tip": "1d2091099defa7d36c590c3e42dea483ef706daa",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-obse1harm",
+      "branch": "wt/obse1harm",
+      "tip": "471a25fbbfb5e8098359cf6d12433c7524c2ce1f",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-obse1seam",
+      "branch": "wt/obse1seam",
+      "tip": "5dd3694f9442e819245182102e38da05b9f3de7f",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-obspipe",
+      "branch": "wt/obspipe",
+      "tip": "94a77ed6e18a90b75c5dfb8a8508a1c51a144195",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-ojw-r7",
+      "branch": "wt/ojw-r7",
+      "tip": "10dca085e27e6ab59c5d79d653d5977a6119f4da",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-ojw-r89",
+      "branch": "wt/ojw-r89",
+      "tip": "ca34fbbe5052cd338a738a00225407fefac03a54",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-ojw-w1",
+      "branch": "wt/ojw-w1",
+      "tip": "0c6b4f536fa6f04510b7731d8e04bb096a979dce",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-ojw-w2",
+      "branch": "wt/ojw-w2",
+      "tip": "8273c20c67a3581f40c32fab796deba52d5d7f21",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-ojw-w3",
+      "branch": "wt/ojw-w3",
+      "tip": "8387496abff30afc1777687cc10e2edf58e606bf",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-ojw-w4",
+      "branch": "wt/ojw-w4",
+      "tip": "f8c531c6b53c01493dae26ecb4ba8aece7451761",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-pairfix",
+      "branch": "wt/pairfix",
+      "tip": "ca4a64531704c9ca645293ddfefed095df3b48c1",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-pemb-repin",
+      "branch": "wt/pemb-repin",
+      "tip": "e1dc9ee000c1676d0107119df10d8c5a0485a722",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-results-ledger",
+      "branch": "wt/results-ledger",
+      "tip": "1165f73f99028ed7f925beef8198ab48b340cd5c",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-stage2a-repin",
+      "branch": "wt/stage2a-repin",
+      "tip": "c3f1c65c3b5899313a052cd9f765eb0e37c381af",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-ts2x",
+      "branch": "wt/ts2x",
+      "tip": "95a7c2e5e2f966dbcb61d122420bd4f9ea0f4db7",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-ts2y",
+      "branch": "wt/ts2y",
+      "tip": "b0a0c2e648de285e9eaa7dd3082d8baa1043c5ab",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-verdict",
+      "branch": "wt/verdict",
+      "tip": "da34fc31f42834a2285a5fda745e7b674abcf4fc",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-wave9",
+      "branch": "wt/wave9",
+      "tip": "33e8c831880ba093616414bf9cb1a60405ed4145",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    },
+    {
+      "path": "D:/chao_workspace/saea-worktrees/wt-wirepay",
+      "branch": "wt/wirepay",
+      "tip": "bb614073bd134b1d602e93659348b63a9c2efdff",
+      "ancestor_of_integrated_master": true,
+      "accessible_from_windows": true,
+      "status_porcelain": []
+    }
+  ]
+}

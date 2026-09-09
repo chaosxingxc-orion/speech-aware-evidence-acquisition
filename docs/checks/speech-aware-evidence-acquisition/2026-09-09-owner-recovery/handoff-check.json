@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "status": "OWNER_DIRECTED_RECOVERY",
+  "checked_at_utc": "2026-09-09T11:14:46.473420+00:00",
+  "current_head": "557e6f10d85ce62e6ce79fd9a6e8ef7b433ce798",
+  "dirty_file_counts": {
+    "tracked": 4,
+    "untracked": 6,
+    "staged": 0,
+    "unstaged": 4,
+    "total": 10
+  },
+  "warnings": [
+    "The working tree has local changes; preserve and reconcile them."
+  ],
+  "errors": [],
+  "execution_authority": "NOT_EVALUATED",
+  "launch_allowed": false,
+  "request_id": "SAEA-HANDOFF-20260909-01",
+  "generation": 3,
+  "snapshot_commit": "557e6f10d85ce62e6ce79fd9a6e8ef7b433ce798",
+  "execution_owner": "Codex",
+  "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-RECOVERY-001.md"
+}

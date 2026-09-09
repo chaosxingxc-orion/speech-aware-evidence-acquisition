@@ -1,0 +1,57 @@
+{
+  "default_plans": [
+    {
+      "carrier": "earnings21-original",
+      "config": "configs/baseline/e21-buf90-zero-locked-scored4-prefetch1.json"
+    }
+  ],
+  "entries": [
+    {
+      "blocked": true,
+      "blocked_reason": "provisional obligation UNMET",
+      "carrier": "earnings21-original",
+      "in_default_plans": [],
+      "module": "substitution-only repair with the ConEC brief",
+      "status": "ADMITTED",
+      "switch_key": "judges.<phase>.judges",
+      "table": "judges"
+    },
+    {
+      "blocked": false,
+      "blocked_reason": "",
+      "carrier": "earnings21-original",
+      "in_default_plans": [
+        "configs/baseline/e21-buf90-zero-locked-scored4-prefetch1.json"
+      ],
+      "module": "cross-call dispatcher (obs_prefetch_depth 1)",
+      "status": "NEUTRAL",
+      "switch_key": "obs_prefetch_depth",
+      "table": "run"
+    },
+    {
+      "blocked": true,
+      "blocked_reason": "status HARMFUL",
+      "carrier": "slurp",
+      "in_default_plans": [],
+      "module": "silence tail on the delivered clip (tail_silence_seconds 2.0)",
+      "status": "HARMFUL",
+      "switch_key": "observe.<phase>.tail_silence_seconds",
+      "table": "observe"
+    },
+    {
+      "blocked": true,
+      "blocked_reason": "status HARMFUL",
+      "carrier": "slurp",
+      "in_default_plans": [],
+      "module": "decode-confidence flag from the sealed trace (the judge replay-logprob-flag-v1, fed by decoding_params.logprobs / top_logprobs)",
+      "status": "HARMFUL",
+      "switch_key": "judges.<phase>.judges",
+      "table": "judges"
+    }
+  ],
+  "failures": [],
+  "passed": true,
+  "receipt": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/harness-admission.json",
+  "repo_root": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition",
+  "schema": "saea-harness-admission-check-v1"
+}

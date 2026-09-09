@@ -1,8 +1,8 @@
 # Stage-2 results ledger
 
-One row per cell, grouped by carrier and by layer. Owner Decision 14-Q, 2026-09-09. Model-free: this document was assembled with zero model, GPU, tool, embedder, tokenizer, network and audio-decode contacts, from verdict notes and receipts already sealed in this repository.
+One row per cell, grouped by carrier and by layer. Owner Decision 14-Q, 2026-09-09. Model-free: this document was assembled with zero model, GPU, tool, embedder, tokenizer, network and audio-decode contacts, from existing verdict notes and receipts, with the owner recovery adding an operational metadata snapshot.
 
-**Scope.** Every cell decided by a verdict note dated 2026-09-04 to 2026-09-09, plus the three entries of `docs/receipts/harness-admission.json` and the cells registered but not yet decided at that cut. Machine-readable twin: `docs/results/stage2-results-ledger.json`, in which every number carries its own `source` path. Checked by `scripts/checks/results_ledger_check.py`.
+**Scope.** Every cell decided by a verdict note dated 2026-09-04 to 2026-09-09, plus the four entries of docs/receipts/harness-admission.json and registered cells whose scientific decisions remain pending; the 2026-09-09 owner recovery adds operational completion for all seven KV flights without inspecting their score values. Machine-readable twin: `docs/results/stage2-results-ledger.json`. Checked by `scripts/checks/results_ledger_check.py`.
 
 ## The rules this ledger follows
 
@@ -42,11 +42,13 @@ ADMITTED-provisional is spelled here as status ADMITTED plus a `provisional` fie
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|
 | **Earnings-21** | corpus WER 8.19952 % / ConEC PERSON 22.48886 on all 44 discovery calls (SAEA-E21-FULL44-DIRECT-BASELINE-V2, 2026-09-04) | MEASURED 2026-09-08 - corpus WER half-width 0.05793, PERSON 0.25009, ORG 0.35609, non-entity 0.06475, numeric 0.15651, semantic 0.00148 (advisory, its null excludes zero) | 8 | 2 | 1 | 1 | 4 | 1 | 3 |
 | **Earnings-22** | DEV arm A corpus WER 17.4012 % on the 1,500-row dev subset; ESB test 15.9365 % on 2,735 published utterances (SAEA-E22-ESB-SHORTFORM-ALIGNMENT-V1, 2026-09-04) | MEASURED 2026-09-06 on the 1,432 cap-inert rows - corpus WER -0.0844 [-0.2356, +0.0692], half-width 0.1524 | 9 | 3 | 1 | 0 | 5 | 1 | 1 |
-| **SLURP** | intent 73.10 / micro SLU-F1 35.80 on DEV-1000 under slurp-slu-official-projected-v2 (SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1 re-locked 2026-09-06) | MEASURED 2026-09-09 - intent half-width 0.9195, micro SLU-F1 1.1804, scenario 0.8255, action 0.9790, per-row SLU-F1 0.8188 | 7 | 1 | 0 | 0 | 3 | 5 | 3 |
+| **SLURP** | intent 73.10 / micro SLU-F1 35.80 on DEV-1000 under slurp-slu-official-projected-v2 (SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1 re-locked 2026-09-06) | MEASURED 2026-09-09 - intent half-width 0.9195, micro SLU-F1 1.1804, scenario 0.8255, action 0.9790, per-row SLU-F1 0.8188 | 15 | 1 | 0 | 0 | 4 | 5 | 8 |
 | **Audio2Tool** | official-protocol pooled tool accuracy 61.40 % over the 4,000-row official population; no cell is an ACCEPTED alignment baseline | NOT MEASURED - every Audio2Tool interval in this ledger is read against zero | 8 | 0 | 0 | 0 | 8 | 0 | 3 |
-| **all four** | | | 32 | 6 | 2 | 1 | 20 | 7 | 10 |
+| **all four** | | | 40 | 6 | 2 | 1 | 21 | 7 | 15 |
 
-`instrument` counts the cells that decide nothing and exist to produce a comparator, a re-lock or a null band; SLURP additionally carries one `closed-unread` row (KU-S1, refused before registration). Counts are counts of the rows below, nothing else.
+`instrument` counts the cells that decide nothing and exist to produce a comparator, a re-lock or a null band; SLURP additionally carries one `closed-unread` row (KU-S1, refused before registration). Counts are counts of the rows below, nothing else. `flown` and scientific `pending` are independent: the seven KV rows count in both columns. This ledger now carries 53 rows.
+
+**Owner recovery, 2026-09-09.** Seven KV attempts are FINALIZED with COMPLETED manifests and successful scoring jobs; all seven scientific verdicts remain PENDING. Exposure-ledger closure, predecessor decisions, and the NEW500/estimator/process binding require reconciliation. Existing verdicts are preserved; this recovery is not a retrospective preregistration. Evidence: [runtime snapshot](../checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/runtime-snapshot.json) and [recovery plan](../superpowers/plans/experiment-handoff/RECOVERY-PLAN.md). Operational completion does not establish that the required KV-0 decision preceded its successors. No KV score value was read for this update.
 
 ---
 
@@ -846,28 +848,196 @@ ADMITTED-provisional is spelled here as status ADMITTED plus a `provisional` fie
 | named next step | the SLURP same-request null - the blocking next cell, now flown - and the `takeaway` / `iot` regression, a small enumerable set of rows whose sealed outputs both arms already carry. |
 | note | Every headline number ROSE and the cell is still refused: five gains above +4.9 pp sit beside five losses. This is a redistribution with a positive sum, and clause 3 is the clause that refuses to switch a redistribution on for everybody. The comparator does NOT move to the @ts2 media. |
 
-### Stage-2 construction (pending)
+### Stage-2 construction (execution complete; scientific verdict pending)
 
-#### SLURP-KV-0 - KV-0 - the slot knowledge-view family, first entry
+#### SLURP-KV-0 - KV-0 - the example-free slot-schema base
 
 | field | value |
 |---|---|
-| **status** | **PENDING** |
-| status is quoted from | not decided - no verdict note exists |
-| date | 2026-09-08 |
-| ledger run id(s) | `SAEA-SLURP-MF-KV-VIEWS-PREP-V1` |
+| **status** | **PENDING - scientific verdict** |
+| execution status | **FINALIZED / COMPLETED**; 1 scoring job succeeded, 0 failed; score values uninspected |
+| status is quoted from | scientific verdict pending; execution completion is metadata only |
+| date | 2026-09-09 |
+| ledger run id(s) | `SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1` |
+| attempt | `attempt-20260909T062500Z-74bfac` |
+| sealed at UTC | 2026-09-09T06:42:45Z |
+| flight study commit | `2afb4b5cdc33f13a73a9b5d11a246f9a6858868b` |
+| exposure closure at snapshot | `consumed=no`; reconcile with completed runtime metadata |
 | verdict note | none |
 | preregistration | `docs/readiness/2026-09-08-slurp-slot-knowledge-views-kv-v1-preregistration.md` |
-| receipt | `docs/checks/speech-aware-evidence-acquisition/2026-09-08-slurp-kv-views-wire-check/` |
-| comparator and its sealed numbers | the re-locked closed-list comparator at intent 73.10 / SLU-F1 35.80. |
-| the preregistered rule | see the preregistration; section 6.4's margin is explicitly superseded by the SLURP own-null replicate. |
-| primary result | not measured. |
-| margin used | **own-null (restated from the null verdict).** Own-null: "KV-0's non-inferiority margin on micro SLU-F1 is 1.1804 pp, and on the per-row estimand 0.8188 pp" - section 6.4 of the KV preregistration is superseded by section 4 of the null verdict. |
-| guards | not evaluated. |
+| receipt | `docs/checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/runtime-snapshot.json` |
+| comparator and its sealed numbers | SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1, sealed manifest sha256 088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08 -- the same roster, the same contacts, the same instruction bytes apart from the block's examples. No twin: KV-0 IS the null view. |
+| the preregistered rule | KV-0 is a SUBTRACTION and is read against KC-S1b under the family's non-inferiority rule, not under a gain rule. NEUTRAL (and the family's base) iff the paired per-sample official SLU-F1 CI90 lower bound on the unexposed NEW500 is above the non-inferiority margin taken from the carrier's own null, with the normalized secondary agreeing in sign. ADMITTED if the lower bound is above 0 -- the five examples were costing the arm. HARMFUL if the upper bound is below the margin, in which case the whole family is re-designed around a block that keeps its examples and no KV cell above KV-0 flies. Intent is identical by construction on every arm and is asserted row by row. This records the original rule; recovery has not applied it or changed it. |
+| primary result | The complete-manifest scoring job succeeded. No score value was inspected during recovery, and no scientific result or verdict is entered here. |
+| margin used | **own-null attribution retained; population, estimator and process binding unresolved.** The own-null verdict section 4 historically states 1.1804 pp for pooled DEV1000 micro SLU-F1 and 0.8188 pp for its per-row estimand, superseding the imported reference in KV section 6.4. Those statements do not establish a matching NEW500 per-row margin or np4/process binding for this family. All seven treatment flights already exist; no margin or preregistration may be changed retrospectively to decide them. |
+| guards | No scientific guard was evaluated in this recovery. Locate a prior KV-0 read/admission record and reconcile the predecessor gate before any family verdict. Later arms were finalized, but the inspected checkout has no record establishing that the required prior decision occurred. |
 | harness-admission entry | none |
 | citable sentence | none |
-| GPU-hours and contacts | model-free preparation only: SAEA-SLURP-MF-KV-VIEWS-PREP-V1, 0 calls, 0 GPU hours. |
-| named next step | KV-0's own preregistration section 6.4 must be restated from the measured null before that cell flies. |
+| GPU-hours and contacts | 1,000 metered model contacts; 2884.7936875 speech-audio seconds; registered caps 1,050 contacts and 3,000 seconds. Realized GPU hours are not stated in the operational snapshot. |
+| named next step | Reconcile the completed attempt with its consumed=no exposure row; locate any earlier read/decision or document the sequence deviation. Register any new model-free result read first. Preserve sealed artifacts and original rules; unresolved analysis remains descriptive until its authority is settled. |
+| note | Execution complete does not mean scientific admission. This row is counted as flown and scientifically pending. Do not re-fly or re-score it merely to recover the history. |
+
+#### SLURP-KV-2 - KV-2 - TRAIN vocabulary cards
+
+| field | value |
+|---|---|
+| **status** | **PENDING - scientific verdict** |
+| execution status | **FINALIZED / COMPLETED**; 1 scoring job succeeded, 0 failed; score values uninspected |
+| status is quoted from | scientific verdict pending; execution completion is metadata only |
+| date | 2026-09-09 |
+| ledger run id(s) | `SAEA-SLURP-KV2-CARDS-DEV1000-V1` |
+| attempt | `attempt-20260909T064623Z-2a0ef7` |
+| sealed at UTC | 2026-09-09T07:13:59Z |
+| flight study commit | `2afb4b5cdc33f13a73a9b5d11a246f9a6858868b` |
+| exposure closure at snapshot | `consumed=no`; reconcile with completed runtime metadata |
+| verdict note | none |
+| preregistration | `docs/readiness/2026-09-08-slurp-slot-knowledge-views-kv-v1-preregistration.md` |
+| receipt | `docs/checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/runtime-snapshot.json` |
+| comparator and its sealed numbers | SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1 (the family base) with SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1, sealed manifest sha256 088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08 reported beside it; the form twin is SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1. |
+| the preregistered rule | ADMITTED iff, on the unexposed NEW500, the paired per-sample OFFICIAL SLU-F1 CI90 lower bound is above 0 against the sealed KV-0 rows AND above 0 against the form twin SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1, with the normalized secondary slurp-slu-f1-normalized-v1 AGREEING IN SIGN on both (MF-10 section 4.1). NULL if any interval includes 0. HARMFUL if an upper bound is below 0. The twin contrast is read twice: on the whole roster, and on the construction-fixed stratum of rows whose predicted intent rotates its view in place, where the twin is volume-matched to the character. Intent is identical by construction and asserted row by row; a non-zero intent delta is a defect, not a result. This records the original rule; recovery has not applied it or changed it. |
+| primary result | The complete-manifest scoring job succeeded. No score value was inspected during recovery, and no scientific result or verdict is entered here. |
+| margin used | **own-null attribution retained; population, estimator and process binding unresolved.** The own-null verdict section 4 historically states 1.1804 pp for pooled DEV1000 micro SLU-F1 and 0.8188 pp for its per-row estimand, superseding the imported reference in KV section 6.4. Those statements do not establish a matching NEW500 per-row margin or np4/process binding for this family. All seven treatment flights already exist; no margin or preregistration may be changed retrospectively to decide them. |
+| guards | No scientific guard was evaluated in this recovery. Locate a prior KV-0 read/admission record and reconcile the predecessor gate before any family verdict. Later arms were finalized, but the inspected checkout has no record establishing that the required prior decision occurred. |
+| harness-admission entry | none |
+| citable sentence | none |
+| GPU-hours and contacts | 1,000 metered model contacts; 2884.7936875 speech-audio seconds; registered caps 1,050 contacts and 3,000 seconds. Realized GPU hours are not stated in the operational snapshot. |
+| named next step | Reconcile the completed attempt with its consumed=no exposure row; locate any earlier read/decision or document the sequence deviation. Register any new model-free result read first. Preserve sealed artifacts and original rules; unresolved analysis remains descriptive until its authority is settled. |
+| note | Execution complete does not mean scientific admission. This row is counted as flown and scientifically pending. Do not re-fly or re-score it merely to recover the history. |
+
+#### SLURP-KV-2-TWIN - KV-2 form twin - vocabulary cards assigned to other types
+
+| field | value |
+|---|---|
+| **status** | **PENDING - scientific verdict** |
+| execution status | **FINALIZED / COMPLETED**; 1 scoring job succeeded, 0 failed; score values uninspected |
+| status is quoted from | scientific verdict pending; execution completion is metadata only |
+| date | 2026-09-09 |
+| ledger run id(s) | `SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1` |
+| attempt | `attempt-20260909T071753Z-548ca4` |
+| sealed at UTC | 2026-09-09T07:44:55Z |
+| flight study commit | `2afb4b5cdc33f13a73a9b5d11a246f9a6858868b` |
+| exposure closure at snapshot | `consumed=no`; reconcile with completed runtime metadata |
+| verdict note | none |
+| preregistration | `docs/readiness/2026-09-08-slurp-slot-knowledge-views-kv-v1-preregistration.md` |
+| receipt | `docs/checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/runtime-snapshot.json` |
+| comparator and its sealed numbers | SAEA-SLURP-KV2-CARDS-DEV1000-V1; the pair is the twin contrast of the KV-2 decision rule. |
+| the preregistered rule | This arm carries no admission rule of its own: it exists to be subtracted from KV-2. It is reported with its own per-stratum table and its block-volume covariate. This records the original rule; recovery has not applied it or changed it. |
+| primary result | The complete-manifest scoring job succeeded. No score value was inspected during recovery, and no scientific result or verdict is entered here. |
+| margin used | **own-null attribution retained; population, estimator and process binding unresolved.** The own-null verdict section 4 historically states 1.1804 pp for pooled DEV1000 micro SLU-F1 and 0.8188 pp for its per-row estimand, superseding the imported reference in KV section 6.4. Those statements do not establish a matching NEW500 per-row margin or np4/process binding for this family. All seven treatment flights already exist; no margin or preregistration may be changed retrospectively to decide them. |
+| guards | No scientific guard was evaluated in this recovery. Locate a prior KV-0 read/admission record and reconcile the predecessor gate before any family verdict. Later arms were finalized, but the inspected checkout has no record establishing that the required prior decision occurred. |
+| harness-admission entry | none |
+| citable sentence | none |
+| GPU-hours and contacts | 1,000 metered model contacts; 2884.7936875 speech-audio seconds; registered caps 1,050 contacts and 3,000 seconds. Realized GPU hours are not stated in the operational snapshot. |
+| named next step | Reconcile the completed attempt with its consumed=no exposure row; locate any earlier read/decision or document the sequence deviation. Register any new model-free result read first. Preserve sealed artifacts and original rules; unresolved analysis remains descriptive until its authority is settled. |
+| note | Execution complete does not mean scientific admission. This row is counted as flown and scientifically pending. Do not re-fly or re-score it merely to recover the history. |
+
+#### SLURP-KV-1 - KV-1 - TRAIN-derived type descriptions
+
+| field | value |
+|---|---|
+| **status** | **PENDING - scientific verdict** |
+| execution status | **FINALIZED / COMPLETED**; 1 scoring job succeeded, 0 failed; score values uninspected |
+| status is quoted from | scientific verdict pending; execution completion is metadata only |
+| date | 2026-09-09 |
+| ledger run id(s) | `SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1` |
+| attempt | `attempt-20260909T074825Z-0d2278` |
+| sealed at UTC | 2026-09-09T08:08:50Z |
+| flight study commit | `2afb4b5cdc33f13a73a9b5d11a246f9a6858868b` |
+| exposure closure at snapshot | `consumed=no`; reconcile with completed runtime metadata |
+| verdict note | none |
+| preregistration | `docs/readiness/2026-09-08-slurp-slot-knowledge-views-kv-v1-preregistration.md` |
+| receipt | `docs/checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/runtime-snapshot.json` |
+| comparator and its sealed numbers | SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1 (the family base); the form twin is SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1. |
+| the preregistered rule | ADMITTED iff, on the unexposed NEW500, the paired per-sample OFFICIAL SLU-F1 CI90 lower bound is above 0 against the sealed KV-0 rows AND above 0 against the form twin SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1, with the normalized secondary slurp-slu-f1-normalized-v1 AGREEING IN SIGN on both (MF-10 section 4.1). NULL if any interval includes 0. HARMFUL if an upper bound is below 0. The twin contrast is read twice: on the whole roster, and on the construction-fixed stratum of rows whose predicted intent rotates its view in place, where the twin is volume-matched to the character. Intent is identical by construction and asserted row by row; a non-zero intent delta is a defect, not a result. This records the original rule; recovery has not applied it or changed it. |
+| primary result | The complete-manifest scoring job succeeded. No score value was inspected during recovery, and no scientific result or verdict is entered here. |
+| margin used | **own-null attribution retained; population, estimator and process binding unresolved.** The own-null verdict section 4 historically states 1.1804 pp for pooled DEV1000 micro SLU-F1 and 0.8188 pp for its per-row estimand, superseding the imported reference in KV section 6.4. Those statements do not establish a matching NEW500 per-row margin or np4/process binding for this family. All seven treatment flights already exist; no margin or preregistration may be changed retrospectively to decide them. |
+| guards | No scientific guard was evaluated in this recovery. Locate a prior KV-0 read/admission record and reconcile the predecessor gate before any family verdict. Later arms were finalized, but the inspected checkout has no record establishing that the required prior decision occurred. |
+| harness-admission entry | none |
+| citable sentence | none |
+| GPU-hours and contacts | 1,000 metered model contacts; 2884.7936875 speech-audio seconds; registered caps 1,050 contacts and 3,000 seconds. Realized GPU hours are not stated in the operational snapshot. |
+| named next step | Reconcile the completed attempt with its consumed=no exposure row; locate any earlier read/decision or document the sequence deviation. Register any new model-free result read first. Preserve sealed artifacts and original rules; unresolved analysis remains descriptive until its authority is settled. |
+| note | Execution complete does not mean scientific admission. This row is counted as flown and scientifically pending. Do not re-fly or re-score it merely to recover the history. |
+
+#### SLURP-KV-1-TWIN - KV-1 form twin - descriptions assigned to other types
+
+| field | value |
+|---|---|
+| **status** | **PENDING - scientific verdict** |
+| execution status | **FINALIZED / COMPLETED**; 1 scoring job succeeded, 0 failed; score values uninspected |
+| status is quoted from | scientific verdict pending; execution completion is metadata only |
+| date | 2026-09-09 |
+| ledger run id(s) | `SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1` |
+| attempt | `attempt-20260909T081235Z-583048` |
+| sealed at UTC | 2026-09-09T08:34:16Z |
+| flight study commit | `2afb4b5cdc33f13a73a9b5d11a246f9a6858868b` |
+| exposure closure at snapshot | `consumed=no`; reconcile with completed runtime metadata |
+| verdict note | none |
+| preregistration | `docs/readiness/2026-09-08-slurp-slot-knowledge-views-kv-v1-preregistration.md` |
+| receipt | `docs/checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/runtime-snapshot.json` |
+| comparator and its sealed numbers | SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1; the pair is the twin contrast of the KV-1 rule. |
+| the preregistered rule | This arm carries no admission rule of its own: it exists to be subtracted from KV-1. This records the original rule; recovery has not applied it or changed it. |
+| primary result | The complete-manifest scoring job succeeded. No score value was inspected during recovery, and no scientific result or verdict is entered here. |
+| margin used | **own-null attribution retained; population, estimator and process binding unresolved.** The own-null verdict section 4 historically states 1.1804 pp for pooled DEV1000 micro SLU-F1 and 0.8188 pp for its per-row estimand, superseding the imported reference in KV section 6.4. Those statements do not establish a matching NEW500 per-row margin or np4/process binding for this family. All seven treatment flights already exist; no margin or preregistration may be changed retrospectively to decide them. |
+| guards | No scientific guard was evaluated in this recovery. Locate a prior KV-0 read/admission record and reconcile the predecessor gate before any family verdict. Later arms were finalized, but the inspected checkout has no record establishing that the required prior decision occurred. |
+| harness-admission entry | none |
+| citable sentence | none |
+| GPU-hours and contacts | 1,000 metered model contacts; 2884.7936875 speech-audio seconds; registered caps 1,050 contacts and 3,000 seconds. Realized GPU hours are not stated in the operational snapshot. |
+| named next step | Reconcile the completed attempt with its consumed=no exposure row; locate any earlier read/decision or document the sequence deviation. Register any new model-free result read first. Preserve sealed artifacts and original rules; unresolved analysis remains descriptive until its authority is settled. |
+| note | Execution complete does not mean scientific admission. This row is counted as flown and scientifically pending. Do not re-fly or re-score it merely to recover the history. |
+
+#### SLURP-KV-3 - KV-3 - TRAIN exemplars
+
+| field | value |
+|---|---|
+| **status** | **PENDING - scientific verdict** |
+| execution status | **FINALIZED / COMPLETED**; 1 scoring job succeeded, 0 failed; score values uninspected |
+| status is quoted from | scientific verdict pending; execution completion is metadata only |
+| date | 2026-09-09 |
+| ledger run id(s) | `SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1` |
+| attempt | `attempt-20260909T083938Z-401fca` |
+| sealed at UTC | 2026-09-09T08:59:48Z |
+| flight study commit | `2afb4b5cdc33f13a73a9b5d11a246f9a6858868b` |
+| exposure closure at snapshot | `consumed=no`; reconcile with completed runtime metadata |
+| verdict note | none |
+| preregistration | `docs/readiness/2026-09-08-slurp-slot-knowledge-views-kv-v1-preregistration.md` |
+| receipt | `docs/checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/runtime-snapshot.json` |
+| comparator and its sealed numbers | SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1 (the family base); the form twin is SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1. |
+| the preregistered rule | ADMITTED iff, on the unexposed NEW500, the paired per-sample OFFICIAL SLU-F1 CI90 lower bound is above 0 against the sealed KV-0 rows AND above 0 against the form twin SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1, with the normalized secondary slurp-slu-f1-normalized-v1 AGREEING IN SIGN on both (MF-10 section 4.1). NULL if any interval includes 0. HARMFUL if an upper bound is below 0. The twin contrast is read twice: on the whole roster, and on the construction-fixed stratum of rows whose predicted intent rotates its view in place, where the twin is volume-matched to the character. Intent is identical by construction and asserted row by row; a non-zero intent delta is a defect, not a result. This records the original rule; recovery has not applied it or changed it. |
+| primary result | The complete-manifest scoring job succeeded. No score value was inspected during recovery, and no scientific result or verdict is entered here. |
+| margin used | **own-null attribution retained; population, estimator and process binding unresolved.** The own-null verdict section 4 historically states 1.1804 pp for pooled DEV1000 micro SLU-F1 and 0.8188 pp for its per-row estimand, superseding the imported reference in KV section 6.4. Those statements do not establish a matching NEW500 per-row margin or np4/process binding for this family. All seven treatment flights already exist; no margin or preregistration may be changed retrospectively to decide them. |
+| guards | No scientific guard was evaluated in this recovery. Locate a prior KV-0 read/admission record and reconcile the predecessor gate before any family verdict. Later arms were finalized, but the inspected checkout has no record establishing that the required prior decision occurred. |
+| harness-admission entry | none |
+| citable sentence | none |
+| GPU-hours and contacts | 1,000 metered model contacts; 2884.7936875 speech-audio seconds; registered caps 1,050 contacts and 3,000 seconds. Realized GPU hours are not stated in the operational snapshot. |
+| named next step | Reconcile the completed attempt with its consumed=no exposure row; locate any earlier read/decision or document the sequence deviation. Register any new model-free result read first. Preserve sealed artifacts and original rules; unresolved analysis remains descriptive until its authority is settled. |
+| note | Execution complete does not mean scientific admission. This row is counted as flown and scientifically pending. Do not re-fly or re-score it merely to recover the history. |
+
+#### SLURP-KV-3-TWIN - KV-3 form twin - another intent's TRAIN exemplars
+
+| field | value |
+|---|---|
+| **status** | **PENDING - scientific verdict** |
+| execution status | **FINALIZED / COMPLETED**; 1 scoring job succeeded, 0 failed; score values uninspected |
+| status is quoted from | scientific verdict pending; execution completion is metadata only |
+| date | 2026-09-09 |
+| ledger run id(s) | `SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1` |
+| attempt | `attempt-20260909T090318Z-b9657d` |
+| sealed at UTC | 2026-09-09T09:22:21Z |
+| flight study commit | `2afb4b5cdc33f13a73a9b5d11a246f9a6858868b` |
+| exposure closure at snapshot | `consumed=no`; reconcile with completed runtime metadata |
+| verdict note | none |
+| preregistration | `docs/readiness/2026-09-08-slurp-slot-knowledge-views-kv-v1-preregistration.md` |
+| receipt | `docs/checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/runtime-snapshot.json` |
+| comparator and its sealed numbers | SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1; the pair is the twin contrast of the KV-3 rule. |
+| the preregistered rule | This arm carries no admission rule of its own: it exists to be subtracted from KV-3. This records the original rule; recovery has not applied it or changed it. |
+| primary result | The complete-manifest scoring job succeeded. No score value was inspected during recovery, and no scientific result or verdict is entered here. |
+| margin used | **own-null attribution retained; population, estimator and process binding unresolved.** The own-null verdict section 4 historically states 1.1804 pp for pooled DEV1000 micro SLU-F1 and 0.8188 pp for its per-row estimand, superseding the imported reference in KV section 6.4. Those statements do not establish a matching NEW500 per-row margin or np4/process binding for this family. All seven treatment flights already exist; no margin or preregistration may be changed retrospectively to decide them. |
+| guards | No scientific guard was evaluated in this recovery. Locate a prior KV-0 read/admission record and reconcile the predecessor gate before any family verdict. Later arms were finalized, but the inspected checkout has no record establishing that the required prior decision occurred. |
+| harness-admission entry | none |
+| citable sentence | none |
+| GPU-hours and contacts | 1,000 metered model contacts; 2884.7936875 speech-audio seconds; registered caps 1,050 contacts and 3,000 seconds. Realized GPU hours are not stated in the operational snapshot. |
+| named next step | Reconcile the completed attempt with its consumed=no exposure row; locate any earlier read/decision or document the sequence deviation. Register any new model-free result read first. Preserve sealed artifacts and original rules; unresolved analysis remains descriptive until its authority is settled. |
+| note | Execution complete does not mean scientific admission. This row is counted as flown and scientifically pending. Do not re-fly or re-score it merely to recover the history. |
 
 ### Stage-2 consumption (pending)
 
@@ -892,28 +1062,31 @@ ADMITTED-provisional is spelled here as status ADMITTED plus a `provisional` fie
 | GPU-hours and contacts | model-free preparation only: SAEA-SLURP-KU-S3-VECTORS-V1 and SAEA-SLURP-KU-S3-SNAPSHOT-V1, 0 calls and 0 GPU hours each. |
 | named next step | re-read against the section 4 margins before it flies - it currently reads against an imported bar 1.3x to 2.1x too narrow. |
 
-### Harness module (pending)
+### Harness module
 
 #### SLURP-LOGPROB - Logprob-as-judge probe - the frozen core's own per-token distribution recorded beside every answer
 
 | field | value |
 |---|---|
-| **status** | **PENDING** |
-| status is quoted from | registered, flight row open (consumed = no); the four-row smoke returned the object |
+| **status** | **NOT ADMITTED** |
+| status is quoted from | h1 |
+| the verdict's own words | # Verdict — the SLURP logprob-as-judge probe: **NOT ADMITTED** |
 | date | 2026-09-09 |
 | ledger run id(s) | `SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1` |
-| verdict note | none |
+| verdict note | `docs/readiness/2026-09-09-slurp-logprob-judge-probe-v1-verdict.md` |
 | preregistration | `docs/readiness/2026-09-08-slurp-logprob-judge-probe-v1-preregistration.md` |
-| receipt | `docs/checks/speech-aware-evidence-acquisition/2026-09-08-slurp-logprob-judge-probe-wire-check/` |
-| comparator and its sealed numbers | the sealed comparator's own file reused byte for byte; one factor moves and it is a declared decoding parameter (`decoding_params.logprobs` true, `top_logprobs` 5). |
-| the preregistered rule | see the preregistration; not applied - the thousand-row cell has not been read. |
-| primary result | not measured. |
-| margin used | **own-null (declared).** SLURP's own null, measured 2026-09-09. |
-| guards | the hard precondition is met: the four-row smoke returned a `choices[0].logprobs` object on the packet route on 4 of 4 rows. |
-| harness-admission entry | none |
+| receipt | `docs/checks/speech-aware-evidence-acquisition/2026-09-09-slurp-logprob-judge-probe-v1/` |
+| comparator and its sealed numbers | The sealed closed-list direct request is unchanged except for decoding_params.logprobs=true and top_logprobs=5. The admission bars concern the confidence signal; the greedy own-null replicate is the latency reference, not a replacement task baseline. |
+| the preregistered rule | Both preregistered conditions must hold for the whole-answer minimum logprob: intent-error AUROC >= 0.75 with CI90 lower bound >= 0.70, and precision at 86 flags > 72.09 percent with its CI90 lower bound strictly above 72.09 percent. Both conditions fail. |
+| primary result | the preregistered rule, applied mechanically by admission_verdict over the preregistered primary statistic min_token_logprob, 1,000 DEV-1000 rows in 124 speaker clusters, 10,000 replicates, seed 20260908, CI90. ARM A: AUROC for intent error 0.6935 [0.6660, 0.7202] against a bar of >= 0.75 with lower bound >= 0.70 -- fails on both halves. ARM B: precision at 86 flags 51.1628 % [42.5287, 59.0909] against a bar of > 72.09 % with the lower bound strictly above -- fails by 20.93 pp with the whole interval under the bar. BOTH ARMS FAIL, so NOT ADMITTED |
+| margin used | **none (fixed AUROC and precision bars); own null is the cost reference.** MEASURED, not imported. This row does not read a non-inferiority margin at all -- its rule is an AUROC bar and a precision bar, both fixed before the flight -- but it uses this carrier's own null for two things: as the wall-clock reference the decoding parameter's cost is measured against, and as the warning attached to the per-scenario table (that null moved intent by -5.13 to +5.41 pp across the same 18 strata with nothing changed). The 28.1 % flip floor the preregistration quoted is superseded by that null's measured 5.20 % projected-intent flip rate |
+| guards | the four-row smoke was a GATE, not a formality: the cell would not have flown without it. 4 of 4 rows returned a choices[0].logprobs object ON THE SPEECH-FEATURE PACKET ROUTE, with exactly five alternatives on every one of 162 generated tokens, the first alternative equal to the sampled token throughout, four MODEL_LOGPROBS records whose logprobs_sha256 recomputes and whose requested_top_logprobs is 5, and the answer reconstructed from the token stream equal to the sealed text on 4 of 4. the flag also loses to a free judge on this arm's own rows: recomputed here, the legality judge flags 42 rows at 66.67 % precision and 10.57 % recall on intent error at zero cost and zero latency, against the confidence flag's 86 rows at 51.16 % and 16.60 %. The union of all three reaches 50.41 % at 123 flags -- adding the confidence flag to the deterministic judges lowers their precision |
+| harness-admission entry | module *decode-confidence flag from the sealed trace (the judge replay-logprob-flag-v1, fed by decoding_params.logprobs / top_logprobs)*; switch `judges.<phase>.judges = ['replay-logprob-flag-v1'] (table: judges; OFF arm null)`; status **HARMFUL**; barred from every default plan because the admission gate failed; the recorded judge switch itself was not flown |
 | citable sentence | none |
-| GPU-hours and contacts | registered ceiling 1,050 calls / 3,000 speech-audio seconds / 0.5 GPU hours; the smoke row carries 12 calls / 60 s / 0.3 GPU hours. |
-| named next step | read against the section 4 margins, which replace the 28 % flip floor this probe was designed around with the measured 17.9 %. |
+| GPU-hours and contacts | 1,000 contacts; 2,884.7936875 metered speech-audio seconds; 0.0690 GPU-h and 248.47 seconds wall. Compared with the greedy own-null replicate: +5.30 percent per-request latency, +8.33 percent wall, +8.35 percent GPU-h. |
+| named next step | Use deterministic judges for the re-ask module. Any label-token successor needs its own frozen primary and fresh registered evidence; the retrospective label-token diagnostic does not admit this probe. |
+| note | The scientific verdict remains NOT ADMITTED. Harness status HARMFUL means the module cannot enter a default plan; it does not claim measured answer degradation. Only the decoding parameter flew, and the judge was evaluated offline. The locked SLURP comparator does not change. |
+
 
 ---
 
@@ -1185,13 +1358,13 @@ ADMITTED-provisional is spelled here as status ADMITTED plus a `provisional` fie
 
 `scripts/checks/results_ledger_check.py` recomputes all four findings below from the repository on every run and prints them; they are findings, not failures, and this ledger fixes none of them.
 
-**A. Verdicts whose first line does not carry the status word - 23 of the rows above.** Only fourteen statuses in this ledger were parsed out of a verdict's H1 or its opening paragraph. In every other case the word lives under a `## Verdict` heading, in a section 0 table, or in a later section, and the `status is quoted from` field of the row records exactly where. The pattern is carrier-shaped: all eight Audio2Tool verdicts and all six SLURP verdicts put the status under `## Verdict`, while the Earnings-21 mechanism verdicts put it in the title. Two instrument cells (the Earnings-21 and SLURP own-null replicates) carry no status word at all, and say so in so many words: "there is none: this cell admits and refutes nothing".
+**A. Verdicts whose first line does not carry the status word - 23 of the rows above.** Only fifteen statuses in this ledger were parsed out of a verdict's H1 or its opening paragraph. In every other case the word lives under a `## Verdict` heading, in a section 0 table, or in a later section, and the `status is quoted from` field of the row records exactly where. The pattern is carrier-shaped: the Audio2Tool verdicts and several historical SLURP verdicts put the status under `## Verdict`; the SLURP logprob verdict states NOT ADMITTED in its H1, while the Earnings-21 mechanism verdicts put it in the title. Two instrument cells (the Earnings-21 and SLURP own-null replicates) carry no status word at all, and say so in so many words: "there is none: this cell admits and refutes nothing".
 
 **B. Cells with a closed ledger row and no verdict note - two.** `SAEA-E21-TOOL-DIARIZATION-V1` (the pinned Sortformer diarization tool row, closed 2026-09-07, whose unit plan OBS-E1 then flew; documented only in `docs/readiness/2026-09-06-e21-diarization-obs-v1-preregistration.md`) and `SAEA-SLURP-KU-S1-QUERY-EMBEDDING-V1` (the MF-7 embedder contacts; documented only in `docs/readiness/2026-09-06-slurp-consumption-ku-s1-v2-preregistration.md`). Both are tool rows rather than cells, which is why neither owes a verdict under the current convention - but the convention is not written down anywhere, and that is the finding.
 
-**C. Harness-admission entries with no ledger row - none.** All three entries of `docs/receipts/harness-admission.json` resolve to a closed exposure-ledger row, and all three carry a row here: KC-E1f v2 (ADMITTED), the cross-call dispatcher (NEUTRAL) and the SLURP silence tail (HARMFUL).
+**C. Harness-admission entries with no ledger row - none.** All four entries of `docs/receipts/harness-admission.json` resolve to a closed exposure-ledger row and carry a row here: KC-E1f v2 (ADMITTED), the cross-call dispatcher (NEUTRAL), the SLURP silence tail (HARMFUL), and the SLURP logprob probe (harness HARMFUL; scientific NOT ADMITTED).
 
-**D. Umbrella disagreements - two, both absences rather than contradictions.** The umbrella page carries one combined row for the two SLURP legal-label projections and reports only v2's headline, so it states neither v1's locked intent 71.60 nor v2's scenario 82.60. Every other headline the check compares - across the 35 rows that declare one - is carried by the umbrella, to trailing-zero formatting. The umbrella is read-only from here and was not edited.
+**D. Umbrella disagreements - none at the owner recovery check.** All 35 rows that declare umbrella headline values are carried by the current umbrella page, to trailing-zero formatting. This supersedes the ledger's earlier cross-check finding of two missing projection values; it changes no scientific result. The published-baselines page was read-only in this cross-check; separate umbrella current-routing updates point to the recovered plan and ledger.
 
 ## What this ledger is not
 

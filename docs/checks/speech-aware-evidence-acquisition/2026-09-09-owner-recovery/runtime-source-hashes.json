@@ -1,0 +1,92 @@
+{
+  "schema": "saea-runtime-metadata-source-hashes-v1",
+  "created_at_utc": "2026-09-09T11:06:55.0605826Z",
+  "root": "SPEECHRL_DATA_DIR",
+  "scope": "Hashes of existing attempt, run-manifest and score-batch metadata only; no output, trace, audio or score-value files opened.",
+  "files": [
+    {
+      "path": "attempts/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac.json",
+      "sha256": "752bcb0d4e35cc780eff2c8954970f6b249ee79a67f1dc3db6fc0fdeba453004"
+    },
+    {
+      "path": "runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1.run-manifest.json",
+      "sha256": "ffd1d3ee543dc73a0802600a9812f8cfe888cdb4bd6456c0667b57d6229ed9c7"
+    },
+    {
+      "path": "runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/score-batch/batch-summary.json",
+      "sha256": "1f6518cee359e8426a3cdde187d23a1e0b9d624964e56ce6f8890273edf9018d"
+    },
+    {
+      "path": "attempts/SAEA-SLURP-KV2-CARDS-DEV1000-V1/attempt-20260909T064623Z-2a0ef7.json",
+      "sha256": "81a79c6824d620aa0df66e799d663f4c4617cdc415f0bf6c4803e5282e7dd75f"
+    },
+    {
+      "path": "runs/SAEA-SLURP-KV2-CARDS-DEV1000-V1/attempt-20260909T064623Z-2a0ef7/SAEA-SLURP-KV2-CARDS-DEV1000-V1.run-manifest.json",
+      "sha256": "ab94ac4139b14348d899f86919cf6a8278f5f4d6e9b4e587ba239cff64095e24"
+    },
+    {
+      "path": "runs/SAEA-SLURP-KV2-CARDS-DEV1000-V1/attempt-20260909T064623Z-2a0ef7/score-batch/batch-summary.json",
+      "sha256": "721ff8bebbac0ba4bd5ec3b2f8165b8585991aa99f455b32137859adb21ada5c"
+    },
+    {
+      "path": "attempts/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1/attempt-20260909T071753Z-548ca4.json",
+      "sha256": "eafad13e51f60e9e0b4dd9c942e1fb129f531067e7681e6e14ef0d379d5d98b6"
+    },
+    {
+      "path": "runs/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1/attempt-20260909T071753Z-548ca4/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1.run-manifest.json",
+      "sha256": "cd374a9f4965ad9b08f7cd92c5def266366198db00f4b252b40c4a2cbc5955dc"
+    },
+    {
+      "path": "runs/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1/attempt-20260909T071753Z-548ca4/score-batch/batch-summary.json",
+      "sha256": "31db7ac15f0d32a3d554f6757c1d1bd33c9af36da783d3810e5ba57a9de8c169"
+    },
+    {
+      "path": "attempts/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1/attempt-20260909T074825Z-0d2278.json",
+      "sha256": "4be680a380e56c12715abc9423f15c870e0c6a36a480d40e23aa5e210fc4faac"
+    },
+    {
+      "path": "runs/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1/attempt-20260909T074825Z-0d2278/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1.run-manifest.json",
+      "sha256": "905bc56a617942fae4f1719fbbd95d653f57b8b5f542a4a3a1e2286e0577ac98"
+    },
+    {
+      "path": "runs/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1/attempt-20260909T074825Z-0d2278/score-batch/batch-summary.json",
+      "sha256": "02a8b8bc489575e2c198f8ff6f7f828e0047d312e77a7ac1a141664bbefea6a2"
+    },
+    {
+      "path": "attempts/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1/attempt-20260909T081235Z-583048.json",
+      "sha256": "af32c79e9f7403e11df3d98e8f413f4bdafcd706f74dcdf225de2024ca06c67c"
+    },
+    {
+      "path": "runs/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1/attempt-20260909T081235Z-583048/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1.run-manifest.json",
+      "sha256": "89c2c0d281e49741796b78a10feef29b58453530752270ec674d0f3733687e02"
+    },
+    {
+      "path": "runs/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1/attempt-20260909T081235Z-583048/score-batch/batch-summary.json",
+      "sha256": "90a4ce1efd75d9f0e5d10f833c117eb1ad9368cf57721278c63aaa530e92fae5"
+    },
+    {
+      "path": "attempts/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1/attempt-20260909T083938Z-401fca.json",
+      "sha256": "1d4fbf06e18e8ee1c6406e7a3a21616553e66008342723bd4c97f81fc073aa96"
+    },
+    {
+      "path": "runs/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1/attempt-20260909T083938Z-401fca/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1.run-manifest.json",
+      "sha256": "bd50da773c977d6f07a2ab1f2b12228517b005f45e622fd2d3a7d9591eb49e75"
+    },
+    {
+      "path": "runs/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1/attempt-20260909T083938Z-401fca/score-batch/batch-summary.json",
+      "sha256": "1cc34b0bd8356323258ba4f43c4cac99e8efdfcb662a2ac27b7c5035ed2d8699"
+    },
+    {
+      "path": "attempts/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1/attempt-20260909T090318Z-b9657d.json",
+      "sha256": "e00feadc85063be110ca6423f493608c4d83974dfc2b4403eac1d94ecbcb2d59"
+    },
+    {
+      "path": "runs/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1/attempt-20260909T090318Z-b9657d/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1.run-manifest.json",
+      "sha256": "1f2c2f41dd26dd539f885dc74950db15dc687a12b4fcd0568f0a0e486f3bd869"
+    },
+    {
+      "path": "runs/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1/attempt-20260909T090318Z-b9657d/score-batch/batch-summary.json",
+      "sha256": "2dfed504316d557dc21cee83239515682efca1248797c2f3cecb4ed30cbb2d26"
+    }
+  ]
+}

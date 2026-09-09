@@ -1,6 +1,6 @@
 # Owner-directed experiment recovery
 
-Status: **owner-directed recovery**, generation 2. Codex is the recovery coordinator
+Status: **owner-directed recovery**, generation 3. Codex is the recovery coordinator
 and execution owner under [OWNER-RECOVERY-001.md](OWNER-RECOVERY-001.md). The current
 phase permits reconstruction and merging; `launch_allowed` remains **false**.
 
@@ -30,6 +30,10 @@ worktrees, organize the plan, and merge completed work into the default branch,
 The detailed recovered inventory and work plan are maintained in
 [RECOVERY-PLAN.md](RECOVERY-PLAN.md). This README defines coordination; it does not
 replace the scientific results ledger or a preregistration.
+
+Generation 3 records completed local integration at `557e6f10` and routes the next
+step to KV closure and the preserved packet dependency. The accompanying results
+ledger and integration receipts are documentation successors to that code snapshot.
 
 ## Local state check
 

@@ -1,0 +1,160 @@
+{
+  "schema": "saea-owner-recovery-integration-verification-v1",
+  "role": "engineering integration and recovery check report",
+  "recorded_at_utc": "2026-09-09T11:17:00Z",
+  "scope": "Recover completed work into the local default branch and restore current routing. This receipt is not a scientific verdict, a flight authorization or evidence of a remote push.",
+  "git": {
+    "repository": "https://github.com/chaosxingxc-orion/speech-aware-evidence-acquisition.git",
+    "default_branch": "master",
+    "recovery_baseline": "2afb4b5cdc33f13a73a9b5d11a246f9a6858868b",
+    "fetched_origin_master": "0b7e1626e44b7cc2fb4784e930291066a9cf40a3",
+    "baseline_remote_only_commits": 0,
+    "baseline_local_only_commits": 980,
+    "open_pull_requests_at_fetch": 0,
+    "integrated_code_head": "557e6f10d85ce62e6ce79fd9a6e8ef7b433ce798",
+    "integrated_remote_only_commits": 0,
+    "integrated_local_only_commits": 1010,
+    "push_performed": false,
+    "merges": [
+      {
+        "source": "wt/wave9",
+        "source_tip_before_review": "39172782c6992db4e50e3154e68de46344884f58",
+        "source_commits_ahead_of_baseline": 22,
+        "review_fix": "33e8c831880ba093616414bf9cb1a60405ed4145",
+        "mode": "fast-forward",
+        "outcome": "Integrated only after the Git status parser gate defect was fixed and verified."
+      },
+      {
+        "source": "wt/kus3seed",
+        "tip": "4279a314fe5c3b4c645f27949dd934a0ee6441e0",
+        "merge": "db1e86f7a48f98300ef93d35f5cd8b5c6b098043",
+        "outcome": "Integrated exact-arithmetic vector norm caching and the live-file digest update; historical frozen digest preserved."
+      },
+      {
+        "source": "wt/a2tgq",
+        "tip": "73a55f638363d765b6b0a2d1786792d1df6e79c6",
+        "merge": "d1c15c293501ba09ac9284033e9fca49796814be",
+        "outcome": "Recovered the existing five-file patch, verified it, committed it and merged it; immutable receipts unchanged."
+      },
+      {
+        "source": "codex/owner-recovery",
+        "tip": "6771fea28618f2ebe7149656e062e7a35dd116ac",
+        "merge": "557e6f10d85ce62e6ce79fd9a6e8ef7b433ce798",
+        "outcome": "Replaced waiting for an unavailable Fable reply with explicit owner-directed recovery."
+      }
+    ],
+    "umbrella_routing_commit": "589bf85f28ee2e5e84cb2bcd21053acded2fccc1",
+    "worktree_inventory": "worktree-inventory.json",
+    "worktrees_pruned_or_deleted": 0
+  },
+  "validation": {
+    "environment": "WSL2 Ubuntu-24.04; /home/chao/.venvs/speechrl Python 3.12; worktree-specific PYTHONPATH; PYTHONDONTWRITEBYTECODE=1. Activate the venv for tests that launch a child shell's python.",
+    "counts_are_per_batch_not_unique_total": true,
+    "test_batches": [
+      {
+        "scope": "Git cleanliness parser regression before the fix",
+        "outcome": "14 intended failures reproduced the leading-status-byte, rename-endpoint and untracked-directory defects before correction."
+      },
+      {
+        "scope": "Shared bundle/scorer unit regression after the fix",
+        "passed": 146,
+        "outcome": "PASS; includes 15 dedicated synthetic Git status cases. Ruff passed."
+      },
+      {
+        "scope": "Wave 9 changed-file regression",
+        "passed_initially": 232,
+        "failed_initially": 3,
+        "outcome": "The three real official scorer cases refused concurrent uncommitted code edits through the strict cleanliness gate. After committing the fix, all three exact cases passed; the gate was not weakened."
+      },
+      {
+        "scope": "KU-S3 norm-cache regression",
+        "passed": 9,
+        "outcome": "PASS; includes bitwise-equivalent random 2048-dimensional dot/cosine checks and live/frozen digest verification."
+      },
+      {
+        "scope": "Recovered Audio2Tool preprocessing/wire classification patch",
+        "passed": 43,
+        "outcome": "PASS; Ruff passed."
+      },
+      {
+        "scope": "Merged contract suite excluding the three already-verified official scorer cases",
+        "passed_initially": 322,
+        "skipped": 1,
+        "failed_initially": 1,
+        "outcome": "The sole failure was test_cli_module_dispatch.py::test_evaluate_sh_outputs_reaches_python_not_merely_a_shell_branch: a child shell could not find python. The exact case passed after activating the documented venv. No unresolved contract failure remains."
+      },
+      {
+        "scope": "Owner-directed recovery checker",
+        "passed": 16,
+        "subtests": 45,
+        "statement_coverage_percent": 94,
+        "outcome": "PASS; malformed/forged/conflicting recovery records fail closed; actual owner recovery is accepted as coordination only. Ruff passed."
+      },
+      {
+        "scope": "Python files changed through the integrated Wave 9/cache/Audio2Tool code",
+        "outcome": "Ruff PASS."
+      }
+    ],
+    "current_study_checks": [
+      {
+        "report": "engineering-base-check.json",
+        "passed": true,
+        "new_offenders": 0,
+        "obsolete_baseline_entries": 0
+      },
+      {
+        "report": "harness-admission-check.json",
+        "passed": true,
+        "modules": 4,
+        "barred_from_default_plans": 3,
+        "default_plans": 1
+      },
+      {
+        "report": "results-ledger-check.json",
+        "passed": true,
+        "rows": 53,
+        "cited_paths": 117,
+        "first_line_statuses_checked": 15,
+        "umbrella_rows_compared": 35,
+        "umbrella_disagreements": 0,
+        "advisory_findings": 30
+      },
+      {
+        "report": "handoff-check.json",
+        "status": "OWNER_DIRECTED_RECOVERY",
+        "generation": 3,
+        "execution_authority": "NOT_EVALUATED",
+        "launch_allowed": false,
+        "note": "Captured before committing recovery documents, so their local changes are reported, not hidden."
+      }
+    ],
+    "umbrella_checks": {
+      "ai_context_surface": "PASS",
+      "ai_context_manifest": "PASS after deterministic generated-hash refresh",
+      "formatting": "PASS",
+      "research_objective_bytes": 4989
+    },
+    "scientific_gate_effect": "None. Advisory ledger findings remain visible; passing structural checks does not admit a module or authorize a new flight."
+  },
+  "experiment_reconciliation": {
+    "metadata_snapshot": "runtime-snapshot.json",
+    "metadata_source_hashes": "runtime-source-hashes.json",
+    "source_metadata_files_hashed": 21,
+    "finalized_and_scored_kv_attempts": 7,
+    "kv_result_values_inspected_in_recovery": false,
+    "kv_scientific_verdict": "PENDING",
+    "new_model_contacts_in_recovery": 0,
+    "new_experiment_flights_in_recovery": 0,
+    "paid_api_spend": 0,
+    "official_scorer_regression_scope": "Existing sealed Audio2Tool comparator artifacts only; no KV rescoring or new scientific read.",
+    "preserved_sources": "No model outputs, speech, raw traces or weights were committed; no sealed KV attempt or score artifact was edited."
+  },
+  "continuation": {
+    "plan": "docs/superpowers/plans/experiment-handoff/RECOVERY-PLAN.md",
+    "results_ledger": "docs/results/stage2-results-ledger.json",
+    "ownership_state": "docs/superpowers/plans/experiment-handoff/state.json",
+    "immediate_next_action": "Reconcile KV exposure accounting and existing read/decision authority before inspecting results; do not rerun finalized attempts.",
+    "ordered_dependencies": "KV closure -> KU-S3 flight and verdict -> KU-S4N. Review packet code now; produce/pin exemplar packets only if KU-S4N is ADMITTED or NEUTRAL.",
+    "preserved_unfinished_work": "Seven untracked KU-S4 packet files and five dirty files on the older agent-loop worktree remain in place."
+  }
+}

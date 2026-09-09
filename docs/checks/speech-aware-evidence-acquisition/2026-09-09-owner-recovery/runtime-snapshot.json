@@ -1,0 +1,57 @@
+{
+  "schema": "saea-owner-recovery-runtime-snapshot-v1",
+  "role": "metadata-only check report",
+  "observed_at_utc": "2026-09-09T10:55:09Z",
+  "source_study_commit": "2afb4b5cdc33f13a73a9b5d11a246f9a6858868b",
+  "scope": "Read process, serving-session, attempt, manifest and score-batch status metadata. No model contact, score-value inspection, raw transcript inspection or scientific verdict.",
+  "runtime": {
+    "active_model_flight_or_scorer_processes": 0,
+    "port_8080_listener": false,
+    "flight_lock_files": 0,
+    "unstopped_serving_records": 0,
+    "last_session": "slurp-np4-base-c65536-20260909",
+    "last_session_stopped_at_utc": "2026-09-09T10:52:14.147Z",
+    "last_stop_reason": "SIGTERM",
+    "last_stop_forced": false,
+    "last_stop_stale": false,
+    "session_source": "$SPEECHRL_DATA_DIR/serving/slurp-np4-base-c65536-20260909/session-stop.json"
+  },
+  "per_run_shared_facts": {
+    "attempt_state": "FINALIZED",
+    "manifest_status": "COMPLETED",
+    "failure_reason": null,
+    "study_repo_dirt": [],
+    "study_commit": "2afb4b5cdc33f13a73a9b5d11a246f9a6858868b",
+    "model_calls": 1000,
+    "speech_audio_seconds": 2884.7936875,
+    "registered_model_call_cap": 1050,
+    "registered_speech_audio_seconds_cap": 3000,
+    "score_batch_jobs_succeeded": 1,
+    "score_batch_jobs_failed": 0,
+    "score_values_inspected": false,
+    "scientific_verdict": "PENDING",
+    "exposure_ledger_consumed_at_snapshot": "no"
+  },
+  "source_templates": {
+    "attempt": "$SPEECHRL_DATA_DIR/attempts/{run_id}/{attempt_id}.json",
+    "manifest": "$SPEECHRL_DATA_DIR/runs/{run_id}/{attempt_id}/{run_id}.run-manifest.json",
+    "score_batch": "$SPEECHRL_DATA_DIR/runs/{run_id}/{attempt_id}/score-batch/batch-summary.json"
+  },
+  "runs": [
+    {"run_id": "SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1", "attempt_id": "attempt-20260909T062500Z-74bfac", "sealed_at_utc": "2026-09-09T06:42:45Z"},
+    {"run_id": "SAEA-SLURP-KV2-CARDS-DEV1000-V1", "attempt_id": "attempt-20260909T064623Z-2a0ef7", "sealed_at_utc": "2026-09-09T07:13:59Z"},
+    {"run_id": "SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1", "attempt_id": "attempt-20260909T071753Z-548ca4", "sealed_at_utc": "2026-09-09T07:44:55Z"},
+    {"run_id": "SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1", "attempt_id": "attempt-20260909T074825Z-0d2278", "sealed_at_utc": "2026-09-09T08:08:50Z"},
+    {"run_id": "SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1", "attempt_id": "attempt-20260909T081235Z-583048", "sealed_at_utc": "2026-09-09T08:34:16Z"},
+    {"run_id": "SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1", "attempt_id": "attempt-20260909T083938Z-401fca", "sealed_at_utc": "2026-09-09T08:59:48Z"},
+    {"run_id": "SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1", "attempt_id": "attempt-20260909T090318Z-b9657d", "sealed_at_utc": "2026-09-09T09:22:21Z"}
+  ],
+  "total_model_calls": 7000,
+  "total_speech_audio_seconds": 20193.5558125,
+  "provenance_open_items": [
+    "Reconcile the seven unconsumed ledger rows with completed attempts without changing sealed bytes.",
+    "Locate any prior KV-0 read/admission record. Later arms flew, but the inspected main checkout contains no evidence that the required predecessor decision happened first.",
+    "Resolve the preregistered NEW500 per-row decision and applicable null/process binding; never select a new margin after seeing treatment results."
+  ],
+  "recovery_model_contacts": 0
+}
