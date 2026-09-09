@@ -43,6 +43,10 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
         raise BundleError(f"run manifest {manifest_path} is not valid JSON: {error}") from error
     if not isinstance(manifest, Mapping):
         raise BundleError(f"run manifest {manifest_path} must be a JSON object")
+    from .delivery import DELIVERY_MANIFEST_SCHEMA, verify_delivery_bundle
+
+    if manifest.get("schema") == DELIVERY_MANIFEST_SCHEMA:
+        return verify_delivery_bundle(manifest_path, manifest)
     _verify_manifest_header(manifest)
 
     # Minor hardening (round-2 external-threat-model review): every artifact

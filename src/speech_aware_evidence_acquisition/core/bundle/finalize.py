@@ -69,6 +69,10 @@ def finalize_bundle(
     _refuse_if_inside_repo(Path(manifest_path).parent, "run bundle directory")
 
     bundle = verify_bundle(manifest_path)
+    from .delivery import DELIVERY_MANIFEST_SCHEMA
+
+    if bundle.manifest.get("schema") == DELIVERY_MANIFEST_SCHEMA:
+        raise BundleError("cannot finalize a delivery derivative: score it without an independent attempt")
     if bundle.manifest.get("status") != STATUS_COMPLETED:
         raise BundleError(
             f"cannot finalize {manifest_path}: manifest status is "

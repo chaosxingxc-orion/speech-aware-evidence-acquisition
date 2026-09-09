@@ -177,7 +177,8 @@ def score_cost_outputs(
     # `finalize_bundle`); importing `core.bundle` back at this module's top
     # level would be a circular import -- same reasoning as `score_bundle`'s
     # own deferred `VerifiedBundle` import below.
-    from .bundle import RUN_MANIFEST_SCHEMA
+    from .bundle import RUN_MANIFEST_SCHEMA, BundleError, verify_bundle
+    from .bundle.delivery import DELIVERY_MANIFEST_SCHEMA
 
     manifest_path = _manifest_path_for_outputs(Path(outputs_path))
     try:
@@ -188,7 +189,15 @@ def score_cost_outputs(
         document = json.loads(raw)
     except json.JSONDecodeError as error:
         raise ScoringPhaseError(f"run manifest {manifest_path} is not valid JSON: {error}") from error
-    if not isinstance(document, dict) or document.get("schema") != RUN_MANIFEST_SCHEMA:
+    if isinstance(document, dict) and document.get("schema") == DELIVERY_MANIFEST_SCHEMA:
+        # A derivative has no independent generation cost. Recompute the
+        # complete parent/rule/output binding before returning its zero-extra
+        # accounting block and explicit shared-parent attribution.
+        try:
+            document = dict(verify_bundle(manifest_path).manifest)
+        except BundleError as error:
+            raise ScoringPhaseError(f"derived cost provenance refused: {error}") from error
+    elif not isinstance(document, dict) or document.get("schema") != RUN_MANIFEST_SCHEMA:
         raise ScoringPhaseError(
             f"run manifest {manifest_path} does not carry schema {RUN_MANIFEST_SCHEMA!r}"
         )
@@ -685,6 +694,15 @@ def score_bundle(
     if bundle.outputs_path is None:
         raise ScoringPhaseError("verified bundle carries no outputs artifact to score")
     _assert_scoring_entry_gate(bundle, lock, root, repo_root)
+    from .bundle import BundleError
+    from .bundle.delivery import reused_delivery_scores
+
+    try:
+        reused = reused_delivery_scores(bundle)
+    except BundleError as error:
+        raise ScoringPhaseError(f"score reuse refused: {error}") from error
+    if reused is not None:
+        return reused
     scorer_names = bundle.manifest.get("scorers")
     if not isinstance(scorer_names, list) or not scorer_names:
         raise ScoringPhaseError("run manifest carries no configured scorers to run")

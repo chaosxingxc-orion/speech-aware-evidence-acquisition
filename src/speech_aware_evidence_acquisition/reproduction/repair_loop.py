@@ -104,6 +104,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Mapping
 
+from ..core.delivery import deliver_terminal_response
 from ..core.base import RESPONSE_POSTPROCESSORS, SampleContext, SampleOutcome
 from ..core.predecessor_snapshot import (
     PredecessorSnapshotError,
@@ -333,7 +334,9 @@ class RepairWindowHook:
         # (the base policy's quarantine). The rule reads that as an empty
         # response and refuses it, which delivers pass 1 -- the honest answer,
         # because this window HAS a transcript and it is the comparator's.
-        outcome = self._rule(target, transcript)
+        outcome = deliver_terminal_response(
+            target, transcript, rule=self._rule, saturated=saturated, skipped=skipped
+        )
         self.outcomes.append(outcome)
         window_text = outcome.text
         fields: dict[str, object] = {
