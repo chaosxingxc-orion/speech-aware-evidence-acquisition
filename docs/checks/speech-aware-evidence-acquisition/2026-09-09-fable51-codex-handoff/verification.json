@@ -1,0 +1,73 @@
+{
+  "schema": "saea-handoff-verification-v1",
+  "role": "metadata-only engineering check report",
+  "checked_at_utc": "2026-09-09T06:15:54.5380764Z",
+  "source_study_commit": "353869bd25c784b30909c33c18824a1a90603993",
+  "request_id": "SAEA-HANDOFF-20260909-01",
+  "checks": [
+    {
+      "name": "synthetic handoff checker tests",
+      "status": "PASS",
+      "count": 11,
+      "runtime": "WSL Ubuntu-24.04 Python 3.12.3",
+      "source": "tests/unit/test_experiment_handoff_check.py"
+    },
+    {
+      "name": "Ruff on checker and tests",
+      "status": "PASS"
+    },
+    {
+      "name": "actual handoff checker",
+      "status": "WAITING_FOR_REPLY",
+      "errors": 0,
+      "tracked_dirty_files": 0,
+      "untracked_handoff_files_at_check": 6,
+      "execution_authority": "NOT_EVALUATED"
+    },
+    {
+      "name": "engineering_base_check.py",
+      "status": "PASS"
+    },
+    {
+      "name": "harness_admission_check.py",
+      "status": "PASS",
+      "modules": 4,
+      "barred_from_default_plans": 3,
+      "default_plans": 1
+    },
+    {
+      "name": "handoff Markdown links and no-CJK document check",
+      "status": "PASS"
+    }
+  ],
+  "experimental_contacts": 0,
+  "dataset_or_trace_content_opened_by_checker": false,
+  "runtime_changes": false,
+  "response_note": "The response hash pins the untouched PENDING template at verification time, not a Fable5.1 reply. A completed reply receives a new hash at acknowledgment.",
+  "files": [
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/README.md",
+      "sha256": "e8b14dfe9244e82683988a2b683f1756106c5482744e2f06f569032079126a39"
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/REQUEST-001.md",
+      "sha256": "8e460ebb749b8290ac1292d3aff96eaa6c88688cd6e6bdd0b98d537732a9343a"
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/RESPONSE-001.md",
+      "sha256": "00b521697c8fa2a91efcb4be6cd1f1843432e8377540aed8d0b70269b577424b"
+    },
+    {
+      "path": "docs/superpowers/plans/experiment-handoff/state.json",
+      "sha256": "1f108c31ae186d520c754e5c03a07010688a907c7def5bff93f0edce52fa11a5"
+    },
+    {
+      "path": "scripts/checks/experiment_handoff_check.py",
+      "sha256": "8f713e1832befbd07c695700cb44ee76abd4ac43cd928b081478469f5065dc7f"
+    },
+    {
+      "path": "tests/unit/test_experiment_handoff_check.py",
+      "sha256": "3b5c08579ae1594567ad7bbd86a0d3531878b4e37301e6e85710af631c32b41d"
+    }
+  ]
+}

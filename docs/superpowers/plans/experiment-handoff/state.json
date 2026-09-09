@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "generation": 1,
+  "phase": "awaiting_fable_reply",
+  "coordinator": "Codex",
+  "execution_owner": "UNCONFIRMED",
+  "request_id": "SAEA-HANDOFF-20260909-01",
+  "request_path": "docs/superpowers/plans/experiment-handoff/REQUEST-001.md",
+  "response_path": "docs/superpowers/plans/experiment-handoff/RESPONSE-001.md",
+  "response_status": "awaiting_reply",
+  "snapshot_commit": "353869bd25c784b30909c33c18824a1a90603993",
+  "updated_at_utc": "2026-09-09T06:08:00Z",
+  "next_action": "Review Fable reply and reconcile state before any flight",
+  "launch_allowed": false
+}
