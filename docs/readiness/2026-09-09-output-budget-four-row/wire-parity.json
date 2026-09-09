@@ -1,0 +1,47 @@
+{
+  "all_other_payload_fields_equal": true,
+  "arms": {
+    "256": {
+      "max_tokens": 256,
+      "model_contacts": 0,
+      "payload_keys_equal_arm_visible_fields": true,
+      "sample_count": 4,
+      "speech_packets_verified": {
+        "slurp:devel:002003:audio-1490199797": "f646f44510c112561503d53b3d8f12f93321588e4660ce91d68b320adb931697",
+        "slurp:devel:003704:audio-1494511949": "e56275251c08a5fe6ad7c032a8edaa4008132064f77a161667c6f4c84b1dbea1",
+        "slurp:devel:008655:audio-1502895086-headset": "910064231823e736531b9b1bc9ca6bed4add716f8b0003b4ab36ab8fa502d2f0",
+        "slurp:devel:012627:audio-1494418708": "c5097b36c6ce2574b12038d13371ecfd7975f176003ebcec54853edb0e47ba2a"
+      },
+      "split_identity_hash": "7e5fb9cf7aa58c9f7d86bcbbf8f4bba378f1ccf64263ac74b007ec1317d339b3",
+      "trace_relpath": "wire-check/WIRECHECK-SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX256-V1-1788967569110/attempt-wire-check-1788967569110/WIRECHECK-SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX256-V1-1788967569110.trace.jsonl",
+      "trace_sha256": "e6d44a8aacb48bf8accf56d00475ab6b1caceb75e9900d7d2ee0262c0157cb7a",
+      "wall_seconds": 5.6906774044036865
+    },
+    "64": {
+      "max_tokens": 64,
+      "model_contacts": 0,
+      "payload_keys_equal_arm_visible_fields": true,
+      "sample_count": 4,
+      "speech_packets_verified": {
+        "slurp:devel:002003:audio-1490199797": "f646f44510c112561503d53b3d8f12f93321588e4660ce91d68b320adb931697",
+        "slurp:devel:003704:audio-1494511949": "e56275251c08a5fe6ad7c032a8edaa4008132064f77a161667c6f4c84b1dbea1",
+        "slurp:devel:008655:audio-1502895086-headset": "910064231823e736531b9b1bc9ca6bed4add716f8b0003b4ab36ab8fa502d2f0",
+        "slurp:devel:012627:audio-1494418708": "c5097b36c6ce2574b12038d13371ecfd7975f176003ebcec54853edb0e47ba2a"
+      },
+      "split_identity_hash": "7e5fb9cf7aa58c9f7d86bcbbf8f4bba378f1ccf64263ac74b007ec1317d339b3",
+      "trace_relpath": "wire-check/WIRECHECK-SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX64-V1-1788967556928/attempt-wire-check-1788967556928/WIRECHECK-SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX64-V1-1788967556928.trace.jsonl",
+      "trace_sha256": "a575009cc7fef8831dc363533c4bbd9f5aed41dedd7000e35e8a4fbf966cd76f",
+      "wall_seconds": 5.499872922897339
+    }
+  },
+  "code_snapshot": "26eaa409; wire construction occurred before capture merge, which leaves request bytes unchanged; real fit rebinds final sources",
+  "equal_excluding": [
+    "request_id",
+    "decoding_params.id_slot",
+    "decoding_params.max_tokens"
+  ],
+  "model_contacts": 0,
+  "root_combined_tests": "287 passed,1 skipped; engineering base PASS",
+  "rows": 4,
+  "schema": "saea-output-budget-wire-parity-v1"
+}
