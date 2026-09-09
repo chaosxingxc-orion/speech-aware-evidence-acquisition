@@ -1,11 +1,11 @@
-# Owner KU-S3 max_tokens=256 budget decision
+# Owner KU-S3 256 tokens budget decision
 
 Decision ID: OWNER-KUS3-BUDGET-005  
 Date: 2026-09-09  
 Scope: KU-S3a, matched form twin, and matched no-retrieval control  
 Status: owner-approved configuration successor; exposure remains HELD
 
-This narrow successor records the owner approval linked to OWNER-KUS3-BUDGET-004: retain the
+This narrow successor records the owner approval linked to OWNER-BUDGET-PROBE-004: retain the
 original example-bearing KC-S1b schema and add a matched no-retrieval control while moving all
 three KU-S3a comparison arms to . The speech-query arm, form twin, and control
 keep the frozen DEV-1000 roster, sealed closed-list-direct predecessor, model geometry, and

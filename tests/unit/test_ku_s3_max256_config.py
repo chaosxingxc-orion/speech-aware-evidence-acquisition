@@ -26,6 +26,7 @@ def test_max256_successor_is_held_and_split_into_fit_generation(path, tmp_path):
     fit, generation = document["cells"]
     assert document["migration_status"].startswith("HELD:")
     assert document["request_decoding_overrides"] == {"max_tokens": 256}
+    assert document["preserve_wire_responses"] is True
     assert fit["readiness"]["state"] == generation["readiness"]["state"] == "held"
     assert fit["allowed_execution_stages"] == ["check", "wire-check", "prompt-fit"]
     assert generation["allowed_execution_stages"] == ["check", "wire-check", "prepare-supply", "worker", "campaign"]
@@ -47,7 +48,11 @@ def test_max256_successor_has_pending_fit_supply_and_no_active_pins(path):
     assert document["execution_plan"]["planned_speech_audio_seconds"] == 3000
     assert document["pending_preparation"]["fit"]["endpoint_count"] == 3001
     assert document["pending_preparation"]["fit"]["artifact_sha256"].startswith("PENDING-")
-    assert document["pending_preparation"]["phase_supply"]["artifact_sha256"].startswith("PENDING-")
+    if "control" not in path.stem:
+        assert document["pending_preparation"]["phase_supply"]["artifact_sha256"].startswith("PENDING-")
+    else:
+        assert "artifact_sha256" not in document["pending_preparation"]["phase_supply"]
+        assert "not applicable" in document["pending_preparation"]["phase_supply"]["status"]
     assert "prepared_phase_supply" not in document
     assert "prepared_request_fit" not in document
     assert all("depends_on" not in cell["readiness"] for cell in document["cells"])
@@ -70,7 +75,7 @@ def test_max256_composition_preserves_override_and_held_pending_state(path, tmp_
 
 def test_max256_control_is_explicit_no_retrieval_and_keeps_owner_schema():
     document = read(CONFIGS[2])
-    assert all(cell["arm"] == "no-retrieval-control" for cell in document["cells"])
+    assert all(cell["arm"] == "speech-feature-query" for cell in document["cells"])
     assert document["retrieval_mode"] == "none"
     assert all(cell["baseline_fragment"] == "slurp-phase-slots-given-intent-schema-v1" for cell in document["cells"])
     assert document["owner_schema_decision"]["decision_id"] == "OWNER-KUS3-SCHEMA-003"
@@ -80,7 +85,7 @@ def test_max256_control_is_explicit_no_retrieval_and_keeps_owner_schema():
 
 def test_budget_decision_is_english_and_narrow():
     text = (REPO / "docs/superpowers/plans/experiment-handoff/OWNER-KUS3-BUDGET-005.md").read_text(encoding="utf-8")
-    assert "OWNER-KUS3-BUDGET-004" in text
-    assert "max_tokens=256" in text
+    assert "OWNER-BUDGET-PROBE-004" in text
+    assert "256 tokens" in text
     assert "four-row" in text
     assert "no extra full sweep" in text
