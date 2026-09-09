@@ -1,0 +1,67 @@
+{
+  "call_mismatches": [],
+  "calls": 44,
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "declaration": {
+    "cell_id": "historical-constrained-compatibility",
+    "response_postprocessor": "e21-entity-repair-substitutions-v1",
+    "response_postprocessor_params": {
+      "max_span_tokens": 4,
+      "max_substituted_fraction": 0.1,
+      "min_anchor_ratio": 0.6
+    }
+  },
+  "elapsed_seconds": 1.4879849110002397,
+  "exact_call_parity": true,
+  "exact_window_parity": true,
+  "implementation": {
+    "core/bundle/delivery_replay.py": "850735af8c0ad6a2286578a29ac84c6e3d7d5f0c286d2d3028e9ca49e33ef22f",
+    "core/delivery.py": "2bdb89f667210cf447e93788582bfaf8a1b8887f853896768c30a7d50f672061",
+    "core/repair_alignment.py": "4a9314bc394c23fe37c925e818600356f9da4f219af5a1a2e53f1e9b36009691",
+    "reproduction/repair_loop.py": "3678eec6d979d6870f913ac6fbf282f7fd8e36923de38202f6aa65ca232d733f"
+  },
+  "refusals": {
+    "accepted": 1511,
+    "anchor_ratio_below_floor": 75,
+    "empty_response": 3,
+    "substituted_fraction_above_ceiling": 4
+  },
+  "registered_read": "SAEA-E21-CONSTRAINED-REPLAY-VERIFY-V1",
+  "report_source": {
+    "relpath": "analysis/SAEA-E21-CONSTRAINED-REPLAY-VERIFY-V1/parity.json",
+    "sha256": "673ddb40001f23b3d6913e073d4e27223181e240f2537c032e5861c5160ea284"
+  },
+  "schema": "saea-historical-constrained-delivery-parity-v1",
+  "sources": {
+    "manifest": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-KC-E1F-REPAIR-44-V1/attempt-20260908T040832Z-ecda9c/SAEA-E21-KC-E1F-REPAIR-44-V1.run-manifest.json",
+      "sha256": "eb9f86d3ea5a8f9fedb15d98374b019dac9fdc545792b77a935cff8f2380bcfc"
+    },
+    "outputs": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-KC-E1F-REPAIR-44-V1/attempt-20260908T040832Z-ecda9c/SAEA-E21-KC-E1F-REPAIR-44-V1.outputs.jsonl",
+      "sha256": "8bead60e0d5fc3476861f272aba04304afe6d18399407aff19a1224817f9317f"
+    },
+    "predecessor_receipt": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/e21-predecessor-full44-direct-baseline-v2.json",
+      "sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a"
+    },
+    "trace": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-KC-E1F-REPAIR-44-V1/attempt-20260908T040832Z-ecda9c/SAEA-E21-KC-E1F-REPAIR-44-V1.trace.jsonl",
+      "sha256": "8b3d6c1540b7a7f1f03e6c4be48c1575b87151e18153107c03833b5e4ac0fdcf"
+    }
+  },
+  "status": "PASS",
+  "terminal_counts": {
+    "retry_terminal": 0,
+    "saturated": 3,
+    "skipped": 0
+  },
+  "window_mismatches": [],
+  "windows": 1593
+}

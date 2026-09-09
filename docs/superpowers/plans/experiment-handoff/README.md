@@ -64,8 +64,11 @@ and client construction, with 191 focused tests passing. It is in-memory only: c
 preprocessing reuse and shorter handoffs remain unfinished. The first service window did not
 meet the intended idle-time target, as recorded in the budget readout.
 
-G2 through G6 have not flown. E21 actual-window CLI wiring, complete DR replay, bounded live
-controller transitions, explicit full-system state joins and broader engineering-rule coverage
+G2 through G6 have not flown. The shared constrained-delivery replay now exactly reproduces
+all 1,593 historical KC-E1f windows and 44 stitched calls; see the
+[full replay receipt](../../../checks/speech-aware-evidence-acquisition/2026-09-09-e21-constrained-replay/README.md).
+E21 actual-window integration, the two-generation/four-delivery successor configuration, bounded
+live controller transitions, explicit full-system state joins and broader engineering coverage
 remain incomplete. Read [STATUS-010.md](STATUS-010.md) for the next work order and held items.
 
 Use ChatGPT/OpenAI cloud subagents under [MODEL-ALLOCATION.md](MODEL-ALLOCATION.md);
