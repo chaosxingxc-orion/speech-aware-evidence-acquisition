@@ -1,6 +1,7 @@
 """One four-fragment factory for carrier-scoped shared FlightRuntime workers."""
 from __future__ import annotations
 
+from functools import partial
 from pathlib import Path
 from typing import Mapping
 from urllib.parse import urlparse
@@ -10,6 +11,7 @@ from ...data.lock import load_lock, umbrella_lock_path
 from ...rails.task_adapter import TaskAdapter
 from ..base import TASK_ADAPTERS, CoreError, declared_derived_media_roots
 from ..config import compose
+from ..scoring_batch import ScoringContext, run_score_batch
 from .runtime import FlightRuntime
 
 
@@ -45,6 +47,11 @@ def build_flight_runtime(
         raise CoreError("runtime carrier view must select one derived media root")
     if roots:
         options["carrier_root_resolver"] = lambda *_args: roots[0]
+    if lock_path is not None:
+        options["score_batch"] = partial(
+            run_score_batch,
+            context=ScoringContext(repo_root, data_root, Path(lock_path)),
+        )
     options.update(runtime_seams)
     runtime = FlightRuntime(
         repo_root, data_root, model=model, dataset=dataset, baseline=baseline,
