@@ -12,6 +12,7 @@ importable from exactly ``core.model`` (this package's own ``__init__.py``).
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 import math
@@ -383,6 +384,32 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
             # deliberately untouched: this is provenance for the run
             # receipt, not a new audited payload field.
             tool_calls = parsed.get("tool_calls")
+            wire_response_b64 = parsed.get("wire_response_b64")
+            wire_response_sha256 = parsed.get("wire_response_sha256")
+            wire_finish_reason = parsed.get("wire_finish_reason")
+            if wire_response_b64 is not None or wire_response_sha256 is not None:
+                if (
+                    not isinstance(wire_response_b64, str)
+                    or not isinstance(wire_response_sha256, str)
+                    or len(wire_response_sha256) != 64
+                ):
+                    raise FrozenCoreError(
+                        "transport returned malformed wire response provenance"
+                    )
+                try:
+                    wire_bytes = base64.b64decode(wire_response_b64, validate=True)
+                except (ValueError, TypeError):
+                    raise FrozenCoreError(
+                        "transport returned malformed wire response base64"
+                    ) from None
+                if hashlib.sha256(wire_bytes).hexdigest() != wire_response_sha256:
+                    raise FrozenCoreError(
+                        "transport wire response hash does not match its bytes"
+                    )
+            elif "wire_finish_reason" in parsed:
+                raise FrozenCoreError(
+                    "transport returned finish reason without wire response provenance"
+                )
         except (KeyError, TypeError, ValueError, UnicodeError) as error:
             raise FrozenCoreError(
                 f"transport returned a malformed response: {error}"
@@ -414,6 +441,18 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
         # request asked for logprobs without naming a k -- the server then
         # applies its own default of 20 (server-common.cpp:1529) and the reader
         # must not silently assume a number the request never sent.
+        if wire_response_b64 is not None:
+            self._sink.emit(
+                "MODEL_WIRE_RESPONSE",
+                f"{request_id}/wire-response",
+                {
+                    "request_id": request_id,
+                    "sample_id": payload["sample_id"],
+                    "response_b64": wire_response_b64,
+                    "response_sha256": wire_response_sha256,
+                    "finish_reason": wire_finish_reason,
+                },
+            )
         if logprobs is not None:
             declared = payload.get("decoding_params")
             self._sink.emit(

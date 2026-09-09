@@ -2331,6 +2331,37 @@ def test_transport_factory_reads_omit_system_message_from_the_composed_config(tm
     assert [message["role"] for message in captured["body"]["messages"]] == ["user"]
 
 
+def test_opt_in_wire_response_keeps_exact_bytes_and_finish_reason(tmp_path):
+    raw = json.dumps(
+        {
+            "choices": [{"message": {"content": "hello"}, "finish_reason": "length"}],
+            "usage": {"prompt_tokens": 1, "completion_tokens": 2},
+        },
+        separators=(",", ":"),
+    ).encode()
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=lambda _url, _body: raw,
+        preserve_wire_responses=True,
+    )
+    envelope = json.loads(transport(json.dumps(_boundary_payload(tmp_path)).encode()))
+    assert envelope["wire_response_b64"] == base64.b64encode(raw).decode("ascii")
+    assert envelope["wire_response_sha256"] == hashlib.sha256(raw).hexdigest()
+    assert envelope["wire_finish_reason"] == "length"
+    assert envelope["text"] == "hello"
+
+
+def test_wire_response_capture_flag_must_be_boolean(tmp_path):
+    with pytest.raises(SessionError, match="preserve_wire_responses must be a bool"):
+        _transport(
+            _base_url(),
+            tmp_path,
+            post=lambda _url, _body: _canned_response(),
+            preserve_wire_responses="yes",
+        )
+
+
 def test_a_construction_proposer_payload_sends_no_audio_part(tmp_path):
     """The ONE text-only arm. Its payload still NAMES the anchor's media so the
     gate's media-identity rail and the trace bind a real recording, but loading
