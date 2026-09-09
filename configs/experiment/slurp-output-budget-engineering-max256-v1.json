@@ -59,9 +59,16 @@
       "baseline_fragment": "slurp-phase-slots-given-intent-schema-v1",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
-        "state": "held",
-        "reason": "Shared completion override and wire-response capture must be reviewed; full four-row real fit and final registration required.",
-        "requirements": []
+        "state": "ready",
+        "reason": "Owner-approved four-row engineering scope; actual fit and matched request parity verified; separate registered generation plan is mandatory.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX256-FIT-V1/request-fit.json",
+            "sha256": "2508b76c9ea8907ca8fe1dd2dcbfe43c616b8c9cefd3148206e35f98adfc3180",
+            "reason": "Full four-row actual fit must match"
+          }
+        ]
       }
     }
   ],
@@ -81,5 +88,9 @@
   },
   "request_decoding_overrides": {
     "max_tokens": 256
+  },
+  "prepared_request_fit": {
+    "relpath": "prepared/SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX256-FIT-V1/request-fit.json",
+    "sha256": "2508b76c9ea8907ca8fe1dd2dcbfe43c616b8c9cefd3148206e35f98adfc3180"
   }
 }

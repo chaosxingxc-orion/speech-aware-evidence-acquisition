@@ -1,0 +1,56 @@
+{
+  "arms": {
+    "256": {
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX256-FIT-V1/request-fit.json",
+        "sha256": "2508b76c9ea8907ca8fe1dd2dcbfe43c616b8c9cefd3148206e35f98adfc3180"
+      },
+      "journal_sha256": "d6723f9376a9c670ad802ecdeab645ef977debc13fd4c77c0ef0d002665b061c",
+      "result": {
+        "boundary_sha256": "e5b5b6565892727f4cc61e6cbb3db77f16acd57382c35e494b46631d4737031b",
+        "contact_counts": {
+          "GET /props": 1,
+          "POST /apply-template": 4,
+          "POST /tokenize": 8
+        },
+        "contacts": 13,
+        "every_request_fits": true,
+        "generation_contacts": 0,
+        "minimum_margin_tokens": 6122,
+        "sample_count": 4,
+        "session_id": "slurp-g1-np4-c65536-20260909-codex",
+        "session_identity_sha256": "319357345629b8a485eb088584b62cea3139539db8f9d350b554d481f4fa0b84",
+        "worst_sample_id": "slurp:devel:008655:audio-1502895086-headset"
+      }
+    },
+    "64": {
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX64-FIT-V1/request-fit.json",
+        "sha256": "31df9e5df3a2996d9b2e75a15d39c7262314ff44b75e91111d0fbba3fdf038f8"
+      },
+      "journal_sha256": "1c5bbcedf91758d131a5e4e431f2427f2400d6e02618c7d4f5cbdf82515b91a2",
+      "result": {
+        "boundary_sha256": "a1f9cd55f30fe724ba8d1cb34f7d8c0164431677bd7024a0fb5bcfa7ffe96a71",
+        "contact_counts": {
+          "GET /props": 1,
+          "POST /apply-template": 4,
+          "POST /tokenize": 8
+        },
+        "contacts": 13,
+        "every_request_fits": true,
+        "generation_contacts": 0,
+        "minimum_margin_tokens": 6314,
+        "sample_count": 4,
+        "session_id": "slurp-g1-np4-c65536-20260909-codex",
+        "session_identity_sha256": "319357345629b8a485eb088584b62cea3139539db8f9d350b554d481f4fa0b84",
+        "worst_sample_id": "slurp:devel:008655:audio-1502895086-headset"
+      }
+    }
+  },
+  "contacts": {
+    "encoder": 0,
+    "generation": 0,
+    "tokenizer": 26
+  },
+  "schema": "saea-paired-engineering-fit-completion-v1"
+}

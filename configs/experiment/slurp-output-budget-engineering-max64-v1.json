@@ -59,9 +59,16 @@
       "baseline_fragment": "slurp-phase-slots-given-intent-schema-v1",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
-        "state": "held",
-        "reason": "Shared completion override and wire-response capture must be reviewed; full four-row real fit and final registration required.",
-        "requirements": []
+        "state": "ready",
+        "reason": "Owner-approved four-row engineering scope; actual fit and matched request parity verified; separate registered generation plan is mandatory.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX64-FIT-V1/request-fit.json",
+            "sha256": "31df9e5df3a2996d9b2e75a15d39c7262314ff44b75e91111d0fbba3fdf038f8",
+            "reason": "Full four-row actual fit must match"
+          }
+        ]
       }
     }
   ],
@@ -78,5 +85,9 @@
     ],
     "interpretation": "Chosen edge cases are not a representative efficacy roster. At-cap is distinct from confirmed truncation. Raising maximum is permission to finish, not a token target. Stop after the two registered four-row arms.",
     "reasoning": "No reasoning prompt or frozen weight change in this comparison."
+  },
+  "prepared_request_fit": {
+    "relpath": "prepared/SAEA-SLURP-OUTPUT-BUDGET-ENGINEERING-MAX64-FIT-V1/request-fit.json",
+    "sha256": "31df9e5df3a2996d9b2e75a15d39c7262314ff44b75e91111d0fbba3fdf038f8"
   }
 }
