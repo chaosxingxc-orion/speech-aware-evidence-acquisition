@@ -2,7 +2,7 @@
   "experiment_id": "SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1",
   "fragment_kind": "saea-slurp-slot-stage-experiment-v1",
   "date": "2026-09-09",
-  "purpose": "HELD same-config replication preparation for KC-S1b. The model, dataset and baseline fragments, frozen DEV-1000 roster, original example-bearing slot-schema fill, request semantics, model geometry and decoding are expected to remain unchanged from SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1. This experiment fragment necessarily changes its formal identity and preparation metadata; root must complete the whole-roster request comparison before calling it a same-config replica. It authorizes no contact and carries no scientific verdict.",
+  "purpose": "Prospective same-profile KC-S1b replication using the unchanged frozen DEV-1000 roster, model/dataset/baseline fragments and example-bearing schema. Complete-roster shared-controller payload parity passed at boundary f5710feb4d222963e47bd6a2fdebad6c8bcb70fc9e7ad9ee3c68a18fe5fea1df; capacity and scientific generation remain separately gated.",
   "split_id": "DEV-1000",
   "replication_source": {
     "run_id": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1",
@@ -18,7 +18,7 @@
     "manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c",
     "binding": "baseline.phase_material.slots.predecessor_source; this sealed closed-list-direct manifest remains the unchanged per-row runtime state source"
   },
-  "runtime_version_bridge_requirement": "Root must bind the owner-approved runtime-version bridge before any fit or generation contact: the bridge must identify the same pinned llama.cpp build, runtime receipt and per-file model hashes used by the four fragments, and must be registered in the exposure record. This preparation does not invent or copy source hashes.",
+  "runtime_version_bridge_requirement": "Bind the same receipt-pinned llama.cpp featcache build and decoder as the historical run. Whole-roster payload equality is passed; root must complete the transport source and local runtime identity checks before service access.",
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
     "split_role": "dev",
@@ -27,37 +27,47 @@
     "planned_speech_audio_seconds": 3000
   },
   "execution_plan_basis": {
-      "generation": "1,000 roster contacts plus 8 canaries; proposal 1,050 calls, 3,000 audio seconds and 1 GPU-hour. The registered exposure row supplies the live ceilings. The inherited one-recovery procedure remains in force.",
+    "generation": "1,000 roster generations under a 1,050-contact, 3,000-audio-second, 1-GPU-hour ceiling. Do not add a new performance trial or smoke by implication; any inherited audit canary must be separately identified and counted.",
     "fit": "The shared fitter's actual endpoint sequence is 1 GET /props + 1,000 POST /apply-template + 2,000 POST /tokenize = 3,001 tokenizer contacts for the complete roster. The fit exposure proposal must therefore use a 3,001 contact cap (with any additional margin separately approved), not the 1,050 generation cap."
   },
   "cells": [
     {
       "cell_id": "kc-s1b-same-config-replicate-fit",
       "run_id": "SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-FIT-V1",
-      "attempt_id": "attempt-pending-owner-registration",
-      "allowed_execution_stages": ["check", "wire-check", "prompt-fit"],
+      "attempt_id": "attempt-20260909T135929Z-8223cb",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit"
+      ],
       "arm": "speech-feature-query",
       "baseline_fragment": "slurp-phase-slots-given-intent-schema-v1",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
         "state": "held",
-        "reason": "Preparation only. Root must register both exposure rows, bind the runtime-version bridge, land the full-roster fit artifact and pass the contact-free wire proof before dispatch. The fit uses the inherited failure and one-recovery procedure.",
+        "reason": "Full-roster payload parity passed. Root must commit the tokenizer exposure and structured plan, verify the same runtime and acquire the root service lease before fitting.",
         "requirements": []
       }
     },
     {
       "cell_id": "kc-s1b-same-config-replicate-generation",
       "run_id": "SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1",
-      "attempt_id": "attempt-pending-owner-registration",
-      "allowed_execution_stages": ["check", "wire-check", "prepare-supply", "worker", "campaign"],
+      "attempt_id": "attempt-20260909T135929Z-cd0731",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
       "arm": "speech-feature-query",
       "baseline_fragment": "slurp-phase-slots-given-intent-schema-v1",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
         "state": "held",
-        "reason": "Preparation only. Root must register both exposure rows, bind the runtime-version bridge, land and verify the full-roster fit artifact, and pass the contact-free wire proof before dispatch. The generation cell uses the inherited failure and one-recovery procedure.",
+        "reason": "Root must bind the successful full-roster fit, register the final generation protocol and verify source/runtime parity before generation.",
         "requirements": []
       }
     }
@@ -102,5 +112,27 @@
     "test_tuning": false,
     "paper_scale": false
   },
-  "claim_surface": "No superiority, generalization, confirmatory or Stage-3 conclusion is authorized by this preparation."
+  "claim_surface": "No superiority, generalization, confirmatory or Stage-3 conclusion is authorized by this preparation.",
+  "prospective_replication_analysis": {
+    "population": "historically exposed NEW500 primary; OLD500 and full DEV-1000 reported separately",
+    "comparators": [
+      "sealed KC-S1b same-profile predecessor run",
+      "sealed closed-list-direct runtime predecessor",
+      "sealed KC-S1a equal-contact control"
+    ],
+    "metrics": [
+      "official strict entity F1 per sample",
+      "official SLU-F1 per sample",
+      "official corpus micro SLU-F1",
+      "scenario/action/intent after deterministic predecessor join"
+    ],
+    "estimator": "paired speaker-cluster bootstrap, 10000 replicates, seed20260903; historical scenario-stratified bootstrap reported as sensitivity",
+    "weights": [
+      "natural mixture",
+      "equal scenario strata"
+    ],
+    "decision": "Report same-profile replication of the historical improvement only if both entity-F1 and per-sample SLU-F1 paired CI90 lower bounds exceed zero versus both historical closed-list-direct and KC-S1a on NEW500. Any upper bound below zero is harmful; otherwise unresolved. Record agreement with sealed KC-S1b descriptively; do not use nonsignificance as equivalence.",
+    "claim_limit": "This is a same-profile repeat. Historical different-geometry rung2 and independent-roster requirements remain unfulfilled.",
+    "guard": "The deterministic predecessor join must preserve scenario/action/intent exactly row by row; report failures, retries, saturation, raw/derived delivery and contact costs."
+  }
 }

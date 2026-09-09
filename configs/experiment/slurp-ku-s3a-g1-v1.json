@@ -69,9 +69,17 @@
     "dimension": "content",
     "k": 5,
     "tau": 0.0,
-    "fuse_coverage": {"m": 5, "c": 5, "top_l": 5},
+    "fuse_coverage": {
+      "m": 5,
+      "c": 5,
+      "top_l": 5
+    },
     "rank_policy": "saea-rank-wcos-prior-agree-v1",
-    "rank_weights": {"w_cos": 1.0, "w_prior": 0.0, "w_agree": 0.0},
+    "rank_weights": {
+      "w_cos": 1.0,
+      "w_prior": 0.0,
+      "w_agree": 0.0
+    },
     "query_vector": "vectors/slurp-kus3/query-vectors-speech.jsonl",
     "facet_vectors": "vectors/slurp-kus3/facet-vectors.jsonl",
     "snapshot": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers/snapshot.json",
@@ -93,9 +101,13 @@
   "cells": [
     {
       "cell_id": "ku-s3a-g1-fit",
-      "run_id": "PENDING-KU-S3A-G1-FIT-RUN-ID",
-      "attempt_id": "PENDING-KU-S3A-G1-FIT-ATTEMPT-ID",
-      "allowed_execution_stages": ["check", "wire-check", "prompt-fit"],
+      "run_id": "SAEA-SLURP-KU-S3A-G1-FIT-V1",
+      "attempt_id": "attempt-20260909T135929Z-6b4163",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit"
+      ],
       "arm": "speech-feature-query",
       "baseline_fragment": "slurp-phase-slots-supplied-fillers-speech-v1",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
@@ -109,8 +121,14 @@
     {
       "cell_id": "ku-s3a-g1-generation",
       "run_id": "SAEA-SLURP-KU-S3-FILLERS-SPEECH-DEV1000-V1",
-      "attempt_id": "PENDING-KU-S3A-G1-GENERATION-ATTEMPT-ID",
-      "allowed_execution_stages": ["check", "wire-check", "prepare-supply", "worker", "campaign"],
+      "attempt_id": "attempt-20260909T135929Z-95c4e4",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
       "arm": "speech-feature-query",
       "baseline_fragment": "slurp-phase-slots-supplied-fillers-speech-v1",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
@@ -122,5 +140,14 @@
       }
     }
   ],
-  "decision": {"test_tuning": false, "paper_scale": false}
+  "decision": {
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "owner_schema_decision": {
+    "decision_id": "OWNER-KUS3-SCHEMA-003",
+    "repo_relpath": "docs/superpowers/plans/experiment-handoff/OWNER-KUS3-SCHEMA-003.md",
+    "schema_basis": "original KC-S1b examples retained",
+    "claim": "incremental retrieval supply; not replacement of schema examples"
+  }
 }

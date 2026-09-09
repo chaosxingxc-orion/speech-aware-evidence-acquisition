@@ -1,0 +1,17 @@
+{
+  "schema": "saea-request-parity-v1",
+  "old_boundary_sha256": "f5710feb4d222963e47bd6a2fdebad6c8bcb70fc9e7ad9ee3c68a18fe5fea1df",
+  "new_boundary_sha256": "f5710feb4d222963e47bd6a2fdebad6c8bcb70fc9e7ad9ee3c68a18fe5fea1df",
+  "historical_manifest_sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08",
+  "historical_trace_sha256": "2fd8d53905aea72a4e632b45203cc0221d363cf3ae65017128d9e2a7c2134107",
+  "sample_count": 1000,
+  "missing": [],
+  "extra": [],
+  "changed_rows": [],
+  "wall_seconds": 328.5578366359987,
+  "model_contacts": 0,
+  "tokenizer_contacts": 0,
+  "status": "PASS",
+  "read_id": "SAEA-SLURP-KC-S1B-REQUEST-PARITY-READ-V1",
+  "scope": "Equal full payloads excluding request_id and decoding_params.id_slot only. No model-visible field was removed. Actual HTTP transport source parity is verified separately before serving."
+}

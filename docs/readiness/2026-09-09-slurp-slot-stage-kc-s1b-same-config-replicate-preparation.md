@@ -24,8 +24,9 @@ persist only the hashable fit artifact and counts, and generate no model output.
 
 The following prerequisites remain unresolved and are owned by root:
 
-1. Register the generation exposure row and the fit exposure row before opening either service
-   session; keep paid API spend at zero and leave both run IDs unconsumed.
+1. Register the fit exposure and structured plan before service access. Register generation
+   after binding the successful fit, so its protocol hash describes the final configuration.
+   Keep paid API spend at zero; each run remains unconsumed until its own registered contact.
 2. Bind the owner-approved runtime-version bridge, including the pinned llama.cpp build,
    runtime receipt and per-file model identities. This preparation records no invented hashes.
 3. Run the shared full-roster fit with the 3,001 contact cap and bind its artifact to the same
@@ -42,3 +43,6 @@ verified. Both cells use identical model, dataset and baseline fragment names; t
 attempt registrations remain separate.
 
 No model, tokenizer, encoder, network or scorer contact was made while preparing this note.
+
+Update: complete-roster wire and payload parity passed; see the successor registration in
+2026-09-09-kc-s1b-replica-registration/. Real capacity and generation remain unexecuted.

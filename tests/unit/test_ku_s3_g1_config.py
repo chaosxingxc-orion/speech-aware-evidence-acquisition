@@ -27,10 +27,10 @@ def test_ku_s3_g1_has_held_fit_and_generation_cells(path):
     assert len(doc["cells"]) == 2
     fit, generation = doc["cells"]
     assert fit["readiness"]["state"] == generation["readiness"]["state"] == "held"
-    assert fit["run_id"].startswith("PENDING-")
-    assert fit["attempt_id"].startswith("PENDING-")
+    assert fit["run_id"].startswith("SAEA-SLURP-KU-S3A")
+    assert fit["attempt_id"].startswith("attempt-")
     assert generation["run_id"].startswith("SAEA-SLURP-KU-S3-FILLERS-")
-    assert generation["attempt_id"].startswith("PENDING-")
+    assert generation["attempt_id"].startswith("attempt-")
     assert fit["allowed_execution_stages"] == ["check", "wire-check", "prompt-fit"]
     assert generation["allowed_execution_stages"] == ["check", "wire-check", "prepare-supply", "worker", "campaign"]
     assert generation["readiness"].get("depends_on") is None

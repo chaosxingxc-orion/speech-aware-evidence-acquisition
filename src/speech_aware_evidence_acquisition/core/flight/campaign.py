@@ -114,13 +114,13 @@ def declared_readiness(cell: CampaignCell, data_root: Path) -> FlightReadiness:
         reason = str(item.get("reason", f"{item['kind']} receipt required"))
         if not path.is_file():
             return FlightReadiness(state, f"{reason}: missing {relative}")
-        with path.open("rb") as handle:
-            actual = hashlib.file_digest(handle, "sha256").hexdigest()
+        raw = path.read_bytes()
+        actual = hashlib.sha256(raw).hexdigest()
         if actual != digest:
             return FlightReadiness(state, f"{reason}: hash mismatch for {relative}")
         if item["kind"] == "decision":
             try:
-                receipt = json.loads(path.read_text(encoding="utf-8"))
+                receipt = json.loads(raw.decode("utf-8"))
             except (OSError, UnicodeError, json.JSONDecodeError) as error:
                 return FlightReadiness("held", f"{reason}: invalid decision receipt {relative}: {error}")
             if not isinstance(receipt, Mapping):

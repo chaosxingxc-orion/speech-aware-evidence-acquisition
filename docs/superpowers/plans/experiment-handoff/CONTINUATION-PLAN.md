@@ -95,8 +95,9 @@ Choose E21 np6 only after actual family-wide fit clears its registered margin. O
 implicitly. Carrier order may change for independently ready work; scientific gates remain binding.
 
 KU-S3: reconcile KV before choosing its schema base. Use eligible sealed KV0, otherwise coherent
-KC-S1b fallback. Apply examples-free state amendments, exact comparator pins, all-row fit and wire/
-seal checks. Fly a+twin by default. Park KU-S3b because its inherited rule and matched twin are
+KC-S1b fallback. OWNER-KUS3-SCHEMA-003 explicitly selects the original example-bearing
+KC-S1b state fill for a and twin, superseding the inherited examples-free amendment in this
+queue. Bind exact comparators and complete all-row fit and wire/seal checks. Fly a+twin by default. Park KU-S3b because its inherited rule and matched twin are
 unresolved. Move KC-S1b replication into the np4 cohort. A different flight may satisfy replication
 only if predecessor, prompts, roster, configuration, role and estimator actually coincide.
 Honor predecessor replication or named-component root-cause requirements before new admission.
