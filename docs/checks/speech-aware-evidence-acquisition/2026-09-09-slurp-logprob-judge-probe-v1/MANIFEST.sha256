@@ -1,7 +1,8 @@
-173315ba0469d4e25df4f205497bf674a8319d05a17c69183519b3c925a026ef  ./README.md
+c51069ebacee1971ce0eae5f243b1487131dd31838a7aed25b64d0cc16d4e5b5  ./README.md
 a90676e81774ddc1913b3d1e31961bad4f2653689d096612274d8652e2483436  ./build_read_inputs.py
 9d4595b9d2c9908a19c03d7c044165f872d69f6f5fd6d08c3ed365f6bfced635  ./build_result_summary.py
 62bd938e86f0d9f7ea898d76b7d530280fdbd21a41a138f7f23c701cb73bc5a4  ./companion-read.py
+04ab6679ae611d1612f54f84a4581b0e4d5ff1b8087f9860415498800b438b82  ./deterministic_pair.py
 599ac9a098a01b87f0bdb796b4ca754761ac964390956416ab9c0b13bd2fd8dc  ./flight-1000/flight-receipt.json
 4d1f2f82900b90c3feb2b6727655f47f736661b143dd8c6226734b4ac58ce7d8  ./flight-1000/monitor-contact-window.json
 9775a7f38edd345267553c4cf75f65c6fa21832556701227e6ee72a0bf25b669  ./score_once.py
@@ -9,8 +10,9 @@ b37f4fdd0931952ebd8103566d0eabc127a5fd866b2044cab38174b24d9871e1  ./smoke/accept
 973ee5f13d22bf6c4f8b46c781bd475221b062524d6d36344b8255631e01af3e  ./smoke/smoke-acceptance.json
 625368a8c6a9c1309566035c6c0e14135ff8545070d3e5f6041ebf64f804c11d  ./verdict/auroc-table.md
 0eefba5ccfa5aa83f4b695599028282dba52d46708fcfd3a445bb8715ceb0425  ./verdict/companion-read.json
+92ba8303a2a967be403ffcec353f5aff3d692901e29cfedf705794f1ddbd2ccd  ./verdict/deterministic-pair.json
 616bc07eee9919dfdad0e54ad147bad3bfa1d4e5f608edd29b98ae7cb7a1da20  ./verdict/official-aggregate.json
-51d40d3dedda5c0df7a23d0f7d259b004884212c31b305e86da8f252543bcdd6  ./verdict/operating-point-table.md
+3f9e8e66586e093280de20418cd88b029537ed8d213caaf16dea33191a794e5f  ./verdict/operating-point-table.md
 829dda6954324fdd62672c2f77ea8539012c90bb13042ae408f2e6a559d02f0c  ./verdict/per-scenario-table.md
 5d81efdcc34fbebb2fad984a70ae2dd23a20ccdf0e1b17c26ccf64764bb82d04  ./verdict/read-inputs-provenance.json
 8892627e3f542b761cade2165530d61e6877a8cb66638db1705af86dfeca2606  ./verdict/read.json

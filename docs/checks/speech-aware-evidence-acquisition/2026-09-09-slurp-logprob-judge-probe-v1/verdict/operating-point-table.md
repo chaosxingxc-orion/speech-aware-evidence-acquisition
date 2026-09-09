@@ -40,6 +40,22 @@ arm) is a different arm's measurement and is carried as a bar, never as a row he
 | union: confidence + schema | 97 | 63 | 559 | 64.95 | 11.27 |
 | union: all three | 123 | 78 | 559 | 63.41 | 13.95 |
 
+## The deterministic pair on its own
+
+The one union the registered read does not compute, added so the verdict's claim that the
+confidence flag lowers the deterministic judges' precision is MEASURED rather than inferred
+(`deterministic-pair.json`, zero contacts).
+
+| target | schema OR legality alone | ... plus the confidence flag |
+|---|---|---|
+| `intent_error` | 52 flags, 29 caught, **55.77 %** / 10.94 % | 123 flags, 62 caught, **50.41 %** / 23.40 % |
+| `slot_error` | 52 flags, 35 caught, **67.31 %** / 5.49 % | 123 flags, 93 caught, **75.61 %** / 14.58 % |
+| `unmatched_gold` | 52 flags, 32 caught, **61.54 %** / 5.72 % | 123 flags, 78 caught, **63.41 %** / 13.95 % |
+
+On intent error the flag costs 5.36 pp of precision to buy 12.45 pp of recall. On the two slot
+targets it RAISES precision as well. That asymmetry is the same one section 3.1 reports: the
+whole-answer minimum is a slot signal, and the rule asked it an intent question.
+
 ## The rule's arm B
 
 | | value |

@@ -1,0 +1,55 @@
+{
+  "model_contacts": 0,
+  "note": "the union the registered read does not compute: the two deterministic judges on their own, so the claim that adding the confidence flag lowers their precision is measured rather than inferred",
+  "results": {
+    "intent_error": {
+      "deterministic_pair_schema_or_legality": {
+        "caught": 29,
+        "errors": 265,
+        "flagged": 52,
+        "precision": 55.76923076923077,
+        "recall": 10.943396226415095
+      },
+      "plus_confidence_all_three": {
+        "caught": 62,
+        "errors": 265,
+        "flagged": 123,
+        "precision": 50.40650406504065,
+        "recall": 23.39622641509434
+      }
+    },
+    "slot_error": {
+      "deterministic_pair_schema_or_legality": {
+        "caught": 35,
+        "errors": 638,
+        "flagged": 52,
+        "precision": 67.3076923076923,
+        "recall": 5.4858934169279
+      },
+      "plus_confidence_all_three": {
+        "caught": 93,
+        "errors": 638,
+        "flagged": 123,
+        "precision": 75.60975609756098,
+        "recall": 14.576802507836991
+      }
+    },
+    "unmatched_gold": {
+      "deterministic_pair_schema_or_legality": {
+        "caught": 32,
+        "errors": 559,
+        "flagged": 52,
+        "precision": 61.53846153846154,
+        "recall": 5.724508050089446
+      },
+      "plus_confidence_all_three": {
+        "caught": 78,
+        "errors": 559,
+        "flagged": 123,
+        "precision": 63.41463414634146,
+        "recall": 13.953488372093023
+      }
+    }
+  },
+  "schema": "saea-slurp-logprob-deterministic-pair-v1"
+}

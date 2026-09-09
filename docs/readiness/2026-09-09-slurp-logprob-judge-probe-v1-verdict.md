@@ -150,6 +150,15 @@ Against **any-slot error** the same 86 rows reach 80.23 % precision, and against
 65.12 % — but the rule's arm B is about intent error, fixed in advance, and that is the cell it is
 read in.
 
+**One union the registered read does not compute, measured here rather than inferred**
+(`verdict/deterministic-pair.json`, zero contacts): the two deterministic judges ON THEIR OWN flag
+**52 rows at 55.77 % precision and 10.94 % recall**. Adding the confidence flag takes that to 123
+rows at 50.41 % and 23.40 % — **precision down 5.36 pp for recall up 12.45 pp**. So the flag does
+buy reach on top of the free judges; what it does not do is buy it at their precision, and the
+rule's bar was a precision bar. The same addition on **any-slot error** goes the other way, 67.31 %
+→ 75.61 %, which is the section 3.1 mirror showing up again: the whole-answer minimum is a slot
+signal being asked an intent question.
+
 **The honesty clause fired exactly as written.** 72.09 % and 86 are KC-S1b's numbers on the
 two-stage slot arm. On THIS arm, under the same definition, **the schema judge flags 13 rows at
 30.77 % precision**, not 86 at 72.09 %. Both readings are reported and neither replaces the other:

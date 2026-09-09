@@ -45,10 +45,11 @@ confidence predict the core's own errors well enough to be a Reviewer signal? Th
 | `verdict/auroc-table.md` | all five statistics against both targets, with CI90 |
 | `verdict/operating-point-table.md` | the 86-flag point for all three targets, the two recomputed judges, both unions, and the rule's arm B |
 | `verdict/per-scenario-table.md` | all 18 gold scenarios, and where the row minimum actually lands |
+| `verdict/deterministic-pair.json` | schema OR legality ON THEIR OWN, the one union the registered read does not compute, so the verdict's claim about the flag's effect on the free judges is measured rather than inferred |
 | `verdict/score-provenance.json` | sealed manifest, derived manifest, the one verified scoring job |
 | `verdict/read-inputs-provenance.json` | the clusters and label inventory the read consumed, with their sources and hashes |
 | `verdict/official-aggregate.json` | this arm's own official aggregate — labels for the read, never a comparator |
-| `build_read_inputs.py`, `score_once.py`, `companion-read.py`, `build_result_summary.py` | archived copies of the four zero-contact steps beside the registered read |
+| `build_read_inputs.py`, `score_once.py`, `companion-read.py`, `build_result_summary.py`, `deterministic_pair.py` | archived copies of the five zero-contact steps beside the registered read |
 
 ## The five things this receipt exists to pin
 
