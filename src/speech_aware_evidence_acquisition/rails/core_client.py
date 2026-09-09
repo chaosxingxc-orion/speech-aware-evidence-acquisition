@@ -631,6 +631,177 @@ def payload_binding_stage(
     )
 
 
+@dataclass(frozen=True)
+class MediaIdentityStageResult:
+    """Receipt of one :func:`media_identity_stage` run.
+
+    ``identity_closed`` is ``True`` only when BOTH halves passed: every id on
+    the cell's roster is inside D1's media identity closure, and every row the
+    stage actually loaded re-hashed to the identity D1 recorded for it.
+    ``refusal`` carries the gate's OWN sentence when either half refused, and
+    is ``None`` exactly when ``identity_closed`` is ``True``.
+
+    ``d1_media_supplement`` / ``d1_media_supplement_sha256`` are the values the
+    gate was CONSTRUCTED with -- i.e. what ``core.config.
+    d1_media_supplement_relpath`` read out of the composed config, which is the
+    exact seam the 2026-09-09 defect hid in: a fragment can declare a
+    supplement under a carrier-prefixed key, satisfy payload confinement, and
+    still hand the gate ``None`` here.
+    """
+
+    dataset_fragment: str
+    carrier_lock_key: str
+    d1_media_supplement: str | None
+    d1_media_supplement_sha256: str | None
+    closure_ids: int
+    roster_ids_checked: int
+    rows_verified: tuple[str, ...]
+    identity_closed: bool
+    refusal: str | None
+    model_contacts: int = 0
+    sockets_opened: int = 0
+
+    def as_receipt(self) -> dict[str, object]:
+        """JSON-safe view for a wire-check receipt document."""
+
+        return {
+            "dataset_fragment": self.dataset_fragment,
+            "carrier_lock_key": self.carrier_lock_key,
+            "d1_media_supplement": self.d1_media_supplement,
+            "d1_media_supplement_sha256": self.d1_media_supplement_sha256,
+            "closure_ids": self.closure_ids,
+            "roster_ids_checked": self.roster_ids_checked,
+            "rows_verified": list(self.rows_verified),
+            "identity_closed": self.identity_closed,
+            "refusal": self.refusal,
+            "model_contacts": self.model_contacts,
+            "sockets_opened": self.sockets_opened,
+        }
+
+
+def media_identity_stage(
+    *,
+    dataset_fragment: str,
+    carrier_lock_key: str,
+    values: Mapping[str, object],
+    repo_root: Path,
+    data_root: Path,
+    runtime_root: Path,
+    roster_sample_ids: Sequence[str],
+    samples: Sequence[object],
+) -> MediaIdentityStageResult:
+    """The shared MEDIA-IDENTITY stage every wire check now runs beside
+    :func:`payload_binding_stage`: a cell is wire-ready only if it BINDS **and**
+    is IDENTITY-CLOSED.
+
+    THE THIRD BLIND SPOT (2026-09-09, ``docs/readiness/
+    2026-09-09-a2t-derived-media-d1-declaration-fix-v1.md``). Payload
+    confinement and media identity are two different rails reading two
+    different config keys, and the wire checks proved only the first. Six
+    Audio2Tool derived-media fragments declared their D1 supplement under the
+    carrier-prefixed key ``core.base.declared_derived_media_roots`` reads and
+    NOT under the plain key ``core.flight.FlightRuntime.preflight`` builds the
+    identity gate from, so confinement passed, the wire checks were green, and
+    the first real request refused every roster id as outside D1's closure.
+
+    This function closes that gap by constructing the REAL
+    ``contracts.FrozenCoreGate`` exactly as ``FlightRuntime.preflight``
+    constructs it -- same ``for_study_repo`` call, same four config-derived
+    keyword arguments (``runtime_receipt_relpath``, ``expected_model_lock_key``,
+    ``model_root`` and the D1 media supplement pair) off the same composed
+    ``values`` -- and then running BOTH halves of the identity rail:
+
+    * ``assert_media_identity_closure`` over EVERY id in ``roster_sample_ids``
+      (membership only; no media file is opened, so a 400- or 1,000-row roster
+      costs nothing), and
+    * the production ``verify_media_identity`` over ``samples`` -- the same
+      rows :func:`payload_binding_stage` loads -- which re-measures each media
+      file on disk against D1's recorded size and SHA-256.
+
+    Zero sockets, zero servers, zero model contacts: ``assert_model_touch_
+    allowed`` is never called, no attempt is opened and no transport is
+    constructed. A refusal is RETURNED, never raised, with the gate's own
+    sentence, so the caller decides whether it was the point (a synthetic
+    prefixed-only cell) or a wire-readiness defect (a real cell).
+    """
+
+    from ..contracts import (  # noqa: PLC0415 (import cost, not a cycle)
+        FrozenCoreGate,
+        GateClosed,
+    )
+    from ..core.config import (  # noqa: PLC0415
+        ConfigError,
+        d1_media_supplement_relpath,
+        d1_media_supplement_sha256,
+        model_lock_key,
+        model_materialization_root,
+        runtime_receipt_relpath,
+    )
+
+    try:
+        supplement_relpath = d1_media_supplement_relpath(values)
+        supplement_sha256 = d1_media_supplement_sha256(values)
+    except ConfigError as error:
+        # ``core.config.assert_d1_media_supplement_spellings_agree`` refuses a
+        # fragment that declares its supplement ONLY under a carrier-prefixed
+        # key -- the 2026-09-09 defect, now unrepresentable. A wire check
+        # REPORTS that refusal as "not identity-closed" rather than exploding,
+        # so one bad cell never hides the state of the others.
+        return MediaIdentityStageResult(
+            dataset_fragment=dataset_fragment,
+            carrier_lock_key=carrier_lock_key,
+            d1_media_supplement=None,
+            d1_media_supplement_sha256=None,
+            closure_ids=0,
+            roster_ids_checked=len(roster_sample_ids),
+            rows_verified=(),
+            identity_closed=False,
+            refusal=str(error),
+        )
+    configured_model_root = model_materialization_root(values)
+    gate = FrozenCoreGate.for_study_repo(
+        Path(repo_root),
+        Path(data_root),
+        Path(runtime_root),
+        runtime_receipt_relpath=runtime_receipt_relpath(values),
+        expected_model_lock_key=model_lock_key(values),
+        model_root=(
+            Path(configured_model_root) if configured_model_root is not None else None
+        ),
+        d1_media_supplement_relpath=supplement_relpath,
+        d1_media_supplement_sha256=supplement_sha256,
+    )
+    roster = [str(sample_id) for sample_id in roster_sample_ids]
+    # ``sample.audio_ref.path`` is the same per-sample media relpath
+    # :func:`build_payload_binding` records in
+    # ``PayloadBindingContext.media_relpaths`` -- i.e. exactly the value the
+    # production gate is handed at model-touch time.
+    media_facts = {
+        sample.sample_id: (sample.audio_ref.path, float(sample.audio_seconds))
+        for sample in samples
+    }
+    refusal: str | None = None
+    closure_ids = 0
+    try:
+        closure_ids = len(gate.media_identity_closure_ids(carrier_lock_key))
+        gate.assert_media_identity_closure(carrier_lock_key, roster)
+        if media_facts:
+            gate.verify_media_identity(carrier_lock_key, media_facts)
+    except GateClosed as error:
+        refusal = str(error)
+    return MediaIdentityStageResult(
+        dataset_fragment=dataset_fragment,
+        carrier_lock_key=carrier_lock_key,
+        d1_media_supplement=supplement_relpath,
+        d1_media_supplement_sha256=supplement_sha256,
+        closure_ids=closure_ids,
+        roster_ids_checked=len(roster),
+        rows_verified=tuple(sorted(media_facts)),
+        identity_closed=refusal is None,
+        refusal=refusal,
+    )
+
+
 def build_slice_registry(
     *, data_root: Path, run_id: str, samples: Sequence[object]
 ) -> SliceRegistry:
