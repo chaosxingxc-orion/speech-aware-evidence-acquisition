@@ -68,9 +68,15 @@ def _git(repo_root: Path, *args: str) -> tuple[int, str, str]:
         ["git", "-C", str(repo_root), *args],
         check=False,
         capture_output=True,
-        text=True,
     )
-    return completed.returncode, completed.stdout.strip(), completed.stderr.strip()
+    # Status columns and path bytes are significant: stripping stdout erases
+    # the index column of a first unstaged change. Decode without newline
+    # conversion so a filename containing CR/LF also survives unchanged.
+    return (
+        completed.returncode,
+        completed.stdout.decode("utf-8", errors="surrogateescape"),
+        completed.stderr.decode("utf-8", errors="surrogateescape").strip(),
+    )
 
 
 def _study_commit(repo_root: Path) -> str:
@@ -98,6 +104,7 @@ def _study_commit(repo_root: Path) -> str:
             f"the exact commit that produced the run, never a dirty tree:\n{dirty}"
         )
     code, commit, stderr = _git(repo_root, "rev-parse", "HEAD")
+    commit = commit.strip()
     if code != 0 or not commit:
         raise BundleError(f"cannot read the study repo's HEAD commit at {repo_root}: {stderr}")
     return commit
@@ -117,28 +124,37 @@ def _is_load_bearing_relpath(relpath: str) -> bool:
 
 
 def _dirty_relpaths(porcelain: str) -> list[str]:
-    """Parse ``git status --porcelain`` (v1) output into repo-relative,
-    forward-slash paths -- one per dirty entry. A rename/copy entry
-    (``R  old -> new`` / ``C  old -> new``) contributes only the
-    POST-rename path, matching what stays dirty going forward. Git quotes a
-    path containing unusual characters in double quotes; those quotes are
-    stripped so the result is a bare path either way."""
+    """Parse porcelain v1 ``-z``, preserving paths and both sides of a move.
 
+    Git emits ``XY path<NUL>``; a rename/copy adds ``source<NUL>`` after its
+    destination. Both paths affect the cleanliness boundary. NUL delimiters
+    make spaces, quotes, arrows and newlines literal filename bytes. Refuse
+    malformed output instead of classifying an incomplete path as harmless.
+    """
+
+    if not porcelain:
+        return []
+    if not porcelain.endswith("\0"):
+        raise BundleError("malformed git porcelain: missing terminal NUL")
+    entries = porcelain[:-1].split("\0")
     paths: list[str] = []
-    for line in porcelain.splitlines():
-        if not line.strip():
-            continue
-        # Porcelain v1: exactly 2 status chars, then one space, then the
-        # path (``line[3:]``); tolerate a shorter/malformed line rather than
-        # raising on a git version's format quirk we did not anticipate.
-        entry = line[3:] if len(line) > 3 else line[2:].lstrip()
-        if " -> " in entry:
-            entry = entry.split(" -> ", 1)[1]
-        entry = entry.strip()
-        if len(entry) >= 2 and entry[0] == '"' and entry[-1] == '"':
-            entry = entry[1:-1]
-        if entry:
-            paths.append(entry.replace("\\", "/"))
+    index = 0
+    while index < len(entries):
+        entry = entries[index]
+        index += 1
+        if (
+            len(entry) < 4
+            or entry[2] != " "
+            or any(status not in " MADRCUT?!" for status in entry[:2])
+            or entry[:2] == "  "
+        ):
+            raise BundleError("malformed git porcelain: invalid status or missing path")
+        paths.append(entry[3:])
+        if "R" in entry[:2] or "C" in entry[:2]:
+            if index >= len(entries) or not entries[index]:
+                raise BundleError("malformed git porcelain: rename/copy source is missing")
+            paths.append(entries[index])
+            index += 1
     return paths
 
 
@@ -166,7 +182,9 @@ def require_clean_load_bearing_surface(repo_root: Path) -> tuple[str, list[str]]
     refuses is refused at scoring too."""
 
     repo_root = Path(repo_root)
-    code, porcelain, stderr = _git(repo_root, "status", "--porcelain")
+    code, porcelain, stderr = _git(
+        repo_root, "status", "--porcelain=v1", "-z", "--untracked-files=all"
+    )
     if code != 0:
         raise BundleError(f"cannot read git status for {repo_root}: {stderr}")
 
@@ -183,6 +201,7 @@ def require_clean_load_bearing_surface(repo_root: Path) -> tuple[str, list[str]]
         )
 
     code, commit, stderr = _git(repo_root, "rev-parse", "HEAD")
+    commit = commit.strip()
     if code != 0 or not commit:
         raise BundleError(f"cannot read the study repo's HEAD commit at {repo_root}: {stderr}")
 
