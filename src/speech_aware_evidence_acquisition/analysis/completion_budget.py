@@ -1,124 +1,197 @@
-"""Pure metadata analysis for bounded completion-budget reads."""
+"""Read sealed completion metadata without scoring or changing model outputs."""
 from __future__ import annotations
-import base64, hashlib, json
+
+import base64
+import binascii
+import copy
+import hashlib
+import json
 from collections.abc import Mapping, Sequence
 from typing import Any
 
-class CompletionBudgetError(ValueError): pass
+from ..reproduction.slurp_scoring import parse_slu_response
 
-def _records_by_channel(records: Sequence[Mapping[str, Any]], channel: str) -> list[Mapping[str, Any]]:
-    return [record for record in records if record.get("channel") == channel]
 
-def _request_id(record: Mapping[str, Any], suffix: str) -> str:
-    value = record.get("record_id")
-    if not isinstance(value, str) or not value.endswith(suffix):
-        raise CompletionBudgetError("record_id has an unexpected suffix")
-    return value[:-len(suffix)]
+class CompletionBudgetError(ValueError):
+    """A trace or source binding cannot support a trustworthy readout."""
 
-def _entities(value: object) -> bool:
-    return isinstance(value, Mapping) and "entities" in value
 
-def _wire(payload: Mapping[str, Any]) -> dict[str, Any]:
-    required = ("request_id", "sample_id", "response_b64", "response_sha256")
-    if any(not isinstance(payload.get(key), str) for key in required):
-        raise CompletionBudgetError("wire response is malformed")
+def _sha(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _text_metadata(text: object) -> dict[str, Any]:
+    if not isinstance(text, str):
+        return {"available": False}
     try:
-        raw = base64.b64decode(payload["response_b64"], validate=True)
-    except Exception as error:
-        raise CompletionBudgetError("wire response has invalid base64") from error
-    digest = hashlib.sha256(raw).hexdigest()
-    valid = digest == payload["response_sha256"]
-    result: dict[str, Any] = {"available": True, "sha256_valid": valid, "sha256": digest, "length": len(raw)}
-    try:
-        decoded = json.loads(raw.decode("utf-8"))
-        result["raw_json_valid"] = True
-    except (UnicodeDecodeError, json.JSONDecodeError):
-        result["raw_json_valid"] = False
-        return result
-    choice = decoded.get("choices", [None])[0] if isinstance(decoded, Mapping) else None
-    if not isinstance(choice, Mapping):
-        result["raw_json_valid"] = False
-        return result
-    message = choice.get("message")
-    content = message.get("content") if isinstance(message, Mapping) else None
-    result["finish_reason"] = choice.get("finish_reason")
-    result["content_sha256"] = hashlib.sha256(content.encode()).hexdigest() if isinstance(content, str) else None
-    result["content_length"] = len(content) if isinstance(content, str) else None
-    result["usage"] = decoded.get("usage") if isinstance(decoded.get("usage"), Mapping) else None
-    return result
+        value = json.loads(text)
+        json_valid = True
+    except json.JSONDecodeError:
+        value, json_valid = None, False
+    entity_list = value.get("entities") if isinstance(value, dict) else None
+    valid_entities = isinstance(entity_list, list) and all(
+        isinstance(entity, dict) and set(entity) == {"type", "filler"}
+        and all(isinstance(item, str) for item in entity.values())
+        for entity in entity_list
+    )
+    return {
+        "available": True, "sha256": _sha(text),
+        "bytes": len(text.encode("utf-8")), "json_syntax_valid": json_valid,
+        "json_object": isinstance(value, dict),
+        "entities_schema_valid": valid_entities,
+        "entities_only_phase_contract": valid_entities and set(value) == {"entities"},
+        "slurp_parser_valid": parse_slu_response(text)[-1],
+    }
 
-def analyze_completion_metadata(records: Sequence[Mapping[str, Any]], outputs: Sequence[Mapping[str, Any]] = ()) -> dict[str, Any]:
-    requests: dict[str, Mapping[str, Any]] = {}
-    responses: dict[str, Mapping[str, Any]] = {}
-    wires: dict[str, Mapping[str, Any]] = {}
+
+def _index(records: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, Mapping]]:
+    suffixes = {"MODEL_REQUEST": "/request", "MODEL_RESPONSE": "/response",
+                "MODEL_WIRE_RESPONSE": "/wire-response"}
+    indexed: dict[str, dict[str, Mapping]] = {name: {} for name in suffixes}
     for record in records:
         channel = record.get("channel")
-        payload = record.get("payload")
-        if not isinstance(payload, Mapping): continue
+        if channel not in suffixes:
+            continue
+        payload, record_id = record.get("payload"), record.get("record_id")
+        suffix = suffixes[channel]
+        if not isinstance(payload, Mapping) or not isinstance(record_id, str) or not record_id.endswith(suffix):
+            raise CompletionBudgetError("invalid trace envelope")
+        request_id = record_id[:-len(suffix)]
+        if not request_id or request_id in indexed[channel]:
+            raise CompletionBudgetError("duplicate or empty request ID")
         if channel == "MODEL_REQUEST":
-            outer = payload.get("payload")
-            if not isinstance(outer, Mapping): raise CompletionBudgetError("MODEL_REQUEST lacks nested request payload")
-            rid = outer.get("request_id")
-            if not isinstance(rid, str) or rid in requests: raise CompletionBudgetError("duplicate or invalid request id")
-            requests[rid] = outer
-        elif channel == "MODEL_RESPONSE":
-            rid = _request_id(record, "/response")
-            if rid in responses: raise CompletionBudgetError("duplicate response id")
-            responses[rid] = payload
-        elif channel == "MODEL_WIRE_RESPONSE":
-            rid = payload.get("request_id")
-            if not isinstance(rid, str) or rid in wires: raise CompletionBudgetError("duplicate or invalid wire id")
-            wires[rid] = payload
-    rows=[]
-    for rid, request in requests.items():
-        sample_id=request.get("sample_id")
-        if not isinstance(sample_id,str): raise CompletionBudgetError("request lacks sample_id")
-        response=responses.get(rid)
-        if response is None: raise CompletionBudgetError("request lacks normalized response")
-        if any(row.get("sample_id")==sample_id for row in rows): raise CompletionBudgetError("duplicate sample id")
-        decoded=request.get("decoding_params")
-        limit=decoded.get("max_tokens") if isinstance(decoded,Mapping) else None
-        if isinstance(limit,bool) or not isinstance(limit,int) or limit<=0: raise CompletionBudgetError("request lacks positive max_tokens")
-        w = _wire(wires[rid]) if rid in wires else {"available":False}
-        if w.get("available") and wires[rid].get("sample_id") != sample_id: raise CompletionBudgetError("wire sample mismatch")
-        normalized=response.get("text")
-        if not isinstance(normalized,str): raise CompletionBudgetError("response lacks text")
-        normalized_sha=hashlib.sha256(normalized.encode()).hexdigest()
-        if response.get("response_text_sha256") not in (None, normalized_sha): raise CompletionBudgetError("normalized text hash mismatch")
-        usage=response.get("usage") if isinstance(response.get("usage"),Mapping) else {}
-        completion=usage.get("completion_tokens")
-        at_cap=isinstance(completion,int) and completion==limit
-        if w.get("available") and w.get("content_sha256") is not None and w["content_sha256"] != normalized_sha: w["content_matches_normalized"]=False
-        elif w.get("available"): w["content_matches_normalized"]=True
-        raw_json=None
-        try: raw_json=json.loads(normalized)
-        except json.JSONDecodeError: pass
-        entities=_entities(raw_json)
-        strict=isinstance(raw_json,Mapping) and set(raw_json)=={"entities"}
-        finish=w.get("finish_reason") if w.get("available") else None
-        metadata_finish=wires[rid].get("finish_reason") if rid in wires else None
-        if metadata_finish is not None and metadata_finish != finish: raise CompletionBudgetError("wire finish metadata mismatch")
-        rows.append({"request_id":rid,"sample_id":sample_id,"max_tokens":limit,"completion_tokens":completion,"at_cap":at_cap,"actual_length_stop": finish=="length","wire":w,"normalized_text_sha256":normalized_sha,"normalized_text_length":len(normalized),"normalized_json_valid":raw_json is not None,"entities_present":entities,"entities_only_phase_contract":strict,"cached_tokens":usage.get("cached_tokens"),"timings":usage.get("timings")})
-    return {"rows":rows,"output_rows":len(outputs)}
+            payload = payload.get("payload")
+            if not isinstance(payload, Mapping) or payload.get("request_id") != request_id:
+                raise CompletionBudgetError("nested request ID mismatch")
+        if channel == "MODEL_WIRE_RESPONSE" and payload.get("request_id") != request_id:
+            raise CompletionBudgetError("wire request ID mismatch")
+        indexed[channel][request_id] = payload
+    requests = indexed["MODEL_REQUEST"]
+    if not requests or any(set(indexed[name]) - set(requests) for name in suffixes if name != "MODEL_REQUEST"):
+        raise CompletionBudgetError("missing request or orphan response")
+    sample_ids = [value.get("sample_id") for value in requests.values()]
+    if any(not isinstance(sid, str) or not sid for sid in sample_ids) or len(set(sample_ids)) != len(sample_ids):
+        raise CompletionBudgetError("duplicate or invalid sample ID")
+    return indexed
 
-def compare_request_payload_sets(left: Sequence[Mapping[str, Any]], right: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
-    def extract(records):
-        result={}
-        for r in _records_by_channel(records,"MODEL_REQUEST"):
-            p=r.get("payload",{}); p=p.get("payload") if isinstance(p,Mapping) else None
-            if not isinstance(p,Mapping) or not isinstance(p.get("sample_id"),str): raise CompletionBudgetError("invalid request")
-            sid=p["sample_id"]
-            if sid in result: raise CompletionBudgetError("duplicate sample id")
-            result[sid]=p
-        return result
-    a,b=extract(left),extract(right)
-    if set(a)!=set(b): return {"payloads_equal_except_allowed":False}
+
+def _wire(payload: Mapping | None) -> tuple[dict[str, Any], str | None]:
+    if payload is None:
+        return {"available": False, "finish_reason": None}, None
+    try:
+        raw = base64.b64decode(payload["response_b64"], validate=True)
+    except (KeyError, ValueError, TypeError, binascii.Error) as error:
+        raise CompletionBudgetError("invalid raw response base64") from error
+    digest = hashlib.sha256(raw).hexdigest()
+    if digest != payload.get("response_sha256"):
+        raise CompletionBudgetError("raw response hash mismatch")
+    result: dict[str, Any] = {"available": True, "sha256": digest, "bytes": len(raw),
+                              "finish_reason": None, "response_json_valid": False}
+    try:
+        document = json.loads(raw)
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return result, None
+    result["response_json_valid"] = True
+    choices = document.get("choices") if isinstance(document, dict) else None
+    if not isinstance(choices, list) or len(choices) != 1 or not isinstance(choices[0], dict):
+        result["response_envelope_valid"] = False
+        return result, None
+    choice = choices[0]
+    message = choice.get("message")
+    text = message.get("content") if isinstance(message, dict) else None
+    finish = choice.get("finish_reason")
+    if "finish_reason" in payload and payload["finish_reason"] != finish:
+        raise CompletionBudgetError("wire finish metadata mismatch")
+    usage = document.get("usage")
+    if not isinstance(usage, dict):
+        usage = {}
+    details = usage.get("prompt_tokens_details")
+    result.update({
+        "response_envelope_valid": isinstance(text, str), "finish_reason": finish,
+        "text": _text_metadata(text), "usage": usage,
+        "cached_tokens": details.get("cached_tokens") if isinstance(details, dict) else None,
+        "timings": document.get("timings"),
+    })
+    return result, text if isinstance(text, str) else None
+
+
+def analyze_completion_metadata(records: Sequence[Mapping[str, Any]],
+                                outputs: Sequence[Mapping[str, Any]] = ()) -> dict[str, Any]:
+    """Keep wire, normalized response and delivered output as separate views."""
+    indexed = _index(records)
+    requests, responses, wires = (indexed[name] for name in
+        ("MODEL_REQUEST", "MODEL_RESPONSE", "MODEL_WIRE_RESPONSE"))
+    delivered = {}
+    for output in outputs:
+        rid = output.get("request_id")
+        if rid not in requests or rid in delivered or output.get("sample_id") != requests[rid]["sample_id"]:
+            raise CompletionBudgetError("delivered output identity mismatch")
+        text = output.get("text")
+        if not isinstance(text, str) or output.get("response_text_sha256") != _sha(text):
+            raise CompletionBudgetError("delivered output hash mismatch")
+        delivered[rid] = output
+    if outputs and set(delivered) != set(requests):
+        raise CompletionBudgetError("incomplete delivered output roster")
+    rows = []
+    for rid, request in sorted(requests.items(), key=lambda item: item[1]["sample_id"]):
+        decoding = request.get("decoding_params")
+        limit = decoding.get("max_tokens") if isinstance(decoding, Mapping) else None
+        if isinstance(limit, bool) or not isinstance(limit, int) or limit <= 0:
+            raise CompletionBudgetError("request lacks a positive completion ceiling")
+        if rid in wires and wires[rid].get("sample_id") != request["sample_id"]:
+            raise CompletionBudgetError("wire sample ID mismatch")
+        wire, raw_text = _wire(wires.get(rid))
+        response = responses.get(rid)
+        text, usage = None, {}
+        if response is not None:
+            text = response.get("text")
+            if not isinstance(text, str) or response.get("response_text_sha256") != _sha(text):
+                raise CompletionBudgetError("normalized text hash mismatch")
+            usage = response.get("usage", {})
+            if not isinstance(usage, Mapping):
+                raise CompletionBudgetError("normalized usage must be a mapping")
+        raw_usage = wire.get("usage", {})
+        for field in ("completion_tokens", "prompt_tokens"):
+            if field in raw_usage and field in usage and raw_usage[field] != usage[field]:
+                raise CompletionBudgetError("wire and normalized usage disagree")
+        completion = raw_usage.get("completion_tokens", usage.get("completion_tokens"))
+        if completion is not None and (isinstance(completion, bool) or not isinstance(completion, int) or completion < 0):
+            raise CompletionBudgetError("invalid completion token count")
+        finish = wire.get("finish_reason")
+        output_text = delivered[rid]["text"] if rid in delivered else None
+        rows.append({
+            "request_id": rid, "sample_id": request["sample_id"], "max_tokens": limit,
+            "completion_tokens": completion,
+            "prompt_tokens": raw_usage.get("prompt_tokens", usage.get("prompt_tokens")),
+            "at_cap": completion == limit if completion is not None else None,
+            "actual_length_stop": finish == "length" if finish is not None else None,
+            "stop_reason": finish, "wire": wire, "normalized": _text_metadata(text),
+            "delivered": _text_metadata(output_text),
+            "raw_matches_normalized": raw_text == text if raw_text is not None and text is not None else None,
+            "normalized_matches_delivered": text == output_text if text is not None and output_text is not None else None,
+        })
+    return {"schema": "saea-completion-budget-metadata-v1", "rows": rows,
+            "row_count": len(rows), "output_rows": len(outputs)}
+
+
+def compare_request_payload_sets(left: Sequence[Mapping[str, Any]],
+                                 right: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """Reject any comparison change except request ID, slot ID and token ceiling."""
+    def by_sample(records):
+        return {value["sample_id"]: value for value in _index(records)["MODEL_REQUEST"].values()}
+    a, b = by_sample(left), by_sample(right)
+    if set(a) != set(b):
+        raise CompletionBudgetError("paired sample sets differ")
     for sid in a:
-        def clean(x):
-            y=json.loads(json.dumps(x)); y.pop("request_id",None)
-            d=y.get("decoding_params",{})
-            if isinstance(d,dict):
-                d.pop("id_slot",None); d.pop("max_tokens",None)
-            return y
-        if clean(a[sid]) != clean(b[sid]): return {"payloads_equal_except_allowed":False}
-    return {"payloads_equal_except_allowed":True}
+        def cleaned(payload):
+            value = copy.deepcopy(dict(payload))
+            value.pop("request_id")
+            decoding = value.get("decoding_params")
+            if not isinstance(decoding, dict):
+                raise CompletionBudgetError("missing decoding parameters")
+            decoding.pop("id_slot", None)
+            decoding.pop("max_tokens", None)
+            return value
+        if cleaned(a[sid]) != cleaned(b[sid]):
+            raise CompletionBudgetError(f"unregistered paired request difference for {sid}")
+    return {"sample_count": len(a), "payloads_equal_except_allowed": True}
