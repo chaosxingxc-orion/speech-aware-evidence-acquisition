@@ -90,27 +90,9 @@ def main(argv=None) -> int:
         elif args.mode == "prepare-supply":
             result = runtime.prepare_phase_supply(args.output)
         elif args.mode == "prompt-fit":
-            preparation_context = None
-            if callable(getattr(runtime, "preparation_context", None)):
-                preparation_context = runtime.preparation_context()
             from ..preparation_fit import fit_phase_runtime
-            window_batch = None
-            adapter = getattr(runtime, "adapter", None)
-            if adapter is not None and adapter.preprocess_plan().get("kind") == "raw-speech-windows":
-                if preparation_context and preparation_context["values"].get(
-                    "prepared_request_fit"
-                ) is not None:
-                    plan = preparation_context["execution_plan"]
-                else:
-                    plan = runtime.authorize_preparation_contacts(
-                        contact_cap=args.contact_cap
-                    )
-                window_batch = runtime.materialize_window_batch(
-                    execution_plan=plan
-                )
             result = fit_phase_runtime(
                 runtime, args.output, policy=policy, contact_cap=args.contact_cap,
-                window_batch=window_batch,
             )
         else:
             runtime.preflight()

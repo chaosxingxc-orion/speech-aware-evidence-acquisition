@@ -3564,6 +3564,17 @@ class FlightRuntime:
         require_clean_study_repo(self._repo_root)
         return plan
 
+    def materialize_request_fit_batch(self, *, execution_plan=None):
+        """Return raw E21 fit requests, or ``None`` for phase-program fits.
+
+        The shared preparation fitter calls this before it decides how to
+        render a request. Keeping the dispatch here makes root-coordinated
+        and attach-only fits bind the same request builder and source facts.
+        """
+        if self._adapter.preprocess_plan().get("kind") != "raw-speech-windows":
+            return None
+        return self.materialize_window_batch(execution_plan=execution_plan)
+
     def materialize_window_batch(self, *, execution_plan=None):
         """Build the configured E21 raw-window requests without model contact."""
         from ..base import SampleContext
@@ -3698,6 +3709,7 @@ class FlightRuntime:
         window_batch = None
         if self._adapter.preprocess_plan().get("kind") == "raw-speech-windows":
             window_batch = self.materialize_window_batch()
+        if window_batch is not None:
             payloads = window_batch.payloads
         else:
             payloads = self.materialize_phase_requests()

@@ -333,3 +333,47 @@ def test_window_batch_fit_uses_real_multimodal_count_route(tmp_path):
     assert fit_phase_runtime(runtime, path, window_batch=batch, **kwargs)["cache"] == "warm"
     assert runtime.authorize_preparation_contacts.call_count == authorization_calls
     assert client.calls == []
+
+
+def test_shared_fit_dispatches_raw_window_batch_before_attachment(tmp_path):
+    """A coordinator and the CLI both reach this shared fitter entry point."""
+    from unittest.mock import Mock
+
+    from speech_aware_evidence_acquisition.core.preparation_fit import fit_phase_runtime
+    from speech_aware_evidence_acquisition.core.preparation_windows import (
+        WindowRequestBatch,
+    )
+
+    runtime, _policy, attach, client, kwargs = fit_fixture(tmp_path)
+    batch = WindowRequestBatch(
+        ({"sample_id": "s1", "media_relpath": "slice.wav", "speech": []},),
+        ("s1#w0001",),
+        ({"sample_id": "s1", "media_relpath": "slice.wav", "sha256": "a"},),
+    )
+    runtime.materialize_phase_requests = Mock(
+        side_effect=AssertionError("raw fit selected phase request materialization")
+    )
+    events = []
+    runtime.materialize_request_fit_batch = Mock(
+        side_effect=lambda **_kwargs: (events.append("materialize"), batch)[1]
+    )
+    attach.side_effect = lambda *args, **kwargs: (
+        events.append("attach"), attach.return_value
+    )[1]
+    original = client.request_json
+
+    def count(method, path, payload):
+        if path == "/v1/chat/completions/input_tokens":
+            client.calls.append((method, path))
+            return {"input_tokens": 2}
+        return original(method, path, payload)
+
+    client.request_json = count
+    fit_phase_runtime(runtime, tmp_path / "fit.json", **kwargs)
+    runtime.materialize_request_fit_batch.assert_called_once_with(execution_plan=None)
+    assert attach.called
+    assert events == ["materialize", "attach"]
+    assert client.calls == [
+        ("GET", "/props"),
+        ("POST", "/v1/chat/completions/input_tokens"),
+    ]

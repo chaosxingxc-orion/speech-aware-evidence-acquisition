@@ -216,6 +216,15 @@ def fit_phase_runtime(
     from .session.worker import attach_worker_session
 
     context = runtime.preparation_context()
+    # The runtime owns the request kind. This keeps attach-only prompt fits
+    # and root-coordinated fits on the same actual-boundary materialization
+    # path. Older, non-flight test doubles retain the phase-request contract.
+    if window_batch is None:
+        materialize = getattr(runtime, "materialize_request_fit_batch", None)
+        if callable(materialize):
+            window_batch = materialize(
+                execution_plan=context.get("execution_plan")
+            )
     payloads = (
         runtime.materialize_phase_requests()
         if window_batch is None
