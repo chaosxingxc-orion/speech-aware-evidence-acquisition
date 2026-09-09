@@ -3,11 +3,13 @@
 Prepared bytes are local artifacts, never authorization for a model contact.
 Receipt pins are excluded from the input-config digest to avoid self-reference;
 every other config value remains bound. Endpoint access is supplied only by an
-already-attested caller and only template/tokenizer routes are used here.
+already-attested caller. Template/tokenizer and multimodal input-count routes
+measure requests without generation.
 """
 
 from __future__ import annotations
 
+import fcntl
 import hashlib
 import json
 import math
@@ -101,6 +103,41 @@ def prepare_artifact(
     producer: Callable[[], object],
     contact_class: str = "model-free",
 ) -> dict[str, object]:
+    """Exclude other producers before checking warm state or doing any work.
+
+    A competing producer is refused immediately. The kernel lock is released
+    on process death; an encoder start marker survives, so interruption never
+    turns into automatic replay of a potentially spent contact.
+    """
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor = os.open(
+        path.with_name(path.name + ".producer.lock"), os.O_CREAT | os.O_RDWR, 0o600
+    )
+    try:
+        try:
+            fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as error:
+            raise PreparationError("prepared artifact producer is busy") from error
+        return _prepare_artifact_locked(
+            path,
+            kind=kind,
+            inputs=inputs,
+            producer=producer,
+            contact_class=contact_class,
+        )
+    finally:
+        os.close(descriptor)
+
+
+def _prepare_artifact_locked(
+    path: Path,
+    *,
+    kind: str,
+    inputs: Mapping[str, object],
+    producer: Callable[[], object],
+    contact_class: str,
+):
     """Persist once, or verify an existing artifact without invoking producer."""
     path = Path(path)
     if contact_class not in {"model-free", "tokenizer", "encoder"}:
@@ -116,6 +153,17 @@ def prepare_artifact(
             "cache": "warm",
             "contact_class": contact_class,
         }
+    if contact_class == "encoder":
+        started = path.with_name(path.name + ".encoder-started.json")
+        try:
+            with started.open("x", encoding="utf-8") as stream:
+                stream.write(canonical_bytes({"kind": kind, "inputs": inputs}).decode())
+                stream.flush()
+                os.fsync(stream.fileno())
+        except FileExistsError as error:
+            raise PreparationError(
+                "prior encoder preparation requires a new registered attempt"
+            ) from error
     output = producer()
     document = {
         "schema": SCHEMA,
