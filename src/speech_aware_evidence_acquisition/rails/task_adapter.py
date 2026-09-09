@@ -225,6 +225,13 @@ class TaskAdapter(abc.ABC):
 
         return {}
 
+    def bind_runtime(self, runtime: object, values: Mapping[str, object]) -> None:
+        """Bind carrier-specific material through shared runtime seams, if required.
+
+        A plain adapter needs no additional material. Config-driven carrier views
+        may bind frozen providers or judge material here before preflight.
+        """
+
     def serving_geometry(self) -> Mapping[str, object]:
         """This carrier's serving geometry (slot count, tokens reserved per
         slot, and max generated tokens), read from the

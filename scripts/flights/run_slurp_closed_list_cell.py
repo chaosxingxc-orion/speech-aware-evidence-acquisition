@@ -16,30 +16,11 @@ directories carrying ``flight-state.json`` and ``arm*-outputs.jsonl`` but no
 registered scorer reads ``text``. Sealing through ``FlightRuntime.seal`` fixes
 both, durably, for this carrier.
 
-Why an adapter subclass here at all. ``FlightRuntime`` reads its system message
-from ``adapter.instruction(sample)`` and has no config seam of its own, and the
-stock ``SlurpAdapter.load_split("devel")`` returns all 8,690 devel recordings
-WITH their gold SLU layer attached. This entry supplies an adapter that
-
-* is bound to ONE hash-pinned roster -- the frozen DEV-1000 runtime view the
-  sealed 2026-08-25 lock arms flew, read id-for-id, with every media file
-  re-hashed against the view's own record before it can become a sample;
-* is **label-free by construction**: samples are built from the runtime view,
-  which carries media identity only. ``scenario``/``action``/``intent``/
-  ``entities`` are left empty and ``gold()`` refuses outright, so no SLURP
-  gold label is ever loaded into the process that talks to the model. The
-  paper-facing numbers come, as they must, from the manifest's declared
-  scorers through ``core.scoring_batch`` after the seal;
-* takes its instruction from the composed config
-  (``core.instructions.resolve_active_task_instruction``), so the closed label
-  inventory lives in a hash-pinned template plus a registered fill rather than
-  in this file.
-
-The subclass lives here rather than under ``rails/adapters/`` deliberately:
-``scripts/checks/engineering_base_check.py`` scans ``src/`` and
-``docs/checks/**/launcher/`` for ``TaskAdapter`` subclasses, and both existing
-flight scripts already put their roster-bound adapter in exactly this place.
-``rails/adapters/slurp.py`` is not edited by this campaign.
+The shared rails.adapters.slurp_runtime module owns the label-free roster,
+config-resolved instruction, serving geometry and reference-free per-row parse
+hook. This historical entry point reexports its compatibility names and retains
+the sealed-M0 prefix assertion. New flights use core.flight.factory and the
+shared campaign CLI.
 
 Modes::
 
@@ -58,7 +39,6 @@ import argparse
 import hashlib
 import json
 import os
-from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -97,11 +77,6 @@ from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
 )
 from speech_aware_evidence_acquisition.rails.adapters.slurp import (  # noqa: E402
     SlurpAdapter,
-    SlurpSample,
-)
-from speech_aware_evidence_acquisition.rails.obs import AudioRef  # noqa: E402
-from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (  # noqa: E402
-    parse_slu_response,
 )
 
 DEFAULT_EXPERIMENT = "slurp-dev1000-closed-list-direct-v1"
@@ -216,170 +191,12 @@ def derived_carrier_root_resolver(values: Mapping[str, object]) -> dict[str, obj
     return {"carrier_root_resolver": resolver}
 
 
-def roster_samples(
-    values: Mapping[str, object],
-    data_root_path: Path,
-    *,
-    limit_sample_ids: Sequence[str] | None = None,
-    workers: int = 16,
-) -> tuple[SlurpSample, ...]:
-    """LABEL-FREE samples built only from the frozen runtime view's own media
-    facts, each media file re-hashed against the view's record.
-
-    The runtime view (``configs/dataset/slurp-speech-native-dev1000.json``) is
-    a ``saea-speech-native-runtime-view-v1`` document that carries, per item,
-    ``sample_id``/``media_relpath``/``audio_sha256``/``audio_seconds``/
-    ``sample_rate_hz``/``packet_id`` and NOTHING ELSE -- no scenario, no
-    action, no entity, no sentence. The ``SlurpSample`` fields that would hold
-    SLURP's gold SLU layer are therefore filled with empty values here, and
-    :meth:`ClosedListSlurpAdapter.gold` refuses to be called at all, so gold
-    cannot reach the request path even by accident.
-    """
-
-    items = values.get("items")
-    if values.get("schema") != RUNTIME_VIEW_SCHEMA or not isinstance(items, list):
-        raise SystemExit("dataset fragment is not a %s runtime view" % RUNTIME_VIEW_SCHEMA)
-    declared_count = values.get("count")
-    if isinstance(declared_count, int) and declared_count != len(items):
-        raise SystemExit(
-            "runtime view count %s disagrees with its own %d items"
-            % (declared_count, len(items))
-        )
-    wanted = set(limit_sample_ids) if limit_sample_ids is not None else None
-    root = Path(data_root_path).resolve()
-    selected: list[Mapping[str, object]] = []
-    for item in items:
-        if not isinstance(item, Mapping):
-            raise SystemExit("runtime view item must be an object")
-        sample_id = str(item["sample_id"])
-        if wanted is not None and sample_id not in wanted:
-            continue
-        if sample_id.startswith("slurp:test:"):
-            raise SystemExit(
-                "runtime view names the HELD OUT test split sample %r; refusing" % sample_id
-            )
-        prefix = derived_media_subdir(values)
-        if prefix is not None and not str(item["media_relpath"]).startswith(prefix + "/"):
-            raise SystemExit(
-                "runtime view media %r is outside the declared derived root %r"
-                % (item["media_relpath"], prefix)
-            )
-        selected.append(item)
-    if wanted is not None:
-        missing = wanted - {str(item["sample_id"]) for item in selected}
-        if missing:
-            raise SystemExit("runtime view lacks requested sample id(s): %s" % sorted(missing))
-
-    def build(item: Mapping[str, object]) -> SlurpSample:
-        sample_id = str(item["sample_id"])
-        media_relpath = str(item["media_relpath"])
-        media_path = root / media_relpath
-        measured = sha256_file(media_path)
-        if measured != str(item["audio_sha256"]):
-            raise SystemExit(
-                "media %s hashes to %s, not the runtime view's %s"
-                % (media_relpath, measured, item["audio_sha256"])
-            )
-        return SlurpSample(
-            sample_id=sample_id,
-            audio_ref=AudioRef(path=media_relpath, sha256=measured).validate(),
-            audio_seconds=float(item["audio_seconds"]),
-            utterance_id=sample_id.split(":")[2],
-            media_relpath=media_relpath,
-            scenario="",
-            action="",
-            intent="",
-            entities=(),
-        )
-
-    with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
-        samples = list(pool.map(build, selected))
-    return tuple(sorted(samples, key=lambda sample: sample.sample_id))
-
-
-class ClosedListSlurpAdapter(SlurpAdapter):
-    """``SlurpAdapter`` bound to one hash-pinned, label-free roster, with the
-    system instruction taken from the composed config.
-
-    Both overrides are DATA, not behaviour. ``load_split`` returns the roster
-    this instance was constructed with instead of re-reading the whole devel
-    split; ``instruction`` returns the config-resolved text instead of the
-    module-level ``_INSTRUCTION`` constant. The serving geometry DEFAULTS to
-    exactly what ``rails/adapters/slurp.py`` declares (8 slots x 8,192 slot
-    tokens, 64 completion tokens), which is already the geometry the sealed
-    M0 arm flew (``-np 8 -c 65536``, ``max_tokens 64``); a baseline fragment
-    whose per-sample prompt needs a larger slot may declare
-    ``serving_slots``/``serving_slot_tokens`` and those land on the instance
-    as data too. Either way the flight asserts the resolved geometry against
-    the model fragment's own ``server_args`` rather than silently overriding
-    one side.
-    """
-
-    def __init__(
-        self,
-        lock,
-        root,
-        *,
-        repo_root: Path,
-        split_id: str,
-        samples: Sequence[SlurpSample],
-        instruction_text: str,
-        serving_slots: int | None = None,
-        serving_slot_tokens: int | None = None,
-    ) -> None:
-        super().__init__(lock, root, repo_root=repo_root)
-        self._split_id = split_id
-        self._samples = tuple(samples)
-        if not isinstance(instruction_text, str) or not instruction_text:
-            raise SystemExit("closed-list cell requires a non-empty resolved instruction")
-        self._instruction_text = instruction_text
-        # DATA, like the other two overrides: TaskAdapter.serving_geometry
-        # reads self.SERVING_*, so a cell whose per-sample prompt needs a
-        # larger slot declares it in its baseline fragment and it lands
-        # here. Absent a declaration these stay the class defaults.
-        if serving_slots is not None:
-            self.SERVING_SLOTS = int(serving_slots)
-        if serving_slot_tokens is not None:
-            self.SERVING_SLOT_TOKENS = int(serving_slot_tokens)
-
-    def load_split(self, split_id, *, allow_heldout=False, allow_synthetic=False):  # noqa: D102
-        if allow_heldout or allow_synthetic:
-            raise SystemExit("closed-list cell never opens the held-out or synthetic splits")
-        if split_id != self._split_id:
-            raise ValueError(
-                "closed-list adapter serves only %s, not %r" % (self._split_id, split_id)
-            )
-        return self._samples
-
-    def instruction(self, sample):  # noqa: D102
-        return self._instruction_text
-
-    def gold(self, sample):  # noqa: D102
-        raise SystemExit(
-            "closed-list cell is label-free: gold never enters the flight process. "
-            "The paper-facing numbers come from the manifest's declared scorers "
-            "through core.scoring_batch, after the seal."
-        )
-
-    def score(self, sample, response: str):  # noqa: D102
-        """Reference-free per-row stub.
-
-        ``FlightRuntime._canonical_output_rows`` drops per-row ``metrics``
-        from the sealed outputs entirely, so this hook's only job is to not
-        need gold. ``parsed`` is genuinely useful, though: it is the
-        JSON-parse outcome of the response, computed by the same
-        ``reproduction.slurp_scoring.parse_slu_response`` the official scorer
-        will use later, so an unparseable-response problem shows up in the
-        run log rather than only after the seal.
-        """
-
-        _scenario, _action, _entities, parsed = parse_slu_response(response)
-        return {
-            "sample_id": sample.sample_id,
-            "parsed": parsed,
-            "response_chars": len(response),
-            "scored_post_hoc_by": "slurp-slu-official through core.scoring_batch",
-        }
+# Compatibility names: shared carrier code owns the label-free roster and
+# adapter; this historical wrapper keeps only its experiment assertions.
+from speech_aware_evidence_acquisition.rails.adapters.slurp_runtime import (  # noqa: E402
+    RuntimeSlurpAdapter as ClosedListSlurpAdapter,
+    roster_samples,
+)
 
 
 def assert_instruction_extends_sealed_m0(instruction: str, sealed_head: str | None) -> dict:
@@ -556,107 +373,9 @@ def build_runtime(
     return runtime, identity
 
 
-def _bind_ku_s4_material(
-    runtime: FlightRuntime,
-    values: Mapping[str, object],
-    lock: Mapping[str, object],
-    root: Path,
-) -> dict[str, object]:
-    """Bind the two pieces of carrier material the KU-S4N cells need, from
-    CONFIG alone -- nothing here is a launcher and nothing here is per-cell
-    code.
-
-    A knowledge provider's own artifact and a judge's own carrier material are
-    the two things ``core.flight.FlightRuntime`` documents as too large for a
-    fragment (``bind_phase_supply_providers`` /
-    ``bind_phase_review_material``). KU-S4N needs exactly one of each:
-
-    * the sha256-pinned candidate bank behind
-      ``rails.knowledge_provider.SlurpIntentCandidateProvider`` -- the
-      per-row decision a cosine cannot express, because half of it is the
-      comparator's own sealed response;
-    * the 60-pair ``LegalIntentInventory`` ``slurp-legal-label-flag-v1``
-      reads.
-
-    Both are keyed off fragment keys, so a fragment that declares neither is
-    byte-unaffected: this function returns an empty record and binds nothing.
-    """
-
-    bound: dict[str, object] = {}
-    relpath = values.get("candidate_bank_relpath")
-    if isinstance(relpath, str) and relpath:
-        from speech_aware_evidence_acquisition.rails.knowledge import KnowledgeSnapshot
-        from speech_aware_evidence_acquisition.rails.knowledge_provider import (
-            SlurpIntentCandidateProvider,
-        )
-        from speech_aware_evidence_acquisition.rails.slurp_intent_candidates import (
-            load_candidate_bank,
-        )
-
-        supply = values.get("phase_supply")
-        if not isinstance(supply, Mapping) or len(supply) != 1:
-            raise SystemExit(
-                "a fragment declaring candidate_bank_relpath must supply exactly one phase"
-            )
-        phase = next(iter(supply))
-        bank = load_candidate_bank(
-            root / relpath, expected_sha256=str(values["candidate_bank_sha256"])
-        )
-        selection = str(values.get("candidate_bank_selection", "candidates"))
-        # The SAME load and the SAME hash check
-        # ``FlightRuntime._load_knowledge_snapshot`` performs, done here
-        # because ``_composed`` is not resolved until preflight and the
-        # provider has to be bound before it: the frozen snapshot named by
-        # ``knowledge_snapshot_relpath``, re-hashed against the fragment's
-        # own ``knowledge_snapshot_sha256``. Both loads produce the same
-        # content hash or neither runs.
-        snapshot_document = json.loads(
-            (root / str(values["knowledge_snapshot_relpath"])).read_text(encoding="utf-8")
-        )
-        snapshot = KnowledgeSnapshot.from_frozen_json(snapshot_document)
-        if snapshot.content_hash() != str(values["knowledge_snapshot_sha256"]):
-            raise SystemExit(
-                "candidate snapshot content hash does not match the fragment's pin"
-            )
-        provider = SlurpIntentCandidateProvider(bank=bank, selection=selection)
-        provider.adopt(
-            snapshot,
-            policy_id=f"frozen-snapshot:{phase}",
-            source_ids=(),
-            snapshot_sha256=snapshot.content_hash(),
-        )
-        runtime.bind_phase_supply_providers({phase: provider})
-        bound["candidate_bank"] = {
-            "relpath": relpath,
-            "sha256": bank.sha256,
-            "selection": selection,
-            "rows": len(bank.selection(selection)),
-            "k": bank.k,
-            "phase": phase,
-        }
-
-    review = values.get("phase_review")
-    if isinstance(review, Mapping) and review:
-        from speech_aware_evidence_acquisition.reproduction.slurp_official_eval import (
-            load_legal_intent_inventory,
-        )
-
-        inventory = load_legal_intent_inventory(lock, root)
-        material = {
-            str(phase): {
-                str(judge_id): {"inventory": inventory}
-                for judge_id in (entry or {}).get("judges", ())
-                if str(judge_id) == "slurp-legal-label-flag-v1"
-            }
-            for phase, entry in review.items()
-        }
-        material = {phase: entry for phase, entry in material.items() if entry}
-        if material:
-            runtime.bind_phase_review_material(material)
-            bound["review_material"] = {
-                phase: sorted(entry) for phase, entry in material.items()
-            }
-    return bound
+from speech_aware_evidence_acquisition.rails.adapters.slurp_runtime_material import (  # noqa: E402
+    bind_runtime_material as _bind_ku_s4_material,
+)
 
 
 def _write_receipt(path: Path, document: Mapping[str, object]) -> str:

@@ -49,6 +49,7 @@ class Registry:
 
 
 CARRIERS = Registry("carrier")
+TASK_ADAPTERS = Registry("task adapter")
 EVIDENCE_SOURCES = Registry("evidence source")
 TRANSPORTS = Registry("transport")
 POLICIES = Registry("policy")
