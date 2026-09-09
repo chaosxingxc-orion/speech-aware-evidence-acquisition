@@ -1,0 +1,782 @@
+{
+  "authorizes": "nothing. This receipt records a composition, a rendered request, a delivery probe and a payload binding. The three DR-1 cells still need the owner's GO to fly and do not have it.",
+  "bindings": {
+    "receipts/e21-predecessor-full44-direct-baseline-v2.json": {
+      "artifact_sha256": "1522f656a8e01b223f3ca65aec9d035e599eecaf8225c8a9fce930b933de8c64",
+      "attempt_id": "attempt-20260904T233816Z-bcd338",
+      "calls": 44,
+      "receipt_sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a",
+      "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+      "windows": 1593
+    },
+    "receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json": {
+      "artifact_sha256": "9ee709d1af609fa832e0dba2e9bf13b7c491a26ffa86a6530c27d811bdefd6fc",
+      "attempt_id": "attempt-20260908T150858Z-c597a8",
+      "calls": 44,
+      "receipt_sha256": "40f466951acce38f13343ddea9357d15efe6eaacc660f9a126f51e81d48f241d",
+      "run_id": "SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1",
+      "windows": 1593
+    }
+  },
+  "delivery_divergence_probe": {
+    "rows": [
+      {
+        "bounded": {
+          "deliveries": {
+            "substitution-splice": 37
+          },
+          "refusal_reasons": {
+            "anchor_ratio_below_floor": 2,
+            "empty_predecessor": 0,
+            "empty_response": 0,
+            "substituted_fraction_above_ceiling": 4
+          },
+          "rejected_opcodes": {
+            "deletion": 47,
+            "insertion": 45,
+            "oversized_replace": 1,
+            "unbalanced_replace": 131
+          },
+          "substituted_tokens": 262,
+          "substitutions": 138,
+          "windows": 37,
+          "windows_changed": 27,
+          "windows_refused": 6,
+          "windows_unchanged_and_accepted": 4
+        },
+        "comparator_draft_tokens": 9116,
+        "free": {
+          "deliveries": {
+            "verbatim-response": 37
+          },
+          "refusal_reasons": {
+            "anchor_ratio_below_floor": 0,
+            "empty_predecessor": 0,
+            "empty_response": 0,
+            "substituted_fraction_above_ceiling": 0
+          },
+          "rejected_opcodes": {
+            "deletion": 47,
+            "insertion": 45,
+            "oversized_replace": 1,
+            "unbalanced_replace": 131
+          },
+          "substituted_tokens": 1054,
+          "substitutions": 0,
+          "windows": 37,
+          "windows_changed": 37,
+          "windows_refused": 0,
+          "windows_unchanged_and_accepted": 0
+        },
+        "free_absolute_token_count_movement": 2327,
+        "sample_id": "4320211",
+        "unit_draft_tokens": 8981,
+        "windows": 37
+      },
+      {
+        "bounded": {
+          "deliveries": {
+            "substitution-splice": 28
+          },
+          "refusal_reasons": {
+            "anchor_ratio_below_floor": 0,
+            "empty_predecessor": 0,
+            "empty_response": 0,
+            "substituted_fraction_above_ceiling": 0
+          },
+          "rejected_opcodes": {
+            "deletion": 26,
+            "insertion": 48,
+            "oversized_replace": 0,
+            "unbalanced_replace": 73
+          },
+          "substituted_tokens": 121,
+          "substitutions": 96,
+          "windows": 28,
+          "windows_changed": 26,
+          "windows_refused": 0,
+          "windows_unchanged_and_accepted": 2
+        },
+        "comparator_draft_tokens": 6831,
+        "free": {
+          "deliveries": {
+            "verbatim-response": 28
+          },
+          "refusal_reasons": {
+            "anchor_ratio_below_floor": 0,
+            "empty_predecessor": 0,
+            "empty_response": 0,
+            "substituted_fraction_above_ceiling": 0
+          },
+          "rejected_opcodes": {
+            "deletion": 26,
+            "insertion": 48,
+            "oversized_replace": 0,
+            "unbalanced_replace": 73
+          },
+          "substituted_tokens": 627,
+          "substitutions": 0,
+          "windows": 28,
+          "windows_changed": 28,
+          "windows_refused": 0,
+          "windows_unchanged_and_accepted": 0
+        },
+        "free_absolute_token_count_movement": 1475,
+        "sample_id": "4330115",
+        "unit_draft_tokens": 6724,
+        "windows": 28
+      },
+      {
+        "bounded": {
+          "deliveries": {
+            "substitution-splice": 64
+          },
+          "refusal_reasons": {
+            "anchor_ratio_below_floor": 3,
+            "empty_predecessor": 0,
+            "empty_response": 0,
+            "substituted_fraction_above_ceiling": 1
+          },
+          "rejected_opcodes": {
+            "deletion": 84,
+            "insertion": 80,
+            "oversized_replace": 2,
+            "unbalanced_replace": 240
+          },
+          "substituted_tokens": 400,
+          "substitutions": 277,
+          "windows": 64,
+          "windows_changed": 55,
+          "windows_refused": 4,
+          "windows_unchanged_and_accepted": 5
+        },
+        "comparator_draft_tokens": 14872,
+        "free": {
+          "deliveries": {
+            "verbatim-response": 64
+          },
+          "refusal_reasons": {
+            "anchor_ratio_below_floor": 0,
+            "empty_predecessor": 0,
+            "empty_response": 0,
+            "substituted_fraction_above_ceiling": 0
+          },
+          "rejected_opcodes": {
+            "deletion": 84,
+            "insertion": 80,
+            "oversized_replace": 2,
+            "unbalanced_replace": 240
+          },
+          "substituted_tokens": 1931,
+          "substitutions": 0,
+          "windows": 64,
+          "windows_changed": 64,
+          "windows_refused": 0,
+          "windows_unchanged_and_accepted": 0
+        },
+        "free_absolute_token_count_movement": 3312,
+        "sample_id": "4341191",
+        "unit_draft_tokens": 14648,
+        "windows": 64
+      },
+      {
+        "bounded": {
+          "deliveries": {
+            "substitution-splice": 31
+          },
+          "refusal_reasons": {
+            "anchor_ratio_below_floor": 2,
+            "empty_predecessor": 0,
+            "empty_response": 0,
+            "substituted_fraction_above_ceiling": 2
+          },
+          "rejected_opcodes": {
+            "deletion": 42,
+            "insertion": 52,
+            "oversized_replace": 0,
+            "unbalanced_replace": 92
+          },
+          "substituted_tokens": 228,
+          "substitutions": 143,
+          "windows": 31,
+          "windows_changed": 24,
+          "windows_refused": 4,
+          "windows_unchanged_and_accepted": 3
+        },
+        "comparator_draft_tokens": 7094,
+        "free": {
+          "deliveries": {
+            "verbatim-response": 31
+          },
+          "refusal_reasons": {
+            "anchor_ratio_below_floor": 0,
+            "empty_predecessor": 0,
+            "empty_response": 0,
+            "substituted_fraction_above_ceiling": 0
+          },
+          "rejected_opcodes": {
+            "deletion": 42,
+            "insertion": 52,
+            "oversized_replace": 0,
+            "unbalanced_replace": 92
+          },
+          "substituted_tokens": 819,
+          "substitutions": 0,
+          "windows": 31,
+          "windows_changed": 30,
+          "windows_refused": 0,
+          "windows_unchanged_and_accepted": 1
+        },
+        "free_absolute_token_count_movement": 1793,
+        "sample_id": "4344338",
+        "unit_draft_tokens": 6985,
+        "windows": 31
+      }
+    ],
+    "what_it_is": "a MODEL-FREE probe, never a prediction. It feeds each window's hook the COMPARATOR's own sealed hypothesis as if it were the pass-2 response, and reports what each rule would deliver. It says nothing about what the core will return; it measures how far the two rules are apart on real text of the kind a refresh returns"
+  },
+  "execution_profile": "model-free-check",
+  "experiment_fragment": "e21-draft-then-refresh-dr1-v1",
+  "exposure_row": "SAEA-E21-MF-DR1-PREP-V1",
+  "failures": [],
+  "identities": {
+    "E21-dr1c-draft-refresh-constrained": {
+      "config_hash": "929af78655613b5563979f4ec8764cf8951c414b00ab4892d5a2b92e5b80aed7",
+      "protocol_hash": "791e21d855e30a87c1a796f058671a754a5a5b5027edab7d152f9ebd9338bab8",
+      "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e"
+    },
+    "E21-dr1f-draft-refresh-free": {
+      "config_hash": "30ebd82c9d230494b5917ce4964ccc2f7ea0f5197e5f6c6535a2feed7cee8e96",
+      "protocol_hash": "b4a4d4f63746b8fc2eb1803c5975407bb1dcbe91b34a8bd16c6f2c8d20058693",
+      "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e"
+    },
+    "E21-dr1s-self-draft-twin": {
+      "config_hash": "61a8ac641aa748902c1ebaaaecba5f3291f415f6f24d6e81a8c61681d28418d8",
+      "protocol_hash": "1716645438df1f3f74f50bf03345724683ff8886190d79a6a1db1f972841a9b8",
+      "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e"
+    }
+  },
+  "kc_e1f": {
+    "config_hash": "05777ca3a3abdc75cd105021fe2104a639440d0ffd4ca2654ad18e50123b3e5f",
+    "functional_diff_dr1c_vs_kc_e1f": [
+      "arm",
+      "brief_max_entries_per_class",
+      "evidence_source",
+      "predecessor_snapshot",
+      "repair_frame",
+      "task_instruction"
+    ]
+  },
+  "one_factor": {
+    "dr1c_vs_dr1f": [
+      "response_postprocessor",
+      "response_postprocessor_params"
+    ],
+    "dr1c_vs_dr1s": [
+      "predecessor_snapshot"
+    ],
+    "instruction_ends_with_the_comparators_own": true,
+    "one_task_instruction_across_the_three_cells": true
+  },
+  "payload_binding": {
+    "bound": true,
+    "failures": [],
+    "rows_checked": [
+      "4320211",
+      "4397829"
+    ],
+    "rows_total": 44
+  },
+  "preregistration": "docs/readiness/2026-09-09-e21-draft-then-refresh-dr1-v1-preregistration.md",
+  "refusal_agreement": [
+    {
+      "rules_agree_on_refusals": true,
+      "sample_id": "4320211"
+    },
+    {
+      "rules_agree_on_refusals": true,
+      "sample_id": "4330115"
+    },
+    {
+      "rules_agree_on_refusals": true,
+      "sample_id": "4341191"
+    },
+    {
+      "rules_agree_on_refusals": true,
+      "sample_id": "4344338"
+    }
+  ],
+  "request_half": [
+    {
+      "binding_relpath": "receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json",
+      "cell_id": "E21-dr1c-draft-refresh-constrained",
+      "empty_drafts": 0,
+      "floor_run": "unit",
+      "instruction_is_the_fragment_plus_the_frame": true,
+      "refusal_ledger": {
+        "deliveries": {
+          "substitution-splice": 37
+        },
+        "refusal_reasons": {
+          "anchor_ratio_below_floor": 0,
+          "empty_predecessor": 0,
+          "empty_response": 37,
+          "substituted_fraction_above_ceiling": 0
+        },
+        "rejected_opcodes": {
+          "deletion": 0,
+          "insertion": 0,
+          "oversized_replace": 0,
+          "unbalanced_replace": 0
+        },
+        "substituted_tokens": 0,
+        "substitutions": 0,
+        "windows": 37,
+        "windows_changed": 0,
+        "windows_refused": 37,
+        "windows_unchanged_and_accepted": 0
+      },
+      "refused_delivery_equals_the_sealed_floor": true,
+      "sample_id": "4320211",
+      "sealed_floor_sha256": "e9dc303374878cbbda7e12221a43adcd94e3b9bbc6c67c65c194392bfc7e3506",
+      "uncontacted_windows": 0,
+      "windows": 37,
+      "windows_delivered": 37
+    },
+    {
+      "binding_relpath": "receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json",
+      "cell_id": "E21-dr1c-draft-refresh-constrained",
+      "empty_drafts": 0,
+      "floor_run": "unit",
+      "instruction_is_the_fragment_plus_the_frame": true,
+      "refusal_ledger": {
+        "deliveries": {
+          "substitution-splice": 28
+        },
+        "refusal_reasons": {
+          "anchor_ratio_below_floor": 0,
+          "empty_predecessor": 0,
+          "empty_response": 28,
+          "substituted_fraction_above_ceiling": 0
+        },
+        "rejected_opcodes": {
+          "deletion": 0,
+          "insertion": 0,
+          "oversized_replace": 0,
+          "unbalanced_replace": 0
+        },
+        "substituted_tokens": 0,
+        "substitutions": 0,
+        "windows": 28,
+        "windows_changed": 0,
+        "windows_refused": 28,
+        "windows_unchanged_and_accepted": 0
+      },
+      "refused_delivery_equals_the_sealed_floor": true,
+      "sample_id": "4330115",
+      "sealed_floor_sha256": "d85fbaff403c2b154f9f808cc4ef52822fe7cdccbd30d5813cbf279ef7c04cbb",
+      "uncontacted_windows": 0,
+      "windows": 28,
+      "windows_delivered": 28
+    },
+    {
+      "binding_relpath": "receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json",
+      "cell_id": "E21-dr1c-draft-refresh-constrained",
+      "empty_drafts": 0,
+      "floor_run": "unit",
+      "instruction_is_the_fragment_plus_the_frame": true,
+      "refusal_ledger": {
+        "deliveries": {
+          "substitution-splice": 64
+        },
+        "refusal_reasons": {
+          "anchor_ratio_below_floor": 0,
+          "empty_predecessor": 0,
+          "empty_response": 64,
+          "substituted_fraction_above_ceiling": 0
+        },
+        "rejected_opcodes": {
+          "deletion": 0,
+          "insertion": 0,
+          "oversized_replace": 0,
+          "unbalanced_replace": 0
+        },
+        "substituted_tokens": 0,
+        "substitutions": 0,
+        "windows": 64,
+        "windows_changed": 0,
+        "windows_refused": 64,
+        "windows_unchanged_and_accepted": 0
+      },
+      "refused_delivery_equals_the_sealed_floor": true,
+      "sample_id": "4341191",
+      "sealed_floor_sha256": "c1aca086aa85d24efbb041746366822d65dc6471149edcd04f5204c26ebed54e",
+      "uncontacted_windows": 0,
+      "windows": 64,
+      "windows_delivered": 64
+    },
+    {
+      "binding_relpath": "receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json",
+      "cell_id": "E21-dr1c-draft-refresh-constrained",
+      "empty_drafts": 0,
+      "floor_run": "unit",
+      "instruction_is_the_fragment_plus_the_frame": true,
+      "refusal_ledger": {
+        "deliveries": {
+          "substitution-splice": 31
+        },
+        "refusal_reasons": {
+          "anchor_ratio_below_floor": 0,
+          "empty_predecessor": 0,
+          "empty_response": 31,
+          "substituted_fraction_above_ceiling": 0
+        },
+        "rejected_opcodes": {
+          "deletion": 0,
+          "insertion": 0,
+          "oversized_replace": 0,
+          "unbalanced_replace": 0
+        },
+        "substituted_tokens": 0,
+        "substitutions": 0,
+        "windows": 31,
+        "windows_changed": 0,
+        "windows_refused": 31,
+        "windows_unchanged_and_accepted": 0
+      },
+      "refused_delivery_equals_the_sealed_floor": true,
+      "sample_id": "4344338",
+      "sealed_floor_sha256": "afbc93bfa8c4a255ac7ce6f84e83634aeb22b6c4e053fb81bd9cda8da4111fb2",
+      "uncontacted_windows": 0,
+      "windows": 31,
+      "windows_delivered": 31
+    },
+    {
+      "binding_relpath": "receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json",
+      "cell_id": "E21-dr1f-draft-refresh-free",
+      "empty_drafts": 0,
+      "floor_run": "unit",
+      "instruction_is_the_fragment_plus_the_frame": true,
+      "refusal_ledger": {
+        "deliveries": {
+          "verbatim-response": 37
+        },
+        "refusal_reasons": {
+          "anchor_ratio_below_floor": 0,
+          "empty_predecessor": 0,
+          "empty_response": 37,
+          "substituted_fraction_above_ceiling": 0
+        },
+        "rejected_opcodes": {
+          "deletion": 0,
+          "insertion": 0,
+          "oversized_replace": 0,
+          "unbalanced_replace": 0
+        },
+        "substituted_tokens": 0,
+        "substitutions": 0,
+        "windows": 37,
+        "windows_changed": 0,
+        "windows_refused": 37,
+        "windows_unchanged_and_accepted": 0
+      },
+      "refused_delivery_equals_the_sealed_floor": true,
+      "sample_id": "4320211",
+      "sealed_floor_sha256": "e9dc303374878cbbda7e12221a43adcd94e3b9bbc6c67c65c194392bfc7e3506",
+      "uncontacted_windows": 0,
+      "windows": 37,
+      "windows_delivered": 37
+    },
+    {
+      "binding_relpath": "receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json",
+      "cell_id": "E21-dr1f-draft-refresh-free",
+      "empty_drafts": 0,
+      "floor_run": "unit",
+      "instruction_is_the_fragment_plus_the_frame": true,
+      "refusal_ledger": {
+        "deliveries": {
+          "verbatim-response": 28
+        },
+        "refusal_reasons": {
+          "anchor_ratio_below_floor": 0,
+          "empty_predecessor": 0,
+          "empty_response": 28,
+          "substituted_fraction_above_ceiling": 0
+        },
+        "rejected_opcodes": {
+          "deletion": 0,
+          "insertion": 0,
+          "oversized_replace": 0,
+          "unbalanced_replace": 0
+        },
+        "substituted_tokens": 0,
+        "substitutions": 0,
+        "windows": 28,
+        "windows_changed": 0,
+        "windows_refused": 28,
+        "windows_unchanged_and_accepted": 0
+      },
+      "refused_delivery_equals_the_sealed_floor": true,
+      "sample_id": "4330115",
+      "sealed_floor_sha256": "d85fbaff403c2b154f9f808cc4ef52822fe7cdccbd30d5813cbf279ef7c04cbb",
+      "uncontacted_windows": 0,
+      "windows": 28,
+      "windows_delivered": 28
+    },
+    {
+      "binding_relpath": "receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json",
+      "cell_id": "E21-dr1f-draft-refresh-free",
+      "empty_drafts": 0,
+      "floor_run": "unit",
+      "instruction_is_the_fragment_plus_the_frame": true,
+      "refusal_ledger": {
+        "deliveries": {
+          "verbatim-response": 64
+        },
+        "refusal_reasons": {
+          "anchor_ratio_below_floor": 0,
+          "empty_predecessor": 0,
+          "empty_response": 64,
+          "substituted_fraction_above_ceiling": 0
+        },
+        "rejected_opcodes": {
+          "deletion": 0,
+          "insertion": 0,
+          "oversized_replace": 0,
+          "unbalanced_replace": 0
+        },
+        "substituted_tokens": 0,
+        "substitutions": 0,
+        "windows": 64,
+        "windows_changed": 0,
+        "windows_refused": 64,
+        "windows_unchanged_and_accepted": 0
+      },
+      "refused_delivery_equals_the_sealed_floor": true,
+      "sample_id": "4341191",
+      "sealed_floor_sha256": "c1aca086aa85d24efbb041746366822d65dc6471149edcd04f5204c26ebed54e",
+      "uncontacted_windows": 0,
+      "windows": 64,
+      "windows_delivered": 64
+    },
+    {
+      "binding_relpath": "receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json",
+      "cell_id": "E21-dr1f-draft-refresh-free",
+      "empty_drafts": 0,
+      "floor_run": "unit",
+      "instruction_is_the_fragment_plus_the_frame": true,
+      "refusal_ledger": {
+        "deliveries": {
+          "verbatim-response": 31
+        },
+        "refusal_reasons": {
+          "anchor_ratio_below_floor": 0,
+          "empty_predecessor": 0,
+          "empty_response": 31,
+          "substituted_fraction_above_ceiling": 0
+        },
+        "rejected_opcodes": {
+          "deletion": 0,
+          "insertion": 0,
+          "oversized_replace": 0,
+          "unbalanced_replace": 0
+        },
+        "substituted_tokens": 0,
+        "substitutions": 0,
+        "windows": 31,
+        "windows_changed": 0,
+        "windows_refused": 31,
+        "windows_unchanged_and_accepted": 0
+      },
+      "refused_delivery_equals_the_sealed_floor": true,
+      "sample_id": "4344338",
+      "sealed_floor_sha256": "afbc93bfa8c4a255ac7ce6f84e83634aeb22b6c4e053fb81bd9cda8da4111fb2",
+      "uncontacted_windows": 0,
+      "windows": 31,
+      "windows_delivered": 31
+    },
+    {
+      "binding_relpath": "receipts/e21-predecessor-full44-direct-baseline-v2.json",
+      "cell_id": "E21-dr1s-self-draft-twin",
+      "empty_drafts": 0,
+      "floor_run": "comparator",
+      "instruction_is_the_fragment_plus_the_frame": true,
+      "refusal_ledger": {
+        "deliveries": {
+          "substitution-splice": 37
+        },
+        "refusal_reasons": {
+          "anchor_ratio_below_floor": 0,
+          "empty_predecessor": 0,
+          "empty_response": 37,
+          "substituted_fraction_above_ceiling": 0
+        },
+        "rejected_opcodes": {
+          "deletion": 0,
+          "insertion": 0,
+          "oversized_replace": 0,
+          "unbalanced_replace": 0
+        },
+        "substituted_tokens": 0,
+        "substitutions": 0,
+        "windows": 37,
+        "windows_changed": 0,
+        "windows_refused": 37,
+        "windows_unchanged_and_accepted": 0
+      },
+      "refused_delivery_equals_the_sealed_floor": true,
+      "sample_id": "4320211",
+      "sealed_floor_sha256": "4becdf3374e378d8b004800951d869eb6a93a38a92bb3e46287bca0d17c07a8c",
+      "uncontacted_windows": 0,
+      "windows": 37,
+      "windows_delivered": 37
+    },
+    {
+      "binding_relpath": "receipts/e21-predecessor-full44-direct-baseline-v2.json",
+      "cell_id": "E21-dr1s-self-draft-twin",
+      "empty_drafts": 0,
+      "floor_run": "comparator",
+      "instruction_is_the_fragment_plus_the_frame": true,
+      "refusal_ledger": {
+        "deliveries": {
+          "substitution-splice": 28
+        },
+        "refusal_reasons": {
+          "anchor_ratio_below_floor": 0,
+          "empty_predecessor": 0,
+          "empty_response": 28,
+          "substituted_fraction_above_ceiling": 0
+        },
+        "rejected_opcodes": {
+          "deletion": 0,
+          "insertion": 0,
+          "oversized_replace": 0,
+          "unbalanced_replace": 0
+        },
+        "substituted_tokens": 0,
+        "substitutions": 0,
+        "windows": 28,
+        "windows_changed": 0,
+        "windows_refused": 28,
+        "windows_unchanged_and_accepted": 0
+      },
+      "refused_delivery_equals_the_sealed_floor": true,
+      "sample_id": "4330115",
+      "sealed_floor_sha256": "c917fa7c917af7ced5ee9d995bd5731d7228e59b0003a5ff4e4951d26f942d44",
+      "uncontacted_windows": 0,
+      "windows": 28,
+      "windows_delivered": 28
+    },
+    {
+      "binding_relpath": "receipts/e21-predecessor-full44-direct-baseline-v2.json",
+      "cell_id": "E21-dr1s-self-draft-twin",
+      "empty_drafts": 0,
+      "floor_run": "comparator",
+      "instruction_is_the_fragment_plus_the_frame": true,
+      "refusal_ledger": {
+        "deliveries": {
+          "substitution-splice": 64
+        },
+        "refusal_reasons": {
+          "anchor_ratio_below_floor": 0,
+          "empty_predecessor": 0,
+          "empty_response": 64,
+          "substituted_fraction_above_ceiling": 0
+        },
+        "rejected_opcodes": {
+          "deletion": 0,
+          "insertion": 0,
+          "oversized_replace": 0,
+          "unbalanced_replace": 0
+        },
+        "substituted_tokens": 0,
+        "substitutions": 0,
+        "windows": 64,
+        "windows_changed": 0,
+        "windows_refused": 64,
+        "windows_unchanged_and_accepted": 0
+      },
+      "refused_delivery_equals_the_sealed_floor": true,
+      "sample_id": "4341191",
+      "sealed_floor_sha256": "65789603934b1e4fbf425297434945f5e8fc630f767991b1fe295f7860e18167",
+      "uncontacted_windows": 0,
+      "windows": 64,
+      "windows_delivered": 64
+    },
+    {
+      "binding_relpath": "receipts/e21-predecessor-full44-direct-baseline-v2.json",
+      "cell_id": "E21-dr1s-self-draft-twin",
+      "empty_drafts": 0,
+      "floor_run": "comparator",
+      "instruction_is_the_fragment_plus_the_frame": true,
+      "refusal_ledger": {
+        "deliveries": {
+          "substitution-splice": 31
+        },
+        "refusal_reasons": {
+          "anchor_ratio_below_floor": 0,
+          "empty_predecessor": 0,
+          "empty_response": 31,
+          "substituted_fraction_above_ceiling": 0
+        },
+        "rejected_opcodes": {
+          "deletion": 0,
+          "insertion": 0,
+          "oversized_replace": 0,
+          "unbalanced_replace": 0
+        },
+        "substituted_tokens": 0,
+        "substitutions": 0,
+        "windows": 31,
+        "windows_changed": 0,
+        "windows_refused": 31,
+        "windows_unchanged_and_accepted": 0
+      },
+      "refused_delivery_equals_the_sealed_floor": true,
+      "sample_id": "4344338",
+      "sealed_floor_sha256": "87fb02d4547eca28f0b13229d9a5c0a97f34927f61c5c9629be31df8ecd789b8",
+      "uncontacted_windows": 0,
+      "windows": 31,
+      "windows_delivered": 31
+    }
+  ],
+  "result": "PASS",
+  "run_id": "SAEA-E21-MF-DR1-PREP-V1",
+  "schema": "saea-e21-dr1-wire-check-v1",
+  "serving_geometry": {
+    "dr1_model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+    "dr1_server_args": [
+      "-c",
+      "36864",
+      "-np",
+      "6",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ],
+    "kc_e1f_model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np4",
+    "kc_e1f_server_args": [
+      "-c",
+      "36864",
+      "-np",
+      "4",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0"
+    ]
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "906212c61b2ee2ef27aff44cd51e10300f0f3e27",
+  "study_repo_dirt": "",
+  "zero_contact": "No frozen core, server, socket, GPU, tokenizer, embedder, network or paid API. Nothing here constructs a transport, gate, attempt store or FrozenCoreAdapter; no audio file is opened and no MP3 is decoded, so the pinned absence of ffmpeg is preserved. The only bytes read are the committed fragments and receipts, the two sealed runs' own outputs.jsonl, and the two hash-verified snapshot artifacts."
+}
