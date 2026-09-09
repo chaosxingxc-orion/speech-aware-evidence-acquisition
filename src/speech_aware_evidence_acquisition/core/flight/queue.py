@@ -1,49 +1,57 @@
-"""``FlightQueue``: ready-first, geometry-grouped scheduling over a roster of
-:class:`~.runtime.FlightRuntime` instances.
-
-Owner rule (study ``CLAUDE.md``, "Engineering base and experiment rules"):
-one resident server per serving geometry, ready-first queue by geometry --
-GPU is contested, whichever task is ready occupies it, no idle reservations,
-priority only orders the ready queue. This module is the harness-level
-realization of that rule: it never starts a second server for a geometry it
-already has resident, it never blocks a ready flight behind a not-yet-ready
-one, and it overlaps official scoring (a CPU/IO-bound batch,
-``core.scoring_batch.run_score_batch``) with the NEXT flight's generation by
-handing each sealed flight's ``score()`` call to a background thread pool
-rather than awaiting it inline.
-
-Zero model/GPU/network contact of its OWN: every actual server start,
-generation contact, and score batch happens inside the ``FlightRuntime``
-instances this queue merely sequences, each already built with the caller's
-own (possibly fake, possibly real) seams. This module adds exactly one more
-seam of its own -- ``score_pool_factory`` -- so a unit test can run the
-whole queue synchronously without any real thread pool.
-"""
-
+"""Ready-first FlightRuntime scheduling with scientific gates and CPU scoring overlap."""
 from __future__ import annotations
 
 from concurrent.futures import Future, ThreadPoolExecutor
+from contextlib import nullcontext
 from dataclasses import dataclass
-from typing import Callable, Mapping, Sequence
+from typing import Callable, ContextManager, Mapping, Sequence
 
 from .runtime import FlightRuntime
 
 
 class FlightQueueError(RuntimeError):
-    """A :class:`FlightQueue` input, or its scheduling state, is invalid."""
+    """A queue input or scheduling state is invalid."""
 
 
 def _default_score_pool_factory() -> ThreadPoolExecutor:
     return ThreadPoolExecutor(max_workers=1, thread_name_prefix="saea-flight-score")
 
 
+@dataclass(frozen=True)
+class FlightReadiness:
+    """A visible scheduling state; a refusal always carries a useful reason."""
+
+    state: str
+    reason: str = ""
+
+    def __post_init__(self) -> None:
+        allowed = {
+            "ready", "dependency-blocked", "preparation-pending", "held",
+            "preflight-failed", "running", "sealed", "scored", "failed", "dry-run",
+        }
+        if self.state not in allowed:
+            raise FlightQueueError(f"unknown readiness state: {self.state!r}")
+        if self.state in {"dependency-blocked", "preparation-pending", "held", "preflight-failed", "failed"}:
+            if not self.reason.strip():
+                raise FlightQueueError(f"{self.state} requires a reason")
+
+    @classmethod
+    def ready(cls) -> FlightReadiness:
+        return cls("ready")
+
+
+@dataclass(frozen=True)
+class FlightDependency:
+    run_id: str
+    required_state: str = "scored"
+
+    def __post_init__(self) -> None:
+        if not self.run_id or self.required_state not in {"sealed", "scored"}:
+            raise FlightQueueError("dependencies require a run id and sealed/scored state")
+
+
 @dataclass
 class FlightQueueEntry:
-    """One completed (or dry-run-stopped) flight's outcome, in the order this
-    queue finished with it -- NOT necessarily arrival order, since a
-    same-geometry flight may be preferred ahead of an earlier-arrived one
-    with a different geometry."""
-
     flight: FlightRuntime
     dry_run: bool
     served_geometry: Mapping[str, object] | None
@@ -51,191 +59,195 @@ class FlightQueueEntry:
 
 
 class FlightQueue:
-    """Holds pending :class:`FlightRuntime` instances and runs them in
-    ready-first, geometry-preferring order.
+    """Prefer ready flights that match the complete resident serving profile.
 
-    ``next_ready()`` preflights every still-pending flight it has not
-    already preflighted (a flight whose ``preflight()`` raises is left
-    pending, never scheduled, and never silently dropped -- it simply never
-    becomes a candidate until removed by the caller) and returns:
-
-    - the first PREFLIGHTED, PENDING flight whose ``adapter.serving_
-      geometry()`` equals the geometry this queue currently has resident
-      (``served_geometry``), if any such flight exists -- so the server
-      restarts only on a geometry change, never merely because an earlier-
-      arrived flight of a DIFFERENT geometry is also ready;
-    - otherwise, the earliest-arrived preflighted flight (arrival order is
-      the order flights were given to the constructor / appended via
-      :meth:`add`).
-
-    Returns ``None`` when no pending flight has yet passed preflight (the
-    caller may retry later, or treat it as "nothing ready").
+    External preparation and scientific decisions are evaluated through the
+    readiness callback on every scheduling pass. Dependencies require an explicit
+    sealed/scored state. Preflight failures remain pending with their reason;
+    an attempted flight is never silently retried.
     """
 
     def __init__(
-        self,
-        flights: Sequence[FlightRuntime] = (),
-        *,
-        dry_run: bool = False,
+        self, flights: Sequence[FlightRuntime] = (), *, dry_run: bool = False,
         score_pool_factory: Callable[[], object] = _default_score_pool_factory,
+        readiness: Callable[[FlightRuntime], FlightReadiness] | None = None,
+        dependencies: Mapping[str, Sequence[FlightDependency]] | None = None,
+        execution_context_factory: Callable[[FlightRuntime], ContextManager] | None = None,
+        include_per_sample: bool = False,
     ) -> None:
-        self._pending: list[FlightRuntime] = list(flights)
-        if any(not isinstance(flight, FlightRuntime) for flight in self._pending):
-            raise FlightQueueError("FlightQueue only accepts FlightRuntime instances")
+        self._pending: list[FlightRuntime] = []
+        self._known: set[str] = set()
+        self._states: dict[str, FlightReadiness] = {}
+        for flight in flights:
+            self.add(flight)
         self.dry_run = bool(dry_run)
         self._preflighted: set[int] = set()
         self._served_geometry: Mapping[str, object] | None = None
+        self._served_profile: str | None = None
         self._served_flight: FlightRuntime | None = None
-        # The flight that actually STARTED the resident server. Distinct
-        # from _served_flight, which is just the most recent user of it: a
-        # reusing flight does not own the process and cannot stop it, so
-        # tracking only the latest user would silently lose the owner and
-        # leave the server resident forever.
         self._server_owner: FlightRuntime | None = None
         self._score_pool_factory = score_pool_factory
         self._score_pool_instance: object | None = None
+        self._readiness = readiness or (lambda flight: FlightReadiness.ready())
+        self._dependencies = {key: tuple(value) for key, value in (dependencies or {}).items()}
+        self._execution_context_factory = execution_context_factory
+        self._include_per_sample = include_per_sample
         self.completed: list[FlightQueueEntry] = []
 
     def add(self, flight: FlightRuntime) -> None:
         if not isinstance(flight, FlightRuntime):
             raise FlightQueueError("FlightQueue only accepts FlightRuntime instances")
+        if flight.run_id in self._known:
+            raise FlightQueueError(f"duplicate flight run id: {flight.run_id}")
+        self._known.add(flight.run_id)
         self._pending.append(flight)
 
     @property
     def pending(self) -> tuple[FlightRuntime, ...]:
         return tuple(self._pending)
 
-    def _ensure_preflighted(self, flight: FlightRuntime) -> bool:
-        if id(flight) in self._preflighted:
-            return True
-        flight.preflight()
-        self._preflighted.add(id(flight))
-        return True
+    @property
+    def states(self) -> Mapping[str, FlightReadiness]:
+        self._refresh_scores()
+        return dict(self._states)
 
-    def next_ready(self) -> FlightRuntime | None:
-        ready: list[FlightRuntime] = []
-        for flight in self._pending:
-            if id(flight) in self._preflighted:
-                ready.append(flight)
+    def _refresh_scores(self) -> None:
+        for entry in self.completed:
+            future = entry.score_future
+            if future is None or not future.done():
                 continue
             try:
-                self._ensure_preflighted(flight)
-            except Exception:  # noqa: BLE001 -- a flight that fails preflight is not ready
-                continue
-            ready.append(flight)
-        if not ready:
-            return None
-        if self._served_geometry is not None:
+                future.result()
+            except Exception as error:  # noqa: BLE001 -- retain explicit failure metadata
+                self._states[entry.flight.run_id] = FlightReadiness(
+                    "failed", f"official scoring failed: {type(error).__name__}: {error}",
+                )
+            else:
+                self._states[entry.flight.run_id] = FlightReadiness("scored")
+
+    def _dependency_state(self, flight: FlightRuntime) -> FlightReadiness:
+        for dependency in self._dependencies.get(flight.run_id, ()):
+            state = self._states.get(dependency.run_id)
+            satisfied = {"scored"} if dependency.required_state == "scored" else {"sealed", "scored"}
+            if state is None or state.state not in satisfied:
+                actual = state.state if state else "not completed"
+                return FlightReadiness(
+                    "dependency-blocked",
+                    f"{dependency.run_id} requires {dependency.required_state}; current state: {actual}",
+                )
+        return FlightReadiness.ready()
+
+    def _ensure_preflighted(self, flight: FlightRuntime) -> None:
+        if id(flight) not in self._preflighted:
+            flight.preflight()
+            self._preflighted.add(id(flight))
+
+    def next_ready(self) -> FlightRuntime | None:
+        self._refresh_scores()
+        ready: list[FlightRuntime] = []
+        for flight in self._pending:
+            state = self._dependency_state(flight)
+            if state.state == "ready":
+                try:
+                    state = self._readiness(flight)
+                    if not isinstance(state, FlightReadiness):
+                        raise FlightQueueError("readiness callback must return FlightReadiness")
+                except Exception as error:  # noqa: BLE001 -- fail closed, visible reason
+                    state = FlightReadiness("held", f"readiness check failed: {error}")
+            if state.state == "ready":
+                try:
+                    self._ensure_preflighted(flight)
+                except Exception as error:  # noqa: BLE001 -- preflight is a readiness refusal
+                    state = FlightReadiness("preflight-failed", f"{type(error).__name__}: {error}")
+                else:
+                    ready.append(flight)
+            self._states[flight.run_id] = state
+        if self._served_profile is not None:
             for flight in ready:
-                if dict(flight.adapter.serving_geometry()) == dict(self._served_geometry):
+                if flight.serving_profile_fingerprint() == self._served_profile:
                     return flight
-        return ready[0]
+        return ready[0] if ready else None
 
     def _score_pool(self) -> object:
         if self._score_pool_instance is None:
             self._score_pool_instance = self._score_pool_factory()
         return self._score_pool_instance
 
+    def _serve(self, flight: FlightRuntime, profile: str) -> None:
+        if self._execution_context_factory is not None:
+            # The coordinator context owns profile switching. Each worker attaches
+            # independently; this queue owns no shutdown capability.
+            flight.serve()
+        elif self._served_profile != profile:
+            if self._server_owner is not None:
+                self._server_owner.stop_serving()
+            flight.serve()
+            self._server_owner = flight
+        else:
+            flight.serve(reuse=self._served_flight)
+        self._served_flight = flight
+        self._served_profile = profile
+        self._served_geometry = dict(flight.adapter.serving_geometry())
+
     def run(self, max_flights: int | None = None) -> tuple[FlightQueueEntry, ...]:
-        """Run ready flights in this queue's preferred order until either
-        ``max_flights`` have been dispatched or no pending flight is ready.
-
-        ``dry_run`` (constructor flag) stops each flight after
-        :meth:`~.runtime.FlightRuntime.preflight` -- ``preprocess``/
-        ``serve``/``run_phases``/``seal``/``score`` never run, and no server
-        is ever started. A live run preprocesses, then serves/reuses the
-        geometry-matching resident server (never restarting it merely
-        because a different flight is also ready), then runs phases and
-        seals inline, and hands ``score()`` to the background pool so it
-        overlaps the NEXT flight's ``preprocess``/``serve``/``run_phases`` --
-        this method itself never blocks on a score future; callers that
-        need every score to have finished call :meth:`drain_scores` (or
-        inspect each entry's own ``score_future``).
-        """
-
-        if max_flights is not None and (isinstance(max_flights, bool) or max_flights < 0):
+        if max_flights is not None and (
+            isinstance(max_flights, bool) or not isinstance(max_flights, int) or max_flights < 0
+        ):
             raise FlightQueueError("max_flights must be a non-negative integer or None")
-        dispatched = 0
         results: list[FlightQueueEntry] = []
-        while self._pending:
-            if max_flights is not None and dispatched >= max_flights:
-                break
+        while self._pending and (max_flights is None or len(results) < max_flights):
             flight = self.next_ready()
             if flight is None:
                 break
             self._pending.remove(flight)
-            dispatched += 1
-
             if self.dry_run:
-                entry = FlightQueueEntry(flight=flight, dry_run=True, served_geometry=None)
-                self.completed.append(entry)
-                results.append(entry)
-                continue
-
-            flight.preprocess()
-
-            geometry = dict(flight.adapter.serving_geometry())
-            if self._served_geometry != geometry:
-                # A genuine geometry change: stop the resident server BEFORE
-                # starting the next one. Two 18.5 GB servers do not fit in
-                # this host's VRAM, and the previous one is finished with --
-                # every flight that used it has already sealed. Without this
-                # the second geometry's server simply fails to start (and
-                # the first was orphaned when the process exited).
-                if self._server_owner is not None:
-                    self._server_owner.stop_serving()
-                flight.serve()
-                self._served_flight = flight
-                self._server_owner = flight
-                self._served_geometry = geometry
+                entry = FlightQueueEntry(flight, True, None)
+                self._states[flight.run_id] = FlightReadiness("dry-run")
             else:
-                flight.serve(reuse=self._served_flight)
-                self._served_flight = flight
-
-            flight.run_phases()
-            flight.seal()
-            future = self._score_pool().submit(flight.score)  # type: ignore[attr-defined]
-            entry = FlightQueueEntry(
-                flight=flight, dry_run=False, served_geometry=geometry, score_future=future
-            )
+                self._states[flight.run_id] = FlightReadiness("running")
+                try:
+                    flight.preprocess()
+                    context = (
+                        self._execution_context_factory(flight)
+                        if self._execution_context_factory else nullcontext()
+                    )
+                    with context:
+                        profile = flight.serving_profile_fingerprint()
+                        self._serve(flight, profile)
+                        flight.run_phases()
+                        flight.seal()
+                    self._states[flight.run_id] = FlightReadiness("sealed")
+                    kwargs = {"include_per_sample": True} if self._include_per_sample else {}
+                    future = self._score_pool().submit(flight.score, **kwargs)
+                    entry = FlightQueueEntry(flight, False, self._served_geometry, future)
+                except Exception as error:
+                    self._states[flight.run_id] = FlightReadiness(
+                        "failed", f"{type(error).__name__}: {error}",
+                    )
+                    raise
             self.completed.append(entry)
             results.append(entry)
-
         return tuple(results)
 
     def drain_scores(self) -> tuple[Mapping[str, object] | None, ...]:
-        """Block until every dispatched flight's background ``score()`` has
-        finished, returning each result in dispatch order (``None`` for a
-        dry-run entry, which never scored)."""
-
-        results: list[Mapping[str, object] | None] = []
-        for entry in self.completed:
-            if entry.score_future is None:
-                results.append(None)
-            else:
-                results.append(entry.score_future.result())
-        return tuple(results)
+        try:
+            return tuple(
+                entry.score_future.result() if entry.score_future else None
+                for entry in self.completed
+            )
+        finally:
+            self._refresh_scores()
 
     def shutdown(self) -> None:
-        """Drain the score pool and stop the resident server, in that order.
-
-        Scoring first: ``core.scoring_batch`` reads sealed bundles off disk
-        and never contacts the server, but draining before the stop keeps
-        the ordering obvious and costs nothing. The server stop is the half
-        that used to be missing entirely -- a queue that finished its last
-        flight left llama-server resident."""
-
         if self._score_pool_instance is not None:
-            self._score_pool_instance.shutdown(wait=True)  # type: ignore[attr-defined]
+            self._score_pool_instance.shutdown(wait=True)
+        self._refresh_scores()
         if self._server_owner is not None:
             self._server_owner.stop_serving()
             self._server_owner = None
             self._served_flight = None
             self._served_geometry = None
+            self._served_profile = None
 
 
-__all__ = [
-    "FlightQueue",
-    "FlightQueueEntry",
-    "FlightQueueError",
-]
+__all__ = ["FlightQueue", "FlightQueueEntry", "FlightQueueError", "FlightReadiness", "FlightDependency"]

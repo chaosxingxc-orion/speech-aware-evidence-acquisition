@@ -94,6 +94,7 @@ from ..session.serving import (
 )
 from ..session.serving import merge_server_args as _merge_server_args
 from ..split_receipt import VerifiedSplit
+from .lease import WorkerExecutionPolicy
 from .receipts import FLIGHT_STAGES, FlightReceipts, require_mandatory_throughput_fields
 
 # ``core.driver.speech_native`` is imported lazily (function-local, inside
@@ -850,6 +851,7 @@ class FlightRuntime:
         request_id_prefix: str = "flight",
         campaign_active: bool = False,
         speech_tokens_per_second: float = 14.4,
+        execution_policy: WorkerExecutionPolicy | None = None,
     ) -> None:
         if not isinstance(run_id, str) or not run_id:
             raise FlightRuntimeError("run_id must be a non-empty string")
@@ -857,6 +859,8 @@ class FlightRuntime:
             raise FlightRuntimeError("attempt_id must be a non-empty string")
         if not callable(adapter_factory):
             raise FlightRuntimeError("adapter_factory must be callable")
+        self._execution_policy = execution_policy
+        self._serve_fingerprint: str | None = None
         self._repo_root = Path(repo_root)
         self._data_root = Path(data_root)
         self._runtime_root = Path(runtime_root)
@@ -2035,8 +2039,12 @@ class FlightRuntime:
         full-hash check per process."""
 
         self._require_prior_stages("serve")
+        self.assert_generation_lease()
         geometry = dict(self._adapter.serving_geometry())
 
+        # Workers reattach through pinned session verification even for in-process reuse.
+        if self._execution_policy is not None:
+            reuse = None
         if reuse is not None:
             if not isinstance(reuse, FlightRuntime):
                 raise FlightRuntimeError("serve(reuse=...) must be another FlightRuntime")
@@ -2048,6 +2056,11 @@ class FlightRuntime:
                 )
             if reuse._session is None or reuse._transport is None:
                 raise FlightRuntimeError("serve(reuse=...) target has not itself served yet")
+            fingerprint = self.serving_profile_fingerprint()
+            if fingerprint != reuse._serve_fingerprint:
+                raise FlightRuntimeError("cannot reuse a server with a different full identity")
+            self._gate_touch(self._gate, self._plan)
+            self._serve_fingerprint = fingerprint
             self._session = reuse._session
             self._transport = reuse._transport
             self._runtime_receipt = reuse._runtime_receipt
@@ -2075,6 +2088,7 @@ class FlightRuntime:
             resolve_runtime_receipt_path(self._repo_root, values)
         )
         self._runtime_receipt = runtime_receipt
+        self._serve_fingerprint = self.serving_profile_fingerprint()
         self._gate_touch(self._gate, self._plan)
 
         # The fragment's own server_args, with ONLY -np/-c overridden from
@@ -2176,6 +2190,77 @@ class FlightRuntime:
 
     # -- stage 3a: the always-on serving session (E7) -----------------------
 
+    @property
+    def execution_policy(self) -> WorkerExecutionPolicy | None:
+        return self._execution_policy
+
+    def bind_execution_policy(self, policy: WorkerExecutionPolicy) -> None:
+        """Bind one coordinator capability before serving; never replace an active one."""
+        if self._session is not None or self._execution_policy is not None:
+            raise FlightRuntimeError("worker execution policy is already bound or serving")
+        if not isinstance(policy, WorkerExecutionPolicy):
+            raise FlightRuntimeError("worker execution policy must be a WorkerExecutionPolicy")
+        self._execution_policy = policy
+
+    def assert_generation_lease(self) -> None:
+        """Revalidate root custody immediately before attachment or generation."""
+        if self._execution_policy is not None:
+            self._execution_policy.assert_lease(
+                self._data_root, run_id=self.run_id, attempt_id=self.attempt_id,
+            )
+
+    def serving_profile_fingerprint(self) -> str:
+        """Hash every declared input that builds the pinned serving identity.
+
+        This is model-free and also usable for queue grouping. The attach path
+        additionally verifies the resulting binary/model/process identity.
+        """
+        from ..config import fragment_hash, read_fragment
+
+        if self._composed is None:
+            raise FlightRuntimeError("preflight must precede serving profile inspection")
+        values = self._composed.values
+        geometry = dict(self.adapter.serving_geometry())
+        receipt = self._runtime_receipt_loader(
+            resolve_runtime_receipt_path(self._repo_root, values)
+        )
+        identity_inputs = {
+            "model_fragment": self._model,
+            "model_fragment_sha256": fragment_hash(read_fragment(self._repo_root, "model", self._model)),
+            "runtime_receipt_relpath": runtime_receipt_relpath(values),
+            "runtime_receipt": receipt,
+            "runtime_root": str(self._runtime_root.resolve()),
+            "data_root": str(self._data_root.resolve()),
+            "model_root": model_materialization_root(values),
+            "server_argv": merge_server_args(
+                values.get("server_args", ()), slots=int(geometry["slots"]),
+                context_tokens=int(geometry["slots"]) * int(geometry["slot_tokens"]),
+            ),
+            "server_env": values.get("server_env", {}),
+            "host": self._host, "port": self._port,
+        }
+        return hashlib.sha256(json.dumps(
+            identity_inputs, sort_keys=True, separators=(",", ":"), default=str,
+        ).encode()).hexdigest()
+
+    def session_required_identity(self) -> Mapping[str, object]:
+        """Build the full pinned identity for root startup and attach-only fitting."""
+        if self._composed is None:
+            self._prepare()
+        values = self._composed.values
+        geometry = dict(self.adapter.serving_geometry())
+        receipt = self._runtime_receipt_loader(
+            resolve_runtime_receipt_path(self._repo_root, values)
+        )
+        return self._required_serving_identity(
+            values=values, runtime_receipt=receipt, geometry=geometry,
+            extra_argv=merge_server_args(
+                values.get("server_args", ()), slots=int(geometry["slots"]),
+                context_tokens=int(geometry["slots"]) * int(geometry["slot_tokens"]),
+            ), extra_env=values.get("server_env", {}),
+            configured_model_root=model_materialization_root(values),
+        )
+
     def _required_serving_identity(
         self,
         *,
@@ -2266,6 +2351,9 @@ class FlightRuntime:
 
         resident = self._serving_session_finder(self._data_root)
         if resident is None:
+            if self._execution_policy is not None:
+                from .lease import GenerationLeaseError
+                raise GenerationLeaseError("required resident session is absent; worker cannot start it")
             return None
         session_dir, document = resident
         session_dir = Path(session_dir)
@@ -2284,11 +2372,21 @@ class FlightRuntime:
                 str(error), getattr(error, "mismatches", ())
             ) from error
 
-        session = self._session_attacher(
-            session_dir / SESSION_RECEIPT_NAME,
-            runtime_receipt=runtime_receipt,
-            runtime_root=self._runtime_root,
-        )
+        if self._execution_policy is not None:
+            from ..session.worker import attach_worker_session
+            session_dir, document, session = attach_worker_session(
+                policy=self._execution_policy, data_root=self._data_root,
+                run_id=self.run_id, attempt_id=self.attempt_id,
+                required_identity=required, runtime_receipt=runtime_receipt,
+                runtime_root=self._runtime_root, finder=self._serving_session_finder,
+                attacher=self._session_attacher,
+            )
+        else:
+            session = self._session_attacher(
+                session_dir / SESSION_RECEIPT_NAME,
+                runtime_receipt=runtime_receipt,
+                runtime_root=self._runtime_root,
+            )
         self._session = session
         self._owns_session = False
         self._session_receipt_path = session_dir / SESSION_RECEIPT_NAME
@@ -2303,6 +2401,10 @@ class FlightRuntime:
             runtime_receipt=runtime_receipt,
             runtime_root=self._runtime_root,
         )
+
+        if self._execution_policy is not None:
+            from ..session.worker import LeaseCheckedTransport
+            self._transport = LeaseCheckedTransport(self._transport, self.assert_generation_lease)
 
         serving_session_id = str(document.get("session_id"))
         self._session_attach_receipt_path = (
@@ -3488,6 +3590,7 @@ class FlightRuntime:
         """
 
         self._require_prior_stages("run_phases")
+        self.assert_generation_lease()
         baseline_values = self._composed.values
         policy = baseline_values.get("policy")
         if not isinstance(policy, str) or not policy:
