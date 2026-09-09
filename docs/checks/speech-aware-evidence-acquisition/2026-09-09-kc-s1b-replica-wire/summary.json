@@ -1,0 +1,23 @@
+{
+  "schema": "saea-contact-free-wire-summary-v1",
+  "status": "PASS",
+  "study_head": "07f7e0d1bb77a164e9c44191e21d868ba41d6964",
+  "experiment": "slurp-slot-stage-kc-s1b-same-config-replicate-v1",
+  "cell": "kc-s1b-same-config-replicate-generation",
+  "wire_check_run_id": "WIRECHECK-SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1-1788961024065",
+  "exit_code": 0,
+  "sample_count": 1000,
+  "simulated_contact_count": 1000,
+  "contacts_per_sample": 1,
+  "model_contacts": 0,
+  "tokenizer_contacts": 0,
+  "encoder_contacts": 0,
+  "scorer_invocations": 0,
+  "phase_program": "phase-slots-given-intent-v1",
+  "phase_names": [
+    "slots"
+  ],
+  "seal_and_score": false,
+  "wall_seconds": 351.1956799030304,
+  "scope": "Engineering connectivity only. Fake transport/gate costs are not experimental costs. This summary is transcribed from the completed shared CLI result; full console output was not archived. It does not certify historical request parity, live capacity or scientific effectiveness."
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 4,
+  "generation": 5,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "de117e740414dc9dea228665fc5d597ed9a8d8bf",
-  "updated_at_utc": "2026-09-09T12:27:12.967054+00:00",
-  "next_action": "Execute CONTINUATION-PLAN.md under OWNER-CONTINUATION-002: null calibration frozen, KV recovery read next; shared runtime/preparation/delivery implementation in isolated WSL worktrees. No resident server loaded.",
+  "snapshot_commit": "07f7e0d1bb77a164e9c44191e21d868ba41d6964",
+  "updated_at_utc": "2026-09-09T13:44:53.820710+00:00",
+  "next_action": "KV seven-run recovery is closed with KC-S1b retained. Complete KC-S1b whole-roster request parity, register separate fit and generation, freeze the WSL execution checkout and certify actual request fit. Prepare KU-S3a/twin and E21 raw-window configuration wiring in isolated cloud-assisted worktrees. No resident service is loaded and no new model/tokenizer/encoder contact has occurred.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002."
 }

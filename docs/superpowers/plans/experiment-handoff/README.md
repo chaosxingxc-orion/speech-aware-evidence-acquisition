@@ -1,6 +1,6 @@
 # Owner-directed Stage-2 continuation
 
-Status: **owner-directed execution**, generation 4. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 5. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -33,10 +33,25 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current implementation
 
-Three isolated WSL branches implement shared serving/queue, prepared artifacts/request fit,
-and deterministic delivery/scoring. Root owns analysis, protocol amendments and integration.
-The null-only NEW500 calibration is completed without model or scorer invocation; KV closure
-uses existing finalized evidence only. No experiment service was started during preparation.
+Shared serving leases, queue admission, persistent preparation, actual request fitting,
+deterministic delivery replay, deferred complete scoring, configuration construction and
+the single-window E21 controller bridge are integrated into master with targeted tests.
+This is infrastructure progress; G1 through G6 have not flown.
 
-Every authored file and model-facing message is English. Dataset identity remains in the
-umbrella lock; no new test/confirmatory exposure, paid API spend or Stage-3 execution is admitted.
+The aligned NEW500 null calibration and all seven KV recovery reads are complete with
+zero new model contacts and zero new scorer invocations. Retain KC-S1b: KV0 is harmful,
+KV1 and KV3 are null-compatible, and KV2 fails its rotating-twin sign guard. Preserve the
+historical missing predecessor decision and do not retroactively admit KV successors.
+See the [KV family report](../../../checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md).
+
+KC-S1b's complete 1,000-row contact-free OpenJiuwen execution check passed. Whole-roster
+request equivalence, prospective exposure registration and real fit still block generation.
+The transitive AST inventory helper is implemented; broader rule enforcement remains pending
+migration of historical mutable entry points. E21 actual-window CLI wiring, complete DR replay,
+bounded live controller transitions and the later configuration families remain unfinished.
+
+Use ChatGPT/OpenAI cloud subagents under [MODEL-ALLOCATION.md](MODEL-ALLOCATION.md);
+the main agent retains planning, scientific decisions, critical review and merge acceptance.
+No local assistant model or independent paid API client is deployed. Every authored file
+and model-facing message is English. Dataset identity remains in the umbrella lock;
+no new test/confirmatory exposure or Stage-3 execution is admitted.
