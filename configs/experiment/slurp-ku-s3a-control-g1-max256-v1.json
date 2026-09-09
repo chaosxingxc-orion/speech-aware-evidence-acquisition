@@ -3,7 +3,7 @@
   "fragment_kind": "saea-slurp-consumption-experiment-v1",
   "migration_status": "HELD: owner-approved 256 tokens KU-S3a successor configuration; no contact is authorized by this fragment",
   "date": "2026-09-09",
-  "purpose": "Owner-approved matched no-retrieval control for the KU-S3a 256 tokens incremental retrieval comparison. Preserve the original example-bearing KC-S1b schema, frozen DEV-1000 roster and runtime predecessor while supplying no retrieval evidence. This is HELD configuration preparation only.",
+  "purpose": "Owner-approved full-roster max256 successor on the shared fit/generation stages. Retain original KC-S1b schema examples and the sealed closed-list runtime predecessor. Compare incremental speech-keyed retrieval with the form twin and a matched no-retrieval control; keep the max64 replica as a descriptive cross-cap anchor. NEW500 is historically exposed.",
   "split_id": "DEV-1000",
   "population": {
     "dataset_fragment": "slurp-speech-native-dev1000",
@@ -27,10 +27,10 @@
   "pending_preparation": {
     "fit": {
       "run_id": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-FIT-V1",
-      "artifact_relpath": "PENDING-SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-FIT-V1-REQUEST-FIT.json",
+      "artifact_relpath": "prepared/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-FIT-V1/request-fit.json",
       "artifact_sha256": "PENDING-REGISTERED-PROMPT-FIT-SHA256",
       "endpoint_count": 3001,
-      "status": "held pending root source-bound preparation and final exposure registration"
+      "status": "Final attempt identities are fixed. The prepared_request_fit pin and cell readiness record, when present, bind completed fit evidence."
     },
     "phase_supply": {
       "status": "not applicable: the matched control baseline supplies no retrieval evidence; no prepared supply pin is active"
@@ -53,7 +53,7 @@
     {
       "cell_id": "ku-s3a-control-g1-max256-fit",
       "run_id": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-FIT-V1",
-      "attempt_id": "PENDING-REGISTERED-KU-S3A-CONTROL-G1-MAX256-FIT-ATTEMPT-ID",
+      "attempt_id": "attempt-20260909T164321Z-0b9222",
       "allowed_execution_stages": [
         "check",
         "wire-check",
@@ -72,7 +72,7 @@
     {
       "cell_id": "ku-s3a-control-g1-max256-generation",
       "run_id": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-V1",
-      "attempt_id": "PENDING-REGISTERED-KU-S3A-CONTROL-G1-MAX256-GENERATION-ATTEMPT-ID",
+      "attempt_id": "attempt-20260909T164321Z-a9c5ef",
       "allowed_execution_stages": [
         "check",
         "wire-check",

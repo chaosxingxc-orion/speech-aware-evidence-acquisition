@@ -1,0 +1,11 @@
+# KU-S3 matched max256 registration
+
+Owner decision OWNER-KUS3-BUDGET-005 approves three full DEV-1000 arms at a 256-token completion ceiling: no-retrieval control, speech-keyed retrieval, and the form twin. Retain the original KC-S1b examples, sealed closed-list predecessor, frozen weights, serving geometry and prompt semantics. Do not enable a reasoning prompt or switch weights.
+
+Fix all fit and generation attempt identities before final preparation. The preparation digest binds cell identities as well as request configuration. The first max256 preparation at study commit 5a51ebb88f2cc2f34e64514e6b9b891859366315 used provisional identities; preserve it as a model-free parity check. Generate a fresh V2 artifact under final identities instead of relabeling those bytes. Only prepared receipt pins and cell readiness may subsequently change without invalidating preparation inputs.
+
+Prepare V2 from existing frozen vectors, with two eight-process CPU pools while the model service is stopped. No waveform encoding, model, tokenizer, scoring, network or attempt contact occurs during this preparation. Verify all 1,000 selected value lists and their order against the immutable original artifacts and verify warm consumption refuses a producer call.
+
+Register each complete-roster fit separately before any tokenizer contact. Each admits exactly 3,001 endpoints: one properties request, 1,000 template applications and 2,000 tokenizations, with a 256-token completion reserve and 16,384-token slots. These are capacity contacts and do not authorize generation. Use one root-owned matching resident service and exclusive custody.
+
+Register generation only after all three fit receipts pass. Run the matched control, speech arm and twin serially on the same service identity. Retain all raw responses, score each complete manifest once with per-sample statistics, and read the registered scientific contrasts after the trio is sealed. Preserve the original scenario-stratified bootstrap rule and speaker sensitivity, natural and equal-stratum weights, historically exposed NEW500 primary and OLD500/pooled reporting. The original max64 replica is not a matched primary comparator.

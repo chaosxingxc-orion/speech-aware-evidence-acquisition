@@ -3,7 +3,7 @@
   "fragment_kind": "saea-slurp-consumption-experiment-v1",
   "migration_status": "HELD: owner-approved 256 tokens KU-S3a successor configuration; no contact is authorized by this fragment",
   "date": "2026-09-09",
-  "purpose": "G1 KU-S3a form-twin preparation. Preserve the original twin generation semantics and budgets while moving the cell onto shared fit/generation stages. The historical NEW500 is exposed; report it as the decision population only after the registered read.",
+  "purpose": "Owner-approved full-roster max256 successor on the shared fit/generation stages. Retain original KC-S1b schema examples and the sealed closed-list runtime predecessor. Compare incremental speech-keyed retrieval with the form twin and a matched no-retrieval control; keep the max64 replica as a descriptive cross-cap anchor. NEW500 is historically exposed.",
   "split_id": "DEV-1000",
   "population": {
     "dataset_fragment": "slurp-speech-native-dev1000",
@@ -49,15 +49,15 @@
   "pending_preparation": {
     "fit": {
       "run_id": "SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-FIT-V1",
-      "artifact_relpath": "PENDING-SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-FIT-V1-REQUEST-FIT.json",
+      "artifact_relpath": "prepared/SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-FIT-V1/request-fit.json",
       "artifact_sha256": "PENDING-REGISTERED-PROMPT-FIT-SHA256",
       "endpoint_count": 3001,
-      "status": "held pending root source-bound preparation and final exposure registration"
+      "status": "Final attempt identities are fixed. The prepared_request_fit pin and cell readiness record, when present, bind completed fit evidence."
     },
     "phase_supply": {
-      "artifact_relpath": "PENDING-SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-V1-PHASE-SUPPLY.json",
+      "artifact_relpath": "prepared/SAEA-SLURP-KU-S3-G1-MAX256-PREPARE-V2/twin-supply.json",
       "artifact_sha256": "PENDING-REGISTERED-PHASE-SUPPLY-SHA256",
-      "status": "held pending root preparation and registration under exact source bindings"
+      "status": "Use a fresh artifact after final attempt assignment. The prepared_phase_supply pin, when present, is the executable source binding."
     }
   },
   "prepared_supply_inputs": {
@@ -98,7 +98,7 @@
     {
       "cell_id": "ku-s3a-twin-g1-max256-fit",
       "run_id": "SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-FIT-V1",
-      "attempt_id": "PENDING-REGISTERED-KU-S3A-TWIN-G1-MAX256-FIT-ATTEMPT-ID",
+      "attempt_id": "attempt-20260909T164321Z-c6d1a0",
       "allowed_execution_stages": [
         "check",
         "wire-check",
@@ -117,7 +117,7 @@
     {
       "cell_id": "ku-s3a-twin-g1-max256-generation",
       "run_id": "SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-V1",
-      "attempt_id": "PENDING-REGISTERED-KU-S3A-TWIN-G1-MAX256-GENERATION-ATTEMPT-ID",
+      "attempt_id": "attempt-20260909T164321Z-d09106",
       "allowed_execution_stages": [
         "check",
         "wire-check",
