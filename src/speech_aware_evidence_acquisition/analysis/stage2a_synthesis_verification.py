@@ -1054,6 +1054,17 @@ FILE_DIGESTS_AT_SYNTHESIS: tuple[tuple[str, str], ...] = (
 #: untouched. The live pin moves to the equivalence-proven bytes;
 #: :data:`FILE_DIGESTS_AT_SYNTHESIS` above keeps the value the five sealed
 #: 2026-08-25 receipts actually recorded.
+#:
+#: 2026-09-09 RE-PIN: the KU-S3 key-norm cache (``rails.kb_policy._KeyNormCache``,
+#: preregistration ``docs/readiness/2026-09-07-slurp-consumption-ku-s3-v1-
+#: preregistration.md`` section 5, the "bit-exact 3x") computes each key
+#: vector's L2 norm once instead of twice per pair, in the same arithmetic,
+#: and is proven bitwise-identical by ``tests/unit/test_kb_policy_norm_cache.py``
+#: (10,000 random pairs at dim 2048; the seeded selection on a fixed fixture
+#: equal to the 2afb4b5c literal). ``kb_policy.py`` moved from
+#: ``06368d7ad109cd3c22de126cd5cece5619a0fc73c48bb62b1e953644032a96e6`` to
+#: ``336c5b951dd7e98abd63bcebc987bbad6676973a5ccc3e80d2d3db4fb3d88063``; the
+#: config fragment is untouched.
 FILE_DIGESTS: tuple[tuple[str, str], ...] = (
     (
         "configs/policy/kb-policy-v1-dev100.json",
@@ -1061,7 +1072,7 @@ FILE_DIGESTS: tuple[tuple[str, str], ...] = (
     ),
     (
         "src/speech_aware_evidence_acquisition/rails/kb_policy.py",
-        "06368d7ad109cd3c22de126cd5cece5619a0fc73c48bb62b1e953644032a96e6",
+        "336c5b951dd7e98abd63bcebc987bbad6676973a5ccc3e80d2d3db4fb3d88063",
     ),
 )
 
