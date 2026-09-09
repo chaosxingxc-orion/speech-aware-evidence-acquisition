@@ -1,0 +1,83 @@
+{
+  "experiment_id": "SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1",
+  "fragment_kind": "saea-slurp-slot-stage-experiment-v1",
+  "date": "2026-09-09",
+  "purpose": "HELD same-config replication preparation for KC-S1b. The four composed fragments, frozen DEV-1000 roster, original example-bearing slot-schema fill, predecessor binding, request semantics, model geometry and decoding remain unchanged from SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1. This fragment changes only the formal experiment identity and preparation metadata; it authorizes no contact and carries no scientific verdict.",
+  "split_id": "DEV-1000",
+  "predecessor": {
+    "run_id": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1",
+    "attempt_id": "attempt-20260906T025102Z-af6b04",
+    "manifest_relpath": "runs/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1/attempt-20260906T025102Z-af6b04/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.run-manifest.json",
+    "manifest_sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08",
+    "binding": "sealed-manifest; source manifest bytes are unchanged and are read only as the predecessor state source"
+  },
+  "runtime_version_bridge_requirement": "Root must bind the owner-approved runtime-version bridge before any fit or generation contact: the bridge must identify the same pinned llama.cpp build, runtime receipt and per-file model hashes used by the four fragments, and must be registered in the exposure record. This preparation does not invent or copy source hashes.",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "dev",
+    "planned_model_calls": 1050,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 3000
+  },
+  "execution_plan_basis": {
+    "generation": "1,000 roster contacts plus 8 canaries; proposal 1,050 calls, 3,000 audio seconds and 1 GPU-hour. The registered exposure row supplies the live ceilings.",
+    "fit": "The shared fitter's actual endpoint sequence is 1 GET /props + 1,000 POST /apply-template + 2,000 POST /tokenize = 3,001 tokenizer contacts for the complete roster. The fit exposure proposal must therefore use a 3,001 contact cap (with any additional margin separately approved), not the 1,050 generation cap."
+  },
+  "cells": [
+    {
+      "cell_id": "kc-s1b-same-config-replicate",
+      "run_id": "SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1",
+      "attempt_id": "attempt-pending-owner-registration",
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-given-intent-schema-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "readiness": {
+        "state": "held",
+        "reason": "Preparation only. Root must register the generation exposure row and fit exposure row, bind the runtime-version bridge, land the full-roster fit artifact, pass contact-free wire and smoke checks, and obtain owner GO before dispatch.",
+        "requirements": []
+      }
+    }
+  ],
+  "prompt_fit": {
+    "run_id": "SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-FIT-V1",
+    "contact_class": "tokenizer",
+    "contact_cap_proposal": 3001,
+    "endpoint_count_basis": {
+      "props": 1,
+      "apply_template_total": 1000,
+      "tokenize_total": 2000,
+      "roster_rows": 1000,
+      "total": 3001
+    },
+    "scope": "Full frozen DEV-1000 roster, same four fragments and same composed configuration as the generation cell; zero generated tokens.",
+    "artifact_binding": "The shared fitter artifact_inputs config digest must bind this composed experiment while stripping only readiness and fit receipt self-reference fields. It must bind the same split identity, runtime receipt, required session identity, implementation hashes and request boundary used by generation.",
+    "dispatch_constraint": "The current core.flight CLI selects one experiment fragment for a mode globally. It cannot safely dispatch this fit cell as a tokenizer-only preparation and the generation cell as a campaign in one mixed campaign. Root must register and invoke the fit separately while reusing this immutable four-fragment identity, or record an equivalent owner-approved arrangement; no code bypass is added here."
+  },
+  "request_identity_comparison": {
+    "unchanged_four_fragments": [
+      "model=q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "dataset=slurp-speech-native-dev1000",
+      "baseline=slurp-phase-slots-given-intent-schema-v1",
+      "experiment semantics=KC-S1b original example-bearing schema, sealed predecessor state, one slot contact per row"
+    ],
+    "unchanged_request_fields": [
+      "same frozen DEV-1000 sample IDs and split identity",
+      "same system instruction and response format",
+      "same sealed predecessor source and per-row state",
+      "same schema fill and fallback behavior",
+      "same packets, prompt order, -np 4 geometry and decoding parameters"
+    ],
+    "identity_changes_by_design": [
+      "experiment_id and generation run_id",
+      "generation attempt_id, fit run_id and fit attempt registration",
+      "preparation and readiness metadata"
+    ],
+    "comparison_rule": "Any request-visible difference or source-receipt drift fails the same-config claim and stops the flight for root review."
+  },
+  "decision": {
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "claim_surface": "No superiority, generalization, confirmatory or Stage-3 conclusion is authorized by this preparation."
+}
