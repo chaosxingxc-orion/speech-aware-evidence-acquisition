@@ -1,0 +1,23 @@
+{
+  "schema": "saea-fit-batch-plan-v1",
+  "fits": [
+    {
+      "experiment": "slurp-ku-s3a-control-g1-max256-recovery-v1",
+      "cell": "ku-s3a-control-g1-max256-recovery-fit",
+      "output_relpath": "prepared/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-RECOVERY-FIT-V1/request-fit.json",
+      "contact_cap": 3001
+    },
+    {
+      "experiment": "slurp-ku-s3a-g1-max256-recovery-v1",
+      "cell": "ku-s3a-g1-max256-recovery-fit",
+      "output_relpath": "prepared/SAEA-SLURP-KU-S3A-G1-MAX256-RECOVERY-FIT-V1/request-fit.json",
+      "contact_cap": 3001
+    },
+    {
+      "experiment": "slurp-ku-s3a-twin-g1-max256-recovery-v1",
+      "cell": "ku-s3a-twin-g1-max256-recovery-fit",
+      "output_relpath": "prepared/SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-RECOVERY-FIT-V1/request-fit.json",
+      "contact_cap": 3001
+    }
+  ]
+}

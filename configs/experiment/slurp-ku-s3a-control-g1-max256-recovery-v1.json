@@ -1,0 +1,146 @@
+{
+  "experiment_id": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-RECOVERY-V1",
+  "fragment_kind": "saea-slurp-consumption-experiment-v1",
+  "migration_status": "HELD: owner-approved 256 tokens KU-S3a successor configuration; no contact is authorized by this fragment",
+  "date": "2026-09-09",
+  "purpose": "Owner-approved full-roster max256 successor on the shared fit/generation stages. Retain original KC-S1b schema examples and the sealed closed-list runtime predecessor. Compare incremental speech-keyed retrieval with the form twin and a matched no-retrieval control; keep the max64 replica as a descriptive cross-cap anchor. NEW500 is historically exposed.",
+  "split_id": "DEV-1000",
+  "population": {
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "decision_population": "historically exposed NEW500; no fresh holdout is claimed",
+    "roster": "the frozen DEV-1000 runtime view, id for id"
+  },
+  "source_pins": {
+    "runtime_predecessor": {
+      "manifest_relpath": "runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
+      "manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c",
+      "binding": "baseline.phase_material.slots.predecessor_source; unchanged runtime state source"
+    },
+    "kc_s1b_comparator": {
+      "manifest_relpath": "runs/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1/attempt-20260906T025102Z-af6b04/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.run-manifest.json",
+      "manifest_sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08",
+      "binding": "descriptive cross-cap anchor only; it does not supply primary inference or runtime state"
+    }
+  },
+  "preparation_source_receipts": [],
+  "pending_preparation": {
+    "fit": {
+      "run_id": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-RECOVERY-FIT-V1",
+      "artifact_relpath": "prepared/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-RECOVERY-FIT-V1/request-fit.json",
+      "artifact_sha256": "PENDING-REGISTERED-PROMPT-FIT-SHA256",
+      "endpoint_count": 3001,
+      "status": "Final attempt identities are fixed. The prepared_request_fit pin and cell readiness record, when present, bind completed fit evidence."
+    },
+    "phase_supply": {
+      "status": "not applicable: the matched control baseline supplies no retrieval evidence; no prepared supply pin is active"
+    }
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "dev",
+    "planned_model_calls": 1050,
+    "planned_gpu_hours": 2.0,
+    "planned_speech_audio_seconds": 3000
+  },
+  "execution_plan_basis": {
+    "generation": "Owner-approved 256 tokens generation ceiling for the 1,000 target rows, with at most 50 contacts of registered fixed overhead if separately bound. This ceiling does not authorize extra probes, adaptive repeats, or an additional full sweep. Final exposure registration remains pending root source and preparation review.",
+    "fit": "The shared full-roster fitter actual endpoint sequence is 1 GET /props + 1,000 POST /apply-template + 2,000 POST /tokenize = 3,001 tokenizer contacts. This fit budget is separate from the 1,050 generation ceiling."
+  },
+  "comparator": "The sealed KC-S1b manifest is a descriptive cross-cap anchor only; primary inference is the max256 speech-query arm minus the matched max256 no-retrieval control and minus the max256 form twin. KV-0 remains harmful retrospective evidence and is not a replacement base.",
+  "decision_rule": "Use this matched no-retrieval control to assess incremental retrieval only after the registered read; primary inference is KU-S3a minus control and KU-S3a minus form twin, each requiring the inherited paired per-row SLU-F1 CI90 lower bound above zero on historically exposed NEW500. Report OLD500 and pooled DEV-1000 separately.",
+  "cells": [
+    {
+      "cell_id": "ku-s3a-control-g1-max256-recovery-fit",
+      "run_id": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-RECOVERY-FIT-V1",
+      "attempt_id": "attempt-20260909T233650Z-8758e2",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit"
+      ],
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-given-intent-schema-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "readiness": {
+        "state": "held",
+        "reason": "Held pending root source verification, final attempt identity, full-roster tokenizer fit authorization and preparation registration.",
+        "requirements": []
+      }
+    },
+    {
+      "cell_id": "ku-s3a-control-g1-max256-recovery-generation",
+      "run_id": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-RECOVERY-V1",
+      "attempt_id": "attempt-20260909T233650Z-4328b7",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-given-intent-schema-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "readiness": {
+        "state": "held",
+        "reason": "Held pending root registration, fresh preparation, and all three recovered fit receipts.",
+        "requirements": []
+      }
+    }
+  ],
+  "decision": {
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "owner_schema_decision": {
+    "decision_id": "OWNER-KUS3-SCHEMA-003",
+    "repo_relpath": "docs/superpowers/plans/experiment-handoff/OWNER-KUS3-SCHEMA-003.md",
+    "schema_basis": "original KC-S1b examples retained",
+    "claim": "incremental retrieval supply; not replacement of schema examples"
+  },
+  "request_decoding_overrides": {
+    "max_tokens": 256
+  },
+  "analysis_plan": {
+    "primary_population": "historically exposed NEW500; no fresh holdout is claimed",
+    "full_roster_reporting": [
+      "OLD500",
+      "pooled DEV-1000"
+    ],
+    "original_kus3_scenario_analysis": "Preserve the original KU-S3 scenario-stratified bootstrap with 10,000 replicates, seed 20260903 and CI90; report speaker-cluster sensitivity separately.",
+    "weightings": [
+      "natural mixture",
+      "equal scenario strata"
+    ],
+    "engineering_limit": "No effectiveness claim is permitted from the four-row engineering arms; this max256 configuration is the full-roster successor.",
+    "reasoning": "No reasoning prompt or frozen-weight switch."
+  },
+  "retrieval_mode": "none",
+  "baseline_fragment": "slurp-phase-slots-given-intent-schema-v1",
+  "preserve_wire_responses": true,
+  "primary_inference": {
+    "contrasts": [
+      "KU-S3a max256 minus matched no-retrieval control max256",
+      "KU-S3a max256 minus matched form twin max256"
+    ],
+    "guard": "Both inherited paired per-row SLU-F1 CI90 lower bounds must exceed zero on historically exposed NEW500 before an incremental retrieval claim is considered.",
+    "safeguards": [
+      "report OLD500 and pooled DEV-1000 separately",
+      "report natural-mixture and equal-scenario weighting",
+      "retain original scenario-stratified bootstrap with seed 20260903 and speaker-cluster sensitivity",
+      "the four-row engineering arms do not establish effectiveness"
+    ]
+  },
+  "prepared_request_fit": {
+    "relpath": "prepared/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-RECOVERY-FIT-V1/request-fit.json",
+    "sha256": "PENDING-REGISTERED-PROMPT-FIT-SHA256"
+  },
+  "owner_recovery_decision": {
+    "decision_id": "OWNER-KUS3-RECOVERY-006",
+    "repo_relpath": "docs/superpowers/plans/experiment-handoff/OWNER-KUS3-RECOVERY-006.md",
+    "comparison_process": "One new control followed by speech and twin in one new root-owned resident session; old control is descriptive replication evidence."
+  }
+}
