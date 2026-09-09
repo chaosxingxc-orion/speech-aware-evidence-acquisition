@@ -1,0 +1,125 @@
+{
+  "experiment_id": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-V1",
+  "fragment_kind": "saea-slurp-consumption-experiment-v1",
+  "migration_status": "HELD: owner-approved max_tokens256 KU-S3a successor configuration; no contact is authorized by this fragment",
+  "date": "2026-09-09",
+  "purpose": "Owner-approved matched no-retrieval control for the KU-S3a max_tokens256 incremental retrieval comparison. Preserve the original example-bearing KC-S1b schema, frozen DEV-1000 roster and runtime predecessor while supplying no retrieval evidence. This is HELD configuration preparation only.",
+  "split_id": "DEV-1000",
+  "population": {
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "decision_population": "historically exposed NEW500; no fresh holdout is claimed",
+    "roster": "the frozen DEV-1000 runtime view, id for id"
+  },
+  "source_pins": {
+    "runtime_predecessor": {
+      "manifest_relpath": "runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
+      "manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c",
+      "binding": "baseline.phase_material.slots.predecessor_source; unchanged runtime state source"
+    },
+    "kc_s1b_comparator": {
+      "manifest_relpath": "runs/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1/attempt-20260906T025102Z-af6b04/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.run-manifest.json",
+      "manifest_sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08",
+      "binding": "sealed KC-S1b comparison rows; not a runtime state source"
+    }
+  },
+  "preparation_source_receipts": [],
+  "pending_preparation": {
+    "fit": {
+      "run_id": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-FIT-V1",
+      "artifact_relpath": "PENDING-SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-FIT-V1-REQUEST-FIT.json",
+      "artifact_sha256": "PENDING-REGISTERED-PROMPT-FIT-SHA256",
+      "endpoint_count": 3001,
+      "status": "held pending root source-bound preparation and final exposure registration"
+    },
+    "phase_supply": {
+      "artifact_relpath": "PENDING-NO-RETRIEVAL-PHASE-SUPPLY-NOT-USED.json",
+      "artifact_sha256": "PENDING-REGISTERED-PHASE-SUPPLY-SHA256",
+      "status": "not applicable: the matched control supplies no retrieval evidence; no prepared supply pin is active"
+    }
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "dev",
+    "planned_model_calls": 1050,
+    "planned_gpu_hours": 2.0,
+    "planned_speech_audio_seconds": 3000
+  },
+  "execution_plan_basis": {
+    "generation": "Owner-approved max_tokens256 generation ceiling: 1,000 roster contacts plus up to 50 registered overhead contacts, 3,000 audio seconds and 2.0 GPU-hours. Final exposure registration remains pending root source and preparation review.",
+    "fit": "The shared full-roster fitter actual endpoint sequence is 1 GET /props + 1,000 POST /apply-template + 2,000 POST /tokenize = 3,001 tokenizer contacts. This fit budget is separate from the 1,050 generation ceiling."
+  },
+  "comparator": "KC-S1b sealed manifest 088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08; KV-0 is harmful retrospective evidence and is not a replacement comparison base.",
+  "decision_rule": "Use this matched no-retrieval control to assess incremental retrieval only after the registered read; report KU-S3a minus control on historically exposed NEW500 with OLD500 and pooled DEV-1000 separately. No four-row arm establishes effectiveness.",
+  "cells": [
+    {
+      "cell_id": "ku-s3a-control-g1-max256-fit",
+      "run_id": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-FIT-V1",
+      "attempt_id": "PENDING-REGISTERED-KU-S3A-G1-FIT-ATTEMPT-ID",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit"
+      ],
+      "arm": "no-retrieval-control",
+      "baseline_fragment": "slurp-phase-slots-given-intent-schema-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "readiness": {
+        "state": "held",
+        "reason": "Held pending root source verification, final attempt identity, full-roster tokenizer fit authorization and preparation registration.",
+        "requirements": []
+      }
+    },
+    {
+      "cell_id": "ku-s3a-control-g1-max256-generation",
+      "run_id": "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-V1",
+      "attempt_id": "PENDING-REGISTERED-KU-S3A-G1-GENERATION-ATTEMPT-ID",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
+      "arm": "no-retrieval-control",
+      "baseline_fragment": "slurp-phase-slots-given-intent-schema-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "readiness": {
+        "state": "held",
+        "reason": "Held pending the fresh source-bound fit receipt, preparation registration and root final exposure review.",
+        "requirements": []
+      }
+    }
+  ],
+  "decision": {
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "owner_schema_decision": {
+    "decision_id": "OWNER-KUS3-SCHEMA-003",
+    "repo_relpath": "docs/superpowers/plans/experiment-handoff/OWNER-KUS3-SCHEMA-003.md",
+    "schema_basis": "original KC-S1b examples retained",
+    "claim": "incremental retrieval supply; not replacement of schema examples"
+  },
+  "request_decoding_overrides": {
+    "max_tokens": 256
+  },
+  "analysis_plan": {
+    "primary_population": "historically exposed NEW500; no fresh holdout is claimed",
+    "full_roster_reporting": [
+      "OLD500",
+      "pooled DEV-1000"
+    ],
+    "original_kus3_scenario_analysis": "Preserve the original KU-S3 scenario-stratified bootstrap with 10,000 replicates, seed 20260903 and CI90; report speaker-cluster sensitivity separately.",
+    "weightings": [
+      "natural mixture",
+      "equal scenario strata"
+    ],
+    "engineering_limit": "No effectiveness claim is permitted from the four-row engineering arms; this max256 configuration is the full-roster successor.",
+    "reasoning": "No reasoning prompt or frozen-weight switch."
+  },
+  "retrieval_mode": "none",
+  "baseline_fragment": "slurp-phase-slots-given-intent-schema-v1"
+}
