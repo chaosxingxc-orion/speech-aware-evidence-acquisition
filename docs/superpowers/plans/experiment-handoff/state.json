@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 8,
+  "generation": 9,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "8a1cdcbf",
-  "updated_at_utc": "2026-09-09T16:13:36.681472+00:00",
-  "next_action": "KC-S1b original64 repeat sealed and scored exactly once with1000 per-sample rows; paired analysis in progress. Four-case64/256 engineering pair complete: two verified truncations at64 resolve at77/79 under256. Owner approved OWNER-KUS3-BUDGET-005: KU-S3a, twin and new no-retrieval control all256, preserving original examples. Three successor configs are held pending root review, fresh preparation, actual full-roster fit and registration. Resident service explicitly stopped after the pair; monitor stopped. No owner question remains pending.",
+  "snapshot_commit": "c8eca411",
+  "updated_at_utc": "2026-09-09T16:26:13.558979+00:00",
+  "next_action": "KC-S1b original64 repeat is DECIDED for same-profile component entity improvement; inherited further replication remains open. Four-case cap pair is DECIDED engineering evidence. OWNER-KUS3-BUDGET-005 approved KU-S3a, twin and new matched control at256. Review held configurations, prepare fresh source-bound artifacts, fit complete rosters, then separately register generation. Service and monitor are stopped; no model work is active. No owner question is pending.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-KUS3-BUDGET-005"

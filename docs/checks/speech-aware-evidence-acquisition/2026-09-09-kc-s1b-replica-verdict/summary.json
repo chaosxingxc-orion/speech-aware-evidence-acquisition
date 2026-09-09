@@ -1,0 +1,3775 @@
+{
+  "cost": {
+    "audio_seconds_used": 2884.793687499999,
+    "calls_used": 1000,
+    "completion_tokens_total": 22228,
+    "latency_seconds_total": 1909.8662531050504,
+    "prompt_tokens_total": 2965694,
+    "tool_calls": 0,
+    "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+  },
+  "join": {
+    "claim_limit": "The joined view is deterministic component analysis; it is not a new run or evidence of a live full-system state join. Raw artifacts remain immutable.",
+    "derived_outputs": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1/deterministic-joined.jsonl",
+      "sha256": "7cf9fef234aba81d97b289bfab1f77d1f1209ee95feb4eea7e7350b20c090a7b"
+    },
+    "entity_predictions_unchanged": true,
+    "implementation": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/slurp_kc_s1_read.py",
+      "sha256": "fdfe67d1ff05c7bbb3e4e5d383cb281da9205d62be236ca367a28761becff1aa"
+    },
+    "intent_preserved_in_derived_join": true,
+    "join_stats": {
+      "arm_response_carried_scenario_or_action": 507,
+      "arm_response_unparsed": 3,
+      "closed_list_unparsed": 3,
+      "rows": 1000
+    },
+    "model_calls": 0,
+    "predecessor_outputs": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.outputs.jsonl",
+      "sha256": "34fda7fa51410e0f4f7e8ba7c35f867c32f53c244de63af5386860486fcb885b"
+    },
+    "raw_intent_present_rows": 507,
+    "raw_model_intent_difference_interpretation": "493 raw label tuples differ from the predecessor before joining, including absent intent fields. Among507 raw rows carrying intent,505 agree and2 disagree. The derived join restores the predecessor labels in all1000 rows. Missing fields are not evidence of a revised intent.",
+    "raw_model_intent_differs_from_predecessor": 493,
+    "raw_present_intent_disagreement_rows": 2,
+    "rows": 1000,
+    "schema": "saea-kc-s1b-replica-deterministic-join-v1",
+    "scorer_invocations": 0,
+    "source_outputs": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1/attempt-20260909T135929Z-cd0731/SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1.outputs.jsonl",
+      "sha256": "3542eea45f8be8658fde3e887ab70ef90f193f8a1b9d244e402f6bb1832ae187"
+    }
+  },
+  "official_score": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1/official-finalize/attempt-20260909T135929Z-cd0731.score.json",
+    "sha256": "e419d91c64f36db0b42b7963ad4c087afa8d8ee41aea0462d2e4782a525254d7"
+  },
+  "population_tables": {
+    "replica_minus_closed_list": {
+      "DEV1000": {
+        "slot_f1_exact_f1": {
+          "delta_pp": 8.10190476190476,
+          "equal_stratum_delta_pp": 7.678398559263455,
+          "equal_stratum_left_percent": 12.616042500908769,
+          "equal_stratum_right_percent": 20.294441060172225,
+          "n": 1000,
+          "natural_left_percent": 12.959285714285715,
+          "natural_right_percent": 21.061190476190475,
+          "per_stratum": {
+            "alarm": {
+              "delta": 0.0413793103448276,
+              "harms": 0,
+              "left_mean": 0.10459770114942528,
+              "n": 58,
+              "right_mean": 0.14597701149425288,
+              "saves": 4,
+              "stratum": "alarm",
+              "ties": 54
+            },
+            "audio": {
+              "delta": 0.03333333333333333,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 30,
+              "right_mean": 0.03333333333333333,
+              "saves": 1,
+              "stratum": "audio",
+              "ties": 29
+            },
+            "calendar": {
+              "delta": 0.10140515222482435,
+              "harms": 0,
+              "left_mean": 0.059055425448868076,
+              "n": 61,
+              "right_mean": 0.16046057767369243,
+              "saves": 9,
+              "stratum": "calendar",
+              "ties": 52
+            },
+            "cooking": {
+              "delta": 0.05405405405405403,
+              "harms": 0,
+              "left_mean": 0.1801801801801802,
+              "n": 37,
+              "right_mean": 0.23423423423423423,
+              "saves": 2,
+              "stratum": "cooking",
+              "ties": 35
+            },
+            "datetime": {
+              "delta": 0.0819672131147541,
+              "harms": 0,
+              "left_mean": 0.14426229508196722,
+              "n": 61,
+              "right_mean": 0.22622950819672133,
+              "saves": 5,
+              "stratum": "datetime",
+              "ties": 56
+            },
+            "email": {
+              "delta": 0.04371584699453554,
+              "harms": 0,
+              "left_mean": 0.133879781420765,
+              "n": 61,
+              "right_mean": 0.17759562841530055,
+              "saves": 4,
+              "stratum": "email",
+              "ties": 57
+            },
+            "general": {
+              "delta": 0.07650273224043716,
+              "harms": 0,
+              "left_mean": 0.01639344262295082,
+              "n": 61,
+              "right_mean": 0.09289617486338798,
+              "saves": 5,
+              "stratum": "general",
+              "ties": 56
+            },
+            "iot": {
+              "delta": 0.11475409836065573,
+              "harms": 0,
+              "left_mean": 0.23497267759562843,
+              "n": 61,
+              "right_mean": 0.34972677595628415,
+              "saves": 7,
+              "stratum": "iot",
+              "ties": 54
+            },
+            "lists": {
+              "delta": 0.05,
+              "harms": 0,
+              "left_mean": 0.06666666666666667,
+              "n": 60,
+              "right_mean": 0.11666666666666667,
+              "saves": 3,
+              "stratum": "lists",
+              "ties": 57
+            },
+            "music": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.0784313725490196,
+              "n": 51,
+              "right_mean": 0.0784313725490196,
+              "saves": 0,
+              "stratum": "music",
+              "ties": 51
+            },
+            "news": {
+              "delta": 0.008333333333333345,
+              "harms": 1,
+              "left_mean": 0.11944444444444445,
+              "n": 60,
+              "right_mean": 0.1277777777777778,
+              "saves": 1,
+              "stratum": "news",
+              "ties": 58
+            },
+            "play": {
+              "delta": 0.023333333333333317,
+              "harms": 1,
+              "left_mean": 0.28611111111111115,
+              "n": 60,
+              "right_mean": 0.30944444444444447,
+              "saves": 3,
+              "stratum": "play",
+              "ties": 56
+            },
+            "qa": {
+              "delta": 0.05000000000000002,
+              "harms": 0,
+              "left_mean": 0.24166666666666667,
+              "n": 60,
+              "right_mean": 0.2916666666666667,
+              "saves": 3,
+              "stratum": "qa",
+              "ties": 57
+            },
+            "recommendation": {
+              "delta": 0.033333333333333326,
+              "harms": 2,
+              "left_mean": 0.28833333333333333,
+              "n": 60,
+              "right_mean": 0.32166666666666666,
+              "saves": 3,
+              "stratum": "recommendation",
+              "ties": 55
+            },
+            "social": {
+              "delta": 0.315,
+              "harms": 0,
+              "left_mean": 0.05277777777777778,
+              "n": 60,
+              "right_mean": 0.36777777777777776,
+              "saves": 22,
+              "stratum": "social",
+              "ties": 38
+            },
+            "takeaway": {
+              "delta": 0.0,
+              "harms": 2,
+              "left_mean": 0.10427350427350426,
+              "n": 39,
+              "right_mean": 0.10427350427350426,
+              "saves": 1,
+              "stratum": "takeaway",
+              "ties": 36
+            },
+            "transport": {
+              "delta": 0.22999999999999998,
+              "harms": 0,
+              "left_mean": 0.0903968253968254,
+              "n": 60,
+              "right_mean": 0.3203968253968254,
+              "saves": 16,
+              "stratum": "transport",
+              "ties": 44
+            },
+            "weather": {
+              "delta": 0.125,
+              "harms": 1,
+              "left_mean": 0.06944444444444445,
+              "n": 60,
+              "right_mean": 0.19444444444444445,
+              "saves": 9,
+              "stratum": "weather",
+              "ties": 50
+            }
+          },
+          "scenario_ci90_pp": [
+            6.787142857142856,
+            9.455761904761905
+          ],
+          "speaker_ci90_pp": [
+            6.665312857031935,
+            9.756706781479927
+          ]
+        },
+        "slu_f1_f1": {
+          "delta_pp": 8.936331763163196,
+          "equal_stratum_delta_pp": 8.58271086567553,
+          "equal_stratum_left_percent": 19.403134049757018,
+          "equal_stratum_right_percent": 27.985844915432548,
+          "n": 1000,
+          "natural_left_percent": 19.7464250116465,
+          "natural_right_percent": 28.682756774809697,
+          "per_stratum": {
+            "alarm": {
+              "delta": 0.07157261199744283,
+              "harms": 0,
+              "left_mean": 0.19139806623928116,
+              "n": 58,
+              "right_mean": 0.262970678236724,
+              "saves": 7,
+              "stratum": "alarm",
+              "ties": 51
+            },
+            "audio": {
+              "delta": 0.04767025089605735,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 30,
+              "right_mean": 0.04767025089605735,
+              "saves": 2,
+              "stratum": "audio",
+              "ties": 28
+            },
+            "calendar": {
+              "delta": 0.12145131353352068,
+              "harms": 0,
+              "left_mean": 0.16235597522257228,
+              "n": 61,
+              "right_mean": 0.28380728875609296,
+              "saves": 11,
+              "stratum": "calendar",
+              "ties": 50
+            },
+            "cooking": {
+              "delta": 0.06629270780214175,
+              "harms": 0,
+              "left_mean": 0.259732121469884,
+              "n": 37,
+              "right_mean": 0.32602482927202575,
+              "saves": 3,
+              "stratum": "cooking",
+              "ties": 34
+            },
+            "datetime": {
+              "delta": 0.09337134711332856,
+              "harms": 0,
+              "left_mean": 0.21266304790372131,
+              "n": 61,
+              "right_mean": 0.3060343950170499,
+              "saves": 6,
+              "stratum": "datetime",
+              "ties": 55
+            },
+            "email": {
+              "delta": 0.06595812155475081,
+              "harms": 1,
+              "left_mean": 0.18796125725671906,
+              "n": 61,
+              "right_mean": 0.25391937881146986,
+              "saves": 7,
+              "stratum": "email",
+              "ties": 53
+            },
+            "general": {
+              "delta": 0.07228383156541304,
+              "harms": 0,
+              "left_mean": 0.046876917682125006,
+              "n": 61,
+              "right_mean": 0.11916074924753806,
+              "saves": 5,
+              "stratum": "general",
+              "ties": 56
+            },
+            "iot": {
+              "delta": 0.12165660051768767,
+              "harms": 0,
+              "left_mean": 0.276643977613131,
+              "n": 61,
+              "right_mean": 0.39830057813081865,
+              "saves": 8,
+              "stratum": "iot",
+              "ties": 53
+            },
+            "lists": {
+              "delta": 0.04015151515151516,
+              "harms": 1,
+              "left_mean": 0.14342007331419457,
+              "n": 60,
+              "right_mean": 0.18357158846570973,
+              "saves": 3,
+              "stratum": "lists",
+              "ties": 56
+            },
+            "music": {
+              "delta": 0.0015403281141979086,
+              "harms": 1,
+              "left_mean": 0.13572690554506361,
+              "n": 51,
+              "right_mean": 0.13726723365926152,
+              "saves": 1,
+              "stratum": "music",
+              "ties": 49
+            },
+            "news": {
+              "delta": 0.006146707348080344,
+              "harms": 2,
+              "left_mean": 0.2290868360672147,
+              "n": 60,
+              "right_mean": 0.23523354341529504,
+              "saves": 1,
+              "stratum": "news",
+              "ties": 57
+            },
+            "play": {
+              "delta": 0.01889082480183446,
+              "harms": 1,
+              "left_mean": 0.3828183885212896,
+              "n": 60,
+              "right_mean": 0.40170921332312404,
+              "saves": 4,
+              "stratum": "play",
+              "ties": 55
+            },
+            "qa": {
+              "delta": 0.05919540229885062,
+              "harms": 0,
+              "left_mean": 0.31598275911899004,
+              "n": 60,
+              "right_mean": 0.37517816141784066,
+              "saves": 4,
+              "stratum": "qa",
+              "ties": 56
+            },
+            "recommendation": {
+              "delta": 0.06376032496708411,
+              "harms": 2,
+              "left_mean": 0.3361061480134551,
+              "n": 60,
+              "right_mean": 0.39986647298053923,
+              "saves": 6,
+              "stratum": "recommendation",
+              "ties": 52
+            },
+            "social": {
+              "delta": 0.30695402298850577,
+              "harms": 1,
+              "left_mean": 0.09905127095029202,
+              "n": 60,
+              "right_mean": 0.4060052939387978,
+              "saves": 22,
+              "stratum": "social",
+              "ties": 37
+            },
+            "takeaway": {
+              "delta": 0.032992045171184536,
+              "harms": 3,
+              "left_mean": 0.25704389144750356,
+              "n": 39,
+              "right_mean": 0.2900359366186881,
+              "saves": 3,
+              "stratum": "takeaway",
+              "ties": 33
+            },
+            "transport": {
+              "delta": 0.22999999999999998,
+              "harms": 0,
+              "left_mean": 0.17783780866418103,
+              "n": 60,
+              "right_mean": 0.407837808664181,
+              "saves": 16,
+              "stratum": "transport",
+              "ties": 44
+            },
+            "weather": {
+              "delta": 0.12499999999999999,
+              "harms": 1,
+              "left_mean": 0.07785868392664509,
+              "n": 60,
+              "right_mean": 0.20285868392664508,
+              "saves": 9,
+              "stratum": "weather",
+              "ties": 50
+            }
+          },
+          "scenario_ci90_pp": [
+            7.57511286741691,
+            10.348018028146331
+          ],
+          "speaker_ci90_pp": [
+            7.40616433519381,
+            10.696972927088257
+          ]
+        }
+      },
+      "NEW500": {
+        "slot_f1_exact_f1": {
+          "delta_pp": 9.777142857142856,
+          "equal_stratum_delta_pp": 9.492088544171878,
+          "equal_stratum_left_percent": 13.497411572592732,
+          "equal_stratum_right_percent": 22.989500116764606,
+          "n": 500,
+          "natural_left_percent": 14.494761904761905,
+          "natural_right_percent": 24.27190476190476,
+          "per_stratum": {
+            "alarm": {
+              "delta": 0.08000000000000002,
+              "harms": 0,
+              "left_mean": 0.08888888888888888,
+              "n": 30,
+              "right_mean": 0.1688888888888889,
+              "saves": 4,
+              "stratum": "alarm",
+              "ties": 26
+            },
+            "audio": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 2,
+              "right_mean": 0.0,
+              "saves": 0,
+              "stratum": "audio",
+              "ties": 2
+            },
+            "calendar": {
+              "delta": 0.15714285714285714,
+              "harms": 0,
+              "left_mean": 0.05865800865800866,
+              "n": 33,
+              "right_mean": 0.2158008658008658,
+              "saves": 8,
+              "stratum": "calendar",
+              "ties": 25
+            },
+            "cooking": {
+              "delta": 0.2222222222222222,
+              "harms": 0,
+              "left_mean": 0.2222222222222222,
+              "n": 9,
+              "right_mean": 0.4444444444444444,
+              "saves": 2,
+              "stratum": "cooking",
+              "ties": 7
+            },
+            "datetime": {
+              "delta": 0.09090909090909091,
+              "harms": 0,
+              "left_mean": 0.12121212121212122,
+              "n": 33,
+              "right_mean": 0.21212121212121213,
+              "saves": 3,
+              "stratum": "datetime",
+              "ties": 30
+            },
+            "email": {
+              "delta": 0.0505050505050505,
+              "harms": 0,
+              "left_mean": 0.18686868686868688,
+              "n": 33,
+              "right_mean": 0.23737373737373738,
+              "saves": 2,
+              "stratum": "email",
+              "ties": 31
+            },
+            "general": {
+              "delta": 0.030303030303030304,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 33,
+              "right_mean": 0.030303030303030304,
+              "saves": 1,
+              "stratum": "general",
+              "ties": 32
+            },
+            "iot": {
+              "delta": 0.12121212121212122,
+              "harms": 0,
+              "left_mean": 0.2626262626262626,
+              "n": 33,
+              "right_mean": 0.3838383838383838,
+              "saves": 4,
+              "stratum": "iot",
+              "ties": 29
+            },
+            "lists": {
+              "delta": 0.03125,
+              "harms": 0,
+              "left_mean": 0.0625,
+              "n": 32,
+              "right_mean": 0.09375,
+              "saves": 1,
+              "stratum": "lists",
+              "ties": 31
+            },
+            "music": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.08695652173913043,
+              "n": 23,
+              "right_mean": 0.08695652173913043,
+              "saves": 0,
+              "stratum": "music",
+              "ties": 23
+            },
+            "news": {
+              "delta": -0.015625,
+              "harms": 1,
+              "left_mean": 0.16145833333333334,
+              "n": 32,
+              "right_mean": 0.14583333333333334,
+              "saves": 0,
+              "stratum": "news",
+              "ties": 31
+            },
+            "play": {
+              "delta": 0.06458333333333333,
+              "harms": 0,
+              "left_mean": 0.265625,
+              "n": 32,
+              "right_mean": 0.3302083333333333,
+              "saves": 3,
+              "stratum": "play",
+              "ties": 29
+            },
+            "qa": {
+              "delta": 0.0625,
+              "harms": 0,
+              "left_mean": 0.296875,
+              "n": 32,
+              "right_mean": 0.359375,
+              "saves": 2,
+              "stratum": "qa",
+              "ties": 30
+            },
+            "recommendation": {
+              "delta": 0.03125,
+              "harms": 2,
+              "left_mean": 0.44479166666666664,
+              "n": 32,
+              "right_mean": 0.47604166666666664,
+              "saves": 2,
+              "stratum": "recommendation",
+              "ties": 28
+            },
+            "social": {
+              "delta": 0.27979797979797977,
+              "harms": 0,
+              "left_mean": 0.06060606060606061,
+              "n": 33,
+              "right_mean": 0.3404040404040404,
+              "saves": 11,
+              "stratum": "social",
+              "ties": 22
+            },
+            "takeaway": {
+              "delta": 0.08333333333333333,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 12,
+              "right_mean": 0.08333333333333333,
+              "saves": 1,
+              "stratum": "takeaway",
+              "ties": 11
+            },
+            "transport": {
+              "delta": 0.2676767676767677,
+              "harms": 0,
+              "left_mean": 0.06479076479076479,
+              "n": 33,
+              "right_mean": 0.33246753246753247,
+              "saves": 10,
+              "stratum": "transport",
+              "ties": 23
+            },
+            "weather": {
+              "delta": 0.1515151515151515,
+              "harms": 0,
+              "left_mean": 0.045454545454545456,
+              "n": 33,
+              "right_mean": 0.19696969696969696,
+              "saves": 5,
+              "stratum": "weather",
+              "ties": 28
+            }
+          },
+          "scenario_ci90_pp": [
+            7.783666666666667,
+            11.853523809523807
+          ],
+          "speaker_ci90_pp": [
+            7.7443445925007754,
+            12.04088190415575
+          ]
+        },
+        "slu_f1_f1": {
+          "delta_pp": 10.610267306358795,
+          "equal_stratum_delta_pp": 10.220608450023557,
+          "equal_stratum_left_percent": 19.924025441201184,
+          "equal_stratum_right_percent": 30.144633891224746,
+          "n": 500,
+          "natural_left_percent": 21.04598570547503,
+          "natural_right_percent": 31.656253011833822,
+          "per_stratum": {
+            "alarm": {
+              "delta": 0.12856979495976198,
+              "harms": 0,
+              "left_mean": 0.23977162407248273,
+              "n": 30,
+              "right_mean": 0.3683414190322447,
+              "saves": 6,
+              "stratum": "alarm",
+              "ties": 24
+            },
+            "audio": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 2,
+              "right_mean": 0.0,
+              "saves": 0,
+              "stratum": "audio",
+              "ties": 2
+            },
+            "calendar": {
+              "delta": 0.19419788259226556,
+              "harms": 0,
+              "left_mean": 0.14263228112048204,
+              "n": 33,
+              "right_mean": 0.3368301637127476,
+              "saves": 10,
+              "stratum": "calendar",
+              "ties": 23
+            },
+            "cooking": {
+              "delta": 0.2222222222222222,
+              "harms": 0,
+              "left_mean": 0.2972582972582972,
+              "n": 9,
+              "right_mean": 0.5194805194805194,
+              "saves": 2,
+              "stratum": "cooking",
+              "ties": 7
+            },
+            "datetime": {
+              "delta": 0.09090909090909091,
+              "harms": 0,
+              "left_mean": 0.21390782129566147,
+              "n": 33,
+              "right_mean": 0.3048169122047524,
+              "saves": 3,
+              "stratum": "datetime",
+              "ties": 30
+            },
+            "email": {
+              "delta": 0.08180708180708182,
+              "harms": 0,
+              "left_mean": 0.18686868686868688,
+              "n": 33,
+              "right_mean": 0.2686757686757687,
+              "saves": 4,
+              "stratum": "email",
+              "ties": 29
+            },
+            "general": {
+              "delta": 0.03030303030303031,
+              "harms": 0,
+              "left_mean": 0.03532652730513693,
+              "n": 33,
+              "right_mean": 0.06562955760816724,
+              "saves": 1,
+              "stratum": "general",
+              "ties": 32
+            },
+            "iot": {
+              "delta": 0.13397129186602869,
+              "harms": 0,
+              "left_mean": 0.3180892507701372,
+              "n": 33,
+              "right_mean": 0.4520605426361659,
+              "saves": 5,
+              "stratum": "iot",
+              "ties": 28
+            },
+            "lists": {
+              "delta": 0.012784090909090925,
+              "harms": 1,
+              "left_mean": 0.12063041125541125,
+              "n": 32,
+              "right_mean": 0.13341450216450218,
+              "saves": 1,
+              "stratum": "lists",
+              "ties": 30
+            },
+            "music": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.12728265923568574,
+              "n": 23,
+              "right_mean": 0.12728265923568574,
+              "saves": 0,
+              "stratum": "music",
+              "ties": 23
+            },
+            "news": {
+              "delta": -0.019724923722349325,
+              "harms": 2,
+              "left_mean": 0.2676597925273831,
+              "n": 32,
+              "right_mean": 0.24793486880503376,
+              "saves": 0,
+              "stratum": "news",
+              "ties": 30
+            },
+            "play": {
+              "delta": 0.04617516663330973,
+              "harms": 0,
+              "left_mean": 0.36088637121834255,
+              "n": 32,
+              "right_mean": 0.4070615378516523,
+              "saves": 3,
+              "stratum": "play",
+              "ties": 29
+            },
+            "qa": {
+              "delta": 0.0625,
+              "harms": 0,
+              "left_mean": 0.34012265413510967,
+              "n": 32,
+              "right_mean": 0.40262265413510967,
+              "saves": 2,
+              "stratum": "qa",
+              "ties": 30
+            },
+            "recommendation": {
+              "delta": 0.08830060931328271,
+              "harms": 2,
+              "left_mean": 0.47329375267436885,
+              "n": 32,
+              "right_mean": 0.5615943619876516,
+              "saves": 5,
+              "stratum": "recommendation",
+              "ties": 25
+            },
+            "social": {
+              "delta": 0.2651689306861721,
+              "harms": 1,
+              "left_mean": 0.11593398045626477,
+              "n": 33,
+              "right_mean": 0.38110291114243683,
+              "saves": 11,
+              "stratum": "social",
+              "ties": 21
+            },
+            "takeaway": {
+              "delta": 0.08333333333333336,
+              "harms": 0,
+              "left_mean": 0.11570709584646867,
+              "n": 12,
+              "right_mean": 0.19904042917980203,
+              "saves": 1,
+              "stratum": "takeaway",
+              "ties": 11
+            },
+            "transport": {
+              "delta": 0.2676767676767677,
+              "harms": 0,
+              "left_mean": 0.17020021068138425,
+              "n": 33,
+              "right_mean": 0.4378769783581519,
+              "saves": 10,
+              "stratum": "transport",
+              "ties": 23
+            },
+            "weather": {
+              "delta": 0.15151515151515152,
+              "harms": 0,
+              "left_mean": 0.06075316269491026,
+              "n": 33,
+              "right_mean": 0.2122683142100618,
+              "saves": 5,
+              "stratum": "weather",
+              "ties": 28
+            }
+          },
+          "scenario_ci90_pp": [
+            8.500930694175496,
+            12.741318151093717
+          ],
+          "speaker_ci90_pp": [
+            8.47550163156596,
+            12.987164874005805
+          ]
+        }
+      },
+      "OLD500": {
+        "slot_f1_exact_f1": {
+          "delta_pp": 6.426666666666665,
+          "equal_stratum_delta_pp": 6.49421908681168,
+          "equal_stratum_left_percent": 11.415343915343914,
+          "equal_stratum_right_percent": 17.909563002155593,
+          "n": 500,
+          "natural_left_percent": 11.423809523809524,
+          "natural_right_percent": 17.85047619047619,
+          "per_stratum": {
+            "alarm": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.12142857142857143,
+              "n": 28,
+              "right_mean": 0.12142857142857143,
+              "saves": 0,
+              "stratum": "alarm",
+              "ties": 28
+            },
+            "audio": {
+              "delta": 0.03571428571428571,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 28,
+              "right_mean": 0.03571428571428571,
+              "saves": 1,
+              "stratum": "audio",
+              "ties": 27
+            },
+            "calendar": {
+              "delta": 0.03571428571428571,
+              "harms": 0,
+              "left_mean": 0.05952380952380952,
+              "n": 28,
+              "right_mean": 0.09523809523809523,
+              "saves": 1,
+              "stratum": "calendar",
+              "ties": 27
+            },
+            "cooking": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.16666666666666669,
+              "n": 28,
+              "right_mean": 0.16666666666666669,
+              "saves": 0,
+              "stratum": "cooking",
+              "ties": 28
+            },
+            "datetime": {
+              "delta": 0.07142857142857142,
+              "harms": 0,
+              "left_mean": 0.17142857142857143,
+              "n": 28,
+              "right_mean": 0.24285714285714285,
+              "saves": 2,
+              "stratum": "datetime",
+              "ties": 26
+            },
+            "email": {
+              "delta": 0.03571428571428571,
+              "harms": 0,
+              "left_mean": 0.07142857142857142,
+              "n": 28,
+              "right_mean": 0.10714285714285714,
+              "saves": 2,
+              "stratum": "email",
+              "ties": 26
+            },
+            "general": {
+              "delta": 0.130952380952381,
+              "harms": 0,
+              "left_mean": 0.03571428571428571,
+              "n": 28,
+              "right_mean": 0.16666666666666669,
+              "saves": 4,
+              "stratum": "general",
+              "ties": 24
+            },
+            "iot": {
+              "delta": 0.1071428571428571,
+              "harms": 0,
+              "left_mean": 0.20238095238095238,
+              "n": 28,
+              "right_mean": 0.3095238095238095,
+              "saves": 3,
+              "stratum": "iot",
+              "ties": 25
+            },
+            "lists": {
+              "delta": 0.07142857142857142,
+              "harms": 0,
+              "left_mean": 0.07142857142857142,
+              "n": 28,
+              "right_mean": 0.14285714285714285,
+              "saves": 2,
+              "stratum": "lists",
+              "ties": 26
+            },
+            "music": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.07142857142857142,
+              "n": 28,
+              "right_mean": 0.07142857142857142,
+              "saves": 0,
+              "stratum": "music",
+              "ties": 28
+            },
+            "news": {
+              "delta": 0.03571428571428571,
+              "harms": 0,
+              "left_mean": 0.07142857142857142,
+              "n": 28,
+              "right_mean": 0.10714285714285714,
+              "saves": 1,
+              "stratum": "news",
+              "ties": 27
+            },
+            "play": {
+              "delta": -0.02380952380952378,
+              "harms": 1,
+              "left_mean": 0.3095238095238095,
+              "n": 28,
+              "right_mean": 0.2857142857142857,
+              "saves": 0,
+              "stratum": "play",
+              "ties": 27
+            },
+            "qa": {
+              "delta": 0.0357142857142857,
+              "harms": 0,
+              "left_mean": 0.17857142857142858,
+              "n": 28,
+              "right_mean": 0.21428571428571427,
+              "saves": 1,
+              "stratum": "qa",
+              "ties": 27
+            },
+            "recommendation": {
+              "delta": 0.03571428571428571,
+              "harms": 0,
+              "left_mean": 0.10952380952380951,
+              "n": 28,
+              "right_mean": 0.14523809523809522,
+              "saves": 1,
+              "stratum": "recommendation",
+              "ties": 27
+            },
+            "social": {
+              "delta": 0.3580246913580247,
+              "harms": 0,
+              "left_mean": 0.043209876543209874,
+              "n": 27,
+              "right_mean": 0.4012345679012346,
+              "saves": 11,
+              "stratum": "social",
+              "ties": 16
+            },
+            "takeaway": {
+              "delta": -0.037037037037037035,
+              "harms": 2,
+              "left_mean": 0.15061728395061727,
+              "n": 27,
+              "right_mean": 0.11358024691358024,
+              "saves": 0,
+              "stratum": "takeaway",
+              "ties": 25
+            },
+            "transport": {
+              "delta": 0.18395061728395068,
+              "harms": 0,
+              "left_mean": 0.12169312169312169,
+              "n": 27,
+              "right_mean": 0.30564373897707237,
+              "saves": 6,
+              "stratum": "transport",
+              "ties": 21
+            },
+            "weather": {
+              "delta": 0.09259259259259259,
+              "harms": 1,
+              "left_mean": 0.09876543209876543,
+              "n": 27,
+              "right_mean": 0.19135802469135801,
+              "saves": 4,
+              "stratum": "weather",
+              "ties": 22
+            }
+          },
+          "scenario_ci90_pp": [
+            4.793333333333334,
+            8.186666666666664
+          ],
+          "speaker_ci90_pp": [
+            4.400980966529268,
+            8.75737127110769
+          ]
+        },
+        "slu_f1_f1": {
+          "delta_pp": 7.262396219967593,
+          "equal_stratum_delta_pp": 7.332771258014653,
+          "equal_stratum_left_percent": 18.43621761212312,
+          "equal_stratum_right_percent": 25.768988870137772,
+          "n": 500,
+          "natural_left_percent": 18.446864317817973,
+          "natural_right_percent": 25.709260537785568,
+          "per_stratum": {
+            "alarm": {
+              "delta": 0.010504201680672287,
+              "harms": 0,
+              "left_mean": 0.13956925427513664,
+              "n": 28,
+              "right_mean": 0.15007345595580893,
+              "saves": 1,
+              "stratum": "alarm",
+              "ties": 27
+            },
+            "audio": {
+              "delta": 0.051075268817204304,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 28,
+              "right_mean": 0.051075268817204304,
+              "saves": 2,
+              "stratum": "audio",
+              "ties": 26
+            },
+            "calendar": {
+              "delta": 0.0357142857142857,
+              "harms": 0,
+              "left_mean": 0.18560175755717864,
+              "n": 28,
+              "right_mean": 0.22131604327146434,
+              "saves": 1,
+              "stratum": "calendar",
+              "ties": 27
+            },
+            "cooking": {
+              "delta": 0.01617250673854448,
+              "harms": 0,
+              "left_mean": 0.24767013639503693,
+              "n": 28,
+              "right_mean": 0.2638426431335814,
+              "saves": 1,
+              "stratum": "cooking",
+              "ties": 27
+            },
+            "datetime": {
+              "delta": 0.09627329192546588,
+              "harms": 0,
+              "left_mean": 0.21119599354893473,
+              "n": 28,
+              "right_mean": 0.3074692854744006,
+              "saves": 3,
+              "stratum": "datetime",
+              "ties": 25
+            },
+            "email": {
+              "delta": 0.047278989828789336,
+              "harms": 1,
+              "left_mean": 0.189248929499757,
+              "n": 28,
+              "right_mean": 0.23652791932854633,
+              "saves": 3,
+              "stratum": "email",
+              "ties": 24
+            },
+            "general": {
+              "delta": 0.12176120448179271,
+              "harms": 0,
+              "left_mean": 0.06048987776928953,
+              "n": 28,
+              "right_mean": 0.18225108225108225,
+              "saves": 4,
+              "stratum": "general",
+              "ties": 24
+            },
+            "iot": {
+              "delta": 0.1071428571428571,
+              "harms": 0,
+              "left_mean": 0.22779776282094505,
+              "n": 28,
+              "right_mean": 0.33494061996380214,
+              "saves": 3,
+              "stratum": "iot",
+              "ties": 25
+            },
+            "lists": {
+              "delta": 0.07142857142857142,
+              "harms": 0,
+              "left_mean": 0.1694654013813755,
+              "n": 28,
+              "right_mean": 0.24089397280994693,
+              "saves": 2,
+              "stratum": "lists",
+              "ties": 26
+            },
+            "music": {
+              "delta": 0.0028055976365748136,
+              "harms": 1,
+              "left_mean": 0.14266325072776684,
+              "n": 28,
+              "right_mean": 0.14546884836434165,
+              "saves": 1,
+              "stratum": "music",
+              "ties": 26
+            },
+            "news": {
+              "delta": 0.035714285714285726,
+              "harms": 0,
+              "left_mean": 0.18500345725559364,
+              "n": 28,
+              "right_mean": 0.22071774296987937,
+              "saves": 1,
+              "stratum": "news",
+              "ties": 27
+            },
+            "play": {
+              "delta": -0.012291280148423067,
+              "harms": 1,
+              "left_mean": 0.4078835511532291,
+              "n": 28,
+              "right_mean": 0.39559227100480604,
+              "saves": 1,
+              "stratum": "play",
+              "ties": 26
+            },
+            "qa": {
+              "delta": 0.05541871921182273,
+              "harms": 0,
+              "left_mean": 0.28839430767199625,
+              "n": 28,
+              "right_mean": 0.343813026883819,
+              "saves": 2,
+              "stratum": "qa",
+              "ties": 26
+            },
+            "recommendation": {
+              "delta": 0.035714285714285726,
+              "harms": 0,
+              "left_mean": 0.17932031411526803,
+              "n": 28,
+              "right_mean": 0.21503459982955375,
+              "saves": 1,
+              "stratum": "recommendation",
+              "ties": 27
+            },
+            "social": {
+              "delta": 0.35802469135802467,
+              "harms": 0,
+              "left_mean": 0.07841684822076979,
+              "n": 27,
+              "right_mean": 0.43644153957879445,
+              "saves": 11,
+              "stratum": "social",
+              "ties": 16
+            },
+            "takeaway": {
+              "delta": 0.010618139321340647,
+              "harms": 3,
+              "left_mean": 0.31986024504796345,
+              "n": 27,
+              "right_mean": 0.3304783843693041,
+              "saves": 2,
+              "stratum": "takeaway",
+              "ties": 22
+            },
+            "transport": {
+              "delta": 0.18395061728395062,
+              "harms": 0,
+              "left_mean": 0.18717265064315486,
+              "n": 27,
+              "right_mean": 0.3711232679271055,
+              "saves": 6,
+              "stratum": "transport",
+              "ties": 21
+            },
+            "weather": {
+              "delta": 0.09259259259259259,
+              "harms": 1,
+              "left_mean": 0.09876543209876543,
+              "n": 27,
+              "right_mean": 0.19135802469135801,
+              "saves": 4,
+              "stratum": "weather",
+              "ties": 22
+            }
+          },
+          "scenario_ci90_pp": [
+            5.553322540082325,
+            9.090053863732281
+          ],
+          "speaker_ci90_pp": [
+            5.152969812774741,
+            9.621052843386675
+          ]
+        }
+      }
+    },
+    "replica_minus_kc_s1a": {
+      "DEV1000": {
+        "slot_f1_exact_f1": {
+          "delta_pp": 8.19,
+          "equal_stratum_delta_pp": 7.763406686244448,
+          "equal_stratum_left_percent": 12.53103437392778,
+          "equal_stratum_right_percent": 20.294441060172225,
+          "n": 1000,
+          "natural_left_percent": 12.871190476190474,
+          "natural_right_percent": 21.061190476190475,
+          "per_stratum": {
+            "alarm": {
+              "delta": 0.029885057471264367,
+              "harms": 1,
+              "left_mean": 0.11609195402298851,
+              "n": 58,
+              "right_mean": 0.14597701149425288,
+              "saves": 4,
+              "stratum": "alarm",
+              "ties": 53
+            },
+            "audio": {
+              "delta": 0.03333333333333333,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 30,
+              "right_mean": 0.03333333333333333,
+              "saves": 1,
+              "stratum": "audio",
+              "ties": 29
+            },
+            "calendar": {
+              "delta": 0.09672131147540984,
+              "harms": 0,
+              "left_mean": 0.06373926619828259,
+              "n": 61,
+              "right_mean": 0.16046057767369243,
+              "saves": 8,
+              "stratum": "calendar",
+              "ties": 53
+            },
+            "cooking": {
+              "delta": 0.07207207207207206,
+              "harms": 0,
+              "left_mean": 0.16216216216216217,
+              "n": 37,
+              "right_mean": 0.23423423423423423,
+              "saves": 3,
+              "stratum": "cooking",
+              "ties": 34
+            },
+            "datetime": {
+              "delta": 0.0819672131147541,
+              "harms": 0,
+              "left_mean": 0.14426229508196722,
+              "n": 61,
+              "right_mean": 0.22622950819672133,
+              "saves": 5,
+              "stratum": "datetime",
+              "ties": 56
+            },
+            "email": {
+              "delta": 0.04371584699453554,
+              "harms": 0,
+              "left_mean": 0.133879781420765,
+              "n": 61,
+              "right_mean": 0.17759562841530055,
+              "saves": 4,
+              "stratum": "email",
+              "ties": 57
+            },
+            "general": {
+              "delta": 0.07650273224043716,
+              "harms": 0,
+              "left_mean": 0.01639344262295082,
+              "n": 61,
+              "right_mean": 0.09289617486338798,
+              "saves": 5,
+              "stratum": "general",
+              "ties": 56
+            },
+            "iot": {
+              "delta": 0.11475409836065573,
+              "harms": 0,
+              "left_mean": 0.23497267759562843,
+              "n": 61,
+              "right_mean": 0.34972677595628415,
+              "saves": 7,
+              "stratum": "iot",
+              "ties": 54
+            },
+            "lists": {
+              "delta": 0.05,
+              "harms": 0,
+              "left_mean": 0.06666666666666667,
+              "n": 60,
+              "right_mean": 0.11666666666666667,
+              "saves": 3,
+              "stratum": "lists",
+              "ties": 57
+            },
+            "music": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.0784313725490196,
+              "n": 51,
+              "right_mean": 0.0784313725490196,
+              "saves": 0,
+              "stratum": "music",
+              "ties": 51
+            },
+            "news": {
+              "delta": 0.016666666666666677,
+              "harms": 0,
+              "left_mean": 0.11111111111111112,
+              "n": 60,
+              "right_mean": 0.1277777777777778,
+              "saves": 1,
+              "stratum": "news",
+              "ties": 59
+            },
+            "play": {
+              "delta": 0.034444444444444444,
+              "harms": 0,
+              "left_mean": 0.275,
+              "n": 60,
+              "right_mean": 0.30944444444444447,
+              "saves": 3,
+              "stratum": "play",
+              "ties": 57
+            },
+            "qa": {
+              "delta": 0.05000000000000002,
+              "harms": 0,
+              "left_mean": 0.24166666666666667,
+              "n": 60,
+              "right_mean": 0.2916666666666667,
+              "saves": 3,
+              "stratum": "qa",
+              "ties": 57
+            },
+            "recommendation": {
+              "delta": 0.04444444444444445,
+              "harms": 2,
+              "left_mean": 0.2772222222222222,
+              "n": 60,
+              "right_mean": 0.32166666666666666,
+              "saves": 4,
+              "stratum": "recommendation",
+              "ties": 54
+            },
+            "social": {
+              "delta": 0.315,
+              "harms": 0,
+              "left_mean": 0.05277777777777778,
+              "n": 60,
+              "right_mean": 0.36777777777777776,
+              "saves": 22,
+              "stratum": "social",
+              "ties": 38
+            },
+            "takeaway": {
+              "delta": -0.017094017094017103,
+              "harms": 3,
+              "left_mean": 0.12136752136752137,
+              "n": 39,
+              "right_mean": 0.10427350427350426,
+              "saves": 1,
+              "stratum": "takeaway",
+              "ties": 35
+            },
+            "transport": {
+              "delta": 0.22999999999999998,
+              "harms": 0,
+              "left_mean": 0.0903968253968254,
+              "n": 60,
+              "right_mean": 0.3203968253968254,
+              "saves": 16,
+              "stratum": "transport",
+              "ties": 44
+            },
+            "weather": {
+              "delta": 0.125,
+              "harms": 1,
+              "left_mean": 0.06944444444444445,
+              "n": 60,
+              "right_mean": 0.19444444444444445,
+              "saves": 9,
+              "stratum": "weather",
+              "ties": 50
+            }
+          },
+          "scenario_ci90_pp": [
+            6.869999999999998,
+            9.553333333333335
+          ],
+          "speaker_ci90_pp": [
+            6.7323192477422005,
+            9.875583142670518
+          ]
+        },
+        "slu_f1_f1": {
+          "delta_pp": 9.135342955098047,
+          "equal_stratum_delta_pp": 8.774487811355609,
+          "equal_stratum_left_percent": 19.21135710407694,
+          "equal_stratum_right_percent": 27.985844915432548,
+          "n": 1000,
+          "natural_left_percent": 19.54741381971165,
+          "natural_right_percent": 28.682756774809697,
+          "per_stratum": {
+            "alarm": {
+              "delta": 0.05331703390413656,
+              "harms": 1,
+              "left_mean": 0.20965364433258743,
+              "n": 58,
+              "right_mean": 0.262970678236724,
+              "saves": 6,
+              "stratum": "alarm",
+              "ties": 51
+            },
+            "audio": {
+              "delta": 0.04767025089605735,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 30,
+              "right_mean": 0.04767025089605735,
+              "saves": 2,
+              "stratum": "audio",
+              "ties": 28
+            },
+            "calendar": {
+              "delta": 0.11013826686720316,
+              "harms": 0,
+              "left_mean": 0.1736690218888898,
+              "n": 61,
+              "right_mean": 0.28380728875609296,
+              "saves": 10,
+              "stratum": "calendar",
+              "ties": 51
+            },
+            "cooking": {
+              "delta": 0.08431072582015975,
+              "harms": 0,
+              "left_mean": 0.241714103451866,
+              "n": 37,
+              "right_mean": 0.32602482927202575,
+              "saves": 4,
+              "stratum": "cooking",
+              "ties": 33
+            },
+            "datetime": {
+              "delta": 0.09337134711332856,
+              "harms": 0,
+              "left_mean": 0.21266304790372131,
+              "n": 61,
+              "right_mean": 0.3060343950170499,
+              "saves": 6,
+              "stratum": "datetime",
+              "ties": 55
+            },
+            "email": {
+              "delta": 0.06595812155475081,
+              "harms": 1,
+              "left_mean": 0.18796125725671906,
+              "n": 61,
+              "right_mean": 0.25391937881146986,
+              "saves": 7,
+              "stratum": "email",
+              "ties": 53
+            },
+            "general": {
+              "delta": 0.07228383156541304,
+              "harms": 0,
+              "left_mean": 0.046876917682125006,
+              "n": 61,
+              "right_mean": 0.11916074924753806,
+              "saves": 5,
+              "stratum": "general",
+              "ties": 56
+            },
+            "iot": {
+              "delta": 0.13054795922844065,
+              "harms": 0,
+              "left_mean": 0.267752618902378,
+              "n": 61,
+              "right_mean": 0.39830057813081865,
+              "saves": 9,
+              "stratum": "iot",
+              "ties": 52
+            },
+            "lists": {
+              "delta": 0.06206349206349207,
+              "harms": 0,
+              "left_mean": 0.12150809640221766,
+              "n": 60,
+              "right_mean": 0.18357158846570973,
+              "saves": 4,
+              "stratum": "lists",
+              "ties": 56
+            },
+            "music": {
+              "delta": 0.008176828868345726,
+              "harms": 0,
+              "left_mean": 0.1290904047909158,
+              "n": 51,
+              "right_mean": 0.13726723365926152,
+              "saves": 2,
+              "stratum": "music",
+              "ties": 49
+            },
+            "news": {
+              "delta": 0.009649122807017546,
+              "harms": 1,
+              "left_mean": 0.2255844206082775,
+              "n": 60,
+              "right_mean": 0.23523354341529504,
+              "saves": 1,
+              "stratum": "news",
+              "ties": 58
+            },
+            "play": {
+              "delta": 0.030001935912945532,
+              "harms": 0,
+              "left_mean": 0.3717072774101785,
+              "n": 60,
+              "right_mean": 0.40170921332312404,
+              "saves": 5,
+              "stratum": "play",
+              "ties": 55
+            },
+            "qa": {
+              "delta": 0.05919540229885062,
+              "harms": 0,
+              "left_mean": 0.31598275911899004,
+              "n": 60,
+              "right_mean": 0.37517816141784066,
+              "saves": 4,
+              "stratum": "qa",
+              "ties": 56
+            },
+            "recommendation": {
+              "delta": 0.07487143607819524,
+              "harms": 2,
+              "left_mean": 0.324995036902344,
+              "n": 60,
+              "right_mean": 0.39986647298053923,
+              "saves": 7,
+              "stratum": "recommendation",
+              "ties": 51
+            },
+            "social": {
+              "delta": 0.30695402298850577,
+              "harms": 1,
+              "left_mean": 0.09905127095029202,
+              "n": 60,
+              "right_mean": 0.4060052939387978,
+              "saves": 22,
+              "stratum": "social",
+              "ties": 37
+            },
+            "takeaway": {
+              "delta": 0.015898028077167448,
+              "harms": 4,
+              "left_mean": 0.27413790854152065,
+              "n": 39,
+              "right_mean": 0.2900359366186881,
+              "saves": 3,
+              "stratum": "takeaway",
+              "ties": 32
+            },
+            "transport": {
+              "delta": 0.22999999999999998,
+              "harms": 0,
+              "left_mean": 0.17783780866418103,
+              "n": 60,
+              "right_mean": 0.407837808664181,
+              "saves": 16,
+              "stratum": "transport",
+              "ties": 44
+            },
+            "weather": {
+              "delta": 0.12499999999999999,
+              "harms": 1,
+              "left_mean": 0.07785868392664509,
+              "n": 60,
+              "right_mean": 0.20285868392664508,
+              "saves": 9,
+              "stratum": "weather",
+              "ties": 50
+            }
+          },
+          "scenario_ci90_pp": [
+            7.743409763392018,
+            10.562002412212983
+          ],
+          "speaker_ci90_pp": [
+            7.603722817450567,
+            10.922249845554434
+          ]
+        }
+      },
+      "NEW500": {
+        "slot_f1_exact_f1": {
+          "delta_pp": 9.68666666666667,
+          "equal_stratum_delta_pp": 9.407337261503928,
+          "equal_stratum_left_percent": 13.582162855260682,
+          "equal_stratum_right_percent": 22.989500116764606,
+          "n": 500,
+          "natural_left_percent": 14.585238095238093,
+          "natural_right_percent": 24.27190476190476,
+          "per_stratum": {
+            "alarm": {
+              "delta": 0.05777777777777779,
+              "harms": 1,
+              "left_mean": 0.1111111111111111,
+              "n": 30,
+              "right_mean": 0.1688888888888889,
+              "saves": 4,
+              "stratum": "alarm",
+              "ties": 25
+            },
+            "audio": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 2,
+              "right_mean": 0.0,
+              "saves": 0,
+              "stratum": "audio",
+              "ties": 2
+            },
+            "calendar": {
+              "delta": 0.1484848484848485,
+              "harms": 0,
+              "left_mean": 0.06731601731601732,
+              "n": 33,
+              "right_mean": 0.2158008658008658,
+              "saves": 7,
+              "stratum": "calendar",
+              "ties": 26
+            },
+            "cooking": {
+              "delta": 0.2222222222222222,
+              "harms": 0,
+              "left_mean": 0.2222222222222222,
+              "n": 9,
+              "right_mean": 0.4444444444444444,
+              "saves": 2,
+              "stratum": "cooking",
+              "ties": 7
+            },
+            "datetime": {
+              "delta": 0.09090909090909091,
+              "harms": 0,
+              "left_mean": 0.12121212121212122,
+              "n": 33,
+              "right_mean": 0.21212121212121213,
+              "saves": 3,
+              "stratum": "datetime",
+              "ties": 30
+            },
+            "email": {
+              "delta": 0.0505050505050505,
+              "harms": 0,
+              "left_mean": 0.18686868686868688,
+              "n": 33,
+              "right_mean": 0.23737373737373738,
+              "saves": 2,
+              "stratum": "email",
+              "ties": 31
+            },
+            "general": {
+              "delta": 0.030303030303030304,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 33,
+              "right_mean": 0.030303030303030304,
+              "saves": 1,
+              "stratum": "general",
+              "ties": 32
+            },
+            "iot": {
+              "delta": 0.12121212121212122,
+              "harms": 0,
+              "left_mean": 0.2626262626262626,
+              "n": 33,
+              "right_mean": 0.3838383838383838,
+              "saves": 4,
+              "stratum": "iot",
+              "ties": 29
+            },
+            "lists": {
+              "delta": 0.03125,
+              "harms": 0,
+              "left_mean": 0.0625,
+              "n": 32,
+              "right_mean": 0.09375,
+              "saves": 1,
+              "stratum": "lists",
+              "ties": 31
+            },
+            "music": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.08695652173913043,
+              "n": 23,
+              "right_mean": 0.08695652173913043,
+              "saves": 0,
+              "stratum": "music",
+              "ties": 23
+            },
+            "news": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.14583333333333334,
+              "n": 32,
+              "right_mean": 0.14583333333333334,
+              "saves": 0,
+              "stratum": "news",
+              "ties": 32
+            },
+            "play": {
+              "delta": 0.06458333333333333,
+              "harms": 0,
+              "left_mean": 0.265625,
+              "n": 32,
+              "right_mean": 0.3302083333333333,
+              "saves": 3,
+              "stratum": "play",
+              "ties": 29
+            },
+            "qa": {
+              "delta": 0.0625,
+              "harms": 0,
+              "left_mean": 0.296875,
+              "n": 32,
+              "right_mean": 0.359375,
+              "saves": 2,
+              "stratum": "qa",
+              "ties": 30
+            },
+            "recommendation": {
+              "delta": 0.03125,
+              "harms": 2,
+              "left_mean": 0.44479166666666664,
+              "n": 32,
+              "right_mean": 0.47604166666666664,
+              "saves": 2,
+              "stratum": "recommendation",
+              "ties": 28
+            },
+            "social": {
+              "delta": 0.27979797979797977,
+              "harms": 0,
+              "left_mean": 0.06060606060606061,
+              "n": 33,
+              "right_mean": 0.3404040404040404,
+              "saves": 11,
+              "stratum": "social",
+              "ties": 22
+            },
+            "takeaway": {
+              "delta": 0.08333333333333333,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 12,
+              "right_mean": 0.08333333333333333,
+              "saves": 1,
+              "stratum": "takeaway",
+              "ties": 11
+            },
+            "transport": {
+              "delta": 0.2676767676767677,
+              "harms": 0,
+              "left_mean": 0.06479076479076479,
+              "n": 33,
+              "right_mean": 0.33246753246753247,
+              "saves": 10,
+              "stratum": "transport",
+              "ties": 23
+            },
+            "weather": {
+              "delta": 0.1515151515151515,
+              "harms": 0,
+              "left_mean": 0.045454545454545456,
+              "n": 33,
+              "right_mean": 0.19696969696969696,
+              "saves": 5,
+              "stratum": "weather",
+              "ties": 28
+            }
+          },
+          "scenario_ci90_pp": [
+            7.659999999999998,
+            11.78
+          ],
+          "speaker_ci90_pp": [
+            7.66253236103474,
+            11.977966221169567
+          ]
+        },
+        "slu_f1_f1": {
+          "delta_pp": 10.673930715869522,
+          "equal_stratum_delta_pp": 10.264394086439035,
+          "equal_stratum_left_percent": 19.88023980478571,
+          "equal_stratum_right_percent": 30.144633891224746,
+          "n": 500,
+          "natural_left_percent": 20.982322295964302,
+          "natural_right_percent": 31.656253011833822,
+          "per_stratum": {
+            "alarm": {
+              "delta": 0.0932756773127032,
+              "harms": 1,
+              "left_mean": 0.2750657417195415,
+              "n": 30,
+              "right_mean": 0.3683414190322447,
+              "saves": 5,
+              "stratum": "alarm",
+              "ties": 24
+            },
+            "audio": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 2,
+              "right_mean": 0.0,
+              "saves": 0,
+              "stratum": "audio",
+              "ties": 2
+            },
+            "calendar": {
+              "delta": 0.17328588723937563,
+              "harms": 0,
+              "left_mean": 0.16354427647337197,
+              "n": 33,
+              "right_mean": 0.3368301637127476,
+              "saves": 9,
+              "stratum": "calendar",
+              "ties": 24
+            },
+            "cooking": {
+              "delta": 0.2222222222222222,
+              "harms": 0,
+              "left_mean": 0.2972582972582972,
+              "n": 9,
+              "right_mean": 0.5194805194805194,
+              "saves": 2,
+              "stratum": "cooking",
+              "ties": 7
+            },
+            "datetime": {
+              "delta": 0.09090909090909091,
+              "harms": 0,
+              "left_mean": 0.21390782129566147,
+              "n": 33,
+              "right_mean": 0.3048169122047524,
+              "saves": 3,
+              "stratum": "datetime",
+              "ties": 30
+            },
+            "email": {
+              "delta": 0.08180708180708182,
+              "harms": 0,
+              "left_mean": 0.18686868686868688,
+              "n": 33,
+              "right_mean": 0.2686757686757687,
+              "saves": 4,
+              "stratum": "email",
+              "ties": 29
+            },
+            "general": {
+              "delta": 0.03030303030303031,
+              "harms": 0,
+              "left_mean": 0.03532652730513693,
+              "n": 33,
+              "right_mean": 0.06562955760816724,
+              "saves": 1,
+              "stratum": "general",
+              "ties": 32
+            },
+            "iot": {
+              "delta": 0.15040683372529934,
+              "harms": 0,
+              "left_mean": 0.30165370891086657,
+              "n": 33,
+              "right_mean": 0.4520605426361659,
+              "saves": 6,
+              "stratum": "iot",
+              "ties": 27
+            },
+            "lists": {
+              "delta": 0.053869047619047636,
+              "harms": 0,
+              "left_mean": 0.07954545454545454,
+              "n": 32,
+              "right_mean": 0.13341450216450218,
+              "saves": 2,
+              "stratum": "lists",
+              "ties": 30
+            },
+            "music": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.12728265923568574,
+              "n": 23,
+              "right_mean": 0.12728265923568574,
+              "saves": 0,
+              "stratum": "music",
+              "ties": 23
+            },
+            "news": {
+              "delta": -0.013157894736842118,
+              "harms": 1,
+              "left_mean": 0.2610927635418759,
+              "n": 32,
+              "right_mean": 0.24793486880503376,
+              "saves": 0,
+              "stratum": "news",
+              "ties": 31
+            },
+            "play": {
+              "delta": 0.04617516663330973,
+              "harms": 0,
+              "left_mean": 0.36088637121834255,
+              "n": 32,
+              "right_mean": 0.4070615378516523,
+              "saves": 3,
+              "stratum": "play",
+              "ties": 29
+            },
+            "qa": {
+              "delta": 0.0625,
+              "harms": 0,
+              "left_mean": 0.34012265413510967,
+              "n": 32,
+              "right_mean": 0.40262265413510967,
+              "saves": 2,
+              "stratum": "qa",
+              "ties": 30
+            },
+            "recommendation": {
+              "delta": 0.08830060931328271,
+              "harms": 2,
+              "left_mean": 0.47329375267436885,
+              "n": 32,
+              "right_mean": 0.5615943619876516,
+              "saves": 5,
+              "stratum": "recommendation",
+              "ties": 25
+            },
+            "social": {
+              "delta": 0.2651689306861721,
+              "harms": 1,
+              "left_mean": 0.11593398045626477,
+              "n": 33,
+              "right_mean": 0.38110291114243683,
+              "saves": 11,
+              "stratum": "social",
+              "ties": 21
+            },
+            "takeaway": {
+              "delta": 0.08333333333333336,
+              "harms": 0,
+              "left_mean": 0.11570709584646867,
+              "n": 12,
+              "right_mean": 0.19904042917980203,
+              "saves": 1,
+              "stratum": "takeaway",
+              "ties": 11
+            },
+            "transport": {
+              "delta": 0.2676767676767677,
+              "harms": 0,
+              "left_mean": 0.17020021068138425,
+              "n": 33,
+              "right_mean": 0.4378769783581519,
+              "saves": 10,
+              "stratum": "transport",
+              "ties": 23
+            },
+            "weather": {
+              "delta": 0.15151515151515152,
+              "harms": 0,
+              "left_mean": 0.06075316269491026,
+              "n": 33,
+              "right_mean": 0.2122683142100618,
+              "saves": 5,
+              "stratum": "weather",
+              "ties": 28
+            }
+          },
+          "scenario_ci90_pp": [
+            8.59801351520962,
+            12.791051286873733
+          ],
+          "speaker_ci90_pp": [
+            8.578095877327078,
+            13.047624605065566
+          ]
+        }
+      },
+      "OLD500": {
+        "slot_f1_exact_f1": {
+          "delta_pp": 6.693333333333332,
+          "equal_stratum_delta_pp": 6.75387027238879,
+          "equal_stratum_left_percent": 11.155692729766805,
+          "equal_stratum_right_percent": 17.909563002155593,
+          "n": 500,
+          "natural_left_percent": 11.157142857142857,
+          "natural_right_percent": 17.85047619047619,
+          "per_stratum": {
+            "alarm": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.12142857142857143,
+              "n": 28,
+              "right_mean": 0.12142857142857143,
+              "saves": 0,
+              "stratum": "alarm",
+              "ties": 28
+            },
+            "audio": {
+              "delta": 0.03571428571428571,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 28,
+              "right_mean": 0.03571428571428571,
+              "saves": 1,
+              "stratum": "audio",
+              "ties": 27
+            },
+            "calendar": {
+              "delta": 0.03571428571428571,
+              "harms": 0,
+              "left_mean": 0.05952380952380952,
+              "n": 28,
+              "right_mean": 0.09523809523809523,
+              "saves": 1,
+              "stratum": "calendar",
+              "ties": 27
+            },
+            "cooking": {
+              "delta": 0.023809523809523836,
+              "harms": 0,
+              "left_mean": 0.14285714285714285,
+              "n": 28,
+              "right_mean": 0.16666666666666669,
+              "saves": 1,
+              "stratum": "cooking",
+              "ties": 27
+            },
+            "datetime": {
+              "delta": 0.07142857142857142,
+              "harms": 0,
+              "left_mean": 0.17142857142857143,
+              "n": 28,
+              "right_mean": 0.24285714285714285,
+              "saves": 2,
+              "stratum": "datetime",
+              "ties": 26
+            },
+            "email": {
+              "delta": 0.03571428571428571,
+              "harms": 0,
+              "left_mean": 0.07142857142857142,
+              "n": 28,
+              "right_mean": 0.10714285714285714,
+              "saves": 2,
+              "stratum": "email",
+              "ties": 26
+            },
+            "general": {
+              "delta": 0.130952380952381,
+              "harms": 0,
+              "left_mean": 0.03571428571428571,
+              "n": 28,
+              "right_mean": 0.16666666666666669,
+              "saves": 4,
+              "stratum": "general",
+              "ties": 24
+            },
+            "iot": {
+              "delta": 0.1071428571428571,
+              "harms": 0,
+              "left_mean": 0.20238095238095238,
+              "n": 28,
+              "right_mean": 0.3095238095238095,
+              "saves": 3,
+              "stratum": "iot",
+              "ties": 25
+            },
+            "lists": {
+              "delta": 0.07142857142857142,
+              "harms": 0,
+              "left_mean": 0.07142857142857142,
+              "n": 28,
+              "right_mean": 0.14285714285714285,
+              "saves": 2,
+              "stratum": "lists",
+              "ties": 26
+            },
+            "music": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.07142857142857142,
+              "n": 28,
+              "right_mean": 0.07142857142857142,
+              "saves": 0,
+              "stratum": "music",
+              "ties": 28
+            },
+            "news": {
+              "delta": 0.03571428571428571,
+              "harms": 0,
+              "left_mean": 0.07142857142857142,
+              "n": 28,
+              "right_mean": 0.10714285714285714,
+              "saves": 1,
+              "stratum": "news",
+              "ties": 27
+            },
+            "play": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.2857142857142857,
+              "n": 28,
+              "right_mean": 0.2857142857142857,
+              "saves": 0,
+              "stratum": "play",
+              "ties": 28
+            },
+            "qa": {
+              "delta": 0.0357142857142857,
+              "harms": 0,
+              "left_mean": 0.17857142857142858,
+              "n": 28,
+              "right_mean": 0.21428571428571427,
+              "saves": 1,
+              "stratum": "qa",
+              "ties": 27
+            },
+            "recommendation": {
+              "delta": 0.05952380952380951,
+              "harms": 0,
+              "left_mean": 0.08571428571428572,
+              "n": 28,
+              "right_mean": 0.14523809523809522,
+              "saves": 2,
+              "stratum": "recommendation",
+              "ties": 26
+            },
+            "social": {
+              "delta": 0.3580246913580247,
+              "harms": 0,
+              "left_mean": 0.043209876543209874,
+              "n": 27,
+              "right_mean": 0.4012345679012346,
+              "saves": 11,
+              "stratum": "social",
+              "ties": 16
+            },
+            "takeaway": {
+              "delta": -0.06172839506172842,
+              "harms": 3,
+              "left_mean": 0.17530864197530865,
+              "n": 27,
+              "right_mean": 0.11358024691358024,
+              "saves": 0,
+              "stratum": "takeaway",
+              "ties": 24
+            },
+            "transport": {
+              "delta": 0.18395061728395068,
+              "harms": 0,
+              "left_mean": 0.12169312169312169,
+              "n": 27,
+              "right_mean": 0.30564373897707237,
+              "saves": 6,
+              "stratum": "transport",
+              "ties": 21
+            },
+            "weather": {
+              "delta": 0.09259259259259259,
+              "harms": 1,
+              "left_mean": 0.09876543209876543,
+              "n": 27,
+              "right_mean": 0.19135802469135801,
+              "saves": 4,
+              "stratum": "weather",
+              "ties": 22
+            }
+          },
+          "scenario_ci90_pp": [
+            5.033333333333333,
+            8.479999999999995
+          ],
+          "speaker_ci90_pp": [
+            4.668019675758888,
+            9.053862192055824
+          ]
+        },
+        "slu_f1_f1": {
+          "delta_pp": 7.596755194326565,
+          "equal_stratum_delta_pp": 7.659577510746833,
+          "equal_stratum_left_percent": 18.10941135939094,
+          "equal_stratum_right_percent": 25.768988870137772,
+          "n": 500,
+          "natural_left_percent": 18.112505343459002,
+          "natural_right_percent": 25.709260537785568,
+          "per_stratum": {
+            "alarm": {
+              "delta": 0.010504201680672287,
+              "harms": 0,
+              "left_mean": 0.13956925427513664,
+              "n": 28,
+              "right_mean": 0.15007345595580893,
+              "saves": 1,
+              "stratum": "alarm",
+              "ties": 27
+            },
+            "audio": {
+              "delta": 0.051075268817204304,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 28,
+              "right_mean": 0.051075268817204304,
+              "saves": 2,
+              "stratum": "audio",
+              "ties": 26
+            },
+            "calendar": {
+              "delta": 0.0357142857142857,
+              "harms": 0,
+              "left_mean": 0.18560175755717864,
+              "n": 28,
+              "right_mean": 0.22131604327146434,
+              "saves": 1,
+              "stratum": "calendar",
+              "ties": 27
+            },
+            "cooking": {
+              "delta": 0.03998203054806829,
+              "harms": 0,
+              "left_mean": 0.22386061258551312,
+              "n": 28,
+              "right_mean": 0.2638426431335814,
+              "saves": 2,
+              "stratum": "cooking",
+              "ties": 26
+            },
+            "datetime": {
+              "delta": 0.09627329192546588,
+              "harms": 0,
+              "left_mean": 0.21119599354893473,
+              "n": 28,
+              "right_mean": 0.3074692854744006,
+              "saves": 3,
+              "stratum": "datetime",
+              "ties": 25
+            },
+            "email": {
+              "delta": 0.047278989828789336,
+              "harms": 1,
+              "left_mean": 0.189248929499757,
+              "n": 28,
+              "right_mean": 0.23652791932854633,
+              "saves": 3,
+              "stratum": "email",
+              "ties": 24
+            },
+            "general": {
+              "delta": 0.12176120448179271,
+              "harms": 0,
+              "left_mean": 0.06048987776928953,
+              "n": 28,
+              "right_mean": 0.18225108225108225,
+              "saves": 4,
+              "stratum": "general",
+              "ties": 24
+            },
+            "iot": {
+              "delta": 0.1071428571428571,
+              "harms": 0,
+              "left_mean": 0.22779776282094505,
+              "n": 28,
+              "right_mean": 0.33494061996380214,
+              "saves": 3,
+              "stratum": "iot",
+              "ties": 25
+            },
+            "lists": {
+              "delta": 0.07142857142857142,
+              "harms": 0,
+              "left_mean": 0.1694654013813755,
+              "n": 28,
+              "right_mean": 0.24089397280994693,
+              "saves": 2,
+              "stratum": "lists",
+              "ties": 26
+            },
+            "music": {
+              "delta": 0.014893509724486886,
+              "harms": 0,
+              "left_mean": 0.13057533863985477,
+              "n": 28,
+              "right_mean": 0.14546884836434165,
+              "saves": 2,
+              "stratum": "music",
+              "ties": 26
+            },
+            "news": {
+              "delta": 0.035714285714285726,
+              "harms": 0,
+              "left_mean": 0.18500345725559364,
+              "n": 28,
+              "right_mean": 0.22071774296987937,
+              "saves": 1,
+              "stratum": "news",
+              "ties": 27
+            },
+            "play": {
+              "delta": 0.011518243661100769,
+              "harms": 0,
+              "left_mean": 0.38407402734370527,
+              "n": 28,
+              "right_mean": 0.39559227100480604,
+              "saves": 2,
+              "stratum": "play",
+              "ties": 26
+            },
+            "qa": {
+              "delta": 0.05541871921182273,
+              "harms": 0,
+              "left_mean": 0.28839430767199625,
+              "n": 28,
+              "right_mean": 0.343813026883819,
+              "saves": 2,
+              "stratum": "qa",
+              "ties": 26
+            },
+            "recommendation": {
+              "delta": 0.05952380952380951,
+              "harms": 0,
+              "left_mean": 0.15551079030574425,
+              "n": 28,
+              "right_mean": 0.21503459982955375,
+              "saves": 2,
+              "stratum": "recommendation",
+              "ties": 26
+            },
+            "social": {
+              "delta": 0.35802469135802467,
+              "harms": 0,
+              "left_mean": 0.07841684822076979,
+              "n": 27,
+              "right_mean": 0.43644153957879445,
+              "saves": 11,
+              "stratum": "social",
+              "ties": 16
+            },
+            "takeaway": {
+              "delta": -0.014073218703350765,
+              "harms": 4,
+              "left_mean": 0.34455160307265487,
+              "n": 27,
+              "right_mean": 0.3304783843693041,
+              "saves": 2,
+              "stratum": "takeaway",
+              "ties": 21
+            },
+            "transport": {
+              "delta": 0.18395061728395062,
+              "harms": 0,
+              "left_mean": 0.18717265064315486,
+              "n": 27,
+              "right_mean": 0.3711232679271055,
+              "saves": 6,
+              "stratum": "transport",
+              "ties": 21
+            },
+            "weather": {
+              "delta": 0.09259259259259259,
+              "harms": 1,
+              "left_mean": 0.09876543209876543,
+              "n": 27,
+              "right_mean": 0.19135802469135801,
+              "saves": 4,
+              "stratum": "weather",
+              "ties": 22
+            }
+          },
+          "scenario_ci90_pp": [
+            5.841906484274085,
+            9.463192545221046
+          ],
+          "speaker_ci90_pp": [
+            5.4292135573134095,
+            9.986305667600377
+          ]
+        }
+      }
+    },
+    "replica_minus_kc_s1b": {
+      "DEV1000": {
+        "slot_f1_exact_f1": {
+          "delta_pp": 0.2985714285714258,
+          "equal_stratum_delta_pp": 0.12234120826545977,
+          "equal_stratum_left_percent": 20.172099851906765,
+          "equal_stratum_right_percent": 20.294441060172225,
+          "n": 1000,
+          "natural_left_percent": 20.76261904761905,
+          "natural_right_percent": 21.061190476190475,
+          "per_stratum": {
+            "alarm": {
+              "delta": 0.004022988505747144,
+              "harms": 2,
+              "left_mean": 0.14195402298850573,
+              "n": 58,
+              "right_mean": 0.14597701149425288,
+              "saves": 1,
+              "stratum": "alarm",
+              "ties": 55
+            },
+            "audio": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.03333333333333333,
+              "n": 30,
+              "right_mean": 0.03333333333333333,
+              "saves": 0,
+              "stratum": "audio",
+              "ties": 30
+            },
+            "calendar": {
+              "delta": 0.012880562060889944,
+              "harms": 0,
+              "left_mean": 0.14758001561280248,
+              "n": 61,
+              "right_mean": 0.16046057767369243,
+              "saves": 2,
+              "stratum": "calendar",
+              "ties": 59
+            },
+            "cooking": {
+              "delta": -0.05405405405405406,
+              "harms": 2,
+              "left_mean": 0.2882882882882883,
+              "n": 37,
+              "right_mean": 0.23423423423423423,
+              "saves": 0,
+              "stratum": "cooking",
+              "ties": 35
+            },
+            "datetime": {
+              "delta": 0.016393442622950838,
+              "harms": 0,
+              "left_mean": 0.2098360655737705,
+              "n": 61,
+              "right_mean": 0.22622950819672133,
+              "saves": 1,
+              "stratum": "datetime",
+              "ties": 60
+            },
+            "email": {
+              "delta": 0.008196721311475391,
+              "harms": 0,
+              "left_mean": 0.16939890710382516,
+              "n": 61,
+              "right_mean": 0.17759562841530055,
+              "saves": 1,
+              "stratum": "email",
+              "ties": 60
+            },
+            "general": {
+              "delta": 0.03278688524590165,
+              "harms": 1,
+              "left_mean": 0.060109289617486336,
+              "n": 61,
+              "right_mean": 0.09289617486338798,
+              "saves": 3,
+              "stratum": "general",
+              "ties": 57
+            },
+            "iot": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.34972677595628415,
+              "n": 61,
+              "right_mean": 0.34972677595628415,
+              "saves": 0,
+              "stratum": "iot",
+              "ties": 61
+            },
+            "lists": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.11666666666666667,
+              "n": 60,
+              "right_mean": 0.11666666666666667,
+              "saves": 0,
+              "stratum": "lists",
+              "ties": 60
+            },
+            "music": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.0784313725490196,
+              "n": 51,
+              "right_mean": 0.0784313725490196,
+              "saves": 0,
+              "stratum": "music",
+              "ties": 51
+            },
+            "news": {
+              "delta": -0.0111111111111111,
+              "harms": 1,
+              "left_mean": 0.1388888888888889,
+              "n": 60,
+              "right_mean": 0.1277777777777778,
+              "saves": 0,
+              "stratum": "news",
+              "ties": 59
+            },
+            "play": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.30944444444444447,
+              "n": 60,
+              "right_mean": 0.30944444444444447,
+              "saves": 0,
+              "stratum": "play",
+              "ties": 60
+            },
+            "qa": {
+              "delta": -0.016666666666666663,
+              "harms": 2,
+              "left_mean": 0.30833333333333335,
+              "n": 60,
+              "right_mean": 0.2916666666666667,
+              "saves": 1,
+              "stratum": "qa",
+              "ties": 57
+            },
+            "recommendation": {
+              "delta": -0.011111111111111072,
+              "harms": 1,
+              "left_mean": 0.33277777777777773,
+              "n": 60,
+              "right_mean": 0.32166666666666666,
+              "saves": 0,
+              "stratum": "recommendation",
+              "ties": 59
+            },
+            "social": {
+              "delta": 0.005555555555555536,
+              "harms": 2,
+              "left_mean": 0.3622222222222222,
+              "n": 60,
+              "right_mean": 0.36777777777777776,
+              "saves": 2,
+              "stratum": "social",
+              "ties": 56
+            },
+            "takeaway": {
+              "delta": -0.017094017094017103,
+              "harms": 2,
+              "left_mean": 0.12136752136752137,
+              "n": 39,
+              "right_mean": 0.10427350427350426,
+              "saves": 1,
+              "stratum": "takeaway",
+              "ties": 36
+            },
+            "transport": {
+              "delta": 0.09388888888888891,
+              "harms": 1,
+              "left_mean": 0.2265079365079365,
+              "n": 60,
+              "right_mean": 0.3203968253968254,
+              "saves": 11,
+              "stratum": "transport",
+              "ties": 48
+            },
+            "weather": {
+              "delta": -0.04166666666666666,
+              "harms": 4,
+              "left_mean": 0.2361111111111111,
+              "n": 60,
+              "right_mean": 0.19444444444444445,
+              "saves": 0,
+              "stratum": "weather",
+              "ties": 56
+            }
+          },
+          "scenario_ci90_pp": [
+            -0.4666666666666666,
+            1.0585714285714287
+          ],
+          "speaker_ci90_pp": [
+            -0.5202436444199309,
+            1.1375479285130117
+          ]
+        },
+        "slu_f1_f1": {
+          "delta_pp": 0.22946820077782704,
+          "equal_stratum_delta_pp": 0.03748186633186271,
+          "equal_stratum_left_percent": 27.94836304910068,
+          "equal_stratum_right_percent": 27.985844915432548,
+          "n": 1000,
+          "natural_left_percent": 28.45328857403187,
+          "natural_right_percent": 28.682756774809697,
+          "per_stratum": {
+            "alarm": {
+              "delta": -0.004168667423865735,
+              "harms": 3,
+              "left_mean": 0.2671393456605897,
+              "n": 58,
+              "right_mean": 0.262970678236724,
+              "saves": 1,
+              "stratum": "alarm",
+              "ties": 54
+            },
+            "audio": {
+              "delta": 0.014336917562724018,
+              "harms": 0,
+              "left_mean": 0.03333333333333333,
+              "n": 30,
+              "right_mean": 0.04767025089605735,
+              "saves": 1,
+              "stratum": "audio",
+              "ties": 29
+            },
+            "calendar": {
+              "delta": 0.019509767977792913,
+              "harms": 0,
+              "left_mean": 0.26429752077830004,
+              "n": 61,
+              "right_mean": 0.28380728875609296,
+              "saves": 2,
+              "stratum": "calendar",
+              "ties": 59
+            },
+            "cooking": {
+              "delta": -0.08351794417368197,
+              "harms": 4,
+              "left_mean": 0.4095427734457077,
+              "n": 37,
+              "right_mean": 0.32602482927202575,
+              "saves": 0,
+              "stratum": "cooking",
+              "ties": 33
+            },
+            "datetime": {
+              "delta": 0.00538326961705432,
+              "harms": 1,
+              "left_mean": 0.30065112539999556,
+              "n": 61,
+              "right_mean": 0.3060343950170499,
+              "saves": 2,
+              "stratum": "datetime",
+              "ties": 58
+            },
+            "email": {
+              "delta": 0.002426025235769236,
+              "harms": 2,
+              "left_mean": 0.25149335357570063,
+              "n": 61,
+              "right_mean": 0.25391937881146986,
+              "saves": 2,
+              "stratum": "email",
+              "ties": 57
+            },
+            "general": {
+              "delta": 0.028567984570877517,
+              "harms": 1,
+              "left_mean": 0.09059276467666054,
+              "n": 61,
+              "right_mean": 0.11916074924753806,
+              "saves": 3,
+              "stratum": "general",
+              "ties": 57
+            },
+            "iot": {
+              "delta": 0.008891358710753028,
+              "harms": 0,
+              "left_mean": 0.3894092194200656,
+              "n": 61,
+              "right_mean": 0.39830057813081865,
+              "saves": 1,
+              "stratum": "iot",
+              "ties": 60
+            },
+            "lists": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.18357158846570973,
+              "n": 60,
+              "right_mean": 0.18357158846570973,
+              "saves": 0,
+              "stratum": "lists",
+              "ties": 60
+            },
+            "music": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.13726723365926152,
+              "n": 51,
+              "right_mean": 0.13726723365926152,
+              "saves": 0,
+              "stratum": "music",
+              "ties": 51
+            },
+            "news": {
+              "delta": -0.0111111111111111,
+              "harms": 1,
+              "left_mean": 0.24634465452640614,
+              "n": 60,
+              "right_mean": 0.23523354341529504,
+              "saves": 0,
+              "stratum": "news",
+              "ties": 59
+            },
+            "play": {
+              "delta": 0.0015873015873015817,
+              "harms": 0,
+              "left_mean": 0.40012191173582246,
+              "n": 60,
+              "right_mean": 0.40170921332312404,
+              "saves": 1,
+              "stratum": "play",
+              "ties": 59
+            },
+            "qa": {
+              "delta": -0.016666666666666663,
+              "harms": 2,
+              "left_mean": 0.3918448280845073,
+              "n": 60,
+              "right_mean": 0.37517816141784066,
+              "saves": 1,
+              "stratum": "qa",
+              "ties": 57
+            },
+            "recommendation": {
+              "delta": -0.0004115226337448874,
+              "harms": 1,
+              "left_mean": 0.4002779956142841,
+              "n": 60,
+              "right_mean": 0.39986647298053923,
+              "saves": 1,
+              "stratum": "recommendation",
+              "ties": 58
+            },
+            "social": {
+              "delta": -0.00418215077924694,
+              "harms": 3,
+              "left_mean": 0.41018744471804475,
+              "n": 60,
+              "right_mean": 0.4060052939387978,
+              "saves": 2,
+              "stratum": "social",
+              "ties": 55
+            },
+            "takeaway": {
+              "delta": -0.015521758158151655,
+              "harms": 3,
+              "left_mean": 0.30555769477683975,
+              "n": 39,
+              "right_mean": 0.2900359366186881,
+              "saves": 3,
+              "stratum": "takeaway",
+              "ties": 33
+            },
+            "transport": {
+              "delta": 0.10329059829059828,
+              "harms": 1,
+              "left_mean": 0.30454721037358273,
+              "n": 60,
+              "right_mean": 0.407837808664181,
+              "saves": 12,
+              "stratum": "transport",
+              "ties": 47
+            },
+            "weather": {
+              "delta": -0.04166666666666666,
+              "harms": 4,
+              "left_mean": 0.24452535059331174,
+              "n": 60,
+              "right_mean": 0.20285868392664508,
+              "saves": 0,
+              "stratum": "weather",
+              "ties": 56
+            }
+          },
+          "scenario_ci90_pp": [
+            -0.6214097676834024,
+            1.0933303270502202
+          ],
+          "speaker_ci90_pp": [
+            -0.6338979704629729,
+            1.1369189295870572
+          ]
+        }
+      },
+      "NEW500": {
+        "slot_f1_exact_f1": {
+          "delta_pp": -0.3295238095238101,
+          "equal_stratum_delta_pp": -0.9251042167708837,
+          "equal_stratum_left_percent": 23.91460433353549,
+          "equal_stratum_right_percent": 22.989500116764606,
+          "n": 500,
+          "natural_left_percent": 24.60142857142857,
+          "natural_right_percent": 24.27190476190476,
+          "per_stratum": {
+            "alarm": {
+              "delta": 0.03,
+              "harms": 1,
+              "left_mean": 0.1388888888888889,
+              "n": 30,
+              "right_mean": 0.1688888888888889,
+              "saves": 1,
+              "stratum": "alarm",
+              "ties": 28
+            },
+            "audio": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 2,
+              "right_mean": 0.0,
+              "saves": 0,
+              "stratum": "audio",
+              "ties": 2
+            },
+            "calendar": {
+              "delta": 0.023809523809523808,
+              "harms": 0,
+              "left_mean": 0.191991341991342,
+              "n": 33,
+              "right_mean": 0.2158008658008658,
+              "saves": 2,
+              "stratum": "calendar",
+              "ties": 31
+            },
+            "cooking": {
+              "delta": -0.11111111111111116,
+              "harms": 1,
+              "left_mean": 0.5555555555555556,
+              "n": 9,
+              "right_mean": 0.4444444444444444,
+              "saves": 0,
+              "stratum": "cooking",
+              "ties": 8
+            },
+            "datetime": {
+              "delta": 0.030303030303030304,
+              "harms": 0,
+              "left_mean": 0.18181818181818182,
+              "n": 33,
+              "right_mean": 0.21212121212121213,
+              "saves": 1,
+              "stratum": "datetime",
+              "ties": 32
+            },
+            "email": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.23737373737373738,
+              "n": 33,
+              "right_mean": 0.23737373737373738,
+              "saves": 0,
+              "stratum": "email",
+              "ties": 33
+            },
+            "general": {
+              "delta": -0.020202020202020193,
+              "harms": 1,
+              "left_mean": 0.0505050505050505,
+              "n": 33,
+              "right_mean": 0.030303030303030304,
+              "saves": 0,
+              "stratum": "general",
+              "ties": 32
+            },
+            "iot": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.3838383838383838,
+              "n": 33,
+              "right_mean": 0.3838383838383838,
+              "saves": 0,
+              "stratum": "iot",
+              "ties": 33
+            },
+            "lists": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.09375,
+              "n": 32,
+              "right_mean": 0.09375,
+              "saves": 0,
+              "stratum": "lists",
+              "ties": 32
+            },
+            "music": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.08695652173913043,
+              "n": 23,
+              "right_mean": 0.08695652173913043,
+              "saves": 0,
+              "stratum": "music",
+              "ties": 23
+            },
+            "news": {
+              "delta": -0.020833333333333315,
+              "harms": 1,
+              "left_mean": 0.16666666666666666,
+              "n": 32,
+              "right_mean": 0.14583333333333334,
+              "saves": 0,
+              "stratum": "news",
+              "ties": 31
+            },
+            "play": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.3302083333333333,
+              "n": 32,
+              "right_mean": 0.3302083333333333,
+              "saves": 0,
+              "stratum": "play",
+              "ties": 32
+            },
+            "qa": {
+              "delta": -0.0625,
+              "harms": 2,
+              "left_mean": 0.421875,
+              "n": 32,
+              "right_mean": 0.359375,
+              "saves": 0,
+              "stratum": "qa",
+              "ties": 30
+            },
+            "recommendation": {
+              "delta": -0.02083333333333337,
+              "harms": 1,
+              "left_mean": 0.496875,
+              "n": 32,
+              "right_mean": 0.47604166666666664,
+              "saves": 0,
+              "stratum": "recommendation",
+              "ties": 31
+            },
+            "social": {
+              "delta": 0.0050505050505050275,
+              "harms": 2,
+              "left_mean": 0.33535353535353535,
+              "n": 33,
+              "right_mean": 0.3404040404040404,
+              "saves": 1,
+              "stratum": "social",
+              "ties": 30
+            },
+            "takeaway": {
+              "delta": -0.05555555555555554,
+              "harms": 1,
+              "left_mean": 0.13888888888888887,
+              "n": 12,
+              "right_mean": 0.08333333333333333,
+              "saves": 0,
+              "stratum": "takeaway",
+              "ties": 11
+            },
+            "transport": {
+              "delta": 0.03535353535353536,
+              "harms": 1,
+              "left_mean": 0.2971139971139971,
+              "n": 33,
+              "right_mean": 0.33246753246753247,
+              "saves": 4,
+              "stratum": "transport",
+              "ties": 28
+            },
+            "weather": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.19696969696969696,
+              "n": 33,
+              "right_mean": 0.19696969696969696,
+              "saves": 0,
+              "stratum": "weather",
+              "ties": 33
+            }
+          },
+          "scenario_ci90_pp": [
+            -1.3866666666666667,
+            0.7266666666666667
+          ],
+          "speaker_ci90_pp": [
+            -1.481914668287256,
+            0.768492003382182
+          ]
+        },
+        "slu_f1_f1": {
+          "delta_pp": -0.235986824893486,
+          "equal_stratum_delta_pp": -0.8509905724687064,
+          "equal_stratum_left_percent": 30.995624463693446,
+          "equal_stratum_right_percent": 30.144633891224746,
+          "n": 500,
+          "natural_left_percent": 31.89223983672731,
+          "natural_right_percent": 31.656253011833822,
+          "per_stratum": {
+            "alarm": {
+              "delta": 0.014162798536081767,
+              "harms": 2,
+              "left_mean": 0.35417862049616294,
+              "n": 30,
+              "right_mean": 0.3683414190322447,
+              "saves": 1,
+              "stratum": "alarm",
+              "ties": 27
+            },
+            "audio": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.0,
+              "n": 2,
+              "right_mean": 0.0,
+              "saves": 0,
+              "stratum": "audio",
+              "ties": 2
+            },
+            "calendar": {
+              "delta": 0.036063510504405094,
+              "harms": 0,
+              "left_mean": 0.3007666532083425,
+              "n": 33,
+              "right_mean": 0.3368301637127476,
+              "saves": 2,
+              "stratum": "calendar",
+              "ties": 31
+            },
+            "cooking": {
+              "delta": -0.11111111111111116,
+              "harms": 1,
+              "left_mean": 0.6305916305916306,
+              "n": 9,
+              "right_mean": 0.5194805194805194,
+              "saves": 0,
+              "stratum": "cooking",
+              "ties": 8
+            },
+            "datetime": {
+              "delta": 0.008264462809917328,
+              "harms": 1,
+              "left_mean": 0.29655244939483505,
+              "n": 33,
+              "right_mean": 0.3048169122047524,
+              "saves": 1,
+              "stratum": "datetime",
+              "ties": 31
+            },
+            "email": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.2686757686757687,
+              "n": 33,
+              "right_mean": 0.2686757686757687,
+              "saves": 0,
+              "stratum": "email",
+              "ties": 33
+            },
+            "general": {
+              "delta": -0.020202020202020193,
+              "harms": 1,
+              "left_mean": 0.08583157781018744,
+              "n": 33,
+              "right_mean": 0.06562955760816724,
+              "saves": 0,
+              "stratum": "general",
+              "ties": 32
+            },
+            "iot": {
+              "delta": 0.016435541859270653,
+              "harms": 0,
+              "left_mean": 0.43562500077689525,
+              "n": 33,
+              "right_mean": 0.4520605426361659,
+              "saves": 1,
+              "stratum": "iot",
+              "ties": 32
+            },
+            "lists": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.13341450216450218,
+              "n": 32,
+              "right_mean": 0.13341450216450218,
+              "saves": 0,
+              "stratum": "lists",
+              "ties": 32
+            },
+            "music": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.12728265923568574,
+              "n": 23,
+              "right_mean": 0.12728265923568574,
+              "saves": 0,
+              "stratum": "music",
+              "ties": 23
+            },
+            "news": {
+              "delta": -0.020833333333333343,
+              "harms": 1,
+              "left_mean": 0.2687682021383671,
+              "n": 32,
+              "right_mean": 0.24793486880503376,
+              "saves": 0,
+              "stratum": "news",
+              "ties": 31
+            },
+            "play": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.4070615378516523,
+              "n": 32,
+              "right_mean": 0.4070615378516523,
+              "saves": 0,
+              "stratum": "play",
+              "ties": 32
+            },
+            "qa": {
+              "delta": -0.0625,
+              "harms": 2,
+              "left_mean": 0.46512265413510967,
+              "n": 32,
+              "right_mean": 0.40262265413510967,
+              "saves": 0,
+              "stratum": "qa",
+              "ties": 30
+            },
+            "recommendation": {
+              "delta": -0.0007716049382715529,
+              "harms": 1,
+              "left_mean": 0.5623659669259231,
+              "n": 32,
+              "right_mean": 0.5615943619876516,
+              "saves": 1,
+              "stratum": "recommendation",
+              "ties": 30
+            },
+            "social": {
+              "delta": -0.009578544061302652,
+              "harms": 3,
+              "left_mean": 0.3906814552037395,
+              "n": 33,
+              "right_mean": 0.38110291114243683,
+              "saves": 1,
+              "stratum": "social",
+              "ties": 29
+            },
+            "takeaway": {
+              "delta": -0.055555555555555525,
+              "harms": 1,
+              "left_mean": 0.25459598473535755,
+              "n": 12,
+              "right_mean": 0.19904042917980203,
+              "saves": 0,
+              "stratum": "takeaway",
+              "ties": 11
+            },
+            "transport": {
+              "delta": 0.05244755244755245,
+              "harms": 1,
+              "left_mean": 0.3854294259105995,
+              "n": 33,
+              "right_mean": 0.4378769783581519,
+              "saves": 5,
+              "stratum": "transport",
+              "ties": 27
+            },
+            "weather": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.2122683142100618,
+              "n": 33,
+              "right_mean": 0.2122683142100618,
+              "saves": 0,
+              "stratum": "weather",
+              "ties": 33
+            }
+          },
+          "scenario_ci90_pp": [
+            -1.4162132006426986,
+            0.9253189910155143
+          ],
+          "speaker_ci90_pp": [
+            -1.4100277362584954,
+            0.9679576427768861
+          ]
+        }
+      },
+      "OLD500": {
+        "slot_f1_exact_f1": {
+          "delta_pp": 0.9266666666666645,
+          "equal_stratum_delta_pp": 0.9349892220262597,
+          "equal_stratum_left_percent": 16.974573780129337,
+          "equal_stratum_right_percent": 17.909563002155593,
+          "n": 500,
+          "natural_left_percent": 16.923809523809524,
+          "natural_right_percent": 17.85047619047619,
+          "per_stratum": {
+            "alarm": {
+              "delta": -0.023809523809523794,
+              "harms": 1,
+              "left_mean": 0.14523809523809522,
+              "n": 28,
+              "right_mean": 0.12142857142857143,
+              "saves": 0,
+              "stratum": "alarm",
+              "ties": 27
+            },
+            "audio": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.03571428571428571,
+              "n": 28,
+              "right_mean": 0.03571428571428571,
+              "saves": 0,
+              "stratum": "audio",
+              "ties": 28
+            },
+            "calendar": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.09523809523809523,
+              "n": 28,
+              "right_mean": 0.09523809523809523,
+              "saves": 0,
+              "stratum": "calendar",
+              "ties": 28
+            },
+            "cooking": {
+              "delta": -0.0357142857142857,
+              "harms": 1,
+              "left_mean": 0.20238095238095238,
+              "n": 28,
+              "right_mean": 0.16666666666666669,
+              "saves": 0,
+              "stratum": "cooking",
+              "ties": 27
+            },
+            "datetime": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.24285714285714285,
+              "n": 28,
+              "right_mean": 0.24285714285714285,
+              "saves": 0,
+              "stratum": "datetime",
+              "ties": 28
+            },
+            "email": {
+              "delta": 0.01785714285714285,
+              "harms": 0,
+              "left_mean": 0.08928571428571429,
+              "n": 28,
+              "right_mean": 0.10714285714285714,
+              "saves": 1,
+              "stratum": "email",
+              "ties": 27
+            },
+            "general": {
+              "delta": 0.09523809523809526,
+              "harms": 0,
+              "left_mean": 0.07142857142857142,
+              "n": 28,
+              "right_mean": 0.16666666666666669,
+              "saves": 3,
+              "stratum": "general",
+              "ties": 25
+            },
+            "iot": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.3095238095238095,
+              "n": 28,
+              "right_mean": 0.3095238095238095,
+              "saves": 0,
+              "stratum": "iot",
+              "ties": 28
+            },
+            "lists": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.14285714285714285,
+              "n": 28,
+              "right_mean": 0.14285714285714285,
+              "saves": 0,
+              "stratum": "lists",
+              "ties": 28
+            },
+            "music": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.07142857142857142,
+              "n": 28,
+              "right_mean": 0.07142857142857142,
+              "saves": 0,
+              "stratum": "music",
+              "ties": 28
+            },
+            "news": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.10714285714285714,
+              "n": 28,
+              "right_mean": 0.10714285714285714,
+              "saves": 0,
+              "stratum": "news",
+              "ties": 28
+            },
+            "play": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.2857142857142857,
+              "n": 28,
+              "right_mean": 0.2857142857142857,
+              "saves": 0,
+              "stratum": "play",
+              "ties": 28
+            },
+            "qa": {
+              "delta": 0.0357142857142857,
+              "harms": 0,
+              "left_mean": 0.17857142857142858,
+              "n": 28,
+              "right_mean": 0.21428571428571427,
+              "saves": 1,
+              "stratum": "qa",
+              "ties": 27
+            },
+            "recommendation": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.14523809523809522,
+              "n": 28,
+              "right_mean": 0.14523809523809522,
+              "saves": 0,
+              "stratum": "recommendation",
+              "ties": 28
+            },
+            "social": {
+              "delta": 0.006172839506172867,
+              "harms": 0,
+              "left_mean": 0.3950617283950617,
+              "n": 27,
+              "right_mean": 0.4012345679012346,
+              "saves": 1,
+              "stratum": "social",
+              "ties": 26
+            },
+            "takeaway": {
+              "delta": 0.0,
+              "harms": 1,
+              "left_mean": 0.11358024691358024,
+              "n": 27,
+              "right_mean": 0.11358024691358024,
+              "saves": 1,
+              "stratum": "takeaway",
+              "ties": 25
+            },
+            "transport": {
+              "delta": 0.16543209876543216,
+              "harms": 0,
+              "left_mean": 0.1402116402116402,
+              "n": 27,
+              "right_mean": 0.30564373897707237,
+              "saves": 7,
+              "stratum": "transport",
+              "ties": 20
+            },
+            "weather": {
+              "delta": -0.09259259259259259,
+              "harms": 4,
+              "left_mean": 0.2839506172839506,
+              "n": 27,
+              "right_mean": 0.19135802469135801,
+              "saves": 0,
+              "stratum": "weather",
+              "ties": 23
+            }
+          },
+          "scenario_ci90_pp": [
+            -0.1066666666666666,
+            1.953333333333334
+          ],
+          "speaker_ci90_pp": [
+            -0.26494585902413037,
+            2.186487040423787
+          ]
+        },
+        "slu_f1_f1": {
+          "delta_pp": 0.6949232264491401,
+          "equal_stratum_delta_pp": 0.704789706371743,
+          "equal_stratum_left_percent": 25.064199163766027,
+          "equal_stratum_right_percent": 25.768988870137772,
+          "n": 500,
+          "natural_left_percent": 25.014337311336426,
+          "natural_right_percent": 25.709260537785568,
+          "per_stratum": {
+            "alarm": {
+              "delta": -0.02380952380952378,
+              "harms": 1,
+              "left_mean": 0.1738829797653327,
+              "n": 28,
+              "right_mean": 0.15007345595580893,
+              "saves": 0,
+              "stratum": "alarm",
+              "ties": 27
+            },
+            "audio": {
+              "delta": 0.015360983102918592,
+              "harms": 0,
+              "left_mean": 0.03571428571428571,
+              "n": 28,
+              "right_mean": 0.051075268817204304,
+              "saves": 1,
+              "stratum": "audio",
+              "ties": 27
+            },
+            "calendar": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.22131604327146434,
+              "n": 28,
+              "right_mean": 0.22131604327146434,
+              "saves": 0,
+              "stratum": "calendar",
+              "ties": 28
+            },
+            "cooking": {
+              "delta": -0.07464871194379391,
+              "harms": 3,
+              "left_mean": 0.3384913550773753,
+              "n": 28,
+              "right_mean": 0.2638426431335814,
+              "saves": 0,
+              "stratum": "cooking",
+              "ties": 25
+            },
+            "datetime": {
+              "delta": 0.001987577639751603,
+              "harms": 0,
+              "left_mean": 0.305481707834649,
+              "n": 28,
+              "right_mean": 0.3074692854744006,
+              "saves": 1,
+              "stratum": "datetime",
+              "ties": 27
+            },
+            "email": {
+              "delta": 0.005285269263640202,
+              "harms": 2,
+              "left_mean": 0.23124265006490613,
+              "n": 28,
+              "right_mean": 0.23652791932854633,
+              "saves": 2,
+              "stratum": "email",
+              "ties": 24
+            },
+            "general": {
+              "delta": 0.08604691876750699,
+              "harms": 0,
+              "left_mean": 0.09620416348357526,
+              "n": 28,
+              "right_mean": 0.18225108225108225,
+              "saves": 3,
+              "stratum": "general",
+              "ties": 25
+            },
+            "iot": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.33494061996380214,
+              "n": 28,
+              "right_mean": 0.33494061996380214,
+              "saves": 0,
+              "stratum": "iot",
+              "ties": 28
+            },
+            "lists": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.24089397280994693,
+              "n": 28,
+              "right_mean": 0.24089397280994693,
+              "saves": 0,
+              "stratum": "lists",
+              "ties": 28
+            },
+            "music": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.14546884836434165,
+              "n": 28,
+              "right_mean": 0.14546884836434165,
+              "saves": 0,
+              "stratum": "music",
+              "ties": 28
+            },
+            "news": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.22071774296987937,
+              "n": 28,
+              "right_mean": 0.22071774296987937,
+              "saves": 0,
+              "stratum": "news",
+              "ties": 28
+            },
+            "play": {
+              "delta": 0.0034013605442176353,
+              "harms": 0,
+              "left_mean": 0.3921909104605884,
+              "n": 28,
+              "right_mean": 0.39559227100480604,
+              "saves": 1,
+              "stratum": "play",
+              "ties": 27
+            },
+            "qa": {
+              "delta": 0.035714285714285754,
+              "harms": 0,
+              "left_mean": 0.30809874116953323,
+              "n": 28,
+              "right_mean": 0.343813026883819,
+              "saves": 1,
+              "stratum": "qa",
+              "ties": 27
+            },
+            "recommendation": {
+              "delta": 0.0,
+              "harms": 0,
+              "left_mean": 0.21503459982955375,
+              "n": 28,
+              "right_mean": 0.21503459982955375,
+              "saves": 0,
+              "stratum": "recommendation",
+              "ties": 28
+            },
+            "social": {
+              "delta": 0.002413441009932238,
+              "harms": 0,
+              "left_mean": 0.4340280985688622,
+              "n": 27,
+              "right_mean": 0.43644153957879445,
+              "saves": 1,
+              "stratum": "social",
+              "ties": 26
+            },
+            "takeaway": {
+              "delta": 0.002271040685138892,
+              "harms": 2,
+              "left_mean": 0.3282073436841652,
+              "n": 27,
+              "right_mean": 0.3304783843693041,
+              "saves": 3,
+              "stratum": "takeaway",
+              "ties": 22
+            },
+            "transport": {
+              "delta": 0.1654320987654321,
+              "harms": 0,
+              "left_mean": 0.20569116916167338,
+              "n": 27,
+              "right_mean": 0.3711232679271055,
+              "saves": 7,
+              "stratum": "transport",
+              "ties": 20
+            },
+            "weather": {
+              "delta": -0.09259259259259259,
+              "harms": 4,
+              "left_mean": 0.2839506172839506,
+              "n": 27,
+              "right_mean": 0.19135802469135801,
+              "saves": 0,
+              "stratum": "weather",
+              "ties": 23
+            }
+          },
+          "scenario_ci90_pp": [
+            -0.42975578953335847,
+            1.8427764713844779
+          ],
+          "speaker_ci90_pp": [
+            -0.6559276750113876,
+            2.0591103068666445
+          ]
+        }
+      }
+    }
+  },
+  "primary": {
+    "replica_minus_closed_list": {
+      "slot_f1_exact_f1": {
+        "delta_pp": 9.777142857142856,
+        "equal_stratum_delta_pp": 9.492088544171878,
+        "equal_stratum_left_percent": 13.497411572592732,
+        "equal_stratum_right_percent": 22.989500116764606,
+        "n": 500,
+        "natural_left_percent": 14.494761904761905,
+        "natural_right_percent": 24.27190476190476,
+        "scenario_ci90_pp": [
+          7.783666666666667,
+          11.853523809523807
+        ],
+        "speaker_ci90_pp": [
+          7.7443445925007754,
+          12.04088190415575
+        ]
+      },
+      "slu_f1_f1": {
+        "delta_pp": 10.610267306358795,
+        "equal_stratum_delta_pp": 10.220608450023557,
+        "equal_stratum_left_percent": 19.924025441201184,
+        "equal_stratum_right_percent": 30.144633891224746,
+        "n": 500,
+        "natural_left_percent": 21.04598570547503,
+        "natural_right_percent": 31.656253011833822,
+        "scenario_ci90_pp": [
+          8.500930694175496,
+          12.741318151093717
+        ],
+        "speaker_ci90_pp": [
+          8.47550163156596,
+          12.987164874005805
+        ]
+      }
+    },
+    "replica_minus_kc_s1a": {
+      "slot_f1_exact_f1": {
+        "delta_pp": 9.68666666666667,
+        "equal_stratum_delta_pp": 9.407337261503928,
+        "equal_stratum_left_percent": 13.582162855260682,
+        "equal_stratum_right_percent": 22.989500116764606,
+        "n": 500,
+        "natural_left_percent": 14.585238095238093,
+        "natural_right_percent": 24.27190476190476,
+        "scenario_ci90_pp": [
+          7.659999999999998,
+          11.78
+        ],
+        "speaker_ci90_pp": [
+          7.66253236103474,
+          11.977966221169567
+        ]
+      },
+      "slu_f1_f1": {
+        "delta_pp": 10.673930715869522,
+        "equal_stratum_delta_pp": 10.264394086439035,
+        "equal_stratum_left_percent": 19.88023980478571,
+        "equal_stratum_right_percent": 30.144633891224746,
+        "n": 500,
+        "natural_left_percent": 20.982322295964302,
+        "natural_right_percent": 31.656253011833822,
+        "scenario_ci90_pp": [
+          8.59801351520962,
+          12.791051286873733
+        ],
+        "speaker_ci90_pp": [
+          8.578095877327078,
+          13.047624605065566
+        ]
+      }
+    },
+    "replica_minus_kc_s1b": {
+      "slot_f1_exact_f1": {
+        "delta_pp": -0.3295238095238101,
+        "equal_stratum_delta_pp": -0.9251042167708837,
+        "equal_stratum_left_percent": 23.91460433353549,
+        "equal_stratum_right_percent": 22.989500116764606,
+        "n": 500,
+        "natural_left_percent": 24.60142857142857,
+        "natural_right_percent": 24.27190476190476,
+        "scenario_ci90_pp": [
+          -1.3866666666666667,
+          0.7266666666666667
+        ],
+        "speaker_ci90_pp": [
+          -1.481914668287256,
+          0.768492003382182
+        ]
+      },
+      "slu_f1_f1": {
+        "delta_pp": -0.235986824893486,
+        "equal_stratum_delta_pp": -0.8509905724687064,
+        "equal_stratum_left_percent": 30.995624463693446,
+        "equal_stratum_right_percent": 30.144633891224746,
+        "n": 500,
+        "natural_left_percent": 31.89223983672731,
+        "natural_right_percent": 31.656253011833822,
+        "scenario_ci90_pp": [
+          -1.4162132006426986,
+          0.9253189910155143
+        ],
+        "speaker_ci90_pp": [
+          -1.4100277362584954,
+          0.9679576427768861
+        ]
+      }
+    }
+  },
+  "schema": "saea-kc-s1b-same-profile-replica-verdict-v1",
+  "scope": "Historically exposed NEW500 component evidence, original64 ceiling. Different-geometry and independent-roster inherited replication requirements remain open. This is not an equivalence or full-system claim.",
+  "source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1/paired-contrasts.json",
+    "sha256": "bdb5afb04202711f8d3ed828e5904c7838f764f1af9d9b1c8c1e9e6f2ee2e242"
+  },
+  "verdict": "REPEATED_ENTITY_IMPROVEMENT_SAME_PROFILE"
+}
