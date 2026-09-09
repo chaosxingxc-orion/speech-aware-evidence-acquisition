@@ -307,6 +307,56 @@ SEALED_PROFILES: dict[str, dict[str, object]] = {
             "negation_critical_high_insertions": 56,
         },
     },
+    # The KC-E1f REPLICATE (docs/checks/.../2026-09-08-e21-kc-e1f-replication-v1/
+    # flight/): the same 44-call roster and the same 1,593 windows flown a SECOND
+    # time under a configuration proved identical by hash before the first contact
+    # -- config `05777ca3...`, protocol `43b60556...`, split `fcc1b0bc...d69e`, and
+    # a prompt-token total of 3,550,695 equal to the first pass's to the digit. It
+    # therefore carries the same delivery shape: `reproduction.repair_loop` splices
+    # substitutions over the sealed comparator's own pass-1 text and records the
+    # result as `obs_delivered_text`. Three of its 1,593 windows saturated the
+    # 1,024-token pass-2 cap -- as the first pass's three did, though on different
+    # calls (`4359732`, `4364366`, `4384198`) -- and none cost a span: a saturated
+    # pass-2 decode arrives empty, is refused as `empty_response` and delivers pass
+    # 1. Quoted from that cell's own committed `flight/flight-receipt.json`.
+    "SAEA-E21-KC-E1F-REPAIR-44-REPLICATE-V1": {
+        "attempt_id": "attempt-20260908T232501Z-36792e",
+        "sealed": {
+            "corpus_wer_percent": 8.153,
+            "substitutions": 12927,
+            "deletions": 5700,
+            "insertions": 10705,
+            "reference_words": 359765,
+            "windows": 1593,
+            "calls": 44,
+            "entity_wer_percent": {
+                "PERSON": 18.85,
+                "ORG": 16.20,
+                "GPE": 17.96,
+                "LOC": 2.68,
+                "PRODUCT": 19.23,
+                "EVENT": 2.43,
+                "NORP": 9.75,
+                "FAC": 18.85,
+            },
+            "entity_reference_words": {
+                "PERSON": 2917,
+                "ORG": 4363,
+                "GPE": 1537,
+                "LOC": 485,
+                "PRODUCT": 390,
+                "EVENT": 494,
+                "NORP": 236,
+                "FAC": 122,
+            },
+            "non_entity_wer_percent": 4.729,
+            "unlabelled_reference_words": 1479,
+            "numeric_expected": 9734,
+            "numeric_matched": 8829,
+            "negation_critical_high_reference_words": 100,
+            "negation_critical_high_insertions": 56,
+        },
+    },
 }
 
 #: The eight ConEC-published classes come first because ConEC Table 2 publishes

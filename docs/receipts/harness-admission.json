@@ -59,9 +59,30 @@
         "any other carrier: SLURP and Audio2Tool have no measured null and none of these margins travels to them"
       ],
       "provisional": {
-        "reason": "this is a RE-DECISION of already-sealed bytes under a new rule, not a second sample; a re-decision replicates nothing by itself",
-        "requirement": "before any candidate freeze, any citation of this effect as an admitted effect, or any promotion of this module into the default plan: a second independent pass of the KC-E1f arm on the same 44-call roster and the same 1,593 windows, re-read against the null's measured intervals, whose PERSON effect is again disjoint from [-0.24338, +0.25680]",
-        "state": "UNMET"
+        "state": "UNMET",
+        "requirement": "COMPOSE AND FLY THE SWITCH FORM THIS TABLE RECORDS. The 'switch' block below already says the sealed arms did NOT fly through judges.<phase>.judges = ['e21-substitution-alignment-flag-v1'] -- they flew the obs-repair-loop policy with the response post-processor -- and no committed config fragment arms that judge. Entering a default plan therefore means arming, on a carrier's default path, a form of this module that has never been flown once. Before that: a config fragment that arms the key, and a cell that flies it and shows it delivers what the sealed form delivered",
+        "reason": "the module is ADMITTED and its replication obligation is MET (see 'replication' above); what still bars it from a default plan is the gap between the form its EVIDENCE was produced in and the form this table now records it under",
+        "supersedes": {
+          "requirement": "before any candidate freeze, any citation of this effect as an admitted effect, or any promotion of this module into the default plan: a second independent pass of the KC-E1f arm on the same 44-call roster and the same 1,593 windows, re-read against the null's measured intervals, whose PERSON effect is again disjoint from [-0.24338, +0.25680]",
+          "state": "MET",
+          "discharged_by": "SAEA-E21-KC-E1F-REPAIR-44-REPLICATE-V1, 2026-09-08",
+          "note": "the candidate-freeze and citation halves of that requirement are DISCHARGED: the effect may now be cited as replicated. Only the default-plan half is still blocked, and by the different reason stated above, not by a missing replication"
+        }
+      },
+      "replication": {
+        "state": "MET",
+        "requirement": "the obligation section 3 of the v2 re-decision fixed before that verdict was known: a second independent pass of the KC-E1f arm on the same 44-call roster and the same 1,593 fixed 90-second windows, under the same configuration, re-read against the null's measured intervals, whose PERSON effect is again disjoint from [-0.24338, +0.25680]",
+        "arm": {
+          "run_id": "SAEA-E21-KC-E1F-REPAIR-44-REPLICATE-V1",
+          "attempt_id": "attempt-20260908T232501Z-36792e"
+        },
+        "identical_configuration": "proved by hash BEFORE the first contact and again in the sealed manifest: composed config hash 05777ca3a3abdc75cd105021fe2104a639440d0ffd4ca2654ad18e50123b3e5f, protocol hash 43b60556bd739192869ac1666612e027c6c1214de242e26ddf5cb0f00f6bd630 and split identity fcc1b0bc...d69e are the first pass's own, obs_prefetch_depth is unset on both, and prompt_tokens_total is 3,550,695 on both -- equal to the digit over 1,593 windows, so only the completions moved",
+        "primary": "PERSON entity WER reduction, call-clustered CI90, 44 call clusters, 1,593 paired 90-second windows: +3.634 [+2.590, +4.690] against the sealed comparator and +3.737 [+2.686, +4.773] against the token-matched twin; both disjoint from the carrier's own PERSON null interval [-0.24338, +0.25680], 10.36 null half-widths at the lower bound of the comparator leg, which clears the band's upper edge by 2.33 points. The first pass measured +3.737 [+2.653, +4.855] on the same contrast and this read reproduces that interval field for field from the v2 decision's own anchored rows before deciding anything",
+        "guards": "corpus WER UB -0.03090 <= +0.05793; numeric-value accuracy (call-pooled) LB -0.07745 >= -0.15651; over-generation UB +0.00328 <= +0.02218; delivery integrity 0 violations on 1,593 windows; the semantic high-impact guard stays advisory and moved EXACTLY zero on this pass (100 HIGH reference words and 56 HIGH insertions, the comparator's own figures). Every gating guard passes under both weightings",
+        "replication_contrast": "first pass versus replicate, signed replicate minus first pass, every metric against this carrier's own null band: INSIDE the band on six of the seven metrics that have one (PERSON +0.103 [-0.331, +0.560], corpus -0.001, ORG -0.298, non-entity +0.001, numeric -0.041, insertions/ref word +0.001). ORG and numeric both EXCLUDE ZERO between two identical passes and both sit inside the band, which is what the band is for. The seventh, the semantic high-impact rate, falls just below its band on a one-word movement -- and that metric's own null EXCLUDES ZERO, so v2 section 2.3 had already ruled it unanswerable on this carrier at any margin. It gates nothing",
+        "verdict_note": "docs/readiness/2026-09-08-e21-kc-e1f-replication-v1-verdict.md",
+        "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-replication-v1/",
+        "date": "2026-09-08"
       },
       "row": "SAEA-E21-KC-E1F-VERDICT-V2",
       "status": "ADMITTED",

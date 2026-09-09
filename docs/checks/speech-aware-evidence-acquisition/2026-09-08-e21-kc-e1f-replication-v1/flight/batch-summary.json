@@ -1,0 +1,30 @@
+{
+  "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+  "effective_max_workers": 1,
+  "elapsed_seconds": 1518.2169158630004,
+  "failed": 0,
+  "job_count": 1,
+  "jobs": [
+    {
+      "elapsed_seconds": 1518.0479057890007,
+      "error": null,
+      "index": 0,
+      "job_id": "e21-kc-e1f-repair-44-replicate-v1",
+      "ledger_cells": null,
+      "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-KC-E1F-REPAIR-44-REPLICATE-V1/attempt-20260908T232501Z-36792e/SAEA-E21-KC-E1F-REPAIR-44-REPLICATE-V1.run-manifest.json",
+      "operation": "score",
+      "result_file": "e21-kc-e1f-repair-44-replicate-v1.score.json",
+      "result_sha256": "23d1355d6c463ae49079c9a59e4202e2a344924b5e3473c03371bbb90a4aed5c",
+      "returncode": 0,
+      "status": "succeeded",
+      "stderr_log": "e21-kc-e1f-repair-44-replicate-v1.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_log": null
+    }
+  ],
+  "operation": "score",
+  "parallelism_boundary": "one-complete-verified-manifest-per-process",
+  "requested_max_workers": 1,
+  "schema": "saea-parallel-score-batch-v1",
+  "succeeded": 1
+}
