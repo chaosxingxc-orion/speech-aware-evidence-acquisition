@@ -35,6 +35,7 @@ class GuardedTokenizer:
             ("GET", "/props"),
             ("POST", "/apply-template"),
             ("POST", "/tokenize"),
+            ("POST", "/v1/chat/completions/input_tokens"),
         }:
             raise PreparationError("fit client refuses a non-tokenizer route")
         if self.counts.total() >= self.contact_cap:
@@ -87,7 +88,12 @@ def boundary_identity(payloads: Sequence[Mapping[str, object]]) -> str:
                 k: v for k, v in row["decoding_params"].items() if k != "id_slot"
             }
         normalized.append(row)
-    return digest(sorted(normalized, key=lambda p: str(p.get("sample_id"))))
+    return digest(
+        sorted(
+            normalized,
+            key=lambda p: (str(p.get("sample_id")), str(p.get("media_relpath"))),
+        )
+    )
 
 
 def fit_requests(
@@ -101,6 +107,8 @@ def fit_requests(
     slot_tokens: int,
     fit_multiple: float = 1.0,
     special_tokens: int = 2,
+    request_key: Callable[[Mapping[str, object]], str] | None = None,
+    request_measure: Callable | None = None,
 ) -> dict[str, object]:
     """Fit every actual body; retain only hashes, counts, and sample identities.
 
@@ -108,7 +116,7 @@ def fit_requests(
     speech-count resolver supports both feature packets and already measured
     raw-speech repair windows; it must never substitute duration estimates.
     """
-    ids = [p.get("sample_id") for p in payloads]
+    ids = [request_key(p) if request_key else p.get("sample_id") for p in payloads]
     if (
         not ids
         or len(set(ids)) != len(ids)
@@ -119,16 +127,28 @@ def fit_requests(
     rows = []
     for payload in payloads:
         body = transport.render_request(canonical_bytes(payload))
-        row = measure_request(
-            client,
-            body,
-            media_marker=media_marker,
-            speech_tokens=speech_counts(payload),
-            slot_tokens=slot_tokens,
-            fit_multiple=fit_multiple,
-            special_tokens=special_tokens,
-        )
-        rows.append({"sample_id": payload["sample_id"], **row})
+        if request_measure is None:
+            row = measure_request(
+                client,
+                body,
+                media_marker=media_marker,
+                speech_tokens=speech_counts(payload),
+                slot_tokens=slot_tokens,
+                fit_multiple=fit_multiple,
+                special_tokens=special_tokens,
+            )
+        else:
+            row = request_measure(
+                client,
+                body,
+                slot_tokens=slot_tokens,
+                fit_multiple=fit_multiple,
+                special_tokens=special_tokens,
+            )
+        row = {"sample_id": payload["sample_id"], **row}
+        if request_key is not None:
+            row["request_key"] = request_key(payload)
+        rows.append(row)
     worst = min(rows, key=lambda row: row["margin_tokens"])
     return {
         "sample_count": len(rows),
@@ -150,24 +170,48 @@ def fit_phase_runtime(
     client_factory=None,
     transport_factory=None,
     speech_counter=None,
+    window_batch=None,
 ) -> dict[str, object]:
-    """Attach to the root session and prepare one single-phase full-roster fit.
+    """Attach to the root session and fit a full phase or actual window batch.
 
     A cold fit requires the normal execution-plan/exposure gate plus the root
     capability. A warm fit verifies the immutable inputs without any endpoint.
     An interrupted cold fit leaves a durable contact journal and cannot restart
-    under the same artifact path.
+    under the same artifact path. Independent raw-speech window batches use
+    the server multimodal input-count route, with no estimated-token fallback.
     """
     import os
 
     from .driver.speech_native import _LoopbackPromptAuditClient
     from .base import TRANSPORTS
-    from .preparation import prepare_artifact
+    from .preparation import prepare_artifact, measure_multimodal_request
     from .session.worker import attach_worker_session
 
     context = runtime.preparation_context()
-    payloads = runtime.materialize_phase_requests()
+    payloads = (
+        runtime.materialize_phase_requests()
+        if window_batch is None
+        else window_batch.payloads
+    )
     inputs = runtime.request_fit_inputs(payloads)
+    if window_batch is not None:
+        from ..reproduction import obs_loop, repair_loop
+        from . import preparation_windows
+        import hashlib
+
+        inputs = {
+            **inputs,
+            "window_sources": list(window_batch.source_bindings),
+            "window_measurement": "resident-multimodal-input-tokens",
+            "window_implementation": {
+                module.__name__: hashlib.sha256(
+                    Path(module.__file__).read_bytes()
+                ).hexdigest()
+                for module in (obs_loop, repair_loop, preparation_windows)
+            },
+        }
+        if {p["sample_id"] for p in payloads} != set(context["sample_ids"]):
+            raise PreparationError("window fit does not cover the runtime call roster")
     path = Path(path)
 
     def produce():
@@ -261,13 +305,25 @@ def fit_phase_runtime(
 
             result = fit_requests(
                 payloads,
-                expected_sample_ids=context["sample_ids"],
+                expected_sample_ids=(
+                    context["sample_ids"]
+                    if window_batch is None
+                    else window_batch.request_keys
+                ),
                 transport=transport,
                 client=client,
                 speech_counts=counts,
                 media_marker=marker,
                 slot_tokens=int(context["geometry"]["slot_tokens"]),
-                fit_multiple=float(values.get("prompt_fit_multiple", 1.0)),
+                fit_multiple=float(
+                    values.get(
+                        "prompt_fit_multiple", 1.0 if window_batch is None else 2.0
+                    )
+                ),
+                request_key=None if window_batch is None else window_batch.request_key,
+                request_measure=None
+                if window_batch is None
+                else measure_multimodal_request,
             )
             return {
                 **result,

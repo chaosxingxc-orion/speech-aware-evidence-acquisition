@@ -300,3 +300,89 @@ def test_interrupted_encoder_is_never_automatically_repeated(tmp_path):
             producer=lambda: pytest.fail("encoder repeated"),
             contact_class="encoder",
         )
+
+
+def test_multimodal_count_measures_actual_body_and_keeps_margin_separate():
+    from speech_aware_evidence_acquisition.core.preparation import (
+        measure_multimodal_request,
+    )
+
+    calls = []
+
+    class Client:
+        def request_json(self, method, path, payload):
+            calls.append((method, path, payload))
+            return {"input_tokens": 17}
+
+    body = {
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "input_audio",
+                        "input_audio": {"data": "actual bytes", "format": "wav"},
+                    }
+                ],
+            }
+        ],
+        "max_tokens": 3,
+    }
+    result = measure_multimodal_request(Client(), body, slot_tokens=43, fit_multiple=2)
+    assert calls == [("POST", "/v1/chat/completions/input_tokens", body)]
+    assert result["measured_prompt_tokens"] == 17
+    assert result["required_tokens"] == 22
+    assert result["margin_tokens"] == -1
+    assert not result["fits"]
+
+
+@pytest.mark.parametrize(
+    "response", [None, {}, {"input_tokens": True}, {"input_tokens": -1}]
+)
+def test_multimodal_count_has_no_estimate_fallback(response):
+    from speech_aware_evidence_acquisition.core.preparation import (
+        measure_multimodal_request,
+    )
+
+    class Client:
+        def request_json(self, *args):
+            return response
+
+    with pytest.raises(PreparationError, match="multimodal"):
+        measure_multimodal_request(
+            Client(), {"messages": [], "max_tokens": 3}, slot_tokens=99
+        )
+
+
+def test_operational_campaign_readiness_is_not_a_circular_input():
+    first = {
+        "k": 5,
+        "cells": [
+            {
+                "cell_id": "a",
+                "baseline_fragment": "model-input",
+                "readiness": {"status": "held", "requirements": []},
+            }
+        ],
+    }
+    second = {
+        "k": 5,
+        "cells": [
+            {
+                "cell_id": "a",
+                "baseline_fragment": "model-input",
+                "readiness": {
+                    "status": "ready",
+                    "requirements": [{"path": "this-fit.json", "sha256": "a" * 64}],
+                },
+            }
+        ],
+    }
+
+    def identity(config):
+        return artifact_inputs(config=config, split_identity_hash="a" * 64, sources={})
+
+    assert identity(first) == identity(second)
+    assert first["cells"][0]["readiness"]["status"] == "held"
+    second["cells"][0]["baseline_fragment"] = "changed-model-input"
+    assert identity(first) != identity(second)

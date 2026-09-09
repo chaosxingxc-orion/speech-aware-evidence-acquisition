@@ -1457,6 +1457,162 @@ def build_run_dispatcher(values: Mapping[str, object]) -> "ObsDispatcher | None"
     return ObsDispatcher(resolve_dispatch_width(values))
 
 
+def materialize_fixed_windows(cfg, registry, data_root, sample, rate, pcm,
+                              duration, parent_sha256):
+    """Cut and register the exact independent windows used by live dispatch."""
+    # The unit plan, resolved ONCE per sample before the first cut (OBS-E1
+    # obs seam, preregistration section 8.3). ``None`` is the historical
+    # fixed-window cutter, byte for byte.
+    plan_units = (
+        None
+        if cfg.unit_plan is None
+        else cfg.unit_plan.units_for(sample.sample_id, duration)
+    )
+
+    windows: list[tuple[int, SliceRecord, bool, float, str | None, PlannedUnit | None]] = []
+    slice_records: list[SliceRecord] = []
+    cursor = 0.0
+    iteration = 0
+    while True:
+        # Under a plan the PLAN's length is the loop bound, not the clock.
+        # OBS-E1b made that distinction load-bearing: a context-bearing
+        # unit's cut runs PAST its turn, so the cursor can reach the call's
+        # end while units remain, and a clock condition would silently drop
+        # the last one. For a v1/v2 plan the two conditions coincide (the
+        # cut IS the turn and the turns tile), so this is byte-identical
+        # for every plan written before v3 and for the clock cutter, whose
+        # branch below still advances and stops on the cursor.
+        if plan_units is not None:
+            if iteration >= len(plan_units):
+                break
+        elif cursor >= duration - _EPSILON_SECONDS:
+            break
+        unit = None
+        if plan_units is not None:
+            unit = plan_units[iteration]
+            # OBS-E1b: the cut is the unit's DELIVERED span, which on a
+            # v1/v2 plan IS its turn (PlannedUnit.cut_*_seconds) -- so this
+            # line is byte-identical for every plan written before v3.
+            start_frame = int(round(unit.cut_start_seconds * rate))
+            end_frame = min(int(round(unit.cut_end_seconds * rate)), len(pcm))
+        else:
+            start_frame = int(round(cursor * rate))
+            end_frame = min(int(round((cursor + cfg.buffer_seconds) * rate)), len(pcm))
+        if end_frame <= start_frame:
+            break
+        slice_samples = pcm[start_frame:end_frame]
+        slice_seconds = (end_frame - start_frame) / rate
+        is_final = (
+            iteration == len(plan_units) - 1
+            if plan_units is not None
+            else end_frame >= len(pcm)
+        )
+        raw_bytes, transforms, pre_sha256 = encode_slice(
+            slice_samples,
+            rate,
+            preprocess=cfg.preprocess,
+            rms_target_dbfs=cfg.rms_target_dbfs,
+            tail_silence_seconds=cfg.slice_tail_silence_seconds,
+        )
+        relpath = registry.slice_relpath(sample.sample_id, iteration)
+        slice_path = data_root / relpath
+        slice_path.parent.mkdir(parents=True, exist_ok=True)
+        slice_path.write_bytes(raw_bytes)
+        record = SliceRecord(
+            sample_id=sample.sample_id,
+            parent_media_relpath=sample.media_relpath,
+            parent_sha256=parent_sha256,
+            start_seconds=start_frame / rate,
+            end_seconds=end_frame / rate,
+            audio_seconds=slice_seconds,
+            sample_rate_hz=rate,
+            media_relpath=relpath,
+            sha256=hashlib.sha256(raw_bytes).hexdigest(),
+            bytes=len(raw_bytes),
+            iteration=iteration,
+            preprocess=transforms,
+            pre_sha256=pre_sha256,
+        )
+        registry.register(record)
+        slice_records.append(record)
+        windows.append((iteration, record, is_final, slice_seconds, pre_sha256, unit))
+        cursor = record.start_seconds + slice_seconds
+        iteration += 1
+
+    return windows, slice_records
+
+
+def window_request_factory(ctx, window, *, sample, rate, evidence,
+                           allow_empty_evidence=False, window_hook=None, slot=None):
+    """Return the live window's payload factory without contacting an adapter."""
+    from ..core.policies import build_arm_payload
+
+    win_iteration, record, _is_final, slice_seconds, _pre, _unit = window
+    slice_ref = SampleRef(
+        carrier_lock_key=sample.carrier_lock_key,
+        sample_id=sample.sample_id,
+        media_relpath=record.media_relpath,
+        audio_seconds=slice_seconds,
+        sample_rate_hz=rate,
+    )
+    base_request_id = f"{ctx.request_id_base}-i{win_iteration:04d}"
+    decoding_params = dict(ctx.decoding_params)
+    if slot is not None:
+        decoding_params["id_slot"] = slot
+
+    instruction = (
+        ctx.task_instruction
+        if window_hook is None
+        else window_hook.instruction(
+            iteration=win_iteration,
+            record=record,
+            default=ctx.task_instruction,
+        )
+    )
+
+    def _payload(
+        rid, _slice_ref=slice_ref, _params=decoding_params, _instruction=instruction
+    ):
+        return build_arm_payload(
+            ctx.arm,
+            _slice_ref,
+            rid,
+            _instruction,
+            _params,
+            evidence=evidence,
+            retrieval_query=ctx.retrieval_query,
+            # Every slice of this sample carries the SAME bank
+            # (ctx.exemplar_bank is resolved once per sample by
+            # core.driver.run_experiment, module docstring above).
+            exemplar_bank=ctx.exemplar_bank,
+            # obs-replay-loop's REPLAY-scoped arm (reproduction.
+            # replay_loop module docstring, 2026-08-13): PASS 1 --
+            # this slice-parallel pass, reused VERBATIM by
+            # ObsReplayLoopPolicy -- never has retrieved delta
+            # candidates of its own (RETRIEVE is a per-flagged-span
+            # REPLAY concept). But core.driver.run_experiment builds
+            # exactly ONE core.model.FrozenCoreAdapter per run, bound
+            # to ctx.arm's own D2-frozen field set for EVERY request
+            # that arm sends, PASS 1's own included -- so an arm
+            # that declares "delta_candidates" (e.g.
+            # "fixed-legal-context-replay") requires the key on
+            # every one of THIS pass's requests too, or the exact
+            # field-set match in build_arm_payload refuses a
+            # perfectly legal PASS 1 request as readily as it would
+            # refuse a smuggled field. An always-empty list satisfies
+            # that requirement without claiming any candidate this
+            # pass never retrieved; an arm that does NOT declare the
+            # field gets None (an omitted key, byte-identical to
+            # every arm registered before this one).
+            delta_candidates=(
+                [] if "delta_candidates" in ARM_VISIBLE_FIELDS[ctx.arm] else None
+            ),
+            allow_empty_evidence=allow_empty_evidence,
+        )
+
+    return base_request_id, _payload
+
+
 class ObsAgentLoopPolicy:
     """One whole-call sample -> N buffer-slice requests -> one stitched
     hypothesis (module docstring). Stateless; every run fact arrives through
@@ -1536,86 +1692,10 @@ class ObsAgentLoopPolicy:
 
         from concurrent.futures import ThreadPoolExecutor
 
-        from ..core.policies import build_arm_payload
 
-        # The unit plan, resolved ONCE per sample before the first cut (OBS-E1
-        # obs seam, preregistration section 8.3). ``None`` is the historical
-        # fixed-window cutter, byte for byte.
-        plan_units = (
-            None
-            if cfg.unit_plan is None
-            else cfg.unit_plan.units_for(sample.sample_id, duration)
-        )
-
-        windows: list[tuple[int, SliceRecord, bool, float, str | None, PlannedUnit | None]] = []
-        slice_records: list[SliceRecord] = []
-        cursor = 0.0
-        iteration = 0
-        while True:
-            # Under a plan the PLAN's length is the loop bound, not the clock.
-            # OBS-E1b made that distinction load-bearing: a context-bearing
-            # unit's cut runs PAST its turn, so the cursor can reach the call's
-            # end while units remain, and a clock condition would silently drop
-            # the last one. For a v1/v2 plan the two conditions coincide (the
-            # cut IS the turn and the turns tile), so this is byte-identical
-            # for every plan written before v3 and for the clock cutter, whose
-            # branch below still advances and stops on the cursor.
-            if plan_units is not None:
-                if iteration >= len(plan_units):
-                    break
-            elif cursor >= duration - _EPSILON_SECONDS:
-                break
-            unit = None
-            if plan_units is not None:
-                unit = plan_units[iteration]
-                # OBS-E1b: the cut is the unit's DELIVERED span, which on a
-                # v1/v2 plan IS its turn (PlannedUnit.cut_*_seconds) -- so this
-                # line is byte-identical for every plan written before v3.
-                start_frame = int(round(unit.cut_start_seconds * rate))
-                end_frame = min(int(round(unit.cut_end_seconds * rate)), len(pcm))
-            else:
-                start_frame = int(round(cursor * rate))
-                end_frame = min(int(round((cursor + cfg.buffer_seconds) * rate)), len(pcm))
-            if end_frame <= start_frame:
-                break
-            slice_samples = pcm[start_frame:end_frame]
-            slice_seconds = (end_frame - start_frame) / rate
-            is_final = (
-                iteration == len(plan_units) - 1
-                if plan_units is not None
-                else end_frame >= len(pcm)
-            )
-            raw_bytes, transforms, pre_sha256 = encode_slice(
-                slice_samples,
-                rate,
-                preprocess=cfg.preprocess,
-                rms_target_dbfs=cfg.rms_target_dbfs,
-                tail_silence_seconds=cfg.slice_tail_silence_seconds,
-            )
-            relpath = registry.slice_relpath(sample.sample_id, iteration)
-            slice_path = data_root / relpath
-            slice_path.parent.mkdir(parents=True, exist_ok=True)
-            slice_path.write_bytes(raw_bytes)
-            record = SliceRecord(
-                sample_id=sample.sample_id,
-                parent_media_relpath=sample.media_relpath,
-                parent_sha256=parent_sha256,
-                start_seconds=start_frame / rate,
-                end_seconds=end_frame / rate,
-                audio_seconds=slice_seconds,
-                sample_rate_hz=rate,
-                media_relpath=relpath,
-                sha256=hashlib.sha256(raw_bytes).hexdigest(),
-                bytes=len(raw_bytes),
-                iteration=iteration,
-                preprocess=transforms,
-                pre_sha256=pre_sha256,
-            )
-            registry.register(record)
-            slice_records.append(record)
-            windows.append((iteration, record, is_final, slice_seconds, pre_sha256, unit))
-            cursor = record.start_seconds + slice_seconds
-            iteration += 1
+        windows, slice_records = materialize_fixed_windows(
+            cfg, registry, data_root, sample, rate, pcm, duration, parent_sha256)
+        iteration = len(windows)
 
         # Slot-affinity sentinel resolution for the PLAIN parallel path
         # (2026-08-12, caught fail-closed by the adapter on first launch):
@@ -1630,68 +1710,11 @@ class ObsAgentLoopPolicy:
         free_slots = list(range(cfg.batch_slices))
 
         def _send(window, slot):
-            win_iteration, record, _is_final, slice_seconds, _pre, _unit = window
-            slice_ref = SampleRef(
-                carrier_lock_key=sample.carrier_lock_key,
-                sample_id=sample.sample_id,
-                media_relpath=record.media_relpath,
-                audio_seconds=slice_seconds,
-                sample_rate_hz=rate,
+            base_request_id, _payload = window_request_factory(
+                ctx, window, sample=sample, rate=rate, evidence=evidence,
+                allow_empty_evidence=allow_empty_evidence,
+                window_hook=window_hook, slot=slot,
             )
-            base_request_id = f"{ctx.request_id_base}-i{win_iteration:04d}"
-            decoding_params = dict(ctx.decoding_params)
-            if slot is not None:
-                decoding_params["id_slot"] = slot
-
-            instruction = (
-                ctx.task_instruction
-                if window_hook is None
-                else window_hook.instruction(
-                    iteration=win_iteration,
-                    record=record,
-                    default=ctx.task_instruction,
-                )
-            )
-
-            def _payload(
-                rid, _slice_ref=slice_ref, _params=decoding_params, _instruction=instruction
-            ):
-                return build_arm_payload(
-                    ctx.arm,
-                    _slice_ref,
-                    rid,
-                    _instruction,
-                    _params,
-                    evidence=evidence,
-                    retrieval_query=ctx.retrieval_query,
-                    # Every slice of this sample carries the SAME bank
-                    # (ctx.exemplar_bank is resolved once per sample by
-                    # core.driver.run_experiment, module docstring above).
-                    exemplar_bank=ctx.exemplar_bank,
-                    # obs-replay-loop's REPLAY-scoped arm (reproduction.
-                    # replay_loop module docstring, 2026-08-13): PASS 1 --
-                    # this slice-parallel pass, reused VERBATIM by
-                    # ObsReplayLoopPolicy -- never has retrieved delta
-                    # candidates of its own (RETRIEVE is a per-flagged-span
-                    # REPLAY concept). But core.driver.run_experiment builds
-                    # exactly ONE core.model.FrozenCoreAdapter per run, bound
-                    # to ctx.arm's own D2-frozen field set for EVERY request
-                    # that arm sends, PASS 1's own included -- so an arm
-                    # that declares "delta_candidates" (e.g.
-                    # "fixed-legal-context-replay") requires the key on
-                    # every one of THIS pass's requests too, or the exact
-                    # field-set match in build_arm_payload refuses a
-                    # perfectly legal PASS 1 request as readily as it would
-                    # refuse a smuggled field. An always-empty list satisfies
-                    # that requirement without claiming any candidate this
-                    # pass never retrieved; an arm that does NOT declare the
-                    # field gets None (an omitted key, byte-identical to
-                    # every arm registered before this one).
-                    delta_candidates=(
-                        [] if "delta_candidates" in ARM_VISIBLE_FIELDS[ctx.arm] else None
-                    ),
-                    allow_empty_evidence=allow_empty_evidence,
-                )
 
             return request_slice_with_retry(
                 ctx.adapter.request, _payload, base_request_id,
