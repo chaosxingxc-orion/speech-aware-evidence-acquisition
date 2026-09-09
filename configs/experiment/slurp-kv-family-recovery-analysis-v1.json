@@ -1,0 +1,223 @@
+{
+  "analysis": {
+    "additional_populations": {
+      "CARDS_ROTATING_NEW500": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KV-FAMILY-RECOVERY-READ-V1/cards-rotating-new500.json",
+        "sha256": "a244ec57c4bb62aefe13ff6a544b282873283e2b190393c4fabf3077dfd9b936"
+      },
+      "DESCRIPTIONS_ROTATING_NEW500": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KV-FAMILY-RECOVERY-READ-V1/descriptions-rotating-new500.json",
+        "sha256": "a822e0339a356bc767495104d8b4d245120bbd476aa52ee7547348f193ac427f"
+      }
+    },
+    "contrasts": [
+      {
+        "left": "kv0",
+        "name": "kv2_minus_kv0",
+        "populations": [
+          "NEW500",
+          "DEV1000",
+          "OLD500"
+        ],
+        "right": "kv2",
+        "scorers": [
+          "official",
+          "normalized"
+        ]
+      },
+      {
+        "left": "kv2t",
+        "name": "kv2_minus_kv2t",
+        "populations": [
+          "NEW500",
+          "DEV1000",
+          "OLD500",
+          "CARDS_ROTATING_NEW500"
+        ],
+        "right": "kv2",
+        "scorers": [
+          "official",
+          "normalized"
+        ]
+      },
+      {
+        "left": "kv0",
+        "name": "kv1_minus_kv0",
+        "populations": [
+          "NEW500",
+          "DEV1000",
+          "OLD500"
+        ],
+        "right": "kv1",
+        "scorers": [
+          "official",
+          "normalized"
+        ]
+      },
+      {
+        "left": "kv1t",
+        "name": "kv1_minus_kv1t",
+        "populations": [
+          "NEW500",
+          "DEV1000",
+          "OLD500",
+          "DESCRIPTIONS_ROTATING_NEW500"
+        ],
+        "right": "kv1",
+        "scorers": [
+          "official",
+          "normalized"
+        ]
+      },
+      {
+        "left": "kv0",
+        "name": "kv3_minus_kv0",
+        "populations": [
+          "NEW500",
+          "DEV1000",
+          "OLD500"
+        ],
+        "right": "kv3",
+        "scorers": [
+          "official",
+          "normalized"
+        ]
+      },
+      {
+        "left": "kv3t",
+        "name": "kv3_minus_kv3t",
+        "populations": [
+          "NEW500",
+          "DEV1000",
+          "OLD500"
+        ],
+        "right": "kv3",
+        "scorers": [
+          "official",
+          "normalized"
+        ]
+      }
+    ],
+    "full_roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "inputs": {
+      "kv0": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1.run-manifest.json",
+          "sha256": "ffd1d3ee543dc73a0802600a9812f8cfe888cdb4bd6456c0667b57d6229ed9c7"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/score-batch/attempt-20260909T062500Z-74bfac.score.json",
+          "sha256": "14b91511df514393412fae84f98c7e72e5576fd33b13753a5616b225949671ba"
+        },
+        "scorers": {
+          "normalized": "slurp-slu-f1-normalized-v1",
+          "official": "slurp-slu-official"
+        }
+      },
+      "kv1": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1/attempt-20260909T074825Z-0d2278/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1.run-manifest.json",
+          "sha256": "905bc56a617942fae4f1719fbbd95d653f57b8b5f542a4a3a1e2286e0577ac98"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1/attempt-20260909T074825Z-0d2278/score-batch/attempt-20260909T074825Z-0d2278.score.json",
+          "sha256": "d1f6d5837921b04c6ee82a024b354f0dc4a7ebe1d52b937639194bd8fc4fc0e3"
+        },
+        "scorers": {
+          "normalized": "slurp-slu-f1-normalized-v1",
+          "official": "slurp-slu-official"
+        }
+      },
+      "kv1t": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1/attempt-20260909T081235Z-583048/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1.run-manifest.json",
+          "sha256": "89c2c0d281e49741796b78a10feef29b58453530752270ec674d0f3733687e02"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1/attempt-20260909T081235Z-583048/score-batch/attempt-20260909T081235Z-583048.score.json",
+          "sha256": "747bcf373838865b210d6c1a9ede2fdac384e15d983ccd8f28efbc419ed5750e"
+        },
+        "scorers": {
+          "normalized": "slurp-slu-f1-normalized-v1",
+          "official": "slurp-slu-official"
+        }
+      },
+      "kv2": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-DEV1000-V1/attempt-20260909T064623Z-2a0ef7/SAEA-SLURP-KV2-CARDS-DEV1000-V1.run-manifest.json",
+          "sha256": "ab94ac4139b14348d899f86919cf6a8278f5f4d6e9b4e587ba239cff64095e24"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-DEV1000-V1/attempt-20260909T064623Z-2a0ef7/score-batch/attempt-20260909T064623Z-2a0ef7.score.json",
+          "sha256": "a44182438ea3d4dc3a9b9e1e64f5ad3444f9d9d3899dd3422eaabdee5423bda6"
+        },
+        "scorers": {
+          "normalized": "slurp-slu-f1-normalized-v1",
+          "official": "slurp-slu-official"
+        }
+      },
+      "kv2t": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1/attempt-20260909T071753Z-548ca4/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1.run-manifest.json",
+          "sha256": "cd374a9f4965ad9b08f7cd92c5def266366198db00f4b252b40c4a2cbc5955dc"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1/attempt-20260909T071753Z-548ca4/score-batch/attempt-20260909T071753Z-548ca4.score.json",
+          "sha256": "eef55ef812f885711eb1a474866fe36325d4e523fdd4e615bce969ff0c957207"
+        },
+        "scorers": {
+          "normalized": "slurp-slu-f1-normalized-v1",
+          "official": "slurp-slu-official"
+        }
+      },
+      "kv3": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1/attempt-20260909T083938Z-401fca/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1.run-manifest.json",
+          "sha256": "bd50da773c977d6f07a2ab1f2b12228517b005f45e622fd2d3a7d9591eb49e75"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1/attempt-20260909T083938Z-401fca/score-batch/attempt-20260909T083938Z-401fca.score.json",
+          "sha256": "8af9562a181a72c815ddfee92713be5a6f75d11bc106425503193894a31226e1"
+        },
+        "scorers": {
+          "normalized": "slurp-slu-f1-normalized-v1",
+          "official": "slurp-slu-official"
+        }
+      },
+      "kv3t": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1/attempt-20260909T090318Z-b9657d/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1.run-manifest.json",
+          "sha256": "1f2c2f41dd26dd539f885dc74950db15dc687a12b4fcd0568f0a0e486f3bd869"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1/attempt-20260909T090318Z-b9657d/score-batch/attempt-20260909T090318Z-b9657d.score.json",
+          "sha256": "5190b2f91dfb7658fb783177c1289f40323fa3d46e7b38205f852f577a030552"
+        },
+        "scorers": {
+          "normalized": "slurp-slu-f1-normalized-v1",
+          "official": "slurp-slu-official"
+        }
+      }
+    },
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+    },
+    "metrics": [
+      "slu_f1_f1"
+    ],
+    "n_replicates": 10000,
+    "roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    },
+    "seed": 20260903
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-SLURP-KV-FAMILY-RECOVERY-READ-V1",
+  "interpretation": "Historical successors ran before a recovered HARMFUL KV0 verdict. These contrasts are recovery analysis, not retrospective scientific admission.",
+  "preregistration": "docs/readiness/2026-09-09-stage2-continuation-recovery-read-v1.md"
+}
