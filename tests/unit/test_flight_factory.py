@@ -146,6 +146,10 @@ def test_runtime_geometry_and_registered_population_are_checked():
     }
     assert registered_population_ids(values, "d") == ("one", "two")
     assert configured_geometry(values, defaults=(8, 8192, 64))["slots"] == 2
+    values["request_decoding_overrides"] = {"max_tokens": 256}
+    geometry = configured_geometry(values, defaults=(8, 8192, 64))
+    assert geometry == {"slots": 2, "slot_tokens": 4096, "max_tokens": 256}
+    assert values["server_args"] == ["-np", "2", "-c", "8192"]
     values["populations"][0]["ids"] = ["one", "one"]
     with pytest.raises(RuntimeViewError, match="repeats"):
         registered_population_ids(values, "d")

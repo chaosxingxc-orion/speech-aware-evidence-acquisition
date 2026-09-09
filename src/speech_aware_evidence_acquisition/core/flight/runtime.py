@@ -72,6 +72,8 @@ from ..config import (
     compose,
     d1_media_supplement_relpath,
     d1_media_supplement_sha256,
+    effective_request_decoding_params,
+    effective_request_values,
     model_lock_key,
     model_materialization_root,
     protocol_hash as compute_protocol_hash,
@@ -1184,7 +1186,7 @@ class FlightRuntime:
         prompt_order = str(
             baseline_values.get("prompt_order") or "speech-query-prefix-v2"
         )
-        ceiling = int(self._adapter.serving_geometry()["max_tokens"])
+        ceiling = self._completion_token_ceiling()
         sample_ids = tuple(str(sample.sample_id) for sample in samples)
 
         # A sealed-manifest phase's predecessor is REAL and per-sample: load
@@ -1462,7 +1464,7 @@ class FlightRuntime:
         }
         bindings = self.speech_packet_bindings()
         prompt_order = str(values.get("prompt_order") or "speech-query-prefix-v2")
-        ceiling = int(self._adapter.serving_geometry()["max_tokens"])
+        ceiling = self._completion_token_ceiling()
         samples_by_id = {sample.sample_id: sample for sample in self._samples}
 
         verified: list[Mapping[str, object]] = []
@@ -1569,7 +1571,7 @@ class FlightRuntime:
             phase_names = program.phase_names()
             if self.uses_speech_feature_packets():
                 phase_payloads = self._phase_prompt_payloads(samples, program)
-        max_tokens = int(self._adapter.serving_geometry()["max_tokens"])
+        max_tokens = self._completion_token_ceiling()
         if self.shows_construction_targets():
             # The proposer arm sends no audio part at all, and its prompt is
             # NOT the adapter's instruction: it is the rendered proposer or
@@ -2051,7 +2053,13 @@ class FlightRuntime:
             if not isinstance(reuse, FlightRuntime):
                 raise FlightRuntimeError("serve(reuse=...) must be another FlightRuntime")
             reuse_geometry = dict(reuse.adapter.serving_geometry())
-            if reuse_geometry != geometry:
+            server_geometry = {
+                key: geometry[key] for key in ("slots", "slot_tokens")
+            }
+            reuse_server_geometry = {
+                key: reuse_geometry[key] for key in ("slots", "slot_tokens")
+            }
+            if reuse_server_geometry != server_geometry:
                 raise FlightServeGeometryMismatchError(
                     f"cannot reuse a server serving geometry {reuse_geometry} for a "
                     f"flight whose adapter declares geometry {geometry}"
@@ -2644,7 +2652,7 @@ class FlightRuntime:
         it dies at its first contact.
         """
 
-        value = self._composed.values.get("decoding_params")
+        value = effective_request_decoding_params(self._composed.values)
         if value is None:
             return None
         if not isinstance(value, Mapping):
@@ -2667,6 +2675,14 @@ class FlightRuntime:
         # integer, per request.
         self._max_tokens_rule(resolved)
         return resolved
+
+    def _completion_token_ceiling(self) -> int:
+        """Return the configured request cap used by preflight and fitting."""
+        decoding = self._decoding_params() or {}
+        maximum = decoding.get("max_tokens")
+        if isinstance(maximum, int) and not isinstance(maximum, bool) and maximum > 0:
+            return maximum
+        return int(self._adapter.serving_geometry()["max_tokens"])
 
     def _max_tokens_rule(
         self, decoding_params: Mapping[str, object] | None
@@ -3316,8 +3332,16 @@ class FlightRuntime:
         run_dir = self._run_dir()
         run_dir.mkdir(parents=True, exist_ok=True)
         obs_runner = self._obs_runner if self._obs_runner is not None else run_experiment
+        effective_values = effective_request_values(self._composed.values)
+        obs_composed = self._composed
+        if effective_values is not self._composed.values:
+            obs_composed = type(self._composed)(
+                values=effective_values,
+                config_hash=self._composed.config_hash,
+                fragments=self._composed.fragments,
+            )
         result = obs_runner(
-            self._composed,
+            obs_composed,
             plan,
             self._gate,
             self._lock,

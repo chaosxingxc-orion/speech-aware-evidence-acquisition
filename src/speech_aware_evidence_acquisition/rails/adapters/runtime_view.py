@@ -94,9 +94,11 @@ def load_runtime_view(
 
 def configured_geometry(values: Mapping[str, object], *, defaults: tuple[int, int, int]) -> dict:
     """Require the fragment's actual server geometry to match the adapter data."""
+    from ...core.config import effective_request_decoding_params
+
     slots = values.get("serving_slots", defaults[0])
     tokens = values.get("serving_slot_tokens", defaults[1])
-    decoding = values.get("decoding_params", {})
+    decoding = effective_request_decoding_params(values) or {}
     maximum = decoding.get("max_tokens", defaults[2])
     if isinstance(maximum, Mapping):
         maximum = defaults[2]
