@@ -7,3 +7,9 @@ The fit performs contact-free CPU request materialization first. Only after the 
 When the output artifact already exists, the coordinator uses the existing warm path in `fit_phase_runtime`: artifact inputs are verified without acquiring a lease, starting a service, starting a monitor, or making endpoint contacts. After a cold success, the coordinator releases the fit lease and keeps its started serving wrapper in the foreground until root uses the existing serving stop path. A cold fit failure prints a lifecycle event and leaves the lease metadata and any started wrapper for root reconciliation; it does not replay or kill them.
 
 Lifecycle events are fsynced to `$SPEECHRL_DATA_DIR/coordination/<session-id>.coordinate-fit.jsonl`; each event carries UTC and monotonic timestamps plus run, attempt, and session identity. The monitor process is recorded in a persistent ownership receipt and is reused only while its recorded PID is alive. Standard output receives only compact progress events and the final structured result; prompts, token payloads, and raw speech are never printed.
+
+Root acceptance: the combined coordinator/campaign/queue/preparation suite passes87 tests.
+The root tightened a false-positive monitor validation test: a valid command binding now
+precedes the invalid-PID cases, exposing and fixing acceptance of boolean, zero and negative
+PIDs. The coordinator-to-real-fitter test uses a real lease and immutable artifact writer,
+with only model endpoints and transport replaced by test doubles. No live contacts occurred.

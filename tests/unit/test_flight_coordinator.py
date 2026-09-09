@@ -1,5 +1,6 @@
 """Contact-free lifecycle tests for root-owned coordinate-fit."""
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -153,14 +154,17 @@ def test_reuse_rejects_monitor_receipt_bound_to_wrong_process(tmp_path):
         )
 
 
-@pytest.mark.parametrize("bad_fields", [{"schema": "wrong"}, {"pid": True}, {"pid": 0}])
+@pytest.mark.parametrize("bad_fields", [{"schema": "wrong"}, {"pid": True}, {"pid": 0}, {"pid": -1}])
 def test_reuse_rejects_invalid_monitor_owner_receipt(tmp_path, bad_fields):
     owner_receipt = tmp_path / "coordination/session.monitor-owner.json"
     owner_receipt.parent.mkdir()
     receipt = {
         "schema": "saea-coordinate-fit-monitor-owner-v1", "session_id": "session", "pid": 4242,
         "data_root": str(tmp_path), "host": "127.0.0.1", "port": 8080,
-        "command": [], "process_start_identity": {"cmdline": [], "starttime": "1"},
+        "command": [sys.executable, str(tmp_path / "scripts/serving_monitor.py"), "sample",
+                    "--session-id", "session", "--data-root", str(tmp_path),
+                    "--host", "127.0.0.1", "--port", "8080", "--interval", "10"],
+        "process_start_identity": {"cmdline": [], "starttime": "1"},
     }
     receipt.update(bad_fields)
     owner_receipt.write_text(json.dumps(receipt))

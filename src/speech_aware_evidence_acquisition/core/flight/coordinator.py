@@ -23,6 +23,8 @@ class CoordinatorError(RuntimeError):
 
 
 def _pid_alive(pid: int) -> bool:
+    if isinstance(pid, bool) or not isinstance(pid, int) or pid <= 0:
+        return False
     try:
         os.kill(pid, 0)
     except OSError:
@@ -228,6 +230,8 @@ def coordinate_fit(
                 or receipt.get("port") != port
                 or receipt.get("command") != expected_command
                 or not isinstance(pid, int)
+                or isinstance(pid, bool)
+                or pid <= 0
                 or not pid_alive(pid)
             ):
                 raise CoordinatorError("matching resident session monitor is not owned and healthy")
@@ -244,7 +248,7 @@ def coordinate_fit(
                 old_pid = old.get("pid") if isinstance(old, Mapping) else None
             except (OSError, UnicodeError, json.JSONDecodeError):
                 old_pid = None
-            if isinstance(old_pid, int) and pid_alive(old_pid):
+            if isinstance(old_pid, int) and not isinstance(old_pid, bool) and old_pid > 0 and pid_alive(old_pid):
                 raise CoordinatorError("live monitor ownership receipt blocks a second monitor")
             monitor_receipt.unlink(missing_ok=True)
         monitor_log = data_root / "serving" / f"{expected_session_id}.monitor.log"

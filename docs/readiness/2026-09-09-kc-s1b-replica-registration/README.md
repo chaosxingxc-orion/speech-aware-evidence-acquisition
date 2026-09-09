@@ -31,3 +31,11 @@ The experiment configuration prospectively fixes both strict per-sample entity F
 per-sample SLU-F1, their historical controls and paired estimators. Keep corpus micro SLU-F1
 separate. NEW500 is historically exposed. A same-profile repeat does not close the historical
 different-geometry rung-2 requirement.
+
+Use scripts/flights/run_campaign.py coordinate-fit with the registered fit cell, explicit
+repository/data/runtime/lock paths, owner Codex, expected session ID
+slurp-g1-np4-c65536-20260909-codex and contact cap3001. This root entry builds the full roster
+before starting the existing serving wrapper. It publishes the immutable fit artifact
+receipt and releases the fit lease while its wrapper remains foreground for later workers.
+Use the existing serving_session.sh stop command at a root-selected service boundary.
+Do not terminate the foreground coordinator merely because the fit receipt was published.
