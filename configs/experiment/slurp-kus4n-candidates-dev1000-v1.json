@@ -1,0 +1,33 @@
+{
+  "budget_basis": "1,000 registered contacts plus 8 canaries, ceiling 1,050; 2,884.7937 audio seconds in one pass, ceiling 3,000 -- KU-S4N sends NO exemplar audio, so its metered speech is the comparator's own; GPU hours planned about 0.11 at -np 8, ceiling 1.0; tool, embedding and paid-API contacts 0. The candidate bank and the candidate snapshot are built model-free before the flight under row SAEA-SLURP-MF-KU-S4-PREP-V1 and cost zero contacts. Plan cells are RUN-CUMULATIVE across every attempt of this run id and at most one recovery re-registration is permitted.",
+  "cells": [
+    {
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-direct-candidates-kus4n-v1",
+      "cell_id": "kus4n-candidates",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64"
+    }
+  ],
+  "comparator": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1, attempt attempt-20260905T060424Z-2c5596, sealed rows, scored through slurp-slu-official-projected-v2 at intent 73.10 / SLU-F1 35.80. Never a re-flight: greedy decoding is not bitwise reproducible across batch shapes on this runtime. The second comparator is the sealed KU-S4N-t twin, SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V1, which must fly before this cell is read.",
+  "date": "2026-09-09",
+  "decision": {
+    "paper_scale": false,
+    "test_tuning": false
+  },
+  "decision_rule": "ADMITTED iff, on the unexposed NEW500, the paired intent CI90 lower bound is above 0 against the SEALED comparator rows AND above 0 against the SEALED twin rows, AND the intent interval against the comparator is DISJOINT from the SLURP own-null replicate's own interval [-0.4049, +1.4341] (SAEA-SLURP-DEV1000-NULL-REPLICATE-V1) -- a lower bound above +1.4341, which needs about 2 pp of intent at this carrier's measured half-width of 0.9195. NULL if any interval includes 0. HARMFUL if an upper bound is below 0. Official SLU-F1 is reported beside intent and must be non-inferior at its own measured margin of 1.1804 (micro). The per-stratum table is reported without exception, and the core-pressure covariates -- per-row narrowing ratio, judge interceptions, prompt and completion tokens -- ride every read.",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1050,
+    "planned_speech_audio_seconds": 3000,
+    "split_role": "dev"
+  },
+  "experiment_id": "SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V1",
+  "fragment_kind": "saea-slurp-intent-stage-experiment-v1",
+  "population": "The whole frozen DEV-1000 runtime view, id for id, at split identity hash 8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84 -- the roster the sealed closed-list direct baseline, KC-S1a, KC-S1b, KU-S1c and the own-null replicate already flew. No new draw and no new exposure. The decision population is the unexposed NEW500; pooled 1,000 and the prior-exposed DEV-500 are reported beside it.",
+  "preregistration": "docs/readiness/2026-09-09-slurp-intent-ku-s4-family-v1-preregistration.md",
+  "preparation_row": "SAEA-SLURP-MF-KU-S4-PREP-V1, receipt docs/checks/speech-aware-evidence-acquisition/2026-09-09-slurp-kus4-prep/",
+  "purpose": "Cell KU-S4N of the SLURP intent family: NARROWING ONLY. The sealed closed-list comparator's contact with a gold-free k=8 intent candidate set supplied as traced typed content, and the deterministic legality judge attached as a record-only reviewer. It answers whether removing 90 percent of the label decision from the frozen core, using only the core's own sealed prediction and the row's own speech vector, raises intent accuracy at all -- before any exemplar is sent.",
+  "split_id": "DEV-1000"
+}

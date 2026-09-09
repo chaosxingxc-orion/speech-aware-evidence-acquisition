@@ -1,0 +1,483 @@
+{
+  "artifacts": {
+    "candidate_bank": {
+      "bytes": 288658,
+      "k": 8,
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/derived/slurp-kus4/candidate-bank-k8-v1.jsonl",
+      "relpath": "derived/slurp-kus4/candidate-bank-k8-v1.jsonl",
+      "rows": 1000,
+      "scenario_lead": 3,
+      "seed": 20260903,
+      "sha256": "a4458e77b648132d9d38c66d6b2ddf54fddf66924db6c6b780c59abf104c541f",
+      "written": true
+    },
+    "candidate_snapshot": {
+      "content_hash": "f179f5db51413fd3141f2d0b65fd49cea35f48b67429c838badf745dc3c779c5",
+      "facets": 60,
+      "file_sha256": "cc60ceb3d218f864f4ce52916e6b09fdca5ec4d9f422d65604d53bff7fc1d3a1",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/knowledge/slurp/saea-slurp-intent-candidates-v1/snapshot.json",
+      "relpath": "knowledge/slurp/saea-slurp-intent-candidates-v1/snapshot.json",
+      "source_sample_ids": 50628,
+      "source_split_identity_hash": "6a6677e97a64063b8672b2d175bd6378bcf9b644346fa2d249cc2d80343b252c",
+      "values": 60,
+      "written": true
+    }
+  },
+  "audio_samples_decoded": 0,
+  "boundary": "no devel sentence text is read; DEV gold labels enter only to REPORT whether a gold-free candidate set contains the gold; the held-out test split is never named, loaded, hashed or scored; audio container headers only, no sample decoded.",
+  "candidate_view": {
+    "block_template_example": {
+      "facet": "intent candidate key: alarm_set",
+      "value": "Candidate intent for the spoken command in this request: alarm_set (scenario \"alarm\", action \"set\")."
+    },
+    "block_volume": {
+      "abs_character_delta": {
+        "max": 86.0,
+        "mean": 19.17,
+        "median": 16.0,
+        "min": 0.0,
+        "p25": 8.0,
+        "p75": 26.0,
+        "p90": 40.0
+      },
+      "arm_characters": {
+        "max": 943.0,
+        "mean": 652.31,
+        "median": 715.0,
+        "min": 102.0,
+        "p25": 437.0,
+        "p75": 871.0,
+        "p90": 891.0
+      },
+      "arm_token_proxy": {
+        "max": 146.0,
+        "mean": 108.45,
+        "median": 110.0,
+        "min": 19.0,
+        "p25": 73.0,
+        "p75": 146.0,
+        "p90": 146.0
+      },
+      "note": "one fixed template per candidate; arm and twin differ only in WHICH sixty-way choice each row was given, so the volume delta is the difference between two label names. Owner ruling 2026-09-06: the twin is the lock and this volume is the reported covariate.",
+      "twin_characters": {
+        "max": 949.0,
+        "mean": 655.36,
+        "median": 701.0,
+        "min": 104.0,
+        "p25": 443.0,
+        "p75": 879.0,
+        "p90": 895.0
+      },
+      "twin_token_proxy": {
+        "max": 146.0,
+        "mean": 108.45,
+        "median": 110.0,
+        "min": 19.0,
+        "p25": 73.0,
+        "p75": 146.0,
+        "p90": 146.0
+      }
+    },
+    "candidate_set_sizes": {
+      "1": 12,
+      "2": 57,
+      "3": 103,
+      "4": 136,
+      "5": 110,
+      "6": 83,
+      "7": 82,
+      "8": 417
+    },
+    "comparator": {
+      "attempt_id": "attempt-20260905T060424Z-2c5596",
+      "errors": 269,
+      "intent_new500": 75.2,
+      "intent_old500": 71.0,
+      "intent_pooled_1000": 73.1,
+      "outputs": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.outputs.jsonl",
+      "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1"
+    },
+    "decision_removed_from_the_core_pct": 86.67,
+    "gold_in_candidate_set_pct": {
+      "all_rows": 95.8,
+      "error_rows": 86.62,
+      "error_rows_new500": 83.87,
+      "new500": 95.4
+    },
+    "gold_in_twin_set_pct": {
+      "all_rows": 0.6,
+      "error_rows": 1.86,
+      "new500": 0.6
+    },
+    "k": 8,
+    "narrowing_ratio_pct": 13.33,
+    "neighbour_depth": 50,
+    "neighbour_depth_sensitivity": {
+      "depth_100": {
+        "gold_in_set_all_rows_pct": 95.9,
+        "gold_in_set_error_rows_pct": 86.62,
+        "mean_candidates_per_row": 6.93,
+        "mean_narrowing_ratio_pct": 11.55,
+        "registered": false,
+        "rows_offered_the_full_k": 647
+      },
+      "depth_200": {
+        "gold_in_set_all_rows_pct": 95.9,
+        "gold_in_set_error_rows_pct": 86.62,
+        "mean_candidates_per_row": 7.76,
+        "mean_narrowing_ratio_pct": 12.94,
+        "registered": false,
+        "rows_offered_the_full_k": 872
+      },
+      "depth_400": {
+        "gold_in_set_all_rows_pct": 95.9,
+        "gold_in_set_error_rows_pct": 86.62,
+        "mean_candidates_per_row": 8.0,
+        "mean_narrowing_ratio_pct": 13.33,
+        "registered": false,
+        "rows_offered_the_full_k": 998
+      },
+      "depth_50": {
+        "gold_in_set_all_rows_pct": 95.8,
+        "gold_in_set_error_rows_pct": 86.62,
+        "mean_candidates_per_row": 5.94,
+        "mean_narrowing_ratio_pct": 9.89,
+        "registered": true,
+        "rows_offered_the_full_k": 417
+      }
+    },
+    "reachable_ceiling_intent": 96.4,
+    "realized_offer": {
+      "mean_candidates_per_row": 5.94,
+      "mean_narrowing_ratio_pct": 9.89,
+      "note": "k is a CAP, not a count. At the registered neighbour depth the rule runs out of DISTINCT neighbour intents before it fills eight slots on most rows, so the offer -- and therefore the narrowing ratio -- is per-row. The twin matches each row's own count by construction, so the FORM contrast is exact anyway; the per-row ratio is a covariate.",
+      "rows_offered_the_full_k": 417
+    },
+    "rows_whose_own_prediction_is_offered": 983,
+    "rows_whose_own_prediction_is_offered_pct": 98.3,
+    "scenario_lead": 3,
+    "scenario_lead_sizes": {
+      "0": 3,
+      "1": 123,
+      "2": 192,
+      "3": 682
+    }
+  },
+  "containment": {
+    "c1_control_turn_hits": 0,
+    "c1_examples": [],
+    "c2_examples": [],
+    "c2_system_message_hits": 0,
+    "c3_view_payload_inside_its_own_instruction_pct": 0.0,
+    "config_hash": "25aab7d7845b8e255453ab79e185690fa8d623217e690a825af6ec4ef083c640",
+    "control_turn_characters": 262,
+    "control_turn_sha256": "d02f194c3c8a8375a15c28f7ca874f30bd2ad34d60e8ff9cdbc654572ebf9d50",
+    "protected_payloads": 120,
+    "system_message_characters": 7583,
+    "system_message_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db"
+  },
+  "embedding_contacts": 0,
+  "exemplar_plan": {
+    "distinct_other_speaker_exemplar_recordings": 5082,
+    "distinct_same_speaker_exemplar_recordings": 2742,
+    "durations": {
+      "distinct_recordings_probed": 7489,
+      "ku_s4a_exemplar_audio_tokens_per_row": {
+        "max": 572.0,
+        "mean": 233.13,
+        "median": 234.0,
+        "min": 0.0,
+        "p25": 156.0,
+        "p75": 299.0,
+        "p90": 364.0
+      },
+      "ku_s4a_exemplar_seconds_one_pass": 15218.6077,
+      "ku_s4a_metered_speech_seconds": 18103.4014,
+      "ku_s4b_exemplar_audio_tokens_per_row": {
+        "max": 468.0,
+        "mean": 239.64,
+        "median": 247.0,
+        "min": 0.0,
+        "p25": 169.0,
+        "p75": 312.0,
+        "p90": 364.0
+      },
+      "ku_s4b_exemplar_seconds_one_pass": 15752.622,
+      "ku_s4b_metered_speech_seconds": 18637.4157,
+      "ku_s4c_metered_speech_seconds": 2884.7937,
+      "measured": true,
+      "note": "container headers only; no audio sample is decoded. The metered figures are one pass over the roster, which is what an attempt books.",
+      "query_seconds_one_pass": 2884.7937
+    },
+    "gold_slot_filled_rows": 902,
+    "ku_s4c_text_characters_per_row": {
+      "max": 393.0,
+      "mean": 174.19,
+      "median": 173.0,
+      "min": 0.0,
+      "p25": 117.0,
+      "p75": 227.0,
+      "p90": 270.0
+    },
+    "rows_fully_covered": 658,
+    "rows_fully_covered_new500": 341,
+    "rows_fully_covered_pct": 65.8,
+    "rows_with_no_exemplar_at_all": 3,
+    "selection_rules": {
+      "fallback": "an uncovered slot sends NO exemplar and is counted (owner Decision 10)",
+      "ku_s4a": "first TRAIN recording of (own speaker, candidate intent) by (utterance_id, sample_id)",
+      "ku_s4b": "random.Random(f'{seed}:{sample_id}:{intent}').choice over the same intent's OTHER-speaker recordings",
+      "ku_s4c": "the KU-S4a recordings' TRAIN gold sentence text, same slots, same utterances",
+      "seed": 20260903
+    },
+    "slots_filled_by_own_speaker": 5442,
+    "slots_filled_pct_macro": 92.14,
+    "slots_filled_pct_micro": 91.66,
+    "slots_filled_per_row": {
+      "max": 8.0,
+      "mean": 5.44,
+      "median": 6.0,
+      "min": 0.0,
+      "p25": 4.0,
+      "p75": 7.0,
+      "p90": 8.0
+    },
+    "slots_offered": 5937,
+    "uncovered_slots": 495,
+    "uncovered_slots_pct": 8.34
+  },
+  "gpu_hours": 0.0,
+  "identity_anchors": {
+    "comparator_intent_new500": 75.2,
+    "comparator_intent_old500": 71.0,
+    "comparator_intent_pooled_1000": 73.1,
+    "gold_in_candidate_set_all_rows_pct": 95.8,
+    "gold_in_candidate_set_error_rows_pct": 86.62,
+    "legality_judge_rows_flagged": 42.0,
+    "rows_fully_covered_by_own_speaker": 658.0,
+    "rows_fully_covered_by_own_speaker_new500": 341.0,
+    "same_speaker_slot_coverage_macro_pct": 92.14
+  },
+  "legality_judge": {
+    "flagged_rows_correct_after_projection": 17,
+    "flagged_rows_still_wrong_after_projection": 25,
+    "flags_by_code": {
+      "illegal_action_for_scenario": 18,
+      "illegal_scenario": 21,
+      "unparsed_response": 3
+    },
+    "judge_id": "slurp-legal-label-flag-v1",
+    "on_flag": "record",
+    "precision_note": "a flag is raised on the UNPROJECTED response; the paper-facing scorer then projects. The rows that stay wrong after projection are the ones a revise would be spent on. The judge can never cost a right answer: no DEV-1000 gold intent lies outside the 60 TRAIN pairs (MF-8 section 2.5).",
+    "role": "core-pressure covariate only. on_flag='record' changes not one byte of what the flight sends (rails.phase_review module docstring), so the number above is what the flight will record, computed model-free instead of assumed.",
+    "rows_flagged": 42,
+    "rows_flagged_pct": 4.2,
+    "rows_reviewed": 1000
+  },
+  "lock_path": "/mnt/d/chao_workspace/docs/datasets.lock.json",
+  "model_contacts": 0,
+  "packet_precondition": {
+    "feature_root": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+    "feature_root_present": true,
+    "ku_s4a_same_speaker": {
+      "already_promoted": 162,
+      "already_promoted_pct": 5.91,
+      "recordings": 2742,
+      "to_promote": 2580
+    },
+    "ku_s4b_other_speaker": {
+      "already_promoted": 291,
+      "already_promoted_pct": 5.73,
+      "recordings": 5082,
+      "to_promote": 4791
+    },
+    "promoted_packets_total": 3673,
+    "promoted_train_packets": 2673,
+    "promotion_cost": {
+      "audio_seconds_to_encode": 30971.23,
+      "frozen_core_contacts": 0,
+      "note": "an upper bound: the seconds figure counts one pass over the plan's recordings, and a recording that serves several rows is encoded once. The GPU cost of the encode belongs to the packet-build receipt, which this pass does not pin.",
+      "recordings_to_promote": 7371
+    },
+    "promotion_receipts": [
+      {
+        "count": 100,
+        "receipt": "DEV-100-promotion.json",
+        "splits": {
+          "devel": 100
+        }
+      },
+      {
+        "count": 1000,
+        "receipt": "DEV-1000-promotion.json",
+        "splits": {
+          "devel": 1000
+        }
+      },
+      {
+        "count": 500,
+        "receipt": "DEV-500-promotion.json",
+        "splits": {
+          "devel": 500
+        }
+      },
+      {
+        "count": 108,
+        "receipt": "EFFECT-C108-promotion.json",
+        "splits": {
+          "train": 108
+        }
+      },
+      {
+        "count": 8,
+        "receipt": "ENG-GATE8-promotion.json",
+        "splits": {
+          "train": 8
+        }
+      },
+      {
+        "count": 108,
+        "receipt": "EVIDENCE-E108-promotion.json",
+        "splits": {
+          "train": 108
+        }
+      },
+      {
+        "count": 1080,
+        "receipt": "EVO-FOLD-A-V2-promotion.json",
+        "splits": {
+          "train": 1080
+        }
+      },
+      {
+        "count": 1080,
+        "receipt": "EVO-FOLD-B-V2-promotion.json",
+        "splits": {
+          "train": 1080
+        }
+      },
+      {
+        "count": 2160,
+        "receipt": "EVO-FOLDS-V2-promotion.json",
+        "splits": {
+          "train": 2160
+        }
+      },
+      {
+        "count": 108,
+        "receipt": "FACTOR-D108-promotion.json",
+        "splits": {
+          "train": 108
+        }
+      },
+      {
+        "count": 36,
+        "receipt": "GATE-C36-promotion.json",
+        "splits": {
+          "train": 36
+        }
+      },
+      {
+        "count": 18,
+        "receipt": "GATE18-promotion.json",
+        "splits": {
+          "train": 18
+        }
+      },
+      {
+        "count": 18,
+        "receipt": "KEY18-promotion.json",
+        "splits": {
+          "train": 18
+        }
+      },
+      {
+        "count": 36,
+        "receipt": "OPT-A36-promotion.json",
+        "splits": {
+          "train": 36
+        }
+      },
+      {
+        "count": 18,
+        "receipt": "OPT-B18-promotion.json",
+        "splits": {
+          "train": 18
+        }
+      },
+      {
+        "count": 63,
+        "receipt": "SLURP-KNOWLEDGE63-promotion.json",
+        "splits": {
+          "train": 63
+        }
+      },
+      {
+        "count": 90,
+        "receipt": "TRAIN90-promotion.json",
+        "splits": {
+          "train": 90
+        }
+      }
+    ],
+    "verdict": "BLOCKED: KU-S4a and KU-S4b cannot fly until their exemplar recordings are promoted to encoder packets under the comparator's own feature root and build commit. The promotion is a preprocessing session with its own receipt and its own exposure row -- ZERO frozen-core contacts -- and it is a PRECONDITION of those two cells, preregistered as such."
+  },
+  "profile": "model-free-check",
+  "prompt_fit_projection": {
+    "arms": {
+      "ku_s4a": {
+        "fits_slot_at_np8": true,
+        "label": "KU-S4a",
+        "prompt_tokens_mean_projected": 2587.7,
+        "prompt_tokens_worst_case_projected": 3089.0,
+        "slot_headroom_factor_mean": 3.17
+      },
+      "ku_s4b": {
+        "fits_slot_at_np8": true,
+        "label": "KU-S4b",
+        "prompt_tokens_mean_projected": 2594.3,
+        "prompt_tokens_worst_case_projected": 2985.0,
+        "slot_headroom_factor_mean": 3.16
+      },
+      "ku_s4c": {
+        "fits_slot_at_np8": true,
+        "label": "KU-S4c",
+        "prompt_tokens_mean_projected": 2400.6,
+        "prompt_tokens_worst_case_projected": 2563.0,
+        "slot_headroom_factor_mean": 3.41
+      },
+      "ku_s4n": {
+        "fits_slot_at_np8": true,
+        "label": "KU-S4N / KU-S4N-t",
+        "prompt_tokens_mean_projected": 2354.6,
+        "prompt_tokens_worst_case_projected": 2517.0,
+        "slot_headroom_factor_mean": 3.48
+      }
+    },
+    "candidate_block_token_proxy": {
+      "max": 146.0,
+      "mean": 108.45
+    },
+    "caveat": "PROJECTION on MF-10's whitespace proxy and the source-read encoder rate (13 tokens per whole second, tools/mtmd/clip.cpp PROJECTOR_TYPE_QWEN3A). No tokenizer was called. The server fit is the flight agent's own step: a zero-generated-token /apply-template + /tokenize pass over the roster, whose receipt is pinned into the fragment before takeoff.",
+    "comparator_realized_prompt_tokens_mean": 2190.16,
+    "control_turn_token_proxy": 56,
+    "fixed_instruction_tokens_mean": 2146.0,
+    "geometry": {
+      "basis": "the sealed comparator's own geometry, held fixed by every arm",
+      "config": "configs/model/q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64.json",
+      "context": 65536,
+      "slots": 8,
+      "tokens_per_slot": 8192
+    },
+    "ku_s4c_text_token_proxy": {
+      "max": 103,
+      "mean": 46
+    }
+  },
+  "row_id": "SAEA-SLURP-MF-KU-S4-PREP-V1",
+  "schema": "saea-slurp-kus4-prep-v1",
+  "servers_started": 0,
+  "sockets_opened": 0,
+  "study": "speech-aware-evidence-acquisition",
+  "tool_contacts": 0
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "saea-phase-program-v1",
+  "program_id": "phase-direct-only-supplied-v1",
+  "phases": [
+    {
+      "name": "direct",
+      "purpose": "direct-decode",
+      "knowledge": "supplied",
+      "response_format_id": null,
+      "barrier": false
+    }
+  ],
+  "max_contacts": 1,
+  "stop_rule": "always-run-full-program"
+}

@@ -1070,6 +1070,213 @@ class ConecContextProvider(KnowledgeProvider):
 
 
 # ---------------------------------------------------------------------------
+# SlurpIntentCandidateProvider -- wraps rails.slurp_intent_candidates (KU-S4N)
+# ---------------------------------------------------------------------------
+
+SLURP_INTENT_CANDIDATES_FUSE_POLICY_ID = "saea-slurp-intent-candidate-passthrough-v1"
+
+SLURP_INTENT_CANDIDATES_RANK_POLICY_ID = "saea-slurp-intent-candidate-bank-v1"
+
+
+class SlurpIntentCandidateProvider(KnowledgeProvider):
+    """Serves the KU-S4N narrowing view: this row's SEALED candidate set.
+
+    The decision this provider returns was made BEFORE the flight, model-free,
+    by ``scripts/slurp_kus4_prep.py``: the predicted scenario's legal intents
+    led by the TRAIN prior, unioned with the row's speech-vector neighbours'
+    distinct intents, capped at k (``rails.slurp_intent_candidates.
+    compose_candidate_set``). It is delivered here as a sha256-pinned
+    :class:`~.slurp_intent_candidates.CandidateBank` because a cosine over one
+    vector file cannot express it -- the scenario half comes from the sealed
+    comparator's own response, which is not a vector at all.
+
+    That is exactly the case ``core.flight.FlightRuntime.
+    bind_phase_supply_providers`` exists for: the provider id resolves in
+    ``core.base.KNOWLEDGE_PROVIDERS`` like every other config-declared
+    component, and the INSTANCE -- carrying the bank -- is injected by the
+    flight runner, never by a launcher.
+
+    ``candidates()`` does no retrieval: it looks this sample's ordered intents
+    up in the bank and returns them as a :class:`Ranking` over the frozen
+    snapshot's own facet ids, scored ``k, k-1, ... 1`` so the ranking's
+    descending-score contract carries the offered ORDER. ``fuse()`` selects
+    the matching value ids, in the same order. Nothing is dropped and nothing
+    is re-scored: a filter here could only subtract from the mechanism the
+    cell preregisters, which is "these k candidates, in this order" -- the
+    same reasoning KU-S3's fragment states for tau 0.0.
+
+    ``selection`` names which of the bank's two selections this instance
+    serves -- ``"candidates"`` for KU-S4N, ``"twin_candidates"`` for its form
+    twin. It rides the config hash through the fragment key that produced it,
+    so an arm and its twin can never resolve to one cell identity.
+    """
+
+    def __init__(
+        self,
+        *,
+        provider_id: str = "slurp-intent-candidates-v1",
+        bank: object = None,
+        selection: str = "candidates",
+    ) -> None:
+        super().__init__(provider_id=provider_id)
+        from .slurp_intent_candidates import (  # noqa: PLC0415 (cycle guard)
+            BANK_SELECTIONS,
+            CandidateBank,
+        )
+
+        if not isinstance(bank, CandidateBank):
+            raise RailsError(
+                "SlurpIntentCandidateProvider needs a rails.slurp_intent_candidates."
+                "CandidateBank; load it with load_candidate_bank() so the file's "
+                "sha256 is verified before a single row is served"
+            )
+        if selection not in BANK_SELECTIONS:
+            raise RailsError(
+                "SlurpIntentCandidateProvider selection must be one of "
+                f"{list(BANK_SELECTIONS)}, got {selection!r}"
+            )
+        self._bank = bank.validate()
+        self._selection = selection
+        self._rows = self._bank.selection(selection)
+        self._last_query_state: QueryState | None = None
+        self._last_rank_result: object | None = None
+
+    @property
+    def selection(self) -> str:
+        return self._selection
+
+    @property
+    def bank_sha256(self) -> str:
+        return self._bank.sha256
+
+    def build(self, source_rows: object, *, policy_id: str) -> object:
+        raise RailsError(
+            "SlurpIntentCandidateProvider does not build: its snapshot is the frozen "
+            "60-card artifact the flight already loaded and hash-verified, and its "
+            "per-row decision is the sha256-pinned candidate bank. Use adopt()"
+        )
+
+    def _ordered_intents(self, sample_id: str) -> tuple[str, ...]:
+        return tuple(self._rows.get(sample_id, ()))
+
+    def candidates(self, query: object, *, k: int) -> Ranking:
+        from .knowledge import RankedFacet, RankResult  # noqa: PLC0415 (cycle guard)
+        from .slurp_intent_candidates import facet_id_for  # noqa: PLC0415 (cycle guard)
+
+        if isinstance(k, bool) or not isinstance(k, int) or k <= 0:
+            raise RailsError(
+                "SlurpIntentCandidateProvider.candidates: k must be a positive int"
+            )
+        snapshot: KnowledgeSnapshot = self._built_object()
+        if isinstance(query, QueryState):
+            query_state = query
+        elif isinstance(query, Mapping) and "query_state" in query:
+            query_state = query["query_state"]
+        else:
+            raise RailsError(
+                "SlurpIntentCandidateProvider.candidates: query must be a QueryState or "
+                "a mapping carrying 'query_state'"
+            )
+        if not isinstance(query_state, QueryState):
+            raise RailsError(
+                "SlurpIntentCandidateProvider.candidates: 'query_state' must be a "
+                "QueryState"
+            )
+        known_facets = {facet.facet_id for facet in snapshot.facets}
+        intents = self._ordered_intents(query_state.query_sample_id)[:k]
+        unknown = [
+            intent for intent in intents if facet_id_for(intent) not in known_facets
+        ]
+        if unknown:
+            raise RailsError(
+                f"the candidate bank offers intent(s) {sorted(unknown)} that the frozen "
+                "candidate snapshot does not card; the bank and the snapshot were built "
+                "from different label spaces"
+            )
+        ranked = tuple(
+            RankedFacet(facet_id=facet_id_for(intent), score=float(len(intents) - index))
+            for index, intent in enumerate(intents)
+        )
+        rank_result = RankResult(
+            snapshot_sha256=self.snapshot_sha256(),
+            query_state_sha256=query_state.content_hash(),
+            ranking_policy_id=SLURP_INTENT_CANDIDATES_RANK_POLICY_ID,
+            candidates=ranked,
+        ).validate()
+        self._last_query_state = query_state
+        self._last_rank_result = rank_result
+        return Ranking(
+            entries=tuple(
+                RankedEntry(
+                    entry_id=candidate.facet_id, score=candidate.score, provenance={}
+                )
+                for candidate in ranked
+            ),
+            index_sha256=self.snapshot_sha256(),
+            query_sha256=query_state.content_hash(),
+            source=self.provider_id,
+        ).validate()
+
+    def fuse(
+        self,
+        rankings: Sequence[Ranking],
+        *,
+        k: int,
+        policy_id: str = SLURP_INTENT_CANDIDATES_FUSE_POLICY_ID,
+    ) -> FusionDecision:
+        from .slurp_intent_candidates import (  # noqa: PLC0415 (cycle guard)
+            FACET_ID_PREFIX,
+            value_id_for,
+        )
+
+        if not rankings:
+            raise RailsError("SlurpIntentCandidateProvider.fuse requires a Ranking")
+        if self._last_query_state is None or self._last_rank_result is None:
+            raise RailsError(
+                "SlurpIntentCandidateProvider.fuse: call candidates() first"
+            )
+        expected = self._last_query_state.content_hash()
+        if any(ranking.query_sha256 != expected for ranking in rankings):
+            raise RailsError(
+                "SlurpIntentCandidateProvider.fuse: a ranking does not match the last "
+                "candidates() call"
+            )
+        facet_ids = tuple(entry.entry_id for entry in rankings[0].entries[:k])
+        value_ids = tuple(
+            value_id_for(facet_id[len(FACET_ID_PREFIX) :]) for facet_id in facet_ids
+        )
+        return FusionDecision(
+            snapshot_sha256=self.snapshot_sha256(),
+            query_state_sha256=expected,
+            rank_result_sha256=self._last_rank_result.content_hash(),
+            fusion_policy_id=SLURP_INTENT_CANDIDATES_FUSE_POLICY_ID,
+            supporting_facet_ids=facet_ids,
+            selected_value_ids=value_ids,
+        ).validate()
+
+    def last_rank_result(self) -> object | None:
+        """The ``RankResult`` the most recent ``candidates()`` produced; E6's
+        traced-supply seam records it beside the ``FusionDecision``."""
+
+        return self._last_rank_result
+
+    def materialize(self, selection: object, *, query_state: QueryState) -> SupplyPacket:
+        snapshot: KnowledgeSnapshot = self._built_object()
+        if isinstance(selection, FusionDecision):
+            selected_ids = set(selection.selected_value_ids)
+        elif isinstance(selection, Ranking):
+            selected_ids = {entry.entry_id for entry in selection.entries}
+        else:
+            selected_ids = set(selection)
+        if not selected_ids <= set(query_state.retrieved_value_ids):
+            raise RailsError(
+                "SlurpIntentCandidateProvider.materialize: selection is not visible in "
+                "query_state.retrieved_value_ids"
+            )
+        return _render_kb_supply_packet(snapshot, query_state)
+
+
+# ---------------------------------------------------------------------------
 # KNOWLEDGE_PROVIDERS -- registrations into the shared core.base registry
 # ---------------------------------------------------------------------------
 #
@@ -1091,6 +1298,52 @@ if "dense-centroid-v1" not in KNOWLEDGE_PROVIDERS.names():
     KNOWLEDGE_PROVIDERS.register("dense-centroid-v1", DenseCentroidProvider)
 if "conec-context-v1" not in KNOWLEDGE_PROVIDERS.names():
     KNOWLEDGE_PROVIDERS.register("conec-context-v1", ConecContextProvider)
+# KU-S4N (2026-09-09): the SLURP intent-narrowing view. Registered here,
+# beside its class, for the same reason the three above are -- this file is
+# the canonical population site scripts/checks/engineering_base_check.py
+# reads without importing the package.
+if "slurp-intent-candidates-v1" not in KNOWLEDGE_PROVIDERS.names():
+    KNOWLEDGE_PROVIDERS.register(
+        "slurp-intent-candidates-v1", SlurpIntentCandidateProvider
+    )
+
+
+def _slurp_intent_candidate_policy_is_not_callable(_knobs: object = None) -> object:
+    """The two KU-S4N policy ids RESOLVE, and every use REFUSES.
+
+    ``rails.phase_supply.PhaseSupplySpec.validate`` requires a fragment's
+    ``rank_policy`` and ``fuse_policy`` to resolve in a ``core.base``
+    registry, and rightly so -- a cell's component ids are part of what it IS.
+    But :class:`SlurpIntentCandidateProvider` runs neither a ranker nor a
+    fuser: its ranking IS the sealed bank's order and its fusion IS that order
+    carried onto the value ids, both computed model-free before the flight.
+
+    Borrowing ``saea-rank-wcos-prior-agree-v1`` to satisfy the validator would
+    put a cosine ranker's name on a cell that never runs one, and the name
+    rides the config hash. So the two ids the provider actually applies are
+    registered instead, and constructing either raises -- the same "the name
+    accounts for it, every use refuses" discipline
+    ``core.frozen_historical`` already established for the retired Audio2Tool
+    controller ids.
+    """
+
+    raise RailsError(
+        "the KU-S4N rank/fuse policy ids name a decision SlurpIntentCandidateProvider "
+        "makes from its sealed candidate bank; there is no ranker or fuser callable "
+        "behind them and nothing should try to construct one"
+    )
+
+
+if SLURP_INTENT_CANDIDATES_RANK_POLICY_ID not in KNOWLEDGE_RANKERS.names():
+    KNOWLEDGE_RANKERS.register(
+        SLURP_INTENT_CANDIDATES_RANK_POLICY_ID,
+        _slurp_intent_candidate_policy_is_not_callable,
+    )
+if SLURP_INTENT_CANDIDATES_FUSE_POLICY_ID not in KNOWLEDGE_FUSERS.names():
+    KNOWLEDGE_FUSERS.register(
+        SLURP_INTENT_CANDIDATES_FUSE_POLICY_ID,
+        _slurp_intent_candidate_policy_is_not_callable,
+    )
 
 
 def resolve_provider(provider_id: str, **kwargs: object) -> KnowledgeProvider:
@@ -1106,11 +1359,14 @@ __all__ = [
     "CONEC_FUSE_POLICY_ID",
     "DENSE_CENTROID_FUSE_POLICY_ID",
     "KNOWLEDGE_PROVIDERS",
+    "SLURP_INTENT_CANDIDATES_FUSE_POLICY_ID",
+    "SLURP_INTENT_CANDIDATES_RANK_POLICY_ID",
     "ConecContextProvider",
     "DenseCentroidProvider",
     "KbFacetProvider",
     "KnowledgeProvider",
     "RankedEntry",
     "Ranking",
+    "SlurpIntentCandidateProvider",
     "resolve_provider",
 ]

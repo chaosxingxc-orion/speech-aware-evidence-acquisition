@@ -444,11 +444,14 @@ def test_conec_context_provider_build_rejects_mismatched_policy_id():
 # ---------------------------------------------------------------------------
 
 
-def test_knowledge_providers_registry_resolves_all_three():
+def test_knowledge_providers_registry_resolves_every_registered_provider():
     assert set(KNOWLEDGE_PROVIDERS.names()) == {
         "kb-facet-v1",
         "dense-centroid-v1",
         "conec-context-v1",
+        # KU-S4N, 2026-09-09: the SLURP intent-narrowing view, whose per-row
+        # decision is a sha256-pinned candidate bank rather than a cosine.
+        "slurp-intent-candidates-v1",
     }
 
 
