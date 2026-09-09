@@ -110,7 +110,15 @@ block committed in `configs/experiment/a2t-official-protocol-tail2s-400-v1.json`
 
 Exit code 0, empty stderr, `"verified": true`. The scorer was never broken.
 
-## 6. What this measurement does NOT authorize
+## 6. After the repair
+
+`wire-check-after-fix.md` records both wire-check scripts re-run without
+`--write` on the repaired branch: all four cross-carrier cells and all four
+input-rate cells reach `seal_and_score = OK`, and the exact 2026-09-09 failing
+condition -- one untracked note under `docs/readiness/` -- now reaches the seal
+too, for both carriers.
+
+## 7. What this measurement does NOT authorize
 
 Nothing. No cell is flown, no exposure row is consumed, no contact is made. The
 `@ts2` and `@16k` cells still need their own owner GO and their own exposure
