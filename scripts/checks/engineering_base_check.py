@@ -501,34 +501,32 @@ def rule_probe_modules(reader: TreeReader) -> list[str]:
     return sorted(offenders)
 
 
+
 def rule_adapter_subclasses_outside_adapters(reader: TreeReader) -> list[str]:
     adapters_prefix = ADAPTERS_DIR + "/"
-    candidates = [
-        f for f in reader.list_files(prefix=PACKAGE_ROOT) if f.endswith(".py")
-    ] + _launcher_py_candidates(reader)
-    offenders = []
-    for relpath in sorted(set(candidates)):
-        if relpath.startswith(adapters_prefix):
-            continue
-        tree = _parse(reader, relpath)
-        for cls_name in _classes_with_base(tree, "TaskAdapter"):
-            offenders.append(f"{relpath}::{cls_name}")
-    return sorted(offenders)
+    inventory = find_subclasses(
+        reader,
+        "speech_aware_evidence_acquisition.rails.task_adapter",
+        "TaskAdapter",
+    )
+    return sorted(
+        item for item in inventory
+        if not item.split("::", 1)[0].startswith(adapters_prefix)
+    )
 
 
 def rule_controller_classes_outside_controllers(reader: TreeReader) -> list[str]:
     excluded = {CONTROLLERS_MODULE, KB_POLICY_MODULE}
-    candidates = [
-        f for f in reader.list_files(prefix=PACKAGE_ROOT) if f.endswith(".py")
-    ] + _launcher_py_candidates(reader)
-    offenders = []
-    for relpath in sorted(set(candidates)):
-        if relpath in excluded:
-            continue
-        tree = _parse(reader, relpath)
-        for cls_name in _classes_with_methods(tree, {"initial_contact", "advance"}):
-            offenders.append(f"{relpath}::{cls_name}")
-    return sorted(offenders)
+    inventory = find_subclasses(
+        reader,
+        "speech_aware_evidence_acquisition.rails.controllers",
+        "EvidenceAgentController",
+    )
+    return sorted(
+        item for item in inventory
+        if item.split("::", 1)[0] not in excluded
+    )
+
 
 
 def rule_launcher_dirs(reader: TreeReader) -> list[str]:
@@ -876,6 +874,84 @@ def main(argv: list[str] | None = None) -> int:
 
     print("engineering base check: PASS")
     return 0
+
+def _python_module_for_path(relpath: str) -> str:
+    parts = relpath[:-3].replace("/", ".").split(".")
+    if parts[-1] == "__init__":
+        parts.pop()
+    package_parts = PACKAGE_ROOT.split("/")[1:]
+    if relpath.startswith(PACKAGE_ROOT + "/"):
+        return ".".join(package_parts + parts[len(package_parts) + 1:])
+    return ".".join(parts)
+
+
+def _resolve_import_module(module: str, current: str, level: int) -> str:
+    if not level:
+        return module
+    package = current.split(".")[:-1]
+    if level > 1:
+        package = package[: -(level - 1)] if level - 1 <= len(package) else []
+    return ".".join([*package, module] if module else package)
+
+
+def _class_candidates(reader: TreeReader) -> list[str]:
+    prefixes = (PACKAGE_ROOT, "scripts", "flights")
+    return sorted({path for prefix in prefixes for path in reader.list_files(prefix=prefix) if path.endswith(".py")} | set(_launcher_py_candidates(reader)))
+
+
+def find_subclasses(reader: TreeReader, base_module: str, base_name: str, candidates: Sequence[str] | None = None) -> list[str]:
+    """Return class definitions transitively derived from an imported base."""
+    paths = list(candidates) if candidates is not None else _class_candidates(reader)
+    classes: dict[str, ast.ClassDef] = {}
+    imports: dict[str, dict[str, str]] = {}
+    for relpath in paths:
+        tree = _parse(reader, relpath)
+        module = _python_module_for_path(relpath)
+        aliases: dict[str, str] = {}
+        for node in tree.body:
+            if isinstance(node, ast.Import):
+                for item in node.names:
+                    aliases[item.asname or item.name.split(".")[0]] = item.name
+            elif isinstance(node, ast.ImportFrom):
+                source = _resolve_import_module(node.module or "", module, node.level)
+                for item in node.names:
+                    if item.name != "*":
+                        aliases[item.asname or item.name] = ".".join(part for part in (source, item.name) if part)
+        imports[module] = aliases
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ClassDef):
+                classes[module + "." + node.name] = node
+
+    def resolve(expr: ast.expr, module: str) -> str | None:
+        aliases = imports[module]
+        if isinstance(expr, ast.Name):
+            return aliases.get(expr.id, module + "." + expr.id)
+        if isinstance(expr, ast.Attribute):
+            parent = resolve(expr.value, module)
+            return parent + "." + expr.attr if parent else None
+        return None
+
+    edges: dict[str, set[str]] = {}
+    for qname, node in classes.items():
+        module = qname.rsplit(".", 1)[0]
+        edges[qname] = {base for expr in node.bases if (base := resolve(expr, module)) is not None}
+
+    target = base_module + "." + base_name
+    derived: set[str] = set()
+    changed = True
+    while changed:
+        changed = False
+        for qname, bases in edges.items():
+            if qname not in derived and (target in bases or bases & derived):
+                derived.add(qname)
+                changed = True
+    results = []
+    for relpath in paths:
+        module = _python_module_for_path(relpath)
+        for qname in derived:
+            if qname.rsplit(".", 1)[0] == module:
+                results.append(relpath + "::" + qname.rsplit(".", 1)[1])
+    return sorted(set(results))
 
 
 if __name__ == "__main__":
