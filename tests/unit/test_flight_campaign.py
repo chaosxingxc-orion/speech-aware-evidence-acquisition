@@ -101,17 +101,106 @@ def test_config_loader_rejects_duplicate_or_empty_cells(tmp_path):
 
 def test_readiness_requires_pinned_confined_receipts(tmp_path):
     import hashlib
-    payload = b"approved preparation"
+    payload = json.dumps({
+        "schema": "saea-campaign-decision-v1",
+        "decision_id": "OWNER-DECISION-001",
+        "status": "decided",
+        "eligible_run_ids": [_SERVING_RUN_ID],
+    }, sort_keys=True).encode()
     (tmp_path / "receipt").write_bytes(payload)
     doc = dict(cell().document)
-    req = {"kind": "decision", "relpath": "receipt", "sha256": hashlib.sha256(payload).hexdigest()}
+    req = {
+        "kind": "decision", "relpath": "receipt",
+        "sha256": hashlib.sha256(payload).hexdigest(),
+        "expected_decision_id": "OWNER-DECISION-001",
+    }
     doc["readiness"] = {"state": "ready", "requirements": [req]}
     assert declared_readiness(CampaignCell.from_document(doc), tmp_path).state == "ready"
+    payload = json.dumps({**json.loads(payload), "status": "pending"}, sort_keys=True).encode()
+    (tmp_path / "receipt").write_bytes(payload)
+    req["sha256"] = hashlib.sha256(payload).hexdigest()
+    state = declared_readiness(CampaignCell.from_document(doc), tmp_path)
+    assert state.state == "held" and "not 'decided'" in state.reason
     req["sha256"] = "0" * 64
     assert declared_readiness(CampaignCell.from_document(doc), tmp_path).state == "held"
     req["relpath"] = "../receipt"
     with pytest.raises(CampaignError, match="confined"):
         declared_readiness(CampaignCell.from_document(doc), tmp_path)
+
+
+@pytest.mark.parametrize(
+    "mutate, reason",
+    [
+        (lambda receipt: receipt.update(status="rejected"), "not 'decided'"),
+        (lambda receipt: receipt.update(decision_id="OWNER-DECISION-002"), "expected decision"),
+        (lambda receipt: receipt.update(eligible_run_ids=["other-run"]), "not eligible"),
+        (lambda receipt: receipt.update(eligible_run_ids=[_SERVING_RUN_ID, _SERVING_RUN_ID]), "unique nonempty"),
+    ],
+)
+def test_decision_receipt_contract_holds_wrong_or_unknown_decisions(tmp_path, mutate, reason):
+    import hashlib
+    receipt = {
+        "schema": "saea-campaign-decision-v1",
+        "decision_id": "OWNER-DECISION-001",
+        "status": "decided",
+        "eligible_run_ids": [_SERVING_RUN_ID],
+    }
+    mutate(receipt)
+    payload = json.dumps(receipt, sort_keys=True).encode()
+    (tmp_path / "receipt").write_bytes(payload)
+    doc = dict(cell().document)
+    doc["readiness"] = {"state": "ready", "requirements": [{
+        "kind": "decision", "relpath": "receipt",
+        "sha256": hashlib.sha256(payload).hexdigest(),
+        "expected_decision_id": "OWNER-DECISION-001",
+    }]}
+    state = declared_readiness(CampaignCell.from_document(doc), tmp_path)
+    assert state.state == "held" and reason in state.reason
+
+
+def test_held_decision_does_not_look_up_resident_or_lease(tmp_path):
+    import hashlib
+    repo, _, data = _serving_world(tmp_path)
+    runtime, starter, attached = _serving_runtime(tmp_path, repo)
+    payload = json.dumps({
+        "schema": "saea-campaign-decision-v1",
+        "decision_id": "OWNER-DECISION-001",
+        "status": "decided",
+        "eligible_run_ids": ["different-run"],
+    }, sort_keys=True).encode()
+    (data / "decision.json").write_bytes(payload)
+    document = dict(cell().document)
+    document["readiness"] = {"state": "ready", "requirements": [{
+        "kind": "decision", "relpath": "decision.json",
+        "sha256": hashlib.sha256(payload).hexdigest(),
+        "expected_decision_id": "OWNER-DECISION-001",
+    }]}
+    report = run_campaign(
+        [runtime], cells=[CampaignCell.from_document(document)], repo_root=repo,
+        data_root=data, owner="coordinator", expected_session_id="serving-test",
+        resident_finder=lambda _: pytest.fail("held decision must not look up resident"),
+    )
+    assert report["states"][_SERVING_RUN_ID]["state"] == "held"
+    assert starter.calls == 0 and attached == []
+    assert not (data / "locks/flight.lock").exists()
+
+
+def test_absent_decision_receipt_stays_held(tmp_path):
+    import hashlib
+    payload = json.dumps({
+        "schema": "saea-campaign-decision-v1",
+        "decision_id": "OWNER-DECISION-001",
+        "status": "decided",
+        "eligible_run_ids": [_SERVING_RUN_ID],
+    }, sort_keys=True).encode()
+    document = dict(cell().document)
+    document["readiness"] = {"state": "ready", "requirements": [{
+        "kind": "decision", "relpath": "missing-decision.json",
+        "sha256": hashlib.sha256(payload).hexdigest(),
+        "expected_decision_id": "OWNER-DECISION-001",
+    }]}
+    state = declared_readiness(CampaignCell.from_document(document), tmp_path)
+    assert state.state == "held" and "missing-decision.json" in state.reason
 
 
 @pytest.mark.parametrize("mode", ["check", "wire-check", "prepare-supply", "prompt-fit", "worker", "campaign"])
