@@ -2054,6 +2054,7 @@ def test_run_phases_receipt_reports_how_responses_arrived(tmp_path):
     assert arrival["rows_total"] == 2
     assert arrival["rows_answered_as_text"] == 2
     assert arrival["rows_with_native_tool_calls"] == 0
+    assert receipt["client_initialization_seconds"] >= 0.0
 
 
 def test_wire_check_reports_and_asserts_native_arrival_for_a_native_arm(tmp_path):

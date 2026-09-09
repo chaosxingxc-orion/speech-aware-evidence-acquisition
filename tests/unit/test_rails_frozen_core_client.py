@@ -23,6 +23,7 @@ from speech_aware_evidence_acquisition.contracts import (
 from speech_aware_evidence_acquisition.core.config import protocol_hash
 from speech_aware_evidence_acquisition.core.model.slices import SliceRecord
 from speech_aware_evidence_acquisition.core.model import (
+    FrozenCoreError,
     SpeechFeatureChunkData,
     materialize_speech_feature_packet,
 )
@@ -359,6 +360,80 @@ def test_speech_feature_arm_builds_audited_packet_payload_on_existing_adapter(tm
     assert payload["mmproj_loaded"] is False
     assert payload["media_relpath"] == world.media_relpath("s1")
     assert payload["supplied_evidence"][0]["knowledge_role"] == "key"
+
+
+def test_prevalidated_packet_set_skips_constructor_scan(
+    tmp_path, monkeypatch
+):
+    from speech_aware_evidence_acquisition.rails import core_client
+
+    world = _World(tmp_path)
+    feature_root, packet, bindings = _speech_feature_world(world, tmp_path)
+    prepared = core_client.validate_speech_packet_set(
+        feature_root, bindings, _binding(world)
+    )
+    monkeypatch.setattr(
+        core_client, "load_speech_feature_packets",
+        lambda *args, **kwargs: pytest.fail("constructor revalidated prepared packet set"),
+    )
+    client, _gate, _transport = _client(
+        world, tmp_path, arm="speech-feature-query",
+        speech_feature_root=feature_root, speech_packet_bindings=bindings,
+        validated_packet_set=prepared,
+    )
+    assert client.arm == "speech-feature-query"
+    assert not prepared.matches(
+        feature_root, {"s1": bindings["s1"]}, _binding(world)
+    )
+
+
+def test_prevalidated_packet_set_rejects_mismatched_bindings(tmp_path):
+    world = _World(tmp_path)
+    feature_root, _packet, bindings = _speech_feature_world(world, tmp_path)
+    from speech_aware_evidence_acquisition.rails import core_client
+
+    prepared = core_client.validate_speech_packet_set(
+        feature_root, bindings, _binding(world)
+    )
+    mismatched = dict(bindings)
+    mismatched["s1"] = {"packet_id": bindings["s1"]["packet_id"], "sha256": "0" * 64}
+    with pytest.raises(FrozenCoreClientError, match="does not match"):
+        _client(
+            world,
+            tmp_path,
+            arm="speech-feature-query",
+            speech_feature_root=feature_root,
+            speech_packet_bindings=mismatched,
+            validated_packet_set=prepared,
+        )
+
+
+def test_prevalidated_packet_set_keeps_request_time_packet_validation(tmp_path):
+    world = _World(tmp_path)
+    feature_root, packet, bindings = _speech_feature_world(world, tmp_path)
+    from speech_aware_evidence_acquisition.rails import core_client
+
+    prepared = core_client.validate_speech_packet_set(
+        feature_root, bindings, _binding(world)
+    )
+    client, _gate, _transport = _client(
+        world,
+        tmp_path,
+        arm="speech-feature-query",
+        speech_feature_root=feature_root,
+        speech_packet_bindings=bindings,
+        validated_packet_set=prepared,
+    )
+    feature_path = feature_root / packet.packet_id / packet.chunks[0].feature_relpath
+    feature_path.write_bytes(b"modified-after-preprocess")
+
+    with pytest.raises(FrozenCoreError, match="feature bytes"):
+        client.complete(
+            _speech_feature_messages(packet, "Stable opaque key catalog."),
+            speech_feature_sample_id="s1",
+            key_representation_id="k1-text-card-v1",
+            matcher_policy_id="m1-listwise-v1",
+        )
 
 
 def test_speech_feature_arm_uses_content_stable_evidence_ids_for_prefix_reuse(tmp_path):
