@@ -1,0 +1,7 @@
+# KC-S1b same-profile replica readout
+
+Read only after generation is sealed and its hashes are verified. Use the frozen generation checkout at0805094f for the one complete official finalization/scoring job through core.scoring_batch, with include_per_sample=True and max_workers=1. Bind the immutable generation-manifest, score-ledger-cells and score-jobs table through core.flight.scoring.load_sealed_score_jobs before invoking the scorer. The research interpreter remains Python3.12; the official SLURP evaluator runs in its pinned Python3.9 environment selected by reproduction.slurp_official_eval.
+
+Apply prospective_replication_analysis already frozen in configs/experiment/slurp-slot-stage-kc-s1b-same-config-replicate-v1.json: historically exposed NEW500 primary, OLD500/full1000 separately, paired speaker-cluster10000 bootstrap with seed20260903, scenario sensitivity, natural/equal-stratum weights, official per-sample strict entity and SLU-F1 separately from corpus micro F1, and exact deterministic intent preservation. Compare with the sealed same-profile KC-S1b and original closed-list/KC-S1a controls using existing score products. Do not rerun old scoring jobs.
+
+This readout adds no model/tokenizer/encoder contact. Score all1000 rows once; no sharding, repeated scorer invocation, fresh roster, or new mechanism. Root reviews the verdict. Record failures, costs and unavailable stop metadata honestly.
