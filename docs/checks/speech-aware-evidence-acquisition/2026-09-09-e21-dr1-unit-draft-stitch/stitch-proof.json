@@ -1,0 +1,170 @@
+{
+  "authorizes": "nothing. This receipt records an arithmetic regrouping of two sealed runs. No cell is registered to fly, OBS-E1 stays REJECTED and no verdict moves",
+  "binding_receipt": {
+    "relpath": "docs/receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json",
+    "sha256": "40f466951acce38f13343ddea9357d15efe6eaacc660f9a126f51e81d48f241d"
+  },
+  "distributions": {
+    "comparator_window_prompt_tokens": {
+      "count": 1593,
+      "max": 1232,
+      "median": 1232.0,
+      "min": 75,
+      "p90": 1232,
+      "p95": 1232,
+      "p99": 1232,
+      "total": 1935965
+    },
+    "units_per_window": {
+      "count": 1593,
+      "max": 16,
+      "median": 2.0,
+      "min": 0,
+      "p90": 6,
+      "p95": 8,
+      "p99": 12,
+      "total": 5122
+    },
+    "window_draft_chars": {
+      "count": 1593,
+      "max": 2794,
+      "median": 1312.0,
+      "min": 0,
+      "p90": 1889,
+      "p95": 2050,
+      "p99": 2354,
+      "total": 2110032
+    },
+    "window_draft_completion_tokens": {
+      "count": 1593,
+      "max": 596,
+      "median": 273.0,
+      "min": 0,
+      "p90": 396,
+      "p95": 432,
+      "p99": 478,
+      "total": 442270
+    },
+    "window_draft_whitespace_tokens": {
+      "count": 1593,
+      "max": 505,
+      "median": 229.0,
+      "min": 0,
+      "p90": 330,
+      "p95": 361,
+      "p99": 410,
+      "total": 368011
+    },
+    "window_owned_unit_completion_tokens": {
+      "count": 1593,
+      "max": 1524,
+      "median": 274.0,
+      "min": 0,
+      "p90": 397,
+      "p95": 433,
+      "p99": 492,
+      "total": 445342
+    },
+    "windows_per_call": {
+      "count": 44,
+      "max": 64,
+      "median": 37.0,
+      "min": 13,
+      "p90": 51,
+      "p95": 55,
+      "p99": 64,
+      "total": 1593
+    }
+  },
+  "execution_profile": "model-free-check",
+  "exposure_row": "SAEA-E21-MF-DR1-PREP-V1",
+  "generated_at": "2026-09-09T00:24:59.346418+00:00",
+  "identity_anchors": {
+    "comparator": {
+      "check": "PASS",
+      "measured": {
+        "calls": 44,
+        "completion_tokens": 439532,
+        "prompt_tokens": 1935965,
+        "saturated": 0,
+        "spans": 1593
+      },
+      "sealed": {
+        "calls": 44,
+        "completion_tokens": 439532,
+        "prompt_tokens": 1935965,
+        "saturated": 0,
+        "spans": 1593
+      }
+    },
+    "draft_completion_tokens": 442270,
+    "drafts_rebuild_the_sealed_obs_e1_hypotheses_byte_for_byte": "PASS",
+    "each_run_rebuilds_its_own_sealed_outputs_byte_for_byte": "PASS",
+    "owned_unit_completion_tokens_conserved": 445342,
+    "ownership_is_a_monotone_partition_of_the_units": "PASS",
+    "quarantined_saturated_unit_tokens": 3072,
+    "unit_run": {
+      "check": "PASS",
+      "measured": {
+        "calls": 44,
+        "completion_tokens": 445342,
+        "prompt_tokens": 2255812,
+        "saturated": 3,
+        "spans": 5122
+      },
+      "sealed": {
+        "calls": 44,
+        "completion_tokens": 445342,
+        "prompt_tokens": 2255812,
+        "saturated": 3,
+        "spans": 5122
+      }
+    },
+    "units_owned": 5122
+  },
+  "ownership": {
+    "units_per_window": {
+      "0": 2,
+      "1": 274,
+      "10": 16,
+      "11": 11,
+      "12": 12,
+      "13": 1,
+      "14": 2,
+      "15": 1,
+      "16": 1,
+      "2": 571,
+      "3": 269,
+      "4": 137,
+      "5": 108,
+      "6": 81,
+      "7": 48,
+      "8": 39,
+      "9": 20
+    },
+    "why_a_window_may_own_none": "a window shorter than the unit covering it loses every tie. Both cases here are the last, remainder window of their call, and the corpus loses nothing: the words spoken there are inside the covering unit's text and that text is delivered by the preceding window. What a cell does with an empty draft is its delivery rule's business -- both DR-1 rules refuse it as empty_predecessor and deliver the empty string",
+    "windows_owning_no_unit": 2,
+    "windows_owning_no_unit_detail": [
+      {
+        "is_last_window_of_the_call": true,
+        "window_id": "4361631#w0050",
+        "window_index": 50,
+        "window_seconds": 1.428625,
+        "windows_in_call": 50
+      },
+      {
+        "is_last_window_of_the_call": true,
+        "window_id": "4387865#w0025",
+        "window_index": 25,
+        "window_seconds": 2.573062,
+        "windows_in_call": 25
+      }
+    ]
+  },
+  "result": "PASS",
+  "run_id": "SAEA-E21-MF-DR1-PREP-V1",
+  "schema": "saea-e21-dr1-unit-draft-stitch-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "9dce9db8578b809818e187d673bbdf3336e818cc",
+  "study_repo_dirt": ""
+}

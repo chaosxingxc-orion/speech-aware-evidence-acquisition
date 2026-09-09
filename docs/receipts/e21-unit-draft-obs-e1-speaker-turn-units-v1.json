@@ -1,0 +1,591 @@
+{
+  "artifact": {
+    "bytes": 3529897,
+    "relpath": "derived/e21-unit-draft/SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1/attempt-20260908T150858Z-c597a8/window-drafts.json",
+    "root": "SPEECHRL_DATA_DIR",
+    "sha256": "9ee709d1af609fa832e0dba2e9bf13b7c491a26ffa86a6530c27d811bdefd6fc"
+  },
+  "attempt_id": "attempt-20260908T150858Z-c597a8",
+  "built_by": "scripts/build_e21_unit_draft_snapshot.py",
+  "calls": 44,
+  "carrier_lock_key": "earnings21-original",
+  "content_free": "this receipt carries hashes, counts and distributions only. Not one draft character is committed: the per-window draft is model output and lives with the sealed outputs under SPEECHRL_DATA_DIR",
+  "distributions": {
+    "comparator_window_prompt_tokens": {
+      "count": 1593,
+      "max": 1232,
+      "median": 1232.0,
+      "min": 75,
+      "p90": 1232,
+      "p95": 1232,
+      "p99": 1232,
+      "total": 1935965
+    },
+    "units_per_window": {
+      "count": 1593,
+      "max": 16,
+      "median": 2.0,
+      "min": 0,
+      "p90": 6,
+      "p95": 8,
+      "p99": 12,
+      "total": 5122
+    },
+    "window_draft_chars": {
+      "count": 1593,
+      "max": 2794,
+      "median": 1312.0,
+      "min": 0,
+      "p90": 1889,
+      "p95": 2050,
+      "p99": 2354,
+      "total": 2110032
+    },
+    "window_draft_completion_tokens": {
+      "count": 1593,
+      "max": 596,
+      "median": 273.0,
+      "min": 0,
+      "p90": 396,
+      "p95": 432,
+      "p99": 478,
+      "total": 442270
+    },
+    "window_draft_whitespace_tokens": {
+      "count": 1593,
+      "max": 505,
+      "median": 229.0,
+      "min": 0,
+      "p90": 330,
+      "p95": 361,
+      "p99": 410,
+      "total": 368011
+    },
+    "window_owned_unit_completion_tokens": {
+      "count": 1593,
+      "max": 1524,
+      "median": 274.0,
+      "min": 0,
+      "p90": 397,
+      "p95": 433,
+      "p99": 492,
+      "total": 445342
+    },
+    "windows_per_call": {
+      "count": 44,
+      "max": 64,
+      "median": 37.0,
+      "min": 13,
+      "p90": 51,
+      "p95": 55,
+      "p99": 64,
+      "total": 1593
+    }
+  },
+  "exposure_row": "SAEA-E21-MF-DR1-PREP-V1",
+  "generated_at": "2026-09-09T00:24:59.346418+00:00",
+  "identity_anchors": {
+    "comparator": {
+      "check": "PASS",
+      "measured": {
+        "calls": 44,
+        "completion_tokens": 439532,
+        "prompt_tokens": 1935965,
+        "saturated": 0,
+        "spans": 1593
+      },
+      "sealed": {
+        "calls": 44,
+        "completion_tokens": 439532,
+        "prompt_tokens": 1935965,
+        "saturated": 0,
+        "spans": 1593
+      }
+    },
+    "draft_completion_tokens": 442270,
+    "drafts_rebuild_the_sealed_obs_e1_hypotheses_byte_for_byte": "PASS",
+    "each_run_rebuilds_its_own_sealed_outputs_byte_for_byte": "PASS",
+    "owned_unit_completion_tokens_conserved": 445342,
+    "ownership_is_a_monotone_partition_of_the_units": "PASS",
+    "quarantined_saturated_unit_tokens": 3072,
+    "unit_run": {
+      "check": "PASS",
+      "measured": {
+        "calls": 44,
+        "completion_tokens": 445342,
+        "prompt_tokens": 2255812,
+        "saturated": 3,
+        "spans": 5122
+      },
+      "sealed": {
+        "calls": 44,
+        "completion_tokens": 445342,
+        "prompt_tokens": 2255812,
+        "saturated": 3,
+        "spans": 5122
+      }
+    },
+    "units_owned": 5122
+  },
+  "ownership": {
+    "units_per_window": {
+      "0": 2,
+      "1": 274,
+      "10": 16,
+      "11": 11,
+      "12": 12,
+      "13": 1,
+      "14": 2,
+      "15": 1,
+      "16": 1,
+      "2": 571,
+      "3": 269,
+      "4": 137,
+      "5": 108,
+      "6": 81,
+      "7": 48,
+      "8": 39,
+      "9": 20
+    },
+    "why_a_window_may_own_none": "a window shorter than the unit covering it loses every tie. Both cases here are the last, remainder window of their call, and the corpus loses nothing: the words spoken there are inside the covering unit's text and that text is delivered by the preceding window. What a cell does with an empty draft is its delivery rule's business -- both DR-1 rules refuse it as empty_predecessor and deliver the empty string",
+    "windows_owning_no_unit": 2,
+    "windows_owning_no_unit_detail": [
+      {
+        "is_last_window_of_the_call": true,
+        "window_id": "4361631#w0050",
+        "window_index": 50,
+        "window_seconds": 1.428625,
+        "windows_in_call": 50
+      },
+      {
+        "is_last_window_of_the_call": true,
+        "window_id": "4387865#w0025",
+        "window_index": 25,
+        "window_seconds": 2.573062,
+        "windows_in_call": 25
+      }
+    ]
+  },
+  "per_call": [
+    {
+      "draft_chars": 52697,
+      "draft_completion_tokens": 10693,
+      "owned_unit_completion_tokens": 10693,
+      "sample_id": "4320211",
+      "units": 125,
+      "windows": 37,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 40064,
+      "draft_completion_tokens": 7841,
+      "owned_unit_completion_tokens": 7841,
+      "sample_id": "4330115",
+      "units": 72,
+      "windows": 28,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 84032,
+      "draft_completion_tokens": 18027,
+      "owned_unit_completion_tokens": 18027,
+      "sample_id": "4341191",
+      "units": 220,
+      "windows": 64,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 40677,
+      "draft_completion_tokens": 8560,
+      "owned_unit_completion_tokens": 8560,
+      "sample_id": "4344338",
+      "units": 90,
+      "windows": 31,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 53057,
+      "draft_completion_tokens": 11042,
+      "owned_unit_completion_tokens": 11042,
+      "sample_id": "4344866",
+      "units": 149,
+      "windows": 37,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 63477,
+      "draft_completion_tokens": 13375,
+      "owned_unit_completion_tokens": 13375,
+      "sample_id": "4346818",
+      "units": 120,
+      "windows": 45,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 60136,
+      "draft_completion_tokens": 12851,
+      "owned_unit_completion_tokens": 13875,
+      "sample_id": "4346923",
+      "units": 200,
+      "windows": 53,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 65686,
+      "draft_completion_tokens": 14377,
+      "owned_unit_completion_tokens": 14377,
+      "sample_id": "4359732",
+      "units": 184,
+      "windows": 55,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 54465,
+      "draft_completion_tokens": 12038,
+      "owned_unit_completion_tokens": 12038,
+      "sample_id": "4359971",
+      "units": 149,
+      "windows": 42,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 62178,
+      "draft_completion_tokens": 12780,
+      "owned_unit_completion_tokens": 12780,
+      "sample_id": "4360366",
+      "units": 152,
+      "windows": 44,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 59721,
+      "draft_completion_tokens": 11804,
+      "owned_unit_completion_tokens": 11804,
+      "sample_id": "4360674",
+      "units": 93,
+      "windows": 40,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 64610,
+      "draft_completion_tokens": 14121,
+      "owned_unit_completion_tokens": 14121,
+      "sample_id": "4360717",
+      "units": 157,
+      "windows": 51,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 51997,
+      "draft_completion_tokens": 10882,
+      "owned_unit_completion_tokens": 10882,
+      "sample_id": "4361631",
+      "units": 118,
+      "windows": 50,
+      "windows_owning_no_unit": 1
+    },
+    {
+      "draft_chars": 80362,
+      "draft_completion_tokens": 16765,
+      "owned_unit_completion_tokens": 16765,
+      "sample_id": "4363614",
+      "units": 180,
+      "windows": 63,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 48349,
+      "draft_completion_tokens": 10029,
+      "owned_unit_completion_tokens": 10029,
+      "sample_id": "4364366",
+      "units": 102,
+      "windows": 39,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 70033,
+      "draft_completion_tokens": 14258,
+      "owned_unit_completion_tokens": 14258,
+      "sample_id": "4365024",
+      "units": 128,
+      "windows": 49,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 40702,
+      "draft_completion_tokens": 8173,
+      "owned_unit_completion_tokens": 8173,
+      "sample_id": "4365948",
+      "units": 90,
+      "windows": 28,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 56259,
+      "draft_completion_tokens": 12149,
+      "owned_unit_completion_tokens": 12149,
+      "sample_id": "4366302",
+      "units": 150,
+      "windows": 40,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 63690,
+      "draft_completion_tokens": 13613,
+      "owned_unit_completion_tokens": 13613,
+      "sample_id": "4366429",
+      "units": 123,
+      "windows": 45,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 25534,
+      "draft_completion_tokens": 5222,
+      "owned_unit_completion_tokens": 5222,
+      "sample_id": "4366522",
+      "units": 36,
+      "windows": 21,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 37533,
+      "draft_completion_tokens": 7936,
+      "owned_unit_completion_tokens": 7936,
+      "sample_id": "4366893",
+      "units": 94,
+      "windows": 27,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 26458,
+      "draft_completion_tokens": 5340,
+      "owned_unit_completion_tokens": 5340,
+      "sample_id": "4367318",
+      "units": 60,
+      "windows": 20,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 41480,
+      "draft_completion_tokens": 8760,
+      "owned_unit_completion_tokens": 8760,
+      "sample_id": "4367535",
+      "units": 112,
+      "windows": 36,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 62466,
+      "draft_completion_tokens": 14167,
+      "owned_unit_completion_tokens": 14167,
+      "sample_id": "4368670",
+      "units": 143,
+      "windows": 47,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 27315,
+      "draft_completion_tokens": 6087,
+      "owned_unit_completion_tokens": 6087,
+      "sample_id": "4374910",
+      "units": 63,
+      "windows": 23,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 55877,
+      "draft_completion_tokens": 11701,
+      "owned_unit_completion_tokens": 11701,
+      "sample_id": "4375653",
+      "units": 120,
+      "windows": 39,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 59731,
+      "draft_completion_tokens": 12919,
+      "owned_unit_completion_tokens": 12919,
+      "sample_id": "4382825",
+      "units": 140,
+      "windows": 43,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 52493,
+      "draft_completion_tokens": 10460,
+      "owned_unit_completion_tokens": 10460,
+      "sample_id": "4383161",
+      "units": 114,
+      "windows": 38,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 38831,
+      "draft_completion_tokens": 8114,
+      "owned_unit_completion_tokens": 8114,
+      "sample_id": "4384198",
+      "units": 116,
+      "windows": 30,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 22092,
+      "draft_completion_tokens": 4421,
+      "owned_unit_completion_tokens": 4421,
+      "sample_id": "4384683",
+      "units": 62,
+      "windows": 17,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 47675,
+      "draft_completion_tokens": 10113,
+      "owned_unit_completion_tokens": 10113,
+      "sample_id": "4384744",
+      "units": 130,
+      "windows": 37,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 56681,
+      "draft_completion_tokens": 12460,
+      "owned_unit_completion_tokens": 12460,
+      "sample_id": "4384964",
+      "units": 167,
+      "windows": 45,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 38271,
+      "draft_completion_tokens": 8272,
+      "owned_unit_completion_tokens": 8272,
+      "sample_id": "4385072",
+      "units": 126,
+      "windows": 29,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 67043,
+      "draft_completion_tokens": 13997,
+      "owned_unit_completion_tokens": 13997,
+      "sample_id": "4385388",
+      "units": 145,
+      "windows": 49,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 49846,
+      "draft_completion_tokens": 10863,
+      "owned_unit_completion_tokens": 10863,
+      "sample_id": "4385939",
+      "units": 152,
+      "windows": 34,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 16736,
+      "draft_completion_tokens": 3364,
+      "owned_unit_completion_tokens": 3364,
+      "sample_id": "4386541",
+      "units": 33,
+      "windows": 13,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 24355,
+      "draft_completion_tokens": 4735,
+      "owned_unit_completion_tokens": 4735,
+      "sample_id": "4387332",
+      "units": 50,
+      "windows": 15,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 22756,
+      "draft_completion_tokens": 4648,
+      "owned_unit_completion_tokens": 4648,
+      "sample_id": "4387383",
+      "units": 108,
+      "windows": 24,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 35421,
+      "draft_completion_tokens": 7279,
+      "owned_unit_completion_tokens": 7279,
+      "sample_id": "4387865",
+      "units": 81,
+      "windows": 25,
+      "windows_owning_no_unit": 1
+    },
+    {
+      "draft_chars": 26633,
+      "draft_completion_tokens": 5134,
+      "owned_unit_completion_tokens": 6158,
+      "sample_id": "4389907",
+      "units": 66,
+      "windows": 23,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 24485,
+      "draft_completion_tokens": 4891,
+      "owned_unit_completion_tokens": 4891,
+      "sample_id": "4392809",
+      "units": 48,
+      "windows": 16,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 22446,
+      "draft_completion_tokens": 4518,
+      "owned_unit_completion_tokens": 4518,
+      "sample_id": "4394084",
+      "units": 52,
+      "windows": 20,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 47299,
+      "draft_completion_tokens": 9519,
+      "owned_unit_completion_tokens": 10543,
+      "sample_id": "4397800",
+      "units": 113,
+      "windows": 31,
+      "windows_owning_no_unit": 0
+    },
+    {
+      "draft_chars": 68383,
+      "draft_completion_tokens": 13972,
+      "owned_unit_completion_tokens": 13972,
+      "sample_id": "4397829",
+      "units": 189,
+      "windows": 50,
+      "windows_owning_no_unit": 0
+    }
+  ],
+  "run_id": "SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1",
+  "saturated_windows": 0,
+  "schema": "saea-e21-predecessor-binding-v1",
+  "source": {
+    "manifest_sha256": "86d4daf43d4b5747a16ebd06f69513e6bdcc6f16148d54c68a5f2b8aaa970813",
+    "outputs_sha256": "e743ddc4e5ebf3695989f46d6fde26a7140d963b1b401d2686f8eca7a4c0542d",
+    "trace_sha256": "f70d6635b0ae62041edc415e73288523453fd49e3b824b13577a1e7d1c54f8d5"
+  },
+  "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+  "stitch_rule": "saea-e21-unit-draft-majority-overlap-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "9dce9db8578b809818e187d673bbdf3336e818cc",
+  "what_it_binds": "the sealed OBS-E1 speaker-turn-unit hypotheses, regrouped onto the sealed comparator's 1,593 fixed 90-second windows by the majority-overlap ownership rule saea-e21-unit-draft-majority-overlap-v1. The window identity and bounds are the COMPARATOR's, because a DR-1 pass-2 contact tiles the comparator's grid and reproduction.repair_loop matches a cut window against its bound predecessor's bounds to 1e-6 s",
+  "why_completion_tokens_matter": "the stitched draft rides in a DR-1 pass-2 request, so the sum of its units' own completion-token counts IS that request's added text cost, measured by the flight server on the flight tokenizer. The prompt fit projects the worst request from this distribution rather than from a characters-per-token guess, and it states the join residue (one space per unit boundary) it cannot see",
+  "window_grid": {
+    "attempt_id": "attempt-20260904T233816Z-bcd338",
+    "manifest_sha256": "1fc51a879c4034e7c59c897f3319a60b4b59d607f8f8c6cb61fbb1668535bb42",
+    "outputs_sha256": "7d4732066d61fccff5bf0829779c24138edcf003e4338933c398416459bbe00d",
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "trace_sha256": "c657260e0d392f084feee0dd09b23e9c7eac56c6288c15e6b05bb808378795dd"
+  },
+  "window_text_sha256_chain": "a1e81bbb6395c2cf4098d2bf2a63aebc8ca792c2d1e641cf391107889e01f12c",
+  "windows": 1593,
+  "zero_contact": "no model, GPU, server, socket, tokenizer, tool, embedder, network or audio-decode contact; six sealed files read (two run manifests, two outputs.jsonl, two trace.jsonl) and no reference transcript, wer_tags sidecar, gold label or scorer opened"
+}
