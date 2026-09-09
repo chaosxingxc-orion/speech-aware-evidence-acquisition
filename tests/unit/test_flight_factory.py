@@ -49,7 +49,7 @@ def test_factory_uses_label_free_slurp_and_same_runtime(tmp_path):
     )
     data = tmp_path / "data"
     doc = view(data)
-    doc.update(carrier_lock_key="slurp", split_id="devel")
+    doc.update(carrier_lock_key="slurp", split_id="DEV-1000")
     (repo / "configs/dataset/d.json").write_text(json.dumps(doc))
     _git(repo, "add", "-A")
     _git(repo, "commit", "-qm", "bind synthetic view")
@@ -59,13 +59,72 @@ def test_factory_uses_label_free_slurp_and_same_runtime(tmp_path):
         lock={}, gate_factory=lambda *a, **kw: _FakeGate(), **_HAPPY_PATH_KWARGS,
     )
     runtime.preflight()
-    assert len(runtime.adapter.load_split("devel")) == 1
-    sample = runtime.adapter.load_split("devel")[0]
+    assert len(runtime.adapter.load_split("DEV-1000")) == 1
+    sample = runtime.adapter.load_split("DEV-1000")[0]
     assert not sample.scenario and not sample.entities
     assert runtime.adapter.instruction(sample) == "Listen and return the spoken command."
     with pytest.raises(RuntimeViewError, match="gold"):
         runtime.adapter.gold(sample)
     assert runtime.adapter.serving_geometry()["slots"] == 2
+
+
+def test_named_dev_roster_returns_only_on_exact_registered_alias(tmp_path):
+    repo = _make_repo(
+        tmp_path, "SLURP-NAMED-DEV", carrier_lock_key="slurp",
+        model_extra={"server_args": ["-np", "2", "-c", "8192"]},
+        baseline_extra={"task_instruction": "Return the spoken command.",
+                        "serving_slots": 2, "serving_slot_tokens": 4096},
+    )
+    data = tmp_path / "data"
+    doc = view(data)
+    doc.update(carrier_lock_key="slurp", split_id="DEV-1000-REPLICATE")
+    (repo / "configs/dataset/d.json").write_text(json.dumps(doc))
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-qm", "bind named dev view")
+    runtime = build_flight_runtime(
+        repo, data, model="m", dataset="d", baseline="b", experiment="e",
+        run_id="SLURP-NAMED-DEV", attempt_id="a", runtime_root=tmp_path / "runtime",
+        lock={}, lock_path=None, gate_factory=lambda *a, **kw: _FakeGate(), **_HAPPY_PATH_KWARGS,
+    )
+    runtime.preflight()
+    assert len(runtime.adapter.load_split("DEV-1000-REPLICATE")) == 1
+    with pytest.raises(RuntimeViewError, match="registered split"):
+        runtime.adapter.load_split("DEV-1000")
+    with pytest.raises(RuntimeViewError, match="registered split"):
+        runtime.adapter.load_split("devel")
+
+
+def test_named_dev_roster_rejects_foreign_split_and_non_devel_source_ids(tmp_path):
+    repo = _make_repo(
+        tmp_path, "SLURP-NAMED-DEV-REJECT", carrier_lock_key="slurp",
+        model_extra={"server_args": ["-np", "2", "-c", "8192"]},
+        baseline_extra={"task_instruction": "Return the spoken command.",
+                        "serving_slots": 2, "serving_slot_tokens": 4096},
+    )
+    data = tmp_path / "data"
+    doc = view(data)
+    doc.update(carrier_lock_key="slurp", split_id="TEST-1000")
+    (repo / "configs/dataset/d.json").write_text(json.dumps(doc))
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-qm", "bind invalid named split")
+    with pytest.raises(RuntimeViewError, match="discovery/devel"):
+        build_flight_runtime(
+            repo, data, model="m", dataset="d", baseline="b", experiment="e",
+            run_id="SLURP-NAMED-DEV-REJECT", attempt_id="a", runtime_root=tmp_path / "runtime",
+            lock={}, lock_path=None, gate_factory=lambda *a, **kw: _FakeGate(), **_HAPPY_PATH_KWARGS,
+        )
+
+    doc["split_id"] = "DEV-1000"
+    doc["items"][0]["sample_id"] = "slurp:test:one:audio"
+    (repo / "configs/dataset/d.json").write_text(json.dumps(doc))
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-qm", "bind non-devel source id")
+    with pytest.raises(RuntimeViewError, match="non-devel sample"):
+        build_flight_runtime(
+            repo, data, model="m", dataset="d", baseline="b", experiment="e",
+            run_id="SLURP-NAMED-DEV-REJECT-2", attempt_id="a", runtime_root=tmp_path / "runtime-2",
+            lock={}, lock_path=None, gate_factory=lambda *a, **kw: _FakeGate(), **_HAPPY_PATH_KWARGS,
+        )
 
 
 def test_runtime_view_population_is_exact_and_hashes_selected_media(tmp_path):
