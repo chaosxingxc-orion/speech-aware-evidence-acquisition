@@ -1,6 +1,6 @@
 # Owner-directed Stage-2 continuation
 
-Status: **owner-directed execution**, generation 9. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 10. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -45,10 +45,12 @@ wire responses, stop reasons, hashes and separate delivery views are retained. T
 accuracy or reasoning result. See the [budget readout](../../../checks/speech-aware-evidence-acquisition/2026-09-09-output-budget-four-row/README.md).
 
 The owner approved OWNER-KUS3-BUDGET-005: KU-S3a, its form twin and a new matched no-retrieval
-control use 256 tokens while retaining original KC-S1b examples. Fresh configurations,
-preparation and real full-roster fits are required; the unused 64-token KU-S3 fit plans are
+control use 256 tokens while retaining original KC-S1b examples. The configurations and final source-bound retrieval preparation are complete;
+real full-roster capacity checks are now registered and active. the unused 64-token KU-S3 fit plans are
 historical plans and must not be repurposed. No pending owner question remains. The root
-stopped the former service and monitor after the engineering pair; no model service is active.
+stopped the former service and monitor after the engineering pair. A new root batch prepares
+all three actual request sets before loading its single matching resident service; inspect the
+live session and batch receipts for current status.
 
 The aligned NEW500 null calibration and all seven KV recovery reads remain complete with
 zero new model contacts or scorer invocations. Retain KC-S1b: KV0 is harmful, KV1 and KV3 are
@@ -64,7 +66,7 @@ meet the intended idle-time target, as recorded in the budget readout.
 
 G2 through G6 have not flown. E21 actual-window CLI wiring, complete DR replay, bounded live
 controller transitions, explicit full-system state joins and broader engineering-rule coverage
-remain incomplete. Read [STATUS-009.md](STATUS-009.md) for the next work order and held items.
+remain incomplete. Read [STATUS-010.md](STATUS-010.md) for the next work order and held items.
 
 Use ChatGPT/OpenAI cloud subagents under [MODEL-ALLOCATION.md](MODEL-ALLOCATION.md);
 the main agent retains planning, scientific decisions, critical review and merge acceptance.

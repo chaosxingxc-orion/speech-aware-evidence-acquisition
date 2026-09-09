@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 9,
+  "generation": 10,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "17c0665abf80425d35befeee31979da1100a6c2c",
-  "updated_at_utc": "2026-09-09T16:29:08.599219+00:00",
-  "next_action": "KC-S1b original64 repeat is DECIDED for same-profile component entity improvement; inherited further replication remains open. Four-case cap pair is DECIDED engineering evidence. OWNER-KUS3-BUDGET-005 approved KU-S3a, twin and new matched control at256. Review held configurations, prepare fresh source-bound artifacts, fit complete rosters, then separately register generation. Service and monitor are stopped; no model work is active. No owner question is pending.",
+  "snapshot_commit": "0bea8e29bdbd732256a0d345af43aaf9bf0ecf60",
+  "updated_at_utc": "2026-09-09T17:00:31.171200+00:00",
+  "next_action": "Final max256 control/speech/twin configurations and all six attempts are fixed. Both full-roster retrieval artifacts pass ordered selection, rendered supply and zero-recomputation warm checks. Three separate 3001-endpoint capacity plans are committed. Root batch coordinator is materializing actual requests from frozen WSL checkout /home/chao/saea-worktrees/g1-max256-runtime before starting session slurp-g1-max256-np4-20260909-root. Generation remains held pending all three fit receipts and separate final registration. No owner question is pending.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-KUS3-BUDGET-005"
