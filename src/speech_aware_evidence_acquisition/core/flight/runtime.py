@@ -3663,7 +3663,7 @@ class FlightRuntime:
             },
         )
 
-    def prepare_phase_supply(self, path: Path) -> Mapping[str, object]:
+    def prepare_phase_supply(self, path: Path, *, max_workers: int = 1) -> Mapping[str, object]:
         """Persist the real first-phase selection offline for reuse at dispatch.
 
         No server, tokenizer, gate, attempt, or inference contact is opened.
@@ -3685,7 +3685,8 @@ class FlightRuntime:
 
         def produce():
             facets, selected = self._phase_supply_seeds(
-                program, binding, specs, SimpleNamespace(split_identity_hash=identity)
+                program, binding, specs, SimpleNamespace(split_identity_hash=identity),
+                max_workers=max_workers,
             )
             return {"facets": facets, "values": selected}
 
@@ -3735,6 +3736,7 @@ class FlightRuntime:
         binding: Mapping[str, object],
         supply_specs: Mapping[str, object],
         plan: ExecutionPlan,
+        max_workers: int = 1,
     ) -> tuple[dict[str, object], dict[str, object]]:
         """``({phase: facet seed}, {phase: value seed})`` for a supplied
         FIRST phase (E6).
@@ -3783,6 +3785,8 @@ class FlightRuntime:
             query_vectors_by_sample=query_tables.get(first_phase, {}),
             speech_packet_bindings=binding["speech_packet_bindings"],
             split_identity_hash=plan.split_identity_hash,
+            workers=max_workers,
+            lease_metadata_present=(self._data_root / "locks" / "flight.lock").exists(),
         )
         return ({first_phase: facets} if facets else {}), (
             {first_phase: values} if values else {}

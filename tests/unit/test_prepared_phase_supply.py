@@ -215,3 +215,101 @@ def test_materialization_restores_live_client_and_outputs_even_on_failure(tmp_pa
         runtime.materialize_phase_requests()
     assert runtime._client == "live"
     assert runtime._output_rows == ["original"]
+
+
+
+class _BootstrapDecision:
+    def __init__(self, sample_id):
+        self.supporting_facet_ids = ("facet-" + sample_id,)
+        self.selected_value_ids = ("value-" + sample_id,)
+
+
+class _BootstrapProvider:
+    def __init__(self, failing=None):
+        self.failing = failing
+
+    def candidates(self, request, *, k):
+        sample_id = request["query_state"].query_sample_id
+        if sample_id == self.failing:
+            raise RuntimeError("provider failed for " + sample_id)
+        return sample_id
+
+    def fuse(self, rankings, *, k, policy_id):
+        return _BootstrapDecision(rankings[0])
+
+
+def _bootstrap_spec():
+    return SimpleNamespace(
+        phase="slots",
+        k=2,
+        fuse_policy="fuse",
+        expose_facets=True,
+    )
+
+
+def _bootstrap_inputs():
+    queries = {
+        "s1": {"content": (1.0,)},
+        "s2": {"content": (2.0,)},
+        "s3": {},
+    }
+    packets = {
+        sid: {"packet_id": "packet-" + sid, "sha256": "a" * 64}
+        for sid in queries
+    }
+    return queries, packets
+
+
+def test_bootstrap_selection_parallel_matches_serial_with_missing_queries():
+    queries, packets = _bootstrap_inputs()
+    serial = phase_supply.build_bootstrap_selection(
+        _bootstrap_spec(),
+        provider=_BootstrapProvider(),
+        query_vectors_by_sample=queries,
+        speech_packet_bindings=packets,
+        split_identity_hash="b" * 64,
+        workers=1,
+    )
+    parallel = phase_supply.build_bootstrap_selection(
+        _bootstrap_spec(),
+        provider=_BootstrapProvider(),
+        query_vectors_by_sample=queries,
+        speech_packet_bindings=packets,
+        split_identity_hash="b" * 64,
+        workers=2,
+    )
+    assert serial == parallel == (
+        {"s1": ("facet-s1",), "s2": ("facet-s2",)},
+        {"s1": ("value-s1",), "s2": ("value-s2",)},
+    )
+
+
+def test_bootstrap_selection_parallel_propagates_provider_failure():
+    queries, packets = _bootstrap_inputs()
+    with pytest.raises(RuntimeError, match="provider failed for s2"):
+        phase_supply.build_bootstrap_selection(
+            _bootstrap_spec(),
+            provider=_BootstrapProvider(failing="s2"),
+            query_vectors_by_sample=queries,
+            speech_packet_bindings=packets,
+            split_identity_hash="b" * 64,
+            workers=2,
+        )
+
+
+@pytest.mark.parametrize("workers", [0, 21, True, "2"])
+def test_bootstrap_selection_rejects_invalid_worker_count(workers):
+    queries, packets = _bootstrap_inputs()
+    with pytest.raises(phase_supply.PhaseSupplyError, match="1 through 20"):
+        phase_supply.build_bootstrap_selection(
+            _bootstrap_spec(),
+            provider=_BootstrapProvider(),
+            query_vectors_by_sample=queries,
+            speech_packet_bindings=packets,
+            split_identity_hash="b" * 64,
+            workers=workers,
+        )
+
+
+def test_generation_lease_caps_parallel_workers_at_eight():
+    assert phase_supply._validate_bootstrap_workers(20, lease_metadata_present=True) == 8
