@@ -59,6 +59,7 @@ from ...rails.task_adapter import TaskAdapter
 from ..attempts.store import AttemptStore
 from ..base import (
     CoreError,
+    PayloadBindingContext,
     MAX_TOKENS_POLICIES,
     RunResult,
     TRANSPORTS,
@@ -930,6 +931,7 @@ class FlightRuntime:
         self._session_receipt_path: Path | None = None
         self._client = None
         self._binding = None
+        self._validated_packet_set = None
         self._output_rows: list[Mapping[str, object]] = []
         # Every phase summary ``run_phases`` got back, in program order.
         # ``_output_rows`` above carries only the LAST phase's rows (one row
@@ -2005,6 +2007,29 @@ class FlightRuntime:
             workers=resolved_workers,
         )
         duration = max(self._clock() - started, 1e-9)
+        packet_validation_seconds = 0.0
+        if self.uses_speech_feature_packets():
+            from ...rails.core_client import validate_speech_packet_set
+
+            values = self._composed.values
+            carrier_root = self._carrier_root_resolver(
+                self._lock, self._plan.carrier_lock_key, self._data_root
+            )
+            binding = self._payload_binding_factory(
+                carrier_lock_key=self._plan.carrier_lock_key,
+                samples=self._samples,
+                data_root=self._data_root,
+                carrier_root=carrier_root,
+                derived_media_roots=declared_derived_media_roots(values, self._data_root),
+            )
+            if isinstance(binding, PayloadBindingContext):
+                validation_started = self._clock()
+                self._validated_packet_set = validate_speech_packet_set(
+                    self._speech_feature_root(), self.speech_packet_bindings(), binding
+                )
+                packet_validation_seconds = max(
+                    self._clock() - validation_started, 1e-9
+                )
         packet_count = len(packets)
         packets_per_second = packet_count / duration
         manifest_hash = _canonical_hash({"packets": sorted(str(packet) for packet in packets)})
@@ -2017,6 +2042,7 @@ class FlightRuntime:
             "packet_count": packet_count,
             "packet_manifest_hash": manifest_hash,
             "duration_seconds": duration,
+            "packet_validation_seconds": packet_validation_seconds,
             "packets_per_second": packets_per_second,
             "promoter_meta": dict(promoter_meta) if isinstance(promoter_meta, Mapping) else {},
         }
@@ -2627,6 +2653,8 @@ class FlightRuntime:
             # receipt), the per-sample descriptors from that same receipt.
             kwargs["speech_feature_root"] = self._speech_feature_root()
             kwargs["speech_packet_bindings"] = self.speech_packet_bindings()
+            if self._validated_packet_set is not None:
+                kwargs["validated_packet_set"] = self._validated_packet_set
         if CONSTRUCTION_VISIBLE_FIELD in arm_fields:
             # rails.core_client.FrozenCoreClient REFUSES to be constructed for
             # a construction-proposer arm without its targets, and binds them
@@ -3592,8 +3620,10 @@ class FlightRuntime:
         from .. import preparation, preparation_fit
         from .. import config as config_module
         from ..model import transport
+        from ..model import speech_features
         from ..preparation import artifact_inputs
         from ...rails.adapters import runtime_view
+        from ...rails import core_client
 
         context = self.preparation_context()
         return artifact_inputs(
@@ -3607,8 +3637,11 @@ class FlightRuntime:
                     "transport": _sha256_file(Path(transport.__file__)),
                     "preparation_fit": _sha256_file(Path(preparation_fit.__file__)),
                     "preparation": _sha256_file(Path(preparation.__file__)),
+                    "runtime": _sha256_file(Path(__file__)),
                     "config": _sha256_file(Path(config_module.__file__)),
                     "runtime_view": _sha256_file(Path(runtime_view.__file__)),
+                    "core_client": _sha256_file(Path(core_client.__file__)),
+                    "speech_features": _sha256_file(Path(speech_features.__file__)),
                 },
             },
         )
@@ -3858,7 +3891,11 @@ class FlightRuntime:
             return self._run_obs_phases(policy)
 
         client_kwargs = self.frozen_core_client_kwargs()
+        client_initialization_started = self._clock()
         client = self._client_factory(**client_kwargs)
+        client_initialization_seconds = max(
+            self._clock() - client_initialization_started, 1e-9
+        )
         self._client = client
 
         started = self._clock()
@@ -3972,6 +4009,7 @@ class FlightRuntime:
             "dispatch": dispatch,
             "serving_slots": slots,
             "occupancy_slots": occupancy_slots,
+            "client_initialization_seconds": client_initialization_seconds,
         }
         require_mandatory_throughput_fields(
             "run_phases", payload, ("contacts_per_second", "tokens_per_second")
