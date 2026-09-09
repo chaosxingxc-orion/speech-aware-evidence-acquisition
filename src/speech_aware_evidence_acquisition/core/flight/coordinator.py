@@ -105,6 +105,7 @@ def coordinate_fit(
         }
         _event(name, event_path=event_path, **event_fields)
 
+    event("coordinate-start", warm=warm)
     resident = None
     if not warm:
         resident = find_resident(data_root)
