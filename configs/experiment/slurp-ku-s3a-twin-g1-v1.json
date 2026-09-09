@@ -27,7 +27,11 @@
     {"root": "repository", "relpath": "docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers.json", "sha256": "2abda571900bfcb5bf4a384eac1cb858fa8841ab3873d034b862c85671af443c"},
     {"root": "repository", "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-kus3-vectors/vectors.json", "sha256": "3c213ad4f4787e32d92fe30dd1119395817a73ba48d46cbed292a8f471aa86e5"}
   ],
-  "prepared_phase_supply": {"relpath": "PENDING-KU-S3A-TWIN-G1-PREPARED-PHASE-SUPPLY.json", "sha256": "PENDING-REGISTERED-PHASE-SUPPLY-SHA256", "status": "PENDING: root must produce and register the persistent full-roster twin seed artifact before generation"},
+  "pending_preparation": {
+    "fit": {"run_id": "PENDING-KU-S3A-TWIN-G1-FIT-RUN-ID", "artifact_relpath": "PENDING-KU-S3A-TWIN-G1-PROMPT-FIT.json", "artifact_sha256": "PENDING-REGISTERED-PROMPT-FIT-SHA256", "endpoint_count": 3001, "status": "pending root registration and fit receipt"},
+    "phase_supply": {"artifact_relpath": "PENDING-KU-S3A-TWIN-G1-PREPARED-PHASE-SUPPLY.json", "artifact_sha256": "PENDING-REGISTERED-PHASE-SUPPLY-SHA256", "status": "pending root preparation and registration under the exact source bindings"},
+    "scientific_eligibility": "pending root decision: retain KC-S1b as the comparison base; KV-0 remains harmful retrospective evidence and KU-S3b remains parked"
+  },
   "prepared_supply_inputs": {
     "provider": "kb-facet-v1",
     "dimension": "content",
@@ -69,7 +73,7 @@
       "baseline_fragment": "slurp-phase-slots-supplied-fillers-twin-v1",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
       "dataset_fragment": "slurp-speech-native-dev1000",
-      "readiness": {"state": "held", "reason": "Generation remains held until the fit cell and persistent phase-supply artifact are verified under the exact source bindings.", "depends_on": [{"run_id": "PENDING-KU-S3A-TWIN-G1-FIT-RUN-ID", "required_state": "prepared"}], "requirements": [{"kind": "preparation", "relpath": "PENDING-KU-S3A-TWIN-G1-PREPARED-PHASE-SUPPLY.json", "sha256": "PENDING-REGISTERED-PHASE-SUPPLY-SHA256", "reason": "full-roster twin phase-supply seed"}, {"kind": "preparation", "relpath": "PENDING-KU-S3A-TWIN-G1-PROMPT-FIT.json", "sha256": "PENDING-REGISTERED-PROMPT-FIT-SHA256", "reason": "full-roster actual twin request fit"}]}
+      "readiness": {"state": "held", "reason": "Generation remains held until the fit receipt and persistent phase-supply artifact are verified under the exact source bindings.", "requirements": []}
     }
   ],
   "decision": {"test_tuning": false, "paper_scale": false}

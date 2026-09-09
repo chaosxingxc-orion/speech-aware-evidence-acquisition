@@ -49,10 +49,20 @@
       "sha256": "3c213ad4f4787e32d92fe30dd1119395817a73ba48d46cbed292a8f471aa86e5"
     }
   ],
-  "prepared_phase_supply": {
-    "relpath": "PENDING-KU-S3A-G1-PREPARED-PHASE-SUPPLY.json",
-    "sha256": "PENDING-REGISTERED-PHASE-SUPPLY-SHA256",
-    "status": "PENDING: root must produce and register the persistent full-roster seed artifact before generation"
+  "pending_preparation": {
+    "fit": {
+      "run_id": "PENDING-KU-S3A-G1-FIT-RUN-ID",
+      "artifact_relpath": "PENDING-KU-S3A-G1-PROMPT-FIT.json",
+      "artifact_sha256": "PENDING-REGISTERED-PROMPT-FIT-SHA256",
+      "endpoint_count": 3001,
+      "status": "pending root registration and fit receipt"
+    },
+    "phase_supply": {
+      "artifact_relpath": "PENDING-KU-S3A-G1-PREPARED-PHASE-SUPPLY.json",
+      "artifact_sha256": "PENDING-REGISTERED-PHASE-SUPPLY-SHA256",
+      "status": "pending root preparation and registration under the exact source bindings"
+    },
+    "scientific_eligibility": "pending root decision: retain KC-S1b as the comparison base; KV-0 remains harmful retrospective evidence and KU-S3b remains parked"
   },
   "prepared_supply_inputs": {
     "provider": "kb-facet-v1",
@@ -108,11 +118,7 @@
       "readiness": {
         "state": "held",
         "reason": "Generation remains held until the fit cell and persistent phase-supply artifact are verified under the exact source bindings.",
-        "depends_on": [{"run_id": "PENDING-KU-S3A-G1-FIT-RUN-ID", "required_state": "prepared"}],
-        "requirements": [
-          {"kind": "preparation", "relpath": "PENDING-KU-S3A-G1-PREPARED-PHASE-SUPPLY.json", "sha256": "PENDING-REGISTERED-PHASE-SUPPLY-SHA256", "reason": "full-roster phase-supply seed"},
-          {"kind": "preparation", "relpath": "PENDING-KU-S3A-G1-PROMPT-FIT.json", "sha256": "PENDING-REGISTERED-PROMPT-FIT-SHA256", "reason": "full-roster actual request fit"}
-        ]
+        "requirements": []
       }
     }
   ],
