@@ -504,29 +504,32 @@ def rule_probe_modules(reader: TreeReader) -> list[str]:
 
 def rule_adapter_subclasses_outside_adapters(reader: TreeReader) -> list[str]:
     adapters_prefix = ADAPTERS_DIR + "/"
-    inventory = find_subclasses(
-        reader,
-        "speech_aware_evidence_acquisition.rails.task_adapter",
-        "TaskAdapter",
-    )
-    return sorted(
-        item for item in inventory
-        if not item.split("::", 1)[0].startswith(adapters_prefix)
-    )
+    candidates = [
+        f for f in reader.list_files(prefix=PACKAGE_ROOT) if f.endswith(".py")
+    ] + _launcher_py_candidates(reader)
+    offenders = []
+    for relpath in sorted(set(candidates)):
+        if relpath.startswith(adapters_prefix):
+            continue
+        tree = _parse(reader, relpath)
+        for cls_name in _classes_with_base(tree, "TaskAdapter"):
+            offenders.append(f"{relpath}::{cls_name}")
+    return sorted(offenders)
 
 
 def rule_controller_classes_outside_controllers(reader: TreeReader) -> list[str]:
     excluded = {CONTROLLERS_MODULE, KB_POLICY_MODULE}
-    inventory = find_subclasses(
-        reader,
-        "speech_aware_evidence_acquisition.rails.controllers",
-        "EvidenceAgentController",
-    )
-    return sorted(
-        item for item in inventory
-        if item.split("::", 1)[0] not in excluded
-    )
-
+    candidates = [
+        f for f in reader.list_files(prefix=PACKAGE_ROOT) if f.endswith(".py")
+    ] + _launcher_py_candidates(reader)
+    offenders = []
+    for relpath in sorted(set(candidates)):
+        if relpath in excluded:
+            continue
+        tree = _parse(reader, relpath)
+        for cls_name in _classes_with_methods(tree, {"initial_contact", "advance"}):
+            offenders.append(f"{relpath}::{cls_name}")
+    return sorted(offenders)
 
 
 def rule_launcher_dirs(reader: TreeReader) -> list[str]:
