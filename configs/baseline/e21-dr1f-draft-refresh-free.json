@@ -1,0 +1,36 @@
+{
+  "arm": "bare-core",
+  "policy": "obs-repair-loop",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "predecessor_snapshot": {
+    "receipt_relpath": "receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json",
+    "receipt_sha256": "40f466951acce38f13343ddea9357d15efe6eaacc660f9a126f51e81d48f241d"
+  },
+  "repair_frame": "e21-draft-refresh-frame-v1",
+  "response_postprocessor": "e21-free-refresh-delivery-v1",
+  "response_postprocessor_params": {},
+  "scorers": [
+    "asr-wer-whisper",
+    "conec-entity-wer-official",
+    "numeric-value-accuracy-v1",
+    "semantic-high-impact-error-rate-v1",
+    "cost"
+  ],
+  "task_instruction": "A draft transcript of this same audio window follows below. Listen to the audio and produce the final transcript of the window: keep the draft's words wherever the audio confirms them, and correct them wherever it does not. Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+  "obs_buffer_seconds": 90,
+  "obs_min_advance_seconds": 20,
+  "obs_max_advance_seconds": 55,
+  "obs_silence_snap_seconds": 2.0,
+  "obs_fallback_advance_seconds": 50,
+  "obs_boundary_mode": "fixed",
+  "obs_vad": "energy",
+  "obs_vad_trim_min_seconds": 0,
+  "obs_preprocess": [],
+  "obs_condition_tail_chars": 0,
+  "obs_slice_retry_max": 1,
+  "obs_slice_skip_max": 1,
+  "obs_batch_samples": 1,
+  "obs_batch_slices": 8,
+  "what_this_is": "DR-1f, the FREE refresh. The SAME request as DR-1c -- same draft, same frame, same instruction, same audio -- delivered verbatim. The one factor is the delivery rule, and the risk it admits is the one KC-E1 paid 2,242 non-entity deletions for; the corpus-WER and over-generation guards are what catch it. response_postprocessor_params is the empty object because the free rule takes no parameters and refuses any (a fragment pinning a span bound here would declare a constraint the rule does not apply), so the two fragments carry the identical KEY SET and differ in two values. Every key below except predecessor_snapshot, response_postprocessor and response_postprocessor_params is byte-identical across the three DR-1 cells, and the OBS block, the decoding parameters and the scorer list are byte-identical to the sealed comparator's e21-buf90-zero-locked-scored4 and to KC-E1f's own fragment. arm is bare-core: DR-1 supplies NO external knowledge, so the request carries exactly the comparator's D2-frozen bare-core payload field set and the draft rides at the end of the rendered task_instruction inside the frozen frame e21-draft-refresh-frame-v1, where obs_loop's own conditioned tail rides. No new key reaches the wire. The task_instruction's last three sentences are the comparator's whole instruction, byte for byte; the one sentence before them is what makes this a refresh."
+}

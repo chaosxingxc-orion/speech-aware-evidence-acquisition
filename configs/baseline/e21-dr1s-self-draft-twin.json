@@ -1,0 +1,40 @@
+{
+  "arm": "bare-core",
+  "policy": "obs-repair-loop",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "predecessor_snapshot": {
+    "receipt_relpath": "receipts/e21-predecessor-full44-direct-baseline-v2.json",
+    "receipt_sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a"
+  },
+  "repair_frame": "e21-draft-refresh-frame-v1",
+  "response_postprocessor": "e21-entity-repair-substitutions-v1",
+  "response_postprocessor_params": {
+    "max_span_tokens": 4,
+    "min_anchor_ratio": 0.6,
+    "max_substituted_fraction": 0.1
+  },
+  "scorers": [
+    "asr-wer-whisper",
+    "conec-entity-wer-official",
+    "numeric-value-accuracy-v1",
+    "semantic-high-impact-error-rate-v1",
+    "cost"
+  ],
+  "task_instruction": "A draft transcript of this same audio window follows below. Listen to the audio and produce the final transcript of the window: keep the draft's words wherever the audio confirms them, and correct them wherever it does not. Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+  "obs_buffer_seconds": 90,
+  "obs_min_advance_seconds": 20,
+  "obs_max_advance_seconds": 55,
+  "obs_silence_snap_seconds": 2.0,
+  "obs_fallback_advance_seconds": 50,
+  "obs_boundary_mode": "fixed",
+  "obs_vad": "energy",
+  "obs_vad_trim_min_seconds": 0,
+  "obs_preprocess": [],
+  "obs_condition_tail_chars": 0,
+  "obs_slice_retry_max": 1,
+  "obs_slice_skip_max": 1,
+  "obs_batch_samples": 1,
+  "obs_batch_slices": 8,
+  "what_this_is": "DR-1s, the SELF-DRAFT twin of DR-1c. Everything is DR-1c's except the bound snapshot: the typed draft is the COMPARATOR's own sealed hypothesis for the same window -- a long-window draft refreshed with the same long window -- so the twin asks whether a refresh helps at all without the short-unit draft. Its binding is KC-E1f's own committed receipt, unchanged and re-pinned by hash here. Against KC-E1f this cell is the same second pass with the brief and the entity-repair instruction removed, which is why the family can also read whether a knowledge-free refresh is competitive with the brief repair. Every key below except predecessor_snapshot, response_postprocessor and response_postprocessor_params is byte-identical across the three DR-1 cells, and the OBS block, the decoding parameters and the scorer list are byte-identical to the sealed comparator's e21-buf90-zero-locked-scored4 and to KC-E1f's own fragment. arm is bare-core: DR-1 supplies NO external knowledge, so the request carries exactly the comparator's D2-frozen bare-core payload field set and the draft rides at the end of the rendered task_instruction inside the frozen frame e21-draft-refresh-frame-v1, where obs_loop's own conditioned tail rides. No new key reaches the wire. The task_instruction's last three sentences are the comparator's whole instruction, byte for byte; the one sentence before them is what makes this a refresh."
+}
