@@ -1,0 +1,764 @@
+{
+  "config": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/configs/experiment/slurp-kv0-recovery-analysis-v1.json",
+    "sha256": "b78068b54cc4aa6d644712f495eeac63764675b3418eea18ffd5801e993b97b4"
+  },
+  "created_at_utc": "2026-09-09T12:49:25.949256+00:00",
+  "encoder_calls": 0,
+  "experiment_id": "SAEA-SLURP-KV-FAMILY-RECOVERY-READ-V1",
+  "implementation": [
+    {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py",
+      "sha256": "ffc9e156ebe1a071e915e5c4ac80a57f28c40b195cd23b0ff32fd26422f4ce6d"
+    },
+    {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/analysis/paired.py",
+      "sha256": "260377bf5ac37fed842636daff69f6a4e28e8011193b9ef1b58265b99b86ca78"
+    }
+  ],
+  "metadata": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+    "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+  },
+  "model_calls": 0,
+  "population_bindings": {
+    "full_roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    }
+  },
+  "populations": {
+    "DEV1000": 1000,
+    "NEW500": 500,
+    "OLD500": 500
+  },
+  "results": {
+    "kv0_minus_kc_s1b": {
+      "DEV1000": {
+        "official": {
+          "slu_f1_f1": {
+            "equal_stratum_delta": -0.027321209810074902,
+            "scenario_stratified": {
+              "bootstrap": {
+                "ci_high": -0.016875368923981678,
+                "ci_level": 0.9,
+                "ci_low": -0.04269378664238505,
+                "n_replicates": 10000,
+                "point_estimate": -0.029670841924226737,
+                "seed": 20260903,
+                "sigma_hat": 0.00789253862046316
+              },
+              "delta": -0.029670841924226754,
+              "harms": 75,
+              "left_mean": 0.2845328857403187,
+              "metric": "slu_f1_f1",
+              "n": 1000,
+              "per_stratum": {
+                "alarm": {
+                  "delta": -0.05446453876734164,
+                  "harms": 7,
+                  "left_mean": 0.2671393456605897,
+                  "n": 58,
+                  "right_mean": 0.21267480689324808,
+                  "saves": 0,
+                  "stratum": "alarm",
+                  "ties": 51
+                },
+                "audio": {
+                  "delta": 0.004747876466833605,
+                  "harms": 1,
+                  "left_mean": 0.03333333333333333,
+                  "n": 30,
+                  "right_mean": 0.03808120980016694,
+                  "saves": 1,
+                  "stratum": "audio",
+                  "ties": 28
+                },
+                "calendar": {
+                  "delta": -0.027202305890830447,
+                  "harms": 3,
+                  "left_mean": 0.26429752077830004,
+                  "n": 61,
+                  "right_mean": 0.2370952148874696,
+                  "saves": 1,
+                  "stratum": "calendar",
+                  "ties": 57
+                },
+                "cooking": {
+                  "delta": 0.009514392441221653,
+                  "harms": 1,
+                  "left_mean": 0.4095427734457077,
+                  "n": 37,
+                  "right_mean": 0.4190571658869294,
+                  "saves": 3,
+                  "stratum": "cooking",
+                  "ties": 33
+                },
+                "datetime": {
+                  "delta": 0.032781119323721464,
+                  "harms": 3,
+                  "left_mean": 0.30065112539999556,
+                  "n": 61,
+                  "right_mean": 0.333432244723717,
+                  "saves": 6,
+                  "stratum": "datetime",
+                  "ties": 52
+                },
+                "email": {
+                  "delta": -0.02680295241384012,
+                  "harms": 5,
+                  "left_mean": 0.25149335357570063,
+                  "n": 61,
+                  "right_mean": 0.2246904011618605,
+                  "saves": 2,
+                  "stratum": "email",
+                  "ties": 54
+                },
+                "general": {
+                  "delta": -0.010928961748633892,
+                  "harms": 1,
+                  "left_mean": 0.09059276467666054,
+                  "n": 61,
+                  "right_mean": 0.07966380292802665,
+                  "saves": 0,
+                  "stratum": "general",
+                  "ties": 60
+                },
+                "iot": {
+                  "delta": -0.04241005055010405,
+                  "harms": 4,
+                  "left_mean": 0.3894092194200656,
+                  "n": 61,
+                  "right_mean": 0.34699916886996157,
+                  "saves": 3,
+                  "stratum": "iot",
+                  "ties": 54
+                },
+                "lists": {
+                  "delta": -0.024437229437229452,
+                  "harms": 3,
+                  "left_mean": 0.18357158846570973,
+                  "n": 60,
+                  "right_mean": 0.15913435902848028,
+                  "saves": 1,
+                  "stratum": "lists",
+                  "ties": 56
+                },
+                "music": {
+                  "delta": 0.0015889371742604241,
+                  "harms": 0,
+                  "left_mean": 0.13726723365926152,
+                  "n": 51,
+                  "right_mean": 0.13885617083352195,
+                  "saves": 1,
+                  "stratum": "music",
+                  "ties": 50
+                },
+                "news": {
+                  "delta": -0.02003559623696921,
+                  "harms": 2,
+                  "left_mean": 0.24634465452640614,
+                  "n": 60,
+                  "right_mean": 0.22630905828943693,
+                  "saves": 2,
+                  "stratum": "news",
+                  "ties": 56
+                },
+                "play": {
+                  "delta": -0.02841463432564395,
+                  "harms": 4,
+                  "left_mean": 0.40012191173582246,
+                  "n": 60,
+                  "right_mean": 0.3717072774101785,
+                  "saves": 0,
+                  "stratum": "play",
+                  "ties": 56
+                },
+                "qa": {
+                  "delta": 0.016666666666666663,
+                  "harms": 0,
+                  "left_mean": 0.3918448280845073,
+                  "n": 60,
+                  "right_mean": 0.408511494751174,
+                  "saves": 1,
+                  "stratum": "qa",
+                  "ties": 59
+                },
+                "recommendation": {
+                  "delta": -0.03116531165311659,
+                  "harms": 4,
+                  "left_mean": 0.4002779956142841,
+                  "n": 60,
+                  "right_mean": 0.36911268396116753,
+                  "saves": 2,
+                  "stratum": "recommendation",
+                  "ties": 54
+                },
+                "social": {
+                  "delta": -0.1492867847635816,
+                  "harms": 16,
+                  "left_mean": 0.41018744471804475,
+                  "n": 60,
+                  "right_mean": 0.26090065995446315,
+                  "saves": 5,
+                  "stratum": "social",
+                  "ties": 39
+                },
+                "takeaway": {
+                  "delta": -0.008441261862886629,
+                  "harms": 3,
+                  "left_mean": 0.30555769477683975,
+                  "n": 39,
+                  "right_mean": 0.2971164329139531,
+                  "saves": 4,
+                  "stratum": "takeaway",
+                  "ties": 32
+                },
+                "transport": {
+                  "delta": -0.03761300480315766,
+                  "harms": 9,
+                  "left_mean": 0.30454721037358273,
+                  "n": 60,
+                  "right_mean": 0.2669342055704251,
+                  "saves": 8,
+                  "stratum": "transport",
+                  "ties": 43
+                },
+                "weather": {
+                  "delta": -0.09587813620071683,
+                  "harms": 9,
+                  "left_mean": 0.24452535059331174,
+                  "n": 60,
+                  "right_mean": 0.1486472143925949,
+                  "saves": 1,
+                  "stratum": "weather",
+                  "ties": 50
+                }
+              },
+              "right_mean": 0.25486204381609195,
+              "saves": 41,
+              "sign_test_p": 0.0020493292522852594,
+              "ties": 884
+            },
+            "speaker_clustered": {
+              "bootstrap": {
+                "ci_high": -0.01651136488094428,
+                "ci_level": 0.9,
+                "ci_low": -0.0438132347266661,
+                "n_replicates": 10000,
+                "point_estimate": -0.029670841924226737,
+                "seed": 20260903,
+                "sigma_hat": 0.00842262691000305
+              },
+              "delta": -0.029670841924226754,
+              "harms": 75,
+              "left_mean": 0.2845328857403187,
+              "metric": "slu_f1_f1",
+              "n": 1000,
+              "per_stratum": {},
+              "right_mean": 0.25486204381609195,
+              "saves": 41,
+              "sign_test_p": 0.0020493292522852594,
+              "ties": 884
+            }
+          }
+        }
+      },
+      "NEW500": {
+        "official": {
+          "slu_f1_f1": {
+            "equal_stratum_delta": -0.04438053300396563,
+            "scenario_stratified": {
+              "bootstrap": {
+                "ci_high": -0.028058837354884496,
+                "ci_level": 0.9,
+                "ci_low": -0.0653612351909818,
+                "n_replicates": 10000,
+                "point_estimate": -0.04626261474017771,
+                "seed": 20260903,
+                "sigma_hat": 0.011287235706048502
+              },
+              "delta": -0.04626261474017773,
+              "harms": 44,
+              "left_mean": 0.3189223983672731,
+              "metric": "slu_f1_f1",
+              "n": 500,
+              "per_stratum": {
+                "alarm": {
+                  "delta": -0.07327196449267753,
+                  "harms": 5,
+                  "left_mean": 0.35417862049616294,
+                  "n": 30,
+                  "right_mean": 0.2809066560034854,
+                  "saves": 0,
+                  "stratum": "alarm",
+                  "ties": 25
+                },
+                "audio": {
+                  "delta": 0.0,
+                  "harms": 0,
+                  "left_mean": 0.0,
+                  "n": 2,
+                  "right_mean": 0.0,
+                  "saves": 0,
+                  "stratum": "audio",
+                  "ties": 2
+                },
+                "calendar": {
+                  "delta": -0.01998001998001997,
+                  "harms": 2,
+                  "left_mean": 0.3007666532083425,
+                  "n": 33,
+                  "right_mean": 0.28078663322832254,
+                  "saves": 1,
+                  "stratum": "calendar",
+                  "ties": 30
+                },
+                "cooking": {
+                  "delta": 0.0,
+                  "harms": 0,
+                  "left_mean": 0.6305916305916306,
+                  "n": 9,
+                  "right_mean": 0.6305916305916306,
+                  "saves": 0,
+                  "stratum": "cooking",
+                  "ties": 9
+                },
+                "datetime": {
+                  "delta": 0.02890757515608644,
+                  "harms": 1,
+                  "left_mean": 0.29655244939483505,
+                  "n": 33,
+                  "right_mean": 0.3254600245509215,
+                  "saves": 2,
+                  "stratum": "datetime",
+                  "ties": 30
+                },
+                "email": {
+                  "delta": -0.0670650670650671,
+                  "harms": 4,
+                  "left_mean": 0.2686757686757687,
+                  "n": 33,
+                  "right_mean": 0.2016107016107016,
+                  "saves": 0,
+                  "stratum": "email",
+                  "ties": 29
+                },
+                "general": {
+                  "delta": -0.020202020202020193,
+                  "harms": 1,
+                  "left_mean": 0.08583157781018744,
+                  "n": 33,
+                  "right_mean": 0.06562955760816724,
+                  "saves": 0,
+                  "stratum": "general",
+                  "ties": 32
+                },
+                "iot": {
+                  "delta": -0.0379902954613035,
+                  "harms": 2,
+                  "left_mean": 0.43562500077689525,
+                  "n": 33,
+                  "right_mean": 0.39763470531559175,
+                  "saves": 2,
+                  "stratum": "iot",
+                  "ties": 29
+                },
+                "lists": {
+                  "delta": -0.035403138528138534,
+                  "harms": 2,
+                  "left_mean": 0.13341450216450218,
+                  "n": 32,
+                  "right_mean": 0.09801136363636365,
+                  "saves": 1,
+                  "stratum": "lists",
+                  "ties": 29
+                },
+                "music": {
+                  "delta": 0.0,
+                  "harms": 0,
+                  "left_mean": 0.12728265923568574,
+                  "n": 23,
+                  "right_mean": 0.12728265923568574,
+                  "saves": 0,
+                  "stratum": "music",
+                  "ties": 23
+                },
+                "news": {
+                  "delta": -0.006316742944317333,
+                  "harms": 1,
+                  "left_mean": 0.2687682021383671,
+                  "n": 32,
+                  "right_mean": 0.2624514591940498,
+                  "saves": 2,
+                  "stratum": "news",
+                  "ties": 29
+                },
+                "play": {
+                  "delta": -0.04617516663330973,
+                  "harms": 3,
+                  "left_mean": 0.4070615378516523,
+                  "n": 32,
+                  "right_mean": 0.36088637121834255,
+                  "saves": 0,
+                  "stratum": "play",
+                  "ties": 29
+                },
+                "qa": {
+                  "delta": 0.03125,
+                  "harms": 0,
+                  "left_mean": 0.46512265413510967,
+                  "n": 32,
+                  "right_mean": 0.49637265413510967,
+                  "saves": 1,
+                  "stratum": "qa",
+                  "ties": 31
+                },
+                "recommendation": {
+                  "delta": -0.03760162601626016,
+                  "harms": 3,
+                  "left_mean": 0.5623659669259231,
+                  "n": 32,
+                  "right_mean": 0.524764340909663,
+                  "saves": 2,
+                  "stratum": "recommendation",
+                  "ties": 27
+                },
+                "social": {
+                  "delta": -0.15860215053763438,
+                  "harms": 9,
+                  "left_mean": 0.3906814552037395,
+                  "n": 33,
+                  "right_mean": 0.2320793046661051,
+                  "saves": 1,
+                  "stratum": "social",
+                  "ties": 23
+                },
+                "takeaway": {
+                  "delta": -0.1388888888888889,
+                  "harms": 2,
+                  "left_mean": 0.25459598473535755,
+                  "n": 12,
+                  "right_mean": 0.11570709584646867,
+                  "saves": 0,
+                  "stratum": "takeaway",
+                  "ties": 10
+                },
+                "transport": {
+                  "delta": -0.1266009975687395,
+                  "harms": 6,
+                  "left_mean": 0.3854294259105995,
+                  "n": 33,
+                  "right_mean": 0.25882842834186,
+                  "saves": 3,
+                  "stratum": "transport",
+                  "ties": 24
+                },
+                "weather": {
+                  "delta": -0.09090909090909093,
+                  "harms": 3,
+                  "left_mean": 0.2122683142100618,
+                  "n": 33,
+                  "right_mean": 0.12135922330097086,
+                  "saves": 0,
+                  "stratum": "weather",
+                  "ties": 30
+                }
+              },
+              "right_mean": 0.27265978362709536,
+              "saves": 15,
+              "sign_test_p": 0.00020372185740785698,
+              "ties": 441
+            },
+            "speaker_clustered": {
+              "bootstrap": {
+                "ci_high": -0.028145357077376268,
+                "ci_level": 0.9,
+                "ci_low": -0.06573729072066774,
+                "n_replicates": 10000,
+                "point_estimate": -0.04626261474017771,
+                "seed": 20260903,
+                "sigma_hat": 0.01142237677226163
+              },
+              "delta": -0.04626261474017773,
+              "harms": 44,
+              "left_mean": 0.3189223983672731,
+              "metric": "slu_f1_f1",
+              "n": 500,
+              "per_stratum": {},
+              "right_mean": 0.27265978362709536,
+              "saves": 15,
+              "sign_test_p": 0.00020372185740785698,
+              "ties": 441
+            }
+          }
+        }
+      },
+      "OLD500": {
+        "official": {
+          "slu_f1_f1": {
+            "equal_stratum_delta": -0.013211709815273764,
+            "scenario_stratified": {
+              "bootstrap": {
+                "ci_high": 0.004582071856397559,
+                "ci_level": 0.9,
+                "ci_low": -0.031087143994082547,
+                "n_replicates": 10000,
+                "point_estimate": -0.013079069108275743,
+                "seed": 20260903,
+                "sigma_hat": 0.010765423755017975
+              },
+              "delta": -0.01307906910827572,
+              "harms": 31,
+              "left_mean": 0.25014337311336426,
+              "metric": "slu_f1_f1",
+              "n": 500,
+              "per_stratum": {
+                "alarm": {
+                  "delta": -0.03431372549019607,
+                  "harms": 2,
+                  "left_mean": 0.1738829797653327,
+                  "n": 28,
+                  "right_mean": 0.13956925427513664,
+                  "saves": 0,
+                  "stratum": "alarm",
+                  "ties": 26
+                },
+                "audio": {
+                  "delta": 0.0050870105001788665,
+                  "harms": 1,
+                  "left_mean": 0.03571428571428571,
+                  "n": 28,
+                  "right_mean": 0.04080129621446458,
+                  "saves": 1,
+                  "stratum": "audio",
+                  "ties": 26
+                },
+                "calendar": {
+                  "delta": -0.0357142857142857,
+                  "harms": 1,
+                  "left_mean": 0.22131604327146434,
+                  "n": 28,
+                  "right_mean": 0.18560175755717864,
+                  "saves": 0,
+                  "stratum": "calendar",
+                  "ties": 27
+                },
+                "cooking": {
+                  "delta": 0.01257259001161437,
+                  "harms": 1,
+                  "left_mean": 0.3384913550773753,
+                  "n": 28,
+                  "right_mean": 0.3510639450889897,
+                  "saves": 3,
+                  "stratum": "cooking",
+                  "ties": 24
+                },
+                "datetime": {
+                  "delta": 0.037346367807005676,
+                  "harms": 2,
+                  "left_mean": 0.305481707834649,
+                  "n": 28,
+                  "right_mean": 0.3428280756416547,
+                  "saves": 4,
+                  "stratum": "datetime",
+                  "ties": 22
+                },
+                "email": {
+                  "delta": 0.020648825567963047,
+                  "harms": 1,
+                  "left_mean": 0.23124265006490613,
+                  "n": 28,
+                  "right_mean": 0.2518914756328692,
+                  "saves": 2,
+                  "stratum": "email",
+                  "ties": 25
+                },
+                "general": {
+                  "delta": 0.0,
+                  "harms": 0,
+                  "left_mean": 0.09620416348357526,
+                  "n": 28,
+                  "right_mean": 0.09620416348357526,
+                  "saves": 0,
+                  "stratum": "general",
+                  "ties": 28
+                },
+                "iot": {
+                  "delta": -0.04761904761904756,
+                  "harms": 2,
+                  "left_mean": 0.33494061996380214,
+                  "n": 28,
+                  "right_mean": 0.2873215723447546,
+                  "saves": 1,
+                  "stratum": "iot",
+                  "ties": 25
+                },
+                "lists": {
+                  "delta": -0.011904761904761918,
+                  "harms": 1,
+                  "left_mean": 0.24089397280994693,
+                  "n": 28,
+                  "right_mean": 0.228989210905185,
+                  "saves": 0,
+                  "stratum": "lists",
+                  "ties": 27
+                },
+                "music": {
+                  "delta": 0.0028941355674028946,
+                  "harms": 0,
+                  "left_mean": 0.14546884836434165,
+                  "n": 28,
+                  "right_mean": 0.14836298393174455,
+                  "saves": 1,
+                  "stratum": "music",
+                  "ties": 27
+                },
+                "news": {
+                  "delta": -0.035714285714285726,
+                  "harms": 1,
+                  "left_mean": 0.22071774296987937,
+                  "n": 28,
+                  "right_mean": 0.18500345725559364,
+                  "saves": 0,
+                  "stratum": "news",
+                  "ties": 27
+                },
+                "play": {
+                  "delta": -0.008116883116883133,
+                  "harms": 1,
+                  "left_mean": 0.3921909104605884,
+                  "n": 28,
+                  "right_mean": 0.38407402734370527,
+                  "saves": 0,
+                  "stratum": "play",
+                  "ties": 27
+                },
+                "qa": {
+                  "delta": 0.0,
+                  "harms": 0,
+                  "left_mean": 0.30809874116953323,
+                  "n": 28,
+                  "right_mean": 0.30809874116953323,
+                  "saves": 0,
+                  "stratum": "qa",
+                  "ties": 28
+                },
+                "recommendation": {
+                  "delta": -0.02380952380952378,
+                  "harms": 1,
+                  "left_mean": 0.21503459982955375,
+                  "n": 28,
+                  "right_mean": 0.19122507602002997,
+                  "saves": 0,
+                  "stratum": "recommendation",
+                  "ties": 27
+                },
+                "social": {
+                  "delta": -0.1379013377064059,
+                  "harms": 7,
+                  "left_mean": 0.4340280985688622,
+                  "n": 27,
+                  "right_mean": 0.2961267608624563,
+                  "saves": 4,
+                  "stratum": "social",
+                  "ties": 16
+                },
+                "takeaway": {
+                  "delta": 0.04953546125978098,
+                  "harms": 1,
+                  "left_mean": 0.3282073436841652,
+                  "n": 27,
+                  "right_mean": 0.3777428049439462,
+                  "saves": 4,
+                  "stratum": "takeaway",
+                  "ties": 22
+                },
+                "transport": {
+                  "delta": 0.07115009746588694,
+                  "harms": 3,
+                  "left_mean": 0.20569116916167338,
+                  "n": 27,
+                  "right_mean": 0.2768412666275603,
+                  "saves": 5,
+                  "stratum": "transport",
+                  "ties": 19
+                },
+                "weather": {
+                  "delta": -0.10195141377937075,
+                  "harms": 6,
+                  "left_mean": 0.2839506172839506,
+                  "n": 27,
+                  "right_mean": 0.18199920350457985,
+                  "saves": 1,
+                  "stratum": "weather",
+                  "ties": 20
+                }
+              },
+              "right_mean": 0.23706430400508854,
+              "saves": 26,
+              "sign_test_p": 0.5966417603730826,
+              "ties": 443
+            },
+            "speaker_clustered": {
+              "bootstrap": {
+                "ci_high": 0.005112598168766001,
+                "ci_level": 0.9,
+                "ci_low": -0.033146392001296626,
+                "n_replicates": 10000,
+                "point_estimate": -0.013079069108275743,
+                "seed": 20260903,
+                "sigma_hat": 0.011580728544983076
+              },
+              "delta": -0.01307906910827572,
+              "harms": 31,
+              "left_mean": 0.25014337311336426,
+              "metric": "slu_f1_f1",
+              "n": 500,
+              "per_stratum": {},
+              "right_mean": 0.23706430400508854,
+              "saves": 26,
+              "sign_test_p": 0.5966417603730826,
+              "ties": 443
+            }
+          }
+        }
+      }
+    }
+  },
+  "schema": "saea-existing-score-contrasts-v1",
+  "scorer_invocations": 0,
+  "sources": {
+    "kc_s1b": {
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1/attempt-20260906T025102Z-af6b04/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.run-manifest.json",
+        "sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08"
+      },
+      "score": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-MF9-SLOT-GAP-AUDIT-V1/score-batch-decompose/kc-s1b-sealed.score.json",
+        "sha256": "5f1bd8fec45bef5e61892359e16d02377fa6ae198487cd3f7ddff5dc8ee91089"
+      },
+      "scorers": {
+        "official": "slurp-slu-official"
+      }
+    },
+    "kv0": {
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1.run-manifest.json",
+        "sha256": "ffd1d3ee543dc73a0802600a9812f8cfe888cdb4bd6456c0667b57d6229ed9c7"
+      },
+      "score": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/score-batch/attempt-20260909T062500Z-74bfac.score.json",
+        "sha256": "14b91511df514393412fae84f98c7e72e5576fd33b13753a5616b225949671ba"
+      },
+      "scorers": {
+        "official": "slurp-slu-official"
+      }
+    }
+  },
+  "tokenizer_calls": 0
+}

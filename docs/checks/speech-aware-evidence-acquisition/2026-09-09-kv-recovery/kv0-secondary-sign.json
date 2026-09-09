@@ -1,0 +1,31 @@
+{
+  "comparator_normalized_mean_rounded_pp": 32.77,
+  "comparator_outputs": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1/attempt-20260906T025102Z-af6b04/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.outputs.jsonl",
+    "sha256": "8dfeb906026057daa604bbe3d52b7dc9aeeccb8028f8fc46e5126bc9c0c97f8c"
+  },
+  "comparator_rounding_half_width_pp": 0.005,
+  "comparator_source": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-09-08-mf10-slot-vocab-cards-normalized-slu/normalized-slu.json",
+    "sha256": "b20abbb0ebc0878b46fb7802aa1c85b4a810cb62d3cc1dfa36f4e9fa5d354c67"
+  },
+  "delta_interval_from_comparator_rounding_pp": [
+    -4.712003518903196,
+    -4.702003518903196
+  ],
+  "kv0_normalized_mean_pp": 28.062996481096807,
+  "kv0_source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/score-batch/attempt-20260909T062500Z-74bfac.score.json",
+    "sha256": "14b91511df514393412fae84f98c7e72e5576fd33b13753a5616b225949671ba"
+  },
+  "limitation": "Comparator normalized per-row scores were not retained; preserve the existing rounded mean and its uncertainty. Do not invent a paired normalized CI or rerun scoring.",
+  "metric": "mean_per_row_normalized_slu_f1",
+  "model_calls": 0,
+  "normalized_sign_agrees_with_official_negative": true,
+  "population": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000-NEW500.json",
+    "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+  },
+  "schema": "saea-rounded-reference-sign-v1",
+  "scorer_invocations": 0
+}

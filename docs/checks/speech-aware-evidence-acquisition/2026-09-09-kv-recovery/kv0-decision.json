@@ -1,0 +1,40 @@
+{
+  "analysis_kind": "retrospective-recovery-of-preregistered-primary",
+  "cell_id": "kv0",
+  "ci90_pp": [
+    -6.53612351909818,
+    -2.80588373548845
+  ],
+  "contacts_added": 0,
+  "delta_pp": -4.626261474017773,
+  "execution_permission": "This decision selects the inherited fallback only. A complete registered ExecutionPlan, fit, runtime receipts and KC-S1b replication or named root-cause closure remain required.",
+  "experiment_id": "SAEA-SLURP-KV-FAMILY-RECOVERY-READ-V1",
+  "historical_verdict_present": false,
+  "ku_s3_comparator": "SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1",
+  "ku_s3_schema": "unchanged KC-S1b schema with five examples; preserve both arms consistently",
+  "kv_followups_admission": "not admitted by this recovery; already completed contacts remain historical",
+  "normalized_secondary_sign_agrees": true,
+  "null_calibration": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-09-09-null-new500-calibration/calibration.json",
+    "sha256": "2bd7e76ea2ea3c03369cd92d2c117c331fd28394a35da3568bf9f3e023cbdcb3"
+  },
+  "primary_metric": "mean_per_row_official_slu_f1",
+  "primary_population": "historically-exposed-NEW500",
+  "schema": "saea-scientific-decision-v1",
+  "sources": [
+    {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/kv0-contrasts.json",
+      "sha256": "64a2691e85c339adf997df4c12a1fed249c469fcbdb29995a4254caf66c48f27"
+    },
+    {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/kv0-secondary-sign.json",
+      "sha256": "2eb952442d7c510314273d66f370cf1a96f75d629ba84389aea6786e22859d63"
+    }
+  ],
+  "speaker_clustered_sensitivity_ci90_pp": [
+    -6.573729072066774,
+    -2.814535707737627
+  ],
+  "status": "DECIDED",
+  "verdict": "HARMFUL"
+}
