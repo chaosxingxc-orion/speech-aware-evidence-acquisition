@@ -146,9 +146,12 @@ def undated(lines: Sequence[str]) -> list[str]:
 #: is harmless when a cell stops early, and it was fatal the first time the
 #: gold-id rail let one get all the way to ``seal_and_score``: the smoke cell's
 #: receipt landed in the tree, the tree went dirty, and the NEXT cell's scoring
-#: correctly refused a COMPLETED manifest on a dirty tree
-#: (``core.bundle.require_clean_study_repo``). The receipt is a by-product of a
-#: contactless check, not evidence, so it is redirected OUT of the repo -- under
+#: refused a COMPLETED manifest over it. (Since 2026-09-09 the scoring entry
+#: gate applies the SAME load-bearing-surface rule the COMPLETED bind applies --
+#: ``core.bundle.git_commit.require_clean_load_bearing_surface`` -- so a stray
+#: ``docs/checks/`` by-product no longer stops a score. The redirection stands
+#: on its own merit regardless: the receipt is a by-product of a contactless
+#: check, not evidence.) It goes OUT of the repo -- under
 #: ``$SPEECHRL_DATA_DIR``, where large by-products already live -- and this
 #: script's own receipt stays the single committed record.
 def _scratch_receipt(cell: dict[str, Any]) -> Path:

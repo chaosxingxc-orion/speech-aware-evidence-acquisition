@@ -16,8 +16,9 @@ convention) and scores them through the SAME frozen scoring stack every other
 scorer in this study uses (``core.scorers.score_asr_outputs`` ->
 ``scoring.normalize.normalize_text_v1``/``scoring.wer.align``). It
 deliberately does NOT go through ``core.bundle.score_bundle``/
-``verify_bundle``: those additionally require a clean git tree
-(``core.bundle.require_clean_study_repo``) and re-verify the E0/D3 freeze on
+``verify_bundle``: those additionally require a git tree whose load-bearing
+surface is clean (``core.bundle.git_commit.
+require_clean_load_bearing_surface``) and re-verify the E0/D3 freeze on
 every call, which is right for a formal audit record but wrong for an
 analysis tool a reviewer wants to re-run against a dirty working tree. In
 exchange this module does its own light integrity check (outputs.jsonl bytes

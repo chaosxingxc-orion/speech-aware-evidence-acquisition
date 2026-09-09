@@ -64,6 +64,10 @@ from speech_aware_evidence_acquisition.core.bundle import (
     finalize_bundle,
     verify_bundle,
 )
+from speech_aware_evidence_acquisition.core.bundle.git_commit import (
+    require_clean_load_bearing_surface,
+    require_clean_study_repo,
+)
 from speech_aware_evidence_acquisition.core.bundle.outputs import (
     _minimum_model_calls_from_trace,
 )
@@ -492,6 +496,54 @@ def test_build_manifest_completed_status_survives_dirt_outside_load_bearing_surf
     assert manifest["status"] == STATUS_COMPLETED
     assert len(manifest["study_commit"]) == 40
     assert manifest["study_repo_dirt"] == ["docs/mid-flight-note.md"]
+
+
+@pytest.mark.parametrize(
+    "relpath,seals",
+    [
+        ("src/tampered.py", False),
+        ("configs/tampered.json", False),
+        ("docs/arms/tampered.arms", False),
+        ("scripts/tampered.sh", False),
+        ("docs/2026-09-09-readiness-note.md", True),
+        ("README-note.md", True),
+    ],
+)
+def test_the_seal_half_and_the_score_half_share_one_load_bearing_rule(
+    bundled_repo, relpath, seals
+):
+    """REGRESSION (2026-09-09): the two halves of one seal must agree.
+
+    ``_study_commit_for_completed_manifest`` (the SEAL half) and
+    ``core.scorers._assert_scoring_entry_gate`` (the SCORE half) both go
+    through ``require_clean_load_bearing_surface`` now. Before this repair
+    the score half called ``require_clean_study_repo`` instead, which refuses
+    ANY dirt -- so a manifest could seal COMPLETED over an untracked
+    readiness note and then never be scored or finalized on the same tree
+    (measured as the Audio2Tool wire checks' ``seal_and_score =
+    SCORING_FAILED``, receipt ``docs/checks/
+    speech-aware-evidence-acquisition/
+    2026-09-09-a2t-official-scorer-seal-and-score-diagnosis/``).
+
+    This probes the shared rule directly, over both classes of dirt, so the
+    two can never drift apart again without a red test.
+    """
+
+    _lock, repo_root = bundled_repo
+    target = repo_root / relpath
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("landed after launch", encoding="utf-8")
+    if seals:
+        commit, tolerated = require_clean_load_bearing_surface(repo_root)
+        assert len(commit) == 40
+        assert tolerated == [relpath]
+        # Same tree, the strict launch-time rule, which is deliberately NOT
+        # what either half of the seal uses.
+        with pytest.raises(BundleError, match="uncommitted"):
+            require_clean_study_repo(repo_root)
+    else:
+        with pytest.raises(BundleError, match="load-bearing"):
+            require_clean_load_bearing_surface(repo_root)
 
 
 def test_run_experiment_bundled_toctou_dirty_tree_outside_load_bearing_surface_still_completes(
@@ -1636,21 +1688,22 @@ def test_finalize_bundle_refuses_when_a_frozen_scoring_source_is_edited(
     assert result.attempt_state == "FINALIZED"
 
 
-def test_finalize_bundle_refuses_a_dirty_study_repo_at_scoring_time(
+def test_finalize_bundle_refuses_load_bearing_dirt_at_scoring_time(
     synthetic_world, bundled_repo, tmp_path
 ):
-    """The clean-tree requirement applies at SCORING time too, not merely at
-    run time: the D3 freeze covers only scoring/*.py, but score_asr_outputs
-    also imports data.references.reference_tokens, which lives outside that
-    frozen package -- an uncommitted edit there would defeat the freeze
-    check alone, so finalize_bundle must independently refuse a dirty study
-    tree before scoring anything (same rule the run path already enforces
-    before spending any budget)."""
+    """The load-bearing-surface requirement applies at SCORING time too, not
+    merely at run time: the D3 freeze covers only scoring/*.py, but
+    score_asr_outputs also imports data.references.reference_tokens, which
+    lives outside that frozen package -- an uncommitted edit there would
+    defeat the freeze check alone, so finalize_bundle must independently
+    refuse before scoring anything. src/ is inside the surface, so that hole
+    stays closed."""
 
     _, repo_root = bundled_repo
     manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
-    (repo_root / "uncommitted-at-scoring-time.txt").write_text("dirty", encoding="utf-8")
-    with pytest.raises(BundleError, match="uncommitted"):
+    (repo_root / "src").mkdir(parents=True, exist_ok=True)
+    (repo_root / "src" / "edited-at-scoring-time.py").write_text("dirty", encoding="utf-8")
+    with pytest.raises(BundleError, match="load-bearing"):
         finalize_bundle(
             manifest_path,
             lock,
@@ -1658,6 +1711,37 @@ def test_finalize_bundle_refuses_a_dirty_study_repo_at_scoring_time(
             repo_root=repo_root,
             ledger_cells=_HUMAN_LEDGER_CELLS,
         )
+
+
+def test_finalize_bundle_completes_through_dirt_outside_the_load_bearing_surface(
+    synthetic_world, bundled_repo, tmp_path
+):
+    """REGRESSION (2026-09-09), the incident's second half: a manifest that
+    SEALED COMPLETED over a governance document must still FINALIZE.
+
+    build_manifest(status=COMPLETED) has tolerated and recorded dirt outside
+    the load-bearing surface since 2026-08-16, but the scoring entry gate
+    finalize_bundle passes through kept refusing ANY dirt -- so the outputs
+    were sealed and then permanently unfinalizable on the same tree, which is
+    exactly the 2026-08-16 incident one step later. Both halves share one
+    rule now."""
+
+    _, repo_root = bundled_repo
+    manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    # Under docs/, which bundled_repo already tracks: a brand-new untracked
+    # DIRECTORY collapses in `git status --porcelain` to its own entry, which
+    # is not the shape a readiness note takes in the real study repo.
+    (repo_root / "docs" / "2026-09-09-readiness-note.md").write_text(
+        "a readiness note landed before finalize", encoding="utf-8"
+    )
+    result = finalize_bundle(
+        manifest_path,
+        lock,
+        synthetic_world.data_root,
+        repo_root=repo_root,
+        ledger_cells=_HUMAN_LEDGER_CELLS,
+    )
+    assert result.attempt_state == "FINALIZED"
 
 
 def test_cli_score_manifest_mode_refuses_when_a_frozen_scoring_source_is_edited(

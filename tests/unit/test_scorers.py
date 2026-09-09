@@ -12,6 +12,9 @@ from speech_aware_evidence_acquisition.contracts import GateClosed
 from speech_aware_evidence_acquisition.core import scorers  # noqa: F401 (registration)
 from speech_aware_evidence_acquisition.core.base import SCORERS
 from speech_aware_evidence_acquisition.core.bundle import BundleError, VerifiedBundle
+from speech_aware_evidence_acquisition.core.bundle.git_commit import (
+    require_clean_load_bearing_surface,
+)
 from speech_aware_evidence_acquisition.core.scorers import (
     ScoringPhaseError,
     score_bundle,
@@ -36,8 +39,9 @@ def _git(repo_root: Path, *args: str) -> None:
 @pytest.fixture()
 def clean_repo_root(tmp_path):
     """An isolated, ACTUAL git repo distinct from this checkout's own
-    REPO_ROOT -- used only for score_bundle's clean-study-repo check
-    (core.bundle.require_clean_study_repo), never for the D3/scope check
+    REPO_ROOT -- used only for score_bundle's load-bearing-surface check
+    (core.bundle.git_commit.require_clean_load_bearing_surface), never for
+    the D3/scope check
     (which is always the real REPO_ROOT -- see
     core.scorers._assert_scoring_entry_gate's docstring for why). Isolating
     this check keeps these tests deterministic regardless of this checkout's
@@ -302,16 +306,8 @@ def test_score_bundle_refuses_a_general_audio_carrier(tmp_path, synthetic_world,
         score_bundle(bundle, lock, synthetic_world.data_root, repo_root=clean_repo_root)
 
 
-def test_score_bundle_refuses_a_dirty_study_repo(tmp_path, synthetic_world, clean_repo_root):
-    outputs = _outputs_path(tmp_path, synthetic_world)
-    _commit_reference_d1_receipt(
-        clean_repo_root,
-        "earnings21-original",
-        synthetic_world.e21 / "transcripts" / "nlp_references" / "4000001.nlp",
-    )
-    lock = load_lock(synthetic_world.lock_path)
-    (clean_repo_root / "uncommitted.txt").write_text("dirty", encoding="utf-8")
-    bundle = VerifiedBundle(
+def _asr_bundle(tmp_path, outputs):
+    return VerifiedBundle(
         manifest_path=tmp_path / "fake.run-manifest.json",
         manifest={"scorers": ["asr-wer"], "plan": _VALID_PLAN_META},
         outputs_path=outputs,
@@ -320,8 +316,88 @@ def test_score_bundle_refuses_a_dirty_study_repo(tmp_path, synthetic_world, clea
         split_ids=frozenset({"4000001"}),
         attempt_state="OPENED",
     )
-    with pytest.raises(BundleError, match="uncommitted"):
-        score_bundle(bundle, lock, synthetic_world.data_root, repo_root=clean_repo_root)
+
+
+@pytest.mark.parametrize(
+    "relpath",
+    [
+        "src/tampered.py",
+        "configs/tampered.json",
+        "docs/arms/tampered.arms",
+        "scripts/tampered.sh",
+    ],
+)
+def test_score_bundle_refuses_dirt_inside_the_load_bearing_surface(
+    tmp_path, synthetic_world, clean_repo_root, relpath
+):
+    """Every file whose bytes can change a score is inside the load-bearing
+    surface -- the driver's own ``src/`` (``data.references``, which the D3
+    freeze over ``scoring/*.py`` does NOT cover, lives there), the composed
+    ``configs/``, the committed arm files and the launch ``scripts/`` -- and
+    an uncommitted edit to any of them still refuses before a scorer runs."""
+
+    outputs = _outputs_path(tmp_path, synthetic_world)
+    _commit_reference_d1_receipt(
+        clean_repo_root,
+        "earnings21-original",
+        synthetic_world.e21 / "transcripts" / "nlp_references" / "4000001.nlp",
+    )
+    lock = load_lock(synthetic_world.lock_path)
+    target = clean_repo_root / relpath
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("tampered before scoring", encoding="utf-8")
+    with pytest.raises(BundleError, match="load-bearing"):
+        score_bundle(
+            _asr_bundle(tmp_path, outputs),
+            lock,
+            synthetic_world.data_root,
+            repo_root=clean_repo_root,
+        )
+
+
+def test_score_bundle_scores_through_dirt_outside_the_load_bearing_surface(
+    tmp_path, synthetic_world, clean_repo_root
+):
+    """REGRESSION (2026-09-09): what SEALS must SCORE.
+
+    ``core.bundle.git_commit._study_commit_for_completed_manifest`` binds a
+    COMPLETED manifest over dirt confined outside the load-bearing surface
+    (the 2026-08-16 flight-protection fix) and records it. This gate used to
+    call ``require_clean_study_repo``, which refuses ANY dirt, so the same
+    tree that sealed a manifest could never score or finalize it -- the
+    2026-08-16 incident moved one step later. Measured on 2026-09-09 as the
+    four Audio2Tool wire-check cells' ``seal_and_score = SCORING_FAILED`` /
+    "official scorer exited with status 1" over ONE untracked readiness note
+    (``docs/checks/speech-aware-evidence-acquisition/
+    2026-09-09-a2t-official-scorer-seal-and-score-diagnosis/``).
+
+    The dirt is placed directly under ``docs/`` -- already tracked here, via
+    the D1 receipt committed just above -- because an entirely new, wholly
+    untracked directory collapses in ``git status --porcelain`` to its own
+    directory entry, which is not the shape a governance-doc edit takes in
+    the real study repo."""
+
+    outputs = _outputs_path(tmp_path, synthetic_world)
+    _commit_reference_d1_receipt(
+        clean_repo_root,
+        "earnings21-original",
+        synthetic_world.e21 / "transcripts" / "nlp_references" / "4000001.nlp",
+    )
+    lock = load_lock(synthetic_world.lock_path)
+    governance_doc = clean_repo_root / "docs" / "2026-09-09-mid-flight-note.md"
+    governance_doc.write_text("a readiness note landed mid-flight", encoding="utf-8")
+    # The seal half tolerates exactly this and records it; the score half
+    # must agree, or a sealed COMPLETED manifest is unfinalizable.
+    commit, tolerated = require_clean_load_bearing_surface(clean_repo_root)
+    assert len(commit) == 40
+    assert tolerated == ["docs/2026-09-09-mid-flight-note.md"]
+    results = score_bundle(
+        _asr_bundle(tmp_path, outputs),
+        lock,
+        synthetic_world.data_root,
+        repo_root=clean_repo_root,
+    )
+    assert set(results) == {"asr-wer"}
 
 
 # ---------------------------------------------------------------------------
