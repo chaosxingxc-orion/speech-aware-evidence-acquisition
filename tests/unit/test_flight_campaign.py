@@ -162,3 +162,36 @@ def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, mon
         assert cli.main(args) == 0
     if mode == "worker":
         assert calls == ["preflight", "preprocess", "serve", "generate", "seal"]
+
+
+def test_fit_cell_cannot_be_dispatched_as_generation():
+    document = dict(cell().document)
+    document["allowed_execution_stages"] = ["prompt-fit"]
+    fit = CampaignCell.from_document(document)
+    fit.assert_mode("prompt-fit")
+    with pytest.raises(CampaignError, match="stage"):
+        fit.assert_mode("worker")
+    with pytest.raises(CampaignError, match="stage"):
+        fit.assert_mode("campaign")
+
+
+@pytest.mark.parametrize("stages", [[], ["unknown"], ["worker", "worker"], "worker"])
+def test_stage_declaration_rejects_invalid_values(stages):
+    document = dict(cell().document)
+    document["allowed_execution_stages"] = stages
+    with pytest.raises(CampaignError, match="stage"):
+        CampaignCell.from_document(document)
+
+
+def test_campaign_holds_fit_cell_before_service_or_lease(tmp_path):
+    repo, _, data = _serving_world(tmp_path)
+    runtime, starter, attached = _serving_runtime(tmp_path, repo)
+    document = dict(cell().document)
+    document["allowed_execution_stages"] = ["prompt-fit"]
+    report = run_campaign(
+        [runtime], cells=[CampaignCell.from_document(document)],
+        repo_root=repo, data_root=data, owner="root", expected_session_id="session",
+        resident_finder=lambda _: pytest.fail("fit cell must not look up a generation service"),
+    )
+    assert "stage" in report["states"][_SERVING_RUN_ID]["reason"]
+    assert starter.calls == 0 and attached == []

@@ -48,6 +48,9 @@ def main(argv=None) -> int:
         cells = tuple(cell for cell in cells if cell.document["cell_id"] == args.cell)
         if not cells:
             parser.error("cell is not declared by the experiment")
+    if args.mode != "campaign":
+        for cell in cells:
+            cell.assert_mode(args.mode)
     policy = None
     if args.mode in {"worker", "prompt-fit"}:
         document = json.loads(args.lease_token_file.read_text(encoding="utf-8"))

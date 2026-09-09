@@ -22,6 +22,9 @@ from .queue import FlightDependency, FlightQueue, FlightReadiness
 from .runtime import FlightRuntime
 
 
+EXECUTION_STAGES = frozenset({"check", "wire-check", "prepare-supply", "prompt-fit", "worker", "campaign"})
+
+
 class CampaignError(ValueError):
     """A campaign is missing explicit identity, readiness or ownership."""
 
@@ -43,7 +46,21 @@ class CampaignCell:
             "ready", "held", "preparation-pending",
         }:
             raise CampaignError("campaign cell requires explicit scientific readiness")
+        stages = document.get("allowed_execution_stages")
+        if stages is not None and (
+            not isinstance(stages, list) or not stages
+            or any(not isinstance(stage, str) for stage in stages)
+            or len(stages) != len(set(stages)) or not set(stages) <= EXECUTION_STAGES
+        ):
+            raise CampaignError("allowed execution stages must be unique known modes")
         return cls(dict(document))
+
+    def assert_mode(self, mode: str) -> None:
+        """Enforce declared stage custody before any runtime or session work."""
+        if mode not in self.document.get("allowed_execution_stages", EXECUTION_STAGES):
+            raise CampaignError(
+                f"cell {self.document['cell_id']} does not permit execution stage {mode}"
+            )
 
     @property
     def run_id(self) -> str:
@@ -113,6 +130,10 @@ def run_campaign(
 
     def readiness(flight):
         cell = by_run[flight.run_id]
+        try:
+            cell.assert_mode("campaign")
+        except CampaignError as error:
+            return FlightReadiness("held", str(error))
         if flight.attempt_id != cell.attempt_id:
             raise CampaignError("runtime attempt differs from the registered campaign cell")
         state = declared_readiness(cell, data_root)
