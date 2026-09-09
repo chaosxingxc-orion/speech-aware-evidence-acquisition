@@ -57,6 +57,7 @@ from openjiuwen.core.graph.executable import Input, Output
 from openjiuwen.core.session.node import Session
 from openjiuwen.core.workflow import WorkflowComponent
 
+from ...core.delivery import normalize_terminal_response
 from ...core.model import SliceRecord
 from ...data.loader import SampleRef
 from ..obs_audio import (
@@ -358,7 +359,7 @@ class BoundaryResolve(WorkflowComponent):
         if cfg.boundary_mode == "model":
             transcript, estimate = parse_boundary_response(text)
         else:
-            transcript, estimate = text.strip(), None
+            transcript, estimate = normalize_terminal_response(text), None
         if slice_spec.get("is_final", False):
             accepted, dropped = transcript, ""
             resolution: dict[str, object] = {

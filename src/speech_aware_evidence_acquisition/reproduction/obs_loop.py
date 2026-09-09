@@ -96,6 +96,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
 
+from ..core.delivery import normalize_terminal_response, terminal_response_saturated
 from ..core.base import SampleContext, SampleOutcome
 from ..core.model import FrozenCoreError, SliceRecord, SliceRegistry
 from ..core.tracing import set_current_trace_buffer
@@ -286,14 +287,7 @@ def _slice_saturated(usage: Mapping[str, object] | None, max_tokens: object) -> 
     a non-numeric cap is simply "cannot be judged saturated", not a crash.
     """
 
-    if max_tokens is None or isinstance(max_tokens, bool) or not isinstance(max_tokens, (int, float)):
-        return False
-    if not isinstance(usage, Mapping):
-        return False
-    completion_tokens = usage.get("completion_tokens")
-    if isinstance(completion_tokens, bool) or not isinstance(completion_tokens, (int, float)):
-        return False
-    return completion_tokens >= max_tokens
+    return terminal_response_saturated(usage, max_tokens)
 
 
 def request_slice_with_retry(adapter_request, build_payload, request_id, retry_max, max_tokens=None):
@@ -1745,7 +1739,9 @@ class ObsAgentLoopPolicy:
         for window, result in zip(windows, results):
             win_iteration, record, _is_final, _slice_seconds, _pre, _unit = window
             _request_id, response, _retry_of, saturated, skipped = result
-            transcript = "" if (skipped or saturated) else response.text.strip()
+            transcript = normalize_terminal_response(
+                None if response is None else response.text, saturated=saturated, skipped=skipped
+            )
             fields: dict[str, object] = {}
             if window_hook is not None:
                 transcript, fields = window_hook.accept(
@@ -2116,7 +2112,7 @@ class ObsAgentLoopPolicy:
             elif cfg.boundary_mode == "model":
                 transcript, estimate = parse_boundary_response(response.text)
             else:
-                transcript, estimate = response.text.strip(), None
+                transcript, estimate = normalize_terminal_response(response.text), None
             if is_final:
                 accepted, dropped = transcript, ""
                 resolution: dict[str, object] = {
