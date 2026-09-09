@@ -11,13 +11,45 @@ from .factory import build_flight_runtime
 from .lease import WorkerExecutionPolicy
 
 
+def load_campaign_plan(repo: Path, path: Path):
+    """Resolve registered cells across experiment fragments without copying them."""
+    document = json.loads(path.read_text(encoding="utf-8"))
+    if (
+        not isinstance(document, dict)
+        or set(document) != {"schema", "cells"}
+        or document["schema"] != "saea-campaign-plan-v1"
+        or not isinstance(document["cells"], list)
+        or not document["cells"]
+    ):
+        raise CampaignError("campaign plan must declare a nonempty cell list")
+    selected, seen = [], set()
+    for item in document["cells"]:
+        if not isinstance(item, dict) or set(item) != {"experiment", "cell"}:
+            raise CampaignError("campaign plan cell requires experiment and cell")
+        matches = [
+            cell for cell in load_campaign_cells(repo, item["experiment"])
+            if cell.document["cell_id"] == item["cell"]
+        ]
+        if len(matches) != 1:
+            raise CampaignError("campaign plan cell must resolve exactly once")
+        cell = matches[0]
+        cell.assert_mode("campaign")
+        if cell.run_id in seen:
+            raise CampaignError("campaign plan repeats a run")
+        seen.add(cell.run_id)
+        selected.append((item["experiment"], cell))
+    return tuple(selected)
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=[
         "check", "wire-check", "prepare-supply", "prompt-fit", "coordinate-fit", "worker", "campaign",
     ])
-    for name in ("repo-root", "data-root", "runtime-root", "lock-path", "experiment"):
+    for name in ("repo-root", "data-root", "runtime-root", "lock-path"):
         parser.add_argument("--" + name, required=True)
+    parser.add_argument("--experiment")
+    parser.add_argument("--campaign-plan", type=Path)
     parser.add_argument("--cell")
     parser.add_argument("--owner")
     parser.add_argument("--expected-session-id")
@@ -26,6 +58,10 @@ def main(argv=None) -> int:
     parser.add_argument("--contact-cap", type=int)
     parser.add_argument("--workers", type=int, default=1)
     args = parser.parse_args(argv)
+    if bool(args.experiment) == bool(args.campaign_plan):
+        parser.error("select either an experiment or a committed campaign plan")
+    if args.campaign_plan is not None and (args.mode != "campaign" or args.cell):
+        parser.error("campaign plans require campaign mode and cannot select a partial cell")
     if args.mode in {"worker", "prompt-fit"} and (
         not args.expected_session_id or args.lease_token_file is None
     ):
@@ -51,11 +87,18 @@ def main(argv=None) -> int:
         parser.error("imported package must belong to --repo-root; use its literal PYTHONPATH")
     if os.environ.get("PYTHONDONTWRITEBYTECODE") != "1":
         parser.error("PYTHONDONTWRITEBYTECODE=1 is required")
-    cells = load_campaign_cells(repo, args.experiment)
-    if args.cell:
-        cells = tuple(cell for cell in cells if cell.document["cell_id"] == args.cell)
-        if not cells:
-            parser.error("cell is not declared by the experiment")
+    if args.campaign_plan is not None:
+        plan_path = args.campaign_plan.resolve()
+        if not plan_path.is_relative_to(repo):
+            parser.error("campaign plan must be within repo-root")
+        selected = load_campaign_plan(repo, plan_path)
+    else:
+        selected = tuple((args.experiment, cell) for cell in load_campaign_cells(repo, args.experiment))
+        if args.cell:
+            selected = tuple(pair for pair in selected if pair[1].document["cell_id"] == args.cell)
+            if not selected:
+                parser.error("cell is not declared by the experiment")
+    cells = tuple(cell for _experiment, cell in selected)
     if args.mode != "campaign":
         for cell in cells:
             cell.assert_mode("prompt-fit" if args.mode == "coordinate-fit" else args.mode)
@@ -68,11 +111,11 @@ def main(argv=None) -> int:
         build_flight_runtime(
             repo, root, model=cell.document["model_fragment"],
             dataset=cell.document["dataset_fragment"], baseline=cell.document["baseline_fragment"],
-            experiment=args.experiment, run_id=cell.run_id, attempt_id=cell.attempt_id,
+            experiment=experiment, run_id=cell.run_id, attempt_id=cell.attempt_id,
             runtime_root=Path(args.runtime_root), lock_path=Path(args.lock_path),
             execution_policy=policy,
         )
-        for cell in cells
+        for experiment, cell in selected
     ]
     if args.mode == "campaign":
         result = run_campaign(

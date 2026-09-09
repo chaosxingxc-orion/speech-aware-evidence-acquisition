@@ -27,7 +27,7 @@
           "sha256": "PENDING-SEALED-FINALIZED-MANIFEST"
         },
         "score": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-V1/official-finalize/attempt-20260909T164321Z-a9c5ef.score.json",
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-V1/attempt-20260909T164321Z-a9c5ef/score-batch/attempt-20260909T164321Z-a9c5ef.score.json",
           "sha256": "PENDING-COMPLETE-OFFICIAL-SCORE"
         },
         "scorers": {
@@ -40,7 +40,7 @@
           "sha256": "PENDING-SEALED-FINALIZED-MANIFEST"
         },
         "score": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KU-S3A-G1-MAX256-V1/official-finalize/attempt-20260909T164321Z-77997e.score.json",
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KU-S3A-G1-MAX256-V1/attempt-20260909T164321Z-77997e/score-batch/attempt-20260909T164321Z-77997e.score.json",
           "sha256": "PENDING-COMPLETE-OFFICIAL-SCORE"
         },
         "scorers": {
@@ -53,7 +53,7 @@
           "sha256": "PENDING-SEALED-FINALIZED-MANIFEST"
         },
         "score": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-V1/official-finalize/attempt-20260909T164321Z-d09106.score.json",
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-V1/attempt-20260909T164321Z-d09106/score-batch/attempt-20260909T164321Z-d09106.score.json",
           "sha256": "PENDING-COMPLETE-OFFICIAL-SCORE"
         },
         "scorers": {

@@ -158,18 +158,28 @@ class FlightQueue:
                 except Exception as error:  # noqa: BLE001 -- fail closed, visible reason
                     state = FlightReadiness("held", f"readiness check failed: {error}")
             if state.state == "ready":
-                try:
-                    self._ensure_preflighted(flight)
-                except Exception as error:  # noqa: BLE001 -- preflight is a readiness refusal
-                    state = FlightReadiness("preflight-failed", f"{type(error).__name__}: {error}")
-                else:
-                    ready.append(flight)
+                ready.append(flight)
             self._states[flight.run_id] = state
-        if self._served_profile is not None:
-            for flight in ready:
-                if flight.serving_profile_fingerprint() == self._served_profile:
-                    return flight
-        return ready[0] if ready else None
+        fallback = None
+        for flight in ready:
+            try:
+                self._ensure_preflighted(flight)
+            except Exception as error:  # noqa: BLE001 -- preflight is a readiness refusal
+                self._states[flight.run_id] = FlightReadiness(
+                    "preflight-failed", f"{type(error).__name__}: {error}"
+                )
+                continue
+            if fallback is None:
+                fallback = flight
+            # Once an admissible matching flight is found, do not delay it
+            # behind unrelated complete-roster preflights. Preserve geometry
+            # preference when selecting a successor to the current service.
+            if (
+                self._served_profile is None
+                or flight.serving_profile_fingerprint() == self._served_profile
+            ):
+                return flight
+        return fallback
 
     def _score_pool(self) -> object:
         if self._score_pool_instance is None:

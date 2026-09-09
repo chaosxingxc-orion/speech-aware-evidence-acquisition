@@ -1,0 +1,34 @@
+{
+  "basis": "Completed KC-S1b same-profile component repeat; retained original schema examples after KV recovery; final prepared-supply parity; all three full-roster max256 fits passed. This admits the registered matched comparison, not retrieval effectiveness.",
+  "contacts": {
+    "generation": 0,
+    "tokenizer": 9003
+  },
+  "decision_id": "KU-S3-MAX256-ADMISSION-V1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-V1",
+    "SAEA-SLURP-KU-S3A-G1-MAX256-V1",
+    "SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-V1"
+  ],
+  "fit_batch_sha256": "4352f8263325e86ecc59c4a018cb7b6e6ab53043811a07571a6d0a4447912d5f",
+  "fit_pins": {
+    "control": {
+      "relpath": "prepared/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-FIT-V1/request-fit.json",
+      "sha256": "0d0ea1bb981201080608fce923f7b1db15ed77980dd4581856d79cdecfad9f32"
+    },
+    "speech": {
+      "relpath": "prepared/SAEA-SLURP-KU-S3A-G1-MAX256-FIT-V1/request-fit.json",
+      "sha256": "e00673a92741a24e0b5f9da6767d00f77f9dbe72bba8c5d37dd5ffd1750fbe0b"
+    },
+    "twin": {
+      "relpath": "prepared/SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-FIT-V1/request-fit.json",
+      "sha256": "2198f9b1191c1f56f91d6ce163f58948595ec9ebd865b8f9aa890c00da3bc0bd"
+    }
+  },
+  "owner_decisions": [
+    "OWNER-KUS3-SCHEMA-003",
+    "OWNER-KUS3-BUDGET-005"
+  ],
+  "schema": "saea-campaign-decision-v1",
+  "status": "decided"
+}

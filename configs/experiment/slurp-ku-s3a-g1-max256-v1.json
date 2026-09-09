@@ -133,9 +133,35 @@
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
-        "state": "held",
-        "reason": "Held pending the fresh source-bound fit receipt, preparation registration and root final exposure review.",
-        "requirements": []
+        "state": "ready",
+        "reason": "Owner-approved fixed max256 matched comparison; full-roster actual fits and source-bound preparation verified; separate registered execution plan remains mandatory.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-FIT-V1/request-fit.json",
+            "sha256": "0d0ea1bb981201080608fce923f7b1db15ed77980dd4581856d79cdecfad9f32",
+            "reason": "All three comparison arms must pass real capacity checks"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-KU-S3A-G1-MAX256-FIT-V1/request-fit.json",
+            "sha256": "e00673a92741a24e0b5f9da6767d00f77f9dbe72bba8c5d37dd5ffd1750fbe0b",
+            "reason": "All three comparison arms must pass real capacity checks"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-FIT-V1/request-fit.json",
+            "sha256": "2198f9b1191c1f56f91d6ce163f58948595ec9ebd865b8f9aa890c00da3bc0bd",
+            "reason": "All three comparison arms must pass real capacity checks"
+          },
+          {
+            "kind": "decision",
+            "relpath": "coordination/ku-s3-max256-admission-v1.json",
+            "sha256": "d3d430bcc63534237ee998e49a6b2e35367e743ef6fc795717631bad8889361e",
+            "expected_decision_id": "KU-S3-MAX256-ADMISSION-V1",
+            "reason": "Root must formally admit this fixed matched group"
+          }
+        ]
       }
     }
   ],
@@ -183,5 +209,9 @@
   "prepared_phase_supply": {
     "relpath": "prepared/SAEA-SLURP-KU-S3-G1-MAX256-PREPARE-V2/speech-supply.json",
     "sha256": "75affecadf9dbbbd406fe5a1af90fa43795e748a6b31b99bd4e129486f6a1582"
+  },
+  "prepared_request_fit": {
+    "relpath": "prepared/SAEA-SLURP-KU-S3A-G1-MAX256-FIT-V1/request-fit.json",
+    "sha256": "e00673a92741a24e0b5f9da6767d00f77f9dbe72bba8c5d37dd5ffd1750fbe0b"
   }
 }

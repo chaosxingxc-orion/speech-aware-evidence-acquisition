@@ -1,0 +1,17 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "slurp-ku-s3a-control-g1-max256-v1",
+      "cell": "ku-s3a-control-g1-max256-generation"
+    },
+    {
+      "experiment": "slurp-ku-s3a-g1-max256-v1",
+      "cell": "ku-s3a-g1-max256-generation"
+    },
+    {
+      "experiment": "slurp-ku-s3a-twin-g1-max256-v1",
+      "cell": "ku-s3a-twin-g1-max256-generation"
+    }
+  ]
+}
