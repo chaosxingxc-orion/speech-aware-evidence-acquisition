@@ -134,10 +134,6 @@
       "the four-row engineering arms do not establish effectiveness"
     ]
   },
-  "prepared_request_fit": {
-    "relpath": "prepared/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-RECOVERY-FIT-V1/request-fit.json",
-    "sha256": "PENDING-REGISTERED-PROMPT-FIT-SHA256"
-  },
   "owner_recovery_decision": {
     "decision_id": "OWNER-KUS3-RECOVERY-006",
     "repo_relpath": "docs/superpowers/plans/experiment-handoff/OWNER-KUS3-RECOVERY-006.md",
