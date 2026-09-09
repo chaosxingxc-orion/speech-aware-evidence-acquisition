@@ -206,6 +206,9 @@ def _prepare_state(
         # policy's own substitution.
         max_iterations = len(plan_units) + 8
 
+    from ..window_controller import build_controller_window_hook
+
+    window_hook = build_controller_window_hook(ctx, cfg, window_hook)
     return ObsSampleState(
         cfg=cfg,
         pcm=pcm,

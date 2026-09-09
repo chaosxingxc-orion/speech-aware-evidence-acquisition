@@ -767,6 +767,7 @@ def run_experiment(
                     "run_dir": Path(run_dir),
                     "repo_root": Path(repo_root),
                     "config_values": values,
+                    "execution_plan": plan,
                     # The run's shared dispatch-slot pool, or None at
                     # obs_prefetch_depth 0 (every config before 2026-09-08).
                     # reproduction.obs_loop's slice-parallel pass reads it and
