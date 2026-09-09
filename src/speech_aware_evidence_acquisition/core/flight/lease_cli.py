@@ -158,8 +158,7 @@ def handoff_worker_lease(
         _preserve(lease)
         return 2
     except BaseException:
-        if token_path.exists():
-            _preserve(lease)
+        _preserve(lease)
         raise
 
 
