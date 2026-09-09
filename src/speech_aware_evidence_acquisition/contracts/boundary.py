@@ -50,6 +50,8 @@ TRACE_CHANNELS = (
     # a decode-confidence signal is core provenance, not an OBS/ORG/SUPPLY/USE
     # observation -- what a Reviewer judge later DERIVES from it is.
     "MODEL_LOGPROBS",
+    # Opt-in exact HTTP response provenance; absent from historical runs.
+    "MODEL_WIRE_RESPONSE",
     "TOOL",
     "COST",
     # obs-replay-loop policy (reproduction.replay_loop): a fifth research-axis

@@ -388,6 +388,7 @@ class LlamaServerTransport:
         user_turn_text: str | None = None,
         user_turn_audio_first: bool = True,
         omit_system_message: bool = False,
+        preserve_wire_responses: bool = False,
     ) -> None:
         # Prompt ordering is part of the request's identity: the bytes the
         # model sees change with it, so it is a MODEL-CONFIG field (inside the
@@ -494,6 +495,15 @@ class LlamaServerTransport:
                 "assembly"
             )
         self._omit_system_message = bool(omit_system_message)
+        # Exact HTTP response capture is an explicit provenance opt-in. The
+        # historical default stays completely untouched: no extra envelope
+        # fields and no sibling trace record are produced when this is false.
+        if not isinstance(preserve_wire_responses, bool):
+            raise SessionError(
+                "preserve_wire_responses must be a bool, got "
+                f"{type(preserve_wire_responses).__name__}"
+            )
+        self._preserve_wire_responses = preserve_wire_responses
         # R0 repair T5 (I5): there is no "no session" transport, mirroring the
         # T3 fail-closed constructor discipline for PayloadBindingContext --
         # a caller can never construct a transport that could ever be asked
@@ -964,6 +974,15 @@ class LlamaServerTransport:
                 f"transport returned a malformed response: {error}"
             ) from error
         envelope: dict[str, object] = {"text": text, "usage": usage}
+        if self._preserve_wire_responses:
+            # Keep the server bytes exactly as received. The adapter validates
+            # the envelope and emits these fields on a separate trace channel;
+            # MODEL_RESPONSE remains the historical normalized record.
+            envelope["wire_response_b64"] = base64.b64encode(raw).decode("ascii")
+            envelope["wire_response_sha256"] = hashlib.sha256(raw).hexdigest()
+            envelope["wire_finish_reason"] = (
+                choice.get("finish_reason") if isinstance(choice, Mapping) else None
+            )
         if isinstance(response_tool_calls, list) and response_tool_calls:
             # Raw pass-through (unmodified: still the server's own
             # function.arguments JSON STRING, never the parsed dict above) so
@@ -1021,6 +1040,11 @@ def _llama_server_factory(
         # being silently coerced to True by Python truthiness.
         omit_system_message=(
             values["omit_system_message"] if "omit_system_message" in values else False
+        ),
+        preserve_wire_responses=(
+            values["preserve_wire_responses"]
+            if "preserve_wire_responses" in values
+            else False
         ),
     )
 

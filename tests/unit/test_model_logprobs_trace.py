@@ -130,7 +130,7 @@ def _server_logprobs(k=5):
     }
 
 
-def _transport(*, logprobs=None):
+def _transport(*, logprobs=None, wire_response=None):
     def transport(request_bytes):
         assert isinstance(request_bytes, bytes)
         envelope = {
@@ -139,18 +139,20 @@ def _transport(*, logprobs=None):
         }
         if logprobs is not None:
             envelope["logprobs"] = logprobs
+        if wire_response is not None:
+            envelope.update(wire_response)
         return json.dumps(envelope).encode()
 
     return transport
 
 
-def _adapter(tmp_path, *, run_dir, logprobs=None, plan=None):
+def _adapter(tmp_path, *, run_dir, logprobs=None, wire_response=None, plan=None):
     sink = TraceSink(tmp_path / run_dir, "SAEA-E-000-logprobs")
     adapter = FrozenCoreAdapter(
         gate=_OpenGate(),
         plan=plan or _plan(),
         arm=_ARM,
-        transport=_transport(logprobs=logprobs),
+        transport=_transport(logprobs=logprobs, wire_response=wire_response),
         sink=sink,
         binding=_binding(tmp_path),
     )
@@ -219,6 +221,45 @@ def test_the_record_records_a_missing_k_as_absent_rather_than_the_server_default
     )
     records = {record["record_id"]: record for record in _trace_records(tmp_path, "nok")}
     assert records["req-1/logprobs"]["payload"]["requested_top_logprobs"] is None
+
+
+def test_opt_in_wire_response_record_preserves_exact_bytes_and_finish_reason(tmp_path):
+    raw = b'{"choices":[{"finish_reason":"length"}],"usage":{"completion_tokens":2}}\n'
+    wire = {
+        "wire_response_b64": __import__("base64").b64encode(raw).decode("ascii"),
+        "wire_response_sha256": hashlib.sha256(raw).hexdigest(),
+        "wire_finish_reason": "length",
+    }
+    adapter, sink = _adapter(tmp_path, run_dir="wire", wire_response=wire)
+    response = adapter.request(_payload())
+    records = {record["record_id"]: record for record in _trace_records(tmp_path, "wire")}
+    payload = records["req-1/wire-response"]["payload"]
+    assert records["req-1/wire-response"]["channel"] == "MODEL_WIRE_RESPONSE"
+    assert payload["request_id"] == "req-1"
+    assert payload["sample_id"] == "5000001"
+    assert payload["response_b64"] == wire["wire_response_b64"]
+    assert payload["response_sha256"] == hashlib.sha256(raw).hexdigest()
+    assert payload["finish_reason"] == "length"
+    assert response.text == "hello world"
+    assert set(records["req-1/response"]["payload"]) == {
+        "response_sha256", "response_text_sha256", "text", "usage"
+    }
+    assert sink.manifest()["req-1/wire-response"]
+
+
+def test_malformed_wire_response_hash_fails_closed(tmp_path):
+    raw = b"raw"
+    adapter, _ = _adapter(
+        tmp_path,
+        run_dir="bad-wire",
+        wire_response={
+            "wire_response_b64": __import__("base64").b64encode(raw).decode("ascii"),
+            "wire_response_sha256": "0" * 64,
+            "wire_finish_reason": "stop",
+        },
+    )
+    with pytest.raises(FrozenCoreError, match="hash does not match"):
+        adapter.request(_payload())
 
 
 def test_the_response_record_is_untouched_by_the_new_one(tmp_path):
@@ -353,6 +394,20 @@ def test_the_accepted_edges_of_the_range_are_accepted(tmp_path):
 # ---------------------------------------------------------------------------
 # The channel is a real, validated channel
 # ---------------------------------------------------------------------------
+
+
+def test_wire_response_channel_is_registered_core_provenance():
+    TraceRecord(
+        channel="MODEL_WIRE_RESPONSE",
+        record_id="req-1/wire-response",
+        payload={
+            "request_id": "req-1",
+            "sample_id": "sample-1",
+            "response_b64": "eA==",
+            "response_sha256": "0" * 64,
+            "finish_reason": "stop",
+        },
+    ).validate()
 
 
 def test_the_channel_carries_no_research_axis_prefix_requirement():
