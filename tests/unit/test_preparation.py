@@ -235,3 +235,68 @@ def test_source_receipts_require_full_confined_file_digest(tmp_path):
     ):
         with pytest.raises(PreparationError):
             verify_source_receipts(bad, repo_root=tmp_path, data_root=tmp_path)
+
+
+def test_concurrent_cold_preparation_runs_one_producer(tmp_path):
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Event
+
+    entered, release, calls = Event(), Event(), []
+    path = tmp_path / "shared.json"
+
+    def produce():
+        calls.append(1)
+        entered.set()
+        assert release.wait(5)
+        return {"done": True}
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        first = pool.submit(
+            prepare_artifact, path, kind="test", inputs=_inputs(), producer=produce
+        )
+        assert entered.wait(5)
+        try:
+            with pytest.raises(PreparationError, match="busy"):
+                prepare_artifact(
+                    path,
+                    kind="test",
+                    inputs=_inputs(),
+                    producer=lambda: calls.append(2),
+                )
+        finally:
+            release.set()
+        first.result(timeout=5)
+    assert calls == [1]
+    assert (
+        prepare_artifact(
+            path,
+            kind="test",
+            inputs=_inputs(),
+            producer=lambda: pytest.fail("warm producer"),
+        )["cache"]
+        == "warm"
+    )
+
+
+def test_interrupted_encoder_is_never_automatically_repeated(tmp_path):
+    path = tmp_path / "encoder.json"
+
+    def fail():
+        raise RuntimeError("encoder interrupted")
+
+    with pytest.raises(RuntimeError, match="interrupted"):
+        prepare_artifact(
+            path,
+            kind="packets",
+            inputs=_inputs(),
+            producer=fail,
+            contact_class="encoder",
+        )
+    with pytest.raises(PreparationError, match="prior encoder"):
+        prepare_artifact(
+            path,
+            kind="packets",
+            inputs=_inputs(),
+            producer=lambda: pytest.fail("encoder repeated"),
+            contact_class="encoder",
+        )
