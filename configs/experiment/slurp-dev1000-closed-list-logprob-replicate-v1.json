@@ -1,0 +1,38 @@
+{
+  "experiment_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-REPLICATE-V1",
+  "purpose": "THE LP-2 CONFIRMATION CELL. A FRESH REPLICATE of SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1's configuration -- the same baseline fragment, the same model fragment (logprobs true / top_logprobs 5 included), the same dataset fragment, the same arm, the same packets, the same instruction, the same geometry and the same seed -- flown again so the LP-2 label-token judge can be read on rows its threshold was NOT fitted to. Nothing about the cell is new; what is new is that the rule reading it was frozen before the contact. The predecessor's own read fixed the judge's floor as the value that flags 86 of ITS 1,000 rows (docs/checks/speech-aware-evidence-acquisition/2026-09-09-lp2-label-token-logprob-design/), which is exactly why a second pass is bought: a statistic chosen after the numbers existed cannot be decided on those numbers. This cell adds no evidence, no retrieval, no second contact, no post-processor and no knowledge, and it makes no SLURP accuracy, superiority, generalization or Stage-3 claim.",
+  "split_id": "DEV-1000",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "dev",
+    "planned_model_calls": 1050,
+    "planned_gpu_hours": 0.1,
+    "planned_speech_audio_seconds": 3000
+  },
+  "cells": [
+    {
+      "cell_id": "closed-list-logprob-replicate",
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-direct-closed-list",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64-logprobs5",
+      "dataset_fragment": "slurp-speech-native-dev1000"
+    }
+  ],
+  "frozen_judge": {
+    "judges": ["slurp-intent-token-logprob-flag-v1"],
+    "statistic": "intent_mean_token_logprob",
+    "threshold": -0.2675283079346116,
+    "flag_budget_the_threshold_was_fixed_at": 86,
+    "alternate_statistic": "intent_min_token_logprob",
+    "alternate_threshold": -0.5693119168281555,
+    "basis": "Both floors are the value that flags exactly 86 of the predecessor arm's 1,000 sealed rows, ties at the boundary included -- the same flag budget the failed probe's own rule used, so the successor is read at the predecessor's operating point rather than at a budget chosen to flatter it. They are quoted from the predecessor verdict's successor_diagnostic_NOT_PREREGISTERED field and re-derived from the sealed rows by docs/checks/speech-aware-evidence-acquisition/2026-09-09-lp2-label-token-logprob-design/label_token_design_read.py, which refuses unless the re-derivation equals the constants core.judges ships. THE CHOSEN STATISTIC IS intent_mean_token_logprob AND IT IS NAMED HERE, BEFORE THE CONTACT: on the design read it reaches 75.58 % precision at 86 flags against the minimum's 72.09 %, and it does not sit on the predecessor bar's own value to three decimals, which the minimum does.",
+    "read_only": "This block is a READ parameter, not a flight parameter. It is hashed into config_hash like every other declared key and it reaches no request: the judge is driven OFFLINE over this cell's own sealed MODEL_LOGPROBS records after the flight lands, never inside the loop. rails.phase_review.default_state_for_review does not carry a row's logprobs, so an in-flight phase_review form of this judge does not exist yet and is NOT what this cell buys."
+  },
+  "one_factor_basis": "NO FACTOR MOVES. Against the predecessor SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-V1 the only composed keys that differ are the five an experiment fragment cannot share between two runs -- experiment_id, purpose, execution_plan, cells and budget_basis -- plus this fragment's own documentation and frozen_judge read block. The baseline, model and dataset fragments are named by the same three strings and are read as the same bytes; decoding_params, the arm, the policy, the evidence source, the instruction, the packets and their promotion receipt, the build, the serving geometry, the server env, temperature 0, seed 20260803, max_tokens 64 and id_slot per-sample are unchanged. scripts/slurp_label_token_logprob_wire_check.py proves that contact-free, in three stages, and its request stage reports every key that moved.",
+  "profile_basis": "bounded-discovery-probe, not baseline-reproduction. This cell reproduces no published protocol and its outputs are not a comparator: greedy is not bitwise reproducible across batch compositions on llama-server and n_probs > 0 additionally disables backend sampling for the slot, so these are a NEW arm's answers by construction. Every relation the confirmation read measures is measured WITHIN this cell -- its own official scores against its own confidences -- exactly as the predecessor's was. The one cross-arm quantity it reports is the FLIP LADDER against the predecessor's sealed rows, which is a stability measurement and never an accuracy comparison.",
+  "budget_basis": "1,000 contacts, one per sample, plus margin for the harness's own accounting and one permitted recovery = 1,050 planned model calls, matching the predecessor's own cell. Metered speech is the roster's own 2,884.7936875 seconds rounded up to 3,000. GPU hours 0.1 against a predecessor that spent 0.0690 on the identical 1,000 contacts on the identical geometry, a 45 % margin. With the eight-row smoke's own row the family's expected spend is 1,008 contacts and about 0.07 GPU-hours. Paid API spend 0. Plan cells are RUN-CUMULATIVE across every attempt of this run id.",
+  "preregistration": "docs/readiness/2026-09-09-slurp-label-token-logprob-judge-lp2-v1-preregistration.md",
+  "design_read": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-lp2-label-token-logprob-design/",
+  "wire_check_script": "scripts/slurp_label_token_logprob_wire_check.py",
+  "smoke": "SAEA-SLURP-DEV1000-CLOSED-LIST-LOGPROB-REPLICATE-SMOKE-8-V1"
+}
