@@ -313,3 +313,20 @@ def test_bootstrap_selection_rejects_invalid_worker_count(workers):
 
 def test_generation_lease_caps_parallel_workers_at_eight():
     assert phase_supply._validate_bootstrap_workers(20, lease_metadata_present=True) == 8
+
+@pytest.mark.parametrize("workers", [1, 2])
+def test_bootstrap_does_not_retain_parent_provider_after_completion(workers):
+    import gc
+    import weakref
+
+    queries, packets = _bootstrap_inputs()
+    provider = _BootstrapProvider()
+    reference = weakref.ref(provider)
+    phase_supply.build_bootstrap_selection(
+        _bootstrap_spec(), provider=provider,
+        query_vectors_by_sample=queries, speech_packet_bindings=packets,
+        split_identity_hash="b" * 64, workers=workers,
+    )
+    del provider
+    gc.collect()
+    assert reference() is None

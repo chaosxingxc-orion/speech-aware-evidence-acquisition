@@ -888,14 +888,20 @@ SEED_QUERY_ID_PREFIX = "phase-supply-seed"
 _BOOTSTRAP_WORKER_STATE = None
 
 
-def _bootstrap_worker_init():
-    if _BOOTSTRAP_WORKER_STATE is None:
-        raise RuntimeError("bootstrap worker state was not initialized")
+def _bootstrap_worker_init(state):
+    global _BOOTSTRAP_WORKER_STATE
+    _BOOTSTRAP_WORKER_STATE = state
 
 
 def _bootstrap_one(task):
+    if _BOOTSTRAP_WORKER_STATE is None:
+        raise RuntimeError("bootstrap worker state was not initialized")
+    return _bootstrap_select(task, _BOOTSTRAP_WORKER_STATE)
+
+
+def _bootstrap_select(task, state):
     sample_id, query_vectors, descriptor = task
-    spec, provider, split_identity_hash = _BOOTSTRAP_WORKER_STATE
+    spec, provider, split_identity_hash = state
     seed_state = QueryState(
         query_id=f"{SEED_QUERY_ID_PREFIX}:{spec.phase}:{sample_id}",
         query_sample_id=sample_id,
@@ -936,8 +942,28 @@ def build_bootstrap_selection(
     workers: int = 1,
     lease_metadata_present: bool = False,
 ) -> tuple[dict[str, tuple[str, ...]], dict[str, tuple[str, ...]]]:
-    """Return deterministic bootstrap selections, optionally using fork workers."""
-    global _BOOTSTRAP_WORKER_STATE
+    """``({sample: facet_ids}, {sample: value_ids})`` for a supplied FIRST
+    phase, decided BEFORE the flight.
+
+    A first phase has no preceding ``advance``, so no wave can carry an
+    ``acquire`` transition for it (``rails.controllers``, "Traced supply").
+    Its selection is therefore decided here -- a pure function of the pinned
+    query vectors, the frozen snapshot and the pinned knobs, so it is
+    reproducible from the config hash plus two sha256s -- and seeded into
+    each sample's initial ``QueryState`` through ``rails.runner``'s
+    ``bootstrap_value_ids`` mapping form. It still reaches the model ONLY as
+    typed content blocks with ``evidence_id``/``source_uri``/
+    ``knowledge_role``, and the SUPPLY trace record reports it per sample.
+
+    What this route does NOT get, stated plainly: an ``acquire`` transition
+    and therefore an ``assert_knowledge_use_binding`` call at contact time.
+    The compensating evidence is that the decision is pre-flight and
+    hash-pinned rather than runtime and unrecorded.
+    
+    Use explicit workers for Linux fork preparation without changing retrieval
+    arithmetic. The parent never installs worker-global provider state, so
+    independent calls cannot leak providers or select from another job.
+    """
     workers = _validate_bootstrap_workers(workers, lease_metadata_present=lease_metadata_present)
     tasks = [
         (sample_id, query_vectors_by_sample[sample_id], speech_packet_bindings[sample_id])
@@ -947,11 +973,9 @@ def build_bootstrap_selection(
     if not tasks:
         return {}, {}
 
+    state = (spec, provider, split_identity_hash)
     if workers == 1:
-        rows = []
-        for task in tasks:
-            _BOOTSTRAP_WORKER_STATE = (spec, provider, split_identity_hash)
-            rows.append(_bootstrap_one(task))
+        rows = [_bootstrap_select(task, state) for task in tasks]
     else:
         import sys
         if sys.platform != "linux":
@@ -961,12 +985,12 @@ def build_bootstrap_selection(
         import multiprocessing
         from concurrent.futures import ProcessPoolExecutor
 
-        _BOOTSTRAP_WORKER_STATE = (spec, provider, split_identity_hash)
         context = multiprocessing.get_context("fork")
         with ProcessPoolExecutor(
             max_workers=workers,
             mp_context=context,
             initializer=_bootstrap_worker_init,
+            initargs=(state,),
         ) as pool:
             rows = list(pool.map(_bootstrap_one, tasks))
 

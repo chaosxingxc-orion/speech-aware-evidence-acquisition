@@ -1,0 +1,32 @@
+{
+  "schema": "saea-model-free-preparation-plan-v1",
+  "run_id": "SAEA-SLURP-KU-S3-G1-PREPARE-V1",
+  "status": "registered",
+  "owner_schema_decision": "OWNER-KUS3-SCHEMA-003",
+  "configurations": [
+    {
+      "relpath": "configs/experiment/slurp-ku-s3a-g1-v1.json",
+      "sha256": "78824900a3b598be43ae240538cb768b4adab29e9223b9ffbc8233d2e9cddede"
+    },
+    {
+      "relpath": "configs/experiment/slurp-ku-s3a-twin-g1-v1.json",
+      "sha256": "7468ed4118d1d6a5229fa9fae1283dc0c7ba9298e42f37a78ad88e94ddc89b2c"
+    }
+  ],
+  "scope": "Persist full-roster original frozen-vector selection for speech and form-twin, verify warm reuse and original selection equivalence; no runtime answer or scorer read.",
+  "sample_count_per_arm": 1000,
+  "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+  "workers_per_job": 10,
+  "jobs": 2,
+  "aggregate_worker_cap": 20,
+  "generation_overlap": "Do not start generation until these 10-worker jobs complete. For later overlap, root assigns at most4 to each of2 jobs, aggregate8.",
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "network": 0,
+    "scorer": 0
+  },
+  "implementation": "FlightRuntime.prepare_phase_supply and rails.phase_supply.build_bootstrap_selection; same candidates/fuse arithmetic under serial and fork execution",
+  "output_policy": "Immutable source/config-bound artifacts in data-root prepared/; commit receipts only, never vectors, raw requests or speech"
+}
