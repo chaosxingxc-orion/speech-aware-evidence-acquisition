@@ -1,0 +1,237 @@
+"""Shared preparation artifacts and exact fit are tested without endpoints."""
+
+import hashlib
+import json
+
+import pytest
+
+from speech_aware_evidence_acquisition.core.preparation import (
+    PreparationError,
+    artifact_inputs,
+    load_artifact,
+    measure_request,
+    prepare_artifact,
+)
+
+
+def _inputs():
+    return artifact_inputs(
+        config={"policy": "one", "prompt_fit_receipt": "later"},
+        split_identity_hash="a" * 64,
+        sources={"vectors": "b" * 64},
+    )
+
+
+def test_warm_artifact_skips_producer_and_pins_file(tmp_path):
+    path = tmp_path / "seed.json"
+    calls = []
+    first = prepare_artifact(
+        path,
+        kind="phase-supply",
+        inputs=_inputs(),
+        producer=lambda: calls.append(1) or {"values": {"s": ["v"]}},
+    )
+    second = prepare_artifact(
+        path,
+        kind="phase-supply",
+        inputs=_inputs(),
+        producer=lambda: pytest.fail("warm preparation recomputed"),
+    )
+    assert calls == [1]
+    assert (
+        first["sha256"]
+        == second["sha256"]
+        == hashlib.sha256(path.read_bytes()).hexdigest()
+    )
+    assert second["cache"] == "warm"
+    assert load_artifact(
+        path, expected_sha256=second["sha256"], kind="phase-supply", inputs=_inputs()
+    ) == {"values": {"s": ["v"]}}
+
+
+@pytest.mark.parametrize("change", ["inputs", "sha", "payload", "kind"])
+def test_stale_or_corrupt_artifact_refused(tmp_path, change):
+    path = tmp_path / "seed.json"
+    receipt = prepare_artifact(
+        path, kind="phase-supply", inputs=_inputs(), producer=lambda: {"a": 1}
+    )
+    inputs, digest, kind = _inputs(), receipt["sha256"], "phase-supply"
+    if change == "inputs":
+        inputs = {**inputs, "split_identity_hash": "c" * 64}
+    if change == "sha":
+        digest = "0" * 64
+    if change == "kind":
+        kind = "packets"
+    if change == "payload":
+        obj = json.loads(path.read_text())
+        obj["output"]["a"] = 2
+        path.write_text(json.dumps(obj))
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    with pytest.raises(PreparationError):
+        load_artifact(path, expected_sha256=digest, kind=kind, inputs=inputs)
+
+
+def test_existing_wrong_key_not_overwritten(tmp_path):
+    path = tmp_path / "seed.json"
+    prepare_artifact(
+        path, kind="phase-supply", inputs=_inputs(), producer=lambda: {"a": 1}
+    )
+    original = path.read_bytes()
+    with pytest.raises(PreparationError):
+        prepare_artifact(
+            path,
+            kind="phase-supply",
+            inputs={"changed": True},
+            producer=lambda: pytest.fail("should refuse first"),
+        )
+    assert path.read_bytes() == original
+
+
+def test_binding_excludes_only_receipt_pins():
+    a = artifact_inputs(config={"k": 5}, split_identity_hash="a" * 64, sources={})
+    b = artifact_inputs(
+        config={
+            "k": 5,
+            "prepared_phase_supply": {"sha256": "x"},
+            "prompt_fit_receipt": "x",
+            "prompt_fit_receipt_sha256": "y",
+        },
+        split_identity_hash="a" * 64,
+        sources={},
+    )
+    assert a == b
+    assert a != artifact_inputs(
+        config={"k": 6}, split_identity_hash="a" * 64, sources={}
+    )
+
+
+@pytest.mark.parametrize("split", ["", "test", "a" * 63])
+def test_bad_split_hash_refused(split):
+    with pytest.raises(PreparationError):
+        artifact_inputs(config={}, split_identity_hash=split, sources={})
+
+
+class Tokenizer:
+    def __init__(self, prompt="A<media>B<media>C"):
+        self.prompt, self.calls = prompt, []
+
+    def request_json(self, method, path, payload):
+        self.calls.append((method, path, payload))
+        if path == "/apply-template":
+            return {"prompt": self.prompt}
+        if path == "/tokenize":
+            return {"tokens": list(payload["content"])}
+        pytest.fail("generation or undeclared endpoint")
+
+
+def test_actual_envelope_count_multiple_media_and_reserve():
+    client = Tokenizer()
+    body = {
+        "messages": [{"role": "system", "content": "instruction"}],
+        "max_tokens": 64,
+    }
+    row = measure_request(
+        client, body, media_marker="<media>", speech_tokens=(13, 26), slot_tokens=128
+    )
+    assert row["text_tokens"] == 3
+    assert row["speech_tokens"] == 39
+    assert row["required_tokens"] == 108  # 3 + 39 + 64 + 2
+    assert row["margin_tokens"] == 20
+    assert row["fits"] is True
+    assert client.calls[0][2] == {"messages": body["messages"]}
+    assert len(client.calls) == 4
+
+
+def test_exact_boundary_and_study_multiple():
+    body = {"messages": [], "max_tokens": 4}
+    assert measure_request(
+        Tokenizer("A"), body, media_marker="<media>", speech_tokens=(), slot_tokens=7
+    )["fits"]
+    row = measure_request(
+        Tokenizer("A"),
+        body,
+        media_marker="<media>",
+        speech_tokens=(),
+        slot_tokens=13,
+        fit_multiple=2,
+    )
+    assert not row["fits"]
+    assert row["margin_tokens"] == -1
+
+
+@pytest.mark.parametrize("speech", [(), (1,), (1, 2, 3)])
+def test_marker_count_must_match_actual_packets(speech):
+    with pytest.raises(PreparationError):
+        measure_request(
+            Tokenizer(),
+            {"messages": [], "max_tokens": 4},
+            media_marker="<media>",
+            speech_tokens=speech,
+            slot_tokens=128,
+        )
+
+
+def test_fit_forwards_tools_and_refuses_empty_marker():
+    client = Tokenizer("A")
+    body = {"messages": [], "tools": [{"type": "function"}], "max_tokens": 1}
+    measure_request(client, body, media_marker="<m>", speech_tokens=(), slot_tokens=8)
+    assert client.calls[0][2]["tools"] == body["tools"]
+    with pytest.raises(PreparationError):
+        measure_request(client, body, media_marker="", speech_tokens=(), slot_tokens=8)
+
+
+def test_warm_contact_class_cannot_be_relabeled(tmp_path):
+    path = tmp_path / "prepared.json"
+    prepare_artifact(
+        path,
+        kind="test",
+        inputs=_inputs(),
+        producer=lambda: {},
+        contact_class="encoder",
+    )
+    with pytest.raises(PreparationError, match="contact class"):
+        prepare_artifact(
+            path,
+            kind="test",
+            inputs=_inputs(),
+            producer=lambda: {},
+            contact_class="model-free",
+        )
+
+
+@pytest.mark.parametrize("response", [None, [], {"prompt": None}])
+def test_malformed_template_response_is_refused(response):
+    client = type("BadClient", (), {"request_json": lambda *args: response})()
+    with pytest.raises(PreparationError, match="prompt"):
+        measure_request(
+            client,
+            {"messages": [], "max_tokens": 1},
+            media_marker="<m>",
+            speech_tokens=(),
+            slot_tokens=20,
+        )
+
+
+def test_source_receipts_require_full_confined_file_digest(tmp_path):
+    from speech_aware_evidence_acquisition.core.preparation import (
+        verify_source_receipts,
+    )
+
+    raw = b"complete frozen receipt"
+    (tmp_path / "source.json").write_bytes(raw)
+    pins = [
+        {
+            "root": "repository",
+            "relpath": "source.json",
+            "sha256": hashlib.sha256(raw).hexdigest(),
+        }
+    ]
+    assert verify_source_receipts(pins, repo_root=tmp_path, data_root=tmp_path) == pins
+    for bad in (
+        [],
+        [{**pins[0], "sha256": "0" * 64}],
+        [{**pins[0], "relpath": "../source.json"}],
+        [{**pins[0], "root": "unknown"}],
+    ):
+        with pytest.raises(PreparationError):
+            verify_source_receipts(bad, repo_root=tmp_path, data_root=tmp_path)

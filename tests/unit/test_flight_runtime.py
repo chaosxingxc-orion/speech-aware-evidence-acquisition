@@ -3968,3 +3968,30 @@ def test_the_prompt_budget_estimates_a_window_not_a_whole_call(tmp_path):
     (budget_two,) = receipt_two["prompt_budget"]
     assert budget_two["breakdown"]["speech_feature_tokens"] > budget["breakdown"]["speech_feature_tokens"]
     assert budget_two["breakdown"]["speech_feature_tokens"] == round(92.0 * 14.4)
+
+
+def test_wire_check_observer_receives_exact_boundary_after_abort(tmp_path):
+    runtime = _wire_runtime(tmp_path)
+    captured = []
+    receipt = runtime.wire_check(seal_and_score=False,
+                                 request_payload_observer=captured.append)
+    assert receipt["schema"] == "saea-flight-wire-check-v1"
+    assert len(captured) == receipt["contact_count"] == 2
+    assert captured[0]["decoding_params"] == {"id_slot": 0}
+
+
+def test_preparation_gate_uses_explicit_tokenizer_cap_and_exposure(tmp_path, monkeypatch):
+    from unittest.mock import Mock
+    runtime = _wire_runtime(tmp_path)
+    runtime._gate_touch = Mock()
+    runtime._require_exposure_row_unconsumed = Mock()
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.core.flight.runtime.require_clean_study_repo",
+        lambda root: "a" * 40)
+    plan = runtime.authorize_preparation_contacts(contact_cap=3001)
+    assert plan.planned_model_calls == 3001
+    assert runtime._gate_touch.call_args.args[1] == plan
+    runtime._require_exposure_row_unconsumed.assert_called_once_with(plan.run_id)
+    for cap in (0, -1, True):
+        with pytest.raises(ValueError, match="cap"):
+            runtime.authorize_preparation_contacts(contact_cap=cap)

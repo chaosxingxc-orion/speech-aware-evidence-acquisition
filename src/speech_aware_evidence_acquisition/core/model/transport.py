@@ -637,7 +637,8 @@ class LlamaServerTransport:
                 "the bank travels in the system message and would be silently dropped"
             )
 
-    def __call__(self, request_bytes: bytes) -> bytes:
+    def render_request(self, request_bytes: bytes) -> dict[str, object]:
+        """Materialize the actual send body with all identity checks, without POST."""
         # R0 repair T5 fix-2 (IMPORTANT, reviewer-flagged): re-verify on the
         # send path itself, every time -- not merely once at construction.
         # Cheap (a few KB re-hash of the launcher stub plus one process-image
@@ -882,6 +883,10 @@ class LlamaServerTransport:
                     "request body and would silently override it"
                 )
             body[key] = value
+        return body
+
+    def __call__(self, request_bytes: bytes) -> bytes:
+        body = self.render_request(request_bytes)
         try:
             raw = self._post(self._url, json.dumps(body).encode("utf-8"))
         except urllib.error.HTTPError as error:
