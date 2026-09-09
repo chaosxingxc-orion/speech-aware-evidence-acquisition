@@ -77,6 +77,7 @@ def test_cpu_materialization_precedes_wrapper_and_monitor(tmp_path):
             fit_runner=fit, attach_runner=attach_runner, find_resident=lambda _: next(resident_calls),
         process_factory=process, sleep=lambda _: None, monotonic=iter([0, 1, 1]).__next__,
         study_head_factory=lambda _: "a" * 40, hold_wrapper_foreground=False,
+        process_start_identity=lambda _: {"cmdline": [], "starttime": "1"},
     )
     assert result["coordinator"]["wrapper_started"] is True
     assert events.index("materialize") < events.index("wrapper") < events.index("attach") < events.index("fit-contact")
@@ -102,8 +103,14 @@ def test_reuses_matching_resident_without_starting_wrapper(tmp_path):
     events = []
     owner_receipt = tmp_path / "coordination/session.monitor-owner.json"
     owner_receipt.parent.mkdir()
+    import sys
+    command = [sys.executable, str(tmp_path / "scripts/serving_monitor.py"), "sample",
+               "--session-id", "session", "--data-root", str(tmp_path),
+               "--host", "127.0.0.1", "--port", "8080", "--interval", "10"]
     owner_receipt.write_text(json.dumps({
         "schema": "saea-coordinate-fit-monitor-owner-v1", "session_id": "session", "pid": 4242,
+        "data_root": str(tmp_path), "host": "127.0.0.1", "port": 8080,
+        "command": command, "process_start_identity": {"cmdline": [], "starttime": "1"},
     }))
     def fit(runtime, output, *, policy, contact_cap, attach=None):
         attach(policy=policy)
@@ -116,10 +123,71 @@ def test_reuses_matching_resident_without_starting_wrapper(tmp_path):
         find_resident=lambda _: resident(),
         process_factory=lambda command, **kwargs: events.append("wrapper" if "serving_session.sh" in command[0] else "monitor") or Process(),
         study_head_factory=lambda _: "a" * 40, hold_wrapper_foreground=False,
-        pid_alive=lambda _: True,
+        pid_alive=lambda _: True, process_start_identity=lambda _: {"cmdline": [], "starttime": "1"},
     )
     assert result["coordinator"]["session_reused"] is True
     assert "wrapper" not in events
+
+
+def test_reuse_rejects_monitor_receipt_bound_to_wrong_process(tmp_path):
+    import sys
+    owner_receipt = tmp_path / "coordination/session.monitor-owner.json"
+    owner_receipt.parent.mkdir()
+    command = [sys.executable, str(tmp_path / "scripts/serving_monitor.py"), "sample",
+               "--session-id", "session", "--data-root", str(tmp_path),
+               "--host", "127.0.0.1", "--port", "8080", "--interval", "10"]
+    owner_receipt.write_text(json.dumps({
+        "schema": "saea-coordinate-fit-monitor-owner-v1", "session_id": "other", "pid": 4242,
+        "data_root": str(tmp_path), "host": "127.0.0.1", "port": 8080,
+        "command": command, "process_start_identity": {"cmdline": [], "starttime": "old"},
+    }))
+    with pytest.raises(CoordinatorError, match="monitor is not owned"):
+        coordinate_fit(
+            Runtime(tmp_path), repo_root=tmp_path, data_root=tmp_path, runtime_root=tmp_path,
+            output=tmp_path / "fit.json", owner="root", expected_session_id="session",
+            contact_cap=3, model_fragment="model",
+            fit_runner=lambda runtime, output, *, policy, contact_cap, attach: attach(policy=policy),
+            find_resident=lambda _: resident(), pid_alive=lambda _: True,
+            process_start_identity=lambda _: {"cmdline": [], "starttime": "new"},
+            study_head_factory=lambda _: "a" * 40,
+        )
+
+
+@pytest.mark.parametrize("bad_fields", [{"schema": "wrong"}, {"pid": True}, {"pid": 0}])
+def test_reuse_rejects_invalid_monitor_owner_receipt(tmp_path, bad_fields):
+    owner_receipt = tmp_path / "coordination/session.monitor-owner.json"
+    owner_receipt.parent.mkdir()
+    receipt = {
+        "schema": "saea-coordinate-fit-monitor-owner-v1", "session_id": "session", "pid": 4242,
+        "data_root": str(tmp_path), "host": "127.0.0.1", "port": 8080,
+        "command": [], "process_start_identity": {"cmdline": [], "starttime": "1"},
+    }
+    receipt.update(bad_fields)
+    owner_receipt.write_text(json.dumps(receipt))
+    with pytest.raises(CoordinatorError, match="monitor is not owned"):
+        coordinate_fit(
+            Runtime(tmp_path), repo_root=tmp_path, data_root=tmp_path, runtime_root=tmp_path,
+            output=tmp_path / "fit.json", owner="root", expected_session_id="session",
+            contact_cap=3, model_fragment="model",
+            fit_runner=lambda runtime, output, *, policy, contact_cap, attach: attach(policy=policy),
+            find_resident=lambda _: resident(), pid_alive=lambda _: True,
+            process_start_identity=lambda _: {"cmdline": [], "starttime": "1"},
+            study_head_factory=lambda _: "a" * 40,
+        )
+
+
+def test_live_monitor_receipt_prevents_duplicate_wrapper_start(tmp_path):
+    owner_receipt = tmp_path / "coordination/session.monitor-owner.json"
+    owner_receipt.parent.mkdir()
+    owner_receipt.write_text(json.dumps({"pid": 4242}))
+    with pytest.raises(CoordinatorError, match="blocks wrapper startup"):
+        coordinate_fit(
+            Runtime(tmp_path), repo_root=tmp_path, data_root=tmp_path, runtime_root=tmp_path,
+            output=tmp_path / "fit.json", owner="root", expected_session_id="session",
+            contact_cap=3, model_fragment="model", fit_runner=lambda *a, **k: pytest.fail("fit must not start"),
+            find_resident=lambda _: None, pid_alive=lambda _: True,
+            study_head_factory=lambda _: "a" * 40,
+        )
 
 
 def test_fit_error_preserves_lease_and_started_wrapper(tmp_path):
@@ -137,8 +205,51 @@ def test_fit_error_preserves_lease_and_started_wrapper(tmp_path):
             process_factory=lambda *a, **k: Process(), sleep=lambda _: None,
             monotonic=iter([0, 1, 1]).__next__, study_head_factory=lambda _: "a" * 40,
             hold_wrapper_foreground=False, pid_alive=lambda _: True,
+            process_start_identity=lambda _: {"cmdline": [], "starttime": "1"},
         )
     assert "lease-preserved" in events
+
+
+def test_monitor_exit_holds_before_first_fit_contact(tmp_path):
+    events = []
+    resident_calls = iter([None, resident()])
+    processes = iter([Process(), Process()])
+    processes_list = list(processes)
+    processes_list[1].returncode = 1
+    process_iter = iter(processes_list)
+    attached = []
+    def fit(runtime, output, *, policy, contact_cap, attach=None):
+        attach(policy=policy)
+        attached.append(True)
+        return {"path": str(output)}
+    with pytest.raises(CoordinatorError, match="monitor exited"):
+        coordinate_fit(
+            Runtime(tmp_path), repo_root=tmp_path, data_root=tmp_path, runtime_root=tmp_path,
+            output=tmp_path / "fit.json", owner="root", expected_session_id="session",
+            contact_cap=3, model_fragment="model", lease_factory=lambda *a, **k: Lease(events),
+            fit_runner=fit, find_resident=lambda _: next(resident_calls),
+            process_factory=lambda *a, **k: next(process_iter), sleep=lambda _: None,
+            monotonic=iter([0, 1]).__next__, hold_wrapper_foreground=False,
+            pid_alive=lambda _: True, process_start_identity=lambda _: {"cmdline": [], "starttime": "1"},
+            study_head_factory=lambda _: "a" * 40,
+        )
+    assert attached == []
+
+
+def test_wrong_forwarded_policy_refuses_before_wrapper_start(tmp_path):
+    started = []
+    def fit(runtime, output, *, policy, contact_cap, attach=None):
+        return attach(policy=object())
+    with pytest.raises(CoordinatorError, match="different from the root lease"):
+        coordinate_fit(
+            Runtime(tmp_path), repo_root=tmp_path, data_root=tmp_path, runtime_root=tmp_path,
+            output=tmp_path / "fit.json", owner="root", expected_session_id="session",
+            contact_cap=3, model_fragment="model", lease_factory=lambda *a, **k: Lease([]),
+            fit_runner=fit, find_resident=lambda _: None,
+            process_factory=lambda *a, **k: started.append(True),
+            study_head_factory=lambda _: "a" * 40,
+        )
+    assert started == []
 
 
 def test_started_wrapper_stays_foreground_after_receipt_until_stop(tmp_path):
@@ -156,6 +267,7 @@ def test_started_wrapper_stays_foreground_after_receipt_until_stop(tmp_path):
         find_resident=lambda _: next(resident_calls),
         process_factory=lambda *a, **k: next(processes), sleep=lambda _: None,
         study_head_factory=lambda _: "a" * 40, pid_alive=lambda _: True,
+        process_start_identity=lambda _: {"cmdline": [], "starttime": "1"},
     )
     lines = (tmp_path / "coordination/session.coordinate-fit.jsonl").read_text().splitlines()
     names = [json.loads(line)["event"] for line in lines]
@@ -260,6 +372,78 @@ def test_real_fit_phase_runtime_forwards_original_policy_to_attach(monkeypatch, 
     )
     assert captured["policy"] is policy
     assert result["contacts"] == 4
+
+
+def test_coordinate_fit_calls_real_fit_and_releases_real_lease(tmp_path):
+    import sys
+    from types import SimpleNamespace
+    from speech_aware_evidence_acquisition.core import preparation_fit
+    from speech_aware_evidence_acquisition.core.flight.lease import _paths
+
+    class Runtime:
+        def preparation_context(self):
+            return {
+                "values": {"transport": "mock"}, "split_identity_hash": "split",
+                "data_root": tmp_path, "runtime_root": tmp_path, "run_id": "fit-run",
+                "attempt_id": "fit-attempt", "geometry": {"slot_tokens": 4096},
+                "sample_ids": ["sample"], "runtime_receipt": {},
+                "required_identity": {"host": "127.0.0.1", "port": 8080},
+            }
+        def materialize_phase_requests(self):
+            return ({"sample_id": "sample", "messages": [{"role": "user", "content": "x"}], "max_tokens": 1},)
+        def request_fit_inputs(self, payloads):
+            return {"boundary": "mock"}
+        def authorize_preparation_contacts(self, *, contact_cap):
+            assert contact_cap == 4
+
+    class Client:
+        def request_json(self, method, route, payload):
+            if route == "/props":
+                return {"media_marker": "<audio>"}
+            if route == "/apply-template":
+                return {"prompt": "hello <audio> world"}
+            return {"tokens": [1, 2]}
+
+    class Transport:
+        def render_request(self, payload):
+            return {"messages": [{"role": "user", "content": "x"}], "max_tokens": 1}
+
+    repo = Path(__file__).resolve().parents[2]
+    monitor_command = [sys.executable, str(repo / "scripts/serving_monitor.py"), "sample",
+                       "--session-id", "session", "--data-root", str(tmp_path),
+                       "--host", "127.0.0.1", "--port", "8080", "--interval", "10"]
+    owner_receipt = tmp_path / "coordination/session.monitor-owner.json"
+    owner_receipt.parent.mkdir()
+    owner_receipt.write_text(json.dumps({
+        "schema": "saea-coordinate-fit-monitor-owner-v1", "session_id": "session", "pid": 4242,
+        "data_root": str(tmp_path), "host": "127.0.0.1", "port": 8080,
+        "command": monitor_command, "process_start_identity": {"cmdline": [], "starttime": "1"},
+    }))
+    def run_real_fit(runtime, output, **kwargs):
+        return preparation_fit.fit_phase_runtime(
+            runtime, output, client_factory=lambda **_: Client(),
+            transport_factory=lambda *a, **k: Transport(), speech_counter=lambda payload: (1,), **kwargs,
+        )
+    artifact = tmp_path / "fit.json"
+    result = coordinate_fit(
+        Runtime(), repo_root=repo, data_root=tmp_path, runtime_root=tmp_path,
+        output=artifact, owner="root", expected_session_id="session", contact_cap=4,
+        model_fragment="model", fit_runner=run_real_fit,
+        attach_runner=lambda **kwargs: (
+            Path("serving/session"), {"session_id": "session"},
+            SimpleNamespace(host="127.0.0.1", port=8080,
+                             model_files=(SimpleNamespace(path="model.gguf", sha256="a" * 64),)),
+        ), find_resident=lambda _: (Path("serving/session"), {
+            "session_id": "session", "identity": {"host": "127.0.0.1", "port": 8080},
+        }), pid_alive=lambda _: True,
+        process_start_identity=lambda _: {"cmdline": [], "starttime": "1"},
+        study_head_factory=lambda _: "a" * 40,
+    )
+    document = json.loads(artifact.read_text())
+    assert document["output"]["contacts"] == 4
+    assert len((tmp_path / "fit.json.contacts.jsonl").read_text().splitlines()) == 4
+    assert not _paths(tmp_path)[1].exists()
+    assert artifact.is_file()
 
 
 def test_warm_fit_is_contact_free_and_does_not_acquire_custody(tmp_path):

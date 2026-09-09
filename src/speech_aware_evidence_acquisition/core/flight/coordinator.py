@@ -30,6 +30,17 @@ def _pid_alive(pid: int) -> bool:
     return True
 
 
+def _process_start_identity(pid: int) -> Mapping[str, object]:
+    """Read the Linux process command and start time used for PID reuse checks."""
+    command = Path(f"/proc/{pid}/cmdline").read_bytes().split(b"\0")
+    command = [part.decode("utf-8", errors="replace") for part in command if part]
+    stat_text = Path(f"/proc/{pid}/stat").read_text(encoding="utf-8")
+    stat = stat_text.rsplit(")", 1)[-1].split()
+    if len(stat) < 20:
+        raise OSError(f"incomplete /proc/{pid}/stat")
+    return {"cmdline": command, "starttime": stat[19]}
+
+
 def _event(event: str, *, event_path: Path | None = None, **fields: object) -> None:
     """Emit only lifecycle metadata; never print prompts, tokens or raw payloads."""
     import json
@@ -67,6 +78,7 @@ def coordinate_fit(
     study_head_factory: Callable = require_clean_study_repo,
     hold_wrapper_foreground: bool = True,
     pid_alive: Callable[[int], bool] = _pid_alive,
+    process_start_identity: Callable[[int], Mapping[str, object]] = _process_start_identity,
 ) -> Mapping[str, object]:
     """Run a fit under a root lease, starting at most one existing wrapper.
 
@@ -93,6 +105,7 @@ def coordinate_fit(
         raise CoordinatorError("fit serving identity must provide a nonempty host and positive port")
     warm = output.is_file()
     event_path = data_root / "coordination" / f"{expected_session_id}.coordinate-fit.jsonl"
+    monitor_receipt = data_root / "coordination" / f"{expected_session_id}.monitor-owner.json"
 
     def event(name: str, **fields: object) -> None:
         event_fields = {
@@ -117,6 +130,14 @@ def coordinate_fit(
                 assert_identity_matches(document, required_identity)
             except Exception as error:  # noqa: BLE001 -- preserve exact identity refusal
                 raise CoordinatorError(f"resident session identity mismatch; refusing model start: {error}") from error
+        elif monitor_receipt.is_file():
+            try:
+                prior = json.loads(monitor_receipt.read_text(encoding="utf-8"))
+                prior_pid = prior.get("pid") if isinstance(prior, Mapping) else None
+            except (OSError, UnicodeError, json.JSONDecodeError):
+                prior_pid = None
+            if isinstance(prior_pid, int) and not isinstance(prior_pid, bool) and prior_pid > 0 and pid_alive(prior_pid):
+                raise CoordinatorError("live monitor ownership receipt blocks wrapper startup")
 
     if warm:
         event("warm-fit-start", output=str(output))
@@ -139,7 +160,13 @@ def coordinate_fit(
     monitor_owned = False
     log_handle = None
     monitor_log_handle = None
-    monitor_receipt = data_root / "coordination" / f"{expected_session_id}.monitor-owner.json"
+
+    def monitor_command() -> list[str]:
+        return [
+            sys.executable, str(repo_root / "scripts/serving_monitor.py"), "sample",
+            "--session-id", expected_session_id, "--data-root", str(data_root),
+            "--host", host, "--port", str(port), "--interval", "10",
+        ]
 
     def start_wrapper() -> None:
         nonlocal wrapper_started, wrapper_process, log_handle
@@ -191,13 +218,24 @@ def coordinate_fit(
             except (FileNotFoundError, OSError, UnicodeError, json.JSONDecodeError) as error:
                 raise CoordinatorError("matching resident session has no readable monitor ownership receipt") from error
             pid = receipt.get("pid") if isinstance(receipt, Mapping) else None
+            expected_command = monitor_command()
             if (
                 not isinstance(receipt, Mapping)
+                or receipt.get("schema") != "saea-coordinate-fit-monitor-owner-v1"
                 or receipt.get("session_id") != expected_session_id
+                or receipt.get("data_root") != str(data_root)
+                or receipt.get("host") != host
+                or receipt.get("port") != port
+                or receipt.get("command") != expected_command
                 or not isinstance(pid, int)
                 or not pid_alive(pid)
             ):
                 raise CoordinatorError("matching resident session monitor is not owned and healthy")
+            try:
+                if receipt.get("process_start_identity") != process_start_identity(pid):
+                    raise CoordinatorError("matching resident session monitor process identity changed")
+            except (OSError, ValueError) as error:
+                raise CoordinatorError("matching resident session monitor process identity is unreadable") from error
             event("serving-monitor-reused", session_id=expected_session_id, pid=pid)
             return
         if monitor_receipt.exists():
@@ -212,11 +250,7 @@ def coordinate_fit(
         monitor_log = data_root / "serving" / f"{expected_session_id}.monitor.log"
         monitor_log.parent.mkdir(parents=True, exist_ok=True)
         monitor_log_handle = monitor_log.open("ab")
-        command = [
-            sys.executable, str(repo_root / "scripts/serving_monitor.py"), "sample",
-            "--session-id", expected_session_id, "--data-root", str(data_root),
-            "--host", host, "--port", str(port), "--interval", "10",
-        ]
+        command = monitor_command()
         monitor_process = process_factory(command, cwd=str(repo_root), env=os.environ | {
             "SPEECHRL_DATA_DIR": str(data_root),
             "PYTHONDONTWRITEBYTECODE": "1",
@@ -225,13 +259,22 @@ def coordinate_fit(
         pid = getattr(monitor_process, "pid", None)
         if isinstance(pid, bool) or not isinstance(pid, int) or pid < 1:
             raise CoordinatorError("monitor process did not expose a valid pid")
+        if monitor_process.poll() is not None:
+            raise CoordinatorError("monitor exited before the first fit contact")
         monitor_receipt.parent.mkdir(parents=True, exist_ok=True)
-        monitor_receipt.write_text(json.dumps({
+        receipt_bytes = (json.dumps({
             "schema": "saea-coordinate-fit-monitor-owner-v1",
             "session_id": expected_session_id, "pid": pid,
+            "data_root": str(data_root), "host": host, "port": port,
+            "command": command,
+            "process_start_identity": process_start_identity(pid),
             "coordinator_pid": os.getpid(),
             "started_at": datetime.now(timezone.utc).isoformat(),
-        }, sort_keys=True) + "\n", encoding="utf-8")
+        }, sort_keys=True) + "\n").encode("utf-8")
+        with monitor_receipt.open("wb") as stream:
+            stream.write(receipt_bytes)
+            stream.flush()
+            os.fsync(stream.fileno())
         monitor_owned = True
         monitor_started = True
         event("serving-monitor-started", session_id=expected_session_id, pid=pid, interval_seconds=10)
@@ -267,16 +310,16 @@ def coordinate_fit(
     def attach_after_materialization(**kwargs):
         nonlocal resident
         event("materialization-complete", sample_count=len(context["sample_ids"]))
+        original_policy = kwargs.pop("policy", None)
+        policy = WorkerExecutionPolicy(expected_session_id, lease.token)
+        if original_policy is not policy and original_policy != policy:
+            raise CoordinatorError("fit attach callback supplied a policy different from the root lease")
         if resident is None:
             start_wrapper()
             resident = wait_for_session()
             start_monitor()
         else:
             start_monitor()
-        original_policy = kwargs.pop("policy", None)
-        policy = WorkerExecutionPolicy(expected_session_id, lease.token)
-        if original_policy is not policy and original_policy != policy:
-            raise CoordinatorError("fit attach callback supplied a policy different from the root lease")
         return attach_runner(policy=original_policy, **kwargs)
 
     def hold_wrapper() -> None:
