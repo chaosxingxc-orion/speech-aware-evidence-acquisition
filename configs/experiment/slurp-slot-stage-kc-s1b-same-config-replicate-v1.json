@@ -66,9 +66,16 @@
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
-        "state": "held",
-        "reason": "Root must bind the successful full-roster fit, register the final generation protocol and verify source/runtime parity before generation.",
-        "requirements": []
+        "state": "ready",
+        "reason": "Full-roster source/request parity and registered actual capacity fit passed. Root admits the independent same-profile repeat under its final generation registration; no new mechanism is introduced.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-FIT-V1/request-fit.json",
+            "sha256": "0aea29658079cda3fc227bd688f66f787bedbc6235ff5851bdf56302175f5dae",
+            "reason": "Complete real-request fit must match"
+          }
+        ]
       }
     }
   ],
@@ -134,5 +141,9 @@
     "decision": "Report same-profile replication of the historical improvement only if both entity-F1 and per-sample SLU-F1 paired CI90 lower bounds exceed zero versus both historical closed-list-direct and KC-S1a on NEW500. Any upper bound below zero is harmful; otherwise unresolved. Record agreement with sealed KC-S1b descriptively; do not use nonsignificance as equivalence.",
     "claim_limit": "This is a same-profile repeat. Historical different-geometry rung2 and independent-roster requirements remain unfulfilled.",
     "guard": "The deterministic predecessor join must preserve scenario/action/intent exactly row by row; report failures, retries, saturation, raw/derived delivery and contact costs."
+  },
+  "prepared_request_fit": {
+    "relpath": "prepared/SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-FIT-V1/request-fit.json",
+    "sha256": "0aea29658079cda3fc227bd688f66f787bedbc6235ff5851bdf56302175f5dae"
   }
 }
