@@ -87,12 +87,23 @@ CELLS: tuple[dict[str, Any], ...] = (
     },
 )
 
-#: The two preconditions the preregistration names. A stop that matches one of
-#: these is EXPECTED and is recorded as such; anything else is a finding.
+#: The named preregistration preconditions, plus the already-consumed run
+#: refusal. A stop that matches one of these is
+#: EXPECTED and is recorded as such; anything else is a finding.
+#:
+#: ``consumed`` -- the real gate (``contracts.gate_exposure``) refuses a run
+#: whose exposure row is marked consumed. Consumption is recorded separately
+#: from attempt finalization; a seal alone does not set this flag. Both SLURP
+#: ``@ts2`` rows are marked consumed as of 2026-09-09, so their preflight
+#: now stops here rather than at
+#: ``gate-not-authorized``; the stop is the ledger doing its job, not a
+#: precondition. The needle is the gate's own message, so a cell that was
+#: never registered still classifies as ``gate-not-authorized``.
 EXPECTED_STOPS = {
     "gate-not-authorized": "has no pre-registered exposure row",
     "slurp-packet-root-missing": "disagrees with the promotion receipt",
     "a2t-gold-id-rail-missing": "is not in the frozen audio2tool probe receipt",
+    "consumed": "is already consumed; a consumed run cannot be re-executed",
 }
 
 

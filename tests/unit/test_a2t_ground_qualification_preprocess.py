@@ -62,9 +62,34 @@ def test_ground_qualification_identity_mode_is_exactly_receipt_bound() -> None:
         "experiment": "a2t-ground-qual-preprocess",
         "model": "q4km-preprocess-featcache-cpu-sidecar-a2t",
     }
+    # The LIVE composition. It moved off ``3845d4a8...`` in ``59407346``
+    # (2026-09-08, owner Decision 12-F item #9): ``configs/baseline/
+    # speech-native-preprocess.json`` gained ``speech_native_agent_executor_id``
+    # and its ``_basis`` -- exactly those two keys and nothing else -- so the
+    # retired silent executor default can no longer be reached. Substituting
+    # the ``59407346^`` fragment reproduces ``3845d4a8...`` byte for byte.
     assert identity["config_hash"] == (
+        "4ae3f6ea72691a5fbd1a7445d28f442a3ee37be703d2d5528ad47a4adaf81d94"
+    )
+    # The SEALED receipt is never re-run: a sealed manifest pins the
+    # composition it flew, and the flown composition is still ``3845d4a8...``.
+    # What stays bound across the move is the population identity -- the
+    # same run id, the same subset receipt bytes and the same split identity
+    # -- which is what a later reader needs to pair this identity with the
+    # sealed one.
+    sealed = json.loads(
+        (
+            REPO
+            / "docs/checks/speech-aware-evidence-acquisition"
+            / "2026-09-02-a2t-ground-qual-104-preprocess/preflight-receipt.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert sealed["config_hash"] == (
         "3845d4a8a601e3279a4656ccd0e1c9c92feed33236801758df528e43a7862ae4"
     )
+    assert sealed["run_id"] == identity["run_id"]
+    assert sealed["subset_receipt_sha256"] == identity["subset_receipt_sha256"]
+    assert sealed["split_identity_hash"] == identity["split_identity_hash"]
 
 
 def test_ground_qualification_preregistration_freezes_no_truncation_gate() -> None:

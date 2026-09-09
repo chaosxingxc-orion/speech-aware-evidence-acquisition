@@ -324,6 +324,14 @@ def test_every_wire_check_stop_is_one_of_the_named_preconditions() -> None:
     ENVIRONMENT fact -- whether another flight held the flight lock while the
     check ran -- so it is not pinned here; the preregistration's section 6
     names the measurement and the commit it was taken at.
+
+    UPDATED 2026-09-09, after both SLURP ``@ts2`` rows were marked consumed. The
+    real gate refuses a run whose exposure row is consumed, so a flown cell's
+    preflight now stops at ``consumed`` (the ledger doing its job) rather
+    than at ``gate-not-authorized``; a cell that was never registered still
+    stops at ``gate-not-authorized``. Both are admissible preflight stops;
+    which one a receipt records is a fact about the ledger at the commit it
+    was taken at, and the sealed ``cf566cb6`` receipt is not rewritten.
     """
 
     receipt = json.loads(WIRE.read_text(encoding="utf-8"))
@@ -334,7 +342,7 @@ def test_every_wire_check_stop_is_one_of_the_named_preconditions() -> None:
     }
     assert "UNEXPECTED" not in set(stops.values())
     assert all(
-        stops[(cell, "preflight")] == "gate-not-authorized"
+        stops[(cell, "preflight")] in {"gate-not-authorized", "consumed"}
         for cell in {row["cell"] for row in receipt["cells"]}
     )
     by_cell = {row["cell"]: row["wire_check"] for row in receipt["cells"]}

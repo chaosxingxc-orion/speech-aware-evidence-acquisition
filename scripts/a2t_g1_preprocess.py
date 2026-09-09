@@ -68,9 +68,13 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-REPO = Path(
-    "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition"
-)
+# The checkout this script lives in, derived from its own location: a git
+# worktree runs against ITS OWN ``src`` and ``configs``, never the main
+# checkout's. On the main checkout this resolves to the literal path that
+# used to be hardcoded here, and no receipt this script writes embeds REPO
+# (state, promotion receipt and report carry data-root and packet paths
+# only), so no receipt byte moves.
+REPO = Path(__file__).resolve().parents[1]
 
 if os.environ.get("PYTHONDONTWRITEBYTECODE") != "1":
     raise SystemExit("PYTHONDONTWRITEBYTECODE=1 is required")
@@ -83,7 +87,9 @@ if (
     Path(_pkg.__file__ or "")
     != REPO / "src" / "speech_aware_evidence_acquisition" / "__init__.py"
 ):
-    raise SystemExit("package resolves to %s, not the main checkout" % (_pkg.__file__,))
+    raise SystemExit(
+        "package resolves to %s, not this checkout's src" % (_pkg.__file__,)
+    )
 
 from speech_aware_evidence_acquisition.contracts import (  # noqa: E402
     ExecutionPlan,
