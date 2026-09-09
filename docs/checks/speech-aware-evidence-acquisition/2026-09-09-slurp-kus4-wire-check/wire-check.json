@@ -247,10 +247,10 @@
           ]
         },
         "system_message_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db",
-        "typed_knowledge_blocks": [
-          8,
-          7,
+        "typed_knowledge_blocks_sorted": [
           5,
+          7,
+          8,
           8
         ],
         "typed_knowledge_blocks_total": 28
@@ -433,7 +433,7 @@
           ]
         },
         "system_message_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db",
-        "typed_knowledge_blocks": [
+        "typed_knowledge_blocks_sorted": [
           5,
           7,
           8,

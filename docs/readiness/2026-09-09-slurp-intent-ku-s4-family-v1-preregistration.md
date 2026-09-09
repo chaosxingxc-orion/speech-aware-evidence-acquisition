@@ -82,7 +82,8 @@ rule **runs out of distinct neighbour intents** before it fills eight slots on m
 
 Mean **5.94** candidates per row; the realized narrowing ratio is **9.89 %**, not 13.33 %. The
 scenario lead itself contributes three intents on only 682 rows (two on 192, one on 123, none on 3 —
-the rows whose predicted scenario is not a legal scenario name).
+measured, exactly the three rows whose sealed response does not parse at all, so the projection has no
+scenario to offer a legal list for).
 
 **Deepening the neighbour list buys nothing where it matters**, and that is measured rather than
 assumed:
@@ -526,14 +527,23 @@ GPU**.
 | requests built | 4 of 4 | 4 of 4 |
 | policy / contacts per sample | `phase-direct-only-supplied-v1` / **1** | same |
 | `phase_supply` covers | **`direct`** only | **`direct`** only |
-| typed knowledge blocks, per row | **5 / 8 / 8 / 7** — that row's own candidate count | **5 / 8 / 8 / 7**, identical |
+| typed knowledge blocks (sorted) | **5, 7, 8, 8** — each row's own candidate count | **5, 7, 8, 8**, identical |
 | supplied evidence ids | all carry `value:intent-candidate:` | same, **sharing nothing with the arm** |
 | control turn | one per request, sha256 `d02f194c…` | **the same sha256** |
 | resolved system message | `4073f79e…0d37db` | `4073f79e…0d37db` |
 | config hash / protocol hash | `5073bda3…` / `3044e0df…` | `38447fb8…` / `d12873c9…` — **distinct** |
+
+Those two hashes are the WIRE-CHECK cells' own: that fragment declares its own four-row
+`split_id` `DEV-1000-KUS4-WIRE-4`, so they are not the registered DEV-1000 cells' hashes and must
+never be quoted as such. What the check proves is that the arm and its twin are two identities, not
+which two.
 | candidate bank | `a4458e77…` selection `candidates` | `a4458e77…` selection `twin_candidates` — **one file, both arms** |
 | review material bound | `slurp-legal-label-flag-v1` | same |
 | containment fold | raised on **none** of the 8 contacts | — |
+
+The block counts are recorded SORTED and the per-row counts are keyed by sample id, because the
+runtime reports them in DISPATCH order and two runs of the same cell may dispatch four rows in two
+orders. **The receipt reproduces byte for byte across consecutive runs**, checked.
 
 **No score in that receipt is a measurement**: the transport answers with a canned string, and the
 judge flagging 4 of 4 rows is that string failing to parse as an SLU label, not a finding.

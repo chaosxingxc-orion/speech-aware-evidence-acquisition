@@ -101,9 +101,6 @@ FEATURE_ROOT = Path("/home/chao/feat-cache/slurp-q4km-packets-04ccc72a")
 #: How many KEY packets the composition proof binds beside the one query.
 MULTIPACKET_K = 8
 
-RUN_LOCAL_PAYLOAD_FIELDS = ("request_id",)
-RUN_LOCAL_DECODING_KEYS = ("id_slot",)
-
 _PYTEST_DURATION = re.compile(r"\s+in\s+[\d.]+s\s*$")
 
 BODY_TESTS = (
@@ -247,7 +244,14 @@ def request_half(runner, *, max_workers: int) -> dict[str, Any]:
             "phases": receipt.get("phases"),
             "phase_supply": receipt.get("phase_supply"),
             "phase_review": receipt.get("phase_review"),
-            "typed_knowledge_blocks": receipt.get("typed_knowledge_blocks"),
+            # SORTED, and the sort is the point: the runtime reports this in
+            # DISPATCH order, and two runs of the same cell may dispatch four
+            # rows in two orders -- recording the raw list would make this
+            # receipt irreproducible while proving nothing. The per-row counts
+            # keyed by sample id are in `supplied_block_counts` above.
+            "typed_knowledge_blocks_sorted": sorted(
+                receipt.get("typed_knowledge_blocks") or []
+            ),
             "typed_knowledge_blocks_total": receipt.get("typed_knowledge_blocks_total"),
         }
         if receipt.get("policy") != "phase-direct-only-supplied-v1":
