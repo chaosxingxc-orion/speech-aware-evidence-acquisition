@@ -507,6 +507,21 @@ def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
     return 0
 
 
+def _scoring_cli_context(args):
+    """Resolve explicit worker paths while retaining historical CLI defaults."""
+    from ...data.lock import data_root, load_lock, umbrella_lock_path
+
+    lock_path = getattr(args, "lock_path", None)
+    root_path = getattr(args, "data_root", None)
+    repo_path = getattr(args, "repo_root", None)
+    if repo_path and Path(repo_path).resolve() != Path(__file__).resolve().parents[4]:
+        raise ValueError("scoring repo_root must match the imported source checkout")
+    lock = load_lock(Path(lock_path) if lock_path else umbrella_lock_path())
+    root = Path(root_path) if root_path else data_root()
+    options = {"repo_root": Path(repo_path)} if repo_path else {}
+    return lock, root, options
+
+
 def _cli_score(args: argparse.Namespace) -> int:
     """IMPORTANT fix (T6 fix round, I7): the manifest path is now the
     AUTHORITATIVE one. ``--manifest`` verifies the bundle
@@ -520,13 +535,10 @@ def _cli_score(args: argparse.Namespace) -> int:
     tagged ``"verified": false`` on stdout, so nothing downstream can mistake
     it for an authoritative score by accident."""
 
-    from ...data.lock import data_root, load_lock, umbrella_lock_path
-
-    lock = load_lock(umbrella_lock_path())
-    root = data_root()
+    lock, root, context_options = _scoring_cli_context(args)
     if args.manifest:
         bundle = verify_bundle(Path(args.manifest))
-        results = score_bundle(bundle, lock, root)
+        results = score_bundle(bundle, lock, root, **context_options)
         print(
             json.dumps(
                 {
@@ -679,10 +691,7 @@ def _cli_run(args: argparse.Namespace) -> int:
 
 
 def _cli_finalize(args: argparse.Namespace) -> int:
-    from ...data.lock import data_root, load_lock, umbrella_lock_path
-
-    lock = load_lock(umbrella_lock_path())
-    root = data_root()
+    lock, root, context_options = _scoring_cli_context(args)
     ledger_cells = (
         json.loads(Path(args.ledger_cells).read_text(encoding="utf-8"))
         if args.ledger_cells
@@ -694,7 +703,13 @@ def _cli_finalize(args: argparse.Namespace) -> int:
         root,
         ledger_cells=ledger_cells,
         tracking_uri=args.tracking_uri,
+        **context_options,
     )
+    extra = {}
+    if getattr(args, "include_per_sample", False):
+        # Finalization already wrote the full registered scorer result. Read that
+        # artifact; never invoke a scorer again to expose its per-sample rows.
+        extra["score_details"] = json.loads(Path(result.scores_path).read_text(encoding="utf-8"))
     print(
         json.dumps(
             {
@@ -705,6 +720,7 @@ def _cli_finalize(args: argparse.Namespace) -> int:
                 "ledger_json": str(result.ledger_json_path),
                 "mlflow_run": result.mlflow_run_id,
                 "attempt_state": result.attempt_state,
+                **extra,
             },
             indent=2,
         )
@@ -846,6 +862,8 @@ def main(argv: list[str] | None = None) -> int:
             "rows alongside its aggregate; default output remains aggregate-only"
         ),
     )
+    for path_name in ("repo-root", "data-root", "lock-path"):
+        score.add_argument("--" + path_name, default=None)
     score.set_defaults(func=_cli_score)
     score_batch = sub.add_parser(
         "score-batch",
@@ -941,6 +959,12 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="MLflow tracking URI; omit to skip the (stubbable) MLflow upload entirely",
     )
+    finalize.add_argument(
+        "--include-per-sample", action="store_true",
+        help="include the saved full scorer result without a second scorer invocation",
+    )
+    for path_name in ("repo-root", "data-root", "lock-path"):
+        finalize.add_argument("--" + path_name, default=None)
     finalize.set_defaults(func=_cli_finalize)
 
     promote = sub.add_parser(

@@ -31,6 +31,15 @@ BatchOperation = Literal["score", "finalize", "per-job"]
 
 
 @dataclass(frozen=True)
+class ScoringContext:
+    """Explicit source checkout, data root and umbrella lock for isolated workers."""
+
+    repo_root: Path
+    data_root: Path
+    lock_path: Path
+
+
+@dataclass(frozen=True)
 class ScoreJob:
     """One complete, independently verifiable official-scorer invocation."""
 
@@ -189,70 +198,54 @@ def load_score_jobs(
     return tuple(jobs)
 
 
-def run_official_score_job(
-    job: ScoreJob, *, include_per_sample: bool = False
+def _official_job_process(
+    job: ScoreJob, *, operation: str, include_per_sample: bool,
+    context: ScoringContext | None,
 ) -> ScoreProcessOutcome:
-    """Launch the existing authoritative scorer once for one whole manifest."""
-
+    if operation == "finalize" and job.ledger_cells is None:
+        raise ScoreBatchError(f"finalize job {job.job_id!r} requires a ledger_cells file")
     environment = dict(os.environ)
     environment["PYTHONDONTWRITEBYTECODE"] = "1"
     arguments = [
-        sys.executable,
-        "-B",
-        "-m",
-        _DRIVER_MODULE,
-        "score",
-        "--manifest",
-        str(job.manifest),
+        sys.executable, "-B", "-m", _DRIVER_MODULE, operation,
+        "--manifest", str(job.manifest),
     ]
+    if operation == "finalize":
+        arguments.extend(("--ledger-cells", str(job.ledger_cells)))
     if include_per_sample:
         arguments.append("--include-per-sample")
+    cwd = _REPO_ROOT
+    if context is not None:
+        cwd = Path(context.repo_root)
+        for key in ("repo_root", "data_root", "lock_path"):
+            arguments.extend(("--" + key.replace("_", "-"), str(getattr(context, key))))
+        environment["PYTHONPATH"] = os.pathsep.join(filter(None, (
+            str(cwd / "src"), environment.get("PYTHONPATH", ""),
+        )))
+        environment["SPEECHRL_DATA_DIR"] = str(context.data_root)
     completed = subprocess.run(
-        arguments,
-        cwd=_REPO_ROOT,
-        env=environment,
-        check=False,
-        capture_output=True,
-        text=True,
+        arguments, cwd=cwd, env=environment, check=False, capture_output=True, text=True,
     )
     return ScoreProcessOutcome(
-        returncode=completed.returncode,
-        stdout=completed.stdout,
-        stderr=completed.stderr,
+        returncode=completed.returncode, stdout=completed.stdout, stderr=completed.stderr,
     )
 
 
-def run_official_finalize_job(job: ScoreJob) -> ScoreProcessOutcome:
-    """Finalize one whole manifest through the existing authoritative CLI."""
-
-    if job.ledger_cells is None:
-        raise ScoreBatchError(
-            f"finalize job {job.job_id!r} requires a ledger_cells file"
-        )
-    environment = dict(os.environ)
-    environment["PYTHONDONTWRITEBYTECODE"] = "1"
-    completed = subprocess.run(
-        [
-            sys.executable,
-            "-B",
-            "-m",
-            _DRIVER_MODULE,
-            "finalize",
-            "--manifest",
-            str(job.manifest),
-            "--ledger-cells",
-            str(job.ledger_cells),
-        ],
-        cwd=_REPO_ROOT,
-        env=environment,
-        check=False,
-        capture_output=True,
-        text=True,
+def run_official_score_job(
+    job: ScoreJob, *, include_per_sample: bool = False, context: ScoringContext | None = None,
+) -> ScoreProcessOutcome:
+    """Launch the authoritative scorer once for one complete manifest."""
+    return _official_job_process(
+        job, operation="score", include_per_sample=include_per_sample, context=context,
     )
-    return ScoreProcessOutcome(
-        returncode=completed.returncode,
-        stdout=completed.stdout,
-        stderr=completed.stderr,
+
+
+def run_official_finalize_job(
+    job: ScoreJob, *, include_per_sample: bool = False, context: ScoringContext | None = None,
+) -> ScoreProcessOutcome:
+    """Score and finalize one complete manifest in one authoritative worker."""
+    return _official_job_process(
+        job, operation="finalize", include_per_sample=include_per_sample, context=context,
     )
 
 
@@ -308,6 +301,7 @@ def run_score_batch(
     runner: ScoreRunner | None = None,
     operation: BatchOperation = "score",
     include_per_sample: bool = False,
+    context: ScoringContext | None = None,
 ) -> dict[str, object]:
     """Run every complete job with bounded outer process concurrency.
 
@@ -391,11 +385,14 @@ def run_score_batch(
         if runner is not None:
             return runner(job)
         job_operation = job.operation if operation == "per-job" else operation
-        if job_operation == "finalize":
-            return run_official_finalize_job(job)
+        selected = run_official_finalize_job if job_operation == "finalize" else run_official_score_job
+        kwargs = {}
         if include_per_sample:
-            return run_official_score_job(job, include_per_sample=True)
-        return run_official_score_job(job)
+            kwargs["include_per_sample"] = True
+        if context is not None:
+            kwargs["context"] = context
+        return selected(job, **kwargs)
+
     started = time.perf_counter()
     completed_by_index: dict[
         int, tuple[ScoreProcessOutcome, float, str | None]

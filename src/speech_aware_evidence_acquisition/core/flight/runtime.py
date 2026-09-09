@@ -4581,13 +4581,30 @@ class FlightRuntime:
                 "core.bundle.finalize_bundle validates the complete ledger surface "
                 "before it will score"
             )
-        finalize_result = self._bundle_finalizer(
-            manifest_path,
-            self._lock,
-            self._data_root,
-            repo_root=self._repo_root,
-            ledger_cells=merged_ledger_cells,
-        )
+        deferred_scoring = None
+        if self._execution_policy is not None:
+            from .scoring import seal_scoring_inputs
+            # Validate caller cells now; the official finalizer validates them
+            # again after root releases generation custody.
+            self._ledger_validator(verified, merged_ledger_cells)
+            deferred_scoring = seal_scoring_inputs(
+                manifest_path, run_id=self.run_id, attempt_id=self.attempt_id,
+                ledger_cells=merged_ledger_cells,
+            )
+            finalize_payload = deferred_scoring["finalize"]
+        else:
+            finalize_result = self._bundle_finalizer(
+                manifest_path,
+                self._lock,
+                self._data_root,
+                repo_root=self._repo_root,
+                ledger_cells=merged_ledger_cells,
+            )
+            finalize_payload = {
+                "scores_path": str(finalize_result.scores_path),
+                "ledger_markdown_path": str(finalize_result.ledger_markdown_path),
+                "attempt_state": finalize_result.attempt_state,
+            }
 
         flight_receipt: Mapping[str, object] | None = None
         if flight_receipt_kwargs is not None:
@@ -4639,13 +4656,11 @@ class FlightRuntime:
             "trace_manifest_hash": close_receipt["trace_manifest_hash"],
             "cost": close_receipt["cost"],
             "ledger_cells": merged_ledger_cells,
-            "finalize": {
-                "scores_path": str(finalize_result.scores_path),
-                "ledger_markdown_path": str(finalize_result.ledger_markdown_path),
-                "attempt_state": finalize_result.attempt_state,
-            },
+            "finalize": finalize_payload,
             "flight_receipt": flight_receipt,
         }
+        if deferred_scoring is not None:
+            payload.update(deferred_scoring)
         return self.receipts.record("seal", payload)
 
     # -- stage 6: score ---------------------------------------------------
@@ -4675,11 +4690,18 @@ class FlightRuntime:
         manifest_path = Path(seal_payload["manifest_path"])
         run_dir = self._run_dir()
         jobs_path = run_dir / "score-jobs.jsonl"
-        with jobs_path.open("w", encoding="utf-8") as handle:
-            handle.write(
-                json.dumps({"job_id": self._plan.attempt_id, "manifest": str(manifest_path)}) + "\n"
-            )
-        jobs = load_score_jobs(jobs_path)
+        score_kwargs = {}
+        if self._execution_policy is not None:
+            from .scoring import load_sealed_score_jobs
+            jobs = load_sealed_score_jobs(seal_payload)
+            score_kwargs["operation"] = "finalize"
+            include_per_sample = True
+        else:
+            with jobs_path.open("w", encoding="utf-8") as handle:
+                handle.write(
+                    json.dumps({"job_id": self._plan.attempt_id, "manifest": str(manifest_path)}) + "\n"
+                )
+            jobs = load_score_jobs(jobs_path)
         resolved_output_dir = Path(output_dir) if output_dir is not None else run_dir / "score-batch"
 
         started = self._clock()
@@ -4688,6 +4710,7 @@ class FlightRuntime:
             output_dir=resolved_output_dir,
             max_workers=max_workers,
             include_per_sample=include_per_sample,
+            **score_kwargs,
         )
         duration = max(self._clock() - started, 1e-9)
 
@@ -4700,6 +4723,12 @@ class FlightRuntime:
             "jobs_per_second": len(jobs) / duration,
             "result": result,
         }
+        if self._execution_policy is not None:
+            payload["source_generation_manifest_sha256"] = seal_payload["generation_manifest_sha256"]
+            payload["finalized_manifest_sha256"] = (
+                _sha256_file(manifest_path) if not result.get("failed", 0) else None
+            )
+            payload["operation"] = "finalize"
         require_mandatory_throughput_fields("score", payload, ("jobs_per_second",))
         return self.receipts.record("score", payload)
 
