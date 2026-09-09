@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+from dataclasses import dataclass
 from collections import Counter
 from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
@@ -160,6 +162,63 @@ def fit_requests(
     }
 
 
+@dataclass(frozen=True)
+class PreparedPhaseRequests:
+    """Keep real single-phase requests immutable until root begins fitting."""
+
+    run_id: str
+    attempt_id: str
+    payload_bytes: tuple[bytes, ...]
+    inputs_bytes: bytes
+
+
+def _validate_phase_roster(payloads, context):
+    expected = context["sample_ids"]
+    actual = [payload.get("sample_id") for payload in payloads]
+    if (
+        not actual or len(set(actual)) != len(actual)
+        or len(set(expected)) != len(expected) or set(actual) != set(expected)
+    ):
+        raise PreparationError("prepared phase must cover the complete unique roster")
+
+
+def materialize_phase_fit(runtime) -> PreparedPhaseRequests:
+    """Complete shared request construction before any service is started."""
+    context = runtime.preparation_context()
+    payloads = runtime.materialize_phase_requests()
+    _validate_phase_roster(payloads, context)
+    return PreparedPhaseRequests(
+        context["run_id"], context["attempt_id"],
+        tuple(canonical_bytes(payload) for payload in payloads),
+        canonical_bytes(runtime.request_fit_inputs(payloads)),
+    )
+
+
+def _consume_phase_fit(runtime, prepared, context):
+    if not isinstance(prepared, PreparedPhaseRequests) or (
+        prepared.run_id != context["run_id"]
+        or prepared.attempt_id != context["attempt_id"]
+    ):
+        raise PreparationError("prepared phase run or attempt identity changed")
+    if not isinstance(prepared.payload_bytes, tuple) or not all(
+        isinstance(raw, bytes) for raw in prepared.payload_bytes
+    ) or not isinstance(prepared.inputs_bytes, bytes):
+        raise PreparationError("prepared phase must contain immutable canonical bytes")
+    try:
+        payloads = tuple(json.loads(raw) for raw in prepared.payload_bytes)
+        if any(not isinstance(payload, dict) for payload in payloads):
+            raise ValueError("payload is not an object")
+        if tuple(canonical_bytes(p) for p in payloads) != prepared.payload_bytes:
+            raise ValueError("payload is not canonical")
+        _validate_phase_roster(payloads, context)
+        inputs = runtime.request_fit_inputs(payloads)
+        if canonical_bytes(inputs) != prepared.inputs_bytes:
+            raise PreparationError("prepared phase request configuration or source changed")
+    except (TypeError, ValueError, KeyError) as error:
+        raise PreparationError(f"invalid prepared phase: {error}") from error
+    return payloads, inputs
+
+
 def fit_phase_runtime(
     runtime,
     path: Path,
@@ -171,6 +230,7 @@ def fit_phase_runtime(
     transport_factory=None,
     speech_counter=None,
     window_batch=None,
+    prepared_phase: PreparedPhaseRequests | None = None,
 ) -> dict[str, object]:
     """Attach to the root session and fit a full phase or actual window batch.
 
@@ -187,13 +247,18 @@ def fit_phase_runtime(
     from .preparation import prepare_artifact, measure_multimodal_request
     from .session.worker import attach_worker_session
 
+    if window_batch is not None and prepared_phase is not None:
+        raise PreparationError("choose either prepared phase requests or a window batch")
     context = runtime.preparation_context()
-    payloads = (
-        runtime.materialize_phase_requests()
-        if window_batch is None
-        else window_batch.payloads
-    )
-    inputs = runtime.request_fit_inputs(payloads)
+    if prepared_phase is not None:
+        payloads, inputs = _consume_phase_fit(runtime, prepared_phase, context)
+    else:
+        payloads = (
+            runtime.materialize_phase_requests()
+            if window_batch is None
+            else window_batch.payloads
+        )
+        inputs = runtime.request_fit_inputs(payloads)
     if window_batch is not None:
         from ..reproduction import obs_loop, repair_loop
         from . import preparation_windows

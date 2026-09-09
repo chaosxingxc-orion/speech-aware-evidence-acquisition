@@ -1,0 +1,53 @@
+{
+  "arms": {
+    "control": {
+      "elapsed_seconds": 9.503851435001707,
+      "phase_supply": "not applicable: no retrieval",
+      "rows": 1000
+    },
+    "speech": {
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-KU-S3-G1-MAX256-PREPARE-V2/speech-supply.json",
+        "sha256": "75affecadf9dbbbd406fe5a1af90fa43795e748a6b31b99bd4e129486f6a1582"
+      },
+      "config_sha256": "1ae88a04642cafd2a44dbd79e094e5390de781f444e8954e08c45f83d178a7c2",
+      "elapsed_seconds": 31.711348815995734,
+      "ordered_selection_equal": true,
+      "rows": 1000,
+      "runner_supply_bytes_equal": true,
+      "selection_output_sha256": "dba7c4a3b4a7808f7ba06d5090024b3cc1ed7b596df0a8ae0b60f0def5238866",
+      "supply_sha256": "77d33a45db4b7880e92acfd7e378a199610938b201cacdada473596b07108154",
+      "warm_producer_invocations": 0,
+      "warm_runtime_selection_invocations": 0
+    },
+    "twin": {
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-KU-S3-G1-MAX256-PREPARE-V2/twin-supply.json",
+        "sha256": "c1e80cf8e0235a2ab9d7e87ea834318e0dfa8a2d06b03a7c02a65539325bee3a"
+      },
+      "config_sha256": "687852fb256615b7eb30c90e0cc878c296b30137ce5b5e5a2af82ac09ff2ebcc",
+      "elapsed_seconds": 35.014601805989514,
+      "ordered_selection_equal": true,
+      "rows": 1000,
+      "runner_supply_bytes_equal": true,
+      "selection_output_sha256": "70eee1947f34484132ed39875aeabb028d1808ce8fcf80165c04e2b5411a7d69",
+      "supply_sha256": "e82ea1847d001dadf76ed13d64d22eca0db26de4a00ddde96c417c855f795da1",
+      "warm_producer_invocations": 0,
+      "warm_runtime_selection_invocations": 0
+    }
+  },
+  "audit_report": {
+    "relpath": "analysis/SAEA-SLURP-KU-S3-G1-MAX256-PREPARE-V2/parity.json",
+    "sha256": "ce088fd3a52fe6ccc24762c73d713711d2293ac8da8aa3f5d74dd831abec94a3"
+  },
+  "complete": true,
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "required_session_identity_equal": true,
+  "schema": "saea-max256-final-preparation-parity-v1"
+}

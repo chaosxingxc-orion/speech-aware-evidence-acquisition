@@ -179,5 +179,9 @@
       "retain original scenario-stratified bootstrap with seed 20260903 and speaker-cluster sensitivity",
       "the four-row engineering arms do not establish effectiveness"
     ]
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-KU-S3-G1-MAX256-PREPARE-V2/speech-supply.json",
+    "sha256": "75affecadf9dbbbd406fe5a1af90fa43795e748a6b31b99bd4e129486f6a1582"
   }
 }

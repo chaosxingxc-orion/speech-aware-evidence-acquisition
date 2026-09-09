@@ -328,3 +328,74 @@ def test_window_batch_fit_uses_real_multimodal_count_route(tmp_path):
         ("GET", "/props"),
         ("POST", "/v1/chat/completions/input_tokens"),
     ]
+
+def test_prepared_phase_reuses_real_payloads_and_warm_fit_has_zero_contacts(tmp_path):
+    from dataclasses import FrozenInstanceError
+    from speech_aware_evidence_acquisition.core.preparation_fit import (
+        fit_phase_runtime, materialize_phase_fit,
+    )
+    runtime, _policy, attach, client, kwargs = fit_fixture(tmp_path)
+    original = runtime.materialize_phase_requests()
+    prepared = materialize_phase_fit(runtime)
+    original[0]["speech"].append(999)
+    runtime.materialize_phase_requests = lambda: pytest.fail("materialized twice")
+    with pytest.raises(FrozenInstanceError):
+        prepared.run_id = "changed"
+    path = tmp_path / "prepared-fit.json"
+    fit_phase_runtime(runtime, path, prepared_phase=prepared, **kwargs)
+    output = json.loads(path.read_bytes())["output"]
+    assert output["rows"][0]["speech_tokens"] == 7
+    client.calls.clear()
+    fit_phase_runtime(runtime, path, prepared_phase=prepared, **kwargs)
+    assert client.calls == [] and attach.call_count == 1
+
+
+@pytest.mark.parametrize("drift", ["run", "attempt", "config", "source", "cap", "roster"])
+def test_prepared_phase_drift_refused_before_authorization(tmp_path, drift):
+    from dataclasses import replace
+    from speech_aware_evidence_acquisition.core.preparation import canonical_bytes
+    from speech_aware_evidence_acquisition.core.preparation_fit import (
+        fit_phase_runtime, materialize_phase_fit,
+    )
+    runtime, _policy, attach, client, kwargs = fit_fixture(tmp_path)
+    prepared = materialize_phase_fit(runtime)
+    context = runtime.preparation_context()
+    if drift in {"run", "attempt"}:
+        context[drift + "_id"] = "different"
+    elif drift == "roster":
+        context["sample_ids"] = ["s1", "s2"]
+    elif drift == "cap":
+        payload = json.loads(prepared.payload_bytes[0])
+        payload["decoding_params"] = {"max_tokens": 256}
+        prepared = replace(prepared, payload_bytes=(canonical_bytes(payload),))
+    else:
+        previous = runtime.request_fit_inputs
+        runtime.request_fit_inputs = lambda p: {**previous(p), drift: "different"}
+    with pytest.raises(PreparationError):
+        fit_phase_runtime(runtime, tmp_path / "fit.json", prepared_phase=prepared, **kwargs)
+    assert not runtime.authorize_preparation_contacts.called
+    assert not attach.called and not client.calls
+
+
+@pytest.mark.parametrize("ids", [[], ["s1", "s1"], ["s2"]])
+def test_phase_materializer_rejects_incomplete_or_duplicate_roster(tmp_path, ids):
+    from speech_aware_evidence_acquisition.core.preparation_fit import materialize_phase_fit
+    runtime, _policy, attach, client, _kwargs = fit_fixture(tmp_path)
+    runtime.materialize_phase_requests = lambda: [{"sample_id": sid} for sid in ids]
+    with pytest.raises(PreparationError, match="roster"):
+        materialize_phase_fit(runtime)
+    assert not attach.called and not client.calls
+
+
+def test_prepared_phase_and_window_batch_are_mutually_exclusive(tmp_path):
+    from speech_aware_evidence_acquisition.core.preparation_fit import (
+        fit_phase_runtime, materialize_phase_fit,
+    )
+    runtime, _policy, attach, client, kwargs = fit_fixture(tmp_path)
+    prepared = materialize_phase_fit(runtime)
+    with pytest.raises(PreparationError, match="either"):
+        fit_phase_runtime(
+            runtime, tmp_path / "fit.json", prepared_phase=prepared,
+            window_batch=object(), **kwargs,
+        )
+    assert not attach.called and not client.calls

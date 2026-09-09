@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -27,34 +28,41 @@ def test_max256_successor_is_held_and_split_into_fit_generation(path, tmp_path):
     assert document["migration_status"].startswith("HELD:")
     assert document["request_decoding_overrides"] == {"max_tokens": 256}
     assert document["preserve_wire_responses"] is True
-    assert fit["readiness"]["state"] == generation["readiness"]["state"] == "held"
+    assert fit["readiness"]["state"] in {"held", "ready"}
+    assert generation["readiness"]["state"] in {"held", "ready"}
     assert fit["allowed_execution_stages"] == ["check", "wire-check", "prompt-fit"]
     assert generation["allowed_execution_stages"] == ["check", "wire-check", "prepare-supply", "worker", "campaign"]
     assert fit["run_id"].endswith("-FIT-V1")
     assert generation["run_id"] == document["experiment_id"]
-    assert fit["attempt_id"].startswith("PENDING-REGISTERED-")
-    assert generation["attempt_id"].startswith("PENDING-REGISTERED-")
+    assert re.fullmatch(r"attempt-[0-9TZ-]+-[0-9a-f]+", fit["attempt_id"])
+    assert re.fullmatch(r"attempt-[0-9TZ-]+-[0-9a-f]+", generation["attempt_id"])
+    assert fit["attempt_id"] != generation["attempt_id"]
     assert fit["model_fragment"] == generation["model_fragment"] == MODEL
     assert fit["dataset_fragment"] == generation["dataset_fragment"] == DATASET
-    assert declared_readiness(load_campaign_cells(REPO, path.stem)[0], tmp_path).state == "held"
-    assert declared_readiness(load_campaign_cells(REPO, path.stem)[1], tmp_path).state == "held"
+    for cell in load_campaign_cells(REPO, path.stem):
+        readiness = declared_readiness(cell, tmp_path)
+        assert readiness.state != "ready" if cell.document["readiness"]["state"] == "ready" else readiness.state == "held"
+        if cell.document["readiness"]["state"] == "ready" and not cell.document["run_id"].endswith("-FIT-V1"):
+            pin = document.get("prepared_request_fit")
+            assert isinstance(pin, dict)
+            assert any(item.get("kind") == "preparation" and item.get("relpath") == pin.get("relpath") and item.get("sha256") == pin.get("sha256") for item in cell.document["readiness"].get("requirements", []))
 
 
 @pytest.mark.parametrize("path", CONFIGS)
-def test_max256_successor_has_pending_fit_supply_and_no_active_pins(path):
+def test_max256_successor_has_registered_budgets_and_valid_active_pins(path):
     document = read(path)
     assert document["execution_plan"]["planned_model_calls"] == 1050
     assert document["execution_plan"]["planned_gpu_hours"] == 2.0
     assert document["execution_plan"]["planned_speech_audio_seconds"] == 3000
     assert document["pending_preparation"]["fit"]["endpoint_count"] == 3001
-    assert document["pending_preparation"]["fit"]["artifact_sha256"].startswith("PENDING-")
-    if "control" not in path.stem:
-        assert document["pending_preparation"]["phase_supply"]["artifact_sha256"].startswith("PENDING-")
-    else:
-        assert "artifact_sha256" not in document["pending_preparation"]["phase_supply"]
-        assert "not applicable" in document["pending_preparation"]["phase_supply"]["status"]
-    assert "prepared_phase_supply" not in document
-    assert "prepared_request_fit" not in document
+    for name in ("prepared_request_fit", "prepared_phase_supply"):
+        if name in document:
+            pin = document[name]
+            assert not Path(pin["relpath"]).is_absolute()
+            assert ".." not in Path(pin["relpath"]).parts
+            assert re.fullmatch(r"[0-9a-f]{64}", pin["sha256"])
+    if "control" in path.stem:
+        assert "prepared_phase_supply" not in document
     assert all("depends_on" not in cell["readiness"] for cell in document["cells"])
     assert "unexposed NEW500" not in path.read_text(encoding="utf-8")
 
@@ -68,9 +76,18 @@ def test_max256_composition_preserves_override_and_held_pending_state(path, tmp_
     assert composed.values["experiment_id"] == document["experiment_id"]
     assert composed.values["request_decoding_overrides"] == {"max_tokens": 256}
     assert composed.values["pending_preparation"]["fit"]["endpoint_count"] == 3001
-    assert "prepared_phase_supply" not in composed.values
-    assert "prepared_request_fit" not in composed.values
-    assert declared_readiness(load_campaign_cells(REPO, path.stem)[0], tmp_path).state == "held"
+    for name in ("prepared_request_fit", "prepared_phase_supply"):
+        if name in composed.values:
+            pin = composed.values[name]
+            assert not Path(pin["relpath"]).is_absolute()
+            assert ".." not in Path(pin["relpath"]).parts
+            assert re.fullmatch(r"[0-9a-f]{64}", pin["sha256"])
+    for cell in load_campaign_cells(REPO, path.stem):
+        readiness = declared_readiness(cell, tmp_path)
+        if cell.document["readiness"]["state"] == "ready":
+            assert readiness.state != "ready"
+        else:
+            assert readiness.state == "held"
 
 
 def test_max256_control_is_explicit_no_retrieval_and_keeps_owner_schema():
