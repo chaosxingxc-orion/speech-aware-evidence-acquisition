@@ -3562,24 +3562,39 @@ class FlightRuntime:
         require_clean_study_repo(self._repo_root)
         return plan
 
-
     def materialize_window_batch(self, *, execution_plan=None):
         """Build the configured E21 raw-window requests without model contact."""
         from ..base import SampleContext
         from ..model.slices import SliceRegistry
         from ..preparation import PreparationError
         from ..preparation_windows import materialize_window_requests
-        from ...reproduction.window_controller import build_controller_window_hook
+        from ...reproduction.window_controller import (
+            PROGRAM_KEY,
+            build_controller_window_hook,
+        )
+        from ...reproduction.repair_loop import build_repair_window_hook
 
         values, _carrier, _split, _identity = self._prepare()
         if self._adapter.preprocess_plan().get("kind") != "raw-speech-windows":
-            raise PreparationError("window fit requires the E21 raw-speech-windows adapter")
+            raise PreparationError(
+                "window fit requires the E21 raw-speech-windows adapter"
+            )
         if not isinstance(self._adapter, TaskAdapter):
             raise PreparationError("window fit requires the prepared runtime adapter")
-        if values.get("policy") not in ("obs-agent-loop-ojw", "obs-repair-loop-ojw"):
-            raise PreparationError("window fit refuses unsupported live or adaptive policies")
+        if values.get("policy") not in (
+            "obs-agent-loop-ojw",
+            "obs-repair-loop-ojw",
+        ):
+            raise PreparationError(
+                "window fit refuses unsupported live or adaptive policies"
+            )
+        if values.get("evidence_source", "none") not in (None, "none"):
+            raise PreparationError(
+                "window fit refuses evidence-bearing arms until shared evidence "
+                "materialization is available"
+            )
         plan = execution_plan or self._plan
-        if values.get("window_controller_program") and plan is None:
+        if values.get(PROGRAM_KEY) and plan is None:
             raise PreparationError("window fit requires the authorized execution plan")
         registry = SliceRegistry(
             data_root=self._data_root,
@@ -3611,16 +3626,20 @@ class FlightRuntime:
                 )
             )
 
-        def hook_factory(ctx, cfg, _root, _sample):
-            if values.get("window_controller_program"):
-                return build_controller_window_hook(ctx, cfg)
-            return None
+        def hook_factory(ctx, cfg, root, sample):
+            delegate = None
+            if values["policy"] == "obs-repair-loop-ojw":
+                delegate = build_repair_window_hook(ctx, cfg, root, sample)
+            if values.get(PROGRAM_KEY):
+                return build_controller_window_hook(ctx, cfg, delegate)
+            return delegate
 
         return materialize_window_requests(
             contexts,
             expected_sample_ids=[sample.sample_id for sample in self._samples],
             hook_factory=hook_factory,
         )
+
 
     def request_fit_inputs(self, payloads, *, window_batch=None):
         from .. import preparation, preparation_fit

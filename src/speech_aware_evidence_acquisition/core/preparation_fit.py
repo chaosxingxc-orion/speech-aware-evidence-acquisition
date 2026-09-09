@@ -193,7 +193,15 @@ def fit_phase_runtime(
         if window_batch is None
         else window_batch.payloads
     )
-    inputs = runtime.request_fit_inputs(payloads, window_batch=window_batch)
+    if window_batch is None:
+        inputs = runtime.request_fit_inputs(payloads)
+    else:
+        try:
+            inputs = runtime.request_fit_inputs(payloads, window_batch=window_batch)
+        except TypeError as error:
+            if "window_batch" not in str(error):
+                raise
+            inputs = runtime.request_fit_inputs(payloads)
     if window_batch is not None:
         if {p["sample_id"] for p in payloads} != set(context["sample_ids"]):
             raise PreparationError("window fit does not cover the runtime call roster")
