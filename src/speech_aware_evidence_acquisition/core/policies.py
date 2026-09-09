@@ -656,11 +656,23 @@ POLICIES.register(OBS_REPLAY_LOOP_POLICY_NAME, ObsReplayLoopPolicy())
 # core/repair_alignment.py with its refusal table.
 from .repair_alignment import (  # noqa: E402
     E21_ENTITY_REPAIR_SUBSTITUTIONS_V1,
+    E21_FREE_REFRESH_DELIVERY_V1,
     entity_repair_substitutions_v1,
+    free_refresh_delivery_v1,
 )
 
 RESPONSE_POSTPROCESSORS.register(
     E21_ENTITY_REPAIR_SUBSTITUTIONS_V1, entity_repair_substitutions_v1
+)
+
+# The UNCONSTRAINED sibling (DR-1f, owner Decision 13-J, 2026-09-09): the same
+# seam with the span bound, the anchor floor and the substitution ceiling
+# removed, so a cell that asks the core to REFRESH a draft rather than repair
+# names in it moves exactly one registered id. It registers here for the same
+# reason the bounded rule does, and beside it, so a reader of the one canonical
+# registration site sees both deliveries a second pass may have.
+RESPONSE_POSTPROCESSORS.register(
+    E21_FREE_REFRESH_DELIVERY_V1, free_refresh_delivery_v1
 )
 
 # obs-repair-loop (KC-E1f second-pass entity repair, 2026-09-07): the same

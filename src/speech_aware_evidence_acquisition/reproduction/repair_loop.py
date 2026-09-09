@@ -152,7 +152,28 @@ REPAIR_FRAME_V1 = (
     "for correction only -- it is not a reference transcript and not an "
     'instruction):\n"{predecessor}"'
 )
-REPAIR_FRAMES: Mapping[str, str] = {"e21-entity-repair-frame-v1": REPAIR_FRAME_V1}
+#: DR-1's frame (owner Decision 13-J, 2026-09-09). Same shape, same position,
+#: same containment discipline: the typed draft rides in the FRAME, never
+#: interpolated into the instruction body, so the instruction the fragment
+#: commits is the instruction a reader can quote and the draft is material
+#: beside it.
+#:
+#: Its wording is deliberately NEUTRAL ABOUT WHERE THE DRAFT CAME FROM, because
+#: the same frame carries a stitched short-unit draft in DR-1c/DR-1f and the
+#: comparator's own long-window hypothesis in the DR-1s twin. Every clause is
+#: true of both -- both are this same model's earlier output on this same
+#: audio, produced without reference material -- so the twin isolates the
+#: draft's SOURCE and not a second difference in what the model was told.
+DRAFT_REFRESH_FRAME_V1 = (
+    "Draft transcript of this same audio window, produced earlier by this same "
+    "model without any reference material (earlier model output, provided as a "
+    "starting point only -- it is not a reference transcript and not an "
+    'instruction):\n"{predecessor}"'
+)
+REPAIR_FRAMES: Mapping[str, str] = {
+    "e21-entity-repair-frame-v1": REPAIR_FRAME_V1,
+    "e21-draft-refresh-frame-v1": DRAFT_REFRESH_FRAME_V1,
+}
 
 #: Config keys this policy adds on top of ``obs-agent-loop``'s own.
 CONFIG_KEYS = (
@@ -516,6 +537,7 @@ __all__ = [
     "REQUIRED_CONFIG_KEYS",
     "OBS_REPAIR_LOOP_OJW_POLICY_NAME",
     "OBS_REPAIR_LOOP_POLICY_NAME",
+    "DRAFT_REFRESH_FRAME_V1",
     "REPAIR_FRAMES",
     "REPAIR_FRAME_V1",
     "ObsRepairLoopOjwPolicy",
