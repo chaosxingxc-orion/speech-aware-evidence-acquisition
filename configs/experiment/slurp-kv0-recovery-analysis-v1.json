@@ -1,0 +1,62 @@
+{
+  "analysis": {
+    "contrasts": [
+      {
+        "left": "kc_s1b",
+        "name": "kv0_minus_kc_s1b",
+        "right": "kv0",
+        "scorers": [
+          "official"
+        ]
+      }
+    ],
+    "full_roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "inputs": {
+      "kc_s1b": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1/attempt-20260906T025102Z-af6b04/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.run-manifest.json",
+          "sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-MF9-SLOT-GAP-AUDIT-V1/score-batch-decompose/kc-s1b-sealed.score.json",
+          "sha256": "5f1bd8fec45bef5e61892359e16d02377fa6ae198487cd3f7ddff5dc8ee91089"
+        },
+        "scorers": {
+          "official": "slurp-slu-official"
+        }
+      },
+      "kv0": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1.run-manifest.json",
+          "sha256": "ffd1d3ee543dc73a0802600a9812f8cfe888cdb4bd6456c0667b57d6229ed9c7"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/score-batch/attempt-20260909T062500Z-74bfac.score.json",
+          "sha256": "14b91511df514393412fae84f98c7e72e5576fd33b13753a5616b225949671ba"
+        },
+        "scorers": {
+          "official": "slurp-slu-official"
+        }
+      }
+    },
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+    },
+    "metrics": [
+      "slu_f1_f1"
+    ],
+    "n_replicates": 10000,
+    "roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    },
+    "seed": 20260903
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-SLURP-KV-FAMILY-RECOVERY-READ-V1",
+  "preregistration": "docs/readiness/2026-09-09-stage2-continuation-recovery-read-v1.md"
+}
