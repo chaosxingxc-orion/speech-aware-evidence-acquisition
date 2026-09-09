@@ -41,6 +41,8 @@ def main(argv=None) -> int:
         or args.contact_cap is None or args.contact_cap < 1
     ):
         parser.error("coordinate-fit requires --owner, --expected-session-id, --output and a positive --contact-cap")
+    if args.mode == "coordinate-fit" and args.lease_token_file is not None:
+        parser.error("coordinate-fit creates its own root lease; --lease-token-file is forbidden")
     if args.mode != "campaign" and not args.cell:
         parser.error("single-worker modes require --cell")
     repo, root = Path(args.repo_root).resolve(), Path(args.data_root).resolve()
