@@ -94,11 +94,13 @@ class GenerationLease:
             except BlockingIOError as error:
                 raise GenerationLeaseError("generation lease is already held") from error
             if metadata.exists():
-                prior = _read(metadata)
-                if _alive(prior.get("pid")):
-                    raise GenerationLeaseError(
-                        "live legacy or unreconciled flight metadata blocks generation"
-                    )
+                _read(metadata)
+                # Owner death does not establish worker/server contact quiescence.
+                # Preserve the evidence for explicit coordinator reconciliation.
+                raise GenerationLeaseError(
+                    "legacy or unreconciled flight metadata blocks generation; "
+                    "record PID/socket/contact quiescence before manual reconciliation"
+                )
             document = {
                 "schema": SCHEMA, **fields, "run_ids": [run_id],
                 "pid": os.getpid(), "token": secrets.token_hex(32),

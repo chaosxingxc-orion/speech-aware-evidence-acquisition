@@ -80,17 +80,24 @@ def test_live_legacy_lock_blocks_new_lease(tmp_path):
         acquire(tmp_path)
 
 
-@pytest.mark.parametrize("document", ["broken", '{"pid": 999999999, "run_ids": ["dead"]}'])
-def test_ambiguous_lock_refuses_but_dead_legacy_can_be_replaced(tmp_path, document):
+@pytest.mark.parametrize("pid", [999999999, os.getpid()])
+def test_unreconciled_dead_owner_or_reused_pid_never_clears_metadata(tmp_path, pid):
     path = tmp_path / "locks/flight.lock"
     path.parent.mkdir()
-    path.write_text(document)
-    if document == "broken":
-        with pytest.raises(GenerationLeaseError, match="unreadable"):
-            acquire(tmp_path)
-    else:
-        with acquire(tmp_path):
-            pass
+    original = json.dumps({"pid": pid, "run_ids": ["unfinished"], "contact_state": "unknown"})
+    path.write_text(original)
+    with pytest.raises(GenerationLeaseError, match="unreconciled"):
+        acquire(tmp_path)
+    assert path.read_text() == original
+
+
+def test_unreadable_lease_requires_reconciliation(tmp_path):
+    path = tmp_path / "locks/flight.lock"
+    path.parent.mkdir()
+    path.write_text("broken")
+    with pytest.raises(GenerationLeaseError, match="unreadable"):
+        acquire(tmp_path)
+    assert path.read_text() == "broken"
 
 
 def test_worker_policy_requires_explicit_identity_and_attach_only():
