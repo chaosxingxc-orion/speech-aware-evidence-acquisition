@@ -1,11 +1,11 @@
 {
   "created_by": "docs/readiness/2026-09-08-e21-kc-e1f-repair-pass-v2-redecision.md section 9",
   "gate": "docs/readiness/2026-09-08-agent-system-episode-and-core-pressure-v1.md section 8: every harness module -- a planner rule, an observe mode, a knowledge view, a judge, a tool -- carries a per-carrier admission receipt before it may enter the default plan. The contrast is module ON versus module OFF in the same harness on the same roster (one config key, never a second code path), paired with the carrier's cluster structure, n >= 400, cluster bootstrap, CI90; the guard is non-inferiority with the margin taken from the carrier's own null (family rule of 2026-09-08).",
-  "note": "This table is a LIVING RECEIPT and it is opened with exactly the one module this note had the authority to decide. The other first entries listed in the design note's section 8 are not transcribed here: each needs its own decided row and its own evidence pin, and copying them in from a prose table would manufacture receipts that no verdict issued.",
+  "note": "This table is a LIVING RECEIPT and it is opened with exactly the one module this note had the authority to decide. The other first entries listed in the design note's section 8 are not transcribed here: each needs its own decided row and its own evidence pin, and copying them in from a prose table would manufacture receipts that no verdict issued. EXTENDED 2026-09-09: a second decided row joins it, on a second carrier, and it is the table's first HARMFUL entry -- the SLURP silence tail, whose gating guards failed even though every pooled number rose. The table records negatives as loudly as positives, which is the whole point of a living receipt.",
   "schema": "saea-harness-admission-v2",
   "schema_history": {
     "saea-harness-admission-v1": "opened 2026-09-08 by docs/readiness/2026-09-08-e21-kc-e1f-repair-pass-v2-redecision.md section 9 with one decided entry.",
-    "saea-harness-admission-v2": "WAVE W4 (owner Decision 11-B change #6, 2026-09-08) adds, per entry, the config table and key that switch the module, plus the default_plans list the gate's last two rules read. NO verdict, number, status, evidence pin or provisional obligation was changed: v2 only records, for a module already decided, WHERE its one config key lives. Enforced by scripts/checks/harness_admission_check.py. EXTENDED 2026-09-08 on merge, when W4 met master's cross-call dispatcher: the switch vocabulary gains a fifth class, 'run', for a module whose one config key is a per-run driver knob rather than a per-phase table entry. The schema NAME is unchanged and the field 'switch_classes' is the version marker; no verdict, number, status, evidence pin or provisional obligation moved."
+    "saea-harness-admission-v2": "WAVE W4 (owner Decision 11-B change #6, 2026-09-08) adds, per entry, the config table and key that switch the module, plus the default_plans list the gate's last two rules read. NO verdict, number, status, evidence pin or provisional obligation was changed: v2 only records, for a module already decided, WHERE its one config key lives. Enforced by scripts/checks/harness_admission_check.py. EXTENDED 2026-09-08 on merge, when W4 met master's cross-call dispatcher: the switch vocabulary gains a fifth class, 'run', for a module whose one config key is a per-run driver knob rather than a per-phase table entry. The schema NAME is unchanged and the field 'switch_classes' is the version marker; no verdict, number, status, evidence pin or provisional obligation moved. EXTENDED 2026-09-09 with the first SLURP entry and the first HARMFUL entry: the silence tail on the delivered clip, decided by docs/readiness/2026-09-09-slurp-silence-tail-v1-verdict.md. NO schema field changed and no existing verdict, number, status, evidence pin or provisional obligation moved."
   },
   "switch_rule": "Every entry names the ONE config key that switches its module ON and OFF, as {table, key, on, off}. 'table' is one of the four config tables (rails.config_tables.CONFIG_TABLE_NAMES: judges, knowledge_views, observe, toolkits); 'key' is a dotted path that starts with that table and names one of its entry keys, with '<phase>' as the placeholder for a program's phase because a module's admission is about the module and not about one program's phase names; 'off' is the table's null arm, which composes to the same config hash as the table being absent (core.config.drop_null_arms), which is what makes the OFF arm a twin of the pre-table baseline rather than a third cell identity. 'proof' names the test that composes both arms and asserts they differ in exactly that one key. A FIFTH class, 'run', covers a module that is one config key and has no table entry because it is per-run and the four tables are per-phase: 'key' is the FLAT config key the fragment carries, it must be on the closed allowlist rails.config_tables.RUN_LEVEL_SWITCH_KEYS, 'off' is the key absent or the driver's documented default, and the entry owes a 'falsifier' -- kind 'request-bytes-identical' plus the receipt that proved it -- whose MANIFEST.sha256 the check re-verifies. That falsifier is the whole licence for being outside the tables: a module that moves one byte of the request cannot produce one and belongs in a table.",
   "default_plans": [
@@ -154,6 +154,58 @@
         "table": "run",
         "what_flew": "The sealed arm DID fly through this key: configs/baseline/e21-buf90-zero-locked-scored4-prefetch1.json is the comparator's own baseline fragment plus obs_prefetch_depth 1, and the proof test diffs those two committed fragments.",
         "why_this_class": "obs_prefetch_depth is read flat by core.driver.run and reproduction.obs_loop and decides how many samples of lookahead the driver keeps in flight. It is per-RUN, while observe, knowledge_views, judges and toolkits are per-PHASE and each of them changes the request the frozen core sees. This one provably changes no request byte, which is both why it has no table entry and why it is allowed to have none."
+      }
+    },
+    {
+      "carrier": "slurp",
+      "comparator": {
+        "attempt_id": "attempt-20260905T060424Z-2c5596",
+        "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1"
+      },
+      "date": "2026-09-09",
+      "evidence": {
+        "arm": {
+          "attempt_id": "attempt-20260909T035340Z-95296f",
+          "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-V1"
+        },
+        "smoke": {
+          "attempt_id": "attempt-20260909T034421Z-f00629",
+          "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1"
+        },
+        "falsifier": "the media accounting closes on every flown row, checked before any score file was opened: 1,000 of 1,000 delivered media sha256 and byte counts equal the committed @ts2 D1 supplement and the frozen runtime view; 1,000 of 1,000 delivered durations equal the sealed comparator's plus exactly 2.0 s and exactly 32,000 samples at 16 kHz; 1,000 of 1,000 packets equal the promoted @ts2 packets by sha256; zero disagreeing, missing or extra rows. The wire moved by the tail alone: prompt tokens 2,216,161 against 2,190,161, +26 on every single row with no other value in the histogram",
+        "guards": "section 4.1 clause 2 non-inferiority at the imported -0.60 pp margin, speaker-clustered CI90 lower bounds: SLU-F1 +0.1455 (inside), action -0.0987 (inside), scenario -0.6921 (OUTSIDE, by 0.09 pp). Section 4.1 clause 3 per-scenario harm bound: the rule allows at most 2 of 18 scenarios to lose intent and none to lose more than 3.0 pp; measured 5 losing scenarios with a worst of -10.2564 pp (takeaway, 4 harms of 39 rows), plus recommendation -3.3333 and iot -3.2787. BOTH gating guards fail, under both interval families",
+        "margins_from": {
+          "note": "IMPORTED, NOT MEASURED. SLURP has no same-request null of its own. The +-0.60 pp margin is section 4.1's own figure, taken from the Earnings-22 same-request null's half-width on the same scale, and every SLURP margin in this study is borrowed until this carrier's own null is measured. That measurement is the named blocking next cell",
+          "run_id": "IMPORTED FROM EARNINGS-22 (SAEA-E22-DEV-NULL-REPLICATE lineage), section 3 of the preregistration"
+        },
+        "primary": "intent accuracy (scenario+action) under slurp-slu-official-projected-v2, 1,000 paired DEV-1000 rows, 124 speaker clusters, CI90: 73.10 -> 74.40, a paired +1.3000 [+0.1934, +2.4262] speaker-clustered and [+0.2000, +2.4000] stratified by gold scenario; equal-stratum weighting +1.2747 [+0.2040, +2.3332]. The interval EXCLUDES ZERO and its lower bound does NOT clear section 4.1 clause 1's +0.60 pp bar, so clause 1 fails on imprecision against an imported bar rather than on direction",
+        "receipt": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-slurp-silence-tail-v1/",
+        "secondary": "slurp-slu-f1-normalized-v1 agrees in sign on all seven paired metrics; micro SLU-F1 36.43 -> 38.52 and its own intent interval [+0.2783, +2.5748] also fails the +0.60 bar, so the verdict does not change under the normalizer",
+        "verdict_note": "docs/readiness/2026-09-09-slurp-silence-tail-v1-verdict.md"
+      },
+      "module": "silence tail on the delivered clip (tail_silence_seconds 2.0)",
+      "not_admitted_for": [
+        "any SLURP use whatsoever at this margin: the gating guards failed and a HARMFUL module never enters a plan. The sealed comparator does not move to the @ts2 media, and every pending SLURP cell (the KV slot-knowledge-view family, KU-S3, KU-S4 and the logprob judge probe) keeps reading against SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1 at intent 73.10 / SLU-F1 35.80, unchanged and un-re-run",
+        "any claim that the tail is neutral or absent on SLURP: every headline number ROSE (intent +1.30, SLU-F1 micro 35.80 -> 37.83, entities strict 21.91 -> 24.36, word-F1 33.69 -> 35.77, char-F1 38.20 -> 40.15, unparsed unchanged at 3), and five gains above +4.9 pp sit beside five losses. This is a redistribution with a positive sum, and clause 3 is the clause that refuses to switch a redistribution on for everybody",
+        "the SLURP test split and FINAL60, neither of which this row touches",
+        "any other carrier: Earnings-21 decided its own tail cell separately and NOT ADMITTED for a different reason, and Audio2Tool has not flown. There is no cross-carrier verdict"
+      ],
+      "provisional": {
+        "reason": "the module is HARMFUL under this carrier's own gating guards and is barred from every default plan on that ground alone; this obligation is recorded because the FORM the table names was also never flown here, so a future re-decision cannot read this entry as evidence about the observe-table key",
+        "requirement": "COMPOSE AND FLY THE SWITCH FORM THIS TABLE RECORDS. This cell's evidence was produced by PRE-BUILT @ts2 media and PRE-ENCODED @ts2 packets, not by observe.<phase>.tail_silence_seconds: on this carrier the clip never reaches a runtime cut site, because DEV-1000 flies mmproj-free over packets materialized once by a CPU sidecar. No committed config fragment arms the observe key for SLURP and no SLURP cell has ever flown it. Before any SLURP re-decision of this module: a config fragment that arms the key on this carrier, and a cell that flies it and shows it delivers what the media form delivered",
+        "state": "UNMET"
+      },
+      "row": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-V1",
+      "status": "HARMFUL",
+      "switch": {
+        "added_by": "docs/readiness/2026-09-09-slurp-silence-tail-v1-verdict.md section 9",
+        "key": "observe.<phase>.tail_silence_seconds",
+        "off": null,
+        "on": 2.0,
+        "proof": "tests/unit/test_config_table_module_switches.py::test_silence_tail_is_one_key",
+        "table": "observe",
+        "what_flew": "The SLURP arm did NOT fly through this key. The 2.0 s was appended OFFLINE to the sealed media by scripts/build_cross_carrier_tail2s_media.py (row SAEA-SN-MF-SLURP-DEV1000-TS2-MEDIA-V1) and then encoded into SpeechFeaturePacketV1 packets by a CPU-only sidecar pass (row SAEA-SN-DEV1000-TS2-PREPROCESS-V1); the cell's model fragment differs from the comparator's in speech_feature_root and in nothing else. This field records the form the module takes from now on, not the form its evidence was produced in; the admission's evidence is the sealed bytes named under 'evidence', and the gap is carried as the provisional obligation above",
+        "why_this_table": "The module is an Observer-side change to the unit the core is asked to observe -- it changes the delivered clip and nothing else about the request, and observe is the table whose entries are 'the Observer's mode: silence tail, speaker-turn units, relisten'. The Earnings carriers already spell it as the flat obs_slice_tail_silence_seconds knob that observe.<phase>.tail_silence_seconds lifts verbatim (rails.config_tables.LEGACY_OBSERVE_KEYS)"
       }
     }
   ],

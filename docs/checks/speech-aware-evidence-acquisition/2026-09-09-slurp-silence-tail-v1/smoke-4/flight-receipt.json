@@ -1,0 +1,302 @@
+{
+  "attempt_id": "attempt-20260909T034421Z-f00629",
+  "cell_id": "closed-list-tail2s-smoke-4",
+  "dataset": "slurp-speech-native-dev1000-tail2s-smoke4",
+  "experiment": "slurp-dev1000-closed-list-tail2s-smoke-4-v1",
+  "generated_at": "2026-09-09T03:46:29.963860+00:00",
+  "identity": {
+    "added_suffix_chars": 1836,
+    "added_suffix_sha256": "46ee018e1bd2392c0e3654ddeacf4b7f32209da2a0c00cd7e658afe50ca0dda3",
+    "config_hash": "ea3e4378295cab081fdab0c895cf2d2afe26bd418be7256da24b645b4feed22a",
+    "instruction_fill": "slurp-label-inventory",
+    "instruction_template": "probes/slurp_direct_closed_list.txt",
+    "relation": "resolved == sealed_m0_instruction + suffix",
+    "resolved_instruction_chars": 7583,
+    "resolved_instruction_sha256": "4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db",
+    "roster_view_sha256": "ffb6f61c5eaeb3979fb63ade3b3f1c9830665944e260c3b9248f046b4c647e6b",
+    "sample_count": 4,
+    "sealed_m0_instruction_chars": 5747,
+    "sealed_m0_instruction_sha256": "cef527896e9beef5774305e01dc29192fc2d5ca89fba5143e82f0b91a7cb86b8",
+    "serving_geometry": {
+      "max_tokens": 64,
+      "slot_tokens": 8192,
+      "slots": 8
+    }
+  },
+  "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1",
+  "schema": "saea-slurp-closed-list-flight-receipt-v1",
+  "stages": {
+    "preflight": {
+      "attempt_id": "attempt-20260909T034421Z-f00629",
+      "attempt_reservation": "deferred to core.model.adapter.FrozenCoreAdapter",
+      "carrier_lock_key": "slurp",
+      "config_hash": "ea3e4378295cab081fdab0c895cf2d2afe26bd418be7256da24b645b4feed22a",
+      "phase_prompt_fit": null,
+      "prompt_budget": [
+        {
+          "breakdown": {
+            "completion_token_ceiling": 64,
+            "rendered_text_tokens": 2143,
+            "required_window_tokens": 2288,
+            "special_token_reserve": 2,
+            "speech_feature_packet_tokens": [
+              [
+                "slurp:devel:000011:audio-1497266596@ts2",
+                79
+              ]
+            ],
+            "speech_feature_tokens": 79
+          },
+          "compaction_pass": 0,
+          "decision": "ALLOW",
+          "dropped_identifiers": [],
+          "operational_margin_tokens": 22288,
+          "operational_reserve_tokens": 8192,
+          "payload_sha256": "8c1112236f05941d1d4a89b36c0059ba8cd36a06f956ff25dd913337c2cdda98",
+          "phase": "direct",
+          "physical_margin_tokens": 30480,
+          "slot_limit_tokens": 32768
+        }
+      ],
+      "protocol_hash": "d0cfc8212bc2daa82b66db42a1f444cd5613496b688ed15d84f00f050ee5ea9d",
+      "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1",
+      "sample_count": 4,
+      "serving_geometry": {
+        "max_tokens": 64,
+        "slot_tokens": 8192,
+        "slots": 8
+      },
+      "split_id": "DEV-1000-TAIL2S-SMOKE-4",
+      "split_identity_hash": "c80d2295848ddd3e635497faf7abbff2842b749c1bbb73958883ab335ea28ede",
+      "stage": "preflight",
+      "stage_hash": "20cca637fb96c07a5a455bb111bfe114d14fcae962a93496ee495fbf0faf378e",
+      "study_commit": "546cad7c1399cc8bafb7d38265884c23858f7899"
+    },
+    "preprocess": {
+      "campaign_active": false,
+      "duration_seconds": 0.026100873947143555,
+      "kind": "speech-packets",
+      "packet_count": 4,
+      "packet_manifest_hash": "4e5d97ed56a66a5b369f1a3caecde2b69e5f413dd57e5cb8e3f40bf65f5655ce",
+      "packets_per_second": 153.25157341858872,
+      "promoter_meta": {
+        "audio_path": "mmproj-free-speech-feature-packets",
+        "feature_root": "/home/chao/feat-cache/slurp-dev1000-ts2-packets-04ccc72a",
+        "legacy_cache_dir": "/home/chao/feat-cache/slurp-ts2-q4km",
+        "packets_required": true,
+        "promotion_receipt": "/home/chao/feat-cache/slurp-dev1000-ts2-packets-04ccc72a/DEV-1000-TAIL2S-promotion.json",
+        "promotion_receipt_sha256": "8d50d6d2702587ea0cae84a1c5489bdb4d70e23387b5f51ef6f613ef64ae92d2"
+      },
+      "stage": "preprocess",
+      "stage_hash": "1c94b59b17e231c9f6c498ab69d7467dbbd028780d38e35e3eca73f4486128e8",
+      "workers_declared": 8,
+      "workers_used": 8
+    },
+    "run_phases": {
+      "arm": "speech-feature-query",
+      "average_latency_seconds": 3.8996834700010368,
+      "contact_count": 4,
+      "contact_window": {
+        "from": 1788925477.697879,
+        "to": 1788925481.7788684
+      },
+      "contacts_per_second": 0.9801544788165621,
+      "dispatch": {
+        "contacts_per_sample": 1,
+        "dispatch": "concurrent",
+        "max_in_flight": 4,
+        "queue_depth": "not a knob: one contact per sample means nothing queues behind a sample, and more in-flight requests than slots is what the slot pinning exists to forbid",
+        "slot_ids_used": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "workers": 4
+      },
+      "id_slot": 0,
+      "id_slot_resolution": "'per-sample' sentinel resolved to slot 0 (this harness dispatches one contact at a time)",
+      "max_tokens": 64,
+      "max_tokens_resolution": "one integer declared by the fragment; no rule to resolve",
+      "occupancy_slots": 4,
+      "phase_material": null,
+      "phase_review": null,
+      "phase_supply": null,
+      "phases": [],
+      "policy": "fixed",
+      "policy_kind": "direct-speech-feature-packets",
+      "response_arrival": {
+        "basis": "rails.core_client.RequestTiming.native_tool_calls, set from core.model.CoreResponse.tool_calls; None means the response envelope carried no tool_calls key at all, i.e. the model answered as text",
+        "native_tool_calls_total": 0,
+        "rows_answered_as_text": 4,
+        "rows_total": 4,
+        "rows_with_native_tool_calls": 0
+      },
+      "serving_slots": 8,
+      "slot_occupancy": 0.9555730547721072,
+      "stage": "run_phases",
+      "stage_hash": "8517b9bb58f788f954ef528dc4fdca6bf005385fc09cbf545eee1aebf356b38a",
+      "tokens_per_second": 62.72988664425998,
+      "tokens_per_second_basis": "contacts_per_second_times_completion_token_ceiling_upper_bound_estimate",
+      "wall_seconds": 4.080989360809326
+    },
+    "score": {
+      "duration_seconds": 52.99091911315918,
+      "include_per_sample": true,
+      "job_count": 1,
+      "jobs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1/attempt-20260909T034421Z-f00629/score-jobs.jsonl",
+      "jobs_per_second": 0.018871157865077887,
+      "output_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1/attempt-20260909T034421Z-f00629/score-batch",
+      "result": {
+        "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+        "effective_max_workers": 1,
+        "elapsed_seconds": 51.785777856002824,
+        "failed": 0,
+        "job_count": 1,
+        "jobs": [
+          {
+            "elapsed_seconds": 51.76790588100266,
+            "error": null,
+            "index": 0,
+            "job_id": "attempt-20260909T034421Z-f00629",
+            "ledger_cells": null,
+            "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1/attempt-20260909T034421Z-f00629/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1.run-manifest.json",
+            "operation": "score",
+            "result_file": "attempt-20260909T034421Z-f00629.score.json",
+            "result_sha256": "d5365b4fa74ac9d680487d2564981f42d08343ac2f165cafeef998e65f809f5a",
+            "returncode": 0,
+            "status": "succeeded",
+            "stderr_log": "attempt-20260909T034421Z-f00629.stderr.log",
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_log": null
+          }
+        ],
+        "operation": "score",
+        "parallelism_boundary": "one-complete-verified-manifest-per-process",
+        "requested_max_workers": 1,
+        "schema": "saea-parallel-score-batch-v1",
+        "succeeded": 1
+      },
+      "stage": "score",
+      "stage_hash": "7817b25dcf786576cea7ce029ddf297d53f37cc56d78823b408d96788edab866"
+    },
+    "seal": {
+      "cost": {
+        "audio_seconds_used": 23.011,
+        "calls_used": 4,
+        "completion_tokens_total": 148,
+        "latency_seconds_total": 15.598733880004147,
+        "prompt_tokens_total": 8909,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      },
+      "finalize": {
+        "attempt_state": "FINALIZED",
+        "ledger_markdown_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1/attempt-20260909T034421Z-f00629/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1.ledger-row.md",
+        "scores_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1/attempt-20260909T034421Z-f00629/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1.scores.json"
+      },
+      "flight_receipt": null,
+      "ledger_cells": {
+        "MLflow run": "not used",
+        "changed axes": "model=q4km-mmproj-free-speech-native-np8-ts2-packets-max64; dataset=slurp-speech-native-dev1000-tail2s-smoke4; baseline=slurp-direct-closed-list-tail2s; experiment=slurp-dev1000-closed-list-tail2s-smoke-4-v1",
+        "dataset rev": "c80d2295848ddd3e635497faf7abbff2842b749c1bbb73958883ab335ea28ede",
+        "decision": "pending post-run analysis",
+        "deviations": "pending post-run analysis",
+        "effectiveness": "pending post-run analysis",
+        "efficiency": "pending post-run analysis",
+        "experiment_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1",
+        "model rev": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+        "reasonableness": "pending post-run analysis",
+        "shared code revision": "none; this study declares no speechrl_common dependency",
+        "speech task/carrier": "slurp; split DEV-1000-TAIL2S-SMOKE-4; 4 samples"
+      },
+      "manifest_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1/attempt-20260909T034421Z-f00629/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1.run-manifest.json",
+      "manifest_sha256": "9fb201404a738a79f5f5bf9fb127d4d46d56a76e92f3b725617547d08ca34203",
+      "outputs_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1/attempt-20260909T034421Z-f00629/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1.outputs.jsonl",
+      "outputs_row_count": 4,
+      "phase_count": 0,
+      "phases_path": null,
+      "phases_sha256": null,
+      "serving_monitor_summary": {
+        "active_seconds": 0.0,
+        "first_sample_at": null,
+        "host_free_gb_last": null,
+        "host_free_gb_min": null,
+        "host_free_gb_min_at": null,
+        "host_memory_samples": 0,
+        "last_sample_at": null,
+        "mean_power_watts": null,
+        "mean_utilization_percent": null,
+        "parked_definition": "every slot idle AND nvidia-smi utilization.gpu < 5%",
+        "parked_fraction": null,
+        "parked_seconds": 0.0,
+        "peak_power_watts": null,
+        "requests_delta": null,
+        "sample_count": 0,
+        "schema": "saea-serving-monitor-summary-v1",
+        "tokens_delta": null,
+        "vm_available_gb_min": null,
+        "vmmem_ws_gb_max": null,
+        "wall_seconds": 0.0,
+        "window": {
+          "from": 1788925477.697879,
+          "to": 1788925481.7788684
+        }
+      },
+      "session_attach_receipt_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1/attempt-20260909T034421Z-f00629/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1-attempt-20260909T034421Z-f00629.session-attach-receipt.json",
+      "session_reused": true,
+      "stage": "seal",
+      "stage_hash": "22bcaccd3709666dc8c4bff1ee4c276a4aea02c3249e3b0e5e51606a406f83b7",
+      "trace_manifest_hash": "4e1b71f8d23ca23262b24216de40cff067fab2959f4d76a5eac0d77792a680e1",
+      "verified_attempt_state": "OPENED"
+    },
+    "serve": {
+      "extra_argv": [
+        "-c",
+        "65536",
+        "-np",
+        "8",
+        "-b",
+        "2048",
+        "-ub",
+        "512",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0",
+        "--cache-prompt",
+        "--cache-ram",
+        "0",
+        "--no-cache-idle-slots",
+        "--slot-prompt-similarity",
+        "0"
+      ],
+      "host": "127.0.0.1",
+      "model_root": "/home/chao",
+      "monitor_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/slurp-np8-ts2-c65536-20260909/monitor.jsonl",
+      "pid": 3107,
+      "port": 8080,
+      "reused": true,
+      "serving_geometry": {
+        "max_tokens": 64,
+        "slot_tokens": 8192,
+        "slots": 8
+      },
+      "serving_session_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/slurp-np8-ts2-c65536-20260909",
+      "session_attach_receipt_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1/attempt-20260909T034421Z-f00629/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1-attempt-20260909T034421Z-f00629.session-attach-receipt.json",
+      "session_id": "slurp-np8-ts2-c65536-20260909",
+      "session_reused": true,
+      "session_role": "inference",
+      "session_source": "attached-serving-session",
+      "stage": "serve",
+      "stage_hash": "35b5e0c00af1548b89cdcff01069fc560146a7949266d26a401f6a2999145e58",
+      "startup_seconds": 0.0
+    },
+    "stop_serving": null
+  },
+  "study": "speech-aware-evidence-acquisition"
+}

@@ -1,0 +1,55 @@
+{
+  "attempt_id": "attempt-20260909T034421Z-f00629",
+  "checks": {
+    "cost_seconds_equal_request_seconds": 4,
+    "delivered_samples_equal_sealed_plus_32000": 4,
+    "delivered_seconds_equal_sealed_plus_2": 4,
+    "id_has_ts2_suffix": 4,
+    "media_bytes_equal_supplement": 4,
+    "media_path_inside_derived_root": 4,
+    "media_sha256_equals_runtime_view": 4,
+    "media_sha256_equals_supplement": 4,
+    "mmproj_not_loaded": 4,
+    "packet_id_carries_ts2": 4,
+    "packet_sha256_equals_promotion": 4,
+    "rows": 4
+  },
+  "comparator": {
+    "attempt_id": "attempt-20260905T060424Z-2c5596",
+    "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1"
+  },
+  "d1_media_supplement": "receipts/artifacts/d1-slurp-dev1000-tail2s.json",
+  "d1_media_supplement_sha256_declared": "56a75cf621806c1864a802e9b42e2478cc5621b6db2a0b700d9b4be032fedae1",
+  "d1_media_supplement_sha256_measured": "56a75cf621806c1864a802e9b42e2478cc5621b6db2a0b700d9b4be032fedae1",
+  "dataset_fragment": "slurp-speech-native-dev1000-tail2s-smoke4",
+  "disagreeing_rows": [],
+  "manifest_status": "COMPLETED",
+  "passed": true,
+  "population": {
+    "expected": 4,
+    "extra": [],
+    "flown": 4,
+    "missing": []
+  },
+  "promotion_receipt": "/home/chao/feat-cache/slurp-dev1000-ts2-packets-04ccc72a/DEV-1000-TAIL2S-promotion.json",
+  "prompt_tokens": {
+    "cell_total": 8909,
+    "comparator_total_on_these_rows": 8805,
+    "delta_histogram": {
+      "26": 4
+    }
+  },
+  "rule": "docs/readiness/2026-09-07-cross-carrier-silence-tail-v1-preregistration.md section 4.4: every flown row's delivered audio seconds equal its sealed row's plus exactly 2.0 and its media SHA-256 equals the committed D1 supplement's entry for that @ts2 id; zero disagreeing rows, or the cell is void and no score is read",
+  "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-SMOKE-V1",
+  "schema": "saea-slurp-tail2s-media-falsifier-v1",
+  "seconds": {
+    "delivered_total": 23.011,
+    "difference": 8.0,
+    "expected_difference": 8.0,
+    "manifest_metered": 23.011,
+    "sealed_total": 15.011
+  },
+  "study": "speech-aware-evidence-acquisition",
+  "study_commit": "546cad7c1399cc8bafb7d38265884c23858f7899",
+  "study_repo_dirt": []
+}

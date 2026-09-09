@@ -1,0 +1,46 @@
+{
+  "aggregation_rule": "no dataset sharding and no averaging of shard-level official metrics",
+  "effective_max_workers": 2,
+  "elapsed_seconds": 43.222194014000706,
+  "failed": 0,
+  "job_count": 2,
+  "jobs": [
+    {
+      "elapsed_seconds": 43.17185963299926,
+      "error": null,
+      "index": 0,
+      "job_id": "cell",
+      "ledger_cells": null,
+      "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-V1/attempt-20260909T035340Z-95296f/SAEA-SLURP-DEV1000-CLOSED-LIST-TAIL2S-V1.silence-tail-v1-read.run-manifest.json",
+      "operation": "score",
+      "result_file": "cell.score.json",
+      "result_sha256": "358ebbcbb2f3957b8132c11ba843e7d6a9ad0d5be19d84c6c2654afedab8b560",
+      "returncode": 0,
+      "status": "succeeded",
+      "stderr_log": "cell.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_log": null
+    },
+    {
+      "elapsed_seconds": 43.16993362499852,
+      "error": null,
+      "index": 1,
+      "job_id": "comparator",
+      "ledger_cells": null,
+      "manifest": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.silence-tail-v1-read.run-manifest.json",
+      "operation": "score",
+      "result_file": "comparator.score.json",
+      "result_sha256": "1586b4994ac6e7519452c452ed162fafbdef999867dfe67ffdb46a9a580c70af",
+      "returncode": 0,
+      "status": "succeeded",
+      "stderr_log": "comparator.stderr.log",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_log": null
+    }
+  ],
+  "operation": "score",
+  "parallelism_boundary": "one-complete-verified-manifest-per-process",
+  "requested_max_workers": 2,
+  "schema": "saea-parallel-score-batch-v1",
+  "succeeded": 2
+}
