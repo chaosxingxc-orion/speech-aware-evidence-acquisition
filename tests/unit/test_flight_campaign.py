@@ -145,7 +145,11 @@ def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, mon
         def score(self, **kwargs):
             pytest.fail("standalone worker must not hold generation custody during scoring")
     monkeypatch.setattr(cli, "__file__", str(repo / "src/package/core/flight/cli.py"))
-    monkeypatch.setattr(cli, "load_campaign_cells", lambda *a: (cell(),))
+    selected_document = dict(cell().document)
+    if mode == "check":
+        selected_document["readiness"] = {"state": "held", "reason": "fit not yet registered"}
+    monkeypatch.setattr(cli, "load_campaign_cells",
+                        lambda *a: (CampaignCell.from_document(selected_document),))
     monkeypatch.setattr(cli, "build_flight_runtime", lambda *a, **kw: Runtime())
     monkeypatch.setattr(cli, "run_campaign", lambda *a, **kw: {"campaign": True})
     monkeypatch.setitem(sys.modules, "speech_aware_evidence_acquisition.core.preparation_fit",

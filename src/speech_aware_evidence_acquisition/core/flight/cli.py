@@ -75,12 +75,16 @@ def main(argv=None) -> int:
         runtime = flights[0]
         if args.mode in {"worker", "check"}:
             state = declared_readiness(cells[0], root)
-            if state.state != "ready":
+            if args.mode == "worker" and state.state != "ready":
                 raise CampaignError(state.reason)
             if args.mode == "worker" and cells[0].dependencies():
                 raise CampaignError("dependent workers require coordinator queue admission")
         if args.mode == "check":
-            result = runtime.preflight()
+            result = {
+                "preflight": runtime.preflight(),
+                "scientific_readiness": {"state": state.state, "reason": state.reason},
+                "generation_authorized": False,
+            }
         elif args.mode == "wire-check":
             result = runtime.wire_check(seal_and_score=False)
         elif args.mode == "prepare-supply":
