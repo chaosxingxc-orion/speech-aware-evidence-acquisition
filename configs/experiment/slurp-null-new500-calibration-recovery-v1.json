@@ -1,0 +1,57 @@
+{
+  "analysis": {
+    "full_roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "left_job": "comparator",
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+    },
+    "metrics": [
+      "scenario_action_exact",
+      "scenario_exact",
+      "action_exact",
+      "slu_f1_f1"
+    ],
+    "micro_metrics": {
+      "slu_f1_micro": [
+        [
+          "slu_f1_word_tp",
+          "slu_f1_char_tp"
+        ],
+        [
+          "slu_f1_word_fp",
+          "slu_f1_char_fp"
+        ],
+        [
+          "slu_f1_word_fn",
+          "slu_f1_char_fn"
+        ]
+      ]
+    },
+    "n_replicates": 10000,
+    "right_job": "replicate",
+    "roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    },
+    "score_batch": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-NULL-REPLICATE-V1/own-null-read-score-batch",
+    "scorers": [
+      "slurp-slu-official-projected-v2",
+      "slurp-slu-f1-normalized-v1"
+    ],
+    "seed": 20260903
+  },
+  "execution_plan": {
+    "execution_profile": "model-free-check",
+    "planned_gpu_hours": 0,
+    "planned_model_calls": 0,
+    "planned_speech_audio_seconds": 0,
+    "split_role": "dev"
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1",
+  "preregistration": "docs/readiness/2026-09-09-stage2-continuation-recovery-read-v1.md"
+}
