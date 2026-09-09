@@ -78,7 +78,7 @@
     "prompt_order": "evidence-first-system-v3 (from the model fragment). There is no evidence block: the draft rides at the END of the rendered task_instruction inside the frozen frame e21-draft-refresh-frame-v1, exactly where reproduction.obs_loop's own OBS_TAIL_FRAME_V1 conditioned tail rides. It is model output, framed as model output, never a reference transcript, and it lands verbatim in the sealed MODEL_REQUEST record.",
     "payload_fields": "the D2-frozen bare-core field set, unchanged. No new key reaches the wire.",
     "contacts_per_item": "ONE per 90-second window; 1,593 windows over 44 calls per cell. Pass 1 is read, not flown.",
-    "harness": "The common four-fragment factory builds FlightRuntime with the Earnings runtime adapter. The registered obs-repair-loop-ojw policy uses the shared OpenJiuwen executor and existing repair hooks. Explicit OJW baseline fragments retain every legacy model-visible prompt and delivery field."
+    "harness": "The common four-fragment factory builds FlightRuntime with the Earnings runtime adapter. The registered obs-repair-loop-ojw policy uses the shared OpenJiuwen executor and existing repair hooks. Explicit obs_controller_program=phase-direct-only-v1 routes each window through EvidenceAgentController while preserving the original model-visible instruction and delegate delivery. This is a single-phase compatibility bridge; live multi-stage performance remains unproven."
   },
   "model_geometry": {
     "provisional_generation": "-c 36864 -np 6, 6,144 tokens per slot, inherited from the original DR projection; pending exact prompt-fit evidence.",
@@ -241,11 +241,11 @@
     },
     "unit_baseline_fragment": {
       "repo_relpath": "configs/baseline/e21-dr1c-draft-refresh-constrained-ojw.json",
-      "sha256": "eb85eced635577ea25ef5b664e50c07d3a116712ed74655223f88d7bee4316d6"
+      "sha256": "5525fff278c311dbe67856098c2f0de781e0b1118765b5f0a3aba1970744dd47"
     },
     "self_baseline_fragment": {
       "repo_relpath": "configs/baseline/e21-dr1s-self-draft-twin-ojw.json",
-      "sha256": "b515a6716e93511469f3e5e9ac65e394ad13c45a634376fdc099d66b73b3dddb"
+      "sha256": "0d0f6bf8124b29fd45a6e6e34e063eb9acf8faf737a46d6c039d10753228a909"
     }
   },
   "decision": {
