@@ -266,6 +266,50 @@ def test_audit_final_recheck_catches_prior_entry_mutation(tmp_path, monkeypatch)
         )
 
 
+def test_audit_final_recheck_catches_prior_audio_and_parent_mutation(
+    tmp_path, monkeypatch
+):
+    import speech_aware_evidence_acquisition.core.preparation_feature_cache as audit_module
+
+    batches = {
+        "arm-a": _batch(tmp_path, run="a", audio=b"first"),
+        "arm-b": _batch(tmp_path, run="b", audio=b"second"),
+    }
+    cache = tmp_path / "legacy-cache"
+    cache.mkdir()
+    for batch in batches.values():
+        audio_path = tmp_path / batch.source_bindings[0]["media_relpath"]
+        _write_chunk(cache, audio_path.read_bytes())
+    first_source = batches["arm-a"].source_bindings[0]
+    first_audio = tmp_path / first_source["media_relpath"]
+    parent = tmp_path / first_source["parent_media_relpath"]
+    original_verify = audit_module._verify_descriptor_files
+    calls = 0
+
+    def mutate_source_after_second_entry(cache_dir, entry):
+        nonlocal calls
+        calls += 1
+        result = original_verify(cache_dir, entry)
+        if calls == 2:
+            first_audio.write_bytes(b"changed first audio")
+            parent.write_bytes(b"changed first parent")
+        return result
+
+    monkeypatch.setattr(
+        audit_module,
+        "_verify_descriptor_files",
+        mutate_source_after_second_entry,
+    )
+    with pytest.raises(PreparationError, match="window source changed during final audit"):
+        build_feature_cache_audit(
+            batches=batches,
+            data_root=tmp_path,
+            encoder_identity=_identity(),
+            legacy_cache_dir=cache,
+            expected_n_embd=4,
+        )
+
+
 def test_audit_refuses_cache_symlink_swapped_outside_after_inspection(
     tmp_path, monkeypatch
 ):

@@ -11,10 +11,10 @@ width. Distinct audio identities sharing one FNV key are refused.
 prepare_feature_cache_audit persists the audit through prepare_artifact with
 contact class model-free. Its state is
 cache-files-verified-runtime-unqualified. The artifact proves file coverage
-and byte stability during the audit only. It does not prove source encoding
+and byte stability during the audit only. It also recomputes the shared window inventory at the end, re-resolving audio and parent paths to detect source changes or symlink swaps observed across the audit. This is model-free verification of observed reads and does not provide a lock or atomic-read guarantee. It does not prove source encoding
 provenance, a live cache hit, or permission to generate; those require later
 pinned receipts and runtime qualification.
 
 Validation is synthetic and model-free. The focused test module covers complete
 deduplicated coverage, all request references, malformed or missing chunks,
-stale prepared artifacts, ambiguous FNV keys, and concurrent file mutation.
+stale prepared artifacts, ambiguous FNV keys, concurrent cache mutation, and delayed audio or parent mutation.
