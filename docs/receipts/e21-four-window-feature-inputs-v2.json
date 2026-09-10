@@ -1,0 +1,58 @@
+{
+  "schema": "saea-e21-four-window-input-receipt-v1",
+  "state": "inputs-verified-features-not-materialized",
+  "code_commit": "7215dfe06c455ad120eebe50483479d4cfc3b2a1",
+  "registration": "SAEA-E21-MF-FOUR-WINDOW-INVENTORY-V2",
+  "artifact_relpath": "analysis/SAEA-E21-MF-FOUR-WINDOW-INVENTORY-V2/window-inventory.json",
+  "artifact_sha256": "c011c46ce7d09b5664a54c14b9cdc2d805ec698188357c717fca0cdd03c21bd2",
+  "encoder_identity": {
+    "build_commit": "cddb000cb45ab44d33c84483cf5e5962cbbaa5bf",
+    "decoder_gguf_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "mmproj_sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883",
+    "runtime_receipt_sha256": "d8c703fae0fe0b4e5e7ab9890553c5dfc6f8f33ffe744e9e7faf140630f22218"
+  },
+  "request_count": 4,
+  "unique_audio_count": 4,
+  "actual_audio_seconds": 41.840312499999996,
+  "rows": [
+    {
+      "request_key": "4320211#w0001",
+      "media_relpath": "derived/obs-slices/SAEA-E21-CURRENT-EXECUTOR-FEATURE-PROOF-V2/4320211/i0000.wav",
+      "sha256": "8d54bf9ced3a219e5d0d25297d88030776b895f876c3c3be93b0907690cab19a",
+      "frames": 166075,
+      "audio_seconds": 10.3796875,
+      "start_seconds": 388.41775,
+      "end_seconds": 398.7974375
+    },
+    {
+      "request_key": "4320211#w0002",
+      "media_relpath": "derived/obs-slices/SAEA-E21-CURRENT-EXECUTOR-FEATURE-PROOF-V2/4320211/i0001.wav",
+      "sha256": "c740c8f627eda4da2ff88186127206d7618a21467584229bbafe54a066f79924",
+      "frames": 166180,
+      "audio_seconds": 10.38625,
+      "start_seconds": 487.8755625,
+      "end_seconds": 498.2618125
+    },
+    {
+      "request_key": "4320211#w0003",
+      "media_relpath": "derived/obs-slices/SAEA-E21-CURRENT-EXECUTOR-FEATURE-PROOF-V2/4320211/i0002.wav",
+      "sha256": "ac52c2af82cb38b4383725d9ce28aee5eedb760a1222af848ed788aaaed14d37",
+      "frames": 165806,
+      "audio_seconds": 10.362875,
+      "start_seconds": 799.637125,
+      "end_seconds": 810.0
+    },
+    {
+      "request_key": "4320211#w0004",
+      "media_relpath": "derived/obs-slices/SAEA-E21-CURRENT-EXECUTOR-FEATURE-PROOF-V2/4320211/i0003.wav",
+      "sha256": "92c4c89940e527f573d23590dd7869baf8fd7236544d6e69f66ec97bcf4a9dcf",
+      "frames": 171384,
+      "audio_seconds": 10.7115,
+      "start_seconds": 946.93675,
+      "end_seconds": 957.64825
+    }
+  ],
+  "actual_model_contacts": 0,
+  "actual_gpu_hours": 0,
+  "decoder_note": "The shared historical MP3 loader emitted a libmpg123 frame warning while loading the pinned parent. Preserve the exact decoder output and log. All four resulting mono PCM16 WAV files have readable complete frames, exact registered hashes and sample-aligned durations. Do not claim error-free parent decoding or silently switch decoders."
+}
