@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import struct
-from dataclasses import replace
 
 import pytest
 
@@ -159,10 +158,142 @@ def test_prepare_artifact_refuses_stale_cache_bytes(tmp_path):
         expected_n_embd=4,
     )
     assert first["cache"] == "cold"
-    path.write_bytes(path.read_bytes()[:-1] + b"")
+    warm = prepare_feature_cache_audit(
+        artifact,
+        batches={"arm": batch},
+        data_root=tmp_path,
+        encoder_identity=_identity(),
+        legacy_cache_dir=cache,
+        expected_n_embd=4,
+    )
+    assert warm["cache"] == "warm"
     with pytest.raises(PreparationError, match="artifact identity mismatch"):
         prepare_feature_cache_audit(
             artifact,
+            batches={"arm": batch},
+            data_root=tmp_path,
+            encoder_identity=_identity("e"),
+            legacy_cache_dir=cache,
+            expected_n_embd=4,
+        )
+    path.write_bytes(path.read_bytes()[:-1] + b"\x01")
+    with pytest.raises(PreparationError, match="artifact identity mismatch"):
+        prepare_feature_cache_audit(
+            artifact,
+            batches={"arm": batch},
+            data_root=tmp_path,
+            encoder_identity=_identity(),
+            legacy_cache_dir=cache,
+            expected_n_embd=4,
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "message"),
+    [
+        ("cache_key", "987654321", "key disagrees"),
+        ("audio_sha256", "f" * 64, "audio SHA256 disagrees"),
+    ],
+)
+def test_audit_refuses_inspection_identity_mismatch(
+    tmp_path, monkeypatch, field, value, message
+):
+    from dataclasses import replace
+
+    import speech_aware_evidence_acquisition.core.preparation_feature_cache as audit_module
+
+    batch = _batch(tmp_path, run="a")
+    cache = tmp_path / "legacy-cache"
+    cache.mkdir()
+    audio = (tmp_path / batch.source_bindings[0]["media_relpath"]).read_bytes()
+    _write_chunk(cache, audio)
+    original = audit_module.inspect_legacy_cached_speech_feature_cache
+
+    def mismatch(**kwargs):
+        return replace(original(**kwargs), **{field: value})
+
+    monkeypatch.setattr(
+        audit_module,
+        "inspect_legacy_cached_speech_feature_cache",
+        mismatch,
+    )
+    with pytest.raises(PreparationError, match=message):
+        build_feature_cache_audit(
+            batches={"arm": batch},
+            data_root=tmp_path,
+            encoder_identity=_identity(),
+            legacy_cache_dir=cache,
+            expected_n_embd=4,
+        )
+
+
+def test_audit_final_recheck_catches_prior_entry_mutation(tmp_path, monkeypatch):
+    import speech_aware_evidence_acquisition.core.preparation_feature_cache as audit_module
+
+    batches = {
+        "arm-a": _batch(tmp_path, run="a", audio=b"first"),
+        "arm-b": _batch(tmp_path, run="b", audio=b"second"),
+    }
+    cache = tmp_path / "legacy-cache"
+    cache.mkdir()
+    paths = []
+    for batch in batches.values():
+        audio_path = tmp_path / batch.source_bindings[0]["media_relpath"]
+        paths.append(_write_chunk(cache, audio_path.read_bytes()))
+    original_verify = audit_module._verify_descriptor_files
+    calls = 0
+
+    def mutate_prior_after_next_verification(cache_dir, entry):
+        nonlocal calls
+        calls += 1
+        result = original_verify(cache_dir, entry)
+        if calls == 2:
+            paths[0].write_bytes(paths[0].read_bytes()[:-1] + b"\x01")
+        return result
+
+    monkeypatch.setattr(
+        audit_module,
+        "_verify_descriptor_files",
+        mutate_prior_after_next_verification,
+    )
+    with pytest.raises(PreparationError, match="changed (during|after) audit"):
+        build_feature_cache_audit(
+            batches=batches,
+            data_root=tmp_path,
+            encoder_identity=_identity(),
+            legacy_cache_dir=cache,
+            expected_n_embd=4,
+        )
+
+
+def test_audit_refuses_cache_symlink_swapped_outside_after_inspection(
+    tmp_path, monkeypatch
+):
+    import speech_aware_evidence_acquisition.core.preparation_feature_cache as audit_module
+
+    batch = _batch(tmp_path, run="a")
+    cache = tmp_path / "legacy-cache"
+    cache.mkdir()
+    audio = (tmp_path / batch.source_bindings[0]["media_relpath"]).read_bytes()
+    path = _write_chunk(cache, audio)
+    outside = tmp_path / "outside.feat"
+    outside.write_bytes(path.read_bytes())
+    original = audit_module.inspect_legacy_cached_speech_feature_cache
+
+    def swap_after_inspection(**kwargs):
+        result = original(**kwargs)
+        path.unlink()
+        path.symlink_to(outside)
+        return result
+
+    monkeypatch.setattr(
+        audit_module,
+        "inspect_legacy_cached_speech_feature_cache",
+        swap_after_inspection,
+    )
+    monkeypatch.setattr(audit_module, "_cache_fingerprint", lambda *args: {})
+    with pytest.raises(PreparationError, match="inside the cache directory"):
+        build_feature_cache_audit(
             batches={"arm": batch},
             data_root=tmp_path,
             encoder_identity=_identity(),
@@ -180,14 +311,14 @@ def test_audit_refuses_distinct_audio_with_ambiguous_legacy_key(tmp_path, monkey
     }
     cache = tmp_path / "legacy-cache"
     cache.mkdir()
-    _write_cache_for_batches(tmp_path, cache, batches)
-    original = audit_module.inspect_legacy_cached_speech_feature_cache
-
-    def collision(**kwargs):
-        result = original(**kwargs)
-        return replace(result, cache_key="ambiguous")
-
-    monkeypatch.setattr(audit_module, "inspect_legacy_cached_speech_feature_cache", collision)
+    monkeypatch.setattr(
+        audit_module.speech_features,
+        "legacy_audio_feature_cache_key",
+        lambda audio: "123456789",
+    )
+    (cache / "123456789_o0.feat").write_bytes(
+        struct.pack("<QQ", 2, 4) + b"\x00" * 32
+    )
     with pytest.raises(PreparationError, match="ambiguous legacy cache key"):
         build_feature_cache_audit(
             batches=batches,
@@ -210,7 +341,7 @@ def test_audit_refuses_concurrent_chunk_mutation(tmp_path, monkeypatch):
 
     def mutate_after_inspection(**kwargs):
         result = original(**kwargs)
-        path.write_bytes(path.read_bytes()[:-1] + b"")
+        path.write_bytes(path.read_bytes()[:-1] + b"\x01")
         return result
 
     monkeypatch.setattr(
