@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import struct
+from pathlib import Path
 from copy import deepcopy
 from dataclasses import dataclass
 
@@ -824,6 +825,119 @@ def test_mixed_warm_fresh_feature_outputs_accept_reversed_top_level_order(
         "1" * 64,
     ]
     assert output["current_contact_count"] == 1
+
+
+def _serving_stop_wrapper(stop, *, session_id, stale=False, server_exit=None):
+    return {
+        "schema": "saea-serving-session-stop-v1",
+        "study": STUDY_SLUG,
+        "session_id": session_id,
+        "stopped_at": "2026-09-10T00:11:00+00:00",
+        "stop_receipt": stop,
+        "stale": stale,
+        "observed": None,
+        "server_exit": server_exit,
+        "monitor_summary": {},
+    }
+
+
+def test_serving_stop_wrapper_is_normalized_and_preserved_in_provenance(
+    tmp_path, monkeypatch
+):
+    import speech_aware_evidence_acquisition.core.preparation_feature_provenance as module
+
+    world = _world(tmp_path)
+    wrapper = _serving_stop_wrapper(
+        json.loads(world["stop"].read_text(encoding="utf-8")),
+        session_id="root-preprocess-session",
+    )
+    world["stop"].write_text(json.dumps(wrapper), encoding="utf-8")
+    monkeypatch.setattr(module, "process_state", lambda pid: PROCESS_STATE_GONE)
+    session, stop = load_preprocess_stop_chain(
+        session_receipt_path=world["session"],
+        stop_receipt_path=world["stop"],
+        runtime_receipt=json.loads(world["runtime"].read_text(encoding="utf-8")),
+        require_normal_stop=True,
+    )
+    assert session.session_id == "root-preprocess-session"
+    assert stop["schema"] == "saea-session-stop-receipt-v1"
+    _prepare(tmp_path, world)
+    output = json.loads((tmp_path / "provenance.json").read_text(encoding="utf-8"))
+    assert output["output"]["stop_receipt_file_sha256"] == _sha(
+        world["stop"].read_bytes()
+    )
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        lambda wrapper: wrapper.update(study="foreign"),
+        lambda wrapper: wrapper.update(schema="wrong"),
+        lambda wrapper: wrapper.update(session_id="other"),
+        lambda wrapper: wrapper.update(stale=True),
+        lambda wrapper: wrapper.update(stop_receipt=None),
+        lambda wrapper: wrapper.update(server_exit={"reason": "server-exited"}),
+    ],
+)
+def test_invalid_serving_stop_wrapper_refuses_strictly(tmp_path, mutation):
+    world = _world(tmp_path)
+    wrapper = _serving_stop_wrapper(
+        json.loads(world["stop"].read_text(encoding="utf-8")),
+        session_id="root-preprocess-session",
+    )
+    mutation(wrapper)
+    world["stop"].write_text(json.dumps(wrapper), encoding="utf-8")
+    with pytest.raises(ValueError):
+        load_preprocess_stop_chain(
+            session_receipt_path=world["session"],
+            stop_receipt_path=world["stop"],
+            runtime_receipt=json.loads(world["runtime"].read_text(encoding="utf-8")),
+            require_normal_stop=True,
+            process_state_reader=lambda pid: PROCESS_STATE_GONE,
+        )
+
+
+def test_serving_stop_wrapper_refuses_forced_nested_stop(tmp_path):
+    world = _world(tmp_path)
+    wrapper = _serving_stop_wrapper(
+        json.loads(world["stop"].read_text(encoding="utf-8")),
+        session_id="root-preprocess-session",
+    )
+    wrapper["stop_receipt"]["forced"] = True
+    world["stop"].write_text(json.dumps(wrapper), encoding="utf-8")
+    with pytest.raises(ValueError, match="forced"):
+        load_preprocess_stop_chain(
+            session_receipt_path=world["session"],
+            stop_receipt_path=world["stop"],
+            runtime_receipt=json.loads(world["runtime"].read_text(encoding="utf-8")),
+            require_normal_stop=True,
+            process_state_reader=lambda pid: PROCESS_STATE_GONE,
+        )
+
+
+def test_serving_stop_wrapper_mutation_between_reads_refuses(tmp_path, monkeypatch):
+    world = _world(tmp_path)
+    wrapper = _serving_stop_wrapper(
+        json.loads(world["stop"].read_text(encoding="utf-8")),
+        session_id="root-preprocess-session",
+    )
+    world["stop"].write_text(json.dumps(wrapper), encoding="utf-8")
+    import speech_aware_evidence_acquisition.core.preparation_feature_provenance as module
+
+    original = module._load_json
+
+    def mutate_after_stop_load(path, label):
+        document, digest_value = original(path, label)
+        if Path(path) == world["stop"]:
+            changed = dict(document)
+            changed["observed"] = {"changed": True}
+            Path(path).write_text(json.dumps(changed), encoding="utf-8")
+        return document, digest_value
+
+    monkeypatch.setattr(module, "_load_json", mutate_after_stop_load)
+    monkeypatch.setattr(module, "process_state", lambda pid: PROCESS_STATE_GONE)
+    with pytest.raises(PreparationError, match="changed"):
+        _prepare(tmp_path, world)
 
 
 def test_public_stop_loader_accepts_legacy_shape_and_checks_chain(tmp_path):

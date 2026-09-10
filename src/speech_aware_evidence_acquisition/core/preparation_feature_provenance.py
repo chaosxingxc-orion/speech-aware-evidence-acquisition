@@ -155,13 +155,44 @@ def load_preprocess_stop_chain(
             "speech packet promotion requires a preprocess session receipt"
         )
     try:
-        stop = json.loads(Path(stop_receipt_path).read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError) as error:
-        raise ValueError(
-            f"cannot read preprocess stop receipt {stop_receipt_path}: {error}"
-        ) from error
+        stop_document, _stop_file_sha256 = _load_json(
+            Path(stop_receipt_path), "preprocess stop receipt"
+        )
+    except PreparationError as error:
+        raise ValueError(str(error)) from error
+    wrapper_keys = {
+        "schema",
+        "study",
+        "session_id",
+        "stopped_at",
+        "stop_receipt",
+        "stale",
+        "observed",
+        "server_exit",
+        "monitor_summary",
+    }
+    if stop_document.get("schema") == "saea-serving-session-stop-v1":
+        if set(stop_document) != wrapper_keys:
+            raise ValueError("preprocess serving stop wrapper has unexpected keys")
+        if (
+            stop_document.get("study") != STUDY_SLUG
+            or stop_document.get("session_id") != session.session_id
+        ):
+            raise ValueError("preprocess serving stop wrapper identity does not match")
+        if stop_document.get("stale") is not False:
+            raise ValueError("preprocess serving stop wrapper is stale")
+        if require_normal_stop and stop_document.get("server_exit") is not None:
+            raise ValueError(
+                "preprocess serving stop wrapper records an unrequested server exit"
+            )
+        embedded = stop_document.get("stop_receipt")
+        if not isinstance(embedded, Mapping):
+            raise ValueError("preprocess serving stop wrapper lacks stop_receipt")
+        stop = dict(embedded)
+    else:
+        stop = dict(stop_document)
     allowed_keys = (_STOP_BASE_KEYS, _STOP_BASE_KEYS | {"final_process_state"})
-    if not isinstance(stop, dict) or set(stop) not in allowed_keys:
+    if set(stop) not in allowed_keys:
         raise ValueError(
             "preprocess stop receipt must carry exact legacy or current stop keys"
         )
@@ -557,8 +588,20 @@ def prepare_window_feature_provenance(
         )
     except (ValueError, SessionError) as error:
         raise PreparationError(str(error)) from error
-    if session.as_json() != session_document or stop != stop_document:
+    stop_document_for_compare = stop_document
+    if stop_document.get("schema") == "saea-serving-session-stop-v1":
+        stop_document_for_compare = stop_document.get("stop_receipt")
+    if (
+        session.as_json() != session_document
+        or stop != stop_document_for_compare
+    ):
         raise PreparationError("preprocess session or stop receipt changed while it was read")
+    if stop_document.get("schema") == "saea-serving-session-stop-v1":
+        current_wrapper, _ = _load_json(
+            stop_receipt_path, "preprocess stop receipt"
+        )
+        if current_wrapper != stop_document:
+            raise PreparationError("preprocess stop wrapper changed while it was read")
     if session.session_id != expected_session_id:
         raise PreparationError("preprocess session ID does not match expected session")
 
