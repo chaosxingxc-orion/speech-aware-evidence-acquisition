@@ -1,0 +1,36 @@
+{
+  "schema": "saea-fable-reproduction-inputs-v1",
+  "source_base_commit": "eeab58e4",
+  "arm_rows": [
+    {
+      "role": "comparator",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-WINDOW-PAIRING-V1/kce1f-v2-window-rows-comparator.json",
+      "sha256": "98d431f24f6d94a4f08c1830ca08ed271106d33d660ac40d0fa93a1c3d7db144",
+      "source_run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+      "source_attempt_id": "attempt-20260904T233816Z-bcd338",
+      "anchor_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict-v2/reaggregation/comparator/reaggregation.json",
+      "anchor_sha256": "ea16c70ce01a78ea8615273a85f68b417e487b979a0af5fa298a29f6bb4e4260"
+    },
+    {
+      "role": "kc-e1f",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-WINDOW-PAIRING-V1/kce1f-v2-window-rows-kc-e1f.json",
+      "sha256": "a668a45cec5cef38670279ab96f3d20dc9be328bb2c46569cd762a71193f6284",
+      "source_run_id": "SAEA-E21-KC-E1F-REPAIR-44-V1",
+      "source_attempt_id": "attempt-20260908T040832Z-ecda9c",
+      "anchor_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict-v2/reaggregation/kc-e1f/reaggregation.json",
+      "anchor_sha256": "9abd51c8356b17cc103ccb525cb6bc271d6e3c3a73fe09da787d24e3b2fe3882"
+    },
+    {
+      "role": "ku-e1fc",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-WINDOW-PAIRING-V1/kce1f-v2-window-rows-ku-e1fc.json",
+      "sha256": "12e636455abac280c69d06cbd5979e1c4c2d405ba3948413092055f7619da8ee",
+      "source_run_id": "SAEA-E21-KU-E1FC-PLACEBO-REPAIR-44-V1",
+      "source_attempt_id": "attempt-20260908T072231Z-ec8a5b",
+      "anchor_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict-v2/reaggregation/ku-e1fc/reaggregation.json",
+      "anchor_sha256": "5764b3df2432e3db6bf7f756282644964de3c2b94a10f7b1170b829739f0f5f1"
+    }
+  ],
+  "analysis_seed": 20260903,
+  "replicates": 10000,
+  "ci_level": 0.9
+}
