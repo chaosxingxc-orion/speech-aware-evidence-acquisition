@@ -12,8 +12,8 @@ def inventory(tmp_path, duplicate=False):
     audio = hashlib.sha256(media.read_bytes()).hexdigest()
     source = {"sample_id":"s","parent_media_relpath":"parent.wav","parent_sha256":SHA,"start_seconds":0.0,"end_seconds":1.0,"audio_seconds":1.0,"sample_rate_hz":16000,"media_relpath":"slices/one.wav","sha256":audio,"bytes":len(media.read_bytes()),"iteration":0,"preprocess":[],"pre_sha256":None}
     req = {"request_key":"s#w1", "source_provenance":source}
-    rows = [req, dict(req)] if duplicate else [req]
-    return data, {"schema":WINDOW_FEATURE_INVENTORY_SCHEMA,"encoder_identity":{"build":"x"},"batches":[{"name":"batch","requests":rows}],"encoding_inputs":[{"audio_sha256":audio,"requests":[{"batch":"batch","request_key":"s#w1"}]}]}, audio
+    rows = [req, {**req, "request_key":"s#w2"}] if duplicate else [req]
+    return data, {"schema":WINDOW_FEATURE_INVENTORY_SCHEMA,"encoder_identity":{"build":"x"},"batches":[{"name":"batch","requests":rows}],"encoding_inputs":[{"audio_sha256":audio,"requests":([{"batch":"batch","request_key":"s#w1"},{"batch":"batch","request_key":"s#w2"}] if duplicate else [{"batch":"batch","request_key":"s#w1"}])}]}, audio
 
 @dataclass
 class Timing: request_id: str
