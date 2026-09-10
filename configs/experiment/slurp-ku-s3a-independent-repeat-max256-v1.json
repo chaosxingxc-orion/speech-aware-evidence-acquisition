@@ -1,0 +1,233 @@
+{
+  "experiment_id": "SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-V1",
+  "fragment_kind": "saea-slurp-consumption-experiment-v1",
+  "migration_status": "Prospectively specified independent treatment repeat; cell readiness and committed exposure/plan bindings control contact. Reuse source behavior; no new answering mechanism.",
+  "date": "2026-09-10",
+  "purpose": "Prospective independent 1,000-row repeat of the admitted KU-S3a speech-keyed treatment. Preserve the inherited roster, speech-keyed supply, request bytes, max256 decoding, np4 geometry and registered ceilings. This repeat has one treatment arm only; it adds no new control, twin or probe.",
+  "split_id": "DEV-1000",
+  "population": {
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "decision_population": "historically exposed NEW500; no fresh holdout is claimed",
+    "roster": "the frozen DEV-1000 runtime view, id for id"
+  },
+  "source_pins": {
+    "runtime_predecessor": {
+      "manifest_relpath": "runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
+      "manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c",
+      "binding": "baseline.phase_material.slots.predecessor_source; unchanged runtime state source"
+    },
+    "kc_s1b_comparator": {
+      "manifest_relpath": "runs/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1/attempt-20260906T025102Z-af6b04/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.run-manifest.json",
+      "manifest_sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08",
+      "binding": "descriptive cross-cap anchor only; it does not supply primary inference or runtime state"
+    },
+    "snapshot_receipt": {
+      "repo_relpath": "docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers.json",
+      "sha256": "2abda571900bfcb5bf4a384eac1cb858fa8841ab3873d034b862c85671af443c"
+    },
+    "vector_receipt": {
+      "repo_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-kus3-vectors/vectors.json",
+      "sha256": "3c213ad4f4787e32d92fe30dd1119395817a73ba48d46cbed292a8f471aa86e5"
+    },
+    "vector_inputs": {
+      "facet_relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+      "facet_sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+      "query_relpath": "vectors/slurp-kus3/query-vectors-speech.jsonl",
+      "query_sha256": "99b2e1700a058640a12c86fb261e3fc1898cd99004b0157366682b2a048b2e7c"
+    }
+  },
+  "preparation_source_receipts": [
+    {
+      "root": "repository",
+      "relpath": "docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers.json",
+      "sha256": "2abda571900bfcb5bf4a384eac1cb858fa8841ab3873d034b862c85671af443c"
+    },
+    {
+      "root": "repository",
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-kus3-vectors/vectors.json",
+      "sha256": "3c213ad4f4787e32d92fe30dd1119395817a73ba48d46cbed292a8f471aa86e5"
+    }
+  ],
+  "pending_preparation": {
+    "fit": {
+      "run_id": "SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-FIT-V1",
+      "artifact_relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-FIT-V1/request-fit.json",
+      "artifact_sha256": "PENDING-FRESH-FIT-ARTIFACT-SHA256",
+      "endpoint_count": 3001,
+      "status": "Fresh fit required for the new run identity; the inherited fit receipt is source evidence only."
+    },
+    "phase_supply": {
+      "artifact_relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-PREPARE-V1/speech-supply.json",
+      "artifact_sha256": "PENDING-FRESH-PHASE-SUPPLY-SHA256",
+      "status": "Fresh source-bound preparation binding required for the new run identity; do not silently reuse the old executable pin."
+    }
+  },
+  "prepared_supply_inputs": {
+    "provider": "kb-facet-v1",
+    "dimension": "content",
+    "k": 5,
+    "tau": 0.0,
+    "fuse_coverage": {
+      "m": 5,
+      "c": 5,
+      "top_l": 5
+    },
+    "rank_policy": "saea-rank-wcos-prior-agree-v1",
+    "rank_weights": {
+      "w_cos": 1.0,
+      "w_prior": 0.0,
+      "w_agree": 0.0
+    },
+    "query_vector": "vectors/slurp-kus3/query-vectors-speech.jsonl",
+    "facet_vectors": "vectors/slurp-kus3/facet-vectors.jsonl",
+    "snapshot": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers/snapshot.json",
+    "required_binding": "The persistent artifact must bind the exact split identity, snapshot and vector receipt/source hashes, query/facet files, packet promotion receipt, policy supply spec and implementation hashes. No duration proxy or re-embedding is acceptable."
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "dev",
+    "planned_model_calls": 1050,
+    "planned_gpu_hours": 2.0,
+    "planned_speech_audio_seconds": 3000
+  },
+  "execution_plan_basis": {
+    "generation": "Owner-approved 256-token generation ceiling for this one 1,000-row repeat, with at most 50 contacts of registered fixed overhead if separately bound. No extra probes, adaptive repeats, control, twin or roster change.",
+    "fit": "The shared full-roster fitter actual endpoint sequence is 1 GET /props + 1,000 POST /apply-template + 2,000 POST /tokenize = 3,001 tokenizer contacts. This fresh fit budget is separate from the 1,050 generation ceiling."
+  },
+  "comparator": "Original max256 speech treatment, original max256 no-retrieval control and original max256 form twin, each sealed on the same original process. This repeat uses a new matched-configuration process. No max64 comparator replaces these bindings.",
+  "decision_rule": "Use the inherited KU-S3 paired per-row SLU-F1 analysis after the new repeat and its registered official score are complete: report the repeat against the original matched control and original form twin on the historically exposed NEW500, with OLD500 and pooled DEV-1000 separately; retain natural-mixture and equal-scenario weighting. The original control and twin are historical old-process comparators and are not new contacts in this fragment.",
+  "cells": [
+    {
+      "cell_id": "ku-s3a-independent-repeat-max256-fit-v1",
+      "run_id": "SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-FIT-V1",
+      "attempt_id": "attempt-independent-s3a-repeat-fit-v1",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit"
+      ],
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-supplied-fillers-speech-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "readiness": {
+        "state": "ready",
+        "reason": "Root permits prospective fit after its committed exposure/plan registration; identical1000-row ordered prepared supply has been independently verified. Model service is not yet switched.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-PREPARE-V1/speech-supply.json",
+            "sha256": "4bec90ce59e60610f1c8cda20f699d9242535d03195b12636be6aa7f800acc3d",
+            "reason": "Root verified exact inherited supply output and source identities"
+          }
+        ]
+      }
+    },
+    {
+      "cell_id": "ku-s3a-independent-repeat-max256-generation-v1",
+      "run_id": "SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-V1",
+      "attempt_id": "attempt-independent-s3a-repeat-v1",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-slots-supplied-fillers-speech-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "readiness": {
+        "state": "ready",
+        "reason": "Root admits the inherited independent1000-row repeat after the exact full-roster fit and source-bound supply passed; one treatment arm only.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-PREPARE-V1/speech-supply.json",
+            "sha256": "4bec90ce59e60610f1c8cda20f699d9242535d03195b12636be6aa7f800acc3d",
+            "reason": "Exact original ordered supply verified"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-FIT-V1/request-fit.json",
+            "sha256": "3dc7fce326a5ada16d37fe23db941a839f1a110dc38306c84922825130c593bf",
+            "reason": "All1000 exact requests fit max256 on np4;3001registered tokenizer contacts"
+          }
+        ]
+      }
+    }
+  ],
+  "decision": {
+    "test_tuning": false,
+    "paper_scale": false
+  },
+  "owner_schema_decision": {
+    "decision_id": "OWNER-KUS3-SCHEMA-003",
+    "repo_relpath": "docs/superpowers/plans/experiment-handoff/OWNER-KUS3-SCHEMA-003.md",
+    "schema_basis": "original KC-S1b examples retained",
+    "claim": "incremental retrieval supply; not replacement of schema examples"
+  },
+  "request_decoding_overrides": {
+    "max_tokens": 256
+  },
+  "analysis_plan": {
+    "primary_population": "historically exposed NEW500; no fresh holdout is claimed",
+    "full_roster_reporting": [
+      "OLD500",
+      "pooled DEV-1000"
+    ],
+    "original_kus3_scenario_analysis": "Preserve the original KU-S3 scenario-stratified bootstrap with 10,000 replicates, seed 20260903 and CI90; report speaker-cluster sensitivity separately.",
+    "weightings": [
+      "natural mixture",
+      "equal scenario strata"
+    ],
+    "engineering_limit": "No effectiveness claim is permitted from the four-row engineering arms; this max256 configuration is the full-roster successor.",
+    "reasoning": "No reasoning prompt or frozen-weight switch."
+  },
+  "preserve_wire_responses": true,
+  "primary_inference": {
+    "contrasts": [
+      "independent KU-S3a repeat minus original speech treatment (same configuration, new process)",
+      "independent KU-S3a repeat minus original matched no-retrieval control (historical artifact)",
+      "independent KU-S3a repeat minus original form twin (historical artifact)"
+    ],
+    "guard": "Both inherited paired per-row SLU-F1 CI90 lower bounds versus the original max256 matched control and original form twin must exceed zero on historically exposed NEW500 to reproduce the component direction. Report the repeat-minus-original-treatment difference, exact output agreement and all weighting sensitivities; do not invent an equivalence margin.",
+    "safeguards": [
+      "report OLD500 and pooled DEV-1000 separately",
+      "report natural-mixture and equal-scenario weighting",
+      "retain scenario-stratified bootstrap with seed 20260903 and speaker-cluster sensitivity",
+      "The new generation is an independent repeat; comparisons against retained old-process controls do not establish fresh same-process causal equivalence."
+    ]
+  },
+  "comparison_process": "An independent generation repeat tests the stability of the original treatment on the same roster. Its comparisons with original control and twin are across processes; preserve that limitation. The original same-process comparison remains the causal component evidence. No new control/twin or same-process equivalence claim is added.",
+  "independent_repeat_sources": {
+    "original_treatment": {
+      "manifest_relpath": "runs/SAEA-SLURP-KU-S3A-G1-MAX256-RECOVERY-V1/attempt-20260909T233650Z-792913/SAEA-SLURP-KU-S3A-G1-MAX256-RECOVERY-V1.run-manifest.json",
+      "manifest_sha256": "e55d16247e6187206e577e2595153d02b3cf49abd6e4d5a90b15bb9172af6c03",
+      "config_hash": "0086482c488dd6e889024b91bd7bbf9537ad5db1f222855676897ed346b51459",
+      "study_commit": "05b0f05ea87b52314845c3466d8f5a547551356f"
+    },
+    "original_control": {
+      "manifest_relpath": "runs/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-RECOVERY-V1/attempt-20260909T233650Z-4328b7/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-RECOVERY-V1.run-manifest.json",
+      "manifest_sha256": "dda9694e1a8d9487b1a4b4907c939a1618a7ccb9296bb85829b6c2ba8aa18a63",
+      "config_hash": "c75093e806fe5f749adf380303d373b54803d1fff14069ee1bd223f40c14b4b0",
+      "study_commit": "05b0f05ea87b52314845c3466d8f5a547551356f"
+    },
+    "original_twin": {
+      "manifest_relpath": "runs/SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-RECOVERY-V1/attempt-20260909T233650Z-5a5e19/SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-RECOVERY-V1.run-manifest.json",
+      "manifest_sha256": "310464cc1e64b4b5104f07cbbfc77ce650de2248ebd5473c25d98eab25491ecc",
+      "config_hash": "01f438445cca09c19d254ad586a347ee207de6ca4dce0bdd20fad16db933bb85",
+      "study_commit": "05b0f05ea87b52314845c3466d8f5a547551356f"
+    }
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-PREPARE-V1/speech-supply.json",
+    "sha256": "4bec90ce59e60610f1c8cda20f699d9242535d03195b12636be6aa7f800acc3d"
+  },
+  "prepared_request_fit": {
+    "relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-FIT-V1/request-fit.json",
+    "sha256": "3dc7fce326a5ada16d37fe23db941a839f1a110dc38306c84922825130c593bf"
+  }
+}

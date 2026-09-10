@@ -1,0 +1,100 @@
+{
+  "schema": "saea-registered-request-fit-plan-v1",
+  "status": "REGISTERED_BY_ROOT_FOR_TOKENIZER_FIT_ONLY",
+  "artifact_path": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-FIT-V1/request-fit.json",
+  "contact_cap": 3001,
+  "count_basis": {
+    "GET /props": 1,
+    "POST /apply-template": 1000,
+    "POST /tokenize": 2000
+  },
+  "execution_plan": {
+    "schema": "saea-execution-plan-v1",
+    "run_id": "SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-FIT-V1",
+    "attempt_id": "attempt-independent-s3a-repeat-fit-v1",
+    "study": "speech-aware-evidence-acquisition",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "dev",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "planned_model_calls": 3001,
+    "planned_gpu_hours": 2.0,
+    "planned_speech_audio_seconds": 3000,
+    "protocol_hash": "d23a16c81b9941f1a83bd30e20ca64f9abad315aa8e07576f9df98fbc2e7dec5"
+  },
+  "generation_contacts": 0,
+  "generation_state": "HELD and unregistered",
+  "source_bindings": {
+    "experiment_config": {
+      "repo_relpath": "configs/experiment/slurp-ku-s3a-independent-repeat-max256-v1.json",
+      "sha256": "6a43346150412a80db897815a01f87b3f5b852c547319ce490153175a512710f"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-PREPARE-V1/speech-supply.json",
+      "sha256": "4bec90ce59e60610f1c8cda20f699d9242535d03195b12636be6aa7f800acc3d"
+    },
+    "request_equivalence": {
+      "coordination_relpath": "coordination/ku-s3-independent-repeat-request-equivalence-v1.json",
+      "sha256": "b4e6183b89f9a7b84f1988ddf626b1809164e3c30e90b47722904dd967375768",
+      "actual_request_count": 1000,
+      "model_visible_requests_match_original": true,
+      "source_runtime_identity_matches_original": true
+    }
+  },
+  "required_session_identity": {
+    "session_role": "inference",
+    "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+    "model_fragment_sha256": "7545a1ac3eb0c1e88d4121fdf84726e5201bb9d5ae5a32804cc62a7f6a289f74",
+    "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+    "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "model_root": "/home/chao",
+    "host": "127.0.0.1",
+    "port": 8080,
+    "props_identity": {
+      "total_slots": 4,
+      "slot_n_ctx": 16384,
+      "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf"
+    },
+    "server_argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8080",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--no-mmproj",
+      "-c",
+      "65536",
+      "-np",
+      "4",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ],
+    "server_env": {
+      "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+      "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+    }
+  },
+  "scope": "Tokenizer fit only. Materialize all 1,000 exact requests before service attachment; generation remains held.",
+  "root_registration_utc": "2026-09-10T21:14:17.207528+00:00",
+  "expected_session_id": "serving-slurp-s3-independent-repeat-np4-v1"
+}
