@@ -40,9 +40,26 @@
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
-        "state": "held",
-        "reason": "Held until independent S3 repeat decision passes, full speech wiring and reusable supply preparation are verified, and root registers this arm. Control results remain unread until the pair is sealed.",
-        "requirements": []
+        "state": "ready",
+        "reason": "Root registers the fixed live speech arm after independent S3 repeat PASS and complete cached versus uncached request-material equivalence; actual per-phase capacity remains mandatory under the same root service.",
+        "requirements": [
+          {
+            "kind": "decision",
+            "relpath": "coordination/slurp-s3-independent-repeat-root-decision-v1.json",
+            "sha256": "4bb6edce6dfb02dbbadf3ccc5b80fda1d80b6570bff0e5f4ad55627dd9b839cd",
+            "expected_decision_id": "slurp-s3-independent-repeat-root-v1"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "coordination/g6-slurp-live-speech-cached-wire-equivalence-v1.json",
+            "sha256": "0af5431fb0ec57f6f4466426eb0033f6e8a3f4dcd405b84e05b05db91e8e5684"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-LIVE-INTENT-SLOTS-SPEECH-PREPARE-V1/recall.json",
+            "sha256": "20d0cd443972cc9fc954222da9bd355af59dea930b316f3ffd4ba60e7831caa3"
+          }
+        ]
       }
     }
   ],
