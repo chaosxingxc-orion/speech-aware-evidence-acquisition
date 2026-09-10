@@ -1,0 +1,18 @@
+{
+  "schema": "saea-model-free-integration-root-review-v1",
+  "status": "ACCEPTED_MODEL_FREE_INTEGRATION",
+  "source_checkout": "/home/chao/saea-worktrees/e21-ojw-integration-proof",
+  "source_commit": "75f536c7aad2a80644163f86889cf9df19f6ee96",
+  "root_test_count": 11,
+  "root_tests": "test_e21_four_row_fit_matches_real_ojw_controller_contacts and test_earnings_runtime_adapter.py",
+  "proof": [
+    "Real RepairWindowHook, OpenJiuwen policy and controller bridge fit and execute exactly the same four synthetic requests.",
+    "Exact predecessor IDs, slice bounds/hash, registered evidence and raw-versus-delivered provenance are asserted.",
+    "Verified discovery-derived construction subsets pass; altered identities and foreign parents fail; full-discovery loading remains covered."
+  ],
+  "model_contacts": 0,
+  "encoder_contacts": 0,
+  "tokenizer_contacts": 0,
+  "scorer_invocations": 0,
+  "scope": "Synthetic integration only. No live feature-serving or task effectiveness acceptance. Preserve the isolated chain during G2; integrate at a deliberate runtime boundary after root review of its earlier implementation commits."
+}

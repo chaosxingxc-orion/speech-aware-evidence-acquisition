@@ -1,0 +1,57 @@
+{
+  "schema": "saea-g2-capacity-root-acceptance-v1",
+  "status": "FIT_READY",
+  "results": {
+    "SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3-FIT-V1": {
+      "sample_count": 1000,
+      "minimum_margin_tokens": 5491,
+      "contacts": 3001,
+      "session_id": "slurp-g2-kus4n-aligned-np8-20260910-root",
+      "session_identity_sha256": "4ae13ff05ba5753a487175529acbb76b715a6ce4bfabac41b0df436b555b4204",
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3-FIT-V1/request-fit.json",
+        "sha256": "70fd44579df13b1f408167a37696e0e9bcc81407d6a00f4e3a51a71241bb7455"
+      }
+    },
+    "SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3-FIT-V1": {
+      "sample_count": 1000,
+      "minimum_margin_tokens": 5478,
+      "contacts": 3001,
+      "session_id": "slurp-g2-kus4n-aligned-np8-20260910-root",
+      "session_identity_sha256": "4ae13ff05ba5753a487175529acbb76b715a6ce4bfabac41b0df436b555b4204",
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3-FIT-V1/request-fit.json",
+        "sha256": "4f25ba80530d421e2167f3db7aa583ff50546ee890e0dfbf8e303d8220280780"
+      }
+    },
+    "SAEA-SLURP-KUS4N-CANDIDATES-SMOKE-ALIGNED-V1-FIT-V1": {
+      "sample_count": 4,
+      "minimum_margin_tokens": 5552,
+      "contacts": 13,
+      "session_id": "slurp-g2-kus4n-aligned-np8-20260910-root",
+      "session_identity_sha256": "4ae13ff05ba5753a487175529acbb76b715a6ce4bfabac41b0df436b555b4204",
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-KUS4N-CANDIDATES-SMOKE-ALIGNED-V1-FIT-V1/request-fit.json",
+        "sha256": "b60c2d9bb5ee4b4585b783284e814c2e2c673647bdba829d5d65b9049dc5a40b"
+      }
+    },
+    "SAEA-SLURP-KUS4N-CANDIDATES-TWIN-SMOKE-ALIGNED-V1-FIT-V1": {
+      "sample_count": 4,
+      "minimum_margin_tokens": 5549,
+      "contacts": 13,
+      "session_id": "slurp-g2-kus4n-aligned-np8-20260910-root",
+      "session_identity_sha256": "4ae13ff05ba5753a487175529acbb76b715a6ce4bfabac41b0df436b555b4204",
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-SMOKE-ALIGNED-V1-FIT-V1/request-fit.json",
+        "sha256": "c8c6fc51d24b06ea621ebdacb40e46dae12112daa535faa44b13c9c0d91d8566"
+      }
+    }
+  },
+  "generation_contacts": 0,
+  "encoder_contacts": 0,
+  "endpoint_contacts": 6028,
+  "full_arm_maximum_required_tokens": {
+    "n": 2701,
+    "twin": 2714
+  }
+}

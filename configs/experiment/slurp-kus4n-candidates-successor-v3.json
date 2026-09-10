@@ -206,8 +206,28 @@
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
         "state": "held",
-        "reason": "Await the registered V3 source-bound supply, actual request fit and root admission. No implicit service launch by a worker.",
-        "requirements": []
+        "reason": "Await both inherited exact-four smoke engineering completion receipts before full generation.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3-ALIGNED/candidates-supply.json",
+            "sha256": "fc36d8e267ed04343c8b0bd6f6c3be0b30ae0ad9939a9b3c051351bf666a7462",
+            "reason": "Source-bound prepared candidate supply"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3-FIT-V1/request-fit.json",
+            "sha256": "70fd44579df13b1f408167a37696e0e9bcc81407d6a00f4e3a51a71241bb7455",
+            "reason": "Actual complete-roster fit on the root resident service"
+          },
+          {
+            "kind": "decision",
+            "relpath": "coordination/SAEA-G2-V3-PREDECESSOR-ADMISSION-V1.json",
+            "sha256": "4bc1f87e629a003294feef0e1d42b65cb3b816b07a86f487fb977559c33ef0eb",
+            "expected_decision_id": "SAEA-G2-V3-PREDECESSOR-ADMISSION-V1",
+            "reason": "G1 component predecessor decision"
+          }
+        ]
       }
     }
   ],
@@ -249,5 +269,9 @@
   "prepared_phase_supply": {
     "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3-ALIGNED/candidates-supply.json",
     "sha256": "fc36d8e267ed04343c8b0bd6f6c3be0b30ae0ad9939a9b3c051351bf666a7462"
+  },
+  "prepared_request_fit": {
+    "relpath": "prepared/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3-FIT-V1/request-fit.json",
+    "sha256": "70fd44579df13b1f408167a37696e0e9bcc81407d6a00f4e3a51a71241bb7455"
   }
 }
