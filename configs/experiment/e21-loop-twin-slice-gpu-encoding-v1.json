@@ -37,8 +37,8 @@
         "prepare-window-features"
       ],
       "readiness": {
-        "state": "held",
-        "reason": "Root review and actual600-input source/warm-cache validation are complete. Await exposure registration and the dedicated root encoder lease after the DR resident window ends. No current encoder contact is authorized.",
+        "state": "ready",
+        "reason": "Exact600-input inventory,11 verified warm inputs and589 fresh inputs reviewed. Root registers offline preparation only; an exclusive matching encoder lease is required after the DR resident window.",
         "requirements": [
           {
             "kind": "preparation",

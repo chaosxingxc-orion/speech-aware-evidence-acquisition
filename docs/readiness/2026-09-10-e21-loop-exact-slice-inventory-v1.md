@@ -89,3 +89,20 @@ add a source-map digest. No model or encoder contact occurred in validation.
 The prerequisite is closed. The held configuration reason now concerns only
 exposure registration and the next dedicated root-owned service window.
 Do not rematerialize these inventories or re-encode verified warm inputs.
+
+
+## Registered future encoder window
+
+The exact judge and twin preprocessing ExecutionPlans and exposure rows are
+now registered before any contact. Both cells are READY for preparation only;
+root lease and full service identity checks remain mandatory. Their shared
+encoder service starts after both current DR parents have sealed, with no
+overlap in GPU ownership. Source-run-specific operations reuse one resident
+encoder configuration and the verified isolated cache. No extra model
+qualification request or throughput probe is admitted.
+
+Plan protocols: judge
+c4cd977b99c9673ef9e8f065c22b063678dd1e89af3f4b78c94f92f4254081e9,
+twin
+c06a92a8884f1f3f78bc4c021dc11d9e29e68eef3203e66e38cfc3bd42d5fcf3.
+The dedicated service ID is serving-e21-loop-slice-gpu-encoding-v1.

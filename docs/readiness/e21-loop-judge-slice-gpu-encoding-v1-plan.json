@@ -1,0 +1,14 @@
+{
+  "run_id": "SAEA-E21-LOOP-JUDGE-SLICE-GPU-ENCODING-V1",
+  "execution_profile": "bounded-discovery-probe",
+  "carrier_lock_key": "earnings21-original",
+  "split_role": "discovery",
+  "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+  "planned_model_calls": 589,
+  "planned_gpu_hours": 0.5,
+  "planned_speech_audio_seconds": 15000,
+  "protocol_hash": "c4cd977b99c9673ef9e8f065c22b063678dd1e89af3f4b78c94f92f4254081e9",
+  "attempt_id": "attempt-20260910-loop-judge-slice-gpu-encoding-v1",
+  "schema": "saea-execution-plan-v1",
+  "study": "speech-aware-evidence-acquisition"
+}
