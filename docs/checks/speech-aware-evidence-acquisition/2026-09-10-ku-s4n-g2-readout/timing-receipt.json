@@ -1,0 +1,6 @@
+{
+  "schema": "saea-root-resource-audit-binding-v1",
+  "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KU-S4N-G2-CAMPAIGN-V3/timing-audit-v2.json",
+  "sha256": "a7ac319292f63cc68c6db198023d1b16be9c7130e88a2e3b7d4840c1c49db8f5",
+  "supersedes": "timing-audit.json contains incorrect unavailable-cost fields and an overbroad scoring-tail label; only V2 is accepted."
+}

@@ -1,0 +1,207 @@
+{
+  "schema": "saea-root-scientific-decision-v1",
+  "decision_id": "KU-S4N-G2-ALIGNED-DECISION-V1",
+  "created_at_utc": "2026-09-10T03:31:39.891658+00:00",
+  "status": "HOLD_NONINFERIORITY_FAILED",
+  "analysis": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KU-S4N-G2-ALIGNED-READOUT-V1/contrasts.json",
+    "sha256": "d296f01467ae388d05b3c932b961e603d8edd94007c92de523b3019b40533e16"
+  },
+  "config": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/configs/experiment/slurp-kus4n-g2-aligned-analysis-v1.json",
+    "sha256": "e3305801cf33c191f16738f3078db67e7663a2fac025de2800974bbcfce6803c"
+  },
+  "population": "Historically exposed NEW500, n=500",
+  "estimator": "Paired speaker-cluster bootstrap, 10000 replicates, frozen seed offsets; CI90 lower equals the one-sided 95% lower bound.",
+  "non_inferiority_passed": false,
+  "efficacy_passed": false,
+  "primary_guards": {
+    "scenario_action_exact": {
+      "left_pct": 75.2,
+      "right_pct": 73.0,
+      "delta_pp": -2.200000000000002,
+      "ci90_pp": [
+        -5.077262693156733,
+        0.8200963920849819
+      ],
+      "equal_scenario_delta_pp": -4.318242814619627,
+      "operational_ni_margin_pp": 1.263481453397735,
+      "non_inferior": false,
+      "equivalent": false,
+      "decision_guard": true
+    },
+    "scenario_exact": {
+      "left_pct": 84.6,
+      "right_pct": 86.4,
+      "delta_pp": 1.8000000000000016,
+      "ci90_pp": [
+        0.6072874493927125,
+        3.071017274472169
+      ],
+      "equal_scenario_delta_pp": 1.797107548919143,
+      "operational_ni_margin_pp": 1.192144142179577,
+      "non_inferior": true,
+      "equivalent": false,
+      "decision_guard": true
+    },
+    "action_exact": {
+      "left_pct": 76.6,
+      "right_pct": 74.0,
+      "delta_pp": -2.6000000000000023,
+      "ci90_pp": [
+        -5.454545454545455,
+        0.2316170092809417
+      ],
+      "equal_scenario_delta_pp": -4.660204094080904,
+      "operational_ni_margin_pp": 1.4464360085580532,
+      "non_inferior": false,
+      "equivalent": false,
+      "decision_guard": true
+    },
+    "slu_f1_f1": {
+      "left_pct": 21.04598570547503,
+      "right_pct": 11.01161553842464,
+      "delta_pp": -10.034370167050389,
+      "ci90_pp": [
+        -12.327977656791376,
+        -7.7386335568448805
+      ],
+      "equal_scenario_delta_pp": -9.365838989551317,
+      "operational_ni_margin_pp": 1.3829190050691285,
+      "non_inferior": false,
+      "equivalent": false,
+      "decision_guard": false
+    },
+    "slu_f1_micro": {
+      "left_pct": 37.37053503500086,
+      "right_pct": 25.626357946905703,
+      "delta_pp": -11.744177088095158,
+      "ci90_pp": [
+        -15.181118863956087,
+        -8.15751993626411
+      ],
+      "equal_scenario_delta_pp": -11.104217905136828,
+      "operational_ni_margin_pp": 1.880025565197486,
+      "non_inferior": false,
+      "equivalent": false,
+      "decision_guard": true
+    }
+  },
+  "n_minus_twin_intent": {
+    "left_pct": 41.0,
+    "right_pct": 73.0,
+    "delta_pp": 32.0,
+    "ci90_pp": [
+      28.10583975613328,
+      36.030906523757146
+    ],
+    "equal_scenario_delta_pp": 30.960038183770067
+  },
+  "secondary_intent_sign_guards": {
+    "n_minus_historical_comparator": {
+      "primary_delta_pp": -2.200000000000002,
+      "normalized_delta_pp": -0.20000000000000018,
+      "agrees": true
+    },
+    "n_minus_twin": {
+      "primary_delta_pp": 32.0,
+      "normalized_delta_pp": 32.4,
+      "agrees": true
+    }
+  },
+  "eligible_run_ids": [],
+  "g3_exemplar_encoding_allowed": false,
+  "g4_exemplar_experiments_allowed": false,
+  "automatic_rerun_allowed": false,
+  "independent_e21_model_free_preparation_allowed": true,
+  "interpretation": "Candidate selection strongly outperforms the deliberately mismatched twin but does not establish benefit over the historical baseline. N fails its frozen intent, action and pooled SLU protection gates. G3/G4 stay held. Component G1 admission is unchanged.",
+  "attribution_limit": "N and twin share OBS and the same control turn; their contrast isolates candidate selection under this harness. N versus historical comparator includes both added supply and the documented ORG/CONTROL turn. Structural output counts are descriptive, not a causal diagnosis.",
+  "output_structure": {
+    "comparator": {
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.outputs.jsonl",
+        "sha256": "34fda7fa51410e0f4f7e8ba7c35f867c32f53c244de63af5386860486fcb885b"
+      },
+      "populations": {
+        "DEV1000": {
+          "rows": 1000,
+          "admitted": 1000,
+          "json_object": 997,
+          "nonempty_entities": 486,
+          "empty_entities": 511,
+          "invalid_json": 3,
+          "total_predicted_entities": 547
+        },
+        "NEW500": {
+          "rows": 500,
+          "admitted": 500,
+          "json_object": 498,
+          "nonempty_entities": 238,
+          "empty_entities": 260,
+          "invalid_json": 2,
+          "total_predicted_entities": 273
+        }
+      }
+    },
+    "n": {
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3/attempt-20260910T020504Z-938cd3/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3.outputs.jsonl",
+        "sha256": "bb34d198a58cc6f07d834a551aef469ec5923178d0c07cb12b126eb1778efa5a"
+      },
+      "populations": {
+        "DEV1000": {
+          "rows": 1000,
+          "admitted": 1000,
+          "json_object": 1000,
+          "nonempty_entities": 208,
+          "empty_entities": 792,
+          "total_predicted_entities": 231
+        },
+        "NEW500": {
+          "rows": 500,
+          "admitted": 500,
+          "json_object": 500,
+          "nonempty_entities": 101,
+          "empty_entities": 399,
+          "total_predicted_entities": 115
+        }
+      }
+    },
+    "twin": {
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3/attempt-20260910T020504Z-a556a2/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3.outputs.jsonl",
+        "sha256": "1b13b8ffa05df2bba315fbc6f0a3920298f2e0ce116a774c56e86c193c48e9f7"
+      },
+      "populations": {
+        "DEV1000": {
+          "rows": 1000,
+          "admitted": 1000,
+          "json_object": 997,
+          "nonempty_entities": 227,
+          "empty_entities": 770,
+          "invalid_json": 3,
+          "total_predicted_entities": 246
+        },
+        "NEW500": {
+          "rows": 500,
+          "admitted": 500,
+          "json_object": 498,
+          "nonempty_entities": 110,
+          "empty_entities": 388,
+          "invalid_json": 2,
+          "total_predicted_entities": 121
+        }
+      }
+    }
+  },
+  "contact_counters": {
+    "model": 0,
+    "encoder": 0,
+    "tokenizer": 0,
+    "scorer": 0
+  },
+  "all_strata_and_sensitivities": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KU-S4N-G2-ALIGNED-READOUT-V1/contrasts.json",
+    "sha256": "d296f01467ae388d05b3c932b961e603d8edd94007c92de523b3019b40533e16"
+  }
+}
