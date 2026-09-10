@@ -1,0 +1,396 @@
+{
+  "schema": "saea-fable-result-reproduction-audit-v1",
+  "created_at_utc": "2026-09-10T06:36:57.174842+00:00",
+  "execution_code_commit": "e06e802982ffcac74185fa48a5c81d07d3c94df3",
+  "authority": "OWNER-REPRODUCTION-FIRST-008",
+  "registrations": [
+    "SAEA-E21-MF-FABLE-REPRODUCTION-V1",
+    "SAEA-SLURP-MF-FABLE-REPRODUCTION-V1"
+  ],
+  "environment": "WSL Ubuntu-24.04; Python /home/chao/.venvs/speechrl/bin/python; literal audit-worktree PYTHONPATH; no editable reinstall",
+  "comparisons": [
+    {
+      "name": "slurp_existing_max64_repeat_analysis",
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1/paired-contrasts.json",
+        "sha256": "bdb5afb04202711f8d3ed828e5904c7838f764f1af9d9b1c8c1e9e6f2ee2e242"
+      },
+      "reproduced": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-MF-FABLE-REPRODUCTION-V1/paired-contrasts-reproduced.json",
+        "sha256": "f12229271de76d3adbe27ee1f035885d3c5ca606b7673dbde103c0c16acdc0da"
+      },
+      "statistical_numeric_fields": 2833,
+      "statistical_differences": [],
+      "metadata_differences": [
+        {
+          "field": "/config/path",
+          "original": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/configs/experiment/slurp-kc-s1b-replica-analysis-v1.json",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/configs/experiment/slurp-kc-s1b-replica-analysis-v1.json"
+        },
+        {
+          "field": "/created_at_utc",
+          "original": "2026-09-09T16:20:15.191461+00:00",
+          "reproduced": "2026-09-10T06:21:55.001712+00:00"
+        },
+        {
+          "field": "/implementation/0/path",
+          "original": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py"
+        },
+        {
+          "field": "/implementation/0/sha256",
+          "original": "29c54103ae63387b5b691c04355317ee907d8b45e5c70f084a2f46cc72221208",
+          "reproduced": "76e8ae1268a8bab77e9b45a52564ce011c6a3d8f4bfaadbb9b36818add6798cc"
+        },
+        {
+          "field": "/implementation/1/path",
+          "original": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/analysis/paired.py",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/src/speech_aware_evidence_acquisition/analysis/paired.py"
+        }
+      ],
+      "verdict": "EXACT_STATISTICAL_REPRODUCTION"
+    },
+    {
+      "name": "e21_original_v1_rule",
+      "original": {
+        "path": "/home/chao/saea-worktrees/fable-reproduction-audit/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict-v2/recomputed/result-summary.json",
+        "sha256": "b7039509e7372e04eadb1ad7ad19c46fce0b9bdce37cd24f9ee6dafc9ba14690"
+      },
+      "reproduced": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-MF-FABLE-REPRODUCTION-V1/kc-e1f-original-rule/result-summary.json",
+        "sha256": "96f2430b6d0c0962d68fb67f602d45ba2972c65194c7607e16ee720ef1be3db1"
+      },
+      "statistical_numeric_fields": 6288,
+      "statistical_differences": [],
+      "metadata_differences": [
+        {
+          "field": "/elapsed_seconds",
+          "original": 417.8,
+          "reproduced": 381.8
+        },
+        {
+          "field": "/identity_anchors/comparator/path",
+          "original": "/mnt/d/chao_workspace/saea-worktrees/wt-kce1fv2/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict-v2/reaggregation/comparator/reaggregation.json",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict-v2/reaggregation/comparator/reaggregation.json"
+        },
+        {
+          "field": "/identity_anchors/kc-e1f/path",
+          "original": "/mnt/d/chao_workspace/saea-worktrees/wt-kce1fv2/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict-v2/reaggregation/kc-e1f/reaggregation.json",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict-v2/reaggregation/kc-e1f/reaggregation.json"
+        },
+        {
+          "field": "/identity_anchors/ku-e1fc/path",
+          "original": "/mnt/d/chao_workspace/saea-worktrees/wt-kce1fv2/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict-v2/reaggregation/ku-e1fc/reaggregation.json",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict-v2/reaggregation/ku-e1fc/reaggregation.json"
+        },
+        {
+          "field": "/token_throughput_covariate/sources/kc-e1f/path",
+          "original": "/mnt/d/chao_workspace/saea-worktrees/wt-kce1fv2/docs/checks/speech-aware-evidence-acquisition/2026-09-07-e21-kc-e1f-repair-44-v1/flight/flight-receipt.json",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/docs/checks/speech-aware-evidence-acquisition/2026-09-07-e21-kc-e1f-repair-44-v1/flight/flight-receipt.json"
+        },
+        {
+          "field": "/token_throughput_covariate/sources/ku-e1fc/path",
+          "original": "/mnt/d/chao_workspace/saea-worktrees/wt-kce1fv2/docs/checks/speech-aware-evidence-acquisition/2026-09-07-e21-kc-e1f-repair-44-v1/flight-twin/flight-receipt.json",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/docs/checks/speech-aware-evidence-acquisition/2026-09-07-e21-kc-e1f-repair-44-v1/flight-twin/flight-receipt.json"
+        }
+      ],
+      "verdict": "EXACT_STATISTICAL_REPRODUCTION"
+    },
+    {
+      "name": "e21_original_v2_redecision",
+      "original": {
+        "path": "/home/chao/saea-worktrees/fable-reproduction-audit/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict-v2/result-summary.json",
+        "sha256": "e71744d14baa68818dd43a11db7bd8e8f8d0cab73bcf18ec3b992bdb7fd6827b"
+      },
+      "reproduced": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-MF-FABLE-REPRODUCTION-V1/kc-e1f-v2-rule/result-summary.json",
+        "sha256": "40a5de682d788dcb810eccc165d70c2f34db3e7f07f9f4aea28ff773f05351cf"
+      },
+      "statistical_numeric_fields": 122,
+      "statistical_differences": [],
+      "metadata_differences": [
+        {
+          "field": "/elapsed_seconds",
+          "original": 5.7,
+          "reproduced": 4.3
+        },
+        {
+          "field": "/identity/null_summary/path",
+          "original": "/mnt/d/chao_workspace/saea-worktrees/wt-kce1fv2/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-full44-null-replicate-v1/verdict/result-summary.json",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-full44-null-replicate-v1/verdict/result-summary.json"
+        },
+        {
+          "field": "/identity/recomputed_summary/path",
+          "original": "/mnt/d/chao_workspace/saea-worktrees/wt-kce1fv2/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict-v2/recomputed/result-summary.json",
+          "reproduced": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-MF-FABLE-REPRODUCTION-V1/kc-e1f-original-rule/result-summary.json"
+        },
+        {
+          "field": "/identity/recomputed_summary/sha256",
+          "original": "b7039509e7372e04eadb1ad7ad19c46fce0b9bdce37cd24f9ee6dafc9ba14690",
+          "reproduced": "96f2430b6d0c0962d68fb67f602d45ba2972c65194c7607e16ee720ef1be3db1"
+        },
+        {
+          "field": "/identity/v1_summary/path",
+          "original": "/mnt/d/chao_workspace/saea-worktrees/wt-kce1fv2/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict/result-summary.json",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-kc-e1f-verdict/result-summary.json"
+        }
+      ],
+      "verdict": "EXACT_STATISTICAL_REPRODUCTION"
+    },
+    {
+      "name": "slurp_historical_kv_family_recovery",
+      "original": {
+        "path": "/home/chao/saea-worktrees/fable-reproduction-audit/docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/family-contrasts.json",
+        "sha256": "890d6fbee8e28460641e4c5f132a1c271043db798ae155c4f5aada6c47db9429"
+      },
+      "reproduced": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-MF-FABLE-REPRODUCTION-V1/kv-family-reproduced.json",
+        "sha256": "2a13bfec896f93c7348a8d3d73383883447665f06f409baac4882c7e761b349e"
+      },
+      "statistical_numeric_fields": 6275,
+      "statistical_differences": [],
+      "metadata_differences": [
+        {
+          "field": "/config/path",
+          "original": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/configs/experiment/slurp-kv-family-recovery-analysis-v1.json",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/configs/experiment/slurp-kv-family-recovery-analysis-v1.json"
+        },
+        {
+          "field": "/created_at_utc",
+          "original": "2026-09-09T13:18:48.173864+00:00",
+          "reproduced": "2026-09-10T06:34:09.348852+00:00"
+        },
+        {
+          "field": "/implementation/0/path",
+          "original": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py"
+        },
+        {
+          "field": "/implementation/0/sha256",
+          "original": "29c54103ae63387b5b691c04355317ee907d8b45e5c70f084a2f46cc72221208",
+          "reproduced": "76e8ae1268a8bab77e9b45a52564ce011c6a3d8f4bfaadbb9b36818add6798cc"
+        },
+        {
+          "field": "/implementation/1/path",
+          "original": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/analysis/paired.py",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/src/speech_aware_evidence_acquisition/analysis/paired.py"
+        }
+      ],
+      "verdict": "EXACT_STATISTICAL_REPRODUCTION"
+    },
+    {
+      "name": "slurp_historical_kv0_recovery",
+      "original": {
+        "path": "/home/chao/saea-worktrees/fable-reproduction-audit/docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/kv0-contrasts.json",
+        "sha256": "64a2691e85c339adf997df4c12a1fed249c469fcbdb29995a4254caf66c48f27"
+      },
+      "reproduced": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-MF-FABLE-REPRODUCTION-V1/kv0-reproduced.json",
+        "sha256": "9bb1bd1ae68c885c9f60fe92ed1d398aa824314052a5e159928338fae78787bb"
+      },
+      "statistical_numeric_fields": 478,
+      "statistical_differences": [],
+      "metadata_differences": [
+        {
+          "field": "/config/path",
+          "original": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/configs/experiment/slurp-kv0-recovery-analysis-v1.json",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/configs/experiment/slurp-kv0-recovery-analysis-v1.json"
+        },
+        {
+          "field": "/created_at_utc",
+          "original": "2026-09-09T12:49:25.949256+00:00",
+          "reproduced": "2026-09-10T06:34:36.410449+00:00"
+        },
+        {
+          "field": "/implementation/0/path",
+          "original": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py"
+        },
+        {
+          "field": "/implementation/0/sha256",
+          "original": "ffc9e156ebe1a071e915e5c4ac80a57f28c40b195cd23b0ff32fd26422f4ce6d",
+          "reproduced": "76e8ae1268a8bab77e9b45a52564ce011c6a3d8f4bfaadbb9b36818add6798cc"
+        },
+        {
+          "field": "/implementation/1/path",
+          "original": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src/speech_aware_evidence_acquisition/analysis/paired.py",
+          "reproduced": "/home/chao/saea-worktrees/fable-reproduction-audit/src/speech_aware_evidence_acquisition/analysis/paired.py"
+        }
+      ],
+      "verdict": "EXACT_STATISTICAL_REPRODUCTION"
+    },
+    {
+      "name": "slurp_original_kc_s1b_two_contrasts_two_metrics",
+      "original": {
+        "path": "/home/chao/saea-worktrees/fable-reproduction-audit/docs/checks/speech-aware-evidence-acquisition/2026-09-05-slurp-slot-stage-kc-s1-v1/read.json",
+        "sha256": "6b5c158b4c199c935ac82d2a1af515007c97fe6c92e647ab1d765b9e09157617"
+      },
+      "reproduced": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-MF-FABLE-REPRODUCTION-V1/kc-s1b-original-contrasts-reproduced.json",
+        "sha256": "e78773b85ef8c7ac69a49e7f7439f002a949450f16ef33f4bbd8ba43c819a649"
+      },
+      "statistical_numeric_fields": 564,
+      "statistical_differences": [],
+      "selection": "paired_kc_s1b_over_closed_list and paired_kc_s1b_over_kc_s1a; original NEW500; strict slot and row-SLU F1",
+      "verdict": "EXACT_STATISTICAL_REPRODUCTION",
+      "projection_limit": "Direct and S1a retained projected score artifacts preserve entity fields only; do not substitute their projected intent for original intent."
+    }
+  ],
+  "slurp_independent_micro_arithmetic": {
+    "CLOSED-LIST": {
+      "entities": {
+        "tp": 164.0,
+        "fp": 383.0,
+        "fn": 786.0,
+        "recomputed_micro_f1": 0.21910487641950568,
+        "reported_micro_f1": 0.21910487641950566
+      },
+      "slu_f1": {
+        "tp": 622.0,
+        "fp": 712.3328016890686,
+        "fn": 1518.3328016890684,
+        "recomputed_micro_f1": 0.35802006351073296,
+        "reported_micro_f1": 0.358020063510733
+      }
+    },
+    "KC-S1A": {
+      "entities": {
+        "tp": 163.0,
+        "fp": 381.0,
+        "fn": 787.0,
+        "recomputed_micro_f1": 0.2182061579651941,
+        "reported_micro_f1": 0.2182061579651941
+      },
+      "slu_f1": {
+        "tp": 620.0,
+        "fp": 708.28288194507,
+        "fn": 1520.2828819450694,
+        "recomputed_micro_f1": 0.35749646522754375,
+        "reported_micro_f1": 0.35749646522754375
+      }
+    },
+    "KC-S1B": {
+      "entities": {
+        "tp": 256.0,
+        "fp": 426.0,
+        "fn": 694.0,
+        "recomputed_micro_f1": 0.3137254901960784,
+        "reported_micro_f1": 0.3137254901960784
+      },
+      "slu_f1": {
+        "tp": 846.0,
+        "fp": 793.5425585988256,
+        "fn": 1329.5425585988257,
+        "recomputed_micro_f1": 0.443502555781206,
+        "reported_micro_f1": 0.44350255578120595
+      }
+    }
+  },
+  "e21_independent_count_audit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-MF-FABLE-REPRODUCTION-V1/independent-count-audit.json",
+    "sha256": "8e224bd40518f3142848f20e9965b622724504d99e7ad9eb9a6f7c99eda43535"
+  },
+  "e21_session_identity": [
+    {
+      "session_id": "e21-np4-c36864-20260908",
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np4-c36864-20260908/session-receipt.json",
+        "sha256": "2123db5301421c1b7b498c2dd9ce0c1dc2c37531735fb845e29bc4c1363b22e2"
+      },
+      "argv": [
+        "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8080",
+        "-m",
+        "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "--mmproj",
+        "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+        "-c",
+        "36864",
+        "-np",
+        "4",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0"
+      ],
+      "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+      "recorded_model_pins": [
+        {
+          "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+          "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+        },
+        {
+          "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+          "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+        }
+      ],
+      "recorded_config_sha256": "05777ca3a3abdc75cd105021fe2104a639440d0ffd4ca2654ad18e50123b3e5f"
+    },
+    {
+      "session_id": "e21-np4-c36864-20260908b",
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/e21-np4-c36864-20260908b/session-receipt.json",
+        "sha256": "f42bcaaf9470209b7538e9924f17ace251bf28497366db7ea4f3bb1f2bffc483"
+      },
+      "argv": [
+        "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8080",
+        "-m",
+        "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "--mmproj",
+        "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+        "-c",
+        "36864",
+        "-np",
+        "4",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0"
+      ],
+      "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+      "recorded_model_pins": [
+        {
+          "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+          "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+        },
+        {
+          "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+          "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+        }
+      ],
+      "recorded_config_sha256": "05777ca3a3abdc75cd105021fe2104a639440d0ffd4ca2654ad18e50123b3e5f"
+    }
+  ],
+  "contact_counts": {
+    "new_inference": 0,
+    "scorer": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "audio_decode": 0,
+    "paid_api": 0
+  },
+  "service_started": false,
+  "limitations": [
+    "This is numerical reproduction from sealed sufficient statistics, not new model generation or a new official scoring pass.",
+    "Existing independent inference repeats remain separately identified evidence.",
+    "KV family conclusions were recovered after original generation and do not create prospective admission.",
+    "Original rejection and later owner-authorized E21 redecision both remain on record.",
+    "No live complete-system or 64-versus-256 or reasoning claim is inferred.",
+    "Historical model weight pins are compared across hashed session receipts; current large weight files were not rehashed."
+  ]
+}

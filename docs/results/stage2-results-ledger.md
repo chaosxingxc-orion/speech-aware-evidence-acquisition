@@ -1373,3 +1373,7 @@ It is a transcription, not an analysis: it recomputes no interval, re-weights no
 ## Owner continuation update: 2026-09-10
 
 The tables above retain the historical recovery transcription. Current KU-S3 max256 recovery is **ADMITTED_COMPONENT**: three new 1,000-row arms completed and scored once each, two registered NEW500 row-SLU-F1 contrasts pass, and the inherited joined-intent protection is verified without changing entity predictions or original outputs. See the [component verdict](../checks/speech-aware-evidence-acquisition/2026-09-10-ku-s3-max256-recovery-verdict/README.md). Live full-system and inherited replication requirements remain open. KV recovery is complete in the [family report](../checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md); historical missing decisions remain explicit.
+
+## Original-result reproduction: 2026-09-10
+
+The [independent reproduction report](2026-09-10-fable-reproduction-audit.md) and [source-bound receipt](../receipts/fable-result-reproduction-v1.json) reproduce the original KC-S1b contrasts, existing max64 repeat analysis, E21 KC-E1f original rule and historical v2 redecision, and KV recovery contrasts. All 16,560 statistical fields agree. No fresh inference or official scoring was performed. Preserve the original rejection/redecision sequence, the historical KV order deviation and the distinction between component evidence and live system performance. The +10.11 pp KC-S1b headline denotes strict entity mean row F1; do not relabel it as official micro SLU-F1.

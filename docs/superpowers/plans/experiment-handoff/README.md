@@ -1,6 +1,6 @@
 # Owner-directed Stage-2 continuation
 
-Status: **owner-directed execution**, generation 20. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 21. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -32,6 +32,13 @@ instruction. The actual ExecutionPlan, exposure, runtime, attempt and budget gat
 each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current implementation
+
+Latest priority: [OWNER-REPRODUCTION-FIRST-008.md](OWNER-REPRODUCTION-FIRST-008.md).
+Original results have been numerically reproduced before further adjustment: all 16,560
+statistical values agree; no service, generation or scoring was added. Read
+[STATUS-021.md](STATUS-021.md) and the [independent report](../../../results/2026-09-10-fable-reproduction-audit.md).
+Feature-serving qualification and DR/LOOP expansion remain paused at this review boundary.
+The earlier implementation and experiment status below remains preserved.
 
 The original 64-token KC-S1b same-profile repeat has generated all 1,000 rows and completed
 one official scoring job with per-sample statistics retained. Its registered NEW500 entity-side

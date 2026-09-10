@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 20,
+  "generation": 21,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,10 +10,10 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "13cd279a79736c201e847f1a73428eb1c70512d6",
-  "updated_at_utc": "2026-09-10T06:06:30.513144+00:00",
-  "next_action": "Read STATUS-020.md. Shared configured encoder/transport/fit guard and explicit preparation lease are integrated. Actual four-input CPU encoding, source cache audit, normal-stop provenance and service-free warm reuse completed. New np6 CPU-projector profile pins actual artifacts but remains held for live strict-cache qualification and actual fit. No service or lease running. G2 NI failed; G3/G4 held; G5 scientific generation and G6 incomplete.",
+  "snapshot_commit": "e06e802982ffcac74185fa48a5c81d07d3c94df3",
+  "updated_at_utc": "2026-09-10T06:41:10.473048+00:00",
+  "next_action": "Read STATUS-021.md and the Fable reproduction report. Original KC-S1b contrasts, max64 repeat analysis, E21 v1/v2 and KV recovery numerically reproduced with 16,560 identical statistical values and zero neural/scorer contacts. Review live-system evidence gaps and exact original service identities before any adjustment or new flight. No service or lease running; feature qualification and DR/LOOP expansion paused. Preserve G2 NI failure and G3/G4 holds; G5/G6 incomplete.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
-  "latest_owner_decision_id": "OWNER-FEATURE-SERVING-007"
+  "latest_owner_decision_id": "OWNER-REPRODUCTION-FIRST-008"
 }

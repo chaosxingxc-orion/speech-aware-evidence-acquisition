@@ -2524,7 +2524,7 @@
       "preregistration": "docs/readiness/2026-09-08-slurp-logprob-judge-probe-v1-preregistration.md",
       "status": "NOT ADMITTED",
       "status_source": "h1",
-      "status_quote": "# Verdict \u2014 the SLURP logprob-as-judge probe: **NOT ADMITTED**",
+      "status_quote": "# Verdict — the SLURP logprob-as-judge probe: **NOT ADMITTED**",
       "pending": false,
       "comparator": {
         "text": "The sealed closed-list direct request is unchanged except for decoding_params.logprobs=true and top_logprobs=5. The admission bars concern the confidence signal; the greedy own-null replicate is the latency reference, not a replacement task baseline.",
@@ -3199,6 +3199,13 @@
       "status": "ADMITTED_COMPONENT",
       "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-10-ku-s3-max256-recovery-verdict/decision.json",
       "meaning": "Recovered same-process 3x1000 comparison; both registered entity-side numerical gates and inherited joined-intent protection pass. Historical rows remain a dated transcription; no live full-system claim."
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "FABLE-RESULT-REPRODUCTION-AUDIT",
+      "status": "NUMERICALLY_REPRODUCED",
+      "source": "docs/receipts/fable-result-reproduction-v1.json",
+      "meaning": "Original SLURP KC-S1b, existing max64 repeat analysis, E21 KC-E1f v1/v2 and historical KV recovery reproduced exactly; 16,560 statistical fields agree. Zero new generation or scoring. Original verdict history and live-system limitations remain unchanged."
     }
   ]
 }
