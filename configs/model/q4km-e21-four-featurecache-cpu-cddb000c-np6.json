@@ -1,0 +1,53 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-e21-feature-raw-cddb000c.json",
+  "server_args": [
+    "-c",
+    "36864",
+    "-np",
+    "6",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "--no-mmproj-offload"
+  ],
+  "serving_geometry": {
+    "slots": 6,
+    "slot_tokens": 6144,
+    "max_tokens": 1024
+  },
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample"
+  },
+  "prompt_order": "evidence-first-system-v3",
+  "server_env": {
+    "GGML_CUDA_DISABLE_GRAPHS": "1",
+    "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/e21-cddb000c-four-proof-cpu-v1",
+    "LLAMA_MTMD_FEAT_CACHE_REQUIRE_HIT": "1"
+  },
+  "feature_encoder_runtime_receipt": "receipts/runtime-q4km-e21-feature-preprocess-cddb000c.json",
+  "preparation_basis": "Consume only the exact-four prepared source-bound cache and final provenance pinned below. Keep mmproj on CPU and require every cache hit. The registered four-input CPU encoding completed and warmed without a service. This model fragment authorizes no contact: live strict-cache error qualification and actual-request capacity remain pending. Preserve all historical model fragments and raw-audio request semantics.",
+  "prepared_window_feature_cache": {
+    "audit": {
+      "relpath": "analysis/SAEA-E21-FOUR-WINDOW-CPU-ENCODING-V1/cache-audit.json",
+      "sha256": "e21563058b6323d67e61644d02c6a5a5732158563f7e37135109d84f8954b561"
+    },
+    "provenance": {
+      "relpath": "analysis/SAEA-E21-FOUR-WINDOW-CPU-ENCODING-V1/feature-provenance.json",
+      "sha256": "c4828d23eed95471f830d5f189c6b57297390776002bcedb78f4041f250cad91"
+    },
+    "expected_n_embd": 2048
+  }
+}

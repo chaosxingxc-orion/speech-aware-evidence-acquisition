@@ -1,0 +1,81 @@
+{
+  "schema": "saea-exact-window-cpu-feature-preparation-receipt-v1",
+  "date_utc": "2026-09-10T06:04:59.249902+00:00",
+  "execution_code_commit": "13cd279a79736c201e847f1a73428eb1c70512d6",
+  "run_id": "SAEA-E21-FOUR-WINDOW-CPU-ENCODING-V1",
+  "attempt_id": "attempt-20260910-four-window-cpu-encoding-v1",
+  "session_id": "serving-e21-four-window-cpu-encoding-v1",
+  "state": "source-bound-feature-cache-verified-serving-unqualified",
+  "counts": {
+    "unique_audio_inputs": 4,
+    "feature_chunk_files": 8,
+    "encoding_calls": 4,
+    "audio_seconds": 41.840312499999996,
+    "request_latency_seconds_total": 16.957283609001024,
+    "completion_tokens_total": 4,
+    "additional_warm_model_contacts": 0
+  },
+  "artifacts": {
+    "window-encoding.json": {
+      "relpath": "analysis/SAEA-E21-FOUR-WINDOW-CPU-ENCODING-V1/window-encoding.json",
+      "sha256": "669e4e79832bafa7cf9706e8094dcba35eee96ef6744b56344064308b6776890"
+    },
+    "cache-audit.json": {
+      "relpath": "analysis/SAEA-E21-FOUR-WINDOW-CPU-ENCODING-V1/cache-audit.json",
+      "sha256": "e21563058b6323d67e61644d02c6a5a5732158563f7e37135109d84f8954b561"
+    },
+    "feature-provenance.json": {
+      "relpath": "analysis/SAEA-E21-FOUR-WINDOW-CPU-ENCODING-V1/feature-provenance.json",
+      "sha256": "c4828d23eed95471f830d5f189c6b57297390776002bcedb78f4041f250cad91"
+    }
+  },
+  "session_files": {
+    "session-receipt.json": {
+      "relpath": "serving/serving-e21-four-window-cpu-encoding-v1/session-receipt.json",
+      "sha256": "c53542e26dcefad947f2dac4c3d3d34d5be0801af07bc0b4fba3a942e6563966"
+    },
+    "session-stop.json": {
+      "relpath": "serving/serving-e21-four-window-cpu-encoding-v1/session-stop.json",
+      "sha256": "3d8df7ce4027f6b9fa74d64d1ab221905e614d82c297f6c23d01c82a7ec0fcc7"
+    },
+    "session.json": {
+      "relpath": "serving/serving-e21-four-window-cpu-encoding-v1/session.json",
+      "sha256": "c654feda57e53ef214bc9ea1c807829c448f3cdbed2acba82183863c2a68b004"
+    },
+    "monitor.jsonl": {
+      "relpath": "serving/serving-e21-four-window-cpu-encoding-v1/monitor.jsonl",
+      "sha256": "dbab1245b122cd7716161b245e37204c17480f38c8dfa8dc9aee837c258cb980"
+    }
+  },
+  "normal_stop": {
+    "final_process_state": "gone",
+    "forced": false,
+    "pid": 605,
+    "runtime_receipt_sha256": "20d4d6c0f7fce2dfe823cb9731e8d8fa2cac86dceaddedf7257b623f95b920e0",
+    "schema": "saea-session-stop-receipt-v1",
+    "session_id": "serving-e21-four-window-cpu-encoding-v1",
+    "session_receipt_sha256": "2c70deca97565fea63365f4fb578d81613a7e70230168f0385703ebc16dff811",
+    "session_role": "preprocess",
+    "stopped_at": "2026-09-10T05:58:26.240784+00:00",
+    "study": "speech-aware-evidence-acquisition",
+    "termination_signal": "SIGTERM"
+  },
+  "monitor": {
+    "service_ok_samples": 14,
+    "max_observed_gpu_memory_mib": 492.0,
+    "max_observed_gpu_utilization_percent": 0.0,
+    "note": "Ten-second monitoring may miss short CPU requests and does not supply the authoritative contact count. Use the exact client receipt for all four contacts. Device context residency does not establish projector weight offload."
+  },
+  "warm_reuse": {
+    "cache": "warm",
+    "contact_class": "encoder",
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-FOUR-WINDOW-CPU-ENCODING-V1/window-encoding.json",
+    "sha256": "669e4e79832bafa7cf9706e8094dcba35eee96ef6744b56344064308b6776890"
+  },
+  "final_service_state": "stopped normally; no resident model, monitor or execution lease",
+  "limitations": [
+    "Four short fixed construction windows establish engineering feature preparation only.",
+    "The cached GPU decoding service, strict hit/miss/error behavior and np6 request fit remain unqualified.",
+    "No G5 scientific generation or score was produced; do not extrapolate full-corpus CPU throughput from this four-window operation."
+  ]
+}

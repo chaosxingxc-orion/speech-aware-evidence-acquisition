@@ -1,6 +1,6 @@
 # Owner-directed Stage-2 continuation
 
-Status: **owner-directed execution**, generation 15. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 20. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -69,15 +69,20 @@ repeated JSON parsing while checking source bytes; fresh recovery supply preserv
 ID and rendered byte. Full CPU request revalidation still delays handoffs beyond the one-minute
 target; preserve the frozen completed campaign while optimizing its successors.
 
-G2 N/twin V2 supplies are DATA_READY with full 1000-row selection and rendering parity, zero warm
-producer calls and zero runtime recomputation. Their fits and generation remain held for scientific
-closure and separate admission on the np8 service. G2 through G6 have not generated. The shared
-constrained-delivery replay exactly reproduces all 1593 historical KC-E1f windows and 44 stitched
-calls; see the [full replay receipt](../../../checks/speech-aware-evidence-acquisition/2026-09-09-e21-constrained-replay/README.md).
-E21 actual-window evidence binding and the held two-generation/four-delivery configuration are
-integrated on canonical master. Current live bridge evidence, bounded controller transitions,
-full-system state joins and broader engineering coverage remain incomplete. Read
-[STATUS-015.md](STATUS-015.md) for the current work order and service recovery status.
+G2 N/twin completed 1000-row generation and one whole official scoring job per arm. The
+frozen aligned analysis returned HOLD_NONINFERIORITY_FAILED; G3 exemplar encoding and G4
+a/b/c remain held. Do not treat prior DATA_READY notes as permission to continue that branch.
+The shared constrained-delivery replay reproduces all 1593 historical KC-E1f windows and 44
+stitched calls; see the [full replay receipt](../../../checks/speech-aware-evidence-acquisition/2026-09-09-e21-constrained-replay/README.md).
+
+E21 exact-four CPU feature encoding is now complete through the shared config-driven entry:
+four unique contacts, eight cache chunks, source-bound audit and normal-stop provenance.
+The same entry verifies warm reuse without a model service and adds zero contacts. The
+normal transport and actual fit paths enforce configured cache pins and CPU projector
+placement. The new six-slot profile remains held for actual strict-cache qualification,
+request capacity and current executor bridge evidence. G5 scientific generation and G6
+live full-system baselines are incomplete. Read [STATUS-020.md](STATUS-020.md) and the
+[actual preparation receipt](../../../receipts/e21-four-window-cpu-feature-preparation-v1.json).
 
 Use ChatGPT/OpenAI cloud subagents under [MODEL-ALLOCATION.md](MODEL-ALLOCATION.md);
 the main agent retains planning, scientific decisions, critical review and merge acceptance.
