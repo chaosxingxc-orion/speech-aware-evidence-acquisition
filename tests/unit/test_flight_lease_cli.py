@@ -1,9 +1,7 @@
 """Contact-free tests for the root-owned worker lease handoff."""
 import io
 import json
-import os
 import stat
-from pathlib import Path
 
 import pytest
 
@@ -12,14 +10,14 @@ from speech_aware_evidence_acquisition.core.flight.lease import GenerationLease,
 from speech_aware_evidence_acquisition.core.flight.lease_cli import LeaseHandoffError, handoff_worker_lease
 
 
-def cell(*, ready=True, dependency=False):
+def cell(*, ready=True, dependency=False, stage="worker"):
     readiness = {"state": "ready" if ready else "held", "reason": "test hold"}
     if dependency:
         readiness["depends_on"] = [{"run_id": "prior", "required_state": "scored"}]
     return CampaignCell.from_document({
         "cell_id": "worker-cell", "model_fragment": "model", "dataset_fragment": "dataset",
         "baseline_fragment": "baseline", "run_id": "run", "attempt_id": "attempt",
-        "allowed_execution_stages": ["worker"], "readiness": readiness,
+        "allowed_execution_stages": [stage], "readiness": readiness,
     })
 
 
@@ -39,20 +37,81 @@ class Lease:
         self.preserved = True
 
 
-def run(tmp_path, *, stdin="release\n", lease=None, selected=None, token="coordination/worker.token"):
+def run(
+    tmp_path, *, stdin="release\n", lease=None, selected=None,
+    token="coordination/worker.token", stage="worker", resident=None,
+):
     lease = lease or Lease()
     out = io.StringIO()
     result = handoff_worker_lease(
         repo_root=tmp_path, data_root=tmp_path, runtime_root=tmp_path,
         lock_path=tmp_path / "lock", experiment="experiment", cell=selected or cell(),
         owner="root", expected_session_id="session", token_output=token,
+        stage=stage,
         input_stream=io.StringIO(stdin), output_stream=out,
         runtime_factory=lambda *args, **kwargs: Runtime(), lease_factory=lambda *args, **kwargs: lease,
-        resident_finder=lambda _: (tmp_path / "session", {
+        resident_finder=lambda _: resident if resident is not None else (tmp_path / "session", {
             "session_id": "session", "identity": {"host": "127.0.0.1", "port": 8080},
         }), study_head_factory=lambda _: "a" * 40,
     )
     return result, lease, out.getvalue()
+
+
+def test_prepare_window_features_stage_issues_and_releases_custody(tmp_path):
+    result, lease, output = run(
+        tmp_path,
+        selected=cell(stage="prepare-window-features"),
+        stage="prepare-window-features",
+        token="coordination/prep.token",
+    )
+    assert result == 0 and lease.released
+    assert not (tmp_path / "coordination/prep.token").exists()
+    assert "prepare-window-features-lease-ready" in output
+    assert '"stage": "prepare-window-features"' not in output
+
+    result, lease, _ = run(
+        tmp_path,
+        stdin="",
+        selected=cell(stage="prepare-window-features"),
+        stage="prepare-window-features",
+        token="coordination/prep-preserved.token",
+    )
+    assert result == 2 and lease.preserved
+    token = json.loads(
+        (tmp_path / "coordination/prep-preserved.token").read_text()
+    )
+    assert token["stage"] == "prepare-window-features"
+
+
+@pytest.mark.parametrize(
+    ("selected", "stage", "message"),
+    [
+        (cell(stage="worker"), "prepare-window-features", "does not permit"),
+        (cell(stage="prepare-window-features", ready=False), "prepare-window-features", "readiness"),
+    ],
+)
+def test_prepare_stage_requires_exact_declared_mode_and_ready_state(
+    tmp_path, selected, stage, message
+):
+    with pytest.raises(LeaseHandoffError, match=message):
+        run(tmp_path, selected=selected, stage=stage, token="coordination/no.token")
+    assert not (tmp_path / "coordination/no.token").exists()
+
+
+def test_prepare_stage_refuses_stale_resident_identity_before_lease(tmp_path):
+    stale = (
+        tmp_path / "session",
+        {"session_id": "session", "identity": {"host": "127.0.0.1", "port": 9999}},
+    )
+    with pytest.raises(LeaseHandoffError, match="identity mismatch"):
+        run(
+            tmp_path,
+            selected=cell(stage="prepare-window-features"),
+            stage="prepare-window-features",
+            token="coordination/no.token",
+            resident=stale,
+        )
+    assert not (tmp_path / "coordination/no.token").exists()
 
 
 def test_release_clears_secret_and_reports_only_public_identity(tmp_path):

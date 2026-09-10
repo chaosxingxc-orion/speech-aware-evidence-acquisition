@@ -68,6 +68,7 @@ def handoff_worker_lease(
     owner: str,
     expected_session_id: str,
     token_output: Path,
+    stage: str = "worker",
     input_stream: TextIO = sys.stdin,
     output_stream: TextIO = sys.stdout,
     runtime_factory: Callable = build_flight_runtime,
@@ -83,20 +84,26 @@ def handoff_worker_lease(
     repo_root, data_root, runtime_root, lock_path = map(
         Path, (repo_root, data_root, runtime_root, lock_path)
     )
+    if stage not in {"worker", "prepare-window-features"}:
+        raise LeaseHandoffError(
+            "lease handoff stage must be worker or prepare-window-features"
+        )
     token_path = _confined_token_path(data_root, Path(token_output))
     if not owner.strip() or not expected_session_id.strip():
         raise LeaseHandoffError("owner and expected session id must be nonempty")
     if re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", expected_session_id) is None:
         raise LeaseHandoffError("expected session id must be one plain path segment")
     try:
-        cell.assert_mode("worker")
+        cell.assert_mode(stage)
     except CampaignError as error:
-        raise LeaseHandoffError(f"cell does not permit worker stage: {error}") from error
+        raise LeaseHandoffError(f"cell does not permit {stage} stage: {error}") from error
     readiness = declared_readiness(cell, data_root)
     if readiness.state != "ready":
-        raise LeaseHandoffError(f"worker readiness is {readiness.state}: {readiness.reason}")
+        raise LeaseHandoffError(f"{stage} readiness is {readiness.state}: {readiness.reason}")
     if cell.dependencies():
-        raise LeaseHandoffError("standalone worker handoff refuses declared flight dependencies")
+        raise LeaseHandoffError(
+            f"standalone {stage} handoff refuses declared flight dependencies"
+        )
     if token_path.exists():
         raise LeaseHandoffError(f"refusing to overwrite token file: {token_path}")
 
@@ -127,10 +134,13 @@ def handoff_worker_lease(
         "token": lease.token, "run_id": cell.run_id, "attempt_id": cell.attempt_id,
         "session_id": expected_session_id,
     }
+    if stage != "worker":
+        token_document["stage"] = stage
+    ready_event = "worker-lease-ready" if stage == "worker" else f"{stage}-lease-ready"
     try:
         _write_token(token_path, token_document)
         output_stream.write(json.dumps({
-            "event": "worker-lease-ready", "run_id": cell.run_id,
+            "event": ready_event, "run_id": cell.run_id,
             "attempt_id": cell.attempt_id, "session_id": expected_session_id,
             "token_path": str(token_path),
         }, sort_keys=True) + "\n")
@@ -138,18 +148,18 @@ def handoff_worker_lease(
         command = input_stream.readline()
         if command == "":
             _preserve(lease)
-            output_stream.write(json.dumps({"event": "worker-lease-preserved", "reason": "stdin EOF"}) + "\n")
+            output_stream.write(json.dumps({"event": f"{stage}-lease-preserved", "reason": "stdin EOF"}) + "\n")
             output_stream.flush()
             return 2
         if command not in {"release", "release\n", "release\r\n"}:
             _preserve(lease)
-            output_stream.write(json.dumps({"event": "worker-lease-preserved", "reason": "explicit release required"}) + "\n")
+            output_stream.write(json.dumps({"event": f"{stage}-lease-preserved", "reason": "explicit release required"}) + "\n")
             output_stream.flush()
             return 2
         lease.release()
         token_path.unlink()
         output_stream.write(json.dumps({
-            "event": "worker-lease-released", "run_id": cell.run_id,
+            "event": f"{stage}-lease-released", "run_id": cell.run_id,
             "attempt_id": cell.attempt_id, "session_id": expected_session_id,
         }, sort_keys=True) + "\n")
         output_stream.flush()
@@ -164,6 +174,9 @@ def handoff_worker_lease(
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--stage", choices=("worker", "prepare-window-features"), default="worker"
+    )
     for name in ("repo-root", "data-root", "runtime-root", "lock-path", "experiment", "cell", "owner", "expected-session-id", "token-output"):
         parser.add_argument("--" + name, required=True)
     args = parser.parse_args(argv)
@@ -176,7 +189,7 @@ def main(argv=None) -> int:
         repo_root=repo, data_root=data_root, runtime_root=Path(args.runtime_root),
         lock_path=Path(args.lock_path), experiment=args.experiment, cell=selected[0],
         owner=args.owner, expected_session_id=args.expected_session_id,
-        token_output=Path(args.token_output),
+        token_output=Path(args.token_output), stage=args.stage,
     )
 
 
