@@ -90,7 +90,7 @@
           ]
         }
       },
-      "slurp-slu-official-projected-v3": {
+      "slurp-slu-official-projected-v2": {
         "action_exact": {
           "delta_pp": 0.20000000000000018,
           "operational_ni_margin_pp": 1.4464360085580532,
@@ -177,16 +177,9 @@
       "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
-        "state": "ready",
-        "reason": "Source-bound candidate supply prepared. This readiness admits only its separately registered tokenizer fit, zero generation.",
-        "requirements": [
-          {
-            "kind": "preparation",
-            "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3/n-smoke-supply.json",
-            "sha256": "cbc72fea878007e5b80db15d4698b30716e78f70c5f35cf2b15f3597d9d8983a",
-            "reason": "V3 exact source-bound candidate supply required"
-          }
-        ]
+        "state": "held",
+        "reason": "Refresh the source-bound artifact after correcting the pre-contact null scorer identity; no contact has occurred.",
+        "requirements": []
       }
     },
     {
@@ -242,7 +235,7 @@
   "inherited_preregistration": "docs/readiness/2026-09-09-slurp-intent-ku-s4-family-v1-preregistration.md",
   "analysis_registration": "Engineering metadata only; do not run the full-population statistical analysis on a smoke.",
   "preparation_contract": {
-    "phase_supply_relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3/n-smoke-supply.json",
+    "phase_supply_relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3-ALIGNED/n-smoke-supply.json",
     "fit_relpath": "prepared/SAEA-SLURP-KUS4N-CANDIDATES-SMOKE-ALIGNED-V1-FIT-V1/request-fit.json",
     "admission": "Bind immutable source-valid preparation and actual full-roster fit receipts. Read both treatments only after both are sealed and scored. G1 component closure is necessary; ordinary preflight is insufficient."
   },
@@ -259,9 +252,5 @@
       ],
       "split_id": "DEV-1000-KUS4-WIRE-4"
     }
-  ],
-  "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3/n-smoke-supply.json",
-    "sha256": "cbc72fea878007e5b80db15d4698b30716e78f70c5f35cf2b15f3597d9d8983a"
-  }
+  ]
 }

@@ -171,7 +171,7 @@
           ]
         }
       },
-      "slurp-slu-official-projected-v3": {
+      "slurp-slu-official-projected-v2": {
         "action_exact": {
           "delta_pp": 0.20000000000000018,
           "operational_ni_margin_pp": 1.4464360085580532,
