@@ -24,6 +24,10 @@ The held E21 DR/LOOP V1 fragments still point to `q4km-e21-buf90-mmproj-gpu-04cc
 6. Measure actual maximum requests with the complete output reserve and the required memory margin. Choose one serving geometry per comparison group. Distinguish parallel slots, prompt batch size and microbatch size; do not increase them solely from nominal free memory.
 7. Keep one root-owned inference service and one generating experiment. Do not add an independently launched CPU sidecar during an SLURP campaign. The existing no-overlap rule remains in force.
 
+## Root engineering preference
+
+Prefer the smaller raw-audio bridge for E21: precompute a fresh, current-build exact-window cache and keep the projector in CPU memory with `--no-mmproj-offload`. Preserve the historical audio wire and prompt layout. Do not treat a preflight check alone as proof that the server cannot encode: the pinned 04ccc72a cache implementation falls through to encoding on misses, invalid entries and cached-decode failure, and its VALIDATE mode deliberately re-encodes. Require an explicit, tested refusal boundary before unintended encoding, with immutable source-bound cache artifacts and observed hit evidence. A minimal shared serving-runtime guard may need its own reviewed build and runtime receipt. Keep the formal per-window packet route as the alternative if this boundary cannot be qualified. Neither route is ready to run today. This engineering preference does not authorize extra generation or relax scientific matching.
+
 ## Offline encoder placement clarification
 
 A clarification is pending: whether this direction excludes GPU mmproj only during resident generation, or also during the separate preparation window. The working interpretation retains the previously accepted, separately registered exclusive GPU encoding window followed by complete encoder unload. CPU-only preparation remains an available alternative. No new encoding contact is authorized or performed by this document; wait for the applicable input before a placement-dependent dispatch.
