@@ -212,35 +212,55 @@ def encode_window_feature_cache(
     # running its producer. Recheck live source bytes and validated cache chunks
     # before allowing that warm return.
     if Path(output_path).exists():
-        try:
-            prior_output = json.loads(Path(output_path).read_text(encoding="utf-8"))[
-                "output"
-            ]
-            prior_features = {
-                (item["audio_sha256"], item["cache_key"]): item["chunks"]
-                for item in prior_output["feature_outputs"]
-            }
-        except (OSError, KeyError, TypeError, json.JSONDecodeError) as error:
+        # Reuse is terminal for this supplied client too. Never leave its trace
+        # sink open, and never fall through to fresh encoding if the artifact
+        # disappears during validation.
+        def refuse_missing_artifact():
             raise PreparationError(
-                "prepared encoding artifact lacks feature output descriptors"
-            ) from error
-        for audio, source in sources.items():
-            media, _content, key = _checked_media(root, source, audio)
-            if not tuple(cache.glob(f"{key}_o*.feat")):
-                raise PreparationError(
-                    "prepared encoding cache is missing before warm reuse"
-                )
-            checked = inspect_legacy_cached_speech_feature_cache(
-                audio_path=media,
-                legacy_cache_dir=cache,
-                expected_n_embd=expected_n_embd,
+                "prepared encoding artifact disappeared during reuse"
             )
-            if checked.audio_sha256 != audio or checked.cache_key != key:
+
+        try:
+            try:
+                prior_output = json.loads(
+                    Path(output_path).read_text(encoding="utf-8")
+                )["output"]
+                prior_features = {
+                    (item["audio_sha256"], item["cache_key"]): item["chunks"]
+                    for item in prior_output["feature_outputs"]
+                }
+            except (OSError, KeyError, TypeError, json.JSONDecodeError) as error:
                 raise PreparationError(
-                    "prepared encoding cache differs from current source"
+                    "prepared encoding artifact lacks feature output descriptors"
+                ) from error
+            for audio, source in sources.items():
+                media, _content, key = _checked_media(root, source, audio)
+                if not tuple(cache.glob(f"{key}_o*.feat")):
+                    raise PreparationError(
+                        "prepared encoding cache is missing before warm reuse"
+                    )
+                checked = inspect_legacy_cached_speech_feature_cache(
+                    audio_path=media,
+                    legacy_cache_dir=cache,
+                    expected_n_embd=expected_n_embd,
                 )
-            if prior_features.get((audio, key)) != _descriptors(checked):
-                raise PreparationError("prepared encoding cache descriptors changed")
+                if checked.audio_sha256 != audio or checked.cache_key != key:
+                    raise PreparationError(
+                        "prepared encoding cache differs from current source"
+                    )
+                if prior_features.get((audio, key)) != _descriptors(checked):
+                    raise PreparationError(
+                        "prepared encoding cache descriptors changed"
+                    )
+            return prepare_artifact(
+                Path(output_path),
+                kind=KIND,
+                inputs=inputs,
+                producer=refuse_missing_artifact,
+                contact_class="encoder",
+            )
+        finally:
+            client.close()
 
     def produce():
         entries = []

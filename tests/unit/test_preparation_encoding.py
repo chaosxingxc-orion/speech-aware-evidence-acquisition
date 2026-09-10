@@ -523,3 +523,38 @@ def test_second_source_mutation_refuses_before_second_contact(tmp_path, monkeypa
         encode_window_feature_cache(**args)
     assert len([call for call in client.calls if call[0] == "complete"]) == 1
     assert client.closed == 1 and (tmp_path / "result.json.partial.json").exists()
+
+
+@pytest.mark.parametrize("mutate", [False, True])
+def test_real_cache_artifact_reuse_closes_client_without_contact(tmp_path, mutate):
+    import struct
+    from speech_aware_evidence_acquisition.core.model import (
+        legacy_audio_feature_cache_key,
+    )
+
+    data, inv, _ = inventory(tmp_path)
+    key = legacy_audio_feature_cache_key((data / "slices/one.wav").read_bytes())
+    args = kwargs(tmp_path, data, inv, Client())
+    feature = args["legacy_cache_dir"] / f"{key}_o0.feat"
+
+    class ProducingClient(Client):
+        def complete(self, *positional, **named):
+            result = super().complete(*positional, **named)
+            feature.write_bytes(struct.pack("<QQ", 2, 4) + b"\x00" * 32)
+            return result
+
+    args["client"] = ProducingClient()
+    encode_window_feature_cache(**args)
+    original = args["output_path"].read_bytes()
+    if mutate:
+        feature.write_bytes(struct.pack("<QQ", 2, 4) + b"\x01" * 32)
+    client = Client()
+    args["client"] = client
+    if mutate:
+        with pytest.raises(PreparationError, match="descriptors changed"):
+            encode_window_feature_cache(**args)
+    else:
+        assert encode_window_feature_cache(**args)["cache"] == "warm"
+    assert client.calls == []
+    assert client.closed == 1
+    assert args["output_path"].read_bytes() == original
