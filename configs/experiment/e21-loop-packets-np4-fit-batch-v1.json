@@ -1,0 +1,17 @@
+{
+  "schema": "saea-fit-batch-plan-v1",
+  "fits": [
+    {
+      "experiment": "e21-loop-shared-two-plan-packets-np4-v1",
+      "cell": "e21-loop-packets-np4-judge-fit",
+      "output_relpath": "analysis/SAEA-E21-LOOP-PACKETS-NP4-JUDGE-FIT-V1/request-fit.json",
+      "contact_cap": 1801
+    },
+    {
+      "experiment": "e21-loop-shared-two-plan-packets-np4-v1",
+      "cell": "e21-loop-packets-np4-twin-fit",
+      "output_relpath": "analysis/SAEA-E21-LOOP-PACKETS-NP4-TWIN-FIT-V1/request-fit.json",
+      "contact_cap": 1801
+    }
+  ]
+}
