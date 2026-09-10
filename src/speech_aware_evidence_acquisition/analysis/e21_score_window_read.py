@@ -161,9 +161,18 @@ def decompose_scored_windows(windows: Mapping, document: Mapping) -> dict:
         "aggregate": aggregate,
         "entity_totals": totals,
         "call_scores": {
-            name: value
+            name: (
+                {
+                    "aggregate": value["aggregate"],
+                    "per_sample": [
+                        {key: item for key, item in row.items() if key != "alignment"}
+                        for row in value["per_sample"]
+                    ],
+                }
+                if name == "conec-entity-wer-official"
+                else value
+            )
             for name, value in scores.items()
-            if name != "conec-entity-wer-official"
         },
         "numeric_note": (
             "Call numeric accuracy remains the official bag-matched metric. "

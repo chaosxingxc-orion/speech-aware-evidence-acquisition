@@ -110,3 +110,14 @@ fields, preserving the historical entity-class row bytes. Undefined pooled
 bootstrap draws produce an unavailable interval without redrawing or substituting
 a value. A single zero-denominator call does not disable all otherwise-defined
 pooled draws.
+
+Whole-call companion configurations are now prepared as
+configs/experiment/e21-dr-packets-call-numeric-contrasts-v1.json and
+configs/experiment/e21-dr-packets-call-error-contrasts-v1.json. They bind existing
+complete44-call comparator, OBS-E1 and KC-E1f score reads without rerunning a
+scorer. The numeric guard uses whole-call matched/expected counts. Error-rate
+call contrasts provide the secondary OBS-E1 read and the mathematically
+equivalent pooled call-cluster check beside the fixed-window report. Save
+ConEC per-call counts in the window-statistics artifact, excluding the large
+alignment word arrays; the original score receipt remains their source.
+All four current input hashes remain unbound until their actual full scores exist.

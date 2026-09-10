@@ -1,0 +1,174 @@
+{
+  "experiment_id": "SAEA-E21-DR-PACKETS-CALL-ERROR-CONTRASTS-V1",
+  "execution_profile": "model-free-check",
+  "readiness": {
+    "state": "PREPARING",
+    "reason": "Bind the four measured saved-window-statistics hashes after complete official scoring, retaining the whole-call numeric score rows."
+  },
+  "analysis": {
+    "id_field": "sample_id",
+    "expected_ids_count": 44,
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-SAVED-SCORE-ANALYSIS-V1/call-metadata.json",
+      "sha256": "5631d6fee9ba032f95abdabf2f9ec9e7fc680b6fe9deb48cc37e50d72a12af23",
+      "rows_key": "rows"
+    },
+    "inputs": {
+      "historical_comparator": {
+        "path": "/home/chao/saea-worktrees/e21-window-packets/docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-agentic-metric-baseline/scoring/verified-score-read.json",
+        "sha256": "6de0adee1c63972305e9235650f2163f84e9e19f4eb92cb05d6cac79fbf5be4f",
+        "rows_key": "scores.conec-entity-wer-official.per_sample"
+      },
+      "historical_kc_e1f": {
+        "path": "/home/chao/saea-worktrees/e21-window-packets/docs/checks/speech-aware-evidence-acquisition/2026-09-07-e21-kc-e1f-repair-44-v1/flight/score-read.json",
+        "sha256": "28ced4157a918b9deb5bdfee1620fe4ab8c74cfa8ed69b52dbd9d1731e923f7f",
+        "rows_key": "read.scores.conec-entity-wer-official.per_sample"
+      },
+      "historical_obs_e1": {
+        "path": "/home/chao/saea-worktrees/e21-window-packets/docs/checks/speech-aware-evidence-acquisition/2026-09-08-e21-obs-e1-flight-v1/flight/verified-score-read.json",
+        "sha256": "6f476731f13a151712f2c450aad59b3b5eb3880eb4c3d51e94bcc7ff1d24e3a7",
+        "rows_key": "scores.conec-entity-wer-official.per_sample"
+      },
+      "unit_constrained": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-UNIT-GENERATION-V2/window-statistics-constrained.json",
+        "sha256": null,
+        "rows_key": "call_scores.conec-entity-wer-official.per_sample"
+      },
+      "unit_free": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-UNIT-GENERATION-V2/window-statistics-free.json",
+        "sha256": null,
+        "rows_key": "call_scores.conec-entity-wer-official.per_sample"
+      },
+      "self_constrained": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-SELF-GENERATION-V2/window-statistics-constrained.json",
+        "sha256": null,
+        "rows_key": "call_scores.conec-entity-wer-official.per_sample"
+      },
+      "self_free": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-SELF-GENERATION-V2/window-statistics-free.json",
+        "sha256": null,
+        "rows_key": "call_scores.conec-entity-wer-official.per_sample"
+      }
+    },
+    "seed": 20260903,
+    "n_replicates": 10000,
+    "ci_level": 0.9,
+    "cluster_field": "cluster",
+    "groupings": {
+      "sector": "sector",
+      "sample_rate": "sample_rate_hz"
+    },
+    "metrics": {
+      "corpus_wer": {
+        "numerator_field": "by_entity_type.__ALL__.errors",
+        "denominator_field": "by_entity_type.__ALL__.reference_words",
+        "direction": "lower"
+      },
+      "person_wer": {
+        "numerator_field": "by_entity_type.PERSON.errors",
+        "denominator_field": "by_entity_type.PERSON.reference_words",
+        "direction": "lower"
+      },
+      "non_entity_wer": {
+        "numerator_field": "by_entity_type.__NON_ENTITY__.errors",
+        "denominator_field": "by_entity_type.__NON_ENTITY__.reference_words",
+        "direction": "lower"
+      },
+      "insertion_rate": {
+        "numerator_field": "by_entity_type.__ALL__.insertions",
+        "denominator_field": "by_entity_type.__ALL__.reference_words",
+        "direction": "lower"
+      }
+    },
+    "contrasts": [
+      {
+        "name": "unit_constrained_versus_historical_comparator",
+        "left": "historical_comparator",
+        "right": "unit_constrained"
+      },
+      {
+        "name": "unit_free_versus_historical_comparator",
+        "left": "historical_comparator",
+        "right": "unit_free"
+      },
+      {
+        "name": "self_constrained_versus_historical_comparator",
+        "left": "historical_comparator",
+        "right": "self_constrained"
+      },
+      {
+        "name": "self_free_versus_historical_comparator",
+        "left": "historical_comparator",
+        "right": "self_free"
+      },
+      {
+        "name": "unit_vs_self_constrained",
+        "left": "self_constrained",
+        "right": "unit_constrained"
+      },
+      {
+        "name": "unit_vs_self_free",
+        "left": "self_free",
+        "right": "unit_free"
+      },
+      {
+        "name": "free_vs_constrained_unit",
+        "left": "unit_constrained",
+        "right": "unit_free"
+      },
+      {
+        "name": "free_vs_constrained_self",
+        "left": "self_constrained",
+        "right": "self_free"
+      },
+      {
+        "name": "unit_constrained_versus_historical_kc_e1f",
+        "left": "historical_kc_e1f",
+        "right": "unit_constrained"
+      },
+      {
+        "name": "unit_free_versus_historical_kc_e1f",
+        "left": "historical_kc_e1f",
+        "right": "unit_free"
+      },
+      {
+        "name": "self_constrained_versus_historical_kc_e1f",
+        "left": "historical_kc_e1f",
+        "right": "self_constrained"
+      },
+      {
+        "name": "self_free_versus_historical_kc_e1f",
+        "left": "historical_kc_e1f",
+        "right": "self_free"
+      },
+      {
+        "name": "unit_constrained_versus_historical_obs_e1",
+        "left": "historical_obs_e1",
+        "right": "unit_constrained"
+      },
+      {
+        "name": "unit_free_versus_historical_obs_e1",
+        "left": "historical_obs_e1",
+        "right": "unit_free"
+      },
+      {
+        "name": "self_constrained_versus_historical_obs_e1",
+        "left": "historical_obs_e1",
+        "right": "self_constrained"
+      },
+      {
+        "name": "self_free_versus_historical_obs_e1",
+        "left": "historical_obs_e1",
+        "right": "self_free"
+      }
+    ]
+  },
+  "interpretation": {
+    "gain": "Positive is comparator error minus cell error, in percentage points.",
+    "estimator_identity": "For pooled ratios, resampling all44 whole-call totals is equivalent to the call-clustered window analysis. Use this table for secondary OBS-E1 comparison and aggregate consistency; it does not add independent observations.",
+    "observations": "44 paired calls. The main fixed-window report retains1593 windows; do not report these as independent evidence or a separate replication.",
+    "source_protocols": "Historical raw-audio protocols and current formal-packet protocols retain distinct identities.",
+    "numeric_guard": "Numeric accuracy remains in the separately bound call-numeric configuration.",
+    "deliveries": "Constrained/free outcomes are correlated derivatives of their generation parent."
+  }
+}

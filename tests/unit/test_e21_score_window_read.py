@@ -68,6 +68,15 @@ def test_partition_preserves_errors_entities_and_numeric_counts():
     assert result["entity_totals"]["PERSON"]["errors"] == 1
     assert result["per_call"][0]["numeric_matched_shortfall"] == 0
     assert result["reference_loader_invocations"] == 0
+    retained = result["call_scores"]["conec-entity-wer-official"]
+    assert (
+        retained["aggregate"] == doc["scores"]["conec-entity-wer-official"]["aggregate"]
+    )
+    assert (
+        retained["per_sample"][0]["by_entity_type"]
+        == doc["scores"]["conec-entity-wer-official"]["per_sample"][0]["by_entity_type"]
+    )
+    assert "alignment" not in retained["per_sample"][0]
 
 
 def test_whole_prefix_normalization_preserves_numeric_boundary_merge():
