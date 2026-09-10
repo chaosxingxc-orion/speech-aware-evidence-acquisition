@@ -1,0 +1,396 @@
+{
+  "experiment_id": "SAEA-E21-DR-SHARED-TWO-GENERATION-PACKETS-V2",
+  "fragment_kind": "saea-e21-shared-two-generation-experiment-v1",
+  "date": "2026-09-10",
+  "migration_status": "The initial unit capacity attempt was refused before service startup by the inference receipt schema. This is its sole recovery, correcting only the declared inference file set. Prepared packet bytes and scientific generation budgets are unchanged.",
+  "purpose": "Shared two-generation DR packet-mode successor. Preserve the frozen Earnings-21 discovery roster, fixed 90-second source windows, original draft-refresh instruction and model-visible frame. The two generation parents are the constrained unit-draft arm and constrained self-draft twin; free delivery remains a zero-contact derivative for each parent. Formal packet transport replaces raw-audio dispatch only after a complete current-build source-bound promotion is pinned.",
+  "policy_override_contract": "The successor binds obs-repair-loop-ojw through dedicated OJW packet baseline derivatives. They preserve the inherited prompts, repair frames, predecessor bindings, and delivery rules; the only request transport change is the declared formal input_speech_features packet binding. No launcher, raw-cache fallback, or hidden runtime switch is used.",
+  "population": {
+    "carrier": "earnings21-original",
+    "split_name": "discovery",
+    "dataset_fragment": "earnings21-discovery-conec-names",
+    "split_role": "discovery",
+    "count": 44,
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "receipt": "docs/receipts/splits.json",
+    "audio_seconds_one_pass": 141348.532,
+    "audio_hours_one_pass": 39.263,
+    "fixed_90s_windows_one_pass": 1593,
+    "selection": "no draw: the whole frozen earnings21-original discovery split -- the same 44 calls, the same 1,593 fixed 90-second windows and the same split identity the sealed comparator, KC-E1, KC-E1f and OBS-E1 all flew. The E5 split (34 kb-construction, 10 r4-e21-sub10 evaluation) is a REPORTING split; the ten carry 342 paired windows, below the program's n >= 400 rule, and are reported apart and descriptively with no interval quoted.",
+    "estimand": "corpus WER and per-entity-class ConEC-mirror entity WER, pooled over the reported roster, paired at the 90-second window and clustered at the call against the sealed comparator, against OBS-E1 and against KC-E1f."
+  },
+  "predecessors": {
+    "unit_draft": {
+      "run_id": "SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1",
+      "attempt": "attempt-20260908T150858Z-c597a8",
+      "binding_receipt": "docs/receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json",
+      "binding_receipt_sha256": "40f466951acce38f13343ddea9357d15efe6eaacc660f9a126f51e81d48f241d",
+      "windows": 1593,
+      "calls": 44,
+      "units_owned": 5122,
+      "windows_owning_no_unit": 2,
+      "stitch_rule": "saea-e21-unit-draft-majority-overlap-v1",
+      "proof": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-e21-dr1-unit-draft-stitch/",
+      "why_it_is_not_reflown": "OBS-E1 already decoded every one of these units, and its bytes ARE the draft. Re-flying pass 1 would double the contacts, spend a second 1.07 GPU-h, and -- because greedy decoding on llama-server is not bitwise reproducible across batch compositions -- would produce a draft that is NOT the arm the family is read against."
+    },
+    "self_draft": {
+      "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+      "attempt": "attempt-20260904T233816Z-bcd338",
+      "binding_receipt": "docs/receipts/e21-predecessor-full44-direct-baseline-v2.json",
+      "binding_receipt_sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a",
+      "windows": 1593,
+      "calls": 44,
+      "why_it_is_the_twin": "the DR-1s draft is the comparator's own sealed hypothesis for the same window: a long-window draft refreshed with the same long window. It isolates the draft's SOURCE, which is the only thing DR-1c claims."
+    }
+  },
+  "comparator": {
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "attempt": "attempt-20260904T233816Z-bcd338",
+    "rows": [
+      "SAEA-E21-MF-AGENTIC-METRIC-BASELINE-V1 (asr-wer-whisper, conec-entity-wer-official, numeric-value-accuracy-v1)",
+      "SAEA-E21-MF-SEMANTIC-IMPACT-BASELINE-V1 (semantic-high-impact-error-rate-v1)"
+    ],
+    "all_44": {
+      "corpus_wer_percent": 8.19952,
+      "conec_person_entity_wer_percent": 22.48886,
+      "conec_org_entity_wer_percent": 17.21293,
+      "conec_non_entity_wer_percent": 4.73038,
+      "numeric_value_accuracy_percent": 90.73351,
+      "semantic_high_impact_error_rate_percent": 0.0278,
+      "substitutions": 13098,
+      "deletions": 5701,
+      "insertions": 10700,
+      "reference_words": 359765
+    },
+    "secondary_comparators": {
+      "SAEA-E21-OBS-E1-SPEAKER-TURN-UNITS-V1": "corpus WER 7.15078, PERSON 24.58005. Does the refresh recover the names the units lost? REJECTED under its own rule and quoted as a comparator, never as an admitted effect.",
+      "SAEA-E21-KC-E1F-REPAIR-44-V1": "Historical repair comparator; its scientific replication is complete. Full historical constrained delivery parity is verified for 1,593 windows and 44 stitched calls. Current shared-executor live bridge evidence remains pending."
+    },
+    "pairing_rule": "the fixed 90-second window is the paired unit (1,593), the call is the bootstrap cluster (44), the estimator is the pooled ratio through analysis.paired.resampled_statistic with cluster_of=analysis.e21_window_pairing.call_of, seed 20260903, 10,000 replicates, CI90, both weightings."
+  },
+  "shared_protocol": {
+    "build_commit": "cddb000cb45ab44d33c84483cf5e5962cbbaa5bf",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "prompt_order": "speech-query-prefix-v2 (from q4km-e21-dr-full-packets-cddb000c-np6). The sealed draft remains rendered in the inherited task instruction and frame; the source-bound formal packet replaces raw input_audio only at transport dispatch.",
+    "payload_fields": "The packet baseline's declared speech-feature identity fields and the matched source-bound input_speech_features packet are carried through the shared OJW window query path. evidence_source remains none; no external knowledge or raw-audio fallback is enabled.",
+    "contacts_per_item": "ONE per 90-second window; 1,593 windows over 44 calls per cell. Pass 1 is read, not flown.",
+    "harness": "The common four-fragment factory builds FlightRuntime with the Earnings runtime adapter. The registered obs-repair-loop-ojw policy uses the shared OpenJiuwen executor and existing repair hooks. Explicit obs_controller_program=phase-direct-only-v1 routes each window through EvidenceAgentController while preserving the original model-visible instruction and delegate delivery. This is a single-phase compatibility bridge; live multi-stage performance remains unproven.",
+    "serving_identity_status": "HELD; cddb000c inference-role receipt and decoder-only model fragment are pinned, but the resident session, packet promotion, request fit, and root admission are not yet qualified.",
+    "prompt_order_status": "SEMANTICS PRESERVED BY DECLARATION; selected-mode packet rendering and actual full-window fit remain pending."
+  },
+  "model_geometry": {
+    "status": "HELD_PENDING_PACKET_PROMOTION_AND_FIT",
+    "owner_control": "OWNER-FEATURE-SERVING-007",
+    "selected_geometry": "-c 36864 -np 6, 6,144 tokens per slot, max_tokens 1024",
+    "basis": "The selected packet model fragment declares c36864/np6/6144/max1024. It remains held until exact promoted packet request fit and decoder-only resident identity qualification are bound."
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 1750,
+    "planned_gpu_hours": 1.2,
+    "planned_speech_audio_seconds": 150000
+  },
+  "family_execution_plan": {
+    "generation_groups": 2,
+    "planned_model_calls": 3500,
+    "planned_gpu_hours": 2.4,
+    "planned_speech_audio_seconds": 300000,
+    "meaning": "Two generation groups only: constrained unit-draft and constrained self-draft. The 1,750-call value is a per-generation ceiling with retry headroom; it does not authorize extra probes, adaptive repeats, or a third group."
+  },
+  "fit_execution_plan": {
+    "planned_endpoint_contacts_per_fit": 4780,
+    "basis": "One GET /props plus, per exact window request, one /apply-template and two /tokenize calls around the single media marker. Exact speech chunk token counts come from the hash-validated packet. The cddb000c input_tokens route ignores formal descriptors and is not used for packet capacity."
+  },
+  "delivery_derivatives": [
+    {
+      "cell_id": "e21-dr-shared-unit-constrained-delivery",
+      "parent_cell_id": "e21-dr-shared-unit-generation",
+      "response_postprocessor": "e21-entity-repair-substitutions-v1",
+      "response_postprocessor_params": {
+        "max_span_tokens": 4,
+        "min_anchor_ratio": 0.6,
+        "max_substituted_fraction": 0.1
+      }
+    },
+    {
+      "cell_id": "e21-dr-shared-unit-free-delivery",
+      "parent_cell_id": "e21-dr-shared-unit-generation",
+      "response_postprocessor": "e21-free-refresh-delivery-v1",
+      "response_postprocessor_params": {}
+    },
+    {
+      "cell_id": "e21-dr-shared-self-constrained-delivery",
+      "parent_cell_id": "e21-dr-shared-self-generation",
+      "response_postprocessor": "e21-entity-repair-substitutions-v1",
+      "response_postprocessor_params": {
+        "max_span_tokens": 4,
+        "min_anchor_ratio": 0.6,
+        "max_substituted_fraction": 0.1
+      }
+    },
+    {
+      "cell_id": "e21-dr-shared-self-free-delivery",
+      "parent_cell_id": "e21-dr-shared-self-generation",
+      "response_postprocessor": "e21-free-refresh-delivery-v1",
+      "response_postprocessor_params": {}
+    }
+  ],
+  "cells": [
+    {
+      "cell_id": "e21-dr-shared-unit-fit",
+      "run_id": "SAEA-E21-DR-PACKETS-UNIT-FIT-V2",
+      "attempt_id": "attempt-20260910-dr-packets-unit-fit-v2",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit"
+      ],
+      "model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-dr1c-draft-refresh-constrained-ojw-feature-packets",
+      "arm": "speech-feature-query",
+      "policy": "obs-repair-loop-ojw",
+      "predecessor": "unit_draft",
+      "readiness": {
+        "state": "ready",
+        "requirements": [],
+        "reason": "Source-bound full packet roster complete; root authorizes the separately registered actual formal request tokenizer check only."
+      },
+      "purpose": "Register and measure all 1,593 actual window requests through the root-owned service. CPU-only materialization precedes the separately registered tokenizer contacts.",
+      "superseded_model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "model_binding": {
+        "status": "PACKETS_BOUND_FIT_PENDING",
+        "owner_control": "OWNER-FEATURE-SERVING-007",
+        "replacement_model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
+        "fresh_cache_manifest": null,
+        "promotion_receipt": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+          "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
+        },
+        "request_fit_receipt": null,
+        "runtime_identity_qualified": false,
+        "contact_authorized": false,
+        "allowed_modes": [
+          "formal-window-packets-decoder-only"
+        ],
+        "selected_mode": "formal-window-packets-decoder-only",
+        "gpu_mmproj_allowed": false
+      }
+    },
+    {
+      "cell_id": "e21-dr-shared-unit-generation",
+      "run_id": "SAEA-E21-DR-PACKETS-UNIT-GENERATION-V2",
+      "attempt_id": "attempt-20260910-dr-packets-unit-generation-v2",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "worker",
+        "campaign"
+      ],
+      "model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-dr1c-draft-refresh-constrained-ojw-feature-packets",
+      "arm": "speech-feature-query",
+      "policy": "obs-repair-loop-ojw",
+      "predecessor": "unit_draft",
+      "readiness": {
+        "state": "held",
+        "reason": "Held pending complete source-bound packet promotion, actual full-window packet capacity receipt, exposure pre-registration, and root admission. No raw-cache qualification may substitute for this packet transport.",
+        "requirements": []
+      },
+      "purpose": "Constrained generation parent using the sealed short-unit draft bound to each fixed long window.",
+      "superseded_model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "model_binding": {
+        "status": "PACKETS_BOUND_FIT_PENDING",
+        "owner_control": "OWNER-FEATURE-SERVING-007",
+        "replacement_model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
+        "fresh_cache_manifest": null,
+        "promotion_receipt": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+          "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
+        },
+        "request_fit_receipt": null,
+        "runtime_identity_qualified": false,
+        "contact_authorized": false,
+        "allowed_modes": [
+          "formal-window-packets-decoder-only"
+        ],
+        "selected_mode": "formal-window-packets-decoder-only",
+        "gpu_mmproj_allowed": false
+      }
+    },
+    {
+      "cell_id": "e21-dr-shared-self-fit",
+      "run_id": "SAEA-E21-DR-PACKETS-SELF-FIT-V2",
+      "attempt_id": "attempt-20260910-dr-packets-self-fit-v2",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit"
+      ],
+      "model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-dr1s-self-draft-twin-ojw-feature-packets",
+      "arm": "speech-feature-query",
+      "policy": "obs-repair-loop-ojw",
+      "predecessor": "self_draft",
+      "readiness": {
+        "state": "ready",
+        "requirements": [],
+        "reason": "Source-bound full packet roster complete; root authorizes the separately registered actual formal request tokenizer check only."
+      },
+      "purpose": "Register and measure all 1,593 actual window requests through the root-owned service. CPU-only materialization precedes the separately registered tokenizer contacts.",
+      "superseded_model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "model_binding": {
+        "status": "PACKETS_BOUND_FIT_PENDING",
+        "owner_control": "OWNER-FEATURE-SERVING-007",
+        "replacement_model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
+        "fresh_cache_manifest": null,
+        "promotion_receipt": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+          "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
+        },
+        "request_fit_receipt": null,
+        "runtime_identity_qualified": false,
+        "contact_authorized": false,
+        "allowed_modes": [
+          "formal-window-packets-decoder-only"
+        ],
+        "selected_mode": "formal-window-packets-decoder-only",
+        "gpu_mmproj_allowed": false
+      }
+    },
+    {
+      "cell_id": "e21-dr-shared-self-generation",
+      "run_id": "SAEA-E21-DR-PACKETS-SELF-GENERATION-V2",
+      "attempt_id": "attempt-20260910-dr-packets-self-generation-v2",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "worker",
+        "campaign"
+      ],
+      "model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-dr1s-self-draft-twin-ojw-feature-packets",
+      "arm": "speech-feature-query",
+      "policy": "obs-repair-loop-ojw",
+      "predecessor": "self_draft",
+      "readiness": {
+        "state": "held",
+        "reason": "Held pending complete source-bound packet promotion, actual full-window packet capacity receipt, exposure pre-registration, and root admission. No raw-cache qualification may substitute for this packet transport.",
+        "requirements": []
+      },
+      "purpose": "Constrained generation parent using the sealed comparator self-draft for each fixed long window.",
+      "superseded_model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "model_binding": {
+        "status": "PACKETS_BOUND_FIT_PENDING",
+        "owner_control": "OWNER-FEATURE-SERVING-007",
+        "replacement_model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
+        "fresh_cache_manifest": null,
+        "promotion_receipt": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+          "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
+        },
+        "request_fit_receipt": null,
+        "runtime_identity_qualified": false,
+        "contact_authorized": false,
+        "allowed_modes": [
+          "formal-window-packets-decoder-only"
+        ],
+        "selected_mode": "formal-window-packets-decoder-only",
+        "gpu_mmproj_allowed": false
+      }
+    }
+  ],
+  "source_pins": {
+    "unit_draft_receipt": {
+      "repo_relpath": "docs/receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json",
+      "sha256": "40f466951acce38f13343ddea9357d15efe6eaacc660f9a126f51e81d48f241d"
+    },
+    "self_draft_receipt": {
+      "repo_relpath": "docs/receipts/e21-predecessor-full44-direct-baseline-v2.json",
+      "sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a"
+    },
+    "packet_model_fragment": {
+      "repo_relpath": "configs/model/q4km-e21-dr-full-packets-cddb000c-np6-v2.json",
+      "sha256": "79e0bd8f5b8646a28cf04bddc2b4c2dbf8927a32347da98e38ad9bb1cd1633c4"
+    },
+    "inference_runtime_receipt": {
+      "repo_relpath": "docs/receipts/runtime-q4km-e21-feature-inference-cddb000c-v2.json",
+      "sha256": "a472219e12fd2a3d08446c29ecf5273646832990fd0379cba380c702b111aba2"
+    },
+    "feature_encoder_runtime_receipt": {
+      "repo_relpath": "docs/receipts/runtime-q4km-e21-feature-preprocess-cddb000c.json",
+      "sha256": "d8c703fae0fe0b4e5e7ab9890553c5dfc6f8f33ffe744e9e7faf140630f22218"
+    }
+  },
+  "decision": {
+    "state": "held",
+    "claim_surface": "Discovery only; no superiority, generality, or Stage-3 claim.",
+    "requirements": [
+      "Promote and pin the complete current source-bound exact-window packet artifact before composition.",
+      "Validate current shared-executor packet rendering and full-group request capacity before generation.",
+      "Register and pass both packet fit cells with the actual shared fitter endpoint count.",
+      "Register generation exposure rows with consumed=false before contact.",
+      "Root review of source bindings, measured geometry, and decoder-only resident session identity."
+    ]
+  },
+  "preserve_wire_responses": true,
+  "supersedes_planning_fragment": "configs/experiment/e21-dr-shared-two-generation-packets-v1.json",
+  "feature_serving_gate": {
+    "status": "PACKETS_BOUND_FIT_PENDING",
+    "owner_control": "OWNER-FEATURE-SERVING-007",
+    "contact_authorized": false,
+    "replacement_mode": {
+      "status": "PACKETS_BOUND_FIT_PENDING",
+      "owner_control": "OWNER-FEATURE-SERVING-007",
+      "selected_mode": "formal-window-packets-decoder-only",
+      "allowed_modes": [
+        {
+          "mode": "formal-window-packets-decoder-only",
+          "wire_semantics": "Send only the exact source-bound precomputed window features through input_speech_features.",
+          "resident_requirement": "Use the inference role with lifecycle-derived --no-mmproj and decoder-only session model_files.",
+          "cache_requirement": "Promote the fresh current-build exact-window cache into formal packets and bind every request through one strict promotion artifact."
+        }
+      ],
+      "common_requirements": [
+        "Bind the complete promoted packet artifact by path and SHA256 before composing a live cell.",
+        "Use the fresh cddb000c source-bound packet root; historical cache qualification is stopped and is not a substitute.",
+        "Keep preprocessing stopped before decoder-only inference serving.",
+        "Qualify the resident inference identity and exact full-window packet request fit before registration.",
+        "Register packet-fit and generation exposure rows and one-time attempts before contact."
+      ]
+    },
+    "forbidden_substitutes": [
+      "No raw-audio cache projector, historical cache, or parent-call packet is an executable fallback.",
+      "No unpinned packet artifact, packet subset, or request route may enter a generation cell."
+    ]
+  },
+  "packet_transport": {
+    "status": "PENDING_ROOT_PACKET_PIN",
+    "model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
+    "feature_root": "/home/chao/feat-packets/e21-cddb000c-dr-full-gpu-v1",
+    "packet_declaration": "prepared_window_feature_packets",
+    "binding_rule": "Root must add the exact absolute promotion artifact path and its measured SHA256 to each packet baseline only after promotion.",
+    "historical_cache_qualification": "stopped; it does not qualify this decoder-only packet route"
+  },
+  "prompt_fit_multiple": 2.0,
+  "split_id": "discovery",
+  "baseline_identity_binding": "Four-fragment config_hash binds each complete baseline. Later prepared_request_fit receipt pins are excluded only from preparation input identity by the existing shared artifact contract; generation protocol hashes still bind them.",
+  "window_preparation_workers": 8,
+  "runtime_recovery": {
+    "cause": "Inference receipt incorrectly listed mmproj",
+    "prior_run_id": "SAEA-E21-DR-PACKETS-UNIT-FIT-V1",
+    "prior_attempt_id": "attempt-20260910-dr-packets-unit-fit-v1",
+    "prior_model_contacts": 0,
+    "prior_encoder_contacts": 0,
+    "recovery_number": 1,
+    "second_failure_action": "Stop this capacity flight and prove any further fix on four exact full windows before another family admission."
+  }
+}
