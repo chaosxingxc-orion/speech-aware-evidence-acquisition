@@ -510,6 +510,34 @@ def model_materialization_root(values: Mapping[str, object]) -> str | None:
     return value
 
 
+def feature_encoder_runtime_receipt_relpath(values: Mapping[str, object]) -> str | None:
+    """Return the optional preprocess-role receipt path with runtime grammar."""
+
+    value = values.get("feature_encoder_runtime_receipt")
+    if value is None:
+        return None
+    if not isinstance(value, str) or not value:
+        raise ConfigError(
+            "model config feature_encoder_runtime_receipt must be a non-empty string"
+        )
+    if "\\" in value or value.startswith("/") or _DRIVE_PREFIX.match(value):
+        raise ConfigError(
+            "model config feature_encoder_runtime_receipt must be a relative POSIX path"
+        )
+    if any(part in ("", ".", "..") for part in value.split("/")):
+        raise ConfigError(
+            "model config feature_encoder_runtime_receipt contains an empty or traversal segment"
+        )
+    return value
+
+
+def resolve_feature_encoder_runtime_receipt_path(
+    repo_root: Path, values: Mapping[str, object]
+) -> Path | None:
+    relative = feature_encoder_runtime_receipt_relpath(values)
+    return None if relative is None else Path(repo_root) / "docs" / relative
+
+
 def resolve_runtime_receipt_path(repo_root: Path, values: Mapping[str, object]) -> Path:
     """The absolute path a composed config's ``runtime_receipt`` key names,
     under ``<repo_root>/docs/`` -- the one place every caller (driver smoke,
