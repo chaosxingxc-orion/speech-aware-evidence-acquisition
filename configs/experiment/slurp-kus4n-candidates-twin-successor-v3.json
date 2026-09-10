@@ -205,8 +205,8 @@
       "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
-        "state": "held",
-        "reason": "Await both inherited exact-four smoke engineering completion receipts before full generation.",
+        "state": "ready",
+        "reason": "G1 component, prepared sources, actual np8 capacity and inherited exact-four smoke gates passed; full frozen comparison admitted.",
         "requirements": [
           {
             "kind": "preparation",
@@ -226,6 +226,13 @@
             "sha256": "4bc1f87e629a003294feef0e1d42b65cb3b816b07a86f487fb977559c33ef0eb",
             "expected_decision_id": "SAEA-G2-V3-PREDECESSOR-ADMISSION-V1",
             "reason": "G1 component predecessor decision"
+          },
+          {
+            "kind": "decision",
+            "relpath": "coordination/SAEA-G2-V3-SMOKE-ADMISSION-V1.json",
+            "sha256": "c8f8eabf08d899d939907025855f7da223d2158b639e7d6086e3317484bc274b",
+            "expected_decision_id": "SAEA-G2-V3-SMOKE-ADMISSION-V1",
+            "reason": "Inherited real smoke engineering completion"
           }
         ]
       }

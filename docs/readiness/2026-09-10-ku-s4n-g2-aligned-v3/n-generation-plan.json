@@ -1,0 +1,82 @@
+{
+  "execution_plan": {
+    "attempt_id": "attempt-20260910T020504Z-938cd3",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1050,
+    "planned_speech_audio_seconds": 3000,
+    "protocol_hash": "43f1e2ea618366f9882c6925078c9214f25f6289c481dcca6cde2ca803d34b51",
+    "run_id": "SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "fit_pin": {
+    "relpath": "prepared/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3-FIT-V1/request-fit.json",
+    "sha256": "70fd44579df13b1f408167a37696e0e9bcc81407d6a00f4e3a51a71241bb7455"
+  },
+  "owner_decision": "OWNER-CONTINUATION-002 and OWNER-FEATURE-SERVING-007",
+  "readout": "Both full arms seal and complete their single whole aligned official score before any treatment metric read. Use the same root resident process, full 60 labels, prepared query speech and candidate hints, max64. Frozen shared analysis, no adaptive replay, new roster, margin change or additional encoding.",
+  "required_session_identity": {
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "host": "127.0.0.1",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      }
+    ],
+    "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+    "model_fragment_sha256": "c4f66b1ee609d26992917b280370aa7ba5b74c93f344f59a222e384a69188c16",
+    "model_root": "/home/chao",
+    "port": 8080,
+    "props_identity": {
+      "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "slot_n_ctx": 8192,
+      "total_slots": 8
+    },
+    "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+    "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+    "server_argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8080",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--no-mmproj",
+      "-c",
+      "65536",
+      "-np",
+      "8",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ],
+    "server_env": {
+      "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+      "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+    },
+    "session_role": "inference"
+  },
+  "schema": "saea-registered-generation-plan-v1"
+}
