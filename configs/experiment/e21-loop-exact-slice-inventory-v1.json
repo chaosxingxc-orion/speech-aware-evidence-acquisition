@@ -1,0 +1,87 @@
+{
+  "experiment_id": "SAEA-E21-LOOP-EXACT-SLICE-INVENTORY-V1",
+  "date": "2026-09-10",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Materialize and hash the exact 600 predeclared selective re-listen slices for each held LOOP arm through the shared FlightRuntime request builder. This is CPU-only source preparation from the sealed historical predecessor and authorizes no model, server, encoder, tokenizer, scorer or reference contact.",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 600,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 15340.460005376464
+  },
+  "budget_basis": "Each inventory operation is model-free and spends zero contacts. The forward values describe one later generation group and do not authorize encoding, fitting or generation. The judge and twin inventories run sequentially; union deduplication is reported only after both complete.",
+  "window_preparation_workers": 7,
+  "source_pins": {
+    "predecessor_receipt": {
+      "repo_relpath": "docs/receipts/e21-predecessor-full44-direct-baseline-v2.json",
+      "sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a"
+    },
+    "judge_plan": {
+      "repo_relpath": "docs/receipts/obs/e21-relisten-plan-v1.json",
+      "sha256": "b9c9a0e671638c7b6e29ba1a24c8c8e368602e2ee6863b25ecf783111ad995e3"
+    },
+    "twin_plan": {
+      "repo_relpath": "docs/receipts/obs/e21-relisten-twin-plan-v1.json",
+      "sha256": "92fc51444581f220064b62a144e27a4fe670647728c004cd27f161473845fccc"
+    },
+    "judge_baseline": {
+      "repo_relpath": "configs/baseline/e21-loop-1-relisten-repair-ojw.json",
+      "sha256": "e5628018d6a9de1329f3b33e316229f294edebfaf2e7363c61821bade299c922"
+    },
+    "twin_baseline": {
+      "repo_relpath": "configs/baseline/e21-loop-1c-random-flag-twin-ojw.json",
+      "sha256": "a2b43dc6ad5451a3c8d40f96ea0519ceb7fcfa6da1b681f9926250f68d876197"
+    },
+    "dataset": {
+      "repo_relpath": "configs/dataset/earnings21-discovery-conec-names.json",
+      "sha256": "0daa2c9c4d6fade4e6a6203296ec34519f35b8abd88c5fd362807fdd4365abb1"
+    },
+    "model": {
+      "repo_relpath": "configs/model/q4km-e21-feature-preprocess-gpu-cddb000c-np1.json",
+      "sha256": "0a93080773d67fdede401b59a1b7554cd0afb5e09952cabb145abe80959e1c03"
+    }
+  },
+  "expected": {
+    "calls_per_arm": 44,
+    "requests_per_arm": 600,
+    "selected_audio_seconds_per_arm": 15340.460005376464,
+    "parent_windows": 1593,
+    "predecessor_run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "predecessor_attempt_id": "attempt-20260904T233816Z-bcd338",
+    "postcondition": "Each artifact must bind every selected source slice, its parent media, actual audio bytes and request payload. Compare the two artifacts by audio SHA-256 and encoding key to report cross-arm unique-audio deduplication; never infer it from plan counts."
+  },
+  "cells": [
+    {
+      "cell_id": "e21-loop-judge-exact-slice-inventory",
+      "run_id": "SAEA-E21-LOOP-JUDGE-EXACT-SLICE-INVENTORY-V1",
+      "attempt_id": "attempt-20260910-loop-judge-exact-slice-inventory-v1",
+      "model_fragment": "q4km-e21-feature-preprocess-gpu-cddb000c-np1",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-loop-1-relisten-repair-ojw",
+      "allowed_execution_stages": [
+        "prepare-window-inventory"
+      ],
+      "readiness": {
+        "state": "ready",
+        "requirements": []
+      }
+    },
+    {
+      "cell_id": "e21-loop-twin-exact-slice-inventory",
+      "run_id": "SAEA-E21-LOOP-TWIN-EXACT-SLICE-INVENTORY-V1",
+      "attempt_id": "attempt-20260910-loop-twin-exact-slice-inventory-v1",
+      "model_fragment": "q4km-e21-feature-preprocess-gpu-cddb000c-np1",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-loop-1c-random-flag-twin-ojw",
+      "allowed_execution_stages": [
+        "prepare-window-inventory"
+      ],
+      "readiness": {
+        "state": "ready",
+        "requirements": []
+      }
+    }
+  ],
+  "split_id": "discovery"
+}
