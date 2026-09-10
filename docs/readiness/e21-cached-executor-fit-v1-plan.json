@@ -1,0 +1,26 @@
+{
+  "schema": "saea-cached-executor-fit-plan-v1",
+  "experiment": "e21-current-executor-cached-proof-v3",
+  "run_id": "SAEA-E21-CURRENT-EXECUTOR-CACHED-PROOF-FIT-V1",
+  "attempt_id": "attempt-20260910-cached-proof-fit-v1",
+  "config_hash": "ff0fc00874f1f71046a8b61f25676cb1b043681db01f14a084b2fb7cf1e724ef",
+  "protocol_hash": "d21a5251c2947010eb0aaec90ef162d00074c0c75ae2986c851ea4f6c7e0ba29",
+  "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
+  "arm": "fixed-legal-context",
+  "endpoint_budget": {
+    "total": 5,
+    "GET /props": 1,
+    "POST /v1/chat/completions/input_tokens": 4
+  },
+  "generation_contacts": 0,
+  "encoder_contacts": 0,
+  "audio_seconds_ceiling": 44,
+  "gpu_hours_ceiling": 0.25,
+  "session_id": "serving-e21-cached-proof-np6-v1",
+  "model_fragment": "q4km-e21-four-featurecache-cpu-cddb000c-np6",
+  "fit_output": "prepared/SAEA-E21-CURRENT-EXECUTOR-CACHED-PROOF-FIT-V1/request-fit.json",
+  "source_base": "6468051a684d737e36a29c3defd1f0655c6103e9",
+  "entry": "core.flight.cli coordinate-fit",
+  "required_fit_multiple": 2.0,
+  "required_max_tokens": 1024
+}

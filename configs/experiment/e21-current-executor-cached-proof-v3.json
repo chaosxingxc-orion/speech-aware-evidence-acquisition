@@ -1,0 +1,169 @@
+{
+  "experiment_id": "SAEA-E21-CURRENT-EXECUTOR-CACHED-PROOF-V3",
+  "date": "2026-09-10",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Qualify positive prepared-cache consumption and the current shared executor on the inherited four exact construction windows. First register actual request fitting. Four later generation contacts remain held until their own fit binding and gate are complete. No scientific effectiveness or complete strict-cache failure qualification is inferred.",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 4,
+    "planned_gpu_hours": 0.25,
+    "planned_speech_audio_seconds": 44
+  },
+  "budget_basis": "Generation retains the inherited ceiling of four total adapter contacts, 44 speech seconds and 0.25 GPU-hours, including any retry; no fifth request is admitted. The separate FIT-V1 plan uses five counted metadata/tokenizer endpoints only (one GET /props, four POST /v1/chat/completions/input_tokens), zero generation and no new encoding. Keep max_tokens=1024 and the existing 2.0 fit multiple.",
+  "population": {
+    "carrier": "earnings21-original",
+    "split_name": "discovery",
+    "split_role": "discovery",
+    "dataset_fragment": "e21-current-executor-four-row-proof-v1",
+    "roster_receipt": "docs/receipts/probe-samples/e21-current-executor-four-row-proof-v1.json",
+    "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
+    "authorized_roster_calls": 1,
+    "authorized_roster_fixed_windows": 4,
+    "selection_rule": "Take the first four distinct planned units after sorting the sealed judge plan by (sample_id, parent_window_index, unit_index). The rule reads only plan identity and routing metadata; it does not read model responses, references, scores, or outcome artifacts.",
+    "selection_canonical_sha256": "046fc42decae75f12445215362178b0e4b78e781db3d44709a3b4f7765294d0f",
+    "proof_rows": [
+      {
+        "sample_id": "4320211",
+        "window_key": "4320211#w0005",
+        "unit_id": "4320211#u0001",
+        "unit_index": 1,
+        "parent_window_index": 5,
+        "start_seconds": 388.4177215189873,
+        "end_seconds": 398.7974683544304,
+        "predecessor_word_start": 74,
+        "predecessor_word_end": 103
+      },
+      {
+        "sample_id": "4320211",
+        "window_key": "4320211#w0006",
+        "unit_id": "4320211#u0002",
+        "unit_index": 2,
+        "parent_window_index": 6,
+        "start_seconds": 487.8755364806867,
+        "end_seconds": 498.2618025751073,
+        "predecessor_word_start": 98,
+        "predecessor_word_end": 125
+      },
+      {
+        "sample_id": "4320211",
+        "window_key": "4320211#w0009",
+        "unit_id": "4320211#u0003",
+        "unit_index": 3,
+        "parent_window_index": 9,
+        "start_seconds": 799.6370967741935,
+        "end_seconds": 810.0,
+        "predecessor_word_start": 219,
+        "predecessor_word_end": 248
+      },
+      {
+        "sample_id": "4320211",
+        "window_key": "4320211#w0011",
+        "unit_id": "4320211#u0004",
+        "unit_index": 4,
+        "parent_window_index": 11,
+        "start_seconds": 946.9367588932806,
+        "end_seconds": 957.6482213438735,
+        "predecessor_word_start": 131,
+        "predecessor_word_end": 163
+      }
+    ]
+  },
+  "source_pins": {
+    "predecessor_receipt": {
+      "repo_relpath": "docs/receipts/e21-predecessor-full44-direct-baseline-v2.json",
+      "sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a"
+    },
+    "judge_plan": {
+      "repo_relpath": "docs/receipts/obs/e21-relisten-plan-v1.json",
+      "sha256": "b9c9a0e671638c7b6e29ba1a24c8c8e368602e2ee6863b25ecf783111ad995e3"
+    },
+    "baseline": {
+      "repo_relpath": "configs/baseline/e21-current-executor-four-row-proof-ojw.json",
+      "sha256": "d823c48415a28b9353cc7c7b66e9d1493dbb917200ab70595cbe73045516a581"
+    },
+    "dataset": {
+      "repo_relpath": "configs/dataset/e21-current-executor-feature-proof-v2.json",
+      "sha256": "56dff642166670820cce57a998364582f88f7d9f76dafbf6c0d84cef634f0ff8"
+    },
+    "subset_receipt": {
+      "repo_relpath": "docs/receipts/probe-samples/e21-current-executor-four-row-proof-v1.json",
+      "sha256": "a99b7eca5f1b02cdad72ca7eb996c4f8f813a13df5d4d78e2c235c9d4e701df8"
+    },
+    "four_unit_plan": {
+      "repo_relpath": "docs/receipts/obs/e21-current-executor-four-row-proof-v1.json",
+      "sha256": "0637d3d9081dee7d3489eef9cc9ead2226f39b3f52d05ae2c6df19777cf67d43"
+    },
+    "model": {
+      "repo_relpath": "configs/model/q4km-e21-four-featurecache-cpu-cddb000c-np6.json",
+      "sha256": "4d9f3c5d593f9ec46eb6b0d6ff96172f8841097bc8555ada2651b1f4322ccf67"
+    },
+    "encoder_model": {
+      "repo_relpath": "configs/model/q4km-e21-feature-preprocess-cpu-cddb000c-np1.json",
+      "sha256": "199d47abf56d5dca4701aadf032b30b990e7417bf107553a65c29e06c885ecc1"
+    },
+    "raw_runtime": {
+      "repo_relpath": "docs/receipts/runtime-q4km-e21-feature-raw-cddb000c.json",
+      "sha256": "19b47b4cdd1a39e3e126654d2c0cab1f202b1b81bf6fc933221d925bce3d2bcc"
+    },
+    "encoder_runtime": {
+      "repo_relpath": "docs/receipts/runtime-q4km-e21-feature-preprocess-cddb000c.json",
+      "sha256": "d8c703fae0fe0b4e5e7ab9890553c5dfc6f8f33ffe744e9e7faf140630f22218"
+    },
+    "reproduction_review": {
+      "repo_relpath": "docs/receipts/fable-result-reproduction-v1.json",
+      "sha256": "57a19ffea284b3de7d8c4bd078c463cb9e52f0239d5c7c6089c65a3ba7d7fa89"
+    },
+    "current_executor_wire_review": {
+      "repo_relpath": "docs/receipts/obs-wire-check-root-review-v1.json",
+      "sha256": "699b83a4060e6295b17e30ecf6944fe9a99ea110fa3fbd57713bd0bb01cdc081"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "e21-cached-proof-fit",
+      "run_id": "SAEA-E21-CURRENT-EXECUTOR-CACHED-PROOF-FIT-V1",
+      "attempt_id": "attempt-20260910-cached-proof-fit-v1",
+      "model_fragment": "q4km-e21-four-featurecache-cpu-cddb000c-np6",
+      "dataset_fragment": "e21-current-executor-feature-proof-v2",
+      "baseline_fragment": "e21-current-executor-four-row-proof-ojw",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit"
+      ],
+      "readiness": {
+        "state": "held",
+        "reason": "Generation is held until the exact request fit and positive cache-contact registration are bound; fit mode has its own five-endpoint registration."
+      }
+    },
+    {
+      "cell_id": "e21-cached-proof-generation",
+      "run_id": "SAEA-E21-CURRENT-EXECUTOR-CACHED-PROOF-V3",
+      "attempt_id": "attempt-20260910-cached-proof-generation-v1",
+      "model_fragment": "q4km-e21-four-featurecache-cpu-cddb000c-np6",
+      "dataset_fragment": "e21-current-executor-feature-proof-v2",
+      "baseline_fragment": "e21-current-executor-four-row-proof-ojw",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check"
+      ],
+      "readiness": {
+        "state": "held",
+        "reason": "Generation is held until the exact request fit and positive cache-contact registration are bound; fit mode has its own five-endpoint registration."
+      }
+    }
+  ],
+  "qualification_limits": {
+    "positive_cache_evidence": "Require all expected audio chunks to hit, no encoder path, complete cache files unchanged, original output limit and shared current executor. Four rows only establish engineering behavior.",
+    "not_qualified_by_success": [
+      "cold miss refusal",
+      "malformed cache refusal",
+      "cached decode failure refusal",
+      "full-roster request capacity",
+      "scientific effectiveness",
+      "full-system performance"
+    ],
+    "observation": "No WER/entity score or reference read. Preserve all raw responses without using their text to choose additional cases. No automatic retry of a failed flight or service restart."
+  }
+}
