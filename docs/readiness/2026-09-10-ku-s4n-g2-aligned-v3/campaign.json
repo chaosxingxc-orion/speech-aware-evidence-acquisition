@@ -1,0 +1,13 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "slurp-kus4n-candidates-successor-v3",
+      "cell": "kus4n-successor-v3-generation"
+    },
+    {
+      "experiment": "slurp-kus4n-candidates-twin-successor-v3",
+      "cell": "kus4n-twin-successor-v3-generation"
+    }
+  ]
+}

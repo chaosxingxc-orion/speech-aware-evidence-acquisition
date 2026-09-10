@@ -1,0 +1,236 @@
+{
+  "experiment_id": "SAEA-SLURP-KU-S4N-G2-ALIGNED-READOUT-V1",
+  "execution_profile": "model-free-check",
+  "binding_state": "HELD until both V3 generations seal and their complete aligned official score jobs finish. Fill only pending source hashes before readout; preserve this frozen design.",
+  "analysis": {
+    "full_roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+    },
+    "roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    },
+    "seed": 20260903,
+    "n_replicates": 10000,
+    "metrics": [
+      "scenario_action_exact",
+      "scenario_exact",
+      "action_exact",
+      "slu_f1_f1"
+    ],
+    "micro_metrics": {
+      "slu_f1_micro": {
+        "tp": [
+          "slu_f1_word_tp",
+          "slu_f1_char_tp"
+        ],
+        "fp": [
+          "slu_f1_word_fp",
+          "slu_f1_char_fp"
+        ],
+        "fn": [
+          "slu_f1_word_fn",
+          "slu_f1_char_fn"
+        ]
+      }
+    },
+    "inputs": {
+      "comparator": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.own-null-replicate-v1-read.run-manifest.json",
+          "sha256": "f017156d6f4509f927598ef9c926e9f5d1139aaf8d9fea7580b48b4cda2738b9"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-NULL-REPLICATE-V1/own-null-read-score-batch/comparator.score.json",
+          "sha256": "b418ee8f02fe06d1fa21e0c55bd2074ae81edaa6980c648c2cbfb16e8a4773a4"
+        },
+        "scorers": {
+          "primary": "slurp-slu-official-projected-v2",
+          "normalized": "slurp-slu-f1-normalized-v1"
+        }
+      },
+      "n": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3/attempt-20260910T020504Z-938cd3/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3.run-manifest.json",
+          "sha256": "PENDING-SEALED-SOURCE-SHA256"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3/attempt-20260910T020504Z-938cd3/score-batch/attempt-20260910T020504Z-938cd3.score.json",
+          "sha256": "PENDING-COMPLETE-SCORE-SHA256"
+        },
+        "scorers": {
+          "primary": "slurp-slu-official-aligned-v1",
+          "normalized": {
+            "scorer": "slurp-slu-official-aligned-v1",
+            "view": "normalized"
+          }
+        }
+      },
+      "twin": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3/attempt-20260910T020504Z-a556a2/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3.run-manifest.json",
+          "sha256": "PENDING-SEALED-SOURCE-SHA256"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3/attempt-20260910T020504Z-a556a2/score-batch/attempt-20260910T020504Z-a556a2.score.json",
+          "sha256": "PENDING-COMPLETE-SCORE-SHA256"
+        },
+        "scorers": {
+          "primary": "slurp-slu-official-aligned-v1",
+          "normalized": {
+            "scorer": "slurp-slu-official-aligned-v1",
+            "view": "normalized"
+          }
+        }
+      }
+    },
+    "contrasts": [
+      {
+        "left": "comparator",
+        "right": "n",
+        "name": "n_minus_historical_comparator",
+        "scorers": [
+          "primary",
+          "normalized"
+        ]
+      },
+      {
+        "left": "twin",
+        "right": "n",
+        "name": "n_minus_twin",
+        "scorers": [
+          "primary",
+          "normalized"
+        ]
+      },
+      {
+        "left": "comparator",
+        "right": "twin",
+        "name": "twin_minus_historical_comparator_descriptive",
+        "scorers": [
+          "primary",
+          "normalized"
+        ]
+      }
+    ]
+  },
+  "preregistration": "docs/readiness/2026-09-10-ku-s4n-g2-aligned-v3/README.md",
+  "primary_estimator": "Paired speaker-cluster bootstrap, historically exposed NEW500; scenario-stratified sensitivity. Keep the metric order for seed offsets, and use the base seed for pooled-count micro F1.",
+  "decision_rules": {
+    "artifact_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-null-new500-calibration/calibration.json",
+    "artifact_sha256": "2bd7e76ea2ea3c03369cd92d2c117c331fd28394a35da3568bf9f3e023cbdcb3",
+    "bootstrap": "paired speaker cluster",
+    "seed": 20260903,
+    "bootstrap_replicates": 10000,
+    "historical_exposed_population": "NEW500",
+    "metric_specific_operational_ni_margins_pp": {
+      "slurp-slu-f1-normalized-v1": {
+        "action_exact": {
+          "delta_pp": 0.40000000000000036,
+          "operational_ni_margin_pp": 1.565611500749232,
+          "ci90_pp": [
+            -1.1131725417439702,
+            2.0180504597544937
+          ]
+        },
+        "scenario_action_exact": {
+          "delta_pp": 0.8000000000000007,
+          "operational_ni_margin_pp": 1.4024453655420364,
+          "ci90_pp": [
+            -0.5415162454873645,
+            2.263374485596708
+          ]
+        },
+        "scenario_exact": {
+          "delta_pp": 0.6000000000000005,
+          "operational_ni_margin_pp": 1.3492860946499332,
+          "ci90_pp": [
+            -0.7105006187233256,
+            1.9880715705765408
+          ]
+        },
+        "slu_f1_f1": {
+          "delta_pp": -0.1456374800533261,
+          "operational_ni_margin_pp": 1.4952900631278283,
+          "ci90_pp": [
+            -1.6818708343554096,
+            1.308709291900247
+          ]
+        },
+        "slu_f1_micro": {
+          "delta_pp": -0.19944907654238508,
+          "operational_ni_margin_pp": 2.0216446731068247,
+          "ci90_pp": [
+            -2.2495993998916077,
+            1.7936899463220413
+          ]
+        }
+      },
+      "slurp-slu-official-projected-v3": {
+        "action_exact": {
+          "delta_pp": 0.20000000000000018,
+          "operational_ni_margin_pp": 1.4464360085580532,
+          "ci90_pp": [
+            -1.2121212121212122,
+            1.680750804994894
+          ]
+        },
+        "scenario_action_exact": {
+          "delta_pp": 0.6000000000000005,
+          "operational_ni_margin_pp": 1.263481453397735,
+          "ci90_pp": [
+            -0.622100114220814,
+            1.9048627925746557
+          ]
+        },
+        "scenario_exact": {
+          "delta_pp": 0.6000000000000005,
+          "operational_ni_margin_pp": 1.192144142179577,
+          "ci90_pp": [
+            -0.576923076923077,
+            1.807365207436077
+          ]
+        },
+        "slu_f1_f1": {
+          "delta_pp": 0.11477333373910437,
+          "operational_ni_margin_pp": 1.3829190050691285,
+          "ci90_pp": [
+            -1.298067197578,
+            1.4677708125602567
+          ]
+        },
+        "slu_f1_micro": {
+          "delta_pp": 0.0868085315428424,
+          "operational_ni_margin_pp": 1.880025565197486,
+          "ci90_pp": [
+            -1.8200062911490937,
+            1.9400448392458782
+          ]
+        }
+      }
+    },
+    "ni_rule": "one-sided 95% lower bound > -delta for each metric",
+    "efficacy_rule": "Intent CI90 lower bound against the sealed comparator must exceed max(1.4341, aligned null intent upper bound); intent CI90 lower bound against the twin must exceed zero; all inherited protection and secondary-sign guards must pass.",
+    "historical_intent_efficacy_floor_pp": 1.4341,
+    "positive_twin_contrast_required": true,
+    "protection_metrics": [
+      "scenario_exact",
+      "action_exact",
+      "slu_f1_micro"
+    ],
+    "equivalence_rule": "report separately: two-sided CI90 must lie inside (-delta, +delta)",
+    "equivalence_is_not_non_inferiority": true,
+    "no_efficacy_conclusion_if_ni_only": "allow_exemplars_noefficacy_conclusion",
+    "ni_failure_action": "hold; no automatic rerun",
+    "aligned_null_intent_upper_bound_pp": 1.9048627925746557,
+    "intent_efficacy_threshold_pp": 1.9048627925746557,
+    "protection_rule": "Official scenario, action and corpus micro SLU-F1 must each pass one-sided95 non-inferiority at their own aligned operational margin; per-sample SLU-F1 is reported separately.",
+    "secondary_sign_guard": "Normalized secondary scenario_action_exact must agree with the projected primary intent delta sign on both N-minus-comparator and N-minus-twin contrasts; no new secondary threshold is fitted.",
+    "continuation_gate": "Read N and twin only after both are sealed and scored; permit exemplar preparation only after N non-inferiority is formally decided. Non-inferiority alone carries no efficacy conclusion."
+  }
+}

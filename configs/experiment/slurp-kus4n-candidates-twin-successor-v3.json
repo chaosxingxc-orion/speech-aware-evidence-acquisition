@@ -1,0 +1,242 @@
+{
+  "fragment_kind": "saea-slurp-intent-stage-experiment-v1",
+  "migration_status": "Configuration-driven successor with aligned first-score views; admit only the stages whose independently registered receipts and readiness gates pass.",
+  "date": "2026-09-10",
+  "dataset_contract": {
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "split_id": "DEV-1000",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "decision_population": "historically exposed NEW500; no fresh holdout is claimed",
+    "labels_retained": 60,
+    "label_inventory_retained": true
+  },
+  "model_contract": {
+    "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+    "decoder_only": true,
+    "server_context": 65536,
+    "server_parallel": 8,
+    "output_max_tokens": 64
+  },
+  "candidate_supply_contract": {
+    "additional_candidate_blocks": true,
+    "maximum_blocks": 8,
+    "candidate_bank_existing": true,
+    "snapshot_existing": true
+  },
+  "source_pins": {
+    "candidate_bank": {
+      "relpath": "derived/slurp-kus4/candidate-bank-k8-v1.jsonl",
+      "sha256": "a4458e77b648132d9d38c66d6b2ddf54fddf66924db6c6b780c59abf104c541f",
+      "selection": "candidates or twin_candidates according to the baseline fragment"
+    },
+    "knowledge_snapshot": {
+      "relpath": "knowledge/slurp/saea-slurp-intent-candidates-v1/snapshot.json",
+      "sha256": "f179f5db51413fd3141f2d0b65fd49cea35f48b67429c838badf745dc3c779c5"
+    },
+    "sealed_closed_list_predecessor": {
+      "run_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1",
+      "attempt_id": "attempt-20260905T060424Z-2c5596",
+      "manifest_relpath": "runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
+      "manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c"
+    }
+  },
+  "null_alignment": {
+    "artifact_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-null-new500-calibration/calibration.json",
+    "artifact_sha256": "2bd7e76ea2ea3c03369cd92d2c117c331fd28394a35da3568bf9f3e023cbdcb3",
+    "bootstrap": "paired speaker cluster",
+    "seed": 20260903,
+    "bootstrap_replicates": 10000,
+    "historical_exposed_population": "NEW500",
+    "metric_specific_operational_ni_margins_pp": {
+      "slurp-slu-f1-normalized-v1": {
+        "action_exact": {
+          "delta_pp": 0.40000000000000036,
+          "operational_ni_margin_pp": 1.565611500749232,
+          "ci90_pp": [
+            -1.1131725417439702,
+            2.0180504597544937
+          ]
+        },
+        "scenario_action_exact": {
+          "delta_pp": 0.8000000000000007,
+          "operational_ni_margin_pp": 1.4024453655420364,
+          "ci90_pp": [
+            -0.5415162454873645,
+            2.263374485596708
+          ]
+        },
+        "scenario_exact": {
+          "delta_pp": 0.6000000000000005,
+          "operational_ni_margin_pp": 1.3492860946499332,
+          "ci90_pp": [
+            -0.7105006187233256,
+            1.9880715705765408
+          ]
+        },
+        "slu_f1_f1": {
+          "delta_pp": -0.1456374800533261,
+          "operational_ni_margin_pp": 1.4952900631278283,
+          "ci90_pp": [
+            -1.6818708343554096,
+            1.308709291900247
+          ]
+        },
+        "slu_f1_micro": {
+          "delta_pp": -0.19944907654238508,
+          "operational_ni_margin_pp": 2.0216446731068247,
+          "ci90_pp": [
+            -2.2495993998916077,
+            1.7936899463220413
+          ]
+        }
+      },
+      "slurp-slu-official-projected-v3": {
+        "action_exact": {
+          "delta_pp": 0.20000000000000018,
+          "operational_ni_margin_pp": 1.4464360085580532,
+          "ci90_pp": [
+            -1.2121212121212122,
+            1.680750804994894
+          ]
+        },
+        "scenario_action_exact": {
+          "delta_pp": 0.6000000000000005,
+          "operational_ni_margin_pp": 1.263481453397735,
+          "ci90_pp": [
+            -0.622100114220814,
+            1.9048627925746557
+          ]
+        },
+        "scenario_exact": {
+          "delta_pp": 0.6000000000000005,
+          "operational_ni_margin_pp": 1.192144142179577,
+          "ci90_pp": [
+            -0.576923076923077,
+            1.807365207436077
+          ]
+        },
+        "slu_f1_f1": {
+          "delta_pp": 0.11477333373910437,
+          "operational_ni_margin_pp": 1.3829190050691285,
+          "ci90_pp": [
+            -1.298067197578,
+            1.4677708125602567
+          ]
+        },
+        "slu_f1_micro": {
+          "delta_pp": 0.0868085315428424,
+          "operational_ni_margin_pp": 1.880025565197486,
+          "ci90_pp": [
+            -1.8200062911490937,
+            1.9400448392458782
+          ]
+        }
+      }
+    },
+    "ni_rule": "one-sided 95% lower bound > -delta for each metric",
+    "efficacy_rule": "Intent CI90 lower bound against the sealed comparator must exceed max(1.4341, aligned null intent upper bound); intent CI90 lower bound against the twin must exceed zero; all inherited protection and secondary-sign guards must pass.",
+    "historical_intent_efficacy_floor_pp": 1.4341,
+    "positive_twin_contrast_required": true,
+    "protection_metrics": [
+      "scenario_exact",
+      "action_exact",
+      "slu_f1_micro"
+    ],
+    "equivalence_rule": "report separately: two-sided CI90 must lie inside (-delta, +delta)",
+    "equivalence_is_not_non_inferiority": true,
+    "no_efficacy_conclusion_if_ni_only": "allow_exemplars_noefficacy_conclusion",
+    "ni_failure_action": "hold; no automatic rerun",
+    "aligned_null_intent_upper_bound_pp": 1.9048627925746557,
+    "intent_efficacy_threshold_pp": 1.9048627925746557,
+    "protection_rule": "Official scenario, action and corpus micro SLU-F1 must each pass one-sided95 non-inferiority at their own aligned operational margin; per-sample SLU-F1 is reported separately.",
+    "secondary_sign_guard": "Normalized secondary scenario_action_exact must agree with the projected primary intent delta sign on both N-minus-comparator and N-minus-twin contrasts; no new secondary threshold is fitted.",
+    "continuation_gate": "Read N and twin only after both are sealed and scored; permit exemplar preparation only after N non-inferiority is formally decided. Non-inferiority alone carries no efficacy conclusion."
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "dev",
+    "planned_model_calls": 1050,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 3000
+  },
+  "preregistration": "docs/readiness/2026-09-10-ku-s4n-g2-aligned-v3/README.md",
+  "experiment_id": "SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-SUCCESSOR-V3",
+  "purpose": "Preserve the inherited N/twin scientific design and actual requests while binding the shared aligned scorer before first generation; historical V1/V2 artifacts remain unchanged.",
+  "cells": [
+    {
+      "cell_id": "kus4n-twin-successor-v3-fit",
+      "run_id": "SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3-FIT-V1",
+      "attempt_id": "attempt-20260910T020504Z-2757e6",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit"
+      ],
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-direct-candidates-kus4n-twin-aligned-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "readiness": {
+        "state": "held",
+        "reason": "Await the registered V3 source-bound supply, actual request fit and root admission. No implicit service launch by a worker.",
+        "requirements": []
+      }
+    },
+    {
+      "cell_id": "kus4n-twin-successor-v3-generation",
+      "run_id": "SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3",
+      "attempt_id": "attempt-20260910T020504Z-a556a2",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query",
+      "baseline_fragment": "slurp-phase-direct-candidates-kus4n-twin-aligned-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "readiness": {
+        "state": "held",
+        "reason": "Await the registered V3 source-bound supply, actual request fit and root admission. No implicit service launch by a worker.",
+        "requirements": []
+      }
+    }
+  ],
+  "split_id": "DEV-1000",
+  "preparation_source_receipts": [
+    {
+      "root": "repository",
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-slurp-kus4-prep/kus4-prep.json",
+      "sha256": "fed692608f7b42072eda8fa1fc4707ba2af12df9685b6b5b48f855c128113cac"
+    },
+    {
+      "root": "repository",
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-kus3-vectors/vectors.json",
+      "sha256": "3c213ad4f4787e32d92fe30dd1119395817a73ba48d46cbed292a8f471aa86e5"
+    },
+    {
+      "root": "data",
+      "relpath": "derived/slurp-kus4/candidate-bank-k8-v1.jsonl",
+      "sha256": "a4458e77b648132d9d38c66d6b2ddf54fddf66924db6c6b780c59abf104c541f"
+    },
+    {
+      "root": "data",
+      "relpath": "knowledge/slurp/saea-slurp-intent-candidates-v1/snapshot.json",
+      "sha256": "cc60ceb3d218f864f4ce52916e6b09fdca5ec4d9f422d65604d53bff7fc1d3a1"
+    },
+    {
+      "root": "data",
+      "relpath": "runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
+      "sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c"
+    }
+  ],
+  "inherited_preregistration": "docs/readiness/2026-09-09-slurp-intent-ku-s4-family-v1-preregistration.md",
+  "analysis_registration": "configs/experiment/slurp-kus4n-g2-aligned-analysis-v1.json",
+  "preparation_contract": {
+    "phase_supply_relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3/twin-supply.json",
+    "fit_relpath": "prepared/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3-FIT-V1/request-fit.json",
+    "admission": "Bind immutable source-valid preparation and actual full-roster fit receipts. Read both treatments only after both are sealed and scored. G1 component closure is necessary; ordinary preflight is insufficient."
+  }
+}

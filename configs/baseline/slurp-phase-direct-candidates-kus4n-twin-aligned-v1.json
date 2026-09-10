@@ -1,0 +1,72 @@
+{
+  "arm": "speech-feature-query",
+  "arm_basis": "speech-feature-query, the SAME arm and the SAME audio path the sealed closed-list comparator flew: mmproj-free decode over pre-materialized encoder packets from the registered DEV-1000 promotion receipt, one input_speech_features QUERY descriptor per contact, one contact per sample. KU-S4N adds no packet: its whole mechanism is text-typed supply. The k exemplar packets belong to KU-S4a/KU-S4b, which are blocked on a packet-promotion precondition.",
+  "candidate_bank_relpath": "derived/slurp-kus4/candidate-bank-k8-v1.jsonl",
+  "candidate_bank_selection": "twin_candidates",
+  "candidate_bank_sha256": "a4458e77b648132d9d38c66d6b2ddf54fddf66924db6c6b780c59abf104c541f",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "instruction_basis": "The system message is byte-identical to the sealed closed-list comparator's own: the sealed 2026-08-25 DEV-1000 M0 instruction (sha256 cef527896e9beef5774305e01dc29192fc2d5ca89fba5143e82f0b91a7cb86b8, 5,747 characters) plus the 1,836-character closed label inventory suffix, rendered from the same hash-pinned template and the same registered fill. Rendered sha256 4073f79ef25c4796b0a46cb2ac7f5d4982c83084982b87ddd8a70504090d37db, 7,583 characters. The candidate set is NEVER written into it.",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-slurp-intent-candidates-v1/snapshot.json",
+  "knowledge_snapshot_sha256": "f179f5db51413fd3141f2d0b65fd49cea35f48b67429c838badf745dc3c779c5",
+  "phase_material": {
+    "direct": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_phase_direct.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    }
+  },
+  "phase_review": {
+    "direct": {
+      "judges": [
+        "slurp-legal-label-flag-v1"
+      ],
+      "on_flag": "record",
+      "params": {}
+    }
+  },
+  "phase_supply": {
+    "direct": {
+      "dimensions": [
+        "content"
+      ],
+      "expose_facets": false,
+      "fuse_policy": "saea-slurp-intent-candidate-passthrough-v1",
+      "k": 8,
+      "provider": "slurp-intent-candidates-v1",
+      "query_source": {
+        "embedded_signal": "speech: Omni-Embed-Nemotron-3B over the DEV-1000 recording of this row, prompt 'query: ' through the encoder's own sentence_transformers.jinja wrapper, mean-pooled over the attention mask and L2-normalised. Set q-speech-nemotron of the sealed 2026-09-06 MF-7b pass. It is the SAME vector whose cosine against the 11,514 sealed TRAIN facet vectors produced the neighbour half of this cell's candidate bank; no text of any kind enters it.",
+        "kind": "sealed-vectors",
+        "relpath": "vectors/slurp-kus3/query-vectors-speech.jsonl",
+        "sha256": "99b2e1700a058640a12c86fb261e3fc1898cd99004b0157366682b2a048b2e7c",
+        "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+      },
+      "rank_policy": "saea-slurp-intent-candidate-bank-v1",
+      "tau": 0.0
+    }
+  },
+  "policy": "phase-direct-only-supplied-v1",
+  "scorers": [
+    "slurp-slu-official-aligned-v1",
+    "cost"
+  ],
+  "serving_slot_tokens": 8192,
+  "serving_slots": 8,
+  "speech_feature_key_representation_id": "saea-slurp-intent-ku-s4n-twin-v1:direct",
+  "speech_feature_matcher_policy_id": "saea-slurp-intent-ku-s4n-twin-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_template_active": true,
+  "the_one_difference_from_ku_s4n": "candidate_bank_selection. Every other key of this fragment is byte-identical to configs/baseline/slurp-phase-direct-candidates-kus4n-v1.json apart from the two speech-feature identity ids, which must be unique per arm, and these note blocks. The two cells read ONE bank file at ONE sha256, so the twin's exclusion rule is a property of the artifact both arms bind rather than a claim about two files.",
+  "the_two_differences_from_the_sealed_comparator": "The same two KU-S4N declares: the supplied blocks and the phase program's ORG/CONTROL history turn. This arm carries both and reaches the gold on 0.60 percent of rows, which is what makes KU-S4N minus KU-S4N-t the mechanism's own contrast.",
+  "what_the_supply_is": "The control. For each DEV row, exactly as many candidate intents as KU-S4N offers that row, drawn uniformly at random from the 60 legal intents EXCLUDING every intent KU-S4N itself chose, with random.Random(f'20260903:{sample_id}') -- one seed whose only entry point is the sample id. Excluding the arm's own choices is what makes this a control rather than a weaker arm: a draw that could contain the candidate KU-S4N found would measure 'does narrowing help' twice instead of 'does the RIGHT narrowing help'. Measured on the sealed comparator's rows, the twin set contains the gold intent on 0.60 percent of rows against KU-S4N's 95.80.",
+  "what_this_is": "KU-S4N additional candidate hints with all 60 labels retained. Preserve the V1 request semantics and registered record-only judge; one official scoring invocation retains projected primary and normalized secondary rows and pooled counts.",
+  "why_np8": "The comparator's own geometry, held fixed so the paired contrast is geometry-matched. The candidate blocks add about 110 proxy tokens and the control turn about 50, against a realized comparator prompt of 2,190 tokens and an 8,192-token slot; the projection is in the preparation receipt and the SERVER fit is measured before takeoff.",
+  "why_the_bank_is_a_file": "The candidate rule unions a cosine over sealed vectors with the comparator's OWN sealed response, and no cosine can express the second half. rails.phase_supply implements exactly one query-source kind for that reason -- a decision that cannot be recomputed in flight is computed before it, pinned by sha256 and re-verified at preflight. The bank is that artifact; both selections live in one file so the twin's exclusion rule is verifiable from the artifact rather than from two files a reader has to trust were produced together.",
+  "why_the_judge_is_record_only": "phase_review with on_flag='record' changes not one byte of what the flight sends (rails.phase_review module docstring), so the judge is a core-pressure covariate and not a second factor. Its interceptions on the sealed comparator rows are already measured model-free -- 42 of 1,000 rows flagged, 25 of them still wrong after the projection -- and the flight records the same quantity on its own rows.",
+  "why_the_review_material_is_injected": "slurp-legal-label-flag-v1 reads a built LegalIntentInventory; a 60-pair inventory is carrier material, not a config knob, so it arrives through FlightRuntime.bind_phase_review_material exactly as rails.phase_review's docstring prescribes. The judge id still has to resolve in core.base.JUDGES."
+}
