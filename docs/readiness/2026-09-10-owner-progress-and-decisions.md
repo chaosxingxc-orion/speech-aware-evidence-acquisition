@@ -1,99 +1,142 @@
 # Owner progress and decision briefing
 
-Snapshot: 2026-09-10. Canonical master is febd8463. The staged-phase-capacity
-worktree contains reviewed engineering work awaiting its final combined check.
-The separate frozen GPU preparation worktree is running from 942ff9ae.
+Snapshot: 2026-09-10 15:25 UTC. The first full E21 DR parent is generating on
+the GPU. The second parent has completed CPU preparation and waits for the root
+handoff. Canonical master contains the reviewed shared analysis through
+bec60089. The active generation worktree remains frozen at8e675662.
 
-## Owner decisions resolved
+## Owner decisions and execution priority
 
 The owner accepted exclusive offline GPU feature encoding followed by encoder
-unload. Keep mmproj off GPU during resident inference. Optimize quality and
-total cost for post-recording meeting minutes; online latency is not a goal.
-Use whole-roster phase barriers where required by actual predecessor state.
+unload. Keep mmproj off GPU during resident inference. Optimize task quality
+and total cost for post-recording meeting minutes; online latency is not a goal.
+Use whole-roster phase barriers where actual predecessor state requires them.
 
-The owner explicitly instructed maximum useful parallel preparation and rapid
-GPU execution. Root now owns the E21 critical path personally. Broader
-engineering does not block the registered encoding operation. The full exact
-DR inventory has completed: 1593 unique windows, 44 calls, 141345.8526875
-seconds, SHA256 7b12a5c32654855701c48b57152ab1643e0c776b9a7a3853fda009a6ac78face.
-All historical predecessor window spans match. The predecessor lacks old cut
-hashes, so retrospective cut-byte hash equality is not claimed; reconstruction
-uses the pinned source and shared cutter, with new source/cut hashes recorded.
+Complete useful preparation in parallel and close each prerequisite once.
+Root owns scientific design, service custody, dispatch, review and decisions.
+Helpers perform bounded preparation, implementation or source-reading tasks.
+The current GPU experiment proceeds while the next materials and complete-score
+handoff are prepared; broader engineering does not block it.
 
-Registered run SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1 has exactly 1593
-preprocessing contacts, max_tokens=1, a 2.0 GPU-hour upper bound and 150000
-audio-second cap. Its root-owned GPU service is loaded; input/cache-key
-verification precedes the first encoder contact. This is feature preparation,
-not completed DR generation or a scientific outcome. Preserve the stopped
-cached-fit flight. No new owner decision blocks this registered preparation.
+No new owner decision currently blocks the registered DR continuation. The
+earlier GPU-budget amendment question was superseded by a verified accounting
+correction: the inherited1.2 GPU-hour cap per parent is a utilization integral,
+not elapsed wall time. Keep that cap and report both quantities separately.
+See [the accounting correction](2026-09-10-e21-dr-gpu-budget-accounting-correction.md).
 
 ## Scientific state
 
-- Fable numerical reproduction is complete: 16,560 statistical fields agree
-  exactly. No fresh neural inference or official scoring occurred in that
-  audit. Existing independent inference repeats are separate evidence.
-- Original KC-S1b: official DEV1000 micro SLU-F1 35.8020 to 44.3503 percent.
-  The original NEW500 strict entity mean-row F1 gain is 10.1067 pp, a different
-  metric/population. Extra slot contact alone did not establish improvement.
+- Fable numerical reproduction is complete:16,560 statistical fields agree
+  exactly. This was a model-free audit of existing results. Existing independent
+  inference repeats remain separate evidence.
+- Original KC-S1b: official DEV1000 micro SLU-F1 changes from35.8020 to44.3503
+  percent. Original NEW500 strict entity mean-row F1 gain is10.1067pp, a
+  different metric and population. Extra slot contact alone did not establish
+  improvement.
 - KV: seven generated/scored runs recovered. Removing original examples in
   KV0 is harmful; KV1/KV3 are null-compatible; KV2 fails its inherited twin
-  guard. Retain KC-S1b content.
-- Recovered G1 KU-S3: three complete 1000-row generations and three official
-  scores in the same decoder-only process. Component admitted. NEW500 row
-  SLU-F1 gains are 6.6374 pp versus the same-process matched control and
-  3.6544 pp versus the form twin. Joined predecessor intent is preserved.
-  No independent treatment repeat or live full-system claim is supplied.
-- G2 N/twin: each completed 1000 generations and official scoring. N fails
-  non-inferiority versus its declared historical comparator. NEW500 intent
-  changes by -2.20 pp and micro SLU-F1 by -11.744 pp. G3 encoding and G4 a/b/c
-  remain held. The comparator includes a documented control-turn difference;
-  existing structural audits are descriptive, not a causal explanation.
-- E21 original constrained repair: PERSON WER 22.488858 to 18.752143 percent;
-  the existing inference repeat is 18.854988. Corpus WER changes from
-  8.199519 to 8.154490 percent, small against own-null repeat variability.
-  Preserve both original rejection and owner-authorized v2 admission.
-- E21 DR constrained replay matches all 1593 windows and 44 stitched calls.
-  Two new generation groups/four deliveries and LOOP judge/twin scientific
-  generation remain incomplete.
-- E21 exact-four CPU preparation produced eight verified feature chunks.
-  This is engineering coverage, not full-roster readiness or GPU cache proof.
-  The subsequent cached-fit recovery stopped after one GET /props and zero
-  token POST/generation/encoding. Keep it stopped; no FIT_READY exists.
-- Live SLURP and E21 full-system quality and total costs remain unmeasured.
-  No formal chain-of-thought effectiveness experiment has been completed.
+  guard. Retain KC-S1b content as the owner selected.
+- G1 KU-S3: control, speech retrieval and form twin each completed1000
+  generations and official scoring in one decoder-only process, all with
+  max256. The component is admitted. NEW500 row SLU-F1 gains are6.6374pp
+  versus matched control and3.6544pp versus form twin. Joined predecessor
+  intent is preserved. This is not an independent treatment repeat or a live
+  system measurement.
+- G2 N/twin: both completed1000 generations and official scoring. N fails
+  non-inferiority versus its declared historical comparator: NEW500 intent
+  changes by-2.20pp and micro SLU-F1 by-11.744pp. G3 encoding and G4 a/b/c
+  remain held; do not encode the7049 missing SLURP exemplars. Preserve the
+  documented control-turn difference and descriptive structural audits.
+- Historical E21 constrained repair: PERSON WER changes from22.488858 to
+  18.752143 percent; its inference repeat is18.854988. Corpus WER changes
+  from8.199519 to8.154490 percent, small against own-null repeat variability.
+  Preserve both the original rejection and owner-authorized v2 admission.
+- Historical DR constrained replay reproduces all1593 windows and44 stitched
+  calls. Current DR has two generation parents and four predeclared deterministic
+  deliveries. Neither current parent has a complete official score yet.
+- LOOP judge/twin generation has not begun. Each plan has600 selected re-listen
+  requests, with all1593 fixed windows delivered. CPU inventory preparation
+  is in progress; exact feature encoding and formal fits follow in a dedicated
+  service window.
+- Live SLURP and E21 system quality and full costs remain unmeasured.
+  Upstream E21 ASR/entity gains do not establish meeting-minutes quality.
+  No formal chain-of-thought effectiveness experiment is complete.
 
-## Engineering state and next order
+## E21 GPU execution and preparation
 
-Merged at febd8463: shared current-run phase delivery, verified predecessor
-and terminal provenance, pure SLURP join, deferred raw scoring, derivative
-CLI/scoring route and live/direct baseline building blocks. The prior
-validation receipt covers 388 distinct related tests.
+Full offline DR feature encoding is complete:1593 unique windows from44 calls,
+141345.8526875 speech seconds, with1593 successful preprocessing contacts.
+All features were verified and promoted into formal window packets without
+re-encoding. Both draft-source groups share packet artifact SHA256
+9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115.
 
-In the current worktree: actual immutable request preparation with full-roster
-OpenJiuwen gates; cross-process attempt mutation locks and receipt-bound
-finalization; independently verified complete saved-score receipts; and
-all-required-delivery settlement. Root reviewed the shared architecture and
-implementations. Tests use actual OpenJiuwen phase execution with synthetic
-transport and real request construction. This does not qualify a live tokenizer
-coordinator or a scientific system.
+The root resident service is serving-e21-dr-packets-np6-v2 on build
+cddb000cb45ab44d33c84483cf5e5962cbbaa5bf. It uses decoder-only inference with
+--no-mmproj, total context36864 and6 slots. Preserve the registered OJW
+prefetch1 behavior throughout the comparison; observed concurrent requests
+are normally2. Do not change concurrency or geometry midflight.
 
-Next:
-1. Complete the running full DR encoding, normal service stop and source-bound
-   cache audit/provenance. Reuse those features for both registered DR groups.
-2. Close and integrate already-tested shared scoring/settlement code while GPU
-   work proceeds; do not alter the active GPU worktree.
-3. Qualify the successor cached inference path through a new named bounded
-   proof, keeping the stopped flight closed. Fit actual full-roster requests
-   with max1024; adopt one service geometry for each comparison group.
-4. Execute DR two generation groups/four deliveries, then LOOP judge/twin
-   after their scientific and technical dependencies pass.
-5. Measure the live SLURP and E21 systems and inherited required repeats.
-   Report upstream E21 ASR/entity metrics separately from any eventual meeting
-   minutes quality claim. Failed G2 descendants remain held.
+Both exact1593-request fits passed at max1024 and the inherited2x margin:
+minimum spare capacity274 tokens for unit drafts and572 for self drafts.
+The current OJW bridge additionally sealed four actual full90-second-window
+requests, with no retry, skip or saturation. This is engineering connectivity,
+not full scientific protocol equivalence to historical raw-audio comparators.
+The stopped strict-cache qualification remains stopped.
 
-Root remains sole serving owner. Use one generating experiment, shared
-geometry, complete-manifest official scoring, global CPU preparation limits
-20 idle/8 during generation, and ten-second monitoring. Do not load an idle
-model merely to report activity. Historic G1 already excluded mmproj; its
-maximum actual request requirement 10457 exceeds an 8192-token slot, so
-doubling slots at fixed total context is not a valid memory-only adjustment.
+At15:24:54UTC, the unit attempt durably recorded1060 calls. Sampled utilization
+integral was0.76630 GPU hours; the full-roster projection was1.15162 against
+the original1.2 cap. This projection is provisional. The root watches actual
+contact counters and the10-second monitor, without reading unsealed quality.
+The self runtime completed CPU preflight/preprocessing in687.8 seconds with
+zero model contacts and remains resident, waiting for its own root lease.
+
+The authoritative external live record is
+/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/e21-dr-gpu-live-handoff.json.
+It identifies service/worker handles, frozen source, budget observations,
+prepared runtime, and the one allowed next action. The derivative/scoring
+handoff v2 binds all four declared jobs and reviewed source; no private
+experiment framework is required.
+
+## Next execution order
+
+1. Finish and verify the unit parent seal. Release its root lease only after
+   seal or explicit abort; preserve the resident service.
+2. Issue the self parent lease on the same service and command its already
+   prepared runtime to generate. Do not launch a duplicate worker.
+3. Build unit constrained/free deliveries through the shared deterministic
+   builder, preserving the raw parent. Score both complete manifests
+   sequentially while self generates, retaining per-sample statistics on the
+   first official score.
+4. Complete the LOOP judge/twin exact-slice inventories and combined deduplicated
+   input inventory. Register one dedicated offline GPU encoding window, then
+   promote formal packets and fit actual selected requests. Preserve the two
+   plans and the family1.0 GPU-hour generation cap.
+5. Seal self, build both derivatives and finish their complete scores. Publish
+   all four DR comparisons, delivery/fallback counts, cost and attribution.
+   Natural-mixture and inherited equal-call readings retain their meanings;
+   sector and sample-rate tables are additional sensitivities. See
+   [the saved-score admission](2026-09-10-e21-dr-saved-score-analysis-admission.md).
+6. Run eligible LOOP judge/twin, then choose complete-system components from
+   formal decisions and complete inherited necessary repeats. Failed G2
+   descendants remain held.
+
+## Complete-system implementation boundary
+
+The shared SLURP phase-direct-then-slots-v1 program and actual sealed-state
+transfer exist. Its live baseline fragment is held pending a real experiment,
+two-stage capacity/budget registration, matched control and delivery binding.
+Existing one-stage or sealed-predecessor runs cannot substitute for this test.
+
+Current E21 OJW execution supports direct requests and repair from a sealed
+historical predecessor. Reviewer flags are recorded, and phase_review explicitly
+refuses on_flag=loop. Therefore an executable live initial-draft, planner and
+conditional re-listen path remains to be integrated into the shared controller
+and OBS execution. Preserve unique state/contact identities and actual cost
+ceilings; Reviewer supplies flags, Planner chooses continuation, and the frozen
+Solver retains answer authority. Do not label the four-row bridge or current
+component DR/LOOP as a completed live system.
+
+Root will define that bounded integration after the component decisions.
+This remaining work does not pause the current GPU queue. CPU preparation stays
+within a global8 workers during generation, official scoring runs one complete
+job at a time, and active source checkouts remain frozen until closure.
