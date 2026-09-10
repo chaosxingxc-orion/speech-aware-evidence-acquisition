@@ -1,7 +1,7 @@
 {
   "experiment_id": "SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-V1",
   "fragment_kind": "saea-slurp-consumption-experiment-v1",
-  "migration_status": "HELD: prospective independent treatment repeat; root formal registration, fresh prepared supply binding and actual full fit are still required; no contact is authorized by this fragment",
+  "migration_status": "Prospectively specified independent treatment repeat; cell readiness and committed exposure/plan bindings control contact. Reuse source behavior; no new answering mechanism.",
   "date": "2026-09-10",
   "purpose": "Prospective independent 1,000-row repeat of the admitted KU-S3a speech-keyed treatment. Preserve the inherited roster, speech-keyed supply, request bytes, max256 decoding, np4 geometry and registered ceilings. This repeat has one treatment arm only; it adds no new control, twin or probe.",
   "split_id": "DEV-1000",
@@ -95,7 +95,7 @@
     "generation": "Owner-approved 256-token generation ceiling for this one 1,000-row repeat, with at most 50 contacts of registered fixed overhead if separately bound. No extra probes, adaptive repeats, control, twin or roster change.",
     "fit": "The shared full-roster fitter actual endpoint sequence is 1 GET /props + 1,000 POST /apply-template + 2,000 POST /tokenize = 3,001 tokenizer contacts. This fresh fit budget is separate from the 1,050 generation ceiling."
   },
-  "comparator": "The sealed KC-S1b manifest is a descriptive cross-cap anchor only; primary inference is the max256 speech-query arm minus the matched max256 no-retrieval control and minus the max256 form twin. KV-0 remains harmful retrospective evidence and is not a replacement base.",
+  "comparator": "Original max256 speech treatment, original max256 no-retrieval control and original max256 form twin, each sealed on the same original process. This repeat uses a new matched-configuration process. No max64 comparator replaces these bindings.",
   "decision_rule": "Use the inherited KU-S3 paired per-row SLU-F1 analysis after the new repeat and its registered official score are complete: report the repeat against the original matched control and original form twin on the historically exposed NEW500, with OLD500 and pooled DEV-1000 separately; retain natural-mixture and equal-scenario weighting. The original control and twin are historical old-process comparators and are not new contacts in this fragment.",
   "cells": [
     {
@@ -169,16 +169,37 @@
   "preserve_wire_responses": true,
   "primary_inference": {
     "contrasts": [
+      "independent KU-S3a repeat minus original speech treatment (same configuration, new process)",
       "independent KU-S3a repeat minus original matched no-retrieval control (historical artifact)",
       "independent KU-S3a repeat minus original form twin (historical artifact)"
     ],
-    "guard": "Apply the inherited paired per-row SLU-F1 CI90 rules only after the new repeat is sealed and officially scored.",
+    "guard": "Both inherited paired per-row SLU-F1 CI90 lower bounds versus the original max256 matched control and original form twin must exceed zero on historically exposed NEW500 to reproduce the component direction. Report the repeat-minus-original-treatment difference, exact output agreement and all weighting sensitivities; do not invent an equivalence margin.",
     "safeguards": [
       "report OLD500 and pooled DEV-1000 separately",
       "report natural-mixture and equal-scenario weighting",
       "retain scenario-stratified bootstrap with seed 20260903 and speaker-cluster sensitivity",
-      "do not treat the old process comparison as an independent repeat"
+      "The new generation is an independent repeat; comparisons against retained old-process controls do not establish fresh same-process causal equivalence."
     ]
   },
-  "comparison_process": "The new repeat is read against the original sealed matched-control and form-twin artifacts only as historical comparators. Those old-process comparisons are descriptive bindings and are not re-flown or re-scored by this fragment."
+  "comparison_process": "An independent generation repeat tests the stability of the original treatment on the same roster. Its comparisons with original control and twin are across processes; preserve that limitation. The original same-process comparison remains the causal component evidence. No new control/twin or same-process equivalence claim is added.",
+  "independent_repeat_sources": {
+    "original_treatment": {
+      "manifest_relpath": "runs/SAEA-SLURP-KU-S3A-G1-MAX256-RECOVERY-V1/attempt-20260909T233650Z-792913/SAEA-SLURP-KU-S3A-G1-MAX256-RECOVERY-V1.run-manifest.json",
+      "manifest_sha256": "e55d16247e6187206e577e2595153d02b3cf49abd6e4d5a90b15bb9172af6c03",
+      "config_hash": "0086482c488dd6e889024b91bd7bbf9537ad5db1f222855676897ed346b51459",
+      "study_commit": "05b0f05ea87b52314845c3466d8f5a547551356f"
+    },
+    "original_control": {
+      "manifest_relpath": "runs/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-RECOVERY-V1/attempt-20260909T233650Z-4328b7/SAEA-SLURP-KU-S3A-CONTROL-G1-MAX256-RECOVERY-V1.run-manifest.json",
+      "manifest_sha256": "dda9694e1a8d9487b1a4b4907c939a1618a7ccb9296bb85829b6c2ba8aa18a63",
+      "config_hash": "c75093e806fe5f749adf380303d373b54803d1fff14069ee1bd223f40c14b4b0",
+      "study_commit": "05b0f05ea87b52314845c3466d8f5a547551356f"
+    },
+    "original_twin": {
+      "manifest_relpath": "runs/SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-RECOVERY-V1/attempt-20260909T233650Z-5a5e19/SAEA-SLURP-KU-S3A-TWIN-G1-MAX256-RECOVERY-V1.run-manifest.json",
+      "manifest_sha256": "310464cc1e64b4b5104f07cbbfc77ce650de2248ebd5473c25d98eab25491ecc",
+      "config_hash": "01f438445cca09c19d254ad586a347ee207de6ca4dce0bdd20fad16db933bb85",
+      "study_commit": "05b0f05ea87b52314845c3466d8f5a547551356f"
+    }
+  }
 }

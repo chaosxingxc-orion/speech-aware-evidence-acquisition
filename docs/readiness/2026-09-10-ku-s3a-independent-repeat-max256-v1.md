@@ -12,4 +12,8 @@ The generation ceiling is 1,050 registered model calls, 2.0 GPU hours and 3,000 
 
 The read compares the new repeat with the original sealed matched no-retrieval control and original form twin using the inherited paired per-row SLU-F1 analysis, historically exposed NEW500 as the primary population, and separate OLD500 and pooled DEV-1000 reporting. Natural-mixture and equal-scenario weighting, seed 20260903, CI90 and speaker-cluster sensitivity remain unchanged. The original control and twin are old-process comparison artifacts; they are not re-flown or re-scored by this repeat and do not count as new contacts.
 
-Before root admission, the owner must create and consume the fresh exposure row, bind the new execution plan and preparation artifact, verify the clean source/runtime/session identities, and confirm the complete fit. Readout is permitted only after one complete sealed manifest and its registered official score exist.
+Before contact, root must register the fresh exposure row, bind the new execution plan and preparation artifact, verify the clean source/runtime/session identities, and bind the complete fit. No additional owner permission is needed for this already-approved minimum repeat. Readout is permitted only after one complete sealed manifest and its registered official score exist.
+
+Root review: compare the repeat with the original treatment as a stability read, then preserve both inherited positive-bound component contrasts with the retained control and twin. Report new-process status explicitly; no equivalence margin or fresh same-process claim is introduced. All three source manifests are pinned in the new fragment.
+
+The earlier external draft timestamp of 2026-09-10T00:00:00Z was a placeholder and is not a factual creation time. It is superseded by committed configuration and actual operational receipt timestamps.
