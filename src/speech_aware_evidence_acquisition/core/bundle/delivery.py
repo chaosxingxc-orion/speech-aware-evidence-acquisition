@@ -190,6 +190,12 @@ def _inherited_slurp_inputs(parent_path, repo_root, experiment_path, data_root):
     declaration = {
         "cell_id": _INHERITED_SLURP_CELL,
         "parent_cell_id": "sealed-predecessor",
+        "registration_basis": "inherited-fixed-protocol-restoration",
+        "registration_scope": (
+            "Restore the fixed intent-plus-slots delivery already determined by "
+            "the original sealed predecessor binding; this is not a newly "
+            "predeclared alternative generation arm."
+        ),
         "response_postprocessor": "slurp-intent-slots-delivery-v1",
         "response_postprocessor_params": {},
         "source_selector": {
