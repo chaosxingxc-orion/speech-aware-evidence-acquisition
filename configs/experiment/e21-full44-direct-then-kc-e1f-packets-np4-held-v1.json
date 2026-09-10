@@ -1,0 +1,136 @@
+{
+  "experiment_id": "SAEA-E21-FULL44-DIRECT-THEN-KC-E1F-PACKETS-NP4-HELD-V1",
+  "schema": "saea-e21-offline-two-stage-planning-v1",
+  "date": "2026-09-10",
+  "execution_profile": "bounded-discovery-probe",
+  "status": "HELD; MODEL-FREE READINESS ONLY",
+  "purpose": "Prospective offline two-stage Earnings-21 pipeline over the frozen full44 discovery roster. Stage 1 generates a new direct transcript for every fixed 90-second window through the current shared OpenJiuwen executor and formal full-window packets. After the whole roster seals, a model-free batch barrier binds those exact new window responses as the predecessor of the existing KC-E1f brief repair. Stage 2 then repairs those same windows. The system result is the stage-2 output and its cost includes both stages.",
+  "population": {
+    "carrier": "earnings21-original",
+    "split_name": "discovery",
+    "dataset_fragment": "earnings21-discovery-conec-names",
+    "split_role": "discovery",
+    "count": 44,
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "fixed_90s_windows_per_stage": 1593,
+    "selection": "The complete frozen discovery roster and its complete fixed 90-second tiling; no outcome-based selection."
+  },
+  "fixed_stage_contract": {
+    "stage_1": {
+      "role": "new-direct-draft",
+      "model_fragment": "q4km-e21-full90-packets-cddb000c-np4-v1",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-full44-direct-ojw-feature-packets-np4-v1",
+      "policy": "obs-agent-loop-ojw",
+      "obs_controller_program": "phase-direct-only-v1",
+      "evidence_source": "none",
+      "instruction_source": "configs/baseline/e21-buf90-zero-locked-scored4.json",
+      "terminal_material": "Every terminal per-window response from this new stage-1 run, recovered only after the complete raw parent seals."
+    },
+    "barrier": {
+      "kind": "complete-sealed-window-predecessor-binding",
+      "timing": "After stage 1 is complete and verified, before any quality or reference read and before stage 2 is composed.",
+      "selection_rule": "Recover every terminal stage-1 window in stitch order from the sealed trace; require the recovered windows to rebuild all 44 sealed call outputs byte for byte; bind exactly 1,593 unique window ids, bounds, request ids, saturation flags and text hashes to the source manifest, outputs and trace hashes.",
+      "materialization_rule": "Write the model-output-bearing snapshot below SPEECHRL_DATA_DIR and an English content-free receipt under docs/receipts. The stage-2 successor must pin the receipt path and measured SHA-256. No response content or quality statistic is inspected to choose or alter the binding.",
+      "historical_predecessor_forbidden": "The receipt docs/receipts/e21-predecessor-full44-direct-baseline-v2.json must not satisfy this barrier; its run and attempt identities differ from the newly sealed stage-1 parent."
+    },
+    "stage_2": {
+      "role": "kc-e1f-brief-repair-of-new-draft",
+      "model_fragment": "q4km-e21-full90-packets-cddb000c-np4-v1",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_successor": "PENDING_AFTER_STAGE_1_SEAL",
+      "baseline_basis": "configs/baseline/e21-kc-e1f-brief-repair.json plus the current shared OJW/formal-packet transport fields; replace only its historical predecessor_snapshot with the newly materialized stage-1 binding.",
+      "policy": "obs-repair-loop-ojw",
+      "obs_controller_program": "phase-direct-only-v1",
+      "evidence_source": "conec-class-lists",
+      "brief_max_entries_per_class": 12,
+      "repair_frame": "e21-entity-repair-frame-v1",
+      "response_postprocessor": "e21-entity-repair-substitutions-v1",
+      "response_postprocessor_params": {
+        "max_span_tokens": 4,
+        "min_anchor_ratio": 0.6,
+        "max_substituted_fraction": 0.1
+      }
+    }
+  },
+  "prepared_inputs": {
+    "window_feature_inventory": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-inventory.json",
+      "status": "complete"
+    },
+    "window_feature_cache_audit": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-cache-audit.json",
+      "sha256": "cc59a1dee59908c7fae25500b9ab40383b4aa9f9ef00a2946ba7c544b60180a8"
+    },
+    "window_feature_preparation_provenance": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-preparation-provenance.json",
+      "sha256": "72d097e3b153baccb75b4e6e221bc83a1ac60d36dd194c39822993db684ed757"
+    },
+    "prepared_window_feature_packets": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+      "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115",
+      "feature_root": "/home/chao/feat-packets/e21-cddb000c-dr-full-gpu-v1",
+      "requests": 1593,
+      "new_neural_contacts_required": 0
+    }
+  },
+  "service_geometry": {
+    "model_fragment": "q4km-e21-full90-packets-cddb000c-np4-v1",
+    "runtime_receipt": "docs/receipts/runtime-q4km-e21-feature-inference-cddb000c-v2.json",
+    "feature_encoder_runtime_receipt": "docs/receipts/runtime-q4km-e21-feature-preprocess-cddb000c.json",
+    "context_tokens": 36864,
+    "slots": 4,
+    "slot_tokens": 9216,
+    "max_tokens": 1024,
+    "prompt_order": "speech-query-prefix-v2",
+    "resident_projector": false,
+    "cuda_graphs": false,
+    "status": "The geometry matches the validated E21 np4 decoder-only packet route. Stage-specific actual request fits and root resident-session admission are still required."
+  },
+  "cells": [
+    {
+      "cell_id": "e21-full44-live-direct-model-free-readiness",
+      "run_id": "SAEA-E21-FULL44-LIVE-DIRECT-PACKETS-NP4-V1",
+      "attempt_id": "PENDING_ROOT_REGISTRATION_DIRECT",
+      "model_fragment": "q4km-e21-full90-packets-cddb000c-np4-v1",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-full44-direct-ojw-feature-packets-np4-v1",
+      "allowed_execution_stages": ["check"],
+      "readiness": {
+        "state": "held",
+        "reason": "Only model-free composition and source-bound packet loading can be prepared. Root has not fixed the execution plan or admitted wire-check, request fit or generation."
+      }
+    },
+    {
+      "cell_id": "e21-kc-e1f-new-draft-repair-pending-binding",
+      "run_id": "SAEA-E21-KC-E1F-NEW-DRAFT-REPAIR-PACKETS-NP4-V1",
+      "attempt_id": "PENDING_ROOT_REGISTRATION_REPAIR",
+      "model_fragment": "q4km-e21-full90-packets-cddb000c-np4-v1",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "PENDING_NEW_STAGE_1_PREDECESSOR_BINDING",
+      "allowed_execution_stages": ["check"],
+      "readiness": {
+        "state": "held",
+        "reason": "The exact stage-2 protocol is predeclared, but its required source hash cannot exist until the newly generated stage-1 parent seals. A hash-pinned baseline successor and separate root admission are mandatory before fit or generation."
+      }
+    }
+  ],
+  "cost_accounting": {
+    "system_cost": "Report the sum of all stage-1 direct and stage-2 repair model contacts, speech seconds, tokens, wall time and externally measured GPU utilization. Do not describe stage 2 alone as the system cost.",
+    "offline_scope": "A full-roster batch barrier separates the stages. This is an offline post-recording pipeline, not a continuous in-request window loop."
+  },
+  "readiness": {
+    "state": "held",
+    "model_contacts_authorized": false,
+    "tokenizer_contacts_authorized": false,
+    "encoding_contacts_authorized": false,
+    "scoring_authorized": false,
+    "requirements": [
+      "Root fixes the comparison, ceilings, attempt identities and exposure rows.",
+      "Generalize the existing predecessor snapshot producer so it binds an arbitrary newly sealed complete Earnings OBS parent without historical hard-coded token totals or run identity.",
+      "After stage 1 seals, materialize and hash-pin the stage-2 baseline successor before any outcome read.",
+      "Run actual np4 formal-packet request fits for both stage-specific request shapes and obtain root service admission."
+    ]
+  },
+  "claim_surface": "Readiness planning only. No effectiveness, comparison, admission, or system-quality conclusion is registered by this fragment."
+}
