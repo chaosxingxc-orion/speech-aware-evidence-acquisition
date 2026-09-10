@@ -5354,6 +5354,241 @@ class FlightRuntime:
 
     # -- contact-free wiring proof -----------------------------------------
 
+    def _wire_check_obs_policy(
+        self,
+        *,
+        carrier_lock_key: str,
+        split_id: str,
+        identity_hash: str,
+        arm: str,
+        policy: str,
+        declared: Mapping[str, object],
+        wire_run_id: str,
+        wire_attempt_id: str,
+        run_dir: Path,
+        response_text: str,
+        request_payload_observer: Callable[[Mapping[str, object]], None] | None,
+    ) -> Mapping[str, object]:
+        """Exercise the shared OJW OBS driver against contact-free doubles.
+
+        The supported OJW fixed-window policies choose a variable number of
+        exact windows before dispatch. Materialize through the production
+        window seam first, then give the production OBS driver an attempt
+        sized to those requests.
+        """
+
+        def _plan(planned_model_calls: int) -> ExecutionPlan:
+            return ExecutionPlan(
+                run_id=wire_run_id,
+                execution_profile=declared["execution_profile"],
+                carrier_lock_key=carrier_lock_key,
+                split_role=declared["split_role"],
+                split_identity_hash=identity_hash,
+                planned_model_calls=planned_model_calls,
+                planned_gpu_hours=declared["planned_gpu_hours"],
+                planned_speech_audio_seconds=declared[
+                    "planned_speech_audio_seconds"
+                ],
+                protocol_hash=compute_protocol_hash(
+                    self._composed.config_hash, arm, identity_hash
+                ),
+                attempt_id=wire_attempt_id,
+            ).validate()
+
+        gate = WireCheckGate()
+        transport = WireCheckTransport(response_text=response_text)
+        saved = {
+            name: getattr(self, name)
+            for name in (
+                "_run_id",
+                "_attempt_id",
+                "_plan",
+                "_gate",
+                "_transport",
+                "_explicit_run_dir",
+                "_client",
+                "_obs_result",
+                "_output_rows",
+                "_composed",
+                "_adapter",
+                "_split_id",
+                "_samples",
+                "_lock",
+            )
+        }
+        dispatch_started = False
+        aborted = False
+        receipt: Mapping[str, object] | None = None
+        observed_payloads: list[Mapping[str, object]] = []
+        try:
+            # Window derivation and driver artifacts both belong to the fresh
+            # synthetic identity. Never cut media under the registered run's
+            # route namespace or write into its attempt directory.
+            self._run_id = wire_run_id
+            self._attempt_id = wire_attempt_id
+            self._explicit_run_dir = run_dir
+            self._gate = gate
+            self._transport = transport
+            self._client = None
+
+            provisional = _plan(max(len(self._samples), 1))
+            window_batch = self.materialize_window_batch(execution_plan=provisional)
+            selected_window_count = len(window_batch.request_keys)
+            if selected_window_count < 1:
+                raise FlightRuntimeError(
+                    "OBS wire check materialized no selected window requests"
+                )
+            plan = _plan(selected_window_count)
+            self._plan = plan
+            started = self._clock()
+            dispatch_started = True
+            rows, contact_count, policy_kind, dispatch, result = (
+                self._dispatch_obs_policy(plan)
+            )
+            wall_seconds = max(self._clock() - started, 1e-9)
+
+            expected_fields = set(ARM_VISIBLE_FIELDS.get(arm, ()))
+            from ..preparation_fit import boundary_identity  # noqa: PLC0415
+
+            expected_request_ids = sorted(
+                str(payload.get("request_id")) for payload in window_batch.payloads
+            )
+            actual_request_ids = sorted(
+                str(payload.get("request_id")) for payload in transport.payloads
+            )
+            problems: list[str] = []
+            if contact_count != selected_window_count:
+                problems.append(
+                    f"driver reported {contact_count} synthetic contact(s) for "
+                    f"{selected_window_count} selected window(s)"
+                )
+            if len(transport.payloads) != selected_window_count:
+                problems.append(
+                    f"fake transport received {len(transport.payloads)} request(s) for "
+                    f"{selected_window_count} selected window(s)"
+                )
+            if len(set(expected_request_ids)) != len(expected_request_ids):
+                problems.append(
+                    "actual window materialization produced duplicate request identities"
+                )
+            if len(set(actual_request_ids)) != len(actual_request_ids):
+                problems.append(
+                    "fake transport received duplicate request identities"
+                )
+            try:
+                expected_boundary = boundary_identity(
+                    window_batch.payloads, window_routes=True
+                )
+                actual_boundary = boundary_identity(
+                    transport.payloads, window_routes=True
+                )
+            except Exception as error:
+                problems.append(f"window payload normalization refused: {error}")
+            else:
+                if actual_boundary != expected_boundary:
+                    problems.append(
+                        "fake transport payloads differ from the complete normalized "
+                        "materialized-window boundary"
+                    )
+            stitched_ids = [row.get("sample_id") for row in rows]
+            expected_samples = {sample.sample_id for sample in self._samples}
+            if (
+                len(rows) != len(self._samples)
+                or any(not isinstance(sample_id, str) for sample_id in stitched_ids)
+                or len(set(stitched_ids)) != len(stitched_ids)
+                or set(stitched_ids) != expected_samples
+            ):
+                problems.append(
+                    "OBS driver stitched output roster differs from the complete "
+                    "unique runtime sample roster"
+                )
+            if len(gate.checked_plans) != 1 or gate.checked_plans[0] != plan:
+                problems.append(
+                    "fake gate did not observe exactly the final exact-window plan"
+                )
+            for index, payload in enumerate(transport.payloads):
+                if set(payload) != expected_fields:
+                    problems.append(
+                        f"request {index} payload keys differ from "
+                        f"ARM_VISIBLE_FIELDS[{arm!r}]: "
+                        f"{sorted(set(payload) ^ expected_fields)}"
+                    )
+            if problems:
+                raise FlightRuntimeError("OBS wire check failed: " + "; ".join(problems))
+
+            observed_payloads = [
+                json.loads(json.dumps(payload)) for payload in transport.payloads
+            ]
+            first = transport.payloads[0]
+            receipt = {
+                "schema": "saea-flight-wire-check-v1",
+                "flight_run_id": saved["_run_id"],
+                "wire_check_run_id": wire_run_id,
+                "attempt_id": wire_attempt_id,
+                "attempt_aborted": True,
+                "config_hash": self._composed.config_hash,
+                "protocol_hash": plan.protocol_hash,
+                "split_id": split_id,
+                "split_identity_hash": identity_hash,
+                "arm": arm,
+                "native_tools_arm": "tool_schemas" in expected_fields,
+                "construction_proposer_arm": False,
+                "construction_draws": [],
+                "sample_count": len(self._samples),
+                "selected_window_count": selected_window_count,
+                "contact_count": contact_count,
+                "contacts_per_sample": dispatch["contacts_per_sample"],
+                "fake_gate_attempts": len(gate.checked_plans),
+                "fake_transport_requests": len(transport.payloads),
+                "policy": policy,
+                "policy_kind": policy_kind,
+                "phases": [],
+                "dispatch": dispatch,
+                "wall_seconds": wall_seconds,
+                "payload_keys": sorted(first),
+                "payload_keys_equal_arm_visible_fields": True,
+                "request_ids": actual_request_ids,
+                "request_body_sha256": [
+                    hashlib.sha256(body).hexdigest()
+                    for body in transport.request_bodies
+                ],
+                "trace_manifest_hash": result.trace_manifest_hash,
+                "cost": dict(result.cost),
+                "seal_and_score": {
+                    "status": "SKIPPED",
+                    "reason": "OBS synthetic wire checks do not seal or score",
+                },
+                "transport": (
+                    "core.flight.runtime.WireCheckTransport (never opens a socket)"
+                ),
+                "gate": "core.flight.runtime.WireCheckGate (authorizes nothing real)",
+                "model_contacts": 0,
+            }
+        finally:
+            try:
+                if dispatch_started:
+                    aborted = self._abort_attempt(
+                        self._data_root,
+                        wire_run_id,
+                        wire_attempt_id,
+                        reason=(
+                            "OBS wire check: contact-free wiring proof, no model was ever reached"
+                        ),
+                    )
+            finally:
+                for name, prior in saved.items():
+                    setattr(self, name, prior)
+        if dispatch_started and not aborted:
+            raise FlightRuntimeError(
+                "OBS wire check did not abort its synthetic spent attempt"
+            )
+        if receipt is None:
+            raise FlightRuntimeError("OBS wire check produced no receipt")
+        if request_payload_observer is not None:
+            for payload in observed_payloads:
+                request_payload_observer(payload)
+        return receipt
+
     def wire_check(
         self,
         *,
@@ -5398,13 +5633,25 @@ class FlightRuntime:
         policy = values.get("policy")
         if not isinstance(policy, str) or not policy:
             raise FlightRuntimeError("baseline fragment must declare a non-empty 'policy'")
+        obs_policy = policy in self._obs_policy_names()
+        if obs_policy and seal_and_score:
+            raise FlightRuntimeError(
+                "OBS wire checks do not support seal_and_score=True: the shared OBS "
+                "driver deliberately has no FlightRuntime FrozenCoreClient, and this "
+                "synthetic path does not prove bundle scoring"
+            )
+        if obs_policy and workers is not None:
+            raise FlightRuntimeError(
+                "OBS wire checks do not accept workers=: OBS request concurrency "
+                "is bound by the composed obs_batch_slices configuration"
+            )
         # A phase program makes ONE contact per phase per sample. The
         # attempt budget is run-cumulative (core.model.adapter re-reads the
         # store's prior actuals on every request), so a wire-check plan sized
         # for one contact per sample is exhausted the moment the SECOND phase
         # asks for its first contact -- the same defect the fresh run id
         # below already fixed once, in the other dimension.
-        contacts_per_sample = (
+        contacts_per_sample = None if obs_policy else (
             1 if policy == "fixed" else len(default_phase_program(policy).phases)
         )
         stamp = int(self._clock() * 1000)
@@ -5413,6 +5660,27 @@ class FlightRuntime:
         declared = self._composed.values.get("execution_plan")
         if not isinstance(declared, Mapping):
             raise FlightRuntimeError("experiment fragment must declare an execution_plan")
+        run_dir = self._data_root / "wire-check" / wire_run_id / wire_attempt_id
+        if obs_policy:
+            if policy not in ("obs-agent-loop-ojw", "obs-repair-loop-ojw"):
+                raise FlightRuntimeError(
+                    f"OBS wire check refuses policy {policy!r}: exact-window "
+                    "materialization currently supports only the shared OJW policies"
+                )
+            return self._wire_check_obs_policy(
+                carrier_lock_key=carrier_lock_key,
+                split_id=split_id,
+                identity_hash=identity_hash,
+                arm=arm,
+                policy=policy,
+                declared=declared,
+                wire_run_id=wire_run_id,
+                wire_attempt_id=wire_attempt_id,
+                run_dir=run_dir,
+                response_text=response_text,
+                request_payload_observer=request_payload_observer,
+            )
+        assert contacts_per_sample is not None
         plan = ExecutionPlan(
             run_id=wire_run_id,
             execution_profile=declared["execution_profile"],
@@ -5427,7 +5695,6 @@ class FlightRuntime:
             ),
             attempt_id=wire_attempt_id,
         ).validate()
-        run_dir = self._data_root / "wire-check" / wire_run_id / wire_attempt_id
         run_dir.mkdir(parents=True, exist_ok=True)
 
         gate = WireCheckGate()

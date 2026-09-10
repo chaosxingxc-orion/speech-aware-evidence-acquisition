@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 21,
+  "generation": 22,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "e06e802982ffcac74185fa48a5c81d07d3c94df3",
-  "updated_at_utc": "2026-09-10T06:41:10.473048+00:00",
-  "next_action": "Read STATUS-021.md and the Fable reproduction report. Original KC-S1b contrasts, max64 repeat analysis, E21 v1/v2 and KV recovery numerically reproduced with 16,560 identical statistical values and zero neural/scorer contacts. Review live-system evidence gaps and exact original service identities before any adjustment or new flight. No service or lease running; feature qualification and DR/LOOP expansion paused. Preserve G2 NI failure and G3/G4 holds; G5/G6 incomplete.",
+  "snapshot_commit": "7c2f34f3f4b898f511a49eb051890ef59497bde2",
+  "updated_at_utc": "2026-09-10T07:29:49.407539+00:00",
+  "next_action": "Read STATUS-022.md and the Fable reproduction report. Original numerical reproduction and live-system source review are complete; shared OBS wire checking passed 296 adjacent regression cases with synthetic data only. Present component conclusions and exact original serving identities before any adjustment. No service started. Feature-serving qualification and scientific DR/LOOP remain paused; preserve G2 NI failure and G3/G4 holds. G5/G6 remain incomplete. The optional G6 timing-semantics question is pending.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-REPRODUCTION-FIRST-008"

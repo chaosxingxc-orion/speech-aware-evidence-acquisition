@@ -288,6 +288,243 @@ def test_e21_four_row_fit_matches_real_ojw_controller_contacts(
     )
 
 
+@pytest.mark.parametrize("fail_transport", [False, True])
+def test_flight_wire_check_real_ojw_request_parity_and_failure_cleanup(
+    tmp_path, monkeypatch, synthetic_world, fail_transport
+):
+    """The FlightRuntime check uses the same fitter, hook, and OBS driver."""
+    import socket
+
+    from test_class_lists import CALL, _install
+
+    def refuse_connection(*_args, **_kwargs):
+        pytest.fail("the synthetic OBS check must never connect to a socket")
+
+    monkeypatch.setattr(socket, "create_connection", refuse_connection)
+    monkeypatch.setattr(socket.socket, "connect", refuse_connection)
+    monkeypatch.setattr(socket.socket, "connect_ex", refuse_connection)
+
+    from speech_aware_evidence_acquisition.core.bundle.finalize import (
+        abort_attempt_if_opened,
+    )
+    from speech_aware_evidence_acquisition.core.attempts import STATE_ABORTED, AttemptStore
+    from speech_aware_evidence_acquisition.core.config import ComposedConfig
+    from speech_aware_evidence_acquisition.core.driver import run as driver_run
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    from speech_aware_evidence_acquisition.rails.task_adapter import TaskAdapter
+
+    source_root = Path(__file__).resolve().parents[2]
+    plan_relpath = "docs/receipts/obs/e21-current-executor-four-row-proof-v1.json"
+    plan_raw = (source_root / plan_relpath).read_bytes()
+    plan_document = json.loads(plan_raw)
+    call = plan_document["calls"][0]
+
+    class VirtualPcm:
+        def __len__(self):
+            return round(call["decoded_duration_seconds"] * 16_000)
+
+        def __getitem__(self, bounds):
+            assert isinstance(bounds, slice) and bounds.step is None
+            return array("h", [0]) * (bounds.stop - bounds.start)
+
+    predecessors = []
+    for parent in call["parent_windows"]:
+        index = parent["window_index"]
+        text = " ".join(
+            f"window{index:02d}word{word:03d}" for word in range(parent["draft_words"])
+        )
+        predecessors.append(
+            SimpleNamespace(
+                window_id=f"{CALL}#w{index:04d}",
+                start_seconds=parent["start_seconds"],
+                end_seconds=parent["end_seconds"],
+                text=text,
+                text_sha256=hashlib.sha256(text.encode()).hexdigest(),
+            )
+        )
+    snapshot = SimpleNamespace(for_sample=lambda sample_id: tuple(predecessors))
+    monkeypatch.setattr(repair_loop, "_bound_snapshot", lambda *args: snapshot)
+    monkeypatch.setattr(obs_loop, "decode_parent_pcm", lambda *args: VirtualPcm())
+
+    values = json.loads(
+        (source_root / "configs/baseline/e21-current-executor-four-row-proof-ojw.json")
+        .read_text(encoding="utf-8")
+    )
+    values["predecessor_snapshot"] = {
+        "receipt_relpath": "receipts/synthetic-predecessor.json",
+        "receipt_sha256": "a" * 64,
+    }
+    values["decoding_params"] = {"temperature": 0, "max_tokens": 1024}
+    values["ojw_workflow_timeout_seconds"] = 0
+    values.update(
+        {
+            "carrier_lock_key": "earnings21-original",
+            "split_id": "synthetic-one-call",
+            "split_name": "synthetic-one-call",
+            "execution_plan": {
+                "execution_profile": "bounded-discovery-probe",
+                "split_role": "discovery",
+                "planned_model_calls": 4,
+                "planned_gpu_hours": 0.01,
+                "planned_speech_audio_seconds": 42,
+            },
+        }
+    )
+    copied_plan = tmp_path / "repo" / plan_relpath
+    copied_plan.parent.mkdir(parents=True, exist_ok=True)
+    copied_plan.write_bytes(plan_raw)
+
+    lock = _install(synthetic_world)
+    parent_relpath = "datasets/earnings21-22/earnings21/media/4320211.mp3"
+    parent = synthetic_world.data_root / parent_relpath
+    parent.parent.mkdir(parents=True, exist_ok=True)
+    parent.write_bytes(b"synthetic speech carrier")
+    sample = SampleRef(
+        carrier_lock_key="earnings21-original",
+        sample_id=CALL,
+        media_relpath=parent_relpath,
+        audio_seconds=call["decoded_duration_seconds"],
+        sample_rate_hz=16_000,
+    )
+
+    class WindowAdapter(TaskAdapter):
+        def preprocess_plan(self):
+            return {"kind": "raw-speech-windows"}
+
+        def instruction(self, sample):
+            return values["task_instruction"]
+
+        def load_split(self, split_id):
+            return (sample,)
+
+        def build_task_contract(self, sample, obs):
+            return "synthetic contract"
+
+        def gold(self, sample):
+            return None
+
+        def score_response(self, gold, response):
+            return {}
+
+    config_hash = "d" * 64
+    composed = ComposedConfig(
+        values=values, config_hash=config_hash, fragments={"dataset": "synthetic"}
+    )
+    identity_hash = "b" * 64
+    monkeypatch.setattr(
+        driver_run,
+        "_verify_split_for_run",
+        lambda *args, **kwargs: SimpleNamespace(
+            ids=(CALL,), split_role="discovery", carrier_lock_key="earnings21-original"
+        ),
+    )
+    monkeypatch.setattr(
+        driver_run.CARRIERS,
+        "resolve",
+        lambda _name: (lambda _lock, _root: (sample,)),
+    )
+
+    runtime = object.__new__(FlightRuntime)
+    runtime._repo_root = tmp_path / "repo"
+    runtime._data_root = synthetic_world.data_root
+    runtime._runtime_root = tmp_path / "runtime"
+    runtime._run_id = "SAEA-SYNTHETIC-REGISTERED"
+    runtime._attempt_id = "attempt-registered"
+    runtime._explicit_run_dir = synthetic_world.data_root / "registered-attempt"
+    runtime._composed = composed
+    runtime._adapter = WindowAdapter()
+    runtime._samples = (sample,)
+    runtime._split_id = "synthetic-one-call"
+    runtime._lock = lock
+    runtime._plan = None
+    runtime._gate = object()
+    runtime._transport = object()
+    runtime._client = None
+    runtime._obs_result = None
+    runtime._output_rows = []
+    runtime._obs_runner = None
+    runtime._clock = time.monotonic
+    runtime._abort_attempt = abort_attempt_if_opened
+    runtime._prepare = lambda: (
+        values,
+        "earnings21-original",
+        "synthetic-one-call",
+        identity_hash,
+    )
+
+    observed = []
+    registered_state = (
+        runtime._run_id,
+        runtime._attempt_id,
+        runtime._explicit_run_dir,
+        runtime._gate,
+        runtime._transport,
+    )
+    if fail_transport:
+        from openjiuwen.core.common.exception.errors import ExecutionError
+
+        from speech_aware_evidence_acquisition.core.base import CoreError
+        from speech_aware_evidence_acquisition.core.flight.runtime import WireCheckTransport
+
+        original_transport = WireCheckTransport.__call__
+        reached = []
+
+        def fail_after_arrival(transport, body):
+            original_transport(transport, body)
+            reached.append(json.loads(body))
+            raise CoreError("synthetic transport failure after request arrival")
+
+        monkeypatch.setattr(WireCheckTransport, "__call__", fail_after_arrival)
+        with pytest.raises(ExecutionError, match="synthetic transport failure") as failure:
+            runtime.wire_check(
+                seal_and_score=False, request_payload_observer=observed.append
+            )
+        assert isinstance(failure.value.__cause__, CoreError)
+        assert reached and len(reached) <= 4
+        assert not observed
+        wire_files = list((synthetic_world.data_root / "attempts").rglob("*.json"))
+        assert len(wire_files) == 1
+        attempt = json.loads(wire_files[0].read_text(encoding="utf-8"))
+        assert attempt["state"] == STATE_ABORTED
+        assert 1 <= attempt["actual"]["calls"] <= 4
+        assert not (synthetic_world.data_root / "attempts" / runtime._run_id).exists()
+        assert not runtime._explicit_run_dir.exists()
+        assert (
+            runtime._run_id,
+            runtime._attempt_id,
+            runtime._explicit_run_dir,
+            runtime._gate,
+            runtime._transport,
+        ) == registered_state
+        return
+
+    receipt = runtime.wire_check(
+        seal_and_score=False, request_payload_observer=observed.append
+    )
+
+    assert receipt["selected_window_count"] == 4
+    assert receipt["contact_count"] == receipt["fake_transport_requests"] == 4
+    assert receipt["fake_gate_attempts"] == 1
+    assert receipt["sample_count"] == 1
+    assert receipt["model_contacts"] == 0
+    assert len(observed) == 4
+    assert len(set(receipt["request_ids"])) == 4
+    wire_attempt = AttemptStore(
+        synthetic_world.data_root / "attempts"
+    ).handle(receipt["wire_check_run_id"], receipt["attempt_id"])
+    assert wire_attempt.state() == STATE_ABORTED
+    assert json.loads(wire_attempt.path.read_text(encoding="utf-8"))["actual"]["calls"] == 4
+    assert not (synthetic_world.data_root / "attempts" / runtime._run_id).exists()
+    assert not runtime._explicit_run_dir.exists()
+    assert (
+        runtime._run_id,
+        runtime._attempt_id,
+        runtime._explicit_run_dir,
+        runtime._gate,
+        runtime._transport,
+    ) == registered_state
+
+
 def _scenario(name):
     """(pcm, texts, values, evidence, arm) per scenario — every behavioural
     surface of the plain policy the ojw executor must reproduce."""

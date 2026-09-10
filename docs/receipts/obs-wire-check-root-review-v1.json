@@ -1,0 +1,97 @@
+{
+  "schema": "saea-obs-wire-check-root-review-v1",
+  "reviewed_at_utc": "2026-09-10T07:29:49.407539+00:00",
+  "reviewed_base": "7c2f34f3f4b898f511a49eb051890ef59497bde2",
+  "reviewer": "root",
+  "environment": {
+    "distribution": "Ubuntu-24.04",
+    "python": "/home/chao/.venvs/speechrl/bin/python",
+    "code_root": "/home/chao/saea-worktrees/obs-wire-check",
+    "pythonpath": "/home/chao/saea-worktrees/obs-wire-check/src",
+    "bytecode_disabled": true,
+    "editable_install_changed": false
+  },
+  "implementation_files": [
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+      "sha256": "0c2768f5f0634b5c4a52ac42fd36ab6f3959163790a487bd25dbcff2790be570"
+    },
+    {
+      "path": "tests/unit/test_flight_runtime.py",
+      "sha256": "2bf980c695334d44bd918909f75fccf20ddee8c530fb66beb3a5afe2ad64bc3f"
+    },
+    {
+      "path": "tests/unit/test_obs_loop_ojw.py",
+      "sha256": "233bcea32726093c015693d67ca974fa4f00dbf8e7c6510063d70f0128b3bb66"
+    }
+  ],
+  "validation": {
+    "targeted_obs_wire_tests": {
+      "passed": 9,
+      "deselected": 174,
+      "warnings": 3
+    },
+    "adjacent_regression": {
+      "files": [
+        "test_flight_runtime.py",
+        "test_obs_loop_ojw.py",
+        "test_window_controller.py",
+        "test_preparation_fit.py",
+        "test_rails_phase_runner.py",
+        "test_phase_material.py"
+      ],
+      "passed": 296,
+      "failures": 0,
+      "errors": 0,
+      "warnings": 3,
+      "pytest_seconds": 45.93,
+      "junit_sha256": "821115fb7f5f89cab31786c686a6fedcdeb7a1a093eaf050a5b33a44df444c90"
+    },
+    "ruff_changed_files": "PASS",
+    "engineering_base_check": "PASS",
+    "git_diff_check": "PASS",
+    "evidence": [
+      "Real shared OJW repair driver materializes and dispatches four synthetic selected-window requests and stitches one call; no fifth request occurs.",
+      "Socket connection methods are refused in the real-driver test.",
+      "Materialized and dispatched normalized payload boundaries agree despite arrival-order variation.",
+      "A duplicate or foreign stitched sample refuses even when the output count is unchanged.",
+      "An injected post-arrival transport failure propagates through the real OJW exception wrapper and leaves an aborted spent synthetic attempt, no observer delivery and restored registered runtime state.",
+      "Materialization, dispatch and abort failures restore the runtime; observers run only after abort and restoration.",
+      "Unsupported scoring and worker overrides refuse before materialization."
+    ],
+    "review_corrections": [
+      "The first root test invocation imported canonical 7c2f34f3 through the existing environment and exposed the pre-fix unknown-phase refusal. It is not counted as verification of the worktree. Subsequent root tests use an absolute worktree PYTHONPATH with an asserted import path.",
+      "The real OpenJiuwen driver wraps an injected CoreError in ExecutionError. The failure test now checks the framework exception and original cause instead of expecting an unwrapped exception."
+    ],
+    "dependency_warnings": "Two OpenJiuwen Pydantic class-config deprecations and one DashScope imported-API deprecation; no API calls made.",
+    "handoff_check": {
+      "exit_code": 0,
+      "errors": [],
+      "generation": 22,
+      "launch_allowed": false,
+      "precommit_warning": "Expected local tracked/untracked changes before committing this reviewed patch."
+    }
+  },
+  "service_started": false,
+  "actual_contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "official_scorer": 0,
+    "paid_api": 0
+  },
+  "scope": "Fixed/explicit-plan shared OJW OBS wire checking with seal_and_score=False; original scientific configs and production generation/serving paths unchanged.",
+  "limitations": [
+    "Synthetic request wiring is not strict-cache neural qualification, real request capacity, throughput, scientific effectiveness or full-system performance.",
+    "Plain/adaptive OBS and zero-selected-window live loops are not admitted by this check.",
+    "No OBS bundle sealing or official scoring proof is added by this check."
+  ],
+  "source_review": "docs/receipts/live-system-source-review-v1.json",
+  "original_result_reproduction": "docs/receipts/fable-result-reproduction-v1.json",
+  "runtime_snapshot": {
+    "checked_at_utc": "2026-09-10T07:30:19+00:00",
+    "llama_server_processes": 0,
+    "gpu_memory_used_mib": 0,
+    "gpu_utilization_percent": 0
+  }
+}

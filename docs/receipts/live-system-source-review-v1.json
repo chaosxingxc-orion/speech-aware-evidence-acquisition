@@ -1,0 +1,105 @@
+{
+  "schema": "saea-live-system-source-review-v1",
+  "reviewed_base": "7c2f34f3",
+  "reviewed_at_utc": "2026-09-10T07:01:40.629870+00:00",
+  "reviewer": "root",
+  "patch_equivalence": [
+    {
+      "tip": "44d8529b",
+      "patch_rows": [
+        "+ 6678f97c679787f2fd72d8a1ea241ead8c233dc2",
+        "+ 9c97e70f987da3384555d02c3ed2dd35ecd1fe1a",
+        "+ a0465ecf45db3f6ae7150e4e04c3a28cb815978b",
+        "- 44d8529b5a06e3247033326286300b6aa7995eb6"
+      ],
+      "unique_patches": 3,
+      "equivalent_patches": 1
+    },
+    {
+      "tip": "75f536c7",
+      "patch_rows": [
+        "+ 6678f97c679787f2fd72d8a1ea241ead8c233dc2",
+        "+ 9c97e70f987da3384555d02c3ed2dd35ecd1fe1a",
+        "+ a0465ecf45db3f6ae7150e4e04c3a28cb815978b",
+        "- 44d8529b5a06e3247033326286300b6aa7995eb6",
+        "- 75f536c7aad2a80644163f86889cf9df19f6ee96"
+      ],
+      "unique_patches": 3,
+      "equivalent_patches": 2
+    },
+    {
+      "tip": "a8f12368",
+      "patch_rows": [
+        "- ceb2dad4d5defe96d97aace364a5efd3c515fe88",
+        "- a00d0b29de7f72adf6479ec7e74fe0eccf6e6056",
+        "- 42fa720779475156a1631cbd645ad34f90d475dd",
+        "- a8f123682203944eeb7aa9128fbbda1faf3b5bdf"
+      ],
+      "unique_patches": 0,
+      "equivalent_patches": 4
+    },
+    {
+      "tip": "91040116",
+      "patch_rows": [
+        "+ 47f394844bc107f40ab6e0965791b26d321a7fed",
+        "+ 8805b3dfce4cc953e3eba9a356384ac8e5a13b09",
+        "+ 91040116a3491162949bf5d9866962141c008d77"
+      ],
+      "unique_patches": 3,
+      "equivalent_patches": 0
+    }
+  ],
+  "ojw_proof_exact_comparison": {
+    "tip": "75f536c7",
+    "files": [
+      "configs/baseline/e21-current-executor-four-row-proof-ojw.json",
+      "configs/dataset/e21-current-executor-four-row-proof-v1.json",
+      "configs/experiment/e21-current-executor-four-row-proof-v1.json",
+      "src/speech_aware_evidence_acquisition/rails/adapters/earnings_runtime.py",
+      "tests/unit/test_earnings_runtime_adapter.py",
+      "tests/unit/test_obs_loop_ojw.py",
+      "docs/receipts/obs/e21-current-executor-four-row-proof-v1.json",
+      "docs/receipts/probe-samples/e21-current-executor-four-row-proof-v1.json"
+    ],
+    "verdict": "IDENTICAL"
+  },
+  "neural_contacts": 0,
+  "scorer_contacts": 0,
+  "source_report": "docs/superpowers/plans/experiment-handoff/LIVE-SYSTEM-EVIDENCE-GAPS.md",
+  "conclusion": "Existing E21 bridge/preparation changes are represented on master. Live phase state/delivery/planner gaps remain, and OBS wire_check dispatch requires a shared fix.",
+  "unique_e21_tip_ancestors": [
+    {
+      "commit": "6678f97c679787f2fd72d8a1ea241ead8c233dc2",
+      "description_and_paths": [
+        "6678f97c Add held E21 current-executor proof config",
+        "",
+        "configs/experiment/e21-current-executor-four-row-proof-v1.json",
+        "docs/readiness/2026-09-09-e21-current-executor-four-row-proof.md"
+      ]
+    },
+    {
+      "commit": "9c97e70f987da3384555d02c3ed2dd35ecd1fe1a",
+      "description_and_paths": [
+        "9c97e70f Document E21 four-row plan coverage gate",
+        "",
+        "configs/experiment/e21-current-executor-four-row-proof-v1.json",
+        "docs/readiness/2026-09-09-e21-current-executor-four-row-proof.md"
+      ]
+    },
+    {
+      "commit": "a0465ecf45db3f6ae7150e4e04c3a28cb815978b",
+      "description_and_paths": [
+        "a0465ecf Support verified E21 construction subsets",
+        "",
+        "configs/baseline/e21-current-executor-four-row-proof-ojw.json",
+        "configs/dataset/e21-current-executor-four-row-proof-v1.json",
+        "configs/experiment/e21-current-executor-four-row-proof-v1.json",
+        "docs/readiness/2026-09-09-e21-current-executor-four-row-proof.md",
+        "docs/receipts/obs/e21-current-executor-four-row-proof-v1.json",
+        "docs/receipts/probe-samples/e21-current-executor-four-row-proof-v1.json",
+        "src/speech_aware_evidence_acquisition/rails/adapters/earnings_runtime.py"
+      ]
+    }
+  ],
+  "unique_ancestor_interpretation": "The three non-equivalent E21 ancestor patches were absorbed with different intermediate edits. Exact final implementation/config/test comparisons against the OJW tip, rather than cherry status alone, establish their current presence. Readiness prose has evolved. Separate shared-delivery branch commits remain held KU-S4N changes."
+}

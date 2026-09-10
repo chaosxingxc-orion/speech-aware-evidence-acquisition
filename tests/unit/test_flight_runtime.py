@@ -1722,6 +1722,189 @@ def test_wire_check_returns_a_zero_contact_receipt(tmp_path):
     assert receipt["phase_supply"] is None
 
 
+def _synthetic_obs_wire_runtime(tmp_path, *, abort_attempt=None):
+    from types import MethodType
+
+    from speech_aware_evidence_acquisition.core.base import RunResult
+    from speech_aware_evidence_acquisition.core.preparation_windows import (
+        WindowRequestBatch,
+    )
+
+    runtime = _wire_runtime(
+        tmp_path,
+        config_kwargs={"arm": "bare-core", "policy": "obs-agent-loop-ojw"},
+        **({"abort_attempt": abort_attempt} if abort_attempt is not None else {}),
+    )
+    payloads = []
+    sources = []
+    for index in range(4):
+        sample_id = "s1" if index < 2 else "s2"
+        request_id = f"WIRECHECK-route-{sample_id}#w{index + 1:04d}"
+        media_relpath = f"derived/obs-slices/WIRECHECK-route/{sample_id}/i{index:04d}.wav"
+        payloads.append(
+            {
+                "request_id": request_id,
+                "carrier_lock_key": "fake-carrier",
+                "sample_id": sample_id,
+                "speech_ref": media_relpath,
+                "media_relpath": media_relpath,
+                "audio_seconds": 1.0,
+                "sample_rate_hz": 16_000,
+                "task_instruction": "Synthetic speech task.",
+                "history": [],
+                "decoding_params": {"temperature": 0, "id_slot": index},
+            }
+        )
+        sources.append({"sample_id": sample_id, "media_relpath": media_relpath})
+    batch = WindowRequestBatch(
+        tuple(payloads),
+        tuple(f"{payload['sample_id']}#w{index + 1:04d}" for index, payload in enumerate(payloads)),
+        tuple(sources),
+    )
+    runtime.materialize_window_batch = lambda **_kwargs: batch
+
+    def dispatch(self, plan):
+        self._gate.assert_model_touch_allowed(plan, arm="bare-core")
+        # Reverse arrival order to prove parity is route/content based rather
+        # than scheduler order based.
+        for payload in reversed(payloads):
+            self._transport(json.dumps(payload).encode("utf-8"))
+        result = RunResult(
+            run_id=plan.run_id,
+            arm="bare-core",
+            outputs_path=tmp_path / "synthetic.outputs.jsonl",
+            trace_manifest_hash="a" * 64,
+            cost={"calls_used": 4},
+        )
+        return (
+            [{"sample_id": "s1"}, {"sample_id": "s2"}],
+            4,
+            "obs-loop",
+            {"contacts_per_sample": 2.0},
+            result,
+        )
+
+    runtime._dispatch_obs_policy = MethodType(dispatch, runtime)
+    return runtime
+
+
+def test_obs_wire_check_restores_runtime_and_observes_only_after_abort(tmp_path):
+    events = []
+
+    def abort(*_args, **_kwargs):
+        events.append("abort")
+        return True
+
+    runtime = _synthetic_obs_wire_runtime(tmp_path, abort_attempt=abort)
+    original = {
+        name: getattr(runtime, name)
+        for name in (
+            "_run_id",
+            "_attempt_id",
+            "_plan",
+            "_gate",
+            "_transport",
+            "_explicit_run_dir",
+        )
+    }
+    receipt = runtime.wire_check(
+        seal_and_score=False,
+        request_payload_observer=lambda _payload: events.append("observe"),
+    )
+
+    assert receipt["selected_window_count"] == 4
+    assert receipt["contact_count"] == 4
+    assert receipt["fake_gate_attempts"] == 1
+    assert receipt["fake_transport_requests"] == 4
+    assert receipt["model_contacts"] == 0
+    assert events == ["abort", "observe", "observe", "observe", "observe"]
+    assert {name: getattr(runtime, name) for name in original} == original
+
+
+def test_obs_wire_check_abort_failure_still_restores_runtime(tmp_path):
+    def abort(*_args, **_kwargs):
+        raise RuntimeError("synthetic abort failure")
+
+    runtime = _synthetic_obs_wire_runtime(tmp_path, abort_attempt=abort)
+    original = (runtime._run_id, runtime._attempt_id, runtime._gate, runtime._transport)
+    with pytest.raises(RuntimeError, match="synthetic abort failure"):
+        runtime.wire_check(seal_and_score=False)
+    assert (runtime._run_id, runtime._attempt_id, runtime._gate, runtime._transport) == original
+
+
+def test_obs_wire_check_materialization_failure_leaves_registered_state_untouched(tmp_path):
+    aborts = []
+    runtime = _synthetic_obs_wire_runtime(
+        tmp_path, abort_attempt=lambda *args, **kwargs: aborts.append((args, kwargs))
+    )
+    runtime._explicit_run_dir = tmp_path / "registered-attempt"
+    registered_dir = runtime._explicit_run_dir
+    original = (runtime._run_id, runtime._attempt_id, runtime._gate, runtime._transport)
+
+    def fail(**_kwargs):
+        raise RuntimeError("synthetic materialization failure")
+
+    runtime.materialize_window_batch = fail
+    with pytest.raises(RuntimeError, match="synthetic materialization failure"):
+        runtime.wire_check(seal_and_score=False)
+
+    assert not aborts
+    assert not registered_dir.exists()
+    assert (runtime._run_id, runtime._attempt_id, runtime._gate, runtime._transport) == original
+
+
+def test_obs_wire_check_dispatch_failure_aborts_and_restores_before_callback(tmp_path):
+    from types import MethodType
+
+    events = []
+
+    def abort(*_args, **_kwargs):
+        events.append("abort")
+        return True
+
+    runtime = _synthetic_obs_wire_runtime(tmp_path, abort_attempt=abort)
+    original = (runtime._run_id, runtime._attempt_id, runtime._gate, runtime._transport)
+
+    def fail_dispatch(self, plan):
+        self._gate.assert_model_touch_allowed(plan, arm="bare-core")
+        raise RuntimeError("synthetic dispatch failure")
+
+    runtime._dispatch_obs_policy = MethodType(fail_dispatch, runtime)
+    with pytest.raises(RuntimeError, match="synthetic dispatch failure"):
+        runtime.wire_check(
+            seal_and_score=False,
+            request_payload_observer=lambda _payload: events.append("observe"),
+        )
+
+    assert events == ["abort"]
+    assert (runtime._run_id, runtime._attempt_id, runtime._gate, runtime._transport) == original
+
+
+@pytest.mark.parametrize("wrong_ids", [("s1", "s1"), ("s1", "foreign")])
+def test_obs_wire_check_refuses_same_size_wrong_stitched_roster(tmp_path, wrong_ids):
+    runtime = _synthetic_obs_wire_runtime(tmp_path)
+    dispatch = runtime._dispatch_obs_policy
+
+    def wrong_roster(plan):
+        _rows, count, kind, details, result = dispatch(plan)
+        return [{"sample_id": value} for value in wrong_ids], count, kind, details, result
+
+    runtime._dispatch_obs_policy = wrong_roster
+    with pytest.raises(FlightRuntimeError, match="stitched output roster"):
+        runtime.wire_check(seal_and_score=False)
+
+
+def test_obs_wire_check_refuses_scoring_and_worker_override_before_materialization(tmp_path):
+    runtime = _synthetic_obs_wire_runtime(tmp_path)
+    runtime.materialize_window_batch = lambda **_kwargs: pytest.fail(
+        "refusal must happen before materialization"
+    )
+    with pytest.raises(FlightRuntimeError, match="seal_and_score=True"):
+        runtime.wire_check(seal_and_score=True)
+    with pytest.raises(FlightRuntimeError, match="do not accept workers"):
+        runtime.wire_check(seal_and_score=False, workers=2)
+
+
 def test_wire_check_never_touches_the_registered_run_id(tmp_path):
     runtime = _wire_runtime(tmp_path)
     receipt = runtime.wire_check(seal_and_score=False)
