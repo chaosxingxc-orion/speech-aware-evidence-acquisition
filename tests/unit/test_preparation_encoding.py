@@ -92,3 +92,19 @@ def test_identical_audio_in_distinct_batch_paths_uses_one_inventory_encoding_inp
     client=Client(); monkeypatch.setattr("speech_aware_evidence_acquisition.core.preparation_encoding.inspect_legacy_cached_speech_feature_cache", lambda **kwargs: type("Inspection", (), {"audio_sha256": hashlib.sha256(kwargs["audio_path"].read_bytes()).hexdigest(), "cache_key": __import__("speech_aware_evidence_acquisition.core.preparation_encoding", fromlist=["legacy_audio_feature_cache_key"]).legacy_audio_feature_cache_key(kwargs["audio_path"].read_bytes())})())
     encode_window_feature_cache(**kwargs(tmp_path,data,inv,client))
     assert len([call for call in client.calls if call[0] == "complete"]) == 1
+
+def test_verified_warm_reuse_makes_zero_current_calls(tmp_path, monkeypatch):
+    data, inv, audio = inventory(tmp_path); client=Client(); args=kwargs(tmp_path,data,inv,client)
+    key=__import__("speech_aware_evidence_acquisition.core.preparation_encoding",fromlist=["legacy_audio_feature_cache_key"]).legacy_audio_feature_cache_key((data/"slices/one.wav").read_bytes())
+    monkeypatch.setattr("speech_aware_evidence_acquisition.core.preparation_encoding.inspect_legacy_cached_speech_feature_cache", lambda **kwargs:type("Inspection",(),{"audio_sha256":audio,"cache_key":key})())
+    args["warm_provenance"]={audio:{"audio_sha256":audio,"cache_key":key,"encoder_identity":{"build":"x"},"source_contact_id":"old-1","source_provenance_receipt_sha256":"b"*64}}
+    result=encode_window_feature_cache(**args)
+    assert client.calls == [] and client.closed == 1 and result["contact_class"] == "encoder"
+
+def test_custody_refusal_precedes_client_request(tmp_path, monkeypatch):
+    data, inv, _ = inventory(tmp_path); client=Client(); args=kwargs(tmp_path,data,inv,client)
+    args["custody_guard"] = lambda: (_ for _ in ()).throw(PreparationError("custody refused"))
+    monkeypatch.setattr("speech_aware_evidence_acquisition.core.preparation_encoding.inspect_legacy_cached_speech_feature_cache", lambda **kwargs:type("Inspection",(),{"audio_sha256":hashlib.sha256(kwargs["audio_path"].read_bytes()).hexdigest(),"cache_key":__import__("speech_aware_evidence_acquisition.core.preparation_encoding",fromlist=["legacy_audio_feature_cache_key"]).legacy_audio_feature_cache_key(kwargs["audio_path"].read_bytes())})())
+    with pytest.raises(PreparationError, match="custody"):
+        encode_window_feature_cache(**args)
+    assert client.calls == [] and client.closed == 1
