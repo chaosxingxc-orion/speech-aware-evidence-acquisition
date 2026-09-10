@@ -1,0 +1,374 @@
+{
+  "experiment_id": "SAEA-E21-LOOP-SHARED-TWO-PLAN-V2",
+  "schema": "saea-e21-loop-shared-two-plan-experiment-v2",
+  "date": "2026-09-10",
+  "execution_profile": "bounded-discovery-probe",
+  "status": "HELD PLANNING SUCCESSOR; BLOCKED UNDER OWNER-FEATURE-SERVING-007. No fit, preprocessing encoder, generation, scoring, or other endpoint contact is authorized. Replacement serving mode is pending root selection between raw-audio requests backed by a fresh exact-selected-window cache with CPU-resident projector and formal window packets with decoder-only inference. Neither mode may place mmproj parameters in GPU memory.",
+  "purpose": "Held E21 LOOP successor comparing the sealed judge-targeted re-listen plan with its matched seeded-random plan. The plans are sealed predecessor component comparisons: they do not claim live initial-draft or judge selection. Every one of the 1,593 fixed windows over 44 calls is delivered; only 600 windows per arm are contacted for selective re-listen and the remainder are delivered from the sealed predecessor.",
+  "policy_binding": "obs-repair-loop-ojw through explicit OJW baseline derivatives; no hidden runtime switch.",
+  "population": {
+    "carrier": "earnings21-original",
+    "split_name": "discovery",
+    "dataset_fragment": "earnings21-discovery-conec-names",
+    "split_role": "discovery",
+    "count": 44,
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "receipt": "docs/receipts/splits.json",
+    "fixed_90s_windows_one_pass": 1593,
+    "contacted_windows_one_pass": 600,
+    "audio_seconds_delivered_one_pass": 15340.5,
+    "selection": "no draw: the whole frozen earnings21-original discovery split -- the same 44 calls, the same 1,593 fixed 90-second windows and the same split identity the sealed comparator, KC-E1, KU-E1c, KC-E1f and the null replicate all flew. The E5 split (34 kb-construction, 10 r4-e21-sub10 evaluation) is a REPORTING split; the evaluation ten carry 342 paired windows, below the program's n >= 400 rule, and are reported apart and descriptively.",
+    "estimand": "per-entity-class ConEC-mirror entity WER, pooled over all 44 calls, paired at the 90-second window and clustered at the call. EVERY window is delivered by both arms -- a flagged one repaired, an unflagged one from the predecessor -- so the paired read is over the same 1,593 units as KC-E1f's, never over the contacted subset."
+  },
+  "predecessor": {
+    "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "attempt": "attempt-20260904T233816Z-bcd338",
+    "binding_receipt": "docs/receipts/e21-predecessor-full44-direct-baseline-v2.json",
+    "binding_receipt_sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a",
+    "windows": 1593,
+    "calls": 44,
+    "why_it_is_not_reflown": "KC-E1f's reason, unchanged: the comparator already decoded every one of these windows and its bytes ARE pass 1. Re-flying pass 1 would double the contacts and -- because greedy decoding on llama-server is not bitwise reproducible across batch compositions -- would produce a pass 1 that is NOT the arm this cell is paired against.",
+    "what_it_additionally_carries_here": "the DRAFT the Reviewer criticised. The selective plan's flags were computed model-free on these exact sealed per-window hypotheses, so the binding is what makes the plan and the flight describe the same text; a binding that failed to verify would invalidate the plan as well as the repair."
+  },
+  "comparators": {
+    "sealed_direct_baseline": {
+      "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+      "attempt": "attempt-20260904T233816Z-bcd338",
+      "corpus_wer_percent": 8.19952,
+      "conec_person_entity_wer_percent": 22.48886,
+      "conec_org_entity_wer_percent": 17.21293,
+      "numeric_value_accuracy_percent": 90.73351,
+      "substitutions": 13098,
+      "deletions": 5701,
+      "insertions": 10700,
+      "reference_words": 359765,
+      "contacts": 1593
+    },
+    "kc_e1f": {
+      "run_id": "SAEA-E21-KC-E1F-REPAIR-44-V1",
+      "attempt": "attempt-20260908T040832Z-ecda9c",
+      "conec_person_entity_wer_percent": 18.752,
+      "corpus_wer_percent": 8.154,
+      "contacts": 1593,
+      "prompt_tokens": 3550695,
+      "completion_tokens": 434219,
+      "realized_gpu_hours": 1.1093,
+      "status": "scientific replica complete; historical scientific comparator retained; current shared-executor bridge proof remains pending"
+    },
+    "own_null": {
+      "run_id": "SAEA-E21-FULL44-NULL-REPLICATE-V1",
+      "person_half_width": 0.25009,
+      "person_null_interval": [
+        -0.24338,
+        0.2568
+      ],
+      "corpus_wer_half_width": 0.05793,
+      "numeric_half_width": 0.15651,
+      "insertions_half_width": 0.022178,
+      "why_it_is_here": "every non-inferiority margin in the decision rule is the half-width of this cell's own call-clustered CI90 on the same metric (family rule of 2026-09-08). No margin is imported and none is chosen after seeing a result."
+    },
+    "pairing_rule": "the fixed 90-second window is the paired unit (1,593), the call is the bootstrap cluster (44), the estimator is the pooled ratio through analysis.paired.resampled_statistic with cluster_of=analysis.e21_window_pairing.call_of, seed 20260903, 10,000 replicates, CI90, reported under both weightings."
+  },
+  "shared_protocol": {
+    "build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample",
+    "prompt_order": "evidence-first-system-v3: the evidence blocks precede the audio, and the re-cut span's own pass-1 words ride at the END of the rendered task_instruction inside the frozen frame e21-entity-repair-frame-v1 -- model output, framed as model output, never a reference transcript.",
+    "contacts_per_item": "ONE per FLAGGED window; 600 flagged windows over 44 calls per cell, against 1,593 windows total.",
+    "delivery_rule": "core.base.RESPONSE_POSTPROCESSORS entry e21-entity-repair-substitutions-v1 with max_span_tokens 4, min_anchor_ratio 0.6 and max_substituted_fraction 0.1 -- KC-E1f's own parameters, byte for byte. It runs over the RE-CUT SPAN's pass-1 words; the repaired span is re-seated in its window, and the window's whitespace-token count is preserved because the rule preserves the span's.",
+    "harness": "core.flight.FlightRuntime through the shared OpenJiuwen phase-direct-only controller program; both OJW baseline derivatives explicitly declare obs_controller_program=phase-direct-only-v1.",
+    "serving_identity_status": "PENDING; the build commit remains an intended pin and is not a qualified resident service identity",
+    "prompt_order_status": "SEMANTICS PRESERVED; exact packet request rendering and fit remain pending"
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 720,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 18500
+  },
+  "family_execution_plan": {
+    "generation_groups": 2,
+    "planned_model_calls": 1440,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 37000,
+    "meaning": "Judge-targeted and matched-random plans only; 720 calls and 18,500 speech seconds per generation ceiling, with every 1,593 windows delivered."
+  },
+  "fit_execution_plan": {
+    "status": "pending evidence-fit bridge",
+    "planned_endpoint_contacts_per_fit": 601,
+    "basis": "The shared raw-window fitter uses one GET /props plus one contacted request for each of the 600 selective re-listen windows: 601 contacts per fit. CPU request materialization is model-free; the later endpoint fit is not. Full materialization must verify this count before registration; no fit receipt is present here."
+  },
+  "source_pins": {
+    "predecessor_receipt": {
+      "repo_relpath": "docs/receipts/e21-predecessor-full44-direct-baseline-v2.json",
+      "sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a"
+    },
+    "judge_plan": {
+      "repo_relpath": "docs/receipts/obs/e21-relisten-plan-v1.json",
+      "sha256": "b9c9a0e671638c7b6e29ba1a24c8c8e368602e2ee6863b25ecf783111ad995e3"
+    },
+    "random_plan": {
+      "repo_relpath": "docs/receipts/obs/e21-relisten-twin-plan-v1.json",
+      "sha256": "92fc51444581f220064b62a144e27a4fe670647728c004cd27f161473845fccc"
+    },
+    "judge_baseline": {
+      "repo_relpath": "configs/baseline/e21-loop-1-relisten-repair-ojw.json",
+      "sha256": "e5628018d6a9de1329f3b33e316229f294edebfaf2e7363c61821bade299c922"
+    },
+    "random_baseline": {
+      "repo_relpath": "configs/baseline/e21-loop-1c-random-flag-twin-ojw.json",
+      "sha256": "a2b43dc6ad5451a3c8d40f96ea0519ceb7fcfa6da1b681f9926250f68d876197"
+    },
+    "dataset_fragment": {
+      "repo_relpath": "configs/dataset/earnings21-discovery-conec-names.json",
+      "sha256": "0daa2c9c4d6fade4e6a6203296ec34519f35b8abd88c5fd362807fdd4365abb1"
+    },
+    "superseded_model_fragment": {
+      "repo_relpath": "configs/model/q4km-e21-buf90-mmproj-gpu-04ccc72a-np6.json",
+      "sha256": "45f878c573d15decea37c97bb2fdd5bd4e7fed819642c0421dcdeafdf48cd293"
+    },
+    "replacement_model_fragment": {
+      "status": "PENDING",
+      "repo_relpath": null,
+      "sha256": null,
+      "owner_control": "OWNER-FEATURE-SERVING-007"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "e21-loop-judge-plan-fit",
+      "run_id": "SAEA-E21-LOOP-JUDGE-PLAN-FIT-V1",
+      "attempt_id": "PENDING-REGISTERED-ATTEMPT-E21_LOOP_JUDGE_PLAN_FIT",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit"
+      ],
+      "model_fragment": null,
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-loop-1-relisten-repair-ojw",
+      "arm": "fixed-legal-context",
+      "policy": "obs-repair-loop-ojw",
+      "predecessor": "sealed_direct_baseline",
+      "purpose": "Held fit cell; CPU request materialization is model-free, while the later endpoint fit remains pending for the sealed judge-targeted selective re-listen generation parent.",
+      "readiness": {
+        "state": "held",
+        "reason": "Held pending evidence-fit bridge, source receipt verification, exposure registration with consumed=false, measured serving geometry, and root readiness review.",
+        "requirements": []
+      },
+      "superseded_model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "model_binding": {
+        "status": "PENDING_ROOT_SELECTION",
+        "owner_control": "OWNER-FEATURE-SERVING-007",
+        "replacement_model_fragment": null,
+        "fresh_cache_manifest": null,
+        "promotion_receipt": null,
+        "request_fit_receipt": null,
+        "runtime_identity_qualified": false,
+        "contact_authorized": false,
+        "allowed_modes": [
+          "raw-audio-precomputed-cache-cpu-projector",
+          "formal-window-packets-decoder-only"
+        ],
+        "selected_mode": null,
+        "gpu_mmproj_allowed": false
+      }
+    },
+    {
+      "cell_id": "e21-loop-judge-plan-generation",
+      "run_id": "SAEA-E21-LOOP-JUDGE-PLAN-GENERATION-V1",
+      "attempt_id": "PENDING-REGISTERED-ATTEMPT-E21_LOOP_JUDGE_PLAN_GENERATION",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "worker",
+        "campaign"
+      ],
+      "model_fragment": null,
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-loop-1-relisten-repair-ojw",
+      "arm": "fixed-legal-context",
+      "policy": "obs-repair-loop-ojw",
+      "predecessor": "sealed_direct_baseline",
+      "purpose": "Held generation parent for the sealed judge-targeted selective re-listen plan.",
+      "readiness": {
+        "state": "held",
+        "reason": "Held pending evidence-fit bridge, source receipt verification, exposure registration with consumed=false, measured serving geometry, and root readiness review.",
+        "requirements": []
+      },
+      "superseded_model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "model_binding": {
+        "status": "PENDING_ROOT_SELECTION",
+        "owner_control": "OWNER-FEATURE-SERVING-007",
+        "replacement_model_fragment": null,
+        "fresh_cache_manifest": null,
+        "promotion_receipt": null,
+        "request_fit_receipt": null,
+        "runtime_identity_qualified": false,
+        "contact_authorized": false,
+        "allowed_modes": [
+          "raw-audio-precomputed-cache-cpu-projector",
+          "formal-window-packets-decoder-only"
+        ],
+        "selected_mode": null,
+        "gpu_mmproj_allowed": false
+      }
+    },
+    {
+      "cell_id": "e21-loop-random-plan-fit",
+      "run_id": "SAEA-E21-LOOP-RANDOM-PLAN-FIT-V1",
+      "attempt_id": "PENDING-REGISTERED-ATTEMPT-E21_LOOP_RANDOM_PLAN_FIT",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit"
+      ],
+      "model_fragment": null,
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-loop-1c-random-flag-twin-ojw",
+      "arm": "fixed-legal-context",
+      "policy": "obs-repair-loop-ojw",
+      "predecessor": "sealed_direct_baseline",
+      "purpose": "Held fit cell; CPU request materialization is model-free, while the later endpoint fit remains pending for the matched seeded-random selective re-listen generation parent.",
+      "readiness": {
+        "state": "held",
+        "reason": "Held pending evidence-fit bridge, source receipt verification, exposure registration with consumed=false, measured serving geometry, and root readiness review.",
+        "requirements": []
+      },
+      "superseded_model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "model_binding": {
+        "status": "PENDING_ROOT_SELECTION",
+        "owner_control": "OWNER-FEATURE-SERVING-007",
+        "replacement_model_fragment": null,
+        "fresh_cache_manifest": null,
+        "promotion_receipt": null,
+        "request_fit_receipt": null,
+        "runtime_identity_qualified": false,
+        "contact_authorized": false,
+        "allowed_modes": [
+          "raw-audio-precomputed-cache-cpu-projector",
+          "formal-window-packets-decoder-only"
+        ],
+        "selected_mode": null,
+        "gpu_mmproj_allowed": false
+      }
+    },
+    {
+      "cell_id": "e21-loop-random-plan-generation",
+      "run_id": "SAEA-E21-LOOP-RANDOM-PLAN-GENERATION-V1",
+      "attempt_id": "PENDING-REGISTERED-ATTEMPT-E21_LOOP_RANDOM_PLAN_GENERATION",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "worker",
+        "campaign"
+      ],
+      "model_fragment": null,
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-loop-1c-random-flag-twin-ojw",
+      "arm": "fixed-legal-context",
+      "policy": "obs-repair-loop-ojw",
+      "predecessor": "sealed_direct_baseline",
+      "purpose": "Held generation parent for the matched seeded-random selective re-listen plan.",
+      "readiness": {
+        "state": "held",
+        "reason": "Held pending evidence-fit bridge, source receipt verification, exposure registration with consumed=false, measured serving geometry, and root readiness review.",
+        "requirements": []
+      },
+      "superseded_model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
+      "model_binding": {
+        "status": "PENDING_ROOT_SELECTION",
+        "owner_control": "OWNER-FEATURE-SERVING-007",
+        "replacement_model_fragment": null,
+        "fresh_cache_manifest": null,
+        "promotion_receipt": null,
+        "request_fit_receipt": null,
+        "runtime_identity_qualified": false,
+        "contact_authorized": false,
+        "allowed_modes": [
+          "raw-audio-precomputed-cache-cpu-projector",
+          "formal-window-packets-decoder-only"
+        ],
+        "selected_mode": null,
+        "gpu_mmproj_allowed": false
+      }
+    }
+  ],
+  "gain_definition": {
+    "formula": "gain(X over Y) = WER(Y) - WER(X)",
+    "interpretation": "Positive gain means X has lower WER than Y; all PERSON admission and targeting bounds use this orientation."
+  },
+  "decision": {
+    "state": "held",
+    "primary": "Admission requires LB90 gain(judge-plan over sealed direct baseline) > 0, LB90 gain(judge-plan over KC-E1f) >= -0.25009, and realized generation calls <= 50% of 1,593. Targeting is a separate attribution requirement: LB90 gain(judge-plan over matched-random twin) > 0.",
+    "guards": [
+      "delivery integrity: every delivered window equals its sealed predecessor outside accepted substitution spans and preserves its identical whitespace-token count; abort the read on any violation.",
+      "window coverage: all 1,593 windows are delivered exactly once, contacted or back-filled; abort the read on any violation.",
+      "corpus WER non-inferiority: UB90(judge-plan WER - sealed baseline WER) <= +0.05793.",
+      "numeric-value accuracy non-inferiority: LB90(judge-plan accuracy - sealed baseline accuracy) >= -0.15651.",
+      "over-generation non-inferiority: UB90(judge-plan minus sealed baseline) on insertion rate in percentage points (100 times insertions divided by reference words) <= +0.022178.",
+      "negation-critical error rate: report the inherited taxonomy ID as advisory only; the null interval excludes zero, so this carrier cannot resolve that clause."
+    ],
+    "claim_surface": "Discovery component comparison only; no live initial-draft/judge-selection claim, no superiority or Stage-3 claim.",
+    "blockers": [
+      "Evidence-fit bridge is not yet bound.",
+      "Current live proof is not a readiness receipt for these cells.",
+      "Exposure rows, measured geometry, and root review remain pending."
+    ],
+    "improvement": "In addition to admission and all guards, an improvement over KC-E1f requires LB90 gain(judge-plan over KC-E1f) > 0; targeting remains a separate attribution conclusion."
+  },
+  "preserve_wire_responses": true,
+  "geometry_note": {
+    "status": "BLOCKED",
+    "owner_control": "OWNER-FEATURE-SERVING-007",
+    "selected_geometry": null,
+    "basis": "Select geometry only after the exact packet request shape passes request fit and the decoder-only resident inference identity passes memory qualification.",
+    "superseded_basis": {
+      "provisional": "-c 36864 -np 6, 6,144 tokens per slot",
+      "group_fallback": "-c 36864 -np 4, 9,216 tokens per slot",
+      "status": "Both are provisional until the evidence-fit bridge and prompt-fit evidence are bound."
+    }
+  },
+  "supersedes_planning_fragment": "configs/experiment/e21-loop-shared-two-plan-v1.json",
+  "feature_serving_gate": {
+    "status": "BLOCKED",
+    "owner_control": "OWNER-FEATURE-SERVING-007",
+    "contact_authorized": false,
+    "replacement_mode": {
+      "status": "PENDING_ROOT_SELECTION",
+      "owner_control": "OWNER-FEATURE-SERVING-007",
+      "selected_mode": null,
+      "allowed_modes": [
+        {
+          "mode": "raw-audio-precomputed-cache-cpu-projector",
+          "wire_semantics": "Preserve the existing raw input_audio request and prompt order.",
+          "resident_requirement": "Load the projector in CPU memory with --no-mmproj-offload; no mmproj parameters may reside in GPU memory.",
+          "cache_requirement": "Use only a fresh current-build exact-window cache. Validate the complete roster before serving and the exact audio-derived cache key and bound cache bytes before every dispatch; refuse missing or invalid entries."
+        },
+        {
+          "mode": "formal-window-packets-decoder-only",
+          "wire_semantics": "Send the exact precomputed window features through the registered input_speech_features transport.",
+          "resident_requirement": "Use role inference with --no-mmproj and decoder-only model_files.",
+          "cache_requirement": "Promote a fresh current-build exact-window cache into formal packets and bind the complete window roster through a strict promotion receipt."
+        }
+      ],
+      "common_requirements": [
+        "Materialize and hash the exact complete cell-specific E21 window roster before encoding.",
+        "Use fresh artifacts produced by the intended current build; the historical cache is forbidden.",
+        "Stop the separately registered preprocessing session before resident inference serving.",
+        "Qualify the selected no-GPU-mmproj resident service identity and exact request fit before registration.",
+        "Register the replacement model fragment and all cache or packet receipts, fit receipts, exposure rows, and one-time attempts before contact."
+      ],
+      "owner_preference": "Prefer raw-audio-precomputed-cache-cpu-projector only if an explicit tested refusal-before-encoding boundary is qualified; preflight validation alone is insufficient because the pinned runtime falls through to encoding. Keep formal-window-packets-decoder-only as fallback."
+    },
+    "forbidden_substitutes": [
+      "The superseded GPU-mmproj model fragment is not an executable fallback.",
+      "The historical feature cache is not an input to either replacement mode.",
+      "A cache or packet for a parent call is not evidence for one exact derived window."
+    ]
+  }
+}
