@@ -738,7 +738,11 @@ def legacy_audio_feature_cache_key(audio_bytes: bytes) -> str:
 
 
 def _validated_legacy_cached_chunks(
-    *, audio_bytes: bytes, legacy_cache_dir: Path, expected_n_embd: int
+    *,
+    audio_bytes: bytes,
+    legacy_cache_dir: Path,
+    expected_n_embd: int,
+    strict_filenames: bool = False,
 ) -> tuple[tuple[SpeechFeatureChunkData, ...], tuple[LegacyCachedChunkDescriptor, ...]]:
     if (
         isinstance(expected_n_embd, bool)
@@ -756,6 +760,17 @@ def _validated_legacy_cached_chunks(
         if not suffix.isdecimal():
             continue
         ordinal = int(suffix)
+        if strict_filenames and path.name != f"{key}_o{ordinal}.feat":
+            raise FrozenCoreError(
+                f"legacy feature-cache chunk filename {path.name!r} is not canonical"
+            )
+        if strict_filenames:
+            try:
+                path.resolve().relative_to(cache_dir.resolve())
+            except ValueError as error:
+                raise FrozenCoreError(
+                    f"legacy feature-cache chunk {path.name!r} resolves outside the cache directory"
+                ) from error
         if ordinal in candidates:
             raise FrozenCoreError(f"duplicate legacy feature-cache ordinal {ordinal}")
         candidates[ordinal] = path
@@ -854,6 +869,7 @@ def inspect_legacy_cached_speech_feature_cache(
         audio_bytes=audio_bytes,
         legacy_cache_dir=Path(legacy_cache_dir),
         expected_n_embd=expected_n_embd,
+        strict_filenames=True,
     )
     return LegacyFeatureCacheInspection(
         audio_sha256=_sha256(audio_bytes),
