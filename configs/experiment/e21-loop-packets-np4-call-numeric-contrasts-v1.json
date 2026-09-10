@@ -1,0 +1,93 @@
+{
+  "experiment_id": "SAEA-E21-LOOP-PACKETS-NP4-CALL-NUMERIC-CONTRASTS-V1",
+  "execution_profile": "model-free-check",
+  "readiness": {
+    "state": "PREPARING",
+    "reason": "Both complete LOOP manifests, integrity/coverage checks, first official scores and saved1593-window views must be bound before contrasts."
+  },
+  "analysis": {
+    "id_field": "sample_id",
+    "expected_ids_count": 44,
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-SAVED-SCORE-ANALYSIS-V1/call-metadata.json",
+      "sha256": "5631d6fee9ba032f95abdabf2f9ec9e7fc680b6fe9deb48cc37e50d72a12af23",
+      "rows_key": "rows"
+    },
+    "inputs": {
+      "historical_comparator": {
+        "path": "/home/chao/saea-worktrees/e21-window-packets/docs/checks/speech-aware-evidence-acquisition/2026-09-06-e21-agentic-metric-baseline/scoring/verified-score-read.json",
+        "sha256": "6de0adee1c63972305e9235650f2163f84e9e19f4eb92cb05d6cac79fbf5be4f",
+        "rows_key": "scores.numeric-value-accuracy-v1.per_sample"
+      },
+      "historical_kc_e1f": {
+        "path": "/home/chao/saea-worktrees/e21-window-packets/docs/checks/speech-aware-evidence-acquisition/2026-09-07-e21-kc-e1f-repair-44-v1/flight/score-read.json",
+        "sha256": "28ced4157a918b9deb5bdfee1620fe4ab8c74cfa8ed69b52dbd9d1731e923f7f",
+        "rows_key": "read.scores.numeric-value-accuracy-v1.per_sample"
+      },
+      "judge": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-LOOP-PACKETS-NP4-JUDGE-GENERATION-V1/window-statistics.json",
+        "sha256": null,
+        "rows_key": "call_scores.numeric-value-accuracy-v1.per_sample"
+      },
+      "twin": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-LOOP-PACKETS-NP4-TWIN-GENERATION-V1/window-statistics.json",
+        "sha256": null,
+        "rows_key": "call_scores.numeric-value-accuracy-v1.per_sample"
+      }
+    },
+    "seed": 20260903,
+    "n_replicates": 10000,
+    "ci_level": 0.9,
+    "cluster_field": "cluster",
+    "groupings": {
+      "sector": "sector",
+      "sample_rate": "sample_rate_hz"
+    },
+    "metrics": {
+      "numeric_accuracy": {
+        "numerator_field": "matched_numeric_words",
+        "denominator_field": "expected_numeric_words",
+        "direction": "higher"
+      }
+    },
+    "contrasts": [
+      {
+        "name": "judge_versus_historical_comparator",
+        "left": "historical_comparator",
+        "right": "judge"
+      },
+      {
+        "name": "twin_versus_historical_comparator",
+        "left": "historical_comparator",
+        "right": "twin"
+      },
+      {
+        "name": "judge_versus_historical_kc_e1f",
+        "left": "historical_kc_e1f",
+        "right": "judge"
+      },
+      {
+        "name": "twin_versus_historical_kc_e1f",
+        "left": "historical_kc_e1f",
+        "right": "twin"
+      },
+      {
+        "name": "judge_versus_twin",
+        "left": "twin",
+        "right": "judge"
+      }
+    ],
+    "include_equal_cluster_mean": true,
+    "max_workers": 1
+  },
+  "interpretation": {
+    "gain": "For error rates, positive means comparator error minus cell error in percentage points. For numeric accuracy, positive means cell accuracy minus comparator accuracy.",
+    "primary": "Judge PERSON gain over historical direct baseline requires LB90>0; PERSON gain over KC-E1f requires LB90>=-0.25009; realized generation calls<=796.5; all applicable guards pass.",
+    "targeting": "Judge-vs-twin PERSON LB90>0 is required for the targeting attribution, separately from component admission.",
+    "guards": "Corpus WER gain LB90>=-0.05793; numeric accuracy gain LB90>=-0.15651; insertion-rate gain LB90>=-0.022178. Preserve all1593 windows and exact predecessor text outside accepted substitution spans with identical whitespace-token counts. Nonentity/ORG and semantic high-impact errors are descriptive, not newly added gates.",
+    "reporting": "Twin-vs-direct and twin-vs-KC-E1f are predefined reporting comparisons, not extra admission gates. Publish all five comparisons.",
+    "weighting": "Natural pooled call-cluster bootstrap is primary; inherited equal eligible-call mean is reported beside it with the same fixed draws. Sector and sample-rate groupings are descriptive. Preserve sign disagreements and guard sensitivities; do not invent a second positive-CI gate.",
+    "scope": "Full44 discovery component comparison using sealed predecessor and selection plans. No live initial-draft, online selection, superiority or final meeting-minutes claim.",
+    "protocol_identity": "Both current arms share np4/c36864/max1024 formal packets. Historical raw-audio comparator differences remain explicit. Component counts and saved window/call views are related evidence, not independent replications."
+  }
+}

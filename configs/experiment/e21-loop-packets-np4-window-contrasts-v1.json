@@ -1,0 +1,116 @@
+{
+  "experiment_id": "SAEA-E21-LOOP-PACKETS-NP4-WINDOW-CONTRASTS-V1",
+  "execution_profile": "model-free-check",
+  "readiness": {
+    "state": "PREPARING",
+    "reason": "Both complete LOOP manifests, integrity/coverage checks, first official scores and saved1593-window views must be bound before contrasts."
+  },
+  "analysis": {
+    "id_field": "window_id",
+    "expected_ids_count": 1593,
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-SAVED-SCORE-ANALYSIS-V1/window-metadata.json",
+      "sha256": "1c5a7c34e208a4148aa1d2d92f97f2116667285cd77dccdaa5ac990335046e75",
+      "rows_key": "rows"
+    },
+    "inputs": {
+      "historical_comparator": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-WINDOW-PAIRING-V1/kce1f-v2-window-rows-comparator.json",
+        "sha256": "98d431f24f6d94a4f08c1830ca08ed271106d33d660ac40d0fa93a1c3d7db144",
+        "rows_key": "rows"
+      },
+      "historical_kc_e1f": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-WINDOW-PAIRING-V1/kce1f-v2-window-rows-kc-e1f.json",
+        "sha256": "a668a45cec5cef38670279ab96f3d20dc9be328bb2c46569cd762a71193f6284",
+        "rows_key": "rows"
+      },
+      "judge": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-LOOP-PACKETS-NP4-JUDGE-GENERATION-V1/window-statistics.json",
+        "sha256": null,
+        "rows_key": "rows"
+      },
+      "twin": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-LOOP-PACKETS-NP4-TWIN-GENERATION-V1/window-statistics.json",
+        "sha256": null,
+        "rows_key": "rows"
+      }
+    },
+    "seed": 20260903,
+    "n_replicates": 10000,
+    "ci_level": 0.9,
+    "cluster_field": "cluster",
+    "groupings": {
+      "sector": "sector",
+      "sample_rate": "sample_rate_hz"
+    },
+    "metrics": {
+      "corpus_wer": {
+        "numerator_field": "errors",
+        "denominator_field": "reference_words",
+        "direction": "lower"
+      },
+      "person_wer": {
+        "numerator_field": "person_errors",
+        "denominator_field": "person_reference_words",
+        "direction": "lower"
+      },
+      "non_entity_wer": {
+        "numerator_field": [
+          "entity_class_counts.__NON_ENTITY__.0",
+          "entity_class_counts.__NON_ENTITY__.1"
+        ],
+        "denominator_field": "entity_class_counts.__NON_ENTITY__.2",
+        "direction": "lower"
+      },
+      "insertion_rate": {
+        "numerator_field": "insertions",
+        "denominator_field": "reference_words",
+        "direction": "lower"
+      },
+      "org_wer": {
+        "numerator_field": "org_errors",
+        "denominator_field": "org_reference_words",
+        "direction": "lower"
+      }
+    },
+    "contrasts": [
+      {
+        "name": "judge_versus_historical_comparator",
+        "left": "historical_comparator",
+        "right": "judge"
+      },
+      {
+        "name": "twin_versus_historical_comparator",
+        "left": "historical_comparator",
+        "right": "twin"
+      },
+      {
+        "name": "judge_versus_historical_kc_e1f",
+        "left": "historical_kc_e1f",
+        "right": "judge"
+      },
+      {
+        "name": "twin_versus_historical_kc_e1f",
+        "left": "historical_kc_e1f",
+        "right": "twin"
+      },
+      {
+        "name": "judge_versus_twin",
+        "left": "twin",
+        "right": "judge"
+      }
+    ],
+    "include_equal_cluster_mean": true,
+    "max_workers": 4
+  },
+  "interpretation": {
+    "gain": "For error rates, positive means comparator error minus cell error in percentage points. For numeric accuracy, positive means cell accuracy minus comparator accuracy.",
+    "primary": "Judge PERSON gain over historical direct baseline requires LB90>0; PERSON gain over KC-E1f requires LB90>=-0.25009; realized generation calls<=796.5; all applicable guards pass.",
+    "targeting": "Judge-vs-twin PERSON LB90>0 is required for the targeting attribution, separately from component admission.",
+    "guards": "Corpus WER gain LB90>=-0.05793; numeric accuracy gain LB90>=-0.15651; insertion-rate gain LB90>=-0.022178. Preserve all1593 windows and exact predecessor text outside accepted substitution spans with identical whitespace-token counts. Nonentity/ORG and semantic high-impact errors are descriptive, not newly added gates.",
+    "reporting": "Twin-vs-direct and twin-vs-KC-E1f are predefined reporting comparisons, not extra admission gates. Publish all five comparisons.",
+    "weighting": "Natural pooled call-cluster bootstrap is primary; inherited equal eligible-call mean is reported beside it with the same fixed draws. Sector and sample-rate groupings are descriptive. Preserve sign disagreements and guard sensitivities; do not invent a second positive-CI gate.",
+    "scope": "Full44 discovery component comparison using sealed predecessor and selection plans. No live initial-draft, online selection, superiority or final meeting-minutes claim.",
+    "protocol_identity": "Both current arms share np4/c36864/max1024 formal packets. Historical raw-audio comparator differences remain explicit. Component counts and saved window/call views are related evidence, not independent replications."
+  }
+}
