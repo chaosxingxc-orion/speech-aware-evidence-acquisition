@@ -1,0 +1,157 @@
+{
+  "experiment_id": "SAEA-E21-DR-PACKETS-WINDOW-CONTRASTS-V1",
+  "execution_profile": "model-free-check",
+  "readiness": {
+    "state": "PREPARING",
+    "reason": "All four new window-statistics artifacts must be sealed and their measured hashes bound before this configuration can execute. No current score has been read."
+  },
+  "analysis": {
+    "id_field": "window_id",
+    "expected_ids_count": 1593,
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-SAVED-SCORE-ANALYSIS-V1/window-metadata.json",
+      "sha256": "1c5a7c34e208a4148aa1d2d92f97f2116667285cd77dccdaa5ac990335046e75",
+      "rows_key": "rows"
+    },
+    "inputs": {
+      "historical_comparator": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-WINDOW-PAIRING-V1/kce1f-v2-window-rows-comparator.json",
+        "sha256": "98d431f24f6d94a4f08c1830ca08ed271106d33d660ac40d0fa93a1c3d7db144",
+        "rows_key": "rows"
+      },
+      "historical_kc_e1f": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-WINDOW-PAIRING-V1/kce1f-v2-window-rows-kc-e1f.json",
+        "sha256": "a668a45cec5cef38670279ab96f3d20dc9be328bb2c46569cd762a71193f6284",
+        "rows_key": "rows"
+      },
+      "unit_constrained": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-UNIT-GENERATION-V2/window-statistics-constrained.json",
+        "sha256": null,
+        "rows_key": "rows"
+      },
+      "unit_free": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-UNIT-GENERATION-V2/window-statistics-free.json",
+        "sha256": null,
+        "rows_key": "rows"
+      },
+      "self_constrained": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-SELF-GENERATION-V2/window-statistics-constrained.json",
+        "sha256": null,
+        "rows_key": "rows"
+      },
+      "self_free": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-SELF-GENERATION-V2/window-statistics-free.json",
+        "sha256": null,
+        "rows_key": "rows"
+      }
+    },
+    "seed": 20260903,
+    "n_replicates": 10000,
+    "ci_level": 0.9,
+    "cluster_field": "cluster",
+    "groupings": {
+      "sector": "sector",
+      "sample_rate": "sample_rate_hz"
+    },
+    "metrics": {
+      "corpus_wer": {
+        "numerator_field": "errors",
+        "denominator_field": "reference_words",
+        "direction": "lower"
+      },
+      "person_wer": {
+        "numerator_field": "person_errors",
+        "denominator_field": "person_reference_words",
+        "direction": "lower"
+      },
+      "non_entity_wer": {
+        "numerator_field": [
+          "entity_class_counts.__NON_ENTITY__.0",
+          "entity_class_counts.__NON_ENTITY__.1"
+        ],
+        "denominator_field": "entity_class_counts.__NON_ENTITY__.2",
+        "direction": "lower"
+      },
+      "insertion_rate": {
+        "numerator_field": "insertions",
+        "denominator_field": "reference_words",
+        "direction": "lower"
+      },
+      "org_wer": {
+        "numerator_field": "org_errors",
+        "denominator_field": "org_reference_words",
+        "direction": "lower"
+      }
+    },
+    "contrasts": [
+      {
+        "name": "unit_constrained_versus_historical_comparator",
+        "left": "historical_comparator",
+        "right": "unit_constrained"
+      },
+      {
+        "name": "unit_free_versus_historical_comparator",
+        "left": "historical_comparator",
+        "right": "unit_free"
+      },
+      {
+        "name": "self_constrained_versus_historical_comparator",
+        "left": "historical_comparator",
+        "right": "self_constrained"
+      },
+      {
+        "name": "self_free_versus_historical_comparator",
+        "left": "historical_comparator",
+        "right": "self_free"
+      },
+      {
+        "name": "unit_vs_self_constrained",
+        "left": "self_constrained",
+        "right": "unit_constrained"
+      },
+      {
+        "name": "unit_vs_self_free",
+        "left": "self_free",
+        "right": "unit_free"
+      },
+      {
+        "name": "free_vs_constrained_unit",
+        "left": "unit_constrained",
+        "right": "unit_free"
+      },
+      {
+        "name": "free_vs_constrained_self",
+        "left": "self_constrained",
+        "right": "self_free"
+      },
+      {
+        "name": "unit_constrained_versus_historical_kc_e1f",
+        "left": "historical_kc_e1f",
+        "right": "unit_constrained"
+      },
+      {
+        "name": "unit_free_versus_historical_kc_e1f",
+        "left": "historical_kc_e1f",
+        "right": "unit_free"
+      },
+      {
+        "name": "self_constrained_versus_historical_kc_e1f",
+        "left": "historical_kc_e1f",
+        "right": "self_constrained"
+      },
+      {
+        "name": "self_free_versus_historical_kc_e1f",
+        "left": "historical_kc_e1f",
+        "right": "self_free"
+      }
+    ]
+  },
+  "interpretation": {
+    "gain": "Positive means fewer errors. All ratios are pooled counts, reported in percentage points.",
+    "historical_comparators": "Raw-audio historical protocols differ from current formal-packet transport; retain protocol limitation.",
+    "matched_attribution": "unit versus self under the same deterministic delivery is the draft-source contrast.",
+    "correlation": "Two deliveries share each raw generation parent; they are not independent replications.",
+    "numeric_guard": "Use complete per-call numeric-value scores in a separate call-pooled configuration; window numeric matches are descriptive.",
+    "evaluation_ten": "342windows, descriptive only; no fresh effectiveness interval."
+  }
+}

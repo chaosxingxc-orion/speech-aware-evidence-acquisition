@@ -87,3 +87,26 @@ configuration, gate interpretation, and the final verdict. Complete official
 score jobs run one at a time and may overlap the next eligible generation.
 Do not mutate the active inference checkout, rescore incomplete manifests,
 rewrite historical outputs, or expand the model experiment to keep the GPU busy.
+
+## Prepared executable inputs
+
+The full44 metadata preparation receipt is external at
+/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-SAVED-SCORE-ANALYSIS-V1/metadata-preparation-receipt.json.
+It binds the registered44-call roster and the existing comparator window roster.
+Window metadata SHA256: 1c5a7c34e208a4148aa1d2d92f97f2116667285cd77dccdaa5ac990335046e75.
+Call metadata SHA256: 5631d6fee9ba032f95abdabf2f9ec9e7fc680b6fe9deb48cc37e50d72a12af23.
+
+configs/experiment/e21-dr-packets-window-contrasts-v1.json freezes the complete
+contrast list and metric definitions. Its four future input hashes intentionally
+remain null while generation is incomplete; the hash-pinned shared reader refuses
+them. Bind measured saved-statistics hashes after each complete score and do not
+change the contrast list from the observed outcomes. The entry is
+python -m speech_aware_evidence_acquisition.analysis.pooled_ratio_compare CONFIG OUTPUT.
+The window-statistics preparation entry is
+python -m speech_aware_evidence_acquisition.analysis.e21_score_window_read --config CONFIG --output OUTPUT.
+
+The generic ratio reader supports a summed numerator over existing nested count
+fields, preserving the historical entity-class row bytes. Undefined pooled
+bootstrap draws produce an unavailable interval without redrawing or substituting
+a value. A single zero-denominator call does not disable all otherwise-defined
+pooled draws.
