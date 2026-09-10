@@ -35,8 +35,12 @@ def _sources(inventory: Mapping[str, object]) -> dict[str, Mapping[str, object]]
             source = request.get("source_provenance")
             if not isinstance(source, Mapping):
                 raise PreparationError("window inventory request provenance is invalid")
-            request_sources[(batch["name"], request["request_key"])] = source
+            reference = (batch["name"], request["request_key"])
+            if reference in request_sources:
+                raise PreparationError("window inventory repeats a batch/request reference")
+            request_sources[reference] = source
     result = {}
+    covered = set()
     for entry in inventory.get("encoding_inputs", []):
         if not isinstance(entry, Mapping) or not isinstance(entry.get("requests"), list):
             raise PreparationError("window inventory encoding input is invalid")
@@ -44,14 +48,24 @@ def _sources(inventory: Mapping[str, object]) -> dict[str, Mapping[str, object]]
         refs = entry["requests"]
         if not refs or not isinstance(refs[0], Mapping):
             raise PreparationError("window inventory encoding input has no request reference")
-        source = request_sources.get((refs[0].get("batch"), refs[0].get("request_key")))
-        if source is None or _sha(source.get("sha256"), "window source audio_sha256") != audio:
-            raise PreparationError("window inventory encoding reference disagrees with source")
+        for ref in refs:
+            if not isinstance(ref, Mapping):
+                raise PreparationError("window inventory encoding reference is invalid")
+            reference = (ref.get("batch"), ref.get("request_key"))
+            source = request_sources.get(reference)
+            if source is None or _sha(source.get("sha256"), "window source audio_sha256") != audio:
+                raise PreparationError("window inventory encoding reference disagrees with source")
+            if reference in covered:
+                raise PreparationError("window inventory repeats an encoding request reference")
+            covered.add(reference)
+        source = request_sources[(refs[0].get("batch"), refs[0].get("request_key"))]
         if audio in result:
             raise PreparationError("window inventory repeats encoding input audio")
         result[audio] = source
     if not result:
         raise PreparationError("window inventory contains no encoding inputs")
+    if covered != set(request_sources):
+        raise PreparationError("window inventory request coverage differs from encoding inputs")
     return result
 
 
@@ -89,7 +103,20 @@ def encode_window_feature_cache(*, inventory: Mapping[str, object], data_root: P
     sources = _sources(inventory)
     inventory_sha256 = digest(inventory)
     warm = warm_provenance or {}
-    inputs = {"inventory_sha256": inventory_sha256, "encoder_identity": identity, "legacy_cache_dir": str(cache), "expected_n_embd": expected_n_embd, "run_id": run_id, "attempt_id": attempt_id, "session_id": session_id, "runtime_receipt_file_sha256": runtime_receipt_file_sha256, "runtime_receipt_document_sha256": runtime_receipt_document_sha256, "session_receipt_file_sha256": session_receipt_file_sha256}
+    inputs = {"inventory_sha256": inventory_sha256, "encoder_identity": identity, "legacy_cache_dir": str(cache), "expected_n_embd": expected_n_embd, "run_id": run_id, "attempt_id": attempt_id, "session_id": session_id, "runtime_receipt_file_sha256": runtime_receipt_file_sha256, "runtime_receipt_document_sha256": runtime_receipt_document_sha256, "session_receipt_file_sha256": session_receipt_file_sha256, "instruction": instruction, "decoding_params": dict(decoding_params)}
+    # Generic prepare_artifact may return an existing encoder artifact without
+    # running its producer. Recheck live source bytes and validated cache chunks
+    # before allowing that warm return.
+    if Path(output_path).exists():
+        for audio, source in sources.items():
+            media, _content, key = _checked_media(root, source, audio)
+            if not tuple(cache.glob(f"{key}_o*.feat")):
+                raise PreparationError("prepared encoding cache is missing before warm reuse")
+            checked = inspect_legacy_cached_speech_feature_cache(
+                audio_path=media, legacy_cache_dir=cache, expected_n_embd=expected_n_embd)
+            if checked.audio_sha256 != audio or checked.cache_key != key:
+                raise PreparationError("prepared encoding cache differs from current source")
+
     def produce():
         entries = []; fresh = []; closed = None
         try:
