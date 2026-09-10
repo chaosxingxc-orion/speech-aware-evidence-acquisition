@@ -82,6 +82,11 @@ from ..config import (
     runtime_receipt_relpath,
 )
 from ..model.speech_features import materialize_legacy_cached_speech_feature_packets
+from ..preparation_runtime import (
+    assert_stable_file_fingerprint as _assert_file_fingerprint,
+    verify_feature_encoder_runtime,
+    verify_pinned_file as _verify_pinned_file,
+)
 from ..scoring_batch import load_score_jobs, run_score_batch
 from ..tracing import set_current_trace_buffer
 from ..tracking import ledger_row_for_bundle
@@ -254,50 +259,6 @@ _OBS_OUTPUTS_FIELDS = frozenset(
 #: * a fragment declaring a plain integer renders byte-identical requests (the
 #:   base mapping is passed through unchanged, not rebuilt).
 MAX_TOKENS_POLICY_KEY = "policy"
-
-
-def _assert_file_fingerprint(
-    path: Path, fingerprint: tuple[int, int, int], label: str
-) -> None:
-    """Refuse a receipt that changed between hashing and JSON loading."""
-
-    from ..preparation import PreparationError
-
-    try:
-        current = path.stat()
-    except OSError as error:
-        raise PreparationError(f"cannot restat {label} {path}: {error}") from error
-    if (current.st_ino, current.st_size, current.st_mtime_ns) != fingerprint:
-        raise PreparationError(f"{label} changed while it was read")
-
-
-def _verify_pinned_file(
-    path: Path, *, expected_size: object, expected_sha256: object, label: str
-) -> str:
-    """Verify the receipt's size and SHA pin against the actual confined file."""
-
-    from ..preparation import PreparationError, hash_stable_file
-
-    if (
-        isinstance(expected_size, bool)
-        or not isinstance(expected_size, int)
-        or expected_size < 0
-    ):
-        raise PreparationError(f"{label} receipt size must be a non-negative integer")
-    if (
-        not isinstance(expected_sha256, str)
-        or len(expected_sha256) != 64
-        or any(char not in "0123456789abcdef" for char in expected_sha256)
-    ):
-        raise PreparationError(f"{label} receipt hash must be a lowercase SHA256")
-    actual_size, actual_sha256, _fingerprint = hash_stable_file(path, label)
-    if actual_size != expected_size:
-        raise PreparationError(
-            f"{label} size {actual_size} does not match receipt size {expected_size}"
-        )
-    if actual_sha256 != expected_sha256:
-        raise PreparationError(f"{label} hash does not match the runtime receipt")
-    return actual_sha256
 
 
 def _canonical_hash(document: object) -> str:
@@ -3774,11 +3735,23 @@ class FlightRuntime:
                 label=f"{role} GGUF",
             )
 
-        encoder_identity = WindowFeatureEncoderIdentity(
-            runtime_receipt_sha256=receipt_sha256,
-            build_commit=build_commit,
-            decoder_gguf_sha256=verified_hashes["decoder"],
-            mmproj_sha256=verified_hashes["mmproj"],
+        encoder_override = verify_feature_encoder_runtime(
+            repo_root=self._repo_root,
+            data_root=materialization_root,
+            runtime_root=self._runtime_root,
+            values=values,
+            generation_receipt=receipt,
+            receipt_loader=self._runtime_receipt_loader,
+        )
+        encoder_identity = (
+            encoder_override.encoder_identity
+            if encoder_override is not None
+            else WindowFeatureEncoderIdentity(
+                runtime_receipt_sha256=receipt_sha256,
+                build_commit=build_commit,
+                decoder_gguf_sha256=verified_hashes["decoder"],
+                mmproj_sha256=verified_hashes["mmproj"],
+            )
         )
         batch = self.materialize_window_batch(execution_plan=execution_plan)
         return prepare_window_feature_inventory(
