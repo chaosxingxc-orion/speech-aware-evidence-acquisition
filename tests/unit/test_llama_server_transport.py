@@ -21,6 +21,8 @@ from speech_aware_evidence_acquisition.contracts import STUDY_SLUG
 from speech_aware_evidence_acquisition.core.base import EvidenceItem
 from speech_aware_evidence_acquisition.core.model import (
     FrozenCoreError,
+    PreparedFeatureCacheError,
+    PreparedFeatureCacheGuard,
     LlamaServerTransport,
     SpeechFeatureChunkData,
     legacy_audio_feature_cache_key,
@@ -31,6 +33,9 @@ from speech_aware_evidence_acquisition.core.model import (
 )
 from speech_aware_evidence_acquisition.core.model.transport import _llama_server_factory
 from speech_aware_evidence_acquisition.core.policies import build_arm_payload
+from speech_aware_evidence_acquisition.core.preparation import canonical_bytes
+from speech_aware_evidence_acquisition.core.preparation_feature_cache import prepare_feature_cache_audit
+from speech_aware_evidence_acquisition.core.preparation_windows import WindowFeatureEncoderIdentity, WindowRequestBatch
 from speech_aware_evidence_acquisition.core.session import (
     SESSION_RECEIPT_SCHEMA,
     SESSION_RECEIPT_SCHEMA_V2,
@@ -2578,3 +2583,132 @@ def test_preparation_render_is_exact_send_body_and_never_posts(tmp_path):
     transport(payload)
     assert captured == [prepared]
     assert prepared["max_tokens"] == 64
+
+
+
+def _cache_guard_setup(tmp_path):
+    payload = _boundary_payload(tmp_path)
+    parent = tmp_path / "parent.wav"
+    parent.write_bytes(b"synthetic parent")
+    media = tmp_path / payload["media_relpath"]
+    source = {
+        "sample_id": payload["sample_id"],
+        "parent_media_relpath": "parent.wav",
+        "parent_sha256": hashlib.sha256(parent.read_bytes()).hexdigest(),
+        "start_seconds": 0.0,
+        "end_seconds": payload["audio_seconds"],
+        "audio_seconds": payload["audio_seconds"],
+        "sample_rate_hz": payload["sample_rate_hz"],
+        "media_relpath": payload["media_relpath"],
+        "sha256": hashlib.sha256(media.read_bytes()).hexdigest(),
+        "bytes": media.stat().st_size,
+        "iteration": 0,
+        "preprocess": [],
+        "pre_sha256": None,
+    }
+    batch = WindowRequestBatch(
+        payloads=(payload,),
+        request_keys=("5000001#w0001",),
+        source_bindings=(source,),
+    )
+    identity = WindowFeatureEncoderIdentity(
+        runtime_receipt_sha256="1" * 64,
+        build_commit="2" * 40,
+        decoder_gguf_sha256="3" * 64,
+        mmproj_sha256="4" * 64,
+    )
+    cache = tmp_path / "legacy-cache"
+    cache.mkdir()
+    key = legacy_audio_feature_cache_key(media.read_bytes())
+    (cache / f"{key}_o0.feat").write_bytes(
+        struct.pack("<QQ", 2, 4) + b"\x00" * 32
+    )
+    artifact = tmp_path / "cache-audit.json"
+    prepared = prepare_feature_cache_audit(
+        artifact,
+        batches={"raw": batch},
+        data_root=tmp_path,
+        encoder_identity=identity,
+        legacy_cache_dir=cache,
+        expected_n_embd=4,
+    )
+    guard = PreparedFeatureCacheGuard.from_artifact(
+        artifact_path=artifact,
+        artifact_sha256=prepared["sha256"],
+        encoder_identity=identity,
+        expected_cache_dir=cache,
+        expected_n_embd=4,
+        data_root=tmp_path,
+    )
+    return payload, identity, guard
+
+
+def test_prepared_cache_guard_runs_on_render_and_blocks_post_on_changed_audio(tmp_path):
+    payload, _, guard = _cache_guard_setup(tmp_path)
+    posted = []
+
+    def fake_post(url, body):
+        posted.append(body)
+        return _canned_response()
+
+    transport = _transport(
+        "http://127.0.0.1:" + str(_live["port"]),
+        tmp_path,
+        post=fake_post,
+        feature_cache_guard=guard,
+    )
+    body = transport.render_request(canonical_bytes(payload))
+    assert body["messages"][1]["content"][-1]["type"] == "input_audio"
+    media = tmp_path / payload["media_relpath"]
+    media.write_bytes(b"changed raw audio")
+    with pytest.raises(PreparedFeatureCacheError, match="source SHA256"):
+        transport(canonical_bytes(payload))
+    assert posted == []
+
+
+def test_prepared_cache_guard_refuses_extra_audio_and_feature_packets(tmp_path):
+    payload, _, guard = _cache_guard_setup(tmp_path)
+    transport = _transport(
+        "http://127.0.0.1:" + str(_live["port"]),
+        tmp_path,
+        post=lambda url, body: _canned_response(),
+        feature_cache_guard=guard,
+    )
+    body = transport.render_request(canonical_bytes(payload))
+    audio = body["messages"][1]["content"][-1]
+    with pytest.raises(PreparedFeatureCacheError, match="exactly one"):
+        guard.validate(
+            payload,
+            {
+                **body,
+                "messages": [
+                    {
+                        **body["messages"][1],
+                        "content": [audio, audio],
+                    }
+                ],
+            },
+        )
+    with pytest.raises(PreparedFeatureCacheError, match="feature packets"):
+        guard.validate(
+            {"query_source": "speech_features"},
+            {"messages": [{"role": "user", "content": []}]},
+        )
+
+
+def test_transport_without_prepared_cache_guard_keeps_legacy_render_and_post(tmp_path):
+    payload = _boundary_payload(tmp_path)
+    captured = []
+
+    def fake_post(url, body):
+        captured.append(body)
+        return _canned_response()
+
+    transport = _transport(
+        "http://127.0.0.1:" + str(_live["port"]),
+        tmp_path,
+        post=fake_post,
+    )
+    transport(payload_bytes := canonical_bytes(payload))
+    assert captured
+    assert payload_bytes
