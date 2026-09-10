@@ -11,6 +11,7 @@ from .preparation import PreparationError, canonical_bytes, digest, prepare_arti
 from .preparation_windows import WINDOW_FEATURE_INVENTORY_SCHEMA
 
 SCHEMA = "saea-window-feature-encoding-record-v1"
+PARTIAL_SCHEMA = "saea-window-feature-encoding-partial-v1"
 KIND = "window-feature-encoding-v1"
 DEFAULT_INSTRUCTION = "Observe the complete speech signal for deterministic feature preprocessing. Respond with OK."
 
@@ -164,7 +165,7 @@ def encode_window_feature_cache(*, inventory: Mapping[str, object], data_root: P
             attempted_id = getattr(client, "last_attempted_request_id", None)
             if isinstance(attempted_id, str) and attempted_id and attempted_id not in {entry["current_contact_id"] for entry in entries}:
                 entries.append({"audio_sha256": active[0] if active else None, "cache_key": active[1] if active else None, "status": "failed", "success": False, "current_contact_id": attempted_id, "source_contact_id": None, "source_provenance_receipt_sha256": None})
-            partial = {"schema": "saea-window-feature-encoding-partial-v1", "state": "failed", "study": "speech-aware-evidence-acquisition", "run_id": run_id, "attempt_id": attempt_id, "session_id": session_id, "runtime_receipt_file_sha256": runtime_receipt_file_sha256, "runtime_receipt_document_sha256": runtime_receipt_document_sha256, "session_receipt_file_sha256": session_receipt_file_sha256, "inventory_sha256": inventory_sha256, "encoder_identity": identity, "current_contact_count": sum(entry["status"] == "encoded" for entry in entries), "entries": entries, "trace_manifest_hash": closed.get("trace_manifest_hash"), "cost": closed.get("cost"), "error_type": type(error).__name__}
+            partial = {"schema": PARTIAL_SCHEMA, "state": "failed", "study": "speech-aware-evidence-acquisition", "run_id": run_id, "attempt_id": attempt_id, "session_id": session_id, "runtime_receipt_file_sha256": runtime_receipt_file_sha256, "runtime_receipt_document_sha256": runtime_receipt_document_sha256, "session_receipt_file_sha256": session_receipt_file_sha256, "inventory_sha256": inventory_sha256, "encoder_identity": identity, "current_contact_count": sum(entry["status"] == "encoded" for entry in entries), "entries": entries, "trace_manifest_hash": closed.get("trace_manifest_hash"), "cost": closed.get("cost"), "error_type": type(error).__name__}
             try:
                 with Path(output_path).with_name(Path(output_path).name + ".partial.json").open("xb") as stream:
                     stream.write(canonical_bytes(partial))
