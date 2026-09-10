@@ -538,6 +538,57 @@ def resolve_feature_encoder_runtime_receipt_path(
     return None if relative is None else Path(repo_root) / "docs" / relative
 
 
+def prepared_window_feature_cache(
+    values: Mapping[str, object],
+) -> dict[str, object] | None:
+    """Validate the optional prepared raw-audio feature-cache declaration."""
+
+    value = values.get("prepared_window_feature_cache")
+    if value is None:
+        return None
+    if not isinstance(value, Mapping) or set(value) != {
+        "audit",
+        "provenance",
+        "expected_n_embd",
+    }:
+        raise ConfigError(
+            "prepared_window_feature_cache must contain exactly audit, provenance, "
+            "and expected_n_embd"
+        )
+    width = value["expected_n_embd"]
+    if isinstance(width, bool) or not isinstance(width, int) or width < 1:
+        raise ConfigError(
+            "prepared_window_feature_cache.expected_n_embd must be a positive integer"
+        )
+    result: dict[str, object] = {"expected_n_embd": width}
+    for name in ("audit", "provenance"):
+        pin = value[name]
+        if not isinstance(pin, Mapping) or set(pin) != {"relpath", "sha256"}:
+            raise ConfigError(
+                f"prepared_window_feature_cache.{name} must contain exactly relpath and sha256"
+            )
+        relpath = pin["relpath"]
+        sha256 = pin["sha256"]
+        if (
+            not isinstance(relpath, str)
+            or not relpath
+            or relpath.startswith("/")
+            or "\\" in relpath
+            or _DRIVE_PREFIX.match(relpath)
+            or any(part in ("", ".", "..") for part in relpath.split("/"))
+        ):
+            raise ConfigError(
+                f"prepared_window_feature_cache.{name}.relpath must be a confined "
+                "relative POSIX path"
+            )
+        if not isinstance(sha256, str) or _SHA256.fullmatch(sha256) is None:
+            raise ConfigError(
+                f"prepared_window_feature_cache.{name}.sha256 must be a lowercase SHA256"
+            )
+        result[name] = {"relpath": relpath, "sha256": sha256}
+    return result
+
+
 def resolve_runtime_receipt_path(repo_root: Path, values: Mapping[str, object]) -> Path:
     """The absolute path a composed config's ``runtime_receipt`` key names,
     under ``<repo_root>/docs/`` -- the one place every caller (driver smoke,

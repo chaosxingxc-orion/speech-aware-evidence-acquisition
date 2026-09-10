@@ -57,7 +57,8 @@ from ...rails.probes.pslu_flight import (
     validate_openjiuwen_speech_native_match_tasks,
 )
 from ..attempts import AttemptStore
-from ..base import TRANSPORTS, declared_derived_media_roots
+from ..base import declared_derived_media_roots
+from ..configured_transport import build_configured_transport
 from ..config import (
     compose,
     d1_evidence_supplement_relpath,
@@ -12080,10 +12081,10 @@ def _cli_speech_native_profile(args: argparse.Namespace) -> int:
     request_started = False
     try:
         _write_inference_process_audit(session, audit_path)
-        transport_factory = TRANSPORTS.resolve(str(values["transport"]))
-        transport = transport_factory(
+        transport = build_configured_transport(
             values,
             root,
+            repo_root=repo_root,
             session=session,
             runtime_receipt=runtime_receipt,
             runtime_root=Path(args.runtime_root),

@@ -31,7 +31,7 @@ from ...e0.artifacts import REPO_ROOT, write_json_artifact
 # import closes the cycle rails/__init__ -> rails.consumption -> core.retrieval ->
 # core/__init__ -> core.driver -> this module -> rails.probes.pslu_flight ->
 # rails.adapters.slurp -> rails.consumption (partially initialized).
-from ..base import SCORERS, TRANSPORTS
+from ..base import SCORERS
 from ..bundle import finalize_bundle, verify_bundle
 from ..config import (
     compose,
@@ -45,6 +45,7 @@ from ..config import (
     runtime_receipt_relpath,
 )
 from ..resources import resolve_resource_sampler
+from ..configured_transport import build_configured_transport
 from ..scorers import score_bundle
 from .bundled import run_experiment_bundled
 from .smoke import _cli_smoke
@@ -624,10 +625,10 @@ def _cli_run(args: argparse.Namespace) -> int:
         runtime_receipt=runtime_receipt,
         runtime_root=runtime_root,
     )
-    transport_factory = TRANSPORTS.resolve(str(composed.values["transport"]))
-    transport = transport_factory(
+    transport = build_configured_transport(
         composed.values,
         root,
+        repo_root=REPO_ROOT,
         session=session,
         runtime_receipt=runtime_receipt,
         runtime_root=runtime_root,

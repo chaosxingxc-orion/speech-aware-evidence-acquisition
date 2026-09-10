@@ -259,7 +259,7 @@ def _write_inference_process_audit(session: object, output: Path) -> Path | None
 def _cli_smoke(args: argparse.Namespace) -> int:
     from ...contracts import FrozenCoreGate
     from ...data.lock import data_root, load_lock, umbrella_lock_path
-    from ..base import TRANSPORTS
+    from ..configured_transport import build_configured_transport
     from ..resources import resolve_resource_sampler
     from ..session import load_runtime_receipt, start_session, stop_session
 
@@ -403,9 +403,8 @@ def _cli_smoke(args: argparse.Namespace) -> int:
             process_audit_path = _write_inference_process_audit(
                 session, process_audit_output_path
             )
-            transport_factory = TRANSPORTS.resolve(str(composed.values["transport"]))
-            transport = transport_factory(
-                composed.values, root, session=session,
+            transport = build_configured_transport(
+                composed.values, root, repo_root=repo_root, session=session,
                 runtime_receipt=runtime_receipt, runtime_root=Path(args.runtime_root),
             )
             sampler = resolve_resource_sampler()
