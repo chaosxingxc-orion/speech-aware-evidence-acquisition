@@ -1,6 +1,6 @@
 # Owner progress and decision briefing
 
-Snapshot: 2026-09-10 16:27 UTC. The first E21 DR parent is sealed with all 1,593 contacts and 44 calls. The second parent is generating on the same resident decoder service (88 durable contacts at this snapshot). Generation source remains frozen at 8e675662; scoring source remains frozen at db5cc2a7. LOOP encoding source remains frozen at a802ca2a. Future LOOP inference configurations are prepared in an isolated checkout.
+Snapshot: 2026-09-10 17:29 UTC. The first E21 DR parent is sealed, both complete official scores and both 1,593-window/44-call statistical views are published, and its original attempt is FINALIZED through shared delivery settlement. The second parent is generating on the same resident decoder service (861 durable contacts at this snapshot). Generation source remains frozen at 8e675662; scoring source remains frozen at db5cc2a7. LOOP encoding source remains frozen at a802ca2a. Future LOOP inference configurations are prepared in an isolated checkout.
 
 ## Owner decisions and execution priority
 
@@ -50,7 +50,9 @@ See [the accounting correction](2026-09-10-e21-dr-gpu-budget-accounting-correcti
   Preserve both the original rejection and owner-authorized v2 admission.
 - Historical DR constrained replay reproduces all1593 windows and44 stitched
   calls. Current DR has two generation parents and four predeclared deterministic
-  deliveries. Neither current parent has a complete official score yet.
+  deliveries. The unit parent now has both complete official scores and saved
+  window views, and its attempt is FINALIZED. Self generation remains active.
+  All-four-result paired comparisons have not begun.
 - LOOP judge/twin generation has not begun. Each plan has600 selected re-listen
   requests, with all1593 fixed windows delivered. Both 600-input inventories and the 1,198-unique-input combined inventory are complete. The 20 reusable DR inputs have been copied and verified with zero encoding contacts. The two registered encoding operations need 589 fresh inputs each; formal fits follow in a dedicated service window.
 - Live SLURP and E21 system quality and full costs remain unmeasured.
@@ -80,6 +82,8 @@ The stopped strict-cache qualification remains stopped.
 
 The unit parent sealed at 16:12:47 UTC with 1,593 successful contacts, 44 delivered calls, no failed attempts, no skipped slices and no saturation. Its verified manifest SHA256 is 81c37866df03cf0307ede5d5d4f46c3df9294dec8fbba98d686fff4361a915be. The external 10-second monitor integral was approximately 1.1692 GPU hours, below the original 1.2 cap. The manifest itself correctly retains GPU sampling as unavailable because this runtime invocation did not supply an inline sampler; the external receipt is separate evidence.
 
+The two unit whole-manifest score jobs completed successfully in 3,682.1 seconds total, sequentially while self generation continued. Both saved views contain 1,593 windows and 44 calls and required zero extra scorer or model contacts. Root verified shared delivery settlement SHA256 fc8f16dcebe64372721e46af682acb7bf03ab824ae6a55d1906ac45067cbc9af. The attempt changed from OPENED to FINALIZED with its 1,593 calls and 141345.8526875 audio seconds unchanged; the original manifest hash remains unchanged. The closure receipt is coordination/e21-dr-unit-score-settlement-closure-v1.json under the data root, SHA256 22bc0a25abd041e8c0e0797727e85cad7dc1a171e9a24a03b616b8df032aa10e. Aggregate values exist, but no formal contrast or four-delivery selection has been performed.
+
 The self runtime completed CPU preparation in 687.8 seconds before handoff. Root released the unit lease, acquired the matching self lease, and issued generation at 16:19:18 UTC. The 391.5-second transfer gap exceeded the one-minute target because unit sealing coincided with context compaction and root recovery. Preserve that delay rather than attributing it to the model. Actual self generation is now in progress. Its GPU budget interval starts at this handoff, never at its earlier CPU preparation start.
 
 The authoritative external live record is
@@ -92,7 +96,7 @@ experiment framework is required.
 ## Next execution order
 
 1. Complete the self parent on the current unchanged resident service. Monitor the original utilization-weighted 1.2 GPU-hour cap, actual durable contacts and failures.
-2. In parallel, build and score the unit constrained/free derivatives through the shared APIs, one full official scoring job at a time, preserving first-score per-sample statistics. Do not wait for these scores before self generation.
+2. The unit constrained/free scores, per-sample views and shared settlement are complete. Preserve these first-score artifacts; do not score the unit parent or its deliveries again. The same analysis worker continues with self once its complete seal exists.
 3. After the self parent seals, build both self derivatives and finish their full scores. Bind all four saved outputs before the preregistered paired comparisons. Use the frozen db5cc2a7 analysis source and four independent contrast workers within the global CPU limit.
 4. Once both DR parents seal, normally stop the decoder service and start the already registered LOOP offline encoder. Run judge then twin on the same encoder, 589 fresh contacts each. Do not re-materialize the closed audio inventories or re-encode the verified warm inputs.
 5. Normally stop the encoder; run the shared cache-audit, provenance and packet-promotion chain. Bind the two actual artifact hashes in the prepared LOOP packet successors. Register and perform both 1,801-contact actual capacity checks on one decoder-only service. Admit the pair at np6 only if both fit with the inherited margin; otherwise apply the registered whole-pair np4 fallback.
