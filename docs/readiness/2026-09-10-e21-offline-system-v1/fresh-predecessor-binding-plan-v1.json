@@ -7,7 +7,7 @@
     "tokenizer": 0
   },
   "contract_relpath": "docs/readiness/2026-09-10-e21-offline-system-v1/direct-parent-contract-v1.json",
-  "contract_sha256": "0919c265ba3be6f04373bbf8517d0c73b5c1f740c70b959ba26956e210061f61",
+  "contract_sha256": "83de6b66a7fcceed1e394d8bf4b0bec0c2b35b100d5ec63a290e52825052844d",
   "exposure_row": "SAEA-E21-MF-OFFLINE-DIRECT-PREDECESSOR-BINDING-V1",
   "guard": "Run only after the complete parent bundle verifies and before any quality or reference read. Do not alter the frozen repair template beyond its new predecessor receipt binding.",
   "output_artifact_relpath": "derived/e21-predecessor/SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1/attempt-e21-offline-direct-generation-v1/window-hypotheses.json",
