@@ -55,7 +55,18 @@
   },
   "prepared_inputs": {
     "window_feature_inventory": {
-      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-inventory.json",
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1/window-inventory.json",
+      "sha256": "7b12a5c32654855701c48b57152ab1643e0c776b9a7a3853fda009a6ac78face",
+      "artifact_schema": "saea-prepared-artifact-v1",
+      "artifact_kind": "exact-window-feature-inventory-v1",
+      "output_schema": "saea-window-feature-inventory-v1",
+      "output_sha256": "09a154a65b83171920b834e706558e75f1a661593cea1ef2ecf1f5503982573d",
+      "window_sources_sha256": "f569c77f6e22315f57268b1688b3b70e0b1e037de3284d5d198fbec269e115d4",
+      "batch": "SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1",
+      "requests": 1593,
+      "calls": 44,
+      "unique_audio": 1593,
+      "selected_audio_seconds": 141345.8526875,
       "status": "complete"
     },
     "window_feature_cache_audit": {
