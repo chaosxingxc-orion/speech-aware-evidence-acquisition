@@ -3,7 +3,7 @@
   "schema": "saea-e21-loop-shared-two-plan-experiment-v3",
   "date": "2026-09-10",
   "execution_profile": "bounded-discovery-probe",
-  "status": "REGISTERED NP4 FALLBACK FITS READY; generation held for both actual fits and root admission.",
+  "status": "ROOT ADMITTED GENERATION: both actual np4 fits passed; two separately registered full-roster generation arms share the same resident decoder.",
   "purpose": "Held E21 LOOP successor comparing the sealed judge-targeted re-listen plan with its matched seeded-random plan. The plans are sealed predecessor component comparisons: they do not claim live initial-draft or judge selection. Every one of the 1,593 fixed windows over 44 calls is delivered; only 600 windows per arm are contacted for selective re-listen and the remainder are delivered from the sealed predecessor.",
   "supersedes_planning_fragment": "configs/experiment/e21-loop-shared-two-plan-packets-v1.json",
   "population": {
@@ -80,7 +80,7 @@
     "input": "Exact sealed-plan re-listen packet and matching first-pass word range, with the inherited ConEC brief; no raw-audio fallback.",
     "delivery": "Preserve the inherited substitution-only rule over the selected span; re-seat it in its parent window and copy every unselected predecessor window.",
     "obs_prefetch_depth": 1,
-    "runtime_identity_qualified": false
+    "runtime_identity_qualified": true
   },
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
@@ -106,7 +106,7 @@
   "preserve_wire_responses": true,
   "model_geometry": {
     "candidate": "-c36864 -np4,9216 tokens per slot,max_tokens1024",
-    "selected": null,
+    "selected": "np4/c36864/slot9216/max1024; both full selected-request checks pass2xreserve",
     "gpu_mmproj_allowed": false,
     "prior_np6_fit": {
       "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-LOOP-PACKETS-JUDGE-FIT-V1/request-fit.json",
@@ -170,14 +170,33 @@
         "campaign"
       ],
       "readiness": {
-        "state": "held",
-        "reason": "Both np4 actual fits and root pair-wide generation admission are pending.",
+        "state": "ready",
+        "reason": "Both actual600-request np4 fits and root pair-wide admission are complete. Generate only through the retained root decoder and exclusive lease.",
         "requirements": [
           {
             "kind": "preparation",
             "relpath": "analysis/SAEA-E21-LOOP-JUDGE-SLICE-GPU-ENCODING-V1/window-feature-packets.json",
             "sha256": "60d89bc277f6b7e397ecb2e8ab5c3dbc0eca47d3a691b5700232f49338708f26",
             "reason": "Complete exact-slice packet promotion required"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "analysis/SAEA-E21-LOOP-PACKETS-NP4-JUDGE-FIT-V1/request-fit.json",
+            "sha256": "be2ae4c9c040d485e694f97e7f4c5d2fa51eedac89de74bfa20debae9cad00e0",
+            "reason": "Both np4 actual request fits must remain bound"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "analysis/SAEA-E21-LOOP-PACKETS-NP4-TWIN-FIT-V1/request-fit.json",
+            "sha256": "1e49f6126db8a33bf7845f8e74dc83f90249a34f06cfddd351629168f4140b4c",
+            "reason": "Both np4 actual request fits must remain bound"
+          },
+          {
+            "kind": "decision",
+            "relpath": "coordination/e21-loop-packets-np4-generation-admission-v1.json",
+            "sha256": "90d2e014cbd177675fb88cc29153b11412846b30d0c162d050e53893ec04a1be",
+            "expected_decision_id": "e21-loop-packets-np4-capacity-admission-v1",
+            "reason": "Root pair capacity admission"
           }
         ]
       }
@@ -225,14 +244,33 @@
         "campaign"
       ],
       "readiness": {
-        "state": "held",
-        "reason": "Both np4 actual fits and root pair-wide generation admission are pending.",
+        "state": "ready",
+        "reason": "Both actual600-request np4 fits and root pair-wide admission are complete. Generate only through the retained root decoder and exclusive lease.",
         "requirements": [
           {
             "kind": "preparation",
             "relpath": "analysis/SAEA-E21-LOOP-TWIN-SLICE-GPU-ENCODING-V1/window-feature-packets.json",
             "sha256": "48d8cb04b14d7cd0ce1dc6b57e3981250442e527bd48d32ee369780199d97ce9",
             "reason": "Complete exact-slice packet promotion required"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "analysis/SAEA-E21-LOOP-PACKETS-NP4-JUDGE-FIT-V1/request-fit.json",
+            "sha256": "be2ae4c9c040d485e694f97e7f4c5d2fa51eedac89de74bfa20debae9cad00e0",
+            "reason": "Both np4 actual request fits must remain bound"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "analysis/SAEA-E21-LOOP-PACKETS-NP4-TWIN-FIT-V1/request-fit.json",
+            "sha256": "1e49f6126db8a33bf7845f8e74dc83f90249a34f06cfddd351629168f4140b4c",
+            "reason": "Both np4 actual request fits must remain bound"
+          },
+          {
+            "kind": "decision",
+            "relpath": "coordination/e21-loop-packets-np4-generation-admission-v1.json",
+            "sha256": "90d2e014cbd177675fb88cc29153b11412846b30d0c162d050e53893ec04a1be",
+            "expected_decision_id": "e21-loop-packets-np4-capacity-admission-v1",
+            "reason": "Root pair capacity admission"
           }
         ]
       }
@@ -243,7 +281,7 @@
     "interpretation": "Positive gain means X has lower WER than Y; all PERSON admission and targeting bounds use this orientation."
   },
   "decision": {
-    "state": "held",
+    "state": "generation-admitted-scientific-verdict-pending",
     "primary": "Admission requires LB90 gain(judge-plan over sealed direct baseline) > 0, LB90 gain(judge-plan over KC-E1f) >= -0.25009, and realized generation calls <= 50% of 1,593. Targeting is a separate attribution requirement: LB90 gain(judge-plan over matched-random twin) > 0.",
     "guards": [
       "delivery integrity: every delivered window equals its sealed predecessor outside accepted substitution spans and preserves its identical whitespace-token count; abort the read on any violation.",
@@ -254,11 +292,7 @@
       "negation-critical error rate: report the inherited taxonomy ID as advisory only; the null interval excludes zero, so this carrier cannot resolve that clause."
     ],
     "claim_surface": "Discovery component comparison only; no live initial-draft/judge-selection claim, no superiority or Stage-3 claim.",
-    "blockers": [
-      "The registered offline encoder window must finish and stop normally.",
-      "Pin complete per-arm packet promotion and actual request-fit receipts.",
-      "Register fixed exposures and admit the pair on one matching resident decoder service."
-    ],
+    "blockers": [],
     "improvement": "In addition to admission and all guards, an improvement over KC-E1f requires LB90 gain(judge-plan over KC-E1f) > 0; targeting remains a separate attribution conclusion."
   },
   "cost_accounting": {
@@ -300,5 +334,9 @@
       "sha256": "f6ea6af8a80e532855bf5af06657d2f7f3613d0defbf9b16be23566e5d516aec"
     }
   },
-  "preparation_note": "Seven global CPU preparation workers while the one complete DR score job runs; no input, prompt, plan or generation change."
+  "preparation_note": "Seven global CPU preparation workers while the one complete DR score job runs; no input, prompt, plan or generation change.",
+  "root_generation_admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/e21-loop-packets-np4-generation-admission-v1.json",
+    "sha256": "90d2e014cbd177675fb88cc29153b11412846b30d0c162d050e53893ec04a1be"
+  }
 }
