@@ -70,8 +70,8 @@ def _obs(*, transcript=RETURNED, saturated=False, skipped=False, **overrides):
     delivered, fields = hook.accept(
         iteration=0,
         record=SimpleNamespace(
-            start_seconds=unit.cut_start_seconds,
-            end_seconds=unit.cut_end_seconds,
+            start_seconds=round(unit.cut_start_seconds * 16000) / 16000,
+            end_seconds=round(unit.cut_end_seconds * 16000) / 16000,
         ),
         transcript=normalize_terminal_response(
             transcript if not skipped else None,
@@ -88,8 +88,8 @@ def _obs(*, transcript=RETURNED, saturated=False, skipped=False, **overrides):
         "obs_boundary_mode": "fixed",
         "obs_unit_id": unit.unit_id,
         "obs_relisten_parent_window_index": unit.parent_window_index,
-        "obs_window_start_seconds": unit.cut_start_seconds,
-        "obs_window_end_seconds": unit.cut_end_seconds,
+        "obs_window_start_seconds": round(unit.cut_start_seconds * 16000) / 16000,
+        "obs_window_end_seconds": round(unit.cut_end_seconds * 16000) / 16000,
         "obs_skipped": skipped,
         "obs_saturated": saturated,
         "obs_delivered_text": delivered,
@@ -102,7 +102,8 @@ def _bundle(obs, response=RETURNED, request_id="root-i0000"):
     payload = {
         "request_id": request_id,
         "sample_id": "s",
-        "audio_seconds": 8.0,
+        "audio_seconds": obs["obs_window_end_seconds"] - obs["obs_window_start_seconds"],
+        "sample_rate_hz": 16000,
         "decoding_params": {"max_tokens": 8},
     }
     records = {
@@ -366,3 +367,26 @@ def test_refuses_retained_config_hash_drift(monkeypatch, tmp_path):
 
     with pytest.raises(subject.SelectiveLoopWindowsError, match="retained config"):
         subject._values(bundle, tmp_path)
+
+
+@pytest.mark.parametrize("sample_shift", [0, 1])
+def test_pcm_frame_rounding_accepts_exact_cut_and_refuses_one_frame_drift(
+    monkeypatch, tmp_path, sample_shift
+):
+    from dataclasses import replace
+    planned = replace(_unit(), start_seconds=11.00004, end_seconds=19.00002)
+    monkeypatch.setattr(__import__(__name__, fromlist=["_unit"]), "_unit", lambda: planned)
+    _patch(monkeypatch)
+    obs = _obs()
+    obs["obs_window_start_seconds"] += sample_shift / 16000
+    bundle = _bundle(obs)
+    if sample_shift:
+        with pytest.raises(subject.SelectiveLoopWindowsError, match="start"):
+            subject.verified_selective_loop_windows(
+                bundle, repo_root=tmp_path, data_root=tmp_path
+            )
+    else:
+        spans = subject.verified_selective_loop_windows(
+            bundle, repo_root=tmp_path, data_root=tmp_path
+        )
+        assert spans["s"][1].text == DELIVERED_PARENT

@@ -176,16 +176,24 @@ def verified_selective_loop_windows(
             for name, value in expected.items():
                 if obs.get(name) != value or type(obs.get(name)) is not type(value):
                     raise SelectiveLoopWindowsError(f"OBS {name} binding mismatch")
-            _same_number(obs.get("obs_window_start_seconds"), unit.cut_start_seconds, "start")
-            _same_number(obs.get("obs_window_end_seconds"), unit.cut_end_seconds, "end")
-            _same_number(
-                obs.get("obs_relisten_recut_seconds"),
-                unit.cut_end_seconds - unit.cut_start_seconds, "recut duration",
-            )
             request = _request(bundle, request_id, sample)["payload"]
+            rate = request.get("sample_rate_hz")
+            if isinstance(rate, bool) or not isinstance(rate, int) or rate <= 0:
+                raise SelectiveLoopWindowsError("request sample rate is missing or invalid")
+            # The shared cutter rounds planned seconds to PCM sample frames.
+            # Compare exact frame boundaries, never relax the tolerance to hide drift.
+            cut_start = round(unit.cut_start_seconds * rate) / rate
+            cut_end = min(
+                round(unit.cut_end_seconds * rate),
+                round(predecessors[-1].end_seconds * rate),
+            ) / rate
+            _same_number(obs.get("obs_window_start_seconds"), cut_start, "start")
+            _same_number(obs.get("obs_window_end_seconds"), cut_end, "end")
             _same_number(
-                request.get("audio_seconds"),
-                unit.cut_end_seconds - unit.cut_start_seconds, "request audio duration",
+                obs.get("obs_relisten_recut_seconds"), cut_end - cut_start, "recut duration",
+            )
+            _same_number(
+                request.get("audio_seconds"), cut_end - cut_start, "request audio duration",
             )
             if request.get("decoding_params", {}).get("max_tokens") != max_tokens:
                 raise SelectiveLoopWindowsError("terminal output cap differs from config")
@@ -209,7 +217,7 @@ def verified_selective_loop_windows(
             actual, fields = hook.accept(
                 iteration=iteration,
                 record=SimpleNamespace(
-                    start_seconds=unit.cut_start_seconds, end_seconds=unit.cut_end_seconds,
+                    start_seconds=cut_start, end_seconds=cut_end,
                 ),
                 transcript=normalize_terminal_response(raw, saturated=saturated, skipped=skipped),
                 saturated=saturated, skipped=skipped,
