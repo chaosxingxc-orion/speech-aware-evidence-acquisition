@@ -1,0 +1,63 @@
+{
+  "schema": "saea-root-integration-review-v1",
+  "code_commit": "dfe4d7c3c02ebcca5fd2784763d61d875a46a6d3",
+  "checks": [
+    {
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/unit/test_preparation_feature_provenance.py",
+        "tests/unit/test_preparation_encoding.py",
+        "tests/unit/test_session.py",
+        "tests/unit/test_preparation_feature_cache.py",
+        "tests/unit/test_preparation_window_feature_inventory.py",
+        "tests/unit/test_preparation_runtime.py",
+        "tests/unit/test_flight_window_inventory.py",
+        "tests/unit/test_llama_server_transport.py",
+        "tests/unit/test_flight_campaign.py",
+        "tests/unit/test_rails_frozen_core_client.py"
+      ],
+      "exit_code": 0,
+      "output": "........................................................................ [ 18%]\n....................................................ssssss.............. [ 37%]\n........................................................................ [ 56%]\n............................s........................................... [ 75%]\n........................................................................ [ 94%]\n...................                                                      [100%]\n372 passed, 7 skipped in 9.18s\n"
+    },
+    {
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "scripts/checks/engineering_base_check.py"
+      ],
+      "exit_code": 0,
+      "output": "engineering base check: PASS\n"
+    },
+    {
+      "command": [
+        "/home/chao/.venvs/speechrl/bin/ruff",
+        "check",
+        "src/speech_aware_evidence_acquisition/core/preparation_encoding.py",
+        "src/speech_aware_evidence_acquisition/core/preparation_feature_provenance.py",
+        "src/speech_aware_evidence_acquisition/core/preparation_runtime.py",
+        "src/speech_aware_evidence_acquisition/core/model/prepared_feature_cache.py"
+      ],
+      "exit_code": 0,
+      "output": "All checks passed!\n"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": ""
+    }
+  ],
+  "actual_model_contacts": 0,
+  "real_input_preparation_receipt": "docs/receipts/e21-four-window-feature-inputs-v2.json",
+  "limitations": [
+    "No neural features have been encoded.",
+    "No live cache hit/miss/invalid-cache qualification or E21 generation has occurred.",
+    "Transport guard and encoder operation require remaining shared configuration/entry wiring.",
+    "The parent MP3 decoding warning is preserved in the real input receipt."
+  ]
+}
