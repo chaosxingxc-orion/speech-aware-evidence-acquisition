@@ -1,0 +1,46 @@
+{
+  "schema": "saea-aligned-readout-source-admission-v1",
+  "created_at_utc": "2026-09-10T03:13:23.865497+00:00",
+  "contact_class": "model-free",
+  "treatment_metrics_read": false,
+  "source_bindings": {
+    "n": {
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3/attempt-20260910T020504Z-938cd3/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3.run-manifest.json",
+        "sha256": "34f7a4ed0f47108def9955451578cf88cd14347bc9f06d03e353d829bce68c22"
+      },
+      "score": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3/attempt-20260910T020504Z-938cd3/score-batch/attempt-20260910T020504Z-938cd3.score.json",
+        "sha256": "87775191a8da85a48b606f3c1ff2f23405226d8088cc4a4531f0335591386113"
+      },
+      "created_at": "2026-09-10T02:59:35.908522+00:00",
+      "status": "COMPLETED",
+      "attempt_state": "FINALIZED",
+      "calls_used": 1000,
+      "session_receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/slurp-g2-kus4n-aligned-np8-20260910-root/session-receipt.json",
+        "sha256": "c931ca11b5cf49052b76188e5ff5bf4f99a9637bc6dab3372da91e250ccfb811"
+      },
+      "study_commit": "c45941547f2a47aac70bf54c1167c066ae2a4d9a"
+    },
+    "twin": {
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3/attempt-20260910T020504Z-a556a2/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3.run-manifest.json",
+        "sha256": "b60464d354c83049d7c01713eaec675e436dab3124a75314064a3abd18579607"
+      },
+      "score": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3/attempt-20260910T020504Z-a556a2/score-batch/attempt-20260910T020504Z-a556a2.score.json",
+        "sha256": "e27484e28d017f5dff98c55ecd73ef0ee5147636aa595efa01b50067c32f9f60"
+      },
+      "created_at": "2026-09-10T03:09:45.769725+00:00",
+      "status": "COMPLETED",
+      "attempt_state": "FINALIZED",
+      "calls_used": 1000,
+      "session_receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/slurp-g2-kus4n-aligned-np8-20260910-root/session-receipt.json",
+        "sha256": "c931ca11b5cf49052b76188e5ff5bf4f99a9637bc6dab3372da91e250ccfb811"
+      },
+      "study_commit": "c45941547f2a47aac70bf54c1167c066ae2a4d9a"
+    }
+  }
+}

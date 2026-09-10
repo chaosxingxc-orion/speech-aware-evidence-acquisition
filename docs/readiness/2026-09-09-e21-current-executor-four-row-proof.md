@@ -45,13 +45,10 @@ The baseline window_review remains documentary metadata for the already sealed
 re-listen plan; it is not a live Reviewer, Planner, or relisten propagation
 path. That live chain is an unresolved G6 shared-controller gap.
 
-The verified probe-sample receipt narrows the runtime roster to call 4320211 with its own split identity. The new E21 runtime subset seam verifies that receipt, verifies frozen discovery, requires construction role and containment in discovery, then selects the verified call from the full discovery loader. The four-unit plan covers the complete one-call roster. The required shared fitter and OJW fake-transport execution-count proof remains pending; this document makes no runtime-count claim until that test passes.
+The verified probe-sample receipt narrows the runtime roster to call 4320211 with its own split identity. The new E21 runtime subset seam verifies that receipt, verifies frozen discovery, requires construction role and containment in discovery, then selects the verified call from the full discovery loader. The four-unit plan covers the complete one-call roster. The shared fitter and OJW fake-transport integration test now passes: each constructs exactly four matching requests and no fifth request, using the real repair hook, shared controller, and deterministic synthetic audio. Root independently ran the integration and adapter tests (11 passed); the receipt is `docs/checks/speech-aware-evidence-acquisition/2026-09-10-e21-exact-four-root-review/review.json`. This proves model-free request and delivery integration only.
 
 This does not enable a live Reviewer, Planner, or multi-phase relisten chain. The pinned judges remain source lineage for the model-free plan; ControllerWindowHook supports phase-direct-only-v1 only.
 
 ## Admission boundary
 
-The cell remains held until root registration and admission and until the
-shared selected-window contract is implemented and tested. Any later execution
-must use a newly registered attempt and exposure row before the first
-model-facing contact. This document grants neither.
+The cell remains held for no-GPU-mmproj serving qualification, exact-window feature preparation, and root registration and admission. Its historical GPU-mmproj model fragment describes the model-free prototype only and cannot authorize live use under OWNER-FEATURE-SERVING-007. Any later execution must select and pin the qualified replacement identity and use a newly registered attempt and exposure row before the first model-facing contact. This document grants neither. The live G6 Reviewer, Planner, and relisten chain remains unresolved.

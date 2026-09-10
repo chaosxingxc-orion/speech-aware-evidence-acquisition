@@ -57,11 +57,11 @@
       "n": {
         "manifest": {
           "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3/attempt-20260910T020504Z-938cd3/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3.run-manifest.json",
-          "sha256": "PENDING-SEALED-SOURCE-SHA256"
+          "sha256": "34f7a4ed0f47108def9955451578cf88cd14347bc9f06d03e353d829bce68c22"
         },
         "score": {
           "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3/attempt-20260910T020504Z-938cd3/score-batch/attempt-20260910T020504Z-938cd3.score.json",
-          "sha256": "PENDING-COMPLETE-SCORE-SHA256"
+          "sha256": "87775191a8da85a48b606f3c1ff2f23405226d8088cc4a4531f0335591386113"
         },
         "scorers": {
           "primary": "slurp-slu-official-aligned-v1",
@@ -74,11 +74,11 @@
       "twin": {
         "manifest": {
           "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3/attempt-20260910T020504Z-a556a2/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3.run-manifest.json",
-          "sha256": "PENDING-SEALED-SOURCE-SHA256"
+          "sha256": "b60464d354c83049d7c01713eaec675e436dab3124a75314064a3abd18579607"
         },
         "score": {
           "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3/attempt-20260910T020504Z-a556a2/score-batch/attempt-20260910T020504Z-a556a2.score.json",
-          "sha256": "PENDING-COMPLETE-SCORE-SHA256"
+          "sha256": "e27484e28d017f5dff98c55ecd73ef0ee5147636aa595efa01b50067c32f9f60"
         },
         "scorers": {
           "primary": "slurp-slu-official-aligned-v1",
