@@ -1,0 +1,14 @@
+{
+  "run_id": "SAEA-E21-LOOP-PACKETS-JUDGE-FIT-V1",
+  "execution_profile": "bounded-discovery-probe",
+  "carrier_lock_key": "earnings21-original",
+  "split_role": "discovery",
+  "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+  "planned_model_calls": 1801,
+  "planned_gpu_hours": 0.5,
+  "planned_speech_audio_seconds": 18500,
+  "protocol_hash": "7085fa1288fb550477003400b21cb1b88eb90ea311ad4a926f43c32d460bdb56",
+  "attempt_id": "attempt-20260910-loop-packets-judge-fit-v1",
+  "schema": "saea-execution-plan-v1",
+  "study": "speech-aware-evidence-acquisition"
+}

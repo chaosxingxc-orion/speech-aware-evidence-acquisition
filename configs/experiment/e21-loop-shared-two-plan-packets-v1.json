@@ -3,7 +3,7 @@
   "schema": "saea-e21-loop-shared-two-plan-experiment-v3",
   "date": "2026-09-10",
   "execution_profile": "bounded-discovery-probe",
-  "status": "HELD FOR MEASURED ARTIFACT BINDINGS; no new contact is authorized by this draft.",
+  "status": "EXACT PACKETS BOUND; registered np6 fit admitted, generation held for both real fits and root pair admission.",
   "purpose": "Held E21 LOOP successor comparing the sealed judge-targeted re-listen plan with its matched seeded-random plan. The plans are sealed predecessor component comparisons: they do not claim live initial-draft or judge selection. Every one of the 1,593 fixed windows over 44 calls is delivered; only 600 windows per arm are contacted for selective re-listen and the remainder are delivered from the sealed predecessor.",
   "supersedes_planning_fragment": "configs/experiment/e21-loop-shared-two-plan-v2.json",
   "population": {
@@ -101,7 +101,7 @@
     "basis": "One GET /props plus one /apply-template and two /tokenize contacts for each of600 actual selected requests. Count the validated packet speech tokens without encoder contact. Do not use the input_tokens route for formal packets."
   },
   "prompt_fit_multiple": 2.0,
-  "window_preparation_workers": 8,
+  "window_preparation_workers": 7,
   "split_id": "discovery",
   "preserve_wire_responses": true,
   "model_geometry": {
@@ -114,11 +114,11 @@
     "model_fragment": "q4km-e21-loop-packets-cddb000c-np6-v1",
     "feature_root": "/home/chao/feat-packets/e21-cddb000c-loop-gpu-v1",
     "packet_promotion_sha256_by_arm": {
-      "judge": null,
-      "twin": null
+      "judge": "60d89bc277f6b7e397ecb2e8ab5c3dbc0eca47d3a691b5700232f49338708f26",
+      "twin": "48d8cb04b14d7cd0ce1dc6b57e3981250442e527bd48d32ee369780199d97ce9"
     },
     "source_cache_dir": "/home/chao/feat-cache/e21-cddb000c-loop-gpu-v1",
-    "preprocessing_complete": false
+    "preprocessing_complete": true
   },
   "cells": [
     {
@@ -136,9 +136,16 @@
         "prompt-fit"
       ],
       "readiness": {
-        "state": "held",
-        "reason": "Complete packet promotion and fixed exposure binding are pending; generation additionally requires both actual selected-packet fits at one serving geometry.",
-        "requirements": []
+        "state": "ready",
+        "reason": "Root admits the separately registered actual600-request packet capacity check on np6, preserving1024 output and2x reserve; zero generation.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "analysis/SAEA-E21-LOOP-JUDGE-SLICE-GPU-ENCODING-V1/window-feature-packets.json",
+            "sha256": "60d89bc277f6b7e397ecb2e8ab5c3dbc0eca47d3a691b5700232f49338708f26",
+            "reason": "Complete exact-slice packet promotion required"
+          }
+        ]
       }
     },
     {
@@ -158,8 +165,15 @@
       ],
       "readiness": {
         "state": "held",
-        "reason": "Complete packet promotion and fixed exposure binding are pending; generation additionally requires both actual selected-packet fits at one serving geometry.",
-        "requirements": []
+        "reason": "Both actual600-request fits and root pair-wide generation admission are pending.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "analysis/SAEA-E21-LOOP-JUDGE-SLICE-GPU-ENCODING-V1/window-feature-packets.json",
+            "sha256": "60d89bc277f6b7e397ecb2e8ab5c3dbc0eca47d3a691b5700232f49338708f26",
+            "reason": "Complete exact-slice packet promotion required"
+          }
+        ]
       }
     },
     {
@@ -177,9 +191,16 @@
         "prompt-fit"
       ],
       "readiness": {
-        "state": "held",
-        "reason": "Complete packet promotion and fixed exposure binding are pending; generation additionally requires both actual selected-packet fits at one serving geometry.",
-        "requirements": []
+        "state": "ready",
+        "reason": "Root admits the separately registered actual600-request packet capacity check on np6, preserving1024 output and2x reserve; zero generation.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "analysis/SAEA-E21-LOOP-TWIN-SLICE-GPU-ENCODING-V1/window-feature-packets.json",
+            "sha256": "48d8cb04b14d7cd0ce1dc6b57e3981250442e527bd48d32ee369780199d97ce9",
+            "reason": "Complete exact-slice packet promotion required"
+          }
+        ]
       }
     },
     {
@@ -199,8 +220,15 @@
       ],
       "readiness": {
         "state": "held",
-        "reason": "Complete packet promotion and fixed exposure binding are pending; generation additionally requires both actual selected-packet fits at one serving geometry.",
-        "requirements": []
+        "reason": "Both actual600-request fits and root pair-wide generation admission are pending.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "analysis/SAEA-E21-LOOP-TWIN-SLICE-GPU-ENCODING-V1/window-feature-packets.json",
+            "sha256": "48d8cb04b14d7cd0ce1dc6b57e3981250442e527bd48d32ee369780199d97ce9",
+            "reason": "Complete exact-slice packet promotion required"
+          }
+        ]
       }
     }
   ],
@@ -265,5 +293,6 @@
       "repo_relpath": "configs/model/q4km-e21-loop-packets-cddb000c-np6-v1.json",
       "sha256": "a17396c8a2eb85a73897a7946e0d235efa73faf3b63c7f7998f8cc3d72779bb2"
     }
-  }
+  },
+  "preparation_note": "Seven global CPU preparation workers while the one complete DR score job runs; no input, prompt, plan or generation change."
 }

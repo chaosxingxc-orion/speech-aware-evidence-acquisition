@@ -75,7 +75,7 @@
   "speech_feature_matcher_policy_id": "saea-e21-loop-window-packets-v1",
   "prepared_window_feature_packets": {
     "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-LOOP-TWIN-SLICE-GPU-ENCODING-V1/window-feature-packets.json",
-    "sha256": null
+    "sha256": "48d8cb04b14d7cd0ce1dc6b57e3981250442e527bd48d32ee369780199d97ce9"
   },
   "obs_prefetch_depth": 1,
   "inherited_baseline": {
