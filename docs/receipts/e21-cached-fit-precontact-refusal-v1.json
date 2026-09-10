@@ -1,0 +1,17 @@
+{
+  "schema": "saea-precontact-refusal-reconciliation-v1",
+  "checked_at_utc": "2026-09-10T07:53:41.568644+00:00",
+  "run_id": "SAEA-E21-CURRENT-EXECUTOR-CACHED-PROOF-FIT-V1",
+  "attempt_id": "attempt-20260910-cached-proof-fit-v1",
+  "reason": "New pre-registration incorrectly used consumed=yes; normal gate refused before session creation or endpoint journal.",
+  "lease_sha256": "971cdff53fa3dcb2dcf7a416fe1f160c5fdc7759b5d937a85571df2f31d38b30",
+  "kernel_lock_acquired": true,
+  "server_processes": 0,
+  "port_8080_listeners": 0,
+  "session_created": false,
+  "contact_journal_created": false,
+  "model_contacts": 0,
+  "tokenizer_contacts": 0,
+  "archived_lease": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/e21-cached-fit-precontact-refusal-lease.json",
+  "recovery_reregistrations_used_after_next_registration": 1
+}
