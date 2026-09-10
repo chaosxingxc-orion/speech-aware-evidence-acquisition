@@ -2,7 +2,7 @@
   "experiment_id": "SAEA-E21-CURRENT-EXECUTOR-FIRST-FOUR-FULL90-PACKET-PROOF-V1",
   "date": "2026-09-10",
   "execution_profile": "bounded-discovery-probe",
-  "purpose": "Held engineering connectivity proof for the current shared OJW executor using four original full 90-second windows and prepared formal speech feature packets. Registration, request fit and root admission remain pending; this fragment authorizes no model or scorer contact and supports no effectiveness claim.",
+  "purpose": "Engineering connectivity proof for the current shared OJW executor using four original full 90-second windows and prepared formal speech feature packets. The fit cell is ready for separately registered fit admission; generation remains held for its fit receipt, exposure registration and root admission. This fragment supports no effectiveness claim.",
   "population": {
     "carrier": "earnings21-original",
     "split_name": "discovery",
@@ -22,7 +22,7 @@
     "selection_rule": "First four original full fixed windows of verified discovery call 4320211, ordered by original window index; no outcome or judge selection."
   },
   "protocol": {
-    "model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6",
+    "model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
     "max_tokens": 1024,
     "response_postprocessor": "e21-entity-repair-substitutions-v1",
     "response_postprocessor_params": {
@@ -39,17 +39,13 @@
       "repo_relpath": "configs/dataset/e21-current-executor-feature-proof-v2.json",
       "sha256": "56dff642166670820cce57a998364582f88f7d9f76dafbf6c0d84cef634f0ff8"
     },
-    "baseline": {
-      "repo_relpath": "configs/baseline/e21-current-executor-first-four-full90-packet-proof-ojw.json",
-      "sha256": "2f89a0d7f981e96d10dc2087cfb5bfd5a32fcbddb18a476a25efa3c1cfbd9782"
-    },
     "unit_plan": {
       "repo_relpath": "docs/receipts/obs/e21-current-executor-first-four-full90-packet-proof-v1.json",
       "sha256": "c5945e0d0ee1ef857d1f904a09b0d9cd9c31f1ecc5b0a082c302227205a1b8eb"
     },
     "model": {
-      "repo_relpath": "configs/model/q4km-e21-dr-full-packets-cddb000c-np6.json",
-      "sha256": "553449b716540d48b822b018ef27821be2580b96f0a158cc2a3e1c753fb9a39f"
+      "repo_relpath": "configs/model/q4km-e21-dr-full-packets-cddb000c-np6-v2.json",
+      "sha256": "79e0bd8f5b8646a28cf04bddc2b4c2dbf8927a32347da98e38ad9bb1cd1633c4"
     },
     "predecessor_receipt": {
       "repo_relpath": "docs/receipts/e21-predecessor-full44-direct-baseline-v2.json",
@@ -58,21 +54,46 @@
     "prepared_window_feature_packets": {
       "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
       "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
+    },
+    "inference_runtime": {
+      "repo_relpath": "docs/receipts/runtime-q4km-e21-feature-inference-cddb000c-v2.json",
+      "sha256": "a472219e12fd2a3d08446c29ecf5273646832990fd0379cba380c702b111aba2"
     }
   },
   "cells": [
     {
-      "cell_id": "e21-current-executor-first-four-full90-packet-proof",
-      "model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6",
+      "cell_id": "e21-current-executor-first-four-full90-packet-fit",
+      "run_id": "SAEA-E21-CURRENT-EXECUTOR-FIRST-FOUR-FULL90-PACKET-FIT-V1",
+      "attempt_id": "attempt-20260910-first-four-full90-packet-fit-v1",
+      "model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
       "dataset_fragment": "e21-current-executor-feature-proof-v2",
       "baseline_fragment": "e21-current-executor-first-four-full90-packet-proof-ojw",
       "allowed_execution_stages": [
         "check",
-        "wire-check"
+        "wire-check",
+        "prompt-fit"
+      ],
+      "readiness": {
+        "state": "ready",
+        "reason": "Configuration is ready for the separately registered exact four-request fit. Exposure registration and root custody remain external prerequisites for any endpoint contact.",
+        "requirements": []
+      }
+    },
+    {
+      "cell_id": "e21-current-executor-first-four-full90-packet-generation",
+      "run_id": "SAEA-E21-CURRENT-EXECUTOR-FIRST-FOUR-FULL90-PACKET-PROOF-V1",
+      "attempt_id": "attempt-20260910-first-four-full90-packet-proof-v1",
+      "model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
+      "dataset_fragment": "e21-current-executor-feature-proof-v2",
+      "baseline_fragment": "e21-current-executor-first-four-full90-packet-proof-ojw",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "worker"
       ],
       "readiness": {
         "state": "held",
-        "reason": "Generation is held pending exposure registration, exact four-request fit, root review and admission. The packet and predecessor pins are preparation inputs, not contact authority."
+        "reason": "Generation is held pending successful exact fit, exposure registration, root review and explicit admission. No model contact is currently authorized."
       }
     }
   ],
@@ -83,6 +104,23 @@
     "effect_claim_authorized": false,
     "expected_requests": 4,
     "no_fifth_request": true,
-    "expected_stitched_outputs": 1
+    "expected_stitched_outputs": 1,
+    "generation_contact_cap": 4,
+    "automatic_retry_contacts": 0,
+    "fit_contact_cap": 13
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 4,
+    "planned_gpu_hours": 0.25,
+    "planned_speech_audio_seconds": 360
+  },
+  "budget_basis": "One generation request for each of the four predeclared full 90-second windows, four total and no automatic retry or fifth request. Request fitting has a separate endpoint-contact registration and cannot consume the generation allowance. Wire-check uses only the shared fake transport and records zero model contacts.",
+  "fit_execution_plan": {
+    "state": "registration-pending",
+    "planned_endpoint_contacts": 13,
+    "basis": "The current formal-packet coordinate fitter makes one shared metadata request plus three tokenizer requests for each of four actual generation payloads. This is a separate fit registration, not model-generation authority.",
+    "automatic_retry_contacts": 0
   }
 }

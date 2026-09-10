@@ -1,0 +1,28 @@
+{
+  "schema": "saea-e21-current-executor-proof-readiness-v1",
+  "experiment": "e21-current-executor-first-four-full90-packet-proof-v1",
+  "fit_run_id": "SAEA-E21-CURRENT-EXECUTOR-FIRST-FOUR-FULL90-PACKET-FIT-V1",
+  "generation_run_id": "SAEA-E21-CURRENT-EXECUTOR-FIRST-FOUR-FULL90-PACKET-PROOF-V1",
+  "state": "fit-ready-generation-held",
+  "fixed_requests": 4,
+  "automatic_retry_contacts": 0,
+  "expected_stitched_outputs": 1,
+  "model_contacts_completed": 0,
+  "fit_endpoint_contacts_completed": 0,
+  "wire_check": {
+    "state": "pending",
+    "contacts": 0,
+    "receipt": null,
+    "sha256": null,
+    "last_attempt": "interrupted during model-free materialization to yield the aggregate CPU preparation budget before dispatch; zero endpoint/model contacts"
+  },
+  "pending_bindings": [
+    "model-free shared CLI wire-check receipt",
+    "separate exact four-request fit exposure registration and receipt",
+    "generation exposure registration and root admission"
+  ],
+  "scientific_scope": "Engineering connectivity only; no scoring or effectiveness claim.",
+  "model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
+  "model_fragment_sha256": "79e0bd8f5b8646a28cf04bddc2b4c2dbf8927a32347da98e38ad9bb1cd1633c4",
+  "inference_runtime_receipt_sha256": "a472219e12fd2a3d08446c29ecf5273646832990fd0379cba380c702b111aba2"
+}

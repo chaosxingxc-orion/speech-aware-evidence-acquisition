@@ -1,0 +1,9 @@
+# E21 current-executor first-four full-window packet proof
+
+This proof selects windows `4320211#w0001` through `4320211#w0004` from the complete source-bound inventory. Each request carries one original full 90-second span, its sealed comparator self-draft, no knowledge supply, formal prepared speech features, the shared OpenJiuwen `phase-direct-only-v1` controller, and constrained shared delivery. The plan fixes four requests, 360 seconds of speech, one stitched output, and zero automatic retry contacts.
+
+The fit and generation are separate cells. The fit configuration is ready for separate exposure registration and root custody. Its ceiling is 13 endpoint contacts: one shared metadata request and three tokenizer requests for each of the four actual formal-packet payloads. Generation remains held and has a hard four-contact ceiling. Neither cell can borrow the other cell's allowance.
+
+The first shared model-free wire-check attempt was interrupted during local materialization when the full-roster fit began, preserving the aggregate CPU worker limit. It reached no endpoint and made no model contact. Root can repeat the same shared CLI check at the capacity boundary; it must report four fake requests, one stitched output, and zero model contacts before generation admission.
+
+The proof uses the verified one-call construction subset's existing executable `split_id`; its parent split role is discovery. The decoder-only inference receipt and v2 model fragment are pinned. Generation remains held until the model-free wire-check passes, the exact fit is registered and saved, and root records generation exposure registration and admission. These files support no scientific effect claim.
