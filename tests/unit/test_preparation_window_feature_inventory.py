@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import wave
 from dataclasses import replace
 
 import pytest
@@ -63,6 +64,8 @@ def _batch(
         "request_id": f"request-{run}",
         "sample_id": "sample-1",
         "media_relpath": media_relpath,
+        "audio_seconds": 1.0,
+        "sample_rate_hz": 16_000,
         "messages": [{"role": "system", "content": "Synthetic request."}],
     }
     payload.update(payload_overrides or {})
@@ -170,6 +173,113 @@ def test_payload_source_mismatch_is_refused(tmp_path, payload_overrides, message
         build_window_feature_inventory(
             batches={"arm": batch}, data_root=tmp_path, encoder_identity=_identity()
         )
+
+
+def test_request_key_window_suffix_must_bind_source_iteration(tmp_path):
+    batch = _batch(tmp_path, run="run-a", request_keys=("sample-1#w0002",))
+
+    with pytest.raises(PreparationError, match="suffix disagrees"):
+        build_window_feature_inventory(
+            batches={"arm": batch}, data_root=tmp_path, encoder_identity=_identity()
+        )
+
+
+@pytest.mark.parametrize(
+    "payload_overrides, message",
+    [
+        ({"audio_seconds": 1.5}, "audio_seconds disagrees"),
+        ({"sample_rate_hz": 8_000}, "sample_rate_hz disagrees"),
+    ],
+)
+def test_payload_audio_facts_must_bind_source(
+    tmp_path, payload_overrides, message
+):
+    batch = _batch(
+        tmp_path, run="run-a", payload_overrides=payload_overrides
+    )
+
+    with pytest.raises(PreparationError, match=message):
+        build_window_feature_inventory(
+            batches={"arm": batch}, data_root=tmp_path, encoder_identity=_identity()
+        )
+
+
+def test_non_string_batch_name_is_refused_before_sorting(tmp_path):
+    batch = _batch(tmp_path, run="run-a")
+
+    with pytest.raises(PreparationError, match="batch name"):
+        build_window_feature_inventory(
+            batches={1: batch, "arm": batch},
+            data_root=tmp_path,
+            encoder_identity=_identity(),
+        )
+
+
+def test_real_materialized_repair_windows_feed_inventory(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.core.preparation_windows import (
+        materialize_window_requests,
+    )
+    from speech_aware_evidence_acquisition.reproduction.repair_loop import (
+        RepairWindowHook,
+    )
+    from test_obs_loop_policy import SAMPLE_ID, _World, _config_values, _noise
+
+    values = _config_values(
+        obs_boundary_mode="fixed",
+        obs_vad_trim_min_seconds=0,
+        obs_condition_tail_chars=0,
+        obs_batch_slices=3,
+        obs_slice_tail_silence_seconds=2.0,
+    )
+    world = _World(
+        tmp_path,
+        monkeypatch,
+        pcm=_noise(90),
+        texts=[],
+        values=values,
+    )
+    hook = RepairWindowHook(
+        sample_id=SAMPLE_ID,
+        predecessors=[
+            SimpleNamespace(start_seconds=0, end_seconds=60, text="draft first"),
+            SimpleNamespace(start_seconds=60, end_seconds=90, text="draft final"),
+        ],
+        frame="Correct this draft: {predecessor}",
+        rule=lambda *args: pytest.fail("inventory must not deliver a response"),
+    )
+
+    batch = materialize_window_requests(
+        [world.ctx],
+        expected_sample_ids=[SAMPLE_ID],
+        hook_factory=lambda *args: hook,
+    )
+    inventory = build_window_feature_inventory(
+        batches={"repair": batch},
+        data_root=world.data_root,
+        encoder_identity=_identity(),
+    )
+
+    assert inventory["request_count"] == 2
+    assert inventory["unique_audio_count"] == 2
+    assert not world.adapter.payloads
+    assert not hook.outcomes
+    rows = inventory["batches"][0]["requests"]
+    with wave.open(
+        str(world.data_root / batch.payloads[0]["media_relpath"]), "rb"
+    ) as handle:
+        written_seconds = handle.getnframes() / handle.getframerate()
+    assert written_seconds == pytest.approx(batch.payloads[0]["audio_seconds"] + 2.0)
+    assert batch.source_bindings[0]["preprocess"] == ["tail-silence-2s"]
+
+    for index, (row, payload, source) in enumerate(
+        zip(rows, batch.payloads, batch.source_bindings, strict=True), start=1
+    ):
+        assert row["request_key"] == f"{SAMPLE_ID}#w{index:04d}"
+        assert row["source_provenance"]["audio_seconds"] == payload["audio_seconds"]
+        assert row["source_provenance"]["sample_rate_hz"] == payload["sample_rate_hz"]
+        assert row["source_provenance"]["sha256"] == source["sha256"]
 
 
 def test_duplicate_request_keys_are_refused(tmp_path):
