@@ -17,6 +17,7 @@ from speech_aware_evidence_acquisition.core.model import (
     FrozenCoreError,
     inspect_legacy_cached_speech_feature_cache,
     legacy_audio_feature_cache_key,
+    materialize_legacy_cached_speech_feature_packet,
     materialize_legacy_cached_speech_feature_packets,
 )
 from speech_aware_evidence_acquisition.rails import (
@@ -128,6 +129,60 @@ def test_legacy_cache_inspection_refuses_invalid_chunks(tmp_path, mutate, messag
 
     mutate(path)
     with pytest.raises(FrozenCoreError, match=message):
+        inspect_legacy_cached_speech_feature_cache(
+            audio_path=audio,
+            legacy_cache_dir=legacy,
+            expected_n_embd=4,
+        )
+
+
+def test_legacy_cache_inspection_refuses_noncanonical_ordinal_but_promotion_keeps_legacy(
+    tmp_path,
+):
+    audio = tmp_path / "audio.flac"
+    audio_bytes = b"governed-audio"
+    audio.write_bytes(audio_bytes)
+    legacy = tmp_path / "legacy-cache"
+    legacy.mkdir()
+    canonical = _write_legacy_cache_chunk(legacy, audio_bytes, 0)
+    alias = legacy / canonical.name.replace("_o0.", "_o00.")
+    canonical.rename(alias)
+
+    with pytest.raises(FrozenCoreError, match="not canonical"):
+        inspect_legacy_cached_speech_feature_cache(
+            audio_path=audio,
+            legacy_cache_dir=legacy,
+            expected_n_embd=4,
+        )
+
+    packet = materialize_legacy_cached_speech_feature_packet(
+        feature_root=tmp_path / "packets",
+        packet_id="slurp/dev/example",
+        audio_path=audio,
+        legacy_cache_dir=legacy,
+        encoder_receipt_sha256="1" * 64,
+        decoder_gguf_sha256="2" * 64,
+        mmproj_sha256="3" * 64,
+        expected_n_embd=4,
+        causal_attention=True,
+    )
+    assert packet.chunks[0].ordinal == 0
+
+
+def test_legacy_cache_inspection_refuses_chunk_symlink_outside_cache(tmp_path):
+    audio = tmp_path / "audio.flac"
+    audio_bytes = b"governed-audio"
+    audio.write_bytes(audio_bytes)
+    legacy = tmp_path / "legacy-cache"
+    legacy.mkdir()
+    external = tmp_path / "external.feat"
+    external.write_bytes(
+        struct.pack("<QQ", 2, 4) + b"\x00" * 32
+    )
+    key = legacy_audio_feature_cache_key(audio_bytes)
+    (legacy / f"{key}_o0.feat").symlink_to(external)
+
+    with pytest.raises(FrozenCoreError, match="outside the cache directory"):
         inspect_legacy_cached_speech_feature_cache(
             audio_path=audio,
             legacy_cache_dir=legacy,
