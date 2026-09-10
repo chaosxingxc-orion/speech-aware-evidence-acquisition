@@ -827,6 +827,7 @@ class FlightRuntime:
         obs_runner: Callable[..., object] | None = None,
         phase_runner: Callable[..., object] = run_program,
         continuous_phase_runner: Callable[..., object] = run_continuous_program,
+        live_phase_fit_factory: Callable[..., object] | None = None,
         score_batch: Callable[..., Mapping[str, object]] = run_score_batch,
         clock: Callable[[], float] = time.time,
         # -- additional seams the C4c brief calls for "through seams" but
@@ -891,6 +892,7 @@ class FlightRuntime:
         self._obs_runner = obs_runner
         self._phase_runner = phase_runner
         self._continuous_phase_runner = continuous_phase_runner
+        self._live_phase_fit_factory = live_phase_fit_factory
         self._score_batch = score_batch
         self._clock = clock
         self._manifest_builder = manifest_builder
@@ -1722,6 +1724,12 @@ class FlightRuntime:
 
         self._require_prior_stages("preflight")
         values, carrier_lock_key, split_id, identity_hash = self._prepare()
+        if "whole_roster_wave_barrier" in values or "live_phase_fit" in values:
+            from ..preparation_fit import validate_live_phase_fit_config
+            policy = values.get("policy")
+            if policy == "fixed" or policy in self._obs_policy_names():
+                raise FlightRuntimeError("live phase fitting requires a registered phase program")
+            validate_live_phase_fit_config(values, default_phase_program(policy))
         composed = self._composed
         adapter = self._adapter
         samples = self._samples
@@ -3497,7 +3505,7 @@ class FlightRuntime:
         return rows
 
     def _dispatch_phase_program(
-        self, client: object, plan: ExecutionPlan, policy: str
+        self, client: object, plan: ExecutionPlan, policy: str, *, model_free_check: bool = False
     ) -> tuple[
         list[Mapping[str, object]],
         int,
@@ -3513,6 +3521,26 @@ class FlightRuntime:
         from ..tracing import TraceBuffer  # noqa: PLC0415 (function-local, cheap)
 
         program = default_phase_program(policy)
+        from ..preparation_fit import build_live_phase_fit_gate, validate_live_phase_fit_config
+        live_fit_spec = validate_live_phase_fit_config(self._composed.values, program)
+        whole_roster = live_fit_spec is not None
+        live_fit_gate = None
+        if whole_roster:
+            if model_free_check:
+                # Wire-check transport is synthetic. Record request identities
+                # without claiming that any tokenizer capacity was measured.
+                def live_fit_gate(phase, batch):
+                    from ..preparation_fit import boundary_identity
+                    live_fit_gate.receipts.append({
+                        "phase": phase, "model_free_request_identity_only": True,
+                        "boundary_sha256": boundary_identity(tuple(r.as_payload() for r in batch)),
+                        "capacity_verified": False,
+                    })
+                live_fit_gate.receipts = []
+            else:
+                live_fit_gate = (self._live_phase_fit_factory or build_live_phase_fit_gate)(
+                    self, program, plan
+                )
         from ..bundle.delivery_replay import validate_phase_delivery_sources
 
         validate_phase_delivery_sources(
@@ -3553,12 +3581,37 @@ class FlightRuntime:
         # acquire transition can be emitted (rails.controllers, "Traced
         # supply"). A program with no supply, or whose only supply is the
         # pre-flight-seeded FIRST phase, keeps the per-phase barrier form.
-        continuous = bool(
+        continuous = whole_roster or bool(
             set(supply_specs) - {program.phase_names()[0]}
         )
-        if continuous:
-            summaries = (
-                self._continuous_phase_runner(
+        live_options = (
+            {"whole_roster_wave_barrier": True, "request_batch_gate": live_fit_gate}
+            if whole_roster else {}
+        )
+        try:
+            if continuous:
+                summaries = (
+                    self._continuous_phase_runner(
+                        program=program,
+                        adapter=self._adapter,
+                        plan=plan,
+                        data_root=self._data_root,
+                        core_client=client,
+                        split_id=self._split_id,
+                        knowledge_snapshot=binding["knowledge_snapshot"],
+                        speech_packet_bindings=binding["speech_packet_bindings"],
+                        trace_sink=sink,
+                        decoding_params=self._phase_decoding_params(),
+                        material_for_phase=binding["material_for_phase"],
+                        supply_for_phase=supply_for_phase,
+                        review_for_phase=review_for_phase,
+                        bootstrap_facet_ids=facet_seed.get(program.phase_names()[0], ()),
+                        bootstrap_value_ids=value_seed.get(program.phase_names()[0], ()),
+                        **live_options,
+                    ),
+                )
+            else:
+                summaries = self._phase_runner(
                     program=program,
                     adapter=self._adapter,
                     plan=plan,
@@ -3572,39 +3625,21 @@ class FlightRuntime:
                     material_for_phase=binding["material_for_phase"],
                     supply_for_phase=supply_for_phase,
                     review_for_phase=review_for_phase,
-                    bootstrap_facet_ids=facet_seed.get(program.phase_names()[0], ()),
-                    bootstrap_value_ids=value_seed.get(program.phase_names()[0], ()),
-                ),
-            )
-        else:
-            summaries = self._phase_runner(
-                program=program,
-                adapter=self._adapter,
-                plan=plan,
-                data_root=self._data_root,
-                core_client=client,
-                split_id=self._split_id,
-                knowledge_snapshot=binding["knowledge_snapshot"],
-                speech_packet_bindings=binding["speech_packet_bindings"],
-                trace_sink=sink,
-                decoding_params=self._phase_decoding_params(),
-                material_for_phase=binding["material_for_phase"],
-                supply_for_phase=supply_for_phase,
-                review_for_phase=review_for_phase,
-                bootstrap_facet_ids_by_phase=facet_seed,
-                bootstrap_value_ids_by_phase=value_seed,
-            )
-        if review_specs:
-            from ...rails.phase_review import (  # noqa: PLC0415 (cycle guard)
-                phase_review_receipt,
-            )
+                    bootstrap_facet_ids_by_phase=facet_seed,
+                    bootstrap_value_ids_by_phase=value_seed,
+                )
+            if review_specs:
+                from ...rails.phase_review import (  # noqa: PLC0415 (cycle guard)
+                    phase_review_receipt,
+                )
 
-            self._phase_review_receipt = phase_review_receipt(
-                review_specs, review_for_phase
-            )
-        flush = getattr(client, "flush_trace_buffer", None)
-        if isinstance(sink, TraceBuffer) and callable(flush):
-            flush(sink)
+                self._phase_review_receipt = phase_review_receipt(
+                    review_specs, review_for_phase
+                )
+        finally:
+            flush = getattr(client, "flush_trace_buffer", None)
+            if isinstance(sink, TraceBuffer) and callable(flush):
+                flush(sink)
         self._phase_summaries = tuple(summaries)
         rows = self._rows_from_phase_summaries(self._phase_summaries, policy=policy)
         contact_count = sum(
@@ -3624,6 +3659,8 @@ class FlightRuntime:
             "phase_names": list(program.phase_names()),
             "contacts_per_sample": len(program.phases),
             "barrier": (
+                "whole-roster waves with retained controller state"
+                if whole_roster else
                 "none: one continuous trajectory per sample "
                 "(rails.phase_runner.run_continuous_program) -- required so a "
                 "supplied phase's acquire transition can be emitted"
@@ -3642,6 +3679,9 @@ class FlightRuntime:
             # (owner Decision 11-C), so this is provenance, not a mode.
             "reviewed_phases": sorted(review_specs),
         }
+        if whole_roster:
+            dispatch["whole_roster_wave_barrier"] = True
+            dispatch["live_phase_fit_receipts"] = list(live_fit_gate.receipts)
         return rows, contact_count, "phase-program", dispatch, phase_receipt
 
     def preparation_context(self):
@@ -5836,7 +5876,7 @@ class FlightRuntime:
                 policy_kind,
                 dispatch,
                 phase_receipt,
-            ) = self._dispatch_phase_program(client, plan, policy)
+            ) = self._dispatch_phase_program(client, plan, policy, model_free_check=True)
         wall_seconds = max(self._clock() - started, 1e-9)
         self._output_rows = rows
 

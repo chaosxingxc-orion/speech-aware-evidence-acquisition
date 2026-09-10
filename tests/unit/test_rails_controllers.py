@@ -41,6 +41,7 @@ _SHA_B = "b" * 64
 _EXPECTED_PROGRAM_SHAPES = {
     "phase-direct-only-v1": (("direct",), 1, "always-run-full-program"),
     "phase-direct-then-slots-v1": (("direct", "slots"), 2, "always-run-full-program"),
+    "phase-direct-then-slots-supplied-v1": (("direct", "slots"), 2, "always-run-full-program"),
     "phase-direct-evidence-alpha-blend-v1": (
         ("direct", "evidence"),
         2,

@@ -10,7 +10,7 @@
     "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
     "count": 1000,
     "roster": "the frozen full DEV-1000 runtime view, id for id",
-    "decision_population": "full DEV-1000; no fresh holdout or outcome claim"
+    "decision_population": "Historically exposed NEW500 primary; OLD500 and pooled DEV-1000 separately. No fresh holdout claim."
   },
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
@@ -20,32 +20,13 @@
     "planned_speech_audio_seconds": 6000
   },
   "execution_plan_basis": {
-    "generation": "Provisional owner review bound for 2,000 phase contacts over 1,000 rows, with a two-phase full-roster barrier and no retries or extra probes. Final exposure registration and fit admission remain required.",
+    "generation": "Root-proposed ceiling for2000phase contacts over1000rows; no extra probes or adaptive repeat. Exposure registration is still pending.",
     "fit": "The live phase gate declares 1 GET /props plus 3 per-row endpoints for each of two phases: 6,002 contacts for DEV-1000. This is separate from the proposed generation ceiling."
   },
   "cells": [
     {
-      "cell_id": "live-intent-slots-control-fit-v1",
-      "run_id": "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-V1-FIT",
-      "attempt_id": "attempt-live-intent-slots-control-fit-v1",
-      "allowed_execution_stages": [
-        "check",
-        "wire-check",
-        "prompt-fit"
-      ],
-      "arm": "speech-feature-query",
-      "baseline_fragment": "slurp-live-intent-slots-control-v1",
-      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
-      "dataset_fragment": "slurp-speech-native-dev1000",
-      "readiness": {
-        "state": "held",
-        "reason": "Held pending source review, fresh registration, full-roster live phase fit, and preparation binding.",
-        "requirements": []
-      }
-    },
-    {
       "cell_id": "live-intent-slots-control-generation-v1",
-      "run_id": "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-V1-GENERATION-V1",
+      "run_id": "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-V1",
       "attempt_id": "attempt-live-intent-slots-control-generation-v1",
       "allowed_execution_stages": [
         "check",
@@ -59,7 +40,7 @@
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
         "state": "held",
-        "reason": "Held pending the two-phase fit, source-bound preparation, exposure registration, and owner admission.",
+        "reason": "Held for root source and model-free wiring review, registered live tokenizer and generation plans, and inherited scientific dependencies. The actual fit runs at each real phase barrier.",
         "requirements": []
       }
     }
@@ -68,5 +49,21 @@
     "max_tokens": 256
   },
   "preserve_wire_responses": true,
-  "comparison_basis": "Compare this arm only after both live phases complete on the same full DEV-1000 roster; report the paired SLU analysis and cost under the existing registered scorers."
+  "comparison_basis": "Freeze both live arms before generation; compare their deterministic joined intent/slots deliveries on historically exposed NEW500, and report OLD500/DEV1000, natural/equal-scenario weighting, speaker sensitivity, output failures, model contacts and actual full-stage cost. The direct phase is regenerated in each arm. Components based on sealed predecessors are descriptive references.",
+  "live_fit_execution": "The baseline live_phase_fit declares the distinct tokenizer run and attempt. It is an internal bounded phase gate; do not dispatch a standalone prompt-fit over synthetic predecessors.",
+  "delivery_derivatives": [
+    {
+      "cell_id": "live-intent-slots-control-delivery-v1",
+      "parent_cell_id": "live-intent-slots-control-generation-v1",
+      "response_postprocessor": "slurp-intent-slots-delivery-v1",
+      "response_postprocessor_params": {},
+      "source_selector": {
+        "schema": "saea-phase-response-pair-v1",
+        "program_id": "phase-direct-then-slots-v1",
+        "program_sha256": "ed19883304997d7e1daa8b1cc57b5691212bb50914a97a83da836e7b12373045",
+        "predecessor_phase": "direct",
+        "response_phase": "slots"
+      }
+    }
+  ]
 }

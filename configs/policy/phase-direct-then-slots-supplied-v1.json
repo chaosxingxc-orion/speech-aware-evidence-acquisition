@@ -1,0 +1,22 @@
+{
+  "schema": "saea-phase-program-v1",
+  "program_id": "phase-direct-then-slots-supplied-v1",
+  "phases": [
+    {
+      "name": "direct",
+      "purpose": "direct-decode",
+      "knowledge": "none",
+      "response_format_id": null,
+      "barrier": true
+    },
+    {
+      "name": "slots",
+      "purpose": "slot-extraction-given-intent",
+      "knowledge": "supplied",
+      "response_format_id": null,
+      "barrier": false
+    }
+  ],
+  "max_contacts": 2,
+  "stop_rule": "always-run-full-program"
+}

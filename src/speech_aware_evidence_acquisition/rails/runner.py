@@ -1543,6 +1543,7 @@ def _run_agent_openjiuwen(
     observe_step: ObserveStep | None = None,
     record_namespace: str | None = None,
     request_batch_gate: RequestBatchGate | None = None,
+    whole_roster_wave_barrier: bool = False,
 ) -> tuple[_AgentRuntimeOutcome, ...]:
     """Run the speech AgentLoop on the pinned openJiuwen workflow engine."""
 
@@ -1668,26 +1669,31 @@ def _run_agent_openjiuwen(
         }
 
     prepared_requests: dict[int, PreparedCoreRequest] = {}
-    if request_batch_gate is not None:
-        # Initial contacts for the entire roster already exist. Preparation
-        # uses them once; no fabricated completion or controller.advance runs.
+
+    def prepare_request_batch(active_states) -> None:
+        # Retained controllers already constructed their actual next requests.
+        # Prepare once and send those same objects after the entire wave fits.
         if any(
             not isinstance(state.current_contact, AgentContactPlan)
-            or len(state.current_nodes) != 1 for state in states
+            or len(state.current_nodes) != 1 for state in active_states
         ):
             raise RailsRunnerError("request batch fit requires one plain contact per sample")
-        for state in states:
+        prepared_requests.clear()
+        for state in active_states:
             node = state.current_nodes[0]
             prepared_requests[node.task_index] = core_client.prepare_request(
                 node.messages, **request_arguments(node)
             )
-        batch = tuple(prepared_requests[state.prepared.index] for state in states)
+        batch = tuple(prepared_requests[state.prepared.index] for state in active_states)
         ids = [request.as_payload()["sample_id"] for request in batch]
         if len(ids) != len(set(ids)) or set(ids) != {
-            task.sample.sample_id for task in prepared_tasks
+            state.prepared.sample.sample_id for state in active_states
         }:
             raise RailsRunnerError("request batch fit requires the complete unique roster")
         request_batch_gate(batch)
+
+    if request_batch_gate is not None and not whole_roster_wave_barrier:
+        prepare_request_batch(states)
 
     def publish_workflow_state(
         state: _ContactAgentState,
@@ -1948,18 +1954,41 @@ def _run_agent_openjiuwen(
             for key in sorted(state.trace_buffers):
                 state.trace_buffers[key].flush_into(trace_sink)
 
-    try:
+    def execute_wave(active_states, *, one_wave: bool) -> None:
+        starting_wave = {
+            state.prepared.index: state.wave_index for state in active_states
+        }
         execute_speech_agent_workflows(
-            states,
+            active_states,
             prepare_wave=prepare_workflow_wave,
             invoke_contact=invoke_contact,
             aggregate_wave=aggregate_wave,
-            should_continue=lambda state: state.final_outcome is None,
+            should_continue=lambda state: (
+                state.final_outcome is None and (
+                    not one_wave
+                    or state.wave_index == starting_wave[state.prepared.index]
+                )
+            ),
             branch_count=max_contacts,
             slot_count=slot_count,
             queue_depth=queue_depth,
             workflow_timeout_seconds=DEFAULT_WORKFLOW_TIMEOUT_SECONDS,
         )
+
+    try:
+        if whole_roster_wave_barrier:
+            active_states = states
+            while active_states:
+                if request_batch_gate is not None:
+                    prepare_request_batch(active_states)
+                # Return only after every active sample settles this wave.
+                # Preserve each controller, query state and trace buffer.
+                execute_wave(active_states, one_wave=True)
+                active_states = [
+                    state for state in active_states if state.final_outcome is None
+                ]
+        else:
+            execute_wave(states, one_wave=False)
         if any(state.final_outcome is None for state in states):
             raise RailsRunnerError("openJiuwen AgentLoop lost a trajectory result")
     except BaseException:
@@ -2133,6 +2162,7 @@ def run_speech_native_agent_loop(
     trace_record_namespace: str | None = None,
     observe_step: ObserveStep | None = None,
     request_batch_gate: RequestBatchGate | None = None,
+    whole_roster_wave_barrier: bool = False,
 ) -> AgentLoopSummary:
     """Run a bounded, batched, speech-native AgentLoop over one DEV split.
 
@@ -2213,13 +2243,19 @@ def run_speech_native_agent_loop(
             "agent_executor_id must be 'reference-trajectory-v1' or "
             "'openjiuwen-workflow-v1'"
         )
+    if not isinstance(whole_roster_wave_barrier, bool):
+        raise RailsRunnerError("whole_roster_wave_barrier must be a boolean")
+    if whole_roster_wave_barrier and agent_executor_id != "openjiuwen-workflow-v1":
+        raise RailsRunnerError("whole-roster waves require the shared OpenJiuwen executor")
     if request_batch_gate is not None:
         if not callable(request_batch_gate):
             raise RailsRunnerError("request_batch_gate must be callable")
         if (
             agent_executor_id != "openjiuwen-workflow-v1"
-            or max_contacts != 1 or observe_step is not None
-            or bootstrap_facet_ids or bootstrap_value_ids
+            or (not whole_roster_wave_barrier and (
+                max_contacts != 1 or observe_step is not None
+                or bootstrap_facet_ids or bootstrap_value_ids
+            ))
         ):
             raise RailsRunnerError(
                 "request batch fit requires a solo OpenJiuwen phase without observe or seeds"
@@ -2347,6 +2383,7 @@ def run_speech_native_agent_loop(
                 observe_step=observe_step,
                 record_namespace=trace_record_namespace,
                 request_batch_gate=request_batch_gate,
+                whole_roster_wave_barrier=whole_roster_wave_barrier,
             )
         )
     else:

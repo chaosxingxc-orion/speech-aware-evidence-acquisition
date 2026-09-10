@@ -1107,6 +1107,7 @@ def default_controller_factory(program: PhaseProgram) -> Callable[[str], Evidenc
 _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-direct-only-v1": "phase-direct-only-v1.json",
     "phase-direct-then-slots-v1": "phase-direct-then-slots-v1.json",
+    "phase-direct-then-slots-supplied-v1": "phase-direct-then-slots-supplied-v1.json",
     "phase-direct-evidence-alpha-blend-v1": "phase-direct-evidence-alpha-blend-v1.json",
     "phase-select-then-fill-v1": "phase-select-then-fill-v1.json",
     "phase-draft-revise-v1": "phase-draft-revise-v1.json",
@@ -1194,6 +1195,13 @@ def register_phase_programs_v1() -> None:
             "phase-direct-then-slots-v1",
             default_controller_factory(
                 default_phase_program("phase-direct-then-slots-v1")
+            ),
+        )
+    if "phase-direct-then-slots-supplied-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-direct-then-slots-supplied-v1",
+            default_controller_factory(
+                default_phase_program("phase-direct-then-slots-supplied-v1")
             ),
         )
     if "phase-direct-evidence-alpha-blend-v1" not in registered:

@@ -443,3 +443,215 @@ def fit_phase_runtime(
         producer=produce,
         contact_class="tokenizer",
     )
+
+
+def validate_live_phase_fit_config(values, program):
+    """Validate the opt-in before service contact; historical defaults are inert."""
+    import re
+
+    barrier = values.get("whole_roster_wave_barrier", False)
+    if not isinstance(barrier, bool):
+        raise PreparationError("whole_roster_wave_barrier must be a boolean")
+    spec = values.get("live_phase_fit")
+    if not barrier:
+        if spec is not None:
+            raise PreparationError("live_phase_fit requires whole_roster_wave_barrier")
+        return None
+    if not isinstance(spec, Mapping) or set(spec) != {
+        "run_id",
+        "attempt_id",
+        "contact_cap",
+    }:
+        raise PreparationError(
+            "whole-roster live fitting requires run_id, attempt_id and contact_cap"
+        )
+    for key in ("run_id", "attempt_id"):
+        if (
+            not isinstance(spec[key], str)
+            or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", spec[key]) is None
+        ):
+            raise PreparationError(f"live fit {key} must be one plain path segment")
+    cap = spec["contact_cap"]
+    if isinstance(cap, bool) or not isinstance(cap, int) or cap < 1:
+        raise PreparationError("live fit contact_cap must be a positive integer")
+    names = tuple(program.phase_names())
+    if (
+        not names
+        or len(set(names)) != len(names)
+        or any(
+            re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", name) is None for name in names
+        )
+    ):
+        raise PreparationError("live fit requires unique plain phase names")
+    if (
+        values.get("prepared_request_fit") is not None
+        or values.get("prompt_fit_receipt") is not None
+    ):
+        raise PreparationError(
+            "live phase fitting cannot reuse a sealed-predecessor fit"
+        )
+    return dict(spec)
+
+
+def build_live_phase_fit_gate(runtime, program, plan, *, client_factory=None):
+    """Fit actual live waves under one generation lease and a separate tool plan.
+
+    No model responses are synthesized. Each callback receives the same
+    PreparedCoreRequest objects the runner will send. A failed or interrupted
+    phase remains journaled and cannot be retried under this fit identity.
+    """
+    import os
+    from dataclasses import asdict, replace
+
+    from ..rails.core_client import PreparedCoreRequest
+    from .driver.speech_native import _LoopbackPromptAuditClient
+    from .preparation import prepare_artifact
+
+    values = runtime._composed.values
+    spec = validate_live_phase_fit_config(values, program)
+    if spec is None:
+        raise PreparationError("live phase fitting was not configured")
+    if spec["run_id"] == plan.run_id or spec["attempt_id"] == plan.attempt_id:
+        raise PreparationError(
+            "tokenizer fit requires distinct run and attempt identities"
+        )
+    if not runtime.uses_speech_feature_packets():
+        raise PreparationError(
+            "live phase fitting currently requires validated feature packets"
+        )
+    if runtime._session is None or runtime._transport is None:
+        raise PreparationError("live phase fitting requires an attached root session")
+    expected_ids = tuple(sample.sample_id for sample in runtime._samples)
+    phases = tuple(program.phase_names())
+    required_contacts = len(phases) * (1 + 3 * len(expected_ids))
+    if spec["contact_cap"] != required_contacts:
+        raise PreparationError(
+            "live fit cap must equal the registered complete phase endpoint count"
+        )
+    fit_plan = replace(
+        plan,
+        run_id=spec["run_id"],
+        attempt_id=spec["attempt_id"],
+        planned_model_calls=spec["contact_cap"],
+    ).validate()
+    runtime.assert_generation_lease()
+    runtime._gate_touch(runtime._gate, fit_plan)
+    runtime._require_exposure_row_unconsumed(fit_plan.run_id)
+    fit_root = runtime._data_root / "prepared" / fit_plan.run_id / fit_plan.attempt_id
+    fit_root.mkdir(parents=True, exist_ok=True)
+    identity = runtime.session_required_identity()
+    session = runtime._session
+    decoder_hashes = {
+        entry.sha256
+        for entry in session.model_files
+        if "mmproj" not in Path(entry.path).name.lower()
+    }
+    if len(decoder_hashes) != 1:
+        raise PreparationError("live fit requires one decoder identity")
+    decoder_sha256 = next(iter(decoder_hashes))
+    guarded = GuardedTokenizer(
+        (client_factory or _LoopbackPromptAuditClient)(
+            host=session.host, port=session.port, timeout_seconds=600.0
+        ),
+        guard=runtime.assert_generation_lease,
+        contact_cap=spec["contact_cap"],
+    )
+    completed = []
+
+    def fit_wave(phase, batch):
+        if len(completed) >= len(phases) or phase != phases[len(completed)]:
+            raise PreparationError("live fit phase order changed or repeated")
+        if (
+            not isinstance(batch, tuple)
+            or not batch
+            or any(not isinstance(request, PreparedCoreRequest) for request in batch)
+        ):
+            raise PreparationError("live fit requires immutable prepared core requests")
+        payloads = tuple(request.as_payload() for request in batch)
+        if {p.get("sample_id") for p in payloads} != set(expected_ids) or len(
+            payloads
+        ) != len(expected_ids):
+            raise PreparationError(
+                "live fit requires the full registered roster at every phase"
+            )
+        runtime.assert_generation_lease()
+        inputs = runtime.request_fit_inputs(payloads)
+        inputs = {**inputs, "live_phase": phase, "fit_plan": asdict(fit_plan)}
+        path = fit_root / (phase + ".request-fit.json")
+        journal = path.with_name(path.name + ".contacts.jsonl")
+        # Refuse both completed and interrupted same-identity phases.
+        if path.exists() or journal.exists():
+            raise PreparationError(
+                "live fit identity already has contact or result evidence"
+            )
+
+        def produce():
+            before = guarded.counts.total()
+            with journal.open("x", encoding="utf-8") as stream:
+
+                def record_contact(method, route):
+                    stream.write(
+                        canonical_bytes(
+                            {
+                                "contact": guarded.counts.total(),
+                                "method": method,
+                                "route": route,
+                                "run_id": fit_plan.run_id,
+                                "attempt_id": fit_plan.attempt_id,
+                                "generation_run_id": plan.run_id,
+                                "session_id": session.session_id,
+                                "phase": phase,
+                            }
+                        ).decode()
+                        + "\n"
+                    )
+                    stream.flush()
+                    os.fsync(stream.fileno())
+
+                guarded.contact_sink = record_contact
+                props = guarded.request_json("GET", "/props", None)
+                marker = (
+                    props.get("media_marker") if isinstance(props, Mapping) else None
+                )
+                if not isinstance(marker, str) or not marker:
+                    raise PreparationError("resident tokenizer has no media marker")
+                result = fit_requests(
+                    payloads,
+                    expected_sample_ids=expected_ids,
+                    transport=runtime._transport,
+                    client=guarded,
+                    speech_counts=lambda payload: packet_token_counts(
+                        payload,
+                        feature_root=Path(str(values["speech_feature_root"])),
+                        decoder_sha256=decoder_sha256,
+                    ),
+                    media_marker=marker,
+                    slot_tokens=int(runtime._adapter.serving_geometry()["slot_tokens"]),
+                    fit_multiple=float(values.get("prompt_fit_multiple", 1.0)),
+                )
+                return {
+                    **result,
+                    "phase": phase,
+                    "session_id": session.session_id,
+                    "session_identity_sha256": digest(identity),
+                    "contacts": guarded.counts.total() - before,
+                    "cumulative_contacts": guarded.counts.total(),
+                    "generation_contacts": 0,
+                }
+
+        receipt = prepare_artifact(
+            path,
+            kind="request-fit",
+            inputs=inputs,
+            producer=produce,
+            contact_class="tokenizer",
+        )
+        document = json.loads(path.read_text(encoding="utf-8"))
+        if document["output"].get("every_request_fits") is not True:
+            raise PreparationError("live phase requests exceed the registered capacity")
+        runtime.assert_generation_lease()
+        completed.append({"phase": phase, **receipt})
+
+    fit_wave.receipts = completed
+    fit_wave.execution_plan = fit_plan
+    return fit_wave

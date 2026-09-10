@@ -436,6 +436,8 @@ def run_continuous_program(
     queue_depth: int | None = None,
     agent_executor_id: str = DEFAULT_AGENT_EXECUTOR_ID,
     agent_runner: Callable[..., object] = run_speech_native_agent_loop,
+    whole_roster_wave_barrier: bool = False,
+    request_batch_gate: Callable[[str, tuple], None] | None = None,
 ) -> AgentLoopSummary:
     """Run the WHOLE program as ONE continuous per-sample trajectory (E6).
 
@@ -450,9 +452,11 @@ def run_continuous_program(
     ``rails.phase_runner``'s own module docstring already describes as the
     alternative for a non-barrier program.
 
-    What is given up, explicitly: the whole-roster barrier. Refused outright
-    for a program declaring ``barrier`` on any phase, rather than silently
-    running a barrier program without its barrier.
+    Default scheduling refuses a declared whole-roster barrier. Explicit
+    whole_roster_wave_barrier retains the same controller trajectory while
+    executing one complete roster wave at a time on OpenJiuwen. The optional
+    request gate sees real prior-state and evidence requests before each wave.
+    Early-stopped samples do not enter later active rosters.
 
     Returns ONE ``AgentLoopSummary`` for the whole program (one result per
     sample, ``len(program.phases)`` contacts each unless the program's stop
@@ -473,7 +477,15 @@ def run_continuous_program(
             "run_continuous_program review_for_phase must be callable or None"
         )
     barriers = [phase.name for phase in program.phases if phase.barrier]
-    if barriers:
+    if not isinstance(whole_roster_wave_barrier, bool):
+        raise PhaseRunnerError("whole_roster_wave_barrier must be a boolean")
+    if whole_roster_wave_barrier and agent_executor_id != DEFAULT_AGENT_EXECUTOR_ID:
+        raise PhaseRunnerError("whole-roster waves require the shared OpenJiuwen executor")
+    if request_batch_gate is not None and (
+        not callable(request_batch_gate) or not whole_roster_wave_barrier
+    ):
+        raise PhaseRunnerError("continuous request fitting requires whole-roster waves")
+    if barriers and not whole_roster_wave_barrier:
         raise PhaseRunnerError(
             f"program {program.program_id!r} declares a barrier on phase(s) "
             f"{barriers}; a barrier is a whole-roster property and can only be "
@@ -520,6 +532,21 @@ def run_continuous_program(
     controller_registry = Registry(f"continuous phase program: {program.program_id}")
     controller_registry.register(program.program_id, controller_factory)
 
+    wave_index = 0
+
+    def gate_wave(batch):
+        nonlocal wave_index
+        if wave_index >= len(program.phases):
+            raise PhaseRunnerError("request wave exceeds the phase program")
+        request_batch_gate(program.phases[wave_index].name, batch)
+        wave_index += 1
+
+    runner_options = {}
+    if whole_roster_wave_barrier:
+        runner_options["whole_roster_wave_barrier"] = True
+    if request_batch_gate is not None:
+        runner_options["request_batch_gate"] = gate_wave
+
     summary = agent_runner(
         data_root=data_root,
         plan=plan,
@@ -539,6 +566,7 @@ def run_continuous_program(
         decoding_params=decoding_params,
         controller_registry=controller_registry,
         trace_record_namespace=program.program_id,
+        **runner_options,
     )
     results = getattr(summary, "results", None)
     if not isinstance(results, tuple) or not results:

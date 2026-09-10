@@ -39,8 +39,8 @@
     "attempt_id": "attempt-live-intent-slots-control-fit-v1",
     "contact_cap": 6002
   },
-  "what_this_is": "HELD: proposed full DEV-1000 live two-stage SLURP no-supply control. No generation, fit, service, or exposure contact is authorized; root must register fresh identities and complete the declared fit before admission.",
-  "delivery_basis": "Future phase-pair declaration must bind the registered slurp-intent-slots-delivery-v1 rule after the direct and slots phases. This fragment does not enable delivery behavior or authorize contact.",
+  "what_this_is": "Live full-roster intent-to-slots configuration; experiment readiness and committed generation/tokenizer exposure plans govern admission.",
+  "delivery_basis": "The experiment predeclares the registered slurp-intent-slots-delivery-v1 deterministic phase-pair join. Retain raw generation, derive the joined delivery, then score the joined complete roster once.",
   "live_state_transfer": "The slots phase appends the direct phase state through the shared phase-material registry; no sealed predecessor receipt is used.",
   "geometry_basis": "Both phases use the inherited np4 / four-slot / 16,384-token geometry and request max_tokens=256 through the experiment fragment; no phase-specific decoding extension is introduced.",
   "policy": "phase-direct-then-slots-v1"
