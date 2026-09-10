@@ -1,0 +1,14 @@
+{
+  "run_id": "SAEA-E21-STRICT-CACHE-QUALIFICATION-RECOVERY-V1",
+  "execution_profile": "bounded-discovery-probe",
+  "carrier_lock_key": "earnings21-original",
+  "split_role": "discovery",
+  "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
+  "planned_model_calls": 4,
+  "planned_gpu_hours": 0.25,
+  "planned_speech_audio_seconds": 44,
+  "protocol_hash": "aef9f65d528b42d42749bd6bc9fd36f2f2f7ae4bdb886e0f989c5daeb4600010",
+  "attempt_id": "attempt-20260910-strict-cache-qualification-recovery-v1",
+  "schema": "saea-execution-plan-v1",
+  "study": "speech-aware-evidence-acquisition"
+}

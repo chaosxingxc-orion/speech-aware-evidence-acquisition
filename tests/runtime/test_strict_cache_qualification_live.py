@@ -22,7 +22,6 @@ from speech_aware_evidence_acquisition.core.flight.factory import build_flight_r
 from speech_aware_evidence_acquisition.core.flight.lease import WorkerExecutionPolicy
 from speech_aware_evidence_acquisition.core.model import FrozenCoreError
 from speech_aware_evidence_acquisition.core.model.slices import (
-    SliceRecord,
     SliceRegistry,
 )
 from speech_aware_evidence_acquisition.core.preparation import (
@@ -32,6 +31,7 @@ from speech_aware_evidence_acquisition.core.preparation import (
 )
 from speech_aware_evidence_acquisition.core.preparation_encoding import (
     DEFAULT_INSTRUCTION,
+    _slice as window_source_slice,
     window_encoding_sources,
 )
 from speech_aware_evidence_acquisition.core.preparation_windows import (
@@ -222,15 +222,7 @@ def test_registered_strict_cache_service():
         prepared = []
         request_hashes = []
         for source in sources:
-            client.register_slice(
-                SliceRecord(
-                    **{
-                        key: value
-                        for key, value in source.items()
-                        if key != "parent_bytes"
-                    }
-                )
-            )
+            client.register_slice(window_source_slice(source))
             request = client.prepare_request(
                 (
                     {"role": "system", "content": DEFAULT_INSTRUCTION},
