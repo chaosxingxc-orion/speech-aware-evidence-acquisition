@@ -4,7 +4,9 @@ gate reusing core.legality's own either-field rule.
 
 from __future__ import annotations
 
+import hashlib
 import struct
+from pathlib import Path
 import threading
 import time
 
@@ -13,6 +15,7 @@ import pytest
 from speech_aware_evidence_acquisition.core.legality import LegalityError
 from speech_aware_evidence_acquisition.core.model import (
     FrozenCoreError,
+    inspect_legacy_cached_speech_feature_cache,
     legacy_audio_feature_cache_key,
     materialize_legacy_cached_speech_feature_packets,
 )
@@ -54,6 +57,123 @@ from speech_aware_evidence_acquisition.rails.knowledge import (
 _SHA_A = "a" * 64
 _SHA_B = "b" * 64
 _SHA_C = "c" * 64
+
+
+def _write_legacy_cache_chunk(
+    cache_dir, audio_bytes, ordinal, *, n_tokens=2, n_embd=4, trailing=b""
+):
+    key = legacy_audio_feature_cache_key(audio_bytes)
+    feature_bytes = struct.pack(f"<{n_tokens * n_embd}f", *[1.0] * (n_tokens * n_embd))
+    path = cache_dir / f"{key}_o{ordinal}.feat"
+    path.write_bytes(struct.pack("<QQ", n_tokens, n_embd) + feature_bytes + trailing)
+    return path
+
+
+def test_legacy_cache_inspection_reports_exact_identity_and_ordered_chunks(tmp_path):
+    audio = tmp_path / "audio.flac"
+    audio_bytes = b"governed-audio"
+    audio.write_bytes(audio_bytes)
+    legacy = tmp_path / "legacy-cache"
+    legacy.mkdir()
+    paths = [
+        _write_legacy_cache_chunk(legacy, audio_bytes, 0, n_tokens=2),
+        _write_legacy_cache_chunk(legacy, audio_bytes, 1, n_tokens=3),
+    ]
+
+    inspection = inspect_legacy_cached_speech_feature_cache(
+        audio_path=audio,
+        legacy_cache_dir=legacy,
+        expected_n_embd=4,
+    )
+
+    assert inspection.audio_sha256 == hashlib.sha256(audio_bytes).hexdigest()
+    assert inspection.cache_key == legacy_audio_feature_cache_key(audio_bytes)
+    assert [chunk.ordinal for chunk in inspection.chunks] == [0, 1]
+    assert [chunk.relative_filename for chunk in inspection.chunks] == [
+        path.name for path in paths
+    ]
+    assert [chunk.file_sha256 for chunk in inspection.chunks] == [
+        hashlib.sha256(path.read_bytes()).hexdigest() for path in paths
+    ]
+    assert [chunk.file_size for chunk in inspection.chunks] == [
+        path.stat().st_size for path in paths
+    ]
+    assert [(chunk.n_tokens, chunk.n_embd) for chunk in inspection.chunks] == [
+        (2, 4),
+        (3, 4),
+    ]
+
+
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (lambda path: path.unlink(), "has no ordinal zero"),
+        (
+            lambda path: path.write_bytes(struct.pack("<QQ", 2, 3) + b"\x00" * 24),
+            "decoder dimension",
+        ),
+        (
+            lambda path: path.write_bytes(struct.pack("<QQ", 2, 4) + b"\x00" * 33),
+            "byte length",
+        ),
+    ],
+)
+def test_legacy_cache_inspection_refuses_invalid_chunks(tmp_path, mutate, message):
+    audio = tmp_path / "audio.flac"
+    audio_bytes = b"governed-audio"
+    audio.write_bytes(audio_bytes)
+    legacy = tmp_path / "legacy-cache"
+    legacy.mkdir()
+    path = _write_legacy_cache_chunk(legacy, audio_bytes, 0)
+
+    mutate(path)
+    with pytest.raises(FrozenCoreError, match=message):
+        inspect_legacy_cached_speech_feature_cache(
+            audio_path=audio,
+            legacy_cache_dir=legacy,
+            expected_n_embd=4,
+        )
+
+
+def test_legacy_cache_inspection_refuses_gapped_ordinals(tmp_path):
+    audio = tmp_path / "audio.flac"
+    audio_bytes = b"governed-audio"
+    audio.write_bytes(audio_bytes)
+    legacy = tmp_path / "legacy-cache"
+    legacy.mkdir()
+    _write_legacy_cache_chunk(legacy, audio_bytes, 0)
+    _write_legacy_cache_chunk(legacy, audio_bytes, 2)
+
+    with pytest.raises(FrozenCoreError, match="not contiguous"):
+        inspect_legacy_cached_speech_feature_cache(
+            audio_path=audio,
+            legacy_cache_dir=legacy,
+            expected_n_embd=4,
+        )
+
+
+def test_legacy_cache_inspection_refuses_duplicate_ordinals(tmp_path, monkeypatch):
+    audio = tmp_path / "audio.flac"
+    audio_bytes = b"governed-audio"
+    audio.write_bytes(audio_bytes)
+    legacy = tmp_path / "legacy-cache"
+    legacy.mkdir()
+    path = _write_legacy_cache_chunk(legacy, audio_bytes, 0)
+    original_glob = Path.glob
+
+    def duplicate_glob(directory, pattern):
+        paths = list(original_glob(directory, pattern))
+        if directory == legacy:
+            return iter(paths + [path])
+        return original_glob(directory, pattern)
+
+    monkeypatch.setattr(Path, "glob", duplicate_glob)
+    with pytest.raises(FrozenCoreError, match="duplicate legacy"):
+        inspect_legacy_cached_speech_feature_cache(
+            audio_path=audio,
+            legacy_cache_dir=legacy,
+            expected_n_embd=4,
+        )
 
 
 def test_legacy_featcache_batch_promotion_is_parallel_and_ordered(

@@ -102,6 +102,27 @@ class SpeechFeatureChunkData:
 
 
 @dataclass(frozen=True)
+class LegacyCachedChunkDescriptor:
+    """Auditable metadata for one validated legacy feature-cache file."""
+
+    ordinal: int
+    relative_filename: str
+    file_sha256: str
+    file_size: int
+    n_tokens: int
+    n_embd: int
+
+
+@dataclass(frozen=True)
+class LegacyFeatureCacheInspection:
+    """Validated, model-free identity and chunk metadata for a warm cache."""
+
+    audio_sha256: str
+    cache_key: str
+    chunks: tuple[LegacyCachedChunkDescriptor, ...]
+
+
+@dataclass(frozen=True)
 class SpeechFeatureChunkV1:
     ordinal: int
     n_tokens: int
@@ -716,9 +737,9 @@ def legacy_audio_feature_cache_key(audio_bytes: bytes) -> str:
     return str(value)
 
 
-def _legacy_cached_chunks(
+def _validated_legacy_cached_chunks(
     *, audio_bytes: bytes, legacy_cache_dir: Path, expected_n_embd: int
-) -> tuple[SpeechFeatureChunkData, ...]:
+) -> tuple[tuple[SpeechFeatureChunkData, ...], tuple[LegacyCachedChunkDescriptor, ...]]:
     if (
         isinstance(expected_n_embd, bool)
         or not isinstance(expected_n_embd, int)
@@ -747,6 +768,7 @@ def _legacy_cached_chunks(
         raise FrozenCoreError("legacy feature-cache chunk ordinals are not contiguous from zero")
 
     chunks: list[SpeechFeatureChunkData] = []
+    descriptors: list[LegacyCachedChunkDescriptor] = []
     for ordinal in range(len(candidates)):
         try:
             raw = candidates[ordinal].read_bytes()
@@ -774,6 +796,16 @@ def _legacy_cached_chunks(
             )
         relative_positions = tuple(range(n_tokens)) * 4
         position_bytes = struct.pack(f"<{len(relative_positions)}i", *relative_positions)
+        descriptors.append(
+            LegacyCachedChunkDescriptor(
+                ordinal=ordinal,
+                relative_filename=candidates[ordinal].name,
+                file_sha256=_sha256(raw),
+                file_size=len(raw),
+                n_tokens=n_tokens,
+                n_embd=expected_n_embd,
+            )
+        )
         chunks.append(
             SpeechFeatureChunkData(
                 n_tokens=n_tokens,
@@ -783,7 +815,51 @@ def _legacy_cached_chunks(
                 position_bytes=position_bytes,
             ).validate()
         )
-    return tuple(chunks)
+    return tuple(chunks), tuple(descriptors)
+
+
+def _legacy_cached_chunks(
+    *, audio_bytes: bytes, legacy_cache_dir: Path, expected_n_embd: int
+) -> tuple[SpeechFeatureChunkData, ...]:
+    """Validate and decode legacy chunks for the existing promotion path."""
+
+    chunks, _ = _validated_legacy_cached_chunks(
+        audio_bytes=audio_bytes,
+        legacy_cache_dir=legacy_cache_dir,
+        expected_n_embd=expected_n_embd,
+    )
+    return chunks
+
+
+def inspect_legacy_cached_speech_feature_cache(
+    *,
+    audio_path: Path,
+    legacy_cache_dir: Path,
+    expected_n_embd: int,
+) -> LegacyFeatureCacheInspection:
+    """Inspect a warm legacy cache without model calls, encoding, or writes.
+
+    The returned identity is limited to the supplied audio bytes, the legacy
+    FNV cache key, and validated chunk files. It carries no model or cache
+    build identity; callers must bind those through an external receipt.
+    """
+
+    try:
+        audio_bytes = Path(audio_path).read_bytes()
+    except OSError as error:
+        raise FrozenCoreError(
+            f"cannot read governed speech media {audio_path}: {error}"
+        ) from error
+    _, descriptors = _validated_legacy_cached_chunks(
+        audio_bytes=audio_bytes,
+        legacy_cache_dir=Path(legacy_cache_dir),
+        expected_n_embd=expected_n_embd,
+    )
+    return LegacyFeatureCacheInspection(
+        audio_sha256=_sha256(audio_bytes),
+        cache_key=legacy_audio_feature_cache_key(audio_bytes),
+        chunks=descriptors,
+    )
 
 
 def materialize_legacy_cached_speech_feature_packet(
