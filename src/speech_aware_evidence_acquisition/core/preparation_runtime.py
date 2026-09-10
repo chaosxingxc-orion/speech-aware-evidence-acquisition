@@ -85,26 +85,6 @@ def verify_pinned_file(
     return actual_sha256
 
 
-def _verify_file(
-    path: Path, entry: Mapping[str, object], label: str
-) -> tuple[int, str]:
-    expected_size = entry.get("bytes", entry.get("binary_bytes"))
-    expected_sha256 = entry.get("sha256", entry.get("binary_sha256"))
-    if (
-        isinstance(expected_size, bool)
-        or not isinstance(expected_size, int)
-        or expected_size < 0
-        or not isinstance(expected_sha256, str)
-        or len(expected_sha256) != 64
-        or any(char not in _HEX for char in expected_sha256)
-    ):
-        raise PreparationError(f"{label} receipt pin is invalid")
-    size, actual, _ = hash_stable_file(path, label)
-    if size != expected_size or actual != expected_sha256:
-        raise PreparationError(f"{label} does not match its runtime receipt")
-    return size, actual
-
-
 def _runtime_files(
     receipt: Mapping[str, object],
     *,
@@ -134,7 +114,12 @@ def _runtime_files(
         binary = _resolve_confined(runtime_root, binary_rel, runtime_root, "runtime binary path", strict=True)
     except FrozenCoreError as error:
         raise PreparationError(str(error)) from error
-    _verify_file(binary, llama, "runtime binary")
+    verify_pinned_file(
+        binary,
+        expected_size=llama.get("binary_bytes"),
+        expected_sha256=llama.get("binary_sha256"),
+        label="runtime binary",
+    )
 
     ggufs = receipt.get("gguf_files")
     if not isinstance(ggufs, list) or not ggufs:
@@ -152,7 +137,12 @@ def _runtime_files(
             )
         except FrozenCoreError as error:
             raise PreparationError(str(error)) from error
-        _verify_file(target, entry, "runtime GGUF")
+        verify_pinned_file(
+            target,
+            expected_size=entry.get("bytes"),
+            expected_sha256=entry.get("sha256"),
+            label="runtime GGUF",
+        )
         if "mmproj" in Path(relative).name.lower():
             if mmproj is not None:
                 raise PreparationError("runtime receipt has duplicate mmproj GGUF")
@@ -176,7 +166,12 @@ def _runtime_files(
             target = _resolve_confined(runtime_root, relative, runtime_root, "runtime library path", strict=True)
         except FrozenCoreError as error:
             raise PreparationError(str(error)) from error
-        _verify_file(target, entry, "runtime library")
+        verify_pinned_file(
+            target,
+            expected_size=entry.get("bytes"),
+            expected_sha256=entry.get("sha256"),
+            label="runtime library",
+        )
         normalized_libraries.append(dict(entry))
     return dict(llama), {"decoder": decoder, "mmproj": mmproj}, {
         "libraries": normalized_libraries
@@ -223,6 +218,11 @@ def verify_feature_encoder_runtime(
         raise PreparationError("feature encoder and generation runtime libraries differ")
     if encoder_ggufs["decoder"] != generation_ggufs["decoder"]:
         raise PreparationError("feature encoder and generation decoder identities differ")
+    if (
+        generation_ggufs["mmproj"] is not None
+        and encoder_ggufs["mmproj"] != generation_ggufs["mmproj"]
+    ):
+        raise PreparationError("feature encoder and generation mmproj identities differ")
     decoder_sha256 = encoder_ggufs["decoder"]["sha256"]
     mmproj_sha256 = encoder_ggufs["mmproj"]["sha256"]
     if not isinstance(decoder_sha256, str) or not isinstance(mmproj_sha256, str):
