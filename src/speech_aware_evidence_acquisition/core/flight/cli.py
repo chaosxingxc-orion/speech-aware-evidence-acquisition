@@ -44,7 +44,8 @@ def load_campaign_plan(repo: Path, path: Path):
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=[
-        "check", "wire-check", "prepare-supply", "prompt-fit", "coordinate-fit", "worker", "campaign",
+        "check", "wire-check", "prepare-supply", "prepare-window-inventory",
+        "prompt-fit", "coordinate-fit", "worker", "campaign",
     ])
     for name in ("repo-root", "data-root", "runtime-root", "lock-path"):
         parser.add_argument("--" + name, required=True)
@@ -68,7 +69,9 @@ def main(argv=None) -> int:
         parser.error("workers require --expected-session-id and --lease-token-file from root")
     if args.mode == "campaign" and (not args.owner or not args.expected_session_id):
         parser.error("campaign requires explicit --owner and --expected-session-id")
-    if args.mode in {"prepare-supply", "prompt-fit"} and args.output is None:
+    if args.mode in {
+        "prepare-supply", "prepare-window-inventory", "prompt-fit"
+    } and args.output is None:
         parser.error("preparation modes require --output")
     if args.mode == "prompt-fit" and (args.contact_cap is None or args.contact_cap < 1):
         parser.error("prompt-fit requires a positive registered --contact-cap")
@@ -150,6 +153,8 @@ def main(argv=None) -> int:
                 result = runtime.prepare_phase_supply(args.output)
             else:
                 result = runtime.prepare_phase_supply(args.output, max_workers=args.workers)
+        elif args.mode == "prepare-window-inventory":
+            result = runtime.prepare_window_inventory(args.output)
         elif args.mode == "prompt-fit":
             from ..preparation_fit import fit_phase_runtime
             result = fit_phase_runtime(

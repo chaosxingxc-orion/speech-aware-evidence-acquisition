@@ -22,7 +22,15 @@ from .queue import FlightDependency, FlightQueue, FlightReadiness
 from .runtime import FlightRuntime
 
 
-EXECUTION_STAGES = frozenset({"check", "wire-check", "prepare-supply", "prompt-fit", "worker", "campaign"})
+EXECUTION_STAGES = frozenset({
+    "check",
+    "wire-check",
+    "prepare-supply",
+    "prepare-window-inventory",
+    "prompt-fit",
+    "worker",
+    "campaign",
+})
 
 
 class CampaignError(ValueError):
@@ -57,7 +65,13 @@ class CampaignCell:
 
     def assert_mode(self, mode: str) -> None:
         """Enforce declared stage custody before any runtime or session work."""
-        if mode not in self.document.get("allowed_execution_stages", EXECUTION_STAGES):
+        stages = self.document.get("allowed_execution_stages")
+        if mode == "prepare-window-inventory" and stages is None:
+            raise CampaignError(
+                f"cell {self.document['cell_id']} must explicitly permit "
+                "execution stage prepare-window-inventory"
+            )
+        if mode not in (stages if stages is not None else EXECUTION_STAGES):
             raise CampaignError(
                 f"cell {self.document['cell_id']} does not permit execution stage {mode}"
             )

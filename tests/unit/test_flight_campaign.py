@@ -239,7 +239,25 @@ def test_absent_decision_receipt_stays_held(tmp_path):
     assert state.state == "held" and "missing-decision.json" in state.reason
 
 
-@pytest.mark.parametrize("mode", ["check", "wire-check", "prepare-supply", "prompt-fit", "worker", "campaign"])
+def test_window_inventory_cli_requires_explicit_output(tmp_path):
+    from speech_aware_evidence_acquisition.core.flight import cli
+
+    with pytest.raises(SystemExit, match="2"):
+        cli.main([
+            "prepare-window-inventory",
+            "--repo-root", str(tmp_path),
+            "--data-root", str(tmp_path),
+            "--runtime-root", str(tmp_path),
+            "--lock-path", str(tmp_path / "lock"),
+            "--experiment", "e",
+            "--cell", "C",
+        ])
+
+
+@pytest.mark.parametrize("mode", [
+    "check", "wire-check", "prepare-supply", "prepare-window-inventory",
+    "prompt-fit", "worker", "campaign",
+])
 def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, monkeypatch, mode):
     import sys
     from types import SimpleNamespace
@@ -258,6 +276,9 @@ def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, mon
         def prepare_phase_supply(self, path):
             calls.append("prepare")
             return {}
+        def prepare_window_inventory(self, path):
+            calls.append("window-inventory")
+            return {}
         def preprocess(self):
             calls.append("preprocess")
         def serve(self):
@@ -273,6 +294,8 @@ def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, mon
     selected_document = dict(cell().document)
     if mode == "check":
         selected_document["readiness"] = {"state": "held", "reason": "fit not yet registered"}
+    if mode == "prepare-window-inventory":
+        selected_document["allowed_execution_stages"] = [mode]
     monkeypatch.setattr(cli, "load_campaign_cells",
                         lambda *a: (CampaignCell.from_document(selected_document),))
     monkeypatch.setattr(cli, "build_flight_runtime", lambda *a, **kw: Runtime())
@@ -291,6 +314,8 @@ def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, mon
         assert cli.main(args) == 0
     if mode == "worker":
         assert calls == ["preflight", "preprocess", "serve", "generate", "seal"]
+    elif mode == "prepare-window-inventory":
+        assert calls == ["window-inventory"]
 
 
 def test_fit_cell_cannot_be_dispatched_as_generation():
@@ -302,6 +327,22 @@ def test_fit_cell_cannot_be_dispatched_as_generation():
         fit.assert_mode("worker")
     with pytest.raises(CampaignError, match="stage"):
         fit.assert_mode("campaign")
+
+
+def test_window_inventory_is_an_explicit_model_free_stage():
+    undeclared = cell()
+    undeclared.assert_mode("check")
+    with pytest.raises(CampaignError, match="explicitly permit"):
+        undeclared.assert_mode("prepare-window-inventory")
+
+    document = dict(cell().document)
+    document["allowed_execution_stages"] = ["prepare-window-inventory"]
+    inventory = CampaignCell.from_document(document)
+    inventory.assert_mode("prepare-window-inventory")
+    with pytest.raises(CampaignError, match="stage"):
+        inventory.assert_mode("wire-check")
+    with pytest.raises(CampaignError, match="stage"):
+        inventory.assert_mode("worker")
 
 
 @pytest.mark.parametrize("stages", [[], ["unknown"], ["worker", "worker"], "worker"])
