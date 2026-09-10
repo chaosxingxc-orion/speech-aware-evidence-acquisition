@@ -1,0 +1,221 @@
+"""Model-free exact-window inventory over synthetic request batches."""
+
+from __future__ import annotations
+
+import hashlib
+import json
+from dataclasses import replace
+
+import pytest
+
+from speech_aware_evidence_acquisition.core.preparation import PreparationError
+from speech_aware_evidence_acquisition.core.preparation_windows import (
+    WindowFeatureEncoderIdentity,
+    WindowRequestBatch,
+    build_window_feature_inventory,
+    prepare_window_feature_inventory,
+)
+
+
+def _identity(marker: str = "a") -> WindowFeatureEncoderIdentity:
+    return WindowFeatureEncoderIdentity(
+        runtime_receipt_sha256=marker * 64,
+        build_commit="b" * 40,
+        decoder_gguf_sha256="c" * 64,
+        mmproj_sha256="d" * 64,
+    )
+
+
+def _batch(
+    root,
+    *,
+    run: str,
+    audio: bytes = b"synthetic exact window",
+    request_keys=("sample-1#w0001",),
+    source_overrides=None,
+    payload_overrides=None,
+) -> WindowRequestBatch:
+    parent_relpath = "datasets/e21/sample-1.wav"
+    parent = root / parent_relpath
+    parent.parent.mkdir(parents=True, exist_ok=True)
+    parent.write_bytes(b"synthetic parent")
+    media_relpath = f"derived/obs-slices/{run}/sample-1/i0000.wav"
+    media = root / media_relpath
+    media.parent.mkdir(parents=True, exist_ok=True)
+    media.write_bytes(audio)
+    source = {
+        "sample_id": "sample-1",
+        "parent_media_relpath": parent_relpath,
+        "parent_sha256": hashlib.sha256(parent.read_bytes()).hexdigest(),
+        "start_seconds": 10.0,
+        "end_seconds": 11.0,
+        "audio_seconds": 1.0,
+        "sample_rate_hz": 16_000,
+        "media_relpath": media_relpath,
+        "sha256": hashlib.sha256(audio).hexdigest(),
+        "bytes": len(audio),
+        "iteration": 0,
+        "preprocess": [],
+        "pre_sha256": None,
+    }
+    source.update(source_overrides or {})
+    payload = {
+        "request_id": f"request-{run}",
+        "sample_id": "sample-1",
+        "media_relpath": media_relpath,
+        "messages": [{"role": "system", "content": "Synthetic request."}],
+    }
+    payload.update(payload_overrides or {})
+    return WindowRequestBatch(
+        payloads=tuple(dict(payload) for _ in request_keys),
+        request_keys=tuple(request_keys),
+        source_bindings=tuple(dict(source) for _ in request_keys),
+    )
+
+
+def test_cross_arm_audio_is_deduplicated_across_distinct_run_paths(tmp_path):
+    batches = {
+        "dr-direct": _batch(tmp_path, run="run-direct"),
+        "dr-delivery": _batch(tmp_path, run="run-delivery"),
+    }
+
+    inventory = build_window_feature_inventory(
+        batches=batches, data_root=tmp_path, encoder_identity=_identity()
+    )
+
+    assert inventory["state"] == "inputs-verified-features-not-materialized"
+    assert inventory["request_count"] == 2
+    assert inventory["unique_audio_count"] == 1
+    assert [row["name"] for row in inventory["batches"]] == [
+        "dr-delivery",
+        "dr-direct",
+    ]
+    encoded = inventory["encoding_inputs"][0]
+    assert encoded["audio_byte_count"] == len(b"synthetic exact window")
+    assert encoded["requests"] == [
+        {"batch": "dr-delivery", "request_key": "sample-1#w0001"},
+        {"batch": "dr-direct", "request_key": "sample-1#w0001"},
+    ]
+    provenances = [
+        batch["requests"][0]["source_provenance"]
+        for batch in inventory["batches"]
+    ]
+    assert provenances[0]["media_relpath"] != provenances[1]["media_relpath"]
+    assert provenances[0]["sha256"] == provenances[1]["sha256"]
+
+
+def test_changed_audio_with_matching_source_identity_is_not_deduplicated(tmp_path):
+    batches = {
+        "arm-a": _batch(tmp_path, run="run-a"),
+        "arm-b": _batch(tmp_path, run="run-b", audio=b"different exact window"),
+    }
+
+    inventory = build_window_feature_inventory(
+        batches=batches, data_root=tmp_path, encoder_identity=_identity()
+    )
+
+    assert inventory["request_count"] == 2
+    assert inventory["unique_audio_count"] == 2
+    assert len({row["encoding_key_sha256"] for row in inventory["encoding_inputs"]}) == 2
+
+
+@pytest.mark.parametrize("mutation", ["claimed-hash", "changed-bytes"])
+def test_changed_window_media_or_claimed_hash_is_refused(tmp_path, mutation):
+    batch = _batch(tmp_path, run="run-a")
+    if mutation == "claimed-hash":
+        source = dict(batch.source_bindings[0], sha256="e" * 64)
+        batch = replace(batch, source_bindings=(source,))
+    else:
+        (tmp_path / batch.source_bindings[0]["media_relpath"]).write_bytes(b"changed")
+
+    with pytest.raises(PreparationError, match="sha256 differs from actual bytes"):
+        build_window_feature_inventory(
+            batches={"arm": batch}, data_root=tmp_path, encoder_identity=_identity()
+        )
+
+
+def test_foreign_window_path_is_refused(tmp_path):
+    outside = tmp_path.parent / "foreign-window.wav"
+    outside.write_bytes(b"foreign")
+    batch = _batch(
+        tmp_path,
+        run="run-a",
+        source_overrides={
+            "media_relpath": "../foreign-window.wav",
+            "sha256": hashlib.sha256(b"foreign").hexdigest(),
+            "bytes": len(b"foreign"),
+        },
+        payload_overrides={"media_relpath": "../foreign-window.wav"},
+    )
+
+    with pytest.raises(PreparationError, match="traversal"):
+        build_window_feature_inventory(
+            batches={"arm": batch}, data_root=tmp_path, encoder_identity=_identity()
+        )
+
+
+@pytest.mark.parametrize(
+    "payload_overrides, message",
+    [
+        ({"sample_id": "foreign-sample"}, "sample ids differ"),
+        ({"media_relpath": "derived/other.wav"}, "media paths differ"),
+    ],
+)
+def test_payload_source_mismatch_is_refused(tmp_path, payload_overrides, message):
+    batch = _batch(
+        tmp_path, run="run-a", payload_overrides=payload_overrides
+    )
+
+    with pytest.raises(PreparationError, match=message):
+        build_window_feature_inventory(
+            batches={"arm": batch}, data_root=tmp_path, encoder_identity=_identity()
+        )
+
+
+def test_duplicate_request_keys_are_refused(tmp_path):
+    batch = _batch(
+        tmp_path,
+        run="run-a",
+        request_keys=("sample-1#w0001", "sample-1#w0001"),
+    )
+
+    with pytest.raises(PreparationError, match="repeats a request key"):
+        build_window_feature_inventory(
+            batches={"arm": batch}, data_root=tmp_path, encoder_identity=_identity()
+        )
+
+
+def test_changed_encoder_identity_cannot_reuse_prepared_inventory(tmp_path):
+    batch = _batch(tmp_path, run="run-a")
+    first = build_window_feature_inventory(
+        batches={"arm": batch}, data_root=tmp_path, encoder_identity=_identity("a")
+    )
+    second = build_window_feature_inventory(
+        batches={"arm": batch}, data_root=tmp_path, encoder_identity=_identity("e")
+    )
+    assert (
+        first["encoding_inputs"][0]["encoding_key_sha256"]
+        != second["encoding_inputs"][0]["encoding_key_sha256"]
+    )
+
+    artifact = tmp_path / "prepared" / "window-inventory.json"
+    cold = prepare_window_feature_inventory(
+        artifact,
+        batches={"arm": batch},
+        data_root=tmp_path,
+        encoder_identity=_identity("a"),
+    )
+    document = json.loads(artifact.read_text(encoding="utf-8"))
+    assert cold["cache"] == "cold"
+    assert document["contact_class"] == "model-free"
+    assert document["output"]["state"] == (
+        "inputs-verified-features-not-materialized"
+    )
+
+    with pytest.raises(PreparationError, match="artifact identity mismatch"):
+        prepare_window_feature_inventory(
+            artifact,
+            batches={"arm": batch},
+            data_root=tmp_path,
+            encoder_identity=_identity("e"),
+        )
