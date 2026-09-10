@@ -2524,7 +2524,7 @@
       "preregistration": "docs/readiness/2026-09-08-slurp-logprob-judge-probe-v1-preregistration.md",
       "status": "NOT ADMITTED",
       "status_source": "h1",
-      "status_quote": "# Verdict — the SLURP logprob-as-judge probe: **NOT ADMITTED**",
+      "status_quote": "# Verdict \u2014 the SLURP logprob-as-judge probe: **NOT ADMITTED**",
       "pending": false,
       "comparator": {
         "text": "The sealed closed-list direct request is unchanged except for decoding_params.logprobs=true and top_logprobs=5. The admission bars concern the confidence signal; the greedy own-null replicate is the latency reference, not a replacement task baseline.",
@@ -3186,8 +3186,19 @@
     }
   ],
   "operational_recovery": {
-    "text": "Seven KV attempts are FINALIZED with COMPLETED manifests and successful scoring jobs; all seven scientific verdicts remain PENDING. Exposure-ledger closure, predecessor decisions, and the NEW500/estimator/process binding require reconciliation. Existing verdicts are preserved; this recovery is not a retrospective preregistration.",
-    "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/runtime-snapshot.json",
-    "plan_source": "docs/superpowers/plans/experiment-handoff/RECOVERY-PLAN.md"
-  }
+    "text": "KV seven-run recovery analysis is completed without new model or scoring contacts; source report 2026-09-09-kv-recovery/FAMILY-REPORT.md. Recovered KU-S3 max256 trio is finalized and ADMITTED_COMPONENT; see continuation_updates. Historical row statuses and missing-decision records remain preserved as the recovery snapshot.",
+    "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-10-ku-s3-max256-recovery-verdict/decision.json",
+    "plan_source": "docs/superpowers/plans/experiment-handoff/RECOVERY-PLAN.md",
+    "historical_snapshot_source": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-owner-recovery/runtime-snapshot.json",
+    "kv_recovery_source": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md"
+  },
+  "continuation_updates": [
+    {
+      "date": "2026-09-10",
+      "cell_id": "SLURP-KU-S3-MAX256-RECOVERY",
+      "status": "ADMITTED_COMPONENT",
+      "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-10-ku-s3-max256-recovery-verdict/decision.json",
+      "meaning": "Recovered same-process 3x1000 comparison; both registered entity-side numerical gates and inherited joined-intent protection pass. Historical rows remain a dated transcription; no live full-system claim."
+    }
+  ]
 }

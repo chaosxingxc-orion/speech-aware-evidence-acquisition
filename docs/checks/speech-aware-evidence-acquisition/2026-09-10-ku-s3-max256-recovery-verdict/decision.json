@@ -1,0 +1,43 @@
+{
+  "schema": "saea-stage2-component-decision-v1",
+  "decision_id": "KU-S3-MAX256-RECOVERY-COMPONENT-DECISION-V1",
+  "created_at_utc": "2026-09-10T01:36:27.056223+00:00",
+  "status": "ADMITTED_COMPONENT",
+  "decision": "ADMITTED",
+  "scope": "Incremental speech-aligned filler supply on retained KC-S1b schema examples, sealed predecessor, max256, historically exposed NEW500",
+  "primary_contrasts": {
+    "speech_minus_matched_control": {
+      "delta_pp": 6.637431576455244,
+      "ci90_pp": [
+        4.645081448944788,
+        8.632662942987057
+      ]
+    },
+    "speech_minus_form_twin": {
+      "delta_pp": 3.6543687216120277,
+      "ci90_pp": [
+        1.6033340682486452,
+        5.7033471083728235
+      ]
+    }
+  },
+  "analysis": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KU-S3-MAX256-RECOVERY-READOUT-V1/paired-contrasts.json",
+    "sha256": "451a107150079450a9eaf8983657f2fc1a77e75fb9d6940b9117bf707bae128f"
+  },
+  "joined_read_protection": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KU-S3-READ-DELIVERY-RESTORATION-V1/receipt.json",
+    "sha256": "1bfa696c26e6580f12777b66afd6df0815da24321b78e9dde9c946466281ebc4"
+  },
+  "all_intents_identical_to_common_predecessor": true,
+  "all_entity_sequences_unchanged": true,
+  "model_contacts_during_readout": 0,
+  "scorer_invocations_during_readout": 0,
+  "generation_calls": 3000,
+  "official_scoring_jobs": 3,
+  "remaining_requirements": [
+    "Live full-system intent-to-slots assembly and its capacity/cost evaluation remain G6.",
+    "Preserve inherited replication and matching requirements; this is not an independent treatment replication."
+  ],
+  "next_action": "Advance G2 technical admission after aligned scorer/configuration preparation and registered np8 actual-request fits; do not repeat G1."
+}

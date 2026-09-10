@@ -1369,3 +1369,7 @@ ADMITTED-provisional is spelled here as status ADMITTED plus a `provisional` fie
 ## What this ledger is not
 
 It is a transcription, not an analysis: it recomputes no interval, re-weights no stratum and issues no verdict of its own. Where a verdict and the umbrella page state the same headline, the check compares them and reports any disagreement; it never edits the umbrella.
+
+## Owner continuation update: 2026-09-10
+
+The tables above retain the historical recovery transcription. Current KU-S3 max256 recovery is **ADMITTED_COMPONENT**: three new 1,000-row arms completed and scored once each, two registered NEW500 row-SLU-F1 contrasts pass, and the inherited joined-intent protection is verified without changing entity predictions or original outputs. See the [component verdict](../checks/speech-aware-evidence-acquisition/2026-09-10-ku-s3-max256-recovery-verdict/README.md). Live full-system and inherited replication requirements remain open. KV recovery is complete in the [family report](../checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md); historical missing decisions remain explicit.
