@@ -55,3 +55,7 @@ Next priorities:
 5. Continue accepted DR as two generation groups with four correlated deterministic deliveries, then LOOP and its twin with registered 600 relistens each and family GPU cap 1.0 hour. Complete shared live system baselines afterward using qualified components; component replay is not full-system performance.
 
 All authored documents and model-facing content are English. All research execution is in WSL Ubuntu-24.04 with explicit checkout PYTHONPATH and no editable-package reinstall. Root owns scientific decisions and the only service; lower-cost helpers perform bounded coding/reading. No paid experimental API, new carrier, Stage-3 scope, publication or automatic replay is authorized.
+
+## Completed existing-control lookup
+
+The metadata-only lookup is now complete; root verified the closest four-row manifest and enumerated canonical direct-phase policies. No full DEV-1000 no-supply control with the added phase turn was found. The only matching engineering smoke has four rows, despite its manifest split name saying DEV-1000. See the G2 readout directory's existing-control-audit.md. This does not change the failed NI gate or authorize new contacts. Next work is shared E21 feature preparation and runtime qualification, with any further G2 causal-control proposal requiring a concrete protocol decision.
