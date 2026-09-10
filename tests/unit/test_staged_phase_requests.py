@@ -10,6 +10,7 @@ from speech_aware_evidence_acquisition.rails import controllers
 from speech_aware_evidence_acquisition.rails.material import PhaseMaterial
 from speech_aware_evidence_acquisition.rails.phase_runner import (
     PhaseRunnerError,
+    run_continuous_program,
     run_program,
 )
 from test_rails_frozen_core_client import (
@@ -187,3 +188,132 @@ def test_staged_dispatch_refuses_packet_corrupted_after_fit(tmp_path):
 def test_staged_gate_refuses_nonplain_or_fanout_execution(tmp_path, overrides, error):
     with pytest.raises(error):
         _run(tmp_path, request_batch_gate=lambda _phase, _requests: None, **overrides)
+
+
+def _run_continuous(tmp_path, *, request_batch_gate):
+    world, root, packet, bindings, client, gate, transport = _world(tmp_path)
+    material_calls = []
+    summary = run_continuous_program(
+        program=controllers.default_phase_program("phase-draft-revise-v1"),
+        adapter=_FakeAdapter(samples=tuple(world.samples)),
+        plan=_plan(planned_model_calls=4),
+        data_root=world.data_root,
+        core_client=client,
+        split_id="all",
+        knowledge_snapshot=_knowledge_snapshot(),
+        speech_packet_bindings=bindings,
+        trace_sink=client._dispatching_sink,
+        decoding_params={"temperature": 0},
+        material_for_phase=_material(material_calls),
+        slot_count=1,
+        queue_depth=2,
+        whole_roster_wave_barrier=True,
+        request_batch_gate=request_batch_gate,
+    )
+    return summary, material_calls, client, transport
+
+
+def test_continuous_whole_roster_barrier_gates_real_waves_and_prior_state(tmp_path):
+    gates = []
+    transport_box = {}
+
+    def gate(phase, requests):
+        payloads = tuple(request.as_payload() for request in requests)
+        assert {payload["sample_id"] for payload in payloads} == {"s1", "s2"}
+        assert len(payloads) == 2
+        if phase == "draft":
+            assert not transport_box["transport"].calls
+            assert all(
+                not any(item["role"] == "agent_state" for item in payload["history"])
+                for payload in payloads
+            )
+        elif phase == "revise":
+            assert len(transport_box["transport"].calls) == 2
+            assert all(
+                any(item["role"] == "agent_state" for item in payload["history"])
+                for payload in payloads
+            )
+            assert all(
+                next(
+                    item["producer_policy_id"]
+                    for item in payload["history"]
+                    if item["role"] == "agent_state"
+                )
+                == "phase-draft-revise-v1"
+                for payload in payloads
+            )
+        else:  # pragma: no cover - two-phase fixture has a closed roster
+            raise AssertionError(f"unexpected gate phase {phase!r}")
+        gates.append((phase, payloads))
+
+    # The gate observes actual prepared requests.  It never creates a response.
+    world, root, packet, bindings, client, gate_handle, transport = _world(tmp_path)
+    transport_box["transport"] = transport
+    material_calls = []
+    summary = run_continuous_program(
+        program=controllers.default_phase_program("phase-draft-revise-v1"),
+        adapter=_FakeAdapter(samples=tuple(world.samples)),
+        plan=_plan(planned_model_calls=4),
+        data_root=world.data_root,
+        core_client=client,
+        split_id="all",
+        knowledge_snapshot=_knowledge_snapshot(),
+        speech_packet_bindings=bindings,
+        trace_sink=client._dispatching_sink,
+        decoding_params={"temperature": 0},
+        material_for_phase=_material(material_calls),
+        slot_count=1,
+        queue_depth=2,
+        whole_roster_wave_barrier=True,
+        request_batch_gate=gate,
+    )
+
+    assert [phase for phase, _ in gates] == ["draft", "revise"]
+    assert len(transport.calls) == 4
+    assert [item[:2] for item in material_calls] == [
+        ("draft", "s1"),
+        ("draft", "s2"),
+        ("revise", "s1"),
+        ("revise", "s2"),
+    ]
+    assert len(summary.results) == 2
+    client.close()
+
+
+def test_continuous_whole_roster_second_gate_refusal_never_sends_second_wave(tmp_path):
+    seen = []
+    transport_box = {}
+
+    def gate(phase, requests):
+        seen.append((phase, tuple(request.as_payload() for request in requests)))
+        if phase == "revise":
+            assert len(transport_box["transport"].calls) == 2
+            assert all(
+                any(item["role"] == "agent_state" for item in payload["history"])
+                for payload in seen[-1][1]
+            )
+            raise RuntimeError("second wave refused")
+
+    world, root, packet, bindings, client, gate_handle, transport = _world(tmp_path)
+    transport_box["transport"] = transport
+    with pytest.raises(RuntimeError, match="second wave refused"):
+        run_continuous_program(
+            program=controllers.default_phase_program("phase-draft-revise-v1"),
+            adapter=_FakeAdapter(samples=tuple(world.samples)),
+            plan=_plan(planned_model_calls=4),
+            data_root=world.data_root,
+            core_client=client,
+            split_id="all",
+            knowledge_snapshot=_knowledge_snapshot(),
+            speech_packet_bindings=bindings,
+            trace_sink=client._dispatching_sink,
+            decoding_params={"temperature": 0},
+            material_for_phase=_material([]),
+            slot_count=1,
+            queue_depth=2,
+            whole_roster_wave_barrier=True,
+            request_batch_gate=gate,
+        )
+    assert [phase for phase, _ in seen] == ["draft", "revise"]
+    assert len(transport.calls) == 2
+    client.close()
