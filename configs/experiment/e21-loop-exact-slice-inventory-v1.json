@@ -8,7 +8,7 @@
     "split_role": "discovery",
     "planned_model_calls": 600,
     "planned_gpu_hours": 0.5,
-    "planned_speech_audio_seconds": 15340.460005376464
+    "planned_speech_audio_seconds": 15341
   },
   "budget_basis": "Each inventory operation is model-free and spends zero contacts. The forward values describe one later generation group and do not authorize encoding, fitting or generation. The judge and twin inventories run sequentially; union deduplication is reported only after both complete.",
   "window_preparation_workers": 7,
