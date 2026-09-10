@@ -1,0 +1,103 @@
+{
+  "experiment_id": "SAEA-E21-STRICT-CACHE-QUALIFICATION-FIT-V1",
+  "date": "2026-09-10",
+  "purpose": "Measure the four actual minimal cache-qualification requests before the registered isolated four-case service test.",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 5,
+    "planned_gpu_hours": 0.25,
+    "planned_speech_audio_seconds": 44
+  },
+  "runtime_cache_qualification": {
+    "inventory": {
+      "relpath": "analysis/SAEA-E21-MF-FOUR-WINDOW-INVENTORY-V2/window-inventory.json",
+      "sha256": "c011c46ce7d09b5664a54c14b9cdc2d805ec698188357c717fca0cdd03c21bd2"
+    },
+    "source_run_id": "SAEA-E21-CURRENT-EXECUTOR-FEATURE-PROOF-V2",
+    "ordered_audio_sha256": [
+      "8d54bf9ced3a219e5d0d25297d88030776b895f876c3c3be93b0907690cab19a",
+      "c740c8f627eda4da2ff88186127206d7618a21467584229bbafe54a066f79924",
+      "ac52c2af82cb38b4383725d9ce28aee5eedb760a1222af848ed788aaaed14d37",
+      "92c4c89940e527f573d23590dd7869baf8fd7236544d6e69f66ec97bcf4a9dcf"
+    ],
+    "original_cache": "/home/chao/feat-cache/e21-cddb000c-four-proof-cpu-v1",
+    "fault_library": {
+      "build_command": [
+        "cc",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-shared",
+        "-fPIC",
+        "/home/chao/saea-worktrees/e21-cached-qualification/tests/runtime_support/llama_decode_fault.c",
+        "-I/home/chao/llama-worktrees/featcache-require-hit/include",
+        "-I/home/chao/llama-worktrees/featcache-require-hit/ggml/include",
+        "-ldl",
+        "-pthread",
+        "-o",
+        "/home/chao/saea-runtime-probes/strict-cache-v1/libsaea_decode_fault.so"
+      ],
+      "path": "/home/chao/saea-runtime-probes/strict-cache-v1/libsaea_decode_fault.so",
+      "sha256": "549f2c7ce9893dc924de038f660e8d10b16aa17b0e1ea15c4dd954141b640e6f",
+      "source_repo_relpath": "tests/runtime_support/llama_decode_fault.c",
+      "source_sha256": "aa4ecd163be30a616cec44861f49d45638441840ba70f8c58f9c6d4583832b7a"
+    },
+    "cases": [
+      "hit",
+      "missing",
+      "malformed",
+      "decode-failure"
+    ],
+    "isolated_cache": "/home/chao/feat-cache/e21-strict-cache-qualification-v1",
+    "fixture_receipt": {
+      "relpath": "analysis/SAEA-E21-MF-STRICT-CACHE-FAULT-FIXTURE-V1/fixture-receipt.json",
+      "sha256": "5b9a1770df962a11dea08c2bbd9086bdaefc3581f9eb2e62596c5a90418bac33"
+    }
+  },
+  "service_session_id": "serving-e21-strict-cache-qualification-v1",
+  "output_relpath": "analysis/SAEA-E21-STRICT-CACHE-QUALIFICATION-FIT-V1/request-fit.json",
+  "prompt_fit_multiple": 2.0,
+  "budget_basis": "Five metadata/tokenizer contacts only: one GET /props and four actual multimodal input_tokens POSTs; zero generation.",
+  "cells": [
+    {
+      "cell_id": "e21-strict-cache-qualification-fit",
+      "run_id": "SAEA-E21-STRICT-CACHE-QUALIFICATION-FIT-V1",
+      "attempt_id": "attempt-20260910-strict-cache-qualification-fit-v1",
+      "model_fragment": "q4km-e21-strict-cache-qualification-cddb000c-np6",
+      "dataset_fragment": "e21-current-executor-feature-proof-v2",
+      "baseline_fragment": "window-feature-preprocess-ojw",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit"
+      ],
+      "readiness": {
+        "state": "ready",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "analysis/SAEA-E21-MF-STRICT-CACHE-FAULT-FIXTURE-V1/fixture-receipt.json",
+            "sha256": "5b9a1770df962a11dea08c2bbd9086bdaefc3581f9eb2e62596c5a90418bac33",
+            "reason": "Exact isolated fixture must match the registered four sources."
+          }
+        ]
+      }
+    }
+  ],
+  "obs_buffer_seconds": 90,
+  "obs_min_advance_seconds": 20,
+  "obs_max_advance_seconds": 55,
+  "obs_silence_snap_seconds": 2.0,
+  "obs_fallback_advance_seconds": 50,
+  "obs_vad": "energy",
+  "obs_preprocess": [],
+  "obs_slice_retry_max": 1,
+  "obs_slice_skip_max": 1,
+  "obs_batch_samples": 1,
+  "obs_batch_slices": 8,
+  "obs_unit_plan": "docs/receipts/obs/e21-current-executor-four-row-proof-v1.json",
+  "obs_unit_plan_sha256": "0637d3d9081dee7d3489eef9cc9ead2226f39b3f52d05ae2c6df19777cf67d43"
+}

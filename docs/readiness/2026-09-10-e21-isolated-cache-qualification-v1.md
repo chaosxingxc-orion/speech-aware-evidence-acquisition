@@ -27,12 +27,12 @@ and all four contacts accounted by the normal FrozenCoreClient and gate.
 Do not treat a client-side refusal as evidence for a server rejection.
 One registered fit of the four minimal actual qualification requests precedes
 the four cases. It uses five tokenizer/metadata contacts and no generation.
-The four cases use max_tokens=1 and at most44 speech seconds. This is plumbing
+The four cases use max_tokens=1 and at most 44 speech seconds. This is plumbing
 qualification, not task answering, an effectiveness screen or scientific score.
 
 The current OpenJiuwen/task-delivery bridge and the full DR group capacities
 remain separate obligations. They use normal serving without the test library,
-original max1024 and actual draft/evidence payloads. Do not pool outputs from
+original max_tokens=1024 and actual draft/evidence payloads. Do not pool outputs from
 the injected process with scientific experiments or claim that these four
 inputs establish full-system performance.
 
@@ -40,3 +40,9 @@ The model-free fixture preparation is registered separately. The contact
 configurations, exact attempt and session identities, artifact pins and budget
 receipts must be committed and pass the normal gate before any service or
 model contact. No automatic retry or service restart is admitted.
+
+The opt-in test binds the completed fit artifact by file hash, checks its
+session identity and all four capacity margins, and compares all four actual
+rendered request body hashes before dispatch. The shared client sends those
+same prepared templates once. Six synthetic interceptor checks pass; the live
+qualification remains pending and the default test invocation skips it.
