@@ -1,0 +1,17 @@
+{
+  "schema": "saea-fit-batch-plan-v1",
+  "fits": [
+    {
+      "experiment": "slurp-kus4n-candidates-successor-v2",
+      "cell": "kus4n-successor-v2-fit",
+      "output_relpath": "prepared/SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V2-FIT-V1/request-fit.json",
+      "contact_cap": 3001
+    },
+    {
+      "experiment": "slurp-kus4n-candidates-twin-successor-v2",
+      "cell": "kus4n-twin-successor-v2-fit",
+      "output_relpath": "prepared/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V2-FIT-V1/request-fit.json",
+      "contact_cap": 3001
+    }
+  ]
+}
