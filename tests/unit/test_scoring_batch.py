@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
@@ -351,6 +352,8 @@ def test_run_score_batch_finishes_other_jobs_and_fails_overall(tmp_path):
     bad = next(row for row in summary["jobs"] if row["job_id"] == "bad")
     assert bad["status"] == "failed"
     assert bad["returncode"] == 7
+    assert bad["complete_receipt_file"] is None
+    assert bad["complete_receipt_sha256"] is None
     assert (tmp_path / "scores" / "bad.stdout.log").read_text(
         encoding="utf-8"
     ) == "partial"
@@ -552,3 +555,159 @@ def test_parallel_evaluate_script_exposes_the_batch_command_help():
     assert completed.returncode == 0, completed.stdout + completed.stderr
     assert "score-batch" in completed.stdout
     assert "--workers" in completed.stdout
+
+
+# Complete score receipts are emitted only for full per-sample score jobs.
+
+def _complete_bundle(tmp_path, job_id="complete"):
+    import hashlib
+    from speech_aware_evidence_acquisition.core.bundle.artifacts import VerifiedBundle
+
+    outputs = tmp_path / f"{job_id}.outputs.jsonl"
+    outputs.write_text('{"sample_id":"s1"}\n{"sample_id":"s2"}\n')
+    manifest = tmp_path / f"{job_id}.run-manifest.json"
+    document = {
+        "schema": "saea-derived-delivery-v1",
+        "run_id": f"parent--delivery-{job_id}",
+        "declaration": {"cell_id": job_id},
+        "parent": {"path": str(tmp_path / "parent"), "sha256": "c" * 64},
+        "config": {"config_hash": "a" * 64},
+        "split": {"identity_hash": "b" * 64, "count": 2, "ids": ["s1", "s2"]},
+        "scorers": ["official", "cost"],
+        "outputs": {
+            "path": str(outputs),
+            "sha256": hashlib.sha256(outputs.read_bytes()).hexdigest(),
+        },
+    }
+    manifest.write_text(json.dumps(document, sort_keys=True))
+    return VerifiedBundle(
+        manifest.resolve(), document, outputs.resolve(),
+        ({"sample_id": "s1"}, {"sample_id": "s2"}), {},
+        frozenset({"s1", "s2"}), "DERIVED",
+    )
+
+
+def _complete_outcome(job, ids=("s1", "s2")):
+    return ScoreProcessOutcome(0, json.dumps({
+        "manifest": str(job.manifest),
+        "verified": True,
+        "scores": {
+            "official": {
+                "aggregate": {"score": 1},
+                "per_sample": [{"sample_id": sample_id} for sample_id in ids],
+            },
+            "cost": {"aggregate": {"calls": 0}, "per_sample": []},
+        },
+    }), "")
+
+
+def test_complete_per_sample_score_emits_independently_verifiable_receipt(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core import scoring_batch
+    from speech_aware_evidence_acquisition.core.scoring_receipt import (
+        SavedScoreReceiptRef, verify_complete_score_receipt,
+    )
+
+    bundle = _complete_bundle(tmp_path, "paired")
+    monkeypatch.setattr(scoring_batch, "verify_bundle", lambda path: bundle)
+    output = tmp_path / "score-output"
+    summary = run_score_batch(
+        (ScoreJob("paired", bundle.manifest_path),),
+        output_dir=output, max_workers=1, runner=_complete_outcome,
+        include_per_sample=True,
+    )
+
+    row = summary["jobs"][0]
+    assert row["status"] == "succeeded"
+    assert row["complete_receipt_file"] == "paired.complete-score-receipt.json"
+    receipt = output / row["complete_receipt_file"]
+    verified = verify_complete_score_receipt(
+        SavedScoreReceiptRef("paired", receipt, row["complete_receipt_sha256"]),
+        bundle,
+    )
+    assert verified["manifest"]["sha256"] == hashlib.sha256(
+        bundle.manifest_path.read_bytes()
+    ).hexdigest()
+
+
+def test_aggregate_only_success_remains_allowed_without_complete_receipt(tmp_path):
+    manifest = _manifest(tmp_path / "one.run-manifest.json").resolve()
+    summary = run_score_batch(
+        (ScoreJob("one", manifest),), output_dir=tmp_path / "scores",
+        max_workers=1, runner=_verified, include_per_sample=False,
+    )
+    row = summary["jobs"][0]
+    assert row["status"] == "succeeded"
+    assert row["complete_receipt_file"] is None
+    assert row["complete_receipt_sha256"] is None
+
+
+def test_incomplete_per_sample_success_is_failed_without_receipt(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core import scoring_batch
+
+    bundle = _complete_bundle(tmp_path, "paired")
+    monkeypatch.setattr(scoring_batch, "verify_bundle", lambda path: bundle)
+    summary = run_score_batch(
+        (ScoreJob("paired", bundle.manifest_path),),
+        output_dir=tmp_path / "scores", max_workers=1,
+        runner=lambda job: _complete_outcome(job, ids=("s1",)),
+        include_per_sample=True,
+    )
+    row = summary["jobs"][0]
+    assert row["status"] == "failed"
+    assert "complete roster" in row["error"]
+    assert row["complete_receipt_file"] is None
+
+
+def test_changed_manifest_during_score_refuses_complete_receipt(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core import scoring_batch
+
+    bundle = _complete_bundle(tmp_path, "paired")
+    monkeypatch.setattr(scoring_batch, "verify_bundle", lambda path: bundle)
+
+    def changed(job):
+        job.manifest.write_text(job.manifest.read_text() + " ")
+        return _complete_outcome(job)
+
+    summary = run_score_batch(
+        (ScoreJob("paired", bundle.manifest_path),),
+        output_dir=tmp_path / "scores", max_workers=1, runner=changed,
+        include_per_sample=True,
+    )
+    row = summary["jobs"][0]
+    assert row["status"] == "failed"
+    assert "manifest hash mismatch" in row["error"]
+    assert row["complete_receipt_file"] is None
+
+
+def test_concurrent_batches_cannot_share_an_output_directory(tmp_path):
+    entered = threading.Event()
+    release = threading.Event()
+    output = tmp_path / "scores"
+    manifest = _manifest(tmp_path / "one.run-manifest.json").resolve()
+    outcomes = []
+
+    def slow(job):
+        entered.set()
+        release.wait(timeout=2)
+        return _verified(job)
+
+    def first():
+        try:
+            outcomes.append(run_score_batch(
+                (ScoreJob("one", manifest),), output_dir=output,
+                max_workers=1, runner=slow,
+            ))
+        except Exception as error:
+            outcomes.append(error)
+
+    thread = threading.Thread(target=first)
+    thread.start()
+    assert entered.wait(timeout=2)
+    with pytest.raises(ScoreBatchError, match="busy"):
+        run_score_batch(
+            (ScoreJob("one", manifest),), output_dir=output,
+            max_workers=1, runner=_verified,
+        )
+    release.set()
+    thread.join(timeout=2)
+    assert outcomes[0]["succeeded"] == 1

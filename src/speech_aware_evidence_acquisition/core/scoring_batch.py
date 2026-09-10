@@ -9,6 +9,7 @@ registered scorer inside that single job process.
 
 from __future__ import annotations
 
+import fcntl
 import hashlib
 import json
 import os
@@ -17,9 +18,17 @@ import subprocess
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Literal, Mapping, Sequence, cast
+from typing import Callable, Iterator, Literal, Mapping, Sequence, cast
+
+from .bundle import BundleError
+from .bundle.verify import verify_bundle
+from .scoring_receipt import (
+    ScoreReceiptError, ScoreSourceSnapshot, capture_score_source,
+    write_complete_score_receipt,
+)
 
 
 class ScoreBatchError(RuntimeError):
@@ -71,9 +80,39 @@ def _sha256_text(value: str) -> str:
 
 
 def _write_text(path: Path, value: str) -> None:
-    temporary = path.with_name(f".{path.name}.tmp")
-    temporary.write_text(value, encoding="utf-8", newline="\n")
-    temporary.replace(path)
+    temporary = path.with_name(
+        f".{path.name}.tmp-{os.getpid()}-{time.monotonic_ns()}"
+    )
+    try:
+        temporary.write_text(value, encoding="utf-8", newline="\n")
+        temporary.replace(path)
+    finally:
+        try:
+            temporary.unlink()
+        except OSError:
+            pass
+
+
+@contextmanager
+def _claim_output_directory(path: Path) -> Iterator[None]:
+    """Exclude concurrent batches while preserving the legacy directory contents."""
+
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    lock_path = path.with_name(f".{path.name}.score-batch.lock")
+    descriptor = os.open(lock_path, os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        try:
+            fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as error:
+            raise ScoreBatchError(f"score output directory is busy: {path}") from error
+        if path.exists() and any(path.iterdir()):
+            raise ScoreBatchError(f"score output directory is not empty: {path}")
+        path.mkdir(parents=True, exist_ok=True)
+        yield
+    finally:
+        fcntl.flock(descriptor, fcntl.LOCK_UN)
+        os.close(descriptor)
 
 
 def _write_json(path: Path, value: Mapping[str, object]) -> None:
@@ -377,103 +416,158 @@ def run_score_batch(
             )
 
     output_dir = Path(output_dir)
-    if output_dir.exists() and any(output_dir.iterdir()):
-        raise ScoreBatchError(f"score output directory is not empty: {output_dir}")
-    output_dir.mkdir(parents=True, exist_ok=True)
+    with _claim_output_directory(output_dir):
+        def selected_runner(job: ScoreJob) -> ScoreProcessOutcome:
+            if runner is not None:
+                return runner(job)
+            job_operation = job.operation if operation == "per-job" else operation
+            selected = (
+                run_official_finalize_job
+                if job_operation == "finalize"
+                else run_official_score_job
+            )
+            kwargs = {}
+            if include_per_sample:
+                kwargs["include_per_sample"] = True
+            if context is not None:
+                kwargs["context"] = context
+            return selected(job, **kwargs)
 
-    def selected_runner(job: ScoreJob) -> ScoreProcessOutcome:
-        if runner is not None:
-            return runner(job)
-        job_operation = job.operation if operation == "per-job" else operation
-        selected = run_official_finalize_job if job_operation == "finalize" else run_official_score_job
-        kwargs = {}
-        if include_per_sample:
-            kwargs["include_per_sample"] = True
-        if context is not None:
-            kwargs["context"] = context
-        return selected(job, **kwargs)
+        started = time.perf_counter()
+        completed_by_index: dict[
+            int, tuple[ScoreProcessOutcome, float, str | None]
+        ] = {}
+        score_sources: dict[int, ScoreSourceSnapshot] = {}
+        runnable: list[tuple[int, ScoreJob]] = []
+        for index, job in enumerate(frozen_jobs):
+            job_operation = job.operation if operation == "per-job" else operation
+            if include_per_sample and job_operation == "score":
+                try:
+                    score_sources[index] = capture_score_source(
+                        verify_bundle(job.manifest)
+                    )
+                except (BundleError, ScoreReceiptError) as error:
+                    completed_by_index[index] = (
+                        ScoreProcessOutcome(returncode=1, stdout="", stderr=""),
+                        0.0,
+                        f"complete score source verification failed: "
+                        f"{type(error).__name__}: {error}",
+                    )
+                    continue
+            runnable.append((index, job))
 
-    started = time.perf_counter()
-    completed_by_index: dict[
-        int, tuple[ScoreProcessOutcome, float, str | None]
-    ] = {}
-    worker_count = min(max_workers, len(frozen_jobs))
-    with ThreadPoolExecutor(max_workers=worker_count) as executor:
-        futures = {
-            executor.submit(_run_timed, job, selected_runner): index
-            for index, job in enumerate(frozen_jobs)
+        worker_count = min(max_workers, len(frozen_jobs))
+        if runnable:
+            with ThreadPoolExecutor(
+                max_workers=min(worker_count, len(runnable))
+            ) as executor:
+                futures = {
+                    executor.submit(_run_timed, job, selected_runner): index
+                    for index, job in runnable
+                }
+                for future in as_completed(futures):
+                    completed_by_index[futures[future]] = future.result()
+
+        rows: list[dict[str, object]] = []
+        succeeded = 0
+        for index, job in enumerate(frozen_jobs):
+            outcome, elapsed_seconds, runner_error = completed_by_index[index]
+            job_operation = job.operation if operation == "per-job" else operation
+            stderr_name = f"{job.job_id}.stderr.log"
+            _write_text(output_dir / stderr_name, outcome.stderr)
+            error = runner_error
+            if error is None and outcome.returncode != 0:
+                error = f"official scorer exited with status {outcome.returncode}"
+            if error is None:
+                try:
+                    _verified_payload(job, outcome, operation=job_operation)
+                except ScoreBatchError as payload_error:
+                    error = str(payload_error)
+
+            result_name: str | None = None
+            result_sha256: str | None = None
+            complete_receipt_file: str | None = None
+            complete_receipt_sha256: str | None = None
+            if error is None:
+                candidate_result = f"{job.job_id}.score.json"
+                _write_text(output_dir / candidate_result, outcome.stdout)
+                if include_per_sample and job_operation == "score":
+                    try:
+                        receipt_name = f"{job.job_id}.complete-score-receipt.json"
+                        receipt = write_complete_score_receipt(
+                            output_dir / receipt_name,
+                            job_id=job.job_id,
+                            result_path=output_dir / candidate_result,
+                            source=score_sources[index],
+                            verified_bundle=verify_bundle(job.manifest),
+                        )
+                        complete_receipt_file = receipt_name
+                        complete_receipt_sha256 = receipt.sha256
+                    except (BundleError, ScoreReceiptError) as receipt_error:
+                        error = (
+                            "complete score receipt refused: "
+                            f"{type(receipt_error).__name__}: {receipt_error}"
+                        )
+                        try:
+                            (output_dir / candidate_result).unlink()
+                        except OSError:
+                            pass
+                if error is None:
+                    result_name = candidate_result
+                    result_sha256 = _sha256_text(outcome.stdout)
+
+            if error is None:
+                status = "succeeded"
+                stdout_name: str | None = None
+                succeeded += 1
+            else:
+                status = "failed"
+                stdout_name = f"{job.job_id}.stdout.log"
+                _write_text(output_dir / stdout_name, outcome.stdout)
+
+            rows.append(
+                {
+                    "index": index,
+                    "job_id": job.job_id,
+                    "operation": job_operation,
+                    "manifest": str(job.manifest),
+                    "ledger_cells": (
+                        str(job.ledger_cells)
+                        if job.ledger_cells is not None
+                        else None
+                    ),
+                    "status": status,
+                    "returncode": outcome.returncode,
+                    "elapsed_seconds": elapsed_seconds,
+                    "result_file": result_name,
+                    "result_sha256": result_sha256,
+                    "complete_receipt_file": complete_receipt_file,
+                    "complete_receipt_sha256": complete_receipt_sha256,
+                    "stdout_log": stdout_name,
+                    "stderr_log": stderr_name,
+                    "stderr_sha256": _sha256_text(outcome.stderr),
+                    "error": error,
+                }
+            )
+
+        summary: dict[str, object] = {
+            "schema": _SCHEMA,
+            "operation": operation,
+            "include_per_sample": bool(include_per_sample),
+            "parallelism_boundary": "one-complete-verified-manifest-per-process",
+            "aggregation_rule": (
+                "no dataset sharding and no averaging of shard-level official metrics"
+            ),
+            "requested_max_workers": max_workers,
+            "effective_max_workers": worker_count,
+            "job_count": len(frozen_jobs),
+            "succeeded": succeeded,
+            "failed": len(frozen_jobs) - succeeded,
+            "elapsed_seconds": time.perf_counter() - started,
+            "jobs": rows,
         }
-        for future in as_completed(futures):
-            completed_by_index[futures[future]] = future.result()
-
-    rows: list[dict[str, object]] = []
-    succeeded = 0
-    for index, job in enumerate(frozen_jobs):
-        outcome, elapsed_seconds, runner_error = completed_by_index[index]
-        job_operation = job.operation if operation == "per-job" else operation
-        stderr_name = f"{job.job_id}.stderr.log"
-        _write_text(output_dir / stderr_name, outcome.stderr)
-        error = runner_error
-        if error is None and outcome.returncode != 0:
-            error = f"official scorer exited with status {outcome.returncode}"
-        if error is None:
-            try:
-                _verified_payload(job, outcome, operation=job_operation)
-            except ScoreBatchError as payload_error:
-                error = str(payload_error)
-
-        if error is None:
-            result_name = f"{job.job_id}.score.json"
-            _write_text(output_dir / result_name, outcome.stdout)
-            result_sha256: str | None = _sha256_text(outcome.stdout)
-            status = "succeeded"
-            stdout_name: str | None = None
-            succeeded += 1
-        else:
-            result_name = None
-            result_sha256 = None
-            status = "failed"
-            stdout_name = f"{job.job_id}.stdout.log"
-            _write_text(output_dir / stdout_name, outcome.stdout)
-
-        rows.append(
-            {
-                "index": index,
-                "job_id": job.job_id,
-                "operation": job_operation,
-                "manifest": str(job.manifest),
-                "ledger_cells": (
-                    str(job.ledger_cells) if job.ledger_cells is not None else None
-                ),
-                "status": status,
-                "returncode": outcome.returncode,
-                "elapsed_seconds": elapsed_seconds,
-                "result_file": result_name,
-                "result_sha256": result_sha256,
-                "stdout_log": stdout_name,
-                "stderr_log": stderr_name,
-                "stderr_sha256": _sha256_text(outcome.stderr),
-                "error": error,
-            }
-        )
-
-    summary: dict[str, object] = {
-        "schema": _SCHEMA,
-        "operation": operation,
-        "parallelism_boundary": "one-complete-verified-manifest-per-process",
-        "aggregation_rule": (
-            "no dataset sharding and no averaging of shard-level official metrics"
-        ),
-        "requested_max_workers": max_workers,
-        "effective_max_workers": worker_count,
-        "job_count": len(frozen_jobs),
-        "succeeded": succeeded,
-        "failed": len(frozen_jobs) - succeeded,
-        "elapsed_seconds": time.perf_counter() - started,
-        "jobs": rows,
-    }
-    _write_json(output_dir / "batch-summary.json", summary)
-    return summary
+        _write_json(output_dir / "batch-summary.json", summary)
+        return summary
 
 
 __all__ = [

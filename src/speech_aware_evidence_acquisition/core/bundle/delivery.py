@@ -281,24 +281,21 @@ def verify_delivery_bundle(manifest_path: Path, manifest: Mapping) -> VerifiedBu
         raise BundleError(f"delivery verification refused: {error}") from error
 
 
-def assert_raw_parent_scoreable(bundle: VerifiedBundle, repo_root: Path) -> None:
-    """Refuse required phase delivery from either the marker or its Git source.
+def recorded_phase_delivery_declarations(
+    bundle: VerifiedBundle, repo_root: Path,
+) -> tuple[Mapping, ...]:
+    """Resolve this parent's declarations from its exact recorded Git blob.
 
-    Older ordinary manifests do not require their config files to remain in
-    the current checkout. Inspect the committed experiment when it exists,
-    so removing a mutable header marker or editing the current config cannot
-    make a declared raw phase parent scoreable. The existing manifest contract
-    does not authenticate a forged study_commit or a rewritten Git history.
+    Historical programmatic manifests without a named experiment blob return
+    an empty tuple, preserving their existing raw-scoring behavior.
     """
+
     if bundle.manifest.get("schema") != RUN_MANIFEST_SCHEMA:
-        return
-    if "required_phase_deliveries" in bundle.manifest:
-        raise BundleError("raw phase parent requires declared delivery before scoring")
+        return ()
     config = bundle.manifest.get("config", {})
     fragments = config.get("fragments", {})
     if not isinstance(fragments, Mapping) or "experiment" not in fragments:
-        # Legacy manifest verification permits no fragment-name record.
-        return
+        return ()
     from .git_commit import _git
 
     path = fragment_path(repo_root, "experiment", fragments["experiment"])
@@ -313,17 +310,24 @@ def assert_raw_parent_scoreable(bundle: VerifiedBundle, repo_root: Path) -> None
         raise BundleError("cannot inspect phase delivery: recorded study commit is unavailable")
     code, raw, _ = _git(repo_root, "show", f"{commit}:{relative}")
     if code:
-        # A historical programmatic config need not have a named experiment
-        # file. New declared phase flights require that file at construction.
-        return
+        return ()
     document = json.loads(raw, object_pairs_hook=_reject_duplicate_keys(path))
     if not isinstance(document, Mapping):
         raise BundleError("recorded experiment fragment must be a mapping")
-    selected = selected_phase_delivery_declarations(document, {
+    return selected_phase_delivery_declarations(document, {
         f"{kind}_fragment": fragments.get(kind)
         for kind in ("model", "dataset", "baseline")
     })
-    if selected:
+
+
+def assert_raw_parent_scoreable(bundle: VerifiedBundle, repo_root: Path) -> None:
+    """Refuse required phase delivery from either the marker or its Git source."""
+
+    if bundle.manifest.get("schema") != RUN_MANIFEST_SCHEMA:
+        return
+    if "required_phase_deliveries" in bundle.manifest:
+        raise BundleError("raw phase parent requires declared delivery before scoring")
+    if recorded_phase_delivery_declarations(bundle, repo_root):
         raise BundleError(
             "raw phase parent requires declared delivery from its recorded config; "
             "the manifest delivery marker is missing"

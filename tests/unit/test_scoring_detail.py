@@ -172,6 +172,29 @@ def test_score_batch_passes_detail_mode_once_to_each_complete_score_job(
         )
 
     monkeypatch.setattr(scoring_batch, "run_official_score_job", official)
+    from speech_aware_evidence_acquisition.core.bundle.artifacts import VerifiedBundle
+
+    bundles = {}
+    for job in jobs:
+        outputs = tmp_path / f"{job.job_id}.outputs.jsonl"
+        outputs.write_text('{"sample_id":"sample-1"}\n')
+        document = {
+            "run_id": job.job_id,
+            "config": {"config_hash": "a" * 64},
+            "split": {
+                "identity_hash": "b" * 64,
+                "count": 1,
+                "ids": ["sample-1"],
+            },
+            "scorers": ["official"],
+        }
+        bundles[job.manifest] = VerifiedBundle(
+            job.manifest, document, outputs,
+            ({"sample_id": "sample-1"},), {}, frozenset({"sample-1"}), "DERIVED",
+        )
+    monkeypatch.setattr(
+        scoring_batch, "verify_bundle", lambda path: bundles[Path(path).resolve()]
+    )
 
     summary = run_score_batch(
         jobs,

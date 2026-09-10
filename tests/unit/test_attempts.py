@@ -7,6 +7,7 @@ the real gate respectively.
 
 import json
 import os
+from pathlib import Path
 
 import pytest
 
@@ -501,3 +502,102 @@ def test_store_handle_returns_a_handle_without_requiring_the_file_to_exist(tmp_p
     handle = store.handle("run-1", "attempt-1")
     assert handle.path == tmp_path / "attempts" / "run-1" / "attempt-1.json"
     assert not handle.path.exists()
+
+
+def _record_usage_worker(path: str, run_id: str, attempt_id: str) -> None:
+    handle = AttemptHandle(path=Path(path), run_id=run_id, attempt_id=attempt_id)
+    handle.record_usage(calls=1, audio_seconds=1.0)
+
+
+def test_cross_process_usage_updates_are_serialized(tmp_path):
+    import multiprocessing
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-process", "attempt-1", carrier_lock_key="c", reserved_calls=20, reserved_audio_seconds=20.0,
+    )
+    context = multiprocessing.get_context("fork")
+    with context.Pool(2) as pool:
+        pool.starmap(
+            _record_usage_worker,
+            [(str(handle.path), "run-process", "attempt-1")] * 10,
+        )
+    assert handle.actual_totals() == (10, 10.0)
+
+
+def test_concurrent_terminal_mutations_leave_one_terminal_state(tmp_path):
+    from concurrent.futures import ThreadPoolExecutor
+
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-race", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+
+    def finalize():
+        try:
+            handle.mark_finalized()
+            return "finalized"
+        except AttemptError:
+            return "refused"
+
+    def abort():
+        try:
+            handle.mark_aborted("race")
+            return "aborted"
+        except AttemptError:
+            return "refused"
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        results = list(executor.map(lambda fn: fn(), (finalize, abort)))
+    assert sorted(results).count("refused") == 1
+    assert handle.state() in {STATE_FINALIZED, STATE_ABORTED}
+    with pytest.raises(AttemptError, match="not OPENED"):
+        handle.record_usage(calls=1, audio_seconds=1.0)
+
+
+def test_finalize_with_receipt_is_exactly_idempotent(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-receipt", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    digest = "a" * 64
+    handle.finalize_with_receipt("runs/run-manifest.json", digest, "run-manifest")
+    handle.finalize_with_receipt("runs/run-manifest.json", digest, "run-manifest")
+    document = json.loads(handle.path.read_text(encoding="utf-8"))
+    assert document["state"] == STATE_FINALIZED
+    assert document["finalization"] == {
+        "path": "runs/run-manifest.json",
+        "sha256": digest,
+        "kind": "run-manifest",
+    }
+    with pytest.raises(AttemptError, match="not OPENED"):
+        handle.finalize_with_receipt("runs/other.json", "b" * 64, "run-manifest")
+
+
+@pytest.mark.parametrize(
+    ("path", "sha256", "kind"),
+    [("", "a" * 64, "receipt"), ("receipt", "A" * 64, "receipt"), ("receipt", "a" * 63, "receipt"), ("receipt", "a" * 64, "")],
+)
+def test_finalize_with_receipt_validates_binding(tmp_path, path, sha256, kind):
+    store = AttemptStore(tmp_path / "attempts")
+    handle = store.open_attempt(
+        "run-receipt", "attempt-1", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    with pytest.raises(AttemptError, match="finalization"):
+        handle.finalize_with_receipt(path, sha256, kind)
+
+
+def test_finalize_with_receipt_refuses_aborted_and_legacy_finalized(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+    aborted = store.open_attempt(
+        "run-receipt", "attempt-aborted", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    aborted.mark_aborted("failure")
+    with pytest.raises(AttemptError, match="not OPENED"):
+        aborted.finalize_with_receipt("receipt", "a" * 64, "kind")
+
+    legacy = store.open_attempt(
+        "run-receipt", "attempt-legacy", carrier_lock_key="c", reserved_calls=1, reserved_audio_seconds=1.0,
+    )
+    legacy.mark_finalized()
+    with pytest.raises(AttemptError, match="not OPENED"):
+        legacy.finalize_with_receipt("receipt", "a" * 64, "kind")
