@@ -9,3 +9,7 @@ Build two truthful runtime receipts for the already reviewed isolated llama.cpp 
 The resulting receipts prove runtime file identity only. They do not qualify strict hit/miss/decode-failure behavior or authorize cache generation. Keep the construction successor held for model contacts while configuring its model-free input inventory stage. Its future actual capacity, encoding, strict-cache and four-row generation proofs require distinct committed ExecutionPlans and contact registrations.
 
 Record command/version receipt generation outcomes and source hashes before marking this row consumed. If the binary reports a stale build or any pin differs, stop and repair the named engineering fault; do not disguise it as a qualified new runtime.
+
+## Named build-identity fault and registered repair
+
+The first shared generator invocation failed after one local --version call: build-qualify/common/build-info.cpp still named 04ccc72a2 although the clean checkout is cddb000cb45ab44d33c84483cf5e5962cbbaa5bf. No receipt was written. Register SAEA-E21-MF-FEATURE-RUNTIME-IDENTITY-REPAIR-V1 separately before repair verification: preserve the old runtime library/binary bundle and generated build-info, rerun the existing CMake configuration and rebuild from Git metadata, then allow at most two shared generator --version calls. No source version string is edited by hand. This is a model-free build repair, not a replay of a scientific attempt.
