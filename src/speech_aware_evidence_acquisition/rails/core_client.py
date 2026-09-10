@@ -1359,6 +1359,7 @@ class FrozenCoreClient:
         # self._binding.sample_facts.
         self._slice_facts: dict[str, tuple[float, int]] = {}
         self._request_counter = 0
+        self._last_attempted_request_id: str | None = None
         self._timings: list[RequestTiming] = []
         self._state_lock = threading.Lock()
         self._closed = False
@@ -1431,6 +1432,16 @@ class FrozenCoreClient:
     def timings(self) -> tuple[RequestTiming, ...]:
         with self._state_lock:
             return tuple(self._timings)
+
+    @property
+    def last_attempted_request_id(self) -> str | None:
+        """The ID handed to transport most recently, if any.
+
+        It identifies an attempted request only; sealed cost remains the
+        authority for charged model contacts.
+        """
+        with self._state_lock:
+            return self._last_attempted_request_id
 
     def flush_trace_buffer(self, buffer: TraceBuffer) -> None:
         """Flush one completed parallel task into the owned trace sink.
@@ -1802,6 +1813,8 @@ class FrozenCoreClient:
                 "construction_target_ids must be omitted"
             )
         started_at = _iso(self._now())
+        with self._state_lock:
+            self._last_attempted_request_id = request_id
         response = self._adapter.request(payload)
         with self._state_lock:
             self._timings.append(
