@@ -256,7 +256,7 @@ def test_window_inventory_cli_requires_explicit_output(tmp_path):
 
 @pytest.mark.parametrize("mode", [
     "check", "wire-check", "prepare-supply", "prepare-window-inventory",
-    "prompt-fit", "worker", "campaign",
+    "prompt-fit", "prepare-window-features", "worker", "campaign",
 ])
 def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, monkeypatch, mode):
     import sys
@@ -294,7 +294,7 @@ def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, mon
     selected_document = dict(cell().document)
     if mode == "check":
         selected_document["readiness"] = {"state": "held", "reason": "fit not yet registered"}
-    if mode == "prepare-window-inventory":
+    if mode in {"prepare-window-inventory", "prepare-window-features"}:
         selected_document["allowed_execution_stages"] = [mode]
     monkeypatch.setattr(cli, "load_campaign_cells",
                         lambda *a: (CampaignCell.from_document(selected_document),))
@@ -302,6 +302,12 @@ def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, mon
     monkeypatch.setattr(cli, "run_campaign", lambda *a, **kw: {"campaign": True})
     monkeypatch.setitem(sys.modules, "speech_aware_evidence_acquisition.core.preparation_fit",
                         SimpleNamespace(fit_phase_runtime=lambda *a, **kw: {"fit": True}))
+    def encode(*args, **kwargs):
+        assert kwargs["policy"].expected_session_id == "serving-test"
+        calls.append("window-features")
+        return {"encoding": True}
+    monkeypatch.setitem(sys.modules, "speech_aware_evidence_acquisition.core.preparation_window_encoding",
+                        SimpleNamespace(prepare_window_feature_encoding=encode))
     args = [mode, "--repo-root", str(repo), "--data-root", str(tmp_path),
             "--runtime-root", str(tmp_path), "--lock-path", str(tmp_path / "lock"),
             "--experiment", "e", "--cell", "C", "--output", str(tmp_path / "receipt"),
@@ -316,6 +322,8 @@ def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, mon
         assert calls == ["preflight", "preprocess", "serve", "generate", "seal"]
     elif mode == "prepare-window-inventory":
         assert calls == ["window-inventory"]
+    elif mode == "prepare-window-features":
+        assert calls == ["window-features"]
 
 
 def test_fit_cell_cannot_be_dispatched_as_generation():
@@ -365,3 +373,22 @@ def test_campaign_holds_fit_cell_before_service_or_lease(tmp_path):
     )
     assert "stage" in report["states"][_SERVING_RUN_ID]["reason"]
     assert starter.calls == 0 and attached == []
+
+
+def test_window_feature_encoding_requires_explicit_stage_and_root_custody(tmp_path):
+    from speech_aware_evidence_acquisition.core.flight import cli
+    with pytest.raises(CampaignError, match="explicitly permit"):
+        cell().assert_mode("prepare-window-features")
+    document = dict(cell().document)
+    document["allowed_execution_stages"] = ["prepare-window-features"]
+    encoding = CampaignCell.from_document(document)
+    encoding.assert_mode("prepare-window-features")
+    with pytest.raises(CampaignError, match="stage"):
+        encoding.assert_mode("worker")
+    with pytest.raises(SystemExit, match="2"):
+        cli.main([
+            "prepare-window-features", "--repo-root", str(tmp_path),
+            "--data-root", str(tmp_path), "--runtime-root", str(tmp_path),
+            "--lock-path", str(tmp_path / "lock"), "--experiment", "e",
+            "--cell", "C", "--output", str(tmp_path / "receipt"),
+        ])

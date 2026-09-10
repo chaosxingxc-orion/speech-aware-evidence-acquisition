@@ -44,7 +44,7 @@ def load_campaign_plan(repo: Path, path: Path):
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=[
-        "check", "wire-check", "prepare-supply", "prepare-window-inventory",
+        "check", "wire-check", "prepare-supply", "prepare-window-inventory", "prepare-window-features",
         "prompt-fit", "coordinate-fit", "worker", "campaign",
     ])
     for name in ("repo-root", "data-root", "runtime-root", "lock-path"):
@@ -63,14 +63,14 @@ def main(argv=None) -> int:
         parser.error("select either an experiment or a committed campaign plan")
     if args.campaign_plan is not None and (args.mode != "campaign" or args.cell):
         parser.error("campaign plans require campaign mode and cannot select a partial cell")
-    if args.mode in {"worker", "prompt-fit"} and (
+    if args.mode in {"worker", "prompt-fit", "prepare-window-features"} and (
         not args.expected_session_id or args.lease_token_file is None
     ):
         parser.error("workers require --expected-session-id and --lease-token-file from root")
     if args.mode == "campaign" and (not args.owner or not args.expected_session_id):
         parser.error("campaign requires explicit --owner and --expected-session-id")
     if args.mode in {
-        "prepare-supply", "prepare-window-inventory", "prompt-fit"
+        "prepare-supply", "prepare-window-inventory", "prepare-window-features", "prompt-fit"
     } and args.output is None:
         parser.error("preparation modes require --output")
     if args.mode == "prompt-fit" and (args.contact_cap is None or args.contact_cap < 1):
@@ -106,7 +106,7 @@ def main(argv=None) -> int:
         for cell in cells:
             cell.assert_mode("prompt-fit" if args.mode == "coordinate-fit" else args.mode)
     policy = None
-    if args.mode in {"worker", "prompt-fit"}:
+    if args.mode in {"worker", "prompt-fit", "prepare-window-features"}:
         document = json.loads(args.lease_token_file.read_text(encoding="utf-8"))
         policy = WorkerExecutionPolicy(args.expected_session_id, document["token"])
         policy.assert_lease(root, run_id=cells[0].run_id, attempt_id=cells[0].attempt_id)
@@ -155,6 +155,9 @@ def main(argv=None) -> int:
                 result = runtime.prepare_phase_supply(args.output, max_workers=args.workers)
         elif args.mode == "prepare-window-inventory":
             result = runtime.prepare_window_inventory(args.output)
+        elif args.mode == "prepare-window-features":
+            from ..preparation_window_encoding import prepare_window_feature_encoding
+            result = prepare_window_feature_encoding(runtime, args.output, policy=policy)
         elif args.mode == "prompt-fit":
             from ..preparation_fit import fit_phase_runtime
             result = fit_phase_runtime(

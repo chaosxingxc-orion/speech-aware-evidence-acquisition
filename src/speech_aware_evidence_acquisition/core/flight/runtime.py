@@ -3588,6 +3588,7 @@ class FlightRuntime:
         preparation_plan = self._build_execution_plan(values, carrier, identity)
         return {
             "values": values, "split_identity_hash": identity,
+            "repo_root": self._repo_root,
             "data_root": self._data_root, "runtime_root": self._runtime_root,
             "run_id": self._run_id, "attempt_id": self.attempt_id,
             "geometry": dict(self._adapter.serving_geometry()),
@@ -3599,6 +3600,11 @@ class FlightRuntime:
 
     def authorize_preparation_contacts(self, *, contact_cap: int):
         """Apply the normal committed plan/exposure gate before tokenizer access."""
+        plan, _gate = self.authorize_preparation_client(contact_cap=contact_cap)
+        return plan
+
+    def authorize_preparation_client(self, *, contact_cap: int):
+        """Return the shared checked plan and gate for a preparation client."""
         from dataclasses import replace
         from ..preparation import PreparationError
 
@@ -3622,7 +3628,7 @@ class FlightRuntime:
         self._gate_touch(gate, plan)
         self._require_exposure_row_unconsumed(plan.run_id)
         require_clean_study_repo(self._repo_root)
-        return plan
+        return plan, gate
 
     def prepare_window_inventory(self, output: Path):
         """Persist verified exact-window inputs without any model contact."""

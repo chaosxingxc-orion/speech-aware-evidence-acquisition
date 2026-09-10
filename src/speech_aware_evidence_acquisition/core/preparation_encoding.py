@@ -31,7 +31,9 @@ def _sha(value: object, label: str) -> str:
     return value
 
 
-def _sources(inventory: Mapping[str, object]) -> dict[str, Mapping[str, object]]:
+def window_encoding_sources(
+    inventory: Mapping[str, object],
+) -> dict[str, Mapping[str, object]]:
     """Use inventory.encoding_inputs, not path equality, as dedup authority."""
     if inventory.get("schema") != WINDOW_FEATURE_INVENTORY_SCHEMA:
         raise PreparationError(
@@ -142,6 +144,22 @@ def _checked_media(root: Path, source: Mapping[str, object], audio_sha256: str):
     return media, content, legacy_audio_feature_cache_key(content)
 
 
+def validate_window_encoding_parameters(decoding_params, instruction):
+    """Validate the registered preprocessing request before opening an attempt."""
+    if (
+        not isinstance(decoding_params, Mapping)
+        or type(decoding_params.get("max_tokens")) is not int
+        or decoding_params.get("max_tokens") != 1
+    ):
+        raise PreparationError(
+            "window encoding decoding_params must set max_tokens to 1"
+        )
+    if not isinstance(instruction, str) or not instruction:
+        raise PreparationError(
+            "window encoding instruction must be non-empty English text"
+        )
+
+
 def encode_window_feature_cache(
     *,
     inventory: Mapping[str, object],
@@ -169,17 +187,7 @@ def encode_window_feature_cache(
         raise PreparationError(
             "window encoding requires an existing cache and custody guard"
         )
-    if (
-        not isinstance(decoding_params, Mapping)
-        or decoding_params.get("max_tokens") != 1
-    ):
-        raise PreparationError(
-            "window encoding decoding_params must set max_tokens to 1"
-        )
-    if not isinstance(instruction, str) or not instruction:
-        raise PreparationError(
-            "window encoding instruction must be non-empty English text"
-        )
+    validate_window_encoding_parameters(decoding_params, instruction)
     identity = dict(encoder_identity)
     if identity != inventory.get("encoder_identity"):
         raise PreparationError(
@@ -191,7 +199,7 @@ def encode_window_feature_cache(
         ("session receipt file", session_receipt_file_sha256),
     ):
         _sha(value, label)
-    sources = _sources(inventory)
+    sources = window_encoding_sources(inventory)
     inventory_sha256 = digest(inventory)
     warm = warm_provenance or {}
     inputs = {
@@ -260,7 +268,21 @@ def encode_window_feature_cache(
                 contact_class="encoder",
             )
         finally:
-            client.close()
+            if client is not None:
+                client.close()
+
+    if client is None:
+        raise PreparationError("a cold encoding artifact requires an authorized client")
+
+    client_close_started = False
+    closed_receipt = None
+
+    def close_client():
+        nonlocal client_close_started, closed_receipt
+        if not client_close_started:
+            client_close_started = True
+            closed_receipt = client.close()
+        return closed_receipt or {}
 
     def produce():
         entries = []
@@ -385,7 +407,7 @@ def encode_window_feature_cache(
                         "source_provenance_receipt_sha256": None,
                     }
                 )
-            closed = client.close()
+            closed = close_client()
             charged = sum(entry["current_contact_id"] is not None for entry in entries)
             if (
                 not isinstance(closed.get("cost"), Mapping)
@@ -414,7 +436,7 @@ def encode_window_feature_cache(
         except BaseException as error:
             if closed is None:
                 try:
-                    closed = client.close()
+                    closed = close_client()
                 except BaseException:
                     closed = {}
             attempted_id = getattr(client, "last_attempted_request_id", None)
@@ -466,10 +488,14 @@ def encode_window_feature_cache(
                 pass
             raise
 
-    return prepare_artifact(
-        Path(output_path),
-        kind=KIND,
-        inputs=inputs,
-        producer=produce,
-        contact_class="encoder",
-    )
+    try:
+        return prepare_artifact(
+            Path(output_path),
+            kind=KIND,
+            inputs=inputs,
+            producer=produce,
+            contact_class="encoder",
+        )
+    finally:
+        # The artifact lock can refuse before produce() has taken ownership.
+        close_client()
