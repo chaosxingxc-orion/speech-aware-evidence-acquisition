@@ -1,6 +1,6 @@
 {
   "schema": "saea-registered-request-fit-plan-v1",
-  "status": "HELD pending root registration; fit only and no generation authorization",
+  "status": "REGISTERED_BY_ROOT_FOR_TOKENIZER_FIT_ONLY",
   "artifact_path": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-FIT-V1/request-fit.json",
   "contact_cap": 3001,
   "count_basis": {
@@ -58,15 +58,43 @@
       "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf"
     },
     "server_argv": [
-      "/home/chao/llama.cpp-featcache/build/bin/llama-server", "--host", "127.0.0.1", "--port", "8080",
-      "-m", "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
-      "--no-mmproj", "-c", "65536", "-np", "4", "-b", "2048", "-ub", "512", "-fa", "on", "-ngl", "999",
-      "-ctk", "q8_0", "-ctv", "q8_0", "--cache-prompt", "--cache-ram", "0", "--no-cache-idle-slots", "--slot-prompt-similarity", "0"
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8080",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--no-mmproj",
+      "-c",
+      "65536",
+      "-np",
+      "4",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
     ],
     "server_env": {
       "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
       "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
     }
   },
-  "scope": "Tokenizer fit only. Materialize all 1,000 exact requests before service attachment; generation remains held."
+  "scope": "Tokenizer fit only. Materialize all 1,000 exact requests before service attachment; generation remains held.",
+  "root_registration_utc": "2026-09-10T21:14:17.207528+00:00",
+  "expected_session_id": "serving-slurp-s3-independent-repeat-np4-v1"
 }
