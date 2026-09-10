@@ -118,13 +118,16 @@ def recover_parent_rows(bundle, contract: Mapping):
     ids = [row["window_id"] for row in rows]
     if len(ids) != len(set(ids)) or set(ids) != set(expected):
         raise PredecessorSnapshotError("recovered terminal windows do not cover the contract")
-    # This pipeline expects one completed generation per fixed window, without
-    # hidden retries or discarded windows. Saturated terminal text remains empty
-    # exactly as the shared stitch policy delivered it, and is counted below.
-    _require_equal(m["cost"]["calls_used"], len(rows), "generation contact count")
+    # Select the successful terminal requests already named by the stitch.
+    # Charge every recorded attempt, including a bounded retry, to the parent.
+    # Saturated terminal text remains empty exactly as the stitch delivered it.
+    _require_equal(m["cost"]["calls_used"], len(costs), "generation contact count")
     _require_equal(m["cost"].get("skipped_slice_count", 0), 0, "skipped windows")
     for field in ("prompt_tokens", "completion_tokens"):
-        _require_equal(sum(row[field] for row in rows), m["cost"][field + "_total"],
+        for cost in costs.values():
+            if isinstance(cost.get(field), bool) or not isinstance(cost.get(field), int) or cost[field] < 0:
+                raise PredecessorSnapshotError("attempt cost is unavailable or invalid")
+        _require_equal(sum(cost[field] for cost in costs.values()), m["cost"][field + "_total"],
                        field + " total")
     _require_equal(sum(row["saturated"] for row in rows),
                    m["cost"]["saturated_slice_count"], "saturation count")
@@ -191,6 +194,8 @@ def build_predecessor_snapshot(*, manifest_path: Path, repo_root: Path, data_roo
         "saturated_windows": sum(row["saturated"] for row in rows),
         "prompt_tokens_total": sum(row["prompt_tokens"] for row in rows),
         "completion_tokens_total": sum(row["completion_tokens"] for row in rows),
+        "parent_generation_cost": m["cost"],
+        "token_total_scope": "Selected terminal windows; parent_generation_cost also includes any bounded retries.",
         "stitch_rebuilds_sealed_outputs_byte_for_byte": "PASS",
         "content_free": True, "additional_model_contacts": 0,
         "cost_rule": "Charge the original parent once and add the downstream repair; this derivative adds zero generation.",
