@@ -3654,7 +3654,7 @@ class FlightRuntime:
         require_clean_study_repo(self._repo_root)
         return plan, gate
 
-    def prepare_window_inventory(self, output: Path):
+    def prepare_window_inventory(self, output: Path, *, max_workers: int = 1):
         """Persist verified exact-window inputs without any model contact."""
 
         from ..model import FrozenCoreError
@@ -3783,7 +3783,10 @@ class FlightRuntime:
                 mmproj_sha256=verified_hashes["mmproj"],
             )
         )
-        batch = self.materialize_window_batch(execution_plan=execution_plan)
+        batch = self.materialize_window_batch(
+            execution_plan=execution_plan,
+            **({"max_workers": max_workers} if max_workers != 1 else {}),
+        )
         return prepare_window_feature_inventory(
             Path(output),
             batches={self._run_id: batch},
@@ -3802,7 +3805,7 @@ class FlightRuntime:
             return None
         return self.materialize_window_batch(execution_plan=execution_plan)
 
-    def materialize_window_batch(self, *, execution_plan=None):
+    def materialize_window_batch(self, *, execution_plan=None, max_workers: int = 1):
         """Build the configured E21 raw-window requests without model contact."""
         from ..base import SampleContext
         from ..model.slices import SliceRegistry
@@ -3814,6 +3817,13 @@ class FlightRuntime:
         )
         from ...reproduction.repair_loop import build_repair_window_hook
 
+        if isinstance(max_workers, bool) or not isinstance(max_workers, int) or not 1 <= max_workers <= 20:
+            raise PreparationError("window preparation max_workers must be between 1 and 20")
+        from ..flight_lock import read_flight_lock
+        # Root allocates a global CPU budget. A live/stale lease conservatively
+        # enforces the lower campaign cap even if a caller says it is idle.
+        if read_flight_lock(self._data_root) is not None:
+            max_workers = min(max_workers, 8)
         values, _carrier, _split, _identity = self._prepare()
         if self._adapter.preprocess_plan().get("kind") != "raw-speech-windows":
             raise PreparationError(
@@ -3883,6 +3893,7 @@ class FlightRuntime:
             expected_sample_ids=[sample.sample_id for sample in self._samples],
             hook_factory=hook_factory,
             evidence_binding=evidence_binding,
+            **({"max_workers": max_workers} if max_workers != 1 else {}),
         )
 
 

@@ -154,7 +154,9 @@ def main(argv=None) -> int:
             else:
                 result = runtime.prepare_phase_supply(args.output, max_workers=args.workers)
         elif args.mode == "prepare-window-inventory":
-            result = runtime.prepare_window_inventory(args.output)
+            result = runtime.prepare_window_inventory(
+                args.output, **({"max_workers": args.workers} if args.workers != 1 else {}),
+            )
         elif args.mode == "prepare-window-features":
             from ..preparation_window_encoding import prepare_window_feature_encoding
             result = prepare_window_feature_encoding(runtime, args.output, policy=policy)

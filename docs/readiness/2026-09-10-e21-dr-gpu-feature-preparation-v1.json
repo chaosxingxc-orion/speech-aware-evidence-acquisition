@@ -54,7 +54,7 @@
     "planned_generation_gpu_hours_per_group": 1.2,
     "feature_encoding": "separate root-owned registration required; no exposure consumed by this model-free plan"
   },
-  "command_template": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/home/chao/saea-worktrees/e21-gpu-encoding-plan/src /home/chao/.venvs/speechrl/bin/python -m speech_aware_evidence_acquisition.core.flight.cli prepare-window-inventory --repo-root /home/chao/saea-worktrees/e21-gpu-encoding-plan --data-root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data --runtime-root /home/chao --lock-path /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/locks/e21-gpu-feature-preparation.lock --experiment e21-dr-shared-two-generation-v1 --cell e21-dr-shared-unit-generation --output /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1/window-inventory.json --workers 16",
+  "command_template": "Use the shared flight CLI prepare-window-inventory with experiment e21-dr-full-window-inventory-v1, cell e21-dr-full-window-inventory, --workers 16 and the umbrella docs/datasets.lock.json. The inherited scientific DR cells do not authorize preparation stages.",
   "limitations": [
     "The inherited DR fragment remains held and is not modified by this plan.",
     "The plan reads and hashes already prepared source windows through the shared model-free path; it does not contact a model, tokenizer, encoder, scorer, service, or network.",
