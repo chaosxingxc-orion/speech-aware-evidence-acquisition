@@ -30,25 +30,33 @@ Primary decision: docs/readiness/2026-09-10-e21-dr-packets-four-delivery-decisio
 
 The follow-on OBS geometry tables are retrospective and descriptive only because the primary DR results were already known. They use fixed content-free bins and do not add a gate or rerun scoring. The interval join passed for 44 calls and 1,593 windows in geometry receipt SHA-256 3549a0a9cfcce25ef8114d73834f93b668984b7998313d8234b869606b048b20. The result artifact is DATA/coordination/e21-dr-descriptive-obs-strata-v1.json, SHA-256 42aaf144762d9ff1259b421b16b59ac07ac921f2c7caf8a734249375a269817a. The companion report is docs/readiness/2026-09-10-e21-dr-descriptive-obs-strata-report.md at commit 051fd189ddaf004c7683d0e5460993c83d33f002.
 
-## Active work: G6 live control recovery
+## Completed G6 live SLURP comparison
 
-This is the only active GPU flight, not a completed result. The original control generated 1,000 direct responses and zero slots responses. It then stopped at the phase boundary because a stale HTTP keep-alive connection failed the second-phase props request. The failed attempt preserved its traces, fit journal, and failure custody.
+Both recovery control and speech treatment are sealed and finalized with 2,000 generation contacts each, on the same decoder process, source runtime and model geometry. Their joined deliveries were officially scored once each with first-pass per-sample retention. The failed first control remains separately aborted with its 1,000 direct contacts and 3,002 fit endpoints. Total G6 cost includes 5,000 generations and 15,006 fit endpoints; the successful pair contact-window utilization integral is 0.4285784232 GPU-hours and includes fits, preparation and generation.
 
-The root cause repair creates a fresh audit client at each actual phase boundary while retaining the cumulative guarded counter. The sole explicit recovery is registered at source commit c4dd9342422c2afc0309a19c5dfa328388e19adf and is currently using service serving-slurp-live-system-recovery-np4-v1. The registration permits one recovery only. It records 3,002 fit endpoints in the failed path, 2,000 recovery generation contacts, and 9,004 combined metadata endpoint contacts (3,002 already spent plus 6,002 recovery capacity-check contacts), separate from the generation budget. A second failure stops the flight and requires a separately registered four-row proof before another proposal.
+NEW500 mean row SLU-F1 improved by 3.259058 percentage points, with speaker-cluster CI90 [1.089283, 5.504729]. Pooled micro SLU-F1 improved by 3.206961 points. However, scenario accuracy changed by -0.2 points and failed the frozen nonnegative protection guard. The system is not admitted despite positive slot evidence. Both arms have zero saturated responses and zero malformed final deliveries.
 
-Prepared speech recall is ready, with artifact SHA-256 20d0cd44. Root retains responsibility for its source equivalence, registration, service custody, and all interpretation. No quality, cost, or system conclusion may be drawn until the recovery seals and completes its registered analysis.
+The renderer also exposes different phase identifiers in the two direct-stage prompts, adding two input tokens per treatment row. Therefore this compares the complete configured systems; it does not isolate a causal retrieval effect. The root retains this limitation and the failed guard without changing scores, tolerances or the roster. No additional SLURP generation follows automatically.
 
-Primary operational records: docs/readiness/2026-09-10-prepared-recall-and-live-fit-closure.md and docs/readiness/2026-09-10-slurp-live-control-recovery-v1/generation-plan.json in the frozen G6 recovery source.
+Primary report: docs/readiness/2026-09-10-slurp-live-intent-slots-result.md. Root decision: DATA/coordination/g6-live-system-root-decision-v1.json. All source and settlement hashes are in that report. The G6 decoder stopped normally at 2026-09-10T23:30:13Z, and its monitor was explicitly stopped after preserving coverage.
 
-## Held queue
+## Active preparation: E21 offline direct-to-KC-E1f
 
-The E21 offline direct-to-KC-E1f pipeline remains held under root review. The existing mechanism is an actual full44 direct draft followed by the registered constrained KC-E1f repair; a future successor must bind a newly sealed direct parent, stage-specific fits, capacity, exposure, and an explicit raw-audio or formal-packet protocol. No new E21 mechanism, reviewer, planner, retrieval method, or LOOP extension is implied by this held item.
+The next system has two real stages over 44 calls and 1,593 windows each: a new direct transcript, followed by the existing constrained KC-E1f brief repair using only that newly sealed draft. The final quality and cost include both stages. The target is 3,186 generation contacts; each stage has a 1,750-call ceiling, 2.0 utilization-GPU-hour allowance and 150,000 speech-second allowance. No historical draft can substitute for the new first stage.
 
-No additional LOOP GPU experiment is queued from the completed result. No additional DR GPU experiment is justified by the descriptive strata. No automatic replay follows a failed flight.
+All 1,593 formal speech packets are already prepared. The decoder uses the verified cddb000c packet route, c36864/np4, max1024, no GPU projector and depth1 prefetch. The full model-free direct wire proof is running against the frozen source. It includes the actual driver route and exact window identities, not a four-row substitute. Eight aggregate CPU preparation workers and 2x output reserve are explicitly set for the upcoming registered fit; the earlier wire inherited serial materialization and remains preserved.
 
-## Immediate queue discipline
+The shared fresh predecessor binder passed the 67-test suite and a model-free replay over all 1,593 historical windows. The replay is engineering evidence only; its old outputs do not enter the new system. The future parent contract fixes the new identity and exact whole-roster geometry, and is rebound before first generation whenever an admission binding changes the composed configuration. Configuration, protocol, parent and exposure hashes must agree before dispatch.
 
-1. Let the sole registered G6 recovery finish or refuse under its current custody.
-2. Seal and analyze G6 only through its registered artifacts; preserve the original failed control separately.
-3. Keep the E21 direct-to-KC-E1f successor held until root completes admission and registration review.
-4. Retain sealed S3, LOOP, and DR sources and receipts as evidence; do not rerun completed scoring or manufacture new comparisons.
+No E21 generation or tokenizer contact has occurred for this offline system. Fit and generation remain held until their respective real prerequisites complete. Root controls service startup, with shared coordinate-fit performing CPU materialization before loading the model. A failed fit does not silently change geometry or the output cap.
+
+## Immediate execution sequence
+
+1. Finish and bind the already-running full direct model-free wire result.
+2. Admit the registered full 1,593-request fit with 4,780 tokenizer endpoints and 2x output reserve. Root loads one decoder only after CPU preparation is ready.
+3. Bind fit, generation admission and the final prospective parent contract; generate the new direct stage and seal.
+4. Build the full fresh predecessor without reading quality, compose the frozen KC-E1f repair template, and complete its own full fit on the same decoder geometry.
+5. Generate and seal repair, score each complete manifest once, apply the frozen call-clustered analysis and entity/error guards, and finalize costs for both stages.
+6. Integrate completed receipts and reproducible configurations into local master at run boundaries.
+
+S4N did not open the exemplar-encoding gate; the 7,049 missing exemplar encodings remain out of the GPU queue. No additional LOOP or DR generation is queued from their completed results. Depth-2, reasoning expansion and new roster experiments remain outside this immediate quality closure.
