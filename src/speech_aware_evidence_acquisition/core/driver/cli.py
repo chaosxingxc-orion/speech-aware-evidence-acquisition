@@ -74,49 +74,15 @@ def _load_preprocess_stop_chain(
     stop_receipt_path: Path,
     runtime_receipt: Mapping[str, object],
 ):
-    """Verify that the receipt-bound preprocessing process is stopped."""
+    """Compatibility wrapper for the shared preprocess stop-chain authority."""
 
-    from ..session import read_session_receipt, verify_against_runtime_receipt
+    from ..preparation_feature_provenance import load_preprocess_stop_chain
 
-    session = read_session_receipt(session_receipt_path)
-    verify_against_runtime_receipt(session, runtime_receipt)
-    if session.role != "preprocess":
-        raise ValueError(
-            "speech packet promotion requires a preprocess session receipt"
-        )
-    try:
-        stop = json.loads(stop_receipt_path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError) as error:
-        raise ValueError(
-            f"cannot read preprocess stop receipt {stop_receipt_path}: {error}"
-        ) from error
-    required = {
-        "schema",
-        "study",
-        "session_id",
-        "session_role",
-        "session_receipt_sha256",
-        "runtime_receipt_sha256",
-        "pid",
-        "termination_signal",
-        "forced",
-        "stopped_at",
-    }
-    if not isinstance(stop, dict) or set(stop) != required:
-        raise ValueError(
-            f"preprocess stop receipt must carry exact keys {sorted(required)}"
-        )
-    if (
-        stop["schema"] != "saea-session-stop-receipt-v1"
-        or stop["study"] != "speech-aware-evidence-acquisition"
-        or stop["session_role"] != "preprocess"
-        or stop["session_id"] != session.session_id
-        or stop["pid"] != session.pid
-        or stop["session_receipt_sha256"] != _canonical_sha256(session.as_json())
-        or stop["runtime_receipt_sha256"] != _canonical_sha256(runtime_receipt)
-    ):
-        raise ValueError("preprocess session/stop/runtime receipt chain does not match")
-    return session, stop
+    return load_preprocess_stop_chain(
+        session_receipt_path=session_receipt_path,
+        stop_receipt_path=stop_receipt_path,
+        runtime_receipt=runtime_receipt,
+    )
 
 
 def _cli_promote_speech_packets(args: argparse.Namespace) -> int:
