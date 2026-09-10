@@ -49,6 +49,10 @@ from speech_aware_evidence_acquisition.data.slurp import (
     load_slurp_split,
     slurp_intent_from_state_content,
 )
+from speech_aware_evidence_acquisition.reproduction.slurp_delivery import (
+    DeliveryJoinError,
+    join_slurp_rosters,
+)
 from speech_aware_evidence_acquisition.reproduction.slurp_official_eval import (
     score_slurp_outputs_official,
 )
@@ -120,49 +124,12 @@ def project_as_sealed(rows: list, out: Path) -> Path:
 
 
 def project_joined(arm_rows: list, closed_list_rows: list, out: Path) -> tuple[Path, dict]:
-    """The full-row projection: the sealed closed-list intent joined to this
-    arm's entities, on ``sample_id``. Model-free and total: every row of the
-    arm must have a closed-list row and vice versa."""
+    """Write the shared pure joined projection in the historical format."""
 
-    closed = {row["sample_id"]: text_of(row) for row in closed_list_rows}
-    arm = {row["sample_id"]: text_of(row) for row in arm_rows}
-    missing = sorted(set(arm) - set(closed))
-    extra = sorted(set(closed) - set(arm))
-    if missing or extra:
-        raise SystemExit(
-            "join is not total: %d arm rows without a closed-list row, %d the other way"
-            % (len(missing), len(extra))
-        )
-    projected = []
-    stats = {
-        "rows": 0,
-        "arm_response_unparsed": 0,
-        "arm_response_carried_scenario_or_action": 0,
-        "closed_list_unparsed": 0,
-    }
-    for sample_id in sorted(arm):
-        cl_scenario, cl_action, _cl_entities, cl_parsed = parse_slu_response(closed[sample_id])
-        arm_scenario, arm_action, arm_entities, arm_parsed = parse_slu_response(arm[sample_id])
-        if not cl_parsed:
-            stats["closed_list_unparsed"] += 1
-        if not arm_parsed:
-            stats["arm_response_unparsed"] += 1
-        if arm_scenario or arm_action:
-            stats["arm_response_carried_scenario_or_action"] += 1
-        payload = {
-            "scenario": cl_scenario if isinstance(cl_scenario, str) else "",
-            "action": cl_action if isinstance(cl_action, str) else "",
-            "entities": [
-                {"type": entity.type, "filler": entity.filler} for entity in arm_entities
-            ],
-        }
-        projected.append(
-            {
-                "sample_id": sample_id,
-                "text": json.dumps(payload, ensure_ascii=False, sort_keys=True),
-            }
-        )
-        stats["rows"] += 1
+    try:
+        projected, stats = join_slurp_rosters(arm_rows, closed_list_rows)
+    except DeliveryJoinError as exc:
+        raise SystemExit(str(exc)) from exc
     return write_jsonl(projected, out), stats
 
 
