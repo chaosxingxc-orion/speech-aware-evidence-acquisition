@@ -84,6 +84,8 @@ The unit parent sealed at 16:12:47 UTC with 1,593 successful contacts, 44 delive
 
 The two unit whole-manifest score jobs completed successfully in 3,682.1 seconds total, sequentially while self generation continued. Both saved views contain 1,593 windows and 44 calls and required zero extra scorer or model contacts. Root verified shared delivery settlement SHA256 fc8f16dcebe64372721e46af682acb7bf03ab824ae6a55d1906ac45067cbc9af. The attempt changed from OPENED to FINALIZED with its 1,593 calls and 141345.8526875 audio seconds unchanged; the original manifest hash remains unchanged. The closure receipt is coordination/e21-dr-unit-score-settlement-closure-v1.json under the data root, SHA256 22bc0a25abd041e8c0e0797727e85cad7dc1a171e9a24a03b616b8df032aa10e. Aggregate values exist, but no formal contrast or four-delivery selection has been performed.
 
+The [unit operational accounting](2026-09-10-e21-dr-unit-operational-accounting.md) now binds the existing monitor summary: mean sampled GPU utilization 50.3425%, parked fraction 7.6551%, and complete first-score CPU overlap. It preserves missing isolated load/data-wait measurements and the observed handoff delay explicitly.
+
 The self runtime completed CPU preparation in 687.8 seconds before handoff. Root released the unit lease, acquired the matching self lease, and issued generation at 16:19:18 UTC. The 391.5-second transfer gap exceeded the one-minute target because unit sealing coincided with context compaction and root recovery. Preserve that delay rather than attributing it to the model. Actual self generation is now in progress. Its GPU budget interval starts at this handoff, never at its earlier CPU preparation start.
 
 The authoritative external live record is
