@@ -146,7 +146,8 @@
         "left": "historical_obs_e1",
         "right": "self_free"
       }
-    ]
+    ],
+    "include_equal_cluster_mean": true
   },
   "interpretation": {
     "gain": "Positive is cell minus comparator numeric accuracy, in percentage points.",

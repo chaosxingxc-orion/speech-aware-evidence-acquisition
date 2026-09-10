@@ -144,7 +144,8 @@
         "left": "historical_kc_e1f",
         "right": "self_free"
       }
-    ]
+    ],
+    "include_equal_cluster_mean": true
   },
   "interpretation": {
     "gain": "Positive means fewer errors. All ratios are pooled counts, reported in percentage points.",

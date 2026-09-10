@@ -130,11 +130,68 @@ def _summary(left, right, ids, numerator, denominator, direction, metadata, clus
     return result
 
 
+def _equal_cluster_summary(left, right, ids, numerator, denominator, direction,
+                           metadata, cluster_field, seed, n_replicates, ci_level):
+    """Average eligible cluster rates, retaining bootstrap draw multiplicity."""
+    members = {}
+    for sid in ids:
+        members.setdefault(metadata[sid][cluster_field], []).append(sid)
+    rates, excluded = {}, []
+    for cluster, cluster_ids in sorted(members.items()):
+        try:
+            rates[cluster] = (
+                _pooled_ratio(left, cluster_ids, numerator, denominator),
+                _pooled_ratio(right, cluster_ids, numerator, denominator),
+            )
+        except _ZeroDenominator:
+            excluded.append(cluster)
+    result = {
+        "status": "available" if rates else "unavailable",
+        "clusters": len(members),
+        "eligible_clusters": len(rates),
+        "excluded_zero_denominator_clusters": excluded,
+        "weighting": "equal per cluster with a positive denominator in both arms",
+    }
+    if not rates:
+        result["reason"] = "no eligible cluster rate"
+        return result
+    result.update({
+        "left_ratio_pct": 100.0 * sum(a for a, _ in rates.values()) / len(rates),
+        "right_ratio_pct": 100.0 * sum(b for _, b in rates.values()) / len(rates),
+        "gain_pp": 100.0 * sum(_gain(a, b, direction) for a, b in rates.values()) / len(rates),
+    })
+
+    def statistic(drawn_clusters):
+        gains = [_gain(*rates[name], direction) for name in drawn_clusters if name in rates]
+        if not gains:
+            raise _ZeroDenominator("draw has no eligible cluster rate")
+        return sum(gains) / len(gains)
+
+    try:
+        # Sample the same complete cluster roster as the natural bootstrap.
+        # A repeated cluster contributes its rate once for each occurrence.
+        boot = resampled_statistic(
+            sample_ids=tuple(sorted(members)), statistic=statistic, seed=seed,
+            n_replicates=n_replicates, ci_level=ci_level, cluster_of=lambda name: name,
+        )
+    except _ZeroDenominator:
+        result["bootstrap"] = {
+            "status": "unavailable",
+            "reason": "at least one realized bootstrap draw has no eligible cluster rate",
+        }
+    else:
+        result["bootstrap"] = _bootstrap_json(boot)
+    return result
+
+
 def compare_pooled_ratios(left, right, metadata, metrics, *, groupings, seed,
-                          n_replicates, ci_level, cluster_field="cluster"):
+                          n_replicates, ci_level, cluster_field="cluster",
+                          include_equal_cluster_mean=False):
     """Compare exact paired rosters with pooled ratios and clustered uncertainty."""
     if not left or set(left) != set(right) or set(left) != set(metadata):
         raise PooledRatioError("left/right/metadata roster mismatch")
+    if not isinstance(include_equal_cluster_mean, bool):
+        raise PooledRatioError("include_equal_cluster_mean must be boolean")
     ids = tuple(sorted(left))
     if not isinstance(metrics, Mapping) or not metrics:
         raise PooledRatioError("metrics must be a nonempty mapping")
@@ -212,6 +269,11 @@ def compare_pooled_ratios(left, right, metadata, metrics, *, groupings, seed,
             }
         output[metric_name] = {"direction": direction, "natural_mixture": natural,
                                "sign_counts": signs, "groupings": grouped}
+        if include_equal_cluster_mean:
+            output[metric_name]["equal_cluster_mean"] = _equal_cluster_summary(
+                left, right, ids, numerator, denominator, direction, metadata,
+                cluster_field, seed, n_replicates, ci_level,
+            )
     return output
 
 
@@ -285,6 +347,7 @@ def run(config_path: Path, output_path: Path):
             groupings=spec["groupings"], seed=spec["seed"],
             n_replicates=spec["n_replicates"], ci_level=spec["ci_level"],
             cluster_field=spec.get("cluster_field", "cluster"),
+            include_equal_cluster_mean=spec.get("include_equal_cluster_mean", False),
         )
     source_path = Path(__file__)
     result = {"schema": SCHEMA, "execution_profile": "model-free-check",

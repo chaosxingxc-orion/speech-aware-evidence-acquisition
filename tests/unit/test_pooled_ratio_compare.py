@@ -166,3 +166,46 @@ def test_nested_array_paths_and_summed_numerator_fields():
         seed=2, n_replicates=2, ci_level=0.9,
     )
     assert result["nonentity"]["natural_mixture"]["gain_pp"] == pytest.approx(20.0)
+
+
+def test_equal_cluster_mean_matches_inherited_call_draws_with_unequal_windows():
+    from collections import Counter
+    from speech_aware_evidence_acquisition.analysis.paired import resampled_statistic
+
+    left = _rows({"a1": (1, 2), "a2": (2, 8), "b1": (9, 9), "c1": (0, 1)})
+    right = _rows({"a1": (0, 2), "a2": (1, 8), "b1": (1, 9), "c1": (1, 1)})
+    metadata = _metadata(left, clusters={"a1": "a", "a2": "a", "b1": "b", "c1": "c"})
+    rates = {"a": 0.2, "b": 8 / 9, "c": -1.0}
+    windows = {"a": 2, "b": 1, "c": 1}
+
+    def inherited(ids):
+        counts = Counter(metadata[sid]["cluster"] for sid in ids)
+        draws = {name: count / windows[name] for name, count in counts.items()}
+        return sum(draws[name] * rates[name] for name in draws) / sum(draws.values())
+
+    expected = resampled_statistic(
+        sample_ids=tuple(sorted(left)), statistic=inherited, seed=20260903,
+        n_replicates=100, ci_level=0.9, cluster_of=lambda sid: metadata[sid]["cluster"],
+    )
+    result = compare_pooled_ratios(
+        left, right, metadata, _metric(), groupings={}, seed=20260903,
+        n_replicates=100, ci_level=0.9, include_equal_cluster_mean=True,
+    )["errors"]
+    equal = result["equal_cluster_mean"]
+    for field in ("point_estimate", "ci_low", "ci_high", "sigma_hat"):
+        assert equal["bootstrap"][field] == pytest.approx(100 * getattr(expected, field))
+    assert equal["gain_pp"] != pytest.approx(result["natural_mixture"]["gain_pp"])
+    assert equal["excluded_zero_denominator_clusters"] == []
+
+
+def test_equal_cluster_omissions_are_explicit_and_undefined_draws_are_not_zero():
+    left = _rows({"positive": (1, 1), "zero": (0, 0)})
+    right = _rows({"positive": (0, 1), "zero": (0, 0)})
+    result = compare_pooled_ratios(
+        left, right, _metadata(left), _metric(), groupings={}, seed=0,
+        n_replicates=1, ci_level=0.9, include_equal_cluster_mean=True,
+    )["errors"]["equal_cluster_mean"]
+    assert result["eligible_clusters"] == 1
+    assert result["excluded_zero_denominator_clusters"] == ["zero"]
+    assert result["gain_pp"] == pytest.approx(100)
+    assert result["bootstrap"]["status"] == "unavailable"

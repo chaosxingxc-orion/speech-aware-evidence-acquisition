@@ -37,7 +37,8 @@ Semantic high-impact rates retain their frozen taxonomy and remain advisory.
 
 Preserve the inherited pairing: fixed windows paired across results, calls as
 bootstrap clusters, seed 20260903, 10,000 replicates, CI90. Report natural pooled
-ratios, equal-sector and equal-sample-rate weighting, and descriptive strata.
+ratios, equal-call means, equal-sector and equal-sample-rate weighting, and
+descriptive strata.
 Do not present 1,593 windows as 1,593 independent calls. The construction34 and
 evaluation10 reporting slices remain separate; evaluation10 is descriptive and
 does not receive an effectiveness interval. Keep the OBS harm-stratum reports
@@ -121,3 +122,35 @@ equivalent pooled call-cluster check beside the fixed-window report. Save
 ConEC per-call counts in the window-statistics artifact, excluding the large
 alignment word arrays; the original score receipt remains their source.
 All four current input hashes remain unbound until their actual full scores exist.
+
+
+## Root clarification before current score access: inherited equal-call reading
+
+The DR pre-registration section 5 inherits the KC-E1f estimator without moving
+it. The historical implementation in scripts/e21_kc_e1f_verdict_read.py,
+_equal_stratum_statistic, means equal weight per call with a positive metric
+denominator in both arms. It resamples the complete call roster and retains the
+multiplicity of each drawn call. Sector and sample-rate equal weighting are
+additional descriptive sensitivities; they do not replace this inherited
+equal-call reading.
+
+The shared pooled-ratio configuration now explicitly enables
+include_equal_cluster_mean. It aggregates each metric inside a call before
+averaging call rates, reports excluded zero-denominator calls, and uses the
+same complete roster, seed and draws as the natural call-cluster bootstrap.
+A realized draw containing no eligible call produces an unavailable interval,
+rather than a fabricated zero. A synthetic unequal-window-count comparison
+matches the historical estimator's point estimate, interval and standard
+deviation. No current DR quality outcome was read to choose this method.
+
+Read the E21-specific natural-mixture primary literally, as stated in the
+KC-E1f v2 redecision section 4. Report the same numerical guard checks for the
+equal-call sensitivity beside it; do not invent new equal-call margins or
+require a second positive confidence lower bound that the primary does not
+name. Retain the broader program's sign-agreement requirement: a positive
+natural-mixture primary with an opposite equal-call point estimate does not
+support an unqualified admitted effectiveness claim. Label such a conflict
+explicitly rather than silently selecting a weighting. If a guard changes
+pass/fail by weighting, preserve the natural primary result and name the
+sensitivity before choosing any downstream component. Root owns that review.
+This clarification changes neither generation, roster, budget, nor thresholds.
