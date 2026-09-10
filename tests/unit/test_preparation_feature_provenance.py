@@ -4,15 +4,23 @@ from __future__ import annotations
 
 import hashlib
 import json
+import struct
 from copy import deepcopy
+from dataclasses import dataclass
 
 import pytest
 
 from speech_aware_evidence_acquisition.contracts import STUDY_SLUG
 from speech_aware_evidence_acquisition.core.preparation import (
+    SCHEMA as PREPARED_ARTIFACT_SCHEMA,
     PreparationError,
     digest,
     prepare_artifact,
+)
+from speech_aware_evidence_acquisition.core.preparation_encoding import (
+    KIND as ENCODING_KIND,
+    PARTIAL_SCHEMA as ENCODING_PARTIAL_SCHEMA,
+    encode_window_feature_cache,
 )
 from speech_aware_evidence_acquisition.core.preparation_feature_cache import (
     FEATURE_CACHE_AUDIT_KIND,
@@ -27,6 +35,9 @@ from speech_aware_evidence_acquisition.core.preparation_feature_provenance impor
     load_preprocess_stop_chain,
     prepare_window_feature_provenance,
     validate_window_feature_encoding_record,
+)
+from speech_aware_evidence_acquisition.core.model import (
+    legacy_audio_feature_cache_key,
 )
 from speech_aware_evidence_acquisition.core.preparation_windows import (
     WINDOW_FEATURE_INVENTORY_SCHEMA,
@@ -53,6 +64,18 @@ def _identity():
         "decoder_gguf_sha256": "c" * 64,
         "mmproj_sha256": "d" * 64,
     }
+
+
+def _write_encoding_artifact(path, record):
+    wrapper = {
+        "schema": PREPARED_ARTIFACT_SCHEMA,
+        "kind": ENCODING_KIND,
+        "inputs": {"synthetic": True},
+        "contact_class": "encoder",
+        "output": record,
+        "output_sha256": digest(record),
+    }
+    path.write_text(json.dumps(wrapper), encoding="utf-8")
 
 
 def _world(tmp_path, *, audio=("1" * 64, "2" * 64)):
@@ -123,14 +146,29 @@ def _world(tmp_path, *, audio=("1" * 64, "2" * 64)):
         "batches": [],
         "encoding_inputs": inputs,
     }
-    audit_entries = [
+    feature_outputs = [
         {
             "audio_sha256": sha,
             "cache_key": str(1000 + i),
-            "requests": item["requests"],
-            "chunks": [{"relative_filename": f"{1000 + i}_o0.feat"}],
+            "chunks": [
+                {
+                    "ordinal": 0,
+                    "relative_filename": f"{1000 + i}_o0.feat",
+                    "file_sha256": "8" * 64,
+                    "file_size": 48,
+                    "n_tokens": 2,
+                    "n_embd": 4,
+                }
+            ],
         }
-        for i, (sha, item) in enumerate(zip(audio, inputs, strict=True))
+        for i, sha in enumerate(audio)
+    ]
+    audit_entries = [
+        {
+            **feature,
+            "requests": item["requests"],
+        }
+        for feature, item in zip(feature_outputs, inputs, strict=True)
     ]
     audit = {
         "schema": FEATURE_CACHE_AUDIT_SCHEMA,
@@ -175,9 +213,10 @@ def _world(tmp_path, *, audio=("1" * 64, "2" * 64)):
             }
             for i, sha in enumerate(audio)
         ],
+        "feature_outputs": feature_outputs,
     }
     encoding_path = tmp_path / "encoding.json"
-    encoding_path.write_text(json.dumps(encoding), encoding="utf-8")
+    _write_encoding_artifact(encoding_path, encoding)
     return {
         "runtime": runtime_path,
         "session": session_path,
@@ -208,6 +247,212 @@ def _prepare(tmp_path, world, *, sources=()):
         expected_session_id="root-preprocess-session",
         source_provenance_paths=sources,
     )
+
+
+def test_real_encoding_producer_artifact_flows_into_final_provenance(
+    tmp_path, monkeypatch
+):
+    import speech_aware_evidence_acquisition.core.preparation_feature_provenance as module
+
+    audio_bytes = b"synthetic exact PCM"
+    audio_sha256 = _sha(audio_bytes)
+    world = _world(tmp_path, audio=(audio_sha256,))
+    data_root = tmp_path / "data"
+    media = data_root / "derived/windows/sample/i0000.wav"
+    media.parent.mkdir(parents=True)
+    media.write_bytes(audio_bytes)
+    parent = data_root / "datasets/e21/sample.wav"
+    parent.parent.mkdir(parents=True)
+    parent.write_bytes(b"synthetic parent")
+    source = {
+        "sample_id": "sample",
+        "parent_media_relpath": "datasets/e21/sample.wav",
+        "parent_sha256": _sha(parent.read_bytes()),
+        "start_seconds": 0.0,
+        "end_seconds": 1.0,
+        "audio_seconds": 1.0,
+        "sample_rate_hz": 16_000,
+        "media_relpath": "derived/windows/sample/i0000.wav",
+        "sha256": audio_sha256,
+        "bytes": len(audio_bytes),
+        "iteration": 0,
+        "preprocess": [],
+        "pre_sha256": None,
+    }
+    request_key = "sample#w0001"
+    inventory = {
+        "schema": WINDOW_FEATURE_INVENTORY_SCHEMA,
+        "state": "inputs-verified-features-not-materialized",
+        "encoder_identity": world["identity"],
+        "batches": [
+            {
+                "name": "generation-run-with-different-id",
+                "requests": [
+                    {"request_key": request_key, "source_provenance": source}
+                ],
+            }
+        ],
+        "encoding_inputs": [
+            {
+                "audio_sha256": audio_sha256,
+                "requests": [
+                    {
+                        "batch": "generation-run-with-different-id",
+                        "request_key": request_key,
+                    }
+                ],
+            }
+        ],
+    }
+    cache_key = legacy_audio_feature_cache_key(audio_bytes)
+    feature_bytes = struct.pack("<QQ", 2, 4) + b"\x00" * 32
+    feature_descriptor = {
+        "ordinal": 0,
+        "relative_filename": f"{cache_key}_o0.feat",
+        "file_sha256": _sha(feature_bytes),
+        "file_size": len(feature_bytes),
+        "n_tokens": 2,
+        "n_embd": 4,
+    }
+    audit_wrapper = json.loads(world["audit"].read_text(encoding="utf-8"))
+    audit_wrapper["output"].update(
+        inventory=inventory,
+        inventory_sha256=digest(inventory),
+        entries=[
+            {
+                "audio_sha256": audio_sha256,
+                "cache_key": cache_key,
+                "requests": inventory["encoding_inputs"][0]["requests"],
+                "chunks": [feature_descriptor],
+            }
+        ],
+    )
+    audit_wrapper["output_sha256"] = digest(audit_wrapper["output"])
+    world["audit"].write_text(json.dumps(audit_wrapper), encoding="utf-8")
+
+    @dataclass
+    class Timing:
+        request_id: str
+
+    class FakeClient:
+        def __init__(self):
+            self.timings = []
+            self.registered = []
+            self.closed = 0
+
+        def register_slice(self, value):
+            self.registered.append(value)
+
+        def complete(self, messages, *, decoding_params):
+            assert messages[1]["content"][0]["media_relpath"] == source["media_relpath"]
+            assert decoding_params["max_tokens"] == 1
+            (cache / f"{cache_key}_o0.feat").write_bytes(feature_bytes)
+            self.timings.append(Timing("encode-request-1"))
+            return "ignored"
+
+        def close(self):
+            self.closed += 1
+            return {
+                "trace_manifest_hash": "f" * 64,
+                "cost": {"calls_used": len(self.timings), "audio_seconds_used": 1.0},
+            }
+
+    monkeypatch.setattr(module, "process_state", lambda pid: PROCESS_STATE_GONE)
+    cache = tmp_path / "cache"
+    cache.mkdir()
+    client = FakeClient()
+    custody_checks = []
+    encoding_path = tmp_path / "real-encoding.json"
+    encoding_result = encode_window_feature_cache(
+        inventory=inventory,
+        data_root=data_root,
+        client=client,
+        custody_guard=lambda: custody_checks.append("checked"),
+        encoder_identity=world["identity"],
+        legacy_cache_dir=cache,
+        expected_n_embd=4,
+        output_path=encoding_path,
+        run_id="SAEA-E21-ENCODE-FOUR",
+        attempt_id="attempt-encode-four",
+        session_id="root-preprocess-session",
+        runtime_receipt_file_sha256=_sha(world["runtime"].read_bytes()),
+        runtime_receipt_document_sha256=canonical_receipt_sha256(
+            json.loads(world["runtime"].read_text(encoding="utf-8"))
+        ),
+        session_receipt_file_sha256=_sha(world["session"].read_bytes()),
+        decoding_params={"temperature": 0, "max_tokens": 1},
+    )
+    assert encoding_result["contact_class"] == "encoder"
+    assert custody_checks == ["checked"]
+    assert client.closed == 1
+
+    world["encoding"] = encoding_path
+    result = _prepare(tmp_path, world)
+    final = json.loads((tmp_path / "provenance.json").read_text(encoding="utf-8"))[
+        "output"
+    ]
+    assert result["cache"] == "cold"
+    assert final["current_contact_count"] == 1
+    assert final["entries"][0]["current_contact_id"] == "encode-request-1"
+    assert final["inventory_sha256"] == digest(inventory)
+    assert final["feature_outputs"] == [
+        {
+            "audio_sha256": audio_sha256,
+            "cache_key": cache_key,
+            "chunks": [feature_descriptor],
+        }
+    ]
+
+    # Existing prepared artifacts are returned only after a live cache
+    # re-inspection. A valid-shaped, same-size byte change refuses without a
+    # second encoder request.
+    mutated = struct.pack("<QQ", 2, 4) + b"\x01" + b"\x00" * 31
+    assert len(mutated) == len(feature_bytes)
+    (cache / f"{cache_key}_o0.feat").write_bytes(mutated)
+    calls_before = len(client.timings)
+    with pytest.raises(PreparationError, match="cache descriptors changed"):
+        encode_window_feature_cache(
+            inventory=inventory,
+            data_root=data_root,
+            client=client,
+            custody_guard=lambda: custody_checks.append("checked"),
+            encoder_identity=world["identity"],
+            legacy_cache_dir=cache,
+            expected_n_embd=4,
+            output_path=encoding_path,
+            run_id="SAEA-E21-ENCODE-FOUR",
+            attempt_id="attempt-encode-four",
+            session_id="root-preprocess-session",
+            runtime_receipt_file_sha256=_sha(world["runtime"].read_bytes()),
+            runtime_receipt_document_sha256=canonical_receipt_sha256(
+                json.loads(world["runtime"].read_text(encoding="utf-8"))
+            ),
+            session_receipt_file_sha256=_sha(world["session"].read_bytes()),
+            decoding_params={"temperature": 0, "max_tokens": 1},
+        )
+    assert len(client.timings) == calls_before
+
+
+def test_partial_diagnostic_cannot_be_consumed_as_final_encoding_artifact(
+    tmp_path, monkeypatch
+):
+    import speech_aware_evidence_acquisition.core.preparation_feature_provenance as module
+
+    world = _world(tmp_path)
+    world["encoding"].write_text(
+        json.dumps(
+            {
+                "schema": ENCODING_PARTIAL_SCHEMA,
+                "state": "failed",
+                "error_type": "RuntimeError",
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(module, "process_state", lambda pid: PROCESS_STATE_GONE)
+
+    with pytest.raises(PreparationError, match="inputs"):
+        _prepare(tmp_path, world)
 
 
 def test_builds_source_bound_complete_provenance_with_foreign_batch_names(
@@ -241,7 +486,7 @@ def test_builds_source_bound_complete_provenance_with_foreign_batch_names(
         (lambda record: record["entries"].append(deepcopy(record["entries"][0])), "duplicate"),
         (lambda record: record["entries"][0].update(audio_sha256="9" * 64), "coverage"),
         (lambda record: record["entries"][0].update(cache_key="9999"), "coverage"),
-        (lambda record: record["entries"][0].update(success=False, status="failed"), "failed"),
+        (lambda record: record["entries"][0].update(success=False, status="failed"), "status"),
         (lambda record: record.update(current_contact_count=1), "contact count"),
         (lambda record: record["cost"].update(calls_used=1), "calls_used"),
         (lambda record: record.update(runtime_receipt_file_sha256="9" * 64), "runtime receipt"),
@@ -270,35 +515,78 @@ def test_refuses_incomplete_duplicate_or_wrong_encoding_evidence(
     world = _world(tmp_path)
     record = world["encoding_document"]
     mutation(record)
-    world["encoding"].write_text(json.dumps(record), encoding="utf-8")
+    _write_encoding_artifact(world["encoding"], record)
     monkeypatch.setattr(module, "process_state", lambda pid: PROCESS_STATE_GONE)
 
     with pytest.raises(PreparationError, match=message):
         _prepare(tmp_path, world)
 
 
-def test_partial_failure_record_remains_a_valid_diagnostic_but_not_final_proof(
-    tmp_path, monkeypatch
-):
-    import speech_aware_evidence_acquisition.core.preparation_feature_provenance as module
-
+def test_success_record_validator_refuses_partial_failure_status(tmp_path):
     world = _world(tmp_path)
     record = world["encoding_document"]
     record["entries"][0].update(status="failed", success=False)
-    record["current_contact_count"] = 1
-    record["cost"]["calls_used"] = 1
-    validated = validate_window_feature_encoding_record(
-        record,
-        expected_run_id="SAEA-E21-ENCODE-FOUR",
-        expected_attempt_id="attempt-encode-four",
-        expected_session_id="root-preprocess-session",
-    )
-    assert validated["entries"][0]["status"] == "failed"
+    with pytest.raises(PreparationError, match="status"):
+        validate_window_feature_encoding_record(
+            record,
+            expected_run_id="SAEA-E21-ENCODE-FOUR",
+            expected_attempt_id="attempt-encode-four",
+            expected_session_id="root-preprocess-session",
+        )
 
-    world["encoding"].write_text(json.dumps(record), encoding="utf-8")
-    monkeypatch.setattr(module, "process_state", lambda pid: PROCESS_STATE_GONE)
-    with pytest.raises(PreparationError, match="failed"):
-        _prepare(tmp_path, world)
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        (
+            lambda record: record["feature_outputs"].append(
+                deepcopy(record["feature_outputs"][0])
+            ),
+            "repeat",
+        ),
+        (
+            lambda record: record["feature_outputs"][0].update(chunks=[]),
+            "chunks are missing",
+        ),
+        (
+            lambda record: record["feature_outputs"][0]["chunks"][0].update(
+                ordinal=1
+            ),
+            "chunk identity",
+        ),
+        (
+            lambda record: record["feature_outputs"][0]["chunks"][0].update(
+                relative_filename="foreign_o0.feat"
+            ),
+            "chunk identity",
+        ),
+        (
+            lambda record: record["feature_outputs"][0]["chunks"][0].update(
+                file_sha256="invalid"
+            ),
+            "lowercase SHA256",
+        ),
+        (
+            lambda record: record["feature_outputs"][0]["chunks"][0].update(
+                file_size=False
+            ),
+            "positive integer",
+        ),
+    ],
+)
+def test_refuses_invalid_encoding_feature_output_descriptors(
+    tmp_path, mutation, message
+):
+    world = _world(tmp_path)
+    record = world["encoding_document"]
+    mutation(record)
+    with pytest.raises(PreparationError, match=message):
+        validate_window_feature_encoding_record(
+            record,
+            expected_run_id="SAEA-E21-ENCODE-FOUR",
+            expected_attempt_id="attempt-encode-four",
+            expected_session_id="root-preprocess-session",
+        )
 
 
 @pytest.mark.parametrize(
@@ -318,9 +606,14 @@ def test_refuses_wrong_runtime_encoder_session_stop_or_audit_identity(
 
     world = _world(tmp_path)
     selected = world[target]
-    document = json.loads(selected.read_text(encoding="utf-8"))
-    mutation(document)
-    selected.write_text(json.dumps(document), encoding="utf-8")
+    if target == "encoding":
+        document = world["encoding_document"]
+        mutation(document)
+        _write_encoding_artifact(selected, document)
+    else:
+        document = json.loads(selected.read_text(encoding="utf-8"))
+        mutation(document)
+        selected.write_text(json.dumps(document), encoding="utf-8")
     monkeypatch.setattr(module, "process_state", lambda pid: PROCESS_STATE_GONE)
 
     with pytest.raises(PreparationError, match=message):
@@ -342,6 +635,12 @@ def test_refuses_wrong_runtime_encoder_session_stop_or_audit_identity(
         (
             lambda output: output["entries"][0].update(cache_key=1000),
             "decimal FNV",
+        ),
+        (
+            lambda output: output["entries"][0]["chunks"][0].update(
+                file_sha256="7" * 64
+            ),
+            "feature outputs",
         ),
     ],
 )
@@ -419,7 +718,7 @@ def test_warm_reuse_requires_matching_prior_final_provenance(tmp_path, monkeypat
         )
     record["current_contact_count"] = 0
     record["cost"]["calls_used"] = 0
-    warm["encoding"].write_text(json.dumps(record), encoding="utf-8")
+    _write_encoding_artifact(warm["encoding"], record)
 
     result = _prepare(warm_root, warm, sources=(prior_path,))
     assert result["cache"] == "cold"
@@ -433,7 +732,7 @@ def test_warm_reuse_requires_matching_prior_final_provenance(tmp_path, monkeypat
     )
 
     record["entries"][0]["source_contact_id"] = "wrong"
-    warm["encoding"].write_text(json.dumps(record), encoding="utf-8")
+    _write_encoding_artifact(warm["encoding"], record)
     with pytest.raises(PreparationError, match="source contact"):
         prepare_window_feature_provenance(
             warm_root / "wrong.json",
@@ -447,6 +746,44 @@ def test_warm_reuse_requires_matching_prior_final_provenance(tmp_path, monkeypat
             expected_session_id="root-preprocess-session",
             source_provenance_paths=(prior_path,),
         )
+
+
+def test_warm_reuse_requires_exact_prior_feature_output_descriptors(
+    tmp_path, monkeypatch
+):
+    import speech_aware_evidence_acquisition.core.preparation_feature_provenance as module
+
+    world = _world(tmp_path)
+    monkeypatch.setattr(module, "process_state", lambda pid: PROCESS_STATE_GONE)
+    _prepare(tmp_path, world)
+    prior_path = tmp_path / "provenance.json"
+
+    changed_path = tmp_path / "changed-prior.json"
+    changed = json.loads(prior_path.read_text(encoding="utf-8"))
+    changed["output"]["feature_outputs"][0]["chunks"][0]["file_sha256"] = "7" * 64
+    changed["output_sha256"] = digest(changed["output"])
+    changed_path.write_text(json.dumps(changed), encoding="utf-8")
+    changed_sha = _sha(changed_path.read_bytes())
+
+    warm_root = tmp_path / "warm-descriptors"
+    warm_root.mkdir()
+    warm = _world(warm_root)
+    record = warm["encoding_document"]
+    for current, prior in zip(
+        record["entries"], world["encoding_document"]["entries"], strict=True
+    ):
+        current.update(
+            status="verified-warm-reuse",
+            current_contact_id=None,
+            source_contact_id=prior["current_contact_id"],
+            source_provenance_receipt_sha256=changed_sha,
+        )
+    record["current_contact_count"] = 0
+    record["cost"]["calls_used"] = 0
+    _write_encoding_artifact(warm["encoding"], record)
+
+    with pytest.raises(PreparationError, match="source feature outputs"):
+        _prepare(warm_root, warm, sources=(changed_path,))
 
 
 def test_public_stop_loader_accepts_legacy_shape_and_checks_chain(tmp_path):

@@ -20,6 +20,10 @@ from .preparation import (
     load_artifact,
     prepare_artifact,
 )
+from .preparation_encoding import (
+    KIND as ENCODING_KIND,
+    SCHEMA as ENCODING_RECORD_SCHEMA,
+)
 from .preparation_feature_cache import (
     FEATURE_CACHE_AUDIT_KIND,
     FEATURE_CACHE_AUDIT_SCHEMA,
@@ -38,7 +42,6 @@ from .session import (
     verify_against_runtime_receipt,
 )
 
-ENCODING_RECORD_SCHEMA = "saea-window-feature-encoding-record-v1"
 PROVENANCE_SCHEMA = "saea-window-feature-preparation-provenance-v1"
 PROVENANCE_KIND = "window-feature-preparation-provenance-v1"
 PROVENANCE_STATE = "source-bound-feature-cache-verified-serving-unqualified"
@@ -70,6 +73,16 @@ _ENCODING_KEYS = {
     "cost",
     "current_contact_count",
     "entries",
+    "feature_outputs",
+}
+_FEATURE_OUTPUT_KEYS = {"audio_sha256", "cache_key", "chunks"}
+_CHUNK_KEYS = {
+    "ordinal",
+    "relative_filename",
+    "file_sha256",
+    "file_size",
+    "n_tokens",
+    "n_embd",
 }
 _ENTRY_KEYS = {
     "audio_sha256",
@@ -278,11 +291,6 @@ def _validate_encoding_entries(
                 raise PreparationError("encoded entry lacks successful current contact")
             if source_contact is not None or source_receipt is not None:
                 raise PreparationError("encoded entry must not claim a source receipt")
-        elif status == "failed":
-            if success is not False or not isinstance(current, str) or not current:
-                raise PreparationError("failed entry lacks its current contact")
-            if source_contact is not None or source_receipt is not None:
-                raise PreparationError("failed entry must not claim a source receipt")
         elif status == "verified-warm-reuse":
             if (
                 success is not True
@@ -302,6 +310,60 @@ def _validate_encoding_entries(
             successful_current_contacts += 1
         entries.append(entry)
     return entries, successful_current_contacts
+
+
+def _validate_feature_outputs(
+    value: object,
+) -> list[dict[str, object]]:
+    if not isinstance(value, list) or not value:
+        raise PreparationError("encoding feature_outputs must be a non-empty list")
+    outputs = []
+    seen = set()
+    for raw in value:
+        if not isinstance(raw, Mapping) or set(raw) != _FEATURE_OUTPUT_KEYS:
+            raise PreparationError("encoding feature output keys are invalid")
+        audio_sha256 = _sha(raw["audio_sha256"], "encoding feature output audio")
+        cache_key = raw["cache_key"]
+        chunks = raw["chunks"]
+        if not isinstance(cache_key, str) or not cache_key.isdecimal():
+            raise PreparationError("encoding feature output cache key is invalid")
+        identity = (audio_sha256, cache_key)
+        if identity in seen:
+            raise PreparationError("encoding feature outputs repeat audio/cache identity")
+        seen.add(identity)
+        if not isinstance(chunks, list) or not chunks:
+            raise PreparationError("encoding feature output chunks are missing")
+        normalized_chunks = []
+        for expected_ordinal, raw_chunk in enumerate(chunks):
+            if not isinstance(raw_chunk, Mapping) or set(raw_chunk) != _CHUNK_KEYS:
+                raise PreparationError("encoding feature chunk keys are invalid")
+            chunk = dict(raw_chunk)
+            ordinal = chunk["ordinal"]
+            filename = chunk["relative_filename"]
+            if (
+                isinstance(ordinal, bool)
+                or not isinstance(ordinal, int)
+                or ordinal != expected_ordinal
+                or not isinstance(filename, str)
+                or filename != f"{cache_key}_o{ordinal}.feat"
+            ):
+                raise PreparationError("encoding feature chunk identity is invalid")
+            _sha(chunk["file_sha256"], "encoding feature chunk file")
+            for field in ("file_size", "n_tokens", "n_embd"):
+                number = chunk[field]
+                if isinstance(number, bool) or not isinstance(number, int) or number < 1:
+                    raise PreparationError(
+                        f"encoding feature chunk {field} must be a positive integer"
+                    )
+            normalized_chunks.append(chunk)
+        outputs.append(
+            {
+                "audio_sha256": audio_sha256,
+                "cache_key": cache_key,
+                "chunks": normalized_chunks,
+            }
+        )
+    return outputs
 
 
 def _validate_encoding_record_components(
@@ -333,6 +395,13 @@ def _validate_encoding_record_components(
         _sha(record.get(field), f"encoding record {field}")
     identity = _encoder_identity(record.get("encoder_identity"), "encoding record")
     entries, observed_contacts = _validate_encoding_entries(record)
+    feature_outputs = _validate_feature_outputs(record.get("feature_outputs"))
+    entry_sources = {(entry["audio_sha256"], entry["cache_key"]) for entry in entries}
+    feature_sources = {
+        (output["audio_sha256"], output["cache_key"]) for output in feature_outputs
+    }
+    if entry_sources != feature_sources or len(entries) != len(feature_outputs):
+        raise PreparationError("encoding entries and feature output coverage differ")
     declared_contacts = record.get("current_contact_count")
     if (
         isinstance(declared_contacts, bool)
@@ -346,18 +415,14 @@ def _validate_encoding_record_components(
     calls_used = cost.get("calls_used")
     if isinstance(calls_used, bool) or not isinstance(calls_used, int) or calls_used < 0:
         raise PreparationError("encoding record cost calls_used is invalid")
-    # A partial diagnostic may name an attempted request that failed before it
-    # became a charged contact. Only a complete all-success record can equate
-    # successful current IDs with the sealed client cost.
-    if not any(entry["status"] == "failed" for entry in entries):
-        if declared_contacts != observed_contacts:
-            raise PreparationError(
-                "encoding record current contact count does not match entries"
-            )
-        if calls_used != declared_contacts:
-            raise PreparationError(
-                "encoding record cost calls_used does not match contact count"
-            )
+    if declared_contacts != observed_contacts:
+        raise PreparationError(
+            "encoding record current contact count does not match entries"
+        )
+    if calls_used != declared_contacts:
+        raise PreparationError(
+            "encoding record cost calls_used does not match contact count"
+        )
     return entries, identity
 
 
@@ -368,11 +433,7 @@ def validate_window_feature_encoding_record(
     expected_attempt_id: str,
     expected_session_id: str,
 ) -> dict[str, object]:
-    """Validate a complete or partial encoder-operation handoff.
-
-    Partial failed records remain valid diagnostics. Final provenance assembly
-    separately requires every entry to be successful.
-    """
+    """Validate one complete all-success encoder-operation handoff."""
 
     entries, identity = _validate_encoding_record_components(
         record,
@@ -382,6 +443,7 @@ def validate_window_feature_encoding_record(
     )
     normalized = dict(record)
     normalized["entries"] = entries
+    normalized["feature_outputs"] = _validate_feature_outputs(record["feature_outputs"])
     normalized["encoder_identity"] = identity
     normalized["cost"] = dict(record["cost"])
     return normalized
@@ -410,6 +472,7 @@ def _verify_warm_sources(
     entries: Sequence[Mapping[str, object]],
     *,
     encoder_identity: Mapping[str, object],
+    feature_outputs: Sequence[Mapping[str, object]],
     source_outputs: Mapping[str, Mapping[str, object]],
 ) -> None:
     for entry in entries:
@@ -437,6 +500,21 @@ def _verify_warm_sources(
         )
         if inherited != entry["source_contact_id"]:
             raise PreparationError("warm reuse source contact does not match")
+        current_features = [
+            item
+            for item in feature_outputs
+            if item["audio_sha256"] == entry["audio_sha256"]
+            and item["cache_key"] == entry["cache_key"]
+        ]
+        source_features = [
+            item
+            for item in source.get("feature_outputs", ())
+            if isinstance(item, Mapping)
+            and item.get("audio_sha256") == entry["audio_sha256"]
+            and item.get("cache_key") == entry["cache_key"]
+        ]
+        if len(current_features) != 1 or source_features != current_features:
+            raise PreparationError("warm reuse source feature outputs do not match")
 
 
 def prepare_window_feature_provenance(
@@ -484,8 +562,10 @@ def prepare_window_feature_provenance(
     if session.session_id != expected_session_id:
         raise PreparationError("preprocess session ID does not match expected session")
 
-    record, encoding_file_sha256 = _load_json(
-        encoding_record_path, "window encoding record"
+    record, encoding_file_sha256 = _load_prepared_output(
+        encoding_record_path,
+        kind=ENCODING_KIND,
+        label="window encoding artifact",
     )
     record = validate_window_feature_encoding_record(
         record,
@@ -494,6 +574,7 @@ def prepare_window_feature_provenance(
         expected_session_id=expected_session_id,
     )
     entries = record["entries"]
+    feature_outputs = record["feature_outputs"]
     encoding_identity = record["encoder_identity"]
     if record["runtime_receipt_file_sha256"] != runtime_file_sha256:
         raise PreparationError("encoding runtime receipt file identity does not match")
@@ -565,6 +646,16 @@ def prepare_window_feature_provenance(
     encoded_sources = [(entry["audio_sha256"], entry["cache_key"]) for entry in entries]
     if set(encoded_sources) != set(audit_sources) or len(encoded_sources) != len(audit_sources):
         raise PreparationError("encoding/cache audit coverage does not match")
+    audit_feature_outputs = [
+        {
+            "audio_sha256": entry["audio_sha256"],
+            "cache_key": entry["cache_key"],
+            "chunks": entry["chunks"],
+        }
+        for entry in audit_entries
+    ]
+    if feature_outputs != audit_feature_outputs:
+        raise PreparationError("encoding/cache audit feature outputs do not match")
     if any(entry["status"] == "failed" or entry["success"] is not True for entry in entries):
         raise PreparationError("encoding record contains a failed input")
 
@@ -572,6 +663,7 @@ def prepare_window_feature_provenance(
     _verify_warm_sources(
         entries,
         encoder_identity=runtime_identity,
+        feature_outputs=feature_outputs,
         source_outputs=sources,
     )
     used_source_hashes = {
@@ -602,6 +694,7 @@ def prepare_window_feature_provenance(
         "current_contact_count": record["current_contact_count"],
         "unique_audio_count": len(entries),
         "entries": entries,
+        "feature_outputs": feature_outputs,
     }
     inputs = {
         key: output[key]
