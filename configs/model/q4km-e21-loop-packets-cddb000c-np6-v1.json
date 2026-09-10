@@ -1,0 +1,42 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-e21-feature-inference-cddb000c-v2.json",
+  "server_args": [
+    "-c",
+    "36864",
+    "-np",
+    "6",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "serving_geometry": {
+    "slots": 6,
+    "slot_tokens": 6144,
+    "max_tokens": 1024
+  },
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample"
+  },
+  "prompt_order": "speech-query-prefix-v2",
+  "speech_feature_root": "/home/chao/feat-packets/e21-cddb000c-loop-gpu-v1",
+  "server_env": {
+    "GGML_CUDA_DISABLE_GRAPHS": "1",
+    "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-packets/e21-cddb000c-loop-gpu-v1",
+    "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+  },
+  "feature_encoder_runtime_receipt": "receipts/runtime-q4km-e21-feature-preprocess-cddb000c.json",
+  "preparation_basis": "Reuse the qualified cddb000c decoder-only inference identity and geometry for precomputed exact LOOP slices. Both arm promotion artifacts share this packet root. Load no mmproj during inference. The separately registered offline encoding window supplies the pinned encoder provenance."
+}
