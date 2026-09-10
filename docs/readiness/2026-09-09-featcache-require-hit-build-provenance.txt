@@ -1,0 +1,34 @@
+Feature-cache require-hit isolated build provenance
+Date: 2026-09-09
+Source worktree: /home/chao/llama-worktrees/featcache-require-hit
+Source commit: cddb000cb45ab44d33c84483cf5e5962cbbaa5bf
+Base commit: 04ccc72a2207347ca76161b93fd9d846dd0a8675
+Build directory: /home/chao/llama-worktrees/featcache-require-hit/build-qualify
+
+Initial configure:
+ /home/chao/.venvs/speechrl/lib/python3.12/site-packages/cmake/data/bin/cmake -S /home/chao/llama-worktrees/featcache-require-hit -B /home/chao/llama-worktrees/featcache-require-hit/build-qualify -G Ninja -DCMAKE_MAKE_PROGRAM=/home/chao/.venvs/speechrl/bin/ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/bin/cc -DCMAKE_CXX_COMPILER=/usr/bin/c++ -DCMAKE_CUDA_COMPILER=/usr/local/cuda-12.8/bin/nvcc -DCMAKE_CUDA_ARCHITECTURES=120 -DGGML_CUDA=ON -DGGML_CCACHE=ON -DGGML_NATIVE=ON -DLLAMA_BUILD_SERVER=ON -DLLAMA_CURL=OFF
+
+Initial compile attempt:
+ /home/chao/.venvs/speechrl/bin/ninja -C /home/chao/llama-worktrees/featcache-require-hit/build-qualify -j4 llama-server
+Result: source compilation completed; UI asset provisioning failed because the disabled remote asset package lacked loading.html.
+
+UI workaround inputs:
+ cp /home/chao/llama.cpp-featcache/build/tools/ui/ui.cpp /home/chao/llama-worktrees/featcache-require-hit/build-qualify/tools/ui/ui.cpp
+ cp /home/chao/llama.cpp-featcache/build/tools/ui/ui.h /home/chao/llama-worktrees/featcache-require-hit/build-qualify/tools/ui/ui.h
+Source UI hashes:
+ ui.cpp ceade106f91d25955ed64d5585dd15526c61e2f4e4f4fe5c72c4cb3770550a36
+ ui.h   3c53266fec4effa0e1ff54f62459b57bb72279c4656e1f9152175e9a992382f1
+
+Successful compile/link commands, run from the build directory:
+ /usr/bin/c++ -I/home/chao/llama-worktrees/featcache-require-hit/build-qualify/tools/ui -O3 -DNDEBUG -fPIC -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi -MD -MT tools/ui/CMakeFiles/llama-ui.dir/ui.cpp.o -MF tools/ui/CMakeFiles/llama-ui.dir/ui.cpp.o.d -o tools/ui/CMakeFiles/llama-ui.dir/ui.cpp.o -c /home/chao/llama-worktrees/featcache-require-hit/build-qualify/tools/ui/ui.cpp
+ /home/chao/.venvs/speechrl/lib/python3.12/site-packages/cmake/data/bin/cmake -E rm -f tools/ui/libllama-ui.a
+ /usr/bin/ar qc tools/ui/libllama-ui.a tools/ui/CMakeFiles/llama-ui.dir/ui.cpp.o
+ /usr/bin/ranlib tools/ui/libllama-ui.a
+ /usr/bin/c++ -fPIC -O3 -DNDEBUG -shared -Wl,--dependency-file=tools/server/CMakeFiles/llama-server-impl.dir/link.d -Wl,-soname,libllama-server-impl.so -o bin/libllama-server-impl.so tools/server/CMakeFiles/llama-server-impl.dir/server.cpp.o tools/server/CMakeFiles/llama-server-impl.dir/server-http.cpp.o tools/server/CMakeFiles/llama-server-impl.dir/server-models.cpp.o -Wl,-rpath,/home/chao/llama-worktrees/featcache-require-hit/build-qualify/bin: tools/server/libserver-context.a tools/ui/libllama-ui.a vendor/cpp-httplib/libcpp-httplib.a bin/libllama-common.so.0.0.8 common/libllama-common-base.a bin/libmtmd.so.0.0.8 bin/libllama.so.0.0.8 bin/libggml.so.0.15.2 bin/libggml-cpu.so.0.15.2 bin/libggml-cuda.so.0.15.2 bin/libggml-base.so.0.15.2 /usr/local/cuda-12.8/targets/x86_64-linux/lib/stubs/libcuda.so
+ /usr/bin/c++ -I/home/chao/llama-worktrees/featcache-require-hit/build-qualify/tools/server -O3 -DNDEBUG -MD -MT tools/server/CMakeFiles/llama-server.dir/main.cpp.o -MF tools/server/CMakeFiles/llama-server.dir/main.cpp.o.d -o tools/server/CMakeFiles/llama-server.dir/main.cpp.o -c /home/chao/llama-worktrees/featcache-require-hit/tools/server/main.cpp
+ /usr/bin/c++ -O3 -DNDEBUG -Wl,--dependency-file=tools/server/CMakeFiles/llama-server.dir/link.d tools/server/CMakeFiles/llama-server.dir/main.cpp.o -o bin/llama-server -Wl,-rpath,/home/chao/llama-worktrees/featcache-require-hit/build-qualify/bin: bin/libllama-server-impl.so tools/server/libserver-context.a bin/libllama-common.so.0.0.8 common/libllama-common-base.a bin/libmtmd.so.0.0.8 bin/libllama.so.0.0.8 bin/libggml.so.0.15.2 bin/libggml-cpu.so.0.15.2 bin/libggml-cuda.so.0.15.2 bin/libggml-base.so.0.15.2 /usr/local/cuda-12.8/targets/x86_64-linux/lib/stubs/libcuda.so tools/ui/libllama-ui.a vendor/cpp-httplib/libcpp-httplib.a
+
+Generated UI archive hash:
+ b69dd37cc170565d9325c9a59d163eb94c16ac8869a974150857667f79a9d5fe
+Result binary hash:
+ 33c80bb2eceb29b8e81739cf0d799fe8d5fb754f73f047aba3c34838f06c66c1
