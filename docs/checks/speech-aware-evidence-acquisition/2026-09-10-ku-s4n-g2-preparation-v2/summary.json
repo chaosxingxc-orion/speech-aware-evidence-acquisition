@@ -1,0 +1,61 @@
+{
+  "audit": {
+    "arms": {
+      "N": {
+        "artifact": {
+          "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V2/candidates-supply.json",
+          "sha256": "3b5ec916434c630d5e56d3ec3f5f73867aa36402bc9dd64665504f66bd499d0a"
+        },
+        "config_sha256": "be1f98f4a275f1325dab3fb55e9837ce3f107a3762db2666c119d98d962ef595",
+        "elapsed_seconds": 14.956367941999815,
+        "endpoints": 0,
+        "ordered_selection_equal_to_v1": true,
+        "rows": 1000,
+        "runner_supply_matches_v1": true,
+        "runner_supply_sha256": "e75b923d68bf4880108d47330c00d69cc9bb41476c6ab530f25742b96617277a",
+        "runtime_bootstrap_calls": 0,
+        "v1_artifact_sha256": "8ebf325e02dae858f4171ddb914fa2a6a8c07e15c187b7dbf7e3e9c4b5bb369c",
+        "warm_cache": "warm",
+        "warm_producer_calls": 0
+      },
+      "twin": {
+        "artifact": {
+          "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V2/twin-supply.json",
+          "sha256": "a6784478768c74858385c4a7a027c7d04b77635872ebd6ebded8a67f7017940d"
+        },
+        "config_sha256": "dc2ac9a55bc51d42c7115ef1ce5f3e0f77cc5532443aefe4653c0a004d04a805",
+        "elapsed_seconds": 12.981742394999856,
+        "endpoints": 0,
+        "ordered_selection_equal_to_v1": true,
+        "rows": 1000,
+        "runner_supply_matches_v1": true,
+        "runner_supply_sha256": "72f4f224a321fea58673b1ab197b2e8c5187e9628828078db9d6e0d84a2d1486",
+        "runtime_bootstrap_calls": 0,
+        "v1_artifact_sha256": "e4facbaed68ff398ad1843ccb44652a4b6c3c26e183a75f0bdf2a391c364383b",
+        "warm_cache": "warm",
+        "warm_producer_calls": 0
+      }
+    },
+    "checkout_commit": "959fda77262662336e9d5e61d41f7ec1f5b17fc6",
+    "complete": true,
+    "contacts": {
+      "encoder": 0,
+      "model": 0,
+      "network": 0,
+      "scorer": 0,
+      "tokenizer": 0
+    },
+    "endpoints": 0,
+    "schema": "saea-prepared-candidate-parity-v2",
+    "status": "DATA_READY; full request fitting and scientific admission remain pending"
+  },
+  "preparation_checkout": "/home/chao/saea-worktrees/g2-kus4n-runtime",
+  "preparation_commit": "959fda77262662336e9d5e61d41f7ec1f5b17fc6",
+  "root_verified_ordered_output_parity_rows_per_arm": 1000,
+  "schema": "saea-prepared-candidate-v2-root-review-v1",
+  "source_report": {
+    "relpath": "analysis/SAEA-SLURP-KU-S4N-G2-PREPARE-V2/parity.json",
+    "sha256": "3ea7729e638233a50ce5868967807b5ef2c3de593621764d8f1cff60f4efdb70"
+  },
+  "status": "DATA_READY; all capacity and generation contacts remain held pending separate registration and G1 closure"
+}

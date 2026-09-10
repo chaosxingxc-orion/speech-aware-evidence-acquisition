@@ -1,0 +1,3 @@
+# KU-S4N G2 preparation refresh V2
+
+Both full DEV-1000 candidate artifacts were prepared through the shared entry from frozen WSL source. Root independently verified full ordered output equality against V1 and artifact hashes before binding the V2 configs. The detailed audit proves warm producer refusal, zero runtime bootstrap recomputation, and identical rendered supply bytes using the shared runtime renderer. No model, tokenizer, encoder, scorer or network contact occurred. Preserve the V1 artifacts and held configurations. Technical DATA_READY status does not admit generation or exemplar encoding.

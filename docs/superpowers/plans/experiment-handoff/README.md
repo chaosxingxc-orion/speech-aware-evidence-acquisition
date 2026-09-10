@@ -1,6 +1,6 @@
 # Owner-directed Stage-2 continuation
 
-Status: **owner-directed execution**, generation 11. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 14. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -44,11 +44,14 @@ complete JSON at 77 and 79 tokens under 256; the two other outputs remain identi
 wire responses, stop reasons, hashes and separate delivery views are retained. This is not an
 accuracy or reasoning result. See the [budget readout](../../../checks/speech-aware-evidence-acquisition/2026-09-09-output-budget-four-row/README.md).
 
-The owner approved OWNER-KUS3-BUDGET-005: KU-S3a, its form twin and a new matched no-retrieval
-control use 256 tokens while retaining original KC-S1b examples. Final source-bound retrieval preparation
-and all three full-roster capacity checks are complete. The registered control/speech/twin campaign
-has launched on the frozen WSL checkout at `024eb00a`; consult its live receipts for progress.
-The unused 64-token KU-S3 fit plans remain historical. No pending owner question remains.
+The owner approved OWNER-KUS3-BUDGET-005: KU-S3a, its form twin and the matched no-retrieval
+control use 256 tokens while retaining original KC-S1b examples. The first control completed;
+a/twin were refused before generation, and the old service exited. OWNER-KUS3-RECOVERY-006
+approves one additional same-process matched control in the recovered service. All three fresh
+full-roster fits passed; the recovered control/speech/twin campaign is actively generating on
+frozen WSL source `05b0f05e`. The recovered control is finalized and scored. Consult the latest
+AttemptStore and [STATUS-014.md](STATUS-014.md) for a/twin progress. Preserve the old control
+and score, and compare only after the entire new trio seals and scores. No owner question is pending.
 
 The aligned NEW500 null calibration and all seven KV recovery reads remain complete with
 zero new model contacts or scorer invocations. Retain KC-S1b: KV0 is harmful, KV1 and KV3 are
@@ -57,18 +60,21 @@ decisions and order effects. See the [KV family report](../../../checks/speech-a
 
 Shared leases, queue admission, persistent retrieval preparation, actual request fitting,
 completion overrides, exact wire capture, deterministic delivery primitives and deferred scoring
-are integrated. The new packet validation cache shares one implementation between preprocessing
-and client construction, with 191 focused tests passing. It is in-memory only: cross-process
-preprocessing reuse and shorter handoffs remain unfinished. The first service window did not
-meet the intended idle-time target, as recorded in the budget readout.
+are integrated. Registered request identity comparison now ignores only validated dynamic route
+identifiers, retaining substantive provenance checks. The shared TRAIN contract cache avoids
+repeated JSON parsing while checking source bytes; fresh recovery supply preserves every selected
+ID and rendered byte. Full CPU request revalidation still delays handoffs beyond the one-minute
+target; do not change the frozen active campaign to optimize it.
 
-G2 through G6 have not flown. The shared constrained-delivery replay now exactly reproduces
-all 1,593 historical KC-E1f windows and 44 stitched calls; see the
-[full replay receipt](../../../checks/speech-aware-evidence-acquisition/2026-09-09-e21-constrained-replay/README.md).
-E21 actual-window integration and the held two-generation/four-delivery successor configuration
-are now integrated on canonical master. Current live bridge evidence, bounded controller transitions,
-full-system state joins and broader engineering coverage remain incomplete. Held KU-S4N successors
-are also integrated. Read [STATUS-011.md](STATUS-011.md) for the next work order and held items.
+G2 N/twin V2 supplies are DATA_READY with full 1000-row selection and rendering parity, zero warm
+producer calls and zero runtime recomputation. Their fits and generation remain held for scientific
+closure and separate admission on the np8 service. G2 through G6 have not generated. The shared
+constrained-delivery replay exactly reproduces all 1593 historical KC-E1f windows and 44 stitched
+calls; see the [full replay receipt](../../../checks/speech-aware-evidence-acquisition/2026-09-09-e21-constrained-replay/README.md).
+E21 actual-window evidence binding and the held two-generation/four-delivery configuration are
+integrated on canonical master. Current live bridge evidence, bounded controller transitions,
+full-system state joins and broader engineering coverage remain incomplete. Read
+[STATUS-014.md](STATUS-014.md) for the current work order and service recovery status.
 
 Use ChatGPT/OpenAI cloud subagents under [MODEL-ALLOCATION.md](MODEL-ALLOCATION.md);
 the main agent retains planning, scientific decisions, critical review and merge acceptance.

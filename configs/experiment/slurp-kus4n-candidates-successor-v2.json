@@ -246,5 +246,9 @@
       "relpath": "runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
       "sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c"
     }
-  ]
+  ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V2/candidates-supply.json",
+    "sha256": "3b5ec916434c630d5e56d3ec3f5f73867aa36402bc9dd64665504f66bd499d0a"
+  }
 }
