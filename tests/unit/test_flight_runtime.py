@@ -4290,3 +4290,40 @@ def test_preparation_gate_uses_explicit_tokenizer_cap_and_exposure(tmp_path, mon
     for cap in (0, -1, True):
         with pytest.raises(ValueError, match="cap"):
             runtime.authorize_preparation_contacts(contact_cap=cap)
+
+@pytest.mark.parametrize("stage", ["preflight", "preparation"])
+@pytest.mark.parametrize("evidence_supplement", [False, True])
+def test_dataset_evidence_identity_reaches_both_shared_gates(
+    tmp_path, stage, evidence_supplement,
+):
+    run_id = "SAEA-EVIDENCE-GATE-BINDING"
+    repo = _make_repo(tmp_path, run_id)
+    path = repo / "configs/dataset/d.json"
+    dataset = json.loads(path.read_text())
+    if evidence_supplement:
+        dataset.update(
+            d1_evidence_supplement="receipts/artifacts/evidence.json",
+            d1_evidence_supplement_sha256="a" * 64,
+        )
+        path.write_text(json.dumps(dataset))
+        _git(repo, "add", "-A")
+        _git(repo, "commit", "-qm", "bind evidence identity")
+    runtime = _make_runtime(tmp_path, run_id=run_id, repo_root=repo)
+    observed = {}
+
+    def gate_factory(*args, **kwargs):
+        observed.update(kwargs)
+        return _FakeGate()
+
+    runtime._gate_factory = gate_factory
+    if stage == "preflight":
+        runtime.preflight()
+    else:
+        runtime.authorize_preparation_client(contact_cap=10)
+    assert observed["d1_evidence_supplement_relpath"] == (
+        "receipts/artifacts/evidence.json" if evidence_supplement else None
+    )
+    assert observed["d1_evidence_supplement_sha256"] == (
+        "a" * 64 if evidence_supplement else None
+    )
+    assert observed["d1_media_supplement_relpath"] is None

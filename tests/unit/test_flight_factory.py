@@ -274,12 +274,13 @@ def test_window_fit_inputs_bind_window_sources_and_payload_boundary(tmp_path):
     assert first["sources"]["boundary_sha256"] != changed_window["sources"]["boundary_sha256"]
 
 
-def test_window_fit_refuses_non_raw_or_adaptive_adapter():
+def test_window_fit_refuses_non_raw_or_adaptive_adapter(tmp_path):
     from types import SimpleNamespace
     from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
     from speech_aware_evidence_acquisition.core.preparation import PreparationError
 
     runtime = object.__new__(FlightRuntime)
+    runtime._data_root = tmp_path
     runtime._prepare = lambda: (
         {"policy": "obs-agent-loop-ojw"},
         "earnings21-original",

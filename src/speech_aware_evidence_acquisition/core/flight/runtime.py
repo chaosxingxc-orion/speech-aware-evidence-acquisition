@@ -70,6 +70,8 @@ from ..bundle.manifest import build_manifest
 from ..bundle.verify import verify_bundle
 from ..config import (
     compose,
+    d1_evidence_supplement_relpath,
+    d1_evidence_supplement_sha256,
     d1_media_supplement_relpath,
     d1_media_supplement_sha256,
     effective_request_decoding_params,
@@ -1737,6 +1739,8 @@ class FlightRuntime:
             model_root=(Path(configured_model_root) if configured_model_root is not None else None),
             d1_media_supplement_relpath=d1_media_supplement_relpath(values),
             d1_media_supplement_sha256=d1_media_supplement_sha256(values),
+            d1_evidence_supplement_relpath=d1_evidence_supplement_relpath(values),
+            d1_evidence_supplement_sha256=d1_evidence_supplement_sha256(values),
         )
         self._gate = gate
         self._gate_touch(gate, plan)
@@ -3684,6 +3688,8 @@ class FlightRuntime:
             model_root=Path(configured_root) if configured_root is not None else None,
             d1_media_supplement_relpath=d1_media_supplement_relpath(values),
             d1_media_supplement_sha256=d1_media_supplement_sha256(values),
+            d1_evidence_supplement_relpath=d1_evidence_supplement_relpath(values),
+            d1_evidence_supplement_sha256=d1_evidence_supplement_sha256(values),
         )
         self._gate_touch(gate, plan)
         self._require_exposure_row_unconsumed(plan.run_id)
