@@ -1,0 +1,88 @@
+{
+  "experiment_id": "SAEA-E21-CURRENT-EXECUTOR-FIRST-FOUR-FULL90-PACKET-PROOF-V1",
+  "date": "2026-09-10",
+  "execution_profile": "bounded-discovery-probe",
+  "purpose": "Held engineering connectivity proof for the current shared OJW executor using four original full 90-second windows and prepared formal speech feature packets. Registration, request fit and root admission remain pending; this fragment authorizes no model or scorer contact and supports no effectiveness claim.",
+  "population": {
+    "carrier": "earnings21-original",
+    "split_name": "discovery",
+    "split_role": "discovery",
+    "dataset_fragment": "e21-current-executor-feature-proof-v2",
+    "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
+    "authorized_roster_calls": 1,
+    "planned_windows": 4,
+    "planned_speech_audio_seconds": 360,
+    "sample_id": "4320211",
+    "window_keys": [
+      "4320211#w0001",
+      "4320211#w0002",
+      "4320211#w0003",
+      "4320211#w0004"
+    ],
+    "selection_rule": "First four original full fixed windows of verified discovery call 4320211, ordered by original window index; no outcome or judge selection."
+  },
+  "protocol": {
+    "model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6",
+    "max_tokens": 1024,
+    "response_postprocessor": "e21-entity-repair-substitutions-v1",
+    "response_postprocessor_params": {
+      "max_span_tokens": 4,
+      "min_anchor_ratio": 0.6,
+      "max_substituted_fraction": 0.1
+    },
+    "obs_controller_program": "phase-direct-only-v1",
+    "evidence_source": "none",
+    "predecessor": "sealed self-draft from SAEA-E21-FULL44-DIRECT-BASELINE-V2"
+  },
+  "source_pins": {
+    "dataset": {
+      "repo_relpath": "configs/dataset/e21-current-executor-feature-proof-v2.json",
+      "sha256": "56dff642166670820cce57a998364582f88f7d9f76dafbf6c0d84cef634f0ff8"
+    },
+    "baseline": {
+      "repo_relpath": "configs/baseline/e21-current-executor-first-four-full90-packet-proof-ojw.json",
+      "sha256": "2f89a0d7f981e96d10dc2087cfb5bfd5a32fcbddb18a476a25efa3c1cfbd9782"
+    },
+    "unit_plan": {
+      "repo_relpath": "docs/receipts/obs/e21-current-executor-first-four-full90-packet-proof-v1.json",
+      "sha256": "c5945e0d0ee1ef857d1f904a09b0d9cd9c31f1ecc5b0a082c302227205a1b8eb"
+    },
+    "model": {
+      "repo_relpath": "configs/model/q4km-e21-dr-full-packets-cddb000c-np6.json",
+      "sha256": "553449b716540d48b822b018ef27821be2580b96f0a158cc2a3e1c753fb9a39f"
+    },
+    "predecessor_receipt": {
+      "repo_relpath": "docs/receipts/e21-predecessor-full44-direct-baseline-v2.json",
+      "sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a"
+    },
+    "prepared_window_feature_packets": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+      "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
+    }
+  },
+  "cells": [
+    {
+      "cell_id": "e21-current-executor-first-four-full90-packet-proof",
+      "model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6",
+      "dataset_fragment": "e21-current-executor-feature-proof-v2",
+      "baseline_fragment": "e21-current-executor-first-four-full90-packet-proof-ojw",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check"
+      ],
+      "readiness": {
+        "state": "held",
+        "reason": "Generation is held pending exposure registration, exact four-request fit, root review and admission. The packet and predecessor pins are preparation inputs, not contact authority."
+      }
+    }
+  ],
+  "qualification_limits": {
+    "engineering_only": true,
+    "generation_authorized": false,
+    "scoring_authorized": false,
+    "effect_claim_authorized": false,
+    "expected_requests": 4,
+    "no_fifth_request": true,
+    "expected_stitched_outputs": 1
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "obs-repair-loop-ojw",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "predecessor_snapshot": {
+    "receipt_relpath": "receipts/e21-predecessor-full44-direct-baseline-v2.json",
+    "receipt_sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a"
+  },
+  "repair_frame": "e21-draft-refresh-frame-v1",
+  "response_postprocessor": "e21-entity-repair-substitutions-v1",
+  "response_postprocessor_params": {
+    "max_span_tokens": 4,
+    "min_anchor_ratio": 0.6,
+    "max_substituted_fraction": 0.1
+  },
+  "scorers": [
+    "asr-wer-whisper",
+    "conec-entity-wer-official",
+    "numeric-value-accuracy-v1",
+    "semantic-high-impact-error-rate-v1",
+    "cost"
+  ],
+  "task_instruction": "A draft transcript of this same audio window follows below. Listen to the audio and produce the final transcript of the window: keep the draft's words wherever the audio confirms them, and correct them wherever it does not. Transcribe the speech verbatim exactly as spoken. Never insert, repeat, or add any word you do not clearly hear in the audio. Output only the transcript text.",
+  "obs_buffer_seconds": 90,
+  "obs_min_advance_seconds": 20,
+  "obs_max_advance_seconds": 55,
+  "obs_silence_snap_seconds": 2.0,
+  "obs_fallback_advance_seconds": 50,
+  "obs_boundary_mode": "fixed",
+  "obs_vad": "energy",
+  "obs_vad_trim_min_seconds": 0,
+  "obs_preprocess": [],
+  "obs_condition_tail_chars": 0,
+  "obs_slice_retry_max": 1,
+  "obs_slice_skip_max": 1,
+  "obs_batch_samples": 1,
+  "obs_batch_slices": 8,
+  "what_this_is": "Held one-call current-executor connectivity proof over the first four original full 90-second windows of discovery call 4320211. It uses the sealed comparator self-draft, constrained shared delivery, no knowledge supply, the OJW direct-only controller and the already prepared formal feature-packet artifact. It is engineering evidence only and authorizes no generation, scoring, or effect claim.",
+  "ojw_workflow_timeout_seconds": 21600,
+  "obs_controller_program": "phase-direct-only-v1",
+  "speech_feature_key_representation_id": "saea-e21-current-executor-first-four-full90-packets-v1:refresh",
+  "speech_feature_matcher_policy_id": "saea-e21-current-executor-first-four-full90-packets-v1",
+  "prepared_window_feature_packets": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+    "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
+  },
+  "obs_prefetch_depth": 1,
+  "obs_unit_plan": "docs/receipts/obs/e21-current-executor-first-four-full90-packet-proof-v1.json",
+  "obs_unit_plan_sha256": "c5945e0d0ee1ef857d1f904a09b0d9cd9c31f1ecc5b0a082c302227205a1b8eb"
+}

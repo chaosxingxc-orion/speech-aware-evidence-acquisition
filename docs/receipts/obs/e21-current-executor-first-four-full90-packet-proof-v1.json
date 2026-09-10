@@ -1,0 +1,173 @@
+{
+  "schema": "saea-e21-relisten-plan-v1",
+  "context_margin_seconds": 0.0,
+  "flag_source": "predeclared-first-four-full-windows",
+  "min_relisten_seconds": 10.0,
+  "provenance": {
+    "purpose": "Current-executor formal-packet connectivity proof only; no scientific comparison, outcome selection, or model contact is authorized.",
+    "selection_rule": "For verified discovery call 4320211, take original full fixed windows 1 through 4 in window order from the complete exact-window inventory. No re-cut or adaptive selection is performed.",
+    "source_inventory": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1/window-inventory.json",
+      "sha256": "7b12a5c32654855701c48b57152ab1643e0c776b9a7a3853fda009a6ac78face",
+      "output_sha256": "09a154a65b83171920b834e706558e75f1a661593cea1ef2ecf1f5503982573d",
+      "request_count": 1593
+    },
+    "source_predecessor": {
+      "receipt_relpath": "docs/receipts/e21-predecessor-full44-direct-baseline-v2.json",
+      "receipt_sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a",
+      "artifact_relpath": "derived/e21-predecessor/SAEA-E21-FULL44-DIRECT-BASELINE-V2/attempt-20260904T233816Z-bcd338/window-hypotheses.json",
+      "artifact_sha256": "1522f656a8e01b223f3ca65aec9d035e599eecaf8225c8a9fce930b933de8c64",
+      "run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+      "attempt_id": "attempt-20260904T233816Z-bcd338"
+    },
+    "prepared_window_feature_packets": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+      "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
+    },
+    "contacts": 0
+  },
+  "source_bindings": [
+    {
+      "request_key": "4320211#w0001",
+      "window_index": 1,
+      "start_seconds": 0.0,
+      "end_seconds": 90.0,
+      "audio_seconds": 90.0,
+      "audio_sha256": "6bd12cbaed4255717c874882d22f051b6521060506e2439f0feaef65a784a029",
+      "audio_bytes": 2880044,
+      "encoding_key_sha256": "63b476ce2ab2b1132614df38bd2fa26aacc4e9e85f1fb40ca029fa92a007b7bb",
+      "parent_media_relpath": "datasets/earnings21-22/earnings21/media/4320211.mp3",
+      "parent_sha256": "b943ebeefc16ef41ab7744d3cc46e9aa5b95245d85fb00dddd6e34e408dd7191",
+      "preprocess": [],
+      "pre_sha256": null,
+      "predecessor_text_sha256": "0fdccfe80df849e7d1c1fbc06ee59690159c68e1572b8cfb24596c404c6d6922",
+      "predecessor_words": 245
+    },
+    {
+      "request_key": "4320211#w0002",
+      "window_index": 2,
+      "start_seconds": 90.0,
+      "end_seconds": 180.0,
+      "audio_seconds": 90.0,
+      "audio_sha256": "a27d9c53f7984694af253f6e546d3a5588f149d6ff3c8643e15c0c585c4c03dd",
+      "audio_bytes": 2880044,
+      "encoding_key_sha256": "6c86817376c89be448fb1232fbb6fe0883d902508833572aa61f7ac451b36b4c",
+      "parent_media_relpath": "datasets/earnings21-22/earnings21/media/4320211.mp3",
+      "parent_sha256": "b943ebeefc16ef41ab7744d3cc46e9aa5b95245d85fb00dddd6e34e408dd7191",
+      "preprocess": [],
+      "pre_sha256": null,
+      "predecessor_text_sha256": "adc42cffc73a6ab13c457b89bbd2775da42b7a9af999fabf60c9b76f69d504c3",
+      "predecessor_words": 221
+    },
+    {
+      "request_key": "4320211#w0003",
+      "window_index": 3,
+      "start_seconds": 180.0,
+      "end_seconds": 270.0,
+      "audio_seconds": 90.0,
+      "audio_sha256": "09db5af827211b92aabfcff8c27c2ffcceac276aa672cd9c6eb59cc351dbbb97",
+      "audio_bytes": 2880044,
+      "encoding_key_sha256": "c155bf957077007769a930414cb3dcafb378bab86e163245f7ab05f70f9ae018",
+      "parent_media_relpath": "datasets/earnings21-22/earnings21/media/4320211.mp3",
+      "parent_sha256": "b943ebeefc16ef41ab7744d3cc46e9aa5b95245d85fb00dddd6e34e408dd7191",
+      "preprocess": [],
+      "pre_sha256": null,
+      "predecessor_text_sha256": "05dcd80245b237e02b7c80ac68bfc8e8383a8ba4efd46fe479b047fbb68e7a6a",
+      "predecessor_words": 236
+    },
+    {
+      "request_key": "4320211#w0004",
+      "window_index": 4,
+      "start_seconds": 270.0,
+      "end_seconds": 360.0,
+      "audio_seconds": 90.0,
+      "audio_sha256": "6b809fa1b5fb159d015cae0ca5c4697c0b40f4328723619eda4de46fec39c286",
+      "audio_bytes": 2880044,
+      "encoding_key_sha256": "c9dc38de9068a78ea9b736d44b1072afa9171dc8321524580126465785c673f9",
+      "parent_media_relpath": "datasets/earnings21-22/earnings21/media/4320211.mp3",
+      "parent_sha256": "b943ebeefc16ef41ab7744d3cc46e9aa5b95245d85fb00dddd6e34e408dd7191",
+      "preprocess": [],
+      "pre_sha256": null,
+      "predecessor_text_sha256": "f936ace7e3c6dad69d8fbfaa8b85fd9619055c3cbf58950c70aabfa8bd3597ef",
+      "predecessor_words": 246
+    }
+  ],
+  "calls": [
+    {
+      "sample_id": "4320211",
+      "decoded_duration_seconds": 3285.816,
+      "parent_windows": [
+        {
+          "window_index": 1,
+          "start_seconds": 0.0,
+          "end_seconds": 90.0,
+          "draft_words": 245
+        },
+        {
+          "window_index": 2,
+          "start_seconds": 90.0,
+          "end_seconds": 180.0,
+          "draft_words": 221
+        },
+        {
+          "window_index": 3,
+          "start_seconds": 180.0,
+          "end_seconds": 270.0,
+          "draft_words": 236
+        },
+        {
+          "window_index": 4,
+          "start_seconds": 270.0,
+          "end_seconds": 360.0,
+          "draft_words": 246
+        }
+      ],
+      "units": [
+        {
+          "unit_id": "4320211#u0001",
+          "unit_index": 1,
+          "start_seconds": 0.0,
+          "end_seconds": 90.0,
+          "parent_window_index": 1,
+          "predecessor_word_start": 0,
+          "predecessor_word_end": 245,
+          "speaker": null,
+          "end_cut": "recut"
+        },
+        {
+          "unit_id": "4320211#u0002",
+          "unit_index": 2,
+          "start_seconds": 90.0,
+          "end_seconds": 180.0,
+          "parent_window_index": 2,
+          "predecessor_word_start": 0,
+          "predecessor_word_end": 221,
+          "speaker": null,
+          "end_cut": "recut"
+        },
+        {
+          "unit_id": "4320211#u0003",
+          "unit_index": 3,
+          "start_seconds": 180.0,
+          "end_seconds": 270.0,
+          "parent_window_index": 3,
+          "predecessor_word_start": 0,
+          "predecessor_word_end": 236,
+          "speaker": null,
+          "end_cut": "recut"
+        },
+        {
+          "unit_id": "4320211#u0004",
+          "unit_index": 4,
+          "start_seconds": 270.0,
+          "end_seconds": 360.0,
+          "parent_window_index": 4,
+          "predecessor_word_start": 0,
+          "predecessor_word_end": 246,
+          "speaker": null,
+          "end_cut": "recut"
+        }
+      ]
+    }
+  ]
+}
