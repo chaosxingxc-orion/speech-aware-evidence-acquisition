@@ -119,7 +119,26 @@ def _manifest_document(
     # and nothing in verify_bundle requires its presence.
     study_commit, study_repo_dirt = _resolve_study_commit(Path(repo_root), Path(data_root), status)
 
+    from .delivery_replay import (
+        require_experiment_phase_declarations, validate_phase_delivery_sources,
+    )
+
+    delivery_fragments = {
+        f"{kind}_fragment": composed.fragments.get(kind)
+        for kind in ("model", "dataset", "baseline")
+    }
+    required_deliveries = validate_phase_delivery_sources(
+        composed.values, parent_fragments=delivery_fragments,
+    )
+    require_experiment_phase_declarations(
+        repo_root, composed.fragments.get("experiment"), required_deliveries, delivery_fragments,
+    )
+    delivery_metadata = (
+        {"required_phase_deliveries": list(required_deliveries)}
+        if required_deliveries else {}
+    )
     return {
+        **delivery_metadata,
         "schema": RUN_MANIFEST_SCHEMA,
         "study": STUDY_SLUG,
         "run_id": run_id,

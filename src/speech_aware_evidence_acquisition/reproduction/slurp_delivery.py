@@ -2,14 +2,14 @@
 
 A slot-stage arm supplies entity predictions while a sealed predecessor owns
 scenario and action. This module joins those two row rosters without file,
-model, or scorer access. Callers that need a JSONL artifact are responsible
-for writing the returned rows.
+model, or scorer access.
 """
 
 from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 from typing import Any
 
 from .slurp_scoring import parse_slu_response
@@ -48,6 +48,65 @@ def _roster_index(rows: Sequence[Mapping[str, Any]], name: str) -> dict[str, str
     return indexed
 
 
+@dataclass(frozen=True)
+class SlurpDeliveryOutcome:
+    """Structured live delivery result for the shared response-postprocessor."""
+
+    text: str
+    refusal_reason: str | None
+    diagnostics: Mapping[str, int]
+
+
+def join_slurp_response(
+    closed_list_text: str, arm_text: str
+) -> tuple[str, dict[str, int]]:
+    """Join one direct response and one slot response deterministically.
+
+    The direct response owns scenario and action; the slot response owns
+    entities. Malformed labels fail closed to empty fields while diagnostics
+    preserve the historical roster counters.
+    """
+
+    cl_scenario, cl_action, _cl_entities, cl_parsed = parse_slu_response(
+        closed_list_text
+    )
+    arm_scenario, arm_action, arm_entities, arm_parsed = parse_slu_response(arm_text)
+    diagnostics = {
+        "rows": 1,
+        "arm_response_unparsed": int(not arm_parsed),
+        "arm_response_carried_scenario_or_action": int(
+            bool(arm_scenario or arm_action)
+        ),
+        "closed_list_unparsed": int(not cl_parsed),
+    }
+    payload = {
+        "scenario": cl_scenario if isinstance(cl_scenario, str) else "",
+        "action": cl_action if isinstance(cl_action, str) else "",
+        "entities": [
+            {"type": entity.type, "filler": entity.filler}
+            for entity in arm_entities
+        ],
+    }
+    return json.dumps(payload, ensure_ascii=False, sort_keys=True), diagnostics
+
+
+def _slurp_intent_slots_delivery_rule(
+    predecessor: str, response: str
+) -> SlurpDeliveryOutcome:
+    """Build a live SLURP delivery from direct intent and slot responses."""
+
+    text, diagnostics = join_slurp_response(predecessor, response)
+    return SlurpDeliveryOutcome(
+        text=text, refusal_reason=None, diagnostics=diagnostics
+    )
+
+
+def slurp_intent_slots_delivery_v1():
+    """Return the live SLURP two-response delivery rule."""
+
+    return _slurp_intent_slots_delivery_rule
+
+
 def join_slurp_rosters(
     arm_rows: Sequence[Mapping[str, Any]],
     closed_list_rows: Sequence[Mapping[str, Any]],
@@ -77,31 +136,8 @@ def join_slurp_rosters(
         "closed_list_unparsed": 0,
     }
     for sample_id in sorted(arm):
-        cl_scenario, cl_action, _cl_entities, cl_parsed = parse_slu_response(
-            closed[sample_id]
-        )
-        arm_scenario, arm_action, arm_entities, arm_parsed = parse_slu_response(
-            arm[sample_id]
-        )
-        if not cl_parsed:
-            stats["closed_list_unparsed"] += 1
-        if not arm_parsed:
-            stats["arm_response_unparsed"] += 1
-        if arm_scenario or arm_action:
-            stats["arm_response_carried_scenario_or_action"] += 1
-        payload = {
-            "scenario": cl_scenario if isinstance(cl_scenario, str) else "",
-            "action": cl_action if isinstance(cl_action, str) else "",
-            "entities": [
-                {"type": entity.type, "filler": entity.filler}
-                for entity in arm_entities
-            ],
-        }
-        projected.append(
-            {
-                "sample_id": sample_id,
-                "text": json.dumps(payload, ensure_ascii=False, sort_keys=True),
-            }
-        )
-        stats["rows"] += 1
+        text, row_stats = join_slurp_response(closed[sample_id], arm[sample_id])
+        projected.append({"sample_id": sample_id, "text": text})
+        for key, value in row_stats.items():
+            stats[key] += value
     return projected, stats

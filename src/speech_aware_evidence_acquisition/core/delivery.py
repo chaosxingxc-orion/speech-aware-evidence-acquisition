@@ -7,9 +7,17 @@ so the registered rule can fall back to its bound predecessor.
 
 from __future__ import annotations
 
-from typing import Callable, Mapping
+from typing import Callable, Mapping, Protocol, TypeVar
 
-from .repair_alignment import RepairOutcome
+
+class TerminalDeliveryOutcome(Protocol):
+    """Structural result required by shared terminal delivery."""
+
+    text: str
+    refusal_reason: str | None
+
+
+_TerminalOutcome = TypeVar("_TerminalOutcome", bound=TerminalDeliveryOutcome)
 
 
 def normalize_terminal_response(
@@ -29,10 +37,10 @@ def deliver_terminal_response(
     predecessor: str,
     text: str | None,
     *,
-    rule: Callable[[str, str], RepairOutcome],
+    rule: Callable[[str, str], _TerminalOutcome],
     saturated: bool = False,
     skipped: bool = False,
-) -> RepairOutcome:
+) -> _TerminalOutcome:
     """Apply an existing registered rule to the normalized terminal input."""
     return rule(
         predecessor,

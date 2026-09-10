@@ -858,3 +858,12 @@ POLICIES.register(
 # "brief-name near-miss detector", the one judge in that table that had no
 # implementation. Registered here for the same reason the six above are.
 JUDGES.register(E21_BRIEF_NAME_NEAR_MISS_JUDGE_V1, BriefNameNearMissJudge())
+
+# Live SLURP direct-intent plus slot-entity delivery. The pure rule preserves
+# direct scenario/action authority and slot entity authority without a sealed
+# predecessor dependency.
+from ..reproduction.slurp_delivery import slurp_intent_slots_delivery_v1  # noqa: E402
+
+RESPONSE_POSTPROCESSORS.register(
+    "slurp-intent-slots-delivery-v1", slurp_intent_slots_delivery_v1
+)

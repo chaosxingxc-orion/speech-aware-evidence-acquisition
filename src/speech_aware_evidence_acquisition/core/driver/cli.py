@@ -695,6 +695,38 @@ def _cli_finalize(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cli_build_delivery(args: argparse.Namespace) -> int:
+    """Build one verified phase-delivery derivative through the shared API."""
+
+    from ..bundle.delivery import build_delivery_bundle
+
+    repo_root = Path(args.repo_root).resolve()
+    imported_root = REPO_ROOT.resolve()
+    if repo_root != imported_root:
+        raise ValueError(
+            "build-delivery repo_root must match the imported source checkout"
+        )
+    manifest = build_delivery_bundle(
+        parent_manifest=Path(args.parent_manifest),
+        repo_root=repo_root,
+        experiment_path=Path(args.experiment_path),
+        data_root=Path(args.data_root),
+        derivative_cell_id=args.derivative_cell_id,
+        output_dir=Path(args.output_dir),
+    )
+    print(
+        json.dumps(
+            {
+                "manifest": str(manifest),
+                "derivative_cell_id": args.derivative_cell_id,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def _cli_flight(args: argparse.Namespace) -> int:
     """C4c: run one arm/carrier through the ``core.flight.FlightRuntime``
     harness -- ``preflight -> preprocess -> serve -> run_phases -> seal ->
@@ -719,6 +751,21 @@ def _cli_flight(args: argparse.Namespace) -> int:
     lock = load_lock(umbrella_lock_path())
     root = data_root()
     composed = compose(REPO_ROOT, args.model, args.dataset, args.baseline, args.experiment)
+    from ..bundle.delivery_replay import validate_phase_delivery_sources
+
+    phase_declarations = validate_phase_delivery_sources(
+        composed.values,
+        parent_fragments={
+            "model_fragment": args.model,
+            "dataset_fragment": args.dataset,
+            "baseline_fragment": args.baseline,
+        },
+    )
+    if phase_declarations and not args.dry_run and not args.seal_only:
+        raise ValueError(
+            "phase delivery declarations require --seal-only or --dry-run; "
+            "raw terminal phase output must be derived before scoring"
+        )
     carrier_lock_key = composed.values.get("carrier_lock_key")
     if not isinstance(carrier_lock_key, str) or not carrier_lock_key:
         raise ValueError("dataset fragment must declare a non-empty carrier_lock_key")
@@ -771,8 +818,9 @@ def _cli_flight(args: argparse.Namespace) -> int:
     runtime.preprocess()
     runtime.serve()
     runtime.run_phases()
-    runtime.seal()
-    runtime.score(max_workers=args.max_workers)
+    runtime.seal(defer_scoring=bool(args.seal_only or phase_declarations))
+    if not args.seal_only:
+        runtime.score(max_workers=args.max_workers)
     print(
         json.dumps(
             {
@@ -1264,6 +1312,18 @@ def main(argv: list[str] | None = None) -> int:
     speech_read.add_argument("--output", required=True)
     speech_read.set_defaults(func=_cli_speech_native_read)
 
+    build_delivery = sub.add_parser(
+        "build-delivery",
+        help="build a verified phase-delivery derivative from an immutable parent",
+    )
+    build_delivery.add_argument("--parent-manifest", required=True)
+    build_delivery.add_argument("--experiment-path", required=True)
+    build_delivery.add_argument("--derivative-cell-id", required=True)
+    build_delivery.add_argument("--output-dir", required=True)
+    build_delivery.add_argument("--repo-root", required=True)
+    build_delivery.add_argument("--data-root", required=True)
+    build_delivery.set_defaults(func=_cli_build_delivery)
+
     flight = sub.add_parser(
         "flight",
         help="C4c FlightRuntime harness: preflight -> preprocess -> serve -> "
@@ -1282,6 +1342,11 @@ def main(argv: list[str] | None = None) -> int:
         "--dry-run",
         action="store_true",
         help="stop after preflight() -- no server start, no model contact",
+    )
+    flight.add_argument(
+        "--seal-only",
+        action="store_true",
+        help="complete raw generation and seal without final scoring",
     )
     flight.add_argument("--max-workers", type=int, default=1, help="score() worker count")
     flight.add_argument(

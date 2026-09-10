@@ -1576,26 +1576,26 @@ def test_cli_score_manifest_mode_is_verified_and_authoritative(
     synthetic_world, bundled_repo, tmp_path, capsys, monkeypatch
 ):
     manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    from speech_aware_evidence_acquisition.core.driver import cli
+
+    _, source_repo = bundled_repo
+    monkeypatch.setattr(
+        cli, "__file__",
+        str(source_repo / "src/speech_aware_evidence_acquisition/core/driver/cli.py"),
+    )
     monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
     monkeypatch.setattr(
         "speech_aware_evidence_acquisition.data.lock.umbrella_lock_path",
         lambda *a, **k: synthetic_world.lock_path,
     )
-    # IMPORTANT 2 (fix-wave3): `_cli_score` (like every real CLI entry point)
-    # never overrides `score_bundle`'s `repo_root` -- it always resolves
-    # against the REAL REPO_ROOT (by design: a CLI's "study repo" is wherever
-    # it is installed, never a caller-supplied stand-in). The REAL D1 receipt
-    # there has no entry for this test's SYNTHETIC sample ids
-    # ("4000001", ...), which were never part of the real corpus at all.
-    # This test's own purpose is verifying CLI manifest-mode authority (I4),
-    # not reference identity (which has its own dedicated coverage in
-    # tests/contract/test_reference_identity.py) -- neutralized here rather
-    # than smuggling fake sample ids into the real, committed D1 receipt.
+    # Score against the explicit synthetic source checkout so its recorded
+    # Git commit is available. Reference identity has separate contract tests;
+    # the real D1 receipt cannot contain these synthetic sample ids.
     monkeypatch.setattr(
         "speech_aware_evidence_acquisition.contracts.FrozenCoreGate.verify_reference_identity",
         lambda self, *a, **k: None,
     )
-    exit_code = driver_main(["score", "--manifest", str(manifest_path)])
+    exit_code = driver_main(["score", "--manifest", str(manifest_path), "--repo-root", str(source_repo)])
     assert exit_code == 0
     captured = capsys.readouterr()
     payload = json.loads(captured.out)
@@ -1748,6 +1748,13 @@ def test_cli_score_manifest_mode_refuses_when_a_frozen_scoring_source_is_edited(
     synthetic_world, bundled_repo, tmp_path, monkeypatch
 ):
     manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    from speech_aware_evidence_acquisition.core.driver import cli
+
+    _, source_repo = bundled_repo
+    monkeypatch.setattr(
+        cli, "__file__",
+        str(source_repo / "src/speech_aware_evidence_acquisition/core/driver/cli.py"),
+    )
     monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
     monkeypatch.setattr(
         "speech_aware_evidence_acquisition.data.lock.umbrella_lock_path",
@@ -1755,13 +1762,20 @@ def test_cli_score_manifest_mode_refuses_when_a_frozen_scoring_source_is_edited(
     )
     with _tamper_real_scoring_source():
         with pytest.raises(GateClosed, match="freeze drift"):
-            driver_main(["score", "--manifest", str(manifest_path)])
+            driver_main(["score", "--manifest", str(manifest_path), "--repo-root", str(source_repo)])
 
 
 def test_cli_finalize_refuses_when_a_frozen_scoring_source_is_edited(
     synthetic_world, bundled_repo, tmp_path, monkeypatch
 ):
     manifest_path, composed, plan, lock = _run_completed(synthetic_world, bundled_repo, tmp_path)
+    from speech_aware_evidence_acquisition.core.driver import cli
+
+    _, source_repo = bundled_repo
+    monkeypatch.setattr(
+        cli, "__file__",
+        str(source_repo / "src/speech_aware_evidence_acquisition/core/driver/cli.py"),
+    )
     monkeypatch.setenv("SPEECHRL_DATA_DIR", str(synthetic_world.data_root))
     monkeypatch.setattr(
         "speech_aware_evidence_acquisition.data.lock.umbrella_lock_path",
@@ -1776,6 +1790,8 @@ def test_cli_finalize_refuses_when_a_frozen_scoring_source_is_edited(
                     "finalize",
                     "--manifest",
                     str(manifest_path),
+                    "--repo-root",
+                    str(source_repo),
                     "--ledger-cells",
                     str(ledger_cells),
                 ]

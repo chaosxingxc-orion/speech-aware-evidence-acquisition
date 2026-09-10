@@ -9,16 +9,17 @@ proof that a writer with access to all source files really ran a model.
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 from typing import Mapping
 
 from ..base import CoreError
-from ..config import ConfigError, compose
+from ..config import ConfigError, _reject_duplicate_keys, compose, fragment_path
 from ..predecessor_snapshot import binding_from_values, load_predecessor_binding
 from . import RUN_MANIFEST_SCHEMA, BundleError, _refuse_if_inside_repo
 from .artifacts import VerifiedBundle, _read_bytes, _verify_artifact
-from .delivery_replay import canonical, replay_delivery, sha256
+from .delivery_replay import (
+    canonical, delivery_declarations, replay_delivery, selected_phase_delivery_declarations, sha256,
+)
 
 DELIVERY_MANIFEST_SCHEMA = "saea-derived-delivery-v1"
 _SOURCE_FILES = (
@@ -26,6 +27,14 @@ _SOURCE_FILES = (
     "core/repair_alignment.py",
     "core/bundle/delivery.py",
     "core/bundle/delivery_replay.py",
+    "core/model/adapter.py",
+    "rails/controllers.py",
+    "rails/core_client.py",
+    "rails/phase_runner.py",
+    "rails/phase_material.py",
+    "reproduction/slurp_delivery.py",
+    "reproduction/slurp_scoring.py",
+    "core/policies.py",
 )
 _INHERITED = (
     "study",
@@ -76,34 +85,9 @@ def _load_inputs(parent_path, repo_root, experiment_path, data_root, cell_id):
     if composed.config_hash != parent.manifest["config"]["config_hash"]:
         raise BundleError("delivery config changed after parent generation")
     values = composed.values
-    if values.get("policy") not in ("obs-repair-loop", "obs-repair-loop-ojw"):
-        raise BundleError("delivery requires the shared full-window repair policy")
-    declarations = values.get("delivery_derivatives")
-    if not isinstance(declarations, list) or not declarations:
+    declarations = delivery_declarations(values)
+    if not declarations:
         raise BundleError("experiment config lacks predeclared delivery_derivatives")
-    required = {
-        "cell_id",
-        "parent_cell_id",
-        "response_postprocessor",
-        "response_postprocessor_params",
-    }
-    identities = set()
-    for item in declarations:
-        if not isinstance(item, dict) or set(item) != required:
-            raise BundleError("delivery declaration has missing or unknown fields")
-        for key in ("cell_id", "parent_cell_id"):
-            if (
-                not isinstance(item[key], str)
-                or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", item[key]) is None
-            ):
-                raise BundleError("delivery cell identity must be a safe config name")
-        if item["cell_id"] in identities or not isinstance(
-            item["response_postprocessor_params"], dict
-        ):
-            raise BundleError(
-                "delivery declaration repeats a cell or has invalid parameters"
-            )
-        identities.add(item["cell_id"])
     selected = [item for item in declarations if item["cell_id"] == cell_id]
     if len(selected) != 1:
         raise BundleError("delivery cell is not uniquely declared")
@@ -117,11 +101,17 @@ def _load_inputs(parent_path, repo_root, experiment_path, data_root, cell_id):
         for kind in ("model", "dataset", "baseline")
     ):
         raise BundleError("delivery parent cell differs from generation fragments")
-    relpath, receipt_hash = binding_from_values(values)
-    receipt = Path(repo_root) / "docs" / relpath
-    snapshot = load_predecessor_binding(
-        receipt, data_root, expected_receipt_sha256=receipt_hash
-    )
+    if declaration.get("source_selector") is None:
+        if values.get("policy") not in ("obs-repair-loop", "obs-repair-loop-ojw"):
+            raise BundleError("legacy delivery requires the shared full-window repair policy")
+        relpath, receipt_hash = binding_from_values(values)
+        receipt = Path(repo_root) / "docs" / relpath
+        snapshot = load_predecessor_binding(
+            receipt, data_root, expected_receipt_sha256=receipt_hash
+        )
+    else:
+        receipt = None
+        snapshot = None
     rows, windows = replay_delivery(parent, snapshot, declaration, values)
     return parent, declaration, receipt, rows, windows
 
@@ -155,7 +145,7 @@ def _expected(
             "scorers": parent.manifest["scorers"],
             "config_hash": parent.manifest["config"]["config_hash"],
         }
-    return {
+    document = {
         "schema": DELIVERY_MANIFEST_SCHEMA,
         "status": "COMPLETED",
         "run_id": f"{parent.manifest['run_id']}--delivery-{declaration['cell_id']}",
@@ -166,9 +156,7 @@ def _expected(
         "data_root": str(Path(data_root).resolve()),
         "declaration": declaration,
         "declaration_sha256": sha256(canonical(declaration)),
-        "predecessor_receipt": _meta(receipt),
         "rule_sources": _sources(),
-        "windows": windows,
         "score_reuse": score_reuse,
         "outputs_sha256": sha256(b"".join(canonical(row) + b"\n" for row in rows)),
         "cost": {
@@ -179,6 +167,12 @@ def _expected(
             "attribution": "Charge the shared generation once; this derivative adds no model contacts.",
         },
     }
+    if receipt is not None:
+        document["predecessor_receipt"] = _meta(receipt)
+        document["windows"] = windows
+    else:
+        document["phase_sources"] = windows
+    return document
 
 
 def build_delivery_bundle(
@@ -233,9 +227,16 @@ def build_delivery_bundle(
 def verify_delivery_bundle(manifest_path: Path, manifest: Mapping) -> VerifiedBundle:
     """Recompute every derivative from verified parent bytes; never alter them."""
     try:
-        for key in ("parent", "experiment", "predecessor_receipt"):
+        for key in ("parent", "experiment"):
             if _verify_artifact(manifest.get(key), key) is None:
                 raise BundleError(f"delivery lacks {key}")
+        if manifest.get("declaration", {}).get("source_selector") is None:
+            if _verify_artifact(
+                manifest.get("predecessor_receipt"), "predecessor_receipt"
+            ) is None:
+                raise BundleError("delivery lacks predecessor_receipt")
+        elif "predecessor_receipt" in manifest:
+            raise BundleError("phase-pair delivery must not name a predecessor receipt")
         raw = _verify_artifact(
             manifest.get("outputs"),
             "derived outputs",
@@ -278,6 +279,55 @@ def verify_delivery_bundle(manifest_path: Path, manifest: Mapping) -> VerifiedBu
         )
     except (CoreError, ConfigError, KeyError, TypeError, ValueError, OSError) as error:
         raise BundleError(f"delivery verification refused: {error}") from error
+
+
+def assert_raw_parent_scoreable(bundle: VerifiedBundle, repo_root: Path) -> None:
+    """Refuse required phase delivery from either the marker or its Git source.
+
+    Older ordinary manifests do not require their config files to remain in
+    the current checkout. Inspect the committed experiment when it exists,
+    so removing a mutable header marker or editing the current config cannot
+    make a declared raw phase parent scoreable. The existing manifest contract
+    does not authenticate a forged study_commit or a rewritten Git history.
+    """
+    if bundle.manifest.get("schema") != RUN_MANIFEST_SCHEMA:
+        return
+    if "required_phase_deliveries" in bundle.manifest:
+        raise BundleError("raw phase parent requires declared delivery before scoring")
+    config = bundle.manifest.get("config", {})
+    fragments = config.get("fragments", {})
+    if not isinstance(fragments, Mapping) or "experiment" not in fragments:
+        # Legacy manifest verification permits no fragment-name record.
+        return
+    from .git_commit import _git
+
+    path = fragment_path(repo_root, "experiment", fragments["experiment"])
+    relative = path.relative_to(repo_root).as_posix()
+    commit = bundle.manifest.get("study_commit")
+    if not isinstance(commit, str) or len(commit) != 40 or any(
+        c not in "0123456789abcdef" for c in commit
+    ):
+        raise BundleError("cannot inspect phase delivery without a valid study commit")
+    code, _, _ = _git(repo_root, "cat-file", "-e", commit + "^{commit}")
+    if code:
+        raise BundleError("cannot inspect phase delivery: recorded study commit is unavailable")
+    code, raw, _ = _git(repo_root, "show", f"{commit}:{relative}")
+    if code:
+        # A historical programmatic config need not have a named experiment
+        # file. New declared phase flights require that file at construction.
+        return
+    document = json.loads(raw, object_pairs_hook=_reject_duplicate_keys(path))
+    if not isinstance(document, Mapping):
+        raise BundleError("recorded experiment fragment must be a mapping")
+    selected = selected_phase_delivery_declarations(document, {
+        f"{kind}_fragment": fragments.get(kind)
+        for kind in ("model", "dataset", "baseline")
+    })
+    if selected:
+        raise BundleError(
+            "raw phase parent requires declared delivery from its recorded config; "
+            "the manifest delivery marker is missing"
+        )
 
 
 def reused_delivery_scores(bundle: VerifiedBundle) -> dict | None:

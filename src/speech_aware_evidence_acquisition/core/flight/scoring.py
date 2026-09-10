@@ -5,7 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
-from typing import Mapping
+from typing import Mapping, Sequence
 
 from ..scoring_batch import load_score_jobs
 
@@ -28,15 +28,23 @@ def _write_once(path: Path, payload: bytes) -> None:
 
 def seal_scoring_inputs(
     manifest_path: Path, *, run_id: str, attempt_id: str,
-    ledger_cells: Mapping[str, object],
+    ledger_cells: Mapping[str, object], delivery_cells: Sequence[str] = (),
 ) -> dict[str, object]:
-    """Keep the pre-score manifest addressable even when finalization attaches scores."""
+    """Pin raw generation and route it to finalization or declared derivatives."""
     manifest_path = Path(manifest_path).resolve()
     directory = manifest_path.parent
     generation = directory / f"{run_id}.generation-manifest.json"
     ledger = directory / "score-ledger-cells.json"
     jobs = directory / "score-jobs.jsonl"
     _write_once(generation, manifest_path.read_bytes())
+    if delivery_cells:
+        return {
+            "finalize": {"status": "deferred-to-declared-deliveries"},
+            "delivery_required": True,
+            "declared_delivery_cells": list(delivery_cells),
+            "generation_manifest_path": str(generation),
+            "generation_manifest_sha256": _hash(generation),
+        }
     _write_once(ledger, (json.dumps(dict(ledger_cells), sort_keys=True) + "\n").encode())
     _write_once(jobs, (json.dumps({
         "job_id": attempt_id, "manifest": str(manifest_path), "ledger_cells": str(ledger),

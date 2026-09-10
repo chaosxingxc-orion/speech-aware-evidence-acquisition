@@ -1,0 +1,43 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "phase-direct-then-slots-v1",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "speech_feature_key_representation_id": "saea-slurp-phase-live-intent-slots-schema-v1:direct+slots",
+  "speech_feature_matcher_policy_id": "saea-slurp-phase-live-intent-slots-schema-v1",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template_active": true,
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-label-prior-speaker/snapshot.json",
+  "knowledge_snapshot_sha256": "07f94807d173b2f2bdda9dcd95b21354e018234a208a76683d0ca4989d9ffa65",
+  "serving_slots": 4,
+  "serving_slot_tokens": 16384,
+  "phase_material": {
+    "direct": {
+      "instruction_template": "probes/slurp_phase_direct.txt",
+      "instruction_fill": null,
+      "response_format_id": null,
+      "predecessor_binding": "none"
+    },
+    "slots": {
+      "instruction_template": "probes/slurp_phase_slots.txt",
+      "instruction_fill": null,
+      "response_format_id": null,
+      "predecessor_binding": "append-sealed-state",
+      "state_fill": "slurp-intent-slot-schema-for-state"
+    }
+  },
+  "what_this_is": "HOLD: schema for a future live two-stage SLURP intent-plus-slots baseline. Full actual fit and registration are still required. The direct prompt is distinct from the historical fixed-direct prompt; the intended phase pair uses two contacts, compared with one contact for the matched direct control.",
+  "what_the_fill_renders": "The existing slurp-intent-slot-schema-for-state material is available to the future slots phase. Its rendering and source binding remain governed by the existing phase-material registry.",
+  "why_np4": "Retain the inherited four-slot, 16384-token geometry because original schema fallback requests exceeded an 8192-token slot. This configuration is a candidate only; current-run predecessor content still requires exact staged capacity checks.",
+  "knowledge_is_bound_but_invisible": "The existing label-prior-speaker snapshot and prepared packet pins are retained for future admission checks; this HOLD fragment does not claim a completed fit, delivery scan, or capacity result.",
+  "delivery_basis": "Future phase-pair declaration must bind the registered slurp-intent-slots-delivery-v1 rule after a direct phase and a slots phase. This baseline fragment does not enable delivery behavior or authorize a live fit.",
+  "live_state_transfer": "This fragment declares direct material followed by slot material that appends the sealed direct state. It carries no sealed predecessor source receipt and makes no runtime or scan claim."
+}

@@ -1659,6 +1659,19 @@ class FlightRuntime:
         )
         self._composed = composed
         values = composed.values
+        from ..bundle.delivery_replay import (
+            require_experiment_phase_declarations, validate_phase_delivery_sources,
+        )
+
+        delivery_fragments = {
+            "model_fragment": self._model,
+            "dataset_fragment": self._dataset,
+            "baseline_fragment": self._baseline,
+        }
+        deliveries = validate_phase_delivery_sources(values, parent_fragments=delivery_fragments)
+        require_experiment_phase_declarations(
+            self._repo_root, self._experiment, deliveries, delivery_fragments,
+        )
 
         lock = self._lock if self._lock is not None else load_lock(umbrella_lock_path(self._repo_root))
         self._lock = lock
@@ -3460,6 +3473,15 @@ class FlightRuntime:
         from ..tracing import TraceBuffer  # noqa: PLC0415 (function-local, cheap)
 
         program = default_phase_program(policy)
+        from ..bundle.delivery_replay import validate_phase_delivery_sources
+
+        validate_phase_delivery_sources(
+            self._composed.values, program=program, parent_fragments={
+                "model_fragment": self._model,
+                "dataset_fragment": self._dataset,
+                "baseline_fragment": self._baseline,
+            },
+        )
         binding = self._phase_program_material
         if binding is None:
             # E1: a phase program whose material IS expressible in the
@@ -5076,6 +5098,7 @@ class FlightRuntime:
         *,
         flight_receipt_kwargs: Mapping[str, object] | None = None,
         ledger_cells: Mapping[str, str] | None = None,
+        defer_scoring: bool = False,
     ) -> Mapping[str, object]:
         """Write ``<run_id>.outputs.jsonl`` from the samples ``run_phases``
         produced,
@@ -5095,6 +5118,15 @@ class FlightRuntime:
         (see the C4c report's residual list)."""
 
         self._require_prior_stages("seal")
+        from ..bundle.delivery_replay import validate_phase_delivery_sources
+
+        deliveries = validate_phase_delivery_sources(
+            self._composed.values, parent_fragments={
+                "model_fragment": self._model,
+                "dataset_fragment": self._dataset,
+                "baseline_fragment": self._baseline,
+            },
+        )
         run_dir = self._run_dir()
         run_dir.mkdir(parents=True, exist_ok=True)
         # `<run_id>.outputs.jsonl`, not `outputs.jsonl`: the cost scorer
@@ -5202,7 +5234,7 @@ class FlightRuntime:
                 "before it will score"
             )
         deferred_scoring = None
-        if self._execution_policy is not None:
+        if deliveries or defer_scoring or self._execution_policy is not None:
             from .scoring import seal_scoring_inputs
             # Validate caller cells now; the official finalizer validates them
             # again after root releases generation custody.
@@ -5210,6 +5242,7 @@ class FlightRuntime:
             deferred_scoring = seal_scoring_inputs(
                 manifest_path, run_id=self.run_id, attempt_id=self.attempt_id,
                 ledger_cells=merged_ledger_cells,
+                delivery_cells=[item["cell_id"] for item in deliveries],
             )
             finalize_payload = deferred_scoring["finalize"]
         else:
@@ -5307,11 +5340,16 @@ class FlightRuntime:
 
         self._require_prior_stages("score")
         seal_payload = self.receipts.require("seal")
+        if seal_payload.get("delivery_required"):
+            raise FlightRuntimeError(
+                "raw phase parent requires declared delivery: use build-delivery, "
+                "then score the derived manifest through score-batch"
+            )
         manifest_path = Path(seal_payload["manifest_path"])
         run_dir = self._run_dir()
         jobs_path = run_dir / "score-jobs.jsonl"
         score_kwargs = {}
-        if self._execution_policy is not None:
+        if seal_payload.get("finalize", {}).get("status") == "deferred-to-score-worker":
             from .scoring import load_sealed_score_jobs
             jobs = load_sealed_score_jobs(seal_payload)
             score_kwargs["operation"] = "finalize"
@@ -5343,7 +5381,7 @@ class FlightRuntime:
             "jobs_per_second": len(jobs) / duration,
             "result": result,
         }
-        if self._execution_policy is not None:
+        if seal_payload.get("finalize", {}).get("status") == "deferred-to-score-worker":
             payload["source_generation_manifest_sha256"] = seal_payload["generation_manifest_sha256"]
             payload["finalized_manifest_sha256"] = (
                 _sha256_file(manifest_path) if not result.get("failed", 0) else None

@@ -693,10 +693,18 @@ def score_bundle(
         )
     if bundle.outputs_path is None:
         raise ScoringPhaseError("verified bundle carries no outputs artifact to score")
-    _assert_scoring_entry_gate(bundle, lock, root, repo_root)
     from .bundle import BundleError
-    from .bundle.delivery import reused_delivery_scores
+    from .bundle.delivery import assert_raw_parent_scoreable, reused_delivery_scores
+    from .config import ConfigError
 
+    try:
+        assert_raw_parent_scoreable(bundle, repo_root)
+    except (BundleError, ConfigError, ValueError, TypeError) as error:
+        raise ScoringPhaseError(
+            f"delivery scoring refused: {error}; use build-delivery, then score "
+            "the derived manifest through score-batch"
+        ) from error
+    _assert_scoring_entry_gate(bundle, lock, root, repo_root)
     try:
         reused = reused_delivery_scores(bundle)
     except BundleError as error:

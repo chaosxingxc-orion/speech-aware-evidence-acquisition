@@ -36,6 +36,7 @@ class _RecordingFlightRuntime:
         self.kwargs = dict(kwargs)
         self.calls: list[str] = []
         self.score_kwargs: dict[str, object] | None = None
+        self.seal_kwargs: dict[str, object] | None = None
         type(self).last_instance = self
 
     def preflight(self):
@@ -56,6 +57,7 @@ class _RecordingFlightRuntime:
 
     def seal(self, *args, **kwargs):
         self.calls.append("seal")
+        self.seal_kwargs = dict(kwargs)
         return {"stage": "seal"}
 
     def score(self, *args, **kwargs):

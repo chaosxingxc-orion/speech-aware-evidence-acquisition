@@ -1,0 +1,148 @@
+{
+  "schema": "saea-phase-response-delivery-validation-v1",
+  "created_at_utc": "2026-09-10T09:26:47.880756+00:00",
+  "base_commit": "7ea3e1db7d2fe527643ac9c2457a7c3bf18f5866",
+  "source_worktree": "/home/chao/saea-worktrees/phase-delivery-sources",
+  "environment": {
+    "distribution": "WSL Ubuntu-24.04",
+    "python": "/home/chao/.venvs/speechrl/bin/python",
+    "pythonpath": "/home/chao/saea-worktrees/phase-delivery-sources/src",
+    "editable_reinstall": false
+  },
+  "source_files": [
+    {
+      "path": "configs/baseline/slurp-phase-live-direct-control-v1.json",
+      "sha256": "fbe8235f315385ad953108dae62b18a60a70f109f807625d9d57532cb8dfd8db"
+    },
+    {
+      "path": "configs/baseline/slurp-phase-live-intent-slots-schema-v1.json",
+      "sha256": "a60f4a871255c1e4e9882ea5afc187edffb453ed3660eeb5c22b21b95357f312"
+    },
+    {
+      "path": "configs/policy/phase-direct-then-slots-v1.json",
+      "sha256": "39f2bc344239f6b6877bd7aaeca9c075218ce09d1826cc3dd84fa67999f9f19f"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/bundle/delivery.py",
+      "sha256": "7c98a06309ab6964ab640bd1bb384940707f80d52c20dbd1d97e4063496e718c"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/bundle/delivery_replay.py",
+      "sha256": "efd20da34cf684e2b0a360b4bd099b1a3973d4c4f4b12d1b85180d9de329eb1e"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/bundle/manifest.py",
+      "sha256": "d0328214f4afa5e92817c3866b068464c18721cb29ee485a41354df8522091dd"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/delivery.py",
+      "sha256": "7a134f64093a7eb6d4c4ad33ba73dedba813c5944a2ef3f27f7b5e03179c013e"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/driver/cli.py",
+      "sha256": "9a406b7f0c3292a394b385a2688a813fc2c7148bc1b587e950cc98eb481dbfcb"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+      "sha256": "78e5deb5ecf690bf8c3d3be85819fde60ce2a1592e84306e27df64cb354920c6"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/flight/scoring.py",
+      "sha256": "4901e920611180454974cb97be142bbe8858ba516518cbcac9baac0aed7957f1"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/policies.py",
+      "sha256": "32647a3a5153fbde767842df7e8bb679ce9763c46985261a20686d3290c65425"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/scorers.py",
+      "sha256": "a7dcdfee5477a68bf1c3f4f66ab68c4062bc287f388949a6e7827d59d801abee"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/rails/controllers.py",
+      "sha256": "151f6ed933a4b3ffa4b995160150f57854a583b28895ca3431155c88897c56a6"
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/reproduction/slurp_delivery.py",
+      "sha256": "fc94dc1234cf33b9c3d2fe6b297935c4f9520952838da63a0faeb89954f5a80a"
+    },
+    {
+      "path": "tests/unit/test_bundle.py",
+      "sha256": "0312a3ab91830236abd8fbd814c0b77df24cf2cf083bbd66d983d58408b0a681"
+    },
+    {
+      "path": "tests/unit/test_cli_delivery.py",
+      "sha256": "d443beea8c237fb5b243eec18ed0103af512b1ab718c0c5bdfb42d412012fdca"
+    },
+    {
+      "path": "tests/unit/test_cli_flight.py",
+      "sha256": "eb95a17075ec4d4e59942d54d414d27b89109dff66bffe2a9f1c879b746c8cea"
+    },
+    {
+      "path": "tests/unit/test_delivery_bundle.py",
+      "sha256": "ab6843cc86004d6251da5d4c41b224c647b1133c3b45e56fcddcb614c689ff70"
+    },
+    {
+      "path": "tests/unit/test_phase_delivery_identity.py",
+      "sha256": "f2a4a6ca22a636fadb61abef53cfabbee42922360f439539da5f9a29c31597d1"
+    },
+    {
+      "path": "tests/unit/test_rails_controllers.py",
+      "sha256": "8dcc70638bee3ecab6849cb8799d809f661a8860e5b0a8b606b2f1a2c64d7e1b"
+    },
+    {
+      "path": "tests/unit/test_slurp_delivery.py",
+      "sha256": "8d2f01f4866aced2e203c178380f0bb9f0d55f8ae185ace66cc7937faa845c5b"
+    }
+  ],
+  "validation": {
+    "final_critical_suite": {
+      "passed": 192,
+      "failed": 0,
+      "warnings": 3,
+      "files": [
+        "tests/unit/test_delivery_bundle.py",
+        "tests/unit/test_phase_delivery_identity.py",
+        "tests/unit/test_cli_delivery.py",
+        "tests/unit/test_bundle.py"
+      ]
+    },
+    "broader_regression": {
+      "passed_before_fixture_correction": 319,
+      "fixture_failures_corrected_in_final_suite": 3,
+      "files": [
+        "tests/unit/test_phase_delivery_identity.py",
+        "tests/unit/test_cli_flight.py",
+        "tests/unit/test_cli_delivery.py",
+        "tests/unit/test_flight_deferred_scoring.py",
+        "tests/unit/test_flight_runtime.py",
+        "tests/unit/test_scorers.py",
+        "tests/unit/test_scorer_alias_identity.py",
+        "tests/unit/test_scoring_batch.py",
+        "tests/unit/test_bundle.py"
+      ]
+    },
+    "distinct_tests_with_passing_evidence": 388,
+    "earlier_environment_failure": "One shell-helper test could not find python before the virtual environment was activated; the subsequent broader invocation passed that test.",
+    "ruff": "PASS",
+    "engineering_base": "PASS",
+    "git_diff_check": "PASS",
+    "independent_review": "No remaining concrete defect in required delivery source binding and score guard after fixing marker-removal bypass."
+  },
+  "scientific_contacts": {
+    "generation": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "official_scoring": 0,
+    "paid_api": 0
+  },
+  "service_started": false,
+  "limits": [
+    "Synthetic transport/scorer integration is engineering evidence only.",
+    "No new live experiment, roster, output cap or budget is registered.",
+    "Staged actual request fitting is unfinished.",
+    "All-derived-score settlement of the raw parent attempt remains unfinished.",
+    "Legacy programmatic manifest source exception and Git local-consistency limits are documented.",
+    "E21 stopped recovery and G2/G3/G4 holds remain in force."
+  ]
+}
