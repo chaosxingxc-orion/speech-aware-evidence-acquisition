@@ -107,8 +107,9 @@ from test_obs_unit_plan import (  # noqa: E402
 )
 
 
+@pytest.mark.parametrize("packet_mode", [None, "query-only", "with-supply"])
 def test_e21_four_row_fit_matches_real_ojw_controller_contacts(
-    tmp_path, monkeypatch, synthetic_world
+    tmp_path, monkeypatch, synthetic_world, packet_mode
 ):
     """The held E21 proof fits and sends the same four synthetic requests."""
     from test_class_lists import CALL, _install
@@ -237,6 +238,47 @@ def test_e21_four_row_fit_matches_real_ojw_controller_contacts(
         )
         assert (world.data_root / source["media_relpath"]).is_file()
 
+    if packet_mode is not None:
+        from speech_aware_evidence_acquisition.core.preparation_window_packets import (
+            PreparedWindowFeaturePackets, WindowPacketBinding,
+        )
+        entries = tuple(
+            WindowPacketBinding(
+                key, f"{key}@{source['sha256']}",
+                f"window-audio/{source['sha256'][:2]}/{source['sha256']}",
+                hashlib.sha256(key.encode()).hexdigest(), source["sha256"], "123",
+                ({"batch": "synthetic", "source_provenance": source},), (),
+            )
+            for key, source in zip(fitted.request_keys, fitted.source_bindings, strict=True)
+        )
+        world.ctx.extras["window_feature_packets"] = PreparedWindowFeaturePackets(
+            "a" * 64, "b" * 64, "c" * 64, "d" * 64, {}, "unused", "unused",
+            len(entries), len(entries), entries,
+            {entry.request_key: entry for entry in entries},
+        )
+        world.ctx.arm = "speech-feature-query"
+        values.update(
+            arm="speech-feature-query",
+            speech_feature_key_representation_id="synthetic-window-features",
+            speech_feature_matcher_policy_id="exact-window-source",
+        )
+        if packet_mode == "query-only":
+            values["evidence_source"] = "none"
+            world.ctx.evidence = []
+        original_instructions = [payload["task_instruction"] for payload in fitted.payloads]
+        world.ctx.extras["slice_registry"] = SliceRegistry(
+            data_root=world.data_root, run_id=RUN_ID,
+            parent_facts={CALL: (world.parent_relpath, world.duration)},
+        )
+        fitted = materialize_window_requests(
+            [world.ctx], expected_sample_ids=[CALL],
+            hook_factory=build_repair_window_hook, evidence_binding=binding,
+        )
+        assert [payload["task_instruction"] for payload in fitted.payloads] == original_instructions
+        assert all(payload["mmproj_loaded"] is False for payload in fitted.payloads)
+        if packet_mode == "query-only":
+            assert all(payload["supplied_evidence"] == [] for payload in fitted.payloads)
+
     world.ctx.extras["slice_registry"] = SliceRegistry(
         data_root=world.data_root,
         run_id=RUN_ID,
@@ -269,9 +311,16 @@ def test_e21_four_row_fit_matches_real_ojw_controller_contacts(
     for index, (observed, used, source) in enumerate(
         zip(obs, uses, fitted.source_bindings, strict=True)
     ):
-        assert used["use_query_state"]["query_source"] == "speech_audio"
-        assert used["use_query_state"]["speech_packet_id"] == source["media_relpath"]
-        assert used["use_query_state"]["speech_packet_sha256"] == source["sha256"]
+        query = used["use_query_state"]
+        if packet_mode is None:
+            assert query["query_source"] == "speech_audio"
+            assert query["speech_packet_id"] == source["media_relpath"]
+            assert query["speech_packet_sha256"] == source["sha256"]
+        else:
+            descriptor = fitted.payloads[index]["speech_feature_parts"][0]
+            assert query["query_source"] == "speech_features"
+            assert query["speech_packet_id"] == descriptor["packet_id"]
+            assert query["speech_packet_sha256"] == descriptor["sha256"]
         request_id = used["use_terminal_request_id"]
         assert used["use_contact"]["instruction"] == by_request[request_id]["task_instruction"]
         assert used["use_sealed_state"]["content"] == targets[index]

@@ -164,6 +164,118 @@ def _obs_pipeline(values: Mapping[str, object], policy_name: str, batch_size: in
     return depth, dispatcher
 
 
+def load_window_packet_binding(values, samples, data_root, repo_root):
+    """Resolve an explicit, source-bound window representation before dispatch."""
+    declaration = values.get("prepared_window_feature_packets")
+    if declaration is None:
+        return None
+    from ...reproduction.obs_loop import ObsLoopConfig
+    from ..preparation_window_packets import load_prepared_window_feature_packets
+
+    if not isinstance(declaration, Mapping) or set(declaration) != {"path", "sha256"}:
+        raise CoreError("prepared_window_feature_packets requires path and sha256")
+    if values.get("arm") != "speech-feature-query" or values.get("policy") not in (
+        "obs-agent-loop-ojw", "obs-repair-loop-ojw",
+    ):
+        raise CoreError("window packets require the shared OJW window query path")
+    cfg = ObsLoopConfig.from_values(values, Path(repo_root))
+    if cfg.boundary_mode != "fixed" or cfg.condition_tail_chars or cfg.vad_trim_min_seconds:
+        raise CoreError("prepared window packets require fixed untrimmed windows without a tail")
+    if values.get("speech_packet_promotion_receipt") is not None:
+        raise CoreError("window and whole-sample packet bindings cannot be combined")
+    path = declaration["path"]
+    if not isinstance(path, str) or not Path(path).is_absolute():
+        raise CoreError("prepared window packet path must be absolute")
+    resolved_path = Path(path).resolve(strict=True)
+    if not resolved_path.is_relative_to(Path(data_root).resolve(strict=True)):
+        raise CoreError("prepared window packet artifact must stay under data_root")
+    prepared = load_prepared_window_feature_packets(
+        resolved_path, declaration["sha256"], Path(data_root),
+    )
+    server_env = values.get("server_env") or {}
+    feature_root = values.get("speech_feature_root")
+    if (
+        not isinstance(feature_root, str) or not Path(feature_root).is_absolute()
+        or Path(feature_root).resolve() != Path(prepared.feature_root).resolve()
+        or server_env.get("LLAMA_SPEECH_FEATURE_ROOT") != feature_root
+        or server_env.get("LLAMA_SPEECH_DECODER_SHA256")
+        != prepared.encoder_identity["decoder_gguf_sha256"]
+    ):
+        raise CoreError("window packets disagree with the configured feature root or decoder")
+    # A frozen OBS plan may consume an explicit subset of a shared artifact.
+    # Validate the selected spans below; never silently narrow an ordinary run.
+    if cfg.unit_plan is not None:
+        from dataclasses import replace
+        from types import MappingProxyType
+        selected = {}
+        for sample in samples:
+            units = cfg.unit_plan.units_by_sample.get(sample.sample_id)
+            if units is None:
+                raise CoreError("window packet roster is absent from the OBS plan")
+            for index in range(1, len(units) + 1):
+                key = f"{sample.sample_id}#w{index:04d}"
+                if key not in prepared.by_request_key:
+                    raise CoreError("planned window has no prepared packet")
+                selected[key] = prepared.by_request_key[key]
+        prepared = replace(
+            prepared, bindings=tuple(selected.values()),
+            by_request_key=MappingProxyType(selected),
+            request_count=len(selected),
+            unique_packet_count=len({binding.packet_id for binding in selected.values()}),
+        )
+    sample_ids = {str(sample.sample_id) for sample in samples}
+    bound_ids = {
+        str(binding.sources[0]["source_provenance"]["sample_id"])
+        for binding in prepared.bindings
+    }
+    if bound_ids != sample_ids:
+        raise CoreError("window packet source roster does not exactly match the flight")
+    # Prove the whole selected sequence before the first window can be sent.
+    # Repair parents and selective OBS plans already pin exact decoded spans.
+    predecessor = None
+    if cfg.unit_plan is None and values.get("predecessor_snapshot") is not None:
+        from ..predecessor_snapshot import binding_from_values
+        from ...reproduction.repair_loop import _bound_snapshot
+        relative, sha256 = binding_from_values(values)
+        predecessor = _bound_snapshot(
+            str(Path(repo_root) / "docs" / relative), str(Path(data_root)), sha256,
+        )
+    for sample in samples:
+        if cfg.unit_plan is not None:
+            units = cfg.unit_plan.units_by_sample.get(sample.sample_id)
+            if units is None:
+                raise CoreError("window packet roster is absent from the OBS plan")
+            spans = [(round(unit.cut_start_seconds * 16000) / 16000,
+                      round(unit.cut_end_seconds * 16000) / 16000) for unit in units]
+        elif predecessor is not None:
+            spans = [(window.start_seconds, window.end_seconds)
+                     for window in predecessor.for_sample(sample.sample_id)]
+        else:
+            from ...reproduction.obs_loop import decode_parent_pcm, SLICE_SAMPLE_RATE_HZ
+            rate = SLICE_SAMPLE_RATE_HZ
+            duration = len(decode_parent_pcm(Path(data_root) / sample.media_relpath, rate)) / rate
+            spans = []
+            cursor = 0.0
+            while cursor < duration - 1e-6:
+                end = min(round((cursor + cfg.buffer_seconds) * rate) / rate, duration)
+                spans.append((round(cursor * rate) / rate, end))
+                cursor = end
+        expected = {f"{sample.sample_id}#w{index:04d}": span
+                    for index, span in enumerate(spans, 1)}
+        actual = {
+            key: (binding.sources[0]["source_provenance"]["start_seconds"],
+                  binding.sources[0]["source_provenance"]["end_seconds"])
+            for key, binding in prepared.by_request_key.items()
+            if binding.sources[0]["source_provenance"]["sample_id"] == sample.sample_id
+        }
+        if expected != actual:
+            raise CoreError("window packets do not exactly cover the configured window sequence")
+    for name in ("speech_feature_key_representation_id", "speech_feature_matcher_policy_id"):
+        if not isinstance(values.get(name), str) or not values[name]:
+            raise CoreError(f"window packets require a nonempty {name}")
+    return prepared
+
+
 def _speech_feature_queries(
     values: Mapping[str, object], samples: Sequence[object]
 ) -> dict[str, Mapping[str, str]]:
@@ -632,7 +744,10 @@ def run_experiment(
         samples = [s for s in carrier_samples if s.sample_id in sample_ids]
         if {s.sample_id for s in samples} != sample_ids:
             raise CoreError("split ids missing from the carrier's loaded samples")
-        speech_feature_query_by_sample = _speech_feature_queries(values, samples)
+        window_feature_packets = load_window_packet_binding(values, samples, root, repo_root)
+        speech_feature_query_by_sample = (
+            {} if window_feature_packets is not None else _speech_feature_queries(values, samples)
+        )
         # Acoustic exemplar banks (core.exemplars module docstring):
         # resolved HERE, right after `samples` becomes available -- same
         # "before any other per-run work" family as evidence_budget_bytes/
@@ -819,6 +934,8 @@ def run_experiment(
                     # reproduction.obs_loop's slice-parallel pass reads it and
                     # falls back to its historical per-sample pool when absent.
                     "obs_dispatcher": obs_dispatcher,
+                    **({"window_feature_packets": window_feature_packets}
+                       if window_feature_packets is not None else {}),
                     **(
                         {
                             "speech_feature_query": speech_feature_query_by_sample[

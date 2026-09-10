@@ -967,6 +967,8 @@ class FlightRuntime:
         self._phase_review_receipt: Mapping[str, object] | None = None
         self._phase_review_material: Mapping[str, object] | None = None
         self._promotion_receipt: Mapping[str, object] | None = None
+        self._window_feature_packets = None
+        self._window_feature_packet_config = None
         self._construction_material: ProposerMaterial | None = None
         self._owns_session = False
         # E7: set only when this flight ATTACHED to an always-on serving
@@ -1855,6 +1857,24 @@ class FlightRuntime:
             self._construction_material = material
         return self._construction_material
 
+    def window_feature_packet_binding(self):
+        """Load one immutable window map per composed source binding."""
+        from ..driver.run import load_window_packet_binding
+
+        declaration = self._composed.values.get("prepared_window_feature_packets")
+        if declaration is None:
+            return None
+        identity = _canonical_hash({
+            "values": self._composed.values,
+            "samples": [sample.sample_id for sample in self._samples],
+        })
+        if getattr(self, "_window_feature_packet_config", None) != identity:
+            self._window_feature_packets = load_window_packet_binding(
+                self._composed.values, self._samples, self._data_root, self._repo_root,
+            )
+            self._window_feature_packet_config = identity
+        return self._window_feature_packets
+
     def _promotion_receipt_path(self) -> Path:
         value = self._composed.values.get("speech_packet_promotion_receipt")
         if not isinstance(value, str) or not value:
@@ -1917,7 +1937,11 @@ class FlightRuntime:
                 "model fragment must declare 'speech_feature_root'"
             )
         root = Path(value)
-        promotion_root = Path(str(self._load_promotion_receipt()["feature_root"]))
+        window_packets = self.window_feature_packet_binding()
+        promotion_root = (
+            Path(window_packets.feature_root) if window_packets is not None
+            else Path(str(self._load_promotion_receipt()["feature_root"]))
+        )
         if root != promotion_root:
             raise FlightRuntimeError(
                 f"model fragment speech_feature_root {root} disagrees with the "
@@ -1953,6 +1977,18 @@ class FlightRuntime:
                     "this arm's D2 field set carries no speech_feature_parts; its audio "
                     "travels through the mmproj at request time and no packet is promoted"
                 ),
+            }
+        window_packets = self.window_feature_packet_binding()
+        if window_packets is not None:
+            return tuple(sorted({entry.packet_id for entry in window_packets.bindings})), {
+                "audio_path": "mmproj-free-window-speech-feature-packets",
+                "packets_required": True,
+                "feature_root": window_packets.feature_root,
+                "prepared_window_feature_packets": dict(
+                    self._composed.values["prepared_window_feature_packets"]
+                ),
+                "request_count": window_packets.request_count,
+                "new_encoder_contacts": 0,
             }
         promotion = self._load_promotion_receipt()
         feature_root = self._speech_feature_root()
@@ -2026,7 +2062,7 @@ class FlightRuntime:
         )
         duration = max(self._clock() - started, 1e-9)
         packet_validation_seconds = 0.0
-        if self.uses_speech_feature_packets():
+        if self.uses_speech_feature_packets() and self.window_feature_packet_binding() is None:
             from ...rails.core_client import validate_speech_packet_set
 
             values = self._composed.values
@@ -3805,7 +3841,7 @@ class FlightRuntime:
             return None
         return self.materialize_window_batch(execution_plan=execution_plan)
 
-    def materialize_window_batch(self, *, execution_plan=None, max_workers: int = 1):
+    def materialize_window_batch(self, *, execution_plan=None, max_workers: int | None = None):
         """Build the configured E21 raw-window requests without model contact."""
         from ..base import SampleContext
         from ..model.slices import SliceRegistry
@@ -3817,6 +3853,9 @@ class FlightRuntime:
         )
         from ...reproduction.repair_loop import build_repair_window_hook
 
+        values, _carrier, _split, _identity = self._prepare()
+        if max_workers is None:
+            max_workers = values.get("window_preparation_workers", 1)
         if isinstance(max_workers, bool) or not isinstance(max_workers, int) or not 1 <= max_workers <= 20:
             raise PreparationError("window preparation max_workers must be between 1 and 20")
         from ..flight_lock import read_flight_lock
@@ -3824,7 +3863,6 @@ class FlightRuntime:
         # enforces the lower campaign cap even if a caller says it is idle.
         if read_flight_lock(self._data_root) is not None:
             max_workers = min(max_workers, 8)
-        values, _carrier, _split, _identity = self._prepare()
         if self._adapter.preprocess_plan().get("kind") != "raw-speech-windows":
             raise PreparationError(
                 "window fit requires the E21 raw-speech-windows adapter"
@@ -3856,6 +3894,7 @@ class FlightRuntime:
                 for sample in self._samples
             },
         )
+        window_packets = self.window_feature_packet_binding()
         contexts = []
         for sample in self._samples:
             contexts.append(
@@ -3876,6 +3915,8 @@ class FlightRuntime:
                         "config_values": values,
                         "execution_plan": plan,
                         "obs_dispatcher": None,
+                        **({"window_feature_packets": window_packets}
+                           if window_packets is not None else {}),
                     },
                 )
             )
@@ -3927,6 +3968,8 @@ class FlightRuntime:
         }
         if window_batch is not None:
             from ...reproduction import obs_loop, repair_loop, window_controller
+            from ...reproduction.ojw import components as ojw_components
+            from ...reproduction.ojw import policy as ojw_policy, state as ojw_state
             from .. import class_lists, evidence, evidence_derivation, preparation_windows
             from ..driver import run as driver_run
             from ..driver.run import (
@@ -3934,9 +3977,20 @@ class FlightRuntime:
                 materialize_evidence_binding,
             )
 
+            if context["values"].get("prepared_window_feature_packets") is not None:
+                from .. import preparation_window_packets
+                sources["prepared_window_feature_packets"] = dict(
+                    context["values"]["prepared_window_feature_packets"]
+                )
+                sources["implementation"]["preparation_window_packets"] = _sha256_file(
+                    Path(preparation_window_packets.__file__)
+                )
             sources["window_implementation"] = {
                 module.__name__: _sha256_file(Path(module.__file__))
-                for module in (obs_loop, repair_loop, preparation_windows)
+                for module in (
+                    obs_loop, repair_loop, preparation_windows, window_controller,
+                    driver_run, ojw_components, ojw_policy, ojw_state,
+                )
             }
             prepared_binding = getattr(window_batch, "evidence_binding", None)
             if prepared_binding is None:
@@ -3979,7 +4033,11 @@ class FlightRuntime:
                 window_sources=list(
                     preparation_fit.canonical_window_sources(window_batch.source_bindings)
                 ),
-                window_measurement="resident-multimodal-input-tokens",
+                window_measurement=(
+                    "resident-template-tokenizer-and-bound-packet-counts"
+                    if context["values"].get("prepared_window_feature_packets") is not None
+                    else "resident-multimodal-input-tokens"
+                ),
             )
         return artifact_inputs(
             config=context["values"],

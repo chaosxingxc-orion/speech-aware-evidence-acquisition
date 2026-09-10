@@ -233,46 +233,25 @@ class FrozenCoreASR(WorkflowComponent):
             instruction = f"{instruction}\n\n{cfg.boundary_prompt_text}"
         if tail:
             instruction = f"{instruction}\n\n{OBS_TAIL_FRAME_V1.format(tail=tail)}"
-        # The per-window hook's instruction leg (KC-E1f; drift #2 of the
-        # 2026-09-08 assessment, closed by the Decision 12-F port). It rides on
-        # the FULLY rendered instruction -- after the boundary template and
-        # after the conditioned tail -- which is exactly where the plain
-        # policy's own two cutters call it, so one seam is one string on every
-        # executor. The record comes from the driver-side state
-        # (``ObsSampleState.slice_record_for``: a SliceRecord is a run object
-        # and the framework channel carries only the JSON slice_spec).
-        if state.window_hook is not None:
-            instruction = state.window_hook.instruction(
-                iteration=slice_spec["iteration"],
-                record=state.slice_record_for(slice_spec["iteration"]),
-                default=instruction,
-            )
+        # Share exact request construction with offline capacity materialization.
+        # The framework still owns its static inputs, tail, and decoding slot.
+        from types import SimpleNamespace
+        from ..obs_loop import window_request_factory
 
-        slice_ref = SampleRef(
-            carrier_lock_key=sample_view["carrier_lock_key"],
-            sample_id=sample_view["sample_id"],
-            media_relpath=slice_spec["relpath"],
-            audio_seconds=slice_spec["slice_seconds"],
-            sample_rate_hz=state.rate,
+        record = state.slice_record_for(slice_spec["iteration"])
+        request_context = SimpleNamespace(
+            arm=arm, task_instruction=instruction, decoding_params=decoding_params,
+            request_id_base=sample_view["request_id_base"],
+            retrieval_query=retrieval_query, exemplar_bank=None,
+            extras=state.request_extras,
         )
-        base_request_id = (
-            f"{sample_view['request_id_base']}-i{slice_spec['iteration']:04d}"
+        base_request_id, _payload = window_request_factory(
+            request_context,
+            (slice_spec["iteration"], record, slice_spec["is_final"],
+             slice_spec["slice_seconds"], slice_spec.get("pre_sha256"), None),
+            sample=state.sample, rate=state.rate, evidence=evidence,
+            window_hook=state.window_hook,
         )
-        # Deferred import (same reason as the plain policy): core.policies
-        # registers the ojw policy, so importing build_arm_payload at module
-        # level here would be circular; by run time both are always loaded.
-        from ...core.policies import build_arm_payload  # noqa: PLC0415
-
-        def _payload(rid):
-            return build_arm_payload(
-                arm,
-                slice_ref,
-                rid,
-                instruction,
-                decoding_params,
-                evidence=evidence,
-                retrieval_query=retrieval_query,
-            )
 
         # Per-slice saturation (obs_loop._slice_saturated): read the decode
         # cap from the SAME composed decoding_params every slice payload

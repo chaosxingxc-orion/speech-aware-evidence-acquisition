@@ -504,4 +504,15 @@ def materialize_window_requests(
     sources = tuple(row for batch in batches for row in batch[2])
     if not payloads:
         raise PreparationError("window fit materialized no requests")
+    for ctx in contexts:
+        prepared = ctx.extras.get("window_feature_packets")
+        if prepared is not None:
+            expected = {
+                key for key, binding in prepared.by_request_key.items()
+                if binding.sources[0]["source_provenance"]["sample_id"] == ctx.sample.sample_id
+            }
+            actual = {key for key, source in zip(keys, sources, strict=True)
+                      if source["sample_id"] == ctx.sample.sample_id}
+            if expected != actual:
+                raise PreparationError("prepared window packets do not exactly cover selected requests")
     return WindowRequestBatch(payloads, keys, sources, evidence_binding=evidence_binding)

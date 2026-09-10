@@ -1,0 +1,14 @@
+{
+  "run_id": "SAEA-E21-DR-PACKETS-UNIT-FIT-V1",
+  "execution_profile": "bounded-discovery-probe",
+  "carrier_lock_key": "earnings21-original",
+  "split_role": "discovery",
+  "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+  "planned_model_calls": 4780,
+  "planned_gpu_hours": 1.2,
+  "planned_speech_audio_seconds": 150000,
+  "protocol_hash": "0811d2cbbc699cfa9738ac95fb87635ae672f1fbc26b779811f7210f42b00cd9",
+  "attempt_id": "attempt-20260910-dr-packets-unit-fit-v1",
+  "schema": "saea-execution-plan-v1",
+  "study": "speech-aware-evidence-acquisition"
+}

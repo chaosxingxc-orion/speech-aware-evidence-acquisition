@@ -422,9 +422,10 @@ def fit_phase_runtime(
                     )
                 ),
                 request_key=None if window_batch is None else window_batch.request_key,
-                request_measure=None
-                if window_batch is None
-                else measure_multimodal_request,
+                request_measure=(
+                    None if window_batch is None or "speech_feature_parts" in payloads[0]
+                    else measure_multimodal_request
+                ),
             )
             return {
                 **result,

@@ -140,13 +140,24 @@ class ControllerWindowHook:
                     "retried window changed its speech or instruction"
                 )
             return existing.contact.instruction
+        packet_id, packet_sha256, query_source = (
+            record.media_relpath, record.sha256, "speech_audio"
+        )
+        prepared_packets = self._ctx.extras.get("window_feature_packets")
+        if prepared_packets is not None:
+            binding = prepared_packets.binding_for(
+                f"{self._ctx.sample.sample_id}#w{iteration + 1:04d}", record.trace_view()
+            )
+            packet_id, packet_sha256, query_source = (
+                binding.packet_id, binding.packet_sha256, "speech_features"
+            )
         query = QueryState(
             query_id=f"{self._ctx.request_id_base}-i{iteration:04d}",
             query_sample_id=self._ctx.sample.sample_id,
-            speech_packet_id=record.media_relpath,
-            speech_packet_sha256=record.sha256,
+            speech_packet_id=packet_id,
+            speech_packet_sha256=packet_sha256,
             use_split_identity_hash=self._split_hash,
-            query_source="speech_audio",
+            query_source=query_source,
         ).validate()
         knowledge = _controller_knowledge(self._ctx)
         context = AgentRuntimeContext(

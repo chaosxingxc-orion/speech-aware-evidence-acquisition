@@ -110,6 +110,8 @@ class ObsSampleState:
     # time per sample, so a per-sample hold is both the in-flight bound and
     # the ``id_slot="per-sample"`` affinity the sentinel asks for.
     dispatcher: object | None = None
+    # Run-bound representation/config facts stay outside framework JSON state.
+    request_extras: dict = field(default_factory=dict)
 
     # -- loop-carried state (single writer per field; see components.py) ----
     cursor: float = 0.0

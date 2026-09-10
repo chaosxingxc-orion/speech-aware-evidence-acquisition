@@ -237,6 +237,7 @@ def _prepare_state(
         # absent (None) for every config written before 2026-09-08, and the
         # runner then takes its historical per-sample slot arithmetic.
         dispatcher=ctx.extras.get("obs_dispatcher"),
+        request_extras=dict(ctx.extras),
     )
 
 

@@ -241,3 +241,33 @@ def test_refuses_duplicate_audit_coverage_before_writes(tmp_path):
     with pytest.raises(PreparationError, match="duplicate"):
         prepare_window_feature_packets(tmp_path / "promotion.json", **kwargs)
     assert not kwargs["feature_root"].exists()
+
+@pytest.mark.parametrize("workers", [0, 21, True])
+def test_refuses_invalid_worker_count_before_promotion(tmp_path, workers):
+    kwargs = _chain(tmp_path)
+    kwargs["workers"] = workers
+    with pytest.raises(PreparationError, match="workers"):
+        prepare_window_feature_packets(tmp_path / "promotion.json", **kwargs)
+    assert not kwargs["feature_root"].exists()
+
+
+def test_binding_refuses_unregistered_request(tmp_path):
+    kwargs = _chain(tmp_path)
+    output = tmp_path / "promotion.json"
+    ref = prepare_window_feature_packets(output, **kwargs)
+    prepared = load_prepared_window_feature_packets(output, ref["sha256"], tmp_path)
+    source = prepared.bindings[0].sources[0]["source_provenance"]
+    with pytest.raises(PreparationError, match="no formal packet"):
+        prepared.binding_for("foreign#w0001", source)
+
+
+def test_loader_refuses_changed_formal_packet_bytes(tmp_path):
+    kwargs = _chain(tmp_path)
+    output = tmp_path / "promotion.json"
+    ref = prepare_window_feature_packets(output, **kwargs)
+    prepared = load_prepared_window_feature_packets(output, ref["sha256"], tmp_path)
+    packet = prepared.bindings[0]
+    feature = kwargs["feature_root"] / packet.packet_id / "chunks/0000.f32"
+    feature.write_bytes(feature.read_bytes()[:-1] + b"x")
+    with pytest.raises(Exception, match="SHA-256|packet"):
+        load_prepared_window_feature_packets(output, ref["sha256"], tmp_path)

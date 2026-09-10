@@ -510,3 +510,27 @@ def test_capacity_identity_normalizes_only_owned_supply_trace_routes():
     changed = deepcopy(external)
     changed["evidence_provenance"][0]["relpath"] = "different-source"
     assert boundary_identity([external]) != boundary_identity([changed])
+
+
+def test_formal_window_fit_counts_bound_packets_instead_of_raw_input_endpoint(tmp_path):
+    from speech_aware_evidence_acquisition.core.preparation_fit import fit_phase_runtime
+    from speech_aware_evidence_acquisition.core.preparation_windows import WindowRequestBatch
+
+    runtime, _policy, _attach, client, kwargs = fit_fixture(tmp_path)
+    payload = {
+        "sample_id": "s1", "media_relpath": "slice.wav", "speech": [7],
+        "speech_feature_parts": [{"packet_id": "q", "sha256": "a" * 64, "role": "query"}],
+    }
+    batch = WindowRequestBatch(
+        (payload,), ("s1#w0001",), ({"sample_id": "s1", "media_relpath": "slice.wav"},),
+    )
+    path = tmp_path / "formal-window-fit.json"
+    fit_phase_runtime(runtime, path, window_batch=batch, **kwargs)
+    output = json.loads(path.read_bytes())["output"]
+    assert output["rows"][0]["speech_tokens"] == 7
+    assert output["rows"][0]["required_tokens"] == 16
+    assert output["rows"][0]["fit_multiple"] == 2.0
+    assert client.calls == [
+        ("GET", "/props"), ("POST", "/apply-template"),
+        ("POST", "/tokenize"), ("POST", "/tokenize"),
+    ]

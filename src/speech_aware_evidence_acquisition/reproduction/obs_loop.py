@@ -1565,6 +1565,32 @@ def window_request_factory(ctx, window, *, sample, rate, evidence,
         )
     )
 
+    packet_kwargs = {}
+    prepared_packets = ctx.extras.get("window_feature_packets")
+    if prepared_packets is not None:
+        if ctx.arm != "speech-feature-query":
+            raise ObsLoopError("window packet binding requires the speech-feature-query arm")
+        binding = prepared_packets.binding_for(
+            f"{sample.sample_id}#w{win_iteration + 1:04d}", record.trace_view()
+        )
+        values = ctx.extras["config_values"]
+        packet_kwargs = {
+            "speech_feature_parts": [{
+                "packet_id": binding.packet_id, "sha256": binding.packet_sha256,
+                "role": "query",
+            }],
+            "speech_packet_sha256": binding.packet_sha256,
+            "query_source": "speech_features",
+            "key_representation_id": values["speech_feature_key_representation_id"],
+            "matcher_policy_id": values["speech_feature_matcher_policy_id"],
+            "mmproj_loaded": False,
+        }
+        # A query-only representation does not invent external knowledge.
+        # Evidence-bearing configurations retain their existing refusal rules.
+        allow_empty_evidence = allow_empty_evidence or (
+            values.get("evidence_source", "none") in (None, "none") and not evidence
+        )
+
     def _payload(
         rid, _slice_ref=slice_ref, _params=decoding_params, _instruction=instruction
     ):
@@ -1603,6 +1629,7 @@ def window_request_factory(ctx, window, *, sample, rate, evidence,
                 [] if "delta_candidates" in ARM_VISIBLE_FIELDS[ctx.arm] else None
             ),
             allow_empty_evidence=allow_empty_evidence,
+            **packet_kwargs,
         )
 
     return base_request_id, _payload
