@@ -83,14 +83,13 @@ def recover_parent_rows(bundle, contract: Mapping):
     windows = wp.stitched_windows_from_trace(trace)
     outputs = {row["sample_id"]: row["text"] for row in bundle.outputs_rows}
     wp.assert_stitch_reproduces_outputs(windows, outputs)
-    costs = {}
-    for record in bundle.trace_records.values():
-        if record.get("channel") != "COST":
-            continue
-        request_id = record["record_id"].split("/", 1)[0]
-        if request_id in costs:
-            raise PredecessorSnapshotError("duplicate per-request cost")
-        costs[request_id] = record["payload"]
+    # VerifiedBundle maps record id to the already-verified payload, not
+    # to the raw channel/record_id/payload envelope.
+    costs = {
+        record_id.removesuffix("/cost"): payload
+        for record_id, payload in bundle.trace_records.items()
+        if record_id.endswith("/cost")
+    }
     rows = []
     for sid in sorted(windows):
         for span in windows[sid]:

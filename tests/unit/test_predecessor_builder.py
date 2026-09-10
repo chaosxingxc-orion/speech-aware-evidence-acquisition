@@ -97,7 +97,7 @@ def _world(tmp_path: Path, *, saturated: bool = True):
             )
             for item in (request, obs, response, cost):
                 trace_lines.append(item)
-                trace_records[item["record_id"]] = item
+                trace_records[item["record_id"]] = item["payload"]
             geometry.append(
                 {
                     "sample_id": sample_id,
@@ -122,7 +122,7 @@ def _world(tmp_path: Path, *, saturated: bool = True):
         )
         for item in (stitch_request, stitch_response):
             trace_lines.append(item)
-            trace_records[item["record_id"]] = item
+            trace_records[item["record_id"]] = item["payload"]
         outputs_rows.append({"sample_id": sample_id, "text": " ".join(filter(None, delivered))})
 
     trace_path = run_dir / f"{RUN_ID}.trace.jsonl"
@@ -361,7 +361,7 @@ def test_missing_duplicate_or_invalid_per_window_cost_refuses(tmp_path):
     costs = [
         key
         for key, record in world["bundle"].trace_records.items()
-        if record["channel"] == "COST"
+        if key.endswith("/cost")
     ]
     del world["bundle"].trace_records[costs[0]]
     with pytest.raises(PredecessorSnapshotError, match="lacks its original cost"):
@@ -370,20 +370,20 @@ def test_missing_duplicate_or_invalid_per_window_cost_refuses(tmp_path):
     world = _world(tmp_path / "duplicate")
     original = next(
         record
-        for record in world["bundle"].trace_records.values()
-        if record["channel"] == "COST"
+        for key, record in world["bundle"].trace_records.items()
+        if key.endswith("/cost")
     )
     world["bundle"].trace_records["duplicate/cost"] = copy.deepcopy(original)
-    with pytest.raises(PredecessorSnapshotError, match="duplicate per-request cost"):
+    with pytest.raises(PredecessorSnapshotError, match="generation contact count"):
         recover_parent_rows(world["bundle"], world["contract"])
 
     world = _world(tmp_path / "invalid")
     original = next(
         record
-        for record in world["bundle"].trace_records.values()
-        if record["channel"] == "COST"
+        for key, record in world["bundle"].trace_records.items()
+        if key.endswith("/cost")
     )
-    original["payload"]["prompt_tokens"] = True
+    original["prompt_tokens"] = True
     with pytest.raises(PredecessorSnapshotError, match="cost is unavailable or invalid"):
         recover_parent_rows(world["bundle"], world["contract"])
 
