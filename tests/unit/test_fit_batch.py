@@ -80,3 +80,21 @@ def test_batch_invalid_plan_refused_before_preparation(tmp_path, defect):
     with pytest.raises(CampaignError):
         coordinate_fit_batch(flights, jobs, **options)
     assert not events
+
+
+def test_module_entry_runs_argument_parser_without_model_contact():
+    """The public module entry must execute main instead of silently exiting."""
+    import os
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[2]
+    env = dict(os.environ, PYTHONPATH=str(root / "src"), PYTHONDONTWRITEBYTECODE="1")
+    result = subprocess.run(
+        [sys.executable, "-m", "speech_aware_evidence_acquisition.core.flight.fit_batch", "--help"],
+        cwd=root, env=env, capture_output=True, text=True, timeout=30,
+    )
+    assert result.returncode == 0
+    assert "--expected-session-id" in result.stdout
+    assert "--plan" in result.stdout
