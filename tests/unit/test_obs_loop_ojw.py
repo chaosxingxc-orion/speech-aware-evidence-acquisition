@@ -27,12 +27,14 @@ with openjiuwen absent; see ``test_obs_loop_ojw_absent.py``).
 """
 
 import asyncio
+from array import array
 import dataclasses
 import hashlib
 import json
 import threading
 import time
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -43,12 +45,19 @@ pytest.importorskip(
 )
 
 import speech_aware_evidence_acquisition.core  # noqa: F401,E402 (populate registries)
+from speech_aware_evidence_acquisition.contracts import ExecutionPlan  # noqa: E402
 from speech_aware_evidence_acquisition.core.base import (  # noqa: E402
     POLICIES,
     EvidenceItem,
     SampleContext,
 )
 from speech_aware_evidence_acquisition.core.model import SliceRegistry  # noqa: E402
+from speech_aware_evidence_acquisition.core.driver.run import (  # noqa: E402
+    materialize_evidence_binding,
+)
+from speech_aware_evidence_acquisition.core.preparation_windows import (  # noqa: E402
+    materialize_window_requests,
+)
 from speech_aware_evidence_acquisition.core.tracing import (  # noqa: E402
     TraceBuffer,
     TraceSink,
@@ -96,6 +105,187 @@ from test_obs_unit_plan import (  # noqa: E402
     _plan_document,
     _plan_values,
 )
+
+
+def test_e21_four_row_fit_matches_real_ojw_controller_contacts(
+    tmp_path, monkeypatch, synthetic_world
+):
+    """The held E21 proof fits and sends the same four synthetic requests."""
+    from test_class_lists import CALL, _install
+
+    source_root = Path(__file__).resolve().parents[2]
+    plan_relpath = "docs/receipts/obs/e21-current-executor-four-row-proof-v1.json"
+    plan_raw = (source_root / plan_relpath).read_bytes()
+    plan = json.loads(plan_raw)
+    call = plan["calls"][0]
+    assert call["sample_id"] == CALL
+
+    class VirtualPcm:
+        """Represent the whole call while allocating only each selected cut."""
+
+        def __len__(self):
+            return round(call["decoded_duration_seconds"] * 16_000)
+
+        def __getitem__(self, bounds):
+            assert isinstance(bounds, slice) and bounds.step is None
+            return array("h", [0]) * (bounds.stop - bounds.start)
+
+    predecessors = []
+    for parent in call["parent_windows"]:
+        index = parent["window_index"]
+        text = " ".join(
+            f"window{index:02d}word{word:03d}"
+            for word in range(parent["draft_words"])
+        )
+        predecessors.append(
+            SimpleNamespace(
+                window_id=f"{CALL}#w{index:04d}",
+                start_seconds=parent["start_seconds"],
+                end_seconds=parent["end_seconds"],
+                text=text,
+                text_sha256=hashlib.sha256(text.encode()).hexdigest(),
+            )
+        )
+    snapshot = SimpleNamespace(for_sample=lambda sample_id: tuple(predecessors))
+    monkeypatch.setattr(repair_loop, "_bound_snapshot", lambda *args: snapshot)
+
+    values = json.loads(
+        (source_root / "configs/baseline/e21-current-executor-four-row-proof-ojw.json")
+        .read_text(encoding="utf-8")
+    )
+    values["predecessor_snapshot"] = {
+        "receipt_relpath": "receipts/synthetic-predecessor.json",
+        "receipt_sha256": "a" * 64,
+    }
+    values["decoding_params"] = {"temperature": 0, "max_tokens": 1024}
+    values["ojw_workflow_timeout_seconds"] = 0
+    targets = []
+    for unit in call["units"]:
+        predecessor = predecessors[unit["parent_window_index"] - 1]
+        words = predecessor.text.split()
+        targets.append(
+            " ".join(
+                words[
+                    unit["predecessor_word_start"] : unit["predecessor_word_end"]
+                ]
+            )
+        )
+
+    world = _World(
+        tmp_path,
+        monkeypatch,
+        pcm=VirtualPcm(),
+        texts=targets,
+        values=values,
+        arm="fixed-legal-context",
+        sample_id=CALL,
+        decoding_params=values["decoding_params"],
+    )
+    copied_plan = world.repo_root / plan_relpath
+    copied_plan.parent.mkdir(parents=True, exist_ok=True)
+    copied_plan.write_bytes(plan_raw)
+    assert hashlib.sha256(plan_raw).hexdigest() == values["obs_unit_plan_sha256"]
+
+    lock = _install(synthetic_world)
+    binding = materialize_evidence_binding(
+        lock,
+        synthetic_world.data_root,
+        [world.ctx.sample],
+        values,
+        evidence_budget_bytes=1_000_000,
+    )
+    world.ctx.evidence = list(binding.evidence_by_sample[CALL])
+    assert [item.evidence_id for item in world.ctx.evidence] == [
+        f"conec-class-lists-roster/{CALL}",
+        f"conec-class-lists-document/{CALL}",
+    ]
+    world.ctx.extras["execution_plan"] = ExecutionPlan(
+        run_id=RUN_ID,
+        execution_profile="bounded-discovery-probe",
+        carrier_lock_key="earnings21-original",
+        split_role="discovery",
+        split_identity_hash="b" * 64,
+        planned_model_calls=4,
+        planned_gpu_hours=0.01,
+        planned_speech_audio_seconds=42,
+        protocol_hash="c" * 64,
+        attempt_id="attempt-synthetic",
+    ).validate()
+
+    fitted = materialize_window_requests(
+        [world.ctx],
+        expected_sample_ids=[CALL],
+        hook_factory=build_repair_window_hook,
+        evidence_binding=binding,
+    )
+    assert fitted.request_keys == tuple(f"{CALL}#w{i:04d}" for i in range(1, 5))
+    assert len(fitted.payloads) == len(fitted.source_bindings) == 4
+    assert not world.adapter.payloads
+    assert [source["media_relpath"] for source in fitted.source_bindings] == [
+        f"derived/obs-slices/{RUN_ID}/{CALL}/i{i:04d}.wav" for i in range(4)
+    ]
+    expected_parent_ids = [f"{CALL}#w{i:04d}" for i in (5, 6, 9, 11)]
+    for source, unit in zip(fitted.source_bindings, call["units"], strict=True):
+        assert source["start_seconds"] == pytest.approx(unit["start_seconds"])
+        assert source["end_seconds"] == pytest.approx(unit["end_seconds"])
+        assert source["audio_seconds"] == pytest.approx(
+            (
+                round(unit["end_seconds"] * 16_000)
+                - round(unit["start_seconds"] * 16_000)
+            )
+            / 16_000
+        )
+        assert (world.data_root / source["media_relpath"]).is_file()
+
+    world.ctx.extras["slice_registry"] = SliceRegistry(
+        data_root=world.data_root,
+        run_id=RUN_ID,
+        parent_facts={CALL: (world.parent_relpath, world.duration)},
+    )
+    outcome = ObsRepairLoopOjwPolicy().run_sample(world.ctx)
+    assert outcome.admitted
+    assert len(world.adapter.payloads) == 4
+    assert {
+        payload["request_id"]: payload for payload in fitted.payloads
+    } == {
+        payload["request_id"]: payload for payload in world.adapter.payloads
+    }
+
+    trace = [
+        json.loads(line)
+        for line in (world.run_dir / f"{RUN_ID}.trace.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ]
+    obs = [row["payload"] for row in trace if row["record_id"].endswith("/obs")]
+    uses = [
+        row["payload"]
+        for row in trace
+        if row["record_id"].endswith("/window-controller")
+    ]
+    assert len(obs) == len(uses) == 4
+    assert [row["obs_repair_predecessor_window_id"] for row in obs] == expected_parent_ids
+    by_request = {payload["request_id"]: payload for payload in world.adapter.payloads}
+    for index, (observed, used, source) in enumerate(
+        zip(obs, uses, fitted.source_bindings, strict=True)
+    ):
+        assert used["use_query_state"]["query_source"] == "speech_audio"
+        assert used["use_query_state"]["speech_packet_id"] == source["media_relpath"]
+        assert used["use_query_state"]["speech_packet_sha256"] == source["sha256"]
+        request_id = used["use_terminal_request_id"]
+        assert used["use_contact"]["instruction"] == by_request[request_id]["task_instruction"]
+        assert used["use_sealed_state"]["content"] == targets[index]
+        assert used["use_sealed_state"]["source_response_sha256"] == hashlib.sha256(
+            targets[index].encode()
+        ).hexdigest()
+        assert used["use_delivered_text_sha256"] == hashlib.sha256(
+            observed["obs_delivered_text"].encode()
+        ).hexdigest()
+        assert used["use_transition"]["action_kind"] == "stop"
+    assert any(
+        used["use_sealed_state"]["content"] != observed["obs_delivered_text"]
+        for observed, used in zip(obs, uses, strict=True)
+    )
 
 
 def _scenario(name):
