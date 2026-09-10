@@ -1,0 +1,46 @@
+{
+  "experiment_id": "SAEA-E21-FOUR-WINDOW-CPU-ENCODING-V1",
+  "date": "2026-09-10",
+  "purpose": "Encode the four already fixed exact construction WAVs once through the root-owned CPU preprocessing service. This preparation stage is separate from scientific generation and preserves the raw-audio protocol. Do not interpret the one-token preprocessing output as a task answer.",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 4,
+    "planned_gpu_hours": 0.25,
+    "planned_speech_audio_seconds": 44
+  },
+  "window_feature_preparation": {
+    "inventory_relpath": "analysis/SAEA-E21-MF-FOUR-WINDOW-INVENTORY-V2/window-inventory.json",
+    "inventory_sha256": "c011c46ce7d09b5664a54c14b9cdc2d805ec698188357c717fca0cdd03c21bd2",
+    "source_run_id": "SAEA-E21-CURRENT-EXECUTOR-FEATURE-PROOF-V2",
+    "expected_n_embd": 2048,
+    "instruction": "Observe the complete speech signal for deterministic feature preprocessing. Respond with OK."
+  },
+  "budget_basis": "Exactly four unique raw-audio inputs totaling 41.8403125 seconds; max_tokens=1 only materializes the encoder cache and closes each registered request. The 0.25 hour cap remains an upper bound, not a predicted GPU use: decoder layers and projector run on CPU. Record wall time and actual GPU measurements separately. No retries, extra samples or scientific scoring are admitted.",
+  "cells": [
+    {
+      "cell_id": "e21-four-window-cpu-encoding",
+      "run_id": "SAEA-E21-FOUR-WINDOW-CPU-ENCODING-V1",
+      "attempt_id": "attempt-20260910-four-window-cpu-encoding-v1",
+      "model_fragment": "q4km-e21-feature-preprocess-cpu-cddb000c-np1",
+      "dataset_fragment": "e21-current-executor-feature-proof-v2",
+      "baseline_fragment": "window-feature-preprocess-ojw",
+      "allowed_execution_stages": [
+        "prepare-window-features"
+      ],
+      "readiness": {
+        "state": "ready",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "analysis/SAEA-E21-MF-FOUR-WINDOW-INVENTORY-V2/window-inventory.json",
+            "sha256": "c011c46ce7d09b5664a54c14b9cdc2d805ec698188357c717fca0cdd03c21bd2",
+            "reason": "Exact-four source inventory must exist unchanged"
+          }
+        ]
+      }
+    }
+  ],
+  "service_session_id": "serving-e21-four-window-cpu-encoding-v1",
+  "output_relpath": "analysis/SAEA-E21-FOUR-WINDOW-CPU-ENCODING-V1/window-encoding.json"
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "saea-root-engineering-review-v1",
+  "date_utc": "2026-09-10",
+  "status": "shared-entry-and-consumer-wiring-verified-live-serving-pending",
+  "reviewed_commits": [
+    "83eeaacc",
+    "e227d3e6",
+    "a29950c2",
+    "af428980"
+  ],
+  "root_findings_fixed": [
+    "Reject invalid one-token encoding parameters before opening the metered attempt.",
+    "Close the encoder client if the immutable artifact start marker refuses before producer entry.",
+    "Bind stop-wrapper raw file bytes, including whitespace-only mutation.",
+    "Use the same configured transport builder for encoder attachment, actual fit and normal generation.",
+    "Preserve root-owned explicit preparation-stage lease and normal inference defaults."
+  ],
+  "validation": {
+    "combined_regression": {
+      "passed": 407,
+      "skipped": 1
+    },
+    "post_review_focused": {
+      "passed": 102
+    },
+    "new_encoder_orchestration_branch_coverage_percent": 83,
+    "configured_transport_branch_coverage_percent": 88,
+    "engineering_base": "PASS",
+    "model_contacts": 0
+  },
+  "limits": [
+    "Tests use synthetic sources and clients; they do not qualify actual cache serving.",
+    "Actual four-input CPU encoding is separately preregistered and remains pending at this review.",
+    "G5 and G6 are incomplete; G3/G4 remain scientifically held."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "arm": "bare-core",
+  "policy": "obs-agent-loop-ojw",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "scorers": [
+    "cost"
+  ],
+  "task_instruction": "Observe the complete speech signal for deterministic feature preprocessing. Respond with OK.",
+  "obs_controller_program": "phase-direct-only-v1",
+  "obs_boundary_mode": "fixed",
+  "obs_condition_tail_chars": 0,
+  "obs_vad_trim_min_seconds": 0,
+  "preprocess_baseline_basis": "Use the shared carrier adapter and gate for exact, already materialized window encoding. The preparation inventory supplies each immutable slice; this stage performs no new observation selection, scientific answering or scoring. Generation modes remain disabled in preparation cells."
+}

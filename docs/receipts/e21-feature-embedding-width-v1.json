@@ -1,0 +1,26 @@
+{
+  "schema": "saea-gguf-encoding-width-readout-v1",
+  "runtime_receipt_sha256": "d8c703fae0fe0b4e5e7ab9890553c5dfc6f8f33ffe744e9e7faf140630f22218",
+  "files": [
+    {
+      "path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "receipt_file_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+      "metadata": {
+        "general.architecture": "qwen3vlmoe",
+        "qwen3vlmoe.embedding_length": 2048
+      }
+    },
+    {
+      "path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+      "receipt_file_sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883",
+      "metadata": {
+        "general.architecture": "clip",
+        "clip.vision.projection_dim": 2048,
+        "clip.vision.embedding_length": 1152,
+        "clip.audio.projection_dim": 2048,
+        "clip.audio.embedding_length": 1280
+      }
+    }
+  ],
+  "model_contacts": 0
+}

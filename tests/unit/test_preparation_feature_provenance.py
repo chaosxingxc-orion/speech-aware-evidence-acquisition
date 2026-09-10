@@ -88,8 +88,14 @@ def _world(tmp_path, *, audio=("1" * 64, "2" * 64)):
             "build_commit": _identity()["build_commit"],
         },
         "gguf_files": [
-            {"path": "models/decoder.gguf", "sha256": _identity()["decoder_gguf_sha256"]},
-            {"path": "models/mmproj-audio.gguf", "sha256": _identity()["mmproj_sha256"]},
+            {
+                "path": "models/decoder.gguf",
+                "sha256": _identity()["decoder_gguf_sha256"],
+            },
+            {
+                "path": "models/mmproj-audio.gguf",
+                "sha256": _identity()["mmproj_sha256"],
+            },
         ],
     }
     runtime_path = tmp_path / "runtime.json"
@@ -102,7 +108,13 @@ def _world(tmp_path, *, audio=("1" * 64, "2" * 64)):
         session_id="root-preprocess-session",
         binary_path="bin/llama-server",
         binary_sha256="e" * 64,
-        argv=("llama-server", "-m", "models/decoder.gguf", "--mmproj", "models/mmproj-audio.gguf"),
+        argv=(
+            "llama-server",
+            "-m",
+            "models/decoder.gguf",
+            "--mmproj",
+            "models/mmproj-audio.gguf",
+        ),
         pid=987654,
         host="127.0.0.1",
         port=8081,
@@ -136,7 +148,9 @@ def _world(tmp_path, *, audio=("1" * 64, "2" * 64)):
     inputs = [
         {
             "audio_sha256": sha,
-            "requests": [{"batch": "generation-arm-a", "request_key": f"sample#w{i + 1:04d}"}],
+            "requests": [
+                {"batch": "generation-arm-a", "request_key": f"sample#w{i + 1:04d}"}
+            ],
         }
         for i, sha in enumerate(audio)
     ]
@@ -288,9 +302,7 @@ def test_real_encoding_producer_artifact_flows_into_final_provenance(
         "batches": [
             {
                 "name": "generation-run-with-different-id",
-                "requests": [
-                    {"request_key": request_key, "source_provenance": source}
-                ],
+                "requests": [{"request_key": request_key, "source_provenance": source}],
             }
         ],
         "encoding_inputs": [
@@ -484,17 +496,32 @@ def test_builds_source_bound_complete_provenance_with_foreign_batch_names(
     ("mutation", "message"),
     [
         (_drop_encoding_entry, "coverage"),
-        (lambda record: record["entries"].append(deepcopy(record["entries"][0])), "duplicate"),
+        (
+            lambda record: record["entries"].append(deepcopy(record["entries"][0])),
+            "duplicate",
+        ),
         (lambda record: record["entries"][0].update(audio_sha256="9" * 64), "coverage"),
         (lambda record: record["entries"][0].update(cache_key="9999"), "coverage"),
-        (lambda record: record["entries"][0].update(success=False, status="failed"), "status"),
+        (
+            lambda record: record["entries"][0].update(success=False, status="failed"),
+            "status",
+        ),
         (lambda record: record.update(current_contact_count=1), "contact count"),
         (lambda record: record["cost"].update(calls_used=1), "calls_used"),
-        (lambda record: record.update(runtime_receipt_file_sha256="9" * 64), "runtime receipt"),
-        (lambda record: record.update(session_receipt_file_sha256="9" * 64), "session receipt"),
+        (
+            lambda record: record.update(runtime_receipt_file_sha256="9" * 64),
+            "runtime receipt",
+        ),
+        (
+            lambda record: record.update(session_receipt_file_sha256="9" * 64),
+            "session receipt",
+        ),
         (lambda record: record.update(inventory_sha256="9" * 64), "inventory"),
         (lambda record: record.update(trace_manifest_hash="invalid"), "SHA256"),
-        (lambda record: record["encoder_identity"].pop("mmproj_sha256"), "encoder identity"),
+        (
+            lambda record: record["encoder_identity"].pop("mmproj_sha256"),
+            "encoder identity",
+        ),
         (lambda record: record["entries"][0].update(status="unknown"), "status"),
         (
             lambda record: record["entries"][0].update(source_contact_id="invented"),
@@ -550,9 +577,7 @@ def test_success_record_validator_refuses_partial_failure_status(tmp_path):
             "chunks are missing",
         ),
         (
-            lambda record: record["feature_outputs"][0]["chunks"][0].update(
-                ordinal=1
-            ),
+            lambda record: record["feature_outputs"][0]["chunks"][0].update(ordinal=1),
             "chunk identity",
         ),
         (
@@ -593,11 +618,29 @@ def test_refuses_invalid_encoding_feature_output_descriptors(
 @pytest.mark.parametrize(
     ("target", "mutation", "message"),
     [
-        ("encoding", lambda doc: doc["encoder_identity"].update(mmproj_sha256="9" * 64), "encoder identity"),
-        ("encoding", lambda doc: doc.update(session_id="foreign-session"), "session_id"),
+        (
+            "encoding",
+            lambda doc: doc["encoder_identity"].update(mmproj_sha256="9" * 64),
+            "encoder identity",
+        ),
+        (
+            "encoding",
+            lambda doc: doc.update(session_id="foreign-session"),
+            "session_id",
+        ),
         ("runtime", lambda doc: doc.update(role="inference"), "preprocess"),
-        ("stop", lambda doc: doc.update(runtime_receipt_sha256="9" * 64), "does not match"),
-        ("audit", lambda doc: doc["output"]["encoder_identity"].update(mmproj_sha256="9" * 64), "output hash mismatch"),
+        (
+            "stop",
+            lambda doc: doc.update(runtime_receipt_sha256="9" * 64),
+            "does not match",
+        ),
+        (
+            "audit",
+            lambda doc: doc["output"]["encoder_identity"].update(
+                mmproj_sha256="9" * 64
+            ),
+            "output hash mismatch",
+        ),
     ],
 )
 def test_refuses_wrong_runtime_encoder_session_stop_or_audit_identity(
@@ -677,7 +720,11 @@ def test_refuses_missing_bound_receipt(tmp_path, monkeypatch, target):
     ("stop_mutation", "state", "message"),
     [
         (lambda stop: stop.update(forced=True), PROCESS_STATE_GONE, "forced"),
-        (lambda stop: stop.update(termination_signal="UNKNOWN"), PROCESS_STATE_GONE, "normal"),
+        (
+            lambda stop: stop.update(termination_signal="UNKNOWN"),
+            PROCESS_STATE_GONE,
+            "normal",
+        ),
         (lambda stop: None, PROCESS_STATE_DEFUNCT, "not gone"),
         (lambda stop: None, PROCESS_STATE_RUNNING, "not gone"),
     ],
@@ -710,7 +757,9 @@ def test_warm_reuse_requires_matching_prior_final_provenance(tmp_path, monkeypat
     warm_root.mkdir()
     warm = _world(warm_root)
     record = warm["encoding_document"]
-    for current, prior in zip(record["entries"], world["encoding_document"]["entries"], strict=True):
+    for current, prior in zip(
+        record["entries"], world["encoding_document"]["entries"], strict=True
+    ):
         current.update(
             status="verified-warm-reuse",
             current_contact_id=None,
@@ -728,8 +777,7 @@ def test_warm_reuse_requires_matching_prior_final_provenance(tmp_path, monkeypat
     )["output"]
     assert warm_output["current_contact_count"] == 0
     assert all(
-        entry["status"] == "verified-warm-reuse"
-        for entry in warm_output["entries"]
+        entry["status"] == "verified-warm-reuse" for entry in warm_output["entries"]
     )
 
     record["entries"][0]["source_contact_id"] = "wrong"
@@ -817,9 +865,9 @@ def test_mixed_warm_fresh_feature_outputs_accept_reversed_top_level_order(
 
     result = _prepare(mixed_root, mixed, sources=(prior_path,))
     assert result["cache"] == "cold"
-    output = json.loads(
-        (mixed_root / "provenance.json").read_text(encoding="utf-8")
-    )["output"]
+    output = json.loads((mixed_root / "provenance.json").read_text(encoding="utf-8"))[
+        "output"
+    ]
     assert [item["audio_sha256"] for item in output["feature_outputs"]] == [
         "2" * 64,
         "1" * 64,
@@ -915,7 +963,10 @@ def test_serving_stop_wrapper_refuses_forced_nested_stop(tmp_path):
         )
 
 
-def test_serving_stop_wrapper_mutation_between_reads_refuses(tmp_path, monkeypatch):
+@pytest.mark.parametrize("bytes_only", [False, True])
+def test_serving_stop_wrapper_mutation_between_reads_refuses(
+    tmp_path, monkeypatch, bytes_only
+):
     world = _world(tmp_path)
     wrapper = _serving_stop_wrapper(
         json.loads(world["stop"].read_text(encoding="utf-8")),
@@ -930,8 +981,9 @@ def test_serving_stop_wrapper_mutation_between_reads_refuses(tmp_path, monkeypat
         document, digest_value = original(path, label)
         if Path(path) == world["stop"]:
             changed = dict(document)
-            changed["observed"] = {"changed": True}
-            Path(path).write_text(json.dumps(changed), encoding="utf-8")
+            if not bytes_only:
+                changed["observed"] = {"changed": True}
+            Path(path).write_text(json.dumps(changed) + "\n", encoding="utf-8")
         return document, digest_value
 
     monkeypatch.setattr(module, "_load_json", mutate_after_stop_load)

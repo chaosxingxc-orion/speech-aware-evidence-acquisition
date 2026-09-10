@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from typing import Mapping
 
-from .base import TRANSPORTS
+from .configured_transport import build_configured_transport
 from .config import model_materialization_root
 from .model.paths import _normalized_relative_path, _resolve_confined
 from .model.slices import SliceRegistry
@@ -219,12 +219,14 @@ def prepare_window_feature_encoding(
         )
     if hash_stable_file(session_path, "preprocess session receipt")[1] != session_hash:
         raise PreparationError("preprocess session receipt changed during attachment")
-    transport = (transport_factory or TRANSPORTS.resolve(str(values["transport"])))(
+    transport = build_configured_transport(
         values,
         root,
         session=session,
+        repo_root=Path(context["repo_root"]),
         runtime_receipt=receipt,
         runtime_root=context["runtime_root"],
+        transport_factory=transport_factory,
     )
     kwargs = runtime.frozen_core_client_kwargs(
         plan=checked_plan, gate=gate, transport=LeaseCheckedTransport(transport, guard)
