@@ -2,7 +2,7 @@
 
 This is a model-free closure check of the completed engineering proof SAEA-E21-CURRENT-EXECUTOR-FIRST-FOUR-FULL90-PACKET-PROOF-V2, attempt attempt-20260910-first-four-full90-packet-proof-v2. It records executor connectivity and bounded transport facts only. It does not score the one-call subset, inspect a reference or gold label, or support an effectiveness claim.
 
-The authoritative generation manifest records study commit bb104ffd8c4533bd7f8ab8b10a37c038d8adde3c, configuration hash 0463c37ba507f476a29098a17d555a35ecb48e0c6b3eb2ced332eba78e0c67bf, protocol hash ee8711a2dd14b37c6d4d6659258a66e083836a49767281a58c5354981b5dcb27, and a completed discovery construction subset containing only call 4320211.
+The authoritative generation manifest records study commit bb104ffd8c4533bd7f8ab8b10a37c038d8adde3c, configuration hash 0463c37ba507f476a29098a17d555a35ecb48e0c6b3eb2ced332eba78e0c67bf, protocol hash ee8711a2dd14b37c6d4d6659258a66e083836a49767281a58c5354981b5dcb27, and a completed discovery engineering subset containing only call 4320211.
 
 The trace contains exactly four non-stitch model requests and four matching responses: req-0001-i0000 through req-0001-i0003. Each names the original source call, uses one query-role formal speech packet, has query_source speech_features, and records mmproj_loaded false. Their audio-source hashes, 90-second intervals, and predecessor delivery bindings match the four ordered fixed-window entries in the hash-pinned unit plan. The trace records no supplied evidence, retry, skip, or saturation. It records the shared phase-direct-only-v1 controller with saea-window-controller-context-v1 context and constrained substitution-splice delivery for every window. One stitch response and one sealed output row are present.
 
