@@ -14,11 +14,13 @@ from speech_aware_evidence_acquisition.core.preparation import PreparationError
 from speech_aware_evidence_acquisition.core.preparation_feature_cache import (
     FEATURE_CACHE_AUDIT_STATE,
     build_feature_cache_audit,
+    build_feature_cache_audit_from_inventory_artifact,
     prepare_feature_cache_audit,
 )
 from speech_aware_evidence_acquisition.core.preparation_windows import (
     WindowFeatureEncoderIdentity,
     WindowRequestBatch,
+    prepare_window_feature_inventory,
 )
 
 
@@ -300,7 +302,9 @@ def test_audit_final_recheck_catches_prior_audio_and_parent_mutation(
         "_verify_descriptor_files",
         mutate_source_after_second_entry,
     )
-    with pytest.raises(PreparationError, match="window source changed during final audit"):
+    with pytest.raises(
+        PreparationError, match="window source changed during final audit"
+    ):
         build_feature_cache_audit(
             batches=batches,
             data_root=tmp_path,
@@ -360,9 +364,7 @@ def test_audit_refuses_distinct_audio_with_ambiguous_legacy_key(tmp_path, monkey
         "legacy_audio_feature_cache_key",
         lambda audio: "123456789",
     )
-    (cache / "123456789_o0.feat").write_bytes(
-        struct.pack("<QQ", 2, 4) + b"\x00" * 32
-    )
+    (cache / "123456789_o0.feat").write_bytes(struct.pack("<QQ", 2, 4) + b"\x00" * 32)
     with pytest.raises(PreparationError, match="ambiguous legacy cache key"):
         build_feature_cache_audit(
             batches=batches,
@@ -389,7 +391,8 @@ def test_audit_refuses_concurrent_chunk_mutation(tmp_path, monkeypatch):
         return result
 
     monkeypatch.setattr(
-        audit_module, "inspect_legacy_cached_speech_feature_cache",
+        audit_module,
+        "inspect_legacy_cached_speech_feature_cache",
         mutate_after_inspection,
     )
     with pytest.raises(PreparationError, match="changed during audit"):
@@ -400,3 +403,176 @@ def test_audit_refuses_concurrent_chunk_mutation(tmp_path, monkeypatch):
             legacy_cache_dir=cache,
             expected_n_embd=4,
         )
+
+
+def _prepared_inventory(tmp_path, batches, *, identity=None):
+    path = tmp_path / "prepared" / "inventory.json"
+    receipt = prepare_window_feature_inventory(
+        path,
+        batches=batches,
+        data_root=tmp_path,
+        encoder_identity=identity or _identity(),
+    )
+    return path, receipt["sha256"]
+
+
+def test_saved_inventory_audit_matches_legacy_without_source_writes(tmp_path):
+    batches = {
+        "arm-a": _batch(tmp_path, run="a"),
+        "arm-b": _batch(tmp_path, run="b"),
+    }
+    cache = tmp_path / "legacy-cache"
+    cache.mkdir()
+    _write_cache_for_batches(tmp_path, cache, batches)
+    inventory_path, inventory_sha256 = _prepared_inventory(tmp_path, batches)
+    watched = {
+        path: (path.read_bytes(), path.stat().st_mtime_ns)
+        for path in {
+            tmp_path / source[key]
+            for batch in batches.values()
+            for source in batch.source_bindings
+            for key in ("media_relpath", "parent_media_relpath")
+        }
+    }
+
+    legacy = build_feature_cache_audit(
+        batches=batches,
+        data_root=tmp_path,
+        encoder_identity=_identity(),
+        legacy_cache_dir=cache,
+        expected_n_embd=4,
+    )
+    saved = build_feature_cache_audit_from_inventory_artifact(
+        inventory_path=inventory_path,
+        inventory_sha256=inventory_sha256,
+        data_root=tmp_path,
+        encoder_identity=_identity(),
+        legacy_cache_dir=cache,
+        expected_n_embd=4,
+    )
+
+    assert saved == legacy
+    assert {
+        path: (path.read_bytes(), path.stat().st_mtime_ns) for path in watched
+    } == watched
+
+
+@pytest.mark.parametrize("mutation", ["hash", "kind", "encoder"])
+def test_saved_inventory_audit_refuses_wrong_artifact_binding(tmp_path, mutation):
+    batch = _batch(tmp_path, run="a")
+    batches = {"arm": batch}
+    cache = tmp_path / "legacy-cache"
+    cache.mkdir()
+    _write_cache_for_batches(tmp_path, cache, batches)
+    inventory_path, inventory_sha256 = _prepared_inventory(tmp_path, batches)
+    identity = _identity()
+    if mutation == "hash":
+        inventory_sha256 = "f" * 64
+    elif mutation == "kind":
+        import json
+
+        document = json.loads(inventory_path.read_text())
+        raw = json.dumps(
+            {**document, "kind": "foreign-kind"},
+            ensure_ascii=True,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+        inventory_path.write_bytes(raw)
+        inventory_sha256 = hashlib.sha256(raw).hexdigest()
+    else:
+        identity = _identity("e")
+
+    with pytest.raises(PreparationError):
+        build_feature_cache_audit_from_inventory_artifact(
+            inventory_path=inventory_path,
+            inventory_sha256=inventory_sha256,
+            data_root=tmp_path,
+            encoder_identity=identity,
+            legacy_cache_dir=cache,
+            expected_n_embd=4,
+        )
+
+
+@pytest.mark.parametrize("changed", ["source", "parent"])
+def test_saved_inventory_audit_refuses_changed_source_custody(tmp_path, changed):
+    batch = _batch(tmp_path, run="a")
+    batches = {"arm": batch}
+    cache = tmp_path / "legacy-cache"
+    cache.mkdir()
+    _write_cache_for_batches(tmp_path, cache, batches)
+    inventory_path, inventory_sha256 = _prepared_inventory(tmp_path, batches)
+    key = "media_relpath" if changed == "source" else "parent_media_relpath"
+    (tmp_path / batch.source_bindings[0][key]).write_bytes(b"changed custody")
+
+    with pytest.raises(PreparationError, match="actual bytes"):
+        build_feature_cache_audit_from_inventory_artifact(
+            inventory_path=inventory_path,
+            inventory_sha256=inventory_sha256,
+            data_root=tmp_path,
+            encoder_identity=_identity(),
+            legacy_cache_dir=cache,
+            expected_n_embd=4,
+        )
+
+
+def test_saved_inventory_audit_rechecks_sources_after_cache_inspection(
+    tmp_path, monkeypatch
+):
+    import speech_aware_evidence_acquisition.core.preparation_feature_cache as audit_module
+
+    batch = _batch(tmp_path, run="a")
+    batches = {"arm": batch}
+    cache = tmp_path / "legacy-cache"
+    cache.mkdir()
+    _write_cache_for_batches(tmp_path, cache, batches)
+    inventory_path, inventory_sha256 = _prepared_inventory(tmp_path, batches)
+    parent = tmp_path / batch.source_bindings[0]["parent_media_relpath"]
+    original = audit_module.inspect_legacy_cached_speech_feature_cache
+
+    def mutate_parent(**kwargs):
+        result = original(**kwargs)
+        parent.write_bytes(b"changed during audit")
+        return result
+
+    monkeypatch.setattr(
+        audit_module, "inspect_legacy_cached_speech_feature_cache", mutate_parent
+    )
+    with pytest.raises(PreparationError, match="changed during final audit"):
+        build_feature_cache_audit_from_inventory_artifact(
+            inventory_path=inventory_path,
+            inventory_sha256=inventory_sha256,
+            data_root=tmp_path,
+            encoder_identity=_identity(),
+            legacy_cache_dir=cache,
+            expected_n_embd=4,
+        )
+
+
+def test_saved_inventory_hashes_shared_parent_once_per_source_pass(tmp_path, monkeypatch):
+    from collections import Counter
+    import speech_aware_evidence_acquisition.core.preparation_feature_cache as audit_module
+
+    batches = {
+        "arm-a": _batch(tmp_path, run="a"),
+        "arm-b": _batch(tmp_path, run="b"),
+    }
+    cache = tmp_path / "cache"
+    cache.mkdir()
+    _write_cache_for_batches(tmp_path, cache, batches)
+    inventory_path, inventory_sha256 = _prepared_inventory(tmp_path, batches)
+    parent = tmp_path / batches["arm-a"].source_bindings[0]["parent_media_relpath"]
+    original = audit_module.hash_stable_file
+    reads = Counter()
+
+    def count_read(path, label):
+        reads[path] += 1
+        return original(path, label)
+
+    monkeypatch.setattr(audit_module, "hash_stable_file", count_read)
+    build_feature_cache_audit_from_inventory_artifact(
+        inventory_path=inventory_path, inventory_sha256=inventory_sha256,
+        data_root=tmp_path, encoder_identity=_identity(),
+        legacy_cache_dir=cache, expected_n_embd=4,
+    )
+    assert reads[parent] == 2  # Initial and final passes, regardless of window count.
