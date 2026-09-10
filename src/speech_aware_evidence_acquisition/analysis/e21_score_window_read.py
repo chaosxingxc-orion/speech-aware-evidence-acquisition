@@ -206,10 +206,17 @@ def run(config_path: Path, output: Path) -> dict:
     score_doc = _pinned(receipt["score_result"])
     if bundle.manifest["schema"] == "saea-derived-delivery-v1":
         windows = verified_delivery_windows(bundle)
-    else:
-        windows = wp.stitched_windows_from_trace(
-            Path(bundle.manifest["raw_trace"]["path"])
+    elif any(
+        record.get("obs_relisten") is True
+        for key, record in bundle.trace_records.items() if key.endswith("/obs")
+    ):
+        from .e21_selective_loop_windows import verified_selective_loop_windows
+
+        windows = verified_selective_loop_windows(
+            bundle, repo_root=Path(spec["repo_root"]), data_root=Path(spec["data_root"]),
         )
+    else:
+        windows = wp.stitched_windows_from_trace(Path(bundle.manifest["raw_trace"]["path"]))
     wp.assert_stitch_reproduces_outputs(
         windows, {row["sample_id"]: row["text"] for row in bundle.outputs_rows}
     )
