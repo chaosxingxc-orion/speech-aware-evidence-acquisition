@@ -23,6 +23,7 @@ from .preparation import (
     PreparationError,
     canonical_bytes,
     digest,
+    hash_stable_file as _sha256_file,
     prepare_artifact,
 )
 
@@ -120,30 +121,6 @@ class WindowRequestBatch:
             if identity == (source["sample_id"], source["media_relpath"]):
                 return key
         raise PreparationError("request does not belong to this window batch")
-
-
-def _sha256_file(path: Path, label: str) -> tuple[int, str, tuple[int, int, int]]:
-    try:
-        before = path.stat()
-    except OSError as error:
-        raise PreparationError(f"cannot stat {label} {path}: {error}") from error
-    measured = hashlib.sha256()
-    size = 0
-    try:
-        with path.open("rb") as handle:
-            while chunk := handle.read(1024 * 1024):
-                size += len(chunk)
-                measured.update(chunk)
-    except OSError as error:
-        raise PreparationError(f"cannot read {label} {path}: {error}") from error
-    try:
-        after = path.stat()
-    except OSError as error:
-        raise PreparationError(f"cannot restat {label} {path}: {error}") from error
-    fingerprint = (after.st_ino, after.st_size, after.st_mtime_ns)
-    if (before.st_ino, before.st_size, before.st_mtime_ns) != fingerprint:
-        raise PreparationError(f"{label} changed while it was read")
-    return size, measured.hexdigest(), fingerprint
 
 
 def _read_bytes(

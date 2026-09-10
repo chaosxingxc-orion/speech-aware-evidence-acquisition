@@ -256,6 +256,50 @@ _OBS_OUTPUTS_FIELDS = frozenset(
 MAX_TOKENS_POLICY_KEY = "policy"
 
 
+def _assert_file_fingerprint(
+    path: Path, fingerprint: tuple[int, int, int], label: str
+) -> None:
+    """Refuse a receipt that changed between hashing and JSON loading."""
+
+    from ..preparation import PreparationError
+
+    try:
+        current = path.stat()
+    except OSError as error:
+        raise PreparationError(f"cannot restat {label} {path}: {error}") from error
+    if (current.st_ino, current.st_size, current.st_mtime_ns) != fingerprint:
+        raise PreparationError(f"{label} changed while it was read")
+
+
+def _verify_pinned_file(
+    path: Path, *, expected_size: object, expected_sha256: object, label: str
+) -> str:
+    """Verify the receipt's size and SHA pin against the actual confined file."""
+
+    from ..preparation import PreparationError, hash_stable_file
+
+    if (
+        isinstance(expected_size, bool)
+        or not isinstance(expected_size, int)
+        or expected_size < 0
+    ):
+        raise PreparationError(f"{label} receipt size must be a non-negative integer")
+    if (
+        not isinstance(expected_sha256, str)
+        or len(expected_sha256) != 64
+        or any(char not in "0123456789abcdef" for char in expected_sha256)
+    ):
+        raise PreparationError(f"{label} receipt hash must be a lowercase SHA256")
+    actual_size, actual_sha256, _fingerprint = hash_stable_file(path, label)
+    if actual_size != expected_size:
+        raise PreparationError(
+            f"{label} size {actual_size} does not match receipt size {expected_size}"
+        )
+    if actual_sha256 != expected_sha256:
+        raise PreparationError(f"{label} hash does not match the runtime receipt")
+    return actual_sha256
+
+
 def _canonical_hash(document: object) -> str:
     blob = json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()
@@ -3618,6 +3662,131 @@ class FlightRuntime:
         self._require_exposure_row_unconsumed(plan.run_id)
         require_clean_study_repo(self._repo_root)
         return plan
+
+    def prepare_window_inventory(self, output: Path):
+        """Persist verified exact-window inputs without any model contact."""
+
+        from ..model import FrozenCoreError
+        from ..model.paths import _normalized_relative_path, _resolve_confined
+        from ..preparation import PreparationError, hash_stable_file
+        from ..preparation_windows import (
+            WindowFeatureEncoderIdentity,
+            prepare_window_feature_inventory,
+        )
+
+        values, carrier, _split, split_identity = self._prepare()
+        execution_plan = self._build_execution_plan(
+            values, carrier, split_identity
+        )
+
+        receipt_path = resolve_runtime_receipt_path(self._repo_root, values)
+        receipt_size, receipt_sha256, receipt_fingerprint = hash_stable_file(
+            receipt_path, "runtime receipt"
+        )
+        if receipt_size == 0:
+            raise PreparationError("runtime receipt is empty")
+        receipt = self._runtime_receipt_loader(receipt_path)
+        _assert_file_fingerprint(
+            receipt_path, receipt_fingerprint, "runtime receipt"
+        )
+
+        llama_cpp = receipt.get("llama_cpp")
+        if not isinstance(llama_cpp, Mapping):
+            raise PreparationError("runtime receipt lacks a llama_cpp mapping")
+        build_commit = llama_cpp.get("build_commit")
+        if (
+            not isinstance(build_commit, str)
+            or len(build_commit) != 40
+            or any(char not in "0123456789abcdef" for char in build_commit)
+        ):
+            raise PreparationError(
+                "runtime receipt build_commit must be a lowercase 40-hex commit"
+            )
+
+        try:
+            binary_relpath = _normalized_relative_path(
+                llama_cpp.get("binary_path"), "runtime binary path"
+            )
+            binary_path = _resolve_confined(
+                self._runtime_root,
+                binary_relpath,
+                self._runtime_root,
+                "runtime binary path",
+                strict=True,
+            )
+        except FrozenCoreError as error:
+            raise PreparationError(str(error)) from error
+        _verify_pinned_file(
+            binary_path,
+            expected_size=llama_cpp.get("binary_bytes"),
+            expected_sha256=llama_cpp.get("binary_sha256"),
+            label="runtime binary",
+        )
+
+        gguf_files = receipt.get("gguf_files")
+        if not isinstance(gguf_files, list) or not gguf_files:
+            raise PreparationError("runtime receipt lacks a non-empty gguf_files list")
+        decoder_entries = []
+        mmproj_entries = []
+        for entry in gguf_files:
+            if not isinstance(entry, Mapping):
+                raise PreparationError(
+                    "runtime receipt gguf_files entries must be mappings"
+                )
+            raw_path = entry.get("path")
+            try:
+                relative = _normalized_relative_path(
+                    raw_path, "runtime receipt GGUF path"
+                )
+            except FrozenCoreError as error:
+                raise PreparationError(str(error)) from error
+            target = mmproj_entries if "mmproj" in Path(relative).name.lower() else decoder_entries
+            target.append((entry, relative))
+        if len(decoder_entries) != 1 or len(mmproj_entries) != 1:
+            raise PreparationError(
+                "window inventory requires exactly one decoder and one mmproj GGUF"
+            )
+
+        configured_root = model_materialization_root(values)
+        materialization_root = (
+            Path(configured_root) if configured_root is not None else self._data_root
+        )
+        verified_hashes = {}
+        for role, entries in (
+            ("decoder", decoder_entries),
+            ("mmproj", mmproj_entries),
+        ):
+            entry, relative = entries[0]
+            try:
+                actual_path = _resolve_confined(
+                    materialization_root,
+                    relative,
+                    materialization_root,
+                    f"{role} GGUF path",
+                    strict=True,
+                )
+            except FrozenCoreError as error:
+                raise PreparationError(str(error)) from error
+            verified_hashes[role] = _verify_pinned_file(
+                actual_path,
+                expected_size=entry.get("bytes"),
+                expected_sha256=entry.get("sha256"),
+                label=f"{role} GGUF",
+            )
+
+        encoder_identity = WindowFeatureEncoderIdentity(
+            runtime_receipt_sha256=receipt_sha256,
+            build_commit=build_commit,
+            decoder_gguf_sha256=verified_hashes["decoder"],
+            mmproj_sha256=verified_hashes["mmproj"],
+        )
+        batch = self.materialize_window_batch(execution_plan=execution_plan)
+        return prepare_window_feature_inventory(
+            Path(output),
+            batches={self._run_id: batch},
+            data_root=self._data_root,
+            encoder_identity=encoder_identity,
+        )
 
     def materialize_request_fit_batch(self, *, execution_plan=None):
         """Return raw E21 fit requests, or ``None`` for phase-program fits.
