@@ -83,8 +83,8 @@
       "sha256": "d823c48415a28b9353cc7c7b66e9d1493dbb917200ab70595cbe73045516a581"
     },
     "dataset": {
-      "repo_relpath": "configs/dataset/e21-current-executor-four-row-proof-v1.json",
-      "sha256": "96adfd1706205cb4afe862d2032e569ebee3a064f6e9df976359afe80fdb6196"
+      "repo_relpath": "configs/dataset/e21-current-executor-feature-proof-v2.json",
+      "sha256": "56dff642166670820cce57a998364582f88f7d9f76dafbf6c0d84cef634f0ff8"
     },
     "subset_receipt": {
       "repo_relpath": "docs/receipts/probe-samples/e21-current-executor-four-row-proof-v1.json",
@@ -117,7 +117,7 @@
       "run_id": "SAEA-E21-CURRENT-EXECUTOR-FEATURE-PROOF-V2",
       "attempt_id": "attempt-20260910-feature-proof-v2",
       "model_fragment": "q4km-e21-freshcache-cpu-cddb000c-np6",
-      "dataset_fragment": "e21-current-executor-four-row-proof-v1",
+      "dataset_fragment": "e21-current-executor-feature-proof-v2",
       "baseline_fragment": "e21-current-executor-four-row-proof-ojw",
       "allowed_execution_stages": [
         "prepare-window-inventory"
