@@ -12,6 +12,18 @@
       "cell": "kus4n-twin-successor-v3-fit",
       "output_relpath": "prepared/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3-FIT-V1/request-fit.json",
       "contact_cap": 3001
+    },
+    {
+      "experiment": "slurp-kus4n-candidates-smoke-aligned-v1",
+      "cell": "kus4n-n-smoke-fit",
+      "output_relpath": "prepared/SAEA-SLURP-KUS4N-CANDIDATES-SMOKE-ALIGNED-V1-FIT-V1/request-fit.json",
+      "contact_cap": 13
+    },
+    {
+      "experiment": "slurp-kus4n-candidates-twin-smoke-aligned-v1",
+      "cell": "kus4n-twin-smoke-fit",
+      "output_relpath": "prepared/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-SMOKE-ALIGNED-V1-FIT-V1/request-fit.json",
+      "contact_cap": 13
     }
   ]
 }
