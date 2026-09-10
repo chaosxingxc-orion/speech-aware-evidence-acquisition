@@ -24,7 +24,7 @@ def pinned_json(binding: dict) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def rows_for(document: dict, scorer: str, fields: tuple[str, ...]) -> dict:
+def rows_for(document: dict, scorer: str, fields: tuple[str, ...], *, view: str | None = None) -> dict:
     if document.get("verified") is not True:
         raise ValueError("unverified score job")
     # Complete finalization jobs retain the score path plus inline score_details;
@@ -34,13 +34,39 @@ def rows_for(document: dict, scorer: str, fields: tuple[str, ...]) -> dict:
         scores = document.get("score_details")
     if not isinstance(scores, dict):
         raise ValueError("score job has no retained per-sample score details")
+    try:
+        entry = scores[scorer]
+    except KeyError:
+        raise ValueError(f"score job has no scorer {scorer!r}") from None
+    if not isinstance(entry, dict):
+        raise ValueError(f"score job scorer {scorer!r} is malformed")
+    if view is None:
+        rows_source = entry.get("per_sample")
+    else:
+        if not isinstance(view, str) or not view:
+            raise ValueError("score view must be a non-empty string")
+        views = entry.get("views")
+        if not isinstance(views, dict) or view not in views:
+            raise ValueError(f"score job scorer {scorer!r} has no view {view!r}")
+        selected = views[view]
+        if not isinstance(selected, dict):
+            raise ValueError(f"score view {view!r} is malformed")
+        rows_source = selected.get("per_sample")
+    if not isinstance(rows_source, list):
+        location = "top-level" if view is None else f"view {view!r}"
+        raise ValueError(f"score job scorer {scorer!r} has no retained {location} per-sample rows")
     rows = {}
-    for row in scores[scorer]["per_sample"]:
+    for row in rows_source:
         sid = published_sample_key(row["sample_id"])
         if sid in rows:
             raise ValueError("duplicate published sample ID")
         values = {**row, **row.get("normalized", {})}
-        rows[sid] = {field: float(values[field]) for field in fields}
+        try:
+            rows[sid] = {field: float(values[field]) for field in fields}
+        except (KeyError, TypeError, ValueError) as error:
+            raise ValueError(
+                f"score row {sid!r} is missing or has invalid retained field"
+            ) from error
     if not rows:
         raise ValueError("empty score job")
     return rows
