@@ -56,6 +56,10 @@ from .transport import (  # noqa: E402
     _default_post,
     _llama_server_factory,
 )
+from .prepared_feature_cache import (  # noqa: E402
+    PreparedFeatureCacheError,
+    PreparedFeatureCacheGuard,
+)
 from .speech_features import (  # noqa: E402
     PACKET_MANIFEST_NAME,
     SPEECH_FEATURE_PACKET_SCHEMA,
@@ -82,6 +86,8 @@ __all__ = [
     "CoreResponse",
     "FrozenCoreAdapter",
     "FrozenCoreError",
+    "PreparedFeatureCacheError",
+    "PreparedFeatureCacheGuard",
     "LlamaServerTransport",
     "OBS_SLICES_SUBDIR",
     "PARENT_DURATION_TOLERANCE_SECONDS",

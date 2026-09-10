@@ -82,6 +82,7 @@ from ..session import (
 )
 from . import FrozenCoreError
 from .paths import _normalized_relative_path, _resolve_confined
+from .prepared_feature_cache import PreparedFeatureCacheGuard
 from .speech_features import load_speech_feature_packets
 
 
@@ -389,6 +390,7 @@ class LlamaServerTransport:
         user_turn_audio_first: bool = True,
         omit_system_message: bool = False,
         preserve_wire_responses: bool = False,
+        feature_cache_guard: PreparedFeatureCacheGuard | None = None,
     ) -> None:
         # Prompt ordering is part of the request's identity: the bytes the
         # model sees change with it, so it is a MODEL-CONFIG field (inside the
@@ -504,6 +506,7 @@ class LlamaServerTransport:
                 f"{type(preserve_wire_responses).__name__}"
             )
         self._preserve_wire_responses = preserve_wire_responses
+        self._feature_cache_guard = feature_cache_guard
         # R0 repair T5 (I5): there is no "no session" transport, mirroring the
         # T3 fail-closed constructor discipline for PayloadBindingContext --
         # a caller can never construct a transport that could ever be asked
@@ -893,6 +896,8 @@ class LlamaServerTransport:
                     "request body and would silently override it"
                 )
             body[key] = value
+        if self._feature_cache_guard is not None:
+            self._feature_cache_guard.validate(payload, body)
         return body
 
     def __call__(self, request_bytes: bytes) -> bytes:
