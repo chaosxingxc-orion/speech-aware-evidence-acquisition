@@ -646,15 +646,15 @@ def prepare_window_feature_provenance(
     encoded_sources = [(entry["audio_sha256"], entry["cache_key"]) for entry in entries]
     if set(encoded_sources) != set(audit_sources) or len(encoded_sources) != len(audit_sources):
         raise PreparationError("encoding/cache audit coverage does not match")
-    audit_feature_outputs = [
-        {
-            "audio_sha256": entry["audio_sha256"],
-            "cache_key": entry["cache_key"],
-            "chunks": entry["chunks"],
-        }
+    encoded_feature_map = {
+        (entry["audio_sha256"], entry["cache_key"]): entry["chunks"]
+        for entry in feature_outputs
+    }
+    audit_feature_map = {
+        (entry["audio_sha256"], entry["cache_key"]): entry["chunks"]
         for entry in audit_entries
-    ]
-    if feature_outputs != audit_feature_outputs:
+    }
+    if encoded_feature_map != audit_feature_map:
         raise PreparationError("encoding/cache audit feature outputs do not match")
     if any(entry["status"] == "failed" or entry["success"] is not True for entry in entries):
         raise PreparationError("encoding record contains a failed input")

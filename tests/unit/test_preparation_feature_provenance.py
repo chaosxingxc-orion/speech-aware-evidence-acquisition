@@ -786,6 +786,46 @@ def test_warm_reuse_requires_exact_prior_feature_output_descriptors(
         _prepare(warm_root, warm, sources=(changed_path,))
 
 
+def test_mixed_warm_fresh_feature_outputs_accept_reversed_top_level_order(
+    tmp_path, monkeypatch
+):
+    import speech_aware_evidence_acquisition.core.preparation_feature_provenance as module
+
+    prior = _world(tmp_path)
+    monkeypatch.setattr(module, "process_state", lambda pid: PROCESS_STATE_GONE)
+    _prepare(tmp_path, prior)
+    prior_path = tmp_path / "provenance.json"
+    prior_sha = _sha(prior_path.read_bytes())
+
+    mixed_root = tmp_path / "mixed"
+    mixed_root.mkdir()
+    mixed = _world(mixed_root)
+    record = mixed["encoding_document"]
+    record["entries"][1].update(
+        status="verified-warm-reuse",
+        current_contact_id=None,
+        source_contact_id=prior["encoding_document"]["entries"][1][
+            "current_contact_id"
+        ],
+        source_provenance_receipt_sha256=prior_sha,
+    )
+    record["current_contact_count"] = 1
+    record["cost"]["calls_used"] = 1
+    record["feature_outputs"].reverse()
+    _write_encoding_artifact(mixed["encoding"], record)
+
+    result = _prepare(mixed_root, mixed, sources=(prior_path,))
+    assert result["cache"] == "cold"
+    output = json.loads(
+        (mixed_root / "provenance.json").read_text(encoding="utf-8")
+    )["output"]
+    assert [item["audio_sha256"] for item in output["feature_outputs"]] == [
+        "2" * 64,
+        "1" * 64,
+    ]
+    assert output["current_contact_count"] == 1
+
+
 def test_public_stop_loader_accepts_legacy_shape_and_checks_chain(tmp_path):
     world = _world(tmp_path)
     stop = json.loads(world["stop"].read_text(encoding="utf-8"))
