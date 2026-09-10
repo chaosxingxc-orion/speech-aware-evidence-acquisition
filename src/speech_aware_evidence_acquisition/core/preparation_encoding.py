@@ -118,7 +118,7 @@ def encode_window_feature_cache(*, inventory: Mapping[str, object], data_root: P
                 raise PreparationError("prepared encoding cache differs from current source")
 
     def produce():
-        entries = []; fresh = []; closed = None
+        entries = []; fresh = []; closed = None; active = None
         try:
             for audio, source in sorted(sources.items()):
                 media, content, key = _checked_media(root, source, audio)
@@ -141,6 +141,7 @@ def encode_window_feature_cache(*, inventory: Mapping[str, object], data_root: P
             for audio, source in fresh:
                 # Re-read immediately before each request; earlier contacts cannot stale it.
                 media, _content, key = _checked_media(root, source, audio)
+                active = (audio, key)
                 custody_guard()
                 client.register_slice(_slice(source))
                 client.complete(({"role": "system", "content": instruction}, {"role": "user", "content": [{"type": "input_audio", "media_relpath": source["media_relpath"]}]}), decoding_params=dict(decoding_params))
@@ -162,8 +163,8 @@ def encode_window_feature_cache(*, inventory: Mapping[str, object], data_root: P
                 except BaseException: closed = {}
             attempted_id = getattr(client, "last_attempted_request_id", None)
             if isinstance(attempted_id, str) and attempted_id and attempted_id not in {entry["current_contact_id"] for entry in entries}:
-                entries.append({"audio_sha256": None, "cache_key": None, "status": "failed", "success": False, "current_contact_id": attempted_id, "source_contact_id": None, "source_provenance_receipt_sha256": None})
-            partial = {"schema": SCHEMA, "state": "failed", "inventory_sha256": inventory_sha256, "entries": entries, "trace_manifest_hash": closed.get("trace_manifest_hash"), "cost": closed.get("cost"), "error_type": type(error).__name__}
+                entries.append({"audio_sha256": active[0] if active else None, "cache_key": active[1] if active else None, "status": "failed", "success": False, "current_contact_id": attempted_id, "source_contact_id": None, "source_provenance_receipt_sha256": None})
+            partial = {"schema": "saea-window-feature-encoding-partial-v1", "state": "failed", "study": "speech-aware-evidence-acquisition", "run_id": run_id, "attempt_id": attempt_id, "session_id": session_id, "runtime_receipt_file_sha256": runtime_receipt_file_sha256, "runtime_receipt_document_sha256": runtime_receipt_document_sha256, "session_receipt_file_sha256": session_receipt_file_sha256, "inventory_sha256": inventory_sha256, "encoder_identity": identity, "current_contact_count": sum(entry["status"] == "encoded" for entry in entries), "entries": entries, "trace_manifest_hash": closed.get("trace_manifest_hash"), "cost": closed.get("cost"), "error_type": type(error).__name__}
             try:
                 with Path(output_path).with_name(Path(output_path).name + ".partial.json").open("xb") as stream:
                     stream.write(canonical_bytes(partial))
