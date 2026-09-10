@@ -1,7 +1,7 @@
 {
   "experiment_id": "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-V1",
   "fragment_kind": "saea-slurp-live-phase-experiment-v1",
-  "migration_status": "HELD: configuration and source bindings only; root must formally register the fit and generation before any contact.",
+  "migration_status": "ROOT_REGISTERED: independent live no-supply system control; real phase fits are mandatory before each phase generation.",
   "date": "2026-09-10",
   "purpose": "Full DEV-1000 live two-stage SLURP no-supply control; direct intent/action state is transferred to a slots phase through the shared controller.",
   "split_id": "DEV-1000",
@@ -20,7 +20,7 @@
     "planned_speech_audio_seconds": 6000
   },
   "execution_plan_basis": {
-    "generation": "Root-proposed ceiling for2000phase contacts over1000rows; no extra probes or adaptive repeat. Exposure registration is still pending.",
+    "generation": "A ceiling of 2,100 calls for exactly 2,000 planned phase contacts over 1,000 rows. No extra probes or adaptive repeats.",
     "fit": "The live phase gate declares 1 GET /props plus 3 per-row endpoints for each of two phases: 6,002 contacts for DEV-1000. This is separate from the proposed generation ceiling."
   },
   "cells": [
@@ -39,9 +39,16 @@
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
-        "state": "held",
-        "reason": "Held for root source and model-free wiring review, registered live tokenizer and generation plans, and inherited scientific dependencies. The actual fit runs at each real phase barrier.",
-        "requirements": []
+        "state": "ready",
+        "reason": "Root admits the independent no-supply live control after full model-free wiring and prospective full-stage registration; no S3 treatment decision is required for this fixed baseline.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "coordination/g6-slurp-live-control-model-free-wire-receipt-v1.json",
+            "sha256": "f3936eb620f3133af934cf32dbd75fa3cc40388f6524a3d7a580e7af0b71dbeb",
+            "reason": "Verified full-roster model-free two-stage wiring; not capacity evidence"
+          }
+        ]
       }
     }
   ],
@@ -65,5 +72,9 @@
         "response_phase": "slots"
       }
     }
-  ]
+  ],
+  "scientific_analysis": {
+    "repo_relpath": "docs/readiness/2026-09-10-slurp-live-system-v1/analysis-plan.json",
+    "sha256": "646304a6540eda1483c8d92be7990f075edb0e9b420fef65960c103b58422ef0"
+  }
 }

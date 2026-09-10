@@ -1,0 +1,34 @@
+{
+  "population": {
+    "primary": "historically exposed NEW500",
+    "secondary": [
+      "OLD500",
+      "DEV-1000"
+    ],
+    "roster_changes": false
+  },
+  "comparison": "live speech supply minus live no-supply control; same service process and source, both stages regenerated",
+  "primary_metric": "paired per-sample official SLU-F1 in percentage points, matching the inherited S3 estimand",
+  "standard_reported_metric": "full-manifest official micro SLU-F1; distinguish pooled TP/FP/FN from mean row F1",
+  "uncertainty": {
+    "resamples": 10000,
+    "seed": 20260903,
+    "primary_cluster": "speaker",
+    "interval": "CI90",
+    "weightings": [
+      "natural-mixture",
+      "equal-scenario"
+    ],
+    "sensitivity": "inherited row bootstrap, explicitly secondary"
+  },
+  "candidate_rule": {
+    "primary": "NEW500 natural-mixture row SLU-F1 CI90 lower bound > 0",
+    "pooled_metric": "NEW500 pooled micro SLU-F1 gain > 0",
+    "weighting": "equal-scenario row SLU-F1 point gain > 0",
+    "protection": "NEW500 intent, scenario and action accuracy point changes are each nonnegative; malformed final delivery and output saturation counts do not increase"
+  },
+  "interpretation": "The protection rule is a prospective descriptive policy guard, not a non-inferiority or equivalence test. Historical np8/max64 null margins do not calibrate this np4/max256 live system. A positive first system comparison is bounded discovery evidence, not a new confirmatory or generalization claim.",
+  "further_contact": "No adaptive rerun, reasoning arm, new roster or automatic extra control. Any minimum same-configuration repetition must have a named decision purpose and separate prospective registration.",
+  "cost": "Report all direct and slots generation, two live fits, actual failures/fallbacks, packet/input size, service load, generation, preparation/barrier waiting and score tail separately.",
+  "attribution": "OBS uses identical validated speech features; ORG retains original examples and live predicted intent schema; SUPPLY adds the inherited speech-keyed top-five TRAIN filler supply only in slots; USE remains the same frozen Solver. Report the full system and component references separately."
+}

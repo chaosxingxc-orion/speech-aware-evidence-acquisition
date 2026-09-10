@@ -40,7 +40,7 @@
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
         "state": "held",
-        "reason": "Held for root source and model-free wiring review, registered live tokenizer and generation plans, and inherited scientific dependencies. The actual fit runs at each real phase barrier.",
+        "reason": "Held until independent S3 repeat decision passes, full speech wiring and reusable supply preparation are verified, and root registers this arm. Control results remain unread until the pair is sealed.",
         "requirements": []
       }
     }
@@ -65,5 +65,9 @@
         "response_phase": "slots"
       }
     }
-  ]
+  ],
+  "scientific_analysis": {
+    "repo_relpath": "docs/readiness/2026-09-10-slurp-live-system-v1/analysis-plan.json",
+    "sha256": "646304a6540eda1483c8d92be7990f075edb0e9b420fef65960c103b58422ef0"
+  }
 }
