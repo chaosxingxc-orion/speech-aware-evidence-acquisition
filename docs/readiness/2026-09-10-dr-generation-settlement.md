@@ -1,0 +1,15 @@
+# DR generation settlement without raw-parent scoring
+
+The two DR generation parents declare four deterministic deliveries in their recorded experiment. Each parent owns two of them. Their immutable manifests carry no required_phase_deliveries marker, because they use the legacy whole-window repair delivery contract rather than a live phase-response selector.
+
+The existing phase-only settlement interface required that marker. It therefore could not finalize these attempts after derivative scoring. The normal raw-parent finalize route would perform scoring on the wrong delivery object and is not the authorized closure route. Do not add a marker to the sealed parent or invoke scoring again.
+
+Root extended only core.bundle.settlement. The public settle_delivery_attempt and verify_delivery_settlement interfaces share the existing atomic publication, score receipt verification, zero-additional-contact checks, and finalization transaction. For a markerless OBS parent, the declaration reader opens the exact experiment Git blob at its recorded study commit, selects the matching parent fragments and declared run/attempt identity, and requires every associated delivery score exactly once. It refuses a live phase-response selector without its original marker. Later worktree edits cannot reduce the required delivery set.
+
+Markerless parents receive saea-delivery-settlement-v1 with required_deliveries. Existing marker-backed phase receipts retain their original schema and bytes. Both verify the original parent and derived hashes again after publication before finalizing the attempt. Repeating an identical settlement converges without another generation, score, or cost charge.
+
+Run settlement only after both complete score receipts for a parent exist. Use the new settlement checkout with an explicit PYTHONPATH, and pass the frozen composition checkout as repo_root. Keep current generation, derivation and scoring checkouts unchanged. Every replay implementation file remains byte-identical to the frozen db5cc2a7 scoring source; the settlement module is outside that immutable replay source set.
+
+Validation: 15 focused settlement tests and 79 combined delivery/settlement tests passed, including a real synthetic generation bundle and both actual deterministic replay paths, missing evidence refusal, exact retry, immutable source bytes, recorded-Git declaration recovery, foreign parent refusal, and missing phase-marker refusal. Ruff and engineering-base checks passed. Root also resolved the actual sealed unit parent's declarations without reading score values or mutating its attempt: exactly unit-constrained and unit-free, no self-parent deliveries. No settlement has been performed before complete score evidence.
+
+The external GPU-utilization receipt remains separate from the original manifest, whose inline GPU field is unavailable. Settlement charges the original generation cost once; final reporting additionally binds the external monitor interval and does not rewrite the manifest to invent an inline measurement.

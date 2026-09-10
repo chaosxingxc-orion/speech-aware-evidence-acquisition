@@ -1,4 +1,4 @@
-"""Settle one raw phase attempt from verified, already-scored derivatives."""
+"""Settle one raw generation attempt from verified, already-scored derivatives."""
 
 from __future__ import annotations
 
@@ -26,10 +26,11 @@ from .delivery import (
     DELIVERY_MANIFEST_SCHEMA,
     recorded_phase_delivery_declarations,
 )
-from .delivery_replay import canonical, sha256
+from .delivery_replay import canonical, delivery_declarations, sha256
 from .verify import verify_bundle
 
 SCHEMA = "saea-phase-delivery-settlement-v1"
+DELIVERY_SCHEMA = "saea-delivery-settlement-v1"
 
 
 @dataclass(frozen=True)
@@ -71,9 +72,73 @@ def _data_root(parent: VerifiedBundle) -> Path:
         raise BundleError("phase delivery attempt path is malformed") from error
 
 
+def _recorded_legacy_delivery_declarations(
+    parent: VerifiedBundle, repo_root: Path,
+) -> tuple[Mapping, ...]:
+    """Recover markerless OBS declarations from the parent's committed source.
+
+    Keep this settlement-only reader outside the replay source files: existing
+    immutable derivatives bind those files byte for byte.
+    """
+    from ..config import _reject_duplicate_keys, fragment_path
+    from .git_commit import _git
+
+    fragments = parent.manifest.get("config", {}).get("fragments")
+    if not isinstance(fragments, Mapping) or "experiment" not in fragments:
+        raise BundleError("markerless delivery requires recorded experiment fragments")
+    commit = parent.manifest.get("study_commit")
+    if not isinstance(commit, str) or len(commit) != 40 or any(
+        c not in "0123456789abcdef" for c in commit
+    ):
+        raise BundleError("markerless delivery requires a valid recorded study commit")
+    path = fragment_path(repo_root, "experiment", fragments["experiment"])
+    relative = path.relative_to(repo_root).as_posix()
+    code, _, _ = _git(repo_root, "cat-file", "-e", commit + "^{commit}")
+    if code:
+        raise BundleError("markerless delivery recorded study commit is unavailable")
+    code, raw, _ = _git(repo_root, "show", f"{commit}:{relative}")
+    if code:
+        raise BundleError("markerless delivery recorded experiment is unavailable")
+    try:
+        values = json.loads(raw, object_pairs_hook=_reject_duplicate_keys(path))
+    except (ValueError, TypeError) as error:
+        raise BundleError(f"invalid recorded delivery experiment: {error}") from error
+    if not isinstance(values, Mapping) or not isinstance(values.get("cells"), list):
+        raise BundleError("markerless delivery requires recorded parent cells")
+    selected = []
+    for declaration in delivery_declarations(values):
+        cells = [
+            cell for cell in values["cells"]
+            if isinstance(cell, Mapping)
+            and cell.get("cell_id") == declaration["parent_cell_id"]
+        ]
+        if len(cells) != 1:
+            raise BundleError("delivery requires one unambiguous recorded parent cell")
+        cell = cells[0]
+        if any(
+            cell.get(f"{kind}_fragment") != fragments.get(kind)
+            for kind in ("model", "dataset", "baseline")
+        ):
+            continue
+        if cell.get("run_id") not in (None, parent.manifest["run_id"]):
+            continue
+        if cell.get("attempt_id") not in (
+            None, parent.manifest["attempt"]["attempt_id"]
+        ):
+            continue
+        if "source_selector" in declaration:
+            raise BundleError("phase delivery settlement requires its original manifest marker")
+        selected.append(declaration)
+    if not selected:
+        raise BundleError("no legacy deliveries match the recorded parent identity")
+    return tuple(selected)
+
+
 def _required_declarations(
     parent: VerifiedBundle, repo_root: Path,
 ) -> tuple[Mapping, ...]:
+    if "required_phase_deliveries" not in parent.manifest:
+        return _recorded_legacy_delivery_declarations(parent, repo_root)
     marker = parent.manifest.get("required_phase_deliveries")
     if not isinstance(marker, list) or not marker or not all(
         isinstance(item, Mapping) for item in marker
@@ -185,8 +250,10 @@ def _expected(
     parent_cost = parent.manifest.get("cost")
     if not isinstance(parent_cost, Mapping):
         raise BundleError("phase delivery parent lacks generation cost")
+    is_phase = "required_phase_deliveries" in parent.manifest
+    declaration_key = "required_phase_deliveries" if is_phase else "required_deliveries"
     return {
-        "schema": SCHEMA,
+        "schema": SCHEMA if is_phase else DELIVERY_SCHEMA,
         "status": "complete",
         "parent": {
             "run_id": parent.manifest["run_id"],
@@ -195,7 +262,7 @@ def _expected(
             "cost": dict(parent_cost),
             "cost_attribution": "parent generation is charged once",
         },
-        "required_phase_deliveries": [dict(item) for item in declarations],
+        declaration_key: [dict(item) for item in declarations],
         "deliveries": deliveries,
     }
 
@@ -246,10 +313,16 @@ def verify_phase_delivery_settlement(
         document = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
         raise BundleError(f"cannot read phase delivery settlement: {error}") from error
-    if not isinstance(document, Mapping) or set(document) != {
-        "schema", "status", "parent", "required_phase_deliveries", "deliveries"
+    if not isinstance(document, Mapping) or document.get("schema") not in {
+        SCHEMA, DELIVERY_SCHEMA
     }:
-        raise BundleError("phase delivery settlement has missing or unknown fields")
+        raise BundleError("delivery settlement has an unknown schema")
+    declaration_key = (
+        "required_phase_deliveries" if document["schema"] == SCHEMA
+        else "required_deliveries"
+    )
+    if set(document) != {"schema", "status", "parent", declaration_key, "deliveries"}:
+        raise BundleError("delivery settlement has missing or unknown fields")
     parent_meta = document.get("parent")
     manifest_meta = parent_meta.get("manifest") if isinstance(parent_meta, Mapping) else None
     if not isinstance(manifest_meta, Mapping) or not isinstance(
@@ -285,7 +358,7 @@ def verify_phase_delivery_settlement(
         binding = {
             "path": str(path),
             "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-            "kind": SCHEMA,
+            "kind": document["schema"],
         }
         if attempt_document.get("finalization") != binding:
             raise BundleError("finalized attempt does not bind this settlement receipt")
@@ -343,7 +416,7 @@ def settle_phase_delivery_attempt(
     verify_phase_delivery_settlement(settlement_path, repo_root=repo_root)
     try:
         handle.finalize_with_receipt(
-            str(settlement_path), receipt_sha256, SCHEMA
+            str(settlement_path), receipt_sha256, document["schema"]
         )
     except AttemptError as error:
         raise BundleError(f"phase delivery settlement cannot finalize attempt: {error}") from error
@@ -355,9 +428,30 @@ def settle_phase_delivery_attempt(
     )
 
 
+def settle_delivery_attempt(
+    parent_manifest: Path, *, repo_root: Path,
+    score_receipts: Sequence[SavedScoreReceiptRef], settlement_path: Path,
+) -> PhaseDeliverySettlementResult:
+    """Settle every recorded derivative and charge the generation parent once."""
+    return settle_phase_delivery_attempt(
+        parent_manifest, repo_root=repo_root, score_receipts=score_receipts,
+        settlement_path=settlement_path,
+    )
+
+
+def verify_delivery_settlement(
+    settlement_path: Path, *, repo_root: Path,
+) -> Mapping[str, object]:
+    """Verify either a legacy OBS or phase-pair delivery settlement."""
+    return verify_phase_delivery_settlement(settlement_path, repo_root=repo_root)
+
+
 __all__ = [
     "PhaseDeliverySettlementResult",
     "SCHEMA",
+    "DELIVERY_SCHEMA",
+    "settle_delivery_attempt",
+    "verify_delivery_settlement",
     "settle_phase_delivery_attempt",
     "verify_phase_delivery_settlement",
 ]

@@ -8,6 +8,8 @@ import threading
 from pathlib import Path
 
 import pytest
+import test_e21_repair_loop as repair_fixtures
+
 
 from speech_aware_evidence_acquisition.core.attempts import AttemptError, AttemptStore
 from speech_aware_evidence_acquisition.core.bundle import BundleError
@@ -22,6 +24,9 @@ from speech_aware_evidence_acquisition.core.scoring_receipt import (
     capture_score_source,
     write_complete_score_receipt,
 )
+
+
+repair_repo = repair_fixtures.repair_repo
 
 
 def _sha(path: Path) -> str:
@@ -361,4 +366,140 @@ def test_terminal_verifier_checks_attempt_receipt_hash_binding(tmp_path, monkeyp
     with pytest.raises(BundleError, match="does not bind"):
         verify_phase_delivery_settlement(
             world["settlement"], repo_root=world["repo"]
+        )
+
+
+def test_markerless_obs_parent_settles_from_recorded_declarations_without_rescoring(
+    synthetic_world, tmp_path, repair_repo, monkeypatch,
+):
+    from test_delivery_bundle import generation as generation_fixture
+    from speech_aware_evidence_acquisition.core.bundle import verify_bundle
+    from speech_aware_evidence_acquisition.core.bundle.delivery import build_delivery_bundle
+    from speech_aware_evidence_acquisition.core.bundle import settlement
+    from speech_aware_evidence_acquisition.core import scorers
+
+    # Exercise the real generation/replay verifier and the actual recorded Git
+    # declarations; only the score numbers are synthetic fixture data.
+    generate = generation_fixture.__wrapped__(
+        synthetic_world, tmp_path, repair_repo, monkeypatch
+    )
+    parent_path, kwargs = generate()
+    parent = verify_bundle(parent_path)
+    assert "required_phase_deliveries" not in parent.manifest
+    refs = []
+    source_bytes = {parent_path: parent_path.read_bytes()}
+    for cell in ("constrained", "free"):
+        path = build_delivery_bundle(
+            **kwargs, derivative_cell_id=cell, output_dir=tmp_path / cell
+        )
+        bundle = verify_bundle(path)
+        source_bytes[path] = path.read_bytes()
+        source_bytes[bundle.outputs_path] = bundle.outputs_path.read_bytes()
+        score_dir = synthetic_world.data_root / "scores" / cell
+        score_dir.mkdir(parents=True)
+        result = score_dir / "score.json"
+        result.write_text(json.dumps({
+            "manifest": str(path), "verified": True,
+            "scores": {
+                name: {
+                    "aggregate": {"fixture_score": 1},
+                    "per_sample": [] if name == "cost" else [
+                        {"sample_id": sid} for sid in sorted(bundle.split_ids)
+                    ],
+                }
+                for name in bundle.manifest["scorers"]
+            },
+        }))
+        refs.append(write_complete_score_receipt(
+            score_dir / "complete-score-receipt.json", job_id=cell,
+            result_path=result, source=capture_score_source(bundle),
+            verified_bundle=bundle,
+        ))
+    monkeypatch.setattr(
+        scorers, "score_bundle",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("settlement cannot invoke a scorer")
+        ),
+    )
+    target = synthetic_world.data_root / "settlements/obs-parent.json"
+    with pytest.raises(BundleError, match="cover"):
+        settlement.settle_delivery_attempt(
+            parent_path, repo_root=kwargs["repo_root"],
+            score_receipts=refs[:1], settlement_path=target,
+        )
+    assert not target.exists()
+    settled = settlement.settle_delivery_attempt(
+        parent_path, repo_root=kwargs["repo_root"],
+        score_receipts=refs, settlement_path=target,
+    )
+    assert settled.attempt_state == "FINALIZED"
+    receipt = settlement.verify_delivery_settlement(
+        target, repo_root=kwargs["repo_root"]
+    )
+    assert receipt["schema"] == "saea-delivery-settlement-v1"
+    assert [x["cell_id"] for x in receipt["required_deliveries"]] == ["constrained", "free"]
+    assert "required_phase_deliveries" not in receipt
+    assert receipt["parent"]["cost_attribution"] == "parent generation is charged once"
+    retry = settlement.settle_delivery_attempt(
+        parent_path, repo_root=kwargs["repo_root"],
+        score_receipts=refs, settlement_path=target,
+    )
+    assert retry.reused and retry.receipt_sha256 == settled.receipt_sha256
+    assert all(path.read_bytes() == raw for path, raw in source_bytes.items())
+
+
+def test_legacy_declarations_use_recorded_git_not_later_worktree_or_foreign_parent(
+    synthetic_world, tmp_path, repair_repo, monkeypatch,
+):
+    from dataclasses import replace
+    from test_delivery_bundle import generation as generation_fixture
+    from speech_aware_evidence_acquisition.core.bundle import verify_bundle, settlement
+
+    generate = generation_fixture.__wrapped__(
+        synthetic_world, tmp_path, repair_repo, monkeypatch
+    )
+    parent_path, kwargs = generate()
+    parent = verify_bundle(parent_path)
+    repo = kwargs["repo_root"]
+    expected = settlement._required_declarations(parent, repo)
+    assert [row["cell_id"] for row in expected] == ["constrained", "free"]
+    experiment = kwargs["experiment_path"]
+    document = json.loads(experiment.read_text())
+    document["delivery_derivatives"].pop()
+    experiment.write_text(json.dumps(document))
+    # Later working-tree edits cannot shrink the required evidence.
+    assert settlement._required_declarations(parent, repo) == expected
+    changed = dict(parent.manifest)
+    changed["config"] = {
+        **changed["config"],
+        "fragments": {**changed["config"]["fragments"], "baseline": "foreign"},
+    }
+    with pytest.raises(BundleError, match="no legacy deliveries"):
+        settlement._required_declarations(replace(parent, manifest=changed), repo)
+
+
+def test_missing_phase_marker_cannot_be_downgraded_to_legacy_settlement(
+    tmp_path, monkeypatch,
+):
+    from dataclasses import replace
+    from speech_aware_evidence_acquisition.core.bundle import settlement, git_commit
+
+    world = _world(tmp_path, monkeypatch)
+    parent = world["parent"]
+    declarations = parent.manifest["required_phase_deliveries"]
+    document = {
+        "cells": [{
+            "cell_id": "generation", "model_fragment": "m",
+            "dataset_fragment": "d", "baseline_fragment": "b",
+        }],
+        "delivery_derivatives": declarations,
+    }
+    monkeypatch.setattr(
+        git_commit, "_git",
+        lambda *args: (0, json.dumps(document) if args[-2] == "show" else "", ""),
+    )
+    without_marker = {k: v for k, v in parent.manifest.items() if k != "required_phase_deliveries"}
+    with pytest.raises(BundleError, match="original manifest marker"):
+        settlement._required_declarations(
+            replace(parent, manifest=without_marker), world["repo"]
         )
