@@ -124,7 +124,6 @@ def build_feature_cache_audit(
 
     try:
         resolved_data_root = Path(data_root).resolve(strict=True)
-        resolved_data_root.relative_to(Path(data_root).resolve(strict=True))
     except (OSError, ValueError) as error:
         raise PreparationError("window inventory data_root is unavailable") from error
 
@@ -213,6 +212,22 @@ def build_feature_cache_audit(
             raise PreparationError(
                 f"legacy feature-cache changed after audit for key {cache_key}"
             )
+
+    # Re-run the shared inventory authority so logical audio and parent paths
+    # are resolved again after cache inspection. This is model-free verification
+    # of observed source bytes, not a lock or a claim of atomic reads.
+    try:
+        final_inventory = build_window_feature_inventory(
+            batches=batches,
+            data_root=data_root,
+            encoder_identity=encoder_identity,
+        )
+    except PreparationError as error:
+        raise PreparationError(
+            f"window source changed during final audit: {error}"
+        ) from error
+    if digest(final_inventory) != digest(inventory):
+        raise PreparationError("window inventory changed during final audit")
 
     inputs = {
         "inventory_sha256": digest(inventory),
