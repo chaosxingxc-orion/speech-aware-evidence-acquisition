@@ -329,3 +329,44 @@ def test_changed_encoder_identity_cannot_reuse_prepared_inventory(tmp_path):
             data_root=tmp_path,
             encoder_identity=_identity("e"),
         )
+
+
+def test_parallel_calls_overlap_and_preserve_exact_sequential_batch(tmp_path, monkeypatch):
+    import threading
+    from speech_aware_evidence_acquisition.core.preparation_windows import materialize_window_requests
+    from speech_aware_evidence_acquisition.reproduction import obs_loop
+    from test_obs_loop_policy import _World, _config_values, _noise
+    pcm = _noise(0.04)
+    values = _config_values(obs_boundary_mode="fixed", obs_vad_trim_min_seconds=0,
+                            obs_condition_tail_chars=0, obs_batch_slices=2)
+    worlds = [_World(tmp_path / str(i), monkeypatch, pcm=pcm, texts=[],
+                     values=values, sample_id=str(4000001+i)) for i in range(2)]
+    contexts = [w.ctx for w in worlds]
+    ids = [w.sample_id for w in worlds]
+    serial = materialize_window_requests(contexts, expected_sample_ids=ids, hook_factory=lambda *args: None)
+    from speech_aware_evidence_acquisition.core.model.slices import SliceRegistry
+    from test_obs_loop_policy import RUN_ID
+    for world in worlds:
+        world.ctx.extras["slice_registry"] = SliceRegistry(
+            data_root=world.data_root, run_id=RUN_ID,
+            parent_facts={world.sample_id: (world.parent_relpath, world.duration)},
+        )
+    barrier = threading.Barrier(2)
+    def decode(path, rate):
+        barrier.wait(timeout=5)
+        return pcm
+    monkeypatch.setattr(obs_loop, "decode_parent_pcm", decode)
+    parallel = materialize_window_requests(contexts, expected_sample_ids=ids, max_workers=2, hook_factory=lambda *args: None)
+    assert parallel == serial
+    assert not any(w.adapter.payloads for w in worlds)
+
+
+@pytest.mark.parametrize("workers", [0, -1, 21, True, 2.5])
+def test_window_parallel_worker_budget_refuses_invalid_values(tmp_path, monkeypatch, workers):
+    from speech_aware_evidence_acquisition.core.preparation_windows import materialize_window_requests
+    from test_obs_loop_policy import _World, _config_values, _noise
+    world = _World(tmp_path, monkeypatch, pcm=_noise(0.01), texts=[],
+                   values=_config_values(obs_boundary_mode="fixed"))
+    with pytest.raises(PreparationError, match="max_workers"):
+        materialize_window_requests([world.ctx], expected_sample_ids=[world.sample_id],
+                                    max_workers=workers)

@@ -419,6 +419,7 @@ def prepare_window_feature_inventory(
 def materialize_window_requests(
     contexts: Sequence[object], *, expected_sample_ids: Sequence[str], hook_factory=None,
     evidence_binding: EvidenceBinding | None = None,
+    max_workers: int = 1,
 ) -> WindowRequestBatch:
     """Prepare the entire verified call roster without opening a model client."""
     from ..reproduction import obs_loop
@@ -432,8 +433,11 @@ def materialize_window_requests(
         or set(ids) != set(expected_sample_ids)
     ):
         raise PreparationError("window fit requires the complete unique call roster")
-    payloads, keys, sources = [], [], []
-    for ctx in contexts:
+    if isinstance(max_workers, bool) or not isinstance(max_workers, int) or not 1 <= max_workers <= 20:
+        raise PreparationError("window preparation max_workers must be between 1 and 20")
+
+    def materialize_call(ctx):
+        payloads, keys, sources = [], [], []
         values = ctx.extras["config_values"]
         cfg = obs_loop.ObsLoopConfig.from_values(values, Path(ctx.extras["repo_root"]))
         if (
@@ -485,8 +489,19 @@ def materialize_window_requests(
             payloads.append(factory(request_id))
             keys.append(f"{sample.sample_id}#w{record.iteration + 1:04d}")
             sources.append(record.trace_view())
+        return payloads, keys, sources
+
+    if max_workers == 1:
+        batches = [materialize_call(ctx) for ctx in contexts]
+    else:
+        from concurrent.futures import ThreadPoolExecutor
+        # Each unique call owns its slice paths and hook. Executor.map keeps
+        # the frozen roster order regardless of CPU completion order.
+        with ThreadPoolExecutor(max_workers=min(max_workers, len(contexts))) as pool:
+            batches = list(pool.map(materialize_call, contexts))
+    payloads = tuple(row for batch in batches for row in batch[0])
+    keys = tuple(row for batch in batches for row in batch[1])
+    sources = tuple(row for batch in batches for row in batch[2])
     if not payloads:
         raise PreparationError("window fit materialized no requests")
-    return WindowRequestBatch(
-        tuple(payloads), tuple(keys), tuple(sources), evidence_binding=evidence_binding
-    )
+    return WindowRequestBatch(payloads, keys, sources, evidence_binding=evidence_binding)

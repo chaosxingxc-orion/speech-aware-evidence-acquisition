@@ -1,0 +1,47 @@
+{
+  "experiment_id": "SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1",
+  "date": "2026-09-10",
+  "purpose": "Encode the full inherited DR exact-window inventory once on the exclusive root-owned GPU preprocessing service. Both DR draft-source groups reuse these immutable features. The one-token response materializes features only and is not a scientific task answer.",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 1593,
+    "planned_gpu_hours": 2.0,
+    "planned_speech_audio_seconds": 150000
+  },
+  "window_feature_preparation": {
+    "inventory_relpath": "analysis/SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1/window-inventory.json",
+    "inventory_sha256": "7b12a5c32654855701c48b57152ab1643e0c776b9a7a3853fda009a6ac78face",
+    "source_run_id": "SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1",
+    "expected_n_embd": 2048,
+    "instruction": "Observe the complete speech signal for deterministic feature preprocessing. Respond with OK."
+  },
+  "budget_basis": "Exactly 1593 unique inputs totaling 141345.8526875 seconds from 44 discovery calls. Each missing input is encoded once with max_tokens=1; no automatic retry or extra performance probe. Measure throughput on the first registered portion. Two GPU hours and 150000 audio seconds are upper bounds. Both DR draft-source groups reuse this one encoding cost. Stop the encoder service before strict-cache inference with the projector off GPU.",
+  "cells": [
+    {
+      "cell_id": "e21-dr-full-window-gpu-encoding",
+      "run_id": "SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1",
+      "attempt_id": "attempt-20260910-dr-full-window-gpu-encoding-v1",
+      "model_fragment": "q4km-e21-feature-preprocess-gpu-cddb000c-np1",
+      "dataset_fragment": "earnings21-discovery",
+      "baseline_fragment": "window-feature-preprocess-ojw",
+      "allowed_execution_stages": [
+        "prepare-window-features"
+      ],
+      "readiness": {
+        "state": "ready",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "analysis/SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1/window-inventory.json",
+            "sha256": "7b12a5c32654855701c48b57152ab1643e0c776b9a7a3853fda009a6ac78face",
+            "reason": "Complete exact 44-call DR input inventory must exist unchanged"
+          }
+        ]
+      }
+    }
+  ],
+  "service_session_id": "serving-e21-dr-full-window-gpu-encoding-v1",
+  "output_relpath": "analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-encoding.json",
+  "split_id": "discovery"
+}

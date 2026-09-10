@@ -1,0 +1,67 @@
+{
+  "schema": "saea-e21-gpu-feature-preparation-plan-v1",
+  "state": "model-free-input-inventory-pending-root-parallel-preparation",
+  "study": "speech-aware-evidence-acquisition",
+  "source_experiment": "configs/experiment/e21-dr-shared-two-generation-v1.json",
+  "source_cells": [
+    "e21-dr-shared-unit-generation",
+    "e21-dr-shared-self-draft-generation"
+  ],
+  "source_binding": {
+    "carrier": "earnings21-original",
+    "split_role": "discovery",
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "calls": 44,
+    "fixed_window_count": 1593,
+    "window_seconds": 141345.8526875,
+    "window_protocol": "fixed 90-second windows; no VAD trim, overlap, rolling tail, or added tail silence",
+    "draft_binding": "docs/receipts/e21-unit-draft-obs-e1-speaker-turn-units-v1.json",
+    "draft_binding_sha256": "40f466951acce38f13343ddea9357d15efe6eaacc660f9a126f51e81d48f241d",
+    "predecessor_binding": "docs/receipts/e21-predecessor-full44-direct-baseline-v2.json",
+    "predecessor_binding_sha256": "26f1d9ccd4a4f9d7aa27559f57b98ee9f8928ee2378883470eeb13145f77a72a"
+  },
+  "materialization": {
+    "inventory_api": "core.flight.runtime.FlightRuntime.prepare_window_inventory",
+    "batch_api": "core.flight.runtime.FlightRuntime.materialize_window_batch",
+    "request_api": "core.preparation_windows.materialize_window_requests",
+    "inventory_state": "inputs-verified-features-not-materialized",
+    "deduplication": "exact source audio SHA-256, using the shared inventory authority",
+    "data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+    "max_workers": 16,
+    "output_relpath": "analysis/SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1/window-inventory.json",
+    "preparation_contacts": 0,
+    "encoding_contacts": "not registered by this plan; root must register the GPU preprocessing session separately"
+  },
+  "encoder_reference": {
+    "role": "preprocess",
+    "runtime_receipt": "docs/receipts/runtime-q4km-e21-feature-preprocess-cddb000c.json",
+    "build_commit": "cddb000cb45ab44d33c84483cf5e5962cbbaa5bf",
+    "decoder_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "mmproj_sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883",
+    "identity_status": "reference only; root must bind the actual GPU session receipt and must not relabel the CPU exact-four cache"
+  },
+  "geometry": {
+    "preferred_root_candidate": "np1 with 16384 context and bf16 mmproj on GPU",
+    "selection_status": "root-owned measurement; this document does not authorize service start or encoder contact",
+    "historical_reference": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6.json",
+    "request_bytes": "unchanged from the registered DR shared generation cells"
+  },
+  "execution_plan": {
+    "profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_generation_calls_per_group": 1750,
+    "planned_generation_speech_seconds_per_group": 150000,
+    "planned_generation_gpu_hours_per_group": 1.2,
+    "feature_encoding": "separate root-owned registration required; no exposure consumed by this model-free plan"
+  },
+  "command_template": "Use the shared flight CLI prepare-window-inventory with experiment e21-dr-full-window-inventory-v1, cell e21-dr-full-window-inventory, --workers 16 and the umbrella docs/datasets.lock.json. The inherited scientific DR cells do not authorize preparation stages.",
+  "limitations": [
+    "The inherited DR fragment remains held and is not modified by this plan.",
+    "The plan reads and hashes already prepared source windows through the shared model-free path; it does not contact a model, tokenizer, encoder, scorer, service, or network.",
+    "The CPU exact-four cache is not reused or relabeled as GPU-equivalent.",
+    "The inventory is not a feature-cache audit, encoding provenance receipt, serving qualification, or generation authorization."
+  ],
+  "preparation_refusals": [
+    "The first model-free invocation refused before audio materialization because the legacy dataset has split_name but no split_id. The inventory experiment now explicitly binds discovery; no service or neural contact occurred."
+  ]
+}

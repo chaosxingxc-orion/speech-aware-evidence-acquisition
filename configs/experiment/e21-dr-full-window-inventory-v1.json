@@ -1,0 +1,36 @@
+{
+  "experiment_id": "SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1",
+  "date": "2026-09-10",
+  "purpose": "Prepare the exact 44-call fixed 90-second DR input roster once through the shared cutter using up to 16 CPU workers. Both inherited draft-source groups consume identical speech; no draft text or references are read by this feature inventory operation.",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 1593,
+    "planned_gpu_hours": 2.0,
+    "planned_speech_audio_seconds": 150000
+  },
+  "obs_buffer_seconds": 90,
+  "obs_min_advance_seconds": 20,
+  "obs_max_advance_seconds": 85,
+  "obs_batch_slices": 2,
+  "obs_slice_tail_silence_seconds": 0.0,
+  "budget_basis": "Inventory is model-free and spends zero contacts; forward unique-encoding limits do not enable contact stages. Validate actual window count and source bytes before a separate encoding registration.",
+  "cells": [
+    {
+      "cell_id": "e21-dr-full-window-inventory",
+      "run_id": "SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1",
+      "attempt_id": "attempt-20260910-dr-full-window-inventory-v1",
+      "model_fragment": "q4km-e21-feature-preprocess-gpu-cddb000c-np1",
+      "dataset_fragment": "earnings21-discovery",
+      "baseline_fragment": "window-feature-preprocess-ojw",
+      "allowed_execution_stages": [
+        "prepare-window-inventory"
+      ],
+      "readiness": {
+        "state": "ready",
+        "requirements": []
+      }
+    }
+  ],
+  "split_id": "discovery"
+}
