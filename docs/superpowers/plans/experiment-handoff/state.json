@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 17,
+  "generation": 18,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "399946901cfbc5c851c592d5bf7e165966715da9",
-  "updated_at_utc": "2026-09-10T03:43:21.303311+00:00",
-  "next_action": "Read STATUS-017.md including its completed control-lookup addendum. G2 generation, scoring, frozen readout and existing-control audit are closed; NI failed and no matching full-roster control exists. G3/G4 held; service stopped normally, no restart/replay. Continue shared E21 exact-window feature preparation/strict-cache wiring and bounded runtime qualification. G5/G6 and the full goal remain incomplete.",
+  "snapshot_commit": "b66bdc6e51377c59c3c976de631fb76feb2a53b9",
+  "updated_at_utc": "2026-09-10T04:21:28.308408+00:00",
+  "next_action": "Read STATUS-018.md. Strict cache serving configuration validation, complete cache audit artifacts, and shared model-free window-inventory CLI/runtime are integrated and cross-tested. G2 NI failed; G3/G4 remain held. No model service is running; no new model/encoder/tokenizer/scorer contacts occurred. Prepare an explicit model-free E21 construction successor, then complete encoding provenance and per-request cache consumption, bounded strict-runtime hit/miss qualification, fresh features and actual request capacity before G5 generation. G5/G6 remain incomplete.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-FEATURE-SERVING-007"

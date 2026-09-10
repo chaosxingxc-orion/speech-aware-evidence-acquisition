@@ -1,0 +1,60 @@
+{
+  "schema": "saea-root-engineering-review-v1",
+  "review_id": "FEATURE-SERVING-SHARED-INTEGRATION-20260910",
+  "date_utc": "2026-09-10T04:21:28.315588+00:00",
+  "code_commit": "b66bdc6e51377c59c3c976de631fb76feb2a53b9",
+  "decision": "ACCEPTED_MODEL_FREE_ENGINEERING_INTEGRATION",
+  "source_commits": {
+    "strict_cache_serving": "faa03a28611fc6609be4d2882afbba7136a5cf4a",
+    "cache_audit": [
+      "514e6f2774b78976886e83b1c06efaac654c6e66",
+      "d89adeca28b9ae3b636599f9eb41fc4922fce9ad",
+      "fc6620d68b898266d0699f4d5c2fbdc7507b78c7"
+    ],
+    "flight_inventory": "ffb427aef5fc8847682ba75835e5b5887a0078d1"
+  },
+  "root_cross_integration": {
+    "passed": 156,
+    "failed": 0,
+    "log_path": "/home/chao/saea-test-cache/feature-serving-integration-root-tests.log",
+    "log_sha256": "fb1efb48d1d90903da3886b3330f71acf763f84148e1dad4b20cf0f5376b038a",
+    "engineering_base_check": "PASS"
+  },
+  "prior_component_checks": {
+    "strict_cache_serving": {
+      "focused_passed": 52,
+      "regression_passed": 208,
+      "platform_skips": 6,
+      "new_validator_line_and_branch_coverage_percent": 100
+    },
+    "cache_audit_inventory_root_passed": 27,
+    "flight_inventory_helper_focused_passed": 60,
+    "flight_inventory_helper_adjacent_passed": 229
+  },
+  "execution": {
+    "environment": "WSL2 Ubuntu-24.04",
+    "python": "/home/chao/.venvs/speechrl/bin/python",
+    "explicit_checkout_pythonpath": true,
+    "editable_reinstall": false,
+    "actual_model_service_contacts": 0,
+    "actual_encoder_contacts": 0,
+    "actual_tokenizer_contacts": 0,
+    "actual_scorer_contacts": 0
+  },
+  "final_service_snapshot": {
+    "active_experiment_service": false,
+    "gpu_memory_used_mib": 0,
+    "gpu_utilization_percent": 0
+  },
+  "not_qualified": [
+    "neural feature generation",
+    "source encoding provenance and preprocess stop binding",
+    "per-request prepared-cache consumption",
+    "live runtime hit/miss/decode-failure refusal",
+    "E21 request capacity",
+    "formal E21 generation"
+  ],
+  "scientific_gate_changed": false,
+  "g2_decision": "HOLD_NONINFERIORITY_FAILED",
+  "g3_g4_admitted": false
+}
