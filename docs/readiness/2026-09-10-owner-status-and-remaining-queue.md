@@ -18,7 +18,7 @@ The LOOP pair is complete and scored. The targeting comparison passed: judge min
 
 Therefore LOOP is not admitted as the E21 replacement. KC-E1f remains the preferred E21 quality component. Both LOOP arms sealed 600 selected contacts, retained 993 unchanged predecessor windows, and delivered 1,593 windows across 44 calls. The pair used 0.3579660937786103 external GPU-hours with zero retries, skips, and saturations. The archived judge seal incident followed completed generation and did not create another generation attempt.
 
-Primary draft: docs/readiness/2026-09-10-e21-loop-packets-decision-draft.md at commit f5be39be17826bb59ad061faa6d4fecc7a675726. The frozen compact contrast input is DATA/analysis/SAEA-E21-LOOP-PACKETS-NP4-SAVED-SCORE-ANALYSIS-V1/loop-contrast-compact-tables.json, SHA-256 4e2200d863a828f665701341f9bc0ecbafbb76bbf67b7ffebab01bb489484a70.
+Primary root-reviewed decision: docs/readiness/2026-09-10-e21-loop-packets-decision.md. The frozen compact contrast input is DATA/analysis/SAEA-E21-LOOP-PACKETS-NP4-SAVED-SCORE-ANALYSIS-V1/loop-contrast-compact-tables.json, SHA-256 4e2200d863a828f665701341f9bc0ecbafbb76bbf67b7ffebab01bb489484a70.
 
 ### E21 DR packet-route deliveries
 
@@ -34,7 +34,7 @@ The follow-on OBS geometry tables are retrospective and descriptive only because
 
 This is the only active GPU flight, not a completed result. The original control generated 1,000 direct responses and zero slots responses. It then stopped at the phase boundary because a stale HTTP keep-alive connection failed the second-phase props request. The failed attempt preserved its traces, fit journal, and failure custody.
 
-The root cause repair creates a fresh audit client at each actual phase boundary while retaining the cumulative guarded counter. The sole explicit recovery is registered at source commit c4dd9342422c2afc0309a19c5dfa328388e19adf and is currently using service serving-slurp-live-system-recovery-np4-v1. The registration permits one recovery only. It records 3,002 fit endpoints in the failed path, 2,000 recovery generation contacts, and a combined recovery ceiling of 9,004 fit-plus-recovery contacts. A second failure stops the flight and requires a separately registered four-row proof before another proposal.
+The root cause repair creates a fresh audit client at each actual phase boundary while retaining the cumulative guarded counter. The sole explicit recovery is registered at source commit c4dd9342422c2afc0309a19c5dfa328388e19adf and is currently using service serving-slurp-live-system-recovery-np4-v1. The registration permits one recovery only. It records 3,002 fit endpoints in the failed path, 2,000 recovery generation contacts, and 9,004 combined metadata endpoint contacts (3,002 already spent plus 6,002 recovery capacity-check contacts), separate from the generation budget. A second failure stops the flight and requires a separately registered four-row proof before another proposal.
 
 Prepared speech recall is ready, with artifact SHA-256 20d0cd44. Root retains responsibility for its source equivalence, registration, service custody, and all interpretation. No quality, cost, or system conclusion may be drawn until the recovery seals and completes its registered analysis.
 
