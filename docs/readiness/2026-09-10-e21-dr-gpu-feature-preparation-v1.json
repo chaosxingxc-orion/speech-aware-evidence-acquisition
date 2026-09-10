@@ -60,5 +60,8 @@
     "The plan reads and hashes already prepared source windows through the shared model-free path; it does not contact a model, tokenizer, encoder, scorer, service, or network.",
     "The CPU exact-four cache is not reused or relabeled as GPU-equivalent.",
     "The inventory is not a feature-cache audit, encoding provenance receipt, serving qualification, or generation authorization."
+  ],
+  "preparation_refusals": [
+    "The first model-free invocation refused before audio materialization because the legacy dataset has split_name but no split_id. The inventory experiment now explicitly binds discovery; no service or neural contact occurred."
   ]
 }
