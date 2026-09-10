@@ -343,6 +343,63 @@ def test_end_to_end_hand_computed(synthetic_world, tmp_path):
     assert aggregate["corpus_wer"] == pytest.approx(2 / 7)
 
 
+def test_conec_alignment_payload_roundtrips_and_reconstructs_entity_counts(
+    synthetic_world, tmp_path
+):
+    _setup(synthetic_world)
+    outputs = _write_outputs(
+        tmp_path,
+        [
+            {
+                "sample_id": "4000001",
+                "carrier_lock_key": "earnings21-original",
+                "text": "the acme corporation inc reported in march 2021",
+            }
+        ],
+    )
+    lock = load_lock(synthetic_world.lock_path)
+    scores = score_conec_entity_wer_outputs(outputs, lock, synthetic_world.data_root)
+    sample = scores["per_sample"][0]
+
+    alignment = json.loads(json.dumps(sample["alignment"], sort_keys=True))
+    assert alignment["schema"] == "saea-conec-alignment-v1"
+    assert alignment["reference_words"] == [
+        "the", "acme", "corporation", "reported", "in", "march", "2020"
+    ]
+    assert alignment["hypothesis_words"] == [
+        "the", "acme", "corporation", "inc", "reported", "in", "march", "2021"
+    ]
+    assert all(
+        isinstance(operation, list) and len(operation) == 3
+        for operation in alignment["operations"]
+    )
+
+    reconstructed = entity_wer_buckets(
+        [tuple(operation) for operation in alignment["operations"]],
+        [
+            None if owners is None else tuple(owners)
+            for owners in alignment["reference_owners"]
+        ],
+        alignment["entity_types"],
+    )
+    assert reconstructed == sample["by_entity_type"]
+    counts = operation_counts(
+        [tuple(operation) for operation in alignment["operations"]],
+        len(alignment["reference_words"]),
+        len(alignment["hypothesis_words"]),
+    )
+    overall = sample["by_entity_type"][OVERALL_BUCKET]
+    assert counts[OP_SUBSTITUTION] == overall["substitutions"]
+    assert counts[OP_DELETION] == overall["deletions"]
+    assert counts[OP_INSERTION] == overall["insertions"]
+    assert counts["reference_words"] == overall["reference_words"]
+    legacy = {key: value for key, value in sample.items() if key != "alignment"}
+    assert legacy["sample_id"] == "4000001"
+    assert legacy["wer"] == pytest.approx(2 / 7)
+    assert legacy["reference_words"] == 7
+    assert legacy["unlabelled_reference_words"] == 0
+
+
 def test_overall_bucket_reproduces_the_whisper_wer_of_the_same_text(synthetic_world, tmp_path):
     """The ``__ALL__`` bucket is this scorer's own identity anchor: it is the
     frozen aligner over exactly the sequences ``asr-wer-whisper`` builds."""

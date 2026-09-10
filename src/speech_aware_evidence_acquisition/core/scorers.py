@@ -1126,6 +1126,30 @@ from ..reproduction import numeric_value_accuracy as _numeric  # noqa: E402
 from ..reproduction import semantic_impact as _semantic  # noqa: E402
 
 
+CONEC_ALIGNMENT_SCHEMA = "saea-conec-alignment-v1"
+
+
+def _conec_alignment_payload(
+    reference_words: list[str],
+    hypothesis_words: list[str],
+    operations: list[tuple[str, int | None, int | None]],
+    reference_owners: list[tuple[str, ...] | None],
+    entity_types: Mapping[str, str],
+) -> dict[str, object]:
+    """Encode the scorer's complete normalized alignment without changing it."""
+
+    return {
+        "schema": CONEC_ALIGNMENT_SCHEMA,
+        "reference_words": list(reference_words),
+        "hypothesis_words": list(hypothesis_words),
+        "operations": [list(operation) for operation in operations],
+        "reference_owners": [
+            None if owners is None else list(owners) for owners in reference_owners
+        ],
+        "entity_types": dict(sorted(entity_types.items())),
+    }
+
+
 def _outputs_rows(outputs_path: Path) -> list[dict[str, object]]:
     """The shared JSONL read every scorer in this module performs, with the
     identical malformed/empty refusals ``score_asr_outputs`` makes."""
@@ -1217,6 +1241,13 @@ def score_conec_entity_wer_outputs(
                     buckets[_conec.UNLABELLED_BUCKET]["reference_words"]
                 ),
                 "by_entity_type": buckets,
+                "alignment": _conec_alignment_payload(
+                    whole_words,
+                    hypothesis_words,
+                    operations,
+                    transferred,
+                    entity_types,
+                ),
             }
         )
 
