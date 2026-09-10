@@ -214,6 +214,26 @@ def test_attach_only_fit_warm_reuse_and_persisted_contact_accounting(tmp_path):
     assert attach.call_count == 1
 
 
+def test_fit_uses_shared_configured_transport_builder(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core.preparation_fit import fit_phase_runtime
+    import speech_aware_evidence_acquisition.core.configured_transport as configured
+
+    runtime, _policy, _attach, _client, kwargs = fit_fixture(tmp_path)
+    supplied_factory = kwargs["transport_factory"]
+    calls = []
+
+    def build(values, data_root, **builder_kwargs):
+        calls.append((values, data_root, builder_kwargs))
+        return Renderer()
+
+    monkeypatch.setattr(configured, "build_configured_transport", build)
+    fit_phase_runtime(runtime, tmp_path / "fit-shared-transport.json", **kwargs)
+    assert len(calls) == 1
+    assert calls[0][0] == runtime.preparation_context()["values"]
+    assert calls[0][1] == tmp_path
+    assert calls[0][2]["transport_factory"] is supplied_factory
+
+
 def test_incomplete_fit_cannot_silently_retry_same_attempt(tmp_path):
     from speech_aware_evidence_acquisition.core.preparation_fit import fit_phase_runtime
 

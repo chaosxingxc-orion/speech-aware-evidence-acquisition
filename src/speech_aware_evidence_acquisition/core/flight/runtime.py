@@ -62,7 +62,6 @@ from ..base import (
     PayloadBindingContext,
     MAX_TOKENS_POLICIES,
     RunResult,
-    TRANSPORTS,
     declared_derived_media_roots,
 )
 from ..bundle.finalize import abort_attempt_if_opened, finalize_bundle
@@ -81,6 +80,7 @@ from ..config import (
     resolve_runtime_receipt_path,
     runtime_receipt_relpath,
 )
+from ..configured_transport import build_configured_transport
 from ..model.speech_features import materialize_legacy_cached_speech_feature_packets
 from ..preparation_runtime import (
     assert_stable_file_fingerprint as _assert_file_fingerprint,
@@ -2202,13 +2202,14 @@ class FlightRuntime:
         self._session_receipt_path = session_receipt_path
         self._owns_session = True
 
-        transport_factory = self._transport_factory or TRANSPORTS.resolve(str(values["transport"]))
-        transport = transport_factory(
+        transport = build_configured_transport(
             values,
             self._data_root,
+            repo_root=self._repo_root,
             session=session,
             runtime_receipt=runtime_receipt,
             runtime_root=self._runtime_root,
+            transport_factory=self._transport_factory,
         )
         self._transport = transport
 
@@ -2435,13 +2436,14 @@ class FlightRuntime:
         self._serving_session_dir = session_dir
         self._serving_monitor_path = session_dir / MONITOR_JSONL_NAME
 
-        transport_factory = self._transport_factory or TRANSPORTS.resolve(str(values["transport"]))
-        self._transport = transport_factory(
+        self._transport = build_configured_transport(
             values,
             self._data_root,
+            repo_root=self._repo_root,
             session=session,
             runtime_receipt=runtime_receipt,
             runtime_root=self._runtime_root,
+            transport_factory=self._transport_factory,
         )
 
         if self._execution_policy is not None:

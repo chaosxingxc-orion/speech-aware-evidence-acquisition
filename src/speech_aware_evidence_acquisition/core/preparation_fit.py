@@ -286,7 +286,7 @@ def fit_phase_runtime(
     import os
 
     from .driver.speech_native import _LoopbackPromptAuditClient
-    from .base import TRANSPORTS
+    from .configured_transport import build_configured_transport
     from .preparation import prepare_artifact, measure_multimodal_request
     from .session.worker import attach_worker_session
 
@@ -380,14 +380,17 @@ def fit_phase_runtime(
             if not isinstance(marker, str) or not marker:
                 raise PreparationError("resident tokenizer has no media marker")
             values = context["values"]
-            transport = (
-                transport_factory or TRANSPORTS.resolve(str(values["transport"]))
-            )(
+            transport = build_configured_transport(
                 values,
                 context["data_root"],
+                # FlightRuntime owns the repository root. Lightweight legacy
+                # fit fakes omit it; the default path is never consulted when
+                # the prepared-cache opt-in is absent.
+                repo_root=getattr(runtime, "_repo_root", Path()),
                 session=session,
                 runtime_receipt=context["runtime_receipt"],
                 runtime_root=context["runtime_root"],
+                transport_factory=transport_factory,
             )
             decoder_hashes = {
                 entry.sha256

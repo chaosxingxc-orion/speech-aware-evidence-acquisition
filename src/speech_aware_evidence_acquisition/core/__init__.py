@@ -34,6 +34,7 @@ from .bundle import (
     verify_bundle,
 )
 from .config import ComposedConfig, ConfigError, compose, protocol_hash
+from .configured_transport import build_configured_transport
 from .model import CoreResponse, FrozenCoreAdapter, FrozenCoreError, LlamaServerTransport
 from .split_receipt import SplitReceiptError, VerifiedSplit, load_verified_split
 from .tracing import TraceSink, TraceSinkError
@@ -56,7 +57,7 @@ __all__ = [
     "CoreResponse", "EvidenceError", "EvidenceItem", "FinalizeResult", "FrozenCoreAdapter",
     "FrozenCoreError", "LlamaServerTransport", "MlflowUnavailable", "RunResult",
     "SampleContext", "SampleOutcome", "SplitReceiptError", "TraceSink", "TraceSinkError",
-    "VerifiedBundle", "VerifiedSplit", "build_manifest", "bundle_ledger_cells", "compose",
+    "VerifiedBundle", "VerifiedSplit", "build_configured_transport", "build_manifest", "bundle_ledger_cells", "compose",
     "finalize_bundle", "ledger_row", "ledger_row_for_bundle", "load_split",
     "load_verified_split", "log_bundle", "log_run", "protocol_hash",
     "require_clean_study_repo", "run_experiment", "run_experiment_bundled", "verify_bundle",
