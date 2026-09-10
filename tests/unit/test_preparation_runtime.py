@@ -120,6 +120,30 @@ def test_foreign_encoder_identity_is_refused(tmp_path, field, message):
         )
 
 
+def test_generation_mmproj_mismatch_is_refused_when_both_are_truthfully_pinned(tmp_path):
+    repo, runtime, data, generation, _preprocess, receipt_path = _world(tmp_path)
+    other = b"generation-mmproj"
+    other_path = data / "models" / "generation-mmproj.gguf"
+    other_path.write_bytes(other)
+    generation["gguf_files"].append(
+        {
+            "path": "models/generation-mmproj.gguf",
+            "bytes": len(other),
+            "sha256": _sha(other),
+        }
+    )
+    receipt_path.write_text(receipt_path.read_text(encoding="utf-8"), encoding="utf-8")
+    with pytest.raises(PreparationError, match="mmproj identities differ"):
+        verify_feature_encoder_runtime(
+            repo_root=repo,
+            data_root=data,
+            runtime_root=runtime,
+            values={"feature_encoder_runtime_receipt": "receipts/preprocess.json"},
+            generation_receipt=generation,
+            receipt_loader=_load,
+        )
+
+
 @pytest.mark.parametrize("change", ["binary", "library", "decoder"])
 def test_foreign_file_identity_is_refused(tmp_path, change):
     repo, runtime, data, generation, preprocess, receipt_path = _world(tmp_path)
