@@ -167,8 +167,8 @@ def _inherited_slurp_inputs(parent_path, repo_root, experiment_path, data_root):
         "manifest_relpath", "manifest_sha256", "producer_policy_id"
     }:
         raise BundleError("inherited SLURP predecessor source binding is incomplete")
-    if source["producer_policy_id"] != "phase-direct-only-v1":
-        raise BundleError("inherited SLURP predecessor must be the direct control protocol")
+    if not isinstance(source["producer_policy_id"], str) or not source["producer_policy_id"]:
+        raise BundleError("inherited SLURP predecessor requires its recorded producer identity")
     relpath = _safe_data_relative(source["manifest_relpath"], "predecessor manifest path")
     manifest_path = Path(data_root) / relpath
     manifest_raw = _read_bytes(manifest_path, "sealed SLURP predecessor manifest")
@@ -178,6 +178,10 @@ def _inherited_slurp_inputs(parent_path, repo_root, experiment_path, data_root):
     predecessor = verify_bundle(manifest_path)
     if predecessor.manifest.get("status") != "COMPLETED" or not predecessor.outputs_rows:
         raise BundleError("sealed SLURP predecessor must be a complete generation")
+    if source["producer_policy_id"] not in {
+        "phase-direct-only-v1", predecessor.manifest["run_id"]
+    }:
+        raise BundleError("inherited SLURP predecessor producer identity does not match")
     if predecessor.split_ids != parent.split_ids:
         raise BundleError("sealed SLURP predecessor roster differs from the slots parent")
     if predecessor.outputs_path is None:

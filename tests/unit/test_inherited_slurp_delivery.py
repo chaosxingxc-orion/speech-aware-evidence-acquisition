@@ -107,3 +107,17 @@ def test_inherited_slurp_refuses_source_manifest_or_outputs_tamper(monkeypatch, 
         delivery_mod._inherited_slurp_inputs(
             parent_path, tmp_path / "second" / "repo", tmp_path / "second" / "repo" / "configs/experiment/e.json", tmp_path / "second"
         )
+
+
+def test_inherited_slurp_accepts_historical_run_identity_and_refuses_mismatch(monkeypatch, tmp_path):
+    parent_path, _, _, _, config = _world(tmp_path, monkeypatch)
+    source = config.values["phase_material"]["slots"]["predecessor_source"]
+    source["producer_policy_id"] = "direct-run"
+    delivery_mod._inherited_slurp_inputs(
+        parent_path, tmp_path / "repo", tmp_path / "repo/configs/experiment/e.json", tmp_path
+    )
+    source["producer_policy_id"] = "different-run"
+    with pytest.raises(BundleError, match="producer identity"):
+        delivery_mod._inherited_slurp_inputs(
+            parent_path, tmp_path / "repo", tmp_path / "repo/configs/experiment/e.json", tmp_path
+        )
