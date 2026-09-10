@@ -22,10 +22,10 @@
     "seed": 20260903,
     "n_replicates": 10000,
     "metrics": [
+      "slu_f1_f1",
       "scenario_action_exact",
       "scenario_exact",
-      "action_exact",
-      "slu_f1_f1"
+      "action_exact"
     ],
     "micro_metrics": {
       "slu_f1_micro": {
@@ -103,13 +103,21 @@
       "OLD500",
       "DEV1000"
     ],
-    "metric_rule": "slu_f1_f1 is mean per-row F1. slu_f1_micro is the separately reported pooled TP/FP/FN F1 and must never be described as a row mean."
+    "metric_rule": "slu_f1_f1 is mean per-row F1. slu_f1_micro is the separately reported pooled TP/FP/FN F1 and must never be described as a row mean.",
+    "effective_seed_by_metric": {
+      "slu_f1_f1": 20260903,
+      "scenario_action_exact": 20260904,
+      "scenario_exact": 20260905,
+      "action_exact": 20260906,
+      "slu_f1_micro": 20260903
+    }
   },
   "guard_review_after_read": {
     "positive_discovery": "NEW500 natural-mixture per-row SLU-F1 CI90 lower bound greater than zero",
     "pooled_micro": "NEW500 pooled micro SLU-F1 gain greater than zero",
     "intent_scenario_action": "point changes are each nonnegative",
     "delivery_integrity": "malformed final delivery and output saturation counts do not increase",
-    "scope": "These are the prospective descriptive policy guards in the frozen analysis plan. They are not a non-inferiority, equivalence, confirmatory, or generalization claim."
+    "scope": "These are the prospective descriptive policy guards in the frozen analysis plan. They are not a non-inferiority, equivalence, confirmatory, or generalization claim.",
+    "equal_scenario": "NEW500 equal-scenario per-row SLU-F1 point gain greater than zero"
   }
 }
