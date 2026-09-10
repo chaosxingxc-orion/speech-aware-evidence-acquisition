@@ -528,6 +528,7 @@ class KbFacetProvider(KnowledgeProvider):
         fuse_knobs: FuseKnobs | None = None,
         top_k_per_dimension: int = 5,
         facet_vectors: Callable[[str], Mapping[str, Sequence[float]]] | None = None,
+        prepared_recall: Mapping[str, Mapping[str, Mapping[str, float]]] | None = None,
     ) -> None:
         super().__init__(provider_id=provider_id)
         self._build_spec = build_spec
@@ -543,6 +544,7 @@ class KbFacetProvider(KnowledgeProvider):
             raise RailsError("KbFacetProvider: top_k_per_dimension must be a positive int")
         self._top_k_per_dimension = top_k_per_dimension
         self._facet_vectors = facet_vectors or (lambda facet_id: {})
+        self._prepared_recall = prepared_recall
         self._last_query_state: QueryState | None = None
         self._last_recall_scores: Mapping[str, Mapping[str, float]] | None = None
         self._last_rank_result: object | None = None
@@ -584,9 +586,17 @@ class KbFacetProvider(KnowledgeProvider):
                 "KbFacetProvider.candidates: query must be a QueryState or a mapping "
                 "with 'query_state'/'query_vectors'"
             )
-        recall_scores = multidim_recall(
-            snapshot, query_vectors, self._facet_vectors, self._top_k_per_dimension
-        )
+        if self._prepared_recall is None:
+            recall_scores = multidim_recall(
+                snapshot, query_vectors, self._facet_vectors, self._top_k_per_dimension
+            )
+        else:
+            sample_id = getattr(query_state, "query_sample_id", None)
+            if not isinstance(sample_id, str) or sample_id not in self._prepared_recall:
+                raise RailsError(
+                    "KbFacetProvider: prepared recall lacks this query sample"
+                )
+            recall_scores = self._prepared_recall[sample_id]
         rank_result = self._ranker(
             snapshot_sha256=self.snapshot_sha256(),
             query_state=query_state,

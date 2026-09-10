@@ -1,7 +1,7 @@
 {
   "experiment_id": "SAEA-SLURP-LIVE-INTENT-SLOTS-SPEECH-V1",
   "fragment_kind": "saea-slurp-live-phase-experiment-v1",
-  "migration_status": "HELD: configuration and source bindings only; root must formally register the fit and generation before any contact.",
+  "migration_status": "Shared live speech-system configuration with prospective analysis frozen; actual readiness is governed by the cell receipts and committed fit/generation exposure rows.",
   "date": "2026-09-10",
   "purpose": "Full DEV-1000 live two-stage SLURP speech-keyed slot-filler treatment; direct intent/action state is transferred to a supplied slot-filler phase through the shared controller.",
   "split_id": "DEV-1000",
@@ -32,7 +32,8 @@
         "check",
         "wire-check",
         "worker",
-        "campaign"
+        "campaign",
+        "prepare-phase-recall"
       ],
       "arm": "speech-feature-query",
       "baseline_fragment": "slurp-live-intent-slots-speech-v1",

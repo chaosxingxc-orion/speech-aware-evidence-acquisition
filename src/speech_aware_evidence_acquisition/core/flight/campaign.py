@@ -26,6 +26,7 @@ EXECUTION_STAGES = frozenset({
     "check",
     "wire-check",
     "prepare-supply",
+    "prepare-phase-recall",
     "prepare-window-inventory",
     "prepare-window-features",
     "prompt-fit",

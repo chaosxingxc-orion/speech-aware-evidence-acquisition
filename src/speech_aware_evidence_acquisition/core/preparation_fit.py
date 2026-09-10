@@ -550,9 +550,7 @@ def build_live_phase_fit_gate(runtime, program, plan, *, client_factory=None):
         raise PreparationError("live fit requires one decoder identity")
     decoder_sha256 = next(iter(decoder_hashes))
     guarded = GuardedTokenizer(
-        (client_factory or _LoopbackPromptAuditClient)(
-            host=session.host, port=session.port, timeout_seconds=600.0
-        ),
+        None,
         guard=runtime.assert_generation_lease,
         contact_cap=spec["contact_cap"],
     )
@@ -586,6 +584,12 @@ def build_live_phase_fit_gate(runtime, program, plan, *, client_factory=None):
             )
 
         def produce():
+            # A completed generation wave can outlive HTTP keep-alive. Open a
+            # fresh audit client at the next phase boundary; never replay a
+            # failed request. The shared guard retains cumulative contact counts.
+            guarded.client = (client_factory or _LoopbackPromptAuditClient)(
+                host=session.host, port=session.port, timeout_seconds=600.0
+            )
             before = guarded.counts.total()
             with journal.open("x", encoding="utf-8") as stream:
 
