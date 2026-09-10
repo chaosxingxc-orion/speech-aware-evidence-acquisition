@@ -1,0 +1,61 @@
+{
+  "arms": {
+    "control": {
+      "elapsed_seconds": 8.19340487699992,
+      "phase_supply": "not applicable: no retrieval",
+      "rows": 1000
+    },
+    "speech": {
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-KU-S3-G1-MAX256-RECOVERY-PREPARE-V1/speech-supply.json",
+        "sha256": "8aedd1018bda26e4757fba460032d8c92f74d7573aba5980b63a7be7a69d6598"
+      },
+      "config_sha256": "2da78380a99584e233248c0c3254f7654f49ddfd6af4786947dae5ba5e7251ad",
+      "elapsed_seconds": 33.30923746399981,
+      "ordered_selection_equal": true,
+      "rows": 1000,
+      "runner_supply_bytes_equal": true,
+      "selection_output_sha256": "dba7c4a3b4a7808f7ba06d5090024b3cc1ed7b596df0a8ae0b60f0def5238866",
+      "supply_sha256": "77d33a45db4b7880e92acfd7e378a199610938b201cacdada473596b07108154",
+      "warm_producer_invocations": 0,
+      "warm_runtime_selection_invocations": 0
+    },
+    "twin": {
+      "artifact": {
+        "relpath": "prepared/SAEA-SLURP-KU-S3-G1-MAX256-RECOVERY-PREPARE-V1/twin-supply.json",
+        "sha256": "f4ed528b720a8d7c570c62e5198e5fdd32293a1a938716526ad3285391106028"
+      },
+      "config_sha256": "5857cd4e95b3a0e5ba8347b09dbc4f3374d484cdd5c2c72af527e8e6b288f42d",
+      "elapsed_seconds": 28.861822993000033,
+      "ordered_selection_equal": true,
+      "rows": 1000,
+      "runner_supply_bytes_equal": true,
+      "selection_output_sha256": "70eee1947f34484132ed39875aeabb028d1808ce8fcf80165c04e2b5411a7d69",
+      "supply_sha256": "e82ea1847d001dadf76ed13d64d22eca0db26de4a00ddde96c417c855f795da1",
+      "warm_producer_invocations": 0,
+      "warm_runtime_selection_invocations": 0
+    }
+  },
+  "audit_report": {
+    "relpath": "analysis/SAEA-SLURP-KU-S3-G1-MAX256-RECOVERY-PREPARE-V1/parity.json",
+    "sha256": "8012e43aefcb81fbc7d5651952772e5c21729242b90fd7632bda769922dcad62"
+  },
+  "complete": true,
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "cpu_prepare_seconds": {
+    "speech": 153.8296492099762,
+    "twin": 158.75439739227295
+  },
+  "required_session_identity_equal": true,
+  "schema": "saea-max256-recovery-preparation-parity-v1",
+  "source_refusal_log": {
+    "relpath": "coordination/ku-s3-max256-recovery-speech-prepare-v1.log",
+    "sha256": "06e5372e32fc1f0a6a7cc8f83227d76dd5590475d51125132126ff0c4978bcb6"
+  }
+}

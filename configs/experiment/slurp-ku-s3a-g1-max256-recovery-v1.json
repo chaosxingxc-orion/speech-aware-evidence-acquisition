@@ -184,5 +184,9 @@
     "decision_id": "OWNER-KUS3-RECOVERY-006",
     "repo_relpath": "docs/superpowers/plans/experiment-handoff/OWNER-KUS3-RECOVERY-006.md",
     "comparison_process": "One new control followed by speech and twin in one new root-owned resident session; old control is descriptive replication evidence."
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-KU-S3-G1-MAX256-RECOVERY-PREPARE-V1/speech-supply.json",
+    "sha256": "8aedd1018bda26e4757fba460032d8c92f74d7573aba5980b63a7be7a69d6598"
   }
 }
