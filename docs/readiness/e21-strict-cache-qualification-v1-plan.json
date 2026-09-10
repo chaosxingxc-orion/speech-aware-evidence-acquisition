@@ -7,7 +7,7 @@
   "planned_model_calls": 4,
   "planned_gpu_hours": 0.25,
   "planned_speech_audio_seconds": 44,
-  "protocol_hash": "14fca28ad8957c5a08dd8116a6ee945ca857200f5592e697676453bf255ddf6d",
+  "protocol_hash": "44cba20b216a4d5c2bb45efc7df766ac656776b66a67b5dbff57c9a11bf93e08",
   "attempt_id": "attempt-20260910-strict-cache-qualification-v1",
   "schema": "saea-execution-plan-v1",
   "study": "speech-aware-evidence-acquisition"

@@ -55,6 +55,10 @@
     "fixture_receipt": {
       "relpath": "analysis/SAEA-E21-MF-STRICT-CACHE-FAULT-FIXTURE-V1/fixture-receipt.json",
       "sha256": "5b9a1770df962a11dea08c2bbd9086bdaefc3581f9eb2e62596c5a90418bac33"
+    },
+    "actual_request_fit": {
+      "relpath": "analysis/SAEA-E21-STRICT-CACHE-QUALIFICATION-FIT-V1/request-fit.json",
+      "sha256": "58f581e0d7487dc2ee8098cb3b88ee8c56b081070f039ec7a15b8b30859b353c"
     }
   },
   "service_session_id": "serving-e21-strict-cache-qualification-v1",
@@ -73,16 +77,22 @@
         "worker"
       ],
       "readiness": {
-        "state": "held",
+        "state": "ready",
         "requirements": [
           {
             "kind": "preparation",
             "relpath": "analysis/SAEA-E21-MF-STRICT-CACHE-FAULT-FIXTURE-V1/fixture-receipt.json",
             "sha256": "5b9a1770df962a11dea08c2bbd9086bdaefc3581f9eb2e62596c5a90418bac33",
             "reason": "Exact isolated fixture must match the registered four sources."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "analysis/SAEA-E21-STRICT-CACHE-QUALIFICATION-FIT-V1/request-fit.json",
+            "sha256": "58f581e0d7487dc2ee8098cb3b88ee8c56b081070f039ec7a15b8b30859b353c",
+            "reason": "All four actual test request hashes must match this completed fit before dispatch."
           }
         ],
-        "reason": "Bind the actual qualification fit and register its final protocol before running the explicit opt-in runtime test."
+        "reason": "Root verified the actual same-session fit: four max_tokens=1 requests, 2x margin, minimum 5792 tokens remaining. Ordered test cases only."
       }
     }
   ],
