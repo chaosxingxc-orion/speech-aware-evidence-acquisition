@@ -66,11 +66,20 @@ from speech_aware_evidence_acquisition.core.session.serving import (
     serving_identity,
     serving_session_dir,
     write_json_document,
+    _read_explicit_stop_document,
+    _session_stop_lock,
+    _write_stop_document,
 )
 
 
 def _sha(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
+
+
+def _canonical_receipt_sha256(document: dict[str, object]) -> str:
+    return hashlib.sha256(
+        json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
 
 
 def _runtime_world(tmp_path: Path):
@@ -1066,6 +1075,16 @@ class _WrapperSession:
     def __init__(self, pid: int) -> None:
         self.pid = pid
         self.session_id = "serving-wrapper"
+        self.role = "inference"
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "schema": "saea-session-receipt-v2",
+            "study": STUDY_SLUG,
+            "session_id": self.session_id,
+            "pid": self.pid,
+            "role": self.role,
+        }
 
 
 def _wrapper_world(monkeypatch, tmp_path: Path):
@@ -1131,6 +1150,153 @@ def test_the_wrapper_reaps_the_server_and_records_why_it_exited(
     assert str(tmp_path / SESSION_STOP_NAME) in lines[0]
     # The document itself still goes to stdout, as every other command does.
     assert json.loads(captured.out)["session_id"] == "serving-wrapper"
+
+
+@_NEEDS_PROC
+@pytest.mark.parametrize(("termination_signal", "forced"), [("SIGTERM", False), ("SIGKILL", True)])
+def test_explicit_stop_receipt_wins_when_owner_reaps_after_operator_stop(
+    tmp_path, monkeypatch, capsys, termination_signal, forced
+):
+    args, calls = _wrapper_world(monkeypatch, tmp_path)
+
+    with _unreaped_child() as process:
+        explicit = _write_stop_document(
+            tmp_path,
+            session_id="serving-wrapper",
+            stop_receipt={
+                "schema": "saea-session-stop-receipt-v1",
+                "study": STUDY_SLUG,
+                "session_id": "serving-wrapper",
+                "session_role": "inference",
+                "session_receipt_sha256": _canonical_receipt_sha256(
+                    _WrapperSession(process.pid).as_json()
+                ),
+                "runtime_receipt_sha256": _canonical_receipt_sha256(
+                    {"schema": "fake"}
+                ),
+                "pid": process.pid,
+                "termination_signal": termination_signal,
+                "forced": forced,
+                "stopped_at": "now",
+                "final_process_state": PROCESS_STATE_GONE,
+            },
+            monitor_path=tmp_path / MONITOR_JSONL_NAME,
+        )
+        status = _hold_session_open(
+            args,
+            profile={"runtime_receipt": {"schema": "fake"}},
+            session=_WrapperSession(process.pid),
+            session_id="serving-wrapper",
+            session_dir=tmp_path,
+            monitor_path=tmp_path / MONITOR_JSONL_NAME,
+        )
+        assert process_state(process.pid) == PROCESS_STATE_GONE
+
+    assert status == 0
+    assert json.loads(
+        (tmp_path / SESSION_STOP_NAME).read_text(encoding="utf-8")
+    ) == explicit
+    assert len(calls) == 0
+    assert capsys.readouterr().err == ""
+
+
+def test_stop_publication_lock_serializes_operator_and_owner(tmp_path):
+    import threading
+
+    session = _WrapperSession(4242)
+    runtime_receipt = {"schema": "fake"}
+    operator_started = threading.Event()
+    release_operator = threading.Event()
+    owner_seen: list[bool] = []
+
+    def operator_publish() -> None:
+        with _session_stop_lock(tmp_path):
+            _write_stop_document(
+                tmp_path,
+                session_id=session.session_id,
+                stop_receipt={
+                    "schema": "saea-session-stop-receipt-v1",
+                    "study": STUDY_SLUG,
+                    "session_id": session.session_id,
+                    "session_role": session.role,
+                    "session_receipt_sha256": _canonical_receipt_sha256(session.as_json()),
+                    "runtime_receipt_sha256": _canonical_receipt_sha256(runtime_receipt),
+                    "pid": session.pid,
+                    "termination_signal": "SIGTERM",
+                    "forced": False,
+                    "stopped_at": "now",
+                    "final_process_state": PROCESS_STATE_GONE,
+                },
+                monitor_path=tmp_path / MONITOR_JSONL_NAME,
+            )
+            operator_started.set()
+            release_operator.wait(timeout=2)
+
+    def owner_publish() -> None:
+        operator_started.wait(timeout=2)
+        with _session_stop_lock(tmp_path):
+            owner_seen.append(
+                _read_explicit_stop_document(
+                    tmp_path, session=session, runtime_receipt=runtime_receipt
+                )
+                is not None
+            )
+
+    operator = threading.Thread(target=operator_publish)
+    owner = threading.Thread(target=owner_publish)
+    operator.start()
+    assert operator_started.wait(timeout=2)
+    owner.start()
+    time.sleep(0.05)
+    assert owner_seen == []
+    release_operator.set()
+    operator.join(timeout=2)
+    owner.join(timeout=2)
+    assert owner_seen == [True]
+
+
+@_NEEDS_PROC
+def test_same_pid_stop_with_wrong_runtime_binding_is_untrusted(
+    tmp_path, monkeypatch, capsys
+):
+    args, calls = _wrapper_world(monkeypatch, tmp_path)
+
+    with _unreaped_child() as process:
+        session = _WrapperSession(process.pid)
+        stop_receipt = {
+            "schema": "saea-session-stop-receipt-v1",
+            "study": STUDY_SLUG,
+            "session_id": session.session_id,
+            "session_role": session.role,
+            "session_receipt_sha256": _canonical_receipt_sha256(session.as_json()),
+            "runtime_receipt_sha256": "0" * 64,
+            "pid": process.pid,
+            "termination_signal": "SIGTERM",
+            "forced": False,
+            "stopped_at": "now",
+            "final_process_state": PROCESS_STATE_GONE,
+        }
+        _write_stop_document(
+            tmp_path,
+            session_id=session.session_id,
+            stop_receipt=stop_receipt,
+            monitor_path=tmp_path / MONITOR_JSONL_NAME,
+        )
+        status = _hold_session_open(
+            args,
+            profile={"runtime_receipt": {"schema": "fake"}},
+            session=session,
+            session_id=session.session_id,
+            session_dir=tmp_path,
+            monitor_path=tmp_path / MONITOR_JSONL_NAME,
+        )
+        assert process_state(process.pid) == PROCESS_STATE_GONE
+
+    assert status == 1
+    document = json.loads((tmp_path / SESSION_STOP_NAME).read_text(encoding="utf-8"))
+    assert document["server_exit"] is not None
+    assert len(calls) == 1
+    assert "exited with code 7" in capsys.readouterr().err
 
 
 @_NEEDS_PROC

@@ -38,8 +38,10 @@ or a heavy config path in.
 
 from __future__ import annotations
 
+import fcntl
 import json
 import math
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
@@ -66,6 +68,70 @@ SESSION_RECEIPT_NAME = "session-receipt.json"
 SESSION_STOP_NAME = "session-stop.json"
 SERVER_LOG_NAME = "server.log"
 MONITOR_JSONL_NAME = "monitor.jsonl"
+SESSION_STOP_LOCK_NAME = ".session-stop.lock"
+
+
+@contextmanager
+def _session_stop_lock(session_dir: Path):
+    """Serialize operator stop and foreground-owner stop publication.
+
+    The operator acquires this lock before signalling the child. That ordering
+    lets the foreground owner distinguish an explicit stop already in progress
+    from a server that exited independently.
+    """
+
+    lock_path = Path(session_dir) / SESSION_STOP_LOCK_NAME
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open("a+", encoding="utf-8") as lock_file:
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+
+
+def _read_explicit_stop_document(
+    session_dir: Path,
+    *,
+    session,
+    runtime_receipt: Mapping[str, object],
+) -> dict[str, object] | None:
+    """Return a matching operator stop document, if one is already durable."""
+
+    from ..preparation_feature_provenance import canonical_receipt_sha256
+
+    path = Path(session_dir) / SESSION_STOP_NAME
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return None
+    receipt = document.get("stop_receipt") if isinstance(document, Mapping) else None
+    if not isinstance(document, Mapping) or not isinstance(receipt, Mapping):
+        return None
+    base_keys = {
+        "schema", "study", "session_id", "session_role",
+        "session_receipt_sha256", "runtime_receipt_sha256", "pid",
+        "termination_signal", "forced", "stopped_at",
+    }
+    if (
+        set(receipt) not in (base_keys, base_keys | {"final_process_state"})
+        or document.get("schema") != SERVING_SESSION_STOP_SCHEMA
+        or document.get("study") != STUDY_SLUG
+        or document.get("session_id") != session.session_id
+        or document.get("stale") is not False
+        or document.get("server_exit") is not None
+        or receipt.get("schema") != "saea-session-stop-receipt-v1"
+        or receipt.get("study") != STUDY_SLUG
+        or receipt.get("session_id") != session.session_id
+        or receipt.get("session_role") != session.role
+        or receipt.get("pid") != session.pid
+        or receipt.get("session_receipt_sha256") != canonical_receipt_sha256(session.as_json())
+        or receipt.get("runtime_receipt_sha256") != canonical_receipt_sha256(runtime_receipt)
+        or receipt.get("termination_signal") not in {"SIGTERM", "SIGKILL", "ALREADY_EXITED"}
+        or not isinstance(receipt.get("forced"), bool)
+    ):
+        return None
+    return dict(document)
 
 #: A sample counts as PARKED when every slot is idle AND the card reports
 #: less than this much utilization. The owner's own idle signal is power
@@ -1416,18 +1482,26 @@ def _hold_session_open(
                 "detected_at": datetime.now(tz=timezone.utc).isoformat(),
             }
 
-        stop_document = _write_stop_document(
-            session_dir,
-            session_id=session_id,
-            stop_receipt=stop_session(
-                session,
-                runtime_receipt=profile["runtime_receipt"],
-                runtime_root=Path(args.runtime_root),
-                force_after_timeout=True,
-            ),
-            monitor_path=monitor_path,
-            server_exit=server_exit,
-        )
+        with _session_stop_lock(session_dir):
+            explicit_stop = _read_explicit_stop_document(
+                session_dir, session=session, runtime_receipt=profile["runtime_receipt"]
+            )
+            if explicit_stop is not None:
+                stop_document = explicit_stop
+                exited_unasked = False
+            else:
+                stop_document = _write_stop_document(
+                    session_dir,
+                    session_id=session_id,
+                    stop_receipt=stop_session(
+                        session,
+                        runtime_receipt=profile["runtime_receipt"],
+                        runtime_root=Path(args.runtime_root),
+                        force_after_timeout=True,
+                    ),
+                    monitor_path=monitor_path,
+                    server_exit=server_exit,
+                )
         print(json.dumps(stop_document, ensure_ascii=False, indent=2, sort_keys=True))
         if not exited_unasked:
             return 0
@@ -1648,17 +1722,18 @@ def _stop(args) -> int:
         runtime_receipt=runtime_receipt,
         runtime_root=Path(args.runtime_root),
     )
-    stop_document = _write_stop_document(
-        session_dir,
-        session_id=str(document["session_id"]),
-        stop_receipt=stop_session(
-            session,
-            runtime_receipt=runtime_receipt,
-            runtime_root=Path(args.runtime_root),
-            force_after_timeout=True,
-        ),
-        monitor_path=session_dir / MONITOR_JSONL_NAME,
-    )
+    with _session_stop_lock(session_dir):
+        stop_document = _write_stop_document(
+            session_dir,
+            session_id=str(document["session_id"]),
+            stop_receipt=stop_session(
+                session,
+                runtime_receipt=runtime_receipt,
+                runtime_root=Path(args.runtime_root),
+                force_after_timeout=True,
+            ),
+            monitor_path=session_dir / MONITOR_JSONL_NAME,
+        )
     print(json.dumps(stop_document, ensure_ascii=False, indent=2, sort_keys=True))
     return 0
 
