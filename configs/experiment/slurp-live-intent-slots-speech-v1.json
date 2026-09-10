@@ -70,5 +70,17 @@
   "scientific_analysis": {
     "repo_relpath": "docs/readiness/2026-09-10-slurp-live-system-v1/analysis-plan.json",
     "sha256": "646304a6540eda1483c8d92be7990f075edb0e9b420fef65960c103b58422ef0"
-  }
+  },
+  "preparation_source_receipts": [
+    {
+      "root": "repository",
+      "relpath": "docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers.json",
+      "sha256": "2abda571900bfcb5bf4a384eac1cb858fa8841ab3873d034b862c85671af443c"
+    },
+    {
+      "root": "repository",
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-kus3-vectors/vectors.json",
+      "sha256": "3c213ad4f4787e32d92fe30dd1119395817a73ba48d46cbed292a8f471aa86e5"
+    }
+  ]
 }
