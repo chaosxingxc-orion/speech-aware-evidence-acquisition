@@ -1,0 +1,14 @@
+{
+  "attempt_id": "attempt-e21-offline-direct-fit-v1",
+  "carrier_lock_key": "earnings21-original",
+  "execution_profile": "bounded-discovery-probe",
+  "planned_gpu_hours": 2.0,
+  "planned_model_calls": 4780,
+  "planned_speech_audio_seconds": 150000,
+  "protocol_hash": "dbce17e3d28e6b53f9df10d2d61e0deb9d297eca0b005ed5cddfde93d72e1da7",
+  "run_id": "SAEA-E21-OFFLINE-DIRECT-FIT-NP4-V1",
+  "schema": "saea-execution-plan-v1",
+  "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+  "split_role": "discovery",
+  "study": "speech-aware-evidence-acquisition"
+}

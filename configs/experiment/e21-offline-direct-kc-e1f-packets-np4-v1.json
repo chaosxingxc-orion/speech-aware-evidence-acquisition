@@ -1,0 +1,192 @@
+{
+  "experiment_id": "SAEA-E21-OFFLINE-DIRECT-KC-E1F-PACKETS-NP4-V1",
+  "schema": "saea-e21-offline-system-experiment-v1",
+  "date": "2026-09-10",
+  "purpose": "Prospective offline two-stage Earnings-21 pipeline over the frozen full44 discovery roster. Stage 1 generates a new direct transcript for every fixed 90-second window through the current shared OpenJiuwen executor and formal full-window packets. After the whole roster seals, a model-free batch barrier binds those exact new window responses as the predecessor of the existing KC-E1f brief repair. Stage 2 then repairs those same windows. The system result is the stage-2 output and its cost includes both stages.",
+  "population": {
+    "carrier": "earnings21-original",
+    "split_name": "discovery",
+    "dataset_fragment": "earnings21-discovery-conec-names",
+    "split_role": "discovery",
+    "count": 44,
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "fixed_90s_windows_per_stage": 1593,
+    "selection": "The complete frozen discovery roster and its complete fixed 90-second tiling; no outcome-based selection."
+  },
+  "fixed_stage_contract": {
+    "stage_1": {
+      "role": "new-direct-draft",
+      "model_fragment": "q4km-e21-full90-packets-cddb000c-np4-v1",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-full44-direct-ojw-feature-packets-np4-v1",
+      "policy": "obs-agent-loop-ojw",
+      "obs_controller_program": "phase-direct-only-v1",
+      "evidence_source": "none",
+      "instruction_source": "configs/baseline/e21-buf90-zero-locked-scored4.json",
+      "terminal_material": "Every terminal per-window response from this new stage-1 run, recovered only after the complete raw parent seals."
+    },
+    "barrier": {
+      "kind": "complete-sealed-window-predecessor-binding",
+      "timing": "After stage 1 is complete and verified, before any quality or reference read and before stage 2 is composed.",
+      "selection_rule": "Recover every terminal stage-1 window in stitch order from the sealed trace; require the recovered windows to rebuild all 44 sealed call outputs byte for byte; bind exactly 1,593 unique window ids, bounds, request ids, saturation flags and text hashes to the source manifest, outputs and trace hashes.",
+      "materialization_rule": "Write the model-output-bearing snapshot below SPEECHRL_DATA_DIR and an English content-free receipt under docs/receipts. The stage-2 successor must pin the receipt path and measured SHA-256. No response content or quality statistic is inspected to choose or alter the binding.",
+      "historical_predecessor_forbidden": "The receipt docs/receipts/e21-predecessor-full44-direct-baseline-v2.json must not satisfy this barrier; its run and attempt identities differ from the newly sealed stage-1 parent."
+    },
+    "stage_2": {
+      "role": "kc-e1f-brief-repair-of-new-draft",
+      "model_fragment": "q4km-e21-full90-packets-cddb000c-np4-v1",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_successor": "PENDING_AFTER_STAGE_1_SEAL",
+      "baseline_basis": "configs/baseline/e21-kc-e1f-brief-repair.json plus the current shared OJW/formal-packet transport fields; replace only its historical predecessor_snapshot with the newly materialized stage-1 binding.",
+      "policy": "obs-repair-loop-ojw",
+      "obs_controller_program": "phase-direct-only-v1",
+      "evidence_source": "conec-class-lists",
+      "brief_max_entries_per_class": 12,
+      "repair_frame": "e21-entity-repair-frame-v1",
+      "response_postprocessor": "e21-entity-repair-substitutions-v1",
+      "response_postprocessor_params": {
+        "max_span_tokens": 4,
+        "min_anchor_ratio": 0.6,
+        "max_substituted_fraction": 0.1
+      }
+    }
+  },
+  "prepared_inputs": {
+    "window_feature_inventory": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1/window-inventory.json",
+      "sha256": "7b12a5c32654855701c48b57152ab1643e0c776b9a7a3853fda009a6ac78face",
+      "artifact_schema": "saea-prepared-artifact-v1",
+      "artifact_kind": "exact-window-feature-inventory-v1",
+      "output_schema": "saea-window-feature-inventory-v1",
+      "output_sha256": "09a154a65b83171920b834e706558e75f1a661593cea1ef2ecf1f5503982573d",
+      "window_sources_sha256": "f569c77f6e22315f57268b1688b3b70e0b1e037de3284d5d198fbec269e115d4",
+      "batch": "SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1",
+      "requests": 1593,
+      "calls": 44,
+      "unique_audio": 1593,
+      "selected_audio_seconds": 141345.8526875,
+      "status": "complete"
+    },
+    "window_feature_cache_audit": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-cache-audit.json",
+      "sha256": "cc59a1dee59908c7fae25500b9ab40383b4aa9f9ef00a2946ba7c544b60180a8"
+    },
+    "window_feature_preparation_provenance": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-preparation-provenance.json",
+      "sha256": "72d097e3b153baccb75b4e6e221bc83a1ac60d36dd194c39822993db684ed757"
+    },
+    "prepared_window_feature_packets": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+      "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115",
+      "feature_root": "/home/chao/feat-packets/e21-cddb000c-dr-full-gpu-v1",
+      "requests": 1593,
+      "new_neural_contacts_required": 0
+    }
+  },
+  "service_geometry": {
+    "model_fragment": "q4km-e21-full90-packets-cddb000c-np4-v1",
+    "runtime_receipt": "docs/receipts/runtime-q4km-e21-feature-inference-cddb000c-v2.json",
+    "feature_encoder_runtime_receipt": "docs/receipts/runtime-q4km-e21-feature-preprocess-cddb000c.json",
+    "context_tokens": 36864,
+    "slots": 4,
+    "slot_tokens": 9216,
+    "max_tokens": 1024,
+    "prompt_order": "speech-query-prefix-v2",
+    "resident_projector": false,
+    "cuda_graphs": false,
+    "status": "The geometry matches the validated E21 np4 decoder-only packet route. The direct fit remains held for the terminal full-roster model-free wire receipt; generation remains held for the resulting exact 1,593-request fit and root admission."
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 1750,
+    "planned_gpu_hours": 2.0,
+    "planned_speech_audio_seconds": 150000
+  },
+  "preserve_wire_responses": true,
+  "scientific_analysis": {
+    "repo_relpath": "docs/readiness/2026-09-10-e21-offline-system-v1/analysis-plan.json",
+    "sha256": "8b92393cb37632b7fc53fbb35686d0aef63f845b199bd5de39127e5702ccd5f5"
+  },
+  "cells": [
+    {
+      "cell_id": "e21-offline-direct-fit-v1",
+      "run_id": "SAEA-E21-OFFLINE-DIRECT-FIT-NP4-V1",
+      "attempt_id": "attempt-e21-offline-direct-fit-v1",
+      "model_fragment": "q4km-e21-full90-packets-cddb000c-np4-v1",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-full44-direct-ojw-feature-packets-np4-v1",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prompt-fit"
+      ],
+      "readiness": {
+        "state": "held",
+        "reason": "Pre-registered only. The full 1,593-window shared model-free wire must terminate successfully before root may change this cell to ready or start the coordinate fit.",
+        "requirements": [],
+        "pending_requirements": [
+          "Terminal successful full-roster wire receipt for the already-running shared wire check.",
+          "Root admission and exclusive custody of serving-e21-offline-direct-repair-np4-v1."
+        ]
+      }
+    },
+    {
+      "cell_id": "e21-offline-direct-generation-v1",
+      "run_id": "SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1",
+      "attempt_id": "attempt-e21-offline-direct-generation-v1",
+      "model_fragment": "q4km-e21-full90-packets-cddb000c-np4-v1",
+      "dataset_fragment": "earnings21-discovery-conec-names",
+      "baseline_fragment": "e21-full44-direct-ojw-feature-packets-np4-v1",
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "worker",
+        "campaign"
+      ],
+      "readiness": {
+        "state": "held",
+        "reason": "Pre-registered only. Generation remains held until the actual 1,593-request fit passes under max1024 and root binds its immutable request-fit receipt and separate admission.",
+        "requirements": [],
+        "pending_requirements": [
+          "Successful terminal full-roster model-free wire receipt.",
+          "Complete request-fit artifact from SAEA-E21-OFFLINE-DIRECT-FIT-NP4-V1 with exactly 4,780 registered endpoint contacts.",
+          "Root generation admission for the 1,593-request target and 1,750-call ceiling on serving-e21-offline-direct-repair-np4-v1."
+        ]
+      }
+    }
+  ],
+  "split_id": "discovery",
+  "service_session_id": "serving-e21-offline-direct-repair-np4-v1",
+  "source_pins": {
+    "model_fragment": {
+      "repo_relpath": "configs/model/q4km-e21-full90-packets-cddb000c-np4-v1.json",
+      "sha256": "aae17a44c78d6cab1eb5c23644cd1d7606b10d7168c008b6fb6db531f1f99e51"
+    },
+    "dataset_fragment": {
+      "repo_relpath": "configs/dataset/earnings21-discovery-conec-names.json",
+      "sha256": "0daa2c9c4d6fade4e6a6203296ec34519f35b8abd88c5fd362807fdd4365abb1"
+    },
+    "direct_baseline_fragment": {
+      "repo_relpath": "configs/baseline/e21-full44-direct-ojw-feature-packets-np4-v1.json",
+      "sha256": "576c81c7ab85e86a7489afdfa235570d040fa1ab8592e4565a24a13514a517d5"
+    },
+    "repair_template": {
+      "repo_relpath": "docs/readiness/2026-09-10-e21-offline-system-v1/repair-baseline-template.json",
+      "sha256": "497131a4e6defc06d1cc638281dfb0691f9390c50ca4079e6fae491d7a8382e3",
+      "status": "Frozen before the direct parent runs; materialize only its predecessor_snapshot receipt path and measured SHA-256 after the direct parent seals."
+    },
+    "prospective_parent_contract": {
+      "repo_relpath": "docs/readiness/2026-09-10-e21-offline-system-v1/direct-parent-contract-v1.json",
+      "status": "The contract embeds the final composed configuration and protocol hashes and is intentionally not self-hash-pinned by this fragment."
+    }
+  },
+  "fit_execution_plan": {
+    "planned_endpoint_contacts": 4780,
+    "basis": "One GET /props plus one /apply-template and two /tokenize calls for each of 1,593 actual formal-packet requests. The fit performs no generation and remains held until the complete model-free wire terminates successfully.",
+    "contact_cap": 4780
+  },
+  "window_preparation_workers": 8,
+  "prompt_fit_multiple": 2.0,
+  "preparation_scheduling": "Root allocates eight aggregate CPU preparation workers. Current serial full-wire proof remains preserved; this preparation concurrency changes no sample, window, packet, prompt or decoding policy. Both stages retain depth1prefetch. Exact whole-roster fits check the unchanged requests with2x output reserve."
+}

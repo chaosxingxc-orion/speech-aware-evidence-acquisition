@@ -1,0 +1,29 @@
+{
+  "schema": "saea-e21-offline-system-analysis-plan-v1",
+  "status": "PROSPECTIVE_BEFORE_NEW_DIRECT_GENERATION",
+  "population": "All44 frozen discovery calls and1593 fixed90second windows; historically exposed, no held-out claim",
+  "comparator": "The newly generated first-stage direct outputs from this same offline execution",
+  "treatment": "Existing KC-E1f constrained repair of those exact new initial windows",
+  "primary": "PERSON entity error reduction in percentage points; paired call-cluster bootstrap10000, seed20260903, CI90; natural pooled ratio primary",
+  "admission": "Require primary CI90 lower bound>0 and natural-mixture point error reductions for overall WER, nonentity and insertion>=0 and numeric-accuracy point change>=0; equal-call PERSON point gain>0. No null-derived equivalence claim. Failures remain reported without adaptive redraws.",
+  "secondary": "Equal-call weighting, all sector/sample-rate strata, fixed window geometry and available speaker strata; complete official pooledmetrics and saved per-window attribution; historical KC-E1f and DR references descriptive with process/input provenance",
+  "cost": "System total includes new direct and repair calls, retries, speechseconds, tokens, fitcontacts, preparation, GPUutilizationintegration and residentwall/idle/load; stage2alone is not systemcost",
+  "scoring": "One complete official-score batch per whole44call manifest, saving required per-sample statistics initially. Read neither stage1quality nor references until stage2sealed or formalhold closescomparison.",
+  "scope": "Stage2 boundeddiscovery, frozen Qwen3Omni, existing ConEC briefs, no secondansweringLLM or meetingminutes-quality claim",
+  "generation_budget": {
+    "per_stage_calls": 1750,
+    "planned_per_stage": 1593,
+    "per_stage_gpu_hours": 2.0,
+    "per_stage_speech_seconds": 150000,
+    "family_planned_generations": 3186,
+    "family_call_ceiling": 3500,
+    "family_gpu_hours": 4.0
+  },
+  "fit_budget": {
+    "per_stage_endpoint_contacts": 4780,
+    "family_endpoint_contacts": 9560,
+    "method": "1props +3 endpoints per exactrequest;2x capacity reserve; no generation in fit"
+  },
+  "failure": "Keep the original attempt and named cause. One explicitly registered recovery maximum; a second failure stops, with no automatic replay.",
+  "representation": "Formal fullwindow source-bound speech feature packets; no newencoding or residentprojector. Bothstages same c36864np4, slot9216,max1024,prefetch1. If actualrepairfit fails, pause for a named capacity decision before furthergeneration; do not silently alter geometry/outputcap."
+}
