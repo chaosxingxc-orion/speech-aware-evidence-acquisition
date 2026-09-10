@@ -124,3 +124,22 @@ def test_warm_artifact_reuse_refuses_when_cache_disappears(tmp_path, monkeypatch
     with pytest.raises(Exception, match="truncated"):
         encode_window_feature_cache(**args)
     assert client.calls == []
+
+def test_second_source_mutation_refuses_before_second_contact(tmp_path, monkeypatch):
+    data, inv, first = inventory(tmp_path); second=data/"slices"/"two.wav"; second.write_bytes(b"second source")
+    second_sha=hashlib.sha256(second.read_bytes()).hexdigest(); source=dict(inv["batches"][0]["requests"][0]["source_provenance"]); source.update({"media_relpath":"slices/two.wav","sha256":second_sha,"bytes":second.stat().st_size,"iteration":1})
+    inv["batches"][0]["requests"].append({"request_key":"s#w2","source_provenance":source})
+    inv["encoding_inputs"].append({"audio_sha256":second_sha,"requests":[{"batch":"batch","request_key":"s#w2"}]})
+    class Mutating(Client):
+        def complete(self, *args, **kwargs):
+            value=super().complete(*args, **kwargs)
+            if len(self.timings)==1: second.write_bytes(b"changed after first")
+            return value
+        @property
+        def last_attempted_request_id(self): return self.timings[-1].request_id if self.timings else None
+    client=Mutating(); args=kwargs(tmp_path,data,inv,client)
+    monkeypatch.setattr("speech_aware_evidence_acquisition.core.preparation_encoding.inspect_legacy_cached_speech_feature_cache", lambda **kwargs:type("Inspection",(),{"audio_sha256":hashlib.sha256(kwargs["audio_path"].read_bytes()).hexdigest(),"cache_key":__import__("speech_aware_evidence_acquisition.core.preparation_encoding",fromlist=["legacy_audio_feature_cache_key"]).legacy_audio_feature_cache_key(kwargs["audio_path"].read_bytes())})())
+    with pytest.raises(PreparationError, match="changed after inventory"):
+        encode_window_feature_cache(**args)
+    assert len([call for call in client.calls if call[0]=="complete"]) == 1
+    assert client.closed == 1 and (tmp_path/"result.json.partial.json").exists()
