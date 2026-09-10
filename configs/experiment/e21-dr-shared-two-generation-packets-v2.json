@@ -199,9 +199,9 @@
       "policy": "obs-repair-loop-ojw",
       "predecessor": "unit_draft",
       "readiness": {
-        "state": "held",
-        "reason": "Held pending complete source-bound packet promotion, actual full-window packet capacity receipt, exposure pre-registration, and root admission. No raw-cache qualification may substitute for this packet transport.",
-        "requirements": []
+        "state": "ready",
+        "requirements": [],
+        "reason": "Root admits the preregistered full44 generation after both exact1593-window fits and the live four-full-window proof passed. This executable stage admission supersedes retained preparation snapshot flags. Reuse the same decoder-only service; four predeclared constrained/free derivatives; no third generation group."
       },
       "purpose": "Constrained generation parent using the sealed short-unit draft bound to each fixed long window.",
       "superseded_model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",
@@ -282,9 +282,9 @@
       "policy": "obs-repair-loop-ojw",
       "predecessor": "self_draft",
       "readiness": {
-        "state": "held",
-        "reason": "Held pending complete source-bound packet promotion, actual full-window packet capacity receipt, exposure pre-registration, and root admission. No raw-cache qualification may substitute for this packet transport.",
-        "requirements": []
+        "state": "ready",
+        "requirements": [],
+        "reason": "Root admits the preregistered full44 generation after both exact1593-window fits and the live four-full-window proof passed. This executable stage admission supersedes retained preparation snapshot flags. Reuse the same decoder-only service; four predeclared constrained/free derivatives; no third generation group."
       },
       "purpose": "Constrained generation parent using the sealed comparator self-draft for each fixed long window.",
       "superseded_model_fragment": "q4km-e21-buf90-mmproj-gpu-04ccc72a-np6",

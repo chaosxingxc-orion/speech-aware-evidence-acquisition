@@ -45,5 +45,9 @@
     "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
     "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
   },
-  "obs_prefetch_depth": 1
+  "obs_prefetch_depth": 1,
+  "prepared_request_fit": {
+    "relpath": "analysis/SAEA-E21-DR-PACKETS-UNIT-FIT-V2/request-fit.json",
+    "sha256": "f0cba4a98c8b0e9376b63dba192e132bb4e0037419611c31cca73384cf822973"
+  }
 }
