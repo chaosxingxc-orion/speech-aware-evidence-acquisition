@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 15,
+  "generation": 16,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "2e536e0c5c9ffbe0054f106108a7e5fe8b8046ac",
-  "updated_at_utc": "2026-09-10T01:36:27.128343+00:00",
-  "next_action": "Read STATUS-015.md. G1 trio finalized, scored and ADMITTED_COMPONENT with inherited joined-intent protection; service stopped. Do not replay or restart G1. Bind the aligned scorer and refresh G2 preparation before registered np8 actual-fit admission. Hold E21 GPU-mmproj V1 configs; follow OWNER-FEATURE-SERVING-007 using exact-window precomputed features and no resident GPU mmproj. Offline GPU encoder placement clarification pending. E21 exact-four fitter/OJW proof is still unaccepted; G3-G6 remain pending.",
+  "snapshot_commit": "c45941547f2a47aac70bf54c1167c066ae2a4d9a",
+  "updated_at_utc": "2026-09-10T02:51:48.908727+00:00",
+  "next_action": "Read STATUS-016.md. G2 decoder-only np8 actual fits and both inherited real smokes passed; full N/twin GPU generation observed (8 busy slots and 98% instantaneous utilization at 02:53:54 UTC) on frozen c4594154 using existing root service. Observe metadata only until both full arms seal and score; then bind source hashes and run the frozen aligned readout once. Keep root wrapper alive; do not restart or replay. E21 implementation/build work remains isolated; G3-G6 remain gated.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-FEATURE-SERVING-007"
