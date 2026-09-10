@@ -1,0 +1,45 @@
+{
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "ROOT_REGISTERED",
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-V1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "dev",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "planned_model_calls": 1050,
+    "planned_gpu_hours": 2.0,
+    "planned_speech_audio_seconds": 3000,
+    "protocol_hash": "38dd2857df5a3b9913c2977d8b1035dc00b4947604aa979f68a0146de524a098",
+    "attempt_id": "attempt-independent-s3a-repeat-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "prepared_request_fit": {
+    "relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-FIT-V1/request-fit.json",
+    "sha256": "3dc7fce326a5ada16d37fe23db941a839f1a110dc38306c84922825130c593bf"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-PREPARE-V1/speech-supply.json",
+    "sha256": "4bec90ce59e60610f1c8cda20f699d9242535d03195b12636be6aa7f800acc3d"
+  },
+  "fit_result": {
+    "boundary_sha256": "fade869c47c60609135a4b94b0b5a3cc2e43a0d8bcfcc79741309aba20148493",
+    "contact_counts": {
+      "GET /props": 1,
+      "POST /apply-template": 1000,
+      "POST /tokenize": 2000
+    },
+    "contacts": 3001,
+    "every_request_fits": true,
+    "generation_contacts": 0,
+    "minimum_margin_tokens": 5927,
+    "sample_count": 1000,
+    "session_id": "serving-slurp-s3-independent-repeat-np4-v1",
+    "session_identity_sha256": "319357345629b8a485eb088584b62cea3139539db8f9d350b554d481f4fa0b84",
+    "worst_sample_id": "slurp:devel:008655:audio-1502895086-headset"
+  },
+  "scope": "One1000-row inherited treatment repeat; no new comparator, twin or probe. Read scientific results only after the registered complete score.",
+  "runtime_source_base": "05b0f05ea87b52314845c3466d8f5a547551356f",
+  "expected_session_id": "serving-slurp-s3-independent-repeat-np4-v1"
+}

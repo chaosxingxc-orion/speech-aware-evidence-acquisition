@@ -140,9 +140,22 @@
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
-        "state": "held",
-        "reason": "Held pending root formal registration, fresh prepared-supply binding and a new full-roster tokenizer fit.",
-        "requirements": []
+        "state": "ready",
+        "reason": "Root admits the inherited independent1000-row repeat after the exact full-roster fit and source-bound supply passed; one treatment arm only.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-PREPARE-V1/speech-supply.json",
+            "sha256": "4bec90ce59e60610f1c8cda20f699d9242535d03195b12636be6aa7f800acc3d",
+            "reason": "Exact original ordered supply verified"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-FIT-V1/request-fit.json",
+            "sha256": "3dc7fce326a5ada16d37fe23db941a839f1a110dc38306c84922825130c593bf",
+            "reason": "All1000 exact requests fit max256 on np4;3001registered tokenizer contacts"
+          }
+        ]
       }
     }
   ],
@@ -212,5 +225,9 @@
   "prepared_phase_supply": {
     "relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-PREPARE-V1/speech-supply.json",
     "sha256": "4bec90ce59e60610f1c8cda20f699d9242535d03195b12636be6aa7f800acc3d"
+  },
+  "prepared_request_fit": {
+    "relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-FIT-V1/request-fit.json",
+    "sha256": "3dc7fce326a5ada16d37fe23db941a839f1a110dc38306c84922825130c593bf"
   }
 }
