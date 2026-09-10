@@ -24,9 +24,12 @@ class _ZeroDenominator(PooledRatioError):
 def _field(row: Mapping[str, object], path: str) -> float:
     value: object = row
     for part in path.split("."):
-        if not isinstance(value, Mapping) or part not in value:
+        if isinstance(value, Mapping) and part in value:
+            value = value[part]
+        elif isinstance(value, (list, tuple)) and part.isdigit() and int(part) < len(value):
+            value = value[int(part)]
+        else:
             raise PooledRatioError(f"row is missing field path {path!r}")
-        value = value[part]
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise PooledRatioError(f"field {path!r} must be a finite nonnegative number")
     result = float(value)
@@ -35,14 +38,20 @@ def _field(row: Mapping[str, object], path: str) -> float:
     return result
 
 
-def _totals(rows, ids: Sequence[str], numerator: str, denominator: str) -> tuple[float, float]:
+def _numerator(row: Mapping[str, object], fields: str | Sequence[str]) -> float:
+    if isinstance(fields, str):
+        return _field(row, fields)
+    return sum(_field(row, field) for field in fields)
+
+
+def _totals(rows, ids: Sequence[str], numerator: str | Sequence[str], denominator: str) -> tuple[float, float]:
     return (
-        sum(_field(rows[sid], numerator) for sid in ids),
+        sum(_numerator(rows[sid], numerator) for sid in ids),
         sum(_field(rows[sid], denominator) for sid in ids),
     )
 
 
-def _pooled_ratio(rows, ids: Sequence[str], numerator: str, denominator: str) -> float:
+def _pooled_ratio(rows, ids: Sequence[str], numerator: str | Sequence[str], denominator: str) -> float:
     num, den = _totals(rows, ids, numerator, denominator)
     if den <= 0:
         raise _ZeroDenominator("pooled denominator is zero")
@@ -70,12 +79,6 @@ def _bootstrap_json(result) -> dict[str, object]:
     return raw
 
 
-def _cluster_bootstrap_safe(rows, ids, numerator, denominator, metadata, cluster_field):
-    clusters: dict[str, list[str]] = {}
-    for sid in ids:
-        clusters.setdefault(str(metadata[sid][cluster_field]), []).append(sid)
-    return all(_totals(rows, members, numerator, denominator)[1] > 0 for members in clusters.values())
-
 
 def _summary(left, right, ids, numerator, denominator, direction, metadata, cluster_field,
              seed, n_replicates, ci_level, strata_field=None, frozen_strata=()):
@@ -90,12 +93,6 @@ def _summary(left, right, ids, numerator, denominator, direction, metadata, clus
         "right_ratio_pct": 100.0 * right_ratio,
         "gain_pp": 100.0 * _gain(left_ratio, right_ratio, direction),
     }
-    safe = _cluster_bootstrap_safe(left, ids, numerator, denominator, metadata, cluster_field)
-    safe = safe and _cluster_bootstrap_safe(right, ids, numerator, denominator, metadata, cluster_field)
-    if not safe:
-        result["bootstrap"] = {"status": "unavailable", "reason": "a resampleable cluster has zero pooled denominator"}
-        return result
-
     def statistic(sample_ids):
         if strata_field is None:
             return _gain(
@@ -121,7 +118,13 @@ def _summary(left, right, ids, numerator, denominator, direction, metadata, clus
             cluster_of=lambda sid: str(metadata[sid][cluster_field]),
             strata_of=(None if strata_field is None else lambda sid: str(metadata[sid][strata_field])),
         )
-    except (PairedAnalysisError, PooledRatioError) as error:
+    except _ZeroDenominator:
+        result["bootstrap"] = {
+            "status": "unavailable",
+            "reason": "at least one realized bootstrap draw has zero pooled denominator",
+        }
+        return result
+    except PairedAnalysisError as error:
         raise PooledRatioError(str(error)) from error
     result["bootstrap"] = _bootstrap_json(boot)
     return result
@@ -160,7 +163,12 @@ def compare_pooled_ratios(left, right, metadata, metrics, *, groupings, seed,
         numerator, denominator, direction = (
             spec.get("numerator_field"), spec.get("denominator_field"), spec.get("direction")
         )
-        if not isinstance(numerator, str) or not isinstance(denominator, str) or direction not in {"lower", "higher"}:
+        numerator_valid = isinstance(numerator, str) and bool(numerator)
+        if isinstance(numerator, list):
+            numerator_valid = bool(numerator) and all(
+                isinstance(field, str) and field for field in numerator
+            )
+        if not numerator_valid or not isinstance(denominator, str) or not denominator or direction not in {"lower", "higher"}:
             raise PooledRatioError("each metric requires numerator_field, denominator_field and lower/higher direction")
         natural = _summary(left, right, ids, numerator, denominator, direction, metadata,
                            cluster_field, seed, n_replicates, ci_level)
@@ -278,12 +286,19 @@ def run(config_path: Path, output_path: Path):
             n_replicates=spec["n_replicates"], ci_level=spec["ci_level"],
             cluster_field=spec.get("cluster_field", "cluster"),
         )
+    source_path = Path(__file__)
     result = {"schema": SCHEMA, "execution_profile": "model-free-check",
               "provenance": {"config_path": str(config_path),
                              "config_sha256": hashlib.sha256(config_raw).hexdigest(),
                              "inputs": pins, "metadata": metadata_pin,
-                             "expected_ids_count": expected},
+                             "expected_ids_count": expected,
+                             "implementation": {
+                                 "relpath": "src/speech_aware_evidence_acquisition/analysis/pooled_ratio_compare.py",
+                                 "sha256": hashlib.sha256(source_path.read_bytes()).hexdigest(),
+                             },
+                             "contacts": {"model": 0, "scorer": 0, "reference": 0}},
               "contrasts": results}
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     with Path(output_path).open("x", encoding="utf-8", newline="\n") as handle:
         json.dump(result, handle, sort_keys=True, indent=2)
         handle.write("\n")

@@ -95,9 +95,11 @@ def test_cli_pins_hash_roster_and_exclusive_output(tmp_path):
     config = {"execution_profile": "model-free-check", "analysis": {"inputs": bindings, "metadata": {"path": str(meta_path), "sha256": _write(meta_path, metadata), "rows_key": "rows"}, "id_field": "id", "expected_ids_count": 2, "cluster_field": "cluster", "groupings": {"sector": "sector"}, "metrics": _metric(), "contrasts": [{"name": "r-v-l", "left": "left", "right": "right"}], "seed": 3, "n_replicates": 10, "ci_level": 0.9}}
     config_path = tmp_path / "config.json"
     _write(config_path, config)
-    output = tmp_path / "result.json"
+    output = tmp_path / "nested" / "result.json"
     result = run(config_path, output)
     assert result["contrasts"]["r-v-l"]["errors"]["natural_mixture"]["gain_pp"] == pytest.approx(25.0)
+    assert result["provenance"]["contacts"] == {"model": 0, "scorer": 0, "reference": 0}
+    assert len(result["provenance"]["implementation"]["sha256"]) == 64
     with pytest.raises(FileExistsError):
         run(config_path, output)
     left_path.write_text("{}")
@@ -124,3 +126,43 @@ def test_missing_denominator_field_refuses_clearly():
             left, right, _metadata(left), _metric(), groupings={},
             seed=1, n_replicates=5, ci_level=0.9,
         )
+
+
+def test_zero_denominator_cluster_only_unavailable_when_a_realized_draw_is_zero():
+    left = _rows({"positive": (1, 1), "zero": (0, 0)})
+    right = _rows({"positive": (0, 1), "zero": (0, 0)})
+    metadata = _metadata(left, clusters={"positive": "positive", "zero": "zero"})
+    safe = compare_pooled_ratios(
+        left, right, metadata, _metric(), groupings={},
+        seed=1, n_replicates=1, ci_level=0.9,
+    )["errors"]["natural_mixture"]
+    assert safe["bootstrap"]["n_replicates"] == 1
+    failed = compare_pooled_ratios(
+        left, right, metadata, _metric(), groupings={},
+        seed=0, n_replicates=1, ci_level=0.9,
+    )["errors"]["natural_mixture"]
+    assert failed["status"] == "available"
+    assert failed["bootstrap"] == {
+        "status": "unavailable",
+        "reason": "at least one realized bootstrap draw has zero pooled denominator",
+    }
+
+
+def test_nested_array_paths_and_summed_numerator_fields():
+    left = {"a": {"entity_class_counts": {"__NON_ENTITY__": [2, 1, 10]}}}
+    right = {"a": {"entity_class_counts": {"__NON_ENTITY__": [1, 0, 10]}}}
+    metric = {
+        "nonentity": {
+            "numerator_field": [
+                "entity_class_counts.__NON_ENTITY__.0",
+                "entity_class_counts.__NON_ENTITY__.1",
+            ],
+            "denominator_field": "entity_class_counts.__NON_ENTITY__.2",
+            "direction": "lower",
+        }
+    }
+    result = compare_pooled_ratios(
+        left, right, _metadata(left), metric, groupings={},
+        seed=2, n_replicates=2, ci_level=0.9,
+    )
+    assert result["nonentity"]["natural_mixture"]["gain_pp"] == pytest.approx(20.0)
