@@ -1096,3 +1096,14 @@ def test_register_slice_without_a_registry_raises(tmp_path):
     )
     with pytest.raises(FrozenCoreClientError, match="slice_registry"):
         client.register_slice(record)
+
+def test_last_attempted_request_id_is_set_before_transport_and_is_not_a_timing(tmp_path):
+    world = _World(tmp_path)
+    def fail(_payload):
+        raise RuntimeError("synthetic transport failure")
+    client, _, _ = _client(world, tmp_path, transport=_CapturingTransport(responder=fail))
+    assert client.last_attempted_request_id is None
+    with pytest.raises(RuntimeError, match="synthetic"):
+        client.complete(_zero_supply_messages(world.media_relpath("s1")))
+    assert client.last_attempted_request_id == "rails-0001"
+    assert client.timings == ()
