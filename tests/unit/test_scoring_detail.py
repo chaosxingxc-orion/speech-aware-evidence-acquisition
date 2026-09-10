@@ -25,6 +25,12 @@ def _registered_scorer_results() -> dict[str, object]:
         "asr-wer": {
             "per_sample": [{"sample_id": "sample-1", "wer": 0.25}],
             "aggregate": {"mean_wer": 0.25, "samples": 1},
+            "views": {
+                "normalized": {
+                    "aggregate": {"mean_wer": 0.2, "samples": 1},
+                    "per_sample": [{"sample_id": "sample-1", "wer": 0.2}],
+                }
+            },
         },
         "cost": {
             "per_sample": [],
@@ -148,7 +154,18 @@ def test_score_batch_passes_detail_mode_once_to_each_complete_score_job(
                 {
                     "manifest": str(job.manifest),
                     "verified": True,
-                    "scores": {"official": {"per_sample": []}},
+                    "scores": {
+                        "official": {
+                            "aggregate": {"samples": 1},
+                            "per_sample": [{"sample_id": "sample-1"}],
+                            "views": {
+                                "normalized": {
+                                    "aggregate": {"samples": 1},
+                                    "per_sample": [{"sample_id": "sample-1"}],
+                                }
+                            },
+                        }
+                    },
                 }
             ),
             stderr="",
@@ -167,6 +184,10 @@ def test_score_batch_passes_detail_mode_once_to_each_complete_score_job(
     assert sorted(calls, key=lambda call: call[0].job_id) == [
         (jobs[0], True),
         (jobs[1], True),
+    ]
+    first = json.loads((tmp_path / "scores" / "observation.score.json").read_text())
+    assert first["scores"]["official"]["views"]["normalized"]["per_sample"] == [
+        {"sample_id": "sample-1"}
     ]
 
 
