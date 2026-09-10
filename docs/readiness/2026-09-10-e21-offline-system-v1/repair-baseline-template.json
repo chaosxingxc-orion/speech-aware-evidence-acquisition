@@ -1,0 +1,49 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "obs-repair-loop-ojw",
+  "evidence_source": "conec-class-lists",
+  "evidence_mismatch": false,
+  "brief_max_entries_per_class": 12,
+  "predecessor_snapshot": {
+    "receipt_relpath": "MATERIALIZE_FROM_THE_NEW_DIRECT_PARENT_ONLY",
+    "receipt_sha256": "MATERIALIZE_AFTER_SEAL"
+  },
+  "repair_frame": "e21-entity-repair-frame-v1",
+  "response_postprocessor": "e21-entity-repair-substitutions-v1",
+  "response_postprocessor_params": {
+    "max_span_tokens": 4,
+    "min_anchor_ratio": 0.6,
+    "max_substituted_fraction": 0.1
+  },
+  "scorers": [
+    "asr-wer-whisper",
+    "conec-entity-wer-official",
+    "numeric-value-accuracy-v1",
+    "semantic-high-impact-error-rate-v1",
+    "cost"
+  ],
+  "task_instruction": "The reference material above is a pre-meeting brief for this call, built only from the call's own published participant roster and press-release documents: participants and their roles, the organizations and divisions the roster names, company and ticker candidates, product and segment candidates, and other document terms. Where an entry shows a form in brackets after \"normalized:\", that is the spelling the measurement compares against. Below it, a first-pass transcript of this same audio window is given. Return that first-pass transcript again, word for word, changing it ONLY where the audio and the reference material together show that a named entity -- a person, organization, place, product, event or other proper name -- is spelled or identified wrongly; replace the wrong name with the right one in place. Do not add words, do not remove words, do not re-order or re-punctuate, and do not change any word that is not part of a name. Never insert a listed word you do not clearly hear in the audio. If nothing needs correcting, return the transcript unchanged. Output only the transcript text.",
+  "obs_buffer_seconds": 90,
+  "obs_min_advance_seconds": 20,
+  "obs_max_advance_seconds": 55,
+  "obs_silence_snap_seconds": 2.0,
+  "obs_fallback_advance_seconds": 50,
+  "obs_boundary_mode": "fixed",
+  "obs_vad": "energy",
+  "obs_vad_trim_min_seconds": 0,
+  "obs_preprocess": [],
+  "obs_condition_tail_chars": 0,
+  "obs_slice_retry_max": 1,
+  "obs_slice_skip_max": 1,
+  "obs_batch_samples": 1,
+  "obs_batch_slices": 8,
+  "obs_controller_program": "phase-direct-only-v1",
+  "prepared_window_feature_packets": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+    "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
+  },
+  "obs_prefetch_depth": 1,
+  "ojw_workflow_timeout_seconds": 21600,
+  "speech_feature_key_representation_id": "saea-e21-offline-kc-e1f-new-draft-v1:repair",
+  "speech_feature_matcher_policy_id": "saea-e21-offline-kc-e1f-new-draft-v1"
+}
