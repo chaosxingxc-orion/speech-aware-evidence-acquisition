@@ -112,9 +112,16 @@
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
-        "state": "held",
-        "reason": "Held pending root formal registration, fresh prepared-supply binding and a new full-roster tokenizer fit.",
-        "requirements": []
+        "state": "ready",
+        "reason": "Root permits prospective fit after its committed exposure/plan registration; identical1000-row ordered prepared supply has been independently verified. Model service is not yet switched.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-PREPARE-V1/speech-supply.json",
+            "sha256": "4bec90ce59e60610f1c8cda20f699d9242535d03195b12636be6aa7f800acc3d",
+            "reason": "Root verified exact inherited supply output and source identities"
+          }
+        ]
       }
     },
     {
@@ -201,5 +208,9 @@
       "config_hash": "01f438445cca09c19d254ad586a347ee207de6ca4dce0bdd20fad16db933bb85",
       "study_commit": "05b0f05ea87b52314845c3466d8f5a547551356f"
     }
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-PREPARE-V1/speech-supply.json",
+    "sha256": "4bec90ce59e60610f1c8cda20f699d9242535d03195b12636be6aa7f800acc3d"
   }
 }
