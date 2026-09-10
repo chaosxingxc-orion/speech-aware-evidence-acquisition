@@ -11,11 +11,28 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
+from pathlib import PurePosixPath
 from typing import Sequence
 
 from . import FrozenCoreError
 
 _DRIVE_PREFIX = re.compile(r"^[A-Za-z]:")
+
+
+def _canonical_window_route_path(value: object) -> object:
+    """Collapse only the run-owned OBS slice namespace.
+
+    A prepared window may be materialized under a different run directory
+    while retaining the same sample/cut suffix. The suffix remains part of
+    the identity; every other path is left unchanged.
+    """
+
+    if not isinstance(value, str):
+        return value
+    parts = PurePosixPath(value).parts
+    if len(parts) >= 4 and parts[:2] == ("derived", "obs-slices") and parts[2]:
+        return "/".join((*parts[:2], "<run-id>", *parts[3:]))
+    return value
 
 
 def _normalized_relative_path(value: object, label: str) -> str:

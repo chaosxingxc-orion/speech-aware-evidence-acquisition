@@ -6,9 +6,10 @@ import json
 from dataclasses import dataclass
 from collections import Counter
 from collections.abc import Callable, Mapping, Sequence
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 
 from .preparation import PreparationError, canonical_bytes, digest, measure_request
+from .model.paths import _canonical_window_route_path
 
 
 class GuardedTokenizer:
@@ -77,15 +78,6 @@ def packet_token_counts(
         expected_decoder_gguf_sha256=decoder_sha256,
     )
     return tuple(sum(chunk.n_tokens for chunk in packet.chunks) for packet in packets)
-
-
-def _canonical_window_route_path(value: object) -> object:
-    if not isinstance(value, str):
-        return value
-    parts = PurePosixPath(value).parts
-    if len(parts) >= 4 and parts[:2] == ("derived", "obs-slices") and parts[2]:
-        return "/".join((*parts[:2], "<run-id>", *parts[3:]))
-    return value
 
 
 def canonical_window_sources(

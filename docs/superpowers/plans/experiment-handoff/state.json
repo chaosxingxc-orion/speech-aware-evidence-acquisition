@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 22,
+  "generation": 23,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "7c2f34f3f4b898f511a49eb051890ef59497bde2",
-  "updated_at_utc": "2026-09-10T07:29:49.407539+00:00",
-  "next_action": "Read STATUS-022.md and the Fable reproduction report. Original numerical reproduction and live-system source review are complete; shared OBS wire checking passed 296 adjacent regression cases with synthetic data only. Present component conclusions and exact original serving identities before any adjustment. No service started. Feature-serving qualification and scientific DR/LOOP remain paused; preserve G2 NI failure and G3/G4 holds. G5/G6 remain incomplete. The optional G6 timing-semantics question is pending.",
+  "snapshot_commit": "c9f478194e64f20bfb796b3aa6bc3cf4e6d0843c",
+  "updated_at_utc": "2026-09-10T08:23:47.867848+00:00",
+  "next_action": "Read STATUS-023 and the Fable reproduction report. Original numerical findings are reproduced. Cached fit recovery stopped after its second failure: one props contact, zero audio measurement/generation/encoding, normal stop and quiescent lease reconciliation. Root verified the offline factory/cache repair on all four real inputs and 146 regression cases; no request content/cache bytes changed. Do not replay this flight or infer FIT_READY. Phase derivative branch remains provisional and unmerged. Present original supported component conclusions before further scientific changes. G2 NI failure/G3/G4 holds and G5/G6 incompleteness remain.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-REPRODUCTION-FIRST-008"

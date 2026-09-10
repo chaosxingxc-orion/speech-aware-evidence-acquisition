@@ -461,3 +461,28 @@ def test_config_parser_rejects_extra_or_malformed_fields():
         prepared_window_feature_cache(
             {"prepared_window_feature_cache": {"audit": {}, "extra": True}}
         )
+
+
+def test_registered_factory_enforces_prepared_cache_for_four_requests(tmp_path, monkeypatch):
+    """Exercise the real registry factory; fake only session liveness and HTTP."""
+    world = _world(tmp_path, monkeypatch)
+    transport = build_configured_transport(
+        world.values, world.data, repo_root=tmp_path, session=world.session,
+        runtime_receipt=world.runtime_receipt, runtime_root=world.runtime_root,
+    )
+    posted = []
+
+    def post(_url, body):
+        posted.append(json.loads(body))
+        return json.dumps({"choices": [{"message": {"content": "ok"}}], "usage": {}}).encode()
+
+    monkeypatch.setattr(transport, "_post", post)
+    for index in range(4):
+        payload = {**world.payload, "request_id": f"prepared-request-{index}"}
+        transport(canonical_bytes(payload))
+    assert len(posted) == 4
+    assert all(body["messages"][1]["content"][-1]["type"] == "input_audio" for body in posted)
+    world.media.write_bytes(b"changed pcm")
+    with pytest.raises(PreparedFeatureCacheError, match="source SHA256"):
+        transport(canonical_bytes(world.payload))
+    assert len(posted) == 4

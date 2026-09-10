@@ -1,0 +1,103 @@
+{
+  "schema": "saea-four-input-offline-cache-guard-proof-v1",
+  "checked_at_utc": "2026-09-10T08:22:32.794223+00:00",
+  "state": "OFFLINE_REQUEST_RENDER_VERIFIED",
+  "model_generation_contacts": 0,
+  "encoder_contacts": 0,
+  "tokenizer_contacts": 0,
+  "service_started": false,
+  "socket_connections_forbidden": true,
+  "mocked": "Only historical session liveness is bypassed; sockets and POST are forbidden. Real registry, runtime file identity, audit/provenance, prepared cache and rendering code execute.",
+  "limits": "This is a four-input offline dry run; it does not establish live server hits, error paths, latency or request capacity and does not reopen the stopped fit.",
+  "sources": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/wire-check/WIRECHECK-SAEA-E21-CURRENT-EXECUTOR-CACHED-PROOF-FIT-V1-1789026505903/attempt-wire-check-1789026505903/WIRECHECK-SAEA-E21-CURRENT-EXECUTOR-CACHED-PROOF-FIT-V1-1789026505903.trace.jsonl",
+      "sha256": "b5c259e47c4d08a7bf22d963c832fe092c2f29a3efe7d5d208a918be492394df"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-e21-cached-proof-np6-recovery-v1/session-receipt.json",
+      "sha256": "679d835d489f09344c4905abcec5d07cce854bfefd2d632ac5e79cbe734e7486"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-FOUR-WINDOW-CPU-ENCODING-V1/cache-audit.json",
+      "sha256": "e21563058b6323d67e61644d02c6a5a5732158563f7e37135109d84f8954b561"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-FOUR-WINDOW-CPU-ENCODING-V1/feature-provenance.json",
+      "sha256": "c4828d23eed95471f830d5f189c6b57297390776002bcedb78f4041f250cad91"
+    }
+  ],
+  "checks": [
+    {
+      "sample_id": "4320211",
+      "media_relpath": "derived/obs-slices/WIRECHECK-SAEA-E21-CURRENT-EXECUTOR-CACHED-PROOF-FIT-V1-1789026505903/4320211/i0000.wav",
+      "audio_seconds": 10.3796875,
+      "sample_rate_hz": 16000,
+      "audio_sha256": "8d54bf9ced3a219e5d0d25297d88030776b895f876c3c3be93b0907690cab19a",
+      "payload_sha256": "5b71cb1cc4a2d4e95d870d9eba13fdc9f5e3808fcf1ff76f458479fe3a382bd9",
+      "rendered_body_sha256": "a915bddea4971706536f151c55b9d3b8c401295622917e1e91d757b0ecc4591b",
+      "guard_passed": true,
+      "request_bytes_unchanged_by_guard": true
+    },
+    {
+      "sample_id": "4320211",
+      "media_relpath": "derived/obs-slices/WIRECHECK-SAEA-E21-CURRENT-EXECUTOR-CACHED-PROOF-FIT-V1-1789026505903/4320211/i0001.wav",
+      "audio_seconds": 10.38625,
+      "sample_rate_hz": 16000,
+      "audio_sha256": "c740c8f627eda4da2ff88186127206d7618a21467584229bbafe54a066f79924",
+      "payload_sha256": "6defd509ef80009853db88b5b788ac4e03b5280caa70892556f32057c0a3a61a",
+      "rendered_body_sha256": "642676ed02b1ac2c7370743ef5345daa0b99bd74e4098b9cff18a716f37b9b76",
+      "guard_passed": true,
+      "request_bytes_unchanged_by_guard": true
+    },
+    {
+      "sample_id": "4320211",
+      "media_relpath": "derived/obs-slices/WIRECHECK-SAEA-E21-CURRENT-EXECUTOR-CACHED-PROOF-FIT-V1-1789026505903/4320211/i0002.wav",
+      "audio_seconds": 10.362875,
+      "sample_rate_hz": 16000,
+      "audio_sha256": "ac52c2af82cb38b4383725d9ce28aee5eedb760a1222af848ed788aaaed14d37",
+      "payload_sha256": "c7e4e7a7caa25528bf118b2645a8cc1627de687f706e131dcaa49a1a6860301e",
+      "rendered_body_sha256": "3939caff0d5d5caf3ee17a9e19fdf64e3e21028ddb95165f37a5cf23ed4beb0d",
+      "guard_passed": true,
+      "request_bytes_unchanged_by_guard": true
+    },
+    {
+      "sample_id": "4320211",
+      "media_relpath": "derived/obs-slices/WIRECHECK-SAEA-E21-CURRENT-EXECUTOR-CACHED-PROOF-FIT-V1-1789026505903/4320211/i0003.wav",
+      "audio_seconds": 10.7115,
+      "sample_rate_hz": 16000,
+      "audio_sha256": "92c4c89940e527f573d23590dd7869baf8fd7236544d6e69f66ec97bcf4a9dcf",
+      "payload_sha256": "f2fdbeeccfa16de42871f9840a4798ab8154de30c5cd53578c5771acad0516c0",
+      "rendered_body_sha256": "53fd30e8d0d2b6b5bcf4005166ff221fc741e62f3465df34b9e0d5ceefe20e6d",
+      "guard_passed": true,
+      "request_bytes_unchanged_by_guard": true
+    }
+  ],
+  "feature_chunks": {
+    "17723165445975928890_o1.feat": "36fc9b6a76ad5094d86dad5887f5d20a7727be4f18f2c134be96fff9d07e7a28",
+    "405339312129692646_o1.feat": "635e785141662a9b4405f1807521f16c00fec6c551dcf2fed3fff89674d2c629",
+    "15652609583607607724_o0.feat": "063e4dd9706577d37d6afa30c6e3be9514bdb9f39304c199293551f2cc378396",
+    "405339312129692646_o0.feat": "047a9c6876581587fb505c57c4c6f1f3544fce6fed45fd8c42fd4f15ac37433e",
+    "17723165445975928890_o0.feat": "83812192c356cf5307907dd6658c1fee2be5bca10a2506e6bddd5077831dd91d",
+    "4134672557807286280_o0.feat": "f82850ae6a77d05d84c0a15c7919e55cd8a7626684dd9686b0a6d41be4320c91",
+    "15652609583607607724_o1.feat": "446fb6a1487e81cc220e1e74a8d24bf7f19c8fa8150db23f67c548eb8951377a",
+    "4134672557807286280_o1.feat": "812a11c6dd263a5b0cf7e3d5b775a840eceab58a6c410521937d08536f31c185"
+  },
+  "feature_chunks_unchanged": true,
+  "regression": {
+    "passed": 146,
+    "skipped": 1,
+    "ruff": "passed",
+    "engineering_base_check": "passed"
+  },
+  "implementation_sources": {
+    "src/speech_aware_evidence_acquisition/core/configured_transport.py": "10f69ced40e16bafff61dbbcbe229b7d490286954ad99739d61acfbd956cc878",
+    "src/speech_aware_evidence_acquisition/core/model/transport.py": "8890e3bd57f663b488f2f35b18e2628edaf5d07702c52a3d2b9008252c751c67",
+    "src/speech_aware_evidence_acquisition/core/model/prepared_feature_cache.py": "ddb5fa062cf1b2042f99936c3a5dc9466dee0bb720e96e91a43bcdfe7393cbb4",
+    "src/speech_aware_evidence_acquisition/core/model/paths.py": "49ee39f3abb8493a1dbee2156b6acbe7fcb1e70ad65d74ee2562150b76a3554a",
+    "src/speech_aware_evidence_acquisition/core/preparation_fit.py": "254c45dbb6c15ecafc8c24a772dd9ef102030b902edfc1a0c01b40aa0f0ce8c2",
+    "tests/unit/test_configured_transport.py": "312eae76501d5145a31075f8619b8514d27205da0cad0d8c2b49d70b788cc636",
+    "tests/unit/test_llama_server_transport.py": "a471ca4ab8a5fdd0b24f1cf2e336e9fe69a0065d3f735d41b5ffe75b884b23a0",
+    "tests/unit/test_preparation_fit.py": "a749a866ddb0f1ebcd252e3522a987df2d2a5ab8dd14ee90b28db9356964adf2"
+  }
+}

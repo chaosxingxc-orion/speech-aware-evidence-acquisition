@@ -2586,8 +2586,17 @@ def test_preparation_render_is_exact_send_body_and_never_posts(tmp_path):
 
 
 
-def _cache_guard_setup(tmp_path):
+def _cache_guard_setup(tmp_path, *, window_run=None):
     payload = _boundary_payload(tmp_path)
+    if window_run is not None:
+        payload["sample_id"] = "sample-1"
+        payload["speech_ref"] = "earnings22-original/sample-1"
+        payload["media_relpath"] = (
+            f"derived/obs-slices/{window_run}/sample-1/i0000.wav"
+        )
+        window_media = tmp_path / payload["media_relpath"]
+        window_media.parent.mkdir(parents=True, exist_ok=True)
+        window_media.write_bytes(b"fake-window-wav-bytes")
     parent = tmp_path / "parent.wav"
     parent.write_bytes(b"synthetic parent")
     media = tmp_path / payload["media_relpath"]
@@ -2608,7 +2617,7 @@ def _cache_guard_setup(tmp_path):
     }
     batch = WindowRequestBatch(
         payloads=(payload,),
-        request_keys=("5000001#w0001",),
+        request_keys=(f"{payload["sample_id"]}#w0001",),
         source_bindings=(source,),
     )
     identity = WindowFeatureEncoderIdentity(
@@ -2695,6 +2704,125 @@ def test_prepared_cache_guard_refuses_extra_audio_and_feature_packets(tmp_path):
             {"messages": [{"role": "user", "content": []}]},
         )
 
+
+
+def test_prepared_cache_guard_accepts_equivalent_window_run_namespace(tmp_path):
+    payload, _, guard = _cache_guard_setup(tmp_path, window_run="prepared-run")
+    source = tmp_path / payload["media_relpath"]
+    alternate_relpath = "derived/obs-slices/serving-run/sample-1/i0000.wav"
+    alternate = tmp_path / alternate_relpath
+    alternate.parent.mkdir(parents=True, exist_ok=True)
+    alternate.write_bytes(source.read_bytes())
+    alternate_payload = {**payload, "media_relpath": alternate_relpath}
+    body = _transport(_base_url(), tmp_path, post=lambda *_: _canned_response()).render_request(
+        canonical_bytes(alternate_payload)
+    )
+    guard.validate(alternate_payload, body)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("sample_id", "other-sample"),
+        ("audio_seconds", 11.0),
+        ("sample_rate_hz", 8000),
+        ("media_relpath", "derived/obs-slices/serving-run/sample-1/i0001.wav"),
+        ("media_relpath", "media/identical.wav"),
+        ("media_relpath", "../outside.wav"),
+    ],
+)
+def test_prepared_cache_guard_refuses_non_equivalent_window_identity(tmp_path, field, value):
+    payload, _, guard = _cache_guard_setup(tmp_path, window_run="prepared-run")
+    changed = {**payload, field: value}
+    if field == "media_relpath" and value.startswith("derived/"):
+        path = tmp_path / value
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes((tmp_path / payload["media_relpath"]).read_bytes())
+    elif field == "media_relpath" and value == "media/identical.wav":
+        path = tmp_path / value
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes((tmp_path / payload["media_relpath"]).read_bytes())
+    transport = _transport(_base_url(), tmp_path, post=lambda *_: _canned_response())
+    with pytest.raises((PreparedFeatureCacheError, FrozenCoreError)):
+        body = transport.render_request(canonical_bytes(changed))
+        guard.validate(changed, body)
+
+
+def test_prepared_cache_guard_refuses_changed_window_bytes(tmp_path):
+    payload, _, guard = _cache_guard_setup(tmp_path, window_run="prepared-run")
+    changed_path = tmp_path / payload["media_relpath"]
+    changed_path.write_bytes(b"different-window-bytes")
+    transport = _transport(_base_url(), tmp_path, post=lambda *_: _canned_response())
+    with pytest.raises(PreparedFeatureCacheError, match="source SHA256"):
+        body = transport.render_request(canonical_bytes(payload))
+        guard.validate(payload, body)
+
+
+def test_prepared_cache_guard_refuses_ambiguous_equivalent_bindings(tmp_path, monkeypatch):
+    import speech_aware_evidence_acquisition.core.model.prepared_feature_cache as cache_module
+
+    payload, identity, _ = _cache_guard_setup(tmp_path, window_run="prepared-run")
+    artifact = tmp_path / "ambiguous-audit.json"
+    artifact.write_text('{"inputs": {}}', encoding="utf-8")
+    source = {
+        "sample_id": "sample-1",
+        "media_relpath": "derived/obs-slices/prepared-run/sample-1/i0000.wav",
+        "audio_seconds": 10.0,
+        "sample_rate_hz": 16000,
+    }
+    alternate = tmp_path / "derived/obs-slices/other-run/sample-1/i0000.wav"
+    alternate.parent.mkdir(parents=True, exist_ok=True)
+    alternate.write_bytes((tmp_path / payload["media_relpath"]).read_bytes())
+    output = {
+        "state": "cache-files-verified-runtime-unqualified",
+        "encoder_identity": identity.as_json(),
+        "legacy_cache_dir": str((tmp_path / "legacy-cache").resolve()),
+        "expected_n_embd": 4,
+        "inventory": {
+            "batches": [
+                {
+                    "name": "raw",
+                    "requests": [
+                        {"request_key": "sample-1#w1", "source_provenance": source},
+                        {
+                            "request_key": "sample-1#w2",
+                            "source_provenance": {
+                                **source,
+                                "media_relpath": (
+                                    "derived/obs-slices/other-run/"
+                                    "sample-1/i0000.wav"
+                                ),
+                            },
+                        },
+                    ],
+                }
+            ]
+        },
+        "entries": [
+            {
+                "audio_sha256": "a" * 64,
+                "cache_key": "1",
+                "requests": [{"batch": "raw", "request_key": "sample-1#w1"}],
+                "chunks": [],
+            },
+            {
+                "audio_sha256": "b" * 64,
+                "cache_key": "2",
+                "requests": [{"batch": "raw", "request_key": "sample-1#w2"}],
+                "chunks": [],
+            },
+        ],
+    }
+    monkeypatch.setattr(cache_module, "load_artifact", lambda *args, **kwargs: output)
+    with pytest.raises(PreparedFeatureCacheError, match="ambiguous"):
+        PreparedFeatureCacheGuard.from_artifact(
+            artifact_path=artifact,
+            artifact_sha256="f" * 64,
+            encoder_identity=identity,
+            expected_cache_dir=tmp_path / "legacy-cache",
+            expected_n_embd=4,
+            data_root=tmp_path,
+        )
 
 def test_transport_without_prepared_cache_guard_keeps_legacy_render_and_post(tmp_path):
     payload = _boundary_payload(tmp_path)

@@ -1,0 +1,79 @@
+{
+  "schema": "saea-cached-fit-stopped-recovery-v1",
+  "checked_at_utc": "2026-09-10T08:15:27.532497+00:00",
+  "run_id": "SAEA-E21-CURRENT-EXECUTOR-CACHED-PROOF-RECOVERY-FIT-V1",
+  "attempt_id": "attempt-20260910-cached-proof-recovery-fit-v1",
+  "execution_commit": "c9f478194e64f20bfb796b3aa6bc3cf4e6d0843c",
+  "session_id": "serving-e21-cached-proof-np6-recovery-v1",
+  "state": "STOPPED_AFTER_SECOND_FAILURE",
+  "failure": "Registered llama-server factory omitted feature_cache_guard keyword.",
+  "earlier_failure": "Precontact consumed flag registration error; one explicit recovery used.",
+  "actual_fit_contacts": {
+    "GET /props": 1,
+    "POST /v1/chat/completions/input_tokens": 0
+  },
+  "generation_contacts": 0,
+  "encoder_contacts": 0,
+  "audio_seconds_sent": 0,
+  "fit_ready": false,
+  "kernel_lock_acquired": true,
+  "lease_sha256": "b9a8a1b7b89f317457e563aa506c4c1890b537e5ea547ae7dea3eec05b305c8a",
+  "archived_lease": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/e21-cached-fit-recovery-stopped-lease.json",
+  "server_processes": 0,
+  "port_8080_listeners": 0,
+  "monitor_owner_present": false,
+  "normal_stop": true,
+  "monitor_summary": {
+    "active_seconds": 0.0,
+    "first_sample_at": 1789027133.168157,
+    "host_free_gb_last": 22.792308807373047,
+    "host_free_gb_min": 22.792308807373047,
+    "host_free_gb_min_at": 1789027232.770645,
+    "host_memory_samples": 10,
+    "last_sample_at": 1789027232.770645,
+    "mean_power_watts": 5.976000000000001,
+    "mean_utilization_percent": 0.0,
+    "parked_definition": "every slot idle AND nvidia-smi utilization.gpu < 5%",
+    "parked_fraction": 1.0,
+    "parked_seconds": 99.6024878025055,
+    "peak_power_watts": 13.46,
+    "requests_delta": 0.0,
+    "sample_count": 10,
+    "schema": "saea-serving-monitor-summary-v1",
+    "tokens_delta": null,
+    "vm_available_gb_min": 39.47578811645508,
+    "vmmem_ws_gb_max": 24.402664184570312,
+    "wall_seconds": 99.6024878025055,
+    "window": {
+      "from": null,
+      "to": null
+    }
+  },
+  "sources": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-E21-CURRENT-EXECUTOR-CACHED-PROOF-RECOVERY-FIT-V1/request-fit.json.contacts.jsonl",
+      "sha256": "feb236c25c323f4e27157460da18ade8a52617fc97d190ad1f7d21c0fce5dead"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/serving-e21-cached-proof-np6-recovery-v1.coordinate-fit.jsonl",
+      "sha256": "41bfcc49fae6d02e25fa92999212b05c4a98b9363eadc966b2199506384c1499"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-e21-cached-proof-np6-recovery-v1/session-receipt.json",
+      "sha256": "679d835d489f09344c4905abcec5d07cce854bfefd2d632ac5e79cbe734e7486"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-e21-cached-proof-np6-recovery-v1/session-stop.json",
+      "sha256": "48f2b382a43ca2e12bbf07a286893f3be638c8df141fca10c8136731b050875a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-e21-cached-proof-np6-recovery-v1/monitor.jsonl",
+      "sha256": "d94a38f873737d335546728f91f9c5f21ad302e3d0b41e60033ab01a83c5fa45"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-CACHED-EXECUTOR-PROOF-V3/coordinate-fit-recovery.log",
+      "sha256": "300f885a2475fa9a124f6e3fbbb5fb3abc4c973fc1d0d78541059a3d776add59"
+    }
+  ],
+  "next_action": "Prove the named factory repair and all four actual prepared inputs offline. Do not repeat this stopped flight or claim neural/cache/capacity qualification."
+}

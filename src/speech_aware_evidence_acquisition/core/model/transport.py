@@ -1031,6 +1031,7 @@ def _llama_server_factory(
     session: SessionReceipt,
     runtime_receipt: Mapping[str, object],
     runtime_root: Path,
+    feature_cache_guard: PreparedFeatureCacheGuard | None = None,
 ):
     return LlamaServerTransport(
         str(values["base_url"]),
@@ -1064,6 +1065,7 @@ def _llama_server_factory(
             if "preserve_wire_responses" in values
             else False
         ),
+        feature_cache_guard=feature_cache_guard,
     )
 
 

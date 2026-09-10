@@ -10,7 +10,7 @@ from __future__ import annotations
 import base64
 import hashlib
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Mapping
 
@@ -18,7 +18,7 @@ from ..preparation import PreparationError, load_artifact
 from ..preparation_windows import WindowFeatureEncoderIdentity
 from . import FrozenCoreError
 from .speech_features import inspect_legacy_cached_speech_feature_cache
-from .paths import _normalized_relative_path
+from .paths import _canonical_window_route_path, _normalized_relative_path
 
 
 class PreparedFeatureCacheError(FrozenCoreError):
@@ -27,7 +27,7 @@ class PreparedFeatureCacheError(FrozenCoreError):
 
 @dataclass(frozen=True)
 class _RegisteredRequest:
-    audio_path: Path
+    audio_path: Path = field(compare=False)
     audio_sha256: str
     source: Mapping[str, object]
     cache_key: str
@@ -42,6 +42,17 @@ class PreparedFeatureCacheGuard:
     cache_dir: Path
     expected_n_embd: int
     requests: Mapping[tuple[object, ...], _RegisteredRequest]
+
+    @staticmethod
+    def _request_identity(
+        sample_id: object, media_relpath: object, duration: object, rate: object
+    ) -> tuple[object, ...]:
+        return (
+            sample_id,
+            _canonical_window_route_path(media_relpath),
+            duration,
+            rate,
+        )
 
     @classmethod
     def from_artifact(
@@ -141,7 +152,13 @@ class PreparedFeatureCacheGuard:
                 rate = source.get("sample_rate_hz")
                 if not isinstance(sample_id, str) or not isinstance(media_relpath, str):
                     raise PreparedFeatureCacheError("feature-cache audit source identity is invalid")
-                identity_key = (sample_id, media_relpath, duration, rate)
+                identity_key = cls._request_identity(
+                    sample_id, media_relpath, duration, rate
+                )
+                source = {
+                    **source,
+                    "media_relpath": _canonical_window_route_path(media_relpath),
+                }
                 try:
                     audio_path = (root / _normalized_relative_path(
                         media_relpath, "feature-cache audit media_relpath"
@@ -184,7 +201,7 @@ class PreparedFeatureCacheGuard:
         rate = payload.get("sample_rate_hz")
         if not isinstance(sample_id, str) or not isinstance(media_relpath, str):
             raise PreparedFeatureCacheError("raw-audio payload identity is incomplete")
-        identity_key = (sample_id, media_relpath, duration, rate)
+        identity_key = self._request_identity(sample_id, media_relpath, duration, rate)
         registered = self.requests.get(identity_key)
         if registered is None:
             raise PreparedFeatureCacheError("raw-audio request is not registered in the cache audit")
