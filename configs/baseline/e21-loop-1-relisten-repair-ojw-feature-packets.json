@@ -71,7 +71,7 @@
   "speech_feature_matcher_policy_id": "saea-e21-loop-window-packets-v1",
   "prepared_window_feature_packets": {
     "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-LOOP-JUDGE-SLICE-GPU-ENCODING-V1/window-feature-packets.json",
-    "sha256": null
+    "sha256": "60d89bc277f6b7e397ecb2e8ab5c3dbc0eca47d3a691b5700232f49338708f26"
   },
   "obs_prefetch_depth": 1,
   "inherited_baseline": {
