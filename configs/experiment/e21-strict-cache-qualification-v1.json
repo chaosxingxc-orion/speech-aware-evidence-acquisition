@@ -77,7 +77,7 @@
         "worker"
       ],
       "readiness": {
-        "state": "ready",
+        "state": "held",
         "requirements": [
           {
             "kind": "preparation",
@@ -92,7 +92,7 @@
             "reason": "All four actual test request hashes must match this completed fit before dispatch."
           }
         ],
-        "reason": "Root verified the actual same-session fit: four max_tokens=1 requests, 2x margin, minimum 5792 tokens remaining. Ordered test cases only."
+        "reason": "STOPPED after the sole recovery. Original attempt zero contacts; recovery three contacts and server SIGSEGV. No third retry. Historical protocols remain bound to their recorded commits and plans."
       }
     }
   ],

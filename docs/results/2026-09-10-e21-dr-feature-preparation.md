@@ -65,12 +65,52 @@ preserved operator-returned normal stop and retain this reconciliation beside
 it; the contradictory final wrapper record must never be silently rewritten
 or discarded.
 
-## Remaining bounded closure
+## Completed feature closure and serving hold
 
-The saved-inventory full cache audit and zero-contact warm validation are
-running on CPU. Final source-bound provenance, root lease release and the
-isolated strict-cache service qualification remain pending. Next, bind the
-current OpenJiuwen bridge and both real DR request fits to the prepared
-CPU-projector inference configuration. Keep max_tokens=1024 and both declared
-draft sources and delivery rules. This report does not yet authorize either
-DR generation group.
+The complete cache audit and final preparation provenance are published:
+
+- window-feature-cache-audit.json: cc59a1dee59908c7fae25500b9ab40383b4aa9f9ef00a2946ba7c544b60180a8.
+- window-feature-preparation-provenance.json: 72d097e3b153baccb75b4e6e221bc83a1ac60d36dd194c39822993db684ed757.
+
+Both cover exactly 1,593 unique inputs and the provenance binds all 1,593
+successful encoding contacts and feature outputs. Full warm verification
+completed with zero new neural contact and the same encoding artifact hash.
+The encoder lease and monitor are closed. Preparation is complete.
+
+The isolated strict-cache service qualification is STOPPED after its only
+recovery. The first attempt refused locally with zero requests because this
+test passed a JSON list where SliceRecord requires a tuple. Reusing the
+existing core.preparation_encoding._slice converter passed registration of
+all four actual sources with sockets forbidden.
+
+The recovery matched all four actual request body hashes to the measured fit,
+then made three metered requests totaling 31.1288125 speech seconds:
+
+| Case | Observed result |
+|---|---|
+| Valid cache | Successful one-token decode; both cache-hit markers observed. |
+| Missing cache | Expected server HTTP refusal; no encoding fallback. |
+| Malformed cache | Request metered; connection reset, without a completed case receipt. |
+| Injected cached-decode error | Not contacted; trigger remains absent. |
+
+The kernel records SIGSEGV in libllama-server-impl.so for the isolated server.
+The exact source-level crash cause is not established. The injected fault was
+never activated. Original and private feature files remain unchanged, and the
+server log contains zero encoder/fallback markers. This is not a complete
+strict-cache qualification. No third retry or automatic restart was performed.
+
+The content-free stopped receipt is
+analysis/SAEA-E21-STRICT-CACHE-QUALIFICATION-RECOVERY-V1/qualification-stopped.json,
+SHA256 85d37f416ccd8dc95877de4f549e3285ea4eacc974cbf2d4ccfb287890511be7.
+Its attempt is ABORTED; the service, coordinator, monitor and lease are closed.
+
+The four-request fit itself remains valid as a narrow capacity observation:
+five metadata/tokenizer contacts, minimum 5,792-token margin under the 2x rule,
+SHA256 58f581e0d7487dc2ee8098cb3b88ee8c56b081070f039ec7a15b8b30859b353c.
+It does not qualify task delivery or full DR request capacity.
+
+Assess the already admitted formal-window-packets decoder-only fallback using
+the complete features. Do not re-encode the 1,593 windows or widen the stopped
+test under a new name. Both DR generation groups remain held until their
+selected serving path, current OpenJiuwen bridge and actual full request
+capacity are qualified.
