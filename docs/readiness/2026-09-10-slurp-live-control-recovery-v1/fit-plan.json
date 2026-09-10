@@ -1,0 +1,92 @@
+{
+  "schema": "saea-registered-fit-plan-v1",
+  "status": "ROOT_REGISTERED_ONE_RECOVERY_ONLY",
+  "registered_at": "2026-09-10T22:36:20.721674+00:00",
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-RECOVERY-FIT-V1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "dev",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "planned_model_calls": 6002,
+    "planned_gpu_hours": 4.0,
+    "planned_speech_audio_seconds": 6000,
+    "protocol_hash": "770318adba98d17c05ca240c0cd721c3960172c0c77aaa8bf0b86ef23567fe8f",
+    "attempt_id": "attempt-live-intent-slots-control-recovery-fit-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-live-system-recovery-np4-v1",
+  "required_session_identity": {
+    "session_role": "inference",
+    "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+    "model_fragment_sha256": "7545a1ac3eb0c1e88d4121fdf84726e5201bb9d5ae5a32804cc62a7f6a289f74",
+    "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+    "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "model_root": "/home/chao",
+    "host": "127.0.0.1",
+    "port": 8080,
+    "props_identity": {
+      "total_slots": 4,
+      "slot_n_ctx": 16384,
+      "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf"
+    },
+    "server_argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8080",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--no-mmproj",
+      "-c",
+      "65536",
+      "-np",
+      "4",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ],
+    "server_env": {
+      "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+      "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+    },
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      }
+    ]
+  },
+  "recovery": {
+    "ordinal": 1,
+    "maximum": 1,
+    "source_failed_run_id": "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-V1",
+    "source_failed_attempt_id": "attempt-live-intent-slots-control-generation-v1",
+    "root_cause": "One keep-alive audit client persisted across the generation wave and expired before the second-phase props call.",
+    "fix": "Use a fresh audit client per actual phase; preserve cumulative contact guard and forbid failed-endpoint retries.",
+    "original_actual_generation_contacts": 1000,
+    "recovery_target_generation_contacts": 2000,
+    "combined_target_generation_contacts": 3000,
+    "combined_actual_fit_plus_recovery_ceiling": 9004,
+    "second_failure_action": "Stop the flight; no second recovery. Prove any further fix on a separately registered four-row dry run before a new proposal."
+  }
+}

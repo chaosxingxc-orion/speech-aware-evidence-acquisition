@@ -662,6 +662,7 @@ def build_supply_for_phase(
     data_root: Path,
     provider_for_phase: ProviderForPhase | None = None,
     seed_phases: Sequence[str] = (),
+    prepared_recall_by_phase: Mapping[str, Mapping[str, Mapping[str, Mapping[str, float]]]] | None = None,
 ):
     """Build the ``rails.controllers.SupplyForPhase`` callable, or ``None``
     when no phase declares supply.
@@ -708,6 +709,7 @@ def build_supply_for_phase(
             snapshot_sha256=snapshot_sha256,
             facet_vectors=facet_tables[phase],
             provider_for_phase=provider_for_phase,
+            prepared_recall=(None if prepared_recall_by_phase is None else prepared_recall_by_phase.get(phase)),
         )
 
     seeded = set(seed_phases)
@@ -831,6 +833,7 @@ def _provider_factory(
     snapshot_sha256: str,
     facet_vectors: Mapping[str, Mapping[str, tuple[float, ...]]],
     provider_for_phase: ProviderForPhase | None,
+    prepared_recall: Mapping[str, Mapping[str, Mapping[str, float]]] | None = None,
 ) -> Callable[[], object]:
     """A zero-argument factory producing a provider ready for ONE decision.
 
@@ -841,6 +844,8 @@ def _provider_factory(
     ``core.flight.FlightRuntime.bind_phase_supply_providers``.
     """
 
+    if prepared_recall is not None and (provider_for_phase is not None or spec.provider != "kb-facet-v1"):
+        raise PhaseSupplyError("prepared recall requires the shared kb-facet-v1 provider")
     if provider_for_phase is not None:
         provider = provider_for_phase(spec.phase)
         if provider is not None:
@@ -864,6 +869,7 @@ def _provider_factory(
             fuse_knobs=fuse_knobs,
             top_k_per_dimension=spec.k,
             facet_vectors=lambda facet_id: facet_vectors.get(facet_id, {}),
+            prepared_recall=prepared_recall,
         )
         provider.adopt(
             snapshot,
@@ -1052,3 +1058,40 @@ __all__ = [
     "phase_supply_receipt",
     "query_signal_modality",
 ]
+
+
+_RECALL_WORKER_STATE = None
+
+
+def _recall_worker_init(snapshot, facets, k):
+    global _RECALL_WORKER_STATE
+    _RECALL_WORKER_STATE = (snapshot, facets, k)
+
+
+def _recall_one(task):
+    from .kb_policy import multidim_recall
+
+    sample_id, query = task
+    snapshot, facets, k = _RECALL_WORKER_STATE
+    return sample_id, multidim_recall(snapshot, query, lambda fid: facets.get(fid, {}), k)
+
+
+def prepare_recall_rows(snapshot, queries, facets, k, *, workers=1):
+    """Compute only state-independent recall using the existing deterministic rule."""
+    from concurrent.futures import ProcessPoolExecutor
+    from multiprocessing import get_context
+
+    workers = _validate_bootstrap_workers(workers)
+    tasks = tuple(sorted(queries.items()))
+    if workers == 1:
+        global _RECALL_WORKER_STATE
+        _recall_worker_init(snapshot, facets, k)
+        try:
+            return dict(map(_recall_one, tasks))
+        finally:
+            _RECALL_WORKER_STATE = None
+    with ProcessPoolExecutor(
+        max_workers=workers, mp_context=get_context("fork"),
+        initializer=_recall_worker_init, initargs=(snapshot, facets, k),
+    ) as executor:
+        return dict(executor.map(_recall_one, tasks, chunksize=8))

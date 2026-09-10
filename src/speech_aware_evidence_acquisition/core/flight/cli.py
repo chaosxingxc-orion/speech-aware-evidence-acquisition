@@ -44,7 +44,7 @@ def load_campaign_plan(repo: Path, path: Path):
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=[
-        "check", "wire-check", "prepare-supply", "prepare-window-inventory", "prepare-window-features",
+        "check", "wire-check", "prepare-supply", "prepare-phase-recall", "prepare-window-inventory", "prepare-window-features",
         "prompt-fit", "coordinate-fit", "worker", "campaign",
     ])
     for name in ("repo-root", "data-root", "runtime-root", "lock-path"):
@@ -58,6 +58,7 @@ def main(argv=None) -> int:
     parser.add_argument("--output", type=Path)
     parser.add_argument("--contact-cap", type=int)
     parser.add_argument("--workers", type=int, default=1)
+    parser.add_argument("--phase")
     args = parser.parse_args(argv)
     if bool(args.experiment) == bool(args.campaign_plan):
         parser.error("select either an experiment or a committed campaign plan")
@@ -70,9 +71,11 @@ def main(argv=None) -> int:
     if args.mode == "campaign" and (not args.owner or not args.expected_session_id):
         parser.error("campaign requires explicit --owner and --expected-session-id")
     if args.mode in {
-        "prepare-supply", "prepare-window-inventory", "prepare-window-features", "prompt-fit"
+        "prepare-supply", "prepare-phase-recall", "prepare-window-inventory", "prepare-window-features", "prompt-fit"
     } and args.output is None:
         parser.error("preparation modes require --output")
+    if args.mode == "prepare-phase-recall" and not args.phase:
+        parser.error("prepare-phase-recall requires --phase")
     if args.mode == "prompt-fit" and (args.contact_cap is None or args.contact_cap < 1):
         parser.error("prompt-fit requires a positive registered --contact-cap")
     if args.mode == "coordinate-fit" and (
@@ -148,6 +151,8 @@ def main(argv=None) -> int:
             }
         elif args.mode == "wire-check":
             result = runtime.wire_check(seal_and_score=False)
+        elif args.mode == "prepare-phase-recall":
+            result = runtime.prepare_phase_recall(args.output, phase=args.phase, max_workers=args.workers)
         elif args.mode == "prepare-supply":
             if args.workers == 1:
                 result = runtime.prepare_phase_supply(args.output)

@@ -253,7 +253,6 @@ def test_live_gate_refuses_wrong_registered_cap_before_lease_or_gate(tmp_path):
 
 
 def test_dispatch_forwards_live_optin_and_callback_to_continuous_runner(monkeypatch):
-    import speech_aware_evidence_acquisition.core.flight.runtime as runtime_module
     from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
     import speech_aware_evidence_acquisition.core.bundle.delivery_replay as delivery
 
@@ -383,3 +382,31 @@ def test_live_gate_tokenizer_exception_leaves_journal_and_refuses_retry(
     with pytest.raises(PreparationError, match="already has contact or result"):
         gate("direct", direct)
     assert len(tokenizer.calls) == calls_after_failure
+
+
+def test_each_phase_uses_fresh_client_after_idle_connection_expires(tmp_path, monkeypatch):
+    import http.client
+    import speech_aware_evidence_acquisition.core.preparation_fit as fitting
+
+    class IdleConnectionTokenizer(Tokenizer):
+        expired = False
+        def request_json(self, method, path, payload):
+            if self.expired:
+                raise http.client.RemoteDisconnected("idle keep-alive closed")
+            return super().request_json(method, path, payload)
+
+    clients = []
+    def factory(**kwargs):
+        client = IdleConnectionTokenizer(**kwargs)
+        clients.append(client)
+        return client
+
+    monkeypatch.setattr(fitting, "packet_token_counts", lambda *_a, **_k: (1,))
+    runtime = Runtime(tmp_path, values())
+    gate = build_live_phase_fit_gate(runtime, default_phase_program("phase-direct-then-slots-v1"), plan(), client_factory=factory)
+    gate("direct", (prepared("s1", "direct"), prepared("s2", "direct")))
+    clients[0].expired = True
+    gate("slots", (prepared("s1", "actual direct result"), prepared("s2", "actual direct result")))
+    assert len(clients) == 2
+    assert [len(client.calls) for client in clients] == [7, 7]
+    assert [row["phase"] for row in gate.receipts] == ["direct", "slots"]

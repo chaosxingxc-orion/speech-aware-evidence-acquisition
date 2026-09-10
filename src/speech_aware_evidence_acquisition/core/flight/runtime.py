@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import threading
 import time
 from pathlib import Path
@@ -4224,6 +4225,57 @@ class FlightRuntime:
 
         return prepare_artifact(path, kind="phase-supply", inputs=inputs, producer=produce)
 
+    def prepare_phase_recall(self, path: Path, *, phase: str, max_workers: int = 1) -> Mapping[str, object]:
+        """Persist model-free multidimensional recall for one configured phase.
+
+        The artifact stores only the deterministic recall scores. Runtime still
+        executes the registered ranker and fuser against the actual QueryState.
+        """
+        from ..preparation import PreparationError, prepare_artifact
+        from ...rails.phase_supply import load_phase_supply_specs, load_sealed_vectors
+        from ...rails.phase_supply import prepare_recall_rows, _validate_bootstrap_workers
+
+        max_workers = _validate_bootstrap_workers(max_workers)
+        if getattr(self, "_campaign_active", False):
+            max_workers = min(max_workers, 8)
+        values, _carrier, _split, identity = self._prepare()
+        program = default_phase_program(str(values["policy"]))
+        binding = self._phase_program_material
+        if binding is None:
+            binding = self._default_phase_program_binding(program, None)
+        specs = load_phase_supply_specs(values, program)
+        spec = specs.get(phase)
+        if spec is None:
+            raise PreparationError(f"phase {phase!r} has no configured phase supply")
+        if spec.provider != "kb-facet-v1" or spec.query_source.get("kind") != "sealed-vectors":
+            raise PreparationError("prepared recall requires kb-facet-v1 and sealed query vectors")
+        if spec.facet_source is not None and spec.facet_source.get("kind") != "sealed-vectors":
+            raise PreparationError("prepared recall requires sealed facet vectors")
+        snapshot = binding["knowledge_snapshot"]
+        query = load_sealed_vectors(
+            self._data_root / str(spec.query_source["relpath"]),
+            expected_sha256=str(spec.query_source["sha256"]),
+            dimensions=spec.dimensions,
+        )
+        facets = (
+            {}
+            if spec.facet_source is None
+            else load_sealed_vectors(
+                self._data_root / str(spec.facet_source["relpath"]),
+                expected_sha256=str(spec.facet_source["sha256"]),
+                dimensions=spec.dimensions,
+            )
+        )
+        if set(query) != set(binding["speech_packet_bindings"]):
+            raise PreparationError("prepared recall query roster differs from the runtime packets")
+        inputs = self._phase_seed_inputs(binding, spec, identity)
+        inputs.update({"recall_schema": "saea-phase-recall-v1", "phase": phase,
+                       "roster_ids": sorted(query)})
+        def produce():
+            rows = prepare_recall_rows(snapshot, query, facets, spec.k, workers=max_workers)
+            return {"phase": phase, "rows": rows}
+        return prepare_artifact(path, kind="phase-recall", inputs=inputs, producer=produce)
+
     def _load_phase_supply_seed(self, pin, binding, spec, split_identity_hash):
         from ..preparation import PreparationError, load_artifact
         from ..model.paths import _normalized_relative_path, _resolve_confined
@@ -4261,6 +4313,57 @@ class FlightRuntime:
                     decoded[phase][sid] = tuple(ids)
             results.append(decoded)
         return tuple(results)
+
+    def _load_phase_recall(self, pin, binding, spec, split_identity_hash):
+        from ..preparation import PreparationError, load_artifact
+        from ..model.paths import _normalized_relative_path, _resolve_confined
+
+        if not isinstance(pin, Mapping) or set(pin) != {"relpath", "sha256"}:
+            raise PreparationError("prepared_phase_recall requires relpath and sha256")
+        relative = _normalized_relative_path(pin["relpath"], "prepared phase recall")
+        path = _resolve_confined(self._data_root, relative, self._data_root,
+                                 "prepared phase recall", strict=True)
+        inputs = self._phase_seed_inputs(binding, spec, split_identity_hash)
+        inputs.update({"recall_schema": "saea-phase-recall-v1", "phase": spec.phase})
+        # The roster is independently checked against the current sealed query table.
+        from ...rails.phase_supply import load_sealed_vectors
+        query = load_sealed_vectors(
+            self._data_root / str(spec.query_source["relpath"]),
+            expected_sha256=str(spec.query_source["sha256"]),
+            dimensions=spec.dimensions,
+        )
+        if set(query) != set(binding["speech_packet_bindings"]):
+            raise PreparationError("prepared recall query roster differs from the runtime packets")
+        inputs["roster_ids"] = sorted(query)
+        output = load_artifact(path, expected_sha256=pin["sha256"],
+                               kind="phase-recall", inputs=inputs)
+        if not isinstance(output, Mapping) or set(output) != {"phase", "rows"}:
+            raise PreparationError("prepared phase recall shape mismatch")
+        if output["phase"] != spec.phase or not isinstance(output["rows"], Mapping):
+            raise PreparationError("prepared phase recall phase mismatch")
+        rows = output["rows"]
+        if set(rows) != set(query):
+            raise PreparationError("prepared phase recall roster mismatch")
+        facet_dimensions = {
+            facet.facet_id: facet.dimension
+            for facet in binding["knowledge_snapshot"].facets
+        }
+        # Recall also includes snapshot label/prior dimensions without vectors.
+        # spec.dimensions only governs the sealed vector-file dimensions.
+        for sample_id, recalled in rows.items():
+            if not isinstance(sample_id, str) or not isinstance(recalled, Mapping):
+                raise PreparationError("prepared phase recall row is malformed")
+            for facet_id, dimensions in recalled.items():
+                if facet_id not in facet_dimensions or not isinstance(dimensions, Mapping):
+                    raise PreparationError("prepared phase recall contains an unknown facet")
+                if set(dimensions) != {facet_dimensions[facet_id]}:
+                    raise PreparationError("prepared phase recall contains an unknown dimension")
+                for score in dimensions.values():
+                    if isinstance(score, bool) or not isinstance(score, (int, float)):
+                        raise PreparationError("prepared phase recall score is not numeric")
+                    if not math.isfinite(float(score)) or float(score) <= 0.0:
+                        raise PreparationError("prepared phase recall score is invalid")
+        return {str(sample_id): rows[sample_id] for sample_id in query}
 
     def _phase_supply_seeds(
         self,
@@ -4912,6 +5015,7 @@ class FlightRuntime:
         * an ``embedding-server`` query source (declared, never resolvable).
         """
 
+        from ..preparation import PreparationError
         from ...rails.phase_supply import (  # noqa: PLC0415 (cycle guard)
             build_supply_for_phase,
             load_phase_supply_specs,
@@ -4950,6 +5054,22 @@ class FlightRuntime:
                 "the supply to a later phase"
             )
         providers = self._phase_supply_providers
+        prepared_recall = None
+        prepared_pin = self._composed.values.get("prepared_phase_recall")
+        if prepared_pin is not None:
+            if not isinstance(prepared_pin, Mapping) or set(prepared_pin) != set(specs):
+                raise PreparationError("prepared_phase_recall must name exactly the supplied phases")
+            if providers is not None or any(spec.provider != "kb-facet-v1" for spec in specs.values()):
+                raise PreparationError("prepared recall cannot be ignored by an injected provider")
+            prepared_recall = {
+                phase: self._load_phase_recall(
+                    prepared_pin[phase], {"knowledge_snapshot": snapshot, "speech_packet_bindings": self.speech_packet_bindings()}, specs[phase], self._prepare()[3]
+                )
+                for phase in specs
+                if phase in prepared_pin
+            }
+            if set(prepared_recall) != set(specs):
+                raise PreparationError("prepared_phase_recall must cover every supplied phase")
         supply_for_phase = build_supply_for_phase(
             specs,
             snapshot=snapshot,
@@ -4958,6 +5078,7 @@ class FlightRuntime:
             provider_for_phase=(
                 None if providers is None else lambda phase: providers.get(phase)
             ),
+            prepared_recall_by_phase=prepared_recall,
             seed_phases=(first_phase,) if first_phase in specs else (),
         )
         self._phase_supply_receipt = phase_supply_receipt(

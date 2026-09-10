@@ -22,6 +22,7 @@ SCHEMA = "saea-prepared-artifact-v1"
 _RECEIPT_KEYS = frozenset(
     {
         "prepared_phase_supply",
+        "prepared_phase_recall",
         "prepared_request_fit",
         "prompt_fit_receipt",
         "prompt_fit_receipt_sha256",
