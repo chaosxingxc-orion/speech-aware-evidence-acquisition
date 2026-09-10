@@ -45,7 +45,7 @@ The baseline window_review remains documentary metadata for the already sealed
 re-listen plan; it is not a live Reviewer, Planner, or relisten propagation
 path. That live chain is an unresolved G6 shared-controller gap.
 
-The verified probe-sample receipt narrows the runtime roster to call 4320211 with its own split identity. The new E21 runtime subset seam verifies that receipt, verifies frozen discovery, requires construction role and containment in discovery, then selects the verified call from the full discovery loader. The four-unit plan now covers the complete one-call roster, so both the shared fitter and OJW executor use exactly four requests.
+The verified probe-sample receipt narrows the runtime roster to call 4320211 with its own split identity. The new E21 runtime subset seam verifies that receipt, verifies frozen discovery, requires construction role and containment in discovery, then selects the verified call from the full discovery loader. The four-unit plan covers the complete one-call roster. The required shared fitter and OJW fake-transport execution-count proof remains pending; this document makes no runtime-count claim until that test passes.
 
 This does not enable a live Reviewer, Planner, or multi-phase relisten chain. The pinned judges remain source lineage for the model-free plan; ControllerWindowHook supports phase-direct-only-v1 only.
 
