@@ -94,7 +94,7 @@
     "prompt_order": "speech-query-prefix-v2",
     "resident_projector": false,
     "cuda_graphs": false,
-    "status": "The geometry matches the validated E21 np4 decoder-only packet route. Stage-specific actual request fits and root resident-session admission are still required."
+    "status": "The geometry matches the validated E21 np4 decoder-only packet route. The direct fit remains held for the terminal full-roster model-free wire receipt; generation remains held for the resulting exact 1,593-request fit and root admission."
   },
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
@@ -123,8 +123,12 @@
       ],
       "readiness": {
         "state": "held",
-        "reason": "Root has frozen the protocol and analysis; actualmodelcontacts wait for fullwireproof and separately committed fit/generation exposures.",
-        "requirements": []
+        "reason": "Pre-registered only. The full 1,593-window shared model-free wire must terminate successfully before root may change this cell to ready or start the coordinate fit.",
+        "requirements": [],
+        "pending_requirements": [
+          "Terminal successful full-roster wire receipt for the already-running shared wire check.",
+          "Root admission and exclusive custody of serving-e21-offline-direct-repair-np4-v1."
+        ]
       }
     },
     {
@@ -142,10 +146,47 @@
       ],
       "readiness": {
         "state": "held",
-        "reason": "Root has frozen the protocol and analysis; actualmodelcontacts wait for fullwireproof and separately committed fit/generation exposures.",
-        "requirements": []
+        "reason": "Pre-registered only. Generation remains held until the actual 1,593-request fit passes under max1024 and root binds its immutable request-fit receipt and separate admission.",
+        "requirements": [],
+        "pending_requirements": [
+          "Successful terminal full-roster model-free wire receipt.",
+          "Complete request-fit artifact from SAEA-E21-OFFLINE-DIRECT-FIT-NP4-V1 with exactly 4,780 registered endpoint contacts.",
+          "Root generation admission for the 1,593-request target and 1,750-call ceiling on serving-e21-offline-direct-repair-np4-v1."
+        ]
       }
     }
   ],
-  "split_id": "discovery"
+  "split_id": "discovery",
+  "service_session_id": "serving-e21-offline-direct-repair-np4-v1",
+  "source_pins": {
+    "model_fragment": {
+      "repo_relpath": "configs/model/q4km-e21-full90-packets-cddb000c-np4-v1.json",
+      "sha256": "aae17a44c78d6cab1eb5c23644cd1d7606b10d7168c008b6fb6db531f1f99e51"
+    },
+    "dataset_fragment": {
+      "repo_relpath": "configs/dataset/earnings21-discovery-conec-names.json",
+      "sha256": "0daa2c9c4d6fade4e6a6203296ec34519f35b8abd88c5fd362807fdd4365abb1"
+    },
+    "direct_baseline_fragment": {
+      "repo_relpath": "configs/baseline/e21-full44-direct-ojw-feature-packets-np4-v1.json",
+      "sha256": "576c81c7ab85e86a7489afdfa235570d040fa1ab8592e4565a24a13514a517d5"
+    },
+    "repair_template": {
+      "repo_relpath": "docs/readiness/2026-09-10-e21-offline-system-v1/repair-baseline-template.json",
+      "sha256": "497131a4e6defc06d1cc638281dfb0691f9390c50ca4079e6fae491d7a8382e3",
+      "status": "Frozen before the direct parent runs; materialize only its predecessor_snapshot receipt path and measured SHA-256 after the direct parent seals."
+    },
+    "prospective_parent_contract": {
+      "repo_relpath": "docs/readiness/2026-09-10-e21-offline-system-v1/direct-parent-contract-v1.json",
+      "status": "The contract embeds the final composed configuration and protocol hashes and is intentionally not self-hash-pinned by this fragment."
+    }
+  },
+  "fit_execution_plan": {
+    "planned_endpoint_contacts": 4780,
+    "basis": "One GET /props plus one /apply-template and two /tokenize calls for each of 1,593 actual formal-packet requests. The fit performs no generation and remains held until the complete model-free wire terminates successfully.",
+    "contact_cap": 4780
+  },
+  "window_preparation_workers": 8,
+  "prompt_fit_multiple": 2.0,
+  "preparation_scheduling": "Root allocates eight aggregate CPU preparation workers. Current serial full-wire proof remains preserved; this preparation concurrency changes no sample, window, packet, prompt or decoding policy. Both stages retain depth1prefetch. Exact whole-roster fits check the unchanged requests with2x output reserve."
 }
