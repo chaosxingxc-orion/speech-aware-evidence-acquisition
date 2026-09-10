@@ -177,9 +177,16 @@
       "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
-        "state": "held",
-        "reason": "Await the registered V3 source-bound supply, actual request fit and root admission. No implicit service launch by a worker.",
-        "requirements": []
+        "state": "ready",
+        "reason": "Source-bound candidate supply prepared. This readiness admits only its separately registered tokenizer fit, zero generation.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3/n-smoke-supply.json",
+            "sha256": "cbc72fea878007e5b80db15d4698b30716e78f70c5f35cf2b15f3597d9d8983a",
+            "reason": "V3 exact source-bound candidate supply required"
+          }
+        ]
       }
     },
     {
@@ -252,5 +259,9 @@
       ],
       "split_id": "DEV-1000-KUS4-WIRE-4"
     }
-  ]
+  ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3/n-smoke-supply.json",
+    "sha256": "cbc72fea878007e5b80db15d4698b30716e78f70c5f35cf2b15f3597d9d8983a"
+  }
 }
