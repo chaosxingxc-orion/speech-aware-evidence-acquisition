@@ -145,7 +145,8 @@
         "right": "self_free"
       }
     ],
-    "include_equal_cluster_mean": true
+    "include_equal_cluster_mean": true,
+    "max_workers": 4
   },
   "interpretation": {
     "gain": "Positive means fewer errors. All ratios are pooled counts, reported in percentage points.",

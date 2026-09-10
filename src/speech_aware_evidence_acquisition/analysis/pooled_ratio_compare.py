@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ProcessPoolExecutor
 import hashlib
 import json
 import math
@@ -19,6 +20,12 @@ class PooledRatioError(ValueError):
 
 class _ZeroDenominator(PooledRatioError):
     pass
+
+
+def _validate_max_workers(value: object) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+        raise PooledRatioError("analysis.max_workers must be a positive integer")
+    return value
 
 
 def _field(row: Mapping[str, object], path: str) -> float:
@@ -277,6 +284,11 @@ def compare_pooled_ratios(left, right, metadata, metrics, *, groupings, seed,
     return output
 
 
+def _compare_contrast(task):
+    name, left, right, metadata, metrics, options = task
+    return name, compare_pooled_ratios(left, right, metadata, metrics, **options)
+
+
 def _pinned(binding):
     path, expected = Path(binding["path"]), binding["sha256"]
     raw = path.read_bytes()
@@ -337,18 +349,33 @@ def run(config_path: Path, output_path: Path):
         pins[name] = pin
     if len(metadata) != expected or any(set(table) != set(metadata) for table in tables.values()):
         raise PooledRatioError("input/metadata roster mismatch or expected_ids_count mismatch")
-    results = {}
-    for contrast in spec["contrasts"]:
+    contrasts = spec["contrasts"]
+    if not isinstance(contrasts, list) or not contrasts:
+        raise PooledRatioError("analysis.contrasts must be a nonempty list")
+    requested_workers = _validate_max_workers(spec.get("max_workers", 1))
+    effective_workers = min(requested_workers, len(contrasts))
+    options = {
+        "groupings": spec["groupings"],
+        "seed": spec["seed"],
+        "n_replicates": spec["n_replicates"],
+        "ci_level": spec["ci_level"],
+        "cluster_field": spec.get("cluster_field", "cluster"),
+        "include_equal_cluster_mean": spec.get("include_equal_cluster_mean", False),
+    }
+    tasks = []
+    names = set()
+    for contrast in contrasts:
         name, left_name, right_name = contrast.get("name"), contrast.get("left"), contrast.get("right")
-        if not isinstance(name, str) or name in results or left_name not in tables or right_name not in tables:
+        if not isinstance(name, str) or name in names or left_name not in tables or right_name not in tables:
             raise PooledRatioError("contrasts require unique names and existing left/right inputs")
-        results[name] = compare_pooled_ratios(
-            tables[left_name], tables[right_name], metadata, spec["metrics"],
-            groupings=spec["groupings"], seed=spec["seed"],
-            n_replicates=spec["n_replicates"], ci_level=spec["ci_level"],
-            cluster_field=spec.get("cluster_field", "cluster"),
-            include_equal_cluster_mean=spec.get("include_equal_cluster_mean", False),
-        )
+        names.add(name)
+        tasks.append((name, tables[left_name], tables[right_name], metadata, spec["metrics"], options))
+    if effective_workers == 1:
+        completed = [_compare_contrast(task) for task in tasks]
+    else:
+        with ProcessPoolExecutor(max_workers=effective_workers) as executor:
+            completed = list(executor.map(_compare_contrast, tasks))
+    results = dict(completed)
     source_path = Path(__file__)
     result = {"schema": SCHEMA, "execution_profile": "model-free-check",
               "provenance": {"config_path": str(config_path),
@@ -361,6 +388,9 @@ def run(config_path: Path, output_path: Path):
                              },
                              "contacts": {"model": 0, "scorer": 0, "reference": 0}},
               "contrasts": results}
+    if "max_workers" in spec:
+        result["provenance"]["max_workers"] = requested_workers
+        result["provenance"]["effective_workers"] = effective_workers
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     with Path(output_path).open("x", encoding="utf-8", newline="\n") as handle:
         json.dump(result, handle, sort_keys=True, indent=2)

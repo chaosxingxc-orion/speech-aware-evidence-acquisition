@@ -209,3 +209,83 @@ def test_equal_cluster_omissions_are_explicit_and_undefined_draws_are_not_zero()
     assert result["excluded_zero_denominator_clusters"] == ["zero"]
     assert result["gain_pp"] == pytest.approx(100)
     assert result["bootstrap"]["status"] == "unavailable"
+
+
+def _parallel_config(tmp_path, contrasts, *, max_workers=None):
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    left_path, right_path, meta_path = (
+        tmp_path / name for name in ("left.json", "right.json", "meta.json")
+    )
+    left = [{"id": "a", "num": 1, "den": 2}, {"id": "b", "num": 0, "den": 2}]
+    right = [{"id": "a", "num": 0, "den": 2}, {"id": "b", "num": 0, "den": 2}]
+    metadata = {
+        "rows": {
+            "a": {"cluster": "c1", "sector": "x"},
+            "b": {"cluster": "c2", "sector": "y"},
+        }
+    }
+    bindings = {
+        "left": {
+            "path": str(left_path),
+            "sha256": _write(left_path, {"rows": left}),
+            "rows_key": "rows",
+        },
+        "right": {
+            "path": str(right_path),
+            "sha256": _write(right_path, {"rows": right}),
+            "rows_key": "rows",
+        },
+    }
+    analysis = {
+        "inputs": bindings,
+        "metadata": {
+            "path": str(meta_path),
+            "sha256": _write(meta_path, metadata),
+            "rows_key": "rows",
+        },
+        "id_field": "id",
+        "expected_ids_count": 2,
+        "cluster_field": "cluster",
+        "groupings": {"sector": "sector"},
+        "metrics": _metric(),
+        "contrasts": contrasts,
+        "seed": 3,
+        "n_replicates": 10,
+        "ci_level": 0.9,
+    }
+    if max_workers is not None:
+        analysis["max_workers"] = max_workers
+    return {"execution_profile": "model-free-check", "analysis": analysis}
+
+
+def test_parallel_contrasts_match_serial_and_preserve_order(tmp_path):
+    contrasts = [
+        {"name": "first", "left": "left", "right": "right"},
+        {"name": "second", "left": "left", "right": "right"},
+    ]
+    serial_config = tmp_path / "serial.json"
+    parallel_config = tmp_path / "parallel.json"
+    _write(serial_config, _parallel_config(tmp_path / "serial", contrasts))
+    _write(parallel_config, _parallel_config(tmp_path / "parallel", contrasts, max_workers=2))
+    serial = run(serial_config, tmp_path / "serial-output.json")
+    parallel = run(parallel_config, tmp_path / "parallel-output.json")
+    assert list(parallel["contrasts"]) == ["first", "second"]
+    assert parallel["contrasts"] == serial["contrasts"]
+    assert "max_workers" not in serial["provenance"]
+    assert parallel["provenance"]["max_workers"] == 2
+    assert parallel["provenance"]["effective_workers"] == 2
+
+
+@pytest.mark.parametrize("workers", [0, -1, True, False, 1.5])
+def test_invalid_analysis_max_workers_refuses(tmp_path, workers):
+    config_path = tmp_path / "config.json"
+    _write(
+        config_path,
+        _parallel_config(
+            tmp_path / "inputs",
+            [{"name": "only", "left": "left", "right": "right"}],
+            max_workers=workers,
+        ),
+    )
+    with pytest.raises(PooledRatioError, match="max_workers"):
+        run(config_path, tmp_path / "result.json")

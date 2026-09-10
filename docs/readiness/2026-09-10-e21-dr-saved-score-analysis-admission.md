@@ -154,3 +154,21 @@ explicitly rather than silently selecting a weighting. If a guard changes
 pass/fail by weighting, preserve the natural primary result and name the
 sensitivity before choosing any downstream component. Root owns that review.
 This clarification changes neither generation, roster, budget, nor thresholds.
+
+
+## Bounded parallel execution of unchanged contrasts
+
+A model-free synthetic timing measured 99.665 seconds for one metric across
+1,593 rows, 44 uneven call clusters, both descriptive groupings and 10,000
+replicates. The 60 declared window-metric comparisons would take approximately
+100 minutes serially on that measurement. The window comparison configuration
+therefore requests four worker processes for independent complete contrasts.
+Each contrast retains its original inputs, estimator, seed and replicate count.
+The shared entry preserves declaration order and records requested/effective
+concurrency. A serial-versus-two-process fixture produces identical contrast
+results. This changes computation scheduling only.
+
+During a GPU campaign, reserve four workers for window comparisons, at most one
+for the sequential call-level comparison jobs, and at most three for any
+overlapping preparation. Their total does not exceed the owner's global eight
+worker limit. Full official scoring remains one job at a time; it is not sharded.
