@@ -177,9 +177,16 @@
       "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "readiness": {
-        "state": "held",
-        "reason": "Refresh the source-bound artifact after correcting the pre-contact null scorer identity; no contact has occurred.",
-        "requirements": []
+        "state": "ready",
+        "reason": "Prepared candidate supply verified; only the separately registered tokenizer fit may run.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3-ALIGNED/twin-supply.json",
+            "sha256": "f2a13e23c03f6e28feb05696f3eefe0e3908abe77d9a7f519da78a187351ff24",
+            "reason": "Source-bound V3 aligned supply required"
+          }
+        ]
       }
     },
     {
@@ -238,5 +245,9 @@
     "phase_supply_relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3-ALIGNED/twin-supply.json",
     "fit_relpath": "prepared/SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3-FIT-V1/request-fit.json",
     "admission": "Bind immutable source-valid preparation and actual full-roster fit receipts. Read both treatments only after both are sealed and scored. G1 component closure is necessary; ordinary preflight is insufficient."
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3-ALIGNED/twin-supply.json",
+    "sha256": "f2a13e23c03f6e28feb05696f3eefe0e3908abe77d9a7f519da78a187351ff24"
   }
 }

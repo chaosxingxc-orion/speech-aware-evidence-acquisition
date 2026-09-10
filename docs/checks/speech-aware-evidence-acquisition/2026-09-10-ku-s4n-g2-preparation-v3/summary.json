@@ -1,0 +1,79 @@
+{
+  "audit": {
+    "arms": {
+      "n": {
+        "artifact": {
+          "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3-ALIGNED/candidates-supply.json",
+          "sha256": "fc36d8e267ed04343c8b0bd6f6c3be0b30ae0ad9939a9b3c051351bf666a7462"
+        },
+        "ordered_selection_matches_parent": true,
+        "parent_artifact_sha256": "3b5ec916434c630d5e56d3ec3f5f73867aa36402bc9dd64665504f66bd499d0a",
+        "prepared_inputs_sha256": "6900bbe391c0869c076c6c3624fa2ba8e100d987765721308ad3ff31fb7d5e17",
+        "rows": 1000,
+        "runtime_bootstrap_calls": 0,
+        "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+        "warm_cache": "warm",
+        "warm_producer_calls": 0
+      },
+      "n-smoke": {
+        "artifact": {
+          "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3-ALIGNED/n-smoke-supply.json",
+          "sha256": "1bc4ace69995eb136351cfcf0fc92e056e3696381e15c4a230abacb21716fb77"
+        },
+        "ordered_selection_matches_parent": true,
+        "parent_artifact_sha256": "3b5ec916434c630d5e56d3ec3f5f73867aa36402bc9dd64665504f66bd499d0a",
+        "prepared_inputs_sha256": "cfdfd1bc81b65c24e039f59498bb271c2b5d0223e5ed0b78be886c6dbbc7cf64",
+        "rows": 4,
+        "runtime_bootstrap_calls": 0,
+        "split_identity_hash": "e335c74149794af0f2301954b6e92cde2a4134d65ebe6069173a1a556b7a04b3",
+        "warm_cache": "warm",
+        "warm_producer_calls": 0
+      },
+      "twin": {
+        "artifact": {
+          "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3-ALIGNED/twin-supply.json",
+          "sha256": "f2a13e23c03f6e28feb05696f3eefe0e3908abe77d9a7f519da78a187351ff24"
+        },
+        "ordered_selection_matches_parent": true,
+        "parent_artifact_sha256": "a6784478768c74858385c4a7a027c7d04b77635872ebd6ebded8a67f7017940d",
+        "prepared_inputs_sha256": "198361133de6de602ffcd5071edf1e1702b53a8f1a40bdb4bcb0aec231c25d23",
+        "rows": 1000,
+        "runtime_bootstrap_calls": 0,
+        "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+        "warm_cache": "warm",
+        "warm_producer_calls": 0
+      },
+      "twin-smoke": {
+        "artifact": {
+          "relpath": "prepared/SAEA-SLURP-KU-S4N-G2-PREPARE-V3-ALIGNED/twin-smoke-supply.json",
+          "sha256": "0bf9a8cb94072f33bdc61320f4dfe622e6c2a14b5e056517f4808bc865e4c008"
+        },
+        "ordered_selection_matches_parent": true,
+        "parent_artifact_sha256": "a6784478768c74858385c4a7a027c7d04b77635872ebd6ebded8a67f7017940d",
+        "prepared_inputs_sha256": "88d465b8dd7eb4c57b2ed0ee67b6283454c73e6dd1c15c7cbdc054b3e6ae22c3",
+        "rows": 4,
+        "runtime_bootstrap_calls": 0,
+        "split_identity_hash": "e335c74149794af0f2301954b6e92cde2a4134d65ebe6069173a1a556b7a04b3",
+        "warm_cache": "warm",
+        "warm_producer_calls": 0
+      }
+    },
+    "code_commit": "63aedc6e2aa3f25814d16f6db6a8645188fb54d2",
+    "complete": true,
+    "contacts": {
+      "encoder": 0,
+      "model": 0,
+      "network": 0,
+      "scorer": 0,
+      "tokenizer": 0
+    },
+    "schema": "saea-g2-v3-preparation-root-audit-v1",
+    "scope": "Fresh corrected configuration pins; all actual request materialization remains required in the registered fit batch before service startup."
+  },
+  "schema": "saea-g2-preparation-root-review-v1",
+  "source_report": {
+    "relpath": "analysis/SAEA-SLURP-KU-S4N-G2-PREPARE-V3-ALIGNED/root-preparation-audit.json",
+    "sha256": "83a85fb5079fc32c4638c08f15ed8d08767acdaa507b3bdf1608028f9ac622e4"
+  },
+  "status": "DATA_READY; actual request fit and smoke gates remain required"
+}
