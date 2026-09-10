@@ -558,3 +558,35 @@ def test_real_cache_artifact_reuse_closes_client_without_contact(tmp_path, mutat
     assert client.calls == []
     assert client.closed == 1
     assert args["output_path"].read_bytes() == original
+
+
+@pytest.mark.parametrize(
+    "case",
+    [
+        "uncovered",
+        "duplicate-request",
+        "duplicate-reference",
+        "wrong-source",
+        "wrong-encoder",
+    ],
+)
+def test_inventory_binding_refuses_before_any_encoder_contact(tmp_path, case):
+    data, inv, _ = inventory(tmp_path)
+    client = Client()
+    args = kwargs(tmp_path, data, inv, client)
+    request = inv["batches"][0]["requests"][0]
+    reference = inv["encoding_inputs"][0]["requests"][0]
+    if case == "uncovered":
+        inv["batches"][0]["requests"].append({**request, "request_key": "s#w2"})
+    elif case == "duplicate-request":
+        inv["batches"][0]["requests"].append(dict(request))
+    elif case == "duplicate-reference":
+        inv["encoding_inputs"][0]["requests"].append(dict(reference))
+    elif case == "wrong-source":
+        reference["request_key"] = "other#w1"
+    else:
+        args["encoder_identity"] = {"build": "different"}
+    with pytest.raises(PreparationError):
+        encode_window_feature_cache(**args)
+    assert client.calls == []
+    assert not args["output_path"].exists()
