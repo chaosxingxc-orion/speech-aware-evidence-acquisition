@@ -1,0 +1,151 @@
+{
+  "schema": "saea-runtime-receipt-v2",
+  "study": "speech-aware-evidence-acquisition",
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "llama_cpp": {
+    "build_commit": "cddb000cb45ab44d33c84483cf5e5962cbbaa5bf",
+    "reported_build": "version: 9 (cddb000cb)",
+    "binary_path": "llama-worktrees/featcache-require-hit/build-qualify/bin/llama-server",
+    "binary_bytes": 17920,
+    "binary_sha256": "6ba5461086c04d91f34ad5694d3316f0d10785888b9c641b0a3f597c5f426b18"
+  },
+  "gguf_files": [
+    {
+      "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "bytes": 18557053952,
+      "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+    },
+    {
+      "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf",
+      "bytes": 2207465568,
+      "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+    }
+  ],
+  "runtime_libraries": [
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libggml-base.so",
+      "bytes": 913472,
+      "sha256": "d682e031543f1f39bb00887e9a5a936f1152ba434733fddefb1465b576067ccc"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libggml-base.so.0",
+      "bytes": 913472,
+      "sha256": "d682e031543f1f39bb00887e9a5a936f1152ba434733fddefb1465b576067ccc"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libggml-base.so.0.15.2",
+      "bytes": 913472,
+      "sha256": "d682e031543f1f39bb00887e9a5a936f1152ba434733fddefb1465b576067ccc"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libggml-cpu.so",
+      "bytes": 1114656,
+      "sha256": "e62092db1ac4e29a5bf6d043c6c1699169fd6222daa51a1306ae246510c38f40"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libggml-cpu.so.0",
+      "bytes": 1114656,
+      "sha256": "e62092db1ac4e29a5bf6d043c6c1699169fd6222daa51a1306ae246510c38f40"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libggml-cpu.so.0.15.2",
+      "bytes": 1114656,
+      "sha256": "e62092db1ac4e29a5bf6d043c6c1699169fd6222daa51a1306ae246510c38f40"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libggml-cuda.so",
+      "bytes": 62937880,
+      "sha256": "24d5c6a7531600fc614b39b40e02867f872d695a5ca8278a960982ee34b07d09"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libggml-cuda.so.0",
+      "bytes": 62937880,
+      "sha256": "24d5c6a7531600fc614b39b40e02867f872d695a5ca8278a960982ee34b07d09"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libggml-cuda.so.0.15.2",
+      "bytes": 62937880,
+      "sha256": "24d5c6a7531600fc614b39b40e02867f872d695a5ca8278a960982ee34b07d09"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libggml.so",
+      "bytes": 56016,
+      "sha256": "9ac9ded8c39ceee17d53fa9ad365e9e0317dd9bddeb17a667e076df602311c09"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libggml.so.0",
+      "bytes": 56016,
+      "sha256": "9ac9ded8c39ceee17d53fa9ad365e9e0317dd9bddeb17a667e076df602311c09"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libggml.so.0.15.2",
+      "bytes": 56016,
+      "sha256": "9ac9ded8c39ceee17d53fa9ad365e9e0317dd9bddeb17a667e076df602311c09"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libllama-common.so",
+      "bytes": 5715912,
+      "sha256": "6e954c376060e1d063d436ccb36e320ecfc1dae00ec37e49dead957b6d9449a0"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libllama-common.so.0",
+      "bytes": 5715912,
+      "sha256": "6e954c376060e1d063d436ccb36e320ecfc1dae00ec37e49dead957b6d9449a0"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libllama-common.so.0.0.8",
+      "bytes": 5715912,
+      "sha256": "b7ffd74d87f7cc9bf63f3e191fb15d5b914f8d62bb5315877b4383604f4ffe9b"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libllama-common.so.0.0.9",
+      "bytes": 5715912,
+      "sha256": "6e954c376060e1d063d436ccb36e320ecfc1dae00ec37e49dead957b6d9449a0"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libllama-server-impl.so",
+      "bytes": 7319160,
+      "sha256": "4c3600dcc09f799e6461068c2c4d8503c6f717aa075db3c9bcec36961af2a41d"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libllama.so",
+      "bytes": 3871904,
+      "sha256": "9294803f671e9898e351ca4058d81c7d8096129b2cec93ccd88df298f5a7a314"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libllama.so.0",
+      "bytes": 3871904,
+      "sha256": "9294803f671e9898e351ca4058d81c7d8096129b2cec93ccd88df298f5a7a314"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libllama.so.0.0.8",
+      "bytes": 3871904,
+      "sha256": "9294803f671e9898e351ca4058d81c7d8096129b2cec93ccd88df298f5a7a314"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libllama.so.0.0.9",
+      "bytes": 3871904,
+      "sha256": "9294803f671e9898e351ca4058d81c7d8096129b2cec93ccd88df298f5a7a314"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libmtmd.so",
+      "bytes": 1429096,
+      "sha256": "a8b359311486abb4beec3678c6b2096bc34091c7fa83056f006a003c64b8e6fc"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libmtmd.so.0",
+      "bytes": 1429096,
+      "sha256": "a8b359311486abb4beec3678c6b2096bc34091c7fa83056f006a003c64b8e6fc"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libmtmd.so.0.0.8",
+      "bytes": 1429096,
+      "sha256": "a8b359311486abb4beec3678c6b2096bc34091c7fa83056f006a003c64b8e6fc"
+    },
+    {
+      "path": "llama-worktrees/featcache-require-hit/build-qualify/bin/libmtmd.so.0.0.9",
+      "bytes": 1429096,
+      "sha256": "a8b359311486abb4beec3678c6b2096bc34091c7fa83056f006a003c64b8e6fc"
+    }
+  ]
+}

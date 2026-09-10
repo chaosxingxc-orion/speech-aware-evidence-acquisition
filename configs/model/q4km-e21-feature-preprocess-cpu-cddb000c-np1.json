@@ -1,0 +1,36 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-e21-feature-preprocess-cddb000c.json",
+  "server_args": [
+    "-c",
+    "8192",
+    "-np",
+    "1",
+    "-ngl",
+    "0",
+    "--no-mmproj-offload",
+    "-b",
+    "512",
+    "-ub",
+    "128"
+  ],
+  "serving_geometry": {
+    "slots": 1,
+    "slot_tokens": 8192,
+    "max_tokens": 1
+  },
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1
+  },
+  "prompt_order": "evidence-first-system-v3",
+  "server_env": {
+    "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/e21-cddb000c-four-proof-cpu-v1"
+  },
+  "preparation_basis": "Root-owned CPU preprocessing only. No automatic attach fallback, sidecar, cache validation re-encode or unregistered replay. The shared encoding operation supplies the registered English instruction and logs each unique exact source. This model fragment alone authorizes no contact."
+}

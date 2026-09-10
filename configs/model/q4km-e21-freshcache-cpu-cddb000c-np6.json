@@ -1,0 +1,42 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-e21-feature-raw-cddb000c.json",
+  "server_args": [
+    "-c",
+    "36864",
+    "-np",
+    "6",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "--no-mmproj-offload"
+  ],
+  "serving_geometry": {
+    "slots": 6,
+    "slot_tokens": 6144,
+    "max_tokens": 1024
+  },
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1024,
+    "id_slot": "per-sample"
+  },
+  "prompt_order": "evidence-first-system-v3",
+  "server_env": {
+    "GGML_CUDA_DISABLE_GRAPHS": "1",
+    "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/e21-cddb000c-four-proof-cpu-v1",
+    "LLAMA_MTMD_FEAT_CACHE_REQUIRE_HIT": "1"
+  },
+  "feature_encoder_runtime_receipt": "receipts/runtime-q4km-e21-feature-preprocess-cddb000c.json",
+  "preparation_basis": "Prepare exact-window features first in the separate root-owned CPU preprocessing session. Keep mmproj on CPU during raw-audio generation; require cache hits. This fragment remains held until live strict-cache qualification, source-bound provenance, actual-request guard configuration and fit receipts are complete. Preserve raw input and historical decoding parameters."
+}
