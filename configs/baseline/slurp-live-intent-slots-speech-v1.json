@@ -1,0 +1,84 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "speech_feature_key_representation_id": "saea-slurp-live-intent-slots-v1:speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-live-intent-slots-v1-speech",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template_active": true,
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers/snapshot.json",
+  "knowledge_snapshot_sha256": "2c43147780b60fe64a3f46de5e9f6ab28b053f3a28a6900b2a92c04591541cf6",
+  "serving_slots": 4,
+  "serving_slot_tokens": 16384,
+  "phase_material": {
+    "direct": {
+      "instruction_template": "probes/slurp_phase_direct.txt",
+      "instruction_fill": null,
+      "response_format_id": null,
+      "predecessor_binding": "none"
+    },
+    "slots": {
+      "instruction_template": "probes/slurp_phase_slots.txt",
+      "instruction_fill": null,
+      "response_format_id": null,
+      "predecessor_binding": "append-sealed-state",
+      "state_fill": "slurp-intent-slot-schema-for-state"
+    }
+  },
+  "whole_roster_wave_barrier": true,
+  "live_phase_fit": {
+    "run_id": "SAEA-SLURP-LIVE-INTENT-SLOTS-SPEECH-FIT-V1",
+    "attempt_id": "attempt-live-intent-slots-speech-fit-v1",
+    "contact_cap": 6002
+  },
+  "what_this_is": "HELD: proposed full DEV-1000 live two-stage SLURP speech-keyed slot-filler treatment. No generation, fit, service, or exposure contact is authorized; root must register fresh identities and complete the declared fit before admission.",
+  "delivery_basis": "Future phase-pair declaration must bind the registered slurp-intent-slots-delivery-v1 rule after the direct and slots phases. This fragment does not enable delivery behavior or authorize contact.",
+  "live_state_transfer": "The slots phase appends the direct phase state through the shared phase-material registry; no sealed predecessor receipt is used.",
+  "geometry_basis": "Both phases use the inherited np4 / four-slot / 16,384-token geometry and request max_tokens=256 through the experiment fragment; no phase-specific decoding extension is introduced.",
+  "policy": "phase-direct-then-slots-supplied-v1",
+  "phase_supply": {
+    "slots": {
+      "dimensions": [
+        "content"
+      ],
+      "expose_facets": false,
+      "facet_source": {
+        "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+        "kind": "sealed-vectors",
+        "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+        "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+        "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+      },
+      "fuse_coverage": {
+        "c": 5,
+        "m": 5,
+        "top_l": 5
+      },
+      "fuse_policy": "saea-fuse-supplyfilter-v1",
+      "k": 5,
+      "provider": "kb-facet-v1",
+      "query_source": {
+        "embedded_signal": "speech: Omni-Embed-Nemotron-3B over the DEV-1000 recording of this row, prompt 'query: ' through the encoder's own sentence_transformers.jinja wrapper, mean-pooled over the attention mask and L2-normalised. Set q-speech-nemotron of the sealed 2026-09-06 MF-7b pass; no text of any kind enters this vector.",
+        "kind": "sealed-vectors",
+        "relpath": "vectors/slurp-kus3/query-vectors-speech.jsonl",
+        "sha256": "99b2e1700a058640a12c86fb261e3fc1898cd99004b0157366682b2a048b2e7c",
+        "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+      },
+      "rank_policy": "saea-rank-wcos-prior-agree-v1",
+      "rank_weights": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "tau": 0.0
+    }
+  }
+}
