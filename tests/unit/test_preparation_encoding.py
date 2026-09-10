@@ -108,3 +108,19 @@ def test_custody_refusal_precedes_client_request(tmp_path, monkeypatch):
     with pytest.raises(PreparationError, match="custody"):
         encode_window_feature_cache(**args)
     assert client.calls == [] and client.closed == 1
+
+def test_missing_or_wrong_shape_after_response_refuses_and_writes_partial(tmp_path, monkeypatch):
+    data, inv, _ = inventory(tmp_path); client=Client(); args=kwargs(tmp_path,data,inv,client)
+    monkeypatch.setattr("speech_aware_evidence_acquisition.core.preparation_encoding.inspect_legacy_cached_speech_feature_cache", lambda **_: (_ for _ in ()).throw(PreparationError("wrong n_embd")))
+    with pytest.raises(PreparationError, match="wrong n_embd"):
+        encode_window_feature_cache(**args)
+    assert client.closed == 1 and (tmp_path/"result.json.partial.json").exists()
+
+def test_warm_artifact_reuse_refuses_when_cache_disappears(tmp_path, monkeypatch):
+    data, inv, _ = inventory(tmp_path); client=Client(); args=kwargs(tmp_path,data,inv,client)
+    key=__import__("speech_aware_evidence_acquisition.core.preparation_encoding",fromlist=["legacy_audio_feature_cache_key"]).legacy_audio_feature_cache_key((data/"slices/one.wav").read_bytes())
+    (args["legacy_cache_dir"]/f"{key}_o0.feat").write_bytes(b"x")
+    args["output_path"].write_text("{}")
+    with pytest.raises(Exception, match="truncated"):
+        encode_window_feature_cache(**args)
+    assert client.calls == []
