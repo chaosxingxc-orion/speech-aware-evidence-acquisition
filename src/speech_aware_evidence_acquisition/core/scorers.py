@@ -744,6 +744,7 @@ def score_bundle(
 
 from ..reproduction.slurp_official_eval import (  # noqa: E402
     score_slurp_outputs_official,
+    score_slurp_outputs_official_aligned,
     score_slurp_outputs_official_projected,
     score_slurp_outputs_official_projected_v2,
     score_slurp_outputs_official_projected_v2_train,
@@ -851,6 +852,11 @@ SCORERS.register(
 # ---------------------------------------------------------------------------
 
 SCORERS.register("slurp-slu-f1-normalized-v1", score_slurp_outputs_slu_normalized)
+
+# One registered callable owns the aligned projected-v2 primary and raw-label
+# normalized secondary. Keeping both views inside this result lets
+# ``score_bundle`` invoke the official evaluator once for a complete manifest.
+SCORERS.register("slurp-slu-official-aligned-v1", score_slurp_outputs_official_aligned)
 
 
 # ---------------------------------------------------------------------------
@@ -1343,4 +1349,3 @@ from ..reproduction.brief_term_recall import (  # noqa: E402
 )
 
 SCORERS.register("brief-term-recall-v1", score_brief_term_recall_outputs)
-

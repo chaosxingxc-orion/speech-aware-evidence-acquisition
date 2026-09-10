@@ -104,6 +104,7 @@ _PROJECTION_RULES = {
 # ``reproduction.slurp_scoring``'s own docstring already names.
 SLURP_OFFICIAL_COMMIT = "8eb16545762be97ace75334109d73824217311f1"
 SLURP_OFFICIAL_SCORER_VERSION = f"slurp-official-{SLURP_OFFICIAL_COMMIT[:8]}"
+SLURP_SLU_OFFICIAL_ALIGNED_SCORER_ID = "slurp-slu-official-aligned-v1"
 
 # The pinned evaluator's own ``requirements.txt`` (jiwer==2.0.0, tabulate==0.8.7,
 # textdistance==4.1.5, progress==1.5) is incompatible with the shared study
@@ -981,7 +982,7 @@ def score_slurp_outputs_official_projected_v2_train(
 # ---------------------------------------------------------------------------
 
 
-def score_slurp_outputs_slu_normalized(
+def score_slurp_outputs_slu_normalized_view(
     outputs_path: Path,
     lock: Mapping[str, object],
     root: Path,
@@ -990,32 +991,11 @@ def score_slurp_outputs_slu_normalized(
     allow_heldout: bool = False,
     per_rule: bool = True,
 ) -> dict[str, object]:
-    """Score one run's outputs BOTH ways -- officially, and under the pinned
-    slot normalizer applied to gold and prediction alike.
+    """Compute the raw-label normalized view without an official subprocess.
 
-    Registered as the ``"slurp-slu-f1-normalized-v1"`` ``core.base.SCORERS``
-    entry with the uniform ``scorer(outputs_path, lock, root)`` signature.
-
-    The returned document is ``score_slurp_outputs_official``'s, with three
-    additions and no removals:
-
-    * ``aggregate["normalized"]`` -- the micro metrics under the full rule set,
-      plus the rule identity, the TRAIN inventory identity and the learned
-      leading-token list;
-    * ``aggregate["normalized_per_rule"]`` (when ``per_rule``) -- the same
-      micro metrics under each cumulative PREFIX of the rule tuple, so a
-      receipt prices ``R0``, ``R0+R1``, ``R0+R1+R2`` and the whole rule
-      separately;
-    * ``per_sample[i]["normalized"]`` -- the per-sample metric dict under the
-      full rule set, keyed exactly like the official one, so
-      ``analysis.paired.paired_contrast`` reads either scorer through the same
-      metric names.
-
-    ``aggregate["normalized"]["false_merges"]`` is the audit that keeps the
-    normalized number honest: how many DISTINCT gold surface forms of one slot
-    type this corpus collapses onto a shared normalized string. A normalizer
-    that merged genuinely different values would inflate the metric, and the
-    count is reported whether it is zero or not.
+    This is the shared pure-scoring half used by both the legacy normalized
+    scorer and the aligned scorer below. Predicted scenario/action labels are
+    parsed directly from the recorded response and are never projected.
     """
 
     from .slurp_slot_normalizer import (  # noqa: PLC0415 (import cost)
@@ -1025,19 +1005,6 @@ def score_slurp_outputs_slu_normalized(
         load_slot_normalizer_inventory,
         normalize_slot_entities,
     )
-
-    document = score_slurp_outputs_official(
-        outputs_path,
-        lock,
-        root,
-        split_id=split_id,
-        allow_heldout=allow_heldout,
-    )
-    if not document["aggregate"]["identity_check"]["passed"]:  # type: ignore[index]
-        raise SlurpOfficialEvalError(
-            "the port disagrees with the official evaluate.py on these outputs; "
-            "the normalized column is not computed on a broken identity"
-        )
 
     inventory = load_slot_normalizer_inventory(lock, root)
     gold_records = load_slurp_split(lock, root, split_id, allow_heldout=allow_heldout)
@@ -1125,10 +1092,7 @@ def score_slurp_outputs_slu_normalized(
         if len(sources) > 1
     }
 
-    for entry in document["per_sample"]:  # type: ignore[index]
-        entry["normalized"] = per_sample_full[str(entry["sample_id"])]
-
-    document["aggregate"]["normalized"] = {  # type: ignore[index]
+    aggregate: dict[str, object] = {
         "scorer_id": SLURP_SLU_NORMALIZED_SCORER_ID,
         "normalizer_id": SLURP_SLOT_NORMALIZER_ID,
         "rules": list(SLURP_SLOT_NORMALIZER_RULES),
@@ -1139,15 +1103,148 @@ def score_slurp_outputs_slu_normalized(
         "false_merges": false_merges,
         "false_merge_count": len(false_merges),
     }
+    document: dict[str, object] = {"aggregate": aggregate}
     if per_rule:
-        document["aggregate"]["normalized_per_rule"] = {  # type: ignore[index]
+        document["aggregate_per_rule"] = {
             "+".join(prefix): _micro(scores) for prefix, scores in by_prefix.items()
         }
+    document["per_sample"] = [
+        {"sample_id": sample_id, **per_sample_full[sample_id]}
+        for sample_id, _scenario, _action, _entities in parsed_rows
+    ]
+    return document
+
+
+def score_slurp_outputs_slu_normalized(
+    outputs_path: Path,
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    split_id: str = "devel",
+    allow_heldout: bool = False,
+    per_rule: bool = True,
+) -> dict[str, object]:
+    """Preserve the legacy raw-official plus normalized scorer document.
+
+    The official evaluator is still invoked first on raw labels. The pure
+    normalized helper then reconstructs the historical aggregate additions
+    and per-row ``normalized`` overlays without changing their keys or values.
+    """
+
+    document = score_slurp_outputs_official(
+        outputs_path,
+        lock,
+        root,
+        split_id=split_id,
+        allow_heldout=allow_heldout,
+    )
+    if not document["aggregate"]["identity_check"]["passed"]:  # type: ignore[index]
+        raise SlurpOfficialEvalError(
+            "the port disagrees with the official evaluate.py on these outputs; "
+            "the normalized column is not computed on a broken identity"
+        )
+    view = score_slurp_outputs_slu_normalized_view(
+        outputs_path,
+        lock,
+        root,
+        split_id=split_id,
+        allow_heldout=allow_heldout,
+        per_rule=per_rule,
+    )
+    normalized_by_id = {
+        str(entry["sample_id"]): {
+            key: value for key, value in entry.items() if key != "sample_id"
+        }
+        for entry in view["per_sample"]  # type: ignore[union-attr]
+    }
+    for entry in document["per_sample"]:  # type: ignore[index]
+        entry["normalized"] = normalized_by_id[str(entry["sample_id"])]
+    document["aggregate"]["normalized"] = view["aggregate"]  # type: ignore[index]
+    if per_rule:
+        document["aggregate"]["normalized_per_rule"] = view[  # type: ignore[index]
+            "aggregate_per_rule"
+        ]
+    return document
+
+
+def score_slurp_outputs_official_aligned(
+    outputs_path: Path,
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    split_id: str = "devel",
+    allow_heldout: bool = False,
+    per_rule: bool = True,
+) -> dict[str, object]:
+    """Return projected-v2 official primary and raw-label normalized view.
+
+    Exactly one official ``evaluate.py`` invocation occurs, in the primary
+    projected-v2 scorer. The normalized secondary is computed by the pure
+    port helper and is kept under ``views.normalized`` so its raw labels cannot
+    overlay the projected primary rows.
+    """
+
+    from .slurp_slot_normalizer import (  # noqa: PLC0415 (import cost)
+        SLURP_SLOT_NORMALIZER_ID,
+        SLURP_SLU_NORMALIZED_SCORER_ID,
+    )
+
+    document = score_slurp_outputs_official_projected_v2(
+        outputs_path,
+        lock,
+        root,
+        split_id=split_id,
+        allow_heldout=allow_heldout,
+    )
+    if not document["aggregate"]["identity_check"]["passed"]:  # type: ignore[index]
+        raise SlurpOfficialEvalError(
+            "the projected-v2 port disagrees with the official evaluate.py; "
+            "the normalized view is not computed on a broken identity"
+        )
+    normalized = score_slurp_outputs_slu_normalized_view(
+        outputs_path,
+        lock,
+        root,
+        split_id=split_id,
+        allow_heldout=allow_heldout,
+        per_rule=per_rule,
+    )
+    normalized["provenance"] = {
+        "view_id": "normalized",
+        "prediction_labels": "raw-unprojected",
+        "projection": {"applied": False, "projection_id": None},
+        "normalizer_id": SLURP_SLOT_NORMALIZER_ID,
+        "scorer_id": SLURP_SLU_NORMALIZED_SCORER_ID,
+        "official_evaluate_invocations": 0,
+        "scoring_route": "pure-slurp-port",
+    }
+    document["aggregate"]["aligned_views"] = {  # type: ignore[index]
+        "scorer_id": SLURP_SLU_OFFICIAL_ALIGNED_SCORER_ID,
+        "official_evaluate_invocations": 1,
+        "primary": {
+            "view_id": "primary",
+            "prediction_labels": "projected-v2",
+            "projection_id": SLURP_LABEL_PROJECTION_V2_ID,
+            "official_evaluate_invocations": 1,
+            "official_scorer_version": SLURP_OFFICIAL_SCORER_VERSION,
+        },
+        "normalized": {
+            "view_id": "normalized",
+            "prediction_labels": "raw-unprojected",
+            "projection_id": None,
+            "normalizer_id": SLURP_SLOT_NORMALIZER_ID,
+            "scorer_id": SLURP_SLU_NORMALIZED_SCORER_ID,
+            "official_evaluate_invocations": 0,
+            "scoring_route": "pure-slurp-port",
+        },
+    }
+    document["views"] = {"normalized": normalized}
     return document
 
 __all__ = [
     "SLURP_OFFICIAL_COMMIT",
     "SLURP_OFFICIAL_SCORER_VERSION",
+    "SLURP_SLU_OFFICIAL_ALIGNED_SCORER_ID",
     "OfficialSluResult",
     "PredictedSlurpSample",
     "SlurpOfficialEvalError",
@@ -1160,6 +1257,8 @@ __all__ = [
     "score_slurp_outputs_official_projected_v2_train",
     "score_slurp_outputs_official_projected",
     "score_slurp_outputs_official_projected_v2",
+    "score_slurp_outputs_official_aligned",
     "score_slurp_outputs_slu_normalized",
+    "score_slurp_outputs_slu_normalized_view",
     "write_official_inputs",
 ]
