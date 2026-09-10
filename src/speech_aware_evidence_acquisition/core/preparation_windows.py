@@ -268,6 +268,26 @@ def _normalized_source(
         raise PreparationError("window source time bounds are inconsistent")
     sample_rate = _positive_int(source["sample_rate_hz"], "sample_rate_hz")
     iteration = _positive_int(source["iteration"], "iteration", allow_zero=True)
+    if int(match.group(2)) != iteration + 1:
+        raise PreparationError(
+            "window request key suffix disagrees with source iteration"
+        )
+    payload_seconds = _finite_number(
+        payload.get("audio_seconds"), "payload audio_seconds"
+    )
+    if abs(payload_seconds - seconds) > 1e-6:
+        raise PreparationError(
+            "window payload audio_seconds disagrees with source audio_seconds"
+        )
+    payload_rate = payload.get("sample_rate_hz")
+    if (
+        isinstance(payload_rate, bool)
+        or not isinstance(payload_rate, int)
+        or payload_rate != sample_rate
+    ):
+        raise PreparationError(
+            "window payload sample_rate_hz disagrees with source sample_rate_hz"
+        )
     preprocess = source["preprocess"]
     if (
         not isinstance(preprocess, (list, tuple))
@@ -316,6 +336,12 @@ def build_window_feature_inventory(
     if not root.is_dir():
         raise PreparationError("window feature inventory data_root is unavailable")
     identity = encoder_identity.as_json()
+    if any(
+        not isinstance(batch_name, str)
+        or _BATCH_NAME.fullmatch(batch_name) is None
+        for batch_name in batches
+    ):
+        raise PreparationError("window feature batch name is not a plain identifier")
     batch_rows: list[dict[str, object]] = []
     unique: dict[str, dict[str, object]] = {}
     unique_paths: dict[str, Path] = {}
@@ -323,8 +349,6 @@ def build_window_feature_inventory(
     observed_files: dict[Path, tuple[int, int, int]] = {}
     request_count = 0
     for batch_name in sorted(batches):
-        if not isinstance(batch_name, str) or _BATCH_NAME.fullmatch(batch_name) is None:
-            raise PreparationError("window feature batch name is not a plain identifier")
         batch = batches[batch_name]
         if not isinstance(batch, WindowRequestBatch):
             raise PreparationError("window feature inventory requires WindowRequestBatch values")

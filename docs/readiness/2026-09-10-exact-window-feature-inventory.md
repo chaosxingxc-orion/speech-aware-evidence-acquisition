@@ -8,10 +8,18 @@ Status: model-free engineering seam; no encoding or generation authorization
 `WindowRequestBatch` objects from the existing shared window materializer. It
 does not cut a second set of windows. For every request it binds the batch name,
 request key, payload hash, parent sample, normalized slice provenance, exact
-slice bytes, and exact parent bytes under the confined data root. It refuses a
-path escape, a payload/source mismatch, duplicate request keys within an arm,
-changed bytes, changed hashes, and files that change while the inventory is
-built.
+slice bytes, and exact parent bytes under the confined data root. The numeric
+request-key suffix must equal the source record's zero-based iteration plus
+one. Payload audio_seconds and sample_rate_hz must equal the corresponding
+source record facts. It refuses a path escape, a payload/source mismatch,
+duplicate request keys within an arm, changed bytes, changed hashes, and files
+that change while the inventory is built.
+
+The duration comparison intentionally follows the existing SliceRecord and
+runtime payload-binding contract. audio_seconds describes the verified cut
+span. A declared transform may change the written WAV duration, such as by
+adding tail silence, without changing that cut-span fact; the inventory does
+not replace it with a duration inferred from the transformed carrier.
 
 One inventory carries one explicit encoder identity: runtime-receipt SHA-256,
 llama.cpp build commit, decoder GGUF SHA-256, and mmproj SHA-256. Identical
