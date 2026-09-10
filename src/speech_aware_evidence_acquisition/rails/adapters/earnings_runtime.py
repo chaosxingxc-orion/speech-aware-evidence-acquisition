@@ -12,6 +12,7 @@ from typing import Mapping
 
 from ...core.base import CoreError
 from ...core.config import effective_request_decoding_params, read_fragment
+from ...core.split_receipt import SplitReceiptError, VerifiedSplit, load_verified_split
 from ...reproduction.window_controller import validate_window_controller
 from ..hashing import content_hash
 from .earnings import Earnings21Adapter
@@ -30,10 +31,40 @@ class Earnings21RuntimeAdapter(Earnings21Adapter):
             or dataset.get("carrier_lock_key") != "earnings21-original"
         ):
             raise CoreError("E21 runtime adapter requires earnings21-original")
-        if self._split_id != "discovery" or dataset.get("split_name") != self._split_id:
-            raise CoreError(
-                "E21 runtime adapter requires the frozen full discovery split"
-            )
+        if not isinstance(self._split_id, str) or dataset.get("split_name") != self._split_id:
+            raise CoreError("E21 runtime split must exactly match its dataset fragment")
+        self._verified_subset: VerifiedSplit | None = None
+        if self._split_id != "discovery":
+            subset = dataset.get("e21_runtime_subset")
+            if not isinstance(subset, Mapping):
+                raise CoreError(
+                    "non-default E21 runtime split requires e21_runtime_subset metadata"
+                )
+            if set(subset) != {"receipt_split_name", "parent_split", "subset_role"}:
+                raise CoreError("E21 runtime subset metadata has an unknown or missing key")
+            if subset.get("receipt_split_name") != self._split_id:
+                raise CoreError("E21 runtime subset receipt name differs from split_name")
+            if subset.get("parent_split") != "discovery":
+                raise CoreError("E21 runtime subset must derive from frozen discovery")
+            if subset.get("subset_role") != "construction":
+                raise CoreError("E21 runtime subset role must be construction")
+            try:
+                verified = load_verified_split(Path(repo_root), self._split_id, lock, root)
+                parent = load_verified_split(Path(repo_root), "discovery", lock, root)
+            except SplitReceiptError as error:
+                raise CoreError(f"E21 runtime subset receipt refused: {error}") from error
+            if (
+                verified.carrier_lock_key != "earnings21-original"
+                or verified.split_role != "discovery"
+            ):
+                raise CoreError(
+                    "E21 runtime subset must be earnings21-original with discovery role"
+                )
+            if not set(verified.prefixed_ids) <= set(parent.prefixed_ids):
+                raise CoreError(
+                    "E21 runtime subset contains an id outside frozen discovery"
+                )
+            self._verified_subset = verified
         if values.get("policy") not in ("obs-agent-loop-ojw", "obs-repair-loop-ojw"):
             raise CoreError(
                 "E21 current runtime requires the shared OpenJiuwen OBS executor"
@@ -70,7 +101,15 @@ class Earnings21RuntimeAdapter(Earnings21Adapter):
     def load_split(self, split_id):
         if split_id != self._split_id:
             raise CoreError("E21 runtime split differs from its dataset fragment")
-        return super().load_split(split_id)
+        if self._verified_subset is None:
+            return super().load_split("discovery")
+        full = super().load_split("discovery")
+        selected = tuple(
+            sample for sample in full if sample.sample_id in set(self._verified_subset.ids)
+        )
+        if {sample.sample_id for sample in selected} != set(self._verified_subset.ids):
+            raise CoreError("E21 runtime subset ids are absent from loaded discovery samples")
+        return selected
 
     def serving_geometry(self):
         return dict(self._geometry)

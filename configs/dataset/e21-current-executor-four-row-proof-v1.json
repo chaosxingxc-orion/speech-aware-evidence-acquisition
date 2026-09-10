@@ -1,0 +1,12 @@
+{
+  "carrier_lock_key": "earnings21-original",
+  "split_name": "e21-current-executor-four-row-proof-v1",
+  "d1_evidence_supplement": "receipts/artifacts/d1-e21-participant-names.json",
+  "d1_evidence_supplement_sha256": "313da4c48acf7403207e2a45c28f90262a94adfaa42873a0c9f251fc9d6bfd83",
+  "e21_runtime_subset": {
+    "receipt_split_name": "e21-current-executor-four-row-proof-v1",
+    "parent_split": "discovery",
+    "subset_role": "construction"
+  },
+  "e21_runtime_subset_note": "A verified one-call construction subset for engineering connectivity only. The shared E21 runtime re-verifies the committed probe receipt, re-verifies frozen discovery, and requires the selected id to be contained in discovery before it loads full discovery and selects the verified sample."
+}

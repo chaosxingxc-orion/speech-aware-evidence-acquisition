@@ -1,0 +1,317 @@
+{
+  "schema": "saea-e21-relisten-plan-v1",
+  "context_margin_seconds": 5.0,
+  "flag_source": "judges",
+  "min_relisten_seconds": 10.0,
+  "provenance": {
+    "brief_max_entries_per_class": 12,
+    "exposure_row": "SAEA-E21-MF-LOOP-1-PREP-V1",
+    "generated_utc": "2026-09-08T19:53:13Z",
+    "judges": [
+      {
+        "id": "e21-brief-name-near-miss-v1",
+        "params": {
+          "max_distance": 0.2
+        },
+        "version": "1.0.0"
+      },
+      {
+        "id": "earnings-numeric-format-flag-v1",
+        "params": {},
+        "version": "1.0.0"
+      }
+    ],
+    "sealed_attempt_id": "attempt-20260904T233816Z-bcd338",
+    "sealed_run_id": "SAEA-E21-FULL44-DIRECT-BASELINE-V2",
+    "totals": {
+      "calls": 44,
+      "contacts_per_window": 0.3766478342749529,
+      "flagged_windows": 600,
+      "recut_seconds": 15340.460005376464,
+      "units": 600,
+      "window_seconds": 141345.8526875,
+      "windows": 1593
+    },
+    "twin_seed": null,
+    "derived_from_plan": "docs/receipts/obs/e21-relisten-plan-v1.json",
+    "derived_from_plan_sha256": "b9c9a0e671638c7b6e29ba1a24c8c8e368602e2ee6863b25ecf783111ad995e3",
+    "selection_rule": "first four units sorted by sample_id, parent_window_index, unit_index; routing metadata only"
+  },
+  "calls": [
+    {
+      "decoded_duration_seconds": 3285.816,
+      "parent_windows": [
+        {
+          "draft_words": 245,
+          "end_seconds": 90.0,
+          "start_seconds": 0.0,
+          "window_index": 1
+        },
+        {
+          "draft_words": 221,
+          "end_seconds": 180.0,
+          "start_seconds": 90.0,
+          "window_index": 2
+        },
+        {
+          "draft_words": 236,
+          "end_seconds": 270.0,
+          "start_seconds": 180.0,
+          "window_index": 3
+        },
+        {
+          "draft_words": 246,
+          "end_seconds": 360.0,
+          "start_seconds": 270.0,
+          "window_index": 4
+        },
+        {
+          "draft_words": 237,
+          "end_seconds": 450.0,
+          "start_seconds": 360.0,
+          "window_index": 5
+        },
+        {
+          "draft_words": 233,
+          "end_seconds": 540.0,
+          "start_seconds": 450.0,
+          "window_index": 6
+        },
+        {
+          "draft_words": 229,
+          "end_seconds": 630.0,
+          "start_seconds": 540.0,
+          "window_index": 7
+        },
+        {
+          "draft_words": 239,
+          "end_seconds": 720.0,
+          "start_seconds": 630.0,
+          "window_index": 8
+        },
+        {
+          "draft_words": 248,
+          "end_seconds": 810.0,
+          "start_seconds": 720.0,
+          "window_index": 9
+        },
+        {
+          "draft_words": 211,
+          "end_seconds": 900.0,
+          "start_seconds": 810.0,
+          "window_index": 10
+        },
+        {
+          "draft_words": 253,
+          "end_seconds": 990.0,
+          "start_seconds": 900.0,
+          "window_index": 11
+        },
+        {
+          "draft_words": 260,
+          "end_seconds": 1080.0,
+          "start_seconds": 990.0,
+          "window_index": 12
+        },
+        {
+          "draft_words": 262,
+          "end_seconds": 1170.0,
+          "start_seconds": 1080.0,
+          "window_index": 13
+        },
+        {
+          "draft_words": 244,
+          "end_seconds": 1260.0,
+          "start_seconds": 1170.0,
+          "window_index": 14
+        },
+        {
+          "draft_words": 221,
+          "end_seconds": 1350.0,
+          "start_seconds": 1260.0,
+          "window_index": 15
+        },
+        {
+          "draft_words": 262,
+          "end_seconds": 1440.0,
+          "start_seconds": 1350.0,
+          "window_index": 16
+        },
+        {
+          "draft_words": 260,
+          "end_seconds": 1530.0,
+          "start_seconds": 1440.0,
+          "window_index": 17
+        },
+        {
+          "draft_words": 273,
+          "end_seconds": 1620.0,
+          "start_seconds": 1530.0,
+          "window_index": 18
+        },
+        {
+          "draft_words": 281,
+          "end_seconds": 1710.0,
+          "start_seconds": 1620.0,
+          "window_index": 19
+        },
+        {
+          "draft_words": 283,
+          "end_seconds": 1800.0,
+          "start_seconds": 1710.0,
+          "window_index": 20
+        },
+        {
+          "draft_words": 260,
+          "end_seconds": 1890.0,
+          "start_seconds": 1800.0,
+          "window_index": 21
+        },
+        {
+          "draft_words": 238,
+          "end_seconds": 1980.0,
+          "start_seconds": 1890.0,
+          "window_index": 22
+        },
+        {
+          "draft_words": 251,
+          "end_seconds": 2070.0,
+          "start_seconds": 1980.0,
+          "window_index": 23
+        },
+        {
+          "draft_words": 222,
+          "end_seconds": 2160.0,
+          "start_seconds": 2070.0,
+          "window_index": 24
+        },
+        {
+          "draft_words": 229,
+          "end_seconds": 2250.0,
+          "start_seconds": 2160.0,
+          "window_index": 25
+        },
+        {
+          "draft_words": 267,
+          "end_seconds": 2340.0,
+          "start_seconds": 2250.0,
+          "window_index": 26
+        },
+        {
+          "draft_words": 279,
+          "end_seconds": 2430.0,
+          "start_seconds": 2340.0,
+          "window_index": 27
+        },
+        {
+          "draft_words": 240,
+          "end_seconds": 2520.0,
+          "start_seconds": 2430.0,
+          "window_index": 28
+        },
+        {
+          "draft_words": 227,
+          "end_seconds": 2610.0,
+          "start_seconds": 2520.0,
+          "window_index": 29
+        },
+        {
+          "draft_words": 237,
+          "end_seconds": 2700.0,
+          "start_seconds": 2610.0,
+          "window_index": 30
+        },
+        {
+          "draft_words": 270,
+          "end_seconds": 2790.0,
+          "start_seconds": 2700.0,
+          "window_index": 31
+        },
+        {
+          "draft_words": 282,
+          "end_seconds": 2880.0,
+          "start_seconds": 2790.0,
+          "window_index": 32
+        },
+        {
+          "draft_words": 286,
+          "end_seconds": 2970.0,
+          "start_seconds": 2880.0,
+          "window_index": 33
+        },
+        {
+          "draft_words": 237,
+          "end_seconds": 3060.0,
+          "start_seconds": 2970.0,
+          "window_index": 34
+        },
+        {
+          "draft_words": 247,
+          "end_seconds": 3150.0,
+          "start_seconds": 3060.0,
+          "window_index": 35
+        },
+        {
+          "draft_words": 273,
+          "end_seconds": 3240.0,
+          "start_seconds": 3150.0,
+          "window_index": 36
+        },
+        {
+          "draft_words": 127,
+          "end_seconds": 3285.816,
+          "start_seconds": 3240.0,
+          "window_index": 37
+        }
+      ],
+      "sample_id": "4320211",
+      "units": [
+        {
+          "end_cut": "recut",
+          "end_seconds": 398.7974683544304,
+          "parent_window_index": 5,
+          "predecessor_word_end": 103,
+          "predecessor_word_start": 74,
+          "speaker": null,
+          "start_seconds": 388.4177215189873,
+          "unit_id": "4320211#u0001",
+          "unit_index": 1
+        },
+        {
+          "end_cut": "recut",
+          "end_seconds": 498.2618025751073,
+          "parent_window_index": 6,
+          "predecessor_word_end": 125,
+          "predecessor_word_start": 98,
+          "speaker": null,
+          "start_seconds": 487.8755364806867,
+          "unit_id": "4320211#u0002",
+          "unit_index": 2
+        },
+        {
+          "end_cut": "recut",
+          "end_seconds": 810.0,
+          "parent_window_index": 9,
+          "predecessor_word_end": 248,
+          "predecessor_word_start": 219,
+          "speaker": null,
+          "start_seconds": 799.6370967741935,
+          "unit_id": "4320211#u0003",
+          "unit_index": 3
+        },
+        {
+          "end_cut": "recut",
+          "end_seconds": 957.6482213438735,
+          "parent_window_index": 11,
+          "predecessor_word_end": 163,
+          "predecessor_word_start": 131,
+          "speaker": null,
+          "start_seconds": 946.9367588932806,
+          "unit_id": "4320211#u0004",
+          "unit_index": 4
+        }
+      ],
+      "windows": 37
+    }
+  ]
+}
