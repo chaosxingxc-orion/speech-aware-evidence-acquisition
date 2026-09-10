@@ -1,0 +1,42 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-e21-feature-preprocess-cddb000c.json",
+  "server_args": [
+    "-c",
+    "8192",
+    "-np",
+    "1",
+    "-ngl",
+    "999",
+    "-fa",
+    "on",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "-b",
+    "512",
+    "-ub",
+    "128"
+  ],
+  "serving_geometry": {
+    "slots": 1,
+    "slot_tokens": 8192,
+    "max_tokens": 1
+  },
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1
+  },
+  "prompt_order": "evidence-first-system-v3",
+  "server_env": {
+    "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/e21-cddb000c-loop-gpu-v1",
+    "GGML_CUDA_DISABLE_GRAPHS": "1"
+  },
+  "preparation_basis": "Exclusive root-owned offline GPU encoding of the exact predeclared LOOP slices. Retain the qualified DR preprocessing build and geometry. Both arms use the same resident service and isolated cache, including hash-verified reuse of20 unique current-build DR inputs. Stop and unload the preprocessing service before decoder-only inference. No task-quality answer is inferred from the one-token preprocessing responses."
+}

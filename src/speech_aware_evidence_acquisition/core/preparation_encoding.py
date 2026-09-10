@@ -216,6 +216,8 @@ def encode_window_feature_cache(
         "instruction": instruction,
         "decoding_params": dict(decoding_params),
     }
+    if warm:
+        inputs["warm_provenance_sha256"] = digest(warm)
     # Generic prepare_artifact may return an existing encoder artifact without
     # running its producer. Recheck live source bytes and validated cache chunks
     # before allowing that warm return.

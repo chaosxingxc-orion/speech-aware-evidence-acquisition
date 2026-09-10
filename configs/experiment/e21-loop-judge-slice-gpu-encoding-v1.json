@@ -1,0 +1,62 @@
+{
+  "experiment_id": "SAEA-E21-LOOP-JUDGE-SLICE-GPU-ENCODING-V1",
+  "date": "2026-09-10",
+  "purpose": "Encode589 missing exact judge LOOP inputs and reuse11 pinned DR cache entries through the shared preparation entry. The600-request arm is unchanged. This is offline feature preparation, not scientific answering.",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 589,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 15000
+  },
+  "window_feature_preparation": {
+    "inventory_relpath": "analysis/SAEA-E21-LOOP-EXACT-SLICE-INVENTORY-V1/judge-window-inventory.json",
+    "inventory_sha256": "0e08d8a9f3d6852b7f707c04a2ee952c38541c9492b45e648b0597bae52cecd7",
+    "source_run_id": "SAEA-E21-LOOP-JUDGE-EXACT-SLICE-INVENTORY-V1",
+    "expected_n_embd": 2048,
+    "instruction": "Observe the complete speech signal for deterministic feature preprocessing. Respond with OK.",
+    "warm_encoding_artifacts": [
+      {
+        "relpath": "analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-encoding.json",
+        "sha256": "821a591aa5d176a13dc12954e5cad01596dcd4915a0a0b7a5fe1f57ba5a85936",
+        "provenance_relpath": "analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-preparation-provenance.json",
+        "provenance_sha256": "72d097e3b153baccb75b4e6e221bc83a1ac60d36dd194c39822993db684ed757"
+      }
+    ]
+  },
+  "budget_basis": "One registered preprocessing contact per fresh audio input, no retries or extra throughput probes. Each arm reuses11 current-build DR inputs and encodes589. The two cross-arm duplicate cuts are included in those reused inputs. The combined two-operation encoding window has1178 new contacts and a1.0 GPU-hour upper bound; this preprocessing cost is separate from the preserved LOOP family1.0 GPU-hour generation cap.",
+  "cells": [
+    {
+      "cell_id": "e21-loop-judge-slice-gpu-encoding",
+      "run_id": "SAEA-E21-LOOP-JUDGE-SLICE-GPU-ENCODING-V1",
+      "attempt_id": "attempt-20260910-loop-judge-slice-gpu-encoding-v1",
+      "model_fragment": "q4km-e21-loop-feature-preprocess-gpu-cddb000c-np1",
+      "dataset_fragment": "earnings21-discovery",
+      "baseline_fragment": "window-feature-preprocess-ojw",
+      "allowed_execution_stages": [
+        "prepare-window-features"
+      ],
+      "readiness": {
+        "state": "held",
+        "reason": "Root review and actual600-input source/warm-cache validation are complete. Await exposure registration and the dedicated root encoder lease after the DR resident window ends. No current encoder contact is authorized.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "analysis/SAEA-E21-LOOP-EXACT-SLICE-INVENTORY-V1/judge-window-inventory.json",
+            "sha256": "0e08d8a9f3d6852b7f707c04a2ee952c38541c9492b45e648b0597bae52cecd7",
+            "reason": "Complete exact source-bound600-input arm inventory"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "analysis/SAEA-E21-LOOP-WARM-REUSE-PREPARATION-V1/warm-cache-copy.json",
+            "sha256": "5f6260ccc6c80afc58f6b3abf0d6c20520a21d91f0514405b22f223cb3af2d58",
+            "reason": "Verified20 unique source cache sets copied without encoding; each arm reuses11."
+          }
+        ]
+      }
+    }
+  ],
+  "service_session_id": "serving-e21-loop-slice-gpu-encoding-v1",
+  "output_relpath": "analysis/SAEA-E21-LOOP-JUDGE-SLICE-GPU-ENCODING-V1/window-encoding.json",
+  "split_id": "discovery"
+}
