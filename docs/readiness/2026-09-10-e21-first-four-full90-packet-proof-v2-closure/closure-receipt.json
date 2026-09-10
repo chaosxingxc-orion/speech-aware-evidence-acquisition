@@ -1,0 +1,63 @@
+{
+  "schema": "saea-e21-four-window-packet-proof-closure-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "scope": "model-free engineering closure; no scoring, reference, gold, or effectiveness read",
+  "run_id": "SAEA-E21-CURRENT-EXECUTOR-FIRST-FOUR-FULL90-PACKET-PROOF-V2",
+  "attempt_id": "attempt-20260910-first-four-full90-packet-proof-v2",
+  "study_commit": "bb104ffd8c4533bd7f8ab8b10a37c038d8adde3c",
+  "config_hash": "0463c37ba507f476a29098a17d555a35ecb48e0c6b3eb2ced332eba78e0c67bf",
+  "protocol_hash": "ee8711a2dd14b37c6d4d6659258a66e083836a49767281a58c5354981b5dcb27",
+  "inputs": {
+    "generation_manifest": {"path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-CURRENT-EXECUTOR-FIRST-FOUR-FULL90-PACKET-PROOF-V2/attempt-20260910-first-four-full90-packet-proof-v2/SAEA-E21-CURRENT-EXECUTOR-FIRST-FOUR-FULL90-PACKET-PROOF-V2.run-manifest.json", "sha256": "33f0a8ca026eb0078e14fd4dba01806c58099ddc6892ccf157548bffc6f1d688"},
+    "trace": {"path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-CURRENT-EXECUTOR-FIRST-FOUR-FULL90-PACKET-PROOF-V2/attempt-20260910-first-four-full90-packet-proof-v2/SAEA-E21-CURRENT-EXECUTOR-FIRST-FOUR-FULL90-PACKET-PROOF-V2.trace.jsonl", "sha256": "b60076e899f48793f5e9a6235b1aa82232cc0c73ad7014b956ae9cd7c6840fed"},
+    "trace_manifest_sha256": "34467908be4bc08c4f6afb5ffde97455e9c71a3763f4894d2e2012fcdfdd0af9",
+    "outputs_sha256": "319a6cdd4162f149b311e719958963b198b001aacc95edde351b8cdc47fb96b3",
+    "session_attach_receipt_sha256": "477df788da376684328af528282d8cfcc0abfbc7e2f91f802ae73c7c83eb0d3d",
+    "fit_artifact": {"path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-CURRENT-EXECUTOR-FIRST-FOUR-FULL90-PACKET-FIT-V2/request-fit.json", "sha256": "982ecb8c314ea308417c80b70f13120b6b0cada723bdecfb2a243386a82f490a"},
+    "unit_plan": {"repo_relpath": "docs/receipts/obs/e21-current-executor-first-four-full90-packet-proof-v1.json", "sha256": "c5945e0d0ee1ef857d1f904a09b0d9cd9c31f1ecc5b0a082c302227205a1b8eb"}
+  },
+  "source_and_controller_checks": {
+    "sample_id": "4320211",
+    "original_full90_windows": ["4320211#w0001", "4320211#w0002", "4320211#w0003", "4320211#w0004"],
+    "request_ids": ["req-0001-i0000", "req-0001-i0001", "req-0001-i0002", "req-0001-i0003"],
+    "request_count": 4,
+    "response_count": 4,
+    "cost_record_count": 4,
+    "controller_use_record_count": 4,
+    "stitched_output_count": 1,
+    "source_audio_sha256_matches_unit_plan": true,
+    "source_intervals_match_unit_plan": true,
+    "packet_query_only": true,
+    "mmproj_loaded": false,
+    "supplied_evidence_empty": true,
+    "controller_program": "phase-direct-only-v1",
+    "controller_context_schema": "saea-window-controller-context-v1",
+    "delivery": "substitution-splice",
+    "predecessor_delivery_hashes_match_unit_plan": true,
+    "retry_count": 0,
+    "skip_count": 0,
+    "saturation_count": 0
+  },
+  "measured_cost": {
+    "calls_used": 4,
+    "audio_seconds_used": 360.0,
+    "prompt_tokens_total": 6360,
+    "completion_tokens_total": 1098,
+    "prompt_tokens_by_request": [1602, 1585, 1586, 1587],
+    "completion_tokens_by_request": [286, 270, 270, 272],
+    "gpu_seconds": "NOT_AVAILABLE",
+    "per_request_gpu_seconds": "NOT_AVAILABLE"
+  },
+  "fit_comparison": {
+    "fit_prompt_tokens_equal_text_plus_speech_tokens": true,
+    "fit_special_tokens_reserved_per_request": 2,
+    "fit_maximum_completion_tokens": 1024,
+    "completion_tokens_within_fit_maximum": true,
+    "fit_required_tokens": [2628, 2611, 2612, 2613],
+    "fit_margin_tokens": [888, 922, 920, 918],
+    "envelope_or_request_id_hash_comparison": "not applicable: fit and generation envelope identities differ"
+  },
+  "monitor_note": {"requests_delta": 2, "authority": "non-authoritative coarse monitor field; sealed cost and four COST trace records establish four calls"},
+  "verdict": "PASS",
+  "limitations": ["This one-call, four-window proof demonstrates executor and packet connectivity only.", "No official scoring was run and no effectiveness conclusion is permitted.", "External GPU telemetry is outside this receipt; inline per-request GPU seconds are unavailable."]
+}
