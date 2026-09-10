@@ -80,5 +80,11 @@
       },
       "tau": 0.0
     }
+  },
+  "prepared_phase_recall": {
+    "slots": {
+      "relpath": "prepared/SAEA-SLURP-LIVE-INTENT-SLOTS-SPEECH-PREPARE-V1/recall.json",
+      "sha256": "20d0cd443972cc9fc954222da9bd355af59dea930b316f3ffd4ba60e7831caa3"
+    }
   }
 }
