@@ -474,6 +474,11 @@ def build_server_command(
             "verified it; I5)"
         )
     model_files = _pinned_model_files(runtime_receipt)
+    from .feature_cache_serving import validate_strict_feature_cache_serving
+
+    validate_strict_feature_cache_serving(
+        role=role, extra_argv=extra_argv, extra_env=extra_env, model_files=model_files
+    )
     model_argv = _model_file_argv(
         Path(data_root), model_files, role=role, model_root=model_root
     )
