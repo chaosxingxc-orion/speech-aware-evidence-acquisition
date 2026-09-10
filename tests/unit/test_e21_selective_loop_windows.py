@@ -8,6 +8,7 @@ from speech_aware_evidence_acquisition.core.bundle.artifacts import VerifiedBund
 from speech_aware_evidence_acquisition.core.predecessor_snapshot import PredecessorSnapshot, PredecessorWindow
 from speech_aware_evidence_acquisition.reproduction.obs_loop import PlannedUnit
 from speech_aware_evidence_acquisition.core.repair_alignment import accept_entity_repair
+from speech_aware_evidence_acquisition.core.bundle.delivery_replay import canonical
 
 
 def _window(i, text):
@@ -15,12 +16,14 @@ def _window(i, text):
 
 
 def _bundle(obs, response="b", request_id="root-i0000"):
+    payload = {"request_id": request_id, "sample_id": "s", "decoding_params": {"max_tokens": 8}}
     records = {
-        f"{request_id}/request": {"payload": {"sample_id": "s"}},
+        f"{request_id}/request": {"payload": payload, "payload_sha256": sha256(canonical(payload)).hexdigest()},
         f"{request_id}/obs": obs,
+        "root/request": {"stitch": True, "stitched_request_ids": [] if obs["obs_skipped"] else [request_id]},
     }
     if response is not None:
-        records[f"{request_id}/response"] = {"text": response, "response_text_sha256": sha256(response.encode()).hexdigest()}
+        records[f"{request_id}/response"] = {"text": response, "response_text_sha256": sha256(response.encode()).hexdigest(), "usage": {"completion_tokens": 1}}
     return SimpleNamespace(outputs_rows=({"sample_id": "s", "request_id": "root", "text": "a b c"},), split_ids=frozenset({"s"}), trace_records=records)
 
 
