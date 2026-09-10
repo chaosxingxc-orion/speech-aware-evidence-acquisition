@@ -1,0 +1,5 @@
+# Four-window root admission
+
+Root admits only the executable generation cell of e21-current-executor-first-four-full90-packet-proof-v2. Its READY state and separate generation plan supersede the retained pre-admission planning snapshot flags; those flags are historical prose, not a service or contact capability. The model-free shared executor produced exactly four synthetic requests over 360 seconds with the frozen speech-feature field set. The registered live tokenizer fit passed all four exact full-window requests at np6/c36864/max1024 and the required 2x reserve, minimum margin 888 tokens.
+
+Generate exactly four requests with zero automatic retries and preserve one stitched output, the original responses, controller traces, packet identities, and cost. Do not score this engineering subset or infer an effectiveness result. Reuse the root-owned decoder-only service and monitor. The previous cross-checkout fit handoff was refused with zero endpoint contacts; its sole recovery passed from the root monitor checkout, without restarting the service or changing runtime code.

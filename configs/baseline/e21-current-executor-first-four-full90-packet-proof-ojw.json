@@ -47,5 +47,9 @@
   },
   "obs_prefetch_depth": 1,
   "obs_unit_plan": "docs/receipts/obs/e21-current-executor-first-four-full90-packet-proof-v1.json",
-  "obs_unit_plan_sha256": "c5945e0d0ee1ef857d1f904a09b0d9cd9c31f1ecc5b0a082c302227205a1b8eb"
+  "obs_unit_plan_sha256": "c5945e0d0ee1ef857d1f904a09b0d9cd9c31f1ecc5b0a082c302227205a1b8eb",
+  "prepared_request_fit": {
+    "relpath": "analysis/SAEA-E21-CURRENT-EXECUTOR-FIRST-FOUR-FULL90-PACKET-FIT-V2/request-fit.json",
+    "sha256": "982ecb8c314ea308417c80b70f13120b6b0cada723bdecfb2a243386a82f490a"
+  }
 }

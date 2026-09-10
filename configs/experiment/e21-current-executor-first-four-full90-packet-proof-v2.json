@@ -92,8 +92,9 @@
         "worker"
       ],
       "readiness": {
-        "state": "held",
-        "reason": "Generation is held pending successful exact fit, exposure registration, root review and explicit admission. No model contact is currently authorized."
+        "state": "ready",
+        "requirements": [],
+        "reason": "Root admits exactly four engineering generation contacts after model-free four-window wiring and registered exact fit passed. This executable stage admission supersedes the retained planning snapshot flags; no scoring or effectiveness claim is admitted."
       }
     }
   ],

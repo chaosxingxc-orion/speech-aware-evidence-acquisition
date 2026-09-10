@@ -1,0 +1,14 @@
+{
+  "run_id": "SAEA-E21-CURRENT-EXECUTOR-FIRST-FOUR-FULL90-PACKET-PROOF-V2",
+  "execution_profile": "bounded-discovery-probe",
+  "carrier_lock_key": "earnings21-original",
+  "split_role": "discovery",
+  "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992",
+  "planned_model_calls": 4,
+  "planned_gpu_hours": 0.25,
+  "planned_speech_audio_seconds": 360,
+  "protocol_hash": "ee8711a2dd14b37c6d4d6659258a66e083836a49767281a58c5354981b5dcb27",
+  "attempt_id": "attempt-20260910-first-four-full90-packet-proof-v2",
+  "schema": "saea-execution-plan-v1",
+  "study": "speech-aware-evidence-acquisition"
+}
