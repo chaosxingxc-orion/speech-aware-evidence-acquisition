@@ -1107,3 +1107,75 @@ def test_last_attempted_request_id_is_set_before_transport_and_is_not_a_timing(t
         client.complete(_zero_supply_messages(world.media_relpath("s1")))
     assert client.last_attempted_request_id == "rails-0001"
     assert client.timings == ()
+
+
+@pytest.mark.parametrize("supplied", [False, True])
+def test_prepared_requests_preserve_legacy_wire_without_preparation_contacts(tmp_path, supplied):
+    legacy_world = _World(tmp_path / "legacy")
+    prepared_world = _World(tmp_path / "prepared")
+    legacy, _, legacy_transport = _client(legacy_world, tmp_path / "legacy")
+    prepared_client, gate, prepared_transport = _client(prepared_world, tmp_path / "prepared")
+    messages = (
+        _supplied_messages(legacy_world.media_relpath("s1"), "Frozen example")
+        if supplied else _zero_supply_messages(legacy_world.media_relpath("s1"))
+    )
+    checked_before = len(gate.checked_plans)
+    if supplied:
+        with pytest.raises(FrozenCoreClientError, match="raw supplied evidence"):
+            prepared_client.prepare_request(messages, decoding_params={"max_tokens": 64})
+        assert not prepared_transport.calls
+        assert prepared_client._request_counter == 0
+        legacy.close()
+        prepared_client.close()
+        return
+    request = prepared_client.prepare_request(messages, decoding_params={"max_tokens": 64})
+    assert not prepared_transport.calls
+    assert prepared_client._request_counter == 0
+    assert len(gate.checked_plans) == checked_before
+    assert not prepared_client._timings
+    legacy.complete(messages, decoding_params={"max_tokens": 64, "id_slot": 1})
+    prepared_client.complete_prepared(request, id_slot=1)
+    assert prepared_transport.calls == legacy_transport.calls
+    with pytest.raises(FrozenCoreClientError, match="consumed"):
+        prepared_client.complete_prepared(request, id_slot=1)
+    assert len(prepared_transport.calls) == 1
+    legacy.close()
+    prepared_client.close()
+
+
+def test_prepared_request_cannot_change_content_or_cross_clients(tmp_path):
+    world = _World(tmp_path / "one")
+    client, _, transport = _client(world, tmp_path / "one")
+    other_world = _World(tmp_path / "two")
+    other, _, other_transport = _client(other_world, tmp_path / "two")
+    request = client.prepare_request(_zero_supply_messages(world.media_relpath("s1")))
+    changed = replace(request, payload_bytes=request.payload_bytes.replace(b"verbatim", b"changed"))
+    with pytest.raises(FrozenCoreClientError, match="changed"):
+        client.complete_prepared(changed)
+    with pytest.raises(FrozenCoreClientError, match="foreign"):
+        other.complete_prepared(request)
+    copy = request.as_payload()
+    copy["task_instruction"] = "Changed independent copy"
+    client.complete_prepared(request)
+    assert "verbatim" in transport.calls[0]["task_instruction"]
+    assert not other_transport.calls
+    client.close()
+    other.close()
+
+
+def test_failed_prepared_send_cannot_repeat_and_close_discards_unused_templates(tmp_path):
+    world = _World(tmp_path)
+    def fail(_):
+        raise RuntimeError("synthetic transport failure")
+    client, _, transport = _client(world, tmp_path, transport=_CapturingTransport(fail))
+    request = client.prepare_request(_zero_supply_messages(world.media_relpath("s1")))
+    with pytest.raises(Exception, match="synthetic transport failure"):
+        client.complete_prepared(request)
+    with pytest.raises(FrozenCoreClientError, match="consumed"):
+        client.complete_prepared(request)
+    assert len(transport.calls) == 1
+    unused = client.prepare_request(_zero_supply_messages(world.media_relpath("s2")))
+    client.close()
+    assert not client._prepared_requests
+    with pytest.raises(FrozenCoreClientError, match="after close"):
+        client.complete_prepared(unused)

@@ -78,6 +78,21 @@ from .errors import RailsError
 from .knowledge import AgentStateArtifact
 
 
+@dataclass(frozen=True)
+class PreparedCoreRequest:
+    """An immutable, client-owned request template; preparation spends no contact."""
+
+    payload_bytes: bytes
+    token: object = field(repr=False, compare=False)
+
+    def as_payload(self) -> dict[str, object]:
+        """Return an independent copy for the shared transport capacity check."""
+        return json.loads(self.payload_bytes)
+
+
+_PREPARED_REQUEST_ID = "saea-prepared-request"
+
+
 @runtime_checkable
 class CoreClient(Protocol):
     """One completion call: chat-style ``messages`` in, response text out.
@@ -1359,6 +1374,7 @@ class FrozenCoreClient:
         # self._binding.sample_facts.
         self._slice_facts: dict[str, tuple[float, int]] = {}
         self._request_counter = 0
+        self._prepared_requests: dict[object, bytes] = {}
         self._last_attempted_request_id: str | None = None
         self._timings: list[RequestTiming] = []
         self._state_lock = threading.Lock()
@@ -1557,6 +1573,136 @@ class FrozenCoreClient:
         contact_instruction: str | None = None,
         construction_target_ids: Sequence[str] | None = None,
     ) -> str:
+        """Construct and send through the same audited adapter as prepared calls."""
+        payload = self._build_request_payload(
+            messages, decoding_params=decoding_params,
+            text_only_sample_id=text_only_sample_id,
+            speech_feature_sample_id=speech_feature_sample_id,
+            key_representation_id=key_representation_id,
+            matcher_policy_id=matcher_policy_id, agent_state=agent_state,
+            agent_contact_id=agent_contact_id, contact_instruction=contact_instruction,
+            construction_target_ids=construction_target_ids,
+        )
+        return self._complete_payload(payload)
+
+    def prepare_request(
+        self, messages: Sequence[Mapping[str, object]], **kwargs: object,
+    ) -> PreparedCoreRequest:
+        """Build actual immutable payload bytes without allocating a request ID.
+
+        This only validates and reads bound local material. It performs no
+        tokenizer, adapter, gate, review or model contact. The owning client
+        accepts the template at most once, including a failed send. Raw
+        supplied-evidence templates are refused because their evidence IDs
+        depend on the dispatch request ID and can enter the model prompt.
+        """
+        if "prepare_only" in kwargs:
+            raise FrozenCoreClientError("prepare_only is internal")
+        payload = self._build_request_payload(messages, prepare_only=True, **kwargs)
+        if payload.get("supplied_evidence") and "speech_feature_parts" not in payload:
+            # Legacy raw supply IDs enter the prompt and include the dispatch
+            # request ID. They cannot be normalized away as mere trace routing.
+            raise FrozenCoreClientError(
+                "prepared raw supplied evidence is unsupported; use the ordinary client"
+            )
+        raw = json.dumps(
+            payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+        token = object()
+        with self._state_lock:
+            if self._closed:
+                raise FrozenCoreClientError("prepare_request() called after close()")
+            self._prepared_requests[token] = raw
+        return PreparedCoreRequest(raw, token)
+
+    def complete_prepared(
+        self, request: PreparedCoreRequest, *, id_slot: int | None = None,
+    ) -> str:
+        """Send an owned template once, changing only request routing and slot.
+
+        Packet bytes are checked again at dispatch because they can change
+        after full-roster preparation. Failed attempts cannot reuse a template.
+        """
+        if not isinstance(request, PreparedCoreRequest):
+            raise FrozenCoreClientError("expected a prepared core request")
+        if id_slot is not None and (
+            isinstance(id_slot, bool) or not isinstance(id_slot, int) or id_slot < 0
+        ):
+            raise FrozenCoreClientError("id_slot must be a non-negative integer")
+        with self._state_lock:
+            if self._closed:
+                raise FrozenCoreClientError("complete_prepared() called after close()")
+            if self._prepared_requests.get(request.token) != request.payload_bytes:
+                raise FrozenCoreClientError("prepared request is foreign, changed or consumed")
+            del self._prepared_requests[request.token]
+        payload = request.as_payload()
+        descriptors = payload.get("speech_feature_parts")
+        if descriptors is not None:
+            load_speech_feature_packets(
+                self._speech_feature_root,
+                tuple({"packet_id": d["packet_id"], "sha256": d["sha256"]}
+                      for d in descriptors),
+                workers=8,
+                expected_decoder_gguf_sha256=self._speech_decoder_gguf_sha256,
+                expected_n_embd=self._speech_n_embd,
+            )
+        with self._state_lock:
+            self._request_counter += 1
+            request_id = f"{self._request_id_prefix}-{self._request_counter:04d}"
+        payload["request_id"] = request_id
+        for index, source in enumerate(payload.get("evidence_provenance", [])):
+            if source.get("lock_key") == "rails-supply":
+                source["relpath"] = f"rails-message/{request_id}/{index}"
+        if descriptors is None:
+            for index, evidence in enumerate(payload.get("supplied_evidence", [])):
+                evidence["evidence_id"] = f"{request_id}-supply-{index}"
+        if id_slot is not None:
+            payload["decoding_params"]["id_slot"] = id_slot
+        return self._complete_payload(payload)
+
+    def _complete_payload(self, payload: Mapping[str, object]) -> str:
+        """Keep metering, exposure, transport and timing on the shared adapter."""
+        request_id = payload["request_id"]
+        sample_id = payload["sample_id"]
+        started_at = _iso(self._now())
+        with self._state_lock:
+            self._last_attempted_request_id = request_id
+        response = self._adapter.request(payload)
+        with self._state_lock:
+            self._timings.append(
+                RequestTiming(
+                    request_id=request_id,
+                    sample_id=sample_id,
+                    started_at=started_at,
+                    latency_seconds=response.latency_seconds,
+                    tool_schemas_sha256=self._tool_schemas_sha256,
+                    request_sha256=response.request_sha256,
+                    response_sha256=response.response_sha256,
+                    response_text_sha256=response.response_text_sha256,
+                    native_tool_calls=(
+                        len(response.tool_calls)
+                        if isinstance(response.tool_calls, list)
+                        else None
+                    ),
+                )
+            )
+        return response.text
+
+    def _build_request_payload(
+        self,
+        messages: Sequence[Mapping[str, object]],
+        *,
+        decoding_params: Mapping[str, object] | None = None,
+        text_only_sample_id: str | None = None,
+        speech_feature_sample_id: str | None = None,
+        key_representation_id: str | None = None,
+        matcher_policy_id: str | None = None,
+        agent_state: Sequence[Mapping[str, object]] | None = None,
+        agent_contact_id: str | None = None,
+        contact_instruction: str | None = None,
+        construction_target_ids: Sequence[str] | None = None,
+        prepare_only: bool = False,
+    ) -> dict[str, object]:
         """The abort's own root cause, repaired (attempt-1 accounting,
         docs/readiness/2026-08-18-pkey-preregistration-REGISTERED.md section
         7): pre-2026-08-19, this method ALWAYS ran ``messages`` through the
@@ -1702,9 +1848,12 @@ class FrozenCoreClient:
             audio_seconds, sample_rate_hz = self._slice_facts.get(
                 media_relpath, self._binding.sample_facts[sample_id]
             )
-        with self._state_lock:
-            self._request_counter += 1
-            request_id = f"{self._request_id_prefix}-{self._request_counter:04d}"
+        if prepare_only:
+            request_id = _PREPARED_REQUEST_ID
+        else:
+            with self._state_lock:
+                self._request_counter += 1
+                request_id = f"{self._request_id_prefix}-{self._request_counter:04d}"
         # Every rails "text" content part becomes one supplied-evidence item
         # (module docstring): rails flattens a SupplyPacket to prompt-level
         # text before assemble_prompt ever runs, so per-item EvidenceItem
@@ -1812,29 +1961,7 @@ class FrozenCoreClient:
                 f"arm {self._arm!r} is not a construction-proposer arm; "
                 "construction_target_ids must be omitted"
             )
-        started_at = _iso(self._now())
-        with self._state_lock:
-            self._last_attempted_request_id = request_id
-        response = self._adapter.request(payload)
-        with self._state_lock:
-            self._timings.append(
-                RequestTiming(
-                    request_id=request_id,
-                    sample_id=sample_id,
-                    started_at=started_at,
-                    latency_seconds=response.latency_seconds,
-                    tool_schemas_sha256=self._tool_schemas_sha256,
-                    request_sha256=response.request_sha256,
-                    response_sha256=response.response_sha256,
-                    response_text_sha256=response.response_text_sha256,
-                    native_tool_calls=(
-                        len(response.tool_calls)
-                        if isinstance(response.tool_calls, list)
-                        else None
-                    ),
-                )
-            )
-        return response.text
+        return payload
 
     def close(self) -> dict[str, object]:
         """Close the owned ``TraceSink`` (mirrors ``core.driver.run_experiment``'s
@@ -1853,6 +1980,7 @@ class FrozenCoreClient:
             raise FrozenCoreClientError("close() called twice")
         with self._state_lock:
             self._closed = True
+            self._prepared_requests.clear()
             manifest_hash = self._sink.close()
             request_count = self._request_counter
             timings = [timing.as_json() for timing in self._timings]

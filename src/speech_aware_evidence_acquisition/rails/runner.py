@@ -27,7 +27,7 @@ from ..core.base import AGENT_CONTROLLERS, CoreError, Registry
 from ..core.flight_lock import read_flight_lock
 from ..core.tracing import TraceBuffer, set_current_trace_buffer
 from .consumption import ConsumptionTrace
-from .core_client import CoreClient, FrozenCoreClient
+from .core_client import CoreClient, FrozenCoreClient, PreparedCoreRequest
 from .errors import RailsError
 from .hashing import content_hash
 from .knowledge import (
@@ -56,6 +56,9 @@ RAILS_ARMS: tuple[str, ...] = (ZERO_SUPPLY_ARM, SUPPLIED_ARM)
 # adapter/caller-level choice, e.g. no evidence retrieved above threshold --
 # distinct from the arm itself being absent from `arms`).
 SupplyBuilder = Callable[[TaskSample, ObsPacket, str], SupplyPacket | None]
+
+
+RequestBatchGate = Callable[[tuple[PreparedCoreRequest, ...]], None]
 
 
 class RailsRunnerError(RailsError):
@@ -1539,6 +1542,7 @@ def _run_agent_openjiuwen(
     run_id: str,
     observe_step: ObserveStep | None = None,
     record_namespace: str | None = None,
+    request_batch_gate: RequestBatchGate | None = None,
 ) -> tuple[_AgentRuntimeOutcome, ...]:
     """Run the speech AgentLoop on the pinned openJiuwen workflow engine."""
 
@@ -1648,6 +1652,43 @@ def _run_agent_openjiuwen(
         schedule_wave(state, controller.initial_contact(initial_context))
         states.append(state)
 
+    def request_arguments(node: _AgentContactNode, slot_id: int | None = None):
+        decoding_params = dict(base_decoding_params or {})
+        decoding_params.update(dict(node.contact.decoding_params))
+        if slot_id is not None:
+            decoding_params["id_slot"] = slot_id
+        return {
+            "decoding_params": decoding_params,
+            "speech_feature_sample_id": node.context.sample_id,
+            "key_representation_id": node.contact.key_representation_id,
+            "matcher_policy_id": node.contact.matcher_policy_id,
+            "agent_state": tuple(a.as_json() for a in node.context.agent_states),
+            "agent_contact_id": node.contact.contact_id,
+            "contact_instruction": node.contact.instruction,
+        }
+
+    prepared_requests: dict[int, PreparedCoreRequest] = {}
+    if request_batch_gate is not None:
+        # Initial contacts for the entire roster already exist. Preparation
+        # uses them once; no fabricated completion or controller.advance runs.
+        if any(
+            not isinstance(state.current_contact, AgentContactPlan)
+            or len(state.current_nodes) != 1 for state in states
+        ):
+            raise RailsRunnerError("request batch fit requires one plain contact per sample")
+        for state in states:
+            node = state.current_nodes[0]
+            prepared_requests[node.task_index] = core_client.prepare_request(
+                node.messages, **request_arguments(node)
+            )
+        batch = tuple(prepared_requests[state.prepared.index] for state in states)
+        ids = [request.as_payload()["sample_id"] for request in batch]
+        if len(ids) != len(set(ids)) or set(ids) != {
+            task.sample.sample_id for task in prepared_tasks
+        }:
+            raise RailsRunnerError("request batch fit requires the complete unique roster")
+        request_batch_gate(batch)
+
     def publish_workflow_state(
         state: _ContactAgentState,
         session: object,
@@ -1687,23 +1728,16 @@ def _run_agent_openjiuwen(
             raise RailsRunnerError("openJiuwen received an invalid Agent state")
         state = state_object
         node = state.current_nodes[branch_index]
-        decoding_params = dict(base_decoding_params or {})
-        decoding_params.update(dict(node.contact.decoding_params))
-        decoding_params["id_slot"] = slot_id
         set_current_trace_buffer(node.trace_buffer)
         try:
-            response_text = core_client.complete(
-                node.messages,
-                decoding_params=decoding_params,
-                speech_feature_sample_id=node.context.sample_id,
-                key_representation_id=node.contact.key_representation_id,
-                matcher_policy_id=node.contact.matcher_policy_id,
-                agent_state=tuple(
-                    artifact.as_json() for artifact in node.context.agent_states
-                ),
-                agent_contact_id=node.contact.contact_id,
-                contact_instruction=node.contact.instruction,
-            )
+            if request_batch_gate is None:
+                response_text = core_client.complete(
+                    node.messages, **request_arguments(node, slot_id)
+                )
+            else:
+                response_text = core_client.complete_prepared(
+                    prepared_requests[node.task_index], id_slot=slot_id,
+                )
         finally:
             set_current_trace_buffer(None)
         if not isinstance(response_text, str):
@@ -2098,6 +2132,7 @@ def run_speech_native_agent_loop(
     controller_registry: Registry = AGENT_CONTROLLERS,
     trace_record_namespace: str | None = None,
     observe_step: ObserveStep | None = None,
+    request_batch_gate: RequestBatchGate | None = None,
 ) -> AgentLoopSummary:
     """Run a bounded, batched, speech-native AgentLoop over one DEV split.
 
@@ -2178,6 +2213,19 @@ def run_speech_native_agent_loop(
             "agent_executor_id must be 'reference-trajectory-v1' or "
             "'openjiuwen-workflow-v1'"
         )
+    if request_batch_gate is not None:
+        if not callable(request_batch_gate):
+            raise RailsRunnerError("request_batch_gate must be callable")
+        if (
+            agent_executor_id != "openjiuwen-workflow-v1"
+            or max_contacts != 1 or observe_step is not None
+            or bootstrap_facet_ids or bootstrap_value_ids
+        ):
+            raise RailsRunnerError(
+                "request batch fit requires a solo OpenJiuwen phase without observe or seeds"
+            )
+        if not isinstance(core_client, FrozenCoreClient):
+            raise RailsRunnerError("request batch fit requires the shared FrozenCoreClient")
     if agent_executor_id == "reference-trajectory-v1":
         if plan.execution_profile != "model-free-check":
             raise RailsRunnerError(
@@ -2298,6 +2346,7 @@ def run_speech_native_agent_loop(
                 run_id=plan.run_id,
                 observe_step=observe_step,
                 record_namespace=trace_record_namespace,
+                request_batch_gate=request_batch_gate,
             )
         )
     else:

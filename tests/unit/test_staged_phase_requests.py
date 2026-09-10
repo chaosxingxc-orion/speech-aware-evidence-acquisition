@@ -1,0 +1,189 @@
+"""Synthetic end-to-end coverage for the staged request gate."""
+
+from __future__ import annotations
+
+from pathlib import Path
+import pytest
+
+from speech_aware_evidence_acquisition.core.preparation_fit import boundary_identity
+from speech_aware_evidence_acquisition.rails import controllers
+from speech_aware_evidence_acquisition.rails.material import PhaseMaterial
+from speech_aware_evidence_acquisition.rails.phase_runner import (
+    PhaseRunnerError,
+    run_program,
+)
+from test_rails_frozen_core_client import (
+    _CapturingTransport,
+    _OpenGate,
+    _World,
+    _client,
+    _plan,
+    _speech_feature_world,
+)
+from test_rails_runner import _FakeAdapter, _knowledge_snapshot
+
+
+def _world(tmp_path: Path):
+    world = _World(tmp_path)
+    feature_root, packet, bindings = _speech_feature_world(world, tmp_path)
+    transport = _CapturingTransport(
+        lambda p: f"{p['history'][-1]['contact_id']}:{p['sample_id']}"
+    )
+    client, gate, _ = _client(
+        world,
+        tmp_path,
+        gate=_OpenGate(),
+        transport=transport,
+        plan=_plan(planned_model_calls=4),
+        arm="speech-feature-query",
+        speech_feature_root=feature_root,
+        speech_packet_bindings=bindings,
+    )
+    return world, feature_root, packet, bindings, client, gate, transport
+
+
+def _material(calls):
+    def material(phase, context, sealed):
+        calls.append((phase, context.sample_id, dict(sealed)))
+        if phase == "revise":
+            assert (
+                sealed[context.sample_id].content
+                == f"contact-draft-{context.sample_id}:{context.sample_id}"
+            )
+        return PhaseMaterial(
+            instruction=(
+                f"Make the {phase} decision for {context.sample_id}."
+                + (
+                    f" Prior phase: {sealed[context.sample_id].content}"
+                    if phase == "revise"
+                    else ""
+                )
+            ),
+            response_format=None,
+            contact_id=f"contact-{phase}-{context.sample_id}",
+            purpose=phase,
+        )
+
+    return material
+
+
+def _run(tmp_path, *, request_batch_gate, probe=None, **overrides):
+    world, root, packet, bindings, client, gate, transport = _world(tmp_path)
+    calls = []
+    values = dict(
+        program=controllers.default_phase_program("phase-draft-revise-v1"),
+        adapter=_FakeAdapter(samples=tuple(world.samples)),
+        plan=_plan(planned_model_calls=4),
+        data_root=world.data_root,
+        core_client=client,
+        split_id="all",
+        knowledge_snapshot=_knowledge_snapshot(),
+        speech_packet_bindings=bindings,
+        trace_sink=client._dispatching_sink,
+        decoding_params={"temperature": 0},
+        material_for_phase=_material(calls),
+        expected_row_count=2,
+        slot_count=1,
+        queue_depth=2,
+        request_batch_gate=request_batch_gate,
+    )
+    values.update(overrides)
+    if probe is not None:
+        probe.update(root=root, packet=packet, transport=transport)
+    return run_program(**values), calls, client, gate, transport
+
+
+def test_staged_two_phase_gate_prepares_exact_roster_then_dispatches_same_requests(
+    tmp_path,
+):
+    seen, probe = [], {}
+
+    def batch_gate(phase, requests):
+        assert len(probe["transport"].calls) == (0 if phase == "draft" else 2)
+        payloads = tuple(request.as_payload() for request in requests)
+        assert {p["sample_id"] for p in payloads} == {"s1", "s2"}
+        assert len(payloads) == 2
+        seen.append((phase, payloads))
+
+    summaries, material, client, gate, transport = _run(
+        tmp_path, request_batch_gate=batch_gate, probe=probe
+    )
+    assert len(summaries) == 2
+    assert [phase for phase, _ in seen] == ["draft", "revise"]
+    assert len(transport.calls) == 4
+    assert [row[:2] for row in material] == [
+        ("draft", "s1"),
+        ("draft", "s2"),
+        ("revise", "s1"),
+        ("revise", "s2"),
+    ]
+    assert all(not sealed for phase, _sample, sealed in material if phase == "draft")
+    assert all(
+        set(sealed) == {"s1", "s2"}
+        for phase, _sample, sealed in material
+        if phase == "revise"
+    )
+    actual = {p["history"][-1]["contact_id"]: p for p in transport.calls}
+    for phase, prepared in seen:
+        for payload in prepared:
+            dispatched = actual[payload["history"][-1]["contact_id"]]
+            assert boundary_identity((payload,)) == boundary_identity((dispatched,))
+            assert dispatched["decoding_params"]["id_slot"] == 0
+            assert dispatched["history"][-1]["role"] == "control"
+            if phase == "revise":
+                assert (
+                    f"contact-draft-{dispatched['sample_id']}:{dispatched['sample_id']}"
+                    in dispatched["history"][-1]["content"]
+                )
+    client.close()
+
+
+def test_staged_gate_refusal_spends_zero_for_first_or_only_prior_phase_for_second(
+    tmp_path,
+):
+    probe = {}
+
+    def reject_first(phase, _requests):
+        if phase == "draft":
+            assert not probe["transport"].calls
+            raise RuntimeError("draft refusal")
+
+    with pytest.raises(RuntimeError, match="draft refusal"):
+        _run(tmp_path / "first", request_batch_gate=reject_first, probe=probe)
+    assert not probe["transport"].calls
+    probe = {}
+
+    def reject_second(phase, _requests):
+        if phase == "revise":
+            assert len(probe["transport"].calls) == 2
+            raise RuntimeError("revise refusal")
+
+    with pytest.raises(RuntimeError, match="revise refusal"):
+        _run(tmp_path / "second", request_batch_gate=reject_second, probe=probe)
+    assert len(probe["transport"].calls) == 2
+
+
+def test_staged_dispatch_refuses_packet_corrupted_after_fit(tmp_path):
+    probe = {}
+
+    def corrupt(phase, _requests):
+        if phase == "draft":
+            path = next(probe["root"].rglob("*.f32"))
+            path.write_bytes(path.read_bytes() + b"corrupt")
+
+    with pytest.raises(Exception, match="sha256|size|feature"):
+        _run(tmp_path, request_batch_gate=corrupt, probe=probe)
+
+
+@pytest.mark.parametrize(
+    ("overrides", "error"),
+    [
+        ({"supply_for_phase": lambda *_: None}, PhaseRunnerError),
+        ({"review_for_phase": lambda *_: None}, PhaseRunnerError),
+        ({"bootstrap_facet_ids_by_phase": {"draft": ("x",)}}, PhaseRunnerError),
+        ({"agent_executor_id": "reference-trajectory-v1"}, PhaseRunnerError),
+    ],
+)
+def test_staged_gate_refuses_nonplain_or_fanout_execution(tmp_path, overrides, error):
+    with pytest.raises(error):
+        _run(tmp_path, request_batch_gate=lambda _phase, _requests: None, **overrides)

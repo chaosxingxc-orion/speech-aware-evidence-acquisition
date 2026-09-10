@@ -68,6 +68,7 @@ from .phase_review import emit_review_records
 from .runner import (
     AgentLoopSummary,
     AgentTraceSink,
+    RequestBatchGate,
     run_speech_native_agent_loop,
 )
 from .task_adapter import TaskAdapter
@@ -111,6 +112,7 @@ def run_agent_phase(
     queue_depth: int | None = None,
     agent_executor_id: str = DEFAULT_AGENT_EXECUTOR_ID,
     agent_runner: Callable[..., object] = run_speech_native_agent_loop,
+    request_batch_gate: RequestBatchGate | None = None,
 ) -> AgentLoopSummary:
     """Run exactly one named phase of ``program`` for the whole roster in
     ``speech_packet_bindings``, as one blocking ``max_contacts=1`` call.
@@ -129,6 +131,14 @@ def run_agent_phase(
     given), and sample identities are unique and match the roster exactly.
     """
 
+    if request_batch_gate is not None and (
+        not callable(request_batch_gate) or supply_for_phase is not None
+        or review_for_phase is not None or bootstrap_facet_ids or bootstrap_value_ids
+        or agent_executor_id != DEFAULT_AGENT_EXECUTOR_ID
+    ):
+        raise PhaseRunnerError(
+            "staged request fit requires a plain solo OpenJiuwen phase without supply or review"
+        )
     program.validate()
     solo_program = program.solo(phase_name)
     if not callable(material_for_phase):
@@ -221,6 +231,7 @@ def run_agent_phase(
         # phase name is what makes the shared sink safe, and it is also what
         # lets a reader tell which phase a trace record came from.
         trace_record_namespace=phase_name,
+        **({"request_batch_gate": request_batch_gate} if request_batch_gate is not None else {}),
     )
 
     if getattr(summary, "agent_executor_id", None) != agent_executor_id:
@@ -324,6 +335,7 @@ def run_program(
     queue_depth: int | None = None,
     agent_executor_id: str = DEFAULT_AGENT_EXECUTOR_ID,
     agent_runner: Callable[..., object] = run_speech_native_agent_loop,
+    request_batch_gate: Callable[[str, tuple], None] | None = None,
 ) -> tuple[AgentLoopSummary, ...]:
     """Run every phase of ``program`` in order, each as one whole-roster
     :func:`run_agent_phase` call (module docstring: this is how the barrier
@@ -338,6 +350,17 @@ def run_program(
     program.validate()
     if not callable(material_for_phase):
         raise PhaseRunnerError("run_program requires a callable material_for_phase")
+
+    if request_batch_gate is not None and (
+        not callable(request_batch_gate) or supply_for_phase is not None
+        or review_for_phase is not None
+        or any((bootstrap_facet_ids_by_phase or {}).values())
+        or any((bootstrap_value_ids_by_phase or {}).values())
+        or agent_executor_id != DEFAULT_AGENT_EXECUTOR_ID
+    ):
+        raise PhaseRunnerError(
+            "staged request fit requires plain whole-roster phases without supply or review"
+        )
 
     summaries: list[AgentLoopSummary] = []
     sealed_states: Mapping[str, AgentStateArtifact] = {}
@@ -376,6 +399,10 @@ def run_program(
             queue_depth=queue_depth,
             agent_executor_id=agent_executor_id,
             agent_runner=agent_runner,
+            request_batch_gate=(
+                None if request_batch_gate is None else
+                lambda batch, name=phase.name: request_batch_gate(name, batch)
+            ),
         )
         summaries.append(summary)
         sealed_states = {
