@@ -27,7 +27,7 @@ Neither comparison should mix diarizer replacement, audio resegmentation, an unr
 A future configuration could legally use the following only after pins, ordering rules, and an exposure plan are declared.
 
 - The current source audio range and already observed source ranges from the same call.
-- Anonymous diarization segment bounds and IDs from the pinned OBS artifact. IDs remain call-local hypotheses.
+- Anonymous speaker observations only after their temporal source boundary is qualified. The existing OBS artifact was derived from the complete call; it may be reused for analysis, but its assignments cannot be fed unchanged to earlier-window prompts under a prefix-causal claim. IDs remain call-local hypotheses.
 - The ConEC premeeting participant brief, which is runtime-legal input, and frozen-core observations such as a self-introduction. Neither may be used to claim a calibrated voice identity.
 - Earlier same-call frozen-core outputs and source-bound atomic records, provided their observed-through time is strictly before the target boundary.
 - A correction record that supersedes rather than overwrites a prior model-derived claim.
@@ -49,4 +49,4 @@ Any later shared extension needs to make chronology, source ranges, anonymous-sp
 
 ## Readiness conclusion
 
-The completed diarization OBS artifact, frozen unit geometry, static predecessor-binding path, and current full-window packet route are reusable inputs. The scientifically interpretable next comparison is a matched local chronology contrast before any speaker-topic-memory contrast. A new stateful shared controller and provenance contract are still required before either can be admitted. This note records readiness only; it makes no quality, meeting-minutes, or causal claim.
+The completed diarization OBS artifact is reusable for analysis; runtime use needs separate temporal qualification. Frozen unit geometry, the static predecessor-binding path, and the current full-window packet route remain available within their original contracts. The scientifically interpretable next comparison is a matched local chronology contrast before any speaker-topic-memory contrast. A new stateful shared controller and provenance contract are still required before either can be admitted. This note records readiness only; it makes no quality, meeting-minutes, or causal claim.

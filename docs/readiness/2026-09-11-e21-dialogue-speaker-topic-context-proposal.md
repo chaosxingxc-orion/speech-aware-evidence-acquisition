@@ -8,7 +8,7 @@ Use diarization as an uncertain observation and retrieval index. Preserve local 
 
 Do not immediately replace the fixed audio windows with isolated speaker turns. The existing OBS-E1 run improved corpus WER from8.19952 to7.15078, but worsened PERSON from22.48886 to24.58005 and was rejected. Its transport change also changed boundary placement, speaker purity, contact count and length. This is evidence of a quality tradeoff, not causal proof that missing context alone caused the name errors. Source: docs/readiness/2026-09-08-e21-obs-speaker-turn-units-v1-verdict.md.
 
-The full44 diarization pass already exists. Reuse and verify it before considering any rerun. Its frozen Sortformer tool has a four-speaker design bound and anonymous call-local IDs; the sealed receipt records38 of44 participant rosters above that bound (maximum19), and42 of44 diarized calls reach four detected IDs. Existing output qualifies coarse observation strata and turn hypotheses, not a trustworthy global person identity store. Source: docs/readiness/2026-09-06-e21-diarization-obs-v1-preregistration.md. This is not evidence of a measured diarization error rate, but it makes conflated global speaker memories a concrete concern. A stable multi-speaker identity route and its budget would need separate qualification before identity-dependent claims.
+The full44 diarization pass already exists. Reuse and verify it for analysis before considering any rerun. It was computed from complete calls and is not an authorized prefix-causal prompt input: an early-window memory cannot consume its future-derived speaker assignments unchanged. A runtime speaker view requires its own temporal-source qualification. Its frozen Sortformer tool has a four-speaker design bound and anonymous call-local IDs; the sealed receipt records38 of44 participant rosters above that bound (maximum19), and42 of44 diarized calls reach four detected IDs. Existing output qualifies coarse observation strata and turn hypotheses, not a trustworthy global person identity store. Source: docs/readiness/2026-09-06-e21-diarization-obs-v1-preregistration.md. This is not evidence of a measured diarization error rate, but it makes conflated global speaker memories a concrete concern. A stable multi-speaker identity route and its budget would need separate qualification before identity-dependent claims.
 
 The inherited OBS-E1b proposal adds local left/right audio context around unchanged speaker-turn ownership and an overlap stitch; it remains unexecuted. It does not implement semantic dialogue history or dynamic speaker summaries. Those are separate hypotheses.
 
@@ -44,7 +44,7 @@ For window-level transcription or repair, admit only state whose observed-throug
 5. Compare selective retrieval with an equal-volume irrelevant or alternative selection control only when a concrete decision requires it. Do not add a large Cartesian sweep.
 6. Consider audio resegmentation or a different diarizer in a later separate comparison. Changing diarizer, segmentation, summaries and prompts together would prevent useful attribution.
 
-Frozen speaker records may be prepared once and reused across the comparison. If a memory builder adds model calls, charge them to all relevant systems rather than hiding them as preprocessing. Saved-derived arms are correlated results and do not become independent replications.
+Speaker records with a qualified temporal visibility contract may be prepared once and reused across the comparison. The existing full-call diarization artifact alone does not satisfy that contract for earlier-window prompts. If a memory builder adds model calls, charge them to all relevant systems rather than hiding them as preprocessing. Saved-derived arms are correlated results and do not become independent replications.
 
 ## Quality and execution
 
@@ -59,3 +59,9 @@ Parallelize independent preparation and independent calls. Stateful turns within
 ## Research context
 
 The external literature motivates hypotheses, not a guaranteed result on this frozen core. QMSum studies locating and summarizing meeting spans for a query, supporting topic/query-focused evidence selection: https://aclanthology.org/2021.naacl-main.472/. Dialogue discourse-aware summarization models relations between utterances rather than only a linear sequence: https://arxiv.org/abs/2012.03502. Topic-aware dialogue summarization explicitly addresses information scattered across different speakers: https://arxiv.org/abs/2109.04994. These trained systems are not imported into this zero-parameter study.
+
+## Contract clarification after root review
+
+The umbrella owner execution contract (2026-08-04, lines 102-107 and 117-123) explicitly excludes future-turn material from runtime; the Stage-2A entry (2026-08-02, lines 34-44) repeats that rule. Neither text grants a blanket offline exception. The existing full-parent barrier only makes sealed outputs available for their declared same-window repair. It does not authorize later-window information in an earlier-window request.
+
+A future final-minutes task could define its target after call end and bind already observed whole-call outputs, speaker observations and memory costs under an explicit episode-end input contract. This is a proposed distinct task boundary, not authorization already granted by this design note. Until then, the local-context comparison remains chronological, and full-call speaker observations remain analysis inputs.
