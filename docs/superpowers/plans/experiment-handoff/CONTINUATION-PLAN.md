@@ -4,6 +4,28 @@ Owner authority: OWNER-CONTINUATION-002. Coordinator and serving owner: Codex.
 Baseline study commit: 3fd7a6ee0713b8c8cbc9d390f144c1fedbf1acd8.
 Execution environment: WSL Ubuntu-24.04 only. Repository documents and model-facing content: English.
 
+## Current execution overlay
+
+Updated on 2026-09-11 from STATUS-025. The original requirements below remain
+the acceptance contract; this overlay records which have actual evidence.
+
+| Work | Current state | Evidence / next action |
+|---|---|---|
+| KV recovery and aligned null | Closed retrospectively; retain KC-S1b examples and preserve historical order/missing-decision facts | Existing seven-run FAMILY-REPORT; no rerun or rescore |
+| KC-S1b and KU-S3 | Original max64 repeat, max256 matched trio, and independent retrieval repeat completed | Component evidence positive; no equivalence or full-system inference from these repeats |
+| KU-S4N and twin | HOLD_NONINFERIORITY_FAILED | G3 encoding and G4 a/b/c remain ineligible; do not encode the 7049 missing exemplars |
+| E21 DR | Two full generations, four derived deliveries, scoring and decisions closed | Unit deliveries rejected; self constrained only a small discovery refresh; self free null; derivatives are correlated |
+| E21 LOOP and twin | Both complete; targeting contrast positive, incumbent floor failed | Retain KC-E1f; no additional LOOP generation admitted |
+| G6 SLURP live intent-to-slots | Complete, scored, decided and parent attempts finalized | Slots improve but the scenario guard fails; full system not admitted; retain prompt-identity attribution limit |
+| E21 offline direct-to-KC-E1f | Direct generation active; actual full fit passed; repair awaits its new sealed parent | Same resident np4 no-mmproj service; bind all1593 new windows before repair; quality remains unread |
+| Live E21 review/selection/observation | Not established by the direct-to-KC-E1f pair | Shared live Reviewer-to-Planner-to-observation evidence remains an explicit gap |
+| Dialogue/speaker-topic memory and final minutes | Design only | Temporal-source and episode-end contracts, shared state transitions and prospective evaluation remain required |
+| Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |
+
+No failed scientific guard is converted into a positive system conclusion.
+The current offline E21 pair remains in progress, and live review/selection/
+observation plus final meeting-minutes evaluation remain explicit gaps.
+
 ## Endpoint and boundaries
 
 Complete the inherited SLURP and Earnings21 component experiments, recover and systematically
@@ -82,13 +104,13 @@ asset revisions/hashes into a new identity authority.
 
 | Cohort | Serving configuration | Work and dependency |
 |---|---|---|
-| G0 | No model loaded | Register recovery reads; implement/test shared base; prepare configs |
-| G1 | SLURP decoder-only c65536 np4, 16384/slot, max64 | Same-config KC-S1b replication; KU-S3a+twin; minimal justified controls |
-| G2 | SLURP decoder-only c65536 np8, 8192/slot, max64 | KU-S4N then twin; read only after both finish |
-| G3 | GPU encoder with bf16 mmproj, c81920 np8 | Only after N NI passes: deduplicated exemplar union encoding/promotion |
-| G4 | Return to identical G2 decoder profile | KU-S4a -> b -> c on one process; record cross-process N comparison |
-| G5 | E21 raw-audio GPU mmproj, c36864 np6, 6144/slot, max1024 | Current-harness bridge; two DR sources/four deliveries; LOOP+twin |
-| G6 | SLURP initial candidate np4; E21 admitted geometry | Live system baselines, justified matching controls; depth2 last |
+| G0 | Model-free preparation | Recovery reads and major shared base completed; remaining live-state gaps are listed in STATUS-025 |
+| G1 | SLURP decoder-only c65536 np4; max64 historical repeat, owner-approved max256 retrieval cohort | Repeats and matched trio closed, including independent KU-S3 repeat |
+| G2 | Registered SLURP np8 prepared-decoder cohort | N and twin complete; non-inferiority failed |
+| G3 | Planned exclusive encoder cohort | Held by G2 failure; no missing-exemplar encoding |
+| G4 | Planned G2-matched decoder cohort | a/b/c held by G2 failure |
+| G5 | Formal GPU-prepared full-window/selected-cut packets; decoder-only c36864 np4 max1024 | Bridge, two DR sources/four deliveries and LOOP+twin completed and decided |
+| G6 | SLURP np4 completed; E21 np4 no-mmproj currently resident | SLURP live system guard failed; offline E21 direct-to-KC-E1f in progress; depth2 remains last |
 
 Choose E21 np6 only after actual family-wide fit clears its registered margin. Otherwise use np4,
 9216/slot for the entire comparison block. Do not switch mid-arm or shorten the completion budget
@@ -116,8 +138,11 @@ supports descriptive analysis only. b/c are attribution controls, not rescue win
 Record the G2/G4 process boundary; use a reserved matched control only when the named mismatch
 could change the decision.
 
-E21: retain raw speech and admitted obs_prefetch_depth=1. Prepare lawful media/decoding/cut plans
-on CPU; encode on GPU per request. Never consume the retired feature cache.
+E21: retain the source speech/window protocol and admitted obs_prefetch_depth=1.
+OWNER-FEATURE-SERVING-007 and OWNER-OFFLINE-QUALITY-009 supersede the original
+per-request GPU-mmproj schedule: encode exact source-bound packets in an exclusive
+GPU preparation cohort, unload the encoder, then run the no-mmproj decoder.
+The current full-window packets are complete. Never consume the retired unqualified cache.
 DR: generate once using sealed short-unit drafts and once using sealed long-window self-drafts.
 Each source covers 1593 windows/44 calls and feeds constrained and free deterministic delivery.
 Register all four outcomes before any treatment read. This removes one 1593-contact generation
@@ -134,7 +159,9 @@ Depth2 remains after scientific closure, compared with depth1 under a separate r
 
 ## Result recovery, calibration and decisions
 
-Register the KV recovery and null-only calibration before reading. Verify original sealed bundles
+The KV recovery and null-only calibration requirements below are completed; preserve their
+receipts and historical deviations. Do not repeat these reads as if they were new work.
+Register any distinct new recovery before reading. Verify original sealed bundles
 and existing successful score jobs; never modify them or silently rerun the scorers.
 Preserve missing predecessor-decision evidence and sequence deviations as historical facts.
 NEW500 is historically exposed, not freshly held out. Report OLD500 and pooled DEV1000 separately.
@@ -165,8 +192,11 @@ contacts, failures/fallbacks and OBS/ORG/SUPPLY/USE attribution. Keep standard o
 
 ## Live baseline and acceptance
 
-Freeze only selected, qualified modules. SLURP must execute live intent -> slots. E21 must execute
-live draft -> judge/selection -> observation/delivery. Register actual phase-derived budgets and fit;
+Freeze only selected, qualified modules. SLURP executed live intent -> slots but failed full
+system admission; preserve that result. The broader E21 acceptance still requires
+live draft -> judge/selection -> observation/delivery; the current offline direct-to-KC-E1f
+pair proves a different, narrower fixed two-stage behavior and does not close that gap.
+Register actual phase-derived budgets and fit;
 do not carry historical 600 fixed LOOP contacts into a live system whose selections may differ.
 Complete inherited required replications, adding controls only for explicit decision needs.
 

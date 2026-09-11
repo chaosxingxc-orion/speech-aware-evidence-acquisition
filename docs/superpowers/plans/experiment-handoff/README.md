@@ -1,6 +1,6 @@
 # Owner-directed Stage-2 continuation
 
-Status: **owner-directed execution**, generation 22. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 25. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -31,68 +31,39 @@ coordination check does not grant a launch. They do not override the owner's con
 instruction. The actual ExecutionPlan, exposure, runtime, attempt and budget gates decide
 each contact. Recovery and original reply-exchange states remain supported.
 
-## Current implementation
+## Current execution and decisions
 
-Latest priority: [OWNER-REPRODUCTION-FIRST-008.md](OWNER-REPRODUCTION-FIRST-008.md).
-Original results have been numerically reproduced before further adjustment: all 16,560
-statistical values agree; no service, generation or scoring was added. Read
-[independent report](../../../results/2026-09-10-fable-reproduction-audit.md).
-The current boundary is [STATUS-022.md](STATUS-022.md): source review identifies the live-system gaps,
-and shared OBS wire checking now has real OJW synthetic-path and failure-cleanup evidence
-(296 adjacent regression cases pass). No service or scientific setting changed.
-Feature-serving qualification and DR/LOOP expansion remain paused while presenting this evidence.
-The earlier implementation and experiment status below remains preserved.
+Read [STATUS-025.md](STATUS-025.md) and state.json first. The latest operating
+decision is [OWNER-OFFLINE-QUALITY-009.md](OWNER-OFFLINE-QUALITY-009.md): prioritize
+post-meeting quality, parallel preparation and exclusive GPU feature encoding
+followed by decoder-only inference. The original numerical reproduction remains
+complete (16560 statistical fields agree); its report is
+[here](../../../results/2026-09-10-fable-reproduction-audit.md).
 
-The original 64-token KC-S1b same-profile repeat has generated all 1,000 rows and completed
-one official scoring job with per-sample statistics retained. Its registered NEW500 entity-side
-improvement test passes against the historical direct and KC-S1a controls. This is a component,
-same-profile result; inherited different-geometry and independent-roster requirements remain
-open. See the [replication verdict](../../../checks/speech-aware-evidence-acquisition/2026-09-09-kc-s1b-replica-verdict/README.md).
+| Work | Current state | Evidence / next action |
+|---|---|---|
+| KV recovery and aligned null | Closed retrospectively; retain KC-S1b examples and preserve historical order/missing-decision facts | Existing seven-run FAMILY-REPORT; no rerun or rescore |
+| KC-S1b and KU-S3 | Original max64 repeat, max256 matched trio, and independent retrieval repeat completed | Component evidence positive; no equivalence or full-system inference from these repeats |
+| KU-S4N and twin | HOLD_NONINFERIORITY_FAILED | G3 encoding and G4 a/b/c remain ineligible; do not encode the 7049 missing exemplars |
+| E21 DR | Two full generations, four derived deliveries, scoring and decisions closed | Unit deliveries rejected; self constrained only a small discovery refresh; self free null; derivatives are correlated |
+| E21 LOOP and twin | Both complete; targeting contrast positive, incumbent floor failed | Retain KC-E1f; no additional LOOP generation admitted |
+| G6 SLURP live intent-to-slots | Complete, scored, decided and parent attempts finalized | Slots improve but the scenario guard fails; full system not admitted; retain prompt-identity attribution limit |
+| E21 offline direct-to-KC-E1f | Direct generation active; actual full fit passed; repair awaits its new sealed parent | Same resident np4 no-mmproj service; bind all1593 new windows before repair; quality remains unread |
+| Live E21 review/selection/observation | Not established by the direct-to-KC-E1f pair | Shared live Reviewer-to-Planner-to-observation evidence remains an explicit gap |
+| Dialogue/speaker-topic memory and final minutes | Design only | Temporal-source and episode-end contracts, shared state transitions and prospective evaluation remain required |
+| Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |
 
-The four-case 64/256 engineering pair is complete: two confirmed length stops at 64 become
-complete JSON at 77 and 79 tokens under 256; the two other outputs remain identical. Exact
-wire responses, stop reasons, hashes and separate delivery views are retained. This is not an
-accuracy or reasoning result. See the [budget readout](../../../checks/speech-aware-evidence-acquisition/2026-09-09-output-budget-four-row/README.md).
+The current results view is [the existing results ledger](../../../results/stage2-results-ledger.md).
+Its historical September9 snapshot must not be mistaken for current unread work.
+STATUS-009 through STATUS-024 preserve earlier boundaries; their pending items
+are superseded only by the cited later decisions, never erased from history.
 
-The owner approved OWNER-KUS3-BUDGET-005: KU-S3a, its form twin and the matched no-retrieval
-control use 256 tokens while retaining original KC-S1b examples. The first control completed;
-a/twin were refused before generation, and the old service exited. OWNER-KUS3-RECOVERY-006
-approves one additional same-process matched control in the recovered service. The complete
-control/speech/twin trio is finalized and scored once each. The registered entity-side numerical
-contrasts and inherited joined-intent protection pass; the scoped component is ADMITTED. The decoder-only
-service has stopped. See [STATUS-015.md](STATUS-015.md) and the
-[component readout](../../../checks/speech-aware-evidence-acquisition/2026-09-10-ku-s3-max256-recovery-verdict/README.md).
-Follow [OWNER-FEATURE-SERVING-007.md](OWNER-FEATURE-SERVING-007.md): prepare features before
-generation and keep mmproj out of resident GPU memory. E21's old GPU-mmproj planning fragments
-remain held for successors; G2 already uses prepared decoder-only speech packets.
-
-The aligned NEW500 null calibration and all seven KV recovery reads remain complete with
-zero new model contacts or scorer invocations. Retain KC-S1b: KV0 is harmful, KV1 and KV3 are
-null-compatible, and KV2 fails its rotating-twin sign guard. Preserve the historical missing
-decisions and order effects. See the [KV family report](../../../checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md).
-
-Shared leases, queue admission, persistent retrieval preparation, actual request fitting,
-completion overrides, exact wire capture, deterministic delivery primitives and deferred scoring
-are integrated. Registered request identity comparison now ignores only validated dynamic route
-identifiers, retaining substantive provenance checks. The shared TRAIN contract cache avoids
-repeated JSON parsing while checking source bytes; fresh recovery supply preserves every selected
-ID and rendered byte. Full CPU request revalidation still delays handoffs beyond the one-minute
-target; preserve the frozen completed campaign while optimizing its successors.
-
-G2 N/twin completed 1000-row generation and one whole official scoring job per arm. The
-frozen aligned analysis returned HOLD_NONINFERIORITY_FAILED; G3 exemplar encoding and G4
-a/b/c remain held. Do not treat prior DATA_READY notes as permission to continue that branch.
-The shared constrained-delivery replay reproduces all 1593 historical KC-E1f windows and 44
-stitched calls; see the [full replay receipt](../../../checks/speech-aware-evidence-acquisition/2026-09-09-e21-constrained-replay/README.md).
-
-E21 exact-four CPU feature encoding is now complete through the shared config-driven entry:
-four unique contacts, eight cache chunks, source-bound audit and normal-stop provenance.
-The same entry verifies warm reuse without a model service and adds zero contacts. The
-normal transport and actual fit paths enforce configured cache pins and CPU projector
-placement. The new six-slot profile remains held for actual strict-cache qualification,
-request capacity and current executor bridge evidence. G5 scientific generation and G6
-live full-system baselines are incomplete. Read [STATUS-020.md](STATUS-020.md) and the
-[actual preparation receipt](../../../receipts/e21-four-window-cpu-feature-preparation-v1.json).
+The root service and direct worker run from frozen WSL checkouts. The shared
+fit passed on every request, and generation is in progress. A stored count or
+handoff file does not grant launch authority or establish current process health.
+The next phase consumes only this run's newly sealed predecessor, under
+[the repair handoff](../../../readiness/2026-09-11-e21-offline-repair-handoff.md).
+Do not score direct quality early or launch the held exemplar branch.
 
 Use ChatGPT/OpenAI cloud subagents under [MODEL-ALLOCATION.md](MODEL-ALLOCATION.md);
 the main agent retains planning, scientific decisions, critical review and merge acceptance.

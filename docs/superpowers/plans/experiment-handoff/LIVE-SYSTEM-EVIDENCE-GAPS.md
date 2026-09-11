@@ -2,11 +2,31 @@
 
 Date: 2026-09-10 UTC. Base inspected: 7c2f34f3. Continue the accepted Stage-2 plan; preserve OWNER-REPRODUCTION-FIRST-008 and the original-result audit. This document records the root's implementation review and the resulting engineering sequence. It grants no new generation, scoring or feature-encoding contact and changes no historical configuration.
 
+## Current closure overlay, 2026-09-11
+
+The original review below is historical. Shared OBS wire routing, current-run
+SLURP phase transfer, pure final delivery, staged actual fits and parent
+settlement now have complete engineering and full-roster runtime evidence.
+The live SLURP comparison was scored and decided: slots improved, scenario
+guard failed, full system not admitted. Its raw parents remain unchanged.
+
+Formal E21 feature preparation and the packet DR/LOOP component comparisons
+are complete. The new offline direct-to-KC-E1f baseline is currently generating
+its direct stage. Fresh predecessor binding is implemented and proven through
+the common builder, but this new parent must still seal before its repair
+can run. Full two-stage quality and cost are not yet measured.
+
+Live Reviewer-to-Planner-to-new-observation remains unproven, as do dynamic
+speaker/topic memory and meeting-minutes quality. These gaps must not be
+declared closed by the fixed repair pair. See STATUS-025 for source reports
+and current handles. OWNER-OFFLINE-QUALITY-009 resolves the historical timing
+question in favor of offline quality and phase barriers.
+
 ## Supported starting point
 
 The reproduced evidence supports schema-conditioned SLURP slots and constrained E21 entity repair as components. It does not establish an end-to-end live system. Independent inference repeats already exist for the original components. The useful next engineering work must therefore establish live state provenance, answer assembly, actual request capacity and total cost, rather than spend another generation merely to recover the same published number.
 
-## Current capability and concrete missing behavior
+## Historical early-September10 capability review
 
 | Requirement | Current evidence | Missing behavior |
 |---|---|---|
@@ -35,7 +55,7 @@ For future multi-phase capacity, check a conservative bound before opening a liv
 
 Current fixed 90-second input windows can be prepared before first-stage generation. Actual live judge-selected re-listen bounds depend on that generation, so their exact feature inventory does not exist at the start. The historical sealed-plan case avoided this dependency; it cannot establish that a live implementation can prepare all future cuts in advance.
 
-The owner has been asked to clarify whether live means current-run predecessor generation and automatic stage chaining with a preparation barrier, or low-latency completion of each individual sample. This is a product/experimental timing distinction, not a request to reconfirm already authorized engineering work. No dependent runtime or protocol change is made while that clarification remains pending.
+The owner resolved this timing question in OWNER-OFFLINE-QUALITY-009: prefer offline phase barriers and task quality; online latency is not the target. The former pending question is closed. This does not waive source visibility, future-turn exclusion or the requirement for actual live-state provenance.
 
 A stage barrier can preserve exact selected cuts and feature-first inference, but its preparation and any root-managed service transitions must count in end-to-end cost. A low-latency requirement needs a separately justified observation/encoding schedule. Do not claim one meets the other, silently replace selected cuts with a fixed catalog, allow cache misses to encode during strict inference, or keep the GPU busy by adding ineligible experiments.
 

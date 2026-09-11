@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 24,
+  "generation": 25,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,10 +10,10 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "7ea3e1db7d2fe527643ac9c2457a7c3bf18f5866",
-  "updated_at_utc": "2026-09-10T09:26:47.880756+00:00",
-  "next_action": "Read STATUS-024 and the phase-response-delivery readiness note. Original Fable numerical reproduction is complete. Shared phase provenance, SLURP direct/slots building blocks, automatic raw seal deferral and a safe build-delivery/score route are validated; no scientific launch is admitted. Implement truthful staged actual-request capacity and all-derived-score settlement before registering live SLURP caps/total budget. Keep the stopped E21 fit closed, G2 NI failure/G3/G4 holds, and unresolved G5/G6 science. No service was started in this boundary.",
+  "snapshot_commit": "fe765d008766851338055b8e85f315076b5a485a",
+  "updated_at_utc": "2026-09-11T00:59:31.568641+00:00",
+  "next_action": "Read STATUS-025. Revalidate direct worker1675/session51412 and resident service1354/session95670; never replay on observation timeout. Complete the registered offline E21 direct parent, bind its1593 fresh windows before quality reads, then use the same resident service for the actual KC-E1f repair fit and generation. Score each whole manifest once only after comparison closure. KV, KU-S3 repeat, S4N, DR, LOOP and G6 SLURP decisions are closed; G3/G4 remain held. Live review/selection/observation, meeting-minutes evaluation and separately registered depth2 validation remain unproven; do not declare the overall goal complete.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
-  "latest_owner_decision_id": "OWNER-REPRODUCTION-FIRST-008"
+  "latest_owner_decision_id": "OWNER-OFFLINE-QUALITY-009"
 }
