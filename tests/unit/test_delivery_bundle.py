@@ -23,7 +23,7 @@ CONSTRAINED = "e21-entity-repair-substitutions-v1"
 
 @pytest.fixture
 def generation(synthetic_world, tmp_path, repair_repo, monkeypatch):
-    def run(*, policy="obs-repair-loop", transport=None, **overrides):
+    def run(*, policy="obs-repair-loop", transport=None, declared_deliveries=True, **overrides):
         _, repo, digest = repair_repo
         values = dict(fixtures._composed(digest, policy=policy, **overrides).values)
         experiment = {
@@ -51,6 +51,8 @@ def generation(synthetic_world, tmp_path, repair_repo, monkeypatch):
                 },
             ],
         }
+        if not declared_deliveries:
+            experiment.pop("delivery_derivatives")
         for kind, name, document in (
             ("model", "m", {}),
             ("dataset", "d", {}),

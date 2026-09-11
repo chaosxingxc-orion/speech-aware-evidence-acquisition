@@ -1,4 +1,4 @@
-"""Settle one raw generation attempt from verified, already-scored derivatives."""
+"""Settle a generation attempt from complete saved raw or derivative scores."""
 
 from __future__ import annotations
 
@@ -31,6 +31,7 @@ from .verify import verify_bundle
 
 SCHEMA = "saea-phase-delivery-settlement-v1"
 DELIVERY_SCHEMA = "saea-delivery-settlement-v1"
+SCORED_SCHEMA = "saea-scored-attempt-settlement-v1"
 
 
 @dataclass(frozen=True)
@@ -73,7 +74,7 @@ def _data_root(parent: VerifiedBundle) -> Path:
 
 
 def _recorded_legacy_delivery_declarations(
-    parent: VerifiedBundle, repo_root: Path,
+    parent: VerifiedBundle, repo_root: Path, *, require_deliveries: bool = True,
 ) -> tuple[Mapping, ...]:
     """Recover markerless OBS declarations from the parent's committed source.
 
@@ -129,7 +130,7 @@ def _recorded_legacy_delivery_declarations(
         if "source_selector" in declaration:
             raise BundleError("phase delivery settlement requires its original manifest marker")
         selected.append(declaration)
-    if not selected:
+    if not selected and require_deliveries:
         raise BundleError("no legacy deliveries match the recorded parent identity")
     return tuple(selected)
 
@@ -153,7 +154,10 @@ def _required_declarations(
 
 
 def _receipt_refs_from_document(document: Mapping) -> tuple[SavedScoreReceiptRef, ...]:
-    deliveries = document.get("deliveries")
+    deliveries = (
+        [document.get("score")] if document.get("schema") == SCORED_SCHEMA
+        else document.get("deliveries")
+    )
     if not isinstance(deliveries, list):
         raise BundleError("phase delivery settlement lacks deliveries")
     refs = []
@@ -174,17 +178,58 @@ def _receipt_refs_from_document(document: Mapping) -> tuple[SavedScoreReceiptRef
     return tuple(refs)
 
 
+def _expected_scored_parent(
+    parent: VerifiedBundle, *, repo_root: Path,
+    score_receipts: Sequence[SavedScoreReceiptRef],
+) -> dict[str, object]:
+    if "required_phase_deliveries" in parent.manifest:
+        raise BundleError("raw score cannot replace required phase deliveries")
+    if _recorded_legacy_delivery_declarations(
+        parent, repo_root, require_deliveries=False,
+    ):
+        raise BundleError("raw score cannot replace recorded delivery derivatives")
+    if len(score_receipts) != 1:
+        raise BundleError("raw settlement requires exactly one complete score receipt")
+    reference = score_receipts[0]
+    score = verify_complete_score_receipt(reference, parent)
+    attempt = parent.manifest["attempt"]
+    cost = parent.manifest.get("cost")
+    if not isinstance(cost, Mapping):
+        raise BundleError("raw scored parent lacks generation cost")
+    return {
+        "schema": SCORED_SCHEMA,
+        "status": "complete",
+        "parent": {
+            "run_id": parent.manifest["run_id"],
+            "attempt_id": attempt["attempt_id"],
+            "manifest": _meta(parent.manifest_path),
+            "cost": dict(cost),
+            "cost_attribution": "parent generation is charged once",
+        },
+        "score": {
+            "cell_id": reference.cell_id,
+            "score_receipt": _meta(reference.path),
+            "score_result": dict(score["score_result"]),
+        },
+    }
+
+
 def _expected(
     parent: VerifiedBundle,
     *,
     repo_root: Path,
     score_receipts: Sequence[SavedScoreReceiptRef],
+    scored_parent: bool = False,
 ) -> dict[str, object]:
     if (
         parent.manifest.get("schema") != RUN_MANIFEST_SCHEMA
         or parent.manifest.get("status") != STATUS_COMPLETED
     ):
         raise BundleError("phase delivery settlement requires an ordinary completed parent")
+    if scored_parent:
+        return _expected_scored_parent(
+            parent, repo_root=repo_root, score_receipts=score_receipts,
+        )
     declarations = _required_declarations(parent, repo_root)
     expected_by_cell = {item["cell_id"]: item for item in declarations}
     if len(expected_by_cell) != len(declarations):
@@ -303,8 +348,8 @@ def _publish_once(path: Path, raw: bytes) -> bool:
         os.close(descriptor)
 
 
-def verify_phase_delivery_settlement(
-    settlement_path: Path, *, repo_root: Path,
+def _verify_settlement(
+    settlement_path: Path, *, repo_root: Path, scored_parent: bool = False,
 ) -> Mapping[str, object]:
     """Recompute every dependency of a saved settlement without scoring."""
 
@@ -313,15 +358,18 @@ def verify_phase_delivery_settlement(
         document = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
         raise BundleError(f"cannot read phase delivery settlement: {error}") from error
-    if not isinstance(document, Mapping) or document.get("schema") not in {
-        SCHEMA, DELIVERY_SCHEMA
-    }:
+    schemas = {SCORED_SCHEMA} if scored_parent else {SCHEMA, DELIVERY_SCHEMA}
+    if not isinstance(document, Mapping) or document.get("schema") not in schemas:
         raise BundleError("delivery settlement has an unknown schema")
     declaration_key = (
         "required_phase_deliveries" if document["schema"] == SCHEMA
         else "required_deliveries"
     )
-    if set(document) != {"schema", "status", "parent", declaration_key, "deliveries"}:
+    expected_keys = (
+        {"schema", "status", "parent", "score"} if scored_parent
+        else {"schema", "status", "parent", declaration_key, "deliveries"}
+    )
+    if set(document) != expected_keys:
         raise BundleError("delivery settlement has missing or unknown fields")
     parent_meta = document.get("parent")
     manifest_meta = parent_meta.get("manifest") if isinstance(parent_meta, Mapping) else None
@@ -335,6 +383,7 @@ def verify_phase_delivery_settlement(
             parent,
             repo_root=Path(repo_root),
             score_receipts=_receipt_refs_from_document(document),
+            scored_parent=scored_parent,
         )
     except ScoreReceiptError as error:
         raise BundleError(f"phase delivery score receipt refused: {error}") from error
@@ -367,12 +416,13 @@ def verify_phase_delivery_settlement(
     return document
 
 
-def settle_phase_delivery_attempt(
+def _settle_attempt(
     parent_manifest: Path,
     *,
     repo_root: Path,
     score_receipts: Sequence[SavedScoreReceiptRef],
     settlement_path: Path,
+    scored_parent: bool = False,
 ) -> PhaseDeliverySettlementResult:
     """Publish complete derivative evidence, then finalize the raw attempt."""
 
@@ -387,7 +437,8 @@ def settle_phase_delivery_attempt(
     settlement_path.parent.mkdir(parents=True, exist_ok=True)
     try:
         document = _expected(
-            parent, repo_root=repo_root, score_receipts=tuple(score_receipts)
+            parent, repo_root=repo_root, score_receipts=tuple(score_receipts),
+            scored_parent=scored_parent,
         )
     except ScoreReceiptError as error:
         raise BundleError(f"phase delivery score receipt refused: {error}") from error
@@ -413,7 +464,9 @@ def settle_phase_delivery_attempt(
 
     # Re-read every source after publication. A crash here leaves an exact
     # retryable receipt and the attempt OPENED.
-    verify_phase_delivery_settlement(settlement_path, repo_root=repo_root)
+    _verify_settlement(
+        settlement_path, repo_root=repo_root, scored_parent=scored_parent,
+    )
     try:
         handle.finalize_with_receipt(
             str(settlement_path), receipt_sha256, document["schema"]
@@ -425,6 +478,49 @@ def settle_phase_delivery_attempt(
         receipt_sha256=receipt_sha256,
         attempt_state="FINALIZED",
         reused=reused,
+    )
+
+
+def verify_phase_delivery_settlement(
+    settlement_path: Path, *, repo_root: Path,
+) -> Mapping[str, object]:
+    """Verify all recorded derivative evidence without invoking a scorer."""
+    return _verify_settlement(settlement_path, repo_root=repo_root)
+
+
+def settle_phase_delivery_attempt(
+    parent_manifest: Path, *, repo_root: Path,
+    score_receipts: Sequence[SavedScoreReceiptRef], settlement_path: Path,
+) -> PhaseDeliverySettlementResult:
+    """Finalize only after all declared derivatives have complete saved scores."""
+    return _settle_attempt(
+        parent_manifest, repo_root=repo_root, score_receipts=score_receipts,
+        settlement_path=settlement_path,
+    )
+
+
+def verify_scored_attempt_settlement(
+    settlement_path: Path, *, repo_root: Path,
+) -> Mapping[str, object]:
+    """Verify a raw parent's saved score and finalization without rescoring."""
+    return _verify_settlement(
+        settlement_path, repo_root=repo_root, scored_parent=True,
+    )
+
+
+def settle_scored_attempt(
+    parent_manifest: Path, *, repo_root: Path,
+    score_receipt: SavedScoreReceiptRef, settlement_path: Path,
+) -> PhaseDeliverySettlementResult:
+    """Finalize a completed raw parent from its first complete saved score.
+
+    Refuse parents with recorded delivery obligations. Keep the raw manifest,
+    outputs, trace and saved scores immutable; reuse the common atomic
+    publication and exact-retry finalization path.
+    """
+    return _settle_attempt(
+        parent_manifest, repo_root=repo_root, score_receipts=(score_receipt,),
+        settlement_path=settlement_path, scored_parent=True,
     )
 
 
