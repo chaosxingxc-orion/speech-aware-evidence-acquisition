@@ -346,13 +346,11 @@ def contrast_block(
 # ---------------------------------------------------------------------------
 # The loss attribution -- shared implementation with historical error surface
 # ---------------------------------------------------------------------------
-from speech_aware_evidence_acquisition.analysis.slurp_entity_attribution import (
-    _match_block as _shared_match_block,
-    attribute_row as _shared_attribute_row,
-)
-
-
 def _match_block(gold, predicted, distance_fn):
+    from speech_aware_evidence_acquisition.analysis.slurp_entity_attribution import (
+        _match_block as _shared_match_block,
+    )
+
     try:
         return _shared_match_block(gold, predicted, distance_fn)
     except ValueError as error:
@@ -360,6 +358,10 @@ def _match_block(gold, predicted, distance_fn):
 
 
 def attribute_row(gold, predicted):
+    from speech_aware_evidence_acquisition.analysis.slurp_entity_attribution import (
+        attribute_row as _shared_attribute_row,
+    )
+
     try:
         return _shared_attribute_row(gold, predicted)
     except ValueError as error:
