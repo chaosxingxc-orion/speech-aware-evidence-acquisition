@@ -3198,14 +3198,264 @@
       "cell_id": "SLURP-KU-S3-MAX256-RECOVERY",
       "status": "ADMITTED_COMPONENT",
       "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-10-ku-s3-max256-recovery-verdict/decision.json",
-      "meaning": "Recovered same-process 3x1000 comparison; both registered entity-side numerical gates and inherited joined-intent protection pass. Historical rows remain a dated transcription; no live full-system claim."
+      "source_sha256": "d23bc235e79438a591d9bf0afb64f709c7f58ba8c491eef48557e38398916bee",
+      "meaning": "The recovered three-arm component comparison passes both registered entity-side gates and inherited joined-intent protection. It remains component evidence rather than a live full-system claim.",
+      "supersedes_historical_cell_ids": [
+        "SLURP-KU-S3"
+      ]
     },
     {
       "date": "2026-09-10",
       "cell_id": "FABLE-RESULT-REPRODUCTION-AUDIT",
       "status": "NUMERICALLY_REPRODUCED",
       "source": "docs/receipts/fable-result-reproduction-v1.json",
-      "meaning": "Original SLURP KC-S1b, existing max64 repeat analysis, E21 KC-E1f v1/v2 and historical KV recovery reproduced exactly; 16,560 statistical fields agree. Zero new generation or scoring. Original verdict history and live-system limitations remain unchanged."
+      "source_sha256": "57a19ffea284b3de7d8c4bd078c463cb9e52f0239d5c7c6089c65a3ba7d7fa89",
+      "meaning": "Original SLURP KC-S1b, existing max64 repeat analysis, E21 KC-E1f v1/v2 and historical KV recovery reproduce exactly. This added no generation or scoring and changes no original verdict."
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "SLURP-KV-0-CURRENT",
+      "status": "HARMFUL",
+      "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/family-decision.json",
+      "source_sha256": "0f2570f185bc6275c9aaa2e8b137b45df4383e344d6b75695d2e5068c834d01b",
+      "meaning": "Retrospective recovery decides the example-free family base harmful and retains KC-S1b as the KU-S3 comparator. The original sequence deviation remains recorded.",
+      "run_ids": [
+        "SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1"
+      ],
+      "supersedes_historical_cell_ids": [
+        "SLURP-KV-0"
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "SLURP-KV-1-CURRENT",
+      "status": "NULL_COMPATIBLE",
+      "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/family-decision.json",
+      "source_sha256": "0f2570f185bc6275c9aaa2e8b137b45df4383e344d6b75695d2e5068c834d01b",
+      "meaning": "The registered primary intervals span zero against KV-0 and the form twin; this is neither equivalence nor noninferiority.",
+      "run_ids": [
+        "SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1"
+      ],
+      "supersedes_historical_cell_ids": [
+        "SLURP-KV-1"
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "SLURP-KV-1-TWIN-CURRENT",
+      "status": "COMPARATOR_ONLY",
+      "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md",
+      "source_sha256": "8c1c4b6609aeceb08f33508c73a943cceebdbcdb58e669f6614a474bff8bdc04",
+      "meaning": "The finalized descriptions twin is retained solely as KV-1 attribution evidence and carries no independent admission verdict.",
+      "run_ids": [
+        "SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1"
+      ],
+      "supersedes_historical_cell_ids": [
+        "SLURP-KV-1-TWIN"
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "SLURP-KV-2-CURRENT",
+      "status": "NOT_ADMITTED_ROTATING_TWIN_GATE_FAILED",
+      "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/family-decision.json",
+      "source_sha256": "0f2570f185bc6275c9aaa2e8b137b45df4383e344d6b75695d2e5068c834d01b",
+      "meaning": "KV-2 improves over the weakened KV-0 base but fails the inherited rotating-stratum twin sign gate, so it is not admitted.",
+      "run_ids": [
+        "SAEA-SLURP-KV2-CARDS-DEV1000-V1"
+      ],
+      "supersedes_historical_cell_ids": [
+        "SLURP-KV-2"
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "SLURP-KV-2-TWIN-CURRENT",
+      "status": "COMPARATOR_ONLY",
+      "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md",
+      "source_sha256": "8c1c4b6609aeceb08f33508c73a943cceebdbcdb58e669f6614a474bff8bdc04",
+      "meaning": "The finalized cards twin is retained solely as KV-2 attribution evidence and carries no independent admission verdict.",
+      "run_ids": [
+        "SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1"
+      ],
+      "supersedes_historical_cell_ids": [
+        "SLURP-KV-2-TWIN"
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "SLURP-KV-3-CURRENT",
+      "status": "NULL_COMPATIBLE",
+      "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/family-decision.json",
+      "source_sha256": "0f2570f185bc6275c9aaa2e8b137b45df4383e344d6b75695d2e5068c834d01b",
+      "meaning": "The registered primary intervals span zero against KV-0 and the form twin; this is neither equivalence nor noninferiority.",
+      "run_ids": [
+        "SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1"
+      ],
+      "supersedes_historical_cell_ids": [
+        "SLURP-KV-3"
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "SLURP-KV-3-TWIN-CURRENT",
+      "status": "COMPARATOR_ONLY",
+      "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md",
+      "source_sha256": "8c1c4b6609aeceb08f33508c73a943cceebdbcdb58e669f6614a474bff8bdc04",
+      "meaning": "The finalized few-shot twin is retained solely as KV-3 attribution evidence and carries no independent admission verdict.",
+      "run_ids": [
+        "SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1"
+      ],
+      "supersedes_historical_cell_ids": [
+        "SLURP-KV-3-TWIN"
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "SLURP-KU-S3-INDEPENDENT-REPEAT",
+      "status": "PASS_COMPONENT_REPEAT",
+      "source": "docs/readiness/2026-09-10-ku-s3-independent-repeat-decision.md",
+      "source_sha256": "b705aec6e975d2dd58db5c017e5d20593d2ff7a3760526bfbcc3e6bb04d87283",
+      "meaning": "The independent-process repeat passes the inherited component criterion against the retained control and form twin. It establishes neither repeat-original equivalence nor a live-system claim.",
+      "run_ids": [
+        "SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-V1"
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "SLURP-KU-S4N-G2-N",
+      "status": "HOLD_NONINFERIORITY_FAILED",
+      "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-10-ku-s4n-g2-readout/decision.json",
+      "source_sha256": "e6feda6bec2c21bc44ac582a7e4550deaebbded0aa939596e029c80d052198b5",
+      "meaning": "The N treatment fails the frozen noninferiority decision. G3 exemplar encoding and G4 remain held; KU-S3 is unaffected.",
+      "run_ids": [
+        "SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3"
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "SLURP-KU-S4N-G2-TWIN",
+      "status": "COMPARATOR_COMPLETED_HELD",
+      "source": "docs/checks/speech-aware-evidence-acquisition/2026-09-10-ku-s4n-g2-readout/decision.json",
+      "source_sha256": "e6feda6bec2c21bc44ac582a7e4550deaebbded0aa939596e029c80d052198b5",
+      "meaning": "The matched twin completed and supplies the frozen paired comparison. It has no independent admission and does not release G3 or G4.",
+      "run_ids": [
+        "SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3"
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "E21-DR-PACKETS-UNIT-CONSTRAINED",
+      "status": "REJECTED",
+      "source": "docs/readiness/2026-09-10-e21-dr-packets-four-delivery-decision.md",
+      "source_sha256": "e5ea755a45f44df2ee1aa3a48b186dc1fa2ff91665b37efbc2809bb67ef6378f",
+      "meaning": "The constrained short-unit derivative fails PERSON, nonentity and numeric protection; its two derivatives share one generation parent and are correlated.",
+      "run_ids": [
+        "SAEA-E21-DR-PACKETS-UNIT-GENERATION-V2"
+      ],
+      "supersedes_historical_cell_ids": [
+        "E21-DR1"
+      ],
+      "derivative_cell_id": "e21-dr-shared-unit-constrained-delivery",
+      "derivative_declaration_source": {
+        "path": "configs/experiment/e21-dr-shared-two-generation-packets-v2.json",
+        "sha256": "b2df0c956cc9ad6f9ae5e484c30bb3fb3044b7728f94a69634365ad6157e1d9a"
+      }
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "E21-DR-PACKETS-UNIT-FREE",
+      "status": "REJECTED",
+      "source": "docs/readiness/2026-09-10-e21-dr-packets-four-delivery-decision.md",
+      "source_sha256": "e5ea755a45f44df2ee1aa3a48b186dc1fa2ff91665b37efbc2809bb67ef6378f",
+      "meaning": "The free short-unit derivative has directional WER harm; its two derivatives share one generation parent and are correlated.",
+      "run_ids": [
+        "SAEA-E21-DR-PACKETS-UNIT-GENERATION-V2"
+      ],
+      "supersedes_historical_cell_ids": [
+        "E21-DR1"
+      ],
+      "derivative_cell_id": "e21-dr-shared-unit-free-delivery",
+      "derivative_declaration_source": {
+        "path": "configs/experiment/e21-dr-shared-two-generation-packets-v2.json",
+        "sha256": "b2df0c956cc9ad6f9ae5e484c30bb3fb3044b7728f94a69634365ad6157e1d9a"
+      }
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "E21-DR-PACKETS-SELF-CONSTRAINED",
+      "status": "ADMITTED_AS_DISCOVERY_REFRESH_IMPROVEMENT",
+      "source": "docs/readiness/2026-09-10-e21-dr-packets-four-delivery-decision.md",
+      "source_sha256": "e5ea755a45f44df2ee1aa3a48b186dc1fa2ff91665b37efbc2809bb67ef6378f",
+      "meaning": "The constrained self-draft derivative passes the discovery gates, with a small-effect and protocol-mismatch limitation; it does not replace KC-E1f.",
+      "run_ids": [
+        "SAEA-E21-DR-PACKETS-SELF-GENERATION-V2"
+      ],
+      "supersedes_historical_cell_ids": [
+        "E21-DR1"
+      ],
+      "derivative_cell_id": "e21-dr-shared-self-constrained-delivery",
+      "derivative_declaration_source": {
+        "path": "configs/experiment/e21-dr-shared-two-generation-packets-v2.json",
+        "sha256": "b2df0c956cc9ad6f9ae5e484c30bb3fb3044b7728f94a69634365ad6157e1d9a"
+      }
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "E21-DR-PACKETS-SELF-FREE",
+      "status": "NULL_NO_DEMONSTRATED_WER_GAIN",
+      "source": "docs/readiness/2026-09-10-e21-dr-packets-four-delivery-decision.md",
+      "source_sha256": "e5ea755a45f44df2ee1aa3a48b186dc1fa2ff91665b37efbc2809bb67ef6378f",
+      "meaning": "The free self-draft derivative has no demonstrated corpus-WER gain; its two derivatives share one generation parent and are correlated.",
+      "run_ids": [
+        "SAEA-E21-DR-PACKETS-SELF-GENERATION-V2"
+      ],
+      "supersedes_historical_cell_ids": [
+        "E21-DR1"
+      ],
+      "derivative_cell_id": "e21-dr-shared-self-free-delivery",
+      "derivative_declaration_source": {
+        "path": "configs/experiment/e21-dr-shared-two-generation-packets-v2.json",
+        "sha256": "b2df0c956cc9ad6f9ae5e484c30bb3fb3044b7728f94a69634365ad6157e1d9a"
+      }
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "E21-LOOP-PACKETS-NP4",
+      "status": "RETAIN_KC_E1F_SYSTEM_FLOOR_FAILED",
+      "source": "docs/readiness/2026-09-10-e21-loop-packets-decision.md",
+      "source_sha256": "3c473dd3cfd5029565b17c6b454bb88d64e98a35db22b16a2437448e1d709029",
+      "meaning": "Judge targeting improves PERSON against the randomized twin, but the judge fails PERSON retention against the KC-E1f system floor. Retain KC-E1f and run no further LOOP generation.",
+      "run_ids": [
+        "SAEA-E21-LOOP-PACKETS-NP4-JUDGE-GENERATION-V1",
+        "SAEA-E21-LOOP-PACKETS-NP4-TWIN-GENERATION-V1"
+      ],
+      "supersedes_historical_cell_ids": [
+        "E21-LOOP-1"
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "cell_id": "SLURP-G6-LIVE-INTENT-SLOTS",
+      "status": "NOT_FULLY_ADMITTED_GUARD_FAILED",
+      "source": "docs/readiness/2026-09-10-slurp-live-intent-slots-result.md",
+      "source_sha256": "d7cb4bbaad48173719b7be65705a1c964a7b608a5df34bc3ffea3e3c690647b7",
+      "meaning": "The live two-stage system supplies positive slot evidence, but its frozen scenario protection point guard fails. No rerun or threshold change follows.",
+      "run_ids": [
+        "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-RECOVERY-V1",
+        "SAEA-SLURP-LIVE-INTENT-SLOTS-SPEECH-V1"
+      ]
+    },
+    {
+      "date": "2026-09-11",
+      "cell_id": "E21-OFFLINE-DIRECT-THEN-KC-E1F",
+      "status": "IN_PROGRESS",
+      "source": "docs/readiness/2026-09-11-e21-offline-repair-handoff.md",
+      "source_sha256": "9ed07bf31c53efa00ecc19bc07c0de4ab9f8db2cd0f99116550ccca21f258c20",
+      "meaning": "The newly generated direct parent is active. The fixed KC-E1f repair successor remains unadmitted until that parent seals and the shared builder binds all 1,593 windows. No current quality result is recorded.",
+      "run_ids": [
+        "SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1"
+      ]
     }
   ]
 }
