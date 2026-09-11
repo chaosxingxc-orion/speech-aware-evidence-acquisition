@@ -1,6 +1,6 @@
 # Owner-directed recovery and continuation plan
 
-**Latest owner direction:** [OWNER-SLURP-FIRST-2026-RL-015.md](OWNER-SLURP-FIRST-2026-RL-015.md) selects SLURP first to stabilize the shared engineering base, then E21 and E22. Inspect actual 2026 training-free RL implementations; retain 2025 TF-GRPO as the baseline. Read STATUS-037 and the [SLURP-first implementation plan](../../../readiness/2026-09-11-slurp-first-system-and-training-free-rl-plan.md). This supersedes the E21-first proposal. OWNER014's quality/headroom objective and all historical verdicts remain intact.
+**Latest owner correction:** [OWNER-MULTIMODAL-SYSTEM-FIRST-016.md](OWNER-MULTIMODAL-SYSTEM-FIRST-016.md) makes the complete multimodal task agent the design target: real tool invocation, TRAIN knowledge/episodic memory, current state, evidence consumption and bounded control. Read [STATUS-038.md](STATUS-038.md) and the [full system specification](../../../readiness/2026-09-11-multimodal-task-agent-system.md). Retrieval/no-retrieval is a later ablation; optimizer choice follows the executable system. Keep SLURP first, then E21/E22, with OWNER014 quality-first and historical verdicts intact.
 
 Role: engineering plan. Coordinator: Codex. Updated: 2026-09-11.
 The owner directed recovery from GitHub history and unmerged worktrees after Fable5.1 exhausted
@@ -9,7 +9,7 @@ the actual experiment state. The former request/reply exchange is historical; no
 
 ## Current continuation closure
 
-The archaeology below records the initial September9 recovery. STATUS-037 and
+The archaeology below records the initial September9 recovery. STATUS-038 and
 the latest overlay govern current work; completed scientific families must not be
 replayed because an older paragraph says pending.
 
@@ -69,7 +69,7 @@ treatment results exist. Any unresolved analysis must remain descriptive until i
 
 ## Current ordered work queue
 
-1. Use the completed sealed-score headroom audit and 2026 static source review in STATUS-037.
+1. Use the completed sealed-score headroom audit and 2026 static source review in STATUS-038.
 2. Add only the shared SLURP supply-action policy seam: row-level retrieval or explicit no retrieval from the same current draft, both continuing to the same slots phase.
 3. Prepare fixed update/validation/evaluation roles, actual requests, action groups and a new prospective registration while the resident decoder stays available.
 4. Execute the first shared feedback loop with TF-GRPO as the 2025 baseline; prioritize EvoTool-style targeted module evolution as the first 2026 system candidate.
@@ -109,4 +109,4 @@ one coordinator and one experiment in flight.
 
 ## September11 cohort closure
 
-Read STATUS-037, the two September11 system result notes and the next-stage acceptance plan. The E21 offline and final program-matched SLURP pairs have complete generation, scoring, fixed analysis and FINALIZED custody. Failed scientific guards remain binding. Shared raw saved-score settlement reuses complete scores and preserves frozen source worktrees. Live E21 review/selection/new-observation remains open.
+Read STATUS-038, the two September11 system result notes and the next-stage acceptance plan. The E21 offline and final program-matched SLURP pairs have complete generation, scoring, fixed analysis and FINALIZED custody. Failed scientific guards remain binding. Shared raw saved-score settlement reuses complete scores and preserves frozen source worktrees. Live E21 review/selection/new-observation remains open.

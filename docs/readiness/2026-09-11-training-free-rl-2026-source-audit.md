@@ -4,11 +4,11 @@ Date: September 11, 2026. Authority: OWNER-SLURP-FIRST-2026-RL-015. Scope: prima
 
 ## Decision
 
-Keep 2025 Training-Free GRPO as the engineering baseline. For the first 2026 system-level challenger, prioritize EvoTool's targeted module evolution after the shared SLURP action/feedback interface works. It addresses component attribution and external policy changes directly; classify it as reward-guided gradient-free evolution, not Q-learning or literal GRPO.
+Keep 2025 Training-Free GRPO as the engineering baseline. OWNER-MULTIMODAL-SYSTEM-FIRST-016 supersedes the earlier premature EvoTool-first selection: choose the complete tool/memory/control system before choosing its optimizer. EvoTool remains a targeted module-evolution candidate; classify it as reward-guided gradient-free evolution, not Q-learning or literal GRPO.
 
 Keep MemRL as the narrow RL comparator for experience/evidence selection after a useful experience store exists. MemQ is a later structural-credit extension, particularly relevant if E21 has a genuine provenance graph. JitRL remains a candidate for action-value reranking after its API and numerical semantics are qualified. Use SkillOpt's bounded-edit/validation pattern as an engineering reference, not a second framework. Do not implement all methods before launching the first shared feedback loop.
 
-The [SLURP-first plan](2026-09-11-slurp-first-system-and-training-free-rl-plan.md) governs execution order. No cited method establishes speech transfer by its published non-speech scores.
+The [complete multimodal system specification](2026-09-11-multimodal-task-agent-system.md) governs execution order. No cited method establishes speech transfer by its published non-speech scores.
 
 ## What is actually training-free?
 
@@ -20,7 +20,7 @@ Frozen core weights do not mean nothing changes. These methods update external m
 | MemRL | January 6, 2026 | Episodic-memory Q/utility metadata and value-aware retrieval | Narrow ORG/SUPPLY RL comparator |
 | JitRL | January 26, 2026 | Retrieved action advantages and external candidate reranking | Later Planner candidate; numerical/API qualification needed |
 | ETS | January 29, 2026 | Energy-guided sampling with Monte Carlo estimates | Not selected for the API-only control-plane base |
-| EvoTool | 2026; ACL July 2026 | Blame-directed single-module text mutation, reward acceptance and population selection | First 2026 modular system optimizer candidate |
+| EvoTool | 2026; ACL July 2026 | Blame-directed single-module text mutation, reward acceptance and population selection | Modular system optimizer candidate after system selection |
 | MemQ | May 8, 2026 | Memory Q updates with provenance-path credit and value-guided retrieval | Later memory-credit extension |
 | SkillOpt | May 22, 2026 | Bounded text-skill edits, validation selection and slow updates | Update-lifecycle reference; gate caveat below |
 

@@ -1,6 +1,6 @@
 # Shared-base SLURP and Earnings21 continuation
 
-**Latest owner direction:** [OWNER-SLURP-FIRST-2026-RL-015.md](OWNER-SLURP-FIRST-2026-RL-015.md) selects SLURP first to stabilize the shared engineering base, then E21 and E22. Inspect actual 2026 training-free RL implementations; retain 2025 TF-GRPO as the baseline. Read STATUS-037 and the [SLURP-first implementation plan](../../../readiness/2026-09-11-slurp-first-system-and-training-free-rl-plan.md). This supersedes the E21-first proposal. OWNER014's quality/headroom objective and all historical verdicts remain intact.
+**Latest owner correction:** [OWNER-MULTIMODAL-SYSTEM-FIRST-016.md](OWNER-MULTIMODAL-SYSTEM-FIRST-016.md) makes the complete multimodal task agent the design target: real tool invocation, TRAIN knowledge/episodic memory, current state, evidence consumption and bounded control. Read [STATUS-038.md](STATUS-038.md) and the [full system specification](../../../readiness/2026-09-11-multimodal-task-agent-system.md). Retrieval/no-retrieval is a later ablation; optimizer choice follows the executable system. Keep SLURP first, then E21/E22, with OWNER014 quality-first and historical verdicts intact.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
@@ -10,10 +10,10 @@ Execution environment: WSL Ubuntu-24.04 only. Repository documents and model-fac
 
 ## Current execution overlay
 
-Updated on 2026-09-11 from STATUS-037 and OWNER-GPU-RESUME-013. The original requirements below remain
+Updated on 2026-09-11 from STATUS-038 and OWNER-GPU-RESUME-013. The original requirements below remain
 the acceptance contract; this overlay records which have actual evidence.
 
-Owner scheduling override: OWNER013 permits eligible GPU work. OWNER011's single matched pair is now fully finalized and closed. OWNER015 prioritizes a new SLURP policy/action baseline before E21/E22; use new prospective registrations, not unused allowance from a closed flight. No configuration change or extra contact is justified solely by utilization.
+Owner scheduling override: OWNER013 permits eligible GPU work. OWNER011's single matched pair is now fully finalized and closed. OWNER016 prioritizes a complete SLURP multimodal agent with TRAIN memory and real tool/result consumption before E21/E22; use new prospective registrations, not unused allowance from a closed flight. No configuration change or extra contact is justified solely by utilization.
 
 | Work | Current state | Evidence / next action |
 |---|---|---|

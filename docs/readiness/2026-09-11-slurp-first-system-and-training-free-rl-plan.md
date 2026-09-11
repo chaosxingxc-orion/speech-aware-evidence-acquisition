@@ -1,5 +1,7 @@
 # SLURP-first system baseline and training-free optimization
 
+**September 11 owner correction:** The [complete multimodal system specification](2026-09-11-multimodal-task-agent-system.md), under OWNER-MULTIMODAL-SYSTEM-FIRST-016, supersedes this document's binary supply-action implementation and early optimizer priority. Keep the saved result/headroom analysis below as historical evidence. Build tools, TRAIN episodic memory, state and evidence-use control first; retrieve/no-retrieve remains a later component contrast.
+
 Authority: OWNER-SYSTEM-OPTIMIZATION-014 and OWNER-SLURP-FIRST-2026-RL-015. Status: root-reviewed implementation and experiment design; no new model contact has occurred for this design. Supersede the E21-first proposal in the earlier September 11 selection note. Retain E21 and E22 as subsequent transfer stages.
 
 ## Decision and evidence
