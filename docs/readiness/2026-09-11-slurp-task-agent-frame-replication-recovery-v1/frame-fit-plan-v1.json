@@ -1,0 +1,103 @@
+{
+  "analysis_template": {
+    "relpath": "docs/readiness/2026-09-11-slurp-task-agent-replication-analysis.recovery-v1.template.json",
+    "sha256": "5682fa5ffafdb98138868eb2091bbb418a21bcf2ba77c2f61bea60a6c95056b3"
+  },
+  "composed_config_hash": "edfbb623b4cf2c822cdef375b092544ab8e548a35a093bd0a7f45d58baeed261",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-task-agent-frame-replication-recovery-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 6002,
+    "planned_speech_audio_seconds": 6000,
+    "protocol_hash": "3fbf6013e95833feef1401dffec309b0521db3aa835335fa2c99eeece112f9a2",
+    "run_id": "SAEA-SLURP-TASK-AGENT-FRAME-REPLICATION-RECOVERY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-task-agent-replication-np4-v1",
+  "family_budget": {
+    "fit_contacts_total": 9003,
+    "generation_calls_total": 3150,
+    "gpu_hours_total": 1.5,
+    "speech_audio_seconds_total": 9000
+  },
+  "live_fit_protocol": "Actual whole-roster phase requests; 6002 fit endpoints; 1.0 GPU hour includes fit and generation.",
+  "operational_gate": "Root must pass exact final-config warm consumption and full fake wire, clean-source preflight, then grant lease. No second recovery.",
+  "protocol": {
+    "relpath": "docs/readiness/2026-09-11-slurp-task-agent-frame-replication-recovery-v1.md",
+    "sha256": "37b74e0430f304280288297034da457dd62ae1acace690df82993e4d35ae88bc"
+  },
+  "quality_read_gate": "Direct and recovery frame must both seal before quality/scoring; scalar integrity only until release.",
+  "registered_at": "2026-09-11T21:06:21.941846+00:00",
+  "required_session_identity": {
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "host": "127.0.0.1",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      }
+    ],
+    "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+    "model_fragment_sha256": "7545a1ac3eb0c1e88d4121fdf84726e5201bb9d5ae5a32804cc62a7f6a289f74",
+    "model_root": "/home/chao",
+    "port": 8080,
+    "props_identity": {
+      "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "slot_n_ctx": 16384,
+      "total_slots": 4
+    },
+    "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+    "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+    "server_argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8080",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--no-mmproj",
+      "-c",
+      "65536",
+      "-np",
+      "4",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ],
+    "server_env": {
+      "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+      "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+    },
+    "session_role": "inference"
+  },
+  "runtime_root": "/home/chao",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-task-agent-frame-replication-recovery-eligibility-v1.json",
+    "sha256": "712e17a1a63979d06761ec4629582af064fae00b3238f88d4d446774ff6f967a"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/slurp-task-agent-frame-replication-recovery-v1",
+  "status": "ROOT_REGISTERED_PENDING_FINAL_WIRE_AND_LEASE"
+}

@@ -1,0 +1,163 @@
+{
+  "analysis": {
+    "contrasts": [
+      {
+        "left": "direct",
+        "name": "compact_intent_frame_agent_minus_direct_replication",
+        "right": "frame",
+        "scorers": [
+          "official"
+        ]
+      }
+    ],
+    "full_roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "inputs": {
+      "direct": {
+        "complete_score_receipt": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-TASK-AGENT-REPLICATION-PAIRED-ANALYSIS-V1/complete-score-batch/direct.complete-score-receipt.json",
+          "sha256": "AWAITING_COMPLETE_SCORE_RECEIPT_SHA256"
+        },
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-TASK-AGENT-DIRECT-REPLICATION-V1/attempt-slurp-task-agent-direct-replication-generation-v1/SAEA-SLURP-TASK-AGENT-DIRECT-REPLICATION-V1.run-manifest.json",
+          "sha256": "AWAITING_VERIFIED_COMPLETE_MANIFEST_SHA256"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-TASK-AGENT-REPLICATION-PAIRED-ANALYSIS-V1/complete-score-batch/direct.score.json",
+          "sha256": "AWAITING_FIRST_COMPLETE_SCORE_SHA256"
+        },
+        "scorers": {
+          "official": "slurp-slu-official"
+        }
+      },
+      "frame": {
+        "complete_score_receipt": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-TASK-AGENT-REPLICATION-PAIRED-ANALYSIS-V1/complete-score-batch/frame.complete-score-receipt.json",
+          "sha256": "AWAITING_COMPLETE_SCORE_RECEIPT_SHA256"
+        },
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-TASK-AGENT-FRAME-REPLICATION-RECOVERY-V1/attempt-slurp-task-agent-frame-replication-recovery-generation-v1/SAEA-SLURP-TASK-AGENT-FRAME-REPLICATION-RECOVERY-V1.run-manifest.json",
+          "sha256": "AWAITING_VERIFIED_COMPLETE_MANIFEST_SHA256"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-TASK-AGENT-REPLICATION-PAIRED-ANALYSIS-V1/complete-score-batch/frame.score.json",
+          "sha256": "AWAITING_FIRST_COMPLETE_SCORE_SHA256"
+        },
+        "scorers": {
+          "official": "slurp-slu-official"
+        }
+      }
+    },
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+    },
+    "metrics": [
+      "scenario_action_exact",
+      "scenario_exact",
+      "action_exact",
+      "slu_f1_f1"
+    ],
+    "micro_metrics": {
+      "slu_f1_micro": {
+        "fn": [
+          "slu_f1_word_fn",
+          "slu_f1_char_fn"
+        ],
+        "fp": [
+          "slu_f1_word_fp",
+          "slu_f1_char_fp"
+        ],
+        "tp": [
+          "slu_f1_word_tp",
+          "slu_f1_char_tp"
+        ]
+      }
+    },
+    "n_replicates": 10000,
+    "roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    },
+    "seed": 20260903
+  },
+  "binding_state": "TEMPLATE ONLY, HELD. Replication manifests, complete score results and complete score receipts do not exist yet; every AWAITING hash must be replaced with a measured SHA-256 after the preceding stage seals. Root must record each release.",
+  "descriptive_decision": {
+    "negative": "For each main outcome separately, interval wholly below zero.",
+    "positive": "For each main outcome separately, NEW500 speaker-cluster CI90 wholly above zero.",
+    "scope": "Independent same-roster replication of the complete-task direct versus compact intent-frame agent contrast; exploratory unadjusted intervals, not a new confirmatory claim. Preserve the qualified prior INTENT_SIGNAL_ENTITY_UNRESOLVED_NO_FULL_TASK_ADMISSION decision and do not adapt cutoffs.",
+    "unresolved": "Otherwise; report intent/entity conflicts, not a selected favorable metric."
+  },
+  "estimator_interpretation": {
+    "effective_seed_by_metric": {
+      "action_exact": 20260905,
+      "scenario_action_exact": 20260903,
+      "scenario_exact": 20260904,
+      "slu_f1_f1": 20260906,
+      "slu_f1_micro": 20260903
+    },
+    "main_contrasts": [
+      "compact_intent_frame_agent_minus_direct_replication"
+    ],
+    "main_outcomes": [
+      "scenario_action_exact",
+      "slu_f1_micro"
+    ],
+    "metric_rule": "slu_f1_f1 is mean per-row F1. slu_f1_micro is the separately reported pooled TP/FP/FN F1 and must never be described as a row mean.",
+    "primary": "paired speaker-cluster bootstrap, 10,000 replicates, seed 20260903, CI90",
+    "primary_population": "historically exposed NEW500",
+    "reporting_populations": [
+      "NEW500",
+      "OLD500",
+      "DEV1000"
+    ],
+    "row_sensitivity": "scenario-stratified paired row bootstrap with the same fixed metric order and seed offsets",
+    "scorer_definition": "Raw slurp-slu-official, no projection. scenario_action_exact mean is intent accuracy; official micro SLU F1 is computed separately from the six saved word/character count fields. All full manifests are evaluated once.",
+    "weightings": [
+      "natural mixture",
+      "equal scenario"
+    ]
+  },
+  "execution_gate": "HELD. This replication template is intentionally invalid until the frozen analysis-plan hash and exact post-seal hashes replace every AWAITING value and root records the result-read release.",
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-SLURP-TASK-AGENT-REPLICATION-PAIRED-ANALYSIS-V1",
+  "postscore_descriptives": {
+    "entity_attribution": {
+      "api": "analysis.slurp_entity_attribution.attribute_parsed_rows",
+      "official_fields": [
+        "slu_f1_word_tp",
+        "slu_f1_word_fp",
+        "slu_f1_word_fn",
+        "slu_f1_char_tp",
+        "slu_f1_char_fp",
+        "slu_f1_char_fn"
+      ],
+      "populations": [
+        "NEW500",
+        "OLD500",
+        "DEV1000"
+      ],
+      "scenario_strata": true
+    },
+    "output_failures": [
+      "parsed",
+      "saturation",
+      "empty",
+      "retry",
+      "fallback"
+    ],
+    "rule": "Use only first complete saved score rows and verified raw outputs after a registered read release; no outcome-dependent subsets."
+  },
+  "recovery_binding": {
+    "change": "Only frame manifest path changes to explicit zero-contact recovery; other method and score paths remain frozen.",
+    "original_template_sha256": "dc7bf47b2b49d3a0c11cf16c8aa62cb710575bed86b52e33ad9bf427c9c383d5",
+    "registration_path": "docs/readiness/2026-09-11-slurp-task-agent-frame-replication-recovery-v1.md",
+    "registration_sha256": "37b74e0430f304280288297034da457dd62ae1acace690df82993e4d35ae88bc"
+  },
+  "source_analysis_plan": {
+    "path": "docs/readiness/2026-09-11-slurp-task-agent-replication-protocol.md",
+    "sha256": "81b3029ff1af366b33f14225ca0f0fd79387e70aaa5524eb0d68b5e11109ed5b"
+  }
+}
