@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-09-11T13:54:51.944997+00:00",
+  "scope": "Static upstream source review only; no installation, execution or model contact",
+  "sources": [
+    {
+      "method": "MemRL",
+      "commit": "c1b322ca43de36ddf64c6712f89d0095bfc35ce0",
+      "paper": "https://arxiv.org/abs/2601.03192",
+      "inspection_receipt_relative_to_data": "research/2026-training-free-rl/memrl-inspection-v2.json",
+      "inspection_receipt_sha256": "3829046ec2c1b51716a83b4af1afca774037c542fe9b06645eee36816cac4edb"
+    },
+    {
+      "method": "JitRL",
+      "commit": "143d22185d95fbf633a0befe6861d5e8b732543b",
+      "paper": "https://arxiv.org/abs/2601.18510",
+      "inspection_receipt_relative_to_data": "research/2026-training-free-rl/jitrl-inspection-v2.json",
+      "inspection_receipt_sha256": "577dc972a73c42eb68fc7f3b7dbb6bd071f65aff46b4d15cde80fdd77f604c98"
+    },
+    {
+      "method": "EvoTool",
+      "commit": "6a82719ea6e22cf23f963078e2527094e50b47f6",
+      "paper": "https://aclanthology.org/2026.acl-long.2016/",
+      "inspection_receipt_relative_to_data": "research/2026-training-free-rl/evotool/6a82719ea6e22cf23f963078e2527094e50b47f6/inspection-receipt.json",
+      "inspection_receipt_sha256": "3c128722a28bf362d0c5079312ead415b9ac1a642b3d19e8aa634d8ad1a51079"
+    },
+    {
+      "method": "SkillOpt",
+      "commit": "79124b37e9a6371e13b753f8bcd7adb1e493ade1",
+      "paper": "https://arxiv.org/abs/2605.23904",
+      "inspection_receipt_relative_to_data": "research/2026-training-free-rl/skillopt/79124b37e9a6371e13b753f8bcd7adb1e493ade1/inspection-receipt.json",
+      "inspection_receipt_sha256": "fa22dbd4be520289c64fe44e72bfc8671c92b9d2c5f91d6146523b0d628ede6f"
+    },
+    {
+      "method": "MemQ",
+      "commit": "9d66abf4f0252b084f088d5081c44b840842e47b",
+      "paper": "https://arxiv.org/abs/2605.08374",
+      "inspection_receipt_relative_to_data": "research/2026-training-free-rl/memq/9d66abf4f0252b084f088d5081c44b840842e47b/inspection-receipt.json",
+      "inspection_receipt_sha256": "8c4d7739cafe873a9bec44a99523a82b9681bd2315e36e9e15972e36d2c8f51d"
+    },
+    {
+      "method": "ETS",
+      "commit": "ec58be0a56c3df904904db41197a597823092c11",
+      "paper": "https://arxiv.org/abs/2601.21484",
+      "inspection_receipt_relative_to_data": "research/2026-training-free-rl/ets-inspection-v1.json",
+      "inspection_receipt_sha256": "e21a23b6beb3084b31ed1dd2a842d030a714b4eaa72dc409c1eee0ae0d09b65e"
+    },
+    {
+      "method": "TF-GRPO",
+      "commit": "7612f860a2314c015573adc742f82157b0d66a6f",
+      "paper": "https://arxiv.org/abs/2510.08191",
+      "inspection_receipt_relative_to_data": "research/2026-training-free-rl/youtu-agent-inspection-v1.json",
+      "inspection_receipt_sha256": "5e17044962371c35178e8b0553cb3c7f1040a4849245215fe56d66c648d24fde"
+    }
+  ]
+}

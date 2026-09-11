@@ -1,5 +1,7 @@
 # Live system evidence gaps after reproducing the original results
 
+**Latest owner direction:** [OWNER-SLURP-FIRST-2026-RL-015.md](OWNER-SLURP-FIRST-2026-RL-015.md) selects SLURP first to stabilize the shared engineering base, then E21 and E22. Inspect actual 2026 training-free RL implementations; retain 2025 TF-GRPO as the baseline. Read STATUS-037 and the [SLURP-first implementation plan](../../../readiness/2026-09-11-slurp-first-system-and-training-free-rl-plan.md). This supersedes the E21-first proposal. OWNER014's quality/headroom objective and all historical verdicts remain intact.
+
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
 Date: 2026-09-10 UTC. Base inspected: 7c2f34f3. Continue the accepted Stage-2 plan; preserve OWNER-REPRODUCTION-FIRST-008 and the original-result audit. This document records the root's implementation review and the resulting engineering sequence. It grants no new generation, scoring or feature-encoding contact and changes no historical configuration.
@@ -16,7 +18,7 @@ Formal E21 preparation, DR/LOOP and the fresh offline pair are complete.
 Both stages, scores, fixed analyses and all four E21/SLURP settlements are closed.
 The fresh E21 PERSON benefit is supported, but insertion protection fails.
 The final matched SLURP pair fails NEW500 primary and intent protection.
-Read STATUS-036 and the September11 next-stage acceptance plan.
+Read STATUS-037 and the SLURP-first plan. The next gap is row-level retrieval/no-retrieval selection from the same current state; existing phase_planner early exit is not that action. Defer the E21 live-control seam until this shared SLURP base is locked.
 
 The generic review-to-bounded-phase-decision seam is now implemented and
 model-free tested through FlightRuntime and the real shared OpenJiuwen executor.

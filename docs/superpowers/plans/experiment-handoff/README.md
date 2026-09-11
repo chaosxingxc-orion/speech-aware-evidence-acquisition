@@ -1,8 +1,10 @@
 # Owner-directed Stage-2 continuation
 
+**Latest owner direction:** [OWNER-SLURP-FIRST-2026-RL-015.md](OWNER-SLURP-FIRST-2026-RL-015.md) selects SLURP first to stabilize the shared engineering base, then E21 and E22. Inspect actual 2026 training-free RL implementations; retain 2025 TF-GRPO as the baseline. Read STATUS-037 and the [SLURP-first implementation plan](../../../readiness/2026-09-11-slurp-first-system-and-training-free-rl-plan.md). This supersedes the E21-first proposal. OWNER014's quality/headroom objective and all historical verdicts remain intact.
+
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 36. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 37. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -35,7 +37,7 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-036.md](STATUS-036.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
+Read [STATUS-037.md](STATUS-037.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
 The owner explicitly resumed GPU work after network reconnection and prioritizes
 high utilization. This supersedes OWNER012's scheduling hold. E21 and SLURP generation, scoring, fixed analysis and all four settlements
 are complete. Both system admissions fail their frozen rules. The resident
@@ -68,13 +70,7 @@ Its historical September9 snapshot must not be mistaken for current unread work.
 STATUS-009 through STATUS-024 preserve earlier boundaries; their pending items
 are superseded only by the cited later decisions, never erased from history.
 
-The root now owns the SLURP service under OWNER013. Both E21 generations are sealed
-and bound; their CPU scoring is released. A stored count or
-handoff file does not grant launch authority or establish current process health.
-The repair consumes only this run's newly sealed predecessor, under
-[the repair handoff](../../../readiness/2026-09-11-e21-offline-repair-handoff.md).
-The full E21 pair is now released for CPU scoring. The SLURP full pair is also released after both arms sealed; keep the exemplar
-branch held under its recorded failed non-inferiority decision.
+The root retains the SLURP resident service under OWNER013. All four E21/SLURP attempts and their complete scoring/settlement are closed. Next implement the registered row-level supply-action seam and freeze a prospective SLURP feedback cohort. Keep the exemplar branch held. A stored receipt is not present health or dispatch authority.
 
 Use ChatGPT/OpenAI cloud subagents under [MODEL-ALLOCATION.md](MODEL-ALLOCATION.md);
 the main agent retains planning, scientific decisions, critical review and merge acceptance.

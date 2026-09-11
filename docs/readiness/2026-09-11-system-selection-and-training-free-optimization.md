@@ -1,5 +1,7 @@
 # System selection and training-free relative optimization
 
+**Superseded execution order:** OWNER-SLURP-FIRST-2026-RL-015 replaces the E21-first proposal below. Read [the current SLURP-first plan](2026-09-11-slurp-first-system-and-training-free-rl-plan.md) and [2026 source audit](2026-09-11-training-free-rl-2026-source-audit.md). Earlier results and gaps remain valid; historical paragraphs do not authorize reopening a closed flight.
+
 Authority: OWNER-SYSTEM-OPTIMIZATION-014. Status: root design direction; current evidence and proposed next implementation are distinguished. This document supersedes large-gain and cost-efficiency criteria in the previous next-stage plan. It does not rewrite the two closed system verdicts.
 
 ## Research questions in order

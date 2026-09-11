@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 36,
+  "generation": 37,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,10 +10,10 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "bcb230cc31e3aafec9bf094c3582d6663c16bb94",
-  "updated_at_utc": "2026-09-11T13:30:08.719249+00:00",
-  "next_action": "Read STATUS-036 and OWNER-SYSTEM-OPTIMIZATION-014. All4 E21/SLURP generation attempts FINALIZED; complete scores once, fixed analysis and root verdicts closed. Historical system gates fail but current owner prioritizes reusable system, component directions and relative training-free optimization, not large gain/cost. E21 primary candidate with PERSON benefit; retain insertion limitation. Resident SLURP service35780/wrapper49170/monitor62129 alive and idle, no lease/scorer/generation worker. Do not restart closed flights. Next implement shared current E21 reviewer/planner/selected-OBS seam and legal state/action/reward/artifact lifecycle; register eligible GPU work under owner013. Original goal active.",
+  "snapshot_commit": "d1ac910cfab20e4f04cff8b31b96d2e72c7dc816",
+  "updated_at_utc": "2026-09-11T13:57:17.947323+00:00",
+  "next_action": "Read STATUS-037 and OWNER-SLURP-FIRST-2026-RL-015. SLURP first to lock the shared engineering base, then E21/E22. Seven upstream source pins and model-free headroom audit complete; no new GPU contacts. Implement the narrow shared per-row retrieval/no-retrieval supply-action seam from the same current direct state, always dispatching slots. Prepare new fixed-role action/feedback cohort; TF-GRPO baseline then EvoTool-style 2026 modular candidate. No new optimizer runtime/flight yet. Four previous E21/SLURP attempts finalized; do not reopen OWNER011 pair or held S4. Root resident decoder35780 remains loaded; requalify identity and register actual contact plan before dispatch. Original goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
-  "latest_owner_decision_id": "OWNER-SYSTEM-OPTIMIZATION-014"
+  "latest_owner_decision_id": "OWNER-SLURP-FIRST-2026-RL-015"
 }

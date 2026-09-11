@@ -1,5 +1,7 @@
 # Shared-base SLURP and Earnings21 continuation
 
+**Latest owner direction:** [OWNER-SLURP-FIRST-2026-RL-015.md](OWNER-SLURP-FIRST-2026-RL-015.md) selects SLURP first to stabilize the shared engineering base, then E21 and E22. Inspect actual 2026 training-free RL implementations; retain 2025 TF-GRPO as the baseline. Read STATUS-037 and the [SLURP-first implementation plan](../../../readiness/2026-09-11-slurp-first-system-and-training-free-rl-plan.md). This supersedes the E21-first proposal. OWNER014's quality/headroom objective and all historical verdicts remain intact.
+
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
 Owner authority: OWNER-CONTINUATION-002. Coordinator and serving owner: Codex.
@@ -8,15 +10,10 @@ Execution environment: WSL Ubuntu-24.04 only. Repository documents and model-fac
 
 ## Current execution overlay
 
-Updated on 2026-09-11 from STATUS-036 and OWNER-GPU-RESUME-013. The original requirements below remain
+Updated on 2026-09-11 from STATUS-037 and OWNER-GPU-RESUME-013. The original requirements below remain
 the acceptance contract; this overlay records which have actual evidence.
 
-Owner scheduling override: OWNER-GPU-RESUME-013 supersedes the temporary GPU
-pause after network reconnection. Resume the already-approved, prepared SLURP
-matched pair under unchanged OWNER011 budgets/guards and frozen source21ebe2bc.
-Root switches the service and runs both arms continuously with four registered
-slots while the existing E21 CPU scoring/analysis continues. No extra flight or
-live configuration change is authorized solely to increase utilization.
+Owner scheduling override: OWNER013 permits eligible GPU work. OWNER011's single matched pair is now fully finalized and closed. OWNER015 prioritizes a new SLURP policy/action baseline before E21/E22; use new prospective registrations, not unused allowance from a closed flight. No configuration change or extra contact is justified solely by utilization.
 
 | Work | Current state | Evidence / next action |
 |---|---|---|
@@ -41,8 +38,7 @@ not a requirement to invent or evaluate a new dataset task.
 
 Complete the inherited SLURP and Earnings21 component experiments, recover and systematically
 analyze existing results, then freeze reproducible live system baselines. Remain in bounded
-Stage-2 on the frozen core and existing rosters. Keep LP-2, speech enhancement, E22 and new
-Audio2Tool flights outside the GPU queue; retain analysis/preparation side lanes only.
+Stage-2 on the frozen core and existing rosters. Keep LP-2, speech enhancement and new Audio2Tool flights outside the GPU queue. E22 is a later expansion under OWNER015 after SLURP and E21; establish its own carrier/admission/readiness before dispatch.
 Do not rerun or rescore the seven already-finalized KV flights automatically.
 Do not claim sealed-predecessor replay proves live end-to-end capability or cost.
 Retain the one-recovery-per-flight rule; a second failure stops that flight and requires a
@@ -121,7 +117,7 @@ asset revisions/hashes into a new identity authority.
 | G3 | Planned exclusive encoder cohort | Held by G2 failure; no missing-exemplar encoding |
 | G4 | Planned G2-matched decoder cohort | a/b/c held by G2 failure |
 | G5 | Formal GPU-prepared full-window/selected-cut packets; decoder-only c36864 np4 max1024 | Bridge, two DR sources/four deliveries and LOOP+twin completed and decided |
-| G6 | Original SLURP and E21 generation completed; program-matched SLURP np4 no-mmproj currently resident | Original SLURP guard failed; one approved matched follow-up sealed/scoring; offline E21 saved analysis in progress; depth2 remains last |
+| G6 | Original SLURP and E21 generation completed; program-matched SLURP np4 no-mmproj currently resident | Original and final matched SLURP verdicts and offline E21 analysis/settlement closed; new SLURP policy baseline next; depth2 remains last |
 
 Choose E21 np6 only after actual family-wide fit clears its registered margin. Otherwise use np4,
 9216/slot for the entire comparison block. Do not switch mid-arm or shorten the completion budget

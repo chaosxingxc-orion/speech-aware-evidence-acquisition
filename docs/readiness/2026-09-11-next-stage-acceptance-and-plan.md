@@ -1,5 +1,7 @@
 # Next-stage acceptance and execution after the September 11 cohort
 
+**Superseded execution order:** OWNER-SLURP-FIRST-2026-RL-015 replaces the E21-first proposal below. Read [the current SLURP-first plan](2026-09-11-slurp-first-system-and-training-free-rl-plan.md) and [2026 source audit](2026-09-11-training-free-rl-2026-source-audit.md). Earlier results and gaps remain valid; historical paragraphs do not authorize reopening a closed flight.
+
 **Superseded selection criteria:** OWNER-SYSTEM-OPTIMIZATION-014 replaces large-gain and cost-efficiency priorities. Read [system selection and training-free optimization](2026-09-11-system-selection-and-training-free-optimization.md) first. Historical failed guards remain facts, not automatic reasons to discard a research base. The CPU closure and recorded implementation gaps below remain valid.
 
 The approved E21 offline pair and final SLURP program-matched pair are generated, scored, scientifically decided and finalized. Finalization records complete custody; both system admissions fail their frozen rules. Preserve positive component evidence and every negative outcome. The original goal remains active.

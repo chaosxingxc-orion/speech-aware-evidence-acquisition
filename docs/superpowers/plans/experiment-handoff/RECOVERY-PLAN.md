@@ -1,5 +1,7 @@
 # Owner-directed recovery and continuation plan
 
+**Latest owner direction:** [OWNER-SLURP-FIRST-2026-RL-015.md](OWNER-SLURP-FIRST-2026-RL-015.md) selects SLURP first to stabilize the shared engineering base, then E21 and E22. Inspect actual 2026 training-free RL implementations; retain 2025 TF-GRPO as the baseline. Read STATUS-037 and the [SLURP-first implementation plan](../../../readiness/2026-09-11-slurp-first-system-and-training-free-rl-plan.md). This supersedes the E21-first proposal. OWNER014's quality/headroom objective and all historical verdicts remain intact.
+
 Role: engineering plan. Coordinator: Codex. Updated: 2026-09-11.
 The owner directed recovery from GitHub history and unmerged worktrees after Fable5.1 exhausted
 its weekly allowance. The current task is to recover and merge completed work, then continue from
@@ -7,8 +9,8 @@ the actual experiment state. The former request/reply exchange is historical; no
 
 ## Current continuation closure
 
-The archaeology below records the initial September9 recovery. STATUS-025 and
-the table below govern current work; completed scientific families must not be
+The archaeology below records the initial September9 recovery. STATUS-037 and
+the latest overlay govern current work; completed scientific families must not be
 replayed because an older paragraph says pending.
 
 | Work | Current state | Evidence / next action |
@@ -19,9 +21,9 @@ replayed because an older paragraph says pending.
 | E21 DR | Two full generations, four derived deliveries, scoring and decisions closed | Unit deliveries rejected; self constrained only a small discovery refresh; self free null; derivatives are correlated |
 | E21 LOOP and twin | Both complete; targeting contrast positive, incumbent floor failed | Retain KC-E1f; no additional LOOP generation admitted |
 | G6 SLURP live intent-to-slots | Complete, scored, decided and parent attempts finalized | Slots improve but the scenario guard fails; full system not admitted; retain prompt-identity attribution limit |
-| E21 offline direct-to-KC-E1f | Direct generation active; actual full fit passed; repair awaits its new sealed parent | Same resident np4 no-mmproj service; bind all1593 new windows before repair; quality remains unread |
+| E21 offline direct-to-KC-E1f | Both stages, complete official scores, fixed analysis and settlement closed | PERSON improves; insertion guard failed; source report unchanged |
 | Live E21 review/selection/observation | Not established by the direct-to-KC-E1f pair | Shared live Reviewer-to-Planner-to-observation evidence remains an explicit gap |
-| Dialogue/speaker-topic memory and final minutes | Design only | Temporal-source and episode-end contracts, shared state transitions and prospective evaluation remain required |
+| Dialogue/speaker-topic memory | Feasibility only | Evaluate later changes against dataset-native tasks; no invented minutes evaluator |
 | Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |
 
 ## Git history and merge decisions
@@ -67,21 +69,14 @@ treatment results exist. Any unresolved analysis must remain descriptive until i
 
 ## Current ordered work queue
 
-1. Continue the already-running E21 direct generation without changing its source.
-2. At seal, verify and bind all new windows; materialize the fixed repair
-   successor, perform its registered actual fit and generate on the same service.
-3. Close the full paired analysis and total cost using one complete score per
-   manifest. No early direct-quality read may select the repair.
-4. Keep failed scientific gates closed. Do not run KU-S4 exemplar encoding,
-   additional LOOP, or another SLURP recovery to seek a passing result.
-5. Record the still-unimplemented live E21 review/planning/observation path and
-   the separate meeting-minutes task. The current fixed repair system does not
-   satisfy these broader acceptance requirements.
-6. Keep depth2 last and independently registered; no live schedule mutation.
+1. Use the completed sealed-score headroom audit and 2026 static source review in STATUS-037.
+2. Add only the shared SLURP supply-action policy seam: row-level retrieval or explicit no retrieval from the same current draft, both continuing to the same slots phase.
+3. Prepare fixed update/validation/evaluation roles, actual requests, action groups and a new prospective registration while the resident decoder stays available.
+4. Execute the first shared feedback loop with TF-GRPO as the 2025 baseline; prioritize EvoTool-style targeted module evolution as the first 2026 system candidate.
+5. Lock reproducible interfaces without requiring a large gain, then extend the same base to E21 and E22 with dataset-native scoring.
+6. Preserve closed comparisons and held S4 exemplars; do not repeat failed flights. Depth2 remains deferred.
 
-The latest owner timing decision is OWNER-OFFLINE-QUALITY-009. Shared code,
-frozen source, complete identity, per-flight budgets, zero paid APIs and the
-Stage-2 stop line remain binding. No remote push has been performed.
+OWNER013 permits eligible GPU work; OWNER014 prioritizes quality/headroom; OWNER015 changes task order. Shared code, frozen source, complete identity, per-flight plans, zero paid experimental APIs and Stage-2 remain binding. No remote push has been performed.
 
 ## Work preserved outside main
 
@@ -114,4 +109,4 @@ one coordinator and one experiment in flight.
 
 ## September11 cohort closure
 
-Read STATUS-036, the two September11 system result notes and the next-stage acceptance plan. The E21 offline and final program-matched SLURP pairs have complete generation, scoring, fixed analysis and FINALIZED custody. Failed scientific guards remain binding. Shared raw saved-score settlement reuses complete scores and preserves frozen source worktrees. Live E21 review/selection/new-observation remains open.
+Read STATUS-037, the two September11 system result notes and the next-stage acceptance plan. The E21 offline and final program-matched SLURP pairs have complete generation, scoring, fixed analysis and FINALIZED custody. Failed scientific guards remain binding. Shared raw saved-score settlement reuses complete scores and preserves frozen source worktrees. Live E21 review/selection/new-observation remains open.
