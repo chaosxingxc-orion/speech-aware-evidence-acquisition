@@ -39,19 +39,23 @@
       "dataset_fragment": "earnings21-discovery-conec-names",
       "model_fragment": "q4km-e21-full90-packets-cddb000c-np4-v1",
       "readiness": {
-        "pending_requirements": [
-          "Complete1593-request repair fit with2x output reserve on the same resident service."
-        ],
-        "reason": "Await the complete actual repair fit and root generation admission.",
+        "pending_requirements": [],
+        "reason": "Root admits frozen whole-roster repair after all1593 actual requests fit with2x output reserve on the same direct-parent service.",
         "requirements": [
           {
             "kind": "preparation",
             "reason": "Complete freshly sealed direct predecessor,1593windows and44byte-exact stitched calls",
             "relpath": "derived/e21-predecessor/SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1/attempt-e21-offline-direct-generation-v1/window-hypotheses.json",
             "sha256": "c2036e928f59b9ae4a42ad079f263d1896d911ad25955fe1c02e9f2e3259a6fd"
+          },
+          {
+            "kind": "preparation",
+            "reason": "Complete actual current-parent repair request fit",
+            "relpath": "analysis/SAEA-E21-OFFLINE-KC-E1F-REPAIR-FIT-NP4-V1/request-fit.json",
+            "sha256": "f2135df1b15cf698e206b26fde9345046542576601282889d35aa85aafa4a6c4"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-E21-OFFLINE-KC-E1F-REPAIR-GENERATION-NP4-V1"
     }
@@ -150,6 +154,10 @@
       "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-preparation-provenance.json",
       "sha256": "72d097e3b153baccb75b4e6e221bc83a1ac60d36dd194c39822993db684ed757"
     }
+  },
+  "prepared_request_fit": {
+    "relpath": "analysis/SAEA-E21-OFFLINE-KC-E1F-REPAIR-FIT-NP4-V1/request-fit.json",
+    "sha256": "f2135df1b15cf698e206b26fde9345046542576601282889d35aa85aafa4a6c4"
   },
   "preserve_wire_responses": true,
   "prompt_fit_multiple": 2.0,
