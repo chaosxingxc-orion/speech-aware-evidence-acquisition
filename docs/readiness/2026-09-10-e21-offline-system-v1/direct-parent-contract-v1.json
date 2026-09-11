@@ -1,7 +1,7 @@
 {
   "attempt_id": "attempt-e21-offline-direct-generation-v1",
-  "config_hash": "28ef61c5cc0baa88df184e3d8696b101dc99060f7a36565676ec32d5c8a70577",
-  "protocol_hash": "dbce17e3d28e6b53f9df10d2d61e0deb9d297eca0b005ed5cddfde93d72e1da7",
+  "config_hash": "4ef7e13d242bf2a87d1ab4b82fff4876560adf52ee67294235f2262597239b98",
+  "protocol_hash": "d3eb7feff5ce46a0845c925734fb37bd2ca945f331936d5394843e03ff9678b4",
   "run_id": "SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1",
   "sample_ids": [
     "4320211",
