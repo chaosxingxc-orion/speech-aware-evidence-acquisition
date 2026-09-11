@@ -1,0 +1,14 @@
+{
+  "attempt_id": "attempt-e21-offline-kc-e1f-repair-fit-v1",
+  "carrier_lock_key": "earnings21-original",
+  "execution_profile": "bounded-discovery-probe",
+  "planned_gpu_hours": 2.0,
+  "planned_model_calls": 4780,
+  "planned_speech_audio_seconds": 150000,
+  "protocol_hash": "d68665c6d959ae5899ca5c7201583b22182df72b1431a9687741b8afa6fb97d2",
+  "run_id": "SAEA-E21-OFFLINE-KC-E1F-REPAIR-FIT-NP4-V1",
+  "schema": "saea-execution-plan-v1",
+  "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+  "split_role": "discovery",
+  "study": "speech-aware-evidence-acquisition"
+}
