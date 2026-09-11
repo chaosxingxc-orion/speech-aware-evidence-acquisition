@@ -40,7 +40,7 @@ def _record(
     record_id: str = "memory-a",
     sample_id: str = "slurp:train:001:audio",
     required: tuple[str, ...] = ("state:prior-response-present",),
-    excluded: tuple[str, ...] = ("state:knowledge-absent",),
+    excluded: tuple[str, ...] = (),
 ) -> ExperienceRecord:
     return ExperienceRecord.create(
         record_id=record_id,
@@ -177,7 +177,7 @@ def test_no_match_is_explicit_and_max_records_applies(tmp_path):
         tmp_path / "two",
         records=(
             _record(roster_sha, record_id="z"),
-            _record(roster_sha, record_id="a", excluded=()),
+            _record(roster_sha, record_id="a", excluded=("state:tool-result-present",)),
         ),
     )
     binding = load_experience_memory_binding(
@@ -440,3 +440,132 @@ def test_runtime_refuses_invalid_binding_before_gate_or_contact(tmp_path):
     with pytest.raises(FlightRuntimeError, match="experience manifest"):
         runtime.preflight()
     assert gate.calls == 0
+
+
+def test_legacy_phase_tool_receipt_keeps_exact_historical_shape():
+    snapshot = _knowledge_snapshot()
+    program = rc.default_phase_program("phase-draft-revise-v1")
+    dispatcher = build_phase_tools(
+        {
+            "phase_tools": {
+                "draft": {
+                    "mode": "fixed",
+                    "allowed_tools": ["saea-tool-task-contract-v1"],
+                    "fixed_action": {
+                        "tool_id": "saea-tool-task-contract-v1",
+                        "arguments": {},
+                    },
+                }
+            }
+        },
+        program,
+        snapshot=snapshot,
+    )
+    assert set(dispatcher.receipt()) == {
+        "schema",
+        "phases",
+        "attempts",
+        "completed",
+        "result_hashes",
+    }
+
+
+def test_flight_runtime_loads_memory_once_and_openjiuwen_carries_it_to_solver(
+    tmp_path, monkeypatch
+):
+    import shutil
+
+    from speech_aware_evidence_acquisition.rails import experience_memory_runtime as emr
+    from speech_aware_evidence_acquisition.rails.core_client import FrozenCoreClient
+    from test_flight_runtime import _git, _make_runtime
+    from test_rails_frozen_core_client import (
+        _World,
+        _binding as payload_binding,
+        _speech_feature_world,
+    )
+    from test_rails_runner import _FakeAdapter
+
+    source_repo, source_data, binding_config = _world(tmp_path / "binding")
+    world = _World(tmp_path / "wire")
+    feature_root, _, packets = _speech_feature_world(world, tmp_path / "wire")
+    baseline = {
+        **binding_config,
+        "phase_tools": {
+            "draft": {
+                "mode": "fixed",
+                "allowed_tools": [CORRECTIVE_MEMORY_TOOL],
+                "fixed_action": {
+                    "tool_id": CORRECTIVE_MEMORY_TOOL,
+                    "arguments": {},
+                },
+            }
+        },
+        "phase_material": {
+            phase: {
+                "instruction_template": f"probes/{phase}.txt",
+                "predecessor_binding": "none",
+            }
+            for phase in ("draft", "revise")
+        },
+    }
+    runtime = _make_runtime(
+        tmp_path / "runtime",
+        happy_path=True,
+        config_kwargs={
+            "arm": "speech-feature-query",
+            "policy": "phase-draft-revise-v1",
+            "carrier_lock_key": "slurp",
+            "model_extra": {"speech_feature_root": str(feature_root)},
+            "baseline_extra": baseline,
+        },
+        adapter_cls=lambda _lock, _root: _FakeAdapter(samples=tuple(world.samples)),
+        client_factory=FrozenCoreClient,
+        payload_binding_factory=lambda **_kw: replace(
+            payload_binding(world), carrier_lock_key="slurp"
+        ),
+    )
+    roster_target = runtime._repo_root / "rosters/train.json"
+    roster_target.parent.mkdir(parents=True)
+    shutil.copy2(source_repo / "rosters/train.json", roster_target)
+    shutil.copytree(source_data / "memory", runtime._data_root / "memory")
+    (runtime._repo_root / "configs/dataset/d.json").write_text(
+        json.dumps({"carrier_lock_key": "slurp", "split_id": "all"})
+    )
+    for phase in ("draft", "revise"):
+        prompt = runtime._repo_root / f"configs/probes/{phase}.txt"
+        prompt.parent.mkdir(parents=True, exist_ok=True)
+        prompt.write_text(f"Solve the task during {phase}.")
+    _git(runtime._repo_root, "add", "-A")
+    _git(runtime._repo_root, "commit", "-q", "-m", "add pinned memory inputs")
+    runtime._load_knowledge_snapshot = _knowledge_snapshot
+    runtime.speech_packet_bindings = lambda: packets
+    runtime._speech_feature_root = lambda: feature_root
+
+    loads = []
+    real_load = emr.load_experience_memory_binding
+
+    def observed_load(*args, **kwargs):
+        loads.append(1)
+        return real_load(*args, **kwargs)
+
+    monkeypatch.setattr(emr, "load_experience_memory_binding", observed_load)
+    payloads = []
+    receipt = runtime.wire_check(
+        seal_and_score=False,
+        response_text="synthetic response",
+        request_payload_observer=lambda payload: payloads.append(payload),
+    )
+
+    assert loads == [1]
+    assert receipt["model_contacts"] == 0
+    assert receipt["dispatch"]["phase_tools"]["memory_lineage"]
+    assert len(payloads) == 2 * len(world.samples)
+    successor_payloads = [
+        payload
+        for payload in payloads
+        if "Review the available evidence" in json.dumps(payload)
+    ]
+    assert len(successor_payloads) == len(world.samples)
+    for payload in successor_payloads:
+        serialized = json.dumps(payload)
+        assert "slurp:train:001:audio" not in serialized
