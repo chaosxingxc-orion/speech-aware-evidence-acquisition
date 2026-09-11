@@ -1,0 +1,77 @@
+{
+  "schema": "saea-slurp-program-matched-analysis-plan-v1",
+  "status": "FROZEN_ANALYSIS_HELD_BEFORE_GENERATION",
+  "identity": {
+    "comparison_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-PAIRED-ANALYSIS-V1",
+    "control": {
+      "run_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1",
+      "attempt_id": "attempt-live-program-matched-control-generation-v1",
+      "derived_delivery_id": "live-program-matched-control-delivery-v1"
+    },
+    "speech": {
+      "run_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1",
+      "attempt_id": "attempt-live-program-matched-speech-generation-v1",
+      "derived_delivery_id": "live-program-matched-speech-delivery-v1"
+    }
+  },
+  "purpose": "Measure the same frozen G6 estimands and guards after prospectively matching the model-visible phase program identifier in both arms. Each arm generates its own complete first-stage answer; no historical or shared predecessor answer is reused.",
+  "owner_decision_id": "OWNER-SLURP-MATCHED-COMPARISON-011",
+  "source_analysis_plan": {
+    "path": "docs/readiness/2026-09-10-slurp-live-system-v1/analysis-plan.json",
+    "sha256": "646304a6540eda1483c8d92be7990f075edb0e9b420fef65960c103b58422ef0",
+    "preservation": "Every population, metric, estimand, resampling, seed, interval, weighting, guard, interpretation, stopping, cost-reporting and attribution definition below is retained; only comparison identity and purpose are updated."
+  },
+  "proposal": {
+    "path": "docs/readiness/2026-09-11-slurp-program-matched-comparison-proposal.md",
+    "sha256": "3d158aca09bfc44eaef6a41e51b63b6ce7bdd4475ec9e889c26b83421a6ad249"
+  },
+  "historical_failed_decision": {
+    "retained": true,
+    "path": "docs/readiness/2026-09-10-slurp-live-intent-slots-result.md",
+    "sha256": "d7cb4bbaad48173719b7be65705a1c964a7b608a5df34bc3ffea3e3c690647b7",
+    "status": "SYSTEM_NOT_ADMITTED",
+    "failed_guard": "NEW500 scenario accuracy point change was -0.2 percentage points. This new pair does not replace or reinterpret that decision."
+  },
+  "execution_accounting": {
+    "planned_generation_contacts": 4000,
+    "generation_contact_ceiling": 4200,
+    "planned_live_fit_endpoint_contacts": 12004,
+    "family_utilization_gpu_hours_ceiling": 1.0,
+    "per_arm_utilization_gpu_hours_ceiling": 0.5,
+    "per_arm_speech_audio_seconds_ceiling": 6000,
+    "paid_api_spend": 0
+  },
+  "launch_gate": "HELD. Root admission is required after all config, fit, serving and source bindings are complete. No score or result read is released before both arms seal, or a root-recorded comparison hold closes the pair.",
+  "population": {
+    "primary": "historically exposed NEW500",
+    "secondary": [
+      "OLD500",
+      "DEV-1000"
+    ],
+    "roster_changes": false
+  },
+  "comparison": "program-matched live speech supply minus program-matched live empty-supply control; same new service process and source, both independent first and second stages regenerated",
+  "primary_metric": "paired per-sample official SLU-F1 in percentage points, matching the inherited S3 estimand",
+  "standard_reported_metric": "full-manifest official micro SLU-F1; distinguish pooled TP/FP/FN from mean row F1",
+  "uncertainty": {
+    "resamples": 10000,
+    "seed": 20260903,
+    "primary_cluster": "speaker",
+    "interval": "CI90",
+    "weightings": [
+      "natural-mixture",
+      "equal-scenario"
+    ],
+    "sensitivity": "inherited row bootstrap, explicitly secondary"
+  },
+  "candidate_rule": {
+    "primary": "NEW500 natural-mixture row SLU-F1 CI90 lower bound > 0",
+    "pooled_metric": "NEW500 pooled micro SLU-F1 gain > 0",
+    "weighting": "equal-scenario row SLU-F1 point gain > 0",
+    "protection": "NEW500 intent, scenario and action accuracy point changes are each nonnegative; malformed final delivery and output saturation counts do not increase"
+  },
+  "interpretation": "The protection rule is a prospective descriptive policy guard, not a non-inferiority or equivalence test. Historical np8/max64 null margins do not calibrate this np4/max256 live system. A positive first system comparison is bounded discovery evidence, not a new confirmatory or generalization claim.",
+  "further_contact": "No adaptive rerun, reasoning arm, new roster or automatic extra control. Any minimum same-configuration repetition must have a named decision purpose and separate prospective registration.",
+  "cost": "Report all direct and slots generation, two live fits, actual failures/fallbacks, packet/input size, service load, generation, preparation/barrier waiting and score tail separately.",
+  "attribution": "OBS uses identical validated speech features; ORG retains original examples and live predicted intent schema; SUPPLY adds the inherited speech-keyed top-five TRAIN filler supply only in slots; USE remains the same frozen Solver. Report the full system and component references separately."
+}
