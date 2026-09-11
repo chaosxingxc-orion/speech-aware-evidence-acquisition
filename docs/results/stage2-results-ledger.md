@@ -4,6 +4,32 @@ One row per cell, grouped by carrier and by layer. Owner Decision 14-Q, 2026-09-
 
 **Scope.** Every cell decided by a verdict note dated 2026-09-04 to 2026-09-09, plus the four entries of docs/receipts/harness-admission.json and registered cells whose scientific decisions remain pending; the 2026-09-09 owner recovery adds operational completion for all seven KV flights without inspecting their score values. Machine-readable twin: `docs/results/stage2-results-ledger.json`. Checked by `scripts/checks/results_ledger_check.py`.
 
+## Current continuation status — source-bound 2026-09-10/11 updates
+
+This table is the current routing layer. The 53 detailed rows and their counts below are an immutable **2026-09-09 historical snapshot**. Their `PENDING`, `not measured`, `verdict note: none`, and `named next step` fields describe what was known then and are superseded where this table names the same historical cell. Current entries do not retroactively alter those decisions, count deterministic derivatives as independent flights, or turn preparation run IDs into generation runs. Every source hash is the SHA-256 of the cited repository file at this ledger revision.
+
+| Current entry | Current status | Registered generation run(s) | Meaning | Authoritative repository source and SHA-256 | Superseded historical row |
+|---|---|---|---|---|---|
+| SLURP-KV-0-CURRENT | **HARMFUL** | `SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1` | Harmful base; retain KC-S1b. | `docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/family-decision.json` · `0f2570f185bc6275c9aaa2e8b137b45df4383e344d6b75695d2e5068c834d01b` | SLURP-KV-0 |
+| SLURP-KV-1-CURRENT | **NULL_COMPATIBLE** | `SAEA-SLURP-KV1-DESCRIPTIONS-DEV1000-V1` | Primary intervals span zero; no equivalence or NI claim. | `docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/family-decision.json` · `0f2570f185bc6275c9aaa2e8b137b45df4383e344d6b75695d2e5068c834d01b` | SLURP-KV-1 |
+| SLURP-KV-1-TWIN-CURRENT | **COMPARATOR_ONLY** | `SAEA-SLURP-KV1-DESCRIPTIONS-TWIN-DEV1000-V1` | Attribution twin; no independent verdict. | `docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md` · `8c1c4b6609aeceb08f33508c73a943cceebdbcdb58e669f6614a474bff8bdc04` | SLURP-KV-1-TWIN |
+| SLURP-KV-2-CURRENT | **NOT_ADMITTED_ROTATING_TWIN_GATE_FAILED** | `SAEA-SLURP-KV2-CARDS-DEV1000-V1` | Gain over KV-0 does not pass the inherited rotating-stratum twin gate. | `docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/family-decision.json` · `0f2570f185bc6275c9aaa2e8b137b45df4383e344d6b75695d2e5068c834d01b` | SLURP-KV-2 |
+| SLURP-KV-2-TWIN-CURRENT | **COMPARATOR_ONLY** | `SAEA-SLURP-KV2-CARDS-TWIN-DEV1000-V1` | Attribution twin; no independent verdict. | `docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md` · `8c1c4b6609aeceb08f33508c73a943cceebdbcdb58e669f6614a474bff8bdc04` | SLURP-KV-2-TWIN |
+| SLURP-KV-3-CURRENT | **NULL_COMPATIBLE** | `SAEA-SLURP-KV3-FEWSHOT-DEV1000-V1` | Primary intervals span zero; no equivalence or NI claim. | `docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/family-decision.json` · `0f2570f185bc6275c9aaa2e8b137b45df4383e344d6b75695d2e5068c834d01b` | SLURP-KV-3 |
+| SLURP-KV-3-TWIN-CURRENT | **COMPARATOR_ONLY** | `SAEA-SLURP-KV3-FEWSHOT-TWIN-DEV1000-V1` | Attribution twin; no independent verdict. | `docs/checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md` · `8c1c4b6609aeceb08f33508c73a943cceebdbcdb58e669f6614a474bff8bdc04` | SLURP-KV-3-TWIN |
+| SLURP-KU-S3-MAX256-RECOVERY | **ADMITTED_COMPONENT** | See decision-bound source products. | Entity-side gates and joined-intent protection pass; no live-system claim. | `docs/checks/speech-aware-evidence-acquisition/2026-09-10-ku-s3-max256-recovery-verdict/decision.json` · `d23bc235e79438a591d9bf0afb64f709c7f58ba8c491eef48557e38398916bee` | SLURP-KU-S3 |
+| SLURP-KU-S3-INDEPENDENT-REPEAT | **PASS_COMPONENT_REPEAT** | `SAEA-SLURP-KU-S3A-INDEPENDENT-REPEAT-MAX256-V1` | Passes the component-repeat criterion; no repeat-original equivalence or full-system claim. | `docs/readiness/2026-09-10-ku-s3-independent-repeat-decision.md` · `b705aec6e975d2dd58db5c017e5d20593d2ff7a3760526bfbcc3e6bb04d87283` | — |
+| SLURP-KU-S4N-G2-N | **HOLD_NONINFERIORITY_FAILED** | `SAEA-SLURP-KUS4N-CANDIDATES-DEV1000-V3` | Frozen NI fails; G3 and G4 remain held. | `docs/checks/speech-aware-evidence-acquisition/2026-09-10-ku-s4n-g2-readout/decision.json` · `e6feda6bec2c21bc44ac582a7e4550deaebbded0aa939596e029c80d052198b5` | — |
+| SLURP-KU-S4N-G2-TWIN | **COMPARATOR_COMPLETED_HELD** | `SAEA-SLURP-KUS4N-CANDIDATES-TWIN-DEV1000-V3` | Completed paired comparator; no independent admission. | `docs/checks/speech-aware-evidence-acquisition/2026-09-10-ku-s4n-g2-readout/decision.json` · `e6feda6bec2c21bc44ac582a7e4550deaebbded0aa939596e029c80d052198b5` | — |
+| E21-DR-PACKETS-UNIT-CONSTRAINED | **REJECTED** | `SAEA-E21-DR-PACKETS-UNIT-GENERATION-V2` | Fails PERSON, nonentity, and numeric protection. Correlated with unit-free. | `docs/readiness/2026-09-10-e21-dr-packets-four-delivery-decision.md` · `e5ea755a45f44df2ee1aa3a48b186dc1fa2ff91665b37efbc2809bb67ef6378f` | E21-DR1 |
+| E21-DR-PACKETS-UNIT-FREE | **REJECTED** | `SAEA-E21-DR-PACKETS-UNIT-GENERATION-V2` | Directional WER harm. Correlated with unit-constrained. | `docs/readiness/2026-09-10-e21-dr-packets-four-delivery-decision.md` · `e5ea755a45f44df2ee1aa3a48b186dc1fa2ff91665b37efbc2809bb67ef6378f` | E21-DR1 |
+| E21-DR-PACKETS-SELF-CONSTRAINED | **ADMITTED_AS_DISCOVERY_REFRESH_IMPROVEMENT** | `SAEA-E21-DR-PACKETS-SELF-GENERATION-V2` | Passes discovery gates with small-effect/protocol limits; does not replace KC-E1f. | `docs/readiness/2026-09-10-e21-dr-packets-four-delivery-decision.md` · `e5ea755a45f44df2ee1aa3a48b186dc1fa2ff91665b37efbc2809bb67ef6378f` | E21-DR1 |
+| E21-DR-PACKETS-SELF-FREE | **NULL_NO_DEMONSTRATED_WER_GAIN** | `SAEA-E21-DR-PACKETS-SELF-GENERATION-V2` | No demonstrated corpus-WER gain. Correlated with self-constrained. | `docs/readiness/2026-09-10-e21-dr-packets-four-delivery-decision.md` · `e5ea755a45f44df2ee1aa3a48b186dc1fa2ff91665b37efbc2809bb67ef6378f` | E21-DR1 |
+| E21-LOOP-PACKETS-NP4 | **RETAIN_KC_E1F_SYSTEM_FLOOR_FAILED** | `SAEA-E21-LOOP-PACKETS-NP4-JUDGE-GENERATION-V1`; `SAEA-E21-LOOP-PACKETS-NP4-TWIN-GENERATION-V1` | Targeting beats the twin, but PERSON retention against KC-E1f fails. No further LOOP generation. | `docs/readiness/2026-09-10-e21-loop-packets-decision.md` · `3c473dd3cfd5029565b17c6b454bb88d64e98a35db22b16a2437448e1d709029` | E21-LOOP-1 |
+| SLURP-G6-LIVE-INTENT-SLOTS | **NOT_FULLY_ADMITTED_GUARD_FAILED** | `SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-RECOVERY-V1`; `SAEA-SLURP-LIVE-INTENT-SLOTS-SPEECH-V1` | Positive slot evidence, but the frozen scenario protection point guard fails. | `docs/readiness/2026-09-10-slurp-live-intent-slots-result.md` · `d7cb4bbaad48173719b7be65705a1c964a7b608a5df34bc3ffea3e3c690647b7` | — |
+| E21-OFFLINE-DIRECT-THEN-KC-E1F | **IN_PROGRESS** | `SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1` | New direct parent active; repair remains unadmitted until seal and exact 1,593-window predecessor binding. No quality result is recorded. | `docs/readiness/2026-09-11-e21-offline-repair-handoff.md` · `9ed07bf31c53efa00ecc19bc07c0de4ab9f8db2cd0f99116550ccca21f258c20` | — |
+| FABLE-RESULT-REPRODUCTION-AUDIT | **NUMERICALLY_REPRODUCED** | none; model-free read | Reproduces historical numbers without changing verdicts. | `docs/receipts/fable-result-reproduction-v1.json` · `57a19ffea284b3de7d8c4bd078c463cb9e52f0239d5c7c6089c65a3ba7d7fa89` | — |
+
 ## The rules this ledger follows
 
 - **Family rule (owner, 2026-09-08).** Every "not worse" guard is a non-inferiority test whose margin is the half-width of the carrier's OWN same-request null. A margin imported from another carrier is labelled as imported wherever it decided a cell, and the row says so.
@@ -36,7 +62,9 @@ Words the verdicts actually used that are outside that list, carried verbatim ra
 
 ADMITTED-provisional is spelled here as status ADMITTED plus a `provisional` field, because that is what the KC-E1f v2 re-decision's own first line says: "**ADMITTED**, provisionally and with a replication obligation fixed in section 3".
 
-## Per-carrier summary
+## Historical per-carrier summary — frozen 2026-09-09 snapshot
+
+The counts in this section apply only to the 53 historical rows below. They intentionally exclude the current continuation table above.
 
 | carrier | comparator locked at | own null measured | cells flown | admitted | aligned | neutral | rejected | instrument | pending |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|
@@ -1370,7 +1398,9 @@ ADMITTED-provisional is spelled here as status ADMITTED plus a `provisional` fie
 
 It is a transcription, not an analysis: it recomputes no interval, re-weights no stratum and issues no verdict of its own. Where a verdict and the umbrella page state the same headline, the check compares them and reports any disagreement; it never edits the umbrella.
 
-## Owner continuation update: 2026-09-10
+## Superseded owner continuation note: early 2026-09-10
+
+This paragraph predates the source-bound current continuation table at the top and is retained as history.
 
 The tables above retain the historical recovery transcription. Current KU-S3 max256 recovery is **ADMITTED_COMPONENT**: three new 1,000-row arms completed and scored once each, two registered NEW500 row-SLU-F1 contrasts pass, and the inherited joined-intent protection is verified without changing entity predictions or original outputs. See the [component verdict](../checks/speech-aware-evidence-acquisition/2026-09-10-ku-s3-max256-recovery-verdict/README.md). Live full-system and inherited replication requirements remain open. KV recovery is complete in the [family report](../checks/speech-aware-evidence-acquisition/2026-09-09-kv-recovery/FAMILY-REPORT.md); historical missing decisions remain explicit.
 
