@@ -65,6 +65,12 @@
     }
   },
   "policy": "phase-direct-then-slots-supplied-v1",
+  "prepared_phase_recall": {
+    "slots": {
+      "relpath": "prepared/SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-PREPARE-V1/recall.json",
+      "sha256": "7295b85d86f0392afbdec7a06a798d7c94a13ef0d11f73d64f812ca8701ac820"
+    }
+  },
   "scorers": [
     "slurp-slu-official",
     "slurp-slu",
