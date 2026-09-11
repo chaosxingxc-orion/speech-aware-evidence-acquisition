@@ -60,7 +60,7 @@
   },
   "execution_plan_basis": {
     "fit": "Two registered phase fits per arm require 6,002 endpoint contacts per arm; fit registration remains pending.",
-    "generation": "Two phases over DEV-1000: 2,000 target contacts with a 2,100 per-arm ceiling; no extra probes or retries."
+    "generation": "Two phases over DEV-1000: 2,000 target contacts with a 2,100 per-arm ceiling. Bounded retries, if needed, stay within that registered ceiling; no extra probe or unregistered recovery."
   },
   "experiment_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1",
   "family_budget": {
@@ -70,7 +70,7 @@
   },
   "fragment_kind": "saea-slurp-live-phase-experiment-v1",
   "live_fit_execution": "The baseline live_phase_fit declares the distinct tokenizer run and attempt. It is an internal bounded phase gate; do not dispatch a standalone prompt-fit over synthetic predecessors.",
-  "migration_status": "ROOT_REGISTERED: the sole recovery of the first control, after root repaired and tested the phase-boundary audit connection.",
+  "migration_status": "OWNER_APPROVED_PROSPECTIVE_HELD: fresh matched-program pair; exposure, wire, fit and service admission remain pending.",
   "population": {
     "count": 1000,
     "dataset_fragment": "slurp-speech-native-dev1000",
@@ -80,19 +80,6 @@
   },
   "preserve_wire_responses": true,
   "purpose": "Prospective held matched-program SLURP comparison: identical direct-then-slots-supplied program identity, empty null supply versus existing speech-keyed slots supply.",
-  "recovery_registration": {
-    "combined_actual_fit_plus_recovery_ceiling": 9004,
-    "combined_target_generation_contacts": 3000,
-    "fix": "Use a fresh audit client per actual phase; preserve cumulative contact guard and forbid failed-endpoint retries.",
-    "maximum": 1,
-    "ordinal": 1,
-    "original_actual_generation_contacts": 1000,
-    "recovery_target_generation_contacts": 2000,
-    "root_cause": "One keep-alive audit client persisted across the generation wave and expired before the second-phase props call.",
-    "second_failure_action": "Stop the flight; no second recovery. Prove any further fix on a separately registered four-row dry run before a new proposal.",
-    "source_failed_attempt_id": "attempt-live-intent-slots-control-generation-v1",
-    "source_failed_run_id": "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-V1"
-  },
   "request_decoding_overrides": {
     "max_tokens": 256
   },
