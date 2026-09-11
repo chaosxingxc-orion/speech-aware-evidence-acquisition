@@ -1,0 +1,7 @@
+# E21 offline direct generation admission
+
+Root admits the new full44 direct parent, target 1593 windows and ceiling 1750 calls, 2.0 utilization GPU-hours and 150000 speech seconds. Its complete actual-request fit passed on the resident decoder session, with all 1593 requests covered, 4780 tokenizer contacts, 0 generation contacts and minimum margin 4704 tokens under 2x output reserve. Fit path /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-OFFLINE-DIRECT-FIT-NP4-V1/request-fit.json; SHA-256 7ffb27a3ea6409bd85a451ec60140c1df842fb4d309b125a580c2d37c1f848d1.
+
+The generation config is 070eebc006e5eeefe35261b4739756fc6ce90bb92d6efcd8b2bfa734f7c1fef1; protocol a292b3978250e797a18591b479506e876a95faa23329be3f5e1b9091543321c4. Only the prepared fit pin and generation readiness changed; common artifact-input identity was checked equal to the completed fit. The fit plan and its exposure row remain unchanged. The future direct-parent contract and binding plan now name the generation identity together.
+
+Use only the existing root lease handoff and attach-only worker against serving-e21-offline-direct-repair-np4-v1. Reuse all formal packets; do not load a projector or start another server. Keep the raw parent and derive its whole-roster predecessor before any quality/reference read. Read direct quality only after stage2 seals or a formal hold closes the comparison. No change to repair template, analysis plan, roster, geometry, output cap or scientific budget is admitted.
