@@ -112,3 +112,7 @@ one coordinator and one experiment in flight.
 ## September11 cohort closure
 
 Read STATUS-040, the two September11 system result notes and the next-stage acceptance plan. The E21 offline and final program-matched SLURP pairs have complete generation, scoring, fixed analysis and FINALIZED custody. Failed scientific guards remain binding. Shared raw saved-score settlement reuses complete scores and preserves frozen source worktrees. Live E21 review/selection/new-observation remains open.
+
+## September 11 complete task-agent closeout
+
+Read STATUS-043 and docs/readiness/2026-09-11-slurp-task-agent-result.md. The new direct/knowledge/frame family is fully generated, officially scored once per raw parent, paired/analyzed and FINALIZED from saved scores. Retain compact frame for matched replication; primary entity gains remain unresolved. Keep malformed raw-output and early-serialization qualifications. No new contact is admitted by this closeout. Runtime source1c11d910 remains preserved. Knowledge design and Audio2Tool live-card readiness are documented alongside the result; all historical closed gates remain unchanged.

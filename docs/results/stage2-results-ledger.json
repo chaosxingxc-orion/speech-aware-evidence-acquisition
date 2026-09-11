@@ -2524,7 +2524,7 @@
       "preregistration": "docs/readiness/2026-09-08-slurp-logprob-judge-probe-v1-preregistration.md",
       "status": "NOT ADMITTED",
       "status_source": "h1",
-      "status_quote": "# Verdict \u2014 the SLURP logprob-as-judge probe: **NOT ADMITTED**",
+      "status_quote": "# Verdict — the SLURP logprob-as-judge probe: **NOT ADMITTED**",
       "pending": false,
       "comparator": {
         "text": "The sealed closed-list direct request is unchanged except for decoding_params.logprobs=true and top_logprobs=5. The admission bars concern the confidence signal; the greedy own-null replicate is the latency reference, not a replacement task baseline.",
@@ -3481,6 +3481,19 @@
         "SAEA-SLURP-DISCRIMINATIVE-VALUE-SPAN-V1"
       ],
       "source_sha256": "3335c8c0d206bd08f416753f34078783777b4510dada6b941446615494f6c2cb"
+    },
+    {
+      "date": "2026-09-11",
+      "cell_id": "SLURP-COMPLETE-TASK-AGENT-V1",
+      "status": "INTENT_SIGNAL_ENTITY_UNRESOLVED_NO_FULL_TASK_ADMISSION",
+      "source": "docs/readiness/2026-09-11-slurp-task-agent-result.md",
+      "meaning": "All3 live raw arms FINALIZED. Derived frame-direct NEW500 intent+2.6pp CI90[0.693,4.398]; primary entity improvement unresolved. Retain frame for matched replication; disclose malformed outputs, initial-state variation and direct serialization deviation. No full-system lock.",
+      "run_ids": [
+        "SAEA-SLURP-TASK-AGENT-DIRECT-V1",
+        "SAEA-SLURP-TASK-AGENT-KNOWLEDGE-V1",
+        "SAEA-SLURP-TASK-AGENT-FRAME-V1"
+      ],
+      "source_sha256": "7354e66cb93d82c86779f765fbff2ee5c9cd8925639e8e415b30d0b2c3b96920"
     }
   ]
 }

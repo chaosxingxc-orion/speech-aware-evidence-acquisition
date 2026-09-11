@@ -1,12 +1,12 @@
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-042.md](STATUS-042.md) closes the new1000-row-per-arm discriminative-value pair. Its source-span bundle is NEGATIVE_COMPONENT_NOT_SELECTED: NEW500 row-F1-6.0619pp, with increased omission and no max256 saturation. Both attempts are FINALIZED from first complete scores; both leases are released and the decoder service is retained. Corrective-memory runtime and legacy-compatibility fixes are integrated with a positive synthetic FlightRuntime/OpenJiuwen proof; no real memory is admitted. Next construct TRAIN-grounded task distinctions and a new complete-agent comparison. Preserve historical verdicts and the SLURP-first preference.
+**Latest execution:** [STATUS-043.md](STATUS-043.md) closes the live direct/historical-knowledge/compact-frame SLURP family. All3 attempts are FINALIZED from first complete scores. The compact frame has a positive primary intent contrast but unresolved primary entity improvement; retain it for matched replication, not full-system admission. Actual fixed tools and all selected-ID matches are verified. Report malformed raw outputs, initial-state variation and the direct serialization deviation. All worker leases are released; the same decoder service is retained.
 
-**Latest owner direction:** [OWNER-DISCRIMINATIVE-VALUES-021.md](OWNER-DISCRIMINATIVE-VALUES-021.md), with OWNER018-020, prioritizes source-grounded distinctions in task-specific values. Include all eight Audio2Tool tiers alongside SLURP and E21/E22 in design/readiness; share the execution base and specialize knowledge and corrective-memory construction. Read [STATUS-042.md](STATUS-042.md) and the [dataset/task analysis](../../../readiness/2026-09-11-task-specific-knowledge-and-memory-analysis.md). Full TRAIN relationship counts and per-carrier audits are complete; three value-format primitives and a TRAIN-bound memory library have CPU tests. Runtime memory integration now has a positive synthetic executor proof; actual memory admission and new registered GPU system comparisons remain pending. Preserve historical verdicts and the SLURP-first execution preference.
+**Latest owner direction:** [OWNER-DISCRIMINATIVE-VALUES-021.md](OWNER-DISCRIMINATIVE-VALUES-021.md), with OWNER018-020, prioritizes source-grounded distinctions in task-specific values. Include all eight Audio2Tool tiers alongside SLURP and E21/E22 in design/readiness; share the execution base and specialize knowledge and corrective-memory construction. Read [STATUS-043.md](STATUS-043.md) and the [dataset/task analysis](../../../readiness/2026-09-11-task-specific-knowledge-and-memory-analysis.md). Full TRAIN relationship counts and per-carrier audits are complete; three value-format primitives and a TRAIN-bound memory library have CPU tests. Runtime memory integration now has a positive synthetic executor proof; actual memory admission remains pending. The first new live task-agent comparison is closed; its matched full-system replication requires a new registration. Preserve historical verdicts and the SLURP-first execution preference.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 42. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 43. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -39,7 +39,7 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-042.md](STATUS-042.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
+Read [STATUS-043.md](STATUS-043.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
 The owner explicitly resumed GPU work after network reconnection and prioritizes
 high utilization. This supersedes OWNER012's scheduling hold. E21 and SLURP generation, scoring, fixed analysis and all four settlements
 are complete. Both system admissions fail their frozen rules. The resident
