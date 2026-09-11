@@ -1,6 +1,6 @@
 # Shared-base SLURP and Earnings21 continuation
 
-**Latest owner correction:** [OWNER-MULTIMODAL-SYSTEM-FIRST-016.md](OWNER-MULTIMODAL-SYSTEM-FIRST-016.md) makes the complete multimodal task agent the design target: real tool invocation, TRAIN knowledge/episodic memory, current state, evidence consumption and bounded control. Read [STATUS-038.md](STATUS-038.md) and the [full system specification](../../../readiness/2026-09-11-multimodal-task-agent-system.md). Retrieval/no-retrieval is a later ablation; optimizer choice follows the executable system. Keep SLURP first, then E21/E22, with OWNER014 quality-first and historical verdicts intact.
+**Latest owner correction:** [OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017.md](OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017.md) distinguishes source knowledge from learned corrective experience. TRAIN speech/text examples, schema and facts are knowledge; analyzed corrections and validated conditional rules are memory. Read [STATUS-039.md](STATUS-039.md) and the [revised system specification](../../../readiness/2026-09-11-multimodal-task-agent-system.md). The shared action/knowledge increment is implemented and under boundary verification; a durable experience-memory runtime and full system GPU cohort remain next work. Preserve OWNER016 system-first, SLURP-first transfer, quality-first selection and all closed verdicts.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
@@ -10,10 +10,10 @@ Execution environment: WSL Ubuntu-24.04 only. Repository documents and model-fac
 
 ## Current execution overlay
 
-Updated on 2026-09-11 from STATUS-038 and OWNER-GPU-RESUME-013. The original requirements below remain
+Updated on 2026-09-11 from STATUS-039 and OWNER-GPU-RESUME-013. The original requirements below remain
 the acceptance contract; this overlay records which have actual evidence.
 
-Owner scheduling override: OWNER013 permits eligible GPU work. OWNER011's single matched pair is now fully finalized and closed. OWNER016 prioritizes a complete SLURP multimodal agent with TRAIN memory and real tool/result consumption before E21/E22; use new prospective registrations, not unused allowance from a closed flight. No configuration change or extra contact is justified solely by utilization.
+Owner scheduling override: OWNER013 permits eligible GPU work. OWNER011's single matched pair is now fully finalized and closed. OWNER016/017 prioritize a complete SLURP multimodal agent with source knowledge, distinct corrective memory and real tool/result consumption before E21/E22; use new prospective registrations, not unused allowance from a closed flight. No configuration change or extra contact is justified solely by utilization.
 
 | Work | Current state | Evidence / next action |
 |---|---|---|
@@ -26,7 +26,7 @@ Owner scheduling override: OWNER013 permits eligible GPU work. OWNER011's single
 | E21 offline direct-to-KC-E1f | Both stages, complete scores, analysis and settlement closed | PERSON benefit; system not admitted because insertions rise by5; see September11 result |
 | SLURP program-matched follow-up | Both arms, deliveries, complete scores, analysis and settlement closed | NEW500 primary and intent guard fail; stop the final owner-authorized pair |
 | Live E21 review/selection/observation | Generic bounded phase Planner is implemented and model-free tested | Live selection and new observation remain unproven; the fixed pair does not establish them |
-| Dialogue/speaker-topic memory | Feasibility only under OWNER-DATASET-TASKS-010 | Judge any later method on the existing dataset task; no new summary/minutes task or evaluator is required |
+| Dialogue/speaker-topic context | Feasibility only under OWNER-DATASET-TASKS-010 | Judge any later method on the existing dataset task; no new summary/minutes task or evaluator is required |
 | Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |
 
 No failed scientific guard is converted into a positive system conclusion.

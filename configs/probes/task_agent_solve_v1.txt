@@ -1,0 +1,1 @@
+Solve the task from the current speech, legal task contract, and returned tool evidence. Treat TRAIN examples as evidence about patterns, not answers to copy. Resolve conflicts against the current speech and keep the full legal answer space. Return only the task output required by the task contract.

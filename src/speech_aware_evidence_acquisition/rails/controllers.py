@@ -43,22 +43,20 @@ Two pieces:
   is the Reviewer seat of the four-agent loop (owner Decision 11-B change #1,
   2026-09-08): after each phase's response is sealed it hands the sealed
   bytes to that phase's registered judges and records their
-  ``core.base.JudgeVerdict`` tuple. It steers nothing -- see "Criticism only"
-  below -- and ``rails.phase_review`` builds it from a baseline fragment's
+  ``core.base.JudgeVerdict`` tuple. It supplies criticism to an explicitly configured Planner -- see
+  "Criticism and explicit control" below -- and ``rails.phase_review`` builds it from a baseline fragment's
   ``phase_review`` block.
 
-Criticism only (owner Decision 11-C, 2026-09-08)
+Criticism and explicit control (owner Decision 11-C and later continuation)
 -------------------------------------------------
 
-**A judge SCORES and FLAGS; it never proposes a revision.** The verdicts
-``review_for_phase`` returns are recorded on the controller and traced by
-``rails.phase_review``; not one byte this controller sends depends on them.
-The transition, the successor ``QueryState`` and the next contact are
-identical whether ``review_for_phase`` is ``None`` or returns a hundred
-flags, which is precisely what makes a judge's admission receipt one config
-key against its null arm instead of a second code path. Acting on a flag
-(the design's ``on_flag: "loop"``) needs ``rails.runner``'s state-id and
-contact-id rails relaxed first, and is refused by name until then.
+**A judge SCORES and FLAGS; it never proposes a revision.** Review alone
+records criticism. Without a configured stop policy, review flags do not
+change the transition, successor QueryState, or next contact. The optional
+bounded phase Planner may use those flags to choose continuation; the
+Reviewer never acquires answer authority. The separate task-action bridge
+returns source-bound tool state and optional knowledge supply to the same
+controller. Both behaviors require explicit configuration.
 
 Traced supply (E6, 2026-09-06)
 -----------------------------
@@ -462,6 +460,27 @@ class PhaseSupply:
         return self
 
 
+@dataclass(frozen=True)
+class PhaseToolStep:
+    """One executed task action and its returned source-bound state."""
+
+    supply: PhaseSupply | None
+    state: AgentStateArtifact
+
+    def validate(self):
+        if self.supply is not None:
+            self.supply.validate()
+        if not isinstance(self.state, AgentStateArtifact):
+            raise RailsControllersError("tool action must return AgentStateArtifact")
+        self.state.validate()
+        if self.state.state_kind != "tool-result":
+            raise RailsControllersError("tool action state must have kind tool-result")
+        return self
+
+
+ToolsForPhase = Callable[[str, str, AgentRuntimeContext], "PhaseToolStep | None"]
+
+
 MaterialForPhase = Callable[[str, AgentRuntimeContext], PhaseMaterial]
 SupplyForPhase = Callable[[str, AgentRuntimeContext], "PhaseSupply | None"]
 StopPolicy = Callable[[AgentRuntimeContext, Sequence[str]], bool]
@@ -556,6 +575,7 @@ class EvidenceAgentController:
         state_view_for_phase: StateViewForPhase | None = None,
         contact_identity: ContactIdentity | None = None,
         state_namespace: str | None = None,
+        tools_for_phase: ToolsForPhase | None = None,
     ) -> None:
         program.validate()
         if not callable(material_for_phase):
@@ -610,6 +630,9 @@ class EvidenceAgentController:
             not isinstance(state_namespace, str) or not state_namespace.strip()
         ):
             raise RailsControllersError("state_namespace must be a non-empty string or None")
+        if tools_for_phase is not None and not callable(tools_for_phase):
+            raise RailsControllersError("tools_for_phase must be callable or None")
+        self._tools_for_phase = tools_for_phase
         self._state_namespace = state_namespace
         self._program = program
         self._material_for_phase = material_for_phase
@@ -669,6 +692,11 @@ class EvidenceAgentController:
         # phase's unsupplied bytes -- the property the containment rule and
         # every paired contrast both depend on.
         instruction = material.instruction
+        tool_instruction = getattr(self._tools_for_phase, "instruction_for_phase", None)
+        if callable(tool_instruction):
+            extra = tool_instruction(phase.name, context)
+            if extra:
+                instruction = f"{instruction}\n\n{extra}"
         decoding_params: dict[str, object] = {}
         if material.response_format is not None:
             decoding_params["response_format"] = dict(material.response_format)
@@ -787,9 +815,23 @@ class EvidenceAgentController:
         # PRIOR QueryState -- the state the RankResult/FusionDecision must
         # be bound to (rails.runner._validate_agent_knowledge_decision
         # validates them against exactly that state).
+        action_phase = getattr(self._tools_for_phase, "is_action_phase", lambda _name: False)
+        if should_stop and action_phase(phase.name):
+            raise RailsControllersError("a Planner action phase cannot deliver its response")
+        tool_step: PhaseToolStep | None = None
         supply: PhaseSupply | None = None
         if not should_stop:
-            supply = self._resolve_supply(self._program.phases[index + 1], staged)
+            next_spec = self._program.phases[index + 1]
+            if self._tools_for_phase is not None:
+                tool_step = self._tools_for_phase(phase.name, next_spec.name, staged)
+                if tool_step is not None:
+                    if not isinstance(tool_step, PhaseToolStep):
+                        raise RailsControllersError("tools_for_phase must return PhaseToolStep or None")
+                    tool_step.validate()
+            supply = (tool_step.supply if tool_step is not None else
+                      self._resolve_supply(next_spec, staged))
+            if supply is not None and next_spec.knowledge != "supplied":
+                raise RailsControllersError("tool knowledge requires a supplied successor phase")
             if supply is not None and supply.retain_prior:
                 if self._program.stop_rule != "stop-policy-optional-early-exit":
                     raise RailsControllersError(
@@ -824,6 +866,7 @@ class EvidenceAgentController:
             )
 
         next_phase = self._program.phases[index + 1]
+        added_states = (artifact,) + (() if tool_step is None else (tool_step.state,))
         new_value_ids: tuple[str, ...] = ()
         new_facet_ids: tuple[str, ...] = ()
         action_kind = "organize"
@@ -846,7 +889,7 @@ class EvidenceAgentController:
             visible_facet_ids=(
                 context.query_state.visible_facet_ids + new_facet_ids
             ),
-            agent_state_ids=context.query_state.agent_state_ids + (artifact.state_id,),
+            agent_state_ids=context.query_state.agent_state_ids + tuple(state.state_id for state in added_states),
             retrieved_value_ids=(
                 context.query_state.retrieved_value_ids + new_value_ids
             ),
@@ -860,7 +903,7 @@ class EvidenceAgentController:
             new_value_ids=new_value_ids,
             used_value_ids=(),
             dropped_value_ids=(),
-            new_agent_state_ids=(artifact.state_id,),
+            new_agent_state_ids=tuple(state.state_id for state in added_states),
             dropped_agent_state_ids=(),
             new_facet_ids=new_facet_ids,
         ).validate()
@@ -881,7 +924,7 @@ class EvidenceAgentController:
             catalog_value_ids=context.catalog_value_ids,
             query_state=next_state,
             task_contract=context.task_contract,
-            agent_states=context.agent_states + (artifact,),
+            agent_states=context.agent_states + added_states,
             prior_response_sha256s=context.prior_response_sha256s + (response_sha256,),
             contact_index=context.contact_index + 1,
         )
@@ -889,7 +932,7 @@ class EvidenceAgentController:
         return AgentLoopAdvance(
             transition=transition,
             next_query_state=next_state,
-            new_agent_states=(artifact,),
+            new_agent_states=added_states,
             next_contact=next_contact,
             rank_result=None if supply is None else supply.rank_result,
             fusion_decision=None if supply is None else supply.fusion_decision,
@@ -1105,6 +1148,7 @@ def default_controller_factory(program: PhaseProgram) -> Callable[[str], Evidenc
 
 
 _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
+    "phase-task-tools-then-solve-v1": "phase-task-tools-then-solve-v1.json",
     "phase-direct-only-v1": "phase-direct-only-v1.json",
     "phase-direct-then-slots-v1": "phase-direct-then-slots-v1.json",
     "phase-direct-then-slots-supplied-v1": "phase-direct-then-slots-supplied-v1.json",
@@ -1254,6 +1298,11 @@ def register_phase_programs_v1() -> None:
             default_controller_factory(
                 default_phase_program("phase-hard-validity-repair-v1")
             ),
+        )
+    if "phase-task-tools-then-solve-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-task-tools-then-solve-v1",
+            default_controller_factory(default_phase_program("phase-task-tools-then-solve-v1")),
         )
     unregistered = set(_PROGRAM_CONFIG_FILENAMES) - set(AGENT_CONTROLLERS.names())
     if unregistered:
@@ -1539,6 +1588,8 @@ __all__ = [
     "PhaseProgram",
     "PhaseSpec",
     "PhaseSupply",
+    "PhaseToolStep",
+    "ToolsForPhase",
     "RailsControllersError",
     "HARD_VALIDITY_PROGRAM_ID",
     "ContactIdentity",

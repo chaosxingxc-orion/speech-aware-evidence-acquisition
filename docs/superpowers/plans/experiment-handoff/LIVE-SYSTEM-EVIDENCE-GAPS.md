@@ -1,6 +1,6 @@
 # Live system evidence gaps after reproducing the original results
 
-**Latest owner correction:** [OWNER-MULTIMODAL-SYSTEM-FIRST-016.md](OWNER-MULTIMODAL-SYSTEM-FIRST-016.md) makes the complete multimodal task agent the design target: real tool invocation, TRAIN knowledge/episodic memory, current state, evidence consumption and bounded control. Read [STATUS-038.md](STATUS-038.md) and the [full system specification](../../../readiness/2026-09-11-multimodal-task-agent-system.md). Retrieval/no-retrieval is a later ablation; optimizer choice follows the executable system. Keep SLURP first, then E21/E22, with OWNER014 quality-first and historical verdicts intact.
+**Latest owner correction:** [OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017.md](OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017.md) distinguishes source knowledge from learned corrective experience. TRAIN speech/text examples, schema and facts are knowledge; analyzed corrections and validated conditional rules are memory. Read [STATUS-039.md](STATUS-039.md) and the [revised system specification](../../../readiness/2026-09-11-multimodal-task-agent-system.md). The shared action/knowledge increment is implemented and under boundary verification; a durable experience-memory runtime and full system GPU cohort remain next work. Preserve OWNER016 system-first, SLURP-first transfer, quality-first selection and all closed verdicts.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
@@ -18,7 +18,7 @@ Formal E21 preparation, DR/LOOP and the fresh offline pair are complete.
 Both stages, scores, fixed analyses and all four E21/SLURP settlements are closed.
 The fresh E21 PERSON benefit is supported, but insertion protection fails.
 The final matched SLURP pair fails NEW500 primary and intent protection.
-Read STATUS-038 and the SLURP-first plan. The next gaps are source-bound TRAIN speech/text memory views and Planner action -> registered tool execution -> returned state -> Solver consumption. Existing phase_planner early exit does not complete that system. Defer E21 transfer until this shared SLURP system is qualified.
+Read STATUS-039 and the SLURP-first plan. The action/result and TRAIN speech/text knowledge-view seams now have CPU proofs. The remaining gaps include public registered-media encoding, the complete reviewed GPU system, and a distinct durable corrective-memory artifact/selector. Existing phase_planner early exit does not complete that system. Defer E21 transfer until this shared SLURP system is qualified.
 
 The generic review-to-bounded-phase-decision seam is now implemented and
 model-free tested through FlightRuntime and the real shared OpenJiuwen executor.
@@ -27,7 +27,7 @@ Configuration changes realized continuation and active fit rosters. See
 No E21 selected-cut or multi-phase window implementation is claimed by that proof.
 
 Live Reviewer-to-Planner-to-new-observation remains unproven and must not be
-declared closed by the fixed repair pair. Dialogue/speaker/topic memory remains
+declared closed by the fixed repair pair. Dialogue/speaker/topic context remains
 feasibility-only. OWNER-DATASET-TASKS-010 corrects the root's earlier expansion:
 final meeting-minutes evaluation is not a required acceptance gap because the
 reviewed dataset releases define ASR, not a native summary task. See STATUS-028

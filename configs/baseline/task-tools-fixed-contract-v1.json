@@ -1,0 +1,31 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "phase-task-tools-then-solve-v1",
+  "evidence_source": "none",
+  "phase_material": {
+    "plan": {
+      "instruction_template": "probes/task_agent_plan_v1.txt",
+      "predecessor_binding": "none"
+    },
+    "solve": {
+      "instruction_template": "probes/task_agent_solve_v1.txt",
+      "predecessor_binding": "none"
+    }
+  },
+  "phase_tools": {
+    "plan": {
+      "mode": "fixed",
+      "allowed_tools": [
+        "saea-tool-task-contract-v1"
+      ],
+      "knowledge_views": [
+        "text"
+      ],
+      "fixed_action": {
+        "tool_id": "saea-tool-task-contract-v1",
+        "arguments": {}
+      }
+    }
+  },
+  "what_this_is": "Shared task-action engineering anchor. Supply dataset/model/experiment fragments and their own registration; this fragment grants no contacts."
+}

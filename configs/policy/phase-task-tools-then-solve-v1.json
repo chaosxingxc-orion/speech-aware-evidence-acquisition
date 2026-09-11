@@ -1,0 +1,22 @@
+{
+  "schema": "saea-phase-program-v1",
+  "program_id": "phase-task-tools-then-solve-v1",
+  "phases": [
+    {
+      "name": "plan",
+      "purpose": "task-planning",
+      "knowledge": "none",
+      "response_format_id": null,
+      "barrier": false
+    },
+    {
+      "name": "solve",
+      "purpose": "task-solving",
+      "knowledge": "supplied",
+      "response_format_id": null,
+      "barrier": false
+    }
+  ],
+  "max_contacts": 2,
+  "stop_rule": "always-run-full-program"
+}

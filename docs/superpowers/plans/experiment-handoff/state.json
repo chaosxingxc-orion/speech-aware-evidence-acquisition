@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 38,
+  "generation": 39,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,10 +10,10 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "7ed5f3021f6955c864c1bf7be74895aeaeeb68f2",
-  "updated_at_utc": "2026-09-11T14:29:38.697546+00:00",
-  "next_action": "Read STATUS-038 and OWNER-MULTIMODAL-SYSTEM-FIRST-016. Build the complete SLURP multimodal task agent: source-bound TRAIN text/paired memory views, actual Planner action -> registered tool -> result/state -> Solver loop, fixed and frozen-core Planner modes. Binary retrieval/no-retrieval and optimizer choice are downstream. Asset readiness and complete source-to-media join for the existing2621-episode recall union verified; freeze recording choice then hash/audit packet overlap. Reuse text retrieval keys for the first paired VALUE comparison; do not require new TRAIN audio keys. No new code feature or GPU cohort implemented/dispatched. Previous E21/SLURP flights closed, S4 held; new configurations/registration required. Resident decoder35780 retained, current identity must be qualified before contact. Goal active.",
+  "snapshot_commit": "2b2c96ffe8e2f194b9a7b04ae443b0bdf94e35e1",
+  "updated_at_utc": "2026-09-11T15:28:49.573405+00:00",
+  "next_action": "Read STATUS-039 and OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017. TRAIN examples/schema/speech packets are knowledge; analyzed corrections and validated conditional rules form a separate experience memory. Shared explicit fixed/core-choice task actions, tool-result state and text/speech/paired knowledge views have CPU proofs through the existing controller/executor. Generic source-media inventory and low-level encoding are added; finish the public runtime/CLI binding and prospective registration, encode only missing qualified packets, then qualify the reviewed SLURP system. Real 2621-source inventory persisted through the shared producer with the preprocess-role receipt; 4 qualified packet hits and 2617 cold. Durable experience artifact/selector and training-free updates remain unimplemented. Previous E21/SLURP flights closed, S4 held. No new GPU contact this boundary; frozen resident decoder retained. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
-  "latest_owner_decision_id": "OWNER-MULTIMODAL-SYSTEM-FIRST-016"
+  "latest_owner_decision_id": "OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017"
 }

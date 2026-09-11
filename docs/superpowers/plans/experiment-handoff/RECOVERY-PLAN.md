@@ -1,6 +1,6 @@
 # Owner-directed recovery and continuation plan
 
-**Latest owner correction:** [OWNER-MULTIMODAL-SYSTEM-FIRST-016.md](OWNER-MULTIMODAL-SYSTEM-FIRST-016.md) makes the complete multimodal task agent the design target: real tool invocation, TRAIN knowledge/episodic memory, current state, evidence consumption and bounded control. Read [STATUS-038.md](STATUS-038.md) and the [full system specification](../../../readiness/2026-09-11-multimodal-task-agent-system.md). Retrieval/no-retrieval is a later ablation; optimizer choice follows the executable system. Keep SLURP first, then E21/E22, with OWNER014 quality-first and historical verdicts intact.
+**Latest owner correction:** [OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017.md](OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017.md) distinguishes source knowledge from learned corrective experience. TRAIN speech/text examples, schema and facts are knowledge; analyzed corrections and validated conditional rules are memory. Read [STATUS-039.md](STATUS-039.md) and the [revised system specification](../../../readiness/2026-09-11-multimodal-task-agent-system.md). The shared action/knowledge increment is implemented and under boundary verification; a durable experience-memory runtime and full system GPU cohort remain next work. Preserve OWNER016 system-first, SLURP-first transfer, quality-first selection and all closed verdicts.
 
 Role: engineering plan. Coordinator: Codex. Updated: 2026-09-11.
 The owner directed recovery from GitHub history and unmerged worktrees after Fable5.1 exhausted
@@ -9,7 +9,7 @@ the actual experiment state. The former request/reply exchange is historical; no
 
 ## Current continuation closure
 
-The archaeology below records the initial September9 recovery. STATUS-038 and
+The archaeology below records the initial September9 recovery. STATUS-039 and
 the latest overlay govern current work; completed scientific families must not be
 replayed because an older paragraph says pending.
 
@@ -23,7 +23,7 @@ replayed because an older paragraph says pending.
 | G6 SLURP live intent-to-slots | Complete, scored, decided and parent attempts finalized | Slots improve but the scenario guard fails; full system not admitted; retain prompt-identity attribution limit |
 | E21 offline direct-to-KC-E1f | Both stages, complete official scores, fixed analysis and settlement closed | PERSON improves; insertion guard failed; source report unchanged |
 | Live E21 review/selection/observation | Not established by the direct-to-KC-E1f pair | Shared live Reviewer-to-Planner-to-observation evidence remains an explicit gap |
-| Dialogue/speaker-topic memory | Feasibility only | Evaluate later changes against dataset-native tasks; no invented minutes evaluator |
+| Dialogue/speaker-topic context | Feasibility only | Evaluate later changes against dataset-native tasks; no invented minutes evaluator |
 | Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |
 
 ## Git history and merge decisions
@@ -69,7 +69,7 @@ treatment results exist. Any unresolved analysis must remain descriptive until i
 
 ## Current ordered work queue
 
-1. Use the completed sealed-score headroom audit and 2026 static source review in STATUS-038.
+1. Use the completed sealed-score headroom audit and 2026 static source review in STATUS-039.
 2. Add only the shared SLURP supply-action policy seam: row-level retrieval or explicit no retrieval from the same current draft, both continuing to the same slots phase.
 3. Prepare fixed update/validation/evaluation roles, actual requests, action groups and a new prospective registration while the resident decoder stays available.
 4. Execute the first shared feedback loop with TF-GRPO as the 2025 baseline; prioritize EvoTool-style targeted module evolution as the first 2026 system candidate.
@@ -109,4 +109,4 @@ one coordinator and one experiment in flight.
 
 ## September11 cohort closure
 
-Read STATUS-038, the two September11 system result notes and the next-stage acceptance plan. The E21 offline and final program-matched SLURP pairs have complete generation, scoring, fixed analysis and FINALIZED custody. Failed scientific guards remain binding. Shared raw saved-score settlement reuses complete scores and preserves frozen source worktrees. Live E21 review/selection/new-observation remains open.
+Read STATUS-039, the two September11 system result notes and the next-stage acceptance plan. The E21 offline and final program-matched SLURP pairs have complete generation, scoring, fixed analysis and FINALIZED custody. Failed scientific guards remain binding. Shared raw saved-score settlement reuses complete scores and preserves frozen source worktrees. Live E21 review/selection/new-observation remains open.

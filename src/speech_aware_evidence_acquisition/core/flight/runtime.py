@@ -1667,6 +1667,7 @@ class FlightRuntime:
         self._composed = composed
         values = composed.values
         self._phase_planner_specs(values.get("policy"))
+        self._phase_tool_specs(values.get("policy"))
         from ..bundle.delivery_replay import (
             require_experiment_phase_declarations, validate_phase_delivery_sources,
         )
@@ -3561,6 +3562,14 @@ class FlightRuntime:
         )
         planner_specs = self._phase_planner_specs(policy)
         planner = build_phase_planner(planner_specs, review_for_phase)
+        from ...rails.phase_tools import build_phase_tools
+        tool_specs = self._phase_tool_specs(policy)
+        tool_dispatcher = build_phase_tools(
+            self._composed.values, program, snapshot=binding["knowledge_snapshot"],
+            supply_for_phase=supply_for_phase, trace_sink=sink,
+            knowledge_catalog=self._phase_knowledge_catalog(binding["knowledge_snapshot"])
+            if tool_specs else None,
+        )
         live_fit_gate = None
         if whole_roster:
             if model_free_check:
@@ -3594,7 +3603,7 @@ class FlightRuntime:
         # acquire transition can be emitted (rails.controllers, "Traced
         # supply"). A program with no supply, or whose only supply is the
         # pre-flight-seeded FIRST phase, keeps the per-phase barrier form.
-        continuous = whole_roster or planner is not None or bool(
+        continuous = whole_roster or planner is not None or tool_dispatcher is not None or bool(
             set(supply_specs) - {program.phase_names()[0]}
         )
         live_options = (
@@ -3603,6 +3612,8 @@ class FlightRuntime:
         )
         if planner is not None:
             live_options["stop_policy"] = planner
+        if tool_dispatcher is not None:
+            live_options["tools_for_phase"] = tool_dispatcher
         try:
             if continuous:
                 summaries = (
@@ -3704,6 +3715,8 @@ class FlightRuntime:
             ]
             if not whole_roster:
                 dispatch["barrier"] = "none: one continuous trajectory with bounded review decisions"
+        if tool_dispatcher is not None:
+            dispatch["phase_tools"] = tool_dispatcher.receipt()
         if whole_roster:
             dispatch["whole_roster_wave_barrier"] = True
             dispatch["live_phase_fit_receipts"] = list(live_fit_gate.receipts)
@@ -4477,6 +4490,7 @@ class FlightRuntime:
         self._assert_phase_supply_is_legal_for(policy)
         self._assert_phase_review_is_legal_for(policy)
         self._phase_planner_specs(policy)
+        self._phase_tool_specs(policy)
 
         # The Earnings carrier (owner Decision 12-F item #9, 2026-09-08). An
         # obs policy is dispatched through the obs driver and builds NO
@@ -4750,6 +4764,52 @@ class FlightRuntime:
                 "direct arm runs no phase program and would review nothing. Declare a "
                 "phase-program policy, or drop the phase_review block"
             )
+
+    def _phase_tool_specs(self, policy: str):
+        """Require an executable phase program for every declared task action."""
+        values = self._composed.values
+        declared = values.get("phase_tools")
+        knowledge = values.get("phase_knowledge_views")
+        if declared is None or declared == {}:
+            if knowledge is not None:
+                raise FlightRuntimeError("phase_knowledge_views requires active phase_tools")
+            return {}
+        if policy == "fixed" or policy in self._obs_policy_names():
+            raise FlightRuntimeError("phase_tools requires the shared phase program path")
+        from ...rails.phase_tools import load_phase_tool_specs
+        specs = load_phase_tool_specs(values, default_phase_program(policy))
+        if knowledge is not None:
+            if not isinstance(knowledge, Mapping) or set(knowledge) != {"catalog_relpath", "catalog_sha256"}:
+                raise FlightRuntimeError("phase_knowledge_views must pin catalog_relpath and catalog_sha256")
+            if not self.uses_speech_feature_packets():
+                raise FlightRuntimeError("phase_knowledge_views requires prepared speech-feature transport")
+        if any(set(spec["knowledge_views"]) - {"text"} for spec in specs.values()) and knowledge is None:
+            raise FlightRuntimeError("speech/paired phase_tools require phase_knowledge_views")
+        return specs
+
+    def _phase_knowledge_catalog(self, snapshot):
+        """Bind knowledge packets to the same decoder/projector as query packets."""
+        spec = self._composed.values.get("phase_knowledge_views")
+        if spec is None:
+            return None
+        from ...rails.knowledge_value_views import load_prepared_knowledge_view_catalog
+        relative = Path(spec["catalog_relpath"])
+        if relative.is_absolute() or ".." in relative.parts:
+            raise FlightRuntimeError("knowledge catalog must be a confined DATA relative path")
+        path = (self._data_root / relative).resolve()
+        if not path.is_relative_to(self._data_root.resolve()):
+            raise FlightRuntimeError("knowledge catalog escapes DATA")
+        promotion = self._load_promotion_receipt()
+        identities = {(row["decoder_gguf_sha256"], row["mmproj_sha256"])
+                      for row in promotion["packets"]}
+        if len(identities) != 1:
+            raise FlightRuntimeError("query packet promotion has mixed model identities")
+        decoder, mmproj = next(iter(identities))
+        return load_prepared_knowledge_view_catalog(
+            path, expected_sha256=spec["catalog_sha256"],
+            feature_root=self._speech_feature_root(), snapshot=snapshot,
+            expected_decoder_gguf_sha256=decoder, expected_mmproj_sha256=mmproj,
+        )
 
     def _phase_planner_specs(self, policy: str):
         """Validate planner behavior before preparation, fitting, or generation."""

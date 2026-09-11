@@ -13,6 +13,10 @@ from .model import (
 )
 from .model.slices import SliceRecord
 from .preparation import PreparationError, canonical_bytes, digest, prepare_artifact
+from .preparation_media_inventory import (
+    SOURCE_MEDIA_FEATURE_INVENTORY_SCHEMA,
+    source_media_encoding_sources,
+)
 from .preparation_windows import WINDOW_FEATURE_INVENTORY_SCHEMA
 
 SCHEMA = "saea-window-feature-encoding-record-v1"
@@ -35,6 +39,8 @@ def window_encoding_sources(
     inventory: Mapping[str, object],
 ) -> dict[str, Mapping[str, object]]:
     """Use inventory.encoding_inputs, not path equality, as dedup authority."""
+    if inventory.get("schema") == SOURCE_MEDIA_FEATURE_INVENTORY_SCHEMA:
+        return source_media_encoding_sources(inventory)
     if inventory.get("schema") != WINDOW_FEATURE_INVENTORY_SCHEMA:
         raise PreparationError(
             "window encoding requires a verified window feature inventory"
@@ -361,7 +367,8 @@ def encode_window_feature_cache(
                 media, _content, key = _checked_media(root, source, audio)
                 active = (audio, key)
                 custody_guard()
-                client.register_slice(_slice(source))
+                if source.get("source_kind") != "registered-media":
+                    client.register_slice(_slice(source))
                 client.complete(
                     (
                         {"role": "system", "content": instruction},

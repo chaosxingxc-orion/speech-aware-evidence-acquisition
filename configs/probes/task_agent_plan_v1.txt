@@ -1,0 +1,1 @@
+Inspect the spoken request and identify the task knowledge or evidence needed. If a task-action contract is present, follow it exactly. Otherwise provide a concise task hypothesis grounded in the speech. Do not treat an early hypothesis as irrevocable.

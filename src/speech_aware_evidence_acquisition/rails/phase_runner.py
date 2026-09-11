@@ -432,6 +432,7 @@ def run_continuous_program(
     supply_for_phase: SupplyForPhase | None = None,
     review_for_phase: ReviewForPhase | None = None,
     stop_policy: StopPolicy | None = None,
+    tools_for_phase: object = None,
     bootstrap_facet_ids: object = (),
     bootstrap_value_ids: object = (),
     slot_count: int | None = None,
@@ -532,6 +533,7 @@ def run_continuous_program(
             material_for_phase=_material,
             supply_for_phase=supply_for_phase,
             review_for_phase=review_for_phase,
+            **({"tools_for_phase": tools_for_phase} if tools_for_phase is not None else {}),
             **({"stop_policy": stop_policy} if stop_policy is not None else {}),
         )
         holder["controller"] = controller
@@ -575,6 +577,8 @@ def run_continuous_program(
             decoding_params=decoding_params,
             controller_registry=controller_registry,
             trace_record_namespace=program.program_id,
+            **({"knowledge_value_renderer": tools_for_phase.render_values}
+               if tools_for_phase is not None else {}),
             **runner_options,
         )
     finally:

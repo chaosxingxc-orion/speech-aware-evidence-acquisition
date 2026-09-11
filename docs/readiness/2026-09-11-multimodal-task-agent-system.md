@@ -1,158 +1,136 @@
-# Multimodal task agent: tools, TRAIN memory and evidence use
+# Multimodal task agent: knowledge, corrective memory and control
 
-Date: September 11, 2026. Authority: OWNER-MULTIMODAL-SYSTEM-FIRST-016, with OWNER015's SLURP-first sequence and OWNER014's quality-first selection objective. Status: root system specification and source-backed implementation map. Supersede the binary supply-policy seam as the next stage's main implementation. No new system flight or completed optimizer is claimed.
+Date: September 11, 2026. Authority: OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017, continuing OWNER016's complete-system design, OWNER015's SLURP-first sequence and OWNER014's quality-first objective. This mutable specification replaces its earlier classification of the raw TRAIN store as episodic memory. Historical source receipts and owner/status records remain unchanged.
 
-## The system being selected
+## System objective and boundaries
 
-Select a complete task-solving control plane around the one frozen speech-capable Solver:
+Build a complete control plane around the single frozen speech-capable Solver:
 
-task speech + legal task contract -> current working state -> Planner -> source-bound tool execution and memory views -> Solver -> Reviewer -> bounded re-plan or final delivery.
+task speech + legal contract -> working state -> Planner -> registered tools -> knowledge and/or applicable experience -> Solver -> Reviewer -> bounded continuation or delivery.
 
-Offline TRAIN memory construction and post-seal quality feedback are distinct processes around that runtime. The testable system includes all three, not only the choice of a retriever. Training-free optimization later changes external strategy, memory organization/utility and action selection while the core remains frozen.
+Construct knowledge and learn from execution offline. At runtime, consume their frozen versions through distinct interfaces. The optimization target includes knowledge organization, tool choice, evidence consumption, experience applicability, revision and stopping. The architecture is not determined by whichever optimizer is easiest to port.
 
-SLURP is the first carrier because the speech/features, TRAIN knowledge and score paths already exist. It need not mimic a meeting. E21/E22 subsequently test longer observation, context and credit chains through the same interfaces. Neither a large immediate gain nor an exhaustive SLURP component search is required before transfer.
+SLURP establishes the reusable base first. E21/E22 later exercise longer speech, context and credit chains with dataset-native metrics. Large immediate gains and online latency are not selection requirements. Preserve Stage-2 roles, the frozen answerer, WSL-only execution, complete standard scoring and registered contact lineage.
 
-## Evidence that changes the implementation choice
+## Separate five objects
 
-Current source: 7ed5f3021f6955c864c1bf7be74895aeaeeb68f2.
+| Object | Content and purpose | Admission and runtime use |
+|---|---|---|
+| Knowledge | TRAIN speech/text examples, semantic annotations, schemas, vocabulary, domain facts and factual summaries | Build from admitted sources; retrieve evidence relevant to the current task |
+| Trajectory archive | Raw inputs/references, requests, actions, tool returns, drafts, reviews, outputs and offline scores, each in its permitted access domain | Preserve audit bytes; do not mount the whole archive into runtime |
+| Experience memory | Analyzed failure/correction experiences and generalized procedural rules, including conditions, counterexamples and validation | Admit through an offline decision; retrieve guidance relevant to current state and failure symptoms |
+| Working state | This task's speech, hypotheses, tool results, selected knowledge/experience references and review flags | Evolve within the current trajectory; do not silently share evaluation state across samples |
+| Policy | Rules or externally updated action-selection behavior | Choose executable actions using legal state, retrieved evidence and applicable experience; freeze the evaluated version |
 
-- rails/knowledge_build.py:1-71,185-286 is already a TRAIN-only, distribution-aware, decontaminated builder. It links TRAIN text, scenario/action/intent, slot fillers, speaker grouping and recording identity. These are admitted BUILD inputs, not forbidden evaluation gold.
-- rails/knowledge.py:344-445 binds an immutable KnowledgeSnapshot to TRAIN or governed external sources and refuses DEV/TEST-built runtime knowledge.
-- Current SLURP speech retrieval uses Omni-Embed-Nemotron-3B speech queries against TRAIN text keys. The baseline pins 11,514 text-key utterances, top-5 rank/fusion and prepared recall. This is cross-modal query-to-text retrieval; it does not establish an audio-plus-text episode memory.
-- rails/tools.py:13-30,330-374 implements a typed, pinned SYSTEM-invoked tool catalog. It explicitly does not offer those manifests to the core or execute choices from model output. The configured command toolkit is an allowlist, not proof of a live model tool loop.
-- Native tool schemas and tool-call envelopes exist in the transport, but the Audio2Tool task's scored tool-call output is not evidence of an internal tool-result-return loop. SLURP can validate real internal schema/memory/observation tool execution without becoming an external tool-call prediction benchmark.
-- AgentStateArtifact, QueryState, PhaseSupply and KnowledgeProvider already provide the state/evidence rails. The OpenJiuwen executor and generic bounded review Planner already run. The missing work is their complete system connection, source-bound multimodal memory views and a qualified action dispatcher.
+Classify by function and evidence, not by database technology or whether a record came from TRAIN. A vector store can hold either knowledge or experience; that does not make the concepts interchangeable. A factual summary of SLURP label meanings remains knowledge. A supported lesson about when similar examples mislead the Solver can become experience. A successful trajectory can also support memory when it explains a reproducible strategy; failures are not the only possible source. When a validated rule becomes universally applicable and deterministic, implement it as a shared policy/configuration check while retaining its experience provenance. Keep conditional guidance retrievable rather than adding every rule to every prompt.
 
-Preserve the shared base. Do not build a new controller hierarchy, memory service, vector database or experiment runner merely to name this architecture.
+## Knowledge construction and consumption
 
-## Three different stores
+Reuse KnowledgeSnapshot, KeyFacet, ValueBundle, KnowledgeProvider and the admitted TRAIN builder. Maintain source split, recording identity, media hashes, builder/encoder identity and all typed query/rank/fusion bindings.
 
-### 1. TRAIN knowledge and episodic memory
+The current SLURP snapshot contains 11,514 content facets/values covering 50,628 TRAIN source recording identities. Existing retrieval uses speech queries against TRAIN text keys. A decoder-ready speech packet is a value representation, not a retrieval embedding. Paired speech/text values do not require a new audio-key index.
 
-Build offline from the admitted TRAIN partition, freeze before evaluation, and retain original source identities. Each episode associates:
-- source utterance and recording IDs plus original media hash;
-- legal TRAIN transcript/semantic description;
-- scenario/action and slot schema/filler structure;
-- separately pinned text and speech retrieval-key references;
-- decoder-ready speech feature packet reference when an audio view is prepared;
-- links to declarative schema/vocabulary/prior knowledge;
-- builder/encoder versions, source split and preparation lineage.
+The first modality contrast keeps candidate IDs, recording selection, ordering and text metadata fixed, then adds source-bound speech. It tests knowledge representation. An audio-key retrieval study changes a different factor and requires its own registered preparation. Keep the complete legal label space; retrieved candidates must not erase alternatives.
 
-Reuse the existing Q-K-V design: speech is the primary query, current agent state is auxiliary; keys expose independently rankable facets; values provide task-helpful content. A retrieval embedding and a Qwen decoder feature packet are different artifacts with different consumers. Never substitute one for the other.
+Prepare the entire admitted candidate union before decoder inference. A runtime policy cannot silently encode an unprepared example. For state-dependent retrieval, either prepare its declared universe or constrain available candidates explicitly.
 
-Keep semantic, speech and optional speaker-related facets separate. Match in a qualified common embedding space, or combine separately ranked lists through the existing rank/fusion seam; do not assume arbitrary audio and text vectors are comparable. Treat speaker similarity as a possible covariate, not evidence of semantic relevance or an unseen-speaker claim.
+## What qualifies for experience memory
 
-The first memory build reuses all qualified existing TRAIN text/schema/source records and the existing speech-query-to-text-key retrieval. A paired speech/text VALUE needs a source-bound decoder packet; it does not require an audio retrieval KEY. Prepare only the missing decoder packets for the frozen eligible evidence union first. Treat TRAIN audio-key retrieval as a separate later ORG/SUPPLY factor, with its own encoder and roster. Do not promise full audio-memory coverage until exact source joins and existing/missing packet counts are verified.
+Use two related record kinds, neither of which is a raw TRAIN row.
 
-The root's metadata inspection of the current pinned prepared recall found 1,000 query rows, exactly five candidate content facets per row, and 2,621 unique TRAIN content facets in their union. This offers a bounded preparation candidate when that exact selection remains the comparison; it is not a new roster registration or a count of missing recordings. Multiple recordings can realize one text episode. Fix the recording choice from TRAIN identity/quality metadata before outcomes, use the same choice in every applicable arm, and verify cache overlap through the media join. A richer state-dependent retrieval policy must prepare its entire admitted candidate universe or explicitly limit available actions; it cannot silently encode a surprise example during decoder generation.
+1. Corrective experience: describe the runtime-visible situation, observed failure symptom, evidence for a proposed cause, corrective action, before/after outcome and limits of that inference. Retain references to the underlying trajectory and knowledge items, rather than copying all media and annotations into the memory.
+2. Generalized rule: state a conditional procedure derived from one or more experiences, its applicable task/model/tool/schema versions, supporting and contradicting cases, validation result and current status.
 
-### 2. Current episode working state
+Keep these minimum fields in the design:
+- identity, revision, record kind and construction role;
+- source trajectory, action, response and offline score/decision hashes;
+- runtime-observable applicability conditions and failure/component tags;
+- proposed diagnosis with its confidence or unresolved alternatives;
+- concrete action/evidence-use guidance, its prerequisites and limits;
+- supporting and harmful cases, validation roster/protocol and result references;
+- status, superseded-by lineage and the frozen memory-version binding.
 
-This contains only the current query speech, current drafts/hypotheses, tool results, selected memory references, review flags and executed actions. It evolves during this task and is not silently persisted as knowledge for other evaluation samples.
+Do not claim a single successful retry identifies the cause of a failure. Changed randomness, prompt form, evidence and observation can be competing explanations. Keep a narrowly scoped episode provisional where appropriate; only stronger validation justifies a generalized rule.
 
-Do not hard-freeze an initial intent as irrevocable in the full system. If legal evidence reveals a conflict, the Planner may request another schema view and the same Solver may revise the hypothesis. Keep the full legal label space; a retrieved candidate list is evidence, not deletion of other labels. Whether that flexibility helps is a prospective USE/system comparison, not an already established result.
+Illustrative SLURP candidate, not a measured result: if the current hypothesis is acoustically or structurally inconsistent with a retrieved example, preserve the full legal intent space, inspect the relevant source speech and ask the same Solver to reconsider. The knowledge store supplies the example and schema. Memory would supply a validated condition and procedure explaining when this reconsideration helps, including cases where it harms.
 
-### 3. Procedural experience / external policy
+Illustrative negative experience: a highly similar example led the Solver to copy a slot value unsupported by the query. Keep the source trace, distinguish selection from consumption failure, and test a targeted evidence-use correction. Do not encode the evaluation example's correct answer as the rule.
 
-Store general action guidance, applicability conditions, evidence-use rules and reward/trajectory provenance. This is the object TF-GRPO-style updates or a 2026 optimizer may change later. It is not the TRAIN example store and not a table mapping evaluation sample IDs to answers.
+## Memory lifecycle and feedback isolation
 
-Freeze policy and memory versions before evaluation. Scoring-derived feedback crosses an offline update boundary; raw evaluation references never enter runtime prompts or deployed memories. Existing data-role and Stage-2 rules remain in force.
+Use a bounded offline lifecycle:
 
-## Tool capability interface
+archive -> candidate experience -> validation -> admitted frozen memory -> usage/outcome record -> retained, revised, rejected or superseded.
 
-Expose a small task-level capability surface; execute it through existing registered primitives.
+Construct the first experiences from admitted TRAIN executions or another explicitly designated optimization role. Existing historically exposed discovery results may motivate labeled hypotheses; they are not fresh validation and do not authorize copying their references into runtime. Do not adopt the proposed DEV split merely because a metadata audit exists.
 
-| Capability | Input | Result the system consumes | Existing base / missing bridge |
-|---|---|---|---|
-| Read task knowledge | Current task/hypothesis, knowledge snapshot ID | Legal label/schema/vocabulary view with provenance | TRAIN schema and state-fill loaders exist; expose as a bounded action |
-| Search episode memory | Current speech key, optional legal state filters, declared facet/rank mode | Ranked episode IDs with per-facet scores and source bindings | KnowledgeProvider candidates/fuse and prepared recall exist; add episode/source bindings; audio-key facets are an independent later option |
-| Open memory evidence | Selected episode IDs and view: text, speech, paired | Typed knowledge values and validated optional TRAIN speech packets | Text materialization exists; shared multimodal view assembly needs qualification |
-| Observe current speech | Current packet or a legal segment/context request | The same source speech or registered derived packet, with derivation | ObserveStep/SliceRegistry/preparation exist; connect action/result to current state |
-| Check current answer | Current Solver output plus admitted schema/evidence | Flags/scores/conflict locations, no replacement answer | Judge registry and bounded review exist; use their results in the action contract |
-| Solve or revise | Current speech, state and selected evidence | Solver-authored task answer | Existing frozen core and phase material path |
-| Deliver | Selected terminal Solver response and declared delivery rule | Final task result, preserving raw response | Existing pure delivery/replay and complete scoring |
+Validate applicability and quality on data separate from the cases used to induce the rule. Report both repairs and newly introduced errors. A larger number of stored memories, confident reflection, or better retrieval similarity is not evidence of task improvement. Judge flags describe observations; dataset-native offline quality remains the outcome.
 
-These are semantic action contracts, not permission to render native Python byte/array APIs to the model. Tool descriptions, JSON-safe inputs and result references must match the actual executable adapters. Reject unknown actions, invalid evidence IDs and illegal media substitutions before a side effect.
+Freeze knowledge, memory and policy before each evaluation cohort. Evaluation outputs may be archived/scored, but cannot update later samples within that cohort. A subsequent optimization round uses its declared update role and produces a new version. Preserve rejected rules and negative evidence in the archive; runtime sees only the admitted compact view.
 
-Separate invocation modes explicitly:
-- The fixed agent baseline uses a declared reproducible Planner policy that invokes real tools and conditions continuation on the current state/flags.
-- A frozen-core Planner variant can select from the same bounded action schema and consume returned result references; the same frozen model performs that role, with Solver retaining final answer authority.
-- The current catalog's system-only default does not prove or automatically authorize the latter semantic. Implement an explicit opt-in action bridge and retain the old default. Qualify the complete selection -> dispatch -> result -> subsequent model request path before claiming model-decided tool use.
-- Later external policy artifacts implement the same action interface. Do not define a different optimizer-owned runner.
+## How the agent uses memory
 
-The target system is reusable across both invocation modes. Do not confuse the fixed-policy baseline required for attribution with an already demonstrated adaptive tool agent.
+Retrieve knowledge using task content and current lawful state. Retrieve experience using the current phase, uncertainty/conflict signals, available tools, recent action/result pattern and relevant component conditions. A semantically similar sentence alone is insufficient evidence that a procedural lesson applies.
 
-## First SLURP system behavior
+The Planner receives a compact applicable experience view and decides whether to act. The Solver may receive evidence-use guidance when relevant; the Reviewer may check the stated risk. Guidance never becomes a substitute answer. All roles use the one frozen core or admitted pinned tool, and the Solver retains answer authority.
 
-Use a bounded Plan -> Observe/Knowledge -> Solve -> Review loop with the original query speech kept addressable:
-1. Establish task state from source speech and the legal contract. Preserve the original direct baseline as its own matched shared-executor configuration.
-2. Planner chooses task knowledge and memory operations needed for that state.
-3. Observer/knowledge tools retrieve and open a compact, source-bound evidence view. Keep retrieved relevance separate from the choice to expose text, speech or both.
-4. Solver produces the structured SLURP result with the selected material.
-5. Reviewer flags schema/label/evidence conflicts. Planner either delivers or requests one bounded, specifically motivated acquisition/revision cycle. Additional steps need new information; repetition alone is not a useful agent capability.
+Record available candidates, selected experience IDs/version, applicability match, adopted or ignored advice, executed action and terminal outcome. Evidence that a memory was supplied does not establish that it caused the improvement. Use matched comparisons where attribution matters.
 
-Exact phase/contact ceilings are fixed in the prospective cohort, not inferred from historical two-call or 600-relisten budgets. The fixed policy, allowed actions and memory view settings are configuration, not a private experiment script.
+## Reuse the shared implementation
 
-Engineering-lock criteria cover a complete trajectory: actual tool call/result hashes, memory lineage, actual changed request, review/decision, Solver answer, shared delivery and complete official score. A registry row or four-row proof is insufficient for full task-quality claims. A bounded four-row test can qualify connectivity once before the full discovery comparison.
+| Capability | Existing seam | Current increment or remaining gap |
+|---|---|---|
+| Knowledge retrieval and views | KnowledgeProvider, PhaseSupply, KnowledgeSnapshot | New source-pinned text/speech/paired renderer; preserve historical text semantics |
+| Actual task action | Native ToolEntry catalog, EvidenceAgentController, OpenJiuwen | Explicit fixed/core-choice selection, real registered invocation, source-bound returned state and subsequent Solver request |
+| Current criticism/control | JudgeVerdict, phase_review, phase_planner | Reuse typed criticism and bounded Planner decisions; review declaration alone does not implement re-observation |
+| Durable corrective memory | Existing trajectory/reward/policy artifacts provide inputs | Still needs an immutable experience/rule artifact and registered selector; do not disguise a KnowledgeSnapshot as experience |
+| Current memory-tool output | AgentStateArtifact and the new tool-result bridge | A newly created current-query-bound state can reference old experience; never inject old episode state with stale provenance |
+| External update | analysis/training_free_vw_control, proposer/evolution and audited candidate optimizers | Reuse suitable reward/policy lineage after the state/action/memory objects are concrete; no production RL integration is claimed |
 
-## Minimal comparisons with a named purpose
+The new action bridge presently implements two primitives: read the current legal task contract and retrieve shared phase knowledge. It supports explicit fixed and frozen-core choice modes and one action per configured nonfinal phase. It does not yet implement durable corrective memory, every observation action, or the full reviewed acquisition loop. Its plan/solve configuration is an engineering increment, not the locked final system.
 
-First compare system objects, then optimize them:
-- Direct frozen-model configuration: the no-agent anchor through the shared executor.
-- Fixed tool-capable agent without episodic memory: tests whether task organization, tool execution and review offer useful behavior.
-- The same fixed agent with TRAIN text memory.
-- The same fixed agent with paired TRAIN speech-plus-text memory.
+Keep the direct baseline in the same FlightRuntime/controller/OpenJiuwen family. A toolkit registration alone never changes a historical configuration into a model-selected tool loop. Shared preparation, actual request fitting, final delivery and scoring remain the common stages.
 
-The fixed policy is an attribution anchor, not the endpoint of the architecture. After the complete fixed path is qualified, compare a frozen-core Planner against that exact system with the same memory universe and available tools. The Planner must actually choose executable actions and consume their results; an output naming a tool is insufficient. Complete this adaptive invocation proof before locking a system for training-free optimization. Exact graph bounds and contact counts belong to the prospective configuration, including every Planner and Solver call.
+## Minimal experiments and interpretation
 
-The primary modality contrast holds episode IDs, selection, ordering and text/task metadata fixed and adds the audio view. If selection itself also changes through speech keys, declare a separate retrieval-key question; do not attribute its gain solely to audio consumption. All query inputs remain speech. A text-memory control is not a transcript-only task baseline.
+Stage these as named questions, with exact rosters, contact ceilings and dependencies fixed prospectively:
+- Direct versus a complete fixed agent: assess the overall system contribution. This contrast can change the number of stages; it is not a pure retrieval effect.
+- Fixed agent without additional knowledge versus the same agent with knowledge: assess evidence provision.
+- Text versus paired speech/text knowledge, with selection held fixed: assess multimodal value consumption.
+- The same knowledge-enabled system without versus with admitted experience memory: assess memory's additional contribution. Hold the knowledge universe, tool capabilities and maximum graph bounds fixed.
+- Fixed versus adaptive control over the same available system: assess action selection, then external training-free updates against that frozen baseline.
 
-Use common sealed current states for component attribution where appropriate, then independently exercise a fresh complete system to assess upstream decisions and end-to-end quality. Component replay cannot substitute for whole-system evidence. Reuse prior controls only if their actual estimand, program/input and data identities match; do not reopen old attempts.
+Do not launch every combination. Select the smallest comparisons needed to resolve the current system question, and preserve historical closed attempts. Check both component behavior and fresh end-to-end performance; replaying a sealed predecessor cannot replace complete system evidence.
 
-Later compare optimized external policy against this exact fixed system, with the same available tools and memory universe. Report optimized-minus-fixed and optimized-minus-direct separately. Keep official slot micro metrics and row-F1 distinct, alongside intent/scenario/action, natural/equal-stratum results and failure/revision evidence. Do not reward tool activity or proxy validity instead of task quality.
+A few traceable useful experiences can test the memory interface; they cannot establish a general quality claim on a tiny screen. Apply the repository's full-roster and pairing rules for effectiveness claims. A four-row proof is connectivity evidence only.
 
-Not every component needs a large positive effect. A memory view may be harmful, a tool may prove unnecessary, and a simpler retained system may still expose meaningful optimization choices. Record those findings and narrow the deployed capability set based on evidence.
+## Training-free optimization surface
 
-## Why these components should work together
+Treat memory and policy as separate but interacting external objects:
+- ORG: choose knowledge structure and experience abstraction, merge redundant records, retain exceptions and revise applicability.
+- SUPPLY: choose retrieval state, selected evidence/experience, view and order.
+- OBS: choose legal speech extent or re-listening when there is a real observation decision.
+- USE/control: choose how evidence is consumed, when a recommendation is adopted, the next tool, revision and stopping.
 
-State four falsifiable system hypotheses:
-1. TRAIN schema/episodic memories connect speech patterns to legal semantic structures, reducing ambiguity where a direct answer lacks task-specific evidence.
-2. Paired values can preserve pronunciation or acoustic cues lost in a transcript-only memory. They can also add irrelevant speaker/noise similarity and overload the request; the same-ID modality comparison tests the net effect.
-3. Tool results can repair an initial hypothesis only if the state retains uncertainty and the Solver can reconsider it. More evidence behind an irreversible wrong intent may amplify the error instead.
-4. Adaptive control helps only if runtime-visible state and review signals select useful evidence or revision actions. A review score is an observation to evaluate, not the reward itself or proof that a flagged answer is wrong.
+Use outcome-linked updates to experience utility and conditional policy, with provenance. Terminal reward alone does not allocate credit to every earlier action; use matched alternatives or explicit uncertainty in credit. Do not call arbitrary summarization or prompt editing RL. TF-GRPO is the 2025 reference; previously audited 2026 implementations remain candidates, not the architecture's organizing principle. No cost or online-latency reward penalty is required.
 
-Inspect the complete causal path in saved traces: available capability -> chosen action -> returned evidence -> evidence actually supplied -> Solver revision -> official quality change. Report selection correctness only where a lawful post-hoc definition exists; never infer evidence use solely from a retrieval hit. Use matched action/view contrasts where outcomes cannot identify the responsible component. More tool calls are not a success criterion.
+## Preparation and execution schedule
 
-## Feedback and training-free optimization targets
+Complete the current shared action/knowledge increment and its configuration path. Finish the generic registered-media connection in the public preparation runtime/CLI, then register one missing-packet encoding window. Use the root-owned encoder service and return to a decoder without the projector in GPU memory. Fit actual multi-packet/stage requests, run eligible configurations consecutively, and overlap preparation and one complete scorer.
 
-After the complete system is concrete, optimize a versioned subset of:
-- ORG: memory granularity, facet organization, coverage, summarization/experience consolidation;
-- SUPPLY: retrieval query/state use, per-facet fusion, diversity, evidence view and conflict-aware selection;
-- OBS: source extent or bounded re-listen when the task has a real observation decision;
-- USE/control: evidence consumption instructions, revision form, action sequence and stopping.
+In parallel, define corrective experience candidates and the smallest runtime memory interface from admitted execution evidence. Do not wait for a generic memory database or port every optimizer before the first system experiment. Do not confuse the current knowledge preparation with a memory-benefit experiment.
 
-Use quality feedback over full trajectories, with component attribution derived from matched traces/contrasts. Establish terminal-reward lineage first; do not assume a word-error change proves which earlier tool caused it. No cost or online-latency reward penalty is required by the owner. Contact/latency/utilization measurements remain reproduction receipts.
+Current preparation roster uses deterministic lexical-smallest TRAIN source ID per recalled facet. It has 2,621 distinct selected recordings. Their full bytes/hashes were verified; 4 packets qualify under the frozen target decoder/projector and 2,617 inputs are cold. This is a preparation roster, not a newly authorized generation roster.
 
-TF-GRPO stays the 2025 engineering reference. MemRL/MemQ are relevant to external memory utility and credit; EvoTool/SkillOpt to bounded module/text-policy changes; JitRL to action reranking with its audited numerical caveat. Keep these as implementation candidates until the selected system supplies the corresponding state/action/reward objects. Do not let a paper's easiest port dictate the system.
+## Artifact lineage
 
-## One implementation increment and GPU schedule
+Preserve the historical memory-named filenames below; their contents describe knowledge readiness under OWNER017.
+- TRAIN readiness v2: DATA coordination/slurp-train-multimodal-memory-readiness-v2.json; SHA256 f5360d2d8293448e3d0cdec281e209d3235d48982c253f11b5d42188c25b9e2d. V1 remains superseded.
+- Root snapshot/recall verification: DATA coordination/multimodal-system-root-readiness-v1.json; SHA256 7582ff0758ea4a6da1bf3b7c36ce1515fbc05c285e8439ea91933081d01173b9.
+- Source-to-media readiness: DATA coordination/slurp-train-recalled-candidate-media-readiness-v1.json; SHA256 6344964135820a133c6aba5cb41108ff10ba15e3600ba483801f96427018875d.
+- Frozen preparation roster: DATA coordination/slurp-train-recalled-candidate-preparation-roster-v1.json; SHA256 094747c37870440cc4adf5dcea61a5afcd8ad0d5640444a5c68ba12f66ad4ebb.
+- Target qualification: DATA prepared/SAEA-SLURP-TRAIN-RECALLED-CANDIDATE-PACKET-AUDIT-V1/target-qualification-v1.json; SHA256 d787ee8aaa42a8ab86de6955de90361fb692348fa2dcf7daff18f427e99d872a.
 
-Complete a single coherent increment:
-1. Source/asset inventory and memory schema: the candidate source-to-media join is now complete. Reuse KnowledgeSnapshot/KbRow, freeze one recording-selection rule, hash selected audio and audit packet overlap. This CPU work runs in parallel with action/trajectory implementation.
-2. Shared memory views and tool-action bridge: implement through KnowledgeProvider, existing ToolEntry bodies, EvidenceAgentController and OpenJiuwen. Add the return-to-state/model path and bounded invocation modes, not a separate framework.
-3. Configured end-to-end proof: actual no-memory/text/paired views, source isolation, returned tool results and final delivery through one executable configuration family. Write meaningful tests around the complete path, not many isolated ratchets.
-4. GPU preparation: one registered decoder-packet encoding window for the frozen TRAIN evidence union, skipping only verified cache hits. Keep existing retrieval keys in the first modality contrast; a later audio-key study uses a separately bound embedding preparation. Do not load the speech projector during decoder inference.
-5. GPU inference: return to one resident decoder, fit the actual multi-packet requests with their stage output bounds, run ready system configurations consecutively, overlap one complete scorer with the next eligible generation.
-6. Freeze the system and its optimization surface; then run the shared feedback/update experiment and transfer to E21/E22.
+- Shared full-source inventory: DATA prepared/SAEA-SLURP-TRAIN-RECALLED-SOURCE-MEDIA-V1/inventory.json; SHA256 e578026f4ea30d64a4bc34091e88193f37c1eb16817d0187b719ef16bf0028b0. It pins the existing preprocess-role receipt e170f1c6360a9d0a1a7dde762bca01fb8e6e0373d73117dc212db0d75120fee5; the public execution binding and service qualification remain next work.
 
-Do not wait for a generic memory database, every tool, all 2026 optimizers or exhaustive fault hardening. Do not use the GPU for arbitrary traffic while the actual experiment is unregistered. The held KU-S4 campaign remains closed; a new TRAIN-memory system needs its own prospective specification and may reuse independently valid bytes, never an old failed gate or attempt ID.
-
-The metadata-only DEV1000 partition audit found OLD500 and NEW500 share 102 speakers. A possible 383/205/412 optimization/validation/evaluation split is speaker-disjoint but remains historically exposed discovery and is not yet adopted. TRAIN memory construction and DEV policy-update roles remain separate. Dataset-native E21/E22 metrics govern later transfer; no new meeting-minutes metric is invented.
-
-## Readiness receipts
-
-The valid TRAIN asset inventory is DATA coordination/slurp-train-multimodal-memory-readiness-v2.json, SHA256 f5360d2d8293448e3d0cdec281e209d3235d48982c253f11b5d42188c25b9e2d. It supersedes v1 without rewriting it. Source-to-media linkage and source-joined packet coverage are still unknown; 90 known promoted packets cannot be subtracted from text-facet count to estimate missing recordings.
-
-Root loader/count/recall verification is DATA coordination/multimodal-system-root-readiness-v1.json, SHA256 7582ff0758ea4a6da1bf3b7c36ce1515fbc05c285e8439ea91933081d01173b9. The snapshot raw file hash and canonical semantic hash differ by serialization convention and both are recorded. These are CPU metadata receipts, not generated system results or new exposure registrations.
-
-The follow-up source-to-media join is complete for the current 2,621-facet recall union: 294 candidates have one eligible recording, 2,327 have multiple and none have zero. DATA coordination/slurp-train-recalled-candidate-media-readiness-v1.json, SHA256 6344964135820a133c6aba5cb41108ff10ba15e3600ba483801f96427018875d. Root verified its source pins, exact candidate identity set, canonical mapping hash, TRAIN source identities and all 2,621 proposed selected paths. Resolve media_relpath against SPEECHRL_DATA_DIR. The lexical source-ID choice is a deterministic proposal; audio-hash and validated packet-overlap work follows roster freeze. Do not equate 2,621 linked episodes with 2,621 missing packets.
+These receipts are CPU preparation, not model contacts or system results. The old KU-S4 gate remains failed and its encoding campaign held. The new system needs its own prospective configuration and registration.

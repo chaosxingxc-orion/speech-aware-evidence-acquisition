@@ -1182,6 +1182,8 @@ def _agent_messages(
     snapshot: KnowledgeSnapshot,
     snapshot_sha256: str,
     query_state: QueryState,
+    agent_states: Sequence[AgentStateArtifact] = (),
+    knowledge_value_renderer: object = None,
 ) -> tuple[Mapping[str, object], ...]:
     base_messages = tuple(adapter.assemble_prompt(sample, None))
     if len(base_messages) != 2:
@@ -1217,16 +1219,19 @@ def _agent_messages(
         }
         for facet in _visible_facets(snapshot, query_state)
     )
-    content.extend(
-        {
-            "type": "text",
-            "text": value.content,
-            "evidence_id": value.value_id,
-            "source_uri": (f"knowledge-snapshot://{snapshot_sha256}/{value.value_id}"),
-            "knowledge_role": "value",
-        }
-        for value in _visible_values(snapshot, query_state)
-    )
+    if knowledge_value_renderer is None:
+        content.extend(
+            {
+                "type": "text",
+                "text": value.content,
+                "evidence_id": value.value_id,
+                "source_uri": (f"knowledge-snapshot://{snapshot_sha256}/{value.value_id}"),
+                "knowledge_role": "value",
+            }
+            for value in _visible_values(snapshot, query_state)
+        )
+    else:
+        content.extend(knowledge_value_renderer(snapshot, query_state, agent_states))
     return (
         {"role": "system", "content": system_text},
         {"role": "user", "content": content},
@@ -1324,6 +1329,7 @@ def _run_agent_trajectory(
     trace_buffer: TraceBuffer,
     observe_step: ObserveStep | None = None,
     record_namespace: str | None = None,
+    knowledge_value_renderer: object = None,
 ) -> _AgentRuntimeOutcome:
     controller = controller_factory(prepared.sample.sample_id)
     if not callable(getattr(controller, "initial_contact", None)) or not callable(
@@ -1389,6 +1395,8 @@ def _run_agent_trajectory(
             snapshot=snapshot,
             snapshot_sha256=snapshot_sha256,
             query_state=query_state,
+            agent_states=context.agent_states,
+            knowledge_value_renderer=knowledge_value_renderer,
         )
         response_text = core_client.complete(
             messages,
@@ -1544,6 +1552,7 @@ def _run_agent_openjiuwen(
     record_namespace: str | None = None,
     request_batch_gate: RequestBatchGate | None = None,
     whole_roster_wave_barrier: bool = False,
+    knowledge_value_renderer: object = None,
 ) -> tuple[_AgentRuntimeOutcome, ...]:
     """Run the speech AgentLoop on the pinned openJiuwen workflow engine."""
 
@@ -1606,6 +1615,8 @@ def _run_agent_openjiuwen(
             snapshot=snapshot,
             snapshot_sha256=snapshot_sha256,
             query_state=state.query_state,
+            agent_states=context.agent_states,
+            knowledge_value_renderer=knowledge_value_renderer,
         )
         nodes: list[_AgentContactNode] = []
         for branch_index, plan in enumerate(plans):
@@ -2163,6 +2174,7 @@ def run_speech_native_agent_loop(
     observe_step: ObserveStep | None = None,
     request_batch_gate: RequestBatchGate | None = None,
     whole_roster_wave_barrier: bool = False,
+    knowledge_value_renderer: object = None,
 ) -> AgentLoopSummary:
     """Run a bounded, batched, speech-native AgentLoop over one DEV split.
 
@@ -2384,6 +2396,7 @@ def run_speech_native_agent_loop(
                 record_namespace=trace_record_namespace,
                 request_batch_gate=request_batch_gate,
                 whole_roster_wave_barrier=whole_roster_wave_barrier,
+                knowledge_value_renderer=knowledge_value_renderer,
             )
         )
     else:
@@ -2411,6 +2424,7 @@ def run_speech_native_agent_loop(
                     trace_buffer=trace_buffer,
                     observe_step=observe_step,
                     record_namespace=trace_record_namespace,
+                    knowledge_value_renderer=knowledge_value_renderer,
                 )
             finally:
                 set_current_trace_buffer(None)

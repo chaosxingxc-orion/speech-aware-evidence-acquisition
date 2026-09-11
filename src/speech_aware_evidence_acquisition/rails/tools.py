@@ -17,13 +17,16 @@ registered as framework local tools" line, on the ground that a framework
 tool base is reserved for a MODEL-INVOKED re-ask arm and that "wrapping
 pipeline DSP as tools would change semantics to model-decided invocation"
 (``docs/readiness/2026-08-08-ojw-rebuild-notes.md`` line 57, restated in
-``reproduction/ojw/components.py``). That ruling is not re-litigated here.
+``reproduction/ojw/components.py``). Historical entries retain that behavior. OWNER-MULTIMODAL-SYSTEM-FIRST-016
+adds the explicit rails.phase_tools action bridge: the frozen core may select a
+bounded task action there, and the harness invokes its native primitive here.
+Selection mode is recorded separately; no existing toolkit opts in implicitly.
 
 Every entry in this catalog is a **system-invoked** tool: the harness -- the
 Planner reading a manifest, or a phase of ``rails.controllers.
-EvidenceAgentController`` -- decides that it runs. No manifest in this
-catalog is ever rendered into a prompt, offered to the core as a callable
-function, or selected by model output. That is enforced in code, not in
+EvidenceAgentController`` -- decides that it runs. Native manifests are never rendered as model-callable Python APIs. The
+explicit task-action bridge exposes its own JSON-safe action contracts and
+records model-selected dispatch; ordinary catalog use stays system-selected. That is enforced in code, not in
 prose: :data:`ToolManifest.system_invoked` must be ``True`` or
 :func:`register_tool` REFUSES the registration, and the flag is carried
 verbatim into the framework ``ToolCard``'s ``properties`` so a reader of the
@@ -87,6 +90,7 @@ from typing import Any, Callable, Mapping, Sequence
 from ..core.base import Registry
 from ..e0.artifacts import REPO_ROOT
 from .errors import RailsError
+from .tool_wrappers import phase_knowledge as _phase_knowledge
 
 
 class ToolCatalogError(RailsError):
@@ -1425,3 +1429,36 @@ __all__ = [
     "to_tool_card",
     "tool_input_params",
 ]
+
+
+# Explicit task-action adapters; historical catalog callers retain system invocation.
+
+TASK_CONTRACT_ACTION_MANIFEST = ToolManifest(
+    tool_id='saea-tool-task-contract-v1',
+    description="Return the current task's legal contract without reading a dataset row.",
+    source_ref="speech_aware_evidence_acquisition.rails.tool_wrappers.phase_knowledge:read_task_contract",
+    pinned_sha256="93b2f93e56c66cca66c1af79402395198bba6848e057c116811abc1c2018066a",
+    inputs={'context': 'AgentRuntimeContext'},
+    outputs={"result": "Mapping | PhaseSupply"},
+    changes_bytes=False, derivation_record=None, cost_class="cpu",
+    axis='ORG', scope=GENERAL_SCOPE, ledger_row_type="none",
+)
+TOOL_CATALOG.register(
+    'saea-tool-task-contract-v1',
+    build_tool_entry(TASK_CONTRACT_ACTION_MANIFEST, _phase_knowledge.read_task_contract),
+)
+
+PHASE_KNOWLEDGE_ACTION_MANIFEST = ToolManifest(
+    tool_id='saea-tool-phase-knowledge-v1',
+    description='Execute the shared prepared knowledge provider for the successor state.',
+    source_ref="speech_aware_evidence_acquisition.rails.tool_wrappers.phase_knowledge:retrieve_phase_knowledge",
+    pinned_sha256="5c626e6119a753fdcff4cd4f22c90d71a88192e6b54f747db992a21a1c88b418",
+    inputs={'supply_for_phase': 'Callable', 'next_phase': 'str', 'context': 'AgentRuntimeContext'},
+    outputs={"result": "Mapping | PhaseSupply"},
+    changes_bytes=False, derivation_record=None, cost_class="cpu",
+    axis='SUPPLY', scope=GENERAL_SCOPE, ledger_row_type="none",
+)
+TOOL_CATALOG.register(
+    'saea-tool-phase-knowledge-v1',
+    build_tool_entry(PHASE_KNOWLEDGE_ACTION_MANIFEST, _phase_knowledge.retrieve_phase_knowledge),
+)
