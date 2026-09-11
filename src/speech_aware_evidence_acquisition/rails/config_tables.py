@@ -718,10 +718,27 @@ def load_toolkits_table(
                     f"{task_type!r} declares no such role"
                 )
         roles = tuple(role for role in TOOLKIT_ROLES if role in seen)
+    from .experience_memory_runtime import CORRECTIVE_MEMORY_TOOL
+
+    phase_tools = values.get("phase_tools")
+    memory_action = isinstance(phase_tools, Mapping) and any(
+        isinstance(spec, Mapping)
+        and isinstance(spec.get("allowed_tools"), (list, tuple))
+        and CORRECTIVE_MEMORY_TOOL in spec["allowed_tools"]
+        for spec in phase_tools.values()
+    )
+    memory_armed = values.get("experience_memory") is not None and memory_action
+
+    def selected_tools(role: str) -> tuple[str, ...]:
+        tools = toolkit.tools_for(role)
+        if memory_armed:
+            return tools
+        return tuple(tool for tool in tools if tool != CORRECTIVE_MEMORY_TOOL)
+
     return ToolkitSelection(
         task_type=task_type,
         roles=roles,
-        tools_by_role={role: toolkit.tools_for(role) for role in roles},
+        tools_by_role={role: selected_tools(role) for role in roles},
     )
 
 

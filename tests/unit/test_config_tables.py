@@ -471,6 +471,32 @@ def test_toolkits_roles_select_a_subset_and_keep_table_order():
     assert set(selection.tools_by_role) == {"planner", "reviewer"}
 
 
+def test_command_toolkit_preserves_legacy_identity_until_memory_is_explicitly_armed():
+    base = {"toolkits": {"task_type": "command", "roles": ["planner"]}}
+    historical = load_toolkits_table(base)
+    assert historical.tools_by_role["planner"] == (
+        "saea-tool-prompt-fit-tokens-v1",
+        "saea-tool-task-contract-v1",
+        "saea-tool-phase-knowledge-v1",
+    )
+
+    armed = load_toolkits_table(
+        {
+            **base,
+            "experience_memory": {"pinned": "synthetic binding"},
+            "phase_tools": {
+                "draft": {
+                    "allowed_tools": ["saea-tool-corrective-memory-v1"],
+                }
+            },
+        }
+    )
+    assert armed.tools_by_role["planner"] == (
+        *historical.tools_by_role["planner"],
+        "saea-tool-corrective-memory-v1",
+    )
+
+
 @pytest.mark.parametrize(
     "entry, message",
     [
