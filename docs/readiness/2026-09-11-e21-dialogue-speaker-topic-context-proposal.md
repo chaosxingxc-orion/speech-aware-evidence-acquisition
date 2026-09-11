@@ -8,7 +8,9 @@ Use diarization as an uncertain observation and retrieval index. Preserve local 
 
 Do not immediately replace the fixed audio windows with isolated speaker turns. The existing OBS-E1 run improved corpus WER from8.19952 to7.15078, but worsened PERSON from22.48886 to24.58005 and was rejected. Its transport change also changed boundary placement, speaker purity, contact count and length. This is evidence of a quality tradeoff, not causal proof that missing context alone caused the name errors. Source: docs/readiness/2026-09-08-e21-obs-speaker-turn-units-v1-verdict.md.
 
-The full44 diarization pass already exists. Reuse and verify it before considering any rerun. Its frozen Sortformer tool has a four-speaker design bound and anonymous call-local IDs; earnings calls can exceed that bound. Existing output qualifies coarse observation strata and turn hypotheses, not a trustworthy global person identity store. Source: docs/readiness/2026-09-06-e21-diarization-obs-v1-preregistration.md. A stable multi-speaker identity route and its budget would need separate qualification before identity-dependent claims.
+The full44 diarization pass already exists. Reuse and verify it before considering any rerun. Its frozen Sortformer tool has a four-speaker design bound and anonymous call-local IDs; the sealed receipt records38 of44 participant rosters above that bound (maximum19), and42 of44 diarized calls reach four detected IDs. Existing output qualifies coarse observation strata and turn hypotheses, not a trustworthy global person identity store. Source: docs/readiness/2026-09-06-e21-diarization-obs-v1-preregistration.md. This is not evidence of a measured diarization error rate, but it makes conflated global speaker memories a concrete concern. A stable multi-speaker identity route and its budget would need separate qualification before identity-dependent claims.
+
+The inherited OBS-E1b proposal adds local left/right audio context around unchanged speaker-turn ownership and an overlap stitch; it remains unexecuted. It does not implement semantic dialogue history or dynamic speaker summaries. Those are separate hypotheses.
 
 ## Proposed context views
 
@@ -50,7 +52,7 @@ Retain E21 official WER, PERSON, non-entity, numeric and insertion metrics with 
 
 Before a new comparison, freeze primary endpoints, guard tolerances, full roster, state visibility, all contact budgets and the role of memory. Do not carry an old numerical noise tolerance across a changed metric or protocol without calibration.
 
-Reuse TaskAdapter, KnowledgeProvider, EvidenceAgentController, FlightRuntime and OpenJiuwen. Existing diarization artifacts, planned windows, predecessor snapshots and prepared packet/fit/score paths are available. A per-call dialogue state store, speaker-topic views and bounded memory-update transitions are proposed shared extensions, not capabilities already established by a judge configuration.
+Reuse TaskAdapter, KnowledgeProvider, EvidenceAgentController, FlightRuntime and OpenJiuwen. Existing diarization artifacts, planned windows, predecessor snapshots and prepared packet/fit/score paths are available. Current unit-plan and sealed-repair paths explicitly reject rolling context tails, and the current window-controller bridge admits only direct-only behavior. A per-call dialogue state store, speaker-topic views and bounded memory-update transitions therefore require an explicit shared extension; a judge or tail configuration alone does not implement them.
 
 Parallelize independent preparation and independent calls. Stateful turns within a call retain order, while different calls fill the resident service slots. A diarizer or feature encoder that needs the GPU receives a separate root-owned preparation window; it must not coexist with another generating flight. Do not start a second answering model. Reuse the current validated full-window packets for initial context-only arms.
 
