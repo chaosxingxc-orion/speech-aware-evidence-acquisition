@@ -1,0 +1,130 @@
+{
+  "experiment_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-PAIRED-ANALYSIS-V1",
+  "execution_profile": "model-free-check",
+  "binding_state": "TEMPLATE ONLY, HELD. Generated manifests, complete score results and complete score receipts do not exist yet; every AWAITING hash must be replaced with a measured SHA-256 after the preceding stage seals. Root must record each release.",
+  "source_analysis_plan": {
+    "path": "docs/readiness/2026-09-11-slurp-program-matched-v1/analysis-plan.json",
+    "sha256": "471e0d7ab6f900b5f2f31a6a7c74dd4d0d7bda22471f1db82da53141e20c5893"
+  },
+  "analysis": {
+    "full_roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    },
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+    },
+    "seed": 20260903,
+    "n_replicates": 10000,
+    "metrics": [
+      "slu_f1_f1",
+      "scenario_action_exact",
+      "scenario_exact",
+      "action_exact"
+    ],
+    "micro_metrics": {
+      "slu_f1_micro": {
+        "tp": [
+          "slu_f1_word_tp",
+          "slu_f1_char_tp"
+        ],
+        "fp": [
+          "slu_f1_word_fp",
+          "slu_f1_char_fp"
+        ],
+        "fn": [
+          "slu_f1_word_fn",
+          "slu_f1_char_fn"
+        ]
+      }
+    },
+    "inputs": {
+      "control": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1/derived-live-program-matched-control-delivery-v1/SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1--delivery-live-program-matched-control-delivery-v1.run-manifest.json",
+          "sha256": "AWAITING_VERIFIED_DERIVED_MANIFEST_SHA256"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-LIVE-PROGRAM-MATCHED-PAIRED-ANALYSIS-V1/complete-score-batch/program-matched-control-delivery.score.json",
+          "sha256": "AWAITING_FIRST_COMPLETE_SCORE_SHA256"
+        },
+        "scorers": {
+          "official": "slurp-slu-official"
+        },
+        "complete_score_receipt": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-LIVE-PROGRAM-MATCHED-PAIRED-ANALYSIS-V1/complete-score-batch/program-matched-control-delivery.complete-score-receipt.json",
+          "sha256": "AWAITING_COMPLETE_SCORE_RECEIPT_SHA256"
+        }
+      },
+      "speech": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1/derived-live-program-matched-speech-delivery-v1/SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1--delivery-live-program-matched-speech-delivery-v1.run-manifest.json",
+          "sha256": "AWAITING_VERIFIED_DERIVED_MANIFEST_SHA256"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-LIVE-PROGRAM-MATCHED-PAIRED-ANALYSIS-V1/complete-score-batch/program-matched-speech-delivery.score.json",
+          "sha256": "AWAITING_FIRST_COMPLETE_SCORE_SHA256"
+        },
+        "scorers": {
+          "official": "slurp-slu-official"
+        },
+        "complete_score_receipt": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-LIVE-PROGRAM-MATCHED-PAIRED-ANALYSIS-V1/complete-score-batch/program-matched-speech-delivery.complete-score-receipt.json",
+          "sha256": "AWAITING_COMPLETE_SCORE_RECEIPT_SHA256"
+        }
+      }
+    },
+    "contrasts": [
+      {
+        "name": "program_matched_speech_minus_program_matched_control",
+        "left": "control",
+        "right": "speech",
+        "scorers": [
+          "official"
+        ]
+      }
+    ]
+  },
+  "estimator_interpretation": {
+    "primary_population": "historically exposed NEW500",
+    "primary": "paired speaker-cluster bootstrap, 10,000 replicates, seed 20260903, CI90",
+    "row_sensitivity": "scenario-stratified paired row bootstrap with the same fixed metric order and seed offsets",
+    "weightings": [
+      "natural mixture",
+      "equal scenario"
+    ],
+    "reporting_populations": [
+      "NEW500",
+      "OLD500",
+      "DEV1000"
+    ],
+    "metric_rule": "slu_f1_f1 is mean per-row F1. slu_f1_micro is the separately reported pooled TP/FP/FN F1 and must never be described as a row mean.",
+    "effective_seed_by_metric": {
+      "slu_f1_f1": 20260903,
+      "scenario_action_exact": 20260904,
+      "scenario_exact": 20260905,
+      "action_exact": 20260906,
+      "slu_f1_micro": 20260903
+    }
+  },
+  "guard_review_after_read": {
+    "positive_discovery": "NEW500 natural-mixture per-row SLU-F1 CI90 lower bound greater than zero",
+    "pooled_micro": "NEW500 pooled micro SLU-F1 gain greater than zero",
+    "intent_scenario_action": "point changes are each nonnegative",
+    "delivery_integrity": "malformed final delivery and output saturation counts do not increase",
+    "scope": "These are the prospective descriptive policy guards in the frozen analysis plan. They are not a non-inferiority, equivalence, confirmatory, or generalization claim.",
+    "equal_scenario": "NEW500 equal-scenario per-row SLU-F1 point gain greater than zero"
+  },
+  "historical_failed_decision": {
+    "retained": true,
+    "path": "docs/readiness/2026-09-10-slurp-live-intent-slots-result.md",
+    "sha256": "d7cb4bbaad48173719b7be65705a1c964a7b608a5df34bc3ffea3e3c690647b7",
+    "meaning": "The previous configured system remains not admitted after its NEW500 scenario point guard failed. This template does not overwrite that decision."
+  },
+  "execution_gate": "HELD. This template is intentionally invalid until exact post-seal hashes replace every AWAITING value and root records the result-read release."
+}
