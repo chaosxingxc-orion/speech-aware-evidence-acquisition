@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 29,
+  "generation": 30,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "359069f5266dded8e360f7671f368a8497b91a38",
-  "updated_at_utc": "2026-09-11T03:46:12.704728+00:00",
-  "next_action": "Read STATUS-029, STATUS-028 and OWNER-SLURP-MATCHED-COMPARISON-011. Keep E21 repair worker21509/session99977 and lease21472/session22105 active on frozen64440737 with server1354. No quality read before seal. SLURP null full wire and new 1000-row recall successor are complete; finish existing speech wire session80581 and compare request fingerprints before registering final fit/generation plans. Exactly one matched pair is approved after E21 seal:4000 planned/4200 maximum generations,12004 fit endpoints,1.0 utilization GPU-hour family. Preserve all prior decisions and active goal. No automatic service restart or duplicate preparation/wire run.",
+  "snapshot_commit": "21ebe2bc8f9c03469a48fe0c68e9b31f1c360dff",
+  "updated_at_utc": "2026-09-11T04:19:31.948322+00:00",
+  "next_action": "Read STATUS-030. E21 repair worker21509/session99977, lease21472/session22105 and server1354 remain live;22/44 call rows at04:16:50Z, no manifest or quality read. Keep source64440737 frozen. SLURP preparation, all4000 synthetic prompt-material checks, four formal registrations and final preflights are complete; use frozen /home/chao/saea-worktrees/slurp-program-matched-generation commit21ebe2bc. Do not rerun preparation/checks or alter configs. After E21 seal verification/cost closure/lease release, stop old service, start serving-slurp-live-program-matched-np4-v1 and10-second monitor, then root lease+control worker, seal/release, lease+speech worker on the same service. Exact non-executed shared entry commands are in coordination/slurp-program-matched-frozen-handoff-v1.json. Actual per-phase fits remain mandatory. E21 complete scoring may overlap SLURP generation; derive SLURP joined deliveries before complete scoring after both parents seal. Preserve all budgets, prior decisions and the active goal.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SLURP-MATCHED-COMPARISON-011"

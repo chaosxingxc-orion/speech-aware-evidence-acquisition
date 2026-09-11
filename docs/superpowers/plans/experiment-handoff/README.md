@@ -1,6 +1,6 @@
 # Owner-directed Stage-2 continuation
 
-Status: **owner-directed execution**, generation 29. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 30. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -33,7 +33,7 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-029.md](STATUS-029.md) and state.json first. The latest experiment authorization is [OWNER-SLURP-MATCHED-COMPARISON-011.md](OWNER-SLURP-MATCHED-COMPARISON-011.md): one program-matched SLURP pair after E21 repair seals, with unchanged guards and no further repeat if it fails. Preparation is underway; see STATUS-029. The task-scope
+Read [STATUS-030.md](STATUS-030.md) and state.json first. The latest experiment authorization is [OWNER-SLURP-MATCHED-COMPARISON-011.md](OWNER-SLURP-MATCHED-COMPARISON-011.md): one program-matched SLURP pair after E21 repair seals, with unchanged guards and no further repeat if it fails. Preparation is complete and the source is frozen; see STATUS-030. The task-scope
 clarification is [OWNER-DATASET-TASKS-010.md](OWNER-DATASET-TASKS-010.md):
 summary design is feasibility only; existing dataset tasks govern evaluation.
 [OWNER-OFFLINE-QUALITY-009.md](OWNER-OFFLINE-QUALITY-009.md) still prioritizes
