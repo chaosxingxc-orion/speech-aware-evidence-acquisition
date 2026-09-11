@@ -1,0 +1,76 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-slurp-task-agent-frame-generation-v1",
+      "baseline_fragment": "slurp-task-agent-frame-v1",
+      "cell_id": "slurp-task-agent-frame-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "readiness": {
+        "state": "held",
+        "reason": "Root must bind protocol, source equivalence, live fit, exposure and service checks before any contact.",
+        "requirements": []
+      },
+      "run_id": "SAEA-SLURP-TASK-AGENT-FRAME-V1"
+    }
+  ],
+  "date": "2026-09-11",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 2100,
+    "planned_speech_audio_seconds": 6000,
+    "split_role": "dev"
+  },
+  "experiment_id": "SAEA-SLURP-TASK-AGENT-FRAME-V1",
+  "family_budget": {
+    "generation_calls_total": 5250,
+    "fit_contacts_total": 15005,
+    "gpu_hours_total": 2.5
+  },
+  "fragment_kind": "saea-slurp-discriminative-value-experiment-v1",
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "decision_population": "Historically exposed NEW500 primary; OLD500 and DEV1000 secondary.",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "preparation_source_receipts": [
+    {
+      "relpath": "docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers.json",
+      "root": "repository",
+      "sha256": "2abda571900bfcb5bf4a384eac1cb858fa8841ab3873d034b862c85671af443c"
+    },
+    {
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-kus3-vectors/vectors.json",
+      "root": "repository",
+      "sha256": "3c213ad4f4787e32d92fe30dd1119395817a73ba48d46cbed292a8f471aa86e5"
+    }
+  ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-DISCRIMINATIVE-VALUE-HISTORICAL-PREPARE-V1/supply.json",
+    "sha256": "a158741f865cedab0fa64a671e8dcdd26b42b67c21903101292446af2a211140"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "Held prospective three-arm SLURP task-agent comparison: frame versus historical value bundle versus direct, with full scenario/action/entities output and no live admission.",
+  "request_decoding_overrides": {
+    "max_tokens": 256
+  },
+  "service_session": "serving-slurp-task-agent-frame-np4-v1",
+  "split_id": "DEV-1000",
+  "fit_run_id": "SAEA-SLURP-TASK-AGENT-FRAME-FIT-V1",
+  "fit_attempt_id": "attempt-slurp-task-agent-frame-fit-v1",
+  "fit_contact_cap": 6002,
+  "generation_budget": {
+    "target": 2000,
+    "cap": 2100
+  }
+}
