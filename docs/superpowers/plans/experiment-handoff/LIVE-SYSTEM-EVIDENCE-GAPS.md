@@ -11,10 +11,10 @@ The live SLURP comparison was scored and decided: slots improved, scenario
 guard failed, full system not admitted. Its raw parents remain unchanged.
 
 Formal E21 feature preparation and the packet DR/LOOP component comparisons
-are complete. The new offline direct-to-KC-E1f baseline is currently generating
-its direct stage. Fresh predecessor binding is implemented and proven through
-the common builder, but this new parent must still seal before its repair
-can run. Full two-stage quality and cost are not yet measured.
+are complete. The new offline direct-to-KC-E1f baseline has sealed its1,593-window direct
+stage and bound every current response through the common predecessor builder.
+The full repair fit passed and the repair is generating on the same resident
+service. The complete two-stage quality and cost decision remains pending.
 
 The generic review-to-bounded-phase-decision seam is now implemented and
 model-free tested through FlightRuntime and the real shared OpenJiuwen executor.
@@ -26,7 +26,7 @@ Live Reviewer-to-Planner-to-new-observation remains unproven and must not be
 declared closed by the fixed repair pair. Dialogue/speaker/topic memory remains
 feasibility-only. OWNER-DATASET-TASKS-010 corrects the root's earlier expansion:
 final meeting-minutes evaluation is not a required acceptance gap because the
-reviewed dataset releases define ASR, not a native summary task. See STATUS-027
+reviewed dataset releases define ASR, not a native summary task. See STATUS-028
 for current routing. OWNER-OFFLINE-QUALITY-009 still favors offline quality
 and phase barriers, without changing task targets or frozen endpoints.
 
