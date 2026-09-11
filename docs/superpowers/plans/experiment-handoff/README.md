@@ -1,6 +1,6 @@
 # Owner-directed Stage-2 continuation
 
-Status: **owner-directed execution**, generation 33. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 34. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -33,12 +33,12 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-033.md](STATUS-033.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
+Read [STATUS-034.md](STATUS-034.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
 The owner explicitly resumed GPU work after network reconnection and prioritizes
 high utilization. This supersedes OWNER012's scheduling hold. E21 generation is
 sealed and its CPU scoring is in progress; see [STATUS-032.md](STATUS-032.md).
-Root has started the approved SLURP control with4/4slots occupied, using the unchanged
-frozen source, registered budgets and prepared handoff under OWNER011.
+The approved SLURP control has sealed with 2,000 calls. The speech arm is now
+running on the same service and frozen source under the unchanged OWNER011 budgets.
 The task-scope
 clarification is [OWNER-DATASET-TASKS-010.md](OWNER-DATASET-TASKS-010.md):
 summary design is feasibility only; existing dataset tasks govern evaluation.
@@ -56,7 +56,8 @@ complete (16560 statistical fields agree); its report is
 | E21 DR | Two full generations, four derived deliveries, scoring and decisions closed | Unit deliveries rejected; self constrained only a small discovery refresh; self free null; derivatives are correlated |
 | E21 LOOP and twin | Both complete; targeting contrast positive, incumbent floor failed | Retain KC-E1f; no additional LOOP generation admitted |
 | G6 SLURP live intent-to-slots | Complete, scored, decided and parent attempts finalized | Slots improve but the scenario guard fails; full system not admitted; retain prompt-identity attribution limit |
-| E21 offline direct-to-KC-E1f | Both1593/44 generations sealed; full fresh-parent lineage verified; experiment lease released | CPU complete scores and frozen paired analysis released under source64440737; retain service, pause all new GPU work |
+| E21 offline direct-to-KC-E1f | Both1593/44 generations sealed; full fresh-parent lineage verified; experiment lease released | Direct score completed once; repair is the sole complete scorer under source 64440737; SLURP GPU work resumed under OWNER013 |
+| SLURP program-matched follow-up | Control sealed; speech arm active on the same service | Complete both live phases and actual fits, then joined deliveries and fixed scoring/analysis |
 | Live E21 review/selection/observation | Generic bounded phase Planner is implemented and model-free tested | Live selection and new observation remain unproven; the fixed pair does not establish them |
 | Dialogue/speaker-topic memory | Feasibility only under OWNER-DATASET-TASKS-010 | Judge any later method on the existing dataset task; no new summary/minutes task or evaluator is required |
 | Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |
@@ -71,7 +72,8 @@ and bound; their CPU scoring is released. A stored count or
 handoff file does not grant launch authority or establish current process health.
 The repair consumes only this run's newly sealed predecessor, under
 [the repair handoff](../../../readiness/2026-09-11-e21-offline-repair-handoff.md).
-Do not score direct quality early or launch the held exemplar branch.
+The full E21 pair is now released for CPU scoring. Keep the SLURP quality read
+held until both arms seal, and keep the exemplar branch held.
 
 Use ChatGPT/OpenAI cloud subagents under [MODEL-ALLOCATION.md](MODEL-ALLOCATION.md);
 the main agent retains planning, scientific decisions, critical review and merge acceptance.

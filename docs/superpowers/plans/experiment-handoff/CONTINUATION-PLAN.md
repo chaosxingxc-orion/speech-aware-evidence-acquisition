@@ -6,7 +6,7 @@ Execution environment: WSL Ubuntu-24.04 only. Repository documents and model-fac
 
 ## Current execution overlay
 
-Updated on 2026-09-11 from STATUS-033 and OWNER-GPU-RESUME-013. The original requirements below remain
+Updated on 2026-09-11 from STATUS-034 and OWNER-GPU-RESUME-013. The original requirements below remain
 the acceptance contract; this overlay records which have actual evidence.
 
 Owner scheduling override: OWNER-GPU-RESUME-013 supersedes the temporary GPU
@@ -25,7 +25,7 @@ live configuration change is authorized solely to increase utilization.
 | E21 LOOP and twin | Both complete; targeting contrast positive, incumbent floor failed | Retain KC-E1f; no additional LOOP generation admitted |
 | G6 SLURP live intent-to-slots | Complete, scored, decided and parent attempts finalized | Slots improve but the scenario guard fails; full system not admitted; retain prompt-identity attribution limit |
 | E21 offline direct-to-KC-E1f | Both1593/44 generations sealed; fresh-parent lineage and repair costs verified | E21 lease released; CPU scores/analysis in progress; service switched to SLURP under OWNER013 |
-| SLURP program-matched follow-up | Both whole-roster wire checks, exact prompt-material matching, all four registrations and final preflights complete; source frozen | RESUMED by OWNER-GPU-RESUME-013; root switches service and executes the unchanged prepared pair |
+| SLURP program-matched follow-up | Both whole-roster wire checks, exact prompt-material matching, all four registrations and final preflights complete; source frozen | Control sealed with 2,000 calls; speech worker active on the same resident service under OWNER013; see STATUS-034 |
 | Live E21 review/selection/observation | Generic bounded phase Planner is implemented and model-free tested | Live selection and new observation remain unproven; the fixed pair does not establish them |
 | Dialogue/speaker-topic memory | Feasibility only under OWNER-DATASET-TASKS-010 | Judge any later method on the existing dataset task; no new summary/minutes task or evaluator is required |
 | Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |
@@ -119,7 +119,7 @@ asset revisions/hashes into a new identity authority.
 | G3 | Planned exclusive encoder cohort | Held by G2 failure; no missing-exemplar encoding |
 | G4 | Planned G2-matched decoder cohort | a/b/c held by G2 failure |
 | G5 | Formal GPU-prepared full-window/selected-cut packets; decoder-only c36864 np4 max1024 | Bridge, two DR sources/four deliveries and LOOP+twin completed and decided |
-| G6 | SLURP np4 completed; E21 np4 no-mmproj currently resident | SLURP live system guard failed; offline E21 direct-to-KC-E1f in progress; depth2 remains last |
+| G6 | Original SLURP and E21 generation completed; program-matched SLURP np4 no-mmproj currently resident | Original SLURP guard failed; one approved matched follow-up running; offline E21 scoring in progress; depth2 remains last |
 
 Choose E21 np6 only after actual family-wide fit clears its registered margin. Otherwise use np4,
 9216/slot for the entire comparison block. Do not switch mid-arm or shorten the completion budget

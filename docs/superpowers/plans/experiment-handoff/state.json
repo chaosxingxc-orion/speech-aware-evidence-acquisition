@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 33,
+  "generation": 34,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "a115efba94cdc27b0731b2ee78c0c746851b5982",
-  "updated_at_utc": "2026-09-11T12:06:30.697100+00:00",
-  "next_action": "Read STATUS-033 and OWNER-GPU-RESUME-013. Owner explicitly resumed exactly the approved GPU work. New SLURP service35780 is live under root wrapper35765/session49170 and monitor35824/session62129, frozen source21ebe2bc. Control worker35924/session7178 has root lease35877/session20612; first-phase1000-request fit PASS,3001 endpoints,minmargin13716, then4/4busy slots and86%GPU at12:03:44Z. Keep lease through seal; no quality read before both arms seal/formal hold. At control closure release only lease20612 and run prepared speech lease+worker on same service with independent first stage and actual fits. Preserve OWNER011 budgets and no-extra-repeat rule. CPU E21 direct scorer33717/33724/session57224 remains sole complete scorer under aligned_scoring_views; continue repair scoring and fixed analysis afterward. Root must review decisions/costs and settle attempts.",
+  "snapshot_commit": "44d71ccd91ec1142831dcddf3e8d016f4ffc1421",
+  "updated_at_utc": "2026-09-11T12:32:46.035331+00:00",
+  "next_action": "Read STATUS-034 and OWNER-GPU-RESUME-013. CONTROL sealed and verified (2000 calls, 1000 outputs, 6002 fit endpoints, 0.21377297687994107 utilization GPUh incl fits); its worker and lease exited zero. SPEECH worker38011/session24915 is active under root lease37699/session20954 on the same server35780, source21ebe2bc. Retain lease through seal or explicit abort. No quality read until both arms seal/formal hold. Record the missed handoff target and initial prepared-packet validation separately. E21 direct full score completed once; repair runner37643/scorer37651/session78549 is the sole complete scorer under aligned_scoring_views. After SPEECH seal derive both registered joined deliveries, then wait for the E21 scorer before SLURP complete scoring and fixed analysis. Root reviews science, costs and settles attempts; all previous failed/held results remain.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-GPU-RESUME-013"
