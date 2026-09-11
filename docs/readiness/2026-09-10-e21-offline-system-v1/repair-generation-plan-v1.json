@@ -5,7 +5,7 @@
   "planned_gpu_hours": 2.0,
   "planned_model_calls": 1750,
   "planned_speech_audio_seconds": 150000,
-  "protocol_hash": "d68665c6d959ae5899ca5c7201583b22182df72b1431a9687741b8afa6fb97d2",
+  "protocol_hash": "5ac185242bca7647c6bd97445e6fdb39fc6ad71d284e1d9f1f6e249e2495943e",
   "run_id": "SAEA-E21-OFFLINE-KC-E1F-REPAIR-GENERATION-NP4-V1",
   "schema": "saea-execution-plan-v1",
   "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
