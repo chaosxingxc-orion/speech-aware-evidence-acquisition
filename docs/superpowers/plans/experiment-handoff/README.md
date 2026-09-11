@@ -1,6 +1,6 @@
 # Owner-directed Stage-2 continuation
 
-Status: **owner-directed execution**, generation 31. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 32. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -33,7 +33,7 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-031.md](STATUS-031.md) and state.json first. The latest scheduling
+Read [STATUS-032.md](STATUS-032.md) and state.json first. The latest scheduling
 instruction is [OWNER-GPU-PAUSE-012.md](OWNER-GPU-PAUSE-012.md): finish the current
 E21 repair, retain the resident model and GPU memory, then pause all further
 GPU-related experiments until a new explicit owner instruction. Continue CPU-only
@@ -58,7 +58,7 @@ complete (16560 statistical fields agree); its report is
 | E21 DR | Two full generations, four derived deliveries, scoring and decisions closed | Unit deliveries rejected; self constrained only a small discovery refresh; self free null; derivatives are correlated |
 | E21 LOOP and twin | Both complete; targeting contrast positive, incumbent floor failed | Retain KC-E1f; no additional LOOP generation admitted |
 | G6 SLURP live intent-to-slots | Complete, scored, decided and parent attempts finalized | Slots improve but the scenario guard fails; full system not admitted; retain prompt-identity attribution limit |
-| E21 offline direct-to-KC-E1f | Direct1593/44 sealed and bound; full repair fit passed; same-service repair generating | Preserve source64440737 and its root lease; after repair seal score the complete pair; quality remains unread |
+| E21 offline direct-to-KC-E1f | Both1593/44 generations sealed; full fresh-parent lineage verified; experiment lease released | CPU complete scores and frozen paired analysis released under source64440737; retain service, pause all new GPU work |
 | Live E21 review/selection/observation | Generic bounded phase Planner is implemented and model-free tested | Live selection and new observation remain unproven; the fixed pair does not establish them |
 | Dialogue/speaker-topic memory | Feasibility only under OWNER-DATASET-TASKS-010 | Judge any later method on the existing dataset task; no new summary/minutes task or evaluator is required |
 | Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |
@@ -68,8 +68,8 @@ Its historical September9 snapshot must not be mistaken for current unread work.
 STATUS-009 through STATUS-024 preserve earlier boundaries; their pending items
 are superseded only by the cited later decisions, never erased from history.
 
-The root service and repair worker run from frozen WSL checkouts. The direct
-parent is sealed and bound; the full actual repair fit passed before attachment. A stored count or
+The root service remains resident under OWNER012. Both E21 generations are sealed
+and bound; their CPU scoring is released. A stored count or
 handoff file does not grant launch authority or establish current process health.
 The repair consumes only this run's newly sealed predecessor, under
 [the repair handoff](../../../readiness/2026-09-11-e21-offline-repair-handoff.md).

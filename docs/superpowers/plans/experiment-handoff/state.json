@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 31,
+  "generation": 32,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "af778ca2b79f3591dab5afd29a5031e87799aee4",
-  "updated_at_utc": "2026-09-11T04:54:16.091736+00:00",
-  "next_action": "Read STATUS-031 and OWNER-GPU-PAUSE-012. Allow only the current E21 repair worker21509/session99977 to finish. After full1593-window/44-call seal, lineage and cost verification, release experiment lease22105 but KEEP resident service serving-e21-offline-direct-repair-np4-v1, coordinator95670 and monitor; do not unload GPU memory. Continue CPU-only complete E21 scores, frozen paired analysis and settlement. All new GPU experiments, encoding, tokenizer/actual-fit checks, throughput probes and profile switches are PAUSED until a new explicit owner instruction. Do not execute the prepared SLURP handoff; retain source21ebe2bc, registrations, budgets and artifacts unchanged. Revalidate liveness; do not infer termination from timeout.",
+  "snapshot_commit": "7e191811b3bcaea8a4069622c7042743f13a894d",
+  "updated_at_utc": "2026-09-11T05:20:46.686610+00:00",
+  "next_action": "Read STATUS-032 and OWNER-GPU-PAUSE-012. E21 repair worker99977 exited0; full1593-window/44-call seal, fresh-parent hashes/ordinals/geometry and costs are verified. Root lease22105 released and exited0. KEEP service serving-e21-offline-direct-repair-np4-v1, coordinator637/session95670, server1354 and monitor1389 resident; do not start new GPU work or SLURP until a new explicit owner instruction. aligned_scoring_views is assigned the preregistered CPU-only two complete scores and frozen paired analysis using source64440737; e21_evidence_review independently audits immutable costs. Revalidate their actual handles/results. Root must review scores/guards, finalize E21 attempts and integrate final decisions/results. Full goal remains incomplete; live selective observation remains unproven.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-GPU-PAUSE-012"

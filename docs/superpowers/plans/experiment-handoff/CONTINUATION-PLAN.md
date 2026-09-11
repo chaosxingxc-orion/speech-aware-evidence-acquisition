@@ -6,7 +6,7 @@ Execution environment: WSL Ubuntu-24.04 only. Repository documents and model-fac
 
 ## Current execution overlay
 
-Updated on 2026-09-11 from STATUS-031 and OWNER-GPU-PAUSE-012. The original requirements below remain
+Updated on 2026-09-11 from STATUS-032 and OWNER-GPU-PAUSE-012. The original requirements below remain
 the acceptance contract; this overlay records which have actual evidence.
 
 Owner scheduling override: finish the already-running E21 repair, then keep its
@@ -25,14 +25,14 @@ handoff stated below; see OWNER-GPU-PAUSE-012 and STATUS-031.
 | E21 DR | Two full generations, four derived deliveries, scoring and decisions closed | Unit deliveries rejected; self constrained only a small discovery refresh; self free null; derivatives are correlated |
 | E21 LOOP and twin | Both complete; targeting contrast positive, incumbent floor failed | Retain KC-E1f; no additional LOOP generation admitted |
 | G6 SLURP live intent-to-slots | Complete, scored, decided and parent attempts finalized | Slots improve but the scenario guard fails; full system not admitted; retain prompt-identity attribution limit |
-| E21 offline direct-to-KC-E1f | Direct 1593/44 sealed and bound; repair full fit passed and generation active | Preserve the frozen same-service worker; paired quality and whole-call scoring await repair seal |
+| E21 offline direct-to-KC-E1f | Both1593/44 generations sealed; fresh-parent lineage and repair costs verified | Experiment lease released; CPU whole-call scores and frozen paired analysis released; keep model resident and pause new GPU dispatch |
 | SLURP program-matched follow-up | Both whole-roster wire checks, exact prompt-material matching, all four registrations and final preflights complete; source frozen | PAUSED by OWNER-GPU-PAUSE-012; preserve preparation and await a new explicit owner instruction |
 | Live E21 review/selection/observation | Generic bounded phase Planner is implemented and model-free tested | Live selection and new observation remain unproven; the fixed pair does not establish them |
 | Dialogue/speaker-topic memory | Feasibility only under OWNER-DATASET-TASKS-010 | Judge any later method on the existing dataset task; no new summary/minutes task or evaluator is required |
 | Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |
 
 No failed scientific guard is converted into a positive system conclusion.
-The current offline E21 pair remains in progress, and live review/selection/
+The current offline E21 pair awaits CPU scoring/decision, and live review/selection/
 observation remains an explicit accepted-runtime gap. Summary feasibility is
 not a requirement to invent or evaluate a new dataset task.
 
