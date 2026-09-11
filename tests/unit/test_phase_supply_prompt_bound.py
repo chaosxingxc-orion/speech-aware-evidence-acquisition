@@ -217,3 +217,73 @@ def test_prompt_bound_is_empty_for_a_cell_that_supplies_nothing():
         ),
     )
     assert FlightRuntime._phase_supply_prompt_bound(stub, program) == {}
+
+
+def test_shared_slurp_program_supports_null_arm_without_direct_prompt_id_drift():
+    """A config-only null arm keeps the direct model-visible program identity."""
+    import copy
+    from pathlib import Path
+
+    from speech_aware_evidence_acquisition.rails.phase_material import (
+        build_material_for_phase,
+        load_phase_material_specs,
+    )
+    from speech_aware_evidence_acquisition.rails.phase_supply import load_phase_supply_specs
+
+    root = Path(__file__).resolve().parents[2]
+    baseline_root = root / "configs" / "baseline"
+    control = json.loads(
+        (baseline_root / "slurp-live-intent-slots-control-recovery-v1.json").read_text()
+    )
+    speech = json.loads(
+        (baseline_root / "slurp-live-intent-slots-speech-v1.json").read_text()
+    )
+    null = copy.deepcopy(control)
+    null["policy"] = speech["policy"]
+    null["phase_supply"] = {}
+
+    def program(values):
+        raw = json.loads(
+            (root / "configs" / "policy" / (values["policy"] + ".json")).read_text()
+        )
+        return rc.PhaseProgram(
+            program_id=raw["program_id"],
+            phases=tuple(rc.PhaseSpec(**phase) for phase in raw["phases"]),
+            max_contacts=raw["max_contacts"],
+            stop_rule=raw["stop_rule"],
+        ).validate()
+
+    shared = program(null)
+    assert load_phase_supply_specs(null, shared) == {}
+    absent = copy.deepcopy(null)
+    del absent["phase_supply"]
+    assert load_phase_supply_specs(absent, shared) == {}
+    assert set(load_phase_supply_specs(speech, shared)) == {"slots"}
+    assert control["phase_material"] == speech["phase_material"]
+
+    def direct_envelope(values):
+        configured = program(values)
+        material = build_material_for_phase(
+            load_phase_material_specs(values, configured),
+            program_id=configured.program_id,
+            static_text_by_phase={
+                "direct": "Transcribe the speech and identify its scenario and action.",
+                "slots": "Extract the stated slots.",
+            },
+            response_format_by_phase={},
+            state_fill_by_phase={"slots": lambda content: "Synthetic slot schema."},
+        )("direct", SimpleNamespace(sample_id="synthetic-config-proof"), {})
+        return render_phase_envelope(
+            "Use only supplied evidence.",
+            material.instruction,
+            prompt_order="speech-query-prefix-v2",
+            packet_descriptor={
+                "packet_id": "synthetic-config-proof",
+                "sha256": _SHA_A,
+            },
+            contact_id=material.contact_id,
+            supply_blocks=(),
+        )
+
+    assert direct_envelope(null) == direct_envelope(absent) == direct_envelope(speech)
+    assert direct_envelope(control) != direct_envelope(speech)
