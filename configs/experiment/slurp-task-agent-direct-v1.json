@@ -14,9 +14,26 @@
       "dataset_fragment": "slurp-speech-native-dev1000",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
       "readiness": {
-        "reason": "Root must bind protocol, source equivalence, live fit, exposure and service checks before any contact.",
-        "requirements": [],
-        "state": "held"
+        "reason": "Root source/wire admission complete; exact live phase capacity is enforced under the exclusive lease before generation.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "coordination/slurp-task-agent-wire-verdict-v1.json",
+            "sha256": "d08b9de70b5edb15534253382e86035c194365f557b92c4a6a123e2adcf45d17"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "coordination/slurp-task-agent-frame-source-verification-v1.json",
+            "sha256": "dce895f0b6b673efb59f1bfe66f831c61ed409da627e62dd024c1cc029baab62"
+          },
+          {
+            "expected_decision_id": "SAEA-SLURP-TASK-AGENT-ADMISSION-V1",
+            "kind": "decision",
+            "relpath": "coordination/slurp-task-agent-eligibility-v1.json",
+            "sha256": "b705c9bddd7894c11be6b8b878fe8589a41049f8b50c3dc7c91ef2a989597267"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-TASK-AGENT-DIRECT-V1"
     }

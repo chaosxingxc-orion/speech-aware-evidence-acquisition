@@ -1,0 +1,105 @@
+{
+  "analysis_template": {
+    "repo_relpath": "docs/readiness/2026-09-11-slurp-task-agent-analysis.template.json",
+    "sha256": "f10845df681fe7fd15cea400173c8cffc160b669c0bdcfc4cd3f36114d6e2a1b"
+  },
+  "composed_config_hash": "64337b38ce2966b030878fcdee00c033759e46a342492936d8445386c9cd9755",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-task-agent-frame-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 6002,
+    "planned_speech_audio_seconds": 6000,
+    "protocol_hash": "3b4e764b4e43fd2e18a4d8ca0d6fa11fee0ba0861eea76d24f433dbe8c614be3",
+    "run_id": "SAEA-SLURP-TASK-AGENT-FRAME-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-live-program-matched-np4-v1",
+  "family_budget": {
+    "fit_contacts_total": 15005,
+    "generation_calls_total": 5250,
+    "gpu_hours_total": 2.5
+  },
+  "live_fit_protocol": "Separate actual full-roster plan/solve wave fits under the worker lease; exactly3001 endpoints per phase. The GPU ceiling includes fitting and generation, not their sum as independent allowances.",
+  "protocol": {
+    "repo_relpath": "docs/readiness/2026-09-11-slurp-task-agent-protocol.md",
+    "sha256": "8df5f5df06544f9b17a6def7f2b7b5456008bd35a80cf513fd0f56591120a08a"
+  },
+  "quality_read_gate": "All3 arms seal or formal root hold before quality/scoring.",
+  "registered_at": "2026-09-11T18:40:54.800183+00:00",
+  "required_session_identity": {
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "host": "127.0.0.1",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      }
+    ],
+    "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+    "model_fragment_sha256": "7545a1ac3eb0c1e88d4121fdf84726e5201bb9d5ae5a32804cc62a7f6a289f74",
+    "model_root": "/home/chao",
+    "port": 8080,
+    "props_identity": {
+      "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "slot_n_ctx": 16384,
+      "total_slots": 4
+    },
+    "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+    "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+    "server_argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8080",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--no-mmproj",
+      "-c",
+      "65536",
+      "-np",
+      "4",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ],
+    "server_env": {
+      "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+      "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+    },
+    "session_role": "inference"
+  },
+  "runtime_root": "/home/chao",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-task-agent-eligibility-v1.json",
+    "sha256": "b705c9bddd7894c11be6b8b878fe8589a41049f8b50c3dc7c91ef2a989597267"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/experiment-closeout-integration",
+  "status": "ROOT_REGISTERED_AWAITING_LEASE",
+  "wire_verdict": {
+    "relpath": "coordination/slurp-task-agent-wire-verdict-v1.json",
+    "sha256": "d08b9de70b5edb15534253382e86035c194365f557b92c4a6a123e2adcf45d17"
+  }
+}
