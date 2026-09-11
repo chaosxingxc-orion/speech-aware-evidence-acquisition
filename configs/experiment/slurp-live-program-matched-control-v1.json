@@ -14,22 +14,21 @@
       "dataset_fragment": "slurp-speech-native-dev1000",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
       "readiness": {
-        "reason": "Prospective owner-approved matched-program comparison; root must complete exposure registration, full model-free wire/equality checks, fit readiness, and service switch before admission.",
+        "reason": "Owner-approved scientific comparison and full model-free preparation are complete. Root dispatch waits for E21 repair seal and the separately attested required SLURP service. Both actual live phase fits remain mandatory inside the exclusive lease before each generation phase.",
         "requirements": [
           {
-            "kind": "registration",
-            "reason": "Fresh generation and fit exposure rows are intentionally absent from this config-only draft."
+            "expected_decision_id": "slurp-program-matched-owner011-eligibility-v1",
+            "kind": "decision",
+            "relpath": "coordination/slurp-program-matched-owner011-eligibility-v1.json",
+            "sha256": "4fb2836b4e53caedbb7bd3b2100222bb928ea08cadce4ca5fbe67c0de97df1be"
           },
           {
-            "kind": "wire-check",
-            "reason": "Verify both arms compose and render the shared phase program before any model contact."
-          },
-          {
-            "kind": "seal",
-            "reason": "E21 repair must be sealed and the source/service switch explicitly admitted by root."
+            "kind": "preparation",
+            "relpath": "coordination/slurp-program-matched-root-wire-verdict-v1.json",
+            "sha256": "6ddf799922869f1adcdbad502acea13287efc9fb91b909f52669b1f9cf6da927"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1"
     }

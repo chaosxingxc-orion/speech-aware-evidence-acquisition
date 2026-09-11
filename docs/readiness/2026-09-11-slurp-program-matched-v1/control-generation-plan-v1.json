@@ -1,0 +1,107 @@
+{
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "ROOT_REGISTERED_AWAITING_SERVICE_HANDOFF",
+  "registered_at": "2026-09-11T04:06:19.030241+00:00",
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "dev",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "planned_model_calls": 2100,
+    "planned_gpu_hours": 0.5,
+    "planned_speech_audio_seconds": 6000,
+    "protocol_hash": "da64d7529359c6fa8a3ce9430f3250717f981b3416a74df07b8e79a47d8b8c70",
+    "attempt_id": "attempt-live-program-matched-control-generation-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "composed_config_hash": "0fe0bd857099c632360d0f9618beaeef6ecb298b718197d887f45ab82f994a45",
+  "expected_session_id": "serving-slurp-live-program-matched-np4-v1",
+  "required_session_identity": {
+    "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+    "model_fragment_sha256": "7545a1ac3eb0c1e88d4121fdf84726e5201bb9d5ae5a32804cc62a7f6a289f74",
+    "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+    "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      }
+    ],
+    "session_role": "inference",
+    "model_root": "/home/chao",
+    "server_argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8080",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--no-mmproj",
+      "-c",
+      "65536",
+      "-np",
+      "4",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ],
+    "server_env": {
+      "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+      "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+    },
+    "host": "127.0.0.1",
+    "port": 8080,
+    "props_identity": {
+      "total_slots": 4,
+      "slot_n_ctx": 16384,
+      "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf"
+    }
+  },
+  "owner_approval": {
+    "repo_relpath": "docs/superpowers/plans/experiment-handoff/OWNER-SLURP-MATCHED-COMPARISON-011.md",
+    "sha256": "baecc034930d76420b783ed4c146e20053d2658e727a7ceeab1118708165837e"
+  },
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-program-matched-owner011-eligibility-v1.json",
+    "sha256": "4fb2836b4e53caedbb7bd3b2100222bb928ea08cadce4ca5fbe67c0de97df1be"
+  },
+  "wire_verdict": {
+    "relpath": "coordination/slurp-program-matched-root-wire-verdict-v1.json",
+    "sha256": "6ddf799922869f1adcdbad502acea13287efc9fb91b909f52669b1f9cf6da927"
+  },
+  "family_budget": {
+    "planned_generation_contacts": 4000,
+    "generation_contact_ceiling": 4200,
+    "fit_endpoint_contact_ceiling": 12004,
+    "utilization_gpu_hours": 1.0,
+    "per_arm_utilization_gpu_hours_including_fit": 0.5
+  },
+  "paired_arm_run_ids": [
+    "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1",
+    "SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1"
+  ],
+  "start_condition": "Root may start the required SLURP resident service only after the current E21 repair manifest seals and verifies and its exclusive lease is released. This scientific-eligibility receipt does not claim that scheduling condition has occurred.",
+  "live_fit_protocol": "The shared phase barrier checks every actual request: 1 props plus 3 endpoints per row, per phase. Slots fit uses this arm's freshly generated direct states. No synthetic predecessor fit or standalone fit flight is substituted.",
+  "quality_read_gate": "Read no new paired quality until both arms seal or a formal root hold closes the comparison.",
+  "stopping": "Exactly this one pair; if inherited guards fail again, stop without another repeat."
+}
