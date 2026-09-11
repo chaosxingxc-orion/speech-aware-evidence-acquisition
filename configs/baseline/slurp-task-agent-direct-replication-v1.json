@@ -1,0 +1,37 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers/snapshot.json",
+  "knowledge_snapshot_sha256": "2c43147780b60fe64a3f46de5e9f6ab28b053f3a28a6900b2a92c04591541cf6",
+  "live_phase_fit": {
+    "attempt_id": "attempt-slurp-task-agent-direct-replication-fit-v1",
+    "contact_cap": 3001,
+    "run_id": "SAEA-SLURP-TASK-AGENT-DIRECT-REPLICATION-FIT-V1"
+  },
+  "phase_material": {
+    "direct": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_phase_direct.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null
+    }
+  },
+  "policy": "phase-direct-only-v1",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "serving_slot_tokens": 16384,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "Complete-task direct comparator through the shared controller, FlightRuntime and OpenJiuwen. One full scenario/action/entities answer per sample; no knowledge is exposed.",
+  "whole_roster_wave_barrier": true
+}

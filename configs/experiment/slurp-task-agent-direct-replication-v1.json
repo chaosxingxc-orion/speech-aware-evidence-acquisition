@@ -1,0 +1,76 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-slurp-task-agent-direct-replication-generation-v1",
+      "baseline_fragment": "slurp-task-agent-direct-replication-v1",
+      "cell_id": "slurp-task-agent-direct-replication-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "readiness": {
+        "reason": "Root same-roster replication admission; actual phase fitting under exclusive lease is required before generation.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "coordination/slurp-task-agent-replication-root-wire-verdict-v1.json",
+            "sha256": "3d97628d6f131e9dfd77524269ec322776f6a6e9ec56580bce9c415f68e83158"
+          },
+          {
+            "expected_decision_id": "SAEA-SLURP-TASK-AGENT-REPLICATION-ADMISSION-V1",
+            "kind": "decision",
+            "relpath": "coordination/slurp-task-agent-replication-eligibility-v1.json",
+            "sha256": "902d5860184a464d1d49acb92f18b15e93bc52334299add6a2435c97839e3c6a"
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-TASK-AGENT-DIRECT-REPLICATION-V1"
+    }
+  ],
+  "date": "2026-09-11",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 1050,
+    "planned_speech_audio_seconds": 3000,
+    "split_role": "dev"
+  },
+  "experiment_id": "SAEA-SLURP-TASK-AGENT-DIRECT-REPLICATION-V1",
+  "family_budget": {
+    "fit_contacts_total": 9003,
+    "generation_calls_total": 3150,
+    "gpu_hours_total": 1.5,
+    "speech_audio_seconds_total": 9000
+  },
+  "fragment_kind": "saea-slurp-task-agent-experiment-v1",
+  "generation_budget": {
+    "cap": 1050,
+    "target": 1000
+  },
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "decision_population": "Historically exposed NEW500 primary; OLD500 and DEV1000 secondary.",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "preparation_source_receipts": [
+    {
+      "relpath": "docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers.json",
+      "root": "repository",
+      "sha256": "2abda571900bfcb5bf4a384eac1cb858fa8841ab3873d034b862c85671af443c"
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Complete-task direct comparator through the shared controller, FlightRuntime and OpenJiuwen. One full scenario/action/entities answer per sample; no knowledge is exposed.",
+  "request_decoding_overrides": {
+    "max_tokens": 256
+  },
+  "service_session": "serving-slurp-task-agent-replication-np4-v1",
+  "split_id": "DEV-1000"
+}

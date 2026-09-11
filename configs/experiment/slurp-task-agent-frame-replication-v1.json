@@ -1,0 +1,87 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prepare-phase-recall",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-slurp-task-agent-frame-replication-generation-v1",
+      "baseline_fragment": "slurp-task-agent-frame-replication-v1",
+      "cell_id": "slurp-task-agent-frame-replication-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "readiness": {
+        "reason": "Root same-roster replication admission; actual phase fitting under exclusive lease is required before generation.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-TASK-AGENT-FRAME-REPLICATION-PREPARE-V1/recall.json",
+            "sha256": "6f50c252739ce5db968e4eca8a76fb5a1a928d06ec61869775e2f855600795fd"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "coordination/slurp-task-agent-replication-root-wire-verdict-v1.json",
+            "sha256": "3d97628d6f131e9dfd77524269ec322776f6a6e9ec56580bce9c415f68e83158"
+          },
+          {
+            "expected_decision_id": "SAEA-SLURP-TASK-AGENT-REPLICATION-ADMISSION-V1",
+            "kind": "decision",
+            "relpath": "coordination/slurp-task-agent-replication-eligibility-v1.json",
+            "sha256": "902d5860184a464d1d49acb92f18b15e93bc52334299add6a2435c97839e3c6a"
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-TASK-AGENT-FRAME-REPLICATION-V1"
+    }
+  ],
+  "date": "2026-09-11",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 2100,
+    "planned_speech_audio_seconds": 6000,
+    "split_role": "dev"
+  },
+  "experiment_id": "SAEA-SLURP-TASK-AGENT-FRAME-REPLICATION-V1",
+  "family_budget": {
+    "fit_contacts_total": 9003,
+    "generation_calls_total": 3150,
+    "gpu_hours_total": 1.5,
+    "speech_audio_seconds_total": 9000
+  },
+  "fragment_kind": "saea-slurp-task-agent-experiment-v1",
+  "generation_budget": {
+    "cap": 2100,
+    "target": 2000
+  },
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "decision_population": "Historically exposed NEW500 primary; OLD500 and DEV1000 secondary.",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "preparation_source_receipts": [
+    {
+      "relpath": "docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers-intent-slot-frame.json",
+      "root": "repository",
+      "sha256": "026f2cbbf9d112ac0ed816a030120acd1eb539f76db1e00dd277aef3272b9104"
+    },
+    {
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-kus3-vectors/vectors.json",
+      "root": "repository",
+      "sha256": "3c213ad4f4787e32d92fe30dd1119395817a73ba48d46cbed292a8f471aa86e5"
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Live current-speech plan, registered fixed knowledge action, and full scenario/action/entities solve. Preserve all legal labels; no sealed predecessor, fixed-intent narrowing, source-span bundle or experience memory.",
+  "request_decoding_overrides": {
+    "max_tokens": 256
+  },
+  "service_session": "serving-slurp-task-agent-replication-np4-v1",
+  "split_id": "DEV-1000"
+}
