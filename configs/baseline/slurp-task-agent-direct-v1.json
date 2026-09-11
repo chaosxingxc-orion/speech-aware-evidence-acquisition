@@ -18,7 +18,7 @@
     }
   },
   "policy": "phase-direct-only-v1",
-  "purpose": "Complete-task direct comparator through the shared controller, FlightRuntime and OpenJiuwen. One full scenario/action/entities answer per sample; no knowledge is exposed.",
+  "what_this_is": "Complete-task direct comparator through the shared controller, FlightRuntime and OpenJiuwen. One full scenario/action/entities answer per sample; no knowledge is exposed.",
   "scorers": [
     "slurp-slu-official",
     "slurp-slu",
