@@ -84,9 +84,9 @@ def handoff_worker_lease(
     repo_root, data_root, runtime_root, lock_path = map(
         Path, (repo_root, data_root, runtime_root, lock_path)
     )
-    if stage not in {"worker", "prepare-window-features"}:
+    if stage not in {"worker", "prepare-window-features", "prompt-fit"}:
         raise LeaseHandoffError(
-            "lease handoff stage must be worker or prepare-window-features"
+            "lease handoff stage must be worker, prepare-window-features or prompt-fit"
         )
     token_path = _confined_token_path(data_root, Path(token_output))
     if not owner.strip() or not expected_session_id.strip():
@@ -175,7 +175,7 @@ def handoff_worker_lease(
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--stage", choices=("worker", "prepare-window-features"), default="worker"
+        "--stage", choices=("worker", "prepare-window-features", "prompt-fit"), default="worker"
     )
     for name in ("repo-root", "data-root", "runtime-root", "lock-path", "experiment", "cell", "owner", "expected-session-id", "token-output"):
         parser.add_argument("--" + name, required=True)

@@ -57,36 +57,39 @@ def run(
     return result, lease, out.getvalue()
 
 
-def test_prepare_window_features_stage_issues_and_releases_custody(tmp_path):
+@pytest.mark.parametrize("stage", ["prepare-window-features", "prompt-fit"])
+def test_preparation_stage_issues_and_releases_custody(tmp_path, stage):
     result, lease, output = run(
         tmp_path,
-        selected=cell(stage="prepare-window-features"),
-        stage="prepare-window-features",
+        selected=cell(stage=stage),
+        stage=stage,
         token="coordination/prep.token",
     )
     assert result == 0 and lease.released
     assert not (tmp_path / "coordination/prep.token").exists()
-    assert "prepare-window-features-lease-ready" in output
-    assert '"stage": "prepare-window-features"' not in output
+    assert f"{stage}-lease-ready" in output
+    assert "secret-token" not in output
 
     result, lease, _ = run(
         tmp_path,
         stdin="",
-        selected=cell(stage="prepare-window-features"),
-        stage="prepare-window-features",
+        selected=cell(stage=stage),
+        stage=stage,
         token="coordination/prep-preserved.token",
     )
     assert result == 2 and lease.preserved
     token = json.loads(
         (tmp_path / "coordination/prep-preserved.token").read_text()
     )
-    assert token["stage"] == "prepare-window-features"
+    assert token["stage"] == stage
 
 
 @pytest.mark.parametrize(
     ("selected", "stage", "message"),
     [
         (cell(stage="worker"), "prepare-window-features", "does not permit"),
+        (cell(stage="worker"), "prompt-fit", "does not permit"),
+        (cell(stage="prompt-fit", ready=False), "prompt-fit", "readiness"),
         (cell(stage="prepare-window-features", ready=False), "prepare-window-features", "readiness"),
     ],
 )
@@ -98,7 +101,8 @@ def test_prepare_stage_requires_exact_declared_mode_and_ready_state(
     assert not (tmp_path / "coordination/no.token").exists()
 
 
-def test_prepare_stage_refuses_stale_resident_identity_before_lease(tmp_path):
+@pytest.mark.parametrize("stage", ["prepare-window-features", "prompt-fit"])
+def test_prepare_stage_refuses_stale_resident_identity_before_lease(tmp_path, stage):
     stale = (
         tmp_path / "session",
         {"session_id": "session", "identity": {"host": "127.0.0.1", "port": 9999}},
@@ -106,8 +110,8 @@ def test_prepare_stage_refuses_stale_resident_identity_before_lease(tmp_path):
     with pytest.raises(LeaseHandoffError, match="identity mismatch"):
         run(
             tmp_path,
-            selected=cell(stage="prepare-window-features"),
-            stage="prepare-window-features",
+            selected=cell(stage=stage),
+            stage=stage,
             token="coordination/no.token",
             resident=stale,
         )
