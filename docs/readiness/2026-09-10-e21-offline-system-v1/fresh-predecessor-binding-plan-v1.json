@@ -7,16 +7,16 @@
     "tokenizer": 0
   },
   "contract_relpath": "docs/readiness/2026-09-10-e21-offline-system-v1/direct-parent-contract-v1.json",
-  "contract_sha256": "d29af6a3ea2a53a4022ba8d2613bcedbc3667b12dad993430512864b503d33d0",
+  "contract_sha256": "2a2f9720debf5c63b6b9d94c760a34859428db0e7a455ea732987666402c6de2",
   "exposure_row": "SAEA-E21-MF-OFFLINE-DIRECT-PREDECESSOR-BINDING-V1",
   "guard": "Run only after the complete parent bundle verifies and before any quality or reference read. Do not alter the frozen repair template beyond its new predecessor receipt binding.",
   "output_artifact_relpath": "derived/e21-predecessor/SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1/attempt-e21-offline-direct-generation-v1/window-hypotheses.json",
   "parent": {
     "attempt_id": "attempt-e21-offline-direct-generation-v1",
-    "config_hash": "4ef7e13d242bf2a87d1ab4b82fff4876560adf52ee67294235f2262597239b98",
+    "config_hash": "070eebc006e5eeefe35261b4739756fc6ce90bb92d6efcd8b2bfa734f7c1fef1",
     "expected_calls": 44,
     "expected_windows": 1593,
-    "protocol_hash": "d3eb7feff5ce46a0845c925734fb37bd2ca945f331936d5394843e03ff9678b4",
+    "protocol_hash": "a292b3978250e797a18591b479506e876a95faa23329be3f5e1b9091543321c4",
     "run_id": "SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1",
     "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e"
   },

@@ -39,14 +39,23 @@
       "dataset_fragment": "earnings21-discovery-conec-names",
       "model_fragment": "q4km-e21-full90-packets-cddb000c-np4-v1",
       "readiness": {
-        "pending_requirements": [
-          "Successful terminal full-roster model-free wire receipt.",
-          "Complete request-fit artifact from SAEA-E21-OFFLINE-DIRECT-FIT-NP4-V1 with exactly 4,780 registered endpoint contacts.",
-          "Root generation admission for the 1,593-request target and 1,750-call ceiling on serving-e21-offline-direct-repair-np4-v1."
+        "pending_requirements": [],
+        "reason": "Root admits the fixed complete direct generation after all1593 actual requests fit with2x output reserve on the root-owned np4 session.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "Terminal complete shared synthetic wire",
+            "relpath": "coordination/e21-offline-direct-full-wire-v3.json",
+            "sha256": "993227dc5d640bd45ee052cd697cdba851497fcd7b2deb944c990c8c64d542c0"
+          },
+          {
+            "kind": "preparation",
+            "reason": "Complete actual direct request fit",
+            "relpath": "analysis/SAEA-E21-OFFLINE-DIRECT-FIT-NP4-V1/request-fit.json",
+            "sha256": "7ffb27a3ea6409bd85a451ec60140c1df842fb4d309b125a580c2d37c1f848d1"
+          }
         ],
-        "reason": "Pre-registered only. Generation remains held until the actual 1,593-request fit passes under max1024 and root binds its immutable request-fit receipt and separate admission.",
-        "requirements": [],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1"
     }
@@ -145,6 +154,10 @@
       "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-preparation-provenance.json",
       "sha256": "72d097e3b153baccb75b4e6e221bc83a1ac60d36dd194c39822993db684ed757"
     }
+  },
+  "prepared_request_fit": {
+    "relpath": "analysis/SAEA-E21-OFFLINE-DIRECT-FIT-NP4-V1/request-fit.json",
+    "sha256": "7ffb27a3ea6409bd85a451ec60140c1df842fb4d309b125a580c2d37c1f848d1"
   },
   "preserve_wire_responses": true,
   "prompt_fit_multiple": 2.0,
