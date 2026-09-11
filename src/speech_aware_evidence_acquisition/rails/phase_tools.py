@@ -411,14 +411,16 @@ class PhaseToolDispatcher:
             for row in records
             if "internal_memory_lineage" in row
         ]
-        return {
+        receipt = {
             "schema": "saea-phase-tools-receipt-v1",
             "phases": {name: dict(spec) for name, spec in self.specs.items()},
             "attempts": attempts,
             "completed": len(records),
             "result_hashes": [content_hash(row) for row in records],
-            "memory_lineage": memory_lineage,
         }
+        if memory_lineage:
+            receipt["memory_lineage"] = memory_lineage
+        return receipt
 
 
 def build_phase_tools(
