@@ -1,0 +1,38 @@
+{
+  "builder": "scripts/flights/bind_window_predecessor.py",
+  "contact_counts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "contract_relpath": "docs/readiness/2026-09-10-e21-offline-system-v1/direct-parent-contract-v2.json",
+  "contract_sha256": "2446308de8b6d462103b196d5c3b691b71d776c2507d10032dcba386e967485f",
+  "exposure_row": "SAEA-E21-MF-OFFLINE-DIRECT-PREDECESSOR-BINDING-V1",
+  "guard": "Run only after the complete parent bundle verifies and before any quality or reference read. Do not alter the frozen repair template beyond its new predecessor receipt binding.",
+  "output_artifact_relpath": "derived/e21-predecessor/SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1/attempt-e21-offline-direct-generation-v1/window-hypotheses.json",
+  "parent": {
+    "attempt_id": "attempt-e21-offline-direct-generation-v1",
+    "config_hash": "070eebc006e5eeefe35261b4739756fc6ce90bb92d6efcd8b2bfa734f7c1fef1",
+    "expected_calls": 44,
+    "expected_windows": 1593,
+    "protocol_hash": "a292b3978250e797a18591b479506e876a95faa23329be3f5e1b9091543321c4",
+    "run_id": "SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1",
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e"
+  },
+  "receipt_relpath": "docs/receipts/e21-predecessor-offline-direct-generation-np4-v1.json",
+  "schema": "saea-e21-fresh-predecessor-binding-plan-v1",
+  "stage_2_template": {
+    "mutable_fields_after_parent_seal": [
+      "predecessor_snapshot.receipt_relpath",
+      "predecessor_snapshot.receipt_sha256"
+    ],
+    "repo_relpath": "docs/readiness/2026-09-10-e21-offline-system-v1/repair-baseline-template.json",
+    "sha256": "497131a4e6defc06d1cc638281dfb0691f9390c50ca4079e6fae491d7a8382e3"
+  },
+  "status": "registered-model-free-contract-ordinal-correction-pending-binding",
+  "supersedes": {
+    "contract_sha256": "2a2f9720debf5c63b6b9d94c760a34859428db0e7a455ea732987666402c6de2",
+    "reason": "Formal preparation inventory ordinals are zero-based; the existing E21 trace and predecessor contract API use one-based window indices. Add one to each ordinal only. Preserve all1593 exact bounds, sample identities and parent identity."
+  }
+}
