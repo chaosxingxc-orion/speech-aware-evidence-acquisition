@@ -76,7 +76,12 @@
     }
   },
   "policy": "phase-task-tools-then-solve-v1",
-  "what_this_is": "Live current-speech plan, registered fixed knowledge action, and full scenario/action/entities solve. Preserve all legal labels; no sealed predecessor, fixed-intent narrowing, source-span bundle or experience memory.",
+  "prepared_phase_recall": {
+    "solve": {
+      "relpath": "prepared/SAEA-SLURP-TASK-AGENT-FRAME-PREPARE-V1/recall.json",
+      "sha256": "3fc68f815cf840d21430ecdb4b31dbc02ac3222b0ddedefb4907188530edb074"
+    }
+  },
   "scorers": [
     "slurp-slu-official",
     "slurp-slu",
@@ -92,5 +97,6 @@
   "task_instruction_template": "probes/slurp_direct_closed_list.txt",
   "task_instruction_template_active": true,
   "value_factor": "Add governed TRAIN observed_intent alongside the same observed_slot_examples. Keys, selected IDs/order, phase program, prompts, tools and full legal answer space match the knowledge arm. This compact association is not an explicit contrast rule.",
+  "what_this_is": "Live current-speech plan, registered fixed knowledge action, and full scenario/action/entities solve. Preserve all legal labels; no sealed predecessor, fixed-intent narrowing, source-span bundle or experience memory.",
   "whole_roster_wave_barrier": true
 }
