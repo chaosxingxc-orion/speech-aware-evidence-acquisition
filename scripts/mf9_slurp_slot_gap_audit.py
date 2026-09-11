@@ -344,154 +344,26 @@ def contrast_block(
 
 
 # ---------------------------------------------------------------------------
-# The loss attribution -- question 1's engine
+# The loss attribution -- shared implementation with historical error surface
 # ---------------------------------------------------------------------------
+from speech_aware_evidence_acquisition.analysis.slurp_entity_attribution import (
+    _match_block as _shared_match_block,
+    attribute_row as _shared_attribute_row,
+)
 
 
 def _match_block(gold, predicted, distance_fn):
-    """One official distance block's matching, with the pairs kept.
-
-    Mirrors ``reproduction.slurp_scoring._distance_based_counts`` exactly --
-    same order, same argmin, same deletions -- but returns WHICH gold each
-    prediction consumed and at what distance, which is the only thing the
-    counts themselves do not say. The caller checks the reconstructed
-    TP/FP/FN against the scorer's own.
-    """
-
-    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (
-        _lowest_distance,
-    )
-
-    remaining_types = [entity.type for entity in gold]
-    remaining_fillers = [entity.filler for entity in gold]
-    matched: list[tuple[str, str, str, float]] = []
-    unmatched_predictions: list[tuple[str, str]] = []
-    tp = fp = fn = 0.0
-    for entity in predicted:
-        if entity.type in remaining_types:
-            index, distance = _lowest_distance(
-                entity, remaining_types, remaining_fillers, distance_fn
-            )
-            tp += 1.0
-            fp += distance
-            fn += distance
-            matched.append(
-                (entity.type, remaining_fillers[index], entity.filler, float(distance))
-            )
-            del remaining_types[index]
-            del remaining_fillers[index]
-        else:
-            unmatched_predictions.append((entity.type, entity.filler))
-            fp += 1.0
-    leftover = list(zip(remaining_types, remaining_fillers))
-    fn += float(len(remaining_types))
-    return matched, unmatched_predictions, leftover, (tp, fp, fn)
+    try:
+        return _shared_match_block(gold, predicted, distance_fn)
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
 
 
 def attribute_row(gold, predicted):
-    """One row's SLU-F1 loss mass, attributed exhaustively.
-
-    The official SLU-F1 is ``2TP / (2TP + FP + FN)`` over the SUM of the word-
-    and char-distance blocks, so the loss mass of a row is exactly
-    ``FP + FN`` summed over both blocks. Every unit of that mass lands in
-    exactly one of four buckets:
-
-    * ``surface`` -- a prediction whose TYPE matched a gold slot but whose
-      value is not the gold surface form: it pays ``d`` on FP and ``d`` on FN
-      in each block, so ``2 * (d_word + d_char)``;
-    * ``type_swap`` -- an unmatched prediction and an unmatched gold that
-      carry the SAME value under the projection's own normalization but
-      different types: 2 units from the prediction's FP plus 2 from the gold's
-      FN;
-    * ``spurious`` -- every other unmatched prediction, 2 units of FP;
-    * ``missing`` -- every other unmatched gold, 2 units of FN.
-
-    The word and char blocks can consume DIFFERENT gold rows when one row
-    carries two gold slots of the same type, but the COUNT of unmatched
-    predictions and unmatched gold is identical in both blocks (the type test
-    is block-independent). The refinement therefore runs on the char block's
-    assignment and the function asserts the counts agree.
-    """
-
-    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (
-        _char_distance,
-        _word_distance,
-    )
-    from speech_aware_evidence_acquisition.reproduction.slurp_value_projection import (
-        normalize_filler,
-    )
-
-    word = _match_block(gold, predicted, _word_distance)
-    char = _match_block(gold, predicted, _char_distance)
-    if len(word[1]) != len(char[1]) or len(word[2]) != len(char[2]):
-        raise SystemExit("the word and char blocks disagree on how many spans matched")
-
-    surface_mass = 2.0 * sum(pair[3] for pair in word[0]) + 2.0 * sum(
-        pair[3] for pair in char[0]
-    )
-    unmatched_predictions = list(char[1])
-    leftover_gold = list(char[2])
-
-    type_swaps: list[dict[str, object]] = []
-    remaining_gold = list(leftover_gold)
-    remaining_predictions: list[tuple[str, str]] = []
-    for pred_type, pred_filler in unmatched_predictions:
-        normalized = normalize_filler(pred_filler)
-        hit = None
-        for index, (gold_type, gold_filler) in enumerate(remaining_gold):
-            if gold_type != pred_type and normalize_filler(gold_filler) == normalized:
-                hit = index
-                break
-        if hit is None:
-            remaining_predictions.append((pred_type, pred_filler))
-            continue
-        gold_type, gold_filler = remaining_gold.pop(hit)
-        type_swaps.append(
-            {
-                "gold_type": gold_type,
-                "gold_filler": gold_filler,
-                "predicted_type": pred_type,
-                "predicted_filler": pred_filler,
-            }
-        )
-
-    # Both blocks walk the predictions in the SAME order and apply the SAME
-    # (block-independent) type test, so index i of one matched list is index i
-    # of the other: the same prediction, possibly against a different gold row
-    # when the row carries two gold slots of one type.
-    surface_pairs = [
-        {
-            "type": word_pair[0],
-            "gold_filler": word_pair[1],
-            "gold_filler_char_block": char_pair[1],
-            "predicted_filler": word_pair[2],
-            "word_distance": word_pair[3],
-            "char_distance": char_pair[3],
-        }
-        for word_pair, char_pair in zip(word[0], char[0])
-    ]
-
-    total_mass = sum(word[3][1:]) + sum(char[3][1:])
-    accounted = (
-        surface_mass + 4.0 * len(type_swaps) + 2.0 * len(remaining_predictions)
-        + 2.0 * len(remaining_gold)
-    )
-    if abs(total_mass - accounted) > 1e-9:
-        raise SystemExit(
-            f"the loss attribution does not close: mass {total_mass} against "
-            f"{accounted} attributed"
-        )
-    return {
-        "tp": word[3][0] + char[3][0],
-        "mass": total_mass,
-        "surface_mass": surface_mass,
-        "surface_pairs": surface_pairs,
-        "type_swaps": type_swaps,
-        "spurious": remaining_predictions,
-        "missing": remaining_gold,
-        "predicted_count": len(predicted),
-        "gold_count": len(gold),
-    }
+    try:
+        return _shared_attribute_row(gold, predicted)
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
 
 
 def _f1(tp: float, fp: float, fn: float) -> float:
