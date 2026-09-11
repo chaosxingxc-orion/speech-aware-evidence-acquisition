@@ -1,0 +1,42 @@
+{
+  "schema": "saea-prospective-held-plan-v1",
+  "status": "HELD",
+  "family_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-V1",
+  "service_session": "serving-slurp-live-program-matched-np4-v1",
+  "arms": [
+    {
+      "arm": "control",
+      "run_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1",
+      "attempt_id": "attempt-live-program-matched-control-generation-v1",
+      "fit_run_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-FIT-V1",
+      "fit_attempt_id": "attempt-live-program-matched-control-fit-v1",
+      "gpu_hours": 0.5,
+      "generation_ceiling": 2100,
+      "fit_contacts": 6002,
+      "speech_seconds": 6000
+    },
+    {
+      "arm": "speech",
+      "run_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1",
+      "attempt_id": "attempt-live-program-matched-speech-generation-v1",
+      "fit_run_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-FIT-V1",
+      "fit_attempt_id": "attempt-live-program-matched-speech-fit-v1",
+      "gpu_hours": 0.5,
+      "generation_ceiling": 2100,
+      "fit_contacts": 6002,
+      "speech_seconds": 6000
+    }
+  ],
+  "family_limits": {
+    "generation_contacts": 4200,
+    "fit_contacts": 12004,
+    "gpu_hours": 1
+  },
+  "pending": [
+    "exposure registration",
+    "full wire/equality verification",
+    "fit readiness",
+    "analysis plan hash binding",
+    "E21 seal and service switch admission"
+  ]
+}

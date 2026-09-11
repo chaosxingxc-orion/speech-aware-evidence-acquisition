@@ -1,0 +1,105 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-live-program-matched-control-generation-v1",
+      "baseline_fragment": "slurp-live-program-matched-control-v1",
+      "cell_id": "live-program-matched-control-generation-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "readiness": {
+        "reason": "Prospective owner-approved matched-program comparison; root must complete exposure registration, full model-free wire/equality checks, fit readiness, and service switch before admission.",
+        "requirements": [
+          {
+            "kind": "registration",
+            "reason": "Fresh generation and fit exposure rows are intentionally absent from this config-only draft."
+          },
+          {
+            "kind": "wire-check",
+            "reason": "Verify both arms compose and render the shared phase program before any model contact."
+          },
+          {
+            "kind": "seal",
+            "reason": "E21 repair must be sealed and the source/service switch explicitly admitted by root."
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1"
+    }
+  ],
+  "comparison_basis": "Freeze both live arms before generation; compare their deterministic joined intent/slots deliveries on historically exposed NEW500, and report OLD500/DEV1000, natural/equal-scenario weighting, speaker sensitivity, output failures, model contacts and actual full-stage cost. The direct phase is regenerated in each arm. Components based on sealed predecessors are descriptive references.",
+  "date": "2026-09-11",
+  "delivery_derivatives": [
+    {
+      "cell_id": "live-program-matched-control-delivery-v1",
+      "parent_cell_id": "live-program-matched-control-generation-v1",
+      "response_postprocessor": "slurp-intent-slots-delivery-v1",
+      "response_postprocessor_params": {},
+      "source_selector": {
+        "predecessor_phase": "direct",
+        "program_id": "phase-direct-then-slots-supplied-v1",
+        "program_sha256": "1ba92c066aef7a399075ba32d657a33e8e49dfcf2947c98ab6055f39600caa6d",
+        "response_phase": "slots",
+        "schema": "saea-phase-response-pair-v1"
+      }
+    }
+  ],
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 2100,
+    "planned_speech_audio_seconds": 6000,
+    "split_role": "dev"
+  },
+  "execution_plan_basis": {
+    "fit": "Two registered phase fits per arm require 6,002 endpoint contacts per arm; fit registration remains pending.",
+    "generation": "Two phases over DEV-1000: 2,000 target contacts with a 2,100 per-arm ceiling; no extra probes or retries."
+  },
+  "experiment_id": "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1",
+  "family_budget": {
+    "fit_contacts_total": 12004,
+    "generation_calls_total": 4200,
+    "gpu_hours_total": 1.0
+  },
+  "fragment_kind": "saea-slurp-live-phase-experiment-v1",
+  "live_fit_execution": "The baseline live_phase_fit declares the distinct tokenizer run and attempt. It is an internal bounded phase gate; do not dispatch a standalone prompt-fit over synthetic predecessors.",
+  "migration_status": "ROOT_REGISTERED: the sole recovery of the first control, after root repaired and tested the phase-boundary audit connection.",
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "decision_population": "Historically exposed NEW500 primary; OLD500 and pooled DEV-1000 separately. No fresh holdout claim.",
+    "roster": "the frozen full DEV-1000 runtime view, id for id",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "Prospective held matched-program SLURP comparison: identical direct-then-slots-supplied program identity, empty null supply versus existing speech-keyed slots supply.",
+  "recovery_registration": {
+    "combined_actual_fit_plus_recovery_ceiling": 9004,
+    "combined_target_generation_contacts": 3000,
+    "fix": "Use a fresh audit client per actual phase; preserve cumulative contact guard and forbid failed-endpoint retries.",
+    "maximum": 1,
+    "ordinal": 1,
+    "original_actual_generation_contacts": 1000,
+    "recovery_target_generation_contacts": 2000,
+    "root_cause": "One keep-alive audit client persisted across the generation wave and expired before the second-phase props call.",
+    "second_failure_action": "Stop the flight; no second recovery. Prove any further fix on a separately registered four-row dry run before a new proposal.",
+    "source_failed_attempt_id": "attempt-live-intent-slots-control-generation-v1",
+    "source_failed_run_id": "SAEA-SLURP-LIVE-INTENT-SLOTS-CONTROL-V1"
+  },
+  "request_decoding_overrides": {
+    "max_tokens": 256
+  },
+  "scientific_analysis": {
+    "repo_relpath": "docs/readiness/2026-09-11-slurp-program-matched-v1/analysis-plan.json",
+    "sha256": "471e0d7ab6f900b5f2f31a6a7c74dd4d0d7bda22471f1db82da53141e20c5893"
+  },
+  "service_session": "serving-slurp-live-program-matched-np4-v1",
+  "split_id": "DEV-1000"
+}
