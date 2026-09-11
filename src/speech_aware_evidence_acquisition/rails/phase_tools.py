@@ -14,10 +14,16 @@ from .errors import RailsError
 from .knowledge import AgentStateArtifact, content_hash
 from .tools import resolve_tool, assert_pinned_hash
 from .controllers import PhaseSupply, PhaseToolStep
+from .experience_memory_runtime import (
+    CORRECTIVE_MEMORY_TOOL,
+    ExperienceMemorySelection,
+)
 
 TASK_CONTRACT_TOOL = "saea-tool-task-contract-v1"
 PHASE_KNOWLEDGE_TOOL = "saea-tool-phase-knowledge-v1"
-ACTION_TOOLS = frozenset({TASK_CONTRACT_TOOL, PHASE_KNOWLEDGE_TOOL})
+ACTION_TOOLS = frozenset(
+    {TASK_CONTRACT_TOOL, PHASE_KNOWLEDGE_TOOL, CORRECTIVE_MEMORY_TOOL}
+)
 MODES = frozenset({"fixed", "core-choice"})
 VIEWS = frozenset({"text", "speech", "paired"})
 
@@ -96,8 +102,8 @@ def _validate_action(action, allowed, views):
         raise PhaseToolError("action tool is outside the configured allowlist")
     if not isinstance(args, Mapping):
         raise PhaseToolError("action arguments must be an object")
-    if tool_id == TASK_CONTRACT_TOOL and args:
-        raise PhaseToolError("task-contract action takes no arguments")
+    if tool_id in {TASK_CONTRACT_TOOL, CORRECTIVE_MEMORY_TOOL} and args:
+        raise PhaseToolError(f"{tool_id} action takes no arguments")
     if tool_id == PHASE_KNOWLEDGE_TOOL:
         if (
             set(args) != {"view"}
@@ -118,12 +124,14 @@ class PhaseToolDispatcher:
         supply_for_phase=None,
         trace_sink=None,
         knowledge_catalog=None,
+        experience_memory=None,
     ):
         self.specs = specs
         self.program = program
         self.snapshot = snapshot.validate()
         self.snapshot_sha256 = snapshot.content_hash()
         self.knowledge_catalog = knowledge_catalog
+        self.experience_memory = experience_memory
         from .knowledge_value_views import KnowledgeValueRenderer
 
         self._value_renderer = KnowledgeValueRenderer(
@@ -145,6 +153,10 @@ class PhaseToolDispatcher:
             PHASE_KNOWLEDGE_TOOL in s["allowed_tools"] for s in specs.values()
         ) and not callable(supply_for_phase):
             raise PhaseToolError("knowledge action requires the shared supply binding")
+        if any(
+            CORRECTIVE_MEMORY_TOOL in s["allowed_tools"] for s in specs.values()
+        ) and experience_memory is None:
+            raise PhaseToolError("corrective-memory action requires a loaded memory binding")
 
     def instruction_for_phase(self, phase, context):
         spec = self.specs.get(phase)
@@ -153,13 +165,16 @@ class PhaseToolDispatcher:
         descriptions = {
             TASK_CONTRACT_TOOL: "Read the current task's legal schema and instructions.",
             PHASE_KNOWLEDGE_TOOL: "Retrieve and open prepared TRAIN knowledge for this task. Arguments: view.",
+            CORRECTIVE_MEMORY_TOOL: (
+                "Read offline-admitted procedural guidance applicable to the next phase."
+            ),
         }
         choices = [
             {
                 "tool_id": tool,
                 "description": descriptions[tool],
                 "arguments": {}
-                if tool == TASK_CONTRACT_TOOL
+                if tool in {TASK_CONTRACT_TOOL, CORRECTIVE_MEMORY_TOOL}
                 else {"view": list(spec["knowledge_views"])},
             }
             for tool in spec["allowed_tools"]
@@ -243,6 +258,8 @@ class PhaseToolDispatcher:
         try:
             if action["tool_id"] == TASK_CONTRACT_TOOL:
                 output = tool.call(context)
+            elif action["tool_id"] == CORRECTIVE_MEMORY_TOOL:
+                output = tool.call(self.experience_memory, next_phase, context)
             else:
                 output = tool.call(self.supply_for_phase, next_phase, context)
             if output.tool_id != action["tool_id"] or output.derivation is not None:
@@ -294,7 +311,7 @@ class PhaseToolDispatcher:
                         }
                         for value_id in cited
                     ]
-            else:
+            elif action["tool_id"] == TASK_CONTRACT_TOOL:
                 if not isinstance(output.result, Mapping) or output.result != {
                     "task_contract": context.task_contract
                 }:
@@ -302,6 +319,12 @@ class PhaseToolDispatcher:
                         "task-contract tool returned an unbound result"
                     )
                 result = dict(output.result)
+            else:
+                if not isinstance(output.result, ExperienceMemorySelection):
+                    raise PhaseToolError(
+                        "corrective-memory tool did not return a bound selection"
+                    )
+                result = dict(output.result.visible)
             document = {
                 **request,
                 "schema": "saea-phase-tool-result-v1",
@@ -317,9 +340,15 @@ class PhaseToolDispatcher:
                 producer_policy_id=self.program.program_id,
                 cited_value_ids=cited,
             ).validate()
-            self._emit(context.sample_id, phase, "result", document)
+            receipt_document = document
+            if action["tool_id"] == CORRECTIVE_MEMORY_TOOL:
+                receipt_document = {
+                    **document,
+                    "internal_memory_lineage": dict(output.result.lineage),
+                }
+            self._emit(context.sample_id, phase, "result", receipt_document)
             with self._lock:
-                self._records[key] = document
+                self._records[key] = receipt_document
             return PhaseToolStep(supply=supply, state=artifact)
         except Exception as exc:
             self._emit(
@@ -377,12 +406,18 @@ class PhaseToolDispatcher:
         with self._lock:
             records = [self._records[key] for key in sorted(self._records)]
             attempts = len(self._attempts)
+        memory_lineage = [
+            row["internal_memory_lineage"]
+            for row in records
+            if "internal_memory_lineage" in row
+        ]
         return {
             "schema": "saea-phase-tools-receipt-v1",
             "phases": {name: dict(spec) for name, spec in self.specs.items()},
             "attempts": attempts,
             "completed": len(records),
             "result_hashes": [content_hash(row) for row in records],
+            "memory_lineage": memory_lineage,
         }
 
 
@@ -394,6 +429,7 @@ def build_phase_tools(
     supply_for_phase=None,
     trace_sink=None,
     knowledge_catalog=None,
+    experience_memory=None,
 ):
     specs = load_phase_tool_specs(config, program)
     if not specs:
@@ -405,4 +441,5 @@ def build_phase_tools(
         supply_for_phase=supply_for_phase,
         trace_sink=trace_sink,
         knowledge_catalog=knowledge_catalog,
+        experience_memory=experience_memory,
     )

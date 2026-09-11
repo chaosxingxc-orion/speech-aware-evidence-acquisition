@@ -976,6 +976,7 @@ PROMPT_FIT_TOKENS_MANIFEST = ToolManifest(
 from .tool_wrappers import (  # noqa: E402  (registration block: see above)
     a2t_renderers as _a2t_renderers,
     diarization as _diarization,
+    experience_memory as _experience_memory,
     flagged_spans as _flagged_spans,
     legal_label_projection as _legal_label_projection,
     prompt_fit_tokens as _prompt_fit_tokens,
@@ -1461,4 +1462,36 @@ PHASE_KNOWLEDGE_ACTION_MANIFEST = ToolManifest(
 TOOL_CATALOG.register(
     'saea-tool-phase-knowledge-v1',
     build_tool_entry(PHASE_KNOWLEDGE_ACTION_MANIFEST, _phase_knowledge.retrieve_phase_knowledge),
+)
+
+CORRECTIVE_MEMORY_ACTION_MANIFEST = ToolManifest(
+    tool_id="saea-tool-corrective-memory-v1",
+    description=(
+        "Select offline-admitted corrective guidance for the successor phase; "
+        "the Solver retains final-answer authority."
+    ),
+    source_ref=(
+        "speech_aware_evidence_acquisition.rails.tool_wrappers.experience_memory:"
+        "select_corrective_memory"
+    ),
+    pinned_sha256="23877f7d1f4f89f180026c23571e181fd52a5b09ad66cec6f28ec3cfdf186c02",
+    inputs={
+        "memory_binding": "LoadedExperienceMemoryBinding",
+        "next_phase": "str",
+        "context": "AgentRuntimeContext",
+    },
+    outputs={"result": "ExperienceMemorySelection"},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis="ORG",
+    scope=GENERAL_SCOPE,
+    ledger_row_type="none",
+)
+TOOL_CATALOG.register(
+    "saea-tool-corrective-memory-v1",
+    build_tool_entry(
+        CORRECTIVE_MEMORY_ACTION_MANIFEST,
+        _experience_memory.select_corrective_memory,
+    ),
 )

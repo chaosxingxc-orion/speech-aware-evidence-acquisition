@@ -71,9 +71,10 @@ def test_the_real_catalog_passes():
     data = tcc.evaluate(REPO_ROOT)
     assert data["failures"] == []
     assert data["passed"] is True
-    # W3 registered the design note's first eight; WAVE R7 added the eighteen
-    # rails/a2t_* renderers Group A named (registered, never rebuilt).
-    assert len(data["tools"]) == 26
+    # W3 registered the first eight; WAVE R7 added eighteen rails/a2t_*
+    # renderers, OWNER016 added two explicit task actions, and OWNER017 adds
+    # the corrective-memory Planner action.
+    assert len(data["tools"]) == 29
     assert all(row["complete"] and row["pin_ok"] for row in data["tools"])
     assert all(row["pin_ok"] for row in data["additional_pins"])
     assert data["registered_ids"] == sorted(data["registered_ids"])

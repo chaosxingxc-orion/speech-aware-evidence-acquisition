@@ -1,6 +1,6 @@
 {
   "schema": "saea-task-toolkits-v1",
-  "note": "Which catalog tools each agent role may call, per task type (design note 2026-09-08 section 7; loader rails.tools.load_toolkit_table). Every id resolves in rails.tools.TOOL_CATALOG and is checked by scripts/checks/engineering_base_check.py. The Solver has no row: the Solver is the frozen core behind the single door and calls no tool. An empty list means that role calls nothing yet, which is a statement, not an omission. WAVE R7 (2026-09-08): the tool-call rows carry the eighteen rails/a2t_* renderers the reuse map's Group A named -- registered, never rebuilt (rails/tool_wrappers/a2t_renderers.py). The Planner reads the knowledge grounds and the prompt/response envelopes, the Observer the two state organizers, and the Reviewer the hard-validity check that used to be a private branch inside a retired controller. OWNER016 adds two command task-action primitives. Their fixed/core selection is enabled only by phase_tools; catalog membership alone does not execute them.",
+  "note": "Which catalog tools each agent role may call, per task type (design note 2026-09-08 section 7; loader rails.tools.load_toolkit_table). Every id resolves in rails.tools.TOOL_CATALOG and is checked by scripts/checks/engineering_base_check.py. The Solver has no row: the Solver is the frozen core behind the single door and calls no tool. An empty list means that role calls nothing yet, which is a statement, not an omission. WAVE R7 (2026-09-08): the tool-call rows carry the eighteen rails/a2t_* renderers the reuse map's Group A named -- registered, never rebuilt (rails/tool_wrappers/a2t_renderers.py). The Planner reads the knowledge grounds and the prompt/response envelopes, the Observer the two state organizers, and the Reviewer the hard-validity check that used to be a private branch inside a retired controller. OWNER016 adds two command task-action primitives; OWNER017 adds admitted corrective-memory guidance for the command Planner. Their fixed/core selection is enabled only by phase_tools; catalog membership alone does not execute them.",
   "toolkits": {
     "meeting": {
       "planner": {
@@ -28,7 +28,8 @@
         "tools": [
           "saea-tool-prompt-fit-tokens-v1",
           "saea-tool-task-contract-v1",
-          "saea-tool-phase-knowledge-v1"
+          "saea-tool-phase-knowledge-v1",
+          "saea-tool-corrective-memory-v1"
         ]
       },
       "observer": {
