@@ -156,8 +156,8 @@ def _tier_label(
     return label
 
 
-def freeze_split_identity() -> int:
-    lock = load_lock(umbrella_lock_path(REPO_ROOT))
+def freeze_split_identity(lock_path: Path | None = None) -> int:
+    lock = load_lock(lock_path if lock_path is not None else umbrella_lock_path(REPO_ROOT))
     root = data_root()
     document = freeze_slurp_split_identity(lock, root)
     path = REPO_ROOT / SPLIT_IDENTITY_RECEIPT_RELPATH
@@ -203,8 +203,9 @@ def build_one(
     value_format: str = "historical",
     exclude_rosters: Sequence[str] = (),
     tier_suffix: str = "",
+    lock_path: Path | None = None,
 ) -> int:
-    lock = load_lock(umbrella_lock_path(REPO_ROOT))
+    lock = load_lock(lock_path if lock_path is not None else umbrella_lock_path(REPO_ROOT))
     root = data_root()
 
     load_start = time.monotonic()
@@ -318,6 +319,10 @@ def build_one(
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
+        "--lock-path", type=Path,
+        help="explicit umbrella datasets lock for an isolated worktree; default uses adjacent layout",
+    )
+    parser.add_argument(
         "--freeze-split-identity",
         action="store_true",
         help="freeze docs/receipts/knowledge/slurp-split-identity.json and exit",
@@ -366,7 +371,7 @@ def main() -> int:
     )
     args = parser.parse_args()
     if args.freeze_split_identity:
-        return freeze_split_identity()
+        return freeze_split_identity(lock_path=args.lock_path)
     if args.size is None:
         parser.error("pass --size <N|full> or --freeze-split-identity")
     return build_one(
@@ -378,6 +383,7 @@ def main() -> int:
             item.strip() for item in str(args.exclude_rosters or "").split(",") if item.strip()
         ),
         tier_suffix=str(args.tier_suffix or ""),
+        lock_path=args.lock_path,
     )
 
 

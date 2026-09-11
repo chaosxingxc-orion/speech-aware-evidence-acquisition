@@ -1,0 +1,103 @@
+{
+  "analysis_template": {
+    "relpath": "docs/readiness/2026-09-11-slurp-role-coverage-analysis.template.json",
+    "sha256": "b087477c21ef886c9ff155b576d21fc591530083e85f8aec7d19f1e94ed6e637"
+  },
+  "composed_config_hash": "20bf5c4c12beb4cd902aef89e5e455b3cee056090167567be59439f90c86202b",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-role-coverage-control-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 2100,
+    "planned_speech_audio_seconds": 6000,
+    "protocol_hash": "ee457f1917a026365c8a328911814ea6049313df1d521790d9486d2c0aadc214",
+    "run_id": "SAEA-SLURP-ROLE-COVERAGE-CONTROL-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-role-coverage-np8-v1",
+  "family_budget": {
+    "fit_contacts_total": 12004,
+    "generation_calls_total": 4200,
+    "gpu_hours_total": 2.0,
+    "speech_audio_seconds_total": 12000
+  },
+  "live_fit_protocol": "Actual full-roster plan/solve requests inside the generation lease;6002 endpoint cap. No guessed predecessor or changed output limit.",
+  "protocol": {
+    "relpath": "docs/readiness/2026-09-11-slurp-role-coverage-protocol.md",
+    "sha256": "44b32af82e3dff7f9c3fc01a03a24ebb2cb547613f49e1518795efe5f1f490cc"
+  },
+  "quality_read_gate": "Both arms sealed or formal closure before semantic inspection and first complete scoring.",
+  "registered_at": "2026-09-11T23:31:15.405447+00:00",
+  "request_matching": "Exact initial model messages; five source-bound audit fingerprints also vary in the solve tool state, prospectively qualified.",
+  "required_session_identity": {
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "host": "127.0.0.1",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      }
+    ],
+    "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+    "model_fragment_sha256": "c4f66b1ee609d26992917b280370aa7ba5b74c93f344f59a222e384a69188c16",
+    "model_root": "/home/chao",
+    "port": 8080,
+    "props_identity": {
+      "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "slot_n_ctx": 8192,
+      "total_slots": 8
+    },
+    "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+    "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+    "server_argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8080",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--no-mmproj",
+      "-c",
+      "65536",
+      "-np",
+      "8",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ],
+    "server_env": {
+      "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+      "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+    },
+    "session_role": "inference"
+  },
+  "runtime_root": "/home/chao",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-role-coverage-eligibility-v1.json",
+    "sha256": "0e21b3a0754d18b0512065430348304f38ddc507f107a9a0c9465c4085a6f145"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/slurp-intent-role-coverage-v1",
+  "status": "ROOT_REGISTERED_AWAITING_CLEAN_SOURCE_PREFLIGHT_AND_LEASE"
+}

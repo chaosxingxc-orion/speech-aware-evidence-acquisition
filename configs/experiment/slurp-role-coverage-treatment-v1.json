@@ -1,0 +1,87 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prepare-phase-recall",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-slurp-role-coverage-treatment-generation-v1",
+      "baseline_fragment": "slurp-role-coverage-treatment-v1",
+      "cell_id": "slurp-role-coverage-treatment-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+      "readiness": {
+        "reason": "Root admitted matched knowledge-package comparison after complete model-free verification; actual live capacity remains mandatory.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-ROLE-COVERAGE-TREATMENT-PREPARE-V1/recall.json",
+            "sha256": "8b3e402878c1a26fc4e326c84aa22725c28a998c47d61e9f463b0cce9a928c2d"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "coordination/slurp-role-coverage-rendered-body-verification-v1.json",
+            "sha256": "a29702f80491943a9b65a88bd0b1bf218c08d02ffdfb91a2ea01c4b82ef4c26b"
+          },
+          {
+            "expected_decision_id": "SAEA-SLURP-ROLE-COVERAGE-ADMISSION-V1",
+            "kind": "decision",
+            "relpath": "coordination/slurp-role-coverage-eligibility-v1.json",
+            "sha256": "0e21b3a0754d18b0512065430348304f38ddc507f107a9a0c9465c4085a6f145"
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-ROLE-COVERAGE-TREATMENT-V1"
+    }
+  ],
+  "date": "2026-09-11",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 2100,
+    "planned_speech_audio_seconds": 6000,
+    "split_role": "dev"
+  },
+  "experiment_id": "SAEA-SLURP-ROLE-COVERAGE-TREATMENT-V1",
+  "family_budget": {
+    "fit_contacts_total": 12004,
+    "generation_calls_total": 4200,
+    "gpu_hours_total": 2.0,
+    "speech_audio_seconds_total": 12000
+  },
+  "fragment_kind": "saea-slurp-task-agent-experiment-v1",
+  "generation_budget": {
+    "cap": 2100,
+    "target": 2000
+  },
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "decision_population": "Historically exposed NEW500 primary; OLD500 and DEV1000 secondary.",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "preparation_source_receipts": [
+    {
+      "relpath": "docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers-intent-role-coverage.json",
+      "root": "repository",
+      "sha256": "96618d6062ae156a0fff7d8b43bd86bfd7798df13d489d63ad26999ea40ff9ed"
+    },
+    {
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-kus3-vectors/vectors.json",
+      "root": "repository",
+      "sha256": "3c213ad4f4787e32d92fe30dd1119395817a73ba48d46cbed292a8f471aa86e5"
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Matched comparison of adding selected TRAIN role-coverage support to compact intent-slot values.",
+  "request_decoding_overrides": {
+    "max_tokens": 256
+  },
+  "service_session": "serving-slurp-role-coverage-np8-v1",
+  "split_id": "DEV-1000"
+}

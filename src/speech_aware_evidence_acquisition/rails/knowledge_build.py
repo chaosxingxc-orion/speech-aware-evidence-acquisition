@@ -173,6 +173,7 @@ VALUE_FORMATS = (
     "slot-type-set",
     "intent-slot-frame",
     "span-role-frame",
+    "intent-role-coverage",
 )
 
 SPLIT_IDENTITY_SCHEMA = "saea-kb-split-identity-v1"
@@ -676,7 +677,51 @@ def _span_role_frame_value_content(row: KbRow) -> str:
         separators=(",", ":"),
     )
 
-def _processed_value_content(row: KbRow, value_format: str) -> str:
+def _selected_intent_role_coverage(
+    selected_by_intent: Mapping[str, Sequence[KbRow]],
+    *,
+    governed_train_relpath: str,
+) -> dict[str, tuple[dict[str, object], str]]:
+    """Aggregate observed annotations over selected, uniquely identified TRAIN utterances.
+
+    Bind each aggregate to its complete membership without replacing the local
+    exemplar association. Empty annotations do not establish entity absence.
+    """
+    coverage_by_intent: dict[str, tuple[dict[str, object], str]] = {}
+    for intent, intent_rows in selected_by_intent.items():
+        role_counts: Counter[str] = Counter()
+        without_annotations = 0
+        for row in intent_rows:
+            if row.intent != f"{row.scenario}_{row.action}":
+                raise RailsError("intent-role-coverage requires canonical scenario_action intent")
+            observed_roles = {role for role, fillers in row.entity_fillers.items() if fillers}
+            role_counts.update(observed_roles)
+            without_annotations += not observed_roles
+        membership_hash = hashlib.sha256(
+            "\n".join(sorted(row.utterance_id for row in intent_rows)).encode("utf-8")
+        ).hexdigest()
+        coverage_by_intent[intent] = (
+            {
+                "support_unit": "selected TRAIN utterance",
+                "utterance_count": len(intent_rows),
+                "utterances_without_entity_annotations": without_annotations,
+                "observed_utterance_counts_by_role": dict(sorted(role_counts.items())),
+                "interpretation": (
+                    "Observed roles are not required or exhaustive slots. "
+                    "Current speech determines entity presence and values."
+                ),
+            },
+            f"governed-jsonl:{governed_train_relpath}#slurp_ids_sha256={membership_hash}",
+        )
+    return coverage_by_intent
+
+
+def _processed_value_content(
+    row: KbRow,
+    value_format: str,
+    *,
+    intent_role_coverage: Mapping[str, object] | None = None,
+) -> str:
     """Render admitted TRAIN facts, without inferring current-query labels.
 
     Keep filler spelling, numbers, negation and modifier content unchanged.
@@ -688,8 +733,12 @@ def _processed_value_content(row: KbRow, value_format: str) -> str:
         document = {"observed_slot_examples": examples}
     elif value_format == "slot-type-set":
         document = {"observed_slot_types": sorted(row.entity_fillers)}
-    elif value_format == "intent-slot-frame":
+    elif value_format in {"intent-slot-frame", "intent-role-coverage"}:
         document = {"observed_intent": row.intent, "observed_slot_examples": examples}
+        if value_format == "intent-role-coverage":
+            if intent_role_coverage is None:
+                raise RailsError("intent-role-coverage requires selected TRAIN coverage")
+            document["intent_role_coverage"] = dict(intent_role_coverage)
     elif value_format == "span-role-frame":
         return _span_role_frame_value_content(row)
     else:
@@ -724,6 +773,14 @@ def _build_facets_and_values(
     selected_by_intent: dict[str, list[KbRow]] = defaultdict(list)
     for row in selected:
         selected_by_intent[row.intent].append(row)
+
+    role_coverage = (
+        _selected_intent_role_coverage(
+            selected_by_intent, governed_train_relpath=governed_train_relpath,
+        )
+        if spec.value_format == "intent-role-coverage"
+        else {}
+    )
 
     facets: list[KeyFacet] = []
     content_facet_id: dict[str, str] = {}
@@ -901,7 +958,10 @@ def _build_facets_and_values(
             else "no additional surface-form variants observed for this utterance's entity types"
         )
         if spec.value_format != "historical":
-            content_text = _processed_value_content(row, spec.value_format)
+            content_text = _processed_value_content(
+                row, spec.value_format,
+                intent_role_coverage=role_coverage[row.intent][0] if role_coverage else None,
+            )
         elif spec.view == VIEW_SLOT_FILLERS:
             content_text = _slot_filler_value_content(row)
         else:
@@ -960,6 +1020,7 @@ def _build_facets_and_values(
                     f"utterance:{row.utterance_id}",
                     f"speaker:{row.primary_speaker_id}",
                     f"governed-jsonl:{governed_train_relpath}#slurp_id={row.utterance_id}",
+                    *([role_coverage[row.intent][1]] if role_coverage else []),
                 }
             )
         )

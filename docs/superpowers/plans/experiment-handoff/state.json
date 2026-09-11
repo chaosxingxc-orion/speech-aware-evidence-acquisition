@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 44,
+  "generation": 45,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "1fd99bbfebe0eda5bbd5e2173408499fe32973b8",
-  "updated_at_utc": "2026-09-11T22:44:02.277867+00:00",
-  "next_action": "Read STATUS-044. Direct and frame replication are FINALIZED from first complete scores;3000 generation and9003 fit contacts. Primary intent and official micro F1 are positive; retain compact frame as exploratory SLURP working baseline, preserve OLD500 uncertainty and old decisions. Root lease released; same no-mmproj service retained, no active flight. Root owns future run/scoring handles. Next prepare a shared TRAIN-grounded role-coverage/conditional-role value matched comparison and check higher-concurrency actual capacity. Audio2Tool historical G4 has2997 current rows in construction blocks; hold reuse and rebuild with current isolation. Native E21/E22, validated memory and training-free system optimization remain pending. Goal active.",
+  "snapshot_commit": "594e24122c4c35a8b938a8415381243f498c148c",
+  "updated_at_utc": "2026-09-11T23:32:14.780141+00:00",
+  "next_action": "Read STATUS-045 and actual runtime receipts. Shared selected-TRAIN role-coverage values, matched np8 configs, full fake workflows and rendered-body verification are complete. Final warm/exposure/clean preflight precede control then treatment under root-owned leases and worker handles. Both seals before quality and first complete scoring. Five named audit fingerprints also vary with values; preserve knowledge-package interpretation. Audio2Tool current construction-roster isolation and shared builder input remain pending. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-DISCRIMINATIVE-VALUES-021"
