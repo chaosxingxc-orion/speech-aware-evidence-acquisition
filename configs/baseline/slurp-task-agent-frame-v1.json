@@ -5,24 +5,24 @@
   "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame/snapshot.json",
   "knowledge_snapshot_sha256": "609854e4211891614b621e6431ccf23706c2aa3a3bc9133dae9d9765628c88b8",
   "live_phase_fit": {
-    "attempt_id": "attempt-discriminative-value-historical-fit-v1",
-    "contact_cap": 3001,
-    "run_id": "SAEA-SLURP-DISCRIMINATIVE-VALUE-HISTORICAL-FIT-V1"
+    "attempt_id": "attempt-slurp-task-agent-frame-fit-v1",
+    "contact_cap": 6002,
+    "run_id": "SAEA-SLURP-TASK-AGENT-FRAME-FIT-V1"
   },
   "phase_material": {
     "plan": {
-      "instruction_template": "probes/task_agent_plan_v1.txt",
       "instruction_fill": null,
+      "instruction_template": "probes/task_agent_plan_v1.txt",
       "predecessor_binding": "none"
     },
     "solve": {
-      "instruction_template": "probes/task_agent_solve_v1.txt",
       "instruction_fill": null,
+      "instruction_template": "probes/task_agent_solve_v1.txt",
       "predecessor_binding": "none"
     }
   },
   "phase_supply": {
-    "slots": {
+    "solve": {
       "dimensions": [
         "content"
       ],
@@ -58,7 +58,25 @@
       "tau": 0.0
     }
   },
+  "phase_tools": {
+    "plan": {
+      "allowed_tools": [
+        "saea-tool-phase-knowledge-v1"
+      ],
+      "fixed_action": {
+        "arguments": {
+          "view": "text"
+        },
+        "tool_id": "saea-tool-phase-knowledge-v1"
+      },
+      "knowledge_views": [
+        "text"
+      ],
+      "mode": "fixed"
+    }
+  },
   "policy": "phase-task-tools-then-solve-v1",
+  "purpose": "Live current-speech plan, registered fixed knowledge action, and full scenario/action/entities solve. Preserve all legal labels; no sealed predecessor, fixed-intent narrowing, source-span bundle or experience memory.",
   "scorers": [
     "slurp-slu-official",
     "slurp-slu",
@@ -66,31 +84,13 @@
   ],
   "serving_slot_tokens": 16384,
   "serving_slots": 4,
-  "speech_feature_key_representation_id": "saea-slurp-task-agent-frame-v1:plan-solve",
-  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-frame-v1",
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
   "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
   "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_direct_closed_list.txt",
   "task_instruction_template_active": true,
-  "value_comparison_rationale": "Fixed-predecessor value-consumption comparison: identical keys, selected identities/order, task/schema, phase program, output contract, service geometry and common grounding instruction; value representation is the registered factor.",
-  "whole_roster_wave_barrier": true,
-  "phase_tools": {
-    "plan": {
-      "mode": "fixed",
-      "allowed_tools": [
-        "saea-tool-phase-knowledge-v1"
-      ],
-      "knowledge_views": [
-        "text"
-      ],
-      "fixed_action": {
-        "tool_id": "saea-tool-phase-knowledge-v1",
-        "arguments": {
-          "view": "text"
-        }
-      }
-    }
-  },
-  "what_this_is": "Held prospective two-contact SLURP task-agent frame arm. It is identical to the historical task-agent arm except for the pinned compact intent-slot-frame snapshot, which adds observed_intent alongside the same observed fillers without long source-span content or a narrowed label space."
+  "value_factor": "Add governed TRAIN observed_intent alongside the same observed_slot_examples. Keys, selected IDs/order, phase program, prompts, tools and full legal answer space match the knowledge arm. This compact association is not an explicit contrast rule.",
+  "whole_roster_wave_barrier": true
 }
