@@ -1,6 +1,6 @@
 # E21 dialogue-context comparison readiness
 
-Status: model-free readiness note. This note does not register an experiment, admit a model contact, or change the running direct-to-KC-E1f baseline.
+Status: model-free feasibility note, qualified by OWNER-DATASET-TASKS-010. Summary/memory design is not a new task or required summary evaluation. Test any admitted method against the existing dataset target and metrics. This note does not register an experiment, admit a model contact, or change the running direct-to-KC-E1f baseline.
 
 ## Existing evidence and boundary
 

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 25,
+  "generation": 26,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,10 +10,10 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "fe765d008766851338055b8e85f315076b5a485a",
-  "updated_at_utc": "2026-09-11T00:59:31.568641+00:00",
-  "next_action": "Read STATUS-025. Revalidate direct worker1675/session51412 and resident service1354/session95670; never replay on observation timeout. Complete the registered offline E21 direct parent, bind its1593 fresh windows before quality reads, then use the same resident service for the actual KC-E1f repair fit and generation. Score each whole manifest once only after comparison closure. KV, KU-S3 repeat, S4N, DR, LOOP and G6 SLURP decisions are closed; G3/G4 remain held. Live review/selection/observation, meeting-minutes evaluation and separately registered depth2 validation remain unproven; do not declare the overall goal complete.",
+  "snapshot_commit": "0cc3d0db485505c57212625a7ebc4ba6c897f0a4",
+  "updated_at_utc": "2026-09-11T01:20:17.395765+00:00",
+  "next_action": "Read STATUS-026 and OWNER-DATASET-TASKS-010. Keep summaries as feasibility only and evaluate existing dataset tasks. Revalidate direct worker1675/session51412 and resident service1354/session95670; never replay on observation timeout. Complete the registered offline E21 direct parent, bind its1593 fresh windows before quality reads, then use the same resident service for actual KC-E1f repair fit and generation. Score each whole manifest once only after comparison closure. Existing component and G6 SLURP decisions remain closed; G3/G4 remain held. Live review/selection/observation and separately registered throughput validation remain unproven. Do not add a summary/minutes evaluation requirement or declare the overall goal complete.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
-  "latest_owner_decision_id": "OWNER-OFFLINE-QUALITY-009"
+  "latest_owner_decision_id": "OWNER-DATASET-TASKS-010"
 }

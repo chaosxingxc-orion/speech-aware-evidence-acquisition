@@ -16,11 +16,13 @@ its direct stage. Fresh predecessor binding is implemented and proven through
 the common builder, but this new parent must still seal before its repair
 can run. Full two-stage quality and cost are not yet measured.
 
-Live Reviewer-to-Planner-to-new-observation remains unproven, as do dynamic
-speaker/topic memory and meeting-minutes quality. These gaps must not be
-declared closed by the fixed repair pair. See STATUS-025 for source reports
-and current handles. OWNER-OFFLINE-QUALITY-009 resolves the historical timing
-question in favor of offline quality and phase barriers.
+Live Reviewer-to-Planner-to-new-observation remains unproven and must not be
+declared closed by the fixed repair pair. Dialogue/speaker/topic memory remains
+feasibility-only. OWNER-DATASET-TASKS-010 corrects the root's earlier expansion:
+final meeting-minutes evaluation is not a required acceptance gap because the
+reviewed dataset releases define ASR, not a native summary task. See STATUS-026
+for current routing. OWNER-OFFLINE-QUALITY-009 still favors offline quality
+and phase barriers, without changing task targets or frozen endpoints.
 
 ## Supported starting point
 

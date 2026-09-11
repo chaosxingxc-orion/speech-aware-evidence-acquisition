@@ -6,7 +6,7 @@ Execution environment: WSL Ubuntu-24.04 only. Repository documents and model-fac
 
 ## Current execution overlay
 
-Updated on 2026-09-11 from STATUS-025. The original requirements below remain
+Updated on 2026-09-11 from STATUS-026 and OWNER-DATASET-TASKS-010. The original requirements below remain
 the acceptance contract; this overlay records which have actual evidence.
 
 | Work | Current state | Evidence / next action |
@@ -19,12 +19,13 @@ the acceptance contract; this overlay records which have actual evidence.
 | G6 SLURP live intent-to-slots | Complete, scored, decided and parent attempts finalized | Slots improve but the scenario guard fails; full system not admitted; retain prompt-identity attribution limit |
 | E21 offline direct-to-KC-E1f | Direct generation active; actual full fit passed; repair awaits its new sealed parent | Same resident np4 no-mmproj service; bind all1593 new windows before repair; quality remains unread |
 | Live E21 review/selection/observation | Not established by the direct-to-KC-E1f pair | Shared live Reviewer-to-Planner-to-observation evidence remains an explicit gap |
-| Dialogue/speaker-topic memory and final minutes | Design only | Temporal-source and episode-end contracts, shared state transitions and prospective evaluation remain required |
+| Dialogue/speaker-topic memory | Feasibility only under OWNER-DATASET-TASKS-010 | Judge any later method on the existing dataset task; no new summary/minutes task or evaluator is required |
 | Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |
 
 No failed scientific guard is converted into a positive system conclusion.
 The current offline E21 pair remains in progress, and live review/selection/
-observation plus final meeting-minutes evaluation remain explicit gaps.
+observation remains an explicit accepted-runtime gap. Summary feasibility is
+not a requirement to invent or evaluate a new dataset task.
 
 ## Endpoint and boundaries
 

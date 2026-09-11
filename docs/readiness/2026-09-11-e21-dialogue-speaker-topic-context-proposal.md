@@ -1,6 +1,6 @@
 # E21 dialogue, speaker and topic context proposal
 
-Status: root design proposal responding to the owner's 2026-09-10 steering. No new mechanism, diarizer run, summary generation or GPU budget is admitted by this document. The registered offline direct-to-KC-E1f baseline continues.
+Status: feasibility-only design, qualified by OWNER-DATASET-TASKS-010 on 2026-09-11. Judge any later method on the existing dataset task; no final-summary task, evaluator or generation campaign is required by this proposal. No new mechanism, diarizer run, summary generation or GPU budget is admitted. The registered offline direct-to-KC-E1f baseline continues.
 
 ## Root recommendation
 
@@ -48,7 +48,7 @@ Speaker records with a qualified temporal visibility contract may be prepared on
 
 ## Quality and execution
 
-Retain E21 official WER, PERSON, non-entity, numeric and insertion metrics with full-call paired clustering and existing complete-score discipline. Add speaker-attribution mistakes, question-answer consistency, grounded claim coverage, unsupported claims, number/period fidelity and correction retention only with a prospective scoring specification. Existing E21 ASR/entity scores do not validate meeting-minutes quality; a minutes claim needs an appropriate human evaluation or independently qualified standard, with evaluation annotations isolated from runtime.
+Follow the existing E21 ASR/entity task and the frozen comparison endpoints: WER, PERSON, non-entity, numeric and insertion measures with full-call paired clustering and complete-score discipline. Distinguish dataset-supported measures from repository-defined auxiliaries and the ConEC definition mirror; do not call all of them executed official metrics. The reviewed E21/E22 releases define no native summary/minutes target or evaluator. Do not add a new human evaluation, summary reference set or summary-quality gate. Candidate memory views are useful only if the existing downstream task improves under its registered comparisons and costs. See 2026-09-11-earnings-native-task-alignment.md.
 
 Before a new comparison, freeze primary endpoints, guard tolerances, full roster, state visibility, all contact budgets and the role of memory. Do not carry an old numerical noise tolerance across a changed metric or protocol without calibration.
 
@@ -64,4 +64,4 @@ The external literature motivates hypotheses, not a guaranteed result on this fr
 
 The umbrella owner execution contract (2026-08-04, lines 102-107 and 117-123) explicitly excludes future-turn material from runtime; the Stage-2A entry (2026-08-02, lines 34-44) repeats that rule. Neither text grants a blanket offline exception. The existing full-parent barrier only makes sealed outputs available for their declared same-window repair. It does not authorize later-window information in an earlier-window request.
 
-A future final-minutes task could define its target after call end and bind already observed whole-call outputs, speaker observations and memory costs under an explicit episode-end input contract. This is a proposed distinct task boundary, not authorization already granted by this design note. Until then, the local-context comparison remains chronological, and full-call speaker observations remain analysis inputs.
+A distinct future final-minutes task would need its own target and input contract, but OWNER-DATASET-TASKS-010 excludes creating that task as a requirement of this round. The existing dataset task remains the evaluation target. The local-context hypothesis remains chronological, and full-call speaker observations remain analysis inputs until separately qualified.

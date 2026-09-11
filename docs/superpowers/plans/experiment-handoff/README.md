@@ -1,6 +1,6 @@
 # Owner-directed Stage-2 continuation
 
-Status: **owner-directed execution**, generation 25. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 26. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -33,9 +33,11 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-025.md](STATUS-025.md) and state.json first. The latest operating
-decision is [OWNER-OFFLINE-QUALITY-009.md](OWNER-OFFLINE-QUALITY-009.md): prioritize
-post-meeting quality, parallel preparation and exclusive GPU feature encoding
+Read [STATUS-026.md](STATUS-026.md) and state.json first. The latest scope
+clarification is [OWNER-DATASET-TASKS-010.md](OWNER-DATASET-TASKS-010.md):
+summary design is feasibility only; existing dataset tasks govern evaluation.
+[OWNER-OFFLINE-QUALITY-009.md](OWNER-OFFLINE-QUALITY-009.md) still prioritizes
+offline quality, parallel preparation and exclusive GPU feature encoding
 followed by decoder-only inference. The original numerical reproduction remains
 complete (16560 statistical fields agree); its report is
 [here](../../../results/2026-09-10-fable-reproduction-audit.md).
@@ -50,7 +52,7 @@ complete (16560 statistical fields agree); its report is
 | G6 SLURP live intent-to-slots | Complete, scored, decided and parent attempts finalized | Slots improve but the scenario guard fails; full system not admitted; retain prompt-identity attribution limit |
 | E21 offline direct-to-KC-E1f | Direct generation active; actual full fit passed; repair awaits its new sealed parent | Same resident np4 no-mmproj service; bind all1593 new windows before repair; quality remains unread |
 | Live E21 review/selection/observation | Not established by the direct-to-KC-E1f pair | Shared live Reviewer-to-Planner-to-observation evidence remains an explicit gap |
-| Dialogue/speaker-topic memory and final minutes | Design only | Temporal-source and episode-end contracts, shared state transitions and prospective evaluation remain required |
+| Dialogue/speaker-topic memory | Feasibility only under OWNER-DATASET-TASKS-010 | Judge any later method on the existing dataset task; no new summary/minutes task or evaluator is required |
 | Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |
 
 The current results view is [the existing results ledger](../../../results/stage2-results-ledger.md).
