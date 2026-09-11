@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 28,
+  "generation": 29,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "bd3ad0721f0ba4ff29e63d0cd672cba89c3b05b9",
-  "updated_at_utc": "2026-09-11T03:13:42.052540+00:00",
-  "next_action": "Read STATUS-028 and OWNER-DATASET-TASKS-010. Direct parent1593/44 is sealed and bound; repair full fit passed and actual GPU generation is confirmed. Revalidate repair worker21509/session99977 and lease21472/session22105 on source64440737, with resident server1354/coordinator637/session95670. Keep this worker source frozen and do not release until seal or explicit abort. After repair seal, verify lineage and full geometry, close costs, release paired quality read, score both complete manifests once with per-sample retention, and make the frozen whole-call decision. Monitor request counts are lower-bound task observations; manifest/usage counts are authoritative. Preserve all closed decisions, held G3/G4, dataset-native task scope and the active goal. OWNER-SLURP-MATCHED-COMPARISON-011 approves exactly one additional SLURP matching pair after E21 repair seal. Prepare both arms and their fixed analysis now, with4,000planned/4,200maximum generation contacts,12,004fit endpoints and1.0family utilizationGPUhour; preserve original gates and stop after this pair if it fails.",
+  "snapshot_commit": "359069f5266dded8e360f7671f368a8497b91a38",
+  "updated_at_utc": "2026-09-11T03:46:12.704728+00:00",
+  "next_action": "Read STATUS-029, STATUS-028 and OWNER-SLURP-MATCHED-COMPARISON-011. Keep E21 repair worker21509/session99977 and lease21472/session22105 active on frozen64440737 with server1354. No quality read before seal. SLURP null full wire and new 1000-row recall successor are complete; finish existing speech wire session80581 and compare request fingerprints before registering final fit/generation plans. Exactly one matched pair is approved after E21 seal:4000 planned/4200 maximum generations,12004 fit endpoints,1.0 utilization GPU-hour family. Preserve all prior decisions and active goal. No automatic service restart or duplicate preparation/wire run.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SLURP-MATCHED-COMPARISON-011"

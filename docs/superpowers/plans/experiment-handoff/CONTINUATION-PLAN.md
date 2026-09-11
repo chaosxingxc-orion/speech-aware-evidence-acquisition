@@ -6,7 +6,7 @@ Execution environment: WSL Ubuntu-24.04 only. Repository documents and model-fac
 
 ## Current execution overlay
 
-Updated on 2026-09-11 from STATUS-027 and OWNER-DATASET-TASKS-010. The original requirements below remain
+Updated on 2026-09-11 from STATUS-029 and OWNER-SLURP-MATCHED-COMPARISON-011. The original requirements below remain
 the acceptance contract; this overlay records which have actual evidence.
 
 | Work | Current state | Evidence / next action |
@@ -17,7 +17,8 @@ the acceptance contract; this overlay records which have actual evidence.
 | E21 DR | Two full generations, four derived deliveries, scoring and decisions closed | Unit deliveries rejected; self constrained only a small discovery refresh; self free null; derivatives are correlated |
 | E21 LOOP and twin | Both complete; targeting contrast positive, incumbent floor failed | Retain KC-E1f; no additional LOOP generation admitted |
 | G6 SLURP live intent-to-slots | Complete, scored, decided and parent attempts finalized | Slots improve but the scenario guard fails; full system not admitted; retain prompt-identity attribution limit |
-| E21 offline direct-to-KC-E1f | Direct generation active; actual full fit passed; repair awaits its new sealed parent | Same resident np4 no-mmproj service; bind all1593 new windows before repair; quality remains unread |
+| E21 offline direct-to-KC-E1f | Direct 1593/44 sealed and bound; repair full fit passed and generation active | Preserve the frozen same-service worker; paired quality and whole-call scoring await repair seal |
+| SLURP program-matched follow-up | One pair explicitly approved by OWNER011; configs, analysis and recall prepared | Full control wire passed; speech wire running; generation waits for E21 seal and final registration |
 | Live E21 review/selection/observation | Generic bounded phase Planner is implemented and model-free tested | Live selection and new observation remain unproven; the fixed pair does not establish them |
 | Dialogue/speaker-topic memory | Feasibility only under OWNER-DATASET-TASKS-010 | Judge any later method on the existing dataset task; no new summary/minutes task or evaluator is required |
 | Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |
