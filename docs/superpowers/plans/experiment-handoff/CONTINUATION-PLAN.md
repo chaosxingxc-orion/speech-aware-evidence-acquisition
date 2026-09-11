@@ -6,16 +6,15 @@ Execution environment: WSL Ubuntu-24.04 only. Repository documents and model-fac
 
 ## Current execution overlay
 
-Updated on 2026-09-11 from STATUS-032 and OWNER-GPU-PAUSE-012. The original requirements below remain
+Updated on 2026-09-11 from STATUS-033 and OWNER-GPU-RESUME-013. The original requirements below remain
 the acceptance contract; this overlay records which have actual evidence.
 
-Owner scheduling override: finish the already-running E21 repair, then keep its
-resident model and GPU memory while pausing all new GPU-related experiments.
-Continue CPU-only E21 scoring, analysis and settlement after seal. Do not start
-SLURP, encoding, actual-fit/tokenizer checks, throughput probes or a service
-profile change until a new explicit owner instruction. Preserve all preparation
-and fixed scientific plans. This override supersedes any automatic queue
-handoff stated below; see OWNER-GPU-PAUSE-012 and STATUS-031.
+Owner scheduling override: OWNER-GPU-RESUME-013 supersedes the temporary GPU
+pause after network reconnection. Resume the already-approved, prepared SLURP
+matched pair under unchanged OWNER011 budgets/guards and frozen source21ebe2bc.
+Root switches the service and runs both arms continuously with four registered
+slots while the existing E21 CPU scoring/analysis continues. No extra flight or
+live configuration change is authorized solely to increase utilization.
 
 | Work | Current state | Evidence / next action |
 |---|---|---|
@@ -25,8 +24,8 @@ handoff stated below; see OWNER-GPU-PAUSE-012 and STATUS-031.
 | E21 DR | Two full generations, four derived deliveries, scoring and decisions closed | Unit deliveries rejected; self constrained only a small discovery refresh; self free null; derivatives are correlated |
 | E21 LOOP and twin | Both complete; targeting contrast positive, incumbent floor failed | Retain KC-E1f; no additional LOOP generation admitted |
 | G6 SLURP live intent-to-slots | Complete, scored, decided and parent attempts finalized | Slots improve but the scenario guard fails; full system not admitted; retain prompt-identity attribution limit |
-| E21 offline direct-to-KC-E1f | Both1593/44 generations sealed; fresh-parent lineage and repair costs verified | Experiment lease released; CPU whole-call scores and frozen paired analysis released; keep model resident and pause new GPU dispatch |
-| SLURP program-matched follow-up | Both whole-roster wire checks, exact prompt-material matching, all four registrations and final preflights complete; source frozen | PAUSED by OWNER-GPU-PAUSE-012; preserve preparation and await a new explicit owner instruction |
+| E21 offline direct-to-KC-E1f | Both1593/44 generations sealed; fresh-parent lineage and repair costs verified | E21 lease released; CPU scores/analysis in progress; service switched to SLURP under OWNER013 |
+| SLURP program-matched follow-up | Both whole-roster wire checks, exact prompt-material matching, all four registrations and final preflights complete; source frozen | RESUMED by OWNER-GPU-RESUME-013; root switches service and executes the unchanged prepared pair |
 | Live E21 review/selection/observation | Generic bounded phase Planner is implemented and model-free tested | Live selection and new observation remain unproven; the fixed pair does not establish them |
 | Dialogue/speaker-topic memory | Feasibility only under OWNER-DATASET-TASKS-010 | Judge any later method on the existing dataset task; no new summary/minutes task or evaluator is required |
 | Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |

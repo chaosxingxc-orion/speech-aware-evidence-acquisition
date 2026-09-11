@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 32,
+  "generation": 33,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,10 +10,10 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "7e191811b3bcaea8a4069622c7042743f13a894d",
-  "updated_at_utc": "2026-09-11T05:20:46.686610+00:00",
-  "next_action": "Read STATUS-032 and OWNER-GPU-PAUSE-012. E21 repair worker99977 exited0; full1593-window/44-call seal, fresh-parent hashes/ordinals/geometry and costs are verified. Root lease22105 released and exited0. KEEP service serving-e21-offline-direct-repair-np4-v1, coordinator637/session95670, server1354 and monitor1389 resident; do not start new GPU work or SLURP until a new explicit owner instruction. aligned_scoring_views is assigned the preregistered CPU-only two complete scores and frozen paired analysis using source64440737; e21_evidence_review independently audits immutable costs. Revalidate their actual handles/results. Root must review scores/guards, finalize E21 attempts and integrate final decisions/results. Full goal remains incomplete; live selective observation remains unproven.",
+  "snapshot_commit": "a115efba94cdc27b0731b2ee78c0c746851b5982",
+  "updated_at_utc": "2026-09-11T12:06:30.697100+00:00",
+  "next_action": "Read STATUS-033 and OWNER-GPU-RESUME-013. Owner explicitly resumed exactly the approved GPU work. New SLURP service35780 is live under root wrapper35765/session49170 and monitor35824/session62129, frozen source21ebe2bc. Control worker35924/session7178 has root lease35877/session20612; first-phase1000-request fit PASS,3001 endpoints,minmargin13716, then4/4busy slots and86%GPU at12:03:44Z. Keep lease through seal; no quality read before both arms seal/formal hold. At control closure release only lease20612 and run prepared speech lease+worker on same service with independent first stage and actual fits. Preserve OWNER011 budgets and no-extra-repeat rule. CPU E21 direct scorer33717/33724/session57224 remains sole complete scorer under aligned_scoring_views; continue repair scoring and fixed analysis afterward. Root must review decisions/costs and settle attempts.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
-  "latest_owner_decision_id": "OWNER-GPU-PAUSE-012"
+  "latest_owner_decision_id": "OWNER-GPU-RESUME-013"
 }

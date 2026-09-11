@@ -1,6 +1,6 @@
 # Owner-directed Stage-2 continuation
 
-Status: **owner-directed execution**, generation 32. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 33. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -33,14 +33,12 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-032.md](STATUS-032.md) and state.json first. The latest scheduling
-instruction is [OWNER-GPU-PAUSE-012.md](OWNER-GPU-PAUSE-012.md): finish the current
-E21 repair, retain the resident model and GPU memory, then pause all further
-GPU-related experiments until a new explicit owner instruction. Continue CPU-only
-E21 scoring, analysis and settlement after seal. The one-pair approval in
-[OWNER-SLURP-MATCHED-COMPARISON-011.md](OWNER-SLURP-MATCHED-COMPARISON-011.md)
-remains historical authority, but its prepared SLURP dispatch is now paused.
-Preparation and the frozen source remain unchanged; see STATUS-030 for their pins.
+Read [STATUS-033.md](STATUS-033.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
+The owner explicitly resumed GPU work after network reconnection and prioritizes
+high utilization. This supersedes OWNER012's scheduling hold. E21 generation is
+sealed and its CPU scoring is in progress; see [STATUS-032.md](STATUS-032.md).
+Root has started the approved SLURP control with4/4slots occupied, using the unchanged
+frozen source, registered budgets and prepared handoff under OWNER011.
 The task-scope
 clarification is [OWNER-DATASET-TASKS-010.md](OWNER-DATASET-TASKS-010.md):
 summary design is feasibility only; existing dataset tasks govern evaluation.
@@ -68,7 +66,7 @@ Its historical September9 snapshot must not be mistaken for current unread work.
 STATUS-009 through STATUS-024 preserve earlier boundaries; their pending items
 are superseded only by the cited later decisions, never erased from history.
 
-The root service remains resident under OWNER012. Both E21 generations are sealed
+The root now owns the SLURP service under OWNER013. Both E21 generations are sealed
 and bound; their CPU scoring is released. A stored count or
 handoff file does not grant launch authority or establish current process health.
 The repair consumes only this run's newly sealed predecessor, under
