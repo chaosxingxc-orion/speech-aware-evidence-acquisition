@@ -1,6 +1,8 @@
 # Owner-directed Stage-2 continuation
 
-Status: **owner-directed execution**, generation 35. Codex coordinates implementation and
+**Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
+
+Status: **owner-directed execution**, generation 36. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -33,12 +35,11 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-035.md](STATUS-035.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
+Read [STATUS-036.md](STATUS-036.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
 The owner explicitly resumed GPU work after network reconnection and prioritizes
-high utilization. This supersedes OWNER012's scheduling hold. E21 generation is
-sealed and its CPU scoring is in progress; see [STATUS-032.md](STATUS-032.md).
-Both approved SLURP arms have sealed with 4,000 calls in total. Their joined
-deliveries are verified and full scoring is active under the unchanged OWNER011 analysis.
+high utilization. This supersedes OWNER012's scheduling hold. E21 and SLURP generation, scoring, fixed analysis and all four settlements
+are complete. Both system admissions fail their frozen rules. The resident
+model is retained; no extra flight is dispatched.
 The task-scope
 clarification is [OWNER-DATASET-TASKS-010.md](OWNER-DATASET-TASKS-010.md):
 summary design is feasibility only; existing dataset tasks govern evaluation.
@@ -56,8 +57,8 @@ complete (16560 statistical fields agree); its report is
 | E21 DR | Two full generations, four derived deliveries, scoring and decisions closed | Unit deliveries rejected; self constrained only a small discovery refresh; self free null; derivatives are correlated |
 | E21 LOOP and twin | Both complete; targeting contrast positive, incumbent floor failed | Retain KC-E1f; no additional LOOP generation admitted |
 | G6 SLURP live intent-to-slots | Complete, scored, decided and parent attempts finalized | Slots improve but the scenario guard fails; full system not admitted; retain prompt-identity attribution limit |
-| E21 offline direct-to-KC-E1f | Both1593/44 generations sealed; full fresh-parent lineage verified; experiment lease released | Both complete scores succeeded once; frozen saved analysis is active under source 64440737 |
-| SLURP program-matched follow-up | Both arms and joined deliveries sealed; complete official scoring active | Review unchanged paired analysis and protection guards; no adaptive repeat |
+| E21 offline direct-to-KC-E1f | Both stages, complete scores, analysis and settlement closed | PERSON benefit; system not admitted because insertions rise by5; see September11 result |
+| SLURP program-matched follow-up | Both arms, deliveries, complete scores, analysis and settlement closed | NEW500 primary and intent guard fail; stop the final owner-authorized pair |
 | Live E21 review/selection/observation | Generic bounded phase Planner is implemented and model-free tested | Live selection and new observation remain unproven; the fixed pair does not establish them |
 | Dialogue/speaker-topic memory | Feasibility only under OWNER-DATASET-TASKS-010 | Judge any later method on the existing dataset task; no new summary/minutes task or evaluator is required |
 | Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |

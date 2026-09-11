@@ -1,5 +1,7 @@
 # Live system evidence gaps after reproducing the original results
 
+**Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
+
 Date: 2026-09-10 UTC. Base inspected: 7c2f34f3. Continue the accepted Stage-2 plan; preserve OWNER-REPRODUCTION-FIRST-008 and the original-result audit. This document records the root's implementation review and the resulting engineering sequence. It grants no new generation, scoring or feature-encoding contact and changes no historical configuration.
 
 ## Current closure overlay, 2026-09-11
@@ -10,11 +12,11 @@ settlement now have complete engineering and full-roster runtime evidence.
 The live SLURP comparison was scored and decided: slots improved, scenario
 guard failed, full system not admitted. Its raw parents remain unchanged.
 
-Formal E21 feature preparation and the packet DR/LOOP component comparisons
-are complete. The new offline direct-to-KC-E1f baseline has sealed its1,593-window direct
-stage and bound every current response through the common predecessor builder.
-The full repair fit passed and the repair is generating on the same resident
-service. The complete two-stage quality and cost decision remains pending.
+Formal E21 preparation, DR/LOOP and the fresh offline pair are complete.
+Both stages, scores, fixed analyses and all four E21/SLURP settlements are closed.
+The fresh E21 PERSON benefit is supported, but insertion protection fails.
+The final matched SLURP pair fails NEW500 primary and intent protection.
+Read STATUS-036 and the September11 next-stage acceptance plan.
 
 The generic review-to-bounded-phase-decision seam is now implemented and
 model-free tested through FlightRuntime and the real shared OpenJiuwen executor.

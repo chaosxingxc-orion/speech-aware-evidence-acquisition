@@ -110,3 +110,8 @@ and their cited original verdicts. This plan owns next actions and integration s
 successful merge or checker result does not authorize a new experimental contact. Before the next
 flight, refresh actual runtime/attempt state, honor the execution plan and exposure gates, and keep
 one coordinator and one experiment in flight.
+
+
+## September11 cohort closure
+
+Read STATUS-036, the two September11 system result notes and the next-stage acceptance plan. The E21 offline and final program-matched SLURP pairs have complete generation, scoring, fixed analysis and FINALIZED custody. Failed scientific guards remain binding. Shared raw saved-score settlement reuses complete scores and preserves frozen source worktrees. Live E21 review/selection/new-observation remains open.

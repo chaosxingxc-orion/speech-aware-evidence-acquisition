@@ -1,12 +1,14 @@
 # Shared-base SLURP and Earnings21 continuation
 
+**Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
+
 Owner authority: OWNER-CONTINUATION-002. Coordinator and serving owner: Codex.
 Baseline study commit: 3fd7a6ee0713b8c8cbc9d390f144c1fedbf1acd8.
 Execution environment: WSL Ubuntu-24.04 only. Repository documents and model-facing content: English.
 
 ## Current execution overlay
 
-Updated on 2026-09-11 from STATUS-035 and OWNER-GPU-RESUME-013. The original requirements below remain
+Updated on 2026-09-11 from STATUS-036 and OWNER-GPU-RESUME-013. The original requirements below remain
 the acceptance contract; this overlay records which have actual evidence.
 
 Owner scheduling override: OWNER-GPU-RESUME-013 supersedes the temporary GPU
@@ -24,15 +26,15 @@ live configuration change is authorized solely to increase utilization.
 | E21 DR | Two full generations, four derived deliveries, scoring and decisions closed | Unit deliveries rejected; self constrained only a small discovery refresh; self free null; derivatives are correlated |
 | E21 LOOP and twin | Both complete; targeting contrast positive, incumbent floor failed | Retain KC-E1f; no additional LOOP generation admitted |
 | G6 SLURP live intent-to-slots | Complete, scored, decided and parent attempts finalized | Slots improve but the scenario guard fails; full system not admitted; retain prompt-identity attribution limit |
-| E21 offline direct-to-KC-E1f | Both1593/44 generations sealed; fresh-parent lineage and repair costs verified | Both E21 complete scores succeeded once; saved analysis and root decision pending |
-| SLURP program-matched follow-up | Both whole-roster wire checks, exact prompt-material matching, all four registrations and final preflights complete; source frozen | Both raw parents and joined deliveries sealed; complete scoring active under OWNER013; see STATUS-035 |
+| E21 offline direct-to-KC-E1f | Both stages, complete scores, analysis and settlement closed | PERSON benefit; system not admitted because insertions rise by5; see September11 result |
+| SLURP program-matched follow-up | Both arms, deliveries, complete scores, analysis and settlement closed | NEW500 primary and intent guard fail; stop the final owner-authorized pair |
 | Live E21 review/selection/observation | Generic bounded phase Planner is implemented and model-free tested | Live selection and new observation remain unproven; the fixed pair does not establish them |
 | Dialogue/speaker-topic memory | Feasibility only under OWNER-DATASET-TASKS-010 | Judge any later method on the existing dataset task; no new summary/minutes task or evaluator is required |
 | Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |
 
 No failed scientific guard is converted into a positive system conclusion.
-The current offline E21 pair awaits CPU scoring/decision, and live review/selection/
-observation remains an explicit accepted-runtime gap. Summary feasibility is
+The offline E21 pair is finalized with PERSON benefit but failed insertion protection;
+live review/selection/observation remains an explicit accepted-runtime gap. Summary feasibility is
 not a requirement to invent or evaluate a new dataset task.
 
 ## Endpoint and boundaries

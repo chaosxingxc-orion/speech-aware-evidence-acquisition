@@ -1,0 +1,62 @@
+{
+  "attribution": "The structured direct requests match after transport-only exclusions; 62/1000 normalized direct intents differ under independent generation. Slot supply does not act retroactively on stage-one answers. System effects are not pure fixed-predecessor retrieval effects; no causal explanation of backend nondeterminism is established.",
+  "created_at_utc": "2026-09-11T13:17:01.498102+00:00",
+  "family": "SLURP program-matched live intent-to-slots",
+  "further_contact": "Stop this owner-authorized final matched comparison. No adaptive rerun or extra control. Preserve the earlier G6 failure independently.",
+  "gates": {
+    "action_point_nonnegative": true,
+    "equal_scenario_row_gain_gt_zero": true,
+    "intent_point_nonnegative": false,
+    "malformed_final_delivery_not_increased": true,
+    "pooled_micro_gain_gt_zero": true,
+    "primary_row_f1_lower_gt_zero": false,
+    "saturation_not_increased": true,
+    "scenario_point_nonnegative": true
+  },
+  "reviewer": "root Codex",
+  "schema": "saea-root-scientific-verdict-v1",
+  "scope": "Bounded Stage-2 discovery; historically exposed NEW500 primary; no confirmatory or generalization claim",
+  "sources": [
+    {
+      "path": "analysis/SAEA-SLURP-LIVE-PROGRAM-MATCHED-PAIRED-ANALYSIS-V1/paired-contrasts.json",
+      "root": "DATA",
+      "sha256": "109d5ca1d0d24776dc7328bdf4e0796f073a5e40b5d369cb5d7b7cc3ba3e1cd5"
+    },
+    {
+      "path": "docs/readiness/2026-09-11-slurp-program-matched-v1/analysis-plan.json",
+      "root": "repo",
+      "sha256": "471e0d7ab6f900b5f2f31a6a7c74dd4d0d7bda22471f1db82da53141e20c5893"
+    },
+    {
+      "path": "coordination/slurp-program-matched-pair-semantic-request-identity-v1.json",
+      "root": "DATA",
+      "sha256": "40f5e6886f8496a3914aa1d22b4138873f6ba0863bb0a60b50435e135887753c"
+    },
+    {
+      "path": "runs/SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1/derived-live-program-matched-control-delivery-v1/SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1--delivery-live-program-matched-control-delivery-v1.run-manifest.json",
+      "root": "DATA",
+      "sha256": "ca5a6368a262d8b147efc7ed5f8ddd61e7ace74402cee65b131001163e145c75"
+    },
+    {
+      "path": "runs/SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1/derived-live-program-matched-control-delivery-v1/SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1--delivery-live-program-matched-control-delivery-v1.outputs.jsonl",
+      "root": "DATA",
+      "sha256": "1a052d01046b67065f0b93092cdcd08b7a69533c93b0372ad43ba34369a89725"
+    },
+    {
+      "path": "runs/SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1/derived-live-program-matched-speech-delivery-v1/SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1--delivery-live-program-matched-speech-delivery-v1.run-manifest.json",
+      "root": "DATA",
+      "sha256": "7692f280830fcb20bea8a1eeb57e4230aacce044af46026f24c011e63ca3b7b2"
+    },
+    {
+      "path": "runs/SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1/derived-live-program-matched-speech-delivery-v1/SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1--delivery-live-program-matched-speech-delivery-v1.outputs.jsonl",
+      "root": "DATA",
+      "sha256": "1331a55080d0020bb49f4f59fa0ab75c0ccdda49a2bc64ebfcaea82f72fa0e6c"
+    },
+    {
+      "path": "coordination/slurp-program-matched-final-delivery-shape-v1.json",
+      "root": "DATA",
+      "sha256": "c5d935b4c53f5edaed4dd44b202bc2262dfd93742dd481e61bbfe3dc2ad43628"
+    }
+  ],
+  "status": "SYSTEM_NOT_ADMITTED_PRIMARY_AND_INTENT_GUARD_FAILED"
+}

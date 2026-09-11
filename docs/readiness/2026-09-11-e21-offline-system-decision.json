@@ -1,0 +1,59 @@
+{
+  "component_finding": "PERSON_ERROR_REDUCTION_SUPPORTED",
+  "created_at_utc": "2026-09-11T13:17:01.498102+00:00",
+  "family": "E21 fresh offline direct to KC-E1f constrained repair",
+  "further_contact": "No adaptive repeat or retrospective margin change. Preserve PERSON component benefit and the five-word insertion increase. Live Reviewer/Planner/new OBS remains a separate unproven path.",
+  "gates": {
+    "equal_call_person_gain_gt_zero": true,
+    "insertion_rate_point_gain_nonnegative": false,
+    "nonentity_error_rate_point_gain_nonnegative": true,
+    "numeric_accuracy_point_gain_nonnegative": true,
+    "overall_wer_point_gain_nonnegative": true,
+    "person_primary_ci90_lower_gt_zero": true
+  },
+  "insertion_counts": {
+    "direct": 10336,
+    "repair": 10341
+  },
+  "reviewer": "root Codex",
+  "schema": "saea-root-scientific-verdict-v1",
+  "scope": "Bounded Stage-2,44 historically exposed discovery calls and1593 fixed windows",
+  "sources": [
+    {
+      "path": "docs/readiness/2026-09-10-e21-offline-system-v1/analysis-plan.json",
+      "root": "repo",
+      "sha256": "8b92393cb37632b7fc53fbb35686d0aef63f845b199bd5de39127e5702ccd5f5"
+    },
+    {
+      "path": "analysis/e21-offline-direct-repair-postseal-v1/call-error-contrast.json",
+      "root": "DATA",
+      "sha256": "715ba8448990598b14882040022ab9f0334f8ac3ad702714a992d067671042f1"
+    },
+    {
+      "path": "analysis/e21-offline-direct-repair-postseal-v1/call-numeric-contrast.json",
+      "root": "DATA",
+      "sha256": "c3284582b81f46fe079da035cbb72027536588527d6fbbf88dca190d2a8e09f2"
+    },
+    {
+      "path": "analysis/SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1/official-scoring-v1/e21-offline-direct-generation-np4-v1.score.json",
+      "root": "DATA",
+      "sha256": "68d2792a22f0901aa7fd8261210d6dbfee5971aae6e5678aa85ded3a93e53682"
+    },
+    {
+      "path": "analysis/SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1/official-scoring-v1/e21-offline-direct-generation-np4-v1.complete-score-receipt.json",
+      "root": "DATA",
+      "sha256": "2a8aa24693d3fdfcf7c0aec31a2b7a8d93fa55e5905d9e336e0da8937f337d1d"
+    },
+    {
+      "path": "analysis/SAEA-E21-OFFLINE-KC-E1F-REPAIR-GENERATION-NP4-V1/official-scoring-v1/e21-offline-kc-e1f-repair-generation-np4-v1.score.json",
+      "root": "DATA",
+      "sha256": "ae4ddb5a0a0877b290c2642b992e24dd7c7e310ecdac028b58eb4c196284f58a"
+    },
+    {
+      "path": "analysis/SAEA-E21-OFFLINE-KC-E1F-REPAIR-GENERATION-NP4-V1/official-scoring-v1/e21-offline-kc-e1f-repair-generation-np4-v1.complete-score-receipt.json",
+      "root": "DATA",
+      "sha256": "1acba8ac3247e02d2ec14daf8df54ac2c1c8175b0363dd800a66c46fe8429198"
+    }
+  ],
+  "status": "SYSTEM_NOT_ADMITTED_INSERTION_GUARD_FAILED"
+}

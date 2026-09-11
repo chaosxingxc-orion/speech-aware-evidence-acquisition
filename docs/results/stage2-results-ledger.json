@@ -3449,13 +3449,26 @@
     {
       "date": "2026-09-11",
       "cell_id": "E21-OFFLINE-DIRECT-THEN-KC-E1F",
-      "status": "IN_PROGRESS",
-      "source": "docs/readiness/2026-09-11-e21-offline-repair-handoff.md",
-      "source_sha256": "9ed07bf31c53efa00ecc19bc07c0de4ab9f8db2cd0f99116550ccca21f258c20",
-      "meaning": "The newly generated direct parent is active. The fixed KC-E1f repair successor remains unadmitted until that parent seals and the shared builder binds all 1,593 windows. No current quality result is recorded.",
+      "status": "SYSTEM_NOT_ADMITTED_INSERTION_GUARD_FAILED",
+      "source": "docs/readiness/2026-09-11-e21-offline-system-result.md",
+      "meaning": "Fresh full44 pair finalized. PERSON improves3.3939pp; five extra insertions fail the prospective point guard. No live Reviewer/Planner/new OBS claim.",
       "run_ids": [
-        "SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1"
-      ]
+        "SAEA-E21-OFFLINE-DIRECT-GENERATION-NP4-V1",
+        "SAEA-E21-OFFLINE-KC-E1F-REPAIR-GENERATION-NP4-V1"
+      ],
+      "source_sha256": "2805ae741e3e80cb4548c287aa160a4edb7a924b326c60ccaac1aaed03061a7b"
+    },
+    {
+      "date": "2026-09-11",
+      "cell_id": "SLURP-PROGRAM-MATCHED-LIVE-FOLLOWUP",
+      "status": "SYSTEM_NOT_ADMITTED_PRIMARY_AND_INTENT_GUARD_FAILED",
+      "source": "docs/readiness/2026-09-11-slurp-program-matched-result.md",
+      "meaning": "Final owner-authorized matched pair finalized. NEW500 row-F1 CI90 crosses zero; intent changes-0.2pp. Preserve original G6 failure; no adaptive repeat.",
+      "run_ids": [
+        "SAEA-SLURP-LIVE-PROGRAM-MATCHED-CONTROL-V1",
+        "SAEA-SLURP-LIVE-PROGRAM-MATCHED-SPEECH-V1"
+      ],
+      "source_sha256": "edaf18d7a25438b0f6c7d54c126e548f0957bfdd1034c45ea2a94d682fd5dbbd"
     }
   ]
 }

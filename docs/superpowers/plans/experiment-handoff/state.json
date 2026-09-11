@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 35,
+  "generation": 36,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,10 +10,10 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "3aea53d97b9b6e69657cd94b464c7f84edde0bf7",
-  "updated_at_utc": "2026-09-11T12:57:24.166421+00:00",
-  "next_action": "Read STATUS-035. Both SLURP raw parents sealed and verified; 4000 generations/12004 fit endpoints/0.4502114679422643 utilization GPUh. Worker24915 and lease20954 exited zero; service35780/wrapper49170/monitor62129 retained resident. Both joined derivatives built/verified after committed postseal release. Root sequential complete-score batch session96331/PID42461 is active (initial control scorer42463); revalidate/poll, never rerun. E21 two complete scores succeeded once; aligned_scoring_views now runs frozen saved analysis on644 source. Root must review scientific guards, write verdicts and settle all4 generation attempts. Shared raw saved-score settlement added22af3394,112 tests/81% coverage PASS, for the E21 parents without derivative duties; do not use finalize_bundle. SLURP still uses declared derivative settlement. Preserve all held/failed branches and live E21 acceptance gap.",
+  "snapshot_commit": "bcb230cc31e3aafec9bf094c3582d6663c16bb94",
+  "updated_at_utc": "2026-09-11T13:30:08.719249+00:00",
+  "next_action": "Read STATUS-036 and OWNER-SYSTEM-OPTIMIZATION-014. All4 E21/SLURP generation attempts FINALIZED; complete scores once, fixed analysis and root verdicts closed. Historical system gates fail but current owner prioritizes reusable system, component directions and relative training-free optimization, not large gain/cost. E21 primary candidate with PERSON benefit; retain insertion limitation. Resident SLURP service35780/wrapper49170/monitor62129 alive and idle, no lease/scorer/generation worker. Do not restart closed flights. Next implement shared current E21 reviewer/planner/selected-OBS seam and legal state/action/reward/artifact lifecycle; register eligible GPU work under owner013. Original goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
-  "latest_owner_decision_id": "OWNER-GPU-RESUME-013"
+  "latest_owner_decision_id": "OWNER-SYSTEM-OPTIMIZATION-014"
 }
