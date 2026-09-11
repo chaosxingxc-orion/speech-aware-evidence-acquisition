@@ -319,6 +319,7 @@ def test_regex_extraction_agrees_with_package_import():
         # object lives in rails.tools rather than core.base (that module's own
         # docstring says why), so it is read from there below.
         from speech_aware_evidence_acquisition.rails import tools as _tools
+        from speech_aware_evidence_acquisition.rails import phase_planner as _planner  # noqa: F401
     except ImportError as exc:
         pytest.skip(f"package not importable in this environment: {exc}")
 
@@ -348,6 +349,7 @@ def test_regex_extraction_agrees_with_package_import():
         # a registry the regex side knows about and the import side does not
         # is exactly the drift this test exists to catch.
         "JUDGES": set(core_base.JUDGES.names()),
+        "PHASE_PLANNERS": set(core_base.PHASE_PLANNERS.names()),
         # WAVE W3 (2026-09-08): the pinned, system-invoked tool catalog a
         # ``tools`` list in configs/ resolves against.
         "TOOL_CATALOG": set(_tools.TOOL_CATALOG.names()),
@@ -629,3 +631,28 @@ def test_subclass_detector_reports_allowed_class_exported_to_script(tmp_path):
         "flights/run.py::FlightAdapter",
         "src/speech_aware_evidence_acquisition/rails/adapters/allowed.py::AllowedAdapter",
     ]
+
+
+
+def test_nested_planner_policy_resolves_only_in_shared_registry(tmp_path, capsys):
+    _write(
+        tmp_path / "src/speech_aware_evidence_acquisition/rails/phase_planner.py",
+        'PHASE_PLANNERS.register("continue-on-flag-v1", rule)\n',
+    )
+    config = tmp_path / "configs/baseline/reviewed.json"
+    _write(config, json.dumps({
+        "nested": {"phase_planner": {"draft": {
+            "planner_policy_id": "continue-on-flag-v1",
+        }}},
+    }))
+    baseline = tmp_path / "baseline.json"
+    _write(baseline, json.dumps({"rules": {}}))
+    code, report = _run(tmp_path, baseline, capsys)
+    assert code == 0
+    assert report["passed"]
+    document = json.loads(config.read_text())
+    document["nested"]["phase_planner"]["draft"]["planner_policy_id"] = "private-copy"
+    _write(config, json.dumps(document))
+    code, report = _run(tmp_path, baseline, capsys)
+    assert code == 1
+    assert any("planner_policy_id=private-copy" in item for item in report["new_offenders"])

@@ -6,7 +6,7 @@ Execution environment: WSL Ubuntu-24.04 only. Repository documents and model-fac
 
 ## Current execution overlay
 
-Updated on 2026-09-11 from STATUS-026 and OWNER-DATASET-TASKS-010. The original requirements below remain
+Updated on 2026-09-11 from STATUS-027 and OWNER-DATASET-TASKS-010. The original requirements below remain
 the acceptance contract; this overlay records which have actual evidence.
 
 | Work | Current state | Evidence / next action |
@@ -18,7 +18,7 @@ the acceptance contract; this overlay records which have actual evidence.
 | E21 LOOP and twin | Both complete; targeting contrast positive, incumbent floor failed | Retain KC-E1f; no additional LOOP generation admitted |
 | G6 SLURP live intent-to-slots | Complete, scored, decided and parent attempts finalized | Slots improve but the scenario guard fails; full system not admitted; retain prompt-identity attribution limit |
 | E21 offline direct-to-KC-E1f | Direct generation active; actual full fit passed; repair awaits its new sealed parent | Same resident np4 no-mmproj service; bind all1593 new windows before repair; quality remains unread |
-| Live E21 review/selection/observation | Not established by the direct-to-KC-E1f pair | Shared live Reviewer-to-Planner-to-observation evidence remains an explicit gap |
+| Live E21 review/selection/observation | Generic bounded phase Planner is implemented and model-free tested | Live selection and new observation remain unproven; the fixed pair does not establish them |
 | Dialogue/speaker-topic memory | Feasibility only under OWNER-DATASET-TASKS-010 | Judge any later method on the existing dataset task; no new summary/minutes task or evaluator is required |
 | Depth2 throughput comparison | Deferred | Close science first; register any new timing comparison separately |
 

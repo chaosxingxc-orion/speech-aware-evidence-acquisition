@@ -1111,6 +1111,7 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-direct-evidence-alpha-blend-v1": "phase-direct-evidence-alpha-blend-v1.json",
     "phase-select-then-fill-v1": "phase-select-then-fill-v1.json",
     "phase-draft-revise-v1": "phase-draft-revise-v1.json",
+    "phase-reviewed-repair-v1": "phase-reviewed-repair-v1.json",
     # MF-3 / KC-S1: one slot-only contact conditioned on an already-sealed
     # intent. A single-phase program, exactly like ``phase-direct-only-v1``,
     # because the intent is NOT re-decided here -- the sealed closed-list
@@ -1220,6 +1221,11 @@ def register_phase_programs_v1() -> None:
         AGENT_CONTROLLERS.register(
             "phase-draft-revise-v1",
             default_controller_factory(default_phase_program("phase-draft-revise-v1")),
+        )
+    if "phase-reviewed-repair-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-reviewed-repair-v1",
+            default_controller_factory(default_phase_program("phase-reviewed-repair-v1")),
         )
     if "phase-slots-given-intent-v1" not in registered:
         AGENT_CONTROLLERS.register(

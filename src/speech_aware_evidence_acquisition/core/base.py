@@ -125,6 +125,8 @@ RESPONSE_POSTPROCESSORS = Registry("response postprocessor")
 # reason the derivation is no longer a hard-coded branch inside a controller.
 # Entries are populated from ``rails/controllers.py``.
 PHASE_STATE_VIEWS = Registry("phase state view")
+# A planner consumes typed criticism and returns a bounded continuation decision.
+PHASE_PLANNERS = Registry("phase planner")
 
 
 # ---------------------------------------------------------------------------

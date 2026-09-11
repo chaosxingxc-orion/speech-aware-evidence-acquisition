@@ -100,6 +100,7 @@ CANONICAL_REGISTRY_FILES = (
     # manifests, for the same reason the provider ids register beside the
     # provider classes. See the "WAVE W3" block below for the config rule.
     TOOLS_MODULE,
+    f"{PACKAGE_ROOT}/rails/phase_planner.py",
 )
 
 # config key -> core.base registry variable, top-level only (the flat
@@ -145,6 +146,7 @@ NESTED_LIST_ID_KEYS = {
 # proposed aliases are covered so a future config using either spelling is
 # still checked.
 NESTED_ID_KEYS = {
+    "planner_policy_id": "PHASE_PLANNERS",
     "controller_policy_id": "AGENT_CONTROLLERS",
     "agent_controller_policy_id": "AGENT_CONTROLLERS",
     "ranker_policy_id": "KNOWLEDGE_RANKERS",

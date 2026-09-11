@@ -410,3 +410,40 @@ def test_each_phase_uses_fresh_client_after_idle_connection_expires(tmp_path, mo
     assert len(clients) == 2
     assert [len(client.calls) for client in clients] == [7, 7]
     assert [row["phase"] for row in gate.receipts] == ["direct", "slots"]
+
+
+
+def test_live_fit_uses_planner_active_roster_and_retains_full_budget_ceiling(tmp_path, monkeypatch):
+    import speech_aware_evidence_acquisition.core.preparation_fit as fitting
+    from test_phase_planner import _binding, _program, _advance, _FLAGGED, _CLEAN
+    from speech_aware_evidence_acquisition.rails.phase_planner import PhasePlannerError
+
+    tokenizer = Tokenizer()
+    monkeypatch.setattr(fitting, "packet_token_counts", lambda *_a, **_k: (1,))
+    runtime = Runtime(tmp_path, values())
+    program = _program()
+    _, reviewer, planner = _binding()
+    active = lambda phase: planner.active_sample_ids(
+        phase, program.phase_names(), ("s1", "s2")
+    )
+    gate = build_live_phase_fit_gate(
+        runtime, program, plan(), client_factory=lambda **_k: tokenizer,
+        active_roster=active,
+    )
+    gate("draft", (prepared("s1", "draft"), prepared("s2", "draft")))
+    with pytest.raises(PhasePlannerError, match="decision"):
+        gate("revise", (prepared("s1", "revise"),))
+    assert len(tokenizer.calls) == 7
+    _advance(_FLAGGED, reviewer, planner, "s1")
+    _advance(_CLEAN, reviewer, planner, "s2")
+    with pytest.raises(PreparationError, match="roster"):
+        gate("revise", (prepared("s1", "revise"), prepared("s2", "revise")))
+    assert len(tokenizer.calls) == 7
+    gate("revise", (prepared("s1", "revise"),))
+    assert len(tokenizer.calls) == 11
+    assert gate.execution_plan.planned_model_calls == 14
+    artifact = tmp_path / "prepared" / gate.execution_plan.run_id / gate.execution_plan.attempt_id / "revise.request-fit.json"
+    document = json.loads(artifact.read_text())
+    assert document["output"]["contacts"] == 4
+    assert document["output"]["generation_contacts"] == 0
+    assert document["inputs"]["active_sample_ids"] == ["s1"]

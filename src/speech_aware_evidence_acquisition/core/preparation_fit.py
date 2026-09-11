@@ -493,7 +493,9 @@ def validate_live_phase_fit_config(values, program):
     return dict(spec)
 
 
-def build_live_phase_fit_gate(runtime, program, plan, *, client_factory=None):
+def build_live_phase_fit_gate(
+    runtime, program, plan, *, client_factory=None, active_roster=None,
+):
     """Fit actual live waves under one generation lease and a separate tool plan.
 
     No model responses are synthesized. Each callback receives the same
@@ -521,6 +523,8 @@ def build_live_phase_fit_gate(runtime, program, plan, *, client_factory=None):
         )
     if runtime._session is None or runtime._transport is None:
         raise PreparationError("live phase fitting requires an attached root session")
+    if active_roster is not None and not callable(active_roster):
+        raise PreparationError("active_roster must derive the roster from prior decisions")
     expected_ids = tuple(sample.sample_id for sample in runtime._samples)
     phases = tuple(program.phase_names())
     required_contacts = len(phases) * (1 + 3 * len(expected_ids))
@@ -566,15 +570,25 @@ def build_live_phase_fit_gate(runtime, program, plan, *, client_factory=None):
         ):
             raise PreparationError("live fit requires immutable prepared core requests")
         payloads = tuple(request.as_payload() for request in batch)
-        if {p.get("sample_id") for p in payloads} != set(expected_ids) or len(
+        wave_ids = expected_ids if active_roster is None else tuple(active_roster(phase))
+        if (
+            len(set(wave_ids)) != len(wave_ids) or not set(wave_ids) <= set(expected_ids)
+            or (phase == phases[0] and wave_ids != expected_ids)
+        ):
+            raise PreparationError("live fit active roster differs from the registered roster")
+        if {p.get("sample_id") for p in payloads} != set(wave_ids) or len(
             payloads
-        ) != len(expected_ids):
+        ) != len(wave_ids):
             raise PreparationError(
                 "live fit requires the full registered roster at every phase"
+                if active_roster is None else
+                "live fit requires the complete planner-selected roster for this phase"
             )
         runtime.assert_generation_lease()
         inputs = runtime.request_fit_inputs(payloads)
         inputs = {**inputs, "live_phase": phase, "fit_plan": asdict(fit_plan)}
+        if active_roster is not None:
+            inputs = {**inputs, "active_sample_ids": list(wave_ids)}
         path = fit_root / (phase + ".request-fit.json")
         journal = path.with_name(path.name + ".contacts.jsonl")
         # Refuse both completed and interrupted same-identity phases.
@@ -621,7 +635,7 @@ def build_live_phase_fit_gate(runtime, program, plan, *, client_factory=None):
                     raise PreparationError("resident tokenizer has no media marker")
                 result = fit_requests(
                     payloads,
-                    expected_sample_ids=expected_ids,
+                    expected_sample_ids=wave_ids,
                     transport=runtime._transport,
                     client=guarded,
                     speech_counts=lambda payload: packet_token_counts(

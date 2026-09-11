@@ -1666,6 +1666,7 @@ class FlightRuntime:
         )
         self._composed = composed
         values = composed.values
+        self._phase_planner_specs(values.get("policy"))
         from ..bundle.delivery_replay import (
             require_experiment_phase_declarations, validate_phase_delivery_sources,
         )
@@ -3525,23 +3526,6 @@ class FlightRuntime:
         from ..preparation_fit import build_live_phase_fit_gate, validate_live_phase_fit_config
         live_fit_spec = validate_live_phase_fit_config(self._composed.values, program)
         whole_roster = live_fit_spec is not None
-        live_fit_gate = None
-        if whole_roster:
-            if model_free_check:
-                # Wire-check transport is synthetic. Record request identities
-                # without claiming that any tokenizer capacity was measured.
-                def live_fit_gate(phase, batch):
-                    from ..preparation_fit import boundary_identity
-                    live_fit_gate.receipts.append({
-                        "phase": phase, "model_free_request_identity_only": True,
-                        "boundary_sha256": boundary_identity(tuple(r.as_payload() for r in batch)),
-                        "capacity_verified": False,
-                    })
-                live_fit_gate.receipts = []
-            else:
-                live_fit_gate = (self._live_phase_fit_factory or build_live_phase_fit_gate)(
-                    self, program, plan
-                )
         from ..bundle.delivery_replay import validate_phase_delivery_sources
 
         validate_phase_delivery_sources(
@@ -3572,6 +3556,34 @@ class FlightRuntime:
         supply_specs = binding.get("supply_specs") or {}
         review_for_phase = binding.get("review_for_phase")
         review_specs = binding.get("review_specs") or {}
+        from ...rails.phase_planner import (
+            build_phase_planner, emit_planner_records, phase_planner_receipt,
+        )
+        planner_specs = self._phase_planner_specs(policy)
+        planner = build_phase_planner(planner_specs, review_for_phase)
+        live_fit_gate = None
+        if whole_roster:
+            if model_free_check:
+                # Wire-check transport is synthetic. Record request identities
+                # without claiming that any tokenizer capacity was measured.
+                def live_fit_gate(phase, batch):
+                    from ..preparation_fit import boundary_identity
+                    live_fit_gate.receipts.append({
+                        "phase": phase, "model_free_request_identity_only": True,
+                        "boundary_sha256": boundary_identity(tuple(r.as_payload() for r in batch)),
+                        "capacity_verified": False,
+                    })
+                live_fit_gate.receipts = []
+            else:
+                fit_options = {}
+                if planner is not None:
+                    expected_ids = tuple(sample.sample_id for sample in self._samples)
+                    fit_options["active_roster"] = lambda phase: planner.active_sample_ids(
+                        phase, program.phase_names(), expected_ids
+                    )
+                live_fit_gate = (self._live_phase_fit_factory or build_live_phase_fit_gate)(
+                    self, program, plan, **fit_options
+                )
         facet_seed, value_seed = self._phase_supply_seeds(
             program, binding, supply_specs, plan
         )
@@ -3582,13 +3594,15 @@ class FlightRuntime:
         # acquire transition can be emitted (rails.controllers, "Traced
         # supply"). A program with no supply, or whose only supply is the
         # pre-flight-seeded FIRST phase, keeps the per-phase barrier form.
-        continuous = whole_roster or bool(
+        continuous = whole_roster or planner is not None or bool(
             set(supply_specs) - {program.phase_names()[0]}
         )
         live_options = (
             {"whole_roster_wave_barrier": True, "request_batch_gate": live_fit_gate}
             if whole_roster else {}
         )
+        if planner is not None:
+            live_options["stop_policy"] = planner
         try:
             if continuous:
                 summaries = (
@@ -3638,6 +3652,7 @@ class FlightRuntime:
                     review_specs, review_for_phase
                 )
         finally:
+            emit_planner_records(planner, sink, record_namespace=program.program_id)
             flush = getattr(client, "flush_trace_buffer", None)
             if isinstance(sink, TraceBuffer) and callable(flush):
                 flush(sink)
@@ -3680,6 +3695,15 @@ class FlightRuntime:
             # (owner Decision 11-C), so this is provenance, not a mode.
             "reviewed_phases": sorted(review_specs),
         }
+        if planner is not None:
+            dispatch["phase_planner"] = phase_planner_receipt(planner_specs, planner)
+            dispatch["contacts_per_sample_ceiling"] = dispatch.pop("contacts_per_sample")
+            dispatch["contacts_per_sample_observed"] = [
+                {"sample_id": result.sample_id, "contacts": len(result.contacts)}
+                for summary in self._phase_summaries for result in summary.results
+            ]
+            if not whole_roster:
+                dispatch["barrier"] = "none: one continuous trajectory with bounded review decisions"
         if whole_roster:
             dispatch["whole_roster_wave_barrier"] = True
             dispatch["live_phase_fit_receipts"] = list(live_fit_gate.receipts)
@@ -4452,6 +4476,7 @@ class FlightRuntime:
             raise FlightRuntimeError("baseline fragment must declare a non-empty 'policy'")
         self._assert_phase_supply_is_legal_for(policy)
         self._assert_phase_review_is_legal_for(policy)
+        self._phase_planner_specs(policy)
 
         # The Earnings carrier (owner Decision 12-F item #9, 2026-09-08). An
         # obs policy is dispatched through the obs driver and builds NO
@@ -4725,6 +4750,24 @@ class FlightRuntime:
                 "direct arm runs no phase program and would review nothing. Declare a "
                 "phase-program policy, or drop the phase_review block"
             )
+
+    def _phase_planner_specs(self, policy: str):
+        """Validate planner behavior before preparation, fitting, or generation."""
+        values = self._composed.values
+        declared = values.get("phase_planner")
+        if declared is None or declared == {}:
+            return {}
+        if policy == "fixed" or policy in self._obs_policy_names():
+            raise FlightRuntimeError(
+                "phase_planner requires a phase program; this path cannot execute it"
+            )
+        from ...rails.phase_planner import load_phase_planner_specs
+        from ...rails.phase_review import load_phase_review_specs
+
+        program = default_phase_program(policy)
+        return load_phase_planner_specs(
+            values, program, load_phase_review_specs(values, program)
+        )
 
     def _phase_decoding_params(self) -> Mapping[str, object]:
         """The run-level decoding params a PHASE program may carry.
@@ -6005,6 +6048,23 @@ class FlightRuntime:
         expected_fields = set(ARM_VISIBLE_FIELDS.get(arm, ()))
         expected_payloads = len(self._samples) * contacts_per_sample
         problems: list[str] = []
+        planned_stopping = bool(self._composed.values.get("phase_planner"))
+        if planned_stopping:
+            from collections import Counter
+            observed = dispatch.get("contacts_per_sample_observed", [])
+            counts = {row["sample_id"]: row["contacts"] for row in observed}
+            if (
+                len(counts) != len(observed)
+                or set(counts) != {sample.sample_id for sample in self._samples}
+                or any(type(count) is not int or not 1 <= count <= contacts_per_sample
+                       for count in counts.values())
+                or sum(counts.values()) != contact_count
+            ):
+                problems.append("planner trajectory counts differ from the registered roster or bound")
+            sent_counts = Counter(payload.get("sample_id") for payload in transport.payloads)
+            if dict(sent_counts) != counts:
+                problems.append("wire requests differ from the planner's realized trajectories")
+            expected_payloads = contact_count
         max_tokens_binding = self._max_tokens_rule(self._decoding_params())
         max_tokens_per_sample: dict[str, int] = {}
         if len(transport.payloads) != expected_payloads:
@@ -6184,7 +6244,7 @@ class FlightRuntime:
             ),
             "sample_count": len(self._samples),
             "contact_count": contact_count,
-            "contacts_per_sample": contacts_per_sample,
+            ("contacts_per_sample_ceiling" if planned_stopping else "contacts_per_sample"): contacts_per_sample,
             "policy": policy,
             "policy_kind": policy_kind,
             "phases": phase_receipt,

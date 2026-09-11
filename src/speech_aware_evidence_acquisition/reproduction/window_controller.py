@@ -81,6 +81,7 @@ def validate_window_controller(values: Mapping) -> bool:
     for key in (
         "phase_supply",
         "phase_review",
+        "phase_planner",
         "judges",
         "knowledge_views",
         "observe",

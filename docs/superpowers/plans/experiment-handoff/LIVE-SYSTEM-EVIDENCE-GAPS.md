@@ -16,11 +16,17 @@ its direct stage. Fresh predecessor binding is implemented and proven through
 the common builder, but this new parent must still seal before its repair
 can run. Full two-stage quality and cost are not yet measured.
 
+The generic review-to-bounded-phase-decision seam is now implemented and
+model-free tested through FlightRuntime and the real shared OpenJiuwen executor.
+Configuration changes realized continuation and active fit rosters. See
+[the bounded Planner note](../../../readiness/2026-09-11-bounded-phase-planner.md).
+No E21 selected-cut or multi-phase window implementation is claimed by that proof.
+
 Live Reviewer-to-Planner-to-new-observation remains unproven and must not be
 declared closed by the fixed repair pair. Dialogue/speaker/topic memory remains
 feasibility-only. OWNER-DATASET-TASKS-010 corrects the root's earlier expansion:
 final meeting-minutes evaluation is not a required acceptance gap because the
-reviewed dataset releases define ASR, not a native summary task. See STATUS-026
+reviewed dataset releases define ASR, not a native summary task. See STATUS-027
 for current routing. OWNER-OFFLINE-QUALITY-009 still favors offline quality
 and phase barriers, without changing task targets or frozen endpoints.
 

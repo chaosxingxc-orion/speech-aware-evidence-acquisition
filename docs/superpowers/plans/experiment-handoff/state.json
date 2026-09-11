@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 26,
+  "generation": 27,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "0cc3d0db485505c57212625a7ebc4ba6c897f0a4",
-  "updated_at_utc": "2026-09-11T01:20:17.395765+00:00",
-  "next_action": "Read STATUS-026 and OWNER-DATASET-TASKS-010. Keep summaries as feasibility only and evaluate existing dataset tasks. Revalidate direct worker1675/session51412 and resident service1354/session95670; never replay on observation timeout. Complete the registered offline E21 direct parent, bind its1593 fresh windows before quality reads, then use the same resident service for actual KC-E1f repair fit and generation. Score each whole manifest once only after comparison closure. Existing component and G6 SLURP decisions remain closed; G3/G4 remain held. Live review/selection/observation and separately registered throughput validation remain unproven. Do not add a summary/minutes evaluation requirement or declare the overall goal complete.",
+  "snapshot_commit": "19540361f06c9c6fe341b188d474d04202365cd8",
+  "updated_at_utc": "2026-09-11T02:08:05.668267+00:00",
+  "next_action": "Read STATUS-027 and OWNER-DATASET-TASKS-010. Revalidate active E21 direct worker1675/session51412 and the root resident service1354/coordinator637/session95670; preserve lease1641/session33752 until seal or explicit abort. Complete the new direct parent, bind1593 fresh windows before quality reads, fit and generate KC-E1f repair on the same frozen no-mmproj service, then score both whole manifests once after comparison closure. Generic bounded review-driven phase planning is implemented and model-free tested; selected new observation on E21 is still unproven. Keep summaries feasibility-only and use existing dataset tasks. Preserve all closed scientific decisions, G3/G4 holds and the active overall goal.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-DATASET-TASKS-010"

@@ -59,6 +59,7 @@ from .controllers import (
     MaterialForPhase,
     PhaseProgram,
     ReviewForPhase,
+    StopPolicy,
     SupplyForPhase,
 )
 from .core_client import CoreClient
@@ -278,7 +279,7 @@ def run_agent_phase(
     # program to this ONE phase, and the base below is f"{sample}/{phase}/
     # review" -- the same per-phase namespacing rails.runner applies with
     # trace_record_namespace=phase_name, without repeating the phase twice.
-    emit_review_records(review_for_phase, trace_sink)
+    emit_review_records(review_for_phase, trace_sink, phase_name=phase_name)
     return summary
 
 
@@ -430,6 +431,7 @@ def run_continuous_program(
     material_for_phase: ProgramMaterialForPhase,
     supply_for_phase: SupplyForPhase | None = None,
     review_for_phase: ReviewForPhase | None = None,
+    stop_policy: StopPolicy | None = None,
     bootstrap_facet_ids: object = (),
     bootstrap_value_ids: object = (),
     slot_count: int | None = None,
@@ -476,6 +478,11 @@ def run_continuous_program(
         raise PhaseRunnerError(
             "run_continuous_program review_for_phase must be callable or None"
         )
+    if stop_policy is not None and (
+        not callable(stop_policy)
+        or program.stop_rule != "stop-policy-optional-early-exit"
+    ):
+        raise PhaseRunnerError("stop_policy requires a callable and optional early-exit program")
     barriers = [phase.name for phase in program.phases if phase.barrier]
     if not isinstance(whole_roster_wave_barrier, bool):
         raise PhaseRunnerError("whole_roster_wave_barrier must be a boolean")
@@ -525,6 +532,7 @@ def run_continuous_program(
             material_for_phase=_material,
             supply_for_phase=supply_for_phase,
             review_for_phase=review_for_phase,
+            **({"stop_policy": stop_policy} if stop_policy is not None else {}),
         )
         holder["controller"] = controller
         return controller
@@ -547,27 +555,33 @@ def run_continuous_program(
     if request_batch_gate is not None:
         runner_options["request_batch_gate"] = gate_wave
 
-    summary = agent_runner(
-        data_root=data_root,
-        plan=plan,
-        adapter=adapter,
-        core_client=core_client,
-        split_id=split_id,
-        knowledge_snapshot=knowledge_snapshot,
-        speech_packet_bindings=speech_packet_bindings,
-        controller_policy_id=program.program_id,
-        bootstrap_facet_ids=bootstrap_facet_ids,
-        bootstrap_value_ids=bootstrap_value_ids,
-        max_contacts=len(program.phases),
-        slot_count=resolved_slot_count,
-        queue_depth=resolved_queue_depth,
-        trace_sink=trace_sink,
-        agent_executor_id=agent_executor_id,
-        decoding_params=decoding_params,
-        controller_registry=controller_registry,
-        trace_record_namespace=program.program_id,
-        **runner_options,
-    )
+    try:
+        summary = agent_runner(
+            data_root=data_root,
+            plan=plan,
+            adapter=adapter,
+            core_client=core_client,
+            split_id=split_id,
+            knowledge_snapshot=knowledge_snapshot,
+            speech_packet_bindings=speech_packet_bindings,
+            controller_policy_id=program.program_id,
+            bootstrap_facet_ids=bootstrap_facet_ids,
+            bootstrap_value_ids=bootstrap_value_ids,
+            max_contacts=len(program.phases),
+            slot_count=resolved_slot_count,
+            queue_depth=resolved_queue_depth,
+            trace_sink=trace_sink,
+            agent_executor_id=agent_executor_id,
+            decoding_params=decoding_params,
+            controller_registry=controller_registry,
+            trace_record_namespace=program.program_id,
+            **runner_options,
+        )
+    finally:
+        # Preserve completed criticism even if fitting or a later contact fails.
+        emit_review_records(
+            review_for_phase, trace_sink, record_namespace=program.program_id
+        )
     results = getattr(summary, "results", None)
     if not isinstance(results, tuple) or not results:
         raise PhaseRunnerError(
@@ -583,9 +597,6 @@ def run_continuous_program(
             f"program {program.program_id!r} result identities differ from "
             "speech_packet_bindings"
         )
-    emit_review_records(
-        review_for_phase, trace_sink, record_namespace=program.program_id
-    )
     return summary
 
 

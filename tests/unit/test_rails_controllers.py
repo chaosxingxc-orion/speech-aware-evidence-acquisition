@@ -63,6 +63,7 @@ _EXPECTED_PROGRAM_SHAPES = {
     # rails.a2t_hard_validity.HardValidityRepairController -- draft, then the
     # repair contact only when the draft is hard-invalid, so the early exit is
     # the stop_policy seam rather than a loop_step branch inside a controller.
+    "phase-reviewed-repair-v1": (("draft", "revise"), 2, "stop-policy-optional-early-exit"),
     "phase-hard-validity-repair-v1": (
         ("draft", "repair"),
         2,

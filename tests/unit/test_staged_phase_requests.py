@@ -317,3 +317,78 @@ def test_continuous_whole_roster_second_gate_refusal_never_sends_second_wave(tmp
     assert [phase for phase, _ in seen] == ["draft", "revise"]
     assert len(transport.calls) == 2
     client.close()
+
+
+
+@pytest.mark.parametrize("whole_roster", [False, True])
+def test_review_planner_drives_real_ojw_and_only_flagged_sample_continues(
+    tmp_path, whole_roster,
+):
+    from test_phase_planner import _binding, _program, _FLAGGED, _CLEAN
+    from speech_aware_evidence_acquisition.core.tracing import TraceBuffer
+    from speech_aware_evidence_acquisition.rails.phase_planner import emit_planner_records
+
+    world, _, _, bindings, client, _, transport = _world(tmp_path)
+    transport._responder = lambda p: (
+        _FLAGGED if p["history"][-1]["contact_id"] == "contact-draft-s1" else _CLEAN
+    )
+    _, reviewer, planner = _binding()
+    gates, materials = [], []
+    sink = TraceBuffer(client._dispatching_sink.run_id)
+
+    def material(phase, context, sealed):
+        materials.append((phase, context.sample_id))
+        if phase == "revise":
+            assert context.sample_id == "s1"
+            assert sealed["s1"].content == _FLAGGED
+        return PhaseMaterial(
+            instruction=f"Transcribe {phase}.", response_format=None,
+            contact_id=f"contact-{phase}-{context.sample_id}", purpose=phase,
+        )
+
+    def fit_gate(phase, requests):
+        payloads = tuple(request.as_payload() for request in requests)
+        if phase == "draft":
+            assert len(transport.calls) == 0
+            assert {p["sample_id"] for p in payloads} == {"s1", "s2"}
+        else:
+            assert phase == "revise"
+            assert len(transport.calls) == 2
+            assert [p["sample_id"] for p in payloads] == ["s1"]
+            assert any(
+                item["role"] == "agent_state" for item in payloads[0]["history"]
+            )
+        gates.append((phase, payloads))
+
+    try:
+        summary = run_continuous_program(
+            program=_program(), adapter=_FakeAdapter(samples=tuple(world.samples)),
+            plan=_plan(planned_model_calls=4), data_root=world.data_root,
+            core_client=client, split_id="all",
+            knowledge_snapshot=_knowledge_snapshot(), speech_packet_bindings=bindings,
+            trace_sink=sink, decoding_params={"temperature": 0},
+            material_for_phase=material, review_for_phase=reviewer, stop_policy=planner,
+            slot_count=2, queue_depth=2, whole_roster_wave_barrier=whole_roster,
+            request_batch_gate=fit_gate if whole_roster else None,
+        )
+        assert "openjiuwen" in summary.agent_executor_id.lower()
+        assert len(transport.calls) == 3
+        assert sorted(materials) == [("draft", "s1"), ("draft", "s2"), ("revise", "s1")]
+        results = {row.sample_id: row for row in summary.results}
+        assert len(results["s1"].contacts) == 2
+        assert len(results["s2"].contacts) == 1
+        assert results["s1"].final_response_text == results["s2"].final_response_text == _CLEAN
+        assert len([row for row in sink.records if row[0] == "REVIEW"]) == 2
+        assert emit_planner_records(planner, sink) == 2
+        if whole_roster:
+            assert [phase for phase, _ in gates] == ["draft", "revise"]
+            prepared = {
+                payload["history"][-1]["contact_id"]: payload
+                for _, batch in gates for payload in batch
+            }
+            sent = {p["history"][-1]["contact_id"]: p for p in transport.calls}
+            assert prepared.keys() == sent.keys()
+            for contact_id, payload in prepared.items():
+                assert boundary_identity((payload,)) == boundary_identity((sent[contact_id],))
+    finally:
+        client.close()

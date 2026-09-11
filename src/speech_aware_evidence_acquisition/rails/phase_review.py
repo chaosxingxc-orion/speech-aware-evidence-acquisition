@@ -370,6 +370,16 @@ class _PhaseReview:
         with self._lock:
             return dict(self._response_sha256)
 
+    def reviewed_response(
+        self, phase: str, sample_id: str
+    ) -> tuple[str, tuple[JudgeVerdict, ...]] | None:
+        """Read verdicts and their source hash atomically for a Planner."""
+        key = (phase, sample_id)
+        with self._lock:
+            if key not in self._verdicts:
+                return None
+            return self._response_sha256[key], self._verdicts[key]
+
     def _material(self, phase: str, judge_id: str) -> Mapping[str, object]:
         material = dict(self._extra_material.get(phase, {}).get(judge_id, {}))
         # Config params win a collision: they are what rides the config hash,
@@ -454,6 +464,7 @@ def emit_review_records(
     sink: object,
     *,
     record_namespace: str | None = None,
+    phase_name: str | None = None,
 ) -> int:
     """Write one ``REVIEW`` trace record per reviewed row, in sorted order.
 
@@ -481,6 +492,8 @@ def emit_review_records(
     specs = review_for_phase.specs
     written = 0
     for phase, sample_id in sorted(collected):
+        if phase_name is not None and phase != phase_name:
+            continue
         row = collected[(phase, sample_id)]
         base = (
             f"{sample_id}/{phase}/review"
