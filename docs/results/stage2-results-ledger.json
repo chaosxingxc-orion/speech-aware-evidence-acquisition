@@ -3494,6 +3494,18 @@
         "SAEA-SLURP-TASK-AGENT-FRAME-V1"
       ],
       "source_sha256": "7354e66cb93d82c86779f765fbff2ee5c9cd8925639e8e415b30d0b2c3b96920"
+    },
+    {
+      "date": "2026-09-11",
+      "cell_id": "SLURP-COMPLETE-TASK-AGENT-REPLICATION-V1",
+      "status": "PRIMARY_INTENT_AND_ENTITY_POSITIVE_EXPLORATORY_WORKING_BASELINE",
+      "source": "docs/readiness/2026-09-11-slurp-task-agent-replication-result.md",
+      "source_sha256": "4ac7b30a8e46e46b33f69ec08d903329c857282d9f0cdfdcf232b14ae5940023",
+      "meaning": "Both raw1000-row parents FINALIZED; NEW500 frame-direct intent+4.200pp CI90[2.331,5.974] and official micro SLU F1+2.991pp [1.056,4.905]. Retain as exploratory working baseline for component optimization; OLD500 entity uncertainty, first-family limitations, zero-contact recovery and monitoring/idle deviations remain recorded. No confirmatory or multi-carrier completion claim.",
+      "run_ids": [
+        "SAEA-SLURP-TASK-AGENT-DIRECT-REPLICATION-V1",
+        "SAEA-SLURP-TASK-AGENT-FRAME-REPLICATION-RECOVERY-V1"
+      ]
     }
   ]
 }
