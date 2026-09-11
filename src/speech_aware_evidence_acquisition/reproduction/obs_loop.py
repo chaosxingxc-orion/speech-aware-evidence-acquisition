@@ -1233,7 +1233,15 @@ def decode_parent_pcm(path: Path, sample_rate_hz: int = SLICE_SAMPLE_RATE_HZ) ->
         import librosa  # noqa: PLC0415 (heavy import stays function-local)
         import numpy  # noqa: PLC0415
 
-        floats, _ = librosa.load(str(path), sr=sample_rate_hz, mono=True)
+        # Decode unchanged compressed bytes on the WSL filesystem. Small
+        # libsndfile reads across a mounted host filesystem otherwise dominate
+        # preparation time; retain the same backend, suffix and PCM conversion.
+        with tempfile.TemporaryDirectory(prefix="saea-parent-decode-") as tmp:
+            local_media = Path(tmp) / ("parent" + path.suffix)
+            shutil.copyfile(path, local_media)
+            floats, _ = librosa.load(
+                str(local_media), sr=sample_rate_hz, mono=True
+            )
         clipped = numpy.clip(numpy.rint(floats * 32767.0), -32768, 32767).astype("int16")
         return array("h", clipped.tolist())
     except ImportError:
