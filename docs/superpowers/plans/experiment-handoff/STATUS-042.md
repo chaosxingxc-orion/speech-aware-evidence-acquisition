@@ -16,13 +16,13 @@ Measured fit-inclusive device utilization GPU hours:0.152694 historical,0.221574
 
 The decoder-only no-mmproj c65536/np4/max256 service serving-slurp-live-program-matched-np4-v1 remains resident. No experiment holds the pair's root leases. No new generation is admitted by this status note. Scientific decision, new source construction and current shared-code review are the reason for the present no-generation interval; do not launch an unregistered task merely to occupy the device.
 
-The corrective-memory runtime implementation is in isolated branch codex/corrective-memory-runtime-v1. Its first bounded suite passed250 tests. Root requested a positive actual FlightRuntime/OpenJiuwen proof and exact compatibility for legacy command toolkits and receipts. Keep that work isolated until reviewed. No real admitted memory exists and no memory experiment has run.
+The corrective-memory runtime implementation and two review fixes are integrated at c0494e75. The isolated relevant suite passed252 tests; root independently passed107 focused tests after integration. A positive synthetic actual FlightRuntime/OpenJiuwen proof confirms one load and successor Solver guidance; legacy command toolkit and receipt identity are preserved. See [runtime integration](../../../readiness/2026-09-11-corrective-memory-runtime-v1.md). No real admitted memory exists and no memory experiment has run.
 
 The sealed EVO-S1 TRAIN source audit is available at DATA coordination/slurp-corrective-memory-source-audit-v1.json. The old round rejected confirmation and promoted no portfolio. Its trajectories support a new prospective construction process only; do not treat its rejected records as admitted rules.
 
 ## Next action
 
-1. Finish the small runtime compatibility review and merge tested shared work at this inactive generation boundary.
+1. The runtime compatibility review and tested shared-code merge are complete. Prepare source-bound candidate knowledge and actual memory construction; do not mistake engineering wiring for scientific admission.
 2. Keep historical values as this component's comparator. Construct compact TRAIN-grounded distinctions about presence, role and value form, including supporting/excluding conditions and limits. Source tokens alone are not a demonstrated discriminative rule. Do not reuse DEV answers as construction content or rerun the closed span pair.
 3. Prepare a new complete agent comparison through the existing TaskAdapter/KnowledgeProvider/controller/FlightRuntime/OpenJiuwen base. Test live initial state and explicit permitted knowledge/tool actions; the fixed-predecessor pair is not full-system evidence.
 4. Validate corrective memory on declared construction/validation partitions before deployment or training-free policy updates.
