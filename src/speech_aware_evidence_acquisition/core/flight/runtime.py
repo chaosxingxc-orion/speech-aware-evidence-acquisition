@@ -971,6 +971,8 @@ class FlightRuntime:
         # shape and same reason as the two phase_supply fields above.
         self._phase_review_receipt: Mapping[str, object] | None = None
         self._phase_review_material: Mapping[str, object] | None = None
+        self._experience_memory = None
+        self._experience_memory_loaded = False
         self._promotion_receipt: Mapping[str, object] | None = None
         self._window_feature_packets = None
         self._window_feature_packet_config = None
@@ -1693,6 +1695,23 @@ class FlightRuntime:
         carrier_lock_key = values.get("carrier_lock_key")
         if not isinstance(carrier_lock_key, str) or not carrier_lock_key:
             raise FlightRuntimeError("dataset fragment must declare a non-empty carrier_lock_key")
+
+        if not self._experience_memory_loaded:
+            from ...rails.experience_memory_runtime import (
+                ExperienceMemoryBindingError,
+                load_experience_memory_binding,
+            )
+
+            try:
+                self._experience_memory = load_experience_memory_binding(
+                    values,
+                    repo_root=self._repo_root,
+                    data_root=self._data_root,
+                    carrier_lock_key=carrier_lock_key,
+                )
+            except ExperienceMemoryBindingError as error:
+                raise FlightRuntimeError(str(error)) from None
+            self._experience_memory_loaded = True
 
         split_id = values.get("split_id")
         if not isinstance(split_id, str) or not split_id:
@@ -3569,6 +3588,7 @@ class FlightRuntime:
             supply_for_phase=supply_for_phase, trace_sink=sink,
             knowledge_catalog=self._phase_knowledge_catalog(binding["knowledge_snapshot"])
             if tool_specs else None,
+            experience_memory=self._experience_memory,
         )
         live_fit_gate = None
         if whole_roster:
@@ -4773,11 +4793,29 @@ class FlightRuntime:
         if declared is None or declared == {}:
             if knowledge is not None:
                 raise FlightRuntimeError("phase_knowledge_views requires active phase_tools")
+            if values.get("experience_memory") is not None:
+                raise FlightRuntimeError(
+                    "experience_memory requires the corrective-memory phase tool"
+                )
             return {}
         if policy == "fixed" or policy in self._obs_policy_names():
             raise FlightRuntimeError("phase_tools requires the shared phase program path")
         from ...rails.phase_tools import load_phase_tool_specs
         specs = load_phase_tool_specs(values, default_phase_program(policy))
+        from ...rails.experience_memory_runtime import CORRECTIVE_MEMORY_TOOL
+
+        uses_memory = any(
+            CORRECTIVE_MEMORY_TOOL in spec["allowed_tools"] for spec in specs.values()
+        )
+        declares_memory = values.get("experience_memory") is not None
+        if uses_memory and not declares_memory:
+            raise FlightRuntimeError(
+                "corrective-memory phase tool requires an experience_memory binding"
+            )
+        if declares_memory and not uses_memory:
+            raise FlightRuntimeError(
+                "experience_memory requires the corrective-memory phase tool"
+            )
         if knowledge is not None:
             if not isinstance(knowledge, Mapping) or set(knowledge) != {"catalog_relpath", "catalog_sha256"}:
                 raise FlightRuntimeError("phase_knowledge_views must pin catalog_relpath and catalog_sha256")
