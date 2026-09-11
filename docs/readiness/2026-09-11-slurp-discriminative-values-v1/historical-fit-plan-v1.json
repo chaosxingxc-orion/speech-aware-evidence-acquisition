@@ -1,0 +1,105 @@
+{
+  "analysis_template": {
+    "repo_relpath": "docs/readiness/2026-09-11-slurp-discriminative-values-analysis.template.json",
+    "sha256": "434bd6928c93ee960c59e838d637353c2e6f8a2b8e65fe9c5adef209c90dbe59"
+  },
+  "composed_config_hash": "be746167ff8d3ad3ee6b69320db939d63635b80efda2dc3279f9b020e67a37de",
+  "execution_plan": {
+    "attempt_id": "attempt-discriminative-value-historical-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 3001,
+    "planned_speech_audio_seconds": 3000,
+    "protocol_hash": "c5eaec2666f872bbff73f32508f0cb0a721eaf97abd38708abc6729fc17e1929",
+    "run_id": "SAEA-SLURP-DISCRIMINATIVE-VALUE-HISTORICAL-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-live-program-matched-np4-v1",
+  "family_budget": {
+    "fit_contacts_total": 6002,
+    "generation_calls_total": 2100,
+    "gpu_hours_total": 1.0
+  },
+  "live_fit_protocol": "One whole-roster phase barrier before generation; exact1 props and3 endpoints per sample,3001 per arm. Fit GPU budget is included in the arm cap, not additive.",
+  "protocol": {
+    "repo_relpath": "docs/readiness/2026-09-11-slurp-discriminative-values-protocol.md",
+    "sha256": "93f67338700ee37abc2fb285ed5884d9cce0ee458ea46e119ea11962188f3b92"
+  },
+  "quality_read_gate": "Both arms seal or formal root hold before quality/scoring.",
+  "registered_at": "2026-09-11T16:37:39.095361+00:00",
+  "required_session_identity": {
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "host": "127.0.0.1",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      }
+    ],
+    "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+    "model_fragment_sha256": "7545a1ac3eb0c1e88d4121fdf84726e5201bb9d5ae5a32804cc62a7f6a289f74",
+    "model_root": "/home/chao",
+    "port": 8080,
+    "props_identity": {
+      "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "slot_n_ctx": 16384,
+      "total_slots": 4
+    },
+    "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+    "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+    "server_argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8080",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--no-mmproj",
+      "-c",
+      "65536",
+      "-np",
+      "4",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ],
+    "server_env": {
+      "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+      "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+    },
+    "session_role": "inference"
+  },
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-discriminative-values-eligibility-v1.json",
+    "sha256": "21d79db0c77df5461b21c9538ac9cece1fe2f5e8678473d4b6310c4a9d552eae"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/experiment-closeout-integration",
+  "start_condition": "Full identity verified against live retained decoder. Clean frozen code, exact registered plan and exclusive root lease remain mandatory.",
+  "status": "ROOT_REGISTERED_AWAITING_LEASE",
+  "wire_verdict": {
+    "relpath": "coordination/slurp-discriminative-values-wire-verdict-v1.json",
+    "sha256": "187c46f944f79d85190b67d239f790dfc8c456a3c29a58bcd2fd0cf8fac2bdff"
+  }
+}

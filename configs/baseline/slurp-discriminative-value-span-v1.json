@@ -1,0 +1,80 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-span-role-frame/snapshot.json",
+  "knowledge_snapshot_sha256": "25176ff7fd78984691b6af41f57f585b55846a954c3afb59d4e64c2d04dfd33d",
+  "live_phase_fit": {
+    "attempt_id": "attempt-discriminative-value-span-fit-v1",
+    "contact_cap": 3001,
+    "run_id": "SAEA-SLURP-DISCRIMINATIVE-VALUE-SPAN-FIT-V1"
+  },
+  "phase_material": {
+    "slots": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_phase_slots_value_grounding.txt",
+      "predecessor_binding": "sealed-manifest",
+      "predecessor_source": {
+        "manifest_relpath": "runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
+        "manifest_sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c",
+        "producer_policy_id": "SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1"
+      },
+      "response_format_id": null,
+      "state_fill": "slurp-intent-slot-schema-for-state"
+    }
+  },
+  "phase_supply": {
+    "slots": {
+      "dimensions": [
+        "content"
+      ],
+      "expose_facets": false,
+      "facet_source": {
+        "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+        "kind": "sealed-vectors",
+        "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+        "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+        "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+      },
+      "fuse_coverage": {
+        "c": 5,
+        "m": 5,
+        "top_l": 5
+      },
+      "fuse_policy": "saea-fuse-supplyfilter-v1",
+      "k": 5,
+      "provider": "kb-facet-v1",
+      "query_source": {
+        "embedded_signal": "speech: Omni-Embed-Nemotron-3B over the DEV-1000 recording of this row, prompt 'query: ' through the encoder's own sentence_transformers.jinja wrapper, mean-pooled over the attention mask and L2-normalised. Set q-speech-nemotron of the sealed 2026-09-06 MF-7b pass; no text of any kind enters this vector.",
+        "kind": "sealed-vectors",
+        "relpath": "vectors/slurp-kus3/query-vectors-speech.jsonl",
+        "sha256": "99b2e1700a058640a12c86fb261e3fc1898cd99004b0157366682b2a048b2e7c",
+        "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+      },
+      "rank_policy": "saea-rank-wcos-prior-agree-v1",
+      "rank_weights": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "tau": 0.0
+    }
+  },
+  "policy": "phase-slots-given-intent-supplied-v1",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "serving_slot_tokens": 16384,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-discriminative-values-v1:slots",
+  "speech_feature_matcher_policy_id": "saea-slurp-discriminative-values-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_template_active": true,
+  "value_comparison_rationale": "Fixed-predecessor value-consumption comparison: identical keys, selected identities/order, task/schema, phase program, output contract, service geometry and common grounding instruction; value representation is the registered factor.",
+  "whole_roster_wave_barrier": true
+}

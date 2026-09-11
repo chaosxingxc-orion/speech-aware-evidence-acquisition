@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 40,
+  "generation": 41,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "bdfc3cab406d7c90eeb795d2635540e5d23db6c5",
-  "updated_at_utc": "2026-09-11T16:07:41.738463+00:00",
-  "next_action": "Read STATUS-040 and OWNER018-021. Dataset-grounded task analysis covers SLURP, all eight Audio2Tool tiers and Earnings21/22. Values should provide source-supported decision distinctions, with task-specific construction and consumption on the shared base. Root TRAIN audit and three processed value artifacts are complete; 86 targeted CPU tests pass including legacy knowledge regression, views and TRAIN-bound experience memory. Select the first informative SLURP relation/grounding value contrast, register real requests and use the shared service; prepare Audio2Tool and Earnings value designs in parallel. Do not encode the full paired-audio roster solely because prepared. Memory tool integration, admitted experiences, public raw-source encoding and new system GPU evidence remain pending. No new model/tokenizer/scorer contact at this boundary; retain closed verdicts and held S4. Goal active.",
+  "snapshot_commit": "dc651732354676caa89a1179a4fd4c60ba4377ce",
+  "updated_at_utc": "2026-09-11T16:38:38.534997+00:00",
+  "next_action": "Read STATUS-041. Both1000-row discriminative-value preparations and exact paired wire proofs pass; new prospective protocol, analysis and four exposure rows are registered. Reuse retained PID35780 decoder-only np4 service. Root must acquire historical lease, run shared internal actual fit then generation, seal and immediately hand off to span. No quality read until both seal or formal hold. All existing gates remain active. Audio2Tool preparation covers all eight tiers. Full-system proof, admitted memory and training-free control remain unfinished. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-DISCRIMINATIVE-VALUES-021"

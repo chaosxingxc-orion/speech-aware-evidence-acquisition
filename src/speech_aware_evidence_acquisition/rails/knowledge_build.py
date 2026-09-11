@@ -165,8 +165,15 @@ _ALLOWED_VIEWS: tuple[str, ...] = (VIEW_EXEMPLAR, VIEW_SLOT_FILLERS)
 
 # Value-only representations preserve the established retrieval-key view.
 # A label-only projection removes information; the intent frame adds a TRAIN
-# relation. Only typed-fillers is a lossless reorganization of filler content.
-VALUE_FORMATS = ("historical", "typed-fillers", "slot-type-set", "intent-slot-frame")
+# relation. ``typed-fillers`` reorganizes filler content without loss, while
+# ``span-role-frame`` retains the governed token and annotation structure.
+VALUE_FORMATS = (
+    "historical",
+    "typed-fillers",
+    "slot-type-set",
+    "intent-slot-frame",
+    "span-role-frame",
+)
 
 SPLIT_IDENTITY_SCHEMA = "saea-kb-split-identity-v1"
 SPLIT_IDENTITY_RECEIPT_RELPATH = "docs/receipts/knowledge/slurp-split-identity.json"
@@ -187,6 +194,23 @@ _LONG_TAIL_THRESHOLD = 5
 
 
 @dataclass(frozen=True)
+class KbSourceToken:
+    """One governed TRAIN token in source order."""
+
+    token_id: int
+    surface: str
+
+
+@dataclass(frozen=True)
+class KbEntityMention:
+    """One governed TRAIN entity annotation, retaining occurrence multiplicity."""
+
+    entity_type: str
+    token_ids: tuple[int, ...]
+    filler: str
+
+
+@dataclass(frozen=True)
 class KbRow:
     """One TRAIN utterance's task-neutral row: everything a distribution-
     modeled, task-independent knowledge builder needs, independent of the
@@ -203,6 +227,8 @@ class KbRow:
     sample_ids: tuple[str, ...]
     speaker_by_sample_id: Mapping[str, str]
     media_relpath_by_sample_id: Mapping[str, str]
+    source_tokens: tuple[KbSourceToken, ...] = ()
+    entity_mentions: tuple[KbEntityMention, ...] = ()
 
     @property
     def primary_speaker_id(self) -> str:
@@ -213,42 +239,87 @@ class KbRow:
         return self.speaker_by_sample_id[min(self.speaker_by_sample_id)]
 
 
-def _train_entity_fillers(
+def _train_entity_annotations(
     lock: Mapping[str, object], root: Path
-) -> dict[str, dict[str, tuple[str, ...]]]:
-    """Per-utterance entity type -> filler-surface exemplars, read directly
-    from ``train.jsonl`` a second time (module docstring):
-    Preserve the historical grouped/sorted/deduplicated filler semantics.
-    Reuse ``data.slurp``'s own private tokens/entity-span
-    join helpers (never reimplemented) so the join is byte-for-byte the same
-    one the rest of this codebase already trusts."""
+) -> tuple[
+    dict[str, dict[str, tuple[str, ...]]],
+    dict[str, tuple[KbSourceToken, ...]],
+    dict[str, tuple[KbEntityMention, ...]],
+]:
+    """Read governed TRAIN tokens and mentions once.
+
+    Historical filler maps keep their grouped, sorted, deduplicated behavior.
+    The additive mention view separately retains source order, exact token
+    surfaces, and every annotation occurrence.
+    """
 
     _audio_relpath, _audio_root, metadata_dir = _governed_roots(lock, root)
     metadata_path = metadata_dir / _SPLIT_FILES["train"]
     fillers_by_utterance: dict[str, dict[str, tuple[str, ...]]] = {}
+    tokens_by_utterance: dict[str, tuple[KbSourceToken, ...]] = {}
+    mentions_by_utterance: dict[str, tuple[KbEntityMention, ...]] = {}
     for line_no, raw in enumerate(_read_jsonl(metadata_path), start=1):
-        context = f"SLURP train.jsonl line {line_no} (KB-BUILD filler pass)"
+        context = f"SLURP train.jsonl line {line_no} (KB-BUILD annotation pass)"
         slurp_id = raw.get("slurp_id")
         if isinstance(slurp_id, bool) or not isinstance(slurp_id, int):
             raise RailsError(f"{context}: slurp_id must be an int")
+        utterance_id = str(slurp_id)
+        raw_tokens = raw.get("tokens")
+        tokens_by_id = _tokens_by_id(raw_tokens, context)
+        if not isinstance(raw_tokens, list):
+            raise RailsError(f"{context}: tokens must be a list")
+        source_tokens: list[KbSourceToken] = []
+        seen_token_ids: set[int] = set()
+        for raw_token in raw_tokens:
+            if not isinstance(raw_token, Mapping):
+                raise RailsError(f"{context}: token entry must be an object")
+            token_id = raw_token.get("id")
+            surface = raw_token.get("surface")
+            if (
+                isinstance(token_id, bool)
+                or not isinstance(token_id, int)
+                or not isinstance(surface, str)
+            ):
+                raise RailsError(f"{context}: token entry malformed")
+            if token_id in seen_token_ids:
+                raise RailsError(f"{context}: token IDs must be unique")
+            seen_token_ids.add(token_id)
+            source_tokens.append(KbSourceToken(token_id, surface))
+        tokens_by_utterance[utterance_id] = tuple(source_tokens)
+
         raw_entities = raw.get("entities")
-        if not isinstance(raw_entities, list) or not raw_entities:
-            continue
-        tokens_by_id = _tokens_by_id(raw.get("tokens"), context)
+        if not isinstance(raw_entities, list):
+            raise RailsError(f"{context}: entities must be a list")
         type_fillers: dict[str, list[str]] = {}
-        for entity in raw_entities:
+        mentions: list[KbEntityMention] = []
+        for entity_index, entity in enumerate(raw_entities):
             if not isinstance(entity, Mapping):
-                continue
+                raise RailsError(
+                    f"{context}: entity {entity_index} must be an object"
+                )
             entity_type = entity.get("type")
             if not isinstance(entity_type, str) or not entity_type:
-                continue
-            filler = _entity_filler(tokens_by_id, entity.get("span"), context)
-            type_fillers.setdefault(entity_type, []).append(filler)
-        fillers_by_utterance[str(slurp_id)] = {
+                raise RailsError(
+                    f"{context}: entity {entity_index} type must be non-empty"
+                )
+            raw_span = entity.get("span")
+            normalized_filler = _entity_filler(tokens_by_id, raw_span, context)
+            if not isinstance(raw_span, list):
+                raise RailsError(f"{context}: entity span must be a list")
+            token_ids = tuple(raw_span)
+            if len(token_ids) != len(set(token_ids)):
+                raise RailsError(
+                    f"{context}: entity {entity_index} token IDs must be unique"
+                )
+            exact_filler = " ".join(tokens_by_id[token_id] for token_id in token_ids)
+            type_fillers.setdefault(entity_type, []).append(normalized_filler)
+            mentions.append(KbEntityMention(entity_type, token_ids, exact_filler))
+        fillers_by_utterance[utterance_id] = {
             entity_type: tuple(sorted(set(values)))
             for entity_type, values in type_fillers.items()
         }
-    return fillers_by_utterance
+        mentions_by_utterance[utterance_id] = tuple(mentions)
+    return fillers_by_utterance, tokens_by_utterance, mentions_by_utterance
 
 
 def governed_train_jsonl_relpath(lock: Mapping[str, object], root: Path) -> str:
@@ -264,7 +335,11 @@ def slurp_kb_rows(lock: Mapping[str, object], root: Path) -> tuple[KbRow, ...]:
     rows (module docstring), sorted by ``utterance_id``."""
 
     material = load_slurp_train_material(lock, root)
-    fillers_by_utterance = _train_entity_fillers(lock, root)
+    (
+        fillers_by_utterance,
+        tokens_by_utterance,
+        mentions_by_utterance,
+    ) = _train_entity_annotations(lock, root)
     rows: list[KbRow] = []
     for entry in material:
         sample_ids = tuple(recording.sample_id for recording in entry.recordings)
@@ -286,6 +361,8 @@ def slurp_kb_rows(lock: Mapping[str, object], root: Path) -> tuple[KbRow, ...]:
                 sample_ids=sample_ids,
                 speaker_by_sample_id=speaker_by_sample_id,
                 media_relpath_by_sample_id=media_relpath_by_sample_id,
+                source_tokens=tokens_by_utterance[entry.utterance_id],
+                entity_mentions=mentions_by_utterance[entry.utterance_id],
             )
         )
     return tuple(sorted(rows, key=lambda row: row.utterance_id))
@@ -459,6 +536,145 @@ def _slot_filler_value_content(row: KbRow) -> str:
         f"Slot type=filler pairs observed in TRAIN utterance {row.utterance_id}: {body}."
     )
 
+SPAN_ROLE_FRAME_SCHEMA = "saea-slurp-span-role-frame-v1"
+
+
+def _span_role_frame_value_content(row: KbRow) -> str:
+    """Render source tokens and mention roles without adding intent labels.
+
+    A delexicalized template is included only when every span is contiguous
+    in source order and no two mention occurrences overlap. Ambiguous spans
+    remain fully represented in ordered_mentions while the optional template
+    is null.
+    """
+
+    if not isinstance(row.source_tokens, tuple) or not row.source_tokens:
+        raise RailsError("span-role-frame source_tokens must be a non-empty tuple")
+    if not isinstance(row.entity_mentions, tuple):
+        raise RailsError("span-role-frame entity_mentions must be a tuple")
+
+    token_ids: list[int] = []
+    token_surfaces: dict[int, str] = {}
+    positions: dict[int, int] = {}
+    sentence_tokens: list[dict[str, object]] = []
+    for position, token in enumerate(row.source_tokens):
+        if not isinstance(token, KbSourceToken):
+            raise RailsError(
+                "span-role-frame source tokens must be KbSourceToken values"
+            )
+        if isinstance(token.token_id, bool) or not isinstance(token.token_id, int):
+            raise RailsError("span-role-frame token ID must be an int")
+        if not isinstance(token.surface, str):
+            raise RailsError("span-role-frame token surface must be a string")
+        if token.token_id in token_surfaces:
+            raise RailsError("span-role-frame token IDs must be unique")
+        token_ids.append(token.token_id)
+        token_surfaces[token.token_id] = token.surface
+        positions[token.token_id] = position
+        sentence_tokens.append({"id": token.token_id, "surface": token.surface})
+
+    ordered_mentions: list[dict[str, object]] = []
+    span_positions: list[tuple[int, ...]] = []
+    template_is_unambiguous = True
+    occupied_positions: set[int] = set()
+    for mention_index, mention in enumerate(row.entity_mentions):
+        if not isinstance(mention, KbEntityMention):
+            raise RailsError(
+                "span-role-frame mentions must be KbEntityMention values"
+            )
+        if not isinstance(mention.entity_type, str) or not mention.entity_type:
+            raise RailsError(
+                f"span-role-frame mention {mention_index} type must be non-empty"
+            )
+        if not isinstance(mention.token_ids, tuple) or not mention.token_ids:
+            raise RailsError(
+                f"span-role-frame mention {mention_index} requires non-empty token IDs"
+            )
+        if any(
+            isinstance(token_id, bool) or not isinstance(token_id, int)
+            for token_id in mention.token_ids
+        ):
+            raise RailsError(
+                f"span-role-frame mention {mention_index} token IDs must be ints"
+            )
+        if len(set(mention.token_ids)) != len(mention.token_ids):
+            raise RailsError(
+                f"span-role-frame mention {mention_index} token IDs must be unique"
+            )
+        unknown = [
+            token_id
+            for token_id in mention.token_ids
+            if token_id not in token_surfaces
+        ]
+        if unknown:
+            raise RailsError(
+                f"span-role-frame mention {mention_index} references unknown token ID "
+                f"{unknown[0]}"
+            )
+        expected_filler = " ".join(
+            token_surfaces[token_id] for token_id in mention.token_ids
+        )
+        if mention.filler != expected_filler:
+            raise RailsError(
+                f"span-role-frame mention {mention_index} filler disagrees with "
+                "its source token span"
+            )
+        mention_positions = tuple(
+            positions[token_id] for token_id in mention.token_ids
+        )
+        contiguous = mention_positions == tuple(
+            range(
+                mention_positions[0],
+                mention_positions[0] + len(mention_positions),
+            )
+        )
+        if not contiguous or occupied_positions.intersection(mention_positions):
+            template_is_unambiguous = False
+        occupied_positions.update(mention_positions)
+        span_positions.append(mention_positions)
+        ordered_mentions.append(
+            {
+                "type": mention.entity_type,
+                "token_ids": list(mention.token_ids),
+                "filler": mention.filler,
+            }
+        )
+
+    template: str | None = None
+    if template_is_unambiguous:
+        starts = {
+            positions_tuple[0]: (positions_tuple, mention.entity_type)
+            for positions_tuple, mention in zip(
+                span_positions,
+                row.entity_mentions,
+                strict=True,
+            )
+        }
+        template_parts: list[str] = []
+        position = 0
+        while position < len(token_ids):
+            start = starts.get(position)
+            if start is None:
+                template_parts.append(row.source_tokens[position].surface)
+                position += 1
+            else:
+                positions_tuple, entity_type = start
+                template_parts.append(f"{{{entity_type}}}")
+                position += len(positions_tuple)
+        template = " ".join(template_parts)
+
+    document = {
+        "schema": SPAN_ROLE_FRAME_SCHEMA,
+        "sentence_tokens": sentence_tokens,
+        "ordered_mentions": ordered_mentions,
+        "delexicalized_typed_template": template,
+    }
+    return json.dumps(
+        document,
+        ensure_ascii=True,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
 
 def _processed_value_content(row: KbRow, value_format: str) -> str:
     """Render admitted TRAIN facts, without inferring current-query labels.
@@ -474,6 +690,8 @@ def _processed_value_content(row: KbRow, value_format: str) -> str:
         document = {"observed_slot_types": sorted(row.entity_fillers)}
     elif value_format == "intent-slot-frame":
         document = {"observed_intent": row.intent, "observed_slot_examples": examples}
+    elif value_format == "span-role-frame":
+        return _span_role_frame_value_content(row)
     else:
         raise RailsError(f"unknown processed value_format {value_format!r}")
     return json.dumps(document, ensure_ascii=True, sort_keys=True, separators=(",", ":"))

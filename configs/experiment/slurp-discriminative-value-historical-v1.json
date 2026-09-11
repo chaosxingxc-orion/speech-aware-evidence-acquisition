@@ -1,0 +1,86 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prepare-supply",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-discriminative-value-historical-generation-v1",
+      "baseline_fragment": "slurp-discriminative-value-historical-v1",
+      "cell_id": "discriminative-value-historical-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "readiness": {
+        "reason": "Root admits the new fixed-predecessor value comparison after full paired preparation/wire proof; internal actual-request fit is mandatory before generation.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-DISCRIMINATIVE-VALUE-HISTORICAL-PREPARE-V1/supply.json",
+            "sha256": "a158741f865cedab0fa64a671e8dcdd26b42b67c21903101292446af2a211140"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "coordination/slurp-discriminative-values-wire-verdict-v1.json",
+            "sha256": "187c46f944f79d85190b67d239f790dfc8c456a3c29a58bcd2fd0cf8fac2bdff"
+          },
+          {
+            "expected_decision_id": "SAEA-SLURP-DISCRIMINATIVE-VALUES-ADMISSION-V1",
+            "kind": "decision",
+            "relpath": "coordination/slurp-discriminative-values-eligibility-v1.json",
+            "sha256": "21d79db0c77df5461b21c9538ac9cece1fe2f5e8678473d4b6310c4a9d552eae"
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-DISCRIMINATIVE-VALUE-HISTORICAL-V1"
+    }
+  ],
+  "date": "2026-09-11",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 1050,
+    "planned_speech_audio_seconds": 3000,
+    "split_role": "dev"
+  },
+  "experiment_id": "SAEA-SLURP-DISCRIMINATIVE-VALUE-HISTORICAL-V1",
+  "family_budget": {
+    "fit_contacts_total": 6002,
+    "generation_calls_total": 2100,
+    "gpu_hours_total": 1.0
+  },
+  "fragment_kind": "saea-slurp-discriminative-value-experiment-v1",
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "decision_population": "Historically exposed NEW500 primary; OLD500 and DEV1000 secondary.",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "preparation_source_receipts": [
+    {
+      "relpath": "docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers.json",
+      "root": "repository",
+      "sha256": "2abda571900bfcb5bf4a384eac1cb858fa8841ab3873d034b862c85671af443c"
+    },
+    {
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-kus3-vectors/vectors.json",
+      "root": "repository",
+      "sha256": "3c213ad4f4787e32d92fe30dd1119395817a73ba48d46cbed292a8f471aa86e5"
+    }
+  ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-DISCRIMINATIVE-VALUE-HISTORICAL-PREPARE-V1/supply.json",
+    "sha256": "a158741f865cedab0fa64a671e8dcdd26b42b67c21903101292446af2a211140"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "Root-designed bounded follow-up under OWNER018-021: compare role/phrase-bound TRAIN values against historical fillers. This is a new value-consumption question, not a replay of closed KU or G6 gates.",
+  "request_decoding_overrides": {
+    "max_tokens": 256
+  },
+  "service_session": "serving-slurp-live-program-matched-np4-v1",
+  "split_id": "DEV-1000"
+}

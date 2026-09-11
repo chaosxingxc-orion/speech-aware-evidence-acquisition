@@ -1,0 +1,116 @@
+{
+  "experiment_id": "SAEA-SLURP-DISCRIMINATIVE-VALUE-PAIRED-ANALYSIS-V1",
+  "execution_profile": "model-free-check",
+  "binding_state": "TEMPLATE ONLY, HELD. Generated manifests, complete score results and complete score receipts do not exist yet; every AWAITING hash must be replaced with a measured SHA-256 after the preceding stage seals. Root must record each release.",
+  "source_analysis_plan": {
+    "path": "docs/readiness/2026-09-11-slurp-discriminative-values-protocol.md",
+    "sha256": "93f67338700ee37abc2fb285ed5884d9cce0ee458ea46e119ea11962188f3b92"
+  },
+  "analysis": {
+    "full_roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    },
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+    },
+    "seed": 20260903,
+    "n_replicates": 10000,
+    "metrics": [
+      "slu_f1_f1"
+    ],
+    "micro_metrics": {
+      "slu_f1_micro": {
+        "tp": [
+          "slu_f1_word_tp",
+          "slu_f1_char_tp"
+        ],
+        "fp": [
+          "slu_f1_word_fp",
+          "slu_f1_char_fp"
+        ],
+        "fn": [
+          "slu_f1_word_fn",
+          "slu_f1_char_fn"
+        ]
+      }
+    },
+    "inputs": {
+      "historical": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISCRIMINATIVE-VALUE-HISTORICAL-V1/attempt-discriminative-value-historical-generation-v1/SAEA-SLURP-DISCRIMINATIVE-VALUE-HISTORICAL-V1.run-manifest.json",
+          "sha256": "AWAITING_VERIFIED_COMPLETE_MANIFEST_SHA256"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-DISCRIMINATIVE-VALUE-PAIRED-ANALYSIS-V1/complete-score-batch/historical.score.json",
+          "sha256": "AWAITING_FIRST_COMPLETE_SCORE_SHA256"
+        },
+        "scorers": {
+          "official": "slurp-slu-official"
+        },
+        "complete_score_receipt": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-DISCRIMINATIVE-VALUE-PAIRED-ANALYSIS-V1/complete-score-batch/historical.complete-score-receipt.json",
+          "sha256": "AWAITING_COMPLETE_SCORE_RECEIPT_SHA256"
+        }
+      },
+      "span": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISCRIMINATIVE-VALUE-SPAN-V1/attempt-discriminative-value-span-generation-v1/SAEA-SLURP-DISCRIMINATIVE-VALUE-SPAN-V1.run-manifest.json",
+          "sha256": "AWAITING_VERIFIED_COMPLETE_MANIFEST_SHA256"
+        },
+        "score": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-DISCRIMINATIVE-VALUE-PAIRED-ANALYSIS-V1/complete-score-batch/span.score.json",
+          "sha256": "AWAITING_FIRST_COMPLETE_SCORE_SHA256"
+        },
+        "scorers": {
+          "official": "slurp-slu-official"
+        },
+        "complete_score_receipt": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-DISCRIMINATIVE-VALUE-PAIRED-ANALYSIS-V1/complete-score-batch/span.complete-score-receipt.json",
+          "sha256": "AWAITING_COMPLETE_SCORE_RECEIPT_SHA256"
+        }
+      }
+    },
+    "contrasts": [
+      {
+        "name": "span_role_frame_minus_historical_fillers",
+        "left": "historical",
+        "right": "span",
+        "scorers": [
+          "official"
+        ]
+      }
+    ]
+  },
+  "estimator_interpretation": {
+    "primary_population": "historically exposed NEW500",
+    "primary": "paired speaker-cluster bootstrap, 10,000 replicates, seed 20260903, CI90",
+    "row_sensitivity": "scenario-stratified paired row bootstrap with the same fixed metric order and seed offsets",
+    "weightings": [
+      "natural mixture",
+      "equal scenario"
+    ],
+    "reporting_populations": [
+      "NEW500",
+      "OLD500",
+      "DEV1000"
+    ],
+    "metric_rule": "slu_f1_f1 is mean per-row F1. slu_f1_micro is the separately reported pooled TP/FP/FN F1 and must never be described as a row mean.",
+    "effective_seed_by_metric": {
+      "slu_f1_f1": 20260903,
+      "slu_f1_micro": 20260903
+    }
+  },
+  "execution_gate": "HELD. This template is intentionally invalid until exact post-seal hashes replace every AWAITING value and root records the result-read release.",
+  "descriptive_decision": {
+    "positive": "primary NEW500 speaker-cluster CI90 wholly above zero",
+    "negative": "primary interval wholly below zero",
+    "unresolved": "otherwise",
+    "scope": "Bounded discovery description; report all regressions and secondary results. No large-gain or cost-efficiency gate; no repeated run to seek significance. Fixed-predecessor component only."
+  }
+}
