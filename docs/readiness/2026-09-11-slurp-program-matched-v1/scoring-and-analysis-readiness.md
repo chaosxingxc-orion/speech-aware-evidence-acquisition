@@ -33,16 +33,50 @@ Use `live-program-matched-control-delivery-v1` and `live-program-matched-speech-
 
 Run exactly one complete job at a time, with per-sample retention and without finalization or sharding:
 
+The `score-batch` CLI does not accept explicit repository, data-root, or umbrella-lock arguments. Use the public batch API, matching the successful G6 score invocation, so every isolated scorer process receives the intended frozen checkout and pinned scoring environment:
+
 ```bash
-SOURCE=<root-frozen-program-matched-source>
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$SOURCE/src SPEECHRL_DATA_DIR=$DATA \
-/home/chao/.venvs/speechrl/bin/python -B \
-  -m speech_aware_evidence_acquisition.core.driver.cli score-batch \
-  --jobs $SOURCE/docs/readiness/2026-09-11-slurp-program-matched-v1/complete-score-jobs.template.jsonl \
-  --output-dir $DATA/analysis/SAEA-SLURP-LIVE-PROGRAM-MATCHED-PAIRED-ANALYSIS-V1/complete-score-batch \
-  --workers 1 \
-  --include-per-sample
+export SOURCE=<root-frozen-program-matched-source>
+export DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+export LOCK=/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json
+export PYTHONDONTWRITEBYTECODE=1
+export PYTHONPATH=$SOURCE/src
+export SPEECHRL_DATA_DIR=$DATA
+/home/chao/.venvs/speechrl/bin/python -B - <<'PY'
+import os
+from pathlib import Path
+
+from speech_aware_evidence_acquisition.core.scoring_batch import (
+    ScoringContext,
+    load_score_jobs,
+    run_score_batch,
+)
+
+source = Path(os.environ["SOURCE"])
+data = Path(os.environ["DATA"])
+lock = Path(os.environ["LOCK"])
+jobs = load_score_jobs(
+    source
+    / "docs/readiness/2026-09-11-slurp-program-matched-v1/complete-score-jobs.template.jsonl"
+)
+result = run_score_batch(
+    jobs,
+    output_dir=(
+        data
+        / "analysis/SAEA-SLURP-LIVE-PROGRAM-MATCHED-PAIRED-ANALYSIS-V1/complete-score-batch"
+    ),
+    max_workers=1,
+    operation="score",
+    include_per_sample=True,
+    context=ScoringContext(
+        repo_root=source,
+        data_root=data,
+        lock_path=lock,
+    ),
+)
+if result["job_count"] != 2 or result["succeeded"] != 2 or result["failed"] != 0:
+    raise SystemExit("the two complete official score jobs did not both succeed exactly once")
+PY
 ```
 
 The job file contains two jobs, so this invocation processes them sequentially. Do not use `--finalize`. Before starting, require both complete derivative manifests, a new output directory, and a root-recorded score release. If either job fails or is incomplete, stop without rerunning.
