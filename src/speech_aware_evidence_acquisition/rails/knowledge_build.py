@@ -163,6 +163,11 @@ VIEW_SLOT_FILLERS = "slot-fillers"
 
 _ALLOWED_VIEWS: tuple[str, ...] = (VIEW_EXEMPLAR, VIEW_SLOT_FILLERS)
 
+# Value-only representations preserve the established retrieval-key view.
+# A label-only projection removes information; the intent frame adds a TRAIN
+# relation. Only typed-fillers is a lossless reorganization of filler content.
+VALUE_FORMATS = ("historical", "typed-fillers", "slot-type-set", "intent-slot-frame")
+
 SPLIT_IDENTITY_SCHEMA = "saea-kb-split-identity-v1"
 SPLIT_IDENTITY_RECEIPT_RELPATH = "docs/receipts/knowledge/slurp-split-identity.json"
 _DEV_LADDER_RECEIPT_DIR_RELPATH = "docs/receipts/probe-samples"
@@ -213,8 +218,8 @@ def _train_entity_fillers(
 ) -> dict[str, dict[str, tuple[str, ...]]]:
     """Per-utterance entity type -> filler-surface exemplars, read directly
     from ``train.jsonl`` a second time (module docstring):
-    ``load_slurp_train_material`` validates and returns TYPES only, never
-    filler text. This reuses ``data.slurp``'s own private tokens/entity-span
+    Preserve the historical grouped/sorted/deduplicated filler semantics.
+    Reuse ``data.slurp``'s own private tokens/entity-span
     join helpers (never reimplemented) so the join is byte-for-byte the same
     one the rest of this codebase already trusts."""
 
@@ -301,6 +306,7 @@ class KnowledgeBuildSpec:
     seed: int = 20260823
     dimensions: tuple[str, ...] = _DEFAULT_DIMENSIONS
     view: str = VIEW_EXEMPLAR
+    value_format: str = "historical"
 
     def validate(self) -> "KnowledgeBuildSpec":
         if not isinstance(self.carrier_lock_key, str) or not self.carrier_lock_key.strip():
@@ -335,6 +341,10 @@ class KnowledgeBuildSpec:
                 f"KnowledgeBuildSpec.view must be one of {list(_ALLOWED_VIEWS)}, got "
                 f"{self.view!r}"
             )
+        if self.value_format not in VALUE_FORMATS:
+            raise RailsError(f"KnowledgeBuildSpec.value_format must be one of {VALUE_FORMATS}")
+        if self.value_format != "historical" and self.view != VIEW_SLOT_FILLERS:
+            raise RailsError("nonhistorical value_format requires the slot-fillers key view")
         if self.view == VIEW_SLOT_FILLERS and "content" not in set(self.dimensions):
             raise RailsError(
                 f"KnowledgeBuildSpec.view={VIEW_SLOT_FILLERS!r} exists to be RECALLED on "
@@ -448,6 +458,25 @@ def _slot_filler_value_content(row: KbRow) -> str:
     return (
         f"Slot type=filler pairs observed in TRAIN utterance {row.utterance_id}: {body}."
     )
+
+
+def _processed_value_content(row: KbRow, value_format: str) -> str:
+    """Render admitted TRAIN facts, without inferring current-query labels.
+
+    Keep filler spelling, numbers, negation and modifier content unchanged.
+    Empty observed slots say nothing about whether an intent requires slots.
+    Keys and all source/value identities are constructed independently.
+    """
+    examples = {kind: list(row.entity_fillers[kind]) for kind in sorted(row.entity_fillers)}
+    if value_format == "typed-fillers":
+        document = {"observed_slot_examples": examples}
+    elif value_format == "slot-type-set":
+        document = {"observed_slot_types": sorted(row.entity_fillers)}
+    elif value_format == "intent-slot-frame":
+        document = {"observed_intent": row.intent, "observed_slot_examples": examples}
+    else:
+        raise RailsError(f"unknown processed value_format {value_format!r}")
+    return json.dumps(document, ensure_ascii=True, sort_keys=True, separators=(",", ":"))
 
 
 def _build_facets_and_values(
@@ -653,7 +682,9 @@ def _build_facets_and_values(
             if normalization_lines
             else "no additional surface-form variants observed for this utterance's entity types"
         )
-        if spec.view == VIEW_SLOT_FILLERS:
+        if spec.value_format != "historical":
+            content_text = _processed_value_content(row, spec.value_format)
+        elif spec.view == VIEW_SLOT_FILLERS:
             content_text = _slot_filler_value_content(row)
         else:
             content_text = (
@@ -940,6 +971,8 @@ def build_knowledge_snapshot(
         # Appended only for a non-default view, so every snapshot built before
         # 2026-09-07 keeps its build hash, its snapshot id and its bytes.
         build_descriptor["view"] = spec.view
+    if spec.value_format != "historical":
+        build_descriptor["value_format"] = spec.value_format
     build_sha256 = content_hash(build_descriptor)
     return KnowledgeSnapshot(
         snapshot_id=f"slurp-kb-distmodel-{build_sha256[:16]}",

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 39,
+  "generation": 40,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,10 +10,10 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "2b2c96ffe8e2f194b9a7b04ae443b0bdf94e35e1",
-  "updated_at_utc": "2026-09-11T15:28:49.573405+00:00",
-  "next_action": "Read STATUS-039 and OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017. TRAIN examples/schema/speech packets are knowledge; analyzed corrections and validated conditional rules form a separate experience memory. Shared explicit fixed/core-choice task actions, tool-result state and text/speech/paired knowledge views have CPU proofs through the existing controller/executor. Generic source-media inventory and low-level encoding are added; finish the public runtime/CLI binding and prospective registration, encode only missing qualified packets, then qualify the reviewed SLURP system. Real 2621-source inventory persisted through the shared producer with the preprocess-role receipt; 4 qualified packet hits and 2617 cold. Durable experience artifact/selector and training-free updates remain unimplemented. Previous E21/SLURP flights closed, S4 held. No new GPU contact this boundary; frozen resident decoder retained. Goal active.",
+  "snapshot_commit": "bdfc3cab406d7c90eeb795d2635540e5d23db6c5",
+  "updated_at_utc": "2026-09-11T16:07:41.738463+00:00",
+  "next_action": "Read STATUS-040 and OWNER018-021. Dataset-grounded task analysis covers SLURP, all eight Audio2Tool tiers and Earnings21/22. Values should provide source-supported decision distinctions, with task-specific construction and consumption on the shared base. Root TRAIN audit and three processed value artifacts are complete; 86 targeted CPU tests pass including legacy knowledge regression, views and TRAIN-bound experience memory. Select the first informative SLURP relation/grounding value contrast, register real requests and use the shared service; prepare Audio2Tool and Earnings value designs in parallel. Do not encode the full paired-audio roster solely because prepared. Memory tool integration, admitted experiences, public raw-source encoding and new system GPU evidence remain pending. No new model/tokenizer/scorer contact at this boundary; retain closed verdicts and held S4. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
-  "latest_owner_decision_id": "OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017"
+  "latest_owner_decision_id": "OWNER-DISCRIMINATIVE-VALUES-021"
 }

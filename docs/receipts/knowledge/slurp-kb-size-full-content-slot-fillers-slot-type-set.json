@@ -1,0 +1,118 @@
+{
+  "authority": "docs/readiness/2026-08-23-knowledge-plane-baseline-rulings.md sections 1 and 5",
+  "builder_policy_id": "saea-kb-distmodel-v1",
+  "coverage_report": {
+    "action_coverage": 1.0,
+    "cluster_coverage_proxy": 1.0,
+    "counts": {
+      "selected_entity_types": 55,
+      "selected_intents": 60,
+      "selected_utterances": 11514,
+      "train_entity_types": 55,
+      "train_intents": 60,
+      "train_utterances": 11514
+    },
+    "datastore_size_actual": 11514,
+    "entity_type_coverage": 1.0,
+    "intent_coverage": 1.0,
+    "kl_selected_given_train_over_intent": 0.0,
+    "long_tail_coverage": {
+      "entity_type": {
+        "coverage": 1.0,
+        "covered_count": 2,
+        "threshold": 5,
+        "train_long_tail_count": 2
+      },
+      "intent": {
+        "coverage": 1.0,
+        "covered_count": 1,
+        "threshold": 5,
+        "train_long_tail_count": 1
+      }
+    },
+    "scenario_coverage": 1.0,
+    "speaker_histogram_summary": {
+      "distinct_speakers": 151,
+      "max_speaker_share": 0.05211047420531527,
+      "top_speakers": [
+        {
+          "count": 600,
+          "speaker_id": "FO-488"
+        },
+        {
+          "count": 451,
+          "speaker_id": "FO-234"
+        },
+        {
+          "count": 288,
+          "speaker_id": "FE-353"
+        },
+        {
+          "count": 264,
+          "speaker_id": "FO-462"
+        },
+        {
+          "count": 240,
+          "speaker_id": "ME-223"
+        },
+        {
+          "count": 228,
+          "speaker_id": "FO-219"
+        },
+        {
+          "count": 208,
+          "speaker_id": "FE-249"
+        },
+        {
+          "count": 199,
+          "speaker_id": "ME-144"
+        },
+        {
+          "count": 192,
+          "speaker_id": "ME-220"
+        },
+        {
+          "count": 184,
+          "speaker_id": "FE-146"
+        }
+      ]
+    }
+  },
+  "decontamination": {
+    "checked_sample_count": 50628,
+    "excluded_rosters": [],
+    "excluded_sample_count": 0,
+    "forbidden_roster_receipts": [
+      "docs/receipts/knowledge/slurp-split-identity.json",
+      "docs/receipts/probe-samples/FINAL60.json",
+      "docs/receipts/probe-samples/DEV-100.json",
+      "docs/receipts/probe-samples/DEV-500.json",
+      "docs/receipts/probe-samples/DEV-1000.json"
+    ],
+    "verdict": "clean"
+  },
+  "facet_count": 11514,
+  "generator": "scripts/build_knowledge_snapshot.py",
+  "schema": "saea-kb-build-receipt-v1",
+  "snapshot_artifact_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-slot-type-set/snapshot.json",
+  "snapshot_id": "slurp-kb-distmodel-5b1be7eb1f585a03",
+  "snapshot_sha256": "1171670b952032e84b5f07794c742c6d7c4e76859c1fdce5c83cffeb0b311501",
+  "source_split_identity_hash": "6a6677e97a64063b8672b2d175bd6378bcf9b644346fa2d249cc2d80343b252c",
+  "spec": {
+    "carrier_lock_key": "slurp",
+    "datastore_size": null,
+    "dimensions": [
+      "content"
+    ],
+    "seed": 20260823,
+    "value_format": "slot-type-set",
+    "view": "slot-fillers"
+  },
+  "timing_seconds": {
+    "build_snapshot": 0.432,
+    "coverage_report": 0.071,
+    "load_train_rows": 8.944
+  },
+  "value_count": 11514,
+  "value_format_authority": "docs/superpowers/plans/experiment-handoff/OWNER-KNOWLEDGE-VALUE-DESIGN-018.md"
+}

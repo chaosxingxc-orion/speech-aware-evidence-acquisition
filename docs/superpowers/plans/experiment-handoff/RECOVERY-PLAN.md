@@ -1,6 +1,6 @@
 # Owner-directed recovery and continuation plan
 
-**Latest owner correction:** [OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017.md](OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017.md) distinguishes source knowledge from learned corrective experience. TRAIN speech/text examples, schema and facts are knowledge; analyzed corrections and validated conditional rules are memory. Read [STATUS-039.md](STATUS-039.md) and the [revised system specification](../../../readiness/2026-09-11-multimodal-task-agent-system.md). The shared action/knowledge increment is implemented and under boundary verification; a durable experience-memory runtime and full system GPU cohort remain next work. Preserve OWNER016 system-first, SLURP-first transfer, quality-first selection and all closed verdicts.
+**Latest owner direction:** [OWNER-DISCRIMINATIVE-VALUES-021.md](OWNER-DISCRIMINATIVE-VALUES-021.md), with OWNER018-020, prioritizes source-grounded distinctions in task-specific values. Include all eight Audio2Tool tiers alongside SLURP and E21/E22 in design/readiness; share the execution base and specialize knowledge and corrective-memory construction. Read [STATUS-040.md](STATUS-040.md) and the [dataset/task analysis](../../../readiness/2026-09-11-task-specific-knowledge-and-memory-analysis.md). Full TRAIN relationship counts and per-carrier audits are complete; three value-format primitives and a TRAIN-bound memory library have CPU tests. Runtime memory integration and new registered GPU system comparisons remain pending. Preserve historical verdicts and the SLURP-first execution preference.
 
 Role: engineering plan. Coordinator: Codex. Updated: 2026-09-11.
 The owner directed recovery from GitHub history and unmerged worktrees after Fable5.1 exhausted
@@ -9,7 +9,7 @@ the actual experiment state. The former request/reply exchange is historical; no
 
 ## Current continuation closure
 
-The archaeology below records the initial September9 recovery. STATUS-039 and
+The archaeology below records the initial September9 recovery. STATUS-040 and
 the latest overlay govern current work; completed scientific families must not be
 replayed because an older paragraph says pending.
 
@@ -69,7 +69,7 @@ treatment results exist. Any unresolved analysis must remain descriptive until i
 
 ## Current ordered work queue
 
-1. Use the completed sealed-score headroom audit and 2026 static source review in STATUS-039.
+1. Use the completed sealed-score headroom audit and 2026 static source review in STATUS-040.
 2. Add only the shared SLURP supply-action policy seam: row-level retrieval or explicit no retrieval from the same current draft, both continuing to the same slots phase.
 3. Prepare fixed update/validation/evaluation roles, actual requests, action groups and a new prospective registration while the resident decoder stays available.
 4. Execute the first shared feedback loop with TF-GRPO as the 2025 baseline; prioritize EvoTool-style targeted module evolution as the first 2026 system candidate.
@@ -109,4 +109,4 @@ one coordinator and one experiment in flight.
 
 ## September11 cohort closure
 
-Read STATUS-039, the two September11 system result notes and the next-stage acceptance plan. The E21 offline and final program-matched SLURP pairs have complete generation, scoring, fixed analysis and FINALIZED custody. Failed scientific guards remain binding. Shared raw saved-score settlement reuses complete scores and preserves frozen source worktrees. Live E21 review/selection/new-observation remains open.
+Read STATUS-040, the two September11 system result notes and the next-stage acceptance plan. The E21 offline and final program-matched SLURP pairs have complete generation, scoring, fixed analysis and FINALIZED custody. Failed scientific guards remain binding. Shared raw saved-score settlement reuses complete scores and preserves frozen source worktrees. Live E21 review/selection/new-observation remains open.

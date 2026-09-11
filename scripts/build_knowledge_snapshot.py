@@ -85,6 +85,7 @@ from speech_aware_evidence_acquisition.rails.knowledge_build import (  # noqa: E
     SPLIT_IDENTITY_RECEIPT_RELPATH,
     VIEW_EXEMPLAR,
     VIEW_SLOT_FILLERS,
+    VALUE_FORMATS,
     KnowledgeBuildSpec,
     build_knowledge_snapshot,
     coverage_report,
@@ -129,7 +130,10 @@ def _parse_dimensions(raw: str) -> tuple[str, ...]:
     return names
 
 
-def _tier_label(size: int | None, dimensions: tuple[str, ...], view: str = VIEW_EXEMPLAR) -> str:
+def _tier_label(
+    size: int | None, dimensions: tuple[str, ...], view: str = VIEW_EXEMPLAR,
+    value_format: str = "historical",
+) -> str:
     """The artifact and receipt label for one build.
 
     The DEFAULT dimension set keeps the historical ``size-<N>`` label, so the
@@ -147,6 +151,8 @@ def _tier_label(size: int | None, dimensions: tuple[str, ...], view: str = VIEW_
         label = "-".join((label, *sorted(dimensions)))
     if view != VIEW_EXEMPLAR:
         label = f"{label}-{view}"
+    if value_format != "historical":
+        label = f"{label}-{value_format}"
     return label
 
 
@@ -194,6 +200,7 @@ def build_one(
     dimensions: tuple[str, ...],
     *,
     view: str = VIEW_EXEMPLAR,
+    value_format: str = "historical",
     exclude_rosters: Sequence[str] = (),
     tier_suffix: str = "",
 ) -> int:
@@ -229,8 +236,9 @@ def build_one(
         seed=SEED,
         dimensions=tuple(dimensions),
         view=view,
+        value_format=value_format,
     ).validate()
-    tier = _tier_label(size, tuple(dimensions), view) + tier_suffix
+    tier = _tier_label(size, tuple(dimensions), view, value_format) + tier_suffix
     build_start = time.monotonic()
     snapshot = build_knowledge_snapshot(
         spec, lock=lock, root=root, rows=rows, repo_root=REPO_ROOT
@@ -290,6 +298,11 @@ def build_one(
             "coverage_report": round(report_seconds, 3),
         },
     }
+    if value_format != "historical":
+        receipt["spec"]["value_format"] = value_format
+        receipt["value_format_authority"] = (
+            "docs/superpowers/plans/experiment-handoff/OWNER-KNOWLEDGE-VALUE-DESIGN-018.md"
+        )
     receipt_path = RECEIPTS_DIR / f"slurp-kb-size-{tier}.json"
     receipt_sha256 = write_json_artifact(receipt_path, receipt)
     print(f"wrote {receipt_path.relative_to(REPO_ROOT)}  sha256={receipt_sha256[:16]}...")
@@ -333,6 +346,10 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--value-format", choices=VALUE_FORMATS, default="historical",
+        help="value-only representation; nonhistorical modes require --view slot-fillers",
+    )
+    parser.add_argument(
         "--exclude-rosters",
         default=None,
         help=(
@@ -356,6 +373,7 @@ def main() -> int:
         _parse_size(args.size),
         tuple(args.dimensions),
         view=str(args.view),
+        value_format=str(args.value_format),
         exclude_rosters=tuple(
             item.strip() for item in str(args.exclude_rosters or "").split(",") if item.strip()
         ),

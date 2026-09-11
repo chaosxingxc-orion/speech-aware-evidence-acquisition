@@ -1,5 +1,7 @@
 # Multimodal task agent: knowledge, corrective memory and control
 
+Current design overlay: OWNER018-021 adds task-specific, source-grounded discriminative values and includes Audio2Tool in parallel architecture/readiness. Read [the dataset/task synthesis](2026-09-11-task-specific-knowledge-and-memory-analysis.md) and STATUS-040. The sequence below is superseded where it prioritizes bulk paired-audio encoding before resolving the value-content question. The experience artifact/selector now has CPU tests, but runtime integration and validated memories remain pending.
+
 Date: September 11, 2026. Authority: OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017, continuing OWNER016's complete-system design, OWNER015's SLURP-first sequence and OWNER014's quality-first objective. This mutable specification replaces its earlier classification of the raw TRAIN store as episodic memory. Historical source receipts and owner/status records remain unchanged.
 
 ## System objective and boundaries

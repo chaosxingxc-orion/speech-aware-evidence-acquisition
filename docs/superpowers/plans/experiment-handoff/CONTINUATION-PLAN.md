@@ -1,6 +1,6 @@
-# Shared-base SLURP and Earnings21 continuation
+# Shared-base task-specific continuation
 
-**Latest owner correction:** [OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017.md](OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017.md) distinguishes source knowledge from learned corrective experience. TRAIN speech/text examples, schema and facts are knowledge; analyzed corrections and validated conditional rules are memory. Read [STATUS-039.md](STATUS-039.md) and the [revised system specification](../../../readiness/2026-09-11-multimodal-task-agent-system.md). The shared action/knowledge increment is implemented and under boundary verification; a durable experience-memory runtime and full system GPU cohort remain next work. Preserve OWNER016 system-first, SLURP-first transfer, quality-first selection and all closed verdicts.
+**Latest owner direction:** [OWNER-DISCRIMINATIVE-VALUES-021.md](OWNER-DISCRIMINATIVE-VALUES-021.md), with OWNER018-020, prioritizes source-grounded distinctions in task-specific values. Include all eight Audio2Tool tiers alongside SLURP and E21/E22 in design/readiness; share the execution base and specialize knowledge and corrective-memory construction. Read [STATUS-040.md](STATUS-040.md) and the [dataset/task analysis](../../../readiness/2026-09-11-task-specific-knowledge-and-memory-analysis.md). Full TRAIN relationship counts and per-carrier audits are complete; three value-format primitives and a TRAIN-bound memory library have CPU tests. Runtime memory integration and new registered GPU system comparisons remain pending. Preserve historical verdicts and the SLURP-first execution preference.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
@@ -10,10 +10,10 @@ Execution environment: WSL Ubuntu-24.04 only. Repository documents and model-fac
 
 ## Current execution overlay
 
-Updated on 2026-09-11 from STATUS-039 and OWNER-GPU-RESUME-013. The original requirements below remain
+Updated on 2026-09-11 from STATUS-040 and OWNER-GPU-RESUME-013. The original requirements below remain
 the acceptance contract; this overlay records which have actual evidence.
 
-Owner scheduling override: OWNER013 permits eligible GPU work. OWNER011's single matched pair is now fully finalized and closed. OWNER016/017 prioritize a complete SLURP multimodal agent with source knowledge, distinct corrective memory and real tool/result consumption before E21/E22; use new prospective registrations, not unused allowance from a closed flight. No configuration change or extra contact is justified solely by utilization.
+Owner scheduling override: OWNER013 permits eligible GPU work. OWNER011's single matched pair is now fully finalized and closed. OWNER016-021 prioritize a complete shared multimodal agent, with SLURP as the first execution carrier and Audio2Tool plus E21/E22 in parallel task-specific design/readiness; use new prospective registrations, not unused allowance from a closed flight. No configuration change or extra contact is justified solely by utilization.
 
 | Work | Current state | Evidence / next action |
 |---|---|---|
