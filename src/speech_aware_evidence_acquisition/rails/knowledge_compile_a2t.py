@@ -30,12 +30,21 @@ from .a2t_executable_semantic_cards import (
     build_executable_semantic_card_corpus,
 )
 from .errors import RailsError
+from .hashing import content_hash
+from .knowledge import (
+    EXTERNAL_GOVERNED_PARTITION_ROLE,
+    KeyFacet,
+    KnowledgeSnapshot,
+    ValueBundle,
+)
 from .knowledge_build_a2t import A2tKbRow, a2t_pool_rows
 
 MINIMUM_COMPATIBILITY_SUPPORT = 2
 COMPILATION_RECEIPT_SCHEMA = "saea-a2t-semantic-card-compilation-receipt-v1"
 PUBLIC_API_LEGALITY_PRESENTATION_V1 = "saea-a2t-public-api-legality-presentation-v1"
 NATIVE_COMPATIBLE_PRESENTATION_V1 = "saea-a2t-native-compatible-presentation-v1"
+NATIVE_CARD_SNAPSHOT_BUILDER_V1 = "saea-a2t-native-card-snapshot-v1"
+NATIVE_CARD_SNAPSHOT_SOURCE_V1 = "saea-a2t-native-card-snapshot-source-v1"
 _ZERO_CONTACTS = {
     "audio_seconds": 0,
     "embedding_tool": 0,
@@ -65,6 +74,7 @@ class A2tSemanticCardCompilationConfig:
     minimum_compatibility_support: int = MINIMUM_COMPATIBILITY_SUPPORT
     max_utf8_bytes: int = DEFAULT_MAX_UTF8_BYTES
     presentation_version: str | None = None
+    snapshot_output_path: Path | None = None
 
 
 @dataclass(frozen=True)
@@ -1375,6 +1385,159 @@ def build_from_partition_with_public_legality(
     return first, report
 
 
+def _humanize_tool_name(tool_name: str) -> str:
+    words = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1 \2", tool_name)
+    words = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", words)
+    words = re.sub(r"([A-Za-z])([0-9])", r"\1 \2", words)
+    words = re.sub(r"([0-9])([A-Za-z])", r"\1 \2", words)
+    return " ".join(words.replace("_", " ").lower().split())
+
+
+def _native_snapshot_key_text(card: NativeCompatibleToolSemanticCard) -> str:
+    native_count = len(card.native_role_guidance)
+    if native_count:
+        if card.role_guidance[-native_count:] != card.native_role_guidance:
+            raise SemanticCardCompilationError(
+                f"native role guidance is not a suffix for {card.tool_name!r}"
+            )
+        public_guidance = card.role_guidance[:-native_count]
+    else:
+        public_guidance = card.role_guidance
+    lines = [
+        f"Exact tool name: {card.tool_name} ({_humanize_tool_name(card.tool_name)}).",
+        f"Choose semantics: {card.choose_semantics}",
+    ]
+    if public_guidance:
+        lines.append("Public spoken-role guidance:")
+        lines.extend(f"- {guidance}" for guidance in public_guidance)
+    if card.native_role_guidance:
+        lines.append("Source-supported native-role guidance:")
+        lines.extend(f"- {guidance}" for guidance in card.native_role_guidance)
+    text = "\n".join(lines)
+    if not text.isascii():
+        raise SemanticCardCompilationError(
+            f"snapshot key text must be ASCII English for {card.tool_name!r}"
+        )
+    return text
+
+
+def build_native_compatible_knowledge_snapshot(
+    corpus: NativeCompatibleSemanticCardCorpus,
+    *,
+    compilation_source: Mapping[str, object],
+) -> KnowledgeSnapshot:
+    """Project native cards into positive keys and complete supplied values.
+
+    ``compilation_source`` is output-path independent and excludes both the
+    compilation receipt and snapshot hash. Its own content hash can therefore
+    bind the snapshot without a circular artifact dependency.
+    """
+
+    expected_source_keys = {
+        "schema",
+        "compilation_id",
+        "presentation_version",
+        "dataset_lock_sha256",
+        "construction_selection_sha256",
+        "tool_registry_sha256",
+        "corpus_sha256",
+        "minimum_compatibility_support",
+        "max_utf8_bytes",
+    }
+    if set(compilation_source) != expected_source_keys:
+        raise SemanticCardCompilationError(
+            "native snapshot compilation source has malformed fields"
+        )
+    if compilation_source.get("schema") != NATIVE_CARD_SNAPSHOT_SOURCE_V1:
+        raise SemanticCardCompilationError(
+            "native snapshot compilation source schema is unsupported"
+        )
+    if (
+        compilation_source.get("presentation_version")
+        != NATIVE_COMPATIBLE_PRESENTATION_V1
+        or compilation_source.get("corpus_sha256") != corpus.sha256
+    ):
+        raise SemanticCardCompilationError(
+            "native snapshot compilation source does not bind its corpus"
+        )
+    if (
+        not isinstance(compilation_source.get("compilation_id"), str)
+        or not compilation_source["compilation_id"]
+        or not str(compilation_source["compilation_id"]).isascii()
+    ):
+        raise SemanticCardCompilationError(
+            "native snapshot compilation source has invalid compilation_id"
+        )
+    for field in (
+        "dataset_lock_sha256",
+        "construction_selection_sha256",
+        "tool_registry_sha256",
+        "corpus_sha256",
+    ):
+        if not _is_sha256(compilation_source.get(field)):
+            raise SemanticCardCompilationError(
+                f"native snapshot compilation source has invalid {field}"
+            )
+    for field in ("minimum_compatibility_support", "max_utf8_bytes"):
+        value = compilation_source.get(field)
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise SemanticCardCompilationError(
+                f"native snapshot compilation source has invalid {field}"
+            )
+    if len(corpus.tool_cards) != REQUIRED_TOOL_COUNT:
+        raise SemanticCardCompilationError(
+            f"native snapshot requires exactly {REQUIRED_TOOL_COUNT} tool cards"
+        )
+    ordered_cards = tuple(sorted(corpus.tool_cards, key=lambda card: card.tool_name))
+    if len({card.tool_name for card in ordered_cards}) != len(ordered_cards):
+        raise SemanticCardCompilationError(
+            "native snapshot tool cards must have unique names"
+        )
+
+    source_document = dict(compilation_source)
+    source_sha256 = content_hash(source_document)
+    source_id = f"external:a2t-native-card-source:{source_sha256}"
+    facets: list[KeyFacet] = []
+    values: list[ValueBundle] = []
+    for card in ordered_cards:
+        facet_id = f"a2t-native-card:{card.tool_name}:content"
+        value_id = f"a2t-native-card:{card.tool_name}:value"
+        facets.append(
+            KeyFacet(
+                facet_id=facet_id,
+                dimension="content",
+                representation_kind="text",
+                representation=_native_snapshot_key_text(card),
+                source_sample_ids=(source_id,),
+            ).validate()
+        )
+        values.append(
+            ValueBundle(
+                value_id=value_id,
+                content=card.text,
+                associated_facet_ids=(facet_id,),
+                source_sample_ids=(source_id,),
+                provenance_refs=(
+                    f"a2t-native-card-compilation-source-sha256:{source_sha256}",
+                    f"a2t-native-card-corpus-sha256:{corpus.sha256}",
+                    "a2t-native-card-sha256:"
+                    f"{hashlib.sha256(card.text.encode('utf-8')).hexdigest()}",
+                ),
+                task_target=card.tool_name,
+                prior_score=None,
+            ).validate()
+        )
+    return KnowledgeSnapshot(
+        snapshot_id=f"a2t-native-cards-{source_sha256[:16]}",
+        source_split_identity_hash=source_sha256,
+        source_sample_ids=(source_id,),
+        builder_policy_id=NATIVE_CARD_SNAPSHOT_BUILDER_V1,
+        facets=tuple(facets),
+        values=tuple(values),
+        source_partition_role=EXTERNAL_GOVERNED_PARTITION_ROLE,
+    ).validate()
+
+
 def _is_sha256(value: object) -> bool:
     return (
         isinstance(value, str)
@@ -1415,7 +1578,19 @@ def _validate_config(config: A2tSemanticCardCompilationConfig) -> None:
             f"{PUBLIC_API_LEGALITY_PRESENTATION_V1!r}, "
             f"{NATIVE_COMPATIBLE_PRESENTATION_V1!r}"
         )
-    for path in (config.corpus_output_path, config.receipt_output_path):
+    if (
+        config.snapshot_output_path is not None
+        and config.presentation_version != NATIVE_COMPATIBLE_PRESENTATION_V1
+    ):
+        raise SemanticCardCompilationError(
+            "snapshot export requires the native-compatible presentation"
+        )
+    output_paths = [config.corpus_output_path, config.receipt_output_path]
+    if config.snapshot_output_path is not None:
+        output_paths.append(config.snapshot_output_path)
+    if len({Path(path) for path in output_paths}) != len(output_paths):
+        raise SemanticCardCompilationError("artifact output paths must be different")
+    for path in output_paths:
         if Path(path).exists():
             raise SemanticCardCompilationError(f"output already exists: {path}")
 
@@ -1485,22 +1660,26 @@ def _write_pair_exclusive(
     receipt_path: Path,
     receipt_bytes: bytes,
 ) -> None:
-    corpus_path = Path(corpus_path)
-    receipt_path = Path(receipt_path)
-    corpus_path.parent.mkdir(parents=True, exist_ok=True)
-    receipt_path.parent.mkdir(parents=True, exist_ok=True)
-    corpus_handle = None
-    receipt_handle = None
-    created_corpus = False
-    created_receipt = False
+    _write_artifacts_exclusive(
+        ((corpus_path, corpus_bytes), (receipt_path, receipt_bytes))
+    )
+
+
+def _write_artifacts_exclusive(
+    artifacts: Sequence[tuple[Path, bytes]],
+) -> None:
+    paths = tuple(Path(path) for path, _payload in artifacts)
+    for path in paths:
+        path.parent.mkdir(parents=True, exist_ok=True)
+    handles = []
+    created: list[Path] = []
     completed = False
     try:
-        corpus_handle = corpus_path.open("xb")
-        created_corpus = True
-        receipt_handle = receipt_path.open("xb")
-        created_receipt = True
-        corpus_handle.write(corpus_bytes)
-        receipt_handle.write(receipt_bytes)
+        for path, payload in artifacts:
+            handle = Path(path).open("xb")
+            handles.append(handle)
+            created.append(Path(path))
+            handle.write(payload)
         completed = True
     except FileExistsError as error:
         raise SemanticCardCompilationError(
@@ -1511,14 +1690,11 @@ def _write_pair_exclusive(
             f"cannot write semantic-card artifacts: {error}"
         ) from error
     finally:
-        if corpus_handle is not None:
-            corpus_handle.close()
-        if receipt_handle is not None:
-            receipt_handle.close()
-        if created_receipt and not completed:
-            receipt_path.unlink(missing_ok=True)
-        if created_corpus and not completed:
-            corpus_path.unlink(missing_ok=True)
+        for handle in handles:
+            handle.close()
+        if not completed:
+            for path in created:
+                path.unlink(missing_ok=True)
 
 
 def compile_a2t_semantic_card_artifacts(
@@ -1584,6 +1760,39 @@ def compile_a2t_semantic_card_artifacts(
     if offline.count != 0:
         raise SemanticCardCompilationError("offline guard observed an outbound attempt")
 
+    snapshot = None
+    snapshot_source = None
+    snapshot_bytes = None
+    if config.snapshot_output_path is not None:
+        if not isinstance(corpus, NativeCompatibleSemanticCardCorpus):
+            raise SemanticCardCompilationError(
+                "snapshot export requires a native-compatible corpus"
+            )
+        snapshot_source = {
+            "schema": NATIVE_CARD_SNAPSHOT_SOURCE_V1,
+            "compilation_id": config.compilation_id,
+            "presentation_version": NATIVE_COMPATIBLE_PRESENTATION_V1,
+            "dataset_lock_sha256": config.dataset_lock_sha256,
+            "construction_selection_sha256": config.construction_receipt_sha256,
+            "tool_registry_sha256": config.tool_registry_sha256,
+            "corpus_sha256": corpus.sha256,
+            "minimum_compatibility_support": config.minimum_compatibility_support,
+            "max_utf8_bytes": config.max_utf8_bytes,
+        }
+        snapshot = build_native_compatible_knowledge_snapshot(
+            corpus,
+            compilation_source=snapshot_source,
+        )
+        snapshot_target_tools = {value.task_target for value in snapshot.values}
+        if snapshot_target_tools != registry_tools:
+            raise SemanticCardCompilationError(
+                "native snapshot does not cover the complete public tool registry"
+            )
+        frozen_snapshot = snapshot.frozen_json()
+        snapshot_bytes = (
+            json.dumps(frozen_snapshot, indent=2, sort_keys=True) + "\n"
+        ).encode("utf-8")
+
     receipt: dict[str, object] = {
         "schema": COMPILATION_RECEIPT_SCHEMA,
         "compilation_id": config.compilation_id,
@@ -1624,15 +1833,56 @@ def compile_a2t_semantic_card_artifacts(
         },
         "contacts": dict(_ZERO_CONTACTS),
     }
+    if (
+        snapshot is not None
+        and snapshot_source is not None
+        and snapshot_bytes is not None
+    ):
+        receipt["knowledge_snapshot"] = {
+            "path": str(config.snapshot_output_path),
+            "file_sha256": hashlib.sha256(snapshot_bytes).hexdigest(),
+            "snapshot_sha256": snapshot.content_hash(),
+            "source": {
+                "metadata": snapshot_source,
+                "sha256": snapshot.source_split_identity_hash,
+            },
+            "builder_policy_id": snapshot.builder_policy_id,
+            "source_partition_role": snapshot.source_partition_role,
+            "positive_content_facet_count": len(snapshot.facets),
+            "key_text_row_count": len(snapshot.facets),
+            "value_count": len(snapshot.values),
+            "schema_only_tool_count": len(
+                snapshot_target_tools - selected_target_tools
+            ),
+            "positive_key_fields": [
+                "humanized_exact_tool_name",
+                "choose_semantics",
+                "public_role_guidance",
+                "native_role_guidance",
+            ],
+            "avoid_semantics_in_positive_keys": False,
+            "supplied_value": "full-native-compatible-tool-card",
+            "encoded_vectors_written": 0,
+        }
     receipt_bytes = (json.dumps(receipt, indent=2, sort_keys=True) + "\n").encode(
         "utf-8"
     )
-    _write_pair_exclusive(
-        config.corpus_output_path,
-        corpus.text.encode("utf-8"),
-        config.receipt_output_path,
-        receipt_bytes,
-    )
+    if snapshot_bytes is None:
+        _write_pair_exclusive(
+            config.corpus_output_path,
+            corpus.text.encode("utf-8"),
+            config.receipt_output_path,
+            receipt_bytes,
+        )
+    else:
+        assert config.snapshot_output_path is not None
+        _write_artifacts_exclusive(
+            (
+                (config.corpus_output_path, corpus.text.encode("utf-8")),
+                (config.snapshot_output_path, snapshot_bytes),
+                (config.receipt_output_path, receipt_bytes),
+            )
+        )
     return receipt
 
 
@@ -1641,6 +1891,8 @@ __all__ = [
     "COMPILATION_RECEIPT_SCHEMA",
     "MINIMUM_COMPATIBILITY_SUPPORT",
     "NATIVE_COMPATIBLE_PRESENTATION_V1",
+    "NATIVE_CARD_SNAPSHOT_BUILDER_V1",
+    "NATIVE_CARD_SNAPSHOT_SOURCE_V1",
     "PUBLIC_API_LEGALITY_PRESENTATION_V1",
     "CompatibilityRule",
     "ExecutableSemanticCardCorpus",
@@ -1653,6 +1905,7 @@ __all__ = [
     "build_from_partition_with_native_compatibility",
     "build_from_partition_with_public_legality",
     "build_native_compatible_semantic_card_corpus",
+    "build_native_compatible_knowledge_snapshot",
     "build_public_legality_semantic_card_corpus",
     "compile_a2t_semantic_card_artifacts",
     "derive_compatibility_rules",
