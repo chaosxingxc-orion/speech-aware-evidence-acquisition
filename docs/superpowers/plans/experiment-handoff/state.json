@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 60,
+  "generation": 61,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "94537c0e0beb0653a1fc61b1b59910c99556f9f4",
-  "updated_at_utc": "2026-09-12T15:55:08.968529+00:00",
-  "next_action": "Read STATUS-060. Shared local batched Whisper producer committed; 402 tests pass, 84 percent combined coverage. SLURP source export complete; actual ASR registration/forward and matched three-phase tool comparison remain pending. Preserve recovery campaign 2179 / exec 22617, resident 620 / exec 51845, monitor 678 / exec 78284. DIRECT and STAGE-CONTROL sealed; KNOWLEDGE active. No quality read before all three recovery seals or root terminal hold. Then registered frozen finalized-bundle saved-score analysis. No second recovery. Goal active.",
+  "snapshot_commit": "a3757d67bcfd49d451fe6dac075f1fd2f08a48f4",
+  "updated_at_utc": "2026-09-12T16:02:15.258245+00:00",
+  "next_action": "Read STATUS-061. Local speech producer is merged, SLURP source inventory exported, and shared three-phase revision policy/configuration design verified. Final ASR ExecutionPlan/protocol/catalog and per-arm recall/fit/analysis bindings remain pending after A2T closure. Preserve active recovery source 22b56d70 and root processes 2179/620/678. DIRECT and STAGE-CONTROL finalized; KNOWLEDGE generating. Quality remains closed until all three seals or terminal hold. No second recovery. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SPEECH-TOOLS-023"
