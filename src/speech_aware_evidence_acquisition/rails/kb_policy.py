@@ -444,7 +444,12 @@ def multidim_segment_recall(
     facet_vectors: Callable[[str], Mapping[str, Sequence[float]]],
     top_k_per_dimension: int,
 ) -> dict[str, dict[str, float]]:
-    """Recall each segment with existing cosine logic and merge maxima."""
+    """Union each segment's existing per-dimension top-k candidates, then
+    retain each admitted facet's maximum score per dimension before ranking.
+
+    The existing segment recall keeps its cosine arithmetic and facet-id tie
+    order; chronological segment order cannot alter this max merge.
+    """
 
     if not isinstance(query_segments, Sequence) or isinstance(query_segments, (str, bytes)):
         raise RailsError("multidim_segment_recall: query_segments must be a sequence")
