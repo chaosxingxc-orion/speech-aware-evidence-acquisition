@@ -54,7 +54,7 @@ request. Record that distinction beside the historical and paper columns.
 The initial serving candidate is decoder-only, c98304/np3, 32768 tokens per
 slot, max1024, fixed seed and temperature zero. It adds a third concurrent slot
 while preserving each complete request window. Resident allocation has not
-been tested on the24GB GPU. If startup cannot allocate this geometry, stop
+been tested on the 24 GB GPU. If startup cannot allocate this geometry, stop
 dispatch and preserve the failed startup; root may prospectively bind the
 entire still-unstarted comparison to the retained c65536/np2 candidate.
 No worker or campaign automatically restarts or substitutes a service. Promote existing complete
@@ -73,7 +73,7 @@ config/source hashes before any endpoint or model contact.
 Check actual shared requests over the complete roster, including all speech
 chunks, full native contracts, selected values, real predecessor states,
 CONTROL/ORG metadata and max1024. Enforce the inherited 8192-token reserve through the existing
-prompt_fit_multiple=4/3: required tokens must not exceed24576 in each32768-token
+prompt_fit_multiple=4/3: required tokens must not exceed 24576 in each 32768-token
 slot. The receipt margin is after that multiplier; also report the physical
 slot-minus-required-token margin. Fit phase two after phase-one state exists;
 use the full-roster phase barrier. No synthetic padding substitutes for
@@ -98,7 +98,7 @@ column without claiming identical model or population conditions.
 The principal estimands are paired exact-match differences for knowledge versus
 direct and knowledge versus stage control. Stage control versus direct is a
 mechanism attribution. Use the frozen decision table in configs/analysis/a2t-native-system-decision-v1.json:
-paired cross-tier query_idx clusters, 10,000 replicates, seed20260912, two
+paired cross-tier query_idx clusters, 10,000 replicates, seed 20260912, two
 Bonferroni-adjusted 97.5-percent primary intervals, and a gain threshold of
 the smaller of one percentage point and ten percent of nonnegative published
 headroom. A comparator already above the paper reference has a zero headroom
@@ -112,9 +112,23 @@ adopting a new effective mechanism. Preserve uncertainty and negative results.
 
 ## Remaining admission work
 
-Complete the generic source-qualified packet promotion and shared
-source-audio/packet identity bridge. Bind the immutable promotion and prepared
-recall outputs into the fragments, prove all three through the shared fake
-wire path, then bind the already frozen decision table and structured generation/fit
-plans. The current configurations deliberately omit promotion and recall
-receipt pins and allow preparation stages only.
+The generic source-qualified promotion is sealed: all 4,000 source recordings
+have verified complete packets, including the four long recordings, with zero
+new encoding contacts. The source-audio/packet identity bridge is implemented
+and tested. The first shared recall preparation covers all 4,000 rows.
+
+Complete the shared fake wire checks, finalize the operational campaign-stage
+allowlist and refresh recall against that final configuration once. Preserve
+the first preparation as a separate artifact; its absence of campaign-stage
+permission is a configuration-identity difference, not a retrieval change.
+Bind final wire, preparation and scientific admission receipts before committing
+structured generation/fit plans. A preparation receipt does not admit generation.
+
+The value criterion is source-grounded decision discrimination. The current
+frozen cards include public and native role-to-argument mappings, scoped task
+forms and nearby tool meanings. Some Avoid text merely lists neighboring tools;
+that is weaker than an explicit supported distinguishing condition. Preserve
+this limitation in component attribution. Do not rewrite the frozen values in
+response to this comparison's outcomes. A later value-content contrast must
+hold retrieved keys and predecessor state fixed, and assess corrections,
+new errors and unchanged difficult cases separately.

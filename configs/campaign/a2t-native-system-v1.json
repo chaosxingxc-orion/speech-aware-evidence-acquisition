@@ -1,0 +1,17 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "a2t-native-system-direct-v1",
+      "cell": "a2t-native-system-direct-v1"
+    },
+    {
+      "experiment": "a2t-native-system-stage-control-v1",
+      "cell": "a2t-native-system-stage-control-v1"
+    },
+    {
+      "experiment": "a2t-native-system-knowledge-v1",
+      "cell": "a2t-native-system-knowledge-v1"
+    }
+  ]
+}

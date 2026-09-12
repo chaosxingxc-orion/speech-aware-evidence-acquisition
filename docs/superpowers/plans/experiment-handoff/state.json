@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 50,
+  "generation": 51,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "2e1001ab6919e40db866780aab9bded453c535f6",
-  "updated_at_utc": "2026-09-12T03:33:03.994101+00:00",
-  "next_action": "Read STATUS-050. Query and native passage-key preparations are sealed/root-validated: 4000 rows,4020 spans,152 keys/values. No service/lease active. Bind shared phase supply, freeze retrieval/dose, register actual full-request capacity including four long recordings, then register matched native full-system generation and scoring. Preparation alone does not authorize answering. Preserve original attempts, source hashes and compact SLURP baseline. Goal active.",
+  "snapshot_commit": "a674cbad",
+  "updated_at_utc": "2026-09-12T04:47:13.346796+00:00",
+  "next_action": "Read STATUS-051. Complete two remaining full fake wire checks, finalize campaign-stage allowlists and refresh recall once, bind final admission and six generation/fit plans, then load root-owned np3 decoder service and dispatch the registered three-arm native comparison. No task generation or new quality results yet. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-DISCRIMINATIVE-VALUES-021"
