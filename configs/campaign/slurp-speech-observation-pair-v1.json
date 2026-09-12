@@ -1,0 +1,13 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "slurp-speech-observation-control-v1",
+      "cell": "slurp-speech-observation-control-v1"
+    },
+    {
+      "experiment": "slurp-speech-observation-whisper-v1",
+      "cell": "slurp-speech-observation-whisper-v1"
+    }
+  ]
+}

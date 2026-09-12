@@ -1,0 +1,37 @@
+{
+  "schema": "saea-slurp-speech-observation-recall-equality-v1",
+  "status": "pass",
+  "population": {
+    "split_id": "DEV-1000",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "rows": 1000,
+    "unique_roster_ids": 1000
+  },
+  "control": {
+    "relpath": "prepared/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-PREPARE-V1/recall.json",
+    "sha256": "fd97cb9a3bf68a2e4f242262e7bd2a7a57ae9a6096f64cb4de1d6fee6a11446f",
+    "config_sha256": "ce832d38ce3e4c302d8094f386b66d445dbaa449ccecc6d66a3a32cf002bff61",
+    "output_sha256": "8bec7bfc7c3d3f64e9e7ae680c5226396e35fd8ec90dfa1ded49dfca07c710be"
+  },
+  "treatment": {
+    "relpath": "prepared/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-PREPARE-V1/recall.json",
+    "sha256": "27956b1278219fc7bc951518c232ab69688f0c457841d1dfc4d66122ac138431",
+    "config_sha256": "355adc0af7584a6a8a468d0cef469219b0fdd59a8b53c46612fa7c0a8255407e",
+    "output_sha256": "8bec7bfc7c3d3f64e9e7ae680c5226396e35fd8ec90dfa1ded49dfca07c710be"
+  },
+  "checks": {
+    "roster_ids_and_serialized_order_equal": true,
+    "selected_value_ids_and_serialized_order_equal": true,
+    "output_sha256_equal": true,
+    "phase_equal": true,
+    "only_input_difference": "config_sha256",
+    "full_output_equal": true
+  },
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0,
+    "audio": 0,
+    "gpu": 0
+  }
+}
