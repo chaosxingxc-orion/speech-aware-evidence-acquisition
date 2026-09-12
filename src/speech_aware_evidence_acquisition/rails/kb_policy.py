@@ -438,6 +438,34 @@ def multidim_recall(
     return recalled
 
 
+def multidim_segment_recall(
+    snapshot: KnowledgeSnapshot,
+    query_segments: Sequence[Mapping[str, Sequence[float] | None]],
+    facet_vectors: Callable[[str], Mapping[str, Sequence[float]]],
+    top_k_per_dimension: int,
+) -> dict[str, dict[str, float]]:
+    """Recall each segment with existing cosine logic and merge maxima."""
+
+    if not isinstance(query_segments, Sequence) or isinstance(query_segments, (str, bytes)):
+        raise RailsError("multidim_segment_recall: query_segments must be a sequence")
+    if not query_segments:
+        raise RailsError("multidim_segment_recall: query_segments must be non-empty")
+    merged: dict[str, dict[str, float]] = {}
+    for segment in query_segments:
+        if not isinstance(segment, Mapping):
+            raise RailsError("multidim_segment_recall: each segment must be a mapping")
+        recalled = multidim_recall(
+            snapshot, segment, facet_vectors, top_k_per_dimension
+        )
+        for facet_id, scores in recalled.items():
+            target = merged.setdefault(facet_id, {})
+            for dimension, score in scores.items():
+                prior = target.get(dimension)
+                if prior is None or score > prior:
+                    target[dimension] = score
+    return merged
+
+
 # ---------------------------------------------------------------------------
 # Stage 2: weighted-cosine/prior/agreement ranker
 # ---------------------------------------------------------------------------
@@ -1554,6 +1582,7 @@ __all__ = [
     "make_kb_alpha_blend_controller_factory",
     "make_kb_alpha_blend_phase_controller_factory",
     "multidim_recall",
+    "multidim_segment_recall",
     "rank_weights_from_config",
     "rank_wcos_prior_agree_factory",
     "register_kb_policy_v1",

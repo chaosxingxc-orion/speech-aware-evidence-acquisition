@@ -80,6 +80,15 @@ def _write_vectors(path, rows) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def _write_segment_vectors(path, rows) -> str:
+    import hashlib
+
+    text = "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(text.encode("utf-8"))
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
 def _source(relpath: str, sha256: str) -> dict[str, object]:
     return {
         "kind": ps.SEALED_VECTORS_KIND,
@@ -88,6 +97,12 @@ def _source(relpath: str, sha256: str) -> dict[str, object]:
         "tool_contact_ledger_row": "TEST-EMB-0001",
         "embedded_signal": "speech: the test's own synthetic vectors",
     }
+
+
+def _segment_source(relpath: str, sha256: str) -> dict[str, object]:
+    source = _source(relpath, sha256)
+    source["kind"] = ps.SEALED_SEGMENT_VECTORS_KIND
+    return source
 
 
 def _fragment(query_source, facet_source=None, **overrides) -> dict[str, object]:
@@ -314,6 +329,48 @@ def test_load_sealed_vectors_refuses_a_duplicate_id(tmp_path):
         ps.load_sealed_vectors(path, expected_sha256=digest, dimensions=("content",))
 
 
+def test_load_sealed_segment_vectors_requires_exact_frame_coverage_and_hash(tmp_path):
+    path = tmp_path / "q-segments.jsonl"
+    digest = _write_segment_vectors(
+        path,
+        [{"id": "dev:s1", "audio_sha256": _SHA_A, "source_frames": 4,
+          "source_sample_rate_hz": 16000,
+          "segments": [
+              {"id": "early", "start_frame": 0, "end_frame": 1,
+               "vectors": {"content": [0.0, 1.0]}},
+              {"id": "late", "start_frame": 2, "end_frame": 4,
+               "vectors": {"content": [1.0, 0.0]}},
+          ]}],
+    )
+    with pytest.raises(ps.PhaseSupplyError, match="coverage"):
+        ps.load_sealed_segment_vectors(path, expected_sha256=digest, dimensions=("content",))
+    with pytest.raises(ps.PhaseSupplyError, match="hashes to"):
+        ps.load_sealed_segment_vectors(path, expected_sha256=_SHA_B, dimensions=("content",))
+
+
+@pytest.mark.parametrize(
+    "segments, message",
+    [
+        ([{"id": "same", "start_frame": 0, "end_frame": 1, "vectors": {"content": [1.0, 0.0]}},
+          {"id": "same", "start_frame": 1, "end_frame": 2, "vectors": {"content": [1.0, 0.0]}}], "duplicate segment id"),
+        ([{"id": "one", "start_frame": 0, "end_frame": 1, "vectors": {"content": [0.0, 0.0]}},
+          {"id": "two", "start_frame": 1, "end_frame": 2, "vectors": {"content": [1.0, 0.0]}}], "nonzero"),
+        ([{"id": "one", "start_frame": 0, "end_frame": 1, "vectors": {"content": [float("nan"), 0.0]}},
+          {"id": "two", "start_frame": 1, "end_frame": 2, "vectors": {"content": [1.0, 0.0]}}], "finite"),
+        ([{"id": "one", "start_frame": 0, "end_frame": 1, "vectors": {"content": [1.0, 0.0]}},
+          {"id": "two", "start_frame": 1, "end_frame": 2, "vectors": {"content": [1.0]}}], "mixes widths"),
+    ],
+)
+def test_load_sealed_segment_vectors_refuses_invalid_ids_and_vectors(tmp_path, segments, message):
+    path = tmp_path / "q-segments.jsonl"
+    digest = _write_segment_vectors(
+        path, [{"id": "dev:s1", "audio_sha256": _SHA_A, "source_frames": 2,
+                "source_sample_rate_hz": 16000, "segments": segments}],
+    )
+    with pytest.raises(ps.PhaseSupplyError, match=message):
+        ps.load_sealed_segment_vectors(path, expected_sha256=digest, dimensions=("content",))
+
+
 # ---------------------------------------------------------------------------
 # the binding
 # ---------------------------------------------------------------------------
@@ -346,13 +403,14 @@ def _built_binding(tmp_path, *, expose_facets=False):
     return snapshot, specs, supply_for_phase
 
 
-def _context(snapshot, *, sample_id="dev:s1"):
+def _context(snapshot, *, sample_id="dev:s1", query_source="speech_features", packet_sha=_SHA_A):
     query_state = QueryState(
         query_id=f"run:{sample_id}:step0",
         query_sample_id=sample_id,
         speech_packet_id=f"speech/{sample_id}",
-        speech_packet_sha256=_SHA_A,
+        speech_packet_sha256=packet_sha,
         use_split_identity_hash=_SHA_A,
+        query_source=query_source,
     ).validate()
     return AgentRuntimeContext(
         sample_id=sample_id,
@@ -387,6 +445,58 @@ def test_binding_returns_none_for_an_undeclared_phase_and_an_unknown_sample(tmp_
     snapshot, _specs, supply_for_phase = _built_binding(tmp_path)
     assert supply_for_phase("direct", _context(snapshot)) is None
     assert supply_for_phase("evidence", _context(snapshot, sample_id="dev:absent")) is None
+
+
+def test_segmented_query_recall_keeps_evidence_found_only_in_a_late_segment(tmp_path):
+    snapshot = _snapshot()
+    query_digest = _write_segment_vectors(
+        tmp_path / "v" / "q.jsonl",
+        [{"id": "dev:s1", "audio_sha256": _SHA_A, "source_frames": 4,
+          "source_sample_rate_hz": 16000,
+          "segments": [
+              {"id": "early", "start_frame": 0, "end_frame": 2,
+               "vectors": {"content": [0.0, 1.0]}},
+              {"id": "late", "start_frame": 2, "end_frame": 4,
+               "vectors": {"content": [1.0, 0.0]}},
+          ]}],
+    )
+    facet_digest = _write_vectors(
+        tmp_path / "v" / "f.jsonl",
+        [("facet:content:u1", {"content": [1.0, 0.0]}),
+         ("facet:content:u2", {"content": [0.0, 1.0]})],
+    )
+    specs = ps.load_phase_supply_specs(
+        _fragment(_segment_source("v/q.jsonl", query_digest),
+                  _source("v/f.jsonl", facet_digest), k=1), _program()
+    )
+    supply_for_phase = ps.build_supply_for_phase(
+        specs, snapshot=snapshot, snapshot_sha256=snapshot.content_hash(), data_root=tmp_path
+    )
+    supply = supply_for_phase("evidence", _context(snapshot, query_source="speech_audio"))
+    assert isinstance(supply, rc.PhaseSupply)
+    assert supply.fusion_decision.selected_value_ids == ("value:u1",)
+    assert type(supply_for_phase.provider_factories["evidence"]()).__name__ == "KbFacetProvider"
+
+
+def test_segmented_queries_require_matching_raw_audio_and_speech_audio_source(tmp_path):
+    snapshot = _snapshot()
+    query_digest = _write_segment_vectors(
+        tmp_path / "v" / "q.jsonl",
+        [{"id": "dev:s1", "audio_sha256": _SHA_A, "source_frames": 2,
+          "source_sample_rate_hz": 16000,
+          "segments": [{"id": "whole", "start_frame": 0, "end_frame": 2,
+                        "vectors": {"content": [1.0, 0.0]}}]}],
+    )
+    specs = ps.load_phase_supply_specs(
+        _fragment(_segment_source("v/q.jsonl", query_digest)), _program()
+    )
+    supply_for_phase = ps.build_supply_for_phase(
+        specs, snapshot=snapshot, snapshot_sha256=snapshot.content_hash(), data_root=tmp_path
+    )
+    with pytest.raises(ps.PhaseSupplyError, match="query_source='speech_audio'"):
+        supply_for_phase("evidence", _context(snapshot))
+    with pytest.raises(ps.PhaseSupplyError, match="audio_sha256"):
+        supply_for_phase("evidence", _context(snapshot, query_source="speech_audio", packet_sha=_SHA_B))
 
 
 def test_a_non_kb_facet_provider_is_refused_without_an_injected_instance(tmp_path):
