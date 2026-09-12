@@ -1,0 +1,29 @@
+{
+  "changed_inventory_files": [
+    "whisper/decoding.py"
+  ],
+  "decoding_policy_unchanged": true,
+  "model_free_proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/whisper-batched-beam-defect-v1/diagnostic.json",
+    "sha256": "7dba1a640ca0be256940bb675ba9e9d82dc01e59375ce6b3458b0d7da3fc1c86"
+  },
+  "new_research_contacts": 0,
+  "old_frozen_source_unchanged": true,
+  "original_inventory": {
+    "relpath": "docs/readiness/2026-09-12-whisper-runtime-inventory-v1.json",
+    "sha256": "29ea8ebeae70defdf09bce2f3c1bff399fdee80b127373969542944062abfdf1"
+  },
+  "original_source_root": "/home/chao/speech-tools/whisper-vad/sources/openai_whisper-20250625",
+  "patch": {
+    "relpath": "docs/readiness/2026-09-12-slurp-whisper-recovery-v1/whisper-batched-beam.patch",
+    "sha256": "5856e1202effcc8a9a7434658a633970e159a071d07cb8ce2df179a1787e6c2f"
+  },
+  "recorded_at_utc": "2026-09-12T19:20:50.143277+00:00",
+  "schema": "saea-local-whisper-source-repair-v1",
+  "shared_producer_unchanged": true,
+  "successor_inventory": {
+    "relpath": "docs/readiness/2026-09-12-slurp-whisper-recovery-v1/runtime-inventory.json",
+    "sha256": "79c79469975a8c014f6fc1b94bb3ab439f9e0cdc877c11378ec33d37170dc697"
+  },
+  "successor_source_root": "/home/chao/speech-tools/whisper-vad/sources/openai_whisper-20250625-saea-beam-batch-v1"
+}

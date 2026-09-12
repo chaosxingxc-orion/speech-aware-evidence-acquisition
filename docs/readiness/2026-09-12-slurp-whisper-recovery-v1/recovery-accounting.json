@@ -1,0 +1,37 @@
+{
+  "authority": "Standing owner one-recovery rule in AGENTS.md; original aborted attempt consumed no prior recovery. Root successor admission is required before contact.",
+  "bound_semantics": "Per-attempt plan remains 1000 new calls/2890 integer seconds and uses only the remaining original 2-hour elapsed preparation allowance. Cumulative caps account for 8 already-spent contacts; no extra sources or automatic retry are admitted.",
+  "family_expected_after_complete": {
+    "audio_seconds": 2909.4675,
+    "calls": 1008
+  },
+  "family_finite_caps": {
+    "calls": 1008,
+    "elapsed_preparation_gpu_hours": 2.0,
+    "speech_audio_seconds": 2910
+  },
+  "prior_abort": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/preparation-runs/SAEA-SLURP-WHISPER-OBSERVATIONS-V1/attempt-slurp-whisper-observations-v1/abort.json",
+    "sha256": "1fc3e19422b98c65e2c9f2517e9cdfd1aa526f2dd6e42649fa97dd949911a303"
+  },
+  "prior_charged": {
+    "actual_speech_audio_seconds": 24.6738125,
+    "elapsed_seconds": 13.996920124001917,
+    "error_type": "RuntimeError",
+    "logical_speech_tool_contacts": 8,
+    "status": "ABORTED"
+  },
+  "recovery_execution_plan": {
+    "relpath": "docs/readiness/2026-09-12-slurp-whisper-recovery-v1/preparation-plan.json",
+    "sha256": "3357a5fad1bd7d8cbba9cca694717b74632db550030709e7609a999f36c1b220"
+  },
+  "recovery_ordinal": 1,
+  "recovery_workload": {
+    "audio_seconds": 2884.7936875,
+    "automatic_retries": 0,
+    "calls": 1000,
+    "sources": 1000
+  },
+  "remaining_elapsed_preparation_seconds": 7186.003079875998,
+  "schema": "saea-speech-tool-recovery-accounting-v1"
+}

@@ -1,0 +1,14 @@
+{
+  "schema": "saea-whisper-recovery-runtime-pin-validation-v1",
+  "verified_at_utc": "2026-09-12T19:23:11.544828+00:00",
+  "status": "pass",
+  "checkpoint_sha256": "e5b1a55b89c1367dacf97e3e19bfd829a01529dbfdeefa8caeb59b3f1b81dadb",
+  "verified_source_files": 18,
+  "verified_packages": 12,
+  "actual_decode_module": "/home/chao/speech-tools/whisper-vad/sources/openai_whisper-20250625-saea-beam-batch-v1/whisper/decoding.py",
+  "decode_sha256": "26799fb53d9cd57c925dee3c00ef2552006c5d12dd5656c4b0f54f6fa6680ecc",
+  "model_load": 0,
+  "neural_forward": 0,
+  "audio_decode": 0,
+  "cuda_visible_devices": ""
+}

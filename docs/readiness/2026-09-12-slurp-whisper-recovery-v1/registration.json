@@ -1,0 +1,52 @@
+{
+  "accounting": {
+    "relpath": "docs/readiness/2026-09-12-slurp-whisper-recovery-v1/recovery-accounting.json",
+    "sha256": "2f83fca0fbaa8cd4c3f3b581456db971b62bc563cb1672a733003bb24c74ec5c"
+  },
+  "attempt_id": "attempt-slurp-whisper-observations-recovery-v1",
+  "contacts": {
+    "model_load": 0,
+    "neural_forward": 0,
+    "task_generation": 0
+  },
+  "execution_plan": {
+    "relpath": "docs/readiness/2026-09-12-slurp-whisper-recovery-v1/preparation-plan.json",
+    "sha256": "3357a5fad1bd7d8cbba9cca694717b74632db550030709e7609a999f36c1b220"
+  },
+  "ledger_row": {
+    "relpath": "docs/readiness/2026-09-12-slurp-whisper-recovery-v1/exposure-ledger.md",
+    "row_id": "SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1",
+    "sha256": "e7ac214ce52b78fea02887745264f6b1d21a8017310515fc832ba46205366b8e"
+  },
+  "prior_registration": {
+    "relpath": "docs/readiness/2026-09-12-slurp-whisper-v1/registration.json",
+    "sha256": "3a0dd027d72a9026b65a7d4594ab626c6cc66f90e87e0e25645ec4e2f9a8d3b9"
+  },
+  "protocol": {
+    "relpath": "docs/readiness/2026-09-12-slurp-whisper-recovery-v1/preparation-protocol.json",
+    "sha256": "fb3ae959b402bb03719d8b52dbf1bf091f48f5c7de0473e290c34d6b275c8295"
+  },
+  "recorded_at_utc": "2026-09-12T19:22:40.962348+00:00",
+  "recovery_ordinal": 1,
+  "remaining_before_dispatch": [
+    "Verify metadata admission and exact local source/package inventory.",
+    "Commit and freeze this clean recovery worktree.",
+    "Root issues an identity-bound successor admission and runtime config, confirms GPU vacancy, then invokes the existing shared producer."
+  ],
+  "root_scientific_decision": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-native-system-root-decision-v1.json",
+    "sha256": "9d9df7fa1c9a2572473b74f84ad64f279b0ba6821f4d16882b037415548b5b42"
+  },
+  "run_id": "SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1",
+  "runtime_config_created": false,
+  "schema": "saea-local-speech-observation-registration-v1",
+  "scientific_eligibility": "A2T complete and decided; unchanged fixed SLURP speech-evidence preparation is eligible for its one registered recovery",
+  "source_repair": {
+    "relpath": "docs/readiness/2026-09-12-slurp-whisper-recovery-v1/source-patch-receipt.json",
+    "sha256": "31fdbb368759f0c7c7e1eaef6f4ab8f70cc0f61dcb8ce39a294c56c34e416b8f"
+  },
+  "umbrella_lock": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+    "sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+  }
+}

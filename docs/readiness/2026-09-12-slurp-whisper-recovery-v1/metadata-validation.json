@@ -1,0 +1,26 @@
+{
+  "schema": "saea-whisper-recovery-precontact-validation-v1",
+  "status": "precontact-checks-pass",
+  "source_count": 1000,
+  "source_audio_seconds": 2884.7936875,
+  "parsed_ledger_rows": 716,
+  "canonical_matches_snapshot": true,
+  "neural_forward": 0,
+  "audio_decode": 0,
+  "generation": 0,
+  "package_inventory_verification": "pass; see runtime-validation.json",
+  "focused_tests": {
+    "passed": 33,
+    "failed": 0,
+    "scope": [
+      "test_speech_observation_backend",
+      "test_speech_observation_preparation",
+      "test_preparation_batch"
+    ]
+  },
+  "results_ledger_check": {
+    "status": "pass",
+    "historical_findings": 31,
+    "changed_result_values": false
+  }
+}

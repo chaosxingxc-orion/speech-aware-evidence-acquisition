@@ -1,0 +1,16 @@
+{
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-whisper-observations-recovery-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.9961119666322218,
+    "planned_model_calls": 1000,
+    "planned_speech_audio_seconds": 2890,
+    "protocol_hash": "fb3ae959b402bb03719d8b52dbf1bf091f48f5c7de0473e290c34d6b275c8295",
+    "run_id": "SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  }
+}
