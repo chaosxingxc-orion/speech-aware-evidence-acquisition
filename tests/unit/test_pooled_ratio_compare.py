@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from speech_aware_evidence_acquisition.analysis.paired import resampled_statistic
 from speech_aware_evidence_acquisition.analysis.pooled_ratio_compare import (
     PooledRatioError,
     _pooled_ratio,
@@ -289,3 +290,129 @@ def test_invalid_analysis_max_workers_refuses(tmp_path, workers):
     )
     with pytest.raises(PooledRatioError, match="max_workers"):
         run(config_path, tmp_path / "result.json")
+
+
+def test_default_grouping_resampling_refuses_cross_stratum_cluster():
+    left = _rows({"a": (1, 1), "b": (0, 1)})
+    right = _rows({"a": (0, 1), "b": (0, 1)})
+    metadata = _metadata(
+        left,
+        strata={"a": "A", "b": "B"},
+        clusters={"a": "one-cluster", "b": "one-cluster"},
+    )
+    with pytest.raises(PooledRatioError, match="not constant inside cluster"):
+        compare_pooled_ratios(
+            left, right, metadata, _metric(), groupings={"sector": "sector"},
+            seed=3, n_replicates=10, ci_level=0.9,
+        )
+
+
+def test_whole_cluster_grouping_uses_shared_resampler_and_frozen_strata():
+    left = _rows({
+        "ca": (1, 1), "cb": (9, 9),
+        "da": (0, 1), "db": (0, 81),
+    })
+    right = _rows({
+        "ca": (0, 1), "cb": (0, 9),
+        "da": (0, 1), "db": (0, 81),
+    })
+    metadata = _metadata(
+        left,
+        strata={"ca": "A", "cb": "B", "da": "A", "db": "B"},
+        clusters={"ca": "c", "cb": "c", "da": "d", "db": "d"},
+    )
+
+    result = compare_pooled_ratios(
+        left, right, metadata, _metric(), groupings={"sector": "sector"},
+        seed=91, n_replicates=50, ci_level=0.9,
+        grouping_resampling="whole-cluster",
+    )["errors"]
+    equal = result["groupings"]["sector"]["equal_stratum"]
+
+    def statistic(sample_ids):
+        gains = []
+        for stratum in ("A", "B"):
+            members = [sid for sid in sample_ids if metadata[sid]["sector"] == stratum]
+            gains.append(
+                _pooled_ratio(left, members, "num", "den")
+                - _pooled_ratio(right, members, "num", "den")
+            )
+        return sum(gains) / len(gains)
+
+    expected = resampled_statistic(
+        sample_ids=tuple(sorted(left)),
+        statistic=statistic,
+        seed=91,
+        n_replicates=50,
+        ci_level=0.9,
+        cluster_of=lambda sid: metadata[sid]["cluster"],
+    )
+
+    assert result["natural_mixture"]["gain_pp"] == pytest.approx(1000 / 92)
+    assert equal["gain_pp"] == pytest.approx(30.0)
+    for field in ("point_estimate", "ci_low", "ci_high", "sigma_hat"):
+        assert equal["bootstrap"][field] == pytest.approx(100 * getattr(expected, field))
+
+
+def test_whole_cluster_missing_frozen_stratum_marks_bootstrap_unavailable():
+    left = _rows({"a": (1, 1), "b": (0, 1)})
+    right = _rows({"a": (0, 1), "b": (0, 1)})
+    metadata = _metadata(
+        left,
+        strata={"a": "A", "b": "B"},
+        clusters={"a": "cluster-a", "b": "cluster-b"},
+    )
+    grouped = compare_pooled_ratios(
+        left, right, metadata, _metric(), groupings={"sector": "sector"},
+        seed=0, n_replicates=1, ci_level=0.9,
+        grouping_resampling="whole-cluster",
+    )["errors"]["groupings"]["sector"]["equal_stratum"]
+
+    assert grouped["status"] == "available"
+    assert grouped["bootstrap"] == {
+        "status": "unavailable",
+        "reason": "at least one realized bootstrap draw has zero pooled denominator",
+    }
+
+
+def test_run_forwards_opt_in_whole_cluster_grouping_mode(tmp_path):
+    left_path, right_path, meta_path = (
+        tmp_path / name for name in ("left.json", "right.json", "meta.json")
+    )
+    left = {"rows": [
+        {"id": "a", "num": 1, "den": 1},
+        {"id": "b", "num": 0, "den": 1},
+    ]}
+    right = {"rows": [
+        {"id": "a", "num": 0, "den": 1},
+        {"id": "b", "num": 0, "den": 1},
+    ]}
+    metadata = {"rows": {
+        "a": {"cluster": "shared", "sector": "A"},
+        "b": {"cluster": "shared", "sector": "B"},
+    }}
+    config = {
+        "execution_profile": "model-free-check",
+        "analysis": {
+            "inputs": {
+                "left": {"path": str(left_path), "sha256": _write(left_path, left), "rows_key": "rows"},
+                "right": {"path": str(right_path), "sha256": _write(right_path, right), "rows_key": "rows"},
+            },
+            "metadata": {"path": str(meta_path), "sha256": _write(meta_path, metadata), "rows_key": "rows"},
+            "id_field": "id",
+            "expected_ids_count": 2,
+            "cluster_field": "cluster",
+            "groupings": {"sector": "sector"},
+            "grouping_resampling": "whole-cluster",
+            "metrics": _metric(),
+            "contrasts": [{"name": "right-v-left", "left": "left", "right": "right"}],
+            "seed": 2,
+            "n_replicates": 5,
+            "ci_level": 0.9,
+        },
+    }
+    config_path = tmp_path / "config.json"
+    _write(config_path, config)
+    result = run(config_path, tmp_path / "result.json")
+
+    assert result["contrasts"]["right-v-left"]["errors"]["groupings"]["sector"]["equal_stratum"]["gain_pp"] == pytest.approx(50.0)

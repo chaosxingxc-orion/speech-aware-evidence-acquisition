@@ -88,7 +88,8 @@ def _bootstrap_json(result) -> dict[str, object]:
 
 
 def _summary(left, right, ids, numerator, denominator, direction, metadata, cluster_field,
-             seed, n_replicates, ci_level, strata_field=None, frozen_strata=()):
+             seed, n_replicates, ci_level, strata_field=None, frozen_strata=(),
+             grouping_resampling="within-stratum"):
     try:
         left_ratio = _pooled_ratio(left, ids, numerator, denominator)
         right_ratio = _pooled_ratio(right, ids, numerator, denominator)
@@ -123,7 +124,11 @@ def _summary(left, right, ids, numerator, denominator, direction, metadata, clus
             sample_ids=ids, statistic=statistic, seed=seed,
             n_replicates=n_replicates, ci_level=ci_level,
             cluster_of=lambda sid: str(metadata[sid][cluster_field]),
-            strata_of=(None if strata_field is None else lambda sid: str(metadata[sid][strata_field])),
+            strata_of=(
+                None
+                if strata_field is None or grouping_resampling == "whole-cluster"
+                else lambda sid: str(metadata[sid][strata_field])
+            ),
         )
     except _ZeroDenominator:
         result["bootstrap"] = {
@@ -193,12 +198,17 @@ def _equal_cluster_summary(left, right, ids, numerator, denominator, direction,
 
 def compare_pooled_ratios(left, right, metadata, metrics, *, groupings, seed,
                           n_replicates, ci_level, cluster_field="cluster",
-                          include_equal_cluster_mean=False):
+                          include_equal_cluster_mean=False,
+                          grouping_resampling="within-stratum"):
     """Compare exact paired rosters with pooled ratios and clustered uncertainty."""
     if not left or set(left) != set(right) or set(left) != set(metadata):
         raise PooledRatioError("left/right/metadata roster mismatch")
     if not isinstance(include_equal_cluster_mean, bool):
         raise PooledRatioError("include_equal_cluster_mean must be boolean")
+    if grouping_resampling not in {"within-stratum", "whole-cluster"}:
+        raise PooledRatioError(
+            "grouping_resampling must be within-stratum or whole-cluster"
+        )
     ids = tuple(sorted(left))
     if not isinstance(metrics, Mapping) or not metrics:
         raise PooledRatioError("metrics must be a nonempty mapping")
@@ -212,13 +222,16 @@ def compare_pooled_ratios(left, right, metadata, metrics, *, groupings, seed,
     for label, field in groupings.items():
         if not isinstance(label, str) or not label or not isinstance(field, str) or not field:
             raise PooledRatioError("groupings must map names to metadata fields")
-        by_cluster = {}
-        for sid in ids:
-            value = _group_value(metadata[sid].get(field), field)
-            cluster = metadata[sid][cluster_field]
-            if cluster in by_cluster and by_cluster[cluster] != value:
-                raise PooledRatioError(f"grouping {field!r} is not constant inside cluster {cluster!r}")
-            by_cluster[cluster] = value
+        if grouping_resampling == "within-stratum":
+            by_cluster = {}
+            for sid in ids:
+                value = _group_value(metadata[sid].get(field), field)
+                cluster = metadata[sid][cluster_field]
+                if cluster in by_cluster and by_cluster[cluster] != value:
+                    raise PooledRatioError(
+                        f"grouping {field!r} is not constant inside cluster {cluster!r}"
+                    )
+                by_cluster[cluster] = value
 
     output = {}
     for metric_name, spec in metrics.items():
@@ -265,7 +278,8 @@ def compare_pooled_ratios(left, right, metadata, metrics, *, groupings, seed,
             else:
                 equal = _summary(left, right, ids, numerator, denominator, direction,
                                  metadata, cluster_field, seed, n_replicates, ci_level,
-                                 strata_field=field, frozen_strata=strata)
+                                 strata_field=field, frozen_strata=strata,
+                                 grouping_resampling=grouping_resampling)
                 equal["left_ratio_pct"] = sum(per[name]["left_ratio_pct"] for name in strata) / len(strata)
                 equal["right_ratio_pct"] = sum(per[name]["right_ratio_pct"] for name in strata) / len(strata)
                 equal["gain_pp"] = sum(per[name]["gain_pp"] for name in strata) / len(strata)
@@ -361,6 +375,7 @@ def run(config_path: Path, output_path: Path):
         "ci_level": spec["ci_level"],
         "cluster_field": spec.get("cluster_field", "cluster"),
         "include_equal_cluster_mean": spec.get("include_equal_cluster_mean", False),
+        "grouping_resampling": spec.get("grouping_resampling", "within-stratum"),
     }
     tasks = []
     names = set()
