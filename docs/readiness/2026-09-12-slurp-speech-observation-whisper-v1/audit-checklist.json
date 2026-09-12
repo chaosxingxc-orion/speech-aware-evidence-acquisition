@@ -1,0 +1,170 @@
+{
+  "schema": "saea-slurp-speech-observation-whisper-template-audit-v1",
+  "source_head": "e5149640f853569f79aafc64fe7172cde8233da5",
+  "sources": {
+    "control_baseline": {
+      "relpath": "configs/baseline/slurp-speech-observation-control-v1.json",
+      "sha256": "274b5a4fdb5baaed007e760d9e78108dc7d21d80ef0ebf8fb9c45f606a263aa1"
+    },
+    "control_experiment": {
+      "relpath": "configs/experiment/slurp-speech-observation-control-v1.json",
+      "sha256": "1891a260a131ede2dccbbf5aea912062359832e95c7dab54cff8a16c8c2113c7"
+    },
+    "design": {
+      "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-design-v1.json",
+      "sha256": "1de32e9d77caeaa095345029a104a814d29e8d007c017fc1521d9c28804762c0"
+    },
+    "policy": {
+      "relpath": "configs/policy/phase-task-tools-solve-revise-v1.json",
+      "sha256": "d962713e9bbaf0fbeec2e2c0c0d6b2d30f34521dae8fdd4032c9dc22a772f0c6"
+    }
+  },
+  "final_ids": {
+    "generation_run_id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-V1",
+    "generation_attempt_id": "attempt-slurp-speech-observation-whisper-generation-v1",
+    "fit_run_id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-FIT-V1",
+    "fit_attempt_id": "attempt-slurp-speech-observation-whisper-fit-v1",
+    "cell_id": "slurp-speech-observation-whisper-v1",
+    "baseline_fragment": "slurp-speech-observation-whisper-v1",
+    "service_session": "serving-slurp-speech-observation-np4-v1"
+  },
+  "retained_common_fields_checked": [
+    "arm",
+    "evidence_source",
+    "evidence_mismatch",
+    "knowledge_snapshot_relpath",
+    "knowledge_snapshot_sha256",
+    "phase_material.plan",
+    "phase_material.solve",
+    "phase_material.revise",
+    "phase_supply.solve",
+    "phase_tools.plan",
+    "policy",
+    "scorers",
+    "serving_slot_tokens",
+    "serving_slots",
+    "speech_packet_promotion_receipt",
+    "speech_packet_promotion_receipt_sha256",
+    "speech_feature_key_representation_id",
+    "speech_feature_matcher_policy_id",
+    "task_instruction_fill",
+    "task_instruction_template",
+    "task_instruction_template_active",
+    "value_factor",
+    "whole_roster_wave_barrier",
+    "allowed_execution_stages",
+    "model_fragment",
+    "dataset_fragment",
+    "execution_plan",
+    "execution_plan_basis",
+    "family_budget",
+    "generation_budget",
+    "population",
+    "preparation_source_receipts",
+    "preserve_wire_responses",
+    "request_decoding_overrides",
+    "service_session",
+    "split_id",
+    "comparison_basis",
+    "date",
+    "fragment_kind",
+    "auxiliary_speech_observation_preparation.run_id",
+    "auxiliary_speech_observation_preparation.attempt_id",
+    "auxiliary_speech_observation_preparation.planned_model_calls",
+    "auxiliary_speech_observation_preparation.planned_speech_audio_seconds",
+    "auxiliary_speech_observation_preparation.planned_gpu_hours"
+  ],
+  "treatment_additions_checked": [
+    "prepared_speech_observations.relpath",
+    "prepared_speech_observations.sha256",
+    "phase_tools.solve.mode",
+    "phase_tools.solve.allowed_tools",
+    "phase_tools.solve.fixed_action.tool_id",
+    "phase_tools.solve.fixed_action.arguments.span",
+    "phase_tools.solve.fixed_action.arguments.representation",
+    "phase_tools.solve.fixed_action.arguments.distinction"
+  ],
+  "fixed_budget_and_stage_checks": {
+    "allowed_execution_stages": [
+      "check",
+      "wire-check",
+      "prepare-phase-recall",
+      "worker",
+      "campaign"
+    ],
+    "generation_target": 3000,
+    "generation_cap": 3150,
+    "planned_model_calls": 3150,
+    "planned_speech_audio_seconds": 10500,
+    "planned_gpu_hours": 2.0,
+    "fit_contact_cap": 9003,
+    "family_generation_calls_total": 6300,
+    "family_fit_contacts_total": 18006,
+    "family_speech_audio_seconds_total": 21000,
+    "family_gpu_hours_total": 4.0,
+    "max_tokens": 256,
+    "population_count": 1000,
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "recall_identity_checklist": [
+    "Keep the allowed execution stages final before recall preparation.",
+    "Bind the actual sealed catalog path and SHA-256 before recall preparation.",
+    "Keep every non-receipt configuration field final before recall preparation.",
+    "Prepare solve recall only through FlightRuntime.prepare_phase_recall.",
+    "Compare all 1000 selected value IDs and serialized order against the retained control recall.",
+    "After preparation, add only prepared_phase_recall.solve and update readiness or other excluded receipt pins.",
+    "Do not change the catalog, tool action, stages, IDs, budgets, service, decoding, prompt, packet, knowledge or shared implementation after recall preparation."
+  ],
+  "unresolved_fields": [
+    {
+      "path": "baseline-template.json:prepared_speech_observations.sha256",
+      "value": "UNRESOLVED_UNTIL_RECOVERY_CATALOG_SEALS",
+      "resolution": "Replace with the lowercase SHA-256 of the sealed recovery catalog at prepared/SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1/attempt-slurp-whisper-observations-recovery-v1/catalog.json before materializing configs or preparing recall."
+    }
+  ],
+  "template_hashes": {
+    "baseline_template_sha256": "042954e068e235c7987ba2df3502e52aa2b4fba8b37891880303cbb5c6f78eb7",
+    "experiment_template_sha256": "b05cf1a7fc972468e235ec187961300a93ddcace0e73ef746b14ded13f6a6b7a"
+  },
+  "status": "pass-known-recovery-address-awaiting-sealed-catalog-sha256",
+  "contacts": {
+    "audio": 0,
+    "asr": 0,
+    "gpu": 0,
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "model_free_validation": {
+    "json_parse": "pass",
+    "retained_control_semantics_static_comparison": "pass",
+    "final_schema_composition": "deferred-until-sealed-recovery-catalog-is-present",
+    "registry_resolution": "deferred-until-sealed-recovery-catalog-is-present",
+    "real_catalog_or_recall_loaded": false
+  },
+  "treatment_metadata_corrections_checked": [
+    "auxiliary_speech_observation_preparation identifies the registered recovery run and attempt.",
+    "auxiliary_speech_observation_preparation records the final recovery catalog ID.",
+    "auxiliary_speech_observation_preparation.budget_relationship states that recovery preparation is outside paired Qwen caps.",
+    "auxiliary_speech_observation_preparation.budget_relationship keeps all recovery contacts and the original attempt's eight charged contacts counted under their respective registrations.",
+    "auxiliary_speech_observation_preparation.budget_relationship states that the treatment consumes the sealed recovery observations.",
+    "cell readiness keeps recall and execution blocked until the sealed recovery catalog SHA-256 is bound."
+  ],
+  "recovery_catalog_binding": {
+    "relpath": "prepared/SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1/attempt-slurp-whisper-observations-recovery-v1/catalog.json",
+    "sha256": "UNRESOLVED_UNTIL_RECOVERY_CATALOG_SEALS",
+    "catalog_id": "slurp-dev1000-whisper-large-v3-full-utterance-recovery-v1",
+    "producer_run_id": "SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1",
+    "producer_attempt_id": "attempt-slurp-whisper-observations-recovery-v1"
+  },
+  "planned_catalog_compatibility_checks": [
+    "Hash the sealed catalog as a stable file and bind its lowercase SHA-256 without changing the frozen relpath.",
+    "Require schema saea-prepared-speech-observation-catalog-v1 and catalog_id slurp-dev1000-whisper-large-v3-full-utterance-recovery-v1.",
+    "Require producer run_id SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1 and attempt_id attempt-slurp-whisper-observations-recovery-v1.",
+    "Require use_split_identity_hash 8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84.",
+    "Use the shared catalog loader to validate the producer execution-plan pin, protocol hash, exposure-ledger row, FINALIZED attempt, source audio bindings and every observation artifact hash.",
+    "Require exactly 1000 unique observations covering the composed DEV-1000 packet roster before recall preparation.",
+    "Compose through the shared registry and confirm the treatment differs from control only in the recovery preparation metadata, prepared speech-observation pin, fixed solve OBS action, treatment identities, purpose and readiness prose.",
+    "Prepare the distinct treatment solve recall and compare all 1000 selected value IDs and serialized order with the retained control recall."
+  ]
+}
