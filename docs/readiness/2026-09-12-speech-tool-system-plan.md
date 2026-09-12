@@ -8,7 +8,7 @@ Prioritize overall WER and PERSON quality in future newly registered E21 experim
 
 Trigger review when the Reviewer has high confidence that a problem or a missing piece of evidence exists. Do not interpret this as high confidence that the current answer is correct. The owner confirmed this meaning on 2026-09-12. Treat self-reported confidence as an uncalibrated signal until evaluated on legally available development trajectories.
 
-Download tools and weights locally in WSL, pin their identities and validate offline loading. Keep the active Audio2Tool comparison frozen at cbc53ac0c36bed94fdb50c3b069a74569d935720. Current tool acquisition permits no dataset audio, labels, task-result reads, neural forward passes, GPU allocation, or paid inference. It does not authorize new experiment generation.
+Download tools and weights locally in WSL, pin their identities and validate offline loading. The interrupted Audio2Tool comparison remains immutable at cbc53ac0c36bed94fdb50c3b069a74569d935720. The active experiment is the sole full matched Audio2Tool recovery frozen at 22b56d706e2f5601dc79f58a8fad2bb6a9629f51; read task quality only after all three recovery manifests seal. Local tool acquisition and load validation permit no new ASR inference, dataset audio processing, labels, task-result reads, auxiliary neural forward passes, GPU allocation, or paid inference. They do not authorize another experiment generation.
 
 ## System contract
 
@@ -47,7 +47,7 @@ Keep neural enhancement and blind source separation outside the first tool compa
 
 ## Experiment order and attribution
 
-1. Finish and analyze the active Audio2Tool direct/stage-control/knowledge comparison. Read task quality only after all three complete manifests seal. Retain the current SLURP compact-frame system as the exploratory working baseline; its gain does not establish an isolated knowledge-value effect.
+1. Finish and analyze the active full matched Audio2Tool recovery at `22b56d706e2f5601dc79f58a8fad2bb6a9629f51`. Preserve the original finalized direct/stage-control and aborted knowledge attempts; read task quality only after all three recovery manifests seal. Retain the current SLURP compact-frame system as the exploratory working baseline; its gain does not establish an isolated knowledge-value effect.
 2. Prepare a SLURP tool-observation registration on the same full DEV1000 roster. Use the existing quality metrics and NEW500 analysis identity, retaining historical exposure. Freeze model, prompts, stage count, output budget and source knowledge.
 3. Compare the same staged system with a no-new-evidence review/revision path against fixed-policy Whisper evidence supply. Preserve original speech, and start with one additional evidence acquisition and at most one revision. This isolates availability of new evidence from merely adding another reflection turn.
 4. If the tool supplies useful evidence, test Reviewer-targeted selection against a matched random selection. Match count and relevant audio-duration strata; use legal state only. Register threshold selection before evaluation. This separates the value of the tool from the value of choosing where to use it.
