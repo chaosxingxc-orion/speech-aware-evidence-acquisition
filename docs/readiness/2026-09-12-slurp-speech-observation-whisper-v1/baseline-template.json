@@ -113,7 +113,7 @@
   "what_this_is": "Prospective fixed cached-Whisper-evidence treatment with the retained current-speech plan, fixed knowledge action, full scenario/action/entities solve, and common revision phase. The solve-phase speech-observation action retrieves the source-bound full-utterance ASR transcript; original speech remains available to revision. No Reviewer-trigger policy, fixed-intent narrowing, source-span selection, experience memory or second answering model.",
   "whole_roster_wave_barrier": true,
   "prepared_speech_observations": {
-    "relpath": "UNRESOLVED_AFTER_REGISTERED_WHISPER_RECOVERY_CATALOG_SEALS",
-    "sha256": "UNRESOLVED_AFTER_REGISTERED_WHISPER_RECOVERY_CATALOG_SEALS"
+    "relpath": "prepared/SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1/attempt-slurp-whisper-observations-recovery-v1/catalog.json",
+    "sha256": "UNRESOLVED_UNTIL_RECOVERY_CATALOG_SEALS"
   }
 }

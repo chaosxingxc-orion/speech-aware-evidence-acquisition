@@ -117,21 +117,16 @@
   ],
   "unresolved_fields": [
     {
-      "path": "baseline-template.json:prepared_speech_observations.relpath",
-      "value": "UNRESOLVED_AFTER_REGISTERED_WHISPER_RECOVERY_CATALOG_SEALS",
-      "resolution": "Replace with the canonical DATA-relative path of the sealed newly registered Whisper recovery catalog before moving final configuration bytes into configs or preparing recall."
-    },
-    {
       "path": "baseline-template.json:prepared_speech_observations.sha256",
-      "value": "UNRESOLVED_AFTER_REGISTERED_WHISPER_RECOVERY_CATALOG_SEALS",
-      "resolution": "Replace with the lowercase SHA-256 of that sealed newly registered Whisper recovery catalog before moving final configuration bytes into configs or preparing recall."
+      "value": "UNRESOLVED_UNTIL_RECOVERY_CATALOG_SEALS",
+      "resolution": "Replace with the lowercase SHA-256 of the sealed recovery catalog at prepared/SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1/attempt-slurp-whisper-observations-recovery-v1/catalog.json before materializing configs or preparing recall."
     }
   ],
   "template_hashes": {
-    "baseline_template_sha256": "cbc973f29086035c146de63ccc214db3568aa747045d8d966c0808ef89eec493",
-    "experiment_template_sha256": "3de63a8cab0fba52cc79a854098c67daefd720562216bb089b12e9d6c19f294f"
+    "baseline_template_sha256": "042954e068e235c7987ba2df3502e52aa2b4fba8b37891880303cbb5c6f78eb7",
+    "experiment_template_sha256": "b05cf1a7fc972468e235ec187961300a93ddcace0e73ef746b14ded13f6a6b7a"
   },
-  "status": "pass-awaiting-newly-registered-recovery-catalog-address",
+  "status": "pass-known-recovery-address-awaiting-sealed-catalog-sha256",
   "contacts": {
     "audio": 0,
     "asr": 0,
@@ -141,25 +136,35 @@
     "tokenizer": 0
   },
   "model_free_validation": {
-    "final_schema_composition": "pass",
-    "registry_resolution": {
-      "agent_controller": "phase-task-tools-solve-revise-v1",
-      "evidence_source": "none",
-      "knowledge_provider": "kb-facet-v1",
-      "scorers": [
-        "slurp-slu-official",
-        "slurp-slu",
-        "cost"
-      ],
-      "status": "pass"
-    },
-    "ephemeral_catalog_digest": "A syntactically valid all-zero digest was substituted only inside a temporary directory to exercise composition and registry resolution. The directory was deleted and the digest is not a prepared artifact, configuration pin or claim.",
+    "json_parse": "pass",
+    "retained_control_semantics_static_comparison": "pass",
+    "final_schema_composition": "deferred-until-sealed-recovery-catalog-is-present",
+    "registry_resolution": "deferred-until-sealed-recovery-catalog-is-present",
     "real_catalog_or_recall_loaded": false
   },
   "treatment_metadata_corrections_checked": [
-    "auxiliary_speech_observation_preparation.budget_relationship states that preparation is outside paired Qwen caps.",
-    "auxiliary_speech_observation_preparation.budget_relationship states that every speech-tool contact remains counted under its own registration.",
-    "auxiliary_speech_observation_preparation.budget_relationship states that the treatment consumes only sealed cached observations from a newly registered recovery.",
-    "cell readiness records the original attempt as aborted after eight charged contacts with no catalog."
+    "auxiliary_speech_observation_preparation identifies the registered recovery run and attempt.",
+    "auxiliary_speech_observation_preparation records the final recovery catalog ID.",
+    "auxiliary_speech_observation_preparation.budget_relationship states that recovery preparation is outside paired Qwen caps.",
+    "auxiliary_speech_observation_preparation.budget_relationship keeps all recovery contacts and the original attempt's eight charged contacts counted under their respective registrations.",
+    "auxiliary_speech_observation_preparation.budget_relationship states that the treatment consumes the sealed recovery observations.",
+    "cell readiness keeps recall and execution blocked until the sealed recovery catalog SHA-256 is bound."
+  ],
+  "recovery_catalog_binding": {
+    "relpath": "prepared/SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1/attempt-slurp-whisper-observations-recovery-v1/catalog.json",
+    "sha256": "UNRESOLVED_UNTIL_RECOVERY_CATALOG_SEALS",
+    "catalog_id": "slurp-dev1000-whisper-large-v3-full-utterance-recovery-v1",
+    "producer_run_id": "SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1",
+    "producer_attempt_id": "attempt-slurp-whisper-observations-recovery-v1"
+  },
+  "planned_catalog_compatibility_checks": [
+    "Hash the sealed catalog as a stable file and bind its lowercase SHA-256 without changing the frozen relpath.",
+    "Require schema saea-prepared-speech-observation-catalog-v1 and catalog_id slurp-dev1000-whisper-large-v3-full-utterance-recovery-v1.",
+    "Require producer run_id SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1 and attempt_id attempt-slurp-whisper-observations-recovery-v1.",
+    "Require use_split_identity_hash 8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84.",
+    "Use the shared catalog loader to validate the producer execution-plan pin, protocol hash, exposure-ledger row, FINALIZED attempt, source audio bindings and every observation artifact hash.",
+    "Require exactly 1000 unique observations covering the composed DEV-1000 packet roster before recall preparation.",
+    "Compose through the shared registry and confirm the treatment differs from control only in the recovery preparation metadata, prepared speech-observation pin, fixed solve OBS action, treatment identities, purpose and readiness prose.",
+    "Prepare the distinct treatment solve recall and compare all 1000 selected value IDs and serialized order with the retained control recall."
   ]
 }
