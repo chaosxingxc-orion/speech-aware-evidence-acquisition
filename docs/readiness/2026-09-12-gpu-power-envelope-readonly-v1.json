@@ -1,0 +1,50 @@
+{
+  "active_service_untouched": true,
+  "hardware_setting_changes": 0,
+  "monitor_window": {
+    "all_server_healthy": true,
+    "busy_slot_histogram": {
+      "0": 0,
+      "1": 13,
+      "2": 12,
+      "3": 95
+    },
+    "clocks_sm_mhz": {
+      "max": 232.0,
+      "mean": 228.96666666666667,
+      "median": 232.0,
+      "min": 180.0
+    },
+    "first": "2026-09-12T16:31:32.015276+00:00",
+    "last": "2026-09-12T16:53:48.445894+00:00",
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-a2t-native-system-recovery-np3-v1/monitor.jsonl",
+    "power_watts": {
+      "max": 97.11,
+      "mean": 94.05583333333334,
+      "median": 95.53999999999999,
+      "min": 70.91
+    },
+    "samples": 120,
+    "utilization_percent": {
+      "max": 98.0,
+      "mean": 94.2,
+      "median": 97.0,
+      "min": 63.0
+    }
+  },
+  "new_gpu_allocations": 0,
+  "new_model_or_tokenizer_contacts": 0,
+  "query": [
+    "nvidia-smi",
+    "-q",
+    "-d",
+    "PERFORMANCE,POWER,CLOCK"
+  ],
+  "query_output": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/gpu-power-envelope-20260912-v1.txt",
+    "sha256": "3732847d32ec0df98789ba824a0e01e784c0821f672027311e26801b8f6b13e0"
+  },
+  "recorded_at_utc": "2026-09-12T17:00:59.487591+00:00",
+  "root_interpretation": "Existing generation remains busy under software power regulation with unusually low reported SM clocks. This evidence does not identify the firmware, driver, OEM profile or workload/reporting cause. Do not restart or change the active comparison. Capture an idle boundary and inspect platform policy before deciding on a prospective change.",
+  "schema": "saea-operational-power-envelope-readonly-v1"
+}

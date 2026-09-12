@@ -1,0 +1,89 @@
+{
+  "analysis": {
+    "contrasts": [
+      {
+        "left": "control",
+        "name": "whisper_evidence_minus_no_new_evidence",
+        "right": "whisper",
+        "scorers": [
+          "official"
+        ]
+      }
+    ],
+    "full_roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+    },
+    "metrics": [
+      "scenario_action_exact",
+      "scenario_exact",
+      "action_exact",
+      "slu_f1_f1"
+    ],
+    "micro_metrics": {
+      "slu_f1_micro": {
+        "fn": [
+          "slu_f1_word_fn",
+          "slu_f1_char_fn"
+        ],
+        "fp": [
+          "slu_f1_word_fp",
+          "slu_f1_char_fp"
+        ],
+        "tp": [
+          "slu_f1_word_tp",
+          "slu_f1_char_tp"
+        ]
+      }
+    },
+    "n_replicates": 10000,
+    "roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    },
+    "seed": 20260903
+  },
+  "execution_profile": "model-free-check",
+  "execution_source": {
+    "relative_module": "src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py",
+    "required_source_commit": "8b0d7062866f53296c729de942142ce43309d410",
+    "sha256": "9ac779f0433bb134b978fd2477b4ef03a8a532ae2192ad88ce7c4e5d9a546ba5"
+  },
+  "experiment_id": "SAEA-SLURP-SPEECH-OBSERVATION-PAIRED-ANALYSIS-V1",
+  "instantiation": {
+    "add_only": "analysis.inputs with exact control and whisper finalized-bundle manifest paths and measured SHA256, scorer alias official=slurp-slu-official. Preserve every statistical field. Register the bound configuration before semantic reads.",
+    "after": "Both full final-output manifests seal, or root registers a terminal family hold.",
+    "future_output_relpath": "analysis/SAEA-SLURP-SPEECH-OBSERVATION-PAIRED-ANALYSIS-V1/score-contrasts.json",
+    "new_scorer_invocations": 0,
+    "official_scorer": "slurp-slu-official",
+    "required_input_names": [
+      "control",
+      "whisper"
+    ],
+    "score_source": "finalized-bundle"
+  },
+  "interpretation": {
+    "noninferiority_or_equivalence_claim": false,
+    "owner_quality_objective": "Quality-first system optimization. An unresolved signal is not proof of no optimization headroom.",
+    "per_metric_rule": "CI90 wholly positive, wholly negative, or unresolved. Report conflicts; no selected favorable metric.",
+    "primary_metric": "slu_f1_micro",
+    "separate_required_task_outcome": "scenario_action_exact"
+  },
+  "recorded_at_utc": "2026-09-12T16:58:06.350251+00:00",
+  "schema": "saea-slurp-saved-score-analysis-recipe-v1",
+  "source_protocol": {
+    "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-analysis-protocol-v1.md",
+    "sha256": "450cbb7d316442e0688acdc288fa2019bb1fe5aa0c707338bfd7974a49777f0c"
+  },
+  "status": "STATISTICS_FROZEN_SOURCES_PENDING_NO_READ_AUTHORITY",
+  "superseded_interpretation": {
+    "field": "analysis.retain_aligned_historical_null_calibration",
+    "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-design-v1.json",
+    "replacement": "Historical context only. No transferred numerical noninferiority/equivalence margin or effectiveness threshold.",
+    "sha256": "1de32e9d77caeaa095345029a104a814d29e8d007c017fc1521d9c28804762c0"
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "analysis": {
+    "contrasts": [
+      {
+        "left": "control",
+        "name": "whisper_evidence_minus_no_new_evidence",
+        "right": "whisper",
+        "scorers": [
+          "official"
+        ]
+      }
+    ],
+    "full_roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+    },
+    "metrics": [
+      "scenario_action_exact",
+      "scenario_exact",
+      "action_exact",
+      "slu_f1_f1"
+    ],
+    "micro_metrics": {
+      "slu_f1_micro": {
+        "fn": [
+          "slu_f1_word_fn",
+          "slu_f1_char_fn"
+        ],
+        "fp": [
+          "slu_f1_word_fp",
+          "slu_f1_char_fp"
+        ],
+        "tp": [
+          "slu_f1_word_tp",
+          "slu_f1_char_tp"
+        ]
+      }
+    },
+    "n_replicates": 10000,
+    "roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    },
+    "seed": 20260903
+  },
+  "execution_profile": "model-free-check",
+  "execution_source": {
+    "relative_module": "src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py",
+    "required_source_commit": "8b0d7062866f53296c729de942142ce43309d410",
+    "sha256": "9ac779f0433bb134b978fd2477b4ef03a8a532ae2192ad88ce7c4e5d9a546ba5"
+  },
+  "experiment_id": "SAEA-SLURP-SPEECH-OBSERVATION-PAIRED-ANALYSIS-V1",
+  "final_method_bindings_required": {
+    "control": "Final baseline and experiment pins, source commit and effective-configuration identity/check receipt.",
+    "shared": "Model/dataset/program/task/phase prompt pins and root service identity.",
+    "verification_limit": "verify_bundle does not rederive config_hash from fragment bytes; verify the direct pinned configuration/check receipts too.",
+    "whisper": "Final baseline and experiment pins, source commit, ASR catalog and recall pins, and effective-configuration identity/check receipt."
+  },
+  "instantiation": {
+    "add_only": "analysis.inputs with exact control and whisper finalized-bundle manifest paths, measured SHA256 and official=slurp-slu-official; final_method_bindings with actual final arm/config/source/preparation pins and the shared effective-configuration check receipts. Preserve every statistical field. Register the bound configuration before semantic reads.",
+    "after": "Both control and whisper bundles are FINALIZED and COMPLETED with attached hash-bound first scores. A terminal hold can authorize only a separately registered diagnostic/partial read and cannot make this paired recipe executable.",
+    "future_output_relpath": "analysis/SAEA-SLURP-SPEECH-OBSERVATION-PAIRED-ANALYSIS-V1/score-contrasts.json",
+    "new_scorer_invocations": 0,
+    "official_scorer": "slurp-slu-official",
+    "required_input_names": [
+      "control",
+      "whisper"
+    ],
+    "score_source": "finalized-bundle"
+  },
+  "interpretation": {
+    "noninferiority_or_equivalence_claim": false,
+    "owner_quality_objective": "Quality-first system optimization. An unresolved signal is not proof of no optimization headroom.",
+    "per_metric_rule": "CI90 wholly positive, wholly negative, or unresolved. Report conflicts; no selected favorable metric.",
+    "primary_metric": "slu_f1_micro",
+    "separate_required_task_outcome": "scenario_action_exact"
+  },
+  "preparation_method_pins": [
+    {
+      "relpath": "configs/baseline/slurp-speech-observation-control-v1.json",
+      "sha256": "274b5a4fdb5baaed007e760d9e78108dc7d21d80ef0ebf8fb9c45f606a263aa1"
+    },
+    {
+      "relpath": "configs/experiment/slurp-speech-observation-control-v1.json",
+      "sha256": "1891a260a131ede2dccbbf5aea912062359832e95c7dab54cff8a16c8c2113c7"
+    },
+    {
+      "relpath": "configs/model/q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64.json",
+      "sha256": "39ae54d72838b359a893a3938e242859c037cb3af1ddb1e7aca838e33fa45ca0"
+    },
+    {
+      "relpath": "configs/dataset/slurp-speech-native-dev1000.json",
+      "sha256": "f92846760b3657ba50009e52f98fcec96df27c16ac66ea57467b4f8fa42f288d"
+    },
+    {
+      "relpath": "configs/policy/phase-task-tools-solve-revise-v1.json",
+      "sha256": "d962713e9bbaf0fbeec2e2c0c0d6b2d30f34521dae8fdd4032c9dc22a772f0c6"
+    },
+    {
+      "relpath": "configs/probes/task_agent_plan_v1.txt",
+      "sha256": "5d9b294b8e98693b9c3d4bab1af88a3537505ce4cc5037384316806a247e0b88"
+    },
+    {
+      "relpath": "configs/probes/task_agent_solve_v1.txt",
+      "sha256": "c60e9e3b0394615e1dadedbd2d90e9d1147d7ac5d96a6ca4e29030579d1d9a1d"
+    },
+    {
+      "relpath": "configs/probes/task_agent_evidence_revise_v1.txt",
+      "sha256": "355e8ac2b4260298f3dd3a9879f2781e0a5c19ac86992178596ccb526b228539"
+    },
+    {
+      "relpath": "configs/probes/slurp_direct_closed_list.txt",
+      "sha256": "9f2017c1b9a5cbf561a3437377ea4777d418ed19a7607f05e471f71a51dc0413"
+    },
+    {
+      "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-control-recall-equality-v1.json",
+      "sha256": "9657650325f7ec7b6e71c3f335d748bf2a4260efc89ec2c26960b80276cef926"
+    },
+    {
+      "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-control-wire-validation-v1.json",
+      "sha256": "0adf80c81a0d50b3270b4f87585a82f66a11f72f53623d81f494f24f004664f8"
+    }
+  ],
+  "recorded_at_utc": "2026-09-12T17:04:49.762544+00:00",
+  "schema": "saea-slurp-saved-score-analysis-recipe-v1",
+  "source_protocol": {
+    "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-analysis-protocol-v2.md",
+    "sha256": "e90722d3bff5125ae72b1cd94e06c308e75ef1fea7dd63609964203f9951cb64"
+  },
+  "status": "STATISTICS_FROZEN_SOURCES_PENDING_NO_READ_AUTHORITY",
+  "superseded_interpretation": {
+    "field": "analysis.retain_aligned_historical_null_calibration",
+    "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-design-v1.json",
+    "replacement": "Historical context only. No transferred numerical noninferiority/equivalence margin or effectiveness threshold.",
+    "sha256": "1de32e9d77caeaa095345029a104a814d29e8d007c017fc1521d9c28804762c0"
+  },
+  "supersedes_recipe": {
+    "changes": "Complete-score admission and explicit final method provenance only. No statistical, population, metric or budget change.",
+    "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-analysis-recipe-v1.json",
+    "sha256": "73b4467e50042cf480ddc8b4da82d6c77e911778afa21e3309ed588cdf213640"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "attempt_id": "attempt-wire-check-1789231487790",
+  "capacity_verified": false,
+  "complete_roster": 1000,
+  "config_hash": "e6d24853907168ef43ed1811303a4a0cc941c609519e1fc0f923d5f1e0cac7cc",
+  "contacts_per_sample": 3,
+  "fake_attempt_aborted_after_success": true,
+  "fake_request_count": 3000,
+  "gpu_allocations": 0,
+  "live_phase_capacity": "The three fake boundaries establish request identity only. Actual service-backed complete live-phase fitting remains mandatory.",
+  "log": {
+    "bytes": 101741155,
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-speech-observation-control-wire-v1.log",
+    "sha256": "4352272e7b286f44a852d42a65887477293264af9621288745e3a1c53f666a65"
+  },
+  "max_tokens": 256,
+  "per_phase_knowledge_block_interpretation": "Inclusive per-request minimum and maximum for1000 requests in each ordered whole-roster wave. The five knowledge blocks persist into every revision.",
+  "per_phase_knowledge_blocks": {
+    "plan": [
+      0,
+      0
+    ],
+    "revise": [
+      5,
+      5
+    ],
+    "solve": [
+      5,
+      5
+    ]
+  },
+  "phases": [
+    "plan",
+    "solve",
+    "revise"
+  ],
+  "prepared_knowledge_tools_completed": 1000,
+  "quality_result": false,
+  "real_model_contacts": 0,
+  "real_scorer_invocations": 0,
+  "real_tokenizer_contacts": 0,
+  "recorded_at_utc": "2026-09-12T16:59:46.431826+00:00",
+  "registration": "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-PREPARE-V1",
+  "result": "PASS_FULL_ROSTER_SHARED_CONTROL_WIRING",
+  "schema": "saea-slurp-speech-observation-control-wire-validation-v1",
+  "typed_knowledge_blocks_total": 10000,
+  "wall_seconds": 468.5424997806549,
+  "warm_recall_consumption": {
+    "cache": "warm",
+    "sha256": "fd97cb9a3bf68a2e4f242262e7bd2a7a57ae9a6096f64cb4de1d6fee6a11446f"
+  },
+  "wire_check_run_id": "WIRECHECK-SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1-1789231487790"
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 63,
+  "generation": 64,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "3c745f028103ad2339272de4b41c1e6de964dbb7",
-  "updated_at_utc": "2026-09-12T16:47:20.899425+00:00",
-  "next_action": "Read STATUS-063. Audio2Tool recovery knowledge generation remains live; all current quality stays closed until all three seals or terminal hold. Control recall is prepared and exactly matches retained recall; full fake wiring is in progress. Preserve frozen Whisper source f755559a; no ASR forward yet. Complete root analysis registration and shared saved-score compatibility, then admitted local Whisper window and matched SLURP tool comparison. No immediate owner decision; goal active.",
+  "snapshot_commit": "8b0d7062866f53296c729de942142ce43309d410",
+  "updated_at_utc": "2026-09-12T17:07:51.016897+00:00",
+  "next_action": "Read STATUS-064 and SLURP speech-observation analysis protocol/recipe v2. Full control recall/warm/fake-wire closed with1000 rows/3000 fake requests and retained knowledge in revise. Shared finalized-score reader merged; frozen SLURP analysis runtime8b0d706. A2T recovery knowledge remains live; preserve closed quality and frozen source/analysis. After full seals, register exact saved-score bindings and root decision; then scientifically admitted local Whisper window. No ASR forward yet. No immediate owner decision; goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SPEECH-TOOLS-023"
