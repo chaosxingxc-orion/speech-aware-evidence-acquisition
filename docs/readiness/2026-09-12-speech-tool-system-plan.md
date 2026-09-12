@@ -84,6 +84,8 @@ For later GPU-intensive preprocessing, schedule an exclusive registered window, 
 
 Classify each tool separately as downloaded, importable, locally loadable, shared-interface integrated, or task-validated. None of these statuses implies the next.
 
+The first bounded shared storage extension is implemented: core.preparation.prepare_artifact accepts the explicit speech-tool contact class. It preserves a source-bound start marker before production, refuses automatic replay after interruption, and reuses validated artifacts without another producer call. See 2026-09-12-speech-tool-preparation-validation.json for the code and test receipt. This does not authorize inference or add an ASR action to the controller. A future prepared transcript must also bind the exact query sample, packet identity, source audio/span, checkpoint, decoding configuration, and producer attempt before conditional supply.
+
 ## Primary implementation sources checked on 2026-09-12
 
 - OpenAI Whisper transcribe interface: https://github.com/openai/whisper/blob/main/whisper/transcribe.py

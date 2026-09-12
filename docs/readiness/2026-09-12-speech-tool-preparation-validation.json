@@ -1,0 +1,39 @@
+{
+  "behavior": [
+    "Reuse verified artifacts without producer contacts",
+    "Refuse concurrent producers",
+    "Persist a source/configuration-bound start marker before calling the producer",
+    "Refuse automatic replay or cross-class relabeling after interruption",
+    "Preserve historical encoder artifact and marker bytes"
+  ],
+  "contacts": {
+    "dataset_reads": 0,
+    "gpu_activations": 0,
+    "model_forwards": 0,
+    "scorer_calls": 0,
+    "tokenizer_calls": 0
+  },
+  "created_at_utc": "2026-09-12T06:47:08.791995+00:00",
+  "implementation_commit": "c6c8220245af0308582233a1cc295e6317d4f2cf",
+  "limits": [
+    "Storage only; no tool inference authorization",
+    "The caller must hold a registered ExecutionPlan and record each contact",
+    "No new live ASR backend or phase-tool action is integrated by this change",
+    "No active campaign source changes"
+  ],
+  "module": {
+    "path": "src/speech_aware_evidence_acquisition/core/preparation.py",
+    "sha256": "7b7de352596b5860767fde0ffca8dc68460971335de9519936ee9ccfa3a28e4c"
+  },
+  "schema": "saea-speech-tool-preparation-validation-v1",
+  "shared_api": "prepare_artifact(..., contact_class=\"speech-tool\")",
+  "source_agent_commit": "958ece85ce3c48eb5c46e9df9e2872081ff668df",
+  "validation": {
+    "agent_engineering_base_check": "passed",
+    "agent_module_coverage_percent": 88,
+    "agent_related_tests_passed": 287,
+    "agent_ruff": "passed",
+    "root_test_selection": "tests/unit/test_preparation.py",
+    "root_tests_passed": 39
+  }
+}
