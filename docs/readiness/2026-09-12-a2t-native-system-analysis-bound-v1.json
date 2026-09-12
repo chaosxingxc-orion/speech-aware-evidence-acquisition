@@ -1,0 +1,187 @@
+{
+  "analysis": {
+    "cluster_field": "query_idx",
+    "contrasts": [
+      {
+        "ci_level": 0.975,
+        "left": "direct",
+        "metrics": [
+          "official_exact_match"
+        ],
+        "name": "knowledge-minus-direct-primary",
+        "right": "knowledge"
+      },
+      {
+        "ci_level": 0.975,
+        "left": "stage-control",
+        "metrics": [
+          "official_exact_match"
+        ],
+        "name": "knowledge-minus-stage-control-primary",
+        "right": "knowledge"
+      },
+      {
+        "ci_level": 0.9,
+        "left": "direct",
+        "metrics": [
+          "official_exact_match",
+          "official_tool_accuracy",
+          "official_macro_parameter_precision",
+          "official_macro_parameter_recall",
+          "official_macro_parameter_f1",
+          "repo_ordered_tool_sequence_accuracy",
+          "official_micro_parameter_f1"
+        ],
+        "name": "knowledge-minus-direct-secondary",
+        "right": "knowledge"
+      },
+      {
+        "ci_level": 0.9,
+        "left": "stage-control",
+        "metrics": [
+          "official_exact_match",
+          "official_tool_accuracy",
+          "official_macro_parameter_precision",
+          "official_macro_parameter_recall",
+          "official_macro_parameter_f1",
+          "repo_ordered_tool_sequence_accuracy",
+          "official_micro_parameter_f1"
+        ],
+        "name": "knowledge-minus-stage-control-secondary",
+        "right": "knowledge"
+      },
+      {
+        "ci_level": 0.9,
+        "left": "direct",
+        "metrics": [
+          "official_exact_match",
+          "official_tool_accuracy",
+          "official_macro_parameter_precision",
+          "official_macro_parameter_recall",
+          "official_macro_parameter_f1",
+          "repo_ordered_tool_sequence_accuracy",
+          "official_micro_parameter_f1"
+        ],
+        "name": "stage-control-minus-direct-secondary",
+        "right": "stage-control"
+      }
+    ],
+    "expected_ids_count": 4000,
+    "format": "generic-scores-v1",
+    "full_roster": {
+      "id_field": "sample_id",
+      "path": "/home/chao/saea-worktrees/a2t-native-analysis-v1/docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-org1-domain-grouped-roster/flight-roster-receipt.json",
+      "sha256": "e5a81b71e1253ff866262991f79d132b89f4bfb47e7c8a0c0cf0aa04857b8736"
+    },
+    "grouping_resampling": "whole-cluster",
+    "groupings": {
+      "domain": "domain",
+      "tier": "tier"
+    },
+    "id_field": "sample_id",
+    "max_workers": 5,
+    "metrics": {
+      "official_exact_match": {
+        "direction": "higher",
+        "field": "exact_match",
+        "scorer": "a2t-toolcall-official",
+        "statistic": "mean"
+      },
+      "official_macro_parameter_f1": {
+        "direction": "higher",
+        "field": "param_f1",
+        "scorer": "a2t-toolcall-official",
+        "statistic": "mean"
+      },
+      "official_macro_parameter_precision": {
+        "direction": "higher",
+        "field": "param_precision",
+        "scorer": "a2t-toolcall-official",
+        "statistic": "mean"
+      },
+      "official_macro_parameter_recall": {
+        "direction": "higher",
+        "field": "param_recall",
+        "scorer": "a2t-toolcall-official",
+        "statistic": "mean"
+      },
+      "official_micro_parameter_f1": {
+        "denominator": {
+          "param_gold_keys": 1,
+          "param_predicted_keys": 1
+        },
+        "direction": "higher",
+        "numerator": {
+          "param_correct_keys": 2
+        },
+        "scorer": "a2t-toolcall-official",
+        "statistic": "ratio",
+        "zero_denominator": "zero"
+      },
+      "official_tool_accuracy": {
+        "direction": "higher",
+        "field": "tool_correct",
+        "scorer": "a2t-toolcall-official",
+        "statistic": "mean"
+      },
+      "repo_ordered_tool_sequence_accuracy": {
+        "direction": "higher",
+        "field": "tool_accuracy",
+        "scorer": "a2t-toolcall-v2",
+        "statistic": "mean"
+      }
+    },
+    "n_replicates": 10000,
+    "seed": 20260912,
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-METADATA-TEXT-V1/metadata.json",
+      "sha256": "f9afc5b715ead7ec809a6ec2844605b8ebf7eeae2f614d60b146c5d7d3b7e1fa",
+      "rows_key": "rows"
+    },
+    "inputs": {
+      "direct": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-DIRECT-V1/attempt-native-system-recovery-direct-generation-v1/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-DIRECT-V1.run-manifest.json",
+          "sha256": "6463f696478d7971d42b8b987e9388d2d9a6f0120b7dec7240004d3149df9725"
+        },
+        "score_source": "finalized-bundle"
+      },
+      "stage-control": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-STAGE-CONTROL-V1/attempt-native-system-recovery-stage-control-generation-v1/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-STAGE-CONTROL-V1.run-manifest.json",
+          "sha256": "4a813a6ccdd8a8611b54fce571ffa6e24152dd90df269362cff771f5cff2304d"
+        },
+        "score_source": "finalized-bundle"
+      },
+      "knowledge": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-KNOWLEDGE-V1/attempt-native-system-recovery-knowledge-generation-v1/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-KNOWLEDGE-V1.run-manifest.json",
+          "sha256": "48cb65089ed1d7059cbd901e0e70dd188525aa263cbca6d88d4f91c5ded9ca9a"
+        },
+        "score_source": "finalized-bundle"
+      }
+    }
+  },
+  "binding_checks": [
+    "Keep all 4000 exact sample IDs, no positional alignment.",
+    "Derive query_idx and tier from the frozen roster.",
+    "Resolve domain metadata only from pinned released manifests, then bind an outcome-free metadata artifact.",
+    "Verify finalized bundle attachments; never invoke an official scorer again.",
+    "Retain published Table 3 values in the report beside corresponding official and repo columns."
+  ],
+  "decision_rule": {
+    "path": "configs/analysis/a2t-native-system-decision-v1.json",
+    "sha256": "3043cdaeaa330e7897e13a4aba17c55706e9e16bda7cde92b9f2683ba59f688c"
+  },
+  "diagnostic_limits": {
+    "official_micro_parameter_f1": "available; distinct from repo micro slot F1 and macro parameter F1",
+    "ordered_full_call_with_arguments": "unavailable; ordered tool-sequence accuracy is a distinct labelled diagnostic",
+    "repo_micro_slot_f1_paired_interval": "unavailable; persisted counts support whole-roster/tier points only"
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-V1",
+  "instantiation": "After all three complete manifests seal, bind hash-pinned finalized manifests (score_source=finalized-bundle), full frozen roster and metadata. Change no statistical field based on outcomes.",
+  "schema": "saea-score-analysis-binding-recipe-v1",
+  "shared_entry": "speech_aware_evidence_acquisition.analysis.score_compare_cli",
+  "status": "statistics-frozen-source-bindings-pending-full-seal"
+}

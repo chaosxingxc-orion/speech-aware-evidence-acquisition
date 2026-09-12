@@ -1,0 +1,144 @@
+{
+  "schema": "saea-postseal-saved-score-read-registration-v1",
+  "run_id": "SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-V1",
+  "registered_at_utc": "2026-09-12T18:07:04.063977+00:00",
+  "execution_profile": "model-free-check",
+  "source_base_commit": "b5d75288e85ac502bd94a0b63370d31b9886d630",
+  "analysis_runtime": {
+    "path": "/home/chao/saea-worktrees/a2t-native-analysis-v1",
+    "commit": "5f79d399dc15016aaeedccac347aebffddfc61ca",
+    "entry": "speech_aware_evidence_acquisition.analysis.score_compare_cli"
+  },
+  "recipe": {
+    "path": "/home/chao/saea-worktrees/a2t-native-postseal-read-v1/docs/readiness/2026-09-12-a2t-native-system-analysis-recipe.json",
+    "sha256": "03db0a625ba6fad25370b278c34597503162e40f8c2d81d3b1c5a1aea9e6c55b"
+  },
+  "bound_config": {
+    "path": "/home/chao/saea-worktrees/a2t-native-postseal-read-v1/docs/readiness/2026-09-12-a2t-native-system-analysis-bound-v1.json",
+    "sha256": "81287fc2864bbd4ad894d90c25c44735e79cb1f48cdf2a7e21efc1f7fcb52835"
+  },
+  "metadata": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-METADATA-TEXT-V1/metadata.json",
+    "sha256": "f9afc5b715ead7ec809a6ec2844605b8ebf7eeae2f614d60b146c5d7d3b7e1fa",
+    "rows_key": "rows"
+  },
+  "metadata_conversion_receipt": {
+    "path": "/home/chao/saea-worktrees/a2t-native-postseal-read-v1/docs/readiness/2026-09-12-a2t-native-system-metadata-text-receipt-v1.json",
+    "sha256": "a7280176a1fccd5d2c664b133b3171743cd3b9a2d650051ede81da3ad1c2b2be"
+  },
+  "complete_sources": {
+    "direct": {
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-DIRECT-V1/attempt-native-system-recovery-direct-generation-v1/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-DIRECT-V1.run-manifest.json",
+        "sha256": "6463f696478d7971d42b8b987e9388d2d9a6f0120b7dec7240004d3149df9725"
+      },
+      "status": "COMPLETED",
+      "attempt_state": "FINALIZED",
+      "actual": {
+        "audio_seconds": 23418.083083330024,
+        "calls": 4000
+      },
+      "scores": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-DIRECT-V1/attempt-native-system-recovery-direct-generation-v1/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-DIRECT-V1.scores.json",
+        "sha256": "432b57a577fb76382bc1f1a765305d0e64022d631082cd0056e3378541f41d5b"
+      },
+      "scores_bytes": 5924885,
+      "study_commit": "22b56d706e2f5601dc79f58a8fad2bb6a9629f51",
+      "configuration": {
+        "config_hash": "971356d4c41c7f0cb0553d3f312a9dcab43bcb824ac8eb32f821042dc5da8d19",
+        "fragments": {
+          "baseline": "a2t-native-system-recovery-direct-v1",
+          "dataset": "audio2tool-org1-union-4000",
+          "experiment": "a2t-native-system-recovery-direct-v1",
+          "model": "q4km-mmproj-free-a2t-native-system-np3-v1"
+        }
+      },
+      "scorers": [
+        "a2t-toolcall-official",
+        "a2t-toolcall-v2",
+        "a2t-toolcall",
+        "cost"
+      ]
+    },
+    "stage-control": {
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-STAGE-CONTROL-V1/attempt-native-system-recovery-stage-control-generation-v1/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-STAGE-CONTROL-V1.run-manifest.json",
+        "sha256": "4a813a6ccdd8a8611b54fce571ffa6e24152dd90df269362cff771f5cff2304d"
+      },
+      "status": "COMPLETED",
+      "attempt_state": "FINALIZED",
+      "actual": {
+        "audio_seconds": 46836.16616666005,
+        "calls": 8000
+      },
+      "scores": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-STAGE-CONTROL-V1/attempt-native-system-recovery-stage-control-generation-v1/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-STAGE-CONTROL-V1.scores.json",
+        "sha256": "f5c49093bd4f56e8df44fc4e144eaf9c124f3711e7a402f6517f4b0703626427"
+      },
+      "scores_bytes": 5922130,
+      "study_commit": "22b56d706e2f5601dc79f58a8fad2bb6a9629f51",
+      "configuration": {
+        "config_hash": "a5094b30c56accb90e208239b520fca104bbd9e7f562e70c13b3c9ea78ae12d4",
+        "fragments": {
+          "baseline": "a2t-native-system-recovery-stage-control-v1",
+          "dataset": "audio2tool-org1-union-4000",
+          "experiment": "a2t-native-system-recovery-stage-control-v1",
+          "model": "q4km-mmproj-free-a2t-native-system-np3-v1"
+        }
+      },
+      "scorers": [
+        "a2t-toolcall-official",
+        "a2t-toolcall-v2",
+        "a2t-toolcall",
+        "cost"
+      ]
+    },
+    "knowledge": {
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-KNOWLEDGE-V1/attempt-native-system-recovery-knowledge-generation-v1/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-KNOWLEDGE-V1.run-manifest.json",
+        "sha256": "48cb65089ed1d7059cbd901e0e70dd188525aa263cbca6d88d4f91c5ded9ca9a"
+      },
+      "status": "COMPLETED",
+      "attempt_state": "FINALIZED",
+      "actual": {
+        "audio_seconds": 46836.16616666005,
+        "calls": 8000
+      },
+      "scores": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-KNOWLEDGE-V1/attempt-native-system-recovery-knowledge-generation-v1/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-KNOWLEDGE-V1.scores.json",
+        "sha256": "eb3840915ea66f37e38b1473f9abfba0178d339dc36540caf4a7ea494a51e158"
+      },
+      "scores_bytes": 5921662,
+      "study_commit": "22b56d706e2f5601dc79f58a8fad2bb6a9629f51",
+      "configuration": {
+        "config_hash": "16dbfdc3b6bcd5f0f4cd5d937de23b10e70fdc9338aee73ac11d34a0aea85983",
+        "fragments": {
+          "baseline": "a2t-native-system-recovery-knowledge-v1",
+          "dataset": "audio2tool-org1-union-4000",
+          "experiment": "a2t-native-system-recovery-knowledge-v1",
+          "model": "q4km-mmproj-free-a2t-native-system-np3-v1"
+        }
+      },
+      "scorers": [
+        "a2t-toolcall-official",
+        "a2t-toolcall-v2",
+        "a2t-toolcall",
+        "cost"
+      ]
+    }
+  },
+  "planned_output": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-V1/score-contrasts.json",
+  "allowed_read": "The three complete first scored bundles, frozen paired comparisons, native per-sample saved-score and registered trace diagnostics. No new references, roster, model generation or scoring.",
+  "root_decision_output": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-native-system-root-decision-v1.json",
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0,
+    "audio": 0,
+    "gpu": 0
+  },
+  "cpu_workers": 5,
+  "statistical_fields_unchanged": true,
+  "quality_read_before_registration": false,
+  "gate": "All three FINALIZED attempts, COMPLETED manifests and exact attached first-score hashes verified mechanically. The shared CLI must verify all three bundles before reading any saved score."
+}
