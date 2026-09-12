@@ -21,8 +21,16 @@ _MEDIA_FIELDS = {
 def registered_population_ids(
     values: Mapping[str, object], dataset_fragment: str,
 ) -> Sequence[str] | None:
+    """Read exact selections from list or named-population metadata."""
+    populations = values.get("populations", ())
+    if isinstance(populations, Mapping):
+        populations = tuple(populations.values())
+    elif not isinstance(populations, (list, tuple)):
+        raise RuntimeViewError("registered populations must be a list or mapping")
+    if any(not isinstance(item, Mapping) for item in populations):
+        raise RuntimeViewError("registered population entries must be mappings")
     matches = [
-        item for item in values.get("populations", ())
+        item for item in populations
         if item.get("dataset_fragment") == dataset_fragment
     ]
     if len(matches) > 1:
@@ -30,7 +38,7 @@ def registered_population_ids(
     if not matches or "ids" not in matches[0]:
         return None
     ids = matches[0]["ids"]
-    if not isinstance(ids, list) or not ids or any(not isinstance(item, str) for item in ids):
+    if not isinstance(ids, list) or not ids or any(not isinstance(item, str) or not item for item in ids):
         raise RuntimeViewError("registered population ids must be non-empty strings")
     if len(set(ids)) != len(ids):
         raise RuntimeViewError("registered population repeats a sample id")
