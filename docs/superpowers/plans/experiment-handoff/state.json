@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 54,
+  "generation": 55,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "c3cd7854f6ca401fe96fa214c4ab60899166b5af",
-  "updated_at_utc": "2026-09-12T06:01:50.150732+00:00",
-  "next_action": "Read STATUS-054 and fresh attempts under DATA/attempts. Direct finalized at 4000 calls; stage-control running; knowledge queued. Keep frozen cbc53ac0 source/resident/monitor unchanged and read quality only after all three seals. Complete isolated local speech-tool acquisition with CPU load-only validation; no dataset forward or GPU allocation. Bind frozen shared analysis recipe to complete first score attachments after the gate. Apply OWNER022 only to future E21 protocols and OWNER023 for Reviewer-triggered speech evidence tools. Goal active.",
+  "snapshot_commit": "200d60c50f21d4bf0ab632c6687bff247d7c46c3",
+  "updated_at_utc": "2026-09-12T06:18:33.402793+00:00",
+  "next_action": "Read STATUS-055, tool-readiness receipts, and fresh DATA/attempts metadata. Keep campaign71462/resident2098/monitor88815 unchanged. Direct finalized; stage-control running; knowledge queued. Wait all three seals before semantic results. Continue existing official Whisper download session30436 (partial, do not restart); final hash then CPU load only if fresh host-free RAM>=14GiB. Local VAD/MMS/FFmpeg ready for bounded future integration; Sortformer verified; optional pyannote payload blocked by HF access. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SPEECH-TOOLS-023"

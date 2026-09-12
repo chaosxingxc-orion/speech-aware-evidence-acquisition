@@ -1,0 +1,53 @@
+{
+  "active_whisper_download_session": 30436,
+  "do_not_restart_download": true,
+  "gpu_campaign": {
+    "knowledge_state": "QUEUED",
+    "last_direct_calls": 4000,
+    "last_direct_state": "FINALIZED",
+    "last_stage_control_calls": 5734,
+    "last_stage_control_state": "OPENED",
+    "serving_session": "serving-a2t-native-system-np3-v1",
+    "session": 71462,
+    "source_commit": "cbc53ac0c36bed94fdb50c3b069a74569d935720"
+  },
+  "large_cpu_load_rule": "After final checkpoint hash verification, load only with fresh host-free RAM >=14GiB, no other large auxiliary load, CUDA hidden and <=2CPUthreads. Otherwise retain hash-ready state.",
+  "next_steps": [
+    "Continue current download and GPU campaign independently",
+    "Honor the all-three-sealed quality-read gate",
+    "After acquisition closure, implement governed shared OBS tool contact before dataset use",
+    "Register the matched SLURP tool-availability and later selection-policy comparisons"
+  ],
+  "receipts": {
+    "alignment_diarization": {
+      "path": "/home/chao/speech-tools/alignment-diarization/receipts/acquisition-v1.json",
+      "sha256": "e73a2d858abd4987d5d59de79741715285337ece885d09d4b77bf6ae4a71cd7d"
+    },
+    "ffmpeg": {
+      "path": "/home/chao/speech-tools/ffmpeg/receipt.json",
+      "sha256": "6f9171bc050800bace78c14b15b6aeedf5d996e9351f8891520a849e310ba19e"
+    },
+    "phonetic_lexicon": {
+      "path": "/home/chao/speech-tools/phonetic-lexicon/receipt.json",
+      "sha256": "ff9b88cdc37fc85d3064295c834e00a59981e6c4d1a0df51d557b5b96b2c3c62"
+    },
+    "whisper_vad": {
+      "path": "/home/chao/speech-tools/whisper-vad/receipts/acquisition-partial-v1.json",
+      "sha256": "9eade5dee99b311786503139658d5d08a6ead197b7e1c50f0b062e1c217922a4"
+    }
+  },
+  "research_tool_integration": "planned, not yet admitted or task-validated",
+  "schema": "saea-local-speech-tool-readiness-v1",
+  "snapshot_utc": "2026-09-12T06:17:00.489307+00:00",
+  "status": {
+    "cmudict": "public pronunciation source pinned locally; not yet a registered runtime tool",
+    "ffmpeg_ffprobe": "user-local launcher version/capability checks passed",
+    "mms_fa": "existing pinned checkpoint reused and CPU load validated; zero forwards",
+    "pyannote_community_1": "public code/card pinned; model payload blocked by official HF access (HTTP401)",
+    "silero_vad": "local assets and CPU ONNX session construction validated; zero forwards",
+    "sortformer_v2": "existing checkpoints and runtime hashes validated; model activation deferred",
+    "whisper_large_v3": "official CPU environment installed; checkpoint partial download, SHA validation and load pending",
+    "whisperx": "optional source-only alternative; no duplicate model weights"
+  },
+  "user_action_for_optional_pyannote": "Enable model access for the current Hugging Face account at https://huggingface.co/pyannote/speaker-diarization-community-1; never paste access tokens into the conversation."
+}
