@@ -38,7 +38,9 @@ def _verify_manifest_header(manifest: Mapping[str, object]) -> str:
         )
     status = manifest.get("status")
     if status not in _VALID_STATUSES:
-        raise BundleError(f"run manifest status must be one of {_VALID_STATUSES}, got {status!r}")
+        raise BundleError(
+            f"run manifest status must be one of {_VALID_STATUSES}, got {status!r}"
+        )
 
     # MINOR 2 fix-wave3: study_commit's SHAPE is now genuinely checked, not
     # merely "is a string" -- previously ANY string (including a hand-typed
@@ -74,16 +76,58 @@ def _verify_manifest_header(manifest: Mapping[str, object]) -> str:
     # no access to; see docs/owner-decisions-pending.md item 6 for exactly
     # what remains unbound: a manifest whose scorers were legitimately
     # trimmed to omit the task metric, e.g. ["cost"] alone, still verifies).
+    result_kind = manifest.get("result_kind", "task-answer")
+    artifact_result = manifest.get("artifact_result")
     scorer_names_value = manifest.get("scorers")
-    if (
-        not isinstance(scorer_names_value, list)
-        or not scorer_names_value
-        or not all(isinstance(name, str) and name.strip() for name in scorer_names_value)
-    ):
-        raise BundleError(
-            "run manifest scorers must be a non-empty list of non-empty scorer names, got "
-            f"{scorer_names_value!r}"
-        )
+    if result_kind == "artifact":
+        if not isinstance(artifact_result, Mapping) or set(artifact_result) != {
+            "schema",
+            "role",
+            "construction_roster",
+        }:
+            raise BundleError(
+                "artifact result manifest requires an exact artifact_result binding"
+            )
+        if (
+            artifact_result.get("schema") != "saea-artifact-result-binding-v1"
+            or artifact_result.get("role") != "training-feedback-proposal"
+        ):
+            raise BundleError("artifact_result schema or proposal role is invalid")
+        roster = artifact_result.get("construction_roster")
+        if not isinstance(roster, Mapping) or set(roster) != {"repo_relpath", "sha256"}:
+            raise BundleError("artifact_result construction_roster pin is invalid")
+        relpath, digest = roster.get("repo_relpath"), roster.get("sha256")
+        if (
+            not isinstance(relpath, str)
+            or not relpath
+            or "\\" in relpath
+            or ":" in relpath
+            or any(part in {"", ".", ".."} for part in relpath.split("/"))
+            or not isinstance(digest, str)
+            or len(digest) != 64
+            or any(character not in "0123456789abcdef" for character in digest)
+        ):
+            raise BundleError("artifact_result construction_roster pin is invalid")
+        if scorer_names_value != []:
+            raise BundleError("artifact result manifest requires empty scorers")
+    elif result_kind == "task-answer":
+        if artifact_result is not None:
+            raise BundleError(
+                "artifact_result is valid only for artifact result manifests"
+            )
+        if (
+            not isinstance(scorer_names_value, list)
+            or not scorer_names_value
+            or not all(
+                isinstance(name, str) and name.strip() for name in scorer_names_value
+            )
+        ):
+            raise BundleError(
+                "run manifest scorers must be a non-empty list of non-empty scorer names, got "
+                f"{scorer_names_value!r}"
+            )
+    else:
+        raise BundleError("run manifest result_kind must be task-answer or artifact")
     unregistered_scorers = sorted(set(scorer_names_value) - set(SCORERS.names()))
     if unregistered_scorers:
         raise BundleError(
@@ -92,7 +136,11 @@ def _verify_manifest_header(manifest: Mapping[str, object]) -> str:
         )
 
     if status == STATUS_COMPLETED:
-        for label, key in (("outputs", "outputs"), ("raw trace", "raw_trace"), ("trace manifest", "trace_manifest")):
+        for label, key in (
+            ("outputs", "outputs"),
+            ("raw trace", "raw_trace"),
+            ("trace manifest", "trace_manifest"),
+        ):
             entry = manifest.get(key)
             if not isinstance(entry, Mapping) or not entry.get("path"):
                 raise BundleError(
@@ -106,7 +154,9 @@ def _verify_manifest_header(manifest: Mapping[str, object]) -> str:
         # manifest that flips status to COMPLETED while leaving a stale
         # UNAVAILABLE study_commit behind.
         study_commit = manifest.get("study_commit")
-        if isinstance(study_commit, str) and study_commit.startswith(UNAVAILABLE_COMMIT_PREFIX):
+        if isinstance(study_commit, str) and study_commit.startswith(
+            UNAVAILABLE_COMMIT_PREFIX
+        ):
             raise BundleError(
                 "run manifest status is COMPLETED but study_commit carries the ABORTED-only "
                 f"{UNAVAILABLE_COMMIT_PREFIX!r} marker; a COMPLETED record must always bind a "

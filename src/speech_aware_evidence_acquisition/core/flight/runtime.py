@@ -314,6 +314,139 @@ def arm_shows_construction_targets(arm: str) -> bool:
     return CONSTRUCTION_VISIBLE_FIELD in set(ARM_VISIBLE_FIELDS.get(arm, ()))
 
 
+ARTIFACT_RESULT_BINDING_SCHEMA = "saea-artifact-result-binding-v1"
+ARTIFACT_RESULT_ROLE = "training-feedback-proposal"
+
+
+def validate_artifact_result_binding(
+    values: Mapping[str, object],
+    *,
+    plan: object,
+    repo_root: Path,
+    sample_ids: Sequence[str],
+) -> Mapping[str, object] | None:
+    """Validate the explicit no-score TRAIN construction artifact mode."""
+
+    result_kind = values.get("result_kind", "task-answer")
+    declared = values.get("artifact_result")
+    if result_kind == "task-answer":
+        if declared is not None:
+            raise FlightRuntimeError(
+                "artifact_result is valid only when result_kind is 'artifact'"
+            )
+        return None
+    if result_kind != "artifact":
+        raise FlightRuntimeError("result_kind must be 'task-answer' or 'artifact'")
+    if not isinstance(declared, Mapping) or set(declared) != {
+        "schema",
+        "role",
+        "construction_roster",
+    }:
+        raise FlightRuntimeError(
+            "artifact_result must contain exactly schema, role and construction_roster"
+        )
+    if (
+        declared.get("schema") != ARTIFACT_RESULT_BINDING_SCHEMA
+        or declared.get("role") != ARTIFACT_RESULT_ROLE
+    ):
+        raise FlightRuntimeError("artifact_result schema or proposal role is invalid")
+    if values.get("policy") == "fixed":
+        raise FlightRuntimeError("artifact results require a registered phase program")
+    try:
+        default_phase_program(str(values.get("policy")))
+    except (CoreError, ValueError, RuntimeError, OSError) as error:
+        raise FlightRuntimeError(
+            "artifact results require a registered phase program"
+        ) from error
+    arm = values.get("arm")
+    if SPEECH_FEATURE_ARM_FIELD not in ARM_VISIBLE_FIELDS.get(str(arm), ()):
+        raise FlightRuntimeError(
+            "artifact results require the speech-feature packet path"
+        )
+    if (
+        getattr(plan, "execution_profile", None) != "bounded-discovery-probe"
+        or getattr(plan, "split_role", None) != "discovery"
+    ):
+        raise FlightRuntimeError(
+            "artifact results require bounded-discovery-probe on a discovery split"
+        )
+    scorers = values.get("scorers", [])
+    if not isinstance(scorers, list) or scorers:
+        raise FlightRuntimeError("artifact results require an empty scorers list")
+
+    pin = declared["construction_roster"]
+    if not isinstance(pin, Mapping) or set(pin) != {"repo_relpath", "sha256"}:
+        raise FlightRuntimeError(
+            "artifact construction_roster must pin repo_relpath and sha256"
+        )
+    relpath = pin["repo_relpath"]
+    digest = pin["sha256"]
+    if (
+        not isinstance(relpath, str)
+        or not relpath
+        or "\\" in relpath
+        or ":" in relpath
+        or any(part in {"", ".", ".."} for part in relpath.split("/"))
+    ):
+        raise FlightRuntimeError(
+            "artifact construction roster path must be canonical relative POSIX"
+        )
+    if (
+        not isinstance(digest, str)
+        or len(digest) != 64
+        or any(character not in "0123456789abcdef" for character in digest)
+    ):
+        raise FlightRuntimeError(
+            "artifact construction roster sha256 must be lowercase 64-hex"
+        )
+    path = (Path(repo_root) / relpath).resolve()
+    root = Path(repo_root).resolve()
+    if not path.is_relative_to(root):
+        raise FlightRuntimeError("artifact construction roster escapes the repository")
+    try:
+        raw = path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != digest:
+            raise FlightRuntimeError("artifact construction roster SHA mismatch")
+        from ..roster import read_roster
+
+        roster = read_roster(path)
+    except (
+        OSError,
+        UnicodeError,
+        json.JSONDecodeError,
+        ValueError,
+        RuntimeError,
+    ) as error:
+        if isinstance(error, FlightRuntimeError):
+            raise
+        raise FlightRuntimeError(
+            f"invalid artifact construction roster: {error}"
+        ) from error
+    roster_ids = tuple(str(item["sample_id"]) for item in roster["items"])
+    if (
+        roster.get("roster_role") != "construction"
+        or roster.get("split_role") != "discovery"
+        or roster.get("carrier_lock_key") != getattr(plan, "carrier_lock_key", None)
+        or roster.get("split_identity_hash")
+        != getattr(plan, "split_identity_hash", None)
+        or tuple(sorted(roster_ids)) != tuple(sorted(sample_ids))
+    ):
+        raise FlightRuntimeError(
+            "artifact result roster must exactly bind the plan carrier, discovery split and samples"
+        )
+    if roster.get("carrier_lock_key") == "slurp" and any(
+        not sample_id.startswith("slurp:train:") for sample_id in roster_ids
+    ):
+        raise FlightRuntimeError(
+            "SLURP artifact results require TRAIN construction samples"
+        )
+    return {
+        "schema": ARTIFACT_RESULT_BINDING_SCHEMA,
+        "role": ARTIFACT_RESULT_ROLE,
+        "construction_roster": {"repo_relpath": relpath, "sha256": digest},
+    }
+
+
 def _default_construction_material(
     values: Mapping[str, object],
     *,
@@ -838,20 +971,26 @@ class FlightRuntime:
         bundle_verifier: Callable[..., object] = verify_bundle,
         bundle_finalizer: Callable[..., object] = finalize_bundle,
         flight_receipt_builder: Callable[..., Mapping[str, object]] | None = None,
-        packet_promoter: Callable[..., tuple[Sequence[object], Mapping[str, object]]] = (
-            _default_packet_promoter
-        ),
+        packet_promoter: Callable[
+            ..., tuple[Sequence[object], Mapping[str, object]]
+        ] = (_default_packet_promoter),
         client_factory: Callable[..., object] = FrozenCoreClient,
         payload_binding_factory: Callable[..., object] = build_payload_binding,
-        carrier_root_resolver: Callable[[Mapping[str, object], str, Path], Path] = asset_dir,
-        runtime_receipt_loader: Callable[[Path], Mapping[str, object]] = load_runtime_receipt,
+        carrier_root_resolver: Callable[
+            [Mapping[str, object], str, Path], Path
+        ] = asset_dir,
+        runtime_receipt_loader: Callable[
+            [Path], Mapping[str, object]
+        ] = load_runtime_receipt,
         attempt_store_factory: Callable[[Path], object] = (
             lambda data_root: AttemptStore(Path(data_root) / "attempts")
         ),
         abort_attempt: Callable[..., bool] = abort_attempt_if_opened,
         ledger_validator: Callable[..., object] = ledger_row_for_bundle,
         token_counter: Callable[[bytes], int] = _default_token_counter,
-        tool_schema_resolver: Callable[[Mapping[str, object], Path, str], Sequence[Mapping[str, object]]]
+        tool_schema_resolver: Callable[
+            [Mapping[str, object], Path, str], Sequence[Mapping[str, object]]
+        ]
         | None = _default_tool_schema_resolver,
         construction_material_resolver: Callable[..., ProposerMaterial] = (
             _default_construction_material
@@ -979,6 +1118,7 @@ class FlightRuntime:
         self._window_feature_packets = None
         self._window_feature_packet_config = None
         self._construction_material: ProposerMaterial | None = None
+        self._artifact_result_binding: Mapping[str, object] | None = None
         self._owns_session = False
         # E7: set only when this flight ATTACHED to an always-on serving
         # session -- the session's directory, its monitor JSONL, and the
@@ -1767,9 +1907,12 @@ class FlightRuntime:
         values, carrier_lock_key, split_id, identity_hash = self._prepare()
         if "whole_roster_wave_barrier" in values or "live_phase_fit" in values:
             from ..preparation_fit import validate_live_phase_fit_config
+
             policy = values.get("policy")
             if policy == "fixed" or policy in self._obs_policy_names():
-                raise FlightRuntimeError("live phase fitting requires a registered phase program")
+                raise FlightRuntimeError(
+                    "live phase fitting requires a registered phase program"
+                )
             validate_live_phase_fit_config(values, default_phase_program(policy))
         composed = self._composed
         adapter = self._adapter
@@ -1777,6 +1920,12 @@ class FlightRuntime:
 
         plan = self._build_execution_plan(values, carrier_lock_key, identity_hash)
         self._plan = plan
+        self._artifact_result_binding = validate_artifact_result_binding(
+            values,
+            plan=plan,
+            repo_root=self._repo_root,
+            sample_ids=tuple(sample.sample_id for sample in samples),
+        )
 
         configured_model_root = model_materialization_root(values)
         gate = self._gate_factory(
@@ -1785,7 +1934,11 @@ class FlightRuntime:
             self._runtime_root,
             runtime_receipt_relpath=runtime_receipt_relpath(values),
             expected_model_lock_key=model_lock_key(values),
-            model_root=(Path(configured_model_root) if configured_model_root is not None else None),
+            model_root=(
+                Path(configured_model_root)
+                if configured_model_root is not None
+                else None
+            ),
             d1_media_supplement_relpath=d1_media_supplement_relpath(values),
             d1_media_supplement_sha256=d1_media_supplement_sha256(values),
             d1_evidence_supplement_relpath=d1_evidence_supplement_relpath(values),
@@ -1853,6 +2006,13 @@ class FlightRuntime:
         if not isinstance(arm, str) or not arm:
             raise FlightRuntimeError("baseline fragment must declare a non-empty 'arm'")
         return arm
+
+    def _result_kind(self) -> str:
+        if self._composed is None:
+            raise FlightStageOrderError(
+                "result kind is unavailable before config composition"
+            )
+        return str(self._composed.values.get("result_kind", "task-answer"))
 
     def uses_speech_feature_packets(self) -> bool:
         """Whether THIS flight's arm travels the speech-feature packet audio
@@ -3616,7 +3776,12 @@ class FlightRuntime:
         return rows
 
     def _dispatch_phase_program(
-        self, client: object, plan: ExecutionPlan, policy: str, *, model_free_check: bool = False
+        self,
+        client: object,
+        plan: ExecutionPlan,
+        policy: str,
+        *,
+        model_free_check: bool = False,
     ) -> tuple[
         list[Mapping[str, object]],
         int,
@@ -3632,13 +3797,19 @@ class FlightRuntime:
         from ..tracing import TraceBuffer  # noqa: PLC0415 (function-local, cheap)
 
         program = default_phase_program(policy)
-        from ..preparation_fit import build_live_phase_fit_gate, validate_live_phase_fit_config
+        from ..preparation_fit import (
+            build_live_phase_fit_gate,
+            validate_live_phase_fit_config,
+        )
+
         live_fit_spec = validate_live_phase_fit_config(self._composed.values, program)
         whole_roster = live_fit_spec is not None
         from ..bundle.delivery_replay import validate_phase_delivery_sources
 
         validate_phase_delivery_sources(
-            self._composed.values, program=program, parent_fragments={
+            self._composed.values,
+            program=program,
+            parent_fragments={
                 "model_fragment": self._model,
                 "dataset_fragment": self._dataset,
                 "baseline_fragment": self._baseline,
@@ -3666,17 +3837,27 @@ class FlightRuntime:
         review_for_phase = binding.get("review_for_phase")
         review_specs = binding.get("review_specs") or {}
         from ...rails.phase_planner import (
-            build_phase_planner, emit_planner_records, phase_planner_receipt,
+            build_phase_planner,
+            emit_planner_records,
+            phase_planner_receipt,
         )
+
         planner_specs = self._phase_planner_specs(policy)
         planner = build_phase_planner(planner_specs, review_for_phase)
         from ...rails.phase_tools import build_phase_tools
+
         tool_specs = self._phase_tool_specs(policy)
         tool_dispatcher = build_phase_tools(
-            self._composed.values, program, snapshot=binding["knowledge_snapshot"],
-            supply_for_phase=supply_for_phase, trace_sink=sink,
-            knowledge_catalog=self._phase_knowledge_catalog(binding["knowledge_snapshot"])
-            if tool_specs else None,
+            self._composed.values,
+            program,
+            snapshot=binding["knowledge_snapshot"],
+            supply_for_phase=supply_for_phase,
+            trace_sink=sink,
+            knowledge_catalog=self._phase_knowledge_catalog(
+                binding["knowledge_snapshot"]
+            )
+            if tool_specs
+            else None,
             experience_memory=self._experience_memory,
             speech_observations=self._speech_observations,
         )
@@ -3687,22 +3868,31 @@ class FlightRuntime:
                 # without claiming that any tokenizer capacity was measured.
                 def live_fit_gate(phase, batch):
                     from ..preparation_fit import boundary_identity
-                    live_fit_gate.receipts.append({
-                        "phase": phase, "model_free_request_identity_only": True,
-                        "boundary_sha256": boundary_identity(tuple(r.as_payload() for r in batch)),
-                        "capacity_verified": False,
-                    })
+
+                    live_fit_gate.receipts.append(
+                        {
+                            "phase": phase,
+                            "model_free_request_identity_only": True,
+                            "boundary_sha256": boundary_identity(
+                                tuple(r.as_payload() for r in batch)
+                            ),
+                            "capacity_verified": False,
+                        }
+                    )
+
                 live_fit_gate.receipts = []
             else:
                 fit_options = {}
                 if planner is not None:
                     expected_ids = tuple(sample.sample_id for sample in self._samples)
-                    fit_options["active_roster"] = lambda phase: planner.active_sample_ids(
-                        phase, program.phase_names(), expected_ids
+                    fit_options["active_roster"] = lambda phase: (
+                        planner.active_sample_ids(
+                            phase, program.phase_names(), expected_ids
+                        )
                     )
-                live_fit_gate = (self._live_phase_fit_factory or build_live_phase_fit_gate)(
-                    self, program, plan, **fit_options
-                )
+                live_fit_gate = (
+                    self._live_phase_fit_factory or build_live_phase_fit_gate
+                )(self, program, plan, **fit_options)
         facet_seed, value_seed = self._phase_supply_seeds(
             program, binding, supply_specs, plan
         )
@@ -3713,12 +3903,16 @@ class FlightRuntime:
         # acquire transition can be emitted (rails.controllers, "Traced
         # supply"). A program with no supply, or whose only supply is the
         # pre-flight-seeded FIRST phase, keeps the per-phase barrier form.
-        continuous = whole_roster or planner is not None or tool_dispatcher is not None or bool(
-            set(supply_specs) - {program.phase_names()[0]}
+        continuous = (
+            whole_roster
+            or planner is not None
+            or tool_dispatcher is not None
+            or bool(set(supply_specs) - {program.phase_names()[0]})
         )
         live_options = (
             {"whole_roster_wave_barrier": True, "request_batch_gate": live_fit_gate}
-            if whole_roster else {}
+            if whole_roster
+            else {}
         )
         if planner is not None:
             live_options["stop_policy"] = planner
@@ -3741,8 +3935,13 @@ class FlightRuntime:
                         material_for_phase=binding["material_for_phase"],
                         supply_for_phase=supply_for_phase,
                         review_for_phase=review_for_phase,
-                        bootstrap_facet_ids=facet_seed.get(program.phase_names()[0], ()),
-                        bootstrap_value_ids=value_seed.get(program.phase_names()[0], ()),
+                        bootstrap_facet_ids=facet_seed.get(
+                            program.phase_names()[0], ()
+                        ),
+                        bootstrap_value_ids=value_seed.get(
+                            program.phase_names()[0], ()
+                        ),
+                        result_kind=self._result_kind(),
                         **live_options,
                     ),
                 )
@@ -3763,6 +3962,7 @@ class FlightRuntime:
                     review_for_phase=review_for_phase,
                     bootstrap_facet_ids_by_phase=facet_seed,
                     bootstrap_value_ids_by_phase=value_seed,
+                    result_kind=self._result_kind(),
                 )
             if review_specs:
                 from ...rails.phase_review import (  # noqa: PLC0415 (cycle guard)
@@ -3779,6 +3979,15 @@ class FlightRuntime:
                 flush(sink)
         self._phase_summaries = tuple(summaries)
         rows = self._rows_from_phase_summaries(self._phase_summaries, policy=policy)
+        if self._result_kind() == "artifact":
+            rows = [
+                {
+                    **row,
+                    "result_kind": "artifact",
+                    "artifact_role": ARTIFACT_RESULT_ROLE,
+                }
+                for row in rows
+            ]
         contact_count = sum(
             self._phase_summary_contacts(summary) for summary in self._phase_summaries
         )
@@ -3787,6 +3996,11 @@ class FlightRuntime:
                 "phase": getattr(summary, "controller_policy_id", None),
                 "rows": len(summary.results),
                 "contacts": self._phase_summary_contacts(summary),
+                **(
+                    {"result_kind": "artifact"}
+                    if getattr(summary, "result_kind", "task-answer") == "artifact"
+                    else {}
+                ),
             }
             for summary in self._phase_summaries
         ]
@@ -3797,8 +4011,8 @@ class FlightRuntime:
             "contacts_per_sample": len(program.phases),
             "barrier": (
                 "whole-roster waves with retained controller state"
-                if whole_roster else
-                "none: one continuous trajectory per sample "
+                if whole_roster
+                else "none: one continuous trajectory per sample "
                 "(rails.phase_runner.run_continuous_program) -- required so a "
                 "supplied phase's acquire transition can be emitted"
                 if continuous
@@ -3815,16 +4029,24 @@ class FlightRuntime:
             # reviewed phase sends the same bytes as an unreviewed one
             # (owner Decision 11-C), so this is provenance, not a mode.
             "reviewed_phases": sorted(review_specs),
+            **(
+                {"result_kind": "artifact"} if self._result_kind() == "artifact" else {}
+            ),
         }
         if planner is not None:
             dispatch["phase_planner"] = phase_planner_receipt(planner_specs, planner)
-            dispatch["contacts_per_sample_ceiling"] = dispatch.pop("contacts_per_sample")
+            dispatch["contacts_per_sample_ceiling"] = dispatch.pop(
+                "contacts_per_sample"
+            )
             dispatch["contacts_per_sample_observed"] = [
                 {"sample_id": result.sample_id, "contacts": len(result.contacts)}
-                for summary in self._phase_summaries for result in summary.results
+                for summary in self._phase_summaries
+                for result in summary.results
             ]
             if not whole_roster:
-                dispatch["barrier"] = "none: one continuous trajectory with bounded review decisions"
+                dispatch["barrier"] = (
+                    "none: one continuous trajectory with bounded review decisions"
+                )
         if tool_dispatcher is not None:
             dispatch["phase_tools"] = tool_dispatcher.receipt()
         if whole_roster:
@@ -4131,7 +4353,6 @@ class FlightRuntime:
             **({"max_workers": max_workers} if max_workers != 1 else {}),
         )
 
-
     def request_fit_inputs(self, payloads, *, window_batch=None):
         from .. import preparation, preparation_fit
         from .. import config as config_module
@@ -4238,7 +4459,6 @@ class FlightRuntime:
             split_identity_hash=context["split_identity_hash"],
             sources=sources,
         )
-
 
     def _verify_prepared_request_fit(self, pin):
         from ..preparation import PreparationError, load_artifact
@@ -4674,7 +4894,9 @@ class FlightRuntime:
         baseline_values = self._composed.values
         policy = baseline_values.get("policy")
         if not isinstance(policy, str) or not policy:
-            raise FlightRuntimeError("baseline fragment must declare a non-empty 'policy'")
+            raise FlightRuntimeError(
+                "baseline fragment must declare a non-empty 'policy'"
+            )
         self._assert_phase_supply_is_legal_for(policy)
         self._assert_phase_review_is_legal_for(policy)
         self._phase_planner_specs(policy)
@@ -4751,6 +4973,14 @@ class FlightRuntime:
             "policy": policy,
             "policy_kind": policy_kind,
             "arm": client.arm,
+            **(
+                {
+                    "result_kind": "artifact",
+                    "artifact_result": dict(self._artifact_result_binding or {}),
+                }
+                if self._result_kind() == "artifact"
+                else {}
+            ),
             "id_slot": decoding.get("id_slot"),
             "id_slot_resolution": (
                 f"{SLOT_AFFINITY_SENTINEL!r} sentinel resolved to slot "
@@ -5639,7 +5869,11 @@ class FlightRuntime:
                 )
             missing = [
                 name
-                for name in ("request_sha256", "response_sha256", "response_text_sha256")
+                for name in (
+                    "request_sha256",
+                    "response_sha256",
+                    "response_text_sha256",
+                )
                 if not getattr(timing, name, None)
             ]
             if missing:
@@ -5660,10 +5894,17 @@ class FlightRuntime:
                     "request_sha256": timing.request_sha256,
                     "response_sha256": timing.response_sha256,
                     "response_text_sha256": timing.response_text_sha256,
+                    **(
+                        {
+                            "result_kind": "artifact",
+                            "artifact_role": ARTIFACT_RESULT_ROLE,
+                        }
+                        if self._result_kind() == "artifact"
+                        else {}
+                    ),
                 }
             )
         return rows
-
 
     def seal(
         self,
@@ -5693,7 +5934,8 @@ class FlightRuntime:
         from ..bundle.delivery_replay import validate_phase_delivery_sources
 
         deliveries = validate_phase_delivery_sources(
-            self._composed.values, parent_fragments={
+            self._composed.values,
+            parent_fragments={
                 "model_fragment": self._model,
                 "dataset_fragment": self._dataset,
                 "baseline_fragment": self._baseline,
@@ -5711,9 +5953,7 @@ class FlightRuntime:
         canonical_rows = self._canonical_output_rows(self._client)
         with outputs_path.open("w", encoding="utf-8") as handle:
             for row in canonical_rows:
-                handle.write(
-                    json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n"
-                )
+                handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
 
         # `<run_id>.phases.json`: every phase summary, in program order,
         # beside the sealed outputs. The bundle contract accepts one outputs
@@ -5735,6 +5975,16 @@ class FlightRuntime:
                         "run_id": self._plan.run_id,
                         "attempt_id": self._plan.attempt_id,
                         "policy": self._composed.values.get("policy"),
+                        **(
+                            {
+                                "result_kind": "artifact",
+                                "artifact_result": dict(
+                                    self._artifact_result_binding or {}
+                                ),
+                            }
+                            if self._result_kind() == "artifact"
+                            else {}
+                        ),
                         "phases": [
                             summary.as_json() for summary in self._phase_summaries
                         ],
@@ -5806,13 +6056,22 @@ class FlightRuntime:
                 "before it will score"
             )
         deferred_scoring = None
-        if deliveries or defer_scoring or self._execution_policy is not None:
+        if self._result_kind() == "artifact" and (deliveries or defer_scoring):
+            raise FlightRuntimeError(
+                "artifact results must finalize directly with no scoring delivery"
+            )
+        if self._result_kind() != "artifact" and (
+            deliveries or defer_scoring or self._execution_policy is not None
+        ):
             from .scoring import seal_scoring_inputs
+
             # Validate caller cells now; the official finalizer validates them
             # again after root releases generation custody.
             self._ledger_validator(verified, merged_ledger_cells)
             deferred_scoring = seal_scoring_inputs(
-                manifest_path, run_id=self.run_id, attempt_id=self.attempt_id,
+                manifest_path,
+                run_id=self.run_id,
+                attempt_id=self.attempt_id,
                 ledger_cells=merged_ledger_cells,
                 delivery_cells=[item["cell_id"] for item in deliveries],
             )
@@ -5826,9 +6085,18 @@ class FlightRuntime:
                 ledger_cells=merged_ledger_cells,
             )
             finalize_payload = {
-                "scores_path": str(finalize_result.scores_path),
+                "scores_path": (
+                    None
+                    if finalize_result.scores_path is None
+                    else str(finalize_result.scores_path)
+                ),
                 "ledger_markdown_path": str(finalize_result.ledger_markdown_path),
                 "attempt_state": finalize_result.attempt_state,
+                **(
+                    {"status": "not-applicable", "result_kind": "artifact"}
+                    if self._result_kind() == "artifact"
+                    else {}
+                ),
             }
 
         flight_receipt: Mapping[str, object] | None = None
@@ -5852,8 +6120,13 @@ class FlightRuntime:
         # folded back into the attach receipt so the attempt's own directory
         # carries the GPU accounting beside its outputs.
         serving_monitor_summary = self.serving_monitor_summary()
-        if serving_monitor_summary is not None and self._session_attach_receipt is not None:
-            self._session_attach_receipt["monitor_summary"] = dict(serving_monitor_summary)
+        if (
+            serving_monitor_summary is not None
+            and self._session_attach_receipt is not None
+        ):
+            self._session_attach_receipt["monitor_summary"] = dict(
+                serving_monitor_summary
+            )
             self._session_attach_receipt["contact_window"] = {
                 "from": self._contact_window[0],
                 "to": self._contact_window[1],
@@ -5918,21 +6191,50 @@ class FlightRuntime:
                 "then score the derived manifest through score-batch"
             )
         manifest_path = Path(seal_payload["manifest_path"])
+        if self._result_kind() == "artifact":
+            verified = self._bundle_verifier(manifest_path)
+            if (
+                getattr(verified, "attempt_state", None) != "FINALIZED"
+                or verified.manifest.get("scores") is not None
+                or verified.manifest.get("scorers") != []
+            ):
+                raise FlightRuntimeError(
+                    "artifact score stage requires a finalized scoreless proposal bundle"
+                )
+            return self.receipts.record(
+                "score",
+                {
+                    "status": "not-applicable",
+                    "result_kind": "artifact",
+                    "manifest_path": str(manifest_path),
+                    "manifest_sha256": _sha256_file(manifest_path),
+                    "job_count": 0,
+                },
+            )
         run_dir = self._run_dir()
         jobs_path = run_dir / "score-jobs.jsonl"
         score_kwargs = {}
         if seal_payload.get("finalize", {}).get("status") == "deferred-to-score-worker":
             from .scoring import load_sealed_score_jobs
+
             jobs = load_sealed_score_jobs(seal_payload)
             score_kwargs["operation"] = "finalize"
             include_per_sample = True
         else:
             with jobs_path.open("w", encoding="utf-8") as handle:
                 handle.write(
-                    json.dumps({"job_id": self._plan.attempt_id, "manifest": str(manifest_path)}) + "\n"
+                    json.dumps(
+                        {
+                            "job_id": self._plan.attempt_id,
+                            "manifest": str(manifest_path),
+                        }
+                    )
+                    + "\n"
                 )
             jobs = load_score_jobs(jobs_path)
-        resolved_output_dir = Path(output_dir) if output_dir is not None else run_dir / "score-batch"
+        resolved_output_dir = (
+            Path(output_dir) if output_dir is not None else run_dir / "score-batch"
+        )
 
         started = self._clock()
         result = self._score_batch(
@@ -5954,7 +6256,9 @@ class FlightRuntime:
             "result": result,
         }
         if seal_payload.get("finalize", {}).get("status") == "deferred-to-score-worker":
-            payload["source_generation_manifest_sha256"] = seal_payload["generation_manifest_sha256"]
+            payload["source_generation_manifest_sha256"] = seal_payload[
+                "generation_manifest_sha256"
+            ]
             payload["finalized_manifest_sha256"] = (
                 _sha256_file(manifest_path) if not result.get("failed", 0) else None
             )
@@ -6242,7 +6546,9 @@ class FlightRuntime:
         # budget -- which is exactly what happened the first time this ran.
         policy = values.get("policy")
         if not isinstance(policy, str) or not policy:
-            raise FlightRuntimeError("baseline fragment must declare a non-empty 'policy'")
+            raise FlightRuntimeError(
+                "baseline fragment must declare a non-empty 'policy'"
+            )
         obs_policy = policy in self._obs_policy_names()
         if obs_policy and seal_and_score:
             raise FlightRuntimeError(
@@ -6261,15 +6567,19 @@ class FlightRuntime:
         # for one contact per sample is exhausted the moment the SECOND phase
         # asks for its first contact -- the same defect the fresh run id
         # below already fixed once, in the other dimension.
-        contacts_per_sample = None if obs_policy else (
-            1 if policy == "fixed" else len(default_phase_program(policy).phases)
+        contacts_per_sample = (
+            None
+            if obs_policy
+            else (1 if policy == "fixed" else len(default_phase_program(policy).phases))
         )
         stamp = int(self._clock() * 1000)
         wire_run_id = f"{WIRE_CHECK_RUN_ID_PREFIX}{self._run_id}-{stamp:d}"
         wire_attempt_id = f"attempt-wire-check-{stamp:d}"
         declared = self._composed.values.get("execution_plan")
         if not isinstance(declared, Mapping):
-            raise FlightRuntimeError("experiment fragment must declare an execution_plan")
+            raise FlightRuntimeError(
+                "experiment fragment must declare an execution_plan"
+            )
         run_dir = self._data_root / "wire-check" / wire_run_id / wire_attempt_id
         if obs_policy:
             if policy not in ("obs-agent-loop-ojw", "obs-repair-loop-ojw"):
@@ -6305,6 +6615,12 @@ class FlightRuntime:
             ),
             attempt_id=wire_attempt_id,
         ).validate()
+        validate_artifact_result_binding(
+            self._composed.values,
+            plan=plan,
+            repo_root=self._repo_root,
+            sample_ids=tuple(sample.sample_id for sample in self._samples),
+        )
         run_dir.mkdir(parents=True, exist_ok=True)
 
         gate = WireCheckGate()
@@ -6333,7 +6649,9 @@ class FlightRuntime:
                 policy_kind,
                 dispatch,
                 phase_receipt,
-            ) = self._dispatch_phase_program(client, plan, policy, model_free_check=True)
+            ) = self._dispatch_phase_program(
+                client, plan, policy, model_free_check=True
+            )
         wall_seconds = max(self._clock() - started, 1e-9)
         self._output_rows = rows
 
@@ -6344,19 +6662,28 @@ class FlightRuntime:
         planned_stopping = bool(self._composed.values.get("phase_planner"))
         if planned_stopping:
             from collections import Counter
+
             observed = dispatch.get("contacts_per_sample_observed", [])
             counts = {row["sample_id"]: row["contacts"] for row in observed}
             if (
                 len(counts) != len(observed)
                 or set(counts) != {sample.sample_id for sample in self._samples}
-                or any(type(count) is not int or not 1 <= count <= contacts_per_sample
-                       for count in counts.values())
+                or any(
+                    type(count) is not int or not 1 <= count <= contacts_per_sample
+                    for count in counts.values()
+                )
                 or sum(counts.values()) != contact_count
             ):
-                problems.append("planner trajectory counts differ from the registered roster or bound")
-            sent_counts = Counter(payload.get("sample_id") for payload in transport.payloads)
+                problems.append(
+                    "planner trajectory counts differ from the registered roster or bound"
+                )
+            sent_counts = Counter(
+                payload.get("sample_id") for payload in transport.payloads
+            )
             if dict(sent_counts) != counts:
-                problems.append("wire requests differ from the planner's realized trajectories")
+                problems.append(
+                    "wire requests differ from the planner's realized trajectories"
+                )
             expected_payloads = contact_count
         max_tokens_binding = self._max_tokens_rule(self._decoding_params())
         max_tokens_per_sample: dict[str, int] = {}
@@ -6384,7 +6711,9 @@ class FlightRuntime:
             request_decoding = dict(payload.get("decoding_params") or {})
             id_slot = request_decoding.get("id_slot")
             if isinstance(id_slot, bool) or not isinstance(id_slot, int):
-                problems.append(f"request {index} id_slot is {id_slot!r}, not an integer")
+                problems.append(
+                    f"request {index} id_slot is {id_slot!r}, not an integer"
+                )
             if max_tokens_binding is not None:
                 # The per-sample cap must have become an INTEGER by the time it
                 # crossed the transport seam, and it must be exactly the integer
@@ -6399,7 +6728,9 @@ class FlightRuntime:
                         "per-sample rule reached the wire unresolved"
                     )
                 else:
-                    expected = cap_policy.resolve(cap_rule, payload.get("audio_seconds"))
+                    expected = cap_policy.resolve(
+                        cap_rule, payload.get("audio_seconds")
+                    )
                     if sent != expected:
                         problems.append(
                             f"request {index} max_tokens is {sent}, not the {expected} "
@@ -6571,7 +6902,11 @@ class FlightRuntime:
             ),
             "sample_count": len(self._samples),
             "contact_count": contact_count,
-            ("contacts_per_sample_ceiling" if planned_stopping else "contacts_per_sample"): contacts_per_sample,
+            (
+                "contacts_per_sample_ceiling"
+                if planned_stopping
+                else "contacts_per_sample"
+            ): contacts_per_sample,
             "policy": policy,
             "policy_kind": policy_kind,
             "phases": phase_receipt,

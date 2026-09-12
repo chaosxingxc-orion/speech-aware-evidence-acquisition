@@ -123,6 +123,21 @@ def test_run_agent_phase_derives_slot_count_and_queue_depth_from_adapter_geometr
     assert returned.results
 
 
+def test_run_agent_phase_forwards_artifact_result_kind_to_shared_runner():
+    captured: dict[str, object] = {}
+
+    def fake_runner(**kwargs):
+        captured.update(kwargs)
+        return _bare_summary(("s1", "s2"))
+
+    pr.run_agent_phase(
+        **_run_agent_phase_defaults(agent_runner=fake_runner),
+        result_kind="artifact",
+    )
+
+    assert captured["result_kind"] == "artifact"
+
+
 def test_run_agent_phase_namespaces_trace_records_by_phase():
     """core.tracing.TraceSink refuses a duplicate record id and every phase
     of a program shares one sink, so the second phase of a two-phase program
