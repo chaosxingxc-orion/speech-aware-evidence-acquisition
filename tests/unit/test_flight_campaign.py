@@ -121,6 +121,49 @@ def test_campaign_cli_exit_reflects_generation_failure(tmp_path, monkeypatch, st
     assert result == expected_exit
 
 
+def test_campaign_cli_forwards_runtime_and_lock_paths_to_shared_factory(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core.flight import cli
+
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    data_root = tmp_path / "data"
+    runtime_root = tmp_path / "resident-runtime"
+    lock_path = tmp_path / "custody" / "flight.lock"
+    factory_calls = []
+
+    monkeypatch.setattr(cli, "__file__", str(repo / "src/package/core/flight/cli.py"))
+    monkeypatch.setattr(cli, "load_campaign_cells", lambda *args: (cell(),))
+
+    def build(*args, **kwargs):
+        factory_calls.append((args, kwargs))
+        return object()
+
+    monkeypatch.setattr(cli, "build_flight_runtime", build)
+    monkeypatch.setattr(
+        cli, "run_campaign",
+        lambda *args, **kwargs: {
+            "schema": "saea-campaign-status-v1",
+            "states": {_SERVING_RUN_ID: {"state": "held", "reason": "test state"}},
+            "pending": [], "completed": [],
+        },
+    )
+
+    result = cli.main([
+        "campaign", "--repo-root", str(repo), "--data-root", str(data_root),
+        "--runtime-root", str(runtime_root), "--lock-path", str(lock_path),
+        "--experiment", "e", "--owner", "root",
+        "--expected-session-id", "serving-test",
+    ])
+
+    assert result == 0
+    assert factory_calls == [((repo.resolve(), data_root.resolve()), {
+        "model": "m", "dataset": "d", "baseline": "b", "experiment": "e",
+        "run_id": _SERVING_RUN_ID, "attempt_id": "attempt-serving",
+        "runtime_root": runtime_root, "lock_path": lock_path,
+        "execution_policy": None,
+    })]
+
+
 def test_config_loader_rejects_duplicate_or_empty_cells(tmp_path):
     from speech_aware_evidence_acquisition.core.flight.campaign import load_campaign_cells
     directory = tmp_path / "configs/experiment"
