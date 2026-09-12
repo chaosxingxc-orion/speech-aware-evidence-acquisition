@@ -40,3 +40,19 @@ registered sequence bound. No tokenizer was invoked for this registration.
 Once sealed, bind configured knowledge supply and register actual Qwen request
 capacity and a complete matched native task comparison. This preparation has
 no task-generation or scoring authority and establishes no effectiveness.
+
+## Executable shared path
+
+The text and speech branches now use the same custody, pre-contact accounting,
+monitor, immutable export, seal and abort lifecycle. Root corrected a draft
+confusion between snapshot file SHA and semantic content SHA; both identities
+are now separately recorded and the distinction is exercised by an actual
+synthetic lifecycle test. The text branch requires its explicit plan schema,
+and the speech branch preserves its historical schema and request behavior.
+
+Root combined validation passed 209 tests, including actual AttemptStore and
+GenerationLease use with synthetic data, stale source refusal, zero-audio usage,
+warm-cache zero contacts, failed-contact preservation and loader-compatible
+output. Coverage was 90 percent for preparation producers and 86 percent for
+the preparation runtime, 88 percent combined. The engineering check passed.
+No model/processor/GPU or actual task score was contacted by these tests.
