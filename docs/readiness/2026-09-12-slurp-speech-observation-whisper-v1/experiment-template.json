@@ -1,7 +1,7 @@
 {
   "auxiliary_speech_observation_preparation": {
     "attempt_id": "attempt-slurp-whisper-observations-v1",
-    "budget_relationship": "Separate registered auxiliary preparation; excluded from the paired Qwen family caps and not consumed by this no-new-evidence control.",
+    "budget_relationship": "Separate registered auxiliary preparation outside the paired Qwen family caps. All speech-tool contacts remain counted under their own preparation registration. The original attempt aborted after eight charged contacts and produced no catalog; this treatment will consume only sealed cached observations from a newly registered recovery.",
     "planned_gpu_hours": 2.0,
     "planned_model_calls": 1000,
     "planned_speech_audio_seconds": 2890,
@@ -23,7 +23,7 @@
       "dataset_fragment": "slurp-speech-native-dev1000",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
       "readiness": {
-        "reason": "Prospective matched fixed cached-Whisper-evidence treatment. The sole unresolved configuration binding is the actual sealed Whisper catalog SHA-256. Recall preparation, scientific admission, exposure registration, service admission, live-phase fitting and generation remain blocked.",
+        "reason": "Prospective matched fixed cached-Whisper-evidence treatment. The original Whisper preparation aborted after eight charged contacts and produced no catalog. The recovery catalog relpath and SHA-256 remain unresolved pending a new registration; recall preparation, scientific admission, exposure registration, service admission, live-phase fitting and generation remain blocked.",
         "state": "preparation-pending"
       },
       "run_id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-V1"
