@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 52,
+  "generation": 53,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,10 +10,10 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "7539aab510473b2e1dd1df02a9af3185c084478b",
-  "updated_at_utc": "2026-09-12T05:07:13.586216+00:00",
-  "next_action": "Read STATUS-052. All fake wire and final recall checks sealed; all three cells ready; six plans/exposure rows registered. Root np3 decoder and 10-second monitor are resident. Launch existing shared campaign from clean isolated a2t-native-campaign-v1, complete actual live fits and generation, then inspect native quality only after all three seals. No task-quality result yet. Keep goal active.",
+  "snapshot_commit": "cbc53ac0c36bed94fdb50c3b069a74569d935720",
+  "updated_at_utc": "2026-09-12T05:16:17.405009+00:00",
+  "next_action": "Read STATUS-053 and fresh DATA campaign/attempt/monitor metadata. Native A2T three-arm campaign dispatched from frozen cbc53ac0; direct owns the lease and was still in preprocessing at last inspection. Resident np3 decoder/monitor stay running. Finish real live fits and generation without changing active source; inspect quality only after all three seals or terminal hold. Apply OWNER022 only to future E21 protocols. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
-  "latest_owner_decision_id": "OWNER-DISCRIMINATIVE-VALUES-021"
+  "latest_owner_decision_id": "OWNER-E21-QUALITY-PRIORITY-022"
 }
