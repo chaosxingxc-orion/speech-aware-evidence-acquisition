@@ -1,12 +1,12 @@
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-069.md](STATUS-069.md) records the live matched SLURP campaign on one decoder-only resident service: control generation is in progress, Whisper preparation is sealed, and treatment follows the control seal. Root's isolated reward-link rewrite passes16 focused tests with82 percent branch-inclusive coverage; independent review found two remaining reward/contact identity checks, which root will close before acceptance. No immediate owner decision blocks the pair. Use state.json and live receipts for current progress.
+**Latest execution:** [STATUS-070.md](STATUS-070.md) records a finalized SLURP control and a Whisper treatment interrupted before revision after 2000 contacts. The shared mixed-evidence renderer defect is reproduced and repaired; 122 tests and independent review pass. The resident service remains alive, but GPU is idle pending the one bounded recovery. Reward lineage and artifact I/O are accepted and merged. No immediate owner choice blocks repair. Use state.json and live receipts for current progress.
 
 **Latest owner direction:** [OWNER-SPEECH-TOOLS-023.md](OWNER-SPEECH-TOOLS-023.md) adds locally loaded speech tools and problem-targeted investigation. [OWNER-DISCRIMINATIVE-VALUES-021.md](OWNER-DISCRIMINATIVE-VALUES-021.md), with OWNER018-020, retains source-grounded distinctions in task-specific values. Include all eight Audio2Tool tiers alongside SLURP and E21/E22 in design/readiness; share the execution base and specialize knowledge and corrective-memory construction. Read [STATUS-044.md](STATUS-044.md) and the [dataset/task analysis](../../../readiness/2026-09-11-task-specific-knowledge-and-memory-analysis.md). Full TRAIN relationship counts and per-carrier audits are complete; three value-format primitives and a TRAIN-bound memory library have CPU tests. Runtime memory integration now has a positive synthetic executor proof; actual memory admission remains pending. The first new live task-agent comparison and its registered matched replication are closed; the subsequent controlled role-coverage comparison is closed without adoption. Preserve historical verdicts and the SLURP-first execution preference.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 69. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 70. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -39,7 +39,7 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-069.md](STATUS-069.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
+Read [STATUS-070.md](STATUS-070.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
 The owner explicitly resumed GPU work after network reconnection and prioritizes
 high utilization. This supersedes OWNER012's scheduling hold. E21 and SLURP generation, scoring, fixed analysis and all four settlements
 are complete. Those earlier G6 SLURP and E21 system admissions fail their frozen rules. STATUS-044 separately admits the newer SLURP task-agent working baseline for exploration. The newer role-coverage pair is closed under STATUS-046; it is not adopted and cannot be replayed under its exhausted registration.
@@ -73,7 +73,7 @@ Its historical September9 snapshot must not be mistaken for current unread work.
 STATUS-009 through STATUS-024 preserve earlier boundaries; their pending items
 are superseded only by the cited later decisions, never erased from history.
 
-Root completed the registered Whisper recovery: all1000 observations are sealed and consumable, and both paired knowledge recalls are identical. The frozen paired configuration and public checks are complete. The root-owned Qwen decoder service and control generation are live at STATUS-069; the treatment will use the same process after control seals. No additional speech encoding is needed. Earlier E21/SLURP attempts and their complete scoring/settlement remain closed. Corrective memory and adaptive control remain parallel component work before a complete external-policy optimization loop. Keep the exemplar branch held. A stored receipt is not present health or dispatch authority.
+Root completed and verified all 1000 Whisper observations. The answering control has finalized, but the treatment stopped after its first two phases because production rendering rejected mixed typed knowledge and untyped tool evidence. Root repaired that shared boundary and is preparing the single bounded recovery. Preserve the original attempts and source. The same decoder service is still resident; it is idle at STATUS-070. Earlier E21/SLURP results remain closed, and the exemplar branch remains held. A stored receipt is not present health or dispatch authority.
 
 Use ChatGPT/OpenAI cloud subagents under [MODEL-ALLOCATION.md](MODEL-ALLOCATION.md);
 the main agent retains planning, scientific decisions, critical review and merge acceptance.
@@ -83,4 +83,4 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest implementation handoff: [STATUS-069](STATUS-069.md). Audio2Tool is decided and closed. Whisper recovery, paired configuration freeze and synthetic request validation are complete; real control generation is live. The shared runtime fits each complete actual phase wave before generating it. This pointer grants no separate task-generation authority.
+Latest implementation handoff: [STATUS-070](STATUS-070.md). Audio2Tool is decided and closed. Reward lineage and artifact I/O are merged; renderer recovery is isolated and validated. Complete the eligible recovered treatment and both source bindings before paired result reading. This pointer grants no separate task-generation authority.
