@@ -362,8 +362,10 @@ def test_whole_cluster_missing_frozen_stratum_marks_bootstrap_unavailable():
         strata={"a": "A", "b": "B"},
         clusters={"a": "cluster-a", "b": "cluster-b"},
     )
+    metric = _metric()
+    metric["errors"]["zero_denominator"] = "zero"
     grouped = compare_pooled_ratios(
-        left, right, metadata, _metric(), groupings={"sector": "sector"},
+        left, right, metadata, metric, groupings={"sector": "sector"},
         seed=0, n_replicates=1, ci_level=0.9,
         grouping_resampling="whole-cluster",
     )["errors"]["groupings"]["sector"]["equal_stratum"]
@@ -416,3 +418,37 @@ def test_run_forwards_opt_in_whole_cluster_grouping_mode(tmp_path):
     result = run(config_path, tmp_path / "result.json")
 
     assert result["contrasts"]["right-v-left"]["errors"]["groupings"]["sector"]["equal_stratum"]["gain_pp"] == pytest.approx(50.0)
+
+
+def test_metric_zero_denominator_uses_scorer_zero_for_all_point_estimands():
+    left = _rows({"zero": (0, 0), "positive": (1, 1)})
+    right = _rows({"zero": (0, 0), "positive": (0, 1)})
+    metadata = _metadata(
+        left,
+        strata={"zero": "A", "positive": "B"},
+        clusters={"zero": "zero-cluster", "positive": "positive-cluster"},
+    )
+    metric = _metric()
+    metric["errors"]["zero_denominator"] = "zero"
+
+    result = compare_pooled_ratios(
+        left, right, metadata, metric, groupings={"sector": "sector"},
+        seed=4, n_replicates=10, ci_level=0.9,
+        include_equal_cluster_mean=True,
+    )["errors"]
+
+    assert result["natural_mixture"]["status"] == "available"
+    assert result["natural_mixture"]["gain_pp"] == pytest.approx(100.0)
+    assert result["sign_counts"] == {
+        "saves": 1,
+        "harms": 0,
+        "ties": 1,
+        "unavailable": 0,
+    }
+    equal = result["groupings"]["sector"]["equal_stratum"]
+    assert equal["status"] == "available"
+    assert equal["gain_pp"] == pytest.approx(50.0)
+    clusters = result["equal_cluster_mean"]
+    assert clusters["eligible_clusters"] == 2
+    assert clusters["excluded_zero_denominator_clusters"] == []
+    assert clusters["gain_pp"] == pytest.approx(50.0)

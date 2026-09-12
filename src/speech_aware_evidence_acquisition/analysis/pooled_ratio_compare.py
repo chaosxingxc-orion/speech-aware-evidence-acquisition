@@ -58,9 +58,18 @@ def _totals(rows, ids: Sequence[str], numerator: str | Sequence[str], denominato
     )
 
 
-def _pooled_ratio(rows, ids: Sequence[str], numerator: str | Sequence[str], denominator: str) -> float:
+def _pooled_ratio(
+    rows,
+    ids: Sequence[str],
+    numerator: str | Sequence[str],
+    denominator: str,
+    *,
+    zero_denominator: str = "unavailable",
+) -> float:
     num, den = _totals(rows, ids, numerator, denominator)
     if den <= 0:
+        if zero_denominator == "zero":
+            return 0.0
         raise _ZeroDenominator("pooled denominator is zero")
     return num / den
 
@@ -89,10 +98,10 @@ def _bootstrap_json(result) -> dict[str, object]:
 
 def _summary(left, right, ids, numerator, denominator, direction, metadata, cluster_field,
              seed, n_replicates, ci_level, strata_field=None, frozen_strata=(),
-             grouping_resampling="within-stratum"):
+             grouping_resampling="within-stratum", zero_denominator="unavailable"):
     try:
-        left_ratio = _pooled_ratio(left, ids, numerator, denominator)
-        right_ratio = _pooled_ratio(right, ids, numerator, denominator)
+        left_ratio = _pooled_ratio(left, ids, numerator, denominator, zero_denominator=zero_denominator)
+        right_ratio = _pooled_ratio(right, ids, numerator, denominator, zero_denominator=zero_denominator)
     except _ZeroDenominator:
         return {"status": "unavailable", "reason": "zero pooled denominator"}
     result = {
@@ -104,8 +113,15 @@ def _summary(left, right, ids, numerator, denominator, direction, metadata, clus
     def statistic(sample_ids):
         if strata_field is None:
             return _gain(
-                _pooled_ratio(left, sample_ids, numerator, denominator),
-                _pooled_ratio(right, sample_ids, numerator, denominator), direction,
+                _pooled_ratio(
+                    left, sample_ids, numerator, denominator,
+                    zero_denominator=zero_denominator,
+                ),
+                _pooled_ratio(
+                    right, sample_ids, numerator, denominator,
+                    zero_denominator=zero_denominator,
+                ),
+                direction,
             )
         gains = []
         for name in frozen_strata:
@@ -113,9 +129,18 @@ def _summary(left, right, ids, numerator, denominator, direction, metadata, clus
                 sid for sid in sample_ids
                 if _group_value(metadata[sid][strata_field], strata_field) == name
             ]
+            if not members:
+                raise _ZeroDenominator("bootstrap draw omits a frozen stratum")
             gains.append(_gain(
-                _pooled_ratio(left, members, numerator, denominator),
-                _pooled_ratio(right, members, numerator, denominator), direction,
+                _pooled_ratio(
+                    left, members, numerator, denominator,
+                    zero_denominator=zero_denominator,
+                ),
+                _pooled_ratio(
+                    right, members, numerator, denominator,
+                    zero_denominator=zero_denominator,
+                ),
+                direction,
             ))
         return sum(gains) / len(gains)
 
@@ -143,7 +168,8 @@ def _summary(left, right, ids, numerator, denominator, direction, metadata, clus
 
 
 def _equal_cluster_summary(left, right, ids, numerator, denominator, direction,
-                           metadata, cluster_field, seed, n_replicates, ci_level):
+                           metadata, cluster_field, seed, n_replicates, ci_level,
+                           zero_denominator="unavailable"):
     """Average eligible cluster rates, retaining bootstrap draw multiplicity."""
     members = {}
     for sid in ids:
@@ -152,8 +178,14 @@ def _equal_cluster_summary(left, right, ids, numerator, denominator, direction,
     for cluster, cluster_ids in sorted(members.items()):
         try:
             rates[cluster] = (
-                _pooled_ratio(left, cluster_ids, numerator, denominator),
-                _pooled_ratio(right, cluster_ids, numerator, denominator),
+                _pooled_ratio(
+                    left, cluster_ids, numerator, denominator,
+                    zero_denominator=zero_denominator,
+                ),
+                _pooled_ratio(
+                    right, cluster_ids, numerator, denominator,
+                    zero_denominator=zero_denominator,
+                ),
             )
         except _ZeroDenominator:
             excluded.append(cluster)
@@ -162,7 +194,11 @@ def _equal_cluster_summary(left, right, ids, numerator, denominator, direction,
         "clusters": len(members),
         "eligible_clusters": len(rates),
         "excluded_zero_denominator_clusters": excluded,
-        "weighting": "equal per cluster with a positive denominator in both arms",
+        "weighting": (
+            "equal per cluster with scorer-defined zero denominators"
+            if zero_denominator == "zero"
+            else "equal per cluster with a positive denominator in both arms"
+        ),
     }
     if not rates:
         result["reason"] = "no eligible cluster rate"
@@ -237,23 +273,45 @@ def compare_pooled_ratios(left, right, metadata, metrics, *, groupings, seed,
     for metric_name, spec in metrics.items():
         if not isinstance(metric_name, str) or not isinstance(spec, Mapping):
             raise PooledRatioError("metric declarations must be named mappings")
-        numerator, denominator, direction = (
-            spec.get("numerator_field"), spec.get("denominator_field"), spec.get("direction")
+        numerator, denominator, direction, zero_denominator = (
+            spec.get("numerator_field"),
+            spec.get("denominator_field"),
+            spec.get("direction"),
+            spec.get("zero_denominator", "unavailable"),
         )
         numerator_valid = isinstance(numerator, str) and bool(numerator)
         if isinstance(numerator, list):
             numerator_valid = bool(numerator) and all(
                 isinstance(field, str) and field for field in numerator
             )
-        if not numerator_valid or not isinstance(denominator, str) or not denominator or direction not in {"lower", "higher"}:
-            raise PooledRatioError("each metric requires numerator_field, denominator_field and lower/higher direction")
+        if (
+            not numerator_valid
+            or not isinstance(denominator, str)
+            or not denominator
+            or direction not in {"lower", "higher"}
+            or zero_denominator not in {"unavailable", "zero"}
+        ):
+            raise PooledRatioError(
+                "each metric requires numerator_field, denominator_field, "
+                "lower/higher direction, and unavailable/zero denominator handling"
+            )
         natural = _summary(left, right, ids, numerator, denominator, direction, metadata,
-                           cluster_field, seed, n_replicates, ci_level)
+                           cluster_field, seed, n_replicates, ci_level,
+                           zero_denominator=zero_denominator)
         signs = {"saves": 0, "harms": 0, "ties": 0, "unavailable": 0}
         for sid in ids:
             try:
-                delta = _gain(_pooled_ratio(left, [sid], numerator, denominator),
-                              _pooled_ratio(right, [sid], numerator, denominator), direction)
+                delta = _gain(
+                    _pooled_ratio(
+                        left, [sid], numerator, denominator,
+                        zero_denominator=zero_denominator,
+                    ),
+                    _pooled_ratio(
+                        right, [sid], numerator, denominator,
+                        zero_denominator=zero_denominator,
+                    ),
+                    direction,
+                )
             except _ZeroDenominator:
                 signs["unavailable"] += 1
             else:
@@ -269,7 +327,8 @@ def compare_pooled_ratios(left, right, metadata, metrics, *, groupings, seed,
                     if _group_value(metadata[sid][field], field) == name
                 ]
                 row = _summary(left, right, members, numerator, denominator, direction,
-                               metadata, cluster_field, seed, 1, ci_level)
+                               metadata, cluster_field, seed, 1, ci_level,
+                               zero_denominator=zero_denominator)
                 row.pop("bootstrap", None)
                 per[name] = row
                 unavailable |= row["status"] != "available"
@@ -279,7 +338,8 @@ def compare_pooled_ratios(left, right, metadata, metrics, *, groupings, seed,
                 equal = _summary(left, right, ids, numerator, denominator, direction,
                                  metadata, cluster_field, seed, n_replicates, ci_level,
                                  strata_field=field, frozen_strata=strata,
-                                 grouping_resampling=grouping_resampling)
+                                 grouping_resampling=grouping_resampling,
+                                 zero_denominator=zero_denominator)
                 equal["left_ratio_pct"] = sum(per[name]["left_ratio_pct"] for name in strata) / len(strata)
                 equal["right_ratio_pct"] = sum(per[name]["right_ratio_pct"] for name in strata) / len(strata)
                 equal["gain_pp"] = sum(per[name]["gain_pp"] for name in strata) / len(strata)
@@ -294,6 +354,7 @@ def compare_pooled_ratios(left, right, metadata, metrics, *, groupings, seed,
             output[metric_name]["equal_cluster_mean"] = _equal_cluster_summary(
                 left, right, ids, numerator, denominator, direction, metadata,
                 cluster_field, seed, n_replicates, ci_level,
+                zero_denominator=zero_denominator,
             )
     return output
 
