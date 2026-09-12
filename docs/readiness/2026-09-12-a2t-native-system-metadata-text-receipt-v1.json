@@ -1,0 +1,60 @@
+{
+  "data_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-METADATA-TEXT-V1/receipt.json",
+    "sha256": "16106b6f96296808e8e54c1a95c7a072383a12c082e8bc7c5a68fec431606f00"
+  },
+  "schema": "saea-outcome-free-metadata-conversion-receipt-v1",
+  "recorded_at_utc": "2026-09-12T17:54:17.642000+00:00",
+  "registration": {
+    "path": "/home/chao/saea-worktrees/a2t-native-postseal-read-v1/docs/readiness/2026-09-12-a2t-native-system-metadata-text-registration-v1.json",
+    "sha256": "fbe69b3deb06f22e570ae1fcdb15f3690156d91d3939a8658ee4e4ab08bca850",
+    "source_commit": "822f294e36b95aec131695bb62f5a2ba4620270e"
+  },
+  "source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-METADATA-V1/metadata.json",
+    "sha256": "f4eeb0f5c548b15ab65e8137d134ee4b17bcebfa402eb71dcda6aa64198a5c70"
+  },
+  "output": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-METADATA-TEXT-V1/metadata.json",
+    "sha256": "f9afc5b715ead7ec809a6ec2844605b8ebf7eeae2f614d60b146c5d7d3b7e1fa",
+    "bytes": 740453
+  },
+  "rows": 4000,
+  "query_clusters": 2097,
+  "tier_counts": {
+    "tier1_direct": 500,
+    "tier2_parametric": 500,
+    "tier3_multi_intent": 500,
+    "tier4_implicit": 500,
+    "tier5_needle": 500,
+    "tier6_correction": 500,
+    "tier7_multiturn": 500,
+    "tier8_intent_blending": 500
+  },
+  "membership_sha256": "0e28414b999a6c2b91c8fccbf47c17baa9551754d5a790babdb56045115ce845",
+  "verified_invariants": [
+    "4000 exact sample IDs",
+    "eight original tiers of 500 rows",
+    "same 2097 query clusters",
+    "identical cluster membership and tier/domain assignments",
+    "all fields other than query_idx unchanged",
+    "text-to-int inverse reproduces every original query_idx",
+    "no output overwrite"
+  ],
+  "shared_interface_validation": {
+    "source_commit": "5f79d399dc15016aaeedccac347aebffddfc61ca",
+    "entry": "analysis.pooled_ratio_compare._table and compare_pooled_ratios",
+    "result": "PASS",
+    "rows": 4000,
+    "score_values": "synthetic all-zero numerators with unit denominators; no real outcomes",
+    "validation_replicates": 1,
+    "formal_statistical_recipe_changed": false
+  },
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "audio": 0,
+    "quality_read": 0,
+    "gpu": 0
+  }
+}
