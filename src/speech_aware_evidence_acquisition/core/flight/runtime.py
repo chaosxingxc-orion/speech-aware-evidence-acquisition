@@ -1963,6 +1963,46 @@ class FlightRuntime:
             )
         return bindings
 
+    def source_audio_bindings(self) -> Mapping[str, Mapping[str, str]]:
+        """Bind each validated source-audio identity to its derived packet.
+
+        The packet descriptor consumed by the answering transport remains the
+        historical exact packet_id/sha256 pair. This separate mapping lets
+        segmented retrieval queries prove which source audio they encoded
+        without treating the derived packet manifest hash as an audio hash.
+        """
+
+        packets = self.speech_packet_bindings()
+        sample_ids = {sample.sample_id for sample in self._samples}
+        if set(packets) != sample_ids:
+            raise FlightRuntimeError(
+                "source-audio bindings and speech packet bindings cover "
+                "different sample rosters"
+            )
+        bindings: dict[str, Mapping[str, str]] = {}
+        for sample in self._samples:
+            audio_ref = getattr(sample, "audio_ref", None)
+            source_sha256 = getattr(audio_ref, "sha256", None)
+            if (
+                not isinstance(source_sha256, str)
+                or len(source_sha256) != 64
+                or set(source_sha256) - set("0123456789abcdef")
+            ):
+                raise FlightRuntimeError(
+                    f"sample {sample.sample_id!r} lacks a validated source audio SHA"
+                )
+            descriptor = packets[sample.sample_id]
+            if set(descriptor) != {"packet_id", "sha256"}:
+                raise FlightRuntimeError(
+                    "speech packet bindings must retain exact packet_id/sha256 fields"
+                )
+            bindings[sample.sample_id] = {
+                "packet_id": descriptor["packet_id"],
+                "packet_sha256": descriptor["sha256"],
+                "source_audio_sha256": source_sha256,
+            }
+        return bindings
+
     def _speech_feature_root(self) -> Path:
         value = self._composed.values.get("speech_feature_root")
         if not isinstance(value, str) or not value:
@@ -4230,27 +4270,58 @@ class FlightRuntime:
             raise PreparationError("actual request materialization must cover the full roster")
         return tuple(payloads)
 
+    def _source_audio_bindings_for_supply(self, binding, spec):
+        """Return the explicit source binding only for segmented queries."""
+
+        from ...rails.phase_supply import SEALED_SEGMENT_VECTORS_KIND
+
+        query_source = getattr(spec, "query_source", {})
+        if query_source.get("kind") != SEALED_SEGMENT_VECTORS_KIND:
+            return None
+        source_audio_bindings = binding.get("source_audio_bindings")
+        if source_audio_bindings is None:
+            source_audio_bindings = getattr(
+                binding.get("supply_for_phase"),
+                "source_audio_bindings",
+                None,
+            )
+        if source_audio_bindings is None:
+            source_audio_bindings = self.source_audio_bindings()
+        return source_audio_bindings
+
     def _phase_seed_inputs(self, binding, spec, split_identity_hash):
         """Bind prepared selections to the same frozen inputs used by dispatch."""
         from ..preparation import artifact_inputs, verify_source_receipts
         from ...rails import kb_policy, knowledge_provider, phase_supply
 
-        return artifact_inputs(
-            config=self._composed.values, split_identity_hash=split_identity_hash,
-            sources={
-                "frozen_source_receipts": verify_source_receipts(
-                    self._composed.values.get("preparation_source_receipts"),
-                    repo_root=self._repo_root, data_root=self._data_root,
-                ),
-                "snapshot": binding["knowledge_snapshot"].content_hash(),
-                "supply_spec": spec.as_json(),
-                "packets": dict(binding["speech_packet_bindings"]),
-                "implementation": {
-                    **{module.__name__: _sha256_file(Path(module.__file__))
-                       for module in (kb_policy, knowledge_provider, phase_supply)},
-                    "runtime": _sha256_file(Path(__file__)),
+        sources = {
+            "frozen_source_receipts": verify_source_receipts(
+                self._composed.values.get("preparation_source_receipts"),
+                repo_root=self._repo_root,
+                data_root=self._data_root,
+            ),
+            "snapshot": binding["knowledge_snapshot"].content_hash(),
+            "supply_spec": spec.as_json(),
+            "packets": dict(binding["speech_packet_bindings"]),
+            "implementation": {
+                **{
+                    module.__name__: _sha256_file(Path(module.__file__))
+                    for module in (kb_policy, knowledge_provider, phase_supply)
                 },
+                "runtime": _sha256_file(Path(__file__)),
             },
+        }
+        if (
+            getattr(spec, "query_source", {}).get("kind")
+            == phase_supply.SEALED_SEGMENT_VECTORS_KIND
+        ):
+            sources["source_audio_bindings"] = dict(
+                self._source_audio_bindings_for_supply(binding, spec)
+            )
+        return artifact_inputs(
+            config=self._composed.values,
+            split_identity_hash=split_identity_hash,
+            sources=sources,
         )
 
     def prepare_phase_supply(self, path: Path, *, max_workers: int = 1) -> Mapping[str, object]:
@@ -4291,6 +4362,8 @@ class FlightRuntime:
         from ..preparation import PreparationError, prepare_artifact
         from ...rails.phase_supply import (
             SEALED_SEGMENT_VECTORS_KIND,
+            PhaseSupplyError,
+            assert_segment_query_bindings,
             load_phase_supply_specs,
             load_sealed_segment_vectors,
             load_sealed_vectors,
@@ -4339,11 +4412,14 @@ class FlightRuntime:
         if set(query) != set(binding["speech_packet_bindings"]):
             raise PreparationError("prepared recall query roster differs from the runtime packets")
         if spec.query_source.get("kind") == SEALED_SEGMENT_VECTORS_KIND:
-            for sample_id, row in query.items():
-                if row.audio_sha256 != binding["speech_packet_bindings"][sample_id]["sha256"]:
-                    raise PreparationError(
-                        "prepared recall segmented query audio does not match runtime packet"
-                    )
+            try:
+                assert_segment_query_bindings(
+                    query,
+                    binding["speech_packet_bindings"],
+                    self._source_audio_bindings_for_supply(binding, spec),
+                )
+            except PhaseSupplyError as error:
+                raise PreparationError(str(error)) from None
         inputs = self._phase_seed_inputs(binding, spec, identity)
         inputs.update({"recall_schema": "saea-phase-recall-v1", "phase": phase,
                        "roster_ids": sorted(query)})
@@ -4404,6 +4480,8 @@ class FlightRuntime:
         # The roster is independently checked against the current sealed query table.
         from ...rails.phase_supply import (
             SEALED_SEGMENT_VECTORS_KIND,
+            PhaseSupplyError,
+            assert_segment_query_bindings,
             load_sealed_segment_vectors,
             load_sealed_vectors,
         )
@@ -4420,11 +4498,14 @@ class FlightRuntime:
         if set(query) != set(binding["speech_packet_bindings"]):
             raise PreparationError("prepared recall query roster differs from the runtime packets")
         if spec.query_source.get("kind") == SEALED_SEGMENT_VECTORS_KIND:
-            for sample_id, row in query.items():
-                if row.audio_sha256 != binding["speech_packet_bindings"][sample_id]["sha256"]:
-                    raise PreparationError(
-                        "prepared recall segmented query audio does not match runtime packet"
-                    )
+            try:
+                assert_segment_query_bindings(
+                    query,
+                    binding["speech_packet_bindings"],
+                    self._source_audio_bindings_for_supply(binding, spec),
+                )
+            except PhaseSupplyError as error:
+                raise PreparationError(str(error)) from None
         inputs["roster_ids"] = sorted(query)
         output = load_artifact(path, expected_sha256=pin["sha256"],
                                kind="phase-recall", inputs=inputs)
@@ -4511,6 +4592,9 @@ class FlightRuntime:
             query_vectors_by_sample=query_tables.get(first_phase, {}),
             speech_packet_bindings=binding["speech_packet_bindings"],
             split_identity_hash=plan.split_identity_hash,
+            source_audio_bindings=getattr(
+                supply_for_phase, "source_audio_bindings", None
+            ),
             workers=max_workers,
             lease_metadata_present=(self._data_root / "locks" / "flight.lock").exists(),
         )
@@ -5229,6 +5313,14 @@ class FlightRuntime:
                 "the supply to a later phase"
             )
         providers = self._phase_supply_providers
+        source_audio_bindings = (
+            self.source_audio_bindings()
+            if any(
+                spec.query_source.get("kind") == "sealed-segment-vectors"
+                for spec in specs.values()
+            )
+            else None
+        )
         prepared_recall = None
         prepared_pin = self._composed.values.get("prepared_phase_recall")
         if prepared_pin is not None:
@@ -5238,7 +5330,14 @@ class FlightRuntime:
                 raise PreparationError("prepared recall cannot be ignored by an injected provider")
             prepared_recall = {
                 phase: self._load_phase_recall(
-                    prepared_pin[phase], {"knowledge_snapshot": snapshot, "speech_packet_bindings": self.speech_packet_bindings()}, specs[phase], self._prepare()[3]
+                    prepared_pin[phase],
+                    {
+                        "knowledge_snapshot": snapshot,
+                        "speech_packet_bindings": self.speech_packet_bindings(),
+                        "source_audio_bindings": source_audio_bindings,
+                    },
+                    specs[phase],
+                    self._prepare()[3],
                 )
                 for phase in specs
                 if phase in prepared_pin
@@ -5255,6 +5354,7 @@ class FlightRuntime:
             ),
             prepared_recall_by_phase=prepared_recall,
             seed_phases=(first_phase,) if first_phase in specs else (),
+            source_audio_bindings=source_audio_bindings,
         )
         self._phase_supply_receipt = phase_supply_receipt(
             specs,

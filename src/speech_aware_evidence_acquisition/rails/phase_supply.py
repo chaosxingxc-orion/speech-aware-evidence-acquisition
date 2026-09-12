@@ -158,6 +158,9 @@ _SOURCE_KEYS = frozenset(
 )
 _RANK_WEIGHT_KEYS = frozenset({"w_cos", "w_prior", "w_agree"})
 _FUSE_COVERAGE_KEYS = frozenset({"m", "c", "top_l"})
+_SOURCE_AUDIO_BINDING_KEYS = frozenset(
+    {"packet_id", "packet_sha256", "source_audio_sha256"}
+)
 
 _SHA256_CHARS = frozenset("0123456789abcdef")
 
@@ -212,6 +215,125 @@ def _require_text(value: object, *, field: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise PhaseSupplyError(f"{field} must be a non-empty string")
     return value
+
+
+def _validate_source_audio_bindings(
+    bindings: Mapping[str, Mapping[str, object]] | None,
+) -> Mapping[str, Mapping[str, str]] | None:
+    """Validate the optional source-audio to derived-packet authority."""
+
+    if bindings is None:
+        return None
+    if not isinstance(bindings, Mapping) or not bindings:
+        raise PhaseSupplyError("source-audio bindings must be a non-empty mapping")
+    validated: dict[str, Mapping[str, str]] = {}
+    for sample_id, raw in bindings.items():
+        _require_text(sample_id, field="source-audio binding sample id")
+        if not isinstance(raw, Mapping) or set(raw) != _SOURCE_AUDIO_BINDING_KEYS:
+            raise PhaseSupplyError(
+                "source-audio binding entries must carry exactly packet_id, "
+                "packet_sha256, and source_audio_sha256"
+            )
+        validated[sample_id] = {
+            "packet_id": _require_text(
+                raw["packet_id"], field=f"source-audio binding {sample_id} packet id"
+            ),
+            "packet_sha256": _require_sha256(
+                raw["packet_sha256"],
+                field=f"source-audio binding {sample_id} packet SHA",
+            ),
+            "source_audio_sha256": _require_sha256(
+                raw["source_audio_sha256"],
+                field=f"source-audio binding {sample_id} source audio SHA",
+            ),
+        }
+    return validated
+
+
+def _assert_segment_query_binding(
+    *,
+    sample_id: str,
+    query_state: QueryState,
+    query_record: SealedSegmentQuery,
+    source_audio_bindings: Mapping[str, Mapping[str, str]] | None,
+) -> None:
+    if query_state.query_sample_id != sample_id:
+        raise PhaseSupplyError(
+            "segmented query context sample and QueryState sample differ"
+        )
+    if source_audio_bindings is None:
+        if query_state.query_source != "speech_audio":
+            raise PhaseSupplyError(
+                "sealed-segment-vectors requires QueryState.query_source='speech_audio'"
+            )
+        if query_record.audio_sha256 != query_state.speech_packet_sha256:
+            raise PhaseSupplyError(
+                "sealed-segment-vectors row audio_sha256 does not match "
+                "QueryState.speech_packet_sha256"
+            )
+        return
+
+    binding = source_audio_bindings.get(sample_id)
+    if binding is None:
+        raise PhaseSupplyError(
+            f"segmented query sample {sample_id!r} has no source-audio binding"
+        )
+    if query_state.speech_packet_id != binding["packet_id"]:
+        raise PhaseSupplyError(
+            "segmented query QueryState packet id differs from its source-audio binding"
+        )
+    if query_state.speech_packet_sha256 != binding["packet_sha256"]:
+        raise PhaseSupplyError(
+            "segmented query QueryState packet SHA differs from its source-audio binding"
+        )
+    if query_record.audio_sha256 != binding["source_audio_sha256"]:
+        raise PhaseSupplyError(
+            "segmented query row source audio SHA differs from its source-audio binding"
+        )
+
+
+def assert_segment_query_bindings(
+    query_records: Mapping[str, SealedSegmentQuery],
+    speech_packet_bindings: Mapping[str, Mapping[str, object]],
+    source_audio_bindings: Mapping[str, Mapping[str, object]] | None,
+) -> None:
+    """Bind segmented source audio independently from derived packet bytes."""
+
+    validated = _validate_source_audio_bindings(source_audio_bindings)
+    if validated is None:
+        raise PhaseSupplyError(
+            "segmented packet execution requires explicit source-audio bindings"
+        )
+    if set(query_records) != set(speech_packet_bindings):
+        raise PhaseSupplyError(
+            "segmented query roster differs from speech packet bindings"
+        )
+    for sample_id, query_record in query_records.items():
+        descriptor = speech_packet_bindings[sample_id]
+        if (
+            not isinstance(descriptor, Mapping)
+            or set(descriptor) != {"packet_id", "sha256"}
+        ):
+            raise PhaseSupplyError(
+                "speech packet binding must carry exactly packet_id and sha256"
+            )
+        binding = validated.get(sample_id)
+        if binding is None:
+            raise PhaseSupplyError(
+                f"segmented query sample {sample_id!r} has no source-audio binding"
+            )
+        if descriptor["packet_id"] != binding["packet_id"]:
+            raise PhaseSupplyError(
+                "segmented query packet id differs from its source-audio binding"
+            )
+        if descriptor["sha256"] != binding["packet_sha256"]:
+            raise PhaseSupplyError(
+                "segmented query packet SHA differs from its source-audio binding"
+            )
+        if query_record.audio_sha256 != binding["source_audio_sha256"]:
+            raise PhaseSupplyError(
+                "segmented query source audio SHA differs from its source-audio binding"
+            )
 
 
 def _require_relpath(value: object, *, field: str) -> str:
@@ -819,6 +941,7 @@ def build_supply_for_phase(
     provider_for_phase: ProviderForPhase | None = None,
     seed_phases: Sequence[str] = (),
     prepared_recall_by_phase: Mapping[str, Mapping[str, Mapping[str, Mapping[str, float]]]] | None = None,
+    source_audio_bindings: Mapping[str, Mapping[str, object]] | None = None,
 ):
     """Build the ``rails.controllers.SupplyForPhase`` callable, or ``None``
     when no phase declares supply.
@@ -845,6 +968,9 @@ def build_supply_for_phase(
     if not specs:
         return None
 
+    validated_source_bindings = _validate_source_audio_bindings(
+        source_audio_bindings
+    )
     query_tables: dict[
         str, Mapping[str, Mapping[str, tuple[float, ...]]] | Mapping[str, SealedSegmentQuery]
     ] = {}
@@ -892,19 +1018,23 @@ def build_supply_for_phase(
                 "supply_for_phase needs an AgentRuntimeContext carrying a sample_id "
                 "and a QueryState"
             )
+        if (
+            validated_source_bindings is not None
+            and sample_id not in validated_source_bindings
+        ):
+            raise PhaseSupplyError(
+                f"segmented query sample {sample_id!r} has no source-audio binding"
+            )
         query_record = query_tables[phase_name].get(sample_id)
         if not query_record:
             return None
         if isinstance(query_record, SealedSegmentQuery):
-            if query_state.query_source != "speech_audio":
-                raise PhaseSupplyError(
-                    "sealed-segment-vectors requires QueryState.query_source='speech_audio'"
-                )
-            if query_record.audio_sha256 != query_state.speech_packet_sha256:
-                raise PhaseSupplyError(
-                    "sealed-segment-vectors row audio_sha256 does not match "
-                    "QueryState.speech_packet_sha256"
-                )
+            _assert_segment_query_binding(
+                sample_id=sample_id,
+                query_state=query_state,
+                query_record=query_record,
+                source_audio_bindings=validated_source_bindings,
+            )
             provider_query = {
                 "query_state": query_state,
                 "query_segments": query_record.segments,
@@ -997,6 +1127,9 @@ def build_supply_for_phase(
     supply_for_phase.facet_vector_rows = {  # type: ignore[attr-defined]
         phase: len(table) for phase, table in facet_tables.items()
     }
+    supply_for_phase.source_audio_bindings = (  # type: ignore[attr-defined]
+        validated_source_bindings
+    )
     return supply_for_phase
 
 
@@ -1080,21 +1213,39 @@ def _bootstrap_one(task):
 
 
 def _bootstrap_select(task, state):
-    sample_id, query_record, descriptor = task
+    sample_id, query_record, descriptor, source_audio_binding = task
     spec, provider, split_identity_hash = state
+    if (
+        not isinstance(descriptor, Mapping)
+        or set(descriptor) != {"packet_id", "sha256"}
+    ):
+        raise PhaseSupplyError(
+            "speech packet binding must carry exactly packet_id and sha256"
+        )
     seed_state = QueryState(
         query_id=f"{SEED_QUERY_ID_PREFIX}:{spec.phase}:{sample_id}",
         query_sample_id=sample_id,
         speech_packet_id=str(descriptor["packet_id"]),
         speech_packet_sha256=str(descriptor["sha256"]),
         use_split_identity_hash=split_identity_hash,
-        query_source=("speech_audio" if isinstance(query_record, SealedSegmentQuery) else "speech_features"),
+        query_source=(
+            "speech_audio"
+            if isinstance(query_record, SealedSegmentQuery)
+            and source_audio_binding is None
+            else "speech_features"
+        ),
     ).validate()
     if isinstance(query_record, SealedSegmentQuery):
-        if query_record.audio_sha256 != descriptor["sha256"]:
-            raise PhaseSupplyError(
-                "sealed-segment-vectors row audio_sha256 does not match speech packet binding"
-            )
+        _assert_segment_query_binding(
+            sample_id=sample_id,
+            query_state=seed_state,
+            query_record=query_record,
+            source_audio_bindings=(
+                None
+                if source_audio_binding is None
+                else {sample_id: source_audio_binding}
+            ),
+        )
         provider_query = {"query_state": seed_state, "query_segments": query_record.segments}
     else:
         provider_query = {"query_state": seed_state, "query_vectors": dict(query_record)}
@@ -1127,6 +1278,7 @@ def build_bootstrap_selection(
     ],
     speech_packet_bindings: Mapping[str, Mapping[str, object]],
     split_identity_hash: str,
+    source_audio_bindings: Mapping[str, Mapping[str, object]] | None = None,
     workers: int = 1,
     lease_metadata_present: bool = False,
 ) -> tuple[dict[str, tuple[str, ...]], dict[str, tuple[str, ...]]]:
@@ -1153,8 +1305,20 @@ def build_bootstrap_selection(
     independent calls cannot leak providers or select from another job.
     """
     workers = _validate_bootstrap_workers(workers, lease_metadata_present=lease_metadata_present)
+    validated_source_bindings = _validate_source_audio_bindings(
+        source_audio_bindings
+    )
     tasks = [
-        (sample_id, query_vectors_by_sample[sample_id], speech_packet_bindings[sample_id])
+        (
+            sample_id,
+            query_vectors_by_sample[sample_id],
+            speech_packet_bindings[sample_id],
+            (
+                None
+                if validated_source_bindings is None
+                else validated_source_bindings.get(sample_id)
+            ),
+        )
         for sample_id in sorted(speech_packet_bindings)
         if query_vectors_by_sample.get(sample_id)
     ]
@@ -1235,6 +1399,7 @@ __all__ = [
     "SealedSegmentQuery",
     "assert_phase_supply_queries_carry_speech",
     "assert_query_signal_declares_speech",
+    "assert_segment_query_bindings",
     "build_bootstrap_selection",
     "build_supply_for_phase",
     "load_phase_supply_specs",
