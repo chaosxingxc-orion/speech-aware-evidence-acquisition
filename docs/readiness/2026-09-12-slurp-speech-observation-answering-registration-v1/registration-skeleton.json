@@ -1,0 +1,713 @@
+{
+  "schema": "saea-slurp-speech-observation-answering-registration-skeleton-v1",
+  "status": "NOT_REGISTERED_NON_RUNNABLE_RECOVERY_CATALOG_SHA_KNOWN",
+  "source_basis": {
+    "pair_worktree": "/home/chao/saea-worktrees/slurp-speech-observation-pair-v1",
+    "observed_head_before_catalog_seal": "a0f34edd6b80865d4e484cc5a0cd2bbd7c8d879f",
+    "required_final_clean_commit": "UNRESOLVED_FINAL_CLEAN_PAIR_SOURCE_COMMIT",
+    "skeleton_worktree": "/home/chao/saea-worktrees/slurp-speech-tool-treatment-prepare-v1"
+  },
+  "identities": {
+    "control": {
+      "generation_run_id": "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1",
+      "generation_attempt_id": "attempt-slurp-speech-observation-control-generation-v1",
+      "fit_run_id": "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-FIT-V1",
+      "fit_attempt_id": "attempt-slurp-speech-observation-control-fit-v1",
+      "experiment": "slurp-speech-observation-control-v1",
+      "cell": "slurp-speech-observation-control-v1",
+      "baseline": "slurp-speech-observation-control-v1"
+    },
+    "treatment": {
+      "generation_run_id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-V1",
+      "generation_attempt_id": "attempt-slurp-speech-observation-whisper-generation-v1",
+      "fit_run_id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-FIT-V1",
+      "fit_attempt_id": "attempt-slurp-speech-observation-whisper-fit-v1",
+      "experiment": "slurp-speech-observation-whisper-v1",
+      "cell": "slurp-speech-observation-whisper-v1",
+      "baseline": "slurp-speech-observation-whisper-v1"
+    }
+  },
+  "plans": {
+    "control_generation": {
+      "schema": "saea-unregistered-generation-plan-template-v1",
+      "status": "NOT_REGISTERED_NON_RUNNABLE",
+      "source_worktree": "/home/chao/saea-worktrees/slurp-speech-observation-pair-v1",
+      "source_commit": "UNRESOLVED_FINAL_CLEAN_PAIR_SOURCE_COMMIT",
+      "composed_config_hash": "UNRESOLVED_AFTER_FINAL_READINESS_AND_PREPARATION_BINDINGS",
+      "expected_session_id": "serving-slurp-speech-observation-np4-v1",
+      "required_session_identity": {
+        "session_id": "serving-slurp-speech-observation-np4-v1",
+        "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+        "model_fragment_sha256_at_skeleton_source": "39ae54d72838b359a893a3938e242859c037cb3af1ddb1e7aca838e33fa45ca0",
+        "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+        "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+        "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+        "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+        "model_files": [
+          {
+            "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+            "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+          }
+        ],
+        "model_root": "/home/chao",
+        "host": "127.0.0.1",
+        "port": 8080,
+        "server_argv": [
+          "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8080",
+          "-m",
+          "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+          "--no-mmproj",
+          "-c",
+          "65536",
+          "-np",
+          "4",
+          "-b",
+          "2048",
+          "-ub",
+          "512",
+          "-fa",
+          "on",
+          "-ngl",
+          "999",
+          "-ctk",
+          "q8_0",
+          "-ctv",
+          "q8_0",
+          "--cache-prompt",
+          "--cache-ram",
+          "0",
+          "--no-cache-idle-slots",
+          "--slot-prompt-similarity",
+          "0"
+        ],
+        "server_env": {
+          "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+          "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+        },
+        "props_identity": {
+          "total_slots": 4,
+          "slot_n_ctx": 16384,
+          "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf"
+        },
+        "request_max_tokens": 256,
+        "session_role": "inference",
+        "resident_document": {
+          "relpath": "serving/serving-slurp-speech-observation-np4-v1/session.json",
+          "sha256": "UNRESOLVED_AFTER_ROOT_STARTS_AND_ATTESTS_SESSION"
+        }
+      },
+      "scientific_eligibility": {
+        "relpath": "UNRESOLVED_ROOT_DECISION_RECEIPT_RELPATH",
+        "sha256": "UNRESOLVED_SEALED_ARTIFACT_SHA256",
+        "expected_decision_id": "UNRESOLVED_ROOT_DECISION_ID"
+      },
+      "family_budget": {
+        "generation_calls_total": 6300,
+        "fit_contacts_total": 18006,
+        "speech_audio_seconds_total": 21000,
+        "gpu_hours_total": 4.0,
+        "per_arm_generation_target": 3000,
+        "per_arm_generation_cap": 3150,
+        "per_arm_fit_contact_cap": 9003,
+        "per_arm_speech_audio_seconds": 10500,
+        "per_arm_gpu_hours_including_fit_and_loading_share": 2.0
+      },
+      "program": {
+        "policy": "phase-task-tools-solve-revise-v1",
+        "phases": [
+          "plan",
+          "solve",
+          "revise"
+        ],
+        "whole_roster_wave_barrier": true,
+        "request_max_tokens": 256
+      },
+      "quality_read_gate": "Do not inspect paired semantic results until both complete manifests seal or root records a formal terminal hold.",
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "dev",
+        "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+        "planned_model_calls": 3150,
+        "planned_gpu_hours": 2.0,
+        "planned_speech_audio_seconds": 10500,
+        "protocol_hash": "UNRESOLVED_FROM_FINAL_COMPOSED_CONFIG_ARM_AND_SPLIT",
+        "attempt_id": "attempt-slurp-speech-observation-control-generation-v1",
+        "schema": "saea-execution-plan-v1",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "experiment": "slurp-speech-observation-control-v1",
+      "cell": "slurp-speech-observation-control-v1"
+    },
+    "control_fit": {
+      "schema": "saea-unregistered-fit-plan-template-v1",
+      "status": "NOT_REGISTERED_NON_RUNNABLE",
+      "source_worktree": "/home/chao/saea-worktrees/slurp-speech-observation-pair-v1",
+      "source_commit": "UNRESOLVED_FINAL_CLEAN_PAIR_SOURCE_COMMIT",
+      "composed_config_hash": "UNRESOLVED_AFTER_FINAL_READINESS_AND_PREPARATION_BINDINGS",
+      "expected_session_id": "serving-slurp-speech-observation-np4-v1",
+      "required_session_identity": {
+        "session_id": "serving-slurp-speech-observation-np4-v1",
+        "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+        "model_fragment_sha256_at_skeleton_source": "39ae54d72838b359a893a3938e242859c037cb3af1ddb1e7aca838e33fa45ca0",
+        "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+        "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+        "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+        "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+        "model_files": [
+          {
+            "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+            "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+          }
+        ],
+        "model_root": "/home/chao",
+        "host": "127.0.0.1",
+        "port": 8080,
+        "server_argv": [
+          "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8080",
+          "-m",
+          "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+          "--no-mmproj",
+          "-c",
+          "65536",
+          "-np",
+          "4",
+          "-b",
+          "2048",
+          "-ub",
+          "512",
+          "-fa",
+          "on",
+          "-ngl",
+          "999",
+          "-ctk",
+          "q8_0",
+          "-ctv",
+          "q8_0",
+          "--cache-prompt",
+          "--cache-ram",
+          "0",
+          "--no-cache-idle-slots",
+          "--slot-prompt-similarity",
+          "0"
+        ],
+        "server_env": {
+          "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+          "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+        },
+        "props_identity": {
+          "total_slots": 4,
+          "slot_n_ctx": 16384,
+          "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf"
+        },
+        "request_max_tokens": 256,
+        "session_role": "inference",
+        "resident_document": {
+          "relpath": "serving/serving-slurp-speech-observation-np4-v1/session.json",
+          "sha256": "UNRESOLVED_AFTER_ROOT_STARTS_AND_ATTESTS_SESSION"
+        }
+      },
+      "scientific_eligibility": {
+        "relpath": "UNRESOLVED_ROOT_DECISION_RECEIPT_RELPATH",
+        "sha256": "UNRESOLVED_SEALED_ARTIFACT_SHA256",
+        "expected_decision_id": "UNRESOLVED_ROOT_DECISION_ID"
+      },
+      "family_budget": {
+        "generation_calls_total": 6300,
+        "fit_contacts_total": 18006,
+        "speech_audio_seconds_total": 21000,
+        "gpu_hours_total": 4.0,
+        "per_arm_generation_target": 3000,
+        "per_arm_generation_cap": 3150,
+        "per_arm_fit_contact_cap": 9003,
+        "per_arm_speech_audio_seconds": 10500,
+        "per_arm_gpu_hours_including_fit_and_loading_share": 2.0
+      },
+      "program": {
+        "policy": "phase-task-tools-solve-revise-v1",
+        "phases": [
+          "plan",
+          "solve",
+          "revise"
+        ],
+        "whole_roster_wave_barrier": true,
+        "request_max_tokens": 256
+      },
+      "quality_read_gate": "Do not inspect paired semantic results until both complete manifests seal or root records a formal terminal hold.",
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-FIT-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "dev",
+        "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+        "planned_model_calls": 9003,
+        "planned_gpu_hours": 2.0,
+        "planned_speech_audio_seconds": 10500,
+        "protocol_hash": "UNRESOLVED_FROM_FINAL_COMPOSED_CONFIG_ARM_AND_SPLIT",
+        "attempt_id": "attempt-slurp-speech-observation-control-fit-v1",
+        "schema": "saea-execution-plan-v1",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "generation_run_id": "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1",
+      "live_fit_protocol": "At each plan, solve and revise full-roster barrier, check the exact 1000 live requests using one GET /props and three capacity endpoints per row; 3 * (1 + 3 * 1000) = 9003 contacts. Fit uses the generation arm's final composed-config and protocol hashes and occurs under its lease on the shared resident.",
+      "experiment": "slurp-speech-observation-control-v1",
+      "cell": "slurp-speech-observation-control-v1"
+    },
+    "treatment_generation": {
+      "schema": "saea-unregistered-generation-plan-template-v1",
+      "status": "NOT_REGISTERED_NON_RUNNABLE",
+      "source_worktree": "/home/chao/saea-worktrees/slurp-speech-observation-pair-v1",
+      "source_commit": "UNRESOLVED_FINAL_CLEAN_PAIR_SOURCE_COMMIT",
+      "composed_config_hash": "UNRESOLVED_AFTER_FINAL_READINESS_AND_PREPARATION_BINDINGS",
+      "expected_session_id": "serving-slurp-speech-observation-np4-v1",
+      "required_session_identity": {
+        "session_id": "serving-slurp-speech-observation-np4-v1",
+        "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+        "model_fragment_sha256_at_skeleton_source": "39ae54d72838b359a893a3938e242859c037cb3af1ddb1e7aca838e33fa45ca0",
+        "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+        "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+        "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+        "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+        "model_files": [
+          {
+            "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+            "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+          }
+        ],
+        "model_root": "/home/chao",
+        "host": "127.0.0.1",
+        "port": 8080,
+        "server_argv": [
+          "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8080",
+          "-m",
+          "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+          "--no-mmproj",
+          "-c",
+          "65536",
+          "-np",
+          "4",
+          "-b",
+          "2048",
+          "-ub",
+          "512",
+          "-fa",
+          "on",
+          "-ngl",
+          "999",
+          "-ctk",
+          "q8_0",
+          "-ctv",
+          "q8_0",
+          "--cache-prompt",
+          "--cache-ram",
+          "0",
+          "--no-cache-idle-slots",
+          "--slot-prompt-similarity",
+          "0"
+        ],
+        "server_env": {
+          "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+          "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+        },
+        "props_identity": {
+          "total_slots": 4,
+          "slot_n_ctx": 16384,
+          "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf"
+        },
+        "request_max_tokens": 256,
+        "session_role": "inference",
+        "resident_document": {
+          "relpath": "serving/serving-slurp-speech-observation-np4-v1/session.json",
+          "sha256": "UNRESOLVED_AFTER_ROOT_STARTS_AND_ATTESTS_SESSION"
+        }
+      },
+      "scientific_eligibility": {
+        "relpath": "UNRESOLVED_ROOT_DECISION_RECEIPT_RELPATH",
+        "sha256": "UNRESOLVED_SEALED_ARTIFACT_SHA256",
+        "expected_decision_id": "UNRESOLVED_ROOT_DECISION_ID"
+      },
+      "family_budget": {
+        "generation_calls_total": 6300,
+        "fit_contacts_total": 18006,
+        "speech_audio_seconds_total": 21000,
+        "gpu_hours_total": 4.0,
+        "per_arm_generation_target": 3000,
+        "per_arm_generation_cap": 3150,
+        "per_arm_fit_contact_cap": 9003,
+        "per_arm_speech_audio_seconds": 10500,
+        "per_arm_gpu_hours_including_fit_and_loading_share": 2.0
+      },
+      "program": {
+        "policy": "phase-task-tools-solve-revise-v1",
+        "phases": [
+          "plan",
+          "solve",
+          "revise"
+        ],
+        "whole_roster_wave_barrier": true,
+        "request_max_tokens": 256
+      },
+      "quality_read_gate": "Do not inspect paired semantic results until both complete manifests seal or root records a formal terminal hold.",
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "dev",
+        "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+        "planned_model_calls": 3150,
+        "planned_gpu_hours": 2.0,
+        "planned_speech_audio_seconds": 10500,
+        "protocol_hash": "UNRESOLVED_FROM_FINAL_COMPOSED_CONFIG_ARM_AND_SPLIT",
+        "attempt_id": "attempt-slurp-speech-observation-whisper-generation-v1",
+        "schema": "saea-execution-plan-v1",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "experiment": "slurp-speech-observation-whisper-v1",
+      "cell": "slurp-speech-observation-whisper-v1"
+    },
+    "treatment_fit": {
+      "schema": "saea-unregistered-fit-plan-template-v1",
+      "status": "NOT_REGISTERED_NON_RUNNABLE",
+      "source_worktree": "/home/chao/saea-worktrees/slurp-speech-observation-pair-v1",
+      "source_commit": "UNRESOLVED_FINAL_CLEAN_PAIR_SOURCE_COMMIT",
+      "composed_config_hash": "UNRESOLVED_AFTER_FINAL_READINESS_AND_PREPARATION_BINDINGS",
+      "expected_session_id": "serving-slurp-speech-observation-np4-v1",
+      "required_session_identity": {
+        "session_id": "serving-slurp-speech-observation-np4-v1",
+        "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+        "model_fragment_sha256_at_skeleton_source": "39ae54d72838b359a893a3938e242859c037cb3af1ddb1e7aca838e33fa45ca0",
+        "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+        "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+        "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+        "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+        "model_files": [
+          {
+            "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+            "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+          }
+        ],
+        "model_root": "/home/chao",
+        "host": "127.0.0.1",
+        "port": 8080,
+        "server_argv": [
+          "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8080",
+          "-m",
+          "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+          "--no-mmproj",
+          "-c",
+          "65536",
+          "-np",
+          "4",
+          "-b",
+          "2048",
+          "-ub",
+          "512",
+          "-fa",
+          "on",
+          "-ngl",
+          "999",
+          "-ctk",
+          "q8_0",
+          "-ctv",
+          "q8_0",
+          "--cache-prompt",
+          "--cache-ram",
+          "0",
+          "--no-cache-idle-slots",
+          "--slot-prompt-similarity",
+          "0"
+        ],
+        "server_env": {
+          "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+          "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+        },
+        "props_identity": {
+          "total_slots": 4,
+          "slot_n_ctx": 16384,
+          "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf"
+        },
+        "request_max_tokens": 256,
+        "session_role": "inference",
+        "resident_document": {
+          "relpath": "serving/serving-slurp-speech-observation-np4-v1/session.json",
+          "sha256": "UNRESOLVED_AFTER_ROOT_STARTS_AND_ATTESTS_SESSION"
+        }
+      },
+      "scientific_eligibility": {
+        "relpath": "UNRESOLVED_ROOT_DECISION_RECEIPT_RELPATH",
+        "sha256": "UNRESOLVED_SEALED_ARTIFACT_SHA256",
+        "expected_decision_id": "UNRESOLVED_ROOT_DECISION_ID"
+      },
+      "family_budget": {
+        "generation_calls_total": 6300,
+        "fit_contacts_total": 18006,
+        "speech_audio_seconds_total": 21000,
+        "gpu_hours_total": 4.0,
+        "per_arm_generation_target": 3000,
+        "per_arm_generation_cap": 3150,
+        "per_arm_fit_contact_cap": 9003,
+        "per_arm_speech_audio_seconds": 10500,
+        "per_arm_gpu_hours_including_fit_and_loading_share": 2.0
+      },
+      "program": {
+        "policy": "phase-task-tools-solve-revise-v1",
+        "phases": [
+          "plan",
+          "solve",
+          "revise"
+        ],
+        "whole_roster_wave_barrier": true,
+        "request_max_tokens": 256
+      },
+      "quality_read_gate": "Do not inspect paired semantic results until both complete manifests seal or root records a formal terminal hold.",
+      "execution_plan": {
+        "run_id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-FIT-V1",
+        "execution_profile": "bounded-discovery-probe",
+        "carrier_lock_key": "slurp",
+        "split_role": "dev",
+        "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+        "planned_model_calls": 9003,
+        "planned_gpu_hours": 2.0,
+        "planned_speech_audio_seconds": 10500,
+        "protocol_hash": "UNRESOLVED_FROM_FINAL_COMPOSED_CONFIG_ARM_AND_SPLIT",
+        "attempt_id": "attempt-slurp-speech-observation-whisper-fit-v1",
+        "schema": "saea-execution-plan-v1",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "generation_run_id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-V1",
+      "live_fit_protocol": "At each plan, solve and revise full-roster barrier, check the exact 1000 live requests using one GET /props and three capacity endpoints per row; 3 * (1 + 3 * 1000) = 9003 contacts. Fit uses the generation arm's final composed-config and protocol hashes and occurs under its lease on the shared resident.",
+      "experiment": "slurp-speech-observation-whisper-v1",
+      "cell": "slurp-speech-observation-whisper-v1"
+    }
+  },
+  "exposure_ledger_header": [
+    "date",
+    "run/experiment id",
+    "execution profile",
+    "scope",
+    "model/tool",
+    "speech carrier + split",
+    "split role",
+    "split identity hash",
+    "consumed",
+    "calls",
+    "speech audio seconds",
+    "gpu hours",
+    "inherited exposure",
+    "artifacts",
+    "notes"
+  ],
+  "exposure_row_drafts": [
+    {
+      "date": "2026-09-12",
+      "run/experiment id": "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1",
+      "execution profile": "bounded-discovery-probe",
+      "scope": "Full DEV-1000 matched three-phase control answering generation; target 3000, cap 3150.",
+      "model/tool": "Root-owned decoder-only Qwen3-Omni Q4_K_M, no mmproj, c65536/np4, 16384 tokens per slot, max256, existing speech packets; one shared resident process.",
+      "speech carrier + split": "slurp DEV-1000; historically exposed NEW500 primary, OLD500 and pooled DEV1000 secondary",
+      "split role": "dev",
+      "split identity hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+      "consumed": "no",
+      "calls": 3150,
+      "speech audio seconds": 10500,
+      "gpu hours": 2.0,
+      "inherited exposure": "All prior SLURP exposure plus separately registered original and recovery Whisper preparation contacts; auxiliary preparation stays outside paired Qwen caps.",
+      "artifacts": "docs/readiness/2026-09-12-slurp-speech-observation-answering-v1/control-generation-plan-v1.json",
+      "notes": "Protocol and config hashes pending final composition; attempt attempt-slurp-speech-observation-control-generation-v1; session serving-slurp-speech-observation-np4-v1. Per-arm fit and generation speech/GPU coverage is shared, not additive. No quality inspection before both arms seal or formal terminal hold."
+    },
+    {
+      "date": "2026-09-12",
+      "run/experiment id": "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-FIT-V1",
+      "execution profile": "bounded-discovery-probe",
+      "scope": "Actual plan/solve/revise full-roster capacity fits for the control arm; 9003 endpoint contacts and zero generation.",
+      "model/tool": "Root-owned decoder-only Qwen3-Omni Q4_K_M, no mmproj, c65536/np4, 16384 tokens per slot, max256, existing speech packets; one shared resident process.",
+      "speech carrier + split": "slurp DEV-1000; historically exposed NEW500 primary, OLD500 and pooled DEV1000 secondary",
+      "split role": "dev",
+      "split identity hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+      "consumed": "no",
+      "calls": 9003,
+      "speech audio seconds": 10500,
+      "gpu hours": 2.0,
+      "inherited exposure": "All prior SLURP exposure plus separately registered original and recovery Whisper preparation contacts; auxiliary preparation stays outside paired Qwen caps.",
+      "artifacts": "docs/readiness/2026-09-12-slurp-speech-observation-answering-v1/control-fit-plan-v1.json",
+      "notes": "Protocol and config hashes pending final composition; attempt attempt-slurp-speech-observation-control-fit-v1; session serving-slurp-speech-observation-np4-v1. Per-arm fit and generation speech/GPU coverage is shared, not additive. No quality inspection before both arms seal or formal terminal hold."
+    },
+    {
+      "date": "2026-09-12",
+      "run/experiment id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-V1",
+      "execution profile": "bounded-discovery-probe",
+      "scope": "Full DEV-1000 matched three-phase treatment answering generation; target 3000, cap 3150.",
+      "model/tool": "Root-owned decoder-only Qwen3-Omni Q4_K_M, no mmproj, c65536/np4, 16384 tokens per slot, max256, existing speech packets; one shared resident process.",
+      "speech carrier + split": "slurp DEV-1000; historically exposed NEW500 primary, OLD500 and pooled DEV1000 secondary",
+      "split role": "dev",
+      "split identity hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+      "consumed": "no",
+      "calls": 3150,
+      "speech audio seconds": 10500,
+      "gpu hours": 2.0,
+      "inherited exposure": "All prior SLURP exposure plus separately registered original and recovery Whisper preparation contacts; auxiliary preparation stays outside paired Qwen caps.",
+      "artifacts": "docs/readiness/2026-09-12-slurp-speech-observation-answering-v1/treatment-generation-plan-v1.json",
+      "notes": "Protocol and config hashes pending final composition; attempt attempt-slurp-speech-observation-whisper-generation-v1; session serving-slurp-speech-observation-np4-v1. Per-arm fit and generation speech/GPU coverage is shared, not additive. No quality inspection before both arms seal or formal terminal hold."
+    },
+    {
+      "date": "2026-09-12",
+      "run/experiment id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-FIT-V1",
+      "execution profile": "bounded-discovery-probe",
+      "scope": "Actual plan/solve/revise full-roster capacity fits for the treatment arm; 9003 endpoint contacts and zero generation.",
+      "model/tool": "Root-owned decoder-only Qwen3-Omni Q4_K_M, no mmproj, c65536/np4, 16384 tokens per slot, max256, existing speech packets; one shared resident process.",
+      "speech carrier + split": "slurp DEV-1000; historically exposed NEW500 primary, OLD500 and pooled DEV1000 secondary",
+      "split role": "dev",
+      "split identity hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+      "consumed": "no",
+      "calls": 9003,
+      "speech audio seconds": 10500,
+      "gpu hours": 2.0,
+      "inherited exposure": "All prior SLURP exposure plus separately registered original and recovery Whisper preparation contacts; auxiliary preparation stays outside paired Qwen caps.",
+      "artifacts": "docs/readiness/2026-09-12-slurp-speech-observation-answering-v1/treatment-fit-plan-v1.json",
+      "notes": "Protocol and config hashes pending final composition; attempt attempt-slurp-speech-observation-whisper-fit-v1; session serving-slurp-speech-observation-np4-v1. Per-arm fit and generation speech/GPU coverage is shared, not additive. No quality inspection before both arms seal or formal terminal hold."
+    }
+  ],
+  "campaign_plan_template": {
+    "schema": "saea-campaign-plan-v1",
+    "cells": [
+      {
+        "experiment": "slurp-speech-observation-control-v1",
+        "cell": "slurp-speech-observation-control-v1"
+      },
+      {
+        "experiment": "slurp-speech-observation-whisper-v1",
+        "cell": "slurp-speech-observation-whisper-v1"
+      }
+    ]
+  },
+  "readiness_template": {
+    "control": {
+      "state": "ready",
+      "requirements": [
+        {
+          "kind": "preparation",
+          "relpath": "prepared/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-PREPARE-V1/recall.json",
+          "sha256": "fd97cb9a3bf68a2e4f242262e7bd2a7a57ae9a6096f64cb4de1d6fee6a11446f",
+          "reason": "Retained control solve recall must remain bound."
+        },
+        {
+          "kind": "decision",
+          "relpath": "UNRESOLVED_ROOT_DECISION_RECEIPT_RELPATH",
+          "sha256": "UNRESOLVED_SEALED_ARTIFACT_SHA256",
+          "expected_decision_id": "UNRESOLVED_ROOT_DECISION_ID",
+          "reason": "Root paired scientific admission must qualify both generation run IDs."
+        }
+      ]
+    },
+    "treatment": {
+      "state": "ready",
+      "depends_on": [
+        {
+          "run_id": "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1",
+          "required_state": "sealed"
+        }
+      ],
+      "requirements": [
+        {
+          "kind": "preparation",
+          "relpath": "prepared/SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1/attempt-slurp-whisper-observations-recovery-v1/catalog.json",
+          "sha256": "43925fb7e66c378037eaf676ae8e25860bf835ed53d34bac696ee718b54f9073",
+          "reason": "The complete finalized recovery catalog must remain bound."
+        },
+        {
+          "kind": "preparation",
+          "relpath": "prepared/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-PREPARE-V1/recall.json",
+          "sha256": "UNRESOLVED_SEALED_ARTIFACT_SHA256",
+          "reason": "The distinct treatment solve recall must remain bound."
+        },
+        {
+          "kind": "decision",
+          "relpath": "UNRESOLVED_ROOT_DECISION_RECEIPT_RELPATH",
+          "sha256": "UNRESOLVED_SEALED_ARTIFACT_SHA256",
+          "expected_decision_id": "UNRESOLVED_ROOT_DECISION_ID",
+          "reason": "Root paired scientific admission must qualify both generation run IDs."
+        }
+      ]
+    }
+  },
+  "queue_semantics": {
+    "control_first": true,
+    "treatment_dependency": {
+      "run_id": "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1",
+      "required_state": "sealed"
+    },
+    "same_process": "serving-slurp-speech-observation-np4-v1",
+    "lease": "The shared campaign coordinator acquires one exclusive generation lease per arm; workers attach to the root-owned resident and cannot start or stop it.",
+    "scoring": "The queue may compute control scoring while treatment runs, following the repository pipeline, but no paired semantic output may be inspected until both arms seal or root records a terminal hold."
+  },
+  "unresolved_bindings": [
+    "Materialized treatment recall relpath and SHA-256.",
+    "Final readiness decision receipt relpath, SHA-256 and decision_id qualifying both generation run IDs.",
+    "Final control and treatment composed-config hashes after readiness pins are frozen.",
+    "Final control and treatment protocol hashes derived from composed_config_hash, arm and DEV-1000 split identity.",
+    "Final clean pair source commit containing materialized treatment configs, recall pin, readiness requirements, campaign plan and registered plan documents.",
+    "Final immutable plan document paths and SHA-256 values for the exposure rows.",
+    "Root-observed resident session.json SHA-256 after the one shared service starts.",
+    "Root owner identity used by the shared campaign command."
+  ],
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0,
+    "generation": 0,
+    "service": 0
+  },
+  "sealed_recovery_catalog": {
+    "relpath": "prepared/SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1/attempt-slurp-whisper-observations-recovery-v1/catalog.json",
+    "sha256": "43925fb7e66c378037eaf676ae8e25860bf835ed53d34bac696ee718b54f9073",
+    "catalog_id": "slurp-dev1000-whisper-large-v3-full-utterance-recovery-v1",
+    "producer_run_id": "SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1",
+    "producer_attempt_id": "attempt-slurp-whisper-observations-recovery-v1",
+    "reported_sealed_rows": 1000
+  },
+  "pre_recall_requirements": {
+    "must_be_final": [
+      "All model and dataset fragments and their identities.",
+      "Treatment prepared_speech_observations relpath and SHA-256, including the finalized recovery producer lineage.",
+      "Treatment phase_tools.solve fixed OBS tool and exact arguments.",
+      "Policy, every plan/solve/revise material and predecessor binding, phase supply, knowledge, packet, prompt and task fields.",
+      "Generation, attempt, fit, cell, experiment and service IDs.",
+      "Allowed execution stages, population, budgets, max_tokens 256, preservation flags and preparation source receipts.",
+      "Every other composed field except the explicitly excluded receipt and readiness fields listed below."
+    ],
+    "may_be_absent_until_after_recall": [
+      "Top-level prepared_phase_recall.",
+      "Top-level prepared_phase_supply.",
+      "Top-level prepared_request_fit.",
+      "Top-level prompt_fit_receipt and prompt_fit_receipt_sha256.",
+      "Per-cell readiness."
+    ],
+    "reason": "core.preparation artifact identity excludes only those receipt fields and per-cell readiness. Changing any other composed field after recall invalidates its input identity."
+  },
+  "post_recall_sequence": [
+    "Bind the returned treatment pin as prepared_phase_recall.solve without changing any identity-bearing field.",
+    "Verify 1000 treatment recall rows and exact selected value IDs and serialized order against the retained control recall.",
+    "Replace per-cell readiness with final requirements: retained control recall plus paired decision for control; sealed recovery catalog, treatment recall and paired decision for treatment.",
+    "Add treatment depends_on control generation with required_state sealed.",
+    "Write the two-cell campaign plan.",
+    "Compose final control and treatment configs after readiness is final, then derive protocol hashes.",
+    "Create immutable generation and fit plan documents, append four exposure rows, and freeze a clean source commit."
+  ]
+}
