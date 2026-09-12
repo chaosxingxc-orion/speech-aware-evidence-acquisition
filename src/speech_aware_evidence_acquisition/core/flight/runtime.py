@@ -2040,6 +2040,18 @@ class FlightRuntime:
                 }
         return bindings
 
+    def prepare_speech_observation_sources(self, output: Path) -> Mapping[str, object]:
+        """Export validated packet and original-audio metadata without model contact."""
+        from ..preparation_speech_observations import export_speech_observation_sources
+
+        _values, carrier, _split_id, identity = self._prepare()
+        if not self.uses_speech_feature_packets():
+            raise FlightRuntimeError("speech observation sources require validated feature packets")
+        return export_speech_observation_sources(
+            output, source_bindings=self.source_audio_bindings(include_address=True),
+            carrier_lock_key=carrier, split_identity_hash=identity,
+        )
+
     def _speech_feature_root(self) -> Path:
         value = self._composed.values.get("speech_feature_root")
         if not isinstance(value, str) or not value:

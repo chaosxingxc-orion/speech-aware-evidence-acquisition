@@ -1,0 +1,111 @@
+{
+  "active_campaign_source_unchanged": "22b56d706e2f5601dc79f58a8fad2bb6a9629f51",
+  "actual_model_free_export": {
+    "artifact": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SPEECH-OBSERVATION-SOURCES-V1/sources.json",
+      "sha256": "435d64b9e4fd341d9db6f8e574d5eda08007f48c432dda55b09bc0b2ab318782"
+    },
+    "count": 1000,
+    "description": "Read configured discovery roster and existing validated feature packet/source identities through FlightRuntime. No source audio decode or neural forward.",
+    "log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-speech-observation-source-export-v1.log",
+      "sha256": "b555cf13040d4f7c0d25f593fecc738f1e88a98574a74e0a9d95b62031293d6d"
+    },
+    "longest_source_seconds": 12.032,
+    "source_audio_seconds": 2884.7936875
+  },
+  "base_commit": "7823f1a9ab0f9117b8785d131c31e89ced182eb7",
+  "contacts": {
+    "asr_forward": 0,
+    "gpu_tool_model_load": 0,
+    "new_research_generation": 0,
+    "paid_api_calls": 0,
+    "source_audio_decode": 0,
+    "source_roster_metadata_read": true
+  },
+  "execution_environment": {
+    "cuda_visible_devices": "",
+    "distribution": "Ubuntu-24.04",
+    "omp_threads": 1,
+    "python": "/home/chao/.venvs/speechrl/bin/python",
+    "pythonpath": "/home/chao/saea-worktrees/speech-observation-producer-v1/src"
+  },
+  "pending": [
+    "Register actual Whisper dataset preparation and finite attempt budgets after the active scientific dependency closes.",
+    "Implement and verify matched three-phase SLURP configuration while preserving compact-frame evidence.",
+    "Measure native task benefit; local loading and fake-transport validation establish no effectiveness result."
+  ],
+  "recorded_at_utc": "2026-09-12T15:52:44.054131+00:00",
+  "review_findings_closed": [
+    "Debit all missing unique clips before a native batch forward; publish start markers before contact and preserve interruption evidence.",
+    "Use persisted attempt totals for catalog accounting, including exact float grouping; reject aggregate source duration mismatch before contacts.",
+    "Bind admission to the exact pinned ledger and verify cold canonical equality.",
+    "Preserve primary exceptions and never abort a finalized attempt after a late event failure.",
+    "Pad waveform before log-mel calculation and validate output cap against available decoder context.",
+    "Keep source export model-free and explicitly admitted as its own campaign stage."
+  ],
+  "runtime_import_receipt": {
+    "path": "/home/chao/saea-worktrees/speech-observation-producer-v1/docs/readiness/2026-09-12-whisper-runtime-import-readiness-v1.json",
+    "sha256": "defdf6a85db79b8d8d9e1ef02c411d0a23489dcca8651185bee7c9609173f604"
+  },
+  "runtime_inventory": {
+    "path": "/home/chao/saea-worktrees/speech-observation-producer-v1/docs/readiness/2026-09-12-whisper-runtime-inventory-v1.json",
+    "sha256": "29ea8ebeae70defdf09bce2f3c1bff399fdee80b127373969542944062abfdf1"
+  },
+  "schema": "saea-speech-observation-producer-validation-v1",
+  "source_sha256": {
+    "configs/experiment/slurp-speech-observation-sources-v1.json": "458a4b900aeaf60a5715179fbb0fa8f33f0ef85690d26f68a1471e8ed5f80ae7",
+    "src/speech_aware_evidence_acquisition/core/flight/campaign.py": "03aa256dd2995e21acd1cf80ea444fe8d725e990313baf9c3d2b1d29d31f805d",
+    "src/speech_aware_evidence_acquisition/core/flight/cli.py": "2d0d237bc05032ca3aa95648a701ab36754314fa94135f1063d3bb4479eb6875",
+    "src/speech_aware_evidence_acquisition/core/flight/runtime.py": "69b495442702c991419f2bf6e6dcc0aa5822320e86e28395c8f29f66d8104a82",
+    "src/speech_aware_evidence_acquisition/core/preparation.py": "0c69bb3321ae85d26f7b0f8ea794ee63e7251f45fcb24a0ba51d9105ce593ad4",
+    "src/speech_aware_evidence_acquisition/core/preparation_speech_observations.py": "a86bb3d535c3f7cd00db737dd08be48f39666e566cc12e388837203c5f346460",
+    "src/speech_aware_evidence_acquisition/core/speech_observation_backend.py": "058c5ae82b3b6caaa3b4a9da48521bf79f90ea3dc57200525504be95ea8d71a6",
+    "src/speech_aware_evidence_acquisition/core/speech_preparation_runtime.py": "18ceeff8cda79cb89f10b264c47d3fed463f171e81af7b730ce5a8ebddd8a51a",
+    "tests/unit/test_flight_campaign.py": "cd189502b5e17a0618039e4e3609f1a42d2db0b863300689a30cbd4c2fb32e0d",
+    "tests/unit/test_preparation_batch.py": "a8e90706de0619f448434d3ef52322ba739732f6fd14d39fa71ba4f0c0a1c714",
+    "tests/unit/test_speech_observation_backend.py": "788920a2c2b92ab7e6a2487c339a04278d08870ec87306e01498e2e678bfb3dc",
+    "tests/unit/test_speech_observation_preparation.py": "227bd42705cd1df9ff06bde72c75aaa1f53523b7af2e5c920eceba1dd36abd6b"
+  },
+  "validation": {
+    "broad_regression_tests": 391,
+    "checks": {
+      "diff_whitespace": {
+        "exit_code": 0,
+        "output": "",
+        "stderr": ""
+      },
+      "engineering_base": {
+        "exit_code": 0,
+        "output": "engineering base check: PASS",
+        "stderr": ""
+      },
+      "ruff": {
+        "exit_code": 0,
+        "output": "All checks passed!",
+        "stderr": ""
+      }
+    },
+    "combined_statement_coverage_percent": 84,
+    "coverage_log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/speech-observation-producer-coverage-v1.log",
+      "sha256": "617af985a961304d488e4c5760f341477d93e780ab5ef70359b55333883c09d8"
+    },
+    "per_module_statement_coverage_percent": {
+      "preparation": 89,
+      "preparation_speech_observations": 86,
+      "speech_observation_backend": 79,
+      "speech_preparation_runtime": 83
+    },
+    "test_log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/speech-observation-producer-tests-v1.log",
+      "sha256": "bc52154f0ff33fdcc4a63e7fef5105d251912604ffda85f9fa974eb4ed8293fc"
+    },
+    "tests_passed": 402,
+    "text_regression_log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/speech-observation-producer-text-regression-v1.log",
+      "sha256": "2f7ea5303894580370b1f1f0716908aed9b5862c42ac764f435a3a9a47b3063e"
+    },
+    "text_runtime_regression_tests": 11
+  }
+}

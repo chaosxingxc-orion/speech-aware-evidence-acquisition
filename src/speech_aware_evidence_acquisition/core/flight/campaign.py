@@ -28,6 +28,7 @@ EXECUTION_STAGES = frozenset({
     "prepare-supply",
     "prepare-phase-recall",
     "prepare-window-inventory",
+    "prepare-speech-observation-sources",
     "prepare-window-features",
     "prompt-fit",
     "worker",
@@ -68,7 +69,7 @@ class CampaignCell:
     def assert_mode(self, mode: str) -> None:
         """Enforce declared stage custody before any runtime or session work."""
         stages = self.document.get("allowed_execution_stages")
-        if mode in {"prepare-window-inventory", "prepare-window-features"} and stages is None:
+        if mode in {"prepare-window-inventory", "prepare-window-features", "prepare-speech-observation-sources"} and stages is None:
             raise CampaignError(
                 f"cell {self.document['cell_id']} must explicitly permit "
                 f"execution stage {mode}"

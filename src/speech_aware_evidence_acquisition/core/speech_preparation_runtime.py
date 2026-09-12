@@ -8,6 +8,7 @@ import importlib.metadata
 import json
 import os
 import subprocess
+import sys
 import threading
 import time
 from collections import deque
@@ -259,9 +260,9 @@ def start_monitor(path, state, interval):
                     "gpu": read_gpu(),
                     "host_memory": read_host_memory(),
                     "elapsed_seconds": time.monotonic() - state["started_monotonic"],
-                    "logical_encoder_contacts": state["calls"],
+                    state.get("contact_counter_field", "logical_encoder_contacts"): state["calls"],
                     "phase": state["phase"],
-                    "busy_slots": int(state["phase"] == "encoder_forward_started"),
+                    "busy_slots": int(state["phase"] == state.get("forward_phase", "encoder_forward_started")),
                     "total_slots": 1,
                 }
                 handle.write(json.dumps(sample, sort_keys=True) + "\n")
@@ -413,6 +414,9 @@ def _execute_preparation(
     seconds_for_source,
     facts_for_source,
     source_bindings,
+    finalize_prepared=None,
+    contact_counter_field="logical_encoder_contacts",
+    forward_phase="encoder_forward_started",
 ):
     """Share custody, pre-contact accounting, sealing and aborts across modalities."""
     attempt_dir = data_root / "preparation-runs" / plan.run_id / str(plan.attempt_id)
@@ -423,6 +427,8 @@ def _execute_preparation(
         "calls": 0,
         "audio_seconds": 0.0,
         "phase": "admitted",
+        "contact_counter_field": contact_counter_field,
+        "forward_phase": forward_phase,
     }
     event_path = attempt_dir / "events.jsonl"
 
@@ -464,92 +470,128 @@ def _execute_preparation(
         )
         stop_monitor = start_monitor(attempt_dir / "monitor.jsonl", state, 10)
         backend = None
+        attempt_finalized = False
         try:
             backend = backend_factory(encoder, protocol, data_root, event)
 
-            def contact(source):
-                seconds = seconds_for_source(source)
+            def contact(source, *, batch=False):
+                sources = tuple(source) if batch else (source,)
+                if not sources:
+                    raise SpeechPreparationError("preparation batch must not be empty")
+                invoke = getattr(backend, "decode_batch", None) if batch else backend
+                if not callable(invoke):
+                    raise SpeechPreparationError("backend does not implement the declared contact")
+                seconds = sum(seconds_for_source(item) for item in sources)
                 if (
-                    state["calls"] + 1 > plan.planned_model_calls
-                    or state["audio_seconds"] + seconds
-                    > plan.planned_speech_audio_seconds
+                    state["calls"] + len(sources) > plan.planned_model_calls
+                    or state["audio_seconds"] + seconds > plan.planned_speech_audio_seconds
                     or time.monotonic() - started >= plan.planned_gpu_hours * 3600
                 ):
-                    raise SpeechPreparationError(
-                        "preparation budget exhausted before contact"
-                    )
-                attempt.record_usage(calls=1, audio_seconds=seconds)
-                state["calls"] += 1
-                state["audio_seconds"] += seconds
+                    raise SpeechPreparationError("preparation budget exhausted before contact")
+                state["calls"], state["audio_seconds"] = attempt.record_usage(
+                    calls=len(sources), audio_seconds=seconds)
                 event(
                     "contact_started",
                     ordinal=state["calls"],
-                    source=facts_for_source(source),
+                    **(
+                        {"batch_size": len(sources),
+                         "sources": [facts_for_source(item) for item in sources]}
+                        if batch else {"source": facts_for_source(source)}
+                    ),
                 )
-                result = backend(source)
+                result = invoke(sources if batch else source)
+                if batch and (not isinstance(result, (tuple, list)) or len(result) != len(sources)):
+                    raise SpeechPreparationError("backend batch result count differs from charged contacts")
                 event("contact_finished", ordinal=state["calls"])
                 return result
 
             prepared = prepare(backend, contact)
-            query_path = row_path
-            content = b"".join(
-                canonical_bytes(row) + b"\n"
-                for row in prepared["artifact"]["output"]["rows"]
-            )
-            query_path.parent.mkdir(parents=True, exist_ok=True)
-            if query_path.exists():
-                if query_path.read_bytes() != content:
-                    raise SpeechPreparationError("sealed query row export differs")
+            if finalize_prepared is not None:
+                result, finalization = finalize_prepared(prepared, state, attempt_dir)
+                _exclusive_json(attempt_dir / "receipt.json", result)
+                attempt.finalize_with_receipt(
+                    finalization["path"], finalization["sha256"], finalization["kind"]
+                )
             else:
-                with query_path.open("xb") as handle:
-                    handle.write(content)
-                    handle.flush()
-                    os.fsync(handle.fileno())
+                query_path = row_path
+                content = b"".join(
+                    canonical_bytes(row) + b"\n"
+                    for row in prepared["artifact"]["output"]["rows"]
+                )
+                query_path.parent.mkdir(parents=True, exist_ok=True)
+                if query_path.exists():
+                    if query_path.read_bytes() != content:
+                        raise SpeechPreparationError("sealed query row export differs")
+                else:
+                    with query_path.open("xb") as handle:
+                        handle.write(content)
+                        handle.flush()
+                        os.fsync(handle.fileno())
 
-            result = {
-                "schema": (
-                    "saea-speech-query-preparation-receipt-v1"
-                    if contact_kind == "speech"
-                    else "saea-text-facet-preparation-receipt-v1"
-                ),
-                "status": "SEALED",
-                "run_id": plan.run_id,
-                "attempt_id": plan.attempt_id,
-                "protocol_sha256": plan.protocol_hash,
-                "study_head": config["study_head"],
-                **source_bindings,
-                "encoder_inventory_sha256": protocol["encoder"]["sha256"],
-                f"{row_label}_rows_path": str(query_path),
-                f"{row_label}_rows_sha256": hashlib.sha256(content).hexdigest(),
-                "index_sha256": prepared["artifact"]["sha256"],
-                "logical_encoder_contacts": state["calls"],
-                "actual_speech_audio_seconds": state["audio_seconds"],
-                "elapsed_seconds": time.monotonic() - started,
-                "cache_accounting": prepared["accounting"],
-                "closed_at": _now(),
-            }
-            _exclusive_json(attempt_dir / "receipt.json", result)
-            attempt.mark_finalized()
+                result = {
+                    "schema": (
+                        "saea-speech-query-preparation-receipt-v1"
+                        if contact_kind == "speech"
+                        else "saea-text-facet-preparation-receipt-v1"
+                    ),
+                    "status": "SEALED",
+                    "run_id": plan.run_id,
+                    "attempt_id": plan.attempt_id,
+                    "protocol_sha256": plan.protocol_hash,
+                    "study_head": config["study_head"],
+                    **source_bindings,
+                    "encoder_inventory_sha256": protocol["encoder"]["sha256"],
+                    f"{row_label}_rows_path": str(query_path),
+                    f"{row_label}_rows_sha256": hashlib.sha256(content).hexdigest(),
+                    "index_sha256": prepared["artifact"]["sha256"],
+                    state.get("contact_counter_field", "logical_encoder_contacts"): state["calls"],
+                    "actual_speech_audio_seconds": state["audio_seconds"],
+                    "elapsed_seconds": time.monotonic() - started,
+                    "cache_accounting": prepared["accounting"],
+                    "closed_at": _now(),
+                }
+                _exclusive_json(attempt_dir / "receipt.json", result)
+                attempt.mark_finalized()
+            attempt_finalized = True
             event("sealed")
             return result
         except BaseException as error:
-            attempt.mark_aborted(type(error).__name__)
-            event("aborted", error_type=type(error).__name__, error=str(error))
-            _exclusive_json(
-                attempt_dir / "abort.json",
-                {
-                    "status": "ABORTED",
-                    "error_type": type(error).__name__,
-                    "logical_encoder_contacts": state["calls"],
+            failure = error
+            def preserve_failure(action, label):
+                try:
+                    action()
+                except BaseException as secondary:
+                    failure.add_note(f"{label} also failed: {type(secondary).__name__}: {secondary}")
+
+            if not attempt_finalized:
+                preserve_failure(lambda: attempt.mark_aborted(type(failure).__name__), "attempt abort")
+            preserve_failure(
+                lambda: event("aborted" if not attempt_finalized else "post_finalize_failure",
+                              error_type=type(failure).__name__, error=str(failure)), "failure event")
+            preserve_failure(
+                lambda: _exclusive_json(attempt_dir / "abort.json", {
+                    "status": "FINALIZED_WITH_POST_SEAL_ERROR" if attempt_finalized else "ABORTED",
+                    "error_type": type(failure).__name__,
+                    contact_counter_field: state["calls"],
                     "actual_speech_audio_seconds": state["audio_seconds"],
                     "elapsed_seconds": time.monotonic() - started,
-                },
-            )
+                }), "failure receipt")
             raise
         finally:
-            if backend is not None:
-                backend.close()
-            stop_monitor()
+            primary = sys.exc_info()[1]
+            for label, close in (
+                ("backend cleanup", backend.close if backend is not None else lambda: None),
+                ("monitor cleanup", stop_monitor),
+            ):
+                try:
+                    close()
+                except BaseException as cleanup_error:
+                    if primary is None:
+                        primary = cleanup_error
+                    else:
+                        primary.add_note(f"{label} also failed: {type(cleanup_error).__name__}: {cleanup_error}")
+            if sys.exc_info()[1] is None and primary is not None:
+                raise primary
 
 
 def run_text_facet_preparation(
@@ -689,11 +731,16 @@ def main():
         }
     )
     protocol = pinned_json(config["protocol"])
-    runner = (
-        run_text_facet_preparation
-        if protocol.get("schema") == "saea-text-facet-encoding-protocol-v1"
-        else run_preparation
-    )
+    from .preparation_speech_observations import run_speech_observation_preparation
+
+    runners = {
+        "saea-text-facet-encoding-protocol-v1": run_text_facet_preparation,
+        "saea-speech-query-encoding-protocol-v1": run_preparation,
+        "saea-speech-observation-preparation-protocol-v1": run_speech_observation_preparation,
+    }
+    runner = runners.get(protocol.get("schema"))
+    if runner is None:
+        raise SpeechPreparationError("unknown frozen tool preparation protocol")
     print(
         json.dumps(
             runner(config, source_root=args.source_root, data_root=args.data_root),

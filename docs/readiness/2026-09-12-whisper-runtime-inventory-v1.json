@@ -1,0 +1,98 @@
+{
+  "schema": "saea-local-whisper-runtime-inventory-v1",
+  "model": "large-v3",
+  "checkpoint": {
+    "path": "/home/chao/speech-tools/whisper-vad/models/whisper/large-v3.pt",
+    "bytes": 3087371615,
+    "sha256": "e5b1a55b89c1367dacf97e3e19bfd829a01529dbfdeefa8caeb59b3f1b81dadb"
+  },
+  "whisper_source_path": "/home/chao/speech-tools/whisper-vad/sources/openai_whisper-20250625",
+  "source_files": {
+    "whisper/__init__.py": {
+      "bytes": 7432,
+      "sha256": "79ecbed714783b6230931a3dba6d5da6d386e2d44f9fc27256e4fc72751e1f62"
+    },
+    "whisper/__main__.py": {
+      "bytes": 35,
+      "sha256": "c519d586c3a6b639f64e59d2d6fd6b591a67ecd739f9727492911fc4ce4d545a"
+    },
+    "whisper/assets/gpt2.tiktoken": {
+      "bytes": 835554,
+      "sha256": "306cd27f03c1a714eca7108e03d66b7dc042abe8c258b44c199a7ed9838dd930"
+    },
+    "whisper/assets/mel_filters.npz": {
+      "bytes": 4271,
+      "sha256": "7450ae70723a5ef9d341e3cee628c7cb0177f36ce42c44b7ed2bf3325f0f6d4c"
+    },
+    "whisper/assets/multilingual.tiktoken": {
+      "bytes": 816730,
+      "sha256": "b34b360dbb493e781e479794586d661700670d65564001f23024971d1f2fa126"
+    },
+    "whisper/audio.py": {
+      "bytes": 4945,
+      "sha256": "36ed287b2de3eaf40207cd2a44a8d45d57ea5c212a39df07401d4fcb4d5a5a1a"
+    },
+    "whisper/decoding.py": {
+      "bytes": 32155,
+      "sha256": "94084fedc5af74cabf8e1883a85552700057081f00ea669ad49435ecb29039db"
+    },
+    "whisper/model.py": {
+      "bytes": 11749,
+      "sha256": "473491a97554ad1d0beaaef6fe91d965f12785b466b93ebb61024307b50ad683"
+    },
+    "whisper/normalizers/__init__.py": {
+      "bytes": 130,
+      "sha256": "f18fcdce4caee7f2e80e4c01ab0457d3a080a872a29489542c6d23c4b0bba572"
+    },
+    "whisper/normalizers/basic.py": {
+      "bytes": 2064,
+      "sha256": "4742eaa040e0657fa1247a1361e0d856c62317a43326ea59a40c2e9edd8d2c38"
+    },
+    "whisper/normalizers/english.json": {
+      "bytes": 56128,
+      "sha256": "6607f948be9824d2e1b2fa2223cd94c06c45afa4e05ea0e3d5e1f2bdffde2465"
+    },
+    "whisper/normalizers/english.py": {
+      "bytes": 20868,
+      "sha256": "2898e4672aeefc9f44cb4de38c115cdf286f5b35ae321433467a7674ce8841d0"
+    },
+    "whisper/timing.py": {
+      "bytes": 12697,
+      "sha256": "bb091c973c428697012f0f8d1b4f5f3a605cd93c5d1c129957f712a6a878a59c"
+    },
+    "whisper/tokenizer.py": {
+      "bytes": 12338,
+      "sha256": "3b48e361a7e95b4ec0356ca6d72bba635778aa10269153136ee7bc34cae30b85"
+    },
+    "whisper/transcribe.py": {
+      "bytes": 30366,
+      "sha256": "848b82877500d6fb8f0b91bee7a08ac67ef670a113591d11b494848d263ad0f6"
+    },
+    "whisper/triton_ops.py": {
+      "bytes": 3646,
+      "sha256": "26c5082f029bbd2b7ae77ecf5a3f7f196f220e5850e2c9d0ec42961caf0dde4c"
+    },
+    "whisper/utils.py": {
+      "bytes": 11529,
+      "sha256": "c25990446ab7dd5ba30bd52bd4f0e6537f11b5e361a015f02c21355d41027b05"
+    },
+    "whisper/version.py": {
+      "bytes": 25,
+      "sha256": "c4d27ecccdd52a9cded762f1a82da3152db12cbc0aa6ea781f945446a143cfaf"
+    }
+  },
+  "packages": {
+    "llvmlite": "0.44.0",
+    "more-itertools": "11.1.0",
+    "numba": "0.61.2",
+    "numpy": "2.2.6",
+    "openai-whisper": "20250625",
+    "regex": "2026.5.9",
+    "requests": "2.34.2",
+    "tiktoken": "0.13.0",
+    "torch": "2.9.1",
+    "torchaudio": "2.9.1",
+    "tqdm": "4.68.3",
+    "triton": "3.5.1"
+  }
+}

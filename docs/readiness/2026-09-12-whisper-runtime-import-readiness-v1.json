@@ -1,0 +1,56 @@
+{
+  "schema": "saea-whisper-runtime-import-readiness-v1",
+  "study_head": "7823f1a9ab0f9117b8785d131c31e89ced182eb7",
+  "inventory": {
+    "path": "docs/readiness/2026-09-12-whisper-runtime-inventory-v1.json",
+    "sha256": "29ea8ebeae70defdf09bce2f3c1bff399fdee80b127373969542944062abfdf1"
+  },
+  "checkpoint_pin_source": {
+    "path": "/home/chao/speech-tools/whisper-vad/receipts/acquisition-complete-v1.json",
+    "sha256": "68e6326bdd5ff6f8a30bfa26ace731d6a3f72b44a3da17e8eab59d25f9df95dd",
+    "checkpoint_bytes_checked": 3087371615,
+    "checkpoint_sha256_reused": "e5b1a55b89c1367dacf97e3e19bfd829a01529dbfdeefa8caeb59b3f1b81dadb",
+    "checkpoint_content_rehashed": false
+  },
+  "dependency_identity_source": {
+    "path": "/home/chao/speech-tools/whisper-vad/receipts/gpu-runtime-dependencies-v1.json",
+    "sha256": "cec2d40453980d870bb2ee84a13d59a1116f729bef80b247af51d976f393ca16",
+    "environment": "/home/chao/.venvs/saea-whisper-gpu",
+    "python": "/home/chao/.venvs/saea-whisper-gpu/bin/python",
+    "path_file": "/home/chao/.venvs/saea-whisper-gpu/lib/python3.12/site-packages/saea-whisper-gpu-readonly-paths.pth",
+    "path_file_sha256": "25fa6303363f2bb7ba522e320e642ac3eeac1ed215956d27af139b37314aba1b",
+    "install_policy": "read-only path file; no editable install"
+  },
+  "verification": {
+    "inventory_exact_schema": "pass",
+    "checkpoint_current_size": "pass",
+    "declared_source_files_hashed": 18,
+    "declared_package_versions_checked": 12,
+    "cli_help_import": "pass",
+    "cli_module": "speech_aware_evidence_acquisition.core.speech_preparation_runtime",
+    "cli_arguments": [
+      "-B",
+      "-m",
+      "speech_aware_evidence_acquisition.core.speech_preparation_runtime",
+      "--help"
+    ],
+    "pythonpath": "/home/chao/saea-worktrees/speech-observation-producer-v1/src",
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "HF_DATASETS_OFFLINE": "1",
+      "HF_HUB_OFFLINE": "1",
+      "PIP_NO_INDEX": "1",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "TRANSFORMERS_OFFLINE": "1"
+    }
+  },
+  "contacts": {
+    "audio": 0,
+    "cuda_queries": 0,
+    "forward": 0,
+    "model_load": 0,
+    "network": 0,
+    "service": 0
+  },
+  "result": "ready-for-root-review"
+}

@@ -1,0 +1,26 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "prepare-speech-observation-sources"
+      ],
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-slurp-speech-observation-sources-v1",
+      "baseline_fragment": "slurp-task-agent-frame-replication-recovery-v1",
+      "cell_id": "slurp-speech-observation-sources-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "readiness": {
+        "reason": "Model-free source export only. Real Whisper preparation and answering arms require separate registration after scientific admission.",
+        "state": "preparation-pending"
+      },
+      "run_id": "SAEA-SLURP-SPEECH-OBSERVATION-SOURCES-V1"
+    }
+  ],
+  "date": "2026-09-12",
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-SLURP-SPEECH-OBSERVATION-SOURCES-V1",
+  "fragment_kind": "saea-speech-observation-source-preparation-v1",
+  "purpose": "Export source and cached feature packet identities from the retained compact-frame carrier. No model, tokenizer, encoder, ASR or scoring contact is permitted by this preparation cell.",
+  "split_id": "DEV-1000"
+}

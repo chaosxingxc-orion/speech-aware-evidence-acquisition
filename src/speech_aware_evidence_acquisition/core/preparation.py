@@ -141,66 +141,59 @@ def load_artifact(
         raise PreparationError(f"cannot load prepared artifact: {error}") from error
 
 
-def prepare_artifact(
-    path: Path,
-    *,
-    kind: str,
-    inputs: Mapping[str, object],
-    producer: Callable[[], object],
-    contact_class: str = "model-free",
-) -> dict[str, object]:
-    """Exclude other producers before checking warm state or doing any work.
+def _acquire_artifact_locks(entries) -> list[int]:
+    """Acquire every unique producer lock without waiting, in path order."""
 
-    A competing producer is refused immediately. The kernel lock is released
-    on process death; encoder and speech-tool start markers survive, so an
-    interruption never turns into automatic replay of a potentially spent
-    contact. This storage helper does not authorize the contact: speech-tool
-    callers still need a registered ``ExecutionPlan`` and governed accounting.
-    """
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    descriptor = os.open(
-        path.with_name(path.name + ".producer.lock"), os.O_CREAT | os.O_RDWR, 0o600
-    )
+    descriptors: list[int] = []
     try:
-        try:
-            fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError as error:
-            raise PreparationError("prepared artifact producer is busy") from error
-        return _prepare_artifact_locked(
-            path,
-            kind=kind,
-            inputs=inputs,
-            producer=producer,
-            contact_class=contact_class,
-        )
-    finally:
-        os.close(descriptor)
+        for entry in sorted(entries, key=lambda row: str(row["resolved"])):
+            resolved = entry["resolved"]
+            resolved.parent.mkdir(parents=True, exist_ok=True)
+            descriptor = os.open(
+                resolved.with_name(resolved.name + ".producer.lock"),
+                os.O_CREAT | os.O_RDWR,
+                0o600,
+            )
+            try:
+                fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError as error:
+                os.close(descriptor)
+                raise PreparationError("prepared artifact producer is busy") from error
+            descriptors.append(descriptor)
+        return descriptors
+    except BaseException:
+        for descriptor in reversed(descriptors):
+            os.close(descriptor)
+        raise
 
 
-def _prepare_artifact_locked(
+def _warm_artifact_receipt(
     path: Path,
     *,
     kind: str,
     inputs: Mapping[str, object],
-    producer: Callable[[], object],
     contact_class: str,
-):
-    """Persist once, or verify an existing artifact without invoking producer."""
-    path = Path(path)
-    if contact_class not in _CONTACT_CLASSES:
-        raise PreparationError("unknown preparation contact class")
-    if path.exists():
-        sha = hashlib.sha256(path.read_bytes()).hexdigest()
-        load_artifact(path, expected_sha256=sha, kind=kind, inputs=inputs)
-        if json.loads(path.read_bytes())["contact_class"] != contact_class:
-            raise PreparationError("prepared artifact contact class mismatch")
-        return {
-            "path": str(path),
-            "sha256": sha,
-            "cache": "warm",
-            "contact_class": contact_class,
-        }
+) -> dict[str, object]:
+    raw = path.read_bytes()
+    sha = hashlib.sha256(raw).hexdigest()
+    load_artifact(path, expected_sha256=sha, kind=kind, inputs=inputs)
+    if json.loads(raw)["contact_class"] != contact_class:
+        raise PreparationError("prepared artifact contact class mismatch")
+    return {
+        "path": str(path),
+        "sha256": sha,
+        "cache": "warm",
+        "contact_class": contact_class,
+    }
+
+
+def _validate_start_state(
+    path: Path,
+    *,
+    kind: str,
+    inputs: Mapping[str, object],
+    contact_class: str,
+) -> None:
     speech_tool_started = path.with_name(path.name + ".speech-tool-started.json")
     encoder_started = path.with_name(path.name + ".encoder-started.json")
     if speech_tool_started.exists():
@@ -212,6 +205,26 @@ def _prepare_artifact_locked(
         )
     if contact_class == "speech-tool" and encoder_started.exists():
         raise PreparationError("preparation start marker contact class mismatch")
+    if contact_class == "encoder" and encoder_started.exists():
+        raise PreparationError(
+            "prior encoder preparation requires a new registered attempt"
+        )
+
+
+def _persist_start_marker(
+    path: Path,
+    *,
+    kind: str,
+    inputs: Mapping[str, object],
+    contact_class: str,
+    prevalidated: bool = False,
+) -> None:
+    speech_tool_started = path.with_name(path.name + ".speech-tool-started.json")
+    encoder_started = path.with_name(path.name + ".encoder-started.json")
+    if not prevalidated:
+        _validate_start_state(
+            path, kind=kind, inputs=inputs, contact_class=contact_class
+        )
     if contact_class == "encoder":
         try:
             with encoder_started.open("x", encoding="utf-8") as stream:
@@ -241,16 +254,30 @@ def _prepare_artifact_locked(
                 inputs=inputs,
                 contact_class=contact_class,
             )
-    output = producer()
-    document = {
-        "schema": SCHEMA,
-        "kind": kind,
-        "inputs": dict(inputs),
-        "contact_class": contact_class,
-        "output": output,
-        "output_sha256": digest(output),
-    }
-    raw = canonical_bytes(document)
+
+
+def _artifact_bytes(
+    *,
+    kind: str,
+    inputs: Mapping[str, object],
+    output: object,
+    contact_class: str,
+) -> bytes:
+    return canonical_bytes(
+        {
+            "schema": SCHEMA,
+            "kind": kind,
+            "inputs": dict(inputs),
+            "contact_class": contact_class,
+            "output": output,
+            "output_sha256": digest(output),
+        }
+    )
+
+
+def _publish_artifact(
+    path: Path, raw: bytes, *, contact_class: str
+) -> dict[str, object]:
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, temp = tempfile.mkstemp(prefix=".prepared-", dir=path.parent)
     try:
@@ -259,7 +286,7 @@ def _prepare_artifact_locked(
             stream.flush()
             os.fsync(stream.fileno())
         try:
-            os.link(temp, path)  # no replacement of a concurrently published artifact
+            os.link(temp, path)
         except FileExistsError:
             if path.read_bytes() != raw:
                 raise PreparationError(
@@ -273,6 +300,194 @@ def _prepare_artifact_locked(
         "cache": "cold",
         "contact_class": contact_class,
     }
+
+
+def prepare_artifact(
+    path: Path,
+    *,
+    kind: str,
+    inputs: Mapping[str, object],
+    producer: Callable[[], object],
+    contact_class: str = "model-free",
+) -> dict[str, object]:
+    """Exclude other producers before checking warm state or doing any work.
+
+    A competing producer is refused immediately. The kernel lock is released
+    on process death; encoder and speech-tool start markers survive, so an
+    interruption never turns into automatic replay of a potentially spent
+    contact. This storage helper does not authorize the contact: speech-tool
+    callers still need a registered ``ExecutionPlan`` and governed accounting.
+    """
+    path = Path(path)
+    entry = {"path": path, "resolved": path.resolve()}
+    descriptors = _acquire_artifact_locks([entry])
+    try:
+        return _prepare_artifact_locked(
+            path,
+            kind=kind,
+            inputs=inputs,
+            producer=producer,
+            contact_class=contact_class,
+        )
+    finally:
+        for descriptor in reversed(descriptors):
+            os.close(descriptor)
+
+
+def prepare_artifact_batch(
+    items,
+    *,
+    kind: str,
+    producer: Callable[[list[int]], Sequence[object]],
+    contact_class: str = "speech-tool",
+) -> list[dict[str, object]]:
+    """Prepare a locked batch once and return receipts in caller order.
+
+    The producer receives the original index of each missing unique path.
+    Authorization, lease ownership and pre-contact accounting remain the
+    caller's responsibility.
+    """
+
+    if contact_class not in _CONTACT_CLASSES:
+        raise PreparationError("unknown preparation contact class")
+    if isinstance(items, (str, bytes)) or not isinstance(items, Sequence):
+        raise PreparationError("preparation batch items must be a sequence")
+
+    entries_by_resolved: dict[Path, dict[str, object]] = {}
+    original_entries: list[dict[str, object]] = []
+    for index, item in enumerate(items):
+        if (
+            not isinstance(item, Mapping)
+            or set(item) != {"path", "inputs"}
+            or not isinstance(item["inputs"], Mapping)
+        ):
+            raise PreparationError("malformed preparation batch item")
+        path = Path(item["path"])
+        inputs = item["inputs"]
+        try:
+            normalized_inputs = canonical_bytes(inputs)
+        except (TypeError, ValueError, OverflowError) as error:
+            raise PreparationError(
+                "preparation batch item inputs are not serializable"
+            ) from error
+        resolved = path.resolve()
+        entry = entries_by_resolved.get(resolved)
+        if entry is None:
+            entry = {
+                "path": path,
+                "resolved": resolved,
+                "inputs": inputs,
+                "normalized_inputs": normalized_inputs,
+                "first_index": index,
+            }
+            entries_by_resolved[resolved] = entry
+        elif entry["normalized_inputs"] != normalized_inputs:
+            raise PreparationError(
+                "duplicate preparation batch path has different inputs"
+            )
+        original_entries.append(entry)
+
+    unique_entries = list(entries_by_resolved.values())
+    if not unique_entries:
+        return []
+    descriptors = _acquire_artifact_locks(unique_entries)
+    try:
+        receipts_by_resolved: dict[Path, dict[str, object]] = {}
+        missing: list[dict[str, object]] = []
+        for entry in unique_entries:
+            path = entry["path"]
+            if path.exists():
+                receipts_by_resolved[entry["resolved"]] = _warm_artifact_receipt(
+                    path,
+                    kind=kind,
+                    inputs=entry["inputs"],
+                    contact_class=contact_class,
+                )
+            else:
+                missing.append(entry)
+
+        if missing:
+            for entry in missing:
+                _validate_start_state(
+                    entry["path"],
+                    kind=kind,
+                    inputs=entry["inputs"],
+                    contact_class=contact_class,
+                )
+            for entry in missing:
+                _persist_start_marker(
+                    entry["path"],
+                    kind=kind,
+                    inputs=entry["inputs"],
+                    contact_class=contact_class,
+                    prevalidated=True,
+                )
+            indices = [entry["first_index"] for entry in missing]
+            outputs = producer(indices)
+            if (
+                isinstance(outputs, (str, bytes, Mapping))
+                or not isinstance(outputs, Sequence)
+                or len(outputs) != len(missing)
+            ):
+                raise PreparationError(
+                    "batch producer output count differs from missing item count"
+                )
+            raws = []
+            try:
+                for entry, output in zip(missing, outputs, strict=True):
+                    raws.append(
+                        _artifact_bytes(
+                            kind=kind,
+                            inputs=entry["inputs"],
+                            output=output,
+                            contact_class=contact_class,
+                        )
+                    )
+            except (TypeError, ValueError, OverflowError) as error:
+                raise PreparationError(
+                    "batch producer outputs are not serializable"
+                ) from error
+            for entry, raw in zip(missing, raws, strict=True):
+                receipts_by_resolved[entry["resolved"]] = _publish_artifact(
+                    entry["path"], raw, contact_class=contact_class
+                )
+
+        return [
+            dict(receipts_by_resolved[entry["resolved"]])
+            for entry in original_entries
+        ]
+    finally:
+        for descriptor in reversed(descriptors):
+            os.close(descriptor)
+
+
+def _prepare_artifact_locked(
+    path: Path,
+    *,
+    kind: str,
+    inputs: Mapping[str, object],
+    producer: Callable[[], object],
+    contact_class: str,
+):
+    """Persist once, or verify an existing artifact without invoking producer."""
+    path = Path(path)
+    if contact_class not in _CONTACT_CLASSES:
+        raise PreparationError("unknown preparation contact class")
+    if path.exists():
+        return _warm_artifact_receipt(
+            path, kind=kind, inputs=inputs, contact_class=contact_class
+        )
+    _persist_start_marker(
+        path, kind=kind, inputs=inputs, contact_class=contact_class
+    )
+    output = producer()
+    raw = _artifact_bytes(
+        kind=kind,
+        inputs=inputs,
+        output=output,
+        contact_class=contact_class,
+    )
+    return _publish_artifact(path, raw, contact_class=contact_class)
 
 
 def _refuse_started_speech_tool(

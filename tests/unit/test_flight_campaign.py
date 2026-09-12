@@ -256,7 +256,7 @@ def test_window_inventory_cli_requires_explicit_output(tmp_path):
 
 @pytest.mark.parametrize("mode", [
     "check", "wire-check", "prepare-supply", "prepare-window-inventory",
-    "prompt-fit", "prepare-window-features", "worker", "campaign",
+    "prompt-fit", "prepare-window-features", "prepare-speech-observation-sources", "worker", "campaign",
 ])
 def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, monkeypatch, mode):
     import sys
@@ -279,6 +279,9 @@ def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, mon
         def prepare_window_inventory(self, path):
             calls.append("window-inventory")
             return {}
+        def prepare_speech_observation_sources(self, path):
+            calls.append("speech-observation-sources")
+            return {}
         def preprocess(self):
             calls.append("preprocess")
         def serve(self):
@@ -294,7 +297,7 @@ def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, mon
     selected_document = dict(cell().document)
     if mode == "check":
         selected_document["readiness"] = {"state": "held", "reason": "fit not yet registered"}
-    if mode in {"prepare-window-inventory", "prepare-window-features"}:
+    if mode in {"prepare-window-inventory", "prepare-window-features", "prepare-speech-observation-sources"}:
         selected_document["allowed_execution_stages"] = [mode]
     monkeypatch.setattr(cli, "load_campaign_cells",
                         lambda *a: (CampaignCell.from_document(selected_document),))
@@ -324,6 +327,8 @@ def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, mon
         assert calls == ["window-inventory"]
     elif mode == "prepare-window-features":
         assert calls == ["window-features"]
+    elif mode == "prepare-speech-observation-sources":
+        assert calls == ["speech-observation-sources"]
 
 
 def test_fit_cell_cannot_be_dispatched_as_generation():
@@ -392,3 +397,9 @@ def test_window_feature_encoding_requires_explicit_stage_and_root_custody(tmp_pa
             "--lock-path", str(tmp_path / "lock"), "--experiment", "e",
             "--cell", "C", "--output", str(tmp_path / "receipt"),
         ])
+
+
+def test_speech_source_export_requires_explicit_stage():
+    undeclared = cell()
+    with pytest.raises(CampaignError, match="explicitly permit"):
+        undeclared.assert_mode("prepare-speech-observation-sources")
