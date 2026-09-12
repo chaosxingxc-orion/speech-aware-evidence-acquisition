@@ -1,0 +1,41 @@
+{
+  "schema": "saea-preread-decision-semantics-v1",
+  "recorded_at_utc": "2026-09-12T17:46:56.283257+00:00",
+  "recipe": {
+    "relpath": "docs/readiness/2026-09-12-a2t-native-system-analysis-recipe.json",
+    "sha256": "03db0a625ba6fad25370b278c34597503162e40f8c2d81d3b1c5a1aea9e6c55b"
+  },
+  "decision_rule": {
+    "relpath": "configs/analysis/a2t-native-system-decision-v1.json",
+    "sha256": "3043cdaeaa330e7897e13a4aba17c55706e9e16bda7cde92b9f2683ba59f688c"
+  },
+  "analysis_runtime_commit": "5f79d399dc15016aaeedccac347aebffddfc61ca",
+  "quality_read": false,
+  "statistics_changed": false,
+  "scope": "Source interpretation only; this file grants no result-read or model authority. Bind all three finalized scored inputs and preregister the actual read before invocation.",
+  "declared_labels": {
+    "promising_system": "Knowledge-minus-direct primary lower bound exceeds the predeclared headroom threshold under natural and equal-tier weighting. Require nonnegative official tool-accuracy and macro parameter-F1 point differences; these latter checks do not establish noninferiority.",
+    "knowledge_contribution": "The corresponding knowledge-minus-stage-control primary lower bound exceeds its predeclared threshold under natural and equal-tier weighting.",
+    "adoption": "Same-roster full comparison reproduction required before claiming a newly effective mechanism.",
+    "negative_or_uncertain": "Report each comparison separately; no positive memory rule or new roster is inferred. Name a component from predeclared traces before another mechanism is admitted."
+  },
+  "contrast_assignment": {
+    "promising_system": "knowledge-minus-direct-primary",
+    "knowledge_contribution": "knowledge-minus-stage-control-primary"
+  },
+  "rule_clarifications": [
+    "The promising_system label does not require the knowledge-minus-stage-control contrast to pass.",
+    "The frozen declaration attaches tool-accuracy and macro parameter-F1 point guards to promising_system, not to knowledge_contribution.",
+    "Report every declared native/equal-tier result and guard point; do not relabel a point guard as noninferiority.",
+    "Apply any additional conservative root interpretation separately; do not attribute it to the frozen rule."
+  ],
+  "threshold": {
+    "comparator_percent_field": "results.<primary-contrast>.official_exact_match.groupings.tier.equal_stratum.left_ratio_pct",
+    "published_equal_tier_exact_match_percent": 29.675,
+    "threshold_percentage_points": "min(1.0, 0.10 * max(0, 29.675 - comparator_percent))",
+    "required_primary_lower_bound_fields": [
+      "natural_mixture.bootstrap.ci_low",
+      "groupings.tier.equal_stratum.bootstrap.ci_low"
+    ]
+  }
+}
