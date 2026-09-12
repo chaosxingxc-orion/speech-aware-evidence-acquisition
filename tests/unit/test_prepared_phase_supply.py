@@ -331,3 +331,52 @@ def test_bootstrap_does_not_retain_parent_provider_after_completion(workers):
     del provider
     gc.collect()
     assert reference() is None
+
+
+
+def test_runtime_source_audio_bindings_keep_packet_descriptor_unchanged(tmp_path):
+    runtime, _binding, _program = setup_runtime(tmp_path)
+    packet_bindings = {
+        "s1": {"packet_id": "packet/s1", "sha256": "b" * 64}
+    }
+    runtime._samples = [
+        SimpleNamespace(
+            sample_id="s1",
+            audio_ref=SimpleNamespace(sha256="a" * 64),
+        )
+    ]
+    runtime.speech_packet_bindings = lambda: packet_bindings
+
+    assert runtime.source_audio_bindings() == {
+        "s1": {
+            "packet_id": "packet/s1",
+            "packet_sha256": "b" * 64,
+            "source_audio_sha256": "a" * 64,
+        }
+    }
+    assert packet_bindings == {
+        "s1": {"packet_id": "packet/s1", "sha256": "b" * 64}
+    }
+
+
+def test_segmented_source_binding_is_part_of_prepared_artifact_identity(tmp_path):
+    runtime, binding, _program = setup_runtime(tmp_path)
+    source_bindings = {
+        "s1": {
+            "packet_id": "p1",
+            "packet_sha256": "b" * 64,
+            "source_audio_sha256": "a" * 64,
+        }
+    }
+    binding["supply_for_phase"] = SimpleNamespace(
+        source_audio_bindings=source_bindings
+    )
+    spec = SimpleNamespace(
+        as_json=lambda: {
+            "query_source": {"kind": phase_supply.SEALED_SEGMENT_VECTORS_KIND}
+        },
+        query_source={"kind": phase_supply.SEALED_SEGMENT_VECTORS_KIND},
+    )
+
+    inputs = runtime._phase_seed_inputs(binding, spec, "d" * 64)
+    assert inputs["sources"]["source_audio_bindings"] == source_bindings

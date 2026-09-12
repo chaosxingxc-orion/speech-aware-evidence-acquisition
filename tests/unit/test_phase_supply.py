@@ -460,11 +460,18 @@ def _built_binding(tmp_path, *, expose_facets=False):
     return snapshot, specs, supply_for_phase
 
 
-def _context(snapshot, *, sample_id="dev:s1", query_source="speech_features", packet_sha=_SHA_A):
+def _context(
+    snapshot,
+    *,
+    sample_id="dev:s1",
+    query_source="speech_features",
+    packet_id=None,
+    packet_sha=_SHA_A,
+):
     query_state = QueryState(
         query_id=f"run:{sample_id}:step0",
         query_sample_id=sample_id,
-        speech_packet_id=f"speech/{sample_id}",
+        speech_packet_id=packet_id or f"speech/{sample_id}",
         speech_packet_sha256=packet_sha,
         use_split_identity_hash=_SHA_A,
         query_source=query_source,
@@ -554,6 +561,93 @@ def test_segmented_queries_require_matching_raw_audio_and_speech_audio_source(tm
         supply_for_phase("evidence", _context(snapshot))
     with pytest.raises(ps.PhaseSupplyError, match="audio_sha256"):
         supply_for_phase("evidence", _context(snapshot, query_source="speech_audio", packet_sha=_SHA_B))
+
+
+def test_segmented_query_accepts_distinct_bound_source_and_packet_hashes(tmp_path):
+    snapshot = _snapshot()
+    query_digest = _write_segment_vectors(
+        tmp_path / "v" / "q.jsonl",
+        [{"id": "dev:s1", "audio_sha256": _SHA_A, "source_frames": 2,
+          "source_sample_rate_hz": 16000,
+          "segments": [{"id": "whole", "start_frame": 0, "end_frame": 2,
+                        "vectors": {"content": [1.0, 0.0]}}]}],
+    )
+    facet_digest = _write_vectors(
+        tmp_path / "v" / "f.jsonl",
+        [("facet:content:u1", {"content": [1.0, 0.0]}),
+         ("facet:content:u2", {"content": [0.0, 1.0]})],
+    )
+    specs = ps.load_phase_supply_specs(
+        _fragment(
+            _segment_source("v/q.jsonl", query_digest),
+            _source("v/f.jsonl", facet_digest),
+            tau=0.0,
+        ),
+        _program(),
+    )
+    source_bindings = {
+        "dev:s1": {
+            "packet_id": "speech/dev:s1",
+            "packet_sha256": _SHA_B,
+            "source_audio_sha256": _SHA_A,
+        }
+    }
+    supply_for_phase = ps.build_supply_for_phase(
+        specs,
+        snapshot=snapshot,
+        snapshot_sha256=snapshot.content_hash(),
+        data_root=tmp_path,
+        source_audio_bindings=source_bindings,
+    )
+
+    supply = supply_for_phase(
+        "evidence", _context(snapshot, packet_sha=_SHA_B)
+    )
+    assert isinstance(supply, rc.PhaseSupply)
+    assert supply.fusion_decision.selected_value_ids == ("value:u1",)
+
+
+@pytest.mark.parametrize(
+    "binding_change, context_change, message",
+    [
+        ({"source_audio_sha256": _SHA_B}, {}, "source audio"),
+        ({"packet_sha256": _SHA_A}, {}, "packet SHA"),
+        ({"packet_id": "speech/other"}, {}, "packet id"),
+        ({}, {"packet_sha": "c" * 64}, "packet SHA"),
+        ({}, {"packet_id": "speech/other"}, "packet id"),
+        ({}, {"sample_id": "dev:other"}, "source-audio binding"),
+    ],
+)
+def test_segmented_query_refuses_source_packet_and_state_mismatches(
+    tmp_path, binding_change, context_change, message
+):
+    snapshot = _snapshot()
+    query_digest = _write_segment_vectors(
+        tmp_path / "v" / "q.jsonl",
+        [{"id": "dev:s1", "audio_sha256": _SHA_A, "source_frames": 2,
+          "source_sample_rate_hz": 16000,
+          "segments": [{"id": "whole", "start_frame": 0, "end_frame": 2,
+                        "vectors": {"content": [1.0, 0.0]}}]}],
+    )
+    specs = ps.load_phase_supply_specs(
+        _fragment(_segment_source("v/q.jsonl", query_digest), tau=0.0), _program()
+    )
+    binding = {
+        "packet_id": "speech/dev:s1",
+        "packet_sha256": _SHA_B,
+        "source_audio_sha256": _SHA_A,
+    }
+    binding.update(binding_change)
+    supply_for_phase = ps.build_supply_for_phase(
+        specs,
+        snapshot=snapshot,
+        snapshot_sha256=snapshot.content_hash(),
+        data_root=tmp_path,
+        source_audio_bindings={"dev:s1": binding},
+    )
+    context_kwargs = {"packet_sha": _SHA_B, **context_change}
+    with pytest.raises(ps.PhaseSupplyError, match=message):
+        supply_for_phase("evidence", _context(snapshot, **context_kwargs))
 
 
 def test_a_non_kb_facet_provider_is_refused_without_an_injected_instance(tmp_path):
@@ -672,6 +766,56 @@ def test_build_bootstrap_selection_decides_before_the_flight(tmp_path):
     assert values == {"dev:s1": ("value:u1",)}
 
 
+def test_bootstrap_accepts_distinct_bound_source_and_packet_hashes(tmp_path):
+    snapshot = _snapshot()
+    query_digest = _write_segment_vectors(
+        tmp_path / "v" / "q.jsonl",
+        [{"id": "dev:s1", "audio_sha256": _SHA_A, "source_frames": 2,
+          "source_sample_rate_hz": 16000,
+          "segments": [{"id": "whole", "start_frame": 0, "end_frame": 2,
+                        "vectors": {"content": [1.0, 0.0]}}]}],
+    )
+    facet_digest = _write_vectors(
+        tmp_path / "v" / "f.jsonl",
+        [("facet:content:u1", {"content": [1.0, 0.0]}),
+         ("facet:content:u2", {"content": [0.0, 1.0]})],
+    )
+    specs = ps.load_phase_supply_specs(
+        _fragment(
+            _segment_source("v/q.jsonl", query_digest),
+            _source("v/f.jsonl", facet_digest),
+            tau=0.0,
+        ),
+        _program(),
+    )
+    source_bindings = {
+        "dev:s1": {
+            "packet_id": "speech/dev:s1",
+            "packet_sha256": _SHA_B,
+            "source_audio_sha256": _SHA_A,
+        }
+    }
+    supply_for_phase = ps.build_supply_for_phase(
+        specs,
+        snapshot=snapshot,
+        snapshot_sha256=snapshot.content_hash(),
+        data_root=tmp_path,
+        source_audio_bindings=source_bindings,
+    )
+    facets, values = ps.build_bootstrap_selection(
+        specs["evidence"],
+        provider=supply_for_phase.provider_factories["evidence"](),
+        query_vectors_by_sample=supply_for_phase.query_tables["evidence"],
+        speech_packet_bindings={
+            "dev:s1": {"packet_id": "speech/dev:s1", "sha256": _SHA_B}
+        },
+        source_audio_bindings=supply_for_phase.source_audio_bindings,
+        split_identity_hash=_SHA_A,
+    )
+    assert facets == {}
+    assert values == {"dev:s1": ("value:u1",)}
+
+
 def test_phase_supply_receipt_never_carries_a_vector(tmp_path):
     _snapshot_obj, specs, supply_for_phase = _built_binding(tmp_path)
     receipt = ps.phase_supply_receipt(
@@ -686,3 +830,59 @@ def test_phase_supply_receipt_never_carries_a_vector(tmp_path):
     serialized = json.dumps(receipt)
     assert "1.0" not in serialized.replace('"k": 5', "")
     assert "evidence payload" not in serialized
+
+
+
+def test_flight_runtime_injects_source_audio_binding_into_segmented_supply(tmp_path):
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+
+    snapshot = _snapshot()
+    query_digest = _write_segment_vectors(
+        tmp_path / "v" / "q.jsonl",
+        [{"id": "dev:s1", "audio_sha256": _SHA_A, "source_frames": 2,
+          "source_sample_rate_hz": 16000,
+          "segments": [{"id": "whole", "start_frame": 0, "end_frame": 2,
+                        "vectors": {"content": [1.0, 0.0]}}]}],
+    )
+    facet_digest = _write_vectors(
+        tmp_path / "v" / "f.jsonl",
+        [("facet:content:u1", {"content": [1.0, 0.0]}),
+         ("facet:content:u2", {"content": [0.0, 1.0]})],
+    )
+    values = _fragment(
+        _segment_source("v/q.jsonl", query_digest),
+        _source("v/f.jsonl", facet_digest),
+        tau=0.0,
+    )
+    source_bindings = {
+        "dev:s1": {
+            "packet_id": "speech/dev:s1",
+            "packet_sha256": _SHA_B,
+            "source_audio_sha256": _SHA_A,
+        }
+    }
+    stub = SimpleNamespace(
+        _composed=SimpleNamespace(values=values),
+        _data_root=tmp_path,
+        _phase_supply_providers=None,
+        _phase_supply_receipt=None,
+        source_audio_bindings=lambda: source_bindings,
+        speech_packet_bindings=lambda: {
+            "dev:s1": {"packet_id": "speech/dev:s1", "sha256": _SHA_B}
+        },
+        _prepare=lambda: (values, "test", "dev", _SHA_A),
+    )
+
+    supply_for_phase, specs = FlightRuntime._resolve_phase_supply(
+        stub, _program(), snapshot
+    )
+    assert supply_for_phase.source_audio_bindings == source_bindings
+    assert isinstance(
+        supply_for_phase(
+            "evidence", _context(snapshot, packet_sha=_SHA_B)
+        ),
+        rc.PhaseSupply,
+    )
+    assert set(specs) == {"evidence"}

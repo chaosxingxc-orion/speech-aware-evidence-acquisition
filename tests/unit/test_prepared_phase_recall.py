@@ -5,7 +5,15 @@ from types import SimpleNamespace
 
 import pytest
 
-from test_phase_supply import _snapshot, _write_vectors, _source, _fragment, _program
+from test_phase_supply import (
+    _fragment,
+    _program,
+    _segment_source,
+    _snapshot,
+    _source,
+    _write_segment_vectors,
+    _write_vectors,
+)
 from test_prepared_phase_supply import setup_runtime
 from speech_aware_evidence_acquisition.core.preparation import PreparationError
 from speech_aware_evidence_acquisition.rails import (
@@ -146,3 +154,98 @@ def test_parallel_recall_matches_serial_exactly_and_releases_state():
     parallel = ps.prepare_recall_rows(snapshot, queries, facets, 2, workers=2)
     assert serial == parallel
     assert ps._RECALL_WORKER_STATE is None
+
+
+
+def segmented_world(tmp_path):
+    runtime, binding, _ = setup_runtime(tmp_path)
+    query_sha = _write_segment_vectors(
+        tmp_path / "segments.jsonl",
+        [{
+            "id": "s1",
+            "audio_sha256": "a" * 64,
+            "source_frames": 2,
+            "source_sample_rate_hz": 16000,
+            "segments": [{
+                "id": "whole",
+                "start_frame": 0,
+                "end_frame": 2,
+                "vectors": {"content": [1.0, 0.0]},
+            }],
+        }],
+    )
+    facet_sha = _write_vectors(
+        tmp_path / "facets.jsonl",
+        [
+            ("facet:content:u1", {"content": [1.0, 0.0]}),
+            ("facet:content:u2", {"content": [0.0, 1.0]}),
+        ],
+    )
+    values = _fragment(
+        _segment_source("segments.jsonl", query_sha),
+        _source("facets.jsonl", facet_sha),
+        tau=0.0,
+    )
+    values["policy"] = _program().program_id
+    runtime._composed.values.update(values)
+    runtime._prepare = lambda: (
+        runtime._composed.values,
+        "audio2tool",
+        "DEV",
+        "d" * 64,
+    )
+    binding["knowledge_snapshot"] = _snapshot()
+    binding["speech_packet_bindings"] = {
+        "s1": {"packet_id": "packet/s1", "sha256": "b" * 64}
+    }
+    binding["source_audio_bindings"] = {
+        "s1": {
+            "packet_id": "packet/s1",
+            "packet_sha256": "b" * 64,
+            "source_audio_sha256": "a" * 64,
+        }
+    }
+    specs = ps.load_phase_supply_specs(runtime._composed.values, _program())
+    binding["supply_specs"] = specs
+    binding["supply_for_phase"] = ps.build_supply_for_phase(
+        specs,
+        snapshot=binding["knowledge_snapshot"],
+        snapshot_sha256=binding["knowledge_snapshot"].content_hash(),
+        data_root=tmp_path,
+        source_audio_bindings=binding["source_audio_bindings"],
+    )
+    return runtime, binding, specs
+
+
+def test_prepared_recall_binds_distinct_source_audio_and_packet_hashes(tmp_path):
+    runtime, binding, specs = segmented_world(tmp_path)
+    receipt = runtime.prepare_phase_recall(
+        tmp_path / "segmented-recall.json", phase="evidence"
+    )
+    pin = {
+        "relpath": "segmented-recall.json",
+        "sha256": receipt["sha256"],
+    }
+    rows = runtime._load_phase_recall(
+        pin, binding, specs["evidence"], "d" * 64
+    )
+    assert set(rows) == {"s1"}
+
+
+@pytest.mark.parametrize(
+    "field,value,message",
+    [
+        ("source_audio_sha256", "c" * 64, "source audio"),
+        ("packet_sha256", "c" * 64, "packet SHA"),
+        ("packet_id", "packet/other", "packet id"),
+    ],
+)
+def test_prepared_recall_refuses_segmented_source_binding_drift(
+    tmp_path, field, value, message
+):
+    runtime, binding, _specs = segmented_world(tmp_path)
+    binding["source_audio_bindings"]["s1"][field] = value
+    with pytest.raises(PreparationError, match=message):
+        runtime.prepare_phase_recall(
+            tmp_path / "segmented-recall.json", phase="evidence"
+        )
