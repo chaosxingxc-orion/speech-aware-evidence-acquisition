@@ -67,6 +67,10 @@ from speech_aware_evidence_acquisition.analysis.slurp_mf7b_vectors import (  # n
 from speech_aware_evidence_acquisition.data.lock import data_root  # noqa: E402
 from speech_aware_evidence_acquisition.e0.artifacts import write_json_artifact  # noqa: E402
 
+from speech_aware_evidence_acquisition.core.speech_embedding import (  # noqa: E402
+    load_stack, render, encode,
+)
+
 ROW_ID = "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
 ENCODER_ID = "omni-embed-nemotron-3b"
 DIMS = 2048
@@ -76,63 +80,10 @@ PASSAGE_PROMPT = "passage: "
 CEILING_CONTACTS = 13600
 
 
-def load_stack(model_dir: Path):
-    """The three shipped modules, reproduced through plain ``transformers``."""
-
-    import torch
-    from transformers import AutoModel, AutoProcessor
-
-    if "sentence_transformers" in sys.modules:  # pragma: no cover - defensive
-        raise SystemExit("sentence_transformers must not be imported in this process")
-    processor = AutoProcessor.from_pretrained(str(model_dir), trust_remote_code=True)
-    model = AutoModel.from_pretrained(
-        str(model_dir),
-        trust_remote_code=True,
-        dtype=torch.bfloat16,
-        attn_implementation="sdpa",
-    )
-    model = model.to("cuda").eval()
-    template = (model_dir / "additional_chat_templates/sentence_transformers.jinja").read_text(
-        encoding="utf-8"
-    )
-    pooling = json.loads((model_dir / "1_Pooling/config.json").read_text(encoding="utf-8"))
-    if pooling.get("pooling_mode") != "mean" or not pooling.get("include_prompt"):
-        raise SystemExit(f"unexpected pooling config {pooling!r}")
-    if int(pooling.get("embedding_dimension", 0)) != DIMS:
-        raise SystemExit(f"unexpected embedding dimension {pooling!r}")
-    return processor, model, template
 
 
-def render(processor, template: str, content: list[dict]) -> str:
-    return processor.apply_chat_template(
-        [{"role": "user", "content": content}],
-        chat_template=template,
-        tokenize=False,
-        add_generation_prompt=False,
-    )
 
 
-def encode(processor, model, texts: list[str], audio: list | None):
-    """One forward pass -> L2-normalised mean-pooled vectors."""
-
-    import torch
-
-    kwargs: dict[str, object] = {"text": texts, "return_tensors": "pt", "padding": True}
-    if audio is not None:
-        kwargs["audio"] = audio
-        kwargs["sampling_rate"] = SAMPLE_RATE_HZ
-    inputs = processor(**kwargs)
-    inputs = {
-        key: (value.to("cuda") if hasattr(value, "to") else value)
-        for key, value in inputs.items()
-    }
-    with torch.inference_mode():
-        outputs = model(**inputs, output_hidden_states=True, return_dict=True)
-    hidden = outputs.hidden_states[-1].float()
-    mask = inputs["attention_mask"].to(hidden.device).unsqueeze(-1).float()
-    pooled = (hidden * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1e-9)
-    pooled = torch.nn.functional.normalize(pooled, p=2, dim=1)
-    return [tuple(float(v) for v in row) for row in pooled.cpu()]
 
 
 def main() -> int:
