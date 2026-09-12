@@ -171,6 +171,72 @@ def test_runner_executes_zero_supply_then_supplied_and_reuses_obs_query(tmp_path
     assert summary.protocol_hash == protocol_hash("f" * 64, "bare-core", _SHA_A)
 
 
+def test_agent_artifact_result_never_reads_task_quality_or_consumption(tmp_path: Path):
+    class ArtifactAdapter(_FakeAdapter):
+        def score(self, sample, response):
+            raise AssertionError("artifact result must not read task quality")
+
+        def extract_consumption(self, sample, supply, response):
+            raise AssertionError("artifact result must not derive answer consumption")
+
+    adapter = ArtifactAdapter(samples=_one_sample_adapter().samples)
+    client = _RecordingAgentClient()
+
+    summary = run_speech_native_agent_loop(
+        data_root=tmp_path,
+        plan=_plan(execution_profile="model-free-check"),
+        adapter=adapter,
+        core_client=client,
+        split_id="all",
+        knowledge_snapshot=_knowledge_snapshot(),
+        speech_packet_bindings={"s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}},
+        controller_policy_id="artifact-stop-test-v1",
+        controller_registry=_controller_registry(
+            "artifact-stop-test-v1", lambda _sample_id: _ImmediateStopController()
+        ),
+        max_contacts=1,
+        slot_count=1,
+        queue_depth=1,
+        trace_sink=_agent_trace(),
+        agent_executor_id="reference-trajectory-v1",
+        result_kind="artifact",
+    )
+
+    assert summary.result_kind == "artifact"
+    assert summary.as_json()["result_kind"] == "artifact"
+    assert summary.results[0].result_kind == "artifact"
+    assert summary.results[0].metrics == {}
+    assert summary.results[0].consumption is None
+    assert summary.results[0].as_json()["consumption"] is None
+    assert len(client.calls) == 1
+
+
+def test_agent_result_kind_rejects_unknown_value_before_adapter_work(tmp_path: Path):
+    adapter = _one_sample_adapter()
+    with pytest.raises(RailsRunnerError, match="result_kind"):
+        run_speech_native_agent_loop(
+            data_root=tmp_path,
+            plan=_plan(execution_profile="model-free-check"),
+            adapter=adapter,
+            core_client=_RecordingAgentClient(),
+            split_id="all",
+            knowledge_snapshot=_knowledge_snapshot(),
+            speech_packet_bindings={
+                "s1": {"packet_id": "fake/dev/s1", "sha256": _SHA_C}
+            },
+            controller_policy_id="artifact-stop-test-v1",
+            controller_registry=_controller_registry(
+                "artifact-stop-test-v1", lambda _sample_id: _ImmediateStopController()
+            ),
+            max_contacts=1,
+            slot_count=1,
+            queue_depth=1,
+            trace_sink=_agent_trace(),
+            agent_executor_id="reference-trajectory-v1",
+            result_kind="scoreless-ish",
+        )
+
+
 def test_runner_supplied_arm_without_a_supply_builder_is_refused(tmp_path: Path):
     adapter = _one_sample_adapter()
     with pytest.raises(RailsRunnerError, match="supply_builder"):

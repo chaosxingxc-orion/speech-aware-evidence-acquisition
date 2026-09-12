@@ -13,10 +13,17 @@ from pathlib import Path
 from typing import Mapping
 
 from ...e0.artifacts import REPO_ROOT, write_json_artifact
-from ..attempts import AttemptError, AttemptHandle, AttemptStore, STATE_FINALIZED, STATE_OPENED
+from ..attempts import (
+    AttemptError,
+    AttemptHandle,
+    AttemptStore,
+    STATE_FINALIZED,
+    STATE_OPENED,
+)
 from ..scorers import score_bundle
 from ..tracking import ledger_row_for_bundle, log_bundle
 from . import STATUS_COMPLETED, BundleError, _confine_child_path, _refuse_if_inside_repo
+from .git_commit import require_clean_load_bearing_surface
 from .manifest import _attach_scores
 from .verify import verify_bundle
 
@@ -24,13 +31,64 @@ from .verify import verify_bundle
 @dataclass(frozen=True)
 class FinalizeResult:
     manifest_path: Path
-    scores_path: Path
+    scores_path: Path | None
     ledger_markdown_path: Path
     ledger_json_path: Path
     ledger_row_markdown: str
     ledger_cells: Mapping[str, str]
     mlflow_run_id: str | None
     attempt_state: str
+
+
+def _validate_artifact_finalization_binding(bundle, repo_root: Path) -> None:
+    """Rebuild an artifact flight's frozen config and bind its proposal rows."""
+    from ...contracts import ExecutionPlan
+    from ..config import compose
+    from ..flight.runtime import (
+        ARTIFACT_RESULT_ROLE,
+        validate_artifact_result_binding,
+    )
+
+    require_clean_load_bearing_surface(Path(repo_root))
+    manifest = bundle.manifest
+    config = manifest.get("config")
+    fragments = config.get("fragments") if isinstance(config, Mapping) else None
+    if not isinstance(fragments, Mapping) or set(fragments) != {
+        "model",
+        "dataset",
+        "baseline",
+        "experiment",
+    }:
+        raise BundleError(
+            "artifact finalization requires exact frozen config fragments"
+        )
+    try:
+        composed = compose(Path(repo_root), **dict(fragments))
+        plan = ExecutionPlan(**manifest["plan"]).validate()
+        binding = validate_artifact_result_binding(
+            composed.values,
+            plan=plan,
+            repo_root=Path(repo_root),
+            sample_ids=tuple(sorted(bundle.split_ids)),
+        )
+    except (KeyError, TypeError, ValueError, RuntimeError, OSError) as error:
+        raise BundleError(
+            f"artifact finalization binding is invalid: {error}"
+        ) from error
+    if (
+        composed.config_hash != config.get("config_hash")
+        or binding != manifest.get("artifact_result")
+        or manifest.get("result_kind") != "artifact"
+    ):
+        raise BundleError(
+            "artifact manifest differs from its frozen composed configuration"
+        )
+    if any(
+        row.get("result_kind") != "artifact"
+        or row.get("artifact_role") != ARTIFACT_RESULT_ROLE
+        for row in bundle.outputs_rows
+    ):
+        raise BundleError("artifact outputs do not carry the registered proposal role")
 
 
 def finalize_bundle(
@@ -72,12 +130,16 @@ def finalize_bundle(
     from .delivery import DELIVERY_MANIFEST_SCHEMA
 
     if bundle.manifest.get("schema") == DELIVERY_MANIFEST_SCHEMA:
-        raise BundleError("cannot finalize a delivery derivative: score it without an independent attempt")
+        raise BundleError(
+            "cannot finalize a delivery derivative: score it without an independent attempt"
+        )
     if bundle.manifest.get("status") != STATUS_COMPLETED:
         raise BundleError(
             f"cannot finalize {manifest_path}: manifest status is "
             f"{bundle.manifest.get('status')!r}, not {STATUS_COMPLETED!r}"
         )
+    if bundle.manifest.get("result_kind", "task-answer") == "artifact":
+        _validate_artifact_finalization_binding(bundle, Path(repo_root))
     if bundle.attempt_state != STATE_OPENED:
         raise BundleError(
             f"cannot finalize {manifest_path}: the attempt's durable state on disk is "
@@ -99,17 +161,23 @@ def finalize_bundle(
     # is recomputed again after scores attach.
     ledger_row_for_bundle(bundle, validation_cells)
 
-    scores = score_bundle(bundle, lock, root, repo_root=repo_root)
     run_dir = Path(manifest_path).resolve().parent
     run_id = str(bundle.manifest["run_id"])
-    scores_path = _confine_child_path(run_dir, f"{run_id}.scores.json", "run scores path")
-    write_json_artifact(scores_path, scores)
-    _attach_scores(Path(manifest_path), scores_path)
+    scores_path = None
+    if bundle.manifest.get("result_kind", "task-answer") == "artifact":
+        # Proposal artifacts are auditable model outputs, not task answers.
+        # Their empty scorer declaration closes without entering a task scorer.
+        bundle = verify_bundle(manifest_path)
+    else:
+        scores = score_bundle(bundle, lock, root, repo_root=repo_root)
+        scores_path = _confine_child_path(
+            run_dir, f"{run_id}.scores.json", "run scores path"
+        )
+        write_json_artifact(scores_path, scores)
+        _attach_scores(Path(manifest_path), scores_path)
 
-    # Re-verify over the now-complete bundle: this both closes the loop the
-    # brief asks for AND proves the scores artifact we just wrote binds
-    # correctly (any write corruption would fail here, before upload/ledger).
-    bundle = verify_bundle(manifest_path)
+        # Re-verify over the now-complete bundle and its score attachment.
+        bundle = verify_bundle(manifest_path)
 
     mlflow_run_id = None
     if tracking_uri is not None:

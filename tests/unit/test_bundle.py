@@ -52,7 +52,11 @@ import pytest
 
 import speech_aware_evidence_acquisition.core  # noqa: F401 (populate registries)
 from speech_aware_evidence_acquisition.contracts import ExecutionPlan, GateClosed
-from speech_aware_evidence_acquisition.core.attempts import AttemptError, AttemptHandle, AttemptStore
+from speech_aware_evidence_acquisition.core.attempts import (
+    AttemptError,
+    AttemptHandle,
+    AttemptStore,
+)
 from speech_aware_evidence_acquisition.core.bundle import (
     STATUS_ABORTED,
     STATUS_COMPLETED,
@@ -83,7 +87,11 @@ from speech_aware_evidence_acquisition.core.split_receipt import load_verified_s
 from speech_aware_evidence_acquisition.core.tracking import ledger_row_for_bundle
 from speech_aware_evidence_acquisition.data.lock import load_lock
 from speech_aware_evidence_acquisition.data.splits import freeze_splits
-from speech_aware_evidence_acquisition.e0.artifacts import REPO_ROOT, sha256_file, write_json_artifact
+from speech_aware_evidence_acquisition.e0.artifacts import (
+    REPO_ROOT,
+    sha256_file,
+    write_json_artifact,
+)
 
 
 class _OpenGate:
@@ -2405,3 +2413,227 @@ def test_verify_bundle_accepts_legitimate_study_commit_config_hash_and_scorers(
     assert bundle.manifest["scorers"] == ["asr-wer"]
     assert len(bundle.manifest["study_commit"]) == 40
     assert len(bundle.manifest["config"]["config_hash"]) == 64
+
+
+def test_finalize_artifact_bundle_skips_task_scorers_and_finalizes(
+    synthetic_world, bundled_repo, tmp_path, monkeypatch
+):
+    from speech_aware_evidence_acquisition.contracts import TraceRecord
+    from speech_aware_evidence_acquisition.core.bundle import finalize as finalizer
+    from speech_aware_evidence_acquisition.core.config import compose
+
+    _, repo_root = bundled_repo
+    manifest_path, _composed, plan, lock = _run_completed(
+        synthetic_world,
+        bundled_repo,
+        tmp_path,
+        run_id="SAEA-E-000-artifact",
+        attempt_id="attempt-artifact",
+        run_dir_name="run-artifact",
+    )
+    manifest = _read_manifest(manifest_path)
+    sample_ids = manifest["split"]["ids"]
+    roster = {
+        "schema": "saea-roster-receipt-v1",
+        "roster_id": "SYNTHETIC-ARTIFACT-CONSTRUCTION",
+        "carrier_lock_key": manifest["split"]["carrier_lock_key"],
+        "split_role": "discovery",
+        "roster_role": "construction",
+        "seed": 1,
+        "per_stratum": {"all": len(sample_ids)},
+        "strata_counts": {"all": len(sample_ids)},
+        "items": [{"sample_id": sid, "stratum": "all"} for sid in sample_ids],
+        "excluded_count": 0,
+        "split_identity_hash": manifest["split"]["identity_hash"],
+    }
+    roster_path = repo_root / "docs" / "rosters" / "train.json"
+    roster_path.parent.mkdir(parents=True)
+    roster_path.write_text(json.dumps(roster))
+    binding = {
+        "schema": "saea-artifact-result-binding-v1",
+        "role": "training-feedback-proposal",
+        "construction_roster": {
+            "repo_relpath": "docs/rosters/train.json",
+            "sha256": sha256_file(roster_path),
+        },
+    }
+    values = {
+        "arm": "speech-feature-query",
+        "policy": "phase-direct-only-v1",
+        "scorers": [],
+        "result_kind": "artifact",
+        "artifact_result": binding,
+    }
+    for kind, document in (
+        ("model", values),
+        ("dataset", {}),
+        ("baseline", {}),
+        ("experiment", {}),
+    ):
+        path = repo_root / "configs" / kind / f"{kind[0]}.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(document))
+    composed = compose(repo_root, model="m", dataset="d", baseline="b", experiment="e")
+
+    outputs_path = Path(manifest["outputs"]["path"])
+    outputs = [
+        json.loads(line) for line in outputs_path.read_text().splitlines() if line
+    ]
+    for row in outputs:
+        row.update(
+            arm="speech-feature-query",
+            result_kind="artifact",
+            artifact_role="training-feedback-proposal",
+        )
+    outputs_path.write_text("".join(json.dumps(row) + "\n" for row in outputs))
+    manifest["outputs"]["sha256"] = sha256_file(outputs_path)
+
+    trace_path = Path(manifest["raw_trace"]["path"])
+    documents = [
+        json.loads(line) for line in trace_path.read_text().splitlines() if line
+    ]
+    records = []
+    for row in documents:
+        if row["channel"] == "MODEL_REQUEST":
+            row["payload"]["arm"] = "speech-feature-query"
+        records.append(TraceRecord(row["channel"], row["record_id"], row["payload"]))
+    trace_path.write_text("".join(record.serialize() + "\n" for record in records))
+    trace_manifest_path = Path(manifest["trace_manifest"]["path"])
+    trace_manifest_path.write_text(
+        json.dumps(
+            {"records": {record.record_id: record.content_hash() for record in records}}
+        )
+    )
+    manifest["raw_trace"]["sha256"] = sha256_file(trace_path)
+    manifest["trace_manifest"]["sha256"] = sha256_file(trace_manifest_path)
+
+    manifest.update(
+        arm="speech-feature-query",
+        result_kind="artifact",
+        artifact_result=binding,
+        scorers=[],
+    )
+    manifest["config"]["config_hash"] = composed.config_hash
+    new_protocol = protocol_hash(
+        composed.config_hash, "speech-feature-query", manifest["split"]["identity_hash"]
+    )
+    manifest["protocol_hash"] = new_protocol
+    manifest["plan"]["protocol_hash"] = new_protocol
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    _git(repo_root, "add", "-A")
+    _git(repo_root, "commit", "-q", "-m", "artifact fixture")
+
+    monkeypatch.setattr(
+        finalizer,
+        "score_bundle",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("artifact finalization must not run task scorers")
+        ),
+    )
+    dirty_source = repo_root / "src" / "dirty_artifact_finalizer.py"
+    dirty_source.parent.mkdir(parents=True, exist_ok=True)
+    dirty_source.write_text("dirty = True\n", encoding="utf-8")
+    with pytest.raises(BundleError, match="load-bearing surface"):
+        finalize_bundle(
+            manifest_path,
+            lock,
+            synthetic_world.data_root,
+            repo_root=repo_root,
+            ledger_cells=_HUMAN_LEDGER_CELLS,
+        )
+    dirty_source.unlink()
+
+    result = finalize_bundle(
+        manifest_path,
+        lock,
+        synthetic_world.data_root,
+        repo_root=repo_root,
+        ledger_cells=_HUMAN_LEDGER_CELLS,
+    )
+
+    assert result.scores_path is None
+    assert result.attempt_state == "FINALIZED"
+    assert _read_manifest(manifest_path)["scores"] is None
+    store = AttemptStore(synthetic_world.data_root / "attempts")
+    assert store.handle(plan.run_id, plan.attempt_id).state() == "FINALIZED"
+
+
+def test_bundle_result_kind_keeps_task_answer_scorers_and_artifact_binding_strict(
+    synthetic_world, bundled_repo, tmp_path
+):
+    manifest_path, _composed, _plan, _lock = _run_completed(
+        synthetic_world,
+        bundled_repo,
+        tmp_path,
+        run_id="SAEA-E-000-artifact-header",
+        attempt_id="attempt-artifact-header",
+        run_dir_name="run-artifact-header",
+    )
+    manifest = _read_manifest(manifest_path)
+    manifest["scorers"] = []
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    with pytest.raises(BundleError, match="non-empty"):
+        verify_bundle(manifest_path)
+
+    manifest["result_kind"] = "artifact"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    with pytest.raises(BundleError, match="artifact_result"):
+        verify_bundle(manifest_path)
+
+    manifest["artifact_result"] = {
+        "schema": "saea-artifact-result-binding-v1",
+        "role": "training-feedback-proposal",
+        "construction_roster": {
+            "repo_relpath": "docs/rosters/train.json",
+            "sha256": "a" * 64,
+        },
+    }
+    manifest["scorers"] = ["asr-wer"]
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    with pytest.raises(BundleError, match="empty scorers"):
+        verify_bundle(manifest_path)
+
+
+def test_artifact_finalizer_rejects_syntactic_relabel_without_frozen_binding(
+    synthetic_world, bundled_repo, tmp_path, monkeypatch
+):
+    from speech_aware_evidence_acquisition.core.bundle import finalize as finalizer
+
+    _, repo_root = bundled_repo
+    manifest_path, _composed, _plan, lock = _run_completed(
+        synthetic_world,
+        bundled_repo,
+        tmp_path,
+        run_id="SAEA-E-000-fake-artifact",
+        attempt_id="attempt-fake-artifact",
+        run_dir_name="run-fake-artifact",
+    )
+    manifest = _read_manifest(manifest_path)
+    manifest.update(
+        result_kind="artifact",
+        artifact_result={
+            "schema": "saea-artifact-result-binding-v1",
+            "role": "training-feedback-proposal",
+            "construction_roster": {
+                "repo_relpath": "docs/rosters/missing.json",
+                "sha256": "a" * 64,
+            },
+        },
+        scorers=[],
+    )
+    manifest_path.write_text(json.dumps(manifest))
+    monkeypatch.setattr(
+        finalizer,
+        "score_bundle",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("scorer must remain behind artifact binding validation")
+        ),
+    )
+    with pytest.raises(BundleError, match="artifact finalization binding"):
+        finalize_bundle(
+            manifest_path,
+            lock,
+            synthetic_world.data_root,
+            repo_root=repo_root,
+            ledger_cells=_HUMAN_LEDGER_CELLS,
+        )

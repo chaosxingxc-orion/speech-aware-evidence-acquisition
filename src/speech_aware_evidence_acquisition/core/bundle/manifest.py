@@ -56,13 +56,17 @@ def _manifest_document(
     now: Callable[[], datetime],
 ) -> dict[str, object]:
     if status not in _VALID_STATUSES:
-        raise BundleError(f"manifest status must be one of {_VALID_STATUSES}, got {status!r}")
+        raise BundleError(
+            f"manifest status must be one of {_VALID_STATUSES}, got {status!r}"
+        )
     if status == STATUS_COMPLETED:
         if failure_reason is not None:
             raise BundleError("a COMPLETED manifest must not carry a failure_reason")
         if result is None:
             raise BundleError("a COMPLETED manifest requires the run's RunResult")
-    if status == STATUS_ABORTED and not (isinstance(failure_reason, str) and failure_reason.strip()):
+    if status == STATUS_ABORTED and not (
+        isinstance(failure_reason, str) and failure_reason.strip()
+    ):
         raise BundleError("an ABORTED manifest requires a non-empty failure_reason")
 
     attempt_id = plan.attempt_id
@@ -117,10 +121,13 @@ def _manifest_document(
     # docstring for the incident this repairs. `study_repo_dirt` is an
     # ADDITIVE field: old manifests (built before this fix) simply lack it,
     # and nothing in verify_bundle requires its presence.
-    study_commit, study_repo_dirt = _resolve_study_commit(Path(repo_root), Path(data_root), status)
+    study_commit, study_repo_dirt = _resolve_study_commit(
+        Path(repo_root), Path(data_root), status
+    )
 
     from .delivery_replay import (
-        require_experiment_phase_declarations, validate_phase_delivery_sources,
+        require_experiment_phase_declarations,
+        validate_phase_delivery_sources,
     )
 
     delivery_fragments = {
@@ -128,14 +135,19 @@ def _manifest_document(
         for kind in ("model", "dataset", "baseline")
     }
     required_deliveries = validate_phase_delivery_sources(
-        composed.values, parent_fragments=delivery_fragments,
+        composed.values,
+        parent_fragments=delivery_fragments,
     )
     require_experiment_phase_declarations(
-        repo_root, composed.fragments.get("experiment"), required_deliveries, delivery_fragments,
+        repo_root,
+        composed.fragments.get("experiment"),
+        required_deliveries,
+        delivery_fragments,
     )
     delivery_metadata = (
         {"required_phase_deliveries": list(required_deliveries)}
-        if required_deliveries else {}
+        if required_deliveries
+        else {}
     )
     return {
         **delivery_metadata,
@@ -169,7 +181,10 @@ def _manifest_document(
         # why this never duplicates core.driver.run.run_experiment's own
         # stderr warning.
         "legality": describe_legality_for_manifest(composed.values, data_root),
-        "config": {"fragments": dict(composed.fragments), "config_hash": composed.config_hash},
+        "config": {
+            "fragments": dict(composed.fragments),
+            "config_hash": composed.config_hash,
+        },
         "protocol_hash": plan.protocol_hash,
         "plan": {
             "schema": plan.schema,
@@ -203,6 +218,14 @@ def _manifest_document(
         "trace_manifest": trace_manifest_meta,
         "scores": None,
         "scorers": list(composed.values.get("scorers", [])),
+        **(
+            {
+                "result_kind": "artifact",
+                "artifact_result": dict(composed.values["artifact_result"]),
+            }
+            if composed.values.get("result_kind", "task-answer") == "artifact"
+            else {}
+        ),
         "cost": cost,
         "attempt": {
             "run_id": run_id,
