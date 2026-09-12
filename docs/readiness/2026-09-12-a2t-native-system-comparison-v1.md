@@ -53,8 +53,8 @@ request. Record that distinction beside the historical and paper columns.
 
 The initial serving candidate is decoder-only, c98304/np3, 32768 tokens per
 slot, max1024, fixed seed and temperature zero. It adds a third concurrent slot
-while preserving each complete request window. Resident allocation has not
-been tested on the 24 GB GPU. If startup cannot allocate this geometry, stop
+while preserving each complete request window. Root resident allocation succeeded on September 12 at 04:57 UTC on the 24 GB GPU;
+the service reports three slots with 32768 tokens each. If startup cannot allocate this geometry, stop
 dispatch and preserve the failed startup; root may prospectively bind the
 entire still-unstarted comparison to the retained c65536/np2 candidate.
 No worker or campaign automatically restarts or substitutes a service. Promote existing complete
@@ -117,12 +117,12 @@ have verified complete packets, including the four long recordings, with zero
 new encoding contacts. The source-audio/packet identity bridge is implemented
 and tested. The first shared recall preparation covers all 4,000 rows.
 
-Complete the shared fake wire checks, finalize the operational campaign-stage
-allowlist and refresh recall against that final configuration once. Preserve
+All three shared fake wire checks passed. The final operational campaign-stage
+allowlist is set and the corresponding recall refresh is sealed with identical outputs. Preserve
 the first preparation as a separate artifact; its absence of campaign-stage
 permission is a configuration-identity difference, not a retrieval change.
-Bind final wire, preparation and scientific admission receipts before committing
-structured generation/fit plans. A preparation receipt does not admit generation.
+Final wire, preparation and scientific admission receipts are bound, and the six
+structured generation/fit plans are registered for the shared campaign. A preparation receipt does not admit generation.
 
 The value criterion is source-grounded decision discrimination. The current
 frozen cards include public and native role-to-argument mappings, scoped task

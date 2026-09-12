@@ -4,7 +4,8 @@
       "allowed_execution_stages": [
         "check",
         "wire-check",
-        "prepare-phase-recall"
+        "prepare-phase-recall",
+        "campaign"
       ],
       "arm": "speech-feature-query",
       "attempt_id": "attempt-direct-generation-v1",
@@ -13,9 +14,26 @@
       "dataset_fragment": "audio2tool-org1-union-4000",
       "model_fragment": "q4km-mmproj-free-a2t-native-system-np3-v1",
       "readiness": {
-        "reason": "Await source-qualified packet promotion, shared segmented-query binding, exact request wire and capacity evidence, and root scientific admission. No generation authority.",
-        "requirements": [],
-        "state": "preparation-pending"
+        "reason": "Root scientific admission and complete shared source/wire preparations closed; real live-phase fit remains mandatory before each generation wave.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-A2T-NATIVE-SYSTEM-PACKETS-V1/promotion.json",
+            "sha256": "720d81f63a1923f19893c0ee171e1ab7b47f9a946c1e62a06bdddd839243de8a"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "coordination/a2t-native-system-root-wire-verdict-v1.json",
+            "sha256": "9de327b187e8d3571fa1b69e9078aecaadddc7b57a4edd2cc46081a2624da39a"
+          },
+          {
+            "expected_decision_id": "ROOT-A2T-NATIVE-SYSTEM-BOUNDED-COMPARISON-V1",
+            "kind": "decision",
+            "relpath": "coordination/a2t-native-system-root-eligibility-v1.json",
+            "sha256": "cc32e69f7dfda6bfe07897f3ce59ce3745a069c8029313b189c6d4b957bae080"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-A2T-NATIVE-SYSTEM-DIRECT-V1"
     }

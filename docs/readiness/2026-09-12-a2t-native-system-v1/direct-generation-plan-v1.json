@@ -1,0 +1,108 @@
+{
+  "budget_semantics": "Per-arm fit and generation GPU/audio caps are shared, not additive; service loading belongs to the same 10 GPU-hour family limit.",
+  "composed_config_hash": "1386cb0d7e337caed0d759092886ee6911d9eed26175bf9506363ae462ce0df4",
+  "decision_rule": {
+    "repo_relpath": "configs/analysis/a2t-native-system-decision-v1.json",
+    "sha256": "3043cdaeaa330e7897e13a4aba17c55706e9e16bda7cde92b9f2683ba59f688c"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-direct-generation-v1",
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 2.0,
+    "planned_model_calls": 4200,
+    "planned_speech_audio_seconds": 25000,
+    "protocol_hash": "853bcf4e599997036e677827229c9fbaf36cf871b9a9d88e6df6a825729bf250",
+    "run_id": "SAEA-A2T-NATIVE-SYSTEM-DIRECT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-a2t-native-system-np3-v1",
+  "family_budget": {
+    "fit_contacts_total": 60005,
+    "generation_calls_total": 21000,
+    "gpu_hours_total": 10.0,
+    "speech_audio_seconds_total": 125000
+  },
+  "live_fit": "One full actual request wave per phase, 1 props plus 3 endpoints per row. Retain all speech chunks, actual own predecessor state, full task contract, supplied values and max1024. Require prompt_fit_multiple4/3 within32768 per slot.",
+  "logging": "Use existing OpenJiuwen INFO file sinks under DATA serving/serving-a2t-native-system-np3-v1/campaign-framework-logs. Keep repository task audit traces independently unchanged.",
+  "observed_resident_identity": {
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "host": "127.0.0.1",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      }
+    ],
+    "model_fragment": "q4km-mmproj-free-a2t-native-system-np3-v1",
+    "model_fragment_sha256": "7c8cde14ccdef5b4d2637457fe30e029c9882439210ebbaf5c2976ebf5496673",
+    "model_root": "/home/chao",
+    "port": 8090,
+    "props_identity": {
+      "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "slot_n_ctx": 32768,
+      "total_slots": 3
+    },
+    "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+    "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+    "server_argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8090",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--no-mmproj",
+      "-c",
+      "98304",
+      "-np",
+      "3",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ],
+    "server_env": {
+      "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+      "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/a2t-native-system-4000-packets-04ccc72a"
+    },
+    "session_role": "inference"
+  },
+  "read_gate": "Do not inspect new semantic task results until all three complete manifests seal or a root terminal hold closes this comparison.",
+  "registered_at": "2026-09-12T05:05:43.565903+00:00",
+  "resident_document": {
+    "relpath": "serving/serving-a2t-native-system-np3-v1/session.json",
+    "sha256": "9b013e45b8e348db30a860d94aab5629f040532c61f10afad3fa910566d63364"
+  },
+  "resident_identity_semantics": "Recorded current resident identity; FlightRuntime independently derives and validates the required complete identity before attachment.",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/a2t-native-system-root-eligibility-v1.json",
+    "sha256": "cc32e69f7dfda6bfe07897f3ce59ce3745a069c8029313b189c6d4b957bae080"
+  },
+  "status": "ROOT_REGISTERED",
+  "stopping": "No automatic restart, re-registration or geometry substitution after task contact. Preserve any refusal and spent contacts for root review.",
+  "wire_verdict": {
+    "relpath": "coordination/a2t-native-system-root-wire-verdict-v1.json",
+    "sha256": "9de327b187e8d3571fa1b69e9078aecaadddc7b57a4edd2cc46081a2624da39a"
+  }
+}
