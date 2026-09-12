@@ -1,12 +1,12 @@
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-071.md](STATUS-071.md) records the live sole Whisper recovery,1721 model contacts at its snapshot, complete plan/solve fits and a retained decoder-only service. The original control is finalized and byte-identical under the integrated renderer repair. The isolated TRAIN knowledge successor is verified and merged; the true strategy-update cycle remains unfinished. No immediate owner decision blocks current work. Use state.json and live receipts for current progress.
+**Latest execution:** [STATUS-072.md](STATUS-072.md) records both completed Whisper arms and the frozen analysis: effectiveness is not established; primary micro F1 and intent are unresolved and full-roster intent is negative. Both TRAIN query-encoding runs are finalized. Qwen is stopped and the GPU is idle after encoding. Source-verified memory is merged, while the actual strategy-update cycle and registered component diagnosis remain unfinished. No immediate owner decision blocks authorized work.
 
 **Latest owner direction:** [OWNER-SPEECH-TOOLS-023.md](OWNER-SPEECH-TOOLS-023.md) adds locally loaded speech tools and problem-targeted investigation. [OWNER-DISCRIMINATIVE-VALUES-021.md](OWNER-DISCRIMINATIVE-VALUES-021.md), with OWNER018-020, retains source-grounded distinctions in task-specific values. Include all eight Audio2Tool tiers alongside SLURP and E21/E22 in design/readiness; share the execution base and specialize knowledge and corrective-memory construction. Read [STATUS-044.md](STATUS-044.md) and the [dataset/task analysis](../../../readiness/2026-09-11-task-specific-knowledge-and-memory-analysis.md). Full TRAIN relationship counts and per-carrier audits are complete; three value-format primitives and a TRAIN-bound memory library have CPU tests. Runtime memory integration now has a positive synthetic executor proof; actual memory admission remains pending. The first new live task-agent comparison and its registered matched replication are closed; the subsequent controlled role-coverage comparison is closed without adoption. Preserve historical verdicts and the SLURP-first execution preference.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 71. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 72. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -39,7 +39,7 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-071.md](STATUS-071.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
+Read [STATUS-072.md](STATUS-072.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
 The owner explicitly resumed GPU work after network reconnection and prioritizes
 high utilization. This supersedes OWNER012's scheduling hold. E21 and SLURP generation, scoring, fixed analysis and all four settlements
 are complete. Those earlier G6 SLURP and E21 system admissions fail their frozen rules. STATUS-044 separately admits the newer SLURP task-agent working baseline for exploration. The newer role-coverage pair is closed under STATUS-046; it is not adopted and cannot be replayed under its exhausted registration.
@@ -73,7 +73,7 @@ Its historical September9 snapshot must not be mistaken for current unread work.
 STATUS-009 through STATUS-024 preserve earlier boundaries; their pending items
 are superseded only by the cited later decisions, never erased from history.
 
-Root completed and verified all 1000 Whisper observations. The answering control is finalized. The original treatment is explicitly aborted after2000 contacts, while the sole registered recovery is now generating on the same resident decoder after the shared renderer repair, full control-byte parity and safe legacy metadata reconciliation. Preserve all original attempts and sources. Earlier E21/SLURP results remain closed, and the exemplar branch remains held. A stored receipt is not present health or dispatch authority.
+Root completed all 1000 Whisper observations and both eligible 1000-row answering arms, each with 3000 contacts and first scores. The original treatment remains ABORTED2000. The exact registered analysis is complete and fixed evidence effectiveness is not established; see the [result](../../../readiness/2026-09-12-slurp-fixed-whisper-result-v1.md). Both TRAIN query preparations have sealed. No live GPU flight is running at STATUS-072. Earlier results and exemplar holds remain unchanged.
 
 Use ChatGPT/OpenAI cloud subagents under [MODEL-ALLOCATION.md](MODEL-ALLOCATION.md);
 the main agent retains planning, scientific decisions, critical review and merge acceptance.
@@ -83,4 +83,4 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest implementation handoff: [STATUS-071](STATUS-071.md). Audio2Tool is decided and closed. Reward lineage, artifact I/O, the renderer repair and isolated TRAIN knowledge preparation are merged. The active recovery checkout remains frozen. Complete the eligible recovered treatment and both source bindings before paired result reading. This pointer grants no separate task-generation authority.
+Latest implementation handoff: [STATUS-072](STATUS-072.md). Reward lineage, authoritative corrective-memory source admission, the renderer repair, isolated TRAIN knowledge and query preparation are merged. The complete Whisper score contrast is decided; registered trace diagnosis and the first actual optimizer cycle remain. Completed experiment sources stay frozen. This pointer grants no separate generation authority.

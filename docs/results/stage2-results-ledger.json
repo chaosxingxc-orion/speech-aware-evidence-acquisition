@@ -2524,7 +2524,7 @@
       "preregistration": "docs/readiness/2026-09-08-slurp-logprob-judge-probe-v1-preregistration.md",
       "status": "NOT ADMITTED",
       "status_source": "h1",
-      "status_quote": "# Verdict \u2014 the SLURP logprob-as-judge probe: **NOT ADMITTED**",
+      "status_quote": "# Verdict — the SLURP logprob-as-judge probe: **NOT ADMITTED**",
       "pending": false,
       "comparator": {
         "text": "The sealed closed-list direct request is unchanged except for decoding_params.logprobs=true and top_logprobs=5. The admission bars concern the confidence signal; the greedy own-null replicate is the latency reference, not a replacement task baseline.",
@@ -3527,6 +3527,18 @@
       "source_sha256": "166511373efe0eb1ed26666139551b4723150eedb2915634f1ae40417a3f0758",
       "meaning": "All three complete arms are finalized and first-scored. Exact match knowledge minus direct is -0.300pp and knowledge minus stage control is +0.650pp; both primary 97.5-percent interval rules fail. Tool accuracy declines. Preserve full strata, original failures and named-component limits; no additional generation.",
       "supersedes_historical_cell_ids": []
+    },
+    {
+      "date": "2026-09-12",
+      "cell_id": "SLURP-FIXED-WHISPER-EVIDENCE-V1",
+      "status": "EFFECTIVENESS_NOT_ESTABLISHED",
+      "source": "docs/readiness/2026-09-12-slurp-fixed-whisper-result-v1.md",
+      "source_sha256": "6c486d49619ecbc6172d461f067c9edb04ed0b55456237b1a6b0bb540313a656",
+      "meaning": "Both complete 1000-row three-stage arms finalized and first-scored. NEW500 micro +0.833007 pp and intent -0.800000 pp both unresolved; secondary full-roster intent negative. Fixed supply not adopted as demonstrated improvement; registered component diagnosis pending, no automatic new mechanism.",
+      "run_ids": [
+        "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1",
+        "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1"
+      ]
     }
   ]
 }
