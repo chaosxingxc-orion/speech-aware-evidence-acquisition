@@ -105,8 +105,10 @@ def _preflight_bindings(plan: Mapping[str, object]) -> tuple[tuple[dict[str, str
         plan["cache_provenance_path"], plan["cache_provenance_sha256"], "cache provenance"
     )
     required_roster = {"schema", "count", "samples"}
-    if set(roster) != required_roster or not isinstance(roster["samples"], list):
-        raise ValueError("source roster must contain exact schema/count/samples")
+    if not required_roster.issubset(roster) or not isinstance(roster["samples"], list):
+        raise ValueError("source roster must contain schema/count/samples")
+    if not isinstance(roster["schema"], str) or not roster["schema"]:
+        raise ValueError("source roster schema must be a non-empty string")
     if roster["count"] != len(roster["samples"]) or not roster["samples"]:
         raise ValueError("source roster count disagrees with samples")
     if not isinstance(provenance.get("sources"), list):
@@ -119,8 +121,8 @@ def _preflight_bindings(plan: Mapping[str, object]) -> tuple[tuple[dict[str, str
             "sample_id", "audio_sha256", "encoder_receipt_sha256",
             "decoder_gguf_sha256", "mmproj_sha256", "session_role",
         }
-        if set(source) != required_source:
-            raise ValueError(f"cache provenance source {index} has unexpected fields")
+        if not required_source.issubset(source):
+            raise ValueError(f"cache provenance source {index} lacks required fields")
         sample_id = source["sample_id"]
         _packet_id(sample_id)
         if sample_id in sources:
@@ -138,8 +140,9 @@ def _preflight_bindings(plan: Mapping[str, object]) -> tuple[tuple[dict[str, str
     bindings: list[dict[str, str]] = []
     seen: set[str] = set()
     for index, sample in enumerate(roster["samples"]):
-        if not isinstance(sample, Mapping) or set(sample) != {"sample_id", "media_relpath", "audio_sha256"}:
-            raise ValueError(f"source roster sample {index} must have exact fields")
+        required_sample = {"sample_id", "media_relpath", "audio_sha256"}
+        if not isinstance(sample, Mapping) or not required_sample.issubset(sample):
+            raise ValueError(f"source roster sample {index} lacks required fields")
         sample_id = sample["sample_id"]
         packet_id = _packet_id(sample_id)
         if sample_id in seen:
