@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 49,
+  "generation": 50,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "8d6d0cb03ec6786f439249302aebcf6529a453a1",
-  "updated_at_utc": "2026-09-12T03:13:00.081259+00:00",
-  "next_action": "Read STATUS-049. Sole query recovery SEALED and root-validated: 4000 rows, 4020 complete spans, lease released, process gone. No answering service resident. Implement/review narrowly typed zero-audio text-encoder accounting and shared 152-key preparation, register and execute it, then bind supply and register actual-request fit/full-system comparison. Preserve historical failed attempt and all sealed artifacts. Goal active.",
+  "snapshot_commit": "2e1001ab6919e40db866780aab9bded453c535f6",
+  "updated_at_utc": "2026-09-12T03:33:03.994101+00:00",
+  "next_action": "Read STATUS-050. Query and native passage-key preparations are sealed/root-validated: 4000 rows,4020 spans,152 keys/values. No service/lease active. Bind shared phase supply, freeze retrieval/dose, register actual full-request capacity including four long recordings, then register matched native full-system generation and scoring. Preparation alone does not authorize answering. Preserve original attempts, source hashes and compact SLURP baseline. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-DISCRIMINATIVE-VALUES-021"

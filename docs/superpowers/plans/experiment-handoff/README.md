@@ -83,4 +83,4 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest implementation handoff: [STATUS-049](STATUS-049.md). Complete-speech query encoding and native card/snapshot materialization are sealed and root-validated. The next step is separately registered text-key preparation. This pointer grants no separate task-generation authority.
+Latest implementation handoff: [STATUS-050](STATUS-050.md). Complete speech queries, native cards and matching passage keys are sealed and root-validated. Bind shared supply and register complete-request capacity before the matched native task comparison. This pointer grants no separate task-generation authority.

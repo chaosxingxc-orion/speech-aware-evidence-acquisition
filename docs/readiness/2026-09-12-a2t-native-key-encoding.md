@@ -56,3 +56,30 @@ warm-cache zero contacts, failed-contact preservation and loader-compatible
 output. Coverage was 90 percent for preparation producers and 86 percent for
 the preparation runtime, 88 percent combined. The engineering check passed.
 No model/processor/GPU or actual task score was contacted by these tests.
+
+## Actual sealed result
+
+The sole encode-v1 attempt sealed at 2026-09-12T03:29:37.323717+00:00,
+with 152 text-encoder forwards, zero speech seconds and no cache hits.
+Process exit was zero; AttemptStore is FINALIZED and the shared lease released.
+Root checked all 152 per-facet cache artifacts and the complete shared-consumer
+export. The snapshot file and semantic hashes are distinct and both verified.
+
+Runtime source: /home/chao/saea-worktrees/a2t-native-key-runtime-v1 at
+2e1001ab6919e40db866780aab9bded453c535f6. Config SHA-256:
+3e4fc80e6b9df6fc6e7e13e0dd1aab9c4d5f9de34b7718d6dc9ed3ef884bfd96.
+Facet JSONL SHA-256:
+567642452ec2b0ae2a3d23036ba296c79542f7fed1d5bd949da3aba1435a52dd.
+Index SHA-256:
+a6e9c218ef36320459f85ccae5cb0a6ce796087d226d94e78d355f8620aa87a3.
+Root closure: DATA coordination/a2t-native-key-root-closure-v1.json,
+SHA-256 95b74158f1c5356288e5a42c6a0012e7a38957a3618a2d3e7ef7af792a4e42cd.
+
+Process-to-seal was 81.968 seconds, including 26.517 seconds before admitted
+runtime. Runtime was 55.451 seconds, with 40.821 seconds loading and 6.576
+seconds in forward/result-transfer event intervals. Five monitor samples are
+too sparse to establish sustained utilization. No performance probe was added.
+
+Knowledge-query sources are now prepared. Configured live supply, actual
+request capacity, full-system treatment/control generation and official native
+scoring remain pending. This receipt does not establish task improvement.
