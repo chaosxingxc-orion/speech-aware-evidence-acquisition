@@ -182,7 +182,7 @@ class NemotronSpeechEncoder:
                 {"type": "audio"},
             ],
         )
-        self.event("encoder_forward_started")
+        self.event("processor_started")
         result = encode(
             processor,
             model,
@@ -191,8 +191,8 @@ class NemotronSpeechEncoder:
             max_audio_samples=self.protocol["max_audio_samples"],
             require_complete_audio=True,
             max_sequence_tokens=self.protocol["max_sequence_tokens"],
+            forward_event=self.event,
         )
-        self.event("encoder_forward_finished")
         return result[0]
 
     def close(self):

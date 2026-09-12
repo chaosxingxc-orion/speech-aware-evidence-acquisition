@@ -99,6 +99,7 @@ def test_attention_mask_mean_pooling_and_l2_normalization_use_real_cpu_tensors()
 def test_invalid_audio_refuses_before_processor_or_forward(audio):
     def fail(**_):
         pytest.fail("invalid audio reached the model")
+
     with pytest.raises(SpeechEmbeddingError):
         encode(fail, fail, ["query"], audio, device="cpu", max_audio_samples=16000)
 
@@ -187,6 +188,7 @@ def test_audio_frontend_coverage_and_token_bound_are_checked_before_forward(
 
         def __call__(self, **kwargs):
             assert kwargs["sampling_rate"] == 16000
+            assert kwargs["audio_kwargs"] == {"max_length": 1000, "truncation": False}
             return {
                 "feature_attention_mask": torch.ones((1, audio_frames)),
                 "attention_mask": torch.ones((1, token_count)),
@@ -199,7 +201,9 @@ def test_audio_frontend_coverage_and_token_bound_are_checked_before_forward(
         return SimpleNamespace(hidden_states=[torch.ones((1, token_count, 2))])
 
     args = (Processor(), model, ["query"], [np.zeros(640, dtype="float32")])
+    forward_events = []
     options = dict(
+        forward_event=forward_events.append,
         device="cpu",
         max_audio_samples=1000,
         require_complete_audio=True,
@@ -209,6 +213,8 @@ def test_audio_frontend_coverage_and_token_bound_are_checked_before_forward(
         with pytest.raises(SpeechEmbeddingError, match=error):
             encode(*args, **options)
         assert not calls
+        assert forward_events == []
     else:
         assert np.allclose(encode(*args, **options), [[2**-0.5, 2**-0.5]])
         assert len(calls) == 1
+        assert forward_events == ["encoder_forward_started", "encoder_forward_finished"]

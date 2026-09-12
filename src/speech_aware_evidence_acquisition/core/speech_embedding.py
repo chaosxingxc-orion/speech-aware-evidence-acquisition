@@ -114,6 +114,7 @@ def encode(
     max_audio_samples: int | None = None,
     require_complete_audio: bool = False,
     max_sequence_tokens: int | None = None,
+    forward_event=None,
 ):
     """One forward pass -> L2-normalised mean-pooled vectors."""
 
@@ -136,6 +137,17 @@ def encode(
     if audio is not None:
         kwargs["audio"] = audio
         kwargs["sampling_rate"] = SAMPLE_RATE_HZ
+        if require_complete_audio:
+            if type(max_audio_samples) is not int or max_audio_samples <= 0:
+                raise SpeechEmbeddingError(
+                    "complete audio requires an explicit sample bound"
+                )
+            # Processor defaults can propagate a text-token max_length into
+            # audio samples. Bind this modality explicitly; never truncate it.
+            kwargs["audio_kwargs"] = {
+                "max_length": max_audio_samples,
+                "truncation": False,
+            }
     inputs = processor(**kwargs)
     if require_complete_audio and audio is not None:
         mask = inputs.get("feature_attention_mask")
@@ -156,10 +168,15 @@ def encode(
         key: (value.to(device) if hasattr(value, "to") else value)
         for key, value in inputs.items()
     }
+    if forward_event is not None:
+        forward_event("encoder_forward_started")
     with torch.inference_mode():
         outputs = model(**inputs, output_hidden_states=True, return_dict=True)
     hidden = outputs.hidden_states[-1].float()
     mask = inputs["attention_mask"].to(hidden.device).unsqueeze(-1).float()
     pooled = (hidden * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1e-9)
     pooled = torch.nn.functional.normalize(pooled, p=2, dim=1)
-    return [tuple(float(v) for v in row) for row in pooled.cpu()]
+    result = [tuple(float(v) for v in row) for row in pooled.cpu()]
+    if forward_event is not None:
+        forward_event("encoder_forward_finished")
+    return result
