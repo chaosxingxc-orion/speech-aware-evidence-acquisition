@@ -1,0 +1,17 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "a2t-native-system-recovery-direct-v1",
+      "cell": "a2t-native-system-recovery-direct-v1"
+    },
+    {
+      "experiment": "a2t-native-system-recovery-stage-control-v1",
+      "cell": "a2t-native-system-recovery-stage-control-v1"
+    },
+    {
+      "experiment": "a2t-native-system-recovery-knowledge-v1",
+      "cell": "a2t-native-system-recovery-knowledge-v1"
+    }
+  ]
+}
