@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 58,
+  "generation": 59,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "42bdd03f9cf6dbfe9e70d9edb6dd3e4feb548e08",
-  "updated_at_utc": "2026-09-12T14:32:51.570464+00:00",
-  "next_action": "Read STATUS-058. Preserve recovery campaign2179/exec22617, resident620/exec51845, monitor678/exec78284. DIRECT fit passed all4000 actual requests and12001 endpoints; generation live with703 calls at snapshot. Three recovery seals before quality read; then registered frozen saved-score analysis. No second recovery. Tool downloads/CPUloads complete; shared OBS integration and new inference registration remain future work. Goal active.",
+  "snapshot_commit": "99e3e5eb85e38e2debc328cfdc66fc6a32bfa0b4",
+  "updated_at_utc": "2026-09-12T15:09:17.701995+00:00",
+  "next_action": "Read STATUS-059. Shared cached speech OBS integration is committed and verified with 426 tests; real Whisper producer and dataset ASR registration remain pending. Preserve recovery campaign 2179 / exec 22617, resident 620 / exec 51845, monitor 678 / exec 78284. DIRECT sealed; STAGE-CONTROL generating; KNOWLEDGE queued. No quality read before three recovery seals or root terminal hold. Then registered frozen finalized-bundle saved-score analysis. No second recovery. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SPEECH-TOOLS-023"
