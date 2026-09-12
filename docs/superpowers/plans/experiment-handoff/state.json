@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 65,
+  "generation": 66,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "a00c34cb3d373a054158d25a2359c3708588bc79",
-  "updated_at_utc": "2026-09-12T17:34:32.548756+00:00",
-  "next_action": "Read STATUS-065. A2T direct and stage-control are finalized; knowledge remains live. Keep all current quality closed until full three-arm closure, then bind frozen saved-score analysis and root decision. Next is the scientifically admitted local Whisper window, followed by the matched three-phase SLURP evidence pair. Control preparation is complete; actual ASR, treatment binding and real phase capacity are pending. No immediate owner decision. The static optimization lifecycle audit records gaps without changing runtime. Goal active.",
+  "snapshot_commit": "7e51daf96f801b5f54d65060e15ffe202bfa8f4c",
+  "updated_at_utc": "2026-09-12T18:22:42.032878+00:00",
+  "next_action": "Read STATUS-066. All three A2T recovery arms are FINALIZED and first-scored; campaign exited 0. Outcome-free metadata text derivative fixed the frozen cluster-key type without changing membership/statistics. Actual analysis/read registered and released at 7e51daf; PID 28696 and remaining bootstrap workers are active. Checked points show no overall EM improvement and increased parse failures; do not invent pending intervals or a positive mechanism verdict. Wait for full frozen output, root decision, then the already registered Whisper preparation window. No Whisper forward yet; goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SPEECH-TOOLS-023"

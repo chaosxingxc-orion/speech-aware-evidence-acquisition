@@ -1,0 +1,31 @@
+{
+  "schema": "saea-postseal-analysis-progress-v1",
+  "recorded_at_utc": "2026-09-12T18:22:42.032878+00:00",
+  "campaign_exit_code": 0,
+  "generation_calls": {
+    "direct": 4000,
+    "stage-control": 8000,
+    "knowledge": 8000
+  },
+  "all_attempts_finalized": true,
+  "all_first_scores_attached": true,
+  "analysis_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-native-system-analysis-launch-v1.json",
+    "sha256": "f2b0f6039e7aa1372c176475ab30e79258897846a1bc6064470463c1cac25046"
+  },
+  "analysis_pid": 28696,
+  "analysis_output_complete": false,
+  "point_verification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-V1/root-point-crosscheck-v1.json",
+    "sha256": "97250d2139f82718c8af02b4c12b23c8317c5f85dbf32eee3320006968ab71fb"
+  },
+  "diagnostics": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-V1/final-output-diagnostic-v1.json",
+    "sha256": "49f3c758ee11c9a46334c4a3fd8724895fdeb4e8a1a5d9a29472f7fdb0f86cf9"
+  },
+  "resident_idle_gpu_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-resident-idle-gpu-snapshot-v1.json",
+    "sha256": "a2c4e7be6f664f8e17ac858d6da89c97606ea22d20425ac0cc37030c2e8e43ca"
+  },
+  "whisper_actual_forward_started": false
+}
