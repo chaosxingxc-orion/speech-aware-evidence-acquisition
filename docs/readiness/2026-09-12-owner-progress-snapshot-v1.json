@@ -1,0 +1,41 @@
+{
+  "schema": "saea-owner-progress-snapshot-v1",
+  "recorded_at_utc": "2026-09-12T17:34:32.548756+00:00",
+  "code_head": "a00c34cb3d373a054158d25a2359c3708588bc79",
+  "attempts": {
+    "direct": {
+      "state": "FINALIZED",
+      "calls": 4000
+    },
+    "stage-control": {
+      "state": "FINALIZED",
+      "calls": 8000
+    },
+    "knowledge": {
+      "state": "OPENED",
+      "calls": 7112
+    }
+  },
+  "monitor": {
+    "sampled_at_iso": "2026-09-12T17:34:26.301831+00:00",
+    "server_ok": true,
+    "gpu": {
+      "clocks_sm_mhz": 232.0,
+      "memory_used_mib": 22984.0,
+      "power_watts": 96.44,
+      "pstate": "P4",
+      "utilization_percent": 95.0
+    },
+    "slots": {
+      "busy": 1,
+      "idle": 2,
+      "total": 3
+    }
+  },
+  "quality_read": false,
+  "process_alive": {
+    "620": true,
+    "678": true,
+    "2179": true
+  }
+}

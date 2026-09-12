@@ -1,12 +1,12 @@
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-064.md](STATUS-064.md) records the live Audio2Tool recovery, completed SLURP recall and full fake-wire proof, frozen next analysis, pending local Whisper inference, retained scientific results and the next matched speech-tool comparison. Use state.json and live runtime receipts for current ownership; old snapshots do not establish present readiness.
+**Latest execution:** [STATUS-065.md](STATUS-065.md) records the owner progress review, live Audio2Tool three-arm recovery, completed SLURP control preparation, pending real Whisper inference, scientific limits, next queue and static optimization lifecycle gaps. Use state.json and live receipts for present readiness; no immediate owner decision blocks the queue.
 
-**Latest owner direction:** [OWNER-DISCRIMINATIVE-VALUES-021.md](OWNER-DISCRIMINATIVE-VALUES-021.md), with OWNER018-020, prioritizes source-grounded distinctions in task-specific values. Include all eight Audio2Tool tiers alongside SLURP and E21/E22 in design/readiness; share the execution base and specialize knowledge and corrective-memory construction. Read [STATUS-044.md](STATUS-044.md) and the [dataset/task analysis](../../../readiness/2026-09-11-task-specific-knowledge-and-memory-analysis.md). Full TRAIN relationship counts and per-carrier audits are complete; three value-format primitives and a TRAIN-bound memory library have CPU tests. Runtime memory integration now has a positive synthetic executor proof; actual memory admission remains pending. The first new live task-agent comparison and its registered matched replication are closed; the subsequent controlled role-coverage comparison is closed without adoption. Preserve historical verdicts and the SLURP-first execution preference.
+**Latest owner direction:** [OWNER-SPEECH-TOOLS-023.md](OWNER-SPEECH-TOOLS-023.md) adds locally loaded speech tools and problem-targeted investigation. [OWNER-DISCRIMINATIVE-VALUES-021.md](OWNER-DISCRIMINATIVE-VALUES-021.md), with OWNER018-020, retains source-grounded distinctions in task-specific values. Include all eight Audio2Tool tiers alongside SLURP and E21/E22 in design/readiness; share the execution base and specialize knowledge and corrective-memory construction. Read [STATUS-044.md](STATUS-044.md) and the [dataset/task analysis](../../../readiness/2026-09-11-task-specific-knowledge-and-memory-analysis.md). Full TRAIN relationship counts and per-carrier audits are complete; three value-format primitives and a TRAIN-bound memory library have CPU tests. Runtime memory integration now has a positive synthetic executor proof; actual memory admission remains pending. The first new live task-agent comparison and its registered matched replication are closed; the subsequent controlled role-coverage comparison is closed without adoption. Preserve historical verdicts and the SLURP-first execution preference.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 64. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 65. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -39,7 +39,7 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-046.md](STATUS-046.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
+Read [STATUS-065.md](STATUS-065.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
 The owner explicitly resumed GPU work after network reconnection and prioritizes
 high utilization. This supersedes OWNER012's scheduling hold. E21 and SLURP generation, scoring, fixed analysis and all four settlements
 are complete. Those earlier G6 SLURP and E21 system admissions fail their frozen rules. STATUS-044 separately admits the newer SLURP task-agent working baseline for exploration. The newer role-coverage pair is closed under STATUS-046; it is not adopted and cannot be replayed under its exhausted registration.
@@ -55,7 +55,7 @@ complete (16560 statistical fields agree); its report is
 | Work | Current state | Evidence / next action |
 |---|---|---|
 | SLURP role-coverage package | Both arms FINALIZED; intent negative, entity improvement unresolved | Close package; preserve compact-frame baseline; full strata and raw lineage verified |
-| Audio2Tool source-bound construction | Shared API and exact current exclusions complete | Compile newly bound cards and connect current live OBS through the shared runtime; no new GPU flight yet |
+| Audio2Tool native three-arm recovery | DIRECT and STAGE-CONTROL finalized; KNOWLEDGE generating | Prepared native cards and live OBS are active; preserve closed quality until complete three-arm analysis |
 | KV recovery and aligned null | Closed retrospectively; retain KC-S1b examples and preserve historical order/missing-decision facts | Existing seven-run FAMILY-REPORT; no rerun or rescore |
 | KC-S1b and KU-S3 | Original max64 repeat, max256 matched trio, and independent retrieval repeat completed | Component evidence positive; no equivalence or full-system inference from these repeats |
 | KU-S4N and twin | HOLD_NONINFERIORITY_FAILED | G3 encoding and G4 a/b/c remain ineligible; do not encode the 7049 missing exemplars |
@@ -73,7 +73,7 @@ Its historical September9 snapshot must not be mistaken for current unread work.
 STATUS-009 through STATUS-024 preserve earlier boundaries; their pending items
 are superseded only by the cited later decisions, never erased from history.
 
-The root retains the SLURP resident service under OWNER013. All four E21/SLURP attempts and their complete scoring/settlement are closed. The shared source-bound knowledge views and tool-action/result bridge now have CPU execution proofs. Complete public feature-preparation binding and the registered GPU cohort, then evaluate distinct corrective memory and adaptive control before external-policy optimization. Keep the exemplar branch held. A stored receipt is not present health or dispatch authority.
+The root currently owns the Audio2Tool decoder-only resident service under OWNER013. Earlier E21/SLURP attempts and their complete scoring/settlement remain closed. Complete the current Audio2Tool recovery and frozen scientific decision, then follow the registered local Whisper and matched SLURP speech-evidence sequence. Corrective memory and adaptive control remain later component work before a complete external-policy optimization loop. Keep the exemplar branch held. A stored receipt is not present health or dispatch authority.
 
 Use ChatGPT/OpenAI cloud subagents under [MODEL-ALLOCATION.md](MODEL-ALLOCATION.md);
 the main agent retains planning, scientific decisions, critical review and merge acceptance.
@@ -83,4 +83,4 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest implementation handoff: [STATUS-050](STATUS-050.md). Complete speech queries, native cards and matching passage keys are sealed and root-validated. Bind shared supply and register complete-request capacity before the matched native task comparison. This pointer grants no separate task-generation authority.
+Latest implementation handoff: [STATUS-065](STATUS-065.md). Native Audio2Tool preparation has entered the live comparison. The SLURP control preparation and shared analysis reader are complete; real Whisper preparation, treatment binding and actual live-phase fit remain pending. This pointer grants no separate task-generation authority.

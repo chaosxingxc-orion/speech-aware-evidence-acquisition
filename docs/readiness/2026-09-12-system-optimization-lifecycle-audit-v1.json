@@ -1,0 +1,25 @@
+{
+  "schema": "saea-static-source-audit-v1",
+  "base_commit": "a00c34cb3d373a054158d25a2359c3708588bc79",
+  "recorded_at_utc": "2026-09-12T17:34:32.548756+00:00",
+  "source_sha256": {
+    "src/speech_aware_evidence_acquisition/core/base.py": "c8d0462f07fd0847b781f99037bfa0e22334860d043947878716314dff178c1a",
+    "src/speech_aware_evidence_acquisition/rails/phase_tools.py": "3a490a0f71bc4a36a6c31f68305004953cbc2a69429a0656e9b0095b77ca2707",
+    "src/speech_aware_evidence_acquisition/rails/phase_planner.py": "cd5aa49be6f069037d5afc11659334cc625550a21f2da8e7af125c967a5be599",
+    "src/speech_aware_evidence_acquisition/rails/experience_memory.py": "0e62ab4ada0773ac93e607e714b2a5131813427f1bf49e2df470654216361311",
+    "src/speech_aware_evidence_acquisition/rails/experience_memory_runtime.py": "525696d3e6826dd41c7424b4959e9fb3c89cf4d263bbabdc19869f4a3a8229f8",
+    "src/speech_aware_evidence_acquisition/rails/tool_wrappers/experience_memory.py": "650ef973f457a38c81453a2c3e00220783111893b5408f075be43487b5989769",
+    "src/speech_aware_evidence_acquisition/rails/tools.py": "e68ab87f894ad349619ed9b1288c20ef2d8a8d410dc63c8b916814ebddcb7a47",
+    "src/speech_aware_evidence_acquisition/rails/core_client.py": "88701b8faaf7d0b3cec3011ecafb8744d68fa6bde3d435687c5b8d0ec8a2ab42",
+    "src/speech_aware_evidence_acquisition/rails/runner.py": "291d458b8cb34487a8d9bc2bb310537e75d716bf838b1db09db3b73887d6ad3e",
+    "src/speech_aware_evidence_acquisition/analysis/null_calibration.py": "fa387344de31e520ef8bf8f7d6d026345166613bd52ea1eb66dcb4483af3baf8"
+  },
+  "upstream_receipt_sha256": {
+    "youtu-agent-inspection-v1.json": "5e17044962371c35178e8b0553cb3c7f1040a4849245215fe56d66c648d24fde",
+    "skillopt/79124b37e9a6371e13b753f8bcd7adb1e493ade1/inspection-receipt.json": "fa22dbd4be520289c64fe44e72bfc8671c92b9d2c5f91d6146523b0d628ede6f"
+  },
+  "model_contacts": 0,
+  "scorer_calls": 0,
+  "quality_reads": 0,
+  "active_runtime_changes": 0
+}
