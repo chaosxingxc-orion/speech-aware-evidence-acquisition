@@ -96,6 +96,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
@@ -126,11 +127,15 @@ from .kb_policy import (
 #: the flight under its own tool-contact ledger row (module docstring).
 SEALED_VECTORS_KIND = "sealed-vectors"
 
+SEALED_SEGMENT_VECTORS_KIND = "sealed-segment-vectors"
+
 #: Named and REFUSED (module docstring): an in-flight embedding-server
 #: contact. Declaring it keeps the refusal specific instead of generic.
 EMBEDDING_SERVER_KIND = "embedding-server"
 
-VECTOR_SOURCE_KINDS = frozenset({SEALED_VECTORS_KIND, EMBEDDING_SERVER_KIND})
+VECTOR_SOURCE_KINDS = frozenset(
+    {SEALED_VECTORS_KIND, SEALED_SEGMENT_VECTORS_KIND, EMBEDDING_SERVER_KIND}
+)
 
 _SPEC_KEYS = frozenset(
     {
@@ -183,6 +188,14 @@ QUERY_SIGNAL_SEPARATOR = ":"
 class PhaseSupplyError(RailsError):
     """A ``phase_supply`` config fragment, or the binding built from it, is
     invalid."""
+
+
+@dataclass(frozen=True)
+class SealedSegmentQuery:
+    """One hash-pinned speech query with vectors for contiguous audio spans."""
+
+    audio_sha256: str
+    segments: tuple[Mapping[str, tuple[float, ...]], ...]
 
 
 def _require_sha256(value: object, *, field: str) -> str:
@@ -291,7 +304,10 @@ def assert_phase_supply_queries_carry_speech(values: Mapping[str, object]) -> No
         source = entry.get("query_source")
         if not isinstance(source, Mapping):
             continue
-        if source.get("kind") != SEALED_VECTORS_KIND:
+        if source.get("kind") not in (
+            SEALED_VECTORS_KIND,
+            SEALED_SEGMENT_VECTORS_KIND,
+        ):
             continue
         assert_query_signal_declares_speech(
             source.get("embedded_signal"),
@@ -325,6 +341,11 @@ def _validated_source(
         # serving geometry, its own ExecutionPlan clause and a per-row
         # tool-contact ledger row, none of which this seam owns.
         return dict(source)
+    if kind == SEALED_SEGMENT_VECTORS_KIND and not is_query:
+        raise PhaseSupplyError(
+            f"{field}.kind={SEALED_SEGMENT_VECTORS_KIND!r} is query-only; "
+            "facet_source must use sealed-vectors"
+        )
     _require_relpath(source.get("relpath"), field=f"{field}.relpath")
     _require_sha256(source.get("sha256"), field=f"{field}.sha256")
     _require_text(
@@ -627,13 +648,130 @@ def load_sealed_vectors(
     return table
 
 
+def load_sealed_segment_vectors(
+    path: Path, *, expected_sha256: str, dimensions: Sequence[str]
+) -> Mapping[str, SealedSegmentQuery]:
+    """Load query-only vectors for exact, contiguous spans of one speech packet."""
+
+    resolved = Path(path)
+    if not resolved.is_file():
+        raise PhaseSupplyError(f"sealed segment vector file {resolved} does not exist")
+    raw = resolved.read_bytes()
+    measured = hashlib.sha256(raw).hexdigest()
+    if measured != _require_sha256(expected_sha256, field="expected_sha256"):
+        raise PhaseSupplyError(
+            f"sealed segment vector file {resolved} hashes to {measured}, not the "
+            f"configured {expected_sha256}"
+        )
+    allowed = set(dimensions)
+    widths: dict[str, int] = {}
+    table: dict[str, SealedSegmentQuery] = {}
+    required_keys = {
+        "id", "audio_sha256", "source_frames", "source_sample_rate_hz", "segments"
+    }
+    segment_keys = {"id", "start_frame", "end_frame", "vectors"}
+    for number, line in enumerate(raw.decode("utf-8").splitlines(), start=1):
+        if not line.strip():
+            continue
+        try:
+            document = json.loads(line)
+        except json.JSONDecodeError as error:
+            raise PhaseSupplyError(
+                f"{resolved} line {number} is not valid JSON: {error}"
+            ) from None
+        if not isinstance(document, Mapping) or set(document) != required_keys:
+            raise PhaseSupplyError(
+                f"{resolved} line {number} must carry exactly {sorted(required_keys)}"
+            )
+        entry_id = _require_text(document["id"], field=f"{resolved} line {number} id")
+        if entry_id in table:
+            raise PhaseSupplyError(f"{resolved} has a duplicate id {entry_id!r}")
+        audio_sha256 = _require_sha256(
+            document["audio_sha256"], field=f"{resolved} line {number} audio_sha256"
+        )
+        source_frames = _require_positive_int(
+            document["source_frames"], field=f"{resolved} line {number} source_frames"
+        )
+        _require_positive_int(
+            document["source_sample_rate_hz"],
+            field=f"{resolved} line {number} source_sample_rate_hz",
+        )
+        raw_segments = document["segments"]
+        if not isinstance(raw_segments, list) or not raw_segments:
+            raise PhaseSupplyError(f"{resolved} line {number} segments must be non-empty")
+        cursor = 0
+        segment_ids: set[str] = set()
+        segments: list[Mapping[str, tuple[float, ...]]] = []
+        for segment_number, segment in enumerate(raw_segments, start=1):
+            field = f"{resolved} line {number} segment {segment_number}"
+            if not isinstance(segment, Mapping) or set(segment) != segment_keys:
+                raise PhaseSupplyError(f"{field} must carry exactly {sorted(segment_keys)}")
+            segment_id = _require_text(segment["id"], field=f"{field} id")
+            if segment_id in segment_ids:
+                raise PhaseSupplyError(f"{field} has duplicate segment id {segment_id!r}")
+            segment_ids.add(segment_id)
+            start = segment["start_frame"]
+            end = segment["end_frame"]
+            if (
+                isinstance(start, bool) or not isinstance(start, int)
+                or isinstance(end, bool) or not isinstance(end, int)
+                or start != cursor or end <= start or end > source_frames
+            ):
+                raise PhaseSupplyError(
+                    f"{field} does not provide ordered exact positive frame coverage"
+                )
+            cursor = end
+            vectors = segment["vectors"]
+            if not isinstance(vectors, Mapping) or set(vectors) != allowed:
+                raise PhaseSupplyError(
+                    f"{field} vectors must carry exactly declared dimensions {sorted(allowed)}"
+                )
+            parsed: dict[str, tuple[float, ...]] = {}
+            for dimension in sorted(vectors):
+                vector = vectors[dimension]
+                if not isinstance(vector, list) or not vector:
+                    raise PhaseSupplyError(
+                        f"{field} dimension {dimension!r} must be a non-empty list"
+                    )
+                if any(
+                    isinstance(value, bool) or not isinstance(value, (int, float))
+                    or not math.isfinite(float(value))
+                    for value in vector
+                ):
+                    raise PhaseSupplyError(
+                        f"{field} dimension {dimension!r} must be finite numbers"
+                    )
+                parsed_vector = tuple(float(value) for value in vector)
+                if not any(value != 0.0 for value in parsed_vector):
+                    raise PhaseSupplyError(
+                        f"{field} dimension {dimension!r} must be nonzero"
+                    )
+                width = widths.setdefault(dimension, len(parsed_vector))
+                if len(parsed_vector) != width:
+                    raise PhaseSupplyError(
+                        f"{resolved} dimension {dimension!r} mixes widths {width} and "
+                        f"{len(parsed_vector)}; one file is one embedding model"
+                    )
+                parsed[dimension] = parsed_vector
+            segments.append(parsed)
+        if cursor != source_frames:
+            raise PhaseSupplyError(
+                f"{resolved} line {number} segments do not provide exact frame coverage "
+                f"[0, {source_frames}]"
+            )
+        table[entry_id] = SealedSegmentQuery(audio_sha256=audio_sha256, segments=tuple(segments))
+    if not table:
+        raise PhaseSupplyError(f"sealed segment vector file {resolved} carries no rows")
+    return table
+
+
 def _load_query_source(
     spec: PhaseSupplySpec,
     source: Mapping[str, object],
     data_root: Path,
     *,
     label: str,
-) -> Mapping[str, Mapping[str, tuple[float, ...]]]:
+) -> Mapping[str, Mapping[str, tuple[float, ...]]] | Mapping[str, SealedSegmentQuery]:
     kind = source["kind"]
     if kind == EMBEDDING_SERVER_KIND:
         raise PhaseSupplyError(
@@ -643,6 +781,14 @@ def _load_query_source(
             "exposure-ledger row per contact, none of which this config seam owns. "
             f"Embed the signal BEFORE the flight and pin it as {SEALED_VECTORS_KIND!r} "
             "(module docstring)"
+        )
+    if kind == SEALED_SEGMENT_VECTORS_KIND:
+        if label != "query_source":
+            raise PhaseSupplyError("sealed-segment-vectors is query-only")
+        return load_sealed_segment_vectors(
+            data_root / str(source["relpath"]),
+            expected_sha256=str(source["sha256"]),
+            dimensions=spec.dimensions,
         )
     return load_sealed_vectors(
         data_root / str(source["relpath"]),
@@ -689,7 +835,9 @@ def build_supply_for_phase(
     if not specs:
         return None
 
-    query_tables: dict[str, Mapping[str, Mapping[str, tuple[float, ...]]]] = {}
+    query_tables: dict[
+        str, Mapping[str, Mapping[str, tuple[float, ...]]] | Mapping[str, SealedSegmentQuery]
+    ] = {}
     facet_tables: dict[str, Mapping[str, Mapping[str, tuple[float, ...]]]] = {}
     provider_factories: dict[str, Callable[[], object]] = {}
     for phase, spec in sorted(specs.items()):
@@ -734,18 +882,34 @@ def build_supply_for_phase(
                 "supply_for_phase needs an AgentRuntimeContext carrying a sample_id "
                 "and a QueryState"
             )
-        query_vectors = query_tables[phase_name].get(sample_id)
-        if not query_vectors:
+        query_record = query_tables[phase_name].get(sample_id)
+        if not query_record:
             return None
+        if isinstance(query_record, SealedSegmentQuery):
+            if query_state.query_source != "speech_audio":
+                raise PhaseSupplyError(
+                    "sealed-segment-vectors requires QueryState.query_source='speech_audio'"
+                )
+            if query_record.audio_sha256 != query_state.speech_packet_sha256:
+                raise PhaseSupplyError(
+                    "sealed-segment-vectors row audio_sha256 does not match "
+                    "QueryState.speech_packet_sha256"
+                )
+            provider_query = {
+                "query_state": query_state,
+                "query_segments": query_record.segments,
+            }
+        else:
+            provider_query = {
+                "query_state": query_state,
+                "query_vectors": dict(query_record),
+            }
         # A FRESH provider per decision: KbFacetProvider carries the
         # last-candidates() rank result on the instance, and
         # rails.runner runs trajectories concurrently, so one shared
         # instance would let two samples interleave their decisions.
         provider = provider_factories[phase_name]()
-        ranking = provider.candidates(
-            {"query_state": query_state, "query_vectors": dict(query_vectors)},
-            k=spec.k,
-        )
+        ranking = provider.candidates(provider_query, k=spec.k)
         fusion_decision = provider.fuse(
             [ranking], k=spec.k, policy_id=spec.fuse_policy
         )
@@ -906,7 +1070,7 @@ def _bootstrap_one(task):
 
 
 def _bootstrap_select(task, state):
-    sample_id, query_vectors, descriptor = task
+    sample_id, query_record, descriptor = task
     spec, provider, split_identity_hash = state
     seed_state = QueryState(
         query_id=f"{SEED_QUERY_ID_PREFIX}:{spec.phase}:{sample_id}",
@@ -914,11 +1078,17 @@ def _bootstrap_select(task, state):
         speech_packet_id=str(descriptor["packet_id"]),
         speech_packet_sha256=str(descriptor["sha256"]),
         use_split_identity_hash=split_identity_hash,
+        query_source=("speech_audio" if isinstance(query_record, SealedSegmentQuery) else "speech_features"),
     ).validate()
-    ranking = provider.candidates(
-        {"query_state": seed_state, "query_vectors": dict(query_vectors)},
-        k=spec.k,
-    )
+    if isinstance(query_record, SealedSegmentQuery):
+        if query_record.audio_sha256 != descriptor["sha256"]:
+            raise PhaseSupplyError(
+                "sealed-segment-vectors row audio_sha256 does not match speech packet binding"
+            )
+        provider_query = {"query_state": seed_state, "query_segments": query_record.segments}
+    else:
+        provider_query = {"query_state": seed_state, "query_vectors": dict(query_record)}
+    ranking = provider.candidates(provider_query, k=spec.k)
     fusion_decision = provider.fuse([ranking], k=spec.k, policy_id=spec.fuse_policy)
     return (
         sample_id,
@@ -942,7 +1112,9 @@ def build_bootstrap_selection(
     spec: PhaseSupplySpec,
     *,
     provider: object,
-    query_vectors_by_sample: Mapping[str, Mapping[str, tuple[float, ...]]],
+    query_vectors_by_sample: Mapping[
+        str, Mapping[str, tuple[float, ...]] | SealedSegmentQuery
+    ],
     speech_packet_bindings: Mapping[str, Mapping[str, object]],
     split_identity_hash: str,
     workers: int = 1,
@@ -1044,17 +1216,20 @@ __all__ = [
     "EMBEDDING_SERVER_KIND",
     "QUERY_SIGNAL_MODALITIES",
     "QUERY_SIGNAL_SEPARATOR",
+    "SEALED_SEGMENT_VECTORS_KIND",
     "SEALED_VECTORS_KIND",
     "SEED_QUERY_ID_PREFIX",
     "VECTOR_SOURCE_KINDS",
     "PhaseSupplyError",
     "PhaseSupplySpec",
+    "SealedSegmentQuery",
     "assert_phase_supply_queries_carry_speech",
     "assert_query_signal_declares_speech",
     "build_bootstrap_selection",
     "build_supply_for_phase",
     "load_phase_supply_specs",
     "load_sealed_vectors",
+    "load_sealed_segment_vectors",
     "phase_supply_receipt",
     "query_signal_modality",
 ]
@@ -1069,11 +1244,16 @@ def _recall_worker_init(snapshot, facets, k):
 
 
 def _recall_one(task):
-    from .kb_policy import multidim_recall
+    from .kb_policy import multidim_recall, multidim_segment_recall
 
     sample_id, query = task
     snapshot, facets, k = _RECALL_WORKER_STATE
-    return sample_id, multidim_recall(snapshot, query, lambda fid: facets.get(fid, {}), k)
+    recall = (
+        multidim_segment_recall(snapshot, query.segments, lambda fid: facets.get(fid, {}), k)
+        if isinstance(query, SealedSegmentQuery)
+        else multidim_recall(snapshot, query, lambda fid: facets.get(fid, {}), k)
+    )
+    return sample_id, recall
 
 
 def prepare_recall_rows(snapshot, queries, facets, k, *, workers=1):

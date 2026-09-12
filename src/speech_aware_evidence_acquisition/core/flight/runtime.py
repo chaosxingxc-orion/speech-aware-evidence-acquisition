@@ -4289,7 +4289,12 @@ class FlightRuntime:
         executes the registered ranker and fuser against the actual QueryState.
         """
         from ..preparation import PreparationError, prepare_artifact
-        from ...rails.phase_supply import load_phase_supply_specs, load_sealed_vectors
+        from ...rails.phase_supply import (
+            SEALED_SEGMENT_VECTORS_KIND,
+            load_phase_supply_specs,
+            load_sealed_segment_vectors,
+            load_sealed_vectors,
+        )
         from ...rails.phase_supply import prepare_recall_rows, _validate_bootstrap_workers
 
         max_workers = _validate_bootstrap_workers(max_workers)
@@ -4304,15 +4309,23 @@ class FlightRuntime:
         spec = specs.get(phase)
         if spec is None:
             raise PreparationError(f"phase {phase!r} has no configured phase supply")
-        if spec.provider != "kb-facet-v1" or spec.query_source.get("kind") != "sealed-vectors":
-            raise PreparationError("prepared recall requires kb-facet-v1 and sealed query vectors")
+        if spec.provider != "kb-facet-v1" or spec.query_source.get("kind") not in (
+            "sealed-vectors", SEALED_SEGMENT_VECTORS_KIND,
+        ):
+            raise PreparationError(
+                "prepared recall requires kb-facet-v1 and sealed query vectors"
+            )
         if spec.facet_source is not None and spec.facet_source.get("kind") != "sealed-vectors":
             raise PreparationError("prepared recall requires sealed facet vectors")
         snapshot = binding["knowledge_snapshot"]
-        query = load_sealed_vectors(
+        query_loader = (
+            load_sealed_segment_vectors
+            if spec.query_source.get("kind") == SEALED_SEGMENT_VECTORS_KIND
+            else load_sealed_vectors
+        )
+        query = query_loader(
             self._data_root / str(spec.query_source["relpath"]),
-            expected_sha256=str(spec.query_source["sha256"]),
-            dimensions=spec.dimensions,
+            expected_sha256=str(spec.query_source["sha256"]), dimensions=spec.dimensions,
         )
         facets = (
             {}
@@ -4325,6 +4338,12 @@ class FlightRuntime:
         )
         if set(query) != set(binding["speech_packet_bindings"]):
             raise PreparationError("prepared recall query roster differs from the runtime packets")
+        if spec.query_source.get("kind") == SEALED_SEGMENT_VECTORS_KIND:
+            for sample_id, row in query.items():
+                if row.audio_sha256 != binding["speech_packet_bindings"][sample_id]["sha256"]:
+                    raise PreparationError(
+                        "prepared recall segmented query audio does not match runtime packet"
+                    )
         inputs = self._phase_seed_inputs(binding, spec, identity)
         inputs.update({"recall_schema": "saea-phase-recall-v1", "phase": phase,
                        "roster_ids": sorted(query)})
@@ -4383,14 +4402,29 @@ class FlightRuntime:
         inputs = self._phase_seed_inputs(binding, spec, split_identity_hash)
         inputs.update({"recall_schema": "saea-phase-recall-v1", "phase": spec.phase})
         # The roster is independently checked against the current sealed query table.
-        from ...rails.phase_supply import load_sealed_vectors
-        query = load_sealed_vectors(
+        from ...rails.phase_supply import (
+            SEALED_SEGMENT_VECTORS_KIND,
+            load_sealed_segment_vectors,
+            load_sealed_vectors,
+        )
+        query_loader = (
+            load_sealed_segment_vectors
+            if spec.query_source.get("kind") == SEALED_SEGMENT_VECTORS_KIND
+            else load_sealed_vectors
+        )
+        query = query_loader(
             self._data_root / str(spec.query_source["relpath"]),
             expected_sha256=str(spec.query_source["sha256"]),
             dimensions=spec.dimensions,
         )
         if set(query) != set(binding["speech_packet_bindings"]):
             raise PreparationError("prepared recall query roster differs from the runtime packets")
+        if spec.query_source.get("kind") == SEALED_SEGMENT_VECTORS_KIND:
+            for sample_id, row in query.items():
+                if row.audio_sha256 != binding["speech_packet_bindings"][sample_id]["sha256"]:
+                    raise PreparationError(
+                        "prepared recall segmented query audio does not match runtime packet"
+                    )
         inputs["roster_ids"] = sorted(query)
         output = load_artifact(path, expected_sha256=pin["sha256"],
                                kind="phase-recall", inputs=inputs)

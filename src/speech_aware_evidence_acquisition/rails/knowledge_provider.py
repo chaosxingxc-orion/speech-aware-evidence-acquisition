@@ -74,7 +74,14 @@ from .a2t_semantic_router import (
 from .a2t_selected_tool_ground import SelectedToolDecisionGround
 from .errors import RailsError
 from .hashing import content_hash
-from .kb_policy import FUSE_POLICY_ID, RANK_POLICY_ID, FuseKnobs, RankWeights, multidim_recall
+from .kb_policy import (
+    FUSE_POLICY_ID,
+    RANK_POLICY_ID,
+    FuseKnobs,
+    RankWeights,
+    multidim_recall,
+    multidim_segment_recall,
+)
 from .knowledge import FusionDecision, KnowledgeSnapshot, QueryState
 from .supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
 
@@ -575,21 +582,32 @@ class KbFacetProvider(KnowledgeProvider):
             raise RailsError("KbFacetProvider.candidates: k must be a positive int")
         snapshot: KnowledgeSnapshot = self._built_object()
         if isinstance(query, QueryState):
-            query_state, query_vectors = query, {}
+            query_state, query_vectors, query_segments = query, {}, None
         elif isinstance(query, Mapping):
             if "query_state" not in query:
                 raise RailsError("KbFacetProvider.candidates: query mapping needs 'query_state'")
             query_state = query["query_state"]
             query_vectors = query.get("query_vectors", {})
+            query_segments = query.get("query_segments")
+            if query_segments is not None and query_vectors:
+                raise RailsError(
+                    "KbFacetProvider.candidates: query_vectors and query_segments are "
+                    "mutually exclusive"
+                )
         else:
             raise RailsError(
                 "KbFacetProvider.candidates: query must be a QueryState or a mapping "
                 "with 'query_state'/'query_vectors'"
             )
         if self._prepared_recall is None:
-            recall_scores = multidim_recall(
-                snapshot, query_vectors, self._facet_vectors, self._top_k_per_dimension
-            )
+            if query_segments is None:
+                recall_scores = multidim_recall(
+                    snapshot, query_vectors, self._facet_vectors, self._top_k_per_dimension
+                )
+            else:
+                recall_scores = multidim_segment_recall(
+                    snapshot, query_segments, self._facet_vectors, self._top_k_per_dimension
+                )
         else:
             sample_id = getattr(query_state, "query_sample_id", None)
             if not isinstance(sample_id, str) or sample_id not in self._prepared_recall:
