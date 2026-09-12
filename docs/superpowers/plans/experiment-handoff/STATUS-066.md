@@ -44,11 +44,16 @@ Do not change this live source, rerun scorers or report unfinished intervals.
 Root checked 90 native/equal-tier/tier arithmetic points against first-score
 aggregates and the independent per-sample calculation. No mismatch exceeded 1e-9 pp.
 
-| Arm | Official exact match percent | Tool accuracy percent | Macro parameter F1 percent | Parse failures |
+| Metric | Direct | Stage control | Knowledge | Published equal-tier reference |
 |---|---:|---:|---:|---:|
-| Direct |18.900|62.025|30.290774|24|
-| Stage control |17.950|60.525|29.117917|22|
-| Knowledge |18.600|58.550|30.719464|77|
+| Official exact match percent | 18.900 | 17.950 | 18.600 | 29.675 |
+| Tool accuracy percent | 62.025 | 60.525 | 58.550 | 69.1875 |
+| Macro parameter F1 percent | 30.290774 | 29.117917 | 30.719464 | Not in the pinned reference row |
+| Parse failures | 24 | 22 | 77 | Not in the pinned reference row |
+
+Published references are the unweighted means of eight Table 3 rows in the frozen
+a2t_v2_rescore.PAPER_TIER_ROW. They are context, not a matched model/population
+control or proof of the cause of a reproduction gap.
 
 Natural and equal-tier points coincide on this balanced roster. Knowledge-minus-
 direct exact match is -0.300 pp; knowledge-minus-stage-control is +0.650 pp.
