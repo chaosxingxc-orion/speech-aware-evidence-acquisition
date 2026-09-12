@@ -227,6 +227,28 @@ def _cli_promote_speech_packets(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cli_promote_pinned_roster_speech_packets(args: argparse.Namespace) -> int:
+    """Promote one pinned carrier roster without a carrier-specific loader."""
+
+    from ..packet_promotion import promote_pinned_roster_legacy_cache
+
+    receipt = promote_pinned_roster_legacy_cache(
+        promotion_plan=Path(args.promotion_plan),
+        promotion_plan_sha256=args.promotion_plan_sha256,
+    )
+    print(
+        json.dumps(
+            {
+                "promotion_plan": str(args.promotion_plan),
+                "count": receipt["count"],
+                "schema": receipt["schema"],
+            },
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def _cli_extend_speech_native_binding(args: argparse.Namespace) -> int:
     """Build a split and/or knowledge successor with the existing selector."""
 
@@ -1009,6 +1031,18 @@ def main(argv: list[str] | None = None) -> int:
     promote.add_argument("--workers", type=int, default=8)
     promote.add_argument("--receipt-output", required=True)
     promote.set_defaults(func=_cli_promote_speech_packets)
+
+
+    promote_roster = sub.add_parser(
+        "promote-pinned-roster-speech-packets",
+        help=(
+            "model-free promotion of a pinned carrier roster from a verified "
+            "legacy feature cache"
+        ),
+    )
+    promote_roster.add_argument("--promotion-plan", required=True)
+    promote_roster.add_argument("--promotion-plan-sha256", required=True)
+    promote_roster.set_defaults(func=_cli_promote_pinned_roster_speech_packets)
 
     extend_binding = sub.add_parser(
         "extend-speech-native-binding",
