@@ -1,0 +1,29 @@
+{
+  "answer_authority": "No answers are generated; these are frozen retrieval-tool query vectors.",
+  "boundary_policy": "fixed-stride-complete-final-tail-v1",
+  "cache_relpath": "prepared/slurp-tfrl-speech-query-span-cache-v1",
+  "contact_policy": "One lazy local frozen encoder load, one speech input per forward, no jitter, retry, fallback, or automatic restart.",
+  "cpu_workers": 4,
+  "dimension": 2048,
+  "encoder": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-speech-query-encoder-inventory-v2.json",
+    "sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31"
+  },
+  "expected_unique_spans": 1080,
+  "input_order": "source-id-then-original-frame",
+  "isolation": "Read only the registered TRAIN source speech. Do not read reference transcripts, task labels, prior answers, feedback from the other fold, or future turns.",
+  "max_audio_samples": 1920000,
+  "max_seconds": 120.0,
+  "max_sequence_tokens": 8192,
+  "monitor_interval_seconds": 10,
+  "output_relpath": "prepared/SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1/index.json",
+  "overlap_seconds": 8.0,
+  "query_prompt": "query: ",
+  "query_rows_relpath": "prepared/SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1/queries.jsonl",
+  "roster_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+  "schema": "saea-speech-query-encoding-protocol-v1",
+  "sources": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-tfrl-fold-a-speech-query-source-inventory-v3.json",
+    "sha256": "43af4aba29630969e03d16a5bcb6fe99e4f5532b1d3a93c8d3da511261b1db14"
+  }
+}

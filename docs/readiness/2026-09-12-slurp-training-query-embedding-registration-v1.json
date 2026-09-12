@@ -1,0 +1,235 @@
+{
+  "encoder": {
+    "encoder_id": "omni-embed-nemotron-3b",
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-speech-query-encoder-inventory-v2.json",
+    "sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31"
+  },
+  "historical_exposure_inheritance": [
+    "SAEA-SN-MF-SLURP-EVO-FOLD-ROSTERS-V2",
+    "SAEA-SN-MF-SLURP-EVO-FOLD-SUPPLEMENTS-V2",
+    "SAEA-SLURP-EVO-FOLD-PACKETS-V2",
+    "SAEA-SLURP-EVO-S1-INTENT-FOLDS-V2",
+    "SAEA-SLURP-EVO-S1-FOLD-A-V2",
+    "SAEA-SLURP-EVO-S1-FOLD-B-V2",
+    "SAEA-SLURP-EVO-S1-PROMPT-FIT-V1",
+    "SAEA-SLURP-EVO-S1-SMOKE-4-V1",
+    "SAEA-SN-MF-SLURP-TFRL-KB-SNAPSHOT-V1"
+  ],
+  "plans": [
+    {
+      "actual_source_audio_seconds": 3084.5284375,
+      "dataset_config": {
+        "path": "/home/chao/saea-worktrees/slurp-training-query-embedding-prepare-v1/configs/dataset/slurp-speech-native-evo-fold-a-1080.json",
+        "sha256": "4ba55688e80d8d768ec6cfc3ff4bacc9802fb34e4dab54913934015184497215"
+      },
+      "execution_plan": {
+        "attempt_id": "encode-v1",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 2.0,
+        "planned_model_calls": 1080,
+        "planned_speech_audio_seconds": 3085,
+        "protocol_hash": "c4c2eecca865a477bda01e578b7dffe32cd1384b341e4c187640962e7280c8c4",
+        "run_id": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "fold": "fold-a",
+      "ledger_row_cells": [
+        "2026-09-12T22:26:25.912357+00:00",
+        "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1",
+        "bounded-discovery-probe",
+        "Prospective complete-speech retrieval-query encoding for disjoint TRAIN fold A; no answers or scoring",
+        "Frozen local Omni-Embed-Nemotron-3B retrieval tool; no answering core",
+        "slurp SLURP-EVO-FOLD-A-V2 TRAIN discovery",
+        "discovery",
+        "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+        "no",
+        "1080",
+        "3085",
+        "2.0",
+        "Historical fold roster, packet, intent-flight, prompt-fit, smoke, and model-free successor-KB exposures carried forward; this row adds only the pinned retrieval-encoder contacts",
+        "docs/readiness/2026-09-12-slurp-training-query-embedding-registration-v1.json",
+        "REGISTERED BEFORE CONTACT. Protocol SHA256 c4c2eecca865a477bda01e578b7dffe32cd1384b341e4c187640962e7280c8c4. One encode-v1 attempt; no retry, fallback, scorer, answer read, or cross-fold feedback. Bind the external runtime study_head to the final clean registration commit."
+      ],
+      "output_relpath": "prepared/SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1/index.json",
+      "protocol": {
+        "path": "/home/chao/saea-worktrees/slurp-training-query-embedding-prepare-v1/configs/preparation/slurp-tfrl-fold-a-speech-query-encoding-protocol-v1.json",
+        "sha256": "c4c2eecca865a477bda01e578b7dffe32cd1384b341e4c187640962e7280c8c4"
+      },
+      "query_rows_relpath": "prepared/SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1/queries.jsonl",
+      "roster_receipt": {
+        "path": "/home/chao/saea-worktrees/slurp-training-query-embedding-prepare-v1/docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+        "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+      },
+      "runtime_config_shape": {
+        "plan": {
+          "attempt_id": "encode-v1",
+          "carrier_lock_key": "slurp",
+          "execution_profile": "bounded-discovery-probe",
+          "planned_gpu_hours": 2.0,
+          "planned_model_calls": 1080,
+          "planned_speech_audio_seconds": 3085,
+          "protocol_hash": "c4c2eecca865a477bda01e578b7dffe32cd1384b341e4c187640962e7280c8c4",
+          "run_id": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1",
+          "schema": "saea-execution-plan-v1",
+          "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+          "split_role": "discovery",
+          "study": "speech-aware-evidence-acquisition"
+        },
+        "protocol": {
+          "path": "/home/chao/saea-worktrees/slurp-training-query-embedding-prepare-v1/configs/preparation/slurp-tfrl-fold-a-speech-query-encoding-protocol-v1.json",
+          "sha256": "c4c2eecca865a477bda01e578b7dffe32cd1384b341e4c187640962e7280c8c4"
+        },
+        "session_id": "local-nemotron-slurp-tfrl-fold-a-query-v1",
+        "study_head": "SET_TO_THE_FINAL_CLEAN_REGISTRATION_COMMIT",
+        "umbrella_lock": {
+          "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+          "sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+        }
+      },
+      "session_id": "local-nemotron-slurp-tfrl-fold-a-query-v1",
+      "source_inventory": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-tfrl-fold-a-speech-query-source-inventory-v3.json",
+        "sha256": "43af4aba29630969e03d16a5bcb6fe99e4f5532b1d3a93c8d3da511261b1db14"
+      },
+      "source_preparation_receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-tfrl-speech-query-source-preparation-v3.json",
+        "sha256": "23e3172dfd3df55c79e7b4ffe22c8953ac0a36b8d5e8ee684003ee0f9384dd7b"
+      }
+    },
+    {
+      "actual_source_audio_seconds": 3154.797375,
+      "dataset_config": {
+        "path": "/home/chao/saea-worktrees/slurp-training-query-embedding-prepare-v1/configs/dataset/slurp-speech-native-evo-fold-b-1080.json",
+        "sha256": "1d30c501612686004936b5dd295885d9452175e6449b4a66187c08227a322cea"
+      },
+      "execution_plan": {
+        "attempt_id": "encode-v1",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 2.0,
+        "planned_model_calls": 1080,
+        "planned_speech_audio_seconds": 3155,
+        "protocol_hash": "36d2425ef516ca446d607ab92e7df86d3c310e5c9d03cca3e6b94a8df70f013a",
+        "run_id": "SAEA-SLURP-TFRL-FOLD-B-SPEECH-QUERY-ENCODING-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "fold": "fold-b",
+      "ledger_row_cells": [
+        "2026-09-12T22:26:25.912357+00:00",
+        "SAEA-SLURP-TFRL-FOLD-B-SPEECH-QUERY-ENCODING-V1",
+        "bounded-discovery-probe",
+        "Prospective complete-speech retrieval-query encoding for disjoint TRAIN fold B; no answers or scoring",
+        "Frozen local Omni-Embed-Nemotron-3B retrieval tool; no answering core",
+        "slurp SLURP-EVO-FOLD-B-V2 TRAIN discovery",
+        "discovery",
+        "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+        "no",
+        "1080",
+        "3155",
+        "2.0",
+        "Historical fold roster, packet, intent-flight, prompt-fit, smoke, and model-free successor-KB exposures carried forward; this row adds only the pinned retrieval-encoder contacts",
+        "docs/readiness/2026-09-12-slurp-training-query-embedding-registration-v1.json",
+        "REGISTERED BEFORE CONTACT. Protocol SHA256 36d2425ef516ca446d607ab92e7df86d3c310e5c9d03cca3e6b94a8df70f013a. One encode-v1 attempt; no retry, fallback, scorer, answer read, or cross-fold feedback. Bind the external runtime study_head to the final clean registration commit."
+      ],
+      "output_relpath": "prepared/SAEA-SLURP-TFRL-FOLD-B-SPEECH-QUERY-ENCODING-V1/index.json",
+      "protocol": {
+        "path": "/home/chao/saea-worktrees/slurp-training-query-embedding-prepare-v1/configs/preparation/slurp-tfrl-fold-b-speech-query-encoding-protocol-v1.json",
+        "sha256": "36d2425ef516ca446d607ab92e7df86d3c310e5c9d03cca3e6b94a8df70f013a"
+      },
+      "query_rows_relpath": "prepared/SAEA-SLURP-TFRL-FOLD-B-SPEECH-QUERY-ENCODING-V1/queries.jsonl",
+      "roster_receipt": {
+        "path": "/home/chao/saea-worktrees/slurp-training-query-embedding-prepare-v1/docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+        "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8"
+      },
+      "runtime_config_shape": {
+        "plan": {
+          "attempt_id": "encode-v1",
+          "carrier_lock_key": "slurp",
+          "execution_profile": "bounded-discovery-probe",
+          "planned_gpu_hours": 2.0,
+          "planned_model_calls": 1080,
+          "planned_speech_audio_seconds": 3155,
+          "protocol_hash": "36d2425ef516ca446d607ab92e7df86d3c310e5c9d03cca3e6b94a8df70f013a",
+          "run_id": "SAEA-SLURP-TFRL-FOLD-B-SPEECH-QUERY-ENCODING-V1",
+          "schema": "saea-execution-plan-v1",
+          "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+          "split_role": "discovery",
+          "study": "speech-aware-evidence-acquisition"
+        },
+        "protocol": {
+          "path": "/home/chao/saea-worktrees/slurp-training-query-embedding-prepare-v1/configs/preparation/slurp-tfrl-fold-b-speech-query-encoding-protocol-v1.json",
+          "sha256": "36d2425ef516ca446d607ab92e7df86d3c310e5c9d03cca3e6b94a8df70f013a"
+        },
+        "session_id": "local-nemotron-slurp-tfrl-fold-b-query-v1",
+        "study_head": "SET_TO_THE_FINAL_CLEAN_REGISTRATION_COMMIT",
+        "umbrella_lock": {
+          "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+          "sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+        }
+      },
+      "session_id": "local-nemotron-slurp-tfrl-fold-b-query-v1",
+      "source_inventory": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-tfrl-fold-b-speech-query-source-inventory-v3.json",
+        "sha256": "baf4a1fbab43c83540bc24eb11a9a0bd3df849fc760b4fac509b3374aa7044a9"
+      },
+      "source_preparation_receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-tfrl-speech-query-source-preparation-v3.json",
+        "sha256": "23e3172dfd3df55c79e7b4ffe22c8953ac0a36b8d5e8ee684003ee0f9384dd7b"
+      }
+    }
+  ],
+  "purpose": "Prepare disjoint SLURP TRAIN fold A and fold B speech retrieval-query vectors for a later registered training-free update and selection cycle.",
+  "registration_requirements": [
+    "Commit the protocols and one valid 15-cell exposure-ledger row per run before any contact.",
+    "Set each external runtime config study_head to that clean registration commit and pin the final protocol hash.",
+    "Keep consumed=no until that exact attempt is admitted; never replay an interrupted contact.",
+    "Acquire the shared GenerationLease and exclusive GPU custody; do not coexist with an answering server."
+  ],
+  "required_runtime_source_commit": "SET_AFTER_THE_EXPOSURE_REGISTRATION_AND_PROTOCOLS_ARE_COMMITTED",
+  "runtime_class": "speech_aware_evidence_acquisition.core.speech_preparation_runtime.NemotronSpeechEncoder",
+  "runtime_entry": "python -m speech_aware_evidence_acquisition.core.speech_preparation_runtime",
+  "schema": "saea-prospective-tool-registration-v1",
+  "service": {
+    "endpoint": null,
+    "kind": "exclusive in-process local frozen retrieval tool",
+    "resident_server": false
+  },
+  "shared_cache_relpath": "prepared/slurp-tfrl-speech-query-span-cache-v1",
+  "shared_source_pins": {
+    "src/speech_aware_evidence_acquisition/contracts/tool_plan.py": "85778e13dafad20e3fd3ea4b4c8e44f8b052073d1319f0f7f9bb3f651fa152c4",
+    "src/speech_aware_evidence_acquisition/core/attempts/handle.py": "f823668d754049c2578ff6cc178e1a51be7d9003fc164a0d8fba3a2a1fcf1dd6",
+    "src/speech_aware_evidence_acquisition/core/attempts/store.py": "7c88b333ee14ab9dc2299395269cf2e413f7b03a15964e3890c6ceec3053e1b3",
+    "src/speech_aware_evidence_acquisition/core/flight/lease.py": "5ca08b022f706e524041e0c7186ded877ed6b79a797166b3bec3b34d6e217ce4",
+    "src/speech_aware_evidence_acquisition/core/preparation_speech_queries.py": "53492f77865de2b53dda9ddc6628e44ea422d4bc4f081d8e153a25a0e925921d",
+    "src/speech_aware_evidence_acquisition/core/speech_embedding.py": "fec4e10ef40abf59d5fd612b62eff4aba962676641b230db8daa72a7d5a747ea",
+    "src/speech_aware_evidence_acquisition/core/speech_preparation_runtime.py": "18ceeff8cda79cb89f10b264c47d3fed463f171e81af7b730ce5a8ebddd8a51a"
+  },
+  "source_base_commit": "0ab46fb93cfb9b9434155cb900f765cc0bc5f5c5",
+  "source_preparation_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-tfrl-speech-query-source-preparation-v3.json",
+    "sha256": "23e3172dfd3df55c79e7b4ffe22c8953ac0a36b8d5e8ee684003ee0f9384dd7b"
+  },
+  "status": "REGISTERED_BEFORE_CONTACT",
+  "study": "speech-aware-evidence-acquisition",
+  "successor_knowledge": {
+    "build_receipt_sha256": "5db718d38426e5e6d2311efbed0c4faf36bf30473c8d00b14e06618257889766",
+    "excludes_both_folds": true,
+    "snapshot_content_sha256": "9c64e8ec48a0fce4f172bd190932f99c98c7efa18bbfb14526d54c62fdf7032b",
+    "snapshot_sha256": "f2785aa3521b08e874d4075154e65cc639284497afc789a3654c2c70a65405ef"
+  },
+  "umbrella_lock": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+    "sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+  },
+  "registered_at_utc": "2026-09-12T22:26:25.912357+00:00",
+  "root_authority": "Owner-directed SLURP-first system optimization and parallel local preparation; independent query encoding only, no task answering or reward reads.",
+  "scheduling": "Run after the current answering lease releases and the Qwen service is stopped. Root alone starts the frozen local encoder; A then B sequentially. CPU paired analysis may overlap.",
+  "service_reuse_limit": "Existing shared runner closes the in-process encoder per attempt. Preserve its proven contact semantics for these two disjoint rosters; account separately for both loads. No speech source is encoded twice across A/B."
+}
