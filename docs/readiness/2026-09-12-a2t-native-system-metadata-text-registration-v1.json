@@ -1,0 +1,31 @@
+{
+  "schema": "saea-outcome-free-metadata-conversion-plan-v1",
+  "run_id": "SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-METADATA-TEXT-V1",
+  "registered_at_utc": "2026-09-12T17:51:56.214590+00:00",
+  "execution_profile": "model-free-check",
+  "source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-METADATA-V1/metadata.json",
+    "sha256": "f4eeb0f5c548b15ab65e8137d134ee4b17bcebfa402eb71dcda6aa64198a5c70"
+  },
+  "output_relpath": "prepared/SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-METADATA-TEXT-V1/metadata.json",
+  "receipt_relpath": "prepared/SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-METADATA-TEXT-V1/receipt.json",
+  "operation": "Convert each query_idx integer to its exact decimal text, changing no other field. Reject bool and non-integer inputs. Preserve original bytes.",
+  "required_invariants": [
+    "4000 exact sample IDs",
+    "eight original tiers of 500 rows",
+    "same 2097 query clusters",
+    "identical cluster membership and tier/domain assignments",
+    "all fields other than query_idx unchanged",
+    "text-to-int inverse reproduces every original query_idx",
+    "no output overwrite"
+  ],
+  "analysis_source_commit": "5f79d399dc15016aaeedccac347aebffddfc61ca",
+  "reason": "The frozen pooled_ratio_compare metadata contract requires a text cluster key; the existing outcome-free source stores integers. Normalize the source binding, not the frozen estimator or statistical rule.",
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "audio": 0,
+    "quality_read": 0,
+    "gpu": 0
+  }
+}
