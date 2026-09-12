@@ -83,4 +83,4 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest implementation handoff: [STATUS-048](STATUS-048.md). The sole registered complete-speech query encoder recovery is active; native card/snapshot materialization is sealed. This pointer grants no separate task-generation authority.
+Latest implementation handoff: [STATUS-049](STATUS-049.md). Complete-speech query encoding and native card/snapshot materialization are sealed and root-validated. The next step is separately registered text-key preparation. This pointer grants no separate task-generation authority.

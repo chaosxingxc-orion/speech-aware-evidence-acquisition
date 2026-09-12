@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 48,
+  "generation": 49,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "2e07b3f4a359d465f84c4085491e4ac0e9367f6c",
-  "updated_at_utc": "2026-09-12T02:56:06.302272+00:00",
-  "next_action": "Read STATUS-048. Sole query encoder recovery is active in frozen WSL source 4671c5b4, observed PID 458. Revalidate custody; never automatically restart/replay. Finish/seal full 4,020 query spans, preserve original truncation refusal, prepare matching 152 text keys, bind shared supply and register actual fit/full-system comparison. Native all 152 snapshot is materialized; legacy example counter is qualified as 190. Keep the previous SLURP compact-frame baseline. Goal active.",
+  "snapshot_commit": "8d6d0cb03ec6786f439249302aebcf6529a453a1",
+  "updated_at_utc": "2026-09-12T03:13:00.081259+00:00",
+  "next_action": "Read STATUS-049. Sole query recovery SEALED and root-validated: 4000 rows, 4020 complete spans, lease released, process gone. No answering service resident. Implement/review narrowly typed zero-audio text-encoder accounting and shared 152-key preparation, register and execute it, then bind supply and register actual-request fit/full-system comparison. Preserve historical failed attempt and all sealed artifacts. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-DISCRIMINATIVE-VALUES-021"
