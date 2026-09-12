@@ -1,5 +1,16 @@
 # Audio2Tool all-eight-tier G4 semantic-card readiness (model-free)
 
+## Latest preparation closeout
+
+The separately versioned public-legality presentation is now implemented and
+materialized. It preserves required/optional public facts and documented
+dependencies while labeling construction patterns descriptive. Root verification
+covers 236 tests and the actual 4,000-row media roster. Read the
+[shared-base closeout](2026-09-11-audio2tool-shared-base-closeout.md) for the two
+sealed corpus identities and the remaining native-compatibility, speech-query
+and live-supply dependencies. No new GPU experiment or effectiveness result is
+established. The following update records the preceding preparation state.
+
 ## Successor update: shared construction is verified; speech-query preparation remains open
 
 The shared source-bound compiler and Audio2Tool factory adapter are now

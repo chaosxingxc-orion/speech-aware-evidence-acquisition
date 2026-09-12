@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 46,
+  "generation": 47,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "c5007cf931ece782005968914afb0455892de284",
-  "updated_at_utc": "2026-09-12T00:36:07.966358+00:00",
-  "next_action": "Read STATUS-046. Role-coverage pair scored, independently analyzed and FINALIZED; do not adopt or repeat. Retain prior replicated compact-frame working baseline. Both generation leases released; np8 service remains resident. Shared Audio2Tool construction source-binding and exact all-tier exclusions are complete; next shared compilation and current-OBS routing. Grounded semantic distinctions and validated memory remain separate from unsupported role statistics. Goal active.",
+  "snapshot_commit": "74facca6a93db5f11814ee380a024f9fa0d3b91f",
+  "updated_at_utc": "2026-09-12T01:44:03.725682+00:00",
+  "next_action": "Read STATUS-047. Shared Audio2Tool factory, full4000 media binding, source-bound offline compilation and opt-in public-legality presentation are complete and tested. Preserve both model-free refusals and both sealed corpora. No new GPU flight. Next qualify native compatibility, prepare current speech queries with long-audio coverage, bind live knowledge supply, and register actual fit/system comparison. Keep the previous SLURP compact-frame baseline; role-coverage flight remains closed. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-DISCRIMINATIVE-VALUES-021"

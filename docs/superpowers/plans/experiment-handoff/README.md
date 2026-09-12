@@ -82,3 +82,5 @@ and model-facing message is English. Dataset identity remains in the umbrella lo
 no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
+
+Latest implementation handoff: [STATUS-047](STATUS-047.md), with [Audio2Tool shared-base closeout](../../../readiness/2026-09-11-audio2tool-shared-base-closeout.md). No successor GPU flight is admitted by this pointer.
