@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 from speech_aware_evidence_acquisition.rails import knowledge_compile_a2t as compilation
 from speech_aware_evidence_acquisition.rails.knowledge_build_a2t import A2tKbRow
 
@@ -251,3 +253,76 @@ def test_native_header_preserves_the_json_array_output_contract() -> None:
         "Copy task values only from the speech or its same-core observation."
         in corpus.text
     )
+
+
+def _snapshot_source(
+    corpus: compilation.NativeCompatibleSemanticCardCorpus,
+    *,
+    tool_registry_sha256: str = "3" * 64,
+) -> dict[str, object]:
+    return {
+        "schema": compilation.NATIVE_CARD_SNAPSHOT_SOURCE_V1,
+        "compilation_id": "SYNTHETIC-NATIVE-CARD-SNAPSHOT",
+        "presentation_version": compilation.NATIVE_COMPATIBLE_PRESENTATION_V1,
+        "dataset_lock_sha256": "1" * 64,
+        "construction_selection_sha256": "2" * 64,
+        "tool_registry_sha256": tool_registry_sha256,
+        "corpus_sha256": corpus.sha256,
+        "minimum_compatibility_support": 2,
+        "max_utf8_bytes": 524288,
+    }
+
+
+def test_snapshot_key_combines_public_and_native_positive_guidance_once() -> None:
+    corpus, _report = compilation.build_from_partition_with_native_compatibility(
+        _registry(),
+        (
+            _row(1, ("account", "legacyFlag")),
+            _row(2, ("account", "legacyFlag")),
+        ),
+    )
+
+    snapshot = compilation.build_native_compatible_knowledge_snapshot(
+        corpus,
+        compilation_source=_snapshot_source(corpus),
+    )
+
+    values = {value.task_target: value for value in snapshot.values}
+    facets = {facet.facet_id: facet for facet in snapshot.facets}
+    value = values["scheduleSynthetic"]
+    key_text = facets[value.associated_facet_ids[0]].representation
+    card = corpus.cards_by_name["scheduleSynthetic"]
+    assert "Exact tool name: scheduleSynthetic (schedule synthetic)." in key_text
+    assert key_text.count("Spoken role: account -> account (String).") == 1
+    assert key_text.count("Observed native role: legacy flag -> legacyFlag") == 1
+    assert card.avoid_semantics not in key_text
+    assert value.content == card.text
+    assert value.task_target == card.tool_name
+
+
+def test_snapshot_identity_changes_with_compilation_source_and_refuses_corpus_drift() -> (
+    None
+):
+    corpus, _report = compilation.build_from_partition_with_native_compatibility(
+        _registry(), (_row(1, ("account",)),)
+    )
+    source = _snapshot_source(corpus)
+
+    first = compilation.build_native_compatible_knowledge_snapshot(
+        corpus, compilation_source=source
+    )
+    second = compilation.build_native_compatible_knowledge_snapshot(
+        corpus,
+        compilation_source={**source, "tool_registry_sha256": "4" * 64},
+    )
+
+    assert first.source_split_identity_hash != second.source_split_identity_hash
+    assert first.content_hash() != second.content_hash()
+    with pytest.raises(
+        compilation.SemanticCardCompilationError,
+        match="does not bind its corpus",
+    ):
+        compilation.build_native_compatible_knowledge_snapshot(
+            corpus,
+            compilation_source={**source, "corpus_sha256": "5" * 64},
+        )

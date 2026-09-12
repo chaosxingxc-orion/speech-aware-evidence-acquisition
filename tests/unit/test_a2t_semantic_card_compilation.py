@@ -20,6 +20,7 @@ from speech_aware_evidence_acquisition.rails.knowledge_build_a2t import (
     A2tKbRow,
     a2t_metadata_inventory,
 )
+from speech_aware_evidence_acquisition.rails.knowledge import KnowledgeSnapshot
 
 
 REPO = Path(__file__).resolve().parents[2]
@@ -479,3 +480,177 @@ def test_compilation_opt_in_uses_native_compatible_presentation(
         ]
         is False
     )
+
+
+def test_native_compilation_can_export_a_source_bound_snapshot(
+    tmp_path: Path, offline: None
+) -> None:
+    config = replace(
+        _world(tmp_path),
+        presentation_version=compilation.NATIVE_COMPATIBLE_PRESENTATION_V1,
+        snapshot_output_path=tmp_path / "outputs" / "snapshot.json",
+    )
+
+    receipt = compilation.compile_a2t_semantic_card_artifacts(config)
+
+    frozen = json.loads(config.snapshot_output_path.read_text(encoding="utf-8"))
+    snapshot = KnowledgeSnapshot.from_frozen_json(frozen)
+    assert snapshot.source_partition_role == "external-governed"
+    assert len(snapshot.facets) == len(snapshot.values) == 152
+    assert {value.task_target for value in snapshot.values} == {
+        f"syntheticTool{index:03d}" for index in range(152)
+    }
+    assert any(value.task_target == "syntheticTool151" for value in snapshot.values)
+
+    facets = {facet.facet_id: facet for facet in snapshot.facets}
+    values = {value.task_target: value for value in snapshot.values}
+    selected_value = values["syntheticTool000"]
+    selected_key = facets[selected_value.associated_facet_ids[0]].representation
+    schema_only_value = values["syntheticTool151"]
+    schema_only_key = facets[schema_only_value.associated_facet_ids[0]].representation
+    assert "Exact tool name: syntheticTool000 (synthetic tool 000)." in selected_key
+    assert "Choose semantics: Perform synthetic operation 000." in selected_key
+    assert "Avoid when:" not in selected_key
+    assert "Avoid when:" in selected_value.content
+    assert selected_value.content in config.corpus_output_path.read_text(
+        encoding="utf-8"
+    )
+    assert "Exact tool name: syntheticTool151" in schema_only_key
+    assert "TOOL CARD syntheticTool151" in schema_only_value.content
+
+    snapshot_receipt = receipt["knowledge_snapshot"]
+    assert snapshot_receipt["snapshot_sha256"] == frozen["snapshot_sha256"]
+    assert (
+        snapshot_receipt["file_sha256"]
+        == hashlib.sha256(config.snapshot_output_path.read_bytes()).hexdigest()
+    )
+    assert snapshot_receipt["positive_content_facet_count"] == 152
+    assert snapshot_receipt["value_count"] == 152
+    assert snapshot_receipt["schema_only_tool_count"] == 151
+    assert snapshot_receipt["avoid_semantics_in_positive_keys"] is False
+    assert snapshot.source_split_identity_hash == snapshot_receipt["source"]["sha256"]
+    for value in snapshot.values:
+        card_hash_ref = next(
+            ref
+            for ref in value.provenance_refs
+            if ref.startswith("a2t-native-card-sha256:")
+        )
+        assert card_hash_ref.removeprefix("a2t-native-card-sha256:") == (
+            hashlib.sha256(value.content.encode("utf-8")).hexdigest()
+        )
+
+
+def test_snapshot_export_is_deterministic_and_does_not_change_default_outputs(
+    tmp_path: Path, offline: None
+) -> None:
+    default_config = _world(tmp_path / "default")
+    default_receipt = compilation.compile_a2t_semantic_card_artifacts(default_config)
+    assert "knowledge_snapshot" not in default_receipt
+
+    first_config = replace(
+        _world(tmp_path / "first"),
+        presentation_version=compilation.NATIVE_COMPATIBLE_PRESENTATION_V1,
+        snapshot_output_path=tmp_path / "first" / "snapshot.json",
+    )
+    second_config = replace(
+        _world(tmp_path / "second"),
+        presentation_version=compilation.NATIVE_COMPATIBLE_PRESENTATION_V1,
+        snapshot_output_path=tmp_path / "second" / "snapshot.json",
+    )
+
+    first = compilation.compile_a2t_semantic_card_artifacts(first_config)
+    second = compilation.compile_a2t_semantic_card_artifacts(second_config)
+
+    assert first_config.snapshot_output_path.read_bytes() == (
+        second_config.snapshot_output_path.read_bytes()
+    )
+    assert (
+        first["knowledge_snapshot"]["source"] == second["knowledge_snapshot"]["source"]
+    )
+    assert (
+        first["knowledge_snapshot"]["snapshot_sha256"]
+        == second["knowledge_snapshot"]["snapshot_sha256"]
+    )
+
+
+@pytest.mark.parametrize(
+    "presentation_version",
+    (None, compilation.PUBLIC_API_LEGALITY_PRESENTATION_V1),
+)
+def test_snapshot_export_refuses_non_native_presentations_before_reading_sources(
+    tmp_path: Path,
+    offline: None,
+    monkeypatch: pytest.MonkeyPatch,
+    presentation_version: str | None,
+) -> None:
+    config = replace(
+        _world(tmp_path),
+        presentation_version=presentation_version,
+        snapshot_output_path=tmp_path / "outputs" / "snapshot.json",
+    )
+    monkeypatch.setattr(
+        compilation,
+        "a2t_pool_rows",
+        lambda *_args, **_kwargs: pytest.fail("source pool was read"),
+    )
+
+    with pytest.raises(
+        compilation.SemanticCardCompilationError,
+        match="native-compatible presentation",
+    ):
+        compilation.compile_a2t_semantic_card_artifacts(config)
+
+    assert not config.corpus_output_path.exists()
+    assert not config.receipt_output_path.exists()
+    assert not config.snapshot_output_path.exists()
+
+
+def test_snapshot_export_refuses_overwrite_without_partial_outputs(
+    tmp_path: Path, offline: None, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    config = replace(
+        _world(tmp_path),
+        presentation_version=compilation.NATIVE_COMPATIBLE_PRESENTATION_V1,
+        snapshot_output_path=tmp_path / "outputs" / "snapshot.json",
+    )
+    config.snapshot_output_path.parent.mkdir(parents=True)
+    config.snapshot_output_path.write_text("PRESERVE\n", encoding="utf-8")
+    monkeypatch.setattr(
+        compilation,
+        "a2t_pool_rows",
+        lambda *_args, **_kwargs: pytest.fail("source pool was read"),
+    )
+
+    with pytest.raises(
+        compilation.SemanticCardCompilationError, match="already exists"
+    ):
+        compilation.compile_a2t_semantic_card_artifacts(config)
+
+    assert config.snapshot_output_path.read_text(encoding="utf-8") == "PRESERVE\n"
+    assert not config.corpus_output_path.exists()
+    assert not config.receipt_output_path.exists()
+
+
+def test_snapshot_export_refuses_an_output_path_alias_before_reading_sources(
+    tmp_path: Path, offline: None, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    base = _world(tmp_path)
+    config = replace(
+        base,
+        presentation_version=compilation.NATIVE_COMPATIBLE_PRESENTATION_V1,
+        snapshot_output_path=base.corpus_output_path,
+    )
+    monkeypatch.setattr(
+        compilation,
+        "a2t_pool_rows",
+        lambda *_args, **_kwargs: pytest.fail("source pool was read"),
+    )
+
+    with pytest.raises(
+        compilation.SemanticCardCompilationError,
+        match="output paths must be different",
+    ):
+        compilation.compile_a2t_semantic_card_artifacts(config)
+
+    assert not config.corpus_output_path.exists()
+    assert not config.receipt_output_path.exists()
