@@ -1,0 +1,174 @@
+{
+  "schema": "saea-postseal-saved-score-read-registration-v1",
+  "run_id": "SAEA-SLURP-SPEECH-OBSERVATION-TRANSPORT-RECOVERY-ANALYSIS-V1",
+  "registered_at_utc": "2026-09-12T22:25:00.255216+00:00",
+  "execution_profile": "model-free-check",
+  "analysis_runtime": {
+    "commit": "8b0d7062866f53296c729de942142ce43309d410",
+    "implementation": [
+      {
+        "relpath": "src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py",
+        "sha256": "9ac779f0433bb134b978fd2477b4ef03a8a532ae2192ad88ce7c4e5d9a546ba5"
+      },
+      {
+        "relpath": "src/speech_aware_evidence_acquisition/analysis/paired.py",
+        "sha256": "260377bf5ac37fed842636daff69f6a4e28e8011193b9ef1b58265b99b86ca78"
+      },
+      {
+        "relpath": "src/speech_aware_evidence_acquisition/analysis/null_calibration.py",
+        "sha256": "fa387344de31e520ef8bf8f7d6d026345166613bd52ea1eb66dcb4483af3baf8"
+      },
+      {
+        "relpath": "src/speech_aware_evidence_acquisition/analysis/null_calibration_cli.py",
+        "sha256": "865d74deb7983b3670000c07a26cdef9fbce551c56777f6e31e0b73e036a7252"
+      }
+    ],
+    "worktree": "/home/chao/saea-worktrees/slurp-speech-observation-analysis-runtime-v1"
+  },
+  "template": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-speech-observation-transport-recovery-v1/analysis-preparation-v1/analysis-config.template.json",
+    "sha256": "c10f34c1689a6221e95a549c769d12e86cc27add3bf6df58f7ddaa7cace34c06"
+  },
+  "bound_config": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-speech-observation-transport-recovery-v1/analysis-preparation-v1/analysis-config.bound.json",
+    "sha256": "eae593512e87c2d52fc60b47b2a3eecf2046d101f3a756c1e90b7bd22c2660ac"
+  },
+  "protocol": {
+    "recipe": {
+      "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-analysis-recipe-v2.json",
+      "sha256": "eb6c6754adcc4d72d7d89529703414cfb7caaec640d193761c18499e2d5807c1"
+    },
+    "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-analysis-protocol-v2.md",
+    "sha256": "e90722d3bff5125ae72b1cd94e06c308e75ef1fea7dd63609964203f9951cb64"
+  },
+  "complete_sources": {
+    "control": {
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1/attempt-slurp-speech-observation-control-generation-v1/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1.run-manifest.json",
+        "sha256": "0bbb781d8a1aefc7b42048c4d7dbee6cd85153699833993c467bf5775d47f130"
+      },
+      "status": "COMPLETED",
+      "attempt_state": "FINALIZED",
+      "actual": {
+        "audio_seconds": 8654.381062500022,
+        "calls": 3000
+      },
+      "study_commit": "b0c227f570fe76a4100a361b7ab3cea33d24f275",
+      "config": {
+        "config_hash": "df64e28888d51a658df3d03e4a13fb19056ae44eb2113dc07b4d2fbc394357d6",
+        "fragments": {
+          "baseline": "slurp-speech-observation-control-v1",
+          "dataset": "slurp-speech-native-dev1000",
+          "experiment": "slurp-speech-observation-control-v1",
+          "model": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64"
+        }
+      },
+      "protocol_hash": "ae634e6dd5e3ebde6de77368849b719f108df06636ba9c6b0bc88f879a4a7575",
+      "split_count": 1000,
+      "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+      "scorers": [
+        "slurp-slu-official",
+        "slurp-slu",
+        "cost"
+      ],
+      "artifacts": {
+        "scores": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1/attempt-slurp-speech-observation-control-generation-v1/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1.scores.json",
+          "sha256": "dd2ead05185c5e40d09f17a430b8b1a241bc38c4b9bb39339349591439e8fc2d",
+          "bytes": 1534087
+        },
+        "outputs": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1/attempt-slurp-speech-observation-control-generation-v1/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1.outputs.jsonl",
+          "sha256": "4886a1bbc6029da31686db8ecc653c2516ef773a1c70f2d9dd16ae819dde0046",
+          "bytes": 538493
+        },
+        "raw_trace": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1/attempt-slurp-speech-observation-control-generation-v1/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1.trace.jsonl",
+          "sha256": "be792319757652b92b3a0f944496432e2a043c59b6e0175dfd3c21a12e278ecc",
+          "bytes": 68032152
+        },
+        "trace_manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1/attempt-slurp-speech-observation-control-generation-v1/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1.trace-manifest.json",
+          "sha256": "bcdcf2d69f5b39cc9c48f77817a4f6b4cd67ca19a6f8c1c4829707659d7c2ce1",
+          "bytes": 2153328
+        },
+        "phases": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1/attempt-slurp-speech-observation-control-generation-v1/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1.phases.json",
+          "sha256": "c472e1391e58572f2c33d6cc48baceb7bfe466e378f7d44a7df2740ffbe7062d"
+        }
+      }
+    },
+    "whisper": {
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1/attempt-slurp-speech-observation-whisper-transport-recovery-generation-v1/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1.run-manifest.json",
+        "sha256": "2b976c1aa64ade8eefbe87c9b1d4704a9d534ad67ce77420f6a7d1f8300897d3"
+      },
+      "status": "COMPLETED",
+      "attempt_state": "FINALIZED",
+      "actual": {
+        "audio_seconds": 8654.381062500022,
+        "calls": 3000
+      },
+      "study_commit": "b9d190291bb3ffe07b3d1a894f8a0e7064596546",
+      "config": {
+        "config_hash": "061b425fa47d6c90c591aee8bda6fe2515e8bf93dec28051e2b3fadb3466acf5",
+        "fragments": {
+          "baseline": "slurp-speech-observation-whisper-transport-recovery-v1",
+          "dataset": "slurp-speech-native-dev1000",
+          "experiment": "slurp-speech-observation-whisper-transport-recovery-v1",
+          "model": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64"
+        }
+      },
+      "protocol_hash": "e2000704a4b26b3dc97bc6c5fd621cb6fc661832a35e9278fb752a3eeb058257",
+      "split_count": 1000,
+      "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+      "scorers": [
+        "slurp-slu-official",
+        "slurp-slu",
+        "cost"
+      ],
+      "artifacts": {
+        "scores": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1/attempt-slurp-speech-observation-whisper-transport-recovery-generation-v1/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1.scores.json",
+          "sha256": "040ee5d1e643343f3c52ee0493086302e52275a79967804decd2c0dd921d7f11",
+          "bytes": 1534212
+        },
+        "outputs": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1/attempt-slurp-speech-observation-whisper-transport-recovery-generation-v1/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1.outputs.jsonl",
+          "sha256": "00e9782d3b2b99c174d64193da61b87f8f50239721c79b8a312da439f7f08553",
+          "bytes": 538299
+        },
+        "raw_trace": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1/attempt-slurp-speech-observation-whisper-transport-recovery-generation-v1/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1.trace.jsonl",
+          "sha256": "0ef80a443bed1d07aff5933204cbd442e5a502260ac5fea2d73f6951384fa65c",
+          "bytes": 77549138
+        },
+        "trace_manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1/attempt-slurp-speech-observation-whisper-transport-recovery-generation-v1/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1.trace-manifest.json",
+          "sha256": "02ca90f4619a03ca31cb2379850763a7da4306b13538f8cb16db76646ccde870",
+          "bytes": 2486097
+        },
+        "phases": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1/attempt-slurp-speech-observation-whisper-transport-recovery-generation-v1/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1.phases.json",
+          "sha256": "9dc5875eede366894d4c8b913561845f83358279a7b087a327ad00df70bbcd5d"
+        }
+      }
+    }
+  },
+  "planned_output": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SPEECH-OBSERVATION-TRANSPORT-RECOVERY-ANALYSIS-V1/score-contrasts.json",
+  "allowed_read": "Both complete first-score bundles, frozen paired comparisons and source-bound post-seal trace/catalog diagnostics defined by the frozen protocol. No new reference data, model, tokenizer, encoder or scorer contact.",
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "scorer": 0,
+    "audio": 0,
+    "gpu": 0
+  },
+  "statistical_fields_unchanged": true,
+  "quality_read_before_registration": false,
+  "method_pins_mechanically_verified": 35,
+  "cpu_workers": 1,
+  "root_decision_output": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-speech-observation-root-decision-v1.json",
+  "gate": "Both FINALIZED3000 and COMPLETED; exact source/config/protocol/roster and attached first-score hashes verified mechanically. Shared CLI verifies full bundles before semantic analysis."
+}
