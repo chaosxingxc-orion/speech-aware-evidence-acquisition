@@ -17,6 +17,7 @@
     }
   },
   "policy": "phase-direct-only-v1",
+  "prompt_fit_multiple": 1.3333333333333333,
   "scorers": [
     "a2t-toolcall-official",
     "a2t-toolcall-v2",
@@ -26,10 +27,10 @@
   "serving_geometry": {
     "max_tokens": 1024,
     "slot_tokens": 32768,
-    "slots": 2
+    "slots": 3
   },
   "serving_slot_tokens": 32768,
-  "serving_slots": 2,
+  "serving_slots": 3,
   "speech_feature_key_representation_id": "saea-a2t-native-system-v1:complete-speech",
   "speech_feature_matcher_policy_id": "saea-a2t-native-system-v1",
   "task_contract_source": "active-instruction",

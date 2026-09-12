@@ -51,8 +51,13 @@ request. Record that distinction beside the historical and paper columns.
 
 ## Service, capacity and bounded exposure
 
-The initial serving candidate is decoder-only, c65536/np2, 32768 tokens per
-slot, max1024, fixed seed and temperature zero. Promote existing complete
+The initial serving candidate is decoder-only, c98304/np3, 32768 tokens per
+slot, max1024, fixed seed and temperature zero. It adds a third concurrent slot
+while preserving each complete request window. Resident allocation has not
+been tested on the24GB GPU. If startup cannot allocate this geometry, stop
+dispatch and preserve the failed startup; root may prospectively bind the
+entire still-unstarted comparison to the retained c65536/np2 candidate.
+No worker or campaign automatically restarts or substitutes a service. Promote existing complete
 Qwen speech features only after source and provenance verification; never use
 Nemotron retrieval vectors as Qwen input features. Keep one resident service
 and one exclusive experiment lease. No child starts a replacement service.
@@ -67,8 +72,10 @@ config/source hashes before any endpoint or model contact.
 
 Check actual shared requests over the complete roster, including all speech
 chunks, full native contracts, selected values, real predecessor states,
-CONTROL/ORG metadata and max1024. Keep the inherited 8192-token reserve as a
-separate admission requirement. Fit phase two after phase-one state exists;
+CONTROL/ORG metadata and max1024. Enforce the inherited 8192-token reserve through the existing
+prompt_fit_multiple=4/3: required tokens must not exceed24576 in each32768-token
+slot. The receipt margin is after that multiplier; also report the physical
+slot-minus-required-token margin. Fit phase two after phase-one state exists;
 use the full-roster phase barrier. No synthetic padding substitutes for
 this final check. If the group does not fit, revise geometry prospectively
 before generation rather than truncate audio, prune tools or shorten output.
@@ -90,9 +97,15 @@ column without claiming identical model or population conditions.
 
 The principal estimands are paired exact-match differences for knowledge versus
 direct and knowledge versus stage control. Stage control versus direct is a
-mechanism attribution. Freeze the paired resampling unit, seed, interval and
-published-headroom decision table before generation admission; preparation
-alone cannot settle these scientific choices. Do not infer quality from
+mechanism attribution. Use the frozen decision table in configs/analysis/a2t-native-system-decision-v1.json:
+paired cross-tier query_idx clusters, 10,000 replicates, seed20260912, two
+Bonferroni-adjusted 97.5-percent primary intervals, and a gain threshold of
+the smaller of one percentage point and ten percent of nonnegative published
+headroom. A comparator already above the paper reference has a zero headroom
+threshold; do not turn the reference into an unattainable absolute gate.
+Natural and equal-tier results must agree on a promising system; equal-domain
+weighting is a sensitivity analysis. Tool accuracy and macro parameter-F1
+must have nonnegative point deltas, which is not a noninferiority claim. Do not infer quality from
 retrieval similarity, source coverage, length or self-reported confidence.
 A promising first comparison requires a same-roster reproduction before
 adopting a new effective mechanism. Preserve uncertainty and negative results.
@@ -102,6 +115,6 @@ adopting a new effective mechanism. Preserve uncertainty and negative results.
 Complete the generic source-qualified packet promotion and shared
 source-audio/packet identity bridge. Bind the immutable promotion and prepared
 recall outputs into the fragments, prove all three through the shared fake
-wire path, then freeze the final decision table and structured generation/fit
+wire path, then bind the already frozen decision table and structured generation/fit
 plans. The current configurations deliberately omit promotion and recall
 receipt pins and allow preparation stages only.

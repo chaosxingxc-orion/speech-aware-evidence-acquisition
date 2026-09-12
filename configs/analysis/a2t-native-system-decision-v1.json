@@ -1,0 +1,51 @@
+{
+  "attribution_contrast": "stage-control minus direct",
+  "bootstrap": {
+    "interval": "percentile",
+    "multiplicity": "Two primary contrasts use Bonferroni 97.5-percent two-sided intervals; all component/tier/domain breakdowns are exploratory.",
+    "paired": true,
+    "primary_ci_level": 0.975,
+    "replicates": 10000,
+    "secondary_ci_level": 0.9,
+    "seed": 20260912
+  },
+  "cluster_key": "cross-tier query_idx from the frozen media roster",
+  "decision": {
+    "adoption": "Same-roster full comparison reproduction required before claiming a newly effective mechanism.",
+    "effect_threshold_proportion": "min(0.01, 0.10 * max(0, published equal-tier exact_match - comparator equal-tier exact_match))",
+    "knowledge_contribution": "The corresponding knowledge-minus-stage-control primary lower bound exceeds its predeclared threshold under natural and equal-tier weighting.",
+    "negative_or_uncertain": "Report each comparison separately; no positive memory rule or new roster is inferred. Name a component from predeclared traces before another mechanism is admitted.",
+    "no_cost_gate": true,
+    "promising_system": "Knowledge-minus-direct primary lower bound exceeds the predeclared headroom threshold under natural and equal-tier weighting. Require nonnegative official tool-accuracy and macro parameter-F1 point differences; these latter checks do not establish noninferiority."
+  },
+  "diagnostics": [
+    "official macro parameter precision/recall/F1",
+    "ordered full-call repo accuracy",
+    "repo micro parameter/slot F1",
+    "all native tiers and domains",
+    "corrected versus newly damaged outcomes",
+    "invalid/empty/saturated/fallback outputs",
+    "input tokens and speech chunks",
+    "OBS/ORG/SUPPLY/USE events",
+    "actual generation/tool contacts and time"
+  ],
+  "frozen_before_generation": true,
+  "paper_reference": {
+    "local_table": "analysis.a2t_v2_rescore.PAPER_TIER_ROW",
+    "role": "Published ceiling reference for headroom target; not a mathematical upper bound or matched model/population.",
+    "source": "arXiv:2604.22821 Table 3, Qwen-3-Omni-30B"
+  },
+  "population": "A2T-ORG1-UNION-4000",
+  "primary_contrasts": [
+    "knowledge minus direct",
+    "knowledge minus stage-control"
+  ],
+  "primary_metric": "official exact_match",
+  "read_policy": "All three complete manifests must seal before root semantic task-result inspection. Each official complete score runs once with per-sample statistics. No dropped long rows, parser gaming or outcome-based rule choice.",
+  "schema": "saea-native-system-decision-rule-v1",
+  "weightings": [
+    "natural mixture",
+    "equal native tier",
+    "equal native domain as sensitivity"
+  ]
+}

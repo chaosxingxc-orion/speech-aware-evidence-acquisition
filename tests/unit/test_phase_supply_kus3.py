@@ -351,7 +351,9 @@ def test_the_seed_uses_the_plan_driving_the_dispatch_not_self_plan(tmp_path):
             "dev:s1": {"packet_id": "speech/dev:s1", "sha256": _SHA_C}
         },
     }
-    seed_stub = SimpleNamespace(_plan=None)
+    seed_stub = SimpleNamespace(
+        _plan=None, _composed=SimpleNamespace(values={}), _data_root=tmp_path
+    )
     plan = SimpleNamespace(split_identity_hash=_SHA_C)
     facets, selected = FlightRuntime._phase_supply_seeds(
         seed_stub, program, binding, resolved, plan
