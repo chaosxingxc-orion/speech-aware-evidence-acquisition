@@ -295,6 +295,48 @@ def test_compilation_is_deterministic_across_new_output_locations(
     assert first["construction_selection"] == second["construction_selection"]
 
 
+def test_compilation_opt_in_uses_public_legality_presentation(
+    tmp_path: Path, offline: None
+) -> None:
+    config = replace(
+        _world(tmp_path),
+        presentation_version=compilation.PUBLIC_API_LEGALITY_PRESENTATION_V1,
+    )
+
+    receipt = compilation.compile_a2t_semantic_card_artifacts(config)
+
+    corpus = config.corpus_output_path.read_text(encoding="utf-8")
+    assert "Public argument legality:" in corpus
+    assert "Construction-observed argument patterns:" in corpus
+    assert "poison" not in corpus
+    assert receipt["compiler"]["presentation_version"] == (
+        compilation.PUBLIC_API_LEGALITY_PRESENTATION_V1
+    )
+    assert receipt["corpus"]["report"]["unobserved_public_combinations_forbidden"] is (
+        False
+    )
+
+
+def test_compilation_refuses_unknown_presentation_before_reading_sources(
+    tmp_path: Path, offline: None, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    config = replace(_world(tmp_path), presentation_version="unknown-presentation")
+    monkeypatch.setattr(
+        compilation,
+        "a2t_pool_rows",
+        lambda *_args, **_kwargs: pytest.fail("source pool was read"),
+    )
+
+    with pytest.raises(
+        compilation.SemanticCardCompilationError,
+        match="presentation_version",
+    ):
+        compilation.compile_a2t_semantic_card_artifacts(config)
+
+    assert not config.corpus_output_path.exists()
+    assert not config.receipt_output_path.exists()
+
+
 @pytest.mark.parametrize(
     ("change", "message"),
     (
