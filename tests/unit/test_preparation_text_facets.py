@@ -42,3 +42,22 @@ def test_text_facet_shape_refuses_before_encoder(tmp_path, facets):
         prepare_text_facet_vectors(tmp_path / "set.json", facets=facets, cache_root=tmp_path / "cache",
             encoder=lambda _: pytest.fail("encoder called"), encoder_identity={"inventory_sha256": _SHA},
             snapshot_sha256=_SHA, protocol_id="b" * 64, dimension=2)
+
+
+def test_passage_backend_uses_no_audio_and_emits_processor_forward_hooks(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core import speech_preparation_runtime as runtime
+    events, rendered, calls = [], [], []
+    (tmp_path / "model").mkdir()
+    monkeypatch.setattr(runtime, "load_stack", lambda *_args, **_kwargs: ("processor", "model", "template"))
+    monkeypatch.setattr(runtime, "render", lambda _p, _t, content: rendered.append(content) or "wire")
+    def fake_encode(_p, _m, texts, audio, **kwargs):
+        calls.append((texts, audio, kwargs))
+        kwargs["forward_event"]("encoder_forward_started")
+        kwargs["forward_event"]("encoder_forward_finished")
+        return [[1.0, 0.0]]
+    monkeypatch.setattr(runtime, "encode", fake_encode)
+    backend = runtime.NemotronPassageEncoder({"model_dir_relpath": "model"}, {"passage_prompt": "passage: ", "max_sequence_tokens": 8192}, tmp_path, events.append)
+    assert backend("facet text") == [1.0, 0.0]
+    assert rendered == [[{"type": "text", "text": "passage: facet text"}]]
+    assert calls == [(["wire"], None, {"max_sequence_tokens": 8192, "forward_event": events.append})]
+    assert events == ["model_load_started", "model_load_finished", "processor_started", "encoder_forward_started", "encoder_forward_finished"]
