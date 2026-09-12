@@ -71,6 +71,16 @@ def load_stack(model_dir: Path, *, local_files_only: bool = False):
 
     if "sentence_transformers" in sys.modules:  # pragma: no cover - defensive
         raise SystemExit("sentence_transformers must not be imported in this process")
+    template = (
+        model_dir / "additional_chat_templates/sentence_transformers.jinja"
+    ).read_text(encoding="utf-8")
+    pooling = json.loads(
+        (model_dir / "1_Pooling/config.json").read_text(encoding="utf-8")
+    )
+    if pooling.get("pooling_mode") != "mean" or not pooling.get("include_prompt"):
+        raise SystemExit(f"unexpected pooling config {pooling!r}")
+    if int(pooling.get("embedding_dimension", 0)) != DIMS:
+        raise SystemExit(f"unexpected embedding dimension {pooling!r}")
     processor = AutoProcessor.from_pretrained(
         str(model_dir), trust_remote_code=True, local_files_only=local_files_only
     )
@@ -82,16 +92,6 @@ def load_stack(model_dir: Path, *, local_files_only: bool = False):
         attn_implementation="sdpa",
     )
     model = model.to("cuda").eval()
-    template = (
-        model_dir / "additional_chat_templates/sentence_transformers.jinja"
-    ).read_text(encoding="utf-8")
-    pooling = json.loads(
-        (model_dir / "1_Pooling/config.json").read_text(encoding="utf-8")
-    )
-    if pooling.get("pooling_mode") != "mean" or not pooling.get("include_prompt"):
-        raise SystemExit(f"unexpected pooling config {pooling!r}")
-    if int(pooling.get("embedding_dimension", 0)) != DIMS:
-        raise SystemExit(f"unexpected embedding dimension {pooling!r}")
     return processor, model, template
 
 

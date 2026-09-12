@@ -29,7 +29,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import subprocess
 import sys
 import time
 import urllib.error
@@ -51,8 +50,9 @@ from speech_aware_evidence_acquisition.core.session.serving import (  # noqa: E4
     summarize_monitor_samples as summarize,
 )
 
-GPU_FIELDS = ("utilization_percent", "memory_used_mib", "power_watts", "pstate", "clocks_sm_mhz")
-NVIDIA_SMI_QUERY = "utilization.gpu,memory.used,power.draw,pstate,clocks.sm"
+from speech_aware_evidence_acquisition.core.session.telemetry import (  # noqa: E402,F401
+    GPU_FIELDS, NVIDIA_SMI_QUERY, _number, read_gpu,
+)
 
 #: The monitor's own operator log, beside ``monitor.jsonl`` in the same
 #: session directory -- a WARN line about the host running low on memory is
@@ -63,36 +63,6 @@ MONITOR_LOG_NAME = "monitor.log"
 #: stays: a host parked below the floor for an hour must write one line, not
 #: one every sampling interval.
 HOST_MEMORY_WARN_INTERVAL_SECONDS = 60.0
-
-
-def _number(text: object) -> float | None:
-    try:
-        return float(str(text))
-    except (TypeError, ValueError):
-        return None
-
-
-def read_gpu(run=subprocess.run) -> dict[str, object] | None:
-    """One nvidia-smi row, or None when the card cannot be read (a monitor
-    that cannot see the GPU keeps sampling the server rather than dying)."""
-
-    try:
-        completed = run(
-            ["nvidia-smi", f"--query-gpu={NVIDIA_SMI_QUERY}", "--format=csv,noheader,nounits"],
-            capture_output=True,
-            text=True,
-            timeout=15,
-        )
-    except (OSError, subprocess.SubprocessError):
-        return None
-    rows = (completed.stdout or "").strip().splitlines()
-    if getattr(completed, "returncode", 1) != 0 or not rows:
-        return None
-    parts = [part.strip() for part in rows[0].split(",")]
-    if len(parts) != len(GPU_FIELDS):
-        return None
-    sample = dict(zip(GPU_FIELDS, parts))
-    return {name: (sample[name] if name == "pstate" else _number(sample[name])) for name in GPU_FIELDS}
 
 
 def _get(url: str, timeout_seconds: float) -> str | None:

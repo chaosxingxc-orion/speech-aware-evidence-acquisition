@@ -170,6 +170,7 @@ def prepare_speech_query_vectors(
     dimension: int,
     max_seconds: float = 120.0,
     overlap_seconds: float = 8.0,
+    prepare_sources: Callable[[Sequence[Mapping[str, object]]], None] | None = None,
 ) -> dict[str, object]:
     """Cache every spent segment separately; never replay an ambiguous contact."""
     dimension = _positive_int(dimension, "dimension")
@@ -228,6 +229,10 @@ def prepare_speech_query_vectors(
                 "deduplicated_references": 0,
             },
         }
+    if prepare_sources is not None:
+        prepare_sources(
+            [dict(row, **span) for row in verified for span in plans[row["id"]]]
+        )
     prepared = {}
     result_rows = []
     accounting = {"encoder_calls": 0, "cache_hits": 0, "deduplicated_references": 0}
