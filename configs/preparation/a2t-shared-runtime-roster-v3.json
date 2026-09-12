@@ -1,0 +1,15 @@
+{
+  "attempt_id": "model-free-factory-construction-v3",
+  "baseline": "a2t-org1-domain-grouped",
+  "campaign_active": false,
+  "data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+  "dataset": "audio2tool-org1-union-4000",
+  "entry": "core.flight.factory.build_flight_runtime only; no runtime.adapter access",
+  "experiment": "a2t-org1-domain-grouped-4000-v1",
+  "lock_path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+  "model": "q4km-featcache-a2t-official-np2-04ccc72a",
+  "receipt_output_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-shared-runtime-roster-verification-v3.json",
+  "repo_root": "/home/chao/saea-worktrees/a2t-live-runtime-v1",
+  "run_id": "SAEA-A2T-MF-SHARED-ROSTER-4000-V3",
+  "runtime_root": "/home/chao"
+}
