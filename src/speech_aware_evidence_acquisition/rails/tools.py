@@ -91,6 +91,7 @@ from ..core.base import Registry
 from ..e0.artifacts import REPO_ROOT
 from .errors import RailsError
 from .tool_wrappers import phase_knowledge as _phase_knowledge
+from .tool_wrappers import speech_observation as _speech_observation
 
 
 class ToolCatalogError(RailsError):
@@ -1493,5 +1494,29 @@ TOOL_CATALOG.register(
     build_tool_entry(
         CORRECTIVE_MEMORY_ACTION_MANIFEST,
         _experience_memory.select_corrective_memory,
+    ),
+)
+
+
+# Cached speech evidence retains its original neural-contact provenance.
+
+PREPARED_SPEECH_OBSERVATION_MANIFEST = ToolManifest(
+    tool_id="saea-tool-prepared-speech-observation-v1",
+    description="Read a pinned transcription of the original utterance as OBS evidence.",
+    source_ref=(
+        "speech_aware_evidence_acquisition.rails.tool_wrappers.speech_observation:"
+        "read_prepared_speech_observation"
+    ),
+    pinned_sha256="a6b27818e4bb1c5e6198a36a1cad7b05e8773a6fcde41a8e6be216ff89560e62",
+    inputs={"catalog": "LoadedSpeechObservationCatalog", "context": "AgentRuntimeContext"},
+    outputs={"result": "SpeechObservationSelection"},
+    changes_bytes=False, derivation_record=None, cost_class="cpu",
+    axis="OBS", scope=GENERAL_SCOPE, ledger_row_type="tool-contact",
+)
+TOOL_CATALOG.register(
+    "saea-tool-prepared-speech-observation-v1",
+    build_tool_entry(
+        PREPARED_SPEECH_OBSERVATION_MANIFEST,
+        _speech_observation.read_prepared_speech_observation,
     ),
 )

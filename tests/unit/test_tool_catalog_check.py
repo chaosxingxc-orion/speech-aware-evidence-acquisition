@@ -73,8 +73,8 @@ def test_the_real_catalog_passes():
     assert data["passed"] is True
     # W3 registered the first eight; WAVE R7 added eighteen rails/a2t_*
     # renderers, OWNER016 added two explicit task actions, and OWNER017 adds
-    # the corrective-memory Planner action.
-    assert len(data["tools"]) == 29
+    # the corrective-memory Planner action; OWNER023 adds one cached OBS action.
+    assert len(data["tools"]) == 30
     assert all(row["complete"] and row["pin_ok"] for row in data["tools"])
     assert all(row["pin_ok"] for row in data["additional_pins"])
     assert data["registered_ids"] == sorted(data["registered_ids"])

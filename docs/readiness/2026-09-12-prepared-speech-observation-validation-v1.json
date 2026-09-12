@@ -1,0 +1,78 @@
+{
+  "active_campaign_source_unchanged": "22b56d706e2f5601dc79f58a8fad2bb6a9629f51",
+  "base_commit": "49a59aa74416ca7b019cb83e7319c70b352a84c1",
+  "contacts": {
+    "dataset_reads": 0,
+    "gpu_model_loads": 0,
+    "model_contacts": 0,
+    "paid_api_calls": 0,
+    "speech_tool_forward_calls": 0
+  },
+  "execution_environment": {
+    "cuda_visible_devices": "",
+    "distribution": "Ubuntu-24.04",
+    "explicit_pythonpath": "/home/chao/saea-worktrees/speech-observation-integration-v1/src",
+    "omp_threads": 1,
+    "python": "/home/chao/.venvs/speechrl/bin/python"
+  },
+  "pending": [
+    "Implement the shared registered Whisper producer.",
+    "Register dataset preparation and a matched full-roster SLURP tool-evidence comparison after the current A2T scientific dependency closes.",
+    "Measure native task benefit; no effectiveness conclusion exists from this integration."
+  ],
+  "recorded_at_utc": "2026-09-12T15:07:06.620984+00:00",
+  "review_findings_closed": [
+    "Typed OBS now crosses real shared wire validation without being mislabeled as knowledge.",
+    "Transcript is supplied once while the sealed tool state retains a reference.",
+    "Single-backslash source addresses are rejected.",
+    "Absent and null declarations preserve historical request behavior."
+  ],
+  "schema": "saea-prepared-speech-observation-validation-v1",
+  "source_sha256": {
+    "configs/toolkit/task-toolkits-v1.json": "69e3fd004bd2890eb200576c24a2811d1ce74675e4f502873f72e26b4ebc974f",
+    "src/speech_aware_evidence_acquisition/core/flight/runtime.py": "db23a5b4d2384563b72c1dd8c34c654145e6ecee77e34491dd29e67ac821230e",
+    "src/speech_aware_evidence_acquisition/rails/phase_tools.py": "3a490a0f71bc4a36a6c31f68305004953cbc2a69429a0656e9b0095b77ca2707",
+    "src/speech_aware_evidence_acquisition/rails/speech_observation.py": "79ca6fd7bb81c96a839a04fa3c377414f04e1d77ebb9cff58c1f53d564616bd5",
+    "src/speech_aware_evidence_acquisition/rails/tool_wrappers/speech_observation.py": "649ca799ee535d9108dad7f975c92cfc7c400fb7eff4f92ea0e7ff6707e510c3",
+    "src/speech_aware_evidence_acquisition/rails/tools.py": "e68ab87f894ad349619ed9b1288c20ef2d8a8d410dc63c8b916814ebddcb7a47",
+    "tests/unit/test_phase_speech_observation.py": "f600b438c82f1e8cc13bca8e9588b44846c5a9e121e388b8eb63971c09f853a5",
+    "tests/unit/test_speech_observation.py": "47611c18be0a81f82979921bca2863a1d09be4eb7175836a22b5f3612b5c62b8",
+    "tests/unit/test_speech_observation_wire.py": "a0850d7451a37debfc13ab1f596db5ca4717e8b02dd29b4f63fa7372c442184a",
+    "tests/unit/test_tool_catalog_check.py": "43209f324e7c4bae4de868a7b1f649ff050cce7f1e688c04bea60176efb0e4ff",
+    "tests/unit/test_tool_wrappers.py": "d938faf8a7a117065727d2d219b590fb3b6b9e088e2f1426f6996c4665b3097e"
+  },
+  "validation": {
+    "checks": {
+      "diff_whitespace": {
+        "exit_code": 0,
+        "output": "",
+        "stderr": ""
+      },
+      "engineering_base": {
+        "exit_code": 0,
+        "output": "engineering base check: PASS",
+        "stderr": ""
+      },
+      "ruff": {
+        "exit_code": 0,
+        "output": "All checks passed!",
+        "stderr": ""
+      },
+      "tool_catalog": {
+        "exit_code": 0,
+        "output": "tool catalog check: PASS (30 tools, 1 extra pin(s), 14 module(s) clean of framework clients)",
+        "stderr": ""
+      }
+    },
+    "coverage_log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/speech-observation-integration-coverage-v1.log",
+      "sha256": "4c80ab3c3604cff2b5891bb1e5e5cfaa9af1bcf4da67b9b286526711121231d8"
+    },
+    "new_modules_statement_coverage_percent": 84,
+    "test_log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/speech-observation-integration-final-tests-v1.log",
+      "sha256": "93e7bca57d6efd3ec4dea07a04a61e095f8beddcedf5c7daa888660b40605479"
+    },
+    "tests_passed": 426
+  }
+}

@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import hashlib
 from threading import Lock
+from types import SimpleNamespace
 from typing import Mapping
 from .errors import RailsError
 from .knowledge import AgentStateArtifact, content_hash
@@ -19,10 +20,16 @@ from .experience_memory_runtime import (
     ExperienceMemorySelection,
 )
 
+from .speech_observation import (
+    PREPARED_SPEECH_OBSERVATION_TOOL,
+    SpeechObservationSelection,
+)
+
 TASK_CONTRACT_TOOL = "saea-tool-task-contract-v1"
 PHASE_KNOWLEDGE_TOOL = "saea-tool-phase-knowledge-v1"
 ACTION_TOOLS = frozenset(
-    {TASK_CONTRACT_TOOL, PHASE_KNOWLEDGE_TOOL, CORRECTIVE_MEMORY_TOOL}
+    {TASK_CONTRACT_TOOL, PHASE_KNOWLEDGE_TOOL, CORRECTIVE_MEMORY_TOOL,
+     PREPARED_SPEECH_OBSERVATION_TOOL}
 )
 MODES = frozenset({"fixed", "core-choice"})
 VIEWS = frozenset({"text", "speech", "paired"})
@@ -111,6 +118,18 @@ def _validate_action(action, allowed, views):
             or args["view"] not in views
         ):
             raise PhaseToolError("knowledge action needs one allowed knowledge view")
+    if tool_id == PREPARED_SPEECH_OBSERVATION_TOOL:
+        if (
+            set(args) != {"span", "representation", "distinction"}
+            or args["span"] != "full-utterance"
+            or args["representation"] != "asr-transcript"
+            or not isinstance(args["distinction"], str)
+            or not args["distinction"].strip()
+            or len(args["distinction"]) > 512
+        ):
+            raise PhaseToolError(
+                "speech observation requires full-utterance, asr-transcript and a bounded distinction"
+            )
     return {"tool_id": tool_id, "arguments": dict(args)}
 
 
@@ -125,6 +144,7 @@ class PhaseToolDispatcher:
         trace_sink=None,
         knowledge_catalog=None,
         experience_memory=None,
+        speech_observations=None,
     ):
         self.specs = specs
         self.program = program
@@ -132,6 +152,7 @@ class PhaseToolDispatcher:
         self.snapshot_sha256 = snapshot.content_hash()
         self.knowledge_catalog = knowledge_catalog
         self.experience_memory = experience_memory
+        self.speech_observations = speech_observations
         from .knowledge_value_views import KnowledgeValueRenderer
 
         self._value_renderer = KnowledgeValueRenderer(
@@ -158,11 +179,21 @@ class PhaseToolDispatcher:
         ) and experience_memory is None:
             raise PhaseToolError("corrective-memory action requires a loaded memory binding")
 
+        if any(
+            PREPARED_SPEECH_OBSERVATION_TOOL in spec["allowed_tools"]
+            for spec in specs.values()
+        ) and speech_observations is None:
+            raise PhaseToolError("speech observation action requires a loaded source binding")
+
     def instruction_for_phase(self, phase, context):
         spec = self.specs.get(phase)
         if spec is None or spec["mode"] != "core-choice":
             return ""
         descriptions = {
+            PREPARED_SPEECH_OBSERVATION_TOOL: (
+                "Inspect an independently prepared transcription of the full original utterance. "
+                "Name the distinction it should resolve; the Solver retains the answer."
+            ),
             TASK_CONTRACT_TOOL: "Read the current task's legal schema and instructions.",
             PHASE_KNOWLEDGE_TOOL: "Retrieve and open prepared TRAIN knowledge for this task. Arguments: view.",
             CORRECTIVE_MEMORY_TOOL: (
@@ -175,6 +206,10 @@ class PhaseToolDispatcher:
                 "description": descriptions[tool],
                 "arguments": {}
                 if tool in {TASK_CONTRACT_TOOL, CORRECTIVE_MEMORY_TOOL}
+                else {
+                    "span": "full-utterance", "representation": "asr-transcript",
+                    "distinction": "Describe the suspected missing evidence or problem in English.",
+                } if tool == PREPARED_SPEECH_OBSERVATION_TOOL
                 else {"view": list(spec["knowledge_views"])},
             }
             for tool in spec["allowed_tools"]
@@ -258,6 +293,8 @@ class PhaseToolDispatcher:
         try:
             if action["tool_id"] == TASK_CONTRACT_TOOL:
                 output = tool.call(context)
+            elif action["tool_id"] == PREPARED_SPEECH_OBSERVATION_TOOL:
+                output = tool.call(self.speech_observations, context)
             elif action["tool_id"] == CORRECTIVE_MEMORY_TOOL:
                 output = tool.call(self.experience_memory, next_phase, context)
             else:
@@ -319,6 +356,11 @@ class PhaseToolDispatcher:
                         "task-contract tool returned an unbound result"
                     )
                 result = dict(output.result)
+            elif action["tool_id"] == PREPARED_SPEECH_OBSERVATION_TOOL:
+                if not isinstance(output.result, SpeechObservationSelection):
+                    raise PhaseToolError("speech observation tool returned an unbound selection")
+                # The typed OBS block supplies the transcript once; history keeps its reference.
+                result = {key: value for key, value in output.result.visible.items() if key != "transcript"}
             else:
                 if not isinstance(output.result, ExperienceMemorySelection):
                     raise PhaseToolError(
@@ -346,6 +388,11 @@ class PhaseToolDispatcher:
                     **document,
                     "internal_memory_lineage": dict(output.result.lineage),
                 }
+            if action["tool_id"] == PREPARED_SPEECH_OBSERVATION_TOOL:
+                receipt_document = {
+                    **document,
+                    "internal_observation_lineage": dict(output.result.lineage),
+                }
             self._emit(context.sample_id, phase, "result", receipt_document)
             with self._lock:
                 self._records[key] = receipt_document
@@ -361,20 +408,42 @@ class PhaseToolDispatcher:
 
     def _emit(self, sample_id, phase, event, payload):
         if self.trace_sink is not None:
+            axis = "OBS" if payload.get("tool_id") == PREPARED_SPEECH_OBSERVATION_TOOL else "USE"
             self.trace_sink.emit(
-                "USE",
+                axis,
                 f"{sample_id}/{self.program.program_id}/{phase}/tool-{event}",
-                {f"use_{key}": value for key, value in payload.items()},
+                {f"{axis.lower()}_{key}": value for key, value in payload.items()},
             )
 
     def render_values(self, snapshot, query_state, agent_states):
         """Assemble actual evidence from the latest source-bound tool selections."""
         selections = {}
+        observations = []
+        observed_artifacts = set()
         for artifact in agent_states:
             if artifact.state_kind != "tool-result":
                 continue
             document = json.loads(artifact.content)
             result = document.get("result", {})
+            if document.get("tool_id") == PREPARED_SPEECH_OBSERVATION_TOOL:
+                if self.speech_observations is None or artifact.state_id not in query_state.agent_state_ids:
+                    raise PhaseToolError("speech observation is absent from current bound state")
+                selected = self.speech_observations.select(
+                    context=SimpleNamespace(
+                        sample_id=query_state.query_sample_id, query_state=query_state,
+                    )
+                )
+                if (
+                    result != {key: value for key, value in selected.visible.items() if key != "transcript"}
+                    or document.get("result_sha256") != content_hash(result)
+                    or document.get("snapshot_sha256") != self.snapshot_sha256
+                ):
+                    raise PhaseToolError("speech observation state differs from its sealed evidence")
+                artifact_sha = result["artifact_sha256"]
+                if artifact_sha not in observed_artifacts:
+                    observations.append(selected.content_block())
+                    observed_artifacts.add(artifact_sha)
+                continue
             if "knowledge_view" not in result:
                 continue
             if document.get("snapshot_sha256") != self.snapshot_sha256:
@@ -400,7 +469,7 @@ class PhaseToolDispatcher:
             previous = view
         if group:
             blocks.extend(self._value_renderer.assemble(group, view=previous))
-        return tuple(blocks)
+        return tuple(blocks + observations)
 
     def receipt(self):
         with self._lock:
@@ -420,6 +489,17 @@ class PhaseToolDispatcher:
         }
         if memory_lineage:
             receipt["memory_lineage"] = memory_lineage
+        observation_records = [
+            row for row in records if row["tool_id"] == PREPARED_SPEECH_OBSERVATION_TOOL
+        ]
+        if self.speech_observations is not None:
+            receipt["speech_observations"] = {
+                **self.speech_observations.receipt(),
+                "supplied_samples": len({row["result"]["sample_id"] for row in observation_records}),
+                "supply_events": len(observation_records),
+                "new_neural_contacts": 0,
+                "lineage": [row["internal_observation_lineage"] for row in observation_records],
+            }
         return receipt
 
 
@@ -432,6 +512,7 @@ def build_phase_tools(
     trace_sink=None,
     knowledge_catalog=None,
     experience_memory=None,
+    speech_observations=None,
 ):
     specs = load_phase_tool_specs(config, program)
     if not specs:
@@ -444,4 +525,5 @@ def build_phase_tools(
         trace_sink=trace_sink,
         knowledge_catalog=knowledge_catalog,
         experience_memory=experience_memory,
+        speech_observations=speech_observations,
     )

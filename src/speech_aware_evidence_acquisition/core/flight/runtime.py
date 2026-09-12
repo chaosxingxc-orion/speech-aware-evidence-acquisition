@@ -971,6 +971,8 @@ class FlightRuntime:
         # shape and same reason as the two phase_supply fields above.
         self._phase_review_receipt: Mapping[str, object] | None = None
         self._phase_review_material: Mapping[str, object] | None = None
+        self._speech_observations = None
+        self._speech_observations_loaded = False
         self._experience_memory = None
         self._experience_memory_loaded = False
         self._promotion_receipt: Mapping[str, object] | None = None
@@ -1726,6 +1728,23 @@ class FlightRuntime:
         if len(set(sample_ids)) != len(sample_ids):
             raise FlightRuntimeError(f"split {split_id!r} contains duplicate sample ids")
         identity_hash = split_identity_hash(prefixed(carrier_lock_key, sample_ids))
+        if not self._speech_observations_loaded:
+            from ...rails.errors import RailsError
+            from ...rails.speech_observation import load_speech_observation_catalog
+            if values.get("prepared_speech_observations") not in (None, {}):
+                if not self.uses_speech_feature_packets():
+                    raise FlightRuntimeError(
+                        "prepared speech observations require the validated speech-feature path"
+                    )
+                try:
+                    self._speech_observations = load_speech_observation_catalog(
+                        values, data_root=self._data_root, repo_root=self._repo_root,
+                        source_audio_bindings=self.source_audio_bindings(include_address=True),
+                        split_identity_hash=identity_hash,
+                    )
+                except RailsError as error:
+                    raise FlightRuntimeError(str(error)) from None
+            self._speech_observations_loaded = True
         return values, carrier_lock_key, split_id, identity_hash
 
     def preflight(self) -> Mapping[str, object]:
@@ -1963,7 +1982,7 @@ class FlightRuntime:
             )
         return bindings
 
-    def source_audio_bindings(self) -> Mapping[str, Mapping[str, str]]:
+    def source_audio_bindings(self, *, include_address: bool = False) -> Mapping[str, Mapping[str, object]]:
         """Bind each validated source-audio identity to its derived packet.
 
         The packet descriptor consumed by the answering transport remains the
@@ -2001,6 +2020,24 @@ class FlightRuntime:
                 "packet_sha256": descriptor["sha256"],
                 "source_audio_sha256": source_sha256,
             }
+            if include_address:
+                import math
+                from pathlib import PurePosixPath
+                path = getattr(audio_ref, "path", None)
+                duration = getattr(sample, "audio_seconds", None)
+                if (
+                    not isinstance(path, str) or not path
+                    or PurePosixPath(path).is_absolute() or "\\" in path
+                    or ":" in path or any(part in {"", ".", ".."} for part in path.split("/"))
+                    or isinstance(duration, bool) or not isinstance(duration, (int, float))
+                    or not math.isfinite(duration) or duration <= 0
+                ):
+                    raise FlightRuntimeError("speech observation source address or duration is invalid")
+                bindings[sample.sample_id] = {
+                    **bindings[sample.sample_id],
+                    "source_audio_relpath": path,
+                    "source_audio_duration_seconds": float(duration),
+                }
         return bindings
 
     def _speech_feature_root(self) -> Path:
@@ -3629,6 +3666,7 @@ class FlightRuntime:
             knowledge_catalog=self._phase_knowledge_catalog(binding["knowledge_snapshot"])
             if tool_specs else None,
             experience_memory=self._experience_memory,
+            speech_observations=self._speech_observations,
         )
         live_fit_gate = None
         if whole_roster:
@@ -4908,7 +4946,10 @@ class FlightRuntime:
         values = self._composed.values
         declared = values.get("phase_tools")
         knowledge = values.get("phase_knowledge_views")
+        declares_observation = values.get("prepared_speech_observations") not in (None, {})
         if declared is None or declared == {}:
+            if declares_observation:
+                raise FlightRuntimeError("prepared speech observations require the speech observation phase tool")
             if knowledge is not None:
                 raise FlightRuntimeError("phase_knowledge_views requires active phase_tools")
             if values.get("experience_memory") is not None:
@@ -4921,6 +4962,14 @@ class FlightRuntime:
         from ...rails.phase_tools import load_phase_tool_specs
         specs = load_phase_tool_specs(values, default_phase_program(policy))
         from ...rails.experience_memory_runtime import CORRECTIVE_MEMORY_TOOL
+        from ...rails.speech_observation import PREPARED_SPEECH_OBSERVATION_TOOL
+        uses_observation = any(
+            PREPARED_SPEECH_OBSERVATION_TOOL in spec["allowed_tools"] for spec in specs.values()
+        )
+        if uses_observation != declares_observation:
+            raise FlightRuntimeError(
+                "speech observation phase tool and prepared speech observation binding must be declared together"
+            )
 
         uses_memory = any(
             CORRECTIVE_MEMORY_TOOL in spec["allowed_tools"] for spec in specs.values()
@@ -6392,15 +6441,36 @@ class FlightRuntime:
                     problems.append(
                         f"request {index} control turn carries an empty instruction"
                     )
-        # E6: a supplied phase's knowledge rides TYPED CONTENT BLOCKS, not
-        # the control turn. Count them at the transport seam and prove they
-        # are typed: an untyped block is knowledge the containment rule
-        # cannot distinguish from smuggled instruction text, and a supplied
-        # cell with zero blocks is a cell that supplied nothing.
+        # Preserve the knowledge containment check while admitting separately
+        # traced OBS blocks only when they match this sample's finalized cache.
+        expected_observations = {}
+        if self._speech_observations is not None:
+            from types import SimpleNamespace
+
+            for sample_id, binding in self.source_audio_bindings().items():
+                selected = self._speech_observations.select(
+                    context=SimpleNamespace(
+                        sample_id=sample_id,
+                        query_state=SimpleNamespace(
+                            query_sample_id=sample_id,
+                            use_split_identity_hash=identity_hash,
+                            speech_packet_id=binding["packet_id"],
+                            speech_packet_sha256=binding["packet_sha256"],
+                        ),
+                    )
+                )
+                block = selected.content_block()
+                expected_observations[sample_id] = {
+                    "evidence_id": block["evidence_id"],
+                    "source_uri": block["source_uri"],
+                    "content": block["text"],
+                }
         typed_blocks: list[int] = []
+        observation_blocks: list[int] = []
         for index, payload in enumerate(transport.payloads):
             items = payload.get("supplied_evidence") or []
-            typed_blocks.append(len(items))
+            typed_blocks.append(0)
+            observation_blocks.append(0)
             for position, item in enumerate(items):
                 if not isinstance(item, Mapping):
                     problems.append(
@@ -6417,12 +6487,25 @@ class FlightRuntime:
                         f"request {index} supplied_evidence[{position}] lacks "
                         f"{missing}; a traced block carries its own provenance"
                     )
-                if item.get("knowledge_role") not in {"key", "value"}:
+                if str(item.get("source_uri") or "").startswith(
+                    "prepared-speech-observation://"
+                ):
+                    expected = expected_observations.get(payload.get("sample_id"))
+                    if expected is None or dict(item) != expected:
+                        problems.append(
+                            f"request {index} supplied_evidence[{position}] differs "
+                            "from the sample's source-bound speech observation"
+                        )
+                    else:
+                        observation_blocks[-1] += 1
+                elif item.get("knowledge_role") not in {"key", "value"}:
                     problems.append(
                         f"request {index} supplied_evidence[{position}] carries "
                         f"knowledge_role {item.get('knowledge_role')!r}, not "
                         "'key'/'value'"
                     )
+                else:
+                    typed_blocks[-1] += 1
         if self._phase_supply_receipt is not None and not any(typed_blocks):
             problems.append(
                 "this cell declares phase_supply but not one request carried a typed "
@@ -6489,6 +6572,14 @@ class FlightRuntime:
             # turn (whose role is asserted separately above).
             "typed_knowledge_blocks": typed_blocks,
             "typed_knowledge_blocks_total": sum(typed_blocks),
+            **(
+                {
+                    "typed_speech_observation_blocks": observation_blocks,
+                    "typed_speech_observation_blocks_total": sum(observation_blocks),
+                }
+                if self._speech_observations is not None
+                else {}
+            ),
             "dispatch": dispatch,
             "wall_seconds": wall_seconds,
             "payload_keys": sorted(first),
