@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 72,
+  "generation": 73,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "7b096e547696f8752d1b56a71fbc495ed83bc4b0",
-  "updated_at_utc": "2026-09-12T22:44:04.589555+00:00",
-  "next_action": "Read STATUS-072. Whisper control and sole recovery finalized3000 each, complete first-score analysis decided EFFECTIVENESS_NOT_ESTABLISHED. NEW500 micro and intent unresolved; full-roster intent negative. Registered component diagnosis pending before another mechanism. TRAIN A/B query encoding both finalized1080 and sealed; Qwen packets and isolated KB ready. GPU currently idle after exclusive encoding. Source-verified memory admission merged, but gold-free proposal, role registration and actual strategy update/freeze/evaluation remain incomplete. No immediate owner decision. Goal active.",
+  "snapshot_commit": "6a07b59766f54c743910bc9f78fe6bf1da02b0cb",
+  "updated_at_utc": "2026-09-12T23:20:20.614932+00:00",
+  "next_action": "Read STATUS-073. Registered Whisper component diagnosis is closed: predecessor-state variability limits action attribution; historical effectiveness verdict unchanged. GPU currently idle. TRAIN-A incumbent package is prepared but blocked by shared adapter devel-only namespace; repair, prepare exact recall, register and run the 1080-row two-stage source flight. A/B packets/query vectors and isolated KB are ready. Feedback/proposal/artifact changes are unmerged; no real optimization cycle or admitted memory yet. No immediate owner decision blocks work. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SPEECH-TOOLS-023"
