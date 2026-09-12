@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 67,
+  "generation": 68,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "4e302fab91b40a754bd8d09ff7731fa3c0239713",
-  "updated_at_utc": "2026-09-12T19:15:39.836133+00:00",
-  "next_action": "Read STATUS-067. A2T recovery generation, first scoring, frozen analysis and root decision are complete; neither primary declaration passes. Qwen stopped for Whisper. First Whisper batch ABORTED after 8 charged contacts, zero sealed observations; no model/GPU process remains at 19:03 UTC. The narrow batched-beam fix passed CPU synthetic regression proof; the one-recovery authority audit passes, while deployment and successor registration remain pending. Prospectively register one eligible recovery before dispatch. Matched SLURP templates await its sealed catalog; real fit and generation remain pending. TRAIN reward-link draft is unaccepted; both root-run WSL tests fail and root is taking over repair. Goal active.",
+  "snapshot_commit": "5c7d7273163961542bd3b094d8bbb93be141f4f2",
+  "updated_at_utc": "2026-09-12T19:47:12.625583+00:00",
+  "next_action": "Read STATUS-068. Whisper recovery sealed1000 observations and shared consumption passed; both1000-row recalls are exactly equal. Qwen paired generation and real phase fits have not started. Close final bindings/four plans and shared preflight in the pair worktree, then root starts decoder-only c65536/np4 no-mmproj service and matched control/treatment. Current GPU is idle during preparation, not owner-paused. A2T is decided and closed. TRAIN reward-link draft remains unaccepted; root repairs it alongside GPU work. No new owner decision blocks this pair. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SPEECH-TOOLS-023"
