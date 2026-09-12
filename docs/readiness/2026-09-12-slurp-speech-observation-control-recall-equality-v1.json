@@ -1,0 +1,18 @@
+{
+  "baseline_sha256": "274b5a4fdb5baaed007e760d9e78108dc7d21d80ef0ebf8fb9c45f606a263aa1",
+  "candidate_ids_and_serialized_order_equal": true,
+  "final_ranker_and_fuser": "Unchanged configuration; runtime still applies registered ranking against legal state. Equality of recall artifacts is not a new task-quality result.",
+  "model_contacts": 0,
+  "new": {
+    "relpath": "prepared/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-PREPARE-V1/recall.json",
+    "sha256": "fd97cb9a3bf68a2e4f242262e7bd2a7a57ae9a6096f64cb4de1d6fee6a11446f"
+  },
+  "recall_scores_exactly_equal": true,
+  "recorded_at_utc": "2026-09-12T16:44:00.639780+00:00",
+  "retained": {
+    "relpath": "prepared/SAEA-SLURP-TASK-AGENT-FRAME-REPLICATION-RECOVERY-PREPARE-V1/recall.json",
+    "sha256": "683f30626441adfadca3631dec8d01ef15afb0d63b11c3cbd090746628898a25"
+  },
+  "rows": 1000,
+  "schema": "saea-retained-recall-equality-v1"
+}

@@ -1,0 +1,39 @@
+{
+  "baseline_sha256": "8d1c75fce878177da14ef9eab73cbbbfebf60567040066e4eb1ff1d329cab2bf",
+  "cell": "slurp-speech-observation-control-v1",
+  "execution_profile": "model-free-check",
+  "experiment": "slurp-speech-observation-control-v1",
+  "experiment_sha256": "1891a260a131ede2dccbbf5aea912062359832e95c7dab54cff8a16c8c2113c7",
+  "forbidden_contacts": [
+    "neural forward",
+    "audio decode",
+    "GPU allocation",
+    "model service",
+    "tokenizer",
+    "official scorer",
+    "new quality read"
+  ],
+  "launch_authority": false,
+  "operation": "Rebind and prepare retained compact-frame solve recall through the shared entry using already pinned source/query vectors and knowledge snapshot.",
+  "output_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-PREPARE-V1/recall.json",
+  "phase": "solve",
+  "population": {
+    "carrier": "slurp",
+    "count": 1000,
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev"
+  },
+  "recorded_at_utc": "2026-09-12T16:27:54.455432+00:00",
+  "run_id": "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-PREPARE-V1",
+  "schema": "saea-model-free-phase-recall-registration-v1",
+  "verification": "Compare all1000 selected value IDs and order against retained frame recall. Do not read new task quality.",
+  "wire_verification": {
+    "complete_roster": 1000,
+    "model_contact": 0,
+    "phases_per_sample": 3,
+    "request_cap": 3000,
+    "shared_entry": true,
+    "transport": "fake"
+  },
+  "workers": 8
+}

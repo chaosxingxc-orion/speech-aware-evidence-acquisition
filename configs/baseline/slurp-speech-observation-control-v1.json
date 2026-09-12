@@ -81,6 +81,12 @@
     }
   },
   "policy": "phase-task-tools-solve-revise-v1",
+  "prepared_phase_recall": {
+    "solve": {
+      "relpath": "prepared/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-PREPARE-V1/recall.json",
+      "sha256": "fd97cb9a3bf68a2e4f242262e7bd2a7a57ae9a6096f64cb4de1d6fee6a11446f"
+    }
+  },
   "scorers": [
     "slurp-slu-official",
     "slurp-slu",
