@@ -358,3 +358,30 @@ def test_preparation_monitor_uses_shared_read_only_telemetry(tmp_path, monkeypat
     assert record["gpu"]["utilization_percent"] == 73
     assert record["busy_slots"] == 1
     assert record["logical_encoder_contacts"] == 3
+
+
+def test_prepared_overlapping_rows_are_consumed_by_shared_phase_loader(job):
+    from speech_aware_evidence_acquisition.rails.phase_supply import (
+        load_sealed_segment_vectors,
+    )
+
+    root, data, config, runtime = job
+    path = Path(config["protocol"]["path"])
+    protocol = json.loads(path.read_text())
+    protocol.update(max_seconds=0.02, overlap_seconds=0.005, expected_unique_spans=2)
+    path.write_bytes(canonical_bytes(protocol))
+    config["protocol"] = pin(path)
+    config["plan"].update(protocol_hash=pin(path)["sha256"], planned_model_calls=2)
+    result = run_preparation(
+        config, source_root=root, data_root=data, backend_factory=lambda *_: Backend()
+    )
+    consumed = load_sealed_segment_vectors(
+        Path(result["query_rows_path"]),
+        expected_sha256=result["query_rows_sha256"],
+        dimensions=("content",),
+    )
+    assert len(consumed["sample"].segments) == 2
+    assert (
+        consumed["sample"].audio_sha256
+        == hashlib.sha256((data / "speech.wav").read_bytes()).hexdigest()
+    )

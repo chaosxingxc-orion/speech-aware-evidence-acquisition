@@ -1,0 +1,29 @@
+{
+  "answer_authority": "No answers are generated; these are retrieval-tool vectors, not answering-core features.",
+  "boundary_policy": "fixed-stride-complete-final-tail-v1",
+  "cache_relpath": "prepared/speech-query-span-cache-v1",
+  "contact_policy": "One lazy local frozen encoder load, one speech input per forward, no jitter, retry or automatic restart.",
+  "cpu_workers": 8,
+  "dimension": 2048,
+  "encoder": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-speech-query-encoder-inventory-v2.json",
+    "sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31"
+  },
+  "expected_unique_spans": 4020,
+  "input_order": "source-id-then-original-frame",
+  "isolation": "Read registered source speech only. No reference transcripts, task labels, prior answers or future turns.",
+  "max_audio_samples": 1920000,
+  "max_seconds": 120.0,
+  "max_sequence_tokens": 8192,
+  "monitor_interval_seconds": 10,
+  "output_relpath": "prepared/SAEA-A2T-SPEECH-QUERY-ENCODING-V1/index.json",
+  "overlap_seconds": 8.0,
+  "query_prompt": "query: ",
+  "query_rows_relpath": "prepared/SAEA-A2T-SPEECH-QUERY-ENCODING-V1/queries.jsonl",
+  "roster_sha256": "e5a81b71e1253ff866262991f79d132b89f4bfb47e7c8a0c0cf0aa04857b8736",
+  "schema": "saea-speech-query-encoding-protocol-v1",
+  "sources": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-speech-query-source-inventory-v1.json",
+    "sha256": "291168111cc160dad6155decaf3f3a062c56344ecc243695209f371bc23655d0"
+  }
+}

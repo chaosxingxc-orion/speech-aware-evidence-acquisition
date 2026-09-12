@@ -65,8 +65,11 @@ or public parameter description can already carry the required distinction.
 Never equate absent construction support with negative evidence, and never turn
 a frequent role count or argument pattern into a mandatory answer rule.
 
-For Audio2Tool, public signatures and documented constraints define legality.
-Construction-observed key combinations describe supported usage patterns only.
+For Audio2Tool, public signatures and documented constraints describe the public
+API. The native benchmark also contains construction-supported extension or
+replacement argument forms. Preserve both source roles: public API validity is
+not identical to the native target contract. Construction-observed combinations
+are scoped positive evidence, never an exhaustive list of permitted patterns.
 Keep this distinction visible in the card header, parameter guidance and examples,
 not merely in an offline provenance receipt. Discrimination can concern the
 operation, its object, the meaning of a parameter or which chronological user
