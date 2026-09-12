@@ -1163,12 +1163,48 @@ def build_native_compatible_semantic_card_corpus(
         for rule in card.native_task_form_rules
     )
     native_form_count = sum(len(card.native_task_form_rules) for card in cards)
+    native_form_support_count = sum(
+        rule.construction_support_count
+        for card in cards
+        for rule in card.native_task_form_rules
+    )
+    observed_pattern_count = sum(
+        len(card.construction_observed_argument_patterns) for card in cards
+    )
+    rendered_example_count = sum(len(card.examples) for card in cards)
+    native_example_count = sum(len(card.native_task_form_examples) for card in cards)
+    role_guidance_count = sum(len(card.role_guidance) for card in cards)
+    native_role_guidance_count = sum(len(card.native_role_guidance) for card in cards)
+    constrained_keys = _registry_constrained_keys(registry_rows)
+    native_constraint_literal_count = sum(
+        key in constrained_keys[card.tool_name]
+        for card in cards
+        for example in card.native_task_form_examples
+        for key in json.loads(example)["arguments"]
+    )
     report = dict(validated.report)
     report.pop("legal_argument_key_set_count", None)
     report.update(
         {
             "schema": "saea-a2t-native-compatible-semantic-card-corpus-report-v1",
             "presentation_version": NATIVE_COMPATIBLE_PRESENTATION_V1,
+            "registry_tool_count": len(cards),
+            "tool_card_count": len(cards),
+            "task_card_count": len(public_only.task_cards),
+            "construction_summary_count": len(construction_rows),
+            "construction_tool_count": sum(
+                bool(card.construction_observed_argument_patterns) for card in cards
+            ),
+            "compatibility_rule_count": native_form_count,
+            "compatibility_rule_construction_support_count": (
+                native_form_support_count
+            ),
+            "example_count": rendered_example_count,
+            "spoken_role_guidance_count": role_guidance_count,
+            "public_constraint_example_literal_count": (
+                public_only.report["public_constraint_example_literal_count"]
+                + native_constraint_literal_count
+            ),
             "public_api_role": "documented-api-shapes",
             "construction_pattern_role": "source-supported-native-task-guidance",
             "native_form_evidence_scope": (
@@ -1186,24 +1222,12 @@ def build_native_compatible_semantic_card_corpus(
                 native_form_count - replacement_count
             ),
             "rendered_native_replacement_form_count": replacement_count,
-            "rendered_native_task_form_support_count": sum(
-                rule.construction_support_count
-                for card in cards
-                for rule in card.native_task_form_rules
-            ),
-            "rendered_observed_argument_pattern_count": sum(
-                len(card.construction_observed_argument_patterns) for card in cards
-            ),
-            "rendered_example_count": sum(len(card.examples) for card in cards),
-            "rendered_native_task_form_example_count": sum(
-                len(card.native_task_form_examples) for card in cards
-            ),
-            "rendered_role_guidance_count": sum(
-                len(card.role_guidance) for card in cards
-            ),
-            "rendered_native_role_guidance_count": sum(
-                len(card.native_role_guidance) for card in cards
-            ),
+            "rendered_native_task_form_support_count": native_form_support_count,
+            "rendered_observed_argument_pattern_count": observed_pattern_count,
+            "rendered_example_count": rendered_example_count,
+            "rendered_native_task_form_example_count": native_example_count,
+            "rendered_role_guidance_count": role_guidance_count,
+            "rendered_native_role_guidance_count": native_role_guidance_count,
             "utf8_bytes": len(rendered),
             "characters": len(text),
             "line_count": len(text.splitlines()),

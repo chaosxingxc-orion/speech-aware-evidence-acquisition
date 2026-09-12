@@ -213,8 +213,28 @@ def test_native_presentation_is_deterministic_and_counts_rendered_content() -> N
     assert corpus.report["rendered_observed_argument_pattern_count"] == sum(
         len(card.construction_observed_argument_patterns) for card in corpus.tool_cards
     )
-    assert corpus.report["rendered_example_count"] == sum(
-        len(card.examples) for card in corpus.tool_cards
+    rendered_example_count = sum(len(card.examples) for card in corpus.tool_cards)
+    assert corpus.report["example_count"] == rendered_example_count
+    assert corpus.report["rendered_example_count"] == rendered_example_count
+    assert corpus.report["spoken_role_guidance_count"] == sum(
+        len(card.role_guidance) for card in corpus.tool_cards
+    )
+    assert (
+        corpus.report["spoken_role_guidance_count"]
+        == corpus.report["rendered_role_guidance_count"]
+    )
+    assert corpus.report["tool_card_count"] == len(corpus.tool_cards)
+    assert corpus.report["task_card_count"] == len(corpus.task_cards)
+    assert corpus.report["construction_summary_count"] == len(rows)
+    assert corpus.report["construction_tool_count"] == sum(
+        bool(card.construction_observed_argument_patterns) for card in corpus.tool_cards
+    )
+    assert corpus.report["compatibility_rule_count"] == sum(
+        len(card.native_task_form_rules) for card in corpus.tool_cards
+    )
+    assert (
+        corpus.report["compatibility_rule_construction_support_count"]
+        == (corpus.report["rendered_native_task_form_support_count"])
     )
     assert corpus.report["rendered_native_task_form_example_count"] == sum(
         len(card.native_task_form_examples) for card in corpus.tool_cards
@@ -225,6 +245,28 @@ def test_native_presentation_is_deterministic_and_counts_rendered_content() -> N
     assert (
         report["rendered_native_task_form_count"]
         == corpus.report["rendered_native_task_form_count"]
+    )
+
+
+def test_native_report_counts_public_constraint_literals_in_rendered_examples() -> None:
+    rows = (
+        _row(1, ("account", "hour", "legacyFlag")),
+        _row(2, ("account", "hour", "legacyFlag")),
+    )
+
+    corpus, _report = compilation.build_from_partition_with_native_compatibility(
+        _registry(), rows
+    )
+
+    rendered_hour_literals = sum(
+        "hour" in json.loads(example)["arguments"]
+        for card in corpus.tool_cards
+        for example in card.examples
+    )
+    assert rendered_hour_literals == 2
+    assert (
+        corpus.report["public_constraint_example_literal_count"]
+        == rendered_hour_literals
     )
 
 
