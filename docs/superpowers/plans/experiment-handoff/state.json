@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 70,
+  "generation": 71,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "0c61ae11adbd8c6ae4642608c9f32fa5ced3acd2",
-  "updated_at_utc": "2026-09-12T21:10:46.884834+00:00",
-  "next_action": "Read STATUS-070. Control is FINALIZED at 3000 contacts; the Whisper campaign exited before revise after 2000 contacts, with explicit attempt settlement pending. The same decoder-only service remains resident but GPU is idle. Root reproduced and repaired the mixed typed-knowledge/untyped-observation renderer defect: 122 tests pass,1 skips; independent review passes. Prepare one bounded recovery, verify source/control/service bindings, then complete the pair before registered analysis. Reward lineage and artifact I/O are accepted and merged. No complete Whisper effect or training-free update is claimed. No immediate owner choice blocks repair. Goal active.",
+  "snapshot_commit": "de0511c16184973ebb0b6b02977f8b1c19f48df2",
+  "updated_at_utc": "2026-09-12T21:59:38.772370+00:00",
+  "next_action": "Read STATUS-071. The same decoder-only service is running the sole Whisper treatment recovery;1721 contacts recorded at snapshot, plan/solve actual fits complete, revise fit and seal pending. Original control FINALIZED3000; failed treatment ABORTED2000. The shared renderer is integrated and all3000 control requests have byte parity. Complete both first-score bundles and exact read registration before analysis. TRAIN KB excluding both1080-row cohorts is verified and merged; reward lineage/I/O are accepted, but no optimizer update is complete. Root rejected the insufficient memory-source patch and owns its admission fix. No immediate owner choice blocks execution. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SPEECH-TOOLS-023"
