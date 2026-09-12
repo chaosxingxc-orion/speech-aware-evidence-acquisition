@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 57,
+  "generation": 58,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "13332641",
-  "updated_at_utc": "2026-09-12T14:25:36+00:00",
-  "next_action": "Read STATUS-057. Preserve recovery campaign PID2179/root-exec22617, resident PID620/root-exec51845 on port8090, and monitor PID678/root-exec78284. All3 model-free preflights passed on4000 rows each. At14:25:36UTC source materialization was still before lease/fit with zero recovery fit/generation contacts and GPU idle. Launch is not completion; another failure stops. Read no quality until all3 recovery manifests seal or root records a terminal hold. Then register the frozen saved-score read. Local speech-tool validation grants no ASR inference. Goal active.",
+  "snapshot_commit": "42bdd03f9cf6dbfe9e70d9edb6dd3e4feb548e08",
+  "updated_at_utc": "2026-09-12T14:32:51.570464+00:00",
+  "next_action": "Read STATUS-058. Preserve recovery campaign2179/exec22617, resident620/exec51845, monitor678/exec78284. DIRECT fit passed all4000 actual requests and12001 endpoints; generation live with703 calls at snapshot. Three recovery seals before quality read; then registered frozen saved-score analysis. No second recovery. Tool downloads/CPUloads complete; shared OBS integration and new inference registration remain future work. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SPEECH-TOOLS-023"
