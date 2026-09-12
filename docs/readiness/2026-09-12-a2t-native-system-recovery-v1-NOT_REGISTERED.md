@@ -27,7 +27,7 @@ The only baseline differences are fresh live-fit run/attempt IDs for every arm
 and removal of the old knowledge `prepared_phase_recall` pin. The only
 experiment differences are fresh cell/run/attempt/experiment IDs, the new
 resident session ID, an explicit `prompt-fit` preparation stage, and held
-`NOT_REGISTERED` readiness. Budgets, population, split identity, source
+`NOT_REGISTERED` readiness. Fresh per-arm budgets, population, split identity, source
 receipts, and task-facing values are unchanged.
 
 ## Receipt reuse and required rebinding
@@ -90,15 +90,17 @@ mkdir -p "$SPEECHRL_DATA_DIR/prepared/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-KNOWLEDGE-
   --output "$SPEECHRL_DATA_DIR/prepared/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-KNOWLEDGE-CAMPAIGN-PREPARE-V1/recall.json"
 ```
 
-After recall rebinding, new full actual-request fits, final composition, root
-eligibility, execution plans, and exposure rows are committed, root may start
-the one resident wrapper and launch the shared campaign:
+After recall rebinding, final composition, root eligibility, execution plans,
+and exposure rows are committed, root may start the one resident wrapper and
+launch the shared campaign. The fresh actual-request fit occurs ON that service
+at each full-roster live phase barrier, including phase two only after fresh
+phase-one state exists; it cannot be completed before service startup:
 
 ```bash
 bash "$RECOVERY_REPO/scripts/serving_session.sh" start \
   q4km-mmproj-free-a2t-native-system-np3-v1 \
   --session-id serving-a2t-native-system-recovery-np3-v1 \
-  --runtime-root /home/chao
+  --runtime-root /home/chao --host 127.0.0.1 --port 8090
 
 "$PYTHON" "$RECOVERY_REPO/scripts/flights/run_campaign.py" campaign \
   --repo-root "$RECOVERY_REPO" --data-root "$SPEECHRL_DATA_DIR" \
@@ -110,3 +112,7 @@ bash "$RECOVERY_REPO/scripts/serving_session.sh" start \
 Keep the serving wrapper in a root-owned live shell. Replace `ROOT_OWNER` only
 with the identity used in the manually registered recovery. The current held
 configuration refuses campaign execution.
+
+## Root cumulative accounting update
+
+The fresh per-arm targets/caps are unchanged. The family budget now carries prior consumed usage plus the fresh full-pass allowance; the exact pinned basis is DATA/coordination/a2t-native-system-recovery-cumulative-budget-v1.json. It records 15,864 prior generation contacts, 48,004 prior fit contacts, and 92,897.6323333201 prior charged speech seconds. The GPU budget conservatively carries the entire original allocation-to-stop wall interval in addition to the new 10-hour allowance, while reporting the sampled utilization integral separately. This candidate remains NOT_REGISTERED until root finishes admission.

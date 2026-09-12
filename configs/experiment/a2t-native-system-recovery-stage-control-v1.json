@@ -32,12 +32,18 @@
   },
   "experiment_id": "SAEA-A2T-NATIVE-SYSTEM-RECOVERY-STAGE-CONTROL-V1",
   "family_budget": {
+    "fit_contacts_total": 108009,
+    "generation_calls_total": 36864,
+    "gpu_hours_total": 12.2345,
+    "speech_audio_seconds_total": 217897.6323333201
+  },
+  "fragment_kind": "saea-native-task-system-experiment-v1",
+  "fresh_pass_budget": {
     "fit_contacts_total": 60005,
     "generation_calls_total": 21000,
     "gpu_hours_total": 10.0,
     "speech_audio_seconds_total": 125000
   },
-  "fragment_kind": "saea-native-task-system-experiment-v1",
   "generation_budget": {
     "cap": 8400,
     "target": 8000
@@ -61,5 +67,13 @@
     }
   ],
   "preserve_wire_responses": true,
+  "recovery_accounting": {
+    "closure_receipt": "coordination/a2t-native-system-interruption-closure-result-v1.json",
+    "closure_receipt_sha256": "c3c33f86073bb039ada533468633ac3fc7b41d4ac155ce53d9e4badeb89612ea",
+    "cumulative_budget_receipt": "coordination/a2t-native-system-recovery-cumulative-budget-v1.json",
+    "cumulative_budget_receipt_sha256": "f407f15c636a8eca25b229b27ee8b9268e51c6e4d5816b8c55f57533f07a294b",
+    "original_campaign": "SAEA-A2T-NATIVE-SYSTEM-V1",
+    "recovery_number": 1
+  },
   "service_session": "serving-a2t-native-system-recovery-np3-v1"
 }
