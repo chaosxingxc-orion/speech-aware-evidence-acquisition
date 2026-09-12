@@ -200,6 +200,29 @@ class NemotronSpeechEncoder:
         self.stack = None
 
 
+class NemotronPassageEncoder:
+    """The same pinned stack for batch-one native-card passage keys."""
+
+    def __init__(self, inventory, protocol, data_root, event):
+        self.inventory, self.protocol, self.data_root, self.event = inventory, protocol, data_root, event
+        self.stack = None
+
+    def __call__(self, text):
+        if self.stack is None:
+            self.event("model_load_started")
+            self.stack = load_stack(confined(self.data_root, self.inventory["model_dir_relpath"]), local_files_only=True)
+            self.event("model_load_finished")
+        processor, model, template = self.stack
+        self.event("processor_started")
+        rendered = render(processor, template, [{"type": "text", "text": self.protocol["passage_prompt"] + text}])
+        return encode(processor, model, [rendered], None,
+                      max_sequence_tokens=self.protocol["max_sequence_tokens"],
+                      forward_event=self.event)[0]
+
+    def close(self):
+        self.stack = None
+
+
 def start_monitor(path, state, interval):
     """Use shared read-only telemetry; local encoder has one occupied slot."""
     from .session.serving import read_host_memory
