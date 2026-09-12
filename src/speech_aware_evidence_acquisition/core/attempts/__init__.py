@@ -62,6 +62,9 @@ from __future__ import annotations
 
 from .constants import (
     ATTEMPT_SCHEMA,
+    CONTACT_KINDS,
+    CONTACT_KIND_SPEECH,
+    CONTACT_KIND_TEXT_ENCODER,
     STATE_ABORTED,
     STATE_FINALIZED,
     STATE_OPENED,
@@ -72,6 +75,7 @@ from .errors import (
     _coerce_actual_field,
     _non_negative_finite,
     _positive_finite,
+    _zero_finite,
     validate_id,
 )
 from .handle import AttemptHandle
@@ -79,6 +83,9 @@ from .store import AttemptStore
 
 __all__ = [
     "ATTEMPT_SCHEMA",
+    "CONTACT_KINDS",
+    "CONTACT_KIND_SPEECH",
+    "CONTACT_KIND_TEXT_ENCODER",
     "STATE_ABORTED",
     "STATE_FINALIZED",
     "STATE_OPENED",
@@ -90,4 +97,5 @@ __all__ = [
     "_coerce_actual_field",
     "_non_negative_finite",
     "_positive_finite",
+    "_zero_finite",
 ]

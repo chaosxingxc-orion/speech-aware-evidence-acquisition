@@ -24,6 +24,7 @@ PAPER_GATE_TOKEN = "OWNER_GO_AND_PAPER_EXECUTION_CONTRACT"
 _PAPER_SCALE_MARKERS = ("paper", "confirmatory", "production")
 
 EXECUTION_PLAN_SCHEMA = "saea-execution-plan-v1"
+TEXT_ENCODER_PLAN_SCHEMA = "saea-text-encoder-plan-v1"
 STAGE2_SPLIT_ROLES = frozenset({"discovery", "dev"})
 
 
@@ -59,11 +60,11 @@ def assert_wsl_execution_environment(
 
 
 def assert_execution_scope(profile: object) -> str:
-    """Fail-closed Stage-2 execution-scope guard (consolidated contract §6/§7, 续91/续92).
+    """Fail-closed Stage-2 execution-scope guard (contract sections 6 and 7).
 
     This study repository accepts exactly the profiles in ``ALLOWED_EXECUTION_PROFILES``.
-    ``paper-scale-confirmatory`` — and any other paper/confirmatory/production-scale
-    profile — is never accepted here: Stage-3 work requires promotion to an independent
+    ``paper-scale-confirmatory`` -- and any other paper/confirmatory/production-scale
+    profile -- is never accepted here: Stage-3 work requires promotion to an independent
     ``papers/<slug>`` repository under ``OWNER_GO_AND_PAPER_EXECUTION_CONTRACT``. Unknown
     or forged profile strings are refused rather than normalized.
     """
@@ -87,16 +88,17 @@ def assert_execution_scope(profile: object) -> str:
 
 @dataclass(frozen=True)
 class ExecutionPlan:
-    """Structured, contract-bound plan for one model-facing run (v1, umbrella 续93).
+    """Structured, contract-bound plan for one governed contact run.
 
     Every field is a value the consolidated execution contract already freezes
     (profiles, Stage-2 split roles, hash disciplines); the schema is therefore not
     speculative design and may be extended at R0 only via a dated owner decision. A
     profile label alone never authorizes a run: the gate validates this plan before
     reading any receipt, so a paper-scale run cannot be smuggled in under an allowed
-    profile name. The three planned-budget fields below (calls/GPU-hours/audio
-    seconds) are still validated as finite positive numbers and are still
-    cross-checked against their pre-registered exposure-ledger row
+    profile name. Calls and GPU hours are finite and positive. Speech seconds
+    are positive under the historical execution schema and exactly integer
+    zero under the explicit text-encoder schema. All three are cross-checked
+    against their pre-registered exposure-ledger row
     (``FrozenCoreGate._require_exposure_preregistration``), but carry no numeric
     ceiling of their own -- the first-slice caps that used to live here were retired
     by the 2026-08-06 owner amendment (SAEA-OWNER-AMENDMENT-2026-08-06-BUDGET-CAPS).
@@ -122,9 +124,11 @@ class ExecutionPlan:
     study: str = STUDY_SLUG
 
     def validate(self) -> "ExecutionPlan":
-        if self.schema != EXECUTION_PLAN_SCHEMA:
+        if self.schema not in {EXECUTION_PLAN_SCHEMA, TEXT_ENCODER_PLAN_SCHEMA}:
             raise ExecutionScopeError(
-                f"execution plan schema must be {EXECUTION_PLAN_SCHEMA!r}, got {self.schema!r}"
+                "execution plan schema must be "
+                f"{EXECUTION_PLAN_SCHEMA!r} or {TEXT_ENCODER_PLAN_SCHEMA!r}, "
+                f"got {self.schema!r}"
             )
         if self.study != STUDY_SLUG:
             raise ExecutionScopeError(
@@ -174,13 +178,9 @@ class ExecutionPlan:
         # where applicable) stays; the comparison against a global first-slice cap
         # that used to run here does not -- see the module-level comment above
         # this class for the retirement record.
-        for field_name in (
-            "planned_model_calls",
-            "planned_gpu_hours",
-            "planned_speech_audio_seconds",
-        ):
+        for field_name in ("planned_model_calls", "planned_gpu_hours"):
             value = getattr(self, field_name)
-            integral = field_name in ("planned_model_calls", "planned_speech_audio_seconds")
+            integral = field_name == "planned_model_calls"
             if (
                 isinstance(value, bool)
                 or not isinstance(value, int if integral else (int, float))
@@ -191,4 +191,20 @@ class ExecutionPlan:
                     f"execution plan {field_name} must be a finite positive "
                     f"{'integer' if integral else 'number'}"
                 )
+        speech_seconds = self.planned_speech_audio_seconds
+        if self.schema == TEXT_ENCODER_PLAN_SCHEMA:
+            if type(speech_seconds) is not int or speech_seconds != 0:
+                raise ExecutionScopeError(
+                    "text-encoder execution plan planned_speech_audio_seconds "
+                    "must be exactly integer zero"
+                )
+        elif (
+            isinstance(speech_seconds, bool)
+            or not isinstance(speech_seconds, int)
+            or speech_seconds <= 0
+        ):
+            raise ExecutionScopeError(
+                "execution plan planned_speech_audio_seconds must be a finite "
+                "positive integer"
+            )
         return self

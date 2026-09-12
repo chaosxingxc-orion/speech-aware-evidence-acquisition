@@ -27,7 +27,12 @@ from .gate_exposure import _ExposureAndCarrierMixin
 from .gate_identity import _MediaReferenceIdentityMixin
 from .gate_runtime import _RuntimeValidationMixin
 from .identifiers import MODEL_LOCK_KEY, STUDY_SLUG
-from .plan import MODEL_TOUCH_PROFILES, ExecutionPlan, assert_wsl_execution_environment
+from .plan import (
+    MODEL_TOUCH_PROFILES,
+    TEXT_ENCODER_PLAN_SCHEMA,
+    ExecutionPlan,
+    assert_wsl_execution_environment,
+)
 
 
 @dataclass(frozen=True)
@@ -307,6 +312,10 @@ class FrozenCoreGate(
                 "gate)"
             )
         ExecutionPlan.validate(plan)
+        if plan.schema == TEXT_ENCODER_PLAN_SCHEMA:
+            raise ExecutionScopeError(
+                "a text-encoder plan cannot authorize a Qwen frozen-core model touch"
+            )
         if plan.execution_profile not in MODEL_TOUCH_PROFILES:
             raise ExecutionScopeError(
                 f"execution profile {plan.execution_profile!r} does not authorize a model "

@@ -60,6 +60,19 @@ def _non_negative_finite(value: object, label: str) -> float:
     return float(value)
 
 
+def _zero_finite(value: object, label: str) -> float:
+    """Require a real numeric zero for a contact with no speech carrier."""
+
+    if (
+        isinstance(value, bool)
+        or not isinstance(value, (int, float))
+        or not math.isfinite(value)
+        or value != 0
+    ):
+        raise AttemptError(f"{label} must be exactly zero, got {value!r}")
+    return 0.0
+
+
 def _coerce_actual_field(value: object, kind: type, label: str):
     """MINOR fix-wave3 (external-threat-model review round 3): coerce a
     PERSISTED (already-written, therefore untrusted-on-re-read) attempt

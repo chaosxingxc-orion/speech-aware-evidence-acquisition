@@ -14,8 +14,20 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping
 
-from .constants import ATTEMPT_SCHEMA, STATE_RESERVED
-from .errors import AttemptError, _coerce_actual_field, _positive_finite, validate_id
+from .constants import (
+    ATTEMPT_SCHEMA,
+    CONTACT_KINDS,
+    CONTACT_KIND_SPEECH,
+    CONTACT_KIND_TEXT_ENCODER,
+    STATE_RESERVED,
+)
+from .errors import (
+    AttemptError,
+    _coerce_actual_field,
+    _positive_finite,
+    _zero_finite,
+    validate_id,
+)
 from .handle import AttemptHandle
 
 
@@ -36,11 +48,12 @@ class AttemptStore:
         carrier_lock_key: str,
         reserved_calls: int,
         reserved_audio_seconds: float,
+        contact_kind: str = CONTACT_KIND_SPEECH,
     ) -> AttemptHandle:
         """Atomically create a brand-new attempt file (RESERVED -> OPENED).
 
-        Fail-closed on: an invalid run/attempt id, a non-positive reservation,
-        or -- the invariant this method exists to enforce -- a
+        Fail-closed on an invalid run/attempt id, a reservation inconsistent
+        with its contact kind, or -- the invariant this method enforces -- a
         ``(run_id, attempt_id)`` pair that was ever opened before, whether by
         this process or another.
         """
@@ -49,12 +62,24 @@ class AttemptStore:
         validate_id(attempt_id, "attempt_id")
         if not isinstance(carrier_lock_key, str) or not carrier_lock_key.strip():
             raise AttemptError("carrier_lock_key must be a non-empty string")
+        if not isinstance(contact_kind, str) or contact_kind not in CONTACT_KINDS:
+            raise AttemptError(
+                f"contact_kind must be one of {sorted(CONTACT_KINDS)}, "
+                f"got {contact_kind!r}"
+            )
         reserved_calls_value = reserved_calls
         if isinstance(reserved_calls_value, bool) or not isinstance(reserved_calls_value, int) or reserved_calls_value <= 0:
             raise AttemptError(
                 f"reserved_calls must be a positive integer, got {reserved_calls!r}"
             )
-        reserved_audio_value = _positive_finite(reserved_audio_seconds, "reserved_audio_seconds")
+        if contact_kind == CONTACT_KIND_TEXT_ENCODER:
+            reserved_audio_value = _zero_finite(
+                reserved_audio_seconds, "reserved_audio_seconds"
+            )
+        else:
+            reserved_audio_value = _positive_finite(
+                reserved_audio_seconds, "reserved_audio_seconds"
+            )
 
         run_dir = self._run_dir(run_id)
         run_dir.mkdir(parents=True, exist_ok=True)
@@ -71,6 +96,8 @@ class AttemptStore:
             },
             "actual": {"calls": 0, "audio_seconds": 0.0},
         }
+        if contact_kind == CONTACT_KIND_TEXT_ENCODER:
+            document["contact_kind"] = CONTACT_KIND_TEXT_ENCODER
         raw = json.dumps(document, ensure_ascii=False, sort_keys=True, indent=2).encode("utf-8")
         # Carried T4-review minor (R0 repair T6): create+write must be atomic.
         # The old code did `os.open(O_CREAT|O_EXCL)` (making an EMPTY file
