@@ -1149,6 +1149,7 @@ def default_controller_factory(program: PhaseProgram) -> Callable[[str], Evidenc
 
 _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-task-tools-then-solve-v1": "phase-task-tools-then-solve-v1.json",
+    "phase-task-tools-solve-revise-v1": "phase-task-tools-solve-revise-v1.json",
     "phase-direct-only-v1": "phase-direct-only-v1.json",
     "phase-direct-then-slots-v1": "phase-direct-then-slots-v1.json",
     "phase-direct-then-slots-supplied-v1": "phase-direct-then-slots-supplied-v1.json",
@@ -1303,6 +1304,13 @@ def register_phase_programs_v1() -> None:
         AGENT_CONTROLLERS.register(
             "phase-task-tools-then-solve-v1",
             default_controller_factory(default_phase_program("phase-task-tools-then-solve-v1")),
+        )
+    if "phase-task-tools-solve-revise-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-task-tools-solve-revise-v1",
+            default_controller_factory(
+                default_phase_program("phase-task-tools-solve-revise-v1")
+            ),
         )
     unregistered = set(_PROGRAM_CONFIG_FILENAMES) - set(AGENT_CONTROLLERS.names())
     if unregistered:

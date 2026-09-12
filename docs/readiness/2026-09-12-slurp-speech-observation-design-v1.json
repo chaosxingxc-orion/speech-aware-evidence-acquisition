@@ -1,0 +1,143 @@
+{
+  "schema": "saea-slurp-speech-observation-design-v1",
+  "status": "prospective-not-runnable",
+  "authority": "Design and local preparation only; this file is not an ExecutionPlan or launch permission.",
+  "dependency": "Close the full admitted Audio2Tool recovery with frozen saved-score analysis and a root admission decision.",
+  "retained_base": {
+    "path": "configs/baseline/slurp-task-agent-frame-replication-recovery-v1.json",
+    "sha256": "08db69a2152059388880be926db1eb3c940ce29110e48c5c52587b9fe6982aaa"
+  },
+  "population": {
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "count": 1000,
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "primary_analysis": "historically exposed NEW500",
+    "secondary_analysis": [
+      "OLD500",
+      "DEV1000"
+    ],
+    "source_audio_seconds": 2884.7936875
+  },
+  "source_inventory": {
+    "data_relpath": "prepared/SAEA-SLURP-SPEECH-OBSERVATION-SOURCES-V1/sources.json",
+    "sha256": "435d64b9e4fd341d9db6f8e574d5eda08007f48c432dda55b09bc0b2ab318782"
+  },
+  "shared_program": "phase-task-tools-solve-revise-v1",
+  "shared_config_delta": {
+    "policy": "phase-task-tools-solve-revise-v1",
+    "phase_material": {
+      "revise": {
+        "instruction_fill": null,
+        "instruction_template": "probes/task_agent_evidence_revise_v1.txt",
+        "predecessor_binding": "append-sealed-state"
+      }
+    },
+    "whole_roster_wave_barrier": true
+  },
+  "retained_identical_fields": [
+    "knowledge_snapshot_relpath",
+    "knowledge_snapshot_sha256",
+    "phase_material.plan",
+    "phase_material.solve",
+    "phase_supply.solve",
+    "phase_tools.plan",
+    "task_instruction_template",
+    "task_instruction_fill",
+    "speech_packet_promotion_receipt",
+    "speech_packet_promotion_receipt_sha256",
+    "speech_feature_key_representation_id",
+    "speech_feature_matcher_policy_id"
+  ],
+  "request_decoding_overrides": {
+    "max_tokens": 256
+  },
+  "treatment_only_phase_tools": {
+    "solve": {
+      "allowed_tools": [
+        "saea-tool-prepared-speech-observation-v1"
+      ],
+      "fixed_action": {
+        "arguments": {
+          "span": "full-utterance",
+          "representation": "asr-transcript",
+          "distinction": "Resolve uncertain words, negation, corrections, and entity values in the current spoken command."
+        },
+        "tool_id": "saea-tool-prepared-speech-observation-v1"
+      },
+      "mode": "fixed"
+    }
+  },
+  "control_omits": [
+    "prepared_speech_observations",
+    "phase_tools.solve"
+  ],
+  "whisper_decoding": {
+    "schema": "saea-local-whisper-decode-v1",
+    "device": "cuda",
+    "cpu_workers": 8,
+    "batch_size": 8,
+    "language": "en",
+    "task": "transcribe",
+    "temperature": 0,
+    "beam_size": 5,
+    "sample_len": 224,
+    "without_timestamps": true,
+    "fp16": true,
+    "no_speech_threshold": 0.6,
+    "logprob_threshold": -1.0
+  },
+  "contact_design": {
+    "asr_source_clips": 1000,
+    "asr_speech_seconds": 2884.7936875,
+    "asr_full_batches": 125,
+    "qwen_calls_per_arm_target": 3000,
+    "qwen_calls_total_target": 6000,
+    "fit_contacts_per_arm": 9003,
+    "fit_contacts_total": 18006,
+    "note": "Freeze finite attempt and family retry, speech and GPU budgets in the actual registration. No contact is authorized here."
+  },
+  "service": {
+    "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+    "decoder_only": true,
+    "mmproj": false,
+    "total_context": 65536,
+    "slots": 4,
+    "per_slot_context": 16384,
+    "same_new_process_for_both_arms": true,
+    "separate_root_owned_whisper_window": true
+  },
+  "analysis": {
+    "official_full_manifest_score_once": true,
+    "primary_metric": "official SLURP pooled micro SLU F1",
+    "required_native_metrics": [
+      "scenario accuracy",
+      "action accuracy",
+      "scenario/action exact correctness",
+      "official SLURP micro SLU F1"
+    ],
+    "weights": [
+      "natural-mixture",
+      "equal-scenario"
+    ],
+    "paired_speaker_cluster_bootstrap_replicates": 10000,
+    "retain_aligned_historical_null_calibration": true,
+    "diagnostics": [
+      "corrected cases",
+      "newly harmed cases",
+      "tool failures and fallbacks",
+      "entity/number/negation and self-correction strata when legally derivable",
+      "OBS/ORG/SUPPLY/USE provenance"
+    ],
+    "no_new_global_effectiveness_threshold_from_results": true
+  },
+  "pending_bindings": [
+    "Root scientific admission",
+    "Actual Whisper protocol, ExecutionPlan, immutable exposure ledger pin and producer catalog",
+    "Final arm baseline and experiment configurations",
+    "Separately rebound prepared recall receipts and rowwise equality of selected value IDs/order",
+    "Exact serving identity and exclusive lease",
+    "Full live-phase capacity receipts",
+    "Frozen arm analysis source bindings"
+  ],
+  "claim_boundary": "An evidence-availability comparison within a matched three-phase system. It is not Reviewer trigger efficacy, an isolated compact-frame value effect, training-free policy optimization, or a fresh confirmatory result."
+}

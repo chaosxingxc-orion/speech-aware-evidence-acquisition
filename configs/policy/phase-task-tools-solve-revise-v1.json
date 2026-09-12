@@ -1,0 +1,29 @@
+{
+  "schema": "saea-phase-program-v1",
+  "program_id": "phase-task-tools-solve-revise-v1",
+  "phases": [
+    {
+      "name": "plan",
+      "purpose": "task-planning",
+      "knowledge": "none",
+      "response_format_id": null,
+      "barrier": false
+    },
+    {
+      "name": "solve",
+      "purpose": "task-solving",
+      "knowledge": "supplied",
+      "response_format_id": null,
+      "barrier": false
+    },
+    {
+      "name": "revise",
+      "purpose": "task-revision",
+      "knowledge": "none",
+      "response_format_id": null,
+      "barrier": false
+    }
+  ],
+  "max_contacts": 3,
+  "stop_rule": "always-run-full-program"
+}

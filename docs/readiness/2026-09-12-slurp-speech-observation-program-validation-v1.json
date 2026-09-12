@@ -1,0 +1,39 @@
+{
+  "schema": "saea-slurp-speech-observation-program-validation-v1",
+  "recorded_at_utc": "2026-09-12T16:02:15.258245+00:00",
+  "base_commit": "a486ba0275e4375ab9ebc46fd150c8378b738d61",
+  "source_sha256": {
+    "configs/policy/phase-task-tools-solve-revise-v1.json": "d962713e9bbaf0fbeec2e2c0c0d6b2d30f34521dae8fdd4032c9dc22a772f0c6",
+    "configs/probes/task_agent_evidence_revise_v1.txt": "355e8ac2b4260298f3dd3a9879f2781e0a5c19ac86992178596ccb526b228539",
+    "docs/readiness/2026-09-12-slurp-speech-observation-design-v1.json": "1de32e9d77caeaa095345029a104a814d29e8d007c017fc1521d9c28804762c0",
+    "src/speech_aware_evidence_acquisition/rails/controllers.py": "c01c43480d1fd128495372cf19ef976b1083088b851dcb7e9c9c99d1b74347a2",
+    "tests/unit/test_rails_controllers.py": "8a027a01f74f8267eb3e69e927f73b731f195e0096e46ef0729910330e02bf4c"
+  },
+  "review": "Root reviewed the exact registration and shared-controller trajectory test diff and validated both design fragment tool configurations.",
+  "tests": {
+    "scoped_passed": 113,
+    "warnings": "Three existing third-party deprecation warnings.",
+    "tdd_initial_failure": "Unknown phase program before registration.",
+    "suites": [
+      "test_rails_controllers",
+      "phase_tools",
+      "phase_supply",
+      "existing configuration suites"
+    ]
+  },
+  "checks": {
+    "ruff": "pass",
+    "engineering_base": "pass",
+    "diff_whitespace": "pass",
+    "root_shared_configuration_validation": "shared design fragment validation: PASS; actual catalog and launch bindings remain pending"
+  },
+  "limitation": "The new trajectory test uses a synthetic PhaseToolStep at the real controller seam. Dedicated existing catalog and wire tests cover those boundaries; no complete real ASR catalog or live three-phase capacity receipt exists yet.",
+  "contacts": {
+    "gpu": 0,
+    "neural_forward": 0,
+    "audio": 0,
+    "research_generation": 0,
+    "paid_api": 0
+  },
+  "launch_ready": false
+}

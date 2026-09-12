@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -17,6 +18,7 @@ import pytest
 from speech_aware_evidence_acquisition.core.base import AGENT_CONTROLLERS
 from speech_aware_evidence_acquisition.rails import controllers as rc
 from speech_aware_evidence_acquisition.rails.knowledge import (
+    AgentStateArtifact,
     FusionDecision,
     QueryState,
     RankedFacet,
@@ -40,6 +42,11 @@ _SHA_B = "b" * 64
 
 _EXPECTED_PROGRAM_SHAPES = {
     "phase-task-tools-then-solve-v1": (("plan", "solve"), 2, "always-run-full-program"),
+    "phase-task-tools-solve-revise-v1": (
+        ("plan", "solve", "revise"),
+        3,
+        "always-run-full-program",
+    ),
     "phase-direct-only-v1": (("direct",), 1, "always-run-full-program"),
     "phase-direct-then-slots-v1": (("direct", "slots"), 2, "always-run-full-program"),
     "phase-direct-then-slots-supplied-v1": (("direct", "slots"), 2, "always-run-full-program"),
@@ -832,3 +839,73 @@ def test_default_controller_factory_runs_to_completion_for_every_registered_prog
         advance = controller.advance(next_context, advance.next_contact, "another response")
         context = next_context
     assert advance.final_response_contact_id is not None
+
+
+def test_three_phase_program_preserves_knowledge_through_treatment_observation():
+    program = rc.default_phase_program("phase-task-tools-solve-revise-v1")
+    calls = []
+    selected = ("value-2", "value-1")
+
+    def tool_state(phase, staged, *, cited=()):
+        return AgentStateArtifact(
+            state_id=f"tool-result:{phase}:{staged.sample_id}",
+            state_kind="tool-result",
+            content=f"synthetic {phase} tool result",
+            source_query_state_sha256=staged.query_state.content_hash(),
+            source_response_sha256=staged.prior_response_sha256s[-1],
+            producer_policy_id=program.program_id,
+            cited_value_ids=cited,
+        ).validate()
+
+    def tools_for_phase(phase, next_phase, staged):
+        calls.append((phase, next_phase))
+        if phase == "plan":
+            return rc.PhaseToolStep(
+                supply=_phase_supply(staged, value_ids=selected),
+                state=tool_state(phase, staged, cited=selected),
+            ).validate()
+        assert phase == "solve"
+        return rc.PhaseToolStep(
+            supply=None,
+            state=tool_state(phase, staged),
+        ).validate()
+
+    tools_for_phase.is_action_phase = lambda phase: phase in {"plan", "solve"}
+    controller = rc.EvidenceAgentController(
+        program=program,
+        material_for_phase=lambda name, ctx: _material(name, ctx.sample_id),
+        tools_for_phase=tools_for_phase,
+    )
+    context0 = replace(_context(_query_state()), catalog_value_ids=selected)
+    plan_contact = controller.initial_contact(context0)
+    after_plan = controller.advance(context0, plan_contact, "compact frame")
+    assert after_plan.next_contact.contact_id == "c-solve-s1"
+    assert after_plan.next_query_state.retrieved_value_ids == selected
+
+    plan_sha = hashlib.sha256(b"compact frame").hexdigest()
+    context1 = replace(
+        context0,
+        query_state=after_plan.next_query_state,
+        agent_states=after_plan.new_agent_states,
+        prior_response_sha256s=(plan_sha,),
+        contact_index=1,
+    )
+    after_solve = controller.advance(context1, after_plan.next_contact, "solver draft")
+    assert after_solve.next_contact.contact_id == "c-revise-s1"
+    assert after_solve.next_query_state.retrieved_value_ids == selected
+    assert after_solve.new_agent_states[-1].state_kind == "tool-result"
+    assert after_solve.rank_result is None
+    assert after_solve.fusion_decision is None
+
+    solve_sha = hashlib.sha256(b"solver draft").hexdigest()
+    context2 = replace(
+        context1,
+        query_state=after_solve.next_query_state,
+        agent_states=context1.agent_states + after_solve.new_agent_states,
+        prior_response_sha256s=(plan_sha, solve_sha),
+        contact_index=2,
+    )
+    final = controller.advance(context2, after_solve.next_contact, "revised answer")
+    assert final.next_contact is None
+    assert final.final_response_contact_id == "c-revise-s1"
+    assert calls == [("plan", "solve"), ("solve", "revise")]
