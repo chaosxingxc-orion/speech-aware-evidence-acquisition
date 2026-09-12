@@ -74,3 +74,23 @@ self-reported confidence and retrieval similarity are not task reward. A value
 can be useful by identifying a missing observation, provided the follow-up is
 legal and task outcomes improve. Preserve independent update/evaluation roles
 before promoting any corrective procedure to memory.
+
+
+## Materialization and root qualification
+
+The configured compilation SAEA-A2T-MF-CURRENT-CARDS-NATIVE-V1 is complete:
+152 tool cards, 152 positive text facets, 152 full values, four schema-only
+tools, 23 observed native forms and 190 actually rendered synthetic examples.
+No source utterance, concrete construction argument value or evaluation sample
+is rendered. A legacy report field inherited the intermediate count 269; the
+root qualification records 190 as the final rendered count and preserves the
+original receipt. Model-facing bytes are unchanged by this reporting correction.
+
+The snapshot is materialized at DATA prepared/
+SAEA-A2T-MF-CURRENT-CARDS-NATIVE-V1/knowledge-snapshot.json, file SHA-256
+6abf2ceacd2fb87242a5e9d15f4c468306feafe8e9bfe3e10fbb0be31800eb8e.
+Compilation receipt SHA-256:
+ee72a598fcedaeda24a2f072c41bd1cbebcbe9cb0ca8b4c530e47f69ab46b2b5.
+Root qualification SHA-256:
+f1d947bf913a981dcae390910e51bda7f1cb44554a296d8cf70ac54e2ec4a63a.
+Text-key encoding, live supply and task-quality comparison remain pending.
