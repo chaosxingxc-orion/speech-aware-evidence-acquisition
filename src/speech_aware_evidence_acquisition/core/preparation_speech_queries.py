@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+import hashlib
 from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 
@@ -18,6 +19,8 @@ from .preparation import (
 KIND = "speech-query-segment-vectors-v1"
 SEGMENT_KIND = "speech-query-segment-vector-v1"
 SCHEMA = "saea-speech-query-segment-vectors-v1"
+TEXT_FACET_KIND = "text-facet-vector-v1"
+TEXT_FACET_SET_KIND = "text-facet-vectors-v1"
 _REQUIRED = {
     "id",
     "media_relpath",
@@ -327,3 +330,88 @@ def prepare_speech_query_vectors(
         },
         "accounting": accounting,
     }
+
+
+def prepare_text_facet_vectors(
+    path: Path,
+    *,
+    facets: Sequence[Mapping[str, object]],
+    cache_root: Path,
+    encoder: Callable[[str], Sequence[float]],
+    encoder_identity: Mapping[str, object],
+    snapshot_sha256: str,
+    protocol_id: str,
+    dimension: int,
+) -> dict[str, object]:
+    """Seal one passage vector per frozen positive text facet.
+
+    This intentionally shares immutable artifact/cache mechanics with speech
+    queries while carrying no media field or audio duration.
+    """
+    dimension = _positive_int(dimension, "dimension")
+    if not isinstance(snapshot_sha256, str) or len(snapshot_sha256) != 64:
+        raise PreparationError("snapshot_sha256 must be a SHA256")
+    if not isinstance(protocol_id, str) or not protocol_id:
+        raise PreparationError("protocol_id must be non-empty")
+    ordered = []
+    seen = set()
+    for facet in facets:
+        if not isinstance(facet, Mapping) or set(facet) != {"id", "text"}:
+            raise PreparationError("text facet must contain exactly id and text")
+        facet_id, text = facet["id"], facet["text"]
+        if not isinstance(facet_id, str) or not facet_id or facet_id in seen:
+            raise PreparationError("text facet IDs must be non-empty and unique")
+        if not isinstance(text, str) or not text:
+            raise PreparationError("text facet representation must be non-empty")
+        seen.add(facet_id)
+        ordered.append({"id": facet_id, "text": text})
+    if not ordered:
+        raise PreparationError("text facet set must be non-empty")
+    ordered.sort(key=lambda row: row["id"])
+    inputs = {
+        "snapshot_sha256": snapshot_sha256,
+        "facets": [
+            {"id": row["id"], "text_sha256": hashlib.sha256(row["text"].encode("utf-8")).hexdigest()} for row in ordered
+        ],
+        "encoder_identity": dict(encoder_identity),
+        "protocol_id": protocol_id,
+        "dimension": dimension,
+        "geometry": {"prompt": "passage: ", "audio": False, "batch_size": 1},
+    }
+    if Path(path).exists():
+        artifact = prepare_artifact(path, kind=TEXT_FACET_SET_KIND, inputs=inputs,
+                                    producer=lambda: None, contact_class="model-free")
+        output = load_artifact(path, expected_sha256=artifact["sha256"],
+                               kind=TEXT_FACET_SET_KIND, inputs=inputs)
+        return {"artifact": {"path": artifact["path"], "sha256": artifact["sha256"], "output": output},
+                "accounting": {"encoder_calls": 0, "cache_hits": len(ordered)}}
+    result, calls, hits = [], 0, 0
+    for row in ordered:
+        binding = {"snapshot_sha256": snapshot_sha256, "facet_id": row["id"],
+                   "text_sha256": hashlib.sha256(row["text"].encode("utf-8")).hexdigest(), "encoder_identity": dict(encoder_identity),
+                   "protocol_id": protocol_id, "dimension": dimension,
+                   "geometry": inputs["geometry"]}
+        cache = Path(cache_root) / (digest(binding) + ".json")
+        called = False
+        def produce(row=row):
+            nonlocal called, calls
+            called = True
+            calls += 1
+            return {"id": row["id"], "vectors": {"content": _checked_vector(encoder(row["text"]), dimension)}}
+        record = prepare_artifact(cache, kind=TEXT_FACET_KIND, inputs=binding,
+                                  producer=produce, contact_class="encoder")
+        if not called:
+            hits += 1
+        saved = load_artifact(Path(record["path"]), expected_sha256=record["sha256"],
+                              kind=TEXT_FACET_KIND, inputs=binding)
+        if set(saved) != {"id", "vectors"} or saved["id"] != row["id"]:
+            raise PreparationError("cached text facet output binding changed")
+        _checked_vector(saved["vectors"].get("content"), dimension)
+        result.append(saved)
+    output = {"schema": "saea-text-facet-vectors-v1", "rows": result,
+              "snapshot_sha256": snapshot_sha256, "encoder_identity": dict(encoder_identity),
+              "protocol_id": protocol_id, "dimension": dimension}
+    artifact = prepare_artifact(path, kind=TEXT_FACET_SET_KIND, inputs=inputs,
+                                producer=lambda: output, contact_class="model-free")
+    return {"artifact": {"path": artifact["path"], "sha256": artifact["sha256"], "output": output},
+            "accounting": {"encoder_calls": calls, "cache_hits": hits}}
