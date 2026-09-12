@@ -349,19 +349,25 @@ def prepare_text_facet_vectors(
     queries while carrying no media field or audio duration.
     """
     dimension = _positive_int(dimension, "dimension")
-    if not isinstance(snapshot_sha256, str) or len(snapshot_sha256) != 64:
+    if not isinstance(snapshot_sha256, str) or len(snapshot_sha256) != 64 or set(snapshot_sha256) - set("0123456789abcdef"):
         raise PreparationError("snapshot_sha256 must be a SHA256")
-    if not isinstance(protocol_id, str) or not protocol_id:
+    if not isinstance(protocol_id, str) or len(protocol_id) != 64 or set(protocol_id) - set("0123456789abcdef"):
         raise PreparationError("protocol_id must be non-empty")
+    if not isinstance(encoder_identity, Mapping) or not encoder_identity:
+        raise PreparationError("encoder_identity must be non-empty")
+    try:
+        canonical_bytes(encoder_identity)
+    except (TypeError, ValueError) as error:
+        raise PreparationError("encoder_identity must be finite canonical JSON") from error
     ordered = []
     seen = set()
     for facet in facets:
         if not isinstance(facet, Mapping) or set(facet) != {"id", "text"}:
             raise PreparationError("text facet must contain exactly id and text")
         facet_id, text = facet["id"], facet["text"]
-        if not isinstance(facet_id, str) or not facet_id or facet_id in seen:
+        if not isinstance(facet_id, str) or not facet_id.strip() or facet_id in seen:
             raise PreparationError("text facet IDs must be non-empty and unique")
-        if not isinstance(text, str) or not text:
+        if not isinstance(text, str) or not text.strip():
             raise PreparationError("text facet representation must be non-empty")
         seen.add(facet_id)
         ordered.append({"id": facet_id, "text": text})
@@ -383,6 +389,12 @@ def prepare_text_facet_vectors(
                                     producer=lambda: None, contact_class="model-free")
         output = load_artifact(path, expected_sha256=artifact["sha256"],
                                kind=TEXT_FACET_SET_KIND, inputs=inputs)
+        if not isinstance(output, Mapping) or output.get("rows") is None or len(output["rows"]) != len(ordered):
+            raise PreparationError("cached text facet set has wrong roster")
+        for row, expected in zip(output["rows"], ordered, strict=True):
+            if not isinstance(row, Mapping) or row.get("id") != expected["id"] or set(row.get("vectors", {})) != {"content"}:
+                raise PreparationError("cached text facet set changed")
+            _checked_vector(row["vectors"]["content"], dimension)
         return {"artifact": {"path": artifact["path"], "sha256": artifact["sha256"], "output": output},
                 "accounting": {"encoder_calls": 0, "cache_hits": len(ordered)}}
     result, calls, hits = [], 0, 0
@@ -404,7 +416,7 @@ def prepare_text_facet_vectors(
             hits += 1
         saved = load_artifact(Path(record["path"]), expected_sha256=record["sha256"],
                               kind=TEXT_FACET_KIND, inputs=binding)
-        if set(saved) != {"id", "vectors"} or saved["id"] != row["id"]:
+        if set(saved) != {"id", "vectors"} or saved["id"] != row["id"] or set(saved["vectors"]) != {"content"}:
             raise PreparationError("cached text facet output binding changed")
         _checked_vector(saved["vectors"].get("content"), dimension)
         result.append(saved)

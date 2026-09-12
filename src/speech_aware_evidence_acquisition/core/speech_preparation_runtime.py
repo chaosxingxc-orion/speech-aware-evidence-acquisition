@@ -20,7 +20,7 @@ from .attempts import AttemptStore
 from .flight.lease import GenerationLease
 from .preparation import canonical_bytes, hash_stable_file
 from .preparation_runtime import verify_pinned_file
-from .preparation_speech_queries import prepare_speech_query_vectors, segment_plan
+from .preparation_speech_queries import prepare_speech_query_vectors, prepare_text_facet_vectors, segment_plan
 from .speech_embedding import encode, load_stack, read_audio_span, render
 
 
@@ -484,6 +484,93 @@ def run_preparation(
             stop_monitor()
 
 
+def run_text_facet_preparation(config, *, source_root, data_root, backend_factory=NemotronPassageEncoder):
+    """Execute one registered, zero-audio native text-facet encoder attempt."""
+    from ..rails.knowledge import KnowledgeSnapshot
+
+    source_root, data_root = Path(source_root), Path(data_root)
+    plan = ExecutionPlan(**config["plan"]).validate()
+    protocol = pinned_json(config["protocol"])
+    if protocol.get("schema") != "saea-text-facet-encoding-protocol-v1":
+        raise SpeechPreparationError("text facet protocol schema is invalid")
+    if plan.protocol_hash != config["protocol"]["sha256"] or plan.planned_speech_audio_seconds != 0:
+        raise SpeechPreparationError("text facet plan must bind protocol with zero speech audio")
+    admit(plan=plan, source_root=source_root, exposure_ledger=source_root / "docs/exposure-ledger.md",
+          umbrella_lock=Path(config["umbrella_lock"]["path"]), umbrella_lock_sha256=config["umbrella_lock"]["sha256"],
+          protocol_path=Path(config["protocol"]["path"]), protocol_sha256=config["protocol"]["sha256"])
+    snapshot = KnowledgeSnapshot.from_frozen_json(pinned_json(protocol["snapshot"]))
+    snapshot_sha256 = snapshot.content_hash()
+    if snapshot_sha256 != protocol["snapshot"]["sha256"]:
+        raise SpeechPreparationError("native snapshot hash differs from protocol")
+    facets = [{"id": facet.facet_id, "text": facet.representation} for facet in snapshot.facets
+              if facet.dimension == "content" and facet.representation_kind == "text"]
+    if len(facets) != protocol["expected_positive_content_facets"]:
+        raise SpeechPreparationError("native snapshot positive content facet count differs")
+    identity = hashlib.sha256("\n".join(sorted(f"{plan.carrier_lock_key}/{row['id']}" for row in facets)).encode()).hexdigest()
+    if identity != plan.split_identity_hash:
+        raise SpeechPreparationError("text facet roster does not match execution split identity")
+    if protocol.get("passage_prompt") != "passage: " or protocol.get("dimension") != 2048 or protocol.get("max_sequence_tokens") != 8192:
+        raise SpeechPreparationError("text facet encoder recipe differs from the pinned passage recipe")
+    if protocol.get("cpu_workers") != 1 or protocol.get("monitor_interval_seconds") != 10:
+        raise SpeechPreparationError("text facet CPU or monitor configuration is invalid")
+    encoder = pinned_json(protocol["encoder"])
+    verify_encoder(encoder, data_root)
+    paths = {key: confined(data_root, protocol[key]) for key in ("output_relpath", "facet_rows_relpath", "cache_relpath")}
+    attempt_dir = data_root / "preparation-runs" / plan.run_id / str(plan.attempt_id)
+    attempt_dir.mkdir(parents=True, exist_ok=False)
+    started, state = time.monotonic(), {"started_monotonic": time.monotonic(), "calls": 0, "phase": "admitted"}
+    event_path = attempt_dir / "events.jsonl"
+    def event(phase, **facts):
+        state["phase"] = phase
+        with event_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps({"timestamp": _now(), "phase": phase, "elapsed_seconds": time.monotonic() - started, **facts}, sort_keys=True) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+    with GenerationLease.acquire(data_root, owner="root-text-facet-preparation", run_id=plan.run_id,
+                                 attempt_id=plan.attempt_id, session_id=config["session_id"], study_head=config["study_head"]):
+        attempt = AttemptStore(data_root / "attempts").open_attempt(plan.run_id, plan.attempt_id,
+            carrier_lock_key=plan.carrier_lock_key, reserved_calls=plan.planned_model_calls,
+            reserved_audio_seconds=0, contact_kind="text-encoder")
+        stop_monitor, backend = start_monitor(attempt_dir / "monitor.jsonl", state, 10), None
+        try:
+            backend = backend_factory(encoder, protocol, data_root, event)
+            def contact(text):
+                if state["calls"] + 1 > plan.planned_model_calls or time.monotonic() - started >= plan.planned_gpu_hours * 3600:
+                    raise SpeechPreparationError("text facet preparation budget exhausted before contact")
+                attempt.record_usage(calls=1, audio_seconds=0)
+                state["calls"] += 1
+                event("contact_started", ordinal=state["calls"])
+                result = backend(text)
+                event("contact_finished", ordinal=state["calls"])
+                return result
+            prepared = prepare_text_facet_vectors(paths["output_relpath"], facets=facets, cache_root=paths["cache_relpath"], encoder=contact,
+                encoder_identity={"inventory_sha256": protocol["encoder"]["sha256"]}, snapshot_sha256=snapshot_sha256,
+                protocol_id=plan.protocol_hash, dimension=protocol["dimension"])
+            content = b"".join(canonical_bytes(row) + b"\n" for row in prepared["artifact"]["output"]["rows"])
+            paths["facet_rows_relpath"].parent.mkdir(parents=True, exist_ok=True)
+            with paths["facet_rows_relpath"].open("xb") as handle:
+                handle.write(content)
+                handle.flush()
+                os.fsync(handle.fileno())
+            result = {"schema": "saea-text-facet-preparation-receipt-v1", "status": "SEALED", "run_id": plan.run_id,
+                "attempt_id": plan.attempt_id, "protocol_sha256": plan.protocol_hash, "snapshot_sha256": snapshot_sha256,
+                "facet_rows_path": str(paths["facet_rows_relpath"]), "facet_rows_sha256": hashlib.sha256(content).hexdigest(),
+                "logical_encoder_contacts": state["calls"], "actual_speech_audio_seconds": 0.0, "cache_accounting": prepared["accounting"]}
+            _exclusive_json(attempt_dir / "receipt.json", result)
+            attempt.mark_finalized()
+            event("sealed")
+            return result
+        except BaseException as error:
+            attempt.mark_aborted(type(error).__name__)
+            event("aborted", error_type=type(error).__name__)
+            _exclusive_json(attempt_dir / "abort.json", {"status": "ABORTED", "error_type": type(error).__name__, "logical_encoder_contacts": state["calls"], "actual_speech_audio_seconds": 0.0})
+            raise
+        finally:
+            if backend is not None:
+                backend.close()
+            stop_monitor()
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, required=True)
@@ -510,11 +597,15 @@ def main():
             "TOKENIZERS_PARALLELISM": "false",
         }
     )
+    protocol = pinned_json(config["protocol"])
+    runner = (
+        run_text_facet_preparation
+        if protocol.get("schema") == "saea-text-facet-encoding-protocol-v1"
+        else run_preparation
+    )
     print(
         json.dumps(
-            run_preparation(
-                config, source_root=args.source_root, data_root=args.data_root
-            ),
+            runner(config, source_root=args.source_root, data_root=args.data_root),
             sort_keys=True,
         )
     )
