@@ -1,0 +1,53 @@
+{
+  "schema": "saea-slurp-train-a-incumbent-reward-source-preparation-verification-v1",
+  "status": "MODEL_FREE_PREPARATION_COMPLETE_NOT_REGISTERED",
+  "source_base_commit": "6a07b59766f54c743910bc9f78fe6bf1da02b0cb",
+  "runtime_adapter_change": "Committed narrow shared TRAIN discovery admission in rails/adapters/slurp_runtime.py; no new adapter or controller.",
+  "config": {
+    "baseline": "configs/baseline/slurp-train-a-incumbent-reward-source-v1.json",
+    "experiment": "configs/experiment/slurp-train-a-incumbent-reward-source-v1.json",
+    "campaign": "configs/campaign/slurp-train-a-incumbent-reward-source-v1.json",
+    "pre_recall_composed_config_hash": "6c8a4179c307401afde99c54fb3747be0fe5f5b4b6dea7dd3837fb98d96e6c92",
+    "pre_recall_protocol_hash": "8acc74cfe260e7f488837b5bdc889d6af70f3cbac974746bc38f8626e2c84c63",
+    "post_recall_pre_admission_composed_config_hash": "700f0e45856aaa8291e260e33a4e17ad7bc2f0b1144414a89783469a71b10be8",
+    "post_recall_pre_admission_protocol_hash": "32a486490c919f59463f766b7abccb5f4905b184cb9ea7b76c9bf1c4a5135c03"
+  },
+  "recall": {
+    "relpath": "prepared/SAEA-SLURP-TRAIN-A-INCUMBENT-REWARD-SOURCE-PREPARE-V1/recall.json",
+    "sha256": "ed393dd7be79eb04f3f9de8b9a23a50c7fd0bd53284153d7bbe67360e61fb12b",
+    "artifact_schema": "saea-prepared-artifact-v1",
+    "kind": "phase-recall",
+    "contact_class": "model-free",
+    "phase": "solve",
+    "rows": 1080,
+    "k_per_row": 5,
+    "selected_facets": 5400,
+    "unique_selected_facets": 2300,
+    "all_selected_facets_in_snapshot": true,
+    "content_score_only": true,
+    "ordered_roster_ids_sha256": "ea3678f51df4827e687afa1fa1e13eb4b6b6a8bdacc4c2b30771ed8c91904456",
+    "output_sha256": "1cf19fc6353eb11ae86119b5521598c853ff92be27dda052986beea9a2ab710d",
+    "warm_revalidation": "passed"
+  },
+  "source_checks": {
+    "dataset_rows": 1080,
+    "query_rows": 1080,
+    "dataset_query_ids_equal": true,
+    "dataset_query_audio_sha256_equal": true,
+    "packet_union_rows": 2160,
+    "snapshot_facets": 9354,
+    "snapshot_runtime_content_sha256": "9c64e8ec48a0fce4f172bd190932f99c98c7efa18bbfb14526d54c62fdf7032b",
+    "snapshot_file_sha256": "f2785aa3521b08e874d4075154e65cc639284497afc789a3654c2c70a65405ef"
+  },
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "encoder": 0,
+    "speech_tool": 0,
+    "scorer": 0,
+    "service": 0,
+    "gpu": 0
+  },
+  "remaining": "Root review, source commit, scientific admission, final readiness, final hashes, immutable plans, exposure rows, serving attestation, public check and full fake wire.",
+  "runtime_adapter_commit": "847052982a3959551be53fc2835eb2464c8f9d01"
+}

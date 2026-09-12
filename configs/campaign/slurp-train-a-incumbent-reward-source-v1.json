@@ -1,0 +1,9 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "slurp-train-a-incumbent-reward-source-v1",
+      "cell": "slurp-train-a-incumbent-reward-source-v1"
+    }
+  ]
+}
