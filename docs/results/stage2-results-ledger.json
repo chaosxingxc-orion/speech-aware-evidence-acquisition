@@ -3506,6 +3506,18 @@
         "SAEA-SLURP-TASK-AGENT-DIRECT-REPLICATION-V1",
         "SAEA-SLURP-TASK-AGENT-FRAME-REPLICATION-RECOVERY-V1"
       ]
+    },
+    {
+      "date": "2026-09-11",
+      "cell_id": "SLURP-ROLE-COVERAGE-MATCHED-V1",
+      "status": "DO_NOT_ADOPT_INTENT_NEGATIVE_ENTITY_UNRESOLVED",
+      "source": "docs/readiness/2026-09-11-slurp-role-coverage-result.md",
+      "source_sha256": "0195b5289fba51e1e4a2b1fe486579f11b531ede7063edb8b74628d93466d436",
+      "meaning": "Both complete 1000-row raw parents FINALIZED. NEW500 intent changes -2.200pp CI90[-3.950,-0.423], micro SLU F1 -0.541pp [-2.546,1.335]. Fewer spurious entities but more omissions. Close this package; retain the previous compact-frame baseline. Same retrieval selection/order but 170 plan texts differ; additional bytes and audit fingerprints remain part of the contrast.",
+      "run_ids": [
+        "SAEA-SLURP-ROLE-COVERAGE-CONTROL-V1",
+        "SAEA-SLURP-ROLE-COVERAGE-TREATMENT-V1"
+      ]
     }
   ]
 }

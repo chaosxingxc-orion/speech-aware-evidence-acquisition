@@ -1,5 +1,76 @@
 # Audio2Tool all-eight-tier G4 semantic-card readiness (model-free)
 
+## Current root update: source-separated construction is now concrete
+
+The original readiness audit below is retained as history. Do not reuse the old G4
+corpus against the current 4,000-row population: 2,997 current rows map to historical
+construction query blocks. This is block-membership evidence, not proof that every
+row survived quarantine or appeared in the old rendered corpus.
+
+The shared construction API is implemented in commit
+c5007cf931ece782005968914afb0455892de284. The root reviewed its code and tests, then
+ran its public metadata and filtered construction APIs on the governed sources.
+The implementation has 104 passing synthetic/regression tests, 89% reported
+builder coverage, and passing lint/engineering checks. It does not add an executor.
+The SLURP runtime source remains preserved at 1aa6cb5d after its paired flight.
+
+The source inventory contains 30,733 recordings in 16,843 units. The committed
+exposure/reserve union contains 6,479 identities, including 1,200 media variants and
+five dialogue derivatives. Resolve media variants with the existing
+data.variant_ids.published_sample_key function. The five dialogue originals were
+independently verified against committed metadata; they are already in the standard
+union. This gives 5,274 distinct original exclusions and 2,956 excluded cross-tier
+query_idx blocks. Path-local query directory numbers are a different namespace and
+must not replace manifest query_idx for construction isolation.
+
+The exact remaining selection has 3,208 complete units, 5,955 recordings, and 1,690
+query_idx blocks. The shared pre-target filter then quarantines one malformed unit,
+leaving 3,207 usable units and 5,953 recordings. All eight tiers remain represented:
+
+| Tier | Selected units | Usable units | Selected recordings |
+|---|---:|---:|---:|
+| Direct | 303 | 303 | 606 |
+| Parametric | 1,243 | 1,242 | 2,486 |
+| Multi-intent | 300 | 300 | 600 |
+| Implicit | 297 | 297 | 594 |
+| Needle | 304 | 304 | 608 |
+| Correction | 300 | 300 | 600 |
+| Multiturn | 299 | 299 | 299 |
+| Intent blending | 162 | 162 | 162 |
+
+Construction targets cover 148 of the 152 public tools. getLockStatus,
+getSentryStatus, openFrontTrunk and setAudioVolume lack supported construction
+targets in this selected pool. Preserve all 152 legal tools; supply public schema
+facts for those four and do not invent construction-supported contrasts or value
+forms. These counts measure available support, not retrieval quality or task gain.
+
+Source-bound artifacts under DATA/coordination:
+
+| Artifact | SHA-256 |
+|---|---|
+| a2t-source-binding-exposure-inventory-v1.json | b861a3ade934498561cbd5c08216b26c493e8452ef1d61d0358741f689ed62f7 |
+| a2t-derived-exposure-root-verification-v1.json | 4ebaa2aa9d0aea5a65e569c29a88cd84a84b4584b6e66b0901311ade71e3ddcf |
+| a2t-current-construction-metadata-inventory-v1.json | d189a189a20153d113e0a348f1285676be8c9175de36d5745d241012d8aaacde |
+| a2t-current-construction-selection-v1.json | 04b2750f12e2771fe76c511cdbf913d703743e2ee1ab66f03b3ad71f43f218e2 |
+| a2t-current-construction-selection-root-receipt-v1.json | 46bab2d2eca0cdebeb545f42792d50372911c07ecb8059e688eee4a681922567 |
+| a2t-current-construction-content-audit-v1.json | eea43a416da522a154e1d39c38442ddb2d6fd372de66d38ebb80c43da7b2b744 |
+
+Both reads were registered before access. The first exact-ID join refused the
+media variants; no construction selection or semantic read happened during that
+refusal. The successor operation used the shared published-ID mapping. No model,
+tokenizer, encoder or scorer was contacted.
+
+Next, expose the existing semantic-card compiler through a source-bound shared
+entry that consumes this selection and preserves public schema versus observed
+construction support. Do not call the historical hard-coded run_build and bypass
+its hash refusals. Reuse its pure builder functions with an explicit new binding.
+Then connect the carrier's configured runtime adapter and current live OBS output
+to the existing registered organizer/router through FlightRuntime/OpenJiuwen.
+Register capacity-check contacts before checking actual raw-audio requests. Admit
+the all-tier system comparison only after preparation and fit receipts pass; run
+complete native scoring once after each manifest seals. This update creates no
+new GPU flight and no deployed knowledge corpus.
+
 ## Scope
 
 This is a preparation handoff for a possible future Audio2Tool semantic-card arm. It does not register an exposure, authorize a contact, rebuild data, or reopen a closed G4 flight.

@@ -116,3 +116,14 @@ Read STATUS-040, the two September11 system result notes and the next-stage acce
 ## September 11 complete task-agent closeout
 
 Read STATUS-043 and docs/readiness/2026-09-11-slurp-task-agent-result.md. The new direct/knowledge/frame family is fully generated, officially scored once per raw parent, paired/analyzed and FINALIZED from saved scores. Retain compact frame for matched replication; primary entity gains remain unresolved. Keep malformed raw-output and early-serialization qualifications. No new contact is admitted by this closeout. Runtime source1c11d910 remains preserved. Knowledge design and Audio2Tool live-card readiness are documented alongside the result; all historical closed gates remain unchanged.
+
+
+## September 11 role-coverage closure and Audio2Tool source binding
+
+Read STATUS-046 and the role-coverage result. Both raw arms are FINALIZED; intent is
+negative and entity improvement unresolved on NEW500. Close this package and retain
+the replicated compact-frame working baseline. The shared Audio2Tool construction
+API and exact all-tier source exclusions are implemented and independently exercised.
+Continue shared source-bound compilation and live OBS routing before a new GPU
+registration. The server remains resident with both leases released. The historical
+ordered queue above is superseded where STATUS-046 names the same next work.

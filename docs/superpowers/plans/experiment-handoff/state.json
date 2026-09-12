@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 45,
+  "generation": 46,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "594e24122c4c35a8b938a8415381243f498c148c",
-  "updated_at_utc": "2026-09-11T23:32:14.780141+00:00",
-  "next_action": "Read STATUS-045 and actual runtime receipts. Shared selected-TRAIN role-coverage values, matched np8 configs, full fake workflows and rendered-body verification are complete. Final warm/exposure/clean preflight precede control then treatment under root-owned leases and worker handles. Both seals before quality and first complete scoring. Five named audit fingerprints also vary with values; preserve knowledge-package interpretation. Audio2Tool current construction-roster isolation and shared builder input remain pending. Goal active.",
+  "snapshot_commit": "c5007cf931ece782005968914afb0455892de284",
+  "updated_at_utc": "2026-09-12T00:36:07.966358+00:00",
+  "next_action": "Read STATUS-046. Role-coverage pair scored, independently analyzed and FINALIZED; do not adopt or repeat. Retain prior replicated compact-frame working baseline. Both generation leases released; np8 service remains resident. Shared Audio2Tool construction source-binding and exact all-tier exclusions are complete; next shared compilation and current-OBS routing. Grounded semantic distinctions and validated memory remain separate from unsupported role statistics. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-DISCRIMINATIVE-VALUES-021"

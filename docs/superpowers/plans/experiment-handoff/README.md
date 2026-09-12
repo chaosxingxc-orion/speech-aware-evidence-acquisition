@@ -1,12 +1,12 @@
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-045.md](STATUS-045.md) prepares the matched SLURP role-coverage knowledge comparison on the qualified compact-frame baseline. Shared construction and full request verification are complete. The two arms use one no-mmproj np8 service; final per-flight gates control dispatch. The named model-visible source fingerprints are retained in the comparison. No new quality result exists yet.
+**Latest execution:** [STATUS-046.md](STATUS-046.md) closes the matched SLURP role-coverage pair. Primary intent regresses and entity improvement is unresolved; both attempts are FINALIZED. Retain the earlier replicated compact-frame working baseline. Shared Audio2Tool construction-source filtering and exact all-tier exclusions are complete; compilation and live OBS-to-card routing remain next. The service remains resident with both leases released.
 
-**Latest owner direction:** [OWNER-DISCRIMINATIVE-VALUES-021.md](OWNER-DISCRIMINATIVE-VALUES-021.md), with OWNER018-020, prioritizes source-grounded distinctions in task-specific values. Include all eight Audio2Tool tiers alongside SLURP and E21/E22 in design/readiness; share the execution base and specialize knowledge and corrective-memory construction. Read [STATUS-044.md](STATUS-044.md) and the [dataset/task analysis](../../../readiness/2026-09-11-task-specific-knowledge-and-memory-analysis.md). Full TRAIN relationship counts and per-carrier audits are complete; three value-format primitives and a TRAIN-bound memory library have CPU tests. Runtime memory integration now has a positive synthetic executor proof; actual memory admission remains pending. The first new live task-agent comparison and its registered matched replication are closed; next prepare the controlled value-content comparison from the admitted working baseline. Preserve historical verdicts and the SLURP-first execution preference.
+**Latest owner direction:** [OWNER-DISCRIMINATIVE-VALUES-021.md](OWNER-DISCRIMINATIVE-VALUES-021.md), with OWNER018-020, prioritizes source-grounded distinctions in task-specific values. Include all eight Audio2Tool tiers alongside SLURP and E21/E22 in design/readiness; share the execution base and specialize knowledge and corrective-memory construction. Read [STATUS-044.md](STATUS-044.md) and the [dataset/task analysis](../../../readiness/2026-09-11-task-specific-knowledge-and-memory-analysis.md). Full TRAIN relationship counts and per-carrier audits are complete; three value-format primitives and a TRAIN-bound memory library have CPU tests. Runtime memory integration now has a positive synthetic executor proof; actual memory admission remains pending. The first new live task-agent comparison and its registered matched replication are closed; the subsequent controlled role-coverage comparison is closed without adoption. Preserve historical verdicts and the SLURP-first execution preference.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 45. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 46. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -39,10 +39,10 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-045.md](STATUS-045.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
+Read [STATUS-046.md](STATUS-046.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
 The owner explicitly resumed GPU work after network reconnection and prioritizes
 high utilization. This supersedes OWNER012's scheduling hold. E21 and SLURP generation, scoring, fixed analysis and all four settlements
-are complete. Those earlier G6 SLURP and E21 system admissions fail their frozen rules. STATUS-044 separately admits the newer SLURP task-agent working baseline for exploration. The newer role-coverage pair is prepared under STATUS-045; its actual per-flight receipts govern dispatch.
+are complete. Those earlier G6 SLURP and E21 system admissions fail their frozen rules. STATUS-044 separately admits the newer SLURP task-agent working baseline for exploration. The newer role-coverage pair is closed under STATUS-046; it is not adopted and cannot be replayed under its exhausted registration.
 The task-scope
 clarification is [OWNER-DATASET-TASKS-010.md](OWNER-DATASET-TASKS-010.md):
 summary design is feasibility only; existing dataset tasks govern evaluation.
@@ -54,6 +54,8 @@ complete (16560 statistical fields agree); its report is
 
 | Work | Current state | Evidence / next action |
 |---|---|---|
+| SLURP role-coverage package | Both arms FINALIZED; intent negative, entity improvement unresolved | Close package; preserve compact-frame baseline; full strata and raw lineage verified |
+| Audio2Tool source-bound construction | Shared API and exact current exclusions complete | Compile newly bound cards and connect current live OBS through the shared runtime; no new GPU flight yet |
 | KV recovery and aligned null | Closed retrospectively; retain KC-S1b examples and preserve historical order/missing-decision facts | Existing seven-run FAMILY-REPORT; no rerun or rescore |
 | KC-S1b and KU-S3 | Original max64 repeat, max256 matched trio, and independent retrieval repeat completed | Component evidence positive; no equivalence or full-system inference from these repeats |
 | KU-S4N and twin | HOLD_NONINFERIORITY_FAILED | G3 encoding and G4 a/b/c remain ineligible; do not encode the 7049 missing exemplars |
@@ -78,3 +80,5 @@ the main agent retains planning, scientific decisions, critical review and merge
 No local assistant model or independent paid API client is deployed. Every authored file
 and model-facing message is English. Dataset identity remains in the umbrella lock;
 no new test/confirmatory exposure or Stage-3 execution is admitted.
+
+Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).

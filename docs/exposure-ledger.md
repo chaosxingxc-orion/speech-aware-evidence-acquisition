@@ -3026,3 +3026,46 @@ Direct and the single frame recovery are FINALIZED from first complete official 
 | 2026-09-11 | SAEA-SLURP-ROLE-COVERAGE-CONTROL-FIT-V1 | bounded-discovery-probe | Matched SLURP role-coverage control; fit | Shared controller/OpenJiuwen; no-mmproj c65536/np8; max256 | slurp exposed DEV1000; NEW500 primary | dev | 8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84 | no | 6002 | 6000 | 1.0 | OWNER014-021 continuation; predecessor closed; preserve historical gates | docs/readiness/2026-09-11-slurp-role-coverage-v1/control-fit-plan-v1.json | Protocol ee457f1917a026365c8a328911814ea6049313df1d521790d9486d2c0aadc214; config 20bf5c4c12beb4cd902aef89e5e455b3cee056090167567be59439f90c86202b; attempt attempt-slurp-role-coverage-control-fit-v1. Family4200 generation ceiling,12004 fit endpoints,12000 speech seconds,2.0 fit-inclusive utilization GPU hours. Both seals before quality. Five named source-binding fields vary with treatment values; do not claim pure content-only HTTP equality. No automatic restart or replay. |
 | 2026-09-11 | SAEA-SLURP-ROLE-COVERAGE-TREATMENT-V1 | bounded-discovery-probe | Matched SLURP role-coverage treatment; generation | Shared controller/OpenJiuwen; no-mmproj c65536/np8; max256 | slurp exposed DEV1000; NEW500 primary | dev | 8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84 | no | 2100 | 6000 | 1.0 | OWNER014-021 continuation; predecessor closed; preserve historical gates | docs/readiness/2026-09-11-slurp-role-coverage-v1/treatment-generation-plan-v1.json | Protocol b65db79ff641b589ac597ebb37cbb30c3c8aad84b4810d1436a49f8efa23bf39; config 5201031fa872112473c4c56334544e8d837410059434f969871bfccc3a4858e7; attempt attempt-slurp-role-coverage-treatment-generation-v1. Family4200 generation ceiling,12004 fit endpoints,12000 speech seconds,2.0 fit-inclusive utilization GPU hours. Both seals before quality. Five named source-binding fields vary with treatment values; do not claim pure content-only HTTP equality. No automatic restart or replay. |
 | 2026-09-11 | SAEA-SLURP-ROLE-COVERAGE-TREATMENT-FIT-V1 | bounded-discovery-probe | Matched SLURP role-coverage treatment; fit | Shared controller/OpenJiuwen; no-mmproj c65536/np8; max256 | slurp exposed DEV1000; NEW500 primary | dev | 8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84 | no | 6002 | 6000 | 1.0 | OWNER014-021 continuation; predecessor closed; preserve historical gates | docs/readiness/2026-09-11-slurp-role-coverage-v1/treatment-fit-plan-v1.json | Protocol b65db79ff641b589ac597ebb37cbb30c3c8aad84b4810d1436a49f8efa23bf39; config 5201031fa872112473c4c56334544e8d837410059434f969871bfccc3a4858e7; attempt attempt-slurp-role-coverage-treatment-fit-v1. Family4200 generation ceiling,12004 fit endpoints,12000 speech seconds,2.0 fit-inclusive utilization GPU hours. Both seals before quality. Five named source-binding fields vary with treatment values; do not claim pure content-only HTTP equality. No automatic restart or replay. |
+
+
+## Role-coverage scoring and Audio2Tool construction-source follow-up
+
+The model-free preparation registrations below were written under DATA/coordination
+before each corresponding read. The active SLURP source remains frozen at
+1aa6cb5d; these additive records live in the isolated closeout checkout.
+
+- SAEA-SLURP-ROLE-COVERAGE-PAIRED-ANALYSIS-V1: the pre-registered protocol requires
+  both 1,000-row manifests to seal before a root read release, then one complete
+  official scoring job per manifest with first-pass per-sample statistics.
+  Root must write coordination/slurp-role-coverage-read-release-v1.json before
+  semantic access and coordination/slurp-role-coverage-score-dispatch-v1.json
+  before invoking core.scoring_batch. Bind the immutable analysis template
+  b087477c21ef886c9ff155b576d21fc591530083e85f8aec7d19f1e94ed6e637
+  only to those first complete scores. This entry records the already registered
+  analysis; it adds no generation, tokenization, encoding or rerun allowance.
+- Audio2Tool exposure inventory: coordination/a2t-source-binding-exposure-inventory-registration-v1.json
+  preceded the identity-only read of 21 committed sources. The inventory hash is
+  b861a3ade934498561cbd5c08216b26c493e8452ef1d61d0358741f689ed62f7.
+  Root verified five derived-dialogue mappings and used the shared media-variant
+  mapping for 1,200 variant identities; no evaluation target was read.
+- Audio2Tool complete-unit inventory: coordination/a2t-current-construction-metadata-registration-v1.json
+  preceded the public a2t_metadata_inventory call from c5007cf9. The exact
+  source-bound selection hash is
+  04b2750f12e2771fe76c511cdbf913d703743e2ee1ab66f03b3ad71f43f218e2.
+- Audio2Tool construction-content audit: coordination/a2t-current-construction-content-audit-registration-v1.json
+  preceded the shared filtered a2t_pool_rows call. The API validated receipt,
+  source bytes, complete units and cross-tier exclusions before accessing allowed
+  construction text/targets. The audit hash is
+  eea43a416da522a154e1d39c38442ddb2d6fd372de66d38ebb80c43da7b2b744.
+  It reports 3,207 usable units, 5,953 recordings and 148 public tools with
+  construction targets; it does not deploy a corpus or admit a GPU flight.
+  All three Audio2Tool operations recorded zero model, tokenizer, encoder and
+  scorer contacts.
+
+## Historical quotation reading successor, September 11, 2026
+
+The 16 historical non-English quotations remain preserved in their original
+records. Use [the English successor](readiness/2026-09-11-historical-exposure-english-successor.md)
+for model-facing reading of those complete entries. Its source commit, source
+hash and line addresses preserve provenance. This translation changes no past
+authorization, exposure, protocol or result. All new entries are English.
