@@ -1,5 +1,49 @@
 # Audio2Tool all-eight-tier G4 semantic-card readiness (model-free)
 
+## Successor update: shared construction is verified; speech-query preparation remains open
+
+The shared source-bound compiler and Audio2Tool factory adapter are now
+implemented. Both direct-only and current-state two-phase programs passed the
+real OpenJiuwen executor with fake model transport. A source-bound compilation
+produced all 152 tool cards (137,428 UTF-8 bytes); 148 have selected construction
+targets and four remain public-schema only. This is an engineering artifact,
+not an admitted model-facing treatment. The unchanged legacy presentation still
+conflates observed argument patterns with legality; hold it for a separately
+versioned correction.
+
+The shared factory now accepts the existing named-population metadata without
+drawing a new roster. Actual construction verified every media hash in the
+4,000-row ORG1 union. Preserve the first selector refusal and the second
+verification-caller refusal: the latter occurred after factory construction
+when reporting attempted a deliberately preflight-gated adapter accessor.
+The successful successor called factory construction only and did not bypass
+the runtime guard. Its receipt is DATA coordination/
+a2t-shared-runtime-roster-verification-v3.json, SHA256
+a68522be9bf7faf740a40a92721be2ba7710bb2af556ae304fd6feaa316f21b2.
+
+The historical G4 text-routing discussion below describes its old mechanism.
+It does not qualify a text-only query for the current shared supply contract:
+current queries must include speech or speech plus legal current state.
+No valid current 4,000-row speech-query vector artifact is prepared; the dense
+hint configuration still contains placeholder bindings. Historical text-key
+vectors and SLURP speech vectors cannot substitute for current source-bound
+Audio2Tool queries.
+
+Four registered rows exceed both 128 and 300 seconds; the maximum is
+654.635666667 seconds. The pinned local retrieval encoder documents a 2,048,000
+sample audio bound at 16 kHz (128 seconds), while its processor advertises a
+different 300-second window. Existing whole-file producer code proves no
+coverage-preserving long-audio behavior. Freeze and verify an explicit segmented
+query/coverage protocol before encoding; do not silently truncate, omit these
+rows, change the frozen answering core's audio protocol or replace speech
+retrieval with text-only OBS matching.
+
+All work in this update is model-free. No new Audio2Tool model, encoder,
+tokenizer, scorer or service contact occurred. The remaining launch dependencies
+are the qualified value presentation, source-bound speech query preparation and
+live knowledge binding, followed by registered actual-request capacity checks.
+Do not equate adapter connectivity with a complete retrieved-knowledge system.
+
 ## Current root update: source-separated construction is now concrete
 
 The original readiness audit below is retained as history. Do not reuse the old G4

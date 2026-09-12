@@ -44,6 +44,57 @@ For Audio2Tool, distinguish applicability across turns from merely matching a
 tool name. For Earnings, any speaker or dialogue state is an observation-derived
 working state, not automatically reusable knowledge or persistent memory.
 
+## Make distinctions usable without over-exclusion
+
+Apply the owner principle to a concrete decision, not to global information
+volume. Retrieval relevance asks whether a card concerns the request.
+Discrimination asks whether its evidence separates alternatives that are still
+plausible for that request. Consumption asks whether the model can use the
+distinction or request the missing observation. A card may pass the first test
+and fail the other two.
+
+Prefer a compact source-supported relation:
+
+- State the ambiguous decision and the relevant alternative when one is known.
+- Connect an observable cue or relation to the supported choice.
+- State the applicability boundary and what the source does not establish.
+- Identify a legal follow-up observation if the evidence cannot decide.
+
+Do not mechanically render all four fields for every card. A concise definition
+or public parameter description can already carry the required distinction.
+Never equate absent construction support with negative evidence, and never turn
+a frequent role count or argument pattern into a mandatory answer rule.
+
+For Audio2Tool, public signatures and documented constraints define legality.
+Construction-observed key combinations describe supported usage patterns only.
+Keep this distinction visible in the card header, parameter guidance and examples,
+not merely in an offline provenance receipt. Discrimination can concern the
+operation, its object, the meaning of a parameter or which chronological user
+instruction remains active. A local observation belongs to the current state;
+a stable tool meaning belongs to knowledge; an independently validated procedure
+for resolving repeated mistakes belongs to memory.
+
+For SLURP, prioritize the semantic relation connecting the spoken value to the
+requested action over generic lists of typical slots. For Earnings, prioritize
+evidence that distinguishes acoustically plausible entity forms and local
+references; do not let topical plausibility supply words that were not spoken.
+These are candidate design directions, not evaluated correction rules.
+
+A value-content comparison should freeze the selected keys and predecessor
+state when the intended estimand is consumption of different values. Describe
+such a comparison as a component study. A live system comparison must generate
+its own legal states and account for downstream observation and answer contacts.
+Neither study substitutes for the other. Measure corrected and newly damaged
+answers on the complete registered roster, with the native overall and stratum
+metrics. A reduction in one error type does not by itself establish a net gain.
+
+Training-free system optimization can then select which supported distinction
+to supply, when to acquire another observation, and when a validated corrective
+procedure applies. Evaluate these decisions with independently scored task
+outcomes under separated update and evaluation roles. Do not reward larger
+knowledge volumes, stronger self-reported confidence or more fluent explanations
+as substitutes for task quality.
+
 ## Couple construction to measured use
 
 1. Define a source-supported distinction using declared construction material.
