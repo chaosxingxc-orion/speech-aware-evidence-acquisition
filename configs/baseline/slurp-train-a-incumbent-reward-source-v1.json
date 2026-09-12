@@ -1,0 +1,101 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame-tfrl-folds-v1/snapshot.json",
+  "knowledge_snapshot_sha256": "9c64e8ec48a0fce4f172bd190932f99c98c7efa18bbfb14526d54c62fdf7032b",
+  "live_phase_fit": {
+    "attempt_id": "attempt-slurp-train-a-incumbent-reward-source-fit-v1",
+    "contact_cap": 6482,
+    "run_id": "SAEA-SLURP-TRAIN-A-INCUMBENT-REWARD-SOURCE-FIT-V1"
+  },
+  "phase_material": {
+    "plan": {
+      "instruction_fill": null,
+      "instruction_template": "probes/task_agent_plan_v1.txt",
+      "predecessor_binding": "none"
+    },
+    "solve": {
+      "instruction_fill": null,
+      "instruction_template": "probes/task_agent_solve_v1.txt",
+      "predecessor_binding": "none"
+    }
+  },
+  "phase_supply": {
+    "solve": {
+      "dimensions": [
+        "content"
+      ],
+      "expose_facets": false,
+      "facet_source": {
+        "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+        "kind": "sealed-vectors",
+        "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+        "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+        "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+      },
+      "fuse_coverage": {
+        "c": 5,
+        "m": 5,
+        "top_l": 5
+      },
+      "fuse_policy": "saea-fuse-supplyfilter-v1",
+      "k": 5,
+      "provider": "kb-facet-v1",
+      "query_source": {
+        "embedded_signal": "speech: complete original TRAIN-A recordings represented by sealed full-utterance spans from pinned Omni-Embed-Nemotron-3B with the query prefix, masked mean pooling and L2 normalization; no transcript, task answer, future turn or intermediate state is embedded.",
+        "kind": "sealed-segment-vectors",
+        "relpath": "prepared/SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1/queries.jsonl",
+        "sha256": "cff97de32d373c318b9c73f703d6ddf173f5150697fc1e25851e8d13cb6ec1f6",
+        "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+      },
+      "rank_policy": "saea-rank-wcos-prior-agree-v1",
+      "rank_weights": {
+        "w_agree": 0.0,
+        "w_cos": 1.0,
+        "w_prior": 0.0
+      },
+      "tau": 0.0
+    }
+  },
+  "phase_tools": {
+    "plan": {
+      "allowed_tools": [
+        "saea-tool-phase-knowledge-v1"
+      ],
+      "fixed_action": {
+        "arguments": {
+          "view": "text"
+        },
+        "tool_id": "saea-tool-phase-knowledge-v1"
+      },
+      "knowledge_views": [
+        "text"
+      ],
+      "mode": "fixed"
+    }
+  },
+  "policy": "phase-task-tools-then-solve-v1",
+  "scorers": [
+    "slurp-slu-official-train",
+    "cost"
+  ],
+  "serving_slot_tokens": 16384,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_template_active": true,
+  "value_factor": "Use the accepted compact intent-slot-frame TRAIN value rendering without a new observation, reviewer, memory, selection or update mechanism. The A/B-excluded snapshot isolates this construction roster; the full facet-vector superset is indexed only by facet IDs present in that snapshot.",
+  "what_this_is": "The accepted two-stage task-agent incumbent on TRAIN-A: current-speech plan, one registered fixed K5 knowledge action, then full scenario/action/entities solve. There is no sealed predecessor and no Whisper observation.",
+  "whole_roster_wave_barrier": true,
+  "prepared_phase_recall": {
+    "solve": {
+      "relpath": "prepared/SAEA-SLURP-TRAIN-A-INCUMBENT-REWARD-SOURCE-PREPARE-V1/recall.json",
+      "sha256": "ed393dd7be79eb04f3f9de8b9a23a50c7fd0bd53284153d7bbe67360e61fb12b"
+    }
+  }
+}

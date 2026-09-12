@@ -1,0 +1,51 @@
+{
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "ROOT_PREREGISTERED_AWAITING_CLEAN_SOURCE_PREFLIGHT",
+  "registered_at": "2026-09-12T23:31:29.339584+00:00",
+  "expected_session_id": "serving-slurp-train-a-incumbent-reward-source-np4-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-train-a-incumbent-reward-source-v1/root-admission-v1.json",
+    "sha256": "3e2e70a2c78a487422c21ff1aa0d81e7786961370f2780a73652d5353f87f6d5",
+    "decision_id": "SAEA-SLURP-TRAIN-A-INCUMBENT-REWARD-SOURCE-ADMISSION-V1"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/training-incumbent-source-prepare-v1",
+  "accepted_implementation_commit": "847052982a3959551be53fc2835eb2464c8f9d01",
+  "experiment": "slurp-train-a-incumbent-reward-source-v1",
+  "cell": "slurp-train-a-incumbent-reward-source-v1",
+  "composed_config_hash": "c704d7c7e0a0a45ac85ef1fa9deb537b5d42b6f375a0cfe4d260632cf76b3565",
+  "family_budget": {
+    "generation_target": 2160,
+    "generation_cap": 2268,
+    "fit_contacts": 6482,
+    "generation_speech_audio_seconds": 7351,
+    "fit_speech_audio_seconds": 6170,
+    "gpu_hours_fit_inclusive": 2.0
+  },
+  "quality_read_gate": "Seal the complete roster; run its native official TRAIN scorer once retaining per-sample counts. Bind exact source outputs and first-score receipt before reward-link construction. No partial result inspection or gold/reference content enters a proposal/runtime.",
+  "program": "phase-task-tools-then-solve-v1; plan and solve over all 1080 TRAIN-A rows; effective max_tokens256.",
+  "live_fit_protocol": "At each actual phase barrier fit all1080 prepared requests using1 GET /props and3 endpoints per row. Two waves total6482. Solve uses the actual plan state.",
+  "required_serving_profile": {
+    "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+    "total_context": 65536,
+    "slots": 4,
+    "slot_tokens": 16384,
+    "effective_output_cap": 256,
+    "mmproj": "absent",
+    "attestation": "Bind the complete session identity in a root launch receipt before the first fit/contact."
+  },
+  "unused_budget_is_not_new_attempt_authority": true,
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-TRAIN-A-INCUMBENT-REWARD-SOURCE-V1",
+    "execution_profile": "baseline-reproduction",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "planned_model_calls": 2268,
+    "planned_gpu_hours": 2.0,
+    "planned_speech_audio_seconds": 7351,
+    "protocol_hash": "bc5350b29009e6240284cf2e1a193537ed2c9130e8dc94f757f416adfe994807",
+    "attempt_id": "attempt-slurp-train-a-incumbent-reward-source-generation-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  }
+}

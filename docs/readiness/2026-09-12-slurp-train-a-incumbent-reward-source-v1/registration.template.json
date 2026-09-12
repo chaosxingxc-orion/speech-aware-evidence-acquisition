@@ -1,0 +1,97 @@
+{
+  "schema": "saea-slurp-train-a-incumbent-reward-source-registration-template-v1",
+  "status": "NOT_REGISTERED_NON_RUNNABLE",
+  "source": {
+    "worktree": "/home/chao/saea-worktrees/training-incumbent-source-prepare-v1",
+    "base_commit": "6a07b59766f54c743910bc9f78fe6bf1da02b0cb",
+    "required_final_commit": "UNRESOLVED_AFTER_COMMON_TRAIN_ADAPTER_REPAIR_AND_ROOT_COMMIT",
+    "runtime_adapter_commit": "847052982a3959551be53fc2835eb2464c8f9d01"
+  },
+  "configs": {
+    "baseline": "configs/baseline/slurp-train-a-incumbent-reward-source-v1.json",
+    "experiment": "configs/experiment/slurp-train-a-incumbent-reward-source-v1.json",
+    "campaign": "configs/campaign/slurp-train-a-incumbent-reward-source-v1.json",
+    "pre_recall_composed_config_hash": "6c8a4179c307401afde99c54fb3747be0fe5f5b4b6dea7dd3837fb98d96e6c92",
+    "pre_recall_protocol_hash": "8acc74cfe260e7f488837b5bdc889d6af70f3cbac974746bc38f8626e2c84c63",
+    "final_composed_config_hash": "UNRESOLVED_AFTER_RECALL_AND_READINESS_BINDING",
+    "final_protocol_hash": "UNRESOLVED_AFTER_FINAL_COMPOSITION",
+    "post_recall_pre_admission_composed_config_hash": "700f0e45856aaa8291e260e33a4e17ad7bc2f0b1144414a89783469a71b10be8",
+    "post_recall_pre_admission_protocol_hash": "32a486490c919f59463f766b7abccb5f4905b184cb9ea7b76c9bf1c4a5135c03"
+  },
+  "identities": {
+    "generation_run_id": "SAEA-SLURP-TRAIN-A-INCUMBENT-REWARD-SOURCE-V1",
+    "generation_attempt_id": "attempt-slurp-train-a-incumbent-reward-source-generation-v1",
+    "fit_run_id": "SAEA-SLURP-TRAIN-A-INCUMBENT-REWARD-SOURCE-FIT-V1",
+    "fit_attempt_id": "attempt-slurp-train-a-incumbent-reward-source-fit-v1",
+    "service_session": "serving-slurp-train-a-incumbent-reward-source-np4-v1"
+  },
+  "execution": {
+    "profile": "baseline-reproduction",
+    "split_role": "discovery",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "generation_target": 2160,
+    "generation_cap": 2268,
+    "generation_speech_audio_seconds": 7351,
+    "fit_contacts": 6482,
+    "fit_speech_audio_seconds": 6170,
+    "gpu_hours_fit_inclusive": 2.0
+  },
+  "prepared_recall": {
+    "relpath": "prepared/SAEA-SLURP-TRAIN-A-INCUMBENT-REWARD-SOURCE-PREPARE-V1/recall.json",
+    "sha256": "ed393dd7be79eb04f3f9de8b9a23a50c7fd0bd53284153d7bbe67360e61fb12b",
+    "expected_rows": 1080
+  },
+  "required_before_contact": [
+    "Land and review the common TRAIN runtime-adapter repair; no private adapter.",
+    "Prepare and bind the exact solve recall, with 1080 roster rows.",
+    "Bind one root scientific admission decision to the generation run.",
+    "Commit the clean final source and configs before creating immutable plans.",
+    "Derive the final composed config and protocol hashes.",
+    "Create and register separate generation and fit ExecutionPlans with the exact source commit and service identity.",
+    "Append both exposure rows with consumed=no before any service fit or generation contact.",
+    "Attest the new decoder-only no-mmproj c65536 np4 resident session and pass public check plus full model-free wire check."
+  ],
+  "exposure_rows": [
+    {
+      "run id": "SAEA-SLURP-TRAIN-A-INCUMBENT-REWARD-SOURCE-V1",
+      "execution profile": "baseline-reproduction",
+      "scope": "Accepted two-stage compact task-agent incumbent over all 1080 TRAIN-A construction rows; generation target2160 cap2268 for later source-bound RewardLinks.",
+      "models / tools": "Frozen decoder-only Qwen3-Omni Q4_K_M, no mmproj, c65536, np4, effective max256; existing packets, sealed speech queries and fixed K5 knowledge action.",
+      "carrier / population": "slurp SLURP-EVO-FOLD-A-V2 TRAIN construction roster",
+      "split role": "discovery",
+      "split identity hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "consumed": "no",
+      "calls": "2268",
+      "speech audio seconds": "7351",
+      "gpu hours": "2.0",
+      "inherited exposure": "All historical TRAIN-A roster, packet, intent, reward-flight, prompt-fit, smoke, query-encoder and A/B-excluded knowledge exposures remain carried forward; this row opens only the new incumbent source-generation attempt.",
+      "preregistration artifact": "UNRESOLVED_FINAL_GENERATION_PLAN_PATH_AND_SHA256",
+      "notes": "No Whisper, reviewer, memory, selection or optimizer mechanism. One full native TRAIN score after complete seal; no adaptive repeat."
+    },
+    {
+      "run id": "SAEA-SLURP-TRAIN-A-INCUMBENT-REWARD-SOURCE-FIT-V1",
+      "execution profile": "baseline-reproduction",
+      "scope": "Actual full-roster plan and solve request-capacity fitting for the TRAIN-A incumbent; zero generated tokens.",
+      "models / tools": "The same attested resident decoder service; props/template/tokenizer/input-count fit endpoints only.",
+      "carrier / population": "slurp SLURP-EVO-FOLD-A-V2 TRAIN construction roster",
+      "split role": "discovery",
+      "split identity hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+      "consumed": "no",
+      "calls": "6482",
+      "speech audio seconds": "6170",
+      "gpu hours": "2.0",
+      "inherited exposure": "Same historical construction exposure as generation; this row adds only actual live-phase fitting.",
+      "preregistration artifact": "UNRESOLVED_FINAL_FIT_PLAN_PATH_AND_SHA256",
+      "notes": "Fit plan first; fit solve only after fresh plan states exist. GPU cap is shared and fit-inclusive."
+    }
+  ],
+  "recovery_policy": "At most one recovery. A second failure stops the flight and requires a separately registered four-row connectivity proof.",
+  "contacts_performed_by_this_preparation": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0,
+    "service": 0,
+    "fit": 0,
+    "generation": 0
+  }
+}
