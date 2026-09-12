@@ -8,8 +8,14 @@ from dataclasses import replace
 
 import pytest
 
-from speech_aware_evidence_acquisition.contracts import ExecutionPlan, ExecutionScopeError, GateClosed
+from speech_aware_evidence_acquisition.contracts import (
+    TEXT_ENCODER_PLAN_SCHEMA,
+    ExecutionPlan,
+    ExecutionScopeError,
+    GateClosed,
+)
 from speech_aware_evidence_acquisition.contracts.tool_plan import (
+    TEXT_FACET_ENCODING_PROTOCOL_SCHEMA,
     assert_registered_tool_plan,
 )
 
@@ -72,9 +78,52 @@ def _allow_wsl(monkeypatch):
     )
 
 
+def _text_world(tmp_path):
+    world = _world(tmp_path)
+    protocol_raw = json.dumps(
+        {"schema": TEXT_FACET_ENCODING_PROTOCOL_SCHEMA}, sort_keys=True
+    ).encode("utf-8")
+    world["protocol_path"].write_bytes(protocol_raw)
+    world["protocol_sha256"] = _sha(protocol_raw)
+    ledger = world["exposure_ledger"]
+    ledger.write_text(
+        ledger.read_text(encoding="utf-8").replace(
+            "| 1 | 1 | 1.0 |", "| 1 | 0 | 1.0 |"
+        ),
+        encoding="utf-8",
+    )
+    world["plan"] = replace(
+        world["plan"],
+        schema=TEXT_ENCODER_PLAN_SCHEMA,
+        planned_speech_audio_seconds=0,
+        protocol_hash=_sha(protocol_raw),
+    )
+    return world
+
+
 def test_admits_pinned_local_frozen_retrieval_tool_plan(monkeypatch, tmp_path):
     _allow_wsl(monkeypatch)
     assert assert_registered_tool_plan(**_world(tmp_path)) is None
+
+
+def test_admits_pinned_text_facet_encoder_plan_with_zero_speech(monkeypatch, tmp_path):
+    _allow_wsl(monkeypatch)
+
+    assert assert_registered_tool_plan(**_text_world(tmp_path)) is None
+
+
+def test_text_encoder_plan_refuses_a_different_pinned_protocol_schema(
+    monkeypatch, tmp_path
+):
+    _allow_wsl(monkeypatch)
+    world = _text_world(tmp_path)
+    protocol_raw = b'{"schema":"other-text-encoding-protocol-v1"}\n'
+    world["protocol_path"].write_bytes(protocol_raw)
+    world["protocol_sha256"] = _sha(protocol_raw)
+    world["plan"] = replace(world["plan"], protocol_hash=_sha(protocol_raw))
+
+    with pytest.raises(GateClosed, match="text-facet-encoding protocol schema"):
+        assert_registered_tool_plan(**world)
 
 
 @pytest.mark.parametrize("field", ["umbrella_lock_sha256", "protocol_sha256"])

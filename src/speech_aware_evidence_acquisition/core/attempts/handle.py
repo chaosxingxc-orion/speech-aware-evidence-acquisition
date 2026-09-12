@@ -15,8 +15,16 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 
-from .constants import STATE_ABORTED, STATE_FINALIZED, STATE_OPENED, STATE_RESERVED
-from .errors import AttemptError, _non_negative_finite, _positive_finite
+from .constants import (
+    CONTACT_KINDS,
+    CONTACT_KIND_SPEECH,
+    CONTACT_KIND_TEXT_ENCODER,
+    STATE_ABORTED,
+    STATE_FINALIZED,
+    STATE_OPENED,
+    STATE_RESERVED,
+)
+from .errors import AttemptError, _non_negative_finite, _positive_finite, _zero_finite
 
 
 @dataclass(frozen=True)
@@ -157,13 +165,46 @@ class AttemptHandle:
         return self
 
     def record_usage(self, *, calls: int, audio_seconds: float) -> tuple[int, float]:
-        """Persist actual usage under the per-attempt lock."""
+        """Persist calls and contact-kind-appropriate audio under the lock."""
 
         if isinstance(calls, bool) or not isinstance(calls, int) or calls <= 0:
             raise AttemptError(f"record_usage calls must be a positive integer, got {calls!r}")
-        audio_seconds = _positive_finite(audio_seconds, "record_usage audio_seconds")
         with self._mutation_lock():
             document = self._read()
+            if "contact_kind" in document:
+                contact_kind = document["contact_kind"]
+                if (
+                    not isinstance(contact_kind, str)
+                    or contact_kind not in CONTACT_KINDS
+                ):
+                    raise AttemptError(
+                        "attempt state has malformed persisted contact_kind "
+                        f"{contact_kind!r}"
+                    )
+            else:
+                contact_kind = CONTACT_KIND_SPEECH
+            if contact_kind == CONTACT_KIND_TEXT_ENCODER:
+                reserved = document.get("reserved")
+                actual = document.get("actual")
+                if not isinstance(reserved, dict) or not isinstance(actual, dict):
+                    raise AttemptError(
+                        "text-encoder attempt state requires reserved and actual mappings"
+                    )
+                _zero_finite(
+                    reserved.get("audio_seconds"),
+                    "persisted text-encoder reserved.audio_seconds",
+                )
+                _zero_finite(
+                    actual.get("audio_seconds"),
+                    "persisted text-encoder actual.audio_seconds",
+                )
+                audio_seconds = _zero_finite(
+                    audio_seconds, "record_usage audio_seconds"
+                )
+            else:
+                audio_seconds = _positive_finite(
+                    audio_seconds, "record_usage audio_seconds"
+                )
             if document.get("state") != STATE_OPENED:
                 raise AttemptError(
                     f"attempt {self.run_id}/{self.attempt_id} is not OPENED "

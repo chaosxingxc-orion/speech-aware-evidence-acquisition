@@ -13,6 +13,8 @@ import pytest
 
 from speech_aware_evidence_acquisition.core.attempts import (
     ATTEMPT_SCHEMA,
+    CONTACT_KIND_SPEECH,
+    CONTACT_KIND_TEXT_ENCODER,
     STATE_ABORTED,
     STATE_FINALIZED,
     STATE_OPENED,
@@ -54,8 +56,73 @@ def test_open_attempt_writes_a_schema_versioned_opened_document(tmp_path):
     assert document["state"] == STATE_OPENED
     assert document["reserved"] == {"calls": 5, "audio_seconds": 600.0}
     assert document["actual"] == {"calls": 0, "audio_seconds": 0.0}
+    assert "contact_kind" not in document
+    assert handle.path.read_bytes() == json.dumps(
+        document, ensure_ascii=False, sort_keys=True, indent=2
+    ).encode("utf-8")
     assert handle.state() == STATE_OPENED
     assert handle.actual_totals() == (0, 0.0)
+
+
+def test_open_text_encoder_attempt_persists_kind_and_exact_zero_audio(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+
+    handle = store.open_attempt(
+        "run-1",
+        "attempt-1",
+        carrier_lock_key="audio2tool",
+        reserved_calls=152,
+        reserved_audio_seconds=0,
+        contact_kind=CONTACT_KIND_TEXT_ENCODER,
+    )
+
+    document = json.loads(handle.path.read_text(encoding="utf-8"))
+    assert document["contact_kind"] == CONTACT_KIND_TEXT_ENCODER
+    assert document["reserved"]["audio_seconds"] == 0.0
+
+
+def test_default_speech_attempt_still_refuses_zero_reserved_audio(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+
+    with pytest.raises(AttemptError, match="finite positive"):
+        store.open_attempt(
+            "run-1",
+            "attempt-1",
+            carrier_lock_key="audio2tool",
+            reserved_calls=1,
+            reserved_audio_seconds=0,
+        )
+
+
+@pytest.mark.parametrize("audio_seconds", [1, -1, 0.5])
+def test_text_encoder_attempt_refuses_nonzero_reserved_audio(
+    tmp_path, audio_seconds
+):
+    store = AttemptStore(tmp_path / "attempts")
+
+    with pytest.raises(AttemptError, match="exactly zero"):
+        store.open_attempt(
+            "run-1",
+            "attempt-1",
+            carrier_lock_key="audio2tool",
+            reserved_calls=1,
+            reserved_audio_seconds=audio_seconds,
+            contact_kind=CONTACT_KIND_TEXT_ENCODER,
+        )
+
+
+def test_open_attempt_refuses_unknown_contact_kind(tmp_path):
+    store = AttemptStore(tmp_path / "attempts")
+
+    with pytest.raises(AttemptError, match="contact_kind"):
+        store.open_attempt(
+            "run-1",
+            "attempt-1",
+            carrier_lock_key="audio2tool",
+            reserved_calls=1,
+            reserved_audio_seconds=1,
+            contact_kind="unknown",
+        )
 
 
 def test_open_attempt_second_call_same_run_and_attempt_id_is_refused(tmp_path):
@@ -132,6 +199,86 @@ def test_record_usage_accumulates_and_persists(tmp_path):
 
     reread = AttemptHandle(path=handle.path, run_id="run-1", attempt_id="attempt-1")
     assert reread.actual_totals() == (2, 150.5)
+
+
+def test_text_encoder_usage_accumulates_calls_with_exact_zero_audio(tmp_path):
+    handle = AttemptStore(tmp_path / "attempts").open_attempt(
+        "run-1",
+        "attempt-1",
+        carrier_lock_key="audio2tool",
+        reserved_calls=152,
+        reserved_audio_seconds=0,
+        contact_kind=CONTACT_KIND_TEXT_ENCODER,
+    )
+
+    assert handle.record_usage(calls=1, audio_seconds=0) == (1, 0.0)
+    assert handle.record_usage(calls=2, audio_seconds=0.0) == (3, 0.0)
+    assert handle.actual_totals() == (3, 0.0)
+
+
+def test_text_encoder_usage_refuses_positive_audio(tmp_path):
+    handle = AttemptStore(tmp_path / "attempts").open_attempt(
+        "run-1",
+        "attempt-1",
+        carrier_lock_key="audio2tool",
+        reserved_calls=1,
+        reserved_audio_seconds=0,
+        contact_kind=CONTACT_KIND_TEXT_ENCODER,
+    )
+
+    with pytest.raises(AttemptError, match="exactly zero"):
+        handle.record_usage(calls=1, audio_seconds=0.25)
+
+
+def test_record_usage_accepts_explicit_persisted_speech_kind(tmp_path):
+    handle = AttemptStore(tmp_path / "attempts").open_attempt(
+        "run-1",
+        "attempt-1",
+        carrier_lock_key="audio2tool",
+        reserved_calls=1,
+        reserved_audio_seconds=1,
+    )
+    document = json.loads(handle.path.read_text(encoding="utf-8"))
+    document["contact_kind"] = CONTACT_KIND_SPEECH
+    handle.path.write_text(json.dumps(document), encoding="utf-8")
+
+    assert handle.record_usage(calls=1, audio_seconds=0.5) == (1, 0.5)
+
+
+def test_record_usage_refuses_a_malformed_persisted_contact_kind(tmp_path):
+    handle = AttemptStore(tmp_path / "attempts").open_attempt(
+        "run-1",
+        "attempt-1",
+        carrier_lock_key="audio2tool",
+        reserved_calls=1,
+        reserved_audio_seconds=1,
+    )
+    document = json.loads(handle.path.read_text(encoding="utf-8"))
+    document["contact_kind"] = "unknown"
+    handle.path.write_text(json.dumps(document), encoding="utf-8")
+
+    with pytest.raises(AttemptError, match="persisted contact_kind"):
+        handle.record_usage(calls=1, audio_seconds=0.5)
+
+
+@pytest.mark.parametrize("section", ["reserved", "actual"])
+def test_text_encoder_usage_refuses_nonzero_persisted_audio_state(
+    tmp_path, section
+):
+    handle = AttemptStore(tmp_path / "attempts").open_attempt(
+        "run-1",
+        "attempt-1",
+        carrier_lock_key="audio2tool",
+        reserved_calls=1,
+        reserved_audio_seconds=0,
+        contact_kind=CONTACT_KIND_TEXT_ENCODER,
+    )
+    document = json.loads(handle.path.read_text(encoding="utf-8"))
+    document[section]["audio_seconds"] = 0.25
+    handle.path.write_text(json.dumps(document), encoding="utf-8")
+
+    with pytest.raises(AttemptError, match=f"persisted text-encoder {section}"):
+        handle.record_usage(calls=1, audio_seconds=0)
 
 
 def test_record_usage_refuses_when_not_opened(tmp_path):

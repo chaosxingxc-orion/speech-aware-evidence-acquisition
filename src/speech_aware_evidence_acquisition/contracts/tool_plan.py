@@ -15,7 +15,14 @@ from typing import Mapping
 from .errors import ExecutionScopeError, GateClosed
 from .gate_exposure import _ExposureAndCarrierMixin
 from .identifiers import _SHA256
-from .plan import MODEL_TOUCH_PROFILES, ExecutionPlan, assert_wsl_execution_environment
+from .plan import (
+    MODEL_TOUCH_PROFILES,
+    TEXT_ENCODER_PLAN_SCHEMA,
+    ExecutionPlan,
+    assert_wsl_execution_environment,
+)
+
+TEXT_FACET_ENCODING_PROTOCOL_SCHEMA = "saea-text-facet-encoding-protocol-v1"
 
 
 class _ToolPlanExposureChecks(_ExposureAndCarrierMixin):
@@ -89,6 +96,20 @@ def assert_registered_tool_plan(
         raise GateClosed(
             "execution plan protocol_hash does not match the pinned protocol bytes"
         )
+    if plan.schema == TEXT_ENCODER_PLAN_SCHEMA:
+        try:
+            protocol = json.loads(protocol_raw.decode("utf-8"))
+        except (UnicodeError, json.JSONDecodeError) as error:
+            raise GateClosed(
+                f"text-facet-encoding protocol is not a JSON object: {error}"
+            ) from error
+        if not isinstance(protocol, Mapping):
+            raise GateClosed("text-facet-encoding protocol must be a JSON object")
+        if protocol.get("schema") != TEXT_FACET_ENCODING_PROTOCOL_SCHEMA:
+            raise GateClosed(
+                "text-encoder tool plan requires pinned text-facet-encoding "
+                f"protocol schema {TEXT_FACET_ENCODING_PROTOCOL_SCHEMA!r}"
+            )
     try:
         lock = json.loads(lock_raw.decode("utf-8"))
     except (UnicodeError, json.JSONDecodeError) as error:
@@ -103,4 +124,7 @@ def assert_registered_tool_plan(
     checks._require_exposure_preregistration(plan, lock)
 
 
-__all__ = ["assert_registered_tool_plan"]
+__all__ = [
+    "TEXT_FACET_ENCODING_PROTOCOL_SCHEMA",
+    "assert_registered_tool_plan",
+]
