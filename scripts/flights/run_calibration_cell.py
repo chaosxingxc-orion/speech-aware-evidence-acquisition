@@ -1,34 +1,9 @@
 #!/usr/bin/env python3
-"""Thin CLI for one cell of a factorial direct-baseline flight.
+"""Compatibility CLI for receipt-scoped Audio2Tool factorial cells.
 
-Everything this script used to bind by hand is now a config-driven default
-inside ``core.flight.FlightRuntime`` (2026-09-04, Phase 2a): the packet
-promoter resolves the baseline fragment's ``speech_packet_promotion_receipt``,
-the client factory supplies ``speech_feature_root``/``speech_packet_bindings``
-for a speech-feature arm, the tool-schema resolver goes through
-``core.policies.TOOL_SCHEMA_FILLS``, ``serve`` preserves the model fragment's
-whole ``server_args`` (plus its ``role`` and model root), and ``run_phases``
-carries the one-contact packet path itself.
-
-What remains here is the ONE thing that is genuinely not derivable from the
-four fragments: the adapter. ``saea-driver flight`` builds a bare
-``Audio2ToolAdapter``, whose ``load_split("discovery")`` now resolves 608
-samples (the frozen 400 plus two 104-row post-seal AgentLoop scoring
-receipts), whose serving geometry is its own class constant rather than the
-model fragment's, and whose ``instruction()`` always renders the legacy
-registry -- none of which suits a receipt-scoped factorial cell. This entry
-supplies exactly that adapter and delegates the rest.
-
-The cells themselves are READ from the experiment fragment's own ``cells``
-array, so a new cell is a config edit, never a code edit.
-
-Modes::
-
-    python scripts/flights/run_calibration_cell.py --cell A0prime-legacy-raw --dry-run
-    python scripts/flights/run_calibration_cell.py --cell A0prime-legacy-raw --run
-
-``--dry-run`` stops after ``FlightRuntime.preflight``: no server, no model
-contact.
+Cell selection and old invocation shapes remain here. The roster loader,
+configured adapter and active-instruction resolution use the shared package.
+New experiments enter through core.flight.factory and the common flight CLI.
 """
 
 from __future__ import annotations
@@ -71,19 +46,11 @@ if (
 from speech_aware_evidence_acquisition.core.config import compose  # noqa: E402
 from speech_aware_evidence_acquisition.core.flight.queue import FlightQueue  # noqa: E402
 from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime  # noqa: E402
-from speech_aware_evidence_acquisition.core.instructions import (  # noqa: E402
-    resolve_task_instruction,
-)
 from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
     data_root,
     load_lock,
     umbrella_lock_path,
 )
-from speech_aware_evidence_acquisition.rails.adapters.audio2tool import (  # noqa: E402
-    Audio2ToolAdapter,
-    Audio2ToolSample,
-)
-from speech_aware_evidence_acquisition.rails.obs import AudioRef  # noqa: E402
 
 DEFAULT_EXPERIMENT = "a2t-direct-calibration-400-v1"
 DEFAULT_DATASET = "audio2tool-calibration-400"
@@ -194,164 +161,19 @@ def load_cells(experiment: str) -> dict[str, Mapping[str, object]]:
     return out
 
 
-def roster_samples(
-    roster_path: Path,
-    roster_sha256: str,
-    data_root_path: Path,
-    *,
-    limit_sample_ids: Sequence[str] | None = None,
-    media_prefix: str | None = None,
-) -> tuple[Audio2ToolSample, ...]:
-    """Samples built ONLY from the hash-pinned roster receipt's media facts.
-
-    The same discipline ``scripts/a2t_g1_preprocess.py`` already applies for
-    a receipt-scoped roster: no carrier task data, no gold, no expected
-    calls -- identifiers, media paths and measured media identity only.
-    ``limit_sample_ids`` narrows the roster to a registered smoke subset and
-    fails closed on any id the roster does not contain. ``media_prefix``, when
-    a dataset fragment declares a derived media root, requires EVERY row to
-    live under it, so a variant roster can never mix its own media with the
-    carrier population's.
-    """
-
-    measured = sha256_file(roster_path)
-    if measured != roster_sha256:
-        raise SystemExit(
-            "roster receipt hashes to %s, not the configured %s" % (measured, roster_sha256)
-        )
-    receipt = json.loads(roster_path.read_text(encoding="utf-8"))
-    wanted = set(limit_sample_ids) if limit_sample_ids is not None else None
-    root = Path(data_root_path).resolve()
-    samples: list[Audio2ToolSample] = []
-    for item in receipt["items"]:
-        sample_id = item["sample_id"]
-        if wanted is not None and sample_id not in wanted:
-            continue
-        media_relpath = item["media_relpath"]
-        if media_prefix is not None and not str(media_relpath).startswith(
-            media_prefix + "/"
-        ):
-            raise SystemExit(
-                "roster media %r is outside the declared derived root %r"
-                % (media_relpath, media_prefix)
-            )
-        media_path = (root / media_relpath).resolve()
-        media_path.relative_to(root)
-        if not media_path.is_file():
-            raise SystemExit("roster media file is missing: %s" % media_relpath)
-        if sha256_file(media_path) != item["audio_sha256"]:
-            raise SystemExit("audio bytes drift for %s" % sample_id)
-        samples.append(
-            Audio2ToolSample(
-                sample_id=sample_id,
-                audio_ref=AudioRef(
-                    path=media_relpath, sha256=item["audio_sha256"]
-                ).validate(),
-                audio_seconds=float(item["audio_seconds"]),
-                media_relpath=media_relpath,
-            )
-        )
-    if wanted is not None and len(samples) != len(wanted):
-        found = {sample.sample_id for sample in samples}
-        raise SystemExit("roster does not contain %r" % sorted(wanted - found))
-    return tuple(sorted(samples, key=lambda sample: sample.sample_id))
+from speech_aware_evidence_acquisition.rails.adapters.audio2tool_runtime import (  # noqa: E402
+    roster_samples,
+    Audio2ToolRuntimeAdapter as CalibrationAdapter,
+)
 
 
 def resolve_cell_instruction(
     values: Mapping[str, object], lock: Mapping[str, object], root: Path
 ) -> str | None:
-    """The cell's system instruction, or ``None`` to fall through to the
-    adapter's own legacy registry template.
+    """Preserve the historical call shape through the shared opt-in resolver."""
+    from speech_aware_evidence_acquisition.core.instructions import resolve_active_task_instruction
+    return resolve_active_task_instruction(values, REPO, lock, root)
 
-    Three sources, in the order a baseline fragment may declare them:
-
-    * a literal ``task_instruction`` -- the native tool-calling calibration
-      cells, whose registry travels in the request's ``tools`` field;
-    * ``task_instruction_template`` + ``task_instruction_fill`` **with
-      ``task_instruction_template_active: true``** -- resolved through
-      ``core.instructions.resolve_task_instruction``, the same
-      frozen-template-plus-registered-fill path ``core.driver.run`` uses, so
-      a cell can fly a hash-pinned template filled with pinned carrier data
-      (the Audio2Tool official-protocol cell);
-    * neither -- the adapter's own legacy registry instruction.
-
-    Why the third key. ``a2t-direct-calibration.json`` and
-    ``a2t-direct-packets.json`` ALREADY carry the template pair, but the
-    flight path has never read it: the four sealed calibration cells went on
-    the wire with the adapter's hard-coded legacy instruction, which is what
-    their prompt-fit receipt records as ``instruction_source`` and what their
-    ``protocol_hash`` was computed over. Honouring the pair unconditionally
-    here would silently rewrite what those four sealed cells mean on any
-    re-run. The opt-in flag keeps every existing cell byte-identical while
-    letting a new fragment say plainly that its template is the wire text.
-    """
-
-    literal = values.get("task_instruction")
-    if literal is not None:
-        if not isinstance(literal, str) or not literal:
-            raise SystemExit("baseline task_instruction must be a non-empty string")
-        if values.get("task_instruction_template_active"):
-            raise SystemExit(
-                "baseline declares both a literal task_instruction and an active "
-                "task_instruction_template"
-            )
-        return literal
-    if not values.get("task_instruction_template_active"):
-        return None
-    if values.get("task_instruction_template") is None:
-        raise SystemExit(
-            "task_instruction_template_active is set but no task_instruction_template "
-            "is declared"
-        )
-    return resolve_task_instruction(values, REPO, lock, root)
-
-
-class CalibrationAdapter(Audio2ToolAdapter):
-    """``Audio2ToolAdapter`` bound to one hash-pinned roster, with the
-    system instruction and the serving geometry taken from the composed
-    config rather than from this class.
-
-    Both overrides are data, not behaviour: ``instruction`` returns the
-    baseline fragment's literal ``task_instruction`` when it declares one
-    (the native tool-calling cells, whose registry travels in the request's
-    ``tools`` field instead of the system message) and otherwise falls
-    through to the unchanged legacy registry template; the serving-geometry
-    class attributes are shadowed by per-instance values read from the model
-    fragment's own ``serving_geometry`` object, so the fragment stays the
-    single authority for ``-np``/``-c`` and ``rails/adapters/audio2tool.py``
-    is never edited.
-    """
-
-    def __init__(
-        self,
-        lock,
-        root,
-        *,
-        repo_root,
-        split_id: str,
-        samples: Sequence[Audio2ToolSample],
-        instruction_text: str | None,
-        geometry: Mapping[str, object],
-    ) -> None:
-        super().__init__(lock, root, repo_root=repo_root)
-        self._split_id = split_id
-        self._samples = tuple(samples)
-        self._instruction_text = instruction_text
-        self.SERVING_SLOTS = int(geometry["slots"])
-        self.SERVING_SLOT_TOKENS = int(geometry["slot_tokens"])
-        self.SERVING_MAX_TOKENS = int(geometry["max_tokens"])
-
-    def load_split(self, split_id):  # noqa: D102
-        if split_id != self._split_id:
-            raise ValueError(
-                "calibration adapter serves only %s, not %r" % (self._split_id, split_id)
-            )
-        return self._samples
-
-    def instruction(self, sample):  # noqa: D102
-        if self._instruction_text is not None:
-            return self._instruction_text
-        return super().instruction(sample)
 
 
 def build_runtime(
