@@ -24,7 +24,7 @@ from .experience_memory import (
 )
 
 CORRECTIVE_MEMORY_TOOL = "saea-tool-corrective-memory-v1"
-EXPERIENCE_MEMORY_ADMISSION_SCHEMA = "saea-experience-memory-admission-v1"
+EXPERIENCE_MEMORY_ADMISSION_SCHEMA = "saea-experience-memory-admission-v2"
 EXPERIENCE_MEMORY_SELECTION_SCHEMA = "saea-experience-memory-selection-v1"
 COMPONENT_TAGS = frozenset({"obs", "org", "supply", "use"})
 PROJECTED_CONDITION_TAGS = frozenset(
@@ -45,6 +45,7 @@ _BINDING_KEYS = frozenset(
         "manifest",
         "construction_roster",
         "admission",
+        "source_verification",
         "task_id",
         "component_tags",
         "max_records",
@@ -162,6 +163,7 @@ class LoadedExperienceMemoryBinding:
     manifest_sha256: str
     construction_roster_sha256: str
     admission_sha256: str
+    source_verification_sha256: str
     task_id: str
     component_tags: tuple[str, ...]
     max_records: int
@@ -191,6 +193,7 @@ class LoadedExperienceMemoryBinding:
         lineage = {
             **visible,
             "construction_roster_sha256": self.construction_roster_sha256,
+            "source_verification_sha256": self.source_verification_sha256,
             "selected_records": [item.as_json() for item in selected],
         }
         return ExperienceMemorySelection(visible=visible, lineage=lineage)
@@ -251,6 +254,10 @@ def load_experience_memory_binding(
     admission_path, admission_sha = _pinned_file(
         Path(data_root), raw["admission"], path_key="relpath", field="memory admission"
     )
+    source_path, source_sha = _pinned_file(
+        Path(data_root), raw["source_verification"],
+        path_key="relpath", field="memory source verification",
+    )
     try:
         roster = read_roster(roster_path)
     except (OSError, ValueError, json.JSONDecodeError, RosterError) as error:
@@ -292,6 +299,7 @@ def load_experience_memory_binding(
         "manifest_sha256",
         "construction_roster_sha256",
         "admitted_record_sha256s",
+        "source_verification_sha256",
     }
     if not isinstance(admission, Mapping) or set(admission) != admission_keys:
         raise ExperienceMemoryBindingError("memory admission has wrong fields")
@@ -299,6 +307,15 @@ def load_experience_memory_binding(
         raise ExperienceMemoryBindingError("memory admission is not admitted")
     if admission["manifest_sha256"] != manifest_sha or admission["construction_roster_sha256"] != roster_sha:
         raise ExperienceMemoryBindingError("memory admission identity mismatch")
+    if admission["source_verification_sha256"] != source_sha:
+        raise ExperienceMemoryBindingError("memory admission source verification mismatch")
+    from .experience_memory_sources import (
+        MemorySourceVerificationError, load_verified_memory_sources,
+    )
+    try:
+        load_verified_memory_sources(catalog, source_path, expected_sha256=source_sha)
+    except MemorySourceVerificationError as error:
+        raise ExperienceMemoryBindingError(str(error)) from error
     admitted = admission["admitted_record_sha256s"]
     if (
         not isinstance(admitted, list)
@@ -312,6 +329,7 @@ def load_experience_memory_binding(
         manifest_sha256=manifest_sha,
         construction_roster_sha256=roster_sha,
         admission_sha256=admission_sha,
+        source_verification_sha256=source_sha,
         task_id=task_id,
         component_tags=tuple(components),
         max_records=max_records,

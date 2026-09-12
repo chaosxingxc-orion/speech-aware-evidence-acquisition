@@ -60,8 +60,8 @@ def _record(
         diagnosis="The earlier step may have omitted a grounded constraint.",
         guidance="Review the available evidence before changing the answer.",
         limitations=("This guidance does not supply a final answer.",),
-        supporting_source_refs=(SourceRef("support", "5" * 64),),
-        contradicting_source_refs=(SourceRef("contradiction", "6" * 64),),
+        supporting_source_refs=(SourceRef("reward-link:" + "5" * 64, "5" * 64),),
+        contradicting_source_refs=(SourceRef("reward-link:" + "6" * 64, "6" * 64),),
         validation=ValidationBinding(
             "admitted", "7" * 64, "8" * 64, "9" * 64, "a" * 64
         ),
@@ -105,8 +105,37 @@ def _world(
     manifest_path.parent.mkdir()
     manifest_path.write_text(json.dumps(manifest, sort_keys=True) + "\n")
     manifest_sha = _sha(manifest_path)
+    # This fixture supplies an explicitly trusted synthetic attestation.
+    # Source-builder tests independently derive the same shape from real sealed
+    # synthetic bundles; this fixture does not claim real reward-source proof.
+    from speech_aware_evidence_acquisition.core.preparation import prepare_artifact
+    proof = {
+        "schema": "saea-experience-source-verification-v1", "status": "source-verified",
+        "manifest_sha256": manifest_sha, "construction_roster_sha256": roster_sha,
+        "verifier_sha256": "b" * 64,
+        "reward_sources": [{
+            "artifact_sha256": "c" * 64, "config_sha256": "d" * 64,
+            "manifest_sha256": "e" * 64, "complete_score_receipt_sha256": "f" * 64,
+            "construction_roster_sha256": roster_sha,
+        }],
+        "records": [{
+            "record_sha256": record.record_sha256, "source": record.source.as_json(),
+            "primary_link_sha256": "c" * 64,
+            "supporting_link_sha256s": [ref.sha256 for ref in record.supporting_source_refs],
+            "contradicting_link_sha256s": [ref.sha256 for ref in record.contradicting_source_refs],
+        } for record in records],
+    }
+    proof_path = data / "memory/source-verification.json"
+    prepare_artifact(
+        proof_path, kind="experience-memory-sources", contact_class="model-free",
+        inputs={key: proof[key] for key in (
+            "manifest_sha256", "construction_roster_sha256", "verifier_sha256", "reward_sources",
+        )},
+        producer=lambda: proof,
+    )
     admission = {
-        "schema": "saea-experience-memory-admission-v1",
+        "schema": "saea-experience-memory-admission-v2",
+        "source_verification_sha256": _sha(proof_path),
         "status": "admitted",
         "manifest_sha256": manifest_sha,
         "construction_roster_sha256": roster_sha,
@@ -124,6 +153,9 @@ def _world(
             "admission": {
                 "relpath": "memory/admission.json",
                 "sha256": _sha(admission_path),
+            },
+            "source_verification": {
+                "relpath": "memory/source-verification.json", "sha256": _sha(proof_path),
             },
             "task_id": "slurp-slot-slu",
             "component_tags": ["supply", "use"],
@@ -412,6 +444,7 @@ def test_runtime_refuses_invalid_binding_before_gate_or_contact(tmp_path):
             "sha256": "1" * 64,
         },
         "admission": {"relpath": "memory/admission.json", "sha256": "2" * 64},
+        "source_verification": {"relpath": "memory/sources.json", "sha256": "3" * 64},
         "task_id": "slurp-slot-slu",
         "component_tags": ["supply", "use"],
         "max_records": 1,
@@ -569,3 +602,69 @@ def test_flight_runtime_loads_memory_once_and_openjiuwen_carries_it_to_solver(
     for payload in successor_payloads:
         serialized = json.dumps(payload)
         assert "slurp:train:001:audio" not in serialized
+
+
+def test_legacy_admission_without_verified_sources_is_not_live_authority(tmp_path):
+    repo, data, config = _world(tmp_path)
+    config["experience_memory"].pop("source_verification", None)
+    path = data / config["experience_memory"]["admission"]["relpath"]
+    doc = json.loads(path.read_text())
+    doc["schema"] = "saea-experience-memory-admission-v1"
+    doc.pop("source_verification_sha256", None)
+    path.write_text(json.dumps(doc))
+    config["experience_memory"]["admission"]["sha256"] = _sha(path)
+    with pytest.raises(ExperienceMemoryBindingError, match="source_verification|source verification"):
+        load_experience_memory_binding(
+            config, repo_root=repo, data_root=data, carrier_lock_key="slurp",
+        )
+
+def test_source_receipt_repin_cannot_bypass_root_admission(tmp_path):
+    from speech_aware_evidence_acquisition.core.preparation import digest
+    repo, data, config = _world(tmp_path)
+    pin = config["experience_memory"]["source_verification"]
+    path = data / pin["relpath"]
+    wrapper = json.loads(path.read_text())
+    wrapper["output"]["records"][0]["primary_link_sha256"] = "d" * 64
+    wrapper["output_sha256"] = digest(wrapper["output"])
+    path.write_text(json.dumps(wrapper))
+    pin["sha256"] = _sha(path)
+    with pytest.raises(ExperienceMemoryBindingError, match="admission source verification"):
+        load_experience_memory_binding(
+            config, repo_root=repo, data_root=data, carrier_lock_key="slurp",
+        )
+
+
+@pytest.mark.parametrize("mutation", ["missing", "extra", "duplicate", "swapped", "primary"])
+def test_source_receipt_checks_record_correspondence_after_all_outer_pins_match(tmp_path, mutation):
+    from speech_aware_evidence_acquisition.core.preparation import digest
+    repo, data, config = _world(tmp_path)
+    pin = config["experience_memory"]["source_verification"]
+    path = data / pin["relpath"]
+    wrapper = json.loads(path.read_text())
+    rows = wrapper["output"]["records"]
+    if mutation == "missing":
+        rows.clear()
+    elif mutation == "extra":
+        rows.append({**rows[0], "record_sha256": "f" * 64})
+    elif mutation == "duplicate":
+        rows.append(dict(rows[0]))
+    elif mutation == "swapped":
+        row = rows[0]
+        row["supporting_link_sha256s"], row["contradicting_link_sha256s"] = (
+            row["contradicting_link_sha256s"], row["supporting_link_sha256s"],
+        )
+    else:
+        rows[0]["source"]["response_sha256"] = "f" * 64
+    wrapper["output_sha256"] = digest(wrapper["output"])
+    path.write_text(json.dumps(wrapper))
+    pin["sha256"] = _sha(path)
+    admission_pin = config["experience_memory"]["admission"]
+    admission_path = data / admission_pin["relpath"]
+    admission = json.loads(admission_path.read_text())
+    admission["source_verification_sha256"] = pin["sha256"]
+    admission_path.write_text(json.dumps(admission))
+    admission_pin["sha256"] = _sha(admission_path)
+    with pytest.raises(ExperienceMemoryBindingError, match="record"):
+        load_experience_memory_binding(
+            config, repo_root=repo, data_root=data, carrier_lock_key="slurp",
+        )
