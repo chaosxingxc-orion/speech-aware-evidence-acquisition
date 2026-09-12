@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 66,
+  "generation": 67,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "7e51daf96f801b5f54d65060e15ffe202bfa8f4c",
-  "updated_at_utc": "2026-09-12T18:22:42.032878+00:00",
-  "next_action": "Read STATUS-066. All three A2T recovery arms are FINALIZED and first-scored; campaign exited 0. Outcome-free metadata text derivative fixed the frozen cluster-key type without changing membership/statistics. Actual analysis/read registered and released at 7e51daf; PID 28696 and remaining bootstrap workers are active. Checked points show no overall EM improvement and increased parse failures; do not invent pending intervals or a positive mechanism verdict. Wait for full frozen output, root decision, then the already registered Whisper preparation window. No Whisper forward yet; goal active.",
+  "snapshot_commit": "4e302fab91b40a754bd8d09ff7731fa3c0239713",
+  "updated_at_utc": "2026-09-12T19:09:57.647987+00:00",
+  "next_action": "Read STATUS-067. A2T recovery generation, first scoring, frozen analysis and root decision are complete; neither primary declaration passes. Qwen stopped for Whisper. First Whisper batch ABORTED after 8 charged contacts, zero sealed observations; no model/GPU process remains at 19:03 UTC. Prove the narrow batched-beam fix and recovery authority, then prospectively register one eligible recovery before dispatch. Matched SLURP templates await its sealed catalog; real fit and generation remain pending. TRAIN reward links are under implementation. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SPEECH-TOOLS-023"

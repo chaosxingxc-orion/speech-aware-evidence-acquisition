@@ -1,12 +1,12 @@
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-066.md](STATUS-066.md) records complete Audio2Tool generation/scoring, the equivalent metadata conversion, active frozen analysis, independently checked points and output diagnostics. Root scientific decision and actual Whisper preparation remain pending. Use state.json and live process receipts for present readiness.
+**Latest execution:** [STATUS-067.md](STATUS-067.md) records the completed Audio2Tool analysis and negative/unresolved primary decisions, the first real Whisper batch failure, current empty GPU, pending bounded recovery, matched SLURP readiness and parallel TRAIN reward-link implementation. Use state.json and live receipts for present readiness.
 
 **Latest owner direction:** [OWNER-SPEECH-TOOLS-023.md](OWNER-SPEECH-TOOLS-023.md) adds locally loaded speech tools and problem-targeted investigation. [OWNER-DISCRIMINATIVE-VALUES-021.md](OWNER-DISCRIMINATIVE-VALUES-021.md), with OWNER018-020, retains source-grounded distinctions in task-specific values. Include all eight Audio2Tool tiers alongside SLURP and E21/E22 in design/readiness; share the execution base and specialize knowledge and corrective-memory construction. Read [STATUS-044.md](STATUS-044.md) and the [dataset/task analysis](../../../readiness/2026-09-11-task-specific-knowledge-and-memory-analysis.md). Full TRAIN relationship counts and per-carrier audits are complete; three value-format primitives and a TRAIN-bound memory library have CPU tests. Runtime memory integration now has a positive synthetic executor proof; actual memory admission remains pending. The first new live task-agent comparison and its registered matched replication are closed; the subsequent controlled role-coverage comparison is closed without adoption. Preserve historical verdicts and the SLURP-first execution preference.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 66. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 67. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -39,7 +39,7 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-066.md](STATUS-066.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
+Read [STATUS-067.md](STATUS-067.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
 The owner explicitly resumed GPU work after network reconnection and prioritizes
 high utilization. This supersedes OWNER012's scheduling hold. E21 and SLURP generation, scoring, fixed analysis and all four settlements
 are complete. Those earlier G6 SLURP and E21 system admissions fail their frozen rules. STATUS-044 separately admits the newer SLURP task-agent working baseline for exploration. The newer role-coverage pair is closed under STATUS-046; it is not adopted and cannot be replayed under its exhausted registration.
@@ -55,7 +55,7 @@ complete (16560 statistical fields agree); its report is
 | Work | Current state | Evidence / next action |
 |---|---|---|
 | SLURP role-coverage package | Both arms FINALIZED; intent negative, entity improvement unresolved | Close package; preserve compact-frame baseline; full strata and raw lineage verified |
-| Audio2Tool native three-arm recovery | All three arms FINALIZED and first-scored; frozen analysis running | Read released with exact bindings; preserve pending intervals and separate system/knowledge labels |
+| Audio2Tool native three-arm recovery | All arms FINALIZED and first-scored; frozen analysis and root decision complete | System not admitted; knowledge contribution not established. Full strata and separate labels in the September 12 final result |
 | KV recovery and aligned null | Closed retrospectively; retain KC-S1b examples and preserve historical order/missing-decision facts | Existing seven-run FAMILY-REPORT; no rerun or rescore |
 | KC-S1b and KU-S3 | Original max64 repeat, max256 matched trio, and independent retrieval repeat completed | Component evidence positive; no equivalence or full-system inference from these repeats |
 | KU-S4N and twin | HOLD_NONINFERIORITY_FAILED | G3 encoding and G4 a/b/c remain ineligible; do not encode the 7049 missing exemplars |
@@ -73,7 +73,7 @@ Its historical September9 snapshot must not be mistaken for current unread work.
 STATUS-009 through STATUS-024 preserve earlier boundaries; their pending items
 are superseded only by the cited later decisions, never erased from history.
 
-The root currently owns the Audio2Tool decoder-only resident service under OWNER013. Earlier E21/SLURP attempts and their complete scoring/settlement remain closed. Complete the current Audio2Tool recovery and frozen scientific decision, then follow the registered local Whisper and matched SLURP speech-evidence sequence. Corrective memory and adaptive control remain later component work before a complete external-policy optimization loop. Keep the exemplar branch held. A stored receipt is not present health or dispatch authority.
+Root stopped the Audio2Tool resident service after its final decision to enter the registered Whisper window. Whisper then aborted on its first batch; no resident model remains at the STATUS-067 snapshot. Earlier E21/SLURP attempts and their complete scoring/settlement remain closed. Complete the narrow Whisper repair and prospectively registered eligible recovery, then the matched SLURP speech-evidence sequence. Corrective memory and adaptive control remain later component work before a complete external-policy optimization loop. Keep the exemplar branch held. A stored receipt is not present health or dispatch authority.
 
 Use ChatGPT/OpenAI cloud subagents under [MODEL-ALLOCATION.md](MODEL-ALLOCATION.md);
 the main agent retains planning, scientific decisions, critical review and merge acceptance.
@@ -83,4 +83,4 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest implementation handoff: [STATUS-065](STATUS-065.md). Native Audio2Tool preparation has entered the live comparison. The SLURP control preparation and shared analysis reader are complete; real Whisper preparation, treatment binding and actual live-phase fit remain pending. This pointer grants no separate task-generation authority.
+Latest implementation handoff: [STATUS-067](STATUS-067.md). Audio2Tool is decided and closed. The SLURP control and shared analysis reader are ready; failed Whisper preparation requires a separately registered eligible recovery before treatment binding and actual live-phase fit. This pointer grants no separate task-generation authority.
