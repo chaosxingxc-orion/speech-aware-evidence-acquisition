@@ -92,6 +92,8 @@
   "serving_slots": 3,
   "speech_feature_key_representation_id": "saea-a2t-native-system-v1:complete-speech",
   "speech_feature_matcher_policy_id": "saea-a2t-native-system-v1",
+  "speech_packet_promotion_receipt": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-PACKETS-V1/promotion.json",
+  "speech_packet_promotion_receipt_sha256": "720d81f63a1923f19893c0ee171e1ab7b47f9a946c1e62a06bdddd839243de8a",
   "task_contract_source": "active-instruction",
   "task_instruction_fill": "audio2tool-registry-compact",
   "task_instruction_template": "probes/r1_audio2tool_official.txt",
