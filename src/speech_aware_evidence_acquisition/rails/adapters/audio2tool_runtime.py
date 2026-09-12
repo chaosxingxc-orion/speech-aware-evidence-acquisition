@@ -103,11 +103,19 @@ class Audio2ToolRuntimeAdapter(Audio2ToolAdapter):
         samples,
         instruction_text,
         geometry,
+        task_contract_source="legacy-registry",
     ):
         super().__init__(lock, root, repo_root=repo_root)
         self._split_id = split_id
         self._samples = tuple(samples)
         self._instruction_text = instruction_text
+        if task_contract_source not in {"legacy-registry", "active-instruction"}:
+            raise CoreError("Audio2Tool task_contract_source is unsupported")
+        if task_contract_source == "active-instruction" and (
+            not isinstance(instruction_text, str) or not instruction_text.strip()
+        ):
+            raise CoreError("Audio2Tool task contract requires an active instruction")
+        self._task_contract_source = task_contract_source
         if not isinstance(geometry, Mapping) or set(geometry) != {
             "slots",
             "slot_tokens",
@@ -133,6 +141,12 @@ class Audio2ToolRuntimeAdapter(Audio2ToolAdapter):
         if self._instruction_text is not None:
             return self._instruction_text
         return super().instruction(sample)
+
+    def build_task_contract(self, sample, obs):
+        """Use the configured native contract once when explicitly selected."""
+        if self._task_contract_source == "active-instruction":
+            return self._instruction_text
+        return super().build_task_contract(sample, obs)
 
     def gold(self, sample):
         raise CoreError("gold never enters an Audio2Tool runtime flight")
@@ -223,6 +237,7 @@ def build_runtime_adapter(values, lock, data_root, repo_root, *, dataset_fragmen
             values, repo_root, lock, data_root
         ),
         geometry=geometry,
+        task_contract_source=values.get("task_contract_source", "legacy-registry"),
     )
     adapter._values_hash = content_hash(values)
     return adapter

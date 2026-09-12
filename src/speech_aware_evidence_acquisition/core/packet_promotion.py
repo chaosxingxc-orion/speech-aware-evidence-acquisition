@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Mapping
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from .model import (
@@ -96,12 +97,12 @@ def _confined_file(root: Path, relative: object, label: str) -> Path:
 def _packet_id(sample_id: object) -> str:
     if not isinstance(sample_id, str) or not sample_id.strip() or sample_id != sample_id.strip():
         raise ValueError("source roster sample_id must be non-blank and unpadded")
-    if sample_id.count(":") != 1:
-        raise ValueError("source roster sample_id must be tier:item")
-    tier, item = sample_id.split(":")
-    if not tier or not item or "/" in sample_id or "\\" in sample_id:
-        raise ValueError("source roster sample_id is unsafe")
-    return f"{tier}/{item}"
+    from .flight.runtime import packet_id_for_sample
+    from .model.paths import _normalized_relative_path
+
+    return _normalized_relative_path(
+        packet_id_for_sample(sample_id), "source roster packet_id"
+    )
 
 
 def _validate_plan(plan: Mapping[str, object]) -> dict[str, object]:
@@ -144,17 +145,17 @@ def _validate_plan(plan: Mapping[str, object]) -> dict[str, object]:
     return {**plan, "source_root": source_root.resolve(), **paths}
 
 
-def _verify_historical_sessions(provenance: Mapping[str, object], plan: Mapping[str, object]) -> dict[str, str]:
+def _verify_historical_sessions(provenance: Mapping[str, object], plan: Mapping[str, object]) -> dict[str, tuple[str, str]]:
     sessions = provenance.get("sessions")
     if not isinstance(sessions, list) or not sessions:
         raise ValueError("cache provenance must contain sessions")
-    runtime_by_session: dict[str, str] = {}
+    runtime_by_session: dict[str, tuple[str, str]] = {}
     for index, entry in enumerate(sessions):
         required = {
             "session_id", "runtime_receipt", "session_receipt", "stop_receipt",
             "model_fragment",
         }
-        if not isinstance(entry, Mapping) or set(entry) != required:
+        if not isinstance(entry, Mapping) or not required.issubset(entry):
             raise ValueError(f"cache provenance session {index} has invalid fields")
         runtime = _read_receipt_artifact(
             entry["runtime_receipt"], f"runtime receipt {index}", canonical=True
@@ -175,6 +176,13 @@ def _verify_historical_sessions(provenance: Mapping[str, object], plan: Mapping[
             raise ValueError(f"historical session {index} does not bind its runtime") from error
         if entry["session_id"] != session.session_id or session.role not in _ROLES:
             raise ValueError(f"historical session {index} identity or role is invalid")
+        model_files = runtime.get("gguf_files", [])
+        decoder = [item.get("sha256") for item in model_files
+                   if "mmproj" not in Path(str(item.get("path"))).name.lower()]
+        mmproj = [item.get("sha256") for item in model_files
+                  if "mmproj" in Path(str(item.get("path"))).name.lower()]
+        if decoder != [plan["decoder_gguf_sha256"]] or mmproj != [plan["mmproj_sha256"]]:
+            raise ValueError("historical runtime model identity disagrees with promotion plan")
         runtime_sha = canonical_receipt_sha256(runtime)
         session_sha = canonical_receipt_sha256(session_document)
         if (
@@ -191,7 +199,7 @@ def _verify_historical_sessions(provenance: Mapping[str, object], plan: Mapping[
             raise ValueError(f"historical model fragment {index} does not bind legacy_cache_dir")
         if session.session_id in runtime_by_session:
             raise ValueError(f"duplicate historical session {session.session_id!r}")
-        runtime_by_session[session.session_id] = runtime_sha
+        runtime_by_session[session.session_id] = (runtime_sha, session.role)
     return runtime_by_session
 
 
@@ -218,13 +226,13 @@ def _audit_rows(
     ):
         raise ValueError("cache audit root/count/status does not agree")
     seen: set[str] = set()
-    for index, entry in enumerate(audit["entries"]):
+    def inspect_one(index_entry):
+        index, entry = index_entry
         if not isinstance(entry, Mapping) or set(entry) != {"sample_id", "status", "inspection"}:
             raise ValueError(f"cache audit entry {index} has invalid fields")
         sample_id = entry["sample_id"]
-        if sample_id in seen or sample_id not in roster or entry["status"] != "valid":
+        if sample_id not in roster or entry["status"] != "valid":
             raise ValueError(f"cache audit entry {index} does not match source roster")
-        seen.add(sample_id)
         inspection = entry["inspection"]
         required_inspection = {"audio_sha256", "cache_key", "chunks"}
         if not isinstance(inspection, Mapping) or set(inspection) != required_inspection:
@@ -254,6 +262,14 @@ def _audit_rows(
             or chunks != inspection["chunks"]
         ):
             raise ValueError(f"legacy cache audit drift for {sample_id!r}")
+        return sample_id
+
+    with ThreadPoolExecutor(max_workers=plan["workers"]) as pool:
+        checked_ids = list(pool.map(inspect_one, enumerate(audit["entries"])))
+    seen.update(checked_ids)
+    if len(checked_ids) != len(seen):
+        raise ValueError("cache audit contains duplicate source IDs")
+
     if seen != set(roster):
         raise ValueError("cache audit does not cover exactly the source roster")
 
@@ -290,7 +306,7 @@ def _preflight_bindings(plan: Mapping[str, object]) -> tuple[tuple[dict[str, str
             _require_sha256(source[field], f"cache provenance {field}")
         if source["session_role"] not in _ROLES or source["session_id"] not in runtime_by_session:
             raise ValueError(f"cache provenance source {index} session is invalid")
-        if source["encoder_receipt_sha256"] != runtime_by_session[source["session_id"]]:
+        if (source["encoder_receipt_sha256"], source["session_role"]) != runtime_by_session[source["session_id"]]:
             raise ValueError(f"cache provenance source {index} runtime hash is invalid")
         if source["decoder_gguf_sha256"] != plan["decoder_gguf_sha256"] or source["mmproj_sha256"] != plan["mmproj_sha256"]:
             raise ValueError("cache provenance model identity disagrees with promotion plan")

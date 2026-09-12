@@ -1,0 +1,63 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prepare-phase-recall"
+      ],
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-knowledge-generation-v1",
+      "baseline_fragment": "a2t-native-system-knowledge-v1",
+      "cell_id": "a2t-native-system-knowledge-v1",
+      "dataset_fragment": "audio2tool-org1-union-4000",
+      "model_fragment": "q4km-mmproj-free-a2t-native-system-np2-v1",
+      "readiness": {
+        "reason": "Await source-qualified packet promotion, shared segmented-query binding, exact request wire and capacity evidence, and root scientific admission. No generation authority.",
+        "requirements": [],
+        "state": "preparing"
+      },
+      "run_id": "SAEA-A2T-NATIVE-SYSTEM-KNOWLEDGE-V1"
+    }
+  ],
+  "date": "2026-09-12",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 4.0,
+    "planned_model_calls": 8400,
+    "planned_speech_audio_seconds": 50000,
+    "split_role": "discovery"
+  },
+  "experiment_id": "SAEA-A2T-NATIVE-SYSTEM-KNOWLEDGE-V1",
+  "family_budget": {
+    "fit_contacts_total": 60005,
+    "generation_calls_total": 21000,
+    "gpu_hours_total": 10.0,
+    "speech_audio_seconds_total": 125000
+  },
+  "fragment_kind": "saea-native-task-system-experiment-v1",
+  "generation_budget": {
+    "cap": 8400,
+    "target": 8000
+  },
+  "population": {
+    "count": 4000,
+    "dataset_fragment": "audio2tool-org1-union-4000",
+    "decision_population": "Historically exposed complete union4000, eight tiers of500; no new draw.",
+    "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6"
+  },
+  "preparation_source_receipts": [
+    {
+      "relpath": "coordination/a2t-query-encoding-root-closure-v1.json",
+      "root": "data",
+      "sha256": "8127de087876b43a22ba26f0564a61b8e00619148a5c664e19d09556c46da91d"
+    },
+    {
+      "relpath": "coordination/a2t-native-key-root-closure-v1.json",
+      "root": "data",
+      "sha256": "95b74158f1c5356288e5a42c6a0012e7a38957a3618a2d3e7ef7af792a4e42cd"
+    }
+  ],
+  "preserve_wire_responses": true,
+  "service_session": "serving-a2t-native-system-np2-v1"
+}

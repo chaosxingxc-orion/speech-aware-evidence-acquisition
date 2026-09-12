@@ -305,3 +305,24 @@ def test_rechecks_pinned_cache_before_receipt_seal(
             promotion_plan=plan_path, promotion_plan_sha256=plan_sha256
         )
     assert not receipt_path.exists()
+
+
+@pytest.mark.parametrize("change", ["role", "model"])
+def test_source_claim_cannot_relabel_runtime_or_weights(tmp_path, change):
+    plan_path, _, receipt_path, _ = _fixture(tmp_path)
+    plan = json.loads(plan_path.read_text())
+    path = Path(plan["cache_provenance_path"])
+    provenance = json.loads(path.read_text())
+    if change == "role":
+        provenance["sources"][0]["session_role"] = "preprocess"
+    else:
+        plan["decoder_gguf_sha256"] = "e" * 64
+        provenance["sources"][0]["decoder_gguf_sha256"] = "e" * 64
+    plan["cache_provenance_sha256"] = _write_json(path, provenance)
+    plan_sha256 = _write_json(plan_path, plan)
+    with pytest.raises(ValueError, match="runtime.*(hash|model)"):
+        packet_promotion.promote_pinned_roster_legacy_cache(
+            promotion_plan=plan_path, promotion_plan_sha256=plan_sha256
+        )
+    assert not receipt_path.exists()
+    assert not Path(plan["feature_root"]).exists()

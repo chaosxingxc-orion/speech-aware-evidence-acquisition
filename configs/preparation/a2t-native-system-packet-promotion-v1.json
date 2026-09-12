@@ -1,0 +1,18 @@
+{
+  "cache_audit_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-legacy-cache-4000-audit-v1.json",
+  "cache_audit_sha256": "3344e9b53b5188139c191525cf61cd1ed4f78a83addbdd208d367121b77905bf",
+  "cache_provenance_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-native-system-historical-cache-provenance-v1.json",
+  "cache_provenance_sha256": "4b85bcc87588252a8494815f115d96510debb11b5fedb0cc0e12ec0bd1b6bf57",
+  "causal_attention": true,
+  "decoder_gguf_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+  "expected_n_embd": 2048,
+  "feature_root": "/home/chao/feat-cache/a2t-native-system-4000-packets-04ccc72a",
+  "legacy_cache_dir": "/home/chao/feat-cache/audio2tool-q4km-04ccc72a",
+  "mmproj_sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883",
+  "receipt_output": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-PACKETS-V1/promotion.json",
+  "schema": "saea-legacy-speech-packet-promotion-plan-v1",
+  "source_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+  "source_roster_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-native-system-packet-source-roster-v1.json",
+  "source_roster_sha256": "db448281dc405f02de717de611ad1a0eccdc96bf4c1b04a10d53e000e91ec416",
+  "workers": 20
+}

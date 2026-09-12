@@ -501,3 +501,45 @@ def test_factory_executes_direct_and_live_state_through_real_shared_program(
         assert any(
             "synthetic current-speech state" in p and "setLight" in p for p in followups
         )
+
+
+def test_active_contract_uses_one_schema_in_actual_shared_request(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+    from speech_aware_evidence_acquisition.rails.knowledge import QueryState
+    from speech_aware_evidence_acquisition.rails.runner import _agent_messages
+
+    repo, data, values, _ = world(tmp_path)
+    values["task_contract_source"] = "active-instruction"
+    values["task_instruction"] = "Return tool_name(). Available tools: alpha(), beta()."
+    adapter = build(repo, data, values)
+    sample = adapter.load_split("A2T-SYNTHETIC")[0]
+    monkeypatch.setattr(
+        Audio2ToolAdapter, "build_task_contract", lambda *_: "Duplicated legacy registry."
+    )
+    contract = adapter.build_task_contract(sample, None)
+    state = QueryState(
+        query_id="q", query_sample_id=sample.sample_id,
+        speech_packet_id="tier1_direct/000000", speech_packet_sha256="a" * 64,
+        use_split_identity_hash="b" * 64,
+    )
+    messages = _agent_messages(
+        adapter=adapter, sample=sample, task_contract=contract, query_state=state,
+        snapshot=SimpleNamespace(facets=(), values=()), snapshot_sha256="c" * 64,
+    )
+    assert messages[0]["content"] == values["task_instruction"]
+    assert "Duplicated legacy registry." not in str(messages)
+
+
+def test_legacy_task_contract_stays_unchanged_and_bad_source_refuses(tmp_path, monkeypatch):
+    repo, data, values, _ = world(tmp_path)
+    monkeypatch.setattr(
+        Audio2ToolAdapter, "build_task_contract", lambda *_: "Legacy contract."
+    )
+    assert build(repo, data, values).build_task_contract(None, None) == "Legacy contract."
+    values["task_contract_source"] = "unsupported"
+    with pytest.raises(CoreError, match="task_contract_source"):
+        build(repo, data, values)
+    values["task_contract_source"] = "active-instruction"
+    values.pop("task_instruction")
+    with pytest.raises(CoreError, match="active instruction"):
+        build(repo, data, values)

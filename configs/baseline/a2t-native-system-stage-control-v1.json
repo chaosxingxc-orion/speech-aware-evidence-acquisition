@@ -1,0 +1,46 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "prepared/SAEA-A2T-MF-CURRENT-CARDS-NATIVE-V1/knowledge-snapshot.json",
+  "knowledge_snapshot_sha256": "ccf5d93f14afa2393fc3e988a1e00c877c73e48b13b9ca0c6bde2f390093d276",
+  "live_phase_fit": {
+    "attempt_id": "attempt-stage-control-fit-v1",
+    "contact_cap": 24002,
+    "run_id": "SAEA-A2T-NATIVE-SYSTEM-STAGE-CONTROL-FIT-V1"
+  },
+  "phase_material": {
+    "plan": {
+      "instruction_fill": null,
+      "instruction_template": "probes/task_hypothesis_v1.txt",
+      "predecessor_binding": "none"
+    },
+    "solve": {
+      "instruction_fill": null,
+      "instruction_template": "probes/task_agent_solve_v1.txt",
+      "predecessor_binding": "none"
+    }
+  },
+  "policy": "phase-task-tools-then-solve-v1",
+  "scorers": [
+    "a2t-toolcall-official",
+    "a2t-toolcall-v2",
+    "a2t-toolcall",
+    "cost"
+  ],
+  "serving_geometry": {
+    "max_tokens": 1024,
+    "slot_tokens": 32768,
+    "slots": 2
+  },
+  "serving_slot_tokens": 32768,
+  "serving_slots": 2,
+  "speech_feature_key_representation_id": "saea-a2t-native-system-v1:complete-speech",
+  "speech_feature_matcher_policy_id": "saea-a2t-native-system-v1",
+  "task_contract_source": "active-instruction",
+  "task_instruction_fill": "audio2tool-registry-compact",
+  "task_instruction_template": "probes/r1_audio2tool_official.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "Own provisional native answer and own final answer; no retrieved knowledge.",
+  "whole_roster_wave_barrier": true
+}

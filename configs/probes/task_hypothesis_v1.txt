@@ -1,0 +1,1 @@
+Produce a provisional answer to the task using the current speech and legal task contract. Preserve all supported operations and arguments. Return only the output format required by the task contract. This provisional answer may be revised after further evidence is supplied.
