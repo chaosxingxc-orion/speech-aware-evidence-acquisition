@@ -20,6 +20,8 @@ from .a2t_executable_semantic_cards import (
     CompatibilityRule,
     ExecutableSemanticCardCorpus,
     ExecutableSemanticCardError,
+    TaskSemanticCard,
+    ToolSemanticCard,
     build_executable_semantic_card_corpus,
 )
 from .errors import RailsError
@@ -27,6 +29,7 @@ from .knowledge_build_a2t import A2tKbRow, a2t_pool_rows
 
 MINIMUM_COMPATIBILITY_SUPPORT = 2
 COMPILATION_RECEIPT_SCHEMA = "saea-a2t-semantic-card-compilation-receipt-v1"
+PUBLIC_API_LEGALITY_PRESENTATION_V1 = "saea-a2t-public-api-legality-presentation-v1"
 _ZERO_CONTACTS = {
     "audio_seconds": 0,
     "embedding_tool": 0,
@@ -55,6 +58,42 @@ class A2tSemanticCardCompilationConfig:
     receipt_output_path: Path
     minimum_compatibility_support: int = MINIMUM_COMPATIBILITY_SUPPORT
     max_utf8_bytes: int = DEFAULT_MAX_UTF8_BYTES
+    presentation_version: str | None = None
+
+
+@dataclass(frozen=True)
+class PublicLegalityToolSemanticCard:
+    """One card with public legality separated from observed patterns."""
+
+    tool_name: str
+    choose_semantics: str
+    avoid_semantics: str
+    signature: str
+    constraints: str
+    public_required_argument_keys: tuple[str, ...]
+    public_optional_argument_keys: tuple[str, ...]
+    construction_observed_argument_patterns: tuple[tuple[str, ...], ...]
+    compatibility_rules: tuple[CompatibilityRule, ...]
+    role_guidance: tuple[str, ...]
+    examples: tuple[str, ...]
+    text: str
+
+
+@dataclass(frozen=True)
+class PublicLegalitySemanticCardCorpus:
+    """Deterministic corpus using registry facts as the legality authority."""
+
+    text: str
+    sha256: str
+    tool_cards: tuple[PublicLegalityToolSemanticCard, ...]
+    task_cards: tuple[TaskSemanticCard, ...]
+    report: Mapping[str, object]
+
+    @property
+    def cards_by_name(self) -> dict[str, PublicLegalityToolSemanticCard]:
+        """Return the complete card map keyed by exact registry name."""
+
+        return {card.tool_name: card for card in self.tool_cards}
 
 
 _LEGAL_KEY = re.compile(r"[A-Za-z][A-Za-z0-9_]*")
@@ -435,6 +474,287 @@ def build_from_partition(
     return first, report
 
 
+_LEGACY_OUTPUT_CONTRACT = (
+    "Use an exact registered tool name, an exact legal argument-key set from its "
+    "card, and JSON values with the public types and constraints."
+)
+_PUBLIC_LEGALITY_OUTPUT_CONTRACT = (
+    "Use an exact registered tool name. For public signature keys, include every "
+    "required key and any subset of optional keys; unobserved public combinations "
+    "remain legal. Use JSON values with the public types and constraints. Construction "
+    "compatibility evidence never changes public argument-key legality."
+)
+_LEGACY_CONSTRUCTION_BOUNDARY = (
+    "The construction summaries contribute only observed legal argument-key sets;"
+)
+_PUBLIC_LEGALITY_CONSTRUCTION_BOUNDARY = (
+    "The construction summaries contribute observed argument patterns as descriptive "
+    "evidence only; their absence never prohibits a public required/optional combination;"
+)
+
+
+def _render_key_set(keys: Sequence[str]) -> str:
+    return "{" + ", ".join(keys) + "}"
+
+
+def _public_legality_header(legacy_text: str) -> str:
+    header, marker, _remainder = legacy_text.partition(
+        "\n\nTASK-WIDE EXECUTION CARDS\n"
+    )
+    if not marker:
+        raise SemanticCardCompilationError(
+            "legacy semantic-card header structure drift"
+        )
+    for old, new in (
+        (_LEGACY_OUTPUT_CONTRACT, _PUBLIC_LEGALITY_OUTPUT_CONTRACT),
+        (_LEGACY_CONSTRUCTION_BOUNDARY, _PUBLIC_LEGALITY_CONSTRUCTION_BOUNDARY),
+    ):
+        if old not in header:
+            raise SemanticCardCompilationError(
+                "legacy semantic-card header wording drift"
+            )
+        header = header.replace(old, new, 1)
+    return header
+
+
+def _public_legality_card(
+    public_card: ToolSemanticCard,
+    *,
+    required_keys: tuple[str, ...],
+    optional_keys: tuple[str, ...],
+    observed_patterns: tuple[tuple[str, ...], ...],
+    compatibility_rules: tuple[CompatibilityRule, ...],
+) -> PublicLegalityToolSemanticCard:
+    legacy_line = next(
+        (
+            line
+            for line in public_card.text.splitlines()
+            if line.startswith("Legal argument-key sets: ")
+        ),
+        None,
+    )
+    if legacy_line is None:
+        raise SemanticCardCompilationError(
+            f"legacy semantic-card legality line drift for {public_card.tool_name!r}"
+        )
+    observed_text = (
+        "; ".join(_render_key_set(pattern) for pattern in observed_patterns)
+        if observed_patterns
+        else "none"
+    )
+    public_lines = (
+        "Public argument legality: required keys "
+        f"{_render_key_set(required_keys)}; optional keys "
+        f"{_render_key_set(optional_keys)}. A call must include every public required "
+        "key and may include any subset of the public optional keys.",
+        f"Construction-observed argument patterns: {observed_text}. These patterns are "
+        "descriptive only; unobserved public combinations remain legal.",
+    )
+    compatibility_lines = tuple(
+        "- Observed keys "
+        f"{_render_key_set(rule.legal_argument_key_set)}; value-form classes "
+        + (
+            ", ".join(f"{key}: {form}" for key, form in rule.value_forms)
+            or "public types"
+        )
+        + f"; construction support count: {rule.construction_support_count}."
+        for rule in compatibility_rules
+    )
+    lines = []
+    for line in public_card.text.splitlines():
+        if line == legacy_line:
+            lines.extend(public_lines)
+        elif line == "Aggregate compatibility rules:":
+            lines.append("Construction-observed compatibility evidence:")
+            lines.extend(compatibility_lines or ("- none.",))
+            lines.append(
+                "This evidence is descriptive and does not alter public argument legality."
+            )
+        elif line.startswith("Synthetic JSON examples: "):
+            lines.append(
+                "Synthetic examples illustrate public shapes only; omitted public "
+                "optional combinations remain legal."
+            )
+            lines.append(line)
+        else:
+            lines.append(line)
+    return PublicLegalityToolSemanticCard(
+        tool_name=public_card.tool_name,
+        choose_semantics=public_card.choose_semantics,
+        avoid_semantics=public_card.avoid_semantics,
+        signature=public_card.signature,
+        constraints=public_card.constraints,
+        public_required_argument_keys=required_keys,
+        public_optional_argument_keys=optional_keys,
+        construction_observed_argument_patterns=observed_patterns,
+        compatibility_rules=compatibility_rules,
+        role_guidance=public_card.role_guidance,
+        examples=public_card.examples,
+        text="\n".join(lines),
+    )
+
+
+def build_public_legality_semantic_card_corpus(
+    registry_rows: Sequence[Mapping[str, str]],
+    construction_rows: Sequence[A2tKbRow],
+    *,
+    compatibility_rules: Sequence[CompatibilityRule] = (),
+    max_utf8_bytes: int = DEFAULT_MAX_UTF8_BYTES,
+) -> PublicLegalitySemanticCardCorpus:
+    """Render public signature legality and observed patterns as separate facts."""
+
+    validated = build_executable_semantic_card_corpus(
+        registry_rows,
+        construction_rows,
+        compatibility_rules=compatibility_rules,
+        max_utf8_bytes=max_utf8_bytes,
+    )
+    public_only = build_executable_semantic_card_corpus(
+        registry_rows,
+        (),
+        max_utf8_bytes=max_utf8_bytes,
+    )
+    public_keys = _registry_argument_types(registry_rows)
+    optional_keys = _registry_optional_keys(registry_rows)
+    observed_by_tool: dict[str, set[tuple[str, ...]]] = defaultdict(set)
+    for row in construction_rows:
+        observed_by_tool[row.tool_name].add(tuple(sorted(row.arg_signature)))
+
+    cards = []
+    validated_cards = validated.cards_by_name
+    for public_card in public_only.tool_cards:
+        tool_name = public_card.tool_name
+        public = frozenset(public_keys[tool_name])
+        optional = optional_keys[tool_name]
+        cards.append(
+            _public_legality_card(
+                public_card,
+                required_keys=tuple(sorted(public - optional)),
+                optional_keys=tuple(sorted(optional)),
+                observed_patterns=tuple(
+                    sorted(
+                        observed_by_tool.get(tool_name, set()),
+                        key=lambda keys: (len(keys), keys),
+                    )
+                ),
+                compatibility_rules=validated_cards[tool_name].compatibility_rules,
+            )
+        )
+
+    header = _public_legality_header(public_only.text)
+    sections = [header.rstrip(), "TASK-WIDE EXECUTION CARDS"]
+    sections.extend(
+        f"TASK CARD {card.card_id}\n{card.text}" for card in public_only.task_cards
+    )
+    sections.extend(card.text for card in cards)
+    text = "\n\n".join(sections) + "\n"
+    if not text.isascii():
+        raise SemanticCardCompilationError(
+            "public-legality semantic-card corpus must be ASCII English"
+        )
+    rendered = text.encode("utf-8")
+    if len(rendered) > max_utf8_bytes:
+        raise SemanticCardCompilationError(
+            "public-legality semantic-card corpus exceeds byte budget: "
+            f"{len(rendered)} > {max_utf8_bytes}"
+        )
+
+    report = dict(validated.report)
+    report.pop("legal_argument_key_set_count", None)
+    report.update(
+        {
+            "schema": "saea-a2t-public-legality-semantic-card-corpus-report-v1",
+            "presentation_version": PUBLIC_API_LEGALITY_PRESENTATION_V1,
+            "public_legality_authority": "registry-required-and-optional-signature-facts",
+            "construction_pattern_role": "descriptive-only",
+            "unobserved_public_combinations_forbidden": False,
+            "public_required_argument_key_count": sum(
+                len(card.public_required_argument_keys) for card in cards
+            ),
+            "public_optional_argument_key_count": sum(
+                len(card.public_optional_argument_keys) for card in cards
+            ),
+            "construction_observed_argument_pattern_count": sum(
+                len(card.construction_observed_argument_patterns) for card in cards
+            ),
+            "utf8_bytes": len(rendered),
+            "characters": len(text),
+            "line_count": len(text.splitlines()),
+        }
+    )
+    return PublicLegalitySemanticCardCorpus(
+        text=text,
+        sha256=hashlib.sha256(rendered).hexdigest(),
+        tool_cards=tuple(cards),
+        task_cards=public_only.task_cards,
+        report=report,
+    )
+
+
+def build_from_partition_with_public_legality(
+    registry_rows: Sequence[Mapping[str, str]],
+    construction_rows: Sequence[A2tKbRow],
+    *,
+    minimum_support: int = MINIMUM_COMPATIBILITY_SUPPORT,
+    max_utf8_bytes: int = DEFAULT_MAX_UTF8_BYTES,
+) -> tuple[PublicLegalitySemanticCardCorpus, dict[str, object]]:
+    """Compile the opt-in presentation and verify reversed-input identity."""
+
+    rules, derivation = derive_compatibility_rules(
+        registry_rows, construction_rows, minimum_support=minimum_support
+    )
+    safe_rows = _compatible_construction_rows(registry_rows, construction_rows, rules)
+    first = build_public_legality_semantic_card_corpus(
+        registry_rows,
+        safe_rows,
+        compatibility_rules=rules,
+        max_utf8_bytes=max_utf8_bytes,
+    )
+    reversed_registry = tuple(reversed(registry_rows))
+    reversed_construction = tuple(reversed(construction_rows))
+    reversed_rules, reversed_derivation = derive_compatibility_rules(
+        reversed_registry,
+        reversed_construction,
+        minimum_support=minimum_support,
+    )
+    reversed_safe_rows = _compatible_construction_rows(
+        reversed_registry,
+        reversed_construction,
+        reversed_rules,
+    )
+    second = build_public_legality_semantic_card_corpus(
+        reversed_registry,
+        reversed_safe_rows,
+        compatibility_rules=reversed_rules,
+        max_utf8_bytes=max_utf8_bytes,
+    )
+    if derivation != reversed_derivation or rules != reversed_rules:
+        raise SemanticCardCompilationError(
+            "compatibility derivation is order-dependent"
+        )
+    if first != second:
+        raise SemanticCardCompilationError(
+            "public-legality semantic-card corpus is not byte deterministic"
+        )
+    pattern_families = {
+        (row.tool_name, tuple(sorted(row.arg_signature))) for row in construction_rows
+    }
+    argument_keys = {key for row in construction_rows for key in row.arg_signature}
+    report = {
+        "deterministic_rebuild_equal": True,
+        "presentation_version": PUBLIC_API_LEGALITY_PRESENTATION_V1,
+        "public_legality_authority": "registry-required-and-optional-signature-facts",
+        "construction_pattern_role": "descriptive-only",
+        "unobserved_public_combinations_forbidden": False,
+        "construction_argument_pattern_family_count": len(pattern_families),
+        "construction_argument_key_count": len(argument_keys),
+        "safe_construction_row_count": len(safe_rows),
+        "excluded_construction_row_count": len(construction_rows) - len(safe_rows),
+        "compatibility": derivation,
+    }
+    return first, report
+
+
 def _is_sha256(value: object) -> bool:
     return (
         isinstance(value, str)
@@ -464,6 +784,14 @@ def _validate_config(config: A2tSemanticCardCompilationConfig) -> None:
     if Path(config.corpus_output_path) == Path(config.receipt_output_path):
         raise SemanticCardCompilationError(
             "corpus and receipt output paths must be different"
+        )
+    if config.presentation_version not in {
+        None,
+        PUBLIC_API_LEGALITY_PRESENTATION_V1,
+    }:
+        raise SemanticCardCompilationError(
+            "presentation_version must be None or "
+            f"{PUBLIC_API_LEGALITY_PRESENTATION_V1!r}"
         )
     for path in (config.corpus_output_path, config.receipt_output_path):
         if Path(path).exists():
@@ -603,7 +931,12 @@ def compile_a2t_semantic_card_artifacts(
             "construction pool omitted its source-bound selection provenance"
         )
     try:
-        corpus, compiler_report = build_from_partition(
+        build = (
+            build_from_partition
+            if config.presentation_version is None
+            else build_from_partition_with_public_legality
+        )
+        corpus, compiler_report = build(
             registry,
             construction_rows,
             minimum_support=config.minimum_compatibility_support,
@@ -684,10 +1017,15 @@ __all__ = [
     "A2tSemanticCardCompilationConfig",
     "COMPILATION_RECEIPT_SCHEMA",
     "MINIMUM_COMPATIBILITY_SUPPORT",
+    "PUBLIC_API_LEGALITY_PRESENTATION_V1",
     "CompatibilityRule",
     "ExecutableSemanticCardCorpus",
+    "PublicLegalitySemanticCardCorpus",
+    "PublicLegalityToolSemanticCard",
     "SemanticCardCompilationError",
     "build_from_partition",
+    "build_from_partition_with_public_legality",
+    "build_public_legality_semantic_card_corpus",
     "compile_a2t_semantic_card_artifacts",
     "derive_compatibility_rules",
 ]
