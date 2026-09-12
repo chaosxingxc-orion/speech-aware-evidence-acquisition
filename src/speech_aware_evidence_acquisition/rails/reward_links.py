@@ -1,7 +1,8 @@
-"""Offline, hash-pinned links from finalized TRAIN runs to experience sources.
+"""Link verified construction trajectories to saved native numeric feedback.
 
-The current ExperienceSource runtime carrier mapping is deliberately narrow: only SLURP construction rosters with slurp:train:* identities are accepted. Stage-2 plans may use other split roles; membership comes from this pinned construction roster.
-This module prepares provenance for a later, human-controlled memory admission step. It never creates or updates provisional or admitted memory records.
+This module never calls a model or scorer, copies reference text, or admits memory.
+ExperienceSource.response_sha256 follows AgentLoopResult's final-text convention.
+Transport response identity remains separately available in provenance.
 """
 from __future__ import annotations
 
@@ -12,7 +13,6 @@ import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 from ..contracts import TraceRecord
 from ..core.bundle.verify import verify_bundle
@@ -24,66 +24,86 @@ from .hashing import content_hash
 REWARD_LINK_SCHEMA = "saea-reward-link-v1"
 REWARD_PROJECTION_SCHEMA = "saea-reward-projection-v1"
 _SHA256 = re.compile(r"[0-9a-f]{64}")
-_FORBIDDEN_SCORERS = frozenset({"cost", "cost-v1", "cost-scorer"})
-_REQUEST_AXES = frozenset({"request", "model_request", "prompt"})
-_RESPONSE_AXES = frozenset({"response", "model_response", "answer"})
-_COST_AXES = frozenset({"cost", "latency"})
-_MANIFEST_KEYS = frozenset({"tool_id", "tool_manifest_sha256", "manifest_sha256", "tool_manifest_id"})
+_RESEARCH_AXES = frozenset({"OBS", "ORG", "SUPPLY", "USE"})
+_ACTION_AXES = _RESEARCH_AXES | {"REVIEW", "REPLAY", "TOOL"}
+_ASR_ROWS = frozenset({"wer", "hits", "substitutions", "deletions", "insertions"})
+SLURP_NATIVE_FIELDS = (
+    "scenario_action_exact", "scenario_exact", "action_exact",
+    "slot_f1_exact_tp", "slot_f1_exact_fp", "slot_f1_exact_fn",
+    "slu_f1_word_tp", "slu_f1_word_fp", "slu_f1_word_fn",
+    "slu_f1_char_tp", "slu_f1_char_fp", "slu_f1_char_fn",
+)
+_SLURP_AGGREGATES = frozenset(
+    "port_micro." + field for field in (
+        "samples", "slu_f1", "slu_f1_precision", "slu_f1_recall",
+        "span_f1", "span_f1_precision", "span_f1_recall",
+        "scenario_accuracy", "action_accuracy", "intent_accuracy",
+    )
+)
+_NATIVE_PROJECTIONS = {
+    "asr-wer": (frozenset({"mean_wer", "samples"}), _ASR_ROWS, _ASR_ROWS),
+    "asr-wer-whisper": (
+        frozenset({"corpus_wer", "substitutions", "deletions", "insertions",
+                   "reference_words", "samples"}), _ASR_ROWS, _ASR_ROWS,
+    ),
+    **{name: (_SLURP_AGGREGATES, frozenset(SLURP_NATIVE_FIELDS),
+              frozenset(SLURP_NATIVE_FIELDS))
+       for name in ("slurp-slu-official", "slurp-slu-official-train", "slurp-slu-train")},
+}
+_MANIFEST_KEYS = frozenset({
+    "tool_id", "tool_manifest_sha256", "manifest_sha256", "tool_manifest_id",
+})
 
 
 class RewardLinkError(ValueError):
-    """A reward link cannot be built or re-verified."""
+    """A source, native projection, or immutable reward link is invalid."""
 
 
-def _text(value: object, field: str) -> str:
-    if not isinstance(value, str) or not value:
-        raise RewardLinkError(f"{field} must be non-empty text")
+def _text(value, field):
+    if not isinstance(value, str) or not value.strip():
+        raise RewardLinkError(f"{field} must be nonempty text")
     return value
 
 
-def _sha(value: object, field: str) -> str:
+def _sha(value, field):
     if not isinstance(value, str) or _SHA256.fullmatch(value) is None:
         raise RewardLinkError(f"{field} must be a lowercase SHA-256")
     return value
 
 
-def _mapping(value: object, field: str) -> Mapping[str, object]:
+def _mapping(value, field):
     if not isinstance(value, Mapping):
         raise RewardLinkError(f"{field} must be an object")
     return value
 
 
-def _path(value: Mapping[str, object], name: str) -> object:
-    current: object = value
-    for part in name.split("."):
-        if not isinstance(current, Mapping) or part not in current:
-            raise RewardLinkError(f"declared score field {name!r} is absent")
-        current = current[part]
-    return current
-
-
-def _numeric(value: object, field: str) -> int | float:
-    if isinstance(value, bool) or not isinstance(value, (int, float)):
-        raise RewardLinkError(f"{field} must be numeric")
-    if isinstance(value, float) and not math.isfinite(value):
-        raise RewardLinkError(f"{field} must be finite")
-    return value
-
-
-def _fields(value: object, field: str) -> tuple[str, ...]:
+def _fields(value, field):
     if isinstance(value, (str, bytes)) or not isinstance(value, Sequence) or not value:
-        raise RewardLinkError(f"{field} must be a non-empty sequence")
-    result = tuple(_text(item, f"{field}[{index}]") for index, item in enumerate(value))
-    if len(result) != len(set(result)):
-        raise RewardLinkError(f"{field} must contain unique paths")
-    if any(path.startswith(".") or path.endswith(".") for path in result):
-        raise RewardLinkError(f"{field} contains an invalid dotted path")
+        raise RewardLinkError(f"{field} must be a nonempty field sequence")
+    result = tuple(_text(item, field) for item in value)
+    if len(set(result)) != len(result):
+        raise RewardLinkError(f"{field} contains duplicate paths")
     return result
+
+
+def _numeric_path(value, field):
+    current = value
+    for part in field.split("."):
+        if not isinstance(current, Mapping) or part not in current:
+            raise RewardLinkError(f"native score field {field!r} is missing")
+        current = current[part]
+    if isinstance(current, bool) or not isinstance(current, (int, float)):
+        raise RewardLinkError(f"native score field {field!r} must be numeric")
+    if not math.isfinite(current) or current < 0:
+        raise RewardLinkError(f"native score field {field!r} must be finite and nonnegative")
+    if field in SLURP_NATIVE_FIELDS[:3] and current not in (0, 1):
+        raise RewardLinkError(f"intent correctness field {field!r} must be zero or one")
+    return current
 
 
 @dataclass(frozen=True)
 class RewardProjection:
-    """Frozen declaration of the numeric fields copied from an official score."""
+    """Select task-native numbers while retaining all per-row sufficient counts."""
 
     reward_rule_id: str
     scorer: str
@@ -91,32 +111,42 @@ class RewardProjection:
     per_sample_fields: tuple[str, ...]
     schema: str = REWARD_PROJECTION_SCHEMA
 
-    def __post_init__(self) -> None:
+    def __post_init__(self):
         _text(self.reward_rule_id, "reward rule ID")
         _text(self.scorer, "scorer")
-        if self.scorer.lower() in _FORBIDDEN_SCORERS:
-            raise RewardLinkError("cost scorers cannot be reward projections")
-        _fields(self.aggregate_fields, "aggregate_fields")
-        _fields(self.per_sample_fields, "per_sample_fields")
+        specification = _NATIVE_PROJECTIONS.get(self.scorer)
+        if specification is None:
+            raise RewardLinkError("scorer has no registered native quality projection")
+        aggregate = _fields(self.aggregate_fields, "aggregate fields")
+        rows = _fields(self.per_sample_fields, "per-sample fields")
+        allowed_aggregate, allowed_rows, required_rows = specification
+        if not set(aggregate) <= allowed_aggregate or not set(rows) <= allowed_rows:
+            raise RewardLinkError("projection contains non-native or answer-bearing fields")
+        if not required_rows <= set(rows):
+            raise RewardLinkError("projection omits required native sufficient statistics")
         if self.schema != REWARD_PROJECTION_SCHEMA:
             raise RewardLinkError("unsupported reward projection schema")
+        object.__setattr__(self, "aggregate_fields", aggregate)
+        object.__setattr__(self, "per_sample_fields", rows)
 
-    def as_json(self) -> dict[str, object]:
-        return {"schema": self.schema, "reward_rule_id": self.reward_rule_id, "scorer": self.scorer,
-                "aggregate_fields": list(self.aggregate_fields), "per_sample_fields": list(self.per_sample_fields)}
+    def as_json(self):
+        return {
+            "schema": self.schema, "reward_rule_id": self.reward_rule_id,
+            "scorer": self.scorer, "aggregate_fields": list(self.aggregate_fields),
+            "per_sample_fields": list(self.per_sample_fields),
+        }
 
     @classmethod
-    def from_json(cls, value: object) -> "RewardProjection":
+    def from_json(cls, value):
         row = _mapping(value, "reward projection")
-        return cls(_text(row.get("reward_rule_id"), "reward_rule_id"), _text(row.get("scorer"), "scorer"),
-                   _fields(row.get("aggregate_fields"), "aggregate_fields"),
-                   _fields(row.get("per_sample_fields"), "per_sample_fields"),
-                   _text(row.get("schema"), "projection schema"))
+        if set(row) != {"schema", "reward_rule_id", "scorer", "aggregate_fields", "per_sample_fields"}:
+            raise RewardLinkError("reward projection has missing or unknown fields")
+        return cls(**row)
 
 
 @dataclass(frozen=True)
 class RewardLink:
-    """One immutable sample-level binding and its proposal-safe numeric vector."""
+    """One source-bound feedback artifact; validate again before conversion."""
 
     source: ExperienceSource
     carrier_lock_key: str
@@ -127,221 +157,418 @@ class RewardLink:
     link_sha256: str
     schema: str = REWARD_LINK_SCHEMA
 
-    def unsigned_json(self) -> dict[str, object]:
-        return {"schema": self.schema, "source": self.source.as_json(), "carrier_lock_key": self.carrier_lock_key,
-                "construction_roster_sha256": self.construction_roster_sha256, "projection": self.projection.as_json(),
-                "native_score_vector": dict(self.native_score_vector), "provenance": dict(self.provenance)}
+    def unsigned_json(self):
+        return {
+            "schema": self.schema, "source": self.source.as_json(),
+            "carrier_lock_key": self.carrier_lock_key,
+            "construction_roster_sha256": self.construction_roster_sha256,
+            "projection": self.projection.as_json(),
+            "native_score_vector": dict(self.native_score_vector),
+            "provenance": dict(self.provenance),
+        }
 
-    def validate(self) -> None:
+    def validate(self):
+        """Validate stored integrity; verify_reward_links rechecks source authority."""
         if self.schema != REWARD_LINK_SCHEMA:
             raise RewardLinkError("unsupported reward link schema")
         self.source.validate()
         if self.source.partition_role != "train":
-            raise RewardLinkError("reward links must target the TRAIN source partition")
-        _text(self.carrier_lock_key, "carrier lock key")
-        _sha(self.construction_roster_sha256, "construction roster SHA-256")
+            raise RewardLinkError("reward links require the TRAIN construction partition")
+        _text(self.carrier_lock_key, "carrier")
+        _sha(self.construction_roster_sha256, "construction roster hash")
+        _sha(self.link_sha256, "reward link hash")
         self.projection.__post_init__()
-        _sha(self.link_sha256, "reward link SHA-256")
         if content_hash(self.unsigned_json()) != self.link_sha256:
-            raise RewardLinkError("reward link hash does not match its immutable contents")
+            raise RewardLinkError("reward link contents no longer match its hash")
 
-    def as_json(self) -> dict[str, object]:
+    def as_json(self):
         self.validate()
-        return {**self.unsigned_json(), "link_sha256": self.link_sha256}
+        # Do not hand mutable internal containers to a serialization consumer.
+        return json.loads(json.dumps({**self.unsigned_json(), "link_sha256": self.link_sha256}))
 
-    def to_experience_source(self) -> ExperienceSource:
-        self.validate()
-        return self.source
-
-
-def _artifact_pin(manifest: Mapping[str, object], key: str) -> dict[str, str]:
-    value = _mapping(manifest.get(key), f"manifest {key}")
-    path = _text(value.get("path"), f"manifest {key}.path")
-    digest = _sha(value.get("sha256"), f"manifest {key}.sha256")
-    actual = hashlib.sha256(Path(path).read_bytes()).hexdigest()
-    if actual != digest:
+def _artifact_pin(manifest, key):
+    entry = _mapping(manifest.get(key), f"manifest {key}")
+    path = Path(_text(entry.get("path"), f"{key} path")).resolve()
+    digest = _sha(entry.get("sha256"), f"{key} hash")
+    if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
         raise RewardLinkError(f"{key} changed after bundle verification")
-    return {"path": str(Path(path).resolve()), "sha256": digest}
+    return {"path": str(path), "sha256": digest}
 
 
-def _sample_for(record_id: str, payload: Mapping[str, object], sample_ids: set[str]) -> str:
-    candidates = {sample for sample in sample_ids if sample in record_id}
-    for value in (payload.get("sample_id"), payload.get("request_id")):
-        if isinstance(value, str):
-            candidates.update(sample for sample in sample_ids if sample in value)
-    if len(candidates) != 1:
-        raise RewardLinkError(f"trace record {record_id!r} does not map to exactly one roster sample")
-    return next(iter(candidates))
+def _manifest_identities(payload):
+    """Keep each tool/manifest identity at its own path, without evidence text."""
+    found = {}
 
-
-def _manifest_identities(payload: object) -> dict[str, object]:
-    found: dict[str, object] = {}
-    def visit(value: object) -> None:
+    def visit(value, path):
         if isinstance(value, Mapping):
             for key, child in value.items():
+                location = f"{path}.{key}" if path else str(key)
                 if isinstance(key, str) and (key in _MANIFEST_KEYS or key.endswith("_manifest_sha256")):
-                    if isinstance(child, (str, int, float, bool)) or child is None:
-                        found[key] = child
-                visit(child)
+                    if isinstance(child, str):
+                        found[location] = child
+                visit(child, location)
         elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
-            for child in value:
-                visit(child)
-    visit(payload)
+            for index, child in enumerate(value):
+                visit(child, f"{path}[{index}]")
+
+    visit(payload, "")
     return dict(sorted(found.items()))
 
 
-def _trace(manifest: Mapping[str, object], sample_ids: set[str]) -> tuple[dict[str, list[dict[str, object]]], dict[str, list[dict[str, object]]]]:
-    meta = _mapping(manifest.get("raw_trace"), "manifest raw_trace")
-    path = Path(_text(meta.get("path"), "raw_trace.path"))
-    expected = _sha(meta.get("sha256"), "raw_trace.sha256")
-    raw = path.read_bytes()
-    if hashlib.sha256(raw).hexdigest() != expected:
-        raise RewardLinkError("raw trace changed after bundle verification")
-    by_sample: dict[str, list[dict[str, object]]] = {sample: [] for sample in sample_ids}
-    for line_number, line in enumerate(raw.decode("utf-8").splitlines(), 1):
-        try:
-            row = json.loads(line)
-        except json.JSONDecodeError as error:
-            raise RewardLinkError(f"raw trace line {line_number} is invalid") from error
-        record = _mapping(row, f"trace line {line_number}")
-        axis = _text(record.get("channel"), "trace channel")
-        record_id = _text(record.get("record_id"), "trace record_id")
-        payload = _mapping(record.get("payload"), "trace payload")
-        sample = _sample_for(record_id, payload, sample_ids)
-        by_sample[sample].append({"axis": axis, "record_id": record_id,
-                                  "event_sha256": TraceRecord(channel=axis, record_id=record_id, payload=payload).content_hash(),
-                                  "tool_manifest_identity": _manifest_identities(payload)})
-    actions: dict[str, list[dict[str, object]]] = {}
-    for sample, events in by_sample.items():
-        if not events:
-            raise RewardLinkError(f"sample {sample!r} has no trace events")
-        if not any(event["axis"].lower() in _RESPONSE_AXES for event in events):
-            raise RewardLinkError(f"sample {sample!r} has no response event")
-        selected = [event for event in events if event["axis"].lower() not in _REQUEST_AXES
-                    and event["axis"].lower() not in _RESPONSE_AXES and event["axis"].lower() not in _COST_AXES]
-        if not selected:
-            raise RewardLinkError(f"sample {sample!r} has no ordered action events")
-        actions[sample] = selected
-    return by_sample, actions
+def _model_index(documents, sample_ids):
+    """Bind normalized responses and control contacts to exact transport requests."""
+    requests, responses, contacts = {}, {}, {}
+    for row in documents:
+        if row["channel"] != "MODEL_REQUEST":
+            continue
+        record_id = row["record_id"]
+        payload = _mapping(row["payload"].get("payload"), "model request payload")
+        if not record_id.endswith("/request"):
+            raise RewardLinkError("model request has a noncanonical record identity")
+        request_id = record_id.removesuffix("/request")
+        sample = payload.get("sample_id")
+        if sample not in sample_ids or payload.get("request_id") != request_id:
+            raise RewardLinkError("model request has a conflicting sample or request identity")
+        if content_hash(payload) != row["payload"].get("payload_sha256"):
+            raise RewardLinkError("model request payload hash differs from its content")
+        requests[request_id] = {"sample": sample, "payload": payload}
+    for row in documents:
+        if row["channel"] != "MODEL_RESPONSE":
+            continue
+        record_id = row["record_id"]
+        if not record_id.endswith("/response"):
+            raise RewardLinkError("model response has a noncanonical record identity")
+        request_id = record_id.removesuffix("/response")
+        if request_id not in requests:
+            raise RewardLinkError("model response lacks its exact request")
+        payload = row["payload"]
+        text = payload.get("text")
+        if not isinstance(text, str):
+            raise RewardLinkError("normalized model response text is missing")
+        digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        if digest != payload.get("response_text_sha256"):
+            raise RewardLinkError("normalized model response text hash differs")
+        responses[request_id] = digest
+        request = requests[request_id]
+        history = request["payload"].get("history", [])
+        controls = [turn for turn in history if isinstance(turn, Mapping)
+                    and turn.get("role") == "control" and "contact_id" in turn]
+        if controls:
+            cid = _text(controls[-1]["contact_id"], "control contact ID")
+            contacts.setdefault((request["sample"], cid, digest), set()).add(request_id)
+    # An attempted request without a normalized response is retained, but cannot
+    # satisfy a successful USE contact or a credited final response.
+    return requests, responses, contacts
 
 
-def _score_vector(receipt: Mapping[str, object], projection: RewardProjection, sample_ids: set[str]) -> tuple[dict[str, object], str]:
-    result_meta = _mapping(receipt.get("score_result"), "score receipt score_result")
-    result_path = Path(_text(result_meta.get("path"), "score_result.path"))
-    result_sha = _sha(result_meta.get("sha256"), "score_result.sha256")
-    raw = result_path.read_bytes()
-    if hashlib.sha256(raw).hexdigest() != result_sha:
-        raise RewardLinkError("score result changed after score receipt verification")
-    result = _mapping(json.loads(raw.decode("utf-8")), "score result")
-    scores = _mapping(result.get("scores"), "score result scores")
-    score = _mapping(scores.get(projection.scorer), f"scores[{projection.scorer}]")
+def _validate_actions(assigned, contacts, outputs):
+    """Cross-check typed phase identities before crediting any action."""
+    phases, runtime, latest = {}, {}, {}
+    successful_responses = {(sample, digest) for sample, _, digest in contacts}
+
+    def contact_requests(sample, contact):
+        contact = _mapping(contact, "USE contact")
+        plan = _mapping(contact.get("plan"), "USE contact plan")
+        cid = _text(plan.get("contact_id"), "USE contact ID")
+        digest = _sha(contact.get("response_sha256"), "USE response hash")
+        matches = contacts.get((sample, cid, digest))
+        if not matches:
+            raise RewardLinkError("USE contact has a stale or cross-sample response")
+        return matches, digest
+
+    for sample, row in assigned:
+        record_id, payload = row["record_id"], row["payload"]
+        if row["channel"] != "USE" or "use_contacts" not in payload:
+            continue
+        suffix = "/agent-loop/runtime-use"
+        if not record_id.endswith(suffix):
+            raise RewardLinkError("USE contacts lack a canonical runtime namespace")
+        head = record_id.removesuffix(suffix)
+        rows = payload["use_contacts"]
+        if not isinstance(rows, list) or not rows:
+            raise RewardLinkError("runtime USE requires successful contacts")
+        final_hash = _sha(payload.get("use_final_response_sha256"), "phase final response")
+        eligible = set()
+        for contact in rows:
+            matches, digest = contact_requests(sample, contact)
+            if digest == final_hash:
+                eligible.update(matches)
+            # Shared phase materials name contacts as program:phase:sample.
+            # Continuous programs have one runtime-use record for all phases.
+            cid = contact["plan"]["contact_id"]
+            suffix = ":" + sample
+            if cid.endswith(suffix):
+                _, separator, contact_phase = cid.removesuffix(suffix).rpartition(":")
+                if separator:
+                    key = (sample, contact_phase)
+                    if key in phases and phases[key] != digest:
+                        raise RewardLinkError("phase has conflicting successful contacts")
+                    phases[key] = digest
+        if not eligible:
+            raise RewardLinkError("phase final response is absent from its successful contacts")
+        for wave in payload.get("use_waves", []):
+            plans, hashes = wave.get("contact_plans", []), wave.get("response_sha256s", [])
+            if len(plans) != len(hashes):
+                raise RewardLinkError("USE wave contact and response counts differ")
+            for plan, digest in zip(plans, hashes):
+                contact_requests(sample, {"plan": plan, "response_sha256": digest})
+        waves = payload.get("use_waves", [])
+        selected = waves[-1].get("selected_final_contact_id") if waves else None
+        if selected is not None:
+            eligible &= contacts.get((sample, selected, final_hash), set())
+            if not eligible:
+                raise RewardLinkError("selected final contact differs from the runtime answer")
+        if "use_runtime_trace_sha256" in payload:
+            keys = ("controller_policy_id", "agent_executor_id", "agent_executor_version",
+                    "knowledge_snapshot_sha256", "initial_query_state_sha256",
+                    "final_query_state_sha256", "speech_packet_sha256", "contacts",
+                    "waves", "transitions", "final_response_sha256")
+            if any("use_" + key not in payload for key in keys):
+                raise RewardLinkError("runtime USE digest has an incomplete document")
+            document = {key: payload["use_" + key] for key in keys}
+            if content_hash(document) != payload["use_runtime_trace_sha256"]:
+                raise RewardLinkError("runtime USE document hash differs")
+        runtime[head] = payload
+        latest[sample] = (final_hash, eligible)
+
+    for sample, row in assigned:
+        if row["channel"] != "ORG":
+            continue
+        for state in row["payload"].get("org_agent_states", []):
+            kind = state.get("state_kind", "")
+            if not isinstance(kind, str) or not kind.startswith("phase:"):
+                continue
+            phase = kind.removeprefix("phase:")
+            digest = _sha(state.get("source_response_sha256"), "phase state source")
+            if (sample, digest) not in successful_responses:
+                raise RewardLinkError("phase state lacks a traced sample response")
+            key = (sample, phase)
+            if key in phases and phases[key] != digest:
+                raise RewardLinkError("phase state conflicts with its contact response")
+            phases[key] = digest
+
+    for sample, row in assigned:
+        record_id, payload = row["record_id"], row["payload"]
+        for key in ("sample_id", "query_sample_id", "review_sample_id", "use_sample_id",
+                    "obs_sample_id", "org_sample_id", "supply_sample_id"):
+            if key in payload and payload[key] != sample:
+                raise RewardLinkError("typed action sample differs from its trace namespace")
+        for key in ("org_initial_query_state", "org_final_query_state"):
+            if key in payload and _mapping(payload[key], key).get("query_sample_id") != sample:
+                raise RewardLinkError("organization query state belongs to another sample")
+        for axis in ("obs", "use"):
+            result = payload.get(axis + "_result")
+            if isinstance(result, Mapping) and "sample_id" in result and result["sample_id"] != sample:
+                raise RewardLinkError("tool result belongs to another sample")
+        for prefix in ("review", "use_review"):
+            key = prefix + "_response_sha256"
+            if key in payload:
+                phase = payload.get("review_phase" if prefix == "review" else "use_phase")
+                expected = phases.get((sample, phase))
+                if expected is None or payload[key] != expected:
+                    raise RewardLinkError("review references a stale or cross-phase answer")
+        if record_id.rsplit("/", 1)[-1].startswith("tool-"):
+            phase = record_id.rsplit("/", 2)[-2]
+            for key in ("obs_source_response_sha256", "use_source_response_sha256"):
+                if key in payload and payload[key] != phases.get((sample, phase)):
+                    raise RewardLinkError("phase tool references a stale source response")
+        if record_id.endswith("/agent-loop/posthoc-use"):
+            head = record_id.removesuffix("/agent-loop/posthoc-use")
+            prior = runtime.get(head)
+            if prior is None or any(payload.get(key) != prior.get(key) for key in (
+                "use_runtime_trace_sha256", "use_final_response_sha256",
+            )):
+                raise RewardLinkError("posthoc USE differs from its runtime response")
+    for output in outputs:
+        sample = output["sample_id"]
+        if sample in latest:
+            final_hash, eligible = latest[sample]
+            if output["response_text_sha256"] != final_hash or output["request_id"] not in eligible:
+                raise RewardLinkError("credited final output differs from the terminal phase")
+
+
+def _trace(bundle, sample_ids, raw):
+    """Associate opaque requests and existing phase namespaces by exact identity."""
+    documents = [json.loads(line) for line in raw.decode("utf-8").split("\n") if line]
+    requests, responses, contacts = _model_index(documents, sample_ids)
+    for output in bundle.outputs_rows:
+        request = requests.get(output["request_id"])
+        if request is None or request["sample"] != output["sample_id"]:
+            raise RewardLinkError("final output does not name its sample's exact request")
+        if responses.get(output["request_id"]) != output["response_text_sha256"]:
+            raise RewardLinkError("final output does not name its exact normalized response")
+    events = {sample: [] for sample in sample_ids}
+    assigned = []
+    for row in documents:
+        axis, record_id, payload = row["channel"], row["record_id"], row["payload"]
+        if bundle.trace_records.get(record_id) != payload:
+            raise RewardLinkError("trace changed after bundle verification")
+        sample, prefix = None, record_id
+        while "/" in prefix:
+            prefix = prefix.rsplit("/", 1)[0]
+            if prefix in requests:
+                sample = requests[prefix]["sample"]
+                break
+        if axis in _ACTION_AXES:
+            prefix = record_id
+            while "/" in prefix:
+                prefix = prefix.rsplit("/", 1)[0]
+                if prefix in sample_ids:
+                    if sample is not None and sample != prefix:
+                        raise RewardLinkError("phase trace conflicts with model sample")
+                    sample = prefix
+                    break
+        if sample is None:
+            # Global bookkeeping remains covered by the whole trace hash.
+            continue
+        assigned.append((sample, row))
+        events[sample].append({
+            "axis": axis, "record_id": record_id,
+            "event_sha256": TraceRecord(axis, record_id, payload).content_hash(),
+            "tool_manifest_identity": _manifest_identities(payload),
+        })
+    _validate_actions(assigned, contacts, bundle.outputs_rows)
+    actions = {sample: [row for row in rows if row["axis"] in _ACTION_AXES]
+               for sample, rows in events.items()}
+    return events, actions
+
+
+def _score_vector(receipt, projection, sample_ids):
+    meta = _mapping(receipt.get("score_result"), "score result")
+    raw = Path(_text(meta.get("path"), "score path")).read_bytes()
+    digest = hashlib.sha256(raw).hexdigest()
+    if digest != meta.get("sha256"):
+        raise RewardLinkError("score result changed after receipt verification")
+    score = json.loads(raw)["scores"][projection.scorer]
     aggregate = _mapping(score.get("aggregate"), "score aggregate")
     rows = score.get("per_sample")
-    if isinstance(rows, (str, bytes)) or not isinstance(rows, Sequence):
-        raise RewardLinkError("score per_sample must be a sequence")
-    by_id: dict[str, Mapping[str, object]] = {}
+    if not isinstance(rows, list):
+        raise RewardLinkError("score per_sample must be a list")
+    by_id = {}
     for row in rows:
-        item = _mapping(row, "score per_sample row")
-        sample = _text(item.get("sample_id"), "score sample_id")
+        row = _mapping(row, "score row")
+        sample = _text(row.get("sample_id"), "score sample")
         if sample in by_id:
-            raise RewardLinkError(f"duplicate score row for {sample!r}")
-        by_id[sample] = item
+            raise RewardLinkError("duplicate native score row")
+        by_id[sample] = row
     if set(by_id) != sample_ids:
-        raise RewardLinkError("score rows do not exactly match the construction roster")
-    aggregate_vector = {field: _numeric(_path(aggregate, field), f"aggregate.{field}") for field in projection.aggregate_fields}
-    per_sample = {sample: {field: _numeric(_path(by_id[sample], field), f"{sample}.{field}") for field in projection.per_sample_fields}
-                  for sample in sorted(sample_ids)}
-    return {"aggregate": aggregate_vector, "per_sample": per_sample}, result_sha
+        raise RewardLinkError("native scores do not exactly cover construction membership")
+    return {
+        "aggregate": {field: _numeric_path(aggregate, field) for field in projection.aggregate_fields},
+        "per_sample": {
+            sample: {field: _numeric_path(row, field) for field in projection.per_sample_fields}
+            for sample, row in by_id.items()
+        },
+    }, digest
 
 
-def _build_one(bundle: Any, roster: Mapping[str, object], roster_sha: str, receipt: Mapping[str, object],
-               projection: RewardProjection, score_vector: Mapping[str, object], score_result_sha: str,
-               events: Mapping[str, list[dict[str, object]]], actions: Mapping[str, list[dict[str, object]]], sample: str) -> RewardLink:
-    outputs = [row for row in bundle.outputs_rows if row.get("sample_id") == sample]
-    if len(outputs) != 1:
-        raise RewardLinkError(f"sample {sample!r} must have exactly one output row")
-    output = _mapping(outputs[0], f"output for {sample}")
-    response = _sha(output.get("response_text_sha256"), f"response hash for {sample}")
-    per = _mapping(score_vector["per_sample"], "per_sample")
-    row_vector = {"aggregate": score_vector["aggregate"], "per_sample": {sample: per[sample]}}
-    trajectory = content_hash({"events": events[sample]})
-    action = content_hash({"actions": actions[sample]})
-    outcome = content_hash({"partition_role": "train", "sample_id": sample, "carrier_lock_key": roster.get("carrier_lock_key"),
-                            "construction_roster_sha256": roster_sha,
-                            "reward_rule_id": projection.reward_rule_id, "scorer": projection.scorer,
-                            "projection": projection.as_json(), "native_score_vector": row_vector,
-                            "score_result_sha256": score_result_sha})
-    source = ExperienceSource("train", sample, trajectory, action, response, outcome)
-    manifest_path = Path(bundle.manifest_path).resolve()
-    provenance = {"manifest": {"path": str(manifest_path), "sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest()},
-                  "outputs": _artifact_pin(bundle.manifest, "outputs"), "raw_trace": _artifact_pin(bundle.manifest, "raw_trace"),
-                  "trace_manifest": _artifact_pin(bundle.manifest, "trace_manifest"), "score_result_sha256": score_result_sha,
-                  "score_receipt_identity": receipt.get("identity"), "ordered_events": events[sample], "ordered_actions": actions[sample]}
-    unsigned = {"schema": REWARD_LINK_SCHEMA, "source": source.as_json(),
-                "carrier_lock_key": _text(roster.get("carrier_lock_key"), "carrier_lock_key"),
-                "construction_roster_sha256": roster_sha, "projection": projection.as_json(),
-                "native_score_vector": row_vector, "provenance": provenance}
-    return RewardLink(source, unsigned["carrier_lock_key"], roster_sha, projection, row_vector, provenance, content_hash(unsigned))
-
-
-def build_reward_links(manifest_path: Path, score_receipt: SavedScoreReceiptRef, construction_roster_path: Path,
-                       projection: RewardProjection) -> tuple[RewardLink, ...]:
-    """Verify a complete TRAIN bundle and score, then build immutable links."""
+def build_reward_links(manifest_path, score_receipt: SavedScoreReceiptRef,
+                       construction_roster_path, projection: RewardProjection):
+    """Build only from complete verified construction runs and their saved scores."""
     if not isinstance(projection, RewardProjection):
         raise RewardLinkError("projection must be a RewardProjection")
+    projection.__post_init__()
     bundle = verify_bundle(Path(manifest_path))
-    if bundle.manifest.get("status") != "COMPLETED" or bundle.attempt_state != "FINALIZED":
-        raise RewardLinkError("reward links require a COMPLETED bundle with FINALIZED attempt")
-    roster = read_roster(Path(construction_roster_path))
-    if roster.get("roster_role") != CONSTRUCTION_ROSTER_ROLE:
+    if bundle.manifest["status"] != "COMPLETED" or bundle.attempt_state != "FINALIZED":
+        raise RewardLinkError("reward links require a COMPLETED, FINALIZED bundle")
+    roster_path = Path(construction_roster_path)
+    roster = read_roster(roster_path)
+    if roster["roster_role"] != CONSTRUCTION_ROSTER_ROLE:
         raise RewardLinkError("reward links require a construction roster")
-    carrier = _text(roster.get("carrier_lock_key"), "roster carrier_lock_key")
-    split = _mapping(bundle.manifest.get("split"), "bundle split")
-    if split.get("carrier_lock_key") != carrier:
-        raise RewardLinkError("bundle and construction roster carriers differ")
-    items = roster.get("items")
-    if isinstance(items, (str, bytes)) or not isinstance(items, Sequence):
-        raise RewardLinkError("construction roster lacks items")
-    ids = [item.get("sample_id") for item in items if isinstance(item, Mapping)]
-    roster_ids = tuple(_text(item, "roster sample ID") for item in ids)
-    if len(set(roster_ids)) != len(roster_ids) or set(roster_ids) != set(bundle.split_ids):
-        raise RewardLinkError("bundle split is not exactly the construction roster")
-    if carrier != "slurp":
-        raise RewardLinkError("ExperienceSource conversion currently supports only SLURP TRAIN construction")
-    if carrier == "slurp" and any(not sample.startswith("slurp:train:") for sample in roster_ids):
-        raise RewardLinkError("SLURP construction sources must use slurp:train:* identities")
-    scorers = bundle.manifest.get("scorers")
-    if not isinstance(scorers, Sequence) or projection.scorer not in set(scorers):
-        raise RewardLinkError("declared scorer is not pinned in the bundle")
+    carrier = roster["carrier_lock_key"]
+    if carrier != bundle.manifest["split"]["carrier_lock_key"]:
+        raise RewardLinkError("bundle and construction carrier differ")
+    ids = tuple(item["sample_id"] for item in roster["items"])
+    if len(set(ids)) != len(ids) or set(ids) != bundle.split_ids:
+        raise RewardLinkError("bundle does not exactly match the construction roster")
+    if carrier == "slurp":
+        if any(not sample.startswith("slurp:train:") for sample in ids):
+            raise RewardLinkError("SLURP construction requires TRAIN sample identities")
+        if projection.scorer not in {"slurp-slu-official-train", "slurp-slu-train"}:
+            raise RewardLinkError("SLURP construction requires its TRAIN scorer")
+    elif carrier not in {"earnings21-original", "earnings22-original"} or projection.scorer not in {
+        "asr-wer", "asr-wer-whisper",
+    }:
+        raise RewardLinkError("carrier and native quality projection do not match")
+    if projection.scorer not in bundle.manifest["scorers"]:
+        raise RewardLinkError("native scorer is not declared by the bundle")
     receipt = verify_complete_score_receipt(score_receipt, bundle)
-    vector, result_sha = _score_vector(receipt, projection, set(roster_ids))
-    events, actions = _trace(bundle.manifest, set(roster_ids))
-    roster_sha = hashlib.sha256(Path(construction_roster_path).read_bytes()).hexdigest()
-    return tuple(_build_one(bundle, roster, roster_sha, receipt, projection, vector, result_sha, events, actions, sample)
-                 for sample in roster_ids)
+    vector, result_sha = _score_vector(receipt, projection, set(ids))
+    # Shared source files are hashed once, not once for every sample.
+    common = {
+        "manifest": {"path": str(Path(manifest_path).resolve()),
+                     "sha256": hashlib.sha256(Path(manifest_path).read_bytes()).hexdigest()},
+        **{key: _artifact_pin(bundle.manifest, key) for key in ("outputs", "raw_trace", "trace_manifest")},
+    }
+    raw = Path(common["raw_trace"]["path"]).read_bytes()
+    if hashlib.sha256(raw).hexdigest() != common["raw_trace"]["sha256"]:
+        raise RewardLinkError("raw trace changed after verification")
+    events, actions = _trace(bundle, set(ids), raw)
+    roster_sha = hashlib.sha256(roster_path.read_bytes()).hexdigest()
+    outputs = {row["sample_id"]: row for row in bundle.outputs_rows}
+    links = []
+    for sample in ids:
+        output = outputs[sample]
+        row_vector = {"aggregate": vector["aggregate"],
+                      "per_sample": {sample: vector["per_sample"][sample]}}
+        outcome = content_hash({
+            "partition_role": "train", "sample_id": sample, "carrier_lock_key": carrier,
+            "construction_roster_sha256": roster_sha,
+            "projection": projection.as_json(), "native_score_vector": row_vector,
+            "score_result_sha256": result_sha,
+        })
+        source = ExperienceSource(
+            "train", sample, content_hash({"events": events[sample]}),
+            content_hash({"actions": actions[sample]}),
+            _sha(output["response_text_sha256"], "final-text hash"), outcome,
+        )
+        provenance = {
+            **common, "score_result_sha256": result_sha,
+            "score_receipt_identity": receipt["identity"],
+            "ordered_events": events[sample], "ordered_actions": actions[sample],
+            "wire_response_sha256": _sha(output["response_sha256"], "wire response hash"),
+        }
+        unsigned = {
+            "schema": REWARD_LINK_SCHEMA, "source": source.as_json(),
+            "carrier_lock_key": carrier, "construction_roster_sha256": roster_sha,
+            "projection": projection.as_json(), "native_score_vector": row_vector,
+            "provenance": provenance,
+        }
+        links.append(RewardLink(source, carrier, roster_sha, projection,
+                                row_vector, provenance, content_hash(unsigned)))
+    return tuple(links)
 
 
-def verify_reward_links(links: Sequence[RewardLink], manifest_path: Path, score_receipt: SavedScoreReceiptRef,
-                        construction_roster_path: Path, projection: RewardProjection) -> tuple[RewardLink, ...]:
-    """Re-run every upstream verifier and require byte-identical links."""
+def verify_reward_links(links, manifest_path, score_receipt,
+                        construction_roster_path, projection):
+    """Reverify source artifacts, full roster order and every link's contents."""
     expected = build_reward_links(manifest_path, score_receipt, construction_roster_path, projection)
     given = tuple(links)
-    for link in given:
-        link.validate()
-    if len(given) != len(expected) or {link.source.source_sample_id: link.as_json() for link in given} != {link.source.source_sample_id: link.as_json() for link in expected}:
-        raise RewardLinkError("reward link does not match current verified artifacts")
+    if [link.as_json() for link in given] != [link.as_json() for link in expected]:
+        raise RewardLinkError("reward links differ from verified source artifacts")
     return expected
 
 
-def build_experience_sources(manifest_path: Path, score_receipt: SavedScoreReceiptRef, construction_roster_path: Path,
-                             projection: RewardProjection) -> tuple[ExperienceSource, ...]:
-    """Convert only freshly re-verified links to source records."""
-    links = build_reward_links(manifest_path, score_receipt, construction_roster_path, projection)
-    return tuple(link.to_experience_source() for link in verify_reward_links(links, manifest_path, score_receipt, construction_roster_path, projection))
+def build_experience_sources(manifest_path, score_receipt, construction_roster_path, projection):
+    """Convert a freshly verified source bundle once for the complete roster."""
+    return tuple(link.source for link in build_reward_links(
+        manifest_path, score_receipt, construction_roster_path, projection,
+    ))
+
+
+def verify_experience_sources(links, manifest_path, score_receipt,
+                              construction_roster_path, projection):
+    """Convert stored links only after one full source-bound verification."""
+    return tuple(link.source for link in verify_reward_links(
+        links, manifest_path, score_receipt, construction_roster_path, projection,
+    ))
 
 
 build_reward_link = build_reward_links
 build_reward_link_sources = build_experience_sources
-
-__all__ = ["REWARD_LINK_SCHEMA", "REWARD_PROJECTION_SCHEMA", "RewardLink", "RewardLinkError", "RewardProjection",
-           "build_experience_sources", "build_reward_link", "build_reward_link_sources", "build_reward_links", "verify_reward_links"]
+__all__ = [
+    "REWARD_LINK_SCHEMA", "REWARD_PROJECTION_SCHEMA", "SLURP_NATIVE_FIELDS",
+    "RewardLink", "RewardLinkError", "RewardProjection", "build_experience_sources",
+    "build_reward_link", "build_reward_link_sources", "build_reward_links", "verify_reward_links",
+    "verify_experience_sources",
+]
