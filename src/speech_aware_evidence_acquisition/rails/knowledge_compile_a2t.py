@@ -35,6 +35,7 @@ from .knowledge_build_a2t import A2tKbRow, a2t_pool_rows
 MINIMUM_COMPATIBILITY_SUPPORT = 2
 COMPILATION_RECEIPT_SCHEMA = "saea-a2t-semantic-card-compilation-receipt-v1"
 PUBLIC_API_LEGALITY_PRESENTATION_V1 = "saea-a2t-public-api-legality-presentation-v1"
+NATIVE_COMPATIBLE_PRESENTATION_V1 = "saea-a2t-native-compatible-presentation-v1"
 _ZERO_CONTACTS = {
     "audio_seconds": 0,
     "embedding_tool": 0,
@@ -101,6 +102,44 @@ class PublicLegalitySemanticCardCorpus:
         return {card.tool_name: card for card in self.tool_cards}
 
 
+@dataclass(frozen=True)
+class NativeCompatibleToolSemanticCard:
+    """One card separating public documentation from native target evidence."""
+
+    tool_name: str
+    choose_semantics: str
+    avoid_semantics: str
+    signature: str
+    constraints: str
+    public_required_argument_keys: tuple[str, ...]
+    public_optional_argument_keys: tuple[str, ...]
+    construction_observed_argument_patterns: tuple[tuple[str, ...], ...]
+    native_task_form_rules: tuple[CompatibilityRule, ...]
+    role_guidance: tuple[str, ...]
+    native_role_guidance: tuple[str, ...]
+    public_examples: tuple[str, ...]
+    native_task_form_examples: tuple[str, ...]
+    examples: tuple[str, ...]
+    text: str
+
+
+@dataclass(frozen=True)
+class NativeCompatibleSemanticCardCorpus:
+    """Deterministic corpus with public and native-task layers."""
+
+    text: str
+    sha256: str
+    tool_cards: tuple[NativeCompatibleToolSemanticCard, ...]
+    task_cards: tuple[TaskSemanticCard, ...]
+    report: Mapping[str, object]
+
+    @property
+    def cards_by_name(self) -> dict[str, NativeCompatibleToolSemanticCard]:
+        """Return the complete card map keyed by exact registry name."""
+
+        return {card.tool_name: card for card in self.tool_cards}
+
+
 _LEGAL_KEY = re.compile(r"[A-Za-z][A-Za-z0-9_]*")
 _VALUE_FORM_TO_COMPATIBILITY = {
     "boolean": "boolean",
@@ -109,6 +148,18 @@ _VALUE_FORM_TO_COMPATIBILITY = {
     "map": "map",
     "number": "number",
     "string": "string",
+}
+
+_NATIVE_SEMANTIC_VALUE_FORMS = frozenset(
+    {"boolean", "integer", "list", "map", "number", "string"}
+)
+_NATIVE_VALUE_FORM_GUIDANCE = {
+    "boolean": "JSON Boolean",
+    "integer": "JSON integer",
+    "list": "JSON array",
+    "map": "JSON object",
+    "number": "JSON number",
+    "string": "JSON string",
 }
 
 
@@ -703,6 +754,563 @@ def build_public_legality_semantic_card_corpus(
     )
 
 
+_NATIVE_OUTPUT_CONTRACT = (
+    "Use an exact registered tool name. Public signatures describe documented API "
+    "shapes. For the native task, a separately labelled source-supported observed "
+    "form may guide the argument shape when the user request grounds every named "
+    "role. Do not force public required keys omitted from an observed replacement "
+    "form. Observations are scoped positive evidence, not exhaustive, and do not "
+    "prohibit public combinations. Use JSON values with documented public types and "
+    "constraints for public keys and the displayed semantic JSON form for extension "
+    "keys."
+)
+_NATIVE_CONSTRUCTION_BOUNDARY = (
+    "The construction summaries contribute source-supported native task forms as "
+    "positive evidence only; absence never prohibits a public combination, and small "
+    "support counts are narrow evidence that must not be generalized;"
+)
+
+
+def _native_compatible_header(legacy_text: str) -> str:
+    header = _public_legality_header(legacy_text)
+    for old, new in (
+        (_PUBLIC_LEGALITY_OUTPUT_CONTRACT, _NATIVE_OUTPUT_CONTRACT),
+        (_PUBLIC_LEGALITY_CONSTRUCTION_BOUNDARY, _NATIVE_CONSTRUCTION_BOUNDARY),
+    ):
+        if old not in header:
+            raise SemanticCardCompilationError(
+                "public-legality semantic-card header wording drift"
+            )
+        header = header.replace(old, new, 1)
+    return header
+
+
+def _select_native_task_form_rules(
+    registry_rows: Sequence[Mapping[str, str]],
+    construction_rows: Sequence[A2tKbRow],
+    derived_rules: Sequence[CompatibilityRule],
+    *,
+    minimum_support: int,
+) -> tuple[tuple[CompatibilityRule, ...], dict[str, int]]:
+    """Select positive native-task forms without scorer lexical artifacts."""
+
+    public_keys = _registry_argument_types(registry_rows)
+    optional_keys = _registry_optional_keys(registry_rows)
+    support_by_pattern = Counter(
+        (row.tool_name, tuple(sorted(row.arg_signature))) for row in construction_rows
+    )
+    derived_by_pattern = {
+        (rule.tool_name, rule.legal_argument_key_set): rule for rule in derived_rules
+    }
+    selected: list[CompatibilityRule] = []
+    small_support_excluded = 0
+    unsafe_extension_excluded = 0
+    scorer_lexical_excluded = 0
+    empty_replacement_excluded = 0
+    extension_count = 0
+    replacement_count = 0
+    for (tool_name, skeleton), support in sorted(support_by_pattern.items()):
+        public = set(public_keys[tool_name])
+        required = public - set(optional_keys[tool_name])
+        extensions = set(skeleton) - public
+        missing_required = required - set(skeleton)
+        if not extensions and not missing_required:
+            continue
+        if support < minimum_support:
+            small_support_excluded += 1
+            continue
+        if not skeleton:
+            empty_replacement_excluded += 1
+            continue
+        if extensions:
+            derived = derived_by_pattern.get((tool_name, skeleton))
+            if derived is None:
+                unsafe_extension_excluded += 1
+                continue
+            forms = dict(derived.value_forms)
+            extension_forms = tuple(
+                sorted((key, forms[key]) for key in extensions if key in forms)
+            )
+            if len(extension_forms) != len(extensions):
+                unsafe_extension_excluded += 1
+                continue
+            if any(
+                value_form not in _NATIVE_SEMANTIC_VALUE_FORMS
+                for _key, value_form in extension_forms
+            ):
+                scorer_lexical_excluded += 1
+                continue
+        else:
+            extension_forms = ()
+        canonical = CompatibilityRule(
+            tool_name=tool_name,
+            legal_argument_key_set=skeleton,
+            value_forms=extension_forms,
+            construction_support_count=support,
+        )
+        selected.append(canonical)
+        if missing_required:
+            replacement_count += 1
+        else:
+            extension_count += 1
+    ordered = tuple(
+        sorted(
+            selected,
+            key=lambda rule: (
+                rule.tool_name,
+                len(rule.legal_argument_key_set),
+                rule.legal_argument_key_set,
+                rule.value_forms,
+            ),
+        )
+    )
+    return ordered, {
+        "selected_native_task_form_count": len(ordered),
+        "selected_extension_form_count": extension_count,
+        "selected_replacement_form_count": replacement_count,
+        "small_support_native_patterns_excluded": small_support_excluded,
+        "unsafe_extension_patterns_excluded": unsafe_extension_excluded,
+        "scorer_lexical_form_patterns_excluded": scorer_lexical_excluded,
+        "empty_replacement_patterns_excluded": empty_replacement_excluded,
+    }
+
+
+def _native_rule_kind(
+    required_keys: Sequence[str],
+    rule: CompatibilityRule,
+) -> str:
+    return (
+        "extension"
+        if set(required_keys).issubset(rule.legal_argument_key_set)
+        else "replacement"
+    )
+
+
+def _humanize_native_key(key: str) -> str:
+    expanded = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", " ", key).replace("_", " ")
+    return " ".join(
+        "identifier" if word == "id" else word for word in expanded.lower().split()
+    )
+
+
+def _native_rule_example(
+    registry_rows: Sequence[Mapping[str, str]],
+    construction_rows: Sequence[A2tKbRow],
+    rule: CompatibilityRule,
+    *,
+    max_utf8_bytes: int,
+) -> str:
+    matching_rows = tuple(
+        row
+        for row in construction_rows
+        if row.tool_name == rule.tool_name
+        and tuple(sorted(row.arg_signature)) == rule.legal_argument_key_set
+    )
+    rendered = build_executable_semantic_card_corpus(
+        registry_rows,
+        matching_rows,
+        compatibility_rules=(rule,),
+        max_utf8_bytes=max_utf8_bytes,
+    )
+    for example in rendered.cards_by_name[rule.tool_name].examples:
+        document = json.loads(example)
+        if set(document["arguments"]) == set(rule.legal_argument_key_set):
+            return example
+    raise SemanticCardCompilationError(
+        f"no synthetic example rendered for native task form {rule.tool_name!r} "
+        f"{rule.legal_argument_key_set!r}"
+    )
+
+
+def _native_compatible_card(
+    public_card: ToolSemanticCard,
+    *,
+    required_keys: tuple[str, ...],
+    optional_keys: tuple[str, ...],
+    observed_patterns: tuple[tuple[str, ...], ...],
+    native_rules: tuple[CompatibilityRule, ...],
+    native_examples: tuple[str, ...],
+) -> NativeCompatibleToolSemanticCard:
+    public_type_line = next(
+        (
+            line
+            for line in public_card.text.splitlines()
+            if line.startswith("Public types: ")
+        ),
+        None,
+    )
+    if public_type_line is None:
+        raise SemanticCardCompilationError(
+            f"legacy semantic-card public type line drift for {public_card.tool_name!r}"
+        )
+    observed_text = (
+        "; ".join(_render_key_set(pattern) for pattern in observed_patterns)
+        if observed_patterns
+        else "none"
+    )
+    native_rule_lines: list[str] = []
+    native_guidance: list[str] = []
+    public = set(required_keys) | set(optional_keys)
+    for rule in native_rules:
+        kind = _native_rule_kind(required_keys, rule)
+        extension_forms = tuple(
+            (key, value_form)
+            for key, value_form in rule.value_forms
+            if key not in public
+        )
+        form_text = (
+            ", ".join(
+                f"{key}: {_NATIVE_VALUE_FORM_GUIDANCE[value_form]}"
+                for key, value_form in extension_forms
+            )
+            or "documented public types for the displayed public keys"
+        )
+        native_rule_lines.append(
+            f"- Observed native {kind} form "
+            f"{_render_key_set(rule.legal_argument_key_set)}; extension key forms: "
+            f"{form_text}; construction support count: "
+            f"{rule.construction_support_count}; source scope: hash-pinned, "
+            "evaluation-excluded construction units. Use only when the user request "
+            "grounds every named role."
+        )
+        native_guidance.extend(
+            f"Observed native role: {_humanize_native_key(key)} -> {key} "
+            f"({_NATIVE_VALUE_FORM_GUIDANCE[value_form]}), only when grounded in "
+            "the user request."
+            for key, value_form in extension_forms
+        )
+
+    public_examples = public_card.examples
+    examples = public_examples + native_examples
+    lines = (
+        f"TOOL CARD {public_card.tool_name}",
+        f"Exact tool name: {public_card.tool_name}",
+        f"Choose when: {public_card.choose_semantics}",
+        f"Avoid when: {public_card.avoid_semantics}",
+        f"Public signature: {public_card.signature}",
+        public_type_line,
+        f"Public constraints: {public_card.constraints or 'none declared'}",
+        "Public API documentation: required keys "
+        f"{_render_key_set(required_keys)}; optional keys "
+        f"{_render_key_set(optional_keys)}. A public-shape call must include every "
+        "public required key and may include any subset of the public optional keys, "
+        "subject to documented constraints and dependencies.",
+        f"Construction-observed argument patterns: {observed_text}. Their absence "
+        "does not prohibit public combinations.",
+        *(
+            ("Observed native task forms:", *native_rule_lines)
+            if native_rule_lines
+            else ("Observed native task forms: none supported.",)
+        ),
+        "Native task form scope: observed forms are positive, source-scoped evidence "
+        "and not exhaustive. For an observed replacement form, do not force omitted "
+        "public required keys into it. Small support counts are narrow evidence and "
+        "must not be generalized.",
+        "Public spoken-role-to-key guidance:",
+        *(f"- {guidance}" for guidance in public_card.role_guidance),
+        "Observed native-role-to-key guidance:",
+        *(f"- {guidance}" for guidance in native_guidance),
+        *(("- none.",) if not native_guidance else ()),
+        "Public synthetic JSON examples: Every example is artificial; never copy "
+        "its values.",
+        *(f"- {example}" for example in public_examples),
+        "Native-form synthetic JSON examples: Every example is artificial; use a "
+        "displayed form only when the user request grounds every named role.",
+        *(f"- {example}" for example in native_examples),
+        *(("- none.",) if not native_examples else ()),
+    )
+    return NativeCompatibleToolSemanticCard(
+        tool_name=public_card.tool_name,
+        choose_semantics=public_card.choose_semantics,
+        avoid_semantics=public_card.avoid_semantics,
+        signature=public_card.signature,
+        constraints=public_card.constraints,
+        public_required_argument_keys=required_keys,
+        public_optional_argument_keys=optional_keys,
+        construction_observed_argument_patterns=observed_patterns,
+        native_task_form_rules=native_rules,
+        role_guidance=public_card.role_guidance + tuple(native_guidance),
+        native_role_guidance=tuple(native_guidance),
+        public_examples=public_examples,
+        native_task_form_examples=native_examples,
+        examples=examples,
+        text="\n".join(lines),
+    )
+
+
+def build_native_compatible_semantic_card_corpus(
+    registry_rows: Sequence[Mapping[str, str]],
+    construction_rows: Sequence[A2tKbRow],
+    *,
+    compatibility_rules: Sequence[CompatibilityRule] = (),
+    scorer_lexical_form_patterns_excluded: int = 0,
+    max_utf8_bytes: int = DEFAULT_MAX_UTF8_BYTES,
+) -> NativeCompatibleSemanticCardCorpus:
+    """Render public API documentation and source-supported native task forms."""
+
+    public_keys = _registry_argument_types(registry_rows)
+    optional_keys = _registry_optional_keys(registry_rows)
+    rules_by_tool: dict[str, list[CompatibilityRule]] = defaultdict(list)
+    for rule in compatibility_rules:
+        if rule.tool_name not in public_keys:
+            raise SemanticCardCompilationError(
+                f"native task form tool {rule.tool_name!r} is outside the registry"
+            )
+        public = set(public_keys[rule.tool_name])
+        required = public - set(optional_keys[rule.tool_name])
+        extensions = set(rule.legal_argument_key_set) - public
+        forms = dict(rule.value_forms)
+        if (
+            (not extensions and required.issubset(rule.legal_argument_key_set))
+            or set(forms) != extensions
+            or any(
+                value_form not in _NATIVE_SEMANTIC_VALUE_FORMS
+                for value_form in forms.values()
+            )
+        ):
+            raise SemanticCardCompilationError(
+                "native task form rules must be observed replacements or extensions "
+                "using semantic JSON value forms only"
+            )
+        rules_by_tool[rule.tool_name].append(rule)
+
+    validated = build_executable_semantic_card_corpus(
+        registry_rows,
+        construction_rows,
+        compatibility_rules=compatibility_rules,
+        max_utf8_bytes=max_utf8_bytes,
+    )
+    public_only = build_executable_semantic_card_corpus(
+        registry_rows,
+        (),
+        max_utf8_bytes=max_utf8_bytes,
+    )
+    observed_by_tool: dict[str, set[tuple[str, ...]]] = defaultdict(set)
+    for row in construction_rows:
+        observed_by_tool[row.tool_name].add(tuple(sorted(row.arg_signature)))
+
+    cards: list[NativeCompatibleToolSemanticCard] = []
+    for public_card in public_only.tool_cards:
+        tool_name = public_card.tool_name
+        public = frozenset(public_keys[tool_name])
+        optional = optional_keys[tool_name]
+        tool_rules = tuple(
+            sorted(
+                rules_by_tool.get(tool_name, ()),
+                key=lambda rule: (
+                    len(rule.legal_argument_key_set),
+                    rule.legal_argument_key_set,
+                    rule.value_forms,
+                ),
+            )
+        )
+        native_examples = tuple(
+            _native_rule_example(
+                registry_rows,
+                construction_rows,
+                rule,
+                max_utf8_bytes=max_utf8_bytes,
+            )
+            for rule in tool_rules
+        )
+        cards.append(
+            _native_compatible_card(
+                public_card,
+                required_keys=tuple(sorted(public - optional)),
+                optional_keys=tuple(sorted(optional)),
+                observed_patterns=tuple(
+                    sorted(
+                        observed_by_tool.get(tool_name, set()),
+                        key=lambda keys: (len(keys), keys),
+                    )
+                ),
+                native_rules=tool_rules,
+                native_examples=native_examples,
+            )
+        )
+
+    header = _native_compatible_header(public_only.text)
+    sections = [header.rstrip(), "TASK-WIDE EXECUTION CARDS"]
+    sections.extend(
+        f"TASK CARD {card.card_id}\n{card.text}" for card in public_only.task_cards
+    )
+    sections.extend(card.text for card in cards)
+    text = "\n\n".join(sections) + "\n"
+    if not text.isascii():
+        raise SemanticCardCompilationError(
+            "native-compatible semantic-card corpus must be ASCII English"
+        )
+    rendered = text.encode("utf-8")
+    if len(rendered) > max_utf8_bytes:
+        raise SemanticCardCompilationError(
+            "native-compatible semantic-card corpus exceeds byte budget: "
+            f"{len(rendered)} > {max_utf8_bytes}"
+        )
+
+    replacement_count = sum(
+        _native_rule_kind(card.public_required_argument_keys, rule) == "replacement"
+        for card in cards
+        for rule in card.native_task_form_rules
+    )
+    native_form_count = sum(len(card.native_task_form_rules) for card in cards)
+    report = dict(validated.report)
+    report.pop("legal_argument_key_set_count", None)
+    report.update(
+        {
+            "schema": "saea-a2t-native-compatible-semantic-card-corpus-report-v1",
+            "presentation_version": NATIVE_COMPATIBLE_PRESENTATION_V1,
+            "public_api_role": "documented-api-shapes",
+            "construction_pattern_role": "source-supported-native-task-guidance",
+            "native_form_evidence_scope": (
+                "hash-pinned-evaluation-excluded-construction-units"
+            ),
+            "observations_exhaustive": False,
+            "unobserved_public_combinations_forbidden": False,
+            "public_required_keys_forced_into_observed_replacements": False,
+            "scorer_parsing_tricks_rendered": 0,
+            "scorer_lexical_form_patterns_excluded": (
+                scorer_lexical_form_patterns_excluded
+            ),
+            "rendered_native_task_form_count": native_form_count,
+            "rendered_native_extension_form_count": (
+                native_form_count - replacement_count
+            ),
+            "rendered_native_replacement_form_count": replacement_count,
+            "rendered_native_task_form_support_count": sum(
+                rule.construction_support_count
+                for card in cards
+                for rule in card.native_task_form_rules
+            ),
+            "rendered_observed_argument_pattern_count": sum(
+                len(card.construction_observed_argument_patterns) for card in cards
+            ),
+            "rendered_example_count": sum(len(card.examples) for card in cards),
+            "rendered_native_task_form_example_count": sum(
+                len(card.native_task_form_examples) for card in cards
+            ),
+            "rendered_role_guidance_count": sum(
+                len(card.role_guidance) for card in cards
+            ),
+            "rendered_native_role_guidance_count": sum(
+                len(card.native_role_guidance) for card in cards
+            ),
+            "utf8_bytes": len(rendered),
+            "characters": len(text),
+            "line_count": len(text.splitlines()),
+        }
+    )
+    return NativeCompatibleSemanticCardCorpus(
+        text=text,
+        sha256=hashlib.sha256(rendered).hexdigest(),
+        tool_cards=tuple(cards),
+        task_cards=public_only.task_cards,
+        report=report,
+    )
+
+
+def build_from_partition_with_native_compatibility(
+    registry_rows: Sequence[Mapping[str, str]],
+    construction_rows: Sequence[A2tKbRow],
+    *,
+    minimum_support: int = MINIMUM_COMPATIBILITY_SUPPORT,
+    max_utf8_bytes: int = DEFAULT_MAX_UTF8_BYTES,
+) -> tuple[NativeCompatibleSemanticCardCorpus, dict[str, object]]:
+    """Compile the opt-in native-compatible presentation deterministically."""
+
+    derived, derivation = derive_compatibility_rules(
+        registry_rows, construction_rows, minimum_support=minimum_support
+    )
+    rules, selection = _select_native_task_form_rules(
+        registry_rows,
+        construction_rows,
+        derived,
+        minimum_support=minimum_support,
+    )
+    safe_rows = _compatible_construction_rows(registry_rows, construction_rows, rules)
+    first = build_native_compatible_semantic_card_corpus(
+        registry_rows,
+        safe_rows,
+        compatibility_rules=rules,
+        scorer_lexical_form_patterns_excluded=selection[
+            "scorer_lexical_form_patterns_excluded"
+        ],
+        max_utf8_bytes=max_utf8_bytes,
+    )
+
+    reversed_registry = tuple(reversed(registry_rows))
+    reversed_construction = tuple(reversed(construction_rows))
+    reversed_derived, reversed_derivation = derive_compatibility_rules(
+        reversed_registry,
+        reversed_construction,
+        minimum_support=minimum_support,
+    )
+    reversed_rules, reversed_selection = _select_native_task_form_rules(
+        reversed_registry,
+        reversed_construction,
+        reversed_derived,
+        minimum_support=minimum_support,
+    )
+    reversed_safe_rows = _compatible_construction_rows(
+        reversed_registry, reversed_construction, reversed_rules
+    )
+    second = build_native_compatible_semantic_card_corpus(
+        reversed_registry,
+        reversed_safe_rows,
+        compatibility_rules=reversed_rules,
+        scorer_lexical_form_patterns_excluded=reversed_selection[
+            "scorer_lexical_form_patterns_excluded"
+        ],
+        max_utf8_bytes=max_utf8_bytes,
+    )
+    if (
+        derivation != reversed_derivation
+        or rules != reversed_rules
+        or selection != reversed_selection
+    ):
+        raise SemanticCardCompilationError(
+            "native task form derivation is order-dependent"
+        )
+    if first != second:
+        raise SemanticCardCompilationError(
+            "native-compatible semantic-card corpus is not byte deterministic"
+        )
+
+    pattern_families = {
+        (row.tool_name, tuple(sorted(row.arg_signature))) for row in construction_rows
+    }
+    argument_keys = {key for row in construction_rows for key in row.arg_signature}
+    report: dict[str, object] = {
+        "deterministic_rebuild_equal": True,
+        "presentation_version": NATIVE_COMPATIBLE_PRESENTATION_V1,
+        "public_api_role": "documented-api-shapes",
+        "construction_pattern_role": "source-supported-native-task-guidance",
+        "observations_exhaustive": False,
+        "unobserved_public_combinations_forbidden": False,
+        "public_required_keys_forced_into_observed_replacements": False,
+        "construction_argument_pattern_family_count": len(pattern_families),
+        "construction_argument_key_count": len(argument_keys),
+        "safe_construction_row_count": len(safe_rows),
+        "excluded_construction_row_count": len(construction_rows) - len(safe_rows),
+        "compatibility": derivation,
+        "native_task_form_selection": selection,
+    }
+    for key in (
+        "rendered_native_task_form_count",
+        "rendered_native_extension_form_count",
+        "rendered_native_replacement_form_count",
+        "rendered_native_task_form_support_count",
+        "rendered_observed_argument_pattern_count",
+        "rendered_example_count",
+        "rendered_native_task_form_example_count",
+        "rendered_role_guidance_count",
+        "rendered_native_role_guidance_count",
+        "scorer_lexical_form_patterns_excluded",
+        "scorer_parsing_tricks_rendered",
+    ):
+        report[key] = first.report[key]
+    return first, report
+
+
 def build_from_partition_with_public_legality(
     registry_rows: Sequence[Mapping[str, str]],
     construction_rows: Sequence[A2tKbRow],
@@ -800,10 +1408,12 @@ def _validate_config(config: A2tSemanticCardCompilationConfig) -> None:
     if config.presentation_version not in {
         None,
         PUBLIC_API_LEGALITY_PRESENTATION_V1,
+        NATIVE_COMPATIBLE_PRESENTATION_V1,
     }:
         raise SemanticCardCompilationError(
-            "presentation_version must be None or "
-            f"{PUBLIC_API_LEGALITY_PRESENTATION_V1!r}"
+            "presentation_version must be None or one of "
+            f"{PUBLIC_API_LEGALITY_PRESENTATION_V1!r}, "
+            f"{NATIVE_COMPATIBLE_PRESENTATION_V1!r}"
         )
     for path in (config.corpus_output_path, config.receipt_output_path):
         if Path(path).exists():
@@ -943,11 +1553,12 @@ def compile_a2t_semantic_card_artifacts(
             "construction pool omitted its source-bound selection provenance"
         )
     try:
-        build = (
-            build_from_partition
-            if config.presentation_version is None
-            else build_from_partition_with_public_legality
-        )
+        if config.presentation_version is None:
+            build = build_from_partition
+        elif config.presentation_version == PUBLIC_API_LEGALITY_PRESENTATION_V1:
+            build = build_from_partition_with_public_legality
+        else:
+            build = build_from_partition_with_native_compatibility
         corpus, compiler_report = build(
             registry,
             construction_rows,
@@ -1029,14 +1640,19 @@ __all__ = [
     "A2tSemanticCardCompilationConfig",
     "COMPILATION_RECEIPT_SCHEMA",
     "MINIMUM_COMPATIBILITY_SUPPORT",
+    "NATIVE_COMPATIBLE_PRESENTATION_V1",
     "PUBLIC_API_LEGALITY_PRESENTATION_V1",
     "CompatibilityRule",
     "ExecutableSemanticCardCorpus",
+    "NativeCompatibleSemanticCardCorpus",
+    "NativeCompatibleToolSemanticCard",
     "PublicLegalitySemanticCardCorpus",
     "PublicLegalityToolSemanticCard",
     "SemanticCardCompilationError",
     "build_from_partition",
+    "build_from_partition_with_native_compatibility",
     "build_from_partition_with_public_legality",
+    "build_native_compatible_semantic_card_corpus",
     "build_public_legality_semantic_card_corpus",
     "compile_a2t_semantic_card_artifacts",
     "derive_compatibility_rules",
