@@ -453,3 +453,29 @@ def test_compilation_refuses_an_offline_guard_attempt_without_writing(
 
     assert not config.corpus_output_path.exists()
     assert not config.receipt_output_path.exists()
+
+
+def test_compilation_opt_in_uses_native_compatible_presentation(
+    tmp_path: Path, offline: None
+) -> None:
+    config = replace(
+        _world(tmp_path),
+        presentation_version=compilation.NATIVE_COMPATIBLE_PRESENTATION_V1,
+    )
+
+    receipt = compilation.compile_a2t_semantic_card_artifacts(config)
+
+    corpus = config.corpus_output_path.read_text(encoding="utf-8")
+    assert "Public API documentation:" in corpus
+    assert "Observed native task forms:" in corpus
+    assert "poison" not in corpus
+    assert receipt["compiler"]["presentation_version"] == (
+        compilation.NATIVE_COMPATIBLE_PRESENTATION_V1
+    )
+    assert receipt["corpus"]["report"]["observations_exhaustive"] is False
+    assert (
+        receipt["corpus"]["report"][
+            "public_required_keys_forced_into_observed_replacements"
+        ]
+        is False
+    )
