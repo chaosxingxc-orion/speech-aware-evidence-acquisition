@@ -1,0 +1,38 @@
+{
+  "contact_caps": {
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "created_at_utc": "2026-09-12T05:45:49.686904+00:00",
+  "decision_rule": {
+    "path": "configs/analysis/a2t-native-system-decision-v1.json",
+    "sha256": "3043cdaeaa330e7897e13a4aba17c55706e9e16bda7cde92b9f2683ba59f688c"
+  },
+  "diagnostic_limitations": [
+    "No ordered full-call-with-arguments exact statistic is persisted; report unavailable, not ordered tool-sequence accuracy under a different name.",
+    "Per-sample v2 micro slot counts are not persisted; retain complete/tier point estimates but no paired micro interval. Official per-sample macro and official pooled count metrics remain available."
+  ],
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-PREPARE-V1",
+  "forbidden_reads": [
+    "Current task predictions",
+    "Current score values",
+    "Reference or gold task content"
+  ],
+  "frozen_campaign_commit": "cbc53ac0c36bed94fdb50c3b069a74569d935720",
+  "historical_results_unchanged": true,
+  "quality_read_gate": "All three complete manifests must seal before semantic score or task reads; bind all finalized score sources before running the recipe.",
+  "schema": "saea-model-free-analysis-preparation-v1",
+  "scope": [
+    "Read frozen roster identity, sample id, query_idx, tier and domain metadata",
+    "Bind the pre-generation decision rule to declared saved-score projections",
+    "Run synthetic shared-reader and resampling tests only"
+  ],
+  "source_roster_receipt": {
+    "path": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-org1-domain-grouped-roster/flight-roster-receipt.json",
+    "sha256": "e5a81b71e1253ff866262991f79d132b89f4bfb47e7c8a0c0cf0aa04857b8736"
+  }
+}

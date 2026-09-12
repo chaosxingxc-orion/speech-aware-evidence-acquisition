@@ -1,0 +1,42 @@
+{
+  "active_campaign_commit_unchanged": "cbc53ac0c36bed94fdb50c3b069a74569d935720",
+  "allowed": [
+    "Official source/package metadata",
+    "Version-pinned software and model downloads",
+    "SHA256 validation",
+    "Dependency import",
+    "CPU model construction and weight loading without forward passes",
+    "Binary version and capability checks"
+  ],
+  "created_at_utc": "2026-09-12T05:51:44.280132+00:00",
+  "destinations": [
+    "/home/chao/speech-tools",
+    "/home/chao/.venvs/saea-whisper-vad",
+    "/home/chao/.venvs/saea-alignment-diarization"
+  ],
+  "execution_profile": "model-free-check",
+  "forbidden": [
+    "Research speech/labels/results reads",
+    "Any inference or forward pass",
+    "GPU allocation or service change",
+    "Accepting gated-model user conditions on the owner's behalf",
+    "Paid inference or uploading speech"
+  ],
+  "owner_authorization": "Download selected speech tool code and weights into WSL and prepare local loading.",
+  "research_admission": "Future shared registered tool interfaces and prospective experiments are required before dataset inference.",
+  "resource_policy": {
+    "cpu_threads_per_worker": 2,
+    "large_cpu_models_loaded_simultaneously_max": 1,
+    "persistent_servers": 0,
+    "total_background_cpu_workers_max": 8
+  },
+  "reviewer_trigger": "High confidence that a problem or missing evidence exists, confirmed by owner; this is not a calibrated probability threshold.",
+  "schema": "saea-local-tool-acquisition-v1",
+  "targets": [
+    "OpenAI Whisper large-v3",
+    "Silero VAD",
+    "WhisperX alignment components",
+    "pyannote community-1 if access is already authorized",
+    "FFmpeg and ffprobe"
+  ]
+}

@@ -222,3 +222,219 @@ def test_rows_for_explicit_view_and_legacy_top_level():
     assert rows_for(document, "s", ("tp",), view="normalized")["a"]["tp"] == 2
     with pytest.raises(ValueError, match="no view"):
         rows_for(document, "s", ("tp",), view="missing")
+
+
+
+@pytest.fixture
+def generic_scores(tmp_path, monkeypatch):
+    import hashlib
+    import json
+    from speech_aware_evidence_acquisition.analysis import score_compare_cli as cli
+
+    def write(name, value):
+        path = tmp_path / name
+        path.write_text(json.dumps(value))
+        return {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
+    inputs, receipts, verified = {}, {}, []
+    for name, count in (("left", 1), ("right", 2)):
+        manifest = write(name + ".manifest.json", {})
+        score = write(name + ".score.json", {
+            "verified": True, "manifest": manifest["path"], "scores": {
+                "official": {"per_sample": [
+                    {"sample_id": "a", "exact_match": count == 2, "f1": 2 * count / (count + 10),
+                     "correct": count, "predicted": count, "gold": 10},
+                    {"sample_id": "b", "exact_match": True, "f1": 18 / 19,
+                     "correct": 9, "predicted": 9, "gold": 10},
+                ]}}})
+        receipt = write(name + ".receipt.json", {"score_result": score})
+        receipts[receipt["path"]] = {"score_result": score}
+        inputs[name] = {"manifest": manifest,
+                        "score_receipt": {**receipt, "cell_id": name}}
+
+    def verify_receipt(ref, bundle):
+        assert bundle == ref.cell_id
+        verified.append(ref)
+        return receipts[str(ref.path)]
+
+    monkeypatch.setattr(cli, "verify_complete_score_receipt", verify_receipt)
+    config = {
+        "execution_profile": "model-free-check", "experiment_id": "synthetic",
+        "analysis": {
+            "format": "generic-scores-v1", "inputs": inputs,
+            "metadata": write("metadata.json", {"rows": {
+                "a": {"query_idx": "shared", "tier": "A", "domain": "one"},
+                "b": {"query_idx": "shared", "tier": "B", "domain": "one"}}}),
+            "full_roster": write("roster.json", {"items": [{"id": "a"}, {"id": "b"}]}),
+            "expected_ids_count": 2, "cluster_field": "query_idx",
+            "groupings": {"tier": "tier", "domain": "domain"},
+            "grouping_resampling": "whole-cluster", "seed": 77, "n_replicates": 20,
+            "metrics": {
+                "em": {"scorer": "official", "statistic": "mean",
+                       "field": "exact_match", "direction": "higher"},
+                "macro": {"scorer": "official", "statistic": "mean",
+                          "field": "f1", "direction": "higher"},
+                "micro": {"scorer": "official", "statistic": "ratio",
+                          "numerator": {"correct": 2}, "denominator": {"predicted": 1, "gold": 1},
+                          "zero_denominator": "zero", "direction": "higher"}},
+            "contrasts": [
+                {"name": "primary", "left": "left", "right": "right",
+                 "metrics": ["em"], "ci_level": .975},
+                {"name": "secondary", "left": "left", "right": "right",
+                 "metrics": ["macro", "micro"], "ci_level": .9}],
+        },
+    }
+    config_path = tmp_path / "config.json"
+
+    def execute():
+        write(config_path.name, config)
+        return cli.run(config_path, tmp_path / "out.json",
+                       verifier=lambda path: path.name.split(".")[0])
+
+    return config, execute, verified, receipts
+
+
+def test_generic_scores_project_official_means_and_pooled_counts(generic_scores):
+    config, execute, verified, _ = generic_scores
+    result = execute()
+    assert len(verified) == 2
+    assert result["scorer_invocations"] == 0
+    assert result["populations"] == {"full_roster": 2}
+    primary = result["results"]["primary"]["em"]
+    assert primary["natural_mixture"]["gain_pp"] == 50.
+    assert primary["sign_counts"] == {"saves": 1, "harms": 0, "ties": 1, "unavailable": 0}
+    assert primary["natural_mixture"]["bootstrap"]["ci_level"] == .975
+    assert primary["groupings"]["tier"]["equal_stratum"]["gain_pp"] == 50.
+    secondary = result["results"]["secondary"]
+    assert secondary["micro"]["natural_mixture"]["left_ratio_pct"] == pytest.approx(100 * 20 / 30)
+    assert secondary["micro"]["natural_mixture"]["right_ratio_pct"] == pytest.approx(100 * 22 / 31)
+    assert secondary["micro"]["natural_mixture"]["bootstrap"]["ci_level"] == .9
+    assert secondary["macro"]["natural_mixture"]["left_ratio_pct"] == pytest.approx(
+        100 * (2 / 11 + 18 / 19) / 2)
+    assert set(result["results"]["primary"]) == {"em"}
+    with pytest.raises(FileExistsError):
+        execute()
+
+
+def test_generic_scores_require_exact_source_roster(generic_scores):
+    config, execute, _, _ = generic_scores
+    config["analysis"]["expected_ids_count"] = 3
+    with pytest.raises(ValueError, match="identity mismatch"):
+        execute()
+
+
+def test_generic_scores_refuse_absent_persisted_diagnostic(generic_scores):
+    config, execute, _, _ = generic_scores
+    config["analysis"]["metrics"]["em"]["field"] = "not_persisted"
+    with pytest.raises(ValueError, match="missing or has invalid"):
+        execute()
+
+
+def test_generic_scores_recheck_receipt_score_hash(generic_scores):
+    config, execute, _, receipts = generic_scores
+    from pathlib import Path
+    pin = receipts[config["analysis"]["inputs"]["left"]["score_receipt"]["path"]]["score_result"]
+    Path(pin["path"]).write_text("{}")
+    with pytest.raises(ValueError, match="hash mismatch"):
+        execute()
+
+
+def test_generic_scores_refuse_receipt_verification_failure(generic_scores, monkeypatch):
+    from speech_aware_evidence_acquisition.analysis import score_compare_cli as cli
+    _, execute, _, _ = generic_scores
+
+    def reject(*args):
+        raise ValueError("synthetic receipt mismatch")
+
+    monkeypatch.setattr(cli, "verify_complete_score_receipt", reject)
+    with pytest.raises(ValueError, match="receipt mismatch"):
+        execute()
+
+
+@pytest.mark.parametrize("mutation", [
+    {"statistic": "unsupported"},
+    {"statistic": "ratio", "numerator": {"correct": -1}, "denominator": {"gold": 1}},
+    {"statistic": "ratio", "numerator": {"correct": float("nan")}, "denominator": {"gold": 1}},
+])
+def test_generic_scores_refuse_invalid_projection(generic_scores, mutation):
+    config, execute, _, _ = generic_scores
+    config["analysis"]["metrics"]["em"].update(mutation)
+    with pytest.raises(ValueError):
+        execute()
+
+
+def test_unknown_score_format_never_uses_legacy_default(generic_scores):
+    config, execute, _, _ = generic_scores
+    config["analysis"]["format"] = "typo"
+    with pytest.raises(ValueError, match="unknown score analysis format"):
+        execute()
+
+
+def test_projection_keeps_zero_counts_and_rejects_nonfinite_fields():
+    from speech_aware_evidence_acquisition.analysis.score_compare_cli import _project_scores
+    metric = {"m": {"scorer": "s", "statistic": "ratio",
+                    "numerator": {"tp": 2}, "denominator": {"pred": 1, "gold": 1},
+                    "direction": "higher"}}
+    row = {"sample_id": "a", "tp": 0, "pred": 0, "gold": 0}
+    document = {"verified": True, "scores": {"s": {"per_sample": [row]}}}
+    assert _project_scores(document, metric, {"a"}) == {"a": {"m": {"num": 0, "den": 0}}}
+    row["tp"] = float("inf")
+    with pytest.raises(ValueError, match="finite nonnegative"):
+        _project_scores(document, metric, {"a"})
+
+
+
+@pytest.mark.parametrize("state", ["FINALIZED", "OPENED"])
+def test_generic_scores_read_finalized_attachment_without_rescoring(
+        generic_scores, tmp_path, monkeypatch, state):
+    import hashlib
+    import json
+    from pathlib import Path
+    from types import SimpleNamespace
+    from speech_aware_evidence_acquisition.analysis import score_compare_cli as cli
+
+    config, _, _, receipts = generic_scores
+    bundles = {}
+    for name, binding in config["analysis"]["inputs"].items():
+        ref = binding.pop("score_receipt")
+        saved = receipts[ref["path"]]["score_result"]
+        scores = json.loads(Path(saved["path"]).read_text())["scores"]
+        path = tmp_path / (name + ".attached.json")
+        path.write_text(json.dumps(scores))
+        pin = {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+        binding["score_source"] = "finalized-bundle"
+        bundles[name] = SimpleNamespace(
+            attempt_state=state, manifest_path=Path(binding["manifest"]["path"]),
+            manifest={"status": "COMPLETED", "scores": pin, "scorers": ["official"]})
+
+    def receipt_must_not_run(*args):
+        raise AssertionError("finalized attachment must not require a new scoring operation")
+
+    monkeypatch.setattr(cli, "verify_complete_score_receipt", receipt_must_not_run)
+    config_path = tmp_path / "attached-config.json"
+    config_path.write_text(json.dumps(config))
+    def run():
+        return cli.run(config_path, tmp_path / "attached-out.json",
+                       verifier=lambda path: bundles[path.name.split(".")[0]])
+    if state == "OPENED":
+        with pytest.raises(ValueError, match="finalized complete"):
+            run()
+    else:
+        result = run()
+        assert result["scorer_invocations"] == 0
+        assert result["results"]["primary"]["em"]["natural_mixture"]["gain_pp"] == 50.
+
+
+
+def test_generic_scores_use_declared_native_roster_id(generic_scores):
+    import hashlib
+    import json
+    from pathlib import Path
+
+    config, execute, _, _ = generic_scores
+    binding = config["analysis"]["full_roster"]
+    path = Path(binding["path"])
+    path.write_text(json.dumps({"items": [
+        {"id": 3, "sample_id": "a"}, {"id": 3, "sample_id": "b"}]}))
+    binding.update(sha256=hashlib.sha256(path.read_bytes()).hexdigest(), id_field="sample_id")
+    assert execute()["populations"] == {"full_roster": 2}

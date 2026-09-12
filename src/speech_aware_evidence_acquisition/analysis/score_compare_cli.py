@@ -3,13 +3,18 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
+import re
+from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 
 from ..core.bundle.verify import verify_bundle
+from ..core.scoring_receipt import SavedScoreReceiptRef, verify_complete_score_receipt
 from .null_calibration_cli import digest, pinned_json, rows_for
 from .null_calibration import pooled_f1
 from .paired import paired_contrast, resampled_statistic
+from .pooled_ratio_compare import _at, _table, _compare_contrast, _validate_max_workers
 
 
 def _pooled_f1_family(left, right, *, ids, metadata, fields, grouping, seed,
@@ -122,12 +127,193 @@ def compare(left, right, *, ids, metadata, metric, seed, n_replicates):
             "equal_stratum_delta": sum(row["delta"] for row in strata.values()) / len(strata)}
 
 
+
+def _projection_fields(metric):
+    """Resolve explicit mean or nonnegative count-ratio projections."""
+    if metric.get("statistic") == "mean":
+        field = metric.get("field")
+        if not isinstance(field, str) or not field:
+            raise ValueError("mean projection requires a field")
+        return (field,)
+    if metric.get("statistic") != "ratio":
+        raise ValueError("projection statistic must be mean or ratio")
+    fields = []
+    for part in ("numerator", "denominator"):
+        terms = metric.get(part)
+        if not isinstance(terms, dict) or not terms:
+            raise ValueError("ratio projection requires nonempty count terms")
+        for field, coefficient in terms.items():
+            if (not isinstance(field, str) or not field
+                    or isinstance(coefficient, bool)
+                    or not isinstance(coefficient, (int, float))
+                    or not math.isfinite(coefficient) or coefficient <= 0):
+                raise ValueError("count terms require fields and positive finite coefficients")
+            fields.append(field)
+    return tuple(dict.fromkeys(fields))
+
+
+def _project_scores(document, metrics, expected_ids):
+    requested = {}
+    for name, metric in metrics.items():
+        if not isinstance(name, str) or re.fullmatch(r"[A-Za-z0-9_-]+", name) is None:
+            raise ValueError("projection names must contain letters, numbers, underscores or hyphens")
+        scorer, view = metric.get("scorer"), metric.get("view")
+        if not isinstance(scorer, str) or not scorer:
+            raise ValueError("projection requires a scorer")
+        if view is not None and (not isinstance(view, str) or not view):
+            raise ValueError("projection view must be nonempty text")
+        requested.setdefault((scorer, view), set()).update(_projection_fields(metric))
+    source = {}
+    for (scorer, view), fields in requested.items():
+        rows = rows_for(document, scorer, tuple(sorted(fields)), view=view)
+        if set(rows) != expected_ids:
+            raise ValueError("score projection roster mismatch")
+        if any(not math.isfinite(value) or value < 0
+               for row in rows.values() for value in row.values()):
+            raise ValueError("score projection requires finite nonnegative values")
+        source[(scorer, view)] = rows
+    projected = {sid: {} for sid in sorted(expected_ids)}
+    for name, metric in metrics.items():
+        for sid, row in source[(metric["scorer"], metric.get("view"))].items():
+            if metric["statistic"] == "mean":
+                num, den = row[metric["field"]], 1.0
+            else:
+                num = sum(row[field] * weight for field, weight in metric["numerator"].items())
+                den = sum(row[field] * weight for field, weight in metric["denominator"].items())
+            if not math.isfinite(num) or not math.isfinite(den):
+                raise ValueError("score projection overflow")
+            projected[sid][name] = {"num": num, "den": den}
+    return projected
+
+
+
+def _saved_scores(binding, bundle):
+    """Accept either an existing score receipt or a finalized bundle attachment."""
+    source = binding.get("score_source", "complete-score-receipt")
+    if source == "complete-score-receipt":
+        pin = binding["score_receipt"]
+        receipt = verify_complete_score_receipt(
+            SavedScoreReceiptRef(cell_id=pin["cell_id"], path=Path(pin["path"]),
+                                 sha256=pin["sha256"]), bundle)
+        score_pin = receipt["score_result"]
+        return pinned_json(score_pin), score_pin
+    if source != "finalized-bundle":
+        raise ValueError("unknown saved score source")
+    if bundle.attempt_state != "FINALIZED" or bundle.manifest.get("status") != "COMPLETED":
+        raise ValueError("attached scores require a finalized complete bundle")
+    score_pin = bundle.manifest.get("scores")
+    if not isinstance(score_pin, dict) or not score_pin.get("sha256"):
+        raise ValueError("finalized bundle has no hash-bound scores")
+    scores = pinned_json(score_pin)
+    if not isinstance(scores, dict) or set(scores) != set(bundle.manifest["scorers"]):
+        raise ValueError("attached score registry mismatch")
+    return {"verified": True, "manifest": str(bundle.manifest_path), "scores": scores}, score_pin
+
+def _run_generic(config, config_path, output, verifier):
+    """Project complete saved scores into the shared clustered ratio analysis."""
+    spec = config["analysis"]
+    metadata = _table(_at(pinned_json(spec["metadata"]),
+                          spec["metadata"].get("rows_key", "rows")),
+                      spec.get("id_field", "sample_id"))
+    expected = spec.get("expected_ids_count")
+    if isinstance(expected, bool) or not isinstance(expected, int) or expected < 1:
+        raise ValueError("generic score analysis requires positive expected_ids_count")
+    roster_binding = spec["full_roster"]
+    roster = [row[roster_binding.get("id_field", "id")]
+              for row in pinned_json(roster_binding)["items"]]
+    if len(roster) != expected or len(set(roster)) != expected or set(roster) != set(metadata):
+        raise ValueError("full roster/metadata identity mismatch")
+    metrics = spec["metrics"]
+    if not isinstance(metrics, dict) or not metrics:
+        raise ValueError("generic score analysis requires metric projections")
+    for metric in metrics.values():
+        if not isinstance(metric, dict):
+            raise ValueError("metric projection must be a mapping")
+        _projection_fields(metric)
+    inputs = spec["inputs"]
+    if not isinstance(inputs, dict) or not inputs:
+        raise ValueError("generic score analysis requires inputs")
+    # Verify every source bundle before consuming any saved score.
+    bundles = {}
+    for name, binding in inputs.items():
+        pinned_json(binding["manifest"])
+        bundles[name] = verifier(Path(binding["manifest"]["path"]))
+    tables, sources = {}, {}
+    for name, binding in inputs.items():
+        document, score_pin = _saved_scores(binding, bundles[name])
+        tables[name] = _project_scores(document, metrics, set(roster))
+        sources[name] = {**binding, "score": score_pin}
+    ratio_metrics = {
+        name: {"numerator_field": name + ".num", "denominator_field": name + ".den",
+               "direction": metric["direction"],
+               **({"zero_denominator": metric["zero_denominator"]}
+                  if "zero_denominator" in metric else {})}
+        for name, metric in metrics.items()
+    }
+    contrasts = spec.get("contrasts")
+    if not isinstance(contrasts, list) or not contrasts:
+        raise ValueError("generic score analysis requires contrasts")
+    tasks, names = [], set()
+    for contrast in contrasts:
+        name, left, right = contrast.get("name"), contrast.get("left"), contrast.get("right")
+        selected = contrast.get("metrics", list(metrics))
+        if (not isinstance(name, str) or not name or name in names
+                or left not in tables or right not in tables or left == right
+                or not isinstance(selected, list) or not selected
+                or len(set(selected)) != len(selected) or not set(selected) <= set(metrics)):
+            raise ValueError("invalid generic score contrast")
+        names.add(name)
+        options = {
+            "groupings": spec["groupings"], "cluster_field": spec["cluster_field"],
+            "grouping_resampling": spec.get("grouping_resampling", "within-stratum"),
+            "seed": spec["seed"], "n_replicates": spec["n_replicates"],
+            "ci_level": contrast.get("ci_level", spec.get("ci_level")),
+        }
+        tasks.append((name, tables[left], tables[right], metadata,
+                      {key: ratio_metrics[key] for key in selected}, options))
+    workers = min(_validate_max_workers(spec.get("max_workers", 1)), len(tasks))
+    if workers == 1:
+        completed = [_compare_contrast(task) for task in tasks]
+    else:
+        with ProcessPoolExecutor(max_workers=workers) as executor:
+            completed = list(executor.map(_compare_contrast, tasks))
+    result = {
+        "schema": "saea-existing-score-projections-v1",
+        "experiment_id": config["experiment_id"],
+        "created_at_utc": datetime.now(timezone.utc).isoformat(),
+        "config": {"path": str(config_path.resolve()), "sha256": digest(config_path)},
+        "sources": sources, "metadata": spec["metadata"],
+        "full_roster": spec["full_roster"], "metric_projections": metrics,
+        "populations": {"full_roster": expected},
+        "resampling": {key: spec[key] for key in
+                       ("cluster_field", "groupings", "grouping_resampling",
+                        "seed", "n_replicates") if key in spec},
+        "effective_workers": workers,
+        "implementation": [
+            {"path": str(path), "sha256": digest(path)}
+            for path in [Path(__file__), Path(__file__).with_name("paired.py"),
+                         Path(__file__).with_name("pooled_ratio_compare.py"),
+                         Path(__file__).with_name("null_calibration_cli.py")]
+        ],
+        "model_calls": 0, "encoder_calls": 0, "tokenizer_calls": 0,
+        "scorer_invocations": 0, "results": dict(completed),
+    }
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("x", encoding="utf-8") as handle:
+        json.dump(result, handle, indent=2, sort_keys=True)
+        handle.write("\n")
+    return result
+
 def run(config_path: Path, output: Path, *, verifier=verify_bundle):
     """Read only hash-pinned, complete, verified score jobs; never call a scorer."""
     config = json.loads(config_path.read_text(encoding="utf-8"))
     if config.get("execution_profile") != "model-free-check":
         raise ValueError("analysis requires model-free-check")
     spec = config["analysis"]
+    if spec.get("format") == "generic-scores-v1":
+        return _run_generic(config, config_path, output, verifier)
+    if "format" in spec:
+        raise ValueError("unknown score analysis format")
     metadata = pinned_json(spec["metadata"])["rows"]
     full = [row["id"] for row in pinned_json(spec["full_roster"])["items"]]
     primary = [row["id"] for row in pinned_json(spec["roster"])["items"]]
