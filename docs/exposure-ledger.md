@@ -3084,3 +3084,5 @@ factory/adapter only. Do not launch or reopen its historical experiment.
 Source code: 036e2db6417cf734123a0b1caf240706340203f6. Registration:
 DATA coordination/a2t-shared-base-model-free-registration-v1.json, SHA256
 f4ed86ba9d78205b28e864948645334982e47476edef7b3e37225fab243bf723. Model results, gold and new query vectors are outside this operation.
+
+| 2026-09-11 | SAEA-A2T-MF-SHARED-ROSTER-4000-V2 | model-free-check | Shared adapter full-roster media binding after named-population compatibility fix | Shared FlightRuntime factory and adapter.load_split only | Existing Audio2Tool ORG1 discovery union4000; no new draw | dev | c0c1e7ccc0a9d923e51e86be11c4aedb760a2b91c8ab166305a6877c64496ad4 | no | 0 | 0 | 0 | Preserve V1 zero-contact refusal and completed card compilation; no scientific retry | configs/preparation/a2t-shared-runtime-roster-v2.json | Registration DATA coordination/a2t-shared-runtime-roster-registration-v2.json SHA256 de5249dda42a76584a8a1182003d9e7d484fd9b53d26f0dde35ea7349632b28e. No preflight, preparation, service, fit, generation, encoding, tokenization, scoring or network contacts. |
