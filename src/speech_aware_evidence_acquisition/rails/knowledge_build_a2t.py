@@ -152,6 +152,8 @@ _AUTHORITY = (
 )
 _LONG_TAIL_THRESHOLD = 5
 
+A2T_CONSTRUCTION_SELECTION_SCHEMA = "saea-a2t-construction-selection-v1"
+
 #: An item is eligible for the proposed evaluation tier only when its gold
 #: primary tool has at least this many units in the exposure-free pool. The
 #: rule exists so the evaluation draw can never starve the construction
@@ -163,6 +165,37 @@ EVAL_TOOL_MIN_POOL_ROWS = 8
 # ---------------------------------------------------------------------------
 # Task-neutral A2T rows
 # ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class _A2tManifestItem:
+    tier: str
+    item_id: int
+    query_idx: int
+    sample_id: str
+    unit_id: str
+    entry: Mapping[str, object]
+
+
+@dataclass(frozen=True)
+class _A2tManifestInventory:
+    units: Mapping[str, tuple[_A2tManifestItem, ...]]
+    source_manifest_sha256_by_tier: Mapping[str, str]
+    tier_item_counts: Mapping[str, int]
+
+    @property
+    def sample_by_id(self) -> dict[str, _A2tManifestItem]:
+        return {
+            item.sample_id: item
+            for members in self.units.values()
+            for item in members
+        }
+
+
+@dataclass(frozen=True)
+class _ConstructionSelection:
+    allowed_unit_ids: frozenset[str]
+    summary: Mapping[str, object]
 
 
 @dataclass(frozen=True)
@@ -238,6 +271,300 @@ def _tier_manifest_path(public_dir: Path, tier: str) -> Path:
     return public_dir / f"{tier}_data" / f"{tier}.json"
 
 
+def _load_a2t_manifest_inventory(
+    lock: Mapping[str, object], root: Path
+) -> _A2tManifestInventory:
+    """Load source bytes once and inspect only construction identity metadata."""
+
+    carrier_dir = asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root)
+    public_dir = carrier_dir / "public"
+    if not public_dir.is_dir():
+        raise RailsError(f"audio2tool public directory missing: {public_dir}")
+
+    units: dict[str, list[_A2tManifestItem]] = defaultdict(list)
+    source_hashes: dict[str, str] = {}
+    tier_item_counts: dict[str, int] = {}
+    seen_sample_ids: set[str] = set()
+    for tier in TIERS:
+        path = _tier_manifest_path(public_dir, tier)
+        if not path.is_file():
+            raise RailsError(f"audio2tool tier manifest missing: {path}")
+        try:
+            raw = path.read_bytes()
+            entries = json.loads(raw.decode("utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            raise RailsError(
+                f"cannot read audio2tool tier manifest {path}: {error}"
+            ) from error
+        if not isinstance(entries, list) or not entries:
+            raise RailsError(
+                f"audio2tool tier manifest {path} must be a non-empty JSON list"
+            )
+        source_hashes[tier] = hashlib.sha256(raw).hexdigest()
+        tier_item_counts[tier] = len(entries)
+        for raw_item in entries:
+            if not isinstance(raw_item, Mapping):
+                raise RailsError(f"audio2tool tier manifest {path} has a malformed item")
+            item_tier = raw_item.get("tier")
+            if item_tier != tier:
+                raise RailsError(
+                    f"audio2tool tier manifest {path} has a tier mismatch: "
+                    f"{item_tier!r} != {tier!r}"
+                )
+            item_id = raw_item.get("id")
+            if isinstance(item_id, bool) or not isinstance(item_id, int):
+                raise RailsError(f"{tier}: manifest entry lacks an integer id")
+            if item_id < 0:
+                raise RailsError(f"{tier}: manifest entry id must be non-negative")
+            query_idx = raw_item.get("query_idx")
+            if isinstance(query_idx, bool) or not isinstance(query_idx, int):
+                raise RailsError(f"{tier}: manifest entry lacks an integer query_idx")
+            if query_idx < 0:
+                raise RailsError(f"{tier}: manifest entry query_idx must be non-negative")
+            sample_id = f"{tier}:{item_id:06d}"
+            if sample_id in seen_sample_ids:
+                raise RailsError(
+                    f"audio2tool manifests contain repeated sample identity {sample_id!r}"
+                )
+            seen_sample_ids.add(sample_id)
+            unit_id = f"{tier}:{query_idx:06d}"
+            units[unit_id].append(
+                _A2tManifestItem(
+                    tier=tier,
+                    item_id=item_id,
+                    query_idx=query_idx,
+                    sample_id=sample_id,
+                    unit_id=unit_id,
+                    entry=raw_item,
+                )
+            )
+
+    frozen_units = {
+        unit_id: tuple(sorted(members, key=lambda item: item.item_id))
+        for unit_id, members in sorted(units.items())
+    }
+    return _A2tManifestInventory(
+        units=frozen_units,
+        source_manifest_sha256_by_tier=source_hashes,
+        tier_item_counts=tier_item_counts,
+    )
+
+
+def a2t_metadata_inventory(
+    lock: Mapping[str, object], root: Path
+) -> dict[str, object]:
+    """Return deterministic Audio2Tool identities and source-manifest hashes.
+
+    This public inventory does not inspect or expose invocation text, gold,
+    tools, speakers, or media fields.
+    """
+
+    inventory = _load_a2t_manifest_inventory(lock, root)
+    units = [
+        {
+            "unit_id": unit_id,
+            "tier": members[0].tier,
+            "query_idx": members[0].query_idx,
+            "sample_ids": [item.sample_id for item in members],
+        }
+        for unit_id, members in inventory.units.items()
+    ]
+    return {
+        "source_manifest_sha256_by_tier": dict(
+            inventory.source_manifest_sha256_by_tier
+        ),
+        "item_count": sum(inventory.tier_item_counts.values()),
+        "item_count_by_tier": dict(inventory.tier_item_counts),
+        "unit_count": len(units),
+        "units": units,
+    }
+
+
+def _is_sha256(value: object) -> bool:
+    return (
+        isinstance(value, str)
+        and len(value) == 64
+        and all(character in "0123456789abcdef" for character in value)
+    )
+
+
+def _load_construction_selection_receipt(
+    path: Path, expected_sha256: str
+) -> Mapping[str, object]:
+    """Verify receipt bytes before parsing any governed tier manifest."""
+
+    if not _is_sha256(expected_sha256):
+        raise RailsError("construction receipt SHA-256 must be 64 lowercase hex digits")
+    try:
+        raw = Path(path).read_bytes()
+    except OSError as error:
+        raise RailsError(f"cannot read construction receipt {path}: {error}") from error
+    actual_sha256 = hashlib.sha256(raw).hexdigest()
+    if actual_sha256 != expected_sha256:
+        raise RailsError(
+            f"construction receipt SHA-256 mismatch: expected {expected_sha256}, "
+            f"got {actual_sha256}"
+        )
+    try:
+        document = json.loads(raw.decode("utf-8"))
+    except (UnicodeError, json.JSONDecodeError) as error:
+        raise RailsError(f"cannot parse construction receipt {path}: {error}") from error
+    if not isinstance(document, Mapping):
+        raise RailsError("construction receipt must be a JSON object")
+    expected_keys = {
+        "schema",
+        "source_manifest_sha256_by_tier",
+        "allowed_units",
+        "excluded_sample_ids",
+    }
+    if set(document) != expected_keys:
+        raise RailsError(
+            "construction receipt must contain exactly "
+            f"{sorted(expected_keys)}, got {sorted(str(key) for key in document)}"
+        )
+    if document.get("schema") != A2T_CONSTRUCTION_SELECTION_SCHEMA:
+        raise RailsError(
+            "construction receipt schema must be "
+            f"{A2T_CONSTRUCTION_SELECTION_SCHEMA!r}"
+        )
+    source_hashes = document.get("source_manifest_sha256_by_tier")
+    if not isinstance(source_hashes, Mapping) or set(source_hashes) != set(TIERS):
+        raise RailsError(
+            "construction receipt source_manifest_sha256_by_tier must cover "
+            "exactly the eight Audio2Tool tiers"
+        )
+    for tier in TIERS:
+        if not _is_sha256(source_hashes.get(tier)):
+            raise RailsError(
+                f"construction receipt source hash for {tier!r} is not a SHA-256"
+            )
+    allowed_units = document.get("allowed_units")
+    if not isinstance(allowed_units, list) or not allowed_units:
+        raise RailsError("construction receipt allowed_units must be non-empty")
+    excluded = document.get("excluded_sample_ids")
+    if not isinstance(excluded, list):
+        raise RailsError("construction receipt excluded_sample_ids must be a list")
+    return document
+
+
+def _validate_construction_selection(
+    receipt: Mapping[str, object],
+    inventory: _A2tManifestInventory,
+    *,
+    receipt_path: Path,
+    receipt_sha256: str,
+) -> _ConstructionSelection:
+    source_hashes = receipt["source_manifest_sha256_by_tier"]
+    assert isinstance(source_hashes, Mapping)
+    for tier in TIERS:
+        if source_hashes[tier] != inventory.source_manifest_sha256_by_tier[tier]:
+            raise RailsError(
+                f"construction receipt source manifest SHA-256 mismatch for {tier}"
+            )
+
+    sample_by_id = inventory.sample_by_id
+    excluded_raw = receipt["excluded_sample_ids"]
+    assert isinstance(excluded_raw, list)
+    excluded_ids: list[str] = []
+    excluded_seen: set[str] = set()
+    for sample_id in excluded_raw:
+        if not isinstance(sample_id, str) or not sample_id:
+            raise RailsError(
+                "construction receipt excluded_sample_ids must contain strings"
+            )
+        if sample_id in excluded_seen:
+            raise RailsError(
+                f"construction receipt has duplicate excluded_sample_id {sample_id!r}"
+            )
+        if sample_id not in sample_by_id:
+            raise RailsError(
+                f"construction receipt has unknown excluded_sample_id {sample_id!r}"
+            )
+        excluded_seen.add(sample_id)
+        excluded_ids.append(sample_id)
+    excluded_query_indices = {
+        sample_by_id[sample_id].query_idx for sample_id in excluded_ids
+    }
+
+    allowed_raw = receipt["allowed_units"]
+    assert isinstance(allowed_raw, list)
+    allowed_unit_ids: set[str] = set()
+    allowed_sample_ids: set[str] = set()
+    allowed_sample_count = 0
+    for record in allowed_raw:
+        if not isinstance(record, Mapping) or set(record) != {"unit_id", "sample_ids"}:
+            raise RailsError(
+                "each construction receipt allowed unit must contain exactly "
+                "unit_id and sample_ids"
+            )
+        unit_id = record.get("unit_id")
+        if not isinstance(unit_id, str) or not unit_id:
+            raise RailsError("construction receipt allowed unit_id must be a string")
+        if unit_id in allowed_unit_ids:
+            raise RailsError(
+                f"construction receipt has duplicate allowed unit {unit_id!r}"
+            )
+        if unit_id not in inventory.units:
+            raise RailsError(
+                f"construction receipt has unknown allowed unit {unit_id!r}"
+            )
+        sample_ids = record.get("sample_ids")
+        if not isinstance(sample_ids, list) or not sample_ids:
+            raise RailsError(
+                f"construction receipt allowed unit {unit_id!r} has no sample_ids"
+            )
+        local_seen: set[str] = set()
+        for sample_id in sample_ids:
+            if not isinstance(sample_id, str) or not sample_id:
+                raise RailsError(
+                    f"construction receipt allowed unit {unit_id!r} has a malformed sample"
+                )
+            if sample_id in local_seen or sample_id in allowed_sample_ids:
+                raise RailsError(
+                    f"construction receipt has duplicate sample {sample_id!r}"
+                )
+            if sample_id not in sample_by_id:
+                raise RailsError(
+                    f"construction receipt allowed unit {unit_id!r} has unknown sample "
+                    f"{sample_id!r}"
+                )
+            local_seen.add(sample_id)
+        expected_ids = {item.sample_id for item in inventory.units[unit_id]}
+        if local_seen != expected_ids:
+            raise RailsError(
+                f"construction receipt selects a partial unit {unit_id!r}: "
+                f"expected {sorted(expected_ids)}, got {sorted(local_seen)}"
+            )
+        query_idx = inventory.units[unit_id][0].query_idx
+        if query_idx in excluded_query_indices:
+            raise RailsError(
+                f"construction receipt allows unit {unit_id!r} sharing excluded "
+                f"query_idx {query_idx}"
+            )
+        allowed_unit_ids.add(unit_id)
+        allowed_sample_ids.update(local_seen)
+        allowed_sample_count += len(local_seen)
+
+    summary = {
+        "schema": A2T_CONSTRUCTION_SELECTION_SCHEMA,
+        "receipt_path": str(Path(receipt_path)),
+        "receipt_sha256": receipt_sha256,
+        "source_manifest_sha256_by_tier": dict(
+            inventory.source_manifest_sha256_by_tier
+        ),
+        "source_item_count": sum(inventory.tier_item_counts.values()),
+        "source_unit_count": len(inventory.units),
+        "allowed_unit_count": len(allowed_unit_ids),
+        "allowed_sample_count": allowed_sample_count,
+        "excluded_sample_count": len(excluded_ids),
+        "excluded_query_idx_count": len(excluded_query_indices),
+    }
+    return _ConstructionSelection(
+        allowed_unit_ids=frozenset(allowed_unit_ids),
+        summary=summary,
+    )
+
+
 def load_tool_registry_by_name(
     lock: Mapping[str, object], root: Path
 ) -> dict[str, dict[str, str]]:
@@ -269,7 +596,11 @@ def load_tool_registry_by_name(
 
 
 def a2t_pool_rows(
-    lock: Mapping[str, object], root: Path
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    construction_receipt_path: Path | None = None,
+    construction_receipt_sha256: str | None = None,
 ) -> tuple[tuple[A2tKbRow, ...], dict[str, object]]:
     """Every Audio2Tool ``(tier, query_idx)`` unit in the FULL carrier pool,
     sorted by ``unit_id``, plus an integrity report.
@@ -281,40 +612,60 @@ def a2t_pool_rows(
     ``expected_tool_call`` string carries Telugu codepoints spliced into the
     middle of ``getApplianceState``), and a corrupted-gold row must never
     enter either a knowledge base or an evaluation tier.
+
+    When both construction receipt arguments are present, the returned rows
+    and the existing pool report fields describe only the receipt's allowed
+    units. Selection provenance is added under construction_selection.
+    Omitting both arguments preserves the full-pool behavior and report shape.
     """
 
-    entry = lock_entry(lock, AUDIO2TOOL_LOCK_KEY)
-    carrier_dir = asset_dir(lock, AUDIO2TOOL_LOCK_KEY, root)
-    subdir = str(entry["local_subdir"]).rstrip("/")
-    public_dir = carrier_dir / "public"
-    if not public_dir.is_dir():
-        raise RailsError(f"audio2tool public directory missing: {public_dir}")
-    registry = load_tool_registry_by_name(lock, root)
+    if (construction_receipt_path is None) != (
+        construction_receipt_sha256 is None
+    ):
+        raise RailsError(
+            "construction_receipt_path and construction_receipt_sha256 "
+            "must be provided together"
+        )
+    receipt: Mapping[str, object] | None = None
+    if (
+        construction_receipt_path is not None
+        and construction_receipt_sha256 is not None
+    ):
+        receipt = _load_construction_selection_receipt(
+            construction_receipt_path, construction_receipt_sha256
+        )
 
-    units: dict[str, list[tuple[int, Mapping[str, object]]]] = defaultdict(list)
-    tier_item_counts: dict[str, int] = {}
-    for tier in TIERS:
-        path = _tier_manifest_path(public_dir, tier)
-        if not path.is_file():
-            raise RailsError(f"audio2tool tier manifest missing: {path}")
-        try:
-            entries = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, UnicodeError, json.JSONDecodeError) as error:
-            raise RailsError(
-                f"cannot read audio2tool tier manifest {path}: {error}"
-            ) from error
-        if not isinstance(entries, list) or not entries:
-            raise RailsError(
-                f"audio2tool tier manifest {path} must be a non-empty JSON list"
-            )
-        tier_item_counts[tier] = len(entries)
-        for item in entries:
-            if not isinstance(item, Mapping):
-                raise RailsError(f"audio2tool tier manifest {path} has a malformed item")
-            query_idx = item.get("query_idx")
-            if isinstance(query_idx, bool) or not isinstance(query_idx, int):
-                raise RailsError(f"{tier}: manifest entry lacks an int query_idx")
-            units[f"{tier}:{query_idx:06d}"].append((int(item["id"]), item))
+    entry = lock_entry(lock, AUDIO2TOOL_LOCK_KEY)
+    subdir = str(entry["local_subdir"]).rstrip("/")
+    inventory = _load_a2t_manifest_inventory(lock, root)
+    selection: _ConstructionSelection | None = None
+    if receipt is not None:
+        assert construction_receipt_path is not None
+        assert construction_receipt_sha256 is not None
+        selection = _validate_construction_selection(
+            receipt,
+            inventory,
+            receipt_path=construction_receipt_path,
+            receipt_sha256=construction_receipt_sha256,
+        )
+    selected_unit_ids = (
+        frozenset(inventory.units)
+        if selection is None
+        else selection.allowed_unit_ids
+    )
+    units = {
+        unit_id: tuple((item.item_id, item.entry) for item in members)
+        for unit_id, members in inventory.units.items()
+        if unit_id in selected_unit_ids
+    }
+    if selection is None:
+        tier_item_counts = dict(inventory.tier_item_counts)
+    else:
+        tier_item_counts = dict.fromkeys(TIERS, 0)
+        for unit_id in selected_unit_ids:
+            for item in inventory.units[unit_id]:
+                tier_item_counts[item.tier] += 1
+    registry = load_tool_registry_by_name(lock, root)
 
     rows: list[A2tKbRow] = []
     quarantined: list[dict[str, object]] = []
@@ -422,6 +773,8 @@ def a2t_pool_rows(
         "gold_primary_tool_count": len({row.tool_name for row in rows}),
         "registry_tools_never_gold": sorted(set(registry) - {row.tool_name for row in rows}),
     }
+    if selection is not None:
+        report["construction_selection"] = dict(selection.summary)
     return tuple(sorted(rows, key=lambda row: row.unit_id)), report
 
 
@@ -1808,6 +2161,7 @@ def coverage_report_a2t(
 
 
 __all__ = [
+    "A2T_CONSTRUCTION_SELECTION_SCHEMA",
     "A2T_KB_BUILD_POLICY_ID",
     "A2T_PARTITION_POLICY_ID",
     "CONSTRUCTION_ROSTER_ROLE",
@@ -1820,6 +2174,7 @@ __all__ = [
     "A2tKbRow",
     "A2tKnowledgeBuildSpec",
     "PartitionProposal",
+    "a2t_metadata_inventory",
     "a2t_pool_rows",
     "build_a2t_knowledge_snapshot",
     "build_a2t_knowledge_snapshot_from_lock",
