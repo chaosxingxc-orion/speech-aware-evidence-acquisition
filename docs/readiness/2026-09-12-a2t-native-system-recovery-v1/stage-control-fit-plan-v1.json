@@ -1,0 +1,122 @@
+{
+  "budget_semantics": "Per-arm fit and generation GPU/audio caps are shared, not additive. Fresh pass caps are21,000 generations,60,005 fit contacts,125,000 speech seconds and10 GPU-hours including loading/fitting. Cumulative family retains15,864 prior generations,48,004 fit contacts,92,897.6323333201 speech seconds and a conservative2.2344070172309873-hour original wall envelope; total GPU cap12.2345 hours.",
+  "composed_config_hash": "a5094b30c56accb90e208239b520fca104bbd9e7f562e70c13b3c9ea78ae12d4",
+  "decision_rule": {
+    "repo_relpath": "configs/analysis/a2t-native-system-decision-v1.json",
+    "sha256": "3043cdaeaa330e7897e13a4aba17c55706e9e16bda7cde92b9f2683ba59f688c"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-native-system-recovery-stage-control-fit-v1",
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 4.0,
+    "planned_model_calls": 24002,
+    "planned_speech_audio_seconds": 50000,
+    "protocol_hash": "f585808ad356107e84ed36b41d8eb6fd8e23197645ec83d15ac0053bbdbec56b",
+    "run_id": "SAEA-A2T-NATIVE-SYSTEM-RECOVERY-STAGE-CONTROL-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-a2t-native-system-recovery-np3-v1",
+  "family_budget": {
+    "fit_contacts_total": 108009,
+    "generation_calls_total": 36864,
+    "gpu_hours_total": 12.2345,
+    "speech_audio_seconds_total": 217897.6323333201
+  },
+  "fresh_pass_budget": {
+    "fit_contacts_total": 60005,
+    "generation_calls_total": 21000,
+    "gpu_hours_total": 10.0,
+    "speech_audio_seconds_total": 125000
+  },
+  "live_fit": "One full actual request wave per phase, 1 props plus 3 endpoints per row. Retain all speech chunks, actual own predecessor state, full task contract, supplied values and max1024. Require prompt_fit_multiple4/3 within32768 per slot.",
+  "logging": "Use existing OpenJiuwen INFO file sinks under DATA serving/serving-a2t-native-system-recovery-np3-v1/campaign-framework-logs. Keep task audit traces unchanged.",
+  "observed_resident_identity": {
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "host": "127.0.0.1",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      }
+    ],
+    "model_fragment": "q4km-mmproj-free-a2t-native-system-np3-v1",
+    "model_fragment_sha256": "7c8cde14ccdef5b4d2637457fe30e029c9882439210ebbaf5c2976ebf5496673",
+    "model_root": "/home/chao",
+    "port": 8090,
+    "props_identity": {
+      "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "slot_n_ctx": 32768,
+      "total_slots": 3
+    },
+    "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+    "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+    "server_argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8090",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--no-mmproj",
+      "-c",
+      "98304",
+      "-np",
+      "3",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ],
+    "server_env": {
+      "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+      "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/a2t-native-system-4000-packets-04ccc72a"
+    },
+    "session_role": "inference"
+  },
+  "read_gate": "Keep old and recovery semantic quality outputs closed until all three complete recovery manifests seal or an explicit root terminal hold closes the comparison.",
+  "recovery_accounting": {
+    "closure_receipt": "coordination/a2t-native-system-interruption-closure-result-v1.json",
+    "closure_receipt_sha256": "c3c33f86073bb039ada533468633ac3fc7b41d4ac155ce53d9e4badeb89612ea",
+    "cumulative_budget_receipt": "coordination/a2t-native-system-recovery-cumulative-budget-v1.json",
+    "cumulative_budget_receipt_sha256": "f407f15c636a8eca25b229b27ee8b9268e51c6e4d5816b8c55f57533f07a294b",
+    "original_campaign": "SAEA-A2T-NATIVE-SYSTEM-V1",
+    "recovery_number": 1
+  },
+  "registered_at": "2026-09-12T14:20:44.694956+00:00",
+  "resident_document": {
+    "relpath": "serving/serving-a2t-native-system-recovery-np3-v1/session.json",
+    "sha256": "673d7fa6d4405a9e91763283b7894f0254fa588c2d86ad2898b3677eca5f4282"
+  },
+  "resident_identity_semantics": "Recorded current resident identity; FlightRuntime independently derives and validates the required complete identity before attachment.",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/a2t-native-system-recovery-root-eligibility-v1.json",
+    "sha256": "1d34101bf00100760ea191e93224631ab3af3e85472e7870270c1daebde0a707"
+  },
+  "status": "ROOT_REGISTERED",
+  "stopping": "Another failure ends recovery. No automatic or second recovery; prove any subsequent fix on a four-row dry run.",
+  "wire_verdict": {
+    "relpath": "coordination/a2t-native-system-recovery-root-wire-verdict-v1.json",
+    "sha256": "568d1fa1305f0a11ff6e9888c20048bfdce81ba5b898a6aef8b9056012808865"
+  }
+}

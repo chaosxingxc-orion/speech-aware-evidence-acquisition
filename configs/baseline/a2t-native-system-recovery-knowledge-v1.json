@@ -76,6 +76,12 @@
     }
   },
   "policy": "phase-task-tools-then-solve-v1",
+  "prepared_phase_recall": {
+    "solve": {
+      "relpath": "prepared/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-KNOWLEDGE-CAMPAIGN-PREPARE-V1/recall.json",
+      "sha256": "8e8426eca470d8e9233accacc2b26d0fe252439453ee0b2b2c8daf6b7ad2c2f4"
+    }
+  },
   "prompt_fit_multiple": 1.3333333333333333,
   "scorers": [
     "a2t-toolcall-official",

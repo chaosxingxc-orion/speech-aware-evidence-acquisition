@@ -15,9 +15,36 @@
       "dataset_fragment": "audio2tool-org1-union-4000",
       "model_fragment": "q4km-mmproj-free-a2t-native-system-np3-v1",
       "readiness": {
-        "reason": "NOT_REGISTERED: recovery-specific recall and actual-request fit evidence, execution plans, exposure registrations, and root scientific eligibility are absent.",
-        "requirements": [],
-        "state": "held"
+        "reason": "Root manually admits sole matched recovery; unchanged sources and wire proof sealed. Actual complete live-phase fitting remains mandatory before each generation wave.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-A2T-NATIVE-SYSTEM-PACKETS-V1/promotion.json",
+            "sha256": "720d81f63a1923f19893c0ee171e1ab7b47f9a946c1e62a06bdddd839243de8a"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "coordination/a2t-native-system-recovery-root-wire-verdict-v1.json",
+            "sha256": "568d1fa1305f0a11ff6e9888c20048bfdce81ba5b898a6aef8b9056012808865"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "coordination/a2t-native-system-recovery-cumulative-budget-v1.json",
+            "sha256": "f407f15c636a8eca25b229b27ee8b9268e51c6e4d5816b8c55f57533f07a294b"
+          },
+          {
+            "expected_decision_id": "ROOT-A2T-NATIVE-SYSTEM-MANUAL-RECOVERY-V1",
+            "kind": "decision",
+            "relpath": "coordination/a2t-native-system-recovery-root-eligibility-v1.json",
+            "sha256": "1d34101bf00100760ea191e93224631ab3af3e85472e7870270c1daebde0a707"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-A2T-NATIVE-SYSTEM-RECOVERY-KNOWLEDGE-CAMPAIGN-PREPARE-V1/recall.json",
+            "sha256": "8e8426eca470d8e9233accacc2b26d0fe252439453ee0b2b2c8daf6b7ad2c2f4"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-A2T-NATIVE-SYSTEM-RECOVERY-KNOWLEDGE-V1"
     }

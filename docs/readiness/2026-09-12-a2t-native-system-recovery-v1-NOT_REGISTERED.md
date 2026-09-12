@@ -116,3 +116,8 @@ configuration refuses campaign execution.
 ## Root cumulative accounting update
 
 The fresh per-arm targets/caps are unchanged. The family budget now carries prior consumed usage plus the fresh full-pass allowance; the exact pinned basis is DATA/coordination/a2t-native-system-recovery-cumulative-budget-v1.json. It records 15,864 prior generation contacts, 48,004 prior fit contacts, and 92,897.6323333201 prior charged speech seconds. The GPU budget conservatively carries the entire original allocation-to-stop wall interval in addition to the new 10-hour allowance, while reporting the sampled utilization integral separately. This candidate remains NOT_REGISTERED until root finishes admission.
+
+
+## Root admission successor
+
+This candidate snapshot was superseded by root registration on 2026-09-12. The six execution plans are in docs/readiness/2026-09-12-a2t-native-system-recovery-v1/. DATA coordination/a2t-native-system-recovery-registration-summary-v1.json (SHA-256 7eef2e239f56a675e693fdd862aae4561cd45b8adabb79165baca17b15bc9f59) pins the successor wire and eligibility receipts and final composed identities. All three cells are now ready for the sole manually reviewed recovery; complete actual-request fitting remains mandatory at each live phase barrier. This update grants no effectiveness conclusion and does not rewrite the original terminated campaign.
