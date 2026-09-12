@@ -3069,3 +3069,18 @@ records. Use [the English successor](readiness/2026-09-11-historical-exposure-en
 for model-facing reading of those complete entries. Its source commit, source
 hash and line addresses preserve provenance. This translation changes no past
 authorization, exposure, protocol or result. All new entries are English.
+
+## September 11, 2026: current Audio2Tool shared-base materialization
+
+Pre-register SAEA-A2T-MF-CURRENT-CARDS-COMPILATION-V1 and
+SAEA-A2T-MF-SHARED-ROSTER-4000-V1 before reading either result.
+Use model-free-check only: zero model, encoder, tokenizer, scorer, network or
+GPU contacts. Bind the shared compilation to configs/preparation/a2t-current-cards-v1.json
+and the exact existing construction selection; preserve all legal tools.
+The compiled legacy presentation is an engineering artifact and remains held
+because observed argument patterns are not an exhaustive statement of legality.
+Validate the full registered A2T-ORG1-UNION-4000 media roster through the shared
+factory/adapter only. Do not launch or reopen its historical experiment.
+Source code: 036e2db6417cf734123a0b1caf240706340203f6. Registration:
+DATA coordination/a2t-shared-base-model-free-registration-v1.json, SHA256
+f4ed86ba9d78205b28e864948645334982e47476edef7b3e37225fab243bf723. Model results, gold and new query vectors are outside this operation.
