@@ -66,6 +66,217 @@ def test_analysis_verifies_inputs_and_keeps_source_hashes(tmp_path):
         run(path, tmp_path / "bad.json", verifier=lambda _: None)
 
 
+def test_default_analysis_finalized_scores_match_legacy_statistics(tmp_path, monkeypatch):
+    import hashlib
+    import json
+    from pathlib import Path
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.analysis import score_compare_cli as cli
+
+    def write(name, value):
+        path = tmp_path / name
+        path.write_text(json.dumps(value))
+        return {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
+    metadata = write("metadata.json", {"rows": {
+        "a": {"speaker": "one", "scenario": "x"},
+        "b": {"speaker": "two", "scenario": "y"},
+    }})
+    full = write("full.json", {"items": [{"id": "a"}, {"id": "b"}]})
+    primary = write("primary.json", {"items": [{"id": "a"}]})
+    legacy_inputs, finalized_inputs, bundles = {}, {}, {}
+    for name, rows in {
+        "left": [
+            {"sample_id": "a", "intent": 0, "tp": 1, "fp": 1, "fn": 1},
+            {"sample_id": "b", "intent": 1, "tp": 2, "fp": 0, "fn": 1},
+        ],
+        "right": [
+            {"sample_id": "a", "intent": 1, "tp": 2, "fp": 0, "fn": 1},
+            {"sample_id": "b", "intent": 1, "tp": 2, "fp": 1, "fn": 0},
+        ],
+    }.items():
+        manifest = write(name + ".manifest.json", {})
+        scores = {"official": {"per_sample": rows}}
+        legacy_score = write(name + ".legacy-score.json", {
+            "verified": True, "manifest": manifest["path"], "scores": scores,
+        })
+        attached_score = write(name + ".attached-score.json", scores)
+        legacy_inputs[name] = {
+            "manifest": manifest, "score": legacy_score,
+            "scorers": {"official": "official"},
+        }
+        finalized_inputs[name] = {
+            "manifest": manifest, "score_source": "finalized-bundle",
+            "scorers": {"official": "official"},
+        }
+        bundles[Path(manifest["path"])] = SimpleNamespace(
+            attempt_state="FINALIZED", manifest_path=Path(manifest["path"]),
+            manifest={"status": "COMPLETED", "scores": attached_score,
+                      "scorers": ["official"]},
+        )
+
+    def config(inputs):
+        return {
+            "execution_profile": "model-free-check", "experiment_id": "equivalent",
+            "analysis": {
+                "metadata": metadata, "full_roster": full, "roster": primary,
+                "inputs": inputs, "metrics": ["intent"],
+                "micro_metrics": {
+                    "micro": {"tp": ["tp"], "fp": ["fp"], "fn": ["fn"]},
+                },
+                "seed": 9, "n_replicates": 20,
+                "contrasts": [{
+                    "name": "right_minus_left", "left": "left", "right": "right",
+                    "scorers": ["official"],
+                }],
+            },
+        }
+
+    legacy_path = tmp_path / "legacy-config.json"
+    legacy_path.write_text(json.dumps(config(legacy_inputs)))
+    legacy = cli.run(legacy_path, tmp_path / "legacy-result.json", verifier=lambda _: None)
+
+    finalized_path = tmp_path / "finalized-config.json"
+    finalized_path.write_text(json.dumps(config(finalized_inputs)))
+    events = []
+    original_pinned_json = cli.pinned_json
+
+    def record_read(pin):
+        events.append(("read", Path(pin["path"])))
+        return original_pinned_json(pin)
+
+    def verify(path):
+        events.append(("verify", path))
+        return bundles[path]
+
+    monkeypatch.setattr(cli, "pinned_json", record_read)
+    finalized = cli.run(finalized_path, tmp_path / "finalized-result.json", verifier=verify)
+
+    first_score_read = min(
+        index for index, event in enumerate(events)
+        if event[0] == "read" and event[1].name.endswith("attached-score.json")
+    )
+    for name in ("left", "right"):
+        manifest_path = Path(legacy_inputs[name]["manifest"]["path"])
+        assert events[:first_score_read].count(("verify", manifest_path)) == 1
+    assert finalized["populations"] == legacy["populations"]
+    assert finalized["results"] == legacy["results"]
+    assert finalized["sources"]["left"]["score"] == bundles[
+        Path(legacy_inputs["left"]["manifest"]["path"])
+    ].manifest["scores"]
+
+
+@pytest.mark.parametrize(
+    ("source", "state", "message"),
+    [
+        ("finalized-bundle", "OPENED", "finalized complete"),
+        ("not-a-score-source", "FINALIZED", "unknown saved score source"),
+    ],
+)
+def test_default_analysis_rejects_invalid_explicit_score_binding(
+        tmp_path, source, state, message):
+    import hashlib
+    import json
+    from pathlib import Path
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.analysis.score_compare_cli import run
+
+    def write(name, value):
+        path = tmp_path / name
+        path.write_text(json.dumps(value))
+        return {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
+    manifest = write("manifest.json", {})
+    attached = write("attached.json", {
+        "official": {"per_sample": [{"sample_id": "a", "m": 1}]},
+    })
+    config = {
+        "execution_profile": "model-free-check", "experiment_id": "invalid",
+        "analysis": {
+            "metadata": write("metadata.json", {"rows": {
+                "a": {"speaker": "one", "scenario": "x"},
+            }}),
+            "full_roster": write("full.json", {"items": [{"id": "a"}]}),
+            "roster": write("primary.json", {"items": [{"id": "a"}]}),
+            "inputs": {"only": {
+                "manifest": manifest, "score_source": source,
+                "scorers": {"official": "official"},
+            }},
+            "metrics": ["m"], "seed": 1, "n_replicates": 20,
+            "contrasts": [{
+                "name": "self", "left": "only", "right": "only",
+                "scorers": ["official"],
+            }],
+        },
+    }
+    config_path = tmp_path / "config.json"
+    config_path.write_text(json.dumps(config))
+    bundle = SimpleNamespace(
+        attempt_state=state, manifest_path=Path(manifest["path"]),
+        manifest={"status": "COMPLETED", "scores": attached, "scorers": ["official"]},
+    )
+    with pytest.raises(ValueError, match=message):
+        run(config_path, tmp_path / "out.json", verifier=lambda _: bundle)
+
+
+def test_default_analysis_accepts_explicit_complete_score_receipt(tmp_path, monkeypatch):
+    import hashlib
+    import json
+
+    from speech_aware_evidence_acquisition.analysis import score_compare_cli as cli
+
+    def write(name, value):
+        path = tmp_path / name
+        path.write_text(json.dumps(value))
+        return {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
+    manifest = write("manifest.json", {})
+    score = write("score.json", {
+        "verified": True, "manifest": manifest["path"],
+        "scores": {"official": {"per_sample": [{"sample_id": "a", "m": 1}]}},
+    })
+    receipt = write("receipt.json", {"score_result": score})
+    binding = {
+        "manifest": manifest, "score_source": "complete-score-receipt",
+        "score_receipt": {**receipt, "cell_id": "only"},
+        "scorers": {"official": "official"},
+    }
+    config = {
+        "execution_profile": "model-free-check", "experiment_id": "receipt",
+        "analysis": {
+            "metadata": write("metadata.json", {"rows": {
+                "a": {"speaker": "one", "scenario": "x"},
+            }}),
+            "full_roster": write("full.json", {"items": [{"id": "a"}]}),
+            "roster": write("primary.json", {"items": [{"id": "a"}]}),
+            "inputs": {"only": binding}, "metrics": ["m"],
+            "seed": 1, "n_replicates": 20,
+            "contrasts": [{
+                "name": "self", "left": "only", "right": "only",
+                "scorers": ["official"],
+            }],
+        },
+    }
+    seen = []
+
+    def verify_receipt(ref, bundle):
+        seen.append((ref.cell_id, bundle))
+        return {"score_result": score}
+
+    monkeypatch.setattr(cli, "verify_complete_score_receipt", verify_receipt)
+    config_path = tmp_path / "config.json"
+    config_path.write_text(json.dumps(config))
+    result = cli.run(config_path, tmp_path / "out.json", verifier=lambda _: None)
+
+    assert seen == [("only", None)]
+    assert result["results"]["self"]["NEW500"]["official"]["m"][
+        "speaker_clustered"
+    ]["delta"] == 0
+    assert result["sources"]["only"] == {**binding, "score": score}
+
+
 def test_cli_uses_shared_reader(monkeypatch, tmp_path, capsys):
     from speech_aware_evidence_acquisition.analysis import score_compare_cli as cli
     seen = []

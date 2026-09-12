@@ -335,14 +335,26 @@ def run(config_path: Path, output: Path, *, verifier=verify_bundle):
         for group in groups:
             requested_fields.extend(group)
     requested_fields = tuple(dict.fromkeys(requested_fields))
+    explicit_bundles = {}
+    for name, binding in spec["inputs"].items():
+        if "score_source" not in binding:
+            continue
+        pinned_json(binding["manifest"])
+        explicit_bundles[name] = verifier(Path(binding["manifest"]["path"]))
     tables, sources = {}, {}
     for name, binding in spec["inputs"].items():
-        document = pinned_json(binding["score"])
-        pinned_json(binding["manifest"])
         manifest = Path(binding["manifest"]["path"])
+        if "score_source" in binding:
+            document, score_pin = _saved_scores(binding, explicit_bundles[name])
+            source = {**binding, "score": score_pin}
+        else:
+            document = pinned_json(binding["score"])
+            pinned_json(binding["manifest"])
+            source = binding
         if Path(document["manifest"]).resolve() != manifest.resolve():
             raise ValueError("score/manifest identity mismatch")
-        verifier(manifest)
+        if "score_source" not in binding:
+            verifier(manifest)
         tables[name] = {}
         for alias, scorer_binding in binding["scorers"].items():
             if isinstance(scorer_binding, str):
@@ -360,7 +372,7 @@ def run(config_path: Path, output: Path, *, verifier=verify_bundle):
             if set(rows) != set(full):
                 raise ValueError("score roster mismatch")
             tables[name][alias] = rows
-        sources[name] = binding
+        sources[name] = source
     results = {}
     for contrast in spec["contrasts"]:
         name = contrast["name"]
