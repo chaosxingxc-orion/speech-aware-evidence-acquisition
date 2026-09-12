@@ -1,0 +1,47 @@
+{
+  "attempt_id": "attempt-slurp-whisper-observations-v1",
+  "contacts": {
+    "audio_header_or_decode": 0,
+    "cuda_query": 0,
+    "model_load": 0,
+    "neural_forward": 0,
+    "quality_result_read": 0,
+    "task_generation": 0
+  },
+  "execution_plan": {
+    "relpath": "docs/readiness/2026-09-12-slurp-whisper-v1/preparation-plan.json",
+    "sha256": "1779c60d5fd70fb79c308bb781e29254b9823ec3d2a82d6699d7a9f449248069"
+  },
+  "ledger_row": {
+    "relpath": "docs/readiness/2026-09-12-slurp-whisper-v1/exposure-ledger.md",
+    "row_id": "SAEA-SLURP-WHISPER-OBSERVATIONS-V1",
+    "sha256": "bd6b15ff02540193a85b4ce67ca6b7734ed23a897111825fc00a6e084ee96025"
+  },
+  "metadata_validation": {
+    "audio_seconds": 2884.7936875,
+    "longest_audio_seconds": 12.032,
+    "shared_source_schema": "pass",
+    "shared_tool_plan_gate": "pass",
+    "sources": 1000
+  },
+  "protocol": {
+    "relpath": "docs/readiness/2026-09-12-slurp-whisper-v1/preparation-protocol.json",
+    "sha256": "0c83ee40b65636047c27921cd257d65aafc5132b353e79b05601ac6af9c64a79"
+  },
+  "recorded_at_utc": "2026-09-12T16:11:17.823966+00:00",
+  "remaining_before_dispatch": [
+    "Verify all three recovery manifests seal and scoring completes.",
+    "Preregister and run frozen A2T saved-score analysis; record root scientific admission.",
+    "Verify this exact frozen source commit and local runtime pins.",
+    "Root owns service switch, memory availability and exclusive preparation lease.",
+    "Create an external pinned runtime config containing the final clean study_head and these exact bindings."
+  ],
+  "run_id": "SAEA-SLURP-WHISPER-OBSERVATIONS-V1",
+  "runtime_config_created": false,
+  "schema": "saea-local-speech-observation-registration-v1",
+  "scientific_eligibility": "pending-a2t-closure-and-root-admission",
+  "umbrella_lock": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+    "sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+  }
+}

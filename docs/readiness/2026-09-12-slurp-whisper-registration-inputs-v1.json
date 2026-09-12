@@ -1,0 +1,212 @@
+{
+  "schema": "saea-slurp-whisper-registration-inputs-v1",
+  "status": "draft-pending-root-registration",
+  "authority": "Registration inputs only. This document is not an ExecutionPlan, protocol, exposure-ledger row, configuration, or launch authority.",
+  "study_base": {
+    "worktree": "/home/chao/saea-worktrees/slurp-speech-tool-registration-v1",
+    "base_commit": "6b237334c981f548dae3708aa6d731ba3f9f6e65"
+  },
+  "design": {
+    "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-design-v1.json",
+    "sha256": "1de32e9d77caeaa095345029a104a814d29e8d007c017fc1521d9c28804762c0"
+  },
+  "retained_baseline": {
+    "relpath": "configs/baseline/slurp-task-agent-frame-replication-recovery-v1.json",
+    "sha256": "08db69a2152059388880be926db1eb3c940ce29110e48c5c52587b9fe6982aaa"
+  },
+  "data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+  "source_inventory": {
+    "relpath": "prepared/SAEA-SLURP-SPEECH-OBSERVATION-SOURCES-V1/sources.json",
+    "absolute_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-SPEECH-OBSERVATION-SOURCES-V1/sources.json",
+    "sha256": "435d64b9e4fd341d9db6f8e574d5eda08007f48c432dda55b09bc0b2ab318782",
+    "bytes": 772675,
+    "artifact_schema": "saea-prepared-artifact-v1",
+    "artifact_kind": "speech-observation-sources",
+    "contact_class": "model-free",
+    "output_schema": "saea-speech-observation-source-inventory-v1",
+    "carrier_lock_key": "slurp",
+    "split_role": "dev",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "source_count": 1000,
+    "source_audio_seconds": 2884.7936875,
+    "longest_source_seconds": 12.032,
+    "binding_fields": [
+      "packet_id",
+      "packet_sha256",
+      "source_audio_relpath",
+      "source_audio_sha256",
+      "source_audio_duration_seconds"
+    ],
+    "shared_metadata_validation": "pass-without-audio-contact"
+  },
+  "checkpoint_runtime_inventory": {
+    "relpath": "docs/readiness/2026-09-12-whisper-runtime-inventory-v1.json",
+    "absolute_path": "/home/chao/saea-worktrees/slurp-speech-tool-registration-v1/docs/readiness/2026-09-12-whisper-runtime-inventory-v1.json",
+    "sha256": "29ea8ebeae70defdf09bce2f3c1bff399fdee80b127373969542944062abfdf1",
+    "bytes": 3338,
+    "schema": "saea-local-whisper-runtime-inventory-v1",
+    "model": "large-v3",
+    "checkpoint": {
+      "path": "/home/chao/speech-tools/whisper-vad/models/whisper/large-v3.pt",
+      "bytes": 3087371615,
+      "sha256": "e5b1a55b89c1367dacf97e3e19bfd829a01529dbfdeefa8caeb59b3f1b81dadb"
+    },
+    "whisper_source_path": "/home/chao/speech-tools/whisper-vad/sources/openai_whisper-20250625"
+  },
+  "runtime_import_readiness": {
+    "relpath": "docs/readiness/2026-09-12-whisper-runtime-import-readiness-v1.json",
+    "absolute_path": "/home/chao/saea-worktrees/slurp-speech-tool-registration-v1/docs/readiness/2026-09-12-whisper-runtime-import-readiness-v1.json",
+    "sha256": "defdf6a85db79b8d8d9e1ef02c411d0a23489dcca8651185bee7c9609173f604",
+    "bytes": 2223,
+    "environment": "/home/chao/.venvs/saea-whisper-gpu",
+    "python": "/home/chao/.venvs/saea-whisper-gpu/bin/python",
+    "scope": "Import readiness only; no CUDA query, model load, audio read, or forward."
+  },
+  "producer_validation": {
+    "relpath": "docs/readiness/2026-09-12-speech-observation-producer-validation-v1.json",
+    "sha256": "c83780bdf88420efab28fc766d8f6111ac8b26e40622227f30c5451fa069efc3"
+  },
+  "umbrella_lock": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+    "sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe",
+    "policy": "Pin this authoritative file by path and hash; do not create a repository-local lock copy."
+  },
+  "decoding": {
+    "schema": "saea-local-whisper-decode-v1",
+    "device": "cuda",
+    "cpu_workers": 8,
+    "batch_size": 8,
+    "language": "en",
+    "task": "transcribe",
+    "temperature": 0,
+    "beam_size": 5,
+    "sample_len": 224,
+    "without_timestamps": true,
+    "fp16": true,
+    "no_speech_threshold": 0.6,
+    "logprob_threshold": -1.0
+  },
+  "contact_geometry": {
+    "logical_speech_tool_contacts": 1000,
+    "native_decoder_batches": 125,
+    "batch_size": 8,
+    "exact_speech_audio_seconds": 2884.7936875,
+    "minimum_execution_plan_model_calls": 1000,
+    "minimum_execution_plan_speech_audio_seconds": 2885,
+    "planned_gpu_hours": "PENDING_ROOT_FINITE_POSITIVE_BUDGET"
+  },
+  "required_execution_plan_fields": {
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition",
+    "run_id": "PENDING_ROOT_UNIQUE_RUN_ID",
+    "attempt_id": "PENDING_ROOT_UNIQUE_ATTEMPT_ID",
+    "execution_profile": "PENDING_ROOT_MODEL_TOUCH_PROFILE",
+    "carrier_lock_key": "slurp",
+    "split_role": "dev",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "planned_model_calls": "PENDING_ROOT_INTEGER_AT_LEAST_1000",
+    "planned_gpu_hours": "PENDING_ROOT_FINITE_POSITIVE_NUMBER",
+    "planned_speech_audio_seconds": "PENDING_ROOT_INTEGER_AT_LEAST_2885",
+    "protocol_hash": "PENDING_SHA256_OF_FINAL_PROTOCOL_BYTES"
+  },
+  "required_protocol_fields": {
+    "schema": "saea-speech-observation-preparation-protocol-v1",
+    "sources": {
+      "relpath": "prepared/SAEA-SLURP-SPEECH-OBSERVATION-SOURCES-V1/sources.json",
+      "sha256": "435d64b9e4fd341d9db6f8e574d5eda08007f48c432dda55b09bc0b2ab318782"
+    },
+    "checkpoint_receipt": {
+      "relpath": "docs/readiness/2026-09-12-whisper-runtime-inventory-v1.json",
+      "sha256": "29ea8ebeae70defdf09bce2f3c1bff399fdee80b127373969542944062abfdf1"
+    },
+    "decoding": "USE_EXACT_DECODING_OBJECT_FROM_THIS_DOCUMENT",
+    "monitor_interval_seconds": 10,
+    "catalog_id": "PENDING_ROOT_CATALOG_ID",
+    "output_relpath": "prepared/PENDING_ROOT_RUN_ID/PENDING_ROOT_ATTEMPT_ID/catalog.json",
+    "artifacts_relpath": "prepared/PENDING_ROOT_RUN_ID/PENDING_ROOT_ATTEMPT_ID/artifacts"
+  },
+  "required_execution_plan_envelope": {
+    "execution_plan": "USE_FINAL_EXECUTION_PLAN_OBJECT"
+  },
+  "required_runner_config_fields": {
+    "plan": "USE_FINAL_EXECUTION_PLAN_OBJECT",
+    "execution_plan": {
+      "relpath": "PENDING_REPOSITORY_RELATIVE_EXECUTION_PLAN_ENVELOPE",
+      "sha256": "PENDING_EXECUTION_PLAN_ENVELOPE_SHA256"
+    },
+    "ledger_row": {
+      "relpath": "docs/exposure-ledger.md",
+      "sha256": "PENDING_POST_REGISTRATION_LEDGER_SHA256",
+      "row_id": "PENDING_ROOT_UNIQUE_RUN_ID"
+    },
+    "protocol": {
+      "path": "PENDING_ABSOLUTE_FINAL_PROTOCOL_PATH",
+      "sha256": "PENDING_SHA256_OF_FINAL_PROTOCOL_BYTES"
+    },
+    "umbrella_lock": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+      "sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+    },
+    "session_id": "PENDING_ROOT_SESSION_ID",
+    "study_head": "PENDING_ROOT_FROZEN_REGISTRATION_COMMIT"
+  },
+  "canonical_source_root_requirements": {
+    "path": "/home/chao/saea-worktrees/slurp-speech-tool-registration-v1",
+    "platform": "WSL2 Ubuntu-24.04",
+    "head": "MUST_EQUAL_RUNNER_CONFIG_STUDY_HEAD",
+    "worktree": "MUST_BE_CLEAN_AT_CLI_ENTRY",
+    "execution_plan_and_checkpoint_pins": "MUST_BE_CANONICAL_POSIX_RELATIVE_PATHS_CONFINED_TO_SOURCE_ROOT",
+    "ledger": "MUST_BE_CANONICAL docs/exposure-ledger.md BYTES AT THE PINNED POST_REGISTRATION_HASH",
+    "protocol": "MUST_BE_AN_ABSOLUTE_PINNED_PATH WHOSE SHA256_EQUALS_PLAN_PROTOCOL_HASH"
+  },
+  "guard_constraints": [
+    "Use an exact ExecutionPlan with a non-null valid attempt_id and a model-touch execution profile: baseline-reproduction or bounded-discovery-probe.",
+    "The umbrella lock must resolve slurp as one unambiguous allowed speech carrier.",
+    "The exposure ledger must contain exactly one original row whose run ID, profile, split role, split hash, carrier, and capacities cover the plan and whose consumed value is no before contact.",
+    "The execution-plan envelope must reconstruct exactly the same plan object as the runner configuration.",
+    "The protocol must have exactly the eight required fields listed here, use monitor interval 10, and hash exactly to plan.protocol_hash.",
+    "The source artifact must remain model-free, match carrier slurp and the DEV1000 split hash, and pass its prepared-artifact input binding.",
+    "The runtime verifier hashes the complete checkpoint, every declared Whisper source file, and all declared package versions before model load.",
+    "Catalog and artifact paths must be confined to the data root and begin prepared/{run_id}/{attempt_id}/.",
+    "All 1000 bindings are hashed and their audio headers are checked before the first forward; total measured duration must equal 2884.7936875 seconds.",
+    "A fresh preparation attempt directory is created exclusively; an existing attempt directory fails closed.",
+    "The exclusive generation lease, AttemptStore reservation, pre-contact per-clip debit, ten-second monitor, sealing, and abort custody are shared runtime requirements.",
+    "Batch size eight still debits one logical contact and the exact speech duration for every clip before each native batch forward."
+  ],
+  "cli_invocation": {
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "PENDING_ROOT_GPU_DEVICE",
+      "HF_DATASETS_OFFLINE": "1",
+      "HF_HUB_OFFLINE": "1",
+      "PIP_NO_INDEX": "1",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "/home/chao/saea-worktrees/slurp-speech-tool-registration-v1/src",
+      "TOKENIZERS_PARALLELISM": "false",
+      "TRANSFORMERS_OFFLINE": "1"
+    },
+    "python": "/home/chao/.venvs/saea-whisper-gpu/bin/python",
+    "module": "speech_aware_evidence_acquisition.core.speech_preparation_runtime",
+    "arguments": [
+      "--config",
+      "PENDING_ABSOLUTE_RUNNER_CONFIG_PATH",
+      "--config-sha256",
+      "PENDING_RUNNER_CONFIG_SHA256",
+      "--data-root",
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+      "--source-root",
+      "/home/chao/saea-worktrees/slurp-speech-tool-registration-v1"
+    ],
+    "launch_authority": "PENDING_ROOT"
+  },
+  "pending_authority_fields": [
+    "Root scientific admission",
+    "Unique run_id and attempt_id",
+    "Execution profile and finite plan budgets",
+    "Final protocol path, bytes, and SHA256",
+    "ExecutionPlan envelope path, bytes, and SHA256",
+    "Original immutable exposure-ledger row and post-registration ledger SHA256",
+    "Catalog ID and attempt-namespaced output paths",
+    "Session ID and final clean study_head",
+    "CUDA device selection, lease admission, and launch"
+  ]
+}

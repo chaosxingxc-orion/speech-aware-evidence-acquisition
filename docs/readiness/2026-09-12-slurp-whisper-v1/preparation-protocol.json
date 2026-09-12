@@ -1,0 +1,30 @@
+{
+  "artifacts_relpath": "prepared/SAEA-SLURP-WHISPER-OBSERVATIONS-V1/attempt-slurp-whisper-observations-v1/observations",
+  "catalog_id": "slurp-dev1000-whisper-large-v3-full-utterance-v1",
+  "checkpoint_receipt": {
+    "relpath": "docs/readiness/2026-09-12-whisper-runtime-inventory-v1.json",
+    "sha256": "29ea8ebeae70defdf09bce2f3c1bff399fdee80b127373969542944062abfdf1"
+  },
+  "decoding": {
+    "batch_size": 8,
+    "beam_size": 5,
+    "cpu_workers": 8,
+    "device": "cuda",
+    "fp16": true,
+    "language": "en",
+    "logprob_threshold": -1.0,
+    "no_speech_threshold": 0.6,
+    "sample_len": 224,
+    "schema": "saea-local-whisper-decode-v1",
+    "task": "transcribe",
+    "temperature": 0,
+    "without_timestamps": true
+  },
+  "monitor_interval_seconds": 10,
+  "output_relpath": "prepared/SAEA-SLURP-WHISPER-OBSERVATIONS-V1/attempt-slurp-whisper-observations-v1/catalog.json",
+  "schema": "saea-speech-observation-preparation-protocol-v1",
+  "sources": {
+    "relpath": "prepared/SAEA-SLURP-SPEECH-OBSERVATION-SOURCES-V1/sources.json",
+    "sha256": "435d64b9e4fd341d9db6f8e574d5eda08007f48c432dda55b09bc0b2ab318782"
+  }
+}
