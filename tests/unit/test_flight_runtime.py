@@ -422,7 +422,9 @@ _HAPPY_PATH_KWARGS: dict[str, object] = {
     "runtime_receipt_loader": _fake_runtime_receipt_loader,
     "packet_promoter": _fake_packet_promoter,
     "payload_binding_factory": _fake_payload_binding_factory,
-    "carrier_root_resolver": lambda lock, carrier_lock_key, data_root: Path(data_root) / carrier_lock_key,
+    "carrier_root_resolver": lambda lock, carrier_lock_key, data_root: (
+        Path(data_root) / carrier_lock_key
+    ),
     "client_factory": _FakeClient,
     "manifest_builder": _fake_manifest_builder,
     "bundle_verifier": _fake_bundle_verifier,
@@ -3809,7 +3811,7 @@ def test_a_spawning_flight_seals_no_monitor_summary(tmp_path):
 # teardown that signalled the inherited pid would be caught too.
 # ---------------------------------------------------------------------------
 
-_SIGNAL_RECORDING_SERVER = '''
+_SIGNAL_RECORDING_SERVER = """
 import os
 import signal
 import sys
@@ -3833,7 +3835,7 @@ with open(ready_path, "w", encoding="utf-8") as handle:
 deadline = time.time() + 180.0
 while time.time() < deadline:
     time.sleep(0.05)
-'''
+"""
 
 
 # The flight side, run as its own process so that "the flight exits" is a
@@ -4145,7 +4147,7 @@ def test_run_phases_routes_every_obs_policy_through_the_obs_driver(tmp_path, pol
 
 
 def test_the_obs_driver_receives_this_flights_own_objects(tmp_path):
-    """"Same harness for every arm" is a claim about identity, not about
+    """ "Same harness for every arm" is a claim about identity, not about
     similarity: the driver must be handed the flight's OWN composed config,
     ExecutionPlan, gate, lock, data root, run dir and transport -- never a
     second copy resolved here."""
@@ -4291,6 +4293,7 @@ def test_preparation_gate_uses_explicit_tokenizer_cap_and_exposure(tmp_path, mon
         with pytest.raises(ValueError, match="cap"):
             runtime.authorize_preparation_contacts(contact_cap=cap)
 
+
 @pytest.mark.parametrize("stage", ["preflight", "preparation"])
 @pytest.mark.parametrize("evidence_supplement", [False, True])
 def test_dataset_evidence_identity_reaches_both_shared_gates(
@@ -4327,3 +4330,146 @@ def test_dataset_evidence_identity_reaches_both_shared_gates(
         "a" * 64 if evidence_supplement else None
     )
     assert observed["d1_media_supplement_relpath"] is None
+
+
+def test_artifact_common_runtime_closes_with_worker_policy_and_zero_score_jobs(
+    tmp_path,
+):
+    from speech_aware_evidence_acquisition.data.splits import (
+        prefixed,
+        split_identity_hash,
+    )
+
+    class QualityForbiddenAdapter(_FakeAdapter):
+        def gold(self, sample):
+            raise AssertionError("artifact runtime must not load task gold")
+
+        def score_response(self, gold, response):
+            raise AssertionError("artifact runtime must not score task answers")
+
+        def extract_consumption(self, sample, supply, response):
+            raise AssertionError("artifact runtime must not derive task consumption")
+
+    identity = split_identity_hash(prefixed("fake-carrier", ("s1", "s2")))
+    repo = _make_repo(
+        tmp_path,
+        "SAEA-TEST-ARTIFACT-001",
+        arm="speech-feature-query",
+        policy="phase-direct-only-v1",
+        carrier_lock_key="fake-carrier",
+        baseline_extra={
+            "scorers": [],
+            "result_kind": "artifact",
+            "artifact_result": {
+                "schema": "saea-artifact-result-binding-v1",
+                "role": "training-feedback-proposal",
+                "construction_roster": {
+                    "repo_relpath": "docs/rosters/train.json",
+                    "sha256": "0" * 64,
+                },
+            },
+        },
+    )
+    promotion_receipt = _write_promotion_receipt(tmp_path)
+    template_path = repo / "configs" / "probes" / "artifact_direct.txt"
+    template_path.parent.mkdir(parents=True, exist_ok=True)
+    template_path.write_text("Propose a training strategy.\n", encoding="utf-8")
+    roster_path = repo / "docs" / "rosters" / "train.json"
+    roster_path.parent.mkdir(parents=True)
+    roster = {
+        "schema": "saea-roster-receipt-v1",
+        "roster_id": "SYNTHETIC-TRAIN-CONSTRUCTION",
+        "carrier_lock_key": "fake-carrier",
+        "split_role": "discovery",
+        "roster_role": "construction",
+        "seed": 1,
+        "per_stratum": {"all": 2},
+        "strata_counts": {"all": 2},
+        "items": [
+            {"sample_id": "s1", "stratum": "all"},
+            {"sample_id": "s2", "stratum": "all"},
+        ],
+        "excluded_count": 0,
+        "split_identity_hash": identity,
+    }
+    roster_path.write_text(json.dumps(roster))
+    baseline_path = repo / "configs" / "baseline" / "b.json"
+    baseline = json.loads(baseline_path.read_text())
+    baseline["speech_packet_promotion_receipt"] = str(promotion_receipt)
+    baseline["speech_feature_key_representation_id"] = "key-rep-v1"
+    baseline["speech_feature_matcher_policy_id"] = "matcher-v1"
+    model_path = repo / "configs" / "model" / "m.json"
+    model = json.loads(model_path.read_text())
+    model["speech_feature_root"] = str(tmp_path / _PROMOTION_DIR)
+    model_path.write_text(json.dumps(model))
+    baseline["phase_material"] = {
+        "direct": {
+            "instruction_template": "probes/artifact_direct.txt",
+            "predecessor_binding": "none",
+        }
+    }
+    baseline["artifact_result"]["construction_roster"]["sha256"] = hashlib.sha256(
+        roster_path.read_bytes()
+    ).hexdigest()
+    baseline_path.write_text(json.dumps(baseline))
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-q", "-m", "artifact fixture")
+
+    class ArtifactFinalize:
+        scores_path = None
+        ledger_markdown_path = Path("artifact-ledger.md")
+        ledger_json_path = Path("artifact-ledger.json")
+        attempt_state = "FINALIZED"
+
+    class ArtifactVerified:
+        def __init__(self, state):
+            self.attempt_state = state
+            self.manifest = {"scores": None, "scorers": []}
+
+    verification_states = iter(("OPENED", "FINALIZED"))
+    runtime = _make_runtime(
+        tmp_path,
+        run_id="SAEA-TEST-ARTIFACT-001",
+        repo_root=repo,
+        adapter_cls=QualityForbiddenAdapter,
+        happy_path=True,
+        bundle_verifier=lambda _path: ArtifactVerified(next(verification_states)),
+        bundle_finalizer=lambda *_args, **_kwargs: ArtifactFinalize(),
+        score_batch=lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("artifact score stage must schedule zero score jobs")
+        ),
+    )
+    runtime.preflight()
+    runtime.preprocess()
+    runtime.serve()
+    runtime.bind_phase_program_material(
+        knowledge_snapshot="fake-snapshot",
+        speech_packet_bindings={},
+        material_for_phase=lambda *args, **kwargs: None,
+    )
+    run = runtime.run_phases()
+    # A campaign worker binds this before seal; its presence must not force
+    # proposal artifacts into the deferred task-scoring path.
+    runtime._execution_policy = object()
+    sealed = runtime.seal()
+    scored = runtime.score()
+
+    assert run["result_kind"] == "artifact"
+    assert sealed["finalize"] == {
+        "scores_path": None,
+        "ledger_markdown_path": "artifact-ledger.md",
+        "attempt_state": "FINALIZED",
+        "status": "not-applicable",
+        "result_kind": "artifact",
+    }
+    assert scored["status"] == "not-applicable"
+    assert scored["job_count"] == 0
+    rows = [
+        json.loads(line)
+        for line in Path(sealed["outputs_path"]).read_text().splitlines()
+    ]
+    assert all(
+        row["result_kind"] == "artifact"
+        and row["artifact_role"] == "training-feedback-proposal"
+        for row in rows
+    )

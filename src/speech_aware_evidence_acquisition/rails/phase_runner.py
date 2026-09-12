@@ -114,6 +114,7 @@ def run_agent_phase(
     agent_executor_id: str = DEFAULT_AGENT_EXECUTOR_ID,
     agent_runner: Callable[..., object] = run_speech_native_agent_loop,
     request_batch_gate: RequestBatchGate | None = None,
+    result_kind: str = "task-answer",
 ) -> AgentLoopSummary:
     """Run exactly one named phase of ``program`` for the whole roster in
     ``speech_packet_bindings``, as one blocking ``max_contacts=1`` call.
@@ -133,19 +134,22 @@ def run_agent_phase(
     """
 
     if request_batch_gate is not None and (
-        not callable(request_batch_gate) or supply_for_phase is not None
-        or review_for_phase is not None or bootstrap_facet_ids or bootstrap_value_ids
+        not callable(request_batch_gate)
+        or supply_for_phase is not None
+        or review_for_phase is not None
+        or bootstrap_facet_ids
+        or bootstrap_value_ids
         or agent_executor_id != DEFAULT_AGENT_EXECUTOR_ID
     ):
         raise PhaseRunnerError(
             "staged request fit requires a plain solo OpenJiuwen phase without supply or review"
         )
     program.validate()
+    if result_kind not in {"task-answer", "artifact"}:
+        raise PhaseRunnerError("result_kind must be task-answer or artifact")
     solo_program = program.solo(phase_name)
     if not callable(material_for_phase):
-        raise PhaseRunnerError(
-            "run_agent_phase requires a callable material_for_phase"
-        )
+        raise PhaseRunnerError("run_agent_phase requires a callable material_for_phase")
     if supply_for_phase is not None and not callable(supply_for_phase):
         raise PhaseRunnerError(
             "run_agent_phase supply_for_phase must be callable or None"
@@ -196,7 +200,9 @@ def run_agent_phase(
     ):
         raise PhaseRunnerError("queue_depth must be an int >= slot_count")
 
-    controller_registry = Registry(f"phase runner controller: {solo_program.program_id}")
+    controller_registry = Registry(
+        f"phase runner controller: {solo_program.program_id}"
+    )
     controller_registry.register(
         solo_program.program_id,
         lambda sample_id: EvidenceAgentController(
@@ -232,7 +238,12 @@ def run_agent_phase(
         # phase name is what makes the shared sink safe, and it is also what
         # lets a reader tell which phase a trace record came from.
         trace_record_namespace=phase_name,
-        **({"request_batch_gate": request_batch_gate} if request_batch_gate is not None else {}),
+        **({"result_kind": "artifact"} if result_kind == "artifact" else {}),
+        **(
+            {"request_batch_gate": request_batch_gate}
+            if request_batch_gate is not None
+            else {}
+        ),
     )
 
     if getattr(summary, "agent_executor_id", None) != agent_executor_id:
@@ -246,7 +257,9 @@ def run_agent_phase(
             f"phase {phase_name!r} must return a non-empty results tuple"
         )
     row_target = (
-        expected_row_count if expected_row_count is not None else len(speech_packet_bindings)
+        expected_row_count
+        if expected_row_count is not None
+        else len(speech_packet_bindings)
     )
     if len(results) != row_target:
         raise PhaseRunnerError(
@@ -258,14 +271,18 @@ def run_agent_phase(
         sample_id = getattr(result, "sample_id", None)
         contacts = getattr(result, "contacts", None)
         if not isinstance(sample_id, str) or not sample_id:
-            raise PhaseRunnerError(f"phase {phase_name!r} result lacks a sample identity")
+            raise PhaseRunnerError(
+                f"phase {phase_name!r} result lacks a sample identity"
+            )
         if not isinstance(contacts, tuple) or len(contacts) != 1:
             raise PhaseRunnerError(
                 f"phase {phase_name!r} every result must contain exactly one contact"
             )
         sample_ids.append(sample_id)
     if len(set(sample_ids)) != len(sample_ids):
-        raise PhaseRunnerError(f"phase {phase_name!r} results have duplicate sample ids")
+        raise PhaseRunnerError(
+            f"phase {phase_name!r} results have duplicate sample ids"
+        )
     if set(sample_ids) != set(speech_packet_bindings):
         raise PhaseRunnerError(
             f"phase {phase_name!r} result identities differ from speech_packet_bindings"
@@ -337,6 +354,7 @@ def run_program(
     agent_executor_id: str = DEFAULT_AGENT_EXECUTOR_ID,
     agent_runner: Callable[..., object] = run_speech_native_agent_loop,
     request_batch_gate: Callable[[str, tuple], None] | None = None,
+    result_kind: str = "task-answer",
 ) -> tuple[AgentLoopSummary, ...]:
     """Run every phase of ``program`` in order, each as one whole-roster
     :func:`run_agent_phase` call (module docstring: this is how the barrier
@@ -349,11 +367,14 @@ def run_program(
     """
 
     program.validate()
+    if result_kind not in {"task-answer", "artifact"}:
+        raise PhaseRunnerError("result_kind must be task-answer or artifact")
     if not callable(material_for_phase):
         raise PhaseRunnerError("run_program requires a callable material_for_phase")
 
     if request_batch_gate is not None and (
-        not callable(request_batch_gate) or supply_for_phase is not None
+        not callable(request_batch_gate)
+        or supply_for_phase is not None
         or review_for_phase is not None
         or any((bootstrap_facet_ids_by_phase or {}).values())
         or any((bootstrap_value_ids_by_phase or {}).values())
@@ -366,6 +387,7 @@ def run_program(
     summaries: list[AgentLoopSummary] = []
     sealed_states: Mapping[str, AgentStateArtifact] = {}
     for phase in program.phases:
+
         def _phase_material_for_phase(
             name: str,
             context: object,
@@ -401,9 +423,11 @@ def run_program(
             agent_executor_id=agent_executor_id,
             agent_runner=agent_runner,
             request_batch_gate=(
-                None if request_batch_gate is None else
-                lambda batch, name=phase.name: request_batch_gate(name, batch)
+                None
+                if request_batch_gate is None
+                else lambda batch, name=phase.name: request_batch_gate(name, batch)
             ),
+            **({"result_kind": "artifact"} if result_kind == "artifact" else {}),
         )
         summaries.append(summary)
         sealed_states = {
@@ -441,6 +465,7 @@ def run_continuous_program(
     agent_runner: Callable[..., object] = run_speech_native_agent_loop,
     whole_roster_wave_barrier: bool = False,
     request_batch_gate: Callable[[str, tuple], None] | None = None,
+    result_kind: str = "task-answer",
 ) -> AgentLoopSummary:
     """Run the WHOLE program as ONE continuous per-sample trajectory (E6).
 
@@ -467,6 +492,8 @@ def run_continuous_program(
     """
 
     program.validate()
+    if result_kind not in {"task-answer", "artifact"}:
+        raise PhaseRunnerError("result_kind must be task-answer or artifact")
     if not callable(material_for_phase):
         raise PhaseRunnerError(
             "run_continuous_program requires a callable material_for_phase"
@@ -483,12 +510,16 @@ def run_continuous_program(
         not callable(stop_policy)
         or program.stop_rule != "stop-policy-optional-early-exit"
     ):
-        raise PhaseRunnerError("stop_policy requires a callable and optional early-exit program")
+        raise PhaseRunnerError(
+            "stop_policy requires a callable and optional early-exit program"
+        )
     barriers = [phase.name for phase in program.phases if phase.barrier]
     if not isinstance(whole_roster_wave_barrier, bool):
         raise PhaseRunnerError("whole_roster_wave_barrier must be a boolean")
     if whole_roster_wave_barrier and agent_executor_id != DEFAULT_AGENT_EXECUTOR_ID:
-        raise PhaseRunnerError("whole-roster waves require the shared OpenJiuwen executor")
+        raise PhaseRunnerError(
+            "whole-roster waves require the shared OpenJiuwen executor"
+        )
     if request_batch_gate is not None and (
         not callable(request_batch_gate) or not whole_roster_wave_barrier
     ):
@@ -533,7 +564,11 @@ def run_continuous_program(
             material_for_phase=_material,
             supply_for_phase=supply_for_phase,
             review_for_phase=review_for_phase,
-            **({"tools_for_phase": tools_for_phase} if tools_for_phase is not None else {}),
+            **(
+                {"tools_for_phase": tools_for_phase}
+                if tools_for_phase is not None
+                else {}
+            ),
             **({"stop_policy": stop_policy} if stop_policy is not None else {}),
         )
         holder["controller"] = controller
@@ -577,8 +612,12 @@ def run_continuous_program(
             decoding_params=decoding_params,
             controller_registry=controller_registry,
             trace_record_namespace=program.program_id,
-            **({"knowledge_value_renderer": tools_for_phase.render_values}
-               if tools_for_phase is not None else {}),
+            **({"result_kind": "artifact"} if result_kind == "artifact" else {}),
+            **(
+                {"knowledge_value_renderer": tools_for_phase.render_values}
+                if tools_for_phase is not None
+                else {}
+            ),
             **runner_options,
         )
     finally:

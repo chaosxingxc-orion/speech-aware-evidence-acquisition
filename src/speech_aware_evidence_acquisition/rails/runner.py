@@ -50,6 +50,9 @@ from .task_adapter import TaskAdapter, TaskSample
 ZERO_SUPPLY_ARM = "zero-supply"
 SUPPLIED_ARM = "supplied"
 RAILS_ARMS: tuple[str, ...] = (ZERO_SUPPLY_ARM, SUPPLIED_ARM)
+TASK_ANSWER_RESULT_KIND = "task-answer"
+ARTIFACT_RESULT_KIND = "artifact"
+RESULT_KINDS = frozenset({TASK_ANSWER_RESULT_KIND, ARTIFACT_RESULT_KIND})
 
 # (sample, obs, stable task contract) -> a SupplyPacket for the supplied arm, or
 # None to skip supply for that one sample even though the arm ran (an
@@ -773,10 +776,11 @@ class AgentLoopResult:
     transitions: tuple[AgentStepTransition, ...]
     agent_states: tuple[AgentStateArtifact, ...]
     metrics: Mapping[str, object]
-    consumption: ConsumptionTrace
+    consumption: ConsumptionTrace | None
+    result_kind: str = TASK_ANSWER_RESULT_KIND
 
     def as_json(self) -> dict[str, object]:
-        return {
+        result = {
             "sample_id": self.sample_id,
             "initial_query_state": self.initial_query_state.as_json(),
             "final_query_state": self.final_query_state.as_json(),
@@ -789,8 +793,13 @@ class AgentLoopResult:
             "transitions": [transition.as_json() for transition in self.transitions],
             "agent_states": [artifact.as_json() for artifact in self.agent_states],
             "metrics": dict(self.metrics),
-            "consumption": self.consumption.as_json(),
+            "consumption": (
+                None if self.consumption is None else self.consumption.as_json()
+            ),
         }
+        if self.result_kind != TASK_ANSWER_RESULT_KIND:
+            result["result_kind"] = self.result_kind
+        return result
 
 
 @dataclass(frozen=True)
@@ -803,9 +812,10 @@ class AgentLoopSummary:
     knowledge_snapshot_sha256: str
     results: tuple[AgentLoopResult, ...]
     flight_lock: Mapping[str, object] | None
+    result_kind: str = TASK_ANSWER_RESULT_KIND
 
     def as_json(self) -> dict[str, object]:
-        return {
+        result = {
             "run_id": self.run_id,
             "protocol_hash": self.protocol_hash,
             "controller_policy_id": self.controller_policy_id,
@@ -817,6 +827,9 @@ class AgentLoopSummary:
                 dict(self.flight_lock) if self.flight_lock is not None else None
             ),
         }
+        if self.result_kind != TASK_ANSWER_RESULT_KIND:
+            result["result_kind"] = self.result_kind
+        return result
 
 
 @dataclass(frozen=True)
@@ -2175,6 +2188,7 @@ def run_speech_native_agent_loop(
     request_batch_gate: RequestBatchGate | None = None,
     whole_roster_wave_barrier: bool = False,
     knowledge_value_renderer: object = None,
+    result_kind: str = TASK_ANSWER_RESULT_KIND,
 ) -> AgentLoopSummary:
     """Run a bounded, batched, speech-native AgentLoop over one DEV split.
 
@@ -2198,6 +2212,10 @@ def run_speech_native_agent_loop(
     covering the seam.
     """
 
+    if result_kind not in RESULT_KINDS:
+        raise RailsRunnerError(
+            f"result_kind must be one of {sorted(RESULT_KINDS)}, got {result_kind!r}"
+        )
     plan.validate()
     assert_execution_scope(plan.execution_profile)
     knowledge_snapshot.validate()
@@ -2258,22 +2276,28 @@ def run_speech_native_agent_loop(
     if not isinstance(whole_roster_wave_barrier, bool):
         raise RailsRunnerError("whole_roster_wave_barrier must be a boolean")
     if whole_roster_wave_barrier and agent_executor_id != "openjiuwen-workflow-v1":
-        raise RailsRunnerError("whole-roster waves require the shared OpenJiuwen executor")
+        raise RailsRunnerError(
+            "whole-roster waves require the shared OpenJiuwen executor"
+        )
     if request_batch_gate is not None:
         if not callable(request_batch_gate):
             raise RailsRunnerError("request_batch_gate must be callable")
-        if (
-            agent_executor_id != "openjiuwen-workflow-v1"
-            or (not whole_roster_wave_barrier and (
-                max_contacts != 1 or observe_step is not None
-                or bootstrap_facet_ids or bootstrap_value_ids
-            ))
+        if agent_executor_id != "openjiuwen-workflow-v1" or (
+            not whole_roster_wave_barrier
+            and (
+                max_contacts != 1
+                or observe_step is not None
+                or bootstrap_facet_ids
+                or bootstrap_value_ids
+            )
         ):
             raise RailsRunnerError(
                 "request batch fit requires a solo OpenJiuwen phase without observe or seeds"
             )
         if not isinstance(core_client, FrozenCoreClient):
-            raise RailsRunnerError("request batch fit requires the shared FrozenCoreClient")
+            raise RailsRunnerError(
+                "request batch fit requires the shared FrozenCoreClient"
+            )
     if agent_executor_id == "reference-trajectory-v1":
         if plan.execution_profile != "model-free-check":
             raise RailsRunnerError(
@@ -2478,15 +2502,19 @@ def run_speech_native_agent_loop(
         outcomes, runtime_trace_sha256s, strict=True
     ):
         assert outcome is not None
-        metrics = adapter.score(
-            outcome.prepared.sample,
-            outcome.final_response_text,
-        )
-        consumption = adapter.extract_consumption(
-            outcome.prepared.sample,
-            outcome.final_supply,
-            outcome.final_response_text,
-        )
+        if result_kind == ARTIFACT_RESULT_KIND:
+            metrics = {}
+            consumption = None
+        else:
+            metrics = adapter.score(
+                outcome.prepared.sample,
+                outcome.final_response_text,
+            )
+            consumption = adapter.extract_consumption(
+                outcome.prepared.sample,
+                outcome.final_supply,
+                outcome.final_response_text,
+            )
         results.append(
             AgentLoopResult(
                 sample_id=outcome.prepared.sample.sample_id,
@@ -2499,14 +2527,16 @@ def run_speech_native_agent_loop(
                 agent_states=outcome.agent_states,
                 metrics=metrics,
                 consumption=consumption,
+                result_kind=result_kind,
             )
         )
-        _emit_agent_posthoc_trace(
-            sink=trace_sink,
-            result=results[-1],
-            runtime_trace_sha256=runtime_trace_sha256,
-            record_namespace=trace_record_namespace,
-        )
+        if result_kind == TASK_ANSWER_RESULT_KIND:
+            _emit_agent_posthoc_trace(
+                sink=trace_sink,
+                result=results[-1],
+                runtime_trace_sha256=runtime_trace_sha256,
+                record_namespace=trace_record_namespace,
+            )
 
     return AgentLoopSummary(
         run_id=plan.run_id,
@@ -2517,4 +2547,5 @@ def run_speech_native_agent_loop(
         knowledge_snapshot_sha256=snapshot_sha256,
         results=tuple(results),
         flight_lock=flight_lock,
+        result_kind=result_kind,
     )
