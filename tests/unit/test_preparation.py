@@ -8,6 +8,7 @@ import pytest
 from speech_aware_evidence_acquisition.core.preparation import (
     PreparationError,
     artifact_inputs,
+    canonical_bytes,
     load_artifact,
     measure_request,
     prepare_artifact,
@@ -299,6 +300,206 @@ def test_interrupted_encoder_is_never_automatically_repeated(tmp_path):
             inputs=_inputs(),
             producer=lambda: pytest.fail("encoder repeated"),
             contact_class="encoder",
+        )
+
+
+def test_warm_speech_tool_artifact_has_zero_additional_contacts(tmp_path):
+    path = tmp_path / "speech-tool.json"
+    calls = []
+    first = prepare_artifact(
+        path,
+        kind="auxiliary-asr",
+        inputs=_inputs(),
+        producer=lambda: calls.append("contact") or {"text_sha256": "c" * 64},
+        contact_class="speech-tool",
+    )
+
+    second = prepare_artifact(
+        path,
+        kind="auxiliary-asr",
+        inputs=_inputs(),
+        producer=lambda: pytest.fail("warm speech tool repeated a contact"),
+        contact_class="speech-tool",
+    )
+
+    assert calls == ["contact"]
+    assert first["cache"] == "cold"
+    assert second == {**first, "cache": "warm"}
+
+
+def test_interrupted_speech_tool_is_never_automatically_repeated(tmp_path):
+    path = tmp_path / "speech-tool.json"
+    inputs = _inputs()
+
+    with pytest.raises(RuntimeError, match="speech tool interrupted"):
+        prepare_artifact(
+            path,
+            kind="auxiliary-asr",
+            inputs=inputs,
+            producer=lambda: (_ for _ in ()).throw(
+                RuntimeError("speech tool interrupted")
+            ),
+            contact_class="speech-tool",
+        )
+    assert (tmp_path / "speech-tool.json.speech-tool-started.json").read_bytes() == (
+        canonical_bytes(
+            {
+                "schema": "saea-speech-tool-preparation-start-v1",
+                "kind": "auxiliary-asr",
+                "inputs": inputs,
+                "contact_class": "speech-tool",
+            }
+        )
+    )
+
+    with pytest.raises(PreparationError, match="prior speech-tool preparation"):
+        prepare_artifact(
+            path,
+            kind="auxiliary-asr",
+            inputs=_inputs(),
+            producer=lambda: pytest.fail("speech tool contact repeated"),
+            contact_class="speech-tool",
+        )
+
+
+@pytest.mark.parametrize(
+    ("changed_inputs", "contact_class", "message"),
+    [
+        ({**_inputs(), "sources": {"vectors": "d" * 64}}, "speech-tool", "identity"),
+        ({**_inputs(), "config_sha256": "e" * 64}, "speech-tool", "identity"),
+        (_inputs(), "encoder", "contact class"),
+        (_inputs(), "model-free", "contact class"),
+    ],
+)
+def test_speech_tool_start_marker_refuses_changed_binding_or_class(
+    tmp_path, changed_inputs, contact_class, message
+):
+    path = tmp_path / "speech-tool.json"
+
+    with pytest.raises(RuntimeError, match="speech tool interrupted"):
+        prepare_artifact(
+            path,
+            kind="auxiliary-asr",
+            inputs=_inputs(),
+            producer=lambda: (_ for _ in ()).throw(
+                RuntimeError("speech tool interrupted")
+            ),
+            contact_class="speech-tool",
+        )
+
+    with pytest.raises(PreparationError, match=message):
+        prepare_artifact(
+            path,
+            kind="auxiliary-asr",
+            inputs=changed_inputs,
+            producer=lambda: pytest.fail("changed binding reached producer"),
+            contact_class=contact_class,
+        )
+
+
+def test_warm_speech_tool_refuses_changed_sources_before_producer(tmp_path):
+    path = tmp_path / "speech-tool.json"
+    prepare_artifact(
+        path,
+        kind="auxiliary-asr",
+        inputs=_inputs(),
+        producer=lambda: {"text_sha256": "c" * 64},
+        contact_class="speech-tool",
+    )
+
+    with pytest.raises(PreparationError, match="identity"):
+        prepare_artifact(
+            path,
+            kind="auxiliary-asr",
+            inputs={**_inputs(), "sources": {"vectors": "d" * 64}},
+            producer=lambda: pytest.fail("wrong source reached producer"),
+            contact_class="speech-tool",
+        )
+
+
+def test_concurrent_speech_tool_preparation_runs_one_producer(tmp_path):
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Event
+
+    entered, release, calls = Event(), Event(), []
+    path = tmp_path / "speech-tool.json"
+
+    def produce():
+        calls.append("contact")
+        entered.set()
+        assert release.wait(5)
+        return {"text_sha256": "c" * 64}
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        first = pool.submit(
+            prepare_artifact,
+            path,
+            kind="auxiliary-asr",
+            inputs=_inputs(),
+            producer=produce,
+            contact_class="speech-tool",
+        )
+        assert entered.wait(5)
+        try:
+            with pytest.raises(PreparationError, match="busy"):
+                prepare_artifact(
+                    path,
+                    kind="auxiliary-asr",
+                    inputs=_inputs(),
+                    producer=lambda: calls.append("second contact"),
+                    contact_class="speech-tool",
+                )
+        finally:
+            release.set()
+        assert first.result(timeout=5)["cache"] == "cold"
+
+    assert calls == ["contact"]
+
+
+def test_encoder_start_marker_keeps_historical_name_and_bytes(tmp_path):
+    path = tmp_path / "encoder.json"
+    inputs = _inputs()
+    prepare_artifact(
+        path,
+        kind="packets",
+        inputs=inputs,
+        producer=lambda: {"vectors": []},
+        contact_class="encoder",
+    )
+
+    marker = tmp_path / "encoder.json.encoder-started.json"
+    assert marker.read_bytes() == canonical_bytes({"kind": "packets", "inputs": inputs})
+    assert not (tmp_path / "encoder.json.speech-tool-started.json").exists()
+    assert path.read_bytes() == canonical_bytes(
+        {
+            "schema": "saea-prepared-artifact-v1",
+            "kind": "packets",
+            "inputs": inputs,
+            "contact_class": "encoder",
+            "output": {"vectors": []},
+            "output_sha256": hashlib.sha256(canonical_bytes({"vectors": []})).hexdigest(),
+        }
+    )
+
+
+def test_speech_tool_cannot_relabel_an_interrupted_encoder(tmp_path):
+    path = tmp_path / "encoder.json"
+    with pytest.raises(RuntimeError, match="encoder interrupted"):
+        prepare_artifact(
+            path,
+            kind="packets",
+            inputs=_inputs(),
+            producer=lambda: (_ for _ in ()).throw(RuntimeError("encoder interrupted")),
+            contact_class="encoder",
+        )
+
+    with pytest.raises(PreparationError, match="contact class"):
+        prepare_artifact(
+            path,
+            kind="auxiliary-asr",
+            inputs=_inputs(),
+            producer=lambda: pytest.fail("encoder state was relabeled"),
+            contact_class="speech-tool",
         )
 
 

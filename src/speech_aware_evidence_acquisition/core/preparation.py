@@ -5,6 +5,10 @@ Receipt pins and per-cell readiness records are excluded from the input-config
 digest to avoid self-reference; every model/request configuration remains bound. Endpoint access is supplied only by an
 already-attested caller. Template/tokenizer and multimodal input-count routes
 measure requests without generation.
+
+The ``speech-tool`` contact class provides one-shot artifact storage only. Its
+caller must separately hold a registered ``ExecutionPlan`` and perform governed
+contact accounting before invoking a speech tool.
 """
 
 from __future__ import annotations
@@ -19,6 +23,8 @@ from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 
 SCHEMA = "saea-prepared-artifact-v1"
+_CONTACT_CLASSES = frozenset({"model-free", "tokenizer", "encoder", "speech-tool"})
+_SPEECH_TOOL_START_SCHEMA = "saea-speech-tool-preparation-start-v1"
 _RECEIPT_KEYS = frozenset(
     {
         "prepared_phase_supply",
@@ -126,12 +132,12 @@ def load_artifact(
             or document["inputs"] != json.loads(canonical_bytes(inputs))
         ):
             raise PreparationError("prepared artifact identity mismatch")
-        if document["contact_class"] not in {"model-free", "tokenizer", "encoder"}:
+        if document["contact_class"] not in _CONTACT_CLASSES:
             raise PreparationError("unknown preparation contact class")
         if digest(document["output"]) != document["output_sha256"]:
             raise PreparationError("prepared artifact output hash mismatch")
         return document["output"]
-    except (OSError, json.JSONDecodeError, TypeError) as error:
+    except (OSError, UnicodeError, json.JSONDecodeError, TypeError) as error:
         raise PreparationError(f"cannot load prepared artifact: {error}") from error
 
 
@@ -146,8 +152,10 @@ def prepare_artifact(
     """Exclude other producers before checking warm state or doing any work.
 
     A competing producer is refused immediately. The kernel lock is released
-    on process death; an encoder start marker survives, so interruption never
-    turns into automatic replay of a potentially spent contact.
+    on process death; encoder and speech-tool start markers survive, so an
+    interruption never turns into automatic replay of a potentially spent
+    contact. This storage helper does not authorize the contact: speech-tool
+    callers still need a registered ``ExecutionPlan`` and governed accounting.
     """
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -180,7 +188,7 @@ def _prepare_artifact_locked(
 ):
     """Persist once, or verify an existing artifact without invoking producer."""
     path = Path(path)
-    if contact_class not in {"model-free", "tokenizer", "encoder"}:
+    if contact_class not in _CONTACT_CLASSES:
         raise PreparationError("unknown preparation contact class")
     if path.exists():
         sha = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -193,10 +201,20 @@ def _prepare_artifact_locked(
             "cache": "warm",
             "contact_class": contact_class,
         }
+    speech_tool_started = path.with_name(path.name + ".speech-tool-started.json")
+    encoder_started = path.with_name(path.name + ".encoder-started.json")
+    if speech_tool_started.exists():
+        _refuse_started_speech_tool(
+            speech_tool_started,
+            kind=kind,
+            inputs=inputs,
+            contact_class=contact_class,
+        )
+    if contact_class == "speech-tool" and encoder_started.exists():
+        raise PreparationError("preparation start marker contact class mismatch")
     if contact_class == "encoder":
-        started = path.with_name(path.name + ".encoder-started.json")
         try:
-            with started.open("x", encoding="utf-8") as stream:
+            with encoder_started.open("x", encoding="utf-8") as stream:
                 stream.write(canonical_bytes({"kind": kind, "inputs": inputs}).decode())
                 stream.flush()
                 os.fsync(stream.fileno())
@@ -204,6 +222,25 @@ def _prepare_artifact_locked(
             raise PreparationError(
                 "prior encoder preparation requires a new registered attempt"
             ) from error
+    elif contact_class == "speech-tool":
+        marker = {
+            "schema": _SPEECH_TOOL_START_SCHEMA,
+            "kind": kind,
+            "inputs": dict(inputs),
+            "contact_class": contact_class,
+        }
+        try:
+            with speech_tool_started.open("x", encoding="utf-8") as stream:
+                stream.write(canonical_bytes(marker).decode())
+                stream.flush()
+                os.fsync(stream.fileno())
+        except FileExistsError:
+            _refuse_started_speech_tool(
+                speech_tool_started,
+                kind=kind,
+                inputs=inputs,
+                contact_class=contact_class,
+            )
     output = producer()
     document = {
         "schema": SCHEMA,
@@ -236,6 +273,41 @@ def _prepare_artifact_locked(
         "cache": "cold",
         "contact_class": contact_class,
     }
+
+
+def _refuse_started_speech_tool(
+    marker_path: Path,
+    *,
+    kind: str,
+    inputs: Mapping[str, object],
+    contact_class: str,
+) -> None:
+    """Validate one durable start marker, then refuse automatic replay."""
+
+    try:
+        marker = json.loads(marker_path.read_bytes())
+    except (OSError, UnicodeError, json.JSONDecodeError, TypeError) as error:
+        raise PreparationError(
+            f"cannot load speech-tool preparation start marker: {error}"
+        ) from error
+    required = {"schema", "kind", "inputs", "contact_class"}
+    if (
+        not isinstance(marker, dict)
+        or set(marker) != required
+        or marker.get("schema") != _SPEECH_TOOL_START_SCHEMA
+        or marker.get("contact_class") != "speech-tool"
+    ):
+        raise PreparationError("speech-tool preparation start marker identity mismatch")
+    if contact_class != "speech-tool":
+        raise PreparationError("preparation start marker contact class mismatch")
+    if (
+        marker["kind"] != kind
+        or marker["inputs"] != json.loads(canonical_bytes(inputs))
+    ):
+        raise PreparationError("speech-tool preparation start marker identity mismatch")
+    raise PreparationError(
+        "prior speech-tool preparation requires a new registered attempt"
+    )
 
 
 def measure_request(
