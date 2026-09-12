@@ -2,9 +2,9 @@
 
 ## Status and purpose
 
-This is a non-runnable preparation for one baseline-reproduction flight over the existing 1,080-row TRAIN-A construction roster. It reproduces the accepted compact task-agent incumbent through the shared FlightRuntime and OpenJiuwen path: plan, one fixed knowledge action, then solve. It creates source-bound trajectories for later offline RewardLink construction. It adds no speech observation, reviewer, experience memory, selection rule, optimizer update, or effectiveness claim.
+Root registered this one baseline-reproduction flight over the existing 1,080-row TRAIN-A construction roster. It reproduces the accepted compact task-agent incumbent through the shared FlightRuntime and OpenJiuwen path: plan, one fixed knowledge action, then solve. It creates source-bound trajectories for later offline RewardLink construction. It adds no speech observation, reviewer, experience memory, selection rule, optimizer update, or effectiveness claim.
 
-Generation, fitting, service startup, scoring, reward reading, and optimizer use remain blocked until root lands the common TRAIN runtime-adapter repair, binds the model-free recall, registers immutable plans and exposure rows, supplies scientific admission, and attests the new resident service.
+The shared TRAIN adapter repair and model-free recall are accepted. Root admission, readiness and separate generation/fit plans are now registered in registration-v1.json. The final clean source check, model-free wire verification, resident identity attestation and actual request fitting remain required before generation. Optimizer proposals retain their separate registration.
 
 ## Frozen method and sources
 

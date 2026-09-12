@@ -15,8 +15,28 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
       "readiness": {
-        "state": "preparation-pending",
-        "reason": "The source-bound configuration is prospective. Prepared recall, root scientific admission, immutable generation and fit plans, exposure rows, serving-session attestation, actual live fitting and launch remain pending."
+        "state": "ready",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-TRAIN-A-INCUMBENT-REWARD-SOURCE-PREPARE-V1/recall.json",
+            "sha256": "ed393dd7be79eb04f3f9de8b9a23a50c7fd0bd53284153d7bbe67360e61fb12b",
+            "reason": "Require all 1080 exact source-bound K5 recall rows."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1/index.json",
+            "sha256": "266206b9f4f83ca79818e5defab8ffc60f6d438a518e9624f14ccac2b7c12287",
+            "reason": "Bind the finalized query embedding export index."
+          },
+          {
+            "kind": "decision",
+            "relpath": "coordination/slurp-train-a-incumbent-reward-source-v1/root-admission-v1.json",
+            "sha256": "3e2e70a2c78a487422c21ff1aa0d81e7786961370f2780a73652d5353f87f6d5",
+            "expected_decision_id": "SAEA-SLURP-TRAIN-A-INCUMBENT-REWARD-SOURCE-ADMISSION-V1",
+            "reason": "Root admits one incumbent TRAIN source flight after closing the prior component diagnosis."
+          }
+        ]
       },
       "run_id": "SAEA-SLURP-TRAIN-A-INCUMBENT-REWARD-SOURCE-V1"
     }
