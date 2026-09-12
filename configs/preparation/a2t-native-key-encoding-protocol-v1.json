@@ -1,0 +1,27 @@
+{
+  "answer_authority": "Retrieval-tool passage vectors only. No answering-model generation or task-score contact.",
+  "cache_relpath": "prepared/native-positive-text-facet-cache-v1",
+  "contact_policy": "One registered attempt, one passage per forward. No automatic restart, jitter or retry. Count 152 logical text encoder contacts and zero speech seconds.",
+  "cpu_workers": 1,
+  "dimension": 2048,
+  "encoder": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-speech-query-encoder-inventory-v2.json",
+    "sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31"
+  },
+  "expected_positive_content_facets": 152,
+  "facet_rows_relpath": "prepared/SAEA-A2T-NATIVE-KEY-ENCODING-V1/facets.jsonl",
+  "max_sequence_tokens": 8192,
+  "monitor_interval_seconds": 10,
+  "output_relpath": "prepared/SAEA-A2T-NATIVE-KEY-ENCODING-V1/index.json",
+  "passage_prompt": "passage: ",
+  "schema": "saea-text-facet-encoding-protocol-v1",
+  "snapshot": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-MF-CURRENT-CARDS-NATIVE-V1/knowledge-snapshot.json",
+    "sha256": "6abf2ceacd2fb87242a5e9d15f4c468306feafe8e9bfe3e10fbb0be31800eb8e"
+  },
+  "source_inventory": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-native-key-source-inventory-v1.json",
+    "sha256": "f4b5bf1361ec63deffccf42c36ed37c3070e69dc682e17bafab40e3d2c39c2c6"
+  },
+  "source_scope": "Positive content facets from isolated construction and the public registry. Full values remain in the sealed snapshot; Avoid guidance is not positive embedding input."
+}
