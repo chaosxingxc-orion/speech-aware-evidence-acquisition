@@ -1,0 +1,152 @@
+{
+  "analysis_metadata": {
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-METADATA-V1/metadata.json",
+      "sha256": "f4eeb0f5c548b15ab65e8137d134ee4b17bcebfa402eb71dcda6aa64198a5c70"
+    },
+    "receipt": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-NATIVE-SYSTEM-ANALYSIS-METADATA-V1/receipt.json",
+      "sha256": "48dfa94b3c0ba3c6d3e66fc9eafbe5645b2e475c4755533e58fe73c08e8e0367"
+    },
+    "root_exact_roster_binding": "passed, 4000 sample IDs; all tiers and domains matched; 2097 query clusters",
+    "task_result_reads": 0
+  },
+  "environments": {
+    "alignment": "/home/chao/.venvs/saea-alignment-diarization",
+    "whisper_cpu": "/home/chao/.venvs/saea-whisper-vad",
+    "whisper_gpu": "/home/chao/.venvs/saea-whisper-gpu"
+  },
+  "gpu_campaign": {
+    "arms": {
+      "DIRECT": {
+        "audio_seconds": 23418.083083330024,
+        "calls": 4000,
+        "state": "FINALIZED"
+      },
+      "KNOWLEDGE": {
+        "audio_seconds": 19224.577208331044,
+        "calls": 3313,
+        "state": "OPENED"
+      },
+      "STAGE-CONTROL": {
+        "audio_seconds": 46836.16616666005,
+        "calls": 8000,
+        "state": "FINALIZED"
+      }
+    },
+    "latest_monitor": {
+      "gpu": {
+        "clocks_sm_mhz": 232.0,
+        "memory_used_mib": 22984.0,
+        "power_watts": 54.47,
+        "pstate": "P4",
+        "utilization_percent": 89.0
+      },
+      "host_memory": {
+        "host_free_gb": 15.782543182373047,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 33.5494384765625,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 32.97840118408203
+      },
+      "metrics": null,
+      "requests_total": 1410,
+      "sampled_at": 1789196630.8998673,
+      "sampled_at_iso": "2026-09-12T07:03:50.899867+00:00",
+      "schema": "saea-serving-monitor-sample-v1",
+      "server_ok": true,
+      "slots": {
+        "busy": 3,
+        "idle": 0,
+        "total": 3
+      }
+    },
+    "monitor_session": 88815,
+    "resident_owner_session": 2098,
+    "session": 71462,
+    "source_commit": "cbc53ac0c36bed94fdb50c3b069a74569d935720"
+  },
+  "limits": [
+    "These acquisition/load checks do not establish task benefit",
+    "New ASR OBS dispatch and contact accounting must be integrated and registered before dataset inference",
+    "All three active A2T manifests must seal before semantic quality reads",
+    "E22 test remains closed"
+  ],
+  "local_root": "/home/chao/speech-tools",
+  "next_action": "Keep active A2T campaign unchanged; instantiate frozen shared analysis after all three seals; next prepare the registered matched SLURP tool-evidence comparison.",
+  "operational_power_diagnostic": {
+    "current_limit_watts": 60,
+    "default_limit_watts": 95,
+    "hardware_thermal_slowdown_active": false,
+    "host": {
+      "battery": [
+        {
+          "EstimatedChargeRemaining": 21
+        }
+      ],
+      "power": [
+        {
+          "Charging": false,
+          "Discharging": true,
+          "PowerOnline": false
+        }
+      ]
+    },
+    "maximum_reported_limit_watts": 175,
+    "nvidia_observation_utc": "2026-09-12T06:48:55Z",
+    "owner_action_requested": "Connect external power; root will recheck. No hardware settings were changed.",
+    "software_power_cap_active": true
+  },
+  "receipts": {
+    "alignment_diarization": {
+      "path": "/home/chao/speech-tools/alignment-diarization/receipts/acquisition-v1.json",
+      "sha256": "e73a2d858abd4987d5d59de79741715285337ece885d09d4b77bf6ae4a71cd7d"
+    },
+    "ffmpeg": {
+      "path": "/home/chao/speech-tools/ffmpeg/receipt.json",
+      "sha256": "6f9171bc050800bace78c14b15b6aeedf5d996e9351f8891520a849e310ba19e"
+    },
+    "phonetic_lexicon": {
+      "path": "/home/chao/speech-tools/phonetic-lexicon/receipt.json",
+      "sha256": "ff9b88cdc37fc85d3064295c834e00a59981e6c4d1a0df51d557b5b96b2c3c62"
+    },
+    "whisper_acquisition": {
+      "path": "/home/chao/speech-tools/whisper-vad/receipts/acquisition-complete-v1.json",
+      "sha256": "68e6326bdd5ff6f8a30bfa26ace731d6a3f72b44a3da17e8eab59d25f9df95dd"
+    },
+    "whisper_cpu_load": {
+      "path": "/home/chao/speech-tools/whisper-vad/receipts/whisper-cpu-load-v1.json",
+      "sha256": "697f9b98c3e3017826378eddf8113d589a944cff585828afb2271c6ad50e602f"
+    },
+    "whisper_gpu_dependencies": {
+      "path": "/home/chao/speech-tools/whisper-vad/receipts/gpu-runtime-dependencies-v1.json",
+      "sha256": "cec2d40453980d870bb2ee84a13d59a1116f729bef80b247af51d976f393ca16"
+    },
+    "whisper_gpu_import": {
+      "path": "/home/chao/speech-tools/whisper-vad/receipts/gpu-runtime-import-v1.json",
+      "sha256": "ad41ce9877853e999699e1f71b495a77232a1ba9e6e40b9493e80b2d3686b559"
+    }
+  },
+  "schema": "saea-local-speech-tool-readiness-v1",
+  "shared_preparation_validation": {
+    "path": "docs/readiness/2026-09-12-speech-tool-preparation-validation.json",
+    "sha256": "17291b48b194355e4a44f774d1b2956804ff20c3f77457f037a6aa10f79f302c"
+  },
+  "snapshot_utc": "2026-09-12T07:03:55.972151+00:00",
+  "status": {
+    "cmudict": "pinned pronunciation dictionary source available locally; task-specific lookup integration pending",
+    "ffmpeg_ffprobe": "local isolated launchers and required capabilities verified",
+    "mms_fa": "existing pinned checkpoint reused and CPU model construction verified; zero forwards",
+    "pyannote_community_1": "official code/card pinned; optional model payload remains access-gated HTTP401; existing Sortformer route available",
+    "silero_vad": "official local ONNX asset and CPU session construction verified; zero forwards",
+    "sortformer_v2": "existing local checkpoints and compiled runtime hashes verified; no new activation",
+    "whisper_gpu_runtime": "CUDA-build dependencies and official source imports verified; no GPU model load or forward has been attempted",
+    "whisper_large_v3": "download complete, official full SHA independently verified by root; CPU model construction passed; zero forward calls",
+    "whisperx": "official source pinned as optional integration; package not installed, no duplicate weights"
+  },
+  "supersedes": {
+    "path": "docs/readiness/2026-09-12-local-speech-tool-readiness.json",
+    "sha256": "3b7f67de1786ff617fd072f7e26c6927b7ad1988621b37ae6a20a51870d10191"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 55,
+  "generation": 56,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "200d60c50f21d4bf0ab632c6687bff247d7c46c3",
-  "updated_at_utc": "2026-09-12T06:18:33.402793+00:00",
-  "next_action": "Read STATUS-055, tool-readiness receipts, and fresh DATA/attempts metadata. Keep campaign71462/resident2098/monitor88815 unchanged. Direct finalized; stage-control running; knowledge queued. Wait all three seals before semantic results. Continue existing official Whisper download session30436 (partial, do not restart); final hash then CPU load only if fresh host-free RAM>=14GiB. Local VAD/MMS/FFmpeg ready for bounded future integration; Sortformer verified; optional pyannote payload blocked by HF access. Goal active.",
+  "snapshot_commit": "3d6e1472",
+  "updated_at_utc": "2026-09-12T07:06:04.210363+00:00",
+  "next_action": "Read STATUS-056 and fresh host power state immediately: battery21percent at07:03UTC, external power disconnected,60W cap; owner asked to connect. Keep campaign71462/resident2098/monitor88815; direct and stage-control finalized, knowledge3313/8000 at snapshot. No restart/replay. All3 seals before quality read. Whisper download and CPU load complete; GPU import env ready. Analysis metadata sealed; use frozen saved-score recipe after gate. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SPEECH-TOOLS-023"
