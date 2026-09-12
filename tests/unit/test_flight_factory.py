@@ -68,6 +68,130 @@ def test_factory_uses_label_free_slurp_and_same_runtime(tmp_path):
     assert runtime.adapter.serving_geometry()["slots"] == 2
 
 
+def _factory_runtime_for_slurp_rows(
+    tmp_path, *, split_id, sample_ids, registered_ids, split_role="discovery",
+):
+    repo = _make_repo(
+        tmp_path, "SLURP-TRAIN-FACTORY", carrier_lock_key="slurp",
+        model_extra={"server_args": ["-np", "2", "-c", "8192"]},
+        baseline_extra={"task_instruction": "Return the spoken command.",
+                        "serving_slots": 2, "serving_slot_tokens": 4096},
+        execution_plan_overrides={"split_role": split_role},
+        experiment_extra=(
+            {"populations": [{"dataset_fragment": "d", "ids": registered_ids}]}
+            if registered_ids is not None else {}
+        ),
+    )
+    data = tmp_path / "data"
+    document = view(data)
+    first = document["items"][0]
+    document["items"] = []
+    for number, sample_id in enumerate(sample_ids):
+        path = data / "media" / f"row-{number}.wav"
+        path.write_bytes(f"synthetic media {number}".encode())
+        document["items"].append({
+            **first,
+            "sample_id": sample_id,
+            "media_relpath": f"media/row-{number}.wav",
+            "audio_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            "packet_id": f"packet-{number}",
+        })
+    document.update(
+        count=len(document["items"]), carrier_lock_key="slurp",
+        split_id=split_id, split_name=split_id,
+    )
+    (repo / "configs/dataset/d.json").write_text(json.dumps(document))
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-qm", "bind synthetic TRAIN view")
+    return build_flight_runtime(
+        repo, data, model="m", dataset="d", baseline="b", experiment="e",
+        run_id="SLURP-TRAIN-FACTORY", attempt_id="a", runtime_root=tmp_path / "runtime",
+        lock={}, lock_path=None, gate_factory=lambda *a, **kw: _FakeGate(),
+        **_HAPPY_PATH_KWARGS,
+    )
+
+
+def test_factory_allows_only_explicit_registered_train_population_on_discovery(tmp_path):
+    selected = "slurp:train:one:audio"
+    runtime = _factory_runtime_for_slurp_rows(
+        tmp_path, split_id="discovery",
+        sample_ids=[selected, "slurp:train:two:audio"], registered_ids=[selected],
+    )
+    runtime.preflight()
+    samples = runtime.adapter.load_split("discovery")
+    assert [sample.sample_id for sample in samples] == [selected]
+    assert not samples[0].scenario and not samples[0].entities
+    with pytest.raises(RuntimeViewError, match="gold"):
+        runtime.adapter.gold(samples[0])
+
+
+def test_factory_allows_named_registered_train_roster_with_discovery_role(tmp_path):
+    runtime = _factory_runtime_for_slurp_rows(
+        tmp_path, split_id="TRAIN-A-1080",
+        sample_ids=["slurp:train:one:audio"],
+        registered_ids=["slurp:train:one:audio"],
+    )
+    runtime.preflight()
+    assert len(runtime.adapter.load_split("TRAIN-A-1080")) == 1
+
+
+@pytest.mark.parametrize(
+    "split_id,sample_ids,registered_ids,split_role,match",
+    [
+        ("discovery", ["slurp:train:one:audio"], None,
+         "discovery", "explicit registered population"),
+        ("discovery", ["slurp:train:one:audio", "slurp:devel:two:audio"],
+         ["slurp:train:one:audio", "slurp:devel:two:audio"], "discovery", "mix"),
+        ("discovery", ["slurp:test:one:audio"], ["slurp:test:one:audio"],
+         "discovery", "non-discovery"),
+        ("DEV-1000", ["slurp:train:one:audio"], ["slurp:train:one:audio"],
+         "discovery", "non-devel"),
+        ("devel", ["slurp:train:one:audio"], ["slurp:train:one:audio"],
+         "discovery", "non-devel"),
+        ("TRAIN-A-1080", ["slurp:train:one:audio"], ["slurp:train:one:audio"],
+         "dev", "discovery split role"),
+    ],
+)
+def test_factory_refuses_unbound_or_wrong_namespace_train_populations(
+    tmp_path, split_id, sample_ids, registered_ids, split_role, match,
+):
+    with pytest.raises(RuntimeViewError, match=match):
+        _factory_runtime_for_slurp_rows(
+            tmp_path, split_id=split_id, sample_ids=sample_ids,
+            registered_ids=registered_ids, split_role=split_role,
+        )
+
+
+def test_factory_keeps_legacy_devel_rows_valid_under_discovery(tmp_path):
+    runtime = _factory_runtime_for_slurp_rows(
+        tmp_path, split_id="discovery",
+        sample_ids=["slurp:devel:one:audio"], registered_ids=None,
+    )
+    runtime.preflight()
+    assert len(runtime.adapter.load_split("discovery")) == 1
+
+
+def test_runtime_slurp_adapter_validates_and_retains_generator_samples(tmp_path):
+    from speech_aware_evidence_acquisition.rails.adapters.slurp import SlurpSample
+    from speech_aware_evidence_acquisition.rails.adapters.slurp_runtime import RuntimeSlurpAdapter
+    from speech_aware_evidence_acquisition.rails.obs import AudioRef
+
+    def samples():
+        yield SlurpSample(
+            sample_id="slurp:train:one:audio",
+            audio_ref=AudioRef(path="one.wav", sha256="0" * 64),
+            audio_seconds=1.0, utterance_id="one", media_relpath="one.wav",
+            scenario="leaked", action="", intent="", entities=(),
+        )
+
+    with pytest.raises(RuntimeViewError, match="gold labels"):
+        RuntimeSlurpAdapter(
+            {}, tmp_path, repo_root=tmp_path, split_id="discovery",
+            samples=samples(), instruction_text="Return the command.",
+            split_role="discovery", registered_population_bound=True,
+        )
+
+
 def test_named_dev_roster_returns_only_on_exact_registered_alias(tmp_path):
     repo = _make_repo(
         tmp_path, "SLURP-NAMED-DEV", carrier_lock_key="slurp",
@@ -133,6 +257,22 @@ def test_runtime_view_population_is_exact_and_hashes_selected_media(tmp_path):
     assert len(samples) == 1
     with pytest.raises(RuntimeViewError, match="missing"):
         load_runtime_view(doc, tmp_path, sample_ids=["absent"])
+
+
+def test_roster_samples_preserves_legacy_devel_default_without_split_id(tmp_path):
+    from speech_aware_evidence_acquisition.rails.adapters.slurp_runtime import roster_samples
+
+    samples = roster_samples(view(tmp_path), tmp_path)
+    assert [sample.sample_id for sample in samples] == ["slurp:devel:one:audio"]
+
+
+def test_roster_samples_refuses_malformed_id_before_indexing_utterance(tmp_path):
+    from speech_aware_evidence_acquisition.rails.adapters.slurp_runtime import roster_samples
+
+    document = view(tmp_path)
+    document["items"][0]["sample_id"] = "slurp"
+    with pytest.raises(RuntimeViewError, match="non-SLURP sample"):
+        roster_samples(document, tmp_path)
 
 
 def test_runtime_geometry_and_registered_population_are_checked():
