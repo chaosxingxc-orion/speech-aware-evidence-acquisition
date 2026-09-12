@@ -113,24 +113,26 @@ def _ordered_speech_feature_content(
     ]
     if knowledge_roles:
         if len(knowledge_roles) != len(text_parts) or any(
-            role not in {"key", "value"} for role in knowledge_roles
+            role not in {None, "key", "value"} for role in knowledge_roles
         ):
             raise FrozenCoreError(
-                "explicit speech knowledge roles must align one-to-one as key/value"
+                "speech knowledge roles must align one-to-one as key/value/absent"
             )
         key_text_parts = [
             part
             for part, role in zip(text_parts, knowledge_roles, strict=True)
             if role == "key"
         ]
-        value_text_parts = [
+        # Untyped observations remain evidence, not knowledge keys or values.
+        # Preserve their order with retrieved values in the mutable suffix.
+        mutable_evidence_parts = [
             part
             for part, role in zip(text_parts, knowledge_roles, strict=True)
-            if role == "value"
+            if role != "key"
         ]
     else:
         key_text_parts = []
-        value_text_parts = []
+        mutable_evidence_parts = []
     if prompt_order == "speech-features-text-keys-v1":
         return [*text_parts, *feature_parts, *state_parts]
 
@@ -155,7 +157,7 @@ def _ordered_speech_feature_content(
     # is appended after the stable speech/knowledge prefix.
     if knowledge_roles:
         stable_text_parts = key_text_parts
-        mutable_state_parts = [*value_text_parts, *state_parts]
+        mutable_state_parts = [*mutable_evidence_parts, *state_parts]
     elif state_parts:
         stable_text_parts = text_parts
         mutable_state_parts = state_parts
@@ -170,7 +172,7 @@ def _ordered_speech_feature_content(
                 *key_text_parts,
                 *key_parts,
                 *query_parts,
-                *value_text_parts,
+                *mutable_evidence_parts,
                 *state_parts,
             ]
         return [

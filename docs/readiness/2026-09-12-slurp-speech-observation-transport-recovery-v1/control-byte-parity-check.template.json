@@ -1,0 +1,26 @@
+{
+  "schema": "saea-slurp-control-render-byte-parity-check-template-v1",
+  "status": "NOT_RUN_NOT_REGISTERED",
+  "purpose": "Decide whether the completed control can serve as the unchanged predecessor after the additive mixed-evidence transport fix without reading semantic answers.",
+  "old_source_commit": "b0c227f570fe76a4100a361b7ab3cea33d24f275",
+  "fixed_source_commit": "405a3a413a429590345544dfc06df06a05857d66",
+  "control_run_id": "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1",
+  "expected_requests": 3000,
+  "method": [
+    "Use a separately registered model-free byte-only verifier over the finalized control request trace.",
+    "Stream each canonical MODEL_REQUEST in recorded order without logging message text or normalized model responses.",
+    "Render the exact same request object through the old and fixed LlamaServerTransport message renderer.",
+    "Record only request ordinal, request_id hash, old rendered-byte SHA-256, new rendered-byte SHA-256 and byte counts.",
+    "Require exactly 3000 requests, identical request ordering, equal byte counts and equal SHA-256 for every request.",
+    "Emit only aggregate counts and a create-only verification receipt; emit no prompts, transcripts, responses, predictions, scores or labels."
+  ],
+  "failure_rule": "Any missing request or byte/hash difference makes existing control ineligible for the recovery comparison. Root must then stop and decide whether a separately authorized fresh control is scientifically required; this package does not authorize one.",
+  "retained_service_gate": "Separately verify the prior and current session documents name the identical model/build/packet roots and c65536/np4/max256 geometry. Do not query the service for this byte-only check.",
+  "authorization": "This template does not authorize opening the held trace. Root must register the exact byte-only check and its source/input hashes first.",
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0,
+    "service": 0
+  }
+}

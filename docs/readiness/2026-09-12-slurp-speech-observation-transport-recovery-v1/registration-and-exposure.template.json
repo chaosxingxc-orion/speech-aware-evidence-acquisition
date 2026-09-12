@@ -1,0 +1,96 @@
+{
+  "schema": "saea-slurp-speech-observation-transport-recovery-registration-template-v1",
+  "status": "NOT_REGISTERED_NON_RUNNABLE",
+  "source": {
+    "worktree": "/home/chao/saea-worktrees/slurp-speech-observation-transport-recovery-v1",
+    "implementation_fix_commit": "405a3a413a429590345544dfc06df06a05857d66",
+    "required_final_commit": "UNRESOLVED_AFTER_ROOT_COMMIT"
+  },
+  "configs": {
+    "baseline": "configs/baseline/slurp-speech-observation-whisper-transport-recovery-v1.json",
+    "experiment": "configs/experiment/slurp-speech-observation-whisper-transport-recovery-v1.json",
+    "campaign": "configs/campaign/slurp-speech-observation-transport-recovery-v1.json",
+    "candidate_pre_recall_composed_config_hash": "eac56bb5b6897418a3ddd6161ca2ce950f32fc7a1a7ef2b54923bee405753cbf",
+    "candidate_pre_recall_protocol_hash": "70ef9826bd581d3e3c2c09d1c6c2ded69b9c4afea8ce795938cd2dcbc19a48cf",
+    "final_composed_config_hash": "UNRESOLVED_AFTER_RECOVERY_RECALL_AND_READINESS_BINDINGS",
+    "final_protocol_hash": "UNRESOLVED_AFTER_FINAL_COMPOSITION"
+  },
+  "bindings_before_recall": [
+    "Root accepts or replaces the cumulative family budget basis; this field is preparation-identity-bearing.",
+    "Root freezes final generation, attempt, fit, cell, experiment and service identifiers.",
+    "The accepted transport source fix remains at or is included by the final clean source commit.",
+    "The sealed Whisper catalog remains pinned at 43925fb7e66c378037eaf676ae8e25860bf835ed53d34bac696ee718b54f9073.",
+    "All plan, solve and revise materials, K5 supply, full label prompt, packets, knowledge, fixed tools, max256, DEV-1000 and allowed stages remain final."
+  ],
+  "bindings_after_recall": [
+    "Insert only the returned prepared_phase_recall.solve relpath and SHA-256.",
+    "Bind root recovery admission under per-cell readiness and change state to ready.",
+    "Reattest the same resident session document and bind its current SHA-256 in both plans.",
+    "Compose final config and derive protocol_hash(config_hash, arm, split_identity_hash).",
+    "Validate both nested ExecutionPlans, write immutable registered plan documents, then append exactly the two exposure rows below with consumed=no."
+  ],
+  "exposure_rows": [
+    {
+      "date": "2026-09-12",
+      "run id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1",
+      "execution profile": "bounded-discovery-probe",
+      "scope": "Fresh full DEV-1000 cached-Whisper treatment transport recovery across plan, solve and revise; target 3000, cap3150.",
+      "models / tools": "Same resident decoder-only Qwen3-Omni Q4_K_M, no mmproj, c65536, np4, max256; sealed Whisper catalog and existing speech packets.",
+      "carrier / population": "slurp DEV-1000; historically exposed NEW500 primary, OLD500 and pooled DEV1000 secondary",
+      "split role": "dev",
+      "split identity hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+      "consumed": "no",
+      "calls": "3150",
+      "speech audio seconds": "10500",
+      "gpu hours": "2.0",
+      "inherited exposure": "Original treatment attempt spent 2000 contacts and remains separately settled; no predecessor state reused.",
+      "preregistration artifact": "UNRESOLVED_FINAL_GENERATION_PLAN_PATH_AND_SHA256",
+      "notes": "First and only recovery registration; source, admission, recall, protocol and retained resident pins must be final."
+    },
+    {
+      "date": "2026-09-12",
+      "run id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-FIT-V1",
+      "execution profile": "bounded-discovery-probe",
+      "scope": "Actual full-roster plan, solve and revise request-capacity fitting for the fresh recovery; zero generated tokens.",
+      "models / tools": "Same resident decoder-only Qwen3-Omni Q4_K_M, no mmproj, c65536, np4, max256; fit endpoints only.",
+      "carrier / population": "slurp DEV-1000; historically exposed NEW500 primary, OLD500 and pooled DEV1000 secondary",
+      "split role": "dev",
+      "split identity hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+      "consumed": "no",
+      "calls": "9003",
+      "speech audio seconds": "10500",
+      "gpu hours": "2.0",
+      "inherited exposure": "Original treatment fit and 2000 generation contacts remain separately counted; no reuse of old fit receipt.",
+      "preregistration artifact": "UNRESOLVED_FINAL_FIT_PLAN_PATH_AND_SHA256",
+      "notes": "Fit each live recovery phase only after its fresh predecessor state exists."
+    }
+  ],
+  "control_predecessor": {
+    "bound": false,
+    "reason": "Root has not yet established byte-identical completed control requests and retained service identity under the additive source fix. No fresh control is included by default.",
+    "conditional_requirements": [
+      "Outcome-blind 3000-request render-byte parity passes in exact request order with no response text emitted.",
+      "Original control attempt is FINALIZED/COMPLETED and otherwise eligible under the preserved analysis protocol.",
+      "Root reattests the same resident model, service, and packet identity."
+    ]
+  },
+  "statistical_protocol": {
+    "protocol": {
+      "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-analysis-protocol-v2.md",
+      "sha256": "e90722d3bff5125ae72b1cd94e06c308e75ef1fea7dd63609964203f9951cb64"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-analysis-recipe-v2.json",
+      "sha256": "eb6c6754adcc4d72d7d89529703414cfb7caaec640d193761c18499e2d5807c1"
+    },
+    "preserved": "NEW500 primary; OLD500 and pooled DEV1000 secondary; native pooled SLU F1 plus scenario/action exact metrics; same bootstrap and no transferred threshold."
+  },
+  "contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0,
+    "fit": 0,
+    "service": 0,
+    "generation": 0
+  }
+}

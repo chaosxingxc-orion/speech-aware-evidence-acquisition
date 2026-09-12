@@ -603,8 +603,9 @@ def test_agent_loop_wire_requests_have_an_identical_prefix_before_mutable_state(
         ),
     ),
 )
+@pytest.mark.parametrize("with_untyped_observations", [False, True])
 def test_registered_v2_prompt_orders_preserve_agent_history_as_an_ordered_suffix(
-    tmp_path, prompt_order, expected_order
+    tmp_path, prompt_order, expected_order, with_untyped_observations
 ):
     feature_root = tmp_path / "features"
     query = _materialize_packet(feature_root, "slurp/train/query")
@@ -678,8 +679,37 @@ def test_registered_v2_prompt_orders_preserve_agent_history_as_an_ordered_suffix
         mmproj_loaded=False,
     )
 
-    transport(json.dumps(payload).encode())
+    if with_untyped_observations:
+        before = {
+            "evidence_id": "prepared-observation-before",
+            "content": "Frozen auxiliary ASR observation before the value.",
+            "source_uri": "prepared-speech-observation://synthetic/before",
+        }
+        after = {
+            "evidence_id": "prepared-observation-after",
+            "content": "Frozen auxiliary ASR observation after the value.",
+            "source_uri": "prepared-speech-observation://synthetic/after",
+        }
+        payload["supplied_evidence"].insert(2, before)
+        payload["supplied_evidence"].append(after)
+        value_index = expected_order.index(
+            "[evidence retrieved-value] Train-derived value."
+        )
+        expected_order = (
+            *expected_order[:value_index],
+            "[evidence prepared-observation-before] "
+            "Frozen auxiliary ASR observation before the value.",
+            expected_order[value_index],
+            "[evidence prepared-observation-after] "
+            "Frozen auxiliary ASR observation after the value.",
+            *expected_order[value_index + 1:],
+        )
 
+    request_bytes = json.dumps(payload).encode()
+    rendered = transport.render_request(request_bytes)
+    assert captured == {}
+    transport(request_bytes)
+    assert rendered == captured["body"]
     parts = captured["body"]["messages"][1]["content"]
     observed_order = tuple(
         (
