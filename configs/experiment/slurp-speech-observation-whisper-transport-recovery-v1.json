@@ -1,0 +1,126 @@
+{
+  "auxiliary_speech_observation_preparation": {
+    "attempt_id": "attempt-slurp-whisper-observations-recovery-v1",
+    "budget_relationship": "Separate registered recovery preparation outside the paired Qwen family caps. All recovery speech-tool contacts remain counted under the recovery registration, and the original aborted attempt's eight charged contacts remain counted under its original registration. This treatment consumes the sealed cached observations from the recovery catalog.",
+    "planned_gpu_hours": 1.9961119666322218,
+    "planned_model_calls": 1000,
+    "planned_speech_audio_seconds": 2890,
+    "run_id": "SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1",
+    "catalog_id": "slurp-dev1000-whisper-large-v3-full-utterance-recovery-v1"
+  },
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "prepare-phase-recall",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-slurp-speech-observation-whisper-transport-recovery-generation-v1",
+      "baseline_fragment": "slurp-speech-observation-whisper-transport-recovery-v1",
+      "cell_id": "slurp-speech-observation-whisper-transport-recovery-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "readiness": {
+        "state": "ready",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-WHISPER-OBSERVATIONS-RECOVERY-V1/attempt-slurp-whisper-observations-recovery-v1/catalog.json",
+            "sha256": "43925fb7e66c378037eaf676ae8e25860bf835ed53d34bac696ee718b54f9073",
+            "reason": "Retain the same sealed Whisper observation catalog."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-PREPARE-V1/recall.json",
+            "sha256": "a9ee23e4723ce02feed37d901cbc89b83aff3fa0655a4a1bfdb18820a06a2699",
+            "reason": "Require the distinct recovery recall with unchanged selected contents."
+          },
+          {
+            "kind": "decision",
+            "relpath": "coordination/slurp-speech-observation-transport-recovery-v1/root-admission-v1.json",
+            "sha256": "89815cc86c67cc3b21cf4dd9e717f1f424b05bc1df7a38a3bb129dfd0745cc86",
+            "expected_decision_id": "SAEA-SLURP-SPEECH-OBSERVATION-TRANSPORT-RECOVERY-ADMISSION-V1",
+            "reason": "Root admits the sole treatment recovery and byte-matched completed control."
+          }
+        ]
+      },
+      "run_id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1"
+    }
+  ],
+  "comparison_basis": "Freeze both three-phase arms before generation; compare no-new-evidence control against fixed cached Whisper evidence on the identical DEV-1000 roster and common plan, solve and revise structure. Historically exposed NEW500 is primary; OLD500 and pooled DEV1000 are secondary.",
+  "date": "2026-09-12",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 2.0,
+    "planned_model_calls": 3150,
+    "planned_speech_audio_seconds": 10500,
+    "split_role": "dev"
+  },
+  "execution_plan_basis": {
+    "fit": "Three registered phase fits require at most 9,003 fit contacts per arm. Fit uses the baseline live_phase_fit run and attempt and remains pending.",
+    "generation": "Three phases over DEV-1000 target 3,000 contacts with a 3,150 per-arm cap and 10,500 speech seconds. No extra probe or unregistered recovery is included.",
+    "resource_share": "The per-arm 2.0 GPU-hour cap includes fitting and the shared resident service loading share."
+  },
+  "experiment_id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1",
+  "family_budget": {
+    "generation_calls_total": 9450,
+    "fit_contacts_total": 27009,
+    "speech_audio_seconds_total": 31500,
+    "gpu_hours_total": 6.0
+  },
+  "fragment_kind": "saea-slurp-task-agent-experiment-v1",
+  "generation_budget": {
+    "cap": 3150,
+    "target": 3000
+  },
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "decision_population": "Historically exposed NEW500 primary; OLD500 and DEV1000 secondary.",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "preparation_source_receipts": [
+    {
+      "relpath": "docs/receipts/knowledge/slurp-kb-size-full-content-slot-fillers-intent-slot-frame.json",
+      "root": "repository",
+      "sha256": "026f2cbbf9d112ac0ed816a030120acd1eb539f76db1e00dd277aef3272b9104"
+    },
+    {
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-kus3-vectors/vectors.json",
+      "root": "repository",
+      "sha256": "3c213ad4f4787e32d92fe30dd1119395817a73ba48d46cbed292a8f471aa86e5"
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "First and only full DEV-1000 recovery of the cached-Whisper treatment after the accepted mixed-evidence renderer fix. Restart all three phases on the same roster; preserve failed contacts; do not reuse unsealed predecessors.",
+  "request_decoding_overrides": {
+    "max_tokens": 256
+  },
+  "service_session": "serving-slurp-speech-observation-np4-v1",
+  "split_id": "DEV-1000",
+  "recovery_accounting": {
+    "recovery_number": 1,
+    "original_generation_run_id": "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-V1",
+    "original_generation_attempt_id": "attempt-slurp-speech-observation-whisper-generation-v1",
+    "reported_failed_treatment_contacts": 2000,
+    "continuation_from_original_attempt": false,
+    "budget_basis": "Root accepts original registered paired ceilings plus one fresh full treatment recovery allowance. Unspent ceilings do not authorize any additional attempt. Preserve all original actual contacts and the shared accounting receipt.",
+    "original_family_registered_caps": {
+      "generation_calls_total": 6300,
+      "fit_contacts_total": 18006,
+      "speech_audio_seconds_total": 21000,
+      "gpu_hours_total": 4.0
+    },
+    "fresh_recovery_allowance": {
+      "generation_calls_cap": 3150,
+      "generation_calls_target": 3000,
+      "fit_contacts_cap": 9003,
+      "speech_audio_seconds": 10500,
+      "gpu_hours_including_fit_and_loading_share": 2.0
+    },
+    "failed_attempt_settlement": "ABORTED_WITH_2000_CONTACTS_PRESERVED"
+  }
+}

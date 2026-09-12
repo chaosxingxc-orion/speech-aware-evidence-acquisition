@@ -1,0 +1,49 @@
+{
+  "schema": "saea-slurp-speech-observation-recovery-binding-v1",
+  "status": "ROOT_REGISTERED_AWAITING_PREFLIGHT",
+  "registered_at": "2026-09-12T21:27:48.655268+00:00",
+  "composed_config_hash": "061b425fa47d6c90c591aee8bda6fe2515e8bf93dec28051e2b3fadb3466acf5",
+  "protocol_hash": "e2000704a4b26b3dc97bc6c5fd621cb6fc661832a35e9278fb752a3eeb058257",
+  "implementation_fix_commit": "405a3a413a429590345544dfc06df06a05857d66",
+  "final_source_commit_binding": "The root launch receipt and sealed source manifests bind the clean commit after these documents are committed; no self-referential commit is embedded here.",
+  "root_admission": {
+    "relpath": "coordination/slurp-speech-observation-transport-recovery-v1/root-admission-v1.json",
+    "sha256": "89815cc86c67cc3b21cf4dd9e717f1f424b05bc1df7a38a3bb129dfd0745cc86"
+  },
+  "generation_plan": {
+    "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-transport-recovery-v1/generation-plan-v1.json",
+    "sha256": "6fb740a151bbc79464da8fab5614961964931e699aa26e986594a414673767c2"
+  },
+  "fit_plan": {
+    "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-transport-recovery-v1/fit-plan-v1.json",
+    "sha256": "fdee861cb93155839d03cf28d9dc013f1502fb8e17776f979d8bfd81c8daba27"
+  },
+  "recall_equality": {
+    "relpath": "docs/readiness/2026-09-12-slurp-speech-observation-transport-recovery-v1/recall-equality-v1.json",
+    "sha256": "cc15294fc5ca7ba5cc1321d1ba5fd0a538ce4653792d95401cebfd0ca4fe7b59"
+  },
+  "original_generation_contacts": 5000,
+  "original_fit_contacts": 15006,
+  "original_control": {
+    "generation": 3000,
+    "fit": 9003,
+    "state": "FINALIZED"
+  },
+  "original_treatment": {
+    "generation": 2000,
+    "fit": 6003,
+    "state": "ABORTED",
+    "revise_generation": 0
+  },
+  "all_failed_contacts_preserved": true,
+  "same_resident_required": true,
+  "fresh_recovery": {
+    "target_generation": 3000,
+    "cap_generation": 3150,
+    "cap_fit": 9003
+  },
+  "comparison_method_unchanged_except_repaired_transport": true,
+  "read_gate": "Both complete eligible first-score bundles and exact postseal registration",
+  "statistical_protocol_sha256": "e90722d3bff5125ae72b1cd94e06c308e75ef1fea7dd63609964203f9951cb64",
+  "statistical_recipe_sha256": "eb6c6754adcc4d72d7d89529703414cfb7caaec640d193761c18499e2d5807c1"
+}

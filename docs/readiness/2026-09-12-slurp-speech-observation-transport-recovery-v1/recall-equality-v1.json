@@ -1,0 +1,16 @@
+{
+  "schema": "saea-recall-equality-v1",
+  "created_at_utc": "2026-09-12T21:26:08.206888+00:00",
+  "status": "PASS",
+  "control": {
+    "relpath": "prepared/SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-PREPARE-V1/recall.json",
+    "sha256": "fd97cb9a3bf68a2e4f242262e7bd2a7a57ae9a6096f64cb4de1d6fee6a11446f"
+  },
+  "recovery": {
+    "relpath": "prepared/SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-PREPARE-V1/recall.json",
+    "sha256": "a9ee23e4723ce02feed37d901cbc89b83aff3fa0655a4a1bfdb18820a06a2699"
+  },
+  "output_sha256": "8bec7bfc7c3d3f64e9e7ae680c5226396e35fd8ec90dfa1ded49dfca07c710be",
+  "complete_output_equal": true,
+  "model_contacts": 0
+}

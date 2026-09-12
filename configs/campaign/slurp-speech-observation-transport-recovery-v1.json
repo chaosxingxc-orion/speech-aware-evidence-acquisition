@@ -1,0 +1,9 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "slurp-speech-observation-whisper-transport-recovery-v1",
+      "cell": "slurp-speech-observation-whisper-transport-recovery-v1"
+    }
+  ]
+}
