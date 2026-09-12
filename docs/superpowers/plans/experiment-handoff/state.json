@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 61,
+  "generation": 62,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "a3757d67bcfd49d451fe6dac075f1fd2f08a48f4",
-  "updated_at_utc": "2026-09-12T16:02:15.258245+00:00",
-  "next_action": "Read STATUS-061. Local speech producer is merged, SLURP source inventory exported, and shared three-phase revision policy/configuration design verified. Final ASR ExecutionPlan/protocol/catalog and per-arm recall/fit/analysis bindings remain pending after A2T closure. Preserve active recovery source 22b56d70 and root processes 2179/620/678. DIRECT and STAGE-CONTROL finalized; KNOWLEDGE generating. Quality remains closed until all three seals or terminal hold. No second recovery. Goal active.",
+  "snapshot_commit": "f755559a43fa8fddb67438cf258626507cf8ae84",
+  "updated_at_utc": "2026-09-12T16:22:26.183202+00:00",
+  "next_action": "Read STATUS-062. Preserve ASR source /home/chao/saea-worktrees/slurp-speech-tool-registration-v1 at f755559a; protocol/plan/ledger and control configs frozen, no runtime config or ASR forward. Prepare control recall in slurp-speech-tool-control-prepare-v1; treatment waits actual catalog. A2T recovery DIRECT and STAGE-CONTROL finalized and scored; KNOWLEDGE active; root processes2179/620/678. All quality remains closed until third seal or terminal hold. Then registered frozen finalized-bundle analysis and root decision. No second recovery. No immediate owner decision. Goal active.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SPEECH-TOOLS-023"
