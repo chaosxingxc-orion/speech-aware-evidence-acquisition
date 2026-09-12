@@ -651,7 +651,12 @@ def load_sealed_vectors(
 def load_sealed_segment_vectors(
     path: Path, *, expected_sha256: str, dimensions: Sequence[str]
 ) -> Mapping[str, SealedSegmentQuery]:
-    """Load query-only vectors for exact, contiguous spans of one speech packet."""
+    """Load query-only vectors for ordered, gap-free spans of one packet.
+
+    Adjacent ranges and overlap are both lawful. Every subsequent range must
+    extend the covered end, which refuses duplicate, reversed, and contained
+    ranges while accepting the registered 120 s / 8 s-overlap protocol.
+    """
 
     resolved = Path(path)
     if not resolved.is_file():
@@ -699,7 +704,8 @@ def load_sealed_segment_vectors(
         raw_segments = document["segments"]
         if not isinstance(raw_segments, list) or not raw_segments:
             raise PhaseSupplyError(f"{resolved} line {number} segments must be non-empty")
-        cursor = 0
+        covered_end = 0
+        previous_start: int | None = None
         segment_ids: set[str] = set()
         segments: list[Mapping[str, tuple[float, ...]]] = []
         for segment_number, segment in enumerate(raw_segments, start=1):
@@ -715,12 +721,16 @@ def load_sealed_segment_vectors(
             if (
                 isinstance(start, bool) or not isinstance(start, int)
                 or isinstance(end, bool) or not isinstance(end, int)
-                or start != cursor or end <= start or end > source_frames
+                or start < 0 or end > source_frames
+                or (previous_start is None and start != 0)
+                or (previous_start is not None and start <= previous_start)
+                or start > covered_end or end <= covered_end
             ):
                 raise PhaseSupplyError(
-                    f"{field} does not provide ordered exact positive frame coverage"
+                    f"{field} does not provide ordered, gap-free extending frame coverage"
                 )
-            cursor = end
+            previous_start = start
+            covered_end = end
             vectors = segment["vectors"]
             if not isinstance(vectors, Mapping) or set(vectors) != allowed:
                 raise PhaseSupplyError(
@@ -754,7 +764,7 @@ def load_sealed_segment_vectors(
                     )
                 parsed[dimension] = parsed_vector
             segments.append(parsed)
-        if cursor != source_frames:
+        if covered_end != source_frames:
             raise PhaseSupplyError(
                 f"{resolved} line {number} segments do not provide exact frame coverage "
                 f"[0, {source_frames}]"

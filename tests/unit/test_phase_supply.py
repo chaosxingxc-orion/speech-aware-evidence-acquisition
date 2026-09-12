@@ -348,6 +348,63 @@ def test_load_sealed_segment_vectors_requires_exact_frame_coverage_and_hash(tmp_
         ps.load_sealed_segment_vectors(path, expected_sha256=_SHA_B, dimensions=("content",))
 
 
+def test_load_sealed_segment_vectors_accepts_registered_120_second_overlap(tmp_path):
+    """120-second windows, 8-second overlap, 112-second stride, tail complete."""
+
+    path = tmp_path / "q-segments.jsonl"
+    digest = _write_segment_vectors(
+        path,
+        [{
+            "id": "dev:s1",
+            "audio_sha256": _SHA_A,
+            "source_frames": 3840000,
+            "source_sample_rate_hz": 16000,
+            "segments": [
+                {"id": "000000000-0001920000", "start_frame": 0,
+                 "end_frame": 1920000, "vectors": {"content": [1.0, 0.0]}},
+                {"id": "0001792000-0003712000", "start_frame": 1792000,
+                 "end_frame": 3712000, "vectors": {"content": [0.0, 1.0]}},
+                {"id": "0003584000-0003840000", "start_frame": 3584000,
+                 "end_frame": 3840000, "vectors": {"content": [1.0, 1.0]}},
+            ],
+        }],
+    )
+    table = ps.load_sealed_segment_vectors(
+        path, expected_sha256=digest, dimensions=("content",)
+    )
+    assert len(table["dev:s1"].segments) == 3
+
+
+@pytest.mark.parametrize(
+    "second_range",
+    [
+        (0, 4),  # duplicate start
+        (1, 3),  # contained
+        (3, 2),  # reversed
+    ],
+)
+def test_load_sealed_segment_vectors_refuses_nonextending_ranges(tmp_path, second_range):
+    path = tmp_path / "q-segments.jsonl"
+    start, end = second_range
+    digest = _write_segment_vectors(
+        path,
+        [{
+            "id": "dev:s1", "audio_sha256": _SHA_A, "source_frames": 4,
+            "source_sample_rate_hz": 16000,
+            "segments": [
+                {"id": "first", "start_frame": 0, "end_frame": 4,
+                 "vectors": {"content": [1.0, 0.0]}},
+                {"id": "second", "start_frame": start, "end_frame": end,
+                 "vectors": {"content": [0.0, 1.0]}},
+            ],
+        }],
+    )
+    with pytest.raises(ps.PhaseSupplyError, match="coverage"):
+        ps.load_sealed_segment_vectors(
+            path, expected_sha256=digest, dimensions=("content",)
+        )
+
+
 @pytest.mark.parametrize(
     "segments, message",
     [
