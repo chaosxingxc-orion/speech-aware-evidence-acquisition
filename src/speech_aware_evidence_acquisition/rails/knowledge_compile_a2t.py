@@ -1,4 +1,9 @@
-"""Compile source-bound Audio2Tool executable semantic cards offline."""
+"""Compile source-bound Audio2Tool semantic-card artifacts offline.
+
+Construction reads and artifact publication belong beside knowledge_build_a2t.
+This API is not a pure runtime renderer or a model-visible tool. Consume its
+source-bound outputs through registered knowledge providers after preparation.
+"""
 
 from __future__ import annotations
 
@@ -480,7 +485,7 @@ _LEGACY_OUTPUT_CONTRACT = (
 )
 _PUBLIC_LEGALITY_OUTPUT_CONTRACT = (
     "Use an exact registered tool name. For public signature keys, include every "
-    "required key and any subset of optional keys; unobserved public combinations "
+    "required key and any subset of optional keys, subject to documented constraints and dependencies; unobserved public combinations "
     "remain legal. Use JSON values with the public types and constraints. Construction "
     "compatibility evidence never changes public argument-key legality."
 )
@@ -546,9 +551,9 @@ def _public_legality_card(
         "Public argument legality: required keys "
         f"{_render_key_set(required_keys)}; optional keys "
         f"{_render_key_set(optional_keys)}. A call must include every public required "
-        "key and may include any subset of the public optional keys.",
+        "key and may include any subset of the public optional keys, subject to documented constraints and dependencies.",
         f"Construction-observed argument patterns: {observed_text}. These patterns are "
-        "descriptive only; unobserved public combinations remain legal.",
+        "descriptive only; unobserved public combinations remain legal, subject to documented constraints and dependencies.",
     )
     compatibility_lines = tuple(
         "- Observed keys "
@@ -573,7 +578,7 @@ def _public_legality_card(
         elif line.startswith("Synthetic JSON examples: "):
             lines.append(
                 "Synthetic examples illustrate public shapes only; omitted public "
-                "optional combinations remain legal."
+                "optional combinations remain legal, subject to documented constraints and dependencies."
             )
             lines.append(line)
         else:
@@ -668,6 +673,13 @@ def build_public_legality_semantic_card_corpus(
             "public_legality_authority": "registry-required-and-optional-signature-facts",
             "construction_pattern_role": "descriptive-only",
             "unobserved_public_combinations_forbidden": False,
+            "example_count": sum(len(card.examples) for card in cards),
+            "spoken_role_guidance_count": sum(
+                len(card.role_guidance) for card in cards
+            ),
+            "public_constraint_example_literal_count": public_only.report[
+                "public_constraint_example_literal_count"
+            ],
             "public_required_argument_key_count": sum(
                 len(card.public_required_argument_keys) for card in cards
             ),

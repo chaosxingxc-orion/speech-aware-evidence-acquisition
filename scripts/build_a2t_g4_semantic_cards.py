@@ -28,7 +28,7 @@ from speech_aware_evidence_acquisition.data.lock import (  # noqa: E402
     load_lock,
     umbrella_lock_path,
 )
-from speech_aware_evidence_acquisition.rails.a2t_semantic_card_compilation import (  # noqa: E402
+from speech_aware_evidence_acquisition.rails.knowledge_compile_a2t import (  # noqa: E402
     MINIMUM_COMPATIBILITY_SUPPORT,
     CompatibilityRule,  # noqa: F401
     SemanticCardCompilationError,

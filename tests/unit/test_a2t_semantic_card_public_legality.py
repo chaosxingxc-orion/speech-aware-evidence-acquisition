@@ -9,7 +9,7 @@ from speech_aware_evidence_acquisition.rails import (
     a2t_executable_semantic_cards as legacy_cards,
 )
 from speech_aware_evidence_acquisition.rails import (
-    a2t_semantic_card_compilation as compilation,
+    knowledge_compile_a2t as compilation,
 )
 from speech_aware_evidence_acquisition.rails.knowledge_build_a2t import A2tKbRow
 
@@ -175,3 +175,44 @@ def test_observed_compatibility_does_not_override_public_legality() -> None:
     assert "Training-supported compatibility rule" not in card.text
     assert "may additionally admit" not in corpus.text
     assert all("legacyFlag" not in example for example in card.examples)
+
+
+def test_public_optional_key_guidance_preserves_conditional_constraints() -> None:
+    registry = list(_registry())
+    registry[0] = dict(
+        registry[0],
+        argument_constraints="hour requires day; neither may be supplied alone",
+    )
+    corpus, _report = compilation.build_from_partition_with_public_legality(
+        tuple(registry), (_row(1, ("account", "day", "hour")),)
+    )
+    card = corpus.cards_by_name["scheduleSynthetic"]
+    assert "hour requires day" in card.constraints
+    assert "subject to documented constraints and dependencies" in card.text
+    assert (
+        "subject to documented constraints and dependencies"
+        in corpus.text.split("TASK-WIDE EXECUTION CARDS", 1)[0]
+    )
+
+
+def test_presentation_report_counts_the_examples_and_roles_actually_rendered() -> None:
+    rows = (
+        _row(1, ("account", "legacyFlag")),
+        _row(2, ("account", "legacyFlag")),
+    )
+    corpus, _report = compilation.build_from_partition_with_public_legality(
+        _registry(), rows
+    )
+    assert corpus.report["example_count"] == sum(
+        len(card.examples) for card in corpus.tool_cards
+    )
+    assert corpus.report["spoken_role_guidance_count"] == sum(
+        len(card.role_guidance) for card in corpus.tool_cards
+    )
+    public = legacy_cards.build_executable_semantic_card_corpus(_registry(), ())
+    assert (
+        corpus.report["public_constraint_example_literal_count"]
+        == (public.report["public_constraint_example_literal_count"])
+    )
+    assert corpus.report["construction_summary_count"] == len(rows)
+    assert corpus.report["compatibility_rule_count"] == 1

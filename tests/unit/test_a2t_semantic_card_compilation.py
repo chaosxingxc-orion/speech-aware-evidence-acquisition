@@ -13,7 +13,7 @@ from types import SimpleNamespace
 import pytest
 
 from speech_aware_evidence_acquisition.rails import (
-    a2t_semantic_card_compilation as compilation,
+    knowledge_compile_a2t as compilation,
 )
 from speech_aware_evidence_acquisition.rails.knowledge_build_a2t import (
     TIERS,
