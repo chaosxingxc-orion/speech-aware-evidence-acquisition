@@ -1,0 +1,51 @@
+{
+  "admission": {
+    "relpath": "coordination/slurp-top3-commitment-v1/distinct-successor-generation-admission-v1.json",
+    "sha256": "dcafe07597f9f7f74159909dc973e454e58b564809b36bb8738708dbeba756d3"
+  },
+  "analysis_method": {
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-distinct-commitment-analysis-recipe-v2.json",
+    "sha256": "48ad90ad08f706a241a382ea406cb9a8118a41a9fcebb79f4044fb883cc5bfac"
+  },
+  "campaign": {
+    "repo_relpath": "configs/campaign/slurp-distinct-successors-v1.json",
+    "sha256": "3b84a0a8e51696cd219eb31b7133427e9385b69e9b3d5623130dce52d4ff4547"
+  },
+  "fit_batch": {
+    "relpath": "coordination/slurp-top3-commitment-v1/distinct-fit-batch-completion-v2.json",
+    "sha256": "1b65a2884d1175e3721f9aa2045b7c7c3d76daa8e52e7e6772e6037c765b0f3e"
+  },
+  "fits": {
+    "closed-joint": {
+      "relpath": "prepared/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-FIT-V1/request-fit.json",
+      "sha256": "311d269e960cdfa2b1dd63ac98084dc7c801ab637e2c92cf4348806f63cf0afa"
+    },
+    "hard-first": {
+      "relpath": "prepared/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-FIT-V1/request-fit.json",
+      "sha256": "fd73df1131828444a7538a0956e91f6242bc639d01ed7c00e207c954d89acc51"
+    }
+  },
+  "generation_plans": {
+    "closed-joint": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-distinct-successors-v1/closed-joint-generation-plan-v1.json",
+      "sha256": "0e407b0c495e6c391827d36cea617a7b474b9adc0db79e8709a86cf7b28f017f"
+    },
+    "hard-first": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-distinct-successors-v1/hard-first-generation-plan-v1.json",
+      "sha256": "0ccb17800678d5f180f9bb0197e4f6dc419ce2eaa55345c28307617b28f8dc25"
+    }
+  },
+  "new_fit_contacts": 0,
+  "new_generation_cap": 2100,
+  "new_generation_target": 2000,
+  "original_source_fit_endpoints_spent": 3001,
+  "original_source_generations_spent": 1000,
+  "registered_at": "2026-09-13T08:13:26.548380+00:00",
+  "same_service_process_required": true,
+  "schema": "saea-distinct-successor-generation-registration-v1",
+  "source": {
+    "relpath": "prepared/SAEA-SLURP-DISTINCT-HYPOTHESIS-SOURCE-RECOVERY-V1/hypotheses.source.json",
+    "sha256": "0146d87679a27f85ee7d0927039f8cd64805ceb40f3b42f3e788529d4a8863d3"
+  },
+  "source_attempt_preserved": "ABORTED"
+}

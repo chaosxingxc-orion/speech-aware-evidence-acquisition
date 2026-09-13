@@ -29,6 +29,10 @@
     }
   },
   "policy": "phase-slots-given-intent-v1",
+  "prepared_request_fit": {
+    "relpath": "prepared/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-FIT-V1/request-fit.json",
+    "sha256": "fd73df1131828444a7538a0956e91f6242bc639d01ed7c00e207c954d89acc51"
+  },
   "scorers": [
     "slurp-slu-official",
     "slurp-slu",
