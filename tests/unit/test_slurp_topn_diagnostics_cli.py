@@ -12,7 +12,6 @@ from speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics_cli impor
     _branch_rows,
     _raw_aggregate,
     _raw_source_rows,
-    _transport_response_sha256,
     _references,
     _source_rows,
     run_raw_source,
@@ -20,6 +19,7 @@ from speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics_cli impor
 from speech_aware_evidence_acquisition.contracts import TraceRecord
 from speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics import ReferenceIntentRow
 from speech_aware_evidence_acquisition.core.bundle.delivery_replay import canonical
+from speech_aware_evidence_acquisition.core.bundle.raw_contact_source import verify_aborted_contact_source, _transport_response_sha256
 from speech_aware_evidence_acquisition.data.splits import prefixed, split_identity_hash
 from speech_aware_evidence_acquisition.rails.knowledge import AgentStateArtifact
 from speech_aware_evidence_acquisition.rails.artifact_results import (
@@ -411,7 +411,7 @@ def test_raw_source_rows_reject_non_normal_stop(tmp_path):
     ("wire", "wire hash"),
     ("audio", "audio cost"),
     ("illegal", "legal"),
-    ("bytes", "changed after"),
+    ("bytes", "hash mismatch"),
 ])
 def test_unsealed_trace_rejects_bound_identity_and_cost_defects(tmp_path, defect, match):
     ids, _, path = _raw_trace_fixture(tmp_path)
@@ -504,6 +504,19 @@ def test_raw_source_entry_uses_real_unsealed_attempt_shape_without_bundle_mock(t
     config_path = tmp_path / "config.json"
     config_path.write_text(json.dumps(config))
     output = tmp_path / "report.json"
+    raw = config["analysis"]["raw_source_diagnostics"]
+    verified = verify_aborted_contact_source(
+        attempt_pin=raw["attempt"],
+        trace_pin=raw["raw_trace"],
+        generation_plan_pin=raw["generation_plan"],
+        expected_sample_ids=("s1", "s2"),
+    )
+    assert verified.attempt["state"] == "ABORTED"
+    assert set(verified.contacts_by_sample_id["s1"]) == {
+        "request_id", "request", "response", "wire", "cost"
+    }
+    with pytest.raises(TypeError):
+        verified.trace_records["unexpected"] = {}
     result = run_raw_source(
         config_path, output,
         reference_loader=lambda *_args, **_kwargs: [
