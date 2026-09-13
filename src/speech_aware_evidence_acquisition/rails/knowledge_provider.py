@@ -46,6 +46,7 @@ other config-declared component id does.
 from __future__ import annotations
 
 import abc
+import hashlib
 import math
 import re
 from dataclasses import dataclass
@@ -82,7 +83,7 @@ from .kb_policy import (
     multidim_recall,
     multidim_segment_recall,
 )
-from .knowledge import FusionDecision, KnowledgeSnapshot, QueryState
+from .knowledge import AgentStateArtifact, FusionDecision, KnowledgeSnapshot, QueryState
 from .supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
 
 _SHA256_HEX = re.compile(r"[0-9a-f]{64}")
@@ -1305,6 +1306,320 @@ class SlurpIntentCandidateProvider(KnowledgeProvider):
 
 
 # ---------------------------------------------------------------------------
+# SlurpCandidateSemanticProvider -- candidate-conditioned authored cards
+# ---------------------------------------------------------------------------
+
+SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID = "slurp-candidate-semantic-v1"
+SLURP_CANDIDATE_SEMANTIC_RANK_POLICY_ID = (
+    "saea-ranked-candidate-round-robin-v1"
+)
+SLURP_CANDIDATE_SEMANTIC_FUSE_POLICY_ID = (
+    "saea-candidate-semantic-passthrough-v1"
+)
+
+
+class SlurpCandidateSemanticProvider(KnowledgeProvider):
+    """Select released semantic values from a ranked hypothesis state.
+
+    The provider reads only a source-bound ``AgentStateArtifact`` produced by
+    the configured predecessor phase.  Its candidate-to-value index is built
+    outside this class from the released authored source and cross-checked
+    against the released snapshot.  Selection is deterministic: value IDs are
+    sorted within each candidate, then visited round-robin in model rank order.
+    A shared value is supplied once, under the first ranked candidate that
+    reaches it.  Per-candidate and total caps are independent hard bounds.
+    """
+
+    def __init__(
+        self,
+        *,
+        candidate_values: Mapping[str, Sequence[str]],
+        legal_candidate_ids: Sequence[str],
+        max_candidates: int,
+        max_values_per_candidate: int,
+        max_total_values: int,
+        provider_id: str = SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID,
+    ) -> None:
+        super().__init__(provider_id=provider_id)
+        legal = frozenset(legal_candidate_ids)
+        if not legal or any(not isinstance(item, str) or not item for item in legal):
+            raise RailsError(
+                "SlurpCandidateSemanticProvider needs a non-empty legal candidate inventory"
+            )
+        for field, value, maximum in (
+            ("max_candidates", max_candidates, 3),
+            ("max_values_per_candidate", max_values_per_candidate, None),
+            ("max_total_values", max_total_values, None),
+        ):
+            if (
+                isinstance(value, bool)
+                or not isinstance(value, int)
+                or value < 1
+                or (maximum is not None and value > maximum)
+            ):
+                suffix = f" and at most {maximum}" if maximum is not None else ""
+                raise RailsError(f"{field} must be a positive integer{suffix}")
+        if max_total_values > max_candidates * max_values_per_candidate:
+            raise RailsError(
+                "max_total_values cannot exceed max_candidates times "
+                "max_values_per_candidate"
+            )
+        index: dict[str, tuple[str, ...]] = {}
+        for candidate_id, raw_values in candidate_values.items():
+            if candidate_id not in legal:
+                raise RailsError(
+                    f"candidate index ID {candidate_id!r} is outside the legal inventory"
+                )
+            if isinstance(raw_values, (str, bytes)) or not isinstance(
+                raw_values, Sequence
+            ):
+                raise RailsError("candidate index values must be a sequence")
+            values = tuple(sorted(raw_values))
+            if any(not isinstance(item, str) or not item for item in values):
+                raise RailsError("candidate index value IDs must be non-empty strings")
+            if len(values) != len(set(values)):
+                raise RailsError("candidate index contains a duplicate value ID")
+            index[candidate_id] = values
+        self._candidate_values = index
+        self._legal_candidate_ids = legal
+        self._max_candidates = max_candidates
+        self._max_values_per_candidate = max_values_per_candidate
+        self._max_total_values = max_total_values
+        self._last_query_state: QueryState | None = None
+        self._last_rank_result: object | None = None
+        self._last_selected_value_ids: tuple[str, ...] = ()
+        self._last_selection_audit: Mapping[str, object] | None = None
+
+    def build(self, source_rows: object, *, policy_id: str) -> object:
+        raise RailsError(
+            "SlurpCandidateSemanticProvider does not build at runtime; load and "
+            "verify the released named store, then use adopt()"
+        )
+
+    def adopt(
+        self,
+        built: object,
+        *,
+        policy_id: str,
+        source_ids: Sequence[str] = (),
+        snapshot_sha256: str | None = None,
+    ) -> "SlurpCandidateSemanticProvider":
+        super().adopt(
+            built,
+            policy_id=policy_id,
+            source_ids=source_ids,
+            snapshot_sha256=snapshot_sha256,
+        )
+        snapshot = self._built_object()
+        if not isinstance(snapshot, KnowledgeSnapshot):
+            raise RailsError("candidate semantic provider requires a KnowledgeSnapshot")
+        facet_ids = {facet.facet_id for facet in snapshot.facets}
+        value_by_id = {value.value_id: value for value in snapshot.values}
+        indexed = {value_id for values in self._candidate_values.values() for value_id in values}
+        unknown = indexed - set(value_by_id)
+        if unknown:
+            raise RailsError(
+                "candidate semantic index cites values outside the released snapshot: "
+                f"{sorted(unknown)[:5]}"
+            )
+        for value_id in indexed:
+            value = value_by_id[value_id]
+            if value_id not in facet_ids or value.associated_facet_ids != (value_id,):
+                raise RailsError(
+                    "candidate semantic values must retain their same-ID released facet"
+                )
+        return self
+
+    def _built_sample_ids(self) -> frozenset[str]:
+        snapshot: KnowledgeSnapshot = self._built_object()
+        return frozenset(snapshot.source_sample_ids)
+
+    def _select(self, candidate_ids: tuple[str, ...]) -> tuple[tuple[str, ...], list[dict[str, object]]]:
+        mapped = [self._candidate_values.get(candidate_id, ()) for candidate_id in candidate_ids]
+        positions = [0 for _ in candidate_ids]
+        selected_by = [[] for _ in candidate_ids]
+        ignored_by: list[list[dict[str, str]]] = [[] for _ in candidate_ids]
+        selected: list[str] = []
+        selected_set: set[str] = set()
+
+        while len(selected) < self._max_total_values:
+            progressed = False
+            for index, values in enumerate(mapped):
+                if len(selected) >= self._max_total_values:
+                    break
+                if len(selected_by[index]) >= self._max_values_per_candidate:
+                    continue
+                while positions[index] < len(values):
+                    value_id = values[positions[index]]
+                    positions[index] += 1
+                    progressed = True
+                    if value_id in selected_set:
+                        ignored_by[index].append(
+                            {"value_id": value_id, "reason": "shared-value-already-selected"}
+                        )
+                        continue
+                    selected.append(value_id)
+                    selected_set.add(value_id)
+                    selected_by[index].append(value_id)
+                    break
+            if not progressed:
+                break
+            if all(
+                positions[index] >= len(values)
+                or len(selected_by[index]) >= self._max_values_per_candidate
+                for index, values in enumerate(mapped)
+            ):
+                break
+
+        total_full = len(selected) >= self._max_total_values
+        for index, values in enumerate(mapped):
+            while positions[index] < len(values):
+                value_id = values[positions[index]]
+                positions[index] += 1
+                if value_id in selected_set:
+                    reason = "shared-value-already-selected"
+                elif len(selected_by[index]) >= self._max_values_per_candidate:
+                    reason = "per-candidate-limit"
+                elif total_full:
+                    reason = "total-limit"
+                else:  # defensive: the round-robin loop should have selected it
+                    reason = "not-selected"
+                ignored_by[index].append({"value_id": value_id, "reason": reason})
+
+        mappings = [
+            {
+                "candidate_id": candidate_id,
+                "mapped_value_ids": list(mapped[index]),
+                "selected_value_ids": list(selected_by[index]),
+                "ignored_mappings": sorted(
+                    ignored_by[index], key=lambda item: (item["value_id"], item["reason"])
+                ),
+                "status": "mapped" if mapped[index] else "absent",
+            }
+            for index, candidate_id in enumerate(candidate_ids)
+        ]
+        return tuple(selected), mappings
+
+    def candidates(self, query: object, *, k: int) -> Ranking:
+        from .knowledge import RankedFacet, RankResult  # noqa: PLC0415
+        from .slurp_intent_hypotheses import (  # noqa: PLC0415
+            parse_slurp_intent_hypothesis_state,
+        )
+
+        if k != self._max_total_values:
+            raise RailsError(
+                "SlurpCandidateSemanticProvider.candidates k must equal the configured "
+                "max_total_values"
+            )
+        if not isinstance(query, Mapping):
+            raise RailsError("candidate semantic query must be a mapping")
+        query_state = query.get("query_state")
+        artifact = query.get("candidate_state")
+        sample_id = query.get("sample_id")
+        if not isinstance(query_state, QueryState):
+            raise RailsError("candidate semantic query needs a QueryState")
+        if not isinstance(artifact, AgentStateArtifact):
+            raise RailsError("candidate semantic query needs an AgentStateArtifact")
+        if sample_id != query_state.query_sample_id:
+            raise RailsError("candidate semantic query sample identity mismatch")
+        state = parse_slurp_intent_hypothesis_state(
+            artifact,
+            expected_sample_id=str(sample_id),
+            legal_intent_ids=self._legal_candidate_ids,
+            max_candidates=self._max_candidates,
+        )
+        candidate_ids = tuple(item.intent_id for item in state.candidates)
+        selected, mappings = self._select(candidate_ids)
+        ranked = tuple(
+            RankedFacet(facet_id=value_id, score=float(len(selected) - index))
+            for index, value_id in enumerate(selected)
+        )
+        rank_result = RankResult(
+            snapshot_sha256=self.snapshot_sha256(),
+            query_state_sha256=query_state.content_hash(),
+            ranking_policy_id=SLURP_CANDIDATE_SEMANTIC_RANK_POLICY_ID,
+            candidates=ranked,
+        ).validate()
+        candidate_state_sha256 = hashlib.sha256(artifact.content.encode("utf-8")).hexdigest()
+        audit: dict[str, object] = {
+            "schema": "saea-candidate-semantic-selection-v1",
+            "snapshot_sha256": self.snapshot_sha256(),
+            "sample_id": str(sample_id),
+            "candidate_state_id": artifact.state_id,
+            "candidate_state_sha256": candidate_state_sha256,
+            "candidate_source_response_sha256": artifact.source_response_sha256,
+            "candidate_ids": list(candidate_ids),
+            "legal_candidate_inventory_sha256": content_hash(
+                {"candidate_ids": sorted(self._legal_candidate_ids)}
+            ),
+            "selection_policy_id": SLURP_CANDIDATE_SEMANTIC_RANK_POLICY_ID,
+            "max_candidates": self._max_candidates,
+            "max_values_per_candidate": self._max_values_per_candidate,
+            "max_total_values": self._max_total_values,
+            "mappings": mappings,
+            "selected_value_ids": list(selected),
+        }
+        audit["selection_sha256"] = content_hash(audit)
+        self._last_query_state = query_state
+        self._last_rank_result = rank_result
+        self._last_selected_value_ids = selected
+        self._last_selection_audit = audit
+        return Ranking(
+            entries=tuple(
+                RankedEntry(entry_id=item.facet_id, score=item.score, provenance={})
+                for item in ranked
+            ),
+            index_sha256=self.snapshot_sha256(),
+            query_sha256=query_state.content_hash(),
+            source=self.provider_id,
+        ).validate()
+
+    def fuse(
+        self,
+        rankings: Sequence[Ranking],
+        *,
+        k: int,
+        policy_id: str = SLURP_CANDIDATE_SEMANTIC_FUSE_POLICY_ID,
+    ) -> FusionDecision:
+        if policy_id != SLURP_CANDIDATE_SEMANTIC_FUSE_POLICY_ID:
+            raise RailsError(f"unsupported candidate semantic fuse policy {policy_id!r}")
+        if len(rankings) != 1 or self._last_query_state is None or self._last_rank_result is None:
+            raise RailsError("candidate semantic fuse requires its one candidates() ranking")
+        ranking = rankings[0].validate()
+        expected = self._last_query_state.content_hash()
+        if ranking.query_sha256 != expected or ranking.index_sha256 != self.snapshot_sha256():
+            raise RailsError("candidate semantic ranking has a changed source binding")
+        selected = self._last_selected_value_ids[:k]
+        return FusionDecision(
+            snapshot_sha256=self.snapshot_sha256(),
+            query_state_sha256=expected,
+            rank_result_sha256=self._last_rank_result.content_hash(),
+            fusion_policy_id=SLURP_CANDIDATE_SEMANTIC_FUSE_POLICY_ID,
+            supporting_facet_ids=selected,
+            selected_value_ids=selected,
+        ).validate()
+
+    def last_rank_result(self) -> object | None:
+        return self._last_rank_result
+
+    def last_selection_audit(self) -> Mapping[str, object] | None:
+        return self._last_selection_audit
+
+    def materialize(self, selection: object, *, query_state: QueryState) -> SupplyPacket:
+        snapshot: KnowledgeSnapshot = self._built_object()
+        selected_ids = (
+            set(selection.selected_value_ids)
+            if isinstance(selection, FusionDecision)
+            else set(selection)
+        )
+        if not selected_ids <= set(query_state.retrieved_value_ids):
+            raise RailsError(
+                "candidate semantic selection must be visible before materialization"
+            )
+        return _render_kb_supply_packet(snapshot, query_state)
+
+
+# ---------------------------------------------------------------------------
 # KNOWLEDGE_PROVIDERS -- registrations into the shared core.base registry
 # ---------------------------------------------------------------------------
 #
@@ -1333,6 +1648,29 @@ if "conec-context-v1" not in KNOWLEDGE_PROVIDERS.names():
 if "slurp-intent-candidates-v1" not in KNOWLEDGE_PROVIDERS.names():
     KNOWLEDGE_PROVIDERS.register(
         "slurp-intent-candidates-v1", SlurpIntentCandidateProvider
+    )
+if SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID not in KNOWLEDGE_PROVIDERS.names():
+    KNOWLEDGE_PROVIDERS.register(
+        "slurp-candidate-semantic-v1", SlurpCandidateSemanticProvider
+    )
+
+
+def _candidate_semantic_policy_is_not_callable(_knobs: object = None) -> object:
+    raise RailsError(
+        "candidate semantic rank/fuse policy IDs name the deterministic decision "
+        "inside SlurpCandidateSemanticProvider; no independent callable exists"
+    )
+
+
+if SLURP_CANDIDATE_SEMANTIC_RANK_POLICY_ID not in KNOWLEDGE_RANKERS.names():
+    KNOWLEDGE_RANKERS.register(
+        "saea-ranked-candidate-round-robin-v1",
+        _candidate_semantic_policy_is_not_callable,
+    )
+if SLURP_CANDIDATE_SEMANTIC_FUSE_POLICY_ID not in KNOWLEDGE_FUSERS.names():
+    KNOWLEDGE_FUSERS.register(
+        "saea-candidate-semantic-passthrough-v1",
+        _candidate_semantic_policy_is_not_callable,
     )
 
 
@@ -1387,6 +1725,9 @@ __all__ = [
     "CONEC_FUSE_POLICY_ID",
     "DENSE_CENTROID_FUSE_POLICY_ID",
     "KNOWLEDGE_PROVIDERS",
+    "SLURP_CANDIDATE_SEMANTIC_FUSE_POLICY_ID",
+    "SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID",
+    "SLURP_CANDIDATE_SEMANTIC_RANK_POLICY_ID",
     "SLURP_INTENT_CANDIDATES_FUSE_POLICY_ID",
     "SLURP_INTENT_CANDIDATES_RANK_POLICY_ID",
     "ConecContextProvider",
@@ -1395,6 +1736,7 @@ __all__ = [
     "KnowledgeProvider",
     "RankedEntry",
     "Ranking",
+    "SlurpCandidateSemanticProvider",
     "SlurpIntentCandidateProvider",
     "resolve_provider",
 ]

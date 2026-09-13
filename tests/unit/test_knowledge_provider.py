@@ -452,6 +452,9 @@ def test_knowledge_providers_registry_resolves_every_registered_provider():
         # KU-S4N, 2026-09-09: the SLURP intent-narrowing view, whose per-row
         # decision is a sha256-pinned candidate bank rather than a cosine.
         "slurp-intent-candidates-v1",
+        # Candidate-conditioned explanatory values stay behind the same
+        # registered provider seam and released named-store custody.
+        "slurp-candidate-semantic-v1",
     }
 
 

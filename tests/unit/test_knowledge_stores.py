@@ -288,6 +288,8 @@ def test_real_request_gate_retains_exact_qualified_store_evidence(tmp_path):
     router = build_knowledge_store_supply(
         binding, program=program, data_root=tmp_path
     )
+    assert "candidate_supply" not in router.receipt
+    assert not hasattr(router, "automatic_for_phase")
     dispatcher = build_phase_tools(
         _native_config(binding.store_ids),
         program,
