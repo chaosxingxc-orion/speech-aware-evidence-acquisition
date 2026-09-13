@@ -863,8 +863,10 @@ JUDGES.register(E21_BRIEF_NAME_NEAR_MISS_JUDGE_V1, BriefNameNearMissJudge())
 # intent authority; the joint-hypothesis rule validates alternatives while
 # making the final response authoritative for intent and entities.
 from ..reproduction.slurp_delivery import (  # noqa: E402
+    slurp_hard_first_hypothesis_delivery_v1,
     slurp_intent_slots_delivery_v1,
     slurp_joint_hypothesis_delivery_v1,
+    slurp_shortlist_joint_hypothesis_delivery_v1,
 )
 
 RESPONSE_POSTPROCESSORS.register(
@@ -873,4 +875,14 @@ RESPONSE_POSTPROCESSORS.register(
 RESPONSE_POSTPROCESSORS.register(
     "slurp-joint-hypothesis-delivery-v1",
     slurp_joint_hypothesis_delivery_v1,
+)
+
+RESPONSE_POSTPROCESSORS.register(
+    "slurp-hard-first-hypothesis-delivery-v1",
+    slurp_hard_first_hypothesis_delivery_v1,
+)
+
+RESPONSE_POSTPROCESSORS.register(
+    "slurp-shortlist-joint-hypothesis-delivery-v1",
+    slurp_shortlist_joint_hypothesis_delivery_v1,
 )

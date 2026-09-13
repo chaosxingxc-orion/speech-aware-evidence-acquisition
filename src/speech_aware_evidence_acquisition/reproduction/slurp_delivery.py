@@ -303,3 +303,130 @@ def join_slurp_rosters(
         for key, value in row_stats.items():
             stats[key] += value
     return projected, stats
+
+
+def slurp_hard_first_hypothesis_delivery_rule(
+    predecessor: str,
+    response: str,
+    *,
+    legal_intent_pairs: Mapping[str, tuple[str, str]],
+    max_candidates: int,
+) -> SlurpDeliveryOutcome:
+    """Keep the first hypothesis authoritative and deliver strict final entities.
+
+    Use the same predecessor and response validation as the joint rule. Preserve
+    the attempted final response in the source bundle; this explicit derivative
+    records when intent authority overrode a model revision. Resolve label parts
+    through the legal inventory rather than splitting IDs containing underscores.
+    """
+    from ..rails.slurp_intent_hypotheses import (  # noqa: PLC0415
+        parse_slurp_intent_hypothesis_content,
+    )
+
+    if not legal_intent_pairs or any(
+        not isinstance(pair, (tuple, list))
+        or len(pair) != 2
+        or any(not isinstance(part, str) or not part for part in pair)
+        or intent_id != f"{pair[0]}_{pair[1]}"
+        for intent_id, pair in legal_intent_pairs.items()
+    ):
+        raise ValueError("hard-first delivery requires a consistent legal intent pair map")
+    legal_ids = frozenset(legal_intent_pairs)
+    validated = slurp_joint_hypothesis_delivery_rule(
+        predecessor, response, legal_intent_ids=legal_ids,
+        max_candidates=max_candidates,
+    )
+    diagnostics = {
+        **validated.diagnostics,
+        "final_authoritative": 0,
+        "hard_first_committed": 0,
+        "attempted_intent_switch": 0,
+    }
+    if validated.refusal_reason is not None:
+        return SlurpDeliveryOutcome(
+            text="", refusal_reason=validated.refusal_reason,
+            diagnostics=diagnostics,
+        )
+    hypotheses = parse_slurp_intent_hypothesis_content(
+        predecessor, expected_sample_id=None, legal_intent_ids=legal_ids,
+        max_candidates=max_candidates,
+    )
+    first_id = hypotheses.candidates[0].intent_id
+    payload = json.loads(validated.text)
+    attempted_id = f"{payload['scenario']}_{payload['action']}"
+    payload["scenario"], payload["action"] = legal_intent_pairs[first_id]
+    diagnostics["attempted_intent_switch"] = int(attempted_id != first_id)
+    diagnostics["hard_first_committed"] = 1
+    return SlurpDeliveryOutcome(
+        text=json.dumps(payload, ensure_ascii=False, sort_keys=True),
+        refusal_reason=None, diagnostics=diagnostics,
+    )
+
+
+def slurp_hard_first_hypothesis_delivery_v1(*, max_candidates: int):
+    """Build the registered fixed-intent rule from the pinned TRAIN inventory."""
+    from ..data.lock import data_root, load_lock, umbrella_lock_path  # noqa: PLC0415
+    from .slurp_official_eval import load_legal_intent_inventory  # noqa: PLC0415
+
+    inventory = load_legal_intent_inventory(
+        load_lock(umbrella_lock_path()), data_root()
+    )
+    pairs = {f"{scenario}_{action}": (scenario, action)
+             for scenario, action in inventory.pairs}
+
+    def deliver(predecessor: str, response: str) -> SlurpDeliveryOutcome:
+        return slurp_hard_first_hypothesis_delivery_rule(
+            predecessor, response, legal_intent_pairs=pairs,
+            max_candidates=max_candidates,
+        )
+
+    return deliver
+
+def slurp_shortlist_joint_hypothesis_delivery_rule(
+    predecessor: str,
+    response: str,
+    *,
+    legal_intent_ids: set[str] | frozenset[str],
+    max_candidates: int,
+) -> SlurpDeliveryOutcome:
+    """Enforce the closed-shortlist comparison without editing raw responses.
+
+    A refused result delivers no task answer. The generation bundle retains the
+    full attempted answer, so an out-of-shortlist correct answer cannot silently
+    count as compliance with a closed-candidate experiment.
+    """
+    validated = slurp_joint_hypothesis_delivery_rule(
+        predecessor, response, legal_intent_ids=legal_intent_ids,
+        max_candidates=max_candidates,
+    )
+    reason = validated.refusal_reason
+    if reason is None and validated.diagnostics["final_intent_outside_shortlist"]:
+        reason = "final_intent_outside_shortlist"
+    diagnostics = {
+        **validated.diagnostics,
+        "final_authoritative": int(reason is None),
+        "shortlist_constraint_satisfied": int(reason is None),
+    }
+    return SlurpDeliveryOutcome(
+        text=validated.text if reason is None else "",
+        refusal_reason=reason, diagnostics=diagnostics,
+    )
+
+
+def slurp_shortlist_joint_hypothesis_delivery_v1(*, max_candidates: int):
+    """Build the registered closed-shortlist rule from the TRAIN inventory."""
+    from ..data.lock import data_root, load_lock, umbrella_lock_path  # noqa: PLC0415
+    from .slurp_official_eval import load_legal_intent_inventory  # noqa: PLC0415
+
+    inventory = load_legal_intent_inventory(
+        load_lock(umbrella_lock_path()), data_root()
+    )
+    legal_ids = frozenset(f"{scenario}_{action}" for scenario, action in inventory.pairs)
+
+    def deliver(predecessor: str, response: str) -> SlurpDeliveryOutcome:
+        return slurp_shortlist_joint_hypothesis_delivery_rule(
+            predecessor, response, legal_intent_ids=legal_ids,
+            max_candidates=max_candidates,
+        )
+
+    return deliver
