@@ -597,15 +597,39 @@ class NativeRoleNode(WorkflowComponent):
         )
         self._rail_registered = False
         self._registration_lock = asyncio.Lock()
+        self._close_requested = False
+        self._tools_closed = False
+        self._resources_closed = False
         self._invocation_serial = itertools.count(1)
 
     async def _ensure_rail(self) -> None:
+        if self._close_requested:
+            raise FrozenCoreRoleModelError("native role node is closed")
         if self._rail_registered:
             return
         async with self._registration_lock:
+            if self._close_requested:
+                raise FrozenCoreRoleModelError("native role node is closed")
             if not self._rail_registered:
                 await self._agent.register_rail(self._rail)
                 self._rail_registered = True
+
+    async def close(self) -> None:
+        """Release only the OpenJiuwen resources owned by this role instance."""
+
+        async with self._registration_lock:
+            if self._resources_closed:
+                return
+            self._close_requested = True
+            try:
+                if self._rail_registered:
+                    await self._agent.unregister_rail(self._rail)
+                    self._rail_registered = False
+            finally:
+                if not self._tools_closed:
+                    self._agent.ability_manager.teardown_tools()
+                    self._tools_closed = True
+            self._resources_closed = True
 
     async def invoke(
         self, inputs: Input, session: Session, context: ModelContext
