@@ -115,7 +115,9 @@ def _load_inputs(parent_path, repo_root, experiment_path, data_root, cell_id):
     else:
         receipt = None
         snapshot = None
-    rows, windows = replay_delivery(parent, snapshot, declaration, values)
+    rows, windows = replay_delivery(
+        parent, snapshot, declaration, values, data_root=data_root
+    )
     return parent, declaration, receipt, rows, windows
 
 
