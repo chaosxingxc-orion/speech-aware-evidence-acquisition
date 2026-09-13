@@ -9,6 +9,7 @@ import soundfile as sf
 from speech_aware_evidence_acquisition.core.preparation import PreparationError
 from speech_aware_evidence_acquisition.core.preparation_speech_queries import (
     segment_plan,
+    prepare_text_facet_vectors,
     prepare_speech_query_vectors,
 )
 
@@ -170,3 +171,40 @@ def test_interrupted_segment_preserves_completed_sibling_and_refuses_replay(tmp_
         )
         == 1
     )
+
+
+def test_text_facet_cache_binds_the_retrieval_dimension(tmp_path):
+    facets = [{"id": "intent-boundary:alpha", "text": "alpha boundary"}]
+    calls = []
+
+    def encoder(text):
+        calls.append(text)
+        return [1.0, 0.0]
+
+    first = prepare_text_facet_vectors(
+        tmp_path / "intent-index.json",
+        facets=facets,
+        cache_root=tmp_path / "cache",
+        encoder=encoder,
+        encoder_identity={"id": "synthetic"},
+        snapshot_sha256="a" * 64,
+        protocol_id="b" * 64,
+        dimension=2,
+        facet_dimension="intent-boundary",
+    )
+    second = prepare_text_facet_vectors(
+        tmp_path / "content-index.json",
+        facets=facets,
+        cache_root=tmp_path / "cache",
+        encoder=encoder,
+        encoder_identity={"id": "synthetic"},
+        snapshot_sha256="a" * 64,
+        protocol_id="b" * 64,
+        dimension=2,
+    )
+
+    assert calls == ["alpha boundary", "alpha boundary"]
+    assert first["artifact"]["output"]["rows"][0]["vectors"] == {
+        "intent-boundary": [1.0, 0.0]
+    }
+    assert second["artifact"]["output"]["rows"][0]["vectors"] == {"content": [1.0, 0.0]}

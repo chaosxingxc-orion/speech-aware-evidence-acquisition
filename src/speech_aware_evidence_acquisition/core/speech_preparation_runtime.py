@@ -627,10 +627,19 @@ def run_text_facet_preparation(
     if snapshot.content_hash() != snapshot_document["snapshot_sha256"]:
         raise SpeechPreparationError("snapshot semantic content identity differs")
     snapshot_sha256 = protocol["snapshot"]["sha256"]
+    facet_dimension = protocol.get("facet_dimension", "content")
+    if (
+        not isinstance(facet_dimension, str)
+        or not facet_dimension
+        or facet_dimension != facet_dimension.strip()
+    ):
+        raise SpeechPreparationError(
+            "text facet protocol facet_dimension must be non-empty text without surrounding space"
+        )
     facets = [
         {"id": facet.facet_id, "text": facet.representation}
         for facet in snapshot.facets
-        if facet.dimension == "content" and facet.representation_kind == "text"
+        if (facet.dimension == facet_dimension and facet.representation_kind == "text")
     ]
     count = protocol["expected_positive_content_facets"]
     if (
@@ -680,6 +689,7 @@ def run_text_facet_preparation(
             snapshot_sha256=snapshot_sha256,
             protocol_id=plan.protocol_hash,
             dimension=protocol["dimension"],
+            facet_dimension=facet_dimension,
         )
 
     return _execute_preparation(
@@ -700,6 +710,11 @@ def run_text_facet_preparation(
         source_bindings={
             "snapshot_sha256": snapshot_sha256,
             "snapshot_content_sha256": snapshot.content_hash(),
+            **(
+                {"facet_dimension": facet_dimension}
+                if facet_dimension != "content"
+                else {}
+            ),
         },
     )
 

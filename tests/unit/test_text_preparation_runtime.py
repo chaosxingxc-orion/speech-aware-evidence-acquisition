@@ -120,6 +120,15 @@ def execute(job, backend):
     )
 
 
+def set_protocol(config, **updates):
+    path = Path(config["protocol"]["path"])
+    protocol = json.loads(path.read_text())
+    protocol.update(updates)
+    path.write_bytes(canonical_bytes(protocol))
+    config["protocol"] = pin(path)
+    config["plan"]["protocol_hash"] = config["protocol"]["sha256"]
+
+
 def test_real_lifecycle_preserves_two_snapshot_hashes_and_zero_audio(job):
     root, data, config, snapshot = job
     backend = Backend(data, "encode-v1")
@@ -144,6 +153,13 @@ def test_real_lifecycle_preserves_two_snapshot_hashes_and_zero_audio(job):
         json.loads((data / "attempts/TEST-TEXT/encode-v1.json").read_text())["state"]
         == "FINALIZED"
     )
+    index = json.loads((data / "prepared/index.json").read_text())
+    assert index["inputs"]["geometry"] == {
+        "prompt": "passage: ",
+        "audio": False,
+        "batch_size": 1,
+    }
+    assert "facet_dimension" not in result
 
 
 def test_explicit_second_warm_attempt_spends_zero_contacts(job):
@@ -157,6 +173,104 @@ def test_explicit_second_warm_attempt_spends_zero_contacts(job):
         second["logical_encoder_contacts"] == second["actual_speech_audio_seconds"] == 0
     )
     assert second["facet_rows_sha256"] == first["facet_rows_sha256"]
+
+
+def test_explicit_alternate_facet_dimension_is_selected_and_emitted(job):
+    root, data, config, _ = job
+    facets = tuple(
+        KeyFacet("boundary:" + x, "intent-boundary", "text", x, ("train:one",))
+        for x in ("beta", "alpha")
+    )
+    snapshot = KnowledgeSnapshot(
+        snapshot_id="synthetic-boundary-keys",
+        source_split_identity_hash="a" * 64,
+        source_sample_ids=("train:one",),
+        builder_policy_id="synthetic",
+        facets=facets,
+        values=tuple(
+            ValueBundle(
+                "value:" + x,
+                "synthetic evidence",
+                ("boundary:" + x,),
+                ("train:one",),
+                ("source:one",),
+            )
+            for x in ("beta", "alpha")
+        ),
+    ).validate()
+    snapshot_path = data / "snapshot.json"
+    snapshot_path.write_text(json.dumps(snapshot.frozen_json(), indent=2) + "\n")
+    set_protocol(
+        config,
+        snapshot=pin(snapshot_path),
+        facet_dimension="intent-boundary",
+    )
+    config["plan"]["split_identity_hash"] = hashlib.sha256(
+        b"audio2tool/boundary:alpha\naudio2tool/boundary:beta"
+    ).hexdigest()
+
+    backend = Backend(data, "encode-v1")
+    result = execute(job, backend)
+
+    assert backend.calls == ["alpha", "beta"]
+    assert result["facet_dimension"] == "intent-boundary"
+    loaded = load_sealed_vectors(
+        Path(result["facet_rows_path"]),
+        expected_sha256=result["facet_rows_sha256"],
+        dimensions=("intent-boundary",),
+    )
+    assert set(loaded["boundary:alpha"]["intent-boundary"]) == {0.0, 1.0}
+
+
+def test_dimension_bound_index_refuses_a_different_dimension_before_encoding(job):
+    root, data, config, original_snapshot = job
+    facets = tuple(
+        KeyFacet("boundary:" + x, "intent-boundary", "text", x, ("train:one",))
+        for x in ("beta", "alpha")
+    )
+    alternate = KnowledgeSnapshot(
+        snapshot_id="synthetic-boundary-keys",
+        source_split_identity_hash="a" * 64,
+        source_sample_ids=("train:one",),
+        builder_policy_id="synthetic",
+        facets=facets,
+        values=tuple(
+            ValueBundle(
+                "value:" + x,
+                "synthetic evidence",
+                ("boundary:" + x,),
+                ("train:one",),
+                ("source:one",),
+            )
+            for x in ("beta", "alpha")
+        ),
+    ).validate()
+    snapshot_path = data / "snapshot.json"
+    snapshot_path.write_text(json.dumps(alternate.frozen_json(), indent=2) + "\n")
+    set_protocol(
+        config,
+        snapshot=pin(snapshot_path),
+        facet_dimension="intent-boundary",
+    )
+    config["plan"]["split_identity_hash"] = hashlib.sha256(
+        b"audio2tool/boundary:alpha\naudio2tool/boundary:beta"
+    ).hexdigest()
+    execute(job, Backend(data, "encode-v1"))
+
+    snapshot_path.write_text(
+        json.dumps(original_snapshot.frozen_json(), indent=2) + "\n"
+    )
+    set_protocol(config, snapshot=pin(snapshot_path), facet_dimension="content")
+    config["plan"].update(
+        attempt_id="encode-v2",
+        split_identity_hash=hashlib.sha256(
+            b"audio2tool/facet:alpha\naudio2tool/facet:beta"
+        ).hexdigest(),
+    )
+    backend = Backend(data, "encode-v2")
+    with pytest.raises(Exception):
+        execute(job, backend)
+    assert backend.calls == []
 
 
 @pytest.mark.parametrize(
