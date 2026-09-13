@@ -51,6 +51,7 @@ is rejected instead of silently losing its tool semantics.
 
 ## Verification and next use
 
+Root integration validation passed 259 tests across the combined changes.
 The focused validation covers reward links, group-relative feedback, legacy and
 native proposal contexts, runtime native history, and framework history. New
 fixtures use canonical contacts for Perception, Solver, Reviewer, and Planner,
