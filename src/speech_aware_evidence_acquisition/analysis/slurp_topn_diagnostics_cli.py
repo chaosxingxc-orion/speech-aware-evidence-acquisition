@@ -2,7 +2,8 @@
 
 This companion to score_compare_cli verifies sealed bundles and complete score
 receipts before delegating all diagnostic counting to the pure aggregator. It
-never scores, resamples, or infers a reference from a prediction.
+never scores or infers a reference from a prediction. Raw-source uncertainty
+uses the existing speaker-cluster resampling function when explicitly configured.
 """
 from __future__ import annotations
 
@@ -10,12 +11,13 @@ import argparse
 import base64
 import hashlib
 import json
+import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
-from ..contracts import TraceRecord
+from ..contracts import ExecutionPlan, TraceRecord
 from ..core.attempts import STATE_ABORTED
 from ..core.bundle.delivery_replay import canonical
 from ..core.bundle.verify import verify_bundle
@@ -27,7 +29,9 @@ from ..data.splits import prefixed, split_identity_hash
 from ..rails.phase_material import sealed_states_from_manifest
 from ..rails.slurp_intent_hypotheses import parse_slurp_intent_hypothesis_state
 from ..reproduction.slurp_scoring import parse_slu_response
+from ..reproduction.probe_split import load_verified_probe_split
 from .null_calibration_cli import digest, pinned_json
+from .paired import resampled_statistic
 from .slurp_topn_diagnostics import (
     BranchOutcomeRow,
     ReferenceIntentRow,
@@ -76,7 +80,16 @@ def _pin(value: object, label: str) -> tuple[Path, str]:
 def _roster_ids(value: object, label: str) -> tuple[str, ...]:
     path, _ = _pin(value, label)
     try:
-        document = read_roster(path)
+        document = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(document, Mapping) and "carrier" in document and "carrier_lock_key" not in document:
+            if path.parent.name != "probe-samples":
+                raise SlurpTopNAnalysisError("legacy roster must use its registered probe-samples path")
+            verified = load_verified_probe_split(path.parents[3], path.stem)
+            item_ids = [item["id"] for item in document["items"]]
+            if set(item_ids) != set(verified.ids):
+                raise SlurpTopNAnalysisError("legacy roster item IDs differ from verified keys")
+        else:
+            document = read_roster(path)
     except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as error:
         raise SlurpTopNAnalysisError(f"{label} is not a verified roster: {error}") from error
     items = document.get("items")
@@ -95,6 +108,13 @@ def _roster_ids(value: object, label: str) -> tuple[str, ...]:
 def _metadata(value: object, expected: set[str]) -> dict[str, Mapping[str, object]]:
     document = pinned_json(_map(value, "analysis.metadata"))
     rows = document.get("rows") if isinstance(document, Mapping) else None
+    if isinstance(rows, Mapping):
+        converted = []
+        for sample_id, row in rows.items():
+            if not isinstance(row, Mapping) or row.get("sample_id", sample_id) != sample_id:
+                raise SlurpTopNAnalysisError("analysis.metadata row identity mismatch")
+            converted.append({"sample_id": sample_id, **row})
+        rows = converted
     if not isinstance(rows, list) or not rows:
         raise SlurpTopNAnalysisError("analysis.metadata must contain rows")
     indexed = {}
@@ -282,6 +302,9 @@ def _raw_legal_ids(binding: object) -> frozenset[str]:
         values = document
     else:
         values = document.get("intent_ids", document.get("ids"))
+        if values is None and isinstance(document.get("profiles"), list):
+            values = [item.get("candidate_id") for item in document["profiles"]
+                      if isinstance(item, Mapping)]
         if values is None:
             items = document.get("items")
             if isinstance(items, list):
@@ -384,78 +407,28 @@ def _raw_candidate_ids(
 
 
 def _raw_trace_channels(
-    trace_path: Path,
-    trace_manifest_path: Path,
-    bundle: object,
-    *,
-    trace_sha256: str | None = None,
-    trace_manifest_sha256: str | None = None,
+    trace_path: Path, *, trace_sha256: str
 ) -> dict[str, dict[str, Mapping[str, object]]]:
-    if trace_sha256 is not None and _sha256_file(trace_path) != trace_sha256:
+    """Verify unsealed raw bytes without inventing a manifest for failed sealing."""
+    if _sha256_file(trace_path) != trace_sha256:
         raise SlurpTopNAnalysisError("raw trace changed after its pinned verification")
-    if (
-        trace_manifest_sha256 is not None
-        and _sha256_file(trace_manifest_path) != trace_manifest_sha256
-    ):
-        raise SlurpTopNAnalysisError(
-            "raw trace manifest changed after its pinned verification"
-        )
-    try:
-        lines = trace_path.read_text(encoding="utf-8").splitlines()
-        trace_manifest = json.loads(trace_manifest_path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeError, json.JSONDecodeError) as error:
-        raise SlurpTopNAnalysisError(f"raw trace cannot be read: {error}") from error
-    records: dict[str, tuple[str, Mapping[str, object], str]] = {}
-    for number, line in enumerate(lines, start=1):
+    channels: dict[str, dict[str, Mapping[str, object]]] = {}
+    seen: set[str] = set()
+    for number, line in enumerate(trace_path.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
             continue
         try:
-            document = json.loads(line)
-        except json.JSONDecodeError as error:
-            raise SlurpTopNAnalysisError(
-                f"raw trace line {number} is malformed: {error}"
-            ) from error
-        if not isinstance(document, Mapping) or not {
-            "channel", "record_id", "payload"
-        } <= set(document):
-            raise SlurpTopNAnalysisError(
-                f"raw trace line {number} lacks channel/record_id/payload"
-            )
-        record_id = document["record_id"]
-        if not isinstance(record_id, str) or not record_id:
-            raise SlurpTopNAnalysisError(f"raw trace line {number} has invalid record_id")
-        if record_id in records:
-            raise SlurpTopNAnalysisError(f"raw trace duplicates record_id {record_id!r}")
-        try:
+            document = json.loads(line, object_pairs_hook=_raw_json_object)
             record = TraceRecord(
-                channel=document["channel"],
-                record_id=record_id,
+                channel=document["channel"], record_id=document["record_id"],
                 payload=document["payload"],
             ).validate()
-            content_hash = record.content_hash()
-        except Exception as error:
-            raise SlurpTopNAnalysisError(
-                f"raw trace record {record_id!r} is invalid: {error}"
-            ) from error
-        records[record_id] = (record.channel, dict(record.payload), content_hash)
-    manifest_records = trace_manifest.get("records") if isinstance(trace_manifest, Mapping) else None
-    if not isinstance(manifest_records, Mapping) or set(manifest_records) != set(records):
-        raise SlurpTopNAnalysisError("raw trace manifest does not match raw record IDs")
-    for record_id, (_channel, _payload, content_hash) in records.items():
-        if manifest_records.get(record_id) != content_hash:
-            raise SlurpTopNAnalysisError(
-                f"raw trace manifest hash mismatch for {record_id!r}"
-            )
-    verified_records = getattr(bundle, "trace_records", None)
-    if not isinstance(verified_records, Mapping) or set(verified_records) != set(records):
-        raise SlurpTopNAnalysisError(
-            "verified bundle trace does not match the pinned raw trace record set"
-        )
-    if any(verified_records[key] != payload for key, (_channel, payload, _hash) in records.items()):
-        raise SlurpTopNAnalysisError("verified bundle trace payload differs from raw trace")
-    channels: dict[str, dict[str, Mapping[str, object]]] = {}
-    for record_id, (channel, payload, _content_hash) in records.items():
-        channels.setdefault(channel, {})[record_id] = payload
+        except (KeyError, TypeError, ValueError) as error:
+            raise SlurpTopNAnalysisError(f"invalid raw trace line {number}: {error}") from error
+        if record.record_id in seen:
+            raise SlurpTopNAnalysisError(f"raw trace duplicates record_id {record.record_id!r}")
+        seen.add(record.record_id)
+        channels.setdefault(record.channel, {})[record.record_id] = dict(record.payload)
     return channels
 
 
@@ -527,23 +500,15 @@ def _transport_response_sha256(
 
 def _raw_source_rows(
     trace_path: Path,
-    trace_manifest_path: Path,
-    bundle: object,
     *,
     expected_ids: tuple[str, ...],
     legal_intent_ids: frozenset[str],
     max_candidates: int,
     expected_contacts: int,
-    trace_sha256: str | None = None,
-    trace_manifest_sha256: str | None = None,
+    trace_sha256: str,
+    expected_audio_seconds: float,
 ) -> tuple[RawProposalRow, ...]:
-    channels = _raw_trace_channels(
-        trace_path,
-        trace_manifest_path,
-        bundle,
-        trace_sha256=trace_sha256,
-        trace_manifest_sha256=trace_manifest_sha256,
-    )
+    channels = _raw_trace_channels(trace_path, trace_sha256=trace_sha256)
     required = ("MODEL_REQUEST", "MODEL_RESPONSE", "MODEL_WIRE_RESPONSE", "COST")
     missing_channels = [channel for channel in required if channel not in channels]
     if missing_channels:
@@ -576,6 +541,7 @@ def _raw_source_rows(
     if len(request_ids) != len(expected_ids):
         raise SlurpTopNAnalysisError("raw request count does not match the pinned roster")
     by_sample: dict[str, RawProposalRow] = {}
+    audio_seconds = 0.0
     for request_id, request in indexed["MODEL_REQUEST"].items():
         inner = request.get("payload")
         if (
@@ -625,6 +591,10 @@ def _raw_source_rows(
         cost = indexed["COST"][request_id]
         if cost.get("request_id", request_id) != request_id or cost.get("calls") != 1:
             raise SlurpTopNAnalysisError(f"raw cost {request_id!r} identity/calls are invalid")
+        audio = cost.get("audio_seconds")
+        if isinstance(audio, bool) or not isinstance(audio, (int, float)) or not math.isfinite(audio) or audio < 0:
+            raise SlurpTopNAnalysisError("raw cost audio_seconds must be finite and nonnegative")
+        audio_seconds += audio
         try:
             candidate_ids = _raw_candidate_ids(
                 text, sample_id=sample_id, legal_intent_ids=legal_intent_ids,
@@ -633,6 +603,8 @@ def _raw_source_rows(
         except SlurpTopNAnalysisError:
             raise
         by_sample[sample_id] = RawProposalRow(sample_id, request_id, candidate_ids)
+    if not math.isclose(audio_seconds, expected_audio_seconds, rel_tol=1e-9, abs_tol=1e-6):
+        raise SlurpTopNAnalysisError("raw trace audio cost differs from the aborted attempt")
     if set(by_sample) != set(expected_ids):
         raise SlurpTopNAnalysisError("raw response sample IDs do not match the pinned roster")
     return tuple(by_sample[sample_id] for sample_id in expected_ids)
@@ -694,17 +666,53 @@ def _raw_aggregate(
                 stratum_field=stratum_field, _include_per_stratum=False,
             )
             summary["per_stratum"][stratum] = nested
+    summary["coverage_headroom_count"] = (
+        summary["distinct_proposal_coverage_count"] - summary["rank1_correct_count"]
+    )
+    summary["coverage_headroom"] = summary["coverage_headroom_count"] / len(selected)
+    if _include_per_stratum:
+        summary["equal_stratum"] = {
+            metric: sum(item[metric] for item in summary["per_stratum"].values()) / len(strata)
+            for metric in ("rank1_accuracy", "distinct_proposal_coverage", "coverage_headroom")
+        }
     return summary
+
+
+def _raw_uncertainty(rows, references, metadata, ids, settings):
+    """Estimate accuracy and within-row candidate headroom with paired cluster draws."""
+    seed, replicates, level = settings["seed"], settings["n_replicates"], settings["ci_level"]
+    field = settings.get("cluster_field", "speaker")
+    if not isinstance(field, str) or not field:
+        raise SlurpTopNAnalysisError("bootstrap cluster_field must be nonempty")
+    indexed = {row.sample_id: row.candidate_ids for row in rows}
+    gold = {row.sample_id: row.intent_id for row in references}
+    if any(not str(metadata[s].get(field, "")) for s in ids):
+        raise SlurpTopNAnalysisError("bootstrap cluster identity is missing")
+    values = {
+        "top1_accuracy": {s: int(indexed[s][0] == gold[s]) for s in ids},
+        "distinct_proposal_coverage": {s: int(gold[s] in indexed[s]) for s in ids},
+    }
+    values["coverage_headroom"] = {
+        s: values["distinct_proposal_coverage"][s] - values["top1_accuracy"][s] for s in ids
+    }
+    return {
+        metric: resampled_statistic(
+            sample_ids=ids,
+            statistic=lambda sample, v=value: 100 * sum(v[s] for s in sample) / len(sample),
+            seed=seed, n_replicates=replicates, ci_level=level,
+            cluster_of=lambda s: str(metadata[s][field]),
+        ).as_json()
+        for metric, value in values.items()
+    }
 
 
 def run_raw_source(
     config_path,
     output,
     *,
-    bundle_verifier=verify_bundle,
     reference_loader=load_slurp_split,
 ):
-    """Read and describe one pinned ABORTED raw source; never repairs or scores it."""
+    """Read one pinned aborted attempt and unsealed trace; never repairs or scores it."""
     config_path, output = Path(config_path), Path(output)
     try:
         config = json.loads(config_path.read_text(encoding="utf-8"))
@@ -728,53 +736,65 @@ def run_raw_source(
         raise SlurpTopNAnalysisError("raw source roster does not match expected contacts")
     metadata = _metadata(spec.get("metadata"), set(full_ids))
     trace_path, trace_sha = _pin(raw.get("raw_trace"), "raw trace")
-    trace_manifest_path, trace_manifest_sha = _pin(
-        raw.get("trace_manifest"), "raw trace manifest"
-    )
-    manifest_path, manifest_sha = _pin(raw.get("manifest"), "aborted source manifest")
+    attempt_path, attempt_sha = _pin(raw.get("attempt"), "aborted source attempt")
+    plan_path, plan_sha = _pin(raw.get("generation_plan"), "source generation plan")
+    attempt = _map(json.loads(attempt_path.read_text()), "aborted source attempt")
+    plan_doc = _map(json.loads(plan_path.read_text()), "source generation plan")
     try:
-        bundle = bundle_verifier(manifest_path)
-    except Exception as error:
-        raise SlurpTopNAnalysisError(f"aborted source bundle verification failed: {error}") from error
-    manifest = _map(getattr(bundle, "manifest", None), "verified aborted source manifest")
-    if (
-        manifest.get("status") != "ABORTED"
-        or getattr(bundle, "attempt_state", None) != STATE_ABORTED
-    ):
-        raise SlurpTopNAnalysisError("raw source must be an ABORTED bundle and attempt")
-    if Path(str(getattr(bundle, "manifest_path", manifest_path))).resolve() != manifest_path.resolve():
-        raise SlurpTopNAnalysisError("verified bundle manifest path differs from pinned manifest")
-    for key, path, sha in (
-        ("raw_trace", trace_path, trace_sha), ("trace_manifest", trace_manifest_path, trace_manifest_sha)
-    ):
-        bound = _map(manifest.get(key), f"aborted source manifest {key}")
-        if (
-            Path(str(bound.get("path"))).resolve() != path.resolve()
-            or bound.get("sha256") != sha
-        ):
-            raise SlurpTopNAnalysisError(f"aborted source manifest {key} differs from pinned file")
-    split = _map(manifest.get("split"), "aborted source split")
+        plan = ExecutionPlan(**_map(plan_doc.get("execution_plan"), "execution plan")).validate()
+    except (TypeError, ValueError) as error:
+        raise SlurpTopNAnalysisError(f"source execution plan is invalid: {error}") from error
+    if attempt.get("schema") != "saea-attempt-v1" or attempt.get("state") != STATE_ABORTED:
+        raise SlurpTopNAnalysisError("raw source must have an ABORTED attempt")
+    for key in ("run_id", "attempt_id", "carrier_lock_key"):
+        if attempt.get(key) != getattr(plan, key):
+            raise SlurpTopNAnalysisError(f"aborted attempt differs from source plan: {key}")
+    actual = _map(attempt.get("actual"), "attempt actual cost")
+    reserved = _map(attempt.get("reserved"), "attempt reserved cost")
+    if (actual.get("calls") != expected_contacts
+            or reserved.get("calls") != plan.planned_model_calls
+            or reserved.get("audio_seconds") != plan.planned_speech_audio_seconds
+            or expected_contacts > plan.planned_model_calls):
+        raise SlurpTopNAnalysisError("aborted attempt cost does not match plan and roster")
+    actual_audio = actual.get("audio_seconds")
+    if (isinstance(actual_audio, bool) or not isinstance(actual_audio, (int, float))
+            or not math.isfinite(actual_audio) or not 0 <= actual_audio <= plan.planned_speech_audio_seconds):
+        raise SlurpTopNAnalysisError("aborted attempt audio cost is invalid")
     expected_split_hash = raw.get("split_identity_hash")
-    if expected_split_hash != split_identity_hash(prefixed("slurp", full_ids)):
-        raise SlurpTopNAnalysisError("raw source split identity does not match full roster")
-    if split.get("identity_hash") != expected_split_hash or set(getattr(bundle, "split_ids", ())) != set(full_ids):
-        raise SlurpTopNAnalysisError("aborted source split binding does not match full roster")
+    if (plan.carrier_lock_key != "slurp"
+            or plan.split_identity_hash != expected_split_hash
+            or expected_split_hash != split_identity_hash(prefixed("slurp", full_ids))):
+        raise SlurpTopNAnalysisError("raw source split identity does not match plan and full roster")
+    release_path, release_sha = _pin(release.get("registration"), "source quality read registration")
+    release_doc = _map(json.loads(release_path.read_text()), "source quality read registration")
+    if release_doc.get("experiment_id") != release["release_id"]:
+        raise SlurpTopNAnalysisError("source quality read registration ID differs")
+    for key, binding in (
+        ("source_attempt", raw["attempt"]), ("source_trace", raw["raw_trace"]),
+        ("source_generation_plan", raw["generation_plan"]),
+        ("full_roster", spec["full_roster"]), ("primary_roster", spec["roster"]),
+        ("metadata", spec["metadata"]),
+    ):
+        if release_doc.get(key) != binding:
+            raise SlurpTopNAnalysisError(f"source quality read registration differs: {key}")
     width = raw.get("max_candidates", 3)
     if isinstance(width, bool) or not isinstance(width, int) or not 1 <= width <= 3:
         raise SlurpTopNAnalysisError("raw max_candidates must be an integer from 1 through 3")
     legal_ids = _raw_legal_ids(raw.get("legal_intent_ids"))
     rows = _raw_source_rows(
-        trace_path, trace_manifest_path, bundle, expected_ids=full_ids,
+        trace_path, expected_ids=full_ids,
         legal_intent_ids=legal_ids,
         max_candidates=width,
         expected_contacts=expected_contacts,
         trace_sha256=trace_sha,
-        trace_manifest_sha256=trace_manifest_sha,
+        expected_audio_seconds=float(actual_audio),
     )
     reference_binding = _map(
         _map(spec.get("source_diagnostics"), "analysis.source_diagnostics").get("reference_source"),
         "raw reference source",
     )
+    if dict(reference_binding) != release_doc.get("reference_source"):
+        raise SlurpTopNAnalysisError("reference source differs from owner read registration")
     references = _references(reference_binding, full_ids, loader=reference_loader)
     field = raw.get("stratum_field", spec.get("stratum_field", "scenario"))
     if not isinstance(field, str) or not field:
@@ -789,28 +809,45 @@ def run_raw_source(
         for population, ids in populations.items()
         if ids
     }
+    bootstrap = raw.get("bootstrap")
+    if bootstrap is not None:
+        settings = _map(bootstrap, "raw source bootstrap")
+        for name, ids in populations.items():
+            if not ids:
+                continue
+            ordered = primary_ids if name == "NEW500" else tuple(s for s in full_ids if s in ids)
+            reports[name]["speaker_ci90_percent"] = _raw_uncertainty(
+                rows, references, metadata, ordered, settings
+            )
+            for width_key, subgroup in reports[name]["by_observed_distinct_width"].items():
+                member_ids = {row.sample_id for row in rows if len(set(row.candidate_ids)) == int(width_key)}
+                subgroup["speaker_ci90_percent"] = _raw_uncertainty(
+                    rows, references, metadata, tuple(s for s in ordered if s in member_ids), settings
+                )
     result = {
         "schema": "saea-slurp-raw-source-diagnostics-v1",
         "experiment_id": config.get("experiment_id"),
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "config": {"path": str(config_path.resolve()), "sha256": digest(config_path)},
         "source": {
-            "manifest": {"path": str(manifest_path), "sha256": manifest_sha},
+            "attempt": {"path": str(attempt_path), "sha256": attempt_sha},
+            "generation_plan": {"path": str(plan_path), "sha256": plan_sha},
             "raw_trace": {"path": str(trace_path), "sha256": trace_sha},
-            "trace_manifest": {"path": str(trace_manifest_path), "sha256": trace_manifest_sha},
             "attempt_state": STATE_ABORTED,
             "expected_contacts": expected_contacts,
         },
         "source_quality_read_release": {
-            "release_id": release["release_id"], "authorized": True
+            "release_id": release["release_id"], "authorized": True,
+            "registration": {"path": str(release_path), "sha256": release_sha},
         },
         "populations": {name: len(ids) for name, ids in populations.items()},
         "max_candidates": width,
         "stratum_field": field,
         "diagnostics": reports,
         "uncertainty": {
-            "status": "descriptive_only",
-            "reason": "one aborted source has no paired comparison; observed distinct width is not calibrated confidence",
+            "status": "speaker_cluster_bootstrap" if bootstrap is not None else "point_estimates_only",
+            "settings": bootstrap,
+            "interpretation": "Candidate coverage is potential, not final accuracy; observed width is uncalibrated.",
         },
         "model_calls": 0,
         "encoder_calls": 0,
@@ -845,7 +882,6 @@ def run(
         return run_raw_source(
             config_path,
             output,
-            bundle_verifier=bundle_verifier,
             reference_loader=reference_loader,
         )
     source_section = _map(spec.get("source_diagnostics"), "analysis.source_diagnostics")
