@@ -22,12 +22,14 @@ source pins. The strict-accept same-roster replication stopped at a named revisi
 1. Preserve the stopped strict-accept system replication, its contacts and its
    unchanged source code. The direct arm completed 1,000 responses and one
    official score; keep that comparator without rereading quality early.
-2. Validate and run the sole prospectively registered recovery with explicit
-   finite terminal delivery. At the existing revision limit, deliver the latest
-   eligible Solver response with planner_accepted=false when Planner requests
-   more work. Never relabel this as explicit acceptance or exact v1 replication.
-   Use the same still-resident process and the same roster. A second failure
-   closes this flight. See the root-cause record and recovery protocol.
+2. The sole terminal-policy recovery also stopped, this time at an incomplete
+   Perception response that hit max256. Close that full-system flight permanently.
+   The required four-row engineering correction has now generated and sealed:
+   bounded candidate JSON, compact prompt v3 and max512, 20 model calls and 80
+   actual-fit endpoint contacts. All four Perception responses ended normally and
+   all final outputs bind to Solver. No official scoring or quality read occurred.
+   See the source-bound Perception root-cause and engineering-verdict records.
+   This proof is not an effectiveness claim or a successful full-roster replication.
 3. Prepare the next complete system with intent-boundary knowledge available to
    Perception, while the existing candidate-conditioned slot-contract knowledge
    remains available to Solver. The role graph, final-answer ownership, legal
@@ -61,9 +63,8 @@ prepare_phase_supply. The existing later candidate supply remains unchanged.
 Selection caps are per store; a prospective config must account for the total
 visible input across stores.
 
-No released vector artifact currently represents the new 60 facets. The minimal
-compatible preparation uses the existing pinned omni-embed-nemotron-3b MF-7b
-geometry: 2,048 dimensions, attention-mask mean pooling with prompt included,
+The 60 released facets now have sealed vectors from the existing pinned
+omni-embed-nemotron-3b MF-7b geometry: 2,048 dimensions, attention-mask mean pooling with prompt included,
 L2 normalization, passage prefix for keys and query prefix for speech queries.
 
 - Reuse the exact numeric DEV1000 speech query vectors from
@@ -78,13 +79,17 @@ L2 normalization, passage prefix for keys and query prefix for speech queries.
   SHA-256 f83b5b002d0823de40ac3f52f9a839f83daedf4ecdbbf0606b85f1fc07bd01a8.
   No encoder, tokenizer or model was contacted. Do not pass the old axis name
   into the new store or claim a new embedding space.
-- Prospectively register exactly 60 text embedding contacts for the released
-  KeyFacet.representation strings. No new speech query encoding is required.
+- Exactly 60 registered text embedding contacts have completed for the released
+  KeyFacet.representation strings. The vectors are at
+  prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl,
+  SHA256 76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2.
+  No speech query re-encoding occurred.
 - Do not substitute the old 11,514 TRAIN facet vectors: their identities and
   content differ. Encoding full values instead of the released keys would be a
   different representation choice requiring its own declaration.
-- Use an exclusive root-managed GPU embedding window after the current flight.
-  Do not load the encoder beside the active decoder or alter its serving process.
+- The exclusive root-managed encoding window is closed. Root stopped the idle
+  decoder after the named failure and restored decoder-only service for the
+  engineering proof. No encoder ran beside the decoder.
 - Seal the facet vectors and source receipt, prepare the full roster's selection
   model-free, and complete actual request capacity checks under a registered
   plan before generation. Loading all values is not assumed to fit.
@@ -108,8 +113,11 @@ quality. Do not claim tool value merely because the tool was called.
 
 The completed native TRAIN proposal-context v2 reader preserves actual role
 instructions, available tools, chosen arguments, observed returns, own responses,
-and native numerical feedback. It adds no model contact and grants no memory
-admission. The remaining optimization sequence is:
+and native numerical feedback. Its source-verified prepared input now enters the
+shared continuous proposal runtime as initial ORG state; actual fit and sent
+request contents match. It adds no model contact by itself and grants no memory
+admission. See 2026-09-13-prepared-training-feedback-runtime-v1.md.
+The remaining optimization sequence is:
 
 1. Generate registered candidate trajectories on the same TRAIN construction
    cohort through the shared native harness.
@@ -126,3 +134,19 @@ admission. The remaining optimization sequence is:
 This sequence seeks an optimizable system. A tool, knowledge store or memory
 component is not accepted merely because it is richer, and a component need not
 produce an independent superiority claim before it can be studied in the system.
+
+
+## Next complete-system comparison draft
+
+The config-only slurp-native-dual-store-dev1000-v1 draft routes up to eight
+intent-boundary values to Perception (k=8, tau=0, one speech-query dimension,
+values exposed without key text). The full 60-label task inventory remains
+available. Solver retains candidate-associated slot-contract values. The existing
+named-store bootstrap and native graph already implement this behavior.
+
+The matching slurp-direct-max512-dev1000-v1 draft uses the same max512 model
+fragment and resident process. Both drafts are CHECK ONLY and not registered for
+generation. Prepare and bind the full native selection artifact, finalize exact
+comparison budgets and source-bound analysis/read rules, then admit the new pair.
+The failed max256 full-system recovery stays closed. Reusing its old direct score
+as a matched max512 control would be incorrect.
