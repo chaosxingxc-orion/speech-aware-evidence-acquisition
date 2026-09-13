@@ -226,6 +226,7 @@ class PhaseToolDispatcher:
         self._lock = Lock()
         self._attempts = set()
         self._records = {}
+        self._native_rejections = []
         if (
             any(set(spec["knowledge_views"]) - {"text"} for spec in specs.values())
             and knowledge_catalog is None
@@ -527,6 +528,14 @@ class PhaseToolDispatcher:
                 result = {key: value for key, value in output.result.visible.items() if key != "transcript"}
                 if action["tool_id"] == LIVE_SPEECH_OBSERVATION_TOOL:
                     with self._lock:
+                        prior = self._live_selections.get(result["artifact_sha256"])
+                        if (
+                            prior is not None
+                            and dict(prior.visible) != dict(output.result.visible)
+                        ):
+                            raise PhaseToolError(
+                                "live speech observation returned conflicting duplicate evidence"
+                            )
                         self._live_selections[result["artifact_sha256"]] = output.result
             else:
                 if not isinstance(output.result, ExperienceMemorySelection):
@@ -646,6 +655,8 @@ class PhaseToolDispatcher:
             producer_policy_id=self.program.program_id,
             cited_value_ids=(),
         ).validate()
+        with self._lock:
+            self._native_rejections.append(content_hash(document))
         self._emit(context.sample_id, phase, "rejected", document)
         return PhaseToolStep(supply=None, state=artifact)
 
@@ -662,7 +673,7 @@ class PhaseToolDispatcher:
         """Assemble actual evidence from the latest source-bound tool selections."""
         selections = {}
         observations = []
-        observed_artifacts = set()
+        observed_evidence = {}
         for artifact in agent_states:
             if artifact.state_kind != "tool-result":
                 continue
@@ -710,10 +721,16 @@ class PhaseToolDispatcher:
                     or document.get("snapshot_sha256") != self.snapshot_sha256
                 ):
                     raise PhaseToolError("speech observation state differs from its sealed evidence")
-                artifact_sha = result["artifact_sha256"]
-                if artifact_sha not in observed_artifacts:
-                    observations.append(selected.content_block())
-                    observed_artifacts.add(artifact_sha)
+                evidence_id = result["evidence_id"]
+                block = selected.content_block()
+                previous = observed_evidence.get(evidence_id)
+                if previous is not None and previous != block:
+                    raise PhaseToolError(
+                        "speech observation repeats an evidence ID with conflicting content"
+                    )
+                if previous is None:
+                    observations.append(block)
+                    observed_evidence[evidence_id] = block
                 continue
             if "knowledge_view" not in result:
                 continue
@@ -758,6 +775,13 @@ class PhaseToolDispatcher:
             "completed": len(records),
             "result_hashes": [content_hash(row) for row in records],
         }
+        if self.native_enabled:
+            with self._lock:
+                rejected = tuple(self._native_rejections)
+            receipt["native_rejected_requests"] = {
+                "count": len(rejected),
+                "hashes": sorted(rejected),
+            }
         if memory_lineage:
             receipt["memory_lineage"] = memory_lineage
         observation_records = [
