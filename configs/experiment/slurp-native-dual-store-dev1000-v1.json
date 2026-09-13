@@ -25,6 +25,12 @@
             "reason": "Root source-bound progressive complete-system admission.",
             "relpath": "coordination/slurp-direct-vs-native-dual-store-dev1000-v1/admission-v1.json",
             "sha256": "55c83bb6ad29b4ce15600005edee8f76091b7dd303d574fe6df44f65b0193ef3"
+          },
+          {
+            "kind": "preparation",
+            "reason": "Full1000 nonempty qualified semantic intent supply, source verified and equal to live selection.",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-V1/phase-supply-associated-values-v1.json",
+            "sha256": "8f44dc4e2d9a51202d7618b89bec47a5b34f6484187302fea7e80f751a1df029"
           }
         ],
         "state": "ready"

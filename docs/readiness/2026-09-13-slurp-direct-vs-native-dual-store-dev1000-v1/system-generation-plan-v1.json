@@ -1,0 +1,27 @@
+{
+  "cell": "slurp-native-dual-store-dev1000-v1",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-dual-store-dev1000-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11000,
+    "planned_speech_audio_seconds": 44000,
+    "protocol_hash": "f9688c7dcbef36c1d8ae197df61ef0a46602c6a616b7adce4e0504582791b386",
+    "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-native-bounded-perception-proof-np4-v1",
+  "experiment": "slurp-native-dual-store-dev1000-v1",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-13-slurp-direct-vs-native-dual-store-dev1000-v1/protocol-v1.json",
+    "sha256": "958bdcaa967eeba83e0cc807d03811ab556964a7a5fce370b44fbdff39f7885b"
+  },
+  "registration_state": "Registered by root before contact; launch requires clean frozen code and successful full-roster preflight.",
+  "root_registration_required": false,
+  "schema": "saea-registered-generation-plan-v1",
+  "scoring": "One first complete official score per successful generation arm; no fit score and no partial score."
+}

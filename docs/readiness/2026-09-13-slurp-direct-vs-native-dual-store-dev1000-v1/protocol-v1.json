@@ -1,0 +1,378 @@
+{
+  "accounting": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "direct_audio_seconds_cap": 3500,
+    "direct_fit_cap": 3001,
+    "direct_model_cap": 1000,
+    "encoder_calls": 0,
+    "family_fit_cap": 47001,
+    "family_gpu_hours_fit_inclusive": 13.0,
+    "family_model_cap": 12000,
+    "native_task_contract_tool_cap": 6000,
+    "official_complete_scoring_jobs": 2,
+    "system_audio_seconds_cap": 44000,
+    "system_fit_cap": 44000,
+    "system_model_cap": 11000
+  },
+  "admission": {
+    "data_relpath": "coordination/slurp-direct-vs-native-dual-store-dev1000-v1/admission-v1.json",
+    "sha256": "55c83bb6ad29b4ce15600005edee8f76091b7dd303d574fe6df44f65b0193ef3"
+  },
+  "analysis_recipe": {
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-direct-vs-native-dual-store-analysis-recipe-v1.json",
+    "sha256": "a4ff75d07e66a41a817f770162d982589bb8bce595406abd721f6a3f7a64cf0b"
+  },
+  "candidate_contract": {
+    "id": "slurp-intent-hypotheses-v1",
+    "max_candidates": 3,
+    "max_distinction_chars": 128,
+    "max_evidence_refs": 0,
+    "max_unresolved_fields": 0,
+    "min_candidates": 1,
+    "source_catalog": {
+      "data_relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+      "sha256": "3e60268b3f940c3018ab8b8c80ccd988b1d1efd6c5a198929c6af05ba21f8263",
+      "source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201"
+    }
+  },
+  "comparison": {
+    "claim_boundary": "Complete-system exploratory comparison; no isolated component causality, successful old-flight replication, superiority or generalization.",
+    "fixed": [
+      "roster",
+      "speech packets",
+      "frozen weights",
+      "max512 sampling",
+      "resident process and geometry",
+      "official scorer"
+    ],
+    "intentional_differences": [
+      "role program",
+      "Perception semantic intent supply",
+      "candidate-associated Solver slot supply",
+      "Reviewer task-contract calls",
+      "bounded Planner revision"
+    ]
+  },
+  "configurations": {
+    "direct": {
+      "attempt_id": "attempt-slurp-direct-max512-dev1000-generation-v1",
+      "baseline_fragment": "slurp-direct-max512-dev1000-v1",
+      "composed_config_hash": "4a7f3440c0d3715ad9bf3bc43bcec8afed4016af4a82d1a3a9aac3a42107df1d",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "execution_budget": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 1000,
+        "planned_speech_audio_seconds": 3500,
+        "split_role": "dev"
+      },
+      "execution_plan_protocol_hash": "d77ba214e1a0afde944f6eeaa33bceb8e21b5edcf4e3ae52a2956009bf1a8cdc",
+      "experiment_fragment": "slurp-direct-max512-dev1000-v1",
+      "fit": {
+        "attempt_id": "attempt-slurp-direct-max512-dev1000-fit-v1",
+        "contact_cap": 3001,
+        "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-FIT-V1"
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-V1"
+    },
+    "system": {
+      "attempt_id": "attempt-slurp-native-dual-store-dev1000-generation-v1",
+      "baseline_fragment": "slurp-native-dual-store-dev1000-v1",
+      "composed_config_hash": "8feecbf7942f99b213c1ef6ec4fb8cab309717bac1bd700ee0c03c241548c245",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "execution_budget": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 12.0,
+        "planned_model_calls": 11000,
+        "planned_speech_audio_seconds": 44000,
+        "split_role": "dev"
+      },
+      "execution_plan_protocol_hash": "f9688c7dcbef36c1d8ae197df61ef0a46602c6a616b7adce4e0504582791b386",
+      "experiment_fragment": "slurp-native-dual-store-dev1000-v1",
+      "fit": {
+        "attempt_id": "attempt-slurp-native-dual-store-dev1000-fit-v1",
+        "contact_cap": 44000,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-FIT-V1"
+      },
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-V1"
+    }
+  },
+  "failure_policy": "Stop and preserve on failure. No automatic restart/replay, partial scoring, response repair, roster filtering, capability or cap change. A future recovery needs a separately reviewed prospective root registration; the two closed predecessor flights remain closed.",
+  "fit": {
+    "direct": "Full1000 actual-wave gate before generation within exclusive lease.",
+    "no_surrogate_fit": true,
+    "system": "Each realized native request including actual supplied content and tool/role history passes its exact fit before transmission."
+  },
+  "knowledge_stores": {
+    "intent-boundaries": {
+      "phase_supply": {
+        "perception": {
+          "dimensions": [
+            "intent-boundary"
+          ],
+          "expose_facets": false,
+          "facet_source": {
+            "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+            "kind": "sealed-vectors",
+            "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+            "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+            "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+          },
+          "fuse_coverage": {
+            "c": 1,
+            "m": 8,
+            "top_l": 8
+          },
+          "fuse_policy": "saea-fuse-associated-values-v1",
+          "k": 8,
+          "provider": "kb-facet-v1",
+          "query_source": {
+            "embedded_signal": "speech: sealed DEV-1000 speech-query vector alias in the intent-boundary retrieval dimension; no text enters this query.",
+            "kind": "sealed-vectors",
+            "relpath": "vectors/slurp-intent-boundaries-dev1000-v1/query-vectors-speech.jsonl",
+            "sha256": "6f391f883129f88fd7f843a76de95a805c39f165b2938a7ae9e3bb92d5860967",
+            "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+          },
+          "rank_policy": "saea-rank-wcos-prior-agree-v1",
+          "rank_weights": {
+            "w_agree": 0.0,
+            "w_cos": 1.0,
+            "w_prior": 0.0
+          },
+          "tau": 0.0
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+        "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+        "sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+      },
+      "store_role": "intent-boundaries"
+    },
+    "slot-contracts": {
+      "candidate_supply": {
+        "solver": {
+          "candidate_state_phase": "perception",
+          "compact_source_phase": "perception",
+          "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+          "max_candidates": 3,
+          "max_total_values": 28,
+          "max_values_per_candidate": 16,
+          "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+          "provider": "slurp-candidate-semantic-v1",
+          "rank_policy": "saea-ranked-candidate-round-robin-v1"
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+        "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/snapshot.json",
+        "sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6"
+      },
+      "store_role": "slot-contracts"
+    }
+  },
+  "limitations": [
+    "Reviewer task-contract call is instructed; this version does not yet test selective ASR.",
+    "TRAIN feedback seam is implemented but no corrective memory is admitted in this comparison.",
+    "Quality and latency/cost are reported separately; cost is not a selection veto."
+  ],
+  "native_diagnostics_template": {
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-direct-vs-native-dual-store-native-diagnostics.template.json",
+    "sha256": "b452c7f138ba9aadb03ccc83242edfcc569685a9722bf5379d0b9a06f0fbee09"
+  },
+  "native_episode": {
+    "actions": {
+      "accept": "ACCEPT",
+      "acquire": "ACQUIRE",
+      "revise": "REVISE"
+    },
+    "episode_id": "slurp-native-dual-store-dev1000-v1",
+    "exhaustion_policy": "deliver-latest-solver",
+    "max_revisions": 1,
+    "roles": {
+      "perception": {
+        "max_iterations": 1,
+        "phase_id": "perception"
+      },
+      "planner": {
+        "max_iterations": 1,
+        "phase_id": "planner"
+      },
+      "reviewer": {
+        "max_iterations": 3,
+        "phase_id": "reviewer"
+      },
+      "solver": {
+        "max_iterations": 1,
+        "phase_id": "solver"
+      }
+    },
+    "schema": "saea-native-episode-config-v1"
+  },
+  "pipeline": {
+    "cpu_workers_total_during_generation": 8,
+    "exclusive_generation_lease": true,
+    "monitor_seconds": 10,
+    "no_automatic_restart": true,
+    "one_resident_service": true,
+    "order": [
+      "direct",
+      "system"
+    ]
+  },
+  "population": {
+    "count": 1000,
+    "exposure": "Historically exposed discovery; preserve all1000 rows.",
+    "no_new_draw": true,
+    "primary": "NEW500",
+    "secondary": [
+      "OLD500",
+      "DEV1000"
+    ],
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev"
+  },
+  "preparation_correction": {
+    "data_relpath": "coordination/slurp-direct-vs-native-dual-store-dev1000-v1/preparation-rejection-v1.json",
+    "description": "The targetless-value fuser is opt-in, generic and tested before any model contact. Preserve empty old artifact and historical fuser behavior.",
+    "sha256": "ac0d7549462caff9ae8c59ace3d494b061757539ee82e4dfc0254a0eb7c48be9"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-V1/phase-supply-associated-values-v1.json",
+    "sha256": "8f44dc4e2d9a51202d7618b89bec47a5b34f6484187302fea7e80f751a1df029"
+  },
+  "prompt_files": [
+    {
+      "repo_relpath": "configs/probes/slurp_direct_closed_list.txt",
+      "sha256": "9f2017c1b9a5cbf561a3437377ea4777d418ed19a7607f05e471f71a51dc0413"
+    },
+    {
+      "repo_relpath": "configs/probes/slurp_native_role_context_v3.txt",
+      "sha256": "46e251173ed15591c8e0f1cbc8709c8da20a463624e430031ceba7c46f576190"
+    },
+    {
+      "repo_relpath": "configs/probes/slurp_native_role_perception_v3.txt",
+      "sha256": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2"
+    },
+    {
+      "repo_relpath": "configs/probes/slurp_native_role_planner_v1.txt",
+      "sha256": "074bd27fe1ea6005d7b096be875f662e91cfe503a22ea78918bd1f5f876ded51"
+    },
+    {
+      "repo_relpath": "configs/probes/slurp_native_role_reviewer_v1.txt",
+      "sha256": "dce206a20d361b221ea146dc4ff274ba5e08ce4ab1bfbfece662dc7da5012417"
+    },
+    {
+      "repo_relpath": "configs/probes/slurp_native_role_solver_v2.txt",
+      "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+    },
+    {
+      "repo_relpath": "configs/probes/slurp_phase_direct.txt",
+      "sha256": "d02f194c3c8a8375a15c28f7ca874f30bd2ad34d60e8ff9cdbc654572ebf9d50"
+    }
+  ],
+  "protocol_id": "SAEA-SLURP-DIRECT-VS-NATIVE-DUAL-STORE-DEV1000-PROTOCOL-V1",
+  "question": "Does this complete agentic system improve native SLURP task quality over matched direct frozen-model answering, and which diagnosed bottleneck should determine the next capability?",
+  "registered_at": "2026-09-13T23:06:26.597234+00:00",
+  "schema": "saea-direct-vs-native-system-protocol-v1",
+  "scoring": {
+    "complete_manifest_once": true,
+    "include_per_sample": true,
+    "no_partial_failed_arm_scoring": true,
+    "overlap": "Score sealed direct while native generates; withhold quality until both first-score receipts are verified and root releases paired reading.",
+    "scorers": [
+      "slurp-slu-official",
+      "slurp-slu",
+      "cost"
+    ],
+    "single_worker": true
+  },
+  "serving": {
+    "identity": {
+      "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+      "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+      "host": "127.0.0.1",
+      "model_files": [
+        {
+          "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+          "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+        }
+      ],
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "model_fragment_sha256": "3cce3c795a8d07a2bcfccc9f04c4d8d6b548b2ae104252a73eef0b464fe6c70a",
+      "model_root": "/home/chao",
+      "port": 8080,
+      "props_identity": {
+        "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "slot_n_ctx": 24576,
+        "total_slots": 4
+      },
+      "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+      "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+      "server_argv": [
+        "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8080",
+        "-m",
+        "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "--no-mmproj",
+        "-c",
+        "98304",
+        "-np",
+        "4",
+        "-b",
+        "2048",
+        "-ub",
+        "512",
+        "-fa",
+        "on",
+        "-ngl",
+        "999",
+        "-ctk",
+        "q8_0",
+        "-ctv",
+        "q8_0",
+        "--cache-prompt",
+        "--cache-ram",
+        "0",
+        "--no-cache-idle-slots",
+        "--slot-prompt-similarity",
+        "0"
+      ],
+      "server_env": {
+        "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+        "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+      },
+      "session_role": "inference"
+    },
+    "max_tokens": 512,
+    "process_pid": 58092,
+    "process_started_at": "2026-09-13T22:25:16.373420+00:00",
+    "same_process_for_both_arms": true,
+    "session_id": "serving-slurp-native-bounded-perception-proof-np4-v1"
+  },
+  "tool_scope": {
+    "reviewer": {
+      "allowed_tools": [
+        "saea-tool-task-contract-v1"
+      ],
+      "knowledge_views": [
+        "text"
+      ],
+      "mode": "native-tools",
+      "source_authority_role": "reviewer"
+    }
+  }
+}
