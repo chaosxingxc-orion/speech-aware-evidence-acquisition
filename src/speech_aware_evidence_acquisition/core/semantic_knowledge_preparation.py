@@ -52,10 +52,11 @@ class _Pin:
     sha256: str
     path: Path
     root: str
+    explicit_root: bool = False
 
     def as_json(self, *, include_root: bool = True) -> dict[str, str]:
         result = {"relpath": self.relpath, "sha256": self.sha256}
-        if include_root:
+        if include_root and self.explicit_root:
             result["root"] = self.root
         return result
 
@@ -136,6 +137,7 @@ def _pin(
         sha256,
         _confined(roots[root_name], relpath, name=name),
         root_name,
+        "root" in mapping,
     )
 
 
@@ -440,9 +442,9 @@ def prepare_semantic_knowledge_store(
         require_construction=True,
         repo_root=repo_root,
     )
-    if scope.split_identity_hash != pins["source_identity"]:
+    if permitted.split_identity_hash != pins["source_identity"]:
         raise SemanticKnowledgePreparationError(
-            "construction scope split identity differs"
+            "permitted roster split identity differs"
         )
     if not set(permitted.sample_ids).issubset(scope.sample_ids):
         raise SemanticKnowledgePreparationError(

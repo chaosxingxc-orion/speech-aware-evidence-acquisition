@@ -1,0 +1,43 @@
+{
+  "schema": "saea-authored-semantic-knowledge-preparation-v1",
+  "registration_id": "SAEA-SLURP-INTENT-BOUNDARIES-PREPARATION-V2",
+  "carrier_lock_key": "slurp",
+  "source_partition_role": "train",
+  "source_split_identity_hash": "f76a7d00172a29452e791b0ec292c08492b9ae48e5eb28f72f58afd7f34cb1df",
+  "builder_policy_id": "saea-authored-intent-boundaries-v1",
+  "store_id": "intent-boundaries",
+  "store_role": "intent-boundaries",
+  "authored_source": {
+    "relpath": "prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V1/authored-intent-boundaries-v2.json",
+    "sha256": "1950c4a3a8bed73d0cf810c10a9f32d42b683b3d317cdc24634366faa0808fb1",
+    "root": "data"
+  },
+  "construction_scope": {
+    "relpath": "prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V1/outer-construction-roster.json",
+    "sha256": "e1a4b353428eb36603757b7f3b327637a64d74bb879af7f6079390a8afbba475",
+    "root": "data"
+  },
+  "permitted_roster": {
+    "relpath": "prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V1/intent-support-construction-roster.json",
+    "sha256": "1bc67cc06ca3a2e3c7cb0143f75937cf2328f1cf930a84344aec697a97df3f3b",
+    "root": "data"
+  },
+  "forbidden_rosters": [
+    {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+      "root": "repo"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+      "root": "repo"
+    },
+    {
+      "relpath": "docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b",
+      "root": "repo"
+    }
+  ],
+  "output_namespace": "knowledge/slurp/semantic/intent-boundaries-v1"
+}
