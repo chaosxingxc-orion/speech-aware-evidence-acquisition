@@ -1414,3 +1414,7 @@ The tables above retain the historical recovery transcription. Current KU-S3 max
 ## Original-result reproduction: 2026-09-10
 
 The [independent reproduction report](2026-09-10-fable-reproduction-audit.md) and [source-bound receipt](../receipts/fable-result-reproduction-v1.json) reproduce the original KC-S1b contrasts, existing max64 repeat analysis, E21 KC-E1f original rule and historical v2 redecision, and KV recovery contrasts. All 16,560 statistical fields agree. No fresh inference or official scoring was performed. Preserve the original rejection/redecision sequence, the historical KV order deviation and the distinction between component evidence and live system performance. The +10.11 pp KC-S1b headline denotes strict entity mean row F1; do not relabel it as official micro SLU-F1.
+
+## September 13: complete native-system candidate
+
+EXPLORATORY_SYSTEM_CANDIDATE. Direct and native system each completed DEV1000 and received one complete official score. Primary NEW500 micro improves by 14.429673 percentage points and joint intent by 6.2 points; both frozen lower-bound conditions pass. Same-roster replication is next. See [the verdict and all scenario tables](../readiness/2026-09-13-slurp-direct-vs-native-system-v1-verdict.md). This continuation preserves historical rows and does not establish component causality/generalization.

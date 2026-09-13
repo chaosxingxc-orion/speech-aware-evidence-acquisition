@@ -1,6 +1,6 @@
 # Multimodal task agent: knowledge, corrective memory and control
 
-Current execution overlay, September13: [OWNER-SYSTEM-VERSIONS-025](../superpowers/plans/experiment-handoff/OWNER-SYSTEM-VERSIONS-025.md) makes direct frozen-model calling versus the complete agentic system the primary task comparison. Expand system capability step by step from results. [STATUS-075](../superpowers/plans/experiment-handoff/STATUS-075.md) and [the active direct-versus-native plan](2026-09-13-slurp-direct-vs-native-system-plan-v1.md) supersede older supplied/withheld knowledge comparisons and bulk-encoding priority in this document. The direct arm is complete and first-scored; the system is generating from frozen7ec4cf34. Quality remains unread. Preserve task-specific discriminative knowledge, distinct corrective memory and Audio2Tool alongside SLURP and E21/E22 design/readiness.
+Current execution overlay, September13: [OWNER-SYSTEM-VERSIONS-025](../superpowers/plans/experiment-handoff/OWNER-SYSTEM-VERSIONS-025.md) makes direct frozen-model calling versus the complete agentic system the primary task comparison. Expand system capability step by step from results. [STATUS-077](../superpowers/plans/experiment-handoff/STATUS-077.md) and [the active direct-versus-native plan](2026-09-13-slurp-direct-vs-native-system-plan-v1.md) supersede older supplied/withheld knowledge comparisons and bulk-encoding priority in this document. Both arms completed and received first official scores from frozen runtime 7ec4cf34. The [released verdict](2026-09-13-slurp-direct-vs-native-system-v1-verdict.md) reports an exploratory candidate: NEW500 pooled micro +14.4297 points and intent +6.2 points. Same-roster replication is next. Preserve task-specific discriminative knowledge, distinct corrective memory and Audio2Tool alongside SLURP and E21/E22 design/readiness.
 
 Date: September 11, 2026. Authority: OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017, continuing OWNER016's complete-system design, OWNER015's SLURP-first sequence and OWNER014's quality-first objective. This mutable specification replaces its earlier classification of the raw TRAIN store as episodic memory. Historical source receipts and owner/status records remain unchanged.
 
@@ -89,7 +89,7 @@ Record available candidates, selected experience IDs/version, applicability matc
 | Current memory-tool output | AgentStateArtifact and the new tool-result bridge | A newly created current-query-bound state can reference old experience; never inject old episode state with stale provenance |
 | External update | analysis/training_free_vw_control, proposer/evolution and audited candidate optimizers | Reuse suitable reward/policy lineage after the state/action/memory objects are concrete; no production RL integration is claimed |
 
-The current native configuration uses OpenJiuwen Perception, joint Solver, Reviewer and Planner with at most one revision. Perception proposes up to three intents; the joint Solver consumes candidate-conditioned released slot contracts. Reviewer alone exposes the native task-contract tool and is currently instructed to call it. Planner accepts or requests the bounded revision; Solver retains final-answer authority. This is the running complete-system version, not yet a demonstrated quality improvement.
+The current native configuration uses OpenJiuwen Perception, joint Solver, Reviewer and Planner with at most one revision. Perception proposes up to three intents; the joint Solver consumes candidate-conditioned released slot contracts. Reviewer alone exposes the native task-contract tool and is currently instructed to call it. Planner accepts or requests the bounded revision; Solver retains final-answer authority. The first complete comparison passes the frozen exploratory quality gate; independent replication and component attribution remain unproven.
 
 The existing live speech-observation tool has lazy local Whisper execution and source-bound returns. Its optional Reviewer configuration remains held until the current error analysis justifies it and its own runtime plans are registered. Prepared transcript lookup and current native live execution are different capabilities. Corrective-memory interfaces exist, but no real optimized memory is admitted by this current experiment.
 
@@ -102,7 +102,7 @@ system version on the registered full roster through the same shared runtime,
 model and official scorer. Additional model calls are intentional; quality is
 primary and cost is descriptive.
 
-Complete the current paired analysis before selecting a successor. Use
+The paired analysis is complete. Replicate the current version before admitting another capability. Use
 candidate coverage, candidate-internal choice, spoken-value errors and
 harmful revisions to identify the next bounded capability. Examples include
 discriminative intent knowledge, controlled candidate reopening, improved
@@ -137,8 +137,7 @@ Use outcome-linked updates to experience utility and conditional policy, with pr
 
 ## Current preparation and execution schedule
 
-Keep the current direct-versus-native campaign on its frozen WSL worktree and
-root-owned decoder service. Reuse verified query packets, match complete
+Preserve the completed campaign's frozen runtime and artifacts. Prepare its same-roster replication in an isolated WSL worktree; reuse the root-owned decoder service after exact identity checks. Reuse verified query packets, match complete
 serving identity and actual request capacity, keep one generating experiment,
 and overlap one complete scorer with generation. Do not replace the resident
 service or modify the active program to admit a later version.

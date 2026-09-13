@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 76,
+  "generation": 77,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "ce1820752fab692de9f3ac8f87cf63abd1920906",
-  "updated_at_utc": "2026-09-13T19:22:50.911057+00:00",
-  "next_action": "Read STATUS-076 and OWNER-SYSTEM-VERSIONS-025. Revalidate the live frozen7ec4cf34 campaign and preserve its handles. Prepared paired/native analysis inputs await the complete system manifest and first saved score. Repackage the attached score without rescoring, write bound successors and register the root quality read release before analysis. Optional physical-power/OEM-mode clarification is pending but does not block generation. Expand the system from the resulting evidence.",
+  "snapshot_commit": "780d06792e6a116036417c4b96a2adb39933964f",
+  "updated_at_utc": "2026-09-13T20:07:18.798788+00:00",
+  "next_action": "Read STATUS-077 and the released direct/native verdict. Original campaign and first scores are complete; quality is released and current version passes the exploratory gate. Finish root review and prospective admission of same-roster replication in its isolated worktree; preserve original runtime/artifacts and reuse the resident session only after exact checks. No new capability or flight is admitted by this status.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SYSTEM-VERSIONS-025"

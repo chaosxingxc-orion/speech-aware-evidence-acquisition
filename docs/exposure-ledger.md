@@ -3489,3 +3489,11 @@ Root verified both complete DEV1000 runs and their first saved official scores b
 | date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2026-09-13T19:41:21.011612+00:00 | SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-PAIRED-ANALYSIS-V1 | model-free-check | Read verified complete paired scores and source-bound system diagnostics under the frozen method. | Saved artifacts only; no model or scorer invocation. | slurp existing DEV1000 | dev | 8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84 | no | 0 | 0 | 0 | Preserve all existing DEV1000 exposure. | docs/readiness/2026-09-13-slurp-direct-vs-native-system-read-release-v1.json | Registered before quality read. Release SHA256 d55233d438135666f368d27898bfef3f45c7e2b3829d9f691ed95e4cb4ab8c29 pins both finalized manifests, first complete score receipts, independently pinned system phases and both bound analysis configs. No new generation, retrospective population filtering or evaluation-to-TRAIN transfer. |
+
+## September 13: close the completed direct/native pair
+
+**SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-V1 COMPLETED**: all 1,000 answers finalized; 1,000 generation contacts; one complete official score retained. Corresponding fit attempts are consumed and preserved; this closure grants no reuse of their allocations.
+
+**SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1 COMPLETED**: all 1,000 answers finalized; 5,020 generation contacts; one complete official score retained. Corresponding fit attempts are consumed and preserved; this closure grants no reuse of their allocations.
+
+The released paired analysis sets EXPLORATORY_SYSTEM_CANDIDATE under the frozen NEW500 gate. Source-bound diagnostics retain five missing intents as nonrefused incorrect outcomes. Analysis-only reader corrections preserve model outputs and first scores. See [the verdict](readiness/2026-09-13-slurp-direct-vs-native-system-v1-verdict.md). No additional model, ASR, encoder, tokenizer or scorer contact occurred in this analysis. Replication requires its own new registration.

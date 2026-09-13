@@ -3539,6 +3539,18 @@
         "SAEA-SLURP-SPEECH-OBSERVATION-CONTROL-V1",
         "SAEA-SLURP-SPEECH-OBSERVATION-WHISPER-TRANSPORT-RECOVERY-V1"
       ]
+    },
+    {
+      "date": "2026-09-13",
+      "cell_id": "SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1",
+      "status": "EXPLORATORY_SYSTEM_CANDIDATE",
+      "source": "docs/readiness/2026-09-13-slurp-direct-vs-native-system-v1-verdict.md",
+      "source_sha256": "02e6cf49caee87b3d104ef832690e9f1f58e926b889ef0dc6aa7e1d7a7a633e7",
+      "meaning": "Both complete 1000-row arms finalized and first-scored. Frozen primary NEW500 micro +14.429673 pp (CI90 [11.210808,17.590317]); joint intent +6.2 pp (CI90 [3.411393,9.171135]). Candidate condition passes. Same-roster replication remains required; no component causality, superiority/generalization or completed training-free RL claim.",
+      "run_ids": [
+        "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-V1",
+        "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1"
+      ]
     }
   ]
 }
