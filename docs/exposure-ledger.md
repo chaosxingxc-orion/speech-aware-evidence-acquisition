@@ -3353,3 +3353,8 @@ Root verified both raw parents FINALIZED/COMPLETED, both saea-derived-delivery-v
 ## SAEA-SLURP-DISTINCT-COMMITMENT-PAIRED-ANALYSIS-V1 result
 
 The registered saved-score analysis completed under the root read release. NEW500 pooled SLU micro delta is +0.0124 pp (speaker CI90 [-1.2911, +1.3864]); the primary verdict is inconclusive and exploratory_candidate=false. Intent exact improves by +2.8 pp (CI90 [+1.2447, +4.3307]). Preserve the distinction between the positive intent component and the unproven overall/system gain. [The result](readiness/2026-09-13-slurp-distinct-commitment-result-v1.md) includes all population/scenario tables, cost and source pins. Source-bound conditional diagnostics remain pending. No new scorer or model contacts were made.
+
+
+## 2026-09-13: Distinct candidate conditional diagnostics
+
+After the registered read release, run the shared model-free source-bound diagnostic entry at code 33d8db2f. Verify the derived common source, both delivery bundles and complete official score receipts. Preserve actual variable-width candidates and map entity exactness from the saved official FP/FN counts. The artifact conditional-diagnostics-v1.json has SHA-256 9d92ca29f9ae733dbf827979f68e3103f0f9c01f6e3a79d77223f24f1ded83a2. See docs/readiness/2026-09-13-slurp-distinct-commitment-conditional-result-v1.md. New model, encoder, tokenizer and scorer contacts: zero. Primary overall SLU verdict remains inconclusive. Raw proposal flags require the separately noted supplement; do not interpret delivered-text attempt fields as raw proposal counts.
