@@ -533,6 +533,42 @@ def _starts_with_textual_native_tool_call(response_text: str) -> bool:
     )
 
 
+def seal_phase_response_state(
+    *,
+    phase_name: str,
+    sample_id: str,
+    state_content: str,
+    raw_response_text: str,
+    source_query_state_sha256: str,
+    producer_policy_id: str,
+    state_namespace: str | None = None,
+    cited_value_ids: Sequence[str] = (),
+) -> AgentStateArtifact:
+    """Seal one phase response with distinct visible and source bytes.
+
+    state_content is the raw response or a registered view of it.
+    source_response_sha256 always binds raw_response_text so a view cannot
+    obscure the model bytes from which it was derived.
+    """
+
+    state_id = (
+        f"{state_namespace}:{phase_name}:{sample_id}"
+        if state_namespace is not None
+        else f"{phase_name}:{sample_id}"
+    )
+    return AgentStateArtifact(
+        state_id=state_id,
+        state_kind=f"phase:{phase_name}",
+        content=state_content,
+        source_query_state_sha256=source_query_state_sha256,
+        source_response_sha256=hashlib.sha256(
+            raw_response_text.encode("utf-8")
+        ).hexdigest(),
+        producer_policy_id=producer_policy_id,
+        cited_value_ids=tuple(cited_value_ids),
+    ).validate()
+
+
 class EvidenceAgentController:
     """One generic ``rails.runner.AgentController`` walking a
     :class:`PhaseProgram` phase-by-phase (module docstring).
@@ -822,24 +858,19 @@ class EvidenceAgentController:
         response_sha256 = hashlib.sha256(response_text.encode("utf-8")).hexdigest()
         # WAVE R7: what this phase SEALS may be a registered VIEW of the raw
         # response rather than the raw response itself (class docstring,
-        # "Knowledge views"). ``None`` -- every caller written before R7 --
-        # seals the raw bytes, which is byte-identical to before this seam
-        # existed. ``source_response_sha256`` always hashes the RAW response,
-        # so a view can never disguise which bytes the core returned.
+        # "Knowledge views"). source_response_sha256 continues to hash the
+        # RAW response through the shared pure sealer.
         state_content = self._resolve_state_view(phase, response_text)
-        artifact = AgentStateArtifact(
-            state_id=(
-                f"{self._state_namespace}:{phase.name}:{context.sample_id}"
-                if self._state_namespace is not None
-                else f"{phase.name}:{context.sample_id}"
-            ),
-            state_kind=f"phase:{phase.name}",
-            content=state_content,
+        artifact = seal_phase_response_state(
+            phase_name=phase.name,
+            sample_id=context.sample_id,
+            state_content=state_content,
+            raw_response_text=response_text,
             source_query_state_sha256=context.query_state.content_hash(),
-            source_response_sha256=response_sha256,
             producer_policy_id=self._program.program_id,
+            state_namespace=self._state_namespace,
             cited_value_ids=(),
-        ).validate()
+        )
         self._sealed[phase.name] = artifact
         self._completed.append(phase.name)
         self._pending_contact_id = None
@@ -1708,5 +1739,6 @@ __all__ = [
     "register_phase_state_views_v1",
     "register_response_formats_v1",
     "registered_program_ids",
+    "seal_phase_response_state",
     "select_response_format_v1",
 ]

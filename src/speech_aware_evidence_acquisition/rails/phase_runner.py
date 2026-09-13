@@ -48,7 +48,6 @@ either shape (module docstring in ``rails.controllers``).
 
 from __future__ import annotations
 
-import hashlib
 from pathlib import Path
 from typing import Callable, Mapping
 
@@ -61,6 +60,7 @@ from .controllers import (
     ReviewForPhase,
     StopPolicy,
     SupplyForPhase,
+    seal_phase_response_state,
 )
 from .core_client import CoreClient
 from .errors import RailsError
@@ -319,16 +319,15 @@ def _seal_phase_state(
     final_response_text = getattr(result, "final_response_text")
     initial_query_state = getattr(result, "initial_query_state")
     sample_id = getattr(result, "sample_id")
-    response_sha256 = hashlib.sha256(final_response_text.encode("utf-8")).hexdigest()
-    return AgentStateArtifact(
-        state_id=f"{phase_name}:{sample_id}",
-        state_kind=f"phase:{phase_name}",
-        content=final_response_text,
+    return seal_phase_response_state(
+        phase_name=phase_name,
+        sample_id=sample_id,
+        state_content=final_response_text,
+        raw_response_text=final_response_text,
         source_query_state_sha256=initial_query_state.content_hash(),
-        source_response_sha256=response_sha256,
         producer_policy_id=producer_policy_id,
         cited_value_ids=(),
-    ).validate()
+    )
 
 
 def run_program(
