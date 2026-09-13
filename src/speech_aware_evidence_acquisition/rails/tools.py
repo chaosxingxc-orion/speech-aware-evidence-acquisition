@@ -91,6 +91,7 @@ from ..core.base import Registry
 from ..e0.artifacts import REPO_ROOT
 from .errors import RailsError
 from .tool_wrappers import phase_knowledge as _phase_knowledge
+from .tool_wrappers import candidate_contract_lookup as _candidate_contract_lookup
 from .tool_wrappers import speech_observation as _speech_observation
 from .tool_wrappers import live_speech_observation as _live_speech_observation
 
@@ -1465,6 +1466,38 @@ TOOL_CATALOG.register(
     'saea-tool-phase-knowledge-v1',
     build_tool_entry(PHASE_KNOWLEDGE_ACTION_MANIFEST, _phase_knowledge.retrieve_phase_knowledge),
 )
+
+CANDIDATE_CONTRACT_LOOKUP_ACTION_MANIFEST = ToolManifest(
+    tool_id="saea-tool-candidate-contract-lookup-v1",
+    description=(
+        "Resolve ordered candidate IDs against a canonical task contract; "
+        "return value-free schema and contrast evidence."
+    ),
+    source_ref=(
+        "speech_aware_evidence_acquisition.rails.tool_wrappers."
+        "candidate_contract_lookup:lookup_candidate_contracts"
+    ),
+    pinned_sha256="723bff22b561686e39b3c1c619551a43c24afd96b441d2209c4221f24bc41507",
+    inputs={
+        "provider": "CandidateContractProvider",
+        "candidate_ids": "Sequence[str]",
+    },
+    outputs={"result": "CandidateContractLookupResult"},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="cpu",
+    axis="ORG",
+    scope=GENERAL_SCOPE,
+    ledger_row_type="none",
+)
+TOOL_CATALOG.register(
+    "saea-tool-candidate-contract-lookup-v1",
+    build_tool_entry(
+        CANDIDATE_CONTRACT_LOOKUP_ACTION_MANIFEST,
+        _candidate_contract_lookup.lookup_candidate_contracts,
+    ),
+)
+
 
 CORRECTIVE_MEMORY_ACTION_MANIFEST = ToolManifest(
     tool_id="saea-tool-corrective-memory-v1",
