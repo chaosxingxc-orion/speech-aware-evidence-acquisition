@@ -43,6 +43,8 @@ from openjiuwen.core.workflow import (
 
 from ...rails.core_client import CoreCompletion, FrozenCoreClientError
 
+FROZEN_CORE_CALLBACK_MODEL = "frozen-core-metered-callback"
+
 RoleKind = Literal["perception", "reviewer", "planner", "solver"]
 _ANALYTICAL_ROLE_KINDS = frozenset({"reviewer", "planner"})
 _TOOL_FREE_ROLE_KINDS = frozenset({"perception", "solver"})
@@ -500,7 +502,7 @@ class NativeRoleNode(WorkflowComponent):
         )
         self._agent.configure(
             ReActAgentConfig(
-                model_name="frozen-core-metered-callback",
+                model_name=FROZEN_CORE_CALLBACK_MODEL,
                 max_iterations=spec.max_iterations,
                 parallel_tool_calls=False,
                 prompt_template=[{"role": "system", "content": spec.prompt}],
