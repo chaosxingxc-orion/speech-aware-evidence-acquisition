@@ -1,0 +1,296 @@
+{
+  "analysis": {
+    "carrier": "slurp",
+    "contrasts": [
+      {
+        "left": "hard_first",
+        "name": "closed_joint_minus_hard_first",
+        "populations": [
+          "NEW500",
+          "OLD500",
+          "DEV1000"
+        ],
+        "right": "closed_joint",
+        "scorers": [
+          "official"
+        ]
+      }
+    ],
+    "full_roster": {
+      "path": "docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "inputs": {
+      "closed_joint": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1/attempt-slurp-distinct-closed-joint-recovery-generation-v1/declared-deliveries/slurp-distinct-closed-joint-dev1000-delivery-v1/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1--delivery-slurp-distinct-closed-joint-dev1000-delivery-v1.run-manifest.json",
+          "sha256": "25f6fd7070ad8cbdb0336e82711fd21671acdf4fb996810d9b0434f5ab966d67"
+        },
+        "score_receipt": {
+          "cell_id": "slurp-distinct-closed-joint-dev1000-delivery-v1",
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1/attempt-slurp-distinct-closed-joint-recovery-generation-v1/score-batch/slurp-distinct-closed-joint-dev1000-delivery-v1.complete-score-receipt.json",
+          "sha256": "3272ebd67b5aae33f2c471035a0c0946c5e36f33ddf7620b7011abec4340b22f"
+        },
+        "score_source": "complete-score-receipt",
+        "scorers": {
+          "official": "slurp-slu-official"
+        }
+      },
+      "hard_first": {
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1/attempt-slurp-distinct-hard-first-recovery-generation-v1/declared-deliveries/slurp-distinct-hard-first-dev1000-delivery-v1/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1--delivery-slurp-distinct-hard-first-dev1000-delivery-v1.run-manifest.json",
+          "sha256": "d351368b00471224bd0b71ea7684b0695011068597c9eaba04b64739799cda14"
+        },
+        "score_receipt": {
+          "cell_id": "slurp-distinct-hard-first-dev1000-delivery-v1",
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1/attempt-slurp-distinct-hard-first-recovery-generation-v1/score-batch/slurp-distinct-hard-first-dev1000-delivery-v1.complete-score-receipt.json",
+          "sha256": "c56a795bd73ce53c42bcd1523e4f2828149201ee29796398813de7ee9075ca3d"
+        },
+        "score_source": "complete-score-receipt",
+        "scorers": {
+          "official": "slurp-slu-official"
+        }
+      }
+    },
+    "intervals": {
+      "primary": {
+        "ci90": {
+          "level": 0.9,
+          "tail_definition": "two-sided percentile interval from the shared paired draws"
+        },
+        "lower95": {
+          "level": 0.95,
+          "tail_definition": "one-sided lower fifth percentile from the same paired draws; do not resample a second time"
+        },
+        "resampling": "paired whole-speaker cluster bootstrap"
+      },
+      "sensitivity": {
+        "ci90": {
+          "level": 0.9,
+          "tail_definition": "two-sided percentile interval"
+        },
+        "resampling": "scenario-stratified paired row bootstrap",
+        "weightings": [
+          "natural mixture",
+          "equal scenario",
+          "per scenario stratum"
+        ]
+      }
+    },
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+    },
+    "metric_labels": {
+      "action": "action_exact",
+      "intent": "scenario_action_exact (joint scenario/action accuracy)",
+      "pooled_slu_micro_f1": "slu_f1_micro (pooled official SLU F1 from saved sufficient counts)",
+      "row_mean_slu_f1": "slu_f1_f1 (mean of per-row official SLU F1)",
+      "scenario": "scenario_exact",
+      "span_f1": "slot_f1_exact_f1 (per-row exact slot/entity F1)"
+    },
+    "metrics": [
+      "scenario_action_exact",
+      "scenario_exact",
+      "action_exact",
+      "slot_f1_exact_f1",
+      "slu_f1_f1"
+    ],
+    "micro_metrics": {
+      "slu_f1_micro": {
+        "fn": [
+          "slu_f1_word_fn",
+          "slu_f1_char_fn"
+        ],
+        "fp": [
+          "slu_f1_word_fp",
+          "slu_f1_char_fp"
+        ],
+        "tp": [
+          "slu_f1_word_tp",
+          "slu_f1_char_tp"
+        ]
+      }
+    },
+    "n_replicates": 10000,
+    "populations": {
+      "construction": "NEW500 is the existing DEV-1000-NEW500 receipt. OLD500 is the full DEV1000 set difference. DEV1000 is the pooled full receipt. Do not redraw a population or promote a secondary population to primary.",
+      "primary": "NEW500",
+      "secondary": [
+        "OLD500",
+        "DEV1000"
+      ]
+    },
+    "primary_metric": "slu_f1_micro",
+    "roster": {
+      "path": "docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    },
+    "seed": 20260913,
+    "source_diagnostics": {
+      "shared_distinct_source": {
+        "analysis_role": "Source-bound diagnostic only, never an answer arm.",
+        "candidate_count_range": [
+          1,
+          3
+        ],
+        "hypothesis_artifact": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-DISTINCT-HYPOTHESIS-SOURCE-RECOVERY-V1/hypotheses.source.json",
+          "sha256": "0146d87679a27f85ee7d0927039f8cd64805ceb40f3b42f3e788529d4a8863d3"
+        },
+        "original_attempt_state": "ABORTED",
+        "scoreless": true,
+        "source_quality_already_read": "Preserve owner-directed source diagnostic and historical NEW500 exposure; successor quality remains unread.",
+        "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+      }
+    }
+  },
+  "analysis_runner": {
+    "mode": "default saved-score path with explicit complete-score receipts for derived-delivery-v1 bundles; do not use generic-scores-v1",
+    "module": "src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py",
+    "no_new_scorer_invocations": 0,
+    "no_new_script": true,
+    "score_once": "src/speech_aware_evidence_acquisition/core/scoring_batch.py",
+    "score_receipt_verifier": "src/speech_aware_evidence_acquisition/core/scoring_receipt.py",
+    "shared_resampling": [
+      "src/speech_aware_evidence_acquisition/analysis/paired.py",
+      "src/speech_aware_evidence_acquisition/analysis/bootstrap.py"
+    ]
+  },
+  "authorization_state": "Both raw parents and complete scored derivatives verified. Root read release is a separate create-only record.",
+  "binding_state": "All future manifest and complete-score receipt pins measured after both complete seals; estimands unchanged.",
+  "diagnostics_after_registered_release": {
+    "branch_integrity": [
+      "hard-first attempted revision and whether its final intent changed",
+      "closed-joint out-of-shortlist final intent attempts",
+      "branch refusal and empty final delivery",
+      "invalid or unknown tool calls",
+      "malformed JSON/entity structure and output saturation",
+      "zero-tool direct paths",
+      "candidate counts and candidate-contract view calls"
+    ],
+    "conditional_commitment": [
+      "rank-one intent wrong and CLOSED_JOINT final intent correct: rescue",
+      "rank-one intent correct and CLOSED_JOINT final intent wrong: harm or spoil",
+      "rank-one intent wrong and final remains wrong",
+      "rank-one intent correct and final remains correct",
+      "gold intent excluded from shortlist",
+      "gold intent retained but not selected",
+      "selected intent correct with wrong entities",
+      "selected intent and entities correct"
+    ],
+    "cost_and_input_quantities": {
+      "interpretation": "Use sealed manifest cost fields and registered contact records. Do not infer generation quantity or efficacy from power, wall time, or tool availability.",
+      "per_arm_required": [
+        "actual model calls",
+        "speech audio seconds",
+        "prompt and completion token totals when sealed cost metadata supplies them",
+        "latency total",
+        "tool-call count",
+        "source and successor sample counts",
+        "extra successor contact count relative to the common source"
+      ]
+    },
+    "entity_and_event": [
+      "slot/entity extraction and ownership failures conditional on intent status",
+      "intent-change versus entity-change partitions",
+      "OBS, ORG, SUPPLY and USE event counts when present in the sealed trace schema"
+    ],
+    "implementation_boundary": "score_compare_cli emits only verified saved-score projections and paired intervals; source Top-1/Top-3, conditional rescue/harm, shortlist, refusal and trace error diagnostics require a separate source-bound read over the verified manifests/phase_sources/trace and are not produced by the generic scorer path.",
+    "observed_width": {
+      "all_rows_retained": true,
+      "interpretation": "Observed width is not calibrated confidence. Report descriptive conditional rescue, harm, shortlist exclusion and entity outcomes for every width.",
+      "widths": [
+        1,
+        2,
+        3
+      ]
+    },
+    "read_rule": "Read successor diagnostics only after both raw generation parents are FINALIZED and COMPLETED, both verified derived-delivery-v1 bundles have complete first official score receipts, final analysis pins are bound, and root records the read release. Delivery derivatives themselves are not finalized as new model runs.",
+    "source": [
+      "Top-1 source intent accuracy",
+      "Top-3 source candidate recall",
+      "candidate-set coverage by scenario and stratum",
+      "source parse, empty, malformed, duplicate, illegal-ID and saturation outcomes"
+    ]
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-SLURP-DISTINCT-COMMITMENT-PAIRED-ANALYSIS-V1",
+  "frozen_recipe": {
+    "path": "/home/chao/saea-worktrees/phase-materialization-state-repair-v1/docs/readiness/2026-09-13-slurp-distinct-commitment-analysis-recipe-v2.json",
+    "sha256": "48ad90ad08f706a241a382ea406cb9a8118a41a9fcebb79f4044fb883cc5bfac"
+  },
+  "interpretation": {
+    "candidate_flag": {
+      "condition": "Set exploratory_candidate=true only when the NEW500 paired speaker-clustered CI90 lower endpoint for slu_f1_micro is greater than zero AND the CI90 lower endpoint for scenario_action_exact is greater than or equal to zero.",
+      "otherwise": "Preserve the label negative or inconclusive according to the requested interval and report all metric tradeoffs.",
+      "primary_basis": "The pooled micro SLU F1 interval is the primary outcome; the intent interval is a guard against an isolated slot-only gain."
+    },
+    "correlation": "The shared source, roster, speech packets and candidate contracts intentionally correlate the paired observations; this is not an independent replication.",
+    "inconclusive": "The requested interval crosses zero or the guard cannot be evaluated; retain the label and report point estimates, intervals and decomposition.",
+    "negative": "The requested interval is wholly below zero for the named metric; report the component result without a superiority or generalization claim.",
+    "positive": "Exploratory component evidence only. It does not admit the mechanism or establish an autonomous system effect.",
+    "replication_rule": "A positive component result requires replication on the same roster or a root-cause to a named registered component before another mechanism or roster is admitted."
+  },
+  "method_contract": {
+    "lower95_reuses_same_draws": true,
+    "no_borrowed_noninferiority_margin": true,
+    "no_historical_effective_gate": true,
+    "pooled_micro_rule": "Compute slu_f1_micro from the declared saved word/character TP, FP and FN fields. Never substitute a mean of row F1 values.",
+    "primary_estimand": "paired speaker-clustered bootstrap delta with 10000 draws and seed 20260913",
+    "primary_outcome": "pooled slu_f1_micro delta on NEW500",
+    "row_mean_rule": "Report slu_f1_f1 as the mean of per-row official SLU F1. Never label it pooled micro F1.",
+    "secondary_estimands": [
+      "row-mean SLU F1, reported separately from pooled micro F1",
+      "intent, scenario and action exact accuracy",
+      "exact slot/entity F1",
+      "natural-mixture, equal-scenario and per-scenario-stratum deltas"
+    ],
+    "sign": "closed_joint minus hard_first; higher quality is positive"
+  },
+  "output": {
+    "future_output_relpath": "analysis/SAEA-SLURP-DISTINCT-COMMITMENT-PAIRED-ANALYSIS-V1/score-contrasts.json",
+    "preserve_inconclusive_labels": true,
+    "result_read_release": "Root records a separate release before reading semantic results.",
+    "source_bindings": "Root replaces every pending source, manifest and attached-score hash with measured values after seals."
+  },
+  "purpose": {
+    "common_source": "Both branches consume exactly the same all-row first-occurrence distinct source (width one to three), ordered original candidate objects, candidate contracts and speech.",
+    "comparison": "Hard-first versus closed-joint from one derived source, preserving the failed fixed-three source and all contacts.",
+    "component_scope": "intent commitment timing and joint intent-slot resolution under identical ordered candidates and candidate contracts",
+    "not_an_autonomous_system_claim": "This is a controlled component comparison. It is not evidence for autonomous tool selection, a decomposition gain beyond the extra contact, complete-system superiority, or an independent replication. The common source makes the paired observations correlated.",
+    "source_quality_read_before_release": true
+  },
+  "recorded_on": "2026-09-13",
+  "schema": "saea-slurp-saved-score-analysis-recipe-v1",
+  "score_source_contract": {
+    "no_new_scorer_invocations": 0,
+    "no_projection": "Use the raw slurp-slu-official result and retain its declared per-row fields plus the six pooled count fields. Do not alter estimator semantics.",
+    "official_scorer": "slurp-slu-official",
+    "score_source": "complete-score-receipt",
+    "source_order": [
+      "Verify the common derived hypothesis source and both completed derived-delivery-v1 successor bundles.",
+      "score each complete derived-delivery manifest exactly once through core.scoring_batch with --include-per-sample; do not finalize a delivery derivative",
+      "verify the resulting complete score receipt bytes without invoking a scorer again",
+      "replace the future manifest and complete-score-receipt path/hash/cell placeholders",
+      "run score_compare_cli once with zero new scorer invocations",
+      "release semantic comparison only after both branch receipts and derived bundles are verified"
+    ]
+  },
+  "source_analysis_plan": {
+    "authority": {
+      "repo_relpath": "docs/readiness/2026-09-13-candidate-coverage-and-node-authority-owner-amendment-v1.md",
+      "sha256": "34b3ac18213a0359169150c7aa5aea87d414e68bce0bb61aebe3a254d1d52349"
+    },
+    "path": "docs/readiness/2026-09-13-slurp-candidate-commitment-recovery-proposal-v1.md",
+    "sha256": "94fd655ff6fe8d4513d9a84a580d1042425974d566ed6c9e4bf544fbccc3be10",
+    "source_status": "Verified DERIVED source with original ABORTED attempt preserved."
+  },
+  "status_clarification": {
+    "reason": "Distinguish FINALIZED raw parents from complete scored delivery derivatives; no estimand, metric, roster, contrast or decision threshold changes.",
+    "supersedes": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-distinct-commitment-analysis-recipe-v1.json",
+      "sha256": "19d4ac7ec6659e2de6d1a1c97fd505901fb9ea958fbb58e245e374478d90c617"
+    }
+  }
+}

@@ -3345,3 +3345,34 @@ Repair the temporary runtime scope, including exceptional-path scratch client/pr
 | 2026-09-13T08:41:02.614392+00:00 | SAEA-SLURP-DISTINCT-CLOSED-JOINT-FIT-REVALIDATION-V1 | model-free-check | Verify full-roster request and capacity provenance after the registered runtime-state repair. | No model or tool endpoints. | slurp retained exposed DEV1000 | dev | 8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84 | no | 0 | 0 | 0 | Preserve original source, measurement and failed precontact dispatch. | docs/readiness/2026-09-13-slurp-distinct-successors-v1/closed-joint-fit-revalidation-registration-v1.json | REGISTERED BEFORE MATERIALIZATION. Registration SHA256 d13ee195d9d7148085b7a85da8f8bc5a3e54f4cd436a7f421648d4ab42f65f8c. Original fit3001 endpoints remain spent; new endpoints0; generation0; official scoring0. |
 
 Both model-free capacity revalidations completed at53b0b681. Hard-first artifact SHA25674a40a6dfafac48c9361a34144d32fa06054030ed779a690ccfa899c672eb6eb; closed-joint e8418111b4d7d8a6f4fa97c914f469602c92ddba031eb72b39c462cf77cde0cf. Each certifies1000 unchanged normalized requests and preserves the original3001-contact journal. New endpoint calls0. Root separately checked each journal exact sibling path and every run/attempt/session field; association receipt SHA256f83e86cb78c489582b4ce4c783cb35928121f6416d93b2030df8070951bb4a5f. The generic helper does not yet enforce sibling association itself; this campaign's exact registered associations are verified. Prospective generation plans v2 replace only the unconsumed precontact bindings. Keep v1 documents and failed launch/exit records. No registered generation attempt existed at re-admission. Same resident decoder PID102694/start ticks5372197 is required.
+
+## SAEA-SLURP-DISTINCT-COMMITMENT-READ-RELEASE-V1
+
+Root verified both raw parents FINALIZED/COMPLETED, both saea-derived-delivery-v1 bundles, and both complete first official score receipts before releasing semantic results. Each arm has 1,000 generated rows. Bind the frozen recipe without changing populations, metrics, draws or decision rules in [the bound analysis](readiness/2026-09-13-slurp-distinct-commitment-analysis-bound-v1.json). [The read release](readiness/2026-09-13-slurp-distinct-commitment-read-release-v1.json) admits saved-score paired analysis and source-bound diagnostics only, with zero new model, tokenizer, encoder or scorer contacts. The original duplicate-bearing source remains ABORTED and its contacts remain counted. This is a component comparison, not an autonomous-system claim.
+
+## SAEA-SLURP-DISTINCT-COMMITMENT-PAIRED-ANALYSIS-V1 result
+
+The registered saved-score analysis completed under the root read release. NEW500 pooled SLU micro delta is +0.0124 pp (speaker CI90 [-1.2911, +1.3864]); the primary verdict is inconclusive and exploratory_candidate=false. Intent exact improves by +2.8 pp (CI90 [+1.2447, +4.3307]). Preserve the distinction between the positive intent component and the unproven overall/system gain. [The result](readiness/2026-09-13-slurp-distinct-commitment-result-v1.md) includes all population/scenario tables, cost and source pins. Source-bound conditional diagnostics remain pending. No new scorer or model contacts were made.
+
+
+## 2026-09-13: Distinct candidate conditional diagnostics
+
+After the registered read release, run the shared model-free source-bound diagnostic entry at code 33d8db2f. Verify the derived common source, both delivery bundles and complete official score receipts. Preserve actual variable-width candidates and map entity exactness from the saved official FP/FN counts. The artifact conditional-diagnostics-v1.json has SHA-256 9d92ca29f9ae733dbf827979f68e3103f0f9c01f6e3a79d77223f24f1ded83a2. See docs/readiness/2026-09-13-slurp-distinct-commitment-conditional-result-v1.md. New model, encoder, tokenizer and scorer contacts: zero. Primary overall SLU verdict remains inconclusive. Raw proposal flags require the separately noted supplement; do not interpret delivered-text attempt fields as raw proposal counts.
+
+
+## 2026-09-13: Register semantic authoring source preparation
+
+Before inspecting new TRAIN semantic support, freeze docs/readiness/2026-09-13-slurp-semantic-authoring-registration-v1.json. Use only the governed A/B-excluded pool, exact identity 22f6092dfdb4a160376e529d8e59e9215bc7701e274620d35feb1c4d82f309e9. Prepare separate deterministic intent and slot support materials and construction rosters; keep DEV/test content and result feedback outside authoring. This is model-free preparation and root authoring, not a runtime knowledge release. All neural, GPU, tokenizer, tool-backend and scorer contact caps are zero.
+
+
+## 2026-09-13: Close raw delivery diagnostic supplement
+
+Under the existing read release, run the shared diagnostic entry at 0bc53729 to create conditional-diagnostics-v2.json, SHA-256 a9fdac614352a767719694d893b65f8431914daff4874d3ecb696636d296a17b. Preserve v1. Root verified all common scientific aggregates and stratum/width tables are identical. The added source-verified flags show zero outside-shortlist proposals, 15 joint refusals, 18 hard-first refusals and 56 hard-first attempted intent switches across DEV1000. See docs/readiness/2026-09-13-slurp-distinct-commitment-delivery-supplement-v1.md. No new model, encoder, tokenizer, tool-backend or scorer contacts; no verdict or threshold changes.
+
+## 2026-09-13: Close registered TRAIN support preparation and root intent authoring
+
+Under semantic-authoring-registration-v1, complete the governed support preparation at fa9ba618. Root verified support SHA-256 1be15d89797e55bfb492df87cc994844bb8db69aab5ce8a70e0880f13e8dcdee, read all 474 intent-support rows and authored 60 source-bound candidate guidance values. The authored source SHA-256 is 040b8143072ccd660cd1659f5a0ddf71dec5a3f8f8ec6e98bda726a6b7db1a13. Root recorded overlapping and sparse label boundaries as limitations, not memorized exceptions. Slot semantic review and both runtime store releases remain pending. All new model, encoder, tokenizer, backend and scorer contacts are zero. See docs/readiness/2026-09-13-slurp-semantic-authoring-root-review-v1.md.
+
+## 2026-09-13: Integrate metered native framework components
+
+Merge verified components at 1d458f17. Actual OpenJiuwen plus shared speech transport synthetic verification now covers full counted tool history and per-instance tool callback isolation. Root combined checks pass 179 tests with one platform skip; canonical engineering base check passes. No real model, tokenizer, encoder, backend or scorer contact was added. The formal full-episode runtime binding is still outstanding; do not declare a new GPU flight ready. See docs/readiness/2026-09-13-framework-integration-handoff-v5.md.

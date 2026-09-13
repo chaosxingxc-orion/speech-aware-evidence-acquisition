@@ -400,13 +400,16 @@ def aggregate_topn_diagnostics(
     branch_outcomes: Mapping[str, Sequence[BranchOutcomeRow]],
     *,
     candidate_width: int | None = None,
+    allow_variable_width: bool = False,
 ) -> TopNDiagnosticReport:
     """Aggregate Top-N source and final-branch diagnostics on one exact roster.
 
     reference_intents are an independent caller supplied reference layer; no
     reference value is ever derived from candidates or branch predictions.
     candidate_width selects the leading ordered IDs to treat as the shortlist.
-    When omitted, every source row must have the same width.
+    When omitted, every source row must have the same width. Explicit
+    allow_variable_width treats candidate_width as a maximum and never pads
+    or drops candidates; the historical fixed-width contract remains default.
     """
 
     source_rows = _index_source(source_candidates)
@@ -426,6 +429,10 @@ def aggregate_topn_diagnostics(
         _check_roster(source_ids, set(rows), f"branch {name!r}")
         branch_rows[name] = rows
 
+    if not isinstance(allow_variable_width, bool):
+        raise TopNDiagnosticError("allow_variable_width must be boolean")
+    if allow_variable_width and candidate_width is None:
+        raise TopNDiagnosticError("variable width requires an explicit maximum")
     source_widths = {len(candidates) for _, candidates in source_rows}
     if candidate_width is None:
         if len(source_widths) != 1:
@@ -441,7 +448,9 @@ def aggregate_topn_diagnostics(
         ):
             raise TopNDiagnosticError("candidate_width must be a positive integer")
         width = candidate_width
-        if any(len(candidates) < width for _, candidates in source_rows):
+        if allow_variable_width and any(len(candidates) > width for _, candidates in source_rows):
+            raise TopNDiagnosticError("source row exceeds the registered maximum width")
+        if not allow_variable_width and any(len(candidates) < width for _, candidates in source_rows):
             raise TopNDiagnosticError(
                 "source candidate row is shorter than candidate_width"
             )

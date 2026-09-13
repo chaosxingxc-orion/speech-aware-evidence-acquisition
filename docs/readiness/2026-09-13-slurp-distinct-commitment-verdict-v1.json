@@ -1,0 +1,81 @@
+{
+  "analysis": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-DISTINCT-COMMITMENT-PAIRED-ANALYSIS-V1/score-contrasts.json",
+    "sha256": "26924003cd975bc77fbc8d9039d591e7d369dbf77a8f183862353f56cb138a69"
+  },
+  "autonomous_system_gain_established": false,
+  "costs": {
+    "closed-joint": {
+      "audio_seconds_used": 2884.793687499999,
+      "calls_used": 1000,
+      "completion_tokens_total": 28687,
+      "latency_seconds_total": 3532.905080746874,
+      "prompt_tokens_total": 2755962,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+    },
+    "hard-first": {
+      "audio_seconds_used": 2884.793687499999,
+      "calls_used": 1000,
+      "completion_tokens_total": 29182,
+      "latency_seconds_total": 3600.019341661842,
+      "prompt_tokens_total": 2755962,
+      "tool_calls": 0,
+      "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+    }
+  },
+  "diagnostics_status": "source-bound conditional and branch-integrity decomposition pending; no new scorer calls",
+  "experiment_id": "SAEA-SLURP-DISTINCT-COMMITMENT-PAIRED-ANALYSIS-V1",
+  "exploratory_candidate": false,
+  "intent_component": "positive paired component evidence",
+  "intent_guard": {
+    "bootstrap": {
+      "ci_high": 0.043307457330545536,
+      "ci_level": 0.9,
+      "ci_low": 0.012446844153501193,
+      "n_replicates": 10000,
+      "point_estimate": 0.028,
+      "seed": 20260913,
+      "sigma_hat": 0.009415231067088822
+    },
+    "delta": 0.028000000000000025,
+    "harms": 6,
+    "left_mean": 0.766,
+    "metric": "scenario_action_exact",
+    "n": 500,
+    "right_mean": 0.794,
+    "saves": 20,
+    "sign_test_p": 0.009355306625366211,
+    "ties": 474
+  },
+  "next_action": "Complete the already registered source-bound conditional and branch-integrity diagnostics. Name the limiting component before registering another mechanism; do not redraw or rerun to obtain a positive verdict.",
+  "primary_metric": "slu_f1_micro",
+  "primary_population": "NEW500",
+  "primary_result": {
+    "bootstrap": {
+      "ci_high": 0.013864133643143458,
+      "ci_level": 0.9,
+      "ci_low": -0.012911253711172825,
+      "n_replicates": 10000,
+      "point_estimate": 0.00012371839229186055,
+      "seed": 20260913,
+      "sigma_hat": 0.008158282529334301
+    },
+    "ci90_pp": [
+      -1.2911253711172825,
+      1.3864133643143457
+    ],
+    "delta_pp": 0.012371839229186055,
+    "equal_stratum_delta_pp": 0.6549631685564372,
+    "left_pct": 49.52907075121301,
+    "right_pct": 49.541442590442195
+  },
+  "primary_verdict": "inconclusive",
+  "read_release": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-13-slurp-distinct-commitment-read-release-v1.json",
+    "sha256": "80ba30353bae64d2f4dd2a559fe585b688619d0c046d0ce485f6ba0e3b0266b4"
+  },
+  "recorded_at_utc": "2026-09-13T09:28:01.396757+00:00",
+  "replication_established": false,
+  "schema": "saea-component-verdict-v1"
+}
