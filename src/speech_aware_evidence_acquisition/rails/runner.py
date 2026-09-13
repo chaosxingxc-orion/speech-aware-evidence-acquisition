@@ -1735,7 +1735,6 @@ async def _invoke_native_role_episode(
         visit = visits[request.role_id]
         material = visit["material"]
         decoding = dict(base_decoding_params or {})
-        decoding["id_slot"] = visit["slot_id"]
         if material.response_format is not None:
             decoding["response_format"] = dict(material.response_format)
         decoding.update(tool_choice="auto" if role.tool_names else "none", parallel_tool_calls=False)
@@ -1753,7 +1752,7 @@ async def _invoke_native_role_episode(
             role_id=request.role_id, sample_id=ctx.sample_id,
             role_query=visit["query"], base_messages=base_messages(ctx),
             core_kwargs={
-                "decoding_params": decoding,
+                "decoding_params": {**decoding, "id_slot": visit["slot_id"]},
                 "key_representation_id": plan.key_representation_id,
                 "matcher_policy_id": plan.matcher_policy_id,
                 "agent_state": [a.as_json() for a in ctx.agent_states],
