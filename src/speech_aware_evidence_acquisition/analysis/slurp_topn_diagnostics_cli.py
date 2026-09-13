@@ -538,6 +538,7 @@ def _trace_contact_for_state(
         or use.get("use_role_id") != source_phase
         or len(control_rows) != 1
         or control_rows[0].get("contact_id") != agent_contact_id
+        or len(history) != 1
         or history[-1] != control
         or not isinstance(control_text, str)
         or control_text != expected_control
@@ -863,7 +864,10 @@ def _native_system_rows(
             f"{scenario}_{action}" if isinstance(scenario, str) and scenario
             and isinstance(action, str) and action else None
         )
-        branches.append(BranchOutcomeRow(sample_id, final_intent, False, None))
+        branches.append(BranchOutcomeRow(
+            sample_id, final_intent, False, None,
+            missing_final_intent=final_intent is None,
+        ))
     phase_supply, audit_source = _native_phase_supply_receipt(
         binding,
         run_id=run_id,
@@ -1762,6 +1766,7 @@ def _run_native_system(
             row.final_intent_id,
             row.refused,
             entity_correctness[row.sample_id],
+            missing_final_intent=row.missing_final_intent,
         )
         for row in system_rows
     )

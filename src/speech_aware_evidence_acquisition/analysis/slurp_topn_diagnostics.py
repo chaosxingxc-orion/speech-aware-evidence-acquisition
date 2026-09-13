@@ -45,13 +45,16 @@ class BranchOutcomeRow:
 
     A refused row may retain a final_intent_id as an attempted intent for
     shortlist diagnostics. That attempted ID never counts as accepted final
-    quality.
+    quality. A nonrefused delivery without an intent must explicitly declare
+    missing_final_intent; it remains an incorrect all-roster outcome, not a
+    refusal or a candidate-width exclusion.
     """
 
     sample_id: str
     final_intent_id: str | None
     refused: bool
     entity_correct: bool | None = None
+    missing_final_intent: bool = False
 
 
 @dataclass(frozen=True)
@@ -70,6 +73,7 @@ class BranchSampleDiagnostic:
     final_intent_attempt_only: bool
     entity_correct: bool | None
     entity_partition: str
+    missing_final_intent: bool = False
 
 
 @dataclass(frozen=True)
@@ -106,6 +110,7 @@ class TopNSampleDiagnostic:
                 name: {
                     "final_intent_id": value.final_intent_id,
                     "refused": value.refused,
+                    "missing_final_intent": value.missing_final_intent,
                     "final_intent_correct": value.final_intent_correct,
                     "rescue": value.rescue,
                     "harm": value.harm,
@@ -186,6 +191,7 @@ class BranchDiagnosticSummary:
     intent_correct_entity_incorrect: int
     intent_incorrect_entity_correct: int
     intent_incorrect_entity_incorrect: int
+    missing_final_intents: int = 0
 
     @property
     def final_intent_accuracy(self) -> float:
@@ -211,6 +217,7 @@ class BranchDiagnosticSummary:
             "final_intent_correct": self.final_intent_correct,
             "final_intent_accuracy": self.final_intent_accuracy,
             "refusals": self.refusals,
+            "missing_final_intents": self.missing_final_intents,
             "out_of_shortlist_attempts": self.out_of_shortlist_attempts,
             "candidate_present": self.candidate_present,
             "candidate_present_final_correct": (
@@ -357,7 +364,14 @@ def _index_branch(value: object, branch_name: str) -> dict[str, BranchOutcomeRow
             raise TopNDiagnosticError(
                 f"branch {branch_name!r} refused must be boolean"
             )
-        if not item.refused and item.final_intent_id is None:
+        if not isinstance(item.missing_final_intent, bool) or (
+            item.missing_final_intent
+            and (item.refused or item.final_intent_id is not None)
+        ):
+            raise TopNDiagnosticError(
+                f"branch {branch_name!r} missing_final_intent is inconsistent"
+            )
+        if not item.refused and item.final_intent_id is None and not item.missing_final_intent:
             raise TopNDiagnosticError(
                 f"branch {branch_name!r} nonrefused outcome has no final_intent_id"
             )
@@ -464,6 +478,7 @@ def aggregate_topn_diagnostics(
         name: {
             "final_intent_correct": 0,
             "refusals": 0,
+            "missing_final_intents": 0,
             "out_of_shortlist_attempts": 0,
             "candidate_present": 0,
             "candidate_present_final_correct": 0,
@@ -519,6 +534,7 @@ def aggregate_topn_diagnostics(
             counts = branch_counts[name]
             counts["final_intent_correct"] += int(final_correct)
             counts["refusals"] += int(outcome.refused)
+            counts["missing_final_intents"] += int(outcome.missing_final_intent)
             counts["out_of_shortlist_attempts"] += int(out_of_shortlist)
             counts["candidate_present"] += int(candidate_present)
             counts["candidate_present_final_correct"] += int(
@@ -542,6 +558,7 @@ def aggregate_topn_diagnostics(
             branch_diagnostics[name] = BranchSampleDiagnostic(
                 final_intent_id=outcome.final_intent_id,
                 refused=outcome.refused,
+                missing_final_intent=outcome.missing_final_intent,
                 final_intent_correct=final_correct,
                 rescue=rescue,
                 harm=harm,

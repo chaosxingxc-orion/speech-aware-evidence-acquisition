@@ -229,3 +229,30 @@ def test_refused_attempt_intent_is_diagnostic_only_and_never_final_quality():
     assert result.as_json()["per_sample"][0]["branches"]["closed_joint"][
         "final_intent_attempt_only"
     ] is True
+
+
+def test_explicit_missing_final_intent_is_retained_without_refusal():
+    report = aggregate_topn_diagnostics(
+        [SourceCandidateRow("s1", ("a",))],
+        [ReferenceIntentRow("s1", "a")],
+        {"system": [BranchOutcomeRow("s1", None, False, False, missing_final_intent=True)]},
+    ).as_json()
+    branch = report["branches"]["system"]
+    assert branch["sample_count"] == 1
+    assert branch["final_intent_correct"] == 0
+    assert branch["refusals"] == 0
+    assert branch["missing_final_intents"] == 1
+    assert branch["harms"] == 1
+    assert branch["candidate_present_final_not_selected"] == 1
+
+
+@pytest.mark.parametrize("intent,refused,missing", [
+    ("a", False, True), (None, True, True), (None, False, "yes"),
+])
+def test_missing_final_intent_flag_must_match_delivery(intent, refused, missing):
+    with pytest.raises(TopNDiagnosticError, match="missing_final_intent"):
+        aggregate_topn_diagnostics(
+            [SourceCandidateRow("s1", ("a",))],
+            [ReferenceIntentRow("s1", "a")],
+            {"system": [BranchOutcomeRow("s1", intent, refused, missing_final_intent=missing)]},
+        )

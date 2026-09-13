@@ -237,6 +237,8 @@ def _native_fixture(
         "s2": '{"scenario":"b","action":"y","entities":[]}',
     }
 
+    if defect == "missing_final_intent":
+        outputs["s2"] = "Synthetic incomplete answer."
     results = []
     output_rows = []
     trace_records = {}
@@ -468,8 +470,13 @@ def _native_fixture(
     return ids, legal_ids, config, bundle
 
 
-def test_native_mode_reads_internal_perception_and_reports_actual_width(tmp_path, monkeypatch):
-    ids, legal_ids, config, bundle = _native_fixture(tmp_path)
+@pytest.mark.parametrize("missing_final_intent", (False, True))
+def test_native_mode_reads_internal_perception_and_reports_actual_width(
+    tmp_path, monkeypatch, missing_final_intent
+):
+    ids, legal_ids, config, bundle = _native_fixture(
+        tmp_path, defect="missing_final_intent" if missing_final_intent else None
+    )
     config_path = tmp_path / "analysis.json"
     config_path.write_text(json.dumps(config), encoding="utf-8")
     monkeypatch.setattr(
@@ -508,7 +515,10 @@ def test_native_mode_reads_internal_perception_and_reports_actual_width(tmp_path
     assert projection["raw_candidate_position_count"] == 4
     assert projection["projected_distinct_candidate_count"] == 3
     assert projection["duplicate_count_histogram"] == {"0": 1, "1": 1}
-    assert result["source"]["final_answer_format_diagnostics"]["malformed_count"] == 0
+    assert result["source"]["final_answer_format_diagnostics"]["malformed_count"] == int(missing_final_intent)
+    assert pooled["branches"]["system"]["missing_final_intents"] == int(missing_final_intent)
+    assert pooled["branches"]["system"]["refusals"] == 0
+    assert pooled["branches"]["system"]["sample_count"] == 2
     assert result["source"]["native_episode_postseal_diagnostics"][
         "model_contacts"
     ]["by_role"] == {
@@ -582,7 +592,7 @@ def test_native_actual_supply_refuses_candidate_spec_or_store_disagreement(
 @pytest.mark.parametrize("defect", (
     "schema", "role", "sample", "contact", "system", "query", "extra_field",
     "tool_ids", "extra_message", "plain_instruction", "duplicate_json_key",
-    "content_hash", "nonfinal_control",
+    "content_hash", "nonfinal_control", "inherited_state",
 ))
 def test_native_perception_refuses_framework_control_envelope_drift(tmp_path, defect):
     ids, legal_ids, config, bundle = _native_fixture(tmp_path)
@@ -604,6 +614,15 @@ def test_native_perception_refuses_framework_control_envelope_drift(tmp_path, de
         envelope["messages"].append({"role": "assistant", "content": "Extra."})
     elif defect == "nonfinal_control":
         payload["history"].append({"role": "agent_state", "content": "Unexpected."})
+    elif defect == "inherited_state":
+        payload["history"].insert(0, {
+            "role": "agent_state", "state_id": "prior:synthetic",
+            "state_kind": "phase:solver", "content": "Inherited answer.",
+            "content_sha256": hashlib.sha256(b"Inherited answer.").hexdigest(),
+            "source_query_state_sha256": "a" * 64,
+            "source_response_sha256": "b" * 64,
+            "producer_policy_id": "native-policy", "cited_value_ids": [],
+        })
     control["content"] = json.dumps(
         envelope, ensure_ascii=False, sort_keys=True, separators=(",", ":")
     )
