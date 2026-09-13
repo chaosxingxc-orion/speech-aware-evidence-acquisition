@@ -1712,7 +1712,7 @@ async def _invoke_native_role_episode(
         state.query_state = next_state
         pending.clear()
 
-    def role_input(phase_id, _episode_state):
+    def role_input(phase_id, episode_state):
         settle(next_phase=phase_id)
         ctx = context()
         previous = ctx.agent_states[-1] if ctx.agent_states else None
@@ -1722,6 +1722,17 @@ async def _invoke_native_role_episode(
         if not isinstance(material, PhaseMaterial):
             raise RailsRunnerError("native role material must be PhaseMaterial")
         material.validate()
+        limits = {
+            "revision_index": episode_state["revision_count"],
+            "max_revisions": config.max_revisions,
+            "remaining_model_contacts": config.max_contacts - state.scheduled_contacts,
+            "role_max_iterations": role_configs[phase_id].max_iterations,
+        }
+        material = replace(
+            material,
+            instruction=material.instruction + "\n\nNative episode limits: "
+            + json.dumps(limits, sort_keys=True),
+        ).validate()
         phase = program.phase(phase_id)
         if (phase.response_format_id is not None) != (material.response_format is not None):
             raise RailsRunnerError("native role response format differs from its phase")

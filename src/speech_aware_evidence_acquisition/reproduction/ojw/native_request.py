@@ -181,7 +181,14 @@ class MeteredNativeSpeechRequest:
         for key, value in framework_controls.items():
             if key not in decoding or decoding[key] != value:
                 raise NativeSpeechRequestError("framework decoding override is not registered: " + key)
-        decoding.update(tool_choice=expected_choice, parallel_tool_calls=False)
+        native_arm = "tool_schemas" in ARM_VISIBLE_FIELDS[self._client.arm]
+        if native_arm:
+            decoding.update(tool_choice=expected_choice, parallel_tool_calls=False)
+        else:
+            if binding.tool_names:
+                raise NativeSpeechRequestError("ordinary arm cannot expose native tools")
+            decoding.pop("tool_choice", None)
+            decoding.pop("parallel_tool_calls", None)
         kwargs["decoding_params"] = decoding
         instruction = framework_contact_instruction(
             role_id=binding.role_id, sample_id=binding.sample_id,
@@ -193,7 +200,7 @@ class MeteredNativeSpeechRequest:
             agent_contact_id=request.context.agent_contact_id,
             contact_instruction=instruction,
             tool_names=(
-                None if not binding.tool_names and "tool_schemas" not in ARM_VISIBLE_FIELDS[self._client.arm]
+                None if not native_arm
                 else binding.tool_names
             ),
         )
