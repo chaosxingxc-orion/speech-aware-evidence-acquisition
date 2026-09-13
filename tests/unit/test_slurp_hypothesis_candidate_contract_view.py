@@ -166,3 +166,29 @@ def test_view_rejects_a_provider_result_from_a_foreign_source(slurp_world):
     )
     with pytest.raises(SlurpHypothesisCandidateContractViewError, match="result source"):
         view.render_state(_artifact("weather_query"), sample_id=SAMPLE_ID)
+
+
+def test_view_rejects_a_same_source_result_for_the_wrong_request(slurp_world):
+    canonical = _provider(slurp_world)
+
+    class WrongRequestProvider:
+        source_sha256 = canonical.source_sha256
+        candidate_ids = canonical.candidate_ids
+
+        def lookup(self, candidate_ids):
+            assert candidate_ids == ("weather_query",)
+            return canonical.lookup(("iot_hue_lightdim",))
+
+    view = SlurpHypothesisCandidateContractStateView(
+        provider=WrongRequestProvider(),
+        candidate_source_sha256=canonical.source_sha256,
+        max_candidates=3,
+    )
+    with pytest.raises(SlurpHypothesisCandidateContractViewError, match="different candidate request"):
+        view.render_state(_artifact("weather_query"), sample_id=SAMPLE_ID)
+
+
+def test_callable_view_requires_the_full_source_bound_artifact(slurp_world):
+    view = _view(slurp_world)
+    with pytest.raises(SlurpHypothesisCandidateContractViewError, match="full AgentStateArtifact"):
+        view("hypothesis text")
