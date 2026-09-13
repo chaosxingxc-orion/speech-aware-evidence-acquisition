@@ -41,6 +41,9 @@ _SHA_A = "a" * 64
 _SHA_B = "b" * 64
 
 _EXPECTED_PROGRAM_SHAPES = {
+    "phase-native-candidates-review-revise-v1": (
+        ("perception", "reviewer", "planner", "solver"), 11, "native-role-episode"
+    ),
     "phase-native-review-revise-v1": (("perception", "reviewer", "planner", "solver"), 11, "native-role-episode"),
     "phase-intent-hypotheses-only-v1": (
         ("hypotheses",),
