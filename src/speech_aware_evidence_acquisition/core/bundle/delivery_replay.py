@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from pathlib import Path
 from typing import Mapping
 
 from ..base import RESPONSE_POSTPROCESSORS, CoreError
@@ -22,11 +23,18 @@ from . import BundleError
 from .artifacts import VerifiedBundle
 
 PHASE_RESPONSE_PAIR_SCHEMA = "saea-phase-response-pair-v1"
+SEALED_STATE_RESPONSE_PAIR_SCHEMA = "saea-sealed-state-response-pair-v1"
 _PHASE_SELECTOR_KEYS = {
     "schema",
     "program_id",
     "program_sha256",
     "predecessor_phase",
+    "response_phase",
+}
+_SEALED_STATE_SELECTOR_KEYS = {
+    "schema",
+    "program_id",
+    "program_sha256",
     "response_phase",
 }
 
@@ -101,6 +109,45 @@ def _phase_program(selector: Mapping, values: Mapping, *, program=None):
     return program
 
 
+def _sealed_state_program(selector: Mapping, values: Mapping, *, program=None):
+    from ...rails.controllers import RailsControllersError, default_phase_program
+
+    if set(selector) != _SEALED_STATE_SELECTOR_KEYS:
+        raise BundleError("sealed-state source_selector has missing or unknown fields")
+    if selector.get("schema") != SEALED_STATE_RESPONSE_PAIR_SCHEMA:
+        raise BundleError("sealed-state source_selector schema mismatch")
+    for field in ("program_id", "response_phase"):
+        if not isinstance(selector.get(field), str) or not selector[field]:
+            raise BundleError(f"sealed-state source_selector {field} must be non-empty")
+    if values.get("policy") != selector["program_id"]:
+        raise BundleError("sealed-state source program differs from parent policy")
+    try:
+        registered = default_phase_program(selector["program_id"])
+        program = registered if program is None else program
+        program.validate()
+    except RailsControllersError as error:
+        raise BundleError(f"sealed-state source program is not registered: {error}") from error
+    if program.as_json() != registered.as_json():
+        raise BundleError("sealed-state source differs from the registered program")
+    if selector.get("program_sha256") != sha256(canonical(program.as_json())):
+        raise BundleError("sealed-state source program hash mismatch")
+    names = program.phase_names()
+    if selector["response_phase"] not in names:
+        raise BundleError("sealed-state response phase is outside its program")
+    if selector["response_phase"] != names[-1]:
+        raise BundleError("sealed-state response phase must be terminal")
+    return program
+
+
+def _source_selector_program(selector: Mapping, values: Mapping, *, program=None):
+    schema = selector.get("schema")
+    if schema == PHASE_RESPONSE_PAIR_SCHEMA:
+        return _phase_program(selector, values, program=program)
+    if schema == SEALED_STATE_RESPONSE_PAIR_SCHEMA:
+        return _sealed_state_program(selector, values, program=program)
+    raise BundleError("delivery source_selector schema is not registered")
+
+
 def delivery_declarations(values: Mapping) -> tuple[Mapping, ...]:
     """Validate the shared declaration shape before generation and replay."""
     declarations = values.get("delivery_derivatives")
@@ -172,7 +219,7 @@ def validate_phase_delivery_sources(
         selector = declaration["source_selector"]
         if not isinstance(selector, Mapping):
             raise BundleError("phase response source_selector must be a mapping")
-        _phase_program(selector, values, program=program)
+        _source_selector_program(selector, values, program=program)
         try:
             params = declaration["response_postprocessor_params"]
             if not isinstance(params, Mapping):
@@ -393,14 +440,205 @@ def replay_phase_pair_delivery(
     return rows, sources
 
 
+def _confined_data_path(data_root, relpath: object) -> Path:
+    if (
+        not isinstance(relpath, str)
+        or not relpath
+        or relpath.startswith("/")
+        or "\\" in relpath
+        or ":" in relpath
+        or any(part in ("", ".", "..") for part in relpath.split("/"))
+    ):
+        raise BundleError("sealed-state predecessor path must be canonical POSIX relative")
+    root = Path(data_root).resolve()
+    path = (root / relpath).resolve()
+    if not path.is_relative_to(root):
+        raise BundleError("sealed-state predecessor path escapes data_root")
+    return path
+
+
+def _history_carries_state(history: object, state) -> bool:
+    if not isinstance(history, list):
+        return False
+    expected = state.as_json()
+    expected.pop("state_artifact_version")
+    expected["content_sha256"] = sha256(state.content.encode("utf-8"))
+    matches = [
+        entry
+        for entry in history
+        if isinstance(entry, Mapping)
+        and entry.get("role") == "agent_state"
+        and all(entry.get(key) == value for key, value in expected.items())
+    ]
+    return len(matches) == 1
+
+
+def replay_sealed_state_response_delivery(
+    parent: VerifiedBundle,
+    declaration: Mapping,
+    values: Mapping,
+    *,
+    data_root,
+) -> tuple[list[dict], list[dict]]:
+    """Deliver a terminal response against its exact external sealed state."""
+    from ...rails.phase_material import (
+        PhaseMaterialError,
+        load_phase_material_specs,
+        sealed_states_from_manifest,
+    )
+    from .verify import verify_bundle
+
+    selector = declaration.get("source_selector")
+    if not isinstance(selector, Mapping):
+        raise BundleError("sealed-state delivery requires a source_selector")
+    program = _sealed_state_program(selector, values)
+    response_phase = selector["response_phase"]
+    try:
+        spec = load_phase_material_specs(values, program)[response_phase]
+    except PhaseMaterialError as error:
+        raise BundleError(f"sealed-state phase material is invalid: {error}") from error
+    if spec.predecessor_binding != "sealed-manifest":
+        raise BundleError("sealed-state response phase must bind a sealed manifest")
+    source = spec.predecessor_source
+    if not isinstance(source, Mapping) or set(source) != {
+        "manifest_relpath",
+        "manifest_sha256",
+        "producer_policy_id",
+    }:
+        raise BundleError("sealed-state predecessor source binding is incomplete")
+    source_path = _confined_data_path(data_root, source["manifest_relpath"])
+    try:
+        source_manifest_sha256 = sha256(source_path.read_bytes())
+    except OSError as error:
+        raise BundleError(f"cannot read sealed-state predecessor manifest: {error}") from error
+    if source_manifest_sha256 != source["manifest_sha256"]:
+        raise BundleError("sealed-state predecessor manifest hash differs from source")
+    predecessor = verify_bundle(source_path)
+    if (
+        predecessor.attempt_state != "FINALIZED"
+        or predecessor.manifest.get("status") != "COMPLETED"
+    ):
+        raise BundleError("sealed-state predecessor must be FINALIZED and COMPLETED")
+    if predecessor.split_ids != parent.split_ids:
+        raise BundleError("sealed-state predecessor roster differs from response parent")
+    runtime_producers = [
+        (record_id.split("/", 1)[0], payload.get("use_controller_policy_id"))
+        for record_id, payload in predecessor.trace_records.items()
+        if "use_controller_policy_id" in payload
+    ]
+    if (
+        len(runtime_producers) != len(predecessor.split_ids)
+        or {sample_id for sample_id, _policy in runtime_producers}
+        != set(predecessor.split_ids)
+        or {policy for _sample_id, policy in runtime_producers}
+        != {source["producer_policy_id"]}
+    ):
+        raise BundleError("sealed-state predecessor producer identity differs from source")
+    try:
+        states = sealed_states_from_manifest(
+            source_path,
+            expected_sha256=source["manifest_sha256"],
+            phase_name=response_phase,
+            producer_policy_id=source["producer_policy_id"],
+            sample_ids=tuple(row["sample_id"] for row in parent.outputs_rows),
+            bundle_verifier=lambda _path: predecessor,
+        )
+    except (KeyError, PhaseMaterialError) as error:
+        raise BundleError(f"sealed-state predecessor loading failed: {error}") from error
+    rule = RESPONSE_POSTPROCESSORS.resolve(declaration["response_postprocessor"])(
+        **declaration["response_postprocessor_params"]
+    )
+    request_index = _phase_request_index(parent)
+    rows, sources = [], []
+    seen = set()
+    for source_row in parent.outputs_rows:
+        sample_id = source_row.get("sample_id")
+        if not isinstance(sample_id, str) or sample_id in seen:
+            raise BundleError("sealed-state response parent has invalid sample identities")
+        seen.add(sample_id)
+        state = states[sample_id]
+        contact_id = f"{program.program_id}:{response_phase}:{sample_id}"
+        request_id, request, response, response_text = _phase_contact(
+            parent, request_index, sample_id=sample_id, contact_id=contact_id
+        )
+        if not _history_carries_state(request["payload"].get("history"), state):
+            raise BundleError("response request did not carry the exact sealed predecessor state")
+        if (
+            source_row.get("request_id") != request_id
+            or source_row.get("text") != response_text
+            or source_row.get("request_sha256") != request.get("payload_sha256")
+            or source_row.get("response_sha256") != response.get("response_sha256")
+            or source_row.get("response_text_sha256")
+            != response.get("response_text_sha256")
+        ):
+            raise BundleError("sealed-state response differs from parent output")
+        max_tokens = _actual_max_tokens(request)
+        saturated = terminal_response_saturated(response.get("usage"), max_tokens)
+        normalized = normalize_terminal_response(response_text, saturated=saturated)
+        outcome = deliver_terminal_response(
+            state.content,
+            response_text,
+            rule=rule,
+            saturated=saturated,
+        )
+        rows.append(
+            {
+                "request_id": f"{request_id}/delivery/{declaration['cell_id']}",
+                "sample_id": sample_id,
+                "carrier_lock_key": source_row["carrier_lock_key"],
+                "arm": source_row["arm"],
+                "text": outcome.text,
+                "admitted": source_row["admitted"],
+                "delivery_text_sha256": sha256(outcome.text.encode("utf-8")),
+                "source_request_id": request_id,
+                "source_output_sha256": sha256(canonical(source_row)),
+            }
+        )
+        sources.append(
+            {
+                "sample_id": sample_id,
+                "selector": dict(selector),
+                "predecessor_manifest": {
+                    "path": str(source_path),
+                    "sha256": source["manifest_sha256"],
+                },
+                "sealed_state_sha256": state.content_hash(),
+                "sealed_state_source_query_sha256": state.source_query_state_sha256,
+                "sealed_state_source_response_sha256": state.source_response_sha256,
+                "response_contact_id": contact_id,
+                "response_request_id": request_id,
+                "response_request_record_sha256": sha256(canonical(request)),
+                "response_response_record_sha256": sha256(canonical(response)),
+                "response_text_sha256": sha256(response_text.encode("utf-8")),
+                "normalized_response_sha256": sha256(normalized.encode("utf-8")),
+                "response_max_tokens": max_tokens,
+                "response_saturated": saturated,
+                "delivered_text_sha256": sha256(outcome.text.encode("utf-8")),
+                "refusal_reason": outcome.refusal_reason,
+            }
+        )
+    if seen != set(parent.split_ids):
+        raise BundleError("sealed-state delivery does not cover the response parent roster")
+    return rows, sources
+
+
 def replay_delivery(
     parent: VerifiedBundle,
     snapshot: PredecessorSnapshot | None,
     declaration: Mapping,
     values: Mapping,
+    *,
+    data_root=None,
 ) -> tuple[list[dict], list[dict]]:
     """Recompute whole-call outputs and a content-free, all-window receipt."""
-    if declaration.get("source_selector") is not None:
+    selector = declaration.get("source_selector")
+    if isinstance(selector, Mapping) and selector.get("schema") == SEALED_STATE_RESPONSE_PAIR_SCHEMA:
+        if data_root is None:
+            raise BundleError("sealed-state delivery requires data_root")
+        return replay_sealed_state_response_delivery(
+            parent, declaration, values, data_root=data_root
+        )
+    if selector is not None:
         return replay_phase_pair_delivery(parent, declaration, values)
     if not isinstance(snapshot, PredecessorSnapshot):
         raise BundleError("legacy OBS delivery requires a predecessor snapshot")
