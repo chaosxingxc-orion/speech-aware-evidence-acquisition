@@ -318,6 +318,8 @@ def arm_shows_construction_targets(arm: str) -> bool:
 
 ARTIFACT_RESULT_BINDING_SCHEMA = "saea-artifact-result-binding-v1"
 ARTIFACT_RESULT_ROLE = "training-feedback-proposal"
+ARTIFACT_RESULT_BINDING_SCHEMA_V2 = "saea-artifact-result-binding-v2"
+SLURP_HYPOTHESIS_ARTIFACT_ROLE = "slurp-intent-hypotheses"
 
 
 def validate_artifact_result_binding(
@@ -326,8 +328,9 @@ def validate_artifact_result_binding(
     plan: object,
     repo_root: Path,
     sample_ids: Sequence[str],
+    data_root: Path | None = None,
 ) -> Mapping[str, object] | None:
-    """Validate the explicit no-score TRAIN construction artifact mode."""
+    """Validate one registered scoreless artifact-result binding."""
 
     result_kind = values.get("result_kind", "task-answer")
     declared = values.get("artifact_result")
@@ -339,18 +342,25 @@ def validate_artifact_result_binding(
         return None
     if result_kind != "artifact":
         raise FlightRuntimeError("result_kind must be 'task-answer' or 'artifact'")
-    if not isinstance(declared, Mapping) or set(declared) != {
-        "schema",
-        "role",
-        "construction_roster",
-    }:
+    if not isinstance(declared, Mapping):
+        raise FlightRuntimeError("artifact_result must be a mapping")
+    schema = declared.get("schema")
+    role = declared.get("role")
+    legacy = schema == ARTIFACT_RESULT_BINDING_SCHEMA and role == ARTIFACT_RESULT_ROLE
+    hypotheses = (
+        schema == ARTIFACT_RESULT_BINDING_SCHEMA_V2
+        and role == SLURP_HYPOTHESIS_ARTIFACT_ROLE
+    )
+    required_keys = (
+        {"schema", "role", "construction_roster"}
+        if legacy
+        else {"schema", "role", "source_roster", "content_contract"}
+    )
+    if set(declared) != required_keys:
         raise FlightRuntimeError(
-            "artifact_result must contain exactly schema, role and construction_roster"
+            "artifact_result fields do not match its registered schema and role"
         )
-    if (
-        declared.get("schema") != ARTIFACT_RESULT_BINDING_SCHEMA
-        or declared.get("role") != ARTIFACT_RESULT_ROLE
-    ):
+    if not legacy and not hypotheses:
         raise FlightRuntimeError("artifact_result schema or proposal role is invalid")
     if values.get("policy") == "fixed":
         raise FlightRuntimeError("artifact results require a registered phase program")
@@ -365,21 +375,22 @@ def validate_artifact_result_binding(
         raise FlightRuntimeError(
             "artifact results require the speech-feature packet path"
         )
-    if (
-        getattr(plan, "execution_profile", None) != "bounded-discovery-probe"
-        or getattr(plan, "split_role", None) != "discovery"
-    ):
+    expected_role = "discovery" if legacy else "dev"
+    if getattr(plan, "execution_profile", None) != "bounded-discovery-probe" or getattr(
+        plan, "split_role", None
+    ) != expected_role:
         raise FlightRuntimeError(
-            "artifact results require bounded-discovery-probe on a discovery split"
+            f"artifact results require bounded-discovery-probe on a {expected_role} split"
         )
     scorers = values.get("scorers", [])
     if not isinstance(scorers, list) or scorers:
         raise FlightRuntimeError("artifact results require an empty scorers list")
 
-    pin = declared["construction_roster"]
+    pin_name = "construction_roster" if legacy else "source_roster"
+    pin = declared[pin_name]
     if not isinstance(pin, Mapping) or set(pin) != {"repo_relpath", "sha256"}:
         raise FlightRuntimeError(
-            "artifact construction_roster must pin repo_relpath and sha256"
+            f"artifact {pin_name} must pin repo_relpath and sha256"
         )
     relpath = pin["repo_relpath"]
     digest = pin["sha256"]
@@ -391,7 +402,7 @@ def validate_artifact_result_binding(
         or any(part in {"", ".", ".."} for part in relpath.split("/"))
     ):
         raise FlightRuntimeError(
-            "artifact construction roster path must be canonical relative POSIX"
+            "artifact roster path must be canonical relative POSIX"
         )
     if (
         not isinstance(digest, str)
@@ -399,7 +410,7 @@ def validate_artifact_result_binding(
         or any(character not in "0123456789abcdef" for character in digest)
     ):
         raise FlightRuntimeError(
-            "artifact construction roster sha256 must be lowercase 64-hex"
+            "artifact roster sha256 must be lowercase 64-hex"
         )
     path = (Path(repo_root) / relpath).resolve()
     root = Path(repo_root).resolve()
@@ -422,26 +433,54 @@ def validate_artifact_result_binding(
         if isinstance(error, FlightRuntimeError):
             raise
         raise FlightRuntimeError(
-            f"invalid artifact construction roster: {error}"
+            f"invalid artifact roster: {error}"
         ) from error
     roster_ids = tuple(str(item["sample_id"]) for item in roster["items"])
     if (
-        roster.get("roster_role") != "construction"
-        or roster.get("split_role") != "discovery"
+        roster.get("roster_role") != ("construction" if legacy else "evaluation")
+        or roster.get("split_role") != expected_role
         or roster.get("carrier_lock_key") != getattr(plan, "carrier_lock_key", None)
         or roster.get("split_identity_hash")
         != getattr(plan, "split_identity_hash", None)
         or tuple(sorted(roster_ids)) != tuple(sorted(sample_ids))
     ):
         raise FlightRuntimeError(
-            "artifact result roster must exactly bind the plan carrier, discovery split and samples"
+            "artifact result roster must exactly bind the plan carrier, split and samples"
         )
-    if roster.get("carrier_lock_key") == "slurp" and any(
+    if legacy and roster.get("carrier_lock_key") == "slurp" and any(
         not sample_id.startswith("slurp:train:") for sample_id in roster_ids
     ):
         raise FlightRuntimeError(
             "SLURP artifact results require TRAIN construction samples"
         )
+    if hypotheses:
+        if values.get("policy") != "phase-intent-hypotheses-only-v1":
+            raise FlightRuntimeError(
+                "SLURP hypothesis artifacts require phase-intent-hypotheses-only-v1"
+            )
+        if roster.get("carrier_lock_key") != "slurp" or any(
+            not sample_id.startswith("slurp:devel:") for sample_id in roster_ids
+        ):
+            raise FlightRuntimeError(
+                "SLURP hypothesis artifacts require an evaluation devel roster"
+            )
+        if data_root is None:
+            raise FlightRuntimeError("SLURP hypothesis artifacts require data_root")
+        from ..base import ARTIFACT_CONTENT_VALIDATORS
+        from ...rails.artifact_results import ArtifactContentError
+
+        contract = declared["content_contract"]
+        try:
+            factory = ARTIFACT_CONTENT_VALIDATORS.resolve(str(contract.get("id")))
+            factory(contract, data_root=Path(data_root))
+        except (AttributeError, CoreError, ArtifactContentError) as error:
+            raise FlightRuntimeError(f"artifact content contract is invalid: {error}") from error
+        return {
+            "schema": ARTIFACT_RESULT_BINDING_SCHEMA_V2,
+            "role": SLURP_HYPOTHESIS_ARTIFACT_ROLE,
+            "source_roster": {"repo_relpath": relpath, "sha256": digest},
+            "content_contract": dict(contract),
+        }
     return {
         "schema": ARTIFACT_RESULT_BINDING_SCHEMA,
         "role": ARTIFACT_RESULT_ROLE,
@@ -1135,6 +1174,7 @@ class FlightRuntime:
         self._window_feature_packet_config = None
         self._construction_material: ProposerMaterial | None = None
         self._artifact_result_binding: Mapping[str, object] | None = None
+        self._artifact_content_validator = None
         self._owns_session = False
         # E7: set only when this flight ATTACHED to an always-on serving
         # session -- the session's directory, its monitor JSONL, and the
@@ -2216,7 +2256,20 @@ class FlightRuntime:
             plan=plan,
             repo_root=self._repo_root,
             sample_ids=tuple(sample.sample_id for sample in samples),
+            data_root=self._data_root,
         )
+        if (
+            self._artifact_result_binding is not None
+            and self._artifact_result_binding.get("schema")
+            == ARTIFACT_RESULT_BINDING_SCHEMA_V2
+        ):
+            from ..base import ARTIFACT_CONTENT_VALIDATORS
+
+            contract = self._artifact_result_binding["content_contract"]
+            factory = ARTIFACT_CONTENT_VALIDATORS.resolve(str(contract["id"]))
+            self._artifact_content_validator = factory(
+                contract, data_root=self._data_root
+            )
 
         configured_model_root = model_materialization_root(values)
         gate = self._gate_factory(
@@ -4418,7 +4471,11 @@ class FlightRuntime:
                 {
                     **row,
                     "result_kind": "artifact",
-                    "artifact_role": ARTIFACT_RESULT_ROLE,
+                    "artifact_role": str(
+                        (self._artifact_result_binding or {}).get(
+                            "role", ARTIFACT_RESULT_ROLE
+                        )
+                    ),
                 }
                 for row in rows
             ]
@@ -6346,6 +6403,27 @@ class FlightRuntime:
                     f"per-request record for sample {sample_id!r} lacks {missing}; the "
                     "bundle contract binds an outputs row to its response bytes"
                 )
+            artifact_fields: dict[str, object] = {}
+            if self._result_kind() == "artifact":
+                artifact_fields = {
+                    "result_kind": "artifact",
+                    "artifact_role": str(
+                        (self._artifact_result_binding or {}).get(
+                            "role", ARTIFACT_RESULT_ROLE
+                        )
+                    ),
+                }
+                if self._artifact_content_validator is not None:
+                    canonical = self._artifact_content_validator.canonicalize(
+                        text, sample_id=sample_id
+                    )
+                    artifact_fields.update(
+                        artifact_content=canonical,
+                        artifact_content_sha256=hashlib.sha256(
+                            canonical.encode("utf-8")
+                        ).hexdigest(),
+                        artifact_source_sha256=self._artifact_content_validator.source_sha256,
+                    )
             rows.append(
                 {
                     "request_id": timing.request_id,
@@ -6359,14 +6437,7 @@ class FlightRuntime:
                     "request_sha256": timing.request_sha256,
                     "response_sha256": timing.response_sha256,
                     "response_text_sha256": timing.response_text_sha256,
-                    **(
-                        {
-                            "result_kind": "artifact",
-                            "artifact_role": ARTIFACT_RESULT_ROLE,
-                        }
-                        if self._result_kind() == "artifact"
-                        else {}
-                    ),
+                    **artifact_fields,
                 }
             )
         return rows
@@ -7163,6 +7234,7 @@ class FlightRuntime:
             plan=plan,
             repo_root=self._repo_root,
             sample_ids=tuple(sample.sample_id for sample in self._samples),
+            data_root=self._data_root,
         )
         run_dir.mkdir(parents=True, exist_ok=True)
 

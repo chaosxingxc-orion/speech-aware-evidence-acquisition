@@ -2594,6 +2594,133 @@ def test_bundle_result_kind_keeps_task_answer_scorers_and_artifact_binding_stric
         verify_bundle(manifest_path)
 
 
+def test_verify_bundle_accepts_and_revalidates_typed_hypothesis_artifact(
+    synthetic_world, bundled_repo, tmp_path
+):
+    from speech_aware_evidence_acquisition.contracts import TraceRecord
+    from speech_aware_evidence_acquisition.rails.candidate_contract_lookup import (
+        canonical_sha256,
+    )
+    from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
+        canonicalize_slurp_intent_hypothesis_response,
+    )
+
+    manifest_path, _composed, _plan, _lock = _run_completed(
+        synthetic_world,
+        bundled_repo,
+        tmp_path,
+        run_id="SAEA-E-000-typed-artifact",
+        attempt_id="attempt-typed-artifact",
+        run_dir_name="run-typed-artifact",
+    )
+    catalog = {
+        "schema": "saea-slurp-candidate-contract-catalog-v1",
+        "projection_version": "saea-slurp-candidate-contract-projection-v1",
+        "source_schema_id": "fixture",
+        "source_schema_sha256": "a" * 64,
+        "source_split": "train",
+        "source_identity_sha256": "b" * 64,
+        "source_utterance_count": 2,
+        "retention": {"min_share": 0.02, "examples_per_type": 0},
+        "profiles": [
+            {"candidate_id": value, "utterances": 1, "slot_mentions": 0, "types": []}
+            for value in ("alarm_set", "weather_query")
+        ],
+    }
+    catalog_path = synthetic_world.data_root / "prepared" / "contracts" / "catalog.json"
+    catalog_path.parent.mkdir(parents=True)
+    catalog_path.write_text(json.dumps(catalog, sort_keys=True) + "\n")
+    contract = {
+        "id": "slurp-intent-hypotheses-v1",
+        "max_candidates": 2,
+        "source_catalog": {
+            "data_relpath": "prepared/contracts/catalog.json",
+            "sha256": sha256_file(catalog_path),
+            "source_sha256": canonical_sha256(catalog),
+        },
+    }
+    binding = {
+        "schema": "saea-artifact-result-binding-v2",
+        "role": "slurp-intent-hypotheses",
+        "source_roster": {"repo_relpath": "docs/rosters/dev.json", "sha256": "c" * 64},
+        "content_contract": contract,
+    }
+    raw = json.dumps(
+        {
+            "candidates": [
+                {
+                    "intent_id": "alarm_set",
+                    "distinction": "Observed alarm request.",
+                    "evidence_refs": [],
+                    "unresolved_fields": [],
+                }
+            ]
+        },
+        sort_keys=True,
+    )
+    raw_sha = hashlib.sha256(raw.encode()).hexdigest()
+    manifest = _read_manifest(manifest_path)
+    outputs_path = Path(manifest["outputs"]["path"])
+    rows = [json.loads(line) for line in outputs_path.read_text().splitlines() if line]
+    by_request = {}
+    for row in rows:
+        canonical = canonicalize_slurp_intent_hypothesis_response(
+            raw,
+            sample_id=row["sample_id"],
+            legal_intent_ids=("alarm_set", "weather_query"),
+            max_candidates=2,
+        )
+        row.update(
+            text=raw,
+            response_text_sha256=raw_sha,
+            result_kind="artifact",
+            artifact_role="slurp-intent-hypotheses",
+            artifact_content=canonical,
+            artifact_content_sha256=hashlib.sha256(canonical.encode()).hexdigest(),
+            artifact_source_sha256=contract["source_catalog"]["source_sha256"],
+        )
+        by_request[row["request_id"]] = row
+    outputs_path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+
+    trace_path = Path(manifest["raw_trace"]["path"])
+    records = []
+    for line in trace_path.read_text().splitlines():
+        document = json.loads(line)
+        if document["record_id"].endswith("/response"):
+            request_id = document["record_id"][: -len("/response")]
+            if request_id in by_request:
+                document["payload"]["text"] = raw
+                document["payload"]["response_text_sha256"] = raw_sha
+        records.append(
+            TraceRecord(document["channel"], document["record_id"], document["payload"])
+        )
+    trace_path.write_text("".join(record.serialize() + "\n" for record in records))
+    trace_manifest_path = Path(manifest["trace_manifest"]["path"])
+    trace_manifest_path.write_text(
+        json.dumps({"records": {r.record_id: r.content_hash() for r in records}})
+    )
+    manifest.update(
+        result_kind="artifact",
+        artifact_result=binding,
+        artifact_content_source={"path": str(catalog_path), "sha256": sha256_file(catalog_path)},
+        scorers=[],
+    )
+    for key in ("outputs", "raw_trace", "trace_manifest"):
+        manifest[key]["sha256"] = sha256_file(Path(manifest[key]["path"]))
+    manifest_path.write_text(json.dumps(manifest))
+
+    verified = verify_bundle(manifest_path)
+    assert all(row["text"] == raw for row in verified.outputs_rows)
+    assert all(row["artifact_content"] != raw for row in verified.outputs_rows)
+
+    rows[0]["artifact_content"] = rows[0]["artifact_content"].replace("alarm_set", "weather_query")
+    outputs_path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+    manifest["outputs"]["sha256"] = sha256_file(outputs_path)
+    manifest_path.write_text(json.dumps(manifest))
+    with pytest.raises(BundleError, match="canonical content"):
+        verify_bundle(manifest_path)
+
+
 def test_artifact_finalizer_rejects_syntactic_relabel_without_frozen_binding(
     synthetic_world, bundled_repo, tmp_path, monkeypatch
 ):

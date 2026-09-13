@@ -96,6 +96,7 @@ KNOWLEDGE_PROVIDERS = Registry("knowledge provider")
 # shape and the same reason as INSTRUCTION_FILLS above (a real schema over
 # the 152-tool registry is far too large for a config fragment).
 RESPONSE_FORMATS = Registry("response format")
+ARTIFACT_CONTENT_VALIDATORS = Registry("artifact content validator")
 # KC-E1f (2026-09-07): named, config-pinned rules that turn a RESPONSE into
 # the text a run actually delivers. RESPONSE_FORMATS above renders a
 # structured-decoding SCHEMA and constrains what the core may emit; this is

@@ -11,6 +11,7 @@ returns the validated ``status``, feeding nothing else back into this module.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from typing import Mapping
@@ -67,6 +68,9 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
     )
     _verify_artifact(manifest.get("scores"), "scores", confine_to=run_dir_resolved)
     _verify_artifact(manifest.get("session_receipt"), "session receipt")
+    artifact_content_source_raw = _verify_artifact(
+        manifest.get("artifact_content_source"), "artifact content source"
+    )
 
     # ------------------------------------------------------------------
     # I-1 fix: the split block's own identity is RE-DERIVED, never merely
@@ -124,6 +128,55 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
         raise BundleError("run manifest lacks a usable 'arm' field (I-1)")
 
     outputs_rows = _verify_outputs(outputs_raw, split_ids, split_carrier_lock_key, arm)
+    artifact_result = manifest.get("artifact_result")
+    if (
+        isinstance(artifact_result, Mapping)
+        and artifact_result.get("schema") == "saea-artifact-result-binding-v2"
+    ):
+        from ...rails.artifact_results import (
+            ArtifactContentError,
+            build_slurp_hypothesis_artifact_validator,
+        )
+
+        source_meta = manifest.get("artifact_content_source")
+        contract = artifact_result.get("content_contract")
+        source_pin = contract.get("source_catalog") if isinstance(contract, Mapping) else None
+        if (
+            artifact_content_source_raw is None
+            or not isinstance(source_meta, Mapping)
+            or not isinstance(source_meta.get("path"), str)
+            or not isinstance(source_pin, Mapping)
+            or not isinstance(source_pin.get("data_relpath"), str)
+        ):
+            raise BundleError("typed artifact bundle lacks its content source artifact")
+        try:
+            source_path = Path(source_meta["path"]).resolve()
+            data_root = source_path
+            for _part in source_pin["data_relpath"].split("/"):
+                data_root = data_root.parent
+            if (data_root / source_pin["data_relpath"]).resolve() != source_path:
+                raise BundleError("typed artifact content source path is not canonical")
+            validator = build_slurp_hypothesis_artifact_validator(
+                contract, data_root=data_root
+            )
+            for row in outputs_rows:
+                canonical = validator.canonicalize(
+                    row["text"], sample_id=str(row["sample_id"])
+                )
+                if (
+                    row.get("artifact_role") != artifact_result.get("role")
+                    or row.get("artifact_content") != canonical
+                    or row.get("artifact_content_sha256")
+                    != hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+                    or row.get("artifact_source_sha256") != validator.source_sha256
+                ):
+                    raise BundleError(
+                        "typed artifact output differs from its registered canonical content"
+                    )
+        except (KeyError, IndexError, ArtifactContentError, ValueError) as error:
+            if isinstance(error, BundleError):
+                raise
+            raise BundleError(f"typed artifact content is invalid: {error}") from error
     trace_records = _verify_raw_trace(raw_trace_raw, trace_manifest_raw)
     _verify_outputs_trace_binding(outputs_rows, trace_records)
 

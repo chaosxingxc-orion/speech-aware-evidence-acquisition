@@ -149,6 +149,18 @@ def _manifest_document(
         if required_deliveries
         else {}
     )
+    artifact_content_source = None
+    artifact_binding = composed.values.get("artifact_result")
+    if (
+        isinstance(artifact_binding, dict)
+        and artifact_binding.get("schema") == "saea-artifact-result-binding-v2"
+    ):
+        contract = artifact_binding.get("content_contract")
+        source = contract.get("source_catalog") if isinstance(contract, dict) else None
+        if not isinstance(source, dict) or not isinstance(source.get("data_relpath"), str):
+            raise BundleError("typed artifact content source is malformed")
+        source_path = Path(data_root) / source["data_relpath"]
+        artifact_content_source = _artifact_meta(source_path)
     return {
         **delivery_metadata,
         "schema": RUN_MANIFEST_SCHEMA,
@@ -217,6 +229,11 @@ def _manifest_document(
         "raw_trace": raw_trace_meta,
         "trace_manifest": trace_manifest_meta,
         "scores": None,
+        **(
+            {"artifact_content_source": artifact_content_source}
+            if artifact_content_source is not None
+            else {}
+        ),
         "scorers": list(composed.values.get("scorers", [])),
         **(
             {
