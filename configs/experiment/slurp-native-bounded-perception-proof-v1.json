@@ -1,15 +1,26 @@
 {
   "cells": [
     {
-      "allowed_execution_stages": ["check"],
+      "allowed_execution_stages": [
+        "check",
+        "worker"
+      ],
       "attempt_id": "attempt-slurp-native-bounded-perception-proof-generation-v1",
       "baseline_fragment": "slurp-native-bounded-perception-proof-v1",
       "cell_id": "slurp-native-bounded-perception-proof-v1",
       "dataset_fragment": "slurp-native-tools-engineering-4-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "state": "draft",
-        "reason": "DRAFT and not GPU admitted. Root must separately register the generation and seal proof before any non-check execution."
+        "reason": "Root admitted only the required four-row generation-and-seal engineering proof; no score or campaign stage.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-native-bounded-perception-four-row-proof-admission-v1",
+            "kind": "decision",
+            "relpath": "coordination/slurp-native-bounded-perception-proof-v1/admission-v1.json",
+            "sha256": "68437fc437d13233c1c61549940b2965c64add3723cd42cc3514810d6e71edb0"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-NATIVE-BOUNDED-PERCEPTION-PROOF-V1"
     }
@@ -36,8 +47,7 @@
   "fragment_kind": "saea-slurp-native-bounded-perception-engineering-proof-v1",
   "generation_budget": {
     "cap": 44,
-    "definition": "Four complete native episodes with at most one revision and eleven model contacts per sample. Check-only until root separately registers the proof.",
-    "target": 0
+    "definition": "At most four complete native episodes, eleven contacts each. Stop after seal and preserve every raw response."
   },
   "population": {
     "count": 4,
@@ -57,7 +67,7 @@
     }
   ],
   "preserve_wire_responses": true,
-  "purpose": "DRAFT prospective four-row full-native engineering proof of bounded SLURP Perception output and finite terminal delivery through the shared FlightRuntime/OpenJiuwen path. Declared TRAIN scorers remain the legal existing baseline scorers, but this fragment permits checks only and schedules zero scoring jobs. It does not assess task quality, knowledge quality, selective-tool benefit, revision effectiveness, or score outcomes.",
+  "purpose": "Required four-row full-native engineering proof of bounded Perception output and finite terminal delivery after permanently closing the failed full-system recovery. Reuse the existing TRAIN engineering roster and shared FlightRuntime/OpenJiuwen executor. Generate and seal only; no quality reading, official scoring, new roster, second recovery, or effectiveness claim.",
   "service_session": "serving-slurp-native-bounded-perception-proof-np4-v1",
   "split_id": "SLURP-NATIVE-TOOLS-ENGINEERING-4-V1"
 }

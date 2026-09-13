@@ -1,0 +1,27 @@
+{
+  "cell": "slurp-native-bounded-perception-proof-v1",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-bounded-perception-proof-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "2b389b598ee81eba8d4f4c40fcb2d41b1eb0b74503de560fcd157b52e5a5e9aa",
+    "run_id": "SAEA-SLURP-NATIVE-BOUNDED-PERCEPTION-PROOF-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-native-bounded-perception-proof-np4-v1",
+  "experiment": "slurp-native-bounded-perception-proof-v1",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-13-slurp-native-bounded-perception-proof-v1/protocol-v1.json",
+    "sha256": "0e68b70dfb54c55dc1418ae5bed19a5b5844d47b7424c43d6e0e6d57b9cf9c9c"
+  },
+  "registration_state": "Registered by root; launch requires clean frozen code and successful preflight.",
+  "root_registration_required": false,
+  "schema": "saea-registered-generation-plan-v1",
+  "scoring": "None. Stop after seal; engineering integrity read only."
+}
