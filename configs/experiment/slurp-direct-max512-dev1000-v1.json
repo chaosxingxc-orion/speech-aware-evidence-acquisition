@@ -1,8 +1,14 @@
 {
+  "analysis_recipe": {
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-direct-vs-native-dual-store-analysis-recipe-v1.json",
+    "sha256": "a4ff75d07e66a41a817f770162d982589bb8bce595406abd721f6a3f7a64cf0b"
+  },
   "cells": [
     {
       "allowed_execution_stages": [
-        "check"
+        "check",
+        "worker",
+        "campaign"
       ],
       "attempt_id": "attempt-slurp-direct-max512-dev1000-generation-v1",
       "baseline_fragment": "slurp-direct-max512-dev1000-v1",
@@ -10,40 +16,56 @@
       "dataset_fragment": "slurp-speech-native-dev1000",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "CHECK ONLY. This is a prospective design record; no registration or model-contact stage is admitted.",
-        "requirements": [],
-        "state": "DRAFT"
+        "reason": "Root admitted this prospective complete-system comparison after named predecessor root causes and the bounded-Perception engineering proof; frozen preparation and exact-fit launch conditions remain mandatory.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-direct-vs-native-dual-store-dev1000-admission-v1",
+            "kind": "decision",
+            "reason": "Root source-bound progressive complete-system admission.",
+            "relpath": "coordination/slurp-direct-vs-native-dual-store-dev1000-v1/admission-v1.json",
+            "sha256": "55c83bb6ad29b4ce15600005edee8f76091b7dd303d574fe6df44f65b0193ef3"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-V1"
     }
   ],
   "date": "2026-09-13",
   "execution_plan": {
-    "execution_profile": "model-free-check",
-    "planned_gpu_hours": 0.0,
-    "planned_model_calls": 0,
-    "planned_speech_audio_seconds": 0,
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1000,
+    "planned_speech_audio_seconds": 3500,
     "split_role": "dev"
   },
-  "execution_profile": "model-free-check",
+  "execution_profile": "bounded-discovery-probe",
   "experiment_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-V1",
-  "failure_policy": "No generation is authorized. Any future flight requires a separate root registration after the required preparation artifacts and four-row proof integrity review.",
-  "fragment_kind": "saea-slurp-prospective-complete-system-draft-v1",
-  "future_full_roster_envelope": {
+  "failure_policy": "Stop and preserve on any failure; no automatic restart/replay, cap or geometry change, response repair or sample filtering. This is a new complete-system capability comparison after named predecessor root causes and the required four-row engineering proof; no closed predecessor flight is reopened. A future recovery requires separate root registration.",
+  "family_budget": {
     "asr_calls": 0,
+    "ceilings_are_not_targets": true,
     "encoder_calls": 0,
-    "expected_generation_calls_cap": 1000,
-    "future_fit_endpoint_calls_cap": 3001,
-    "status": "Planning information only; it is not a budget, exposure, ledger or registration authorization."
+    "fit_endpoint_calls_cap": 47001,
+    "generation_calls_cap": 12000,
+    "gpu_hours_fit_inclusive": 13.0,
+    "native_task_contract_calls_cap": 6000,
+    "official_complete_scoring_jobs": 2
+  },
+  "fragment_kind": "saea-slurp-progressive-complete-system-v1",
+  "generation_budget": {
+    "cap": 1000,
+    "definition": "Complete every existing DEV1000 sample; ceilings bound contacts and are not targets.",
+    "target": 1000
   },
   "population": {
     "count": 1000,
     "dataset_fragment": "slurp-speech-native-dev1000",
-    "decision_population": "Historically exposed DEV-1000. No result, score, quality reading, efficacy claim or fresh draw is authorized by this draft.",
+    "decision_population": "Historically exposed DEV1000; NEW500 primary, OLD500 descriptive sensitivity, DEV1000 pooled secondary. Keep all rows and actual candidate widths.",
     "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
   },
   "preserve_wire_responses": true,
-  "purpose": "Prospective matched direct-only control for the independent complete native system. It retains the full 60-label task contract and the same max-512 resident geometry, with no supplied knowledge. It remains behind a fresh request fit and root registration.",
+  "purpose": "Matched direct frozen model versus the complete native system; same weights, full60label task contract, prepared speech, max512 decoding and resident process.",
   "service_session": "serving-slurp-native-bounded-perception-proof-np4-v1",
   "split_id": "DEV-1000"
 }

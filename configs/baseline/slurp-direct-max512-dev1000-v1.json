@@ -10,9 +10,6 @@
     "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-FIT-V1"
   },
   "live_phase_fit_audio_seconds_cap": 3500,
-  "pending_preparation": {
-    "request_fit": "Before any registration, bind a fresh max-512 direct request-fit artifact to this composed configuration, the DEV-1000 roster and promoted packets."
-  },
   "phase_material": {
     "direct": {
       "instruction_fill": null,
@@ -36,6 +33,6 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_direct_closed_list.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "DRAFT CHECK-ONLY matched direct baseline for the prospective independent native system. It sends one direct-only task request per DEV-1000 sample through the shared controller, FlightRuntime and OpenJiuwen executor, with the full 60-label task contract and no model-visible retrieved knowledge, candidate state, review or tool use. It reuses the same max-512 proof model fragment, resident service geometry and promoted DEV-1000 packets as the native draft. This draft is not a retry, a knowledge ablation, or a generation authorization.",
+  "what_this_is": "Matched direct frozen-model baseline for the prospective complete dual-store native system. Send one direct-only task request per existing DEV1000 sample through the shared controller, FlightRuntime and OpenJiuwen executor, retaining all 60 legal labels and the same max512 service process and promoted speech packets. The whole-roster actual-request gate runs under its registered generation lease before generation; preliminary estimates do not replace its exact fit receipt. No retrieved knowledge, intermediate candidate state or analytical tools enter this direct arm.",
   "whole_roster_wave_barrier": true
 }
