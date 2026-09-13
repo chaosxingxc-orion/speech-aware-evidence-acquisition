@@ -24,6 +24,7 @@ def _runtime(tmp_path: Path) -> FlightRuntime:
     runtime._repo_root.mkdir()
     runtime._data_root.mkdir()
     runtime._attempt_store_factory = lambda root: AttemptStore(root / "attempts")
+    runtime._execution_policy = None
     runtime._live_speech_attempt_handle = None
     runtime._live_speech_provider = None
     runtime._live_speech_finalized = False

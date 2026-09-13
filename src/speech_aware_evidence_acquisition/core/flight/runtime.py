@@ -2037,6 +2037,7 @@ class FlightRuntime:
         bindings = self._live_speech_source_bindings
         if not isinstance(config, Mapping) or not isinstance(bindings, Mapping):
             raise FlightRuntimeError("live speech custody is not configured")
+        self.assert_generation_lease()
         sample_id = facts.get("sample_id")
         binding = bindings.get(sample_id)
         source = facts.get("source")
@@ -2098,6 +2099,7 @@ class FlightRuntime:
 
         sample_id = facts.get("sample_id")
         bindings = self._live_speech_source_bindings
+        self.assert_generation_lease()
         if not isinstance(bindings, Mapping) or sample_id not in bindings:
             raise FlightRuntimeError("native tool action sample is outside the bound roster")
         required_text = ("phase", "next_phase", "tool_id", "source_response_sha256", "request_id", "tool_call_id", "tool_calls_sha256")
