@@ -274,6 +274,110 @@ def test_successive_same_role_nodes_keep_tool_callbacks_instance_bound():
     assert observed == [("first:analyze", 1), ("second:analyze", 2)]
 
 
+def test_close_removes_only_the_node_owned_tool_and_rail_and_is_idempotent():
+    def node(label: str) -> NativeRoleNode:
+        tool = LocalFunction(
+            card=_card("inspect"),
+            func=lambda value: {"label": label, "value": value},
+        )
+        return NativeRoleNode(
+            spec=NativeRoleNodeSpec(
+                role_id="reviewer",
+                role_kind="reviewer",
+                prompt=f"Review the {label} state.",
+                max_iterations=1,
+                ability_names=("inspect",),
+            ),
+            metered_request=_MeteredScript(
+                [
+                    _completion(
+                        text=f"{label} complete",
+                        sample_id=f"sample-{label}",
+                    )
+                ]
+            ),
+            contact_context=NativeRoleContactContext(
+                sample_id=f"sample-{label}", agent_contact_id="contact-1"
+            ),
+            abilities=(tool,),
+            tool_allowed=lambda role, name: (
+                role == "reviewer" and name == "inspect"
+            ),
+        )
+
+    first = node("first")
+    second = node("second")
+    first_tool_id = f"inspect_{first._agent.card.id}"
+    second_tool_id = f"inspect_{second._agent.card.id}"
+    rail_event = next(iter(first._rail.get_callbacks()))
+
+    async def exercise():
+        try:
+            await first.invoke_direct("Inspect the first state.")
+            await second.invoke_direct("Inspect the second state.")
+            assert Runner.resource_mgr.get_tool(first_tool_id) is not None
+            assert Runner.resource_mgr.get_tool(second_tool_id) is not None
+            assert first._agent.agent_callback_manager.has_hooks(rail_event)
+            assert second._agent.agent_callback_manager.has_hooks(rail_event)
+
+            await first.close()
+            await first.close()
+
+            assert Runner.resource_mgr.get_tool(first_tool_id) is None
+            assert Runner.resource_mgr.get_tool(second_tool_id) is not None
+            assert not first._agent.agent_callback_manager.has_hooks(rail_event)
+            assert second._agent.agent_callback_manager.has_hooks(rail_event)
+        finally:
+            await first.close()
+            await second.close()
+
+    asyncio.run(exercise())
+
+
+def test_close_after_role_error_removes_node_owned_resources():
+    tool = LocalFunction(
+        card=_card("inspect_after_error"),
+        func=lambda value: {"value": value},
+    )
+    node = NativeRoleNode(
+        spec=NativeRoleNodeSpec(
+            role_id="reviewer",
+            role_kind="reviewer",
+            prompt="Review the state.",
+            max_iterations=1,
+            ability_names=("inspect_after_error",),
+        ),
+        metered_request=lambda _request: _completion(
+            text="wrong sample", sample_id="sample-2"
+        ),
+        contact_context=NativeRoleContactContext(
+            sample_id="sample-1", agent_contact_id="contact-1"
+        ),
+        abilities=(tool,),
+        tool_allowed=lambda role, name: (
+            role == "reviewer" and name == "inspect_after_error"
+        ),
+    )
+    tool_id = f"inspect_after_error_{node._agent.card.id}"
+    rail_event = next(iter(node._rail.get_callbacks()))
+
+    async def exercise():
+        try:
+            with pytest.raises(FrozenCoreRoleModelError, match="binding"):
+                await node.invoke_direct("Review the state.")
+            assert Runner.resource_mgr.get_tool(tool_id) is not None
+            assert node._agent.agent_callback_manager.has_hooks(rail_event)
+
+            await node.close()
+
+            assert Runner.resource_mgr.get_tool(tool_id) is None
+            assert not node._agent.agent_callback_manager.has_hooks(rail_event)
+        finally:
+            await node.close()
+
+    asyncio.run(exercise())
+
+
 def test_role_spec_rejects_tools_for_perception_and_solver():
     for kind in ("perception", "solver"):
         with pytest.raises(ValueError, match="must be tool-free"):
