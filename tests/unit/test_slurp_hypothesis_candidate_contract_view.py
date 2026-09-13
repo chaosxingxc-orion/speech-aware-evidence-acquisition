@@ -192,3 +192,33 @@ def test_callable_view_requires_the_full_source_bound_artifact(slurp_world):
     view = _view(slurp_world)
     with pytest.raises(SlurpHypothesisCandidateContractViewError, match="full AgentStateArtifact"):
         view("hypothesis text")
+
+
+def test_registered_state_view_supplies_identical_bytes_through_phase_builder(
+    slurp_world, monkeypatch
+):
+    from types import SimpleNamespace
+    from speech_aware_evidence_acquisition.data import lock as lock_module
+    from speech_aware_evidence_acquisition.rails.phase_material import (
+        PhaseMaterialSpec, build_material_for_phase,
+    )
+
+    monkeypatch.setattr(lock_module, "umbrella_lock_path", lambda: slurp_world.lock_path)
+    monkeypatch.setattr(lock_module, "data_root", lambda: slurp_world.data_root)
+    provider = _provider(slurp_world)
+    artifact = _artifact("iot_hue_lightdim", "weather_query")
+    spec = PhaseMaterialSpec(
+        phase="slots", purpose="fill", instruction_template="probes/slots.txt",
+        predecessor_binding="append-sealed-state",
+        state_fill="slurp-hypothesis-candidate-contracts-for-state-v1",
+        fill_params={"candidate_source_sha256": provider.source_sha256, "max_candidates": 3},
+    ).validate()
+    suffixes = []
+    for instruction in ("Keep the first intent.", "Select among the candidates."):
+        material = build_material_for_phase(
+            {"slots": spec}, program_id="phase-slots-given-intent-v1",
+            static_text_by_phase={"slots": instruction}, response_format_by_phase={},
+        )("slots", SimpleNamespace(sample_id=SAMPLE_ID), {SAMPLE_ID: artifact})
+        suffixes.append(material.instruction[len(instruction):])
+    assert suffixes[0] == suffixes[1]
+    assert "observed associations, not required or forbidden fields" in suffixes[0]

@@ -723,6 +723,29 @@ PHASE_STATE_FILLS.register(
 )
 
 
+
+def _slurp_hypothesis_candidate_contracts_state_fill(
+    *, candidate_source_sha256: str, max_candidates: int = 3
+):
+    """Build a shared, source-bound contract view for hypothesis consumers."""
+    from ..data.lock import data_root, load_lock, umbrella_lock_path  # noqa: PLC0415
+    from .slurp_hypothesis_candidate_contract_view import (  # noqa: PLC0415
+        build_slurp_hypothesis_candidate_contract_view,
+    )
+
+    return build_slurp_hypothesis_candidate_contract_view(
+        load_lock(umbrella_lock_path()), data_root(),
+        candidate_source_sha256=candidate_source_sha256,
+        max_candidates=max_candidates,
+    )
+
+
+PHASE_STATE_FILLS.register(
+    "slurp-hypothesis-candidate-contracts-for-state-v1",
+    _slurp_hypothesis_candidate_contracts_state_fill,
+)
+
+
 class PhaseMaterialError(RailsError):
     """A ``phase_material`` config fragment, or the material built from it,
     is invalid."""
