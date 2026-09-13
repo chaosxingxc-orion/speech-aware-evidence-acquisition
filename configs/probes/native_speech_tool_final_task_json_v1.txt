@@ -1,0 +1,1 @@
+Using the original speech and all returned evidence, deliver the task answer now. Respond with only the JSON object required by the task contract. Do not output a tool call, XML-style tool-call markup, a Markdown code fence, or an explanation.

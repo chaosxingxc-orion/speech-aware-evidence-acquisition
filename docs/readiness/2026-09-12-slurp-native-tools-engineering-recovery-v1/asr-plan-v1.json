@@ -1,0 +1,42 @@
+{
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-tools-engineering-recovery-asr-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 4,
+    "planned_speech_audio_seconds": 11,
+    "protocol_hash": "4b4cf3c80f94e98b19245400eebb63891054af6006dd915195e24dbf27d6268c",
+    "run_id": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-RECOVERY-ASR-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "gpu_accounting": "ExecutionPlan requires a positive ceiling; the backend is CPU-only and actual ASR GPU usage must be zero. This ceiling does not authorize GPU ASR.",
+  "inventory": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-PREPARE-V1/full-runtime-inventory.json",
+    "sha256": "79c79469975a8c014f6fc1b94bb3ab439f9e0cdc877c11378ec33d37170dc697"
+  },
+  "protocol": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-PREPARE-V1/cpu-decode-protocol.json",
+    "sha256": "4b4cf3c80f94e98b19245400eebb63891054af6006dd915195e24dbf27d6268c"
+  },
+  "purpose": "At most one cold CPU Whisper full-utterance decode per four-row source, only after the main model selects its native speech tool. Warm requests remain real internal tool invocations with zero ASR forward. No transcript is prepared before selection.",
+  "recovery": {
+    "maximum_recoveries": 1,
+    "named_failure": "Generic user-text native history and repeated acquisition instruction; final textual tool frames admitted.",
+    "ordinal": 1,
+    "parent_attempt_id": "attempt-slurp-native-tools-engineering-generation-v1",
+    "parent_run_id": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-V1",
+    "parent_verdict": {
+      "relpath": "coordination/slurp-native-tools-engineering-v1/root-verdict-v1.json",
+      "sha256": "fdfda1572010a6a1c017ff1a151c213f7c82925d273f9ae8443af94d3c6f258b"
+    },
+    "repair_commit": "48ae3d8d6d5e58ccadf093317e789fa443320af2",
+    "stop_rule": "A second failure stops this flight; no further recovery or automatic replay."
+  },
+  "registered_at": "2026-09-13T02:20:04.508422+00:00",
+  "retry_policy": "No automatic ASR retry or fallback. Preserve any failed selected contact and stop for root diagnosis.",
+  "schema": "saea-registered-live-speech-tool-plan-v1"
+}

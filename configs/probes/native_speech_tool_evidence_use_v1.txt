@@ -1,0 +1,1 @@
+Use the returned transcript as fallible evidence together with the original speech. If the task contract and evidence are sufficient, respond now with only the task JSON required by the task contract. Do not request the live speech observation again. Only if the task contract itself remains unclear, call the task-contract tool once. Do not simulate a tool result.

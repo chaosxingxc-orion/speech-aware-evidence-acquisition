@@ -1,0 +1,71 @@
+{
+  "cell": "slurp-native-tools-engineering-recovery-4-v1",
+  "composed_config_hash": "d7b2b60aaa81a572cc812af50e27a3ff7878c0a12959158f40ca0340f8174784",
+  "engineering_bound": "Same four historically exposed TRAIN rows. First and only recovery. No paired effectiveness claim.",
+  "expected_session_id": "serving-slurp-train-a-incumbent-reward-source-np4-v1",
+  "experiment": "slurp-native-tools-engineering-recovery-4-v1",
+  "family_budget": {
+    "asr_speech_audio_seconds_total": 11,
+    "cold_asr_calls_total": 4,
+    "fit_contacts_total": 39,
+    "fit_speech_audio_seconds_total": 32,
+    "generation_calls_total": 12,
+    "generation_speech_audio_seconds_total": 32,
+    "gpu_hours_fit_inclusive": 1.0,
+    "internal_tool_invocations_total": 8
+  },
+  "final_source_binding": "Bind the clean committed checkout and complete resident identity in a separate launch receipt before contact.",
+  "fit_protocol": "Before each actual active wave use one GET /props plus three real fit endpoints per active row; maximum three waves, 39 contacts. Prepared bytes must be the bytes sent. No approximate count is a live capacity receipt.",
+  "plans": {
+    "asr": {
+      "relpath": "docs/readiness/2026-09-12-slurp-native-tools-engineering-recovery-v1/asr-plan-v1.json",
+      "sha256": "a589061c278baf66f9642d491379cdb1aab08856d71975780abb04bdc0fe7563"
+    },
+    "fit": {
+      "relpath": "docs/readiness/2026-09-12-slurp-native-tools-engineering-recovery-v1/fit-plan-v1.json",
+      "sha256": "28d41cb054f8db18590744a59b8ecca62eb766fc4b7613f4b171581f5ad6a626"
+    },
+    "generation": {
+      "relpath": "docs/readiness/2026-09-12-slurp-native-tools-engineering-recovery-v1/generation-plan-v1.json",
+      "sha256": "18a12da6bebaa42b350fa9de05f1eb0cc73b859bc238ce47396462a20a072f21"
+    }
+  },
+  "prompt_bindings": {
+    "decision-1": {
+      "relpath": "configs/probes/native_speech_tool_acquire_once_v1.txt",
+      "sha256": "5817de58e3f1ebb704f5daaa062f66330e74db546d502dc42ee71cbebd19cc68"
+    },
+    "decision-2": {
+      "relpath": "configs/probes/native_speech_tool_evidence_use_v1.txt",
+      "sha256": "3cf54b29321dcf8980aa3346babbf7f5bff252efb7dade2d17ac435caf915a01"
+    },
+    "final": {
+      "relpath": "configs/probes/native_speech_tool_final_task_json_v1.txt",
+      "sha256": "d8b5e1af5b7ac886611971124476579024f70f8fc70e32e76a06d08048d5f780"
+    }
+  },
+  "protocol_hash": "00cf897375bba7f510efdb9234ad5454830703f3f90712df9a9b0780abbbd366",
+  "quality_read_gate": "Seal all four final outputs before reading semantics or scoring. Run the complete native TRAIN scorer once. Results are engineering diagnostics only.",
+  "recovery": {
+    "maximum_recoveries": 1,
+    "named_failure": "Generic user-text native history and repeated acquisition instruction; final textual tool frames admitted.",
+    "ordinal": 1,
+    "parent_attempt_id": "attempt-slurp-native-tools-engineering-generation-v1",
+    "parent_run_id": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-V1",
+    "parent_verdict": {
+      "relpath": "coordination/slurp-native-tools-engineering-v1/root-verdict-v1.json",
+      "sha256": "fdfda1572010a6a1c017ff1a151c213f7c82925d273f9ae8443af94d3c6f258b"
+    },
+    "repair_commit": "48ae3d8d6d5e58ccadf093317e789fa443320af2",
+    "stop_rule": "A second failure stops this flight; no further recovery or automatic replay."
+  },
+  "registered_at": "2026-09-13T02:20:04.508422+00:00",
+  "retry_policy": "No adaptive rerun, silent recovery, hidden forced tool or service restart. Unused ceiling is not new attempt authority.",
+  "schema": "saea-native-speech-tool-engineering-registration-v1",
+  "scientific_eligibility": {
+    "decision_id": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-RECOVERY-ADMISSION-V1",
+    "relpath": "coordination/slurp-native-tools-engineering-recovery-v1/root-admission-v1.json",
+    "sha256": "5be533d12a6695b7b37f2f099ed22903af1a42d7b146b5bd4021fa3f989b8e8c"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/agentic-native-tool-loop-v1"
+}

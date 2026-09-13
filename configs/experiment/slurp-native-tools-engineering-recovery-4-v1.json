@@ -1,0 +1,105 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-tools-engineering-recovery-generation-v1",
+      "baseline_fragment": "slurp-native-tools-engineering-recovery-4-v1",
+      "cell_id": "slurp-native-tools-engineering-recovery-4-v1",
+      "dataset_fragment": "slurp-native-tools-engineering-4-v1",
+      "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+      "readiness": {
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "Require pinned local backend inventory verified against checkpoint and sources.",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-PREPARE-V1/full-runtime-inventory.json",
+            "sha256": "79c79469975a8c014f6fc1b94bb3ab439f9e0cdc877c11378ec33d37170dc697"
+          },
+          {
+            "kind": "preparation",
+            "reason": "Require CPU-only pinned ASR protocol.",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-PREPARE-V1/cpu-decode-protocol.json",
+            "sha256": "4b4cf3c80f94e98b19245400eebb63891054af6006dd915195e24dbf27d6268c"
+          },
+          {
+            "expected_decision_id": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-RECOVERY-ADMISSION-V1",
+            "kind": "decision",
+            "reason": "Require root admission of the single native dialogue recovery.",
+            "relpath": "coordination/slurp-native-tools-engineering-recovery-v1/root-admission-v1.json",
+            "sha256": "5be533d12a6695b7b37f2f099ed22903af1a42d7b146b5bd4021fa3f989b8e8c"
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-RECOVERY-V1"
+    }
+  ],
+  "date": "2026-09-12",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 12,
+    "planned_speech_audio_seconds": 32,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-RECOVERY-V1",
+  "family_budget": {
+    "asr_speech_audio_seconds_total": 11,
+    "cold_asr_calls_total": 4,
+    "fit_contacts_total": 39,
+    "fit_speech_audio_seconds_total": 32,
+    "generation_calls_total": 12,
+    "generation_speech_audio_seconds_total": 32,
+    "gpu_hours_fit_inclusive": 1.0,
+    "internal_tool_invocations_total": 8
+  },
+  "fragment_kind": "saea-slurp-task-agent-experiment-v1",
+  "generation_budget": {
+    "cap": 12,
+    "target": 8
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-native-tools-engineering-4-v1",
+    "decision_population": "Engineering only; first four ordered TRAIN-A construction samples, no new draw and no efficacy claim.",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-native-tools-engineering-4-v1",
+      "ids": [
+        "slurp:train:000007:audio--1504197557",
+        "slurp:train:000009:audio-1497557594-headset",
+        "slurp:train:000015:audio-1488524781",
+        "slurp:train:000023:audio-1490956038"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Recover source-bound native assistant/tool dialogue and final task delivery on the same four-row engineering roster using phase-specific instructions. No task improvement claim.",
+  "recovery": {
+    "maximum_recoveries": 1,
+    "named_failure": "Generic user-text native history and repeated acquisition instruction; final textual tool frames admitted.",
+    "ordinal": 1,
+    "parent_attempt_id": "attempt-slurp-native-tools-engineering-generation-v1",
+    "parent_run_id": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-V1",
+    "parent_verdict": {
+      "relpath": "coordination/slurp-native-tools-engineering-v1/root-verdict-v1.json",
+      "sha256": "fdfda1572010a6a1c017ff1a151c213f7c82925d273f9ae8443af94d3c6f258b"
+    },
+    "repair_commit": "48ae3d8d6d5e58ccadf093317e789fa443320af2",
+    "stop_rule": "A second failure stops this flight; no further recovery or automatic replay."
+  },
+  "request_decoding_overrides": {
+    "max_tokens": 256
+  },
+  "service_session": "serving-slurp-train-a-incumbent-reward-source-np4-v1",
+  "split_id": "SLURP-NATIVE-TOOLS-ENGINEERING-4-V1"
+}
