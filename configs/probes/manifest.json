@@ -461,6 +461,12 @@
     },
     "slurp_phase_slots.txt": {
       "sha256": "221ed0d343b0a543eda98008312938da25bde204a131efe8427ea8e3934a5e1f"
+    },
+    "slurp_top3_closed_joint_slots_v1.txt": {
+      "sha256": "db7168bf4adab7ece0616add41ffa98809f7f1508c1f9069ba2327229dd01dee"
+    },
+    "slurp_top3_hard_first_slots_v1.txt": {
+      "sha256": "c814d07822aa47368adad9b2ee60de0b0036e05ade964ca56e2c98b24ee5bcab"
     }
   }
 }

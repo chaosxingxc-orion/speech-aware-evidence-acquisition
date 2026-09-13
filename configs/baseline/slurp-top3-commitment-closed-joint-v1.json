@@ -1,0 +1,48 @@
+{
+  "arm": "speech-feature-query",
+  "policy": "phase-slots-given-intent-v1",
+  "evidence_source": "none",
+  "evidence_mismatch": false,
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template_active": true,
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame/snapshot.json",
+  "knowledge_snapshot_sha256": "609854e4211891614b621e6431ccf23706c2aa3a3bc9133dae9d9765628c88b8",
+  "serving_slots": 8,
+  "serving_slot_tokens": 8192,
+  "whole_roster_wave_barrier": true,
+  "speech_feature_key_representation_id": "saea-slurp-top3-commitment-closed-joint-v1:slots",
+  "speech_feature_matcher_policy_id": "saea-slurp-top3-commitment-closed-joint-v1",
+  "phase_material": {
+    "slots": {
+      "instruction_template": "probes/slurp_top3_closed_joint_slots_v1.txt",
+      "instruction_fill": null,
+      "response_format_id": null,
+      "predecessor_binding": "sealed-manifest",
+      "predecessor_source": {
+        "manifest_relpath": "__UNRESOLVED_FINALIZED_SOURCE_MANIFEST_RELPATH__",
+        "manifest_sha256": "__UNRESOLVED_FINALIZED_SOURCE_MANIFEST_SHA256__",
+        "producer_policy_id": "phase-intent-hypotheses-only-v1"
+      },
+      "state_fill": "slurp-hypothesis-candidate-contracts-for-state-v1",
+      "fill_params": {
+        "candidate_source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201",
+        "max_candidates": 3
+      }
+    }
+  },
+  "held_binding": "The predecessor manifest path and SHA-256 are unresolved. This fragment is not executable until root binds the FINALIZED typed source without changing any other field.",
+  "delivery_basis": {
+    "response_postprocessor": "slurp-shortlist-joint-hypothesis-delivery-v1",
+    "response_postprocessor_params": {
+      "max_candidates": 3
+    }
+  }
+}
