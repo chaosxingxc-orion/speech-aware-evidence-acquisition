@@ -1,0 +1,22 @@
+{
+  "schema": "saea-phase-program-v1",
+  "program_id": "native-answer-or-one-tool-v1",
+  "phases": [
+    {
+      "name": "decision-1",
+      "purpose": "answer-or-acquire-evidence",
+      "knowledge": "supplied",
+      "response_format_id": null,
+      "barrier": false
+    },
+    {
+      "name": "final",
+      "purpose": "deliver-task-answer",
+      "knowledge": "supplied",
+      "response_format_id": null,
+      "barrier": false
+    }
+  ],
+  "max_contacts": 2,
+  "stop_rule": "native-answer-or-tool"
+}

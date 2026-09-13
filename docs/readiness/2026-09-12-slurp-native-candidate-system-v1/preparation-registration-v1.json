@@ -1,0 +1,48 @@
+{
+  "boundary": {
+    "audio_reads": 0,
+    "encoder_calls": 0,
+    "evaluation_split": "historically exposed DEV1000",
+    "model_calls": 0,
+    "runtime_candidate_lookups": 0,
+    "scorer_calls": 0,
+    "source_split": "train",
+    "suitable_for_train_reward_folds": false,
+    "tokenizer_calls": 0
+  },
+  "created_at": "2026-09-13T03:15:41.738738+00:00",
+  "planned_outputs": {
+    "catalog": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+    "receipt": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/receipt.json"
+  },
+  "producer": "SlurpAdapter.candidate_contract_provider",
+  "profile": "model-free-check",
+  "purpose": "Prepare a filler-free canonical TRAIN intent/slot catalog and request-relative comparative projection for a future DEV1000 native candidate-tool system source. No current-evaluation gold, query transcript, audio or model is read.",
+  "run_id": "SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1",
+  "schema": "saea-model-free-preparation-registration-v1",
+  "source_commit": "f8b5947932cbd2c2bf0c1159fbf96a41ed10b7fb",
+  "sources": {
+    "dataset_lock": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+      "sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+    },
+    "implementation": [
+      {
+        "relpath": "src/speech_aware_evidence_acquisition/rails/slurp_candidate_contracts.py",
+        "sha256": "4cee945e97865253533e96a2da07bcf58a7574328f67894d3ba6ac726f2440d0"
+      },
+      {
+        "relpath": "src/speech_aware_evidence_acquisition/rails/candidate_contract_lookup.py",
+        "sha256": "f59a440180d44412d2f7874f82de21da15cf734a59b6034652056e0a3ff93e86"
+      },
+      {
+        "relpath": "src/speech_aware_evidence_acquisition/rails/adapters/slurp.py",
+        "sha256": "906b457c61818ef6cc30cb9ed4a40e129ac56538a439912198bdb59067ac2686"
+      },
+      {
+        "relpath": "src/speech_aware_evidence_acquisition/data/slurp.py",
+        "sha256": "2f68f37591e2b4207684403f7b81317e826b05bcbfa91dab22291ede2128bffb"
+      }
+    ]
+  }
+}

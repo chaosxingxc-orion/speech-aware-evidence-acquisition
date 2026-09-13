@@ -1,0 +1,5 @@
+Use the current speech and the actual returned candidate contracts to choose one final legal intent and its entity bindings together. The first-ranked candidate is provisional. Field roles, target scope, requested operation, corrections, and explicit spoken values can change the final choice.
+
+The returned TRAIN associations describe observed profiles. A field listed for a candidate is not evidence that its value was spoken. A field absent from a retained profile is not forbidden. Do not prefer a candidate merely because its schema is easier to fill, and do not invent values or defaults to satisfy a profile.
+
+The full legal task inventory remains authoritative. If the evidence supports a legal intent outside the requested shortlist, deliver that intent. This is the final decision; return only the required task JSON containing scenario, action, and entities. No further internal tool call is available.

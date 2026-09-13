@@ -42,6 +42,7 @@ _SHA_B = "b" * 64
 
 _EXPECTED_PROGRAM_SHAPES = {
     "native-answer-or-tool-v1": (("decision-1", "decision-2", "final"), 3, "native-answer-or-tool"),
+    "native-answer-or-one-tool-v1": (("decision-1", "final"), 2, "native-answer-or-tool"),
     "phase-task-tools-then-solve-v1": (("plan", "solve"), 2, "always-run-full-program"),
     "phase-task-tools-solve-revise-v1": (
         ("plan", "solve", "revise"),
@@ -824,7 +825,7 @@ def test_evidence_agent_controller_satisfies_agent_controller_protocol_structura
 @pytest.mark.parametrize("program_id", sorted(_EXPECTED_PROGRAM_SHAPES))
 def test_default_controller_factory_runs_to_completion_for_every_registered_program(program_id):
     factory = AGENT_CONTROLLERS.resolve(program_id)
-    if program_id == "native-answer-or-tool-v1":
+    if rc.default_phase_program(program_id).stop_rule == "native-answer-or-tool":
         with pytest.raises(rc.RailsControllersError, match="native.*dispatcher"):
             factory("s1")
         return
@@ -956,17 +957,18 @@ def _native_response_context(context, contact, text, *, tool_calls=None):
     return replace(context, core_completions=(reply,))
 
 
-def _native_controller(tools=None, **kwargs):
+def _native_controller(tools=None, *, program_id="native-answer-or-tool-v1", **kwargs):
     return rc.EvidenceAgentController(
-        program=rc.default_phase_program("native-answer-or-tool-v1"),
+        program=rc.default_phase_program(program_id),
         material_for_phase=lambda name, ctx: _material(name, ctx.sample_id),
         tools_for_phase=tools or _NativeToolSteps(), **kwargs,
     )
 
 
-def test_native_answer_stops_first_contact_without_tool_or_successor():
+@pytest.mark.parametrize("program_id", ["native-answer-or-tool-v1", "native-answer-or-one-tool-v1"])
+def test_native_answer_stops_first_contact_without_tool_or_successor(program_id):
     tools = _NativeToolSteps()
-    controller = _native_controller(tools)
+    controller = _native_controller(tools, program_id=program_id)
     context = _context(_query_state())
     contact = controller.initial_contact(context)
     assert contact.decoding_params == {
@@ -980,12 +982,13 @@ def test_native_answer_stops_first_contact_without_tool_or_successor():
     assert tools.calls == []
 
 
-def test_native_tool_observations_reach_bounded_successors_and_final_none():
+@pytest.mark.parametrize("program_id,steps", [("native-answer-or-tool-v1", 2), ("native-answer-or-one-tool-v1", 1)])
+def test_native_tool_observations_reach_bounded_successors_and_final_none(program_id, steps):
     tools = _NativeToolSteps()
-    controller = _native_controller(tools)
+    controller = _native_controller(tools, program_id=program_id)
     context = _context(_query_state())
     contact = controller.initial_contact(context)
-    for index in range(2):
+    for index in range(steps):
         text = f"native-call-{index}"
         response_context = _native_response_context(
             context, contact, text, tool_calls=[{
@@ -1012,7 +1015,7 @@ def test_native_tool_observations_reach_bounded_successors_and_final_none():
     response_context = _native_response_context(context, contact, "Corrected task answer.")
     advance = controller.advance(response_context, contact, "Corrected task answer.")
     assert advance.next_contact is None
-    assert len(tools.calls) == 2
+    assert len(tools.calls) == steps
     assert advance.final_response_contact_id == contact.contact_id
 
 

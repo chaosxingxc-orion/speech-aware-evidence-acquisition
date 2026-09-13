@@ -1215,6 +1215,7 @@ def default_controller_factory(program: PhaseProgram) -> Callable[[str], Evidenc
 
 
 _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
+    "native-answer-or-one-tool-v1": "native-answer-or-one-tool-v1.json",
     "native-answer-or-tool-v1": "native-answer-or-tool-v1.json",
     "phase-task-tools-then-solve-v1": "phase-task-tools-then-solve-v1.json",
     "phase-task-tools-solve-revise-v1": "phase-task-tools-solve-revise-v1.json",
@@ -1299,6 +1300,11 @@ def register_phase_programs_v1() -> None:
     # engineering-base gate (scripts/checks/engineering_base_check.py) can
     # read the registered name set from source without importing the package.
     registered = AGENT_CONTROLLERS.names()
+    if "native-answer-or-one-tool-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "native-answer-or-one-tool-v1",
+            default_controller_factory(default_phase_program("native-answer-or-one-tool-v1")),
+        )
     if "native-answer-or-tool-v1" not in registered:
         AGENT_CONTROLLERS.register(
             "native-answer-or-tool-v1",
