@@ -40,3 +40,7 @@ The shared public-entry sequence and prospective exposure rows are in [`launch-r
 6. Preserve request-fit journals, role histories, source-bound tool receipts, and the Solver seal. Do not force a tool call, retry a no-tool outcome, read a scorer, or infer task or knowledge quality from four rows.
 
 No service is started, and no tokenizer, model, tool, scorer, GPU, or speech-data contact is made by this preparation.
+
+## Root admission
+
+The clean successor configuration is READY for the registered public worker only. Protocol v2 and generation/dynamic-fit plan v2 supersede the unexecuted pre-admission v1 documents. Runtime protocol 09d526c6afb5eef77f088d0f2d5cd4c59d926e1b81b00c6502e1e223b43b9774 derives from composed configuration baf5904f45f6fc20df44d61535058791e82c9eb6709a10243146cd2e6bea5c37; protocol document file SHA-256 is 60f54f7d1b852d79f70ee8b19a797da2991f1f1f9135c393dad68d48e5a1966c. These are different identities. All four role prompt bytes are pinned in protocol v2. Final exposure rows are committed in the shared ledger before service or request contact. The root-owned decoder service and monitor use the new session ID. No task-quality score is authorized by this engineering proof.

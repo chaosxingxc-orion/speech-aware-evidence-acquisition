@@ -1,0 +1,29 @@
+{
+  "schema": "saea-native-contact-fit-execution-plan-v1",
+  "cell": "slurp-native-role-gpu-proof-v1",
+  "attached_generation_run_id": "SAEA-SLURP-NATIVE-ROLE-GPU-PROOF-V1",
+  "expected_session_id": "serving-slurp-native-role-gpu-proof-np8-v1",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-13-slurp-native-role-gpu-proof-v1/protocol-v2.json",
+    "sha256": "60f54f7d1b852d79f70ee8b19a797da2991f1f1f9135c393dad68d48e5a1966c"
+  },
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-NATIVE-ROLE-GPU-PROOF-FIT-V1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "planned_model_calls": 176,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "09d526c6afb5eef77f088d0f2d5cd4c59d926e1b81b00c6502e1e223b43b9774",
+    "attempt_id": "attempt-slurp-native-role-gpu-proof-fit-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "contact_cap": 176,
+  "max_speech_packets": 1,
+  "execution_location": "FlightRuntime native request gate during generation, before each realized request dispatch.",
+  "root_registration_required": false,
+  "supersedes_unexecuted_document": "dynamic-fit-plan-v1.json"
+}
