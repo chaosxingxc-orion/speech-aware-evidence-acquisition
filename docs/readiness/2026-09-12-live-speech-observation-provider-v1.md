@@ -1,0 +1,19 @@
+# On-demand local speech observation provider
+
+Status: provider and fake-only validation are complete. No tool is registered by this change, and no model, audio, GPU, service, scorer or task-result contact was made.
+
+`LiveSpeechObservationProvider` is a reusable data and custody component for the future shared phase-tool integration. Its constructor accepts an already verified flattened Whisper inventory, an exact decoding protocol, canonical source bindings indexed by sample ID, the DATA root, a dedicated output root and a required contact callback. Construction validates only in-memory declarations. It does not create an attempt, inspect audio, create a prefetch pool, instantiate Whisper or load weights.
+
+The v1 action accepts exactly `span`, `representation` and `distinction`. The span must be `full-utterance`, the representation must be `asr-transcript`, and the distinction is bounded English text. The model cannot supply a path, audio hash or frame range. The provider resolves those facts from the canonical sample binding after the context sample and speech-packet identities match.
+
+The immutable cache key binds the verified backend inventory hash, decoding protocol hash, canonical packet/audio source binding, full-utterance span and ASR representation. Planner rationale and response identity remain invocation lineage because they do not alter the decoded evidence. A changed audio binding or protocol therefore cannot reuse an unrelated artifact, while a later identical request can reuse the exact source-bound evidence without another neural forward.
+
+On a cold request, shared `prepare_artifact` acquires the producer lock and writes its durable speech-tool start marker. The provider applies the 14 GiB host-free memory guard before the first backend construction. It then calls the required contact callback before resolving or reading the selected source. The callback must debit the future separately registered speech-tool attempt and return a JSON-safe contact receipt. Callback failure prevents audio inspection, backend construction and forward. After debit, the provider hashes and checks only the selected audio, verifies its header and duration, constructs the backend if needed, and calls `decode_selected`.
+
+The prepared artifact preserves the raw backend output and decoder diagnostics separately from the live result envelope. It also preserves the resolved source fingerprint/frame geometry and the original contact receipt. `observe` returns the existing `SpeechObservationSelection` class with `saea-live-speech-observation-selection-v1` visible data and `saea-live-speech-observation-lineage-v1` internal lineage. The visible block contains evidence, status, transcript, artifact and packet identities; it contains no gold, reference, task answer or filesystem path.
+
+`LocalWhisperBackend.decode_selected` creates and closes a small prefetch pool for exactly one selected source under the existing decode lock. It retains the already loaded Whisper stack across selected calls. Existing `prepare_sources` and `decode_batch` behavior remains unchanged for historical batch preparation.
+
+Concurrency over one provider is serialized around cache lookup and production. Two simultaneous identical selections yield one debit and one decode; the second receives the verified warm artifact. A backend failure retains the contact charge and durable start marker, and another call does not replay it automatically. Provider receipts separately count invocations, warm cache hits, actual `speech_tool_forward_started` events, failures and artifact hashes.
+
+Future FlightRuntime integration must supply the registered contact callback, route only a validated model-selected action to `observe`, carry returned lineage into the phase-tool receipt, and close the provider with the flight. This module grants no execution authority and does not define a controller or tool-registration API.

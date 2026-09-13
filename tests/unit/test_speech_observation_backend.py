@@ -320,3 +320,28 @@ def test_existing_cuda_device_and_fp16_contract_remains_valid(monkeypatch, devic
     )
     assert worker.protocol["device"] == device
     assert worker.protocol["fp16"] is True
+
+
+def test_decode_selected_reuses_loaded_stack_and_closes_each_small_prefetch(monkeypatch):
+    calls = {}
+    results = [FakeResult("selected", [1], -0.1, 0.0)]
+    monkeypatch.setattr(backend, "BoundedAudioPrefetch", FakePrefetch)
+    monkeypatch.setattr(
+        backend,
+        "_load_whisper_stack",
+        lambda actual_inventory, actual_protocol: (
+            calls.setdefault("loads", []).append((actual_inventory, actual_protocol))
+            or fake_stack(results, calls)
+        ),
+    )
+    worker = backend.LocalWhisperBackend(
+        inventory(), protocol(device="cpu", fp16=False, batch_size=1),
+        "/unused", lambda _: None,
+    )
+    assert worker.decode_selected(source("one"))["transcript"] == "selected"
+    assert worker.decode_selected(source("two"))["transcript"] == "selected"
+
+    assert len(calls["loads"]) == 1
+    assert all(item.closed for item in FakePrefetch.instances[-2:])
+    assert worker.stack is not None
+    worker.close()
