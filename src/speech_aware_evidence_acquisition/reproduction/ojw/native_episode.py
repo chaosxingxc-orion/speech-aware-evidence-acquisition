@@ -510,12 +510,18 @@ class NativeEpisodeWorkflow:
         return workflow
 
     async def invoke_direct(
-        self, original_query: str, candidates: Sequence[object]
+        self,
+        original_query: str,
+        candidates: Sequence[object],
+        *,
+        session: Session | None = None,
     ) -> dict[str, object]:
         try:
             output = await self._build().invoke(
                 inputs={"original_query": original_query, "candidates": candidates},
-                session=create_workflow_session(),
+                session=(
+                    session if session is not None else create_workflow_session()
+                ),
             )
         except Exception as error:
             cause: BaseException | None = error

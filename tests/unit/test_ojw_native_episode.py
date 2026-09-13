@@ -6,10 +6,15 @@ import asyncio
 import hashlib
 import json
 from dataclasses import dataclass, field
+from types import SimpleNamespace
 
 import pytest
+from openjiuwen.core.workflow import create_workflow_session
 
 from speech_aware_evidence_acquisition.rails.core_client import CoreCompletion
+from speech_aware_evidence_acquisition.reproduction.ojw import (
+    native_episode as native_episode_module,
+)
 from speech_aware_evidence_acquisition.reproduction.ojw.native_episode import (
     NativeEpisodeActions,
     NativeEpisodeError,
@@ -80,6 +85,24 @@ class _Script:
 
 
 _ALL_SCRIPTS: list[_Script] = []
+
+
+class _CapturingWorkflow:
+    def __init__(self) -> None:
+        self.sessions: list[object] = []
+
+    async def invoke(self, *, inputs, session):
+        self.sessions.append(session)
+        return SimpleNamespace(
+            result={
+                "output": {
+                    "accepted": {
+                        "state": {"original_query": inputs["original_query"]},
+                        "delivery": {"actor_output": "synthetic"},
+                    }
+                }
+            }
+        )
 
 
 def _node(role_id: str, role_kind: str, values: list[str], *, valid=False):
@@ -324,3 +347,49 @@ def test_framework_node_error_never_delivers():
 
     with pytest.raises(NativeEpisodeError, match="native episode node failed"):
         asyncio.run(workflow.invoke_direct("query", ()))
+
+
+def test_invoke_direct_passes_the_exact_caller_session(monkeypatch):
+    solver, _ = _node("solver", "solver", ["unused"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["unused"])
+    planner, _ = _node("planner", "planner", ["unused"])
+    workflow, _, _ = _episode(solver=solver, reviewer=reviewer, planner=planner)
+    capturing = _CapturingWorkflow()
+    supplied_session = create_workflow_session()
+    monkeypatch.setattr(workflow, "_build", lambda: capturing)
+    monkeypatch.setattr(
+        native_episode_module,
+        "create_workflow_session",
+        lambda: pytest.fail("caller session must suppress the default factory"),
+    )
+
+    result = asyncio.run(
+        workflow.invoke_direct("query", (), session=supplied_session)
+    )
+
+    assert capturing.sessions[0] is supplied_session
+    assert result["state"]["original_query"] == "query"
+
+
+def test_invoke_direct_still_creates_a_default_session_when_absent(monkeypatch):
+    solver, _ = _node("solver", "solver", ["unused"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["unused"])
+    planner, _ = _node("planner", "planner", ["unused"])
+    workflow, _, _ = _episode(solver=solver, reviewer=reviewer, planner=planner)
+    capturing = _CapturingWorkflow()
+    default_session = create_workflow_session()
+    factory_calls: list[None] = []
+    monkeypatch.setattr(workflow, "_build", lambda: capturing)
+
+    def default_factory():
+        factory_calls.append(None)
+        return default_session
+
+    monkeypatch.setattr(
+        native_episode_module, "create_workflow_session", default_factory
+    )
+
+    asyncio.run(workflow.invoke_direct("query", ()))
+
+    assert factory_calls == [None]
+    assert capturing.sessions[0] is default_session
