@@ -11,7 +11,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Iterable, Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from .errors import RailsError
 from .knowledge import AgentStateArtifact
@@ -34,6 +34,20 @@ FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256 = hashlib.sha256(
         ensure_ascii=True,
         sort_keys=True,
         separators=(",", ":"),
+    ).encode("utf-8")
+).hexdigest()
+BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID = (
+    "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1"
+)
+_BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY = {
+    **_FIRST_OCCURRENCE_PROJECTION_POLICY,
+    "policy_id": BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    "input_candidate_count": {"min": 1, "max": 3},
+}
+BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256 = hashlib.sha256(
+    json.dumps(
+        _BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY,
+        ensure_ascii=True, sort_keys=True, separators=(",", ":"),
     ).encode("utf-8")
 ).hexdigest()
 _CANDIDATE_KEYS = frozenset(
@@ -65,6 +79,7 @@ class SlurpIntentHypothesisState:
 
     sample_id: str
     candidates: tuple[SlurpIntentHypothesisCandidate, ...]
+    projection: SlurpIntentHypothesisProjection | None = None
 
 
 @dataclass(frozen=True)
@@ -289,6 +304,48 @@ def project_fixed_three_slurp_intent_hypotheses(
             "fixed-three hypothesis response must contain exactly three candidates"
         )
 
+    return _project_validated_rows(
+        content, rows=rows, sample_id=sample_id, legal=legal,
+        policy_id=FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+        policy_sha256=FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256,
+    )
+
+
+def project_bounded_slurp_intent_hypotheses(
+    content: str, *, sample_id: str, legal_intent_ids: Iterable[str],
+) -> SlurpIntentHypothesisProjection:
+    """Project one through three raw candidates without editing the source.
+
+    Validate every raw object before retaining the first occurrence of each
+    intent. This policy has a separate identity from the fixed-three policy.
+    """
+    if not isinstance(content, str):
+        raise SlurpIntentHypothesisError("bounded hypothesis response must be JSON text")
+    legal = _legal_ids(legal_intent_ids)
+    try:
+        compact = json.loads(content, object_pairs_hook=_unique_json_object)
+    except (TypeError, json.JSONDecodeError) as error:
+        raise SlurpIntentHypothesisError("bounded hypothesis response must be JSON") from error
+    if not isinstance(compact, Mapping) or set(compact) != _COMPACT_DOCUMENT_KEYS:
+        raise SlurpIntentHypothesisError(
+            "bounded hypothesis response must contain exactly candidates"
+        )
+    rows = compact["candidates"]
+    if not isinstance(rows, list) or not 1 <= len(rows) <= 3:
+        raise SlurpIntentHypothesisError(
+            "bounded hypothesis response must contain one through three candidates"
+        )
+    return _project_validated_rows(
+        content, rows=rows, sample_id=sample_id, legal=legal,
+        policy_id=BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+        policy_sha256=BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256,
+    )
+
+
+def _project_validated_rows(
+    content: str, *, rows: list[object], sample_id: str,
+    legal: frozenset[str], policy_id: str, policy_sha256: str,
+) -> SlurpIntentHypothesisProjection:
     validated_rows: list[dict[str, object]] = []
     for row in rows:
         single = json.dumps(
@@ -347,8 +404,8 @@ def project_fixed_three_slurp_intent_hypotheses(
         projected_content_sha256=hashlib.sha256(
             projected.encode("utf-8")
         ).hexdigest(),
-        projection_policy_id=FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
-        projection_policy_sha256=FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256,
+        projection_policy_id=policy_id,
+        projection_policy_sha256=policy_sha256,
         raw_positions=tuple(provenance),
     )
 
@@ -360,6 +417,7 @@ def parse_slurp_intent_hypothesis_state(
     legal_intent_ids: Iterable[str],
     max_candidates: int,
     compact_source_phase: str | None = None,
+    projection_policy: str | None = None,
 ) -> SlurpIntentHypothesisState:
     """Consume raw state without changing its sealed bytes or source hash.
 
@@ -384,6 +442,14 @@ def parse_slurp_intent_hypothesis_state(
         raise SlurpIntentHypothesisError(
             "hypothesis content does not match its source response SHA-256"
         )
+    if projection_policy is not None and (
+        projection_policy != BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+        or compact_source_phase is None
+    ):
+        raise SlurpIntentHypothesisError(
+            "projection_policy requires the bounded first-occurrence policy and compact source"
+        )
+    projection = None
     content = artifact.content
     legal = _legal_ids(legal_intent_ids)
     if compact_source_phase is not None:
@@ -405,18 +471,25 @@ def parse_slurp_intent_hypothesis_state(
             raise SlurpIntentHypothesisError(
                 "compact hypothesis state must bind the configured phase and sample_id"
             )
-        content = canonicalize_slurp_intent_hypothesis_response(
-            content,
-            sample_id=sample_id,
-            legal_intent_ids=legal,
-            max_candidates=max_candidates,
-        )
-    return parse_slurp_intent_hypothesis_content(
+        if projection_policy is not None:
+            projection = project_bounded_slurp_intent_hypotheses(
+                content, sample_id=sample_id, legal_intent_ids=legal,
+            )
+            content = projection.content
+        else:
+            content = canonicalize_slurp_intent_hypothesis_response(
+                content,
+                sample_id=sample_id,
+                legal_intent_ids=legal,
+                max_candidates=max_candidates,
+            )
+    state = parse_slurp_intent_hypothesis_content(
         content,
         expected_sample_id=expected_sample_id,
         legal_intent_ids=legal,
         max_candidates=max_candidates,
     )
+    return replace(state, projection=projection) if projection is not None else state
 
 
 @dataclass(frozen=True)

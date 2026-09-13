@@ -1,0 +1,258 @@
+{
+  "schema": "saea-direct-vs-native-system-protocol-v1",
+  "protocol_id": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-PROTOCOL-V1",
+  "root_admitted_at": "2026-09-13T16:54:33.988612+00:00",
+  "configurations": {
+    "direct": {
+      "experiment_fragment": "slurp-direct-vs-native-direct-dev1000-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-direct-vs-native-np4-ctx24k-max256-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "baseline_fragment": "slurp-direct-vs-native-direct-dev1000-v1",
+      "composed_config_hash": "701accf879cf0111543aefa1d7e672612fc32f563575beea523fd0a0304a8b2e",
+      "execution_plan_protocol_hash": "87b1ab2d4a1fba2f41e174d84b3888930a6d114c06a98f2f73c34e8cbb488c68",
+      "run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-V1",
+      "attempt_id": "attempt-slurp-direct-vs-native-direct-generation-v1",
+      "fit": {
+        "attempt_id": "attempt-slurp-direct-vs-native-direct-fit-v1",
+        "contact_cap": 3001,
+        "run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-FIT-V1"
+      },
+      "execution_budget": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 1050,
+        "planned_speech_audio_seconds": 3500,
+        "split_role": "dev"
+      }
+    },
+    "system": {
+      "experiment_fragment": "slurp-direct-vs-native-system-dev1000-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-direct-vs-native-np4-ctx24k-max256-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "baseline_fragment": "slurp-direct-vs-native-system-dev1000-v1",
+      "composed_config_hash": "aa43a443a331ba17cfe0e9cf4914518c6f7132627f5927e747693c50ced6455c",
+      "execution_plan_protocol_hash": "d64c04ebf8163c29a77d9f790de668cfe2ae36a979e80282c86f29a7f5517f94",
+      "run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1",
+      "attempt_id": "attempt-slurp-direct-vs-native-system-generation-v1",
+      "fit": {
+        "run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-FIT-V1",
+        "attempt_id": "attempt-slurp-direct-vs-native-system-fit-v1",
+        "contact_cap": 44000,
+        "max_speech_packets": 1
+      },
+      "execution_budget": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 12.0,
+        "planned_model_calls": 11000,
+        "planned_speech_audio_seconds": 44000,
+        "split_role": "dev"
+      }
+    }
+  },
+  "population": {
+    "count": 1000,
+    "split_role": "dev",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "roster": "configs/dataset/slurp-speech-native-dev1000.json",
+    "no_new_draw": true,
+    "primary": "NEW500",
+    "secondary": [
+      "OLD500",
+      "DEV1000"
+    ],
+    "exposure": "Previously exposed discovery roster; no unseen-data claim."
+  },
+  "question": "Does the complete current native agent improve the multimodal task outcome over one direct frozen-model answer?",
+  "comparison": {
+    "direct": "Existing shared direct-only phase; current speech and legal task contract, no retrieved knowledge or intermediate agent/tool state.",
+    "system": "Native live Perception, complete candidate-associated explanatory slot knowledge, joint intent/entity Solver, Reviewer native task-contract call, Planner acceptance or bounded revision. Solver alone answers.",
+    "fixed": [
+      "roster",
+      "prepared speech",
+      "weights",
+      "sampling",
+      "per-request max256",
+      "resident process and geometry",
+      "official scoring"
+    ],
+    "intentional_differences": [
+      "role program and instructions",
+      "candidate states",
+      "knowledge consumption",
+      "review/tool/planning calls",
+      "bounded revision"
+    ],
+    "interpretation": "End-to-end system bundle contrast. Do not attribute a gain to an isolated component or claim compute matching."
+  },
+  "native_episode": {
+    "policy": "phase-native-candidates-review-revise-v1",
+    "max_revisions": 1,
+    "contact_cap_per_sample": 11,
+    "roles": {
+      "perception": 1,
+      "solver": 1,
+      "reviewer": 3,
+      "planner": 1
+    },
+    "tool_scope": {
+      "reviewer": [
+        "saea-tool-task-contract-v1"
+      ],
+      "perception": [],
+      "solver": [],
+      "planner": []
+    },
+    "reviewer_requirement": "The Reviewer prompt instructs one native task-contract call per review. The frozen core originates the function call; the harness does not inject a call.",
+    "acceptance": "Complete native episodes for every registered row. Source-validate raw candidates; apply the prospective bounded projection only to the lookup view. Supply all associated released slot values before Solver, preserve the dose on revisions, and preserve every model response. No hidden repair or roster filtering."
+  },
+  "serving": {
+    "session_id": "serving-slurp-direct-vs-native-np4-ctx24k-v1",
+    "runtime_receipt": "docs/receipts/runtime-q4km-mmproj-free.json",
+    "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+    "llama_cpp_build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "llama_server_binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "decoder_gguf_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "role": "inference",
+    "lifecycle_injected_argument": "--no-mmproj",
+    "server_args": [
+      "-c",
+      "98304",
+      "-np",
+      "4",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ],
+    "slot_geometry": "4 x 24576",
+    "max_tokens": 256,
+    "new_after_wsl_restart": false,
+    "reuse_existing_e0_receipt": true,
+    "switch_reason": "One matched resident decoder process for pure-model and full native-agent task comparison; reserve complete candidate slot values and review history."
+  },
+  "native_prompt_files": [
+    {
+      "relpath": "configs/probes/slurp_native_role_context_v3.txt",
+      "sha256": "46e251173ed15591c8e0f1cbc8709c8da20a463624e430031ceba7c46f576190"
+    },
+    {
+      "relpath": "configs/probes/slurp_native_role_perception_v2.txt",
+      "sha256": "bd3b6444ea727506f41dfe852cd586ad30e7c66778434b8f29048559e4257cad"
+    },
+    {
+      "relpath": "configs/probes/slurp_native_role_planner_v1.txt",
+      "sha256": "074bd27fe1ea6005d7b096be875f662e91cfe503a22ea78918bd1f5f876ded51"
+    },
+    {
+      "relpath": "configs/probes/slurp_native_role_reviewer_v1.txt",
+      "sha256": "dce206a20d361b221ea146dc4ff274ba5e08ce4ab1bfbfece662dc7da5012417"
+    },
+    {
+      "relpath": "configs/probes/slurp_native_role_solver_v2.txt",
+      "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+    }
+  ],
+  "native_policy_document": {
+    "relpath": "configs/policy/phase-native-candidates-review-revise-v1.json",
+    "sha256": "0941a53f3cd943ec6560ed8e755df940a3b752c5ff1341baff9a3b914bc40101"
+  },
+  "candidate_enum_contract": {
+    "id": "slurp-intent-hypotheses-v1",
+    "min_candidates": 1,
+    "max_candidates": 3,
+    "source_catalog": {
+      "data_relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+      "sha256": "3e60268b3f940c3018ab8b8c80ccd988b1d1efd6c5a198929c6af05ba21f8263",
+      "source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201"
+    }
+  },
+  "candidate_projection": {
+    "scope": "system knowledge lookup view only; original Perception remains in native history",
+    "policy_id": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+    "policy_sha256": "a4ef54c1b0d1ee4853528fcd667fd0fd6f5b91a3b485c85dd75bd7f33f4c5096",
+    "raw_bounds": [
+      1,
+      3
+    ],
+    "retention": "Validate all raw objects before first occurrence deduplication; no padding; record every raw position and raw/projected hashes.",
+    "interpretation": "Gold inclusion and actual width are system-only offline diagnostics; width is not confidence. Never filter the primary contrast."
+  },
+  "analysis_recipe": {
+    "relpath": "docs/readiness/2026-09-13-slurp-direct-vs-native-system-analysis-recipe-v1.json",
+    "sha256": "fc01785df80224a999b8ac53986e5ba0f400c2cfd2360cc4c9a1900ebe63e35a"
+  },
+  "fit": {
+    "direct": "Whole-roster actual-wave gate before generation; 3001 endpoint cap.",
+    "system": "Before each realized native request under generation lease; one speech packet plus three endpoint checks per model call; 44000 endpoint cap.",
+    "no_hidden_probe": true,
+    "refuse_overflow": true
+  },
+  "accounting": {
+    "direct_model_cap": 1050,
+    "system_model_cap": 11000,
+    "direct_fit_cap": 3001,
+    "system_fit_cap": 44000,
+    "family_model_cap": 12050,
+    "family_fit_cap": 47001,
+    "family_gpu_hours_fit_inclusive": 13.0,
+    "direct_audio_seconds": 3500,
+    "system_audio_seconds": 44000,
+    "system_audio_basis": "Existing roster totals 2884.7936875 seconds, at most 11 speech reuses per episode.",
+    "system_native_task_contract_tool_cap": 6000,
+    "official_complete_scoring_jobs": 2,
+    "asr_calls": 0,
+    "encoder_calls": 0,
+    "ceilings_not_targets": true
+  },
+  "scoring": {
+    "scorers": [
+      "slurp-slu-official",
+      "slurp-slu",
+      "cost"
+    ],
+    "complete_manifest_once": true,
+    "include_per_sample": true,
+    "single_worker": true,
+    "overlap": "Score sealed direct while system generates. Root reads quality after both official complete receipts and a separate read release.",
+    "no_partial_failed_arm_scoring": true
+  },
+  "pipeline": {
+    "order": [
+      "direct",
+      "system"
+    ],
+    "single_resident_service": true,
+    "exclusive_generation_leases": true,
+    "prepared_features_only": true,
+    "cpu_preparation_workers_total_during_generation": 8,
+    "monitor_seconds": 10,
+    "no_mid_arm_geometry_change": true
+  },
+  "failure_policy": "Stop and preserve on failure; no automatic recovery/replay. At most one separately registered recovery after a named root cause. All closed predecessor attempts stay closed.",
+  "limits": [
+    "No Whisper or intent-boundary-store consumption in this version.",
+    "Reviewer task-contract invocation is instructed; it is not evidence of calibrated selective speech-tool choice.",
+    "This is a Stage-2 discovery comparison; superiority/generalization and full-goal completion remain unproven."
+  ],
+  "admission": {
+    "kind": "decision",
+    "relpath": "coordination/slurp-direct-vs-native-system-dev1000-v1/admission-v1.json",
+    "sha256": "6fa9c0d1c65aa46fdc486b6a1e7768a2aeaf0fa1106efd985684fc6c8c6a29b9",
+    "expected_decision_id": "slurp-direct-vs-native-system-dev1000-admission-v1",
+    "reason": "Owner-directed direct versus complete native system admission"
+  }
+}

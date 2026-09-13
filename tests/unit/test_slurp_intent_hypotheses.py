@@ -14,6 +14,8 @@ from speech_aware_evidence_acquisition.rails.phase_material import (
     build_material_for_phase,
 )
 from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
+    BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256,
     FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
     FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256,
     HYPOTHESIS_SEMANTICS,
@@ -22,6 +24,7 @@ from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
     SlurpIntentHypothesisStateFill,
     parse_slurp_intent_hypothesis_state,
     project_fixed_three_slurp_intent_hypotheses,
+    project_bounded_slurp_intent_hypotheses,
 )
 
 LEGAL = frozenset({"weather_query", "transport_taxi", "calendar_set"})
@@ -409,4 +412,82 @@ def test_compact_consumption_never_repairs_candidate_ids_or_duplicates(candidate
             artifact, expected_sample_id=SAMPLE_ID,
             legal_intent_ids=LEGAL, max_candidates=3,
             compact_source_phase="hypotheses",
+        )
+
+
+@pytest.mark.parametrize("positions", [(0,), (0, 0), (0, 1), (0, 1, 0)])
+def test_bounded_projection_preserves_source_and_first_occurrence(positions):
+    rows = [_payload()["candidates"][i] for i in positions]
+    source = json.dumps({"candidates": rows})
+    artifact = _state({"candidates": rows})
+    result = parse_slurp_intent_hypothesis_state(
+        artifact, expected_sample_id=SAMPLE_ID, legal_intent_ids=LEGAL,
+        max_candidates=3, compact_source_phase="hypotheses",
+        projection_policy=BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    )
+    assert [c.intent_id for c in result.candidates] == list(dict.fromkeys(
+        row["intent_id"] for row in rows
+    ))
+    projection = result.projection
+    assert projection is not None
+    assert projection.original_text_sha256 == artifact.source_response_sha256
+    assert artifact.content == json.dumps({"candidates": rows}, sort_keys=True)
+    assert len(projection.raw_positions) == len(rows)
+    assert projection.projection_policy_id == BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+    assert projection.projection_policy_sha256 == BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256
+    direct = project_bounded_slurp_intent_hypotheses(
+        source, sample_id=SAMPLE_ID, legal_intent_ids=LEGAL,
+    )
+    assert direct.content == projection.content
+    if len(set(positions)) != len(positions):
+        with pytest.raises(SlurpIntentHypothesisError, match="unique"):
+            parse_slurp_intent_hypothesis_state(
+                artifact, expected_sample_id=SAMPLE_ID, legal_intent_ids=LEGAL,
+                max_candidates=3, compact_source_phase="hypotheses",
+            )
+
+
+@pytest.mark.parametrize("rows", [
+    [], [_payload()["candidates"][0]] * 4,
+    [_payload()["candidates"][0], {
+        **_payload()["candidates"][0], "evidence_refs": ["duplicate", "duplicate"],
+    }],
+    [_payload()["candidates"][0], {
+        **_payload()["candidates"][0], "intent_id": "illegal",
+    }],
+])
+def test_bounded_projection_validates_all_raw_objects(rows):
+    with pytest.raises(SlurpIntentHypothesisError):
+        project_bounded_slurp_intent_hypotheses(
+            json.dumps({"candidates": rows}), sample_id=SAMPLE_ID, legal_intent_ids=LEGAL,
+        )
+
+
+@pytest.mark.parametrize("mutation", [
+    {"state_id": "hypotheses:foreign"},
+    {"state_kind": "phase:foreign"},
+    {"source_response_sha256": "a" * 64},
+])
+def test_projection_cannot_bypass_source_custody(mutation):
+    artifact = replace(_state({"candidates": _payload()["candidates"]}), **mutation)
+    with pytest.raises(SlurpIntentHypothesisError):
+        parse_slurp_intent_hypothesis_state(
+            artifact, expected_sample_id=SAMPLE_ID, legal_intent_ids=LEGAL,
+            max_candidates=3, compact_source_phase="hypotheses",
+            projection_policy=BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+        )
+
+
+def test_bounded_and_fixed_three_projections_have_distinct_policy_identity():
+    raw = json.dumps({"candidates": [_payload()["candidates"][0]] * 3})
+    args = {"sample_id": SAMPLE_ID, "legal_intent_ids": LEGAL}
+    old = project_fixed_three_slurp_intent_hypotheses(raw, **args)
+    new = project_bounded_slurp_intent_hypotheses(raw, **args)
+    assert old.content == new.content
+    assert old.raw_positions == new.raw_positions
+    assert old.projection_policy_id != new.projection_policy_id
+    assert old.projection_policy_sha256 != new.projection_policy_sha256
+    with pytest.raises(SlurpIntentHypothesisError, match="exactly three"):
+        project_fixed_three_slurp_intent_hypotheses(
+            json.dumps({"candidates": [_payload()["candidates"][0]]}), **args,
         )

@@ -1,0 +1,13 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "slurp-direct-vs-native-direct-dev1000-v1",
+      "cell": "slurp-direct-vs-native-direct-dev1000-v1"
+    },
+    {
+      "experiment": "slurp-direct-vs-native-system-dev1000-v1",
+      "cell": "slurp-direct-vs-native-system-dev1000-v1"
+    }
+  ]
+}

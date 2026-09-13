@@ -39,7 +39,10 @@ from .semantic_knowledge_build import (
     AuthoredSemanticKnowledgeSpec,
     build_slot_contract_snapshot,
 )
-from .slurp_intent_hypotheses import SlurpIntentHypothesisError
+from .slurp_intent_hypotheses import (
+    BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    SlurpIntentHypothesisError,
+)
 
 CANDIDATE_SUPPLY_SCHEMA = "saea-candidate-semantic-supply-v1"
 SELECTION_SCHEMA = "saea-candidate-semantic-selection-v1"
@@ -57,7 +60,7 @@ _SPEC_KEYS = frozenset(
         "max_total_values",
     }
 )
-_OPTIONAL_SPEC_KEYS = frozenset({"compact_source_phase"})
+_OPTIONAL_SPEC_KEYS = frozenset({"compact_source_phase", "supply_mode", "projection_policy"})
 _SOURCE_KEYS = frozenset(
     {"schema", "builder_policy_id", "source_split_identity_hash", "rows"}
 )
@@ -91,9 +94,20 @@ class CandidateSemanticSupplySpec:
     max_values_per_candidate: int
     max_total_values: int
     compact_source_phase: str | None = None
+    supply_mode: str = "provide"
+    projection_policy: str | None = None
 
     def validate(self, program: PhaseProgram) -> "CandidateSemanticSupplySpec":
         program.validate()
+        if self.supply_mode not in ("provide", "withhold"):
+            raise CandidateSemanticSupplyError("supply_mode must be provide or withhold")
+        if self.projection_policy is not None and (
+            self.projection_policy != BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+            or self.compact_source_phase is None
+        ):
+            raise CandidateSemanticSupplyError(
+                "projection_policy requires bounded first-occurrence and compact source"
+            )
         phases = program.phase_names()
         if self.phase not in phases or self.candidate_state_phase not in phases:
             raise CandidateSemanticSupplyError(
@@ -168,6 +182,10 @@ class CandidateSemanticSupplySpec:
         }
         if self.compact_source_phase is not None:
             result["compact_source_phase"] = self.compact_source_phase
+        if self.supply_mode != "provide":
+            result["supply_mode"] = self.supply_mode
+        if self.projection_policy is not None:
+            result["projection_policy"] = self.projection_policy
         return result
 
 
@@ -212,6 +230,8 @@ def load_candidate_semantic_supply_specs(
                 max_values_per_candidate=raw["max_values_per_candidate"],
                 max_total_values=raw["max_total_values"],
                 compact_source_phase=raw.get("compact_source_phase"),
+                supply_mode=raw.get("supply_mode", "provide"),
+                projection_policy=raw.get("projection_policy"),
             ).validate(program)
             specs[phase] = spec
     return MappingProxyType(specs)
@@ -362,6 +382,7 @@ def build_candidate_semantic_supply(
             max_values_per_candidate=spec.max_values_per_candidate,
             max_total_values=spec.max_total_values,
             compact_source_phase=spec.compact_source_phase,
+            projection_policy=spec.projection_policy,
         ).adopt(
             store.snapshot,
             policy_id=store.snapshot.builder_policy_id,
@@ -399,8 +420,13 @@ def build_candidate_semantic_supply(
             raise CandidateSemanticSupplyError(
                 "candidate supply partially overlaps visible values; refuse a changed dose"
             )
+        if spec.supply_mode == "withhold" and overlap:
+            raise CandidateSemanticSupplyError(
+                "withheld candidate values are already visible; refuse a contaminated control"
+            )
         disposition = (
-            "already-visible" if overlap else "acquired" if selected_ids else "no-mapping"
+            "withheld" if spec.supply_mode == "withhold"
+            else "already-visible" if overlap else "acquired" if selected_ids else "no-mapping"
         )
         query_hash = query_state.content_hash()
         audit.update(

@@ -1,0 +1,27 @@
+{
+  "schema": "saea-registered-generation-plan-v1",
+  "cell": "slurp-direct-vs-native-direct-dev1000-v1",
+  "experiment": "slurp-direct-vs-native-direct-dev1000-v1",
+  "expected_session_id": "serving-slurp-direct-vs-native-np4-ctx24k-v1",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-13-slurp-direct-vs-native-system-dev1000-v1/protocol-v1.json",
+    "sha256": "99594c92b189d99d71a188b15d52fbfe154134bcf49d64a624c7d5191343f784"
+  },
+  "root_registration_required": false,
+  "execution_plan": {
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition",
+    "run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-V1",
+    "attempt_id": "attempt-slurp-direct-vs-native-direct-generation-v1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "dev",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "planned_model_calls": 1050,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 3500,
+    "protocol_hash": "87b1ab2d4a1fba2f41e174d84b3888930a6d114c06a98f2f73c34e8cbb488c68"
+  },
+  "scoring": "Complete official scoring once after seal with per-sample fields; quality read waits for both receipts.",
+  "execution_location": "Whole-roster actual-wave gate before generation; 3001 endpoint cap."
+}

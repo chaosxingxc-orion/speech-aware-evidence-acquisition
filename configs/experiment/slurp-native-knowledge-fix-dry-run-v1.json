@@ -8,12 +8,11 @@
       "run_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-FIX-DRY-RUN-V1",
       "attempt_id": "attempt-slurp-native-knowledge-fix-dry-run-generation-v1",
       "allowed_execution_stages": [
-        "check",
-        "worker"
+        "check"
       ],
       "readiness": {
-        "state": "ready",
-        "reason": "Root admits the mandatory four-row fix dry run after the original flight and its sole recovery are durably closed. The actual installed framework callback and shared request preparation pass with the explicit v3 prompt; strict request guards and all task behavior remain unchanged. Reuse the resident np4 decoder and require a fresh exclusive lease with per-realized-request fitting. No automatic recovery or effectiveness claim."
+        "state": "held",
+        "reason": "All four native episodes generated, but seal failed on the invalid empty task-answer scorer declaration. Attempt ABORTED; preserve draft manifest and all 20 contacts. No regeneration. See the dry-run result note."
       }
     }
   ],

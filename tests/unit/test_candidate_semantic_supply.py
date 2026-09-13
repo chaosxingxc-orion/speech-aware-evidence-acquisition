@@ -501,3 +501,87 @@ def test_revision_cannot_partially_overlap_or_reveal_next_cards(tmp_path):
     )
     with pytest.raises(CandidateSemanticSupplyError, match="partially overlaps"):
         router.automatic_for_phase("solve", changed)
+
+
+def test_withheld_control_validates_and_ranks_without_exposing_knowledge(tmp_path):
+    config, legal = _config(tmp_path)
+    spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
+    spec["supply_mode"] = "withhold"
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal
+    )
+    context = _context(binding, _artifact("s1", ("beta", "alpha")))
+    before = context.query_state.content_hash()
+    assert router.automatic_for_phase("solve", context) is None
+    assert context.query_state.content_hash() == before
+    assert context.query_state.retrieved_value_ids == ()
+    audit = next(iter(router.receipt["candidate_selections"].values()))
+    assert audit["candidate_ids"] == ["beta", "alpha"]
+    assert audit["qualified_selected_value_ids"] == [
+        "slot-contracts::slot-contract:beta_one",
+        "slot-contracts::slot-contract:alpha_one",
+    ]
+    assert audit["supply_disposition"] == "withheld"
+    assert router.receipt["candidate_supply"]["specs"][0]["supply_mode"] == "withhold"
+    with pytest.raises(CandidateSemanticSupplyError):
+        router.automatic_for_phase("solve", _context(binding, _artifact("s2", ("illegal",)), "s2"))
+    missing = replace(context, agent_states=())
+    with pytest.raises(CandidateSemanticSupplyError, match="exactly one"):
+        router.automatic_for_phase("solve", missing)
+
+
+def test_withheld_control_refuses_already_visible_candidate_values(tmp_path):
+    config, legal = _config(tmp_path)
+    spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
+    spec["supply_mode"] = "withhold"
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal
+    )
+    context = _context(binding, _artifact("s1", ("beta",)))
+    context = replace(context, query_state=replace(
+        context.query_state,
+        retrieved_value_ids=("slot-contracts::slot-contract:beta_one",),
+    ))
+    with pytest.raises(CandidateSemanticSupplyError, match="contaminated control"):
+        router.automatic_for_phase("solve", context)
+
+
+@pytest.mark.parametrize("mode", [None, True, "", "unvalidated"])
+def test_candidate_supply_refuses_unknown_mode(tmp_path, mode):
+    config, legal = _config(tmp_path)
+    config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]["supply_mode"] = mode
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    with pytest.raises(CandidateSemanticSupplyError, match="supply_mode"):
+        build_knowledge_store_supply(
+            binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal
+        )
+
+
+@pytest.mark.parametrize("mode", ["withhold", "provide"])
+def test_bounded_projection_is_shared_by_treatment_and_control(tmp_path, mode):
+    config, legal = _config(tmp_path)
+    spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
+    spec.update(
+        compact_source_phase="hypotheses", supply_mode=mode,
+        projection_policy="bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+    )
+    source = _artifact("s1", ("beta", "alpha", "beta"))
+    raw = json.dumps({"candidates": json.loads(source.content)["candidates"]})
+    source = replace(
+        source, content=raw,
+        source_response_sha256=hashlib.sha256(raw.encode()).hexdigest(),
+    )
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal,
+    )
+    supply = router.automatic_for_phase("solve", _context(binding, source))
+    assert (supply is None) == (mode == "withhold")
+    audit = next(iter(router.receipt["candidate_selections"].values()))
+    assert audit["candidate_ids"] == ["beta", "alpha"]
+    assert audit["candidate_projection"]["original_text_sha256"] == source.source_response_sha256
+    assert len(audit["candidate_projection"]["raw_positions"]) == 3
+    assert source.content == raw
+    assert router.receipt["candidate_supply"]["specs"][0]["projection_policy"] == spec["projection_policy"]

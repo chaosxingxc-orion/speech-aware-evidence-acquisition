@@ -101,3 +101,30 @@ IDs and only Solver emits final scenario/action/entity JSON. Do not attach a
 Perception-only state fill to a Solver's immediate predecessor: on revision,
 that predecessor is Planner. Candidate supply selects the configured Perception
 source from the source-bound trajectory instead.
+
+## Matched withheld control
+
+Set candidate_supply.<phase>.supply_mode to withhold to validate the same
+source-bound candidates and compute the same card selection without making an
+acquisition. Keep the same released store and other limits in the control and
+supplied arms. The selection receipt records withheld; selected IDs are audit
+metadata and are not added to the query state. Refuse a control whose selected
+cards are already visible. Omitted mode retains provide and the historical
+receipt shape. This switch isolates model-facing knowledge availability while
+preserving source validation and selection failure behavior.
+
+
+## Bounded candidate projection
+
+Opt into `projection_policy: bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1`
+only in a prospectively registered compact-source experiment. Validate every original
+candidate object and its source phase/sample/hash before projecting. Accept one
+through three raw candidates; retain the first occurrence of each legal intent in
+original order without padding. Preserve original model responses and record the
+projected content hash, policy hash and every raw position in the selection receipt.
+Actual width is descriptive, not confidence. The historical fixed-three policy
+and strict default parser retain their identities and behavior.
+
+Use the same projection policy in a supplied arm and its withheld control. This
+projection changes only the knowledge lookup view; the original Perception message
+remains in native framework history. Do not manufacture a replacement source state.

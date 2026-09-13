@@ -1339,6 +1339,7 @@ class SlurpCandidateSemanticProvider(KnowledgeProvider):
         max_values_per_candidate: int,
         max_total_values: int,
         compact_source_phase: str | None = None,
+        projection_policy: str | None = None,
         provider_id: str = SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID,
     ) -> None:
         super().__init__(provider_id=provider_id)
@@ -1387,6 +1388,7 @@ class SlurpCandidateSemanticProvider(KnowledgeProvider):
         self._max_values_per_candidate = max_values_per_candidate
         self._max_total_values = max_total_values
         self._compact_source_phase = compact_source_phase
+        self._projection_policy = projection_policy
         self._last_query_state: QueryState | None = None
         self._last_rank_result: object | None = None
         self._last_selected_value_ids: tuple[str, ...] = ()
@@ -1530,6 +1532,7 @@ class SlurpCandidateSemanticProvider(KnowledgeProvider):
             legal_intent_ids=self._legal_candidate_ids,
             max_candidates=self._max_candidates,
             compact_source_phase=self._compact_source_phase,
+            projection_policy=self._projection_policy,
         )
         candidate_ids = tuple(item.intent_id for item in state.candidates)
         selected, mappings = self._select(candidate_ids)
@@ -1564,6 +1567,10 @@ class SlurpCandidateSemanticProvider(KnowledgeProvider):
         }
         if self._compact_source_phase is not None:
             audit["compact_source_phase"] = self._compact_source_phase
+        if state.projection is not None:
+            from dataclasses import asdict  # noqa: PLC0415
+
+            audit["candidate_projection"] = asdict(state.projection)
         audit["selection_sha256"] = content_hash(audit)
         self._last_query_state = query_state
         self._last_rank_result = rank_result
