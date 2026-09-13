@@ -717,6 +717,19 @@ def _cli_finalize(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cli_prepare_semantic_knowledge(args: argparse.Namespace) -> int:
+    """Build or exactly reuse one registered authored semantic knowledge store."""
+    from ..semantic_knowledge_preparation import prepare_semantic_knowledge_store
+
+    receipt = prepare_semantic_knowledge_store(
+        Path(args.registration),
+        repo_root=Path(args.repo_root),
+        data_root=Path(args.data_root),
+    )
+    print(json.dumps(receipt, indent=2, sort_keys=True))
+    return 0
+
+
 def _cli_prepare_state_source(args: argparse.Namespace) -> int:
     """Prepare one registered deterministic source through the common cache."""
     from ..bundle.git_commit import require_clean_study_repo
@@ -1394,6 +1407,14 @@ def main(argv: list[str] | None = None) -> int:
     speech_read.add_argument("--output", required=True)
     speech_read.set_defaults(func=_cli_speech_native_read)
 
+    prepare_semantic = sub.add_parser(
+        "prepare-semantic-knowledge",
+        help="build a registered authored semantic knowledge store without model contact",
+    )
+    prepare_semantic.add_argument("--registration", required=True)
+    prepare_semantic.add_argument("--repo-root", required=True)
+    prepare_semantic.add_argument("--data-root", required=True)
+    prepare_semantic.set_defaults(func=_cli_prepare_semantic_knowledge)
     prepare_state = sub.add_parser(
         "prepare-state-source",
         help="prepare a registered deterministic predecessor without new inference",
