@@ -21,7 +21,11 @@ class TopNDiagnosticError(ValueError):
 
 @dataclass(frozen=True)
 class SourceCandidateRow:
-    """One verified sample and its ordered candidate intent IDs."""
+    """One verified sample and its ordered candidate intent IDs.
+
+    candidate_ids must be a non-string ordered sequence. The aggregator
+    preserves order and never ranks or deduplicates it.
+    """
 
     sample_id: str
     candidate_ids: tuple[str, ...]
@@ -37,7 +41,12 @@ class ReferenceIntentRow:
 
 @dataclass(frozen=True)
 class BranchOutcomeRow:
-    """One branch's final intent/refusal and optional official entity result."""
+    """One branch's final intent/refusal and optional official entity result.
+
+    A refused row may retain a final_intent_id as an attempted intent for
+    shortlist diagnostics. That attempted ID never counts as accepted final
+    quality.
+    """
 
     sample_id: str
     final_intent_id: str | None
@@ -55,6 +64,10 @@ class BranchSampleDiagnostic:
     rescue: bool
     harm: bool
     out_of_shortlist: bool
+    candidate_present: bool
+    candidate_present_final_correct: bool
+    candidate_present_final_not_selected: bool
+    final_intent_attempt_only: bool
     entity_correct: bool | None
     entity_partition: str
 
@@ -86,6 +99,9 @@ class TopNSampleDiagnostic:
             "topn_included": self.topn_included,
             "missing_true_candidate": self.missing_true_candidate,
             "present_not_selected": self.present_not_selected,
+            "true_candidate_present_but_source_rank1_not_selected": (
+                self.present_not_selected
+            ),
             "branches": {
                 name: {
                     "final_intent_id": value.final_intent_id,
@@ -94,6 +110,14 @@ class TopNSampleDiagnostic:
                     "rescue": value.rescue,
                     "harm": value.harm,
                     "out_of_shortlist": value.out_of_shortlist,
+                    "candidate_present": value.candidate_present,
+                    "candidate_present_final_correct": (
+                        value.candidate_present_final_correct
+                    ),
+                    "candidate_present_final_not_selected": (
+                        value.candidate_present_final_not_selected
+                    ),
+                    "final_intent_attempt_only": value.final_intent_attempt_only,
                     "entity_correct": value.entity_correct,
                     "entity_partition": value.entity_partition,
                 }
@@ -104,7 +128,12 @@ class TopNSampleDiagnostic:
 
 @dataclass(frozen=True)
 class SourceCandidateSummary:
-    """Aggregate source Top-1, Top-N and candidate-presence counts."""
+    """Aggregate source Top-1, Top-N and candidate-presence counts.
+
+    present_not_selected means the reference intent is in the considered
+    ordered Top-N but differs from source rank one. The explicit serialized
+    alias names this coverage-versus-source-resolution distinction.
+    """
 
     sample_count: int
     top1_correct: int
@@ -129,6 +158,9 @@ class SourceCandidateSummary:
             "topn_inclusion": self.topn_inclusion,
             "missing_true_candidate": self.missing_true_candidate,
             "present_not_selected": self.present_not_selected,
+            "true_candidate_present_but_source_rank1_not_selected": (
+                self.present_not_selected
+            ),
         }
 
 
@@ -140,6 +172,10 @@ class BranchDiagnosticSummary:
     final_intent_correct: int
     refusals: int
     out_of_shortlist_attempts: int
+    candidate_present: int
+    candidate_present_final_correct: int
+    candidate_present_final_not_selected: int
+    refusal_attempts_with_intent: int
     rescues: int
     harms: int
     unchanged_correct: int
@@ -155,6 +191,20 @@ class BranchDiagnosticSummary:
     def final_intent_accuracy(self) -> float:
         return self.final_intent_correct / self.sample_count
 
+    @property
+    def candidate_present_final_correct_rate(self) -> float | None:
+        if not self.candidate_present:
+            return None
+        return self.candidate_present_final_correct / self.candidate_present
+
+    @property
+    def candidate_present_final_not_selected_rate(self) -> float | None:
+        if not self.candidate_present:
+            return None
+        return (
+            self.candidate_present_final_not_selected / self.candidate_present
+        )
+
     def as_json(self) -> dict[str, Any]:
         return {
             "sample_count": self.sample_count,
@@ -162,6 +212,20 @@ class BranchDiagnosticSummary:
             "final_intent_accuracy": self.final_intent_accuracy,
             "refusals": self.refusals,
             "out_of_shortlist_attempts": self.out_of_shortlist_attempts,
+            "candidate_present": self.candidate_present,
+            "candidate_present_final_correct": (
+                self.candidate_present_final_correct
+            ),
+            "candidate_present_final_correct_rate": (
+                self.candidate_present_final_correct_rate
+            ),
+            "candidate_present_final_not_selected": (
+                self.candidate_present_final_not_selected
+            ),
+            "candidate_present_final_not_selected_rate": (
+                self.candidate_present_final_not_selected_rate
+            ),
+            "refusal_attempts_with_intent": self.refusal_attempts_with_intent,
             "rescues": self.rescues,
             "harms": self.harms,
             "unchanged_correct": self.unchanged_correct,
@@ -228,6 +292,13 @@ def _index_source(
         sample_id = _sample_id(item.sample_id, "source candidate")
         if sample_id in seen:
             raise TopNDiagnosticError(f"duplicate source sample_id {sample_id!r}")
+        if isinstance(item.candidate_ids, (str, bytes)) or not isinstance(
+            item.candidate_ids, Sequence
+        ):
+            raise TopNDiagnosticError(
+                f"source candidate row {sample_id!r} candidate_ids must be a "
+                "non-string sequence"
+            )
         candidates = tuple(item.candidate_ids)
         if not candidates:
             raise TopNDiagnosticError(
@@ -385,6 +456,10 @@ def aggregate_topn_diagnostics(
             "final_intent_correct": 0,
             "refusals": 0,
             "out_of_shortlist_attempts": 0,
+            "candidate_present": 0,
+            "candidate_present_final_correct": 0,
+            "candidate_present_final_not_selected": 0,
+            "refusal_attempts_with_intent": 0,
             "rescues": 0,
             "harms": 0,
             "unchanged_correct": 0,
@@ -423,11 +498,29 @@ def aggregate_topn_diagnostics(
                 outcome.final_intent_id is not None
                 and outcome.final_intent_id not in considered
             )
+            candidate_present = topn_included
+            candidate_present_final_correct = candidate_present and final_correct
+            candidate_present_final_not_selected = (
+                candidate_present and not final_correct
+            )
+            final_intent_attempt_only = (
+                outcome.refused and outcome.final_intent_id is not None
+            )
             partition = _entity_partition(final_correct, outcome.entity_correct)
             counts = branch_counts[name]
             counts["final_intent_correct"] += int(final_correct)
             counts["refusals"] += int(outcome.refused)
             counts["out_of_shortlist_attempts"] += int(out_of_shortlist)
+            counts["candidate_present"] += int(candidate_present)
+            counts["candidate_present_final_correct"] += int(
+                candidate_present_final_correct
+            )
+            counts["candidate_present_final_not_selected"] += int(
+                candidate_present_final_not_selected
+            )
+            counts["refusal_attempts_with_intent"] += int(
+                final_intent_attempt_only
+            )
             counts["rescues"] += int(rescue)
             counts["harms"] += int(harm)
             counts["unchanged_correct"] += int(top1_correct and final_correct)
@@ -444,6 +537,12 @@ def aggregate_topn_diagnostics(
                 rescue=rescue,
                 harm=harm,
                 out_of_shortlist=out_of_shortlist,
+                candidate_present=candidate_present,
+                candidate_present_final_correct=candidate_present_final_correct,
+                candidate_present_final_not_selected=(
+                    candidate_present_final_not_selected
+                ),
+                final_intent_attempt_only=final_intent_attempt_only,
                 entity_correct=outcome.entity_correct,
                 entity_partition=partition,
             )
