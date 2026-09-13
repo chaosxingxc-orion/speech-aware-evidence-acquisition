@@ -1,0 +1,74 @@
+{
+  "attempt_policy": "First and only deterministic delivery recovery for these engineering parents. No generation replay or exposure reset. Stop on another failure and root-cause before further action.",
+  "budgets": {
+    "asr_calls": 0,
+    "encoder_calls": 0,
+    "fit_calls": 0,
+    "generation_calls": 0,
+    "gpu_hours": 0,
+    "official_complete_scoring_jobs": 2
+  },
+  "execution_profile": "model-free-check",
+  "output_relpath": "coordination/slurp-top3-commitment-v1/delivery-recovery-v1",
+  "owner": "root",
+  "parents": [
+    {
+      "arm": "hard-first",
+      "derivative_cell_id": "slurp-top3-commitment-hard-first-engineering4-delivery-v1",
+      "experiment": "slurp-top3-commitment-hard-first-engineering4-v1",
+      "generation_manifest": {
+        "data_relpath": "runs/SAEA-SLURP-TOP3-HARD-FIRST-ENGINEERING-V1/attempt-slurp-top3-hard-first-engineering-generation-v1/SAEA-SLURP-TOP3-HARD-FIRST-ENGINEERING-V1.generation-manifest.json",
+        "sha256": "7ba662da28351ae04cf25246452a5e80baa503435ed7d03e43a8c95b8f64d81c"
+      },
+      "manifest": {
+        "data_relpath": "runs/SAEA-SLURP-TOP3-HARD-FIRST-ENGINEERING-V1/attempt-slurp-top3-hard-first-engineering-generation-v1/SAEA-SLURP-TOP3-HARD-FIRST-ENGINEERING-V1.run-manifest.json",
+        "sha256": "7ba662da28351ae04cf25246452a5e80baa503435ed7d03e43a8c95b8f64d81c"
+      },
+      "original_cost": {
+        "audio_seconds_used": 15.011,
+        "calls_used": 4,
+        "completion_tokens_total": 164,
+        "latency_seconds_total": 19.57926813598897,
+        "prompt_tokens_total": 11560,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      },
+      "recorded_source_commit": "9d43fb5945e7d1f219d3d20ef2281678965372ce"
+    },
+    {
+      "arm": "closed-joint",
+      "derivative_cell_id": "slurp-top3-commitment-closed-joint-engineering4-delivery-v1",
+      "experiment": "slurp-top3-commitment-closed-joint-engineering4-v1",
+      "generation_manifest": {
+        "data_relpath": "runs/SAEA-SLURP-TOP3-CLOSED-JOINT-ENGINEERING-V1/attempt-slurp-top3-closed-joint-engineering-generation-v1/SAEA-SLURP-TOP3-CLOSED-JOINT-ENGINEERING-V1.generation-manifest.json",
+        "sha256": "e8dca4e3aa006736ee0408791d2c6280a1ad56189dee77fdfd8552ecc30f2059"
+      },
+      "manifest": {
+        "data_relpath": "runs/SAEA-SLURP-TOP3-CLOSED-JOINT-ENGINEERING-V1/attempt-slurp-top3-closed-joint-engineering-generation-v1/SAEA-SLURP-TOP3-CLOSED-JOINT-ENGINEERING-V1.run-manifest.json",
+        "sha256": "e8dca4e3aa006736ee0408791d2c6280a1ad56189dee77fdfd8552ecc30f2059"
+      },
+      "original_cost": {
+        "audio_seconds_used": 15.011,
+        "calls_used": 4,
+        "completion_tokens_total": 152,
+        "latency_seconds_total": 6.600784910995571,
+        "prompt_tokens_total": 11560,
+        "tool_calls": 0,
+        "umbrella_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+      },
+      "recorded_source_commit": "9d43fb5945e7d1f219d3d20ef2281678965372ce"
+    }
+  ],
+  "quality_gate": "Engineering and integrity checks only. Official scores may be produced once, but no accuracy-based selection from four rows.",
+  "reason": "Original8generations and26fit completed. Replay incorrectly required a separate agent_state turn, while shared sealed-manifest execution embeds the exact state in the authenticated control instruction. No official scoring was reached.",
+  "recovery_implementation_commit": "90cd1a169d61ca1f84bd0d8feeea19cdb260cfa3",
+  "registered_at": "2026-09-13T05:26:00.100352+00:00",
+  "required_verification": [
+    "Require exact recorded source manifest/roster/program and terminal request/response hashes.",
+    "For control-form state, verify matching contact ID, content hash, one exact shared predecessor block and valid block boundary. Preserve structured-state compatibility.",
+    "Use existing declared-delivery builder, complete score batch workers1/include_per_sample and phase-delivery settlement. Use fresh recovery output paths; retain original failed empty output directory.",
+    "Verify all raw parent/source/output/trace bytes unchanged after recovery. Validate no-empty/no-outside-C delivery, saturation and replay only; no four-row efficacy inference."
+  ],
+  "run_id": "SAEA-SLURP-TOP3-SUCCESSOR-ENGINEERING-DELIVERY-RECOVERY-V1",
+  "schema": "saea-deterministic-delivery-recovery-registration-v1"
+}
