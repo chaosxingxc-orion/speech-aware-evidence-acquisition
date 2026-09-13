@@ -176,7 +176,7 @@ PHASE_KNOWLEDGE_KINDS = frozenset({"none", "supplied"})
 #: that phase's own response as the final answer -- the last phase always
 #: stops regardless.
 PHASE_PROGRAM_STOP_RULES = frozenset(
-    {"always-run-full-program", "stop-policy-optional-early-exit", "native-answer-or-tool"}
+    {"always-run-full-program", "stop-policy-optional-early-exit", "native-answer-or-tool", "native-role-episode"}
 )
 
 _PHASE_SPEC_KEYS = frozenset(
@@ -569,6 +569,57 @@ def seal_phase_response_state(
     ).validate()
 
 
+def advance_phase_response_state(
+    *,
+    context: AgentRuntimeContext,
+    added_states: tuple[AgentStateArtifact, ...],
+    action_target_ref: str,
+    supply: PhaseSupply | None = None,
+) -> tuple[QueryState, AgentStepTransition]:
+    """Materialize a response/tool observation without choosing the next node.
+
+    The sequential controller and native Workflow share these custody bytes.
+    Routing and final answer selection remain with their respective executors.
+    """
+    new_value_ids: tuple[str, ...] = ()
+    new_facet_ids: tuple[str, ...] = ()
+    action_kind = "organize"
+    action_target_refs = (action_target_ref,)
+    if supply is not None:
+        supply.validate()
+        if supply.retain_prior:
+            raise RailsControllersError("state materialization cannot select a final answer")
+        new_value_ids, new_facet_ids = EvidenceAgentController._acquired_ids(supply, context)
+        action_kind = "acquire"
+        action_target_refs = (*action_target_refs, supply.action_target_ref)
+    next_state = QueryState(
+        query_id=context.query_state.query_id,
+        query_sample_id=context.query_state.query_sample_id,
+        speech_packet_id=context.query_state.speech_packet_id,
+        speech_packet_sha256=context.query_state.speech_packet_sha256,
+        query_source=context.query_state.query_source,
+        use_split_identity_hash=context.query_state.use_split_identity_hash,
+        loop_step=context.query_state.loop_step + 1,
+        visible_facet_ids=context.query_state.visible_facet_ids + new_facet_ids,
+        agent_state_ids=context.query_state.agent_state_ids + tuple(s.state_id for s in added_states),
+        retrieved_value_ids=context.query_state.retrieved_value_ids + new_value_ids,
+    ).validate()
+    transition = AgentStepTransition(
+        snapshot_sha256=context.knowledge_snapshot_sha256,
+        prior_query_state_sha256=context.query_state.content_hash(),
+        next_query_state_sha256=next_state.content_hash(),
+        action_kind=action_kind,
+        action_target_refs=action_target_refs,
+        new_value_ids=new_value_ids,
+        used_value_ids=(),
+        dropped_value_ids=(),
+        new_agent_state_ids=tuple(s.state_id for s in added_states),
+        dropped_agent_state_ids=(),
+        new_facet_ids=new_facet_ids,
+    ).validate()
+    return next_state, transition
+
+
 class EvidenceAgentController:
     """One generic ``rails.runner.AgentController`` walking a
     :class:`PhaseProgram` phase-by-phase (module docstring).
@@ -802,6 +853,8 @@ class EvidenceAgentController:
             raise RailsControllersError(
                 "EvidenceAgentController.initial_contact called out of sequence"
             )
+        if self._program.stop_rule == "native-role-episode":
+            raise RailsControllersError("native-role-episode requires the OpenJiuwen episode binding")
         self._initial_dispatched = True
         return self._dispatch(self._program.phases[0], context)
 
@@ -964,46 +1017,12 @@ class EvidenceAgentController:
 
         next_phase = self._program.phases[index + 1]
         added_states = (artifact,) + (() if tool_step is None else (tool_step.state,))
-        new_value_ids: tuple[str, ...] = ()
-        new_facet_ids: tuple[str, ...] = ()
-        action_kind = "organize"
-        action_target_refs = (
-            f"{self._program.program_id}:{phase.name}->{next_phase.name}",
+        next_state, transition = advance_phase_response_state(
+            context=context,
+            added_states=added_states,
+            action_target_ref=f"{self._program.program_id}:{phase.name}->{next_phase.name}",
+            supply=supply,
         )
-        if supply is not None:
-            new_value_ids, new_facet_ids = self._acquired_ids(supply, context)
-            action_kind = "acquire"
-            action_target_refs = (*action_target_refs, supply.action_target_ref)
-
-        next_state = QueryState(
-            query_id=context.query_state.query_id,
-            query_sample_id=context.query_state.query_sample_id,
-            speech_packet_id=context.query_state.speech_packet_id,
-            speech_packet_sha256=context.query_state.speech_packet_sha256,
-            query_source=context.query_state.query_source,
-            use_split_identity_hash=context.query_state.use_split_identity_hash,
-            loop_step=context.query_state.loop_step + 1,
-            visible_facet_ids=(
-                context.query_state.visible_facet_ids + new_facet_ids
-            ),
-            agent_state_ids=context.query_state.agent_state_ids + tuple(state.state_id for state in added_states),
-            retrieved_value_ids=(
-                context.query_state.retrieved_value_ids + new_value_ids
-            ),
-        ).validate()
-        transition = AgentStepTransition(
-            snapshot_sha256=context.knowledge_snapshot_sha256,
-            prior_query_state_sha256=context.query_state.content_hash(),
-            next_query_state_sha256=next_state.content_hash(),
-            action_kind=action_kind,
-            action_target_refs=action_target_refs,
-            new_value_ids=new_value_ids,
-            used_value_ids=(),
-            dropped_value_ids=(),
-            new_agent_state_ids=tuple(state.state_id for state in added_states),
-            dropped_agent_state_ids=(),
-            new_facet_ids=new_facet_ids,
-        ).validate()
         # A synthetic "as of the next contact" context: the runner itself
         # only reconstructs a fresh AgentRuntimeContext at the TOP of its
         # next trajectory iteration (rails.runner._run_agent_trajectory),

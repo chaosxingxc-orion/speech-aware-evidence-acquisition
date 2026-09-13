@@ -465,6 +465,7 @@ def run_continuous_program(
     whole_roster_wave_barrier: bool = False,
     request_batch_gate: Callable[[str, tuple], None] | None = None,
     result_kind: str = "task-answer",
+    native_episode_binding: object = None,
 ) -> AgentLoopSummary:
     """Run the WHOLE program as ONE continuous per-sample trajectory (E6).
 
@@ -491,6 +492,20 @@ def run_continuous_program(
     """
 
     program.validate()
+    if (program.stop_rule == "native-role-episode") != (native_episode_binding is not None):
+        raise PhaseRunnerError("native role program and episode binding must be supplied together")
+    if native_episode_binding is not None:
+        from .native_episode_config import NativeEpisodeRunBinding
+
+        if (
+            not isinstance(native_episode_binding, NativeEpisodeRunBinding)
+            or native_episode_binding.program != program
+            or native_episode_binding.material_for_phase is not material_for_phase
+            or native_episode_binding.tools_for_phase is not tools_for_phase
+            or whole_roster_wave_barrier or request_batch_gate is not None
+            or stop_policy is not None
+        ):
+            raise PhaseRunnerError("native episode custody differs from the continuous program")
     if result_kind not in {"task-answer", "artifact"}:
         raise PhaseRunnerError("result_kind must be task-answer or artifact")
     if not callable(material_for_phase):
@@ -586,6 +601,8 @@ def run_continuous_program(
         wave_index += 1
 
     runner_options = {}
+    if native_episode_binding is not None:
+        runner_options["native_episode_binding"] = native_episode_binding
     if whole_roster_wave_barrier:
         runner_options["whole_roster_wave_barrier"] = True
     if request_batch_gate is not None:
@@ -603,7 +620,7 @@ def run_continuous_program(
             controller_policy_id=program.program_id,
             bootstrap_facet_ids=bootstrap_facet_ids,
             bootstrap_value_ids=bootstrap_value_ids,
-            max_contacts=len(program.phases),
+            max_contacts=(program.max_contacts if native_episode_binding is not None else len(program.phases)),
             slot_count=resolved_slot_count,
             queue_depth=resolved_queue_depth,
             trace_sink=trace_sink,

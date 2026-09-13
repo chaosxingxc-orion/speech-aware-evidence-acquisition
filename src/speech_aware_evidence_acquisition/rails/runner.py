@@ -15,6 +15,7 @@ receipt-bound resident llama.cpp service; unit tests use in-process clients.
 from __future__ import annotations
 
 import hashlib
+import json
 from collections import deque
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
 from dataclasses import dataclass, field, replace
@@ -42,6 +43,7 @@ from .knowledge import (
     assert_agent_step_binding,
     assert_knowledge_use_binding,
 )
+from .native_episode_config import NativeEpisodeRunBinding
 from .obs import ObsPacket, default_obs_packet
 from .observe import ObserveStep
 from .supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
@@ -779,6 +781,7 @@ class AgentLoopResult:
     metrics: Mapping[str, object]
     consumption: ConsumptionTrace | None
     result_kind: str = TASK_ANSWER_RESULT_KIND
+    native_episode_receipt: Mapping[str, object] | None = None
 
     def as_json(self) -> dict[str, object]:
         result = {
@@ -798,6 +801,8 @@ class AgentLoopResult:
                 None if self.consumption is None else self.consumption.as_json()
             ),
         }
+        if self.native_episode_receipt is not None:
+            result["native_episode_receipt"] = dict(self.native_episode_receipt)
         if self.result_kind != TASK_ANSWER_RESULT_KIND:
             result["result_kind"] = self.result_kind
         return result
@@ -852,12 +857,13 @@ class _AgentRuntimeOutcome:
     agent_states: tuple[AgentStateArtifact, ...]
     final_supply: SupplyPacket | None
     trace_buffer: TraceBuffer
+    native_episode_receipt: Mapping[str, object] | None = None
 
 
 @dataclass
 class _ContactAgentState:
     prepared: _PreparedAgentTask
-    controller: AgentController
+    controller: AgentController | None
     query_state: QueryState
     state_store: dict[str, AgentStateArtifact] = field(default_factory=dict)
     response_sha256s: list[str] = field(default_factory=list)
@@ -1601,6 +1607,336 @@ def _run_agent_trajectory(
     )
 
 
+
+async def _invoke_native_role_episode(
+    *, state, run_contact, session, binding, adapter, core_client, snapshot,
+    snapshot_sha256, protected_material, base_decoding_params, run_id,
+    knowledge_value_renderer,
+):
+    """Collect one public role graph through the shared speech request custody.
+
+    ReAct owns model/tool iteration and history. Workflow owns routing. This
+    adapter only binds their actual contacts to existing state, fit and traces.
+    """
+    from openjiuwen.core.foundation.tool import LocalFunction, ToolCard
+    from ..core.model.native_framework_history import native_tool_result_message
+    from ..reproduction.ojw.native_episode import (
+        NativeEpisodeActions, NativeEpisodeNodes, NativeEpisodeSpec, build_native_episode,
+    )
+    from ..reproduction.ojw.native_request import (
+        MeteredNativeSpeechRequest, NativeRoleSpeechBinding,
+    )
+    from ..reproduction.ojw.native_roles import (
+        NativeRoleContactContext, NativeRoleNode, NativeRoleNodeSpec,
+    )
+    from .controllers import (
+        advance_phase_response_state, seal_phase_response_state,
+    )
+    from .material import PhaseMaterial
+
+    config, program = binding.config, binding.program
+    pending = {}
+    visits = {}
+    completed = {}
+    role_configs = {role.phase_id: role for role in config.roles}
+
+    def context():
+        return _runtime_context(
+            prepared=state.prepared, snapshot=snapshot, snapshot_sha256=snapshot_sha256,
+            query_state=state.query_state, state_store=state.state_store,
+            response_sha256s=state.response_sha256s, contact_index=len(state.contacts),
+        )
+
+    def base_messages(ctx):
+        return _agent_messages(
+            adapter=adapter, sample=state.prepared.sample,
+            task_contract=state.prepared.task_contract, snapshot=snapshot,
+            snapshot_sha256=snapshot_sha256, query_state=ctx.query_state,
+            agent_states=ctx.agent_states, knowledge_value_renderer=knowledge_value_renderer,
+        )
+
+    def settle(*, tool_step=None, next_phase=None):
+        if not pending:
+            return
+        completion, source, before, plan, slot_id = (
+            pending[name] for name in ("completion", "source", "context", "plan", "slot_id")
+        )
+        if completion.tool_calls and tool_step is None:
+            raise RailsRunnerError("native tool request has no source-bound observation")
+        staged = replace(
+            before, agent_states=before.agent_states + (source,),
+            prior_response_sha256s=before.prior_response_sha256s + (completion.response_text_sha256,),
+            core_completions=(completion,),
+        )
+        supply = None if tool_step is None else tool_step.supply
+        if supply is None and next_phase is not None and binding.supply_for_phase is not None:
+            supply = binding.supply_for_phase(next_phase, staged)
+        if supply is not None and next_phase is not None and program.phase(next_phase).knowledge != "supplied":
+            raise RailsRunnerError("native knowledge supply requires a supplied destination")
+        added = (source,) + (() if tool_step is None else (tool_step.state,))
+        next_state, transition = advance_phase_response_state(
+            context=before, added_states=added,
+            action_target_ref=f"{program.program_id}:{pending['phase_id']}:{plan.contact_id}",
+            supply=supply,
+        )
+        advance = AgentLoopAdvance(
+            transition=transition, next_query_state=next_state,
+            new_agent_states=added, next_contact=None,
+            rank_result=None if supply is None else supply.rank_result,
+            fusion_decision=None if supply is None else supply.fusion_decision,
+        )
+        _validate_agent_knowledge_decision(
+            snapshot=snapshot, snapshot_sha256=snapshot_sha256,
+            query_state=before.query_state, advance=advance,
+        )
+        assert_agent_step_binding(
+            snapshot=snapshot, snapshot_sha256=snapshot_sha256,
+            prior_query_state=before.query_state, next_query_state=next_state,
+            transition=transition,
+            origin_speech_packet=(
+                state.prepared.initial_query_state.speech_packet_id,
+                state.prepared.initial_query_state.speech_packet_sha256,
+            ),
+        )
+        _validate_new_agent_states(
+            artifacts=added, transition=transition, prior_query_state=before.query_state,
+            response_sha256=completion.response_text_sha256, snapshot=snapshot,
+            existing_state_ids=set(state.state_store),
+        )
+        state.waves.append(_agent_wave_record(
+            wave_index=len(state.waves), contact=plan, response=completion.text,
+            slot_ids=(slot_id,), query_state=before.query_state, advance=advance,
+        ))
+        state.transitions.append(transition)
+        state.state_store.update((artifact.state_id, artifact) for artifact in added)
+        state.query_state = next_state
+        pending.clear()
+
+    def role_input(phase_id, _episode_state):
+        settle(next_phase=phase_id)
+        ctx = context()
+        previous = ctx.agent_states[-1] if ctx.agent_states else None
+        material = binding.material_for_phase(
+            phase_id, ctx, {} if previous is None else {ctx.sample_id: previous},
+        )
+        if not isinstance(material, PhaseMaterial):
+            raise RailsRunnerError("native role material must be PhaseMaterial")
+        material.validate()
+        phase = program.phase(phase_id)
+        if (phase.response_format_id is not None) != (material.response_format is not None):
+            raise RailsRunnerError("native role response format differs from its phase")
+        visits[phase_id] = {"query": material.instruction, "material": material, "local_ids": []}
+        return material.instruction
+
+    def speech_binding(request):
+        settle()
+        ctx = context()
+        role = role_configs[request.role_id]
+        visit = visits[request.role_id]
+        material = visit["material"]
+        decoding = dict(base_decoding_params or {})
+        decoding["id_slot"] = visit["slot_id"]
+        if material.response_format is not None:
+            decoding["response_format"] = dict(material.response_format)
+        decoding.update(tool_choice="auto" if role.tool_names else "none", parallel_tool_calls=False)
+        plan = AgentContactPlan(
+            contact_id=request.context.agent_contact_id,
+            query_state_sha256=ctx.query_state.content_hash(),
+            purpose=program.phase(request.role_id).purpose,
+            instruction=material.instruction,
+            key_representation_id=f"{program.program_id}:{request.role_id}",
+            matcher_policy_id=program.program_id, decoding_params=decoding,
+        ).validate()
+        _assert_agent_control_excludes_knowledge_payloads(plan, protected_material)
+        state.current_context, state.current_contact = ctx, plan
+        return NativeRoleSpeechBinding(
+            role_id=request.role_id, sample_id=ctx.sample_id,
+            role_query=visit["query"], base_messages=base_messages(ctx),
+            core_kwargs={
+                "decoding_params": decoding,
+                "key_representation_id": plan.key_representation_id,
+                "matcher_policy_id": plan.matcher_policy_id,
+                "agent_state": [a.as_json() for a in ctx.agent_states],
+            },
+            tool_names=role.tool_names, local_tool_result_ids=tuple(visit["local_ids"]),
+        )
+
+    def capture_completion(request, completion):
+        if pending:
+            raise RailsRunnerError("native completion overwrote an unsettled source")
+        before, plan = state.current_context, state.current_contact
+        if before is None or plan is None or request.context.agent_contact_id != plan.contact_id:
+            raise RailsRunnerError("native completion lost its actual speech contact")
+        source = seal_phase_response_state(
+            phase_name=request.role_id, sample_id=before.sample_id,
+            state_content=completion.text, raw_response_text=completion.text,
+            source_query_state_sha256=before.query_state.content_hash(),
+            producer_policy_id=program.program_id,
+            state_namespace=plan.contact_id,
+        )
+        slot_id = visits[request.role_id]["slot_id"]
+        state.contacts.append(AgentContactRecord(
+            plan=plan, query_state_sha256=before.query_state.content_hash(),
+            speech_packet_sha256=before.query_state.speech_packet_sha256,
+            slot_id=slot_id, response_sha256=completion.response_text_sha256,
+        ))
+        state.response_sha256s.append(completion.response_text_sha256)
+        completed[completion.agent_contact_id] = completion
+        pending.update(
+            completion=completion, source=source, context=before, plan=plan,
+            slot_id=slot_id, phase_id=request.role_id,
+        )
+        if binding.review_for_phase is not None and not completion.tool_calls:
+            staged = replace(
+                before, agent_states=before.agent_states + (source,),
+                prior_response_sha256s=before.prior_response_sha256s + (completion.response_text_sha256,),
+                core_completions=(completion,),
+            )
+            verdicts = binding.review_for_phase(request.role_id, staged, completion.text)
+            from ..core.base import JudgeVerdict
+            if not isinstance(verdicts, Sequence) or isinstance(verdicts, (str, bytes)):
+                raise RailsRunnerError("native phase judges must return structured criticism")
+            for verdict in verdicts:
+                if not isinstance(verdict, JudgeVerdict):
+                    raise RailsRunnerError("native phase judge cannot replace an answer")
+                verdict.validate()
+
+    adapter_request = MeteredNativeSpeechRequest(
+        client=core_client, binding_provider=speech_binding,
+        render_request=binding.render_request, completion_sink=capture_completion,
+    )
+
+    async def metered(request):
+        def contact(slot_id):
+            if state.scheduled_contacts >= config.max_contacts:
+                raise RailsRunnerError("native graph exceeds its registered contact ceiling")
+            if request.context.agent_contact_id in state.seen_contact_ids:
+                raise RailsRunnerError("native graph repeated a contact identity")
+            state.seen_contact_ids.add(request.context.agent_contact_id)
+            trace = TraceBuffer(run_id)
+            state.trace_buffers[(state.scheduled_contacts, 0)] = trace
+            state.scheduled_contacts += 1
+            visits[request.role_id]["slot_id"] = slot_id
+            set_current_trace_buffer(trace)
+            try:
+                prepared = adapter_request.prepare(request)
+                binding.request_gate(prepared.request)
+                completion = adapter_request.dispatch(prepared)
+                trace.emit("USE", f"{completion.request_id}/native-role-contact", {
+                    "use_role_id": request.role_id,
+                    "use_request_sha256": completion.request_sha256,
+                    "use_response_sha256": completion.response_sha256,
+                    "use_response_text_sha256": completion.response_text_sha256,
+                    "use_agent_contact_id": completion.agent_contact_id,
+                })
+                return completion
+            finally:
+                set_current_trace_buffer(None)
+        return await run_contact(contact)
+
+    def ability_for(role, schema):
+        function = schema["function"]
+        async def invoke(**arguments):
+            def execute(_slot_id):
+                if not pending or pending["phase_id"] != role.phase_id:
+                    raise RailsRunnerError("tool has no pending completion for this role")
+                completion = pending["completion"]
+                calls = completion.tool_calls
+                if len(calls) != 1:
+                    raise RailsRunnerError("native role supports one analytical action per contact")
+                call = calls[0]
+                if (
+                    call["function"]["name"] != function["name"]
+                    or content_hash(json.loads(call["function"]["arguments"])) != content_hash(arguments)
+                ):
+                    raise RailsRunnerError("framework tool action differs from the frozen source")
+                before, source = pending["context"], pending["source"]
+                staged = replace(
+                    before, agent_states=before.agent_states + (source,),
+                    prior_response_sha256s=before.prior_response_sha256s + (completion.response_text_sha256,),
+                    core_completions=(completion,),
+                )
+                step = binding.tools_for_phase(role.phase_id, role.phase_id, staged)
+                if step is None:
+                    raise RailsRunnerError("analytical action has no counted observation")
+                step.validate()
+                document = json.loads(step.state.content)
+                message = native_tool_result_message(document)
+                settle(tool_step=step)
+                visits[role.phase_id]["local_ids"].append(step.state.state_id)
+                return message
+            return await run_contact(execute)
+        return LocalFunction(
+            card=ToolCard(id=function["name"], name=function["name"],
+                          description=function.get("description", ""),
+                          input_params=function["parameters"]),
+            func=invoke,
+        )
+
+    schema_by_name = {}
+    if binding.tools_for_phase is not None:
+        schema_by_name = {
+            row["function"]["name"]: row
+            for row in binding.tools_for_phase.native_tool_schemas()
+        }
+    prompt = base_messages(context())[0]["content"]
+    nodes = {}
+    for role in config.roles:
+        def contact_context(index, role=role):
+            return NativeRoleContactContext(
+                sample_id=state.prepared.sample.sample_id,
+                agent_contact_id=f"{program.program_id}:{role.phase_id}:{index}:{state.prepared.sample.sample_id}",
+                evidence_pins={"knowledge_snapshot": snapshot_sha256},
+                budget_id=run_id,
+            )
+        nodes[role.role_kind] = NativeRoleNode(
+            spec=NativeRoleNodeSpec(
+                role_id=role.phase_id, role_kind=role.role_kind, prompt=prompt,
+                max_iterations=role.max_iterations, ability_names=role.tool_names,
+            ),
+            metered_request=metered, contact_context_provider=contact_context,
+            abilities=tuple(ability_for(role, schema_by_name[name]) for name in role.tool_names),
+            tool_allowed=(
+                (lambda phase, name, role=role: phase == role.phase_id and name in role.tool_names)
+                if role.role_kind in {"reviewer", "planner"} else None
+            ),
+            delivery_allowed=lambda _role, output: isinstance(output, str) and bool(output.strip()),
+        )
+    workflow = build_native_episode(
+        spec=NativeEpisodeSpec(config.episode_id, config.max_revisions, NativeEpisodeActions(*config.actions)),
+        nodes=NativeEpisodeNodes(**nodes),
+        role_input_builder=role_input,
+    )
+    result = await workflow.invoke_direct(state.prepared.task_contract, (), session=session)
+    settle()
+    receipt = result["state"]
+    accepted = receipt["accepted_solver_receipt"]["final_contact"]
+    completion = completed.get(accepted["agent_contact_id"])
+    if (
+        completion is None or completion.request_sha256 != accepted["request_sha256"]
+        or completion.response_sha256 != accepted["response_sha256"]
+        or completion.response_text_sha256 != accepted["response_text_sha256"]
+        or result["delivery"]["actor_output"] != completion.text
+    ):
+        raise RailsRunnerError("native acceptance is not bound to its actual Solver response")
+    trace = TraceBuffer(run_id)
+    for key in sorted(state.trace_buffers):
+        trace.extend_from(state.trace_buffers[key])
+    compact_receipt = {key: receipt[key] for key in (
+        "role_visits", "planner_routes", "accepted_solver_receipt",
+    )}
+    trace.emit("USE", f"{state.prepared.sample.sample_id}/{program.program_id}/native-episode", {
+        "use_native_episode": compact_receipt,
+    })
+    state.final_outcome = _AgentRuntimeOutcome(
+        prepared=state.prepared, final_query_state=state.query_state,
+        final_response_text=completion.text, contacts=tuple(state.contacts),
+        waves=tuple(state.waves), transitions=tuple(state.transitions),
+        agent_states=tuple(state.state_store[k] for k in state.query_state.agent_state_ids),
+        final_supply=_supply_for_state(snapshot, state.query_state),
+        trace_buffer=trace, native_episode_receipt=compact_receipt,
+    )
+
 def _run_agent_openjiuwen(
     *,
     prepared_tasks: Sequence[_PreparedAgentTask],
@@ -1622,6 +1958,7 @@ def _run_agent_openjiuwen(
     request_batch_gate: RequestBatchGate | None = None,
     whole_roster_wave_barrier: bool = False,
     knowledge_value_renderer: object = None,
+    native_episode_binding: NativeEpisodeRunBinding | None = None,
 ) -> tuple[_AgentRuntimeOutcome, ...]:
     """Run the speech AgentLoop on the pinned openJiuwen workflow engine."""
 
@@ -1636,6 +1973,38 @@ def _run_agent_openjiuwen(
     from ..reproduction.ojw.runner import (  # noqa: PLC0415
         execute_speech_agent_workflows,
     )
+
+    if native_episode_binding is not None:
+        states = [
+            _ContactAgentState(prepared=task, controller=None, query_state=task.initial_query_state)
+            for task in prepared_tasks
+        ]
+
+        async def invoke_episode(state, run_contact, session):
+            await _invoke_native_role_episode(
+                state=state, run_contact=run_contact, session=session,
+                binding=native_episode_binding, adapter=adapter,
+                core_client=core_client, snapshot=snapshot,
+                snapshot_sha256=snapshot_sha256, protected_material=protected_material,
+                base_decoding_params=base_decoding_params, run_id=run_id,
+                knowledge_value_renderer=knowledge_value_renderer,
+            )
+
+        try:
+            execute_speech_agent_workflows(
+                states, branch_count=1, slot_count=slot_count,
+                queue_depth=queue_depth,
+                workflow_timeout_seconds=DEFAULT_WORKFLOW_TIMEOUT_SECONDS,
+                episode_invoker=invoke_episode,
+            )
+        except BaseException:
+            for state in states:
+                for key in sorted(state.trace_buffers):
+                    state.trace_buffers[key].flush_into(trace_sink)
+            raise
+        if any(state.final_outcome is None for state in states):
+            raise RailsRunnerError("native graph ended without an accepted Solver outcome")
+        return tuple(state.final_outcome for state in states)
 
     states: list[_ContactAgentState] = []
 
@@ -2270,6 +2639,7 @@ def run_speech_native_agent_loop(
     whole_roster_wave_barrier: bool = False,
     knowledge_value_renderer: object = None,
     result_kind: str = TASK_ANSWER_RESULT_KIND,
+    native_episode_binding: NativeEpisodeRunBinding | None = None,
 ) -> AgentLoopSummary:
     """Run a bounded, batched, speech-native AgentLoop over one DEV split.
 
@@ -2293,6 +2663,23 @@ def run_speech_native_agent_loop(
     covering the seam.
     """
 
+    if native_episode_binding is not None:
+        if not isinstance(native_episode_binding, NativeEpisodeRunBinding):
+            raise RailsRunnerError("native episode requires the immutable flight binding")
+        if (
+            agent_executor_id != "openjiuwen-workflow-v1"
+            or not isinstance(core_client, FrozenCoreClient)
+            or whole_roster_wave_barrier or request_batch_gate is not None
+            or observe_step is not None
+        ):
+            raise RailsRunnerError("native episodes require the shared client/executor and their actual-contact fit gate")
+        if (
+            controller_policy_id != native_episode_binding.program.program_id
+            or max_contacts != native_episode_binding.config.max_contacts
+            or not callable(native_episode_binding.request_gate)
+            or not callable(native_episode_binding.render_request)
+        ):
+            raise RailsRunnerError("native episode program, ceiling or request custody differs")
     if result_kind not in RESULT_KINDS:
         raise RailsRunnerError(
             f"result_kind must be one of {sorted(RESULT_KINDS)}, got {result_kind!r}"
@@ -2502,6 +2889,7 @@ def run_speech_native_agent_loop(
                 request_batch_gate=request_batch_gate,
                 whole_roster_wave_barrier=whole_roster_wave_barrier,
                 knowledge_value_renderer=knowledge_value_renderer,
+                native_episode_binding=native_episode_binding,
             )
         )
     else:
@@ -2609,6 +2997,7 @@ def run_speech_native_agent_loop(
                 metrics=metrics,
                 consumption=consumption,
                 result_kind=result_kind,
+                native_episode_receipt=outcome.native_episode_receipt,
             )
         )
         if result_kind == TASK_ANSWER_RESULT_KIND:
