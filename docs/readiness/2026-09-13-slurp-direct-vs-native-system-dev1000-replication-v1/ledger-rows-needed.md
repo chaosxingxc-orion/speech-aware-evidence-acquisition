@@ -1,0 +1,15 @@
+# Exposure-ledger rows required before replication
+
+Do not launch either flight until root has added and committed all four rows below with consumed set to no. Each row uses execution profile bounded-discovery-probe, carrier slurp, split DEV-1000, split role dev, and split identity SHA-256 8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84.
+
+The rows inherit every prior DEV1000 exposure, use the frozen Q4_K_M decoder-only resident service at total context 98304 with four slots and request max_tokens 256, reuse the existing prepared packet receipt, and authorize no ASR or encoder contact. The system row retains the existing Reviewer task-contract tool ceiling. The family ceilings are 12,050 generation model calls, 47,001 fit endpoints, and 13.0 fit-inclusive GPU hours. Ceilings are not targets.
+
+- SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-REPLICATION-V1: 1,050 model calls, 3,500 speech-audio seconds, 1.0 GPU hours; artifact docs/readiness/2026-09-13-slurp-direct-vs-native-system-dev1000-replication-v1/direct-generation-plan-v1.json at current SHA-256 a3a2bd5984fe5ca91fe4beaa79f5a824dba2eb09d27b0d498cebe8ffebee6ed2; current held-state runtime protocol SHA-256 55782e07a0f3defc9cdf855569e9043f3c738f82f673aeb44a1b771b2f68d6e8.
+
+- SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-FIT-REPLICATION-V1: 3,001 tokenizer fit endpoints, 3,500 speech-audio seconds, 1.0 GPU hours; artifact docs/readiness/2026-09-13-slurp-direct-vs-native-system-dev1000-replication-v1/direct-fit-plan-v1.json at current SHA-256 a758f854025ed97d661ffea27de9878c7bbad4e5a5b9bf11c8becff88ae8751f; current held-state runtime protocol SHA-256 55782e07a0f3defc9cdf855569e9043f3c738f82f673aeb44a1b771b2f68d6e8.
+
+- SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-REPLICATION-V1: 11,000 model calls, 44,000 speech-audio seconds, 12.0 GPU hours; artifact docs/readiness/2026-09-13-slurp-direct-vs-native-system-dev1000-replication-v1/system-generation-plan-v1.json at current SHA-256 91c418a7cb811e0223c667d27bebce20b002a458b3a4e8103cfb2e3a3d1a70e7; current held-state runtime protocol SHA-256 ac32ae3180b4eaeb84b40f97a9bcb388ed128a21e1c019b0057b3f92b48ae95a.
+
+- SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-FIT-REPLICATION-V1: 44,000 tokenizer fit endpoints, 44,000 speech-audio seconds, 12.0 GPU hours; artifact docs/readiness/2026-09-13-slurp-direct-vs-native-system-dev1000-replication-v1/system-fit-plan-v1.json at current SHA-256 7487ce480aac1c3803c2408f8b11c62c9e734a227c2cca9742b15a9dda96acb8; current held-state runtime protocol SHA-256 ac32ae3180b4eaeb84b40f97a9bcb388ed128a21e1c019b0057b3f92b48ae95a.
+
+These plan and protocol hashes are provisional only because the hash-pinned decision receipt is still absent. Root must bind that receipt, change both cells from held to ready, recompute both composed and protocol hashes through the shared core config APIs, refresh the protocol and four plans, then use the refreshed plan SHA-256 values in the actual ledger rows. The ledger edit and final decision are intentionally outside this preparation commit.

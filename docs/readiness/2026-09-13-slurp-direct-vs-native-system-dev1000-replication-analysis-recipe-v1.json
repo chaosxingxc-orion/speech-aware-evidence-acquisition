@@ -1,0 +1,371 @@
+{
+  "analysis": {
+    "carrier": "slurp",
+    "contrasts": [
+      {
+        "left": "direct",
+        "name": "native_system_replication_minus_direct_replication",
+        "populations": [
+          "NEW500",
+          "OLD500",
+          "DEV1000"
+        ],
+        "right": "system",
+        "scorers": [
+          "official"
+        ]
+      },
+      {
+        "left": "original_direct",
+        "name": "direct_replication_minus_original_direct",
+        "populations": [
+          "NEW500",
+          "OLD500",
+          "DEV1000"
+        ],
+        "right": "direct",
+        "scorers": [
+          "official"
+        ],
+        "interpretation": "secondary descriptive consistency only; no threshold, gate, or additional contact"
+      },
+      {
+        "left": "original_system",
+        "name": "system_replication_minus_original_system",
+        "populations": [
+          "NEW500",
+          "OLD500",
+          "DEV1000"
+        ],
+        "right": "system",
+        "scorers": [
+          "official"
+        ],
+        "interpretation": "secondary descriptive consistency only; no threshold, gate, or additional contact"
+      }
+    ],
+    "full_roster": {
+      "path": "docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "inputs": {
+      "direct": {
+        "future_attempt_id": "attempt-slurp-direct-vs-native-direct-generation-replication-v1",
+        "future_run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-REPLICATION-V1",
+        "manifest": {
+          "path": null,
+          "sha256": "PENDING-DIRECT-REPLICATION-DEV1000-MANIFEST-SHA256"
+        },
+        "score_receipt": {
+          "cell_id": "PENDING-DIRECT-REPLICATION-DEV1000-SCORE-RECEIPT-CELL-ID",
+          "path": null,
+          "sha256": "PENDING-DIRECT-REPLICATION-DEV1000-SCORE-RECEIPT-SHA256"
+        },
+        "score_source": "complete-score-receipt",
+        "scorers": {
+          "official": "slurp-slu-official"
+        }
+      },
+      "system": {
+        "future_attempt_id": "attempt-slurp-direct-vs-native-system-generation-replication-v1",
+        "future_run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-REPLICATION-V1",
+        "manifest": {
+          "path": null,
+          "sha256": "PENDING-SYSTEM-REPLICATION-DEV1000-MANIFEST-SHA256"
+        },
+        "score_receipt": {
+          "cell_id": "PENDING-SYSTEM-REPLICATION-DEV1000-SCORE-RECEIPT-CELL-ID",
+          "path": null,
+          "sha256": "PENDING-SYSTEM-REPLICATION-DEV1000-SCORE-RECEIPT-SHA256"
+        },
+        "score_source": "complete-score-receipt",
+        "scorers": {
+          "official": "slurp-slu-official"
+        }
+      },
+      "original_direct": {
+        "future_attempt_id": "attempt-slurp-direct-vs-native-direct-generation-v1",
+        "future_run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-V1",
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-V1/attempt-slurp-direct-vs-native-direct-generation-v1/SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-V1.run-manifest.json",
+          "sha256": "d899351a5793130192a192853aad1870112c61bcd5e0561e166273d4dc669bf2"
+        },
+        "score_receipt": {
+          "cell_id": "attempt-slurp-direct-vs-native-direct-generation-v1",
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-PAIRED-ANALYSIS-V1/saved-score-receipts/direct/complete-score-receipt.json",
+          "sha256": "e6bc6eb14ea16a38d75b089d452d7e6915c9282f5ca36e961adb8f1802427b8c"
+        },
+        "score_source": "complete-score-receipt",
+        "scorers": {
+          "official": "slurp-slu-official"
+        }
+      },
+      "original_system": {
+        "future_attempt_id": "attempt-slurp-direct-vs-native-system-generation-v1",
+        "future_run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1",
+        "manifest": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1/attempt-slurp-direct-vs-native-system-generation-v1/SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1.run-manifest.json",
+          "sha256": "f4568e15af3db2d9f8f949d5585886894e5d76418accd458d35a166093688b73"
+        },
+        "score_receipt": {
+          "cell_id": "attempt-slurp-direct-vs-native-system-generation-v1",
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-PAIRED-ANALYSIS-V1/saved-score-receipts/system/complete-score-receipt.json",
+          "sha256": "b710f71d37fb7d79bf2fc38ef4898d35f1fb954e6a08647b47f25f70ed41d506"
+        },
+        "score_source": "complete-score-receipt",
+        "scorers": {
+          "official": "slurp-slu-official"
+        }
+      }
+    },
+    "intervals": {
+      "primary": {
+        "ci90": {
+          "level": 0.9,
+          "tail_definition": "two-sided percentile interval from the shared paired draws"
+        },
+        "lower95": {
+          "level": 0.95,
+          "tail_definition": "one-sided lower fifth percentile from the same paired draws; do not resample a second time"
+        },
+        "resampling": "paired whole-speaker cluster bootstrap"
+      },
+      "sensitivity": {
+        "ci90": {
+          "level": 0.9,
+          "tail_definition": "two-sided percentile interval"
+        },
+        "resampling": "scenario-stratified paired row bootstrap",
+        "weightings": [
+          "natural mixture",
+          "equal scenario",
+          "per scenario stratum"
+        ]
+      }
+    },
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+    },
+    "metric_labels": {
+      "action": "action_exact",
+      "intent": "scenario_action_exact (joint scenario/action accuracy)",
+      "pooled_slu_micro_f1": "slu_f1_micro (pooled official SLU F1 from saved sufficient counts)",
+      "row_mean_slu_f1": "slu_f1_f1 (mean of per-row official SLU F1)",
+      "scenario": "scenario_exact",
+      "span_f1": "slot_f1_exact_f1 (per-row exact slot/entity F1)"
+    },
+    "metrics": [
+      "scenario_action_exact",
+      "scenario_exact",
+      "action_exact",
+      "slot_f1_exact_f1",
+      "slu_f1_f1"
+    ],
+    "micro_metrics": {
+      "slu_f1_micro": {
+        "fn": [
+          "slu_f1_word_fn",
+          "slu_f1_char_fn"
+        ],
+        "fp": [
+          "slu_f1_word_fp",
+          "slu_f1_char_fp"
+        ],
+        "tp": [
+          "slu_f1_word_tp",
+          "slu_f1_char_tp"
+        ]
+      }
+    },
+    "n_replicates": 10000,
+    "populations": {
+      "construction": "NEW500 is the existing DEV-1000-NEW500 receipt. OLD500 is the full DEV1000 set difference. DEV1000 is the pooled full receipt. Do not redraw a population or promote a secondary population to primary.",
+      "primary": "NEW500",
+      "secondary": [
+        "OLD500",
+        "DEV1000"
+      ]
+    },
+    "primary_metric": "slu_f1_micro",
+    "roster": {
+      "path": "docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    },
+    "seed": 20260913,
+    "source_diagnostics": {
+      "native_system_perception_only": {
+        "analysis_role": "Post-seal replication system-arm diagnostic only; never a filter, matching key, answer source, or primary population definition.",
+        "applies_to": "System only. The direct arm has no Perception phase or candidate state.",
+        "candidate_count_range": [
+          1,
+          3
+        ],
+        "diagnostics": [
+          "gold intent inclusion in the projected at-most-three system candidate set",
+          "actual projected system candidate width",
+          "system candidate parse, empty, malformed, duplicate, illegal-ID, and saturation outcomes"
+        ],
+        "no_posthoc_filtering": "Retain every registered sample in all primary and secondary comparisons regardless of system candidate inclusion or width.",
+        "projection": {
+          "custody": "Preserve raw Perception response bytes and hashes unchanged. Bind the separately projected canonical state, every raw position, and projected content hash.",
+          "input_contract": "Validate every raw compact candidate object from the model-produced one-to-three-candidate system Perception response, then retain the first occurrence of each legal intent_id in original order.",
+          "policy_id": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+          "width_semantics": "Projected width is the number of distinct model-produced candidates after first-occurrence retention. It is not confidence and is never padded."
+        },
+        "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+      }
+    },
+    "replication_consistency": {
+      "role": "Secondary descriptive read after the replication pair has complete verified official-score receipts and its read release.",
+      "comparisons": [
+        "direct replication minus original direct on the identical roster",
+        "system replication minus original system on the identical roster"
+      ],
+      "method": "Use the same paired whole-speaker cluster bootstrap, populations, metrics, seed, and saved official per-sample fields as the primary replication contrast.",
+      "decision_boundary": "Report point estimates and intervals only. Do not create a consistency threshold, change the frozen system-effect gate, filter rows, or authorize extra contacts.",
+      "original_source_verdict": {
+        "decision": "EXPLORATORY_SYSTEM_CANDIDATE",
+        "markdown": {
+          "repo_relpath": "docs/readiness/2026-09-13-slurp-direct-vs-native-system-v1-verdict.md",
+          "sha256": "02e6cf49caee87b3d104ef832690e9f1f58e926b889ef0dc6aa7e1d7a7a633e7"
+        },
+        "aggregate": {
+          "repo_relpath": "docs/readiness/2026-09-13-slurp-direct-vs-native-system-verdict-v1.json",
+          "sha256": "3d271a4f6007d4fda5e416b679832d1565873b7d2ae2d7133a8101c6cd416e8e"
+        },
+        "read_release": {
+          "repo_relpath": "docs/readiness/2026-09-13-slurp-direct-vs-native-system-read-release-v1.json",
+          "sha256": "d55233d438135666f368d27898bfef3f45c7e2b3829d9f691ed95e4cb4ab8c29"
+        }
+      }
+    }
+  },
+  "analysis_runner": {
+    "mode": "default saved-score path with four explicit complete-score receipts: replication direct/system for the primary paired contrast and original direct/system for secondary descriptive consistency; do not use generic-scores-v1",
+    "module": "src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py",
+    "no_new_scorer_invocations": 0,
+    "no_new_script": true,
+    "score_once": "src/speech_aware_evidence_acquisition/core/scoring_batch.py",
+    "score_receipt_verifier": "src/speech_aware_evidence_acquisition/core/scoring_receipt.py",
+    "shared_resampling": [
+      "src/speech_aware_evidence_acquisition/analysis/paired.py",
+      "src/speech_aware_evidence_acquisition/analysis/bootstrap.py"
+    ]
+  },
+  "authorization_state": "METHOD FROZEN BEFORE EITHER REPLICATION ARM IS READ. The completed original pair is bound through its committed verdict, aggregate and read-release hashes. Each replication arm may receive its one official complete score when complete. Read replication quality only after both verified complete-score receipts exist, every replication pin is bound, and root records a replication read release.",
+  "binding_state": "The completed original pair source is bound. Replication manifests and complete-score receipts and the root admission receipt remain pending. No pending value authorizes a flight or result read.",
+  "diagnostics_after_registered_release": {
+    "candidate_diagnostic_boundary": "System candidate inclusion and width are descriptive diagnostics only. Do not condition, match, exclude, reweight, or redefine the primary NEW500 direct-versus-system comparison with them. The direct arm has no candidate state and no interarm candidate-agreement estimand exists.",
+    "cost_and_input_quantities": {
+      "interpretation": "Unequal call count is intentional in this end-to-end system contrast. Quality is primary; model contacts, tool calls, tokens, speech seconds, latency, and supplied knowledge are descriptive costs.",
+      "per_arm_required": [
+        "actual model calls by role",
+        "speech audio seconds",
+        "prompt and completion token totals when available",
+        "latency total",
+        "analytical-tool call count",
+        "named knowledge values supplied and consumed",
+        "complete answer sample count"
+      ]
+    },
+    "implementation_boundary": "score_compare_cli emits verified saved-score projections and paired intervals. System candidate diagnostics, role transitions, tool calls, knowledge consumption, refusals, and trace diagnostics require a separate source-bound read over the verified system manifest.",
+    "paired_errors": [
+      "final system-versus-direct intent, scenario, action, entity, and pooled SLU outcomes on every row",
+      "system saves, harms, both-correct, and both-wrong final intent outcomes",
+      "refusal, malformed final answer, and output saturation in each arm"
+    ],
+    "read_rule": "Read no replication quality or diagnostic until both replication DEV1000 task-answer manifests have verified complete-score receipts, final pins are bound, and root records the replication read release.",
+    "system_candidate_source": [
+      "gold intent inclusion in the projected system candidate set",
+      "actual projected system width one, two, or three",
+      "raw system candidate parse, empty, malformed, duplicate, illegal-ID, and saturation outcomes"
+    ],
+    "system_events": [
+      "Perception candidate projection and custody",
+      "full released candidate-conditioned slot knowledge supplied to joint Solver",
+      "Reviewer task-contract native tool call",
+      "optional Planner revision and sole-Solver final-answer custody",
+      "OBS, ORG, SUPPLY, and USE event counts when present"
+    ]
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-REPLICATION-PAIRED-ANALYSIS-V1",
+  "interpretation": {
+    "correlation": "The arms use the same fixed roster, weights, service geometry, speech features, and task, and are paired by sample. They are separate end-to-end executions; direct does not share or consume a realized system Perception state.",
+    "inconclusive": "The requested interval crosses zero or the guard cannot be evaluated; retain the label and report point estimates, intervals and decomposition.",
+    "negative": "The requested interval is wholly below zero for the named metric; report the component result without a superiority or generalization claim.",
+    "positive": "Same-roster independent execution evidence for the frozen end-to-end system contrast only. It does not establish superiority or generalization.",
+    "replication_rule": "Apply the original frozen system-effect condition unchanged to the replication pair. Original-versus-replication same-arm contrasts are descriptive and add no gate.",
+    "system_effect_flag": {
+      "condition": "Set exploratory_system_candidate=true only when the NEW500 paired speaker-clustered CI90 lower endpoint for slu_f1_micro is greater than zero and the CI90 lower endpoint for scenario_action_exact is greater than or equal to zero.",
+      "otherwise": "Preserve the label negative or inconclusive and report all metric and cost tradeoffs.",
+      "primary_basis": "Pooled micro SLU F1 is primary; intent is the prespecified nonnegative guard."
+    }
+  },
+  "method_contract": {
+    "lower95_reuses_same_draws": true,
+    "no_borrowed_noninferiority_margin": true,
+    "no_historical_effective_gate": true,
+    "pooled_micro_rule": "Compute slu_f1_micro from the declared saved word/character TP, FP and FN fields. Never substitute a mean of row F1 values.",
+    "primary_estimand": "paired speaker-clustered bootstrap delta with 10000 draws and seed 20260913",
+    "primary_outcome": "pooled slu_f1_micro delta on NEW500",
+    "row_mean_rule": "Report slu_f1_f1 as the mean of per-row official SLU F1. Never label it pooled micro F1.",
+    "secondary_estimands": [
+      "row-mean SLU F1, reported separately from pooled micro F1",
+      "intent, scenario and action exact accuracy",
+      "exact slot/entity F1",
+      "natural-mixture, equal-scenario and per-scenario-stratum deltas"
+    ],
+    "sign": "system minus direct; higher quality is positive"
+  },
+  "output": {
+    "future_output_relpath": "analysis/SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-REPLICATION-PAIRED-ANALYSIS-V1/score-contrasts.json",
+    "preserve_inconclusive_labels": true,
+    "result_read_release": "Root records a separate replication release after both verified complete-score receipts and before reading replication quality or diagnostics.",
+    "source_bindings": "The original pair is bound through its committed verdict and read-release receipt. Root replaces all pending replication manifest and complete-score-receipt values before the replication read release."
+  },
+  "purpose": {
+    "candidate_diagnostic_boundary": "Candidate inclusion and actual width are system-only diagnostics and never filter the all-row primary comparison.",
+    "claim_boundary": "This same-roster independent execution assesses replication of the frozen discovery result; it does not establish superiority or generalization.",
+    "comparison": "Repeat the frozen paired end-to-end direct-versus-system bundle contrast over the identical DEV1000 sample identities without adding a capability or sharing realized Perception state.",
+    "cost_boundary": "Unequal call counts are intentional. Quality is primary and cost is descriptive.",
+    "direct_arm": "One task-answer contact through the existing direct-only shared controller.",
+    "fixed_execution_context": "Both arms use the same frozen weights, resident service np4 with total context 98304 (24576 per slot), max_tokens 256 per request, and prepared speech-feature inputs.",
+    "knowledge_scope": "The current system consumes released candidate-conditioned slot knowledge. It consumes no Whisper transcript knowledge or intent-boundary knowledge store.",
+    "primary_question": "Does an independent same-roster execution reproduce the frozen direct-versus-current-native-system effect under the identical registered method?",
+    "system_arm": "Live Perception candidates, bounded first-occurrence distinct projection, full released candidate-conditioned slot knowledge, joint Solver, Reviewer use of the task-contract native tool, optional Planner revision, and sole-Solver final-answer custody.",
+    "tool_claim_boundary": "The Reviewer is instructed to use the task-contract native tool. This proves neither selective tool choice nor speech-conditioned tool-use effectiveness."
+  },
+  "recorded_on": "2026-09-13",
+  "schema": "saea-slurp-saved-score-analysis-recipe-v1",
+  "score_source_contract": {
+    "no_new_scorer_invocations": 0,
+    "no_projection": "Use the raw slurp-slu-official result and retain its declared per-row fields plus six pooled count fields. Do not alter estimator semantics.",
+    "official_scorer": "slurp-slu-official",
+    "score_source": "complete-score-receipt",
+    "source_order": [
+      "Bind the completed original pair through the final hash-pinned source verdict without invoking a scorer again.",
+      "Verify each complete replication DEV1000 task-answer manifest without reading quality.",
+      "Score each complete replication arm exactly once through core.scoring_batch with --include-per-sample; the first completed score may overlap generation of the other arm.",
+      "Verify each complete replication score receipt without invoking a scorer again.",
+      "Replace every pending manifest, complete-score-receipt, and source-verdict placeholder.",
+      "Register the replication read release, then run score_compare_cli once with zero new scorer invocations.",
+      "Read replication system candidate and event diagnostics over the complete roster without filtering the primary contrast."
+    ]
+  },
+  "source_analysis_plan": {
+    "diagnostic_scope": "Report system candidate inclusion and actual width after release. No interarm candidate agreement exists because direct has no Perception state.",
+    "pairing": "Pair direct and system final task answers by unchanged sample identity over every row. Do not pair, match, or filter by system candidate state.",
+    "status": "Frozen before either replication quality result is read; the original source verdict is bound and replication manifests, score receipts and admission remain pending.",
+    "system_projection_policy_id": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+    "system_raw_custody": "Preserve every raw system Perception response byte and hash. Validate all raw candidate objects before retaining first occurrences of legal intent IDs in original order."
+  },
+  "status_clarification": {
+    "based_on": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-direct-vs-native-system-analysis-recipe-v1.json",
+      "sha256": "fc01785df80224a999b8ac53986e5ba0f400c2cfd2360cc4c9a1900ebe63e35a"
+    },
+    "reason": "Prospectively repeats the identical same-roster paired method after the original pair passed its frozen gate. Adds only secondary descriptive same-arm original-versus-replication consistency contrasts, with no new gate or contact."
+  }
+}
