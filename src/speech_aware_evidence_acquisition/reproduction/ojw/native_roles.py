@@ -18,6 +18,8 @@ from __future__ import annotations
 
 import asyncio
 import inspect
+import itertools
+import uuid
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 from types import MappingProxyType
@@ -269,9 +271,7 @@ class FrozenCoreRoleModel:
                 f"metered completion binding failed: {error}"
             ) from error
         calls = _tool_calls(completion)
-        return AssistantMessage(
-            content="" if calls else completion.text, tool_calls=calls
-        )
+        return AssistantMessage(content=completion.text, tool_calls=calls)
 
 
 class _RoleAuthorityRail(AgentRail):
@@ -367,6 +367,8 @@ class NativeRoleNode(WorkflowComponent):
         )
         self._rail_registered = False
         self._registration_lock = asyncio.Lock()
+        self._invocation_namespace = uuid.uuid4().hex
+        self._invocation_serial = itertools.count(1)
 
     async def _ensure_rail(self) -> None:
         if self._rail_registered:
@@ -379,16 +381,19 @@ class NativeRoleNode(WorkflowComponent):
     async def invoke(
         self, inputs: Input, session: Session, context: ModelContext
     ) -> Output:
-        return await self._run(inputs.get("query"), conversation_id=id(session))
+        return await self._run(inputs.get("query"))
 
-    async def _run(self, query: object, *, conversation_id: object) -> Output:
+    async def _run(self, query: object) -> Output:
         await self._ensure_rail()
         if not isinstance(query, str) or not query:
             raise ValueError("native role query must be non-empty text")
         result = await self._agent.invoke(
             {
                 "query": query,
-                "conversation_id": f"{self.spec.role_id}-{conversation_id}",
+                "conversation_id": (
+                    f"{self.spec.role_id}-{self._invocation_namespace}-"
+                    f"{next(self._invocation_serial):08d}"
+                ),
             },
         )
         actor_output = result.get("output")
@@ -411,7 +416,7 @@ class NativeRoleNode(WorkflowComponent):
 
     async def invoke_direct(self, query: str) -> dict[str, object]:
         """Invoke this component with a fresh public framework session."""
-        result = await self._run(query, conversation_id="direct")
+        result = await self._run(query)
         return dict(result)
 
 

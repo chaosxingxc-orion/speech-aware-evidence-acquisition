@@ -94,7 +94,7 @@ def test_analytical_role_uses_framework_tool_history_and_meters_every_call():
     script = _MeteredScript(
         [
             _completion(
-                text='[{"name":"analyze","arguments":{"value":4}}]',
+                text="I will inspect the supplied value.",
                 tool_calls=_tool_call("analyze", "call-1", '{"value":4}'),
             ),
             _completion(text="review complete", serial=2),
@@ -133,6 +133,10 @@ def test_analytical_role_uses_framework_tool_history_and_meters_every_call():
         "assistant",
         "tool",
     ]
+    assert (
+        script.requests[1].messages[-2]["content"]
+        == "I will inspect the supplied value."
+    )
     assert script.requests[1].messages[-1]["tool_call_id"] == "call-1"
     assert (
         script.requests[1].messages[-2]["tool_calls"][0]["function"]["arguments"]
@@ -318,3 +322,31 @@ def test_bridge_refuses_noncompletion_and_cross_sample_completion():
     )
     with pytest.raises(FrozenCoreRoleModelError, match="source binding"):
         asyncio.run(missing_source.invoke_direct("Solve."))
+
+
+def test_repeated_node_invocations_use_fresh_framework_history():
+    script = _MeteredScript(
+        [_completion(text="first answer"), _completion(text="second answer", serial=2)]
+    )
+    node = NativeRoleNode(
+        spec=NativeRoleNodeSpec(
+            role_id="solver", role_kind="solver", prompt="Solve.", max_iterations=1
+        ),
+        metered_request=script,
+        contact_context=NativeRoleContactContext(
+            sample_id="sample-1", agent_contact_id="contact-1"
+        ),
+    )
+
+    first = asyncio.run(node.invoke_direct("First independent query."))
+    second = asyncio.run(node.invoke_direct("Second independent query."))
+
+    assert first["actor_output"] == "first answer"
+    assert second["actor_output"] == "second answer"
+    assert len(script.requests) == 2
+    assert [[message["role"] for message in request.messages] for request in script.requests] == [
+        ["system", "user"],
+        ["system", "user"],
+    ]
+    assert script.requests[0].messages[-1]["content"] == "First independent query."
+    assert script.requests[1].messages[-1]["content"] == "Second independent query."
