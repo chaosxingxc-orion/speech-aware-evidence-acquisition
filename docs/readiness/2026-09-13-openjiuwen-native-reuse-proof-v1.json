@@ -1,0 +1,81 @@
+{
+  "installed_source_sha256": {
+    "core/foundation/tool/function/function.py": "8f994c84b83ef6ed5d8eeb911362147990ff5946b99b7a94eaa975cf98249869",
+    "core/runner/callback/errors.py": "b245b5fe16c622b43231b90a92884e44283e21ac24d947f9e7c9dd571be394c3",
+    "core/runner/callback/framework.py": "7a5a60501758d5d098a3fc78e78505ad14b292179e9ccccfad4c6e19630cdb99",
+    "core/single_agent/ability_manager.py": "12112e092f9e7e6254ff105bca4f36922d4cf3454b9f96b746a7e48da0f41050",
+    "core/single_agent/agents/react_agent.py": "7952a2798718772bb2ec15794211b6de3a9082e549de8dfadd9eedebd5b897ec",
+    "core/single_agent/rail/base.py": "f85d5dd6ee09686b3a0f04ad7afa3fc31335b868cfbe0963e165975041cd4cbe",
+    "core/workflow/workflow.py": "80e2fb6bed41fa0ae8b6266f31478987ea2fc017571e6344f1afa1d1eeb874fd"
+  },
+  "limitations": [
+    "A per-agent tool list controls model-visible schemas, but AbilityManager falls back to the process-global tool registry by requested name.",
+    "AgentRail.before_tool_call plus public AbortError blocks before callback invocation; the ReAct tool layer converts the failure to a tool observation and continues the bounded loop.",
+    "No private API was needed for the tested rejection. Supplying a custom replacement ToolMessage without raising would rely on the underscore-prefixed _skip_tool convention.",
+    "ReActAgentComp does not expose set_llm; workflow injection uses a small public WorkflowComponent that calls a public ReActAgent.",
+    "This proves framework behavior with deterministic fakes, not the repository service bridge, custody policy, or task efficacy."
+  ],
+  "openjiuwen_version": "0.1.16.post2",
+  "proofs": {
+    "advertised_tool_round_trip": {
+      "advertised_names": [
+        "audit_analyze"
+      ],
+      "callback_invocations": 1,
+      "passed": true,
+      "second_model_roles": [
+        "system",
+        "user",
+        "assistant",
+        "tool"
+      ],
+      "tool_call_id_preserved": "call-roundtrip"
+    },
+    "before_tool_call_rail_rejection": {
+      "hidden_callback_count_before_and_after_rejection": [
+        1,
+        1
+      ],
+      "passed": true,
+      "seen_tool_names": [
+        "audit_hidden_global"
+      ],
+      "tool_error_observation_reached_model": true,
+      "whole_react_run_aborted": false
+    },
+    "global_fallback_is_not_authority": {
+      "observation_reached_second_model_call": true,
+      "passed": true,
+      "unadvertised_callback_invocations": 1
+    },
+    "max_iterations": {
+      "configured": 1,
+      "model_calls": 1,
+      "passed": true,
+      "result_type": "error",
+      "tool_calls": 1
+    },
+    "per_agent_visibility": {
+      "agent_with_tool": [
+        "audit_analyze"
+      ],
+      "agent_without_tool": [],
+      "passed": true
+    },
+    "workflow_reviewer_then_solver": {
+      "passed": true,
+      "reviewer_invocations": 1,
+      "solver_invocations": 1,
+      "solver_received_reviewer_output": true,
+      "workflow_output_type": "WorkflowOutput"
+    }
+  },
+  "public_api": {
+    "agent": "ReActAgent.configure/set_llm/invoke",
+    "private_api_required_for_tested_behavior": false,
+    "rail": "ReActAgent.register_rail with AgentRail.before_tool_call and AbortError",
+    "tool": "ToolCard/LocalFunction and AbilityManager.add_ability",
+    "workflow": "Workflow/WorkflowComponent/Start/End"
+  },
+  "schema": "saea-openjiuwen-native-framework-proof-v1"
+}

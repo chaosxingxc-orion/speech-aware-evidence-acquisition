@@ -1,0 +1,53 @@
+{
+  "actual_model_contacts": 0,
+  "actual_tool_backend_contacts": 0,
+  "environment": "WSL Ubuntu-24.04; Python 3.12; /home/chao/.venvs/speechrl",
+  "framework": "openjiuwen",
+  "framework_files": [
+    {
+      "matches_distribution_record": true,
+      "relative_path": "core/workflow/workflow.py",
+      "sha256": "80e2fb6bed41fa0ae8b6266f31478987ea2fc017571e6344f1afa1d1eeb874fd"
+    },
+    {
+      "matches_distribution_record": true,
+      "relative_path": "core/workflow/components/flow/branch_comp.py",
+      "sha256": "f50b06db1864140169358d57a3565ef108e4ff05aca14742cb46a22ee3124ac3"
+    },
+    {
+      "matches_distribution_record": true,
+      "relative_path": "core/workflow/components/flow/loop/loop_comp.py",
+      "sha256": "001504c92a58870b51fe8b8e4f7c641fc9fa25e9353e0c388808ad4eb6cc2197"
+    },
+    {
+      "matches_distribution_record": true,
+      "relative_path": "core/single_agent/agents/react_agent.py",
+      "sha256": "7952a2798718772bb2ec15794211b6de3a9082e549de8dfadd9eedebd5b897ec"
+    },
+    {
+      "matches_distribution_record": true,
+      "relative_path": "core/single_agent/ability_manager.py",
+      "sha256": "12112e092f9e7e6254ff105bca4f36922d4cf3454b9f96b746a7e48da0f41050"
+    },
+    {
+      "matches_distribution_record": true,
+      "relative_path": "core/single_agent/rail/base.py",
+      "sha256": "f85d5dd6ee09686b3a0f04ad7afa3fc31335b868cfbe0963e165975041cd4cbe"
+    },
+    {
+      "matches_distribution_record": true,
+      "relative_path": "core/context_engine/context_engine.py",
+      "sha256": "046856b24ac870e9625c27c53a62ba5130ec3399b89dc6c14a822bc639aa2a8e"
+    },
+    {
+      "matches_distribution_record": true,
+      "relative_path": "core/workflow/components/llm/react/react_executable.py",
+      "sha256": "d1ce01332816bdf94ddb82d7517e8e1ae926b7023367b5d0372b103fbcb28c88"
+    }
+  ],
+  "installed_root": "/home/chao/.venvs/speechrl/lib/python3.12/site-packages/openjiuwen",
+  "installed_version": "0.1.16.post2",
+  "schema": "saea-framework-source-audit-v1",
+  "scope": "Read installed source and repository integration; synthetic behavior evidence is separate.",
+  "service_mutations": 0
+}
