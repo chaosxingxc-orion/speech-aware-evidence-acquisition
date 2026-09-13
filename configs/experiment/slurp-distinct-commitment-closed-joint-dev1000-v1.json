@@ -14,13 +14,12 @@
       "dataset_fragment": "slurp-speech-native-dev1000",
       "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
       "readiness": {
-        "reason": "Registered runtime-state repair and zero-contact capacity revalidation are in progress; no new measured fit or generation has occurred.",
         "requirements": [
           {
-            "expected_decision_id": "SAEA-SLURP-DISTINCT-SUCCESSOR-GENERATION-ADMISSION-V1",
+            "expected_decision_id": "SAEA-SLURP-DISTINCT-SUCCESSOR-GENERATION-ADMISSION-V2",
             "kind": "decision",
-            "relpath": "coordination/slurp-top3-commitment-v1/distinct-successor-generation-admission-v1.json",
-            "sha256": "dcafe07597f9f7f74159909dc973e454e58b564809b36bb8738708dbeba756d3"
+            "relpath": "coordination/slurp-top3-commitment-v1/distinct-successor-generation-admission-v2.json",
+            "sha256": "cf939d7f9ea8c48d6cdc406dab7a853bd753c1d4d401d97378ff4566fefd207e"
           },
           {
             "kind": "preparation",
@@ -29,16 +28,16 @@
           },
           {
             "kind": "preparation",
-            "relpath": "prepared/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-FIT-V1/request-fit.json",
-            "sha256": "fd73df1131828444a7538a0956e91f6242bc639d01ed7c00e207c954d89acc51"
+            "relpath": "prepared/SAEA-SLURP-DISTINCT-HARD-FIRST-FIT-REVALIDATION-V1/request-fit.json",
+            "sha256": "74a40a6dfafac48c9361a34144d32fa06054030ed779a690ccfa899c672eb6eb"
           },
           {
             "kind": "preparation",
-            "relpath": "prepared/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-FIT-V1/request-fit.json",
-            "sha256": "311d269e960cdfa2b1dd63ac98084dc7c801ab637e2c92cf4348806f63cf0afa"
+            "relpath": "prepared/SAEA-SLURP-DISTINCT-CLOSED-JOINT-FIT-REVALIDATION-V1/request-fit.json",
+            "sha256": "e8418111b4d7d8a6f4fa97c914f469602c92ddba031eb72b39c462cf77cde0cf"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1"
     },

@@ -30,8 +30,8 @@
   },
   "policy": "phase-slots-given-intent-v1",
   "prepared_request_fit": {
-    "relpath": "prepared/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-FIT-V1/request-fit.json",
-    "sha256": "fd73df1131828444a7538a0956e91f6242bc639d01ed7c00e207c954d89acc51"
+    "relpath": "prepared/SAEA-SLURP-DISTINCT-HARD-FIRST-FIT-REVALIDATION-V1/request-fit.json",
+    "sha256": "74a40a6dfafac48c9361a34144d32fa06054030ed779a690ccfa899c672eb6eb"
   },
   "scorers": [
     "slurp-slu-official",

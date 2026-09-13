@@ -1,0 +1,64 @@
+{
+  "admission": {
+    "relpath": "coordination/slurp-top3-commitment-v1/distinct-successor-generation-admission-v2.json",
+    "sha256": "cf939d7f9ea8c48d6cdc406dab7a853bd753c1d4d401d97378ff4566fefd207e"
+  },
+  "analysis_method": {
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-distinct-commitment-analysis-recipe-v2.json",
+    "sha256": "48ad90ad08f706a241a382ea406cb9a8118a41a9fcebb79f4044fb883cc5bfac"
+  },
+  "campaign": {
+    "repo_relpath": "configs/campaign/slurp-distinct-successors-v1.json",
+    "sha256": "3b84a0a8e51696cd219eb31b7133427e9385b69e9b3d5623130dce52d4ff4547"
+  },
+  "capacity_revalidation": {
+    "relpath": "coordination/slurp-top3-commitment-v1/distinct-fit-revalidation-completion-v1.json",
+    "sha256": "0e8d642568058903bdd7ec2358bc346891784701b0fa91abcc8b0c9eca0f3e0b"
+  },
+  "fit_batch": {
+    "relpath": "coordination/slurp-top3-commitment-v1/distinct-fit-batch-completion-v2.json",
+    "sha256": "1b65a2884d1175e3721f9aa2045b7c7c3d76daa8e52e7e6772e6037c765b0f3e"
+  },
+  "fits": {
+    "closed-joint": {
+      "relpath": "prepared/SAEA-SLURP-DISTINCT-CLOSED-JOINT-FIT-REVALIDATION-V1/request-fit.json",
+      "sha256": "e8418111b4d7d8a6f4fa97c914f469602c92ddba031eb72b39c462cf77cde0cf"
+    },
+    "hard-first": {
+      "relpath": "prepared/SAEA-SLURP-DISTINCT-HARD-FIRST-FIT-REVALIDATION-V1/request-fit.json",
+      "sha256": "74a40a6dfafac48c9361a34144d32fa06054030ed779a690ccfa899c672eb6eb"
+    }
+  },
+  "generation_plans": {
+    "closed-joint": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-distinct-successors-v1/closed-joint-generation-plan-v2.json",
+      "sha256": "fedd3275db34ef5b6f1a83d0bf858747c075699621beb55323107dc277ac71e5"
+    },
+    "hard-first": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-distinct-successors-v1/hard-first-generation-plan-v2.json",
+      "sha256": "498dc79e7bf9d09e2c3d2486c2852aca34719853a40014e68c608fc7dd2694ec"
+    }
+  },
+  "implementation_repair_commit": "53b0b681be4e921edaffff2425ded1525df304d3",
+  "new_fit_contacts": 0,
+  "new_generation_cap": 2100,
+  "new_generation_target": 2000,
+  "original_source_fit_endpoints_spent": 3001,
+  "original_source_generations_spent": 1000,
+  "prior_precontact_registration": {
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-distinct-successors-v1/generation-registration-v1.json",
+    "sha256": "7a5081b6575ccdea2f491f80cc553ceed07a8093c009ce50d8b9c535d83682d7"
+  },
+  "registered_at": "2026-09-13T08:47:43.634242+00:00",
+  "same_service_process_required": true,
+  "schema": "saea-distinct-successor-generation-registration-v1",
+  "source": {
+    "relpath": "prepared/SAEA-SLURP-DISTINCT-HYPOTHESIS-SOURCE-RECOVERY-V1/hypotheses.source.json",
+    "sha256": "0146d87679a27f85ee7d0927039f8cd64805ceb40f3b42f3e788529d4a8863d3"
+  },
+  "source_attempt_preserved": "ABORTED",
+  "source_journal_association": {
+    "relpath": "coordination/slurp-top3-commitment-v1/distinct-fit-source-journal-association-v1.json",
+    "sha256": "f83e86cb78c489582b4ce4c783cb35928121f6416d93b2030df8070951bb4a5f"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "analysis_method": {
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-distinct-commitment-analysis-recipe-v2.json",
+    "sha256": "48ad90ad08f706a241a382ea406cb9a8118a41a9fcebb79f4044fb883cc5bfac"
+  },
+  "both_fits_completed": {
+    "relpath": "coordination/slurp-top3-commitment-v1/distinct-fit-batch-completion-v2.json",
+    "sha256": "1b65a2884d1175e3721f9aa2045b7c7c3d76daa8e52e7e6772e6037c765b0f3e"
+  },
+  "capacity_revalidation": {
+    "relpath": "coordination/slurp-top3-commitment-v1/distinct-fit-revalidation-completion-v1.json",
+    "sha256": "0e8d642568058903bdd7ec2358bc346891784701b0fa91abcc8b0c9eca0f3e0b"
+  },
+  "cell": "slurp-distinct-hard-first-dev1000-generation-v1",
+  "composed_config_hash": "b8a13180c47966bc448560778723a2fd597d972475ab39b3e94af953d2303114",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-distinct-hard-first-recovery-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1050,
+    "planned_speech_audio_seconds": 3000,
+    "protocol_hash": "6c428eda8a54b6eb0ff2688003f6c55f6dbbb909906cccd1c51e55566b09b826",
+    "run_id": "SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-top3-commitment-np8-v1",
+  "experiment": "slurp-distinct-commitment-hard-first-dev1000-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "common_source_counted_once": true,
+    "encoder_calls": 0,
+    "fit_audio_seconds_cap": 9000,
+    "fit_endpoint_calls_cap": 9003,
+    "generation_audio_seconds_cap": 10500,
+    "generation_calls_cap": 3150,
+    "generation_calls_target": 3000,
+    "gpu_hours_fit_inclusive": 3.0,
+    "official_complete_derivative_scoring_jobs": 2
+  },
+  "fit_endpoints_already_spent": 3001,
+  "gpu_cap_interpretation": "The arm1.0-hour cap includes its actual fit interval; do not add a second hour for fitting. Family3.0 includes the failed original source.",
+  "new_encoder_asr_calls": 0,
+  "new_fit_endpoints": 0,
+  "official_complete_derivative_scoring_jobs": 1,
+  "precontact_repair": "Temporary wire state is restored; original fit/source contacts and zero successor generation state are preserved.",
+  "prepared_request_fit": {
+    "relpath": "prepared/SAEA-SLURP-DISTINCT-HARD-FIRST-FIT-REVALIDATION-V1/request-fit.json",
+    "sha256": "74a40a6dfafac48c9361a34144d32fa06054030ed779a690ccfa899c672eb6eb"
+  },
+  "protocol_hash": "6c428eda8a54b6eb0ff2688003f6c55f6dbbb909906cccd1c51e55566b09b826",
+  "quality_read_gate": "Hold all successor quality until both complete first official score receipts; source diagnostic already read under owner direction.",
+  "registered_at": "2026-09-13T08:47:43.634242+00:00",
+  "retry_policy": "No automatic replay, fresh roster or additional recovery after a contact-bearing failure. Preserve every raw response and only apply the declared deterministic delivery.",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-top3-commitment-v1/distinct-successor-generation-admission-v2.json",
+    "sha256": "cf939d7f9ea8c48d6cdc406dab7a853bd753c1d4d401d97378ff4566fefd207e"
+  },
+  "source": {
+    "relpath": "prepared/SAEA-SLURP-DISTINCT-HYPOTHESIS-SOURCE-RECOVERY-V1/hypotheses.source.json",
+    "sha256": "0146d87679a27f85ee7d0927039f8cd64805ceb40f3b42f3e788529d4a8863d3"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/phase-materialization-state-repair-v1",
+  "supersedes_precontact_plan": {
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-distinct-successors-v1/hard-first-generation-plan-v1.json",
+    "sha256": "0ccb17800678d5f180f9bb0197e4f6dc419ce2eaa55345c28307617b28f8dc25"
+  },
+  "target_generation_calls": 1000
+}
