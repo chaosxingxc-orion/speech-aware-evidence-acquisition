@@ -4,6 +4,9 @@ This companion to score_compare_cli verifies sealed bundles and complete score
 receipts before delegating all diagnostic counting to the pure aggregator. It
 never scores or infers a reference from a prediction. Raw-source uncertainty
 uses the existing speaker-cluster resampling function when explicitly configured.
+The native-system mode reads Perception state from a separately pinned phase
+artifact of the same verified task-answer run; it never invents candidate state
+for a direct arm.
 """
 from __future__ import annotations
 
@@ -12,7 +15,7 @@ import hashlib
 import json
 import math
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -28,7 +31,14 @@ from ..data.lock import load_lock
 from ..data.slurp import load_slurp_split
 from ..data.splits import prefixed, split_identity_hash
 from ..rails.phase_material import sealed_states_from_manifest
-from ..rails.slurp_intent_hypotheses import parse_slurp_intent_hypothesis_state
+from ..rails.hashing import content_hash
+from ..rails.knowledge import AgentStateArtifact
+from ..rails.errors import RailsError
+from ..rails.slurp_candidate_contracts import build_slurp_candidate_contract_provider
+from ..rails.slurp_intent_hypotheses import (
+    BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    parse_slurp_intent_hypothesis_state,
+)
 from ..reproduction.slurp_scoring import parse_slu_response
 from ..reproduction.probe_split import load_verified_probe_split
 from .null_calibration_cli import digest, pinned_json, rows_for
@@ -44,6 +54,9 @@ from .slurp_topn_diagnostics import (
 
 class SlurpTopNAnalysisError(ValueError):
     """An analysis config or source binding failed closed."""
+
+
+_NATIVE_SOURCE_KEY = "native_system_perception_source"
 
 
 def _sha256_file(path: Path) -> str:
@@ -346,6 +359,527 @@ def _source_rows(binding, bundle, full_ids, *, state_loader, distinct=False):
     return tuple(rows), manifest, states
 
 
+def _pinned_json_mapping(value: object, label: str) -> tuple[Path, str, Mapping[str, object]]:
+    path, sha256 = _pin(value, label)
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise SlurpTopNAnalysisError(f"{label} is not readable JSON: {error}") from error
+    return path, sha256, _map(document, label)
+
+
+def _validate_flight_receipts(
+    document: Mapping[str, object],
+    *,
+    run_id: str,
+    attempt_id: str,
+    phase_path: Path,
+    phase_sha256: str,
+) -> Mapping[str, object]:
+    """Return the recorded phase-supply receipt after checking its ledger.
+
+    The driver may preserve either ``FlightReceipts.as_json()`` itself or the
+    CLI object which carries it under ``receipts``.  Both contain the same
+    self-hashed stage ledger; accepting the wrapper does not weaken it.
+    """
+    inner = document.get("receipts", document)
+    receipt = _map(inner, "native flight receipts")
+    if (
+        receipt.get("schema") != "saea-flight-receipts-v1"
+        or receipt.get("run_id") != run_id
+        or receipt.get("attempt_id") != attempt_id
+    ):
+        raise SlurpTopNAnalysisError("native flight receipt run binding mismatch")
+    claimed = receipt.get("receipts_hash")
+    unsigned = dict(receipt)
+    unsigned.pop("receipts_hash", None)
+    if claimed != content_hash(unsigned):
+        raise SlurpTopNAnalysisError("native flight receipt self-hash mismatch")
+    stages = _map(receipt.get("stages"), "native flight receipt stages")
+    for stage_name, raw_stage in stages.items():
+        stage = _map(raw_stage, f"native flight stage {stage_name!r}")
+        unsigned_stage = dict(stage)
+        stage_hash = unsigned_stage.pop("stage_hash", None)
+        if stage.get("stage") != stage_name or stage_hash != content_hash(unsigned_stage):
+            raise SlurpTopNAnalysisError(
+                f"native flight stage {stage_name!r} self-hash mismatch"
+            )
+    run_stage = _map(stages.get("run_phases"), "native run_phases receipt")
+    seal_stage = _map(stages.get("seal"), "native seal receipt")
+    if (
+        Path(str(seal_stage.get("phases_path"))).resolve() != phase_path.resolve()
+        or seal_stage.get("phases_sha256") != phase_sha256
+    ):
+        raise SlurpTopNAnalysisError("native seal receipt does not bind the phase artifact")
+    return _map(run_stage.get("phase_supply"), "native phase-supply receipt")
+
+
+def _native_phase_supply_receipt(
+    binding: Mapping[str, object],
+    *,
+    run_id: str,
+    attempt_id: str,
+    phase_path: Path,
+    phase_sha256: str,
+) -> tuple[Mapping[str, object] | None, dict[str, object]]:
+    flight = binding.get("flight_receipts")
+    if binding.get("candidate_selection_audit") is not None:
+        raise SlurpTopNAnalysisError(
+            "native candidate selection audits require genuine preserved flight_receipts"
+        )
+    if flight is None:
+        return None, {
+            "status": "unavailable",
+            "reason": (
+                "the campaign producer did not preserve FlightReceipts; "
+                "source-derived candidate diagnostics do not prove actual slot-card supply"
+            ),
+        }
+    path, sha256, document = _pinned_json_mapping(
+        flight, "native flight receipts"
+    )
+    if "receipts" in document and (
+        document.get("run_id") != run_id
+        or document.get("attempt_id") != attempt_id
+    ):
+        raise SlurpTopNAnalysisError("native flight receipt wrapper binding mismatch")
+    return (
+        _validate_flight_receipts(
+            document,
+            run_id=run_id,
+            attempt_id=attempt_id,
+            phase_path=phase_path,
+            phase_sha256=phase_sha256,
+        ),
+        {
+            "status": "verified",
+            "kind": "flight-receipts",
+            "path": str(path),
+            "sha256": sha256,
+        },
+    )
+
+
+def _trace_contact_for_state(
+    bundle: object,
+    *,
+    sample_id: str,
+    source_phase: str,
+    state: AgentStateArtifact,
+    contact: Mapping[str, object],
+) -> None:
+    """Join a phase-local Perception state to manifest-verified raw trace records."""
+    plan = _map(contact.get("plan"), "native Perception contact plan")
+    agent_contact_id = plan.get("contact_id")
+    trace_records = getattr(bundle, "trace_records", None)
+    if not isinstance(trace_records, Mapping):
+        raise SlurpTopNAnalysisError("verified native bundle lacks trace records")
+    uses = [
+        (record_id, record)
+        for record_id, record in trace_records.items()
+        if isinstance(record_id, str)
+        and record_id.endswith("/native-role-contact")
+        and isinstance(record, Mapping)
+        and record.get("use_agent_contact_id") == agent_contact_id
+    ]
+    if len(uses) != 1:
+        raise SlurpTopNAnalysisError(
+            f"native Perception trace contact mismatch for {sample_id!r}"
+        )
+    use_record_id, use = uses[0]
+    request_id = use_record_id.removesuffix("/native-role-contact")
+    request = trace_records.get(f"{request_id}/request")
+    response = trace_records.get(f"{request_id}/response")
+    if not isinstance(request, Mapping) or not isinstance(response, Mapping):
+        raise SlurpTopNAnalysisError(
+            f"native Perception trace request or response missing for {sample_id!r}"
+        )
+    payload = request.get("payload")
+    history = payload.get("history") if isinstance(payload, Mapping) else None
+    control_rows = (
+        [
+            row
+            for row in history
+            if isinstance(row, Mapping) and row.get("role") == "control"
+        ]
+        if isinstance(history, list)
+        else []
+    )
+    expected_text_sha256 = hashlib.sha256(state.content.encode("utf-8")).hexdigest()
+    if (
+        not isinstance(payload, Mapping)
+        or payload.get("request_id") != request_id
+        or payload.get("sample_id") != sample_id
+        or request.get("payload_sha256") != use.get("use_request_sha256")
+        or use.get("use_role_id") != source_phase
+        or len(control_rows) != 1
+        or control_rows[0].get("contact_id") != agent_contact_id
+        or control_rows[0].get("content") != plan.get("instruction")
+        or response.get("text") != state.content
+        or response.get("response_text_sha256") != expected_text_sha256
+        or response.get("response_text_sha256")
+        != use.get("use_response_text_sha256")
+        or response.get("response_sha256") != use.get("use_response_sha256")
+        or state.source_response_sha256 != response.get("response_text_sha256")
+        or contact.get("response_sha256") != response.get("response_text_sha256")
+        or contact.get("query_state_sha256") != state.source_query_state_sha256
+        or plan.get("query_state_sha256") != state.source_query_state_sha256
+        or state.state_id != f"{agent_contact_id}:{source_phase}:{sample_id}"
+    ):
+        raise SlurpTopNAnalysisError(
+            f"native Perception state differs from manifest-verified trace for {sample_id!r}"
+        )
+
+
+def _validate_candidate_audits(
+    phase_supply: Mapping[str, object],
+    *,
+    states: Mapping[str, AgentStateArtifact],
+    parsed_states: Mapping[str, object],
+    legal_inventory_sha256: str,
+    legal_inventory_count: int,
+    selection_phase: str,
+    source_phase: str,
+    projection_policy: str,
+    max_candidates: int,
+) -> dict[str, int]:
+    if phase_supply.get("schema") != "saea-named-knowledge-store-routing-v1":
+        raise SlurpTopNAnalysisError("native phase supply is not named-store routing")
+    candidate_supply = _map(
+        phase_supply.get("candidate_supply"), "native candidate supply receipt"
+    )
+    if candidate_supply.get("schema") != "saea-candidate-semantic-supply-v1":
+        raise SlurpTopNAnalysisError("native candidate supply receipt schema mismatch")
+    if (
+        candidate_supply.get("candidate_inventory_authority")
+        != "task-adapter-candidate-contract-provider"
+        or candidate_supply.get("candidate_inventory_sha256")
+        != legal_inventory_sha256
+        or candidate_supply.get("candidate_inventory_count") != legal_inventory_count
+    ):
+        raise SlurpTopNAnalysisError("native candidate legal inventory hash mismatch")
+    specs = candidate_supply.get("specs")
+    if not isinstance(specs, list):
+        raise SlurpTopNAnalysisError("native candidate supply specs are malformed")
+    matches = [
+        spec for spec in specs
+        if isinstance(spec, Mapping) and spec.get("phase") == selection_phase
+    ]
+    if len(matches) != 1:
+        raise SlurpTopNAnalysisError("native candidate supply must have one selection-phase spec")
+    spec = matches[0]
+    spec_store_id = spec.get("store_id")
+    if (
+        not isinstance(spec_store_id, str)
+        or not spec_store_id
+        or spec.get("candidate_state_phase") != source_phase
+        or spec.get("compact_source_phase") != source_phase
+        or spec.get("projection_policy") != projection_policy
+        or spec.get("max_candidates") != max_candidates
+        or spec.get("provider") != "slurp-candidate-semantic-v1"
+        or spec.get("rank_policy") != "saea-ranked-candidate-round-robin-v1"
+        or spec.get("fuse_policy") != "saea-candidate-semantic-passthrough-v1"
+    ):
+        raise SlurpTopNAnalysisError("native candidate supply policy binding mismatch")
+    stores = _map(phase_supply.get("stores"), "native named-store receipts")
+    store_receipt = _map(
+        stores.get(spec_store_id), "native candidate named-store receipt"
+    )
+    audits = _map(
+        phase_supply.get("candidate_selections"), "native candidate selection audits"
+    )
+    nested_audits = candidate_supply.get("candidate_selections")
+    if nested_audits is not None and nested_audits != audits:
+        raise SlurpTopNAnalysisError("native candidate selection audit copies differ")
+    counts = {sample_id: 0 for sample_id in states}
+    store_fields = (
+        "store_id", "store_role", "store_snapshot_sha256", "store_release_sha256",
+        "store_source_sha256", "composite_snapshot_sha256",
+    )
+    outer_fields = (
+        *store_fields, "query_state_sha256", "qualified_selected_value_ids",
+        "supply_disposition", "selection_receipt_sha256",
+    )
+    for audit_key, raw_audit in audits.items():
+        audit = _map(raw_audit, f"native candidate audit {audit_key!r}")
+        sample_id = audit.get("sample_id")
+        if sample_id not in states:
+            raise SlurpTopNAnalysisError("native candidate audit has a foreign sample")
+        if not isinstance(audit_key, str) or not audit_key.startswith(
+            f"{selection_phase}:{sample_id}:"
+        ) or audit_key.rsplit(":", 1)[-1] != audit.get("query_state_sha256"):
+            raise SlurpTopNAnalysisError("native candidate audit key binding mismatch")
+        state = states[str(sample_id)]
+        parsed = parsed_states[str(sample_id)]
+        projection = getattr(parsed, "projection", None)
+        expected_projection = None if projection is None else json.loads(
+            json.dumps(asdict(projection))
+        )
+        if (
+            audit.get("schema") != "saea-candidate-semantic-selection-v1"
+            or audit.get("candidate_state_id") != state.state_id
+            or audit.get("candidate_state_sha256")
+            != hashlib.sha256(state.content.encode("utf-8")).hexdigest()
+            or audit.get("candidate_source_response_sha256")
+            != state.source_response_sha256
+            or audit.get("candidate_ids")
+            != [candidate.intent_id for candidate in parsed.candidates]
+            or audit.get("candidate_projection") != expected_projection
+            or audit.get("legal_candidate_inventory_sha256") != legal_inventory_sha256
+            or audit.get("selection_policy_id")
+            != "saea-ranked-candidate-round-robin-v1"
+            or audit.get("max_candidates") != max_candidates
+            or audit.get("compact_source_phase") != source_phase
+        ):
+            raise SlurpTopNAnalysisError("native candidate audit source or policy mismatch")
+        provenance_hashes = store_fields[2:]
+        if (
+            audit.get("store_id") != spec_store_id
+            or audit.get("store_role") != "slot-contracts"
+            or any(
+                not isinstance(audit.get(field), str)
+                or len(str(audit.get(field))) != 64
+                for field in provenance_hashes
+            )
+            or any(audit.get(field) != store_receipt.get(field) for field in store_fields)
+        ):
+            raise SlurpTopNAnalysisError("native candidate audit lacks released-store provenance")
+        selection_unsigned = {
+            key: value for key, value in audit.items()
+            if key not in outer_fields and key != "selection_sha256"
+        }
+        if audit.get("selection_sha256") != content_hash(selection_unsigned):
+            raise SlurpTopNAnalysisError("native candidate selection hash mismatch")
+        receipt_unsigned = dict(audit)
+        receipt_hash = receipt_unsigned.pop("selection_receipt_sha256", None)
+        if receipt_hash != content_hash(receipt_unsigned):
+            raise SlurpTopNAnalysisError("native candidate selection receipt hash mismatch")
+        counts[str(sample_id)] += 1
+    if any(count == 0 for count in counts.values()):
+        raise SlurpTopNAnalysisError("native candidate selection audit roster is incomplete")
+    return counts
+
+
+def _native_system_rows(
+    binding: Mapping[str, object],
+    bundle: object,
+    full_ids: Sequence[str],
+    *,
+    legal_ids: frozenset[str],
+) -> tuple[
+    tuple[SourceCandidateRow, ...],
+    tuple[BranchOutcomeRow, ...],
+    dict[str, object],
+]:
+    """Load internal native Perception state from one verified answer bundle."""
+    manifest = _map(getattr(bundle, "manifest", None), "verified native manifest")
+    if (
+        manifest.get("status") != "COMPLETED"
+        or getattr(bundle, "attempt_state", None) != "FINALIZED"
+    ):
+        raise SlurpTopNAnalysisError("native source must be FINALIZED/COMPLETED")
+    if set(getattr(bundle, "split_ids", ())) != set(full_ids):
+        raise SlurpTopNAnalysisError("native source roster does not match full roster")
+    split = _map(manifest.get("split"), "native manifest split")
+    if (
+        split.get("identity_hash") != binding.get("split_identity_hash")
+        or binding.get("split_identity_hash")
+        != split_identity_hash(prefixed("slurp", full_ids))
+    ):
+        raise SlurpTopNAnalysisError("native source split identity mismatch")
+    run_id = manifest.get("run_id")
+    plan = _map(manifest.get("plan"), "native manifest plan")
+    attempt_id, protocol_hash = plan.get("attempt_id"), plan.get("protocol_hash")
+    if not all(isinstance(value, str) and value for value in (run_id, attempt_id, protocol_hash)):
+        raise SlurpTopNAnalysisError("native manifest run binding is incomplete")
+    phase_pin = _map(binding.get("phase_artifact"), "native phase artifact pin")
+    phase_path, phase_sha256, phases = _pinned_json_mapping(
+        phase_pin, "native phase artifact"
+    )
+    manifest_path = Path(getattr(bundle, "manifest_path", binding["manifest"]["path"]))
+    if phase_path.resolve().parent != manifest_path.resolve().parent:
+        raise SlurpTopNAnalysisError("native phase artifact is outside the manifest run directory")
+    if (
+        phases.get("schema") != "saea-flight-phase-summaries-v1"
+        or phases.get("run_id") != run_id
+        or phases.get("attempt_id") != attempt_id
+    ):
+        raise SlurpTopNAnalysisError("native phase artifact run binding mismatch")
+    producer = binding.get("producer_policy_id")
+    source_phase = binding.get("compact_source_phase", "perception")
+    selection_phase = binding.get("candidate_selection_phase", "solver")
+    projection_policy = binding.get(
+        "projection_policy", BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+    )
+    width = _source_candidate_width(binding, distinct=True)
+    if (
+        not isinstance(producer, str) or not producer
+        or source_phase != "perception"
+        or not isinstance(selection_phase, str) or not selection_phase
+        or projection_policy != BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+        or phases.get("policy") != producer
+    ):
+        raise SlurpTopNAnalysisError("native source phase or projection policy binding mismatch")
+    summaries = phases.get("phases")
+    if not isinstance(summaries, list):
+        raise SlurpTopNAnalysisError("native phase artifact lacks phase summaries")
+    matched = [
+        summary for summary in summaries
+        if isinstance(summary, Mapping) and summary.get("controller_policy_id") == producer
+    ]
+    if len(matched) != 1:
+        raise SlurpTopNAnalysisError("native phase artifact must have one system summary")
+    summary = matched[0]
+    if summary.get("run_id") != run_id or summary.get("protocol_hash") != protocol_hash:
+        raise SlurpTopNAnalysisError("native phase summary run or protocol binding mismatch")
+    result_rows = summary.get("results")
+    if not isinstance(result_rows, list):
+        raise SlurpTopNAnalysisError("native phase summary lacks results")
+    results: dict[str, Mapping[str, object]] = {}
+    for row in result_rows:
+        if not isinstance(row, Mapping) or not isinstance(row.get("sample_id"), str):
+            raise SlurpTopNAnalysisError("native phase result is malformed")
+        if row["sample_id"] in results:
+            raise SlurpTopNAnalysisError("native phase results contain duplicate samples")
+        results[row["sample_id"]] = row
+    if set(results) != set(full_ids):
+        raise SlurpTopNAnalysisError("native phase result roster mismatch")
+    outputs: dict[str, Mapping[str, object]] = {}
+    for row in getattr(bundle, "outputs_rows", ()):
+        if not isinstance(row, Mapping) or not isinstance(row.get("sample_id"), str):
+            raise SlurpTopNAnalysisError("native output row is malformed")
+        if row["sample_id"] in outputs:
+            raise SlurpTopNAnalysisError("native outputs contain duplicate samples")
+        outputs[row["sample_id"]] = row
+    if set(outputs) != set(full_ids):
+        raise SlurpTopNAnalysisError("native output roster mismatch")
+    legal_inventory_sha256 = content_hash({"candidate_ids": sorted(legal_ids)})
+    states: dict[str, AgentStateArtifact] = {}
+    parsed_states: dict[str, object] = {}
+    branches: list[BranchOutcomeRow] = []
+    source_rows: list[SourceCandidateRow] = []
+    for sample_id in full_ids:
+        result, output_row = results[sample_id], outputs[sample_id]
+        text = output_row.get("text")
+        if (
+            not isinstance(text, str)
+            or result.get("final_response_text") != text
+            or result.get("final_response_sha256")
+            != hashlib.sha256(text.encode("utf-8")).hexdigest()
+            or result.get("native_episode_receipt") != output_row.get("native_episode_receipt")
+            or not isinstance(result.get("native_episode_receipt"), Mapping)
+        ):
+            raise SlurpTopNAnalysisError(
+                f"native final output binding mismatch for {sample_id!r}"
+            )
+        raw_states = result.get("agent_states")
+        if not isinstance(raw_states, list):
+            raise SlurpTopNAnalysisError(f"native states missing for {sample_id!r}")
+        matches = [
+            raw for raw in raw_states
+            if isinstance(raw, Mapping) and raw.get("state_kind") == f"phase:{source_phase}"
+        ]
+        if len(matches) != 1:
+            raise SlurpTopNAnalysisError(
+                f"native source requires exactly one Perception state for {sample_id!r}"
+            )
+        try:
+            state = AgentStateArtifact.from_json(matches[0]).validate()
+            parsed = parse_slurp_intent_hypothesis_state(
+                state,
+                expected_sample_id=sample_id,
+                legal_intent_ids=legal_ids,
+                max_candidates=width,
+                compact_source_phase=source_phase,
+                projection_policy=projection_policy,
+            )
+        except (KeyError, TypeError, ValueError, RailsError) as error:
+            raise SlurpTopNAnalysisError(
+                f"native Perception state for {sample_id!r} is invalid: {error}"
+            ) from error
+        contacts = result.get("contacts")
+        if not isinstance(contacts, list):
+            raise SlurpTopNAnalysisError(f"native contacts missing for {sample_id!r}")
+        source_contacts = [
+            contact for contact in contacts
+            if isinstance(contact, Mapping)
+            and isinstance(contact.get("plan"), Mapping)
+            and state.state_id
+            == f"{contact['plan'].get('contact_id')}:{source_phase}:{sample_id}"
+        ]
+        if (
+            len(source_contacts) != 1
+            or source_contacts[0].get("query_state_sha256")
+            != state.source_query_state_sha256
+            or source_contacts[0].get("response_sha256")
+            != state.source_response_sha256
+            or state.producer_policy_id != producer
+        ):
+            raise SlurpTopNAnalysisError(
+                f"native Perception state source contact mismatch for {sample_id!r}"
+            )
+        _trace_contact_for_state(
+            bundle,
+            sample_id=sample_id,
+            source_phase=source_phase,
+            state=state,
+            contact=source_contacts[0],
+        )
+        states[sample_id], parsed_states[sample_id] = state, parsed
+        candidate_ids = tuple(candidate.intent_id for candidate in parsed.candidates)
+        source_rows.append(SourceCandidateRow(sample_id, candidate_ids))
+        scenario, action, _entities, _parsed = parse_slu_response(text)
+        final_intent = (
+            f"{scenario}_{action}" if isinstance(scenario, str) and scenario
+            and isinstance(action, str) and action else None
+        )
+        branches.append(BranchOutcomeRow(sample_id, final_intent, False, None))
+    phase_supply, audit_source = _native_phase_supply_receipt(
+        binding,
+        run_id=run_id,
+        attempt_id=attempt_id,
+        phase_path=phase_path,
+        phase_sha256=phase_sha256,
+    )
+    audit_counts = (
+        {}
+        if phase_supply is None
+        else _validate_candidate_audits(
+            phase_supply,
+            states=states,
+            parsed_states=parsed_states,
+            legal_inventory_sha256=legal_inventory_sha256,
+            legal_inventory_count=len(legal_ids),
+            selection_phase=selection_phase,
+            source_phase=source_phase,
+            projection_policy=projection_policy,
+            max_candidates=width,
+        )
+    )
+    return tuple(source_rows), tuple(branches), {
+        "phase_artifact": {"path": str(phase_path), "sha256": phase_sha256},
+        "candidate_source": {
+            "status": "verified-source-derived-projection",
+            "custody": (
+                "independently pinned phase artifact joined to the "
+                "manifest-verified raw request/response trace"
+            ),
+        },
+        "actual_candidate_supply": {
+            **audit_source,
+            "candidate_selection_audits": (
+                None if phase_supply is None else sum(audit_counts.values())
+            ),
+            "samples_with_candidate_selection_audit": (
+                None if phase_supply is None else len(audit_counts)
+            ),
+        },
+        "projection_policy": projection_policy,
+        "candidate_count_range": [1, width],
+        "legal_candidate_inventory_sha256": legal_inventory_sha256,
+    }
+
+
 def _references(binding, expected_ids, *, loader):
     if binding.get("kind") != "slurp-split":
         raise SlurpTopNAnalysisError("reference source kind must be slurp-split")
@@ -382,6 +916,28 @@ def _references(binding, expected_ids, *, loader):
     if selected_hash != split_hash:
         raise SlurpTopNAnalysisError("reference analysis-roster identity differs from configured hash")
     return tuple(ReferenceIntentRow(sample_id, by_id[sample_id].intent) for sample_id in expected_ids)
+
+
+def _authoritative_candidate_ids(binding: Mapping[str, object], *, loader) -> frozenset[str]:
+    """Load the exact candidate-contract authority used by the task adapter."""
+    if binding.get("kind") != "slurp-split":
+        raise SlurpTopNAnalysisError("legal inventory requires a slurp-split binding")
+    lock_path, _ = _pin(binding.get("lock"), "reference lock")
+    data_root = binding.get("data_root")
+    if not isinstance(data_root, str) or not data_root:
+        raise SlurpTopNAnalysisError("reference data_root must be explicit")
+    try:
+        provider = loader(load_lock(lock_path), Path(data_root))
+        legal = frozenset(provider.candidate_ids)
+    except Exception as error:
+        raise SlurpTopNAnalysisError(
+            f"authoritative candidate contract provider failed: {error}"
+        ) from error
+    if not legal or any(not isinstance(intent_id, str) or not intent_id for intent_id in legal):
+        raise SlurpTopNAnalysisError(
+            "authoritative candidate contract inventory is empty or malformed"
+        )
+    return legal
 
 
 def _branch_rows(
@@ -1034,10 +1590,204 @@ def _observed_width_reports(
     return reports
 
 
+def _run_native_system(
+    config_path: Path,
+    output: Path,
+    config: Mapping[str, object],
+    spec: Mapping[str, object],
+    source_section: Mapping[str, object],
+    source: Mapping[str, object],
+    *,
+    bundle_verifier,
+    score_receipt_verifier,
+    reference_loader,
+    candidate_contract_loader,
+):
+    """Diagnose one native system whose Perception state is internal."""
+    full_ids = _roster_ids(spec.get("full_roster"), "analysis.full_roster")
+    primary_ids = _roster_ids(spec.get("roster"), "analysis.roster")
+    if not set(primary_ids) <= set(full_ids):
+        raise SlurpTopNAnalysisError("primary roster must be a subset of full roster")
+    metadata = _metadata(spec.get("metadata"), set(full_ids))
+    inputs = _map(spec.get("inputs"), "analysis.inputs")
+    if set(inputs) != {"system"}:
+        raise SlurpTopNAnalysisError(
+            "native Perception diagnostics require exactly one system input"
+        )
+    system_input = _map(inputs["system"], "analysis.inputs.system")
+    source_manifest = _map(source.get("manifest"), "native source manifest")
+    input_manifest = _map(system_input.get("manifest"), "system manifest")
+    source_path, source_sha = _pin(source_manifest, "native source manifest")
+    input_path, input_sha = _pin(input_manifest, "system manifest")
+    if source_path.resolve() != input_path.resolve() or source_sha != input_sha:
+        raise SlurpTopNAnalysisError("native source and system input manifests differ")
+    bundle = bundle_verifier(source_path)
+
+    if system_input.get("score_source", "complete-score-receipt") != "complete-score-receipt":
+        raise SlurpTopNAnalysisError("system must use a complete-score-receipt")
+    receipt_path, receipt_sha = _pin(
+        system_input.get("score_receipt"), "system score receipt"
+    )
+    receipt_binding = _map(system_input.get("score_receipt"), "system score receipt")
+    cell_id = receipt_binding.get("cell_id")
+    if not isinstance(cell_id, str) or not cell_id:
+        raise SlurpTopNAnalysisError("system score receipt cell_id is required")
+    try:
+        score_receipt = score_receipt_verifier(
+            SavedScoreReceiptRef(
+                cell_id=cell_id, path=receipt_path, sha256=receipt_sha
+            ),
+            bundle,
+        )
+    except Exception as error:
+        raise SlurpTopNAnalysisError(
+            f"system complete score receipt failed: {error}"
+        ) from error
+
+    reference_binding = _map(
+        source_section.get("reference_source"), "reference_source"
+    )
+    legal_ids = _authoritative_candidate_ids(
+        reference_binding, loader=candidate_contract_loader
+    )
+    source_rows, system_rows, native_source = _native_system_rows(
+        source, bundle, full_ids, legal_ids=legal_ids
+    )
+    scorer_map = system_input.get("scorers", {})
+    if scorer_map is None:
+        scorer_map = {}
+    if not isinstance(scorer_map, Mapping):
+        raise SlurpTopNAnalysisError("system scorers must be a mapping")
+    entity_correctness = _entity_correctness_from_verified_receipt(
+        score_receipt,
+        scorer=scorer_map.get("official", "slurp-slu-official"),
+        expected_ids=set(full_ids),
+    )
+    system_rows = tuple(
+        BranchOutcomeRow(
+            row.sample_id,
+            row.final_intent_id,
+            row.refused,
+            entity_correctness[row.sample_id],
+        )
+        for row in system_rows
+    )
+    references = _references(reference_binding, full_ids, loader=reference_loader)
+    width = _source_candidate_width(source, distinct=True)
+    populations = {
+        "NEW500": set(primary_ids),
+        "DEV1000": set(full_ids),
+        "OLD500": set(full_ids) - set(primary_ids),
+    }
+    field = spec.get("stratum_field", "scenario")
+    if not isinstance(field, str) or not field:
+        raise SlurpTopNAnalysisError("stratum_field must be nonempty text")
+    reports = {}
+    for population, ids in populations.items():
+        if not ids:
+            raise SlurpTopNAnalysisError(f"population {population} is empty")
+        src, refs = _subset(source_rows, ids), _subset(references, ids)
+        branches = {"system": _subset(system_rows, ids)}
+        try:
+            report = aggregate_topn_diagnostics(
+                src,
+                refs,
+                branches,
+                candidate_width=width,
+                allow_variable_width=True,
+            ).as_json()
+        except TopNDiagnosticError as error:
+            raise SlurpTopNAnalysisError(
+                f"{population} aggregation failed: {error}"
+            ) from error
+        strata: dict[str, set[str]] = {}
+        for sample_id in ids:
+            value = metadata[sample_id].get(field)
+            if not isinstance(value, str) or not value:
+                raise SlurpTopNAnalysisError(
+                    f"metadata {field} missing for {sample_id!r}"
+                )
+            strata.setdefault(value, set()).add(sample_id)
+        report["per_stratum"] = {
+            key: aggregate_topn_diagnostics(
+                _subset(src, members),
+                _subset(refs, members),
+                {"system": _subset(system_rows, members)},
+                candidate_width=width,
+                allow_variable_width=True,
+            ).as_json()
+            for key, members in sorted(strata.items())
+        }
+        report["candidate_width_semantics"] = (
+            "maximum; actual width is the unpadded first-occurrence distinct "
+            "system Perception set"
+        )
+        report["by_observed_distinct_width"] = _observed_width_reports(
+            src, refs, branches, candidate_width=width
+        )
+        report["per_stratum_observed_distinct_width"] = {
+            key: _observed_width_reports(
+                _subset(src, members),
+                _subset(refs, members),
+                {"system": _subset(system_rows, members)},
+                candidate_width=width,
+            )
+            for key, members in sorted(strata.items())
+        }
+        report["metric_semantics"] = {
+            "branches.system.rescues": (
+                "system final intent correct after system Perception rank one was wrong"
+            ),
+            "branches.system.harms": (
+                "system final intent wrong after system Perception rank one was correct"
+            ),
+            "direct_vs_system_saves_harms": (
+                "unavailable here; use score_compare_cli on the two complete official receipts"
+            ),
+        }
+        reports[population] = report
+    result = {
+        "schema": "saea-slurp-topn-diagnostics-v1",
+        "experiment_id": config.get("experiment_id"),
+        "created_at_utc": datetime.now(timezone.utc).isoformat(),
+        "config": {"path": str(config_path.resolve()), "sha256": digest(config_path)},
+        "source": {
+            **source,
+            "binding_name": _NATIVE_SOURCE_KEY,
+            "manifest": {"path": str(source_path), "sha256": source_sha},
+            **native_source,
+        },
+        "score_gate": {
+            "system": {
+                "path": str(receipt_path), "sha256": receipt_sha, "verified": True
+            }
+        },
+        "populations": {name: len(ids) for name, ids in populations.items()},
+        "stratum_field": field,
+        "diagnostics": reports,
+        "diagnostic_semantics": {
+            "scope": "system-only internal Perception candidate diagnostics",
+            "rank1_rescues_harms": "relative to system Perception rank one",
+            "direct_vs_system_saves_harms": "score_compare_cli only",
+        },
+        "model_calls": 0,
+        "encoder_calls": 0,
+        "tokenizer_calls": 0,
+        "scorer_invocations": 0,
+    }
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("x", encoding="utf-8") as stream:
+        json.dump(result, stream, indent=2, sort_keys=True)
+        stream.write("\n")
+    return result
+
+
 def run(
     config_path, output, *, bundle_verifier=verify_bundle,
     score_receipt_verifier=verify_complete_score_receipt,
-    reference_loader=load_slurp_split, state_loader=sealed_states_from_manifest,
+    reference_loader=load_slurp_split,
+    candidate_contract_loader=build_slurp_candidate_contract_provider,
+    state_loader=sealed_states_from_manifest,
 ):
     """Verify all source bindings, then write descriptive diagnostics."""
     config_path, output = Path(config_path), Path(output)
@@ -1055,6 +1805,27 @@ def run(
             reference_loader=reference_loader,
         )
     source_section = _map(spec.get("source_diagnostics"), "analysis.source_diagnostics")
+    native_source = source_section.get(_NATIVE_SOURCE_KEY)
+    if native_source is not None:
+        if any(
+            source_section.get(key) is not None
+            for key in ("shared_fixed_top3_source", "shared_distinct_source")
+        ):
+            raise SlurpTopNAnalysisError(
+                "native and shared source bindings cannot be combined"
+            )
+        return _run_native_system(
+            config_path,
+            output,
+            config,
+            spec,
+            source_section,
+            _map(native_source, "native system Perception source"),
+            bundle_verifier=bundle_verifier,
+            score_receipt_verifier=score_receipt_verifier,
+            reference_loader=reference_loader,
+            candidate_contract_loader=candidate_contract_loader,
+        )
     source_name, source, distinct_source = _select_source_binding(source_section)
     full_ids = _roster_ids(spec.get("full_roster"), "analysis.full_roster")
     primary_ids = _roster_ids(spec.get("roster"), "analysis.roster")
