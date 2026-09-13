@@ -27,7 +27,7 @@ from ..core.base import AGENT_CONTROLLERS, CoreError, Registry
 from ..core.flight_lock import read_flight_lock
 from ..core.tracing import TraceBuffer, set_current_trace_buffer
 from .consumption import ConsumptionTrace
-from .core_client import CoreClient, FrozenCoreClient, PreparedCoreRequest
+from .core_client import CoreClient, CoreCompletion, FrozenCoreClient, PreparedCoreRequest
 from .errors import RailsError
 from .hashing import content_hash
 from .knowledge import (
@@ -231,6 +231,7 @@ class AgentRuntimeContext:
     agent_states: tuple[AgentStateArtifact, ...]
     prior_response_sha256s: tuple[str, ...]
     contact_index: int
+    core_completions: tuple[CoreCompletion, ...] = ()
 
 
 class AgentController(Protocol):
@@ -1326,6 +1327,57 @@ def _validate_new_agent_states(
         )
 
 
+
+def _complete_agent_request(
+    *, core_client: CoreClient, messages, arguments, trace_buffer: TraceBuffer,
+    prepared_request: PreparedCoreRequest | None = None,
+) -> tuple[str, CoreCompletion | None]:
+    """Preserve response-local native metadata on the same metered request path."""
+    native = "tool_choice" in arguments.get("decoding_params", {})
+    method_name = (
+        "complete_prepared_with_metadata" if native else "complete_prepared"
+    ) if prepared_request is not None else (
+        "complete_with_metadata" if native else "complete"
+    )
+    method = getattr(core_client, method_name, None)
+    if not callable(method):
+        raise RailsRunnerError(
+            f"native contact requires shared client method {method_name}"
+        )
+    if prepared_request is None:
+        result = method(messages, **arguments)
+    else:
+        result = method(
+            prepared_request, id_slot=arguments["decoding_params"].get("id_slot"),
+        )
+    if not native:
+        if not isinstance(result, str):
+            raise RailsRunnerError("frozen core response must be a string")
+        return result, None
+    if not isinstance(result, CoreCompletion):
+        raise RailsRunnerError("native contact requires source-bound CoreCompletion")
+    result.assert_binding(
+        sample_id=arguments["speech_feature_sample_id"],
+        agent_contact_id=arguments["agent_contact_id"],
+        response_text=result.text,
+    )
+    trace_buffer.emit(
+        "TOOL", f"{result.request_id}/native-completion",
+        {
+            "schema": "saea-native-completion-v1",
+            "request_id": result.request_id,
+            "sample_id": result.sample_id,
+            "agent_contact_id": result.agent_contact_id,
+            "request_sha256": result.request_sha256,
+            "response_sha256": result.response_sha256,
+            "response_text_sha256": result.response_text_sha256,
+            "native_tool_calls_json": result.tool_calls_json.decode("utf-8"),
+            "native_tool_calls_sha256": result.tool_calls_sha256,
+        },
+    )
+    return result.text, result
+
+
 def _run_agent_trajectory(
     *,
     prepared: _PreparedAgentTask,
@@ -1411,16 +1463,20 @@ def _run_agent_trajectory(
             agent_states=context.agent_states,
             knowledge_value_renderer=knowledge_value_renderer,
         )
-        response_text = core_client.complete(
-            messages,
-            decoding_params=decoding_params,
-            speech_feature_sample_id=prepared.sample.sample_id,
-            key_representation_id=contact.key_representation_id,
-            matcher_policy_id=contact.matcher_policy_id,
-            agent_state=tuple(artifact.as_json() for artifact in context.agent_states),
-            agent_contact_id=contact.contact_id,
-            contact_instruction=contact.instruction,
+        response_text, completion = _complete_agent_request(
+            core_client=core_client, messages=messages, trace_buffer=trace_buffer,
+            arguments={
+                "decoding_params": decoding_params,
+                "speech_feature_sample_id": prepared.sample.sample_id,
+                "key_representation_id": contact.key_representation_id,
+                "matcher_policy_id": contact.matcher_policy_id,
+                "agent_state": tuple(a.as_json() for a in context.agent_states),
+                "agent_contact_id": contact.contact_id,
+                "contact_instruction": contact.instruction,
+            },
         )
+        if completion is not None:
+            context = replace(context, core_completions=(completion,))
         response_sha256 = agent_response_sha256(contact, response_text)
         response_sha256s.append(response_sha256)
         contacts.append(
@@ -1749,6 +1805,10 @@ def _run_agent_openjiuwen(
         publish_workflow_state(state_object, session)
         return len(state_object.current_nodes)
 
+    # Keep immutable metadata outside OpenJiuwen's serialized response mapping.
+    # Each fan-in consumes only the exact source sample/wave/branch reply.
+    native_completions: dict[tuple[int, int, int], CoreCompletion] = {}
+
     def invoke_contact(
         state_object: object,
         branch_index: int,
@@ -1760,23 +1820,26 @@ def _run_agent_openjiuwen(
         node = state.current_nodes[branch_index]
         set_current_trace_buffer(node.trace_buffer)
         try:
-            if request_batch_gate is None:
-                response_text = core_client.complete(
-                    node.messages, **request_arguments(node, slot_id)
-                )
-            else:
-                response_text = core_client.complete_prepared(
-                    prepared_requests[node.task_index], id_slot=slot_id,
-                )
+            response_text, completion = _complete_agent_request(
+                core_client=core_client, messages=node.messages,
+                arguments=request_arguments(node, slot_id), trace_buffer=node.trace_buffer,
+                prepared_request=(
+                    prepared_requests[node.task_index] if request_batch_gate is not None
+                    else None
+                ),
+            )
         finally:
             set_current_trace_buffer(None)
-        if not isinstance(response_text, str):
-            raise RailsRunnerError("frozen core response must be a string")
-        return {
+        result = {
             "response_text": response_text,
             "slot_id": slot_id,
             "response_sha256": agent_response_sha256(node.contact, response_text),
         }
+        if completion is not None:
+            native_completions[
+                (node.task_index, node.wave_index, node.branch_index)
+            ] = completion
+        return result
 
     def combine_trace_buffers(state: _ContactAgentState) -> TraceBuffer:
         combined = TraceBuffer(run_id)
@@ -1801,7 +1864,8 @@ def _run_agent_openjiuwen(
             raise RailsRunnerError("openJiuwen Agent fan-in changed the contact count")
         response_texts: list[str] = []
         slot_ids: list[int] = []
-        for plan, response in zip(plans, responses, strict=True):
+        wave_completions: list[CoreCompletion] = []
+        for branch_index, (plan, response) in enumerate(zip(plans, responses, strict=True)):
             response_text = response["response_text"]
             slot_id = response["slot_id"]
             response_sha256 = response["response_sha256"]
@@ -1819,6 +1883,21 @@ def _run_agent_openjiuwen(
             ).hexdigest()
             if response_sha256 != expected_response_sha256:
                 raise RailsRunnerError("openJiuwen Agent fan-in response hash mismatch")
+            native = "tool_choice" in {
+                **dict(base_decoding_params or {}), **dict(plan.decoding_params),
+            }
+            if native:
+                metadata = native_completions.pop(
+                    (state.prepared.index, state.wave_index, branch_index), None,
+                )
+                if metadata is None:
+                    raise RailsRunnerError("openJiuwen native completion binding was lost")
+                completion = metadata
+                completion.assert_binding(
+                    sample_id=context.sample_id, agent_contact_id=plan.contact_id,
+                    response_text=response_text,
+                )
+                wave_completions.append(completion)
             response_texts.append(response_text)
             slot_ids.append(slot_id)
             state.contacts.append(
@@ -1840,6 +1919,8 @@ def _run_agent_openjiuwen(
             controller_response,
         )
         state.response_sha256s.append(response_sha256)
+        if wave_completions:
+            context = replace(context, core_completions=tuple(wave_completions))
         advance = state.controller.advance(
             context,
             current_contact,

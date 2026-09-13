@@ -1326,3 +1326,17 @@ def test_completion_metadata_binds_actual_native_speech_contact(tmp_path, prepar
     assert reply.tool_calls_sha256 == hashlib.sha256(reply.tool_calls_json).hexdigest()
     assert transport.calls[0]["history"][-1]["contact_id"] == "decision-1"
     client.close()
+
+
+def test_registered_tool_invocation_uses_shared_counter_without_model_debit(tmp_path):
+    world = _World(tmp_path)
+    client, _, transport = _client(world, tmp_path)
+    client.record_tool_call()
+    client.record_tool_call(2)
+    assert transport.calls == []
+    summary = client.close()
+    assert summary["cost"]["tool_calls"] == 3
+    assert summary["cost"]["calls_used"] == 0
+    assert summary["cost"]["audio_seconds_used"] == 0
+    with pytest.raises(FrozenCoreClientError, match="after close"):
+        client.record_tool_call()

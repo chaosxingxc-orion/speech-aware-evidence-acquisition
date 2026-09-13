@@ -41,6 +41,7 @@ _SHA_A = "a" * 64
 _SHA_B = "b" * 64
 
 _EXPECTED_PROGRAM_SHAPES = {
+    "native-answer-or-tool-v1": (("decision-1", "decision-2", "final"), 3, "native-answer-or-tool"),
     "phase-task-tools-then-solve-v1": (("plan", "solve"), 2, "always-run-full-program"),
     "phase-task-tools-solve-revise-v1": (
         ("plan", "solve", "revise"),
@@ -823,6 +824,10 @@ def test_evidence_agent_controller_satisfies_agent_controller_protocol_structura
 @pytest.mark.parametrize("program_id", sorted(_EXPECTED_PROGRAM_SHAPES))
 def test_default_controller_factory_runs_to_completion_for_every_registered_program(program_id):
     factory = AGENT_CONTROLLERS.resolve(program_id)
+    if program_id == "native-answer-or-tool-v1":
+        with pytest.raises(rc.RailsControllersError, match="native.*dispatcher"):
+            factory("s1")
+        return
     controller = factory("s1")
     context = _context(_query_state())
     contact = controller.initial_contact(context)
@@ -909,3 +914,155 @@ def test_three_phase_program_preserves_knowledge_through_treatment_observation()
     assert final.next_contact is None
     assert final.final_response_contact_id == "c-revise-s1"
     assert calls == [("plan", "solve"), ("solve", "revise")]
+
+
+class _NativeToolSteps:
+    native_enabled = True
+
+    def __init__(self):
+        self.calls = []
+
+    def is_action_phase(self, phase):
+        return phase != "final"
+
+    def is_native_phase(self, phase):
+        return phase != "final"
+
+    def __call__(self, phase, next_phase, context):
+        self.calls.append((phase, next_phase, context))
+        response = context.core_completions[0]
+        state = AgentStateArtifact(
+            state_id=f"native-observation:{phase}:{context.sample_id}",
+            state_kind="tool-result",
+            content="A source-bound tool observation.",
+            source_query_state_sha256=context.query_state.content_hash(),
+            source_response_sha256=response.response_text_sha256,
+            producer_policy_id="native-test-tool-v1",
+            cited_value_ids=(),
+        ).validate()
+        return rc.PhaseToolStep(state=state, supply=None)
+
+
+def _native_response_context(context, contact, text, *, tool_calls=None):
+    from speech_aware_evidence_acquisition.rails.core_client import CoreCompletion
+
+    reply = CoreCompletion(
+        text=text, request_id=f"request:{contact.contact_id}",
+        sample_id=context.sample_id, agent_contact_id=contact.contact_id,
+        request_sha256="c" * 64, response_sha256="d" * 64,
+        response_text_sha256=hashlib.sha256(text.encode()).hexdigest(),
+        tool_calls_json=json.dumps(tool_calls).encode(),
+    )
+    return replace(context, core_completions=(reply,))
+
+
+def _native_controller(tools=None, **kwargs):
+    return rc.EvidenceAgentController(
+        program=rc.default_phase_program("native-answer-or-tool-v1"),
+        material_for_phase=lambda name, ctx: _material(name, ctx.sample_id),
+        tools_for_phase=tools or _NativeToolSteps(), **kwargs,
+    )
+
+
+def test_native_answer_stops_first_contact_without_tool_or_successor():
+    tools = _NativeToolSteps()
+    controller = _native_controller(tools)
+    context = _context(_query_state())
+    contact = controller.initial_contact(context)
+    assert contact.decoding_params == {
+        "tool_choice": "auto", "parallel_tool_calls": False,
+    }
+    response_context = _native_response_context(context, contact, "Final task answer.")
+    advance = controller.advance(response_context, contact, "Final task answer.")
+    assert advance.next_contact is None
+    assert advance.final_response_contact_id == contact.contact_id
+    assert advance.transition.action_kind == "stop"
+    assert tools.calls == []
+
+
+def test_native_tool_observations_reach_bounded_successors_and_final_none():
+    tools = _NativeToolSteps()
+    controller = _native_controller(tools)
+    context = _context(_query_state())
+    contact = controller.initial_contact(context)
+    for index in range(2):
+        text = f"native-call-{index}"
+        response_context = _native_response_context(
+            context, contact, text, tool_calls=[{
+                "id": f"call-{index}", "type": "function",
+                "function": {"name": "observe_speech", "arguments": "{}"},
+            }],
+        )
+        advance = controller.advance(response_context, contact, text)
+        assert advance.next_contact is not None
+        assert len(tools.calls) == index + 1
+        assert tools.calls[-1][2].core_completions == response_context.core_completions
+        assert any(s.state_kind == "tool-result" for s in advance.new_agent_states)
+        context = replace(
+            context, query_state=advance.next_query_state,
+            agent_states=context.agent_states + advance.new_agent_states,
+            prior_response_sha256s=context.prior_response_sha256s
+            + (hashlib.sha256(text.encode()).hexdigest(),),
+            contact_index=index + 1,
+        )
+        contact = advance.next_contact
+    assert contact.decoding_params == {
+        "tool_choice": "none", "parallel_tool_calls": False,
+    }
+    response_context = _native_response_context(context, contact, "Corrected task answer.")
+    advance = controller.advance(response_context, contact, "Corrected task answer.")
+    assert advance.next_contact is None
+    assert len(tools.calls) == 2
+    assert advance.final_response_contact_id == contact.contact_id
+
+
+@pytest.mark.parametrize("mismatch", ["missing", "sample", "contact", "text", "query"])
+def test_native_completion_must_match_current_contact_before_sealing(mismatch):
+    controller = _native_controller()
+    context = _context(_query_state())
+    contact = controller.initial_contact(context)
+    context = _native_response_context(context, contact, "Answer.")
+    if mismatch == "missing":
+        context = replace(context, core_completions=())
+    elif mismatch == "query":
+        context = replace(context, query_state=replace(context.query_state, loop_step=1))
+    else:
+        reply = context.core_completions[0]
+        changes = {
+            "sample": {"sample_id": "other"},
+            "contact": {"agent_contact_id": "other"},
+            "text": {"text": "Other answer."},
+        }
+        context = replace(context, core_completions=(replace(reply, **changes[mismatch]),))
+    with pytest.raises(rc.RailsControllersError, match="native.*(completion|binding)"):
+        controller.advance(context, contact, "Answer.")
+    assert controller.sealed_states == {}
+
+
+def test_native_tool_request_after_final_bound_never_executes():
+    tools = _NativeToolSteps()
+    program = replace(
+        rc.default_phase_program("native-answer-or-tool-v1"),
+        phases=(rc.default_phase_program("native-answer-or-tool-v1").phases[-1],),
+        max_contacts=1,
+    )
+    controller = rc.EvidenceAgentController(
+        program=program, material_for_phase=lambda n, c: _material(n, c.sample_id),
+        tools_for_phase=tools,
+    )
+    context = _context(_query_state())
+    contact = controller.initial_contact(context)
+    context = _native_response_context(context, contact, "Call.", tool_calls=[{}])
+    with pytest.raises(rc.RailsControllersError, match="final.*native tool"):
+        controller.advance(context, contact, "Call.")
+    assert tools.calls == []
+
+
+def test_native_program_requires_dispatcher_and_owns_stop_decision():
+    program = rc.default_phase_program("native-answer-or-tool-v1")
+    with pytest.raises(rc.RailsControllersError, match="native.*dispatcher"):
+        rc.EvidenceAgentController(
+            program=program, material_for_phase=lambda n, c: _material(n, c.sample_id),
+        )
+    with pytest.raises(rc.RailsControllersError, match="native.*stop"):
+        _native_controller(stop_policy=lambda *_: True)
