@@ -908,9 +908,14 @@ class LlamaServerTransport:
         # here and this body is byte-identical to before this arm existed.
         tool_schemas = payload.get("tool_schemas")
         if tool_schemas is not None:
-            if not isinstance(tool_schemas, list) or not tool_schemas:
-                raise FrozenCoreError("payload tool_schemas must be a non-empty list")
-            body["tools"] = tool_schemas
+            if not isinstance(tool_schemas, list):
+                raise FrozenCoreError("payload tool_schemas must be a list")
+            if tool_schemas:
+                body["tools"] = tool_schemas
+            elif payload.get("decoding_params", {}).get("tool_choice") != "none":
+                raise FrozenCoreError(
+                    "empty tool_schemas requires decoding_params tool_choice 'none'"
+                )
         decoding_params = dict(payload.get("decoding_params", {}))  # type: ignore[arg-type]
         try:
             native_controls = native_tool_request_controls(
