@@ -3349,3 +3349,7 @@ Both model-free capacity revalidations completed at53b0b681. Hard-first artifact
 ## SAEA-SLURP-DISTINCT-COMMITMENT-READ-RELEASE-V1
 
 Root verified both raw parents FINALIZED/COMPLETED, both saea-derived-delivery-v1 bundles, and both complete first official score receipts before releasing semantic results. Each arm has 1,000 generated rows. Bind the frozen recipe without changing populations, metrics, draws or decision rules in [the bound analysis](readiness/2026-09-13-slurp-distinct-commitment-analysis-bound-v1.json). [The read release](readiness/2026-09-13-slurp-distinct-commitment-read-release-v1.json) admits saved-score paired analysis and source-bound diagnostics only, with zero new model, tokenizer, encoder or scorer contacts. The original duplicate-bearing source remains ABORTED and its contacts remain counted. This is a component comparison, not an autonomous-system claim.
+
+## SAEA-SLURP-DISTINCT-COMMITMENT-PAIRED-ANALYSIS-V1 result
+
+The registered saved-score analysis completed under the root read release. NEW500 pooled SLU micro delta is +0.0124 pp (speaker CI90 [-1.2911, +1.3864]); the primary verdict is inconclusive and exploratory_candidate=false. Intent exact improves by +2.8 pp (CI90 [+1.2447, +4.3307]). Preserve the distinction between the positive intent component and the unproven overall/system gain. [The result](readiness/2026-09-13-slurp-distinct-commitment-result-v1.md) includes all population/scenario tables, cost and source pins. Source-bound conditional diagnostics remain pending. No new scorer or model contacts were made.
