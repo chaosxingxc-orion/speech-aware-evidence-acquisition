@@ -14,6 +14,13 @@ from typing import Mapping
 from .errors import RailsError
 from .knowledge import AgentStateArtifact, content_hash
 from .tools import resolve_tool, assert_pinned_hash
+from .candidate_contract_lookup import (
+    TOOL_ID as CANDIDATE_CONTRACT_TOOL,
+    MAX_CANDIDATE_IDS,
+    CandidateContractLookupError,
+    CandidateContractLookupResult,
+    CandidateContractRequest,
+)
 from .controllers import PhaseSupply, PhaseToolStep
 from .experience_memory_runtime import (
     CORRECTIVE_MEMORY_TOOL,
@@ -31,7 +38,8 @@ TASK_CONTRACT_TOOL = "saea-tool-task-contract-v1"
 PHASE_KNOWLEDGE_TOOL = "saea-tool-phase-knowledge-v1"
 ACTION_TOOLS = frozenset(
     {TASK_CONTRACT_TOOL, PHASE_KNOWLEDGE_TOOL, CORRECTIVE_MEMORY_TOOL,
-     PREPARED_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_OBSERVATION_TOOL}
+     PREPARED_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_OBSERVATION_TOOL,
+     CANDIDATE_CONTRACT_TOOL}
 )
 MODES = frozenset({"fixed", "core-choice", "native-tools"})
 VIEWS = frozenset({"text", "speech", "paired"})
@@ -77,6 +85,7 @@ def load_phase_tool_specs(config, program):
             "allowed_tools",
             "knowledge_views",
             "fixed_action",
+            "candidate_limit",
         }:
             raise PhaseToolError("phase_tools entry has unknown fields")
         mode = entry.get("mode")
@@ -86,6 +95,20 @@ def load_phase_tool_specs(config, program):
         views = _unique(
             entry.get("knowledge_views", ["text"]), VIEWS, "knowledge_views"
         )
+        candidate_limit = entry.get("candidate_limit")
+        if CANDIDATE_CONTRACT_TOOL in tools:
+            if (
+                isinstance(candidate_limit, bool)
+                or not isinstance(candidate_limit, int)
+                or not 1 <= candidate_limit <= MAX_CANDIDATE_IDS
+            ):
+                raise PhaseToolError(
+                    "candidate lookup requires an explicit candidate_limit between 1 and 32"
+                )
+            if mode != "native-tools":
+                raise PhaseToolError("candidate lookup currently requires native-tools mode")
+        elif "candidate_limit" in entry:
+            raise PhaseToolError("candidate_limit requires the candidate lookup tool")
         fixed = entry.get("fixed_action")
         if mode == "fixed":
             _validate_action(fixed, tools, views)
@@ -99,6 +122,8 @@ def load_phase_tool_specs(config, program):
             "knowledge_views": views,
             "fixed_action": fixed,
         }
+        if CANDIDATE_CONTRACT_TOOL in tools:
+            specs[phase]["candidate_limit"] = candidate_limit
     native_program = getattr(program, "stop_rule", None) == "native-answer-or-tool"
     native_specs = any(spec["mode"] == "native-tools" for spec in specs.values())
     if native_program or native_specs:
@@ -112,7 +137,7 @@ def load_phase_tool_specs(config, program):
                 "native-answer-or-tool requires native-tools on every nonfinal phase"
             )
         signatures = {
-            (spec["allowed_tools"], spec["knowledge_views"])
+            (spec["allowed_tools"], spec["knowledge_views"], spec.get("candidate_limit"))
             for spec in specs.values()
         }
         if len(signatures) != 1:
@@ -122,7 +147,7 @@ def load_phase_tool_specs(config, program):
     return specs
 
 
-def _validate_action(action, allowed, views):
+def _validate_action(action, allowed, views, *, candidate_limit=None):
     if not isinstance(action, Mapping) or set(action) != {"tool_id", "arguments"}:
         raise PhaseToolError("action must contain exactly tool_id and arguments")
     tool_id = action["tool_id"]
@@ -152,12 +177,25 @@ def _validate_action(action, allowed, views):
             raise PhaseToolError(
                 "speech observation requires full-utterance, asr-transcript and a bounded distinction"
             )
+    if tool_id == CANDIDATE_CONTRACT_TOOL:
+        if set(args) != {"candidate_ids"} or not isinstance(args["candidate_ids"], list):
+            raise PhaseToolError("candidate lookup requires only a candidate_ids list")
+        try:
+            request = CandidateContractRequest.from_ids(args["candidate_ids"])
+        except CandidateContractLookupError as error:
+            raise PhaseToolError(str(error)) from error
+        if candidate_limit is None or len(request.candidate_ids) > candidate_limit:
+            raise PhaseToolError("candidate request exceeds the configured candidate_limit")
     return {"tool_id": tool_id, "arguments": dict(args)}
 
 
-def _native_tool_schema(tool_id, views):
+def _native_tool_schema(tool_id, views, *, candidate_limit=None):
     descriptions = {
         TASK_CONTRACT_TOOL: "Read the legal task contract.",
+        CANDIDATE_CONTRACT_TOOL: (
+            "Read compact contracts for ordered competing intent or tool candidates. "
+            "Returned field associations are task knowledge, not evidence of spoken values."
+        ),
         PHASE_KNOWLEDGE_TOOL: "Retrieve prepared task knowledge.",
         CORRECTIVE_MEMORY_TOOL: "Read admitted corrective guidance.",
         PREPARED_SPEECH_OBSERVATION_TOOL: "Read a prepared speech transcript.",
@@ -169,6 +207,12 @@ def _native_tool_schema(tool_id, views):
     elif tool_id == PHASE_KNOWLEDGE_TOOL:
         properties = {"view": {"type": "string", "enum": list(views)}}
         required = ["view"]
+    elif tool_id == CANDIDATE_CONTRACT_TOOL:
+        properties = {"candidate_ids": {
+            "type": "array", "minItems": 1, "maxItems": candidate_limit,
+            "uniqueItems": True, "items": {"type": "string", "minLength": 1},
+        }}
+        required = ["candidate_ids"]
     else:
         properties = {
             "span": {"type": "string", "enum": ["full-utterance"]},
@@ -205,6 +249,7 @@ class PhaseToolDispatcher:
         speech_observations=None,
         live_speech_observations=None,
         tool_contact=None,
+        candidate_contracts=None,
     ):
         self.specs = specs
         self.program = program
@@ -215,6 +260,23 @@ class PhaseToolDispatcher:
         self.speech_observations = speech_observations
         self.live_speech_observations = live_speech_observations
         self.tool_contact = tool_contact
+        self.candidate_contracts = candidate_contracts
+        self._candidate_ids = ()
+        self._candidate_source_sha256 = None
+        if any(CANDIDATE_CONTRACT_TOOL in spec["allowed_tools"] for spec in specs.values()):
+            source_sha = getattr(candidate_contracts, "source_sha256", None)
+            ids = getattr(candidate_contracts, "candidate_ids", None)
+            if (
+                not callable(getattr(candidate_contracts, "lookup", None))
+                or not isinstance(source_sha, str) or len(source_sha) != 64
+                or any(char not in "0123456789abcdef" for char in source_sha)
+                or not isinstance(ids, tuple) or not ids
+                or any(not isinstance(key, str) or not key for key in ids)
+                or len(ids) != len(set(ids))
+            ):
+                raise PhaseToolError("candidate lookup requires a bound canonical provider")
+            self._candidate_ids = ids
+            self._candidate_source_sha256 = source_sha
         self._live_selections = {}
         from .knowledge_value_views import KnowledgeValueRenderer
 
@@ -272,7 +334,10 @@ class PhaseToolDispatcher:
         for phase in self.program.phase_names()[:-1]:
             for tool_id in self.specs[phase]["allowed_tools"]:
                 if tool_id not in seen:
-                    ordered.append(_native_tool_schema(tool_id, self.specs[phase]["knowledge_views"]))
+                    ordered.append(_native_tool_schema(
+                        tool_id, self.specs[phase]["knowledge_views"],
+                        candidate_limit=self.specs[phase].get("candidate_limit"),
+                    ))
                     seen.add(tool_id)
         return tuple(ordered)
 
@@ -438,6 +503,10 @@ class PhaseToolDispatcher:
                 request["tool_invocation"] = dict(invocation)
             if action["tool_id"] == TASK_CONTRACT_TOOL:
                 output = tool.call(context)
+            elif action["tool_id"] == CANDIDATE_CONTRACT_TOOL:
+                output = tool.call(
+                    self.candidate_contracts, action["arguments"]["candidate_ids"]
+                )
             elif action["tool_id"] == PREPARED_SPEECH_OBSERVATION_TOOL:
                 output = tool.call(self.speech_observations, context)
             elif action["tool_id"] == LIVE_SPEECH_OBSERVATION_TOOL:
@@ -500,6 +569,15 @@ class PhaseToolDispatcher:
                         }
                         for value_id in cited
                     ]
+            elif action["tool_id"] == CANDIDATE_CONTRACT_TOOL:
+                if not isinstance(output.result, CandidateContractLookupResult):
+                    raise PhaseToolError("candidate tool returned an unbound result")
+                output.result.validate_for(CandidateContractRequest.from_ids(
+                    action["arguments"]["candidate_ids"]
+                ))
+                if output.result.source_sha256 != self._candidate_source_sha256:
+                    raise PhaseToolError("candidate tool returned a foreign canonical source")
+                result = output.result.as_json()
             elif action["tool_id"] == TASK_CONTRACT_TOOL:
                 if not isinstance(output.result, Mapping) or output.result != {
                     "task_contract": context.task_contract
@@ -658,7 +736,11 @@ class PhaseToolDispatcher:
             {"tool_id": call["function"]["name"], "arguments": arguments},
             spec["allowed_tools"],
             spec["knowledge_views"],
+            candidate_limit=spec.get("candidate_limit"),
         )
+        if action["tool_id"] == CANDIDATE_CONTRACT_TOOL:
+            if not set(action["arguments"]["candidate_ids"]) <= set(self._candidate_ids):
+                raise PhaseToolError("candidate request contains unknown legal IDs")
         return action, {
             "call_id": call["id"],
             "completion": completion,
@@ -834,6 +916,15 @@ class PhaseToolDispatcher:
                     row["internal_observation_lineage"] for row in live_records
                 ],
             }
+        if self._candidate_source_sha256 is not None:
+            receipt["candidate_contracts"] = {
+                "source_sha256": self._candidate_source_sha256,
+                "legal_candidate_count": len(self._candidate_ids),
+                "supply_events": sum(
+                    row["tool_id"] == CANDIDATE_CONTRACT_TOOL for row in records
+                ),
+                "new_neural_contacts": 0,
+            }
         return receipt
 
 
@@ -849,6 +940,7 @@ def build_phase_tools(
     speech_observations=None,
     live_speech_observations=None,
     tool_contact=None,
+    candidate_contracts=None,
 ):
     specs = load_phase_tool_specs(config, program)
     if not specs:
@@ -864,4 +956,5 @@ def build_phase_tools(
         speech_observations=speech_observations,
         live_speech_observations=live_speech_observations,
         tool_contact=tool_contact,
+        candidate_contracts=candidate_contracts,
     )

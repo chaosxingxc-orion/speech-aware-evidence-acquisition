@@ -4141,6 +4141,33 @@ class FlightRuntime:
             "experience_memory": self._experience_memory,
             "speech_observations": self._speech_observations,
         }
+        from ...rails.candidate_contract_lookup import TOOL_ID as CANDIDATE_CONTRACT_TOOL  # noqa: PLC0415
+
+        uses_candidate_contracts = any(
+            CANDIDATE_CONTRACT_TOOL in spec.get("allowed_tools", ())
+            for spec in tool_specs.values()
+        )
+        candidate_spec = self._composed.values.get("candidate_contracts")
+        if uses_candidate_contracts:
+            if (
+                not isinstance(candidate_spec, Mapping)
+                or set(candidate_spec) != {"source_sha256"}
+                or not isinstance(candidate_spec["source_sha256"], str)
+                or len(candidate_spec["source_sha256"]) != 64
+                or any(char not in "0123456789abcdef" for char in candidate_spec["source_sha256"])
+            ):
+                raise FlightRuntimeError("candidate contracts require an exact canonical source pin")
+            prepare = getattr(self._adapter, "candidate_contract_provider", None)
+            provider = prepare() if callable(prepare) else None
+            if (
+                provider is None
+                or not callable(getattr(provider, "lookup", None))
+                or getattr(provider, "source_sha256", None) != candidate_spec["source_sha256"]
+            ):
+                raise FlightRuntimeError("candidate contract source differs from the configured pin")
+            kwargs["candidate_contracts"] = provider
+        elif candidate_spec is not None:
+            raise FlightRuntimeError("candidate contracts are configured without a candidate lookup action")
         uses_native = any(spec.get("mode") == "native-tools" for spec in tool_specs.values())
         if uses_native:
             kwargs["tool_contact"] = self._record_phase_tool_contact
