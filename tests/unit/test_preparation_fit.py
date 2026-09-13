@@ -534,3 +534,88 @@ def test_formal_window_fit_counts_bound_packets_instead_of_raw_input_endpoint(tm
         ("GET", "/props"), ("POST", "/apply-template"),
         ("POST", "/tokenize"), ("POST", "/tokenize"),
     ]
+
+
+def test_fit_counts_effective_rendered_query_and_historical_packets_once():
+    from speech_aware_evidence_acquisition.core.preparation_fit import (
+        rendered_speech_feature_descriptors,
+    )
+
+    query = {"packet_id": "query", "sha256": "a" * 64, "role": "query"}
+    historical = {"packet_id": "history", "sha256": "b" * 64, "role": "key"}
+    body = {
+        "messages": [
+            {"role": "system", "content": "Solve."},
+            {
+                "role": "user",
+                "content": [
+                    {"type": "input_speech_features", "speech_features": query},
+                    {
+                        "type": "text",
+                        "text": "A prior paired return.",
+                    },
+                    {
+                        "type": "input_speech_features",
+                        "speech_features": historical,
+                    },
+                    {
+                        "type": "input_speech_features",
+                        "speech_features": historical,
+                    },
+                ],
+            },
+        ],
+        "max_tokens": 5,
+    }
+
+    class RenderedTransport:
+        def __init__(self):
+            self.calls = 0
+
+        def render_request(self, _raw):
+            self.calls += 1
+            return body
+
+    class RenderedClient:
+        def request_json(self, _method, path, payload):
+            if path == "/apply-template":
+                count = sum(
+                    part.get("type") == "input_speech_features"
+                    for message in payload["messages"]
+                    if isinstance(message.get("content"), list)
+                    for part in message["content"]
+                )
+                return {"prompt": "A" + "<m>B" * count}
+            if path == "/tokenize":
+                return {"tokens": list(payload["content"])}
+            raise AssertionError(path)
+
+    seen = []
+
+    def speech_counts(payload):
+        descriptors = payload["speech_feature_parts"]
+        seen.append(tuple(descriptors))
+        return tuple(2 if item["role"] == "query" else 7 for item in descriptors)
+
+    payload = {"sample_id": "s1", "speech_feature_parts": [query]}
+    transport = RenderedTransport()
+    result = fit_requests(
+        [payload],
+        expected_sample_ids=["s1"],
+        transport=transport,
+        client=RenderedClient(),
+        speech_counts=speech_counts,
+        media_marker="<m>",
+        slot_tokens=100,
+    )
+
+    assert rendered_speech_feature_descriptors(body) == (
+        query,
+        historical,
+        historical,
+    )
+    assert seen == [(query, historical, historical)]
+    assert result["rows"][0]["speech_tokens"] == 16
+    assert result["rows"][0]["media_count"] == 3
+    assert transport.calls == 1
+    assert payload["speech_feature_parts"] == [query]

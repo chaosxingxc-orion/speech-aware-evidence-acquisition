@@ -50,6 +50,44 @@ class GuardedTokenizer:
         return self.client.request_json(method, path, payload)
 
 
+def rendered_speech_feature_descriptors(
+    body: Mapping[str, object],
+) -> tuple[dict[str, object], ...]:
+    """Return every speech-feature descriptor in actual rendered wire order."""
+
+    messages = body.get("messages")
+    if not isinstance(messages, Sequence) or isinstance(messages, (str, bytes)):
+        raise PreparationError("rendered request messages must be a sequence")
+    descriptors = []
+    for message_index, message in enumerate(messages):
+        if not isinstance(message, Mapping):
+            raise PreparationError(
+                f"rendered request messages[{message_index}] must be a mapping"
+            )
+        content = message.get("content")
+        if not isinstance(content, list):
+            continue
+        for part_index, part in enumerate(content):
+            if not isinstance(part, Mapping) or part.get("type") != "input_speech_features":
+                continue
+            descriptor = part.get("speech_features")
+            if (
+                not isinstance(descriptor, Mapping)
+                or set(descriptor) != {"packet_id", "sha256", "role"}
+                or descriptor.get("role") not in {"query", "key"}
+                or not all(
+                    isinstance(descriptor.get(key), str) and descriptor[key]
+                    for key in ("packet_id", "sha256")
+                )
+            ):
+                raise PreparationError(
+                    "rendered request speech feature descriptor is malformed at "
+                    f"messages[{message_index}].content[{part_index}]"
+                )
+            descriptors.append(dict(descriptor))
+    return tuple(descriptors)
+
+
 def packet_token_counts(
     payload: Mapping[str, object],
     *,
@@ -164,12 +202,21 @@ def fit_requests(
     rows = []
     for payload in payloads:
         body = transport.render_request(canonical_bytes(payload))
+        effective_descriptors = rendered_speech_feature_descriptors(body)
+        speech_payload = payload
+        if effective_descriptors or "speech_feature_parts" in payload:
+            speech_payload = {
+                **payload,
+                "speech_feature_parts": [
+                    dict(descriptor) for descriptor in effective_descriptors
+                ],
+            }
         if request_measure is None:
             row = measure_request(
                 client,
                 body,
                 media_marker=media_marker,
-                speech_tokens=speech_counts(payload),
+                speech_tokens=speech_counts(speech_payload),
                 slot_tokens=slot_tokens,
                 fit_multiple=fit_multiple,
                 special_tokens=special_tokens,
