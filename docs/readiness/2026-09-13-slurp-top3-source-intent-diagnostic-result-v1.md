@@ -155,3 +155,17 @@ The earlier native direct result (73.2% NEW500 intent accuracy) used a different
 - Source contacts remain 1,000 generations and 3,001 actual-capacity endpoints. This analysis added zero model, tokenizer, encoder, ASR, GPU, or official scorer contacts.
 - Verify raw HTTP response hashes separately from normalized transport-envelope hashes; they bind different byte representations. The initial analysis assertion equated them and stopped before reference loading. The corrected audit verifies both and matches the recorded model text and usage.
 - Full successors remain unstarted. Keep the resident decoder service unchanged; no automatic restart or unregistered replacement work is authorized.
+
+## Shared-entry reproduction closure
+
+The config-driven shared analysis entry reproduced 462 numeric fields within absolute tolerance 1e-12, including every population and width-specific speaker interval, all scenario counts, and equal-scenario weighting. The preserved ABORTED attempt and raw trace hashes are unchanged. The shared path directly verifies the unsealed AttemptStore record, generation plan, source-quality release, and raw trace; it does not fabricate the run/trace manifests absent from this failed seal. Root validation passed 136 focused tests, Ruff, the engineering-base check, and diff checks. No official score or model/tool contact was added.
+
+Run in WSL with the pinned checkout on PYTHONPATH:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/home/chao/saea-worktrees/slurp-top3-full-successors-v1/src /home/chao/.venvs/speechrl/bin/python -B -m speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics_cli --config /home/chao/saea-worktrees/slurp-top3-full-successors-v1/configs/analysis/slurp-top3-source-intent-diagnostic-v1.json --output /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-TOP3-SOURCE-INTENT-DIAGNOSTIC-V1/shared-entry-diagnostic-reproduction.json
+```
+
+Use a new output path; the entry refuses to overwrite an existing report. Implementation commit: 7d382f97. Config SHA-256: 1c4d96bc06530bb284845ae967a65e9cdcd0e4460e85b20da3ac6041f4cf60e9. Verification receipt: /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-TOP3-SOURCE-INTENT-DIAGNOSTIC-V1/shared-entry-verification-v1.json; SHA-256 dbe8efb2649ffb3a3c903fa1f5e68d1d7f69ff1a522b76220c1f138381331bff.
+
+The independently versioned knowledge-store routing implementation also passed its 485-test worker suite and the root integration subset. It keeps model-facing evidence compact and full provenance in trace receipts. This is engineering readiness only; rich intent/slot knowledge releases and their task-quality effect are still pending.
