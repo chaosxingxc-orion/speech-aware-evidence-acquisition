@@ -79,9 +79,13 @@ def call(name=LIVE, arguments=None):
     return [{"id": "call-1", "type": "function",
              "function": {"name": name, "arguments": json.dumps(arguments or ARGS)}}]
 
-def dispatcher(*tools, provider=None, supply=None, custody=None):
+def dispatcher(*tools, provider=None, supply=None, custody=None, authority_role=None):
+    config = native_config(*tools)
+    if authority_role is not None:
+        for spec in config["phase_tools"].values():
+            spec["source_authority_role"] = authority_role
     return build_phase_tools(
-        native_config(*tools), NativeProgram(), snapshot=_knowledge_snapshot(),
+        config, NativeProgram(), snapshot=_knowledge_snapshot(),
         supply_for_phase=supply, live_speech_observations=provider,
         tool_contact=custody or Custody())
 

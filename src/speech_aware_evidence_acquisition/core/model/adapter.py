@@ -400,10 +400,15 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
         latency = time.monotonic() - started
         response_sha256 = hashlib.sha256(response_bytes).hexdigest()
         wire_provenance: dict[str, object] | None = None
+        wire_response_bytes: bytes | None = None
         parsed: object = None
         try:
             parsed = json.loads(response_bytes.decode("utf-8"))
             wire_provenance = _wire_provenance(parsed)
+            if wire_provenance is not None:
+                wire_response_bytes = base64.b64decode(
+                    wire_provenance["response_b64"], validate=True
+                )
             text = parsed["text"]  # type: ignore[index]
             usage = {
                 str(k): int(v)
@@ -506,6 +511,7 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
             latency_seconds=latency,
             logprobs=logprobs,
             tool_calls=tool_calls,
+            wire_response_bytes=wire_response_bytes,
         )
 
     def record_tool_call(self, count: int = 1) -> None:

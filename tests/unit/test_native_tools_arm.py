@@ -592,6 +592,39 @@ def test_adapter_and_production_transport_send_native_request_controls_at_top_le
     assert captured["body"]["seed"] == 20260803
 
 
+def test_transport_omits_wire_tools_for_explicit_empty_final_scope(tmp_path):
+    captured = {}
+
+    def fake_post(url, body):
+        captured["body"] = json.loads(body)
+        return _canned_content_response()
+
+    transport = _transport(post=fake_post, data_root=tmp_path)
+    payload = _native_tools_payload(
+        tmp_path,
+        tool_schemas=[],
+        decoding_params={**_DECODING, "tool_choice": "none"},
+    )
+    transport(json.dumps(payload).encode())
+
+    assert "tools" not in captured["body"]
+    assert captured["body"]["tool_choice"] == "none"
+
+
+def test_transport_refuses_empty_tools_with_nonfinal_choice_before_post(tmp_path):
+    posts = []
+    transport = _transport(post=lambda url, body: posts.append((url, body)), data_root=tmp_path)
+    payload = _native_tools_payload(
+        tmp_path,
+        tool_schemas=[],
+        decoding_params={**_DECODING, "tool_choice": "auto"},
+    )
+
+    with pytest.raises(FrozenCoreError, match="empty tool_schemas"):
+        transport(json.dumps(payload).encode())
+    assert posts == []
+
+
 def test_native_parallel_false_is_independently_optional(tmp_path):
     captured = {}
 

@@ -798,9 +798,17 @@ class LlamaServerTransport:
                 {"role": "system", "content": payload["task_instruction"]},
                 {"role": "user", "content": content},
             ]
-            messages, historical_descriptors = project_native_history(
+            from .native_framework_history import project_native_framework_history
+
+            framework_projection = project_native_framework_history(
                 payload=payload, messages=messages, state_texts=state_texts,
             )
+            if framework_projection is None:
+                messages, historical_descriptors = project_native_history(
+                    payload=payload, messages=messages, state_texts=state_texts,
+                )
+            else:
+                messages, historical_descriptors = framework_projection
             packet_identities = {
                 (item["packet_id"], item["sha256"])
                 for item in validated_descriptors
@@ -908,9 +916,14 @@ class LlamaServerTransport:
         # here and this body is byte-identical to before this arm existed.
         tool_schemas = payload.get("tool_schemas")
         if tool_schemas is not None:
-            if not isinstance(tool_schemas, list) or not tool_schemas:
-                raise FrozenCoreError("payload tool_schemas must be a non-empty list")
-            body["tools"] = tool_schemas
+            if not isinstance(tool_schemas, list):
+                raise FrozenCoreError("payload tool_schemas must be a list")
+            if tool_schemas:
+                body["tools"] = tool_schemas
+            elif payload.get("decoding_params", {}).get("tool_choice") != "none":
+                raise FrozenCoreError(
+                    "empty tool_schemas requires decoding_params tool_choice 'none'"
+                )
         decoding_params = dict(payload.get("decoding_params", {}))  # type: ignore[arg-type]
         try:
             native_controls = native_tool_request_controls(

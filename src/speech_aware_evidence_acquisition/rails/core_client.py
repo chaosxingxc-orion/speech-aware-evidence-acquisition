@@ -71,7 +71,7 @@ from ..core.model import (
     load_speech_feature_packets,
 )
 from ..core.model.binding import _PayloadBindingMixin
-from ..core.model.request_types import CoreResponse
+from ..core.model.request_types import CoreResponse, wire_response_message
 from ..core.model.slices import SliceRecord
 from ..core.tracing import DispatchingSink, TraceBuffer, TraceSink
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
@@ -97,6 +97,13 @@ class CoreCompletion:
     response_sha256: str
     response_text_sha256: str
     tool_calls_json: bytes = field(repr=False)
+    # Exact preserved server response bytes. Absent for the historical
+    # transport default; never reconstructed from normalized text.
+    wire_response_bytes: bytes | None = field(default=None, repr=False, compare=False)
+    # Derived from the actual built payload, after per-contact narrowing.
+    # An empty tuple is a native tool-free contact; None is a non-native one.
+    tool_names: tuple[str, ...] | None = None
+    tool_schemas_sha256: str | None = None
 
     @property
     def tool_calls(self) -> object:
@@ -106,6 +113,14 @@ class CoreCompletion:
     @property
     def tool_calls_sha256(self) -> str:
         return hashlib.sha256(self.tool_calls_json).hexdigest()
+
+    @property
+    def original_message(self) -> Mapping[str, object] | None:
+        return wire_response_message(self.wire_response_bytes, self.tool_calls)[0]
+
+    @property
+    def finish_reason(self) -> object | None:
+        return wire_response_message(self.wire_response_bytes, self.tool_calls)[1]
 
     def assert_binding(
         self, *, sample_id: str, agent_contact_id: str | None,
@@ -173,6 +188,7 @@ class CoreClient(Protocol):
         agent_contact_id: str | None = None,
         contact_instruction: str | None = None,
         construction_target_ids: Sequence[str] | None = None,
+        tool_names: Sequence[str] | None = None,
     ) -> str: ...
 
 
@@ -490,8 +506,8 @@ def _validate_tool_schemas(
     {"name": ..., ...}}`` entries -- the exact shape
     ``data.audio2tool_tools.render_openai_tools`` produces (never imported
     here; module docstring -- this bridge's own dependency surface stays
-    light). Every entry is copied into a plain ``dict`` so the client's own
-    stored tuple never aliases a caller-owned mutable object."""
+    light). Every entry is copied through canonical JSON so no nested value in
+    the client's stored tuple aliases a caller-owned mutable object."""
 
     if (
         tool_schemas is None
@@ -503,11 +519,31 @@ def _validate_tool_schemas(
             "a native tool-calling arm requires a non-empty tool_schemas sequence"
         )
     validated: list[dict[str, object]] = []
+    names: set[str] = set()
     for index, entry in enumerate(tool_schemas):
         if not isinstance(entry, Mapping):
             raise FrozenCoreClientError(
                 f"tool_schemas[{index}] must be a mapping, got {type(entry).__name__}"
             )
+        try:
+            copied = json.loads(
+                json.dumps(
+                    entry,
+                    ensure_ascii=False,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                    allow_nan=False,
+                )
+            )
+        except (TypeError, ValueError) as error:
+            raise FrozenCoreClientError(
+                f"tool_schemas[{index}] must be JSON-compatible"
+            ) from error
+        if not isinstance(copied, dict):
+            raise FrozenCoreClientError(
+                f"tool_schemas[{index}] must serialize to a JSON object"
+            )
+        entry = copied
         if entry.get("type") != "function":
             raise FrozenCoreClientError(
                 f"tool_schemas[{index}] must declare type 'function'"
@@ -522,7 +558,12 @@ def _validate_tool_schemas(
             raise FrozenCoreClientError(
                 f"tool_schemas[{index}].function.name must be a non-empty string"
             )
-        validated.append(dict(entry))
+        if name in names:
+            raise FrozenCoreClientError(
+                "tool_schemas must not contain duplicate function names"
+            )
+        names.add(name)
+        validated.append(entry)
     return tuple(validated)
 
 
@@ -1009,12 +1050,13 @@ class RequestTiming:
     sample_id: str
     started_at: str
     latency_seconds: float
-    # D1b, 2026-09-03: ``None`` for every non-native-tools client (every
-    # pre-existing caller, byte-identical); the client's own
-    # ``tool_schemas_sha256`` (constant for the client's whole life) on a
-    # native-tools client, so a per-request trace record names the exact
-    # tool registry that request was made under without re-hashing it.
+    # ``None`` for a non-native client; otherwise the exact selected schemas
+    # on this contact. The close summary separately retains the immutable
+    # constructor superset hash.
     tool_schemas_sha256: str | None = None
+    # ``None`` distinguishes a non-native request from a native request whose
+    # explicit final scope is empty.
+    tool_names: tuple[str, ...] | None = None
     # 2026-09-04: the adapter's own per-request identity hashes, carried
     # through instead of discarded. core.bundle.verify_bundle REQUIRES every
     # outputs row to carry request_sha256/response_sha256/
@@ -1042,6 +1084,7 @@ class RequestTiming:
             "started_at": self.started_at,
             "latency_seconds": self.latency_seconds,
             "tool_schemas_sha256": self.tool_schemas_sha256,
+            "tool_names": None if self.tool_names is None else list(self.tool_names),
             "request_sha256": self.request_sha256,
             "response_sha256": self.response_sha256,
             "response_text_sha256": self.response_text_sha256,
@@ -1472,9 +1515,13 @@ class FrozenCoreClient:
             )
         self._tool_schemas: tuple[dict[str, object], ...] | None = None
         self._tool_schemas_sha256: str | None = None
+        self._tool_schemas_by_name: dict[str, dict[str, object]] = {}
         if self._is_native_tools_arm:
             self._tool_schemas = _validate_tool_schemas(tool_schemas)
             self._tool_schemas_sha256 = _tool_schemas_sha256(self._tool_schemas)
+            self._tool_schemas_by_name = {
+                schema["function"]["name"]: schema for schema in self._tool_schemas
+            }
         elif tool_schemas is not None:
             raise FrozenCoreClientError(
                 f"arm {arm!r} is not a native tool-calling arm; tool_schemas must be omitted"
@@ -1616,6 +1663,7 @@ class FrozenCoreClient:
         agent_contact_id: str | None = None,
         contact_instruction: str | None = None,
         construction_target_ids: Sequence[str] | None = None,
+        tool_names: Sequence[str] | None = None,
     ) -> str:
         """Construct and send through the same audited adapter as prepared calls."""
         payload = self._build_request_payload(
@@ -1626,6 +1674,7 @@ class FrozenCoreClient:
             matcher_policy_id=matcher_policy_id, agent_state=agent_state,
             agent_contact_id=agent_contact_id, contact_instruction=contact_instruction,
             construction_target_ids=construction_target_ids,
+            tool_names=tool_names,
         )
         return self._complete_payload(payload)
 
@@ -1739,6 +1788,11 @@ class FrozenCoreClient:
             item["contact_id"] for item in payload["history"]
             if item.get("role") == "control"
         ]
+        schemas = payload.get("tool_schemas")
+        tool_names = (
+            tuple(schema["function"]["name"] for schema in schemas)
+            if isinstance(schemas, list) else None
+        )
         return CoreCompletion(
             text=response.text,
             request_id=payload["request_id"],
@@ -1751,6 +1805,11 @@ class FrozenCoreClient:
                 response.tool_calls, ensure_ascii=False,
                 sort_keys=True, separators=(",", ":"),
             ).encode("utf-8"),
+            tool_names=tool_names,
+            tool_schemas_sha256=(
+                _tool_schemas_sha256(schemas) if isinstance(schemas, list) else None
+            ),
+            wire_response_bytes=response.wire_response_bytes,
         )
 
     def _dispatch_payload(self, payload: Mapping[str, object]) -> CoreResponse:
@@ -1762,13 +1821,22 @@ class FrozenCoreClient:
             self._last_attempted_request_id = request_id
         response = self._adapter.request(payload)
         with self._state_lock:
+            schemas = payload.get("tool_schemas")
+            tool_names = (
+                tuple(schema["function"]["name"] for schema in schemas)
+                if isinstance(schemas, list) else None
+            )
             self._timings.append(
                 RequestTiming(
                     request_id=request_id,
                     sample_id=sample_id,
                     started_at=started_at,
                     latency_seconds=response.latency_seconds,
-                    tool_schemas_sha256=self._tool_schemas_sha256,
+                    tool_schemas_sha256=(
+                        _tool_schemas_sha256(schemas)
+                        if isinstance(schemas, list) else None
+                    ),
+                    tool_names=tool_names,
                     request_sha256=response.request_sha256,
                     response_sha256=response.response_sha256,
                     response_text_sha256=response.response_text_sha256,
@@ -1794,6 +1862,7 @@ class FrozenCoreClient:
         agent_contact_id: str | None = None,
         contact_instruction: str | None = None,
         construction_target_ids: Sequence[str] | None = None,
+        tool_names: Sequence[str] | None = None,
         prepare_only: bool = False,
     ) -> dict[str, object]:
         """The abort's own root cause, repaired (attempt-1 accounting,
@@ -1832,6 +1901,14 @@ class FrozenCoreClient:
 
         if self._closed:
             raise FrozenCoreClientError("complete() called after close()")
+        selected_tool_schemas = self._select_tool_schemas(tool_names)
+        if selected_tool_schemas == () and (
+            not isinstance(decoding_params, Mapping)
+            or decoding_params.get("tool_choice") != "none"
+        ):
+            raise FrozenCoreClientError(
+                "an empty per-contact tool_names scope requires tool_choice 'none'"
+            )
         speech_feature_parts: list[dict[str, str]] | None = None
         speech_supply_parts: list[dict[str, str | None]] | None = None
         history = _agent_history(
@@ -2034,7 +2111,7 @@ class FrozenCoreClient:
         # paths" acceptance rule; core.model.transport.LlamaServerTransport.
         # __call__ forwards it verbatim as the request's `tools` key).
         if self._is_native_tools_arm:
-            payload["tool_schemas"] = list(self._tool_schemas)
+            payload["tool_schemas"] = list(selected_tool_schemas)
         # Construction-proposer arm (E2.4): the one payload field that carries
         # gold, attached only for the arm whose D2-frozen field set declares
         # it and only on a text-only contact -- the proposer writes an
@@ -2055,6 +2132,37 @@ class FrozenCoreClient:
                 "construction_target_ids must be omitted"
             )
         return payload
+
+    def _select_tool_schemas(
+        self, tool_names: Sequence[str] | None,
+    ) -> tuple[dict[str, object], ...] | None:
+        """Select an ordered subset of this client's immutable tool registry."""
+        if not self._is_native_tools_arm:
+            if tool_names is not None:
+                raise FrozenCoreClientError(
+                    "tool_names is valid only for a native tool-calling arm"
+                )
+            return None
+        assert self._tool_schemas is not None
+        if tool_names is None:
+            return self._tool_schemas
+        if (
+            not isinstance(tool_names, Sequence)
+            or isinstance(tool_names, (str, bytes))
+            or any(not isinstance(name, str) or not name for name in tool_names)
+        ):
+            raise FrozenCoreClientError(
+                "tool_names must be an ordered sequence of non-empty strings"
+            )
+        names = tuple(tool_names)
+        if len(set(names)) != len(names):
+            raise FrozenCoreClientError("tool_names must not contain duplicates")
+        unknown = [name for name in names if name not in self._tool_schemas_by_name]
+        if unknown:
+            raise FrozenCoreClientError(
+                f"tool_names contains names outside the registered superset: {unknown}"
+            )
+        return tuple(self._tool_schemas_by_name[name] for name in names)
 
     def record_tool_call(self, count: int = 1) -> None:
         """Count a registered internal invocation without a model/audio debit."""

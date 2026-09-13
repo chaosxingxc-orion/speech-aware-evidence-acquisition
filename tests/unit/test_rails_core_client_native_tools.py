@@ -365,6 +365,43 @@ def test_native_packet_arm_rejects_a_missing_function_name(tmp_path):
         )
 
 
+def test_native_arm_rejects_duplicate_names_in_registered_superset(tmp_path):
+    world = _World(tmp_path)
+    duplicate = ({**_TOOLS[0], "function": dict(_TOOLS[0]["function"])},) * 2
+    with pytest.raises(FrozenCoreClientError, match="duplicate function names"):
+        _client(
+            world, tmp_path, arm="bare-core-native-tools", tool_schemas=duplicate,
+        )
+
+
+def test_registered_superset_is_immune_to_nested_caller_mutation(tmp_path):
+    world = _World(tmp_path)
+    supplied = json.loads(json.dumps(_TOOLS))
+    admitted = json.loads(json.dumps(_TOOLS))
+    client, _, transport = _client(
+        world, tmp_path, arm="bare-core-native-tools", tool_schemas=supplied,
+    )
+    admitted_hash = _tool_schemas_sha256(admitted)
+    supplied[0]["function"]["description"] = "Changed after admission."
+    supplied[0]["function"]["parameters"]["properties"]["zone"]["type"] = "integer"
+
+    prepared = client.prepare_request(
+        _zero_supply_messages(world.media_relpath("s1")),
+    )
+    exposed = prepared.as_payload()
+    exposed["tool_schemas"][0]["function"]["description"] = "Changed payload copy."
+    client.complete_prepared_with_metadata(prepared)
+    client.complete(
+        _zero_supply_messages(world.media_relpath("s2")),
+        tool_names=("turnOnLight",),
+    )
+
+    assert transport.calls[0]["tool_schemas"] == admitted
+    assert transport.calls[1]["tool_schemas"] == [admitted[0]]
+    assert client.timings[0].tool_schemas_sha256 == admitted_hash
+    assert client.close()["tool_schemas_sha256"] == admitted_hash
+
+
 # ---------------------------------------------------------------------------
 # payload byte-identity: packet path (real D2 arm) vs speech-feature-query
 # ---------------------------------------------------------------------------
@@ -545,6 +582,93 @@ def test_close_summary_carries_tool_schemas_sha256_for_a_native_arm(tmp_path):
     assert client.timings[0].tool_schemas_sha256 == expected_hash
 
 
+def test_one_native_client_scopes_tools_per_contact_and_preserves_default_bytes(tmp_path):
+    world = _World(tmp_path)
+    client, _, transport = _client(
+        world, tmp_path, arm="bare-core-native-tools", tool_schemas=_TOOLS
+    )
+    messages = _zero_supply_messages(world.media_relpath("s1"))
+    default = client.prepare_request(messages)
+    explicit_full = client.prepare_request(
+        messages, tool_names=("turnOnLight", "setAlarm")
+    )
+    assert default.payload_bytes == explicit_full.payload_bytes
+
+    proper = client.complete_with_metadata(
+        messages, tool_names=("setAlarm",),
+        decoding_params={"tool_choice": "auto", "parallel_tool_calls": False},
+    )
+    empty = client.complete_with_metadata(
+        messages, tool_names=(), decoding_params={"tool_choice": "none"},
+    )
+
+    assert transport.calls[0]["tool_schemas"] == [_TOOLS[1]]
+    assert transport.calls[1]["tool_schemas"] == []
+    assert proper.tool_names == ("setAlarm",)
+    assert proper.tool_schemas_sha256 == _tool_schemas_sha256((_TOOLS[1],))
+    assert empty.tool_names == ()
+    assert empty.tool_schemas_sha256 == _tool_schemas_sha256(())
+    assert client.timings[0].tool_names == ("setAlarm",)
+    assert client.timings[1].tool_names == ()
+    assert client.close()["tool_schemas_sha256"] == _tool_schemas_sha256(_TOOLS)
+
+
+@pytest.mark.parametrize("tool_names", [("unknown",), ("setAlarm", "setAlarm")])
+def test_per_contact_tool_scope_refuses_unknown_or_duplicate_before_contact(
+    tmp_path, tool_names,
+):
+    world = _World(tmp_path)
+    client, gate, transport = _client(
+        world, tmp_path, arm="bare-core-native-tools", tool_schemas=_TOOLS
+    )
+    checked_before = list(gate.checked_plans)
+    with pytest.raises(FrozenCoreClientError, match="tool_names"):
+        client.complete(
+            _zero_supply_messages(world.media_relpath("s1")), tool_names=tool_names,
+        )
+    assert transport.calls == []
+    assert gate.checked_plans == checked_before
+
+
+def test_empty_scope_requires_none_and_non_native_client_refuses_selector(tmp_path):
+    world = _World(tmp_path)
+    native, _, native_transport = _client(
+        world, tmp_path / "native", arm="bare-core-native-tools", tool_schemas=_TOOLS
+    )
+    with pytest.raises(FrozenCoreClientError, match="requires tool_choice 'none'"):
+        native.complete(
+            _zero_supply_messages(world.media_relpath("s1")), tool_names=(),
+            decoding_params={"tool_choice": "auto"},
+        )
+    assert native_transport.calls == []
+
+    plain_world = _World(tmp_path / "plain")
+    plain, _, plain_transport = _client(plain_world, tmp_path / "plain")
+    with pytest.raises(FrozenCoreClientError, match="native tool-calling arm"):
+        plain.complete(
+            _zero_supply_messages(plain_world.media_relpath("s1")), tool_names=(),
+        )
+    assert plain_transport.calls == []
+
+
+def test_prepared_request_retains_selected_tools_through_owned_send(tmp_path):
+    world = _World(tmp_path)
+    client, _, transport = _client(
+        world, tmp_path, arm="bare-core-native-tools", tool_schemas=_TOOLS
+    )
+    request = client.prepare_request(
+        _zero_supply_messages(world.media_relpath("s1")), tool_names=("setAlarm",),
+    )
+    assert request.as_payload()["tool_schemas"] == [_TOOLS[1]]
+
+    completion = client.complete_prepared_with_metadata(request)
+
+    assert transport.calls[0]["tool_schemas"] == [_TOOLS[1]]
+    assert completion.tool_names == ("setAlarm",)
+    assert completion.tool_schemas_sha256 == _tool_schemas_sha256((_TOOLS[1],))
+    assert client.timings[0].tool_names == ("setAlarm",)
+
+
 def test_close_summary_tool_schemas_sha256_is_none_for_a_non_native_arm(tmp_path):
     world = _World(tmp_path)
     client, _, _transport = _client(world, tmp_path)
@@ -715,3 +839,22 @@ def test_non_native_arm_never_reports_native_tool_calls(tmp_path):
     client.complete(_zero_supply_messages(world.media_relpath("s1")))
 
     assert client.timings[0].native_tool_calls is None
+
+
+def test_no_wire_metadata_stays_absent_on_core_completion(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(
+        world,
+        tmp_path,
+        arm="bare-core-native-tools",
+        tool_schemas=_TOOLS,
+    )
+    completion = client.complete_with_metadata(
+        _zero_supply_messages(world.media_relpath("s1")),
+        decoding_params={"tool_choice": "auto"},
+    )
+    client.close()
+
+    assert completion.wire_response_bytes is None
+    assert completion.original_message is None
+    assert completion.finish_reason is None

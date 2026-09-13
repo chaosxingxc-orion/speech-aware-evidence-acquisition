@@ -4,6 +4,7 @@ Also enforces its own INDEPENDENT media-confinement rail (I4): the transport
 must refuse an absolute/backslash/traversal/escaping ``media_relpath`` on its
 own inputs, without relying on the adapter having already checked it."""
 
+import asyncio
 import base64
 import hashlib
 import json
@@ -14,10 +15,13 @@ import subprocess
 import sys
 import threading
 import time
+from types import SimpleNamespace
 
 import pytest
+from openjiuwen.core.foundation.tool import LocalFunction, ToolCard
 
-from speech_aware_evidence_acquisition.contracts import STUDY_SLUG
+from speech_aware_evidence_acquisition.contracts import ExecutionPlan, STUDY_SLUG
+from speech_aware_evidence_acquisition.core.config import protocol_hash
 from speech_aware_evidence_acquisition.core.base import EvidenceItem
 from speech_aware_evidence_acquisition.core.model import (
     FrozenCoreError,
@@ -44,6 +48,10 @@ from speech_aware_evidence_acquisition.core.session import (
     SessionReceipt,
 )
 from speech_aware_evidence_acquisition.data.loader import SampleRef
+from speech_aware_evidence_acquisition.rails import AudioRef, FrozenCoreClient, build_payload_binding
+from speech_aware_evidence_acquisition.reproduction.ojw.native_roles import (
+    NativeRoleContactContext, NativeRoleNode, NativeRoleNodeSpec,
+)
 
 # R0 repair T5 (I5): every LlamaServerTransport now requires a session receipt
 # that has already been verified against a runtime receipt. These tests are
@@ -2914,3 +2922,638 @@ def test_native_chat_projection_matches_rendered_and_sent_body(tmp_path, prompt_
     for index, message in enumerate(messages):
         if message["role"] == "assistant":
             assert messages[index + 1]["tool_call_id"] == message["tool_calls"][0]["id"]
+
+
+class _WireMetadataOpenGate:
+    def assert_model_touch_allowed(self, plan):
+        self.plan = plan
+
+
+def test_real_transport_client_preserves_native_wire_message_metadata(tmp_path):
+    raw = json.dumps(
+        {
+            "id": "chatcmpl-wire-metadata",
+            "choices": [
+                {
+                    "message": {
+                        "role": "assistant",
+                        "content": "assistant explanation",
+                        "tool_calls": [
+                            {
+                                "id": "call-native-1",
+                                "type": "function",
+                                "function": {
+                                    "name": "turnOnLight",
+                                    "arguments": '{"zone":"kitchen"}',
+                                },
+                            }
+                        ],
+                    },
+                    "finish_reason": "tool_calls",
+                }
+            ],
+            "usage": {"prompt_tokens": 11, "completion_tokens": 6},
+        },
+        separators=(",", ":"),
+    ).encode()
+
+    media = tmp_path / "media" / "5000001.mp3"
+    media.parent.mkdir(parents=True)
+    media.write_bytes(b"fake-mp3-bytes")
+    sample = SimpleNamespace(
+        sample_id="5000001",
+        audio_ref=AudioRef(
+            path="media/5000001.mp3",
+            sha256=hashlib.sha256(media.read_bytes()).hexdigest(),
+        ),
+        audio_seconds=10.0,
+    )
+    binding = build_payload_binding(
+        carrier_lock_key="earnings22-original",
+        samples=(sample,),
+        data_root=tmp_path,
+        carrier_root=tmp_path,
+        sample_rate_prober=lambda _path: 16000,
+    )
+    plan = ExecutionPlan(
+        run_id="SAEA-E-wire-metadata-client",
+        execution_profile="bounded-discovery-probe",
+        carrier_lock_key="earnings22-original",
+        split_role="dev",
+        split_identity_hash="a" * 64,
+        planned_model_calls=1,
+        planned_gpu_hours=1.0,
+        planned_speech_audio_seconds=10,
+        protocol_hash=protocol_hash("b" * 64, "bare-core-native-tools", "a" * 64),
+        attempt_id="attempt-wire-metadata-client",
+    )
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=lambda _url, _body: raw,
+        preserve_wire_responses=True,
+    )
+    client = FrozenCoreClient(
+        plan=plan,
+        gate=_WireMetadataOpenGate(),
+        transport=transport,
+        run_dir=tmp_path / "client-run",
+        binding=binding,
+        arm="bare-core-native-tools",
+        tool_schemas=(
+            {
+                "type": "function",
+                "function": {
+                    "name": "turnOnLight",
+                    "description": "Turn on a named light.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {"zone": {"type": "string"}},
+                        "required": ["zone"],
+                    },
+                },
+            },
+        ),
+    )
+    completion = client.complete_with_metadata(
+        (
+            {"role": "system", "content": "Handle the request."},
+            {
+                "role": "user",
+                "content": [
+                    {"type": "input_audio", "media_relpath": "media/5000001.mp3"},
+                ],
+            },
+        ),
+        decoding_params={"temperature": 0, "tool_choice": "auto"},
+    )
+    client.close()
+
+    assert completion.text == json.dumps(
+        [{"name": "turnOnLight", "arguments": {"zone": "kitchen"}}]
+    )
+    assert completion.wire_response_bytes == raw
+    assert completion.original_message["content"] == "assistant explanation"
+    assert completion.original_message["tool_calls"][0]["id"] == "call-native-1"
+    assert completion.original_message["tool_calls"][0]["function"]["arguments"] == '{"zone":"kitchen"}'
+    assert completion.finish_reason == "tool_calls"
+
+
+def test_real_client_role_roundtrip_uses_wire_content_and_native_calls(tmp_path):
+    from test_rails_core_client_native_tools import (
+        _World as ClientWorld,
+        _speech_feature_messages,
+        _speech_feature_world,
+    )
+
+    responses = []
+    first_raw = json.dumps(
+        {
+            "choices": [
+                {
+                    "message": {
+                        "role": "assistant",
+                        "content": "I will inspect the supplied value.",
+                        "tool_calls": [
+                            {
+                                "id": "call-roundtrip-1",
+                                "type": "function",
+                                "function": {
+                                    "name": "analyze",
+                                    "arguments": '{"value":4}',
+                                },
+                            }
+                        ],
+                    },
+                    "finish_reason": "tool_calls",
+                }
+            ],
+            "usage": {"prompt_tokens": 3, "completion_tokens": 4},
+        },
+        separators=(",", ":"),
+    ).encode()
+    second_raw = json.dumps(
+        {
+            "choices": [
+                {
+                    "message": {
+                        "role": "assistant",
+                        "content": "review complete",
+                    },
+                    "finish_reason": "stop",
+                }
+            ],
+            "usage": {"prompt_tokens": 3, "completion_tokens": 2},
+        },
+        separators=(",", ":"),
+    ).encode()
+    responses.extend((first_raw, second_raw))
+    captured = []
+
+    def post(_url, body):
+        captured.append(json.loads(body))
+        return responses.pop(0)
+
+    world = ClientWorld(tmp_path)
+    feature_root, packet, packet_bindings = _speech_feature_world(world, tmp_path)
+    binding = build_payload_binding(
+        carrier_lock_key="fake-carrier",
+        samples=world.samples,
+        data_root=world.data_root,
+        carrier_root=world.carrier_root,
+    )
+    plan = ExecutionPlan(
+        run_id="SAEA-E-native-role-wire-roundtrip",
+        execution_profile="bounded-discovery-probe",
+        carrier_lock_key="fake-carrier",
+        split_role="discovery",
+        split_identity_hash="a" * 64,
+        planned_model_calls=2,
+        planned_gpu_hours=1.0,
+        planned_speech_audio_seconds=100,
+        protocol_hash=protocol_hash("b" * 64, "speech-feature-query-native-tools", "a" * 64),
+        attempt_id="attempt-native-role-wire-roundtrip",
+    )
+    transport = _transport(
+        _base_url(),
+        world.data_root,
+        post=post,
+        feature_root=feature_root,
+        preserve_wire_responses=True,
+    )
+    client = FrozenCoreClient(
+        plan=plan,
+        gate=_WireMetadataOpenGate(),
+        transport=transport,
+        run_dir=world.run_dir,
+        binding=binding,
+        arm="speech-feature-query-native-tools",
+        speech_feature_root=feature_root,
+        speech_packet_bindings=packet_bindings,
+        tool_schemas=(
+            {
+                "type": "function",
+                "function": {
+                    "name": "analyze",
+                    "description": "Analyze a value.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {"value": {"type": "integer"}},
+                        "required": ["value"],
+                    },
+                },
+            },
+        ),
+    )
+    observed = []
+    role_requests = []
+
+    def analyze(value: int):
+        observed.append(value)
+        return {"doubled": value * 2}
+
+    card = ToolCard(
+        id="analyze",
+        name="analyze",
+        description="Analyze a value.",
+        input_params={
+            "type": "object",
+            "properties": {"value": {"type": "integer"}},
+            "required": ["value"],
+            "additionalProperties": False,
+        },
+        stateless=True,
+        idempotent=True,
+    )
+    node = NativeRoleNode(
+        spec=NativeRoleNodeSpec(
+            role_id="reviewer",
+            role_kind="reviewer",
+            prompt="Review with the analytical tool.",
+            max_iterations=2,
+            ability_names=("analyze",),
+        ),
+        metered_request=lambda request: (
+            role_requests.append(request)
+            or client.complete_with_metadata(
+                _speech_feature_messages(packet),
+                speech_feature_sample_id="s1",
+                key_representation_id="k1-text-card-v1",
+                matcher_policy_id="m1-listwise-v1",
+                agent_state=(),
+                agent_contact_id=request.context.agent_contact_id,
+                contact_instruction=request.context.agent_contact_id,
+            )
+        ),
+        contact_context_provider=lambda index: NativeRoleContactContext(
+            sample_id="s1",
+            agent_contact_id=f"contact-{index + 1}",
+        ),
+        abilities=(LocalFunction(card=card, func=analyze),),
+        tool_allowed=lambda role, name: role == "reviewer" and name == "analyze",
+    )
+
+    try:
+        result = asyncio.run(node.invoke_direct("Inspect the supplied value."))
+    finally:
+        client.close()
+
+    assert result["actor_output"] == "review complete"
+    assert "doubled" in role_requests[1].messages[-1]["content"]
+    assert len(captured) == 2
+    assert len(role_requests) == 2
+    assert role_requests[1].messages[-2]["content"] == "I will inspect the supplied value."
+    assert role_requests[1].messages[-2]["tool_calls"][0]["id"] == "call-roundtrip-1"
+    assert role_requests[1].messages[-1]["tool_call_id"] == "call-roundtrip-1"
+
+
+def test_metered_native_role_roundtrip_sends_bound_framework_history_once(tmp_path):
+    """The real shared client must send the framework's counted tool history."""
+    import copy
+    from dataclasses import replace
+
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    from speech_aware_evidence_acquisition.core.model.native_framework_history import (
+        native_tool_result_message,
+    )
+    from speech_aware_evidence_acquisition.rails.phase_runner import _seal_phase_state
+    from speech_aware_evidence_acquisition.reproduction.ojw.native_request import (
+        MeteredNativeSpeechRequest,
+        NativeRoleSpeechBinding,
+    )
+    from test_phase_native_tools import ARGS, LIVE, LiveProvider, dispatcher
+    from test_phase_tools import _context
+    from test_rails_core_client_native_tools import (
+        _World as ClientWorld,
+    )
+
+    review_prompt = "Review the speech and call the observation tool once."
+    review_query = "Inspect the original speech."
+    solver_prompt = "Return the final task JSON using the retained observation."
+    solver_query = "Solve from the reviewed evidence."
+    raw_arguments = json.dumps(ARGS, separators=(",", ":"))
+    responses = [
+        json.dumps(
+            {
+                "choices": [{
+                    "message": {
+                        "role": "assistant", "content": None,
+                        "tool_calls": [{
+                            "id": "call-observe-1", "type": "function",
+                            "function": {"name": LIVE, "arguments": raw_arguments},
+                        }],
+                    },
+                    "finish_reason": "tool_calls",
+                }],
+                "usage": {"prompt_tokens": 11, "completion_tokens": 5},
+            },
+            separators=(",", ":"),
+        ).encode(),
+        json.dumps(
+            {
+                "choices": [{
+                    "message": {"role": "assistant", "content": "Reviewer assessment complete."},
+                    "finish_reason": "stop",
+                }],
+                "usage": {"prompt_tokens": 17, "completion_tokens": 3},
+            },
+            separators=(",", ":"),
+        ).encode(),
+        json.dumps(
+            {
+                "choices": [{
+                    "message": {
+                        "role": "assistant",
+                        "content": '{"intent":"synthetic-intent","slots":{}}',
+                    },
+                    "finish_reason": "stop",
+                }],
+                "usage": {"prompt_tokens": 19, "completion_tokens": 5},
+            },
+            separators=(",", ":"),
+        ).encode(),
+    ]
+    sent_bodies = []
+
+    def post(_url, body):
+        sent_bodies.append(json.loads(body))
+        return responses.pop(0)
+
+    world = ClientWorld(tmp_path)
+    feature_root = tmp_path / "features"
+    packets = {
+        sample.sample_id: materialize_speech_feature_packet(
+            feature_root=feature_root,
+            packet_id=f"slurp/train/{sample.sample_id}",
+            audio_sha256=sample.audio_ref.sha256,
+            encoder_receipt_sha256="e" * 64,
+            decoder_gguf_sha256=_MODEL_FILES[0].sha256,
+            mmproj_sha256=_MODEL_FILES[1].sha256,
+            position_mode="mrope_1d",
+            causal_attention=True,
+            chunks=(SpeechFeatureChunkData(
+                n_tokens=2, n_pos=2, n_embd=4,
+                feature_bytes=struct.pack("<8f", *range(8)),
+                position_bytes=struct.pack("<8i", 0, 1, 0, 1, 0, 1, 0, 1),
+            ),),
+        )
+        for sample in world.samples
+    }
+    packet = packets["s1"]
+    packet_bindings = {
+        sample_id: {"packet_id": value.packet_id, "sha256": value.packet_sha256}
+        for sample_id, value in packets.items()
+    }
+    binding = build_payload_binding(
+        carrier_lock_key="fake-carrier", samples=world.samples,
+        data_root=world.data_root, carrier_root=world.carrier_root,
+    )
+    plan = ExecutionPlan(
+        run_id="SAEA-E-native-role-metered-history",
+        execution_profile="bounded-discovery-probe",
+        carrier_lock_key="fake-carrier", split_role="discovery",
+        split_identity_hash="a" * 64, planned_model_calls=3,
+        planned_gpu_hours=1.0, planned_speech_audio_seconds=100,
+        protocol_hash=protocol_hash(
+            "b" * 64, "speech-feature-query-native-tools", "a" * 64
+        ),
+        attempt_id="attempt-native-role-metered-history",
+    )
+    transport = _transport(
+        _base_url(), world.data_root, post=post, feature_root=feature_root,
+        preserve_wire_responses=True, prompt_order="speech-query-prefix-v2",
+        session=_fake_inference_session(),
+    )
+    provider = LiveProvider()
+    phase_dispatcher = dispatcher(
+        LIVE, provider=provider, authority_role="reviewer"
+    )
+    schemas = phase_dispatcher.native_tool_schemas()
+    client = FrozenCoreClient(
+        plan=plan, gate=_WireMetadataOpenGate(), transport=transport,
+        run_dir=world.run_dir, binding=binding,
+        arm="speech-feature-query-native-tools",
+        speech_feature_root=feature_root,
+        speech_packet_bindings=packet_bindings, tool_schemas=schemas,
+    )
+    context = _context()
+    query_state = replace(
+        context.query_state, speech_packet_id=packet.packet_id,
+        speech_packet_sha256=packet.packet_sha256,
+    )
+    context = replace(context, query_state=query_state)
+    states = []
+    completions = []
+    prepared_contacts = []
+    role_requests = []
+    custody = SimpleNamespace(
+        _samples=world.samples,
+        _live_speech_source_bindings={
+            "s1": {"packet_id": packet.packet_id, "packet_sha256": packet.packet_sha256}
+        },
+        _client=client, assert_generation_lease=lambda: None,
+    )
+    phase_dispatcher.tool_contact = lambda **facts: (
+        FlightRuntime._record_phase_tool_contact(custody, **facts)
+    )
+
+    def messages(prompt):
+        return (
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": [{
+                "type": "input_speech_features",
+                "speech_features": {
+                    "packet_id": packet.packet_id,
+                    "sha256": packet.packet_sha256,
+                    "role": "query",
+                },
+            }]},
+        )
+
+    def binding_provider(request):
+        if request.role_id == "reviewer":
+            prompt, query = review_prompt, review_query
+            local = (states[1].state_id,) if len(states) >= 2 else ()
+        else:
+            prompt, query, local = solver_prompt, solver_query, ()
+        return NativeRoleSpeechBinding(
+            role_id=request.role_id, sample_id="s1", role_query=query,
+            base_messages=messages(prompt),
+            core_kwargs={
+                "decoding_params": {"temperature": 0},
+                "key_representation_id": "k1-text-card-v1",
+                "matcher_policy_id": "m1-listwise-v1",
+                "agent_state": tuple(state.as_json() for state in states),
+            },
+            tool_names=request.visible_tool_names,
+            local_tool_result_ids=local,
+        )
+
+    def completion_sink(request, completion):
+        completions.append(completion)
+        phase_name = (
+            "decision-1" if request.role_id == "reviewer" and not states
+            else "decision-2" if request.role_id == "reviewer" else "final"
+        )
+        states.append(_seal_phase_state(
+            SimpleNamespace(
+                final_response_text=completion.text,
+                initial_query_state=query_state,
+                sample_id="s1",
+            ),
+            phase_name=phase_name,
+            producer_policy_id="native-answer-or-tool-v1",
+        ))
+
+    metered = MeteredNativeSpeechRequest(
+        client=client, binding_provider=binding_provider,
+        render_request=transport.render_request, completion_sink=completion_sink,
+    )
+
+    def metered_request(request):
+        role_requests.append(request)
+        prepared = metered.prepare(request)
+        prepared_contacts.append(prepared)
+        return metered.dispatch(prepared)
+
+    function = schemas[0]["function"]
+    card = ToolCard(
+        id=LIVE, name=LIVE, description=function["description"],
+        input_params=function["parameters"], stateless=True, idempotent=True,
+    )
+
+    def observe(**_arguments):
+        staged = replace(
+            context, agent_states=(states[0],),
+            prior_response_sha256s=(states[0].source_response_sha256,),
+            core_completions=(completions[0],),
+        )
+        step = phase_dispatcher("decision-1", "decision-2", staged)
+        states.append(step.state)
+        return native_tool_result_message(json.loads(step.state.content))["content"]
+
+    reviewer = NativeRoleNode(
+        spec=NativeRoleNodeSpec(
+            role_id="reviewer", role_kind="reviewer", prompt=review_prompt,
+            max_iterations=2, ability_names=(LIVE,),
+        ),
+        metered_request=metered_request,
+        contact_context_provider=lambda index: NativeRoleContactContext(
+            sample_id="s1", agent_contact_id=f"reviewer-{index + 1}"
+        ),
+        abilities=(LocalFunction(card=card, func=observe),),
+        tool_allowed=lambda role, name: role == "reviewer" and name == LIVE,
+    )
+    solver = NativeRoleNode(
+        spec=NativeRoleNodeSpec(
+            role_id="solver", role_kind="solver", prompt=solver_prompt,
+            max_iterations=1,
+        ),
+        metered_request=metered_request,
+        contact_context_provider=lambda _index: NativeRoleContactContext(
+            sample_id="s1", agent_contact_id="solver-1"
+        ),
+        delivery_allowed=lambda role, _output: role == "solver",
+    )
+    try:
+        reviewer_result = asyncio.run(reviewer.invoke_direct(review_query))
+        from speech_aware_evidence_acquisition.reproduction.ojw.native_request import (
+            NativeSpeechRequestError,
+        )
+
+        second_request = role_requests[1]
+        changed_messages = [copy.deepcopy(item) for item in second_request.messages]
+        changed_messages[-1]["content"] = "{}"
+        changed_schema = [copy.deepcopy(item) for item in second_request.tool_schemas]
+        changed_schema[0]["description"] += " Changed."
+        short_metadata = [copy.deepcopy(item) for item in second_request.messages]
+        short_metadata[-1]["metadata"] = {"context_message_id": "0" * 31}
+        extra_metadata = [copy.deepcopy(item) for item in second_request.messages]
+        extra_metadata[-1]["metadata"]["foreign"] = "value"
+        system_metadata = [copy.deepcopy(item) for item in second_request.messages]
+        system_metadata[0]["metadata"] = {"context_message_id": "0" * 32}
+        before_refusals = len(sent_bodies)
+        refusals = (
+            (
+                replace(second_request, messages=tuple(changed_messages)),
+                FrozenCoreError,
+            ),
+            (
+                replace(second_request, role_id="planner"),
+                NativeSpeechRequestError,
+            ),
+            (
+                replace(
+                    second_request,
+                    messages=(
+                        second_request.messages[0],
+                        {"role": "user", "content": "Changed query."},
+                        *second_request.messages[2:],
+                    ),
+                ),
+                NativeSpeechRequestError,
+            ),
+            (
+                replace(second_request, tool_schemas=tuple(changed_schema)),
+                NativeSpeechRequestError,
+            ),
+            (
+                replace(second_request, messages=tuple(short_metadata)),
+                NativeSpeechRequestError,
+            ),
+            (
+                replace(second_request, messages=tuple(extra_metadata)),
+                NativeSpeechRequestError,
+            ),
+            (
+                replace(second_request, messages=tuple(system_metadata)),
+                NativeSpeechRequestError,
+            ),
+        )
+        for changed_request, error_type in refusals:
+            with pytest.raises(error_type):
+                metered.prepare(changed_request)
+            assert len(sent_bodies) == before_refusals
+        solver_result = asyncio.run(solver.invoke_direct(solver_query))
+    finally:
+        close_summary = client.close()
+
+    assert reviewer_result["actor_output"] == "Reviewer assessment complete."
+    assert solver_result["delivery_eligible"] is True
+    assert len(prepared_contacts) == len(sent_bodies) == 3
+    assert [contact.rendered_body() for contact in prepared_contacts] == sent_bodies
+    second = sent_bodies[1]
+    assert [item["role"] for item in second["messages"]] == [
+        "system", "user", "assistant", "tool",
+    ]
+    assert second["messages"][0] == {"role": "system", "content": review_prompt}
+    assert {"type": "text", "text": review_query} in second["messages"][1]["content"]
+    assert second["messages"][2]["content"] is None
+    assert second["messages"][2]["tool_calls"][0]["function"]["arguments"] == raw_arguments
+    tool_message = second["messages"][3]
+    assert tool_message["tool_call_id"] == "call-observe-1"
+    assert sum(
+        row.get("tool_call_id") == "call-observe-1" for row in second["messages"]
+    ) == 1
+    assert json.loads(tool_message["content"])["result"]["status"] == "ok"
+    assert sum(
+        part.get("speech_features", {}).get("packet_id") == packet.packet_id
+        for row in second["messages"]
+        if isinstance(row.get("content"), list)
+        for part in row["content"]
+        if isinstance(part, dict)
+    ) == 1
+    assert all(
+        "saea-native-framework-contact-v1" not in json.dumps(body)
+        for body in sent_bodies
+    )
+    solver_body = sent_bodies[2]
+    assert solver_body["messages"][0] == {"role": "system", "content": solver_prompt}
+    assert sum(
+        row.get("tool_call_id") == "call-observe-1"
+        for row in solver_body["messages"]
+    ) == 1
+    assert provider.calls == [("s1", ARGS, states[0].source_response_sha256)]
+    assert close_summary["request_count"] == 3
+    assert close_summary["cost"]["calls_used"] == 3
+    assert close_summary["cost"]["tool_calls"] == 1

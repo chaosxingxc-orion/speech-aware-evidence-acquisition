@@ -47,7 +47,9 @@ from .request_types import (  # noqa: E402
     ALLOWED_DECODING_KEYS,
     MAX_TOP_LOGPROBS,
     CoreResponse,
+    WireResponseMetadataError,
     _canonical,
+    wire_response_message,
 )
 from .lifecycle import _AttemptLifecycleMixin  # noqa: E402
 from .adapter import FrozenCoreAdapter  # noqa: E402
@@ -84,6 +86,7 @@ __all__ = [
     "ALLOWED_DECODING_KEYS",
     "MAX_TOP_LOGPROBS",
     "CoreResponse",
+    "WireResponseMetadataError",
     "FrozenCoreAdapter",
     "FrozenCoreError",
     "PreparedFeatureCacheError",
@@ -105,6 +108,7 @@ __all__ = [
     "_DRIVE_PREFIX",
     "_PayloadBindingMixin",
     "_canonical",
+    "wire_response_message",
     "_default_post",
     "_llama_server_factory",
     "_normalized_relative_path",
