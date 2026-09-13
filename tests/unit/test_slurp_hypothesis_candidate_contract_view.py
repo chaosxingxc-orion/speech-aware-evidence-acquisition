@@ -222,3 +222,63 @@ def test_registered_state_view_supplies_identical_bytes_through_phase_builder(
         suffixes.append(material.instruction[len(instruction):])
     assert suffixes[0] == suffixes[1]
     assert "observed associations, not required or forbidden fields" in suffixes[0]
+
+
+def test_capacity_and_live_material_render_identical_full_state_view(slurp_world):
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.core.flight.runtime import render_phase_prompt_envelopes
+    from speech_aware_evidence_acquisition.rails.phase_material import (
+        PhaseMaterialSpec, build_material_for_phase, render_phase_envelope,
+    )
+
+    view = _view(slurp_world)
+    artifact = _artifact("weather_query", "iot_hue_lightdim")
+    spec = PhaseMaterialSpec(
+        phase="slots", purpose="fill", instruction_template="probes/slots.txt",
+        predecessor_binding="append-sealed-state",
+        state_fill="slurp-hypothesis-candidate-contracts-for-state-v1",
+    ).validate()
+    specs = {"slots": spec}
+    static = {"slots": "Select one candidate and extract its entities."}
+    material = build_material_for_phase(
+        specs, program_id="phase-slots-given-intent-v1",
+        static_text_by_phase=static, response_format_by_phase={},
+        state_fill_by_phase={"slots": view},
+    )("slots", SimpleNamespace(sample_id=SAMPLE_ID), {SAMPLE_ID: artifact})
+    packet = {"packet_id": "slurp/devel/query", "sha256": "a" * 64}
+    measured = render_phase_prompt_envelopes(
+        program_id="phase-slots-given-intent-v1", phase_names=("slots",),
+        specs=specs, static_text_by_phase=static, system_text="Speech task.",
+        prompt_order="speech-query-prefix-v2", packet_descriptor=packet,
+        sample_id=SAMPLE_ID, sealed_states_by_phase={"slots": {SAMPLE_ID: artifact}},
+        state_fill_by_phase={"slots": view}, completion_token_ceiling=256,
+    )["slots"]
+    expected = render_phase_envelope(
+        "Speech task.", material.instruction,
+        prompt_order="speech-query-prefix-v2", packet_descriptor=packet,
+        contact_id=f"phase-slots-given-intent-v1:slots:{SAMPLE_ID}",
+    )
+    assert measured == expected
+
+
+def test_capacity_full_state_view_refuses_unknown_predecessor(slurp_world):
+    from speech_aware_evidence_acquisition.core.flight.runtime import render_phase_prompt_envelopes
+    from speech_aware_evidence_acquisition.rails.phase_material import (
+        PhaseMaterialError, PhaseMaterialSpec,
+    )
+
+    spec = PhaseMaterialSpec(
+        phase="slots", purpose="fill", instruction_template="probes/slots.txt",
+        predecessor_binding="append-sealed-state",
+        state_fill="slurp-hypothesis-candidate-contracts-for-state-v1",
+    ).validate()
+    with pytest.raises(PhaseMaterialError, match="full predecessor artifact"):
+        render_phase_prompt_envelopes(
+            program_id="phase-slots-given-intent-v1", phase_names=("slots",),
+            specs={"slots": spec}, static_text_by_phase={"slots": "Fill."},
+            system_text="Speech task.", prompt_order="speech-query-prefix-v2",
+            packet_descriptor={"packet_id": "slurp/devel/query", "sha256": "a" * 64},
+            sample_id=SAMPLE_ID, state_fill_by_phase={"slots": _view(slurp_world)},
+            completion_token_ceiling=256,
+        )

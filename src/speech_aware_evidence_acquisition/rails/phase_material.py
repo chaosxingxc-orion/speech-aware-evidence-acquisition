@@ -1088,6 +1088,25 @@ def _resolved_state_fills(
     return fills
 
 
+def render_phase_state_fill(
+    fill: object, *, state: AgentStateArtifact | None, sample_id: str,
+    fallback_content: str | None = None,
+) -> str:
+    """Render the same state view for live material and request-capacity checks."""
+    renderer = getattr(fill, "render_state", None)
+    if callable(renderer):
+        if state is None:
+            raise PhaseMaterialError(
+                "state view requires the full predecessor artifact; "
+                "an unsealed padding estimate cannot supply its source binding"
+            )
+        return renderer(state, sample_id=sample_id)
+    content = state.content if state is not None else fallback_content
+    if content is None or not callable(fill):
+        raise PhaseMaterialError("state fill requires callable content rendering")
+    return fill(content)
+
+
 def build_material_for_phase(
     specs: Mapping[str, PhaseMaterialSpec],
     *,
@@ -1174,11 +1193,8 @@ def build_material_for_phase(
                     f"phase {phase_name!r} declares a state fill but bound no predecessor "
                     f"state for sample {sample_id!r}"
                 )
-            renderer = getattr(fill, "render_state", None)
-            rendered = (
-                renderer(state, sample_id=sample_id)
-                if callable(renderer)
-                else fill(state.content)
+            rendered = render_phase_state_fill(
+                fill, state=state, sample_id=sample_id,
             )
             if not isinstance(rendered, str) or not rendered.strip():
                 raise PhaseMaterialError(

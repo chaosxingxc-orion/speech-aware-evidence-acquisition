@@ -796,6 +796,7 @@ def render_phase_prompt_envelopes(
 
     from ...rails.phase_material import (  # noqa: PLC0415 (cycle guard)
         render_phase_envelope,
+        render_phase_state_fill,
     )
 
     if not isinstance(completion_token_ceiling, int) or completion_token_ceiling <= 0:
@@ -826,7 +827,10 @@ def render_phase_prompt_envelopes(
                 )
             fill = fills.get(phase)
             if fill is not None:
-                rendered = fill(state_content)
+                rendered = render_phase_state_fill(
+                    fill, state=state, sample_id=sample_id,
+                    fallback_content=state_content,
+                )
                 if not isinstance(rendered, str) or not rendered.strip():
                     raise FlightRuntimeError(
                         f"phase {phase!r} state fill rendered no text for sample "
