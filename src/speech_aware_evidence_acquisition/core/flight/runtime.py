@@ -4301,6 +4301,9 @@ class FlightRuntime:
             from ...rails.phase_tools import build_phase_tools  # noqa: PLC0415
 
             builder = build_phase_tools
+        uses_named_store_tools = any(
+            spec.get("knowledge_store_ids") for spec in tool_specs.values()
+        )
         kwargs = {
             "snapshot": binding["knowledge_snapshot"],
             "supply_for_phase": binding.get("supply_for_phase"),
@@ -4310,8 +4313,17 @@ class FlightRuntime:
             ),
             "experience_memory": self._experience_memory,
             "speech_observations": self._speech_observations,
-            "knowledge_stores": binding.get("knowledge_stores"),
-            "supply_for_store": binding.get("supply_for_store"),
+            # Automatic phase supply owns its store binding independently.
+            # Hand a store router to tools only when their declared authority
+            # includes named-store access; a task-contract tool needs none.
+            "knowledge_stores": (
+                binding.get("knowledge_stores")
+                if uses_named_store_tools else None
+            ),
+            "supply_for_store": (
+                binding.get("supply_for_store")
+                if uses_named_store_tools else None
+            ),
         }
         from ...rails.candidate_contract_lookup import TOOL_ID as CANDIDATE_CONTRACT_TOOL  # noqa: PLC0415
 
