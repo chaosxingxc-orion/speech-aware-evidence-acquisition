@@ -3376,3 +3376,10 @@ Under semantic-authoring-registration-v1, complete the governed support preparat
 ## 2026-09-13: Integrate metered native framework components
 
 Merge verified components at 1d458f17. Actual OpenJiuwen plus shared speech transport synthetic verification now covers full counted tool history and per-instance tool callback isolation. Root combined checks pass 179 tests with one platform skip; canonical engineering base check passes. No real model, tokenizer, encoder, backend or scorer contact was added. The formal full-episode runtime binding is still outstanding; do not declare a new GPU flight ready. See docs/readiness/2026-09-13-framework-integration-handoff-v5.md.
+
+
+## 2026-09-13: Complete shared native-role flight integration
+
+The actual configured FlightRuntime path now executes the public OpenJiuwen role graph through the existing shared speech runner and slot scheduler. Each internal contact retains exact request fitting, frozen-client accounting, source-bound tool history and accepted Solver custody. Root fixed canonical sealing to select the accepted Solver request rather than the last Planner request, retained repeated judge criticism and closed instance-owned framework resources through public lifecycle APIs. The reconciled integration tree f9cd4bee passes 209 focused WSL tests, changed-file Ruff, engineering-base and diff checks. Synthetic responses were used; new real model, tokenizer, encoder, Whisper/backend, scorer and GPU experiment contacts are zero. See docs/readiness/2026-09-13-framework-integration-handoff-v6.md and docs/readiness/2026-09-13-native-role-flight-bridge-v1.md.
+
+Read-only WSL process inspection at 2026-09-13T13:43:55.390426+00:00 found no running llama-server executable after the WSL restart. The historical resident-service observation is stale. Preserve the completed comparison, its old service identity, all sealed artifacts and spent contacts. No automatic restart or replay occurred; the next ready registered GPU proof requires a new root-owned session and monitoring identity. Runtime knowledge releases and actual task-quality proof remain pending.
