@@ -1,0 +1,57 @@
+{
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tool": 0
+  },
+  "schema": "saea-reviewed-semantic-store-release-pins-v1",
+  "status": "RELEASED_PENDING_RUNTIME_CONSUMPTION",
+  "stores": {
+    "intent-boundaries": {
+      "completion": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/completion.json",
+        "sha256": "ebd60aca7e16e647c750a59370fce8010d55f3b57375d202817a4a08da1f4a5e"
+      },
+      "content_words": {
+        "max": 119,
+        "median": 92.0,
+        "min": 83,
+        "total": 5740
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+        "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+        "sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+      },
+      "source_recordings": 2037,
+      "store_role": "intent-boundaries",
+      "value_count": 60
+    },
+    "slot-contracts": {
+      "completion": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/completion.json",
+        "sha256": "7acb644871b037f7123adec0c8fd7283ab9215d67c12fc0a32748a67a0f9dc51"
+      },
+      "content_words": {
+        "max": 472,
+        "median": 186.0,
+        "min": 146,
+        "total": 11647
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+        "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/snapshot.json",
+        "sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6"
+      },
+      "source_recordings": 3162,
+      "store_role": "slot-contracts",
+      "value_count": 54
+    }
+  }
+}
