@@ -14,6 +14,7 @@ from typing import Any
 from ..rails.consumption import ConsumptionTrace
 from ..rails.errors import RailsError
 from ..rails.hashing import content_hash
+from ..rails.native_episode_receipt import validate_native_episode_delivery_receipt
 from .completion_budget import CompletionBudgetError, analyze_completion_metadata
 
 
@@ -328,6 +329,8 @@ def analyze_verified_native_episode_statistics(
     consumptions: list[Mapping[str, object]] = []
     action_counts: Counter[str] = Counter()
     revision_counts: Counter[int] = Counter()
+    terminal_actions: Counter[str] = Counter()
+    terminal_revisions: Counter[int] = Counter()
 
     for sample_id in ids:
         phase_result = _map(phase_results[sample_id], f"phase result {sample_id!r}")
@@ -444,37 +447,6 @@ def analyze_verified_native_episode_statistics(
                     f"native episode {sample_id!r} receipt differs from phase contacts"
                 )
 
-        accepted = _map(episode.get("accepted_solver_receipt"), "accepted Solver receipt")
-        accepted_final = _contact(accepted.get("final_contact"), "accepted Solver final contact")
-        exact_solver_visits = [
-            execution for role_id, stage, execution in executions
-            if (role_id == "solver" or stage == "solver") and execution == accepted
-        ]
-        if len(exact_solver_visits) != 1:
-            raise NativeEpisodeDiagnosticError(
-                f"accepted Solver receipt {sample_id!r} is not one exact Solver visit"
-            )
-        accepted_request_id = accepted_final["request_id"]
-        accepted_response = _map(
-            trace_records.get(f"{accepted_request_id}/response"), "accepted Solver response"
-        )
-        if (
-            accepted_final["response_text_sha256"] != final_sha256
-            or accepted_response.get("text") != text
-        ):
-            raise NativeEpisodeDiagnosticError(
-                f"accepted Solver response {sample_id!r} is not final output"
-            )
-        final_completion = _completion(
-            accepted_request_id,
-            _map(trace_records[f"{accepted_request_id}/request"], "accepted request"),
-            accepted_response,
-            trace_records.get(f"{accepted_request_id}/wire-response"),
-            delivered_text=text,
-        )
-        by_request[accepted_request_id]["completion"] = final_completion
-        final_completions.append(final_completion)
-
         routes = _seq(episode.get("planner_routes"), f"Planner routes {sample_id!r}")
         ordered_routes: list[dict[str, object]] = []
         for index, raw_route in enumerate(routes):
@@ -504,24 +476,82 @@ def analyze_verified_native_episode_statistics(
             action_counts[action] += 1
             revision_counts[revision] += 1
 
+        delivery = validate_native_episode_delivery_receipt(
+            episode,
+            visits,
+            routes,
+            error_type=NativeEpisodeDiagnosticError,
+        )
+        delivered_final = _contact(
+            delivery.final_contact,
+            f"{delivery.kind} Solver final contact",
+        )
+        delivered_request_id = delivered_final["request_id"]
+        delivered_response = _map(
+            trace_records.get(f"{delivered_request_id}/response"),
+            f"{delivery.kind} Solver response",
+        )
+        if (
+            delivered_final["response_text_sha256"] != final_sha256
+            or delivered_response.get("text") != text
+        ):
+            raise NativeEpisodeDiagnosticError(
+                f"{delivery.kind} Solver response {sample_id!r} is not final output"
+            )
+        final_completion = _completion(
+            delivered_request_id,
+            _map(trace_records[f"{delivered_request_id}/request"], "delivered Solver request"),
+            delivered_response,
+            trace_records.get(f"{delivered_request_id}/wire-response"),
+            delivered_text=text,
+        )
+        by_request[delivered_request_id]["completion"] = final_completion
+        final_completions.append(final_completion)
+        if delivery.kind == "terminal":
+            disposition = _map(delivery.terminal_disposition, "terminal disposition")
+            planner_route = _map(delivery.planner_route, "terminal Planner route")
+            planner_visit_index = planner_route["role_visit_index"]
+            planner_execution = executions[planner_visit_index][2]
+            planner_final = _contact(
+                planner_execution.get("final_contact"), "terminal Planner final contact"
+            )
+            planner_response = _map(
+                trace_records.get(f"{planner_final['request_id']}/response"),
+                "terminal Planner response",
+            )
+            if planner_response.get("text") != disposition["planner_action"]:
+                raise NativeEpisodeDiagnosticError(
+                    f"terminal Planner response {sample_id!r} differs from disposition"
+                )
+            terminal_actions[str(disposition["planner_action"])] += 1
+            terminal_revisions[int(disposition["revision_count"])] += 1
+
         tools = _tool_rows(sample_id, controller_policy_id, trace_records, by_request)
         consumption = _consumption(
             sample_id, controller_policy_id, phase_result, final_sha256, trace_records
         )
         all_tools.extend(tools)
         consumptions.append(consumption)
-        samples.append({
+        sample = {
             "sample_id": sample_id,
             "model_contacts": flattened,
-            "accepted_solver": {
-                "request_id": accepted_request_id,
-                "agent_contact_id": accepted_final["agent_contact_id"],
-                "completion": final_completion,
-            },
             "planner_routes": ordered_routes,
             "native_tool_events": tools,
             "lexical_consumption": consumption,
-        })
+        }
+        delivery_record = {
+            "request_id": delivered_request_id,
+            "agent_contact_id": delivered_final["agent_contact_id"],
+            "completion": final_completion,
+        }
+        if delivery.kind == "accepted":
+            sample["accepted_solver"] = delivery_record
+        else:
+            sample["terminal_solver"] = delivery_record
+            sample["terminal_disposition"] = dict(
+                _map(delivery.terminal_disposition, "terminal disposition")
+            )
+        samples.append(sample)
 
     role_counts = Counter(str(row["role_id"]) for row in all_contacts)
     role_caps = {
@@ -554,7 +584,7 @@ def analyze_verified_native_episode_statistics(
             lexical_record_count += int(row["record_count"])
             lexical_counts.update(_map(row["outcome_counts"], "consumption counts"))
 
-    return {
+    result = {
         "schema": "saea-native-episode-postseal-diagnostics-v1",
         "sample_count": len(ids),
         "model_contacts": {
@@ -616,6 +646,15 @@ def analyze_verified_native_episode_statistics(
         },
         "samples": samples,
     }
+    if terminal_actions:
+        result["terminal_stops"] = {
+            "count": sum(terminal_actions.values()),
+            "by_planner_action": dict(sorted(terminal_actions.items())),
+            "by_revision_count": {
+                str(key): value for key, value in sorted(terminal_revisions.items())
+            },
+        }
+    return result
 
 
 __all__ = ["NativeEpisodeDiagnosticError", "analyze_verified_native_episode_statistics"]

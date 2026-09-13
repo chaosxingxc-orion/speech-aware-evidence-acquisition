@@ -178,3 +178,109 @@ def test_flight_config_dispatches_actual_roles_and_preserves_solver_custody(
     runtime._output_rows = altered
     with pytest.raises(FlightRuntimeError, match="accepted runtime result"):
         runtime._canonical_output_rows(harness.client)
+
+
+@pytest.mark.parametrize("max_revisions", (0, 1))
+def test_canonical_outputs_accept_an_opted_in_terminal_solver_delivery(
+    tmp_path, monkeypatch, max_revisions
+):
+    harness = _ActualEpisodeHarness(
+        tmp_path,
+        sample_count=1,
+        max_revisions=max_revisions,
+        max_contacts=4 + 3 * max_revisions,
+        planner_actions=("ACCEPT",) if max_revisions == 0 else ("REVISE", "ACCEPT"),
+        arm="speech-feature-query",
+    )
+    values = {
+        "native_episode": {
+            "schema": "saea-native-episode-config-v1",
+            "episode_id": harness.config.episode_id,
+            "max_revisions": max_revisions,
+            "actions": dict(zip(("accept", "revise", "acquire"), harness.config.actions)),
+            "roles": {
+                role.role_kind: {
+                    "phase_id": role.phase_id,
+                    "max_iterations": role.max_iterations,
+                }
+                for role in harness.config.roles
+            },
+        },
+        "native_contact_fit": {
+            "run_id": "SAEA-NATIVE-TERMINAL-FIT",
+            "attempt_id": "attempt-native-terminal-fit",
+            "contact_cap": 4 + 3 * max_revisions,
+        },
+    }
+    runtime = object.__new__(FlightRuntime)
+    runtime._composed = SimpleNamespace(values=values)
+    runtime._model = runtime._dataset = runtime._baseline = {}
+    runtime._adapter = harness.adapter
+    runtime._data_root = harness.world.data_root
+    runtime._split_id = "all"
+    runtime._transport = harness.transport
+    runtime._arm = lambda: harness.client.arm
+    runtime._plan = harness.plan
+    runtime._phase_program_material = {
+        "knowledge_snapshot": _knowledge_snapshot(),
+        "speech_packet_bindings": harness.speech_bindings,
+        "material_for_phase": harness.material_for_phase,
+        "trace_sink": harness.trace,
+        "review_for_phase": None,
+    }
+    runtime._continuous_phase_runner = run_continuous_program
+    runtime._phase_planner_specs = lambda _policy: {}
+    runtime._phase_decoding_params = lambda: {"temperature": 0, "max_tokens": 64}
+    runtime._fit_base_plan = lambda plan: plan
+    runtime._build_phase_tool_dispatcher = lambda *args, **kwargs: None
+    monkeypatch.setattr(flight_module, "default_phase_program", lambda _policy: harness.program)
+    def terminal_capacity_gate(request):
+        harness.request_gate(request)
+        terminal_capacity_gate.receipts.append({"capacity_verified": False})
+
+    terminal_capacity_gate.receipts = []
+    monkeypatch.setattr(
+        preparation_fit, "build_native_contact_fit_gate", lambda *_args: terminal_capacity_gate
+    )
+    try:
+        rows, *_ = runtime._dispatch_phase_program(
+            harness.client, harness.plan, harness.program.program_id
+        )
+    finally:
+        harness.close()
+
+    terminal_receipt = copy.deepcopy(rows[0]["native_episode_receipt"])
+    terminal_receipt.pop("accepted_solver_receipt")
+    terminal_receipt["terminal_solver_receipt"] = copy.deepcopy([
+        visit["execution_receipt"]
+        for visit in terminal_receipt["role_visits"]
+        if visit["stage"] == "solver"
+    ][-1])
+    terminal_receipt["planner_routes"][-1]["action"] = "REVISE"
+    terminal_receipt["terminal_disposition"] = {
+        "reason": "revision_limit",
+        "planner_action": "REVISE",
+        "revision_count": max_revisions,
+        "planner_accepted": False,
+    }
+    values["native_episode"]["exhaustion_policy"] = "deliver-latest-solver"
+    row = {**rows[0], "native_episode_receipt": terminal_receipt}
+    runtime._output_rows = [row]
+    runtime._phase_summaries = (
+        SimpleNamespace(results=(SimpleNamespace(
+            sample_id=row["sample_id"],
+            final_response_text=row["final_response_text"],
+            native_episode_receipt=terminal_receipt,
+        ),)),
+    )
+
+    canonical = runtime._canonical_output_rows(harness.client)
+
+    terminal = terminal_receipt["terminal_solver_receipt"]["final_contact"]
+    assert canonical[0]["request_id"] == terminal["request_id"]
+    assert canonical[0]["text"] == row["final_response_text"]
+
+    terminal_receipt["terminal_disposition"]["planner_action"] = "UNREGISTERED"
+    terminal_receipt["planner_routes"][-1]["action"] = "UNREGISTERED"
+    with pytest.raises(FlightRuntimeError, match="configured revise/acquire action"):
+        runtime._canonical_output_rows(harness.client)
