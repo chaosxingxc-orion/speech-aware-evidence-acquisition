@@ -89,6 +89,7 @@ def test_catalog_retains_legacy_wrappers_and_explicit_registered_actions():
         "saea-tool-phase-knowledge-v1",
         "saea-tool-corrective-memory-v1",
         "saea-tool-prepared-speech-observation-v1",
+        "saea-tool-candidate-contract-lookup-v1",
     }
     assert actions <= set(registered)
     others = set(registered) - set(EXPECTED_TOOL_IDS) - actions
