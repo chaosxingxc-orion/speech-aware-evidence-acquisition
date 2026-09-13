@@ -478,7 +478,7 @@ def _confined_data_path(data_root, relpath: object) -> Path:
     return path
 
 
-def _history_carries_state(history: object, state) -> bool:
+def _history_carries_state(history: object, state, *, contact_id: str) -> bool:
     if not isinstance(history, list):
         return False
     expected = state.as_json()
@@ -491,7 +491,32 @@ def _history_carries_state(history: object, state) -> bool:
         and entry.get("role") == "agent_state"
         and all(entry.get(key) == value for key, value in expected.items())
     ]
-    return len(matches) == 1
+    if any(isinstance(entry, Mapping) and entry.get("role") == "agent_state" for entry in history):
+        return len(matches) == 1
+
+    from ...rails.phase_material import PREDECESSOR_PREFIX, render_phase_predecessor_block
+
+    controls = [
+        entry for entry in history
+        if isinstance(entry, Mapping)
+        and entry.get("role") == "control"
+        and entry.get("contact_id") == contact_id
+    ]
+    if len(controls) != 1:
+        return False
+    control = controls[0]
+    content = control.get("content")
+    if (
+        not isinstance(content, str)
+        or control.get("content_sha256") != sha256(content.encode("utf-8"))
+    ):
+        return False
+    prefix = f"\n\n{PREDECESSOR_PREFIX} ("
+    block = "\n\n" + render_phase_predecessor_block(state)
+    if content.count(prefix) != 1 or content.count(block) != 1:
+        return False
+    suffix = content.split(block, 1)[1]
+    return not suffix or suffix.startswith("\n\n")
 
 
 def replay_sealed_state_response_delivery(
@@ -570,7 +595,9 @@ def replay_sealed_state_response_delivery(
         request_id, request, response, response_text = _phase_contact(
             parent, request_index, sample_id=sample_id, contact_id=contact_id
         )
-        if not _history_carries_state(request["payload"].get("history"), state):
+        if not _history_carries_state(
+            request["payload"].get("history"), state, contact_id=contact_id,
+        ):
             raise BundleError("response request did not carry the exact sealed predecessor state")
         if (
             source_row.get("request_id") != request_id

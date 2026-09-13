@@ -1025,10 +1025,13 @@ def resolve_response_formats(
     return formats
 
 
+def render_phase_predecessor_block(state: AgentStateArtifact) -> str:
+    """Render the exact predecessor block shared by requests and replay checks."""
+    return f"{PREDECESSOR_PREFIX} ({state.state_kind}):\n{state.content}"
+
+
 def _appended(instruction: str, state: AgentStateArtifact) -> str:
-    return (
-        f"{instruction}\n\n{PREDECESSOR_PREFIX} ({state.state_kind}):\n{state.content}"
-    )
+    return f"{instruction}\n\n{render_phase_predecessor_block(state)}"
 
 
 def _joined(instruction: str, rendered: str) -> str:

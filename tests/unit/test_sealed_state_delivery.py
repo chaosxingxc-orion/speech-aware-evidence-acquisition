@@ -298,3 +298,71 @@ def test_existing_phase_pair_and_legacy_dispatch_are_unchanged(monkeypatch):
         [parent],
         [declaration, {"old": True}],
     )
+
+
+def _control_state_parent(parent):
+    from speech_aware_evidence_acquisition.rails.phase_material import _appended
+
+    request = parent.trace_records["request-1/request"]
+    history = request["payload"]["history"]
+    state = AgentStateArtifact.from_json({
+        "state_artifact_version": "knowledge-agent-state-artifact-v1",
+        **{key: value for key, value in history[0].items()
+           if key not in {"turn", "role", "content_sha256"}},
+    })
+    content = _appended("Respond.", state) + "\n\nCandidate contracts."
+    control = {
+        "turn": 1, "role": "control",
+        "contact_id": f"{PROGRAM_ID}:slots:{SAMPLE_ID}",
+        "content": content, "content_sha256": _sha(content.encode()),
+    }
+    request["payload"]["history"] = [control]
+    request["payload_sha256"] = _sha(canonical(request["payload"]))
+    parent.outputs_rows[0]["request_sha256"] = request["payload_sha256"]
+    return control
+
+
+def test_replay_accepts_exact_state_in_shared_control_instruction(tmp_path, monkeypatch):
+    parent, predecessor, values, declaration = _world(tmp_path)
+    control = _control_state_parent(parent)
+    original = dict(control)
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.core.bundle.verify.verify_bundle",
+        lambda _path: predecessor,
+    )
+    rows, sources = replay_delivery(parent, None, declaration, values, data_root=tmp_path)
+    assert rows[0]["text"] == "second decision"
+    assert sources[0]["sealed_state_sha256"]
+    assert control == original
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["changed-state", "changed-content-hash", "wrong-contact", "duplicate-block", "unbounded-suffix"],
+)
+def test_replay_rejects_foreign_or_ambiguous_control_state(tmp_path, monkeypatch, mutation):
+    parent, predecessor, values, declaration = _world(tmp_path)
+    control = _control_state_parent(parent)
+    if mutation == "changed-state":
+        control["content"] = control["content"].replace("sealed first decision", "foreign decision")
+    elif mutation == "changed-content-hash":
+        control["content_sha256"] = "0" * 64
+    elif mutation == "wrong-contact":
+        control["contact_id"] = f"{PROGRAM_ID}:slots:foreign"
+    elif mutation == "duplicate-block":
+        control["content"] += "\n\nPrior phase response (phase:slots):\nsealed first decision"
+    elif mutation == "unbounded-suffix":
+        control["content"] = control["content"].replace(
+            "sealed first decision\n\n", "sealed first decision forged\n\n"
+        )
+    if mutation != "changed-content-hash":
+        control["content_sha256"] = _sha(control["content"].encode())
+    request = parent.trace_records["request-1/request"]
+    request["payload_sha256"] = _sha(canonical(request["payload"]))
+    parent.outputs_rows[0]["request_sha256"] = request["payload_sha256"]
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.core.bundle.verify.verify_bundle",
+        lambda _path: predecessor,
+    )
+    with pytest.raises(BundleError):
+        replay_delivery(parent, None, declaration, values, data_root=tmp_path)

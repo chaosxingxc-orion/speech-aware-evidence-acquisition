@@ -807,6 +807,7 @@ def render_phase_prompt_envelopes(
 
     from ...rails.phase_material import (  # noqa: PLC0415 (cycle guard)
         render_phase_envelope,
+        render_phase_predecessor_block,
         render_phase_state_fill,
     )
 
@@ -832,10 +833,7 @@ def render_phase_prompt_envelopes(
                 )
             else:
                 state_content = str(state.content)
-                instruction = (
-                    f"{instruction}\n\nPrior phase response "
-                    f"({state.state_kind}):\n{state.content}"
-                )
+                instruction = f"{instruction}\n\n{render_phase_predecessor_block(state)}"
             fill = fills.get(phase)
             if fill is not None:
                 rendered = render_phase_state_fill(
