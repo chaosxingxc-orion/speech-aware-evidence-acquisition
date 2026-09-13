@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import hashlib
 
 import pytest
@@ -9,6 +10,9 @@ from speech_aware_evidence_acquisition.analysis.native_episode_diagnostics impor
     analyze_verified_native_episode_statistics,
 )
 from speech_aware_evidence_acquisition.rails.hashing import content_hash
+from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
+    validate_native_episode_delivery_receipt,
+)
 
 
 def _sha(text: str) -> str:
@@ -165,6 +169,51 @@ def _fixture():
     return policy, phase_result, output, trace
 
 
+def _terminal_fixture(*, planner_text: str = "REVISE"):
+    """Turn the synthetic accepted episode into an honest terminal delivery."""
+    policy, phase_result, output, trace = _fixture()
+    phase_result = copy.deepcopy(phase_result)
+    episode = phase_result["native_episode_receipt"]
+    planner = episode["role_visits"][-1]["execution_receipt"]
+    planner_contact = planner["final_contact"]
+    request_id = planner_contact["request_id"]
+    response_sha256 = _sha(f"response:{request_id}:terminal:{planner_text}")
+    response_text_sha256 = _sha(planner_text)
+    trace[f"{request_id}/response"].update({
+        "text": planner_text,
+        "response_sha256": response_sha256,
+        "response_text_sha256": response_text_sha256,
+    })
+    trace[f"{request_id}/native-role-contact"].update({
+        "use_response_sha256": response_sha256,
+        "use_response_text_sha256": response_text_sha256,
+    })
+    for contact in planner["contacts"]:
+        contact.update({
+            "response_sha256": response_sha256,
+            "response_text_sha256": response_text_sha256,
+        })
+    planner_contact.update({
+        "response_sha256": response_sha256,
+        "response_text_sha256": response_text_sha256,
+    })
+    phase_result["contacts"][-1]["response_sha256"] = response_text_sha256
+    route = episode["planner_routes"][-1]
+    route["action"] = "REVISE"
+    episode.pop("accepted_solver_receipt")
+    episode["terminal_solver_receipt"] = copy.deepcopy(
+        episode["role_visits"][1]["execution_receipt"]
+    )
+    episode["terminal_disposition"] = {
+        "reason": "revision_limit",
+        "planner_action": "REVISE",
+        "revision_count": 0,
+        "planner_accepted": False,
+    }
+    output = {**output, "native_episode_receipt": episode}
+    return policy, phase_result, output, trace
+
+
 def test_counts_react_contacts_by_role_and_preserves_accepted_solver_custody():
     policy, phase_result, output, trace = _fixture()
 
@@ -234,7 +283,74 @@ def test_rejects_an_accepted_solver_receipt_not_equal_to_a_solver_visit():
     phase_result = {**phase_result, "native_episode_receipt": episode}
     output = {**output, "native_episode_receipt": episode}
 
-    with pytest.raises(NativeEpisodeDiagnosticError, match="one exact Solver visit"):
+    with pytest.raises(NativeEpisodeDiagnosticError, match="exact last Solver visit"):
+        analyze_verified_native_episode_statistics(
+            sample_ids=("s1",),
+            controller_policy_id=policy,
+            phase_results={"s1": phase_result},
+            output_rows={"s1": output},
+            trace_records=trace,
+        )
+
+
+def test_counts_opt_in_terminal_delivery_separately_without_an_accepted_solver():
+    policy, phase_result, output, trace = _terminal_fixture()
+    # Full graph state retains its initialized null accepted field.  It is not
+    # an acceptance and must not make the terminal delivery ambiguous.
+    phase_result["native_episode_receipt"]["accepted_solver_receipt"] = None
+    output = {
+        **output,
+        "native_episode_receipt": phase_result["native_episode_receipt"],
+    }
+    delivery = validate_native_episode_delivery_receipt(
+        phase_result["native_episode_receipt"],
+        terminal_actions=("REVISE", "ACQUIRE"),
+        error_type=NativeEpisodeDiagnosticError,
+    )
+    assert delivery.kind == "terminal"
+
+    result = analyze_verified_native_episode_statistics(
+        sample_ids=("s1",),
+        controller_policy_id=policy,
+        phase_results={"s1": phase_result},
+        output_rows={"s1": output},
+        trace_records=trace,
+    )
+
+    assert result["terminal_stops"] == {
+        "count": 1,
+        "by_planner_action": {"REVISE": 1},
+        "by_revision_count": {"0": 1},
+    }
+    assert "accepted_solver" not in result["samples"][0]
+    assert result["samples"][0]["terminal_disposition"] == {
+        "reason": "revision_limit",
+        "planner_action": "REVISE",
+        "revision_count": 0,
+        "planner_accepted": False,
+    }
+
+
+def test_rejects_terminal_disposition_that_does_not_match_the_planner_response():
+    policy, phase_result, output, trace = _terminal_fixture(planner_text="ACCEPT")
+
+    with pytest.raises(NativeEpisodeDiagnosticError, match="Planner response"):
+        analyze_verified_native_episode_statistics(
+            sample_ids=("s1",),
+            controller_policy_id=policy,
+            phase_results={"s1": phase_result},
+            output_rows={"s1": output},
+            trace_records=trace,
+        )
+
+
+def test_rejects_ambiguous_accepted_and_terminal_delivery_receipts():
+    policy, phase_result, output, trace = _terminal_fixture()
+    episode = phase_result["native_episode_receipt"]
+    episode["accepted_solver_receipt"] = copy.deepcopy(episode["terminal_solver_receipt"])
+    output = {**output, "native_episode_receipt": episode}
+
+    with pytest.raises(NativeEpisodeDiagnosticError, match="exactly one delivery receipt"):
         analyze_verified_native_episode_statistics(
             sample_ids=("s1",),
             controller_policy_id=policy,

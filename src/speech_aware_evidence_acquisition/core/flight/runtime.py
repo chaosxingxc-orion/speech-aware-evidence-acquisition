@@ -6717,7 +6717,7 @@ class FlightRuntime:
             timing = timing_by_sample.get(sample_id)
             episode_receipt = row.get("native_episode_receipt")
             if episode_receipt is not None:
-                # The accepted Solver can precede Reviewer/Planner contacts.
+                # The delivery Solver can precede Reviewer/Planner contacts.
                 # Bind the existing response, without deriving or rewriting text.
                 sources = [
                     result for summary in self._phase_summaries
@@ -6729,19 +6729,54 @@ class FlightRuntime:
                     raise FlightRuntimeError("native delivery differs from its accepted runtime result")
                 if not isinstance(episode_receipt, Mapping):
                     raise FlightRuntimeError("native delivery lacks a structured episode receipt")
-                accepted = episode_receipt.get("accepted_solver_receipt")
                 visits = episode_receipt.get("role_visits")
-                solver_visits = [
-                    visit for visit in (visits if isinstance(visits, list) else [])
-                    if isinstance(visit, Mapping) and visit.get("stage") == "solver"
-                ]
-                if (
-                    not isinstance(accepted, Mapping) or not solver_visits
-                    or solver_visits[-1].get("execution_receipt") != accepted
-                    or not isinstance(accepted.get("final_contact"), Mapping)
-                ):
-                    raise FlightRuntimeError("native delivery has no accepted final Solver contact")
-                contact = accepted["final_contact"]
+                routes = episode_receipt.get("planner_routes")
+                if not isinstance(visits, Sequence) or isinstance(visits, (str, bytes)):
+                    raise FlightRuntimeError("native delivery lacks ordered role visits")
+                if not isinstance(routes, Sequence) or isinstance(routes, (str, bytes)):
+                    raise FlightRuntimeError("native delivery lacks ordered Planner routes")
+                from ...rails.native_episode_receipt import (  # noqa: PLC0415
+                    validate_native_episode_delivery_receipt,
+                )
+
+                raw_native = self._composed.values.get("native_episode")
+                terminal_actions = None
+                if isinstance(raw_native, Mapping):
+                    raw_actions = raw_native.get("actions")
+                    if isinstance(raw_actions, Mapping):
+                        terminal_actions = (
+                            raw_actions.get("revise"), raw_actions.get("acquire")
+                        )
+                delivery = validate_native_episode_delivery_receipt(
+                    episode_receipt,
+                    visits,
+                    routes,
+                    terminal_actions=terminal_actions,
+                    error_type=FlightRuntimeError,
+                )
+                if delivery.kind == "terminal":
+                    if (
+                        not isinstance(raw_native, Mapping)
+                        or raw_native.get("exhaustion_policy", "raise")
+                        != "deliver-latest-solver"
+                    ):
+                        raise FlightRuntimeError(
+                            "terminal native delivery requires the composed "
+                            "exhaustion_policy deliver-latest-solver"
+                        )
+                    configured_revisions = raw_native.get("max_revisions")
+                    disposition = delivery.terminal_disposition
+                    if (
+                        isinstance(configured_revisions, bool)
+                        or not isinstance(configured_revisions, int)
+                        or not isinstance(disposition, Mapping)
+                        or disposition.get("revision_count") != configured_revisions
+                    ):
+                        raise FlightRuntimeError(
+                            "terminal native delivery revision count differs from "
+                            "the composed max_revisions"
+                        )
+                contact = delivery.final_contact
                 timing = timing_by_request.get(contact.get("request_id"))
                 if (
                     timing is None or timing.sample_id != sample_id
