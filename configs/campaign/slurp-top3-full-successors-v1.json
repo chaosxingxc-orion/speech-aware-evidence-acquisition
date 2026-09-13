@@ -1,0 +1,13 @@
+{
+  "cells": [
+    {
+      "cell": "slurp-top3-commitment-hard-first-dev1000-generation-v1",
+      "experiment": "slurp-top3-commitment-hard-first-dev1000-v1"
+    },
+    {
+      "cell": "slurp-top3-commitment-closed-joint-dev1000-generation-v1",
+      "experiment": "slurp-top3-commitment-closed-joint-dev1000-v1"
+    }
+  ],
+  "schema": "saea-campaign-plan-v1"
+}

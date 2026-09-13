@@ -8,7 +8,7 @@
         "campaign"
       ],
       "arm": "speech-feature-query",
-      "attempt_id": "__UNREGISTERED_ATTEMPT_HARD_FIRST_DEV1000__",
+      "attempt_id": "attempt-slurp-top3-hard-first-generation-v1",
       "baseline_fragment": "slurp-top3-commitment-hard-first-v1",
       "cell_id": "slurp-top3-commitment-hard-first-dev1000-generation-v1",
       "dataset_fragment": "slurp-speech-native-dev1000",
@@ -18,7 +18,7 @@
         "requirements": [],
         "state": "held"
       },
-      "run_id": "__UNREGISTERED_RUN_HARD_FIRST_DEV1000__"
+      "run_id": "SAEA-SLURP-TOP3-HARD-FIRST-V1"
     }
   ],
   "date": "2026-09-13",
@@ -45,7 +45,7 @@
     "planned_speech_audio_seconds": 3500,
     "split_role": "dev"
   },
-  "experiment_id": "HELD-SAEA-SLURP-TOP3-COMMITMENT-HARD-FIRST-DEV1000-V1",
+  "experiment_id": "SAEA-SLURP-TOP3-HARD-FIRST-V1",
   "family_budget": {
     "asr_calls": 0,
     "common_source_counted_once": true,
