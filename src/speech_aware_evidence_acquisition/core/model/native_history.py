@@ -24,9 +24,12 @@ def _bound_result(state, states, allowed_names, payload):
     from ...rails.hashing import content_hash
 
     document = _json(state["content"])
+    schema = document.get("schema") if isinstance(document, Mapping) else None
+    if schema not in {"saea-phase-tool-result-v1", "saea-phase-tool-result-v2"}:
+        _refuse("tool result has an unsupported native envelope")
     source = states.get(document.get("native_source_state_id"))
     if (
-        document.get("schema") != "saea-phase-tool-result-v1"
+        document.get("schema") not in {"saea-phase-tool-result-v1", "saea-phase-tool-result-v2"}
         or document.get("selection_mode") != "native-tools"
         or source is None
         or not source.get("state_kind", "").startswith("phase:")
@@ -39,6 +42,32 @@ def _bound_result(state, states, allowed_names, payload):
     ):
         _refuse("tool result is not bound to its preceding phase")
     invocation = document.get("tool_invocation")
+    authority = None
+    assistant_message = {"role": "assistant", "content": None}
+    invocation_schema = "saea-native-phase-tool-contact-v1"
+    if schema == "saea-phase-tool-result-v2":
+        from ...rails.native_tool_authority import (
+            NativeToolAuthorityError, validate_native_tool_authority,
+        )
+        try:
+            authority = validate_native_tool_authority(document.get("source_authority"))
+        except NativeToolAuthorityError as error:
+            raise FrozenCoreError("native history: source authority is invalid") from error
+        authority_sha256 = content_hash(authority)
+        if (
+            document.get("source_authority_sha256") != authority_sha256
+            or authority["phase_id"] != document.get("phase")
+            or authority["sample_id"] != document.get("sample_id")
+            or authority["request_id"] != document.get("core_request_id")
+            or authority["source_response_text_sha256"]
+            != document.get("source_response_sha256")
+            or authority["source_tool_calls_sha256"]
+            != document.get("tool_calls_sha256")
+        ):
+            _refuse("source authority differs from the tool result")
+        allowed_names = set(authority["selected_tool_names"])
+        assistant_message = dict(authority["original_assistant_message"])
+        invocation_schema = "saea-native-phase-tool-contact-v2"
     fields = (
         "sample_id", "phase", "next_phase", "tool_id", "source_response_sha256",
         "tool_call_id", "tool_calls_sha256", "speech_packet_id", "speech_packet_sha256",
@@ -49,10 +78,17 @@ def _bound_result(state, states, allowed_names, payload):
     ]
     if (
         not isinstance(invocation, Mapping)
-        or invocation.get("schema") != "saea-native-phase-tool-contact-v1"
+        or invocation.get("schema") != invocation_schema
         or any(not isinstance(document.get(key), str) or not document[key]
                or invocation.get(key) != document[key] for key in fields)
         or invocation.get("request_id") != document.get("core_request_id")
+        or (authority is not None and (
+            invocation.get("source_authority_sha256")
+            != document.get("source_authority_sha256")
+            or invocation.get("source_authority_role") != authority["role_id"]
+            or invocation.get("source_request_sha256") != authority["source_request_sha256"]
+            or invocation.get("source_completion_sha256") != authority["completion_sha256"]
+        ))
         or not isinstance(document.get("core_request_id"), str)
         or not document["core_request_id"]
         or invocation.get("arguments_sha256") != hashlib.sha256(
@@ -65,6 +101,8 @@ def _bound_result(state, states, allowed_names, payload):
         or document["speech_packet_sha256"] != query_packets[0].get("sha256")
     ):
         _refuse("tool invocation lacks matching counted custody")
+    if schema == "saea-phase-tool-result-v1" and not allowed_names:
+        _refuse("legacy native result requires the current tool schema scope")
     raw = document.get("native_tool_calls_json")
     if not isinstance(raw, str) or hashlib.sha256(raw.encode()).hexdigest() != document.get("tool_calls_sha256"):
         _refuse("native call bytes changed")
@@ -95,7 +133,12 @@ def _bound_result(state, states, allowed_names, payload):
         or content_hash({"blocks": blocks}) != document.get("native_result_content_sha256")
     ):
         _refuse("tool return content changed")
-    return document, call
+    if authority is not None:
+        if assistant_message.get("tool_calls") != [call]:
+            _refuse("source assistant message differs from the executed call")
+    else:
+        assistant_message["tool_calls"] = [call]
+    return document, call, assistant_message
 
 
 def _bound_blocks(document):
@@ -174,24 +217,32 @@ def project_native_history(*, payload, messages, state_texts):
         return messages, []
     if (
         payload.get("decoding_params", {}).get("tool_choice") not in {"auto", "none", "required"}
-        or not payload.get("tool_schemas")
         or len(messages) != 2
         or messages[1]["role"] != "user"
         or len(state_texts) != len(history)
     ):
         _refuse("explicit native controls and the complete source history are required")
-    allowed = {tool["function"]["name"] for tool in payload["tool_schemas"]}
+    schemas = payload.get("tool_schemas")
+    allowed = {
+        tool["function"]["name"] for tool in schemas
+        if isinstance(tool, Mapping) and isinstance(tool.get("function"), Mapping)
+        and isinstance(tool["function"].get("name"), str)
+    } if isinstance(schemas, list) else set()
     states, calls_by_source, result_indices = {}, {}, {}
     evidence, feature_identities = {}, {}
     for index, state in enumerate(history):
         if index in native_indices:
-            document, call = _bound_result(state, states, allowed, payload)
+            document, call, assistant_message = _bound_result(
+                state, states, allowed, payload
+            )
             source_id = document["native_source_state_id"]
             if source_id in calls_by_source:
                 _refuse("a phase is associated with more than one executed result")
             text_blocks, packets = _bound_blocks(document)
-            calls_by_source[source_id] = call
-            result_indices[index] = (document, call, text_blocks, packets)
+            calls_by_source[source_id] = (call, assistant_message)
+            result_indices[index] = (
+                document, call, assistant_message, text_blocks, packets
+            )
             for block in text_blocks:
                 previous = evidence.setdefault(block["evidence_id"], block)
                 if previous != block:
@@ -236,11 +287,12 @@ def project_native_history(*, payload, messages, state_texts):
             rendered.append({"role": "user", "content": parts})
 
     for index, state in enumerate(history):
-        call = calls_by_source.get(state.get("state_id"))
-        if call is not None:
-            rendered.append({"role": "assistant", "content": None, "tool_calls": [call]})
+        source_call = calls_by_source.get(state.get("state_id"))
+        if source_call is not None:
+            call, assistant_message = source_call
+            rendered.append(dict(assistant_message))
         elif index in result_indices:
-            document, call, blocks, packets = result_indices[index]
+            document, call, _assistant_message, blocks, packets = result_indices[index]
             if rendered[-1].get("tool_calls") != [call]:
                 _refuse("a native call and result must be adjacent source states")
             fresh = [b for b in blocks if b["evidence_id"] not in returned_evidence]

@@ -2253,6 +2253,40 @@ class FlightRuntime:
         arguments = facts.get("arguments")
         if not isinstance(arguments, Mapping):
             raise FlightRuntimeError("native tool action arguments must be a mapping")
+        authority = facts.get("source_authority")
+        authority_role = facts.get("source_authority_role")
+        authority_receipt = None
+        if authority is not None or authority_role is not None:
+            from ...rails.native_tool_authority import (
+                NativeToolAuthorityError, validate_native_tool_authority,
+            )
+            try:
+                authority_receipt = validate_native_tool_authority(authority)
+                calls = authority_receipt["original_assistant_message"]["tool_calls"]
+                call = calls[0] if len(calls) == 1 else None
+                function = call.get("function") if isinstance(call, Mapping) else None
+                call_arguments = json.loads(function["arguments"]) if (
+                    isinstance(function, Mapping)
+                    and isinstance(function.get("arguments"), str)
+                ) else None
+            except (NativeToolAuthorityError, ValueError, TypeError, KeyError) as error:
+                raise FlightRuntimeError("native tool source authority is invalid") from error
+            if (
+                authority_receipt["role_id"] != authority_role
+                or authority_receipt["phase_id"] != facts["phase"]
+                or authority_receipt["sample_id"] != sample_id
+                or authority_receipt["request_id"] != facts["request_id"]
+                or authority_receipt["source_response_text_sha256"]
+                != facts["source_response_sha256"]
+                or authority_receipt["source_tool_calls_sha256"]
+                != facts["tool_calls_sha256"]
+                or not isinstance(call, Mapping)
+                or call.get("id") != facts["tool_call_id"]
+                or not isinstance(function, Mapping)
+                or function.get("name") != facts["tool_id"]
+                or call_arguments != dict(arguments)
+            ):
+                raise FlightRuntimeError("native tool source authority differs from the action")
         callback = getattr(self._client, "record_tool_call", None)
         if not callable(callback):
             raise FlightRuntimeError(
@@ -2268,7 +2302,7 @@ class FlightRuntime:
             descriptor = self.speech_packet_bindings()[sample_id]
             packet_id = descriptor["packet_id"]
             packet_sha256 = descriptor["sha256"]
-        return {
+        receipt = {
             "schema": "saea-native-phase-tool-contact-v1",
             "sample_id": sample_id,
             **{key: facts[key] for key in required_text},
@@ -2278,6 +2312,16 @@ class FlightRuntime:
             "speech_packet_id": packet_id,
             "speech_packet_sha256": packet_sha256,
         }
+        if authority_receipt is not None:
+            from ...rails.hashing import content_hash
+            receipt.update(
+                schema="saea-native-phase-tool-contact-v2",
+                source_authority_role=authority_receipt["role_id"],
+                source_authority_sha256=content_hash(authority_receipt),
+                source_request_sha256=authority_receipt["source_request_sha256"],
+                source_completion_sha256=authority_receipt["completion_sha256"],
+            )
+        return receipt
 
     def _fit_base_plan(self, plan: ExecutionPlan) -> ExecutionPlan:
         cap = self._composed.values.get("live_phase_fit_audio_seconds_cap")

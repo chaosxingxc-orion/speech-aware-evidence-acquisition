@@ -87,11 +87,21 @@ def load_phase_tool_specs(config, program):
             "fixed_action",
             "candidate_limit",
             "knowledge_store_ids",
+            "source_authority_role",
         }:
             raise PhaseToolError("phase_tools entry has unknown fields")
         mode = entry.get("mode")
         if not isinstance(mode, str) or mode not in MODES:
             raise PhaseToolError("phase_tools mode must be fixed, core-choice or native-tools")
+        authority_role = entry.get("source_authority_role")
+        if authority_role is not None and (
+            mode != "native-tools"
+            or not isinstance(authority_role, str)
+            or not authority_role
+        ):
+            raise PhaseToolError(
+                "source_authority_role requires native-tools and a nonempty role ID"
+            )
         tools = _unique(entry.get("allowed_tools"), ACTION_TOOLS, "allowed_tools")
         views = _unique(
             entry.get("knowledge_views", ["text"]), VIEWS, "knowledge_views"
@@ -134,6 +144,8 @@ def load_phase_tool_specs(config, program):
         }
         if store_ids is not None:
             specs[phase]["knowledge_store_ids"] = store_ids
+        if authority_role is not None:
+            specs[phase]["source_authority_role"] = authority_role
         if CANDIDATE_CONTRACT_TOOL in tools:
             specs[phase]["candidate_limit"] = candidate_limit
     native_program = getattr(program, "stop_rule", None) == "native-answer-or-tool"
@@ -514,6 +526,22 @@ class PhaseToolDispatcher:
                     native_call["completion"].tool_calls_json.decode("utf-8")
                 ),
             })
+            authority_role = spec.get("source_authority_role")
+            if authority_role is not None:
+                from .native_tool_authority import (
+                    build_native_tool_authority, select_completion_tool_schemas,
+                )
+
+                completion = native_call["completion"]
+                selected_schemas = select_completion_tool_schemas(
+                    completion, self.native_tool_schemas()
+                )
+                authority = build_native_tool_authority(
+                    completion, role_id=authority_role, phase_id=phase,
+                    selected_tool_schemas=selected_schemas,
+                )
+                request["source_authority"] = authority
+                request["source_authority_sha256"] = content_hash(authority)
         self._emit(context.sample_id, phase, "attempt", request)
         try:
             if spec["mode"] == "native-tools":
@@ -527,6 +555,10 @@ class PhaseToolDispatcher:
                 request_id=native_call["completion"].request_id,
                 tool_call_id=native_call["call_id"],
                 tool_calls_sha256=native_call["completion"].tool_calls_sha256,
+                **({
+                    "source_authority": request["source_authority"],
+                    "source_authority_role": spec["source_authority_role"],
+                } if "source_authority" in request else {}),
                 )
                 if not isinstance(invocation, Mapping):
                     raise PhaseToolError(
@@ -729,7 +761,10 @@ class PhaseToolDispatcher:
                 }
             document = {
                 **request,
-                "schema": "saea-phase-tool-result-v1",
+                "schema": (
+                    "saea-phase-tool-result-v2"
+                    if "source_authority" in request else "saea-phase-tool-result-v1"
+                ),
                 "result": model_result,
                 "result_sha256": content_hash(model_result),
             }
