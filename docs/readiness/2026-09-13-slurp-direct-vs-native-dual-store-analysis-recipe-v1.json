@@ -1,0 +1,97 @@
+{
+  "schema": "saea-slurp-saved-score-analysis-recipe-v1",
+  "experiment_id": "SAEA-SLURP-DIRECT-VS-NATIVE-DUAL-STORE-PAIRED-ANALYSIS-V1",
+  "execution_profile": "model-free-check",
+  "recorded_on": "2026-09-13",
+  "binding_state": "FROZEN TEMPLATE. The paired method is fixed before either new arm's quality is read. Manifest and first complete official-score receipt pins remain pending and must be replaced only by measured sealed artifacts.",
+  "analysis": {
+    "carrier": "slurp",
+    "full_roster": {"path": "docs/receipts/probe-samples/DEV-1000.json", "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"},
+    "roster": {"path": "docs/receipts/probe-samples/DEV-1000-NEW500.json", "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"},
+    "metadata": {"path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json", "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"},
+    "seed": 20260913,
+    "n_replicates": 10000,
+    "metrics": ["scenario_action_exact", "scenario_exact", "action_exact", "slot_f1_exact_f1", "slu_f1_f1"],
+    "micro_metrics": {
+      "slu_f1_micro": {
+        "tp": ["slu_f1_word_tp", "slu_f1_char_tp"],
+        "fp": ["slu_f1_word_fp", "slu_f1_char_fp"],
+        "fn": ["slu_f1_word_fn", "slu_f1_char_fn"]
+      }
+    },
+    "inputs": {
+      "direct": {
+        "future_run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-V1",
+        "future_attempt_id": "attempt-slurp-direct-max512-dev1000-generation-v1",
+        "manifest": {"path": null, "sha256": "PENDING-DIRECT-MAX512-DEV1000-MANIFEST-SHA256"},
+        "score_source": "complete-score-receipt",
+        "score_receipt": {"cell_id": "PENDING-DIRECT-MAX512-DEV1000-SCORE-RECEIPT-CELL-ID", "path": null, "sha256": "PENDING-DIRECT-MAX512-DEV1000-SCORE-RECEIPT-SHA256"},
+        "scorers": {"official": "slurp-slu-official"}
+      },
+      "native_dual_store": {
+        "future_run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-V1",
+        "future_attempt_id": "attempt-slurp-native-dual-store-dev1000-generation-v1",
+        "manifest": {"path": null, "sha256": "PENDING-NATIVE-DUAL-STORE-DEV1000-MANIFEST-SHA256"},
+        "score_source": "complete-score-receipt",
+        "score_receipt": {"cell_id": "PENDING-NATIVE-DUAL-STORE-DEV1000-SCORE-RECEIPT-CELL-ID", "path": null, "sha256": "PENDING-NATIVE-DUAL-STORE-DEV1000-SCORE-RECEIPT-SHA256"},
+        "scorers": {"official": "slurp-slu-official"}
+      }
+    },
+    "contrasts": [{
+      "name": "native_dual_store_minus_direct_max512",
+      "left": "direct",
+      "right": "native_dual_store",
+      "scorers": ["official"],
+      "populations": ["NEW500", "OLD500", "DEV1000"]
+    }]
+  },
+  "analysis_runner": {
+    "module": "src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py",
+    "mode": "default saved-score path with verified complete-score receipts",
+    "score_once": "src/speech_aware_evidence_acquisition/core/scoring_batch.py",
+    "score_receipt_verifier": "src/speech_aware_evidence_acquisition/core/scoring_receipt.py",
+    "shared_resampling": ["src/speech_aware_evidence_acquisition/analysis/paired.py", "src/speech_aware_evidence_acquisition/analysis/bootstrap.py"],
+    "no_new_scorer_invocations": 0,
+    "no_new_script": true
+  },
+  "method_contract": {
+    "sign": "native dual-store system minus matched direct max512; higher task quality is positive",
+    "primary_population": "NEW500",
+    "primary_outcome": "official pooled SLU micro F1",
+    "primary_estimand": "paired whole-speaker cluster bootstrap delta with 10000 draws, seed 20260913, and two-sided percentile CI90",
+    "natural_mixture": "The primary point estimate and bootstrap use the roster's natural mixture.",
+    "equal_stratum": "Report equal-scenario point deltas separately for every metric; do not replace natural-mixture inference with an equal-stratum average.",
+    "population_rule": "NEW500 remains primary; OLD500 and DEV1000 remain descriptive sensitivity populations. The latter cannot replace the primary result. Do not redraw, filter, reweight, or promote a secondary population.",
+    "pooled_micro_rule": "Compute slu_f1_micro only from saved official word and character TP, FP, and FN sufficient counts. It is not the mean of per-sample F1.",
+    "row_mean_rule": "slu_f1_f1 is the mean per-sample official SLU F1 and is reported as a distinct estimand.",
+    "secondary_quality": ["joint scenario/action intent accuracy", "scenario accuracy", "action accuracy", "mean exact slot/entity F1", "mean per-sample official SLU F1", "per-scenario descriptive tables", "paired saves, harms, ties, malformed, empty, and saturated final deliveries"],
+    "sensitivity": "Report the shared scenario-stratified paired row-bootstrap CI90 alongside the speaker-cluster primary interval. It is a sensitivity, not a replacement primary analysis."
+  },
+  "predeclared_advancement": {
+    "advance_condition": "Advance as an exploratory complete-system capability only when the NEW500 official pooled SLU micro F1 speaker-cluster CI90 lower endpoint is greater than zero and the DEV1000 and equal-scenario pooled-micro point deltas are both positive.",
+    "meaning": "This is an engineering selection rule for bounded exploratory system development, not superiority, generalization, a component-causal claim, or confirmatory inference.",
+    "intent_and_regressions": "Report intent, scenario, action, slot/entity, malformed, empty, saturation, saves, harms, and ties. They diagnose the next capability but are not arbitrary vetoes of a positive primary quality result.",
+    "if_inconclusive": "Do not extend or rerun to seek a favorable result. Preserve the paired result and inspect the named complete-system bottleneck using the frozen candidate, role, terminal, tool, and OBS/ORG/SUPPLY/USE diagnostics.",
+    "if_harmful": "If the primary CI90 is wholly below zero, preserve the result, reverse the prospective step, and root-cause the named complete-system failure before another extension.",
+    "next_capability_diagnosis": "Compare candidate gold-in-up-to-N coverage with covered-but-final-wrong resolution, correct-intent/entity error partitions, terminal and output failures, and actual role/tool/supply traces. Candidate misses favor a discriminative Perception evidence extension; covered-but-unresolved or correct-intent/entity errors favor Solver evidence-use or slot-resolution work; reliable terminal or format failures require the named reliability repair first. If no diagnostic dominates, hold the next mechanism for root review."
+  },
+  "diagnostics_after_registered_release": {
+    "candidate": "Use the separately frozen native diagnostics template to report gold intent inclusion in the actual unpadded Perception candidate set up to N=3, rank-one correctness, observed width, gold-missing cases, covered-but-final-incorrect cases, final-correct-outside-candidate cases, rank-one-to-final saves and harms, and per-scenario/population tables. These are system-only descriptive diagnostics and never filter the paired direct comparison.",
+    "native_episode": "Use analyze_verified_native_episode_statistics over the sealed native bundle to report raw role visits, all model contacts by role, completion caps and stops, Planner action/revision histograms, terminal solver dispositions, native tool events, supplied values, and lexical consumption.",
+    "information_planes": "Report OBS, ORG, SUPPLY, and USE counts and provenance when present. Lexical USE/COPY/IGNORE is descriptive overlap only and does not prove semantic or causal use.",
+    "cost": "Report model contacts, tool contacts, tokens, speech seconds, latency, fit/generation/scoring windows, and supplied values. Cost and latency are descriptive only and never reject a quality-positive result."
+  },
+  "authorization_state": "No generation, scoring, quality read, or diagnostic read is authorized by this recipe. After both complete 1000-row manifests seal, root binds measured paths, hashes, and receipt cell IDs; each arm has exactly its first complete official score; root records a result-read release; then the shared read-only tools run once.",
+  "output": {
+    "future_output_relpath": "analysis/SAEA-SLURP-DIRECT-VS-NATIVE-DUAL-STORE-PAIRED-ANALYSIS-V1/score-contrasts.json",
+    "native_diagnostics_template": "docs/readiness/2026-09-13-slurp-direct-vs-native-dual-store-native-diagnostics.template.json",
+    "preserve_inconclusive_labels": true,
+    "source_bindings": "Root replaces pending values only with sealed measured artifacts. Do not alter the method, metric order, seed, roster, or advancement rule while binding."
+  },
+  "purpose": {
+    "comparison": "A paired complete-system comparison between matched direct max512 task answering and the independent native dual-store system on the same DEV1000 sample identities.",
+    "native_system": "Perception receives up to eight sealed speech-retrieved intent-boundary values, Solver retains candidate-associated slot-contract supply, Reviewer alone has the task-contract tool, the finite terminal policy remains explicit, and Solver owns the final answer.",
+    "direct_system": "One direct-only task request with the same frozen weights, resident max512 geometry, prepared speech packets, full 60-label task contract, and no supplied knowledge, candidate state, review, or tool use.",
+    "claim_boundary": "This is not a knowledge ablation, a component causal comparison, or a reuse of the original positive exploratory pair or either failed replication as a matched arm. Preserve those records unchanged."
+  }
+}
