@@ -1,0 +1,53 @@
+{
+  "analysis_recipe": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-13-slurp-distinct-commitment-analysis-bound-v1.json",
+    "sha256": "eb1131557188b1d30795adbee24a3ec5b7c019083a2bf471b2cff909efdbb4a2"
+  },
+  "frozen_recipe": {
+    "path": "/home/chao/saea-worktrees/phase-materialization-state-repair-v1/docs/readiness/2026-09-13-slurp-distinct-commitment-analysis-recipe-v2.json",
+    "sha256": "48ad90ad08f706a241a382ea406cb9a8118a41a9fcebb79f4044fb883cc5bfac"
+  },
+  "new_model_contacts": 0,
+  "new_scorer_invocations": 0,
+  "parents": {
+    "closed-joint": {
+      "attempt_state": "FINALIZED",
+      "derived_manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1/attempt-slurp-distinct-closed-joint-recovery-generation-v1/declared-deliveries/slurp-distinct-closed-joint-dev1000-delivery-v1/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1--delivery-slurp-distinct-closed-joint-dev1000-delivery-v1.run-manifest.json",
+        "sha256": "25f6fd7070ad8cbdb0336e82711fd21671acdf4fb996810d9b0434f5ab966d67"
+      },
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1/attempt-slurp-distinct-closed-joint-recovery-generation-v1/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1.run-manifest.json",
+      "sample_count": 1000,
+      "score_receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1/attempt-slurp-distinct-closed-joint-recovery-generation-v1/score-batch/slurp-distinct-closed-joint-dev1000-delivery-v1.complete-score-receipt.json",
+        "sha256": "3272ebd67b5aae33f2c471035a0c0946c5e36f33ddf7620b7011abec4340b22f"
+      },
+      "sha256": "ef2f6849ba9d2ec23300481860900b54c37b75bac5cb4fffbf2ae6118bba4d6e",
+      "status": "COMPLETED"
+    },
+    "hard-first": {
+      "attempt_state": "FINALIZED",
+      "derived_manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1/attempt-slurp-distinct-hard-first-recovery-generation-v1/declared-deliveries/slurp-distinct-hard-first-dev1000-delivery-v1/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1--delivery-slurp-distinct-hard-first-dev1000-delivery-v1.run-manifest.json",
+        "sha256": "d351368b00471224bd0b71ea7684b0695011068597c9eaba04b64739799cda14"
+      },
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1/attempt-slurp-distinct-hard-first-recovery-generation-v1/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1.run-manifest.json",
+      "sample_count": 1000,
+      "score_receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1/attempt-slurp-distinct-hard-first-recovery-generation-v1/score-batch/slurp-distinct-hard-first-dev1000-delivery-v1.complete-score-receipt.json",
+        "sha256": "c56a795bd73ce53c42bcd1523e4f2828149201ee29796398813de7ee9075ca3d"
+      },
+      "sha256": "67605a88986a69e54c78cb9f1945a21151b645c8cd096a09e5602839146f5d98",
+      "status": "COMPLETED"
+    }
+  },
+  "permitted_read": "Read the two sealed successor arms and source-bound diagnostics under the frozen paired-analysis recipe. Do not invoke any model, tokenizer, encoder or scorer.",
+  "release_id": "SAEA-SLURP-DISTINCT-COMMITMENT-READ-RELEASE-V1",
+  "released_at_utc": "2026-09-13T09:19:29.768561+00:00",
+  "released_by": "root",
+  "schema": "saea-result-read-release-v1",
+  "source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-DISTINCT-HYPOTHESIS-SOURCE-RECOVERY-V1/hypotheses.source.json",
+    "sha256": "0146d87679a27f85ee7d0927039f8cd64805ceb40f3b42f3e788529d4a8863d3"
+  }
+}
