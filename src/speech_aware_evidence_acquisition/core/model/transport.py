@@ -885,8 +885,9 @@ class LlamaServerTransport:
         # payload field this transport reads outside decoding_params/prompt
         # content. Sent verbatim as the OpenAI-compatible `tools` key so the
         # GGUF chat template renders `<tools>...</tools>` itself -- no
-        # `tool_choice` is ever added (module goal: let the template's own
-        # default tool-use behavior decide, never force a call). Every arm
+        # Historical requests omit `tool_choice`, leaving the template's own
+        # default tool-use behavior unchanged. Optional native per-contact
+        # controls are validated and projected below. Every arm
         # that does not declare `tool_schemas` (core.policies.build_arm_payload
         # refuses to attach it otherwise) leaves `payload.get(...)` at None
         # here and this body is byte-identical to before this arm existed.
