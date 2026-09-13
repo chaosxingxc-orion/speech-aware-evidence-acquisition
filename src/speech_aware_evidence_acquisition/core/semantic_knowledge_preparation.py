@@ -18,6 +18,17 @@ from speech_aware_evidence_acquisition.core.preparation import (
     canonical_bytes,
     digest,
 )
+from speech_aware_evidence_acquisition.core.roster import (
+    CONSTRUCTION_ROSTER_ROLE,
+    RECEIPT_SCHEMA,
+    RosterError,
+    read_roster,
+)
+from speech_aware_evidence_acquisition.core.split_receipt import SplitReceiptError
+from speech_aware_evidence_acquisition.reproduction.probe_split import (
+    PROBE_SAMPLES_DIRNAME,
+    load_verified_probe_split,
+)
 from speech_aware_evidence_acquisition.rails.errors import RailsError
 from speech_aware_evidence_acquisition.rails.semantic_knowledge_build import (
     AuthoredSemanticKnowledgeSpec,
@@ -25,10 +36,9 @@ from speech_aware_evidence_acquisition.rails.semantic_knowledge_build import (
 
 REGISTRATION_SCHEMA = "saea-authored-semantic-knowledge-preparation-v1"
 SOURCE_SCHEMA = "saea-authored-semantic-knowledge-source-v1"
-ROSTER_SCHEMA = "saea-semantic-knowledge-roster-v1"
 COMPLETION_SCHEMA = "saea-authored-semantic-knowledge-preparation-completion-v1"
 _RELEASE_SCHEMA = "saea-knowledge-store-release-v1"
-_SLUG = re.compile(r"^[a-z0-9]+(?:[-_.][a-z0-9]+)*$")
+_STORE_ID = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
@@ -62,7 +72,7 @@ def _exact_keys(value: Mapping[str, Any], expected: set[str], *, name: str) -> N
 def _text(value: object, *, name: str, slug: bool = False) -> str:
     if not isinstance(value, str) or not value:
         raise SemanticKnowledgePreparationError(f"{name} must be non-empty text")
-    if slug and _SLUG.fullmatch(value) is None:
+    if slug and _STORE_ID.fullmatch(value) is None:
         raise SemanticKnowledgePreparationError(
             f"{name} must be a canonical identifier"
         )
@@ -126,38 +136,77 @@ def _json(raw: bytes, *, name: str) -> Mapping[str, Any]:
         ) from exc
 
 
-def _sample_ids(value: object, *, name: str) -> tuple[str, ...]:
-    if not isinstance(value, list) or not value:
-        raise SemanticKnowledgePreparationError(f"{name} must be a non-empty list")
-    result = tuple(_text(item, name=f"{name} entry") for item in value)
-    if len(set(result)) != len(result):
-        raise SemanticKnowledgePreparationError(f"{name} must not contain duplicates")
-    return result
+@dataclass(frozen=True)
+class _RosterReceipt:
+    roster_id: str
+    split_identity_hash: str
+    sample_ids: tuple[str, ...]
+    roster_role: str | None
+    split_role: str
 
 
 def _roster(
-    raw: bytes, *, name: str, carrier: str
-) -> tuple[Mapping[str, Any], tuple[str, ...]]:
-    roster = _json(raw, name=name)
-    _exact_keys(
-        roster,
-        {
-            "schema",
-            "roster_id",
-            "carrier_lock_key",
-            "roster_role",
-            "split_identity_hash",
-            "sample_ids",
-        },
-        name=name,
+    pin: _Pin,
+    raw: bytes,
+    *,
+    name: str,
+    carrier: str,
+    require_construction: bool,
+    repo_root: Path,
+) -> _RosterReceipt:
+    document = _json(raw, name=name)
+    schema = document.get("schema")
+    if schema == RECEIPT_SCHEMA:
+        try:
+            roster = read_roster(pin.path)
+        except (OSError, UnicodeError, json.JSONDecodeError, RosterError) as exc:
+            raise SemanticKnowledgePreparationError(
+                f"{name} is not a verified roster"
+            ) from exc
+        if roster.get("carrier_lock_key") != carrier:
+            raise SemanticKnowledgePreparationError(f"{name} has the wrong carrier")
+        role = roster.get("roster_role", "evaluation")
+        if require_construction and role != CONSTRUCTION_ROSTER_ROLE:
+            raise SemanticKnowledgePreparationError(
+                f"{name} must retain construction role"
+            )
+        roster_id = _text(roster.get("roster_id"), name=f"{name}.roster_id")
+        split_role = _text(roster.get("split_role"), name=f"{name}.split_role")
+        items = roster["items"]
+        return _RosterReceipt(
+            roster_id=roster_id,
+            split_identity_hash=_text(
+                roster["split_identity_hash"], name=f"{name}.split_identity_hash"
+            ),
+            sample_ids=tuple(str(item["sample_id"]) for item in items),
+            roster_role=str(role),
+            split_role=split_role,
+        )
+    if schema == "saea-dev-ladder-v1" and not require_construction:
+        expected_parent = Path("docs") / "receipts" / PROBE_SAMPLES_DIRNAME
+        relative = Path(pin.relpath)
+        if relative.parent != expected_parent or relative.suffix != ".json":
+            raise SemanticKnowledgePreparationError(
+                f"{name} probe receipt must use its governed repository path"
+            )
+        try:
+            verified = load_verified_probe_split(repo_root, relative.stem)
+        except SplitReceiptError as exc:
+            raise SemanticKnowledgePreparationError(
+                f"{name} is not a verified probe roster"
+            ) from exc
+        if verified.carrier_lock_key != carrier:
+            raise SemanticKnowledgePreparationError(f"{name} has the wrong carrier")
+        return _RosterReceipt(
+            roster_id=_text(document.get("probe"), name=f"{name}.probe"),
+            split_identity_hash=verified.identity_hash,
+            sample_ids=verified.ids,
+            roster_role=None,
+            split_role=verified.split_role,
+        )
+    raise SemanticKnowledgePreparationError(
+        f"{name} has unsupported governed roster schema"
     )
-    if roster["schema"] != ROSTER_SCHEMA:
-        raise SemanticKnowledgePreparationError(f"{name} has unsupported schema")
-    if roster["carrier_lock_key"] != carrier or roster["roster_role"] != "construction":
-        raise SemanticKnowledgePreparationError(f"{name} has wrong carrier or role")
-    _text(roster["roster_id"], name=f"{name}.roster_id")
-    _text(roster["split_identity_hash"], name=f"{name}.split_identity_hash")
-    return roster, _sample_ids(roster["sample_ids"], name=f"{name}.sample_ids")
 
 
 def _source_rows(
@@ -219,7 +268,9 @@ def _registration(
     if registration["schema"] != REGISTRATION_SCHEMA:
         raise SemanticKnowledgePreparationError("registration has unsupported schema")
     _text(registration["registration_id"], name="registration.registration_id")
-    for key in ("carrier_lock_key", "builder_policy_id", "store_id", "store_role"):
+    for key in ("carrier_lock_key", "builder_policy_id"):
+        _text(registration[key], name=f"registration.{key}")
+    for key in ("store_id", "store_role"):
         _text(registration[key], name=f"registration.{key}", slug=True)
     if registration["source_partition_role"] != "train":
         raise SemanticKnowledgePreparationError(
@@ -330,15 +381,27 @@ def prepare_semantic_knowledge_store(
     )
 
     carrier = registration["carrier_lock_key"]
-    scope, scope_ids = _roster(scope_raw, name="construction_scope", carrier=carrier)
-    permitted, permitted_ids = _roster(
-        permitted_raw, name="permitted_roster", carrier=carrier
+    scope = _roster(
+        pins["construction_scope"],
+        scope_raw,
+        name="construction_scope",
+        carrier=carrier,
+        require_construction=True,
+        repo_root=repo_root,
     )
-    if permitted["split_identity_hash"] != pins["source_identity"]:
+    permitted = _roster(
+        pins["permitted_roster"],
+        permitted_raw,
+        name="permitted_roster",
+        carrier=carrier,
+        require_construction=True,
+        repo_root=repo_root,
+    )
+    if permitted.split_identity_hash != pins["source_identity"]:
         raise SemanticKnowledgePreparationError(
             "permitted roster split identity differs"
         )
-    if not set(permitted_ids).issubset(scope_ids):
+    if not set(permitted.sample_ids).issubset(scope.sample_ids):
         raise SemanticKnowledgePreparationError(
             "permitted support roster is outside construction scope"
         )
@@ -346,9 +409,16 @@ def prepare_semantic_knowledge_store(
     forbidden_records = []
     forbidden_ids: set[str] = set()
     for index, raw in enumerate(forbidden_raw):
-        roster, ids = _roster(raw, name=f"forbidden_rosters[{index}]", carrier=carrier)
-        forbidden_records.append((roster, ids))
-        forbidden_ids.update(ids)
+        roster = _roster(
+            pins["forbidden_rosters"][index],
+            raw,
+            name=f"forbidden_rosters[{index}]",
+            carrier=carrier,
+            require_construction=False,
+            repo_root=repo_root,
+        )
+        forbidden_records.append(roster)
+        forbidden_ids.update(roster.sample_ids)
 
     rows = _source_rows(
         source_raw,
@@ -366,7 +436,7 @@ def prepare_semantic_knowledge_store(
             AuthoredSemanticKnowledgeSpec(
                 carrier_lock_key=carrier,
                 source_split_identity_hash=pins["source_identity"],
-                permitted_source_sample_ids=permitted_ids,
+                permitted_source_sample_ids=permitted.sample_ids,
                 source_partition_role=registration["source_partition_role"],
             ),
             rows=rows,
@@ -417,22 +487,28 @@ def prepare_semantic_knowledge_store(
         "binding_sha256": digest(binding),
         "binding": binding,
         "outer_construction_scope": {
-            "roster_id": scope["roster_id"],
-            "split_identity_hash": scope["split_identity_hash"],
-            "sample_count": len(scope_ids),
+            "roster_id": scope.roster_id,
+            "roster_role": scope.roster_role,
+            "split_role": scope.split_role,
+            "split_identity_hash": scope.split_identity_hash,
+            "sample_count": len(scope.sample_ids),
         },
         "exact_support_roster": {
-            "roster_id": permitted["roster_id"],
-            "split_identity_hash": permitted["split_identity_hash"],
-            "sample_count": len(permitted_ids),
+            "roster_id": permitted.roster_id,
+            "roster_role": permitted.roster_role,
+            "split_role": permitted.split_role,
+            "split_identity_hash": permitted.split_identity_hash,
+            "sample_count": len(permitted.sample_ids),
         },
         "forbidden_rosters": [
             {
-                "roster_id": roster["roster_id"],
-                "split_identity_hash": roster["split_identity_hash"],
-                "sample_count": len(ids),
+                "roster_id": roster.roster_id,
+                "roster_role": roster.roster_role,
+                "split_role": roster.split_role,
+                "split_identity_hash": roster.split_identity_hash,
+                "sample_count": len(roster.sample_ids),
             }
-            for roster, ids in forbidden_records
+            for roster in forbidden_records
         ],
         "snapshot": snapshot_pin,
         "snapshot_file_sha256": hashlib.sha256(snapshot_raw).hexdigest(),
