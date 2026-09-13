@@ -148,6 +148,7 @@ from .knowledge import (
     RankResult,
 )
 from .material import PhaseMaterial
+from .core_client import CoreCompletion, FrozenCoreClientError
 from .runner import (
     AgentContactPlan,
     AgentLoopAdvance,
@@ -175,7 +176,7 @@ PHASE_KNOWLEDGE_KINDS = frozenset({"none", "supplied"})
 #: that phase's own response as the final answer -- the last phase always
 #: stops regardless.
 PHASE_PROGRAM_STOP_RULES = frozenset(
-    {"always-run-full-program", "stop-policy-optional-early-exit"}
+    {"always-run-full-program", "stop-policy-optional-early-exit", "native-answer-or-tool"}
 )
 
 _PHASE_SPEC_KEYS = frozenset(
@@ -632,6 +633,21 @@ class EvidenceAgentController:
             raise RailsControllersError("state_namespace must be a non-empty string or None")
         if tools_for_phase is not None and not callable(tools_for_phase):
             raise RailsControllersError("tools_for_phase must be callable or None")
+        self._native_mode = program.stop_rule == "native-answer-or-tool"
+        native_dispatcher = getattr(tools_for_phase, "native_enabled", False)
+        if self._native_mode != bool(native_dispatcher):
+            raise RailsControllersError(
+                "native answer-or-tool program requires its native tool dispatcher"
+            )
+        if self._native_mode and stop_policy is not None:
+            raise RailsControllersError("native model decisions cannot use an external stop policy")
+        if self._native_mode and any(
+            phase.response_format_id is not None or phase.barrier
+            for phase in program.phases
+        ):
+            raise RailsControllersError(
+                "native answer-or-tool phases cannot force a response format or phase barrier"
+            )
         self._tools_for_phase = tools_for_phase
         self._state_namespace = state_namespace
         self._program = program
@@ -700,6 +716,11 @@ class EvidenceAgentController:
         decoding_params: dict[str, object] = {}
         if material.response_format is not None:
             decoding_params["response_format"] = dict(material.response_format)
+        if self._native_mode:
+            decoding_params.update(
+                tool_choice="none" if phase == self._program.phases[-1] else "auto",
+                parallel_tool_calls=False,
+            )
         self._pending_contact_id = material.contact_id
         # WAVE R7: a cell may declare its OWN key-representation / matcher
         # identity instead of the program-derived default. It exists for the
@@ -755,6 +776,26 @@ class EvidenceAgentController:
             raise RailsControllersError(
                 "EvidenceAgentController.advance received an out-of-sequence contact"
             )
+        native_requested = False
+        if self._native_mode:
+            if (
+                len(context.core_completions) != 1
+                or not isinstance(context.core_completions[0], CoreCompletion)
+                or contact.query_state_sha256 != context.query_state.content_hash()
+            ):
+                raise RailsControllersError("native completion binding is missing or stale")
+            completion = context.core_completions[0]
+            try:
+                completion.assert_binding(
+                    sample_id=context.sample_id, agent_contact_id=contact.contact_id,
+                    response_text=response_text,
+                )
+            except FrozenCoreClientError as error:
+                raise RailsControllersError(f"native completion binding refused: {error}") from error
+            raw_calls = completion.tool_calls
+            native_requested = raw_calls is not None and raw_calls != []
+            if index + 1 == len(self._program.phases) and native_requested:
+                raise RailsControllersError("final answer contact returned a native tool request")
         response_sha256 = hashlib.sha256(response_text.encode("utf-8")).hexdigest()
         # WAVE R7: what this phase SEALS may be a registered VIEW of the raw
         # response rather than the raw response itself (class docstring,
@@ -790,7 +831,7 @@ class EvidenceAgentController:
         self._resolve_review(phase, staged, response_text)
 
         is_last = index + 1 >= len(self._program.phases)
-        should_stop = is_last
+        should_stop = not native_requested if self._native_mode else is_last
         if (
             not should_stop
             and self._program.stop_rule == "stop-policy-optional-early-exit"
@@ -816,7 +857,7 @@ class EvidenceAgentController:
         # be bound to (rails.runner._validate_agent_knowledge_decision
         # validates them against exactly that state).
         action_phase = getattr(self._tools_for_phase, "is_action_phase", lambda _name: False)
-        if should_stop and action_phase(phase.name):
+        if should_stop and action_phase(phase.name) and not self._native_mode:
             raise RailsControllersError("a Planner action phase cannot deliver its response")
         tool_step: PhaseToolStep | None = None
         supply: PhaseSupply | None = None
@@ -824,6 +865,8 @@ class EvidenceAgentController:
             next_spec = self._program.phases[index + 1]
             if self._tools_for_phase is not None:
                 tool_step = self._tools_for_phase(phase.name, next_spec.name, staged)
+                if self._native_mode and tool_step is None:
+                    raise RailsControllersError("native tool request produced no tool observation")
                 if tool_step is not None:
                     if not isinstance(tool_step, PhaseToolStep):
                         raise RailsControllersError("tools_for_phase must return PhaseToolStep or None")
@@ -961,6 +1004,7 @@ class EvidenceAgentController:
                 context.prior_response_sha256s + (response_sha256,)
             ),
             contact_index=context.contact_index,
+            core_completions=context.core_completions,
         )
 
     def _resolve_state_view(self, phase: PhaseSpec, response_text: str) -> str:
@@ -1148,6 +1192,7 @@ def default_controller_factory(program: PhaseProgram) -> Callable[[str], Evidenc
 
 
 _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
+    "native-answer-or-tool-v1": "native-answer-or-tool-v1.json",
     "phase-task-tools-then-solve-v1": "phase-task-tools-then-solve-v1.json",
     "phase-task-tools-solve-revise-v1": "phase-task-tools-solve-revise-v1.json",
     "phase-direct-only-v1": "phase-direct-only-v1.json",
@@ -1231,6 +1276,11 @@ def register_phase_programs_v1() -> None:
     # engineering-base gate (scripts/checks/engineering_base_check.py) can
     # read the registered name set from source without importing the package.
     registered = AGENT_CONTROLLERS.names()
+    if "native-answer-or-tool-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "native-answer-or-tool-v1",
+            default_controller_factory(default_phase_program("native-answer-or-tool-v1")),
+        )
     if "phase-direct-only-v1" not in registered:
         AGENT_CONTROLLERS.register(
             "phase-direct-only-v1",

@@ -2056,6 +2056,13 @@ class FrozenCoreClient:
             )
         return payload
 
+    def record_tool_call(self, count: int = 1) -> None:
+        """Count a registered internal invocation without a model/audio debit."""
+        with self._state_lock:
+            if self._closed:
+                raise FrozenCoreClientError("record_tool_call() called after close()")
+            self._adapter.record_tool_call(count)
+
     def close(self) -> dict[str, object]:
         """Close the owned ``TraceSink`` (mirrors ``core.driver.run_experiment``'s
         own ``manifest_hash = sink.close()``) and return a JSON-safe summary
