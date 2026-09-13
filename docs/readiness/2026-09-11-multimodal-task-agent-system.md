@@ -1,6 +1,6 @@
 # Multimodal task agent: knowledge, corrective memory and control
 
-Current design overlay: OWNER018-021 adds task-specific, source-grounded discriminative values and includes Audio2Tool in parallel architecture/readiness. Read [the dataset/task synthesis](2026-09-11-task-specific-knowledge-and-memory-analysis.md) and STATUS-040. The sequence below is superseded where it prioritizes bulk paired-audio encoding before resolving the value-content question. The corrective-memory runtime is now integrated and tested through the actual FlightRuntime/OpenJiuwen path; real admitted memories remain pending. The next executable complete-task comparison is frozen in [the task-agent protocol](2026-09-11-slurp-task-agent-protocol.md): direct, fixed historical-knowledge agent, and the same agent with compact TRAIN intent-role association values.
+Current execution overlay, September13: [OWNER-SYSTEM-VERSIONS-025](../superpowers/plans/experiment-handoff/OWNER-SYSTEM-VERSIONS-025.md) makes direct frozen-model calling versus the complete agentic system the primary task comparison. Expand system capability step by step from results. [STATUS-075](../superpowers/plans/experiment-handoff/STATUS-075.md) and [the active direct-versus-native plan](2026-09-13-slurp-direct-vs-native-system-plan-v1.md) supersede older supplied/withheld knowledge comparisons and bulk-encoding priority in this document. The direct arm is complete and first-scored; the system is generating from frozen7ec4cf34. Quality remains unread. Preserve task-specific discriminative knowledge, distinct corrective memory and Audio2Tool alongside SLURP and E21/E22 design/readiness.
 
 Date: September 11, 2026. Authority: OWNER-KNOWLEDGE-EXPERIENCE-SEPARATION-017, continuing OWNER016's complete-system design, OWNER015's SLURP-first sequence and OWNER014's quality-first objective. This mutable specification replaces its earlier classification of the raw TRAIN store as episodic memory. Historical source receipts and owner/status records remain unchanged.
 
@@ -89,22 +89,39 @@ Record available candidates, selected experience IDs/version, applicability matc
 | Current memory-tool output | AgentStateArtifact and the new tool-result bridge | A newly created current-query-bound state can reference old experience; never inject old episode state with stale provenance |
 | External update | analysis/training_free_vw_control, proposer/evolution and audited candidate optimizers | Reuse suitable reward/policy lineage after the state/action/memory objects are concrete; no production RL integration is claimed |
 
-The new action bridge presently implements two primitives: read the current legal task contract and retrieve shared phase knowledge. It supports explicit fixed and frozen-core choice modes and one action per configured nonfinal phase. A separate opt-in source-bound corrective-memory tool is now integrated; no real memory has been admitted. The action bridge does not implement every observation action or the full reviewed acquisition loop. Its plan/solve configuration is an engineering increment, not the locked final system.
+The current native configuration uses OpenJiuwen Perception, joint Solver, Reviewer and Planner with at most one revision. Perception proposes up to three intents; the joint Solver consumes candidate-conditioned released slot contracts. Reviewer alone exposes the native task-contract tool and is currently instructed to call it. Planner accepts or requests the bounded revision; Solver retains final-answer authority. This is the running complete-system version, not yet a demonstrated quality improvement.
+
+The existing live speech-observation tool has lazy local Whisper execution and source-bound returns. Its optional Reviewer configuration remains held until the current error analysis justifies it and its own runtime plans are registered. Prepared transcript lookup and current native live execution are different capabilities. Corrective-memory interfaces exist, but no real optimized memory is admitted by this current experiment.
 
 Keep the direct baseline in the same FlightRuntime/controller/OpenJiuwen family. A toolkit registration alone never changes a historical configuration into a model-selected tool loop. Shared preparation, actual request fitting, final delivery and scoring remain the common stages.
 
-## Minimal experiments and interpretation
+## System versions and interpretation
 
-Stage these as named questions, with exact rosters, contact ceilings and dependencies fixed prospectively:
-- Direct versus a complete fixed agent: assess the overall system contribution. This contrast can change the number of stages; it is not a pure retrieval effect.
-- Fixed agent without additional knowledge versus the same agent with knowledge: assess evidence provision.
-- Text versus paired speech/text knowledge, with selection held fixed: assess multimodal value consumption.
-- The same knowledge-enabled system without versus with admitted experience memory: assess memory's additional contribution. Hold the knowledge universe, tool capabilities and maximum graph bounds fixed.
-- Fixed versus adaptive control over the same available system: assess action selection, then external training-free updates against that frozen baseline.
+Keep direct frozen-model calling as the task baseline. Evaluate each complete
+system version on the registered full roster through the same shared runtime,
+model and official scorer. Additional model calls are intentional; quality is
+primary and cost is descriptive.
 
-Do not launch every combination. Select the smallest comparisons needed to resolve the current system question, and preserve historical closed attempts. Check both component behavior and fresh end-to-end performance; replaying a sealed predecessor cannot replace complete system evidence.
+Complete the current paired analysis before selecting a successor. Use
+candidate coverage, candidate-internal choice, spoken-value errors and
+harmful revisions to identify the next bounded capability. Examples include
+discriminative intent knowledge, controlled candidate reopening, improved
+joint reasoning, optional Reviewer-selected speech evidence and validated
+corrective experience. Do not implement every option or queue a full component
+factorial. The supplied/withheld knowledge draft is withdrawn.
 
-A few traceable useful experiences can test the memory interface; they cannot establish a general quality claim on a tiny screen. Apply the repository's full-roster and pairing rules for effectiveness claims. A four-row proof is connectivity evidence only.
+Report each complete version against direct task performance; compare
+successive system versions where their sources and estimands support it.
+Component replay can help resolve a named cause, but cannot replace live
+end-to-end system evidence. Preserve negative and inconclusive results and
+follow the inherited same-roster replication or named-component root-cause
+rule before admitting another mechanism. Large gains at every increment are
+not a requirement for selecting useful optimization surfaces.
+
+Once the state/action space is useful and fixed, compare an externally
+optimized policy with that fixed system and with direct calling. A manually
+edited prompt, extra tool or memory store alone is not a completed RL cycle.
+Keep update, selection and frozen evaluation separated.
 
 ## Training-free optimization surface
 
@@ -116,13 +133,26 @@ Treat memory and policy as separate but interacting external objects:
 
 Use outcome-linked updates to experience utility and conditional policy, with provenance. Terminal reward alone does not allocate credit to every earlier action; use matched alternatives or explicit uncertainty in credit. Do not call arbitrary summarization or prompt editing RL. TF-GRPO is the 2025 reference; previously audited 2026 implementations remain candidates, not the architecture's organizing principle. No cost or online-latency reward penalty is required.
 
-## Preparation and execution schedule
+## Current preparation and execution schedule
 
-Current priority: complete the direct/historical-knowledge/compact-frame SLURP comparison using already prepared query packets and solve-phase recall. The earlier paired-audio encoding sequence below is deferred and does not block this question. Retain all held KU-S4 gates. Audio2Tool all-eight-tier preparation needs a shared replacement for the old G4 hard-coded screen path; the existing contrast-card renderer is reusable, but this is not yet a configuration-only full-tier experiment.
+Keep the current direct-versus-native campaign on its frozen WSL worktree and
+root-owned decoder service. Reuse verified query packets, match complete
+serving identity and actual request capacity, keep one generating experiment,
+and overlap one complete scorer with generation. Do not replace the resident
+service or modify the active program to admit a later version.
 
-Complete the current shared action/knowledge increment and its configuration path. Finish the generic registered-media connection in the public preparation runtime/CLI, then register one missing-packet encoding window. Use the root-owned encoder service and return to a decoder without the projector in GPU memory. Fit actual multi-packet/stage requests, run eligible configurations consecutively, and overlap preparation and one complete scorer.
+In parallel, finish only source-bound analysis and the concrete preparation
+needed by plausible next capabilities. The optional live-Whisper draft has
+verified local source/checkpoint bytes but no new ASR execution authorization.
+Its use is selected by Reviewer during execution, not eager dataset
+transcription. Choose activation from current errors after the read release.
 
-In parallel, define corrective experience candidates and the smallest runtime memory interface from admitted execution evidence. Do not wait for a generic memory database or port every optimizer before the first system experiment. Do not confuse the current knowledge preparation with a memory-benefit experiment.
+The earlier paired-example encoding and TRAIN source proposals remain held.
+The following retained preparation facts establish historical byte readiness,
+not an active queue or a requirement to encode before the current system
+comparison. Audio2Tool remains in architecture/readiness and task-specific
+knowledge work; later E21/E22 transfer follows their own task identity,
+execution scope and official metrics.
 
 Current preparation roster uses deterministic lexical-smallest TRAIN source ID per recalled facet. It has 2,621 distinct selected recordings. Their full bytes/hashes were verified; 4 packets qualify under the frozen target decoder/projector and 2,617 inputs are cold. This is a preparation roster, not a newly authorized generation roster.
 
