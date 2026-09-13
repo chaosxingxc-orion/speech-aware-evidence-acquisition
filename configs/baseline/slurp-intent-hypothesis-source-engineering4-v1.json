@@ -55,9 +55,7 @@
   "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
   "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
   "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
-  "task_instruction_fill": null,
-  "task_instruction_template": "probes/slurp_intent_hypothesis_source_system_v1.txt",
-  "task_instruction_template_active": true,
+  "task_instruction": "You are given spoken audio expressing one command to a voice assistant. Produce exactly three ranked, mutually exclusive intent hypotheses. Use only an exact intent ID from this canonical legal inventory; do not compose or alter an ID:\nalarm_query, alarm_remove, alarm_set, audio_volume_down, audio_volume_mute, audio_volume_other, audio_volume_up, calendar_query, calendar_remove, calendar_set, cooking_query, cooking_recipe, datetime_convert, datetime_query, email_addcontact, email_query, email_querycontact, email_sendemail, general_greet, general_joke, general_quirky, iot_cleaning, iot_coffee, iot_hue_lightchange, iot_hue_lightdim, iot_hue_lightoff, iot_hue_lighton, iot_hue_lightup, iot_wemo_off, iot_wemo_on, lists_createoradd, lists_query, lists_remove, music_dislikeness, music_likeness, music_query, music_settings, news_query, play_audiobook, play_game, play_music, play_podcasts, play_radio, qa_currency, qa_definition, qa_factoid, qa_maths, qa_stock, recommendation_events, recommendation_locations, recommendation_movies, social_post, social_query, takeaway_order, takeaway_query, transport_query, transport_taxi, transport_ticket, transport_traffic, weather_query\n\nDo not provide a final scenario/action/entities task answer, a transcript, or long reasoning. The response schema is authoritative.\n",
   "what_this_is": "Four-row connectivity-only view of the scoreless fixed Top-3 source; no effectiveness inference.",
   "whole_roster_wave_barrier": true
 }
