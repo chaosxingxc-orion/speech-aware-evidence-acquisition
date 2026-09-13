@@ -3358,3 +3358,8 @@ The registered saved-score analysis completed under the root read release. NEW50
 ## 2026-09-13: Distinct candidate conditional diagnostics
 
 After the registered read release, run the shared model-free source-bound diagnostic entry at code 33d8db2f. Verify the derived common source, both delivery bundles and complete official score receipts. Preserve actual variable-width candidates and map entity exactness from the saved official FP/FN counts. The artifact conditional-diagnostics-v1.json has SHA-256 9d92ca29f9ae733dbf827979f68e3103f0f9c01f6e3a79d77223f24f1ded83a2. See docs/readiness/2026-09-13-slurp-distinct-commitment-conditional-result-v1.md. New model, encoder, tokenizer and scorer contacts: zero. Primary overall SLU verdict remains inconclusive. Raw proposal flags require the separately noted supplement; do not interpret delivered-text attempt fields as raw proposal counts.
+
+
+## 2026-09-13: Register semantic authoring source preparation
+
+Before inspecting new TRAIN semantic support, freeze docs/readiness/2026-09-13-slurp-semantic-authoring-registration-v1.json. Use only the governed A/B-excluded pool, exact identity 22f6092dfdb4a160376e529d8e59e9215bc7701e274620d35feb1c4d82f309e9. Prepare separate deterministic intent and slot support materials and construction rosters; keep DEV/test content and result feedback outside authoring. This is model-free preparation and root authoring, not a runtime knowledge release. All neural, GPU, tokenizer, tool-backend and scorer contact caps are zero.
