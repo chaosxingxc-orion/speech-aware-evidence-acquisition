@@ -148,13 +148,31 @@ def test_changed_link_order_or_feedback_is_rejected(completed_source):
         bad.validate()
 
 
-def _slurp_source(completed_source, tmp_path, mode):
+def _slurp_source(completed_source, tmp_path, mode, *, native_framework=False):
     """Build complete schema-bound synthetic SLURP phases with overlapping IDs."""
     from speech_aware_evidence_acquisition.contracts import ExecutionPlan, TraceRecord
     from speech_aware_evidence_acquisition.core.attempts import AttemptStore
     from speech_aware_evidence_acquisition.core.config import protocol_hash
     from speech_aware_evidence_acquisition.data.splits import prefixed, split_identity_hash
+    from speech_aware_evidence_acquisition.core.model.native_framework_history import (
+        framework_contact_instruction,
+        native_tool_result_message,
+    )
+    from speech_aware_evidence_acquisition.rails.core_client import (
+        CoreCompletion,
+        _agent_history,
+        _tool_schemas_sha256,
+    )
     from speech_aware_evidence_acquisition.rails.hashing import content_hash
+    from speech_aware_evidence_acquisition.rails.knowledge import AgentStateArtifact
+    from speech_aware_evidence_acquisition.rails.native_tool_authority import (
+        build_native_tool_authority,
+    )
+    from speech_aware_evidence_acquisition.rails.phase_tools import (
+        CANDIDATE_CONTRACT_TOOL,
+        TASK_CONTRACT_TOOL,
+        _native_tool_schema,
+    )
     from speech_aware_evidence_acquisition.rails.reward_links import SLURP_NATIVE_FIELDS
 
     _, _, _, seed_bundle, _ = completed_source
@@ -186,18 +204,180 @@ def _slurp_source(completed_source, tmp_path, mode):
         documents.append(record.serialize())
         hashes[rid] = record.content_hash()
 
+    def native_tool_state(*, sid, index, rid, cid, payload, text, iteration):
+        """Build the real native custody shapes without contacting a service."""
+        tool_id = TASK_CONTRACT_TOOL if iteration == 0 else CANDIDATE_CONTRACT_TOOL
+        arguments = {} if tool_id == TASK_CONTRACT_TOOL else {
+            "candidate_ids": ["synthetic-candidate-marker"],
+        }
+        schema = _native_tool_schema(
+            tool_id, ("text",),
+            candidate_limit=3 if tool_id == CANDIDATE_CONTRACT_TOOL else None,
+        )
+        calls = [{
+            "id": f"synthetic-native-call-{index}-{iteration}",
+            "type": "function",
+            "function": {
+                "name": tool_id,
+                "arguments": json.dumps(arguments, sort_keys=True, separators=(",", ":")),
+            },
+        }]
+        raw_calls = json.dumps(calls, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        assistant = {"role": "assistant", "content": text, "tool_calls": calls}
+        wire = json.dumps({"choices": [{
+            "message": assistant, "finish_reason": "tool_calls",
+        }]}, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        text_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        request_hash = content_hash(payload)
+        completion = CoreCompletion(
+            text=text, request_id=rid, sample_id=sid, agent_contact_id=cid,
+            request_sha256=request_hash, response_sha256=hashlib.sha256(wire).hexdigest(),
+            response_text_sha256=text_hash, tool_calls_json=raw_calls.encode("utf-8"),
+            wire_response_bytes=wire, tool_names=(tool_id,),
+            tool_schemas_sha256=_tool_schemas_sha256([schema]),
+        )
+        authority = build_native_tool_authority(
+            completion, role_id="reviewer", phase_id="reviewer",
+            selected_tool_schemas=[schema],
+        )
+        query_hash = content_hash({"query_sample_id": sid})
+        source = AgentStateArtifact(
+            state_id=f"phase:reviewer:{rid}", state_kind="phase:reviewer",
+            content=text, source_query_state_sha256=query_hash,
+            source_response_sha256=text_hash,
+            producer_policy_id="synthetic-native-framework-v1", cited_value_ids=(),
+        ).validate()
+        result = {
+            "evidence_id": f"synthetic-contract-evidence-{index}-{iteration}",
+            "source_uri": f"synthetic-task-contract://opaque/{index}/{iteration}",
+            "contract_status": "synthetic-contract-confirmed",
+            "evidence_marker": "synthetic-task-contract-evidence-marker",
+        }
+        blocks = [{
+            "type": "text", "evidence_id": result["evidence_id"],
+            "source_uri": result["source_uri"],
+            "text": "Synthetic task-contract evidence marker.",
+        }]
+        packet = payload["speech_feature_parts"][0]
+        invocation = {
+            "schema": "saea-native-phase-tool-contact-v2",
+            "sample_id": sid, "phase": "reviewer", "next_phase": "reviewer",
+            "tool_id": tool_id, "source_response_sha256": text_hash,
+            "tool_call_id": calls[0]["id"],
+            "tool_calls_sha256": completion.tool_calls_sha256,
+            "speech_packet_id": packet["packet_id"],
+            "speech_packet_sha256": packet["sha256"], "request_id": rid,
+            "arguments_sha256": hashlib.sha256(
+                json.dumps(arguments, sort_keys=True, separators=(",", ":")).encode()
+            ).hexdigest(),
+            "source_authority_sha256": content_hash(authority),
+            "source_authority_role": "reviewer",
+            "source_request_sha256": authority["source_request_sha256"],
+            "source_completion_sha256": authority["completion_sha256"],
+        }
+        document = {
+            "schema": "saea-phase-tool-result-v2", "selection_mode": "native-tools",
+            "tool_id": tool_id, "arguments": arguments,
+            "query_state_sha256": query_hash, "source_response_sha256": text_hash,
+            "snapshot_sha256": "a" * 64,
+            "tool_source_sha256": "93b2f93e56c66cca66c1af79402395198bba6848e057c116811abc1c2018066a",
+            "tool_call_id": calls[0]["id"], "tool_calls_sha256": completion.tool_calls_sha256,
+            "core_request_id": rid, "sample_id": sid, "phase": "reviewer",
+            "next_phase": "reviewer", "speech_packet_id": packet["packet_id"],
+            "speech_packet_sha256": packet["sha256"],
+            "native_source_state_id": source.state_id,
+            "native_tool_calls_json": raw_calls, "source_authority": authority,
+            "source_authority_sha256": content_hash(authority),
+            "tool_invocation": invocation, "native_result_content": blocks,
+            "native_result_content_sha256": content_hash({"blocks": blocks}),
+            "result": result, "result_sha256": content_hash(result),
+        }
+        tool = AgentStateArtifact(
+            state_id=f"tool-result:reviewer:{sid}:{iteration}", state_kind="tool-result",
+            content=json.dumps(document, sort_keys=True),
+            source_query_state_sha256=query_hash, source_response_sha256=text_hash,
+            producer_policy_id="synthetic-native-framework-v1", cited_value_ids=(),
+        ).validate()
+        return completion, source, tool, document
+
     for index, sid in enumerate(ids):
         phase_contacts, phase_states = [], []
+        native_artifacts, native_tool_documents, native_tool_artifacts = [], {}, {}
         for phase, iteration in stages:
             rid = f"opaque-{index}-{phase}" + (f"-{iteration}" if iteration is not None else "")
             cid = f"synthetic-program:{phase}:" + (f"{iteration}:" if iteration is not None else "") + sid
-            payload = {
-                "sample_id": sid, "request_id": rid, "carrier_lock_key": "slurp",
-                "history": [{"role": "control", "contact_id": cid}],
-            }
             text = f"synthetic-answer-{index}-{phase}" + (f"-{iteration}" if iteration is not None else "")
             text_hash = hashlib.sha256(text.encode()).hexdigest()
+            is_native_role = native_framework and mode == "native"
+            is_native_reviewer = is_native_role and phase == "reviewer"
+            is_native_tool_source = is_native_reviewer and iteration in (0, 2)
+            if is_native_role:
+                system = (
+                    "Apply the synthetic SLU task contract."
+                    if is_native_reviewer
+                    else f"Perform the synthetic {phase} role."
+                )
+                query = (
+                    "Review the Solver draft against the synthetic task contract."
+                    if is_native_reviewer
+                    else f"Perform the synthetic {phase} role for this utterance."
+                )
+                previous = native_tool_documents.get(iteration - 1) if is_native_reviewer else None
+                local_ids = [] if previous is None else [
+                    native_tool_artifacts[iteration - 1].state_id,
+                ]
+                framework_messages = [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": query},
+                ]
+                if previous is not None:
+                    framework_messages.extend([
+                        dict(previous["source_authority"]["original_assistant_message"]),
+                        native_tool_result_message(previous),
+                    ])
+                contact_instruction = framework_contact_instruction(
+                    role_id=phase, sample_id=sid, contact_id=cid,
+                    messages=framework_messages, local_tool_result_ids=local_ids,
+                )
+                payload = {
+                    "sample_id": sid, "request_id": rid, "carrier_lock_key": "slurp",
+                    "task_instruction": system,
+                    "speech_feature_parts": [{
+                        "packet_id": f"synthetic-query-packet-{index}",
+                        "sha256": hashlib.sha256(
+                            f"synthetic-query-packet-{index}".encode()
+                        ).hexdigest(),
+                        "role": "query",
+                    }],
+                    "history": _agent_history(
+                        agent_state=[artifact.as_json() for artifact in native_artifacts],
+                        agent_contact_id=cid, contact_instruction=contact_instruction,
+                    ),
+                    "tool_schemas": (
+                        [_native_tool_schema(
+                            TASK_CONTRACT_TOOL if iteration == 0 else CANDIDATE_CONTRACT_TOOL,
+                            ("text",),
+                            candidate_limit=3 if iteration == 2 else None,
+                        )] if is_native_tool_source else []
+                    ),
+                    "decoding_params": {
+                        "tool_choice": "auto" if is_native_tool_source else "none",
+                        "parallel_tool_calls": False,
+                    },
+                }
+            else:
+                payload = {
+                    "sample_id": sid, "request_id": rid, "carrier_lock_key": "slurp",
+                    "history": [{"role": "control", "contact_id": cid}],
+                }
             wire_hash = content_hash({"wire": text})
+            native_completion = None
+            if is_native_tool_source:
+                native_completion, source_state, tool_state, tool_document = native_tool_state(
+                    sid=sid, index=index, rid=rid, cid=cid, payload=payload, text=text,
+                    iteration=iteration,
+                )
+                wire_hash = native_completion.response_sha256
             emit("MODEL_REQUEST", rid + "/request", {
                 "arm": "bare-core", "payload": payload, "payload_sha256": content_hash(payload),
             })
@@ -206,6 +386,20 @@ def _slurp_source(completed_source, tmp_path, mode):
             })
             phase_contacts.append({"plan": {"contact_id": cid}, "response_sha256": text_hash})
             if mode == "native":
+                if native_framework:
+                    raw_calls = (
+                        native_completion.tool_calls_json.decode("utf-8")
+                        if native_completion is not None else "[]"
+                    )
+                    emit("TOOL", rid + "/native-completion", {
+                        "schema": "saea-native-completion-v1",
+                        "request_id": rid, "sample_id": sid, "agent_contact_id": cid,
+                        "request_sha256": content_hash(payload),
+                        "response_sha256": wire_hash,
+                        "response_text_sha256": text_hash,
+                        "native_tool_calls_json": raw_calls,
+                        "native_tool_calls_sha256": hashlib.sha256(raw_calls.encode()).hexdigest(),
+                    })
                 emit("USE", rid + "/native-role-contact", {
                     "use_role_id": phase, "use_agent_contact_id": cid,
                     "use_request_sha256": content_hash(payload),
@@ -213,14 +407,24 @@ def _slurp_source(completed_source, tmp_path, mode):
                     "use_response_text_sha256": text_hash,
                 })
                 if phase == "reviewer" and iteration in (0, 2):
-                    call_id = f"call-{iteration}"
+                    call_id = (
+                        native_completion.tool_calls[0]["id"]
+                        if native_completion is not None else f"call-{iteration}"
+                    )
                     suffix = content_hash({"request_id": rid, "tool_call_id": call_id})
                     emit("USE", f"{sid}/synthetic-program/{phase}/tool-result/{suffix}", {
-                        "use_tool_id": "saea-tool-task-contract-v1",
+                        "use_tool_id": (
+                            native_completion.tool_names[0]
+                            if native_completion is not None else "saea-tool-task-contract-v1"
+                        ),
                         "use_core_request_id": rid, "use_tool_call_id": call_id,
                         "use_sample_id": sid, "use_phase": phase,
                         "use_source_response_sha256": text_hash,
                     })
+                    if native_completion is not None:
+                        native_artifacts.extend((source_state, tool_state))
+                        native_tool_documents[iteration] = tool_document
+                        native_tool_artifacts[iteration] = tool_state
             if phase != "revise":
                 phase_states.append({"state_kind": "phase:" + phase,
                                      "source_response_sha256": text_hash})
@@ -350,6 +554,76 @@ def slurp_source(completed_source, tmp_path, request):
 @pytest.fixture
 def native_slurp_source(completed_source, tmp_path):
     return _slurp_source(completed_source, tmp_path, "native")
+
+
+@pytest.fixture
+def native_training_slurp_source(completed_source, tmp_path):
+    """Opt-in source with actual framework envelopes and native tool custody."""
+    return _slurp_source(
+        completed_source, tmp_path, "native", native_framework=True,
+    )
+
+
+def test_native_training_fixture_keeps_bound_framework_tool_custody(
+    native_training_slurp_source,
+):
+    from speech_aware_evidence_acquisition.core.model.native_history import _bound_result
+
+    path, _ref, _roster, _projection, _native = native_training_slurp_source
+    manifest = json.loads(path.read_text())
+    records = [
+        json.loads(line) for line in Path(manifest["raw_trace"]["path"]).read_text().splitlines()
+        if line
+    ]
+    requests = [
+        row["payload"]["payload"] for row in records
+        if row["channel"] == "MODEL_REQUEST"
+    ]
+    reviewer_continuation = next(
+        payload for payload in requests
+        if payload["request_id"].endswith("reviewer-1")
+    )
+    control = reviewer_continuation["history"][-1]
+    envelope = json.loads(control["content"])
+    assert envelope["schema"] == "saea-native-framework-contact-v1"
+    assert [message["role"] for message in envelope["messages"]] == [
+        "system", "user", "assistant", "tool",
+    ]
+    state_by_id = {
+        state["state_id"]: state for state in reviewer_continuation["history"]
+        if state["role"] == "agent_state"
+    }
+    tool_state = state_by_id[envelope["local_tool_result_ids"][0]]
+    document, call, assistant = _bound_result(
+        tool_state, state_by_id, set(), reviewer_continuation,
+    )
+    assert document["schema"] == "saea-phase-tool-result-v2"
+    assert call["function"]["name"] == "saea-tool-task-contract-v1"
+    assert assistant["tool_calls"] == [call]
+    completion_rows = [
+        row["payload"] for row in records
+        if row["channel"] == "TOOL"
+        and row["payload"].get("schema") == "saea-native-completion-v1"
+    ]
+    assert len(completion_rows) == 18
+    request_by_id = {
+        row["payload"]["payload"]["request_id"]: row["payload"]
+        for row in records if row["channel"] == "MODEL_REQUEST"
+    }
+    response_by_id = {
+        row["record_id"].removesuffix("/response"): row["payload"]
+        for row in records if row["channel"] == "MODEL_RESPONSE"
+    }
+    assert all(
+        row["request_sha256"] == request_by_id[row["request_id"]]["payload_sha256"]
+        and row["response_sha256"] == response_by_id[row["request_id"]]["response_sha256"]
+        and row["response_text_sha256"]
+        == response_by_id[row["request_id"]]["response_text_sha256"]
+        and hashlib.sha256(row["native_tool_calls_json"].encode()).hexdigest()
+        == row["native_tool_calls_sha256"]
+        for row in completion_rows
+    )
+    assert sum(row["native_tool_calls_json"] == "[]" for row in completion_rows) == 14
 
 
 def test_native_role_revisits_keep_every_contact_and_accepted_solver(native_slurp_source):

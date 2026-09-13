@@ -14,8 +14,9 @@ from pathlib import Path
 from ..core.preparation import hash_stable_file, prepare_artifact
 from .group_relative_feedback import build_group_relative_feedback
 from .hashing import content_hash
+from .native_training_context import NativeTrainingContextProjector
 
-TRAINING_PROPOSAL_CONTEXT_SCHEMA = "saea-training-proposal-contexts-v1"
+TRAINING_PROPOSAL_CONTEXT_SCHEMA = "saea-training-proposal-contexts-v2"
 
 
 class TrainingProposalContextError(ValueError):
@@ -46,25 +47,40 @@ def _source_trajectories(source, sample_ids):
                 _read_pinned(manifest["outputs"], "proposal source outputs").splitlines())}
     if set(outputs) != set(sample_ids):
         raise TrainingProposalContextError("proposal outputs do not cover the exact construction cohort")
-    responses = {}
+    responses, completions, request_ids = {}, {}, set()
     requests = {sid: [] for sid in sample_ids}
     for row in documents:
         if row["channel"] == "MODEL_RESPONSE":
             rid = row["record_id"].removesuffix("/response")
-            if rid in responses:
+            if rid in responses or row["record_id"] != rid + "/response":
                 raise TrainingProposalContextError("ambiguous source response")
             responses[rid] = row["payload"]
+        elif row["channel"] == "TOOL" and row["payload"].get("schema") == "saea-native-completion-v1":
+            completion = row["payload"]
+            rid = completion["request_id"]
+            if rid in completions or row["record_id"] != rid + "/native-completion":
+                raise TrainingProposalContextError("ambiguous native source completion")
+            completions[rid] = completion
         elif row["channel"] == "MODEL_REQUEST":
             request = row["payload"]["payload"]
             if "construction_targets" in request:
                 raise TrainingProposalContextError("gold-bearing fields cannot supply proposal context")
+            rid = request["request_id"]
+            if rid in request_ids or row["record_id"] != rid + "/request":
+                raise TrainingProposalContextError("ambiguous source request")
+            if content_hash(request) != row["payload"]["payload_sha256"]:
+                raise TrainingProposalContextError("source request payload hash differs")
+            request_ids.add(rid)
             sid = request["sample_id"]
             if sid not in requests:
                 raise TrainingProposalContextError("request lies outside the construction cohort")
             requests[sid].append(request)
+    if (set(responses) | set(completions)) - request_ids:
+        raise TrainingProposalContextError("source completion has no recorded request")
     result = {}
     for sid in sample_ids:
         trajectory = []
+        native = NativeTrainingContextProjector()
         evidence_pool, evidence_labels = [], {}
         for request in requests[sid]:
             rid = request["request_id"]
@@ -91,12 +107,16 @@ def _source_trajectories(source, sample_ids):
                 or hashlib.sha256(response_text.encode()).hexdigest() != response["response_text_sha256"]
             ):
                 raise TrainingProposalContextError("own response text no longer matches its source")
-            trajectory.append({
+            step = {
                 "action": action, "instruction": control.get("content", ""),
                 "response": response_text, "response_observed": response is not None,
                 "selected_final": rid == outputs[sid]["request_id"],
                 "evidence_labels": selected_evidence,
-            })
+            }
+            native_fields = native.project(request, response, completions.get(rid))
+            if native_fields is not None:
+                step.update(native_fields)
+            trajectory.append(step)
         selected = [step for step in trajectory if step["selected_final"]]
         if len(selected) != 1:
             raise TrainingProposalContextError("source has no unique selected final request")
@@ -177,11 +197,22 @@ def prepare_training_proposal_contexts(source_bindings, output_path):
     """Persist compact model-facing contexts through shared preparation."""
     document = build_training_proposal_contexts(source_bindings)
     try:
-        _, implementation_sha, _ = hash_stable_file(Path(__file__), "proposal projection implementation")
+        from ..core.model import native_framework_history, native_history
+        from . import core_client, hashing, native_training_context, native_tool_authority
+        dependencies = [Path(__file__), *(
+            Path(module.__file__) for module in (
+                native_training_context, native_framework_history, native_history,
+                native_tool_authority, hashing, core_client,
+            )
+        )]
+        implementations = {
+            path.name: hash_stable_file(path, "proposal projection implementation")[1]
+            for path in dependencies
+        }
         return prepare_artifact(
             Path(output_path), kind="training-proposal-contexts",
             inputs={"document_sha256": content_hash(document),
-                    "implementation_sha256": implementation_sha},
+                    "implementation_sha256": content_hash(implementations)},
             producer=lambda: document, contact_class="model-free",
         )
     except (ValueError, RuntimeError, OSError) as error:

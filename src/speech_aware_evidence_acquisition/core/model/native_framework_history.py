@@ -62,8 +62,12 @@ def _speech_parts(document, packets):
     ]
 
 
-def project_native_framework_history(*, payload, messages, state_texts):
-    """Return a validated full wire sequence, or None for the historical path."""
+def validate_native_framework_contact(payload):
+    """Validate the source envelope and local tool sequence without rendering.
+
+    Runtime transport and offline TRAIN projection consume the same authority.
+    Return None for historical contacts without the native framework envelope.
+    """
     history = payload.get("history", [])
     if not history or history[-1].get("role") != "control":
         return None
@@ -82,9 +86,6 @@ def project_native_framework_history(*, payload, messages, state_texts):
         not isinstance(contract["role_id"], str) or not contract["role_id"]
         or contract["sample_id"] != payload.get("sample_id")
         or contract["contact_id"] != control.get("contact_id")
-        or len(history) != len(state_texts)
-        or len(messages) != 2 or messages[1].get("role") != "user"
-        or not isinstance(messages[1].get("content"), list)
     ):
         _refuse("control, sample or speech history binding differs")
     local_ids = contract["local_tool_result_ids"]
@@ -99,17 +100,11 @@ def project_native_framework_history(*, payload, messages, state_texts):
         _refuse("the complete ordered framework tool sequence is required")
     if (
         dict(framework[0]) != {"role": "system", "content": payload.get("task_instruction")}
-        or framework[0] != messages[0]
         or set(framework[1]) != {"role", "content"}
         or framework[1]["role"] != "user"
         or not isinstance(framework[1]["content"], str) or not framework[1]["content"]
     ):
         _refuse("framework system or initial query differs")
-    if messages[1]["content"][-len(state_texts):] != [
-        {"type": "text", "text": text} for text in state_texts
-    ]:
-        _refuse("source history is not the complete speech suffix")
-
     states, selected, source_ids = {}, {}, set()
     local_set = set(local_ids)
     encountered = []
@@ -136,6 +131,44 @@ def project_native_framework_history(*, payload, messages, state_texts):
         states[state_id] = item
     if encountered != local_ids:
         _refuse("local tool results are missing or reordered")
+    for index, state_id in enumerate(local_ids):
+        document, _call, assistant, _packets = selected[state_id]
+        observed_assistant = dict(framework[2 + index * 2])
+        expected_assistant = copy.deepcopy(assistant)
+        expected_assistant["content"] = (
+            "" if assistant.get("content") is None else assistant["content"]
+        )
+        # OpenJiuwen can retain finish_reason in its serialized AssistantMessage.
+        finish = observed_assistant.pop("finish_reason", "tool_calls")
+        if finish != "tool_calls" or observed_assistant != expected_assistant:
+            _refuse("framework assistant differs from its original source turn")
+        tool_message = native_tool_result_message(document)
+        if dict(framework[3 + index * 2]) != tool_message:
+            _refuse("framework tool message differs from its counted observation")
+    return contract, selected, source_ids
+
+
+def project_native_framework_history(*, payload, messages, state_texts):
+    """Return a validated full wire sequence, or None for the historical path."""
+    validated = validate_native_framework_contact(payload)
+    if validated is None:
+        return None
+    contract, selected, source_ids = validated
+    history = payload["history"]
+    framework = contract["messages"]
+    local_ids = contract["local_tool_result_ids"]
+    local_set = set(local_ids)
+    if (
+        len(history) != len(state_texts)
+        or len(messages) != 2 or messages[1].get("role") != "user"
+        or not isinstance(messages[1].get("content"), list)
+        or framework[0] != messages[0]
+    ):
+        _refuse("control, sample or speech history binding differs")
+    if messages[1]["content"][-len(state_texts):] != [
+        {"type": "text", "text": text} for text in state_texts
+    ]:
+        _refuse("source history is not the complete speech suffix")
     excluded = local_set | source_ids
     prior = [(item, state_texts[index]) for index, item in enumerate(history[:-1])
              if item.get("state_id") not in excluded]
@@ -158,18 +191,7 @@ def project_native_framework_history(*, payload, messages, state_texts):
     packet_by_id = {p["packet_id"]: p for p in historical_packets}
     for index, state_id in enumerate(local_ids):
         document, _call, assistant, packets = selected[state_id]
-        observed_assistant = dict(framework[2 + index * 2])
-        expected_assistant = copy.deepcopy(assistant)
-        expected_assistant["content"] = (
-            "" if assistant.get("content") is None else assistant["content"]
-        )
-        # OpenJiuwen can retain finish_reason in its serialized AssistantMessage.
-        finish = observed_assistant.pop("finish_reason", "tool_calls")
-        if finish != "tool_calls" or observed_assistant != expected_assistant:
-            _refuse("framework assistant differs from its original source turn")
         tool_message = native_tool_result_message(document)
-        if dict(framework[3 + index * 2]) != tool_message:
-            _refuse("framework tool message differs from its counted observation")
         rendered.extend([copy.deepcopy(assistant), tool_message])
         for packet in packets:
             prior_packet = packet_by_id.setdefault(packet["packet_id"], packet)

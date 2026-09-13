@@ -124,7 +124,7 @@ def _enrich_trace_with_supplied_evidence_and_failed_contact(manifest_path):
     manifest["cost"]["calls_used"] += 1
     Path(manifest_path).write_text(json.dumps(manifest))
 
-def _source_pair(synthetic_world, bundled_repo, tmp_path, *, native=False):
+def _source_pair(synthetic_world, bundled_repo, tmp_path, *, native=False, native_framework=False):
     base = fixtures.completed_source.__wrapped__(synthetic_world, bundled_repo, tmp_path)
     bindings = []
     for arm in range(2):
@@ -132,6 +132,7 @@ def _source_pair(synthetic_world, bundled_repo, tmp_path, *, native=False):
         folder.mkdir()
         path, _, roster, projection, _ = fixtures._slurp_source(
             base, folder, "native" if native else "continuous",
+            native_framework=native_framework,
         )
         if not native:
             _enrich_trace_with_supplied_evidence_and_failed_contact(path)
@@ -181,6 +182,15 @@ def native_source_pair(synthetic_world, bundled_repo, tmp_path):
     return _source_pair(synthetic_world, bundled_repo, tmp_path, native=True)
 
 
+@pytest.fixture
+def native_training_source_pair(synthetic_world, bundled_repo, tmp_path):
+    """Opt-in pair with source-bound framework history for proposal projection."""
+    return _source_pair(
+        synthetic_world, bundled_repo, tmp_path,
+        native=True, native_framework=True,
+    )
+
+
 def test_complete_verified_sources_form_exact_groups_and_preserve_counts(source_pair):
     result = build_group_relative_feedback(source_pair)
     assert len(result["groups"]) == 2
@@ -196,6 +206,14 @@ def test_complete_verified_sources_form_exact_groups_and_preserve_counts(source_
     serialized = json.dumps(result)
     assert "synthetic-answer" not in serialized
     assert "reference_text" not in serialized
+
+
+def test_native_training_pair_preserves_upstream_finalized_reward_custody(
+    native_training_source_pair,
+):
+    result = build_group_relative_feedback(native_training_source_pair)
+    assert result["candidate_ids"] == ["candidate-0", "candidate-1"]
+    assert all(source["attempt_state"]["state"] == "FINALIZED" for source in result["sources"])
 
 
 def test_group_artifact_uses_shared_preparation_and_reverifies_warm_sources(source_pair, tmp_path):
