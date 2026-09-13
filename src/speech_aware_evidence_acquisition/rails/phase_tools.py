@@ -148,9 +148,11 @@ def load_phase_tool_specs(config, program):
             specs[phase]["source_authority_role"] = authority_role
         if CANDIDATE_CONTRACT_TOOL in tools:
             specs[phase]["candidate_limit"] = candidate_limit
-    native_program = getattr(program, "stop_rule", None) == "native-answer-or-tool"
+    stop_rule = getattr(program, "stop_rule", None)
+    native_program = stop_rule == "native-answer-or-tool"
+    native_role_episode = stop_rule == "native-role-episode"
     native_specs = any(spec["mode"] == "native-tools" for spec in specs.values())
-    if native_program or native_specs:
+    if native_program or (native_specs and not native_role_episode):
         nonfinal = set(phases[:-1])
         if (
             not native_program
@@ -168,6 +170,32 @@ def load_phase_tool_specs(config, program):
             raise PhaseToolError(
                 "native-tools phases must expose one identical tool schema set"
             )
+    elif native_role_episode:
+        if any(
+            spec["mode"] != "native-tools"
+            or "source_authority_role" not in spec
+            for spec in specs.values()
+        ):
+            raise PhaseToolError(
+                "native-role-episode phase tools require native-tools with source authority"
+            )
+        schemas_by_name = {}
+        for phase in phases[:-1]:
+            spec = specs.get(phase)
+            if spec is None:
+                continue
+            for tool_id in spec["allowed_tools"]:
+                schema = _native_tool_schema(
+                    tool_id,
+                    spec["knowledge_views"],
+                    candidate_limit=spec.get("candidate_limit"),
+                    store_ids=spec.get("knowledge_store_ids"),
+                )
+                previous = schemas_by_name.setdefault(tool_id, schema)
+                if previous != schema:
+                    raise PhaseToolError(
+                        "native-role-episode exposes one tool name with different schemas"
+                    )
     return specs
 
 
@@ -364,7 +392,13 @@ class PhaseToolDispatcher:
 
     @property
     def native_enabled(self):
-        return getattr(self.program, "stop_rule", None) == "native-answer-or-tool"
+        return getattr(self.program, "stop_rule", None) in {
+            "native-answer-or-tool", "native-role-episode",
+        }
+
+    @property
+    def native_role_episode(self):
+        return getattr(self.program, "stop_rule", None) == "native-role-episode"
 
     def is_native_phase(self, phase):
         spec = self.specs.get(phase)
@@ -376,12 +410,19 @@ class PhaseToolDispatcher:
         ordered = []
         seen = set()
         for phase in self.program.phase_names()[:-1]:
-            for tool_id in self.specs[phase]["allowed_tools"]:
+            spec = (
+                self.specs.get(phase)
+                if self.native_role_episode
+                else self.specs[phase]
+            )
+            if spec is None:
+                continue
+            for tool_id in spec["allowed_tools"]:
                 if tool_id not in seen:
                     ordered.append(_native_tool_schema(
-                        tool_id, self.specs[phase]["knowledge_views"],
-                        candidate_limit=self.specs[phase].get("candidate_limit"),
-                        store_ids=self.specs[phase].get("knowledge_store_ids"),
+                        tool_id, spec["knowledge_views"],
+                        candidate_limit=spec.get("candidate_limit"),
+                        store_ids=spec.get("knowledge_store_ids"),
                     ))
                     seen.add(tool_id)
         return tuple(ordered)
@@ -443,7 +484,10 @@ class PhaseToolDispatcher:
         if spec is None:
             return None
         phases = self.program.phase_names()
-        if next_phase != phases[phases.index(phase) + 1]:
+        sequential_next = phases[phases.index(phase) + 1]
+        if next_phase != sequential_next and not (
+            self.native_role_episode and next_phase == phase
+        ):
             raise PhaseToolError("action successor differs from the program")
         states = [s for s in context.agent_states if s.state_kind == f"phase:{phase}"]
         if not states:
@@ -494,12 +538,20 @@ class PhaseToolDispatcher:
                 spec["allowed_tools"],
                 spec["knowledge_views"],
             )
-        key = (context.sample_id, phase)
+        if self.native_role_episode:
+            key = (
+                native_call["completion"].request_id,
+                native_call["call_id"],
+            )
+            duplicate_error = (
+                "tool action already attempted for this source completion/tool call"
+            )
+        else:
+            key = (context.sample_id, phase)
+            duplicate_error = "tool action already attempted for this phase/sample"
         with self._lock:
             if key in self._attempts:
-                raise PhaseToolError(
-                    "tool action already attempted for this phase/sample"
-                )
+                raise PhaseToolError(duplicate_error)
             self._attempts.add(key)
         tool = resolve_tool(action["tool_id"])
         request = {
@@ -768,8 +820,14 @@ class PhaseToolDispatcher:
                 "result": model_result,
                 "result_sha256": content_hash(model_result),
             }
+            state_id = f"tool-result:{phase}:{context.sample_id}"
+            if self.native_role_episode:
+                state_id += ":" + content_hash({
+                    "request_id": native_call["completion"].request_id,
+                    "tool_call_id": native_call["call_id"],
+                })
             artifact = AgentStateArtifact(
-                state_id=f"tool-result:{phase}:{context.sample_id}",
+                state_id=state_id,
                 state_kind="tool-result",
                 content=json.dumps(document, sort_keys=True),
                 source_query_state_sha256=expected,
@@ -835,6 +893,27 @@ class PhaseToolDispatcher:
             calls = completion.tool_calls
         except Exception as error:
             raise PhaseToolError("native completion binding or tool calls are malformed") from error
+        if self.native_role_episode:
+            authority_role = spec.get("source_authority_role")
+            prefix = f"{self.program.program_id}:{authority_role}:"
+            suffix = f":{context.sample_id}"
+            contact_id = completion.agent_contact_id
+            if (
+                not isinstance(contact_id, str)
+                or not contact_id.startswith(prefix)
+                or not contact_id.endswith(suffix)
+            ):
+                raise PhaseToolError(
+                    "native completion contact does not match the authorized role"
+                )
+            iteration = contact_id[len(prefix):len(contact_id) - len(suffix)]
+            if (
+                not iteration.isdecimal()
+                or str(int(iteration)) != iteration
+            ):
+                raise PhaseToolError(
+                    "native completion contact has a malformed iteration identity"
+                )
         if not isinstance(calls, list) or len(calls) != 1:
             raise PhaseToolError("native action must contain exactly one tool call")
         call = calls[0]
@@ -879,6 +958,11 @@ class PhaseToolDispatcher:
             "query_state_sha256": expected,
             "source_response_sha256": source.source_response_sha256,
         }
+        if self.native_role_episode:
+            with self._lock:
+                self._native_rejections.append(content_hash(document))
+            self._emit(context.sample_id, phase, "rejected", document)
+            raise PhaseToolError(message)
         artifact = AgentStateArtifact(
             state_id=f"tool-error:{phase}:{context.sample_id}",
             state_kind="tool-result",
@@ -896,9 +980,19 @@ class PhaseToolDispatcher:
     def _emit(self, sample_id, phase, event, payload):
         if self.trace_sink is not None:
             axis = "OBS" if payload.get("tool_id") in {PREPARED_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_OBSERVATION_TOOL} else "USE"
+            event_id = f"{sample_id}/{self.program.program_id}/{phase}/tool-{event}"
+            if (
+                self.native_role_episode
+                and isinstance(payload.get("core_request_id"), str)
+                and isinstance(payload.get("tool_call_id"), str)
+            ):
+                event_id += "/" + content_hash({
+                    "request_id": payload["core_request_id"],
+                    "tool_call_id": payload["tool_call_id"],
+                })
             self.trace_sink.emit(
                 axis,
-                f"{sample_id}/{self.program.program_id}/{phase}/tool-{event}",
+                event_id,
                 {f"{axis.lower()}_{key}": value for key, value in payload.items()},
             )
 
