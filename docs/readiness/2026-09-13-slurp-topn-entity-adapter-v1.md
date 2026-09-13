@@ -30,3 +30,5 @@ candidate IDs after source verification. The runner groups rows at widths 1,
 2, and 3 and calls the existing pure aggregate_topn_diagnostics once per
 nonempty subgroup. The legacy shared_fixed_top3_source binding remains the
 default; shared_distinct_source is an explicit opt-in binding.
+
+Root integration closure: recognize the actual shared source through core.bundle.hypothesis_source.is_derived_hypothesis_bundle after the common bundle verifier rebuilds its first-occurrence projection. Load the original hash-pinned source baseline for the legal candidate catalog. The source remains DERIVED/COMPLETED_DERIVATION with an ABORTED original attempt; never require or fabricate a FINALIZED source run. The hypothesis_artifact pin is explicit, and conflicting source aliases are rejected. The diagnostic config adds measured bindings and the existing offline reference adapter only; it changes no estimand, gate or source population.
