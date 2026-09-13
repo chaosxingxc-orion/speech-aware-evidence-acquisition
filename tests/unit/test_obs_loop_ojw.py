@@ -1592,6 +1592,157 @@ def _execute_fake_agent_workflows(runner, states, invoke_contact, *, queue_depth
 
 
 class TestSpeechAgentWorkflowScheduling:
+    def test_native_episode_contacts_overlap_and_keep_one_primary_slot(
+        self, monkeypatch
+    ):
+        from speech_aware_evidence_acquisition.reproduction.ojw import runner
+
+        states = [object(), object()]
+        slots_by_state = {state: [] for state in states}
+        simultaneous_contacts = threading.Barrier(2)
+
+        monkeypatch.setattr(
+            runner,
+            "build_speech_agent_workflow",
+            lambda **_kwargs: pytest.fail("legacy workflow must not be built"),
+        )
+
+        async def episode_invoker(state, run_contact, _session):
+            first = await run_contact(lambda _slot_id: "zero-argument-result")
+            assert first == "zero-argument-result"
+
+            def blocking_contact(slot_id):
+                slots_by_state[state].append(slot_id)
+                if len(slots_by_state[state]) == 1:
+                    simultaneous_contacts.wait(timeout=1.0)
+                return len(slots_by_state[state])
+
+            assert await run_contact(blocking_contact) == 1
+            assert await run_contact(blocking_contact) == 2
+
+        results = runner.execute_speech_agent_workflows(
+            states,
+            branch_count=2,
+            slot_count=2,
+            queue_depth=2,
+            workflow_timeout_seconds=10.0,
+            episode_invoker=episode_invoker,
+        )
+
+        assert results == states
+        assert all(len(set(slots)) == 1 for slots in slots_by_state.values())
+        assert len({slots[0] for slots in slots_by_state.values()}) == 2
+
+    def test_native_episode_cancellation_drains_contact_before_slot_release(
+        self, monkeypatch
+    ):
+        from speech_aware_evidence_acquisition.reproduction.ojw import runner
+
+        blocker_active = threading.Event()
+        blocker_slot = []
+        later_contacts = []
+        states = [object(), object()]
+
+        async def episode_invoker(state, run_contact, _session):
+            if state is states[0]:
+                blocking = asyncio.create_task(run_contact(blocking_contact))
+                while not blocker_active.is_set():
+                    await asyncio.sleep(0)
+                blocking.cancel()
+                with pytest.raises(asyncio.CancelledError):
+                    await blocking
+                raise RuntimeError("planned native episode failure")
+            while not blocker_active.is_set():
+                await asyncio.sleep(0)
+            await run_contact(later_contact)
+
+        def blocking_contact(slot_id):
+            blocker_slot.append(slot_id)
+            blocker_active.set()
+            time.sleep(0.10)
+            blocker_active.clear()
+            return "settled"
+
+        def later_contact(slot_id):
+            later_contacts.append((slot_id, blocker_active.is_set()))
+            return "later"
+
+        with pytest.raises(RuntimeError, match="planned native episode failure"):
+            runner.execute_speech_agent_workflows(
+                states,
+                branch_count=1,
+                slot_count=1,
+                queue_depth=2,
+                workflow_timeout_seconds=10.0,
+                episode_invoker=episode_invoker,
+            )
+
+        assert blocker_slot
+        assert later_contacts == [(blocker_slot[0], False)]
+
+    def test_native_episode_raises_first_failure_in_input_order(self):
+        from speech_aware_evidence_acquisition.reproduction.ojw import runner
+
+        both_admitted = asyncio.Event()
+        admitted = set()
+
+        async def episode_invoker(state, _run_contact, _session):
+            admitted.add(state)
+            if len(admitted) == 2:
+                both_admitted.set()
+            await both_admitted.wait()
+            if state == 0:
+                await asyncio.sleep(0.02)
+                raise RuntimeError("first input failure")
+            raise RuntimeError("second input failure")
+
+        with pytest.raises(RuntimeError, match="first input failure"):
+            runner.execute_speech_agent_workflows(
+                [0, 1],
+                branch_count=1,
+                slot_count=2,
+                queue_depth=2,
+                workflow_timeout_seconds=10.0,
+                episode_invoker=episode_invoker,
+            )
+
+    def test_native_episode_uses_shared_session_timeout_translation(
+        self, monkeypatch
+    ):
+        from openjiuwen.core.common.exception.codes import StatusCode
+        from openjiuwen.core.common.exception.errors import BaseError
+        from openjiuwen.core.session import WORKFLOW_EXECUTE_TIMEOUT
+
+        from speech_aware_evidence_acquisition.reproduction.ojw import (
+            OpenJiuwenExecutorError,
+            runner,
+        )
+
+        captured = {}
+        session = object()
+
+        def create_session(*, envs):
+            captured.update(envs)
+            return session
+
+        monkeypatch.setattr(runner, "create_workflow_session", create_session)
+
+        async def episode_invoker(_state, _run_contact, actual_session):
+            assert actual_session is session
+            raise BaseError(StatusCode.WORKFLOW_EXECUTION_TIMEOUT)
+
+        with pytest.raises(OpenJiuwenExecutorError, match="7.5-second ceiling"):
+            runner.execute_speech_agent_workflows(
+                [object()],
+                branch_count=1,
+                slot_count=1,
+                queue_depth=1,
+                workflow_timeout_seconds=7.5,
+                episode_invoker=episode_invoker,
+            )
+
+        assert captured[WORKFLOW_EXECUTE_TIMEOUT] == 7.5
+
     def test_sibling_failure_does_not_recycle_a_running_worker_slot(
         self, monkeypatch
     ):
