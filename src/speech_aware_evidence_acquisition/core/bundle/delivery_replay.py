@@ -148,6 +148,25 @@ def _source_selector_program(selector: Mapping, values: Mapping, *, program=None
     raise BundleError("delivery source_selector schema is not registered")
 
 
+def _sealed_state_phase_spec(selector: Mapping, values: Mapping, program):
+    from ...rails.phase_material import PhaseMaterialError, load_phase_material_specs
+
+    try:
+        spec = load_phase_material_specs(values, program)[selector["response_phase"]]
+    except (KeyError, PhaseMaterialError) as error:
+        raise BundleError(f"sealed-state phase material is invalid: {error}") from error
+    if spec.predecessor_binding != "sealed-manifest":
+        raise BundleError("sealed-state response phase must bind a sealed manifest")
+    source = spec.predecessor_source
+    if not isinstance(source, Mapping) or set(source) != {
+        "manifest_relpath",
+        "manifest_sha256",
+        "producer_policy_id",
+    }:
+        raise BundleError("sealed-state predecessor source binding is incomplete")
+    return spec
+
+
 def delivery_declarations(values: Mapping) -> tuple[Mapping, ...]:
     """Validate the shared declaration shape before generation and replay."""
     declarations = values.get("delivery_derivatives")
@@ -219,7 +238,9 @@ def validate_phase_delivery_sources(
         selector = declaration["source_selector"]
         if not isinstance(selector, Mapping):
             raise BundleError("phase response source_selector must be a mapping")
-        _source_selector_program(selector, values, program=program)
+        resolved_program = _source_selector_program(selector, values, program=program)
+        if selector.get("schema") == SEALED_STATE_RESPONSE_PAIR_SCHEMA:
+            _sealed_state_phase_spec(selector, values, resolved_program)
         try:
             params = declaration["response_postprocessor_params"]
             if not isinstance(params, Mapping):
@@ -483,7 +504,6 @@ def replay_sealed_state_response_delivery(
     """Deliver a terminal response against its exact external sealed state."""
     from ...rails.phase_material import (
         PhaseMaterialError,
-        load_phase_material_specs,
         sealed_states_from_manifest,
     )
     from .verify import verify_bundle
@@ -493,19 +513,8 @@ def replay_sealed_state_response_delivery(
         raise BundleError("sealed-state delivery requires a source_selector")
     program = _sealed_state_program(selector, values)
     response_phase = selector["response_phase"]
-    try:
-        spec = load_phase_material_specs(values, program)[response_phase]
-    except PhaseMaterialError as error:
-        raise BundleError(f"sealed-state phase material is invalid: {error}") from error
-    if spec.predecessor_binding != "sealed-manifest":
-        raise BundleError("sealed-state response phase must bind a sealed manifest")
+    spec = _sealed_state_phase_spec(selector, values, program)
     source = spec.predecessor_source
-    if not isinstance(source, Mapping) or set(source) != {
-        "manifest_relpath",
-        "manifest_sha256",
-        "producer_policy_id",
-    }:
-        raise BundleError("sealed-state predecessor source binding is incomplete")
     source_path = _confined_data_path(data_root, source["manifest_relpath"])
     try:
         source_manifest_sha256 = sha256(source_path.read_bytes())
@@ -617,6 +626,11 @@ def replay_sealed_state_response_delivery(
                 "refusal_reason": outcome.refusal_reason,
             }
         )
+        diagnostics = getattr(outcome, "diagnostics", None)
+        if diagnostics is not None:
+            if not isinstance(diagnostics, Mapping):
+                raise BundleError("sealed-state delivery diagnostics must be a mapping")
+            sources[-1]["delivery_diagnostics"] = dict(diagnostics)
     if seen != set(parent.split_ids):
         raise BundleError("sealed-state delivery does not cover the response parent roster")
     return rows, sources

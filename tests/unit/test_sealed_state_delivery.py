@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 from dataclasses import replace
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -190,6 +191,44 @@ def test_selector_is_validated_through_shared_delivery_declarations(tmp_path):
     _parent, _predecessor, values, declaration = _world(tmp_path)
     values["delivery_derivatives"] = [declaration]
     assert validate_phase_delivery_sources(values) == (declaration,)
+
+
+def test_precontact_validation_refuses_missing_sealed_binding(tmp_path):
+    _parent, _predecessor, values, declaration = _world(tmp_path)
+    values["delivery_derivatives"] = [declaration]
+    values["phase_material"]["slots"]["predecessor_binding"] = "none"
+    values["phase_material"]["slots"]["predecessor_source"] = None
+    with pytest.raises(BundleError, match="sealed manifest"):
+        validate_phase_delivery_sources(values)
+
+
+def test_delivery_rule_diagnostics_are_preserved(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core.base import RESPONSE_POSTPROCESSORS
+
+    parent, predecessor, values, declaration = _world(tmp_path)
+    monkeypatch.setattr(
+        "speech_aware_evidence_acquisition.core.bundle.verify.verify_bundle",
+        lambda _path: predecessor,
+    )
+    monkeypatch.setattr(
+        RESPONSE_POSTPROCESSORS,
+        "resolve",
+        lambda _name: lambda **_params: lambda _predecessor, response: SimpleNamespace(
+            text=response,
+            refusal_reason=None,
+            diagnostics={
+                "attempted_intent_switch": True,
+                "closed_shortlist_escape": False,
+            },
+        ),
+    )
+    _rows, sources = replay_delivery(
+        parent, None, declaration, values, data_root=tmp_path
+    )
+    assert sources[0]["delivery_diagnostics"] == {
+        "attempted_intent_switch": True,
+        "closed_shortlist_escape": False,
+    }
 
 
 @pytest.mark.parametrize(
