@@ -3368,3 +3368,7 @@ Before inspecting new TRAIN semantic support, freeze docs/readiness/2026-09-13-s
 ## 2026-09-13: Close raw delivery diagnostic supplement
 
 Under the existing read release, run the shared diagnostic entry at 0bc53729 to create conditional-diagnostics-v2.json, SHA-256 a9fdac614352a767719694d893b65f8431914daff4874d3ecb696636d296a17b. Preserve v1. Root verified all common scientific aggregates and stratum/width tables are identical. The added source-verified flags show zero outside-shortlist proposals, 15 joint refusals, 18 hard-first refusals and 56 hard-first attempted intent switches across DEV1000. See docs/readiness/2026-09-13-slurp-distinct-commitment-delivery-supplement-v1.md. No new model, encoder, tokenizer, tool-backend or scorer contacts; no verdict or threshold changes.
+
+## 2026-09-13: Close registered TRAIN support preparation and root intent authoring
+
+Under semantic-authoring-registration-v1, complete the governed support preparation at fa9ba618. Root verified support SHA-256 1be15d89797e55bfb492df87cc994844bb8db69aab5ce8a70e0880f13e8dcdee, read all 474 intent-support rows and authored 60 source-bound candidate guidance values. The authored source SHA-256 is 040b8143072ccd660cd1659f5a0ddf71dec5a3f8f8ec6e98bda726a6b7db1a13. Root recorded overlapping and sparse label boundaries as limitations, not memorized exceptions. Slot semantic review and both runtime store releases remain pending. All new model, encoder, tokenizer, backend and scorer contacts are zero. See docs/readiness/2026-09-13-slurp-semantic-authoring-root-review-v1.md.
