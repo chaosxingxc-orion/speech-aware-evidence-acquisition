@@ -23,7 +23,7 @@ The answer-contact column excludes the common observation/retrieval preparation 
 
 The later v2 rescore of the same sealed responses gives exact rates 24.04, 31.73, 32.69 and 34.62 percent respectively; it does not represent new generation and did not change the recorded admission decision. Retain the original v1 mechanism decomposition as v1; no new decomposition was computed in this review.
 
-The September12 complete 4000-row experiment instead uses the released official first-call metrics: direct/stage/knowledge exact 18.900/17.950/18.600 percent and tool accuracy 62.025/60.525/58.550 percent. These are not directly comparable with the old 104-row corpus/multiset figures. Population, scoring, observations, retrieval query signal, K, knowledge content and output contracts differ. Do not attribute their numerical gap to decomposition alone.
+The September 12 complete 4000-row experiment instead uses the released official first-call metrics: direct/stage/knowledge exact 18.900/17.950/18.600 percent and tool accuracy 62.025/60.525/58.550 percent. These are not directly comparable with the old 104-row corpus/multiset figures. Population, scoring, observations, retrieval query signal, K, knowledge content and output contracts differ. Do not attribute their numerical gap to decomposition alone.
 
 ## What the old evidence diagnoses
 
@@ -31,9 +31,9 @@ The 104-row split partition is 4 unreachable tool-set rows, 38 selection failure
 
 SELECT omitted signatures, key/type constraints and other interface cues present in the joint arm. Its weaker selection is consistent with over-separating knowledge views; it does not prove which individual omitted field caused the difference. Neighbor substitutions dominate its selector errors. Fields such as groupId versus deviceId can identify target scope before any value is filled.
 
-Among the 62 correct selections, only 26 final calls are exact under v1. The overlapping parameter-error taxonomy includes extra keys on20 rows, missing keys on6, wrong same-type values on14 and wrong types on4. deviceId appears on20 error rows. Supported source evidence, argument presence, occurrence ownership, correction state and normalization need explicit representation. Public defaults and valid types do not prove a value was spoken or an operation was requested. Sparse benchmark annotations must be analyzed separately from real semantic requirements.
+Among the 62 correct selections, only 26 final calls are exact under v1. The overlapping parameter-error taxonomy includes extra keys on 20 rows, missing keys on 6, wrong same-type values on 14 and wrong types on 4. deviceId appears on 20 error rows. Supported source evidence, argument presence, occurrence ownership, correction state and normalization need explicit representation. Public defaults and valid types do not prove a value was spoken or an operation was requested. Sparse benchmark annotations must be analyzed separately from real semantic requirements.
 
-The old report also finds all26 multi-call rows non-exact in every arm. Global tool selection and field-level filling alone do not resolve call occurrence and state binding.
+The old report also finds all 26 multi-call rows non-exact in every arm. Global tool selection and field-level filling alone do not resolve call occurrence and state binding.
 
 Current production already contains build_interface_routing_knowledge_ground and build_sparse_parameter_knowledge_ground in rails/a2t_select_fill_ground.py. Recover and test those shared builders; do not create duplicate knowledge implementations. Their existence alone does not establish the unexecuted successor's quality.
 
@@ -55,7 +55,7 @@ Long-term knowledge contains these supported semantics. Per-episode working stat
 
 ## Connection to the required agentic system
 
-Distinguish Audio2Tool's predicted business calls from the system's actually executed internal reasoning/evidence tools. The native benchmark does not require contacting all152 external business services. The agent should actually invoke local ASR, knowledge views, schema checks or permitted speech observations when the frozen main model decides they are needed.
+Distinguish Audio2Tool's predicted business calls from the system's actually executed internal reasoning/evidence tools. The native benchmark does not require contacting all 152 external business services. The agent should actually invoke local ASR, knowledge views, schema checks or permitted speech observations when the frozen main model decides they are needed.
 
 Treat SELECT/FILL as decision responsibilities rather than an irreversible two-step conveyor. A provisional selection can load a compact argument view. If filling exposes incompatible scope, absent required evidence, a correction or a plausible sibling tool, the main model can request the relevant knowledge, call local Whisper for the current speech, or return to selection within the registered bound. Final answer authority stays with the frozen core.
 
@@ -65,7 +65,7 @@ Do not force every sample through every tool. Precomputed base speech packets an
 
 Maintain the owner's SLURP-first order. Implement the shared bounded answer-or-tool loop and phase-specific knowledge access once. Use intent/slots to validate the same responsibilities quickly, then transfer the proven execution path to Audio2Tool's tools/arguments/occurrences with its own values and native metrics.
 
-Before another full Audio2Tool comparison, bind a matched population, model/service, observation and query route, candidate access, scorer and final output contract. Compare focused decomposition with an equal-contact joint control when attributing decomposition; compare fixed versus model-selected acquisition when attributing agency. Direct remains the complete-system reference. Do not revive the old104/128-row scale plan or change historical admissions.
+Before another full Audio2Tool comparison, bind a matched population, model/service, observation and query route, candidate access, scorer and final output contract. Compare focused decomposition with an equal-contact joint control when attributing decomposition; compare fixed versus model-selected acquisition when attributing agency. Direct remains the complete-system reference. Do not revive the old 104/128-row scale plan or change historical admissions.
 
 Report task-native exact/tool/parameter metrics plus full-call/multiplicity diagnostics. Separate candidate reachability, selection, argument binding and observation/format failures. Conditional filling accuracy is descriptive; use full paired final outcomes for system claims.
 
