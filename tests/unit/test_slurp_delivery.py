@@ -206,3 +206,158 @@ def test_live_phase_program_and_baselines_are_config_only():
     assert "output_cap" not in live and "experiment_cell" not in live
     assert "response_postprocessor" not in live
     assert "delivery_basis" in live
+
+
+def test_joint_hypothesis_delivery_takes_all_fields_from_final_answer():
+    from speech_aware_evidence_acquisition.reproduction.slurp_delivery import (
+        slurp_joint_hypothesis_delivery_rule,
+    )
+
+    predecessor = json.dumps({
+        "schema": "saea-slurp-intent-hypotheses-v1",
+        "semantics": "ranked-mutually-exclusive-intent-alternatives",
+        "sample_id": "slurp:devel:0001",
+        "candidates": [
+            {"intent_id": "weather_query", "distinction": "Weather request.",
+             "evidence_refs": [], "unresolved_fields": ["location"]},
+            {"intent_id": "transport_taxi", "distinction": "Taxi request.",
+             "evidence_refs": [], "unresolved_fields": ["destination"]},
+        ],
+    }, sort_keys=True)
+    final = json.dumps({
+        "scenario": "transport", "action": "taxi",
+        "entities": [{"type": "destination", "filler": "the station"}],
+    })
+
+    result = slurp_joint_hypothesis_delivery_rule(
+        predecessor, final,
+        legal_intent_ids={"weather_query", "transport_taxi", "calendar_set"},
+        max_candidates=3,
+    )
+
+    assert result.refusal_reason is None
+    assert json.loads(result.text) == json.loads(final)
+    assert result.diagnostics == {
+        "rows": 1,
+        "hypothesis_state_invalid": 0,
+        "final_response_unparsed": 0,
+        "final_intent_illegal": 0,
+        "final_intent_outside_shortlist": 0,
+        "final_authoritative": 1,
+    }
+
+
+@pytest.mark.parametrize(
+    "final, reason",
+    [
+        ("", "empty_response"),
+        ("not json", "malformed_final_response"),
+        (
+            '{"scenario":"transport","action":"taxi",'
+            '"entities":[{"type":"destination"}]}',
+            "malformed_final_response",
+        ),
+        (
+            '{"scenario":"weather","scenario":"transport","action":"taxi",'
+            '"entities":[]}',
+            "malformed_final_response",
+        ),
+        ('{"scenario": "illegal", "action": "pair", "entities": []}', "illegal_final_intent"),
+    ],
+)
+def test_joint_hypothesis_delivery_never_falls_back_to_predecessor(final, reason):
+    from speech_aware_evidence_acquisition.reproduction.slurp_delivery import (
+        slurp_joint_hypothesis_delivery_rule,
+    )
+
+    predecessor = json.dumps({
+        "schema": "saea-slurp-intent-hypotheses-v1",
+        "semantics": "ranked-mutually-exclusive-intent-alternatives",
+        "sample_id": "slurp:devel:0001",
+        "candidates": [
+            {"intent_id": "weather_query", "distinction": "Weather request.",
+             "evidence_refs": [], "unresolved_fields": ["location"]},
+            {"intent_id": "transport_taxi", "distinction": "Taxi request.",
+             "evidence_refs": [], "unresolved_fields": ["destination"]},
+        ],
+    }, sort_keys=True)
+    result = slurp_joint_hypothesis_delivery_rule(
+        predecessor, final,
+        legal_intent_ids={"weather_query", "transport_taxi", "calendar_set"},
+        max_candidates=3,
+    )
+
+    assert result.refusal_reason == reason
+    assert result.text == final
+    assert result.text != predecessor
+
+
+def test_joint_delivery_accepts_a_legal_escape_outside_shortlist():
+    from speech_aware_evidence_acquisition.reproduction.slurp_delivery import (
+        slurp_joint_hypothesis_delivery_rule,
+    )
+
+    predecessor = json.dumps({
+        "schema": "saea-slurp-intent-hypotheses-v1",
+        "semantics": "ranked-mutually-exclusive-intent-alternatives",
+        "sample_id": "s",
+        "candidates": [
+            {"intent_id": "weather_query", "distinction": "Weather request.",
+             "evidence_refs": [], "unresolved_fields": []},
+            {"intent_id": "transport_taxi", "distinction": "Taxi request.",
+             "evidence_refs": [], "unresolved_fields": []},
+        ],
+    }, sort_keys=True)
+    result = slurp_joint_hypothesis_delivery_rule(
+        predecessor,
+        '{"scenario": "calendar", "action": "set", "entities": []}',
+        legal_intent_ids={"weather_query", "transport_taxi", "calendar_set"},
+        max_candidates=2,
+    )
+    assert result.refusal_reason is None
+    assert result.diagnostics["final_intent_outside_shortlist"] == 1
+
+
+def test_joint_hypothesis_delivery_is_registered_separately():
+    from speech_aware_evidence_acquisition.core import policies  # noqa: F401
+    from speech_aware_evidence_acquisition.core.base import RESPONSE_POSTPROCESSORS
+
+    assert RESPONSE_POSTPROCESSORS.resolve("slurp-joint-hypothesis-delivery-v1")
+
+
+def test_joint_delivery_accepts_real_multiline_json_fence_and_rejects_fenced_duplicates():
+    from speech_aware_evidence_acquisition.reproduction.slurp_delivery import (
+        slurp_joint_hypothesis_delivery_rule,
+    )
+
+    predecessor = json.dumps({
+        "schema": "saea-slurp-intent-hypotheses-v1",
+        "semantics": "ranked-mutually-exclusive-intent-alternatives",
+        "sample_id": "s",
+        "candidates": [
+            {"intent_id": "transport_taxi", "distinction": "Taxi request.",
+             "evidence_refs": [], "unresolved_fields": []},
+        ],
+    }, sort_keys=True)
+    legal = {"transport_taxi"}
+
+    fenced = """  ```json
+      {"scenario": "transport", "action": "taxi", "entities": []}
+    ```  """
+    accepted = slurp_joint_hypothesis_delivery_rule(
+        predecessor, fenced, legal_intent_ids=legal, max_candidates=1
+    )
+    assert accepted.refusal_reason is None
+    assert json.loads(accepted.text) == {
+        "scenario": "transport", "action": "taxi", "entities": []
+    }
+
+    duplicated = """```json
+    {"scenario": "weather", "scenario": "transport",
+     "action": "taxi", "entities": []}
+    ```"""
+    refused = slurp_joint_hypothesis_delivery_rule(
+        predecessor, duplicated, legal_intent_ids=legal, max_candidates=1
+    )
+    assert refused.refusal_reason == "malformed_final_response"
+    assert refused.diagnostics["final_authoritative"] == 0

@@ -1,13 +1,15 @@
-"""Pure model-free assembly of SLURP slot-stage delivery rows.
+"""Pure model-free assembly of registered SLURP delivery responses.
 
-A slot-stage arm supplies entity predictions while a sealed predecessor owns
-scenario and action. This module joins those two row rosters without file,
-model, or scorer access.
+The historical slot-stage rule keeps predecessor intent authority. The joint
+hypothesis rule validates its predecessor as alternatives, then makes the
+final response authoritative for intent and entities. Neither rule contacts a
+model or scorer.
 """
 
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
@@ -55,6 +57,54 @@ class SlurpDeliveryOutcome:
     text: str
     refusal_reason: str | None
     diagnostics: Mapping[str, int]
+
+
+_FINAL_FENCE_RE = re.compile(r"```(?:json)?\s*(.*?)```", re.DOTALL | re.IGNORECASE)
+_FINAL_KEYS = frozenset({"scenario", "action", "entities"})
+_ENTITY_KEYS = frozenset({"type", "filler"})
+
+
+def _strict_joint_response(text: str):
+    """Parse the final task contract without duplicate or partial entities."""
+
+    from ..rails.slurp_intent_hypotheses import _unique_json_object  # noqa: PLC0415
+
+    candidates = [match.strip() for match in _FINAL_FENCE_RE.findall(text)]
+    candidates.append(text.strip())
+    for candidate in candidates:
+        if not candidate:
+            continue
+        try:
+            payload = json.loads(candidate, object_pairs_hook=_unique_json_object)
+        except (json.JSONDecodeError, ValueError):
+            continue
+        if not isinstance(payload, Mapping) or set(payload) != _FINAL_KEYS:
+            continue
+        scenario = payload["scenario"]
+        action = payload["action"]
+        entities = payload["entities"]
+        if (
+            not isinstance(scenario, str)
+            or not scenario
+            or not isinstance(action, str)
+            or not action
+            or not isinstance(entities, list)
+        ):
+            continue
+        if any(
+            not isinstance(entity, Mapping)
+            or set(entity) != _ENTITY_KEYS
+            or not isinstance(entity["type"], str)
+            or not isinstance(entity["filler"], str)
+            for entity in entities
+        ):
+            continue
+        parsed = parse_slu_response(
+            json.dumps(payload, ensure_ascii=False, sort_keys=True)
+        )
+        if parsed[3]:
+            return parsed
+    return None, None, [], False
 
 
 def join_slurp_response(
@@ -105,6 +155,118 @@ def slurp_intent_slots_delivery_v1():
     """Return the live SLURP two-response delivery rule."""
 
     return _slurp_intent_slots_delivery_rule
+
+
+def slurp_joint_hypothesis_delivery_rule(
+    predecessor: str,
+    response: str,
+    *,
+    legal_intent_ids: set[str] | frozenset[str],
+    max_candidates: int,
+) -> SlurpDeliveryOutcome:
+    """Deliver one final-authoritative intent and entity response.
+
+    The predecessor is validated as ranked alternatives only. It never owns
+    delivered fields. A legal final intent outside the shortlist is allowed
+    because the shortlist is guidance over the full legal task inventory.
+    """
+
+    from ..rails.slurp_intent_hypotheses import (  # noqa: PLC0415
+        SlurpIntentHypothesisError,
+        parse_slurp_intent_hypothesis_content,
+    )
+
+    diagnostics = {
+        "rows": 1,
+        "hypothesis_state_invalid": 0,
+        "final_response_unparsed": 0,
+        "final_intent_illegal": 0,
+        "final_intent_outside_shortlist": 0,
+        "final_authoritative": 0,
+    }
+    try:
+        hypothesis_state = parse_slurp_intent_hypothesis_content(
+            predecessor,
+            expected_sample_id=None,
+            legal_intent_ids=legal_intent_ids,
+            max_candidates=max_candidates,
+        )
+    except SlurpIntentHypothesisError:
+        diagnostics["hypothesis_state_invalid"] = 1
+        return SlurpDeliveryOutcome(
+            text=response,
+            refusal_reason="invalid_hypothesis_predecessor",
+            diagnostics=diagnostics,
+        )
+
+    if not response:
+        diagnostics["final_response_unparsed"] = 1
+        return SlurpDeliveryOutcome(
+            text=response, refusal_reason="empty_response", diagnostics=diagnostics
+        )
+    scenario, action, entities, parsed = _strict_joint_response(response)
+    if not parsed:
+        diagnostics["final_response_unparsed"] = 1
+        return SlurpDeliveryOutcome(
+            text=response,
+            refusal_reason="malformed_final_response",
+            diagnostics=diagnostics,
+        )
+    intent_id = (
+        f"{scenario}_{action}"
+        if isinstance(scenario, str)
+        and scenario
+        and isinstance(action, str)
+        and action
+        else ""
+    )
+    if intent_id not in legal_intent_ids:
+        diagnostics["final_intent_illegal"] = 1
+        return SlurpDeliveryOutcome(
+            text=response,
+            refusal_reason="illegal_final_intent",
+            diagnostics=diagnostics,
+        )
+
+    shortlist = {candidate.intent_id for candidate in hypothesis_state.candidates}
+    diagnostics["final_intent_outside_shortlist"] = int(intent_id not in shortlist)
+    diagnostics["final_authoritative"] = 1
+    payload = {
+        "scenario": scenario,
+        "action": action,
+        "entities": [
+            {"type": entity.type, "filler": entity.filler} for entity in entities
+        ],
+    }
+    return SlurpDeliveryOutcome(
+        text=json.dumps(payload, ensure_ascii=False, sort_keys=True),
+        refusal_reason=None,
+        diagnostics=diagnostics,
+    )
+
+
+def slurp_joint_hypothesis_delivery_v1(*, max_candidates: int):
+    """Build the registered joint delivery rule from the TRAIN legal inventory."""
+
+    from ..data.lock import data_root, load_lock, umbrella_lock_path  # noqa: PLC0415
+    from .slurp_official_eval import load_legal_intent_inventory  # noqa: PLC0415
+
+    inventory = load_legal_intent_inventory(
+        load_lock(umbrella_lock_path()), data_root()
+    )
+    legal_intent_ids = frozenset(
+        f"{scenario}_{action}" for scenario, action in inventory.pairs
+    )
+
+    def deliver(predecessor: str, response: str) -> SlurpDeliveryOutcome:
+        return slurp_joint_hypothesis_delivery_rule(
+            predecessor,
+            response,
+            legal_intent_ids=legal_intent_ids,
+            max_candidates=max_candidates,
+        )
+
+    return deliver
 
 
 def join_slurp_rosters(
