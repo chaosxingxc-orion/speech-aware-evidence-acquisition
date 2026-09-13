@@ -122,6 +122,17 @@ from .receipts import FLIGHT_STAGES, FlightReceipts, require_mandatory_throughpu
 # has finished initializing.
 
 
+def _default_delivery_builder(**kwargs: object) -> Path:
+    from ..bundle.delivery import build_delivery_bundle
+
+    return build_delivery_bundle(**kwargs)
+
+
+def _default_delivery_settler(*args: object, **kwargs: object) -> object:
+    from ..bundle.settlement import settle_phase_delivery_attempt
+
+    return settle_phase_delivery_attempt(*args, **kwargs)
+
 class FlightRuntimeError(RuntimeError):
     """A :class:`FlightRuntime` input is invalid, or a stage cannot run."""
 
@@ -1011,6 +1022,8 @@ class FlightRuntime:
         whisper_inventory_verifier: Callable[[Mapping[str, object]], Mapping[str, object]] | None = None,
         phase_tool_builder: Callable[..., object] | None = None,
         score_batch: Callable[..., Mapping[str, object]] = run_score_batch,
+        delivery_builder: Callable[..., Path] = _default_delivery_builder,
+        delivery_settler: Callable[..., object] = _default_delivery_settler,
         clock: Callable[[], float] = time.time,
         # -- additional seams the C4c brief calls for "through seams" but
         # does not enumerate in its own constructor list (each defaults to
@@ -1085,6 +1098,8 @@ class FlightRuntime:
         self._whisper_inventory_verifier = whisper_inventory_verifier
         self._phase_tool_builder = phase_tool_builder
         self._score_batch = score_batch
+        self._delivery_builder = delivery_builder
+        self._delivery_settler = delivery_settler
         self._clock = clock
         self._manifest_builder = manifest_builder
         self._bundle_verifier = bundle_verifier
@@ -6779,12 +6794,34 @@ class FlightRuntime:
 
         self._require_prior_stages("score")
         seal_payload = self.receipts.require("seal")
-        if seal_payload.get("delivery_required"):
-            raise FlightRuntimeError(
-                "raw phase parent requires declared delivery: use build-delivery, "
-                "then score the derived manifest through score-batch"
-            )
+        delivery_preparation = None
         manifest_path = Path(seal_payload["manifest_path"])
+        if seal_payload.get("delivery_required"):
+            if seal_payload.get("finalize", {}).get("status") != "deferred-to-declared-deliveries":
+                raise FlightRuntimeError("declared delivery seal has an invalid finalization state")
+            if max_workers != 1:
+                raise FlightRuntimeError("declared deliveries use the single official scoring worker")
+            if not include_per_sample:
+                raise FlightRuntimeError(
+                    "declared delivery scoring requires include_per_sample for complete "
+                    "score receipts and attempt settlement"
+                )
+            from .scoring import prepare_declared_delivery_score_jobs
+
+            delivery_preparation = prepare_declared_delivery_score_jobs(
+                parent_manifest=manifest_path,
+                generation_manifest=Path(seal_payload["generation_manifest_path"]),
+                generation_manifest_sha256=seal_payload["generation_manifest_sha256"],
+                repo_root=self._repo_root,
+                data_root=self._data_root,
+                experiment_path=(
+                    self._repo_root / "configs" / "experiment" / f"{self._experiment}.json"
+                ),
+                delivery_cells=tuple(seal_payload.get("declared_delivery_cells", ())),
+                output_root=self._run_dir() / "declared-deliveries",
+                jobs_path=self._run_dir() / "delivery-score-jobs.jsonl",
+                delivery_builder=self._delivery_builder,
+            )
         if self._result_kind() == "artifact":
             verified = self._bundle_verifier(manifest_path)
             if (
@@ -6808,7 +6845,10 @@ class FlightRuntime:
         run_dir = self._run_dir()
         jobs_path = run_dir / "score-jobs.jsonl"
         score_kwargs = {}
-        if seal_payload.get("finalize", {}).get("status") == "deferred-to-score-worker":
+        if delivery_preparation is not None:
+            jobs_path = delivery_preparation.jobs_path
+            jobs = delivery_preparation.jobs
+        elif seal_payload.get("finalize", {}).get("status") == "deferred-to-score-worker":
             from .scoring import load_sealed_score_jobs
 
             jobs = load_sealed_score_jobs(seal_payload)
@@ -6840,6 +6880,41 @@ class FlightRuntime:
         )
         duration = max(self._clock() - started, 1e-9)
 
+        delivery_settlement = None
+        if delivery_preparation is not None:
+            if _sha256_file(manifest_path) != delivery_preparation.parent_sha256:
+                raise FlightRuntimeError("raw generation manifest changed during derivative scoring")
+            if not result.get("failed", 0):
+                from ..scoring_receipt import SavedScoreReceiptRef
+
+                result_rows = result.get("jobs")
+                if not isinstance(result_rows, list) or len(result_rows) != len(jobs):
+                    raise FlightRuntimeError("delivery score batch returned an invalid job roster")
+                refs = []
+                for job, row in zip(jobs, result_rows, strict=True):
+                    if not isinstance(row, Mapping) or row.get("job_id") != job.job_id:
+                        raise FlightRuntimeError("delivery score result differs from declared jobs")
+                    receipt_name = row.get("complete_receipt_file")
+                    receipt_sha256 = row.get("complete_receipt_sha256")
+                    if not isinstance(receipt_name, str) or not isinstance(receipt_sha256, str):
+                        raise FlightRuntimeError("delivery score job lacks a complete score receipt")
+                    receipt_path = resolved_output_dir / receipt_name
+                    if _sha256_file(receipt_path) != receipt_sha256:
+                        raise FlightRuntimeError("delivery complete score receipt hash mismatch")
+                    refs.append(SavedScoreReceiptRef(job.job_id, receipt_path, receipt_sha256))
+                settlement = self._delivery_settler(
+                    manifest_path,
+                    repo_root=self._repo_root,
+                    score_receipts=tuple(refs),
+                    settlement_path=run_dir / "delivery-settlement.json",
+                )
+                delivery_settlement = {
+                    "receipt_path": str(settlement.receipt_path),
+                    "receipt_sha256": settlement.receipt_sha256,
+                    "attempt_state": settlement.attempt_state,
+                    "reused": settlement.reused,
+                }
+
         payload = {
             "jobs_path": str(jobs_path),
             "output_dir": str(resolved_output_dir),
@@ -6849,6 +6924,10 @@ class FlightRuntime:
             "jobs_per_second": len(jobs) / duration,
             "result": result,
         }
+        if delivery_preparation is not None:
+            payload["delivery_derivatives"] = list(delivery_preparation.derivatives)
+            payload["source_generation_manifest_sha256"] = delivery_preparation.parent_sha256
+            payload["delivery_settlement"] = delivery_settlement
         if seal_payload.get("finalize", {}).get("status") == "deferred-to-score-worker":
             payload["source_generation_manifest_sha256"] = seal_payload[
                 "generation_manifest_sha256"
