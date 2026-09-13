@@ -156,6 +156,8 @@ comparison. Audio2Tool remains in architecture/readiness and task-specific
 knowledge work; later E21/E22 transfer follows their own task identity,
 execution scope and official metrics.
 
+The [Audio2Tool native-role reuse audit](2026-09-13-a2t-native-role-reuse-audit-v1.md) verifies the actual frozen-roster adapter path, existing complete-dialogue preparation and ordered scoring. It separates the closed two-stage task system from the new four-role graph and specifies the carrier contracts a successor must bind, without admitting a new flight.
+
 Current preparation roster uses deterministic lexical-smallest TRAIN source ID per recalled facet. It has 2,621 distinct selected recordings. Their full bytes/hashes were verified; 4 packets qualify under the frozen target decoder/projector and 2,617 inputs are cold. This is a preparation roster, not a newly authorized generation roster.
 
 ## Artifact lineage
