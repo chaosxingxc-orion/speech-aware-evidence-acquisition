@@ -1,0 +1,37 @@
+{
+  "schema": "saea-native-contact-fit-execution-plan-v1",
+  "cell": "slurp-native-knowledge-proof-recovery-v1",
+  "experiment": "slurp-native-knowledge-proof-recovery-v1",
+  "expected_session_id": "serving-slurp-native-knowledge-proof-np4-v1",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-13-slurp-native-knowledge-proof-recovery-v1/protocol-v1.json",
+    "sha256": "3ae7ace87ad0f1b07977f44603977277577dd1a1d8c0d684278e7a061ad12d0d"
+  },
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-PROOF-RECOVERY-FIT-V1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "planned_model_calls": 176,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "99e4970abad936e01fac3f119ad5653b32a5f1df4b425ff331f9d940fb939b70",
+    "attempt_id": "attempt-slurp-native-knowledge-proof-recovery-fit-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "root_registration_required": false,
+  "scoring": "No scorer or task-quality read in this engineering proof.",
+  "attached_generation_run_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-PROOF-RECOVERY-V1",
+  "contact_cap": 176,
+  "max_speech_packets": 1,
+  "execution_location": "FlightRuntime native request gate during generation, before each realized request dispatch.",
+  "recovery": {
+    "predecessor_run_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-PROOF-V1",
+    "predecessor_model_contacts": 0,
+    "predecessor_tokenizer_contacts": 0,
+    "maximum_recovery_registrations": 1,
+    "on_failure": "Stop and preserve; no second recovery."
+  }
+}
