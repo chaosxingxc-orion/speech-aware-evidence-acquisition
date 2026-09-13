@@ -1,0 +1,31 @@
+{
+  "attached_generation_run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-REPLICATION-V1",
+  "cell": "slurp-native-terminal-system-dev1000-recovery-v1",
+  "contact_cap": 44000,
+  "execution_location": "Before each realized native request under generation lease; one speech packet plus three endpoint checks per model call; 44000 endpoint cap.",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-terminal-system-fit-recovery-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 44000,
+    "planned_speech_audio_seconds": 44000,
+    "protocol_hash": "931787a2cf90d79c847f9e0b695d940a78815b6192ad1ca821dc30a69b09c382",
+    "run_id": "SAEA-SLURP-NATIVE-TERMINAL-SYSTEM-FIT-RECOVERY-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-direct-vs-native-np4-ctx24k-v1",
+  "experiment": "slurp-native-terminal-system-dev1000-recovery-v1",
+  "max_speech_packets": 1,
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-13-slurp-native-terminal-system-dev1000-recovery-v1/protocol-v1.json",
+    "sha256": "c23acfa056459271e3a48f7287701202d7a4663b316033dbe683a24d05bc8feb"
+  },
+  "registration_state": "Registered by root before contact; launch still requires completed engineering verification and same-process service identity.",
+  "root_registration_required": false,
+  "schema": "saea-native-contact-fit-execution-plan-v1",
+  "scoring": "One complete official system score; reuse existing direct first score; source-bound read release required."
+}

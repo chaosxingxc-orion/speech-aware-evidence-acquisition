@@ -1,0 +1,124 @@
+{
+  "analysis_recipe": {
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-native-terminal-system-dev1000-recovery-analysis-recipe-v1.json",
+    "sha256": "567fcb543c04b01304451d4b5f0de7e94732c2054e71c1ad9698d43f8f4d2cb9"
+  },
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 44000,
+    "generation_calls_cap": 11000,
+    "gpu_hours_fit_inclusive": 12.0,
+    "official_complete_scoring_jobs": 1
+  },
+  "claim": "Prospective revised full system versus direct frozen model on exposed discovery. No exact v1 replication, isolated mechanism causality or generalization claim.",
+  "direct_comparator": {
+    "attempt_id": "attempt-slurp-direct-vs-native-direct-generation-replication-v1",
+    "first_score_file": {
+      "data_relpath": "runs/SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-REPLICATION-V1/attempt-slurp-direct-vs-native-direct-generation-replication-v1/score-batch/attempt-slurp-direct-vs-native-direct-generation-replication-v1.score.json",
+      "sha256": "4f004557088ff9cb4ddec8091e9a29e02b9d4f5f02a094d50f82763d9fa20266"
+    },
+    "manifest": {
+      "data_relpath": "runs/SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-REPLICATION-V1/attempt-slurp-direct-vs-native-direct-generation-replication-v1/SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-REPLICATION-V1.run-manifest.json",
+      "sha256": "60eacd635ec927d894f6fe3222a2cbb8d3d5927ae56adcb7317ee8025f1c27d4"
+    },
+    "quality_read": false,
+    "repeat_generation": false,
+    "run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-REPLICATION-V1"
+  },
+  "exhaustion_semantics": {
+    "answer_source": "last eligible actual Solver completion, byte-preserved",
+    "at_limit_non_accept_actions": [
+      "REVISE",
+      "ACQUIRE"
+    ],
+    "default_legacy": "raise",
+    "new_model_calls_for_terminal_delivery": 0,
+    "opt_in": "deliver-latest-solver",
+    "planner_accepted": false,
+    "receipt": "terminal_solver_receipt and terminal_disposition; no accepted_solver_receipt",
+    "unrelated_failure": "stop and preserve"
+  },
+  "failure_policy": "Stop and preserve on any failure. This is the sole recovery registration of the failed native replication; a second failure closes the flight. No automatic restart/replay, roster filtering, extra repair, geometry change or discarded failed samples.",
+  "fit": {
+    "endpoint_cap": 44000,
+    "kind": "every actual native request before dispatch under same generation lease",
+    "max_packets": 1,
+    "no_previous_allocation_reuse": true
+  },
+  "launch_conditions": [
+    "Root reviews and passes the new graph/config/runner/bundle/diagnostic and queue tests on a clean frozen WSL worktree.",
+    "Shared preflight and source bindings pass over all 1000 rows.",
+    "Use the same resident serving-slurp-direct-vs-native-np4-ctx24k-v1 process as the completed direct comparator; do not silently substitute a restarted process.",
+    "Register exact composed plan identities before any fit or model contact.",
+    "A second failed recovery stops this flight."
+  ],
+  "native_episode": {
+    "actions": {
+      "accept": "ACCEPT",
+      "acquire": "ACQUIRE",
+      "revise": "REVISE"
+    },
+    "episode_id": "slurp-native-terminal-system-dev1000-v1",
+    "exhaustion_policy": "deliver-latest-solver",
+    "max_revisions": 1,
+    "roles": {
+      "perception": {
+        "max_iterations": 1,
+        "phase_id": "perception"
+      },
+      "planner": {
+        "max_iterations": 1,
+        "phase_id": "planner"
+      },
+      "reviewer": {
+        "max_iterations": 3,
+        "phase_id": "reviewer"
+      },
+      "solver": {
+        "max_iterations": 1,
+        "phase_id": "solver"
+      }
+    },
+    "schema": "saea-native-episode-config-v1"
+  },
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "decision_population": "Historically exposed DEV1000; NEW500 primary, OLD500 and pooled secondary. Preserve variable-width candidates and all rows.",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "protocol_id": "SAEA-SLURP-NATIVE-TERMINAL-SYSTEM-RECOVERY-PROTOCOL-V1",
+  "read_rule": "Read quality only after the complete recovery is sealed and officially scored once, both exact first-score receipts are verified, and a new root release binds the derived analysis config. Retain all rows and report terminal stops separately.",
+  "registered_at": "2026-09-13T21:33:56.424854+00:00",
+  "root_cause": {
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-native-replication-exhaustion-root-cause-v1.md",
+    "sha256": "6447d2ab32315ca122309edb02cfc13908f220dd8d02bd679fae967d734a5712"
+  },
+  "schema": "saea-native-terminal-system-recovery-protocol-v1",
+  "scientific_admission": {
+    "expected_decision_id": "slurp-native-terminal-system-dev1000-recovery-admission-v1",
+    "kind": "decision",
+    "reason": "Root registered one prospective terminal-policy recovery after a named failure.",
+    "relpath": "coordination/slurp-native-terminal-system-dev1000-recovery-v1/admission-v1.json",
+    "sha256": "1c8865f882b0505597a3bc5cdd5a6b0e2e80ee105aadfc5833f2324a5345ed24"
+  },
+  "scoring": "One standard complete official score of the new system with all per-sample statistics, no partial scoring. Reuse the saved direct first score without rerun.",
+  "service": {
+    "decoder_only": true,
+    "expected_existing_pid": 756,
+    "max_tokens": 256,
+    "prepared_speech": true,
+    "same_process_required": true,
+    "session_id": "serving-slurp-direct-vs-native-np4-ctx24k-v1",
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "setting": {
+    "cell": "slurp-native-terminal-system-dev1000-recovery-v1",
+    "composed_config_sha256": "3efc88a022ac2b68aeca848f453013fed181fe93ceccf0a146f0605e794c6614",
+    "execution_protocol_sha256": "931787a2cf90d79c847f9e0b695d940a78815b6192ad1ca821dc30a69b09c382",
+    "experiment": "slurp-native-terminal-system-dev1000-recovery-v1"
+  }
+}
