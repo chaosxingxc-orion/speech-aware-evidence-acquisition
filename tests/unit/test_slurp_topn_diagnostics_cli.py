@@ -10,14 +10,22 @@ import pytest
 from speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics_cli import (
     SlurpTopNAnalysisError,
     _branch_rows,
+    _entity_correctness_from_verified_receipt,
+    _entity_correctness_from_verified_score_document,
     _raw_aggregate,
     _raw_source_rows,
     _references,
+    _observed_width_reports,
+    _select_source_binding,
     _source_rows,
     run_raw_source,
 )
 from speech_aware_evidence_acquisition.contracts import TraceRecord
-from speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics import ReferenceIntentRow
+from speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics import (
+    BranchOutcomeRow,
+    ReferenceIntentRow,
+    SourceCandidateRow,
+)
 from speech_aware_evidence_acquisition.core.bundle.delivery_replay import canonical
 from speech_aware_evidence_acquisition.core.bundle.raw_contact_source import verify_aborted_contact_source, _transport_response_sha256
 from speech_aware_evidence_acquisition.data.splits import prefixed, split_identity_hash
@@ -144,11 +152,14 @@ def test_branch_reader_requires_common_state_and_delivery_hashes(tmp_path):
     )
 
     rows = _branch_rows(
-        "joint", branch, source_path, binding["manifest"]["sha256"], states, ids
+        "joint", branch, source_path, binding["manifest"]["sha256"], states, ids,
+        {"s1": True, "s2": False},
     )
 
     assert rows[0].final_intent_id == "a_x"
     assert rows[0].refused is False
+    assert rows[0].entity_correct is True
+    assert rows[1].entity_correct is False
 
     branch.manifest["phase_sources"][1]["sealed_state_sha256"] = "f" * 64
     with pytest.raises(SlurpTopNAnalysisError, match="state binding"):
@@ -294,6 +305,29 @@ def test_run_is_config_driven_and_score_gate_precedes_semantic_reads(tmp_path, m
     assert result["populations"] == {"NEW500": 1, "DEV1000": 2, "OLD500": 1}
     assert calls == ["score", "references"]
     assert result["diagnostics"]["DEV1000"]["source"]["topn_included"] == 2
+    assert "by_observed_distinct_width" not in result["diagnostics"]["DEV1000"]
+
+    distinct_source = dict(source_binding)
+    distinct_source["candidate_count_range"] = [1, 3]
+    config["analysis"]["source_diagnostics"] = {
+        **config["analysis"]["source_diagnostics"],
+        "shared_distinct_source": distinct_source,
+    }
+    del config["analysis"]["source_diagnostics"]["shared_fixed_top3_source"]
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    distinct_result = cli.run(
+        config_path,
+        tmp_path / "distinct-out.json",
+        bundle_verifier=verifier,
+        score_receipt_verifier=score_verifier,
+        reference_loader=references,
+        state_loader=lambda *_args, **_kwargs: states,
+    )
+    assert distinct_result["source"]["binding_name"] == "shared_distinct_source"
+    assert set(distinct_result["diagnostics"]["DEV1000"]["by_observed_distinct_width"]) == {"3"}
+    assert distinct_result["diagnostics"]["DEV1000"]["branches"]["joint"][
+        "entity_unavailable"
+    ] == 2
 
 
 def _raw_trace_fixture(tmp_path: Path, *, finish_reason: str = "stop"):
@@ -557,3 +591,118 @@ def test_unsealed_entry_refuses_before_reference_read(tmp_path, defect, match):
         pytest.fail("references must not be read")
     with pytest.raises(SlurpTopNAnalysisError, match=match):
         run_raw_source(path, tmp_path / "report.json", reference_loader=no_read)
+
+
+def test_distinct_source_binding_is_selected_without_changing_fixed_default():
+    fixed = {"shared_fixed_top3_source": {"candidate_count": 3}}
+    assert _select_source_binding(fixed) == (
+        "shared_fixed_top3_source", fixed["shared_fixed_top3_source"], False
+    )
+
+    distinct = {"shared_distinct_source": {"candidate_count_range": [1, 3]}}
+    assert _select_source_binding(distinct) == (
+        "shared_distinct_source", distinct["shared_distinct_source"], True
+    )
+
+    with pytest.raises(SlurpTopNAnalysisError, match="source binding"):
+        _select_source_binding({"shared_distinct_source": {}, "shared_fixed_top3_source": {}})
+
+
+def test_verified_entity_adapter_uses_exact_counts_and_handles_empty_entities():
+    document = {
+        "verified": True,
+        "scores": {
+            "slurp-slu-official": {
+                "per_sample": [
+                    {"sample_id": "empty", "slot_f1_exact_fp": 0, "slot_f1_exact_fn": 0},
+                    {"sample_id": "wrong_entity", "slot_f1_exact_fp": 1, "slot_f1_exact_fn": 0},
+                    {"sample_id": "missed_entity", "slot_f1_exact_fp": 0, "slot_f1_exact_fn": 1},
+                ]
+            }
+        },
+    }
+    assert _entity_correctness_from_verified_score_document(
+        document, scorer="slurp-slu-official",
+        expected_ids={"empty", "wrong_entity", "missed_entity"}
+    ) == {"empty": True, "wrong_entity": False, "missed_entity": False}
+
+
+def test_verified_entity_adapter_reads_only_hash_pinned_score_result(tmp_path):
+    score_path = tmp_path / "score.json"
+    score_path.write_text(json.dumps({
+        "verified": True,
+        "scores": {"slurp-slu-official": {"per_sample": [
+            {"sample_id": "s1", "slot_f1_exact_fp": 0, "slot_f1_exact_fn": 0},
+        ]}},
+    }), encoding="utf-8")
+    score_pin = {
+        "path": str(score_path),
+        "sha256": hashlib.sha256(score_path.read_bytes()).hexdigest(),
+    }
+    assert _entity_correctness_from_verified_receipt(
+        {"score_result": score_pin},
+        scorer="slurp-slu-official",
+        expected_ids={"s1"},
+    ) == {"s1": True}
+
+
+def test_verified_entity_adapter_refuses_score_roster_mismatch():
+    document = {
+        "verified": True,
+        "scores": {"slurp-slu-official": {"per_sample": [
+            {"sample_id": "foreign", "slot_f1_exact_fp": 0, "slot_f1_exact_fn": 0},
+        ]}},
+    }
+    with pytest.raises(SlurpTopNAnalysisError, match="roster"):
+        _entity_correctness_from_verified_score_document(
+            document, scorer="slurp-slu-official", expected_ids={"s1"}
+        )
+
+
+def test_distinct_candidate_range_is_bounded():
+    assert _select_source_binding(
+        {"shared_distinct_source": {"candidate_count_range": [1, 3]}}
+    )[2] is True
+    with pytest.raises(SlurpTopNAnalysisError, match="candidate_count_range"):
+        from speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics_cli import (
+            _source_candidate_width,
+        )
+        _source_candidate_width(
+            {"candidate_count_range": [1, 4]}, distinct=True
+        )
+
+
+def test_verified_entity_adapter_leaves_missing_sufficient_counts_unavailable():
+    document = {
+        "verified": True,
+        "scores": {"slurp-slu-official": {"per_sample": [
+            {"sample_id": "s1", "slot_f1_exact_f1": 1.0},
+        ]}},
+    }
+    assert _entity_correctness_from_verified_score_document(
+        document, scorer="slurp-slu-official", expected_ids={"s1"}
+    ) == {"s1": None}
+
+
+def test_observed_width_reports_cover_one_two_three_and_reject_mismatch():
+    source = (
+        SourceCandidateRow("s1", ("a",)),
+        SourceCandidateRow("s2", ("a", "b")),
+        SourceCandidateRow("s3", ("a", "b", "c")),
+    )
+    refs = tuple(ReferenceIntentRow(sid, "a") for sid in ("s1", "s2", "s3"))
+    branches = {"closed_joint": tuple(
+        BranchOutcomeRow(sid, "a", False, None) for sid in ("s1", "s2", "s3")
+    )}
+    reports = _observed_width_reports(source, refs, branches, candidate_width=3)
+    assert set(reports) == {"1", "2", "3"}
+    assert [reports[str(width)]["source"]["sample_count"] for width in (1, 2, 3)] == [1, 1, 1]
+    assert reports["2"]["candidate_width"] == 2
+
+    with pytest.raises(SlurpTopNAnalysisError, match="width"):
+        _observed_width_reports(
+            (SourceCandidateRow("s1", ("a", "b", "c", "d")),),
+            (ReferenceIntentRow("s1", "a"),),
+            {"closed_joint": (BranchOutcomeRow("s1", "a", False, None),)},
+            candidate_width=4,
+        )
