@@ -322,6 +322,86 @@ def verify_complete_score_receipt(
     return document
 
 
+def write_complete_saved_score_receipt(
+    output_dir: Path, *, job_id: str, verified_bundle: VerifiedBundle,
+) -> SavedScoreReceiptRef:
+    """Repackage finalized, attached scores without invoking any scorer.
+
+    Keep the original finalized bundle immutable. The new result envelope
+    contains the complete attached score mapping unchanged; its receipt binds
+    the finalized manifest, which itself pins the original score artifact.
+    Record this derivation separately so it cannot look like another score run.
+    """
+    bundle = verified_bundle
+    if (
+        not isinstance(bundle, VerifiedBundle)
+        or bundle.attempt_state != "FINALIZED"
+        or bundle.manifest.get("status") != "COMPLETED"
+    ):
+        raise ScoreReceiptError("saved scores require a FINALIZED/COMPLETED bundle")
+    if not isinstance(job_id, str) or not job_id:
+        raise ScoreReceiptError("saved score reuse requires the original job identity")
+    meta = bundle.manifest.get("scores")
+    if not isinstance(meta, Mapping) or not isinstance(meta.get("path"), str):
+        raise ScoreReceiptError("finalized bundle has no attached saved scores")
+    score_path = Path(meta["path"]).resolve()
+    if score_path.parent != bundle.manifest_path.resolve().parent:
+        raise ScoreReceiptError("attached saved scores are outside the finalized run")
+    try:
+        raw = score_path.read_bytes()
+        if _sha256_bytes(raw) != meta.get("sha256"):
+            raise ScoreReceiptError("attached saved score artifact hash mismatch")
+        scores = json.loads(raw)
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise ScoreReceiptError(f"cannot read attached saved scores: {error}") from error
+    snapshot = capture_score_source(bundle)
+    payload = {
+        "manifest": str(bundle.manifest_path.resolve()),
+        "verified": True,
+        "scores": scores,
+    }
+    _validate_scores(payload, source=snapshot, manifest_path=bundle.manifest_path)
+    destination = Path(output_dir).resolve()
+    try:
+        destination.mkdir(parents=True, exist_ok=False)
+    except OSError as error:
+        raise ScoreReceiptError(f"saved score reuse requires a fresh output directory: {error}") from error
+
+    result_path = destination / "score-result.json"
+    with result_path.open("x", encoding="utf-8") as stream:
+        json.dump(payload, stream, ensure_ascii=False, sort_keys=True, indent=2)
+        stream.write("\n")
+    if _hash_file(score_path, "attached saved scores") != meta["sha256"]:
+        raise ScoreReceiptError("attached saved score artifact hash changed during reuse")
+    reference = write_complete_score_receipt(
+        destination / "complete-score-receipt.json",
+        job_id=job_id,
+        result_path=result_path,
+        source=snapshot,
+        verified_bundle=bundle,
+    )
+    provenance = {
+        "schema": "saea-finalized-score-reuse-v1",
+        "operation": "reuse-finalized-scores",
+        "job_id": job_id,
+        "source_manifest": dict(snapshot.manifest),
+        "source_scores": {"path": str(score_path), "sha256": meta["sha256"]},
+        "score_result": _artifact(result_path, "reused complete score result"),
+        "complete_score_receipt": {
+            "cell_id": reference.cell_id,
+            "path": str(reference.path),
+            "sha256": reference.sha256,
+        },
+        "scorer_invocations": 0,
+        "model_calls": 0,
+        "normalization": "Envelope only; preserve every configured scorer and every saved statistic.",
+    }
+    with (destination / "source-reuse.json").open("x", encoding="utf-8") as stream:
+        json.dump(provenance, stream, ensure_ascii=False, sort_keys=True, indent=2)
+        stream.write("\n")
+    return reference
+
+
 __all__ = [
     "SCHEMA",
     "SavedScoreReceiptRef",
@@ -331,4 +411,32 @@ __all__ = [
     "load_complete_score_receipt",
     "verify_complete_score_receipt",
     "write_complete_score_receipt",
+    "write_complete_saved_score_receipt",
 ]
+
+
+
+def main() -> int:
+    """Expose saved-score reuse as a model-free shared entry point."""
+    import argparse
+    from .bundle.verify import verify_bundle
+
+    parser = argparse.ArgumentParser(description=main.__doc__)
+    parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--job-id", required=True)
+    args = parser.parse_args()
+    reference = write_complete_saved_score_receipt(
+        args.output_dir, job_id=args.job_id, verified_bundle=verify_bundle(args.manifest),
+    )
+    print(json.dumps({
+        "cell_id": reference.cell_id,
+        "path": str(reference.path),
+        "sha256": reference.sha256,
+        "scorer_invocations": 0,
+    }, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

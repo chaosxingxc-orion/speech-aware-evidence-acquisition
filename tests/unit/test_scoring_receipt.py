@@ -201,3 +201,92 @@ def test_nonmapping_per_sample_row_and_nonstring_reference_hash_refuse(tmp_path)
         verify_complete_score_receipt(
             SavedScoreReceiptRef(ref.cell_id, ref.path, 7), _bundle(tmp_path / "valid")
         )
+
+
+def _finalized_bundle(tmp_path, *, ids=("s1", "s2")):
+    from dataclasses import replace
+
+    bundle = _bundle(tmp_path)
+    document = dict(bundle.manifest)
+    document["status"] = "COMPLETED"
+    document.pop("declaration")
+    document.pop("parent")
+    scores = tmp_path / "run.scores.json"
+    scores.write_text(json.dumps(_result(bundle, ids=ids)["scores"]), encoding="utf-8")
+    document["scores"] = {"path": str(scores), "sha256": _sha(scores)}
+    bundle.manifest_path.write_text(json.dumps(document), encoding="utf-8")
+    return replace(bundle, manifest=document, attempt_state="FINALIZED")
+
+
+def test_reuse_finalized_scores_preserves_originals_and_is_verifiable(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core import scoring_receipt as module
+
+    bundle = _finalized_bundle(tmp_path / "run")
+    before = {path: path.read_bytes() for path in (tmp_path / "run").iterdir()}
+    reference = module.write_complete_saved_score_receipt(
+        tmp_path / "reuse", job_id="original-finalize-job", verified_bundle=bundle,
+    )
+
+    document = verify_complete_score_receipt(reference, bundle)
+    result = json.loads(Path(document["score_result"]["path"]).read_text())
+    assert result["scores"] == json.loads(Path(bundle.manifest["scores"]["path"]).read_text())
+    assert reference.cell_id == "original-finalize-job"
+    assert {path: path.read_bytes() for path in before} == before
+    source = json.loads((tmp_path / "reuse/source-reuse.json").read_text())
+    assert source["scorer_invocations"] == 0
+    assert source["source_scores"] == bundle.manifest["scores"]
+    assert source["complete_score_receipt"]["sha256"] == reference.sha256
+    assert source["source_manifest"] == document["manifest"]
+
+
+@pytest.mark.parametrize("state", ["OPENED", "ABORTED", "DERIVED"])
+def test_reuse_refuses_unfinalized_source(tmp_path, state):
+    from dataclasses import replace
+    from speech_aware_evidence_acquisition.core import scoring_receipt as module
+
+    bundle = replace(_finalized_bundle(tmp_path / "run"), attempt_state=state)
+    with pytest.raises(ScoreReceiptError, match="FINALIZED/COMPLETED"):
+        module.write_complete_saved_score_receipt(
+            tmp_path / "reuse", job_id="job", verified_bundle=bundle,
+        )
+    assert not (tmp_path / "reuse").exists()
+
+
+def test_reuse_refuses_changed_saved_scores_before_writing(tmp_path):
+    from speech_aware_evidence_acquisition.core import scoring_receipt as module
+
+    bundle = _finalized_bundle(tmp_path / "run")
+    Path(bundle.manifest["scores"]["path"]).write_text("{}")
+    with pytest.raises(ScoreReceiptError, match="saved score.*hash"):
+        module.write_complete_saved_score_receipt(
+            tmp_path / "reuse", job_id="job", verified_bundle=bundle,
+        )
+    assert not (tmp_path / "reuse").exists()
+
+
+@pytest.mark.parametrize("ids", [("s1",), ("s1", "s1"), ("s1", "foreign")])
+def test_reuse_refuses_incomplete_saved_scoring(tmp_path, ids):
+    from speech_aware_evidence_acquisition.core import scoring_receipt as module
+
+    bundle = _finalized_bundle(tmp_path / "run", ids=ids)
+    with pytest.raises(ScoreReceiptError, match="complete roster"):
+        module.write_complete_saved_score_receipt(
+            tmp_path / "reuse", job_id="job", verified_bundle=bundle,
+        )
+    assert not (tmp_path / "reuse").exists()
+
+
+def test_reuse_refuses_overwrite(tmp_path):
+    from speech_aware_evidence_acquisition.core import scoring_receipt as module
+
+    bundle = _finalized_bundle(tmp_path / "run")
+    destination = tmp_path / "reuse"
+    module.write_complete_saved_score_receipt(
+        destination, job_id="job", verified_bundle=bundle,
+    )
+    before = {path: path.read_bytes() for path in destination.iterdir()}
+    with pytest.raises(ScoreReceiptError, match="fresh.*directory"):
+        module.write_complete_saved_score_receipt(
+            destination, job_id="job", verified_bundle=bundle,
+        )
+    assert {path: path.read_bytes() for path in before} == before
