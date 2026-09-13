@@ -1,0 +1,57 @@
+{
+  "schema": "saea-native-role-gpu-proof-protocol-v1",
+  "protocol_id": "SAEA-SLURP-NATIVE-ROLE-GPU-PROOF-PROTOCOL-V1",
+  "configuration": {
+    "model_fragment": "q4km-mmproj-free-slurp-native-role-gpu-proof-np8-max256-v1",
+    "dataset_fragment": "slurp-native-tools-engineering-4-v1",
+    "baseline_fragment": "slurp-native-role-gpu-proof-v1",
+    "experiment_fragment": "slurp-native-role-gpu-proof-v1",
+    "composed_config_hash": "cb814a959eaa044f39f7d8147c4f3f6f1ebc4f3a6142a386cda85c5308cf5dcd",
+    "execution_plan_protocol_hash": "c2c26d0e73e26c9144ab745e045732d9220843099a59e543c874d31bb6c4fbdc"
+  },
+  "population": {
+    "count": 4,
+    "split_role": "discovery",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "roster": "configs/dataset/slurp-native-tools-engineering-4-v1.json",
+    "no_new_draw": true
+  },
+  "native_episode": {
+    "policy": "phase-native-review-revise-v1",
+    "max_revisions": 1,
+    "contact_cap_per_sample": 11,
+    "roles": {"perception": 1, "solver": 1, "reviewer": 3, "planner": 1},
+    "tool_scope": {"reviewer": ["saea-tool-task-contract-v1"], "perception": [], "solver": [], "planner": []},
+    "reviewer_requirement": "The Reviewer prompt instructs one native task-contract call per review. The frozen core originates the function call; the harness does not inject a call.",
+    "acceptance": "Require a source-bound Reviewer task-contract tool receipt and an accepted Solver receipt sealed by Solver request identity."
+  },
+  "dynamic_fit": {
+    "mode": "in-generation-per-realized-request",
+    "run_id": "SAEA-SLURP-NATIVE-ROLE-GPU-PROOF-FIT-V1",
+    "attempt_id": "attempt-slurp-native-role-gpu-proof-fit-v1",
+    "max_speech_packets": 1,
+    "endpoint_cap": 176,
+    "formula": "4 roster rows * 11 maximum model contacts * (1 speech packet + 3 tokenizer endpoints)",
+    "separate_pre_run": false
+  },
+  "serving": {
+    "session_id": "serving-slurp-native-role-gpu-proof-np8-v1",
+    "runtime_receipt": "docs/receipts/runtime-q4km-mmproj-free.json",
+    "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+    "llama_cpp_build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "llama_server_binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "decoder_gguf_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "role": "inference",
+    "lifecycle_injected_argument": "--no-mmproj",
+    "server_args": ["-c", "65536", "-np", "8"],
+    "slot_geometry": "8 x 8192",
+    "max_tokens": 256,
+    "new_after_wsl_restart": true,
+    "reuse_existing_e0_receipt": true
+  },
+  "interpretation": {
+    "engineering_only": true,
+    "does_not_assess": ["task quality", "knowledge effectiveness", "selective tool benefit", "autonomous trigger quality"],
+    "retry": "No replay, forced call, or adaptive retry. A failed or contacted identity is retained."
+  }
+}

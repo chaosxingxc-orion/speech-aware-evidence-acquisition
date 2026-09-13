@@ -4,7 +4,7 @@
   "evidence_source": "none",
   "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame-tfrl-folds-v1/snapshot.json",
   "knowledge_snapshot_sha256": "9c64e8ec48a0fce4f172bd190932f99c98c7efa18bbfb14526d54c62fdf7032b",
-  "knowledge_visibility": "No knowledge value is supplied in this pre-release proof configuration. The existing snapshot is retained only for shared runtime binding. Separate root-authored intent and slot stores are intentionally absent until their source, snapshot, and release SHA-256 bindings are supplied and reviewed.",
+  "knowledge_visibility": "No knowledge value is supplied by this task-contract-only proof. The existing snapshot remains only as a shared runtime binding and is not a prompt source for any role.",
   "native_episode": {
     "schema": "saea-native-episode-config-v1",
     "episode_id": "slurp-native-role-gpu-proof-v1",
@@ -33,10 +33,6 @@
     "reviewer": {
       "mode": "native-tools", "source_authority_role": "reviewer",
       "allowed_tools": ["saea-tool-task-contract-v1"], "knowledge_views": ["text"]
-    },
-    "planner": {
-      "mode": "native-tools", "source_authority_role": "planner",
-      "allowed_tools": ["saea-tool-task-contract-v1"], "knowledge_views": ["text"]
     }
   },
   "policy": "phase-native-review-revise-v1",
@@ -50,6 +46,5 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_direct_closed_list.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "Prospective four-row TRAIN engineering proof of the shared FlightRuntime/OpenJiuwen native role graph. Reviewer or Planner analytical actions are only model-proposed native task-contract calls. Perception and Solver have explicit empty native-tool authority. The proof cannot establish task quality or knowledge-store value.",
-  "knowledge_release_gate": "The root must replace this pre-release task-contract-only configuration with separately pinned intent and slot named-store bindings after review. The provider must return selected values only; it must never attach all 60 intent cards or all 54 slot cards."
+  "what_this_is": "Four-row TRAIN engineering proof of the shared FlightRuntime/OpenJiuwen native role graph. Reviewer alone is instructed to invoke the native task-contract tool once per review; the framework does not inject that call. Perception, Solver, and Planner have empty native-tool authority. The proof cannot establish task quality, knowledge effectiveness, selective-tool benefit, or autonomous trigger quality. Any knowledge experiment requires its own separately registered identity."
 }
