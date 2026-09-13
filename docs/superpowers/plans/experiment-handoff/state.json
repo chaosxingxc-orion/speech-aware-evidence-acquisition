@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 77,
+  "generation": 78,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "780d06792e6a116036417c4b96a2adb39933964f",
-  "updated_at_utc": "2026-09-13T20:07:18.798788+00:00",
-  "next_action": "Read STATUS-077 and the released direct/native verdict. Original campaign and first scores are complete; quality is released and current version passes the exploratory gate. Finish root review and prospective admission of same-roster replication in its isolated worktree; preserve original runtime/artifacts and reuse the resident session only after exact checks. No new capability or flight is admitted by this status.",
+  "snapshot_commit": "532d8788a3cedca45fd9b81bde81b08fad4a22ec",
+  "updated_at_utc": "2026-09-13T20:25:20.424674+00:00",
+  "next_action": "Read STATUS-078. Replication is generating: direct OPENED with 359 consumed contacts at snapshot. Campaign PID27240/exec29344 on frozen532d8788; preserve service45101 and monitor86723. Follow counters without reading new quality. Score each complete arm once and release quality only after both receipts. Original pair passes exploratory gate; replication unproven. Prepare future capability/RL work in isolation.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SYSTEM-VERSIONS-025"
