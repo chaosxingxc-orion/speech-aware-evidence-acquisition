@@ -1,0 +1,60 @@
+{
+  "arm": "speech-feature-query-native-tools",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame/snapshot.json",
+  "knowledge_snapshot_sha256": "609854e4211891614b621e6431ccf23706c2aa3a3bc9133dae9d9765628c88b8",
+  "knowledge_visibility": "The retained compact-frame snapshot is bound only for shared agent-loop containment. No knowledge retrieval or value supply is enabled.",
+  "live_phase_fit": {
+    "attempt_id": "attempt-slurp-native-candidate-source-lookup-fit-v1",
+    "contact_cap": 6002,
+    "run_id": "SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-LOOKUP-FIT-V1"
+  },
+  "live_phase_fit_audio_seconds_cap": 6000,
+  "phase_material": {
+    "decision-1": {
+      "instruction_fill": null,
+      "instruction_template": "probes/native_candidate_contract_decision_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null
+    },
+    "final": {
+      "instruction_fill": null,
+      "instruction_template": "probes/native_candidate_contract_final_v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null
+    }
+  },
+  "phase_tools": {
+    "decision-1": {
+      "allowed_tools": [
+        "saea-tool-candidate-contract-lookup-v1"
+      ],
+      "candidate_limit": 3,
+      "knowledge_views": [
+        "text"
+      ],
+      "mode": "native-tools"
+    }
+  },
+  "policy": "native-answer-or-one-tool-v1",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "serving_slot_tokens": 16384,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "Two-contact native answer-or-one-tool source flight. The main model may answer immediately or request one canonical TRAIN-derived candidate-contract lookup with at most three ordered legal candidates, then deliver the final task answer. This source run does not isolate Top-N commitment and is not the promised shared-first-pass comparison.",
+  "whole_roster_wave_barrier": true,
+  "candidate_contracts": {
+    "source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201"
+  }
+}
