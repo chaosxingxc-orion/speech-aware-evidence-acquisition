@@ -4,6 +4,7 @@ Also enforces its own INDEPENDENT media-confinement rail (I4): the transport
 must refuse an absolute/backslash/traversal/escaping ``media_relpath`` on its
 own inputs, without relying on the adapter having already checked it."""
 
+import asyncio
 import base64
 import hashlib
 import json
@@ -17,8 +18,10 @@ import time
 from types import SimpleNamespace
 
 import pytest
+from openjiuwen.core.foundation.tool import LocalFunction, ToolCard
 
 from speech_aware_evidence_acquisition.contracts import ExecutionPlan, STUDY_SLUG
+from speech_aware_evidence_acquisition.core.config import protocol_hash
 from speech_aware_evidence_acquisition.core.base import EvidenceItem
 from speech_aware_evidence_acquisition.core.model import (
     FrozenCoreError,
@@ -33,7 +36,6 @@ from speech_aware_evidence_acquisition.core.model import (
     materialize_speech_feature_packet,
 )
 from speech_aware_evidence_acquisition.core.model.transport import _llama_server_factory
-from speech_aware_evidence_acquisition.core.config import protocol_hash
 from speech_aware_evidence_acquisition.core.policies import build_arm_payload
 from speech_aware_evidence_acquisition.core.preparation import canonical_bytes
 from speech_aware_evidence_acquisition.core.preparation_feature_cache import prepare_feature_cache_audit
@@ -47,6 +49,9 @@ from speech_aware_evidence_acquisition.core.session import (
 )
 from speech_aware_evidence_acquisition.data.loader import SampleRef
 from speech_aware_evidence_acquisition.rails import AudioRef, FrozenCoreClient, build_payload_binding
+from speech_aware_evidence_acquisition.reproduction.ojw.native_roles import (
+    NativeRoleContactContext, NativeRoleNode, NativeRoleNodeSpec,
+)
 
 # R0 repair T5 (I5): every LlamaServerTransport now requires a session receipt
 # that has already been verified against a runtime receipt. These tests are
@@ -3032,3 +3037,171 @@ def test_real_transport_client_preserves_native_wire_message_metadata(tmp_path):
     assert completion.original_message["tool_calls"][0]["id"] == "call-native-1"
     assert completion.original_message["tool_calls"][0]["function"]["arguments"] == '{"zone":"kitchen"}'
     assert completion.finish_reason == "tool_calls"
+
+
+def test_real_client_role_roundtrip_uses_wire_content_and_native_calls(tmp_path):
+    from test_rails_core_client_native_tools import (
+        _World as ClientWorld,
+        _speech_feature_messages,
+        _speech_feature_world,
+    )
+
+    responses = []
+    first_raw = json.dumps(
+        {
+            "choices": [
+                {
+                    "message": {
+                        "role": "assistant",
+                        "content": "I will inspect the supplied value.",
+                        "tool_calls": [
+                            {
+                                "id": "call-roundtrip-1",
+                                "type": "function",
+                                "function": {
+                                    "name": "analyze",
+                                    "arguments": '{"value":4}',
+                                },
+                            }
+                        ],
+                    },
+                    "finish_reason": "tool_calls",
+                }
+            ],
+            "usage": {"prompt_tokens": 3, "completion_tokens": 4},
+        },
+        separators=(",", ":"),
+    ).encode()
+    second_raw = json.dumps(
+        {
+            "choices": [
+                {
+                    "message": {
+                        "role": "assistant",
+                        "content": "review complete",
+                    },
+                    "finish_reason": "stop",
+                }
+            ],
+            "usage": {"prompt_tokens": 3, "completion_tokens": 2},
+        },
+        separators=(",", ":"),
+    ).encode()
+    responses.extend((first_raw, second_raw))
+    captured = []
+
+    def post(_url, body):
+        captured.append(json.loads(body))
+        return responses.pop(0)
+
+    world = ClientWorld(tmp_path)
+    feature_root, packet, packet_bindings = _speech_feature_world(world, tmp_path)
+    binding = build_payload_binding(
+        carrier_lock_key="fake-carrier",
+        samples=world.samples,
+        data_root=world.data_root,
+        carrier_root=world.carrier_root,
+    )
+    plan = ExecutionPlan(
+        run_id="SAEA-E-native-role-wire-roundtrip",
+        execution_profile="bounded-discovery-probe",
+        carrier_lock_key="fake-carrier",
+        split_role="discovery",
+        split_identity_hash="a" * 64,
+        planned_model_calls=2,
+        planned_gpu_hours=1.0,
+        planned_speech_audio_seconds=100,
+        protocol_hash=protocol_hash("b" * 64, "speech-feature-query-native-tools", "a" * 64),
+        attempt_id="attempt-native-role-wire-roundtrip",
+    )
+    transport = _transport(
+        _base_url(),
+        world.data_root,
+        post=post,
+        feature_root=feature_root,
+        preserve_wire_responses=True,
+    )
+    client = FrozenCoreClient(
+        plan=plan,
+        gate=_WireMetadataOpenGate(),
+        transport=transport,
+        run_dir=world.run_dir,
+        binding=binding,
+        arm="speech-feature-query-native-tools",
+        speech_feature_root=feature_root,
+        speech_packet_bindings=packet_bindings,
+        tool_schemas=(
+            {
+                "type": "function",
+                "function": {
+                    "name": "analyze",
+                    "description": "Analyze a value.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {"value": {"type": "integer"}},
+                        "required": ["value"],
+                    },
+                },
+            },
+        ),
+    )
+    observed = []
+    role_requests = []
+
+    def analyze(value: int):
+        observed.append(value)
+        return {"doubled": value * 2}
+
+    card = ToolCard(
+        id="analyze",
+        name="analyze",
+        description="Analyze a value.",
+        input_params={
+            "type": "object",
+            "properties": {"value": {"type": "integer"}},
+            "required": ["value"],
+            "additionalProperties": False,
+        },
+        stateless=True,
+        idempotent=True,
+    )
+    node = NativeRoleNode(
+        spec=NativeRoleNodeSpec(
+            role_id="reviewer",
+            role_kind="reviewer",
+            prompt="Review with the analytical tool.",
+            max_iterations=2,
+            ability_names=("analyze",),
+        ),
+        metered_request=lambda request: (
+            role_requests.append(request)
+            or client.complete_with_metadata(
+                _speech_feature_messages(packet),
+                speech_feature_sample_id="s1",
+                key_representation_id="k1-text-card-v1",
+                matcher_policy_id="m1-listwise-v1",
+                agent_state=(),
+                agent_contact_id=request.context.agent_contact_id,
+                contact_instruction=request.context.agent_contact_id,
+            )
+        ),
+        contact_context_provider=lambda index: NativeRoleContactContext(
+            sample_id="s1",
+            agent_contact_id=f"contact-{index + 1}",
+        ),
+        abilities=(LocalFunction(card=card, func=analyze),),
+        tool_allowed=lambda role, name: role == "reviewer" and name == "analyze",
+    )
+
+    try:
+        result = asyncio.run(node.invoke_direct("Inspect the supplied value."))
+    finally:
+        client.close()
+
+    assert result["actor_output"] == "review complete"
+    assert "doubled" in role_requests[1].messages[-1]["content"]
+    assert len(captured) == 2
+    assert len(role_requests) == 2
+    assert role_requests[1].messages[-2]["content"] == "I will inspect the supplied value."
+    assert role_requests[1].messages[-2]["tool_calls"][0]["id"] == "call-roundtrip-1"
+    assert role_requests[1].messages[-1]["tool_call_id"] == "call-roundtrip-1"

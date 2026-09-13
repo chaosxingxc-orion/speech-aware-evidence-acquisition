@@ -14,6 +14,7 @@ from openjiuwen.core.runner import Runner
 
 from speech_aware_evidence_acquisition.rails.core_client import CoreCompletion
 from speech_aware_evidence_acquisition.reproduction.ojw.native_roles import (
+    FrozenCoreRoleModel,
     FrozenCoreRoleModelError,
     NativeRoleContactContext,
     NativeRoleNode,
@@ -45,8 +46,25 @@ def _completion(
     contact_id: str = "contact-1",
     tool_calls: object = None,
     serial: int = 1,
+    wire_content: str | None = None,
+    finish_reason: str | None = None,
 ) -> CoreCompletion:
     request_id = f"request-{serial}"
+    if finish_reason is None:
+        finish_reason = "tool_calls" if tool_calls else "stop"
+    message = {
+        "role": "assistant",
+        "content": text if wire_content is None else wire_content,
+    }
+    if tool_calls is not None:
+        message["tool_calls"] = tool_calls
+    wire = json.dumps(
+        {
+            "choices": [{"message": message, "finish_reason": finish_reason}],
+            "usage": {"prompt_tokens": 1, "completion_tokens": 1},
+        },
+        separators=(",", ":"),
+    ).encode()
     return CoreCompletion(
         text=text,
         request_id=request_id,
@@ -58,6 +76,7 @@ def _completion(
         tool_calls_json=json.dumps(
             tool_calls, ensure_ascii=False, sort_keys=True, separators=(",", ":")
         ).encode(),
+        wire_response_bytes=wire,
     )
 
 
@@ -96,6 +115,7 @@ def test_analytical_role_uses_framework_tool_history_and_meters_every_call():
             _completion(
                 text="I will inspect the supplied value.",
                 tool_calls=_tool_call("analyze", "call-1", '{"value":4}'),
+                wire_content="I will inspect the supplied value.",
             ),
             _completion(text="review complete", contact_id="contact-2", serial=2),
         ]
@@ -423,3 +443,109 @@ def test_context_provider_exhaustion_or_duplicate_refuses_before_callback(bad_co
         asyncio.run(node.invoke_direct("Review twice."))
     assert calls == [1]
     assert len(script.requests) == 1
+
+
+def test_role_requires_wire_metadata_and_rejects_terminal_saturation():
+    context = NativeRoleContactContext(
+        sample_id="sample-1", agent_contact_id="contact-1"
+    )
+    missing_wire = _completion(text="answer")
+    missing_wire = replace(missing_wire, wire_response_bytes=None)
+    model = FrozenCoreRoleModel(
+        role_id="solver",
+        metered_request=lambda _request: missing_wire,
+        context=context,
+    )
+    with pytest.raises(FrozenCoreRoleModelError, match="wire metadata"):
+        asyncio.run(model.invoke(
+            ({"role": "user", "content": "Solve."},),
+            tools=(),
+        ))
+
+    tool_calls = _tool_call("analyze", "call-length", '{"value":1}')
+    backend_calls: list[str] = []
+    saturated = _completion(
+        text='[{"name":"analyze","arguments":{"value":1}}]',
+        tool_calls=tool_calls,
+        finish_reason="length",
+    )
+    saturated_model = FrozenCoreRoleModel(
+        role_id="reviewer",
+        metered_request=lambda _request: saturated,
+        context=context,
+    )
+    with pytest.raises(FrozenCoreRoleModelError, match="finish_reason"):
+        asyncio.run(saturated_model.invoke(
+            ({"role": "user", "content": "Review."},),
+            tools=({"name": "analyze"},),
+        ))
+    assert backend_calls == []
+
+    delivered: list[str] = []
+    terminal_node = NativeRoleNode(
+        spec=NativeRoleNodeSpec(
+            role_id="solver",
+            role_kind="solver",
+            prompt="Solve.",
+            max_iterations=1,
+        ),
+        metered_request=lambda _request: _completion(
+            text="partial answer", finish_reason="length"
+        ),
+        contact_context=context,
+        delivery_allowed=lambda _role, output: delivered.append(output) or True,
+    )
+    with pytest.raises(FrozenCoreRoleModelError, match="finish_reason"):
+        asyncio.run(terminal_node.invoke_direct("Deliver the answer."))
+    assert delivered == []
+
+
+def test_role_preserves_structured_wire_content_supported_by_assistant_message():
+    completion = _completion(
+        text="normalized scorer text",
+        wire_content=[{"type": "text", "text": "structured assistant content"}],
+    )
+    model = FrozenCoreRoleModel(
+        role_id="solver",
+        metered_request=lambda _request: completion,
+        context=NativeRoleContactContext(
+            sample_id="sample-1", agent_contact_id="contact-1"
+        ),
+    )
+
+    message = asyncio.run(model.invoke(
+        ({"role": "user", "content": "Solve."},),
+        tools=(),
+    ))
+
+    assert message.content == [{"type": "text", "text": "structured assistant content"}]
+    assert message.content != completion.text
+
+
+def test_role_refuses_wire_null_content_instead_of_rewriting_it():
+    completion = _completion(text="normalized scorer text")
+    wire = json.dumps(
+        {
+            "choices": [
+                {
+                    "message": {"role": "assistant", "content": None},
+                    "finish_reason": "stop",
+                }
+            ]
+        },
+        separators=(",", ":"),
+    ).encode()
+    completion = replace(completion, wire_response_bytes=wire)
+    model = FrozenCoreRoleModel(
+        role_id="solver",
+        metered_request=lambda _request: completion,
+        context=NativeRoleContactContext(
+            sample_id="sample-1", agent_contact_id="contact-1"
+        ),
+    )
+
+    with pytest.raises(FrozenCoreRoleModelError, match="null"):
+        asyncio.run(model.invoke(
+            ({"role": "user", "content": "Solve."},),
+            tools=(),
+        ))
