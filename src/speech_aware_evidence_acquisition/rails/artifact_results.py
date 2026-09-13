@@ -85,6 +85,9 @@ class SlurpHypothesisArtifactValidator:
     min_candidates: int
     max_candidates: int
     source_sha256: str
+    max_distinction_chars: int | None = None
+    max_evidence_refs: int | None = None
+    max_unresolved_fields: int | None = None
 
     def canonicalize(self, raw_response: str, *, sample_id: str) -> str:
         canonical = canonicalize_slurp_intent_hypothesis_response(
@@ -97,19 +100,53 @@ class SlurpHypothesisArtifactValidator:
             raise ArtifactContentError(
                 f"SLURP hypothesis response requires at least {self.min_candidates} candidates"
             )
+        candidates = json.loads(canonical)["candidates"]
+        for index, candidate in enumerate(candidates):
+            if (
+                self.max_distinction_chars is not None
+                and len(candidate["distinction"]) > self.max_distinction_chars
+            ):
+                raise ArtifactContentError(
+                    "SLURP hypothesis candidate "
+                    f"{index} distinction exceeds {self.max_distinction_chars} characters"
+                )
+            if (
+                self.max_evidence_refs is not None
+                and len(candidate["evidence_refs"]) > self.max_evidence_refs
+            ):
+                raise ArtifactContentError(
+                    "SLURP hypothesis candidate "
+                    f"{index} evidence_refs exceeds {self.max_evidence_refs} items"
+                )
+            if (
+                self.max_unresolved_fields is not None
+                and len(candidate["unresolved_fields"]) > self.max_unresolved_fields
+            ):
+                raise ArtifactContentError(
+                    "SLURP hypothesis candidate "
+                    f"{index} unresolved_fields exceeds {self.max_unresolved_fields} items"
+                )
         return canonical
 
 
 def build_slurp_hypothesis_artifact_validator(
     contract: Mapping[str, object], *, data_root: Path
 ) -> SlurpHypothesisArtifactValidator:
-    if not isinstance(contract, Mapping) or set(contract) not in (
-        {"id", "max_candidates", "source_catalog"},
-        {"id", "min_candidates", "max_candidates", "source_catalog"},
+    required = {"id", "max_candidates", "source_catalog"}
+    optional = {
+        "min_candidates",
+        "max_distinction_chars",
+        "max_evidence_refs",
+        "max_unresolved_fields",
+    }
+    if (
+        not isinstance(contract, Mapping)
+        or not required <= set(contract)
+        or not set(contract) <= required | optional
     ):
         raise ArtifactContentError(
             "SLURP hypothesis content contract must contain id, max_candidates, "
-            "source_catalog and optional min_candidates"
+            "source_catalog and optional candidate or output bounds"
         )
     if contract.get("id") != SLURP_HYPOTHESIS_CONTENT_ID:
         raise ArtifactContentError("SLURP hypothesis content contract id is invalid")
@@ -125,8 +162,39 @@ def build_slurp_hypothesis_artifact_validator(
         raise ArtifactContentError(
             "SLURP hypothesis candidate bounds must satisfy 1 <= min <= max <= 3"
         )
+    max_distinction_chars = contract.get("max_distinction_chars")
+    if max_distinction_chars is not None and (
+        isinstance(max_distinction_chars, bool)
+        or not isinstance(max_distinction_chars, int)
+        or max_distinction_chars < 1
+    ):
+        raise ArtifactContentError(
+            "SLURP hypothesis output bound max_distinction_chars must be a positive integer"
+        )
+    max_evidence_refs = contract.get("max_evidence_refs")
+    max_unresolved_fields = contract.get("max_unresolved_fields")
+    for field, value in (
+        ("max_evidence_refs", max_evidence_refs),
+        ("max_unresolved_fields", max_unresolved_fields),
+    ):
+        if value is not None and (
+            isinstance(value, bool)
+            or not isinstance(value, int)
+            or not 0 <= value <= 32
+        ):
+            raise ArtifactContentError(
+                f"SLURP hypothesis output bound {field} must be an integer from 0 to 32"
+            )
     ids, source_sha = _source_catalog(contract, data_root)
-    return SlurpHypothesisArtifactValidator(ids, minimum, maximum, source_sha)
+    return SlurpHypothesisArtifactValidator(
+        ids,
+        minimum,
+        maximum,
+        source_sha,
+        max_distinction_chars,
+        max_evidence_refs,
+        max_unresolved_fields,
+    )
 
 
 def slurp_intent_hypotheses_response_format(
@@ -160,6 +228,18 @@ def slurp_intent_hypotheses_response_format(
             },
         },
     }
+    if validator.max_distinction_chars is not None:
+        candidate["properties"]["distinction"]["maxLength"] = (
+            validator.max_distinction_chars
+        )
+    if validator.max_evidence_refs is not None:
+        candidate["properties"]["evidence_refs"]["maxItems"] = (
+            validator.max_evidence_refs
+        )
+    if validator.max_unresolved_fields is not None:
+        candidate["properties"]["unresolved_fields"]["maxItems"] = (
+            validator.max_unresolved_fields
+        )
     return {
         "type": "json_schema",
         "json_schema": {
