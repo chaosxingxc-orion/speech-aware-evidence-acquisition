@@ -97,13 +97,13 @@ class CoreCompletion:
     response_sha256: str
     response_text_sha256: str
     tool_calls_json: bytes = field(repr=False)
+    # Exact preserved server response bytes. Absent for the historical
+    # transport default; never reconstructed from normalized text.
+    wire_response_bytes: bytes | None = field(default=None, repr=False, compare=False)
     # Derived from the actual built payload, after per-contact narrowing.
     # An empty tuple is a native tool-free contact; None is a non-native one.
     tool_names: tuple[str, ...] | None = None
     tool_schemas_sha256: str | None = None
-    # Exact preserved server response bytes. Absent for the historical
-    # transport default; never reconstructed from normalized text.
-    wire_response_bytes: bytes | None = field(default=None, repr=False, compare=False)
 
     @property
     def tool_calls(self) -> object:
@@ -506,8 +506,8 @@ def _validate_tool_schemas(
     {"name": ..., ...}}`` entries -- the exact shape
     ``data.audio2tool_tools.render_openai_tools`` produces (never imported
     here; module docstring -- this bridge's own dependency surface stays
-    light). Every entry is copied into a plain ``dict`` so the client's own
-    stored tuple never aliases a caller-owned mutable object."""
+    light). Every entry is copied through canonical JSON so no nested value in
+    the client's stored tuple aliases a caller-owned mutable object."""
 
     if (
         tool_schemas is None
@@ -525,6 +525,25 @@ def _validate_tool_schemas(
             raise FrozenCoreClientError(
                 f"tool_schemas[{index}] must be a mapping, got {type(entry).__name__}"
             )
+        try:
+            copied = json.loads(
+                json.dumps(
+                    entry,
+                    ensure_ascii=False,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                    allow_nan=False,
+                )
+            )
+        except (TypeError, ValueError) as error:
+            raise FrozenCoreClientError(
+                f"tool_schemas[{index}] must be JSON-compatible"
+            ) from error
+        if not isinstance(copied, dict):
+            raise FrozenCoreClientError(
+                f"tool_schemas[{index}] must serialize to a JSON object"
+            )
+        entry = copied
         if entry.get("type") != "function":
             raise FrozenCoreClientError(
                 f"tool_schemas[{index}] must declare type 'function'"
@@ -544,7 +563,7 @@ def _validate_tool_schemas(
                 "tool_schemas must not contain duplicate function names"
             )
         names.add(name)
-        validated.append(dict(entry))
+        validated.append(entry)
     return tuple(validated)
 
 
