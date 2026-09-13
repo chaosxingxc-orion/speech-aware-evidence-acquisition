@@ -3977,6 +3977,10 @@ class FlightRuntime:
                 "sample_id": result.sample_id,
                 "final_response_text": getattr(result, "final_response_text", None),
                 "contact_count": len(getattr(result, "contacts", ()) or ()),
+                **(
+                    {"native_episode_receipt": dict(result.native_episode_receipt)}
+                    if getattr(result, "native_episode_receipt", None) is not None else {}
+                ),
             }
             for result in last.results
         ]
@@ -4351,7 +4355,7 @@ class FlightRuntime:
             raise FlightRuntimeError(
                 "live speech observations require a native-enabled phase dispatcher"
             )
-        native_rule = getattr(program, "stop_rule", None) == "native-answer-or-tool"
+        native_rule = getattr(program, "stop_rule", None) in {"native-answer-or-tool", "native-role-episode"}
         if native_rule != bool(getattr(dispatcher, "native_enabled", False)):
             raise FlightRuntimeError(
                 "native-answer-or-tool stop rule and dispatcher mode must agree"
@@ -4366,6 +4370,9 @@ class FlightRuntime:
         if policy == "fixed" or policy in self._obs_policy_names():
             return
         program = default_phase_program(policy)
+        from ...rails.native_episode_config import load_native_episode_config
+
+        load_native_episode_config(self._composed.values, program)
         specs = self._phase_tool_specs(policy)
         if not specs:
             return
@@ -4405,6 +4412,11 @@ class FlightRuntime:
         from ..tracing import TraceBuffer  # noqa: PLC0415 (function-local, cheap)
 
         program = default_phase_program(policy)
+        from ...rails.native_episode_config import (
+            NativeEpisodeRunBinding, load_native_episode_config,
+        )
+
+        native_config = load_native_episode_config(self._composed.values, program)
         from ..preparation_fit import (
             build_live_phase_fit_gate,
             validate_live_phase_fit_config,
@@ -4495,6 +4507,40 @@ class FlightRuntime:
                 live_fit_gate = (
                     self._live_phase_fit_factory or build_live_phase_fit_gate
                 )(self, program, self._fit_base_plan(plan), **fit_options)
+        native_binding = None
+        native_fit_gate = None
+        if native_config is not None:
+            from ..preparation_fit import (
+                build_native_contact_fit_gate, validate_native_contact_fit_config,
+            )
+
+            validate_native_contact_fit_config(self._composed.values, program)
+            render_request = getattr(self._transport, "render_request", None)
+            if not callable(render_request):
+                raise FlightRuntimeError(
+                    "native episode requires the actual shared speech renderer; "
+                    "a generic text wire-check transport cannot prove this path"
+                )
+            if model_free_check:
+                def native_fit_gate(request):
+                    native_fit_gate.receipts.append({
+                        "sample_id": request.as_payload()["sample_id"],
+                        "prepared_request_sha256": hashlib.sha256(request.payload_bytes).hexdigest(),
+                        "model_free_request_identity_only": True,
+                        "capacity_verified": False,
+                    })
+                native_fit_gate.receipts = []
+            else:
+                native_fit_gate = build_native_contact_fit_gate(
+                    self, program, self._fit_base_plan(plan),
+                )
+            native_binding = NativeEpisodeRunBinding(
+                config=native_config, program=program,
+                material_for_phase=binding["material_for_phase"],
+                render_request=render_request, request_gate=native_fit_gate,
+                tools_for_phase=tool_dispatcher, supply_for_phase=supply_for_phase,
+                review_for_phase=review_for_phase,
+            )
         facet_seed, value_seed = self._phase_supply_seeds(
             program, binding, supply_specs, plan
         )
@@ -4506,7 +4552,8 @@ class FlightRuntime:
         # supply"). A program with no supply, or whose only supply is the
         # pre-flight-seeded FIRST phase, keeps the per-phase barrier form.
         continuous = (
-            whole_roster
+            native_binding is not None
+            or whole_roster
             or planner is not None
             or tool_dispatcher is not None
             or bool(set(supply_specs) - {program.phase_names()[0]})
@@ -4516,6 +4563,8 @@ class FlightRuntime:
             if whole_roster
             else {}
         )
+        if native_binding is not None:
+            live_options["native_episode_binding"] = native_binding
         if planner is not None:
             live_options["stop_policy"] = planner
         if tool_dispatcher is not None:
@@ -4614,7 +4663,7 @@ class FlightRuntime:
             "dispatch": "phase-program-continuous" if continuous else "phase-program",
             "program_id": program.program_id,
             "phase_names": list(program.phase_names()),
-            "contacts_per_sample": len(program.phases),
+            "contacts_per_sample": (program.max_contacts if native_binding is not None else len(program.phases)),
             "barrier": (
                 "whole-roster waves with retained controller state"
                 if whole_roster
@@ -4639,7 +4688,7 @@ class FlightRuntime:
                 {"result_kind": "artifact"} if self._result_kind() == "artifact" else {}
             ),
         }
-        records_realized_contacts = planner is not None or (
+        records_realized_contacts = native_binding is not None or planner is not None or (
             tool_dispatcher is not None
             and bool(getattr(tool_dispatcher, "native_enabled", False))
         )
@@ -4660,6 +4709,22 @@ class FlightRuntime:
                 )
         if tool_dispatcher is not None:
             dispatch["phase_tools"] = tool_dispatcher.receipt()
+        if native_binding is not None:
+            dispatch["native_episode"] = {
+                "episode_id": native_config.episode_id,
+                "framework": "OpenJiuwen Workflow and ReActAgent",
+                "max_revisions": native_config.max_revisions,
+                "roles": [
+                    {
+                        "phase_id": role.phase_id, "role_kind": role.role_kind,
+                        "max_iterations": role.max_iterations,
+                        "tool_names": list(role.tool_names),
+                    }
+                    for role in native_config.roles
+                ],
+            }
+            dispatch["barrier"] = "none: bounded native role graph per sample"
+            dispatch["native_contact_fit_receipts"] = list(native_fit_gate.receipts)
         if whole_roster:
             dispatch["whole_roster_wave_barrier"] = True
             dispatch["live_phase_fit_receipts"] = list(live_fit_gate.receipts)

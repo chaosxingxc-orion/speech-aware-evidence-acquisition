@@ -1864,7 +1864,7 @@ async def _invoke_native_role_episode(
                 message = native_tool_result_message(document)
                 settle(tool_step=step)
                 visits[role.phase_id]["local_ids"].append(step.state.state_id)
-                return message
+                return message["content"]
             return await run_contact(execute)
         return LocalFunction(
             card=ToolCard(id=function["name"], name=function["name"],
@@ -1928,6 +1928,13 @@ async def _invoke_native_role_episode(
     trace.emit("USE", f"{state.prepared.sample.sample_id}/{program.program_id}/native-episode", {
         "use_native_episode": compact_receipt,
     })
+    state.transitions.append(AgentStepTransition(
+        snapshot_sha256=snapshot_sha256,
+        prior_query_state_sha256=state.query_state.content_hash(),
+        next_query_state_sha256=None, action_kind="stop", action_target_refs=(),
+        new_value_ids=(), used_value_ids=(), dropped_value_ids=(),
+        new_agent_state_ids=(), dropped_agent_state_ids=(),
+    ).validate())
     state.final_outcome = _AgentRuntimeOutcome(
         prepared=state.prepared, final_query_state=state.query_state,
         final_response_text=completion.text, contacts=tuple(state.contacts),

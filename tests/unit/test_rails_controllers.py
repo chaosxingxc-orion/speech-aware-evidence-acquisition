@@ -41,6 +41,7 @@ _SHA_A = "a" * 64
 _SHA_B = "b" * 64
 
 _EXPECTED_PROGRAM_SHAPES = {
+    "phase-native-review-revise-v1": (("perception", "reviewer", "planner", "solver"), 11, "native-role-episode"),
     "phase-intent-hypotheses-only-v1": (
         ("hypotheses",),
         1,
@@ -836,6 +837,10 @@ def test_default_controller_factory_runs_to_completion_for_every_registered_prog
         return
     controller = factory("s1")
     context = _context(_query_state())
+    if rc.default_phase_program(program_id).stop_rule == "native-role-episode":
+        with pytest.raises(rc.RailsControllersError, match="OpenJiuwen episode binding"):
+            controller.initial_contact(context)
+        return
     contact = controller.initial_contact(context)
     assert isinstance(contact, AgentContactPlan)
     advance = controller.advance(context, contact, "a generic response")
