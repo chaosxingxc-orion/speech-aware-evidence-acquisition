@@ -6,9 +6,9 @@ All four exposure rows are committed with consumed=no. The shared attempt gate o
 
 | Role | Kind | Run | Plan SHA-256 |
 | --- | --- | --- | --- |
-| direct | generation | SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-REPLICATION-V1 | ba3577a8ab118d32f09bf5fe1b9c5f9e736db362de1f04fc3881b5d86d8a7e64 |
-| direct | fit | SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-FIT-REPLICATION-V1 | 962e81fec895ee7eaf684a8988ff5f115d419bfa62575e6f6b5782f903bcfea6 |
-| system | generation | SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-REPLICATION-V1 | 0637f24358e92eeec06de75bb42245c47a8cbbc78ee7a0ced39bc6d562978b87 |
-| system | fit | SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-FIT-REPLICATION-V1 | 2f09cbfeffd70bae4cd1bdc523547737f2de3fe511cfa4d7fcbd906148afcfee |
+| direct | generation | SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-REPLICATION-V1 | e441372b1b5833062aa6ef7fa5e74c7fe3c5bd2230e606d98e5dd5d411848b8d |
+| direct | fit | SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-FIT-REPLICATION-V1 | e1068839c6ec802c070421c854fd9d99da1823b31aa01775d7d80948c8ec49f5 |
+| system | generation | SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-REPLICATION-V1 | bc29509c3d2d643acf8eeadcd1432f88328a3b7146dd2530d120085008c2086a |
+| system | fit | SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-FIT-REPLICATION-V1 | c37ab65ed28da4945a0bb10d5964cc1171644704f66bdaa4973e1e62533ad493 |
 
 Budgets remain 1050/11000 generation and 3001/44000 fit contacts, 13 fit-inclusive family GPU hours, two complete official scores, and zero ASR/encoder contacts. These are ceilings, not targets.

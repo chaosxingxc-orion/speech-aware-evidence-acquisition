@@ -7,7 +7,7 @@
     "relpath": "docs/readiness/2026-09-13-slurp-direct-vs-native-system-dev1000-replication-v1/protocol-v1.json",
     "sha256": "0e745a715271294c57b6a92b3574d50b4beed88531c1470ef20646328cb5b489"
   },
-  "root_registration_required": true,
+  "root_registration_required": false,
   "execution_plan": {
     "schema": "saea-execution-plan-v1",
     "study": "speech-aware-evidence-acquisition",
