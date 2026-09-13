@@ -1,0 +1,42 @@
+{
+  "admission": {
+    "relpath": "coordination/slurp-top3-commitment-v1/distinct-successor-fit-admission-v1.json",
+    "sha256": "545c24efa842ba4ea45c7b0a1ecbed0c25fc3163386d274dc790d037d90fff91"
+  },
+  "analysis_method": {
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-distinct-commitment-analysis-recipe-v1.json",
+    "sha256": "19d4ac7ec6659e2de6d1a1c97fd505901fb9ea958fbb58e245e374478d90c617"
+  },
+  "budget_reconciliation": {
+    "relpath": "coordination/slurp-top3-commitment-v1/distinct-recovery-budget-reconciliation-v1.json",
+    "sha256": "9cc7f48a7e40a8d40b3e17cd0a7b77316fe8ad69aa81c2c293e389f66cccf5a8"
+  },
+  "fit_batch": {
+    "repo_relpath": "configs/campaign/slurp-distinct-successor-fit-batch-v1.json",
+    "sha256": "9ae87b39fa6f1c050ca22712d497d7e69501dc279d0ca0fae324d73ae7fe333b"
+  },
+  "fit_plans": {
+    "closed-joint": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-distinct-successors-v1/closed-joint-fit-plan-v2.json",
+      "sha256": "fe2ad347ed8938bbc9cede8315b41fa139f077b64b04692b4e514008ec09145e"
+    },
+    "hard-first": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-distinct-successors-v1/hard-first-fit-plan-v1.json",
+      "sha256": "d8aa968b0c24d6f4322c4b3502c2133a4b2259a697e573561fbf869f90b68e2c"
+    }
+  },
+  "generation_state": "HELD UNTIL BOTH FIT ARTIFACTS, FINAL PINS AND GENERATION ADMISSION",
+  "new_generation_contacts_in_this_admission": 0,
+  "original_attempt_preserved": "ABORTED",
+  "planned_endpoint_contacts": 6002,
+  "precontact_amendment": {
+    "reason": "Correct the closed-joint delivery derivative registry ID. The root preparation gate refused the descriptive but unregistered ID before any capacity endpoint or generation. The hard-first full-roster materialization passed. No scientific method, roster, candidate source, prompt, budget, or service changed.",
+    "supersedes_sha256": "2037acb47b496464e430413b2cc3a4198b3d1a6f0bc5d86524df107385ba4959"
+  },
+  "registered_at": "2026-09-13T07:55:57.298086+00:00",
+  "schema": "saea-distinct-successor-fit-registration-v1",
+  "source": {
+    "relpath": "prepared/SAEA-SLURP-DISTINCT-HYPOTHESIS-SOURCE-RECOVERY-V1/hypotheses.source.json",
+    "sha256": "0146d87679a27f85ee7d0927039f8cd64805ceb40f3b42f3e788529d4a8863d3"
+  }
+}

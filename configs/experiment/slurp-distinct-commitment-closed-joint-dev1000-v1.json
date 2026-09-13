@@ -54,7 +54,7 @@
     {
       "cell_id": "slurp-distinct-closed-joint-dev1000-delivery-v1",
       "parent_cell_id": "slurp-distinct-closed-joint-dev1000-generation-v1",
-      "response_postprocessor": "slurp-closed-joint-hypothesis-delivery-v1",
+      "response_postprocessor": "slurp-shortlist-joint-hypothesis-delivery-v1",
       "response_postprocessor_params": {
         "max_candidates": 3
       },
