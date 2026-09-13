@@ -42,7 +42,7 @@ write any extended result to a new path.
 
 /home/chao/saea-worktrees/native-agentic-system-integration-v1
 
-Current code HEAD: 63c55698 before this handoff was authored.
+Current code HEAD: e8730cdd51865c517e47a6e5525283cdade0581e.
 
 Integrated after f2cf6799:
 - 1321f545 / fde6e050: registered semantic preparation with governed A/B and DEV
@@ -61,19 +61,20 @@ No model generation has run on this integration version. Do not substitute it
 for the frozen campaign checkout or claim that graph/helper tests prove a
 production multimodal loop.
 
-## Source-authority review still in progress
+## Source-authority review closed
 
-Herschel's isolated tree:
-/home/chao/saea-worktrees/native-tool-authority-v1, original 7273fd59.
+Herschel replaced original 7273fd59 with 9496eb1884d569f158aa563b4e13a9bfc2f7df8f
+after root review. The replacement is integrated as e8730cdd in the future
+checkout. The full dispatcher union is now narrowed by the actual ordered
+completion.tool_names and checked against the complete selected schema hash.
+The validator also requires finish_reason=tool_calls and retains structured,
+string and null assistant content.
 
-Do not integrate the original alone. Root found it passes the full dispatcher
-tool-schema union to authority construction, conflicting with a valid
-per-contact narrowed Reviewer scope. The follow-up must select actual ordered
-completion.tool_names from the registered union and verify its complete schema
-hash. Require a real shared dispatcher/custodian synthetic test with at least
-two registered tools, one advertised Reviewer tool, and a tool-free Solver.
-Also require persisted finish_reason=tool_calls and preserve structured
-assistant content consistently. Legacy v1 remains unchanged.
+A real shared dispatcher/custodian synthetic test registers two tools,
+advertises one to Reviewer, then projects the counted result into a tool-free
+Solver request. Root integrated authority/dispatcher/history/role/episode
+checks: 89 pass. This closes the source-scope seam; it still does not close the
+full framework-message-to-speech callback described below.
 
 ## Next root-owned integration
 
