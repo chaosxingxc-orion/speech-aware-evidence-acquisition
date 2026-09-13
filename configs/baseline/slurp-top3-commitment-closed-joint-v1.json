@@ -1,48 +1,55 @@
 {
   "arm": "speech-feature-query",
-  "policy": "phase-slots-given-intent-v1",
-  "evidence_source": "none",
+  "delivery_basis": {
+    "response_postprocessor": "slurp-shortlist-joint-hypothesis-delivery-v1",
+    "response_postprocessor_params": {
+      "max_candidates": 3
+    }
+  },
   "evidence_mismatch": false,
-  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
-  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
-  "scorers": [
-    "slurp-slu-official",
-    "slurp-slu",
-    "cost"
-  ],
-  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
-  "task_instruction_fill": "slurp-label-inventory",
-  "task_instruction_template_active": true,
+  "evidence_source": "none",
+  "held_binding": "The predecessor manifest path and SHA-256 are unresolved. Root must bind the exact FINALIZED typed source, then freeze all source, config, run, fit, plan, exposure, readiness, and admission identities before any contact.",
   "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame/snapshot.json",
   "knowledge_snapshot_sha256": "609854e4211891614b621e6431ccf23706c2aa3a3bc9133dae9d9765628c88b8",
-  "serving_slots": 8,
-  "serving_slot_tokens": 8192,
-  "whole_roster_wave_barrier": true,
-  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
-  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
+  "live_phase_fit": {
+    "attempt_id": "attempt-slurp-top3-closed-joint-fit-v1",
+    "contact_cap": 3001,
+    "run_id": "SAEA-SLURP-TOP3-CLOSED-JOINT-FIT-V1"
+  },
+  "live_phase_fit_audio_seconds_cap": 3000,
   "phase_material": {
     "slots": {
-      "instruction_template": "probes/slurp_top3_closed_joint_slots_v1.txt",
+      "fill_params": {
+        "candidate_source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201",
+        "max_candidates": 3
+      },
       "instruction_fill": null,
-      "response_format_id": null,
+      "instruction_template": "probes/slurp_top3_closed_joint_slots_v1.txt",
       "predecessor_binding": "sealed-manifest",
       "predecessor_source": {
         "manifest_relpath": "__UNRESOLVED_FINALIZED_SOURCE_MANIFEST_RELPATH__",
         "manifest_sha256": "__UNRESOLVED_FINALIZED_SOURCE_MANIFEST_SHA256__",
         "producer_policy_id": "phase-intent-hypotheses-only-v1"
       },
-      "state_fill": "slurp-hypothesis-candidate-contracts-for-state-v1",
-      "fill_params": {
-        "candidate_source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201",
-        "max_candidates": 3
-      }
+      "response_format_id": null,
+      "state_fill": "slurp-hypothesis-candidate-contracts-for-state-v1"
     }
   },
-  "held_binding": "The predecessor manifest path and SHA-256 are unresolved. Root must bind the exact FINALIZED typed source, then freeze all source, config, run, fit, plan, exposure, readiness, and admission identities before any contact.",
-  "delivery_basis": {
-    "response_postprocessor": "slurp-shortlist-joint-hypothesis-delivery-v1",
-    "response_postprocessor_params": {
-      "max_candidates": 3
-    }
-  }
+  "policy": "phase-slots-given-intent-v1",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "serving_slot_tokens": 8192,
+  "serving_slots": 8,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "One-contact matched successor consuming the exact common sealed Top-3 source and the same compact TRAIN candidate contracts. Hold until source hash, full plans and root admission are bound.",
+  "whole_roster_wave_barrier": true
 }
