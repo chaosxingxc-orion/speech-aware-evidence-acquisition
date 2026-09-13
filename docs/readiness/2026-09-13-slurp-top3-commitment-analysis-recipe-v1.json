@@ -24,13 +24,14 @@
       "closed_joint": {
         "manifest": {
           "path": null,
-          "sha256": "PENDING-CLOSED-JOINT-FINALIZED-MANIFEST-SHA256"
+          "sha256": "PENDING-CLOSED-JOINT-DERIVED-MANIFEST-SHA256"
         },
-        "score": {
+        "score_receipt": {
+          "cell_id": "PENDING-CLOSED-JOINT-SCORE-RECEIPT-CELL-ID",
           "path": null,
-          "sha256": "PENDING-CLOSED-JOINT-ATTACHED-SCORE-SHA256"
+          "sha256": "PENDING-CLOSED-JOINT-SCORE-RECEIPT-SHA256"
         },
-        "score_source": "finalized-bundle",
+        "score_source": "complete-score-receipt",
         "scorers": {
           "official": "slurp-slu-official"
         }
@@ -38,30 +39,17 @@
       "hard_first": {
         "manifest": {
           "path": null,
-          "sha256": "PENDING-HARD-FIRST-FINALIZED-MANIFEST-SHA256"
+          "sha256": "PENDING-HARD-FIRST-DERIVED-MANIFEST-SHA256"
         },
-        "score": {
+        "score_receipt": {
+          "cell_id": "PENDING-HARD-FIRST-SCORE-RECEIPT-CELL-ID",
           "path": null,
-          "sha256": "PENDING-HARD-FIRST-ATTACHED-SCORE-SHA256"
+          "sha256": "PENDING-HARD-FIRST-SCORE-RECEIPT-SHA256"
         },
-        "score_source": "finalized-bundle",
+        "score_source": "complete-score-receipt",
         "scorers": {
           "official": "slurp-slu-official"
         }
-      },
-      "shared_fixed_top3_source": {
-        "candidate_contract_source_sha256": "PENDING-CANDIDATE-CONTRACT-SOURCE-SHA256",
-        "candidate_count": 3,
-        "hypothesis_artifact": {
-          "path": null,
-          "sha256": "PENDING-SOURCE-HYPOTHESIS-SHA256"
-        },
-        "manifest": {
-          "path": null,
-          "sha256": "PENDING-SOURCE-MANIFEST-SHA256"
-        },
-        "scoreless": true,
-        "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
       }
     },
     "intervals": {
@@ -138,10 +126,27 @@
       "path": "docs/receipts/probe-samples/DEV-1000-NEW500.json",
       "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
     },
-    "seed": 20260913
+    "seed": 20260913,
+    "source_diagnostics": {
+      "shared_fixed_top3_source": {
+        "analysis_role": "Separate source-bound diagnostic input. It is not a scored arm and must never be placed under analysis.inputs for score_compare_cli.",
+        "candidate_contract_source_sha256": "PENDING-CANDIDATE-CONTRACT-SOURCE-SHA256",
+        "candidate_count": 3,
+        "hypothesis_artifact": {
+          "path": null,
+          "sha256": "PENDING-SOURCE-HYPOTHESIS-SHA256"
+        },
+        "manifest": {
+          "path": null,
+          "sha256": "PENDING-SOURCE-MANIFEST-SHA256"
+        },
+        "scoreless": true,
+        "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+      }
+    }
   },
   "analysis_runner": {
-    "mode": "default saved-score path with explicit finalized-bundle sources; do not use generic-scores-v1",
+    "mode": "default saved-score path with explicit complete-score receipts for derived-delivery-v1 bundles; do not use generic-scores-v1",
     "module": "src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py",
     "no_new_scorer_invocations": 0,
     "no_new_script": true,
@@ -155,6 +160,7 @@
   "authorization_state": "HELD. This recipe defines a future saved-score analysis only. It does not authorize source generation, successor generation, fitting, scoring, a new roster, a candidate-width sweep, semantic result reads, or a new autonomous system claim.",
   "binding_state": "DRAFT ONLY, HELD. The common fixed-Top-3 source and both successor bundles are future bindings. Root must replace every pending path/hash after finalization and first complete official scoring, register the read release, and review before any semantic result read.",
   "diagnostics_after_registered_release": {
+    "implementation_boundary": "score_compare_cli emits only verified saved-score projections and paired intervals; source Top-1/Top-3, conditional rescue/harm, shortlist, refusal and trace error diagnostics require a separate source-bound read over the verified manifests/phase_sources/trace and are not produced by the generic scorer path.",
     "branch_integrity": [
       "hard-first attempted revision and whether its final intent changed",
       "closed-joint out-of-shortlist final intent attempts",
@@ -242,25 +248,25 @@
     "not_an_autonomous_system_claim": "This is a controlled component comparison. It is not evidence for autonomous tool selection, a decomposition gain beyond the extra contact, complete-system superiority, or an independent replication. The common source makes the paired observations correlated.",
     "source_quality_read_before_release": false
   },
-  "recorded_at_utc": "2026-09-13T00:00:00Z",
+  "recorded_on": "2026-09-13",
   "schema": "saea-slurp-saved-score-analysis-recipe-v1",
   "score_source_contract": {
     "no_new_scorer_invocations": 0,
     "no_projection": "Use the raw slurp-slu-official result and retain its declared per-row fields plus the six pooled count fields. Do not alter estimator semantics.",
     "official_scorer": "slurp-slu-official",
-    "score_source": "finalized-bundle",
+    "score_source": "complete-score-receipt",
     "source_order": [
-      "verify the common fixed-Top-3 source and both FINALIZED/COMPLETED successor bundles",
-      "score each complete successor final-output manifest exactly once through core.scoring_batch",
-      "verify the attached first score bytes without invoking a scorer again",
-      "replace the future manifest and score path/hash placeholders",
+      "verify the common fixed-Top-3 source and both derived-delivery-v1 successor bundles",
+      "score each complete derived-delivery manifest exactly once through core.scoring_batch with --include-per-sample; do not finalize a delivery derivative",
+      "verify the resulting complete score receipt bytes without invoking a scorer again",
+      "replace the future manifest and complete-score-receipt path/hash/cell placeholders",
       "run score_compare_cli once with zero new scorer invocations",
-      "release semantic comparison only after both branches are sealed and scored"
+      "release semantic comparison only after both branch receipts and derived bundles are verified"
     ]
   },
   "source_analysis_plan": {
     "path": "docs/readiness/2026-09-13-slurp-top3-commitment-design-v1.md",
     "sha256": "PENDING-ROOT-DESIGN-BINDING",
-    "source_status": "The source is a scoreless fixed-3 artifact on the DEV1000 roster. Preserve its raw response and bind its canonical sample, schema, semantics, candidate order, candidate-contract source and response hashes after sealing."
+    "source_status": "The source is a scoreless fixed-3 artifact on the DEV1000 roster. Preserve its raw response and bind its canonical sample, schema, semantics, candidate order, candidate-contract source and response hashes after sealing. The branch score manifests are saea-derived-delivery-v1 bundles; their raw generation parents remain unscored."
   }
 }
