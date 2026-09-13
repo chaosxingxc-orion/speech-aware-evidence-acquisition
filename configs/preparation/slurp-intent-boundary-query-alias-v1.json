@@ -1,0 +1,30 @@
+{
+  "expected_rows": 1000,
+  "output_relpath": "vectors/slurp-intent-boundaries-dev1000-v1/query-vectors-speech.jsonl",
+  "receipt_relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-VECTOR-PREPARE-V1/query-dimension-alias.json",
+  "schema": "saea-sealed-vector-dimension-alias-v1",
+  "source": {
+    "dimension": "content",
+    "relpath": "vectors/slurp-kus3/query-vectors-speech.jsonl",
+    "sha256": "99b2e1700a058640a12c86fb261e3fc1898cd99004b0157366682b2a048b2e7c"
+  },
+  "source_receipts": [
+    {
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-kus3-vectors/vectors.json",
+      "root": "repository",
+      "sha256": "3c213ad4f4787e32d92fe30dd1119395817a73ba48d46cbed292a8f471aa86e5"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+      "root": "data",
+      "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/completion.json",
+      "root": "data",
+      "sha256": "ebd60aca7e16e647c750a59370fce8010d55f3b57375d202817a4a08da1f4a5e"
+    }
+  ],
+  "target_dimension": "intent-boundary",
+  "vector_width": 2048
+}

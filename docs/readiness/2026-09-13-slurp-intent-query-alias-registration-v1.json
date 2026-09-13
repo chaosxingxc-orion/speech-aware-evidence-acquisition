@@ -1,0 +1,33 @@
+{
+  "config": {
+    "relpath": "configs/preparation/slurp-intent-boundary-query-alias-v1.json",
+    "sha256": "7890c3686822f8955105b1ef4a1b2e7c4913044ca82a5e8dea2117d0fa10c92a"
+  },
+  "contact_counts": {
+    "encoder": 0,
+    "model": 0,
+    "tokenizer": 0
+  },
+  "not_authorized": "No retrieval encoder window or new task generation is admitted by this registration.",
+  "operation": "Alias the sealed MF-7b speech query axis content to intent-boundary without altering row IDs, row order or numeric components. Preserve the source file. This is format preparation, not knowledge consumption or task-quality read.",
+  "registered_at": "2026-09-13T21:26:57.340395+00:00",
+  "run_id": "SAEA-SLURP-INTENT-BOUNDARY-VECTOR-PREPARE-V1",
+  "schema": "saea-model-free-preparation-registration-v1",
+  "source_receipts": [
+    {
+      "relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-07-slurp-kus3-vectors/vectors.json",
+      "root": "repository",
+      "sha256": "3c213ad4f4787e32d92fe30dd1119395817a73ba48d46cbed292a8f471aa86e5"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+      "root": "data",
+      "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/completion.json",
+      "root": "data",
+      "sha256": "ebd60aca7e16e647c750a59370fce8010d55f3b57375d202817a4a08da1f4a5e"
+    }
+  ]
+}
