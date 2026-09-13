@@ -844,6 +844,7 @@ class _PreparedAgentTask:
     sample: TaskSample
     task_contract: str
     initial_query_state: QueryState
+    initial_feedback_states: tuple = ()
 
 
 @dataclass(frozen=True)
@@ -1419,7 +1420,7 @@ def _run_agent_trajectory(
         prepared.sample.sample_id, record_namespace
     )
     relisten_count = 0
-    state_store: dict[str, AgentStateArtifact] = {}
+    state_store = {item.state_id: item for item in prepared.initial_feedback_states}
     response_sha256s: list[str] = []
     contacts: list[AgentContactRecord] = []
     waves: list[AgentWaveRecord] = []
@@ -2164,6 +2165,7 @@ def _run_agent_openjiuwen(
             prepared=prepared,
             controller=controller,
             query_state=prepared.initial_query_state,
+            state_store={item.state_id: item for item in prepared.initial_feedback_states},
         )
         initial_context = _runtime_context(
             prepared=prepared,
@@ -2594,6 +2596,12 @@ def _emit_agent_runtime_trace(
             "org_agent_states": [
                 artifact.as_json() for artifact in outcome.agent_states
             ],
+            **(
+                {"org_prepared_feedback_seeds": [
+                    artifact.as_json() for artifact in outcome.prepared.initial_feedback_states
+                ]}
+                if outcome.prepared.initial_feedback_states else {}
+            ),
         },
     )
     sink.emit(
@@ -2715,6 +2723,7 @@ def run_speech_native_agent_loop(
     knowledge_value_renderer: object = None,
     result_kind: str = TASK_ANSWER_RESULT_KIND,
     native_episode_binding: NativeEpisodeRunBinding | None = None,
+    initial_feedback_states: Mapping[str, object] | None = None,
 ) -> AgentLoopSummary:
     """Run a bounded, batched, speech-native AgentLoop over one DEV split.
 
@@ -2902,6 +2911,22 @@ def run_speech_native_agent_loop(
         per_sample_values_raw, sample_ids, field="bootstrap_value_ids"
     )
 
+    feedback_by_sample = {}
+    if initial_feedback_states is not None:
+        from .prepared_feedback import PreparedFeedbackStateArtifact
+
+        if result_kind != ARTIFACT_RESULT_KIND or native_episode_binding is not None:
+            raise RailsRunnerError(
+                "prepared feedback requires a scoreless non-native proposal program"
+            )
+        if not isinstance(initial_feedback_states, Mapping) or set(initial_feedback_states) != set(sample_ids):
+            raise RailsRunnerError("prepared feedback must bind every active sample exactly once")
+        for sample_id, artifact in initial_feedback_states.items():
+            if not isinstance(artifact, PreparedFeedbackStateArtifact):
+                raise RailsRunnerError("initial feedback entries must be prepared feedback states")
+            artifact.validate()
+            feedback_by_sample[sample_id] = artifact
+
     prepared_tasks: list[_PreparedAgentTask] = []
     for index, sample in enumerate(samples):
         obs = default_obs_packet(sample)
@@ -2931,12 +2956,19 @@ def run_speech_native_agent_loop(
                 )
             ),
         )
+        feedback = feedback_by_sample.get(sample.sample_id)
+        initial_feedback = () if feedback is None else (feedback,)
+        if initial_feedback:
+            query_state = replace(
+                query_state, agent_state_ids=tuple(item.state_id for item in initial_feedback)
+            ).validate()
         prepared_tasks.append(
             _PreparedAgentTask(
                 index=index,
                 sample=sample,
                 task_contract=task_contract,
                 initial_query_state=query_state,
+                initial_feedback_states=initial_feedback,
             )
         )
 

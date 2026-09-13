@@ -2371,6 +2371,11 @@ class FlightRuntime:
             sample_ids=tuple(sample.sample_id for sample in samples),
             data_root=self._data_root,
         )
+        if values.get("prepared_training_feedback") is not None and (
+            self._artifact_result_binding is None
+            or self._artifact_result_binding.get("role") != ARTIFACT_RESULT_ROLE
+        ):
+            raise FlightRuntimeError("prepared feedback requires the TRAIN proposal artifact role")
         if (
             self._artifact_result_binding is not None
             and self._artifact_result_binding.get("schema")
@@ -4564,7 +4569,8 @@ class FlightRuntime:
         # supply"). A program with no supply, or whose only supply is the
         # pre-flight-seeded FIRST phase, keeps the per-phase barrier form.
         continuous = (
-            native_binding is not None
+            binding.get("initial_feedback_states") is not None
+            or native_binding is not None
             or whole_roster
             or planner is not None
             or tool_dispatcher is not None
@@ -4575,6 +4581,8 @@ class FlightRuntime:
             if whole_roster
             else {}
         )
+        if binding.get("initial_feedback_states") is not None:
+            live_options["initial_feedback_states"] = binding["initial_feedback_states"]
         if native_binding is not None:
             live_options["native_episode_binding"] = native_binding
         if planner is not None:
@@ -6164,6 +6172,43 @@ class FlightRuntime:
             )
         return snapshot
 
+    def _prepared_feedback_binding(self, program):
+        """Verify TRAIN feedback for the common initial ORG history and real fit path."""
+        values = self._composed.values
+        spec = values.get("prepared_training_feedback")
+        if spec is None:
+            return None, None
+        from ..preparation_fit import validate_live_phase_fit_config
+        from ...rails.prepared_feedback import load_prepared_feedback, PreparedFeedbackError
+
+        if program.stop_rule == "native-role-episode":
+            raise FlightRuntimeError("prepared feedback is limited to non-native proposal programs")
+        if validate_live_phase_fit_config(values, program) is None:
+            raise FlightRuntimeError("prepared feedback requires actual per-wave request fitting")
+        sample_ids = tuple(sample.sample_id for sample in self._samples)
+        carrier = values.get("carrier_lock_key")
+        plan = self._plan
+        if plan is None:
+            plan = self._build_execution_plan(
+                values, carrier, split_identity_hash(prefixed(carrier, sample_ids))
+            )
+        authority = validate_artifact_result_binding(
+            values, plan=plan, repo_root=self._repo_root,
+            sample_ids=sample_ids, data_root=self._data_root,
+        )
+        if authority is None or authority.get("role") != ARTIFACT_RESULT_ROLE:
+            raise FlightRuntimeError("prepared feedback requires the TRAIN proposal artifact role")
+        try:
+            return load_prepared_feedback(
+                spec, repo_root=self._repo_root, data_root=self._data_root,
+                sample_ids=sample_ids,
+                construction_roster_sha256=authority["construction_roster"]["sha256"],
+                result_kind=values.get("result_kind"),
+                artifact_role=authority["role"],
+            )
+        except PreparedFeedbackError as error:
+            raise FlightRuntimeError(str(error)) from error
+
     def _default_phase_program_binding(
         self, program: object, client: object
     ) -> Mapping[str, object]:
@@ -6258,6 +6303,12 @@ class FlightRuntime:
         self._phase_material_receipt = phase_material_receipt(
             specs, static_text, formats
         )
+        feedback_states, feedback_receipt = self._prepared_feedback_binding(program)
+        if feedback_receipt is not None:
+            self._phase_material_receipt = {
+                **self._phase_material_receipt,
+                "prepared_training_feedback": feedback_receipt,
+            }
         supply_for_phase, supply_specs = self._resolve_phase_supply(program, snapshot)
         review_for_phase, review_specs = self._resolve_phase_review(program)
         return {
@@ -6277,6 +6328,10 @@ class FlightRuntime:
             "review_for_phase": review_for_phase,
             "review_specs": review_specs,
             "trace_sink": client,
+            **(
+                {"initial_feedback_states": feedback_states}
+                if feedback_states is not None else {}
+            ),
         }
 
     def _resolve_phase_review(

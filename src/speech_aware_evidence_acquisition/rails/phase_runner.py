@@ -466,6 +466,7 @@ def run_continuous_program(
     request_batch_gate: Callable[[str, tuple], None] | None = None,
     result_kind: str = "task-answer",
     native_episode_binding: object = None,
+    initial_feedback_states: Mapping[str, object] | None = None,
 ) -> AgentLoopSummary:
     """Run the WHOLE program as ONE continuous per-sample trajectory (E6).
 
@@ -601,6 +602,8 @@ def run_continuous_program(
         wave_index += 1
 
     runner_options = {}
+    if initial_feedback_states is not None:
+        runner_options["initial_feedback_states"] = initial_feedback_states
     if native_episode_binding is not None:
         runner_options["native_episode_binding"] = native_episode_binding
     if whole_roster_wave_barrier:
