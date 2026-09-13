@@ -1449,3 +1449,27 @@ from .knowledge_build_a2t import (  # noqa: E402  (deliberate bottom import)
 KNOWLEDGE_BUILDERS.register(
     A2T_KB_BUILD_POLICY_ID, build_a2t_knowledge_snapshot_from_lock
 )
+
+
+# Authored semantic stores retain the canonical registration site while their
+# thin compilers live beside the shared knowledge contracts.
+from .semantic_knowledge_build import (  # noqa: E402
+    INTENT_BOUNDARY_BUILD_POLICY_ID,
+    SLOT_CONTRACT_BUILD_POLICY_ID,
+    build_intent_boundary_snapshot,
+    build_slot_contract_snapshot,
+)
+
+KNOWLEDGE_BUILDERS.register(
+    INTENT_BOUNDARY_BUILD_POLICY_ID, build_intent_boundary_snapshot
+)
+KNOWLEDGE_BUILDERS.register(
+    SLOT_CONTRACT_BUILD_POLICY_ID, build_slot_contract_snapshot
+)
+
+__all__ += [
+    "INTENT_BOUNDARY_BUILD_POLICY_ID",
+    "SLOT_CONTRACT_BUILD_POLICY_ID",
+    "build_intent_boundary_snapshot",
+    "build_slot_contract_snapshot",
+]
