@@ -1,0 +1,41 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame/snapshot.json",
+  "knowledge_snapshot_sha256": "609854e4211891614b621e6431ccf23706c2aa3a3bc9133dae9d9765628c88b8",
+  "live_phase_fit": {
+    "attempt_id": "attempt-slurp-direct-max512-dev1000-fit-v1",
+    "contact_cap": 3001,
+    "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-FIT-V1"
+  },
+  "live_phase_fit_audio_seconds_cap": 3500,
+  "pending_preparation": {
+    "request_fit": "Before any registration, bind a fresh max-512 direct request-fit artifact to this composed configuration, the DEV-1000 roster and promoted packets."
+  },
+  "phase_material": {
+    "direct": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_phase_direct.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null
+    }
+  },
+  "policy": "phase-direct-only-v1",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "DRAFT CHECK-ONLY matched direct baseline for the prospective independent native system. It sends one direct-only task request per DEV-1000 sample through the shared controller, FlightRuntime and OpenJiuwen executor, with the full 60-label task contract and no model-visible retrieved knowledge, candidate state, review or tool use. It reuses the same max-512 proof model fragment, resident service geometry and promoted DEV-1000 packets as the native draft. This draft is not a retry, a knowledge ablation, or a generation authorization.",
+  "whole_roster_wave_barrier": true
+}

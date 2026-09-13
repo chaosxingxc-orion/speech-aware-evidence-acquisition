@@ -1,0 +1,49 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "attempt_id": "attempt-slurp-direct-max512-dev1000-generation-v1",
+      "baseline_fragment": "slurp-direct-max512-dev1000-v1",
+      "cell_id": "slurp-direct-max512-dev1000-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "CHECK ONLY. This is a prospective design record; no registration or model-contact stage is admitted.",
+        "requirements": [],
+        "state": "DRAFT"
+      },
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-V1"
+    }
+  ],
+  "date": "2026-09-13",
+  "execution_plan": {
+    "execution_profile": "model-free-check",
+    "planned_gpu_hours": 0.0,
+    "planned_model_calls": 0,
+    "planned_speech_audio_seconds": 0,
+    "split_role": "dev"
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-V1",
+  "failure_policy": "No generation is authorized. Any future flight requires a separate root registration after the required preparation artifacts and four-row proof integrity review.",
+  "fragment_kind": "saea-slurp-prospective-complete-system-draft-v1",
+  "future_full_roster_envelope": {
+    "asr_calls": 0,
+    "encoder_calls": 0,
+    "expected_generation_calls_cap": 1000,
+    "future_fit_endpoint_calls_cap": 3001,
+    "status": "Planning information only; it is not a budget, exposure, ledger or registration authorization."
+  },
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "decision_population": "Historically exposed DEV-1000. No result, score, quality reading, efficacy claim or fresh draw is authorized by this draft.",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "Prospective matched direct-only control for the independent complete native system. It retains the full 60-label task contract and the same max-512 resident geometry, with no supplied knowledge. It remains behind a fresh request fit and root registration.",
+  "service_session": "serving-slurp-native-bounded-perception-proof-np4-v1",
+  "split_id": "DEV-1000"
+}
