@@ -248,6 +248,34 @@ PHASE_STATE_FILLS.register(
 )
 
 
+def _slurp_intent_hypotheses_state_fill(*, max_candidates: int):
+    """Build the source-bound ranked-alternative view from TRAIN legal IDs."""
+
+    from ..data.lock import data_root, load_lock, umbrella_lock_path  # noqa: PLC0415
+    from ..reproduction.slurp_official_eval import (  # noqa: PLC0415
+        load_legal_intent_inventory,
+    )
+    from .slurp_intent_hypotheses import (  # noqa: PLC0415
+        SlurpIntentHypothesisStateFill,
+    )
+
+    inventory = load_legal_intent_inventory(
+        load_lock(umbrella_lock_path()), data_root()
+    )
+    legal_intent_ids = {
+        f"{scenario}_{action}" for scenario, action in inventory.pairs
+    }
+    return SlurpIntentHypothesisStateFill(
+        legal_intent_ids=legal_intent_ids, max_candidates=max_candidates
+    )
+
+
+PHASE_STATE_FILLS.register(
+    "slurp-intent-hypotheses-for-joint-resolution-v1",
+    _slurp_intent_hypotheses_state_fill,
+)
+
+
 def _slurp_evolved_slot_schema_state_fill(
     *,
     artifact_relpath: str,
@@ -1118,7 +1146,12 @@ def build_material_for_phase(
                     f"phase {phase_name!r} declares a state fill but bound no predecessor "
                     f"state for sample {sample_id!r}"
                 )
-            rendered = fill(state.content)
+            renderer = getattr(fill, "render_state", None)
+            rendered = (
+                renderer(state, sample_id=sample_id)
+                if callable(renderer)
+                else fill(state.content)
+            )
             if not isinstance(rendered, str) or not rendered.strip():
                 raise PhaseMaterialError(
                     f"phase {phase_name!r} state fill {spec.state_fill!r} rendered no text "
