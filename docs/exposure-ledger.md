@@ -3372,3 +3372,7 @@ Under the existing read release, run the shared diagnostic entry at 0bc53729 to 
 ## 2026-09-13: Close registered TRAIN support preparation and root intent authoring
 
 Under semantic-authoring-registration-v1, complete the governed support preparation at fa9ba618. Root verified support SHA-256 1be15d89797e55bfb492df87cc994844bb8db69aab5ce8a70e0880f13e8dcdee, read all 474 intent-support rows and authored 60 source-bound candidate guidance values. The authored source SHA-256 is 040b8143072ccd660cd1659f5a0ddf71dec5a3f8f8ec6e98bda726a6b7db1a13. Root recorded overlapping and sparse label boundaries as limitations, not memorized exceptions. Slot semantic review and both runtime store releases remain pending. All new model, encoder, tokenizer, backend and scorer contacts are zero. See docs/readiness/2026-09-13-slurp-semantic-authoring-root-review-v1.md.
+
+## 2026-09-13: Integrate metered native framework components
+
+Merge verified components at 1d458f17. Actual OpenJiuwen plus shared speech transport synthetic verification now covers full counted tool history and per-instance tool callback isolation. Root combined checks pass 179 tests with one platform skip; canonical engineering base check passes. No real model, tokenizer, encoder, backend or scorer contact was added. The formal full-episode runtime binding is still outstanding; do not declare a new GPU flight ready. See docs/readiness/2026-09-13-framework-integration-handoff-v5.md.
