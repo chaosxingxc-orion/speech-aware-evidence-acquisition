@@ -25,6 +25,7 @@ def _runtime(tmp_path: Path) -> FlightRuntime:
     runtime._data_root.mkdir()
     runtime._attempt_store_factory = lambda root: AttemptStore(root / "attempts")
     runtime._execution_policy = None
+    runtime._whisper_inventory_verifier = lambda value: dict(value)
     runtime._live_speech_attempt_handle = None
     runtime._live_speech_provider = None
     runtime._live_speech_finalized = False
@@ -40,6 +41,11 @@ def _runtime(tmp_path: Path) -> FlightRuntime:
 
 def test_live_config_loads_exact_pins_and_registered_roster(tmp_path):
     runtime = _runtime(tmp_path)
+    verified_inventory = {"schema": "verified-backend-inventory"}
+    seen_inventory = []
+    runtime._whisper_inventory_verifier = lambda value: (
+        seen_inventory.append(dict(value)) or verified_inventory
+    )
     inventory = runtime._data_root / "inventory.json"
     protocol = runtime._data_root / "protocol.json"
     plan_path = runtime._repo_root / "plan.json"
@@ -63,6 +69,8 @@ def test_live_config_loads_exact_pins_and_registered_roster(tmp_path):
         spec, carrier_lock_key="carrier", split_identity_hash="c" * 64
     )
     assert loaded["plan"] == plan
+    assert seen_inventory == [{"schema": "inventory"}]
+    assert loaded["inventory"] == verified_inventory
     assert loaded["source_bindings_sha256"]
     assert loaded["output_root"] == runtime._data_root / spec["output_relpath"]
 
@@ -149,6 +157,79 @@ def test_native_dispatcher_receives_live_provider_and_custody_callback(tmp_path)
     assert dispatcher.native_tool_schemas() == ({"type": "function"},)
     assert captured["live_speech_observations"] is provider
     assert captured["tool_contact"] == runtime._record_phase_tool_contact
+
+
+def test_native_knowledge_only_dispatcher_needs_no_live_provider(tmp_path):
+    runtime = _runtime(tmp_path)
+    runtime._live_speech_config = None
+    runtime._speech_observations = None
+    runtime._experience_memory = None
+    runtime._composed = SimpleNamespace(values={"phase_planner": None})
+    runtime._phase_tool_specs = lambda _policy: {
+        "decision-1": {"mode": "native-tools", "allowed_tools": ("knowledge",)}
+    }
+    runtime._phase_knowledge_catalog = lambda _snapshot: None
+    captured = {}
+
+    class Dispatcher:
+        native_enabled = True
+
+    def builder(values, program, **kwargs):
+        captured.update(kwargs)
+        return Dispatcher()
+
+    runtime._phase_tool_builder = builder
+    dispatcher = runtime._build_phase_tool_dispatcher(
+        "native-answer-or-tool-v1",
+        SimpleNamespace(stop_rule="native-answer-or-tool"),
+        binding={"knowledge_snapshot": object(), "supply_for_phase": object()},
+        sink=object(), client=None,
+    )
+    assert dispatcher.native_enabled is True
+    assert "live_speech_observations" not in captured
+    assert captured["tool_contact"] == runtime._record_phase_tool_contact
+
+
+def test_wire_custody_refuses_valid_tool_action_before_any_contact(tmp_path):
+    runtime = _runtime(tmp_path)
+    counted = []
+    runtime._client = SimpleNamespace(record_tool_call=lambda **facts: counted.append(facts))
+    runtime._wire_check_active = True
+    with pytest.raises(FlightRuntimeError, match="wire check refuses"):
+        runtime._record_phase_tool_contact(
+            sample_id="s1", phase="decision-1", next_phase="decision-2",
+            tool_id="saea-tool-live-speech-observation-v1", arguments={},
+            source_response_sha256="e" * 64, request_id="request-1",
+            tool_call_id="call-1", tool_calls_sha256="f" * 64,
+        )
+    assert counted == []
+    assert runtime._live_speech_attempt_handle is None
+
+
+def test_native_mode_requires_tool_schema_visible_arm(monkeypatch, tmp_path):
+    from speech_aware_evidence_acquisition.rails import phase_tools
+
+    runtime = _runtime(tmp_path)
+    runtime._composed = SimpleNamespace(
+        values={
+            "arm": "speech-feature-query",
+            "phase_tools": {"decision-1": {}},
+        }
+    )
+    runtime._obs_policy_names = lambda: set()
+    monkeypatch.setattr(
+        phase_tools,
+        "load_phase_tool_specs",
+        lambda *_args: {
+            "decision-1": {
+                "mode": "native-tools",
+                "allowed_tools": ("saea-tool-phase-knowledge-v1",),
+                "knowledge_views": ("text",),
+            }
+        },
+    )
+    with pytest.raises(FlightRuntimeError, match="exposes tool_schemas"):
+        runtime._phase_tool_specs("native-answer-or-tool-v1")
 
 
 def test_seal_closes_provider_and_finalizes_cold_attempt_with_receipt(tmp_path):
