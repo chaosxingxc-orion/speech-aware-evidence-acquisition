@@ -1,0 +1,183 @@
+{
+  "commands": [
+    "PYTHONPATH=/home/chao/saea-worktrees/slurp-native-tools-engineering-4-v1/src CUDA_VISIBLE_DEVICES='' /home/chao/.venvs/speechrl/bin/python -B <metadata/hash verification script>",
+    "No load_model, audio read, tokenizer call, forward, service contact, scorer contact, or network contact was performed."
+  ],
+  "derived_artifacts": {
+    "backend_inventory": {
+      "exact_keys": [
+        "checkpoint_path",
+        "checkpoint_sha256",
+        "model",
+        "schema",
+        "whisper_source_path"
+      ],
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-PREPARE-V1/backend-inventory.json",
+      "schema": "saea-local-whisper-backend-inventory-v1",
+      "sha256": "0f32edfa4e79543c64f806971156fb9af2aa69fec00c3703a06db6922cdf92fd"
+    },
+    "cpu_decode_protocol": {
+      "decoding": {
+        "batch_size": 1,
+        "beam_size": 5,
+        "cpu_workers": 8,
+        "device": "cpu",
+        "fp16": false,
+        "language": "en",
+        "logprob_threshold": -1.0,
+        "no_speech_threshold": 0.6,
+        "sample_len": 256,
+        "schema": "saea-local-whisper-decode-v1",
+        "task": "transcribe",
+        "temperature": 0,
+        "without_timestamps": true
+      },
+      "exact_keys": [
+        "batch_size",
+        "beam_size",
+        "cpu_workers",
+        "device",
+        "fp16",
+        "language",
+        "logprob_threshold",
+        "no_speech_threshold",
+        "sample_len",
+        "schema",
+        "task",
+        "temperature",
+        "without_timestamps"
+      ],
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-PREPARE-V1/cpu-decode-protocol.json",
+      "schema": "saea-local-whisper-decode-v1",
+      "sha256": "4b4cf3c80f94e98b19245400eebb63891054af6006dd915195e24dbf27d6268c"
+    },
+    "data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+    "directory": "prepared/SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-PREPARE-V1"
+  },
+  "inheritance": {
+    "changed_cpu_fields": {
+      "batch_size": 1,
+      "device": "cpu",
+      "fp16": false,
+      "sample_len": 256
+    },
+    "inherited_thresholds": {
+      "logprob_threshold": -1.0,
+      "no_speech_threshold": 0.6
+    },
+    "recovery_protocol_relpath": "docs/readiness/2026-09-12-slurp-whisper-recovery-v1/preparation-protocol.json",
+    "recovery_protocol_sha256": "fb3ae959b402bb03719d8b52dbf1bf091f48f5c7de0473e290c34d6b275c8295"
+  },
+  "limitation": "The speechrl environment has no openai-whisper distribution metadata. The pinned source tree imports successfully and reports whisper.__version__=20250625, matching the inventory; strict importlib.metadata verification is therefore incomplete for that one distribution.",
+  "package_verification": {
+    "distribution_metadata_missing": [
+      "openai-whisper"
+    ],
+    "expected_versions": {
+      "llvmlite": "0.44.0",
+      "more-itertools": "11.1.0",
+      "numba": "0.61.2",
+      "numpy": "2.2.6",
+      "openai-whisper": "20250625",
+      "regex": "2026.5.9",
+      "requests": "2.34.2",
+      "tiktoken": "0.13.0",
+      "torch": "2.9.1",
+      "torchaudio": "2.9.1",
+      "tqdm": "4.68.3",
+      "triton": "3.5.1"
+    },
+    "results": {
+      "llvmlite": {
+        "expected": "0.44.0",
+        "metadata_version": "0.44.0",
+        "status": "match"
+      },
+      "more-itertools": {
+        "expected": "11.1.0",
+        "metadata_version": "11.1.0",
+        "status": "match"
+      },
+      "numba": {
+        "expected": "0.61.2",
+        "metadata_version": "0.61.2",
+        "status": "match"
+      },
+      "numpy": {
+        "expected": "2.2.6",
+        "metadata_version": "2.2.6",
+        "status": "match"
+      },
+      "openai-whisper": {
+        "expected": "20250625",
+        "metadata_version": null,
+        "source_module_version": "20250625",
+        "status": "distribution metadata absent",
+        "verified_via": "whisper.__version__ from pinned source tree"
+      },
+      "regex": {
+        "expected": "2026.5.9",
+        "metadata_version": "2026.5.9",
+        "status": "match"
+      },
+      "requests": {
+        "expected": "2.34.2",
+        "metadata_version": "2.34.2",
+        "status": "match"
+      },
+      "tiktoken": {
+        "expected": "0.13.0",
+        "metadata_version": "0.13.0",
+        "status": "match"
+      },
+      "torch": {
+        "expected": "2.9.1",
+        "metadata_version": "2.9.1",
+        "status": "match"
+      },
+      "torchaudio": {
+        "expected": "2.9.1",
+        "metadata_version": "2.9.1",
+        "status": "match"
+      },
+      "tqdm": {
+        "expected": "4.68.3",
+        "metadata_version": "4.68.3",
+        "status": "match"
+      },
+      "triton": {
+        "expected": "3.5.1",
+        "metadata_version": "3.5.1",
+        "status": "match"
+      }
+    },
+    "source_tree_module_version_pass": true,
+    "strict_distribution_metadata_pass": false
+  },
+  "runtime": {
+    "cuda_visible_devices": "",
+    "platform": "WSL2 Ubuntu-24.04",
+    "python": "/home/chao/.venvs/speechrl/bin/python",
+    "python_version": "3.12.3",
+    "repo_head": "adad23b54a049bfcbf3d8b0f36e5d0e64e64d61d",
+    "repo_worktree": "/home/chao/saea-worktrees/slurp-native-tools-engineering-4-v1"
+  },
+  "schema": "saea-slurp-native-tools-engineering-preparation-receipt-v1",
+  "scope": "Create-only DATA artifacts for later root-owned registration. No model, tokenizer, audio, scorer, service, network, exposure, or experiment contact.",
+  "source_inventory": {
+    "checkpoint": {
+      "bytes": 3087371615,
+      "path": "/home/chao/speech-tools/whisper-vad/models/whisper/large-v3.pt",
+      "sha256": "e5b1a55b89c1367dacf97e3e19bfd829a01529dbfdeefa8caeb59b3f1b81dadb",
+      "verified": true
+    },
+    "model": "large-v3",
+    "relpath": "docs/readiness/2026-09-12-slurp-whisper-recovery-v1/runtime-inventory.json",
+    "schema": "saea-local-whisper-runtime-inventory-v1",
+    "sha256": "79c79469975a8c014f6fc1b94bb3ab439f9e0cdc877c11378ec33d37170dc697",
+    "source_files_checked": 18,
+    "source_files_verified": true,
+    "whisper_source_path": "/home/chao/speech-tools/whisper-vad/sources/openai_whisper-20250625-saea-beam-batch-v1"
+  },
+  "status": "MODEL-FREE PREPARATION; CPU BACKEND INVENTORY AND PROTOCOL ONLY"
+}
