@@ -92,6 +92,19 @@ def _tool_call(name: str, call_id: str, arguments: str) -> list[dict[str, object
     ]
 
 
+def _contact_receipt(
+    *, text: str, contact_id: str, serial: int
+) -> dict[str, str]:
+    request_id = f"request-{serial}"
+    return {
+        "agent_contact_id": contact_id,
+        "request_id": request_id,
+        "request_sha256": hashlib.sha256(request_id.encode()).hexdigest(),
+        "response_sha256": hashlib.sha256(("wire-" + text).encode()).hexdigest(),
+        "response_text_sha256": hashlib.sha256(text.encode()).hexdigest(),
+    }
+
+
 @dataclass
 class _MeteredScript:
     responses: list[CoreCompletion]
@@ -147,6 +160,21 @@ def test_analytical_role_uses_framework_tool_history_and_meters_every_call():
         "actor_output": "review complete",
         "result_type": "answer",
         "delivery_eligible": False,
+        "execution_receipt": {
+            "contacts": [
+                _contact_receipt(
+                    text="I will inspect the supplied value.",
+                    contact_id="contact-1",
+                    serial=1,
+                ),
+                _contact_receipt(
+                    text="review complete", contact_id="contact-2", serial=2
+                ),
+            ],
+            "final_contact": _contact_receipt(
+                text="review complete", contact_id="contact-2", serial=2
+            ),
+        },
     }
     assert observed == [4]
     assert len(script.requests) == 2
@@ -342,6 +370,14 @@ def test_max_iteration_error_remains_nondeliverable():
     assert result["result_type"] == "error"
     assert result["actor_output"] == "Max iterations reached without completion"
     assert result["delivery_eligible"] is False
+    assert result["execution_receipt"] == {
+        "contacts": [
+            _contact_receipt(text="repeat", contact_id="contact-1", serial=1),
+        ],
+        "final_contact": _contact_receipt(
+            text="repeat", contact_id="contact-1", serial=1
+        ),
+    }
     assert calls == [1]
     assert len(script.requests) == 1
 
@@ -456,6 +492,26 @@ def test_repeated_node_invocations_use_fresh_framework_history():
     ]
     assert script.requests[0].messages[-1]["content"] == "First independent query."
     assert script.requests[1].messages[-1]["content"] == "Second independent query."
+    assert first["execution_receipt"] == {
+        "contacts": [
+            _contact_receipt(
+                text="first answer", contact_id="contact-1", serial=1
+            ),
+        ],
+        "final_contact": _contact_receipt(
+            text="first answer", contact_id="contact-1", serial=1
+        ),
+    }
+    assert second["execution_receipt"] == {
+        "contacts": [
+            _contact_receipt(
+                text="second answer", contact_id="contact-2", serial=2
+            ),
+        ],
+        "final_contact": _contact_receipt(
+            text="second answer", contact_id="contact-2", serial=2
+        ),
+    }
 
 
 def test_fixed_contact_context_refuses_a_second_episode_before_callback():

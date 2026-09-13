@@ -21,6 +21,7 @@ import inspect
 import itertools
 import uuid
 from collections.abc import Callable, Mapping, Sequence
+from contextvars import ContextVar, Token
 from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import Literal, Protocol
@@ -347,6 +348,18 @@ def _has_source_binding(completion: CoreCompletion) -> bool:
     )
 
 
+def _contact_receipt(completion: CoreCompletion) -> dict[str, str]:
+    """Select compact identity and hashes from one bound completion."""
+    assert isinstance(completion.agent_contact_id, str)
+    return {
+        "agent_contact_id": completion.agent_contact_id,
+        "request_id": completion.request_id,
+        "request_sha256": completion.request_sha256,
+        "response_sha256": completion.response_sha256,
+        "response_text_sha256": completion.response_text_sha256,
+    }
+
+
 class FrozenCoreRoleModel:
     """Public ``ReActAgent.set_llm`` target backed only by a metered callback."""
 
@@ -374,6 +387,22 @@ class FrozenCoreRoleModel:
         self._context_provider = context_provider
         self._contact_index = itertools.count(0)
         self._used_contact_ids: set[str] = set()
+        self._receipt_contacts: ContextVar[list[dict[str, str]] | None] = (
+            ContextVar(
+                f"native_role_receipts_{uuid.uuid4().hex}", default=None
+            )
+        )
+
+    def _begin_receipt_capture(
+        self,
+    ) -> tuple[Token[list[dict[str, str]] | None], list[dict[str, str]]]:
+        contacts: list[dict[str, str]] = []
+        return self._receipt_contacts.set(contacts), contacts
+
+    def _end_receipt_capture(
+        self, token: Token[list[dict[str, str]] | None]
+    ) -> None:
+        self._receipt_contacts.reset(token)
 
     def _next_context(self) -> NativeRoleContactContext:
         index = next(self._contact_index)
@@ -445,6 +474,9 @@ class FrozenCoreRoleModel:
             raise FrozenCoreRoleModelError(
                 f"metered completion binding failed: {error}"
             ) from error
+        contacts = self._receipt_contacts.get()
+        if contacts is not None:
+            contacts.append(_contact_receipt(completion))
         return project_native_assistant_message(completion)
 
 
@@ -527,14 +559,13 @@ class NativeRoleNode(WorkflowComponent):
                 prompt_template=[{"role": "system", "content": spec.prompt}],
             )
         )
-        self._agent.set_llm(
-            FrozenCoreRoleModel(
-                role_id=spec.role_id,
-                metered_request=metered_request,
-                context=contact_context,
-                context_provider=contact_context_provider,
-            )
+        self._model = FrozenCoreRoleModel(
+            role_id=spec.role_id,
+            metered_request=metered_request,
+            context=contact_context,
+            context_provider=contact_context_provider,
         )
+        self._agent.set_llm(self._model)
         for ability in abilities:
             card = getattr(ability, "card", None)
             name = getattr(card, "name", None)
@@ -585,20 +616,28 @@ class NativeRoleNode(WorkflowComponent):
         await self._ensure_rail()
         if not isinstance(query, str) or not query:
             raise ValueError("native role query must be non-empty text")
-        result = await self._agent.invoke(
-            {
-                "query": query,
-                "conversation_id": (
-                    f"{self.spec.role_id}-{self._invocation_namespace}-"
-                    f"{next(self._invocation_serial):08d}"
-                ),
-            },
-        )
+        receipt_token, receipt_contacts = self._model._begin_receipt_capture()
+        try:
+            result = await self._agent.invoke(
+                {
+                    "query": query,
+                    "conversation_id": (
+                        f"{self.spec.role_id}-{self._invocation_namespace}-"
+                        f"{next(self._invocation_serial):08d}"
+                    ),
+                },
+            )
+        finally:
+            self._model._end_receipt_capture(receipt_token)
         actor_output = result.get("output")
         result_type = result.get("result_type")
         if not isinstance(actor_output, str) or not isinstance(result_type, str):
             raise FrozenCoreRoleModelError(
                 "OpenJiuwen returned a malformed role result"
+            )
+        if not receipt_contacts:
+            raise FrozenCoreRoleModelError(
+                "OpenJiuwen returned a role result without a source-bound contact"
             )
         delivery_eligible = bool(
             self.spec.role_kind == "solver"
@@ -610,6 +649,10 @@ class NativeRoleNode(WorkflowComponent):
             "actor_output": actor_output,
             "result_type": result_type,
             "delivery_eligible": delivery_eligible,
+            "execution_receipt": {
+                "contacts": [dict(contact) for contact in receipt_contacts],
+                "final_contact": dict(receipt_contacts[-1]),
+            },
         }
 
     async def invoke_direct(self, query: str) -> dict[str, object]:

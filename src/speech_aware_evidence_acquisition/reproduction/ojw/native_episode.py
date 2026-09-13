@@ -110,6 +110,9 @@ class _InitialState(WorkflowComponent):
                 "plan": None,
                 "acquisition": None,
                 "revision_count": 0,
+                "role_visits": [],
+                "planner_routes": [],
+                "accepted_solver_receipt": None,
             }
         }
 
@@ -148,7 +151,23 @@ class _ApplyRole(WorkflowComponent):
         output = role.get("actor_output")
         if not isinstance(output, str) or not output:
             raise NativeEpisodeError(f"{self._kind} node returned no actor output")
+        role_id = role.get("role_id")
+        if not isinstance(role_id, str) or not role_id:
+            raise NativeEpisodeError(f"{self._kind} node returned no role id")
+        receipt = _execution_receipt(role)
         updated = dict(state)
+        visits = updated.get("role_visits")
+        if not isinstance(visits, Sequence) or isinstance(visits, (str, bytes)):
+            raise NativeEpisodeError("episode state has invalid ordered role visits")
+        updated_visits = [copy.deepcopy(visit) for visit in visits]
+        updated_visits.append(
+            {
+                "role_id": role_id,
+                "stage": self._kind,
+                "execution_receipt": copy.deepcopy(receipt),
+            }
+        )
+        updated["role_visits"] = updated_visits
         result: dict[str, object] = {"state": updated}
         if self._kind == "solver":
             if role.get("delivery_eligible") is not True:
@@ -165,6 +184,20 @@ class _ApplyRole(WorkflowComponent):
                     "Planner output does not exact-match a registered action"
                 )
             updated["plan"] = output
+            routes = updated.get("planner_routes")
+            if not isinstance(routes, Sequence) or isinstance(
+                routes, (str, bytes)
+            ):
+                raise NativeEpisodeError("episode state has invalid Planner routes")
+            updated_routes = [copy.deepcopy(route) for route in routes]
+            updated_routes.append(
+                {
+                    "role_visit_index": len(updated_visits) - 1,
+                    "revision_count": int(updated["revision_count"]),
+                    "action": output,
+                }
+            )
+            updated["planner_routes"] = updated_routes
             result["action"] = output
         else:
             updated[self._kind] = output
@@ -189,7 +222,9 @@ class _Accept(WorkflowComponent):
         solver = state.get("latest_solver")
         if not isinstance(solver, Mapping) or solver.get("delivery_eligible") is not True:
             raise NativeEpisodeError("explicit accept has no valid Solver draft")
-        return {"state": state, "delivery": dict(solver)}
+        updated = dict(state)
+        updated["accepted_solver_receipt"] = _execution_receipt(solver)
+        return {"state": updated, "delivery": dict(solver)}
 
 
 class _Exhausted(WorkflowComponent):
@@ -208,6 +243,54 @@ def _state(inputs: Mapping[str, object]) -> dict[str, object]:
     if not isinstance(state, Mapping):
         raise NativeEpisodeError("workflow stage is missing episode state")
     return copy.deepcopy(dict(state))
+
+
+def _execution_receipt(role: Mapping[str, object]) -> dict[str, object]:
+    receipt = role.get("execution_receipt")
+    if not isinstance(receipt, Mapping):
+        raise NativeEpisodeError("role result is missing its execution receipt")
+    contacts = receipt.get("contacts")
+    if (
+        not isinstance(contacts, Sequence)
+        or isinstance(contacts, (str, bytes))
+        or not contacts
+    ):
+        raise NativeEpisodeError("role execution receipt has no ordered contacts")
+    fields = (
+        "agent_contact_id",
+        "request_id",
+        "request_sha256",
+        "response_sha256",
+        "response_text_sha256",
+    )
+    normalized: list[dict[str, str]] = []
+    for contact in contacts:
+        if not isinstance(contact, Mapping):
+            raise NativeEpisodeError("role execution contact must be an object")
+        selected: dict[str, str] = {}
+        for field in fields:
+            value = contact.get(field)
+            if not isinstance(value, str) or not value:
+                raise NativeEpisodeError(
+                    f"role execution contact has invalid {field}"
+                )
+            if field.endswith("sha256") and (
+                len(value) != 64
+                or any(character not in "0123456789abcdef" for character in value)
+            ):
+                raise NativeEpisodeError(
+                    f"role execution contact has invalid {field}"
+                )
+            selected[field] = value
+        normalized.append(selected)
+    final = receipt.get("final_contact")
+    if not isinstance(final, Mapping) or any(
+        final.get(field) != normalized[-1][field] for field in fields
+    ):
+        raise NativeEpisodeError(
+            "role execution receipt final contact does not match its last contact"
+        )
+    return {"contacts": normalized, "final_contact": dict(normalized[-1])}
 
 
 def _first_available_state(component_ids: Sequence[str]):
