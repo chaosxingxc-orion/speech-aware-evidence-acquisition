@@ -202,6 +202,57 @@ def _tool_calls(completion: CoreCompletion) -> list[ToolCall] | None:
     return converted
 
 
+def _wire_turn(
+    completion: CoreCompletion,
+) -> tuple[object, list[ToolCall] | None, str]:
+    """Validate and project one source-bound native assistant turn.
+
+    The original wire message is the only assistant content accepted here.
+    CoreCompletion.text is the normalized scorer text and may be a
+    canonical tool-call array, so it must never become framework history.
+    """
+
+    try:
+        message = completion.original_message
+        finish_reason = completion.finish_reason
+    except ValueError as error:
+        raise FrozenCoreRoleModelError(
+            f"metered completion wire metadata is invalid: {error}"
+        ) from error
+    if message is None or finish_reason is None:
+        raise FrozenCoreRoleModelError(
+            "metered completion requires preserved wire metadata"
+        )
+    if not isinstance(message, Mapping):
+        raise FrozenCoreRoleModelError(
+            "metered completion wire message must be an object"
+        )
+    if not isinstance(finish_reason, str) or finish_reason not in {"stop", "tool_calls"}:
+        raise FrozenCoreRoleModelError(
+            f"metered completion has unsupported finish_reason {finish_reason!r}"
+        )
+    calls = _tool_calls(completion)
+    if finish_reason == "stop" and calls is not None:
+        raise FrozenCoreRoleModelError(
+            "finish_reason 'stop' cannot carry native tool_calls"
+        )
+    if finish_reason == "tool_calls" and calls is None:
+        raise FrozenCoreRoleModelError(
+            "finish_reason 'tool_calls' requires native tool_calls"
+        )
+    content = message.get("content")
+    if content is None:
+        raise FrozenCoreRoleModelError(
+            "metered completion wire message content is null; "
+            "AssistantMessage does not support null content"
+        )
+    if not isinstance(content, (str, list, tuple)):
+        raise FrozenCoreRoleModelError(
+            "metered completion wire message content is not framework-compatible"
+        )
+    return content, calls, finish_reason
+
+
 def _has_source_binding(completion: CoreCompletion) -> bool:
     digests = (
         completion.request_sha256,
@@ -318,8 +369,12 @@ class FrozenCoreRoleModel:
             raise FrozenCoreRoleModelError(
                 f"metered completion binding failed: {error}"
             ) from error
-        calls = _tool_calls(completion)
-        return AssistantMessage(content=completion.text, tool_calls=calls)
+        content, calls, finish_reason = _wire_turn(completion)
+        return AssistantMessage(
+            content=content,
+            tool_calls=calls,
+            finish_reason=finish_reason,
+        )
 
 
 class _RoleAuthorityRail(AgentRail):
