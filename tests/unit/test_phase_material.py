@@ -40,6 +40,16 @@ from speech_aware_evidence_acquisition.rails.phase_material import (
 HASHES = {character: character * 64 for character in "123456789abcdef"}
 
 
+def test_response_format_may_own_phase_fill_params():
+    PhaseMaterialSpec(
+        phase="hypotheses",
+        purpose="intent-hypothesis-source",
+        instruction_template="probes/hypotheses.txt",
+        response_format_id="slurp-intent-hypotheses-v1",
+        fill_params={"max_candidates": 3},
+    ).validate()
+
+
 def _program() -> PhaseProgram:
     return PhaseProgram(
         program_id="phase-select-then-fill-v1",

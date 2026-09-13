@@ -1,0 +1,51 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-slurp-intent-hypothesis-source-engineering-generation-v1",
+      "baseline_fragment": "slurp-intent-hypothesis-source-engineering4-v1",
+      "cell_id": "slurp-intent-hypothesis-source-engineering4-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+      "readiness": {
+        "reason": "No model execution is admitted. Root must register the exact generation plan and exposure, add an admission receipt, prepare and bind actual live-phase request fit, and attest the np8 resident service.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-ENGINEERING-V1"
+    }
+  ],
+  "date": "2026-09-13",
+  "experiment_id": "SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-ENGINEERING-V1",
+  "fragment_kind": "saea-slurp-task-agent-experiment-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "decision_population": "Deterministic first four retained rows; engineering only.",
+    "split_identity_hash": "e335c74149794af0f2301954b6e92cde2a4134d65ebe6069173a1a556b7a04b3"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "ids": [
+        "slurp:devel:000011:audio-1497266596",
+        "slurp:devel:000053:audio-1498758443",
+        "slurp:devel:000058:audio-1488637952",
+        "slurp:devel:000068:audio-1488550098"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Connectivity-only four-row check of the typed source contract.",
+  "request_decoding_overrides": {
+    "max_tokens": 512
+  },
+  "service_session": "serving-slurp-intent-hypothesis-source-np8-v1",
+  "split_id": "DEV-1000"
+}

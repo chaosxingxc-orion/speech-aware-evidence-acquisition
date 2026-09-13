@@ -788,10 +788,15 @@ class PhaseMaterialSpec:
             raise PhaseMaterialError(
                 f"phase {self.phase!r} fill_params must be an object"
             )
-        if self.fill_params and self.instruction_fill is None and self.state_fill is None:
+        if (
+            self.fill_params
+            and self.instruction_fill is None
+            and self.state_fill is None
+            and self.response_format_id is None
+        ):
             raise PhaseMaterialError(
-                f"phase {self.phase!r} declares fill_params but neither "
-                "instruction_fill nor state_fill"
+                f"phase {self.phase!r} declares fill_params but no registered "
+                "instruction, state or response-format consumer"
             )
         if self.fill_params and self.instruction_fill is not None and (
             self.state_fill is not None

@@ -444,6 +444,12 @@
     "slurp_direct_closed_list.txt": {
       "sha256": "9f2017c1b9a5cbf561a3437377ea4777d418ed19a7607f05e471f71a51dc0413"
     },
+    "slurp_intent_hypothesis_source_phase_v1.txt": {
+      "sha256": "80023f2222ccf86e4a9bc618c381673a20b5115c9aee245195ee8cb92e8be259"
+    },
+    "slurp_intent_hypothesis_source_system_v1.txt": {
+      "sha256": "1c695a68452c8858f91eff6e683f9a6983d53328fc86b2884b50381532e0132b"
+    },
     "slurp_phase_direct.txt": {
       "sha256": "d02f194c3c8a8375a15c28f7ca874f30bd2ad34d60e8ff9cdbc654572ebf9d50"
     },

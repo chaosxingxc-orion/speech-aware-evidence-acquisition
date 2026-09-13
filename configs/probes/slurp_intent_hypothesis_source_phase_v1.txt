@@ -1,0 +1,1 @@
+Return exactly three distinct legal intent candidates in ranked order. Use at most 12 English words for each distinction. Keep evidence_refs and unresolved_fields empty unless a short necessary item is directly supported by the speech. Return only the required JSON object; do not include a transcript, task entities, or reasoning.
