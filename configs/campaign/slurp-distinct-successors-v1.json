@@ -1,0 +1,13 @@
+{
+  "cells": [
+    {
+      "cell": "slurp-distinct-hard-first-dev1000-generation-v1",
+      "experiment": "slurp-distinct-commitment-hard-first-dev1000-v1"
+    },
+    {
+      "cell": "slurp-distinct-closed-joint-dev1000-generation-v1",
+      "experiment": "slurp-distinct-commitment-closed-joint-dev1000-v1"
+    }
+  ],
+  "schema": "saea-campaign-plan-v1"
+}

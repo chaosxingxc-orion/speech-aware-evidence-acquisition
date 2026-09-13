@@ -1,0 +1,107 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-slurp-distinct-hard-first-recovery-generation-v1",
+      "baseline_fragment": "slurp-distinct-commitment-hard-first-v1",
+      "cell_id": "slurp-distinct-hard-first-dev1000-generation-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+      "readiness": {
+        "reason": "Wait for both actual full-roster fit artifacts, then pin this arm receipt and register exact generation protocol and root admission.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1"
+    },
+    {
+      "allowed_execution_stages": [
+        "prompt-fit"
+      ],
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-slurp-distinct-hard-first-recovery-fit-v1",
+      "baseline_fragment": "slurp-distinct-commitment-hard-first-v1",
+      "cell_id": "slurp-distinct-hard-first-dev1000-fit-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+      "readiness": {
+        "requirements": [
+          {
+            "expected_decision_id": "SAEA-SLURP-DISTINCT-SUCCESSOR-FIT-ADMISSION-V1",
+            "kind": "decision",
+            "relpath": "coordination/slurp-top3-commitment-v1/distinct-successor-fit-admission-v1.json",
+            "sha256": "545c24efa842ba4ea45c7b0a1ecbed0c25fc3163386d274dc790d037d90fff91"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-DISTINCT-HYPOTHESIS-SOURCE-RECOVERY-V1/hypotheses.source.json",
+            "sha256": "0146d87679a27f85ee7d0927039f8cd64805ceb40f3b42f3e788529d4a8863d3"
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-FIT-V1"
+    }
+  ],
+  "date": "2026-09-13",
+  "delivery_derivatives": [
+    {
+      "cell_id": "slurp-distinct-hard-first-dev1000-delivery-v1",
+      "parent_cell_id": "slurp-distinct-hard-first-dev1000-generation-v1",
+      "response_postprocessor": "slurp-hard-first-hypothesis-delivery-v1",
+      "response_postprocessor_params": {
+        "max_candidates": 3
+      },
+      "source_selector": {
+        "program_id": "phase-slots-given-intent-v1",
+        "program_sha256": "3ebb3afa30b6072b22ed2fb00f39db2ff8744b6adbe494d31efa76e47c452abd",
+        "response_phase": "slots",
+        "schema": "saea-sealed-state-response-pair-v1"
+      }
+    }
+  ],
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1050,
+    "planned_speech_audio_seconds": 3000,
+    "split_role": "dev"
+  },
+  "experiment_id": "SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1",
+  "family_budget": {
+    "asr_calls": 0,
+    "common_source_counted_once": true,
+    "encoder_calls": 0,
+    "fit_audio_seconds_cap": 9000,
+    "fit_endpoint_calls_cap": 9003,
+    "generation_audio_seconds_cap": 10500,
+    "generation_calls_cap": 3150,
+    "generation_calls_target": 3000,
+    "gpu_hours_fit_inclusive": 3.0,
+    "official_complete_derivative_scoring_jobs": 2
+  },
+  "fragment_kind": "saea-slurp-task-agent-experiment-v1",
+  "generation_budget": {
+    "cap": 1050,
+    "target": 1000
+  },
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "decision_population": "Retained historically exposed DEV1000; NEW500 primary, OLD500 and pooled secondary. Width one to three, all rows retained.",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "Registered all-row distinct-candidate recovery comparison. Only the commitment instruction and deterministic constraint differ between arms. Both fits precede either generation.",
+  "request_decoding_overrides": {
+    "max_tokens": 256
+  },
+  "service_session": "serving-slurp-top3-commitment-np8-v1",
+  "split_id": "DEV-1000"
+}

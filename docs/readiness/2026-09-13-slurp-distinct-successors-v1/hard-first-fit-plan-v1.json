@@ -1,0 +1,56 @@
+{
+  "analysis_method": {
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-distinct-commitment-analysis-recipe-v1.json",
+    "sha256": "19d4ac7ec6659e2de6d1a1c97fd505901fb9ea958fbb58e245e374478d90c617"
+  },
+  "audio_budget_note": "Use a shared per-arm 3000-second plan for fit and generation, narrower than the previously authorized 3500 generation ceiling. The complete roster has 2884.7936875 seconds; retries remain bounded by both the audio and 1050-call cap.",
+  "budget_reconciliation": {
+    "relpath": "coordination/slurp-top3-commitment-v1/distinct-recovery-budget-reconciliation-v1.json",
+    "sha256": "9cc7f48a7e40a8d40b3e17cd0a7b77316fe8ad69aa81c2c293e389f66cccf5a8"
+  },
+  "cell": "slurp-distinct-hard-first-dev1000-fit-v1",
+  "composed_config_hash": "e9ca226470440d0e87c530c0725aa8e7498a6e774ac8bd76ea146f0f953ca562",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-distinct-hard-first-recovery-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 3001,
+    "planned_speech_audio_seconds": 3000,
+    "protocol_hash": "36464eec42ab7d8a650f16bc937885d1231a74b7857cff729a24ee31a58b2f48",
+    "run_id": "SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-top3-commitment-np8-v1",
+  "experiment": "slurp-distinct-commitment-hard-first-dev1000-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "common_source_counted_once": true,
+    "encoder_calls": 0,
+    "fit_audio_seconds_cap": 9000,
+    "fit_endpoint_calls_cap": 9003,
+    "generation_audio_seconds_cap": 10500,
+    "generation_calls_cap": 3150,
+    "generation_calls_target": 3000,
+    "gpu_hours_fit_inclusive": 3.0,
+    "official_complete_derivative_scoring_jobs": 2
+  },
+  "fit_protocol": "Exactly one props plus three actual request endpoints for each of all 1000 source-bound rows; both arms fit before either generation. No generated tokens.",
+  "protocol_hash": "36464eec42ab7d8a650f16bc937885d1231a74b7857cff729a24ee31a58b2f48",
+  "quality_read_gate": "No successor semantic read until both full derivatives receive their first complete official score receipts.",
+  "registered_at": "2026-09-13T07:49:40.703197+00:00",
+  "retry_policy": "No automatic restart, replay or new recovery after a contact-bearing failure.",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-top3-commitment-v1/distinct-successor-fit-admission-v1.json",
+    "sha256": "545c24efa842ba4ea45c7b0a1ecbed0c25fc3163386d274dc790d037d90fff91"
+  },
+  "source": {
+    "relpath": "prepared/SAEA-SLURP-DISTINCT-HYPOTHESIS-SOURCE-RECOVERY-V1/hypotheses.source.json",
+    "sha256": "0146d87679a27f85ee7d0927039f8cd64805ceb40f3b42f3e788529d4a8863d3"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/semantic-knowledge-releases-v1"
+}

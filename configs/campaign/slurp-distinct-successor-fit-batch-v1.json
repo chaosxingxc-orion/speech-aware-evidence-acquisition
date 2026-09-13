@@ -1,0 +1,17 @@
+{
+  "fits": [
+    {
+      "cell": "slurp-distinct-hard-first-dev1000-fit-v1",
+      "contact_cap": 3001,
+      "experiment": "slurp-distinct-commitment-hard-first-dev1000-v1",
+      "output_relpath": "prepared/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-FIT-V1/request-fit.json"
+    },
+    {
+      "cell": "slurp-distinct-closed-joint-dev1000-fit-v1",
+      "contact_cap": 3001,
+      "experiment": "slurp-distinct-commitment-closed-joint-dev1000-v1",
+      "output_relpath": "prepared/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-FIT-V1/request-fit.json"
+    }
+  ],
+  "schema": "saea-fit-batch-plan-v1"
+}

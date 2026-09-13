@@ -1,0 +1,47 @@
+{
+  "arm": "speech-feature-query",
+  "delivery_basis": {
+    "response_postprocessor": "slurp-shortlist-joint-hypothesis-delivery-v1",
+    "response_postprocessor_params": {
+      "max_candidates": 3
+    }
+  },
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame/snapshot.json",
+  "knowledge_snapshot_sha256": "609854e4211891614b621e6431ccf23706c2aa3a3bc9133dae9d9765628c88b8",
+  "phase_material": {
+    "slots": {
+      "fill_params": {
+        "candidate_source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201",
+        "max_candidates": 3
+      },
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_top3_closed_joint_slots_v1.txt",
+      "predecessor_binding": "sealed-manifest",
+      "predecessor_source": {
+        "manifest_relpath": "prepared/SAEA-SLURP-DISTINCT-HYPOTHESIS-SOURCE-RECOVERY-V1/hypotheses.source.json",
+        "manifest_sha256": "0146d87679a27f85ee7d0927039f8cd64805ceb40f3b42f3e788529d4a8863d3",
+        "producer_policy_id": "phase-intent-hypotheses-only-v1"
+      },
+      "response_format_id": null,
+      "state_fill": "slurp-hypothesis-candidate-contracts-for-state-v1"
+    }
+  },
+  "policy": "phase-slots-given-intent-v1",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "serving_slot_tokens": 8192,
+  "serving_slots": 8,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "Matched one-contact candidate commitment successor over one verified all-row derived source. External full-roster request fit is shared preparation; analytical tools and new knowledge values are absent."
+}
