@@ -83,6 +83,10 @@ from ..session import (
 from . import FrozenCoreError
 from .paths import _normalized_relative_path, _resolve_confined
 from .prepared_feature_cache import PreparedFeatureCacheGuard
+from .request_types import (
+    NATIVE_TOOL_REQUEST_CONTROL_KEYS,
+    native_tool_request_controls,
+)
 from .speech_features import load_speech_feature_packets
 
 
@@ -881,8 +885,9 @@ class LlamaServerTransport:
         # payload field this transport reads outside decoding_params/prompt
         # content. Sent verbatim as the OpenAI-compatible `tools` key so the
         # GGUF chat template renders `<tools>...</tools>` itself -- no
-        # `tool_choice` is ever added (module goal: let the template's own
-        # default tool-use behavior decide, never force a call). Every arm
+        # Historical requests omit `tool_choice`, leaving the template's own
+        # default tool-use behavior unchanged. Optional native per-contact
+        # controls are validated and projected below. Every arm
         # that does not declare `tool_schemas` (core.policies.build_arm_payload
         # refuses to attach it otherwise) leaves `payload.get(...)` at None
         # here and this body is byte-identical to before this arm existed.
@@ -891,7 +896,17 @@ class LlamaServerTransport:
             if not isinstance(tool_schemas, list) or not tool_schemas:
                 raise FrozenCoreError("payload tool_schemas must be a non-empty list")
             body["tools"] = tool_schemas
-        for key, value in dict(payload.get("decoding_params", {})).items():  # type: ignore[arg-type]
+        decoding_params = dict(payload.get("decoding_params", {}))  # type: ignore[arg-type]
+        try:
+            native_controls = native_tool_request_controls(
+                decoding_params, native_tools=tool_schemas is not None
+            )
+        except ValueError as error:
+            raise FrozenCoreError(str(error)) from error
+        body.update(native_controls)
+        for key, value in decoding_params.items():
+            if key in NATIVE_TOOL_REQUEST_CONTROL_KEYS:
+                continue
             if key in body:
                 raise FrozenCoreError(
                     f"decoding_params key {key!r} collides with the constructed "

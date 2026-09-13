@@ -38,6 +38,7 @@ from speech_aware_evidence_acquisition.core.base import (
 )
 from speech_aware_evidence_acquisition.core.model import FrozenCoreAdapter, FrozenCoreError
 from speech_aware_evidence_acquisition.core.model.transport import LlamaServerTransport
+from speech_aware_evidence_acquisition.core.preparation_fit import fit_requests
 from speech_aware_evidence_acquisition.core.policies import (
     TOOL_SCHEMA_FILLS,
     ArmError,
@@ -502,6 +503,36 @@ def _native_tools_payload(tmp_path, **overrides):
     return payload
 
 
+def _request_adapter(tmp_path, *, arm, transport):
+    plan = ExecutionPlan(
+        run_id="SAEA-E-000-native-request-controls",
+        execution_profile="bounded-discovery-probe",
+        carrier_lock_key="audio2tool",
+        split_role="discovery",
+        split_identity_hash="a" * 64,
+        planned_model_calls=2,
+        planned_gpu_hours=1.0,
+        planned_speech_audio_seconds=10.0,
+        protocol_hash="b" * 64,
+        attempt_id="attempt-native-request-controls",
+    )
+    binding = PayloadBindingContext(
+        carrier_lock_key="audio2tool",
+        allowed_sample_ids=frozenset({_REF.sample_id}),
+        sample_facts={_REF.sample_id: (_REF.audio_seconds, _REF.sample_rate_hz)},
+        data_root=tmp_path,
+        carrier_root=tmp_path / "media",
+    )
+    return FrozenCoreAdapter(
+        gate=_OpenGate(),
+        plan=plan,
+        arm=arm,
+        transport=transport,
+        sink=TraceSink(tmp_path / f"run-{arm}", plan.run_id),
+        binding=binding,
+    )
+
+
 def _canned_content_response():
     return json.dumps(
         {
@@ -526,6 +557,169 @@ def test_transport_sends_tools_verbatim_and_never_a_tool_choice(tmp_path):
     # decoding_params still merge in exactly as before this arm existed.
     assert captured["body"]["temperature"] == 0
     assert captured["body"]["seed"] == 20260803
+    assert "parallel_tool_calls" not in captured["body"]
+
+
+@pytest.mark.parametrize("tool_choice", ["auto", "none"])
+def test_adapter_and_production_transport_send_native_request_controls_at_top_level(
+    tmp_path, tool_choice
+):
+    captured = {}
+
+    def fake_post(url, body):
+        captured["body"] = json.loads(body)
+        return _canned_content_response()
+
+    transport = _transport(post=fake_post, data_root=tmp_path)
+    adapter = _request_adapter(
+        tmp_path, arm="bare-core-native-tools", transport=transport
+    )
+    payload = _native_tools_payload(
+        tmp_path,
+        decoding_params={
+            **_DECODING,
+            "tool_choice": tool_choice,
+            "parallel_tool_calls": False,
+        },
+    )
+
+    response = adapter.request(payload)
+
+    assert response.text == "hello world"
+    assert captured["body"]["tool_choice"] == tool_choice
+    assert captured["body"]["parallel_tool_calls"] is False
+    assert captured["body"]["temperature"] == 0
+    assert captured["body"]["seed"] == 20260803
+
+
+def test_native_parallel_false_is_independently_optional(tmp_path):
+    captured = {}
+
+    def fake_post(url, body):
+        captured["body"] = json.loads(body)
+        return _canned_content_response()
+
+    transport = _transport(post=fake_post, data_root=tmp_path)
+    adapter = _request_adapter(
+        tmp_path, arm="bare-core-native-tools", transport=transport
+    )
+    payload = _native_tools_payload(
+        tmp_path, decoding_params={**_DECODING, "parallel_tool_calls": False}
+    )
+
+    adapter.request(payload)
+
+    assert captured["body"]["parallel_tool_calls"] is False
+    assert "tool_choice" not in captured["body"]
+
+
+def test_actual_request_fit_renders_native_controls_at_top_level(tmp_path):
+    seen = {}
+    transport = _transport(post=lambda u, b: _canned_content_response(), data_root=tmp_path)
+    payload = _native_tools_payload(
+        tmp_path,
+        decoding_params={
+            **_DECODING,
+            "tool_choice": "auto",
+            "parallel_tool_calls": False,
+        },
+    )
+
+    def request_measure(client, body, **kwargs):
+        seen.update(body)
+        return {"fits": True, "margin_tokens": 8}
+
+    receipt = fit_requests(
+        [payload],
+        expected_sample_ids=[payload["sample_id"]],
+        transport=transport,
+        client=object(),
+        speech_counts=lambda _payload: [1],
+        media_marker="<unused>",
+        slot_tokens=1024,
+        request_measure=request_measure,
+    )
+
+    assert receipt["every_request_fits"] is True
+    assert seen["tools"] == _TOOL_SCHEMAS
+    assert seen["tool_choice"] == "auto"
+    assert seen["parallel_tool_calls"] is False
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("tool_choice", "required"),
+        ("tool_choice", True),
+        ("tool_choice", None),
+        ("parallel_tool_calls", True),
+        ("parallel_tool_calls", "false"),
+        ("parallel_tool_calls", 0),
+    ],
+)
+def test_adapter_rejects_unsupported_native_request_control_values_before_transport(
+    tmp_path, field, value
+):
+    contacted = False
+
+    def forbidden_transport(_request):
+        nonlocal contacted
+        contacted = True
+        raise AssertionError("invalid request control reached transport")
+
+    adapter = _request_adapter(
+        tmp_path, arm="bare-core-native-tools", transport=forbidden_transport
+    )
+    payload = _native_tools_payload(tmp_path, decoding_params={**_DECODING, field: value})
+
+    with pytest.raises(FrozenCoreError, match=field):
+        adapter.request(payload)
+
+    assert contacted is False
+
+
+@pytest.mark.parametrize(
+    "request_controls",
+    [{"tool_choice": "auto"}, {"parallel_tool_calls": False}],
+)
+def test_adapter_rejects_native_request_controls_on_non_native_arms(
+    tmp_path, request_controls
+):
+    contacted = False
+
+    def forbidden_transport(_request):
+        nonlocal contacted
+        contacted = True
+        raise AssertionError("native request control reached transport")
+
+    adapter = _request_adapter(tmp_path, arm="bare-core", transport=forbidden_transport)
+    payload = _native_tools_payload(
+        tmp_path, decoding_params={**_DECODING, **request_controls}
+    )
+    payload.pop("tool_schemas")
+
+    with pytest.raises(FrozenCoreError, match="native tool"):
+        adapter.request(payload)
+
+    assert contacted is False
+
+
+@pytest.mark.parametrize(
+    "decoding_params",
+    [
+        {**_DECODING, "tool_choice": "auto"},
+        {**_DECODING, "parallel_tool_calls": False},
+    ],
+)
+def test_transport_refuses_native_request_controls_without_tool_schemas(
+    tmp_path, decoding_params
+):
+    transport = _transport(post=lambda u, b: _canned_content_response(), data_root=tmp_path)
+    payload = _native_tools_payload(tmp_path, decoding_params=decoding_params)
+    payload.pop("tool_schemas")
+
+    with pytest.raises(FrozenCoreError, match="native tool"):
+        transport.render_request(json.dumps(payload).encode())
 
 
 def test_transport_refuses_an_empty_tool_schemas_list_on_the_wire(tmp_path):

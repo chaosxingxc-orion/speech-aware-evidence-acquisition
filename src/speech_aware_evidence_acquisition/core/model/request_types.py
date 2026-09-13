@@ -16,6 +16,9 @@ from typing import Mapping
 # through to the transport, where it would otherwise silently replace the
 # constructed chat-completions body (dropping audio while the adapter still
 # meters it as delivered).
+NATIVE_TOOL_REQUEST_CONTROL_KEYS = frozenset({"tool_choice", "parallel_tool_calls"})
+
+
 ALLOWED_DECODING_KEYS = frozenset(
     {
         "temperature",
@@ -57,8 +60,37 @@ ALLOWED_DECODING_KEYS = frozenset(
         # a crash.
         "logprobs",
         "top_logprobs",
+        # Native tool request controls remain in the audited per-contact
+        # decoding mapping. The adapter restricts them to native-tool arms;
+        # the transport moves them to the OpenAI request body's top level.
+        *NATIVE_TOOL_REQUEST_CONTROL_KEYS,
     }
 )
+
+
+def native_tool_request_controls(
+    decoding_params: Mapping[str, object], *, native_tools: bool
+) -> dict[str, object]:
+    """Validate and project optional native-tool request controls."""
+
+    declared = NATIVE_TOOL_REQUEST_CONTROL_KEYS & set(decoding_params)
+    if declared and not native_tools:
+        raise ValueError(
+            "native tool request controls are valid only for a native-tool arm"
+        )
+    controls: dict[str, object] = {}
+    if "tool_choice" in decoding_params:
+        tool_choice = decoding_params["tool_choice"]
+        if not isinstance(tool_choice, str) or tool_choice not in {"auto", "none"}:
+            raise ValueError("decoding_params tool_choice must be 'auto' or 'none'")
+        controls["tool_choice"] = tool_choice
+    if "parallel_tool_calls" in decoding_params:
+        parallel = decoding_params["parallel_tool_calls"]
+        if parallel is not False:
+            raise ValueError("decoding_params parallel_tool_calls must be false")
+        controls["parallel_tool_calls"] = False
+    return controls
+
 
 #: Upper bound this adapter accepts for ``decoding_params.top_logprobs``
 #: (2026-09-08 logprob-as-judge probe). The pinned llama-server does not cap
