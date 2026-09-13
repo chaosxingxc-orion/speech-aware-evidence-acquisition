@@ -22,6 +22,12 @@
   "evidence_source": "none",
   "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame/snapshot.json",
   "knowledge_snapshot_sha256": "609854e4211891614b621e6431ccf23706c2aa3a3bc9133dae9d9765628c88b8",
+  "live_phase_fit": {
+    "attempt_id": "attempt-slurp-intent-hypothesis-source-fit-v1",
+    "contact_cap": 3001,
+    "run_id": "SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-FIT-V1"
+  },
+  "live_phase_fit_audio_seconds_cap": 3000,
   "phase_material": {
     "hypotheses": {
       "fill_params": {
