@@ -25,13 +25,15 @@ from .speech_observation import (
     SpeechObservationSelection,
 )
 
+LIVE_SPEECH_OBSERVATION_TOOL = "saea-tool-live-speech-observation-v1"
+
 TASK_CONTRACT_TOOL = "saea-tool-task-contract-v1"
 PHASE_KNOWLEDGE_TOOL = "saea-tool-phase-knowledge-v1"
 ACTION_TOOLS = frozenset(
     {TASK_CONTRACT_TOOL, PHASE_KNOWLEDGE_TOOL, CORRECTIVE_MEMORY_TOOL,
-     PREPARED_SPEECH_OBSERVATION_TOOL}
+     PREPARED_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_OBSERVATION_TOOL}
 )
-MODES = frozenset({"fixed", "core-choice"})
+MODES = frozenset({"fixed", "core-choice", "native-tools"})
 VIEWS = frozenset({"text", "speech", "paired"})
 
 
@@ -79,7 +81,7 @@ def load_phase_tool_specs(config, program):
             raise PhaseToolError("phase_tools entry has unknown fields")
         mode = entry.get("mode")
         if not isinstance(mode, str) or mode not in MODES:
-            raise PhaseToolError("phase_tools mode must be fixed or core-choice")
+            raise PhaseToolError("phase_tools mode must be fixed, core-choice or native-tools")
         tools = _unique(entry.get("allowed_tools"), ACTION_TOOLS, "allowed_tools")
         views = _unique(
             entry.get("knowledge_views", ["text"]), VIEWS, "knowledge_views"
@@ -88,7 +90,7 @@ def load_phase_tool_specs(config, program):
         if mode == "fixed":
             _validate_action(fixed, tools, views)
         elif "fixed_action" in entry:
-            raise PhaseToolError("core-choice cannot declare a fixed_action")
+            raise PhaseToolError(f"{mode} cannot declare a fixed_action")
         for tool_id in tools:
             assert_pinned_hash(resolve_tool(tool_id).manifest)
         specs[phase] = {
@@ -97,6 +99,26 @@ def load_phase_tool_specs(config, program):
             "knowledge_views": views,
             "fixed_action": fixed,
         }
+    native_program = getattr(program, "stop_rule", None) == "native-answer-or-tool"
+    native_specs = any(spec["mode"] == "native-tools" for spec in specs.values())
+    if native_program or native_specs:
+        nonfinal = set(phases[:-1])
+        if (
+            not native_program
+            or set(specs) != nonfinal
+            or any(spec["mode"] != "native-tools" for spec in specs.values())
+        ):
+            raise PhaseToolError(
+                "native-answer-or-tool requires native-tools on every nonfinal phase"
+            )
+        signatures = {
+            (spec["allowed_tools"], spec["knowledge_views"])
+            for spec in specs.values()
+        }
+        if len(signatures) != 1:
+            raise PhaseToolError(
+                "native-tools phases must expose one identical tool schema set"
+            )
     return specs
 
 
@@ -118,7 +140,7 @@ def _validate_action(action, allowed, views):
             or args["view"] not in views
         ):
             raise PhaseToolError("knowledge action needs one allowed knowledge view")
-    if tool_id == PREPARED_SPEECH_OBSERVATION_TOOL:
+    if tool_id in {PREPARED_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_OBSERVATION_TOOL}:
         if (
             set(args) != {"span", "representation", "distinction"}
             or args["span"] != "full-utterance"
@@ -133,6 +155,42 @@ def _validate_action(action, allowed, views):
     return {"tool_id": tool_id, "arguments": dict(args)}
 
 
+def _native_tool_schema(tool_id, views):
+    descriptions = {
+        TASK_CONTRACT_TOOL: "Read the legal task contract.",
+        PHASE_KNOWLEDGE_TOOL: "Retrieve prepared task knowledge.",
+        CORRECTIVE_MEMORY_TOOL: "Read admitted corrective guidance.",
+        PREPARED_SPEECH_OBSERVATION_TOOL: "Read a prepared speech transcript.",
+        LIVE_SPEECH_OBSERVATION_TOOL: "Transcribe the current full utterance on demand.",
+    }
+    if tool_id in {TASK_CONTRACT_TOOL, CORRECTIVE_MEMORY_TOOL}:
+        properties = {}
+        required = []
+    elif tool_id == PHASE_KNOWLEDGE_TOOL:
+        properties = {"view": {"type": "string", "enum": list(views)}}
+        required = ["view"]
+    else:
+        properties = {
+            "span": {"type": "string", "enum": ["full-utterance"]},
+            "representation": {"type": "string", "enum": ["asr-transcript"]},
+            "distinction": {"type": "string", "minLength": 1, "maxLength": 512},
+        }
+        required = ["span", "representation", "distinction"]
+    return {
+        "type": "function",
+        "function": {
+            "name": tool_id,
+            "description": descriptions[tool_id],
+            "parameters": {
+                "type": "object",
+                "properties": properties,
+                "required": required,
+                "additionalProperties": False,
+            },
+        },
+    }
+
+
 class PhaseToolDispatcher:
     def __init__(
         self,
@@ -145,6 +203,8 @@ class PhaseToolDispatcher:
         knowledge_catalog=None,
         experience_memory=None,
         speech_observations=None,
+        live_speech_observations=None,
+        tool_contact=None,
     ):
         self.specs = specs
         self.program = program
@@ -153,6 +213,9 @@ class PhaseToolDispatcher:
         self.knowledge_catalog = knowledge_catalog
         self.experience_memory = experience_memory
         self.speech_observations = speech_observations
+        self.live_speech_observations = live_speech_observations
+        self.tool_contact = tool_contact
+        self._live_selections = {}
         from .knowledge_value_views import KnowledgeValueRenderer
 
         self._value_renderer = KnowledgeValueRenderer(
@@ -184,12 +247,50 @@ class PhaseToolDispatcher:
             for spec in specs.values()
         ) and speech_observations is None:
             raise PhaseToolError("speech observation action requires a loaded source binding")
+        if any(
+            LIVE_SPEECH_OBSERVATION_TOOL in spec["allowed_tools"]
+            for spec in specs.values()
+        ) and live_speech_observations is None:
+            raise PhaseToolError("live speech observation action requires a loaded provider")
+        if self.native_enabled and not callable(tool_contact):
+            raise PhaseToolError("native tools require a tool contact custodian")
+
+    @property
+    def native_enabled(self):
+        return getattr(self.program, "stop_rule", None) == "native-answer-or-tool"
+
+    def is_native_phase(self, phase):
+        spec = self.specs.get(phase)
+        return bool(self.native_enabled and spec and spec["mode"] == "native-tools")
+
+    def native_tool_schemas(self):
+        if not self.native_enabled:
+            return ()
+        ordered = []
+        seen = set()
+        for phase in self.program.phase_names()[:-1]:
+            for tool_id in self.specs[phase]["allowed_tools"]:
+                if tool_id not in seen:
+                    ordered.append(_native_tool_schema(tool_id, self.specs[phase]["knowledge_views"]))
+                    seen.add(tool_id)
+        return tuple(ordered)
 
     def instruction_for_phase(self, phase, context):
         spec = self.specs.get(phase)
-        if spec is None or spec["mode"] != "core-choice":
+        if spec is None or spec["mode"] not in {"core-choice", "native-tools"}:
             return ""
+        if spec["mode"] == "native-tools":
+            return (
+                "Answer the task directly when the available evidence is sufficient. "
+                "Otherwise call at most one available internal tool that is needed, "
+                "then use its returned evidence in the next decision. Do not invent "
+                "tool results or call a tool merely because it is available."
+            )
         descriptions = {
+            LIVE_SPEECH_OBSERVATION_TOOL: (
+                "Transcribe the full original utterance on demand. Name the distinction "
+                "the observation should resolve; the frozen core retains answer authority."
+            ),
             PREPARED_SPEECH_OBSERVATION_TOOL: (
                 "Inspect an independently prepared transcription of the full original utterance. "
                 "Name the distinction it should resolve; the Solver retains the answer."
@@ -250,10 +351,20 @@ class PhaseToolDispatcher:
             or context.sample_id != context.query_state.query_sample_id
         ):
             raise PhaseToolError("action has stale or cross-sample source state")
+        native_call = None
         if spec["mode"] == "fixed":
             action = _validate_action(
                 spec["fixed_action"], spec["allowed_tools"], spec["knowledge_views"]
             )
+        elif spec["mode"] == "native-tools":
+            try:
+                action, native_call = self._parse_native_action(
+                    context, source, spec
+                )
+            except PhaseToolError as error:
+                return self._native_error(
+                    phase, context, source, expected, str(error)
+                )
         else:
             try:
                 raw = json.loads(source.content, object_pairs_hook=_json_object)
@@ -289,12 +400,43 @@ class PhaseToolDispatcher:
             "snapshot_sha256": context.knowledge_snapshot_sha256,
             "tool_source_sha256": tool.manifest.pinned_sha256,
         }
+        if native_call is not None:
+            request.update({
+                "tool_call_id": native_call["call_id"],
+                "tool_calls_sha256": native_call["completion"].tool_calls_sha256,
+                "core_request_id": native_call["completion"].request_id,
+            })
         self._emit(context.sample_id, phase, "attempt", request)
         try:
+            if spec["mode"] == "native-tools":
+                invocation = self.tool_contact(
+                sample_id=context.sample_id,
+                phase=phase,
+                next_phase=next_phase,
+                tool_id=action["tool_id"],
+                arguments=dict(action["arguments"]),
+                source_response_sha256=source.source_response_sha256,
+                request_id=native_call["completion"].request_id,
+                tool_call_id=native_call["call_id"],
+                tool_calls_sha256=native_call["completion"].tool_calls_sha256,
+                )
+                if not isinstance(invocation, Mapping):
+                    raise PhaseToolError(
+                        "tool contact custodian returned no invocation receipt"
+                    )
+                content_hash(invocation)
+                request["tool_invocation"] = dict(invocation)
             if action["tool_id"] == TASK_CONTRACT_TOOL:
                 output = tool.call(context)
             elif action["tool_id"] == PREPARED_SPEECH_OBSERVATION_TOOL:
                 output = tool.call(self.speech_observations, context)
+            elif action["tool_id"] == LIVE_SPEECH_OBSERVATION_TOOL:
+                output = tool.call(
+                    self.live_speech_observations,
+                    context,
+                    action["arguments"],
+                    source.source_response_sha256,
+                )
             elif action["tool_id"] == CORRECTIVE_MEMORY_TOOL:
                 output = tool.call(self.experience_memory, next_phase, context)
             else:
@@ -356,11 +498,36 @@ class PhaseToolDispatcher:
                         "task-contract tool returned an unbound result"
                     )
                 result = dict(output.result)
-            elif action["tool_id"] == PREPARED_SPEECH_OBSERVATION_TOOL:
+            elif action["tool_id"] in {
+                PREPARED_SPEECH_OBSERVATION_TOOL,
+                LIVE_SPEECH_OBSERVATION_TOOL,
+            }:
                 if not isinstance(output.result, SpeechObservationSelection):
                     raise PhaseToolError("speech observation tool returned an unbound selection")
+                if action["tool_id"] == LIVE_SPEECH_OBSERVATION_TOOL:
+                    visible = output.result.visible
+                    lineage = output.result.lineage
+                    if (
+                        not isinstance(visible, Mapping)
+                        or visible.get("schema")
+                        != "saea-live-speech-observation-selection-v1"
+                        or visible.get("sample_id") != context.sample_id
+                        or visible.get("speech_packet_id")
+                        != context.query_state.speech_packet_id
+                        or visible.get("speech_packet_sha256")
+                        != context.query_state.speech_packet_sha256
+                        or not isinstance(lineage, Mapping)
+                        or lineage.get("source_response_sha256")
+                        != source.source_response_sha256
+                    ):
+                        raise PhaseToolError(
+                            "live speech observation returned foreign evidence"
+                        )
                 # The typed OBS block supplies the transcript once; history keeps its reference.
                 result = {key: value for key, value in output.result.visible.items() if key != "transcript"}
+                if action["tool_id"] == LIVE_SPEECH_OBSERVATION_TOOL:
+                    with self._lock:
+                        self._live_selections[result["artifact_sha256"]] = output.result
             else:
                 if not isinstance(output.result, ExperienceMemorySelection):
                     raise PhaseToolError(
@@ -388,7 +555,10 @@ class PhaseToolDispatcher:
                     **document,
                     "internal_memory_lineage": dict(output.result.lineage),
                 }
-            if action["tool_id"] == PREPARED_SPEECH_OBSERVATION_TOOL:
+            if action["tool_id"] in {
+                PREPARED_SPEECH_OBSERVATION_TOOL,
+                LIVE_SPEECH_OBSERVATION_TOOL,
+            }:
                 receipt_document = {
                     **document,
                     "internal_observation_lineage": dict(output.result.lineage),
@@ -406,9 +576,82 @@ class PhaseToolDispatcher:
             )
             raise
 
+    def _parse_native_action(self, context, source, spec):
+        completions = []
+        for completion in getattr(context, "core_completions", ()):
+            if (
+                getattr(completion, "sample_id", None) == context.sample_id
+                and getattr(completion, "text", None) == source.content
+                and getattr(completion, "response_text_sha256", None)
+                == source.source_response_sha256
+            ):
+                completions.append(completion)
+        if len(completions) != 1:
+            raise PhaseToolError("native action requires exactly one source-bound completion")
+        completion = completions[0]
+        try:
+            completion.assert_binding(
+                sample_id=context.sample_id,
+                agent_contact_id=completion.agent_contact_id,
+                response_text=source.content,
+            )
+            calls = completion.tool_calls
+        except Exception as error:
+            raise PhaseToolError("native completion binding or tool calls are malformed") from error
+        if not isinstance(calls, list) or len(calls) != 1:
+            raise PhaseToolError("native action must contain exactly one tool call")
+        call = calls[0]
+        if (
+            not isinstance(call, Mapping)
+            or set(call) != {"id", "type", "function"}
+            or not isinstance(call["id"], str)
+            or not call["id"]
+            or call["type"] != "function"
+            or not isinstance(call["function"], Mapping)
+            or set(call["function"]) != {"name", "arguments"}
+            or not isinstance(call["function"]["name"], str)
+            or not isinstance(call["function"]["arguments"], str)
+        ):
+            raise PhaseToolError("native tool call has the wrong OpenAI function shape")
+        try:
+            arguments = json.loads(
+                call["function"]["arguments"], object_pairs_hook=_json_object
+            )
+        except (ValueError, TypeError) as error:
+            raise PhaseToolError("native tool arguments are not one JSON object") from error
+        action = _validate_action(
+            {"tool_id": call["function"]["name"], "arguments": arguments},
+            spec["allowed_tools"],
+            spec["knowledge_views"],
+        )
+        return action, {
+            "call_id": call["id"],
+            "completion": completion,
+        }
+
+    def _native_error(self, phase, context, source, expected, message):
+        document = {
+            "schema": "saea-phase-tool-error-v1",
+            "selection_mode": "native-tools",
+            "error": message,
+            "query_state_sha256": expected,
+            "source_response_sha256": source.source_response_sha256,
+        }
+        artifact = AgentStateArtifact(
+            state_id=f"tool-error:{phase}:{context.sample_id}",
+            state_kind="tool-result",
+            content=json.dumps(document, sort_keys=True),
+            source_query_state_sha256=expected,
+            source_response_sha256=source.source_response_sha256,
+            producer_policy_id=self.program.program_id,
+            cited_value_ids=(),
+        ).validate()
+        self._emit(context.sample_id, phase, "rejected", document)
+        return PhaseToolStep(supply=None, state=artifact)
+
     def _emit(self, sample_id, phase, event, payload):
         if self.trace_sink is not None:
-            axis = "OBS" if payload.get("tool_id") == PREPARED_SPEECH_OBSERVATION_TOOL else "USE"
+            axis = "OBS" if payload.get("tool_id") in {PREPARED_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_OBSERVATION_TOOL} else "USE"
             self.trace_sink.emit(
                 axis,
                 f"{sample_id}/{self.program.program_id}/{phase}/tool-{event}",
@@ -424,15 +667,43 @@ class PhaseToolDispatcher:
             if artifact.state_kind != "tool-result":
                 continue
             document = json.loads(artifact.content)
+            if document.get("schema") == "saea-phase-tool-error-v1":
+                if artifact.state_id not in query_state.agent_state_ids:
+                    raise PhaseToolError("tool error is absent from current bound state")
+                observations.append({
+                    "type": "text",
+                    "text": "The internal tool request was rejected: " + document["error"],
+                    "evidence_id": artifact.state_id,
+                    "source_uri": (
+                        "phase-tool-error://"
+                        + artifact.source_response_sha256
+                        + "/"
+                        + artifact.state_id
+                    ),
+                })
+                continue
             result = document.get("result", {})
-            if document.get("tool_id") == PREPARED_SPEECH_OBSERVATION_TOOL:
-                if self.speech_observations is None or artifact.state_id not in query_state.agent_state_ids:
+            if document.get("tool_id") in {
+                PREPARED_SPEECH_OBSERVATION_TOOL,
+                LIVE_SPEECH_OBSERVATION_TOOL,
+            }:
+                if artifact.state_id not in query_state.agent_state_ids:
                     raise PhaseToolError("speech observation is absent from current bound state")
-                selected = self.speech_observations.select(
-                    context=SimpleNamespace(
-                        sample_id=query_state.query_sample_id, query_state=query_state,
+                if document["tool_id"] == PREPARED_SPEECH_OBSERVATION_TOOL:
+                    if self.speech_observations is None:
+                        raise PhaseToolError("prepared speech observation binding is absent")
+                    selected = self.speech_observations.select(
+                        context=SimpleNamespace(
+                            sample_id=query_state.query_sample_id, query_state=query_state,
+                        )
                     )
-                )
+                else:
+                    with self._lock:
+                        selected = self._live_selections.get(
+                            result.get("artifact_sha256")
+                        )
+                    if selected is None:
+                        raise PhaseToolError("live speech observation is absent from this dispatcher")
                 if (
                     result != {key: value for key, value in selected.visible.items() if key != "transcript"}
                     or document.get("result_sha256") != content_hash(result)
@@ -490,7 +761,8 @@ class PhaseToolDispatcher:
         if memory_lineage:
             receipt["memory_lineage"] = memory_lineage
         observation_records = [
-            row for row in records if row["tool_id"] == PREPARED_SPEECH_OBSERVATION_TOOL
+            row for row in records
+            if row["tool_id"] == PREPARED_SPEECH_OBSERVATION_TOOL
         ]
         if self.speech_observations is not None:
             receipt["speech_observations"] = {
@@ -499,6 +771,18 @@ class PhaseToolDispatcher:
                 "supply_events": len(observation_records),
                 "new_neural_contacts": 0,
                 "lineage": [row["internal_observation_lineage"] for row in observation_records],
+            }
+        live_records = [
+            row for row in records
+            if row["tool_id"] == LIVE_SPEECH_OBSERVATION_TOOL
+        ]
+        if self.live_speech_observations is not None:
+            receipt["live_speech_observations"] = {
+                **self.live_speech_observations.receipt(),
+                "supply_events": len(live_records),
+                "lineage": [
+                    row["internal_observation_lineage"] for row in live_records
+                ],
             }
         return receipt
 
@@ -513,6 +797,8 @@ def build_phase_tools(
     knowledge_catalog=None,
     experience_memory=None,
     speech_observations=None,
+    live_speech_observations=None,
+    tool_contact=None,
 ):
     specs = load_phase_tool_specs(config, program)
     if not specs:
@@ -526,4 +812,6 @@ def build_phase_tools(
         knowledge_catalog=knowledge_catalog,
         experience_memory=experience_memory,
         speech_observations=speech_observations,
+        live_speech_observations=live_speech_observations,
+        tool_contact=tool_contact,
     )

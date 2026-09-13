@@ -92,6 +92,7 @@ from ..e0.artifacts import REPO_ROOT
 from .errors import RailsError
 from .tool_wrappers import phase_knowledge as _phase_knowledge
 from .tool_wrappers import speech_observation as _speech_observation
+from .tool_wrappers import live_speech_observation as _live_speech_observation
 
 
 class ToolCatalogError(RailsError):
@@ -1518,5 +1519,39 @@ TOOL_CATALOG.register(
     build_tool_entry(
         PREPARED_SPEECH_OBSERVATION_MANIFEST,
         _speech_observation.read_prepared_speech_observation,
+    ),
+)
+
+
+LIVE_SPEECH_OBSERVATION_MANIFEST = ToolManifest(
+    tool_id="saea-tool-live-speech-observation-v1",
+    description=(
+        "Decode the current full utterance with the registered local speech "
+        "observer only when selected by the frozen core."
+    ),
+    source_ref=(
+        "speech_aware_evidence_acquisition.rails.tool_wrappers.live_speech_observation:"
+        "observe_live_speech"
+    ),
+    pinned_sha256="916728195c6979ddb61cc1d7fe9b3326904901d1e79ae71309650799f4e103f1",
+    inputs={
+        "provider": "LiveSpeechObservationProvider",
+        "context": "AgentRuntimeContext",
+        "arguments": "Mapping",
+        "source_response_sha256": "str",
+    },
+    outputs={"result": "SpeechObservationSelection"},
+    changes_bytes=False,
+    derivation_record=None,
+    cost_class="contact",
+    axis="OBS",
+    scope=GENERAL_SCOPE,
+    ledger_row_type="tool-contact",
+)
+TOOL_CATALOG.register(
+    "saea-tool-live-speech-observation-v1",
+    build_tool_entry(
+        LIVE_SPEECH_OBSERVATION_MANIFEST,
+        _live_speech_observation.observe_live_speech,
     ),
 )
