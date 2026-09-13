@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 73,
+  "generation": 74,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,10 +10,10 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "6a07b59766f54c743910bc9f78fe6bf1da02b0cb",
-  "updated_at_utc": "2026-09-12T23:20:20.614932+00:00",
-  "next_action": "Read STATUS-073. Registered Whisper component diagnosis is closed: predecessor-state variability limits action attribution; historical effectiveness verdict unchanged. GPU currently idle. TRAIN-A incumbent package is prepared but blocked by shared adapter devel-only namespace; repair, prepare exact recall, register and run the 1080-row two-stage source flight. A/B packets/query vectors and isolated KB are ready. Feedback/proposal/artifact changes are unmerged; no real optimization cycle or admitted memory yet. No immediate owner decision blocks work. Goal active.",
+  "snapshot_commit": "27b9fc857ea03da55def09495a1fc3e73df20fea",
+  "updated_at_utc": "2026-09-13T00:02:42.034790+00:00",
+  "next_action": "Read STATUS-074 and OWNER-AGENTIC-TOOLS-024. Fixed TRAIN source launch stopped and was settled ABORTED with zero actual contacts; recovery held. Build and prove genuine frozen-main-model-selected on-demand tool execution before the next system comparison or optimizer flight. Resident decoder retained; do not claim GPU saturation. No immediate owner decision is pending.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
-  "latest_owner_decision_id": "OWNER-SPEECH-TOOLS-023"
+  "latest_owner_decision_id": "OWNER-AGENTIC-TOOLS-024"
 }

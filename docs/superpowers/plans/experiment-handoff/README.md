@@ -1,12 +1,12 @@
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-073.md](STATUS-073.md) closes the registered Whisper component diagnosis and records the concrete TRAIN-A launch blocker: the shared adapter still rejects TRAIN source IDs. Both TRAIN query preparations are sealed; the GPU is currently idle. The first incumbent source package is prepared but not registered. Group feedback, proposal context and artifact-only execution are isolated unfinished integrations, not a completed optimizer. No immediate owner decision blocks authorized work.
+**Latest execution:** [STATUS-074.md](STATUS-074.md) records the owner correction to genuine main-model-selected on-demand tools, the zero-contact TRAIN source stop, and the resulting queue priority. [OWNER-AGENTIC-TOOLS-024.md](OWNER-AGENTIC-TOOLS-024.md) governs the immediate target. The resident decoder is retained, but no new generation or optimizer cycle has completed.
 
 **Latest owner direction:** [OWNER-SPEECH-TOOLS-023.md](OWNER-SPEECH-TOOLS-023.md) adds locally loaded speech tools and problem-targeted investigation. [OWNER-DISCRIMINATIVE-VALUES-021.md](OWNER-DISCRIMINATIVE-VALUES-021.md), with OWNER018-020, retains source-grounded distinctions in task-specific values. Include all eight Audio2Tool tiers alongside SLURP and E21/E22 in design/readiness; share the execution base and specialize knowledge and corrective-memory construction. Read [STATUS-044.md](STATUS-044.md) and the [dataset/task analysis](../../../readiness/2026-09-11-task-specific-knowledge-and-memory-analysis.md). Full TRAIN relationship counts and per-carrier audits are complete; three value-format primitives and a TRAIN-bound memory library have CPU tests. Runtime memory integration now has a positive synthetic executor proof; actual memory admission remains pending. The first new live task-agent comparison and its registered matched replication are closed; the subsequent controlled role-coverage comparison is closed without adoption. Preserve historical verdicts and the SLURP-first execution preference.
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 73. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 74. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -39,7 +39,7 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-073.md](STATUS-073.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
+Read [STATUS-074.md](STATUS-074.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
 The owner explicitly resumed GPU work after network reconnection and prioritizes
 high utilization. This supersedes OWNER012's scheduling hold. E21 and SLURP generation, scoring, fixed analysis and all four settlements
 are complete. Those earlier G6 SLURP and E21 system admissions fail their frozen rules. STATUS-044 separately admits the newer SLURP task-agent working baseline for exploration. The newer role-coverage pair is closed under STATUS-046; it is not adopted and cannot be replayed under its exhausted registration.
