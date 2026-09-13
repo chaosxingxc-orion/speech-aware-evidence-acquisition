@@ -798,9 +798,17 @@ class LlamaServerTransport:
                 {"role": "system", "content": payload["task_instruction"]},
                 {"role": "user", "content": content},
             ]
-            messages, historical_descriptors = project_native_history(
+            from .native_framework_history import project_native_framework_history
+
+            framework_projection = project_native_framework_history(
                 payload=payload, messages=messages, state_texts=state_texts,
             )
+            if framework_projection is None:
+                messages, historical_descriptors = project_native_history(
+                    payload=payload, messages=messages, state_texts=state_texts,
+                )
+            else:
+                messages, historical_descriptors = framework_projection
             packet_identities = {
                 (item["packet_id"], item["sha256"])
                 for item in validated_descriptors
