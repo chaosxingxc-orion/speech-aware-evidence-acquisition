@@ -5323,6 +5323,12 @@ class FlightRuntime:
                 "runtime": _sha256_file(Path(__file__)),
             },
         }
+        if binding.get("supply_for_store") is not None:
+            from ...rails import knowledge_stores
+
+            sources["implementation"][knowledge_stores.__name__] = _sha256_file(
+                Path(knowledge_stores.__file__)
+            )
         if (
             getattr(spec, "query_source", {}).get("kind")
             == phase_supply.SEALED_SEGMENT_VECTORS_KIND
@@ -5587,6 +5593,22 @@ class FlightRuntime:
         if prepared is not None:
             return self._load_phase_supply_seed(
                 prepared, binding, spec, plan.split_identity_hash
+            )
+        supply_for_store = binding.get("supply_for_store")
+        store_bootstrap = getattr(
+            supply_for_store, "bootstrap_first_phase", None
+        )
+        if callable(store_bootstrap):
+            facets, values = store_bootstrap(
+                speech_packet_bindings=binding["speech_packet_bindings"],
+                split_identity_hash=plan.split_identity_hash,
+                workers=max_workers,
+                lease_metadata_present=(
+                    self._data_root / "locks" / "flight.lock"
+                ).exists(),
+            )
+            return ({first_phase: facets} if facets else {}), (
+                {first_phase: values} if values else {}
             )
         supply_for_phase = binding.get("supply_for_phase")
         factories = getattr(supply_for_phase, "provider_factories", {}) or {}
@@ -6346,7 +6368,9 @@ class FlightRuntime:
           decision has to be computable before the flight, so it is refused
           here unless the phase's provider is ``kb-facet-v1`` (which this
           seam constructs from the frozen snapshot) or an instance was
-          injected through :meth:`bind_phase_supply_providers`;
+          injected through :meth:`bind_phase_supply_providers`. Named stores
+          use the same bootstrap and qualify each store's selected IDs before
+          merging them into the initial state;
         * an ``embedding-server`` query source (declared, never resolvable).
         """
 

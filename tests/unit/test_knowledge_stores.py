@@ -183,6 +183,15 @@ def _native_config(store_ids):
     }
 
 
+def _first_phase_config(tmp_path):
+    config, snapshots = _config(tmp_path)
+    for store in config["knowledge_stores"].values():
+        supply = store["phase_supply"]["decision-2"]
+        supply["expose_facets"] = True
+        store["phase_supply"] = {"direct": supply}
+    return config, snapshots
+
+
 def test_native_model_selects_each_store_and_joint_history_keeps_both(tmp_path):
     from speech_aware_evidence_acquisition.core.tracing import TraceBuffer
 
@@ -542,6 +551,107 @@ def test_shared_phase_supply_builds_and_routes_each_independent_store(tmp_path):
         router.receipt["stores"]["intent-boundaries"]["store_release_sha256"]
         != router.receipt["stores"]["slot-contracts"]["store_release_sha256"]
     )
+
+
+def test_named_stores_bootstrap_colliding_local_ids_as_qualified_evidence(tmp_path):
+    from speech_aware_evidence_acquisition.rails.controllers import (
+        default_phase_program,
+    )
+    from speech_aware_evidence_acquisition.rails.knowledge_value_views import (
+        KnowledgeValueRenderer,
+    )
+
+    config, snapshots = _first_phase_config(tmp_path)
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding,
+        program=default_phase_program("phase-direct-only-supplied-v1"),
+        data_root=tmp_path,
+    )
+    facets, values = router.bootstrap_first_phase(
+        speech_packet_bindings={
+            "s1": {"packet_id": "speech/s1", "sha256": "a" * 64}
+        },
+        split_identity_hash="b" * 64,
+    )
+
+    assert facets == {
+        "s1": (
+            "intent-boundaries::operation:dim",
+            "slot-contracts::operation:dim",
+        )
+    }
+    assert values == {
+        "s1": (
+            "intent-boundaries::value:dim-light",
+            "slot-contracts::value:dim-light",
+        )
+    }
+    blocks = KnowledgeValueRenderer(binding.composite_snapshot).assemble(values["s1"])
+    assert [block["evidence_id"] for block in blocks] == list(values["s1"])
+    assert {block["text"] for block in blocks} == {
+        snapshots["intent-boundaries"].values[0].content,
+        snapshots["slot-contracts"].values[0].content,
+    }
+    assert router("intent-boundaries", "direct", None) is None
+    for store_id in binding.store_ids:
+        receipt = router.receipt["stores"][store_id]
+        assert receipt["store_snapshot_sha256"] == snapshots[store_id].content_hash()
+        assert receipt["composite_snapshot_sha256"] == binding.binding_sha256
+        assert receipt["phase_supply"]["phases"][0]["spec"]["phase"] == "direct"
+
+
+def test_flight_runtime_seeds_all_named_stores_for_the_first_phase(tmp_path):
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    from speech_aware_evidence_acquisition.rails.controllers import (
+        default_phase_program,
+    )
+
+    config, _ = _first_phase_config(tmp_path)
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    runtime = SimpleNamespace(
+        _composed=SimpleNamespace(values=config),
+        _data_root=tmp_path,
+        _knowledge_store_binding=binding,
+        _knowledge_store_supply=None,
+    )
+    program = default_phase_program("phase-direct-only-supplied-v1")
+    supply, specs = FlightRuntime._resolve_phase_supply(
+        runtime, program, binding.composite_snapshot
+    )
+    phase_binding = {
+        "supply_for_phase": supply,
+        "supply_for_store": runtime._knowledge_store_supply,
+        "speech_packet_bindings": {
+            "s1": {"packet_id": "speech/s1", "sha256": "a" * 64}
+        },
+    }
+    facets, values = FlightRuntime._phase_supply_seeds(
+        runtime,
+        program,
+        phase_binding,
+        specs,
+        SimpleNamespace(split_identity_hash="b" * 64),
+    )
+
+    assert facets == {
+        "direct": {
+            "s1": (
+                "intent-boundaries::operation:dim",
+                "slot-contracts::operation:dim",
+            )
+        }
+    }
+    assert values == {
+        "direct": {
+            "s1": (
+                "intent-boundaries::value:dim-light",
+                "slot-contracts::value:dim-light",
+            )
+        }
+    }
 
 
 def test_flight_runtime_resolves_named_store_supply_without_a_launcher(tmp_path):
