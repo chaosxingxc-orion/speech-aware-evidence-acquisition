@@ -1,0 +1,13 @@
+{
+  "cells": [
+    {
+      "cell": "slurp-native-candidate-source-direct-v1",
+      "experiment": "slurp-native-candidate-source-direct-v1"
+    },
+    {
+      "cell": "slurp-native-candidate-source-lookup-v1",
+      "experiment": "slurp-native-candidate-source-lookup-v1"
+    }
+  ],
+  "schema": "saea-campaign-plan-v1"
+}

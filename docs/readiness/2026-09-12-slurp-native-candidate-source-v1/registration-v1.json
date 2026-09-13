@@ -1,0 +1,38 @@
+{
+  "analysis_recipe": {
+    "relpath": "docs/readiness/2026-09-12-slurp-native-candidate-source-analysis-recipe-v1.json",
+    "sha256": "2e9e492242f63213b29291ba5016fa02f80ee16dd3c41303298fa75e255b9feb"
+  },
+  "complete_source_binding": "Final clean commit is pinned by an immutable launch receipt before contact.",
+  "no_new_mechanism_admitted": true,
+  "plans": {
+    "direct-fit": {
+      "relpath": "docs/readiness/2026-09-12-slurp-native-candidate-source-v1/direct-fit-plan-v1.json",
+      "sha256": "0bb66aeab4a88c4e7dc76770b47866421c1c4de62d9681a19a07fceb89fbf593"
+    },
+    "direct-generation": {
+      "relpath": "docs/readiness/2026-09-12-slurp-native-candidate-source-v1/direct-generation-plan-v1.json",
+      "sha256": "5409eff933a317543e27fd6205782010636c4fb4511df24d7b1aec3632aa6433"
+    },
+    "lookup-fit": {
+      "relpath": "docs/readiness/2026-09-12-slurp-native-candidate-source-v1/lookup-fit-plan-v1.json",
+      "sha256": "70157c5e420fed0e5a3135b3d7f053b79468301c213a3e4e6a28d7824b40d839"
+    },
+    "lookup-generation": {
+      "relpath": "docs/readiness/2026-09-12-slurp-native-candidate-source-v1/lookup-generation-plan-v1.json",
+      "sha256": "cfee938f79e0727cd4afdd4448d4beb9901294d0d16fad5e79eee598f06825a3"
+    }
+  },
+  "registered_at": "2026-09-13T03:27:01.861908+00:00",
+  "schema": "saea-native-candidate-source-registration-v1",
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-native-candidate-source-v1/root-admission-v1.json",
+    "sha256": "9507ea48059ee20bcf7b70ef5847d4d431fbb4c566c498299ef13647fe75f0d5"
+  },
+  "scope": "Owner-authorized Stage-2 bounded system construction on the existing exposed DEV1000 roster. Compare shared one-contact direct execution with optional main-model candidate-contract acquisition followed by joint resolution. This is not isolated evidence for a Top-N commitment effect.",
+  "source_inventory": {
+    "relpath": "docs/readiness/2026-09-12-slurp-native-candidate-source-v1/inventory.json",
+    "sha256": "a5cb4021faab41fb61b96638991ff43fd770ca23cd56e36a19e8dfc2885ce6a1"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/agentic-native-tool-loop-v1"
+}

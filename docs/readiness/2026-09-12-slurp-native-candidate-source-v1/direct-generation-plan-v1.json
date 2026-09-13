@@ -1,0 +1,43 @@
+{
+  "cell": "slurp-native-candidate-source-direct-v1",
+  "composed_config_hash": "500e2be24064572e100160af3f9a908e0da1d1ae5fef5ae1758daac831ec1161",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-candidate-source-direct-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "baseline-reproduction",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1050,
+    "planned_speech_audio_seconds": 3500,
+    "protocol_hash": "980345971798e549a8bda6e61609d777d54e3150081d9c66ae2cc0e6d093ae2f",
+    "run_id": "SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-DIRECT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-train-a-incumbent-reward-source-np4-v1",
+  "experiment": "slurp-native-candidate-source-direct-v1",
+  "family_budget": {
+    "cold_asr_calls_total": 0,
+    "encoder_calls_total": 0,
+    "fit_contacts_total": 9003,
+    "fit_speech_audio_seconds_total": 9000,
+    "generation_calls_total": 3150,
+    "gpu_hours_fit_inclusive": 3.0,
+    "internal_candidate_tool_invocations_total": 1000,
+    "speech_audio_seconds_total": 10500
+  },
+  "final_source_binding": "The launch receipt must bind the final clean commit, this plan hash and complete resident identity before any contact.",
+  "fit_protocol": "Before each actual active wave, contact GET /props once and the three real fit endpoints per active row. Render complete native call/result history using the same request builder and send those fitted bytes. No separate approximate capacity calls.",
+  "protocol_hash": "980345971798e549a8bda6e61609d777d54e3150081d9c66ae2cc0e6d093ae2f",
+  "quality_read_gate": "Freeze the analysis recipe before semantic reads. Seal both complete sources and run each complete official scorer once before paired quality release.",
+  "registered_at": "2026-09-13T03:27:01.861908+00:00",
+  "retry_policy": "Only the shared registered mechanical retry policy within the cap; no silent new attempt, service restart, adaptive prompt or output cap change. One named recovery at most after root diagnosis.",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_eligibility": {
+    "decision_id": "SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-ADMISSION-V1",
+    "relpath": "coordination/slurp-native-candidate-source-v1/root-admission-v1.json",
+    "sha256": "9507ea48059ee20bcf7b70ef5847d4d431fbb4c566c498299ef13647fe75f0d5"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/agentic-native-tool-loop-v1"
+}
