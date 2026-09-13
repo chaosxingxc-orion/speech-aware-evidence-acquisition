@@ -28,6 +28,7 @@ from typing import Literal, Protocol
 from openjiuwen.core.context_engine import ModelContext
 from openjiuwen.core.foundation.llm.schema.message import AssistantMessage
 from openjiuwen.core.foundation.llm.schema.tool_call import ToolCall
+from openjiuwen.core.foundation.tool.base import Tool
 from openjiuwen.core.graph.executable import Input, Output
 from openjiuwen.core.runner.callback.errors import AbortError
 from openjiuwen.core.session.node import Session
@@ -471,6 +472,22 @@ class _RoleAuthorityRail(AgentRail):
             raise AbortError("role tool authority rejection", cause=cause)
 
 
+class _InstanceOwnedAbility(Tool):
+    """Bind one caller ability to this role node without mutating its card."""
+
+    def __init__(self, ability: Tool) -> None:
+        card = ability.card.model_copy(deep=True, update={"stateless": False})
+        super().__init__(card)
+        self._ability = ability
+
+    async def invoke(self, inputs, **kwargs):
+        return await self._ability.invoke(inputs, **kwargs)
+
+    async def stream(self, inputs, **kwargs):
+        async for item in self._ability.stream(inputs, **kwargs):
+            yield item
+
+
 class NativeRoleNode(WorkflowComponent):
     """One OpenJiuwen ReAct role that returns actor output without delivery."""
 
@@ -493,9 +510,11 @@ class NativeRoleNode(WorkflowComponent):
         if spec.role_kind in _TOOL_FREE_ROLE_KINDS and tool_allowed is not None:
             raise ValueError(f"{spec.role_kind} role must be tool-free")
         names: list[str] = []
+        self._invocation_namespace = uuid.uuid4().hex
+        framework_agent_id = f"{spec.role_id}-{self._invocation_namespace}"
         self._agent = ReActAgent(
             card=AgentCard(
-                id=spec.role_id,
+                id=framework_agent_id,
                 name=spec.role_id,
                 description=f"Native {spec.role_kind} role node.",
             )
@@ -526,7 +545,12 @@ class NativeRoleNode(WorkflowComponent):
             if name in names:
                 raise ValueError(f"duplicate ability name {name!r}")
             names.append(name)
-            added = self._agent.ability_manager.add_ability(card, ability)
+            if not isinstance(ability, Tool):
+                raise ValueError("every ability must be an OpenJiuwen Tool")
+            owned_ability = _InstanceOwnedAbility(ability)
+            added = self._agent.ability_manager.add_ability(
+                owned_ability.card, owned_ability
+            )
             if not added.added:
                 raise ValueError(f"OpenJiuwen refused ability {name!r}")
         if tuple(names) != spec.ability_names:
@@ -542,7 +566,6 @@ class NativeRoleNode(WorkflowComponent):
         )
         self._rail_registered = False
         self._registration_lock = asyncio.Lock()
-        self._invocation_namespace = uuid.uuid4().hex
         self._invocation_serial = itertools.count(1)
 
     async def _ensure_rail(self) -> None:
