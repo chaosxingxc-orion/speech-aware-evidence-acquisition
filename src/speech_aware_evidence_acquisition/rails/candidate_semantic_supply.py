@@ -57,6 +57,7 @@ _SPEC_KEYS = frozenset(
         "max_total_values",
     }
 )
+_OPTIONAL_SPEC_KEYS = frozenset({"compact_source_phase"})
 _SOURCE_KEYS = frozenset(
     {"schema", "builder_policy_id", "source_split_identity_hash", "rows"}
 )
@@ -89,6 +90,7 @@ class CandidateSemanticSupplySpec:
     max_candidates: int
     max_values_per_candidate: int
     max_total_values: int
+    compact_source_phase: str | None = None
 
     def validate(self, program: PhaseProgram) -> "CandidateSemanticSupplySpec":
         program.validate()
@@ -100,6 +102,14 @@ class CandidateSemanticSupplySpec:
         if phases.index(self.candidate_state_phase) >= phases.index(self.phase):
             raise CandidateSemanticSupplyError(
                 "candidate supply phase must be later than candidate_state_phase"
+            )
+        if self.compact_source_phase is not None and (
+            self.compact_source_phase != self.candidate_state_phase
+            or ":" in self.compact_source_phase
+            or any(character.isspace() for character in self.compact_source_phase)
+        ):
+            raise CandidateSemanticSupplyError(
+                "compact_source_phase must equal the candidate_state_phase name"
             )
         if program.phase(self.phase).knowledge != "supplied":
             raise CandidateSemanticSupplyError(
@@ -145,7 +155,7 @@ class CandidateSemanticSupplySpec:
         return self
 
     def as_json(self) -> dict[str, object]:
-        return {
+        result = {
             "phase": self.phase,
             "store_id": self.store_id,
             "provider": self.provider,
@@ -156,6 +166,9 @@ class CandidateSemanticSupplySpec:
             "max_values_per_candidate": self.max_values_per_candidate,
             "max_total_values": self.max_total_values,
         }
+        if self.compact_source_phase is not None:
+            result["compact_source_phase"] = self.compact_source_phase
+        return result
 
 
 def load_candidate_semantic_supply_specs(
@@ -178,7 +191,9 @@ def load_candidate_semantic_supply_specs(
                 raise CandidateSemanticSupplyError(
                     "candidate_supply entries must be objects"
                 )
-            if set(raw) != _SPEC_KEYS:
+            if not _SPEC_KEYS <= set(raw) or set(raw) - (
+                _SPEC_KEYS | _OPTIONAL_SPEC_KEYS
+            ):
                 raise CandidateSemanticSupplyError(
                     f"candidate_supply[{phase!r}] has the wrong fields"
                 )
@@ -196,6 +211,7 @@ def load_candidate_semantic_supply_specs(
                 max_candidates=raw["max_candidates"],
                 max_values_per_candidate=raw["max_values_per_candidate"],
                 max_total_values=raw["max_total_values"],
+                compact_source_phase=raw.get("compact_source_phase"),
             ).validate(program)
             specs[phase] = spec
     return MappingProxyType(specs)
@@ -305,6 +321,8 @@ def build_candidate_semantic_supply(
 ):
     """Build automatic per-phase supply and its mutable run receipt."""
 
+    from .knowledge_stores import qualify_id  # noqa: PLC0415
+
     if not specs:
         return None
     indexes: dict[str, Mapping[str, tuple[str, ...]]] = {}
@@ -343,6 +361,7 @@ def build_candidate_semantic_supply(
             max_candidates=spec.max_candidates,
             max_values_per_candidate=spec.max_values_per_candidate,
             max_total_values=spec.max_total_values,
+            compact_source_phase=spec.compact_source_phase,
         ).adopt(
             store.snapshot,
             policy_id=store.snapshot.builder_policy_id,
@@ -371,35 +390,46 @@ def build_candidate_semantic_supply(
                 "candidate provider produced no selection audit"
             )
         audit.update(binding.store_receipt(spec.store_id))
-        audit["selection_receipt_sha256"] = content_hash(audit)
-        local_supply = PhaseSupply(
-            rank_result=provider.last_rank_result(),
-            fusion_decision=decision,
-            action_target_ref=(
-                f"{spec.provider}:{spec.rank_policy}:{spec.fuse_policy}:"
-                f"selection-receipt={audit['selection_receipt_sha256']}"
-            ),
-        ).validate()
-        qualified = (
-            None
-            if not decision.selected_value_ids
-            else binding.qualify_supply(spec.store_id, local_supply, query_state)
+        selected_ids = tuple(
+            qualify_id(spec.store_id, value_id)
+            for value_id in decision.selected_value_ids
         )
+        overlap = set(selected_ids) & set(query_state.retrieved_value_ids)
+        if overlap and overlap != set(selected_ids):
+            raise CandidateSemanticSupplyError(
+                "candidate supply partially overlaps visible values; refuse a changed dose"
+            )
+        disposition = (
+            "already-visible" if overlap else "acquired" if selected_ids else "no-mapping"
+        )
+        query_hash = query_state.content_hash()
         audit.update(
             {
-                "qualified_selected_value_ids": (
-                    []
-                    if qualified is None
-                    else list(qualified.fusion_decision.selected_value_ids)
-                ),
+                "query_state_sha256": query_hash,
+                "qualified_selected_value_ids": list(selected_ids),
+                "supply_disposition": disposition,
             }
         )
-        audit_key = f"{phase}:{sample_id}"
+        audit["selection_receipt_sha256"] = content_hash(audit)
+        qualified = None
+        if disposition == "acquired":
+            local_supply = PhaseSupply(
+                rank_result=provider.last_rank_result(),
+                fusion_decision=decision,
+                action_target_ref=(
+                    f"{spec.provider}:{spec.rank_policy}:{spec.fuse_policy}:"
+                    f"selection-receipt={audit['selection_receipt_sha256']}"
+                ),
+            ).validate()
+            qualified = binding.qualify_supply(spec.store_id, local_supply, query_state)
+        # Revisions retain the same bounded cards. Do not expose the next cards
+        # by filtering already-visible values before candidate selection.
+        audit_key = f"{phase}:{sample_id}:{query_hash}"
         with audit_lock:
             prior = audits.get(audit_key)
             if prior is not None and prior != audit:
                 raise CandidateSemanticSupplyError(
-                    f"candidate selection for {audit_key!r} changed within one run"
+                    f"candidate selection for {audit_key!r} changed within one query"
                 )
             audits[audit_key] = audit
         return qualified

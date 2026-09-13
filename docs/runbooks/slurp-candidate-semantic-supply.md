@@ -79,3 +79,25 @@ still retains the full task contract. The mechanism does not decide the
 intent, infer slot values, enforce slot presence, or introduce a fallback
 candidate. It performs no preparation release, model contact, scoring, or
 experiment execution.
+
+## Native compact state and repeated Solver visits
+
+Set `compact_source_phase` to the same phase as `candidate_state_phase` only
+when the source is the native compact `{candidates}` response. The omitted
+default still requires a canonical document with its sample identity. Compact
+consumption verifies the raw response hash, phase kind, and shared-sealer
+phase/sample state ID before using the existing canonicalizer. It never repairs
+IDs, fills missing candidates, removes duplicates, or rewrites sealed bytes.
+
+Record each supply decision by target phase, sample, and exact query-state hash.
+A Solver revision that already sees the entire selected card set retains it
+with an `already-visible` receipt and no new acquisition. Refuse partial overlap;
+do not refill from later cards on each revision. This preserves the configured
+knowledge dose across the bounded episode.
+
+Keep the common task instruction role-neutral. Use the role's own output
+contract; in particular, Perception emits complete scenario_action candidate
+IDs and only Solver emits final scenario/action/entity JSON. Do not attach a
+Perception-only state fill to a Solver's immediate predecessor: on revision,
+that predecessor is Planner. Candidate supply selects the configured Perception
+source from the source-bound trajectory instead.

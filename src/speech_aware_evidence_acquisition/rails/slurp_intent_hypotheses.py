@@ -359,8 +359,15 @@ def parse_slurp_intent_hypothesis_state(
     expected_sample_id: str,
     legal_intent_ids: Iterable[str],
     max_candidates: int,
+    compact_source_phase: str | None = None,
 ) -> SlurpIntentHypothesisState:
-    """Validate an artifact and its exact source-response content binding."""
+    """Consume raw state without changing its sealed bytes or source hash.
+
+    The default requires the canonical document, including its sample identity.
+    Compact native responses require an explicit source phase and the shared
+    sealer's phase/sample identity. This local check complements, rather than
+    replaces, the runner's per-sample custody or an external manifest verifier.
+    """
 
     try:
         artifact.validate()
@@ -377,10 +384,37 @@ def parse_slurp_intent_hypothesis_state(
         raise SlurpIntentHypothesisError(
             "hypothesis content does not match its source response SHA-256"
         )
+    content = artifact.content
+    legal = _legal_ids(legal_intent_ids)
+    if compact_source_phase is not None:
+        if (
+            not isinstance(compact_source_phase, str)
+            or not compact_source_phase
+            or ":" in compact_source_phase
+            or any(character.isspace() for character in compact_source_phase)
+        ):
+            raise SlurpIntentHypothesisError(
+                "compact_source_phase must be one non-empty phase name"
+            )
+        sample_id = _text(expected_sample_id, field="expected_sample_id")
+        sealed_id = f"{compact_source_phase}:{sample_id}"
+        if artifact.state_kind != f"phase:{compact_source_phase}" or not (
+            artifact.state_id == sealed_id
+            or artifact.state_id.endswith(f":{sealed_id}")
+        ):
+            raise SlurpIntentHypothesisError(
+                "compact hypothesis state must bind the configured phase and sample_id"
+            )
+        content = canonicalize_slurp_intent_hypothesis_response(
+            content,
+            sample_id=sample_id,
+            legal_intent_ids=legal,
+            max_candidates=max_candidates,
+        )
     return parse_slurp_intent_hypothesis_content(
-        artifact.content,
+        content,
         expected_sample_id=expected_sample_id,
-        legal_intent_ids=legal_intent_ids,
+        legal_intent_ids=legal,
         max_candidates=max_candidates,
     )
 
@@ -391,10 +425,15 @@ class SlurpIntentHypothesisStateFill:
 
     legal_intent_ids: frozenset[str]
     max_candidates: int
+    compact_source_phase: str | None
 
-    def __init__(self, *, legal_intent_ids: Iterable[str], max_candidates: int):
+    def __init__(
+        self, *, legal_intent_ids: Iterable[str], max_candidates: int,
+        compact_source_phase: str | None = None,
+    ):
         object.__setattr__(self, "legal_intent_ids", _legal_ids(legal_intent_ids))
         object.__setattr__(self, "max_candidates", max_candidates)
+        object.__setattr__(self, "compact_source_phase", compact_source_phase)
         if (
             isinstance(max_candidates, bool)
             or not isinstance(max_candidates, int)
@@ -416,6 +455,7 @@ class SlurpIntentHypothesisStateFill:
             expected_sample_id=sample_id,
             legal_intent_ids=self.legal_intent_ids,
             max_candidates=self.max_candidates,
+            compact_source_phase=self.compact_source_phase,
         )
         lines = [
             "Retained intent hypotheses are ranked alternatives, not multiple task outputs."

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from dataclasses import replace
 
 import pytest
 
@@ -277,7 +278,10 @@ def test_selection_receipt_logs_candidate_state_selected_ignored_and_absent_mapp
     artifact = _artifact("s1", ("alpha", "delta"))
 
     supply = router.automatic_for_phase("solve", _context(binding, artifact))
-    audit = router.receipt["candidate_selections"]["solve:s1"]
+    audit = next(
+        audit for key, audit in router.receipt["candidate_selections"].items()
+        if key.startswith("solve:s1:")
+    )
 
     assert audit["candidate_ids"] == ["alpha", "delta"]
     assert audit["candidate_state_id"] == artifact.state_id
@@ -314,7 +318,10 @@ def test_one_candidate_stays_one_candidate_and_missing_source_state_is_refused(
     supply = router.automatic_for_phase(
         "solve", _context(binding, _artifact("s1", ("gamma",)))
     )
-    audit = router.receipt["candidate_selections"]["solve:s1"]
+    audit = next(
+        audit for key, audit in router.receipt["candidate_selections"].items()
+        if key.startswith("solve:s1:")
+    )
     assert audit["candidate_ids"] == ["gamma"]
     assert len(supply.fusion_decision.selected_value_ids) == 1
 
@@ -322,7 +329,10 @@ def test_one_candidate_stays_one_candidate_and_missing_source_state_is_refused(
         "solve", _context(binding, _artifact("s2", ("delta",)), sample_id="s2")
     )
     assert absent is None
-    absent_audit = router.receipt["candidate_selections"]["solve:s2"]
+    absent_audit = next(
+        audit for key, audit in router.receipt["candidate_selections"].items()
+        if key.startswith("solve:s2:")
+    )
     assert absent_audit["selected_value_ids"] == []
     assert absent_audit["mappings"][0]["status"] == "absent"
 
@@ -408,3 +418,86 @@ def test_candidate_supply_requires_a_later_supplied_phase_and_exact_known_fields
             data_root=tmp_path / "wrong-phase",
             legal_candidate_ids=legal,
         )
+
+
+def test_native_compact_candidates_reach_released_cards_only_when_configured(tmp_path):
+    config, legal = _config(tmp_path)
+    source = _artifact("s1", ("beta", "alpha"))
+    raw = json.dumps({"candidates": json.loads(source.content)["candidates"]})
+    source = replace(
+        source, content=raw,
+        source_response_sha256=hashlib.sha256(raw.encode()).hexdigest(),
+    )
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    strict = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal,
+    )
+    with pytest.raises(CandidateSemanticSupplyError, match="exactly"):
+        strict.automatic_for_phase("solve", _context(binding, source))
+    spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
+    spec["compact_source_phase"] = "hypotheses"
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal,
+    )
+    supply = router.automatic_for_phase("solve", _context(binding, source))
+    assert supply is not None
+    assert len(supply.fusion_decision.selected_value_ids) == 2
+    assert source.content == raw
+
+
+def test_compact_source_phase_cannot_change_the_configured_candidate_source(tmp_path):
+    config, legal = _config(tmp_path)
+    spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
+    spec["compact_source_phase"] = "solve"
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    with pytest.raises(CandidateSemanticSupplyError, match="compact_source_phase"):
+        build_knowledge_store_supply(
+            binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal,
+        )
+
+
+def test_solver_revision_retains_bounded_cards_and_records_each_query(tmp_path):
+    config, legal = _config(tmp_path)
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal,
+    )
+    initial = _context(binding, _artifact("s1", ("alpha", "beta")))
+    first = router.automatic_for_phase("solve", initial)
+    selected = first.fusion_decision.selected_value_ids
+    revised = replace(
+        initial,
+        query_state=replace(
+            initial.query_state, loop_step=2,
+            retrieved_value_ids=selected,
+            visible_facet_ids=first.fusion_decision.supporting_facet_ids,
+        ).validate(),
+    )
+    assert router.automatic_for_phase("solve", revised) is None
+    audits = list(router.receipt["candidate_selections"].values())
+    assert len(audits) == 2
+    assert {a["supply_disposition"] for a in audits} == {"acquired", "already-visible"}
+    assert len({a["query_state_sha256"] for a in audits}) == 2
+    assert all(a["qualified_selected_value_ids"] == list(selected) for a in audits)
+    assert router.automatic_for_phase("solve", revised) is None
+    assert len(router.receipt["candidate_selections"]) == 2
+
+
+def test_revision_cannot_partially_overlap_or_reveal_next_cards(tmp_path):
+    config, legal = _config(tmp_path)
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal,
+    )
+    initial = _context(binding, _artifact("s1", ("alpha", "beta")))
+    first = router.automatic_for_phase("solve", initial)
+    changed = replace(
+        initial,
+        query_state=replace(
+            initial.query_state, loop_step=1,
+            retrieved_value_ids=first.fusion_decision.selected_value_ids[:1],
+        ).validate(),
+    )
+    with pytest.raises(CandidateSemanticSupplyError, match="partially overlaps"):
+        router.automatic_for_phase("solve", changed)

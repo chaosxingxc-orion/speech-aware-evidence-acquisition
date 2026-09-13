@@ -324,3 +324,89 @@ def test_projection_does_not_relax_historical_duplicate_rejection():
             legal_intent_ids=LEGAL,
             max_candidates=3,
         )
+
+
+@pytest.mark.parametrize("namespace", [None, "native:request-7"])
+def test_compact_state_consumption_is_explicit_and_preserves_raw_custody(namespace):
+    from speech_aware_evidence_acquisition.rails.controllers import seal_phase_response_state
+
+    raw = _compact_response(*_payload()["candidates"])
+    artifact = seal_phase_response_state(
+        phase_name="hypotheses", sample_id=SAMPLE_ID,
+        state_content=raw, raw_response_text=raw,
+        source_query_state_sha256="1" * 64,
+        producer_policy_id="phase-joint-intent-v1", state_namespace=namespace,
+    )
+    original_hash = artifact.content_hash()
+    with pytest.raises(SlurpIntentHypothesisError, match="exactly"):
+        parse_slurp_intent_hypothesis_state(
+            artifact, expected_sample_id=SAMPLE_ID,
+            legal_intent_ids=LEGAL, max_candidates=3,
+        )
+    parsed = parse_slurp_intent_hypothesis_state(
+        artifact, expected_sample_id=SAMPLE_ID,
+        legal_intent_ids=LEGAL, max_candidates=3,
+        compact_source_phase="hypotheses",
+    )
+    assert parsed.sample_id == SAMPLE_ID
+    assert [item.intent_id for item in parsed.candidates] == [
+        "weather_query", "transport_taxi",
+    ]
+    rendered = SlurpIntentHypothesisStateFill(
+        legal_intent_ids=LEGAL, max_candidates=3,
+        compact_source_phase="hypotheses",
+    ).render_state(artifact, sample_id=SAMPLE_ID)
+    assert "weather_query" in rendered and "transport_taxi" in rendered
+    assert artifact.content == raw
+    assert artifact.content_hash() == original_hash
+    assert artifact.source_response_sha256 == hashlib.sha256(raw.encode()).hexdigest()
+
+
+@pytest.mark.parametrize(
+    "overrides,source_phase,match",
+    [
+        ({"state_id": "hypotheses:another-sample"}, "hypotheses", "sample_id"),
+        ({"state_kind": "phase:solver"}, "hypotheses", "phase"),
+        ({"source_response_sha256": "b" * 64}, "hypotheses", "source response"),
+        ({}, "other-phase", "phase"),
+        ({}, "hypotheses:slurp", "phase name"),
+        ({}, "", "phase name"),
+        ({}, True, "phase name"),
+    ],
+)
+def test_compact_consumption_rejects_wrong_sample_phase_and_raw_hash(
+    overrides, source_phase, match
+):
+    raw = _compact_response(*_payload()["candidates"])
+    artifact = replace(
+        _state(), content=raw,
+        source_response_sha256=hashlib.sha256(raw.encode()).hexdigest(),
+    )
+    artifact = replace(artifact, **overrides)
+    with pytest.raises(SlurpIntentHypothesisError, match=match):
+        parse_slurp_intent_hypothesis_state(
+            artifact, expected_sample_id=SAMPLE_ID,
+            legal_intent_ids=LEGAL, max_candidates=3,
+            compact_source_phase=source_phase,
+        )
+
+
+@pytest.mark.parametrize(
+    "candidates,match",
+    [
+        ([{**_payload()["candidates"][0], "intent_id": "query"}], "not legal"),
+        ([_payload()["candidates"][0]] * 2, "unique"),
+    ],
+)
+def test_compact_consumption_never_repairs_candidate_ids_or_duplicates(candidates, match):
+    raw = _compact_response(*candidates)
+    artifact = replace(
+        _state(), content=raw,
+        source_response_sha256=hashlib.sha256(raw.encode()).hexdigest(),
+    )
+    with pytest.raises(SlurpIntentHypothesisError, match=match):
+        parse_slurp_intent_hypothesis_state(
+            artifact, expected_sample_id=SAMPLE_ID,
+            legal_intent_ids=LEGAL, max_candidates=3,
+            compact_source_phase="hypotheses",
+        )

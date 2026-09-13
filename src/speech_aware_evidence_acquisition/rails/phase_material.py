@@ -248,7 +248,9 @@ PHASE_STATE_FILLS.register(
 )
 
 
-def _slurp_intent_hypotheses_state_fill(*, max_candidates: int):
+def _slurp_intent_hypotheses_state_fill(
+    *, max_candidates: int, compact_source_phase: str | None = None
+):
     """Build the source-bound ranked-alternative view from TRAIN legal IDs."""
 
     from ..data.lock import data_root, load_lock, umbrella_lock_path  # noqa: PLC0415
@@ -266,7 +268,8 @@ def _slurp_intent_hypotheses_state_fill(*, max_candidates: int):
         f"{scenario}_{action}" for scenario, action in inventory.pairs
     }
     return SlurpIntentHypothesisStateFill(
-        legal_intent_ids=legal_intent_ids, max_candidates=max_candidates
+        legal_intent_ids=legal_intent_ids, max_candidates=max_candidates,
+        compact_source_phase=compact_source_phase,
     )
 
 
