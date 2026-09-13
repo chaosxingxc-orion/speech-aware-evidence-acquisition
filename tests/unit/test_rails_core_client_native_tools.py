@@ -374,6 +374,34 @@ def test_native_arm_rejects_duplicate_names_in_registered_superset(tmp_path):
         )
 
 
+def test_registered_superset_is_immune_to_nested_caller_mutation(tmp_path):
+    world = _World(tmp_path)
+    supplied = json.loads(json.dumps(_TOOLS))
+    admitted = json.loads(json.dumps(_TOOLS))
+    client, _, transport = _client(
+        world, tmp_path, arm="bare-core-native-tools", tool_schemas=supplied,
+    )
+    admitted_hash = _tool_schemas_sha256(admitted)
+    supplied[0]["function"]["description"] = "Changed after admission."
+    supplied[0]["function"]["parameters"]["properties"]["zone"]["type"] = "integer"
+
+    prepared = client.prepare_request(
+        _zero_supply_messages(world.media_relpath("s1")),
+    )
+    exposed = prepared.as_payload()
+    exposed["tool_schemas"][0]["function"]["description"] = "Changed payload copy."
+    client.complete_prepared_with_metadata(prepared)
+    client.complete(
+        _zero_supply_messages(world.media_relpath("s2")),
+        tool_names=("turnOnLight",),
+    )
+
+    assert transport.calls[0]["tool_schemas"] == admitted
+    assert transport.calls[1]["tool_schemas"] == [admitted[0]]
+    assert client.timings[0].tool_schemas_sha256 == admitted_hash
+    assert client.close()["tool_schemas_sha256"] == admitted_hash
+
+
 # ---------------------------------------------------------------------------
 # payload byte-identity: packet path (real D2 arm) vs speech-feature-query
 # ---------------------------------------------------------------------------
