@@ -8,7 +8,9 @@ from dataclasses import dataclass, field
 
 from ...core.model.native_framework_history import framework_contact_instruction
 from ...rails.core_client import CoreCompletion, FrozenCoreClient, PreparedCoreRequest
-from .native_roles import NativeRoleContactContext, NativeRoleModelRequest
+from .native_roles import (
+    FROZEN_CORE_CALLBACK_MODEL, NativeRoleContactContext, NativeRoleModelRequest,
+)
 
 
 class NativeSpeechRequestError(ValueError):
@@ -171,7 +173,11 @@ class MeteredNativeSpeechRequest:
             raise NativeSpeechRequestError("this role binding requires sequential native calls")
         # The registered flight owns decoding settings. Framework defaults
         # may repeat them, but cannot silently change the actual request.
-        for key, value in request.decoding_controls.items():
+        framework_controls = dict(request.decoding_controls)
+        if "model" in framework_controls:
+            if framework_controls.pop("model") != FROZEN_CORE_CALLBACK_MODEL:
+                raise NativeSpeechRequestError("framework model routing differs from the frozen callback")
+        for key, value in framework_controls.items():
             if key not in decoding or decoding[key] != value:
                 raise NativeSpeechRequestError("framework decoding override is not registered: " + key)
         decoding.update(tool_choice=expected_choice, parallel_tool_calls=False)
@@ -213,7 +219,7 @@ class MeteredNativeSpeechRequest:
             "messages": framework,
             "tool_schemas": list(request.tool_schemas),
             "visible_tool_names": list(request.visible_tool_names),
-            "decoding_controls": dict(request.decoding_controls),
+            "decoding_controls": framework_controls,
         })
         return PreparedNativeRoleContact(prepared, role_bytes, _bytes(body), self._owner)
 
