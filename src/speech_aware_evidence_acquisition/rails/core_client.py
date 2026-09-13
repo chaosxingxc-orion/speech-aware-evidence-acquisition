@@ -71,11 +71,55 @@ from ..core.model import (
     load_speech_feature_packets,
 )
 from ..core.model.binding import _PayloadBindingMixin
+from ..core.model.request_types import CoreResponse
 from ..core.model.slices import SliceRecord
 from ..core.tracing import DispatchingSink, TraceBuffer, TraceSink
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
 from .errors import RailsError
 from .knowledge import AgentStateArtifact
+
+
+@dataclass(frozen=True)
+class CoreCompletion:
+    """An immutable response bound to one actual adapter request.
+
+    Native call bytes are retained without interpreting malformed arguments.
+    Consumers receive independent decoded copies and must validate the binding
+    before deciding whether this response authorizes an internal tool action.
+    Historical text completions do not create or expose this object.
+    """
+
+    text: str
+    request_id: str
+    sample_id: str
+    agent_contact_id: str | None
+    request_sha256: str
+    response_sha256: str
+    response_text_sha256: str
+    tool_calls_json: bytes = field(repr=False)
+
+    @property
+    def tool_calls(self) -> object:
+        """Return exact transport-forwarded calls, never repaired arguments."""
+        return json.loads(self.tool_calls_json)
+
+    @property
+    def tool_calls_sha256(self) -> str:
+        return hashlib.sha256(self.tool_calls_json).hexdigest()
+
+    def assert_binding(
+        self, *, sample_id: str, agent_contact_id: str | None,
+        response_text: str,
+    ) -> None:
+        if (
+            self.sample_id != sample_id
+            or self.agent_contact_id != agent_contact_id
+            or self.text != response_text
+            or not isinstance(response_text, str)
+            or hashlib.sha256(response_text.encode("utf-8")).hexdigest()
+            != self.response_text_sha256
+        ):
+            raise FrozenCoreClientError("completion binding does not match this contact")
 
 
 @dataclass(frozen=True)
@@ -1585,6 +1629,15 @@ class FrozenCoreClient:
         )
         return self._complete_payload(payload)
 
+    def complete_with_metadata(
+        self, messages: Sequence[Mapping[str, object]], **kwargs: object,
+    ) -> CoreCompletion:
+        """Send once through the ordinary builder and preserve response metadata."""
+        if "prepare_only" in kwargs:
+            raise FrozenCoreClientError("prepare_only is internal")
+        payload = self._build_request_payload(messages, **kwargs)
+        return self._completion_metadata(payload, self._dispatch_payload(payload))
+
     def prepare_request(
         self, messages: Sequence[Mapping[str, object]], **kwargs: object,
     ) -> PreparedCoreRequest:
@@ -1618,6 +1671,21 @@ class FrozenCoreClient:
     def complete_prepared(
         self, request: PreparedCoreRequest, *, id_slot: int | None = None,
     ) -> str:
+        """Send the same one-use prepared payload and return historical text."""
+        return self._complete_payload(
+            self._consume_prepared_payload(request, id_slot=id_slot),
+        )
+
+    def complete_prepared_with_metadata(
+        self, request: PreparedCoreRequest, *, id_slot: int | None = None,
+    ) -> CoreCompletion:
+        """Preserve native metadata while consuming the same prepared request."""
+        payload = self._consume_prepared_payload(request, id_slot=id_slot)
+        return self._completion_metadata(payload, self._dispatch_payload(payload))
+
+    def _consume_prepared_payload(
+        self, request: PreparedCoreRequest, *, id_slot: int | None,
+    ) -> dict[str, object]:
         """Send an owned template once, changing only request routing and slot.
 
         Packet bytes are checked again at dispatch because they can change
@@ -1658,9 +1726,34 @@ class FrozenCoreClient:
                 evidence["evidence_id"] = f"{request_id}-supply-{index}"
         if id_slot is not None:
             payload["decoding_params"]["id_slot"] = id_slot
-        return self._complete_payload(payload)
+        return payload
 
     def _complete_payload(self, payload: Mapping[str, object]) -> str:
+        return self._dispatch_payload(payload).text
+
+    @staticmethod
+    def _completion_metadata(
+        payload: Mapping[str, object], response: CoreResponse,
+    ) -> CoreCompletion:
+        contacts = [
+            item["contact_id"] for item in payload["history"]
+            if item.get("role") == "control"
+        ]
+        return CoreCompletion(
+            text=response.text,
+            request_id=payload["request_id"],
+            sample_id=payload["sample_id"],
+            agent_contact_id=contacts[-1] if contacts else None,
+            request_sha256=response.request_sha256,
+            response_sha256=response.response_sha256,
+            response_text_sha256=response.response_text_sha256,
+            tool_calls_json=json.dumps(
+                response.tool_calls, ensure_ascii=False,
+                sort_keys=True, separators=(",", ":"),
+            ).encode("utf-8"),
+        )
+
+    def _dispatch_payload(self, payload: Mapping[str, object]) -> CoreResponse:
         """Keep metering, exposure, transport and timing on the shared adapter."""
         request_id = payload["request_id"]
         sample_id = payload["sample_id"]
@@ -1686,7 +1779,7 @@ class FrozenCoreClient:
                     ),
                 )
             )
-        return response.text
+        return response
 
     def _build_request_payload(
         self,

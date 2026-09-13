@@ -1179,3 +1179,150 @@ def test_failed_prepared_send_cannot_repeat_and_close_discards_unused_templates(
     assert not client._prepared_requests
     with pytest.raises(FrozenCoreClientError, match="after close"):
         client.complete_prepared(unused)
+
+
+class _CompletionMetadataTransport:
+    """Return source-specific native provenance through the real adapter."""
+
+    def __init__(self, tool_calls, *, barrier=None):
+        self.calls = []
+        self.tool_calls = tool_calls
+        self.barrier = barrier
+
+    def __call__(self, request_bytes):
+        payload = json.loads(request_bytes)
+        self.calls.append(payload)
+        if self.barrier is not None:
+            self.barrier.wait(timeout=10)
+        return json.dumps({
+            "text": "answer-" + payload["sample_id"],
+            "usage": {"prompt_tokens": 3, "completion_tokens": 2},
+            "tool_calls": self.tool_calls,
+        }).encode()
+
+
+@pytest.mark.parametrize("prepared", [False, True])
+@pytest.mark.parametrize("tool_calls", [
+    None,
+    [],
+    [{"id": "native-call-1", "type": "function",
+      "function": {"name": "observe_speech", "arguments": "{malformed-json"}}],
+])
+def test_completion_metadata_preserves_native_provenance_and_legacy_wire(
+    tmp_path, prepared, tool_calls,
+):
+    world = _World(tmp_path / "metadata")
+    old_world = _World(tmp_path / "legacy")
+    transport = _CompletionMetadataTransport(tool_calls)
+    old_transport = _CompletionMetadataTransport(tool_calls)
+    client, _, _ = _client(world, tmp_path / "metadata", transport=transport)
+    old_client, _, _ = _client(old_world, tmp_path / "legacy", transport=old_transport)
+    messages = _zero_supply_messages(world.media_relpath("s1"))
+    if prepared:
+        request = client.prepare_request(messages, decoding_params={"max_tokens": 256})
+        assert transport.calls == []
+        reply = client.complete_prepared_with_metadata(request, id_slot=1)
+        with pytest.raises(FrozenCoreClientError, match="consumed"):
+            client.complete_prepared_with_metadata(request, id_slot=1)
+    else:
+        reply = client.complete_with_metadata(
+            messages, decoding_params={"max_tokens": 256, "id_slot": 1},
+        )
+    text = old_client.complete(
+        messages, decoding_params={"max_tokens": 256, "id_slot": 1},
+    )
+    assert transport.calls == old_transport.calls
+    assert reply.text == text == "answer-s1"
+    assert reply.request_id == "rails-0001"
+    assert reply.sample_id == "s1"
+    assert reply.agent_contact_id is None
+    assert reply.tool_calls == tool_calls
+    assert reply.request_sha256 == client.timings[0].request_sha256
+    assert reply.response_sha256 == client.timings[0].response_sha256
+    assert reply.response_text_sha256 == hashlib.sha256(text.encode()).hexdigest()
+    reply.assert_binding(sample_id="s1", agent_contact_id=None, response_text=text)
+    for wrong in [
+        {"sample_id": "s2", "agent_contact_id": None, "response_text": text},
+        {"sample_id": "s1", "agent_contact_id": "foreign", "response_text": text},
+        {"sample_id": "s1", "agent_contact_id": None, "response_text": text + "x"},
+    ]:
+        with pytest.raises(FrozenCoreClientError, match="completion binding"):
+            reply.assert_binding(**wrong)
+    if tool_calls:
+        mutable_copy = reply.tool_calls
+        mutable_copy[0]["function"]["arguments"] = "{}"
+        assert reply.tool_calls == tool_calls
+    client.close()
+    old_client.close()
+
+
+def test_completion_metadata_is_local_to_each_concurrent_response(tmp_path):
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Barrier
+
+    world = _World(tmp_path)
+    transport = _CompletionMetadataTransport(None, barrier=Barrier(2))
+    client, _, _ = _client(world, tmp_path, transport=transport)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        replies = list(pool.map(
+            lambda sample: client.complete_with_metadata(
+                _zero_supply_messages(world.media_relpath(sample)),
+            ),
+            ("s1", "s2"),
+        ))
+    assert [reply.sample_id for reply in replies] == ["s1", "s2"]
+    assert [reply.text for reply in replies] == ["answer-s1", "answer-s2"]
+    assert len({reply.request_id for reply in replies}) == 2
+    assert len({reply.request_sha256 for reply in replies}) == 2
+    for reply in replies:
+        reply.assert_binding(
+            sample_id=reply.sample_id, agent_contact_id=None, response_text=reply.text,
+        )
+    client.close()
+
+
+@pytest.mark.parametrize("prepared", [False, True])
+def test_completion_metadata_binds_actual_native_speech_contact(tmp_path, prepared):
+    world = _World(tmp_path)
+    feature_root, packet, bindings = _speech_feature_world(world, tmp_path)
+    native_calls = [{
+        "id": "call-observe-1", "type": "function",
+        "function": {"name": "observe_speech", "arguments": '{"mode":"asr-transcript"}'},
+    }]
+    transport = _CompletionMetadataTransport(native_calls)
+    client, _, _ = _client(
+        world, tmp_path, transport=transport,
+        arm="speech-feature-query-native-tools",
+        speech_feature_root=feature_root,
+        speech_packet_bindings=bindings,
+        tool_schemas=[{
+            "type": "function",
+            "function": {
+                "name": "observe_speech",
+                "description": "Decode the current speech on demand.",
+                "parameters": {"type": "object", "properties": {
+                    "mode": {"type": "string", "enum": ["asr-transcript"]},
+                }},
+            },
+        }],
+    )
+    arguments = {
+        "speech_feature_sample_id": "s1",
+        "key_representation_id": "speech-key",
+        "matcher_policy_id": "native-agent",
+        "agent_state": (),
+        "agent_contact_id": "decision-1",
+        "contact_instruction": "Answer or request needed evidence.",
+    }
+    if prepared:
+        request = client.prepare_request(_speech_feature_messages(packet), **arguments)
+        reply = client.complete_prepared_with_metadata(request, id_slot=0)
+    else:
+        reply = client.complete_with_metadata(_speech_feature_messages(packet), **arguments)
+    reply.assert_binding(
+        sample_id="s1", agent_contact_id="decision-1", response_text="answer-s1",
+    )
+    assert reply.tool_calls == native_calls
+    assert reply.tool_calls_sha256 == hashlib.sha256(reply.tool_calls_json).hexdigest()
+    assert transport.calls[0]["history"][-1]["contact_id"] == "decision-1"
+    client.close()
