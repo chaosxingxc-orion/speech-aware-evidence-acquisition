@@ -106,9 +106,6 @@
     },
     "schema": "saea-native-episode-config-v1"
   },
-  "pending_preparation": {
-    "prepared_phase_supply": "Before any registration, create a fresh selection artifact from this exact composed configuration, the DEV-1000 split identity and packet bindings, both named-store release and snapshot pins, the intent-boundary query and facet vector pins, and the implementation identity. Only then add the artifact's concrete relpath and SHA-256 as prepared_phase_supply."
-  },
   "phase_material": {
     "perception": {
       "fill_params": {
@@ -168,6 +165,38 @@
     }
   },
   "policy": "phase-native-candidates-review-revise-v1",
+  "preparation_source_receipts": [
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+      "root": "data",
+      "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/completion.json",
+      "root": "data",
+      "sha256": "ebd60aca7e16e647c750a59370fce8010d55f3b57375d202817a4a08da1f4a5e"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+      "root": "data",
+      "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v1/completion.json",
+      "root": "data",
+      "sha256": "7acb644871b037f7123adec0c8fd7283ab9215d67c12fc0a32748a67a0f9dc51"
+    },
+    {
+      "relpath": "preparation-runs/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/encode-v1/receipt.json",
+      "root": "data",
+      "sha256": "3c152fc086ed1d1858f5b3021a336570d1b68c87f9c3a5abbe16209c009e2653"
+    },
+    {
+      "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-VECTOR-PREPARE-V1/query-dimension-alias.json",
+      "root": "data",
+      "sha256": "f83b5b002d0823de40ac3f52f9a839f83daedf4ecdbbf0606b85f1fc07bd01a8"
+    }
+  ],
   "scorers": [
     "slurp-slu-official",
     "slurp-slu",
@@ -182,5 +211,5 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "DRAFT CHECK-ONLY configuration for a prospective independent complete native system. The task contract keeps the full 60-label SLURP space available. Before the first Perception contact, the shared named-store bootstrap retrieves at most eight supplied intent-boundary values from a sealed speech query; Solver retains the existing candidate-associated slot-contract supply. The bounded Perception prompt and format, native graph, Reviewer-only task-contract tool authority, finite terminal delivery policy, DEV-1000 promoted packets, and sole-Solver answer authority are retained. This draft is neither a closed-flight retry nor a knowledge ablation. It authorizes only structural checks: no model, scoring, ASR, encoder, GPU, registration, ledger, or prepared-selection artifact exists."
+  "what_this_is": "Prospective independent complete native system. The task contract keeps the full 60-label SLURP space available. Before the first Perception contact, the shared named-store bootstrap retrieves at most eight supplied intent-boundary values from the sealed speech-query and released key-vector inputs; Solver retains the existing candidate-associated slot-contract supply. The bounded Perception prompt and format, native graph, Reviewer-only task-contract tool authority, finite terminal delivery policy, DEV-1000 promoted packets, and sole-Solver answer authority are retained. This configuration is not a closed-flight retry or a knowledge ablation. Any execution remains subject to separately completed preparation, root registration, and the final experiment plan."
 }
