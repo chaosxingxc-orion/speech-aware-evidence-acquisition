@@ -41,6 +41,10 @@ from ...data.slurp import SLURP_LOCK_KEY, load_slurp_split
 from ...data.slurp_contract_cache import load_cached_slurp_contract
 from ...reproduction.slurp_scoring import SlotEntity, parse_slu_response, score_slu
 from ..obs import AudioRef, ObsPacket
+from ..slurp_candidate_contracts import (
+    SlurpCandidateContractProvider,
+    build_slurp_candidate_contract_provider,
+)
 from ..task_adapter import TaskAdapter
 
 _INSTRUCTION = (
@@ -94,6 +98,16 @@ class SlurpAdapter(TaskAdapter):
         self._lock = lock
         self._root = Path(root)
         self._repo_root = Path(REPO_ROOT if repo_root is None else repo_root)
+        self._candidate_contracts: SlurpCandidateContractProvider | None = None
+
+    def candidate_contract_provider(self) -> SlurpCandidateContractProvider:
+        """Prepare the TRAIN-only canonical catalog on explicit opt-in."""
+
+        if self._candidate_contracts is None:
+            self._candidate_contracts = build_slurp_candidate_contract_provider(
+                self._lock, self._root
+            )
+        return self._candidate_contracts
 
     def load_split(
         self, split_id: str, *, allow_heldout: bool = False, allow_synthetic: bool = False

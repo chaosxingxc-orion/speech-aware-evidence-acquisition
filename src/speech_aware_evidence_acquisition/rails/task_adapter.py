@@ -41,6 +41,7 @@ import abc
 import hashlib
 from typing import Mapping, Protocol, Sequence, runtime_checkable
 
+from .candidate_contract_lookup import CandidateContractProvider
 from .consumption import ConsumptionTrace, build_consumption_trace
 from .obs import AudioRef, ObsPacket
 from .supply import SupplyPacket
@@ -211,6 +212,17 @@ class TaskAdapter(abc.ABC):
 
     # -- additional non-abstract hooks (owner design: Part B fills these
     # in further; today they carry small, honest defaults) --------------
+
+    def candidate_contract_provider(self) -> CandidateContractProvider | None:
+        """Return this carrier's canonical candidate contracts, when configured.
+
+        The default is exactly no provider. A task adapter may prepare and cache
+        an immutable provider when this hook is explicitly requested before a
+        model run; ordinary historical adapter construction remains free of
+        that task-specific I/O.
+        """
+
+        return None
 
     def strata_of(self, sample: TaskSample) -> str:
         """Which analysis stratum ``sample`` belongs to. Default ``"all"``
