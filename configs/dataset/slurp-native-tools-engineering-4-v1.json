@@ -1,0 +1,51 @@
+{
+  "audio_seconds_total": 10.5955625,
+  "carrier_lock_key": "slurp",
+  "count": 4,
+  "d1_manifest_sha256": "c770b5d4ab5e00393c8eadce8ad95d40a5de7b4ec11a5ee1e1544c7794b7db74",
+  "d1_media_supplement": "receipts/artifacts/d1-slurp-evo-fold-a-v2.json",
+  "d1_media_supplement_sha256": "2b3d22993cfbefa5eee54b883cee23477b9e445e3b74a5e95ed86a327eba8397",
+  "items": [
+    {
+      "audio_seconds": 1.98375,
+      "audio_sha256": "a215777964e40ebaee5a3568ba05a9bec9201af5976cc3e471d47e22df6650a4",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504197557.flac",
+      "packet_id": "slurp/train/000007/audio--1504197557",
+      "sample_id": "slurp:train:000007:audio--1504197557",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 3.968,
+      "audio_sha256": "0406bfcb5f9e2154a5e2786f62eac4b22df71609db068f37fe01436973bc799b",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497557594-headset.flac",
+      "packet_id": "slurp/train/000009/audio-1497557594-headset",
+      "sample_id": "slurp:train:000009:audio-1497557594-headset",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 2.98,
+      "audio_sha256": "a161018123834f7413cff4f41b209c0d2728e154cb8a282ae9c9711f02051d57",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488524781.flac",
+      "packet_id": "slurp/train/000015/audio-1488524781",
+      "sample_id": "slurp:train:000015:audio-1488524781",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 1.6638125,
+      "audio_sha256": "e1e18aeedf18d9b9da5a48356947cfb82b034e1c890d702e837dd636fabb2d41",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490956038.flac",
+      "packet_id": "slurp/train/000023/audio-1490956038",
+      "sample_id": "slurp:train:000023:audio-1490956038",
+      "sample_rate_hz": 16000
+    }
+  ],
+  "runtime_view_sha256": "dd90cdb4078bc9c9e665ed54afd4664639f2d0b11f5d1816145deab9f1e0f2c1",
+  "schema": "saea-speech-native-runtime-view-v1",
+  "seed": 20260906,
+  "source_binding_sha256": "300dc48fe23180c2d69bdd8b2850d7102895d83f02a1c600a5dbea1fe4c4dfd5",
+  "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+  "split_name": "SLURP-NATIVE-TOOLS-ENGINEERING-4-V1",
+  "split_role": "discovery",
+  "status": "MODEL-FREE, LABEL-FREE ENGINEERING INPUT; NO EFFICACY SAMPLE; NOT AN EXPOSURE REGISTRATION",
+  "study": "speech-aware-evidence-acquisition"
+}

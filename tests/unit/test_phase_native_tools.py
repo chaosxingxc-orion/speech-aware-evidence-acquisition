@@ -4,6 +4,7 @@ import json
 from dataclasses import replace
 from types import SimpleNamespace
 import pytest
+from speech_aware_evidence_acquisition.rails import controllers as rc
 from speech_aware_evidence_acquisition.rails.core_client import CoreCompletion
 from speech_aware_evidence_acquisition.rails.knowledge import AgentStateArtifact
 from speech_aware_evidence_acquisition.rails.phase_tools import (
@@ -178,3 +179,47 @@ def test_native_config_requires_all_nonfinal_phases_and_live_custody():
         build_phase_tools(native_config(LIVE), NativeProgram(),
                           snapshot=_knowledge_snapshot(),
                           live_speech_observations=LiveProvider())
+
+
+def test_native_receipt_counts_rejected_requests_without_changing_tool_counts():
+    tool = dispatcher(LIVE, provider=LiveProvider())
+    context = staged_native([])
+    tool("decision-1", "decision-2", context)
+    receipt = tool.receipt()
+    assert receipt["attempts"] == 0 and receipt["completed"] == 0
+    assert receipt["native_rejected_requests"]["count"] == 1
+    assert len(receipt["native_rejected_requests"]["hashes"]) == 1
+
+
+def test_conflicting_duplicate_live_evidence_is_rejected():
+    class ConflictingProvider(LiveProvider):
+        def observe(self, **kwargs):
+            selection = super().observe(**kwargs)
+            if len(self.calls) == 2:
+                visible = dict(selection.visible)
+                visible["transcript"] = "Conflicting transcript."
+                return SpeechObservationSelection(
+                    visible=visible, lineage=selection.lineage
+                )
+            return selection
+
+    provider = ConflictingProvider()
+    tool = dispatcher(LIVE, provider=provider)
+    first_context = staged_native(call())
+    first = tool("decision-1", "decision-2", first_context)
+    second_context = staged_native(
+        call(), phase="decision-2", prior_states=(first.state,)
+    )
+    with pytest.raises(PhaseToolError, match="conflicting"):
+        tool("decision-2", "final", second_context)
+
+
+def test_legacy_dispatcher_receipt_has_no_native_rejection_extension():
+    from test_phase_tools import config as legacy_config
+
+    tool = build_phase_tools(
+        legacy_config("fixed"),
+        rc.default_phase_program("phase-draft-revise-v1"),
+        snapshot=_knowledge_snapshot(),
+    )
+    assert "native_rejected_requests" not in tool.receipt()

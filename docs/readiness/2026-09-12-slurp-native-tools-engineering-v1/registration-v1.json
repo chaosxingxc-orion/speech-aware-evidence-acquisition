@@ -1,0 +1,44 @@
+{
+  "cell": "slurp-native-tools-engineering-4-v1",
+  "composed_config_hash": "cd08d5f1f7a20a64f61930403fcb518d6ae748ec492263c2cb2e84d49a3b1ec4",
+  "engineering_bound": "Four rows, no paired effectiveness claim. Instruction-requested native corroboration proves executable tool use only.",
+  "expected_session_id": "serving-slurp-train-a-incumbent-reward-source-np4-v1",
+  "experiment": "slurp-native-tools-engineering-4-v1",
+  "family_budget": {
+    "asr_speech_audio_seconds_total": 11,
+    "cold_asr_calls_total": 4,
+    "fit_contacts_total": 39,
+    "fit_speech_audio_seconds_total": 32,
+    "generation_calls_total": 12,
+    "generation_speech_audio_seconds_total": 32,
+    "gpu_hours_fit_inclusive": 1.0,
+    "internal_tool_invocations_total": 8
+  },
+  "final_source_binding": "Bind the clean committed checkout and complete resident identity in a separate launch receipt before contact.",
+  "fit_protocol": "Before each actual active wave use one GET /props plus three real fit endpoints per active row; maximum three waves, 39 contacts. Prepared bytes must be the bytes sent. No approximate count is a live capacity receipt.",
+  "plans": {
+    "asr": {
+      "relpath": "docs/readiness/2026-09-12-slurp-native-tools-engineering-v1/asr-plan-v1.json",
+      "sha256": "2f2b382bed89bc9005675b33f3e71696712f8f661674d763a692b63118111cf1"
+    },
+    "fit": {
+      "relpath": "docs/readiness/2026-09-12-slurp-native-tools-engineering-v1/fit-plan-v1.json",
+      "sha256": "39c1b4d942fec294793c9aabb55cc7fb395cb954fc3e540cec863ca17906ffd5"
+    },
+    "generation": {
+      "relpath": "docs/readiness/2026-09-12-slurp-native-tools-engineering-v1/generation-plan-v1.json",
+      "sha256": "60ca98900c33c1560a4f4365b916017617e13d8b2edace4f56d1f83b9e2ae575"
+    }
+  },
+  "protocol_hash": "a86db904fa10553f1f2c7a02a47a7b9000e945d144b9024282a3163a93e2ac57",
+  "quality_read_gate": "Seal all four final outputs before reading semantics or scoring. Run the complete native TRAIN scorer once. Results are engineering diagnostics only.",
+  "registered_at": "2026-09-13T01:12:19.100363+00:00",
+  "retry_policy": "No adaptive rerun, silent recovery, hidden forced tool or service restart. Unused ceiling is not new attempt authority.",
+  "schema": "saea-native-speech-tool-engineering-registration-v1",
+  "scientific_eligibility": {
+    "decision_id": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-ADMISSION-V1",
+    "relpath": "coordination/slurp-native-tools-engineering-v1/root-admission-v1.json",
+    "sha256": "70fcd492aef72391c68d89540567ede1cf89f8911c7434f3c6ce4e9ed811a31a"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/agentic-native-tool-loop-v1"
+}
