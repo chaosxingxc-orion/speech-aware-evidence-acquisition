@@ -25,6 +25,7 @@ from ..core.bundle.raw_contact_source import (
     _load_verified_trace,
     verify_aborted_contact_source,
 )
+from ..core.model.native_framework_history import framework_contact_instruction
 from ..core.roster import read_roster
 from ..core.scoring_receipt import SavedScoreReceiptRef, verify_complete_score_receipt
 from ..data.lock import load_lock
@@ -509,6 +510,25 @@ def _trace_contact_for_state(
         if isinstance(history, list)
         else []
     )
+    control = control_rows[0] if len(control_rows) == 1 else {}
+    control_text = control.get("content")
+    # Perception has no local tools. Compare the complete canonical producer
+    # envelope, whose initial user message carries the phase instruction.
+    expected_control = (
+        framework_contact_instruction(
+            role_id=source_phase, sample_id=sample_id, contact_id=agent_contact_id,
+            messages=[
+                {"role": "system", "content": payload["task_instruction"]},
+                {"role": "user", "content": plan["instruction"]},
+            ],
+            local_tool_result_ids=[],
+        )
+        if isinstance(payload, Mapping)
+        and isinstance(payload.get("task_instruction"), str)
+        and payload["task_instruction"]
+        and isinstance(plan.get("instruction"), str) and plan["instruction"]
+        else None
+    )
     expected_text_sha256 = hashlib.sha256(state.content.encode("utf-8")).hexdigest()
     if (
         not isinstance(payload, Mapping)
@@ -518,7 +538,11 @@ def _trace_contact_for_state(
         or use.get("use_role_id") != source_phase
         or len(control_rows) != 1
         or control_rows[0].get("contact_id") != agent_contact_id
-        or control_rows[0].get("content") != plan.get("instruction")
+        or history[-1] != control
+        or not isinstance(control_text, str)
+        or control_text != expected_control
+        or hashlib.sha256(control_text.encode("utf-8")).hexdigest()
+        != control.get("content_sha256")
         or response.get("text") != state.content
         or response.get("response_text_sha256") != expected_text_sha256
         or response.get("response_text_sha256")

@@ -9,6 +9,9 @@ from types import SimpleNamespace
 import pytest
 
 import speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics_cli as cli
+from speech_aware_evidence_acquisition.core.model.native_framework_history import (
+    framework_contact_instruction,
+)
 from speech_aware_evidence_acquisition.data.splits import prefixed, split_identity_hash
 from speech_aware_evidence_acquisition.rails.hashing import content_hash
 from speech_aware_evidence_acquisition.rails.knowledge import AgentStateArtifact
@@ -242,6 +245,15 @@ def _native_fixture(
         contact_id = f"native-policy:perception:0:{sample_id}"
         request_id = f"rails-{sample_id}"
         instruction = f"perception instruction for {sample_id}"
+        task_instruction = "Synthetic full task contract."
+        control_text = framework_contact_instruction(
+            role_id="perception", sample_id=sample_id, contact_id=contact_id,
+            messages=[
+                {"role": "system", "content": task_instruction},
+                {"role": "user", "content": instruction},
+            ],
+            local_tool_result_ids=[],
+        )
         request_sha256 = hashlib.sha256(f"request:{sample_id}".encode()).hexdigest()
         response_sha256 = hashlib.sha256(f"wire:{sample_id}".encode()).hexdigest()
         trace_records.update(
@@ -250,11 +262,13 @@ def _native_fixture(
                     "payload": {
                         "request_id": request_id,
                         "sample_id": sample_id,
+                        "task_instruction": task_instruction,
                         "history": [
                             {
                                 "role": "control",
                                 "contact_id": contact_id,
-                                "content": instruction,
+                                "content": control_text,
+                                "content_sha256": hashlib.sha256(control_text.encode()).hexdigest(),
                             }
                         ],
                     },
@@ -562,4 +576,43 @@ def test_native_actual_supply_refuses_candidate_spec_or_store_disagreement(
         cli.SlurpTopNAnalysisError,
         match="candidate audit lacks released-store provenance",
     ):
+        cli._native_system_rows(source, bundle, ids, legal_ids=legal_ids)
+
+
+@pytest.mark.parametrize("defect", (
+    "schema", "role", "sample", "contact", "system", "query", "extra_field",
+    "tool_ids", "extra_message", "plain_instruction", "duplicate_json_key",
+    "content_hash", "nonfinal_control",
+))
+def test_native_perception_refuses_framework_control_envelope_drift(tmp_path, defect):
+    ids, legal_ids, config, bundle = _native_fixture(tmp_path)
+    source = config["analysis"]["source_diagnostics"]["native_system_perception_source"]
+    payload = bundle.trace_records["rails-s2/request"]["payload"]
+    control = payload["history"][0]
+    envelope = json.loads(control["content"])
+    if defect in {"schema", "role", "sample", "contact"}:
+        key = {"schema": "schema", "role": "role_id", "sample": "sample_id",
+               "contact": "contact_id"}[defect]
+        envelope[key] = "foreign"
+    elif defect in {"system", "query"}:
+        envelope["messages"][0 if defect == "system" else 1]["content"] = "Changed."
+    elif defect == "extra_field":
+        envelope["unregistered"] = True
+    elif defect == "tool_ids":
+        envelope["local_tool_result_ids"] = ["unexpected-tool"]
+    elif defect == "extra_message":
+        envelope["messages"].append({"role": "assistant", "content": "Extra."})
+    elif defect == "nonfinal_control":
+        payload["history"].append({"role": "agent_state", "content": "Unexpected."})
+    control["content"] = json.dumps(
+        envelope, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    )
+    if defect == "plain_instruction":
+        control["content"] = "perception instruction for s2"
+    elif defect == "duplicate_json_key":
+        control["content"] = '{"role_id":"foreign",' + control["content"][1:]
+    control["content_sha256"] = hashlib.sha256(control["content"].encode()).hexdigest()
+    if defect == "content_hash":
+        control["content_sha256"] = "0" * 64
+    with pytest.raises(cli.SlurpTopNAnalysisError, match="manifest-verified trace"):
         cli._native_system_rows(source, bundle, ids, legal_ids=legal_ids)
