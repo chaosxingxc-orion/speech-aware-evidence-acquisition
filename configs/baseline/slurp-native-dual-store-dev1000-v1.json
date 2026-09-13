@@ -202,6 +202,10 @@
       "sha256": "f83b5b002d0823de40ac3f52f9a839f83daedf4ecdbbf0606b85f1fc07bd01a8"
     }
   ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-V1/phase-supply-associated-values-v1.json",
+    "sha256": "8f44dc4e2d9a51202d7618b89bec47a5b34f6484187302fea7e80f751a1df029"
+  },
   "scorers": [
     "slurp-slu-official",
     "slurp-slu",
