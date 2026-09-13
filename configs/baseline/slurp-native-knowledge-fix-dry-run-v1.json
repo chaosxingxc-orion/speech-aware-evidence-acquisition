@@ -1,0 +1,131 @@
+{
+  "arm": "speech-feature-query-native-tools",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_stores": {
+    "slot-contracts": {
+      "store_role": "slot-contracts",
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/snapshot.json",
+        "sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6"
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+        "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+      },
+      "candidate_supply": {
+        "solver": {
+          "provider": "slurp-candidate-semantic-v1",
+          "rank_policy": "saea-ranked-candidate-round-robin-v1",
+          "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+          "candidate_state_phase": "perception",
+          "max_candidates": 3,
+          "max_values_per_candidate": 16,
+          "max_total_values": 28,
+          "compact_source_phase": "perception"
+        }
+      }
+    }
+  },
+  "native_episode": {
+    "schema": "saea-native-episode-config-v1",
+    "episode_id": "slurp-native-knowledge-fix-dry-run-v1",
+    "max_revisions": 1,
+    "actions": {
+      "accept": "ACCEPT",
+      "revise": "REVISE",
+      "acquire": "ACQUIRE"
+    },
+    "roles": {
+      "perception": {
+        "phase_id": "perception",
+        "max_iterations": 1
+      },
+      "solver": {
+        "phase_id": "solver",
+        "max_iterations": 1
+      },
+      "reviewer": {
+        "phase_id": "reviewer",
+        "max_iterations": 3
+      },
+      "planner": {
+        "phase_id": "planner",
+        "max_iterations": 1
+      }
+    }
+  },
+  "native_contact_fit": {
+    "run_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-FIX-DRY-RUN-FIT-V1",
+    "attempt_id": "attempt-slurp-native-knowledge-fix-dry-run-fit-v1",
+    "contact_cap": 176,
+    "max_speech_packets": 1
+  },
+  "phase_material": {
+    "perception": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_perception_v2.txt",
+      "fill_params": {
+        "id": "slurp-intent-hypotheses-v1",
+        "min_candidates": 1,
+        "max_candidates": 3,
+        "source_catalog": {
+          "data_relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+          "sha256": "3e60268b3f940c3018ab8b8c80ccd988b1d1efd6c5a198929c6af05ba21f8263",
+          "source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201"
+        }
+      },
+      "response_format_id": "slurp-intent-hypotheses-v1",
+      "predecessor_binding": "none",
+      "state_fill": null
+    },
+    "reviewer": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_reviewer_v1.txt",
+      "fill_params": {},
+      "response_format_id": null,
+      "predecessor_binding": "none",
+      "state_fill": null
+    },
+    "planner": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_planner_v1.txt",
+      "fill_params": {},
+      "response_format_id": null,
+      "predecessor_binding": "none",
+      "state_fill": null
+    },
+    "solver": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_solver_v2.txt",
+      "fill_params": {},
+      "response_format_id": null,
+      "predecessor_binding": "none",
+      "state_fill": null
+    }
+  },
+  "phase_tools": {
+    "reviewer": {
+      "mode": "native-tools",
+      "source_authority_role": "reviewer",
+      "allowed_tools": [
+        "saea-tool-task-contract-v1"
+      ],
+      "knowledge_views": [
+        "text"
+      ]
+    }
+  },
+  "policy": "phase-native-candidates-review-revise-v1",
+  "scorers": [],
+  "serving_slot_tokens": 16384,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "Required four-row fix dry run after closing the failed native knowledge flight. Exercise the complete intended native Perception/Solver/Reviewer/Planner episode and full source-bound slot-card supply using the explicit v3 system template. Keep both failed attempts closed and preserve their bytes. Reuse the same four exposed TRAIN rows and resident np4 decoder. No quality scoring, new roster, intent knowledge treatment or selective speech-tool claim. Stop and preserve on failure; no retry under this registration."
+}

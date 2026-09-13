@@ -1,0 +1,185 @@
+{
+  "schema": "saea-native-role-knowledge-fix-dry-run-protocol-v1",
+  "protocol_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-FIX-DRY-RUN-PROTOCOL-V1",
+  "configuration": {
+    "model_fragment": "q4km-mmproj-free-slurp-native-knowledge-proof-np4-max256-v1",
+    "dataset_fragment": "slurp-native-tools-engineering-4-v1",
+    "baseline_fragment": "slurp-native-knowledge-fix-dry-run-v1",
+    "experiment_fragment": "slurp-native-knowledge-fix-dry-run-v1",
+    "composed_config_hash": "cc01b198fd3f3493f38fbff091f46f1e9967de4e2714a629edc8cf24bb19213d",
+    "execution_plan_protocol_hash": "66f90460937d58257c4495e7efcd4d8f5c42073a12d76a5cc0f503bdb1428e54"
+  },
+  "population": {
+    "count": 4,
+    "split_role": "discovery",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "roster": "configs/dataset/slurp-native-tools-engineering-4-v1.json",
+    "no_new_draw": true
+  },
+  "native_episode": {
+    "policy": "phase-native-candidates-review-revise-v1",
+    "max_revisions": 1,
+    "contact_cap_per_sample": 11,
+    "roles": {
+      "perception": 1,
+      "solver": 1,
+      "reviewer": 3,
+      "planner": 1
+    },
+    "tool_scope": {
+      "reviewer": [
+        "saea-tool-task-contract-v1"
+      ],
+      "perception": [],
+      "solver": [],
+      "planner": []
+    },
+    "reviewer_requirement": "The Reviewer prompt instructs one native task-contract call per review. The frozen core originates the function call; the harness does not inject a call.",
+    "acceptance": "All four rows complete. Every Perception state has one through three distinct adapter-legal intent IDs. Before the initial Solver, acquire exactly the complete candidate-associated slot-card union, with raw source/state/snapshot bindings and exact model-facing values. A revision retains the same knowledge dose and original candidates. Reviewer calls remain model-originated, final output custody remains Solver-only. Preserve every malformed, missing, duplicate or failed result; no repair or replay."
+  },
+  "knowledge_stores": {
+    "slot-contracts": {
+      "store_role": "slot-contracts",
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/snapshot.json",
+        "sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6"
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+        "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+      },
+      "candidate_supply": {
+        "solver": {
+          "provider": "slurp-candidate-semantic-v1",
+          "rank_policy": "saea-ranked-candidate-round-robin-v1",
+          "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+          "candidate_state_phase": "perception",
+          "max_candidates": 3,
+          "max_values_per_candidate": 16,
+          "max_total_values": 28,
+          "compact_source_phase": "perception"
+        }
+      }
+    }
+  },
+  "candidate_enum_contract": {
+    "id": "slurp-intent-hypotheses-v1",
+    "min_candidates": 1,
+    "max_candidates": 3,
+    "source_catalog": {
+      "data_relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+      "sha256": "3e60268b3f940c3018ab8b8c80ccd988b1d1efd6c5a198929c6af05ba21f8263",
+      "source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201"
+    }
+  },
+  "candidate_supply_target": "solver",
+  "dynamic_fit": {
+    "mode": "in-generation-per-realized-request",
+    "run_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-FIX-DRY-RUN-FIT-V1",
+    "attempt_id": "attempt-slurp-native-knowledge-fix-dry-run-fit-v1",
+    "max_speech_packets": 1,
+    "endpoint_cap": 176,
+    "formula": "4 roster rows * 11 maximum model contacts * (1 speech packet + 3 tokenizer endpoints)",
+    "separate_pre_run": false
+  },
+  "serving": {
+    "session_id": "serving-slurp-native-knowledge-proof-np4-v1",
+    "runtime_receipt": "docs/receipts/runtime-q4km-mmproj-free.json",
+    "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+    "llama_cpp_build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+    "llama_server_binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "decoder_gguf_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "role": "inference",
+    "lifecycle_injected_argument": "--no-mmproj",
+    "server_args": [
+      "-c",
+      "65536",
+      "-np",
+      "4",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ],
+    "slot_geometry": "4 x 16384",
+    "max_tokens": 256,
+    "new_after_wsl_restart": false,
+    "reuse_existing_e0_receipt": true,
+    "switch_reason": "Preserve complete candidate-associated explanatory values; prospective per-request capacity checks remain mandatory."
+  },
+  "interpretation": {
+    "engineering_only": true,
+    "does_not_assess": [
+      "task quality",
+      "knowledge effectiveness",
+      "dual-store quality",
+      "selective tool benefit",
+      "autonomous trigger quality",
+      "revision effectiveness"
+    ],
+    "retry": "One mandatory four-row diagnostic after flight closure. Stop and preserve on failure; no replay or recovery."
+  },
+  "prompt_files": [
+    {
+      "relpath": "configs/probes/slurp_native_role_context_v3.txt",
+      "sha256": "46e251173ed15591c8e0f1cbc8709c8da20a463624e430031ceba7c46f576190"
+    },
+    {
+      "relpath": "configs/probes/slurp_native_role_perception_v2.txt",
+      "sha256": "bd3b6444ea727506f41dfe852cd586ad30e7c66778434b8f29048559e4257cad"
+    },
+    {
+      "relpath": "configs/probes/slurp_native_role_planner_v1.txt",
+      "sha256": "074bd27fe1ea6005d7b096be875f662e91cfe503a22ea78918bd1f5f876ded51"
+    },
+    {
+      "relpath": "configs/probes/slurp_native_role_reviewer_v1.txt",
+      "sha256": "dce206a20d361b221ea146dc4ff274ba5e08ce4ab1bfbfece662dc7da5012417"
+    },
+    {
+      "relpath": "configs/probes/slurp_native_role_solver_v2.txt",
+      "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+    }
+  ],
+  "policy_document": {
+    "relpath": "configs/policy/phase-native-candidates-review-revise-v1.json",
+    "sha256": "0941a53f3cd943ec6560ed8e755df940a3b752c5ff1341baff9a3b914bc40101"
+  },
+  "accounting": {
+    "model_contact_cap": 44,
+    "dynamic_fit_endpoint_cap": 176,
+    "joint_gpu_hour_cap": 1.0,
+    "speech_audio_seconds_cap": 117,
+    "score_contacts": 0,
+    "observed_calls_not_forced_to_cap": true,
+    "non_neural_knowledge_lookup": "Recorded through named-store supply receipts; no encoder or answering model is added."
+  },
+  "root_admitted_at": "2026-09-13T16:02:14.618075+00:00",
+  "fix_validation": {
+    "closed_predecessor_run_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-PROOF-RECOVERY-V1",
+    "closed_predecessor_receipt": {
+      "relpath": "coordination/slurp-native-knowledge-proof-v1/flight-closure-v1.json",
+      "sha256": "fc44b1f8cc7a21c776724e08a2da0e6a3b6d701f0e037b39fb76a2221f488a86"
+    },
+    "authorization": "AGENTS.md Engineering base and experiment rules: a second failure stops the flight and the fix is proven on a 4-row dry run; owner ongoing goal and GPU authorization.",
+    "correction_commit": "9a775064f2c7214c88ad2d9fc2f0aec1a8d06e22",
+    "model_free_evidence": "Actual NativeRoleNode callback and shared MeteredNativeSpeechRequest.prepare; 7 focused tests passed. Actual full 60-intent render differs only by the v2 terminal LF.",
+    "new_contact_allocation": true,
+    "predecessor_reopened": false,
+    "on_failure": "Stop this diagnostic and preserve; no recovery under this registration."
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schema": "saea-native-contact-fit-execution-plan-v1",
+  "cell": "slurp-native-knowledge-fix-dry-run-v1",
+  "experiment": "slurp-native-knowledge-fix-dry-run-v1",
+  "expected_session_id": "serving-slurp-native-knowledge-proof-np4-v1",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-13-slurp-native-knowledge-fix-dry-run-v1/protocol-v1.json",
+    "sha256": "4432985e03a4f25f814e353fc443891d7cf4c0764e5f3bb7d838b708febccabd"
+  },
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-FIX-DRY-RUN-FIT-V1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "planned_model_calls": 176,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 117,
+    "protocol_hash": "66f90460937d58257c4495e7efcd4d8f5c42073a12d76a5cc0f503bdb1428e54",
+    "attempt_id": "attempt-slurp-native-knowledge-fix-dry-run-fit-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "root_registration_required": false,
+  "scoring": "No scorer or task-quality read in this engineering proof.",
+  "attached_generation_run_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-FIX-DRY-RUN-V1",
+  "contact_cap": 176,
+  "max_speech_packets": 1,
+  "execution_location": "FlightRuntime native request gate during generation, before each realized request dispatch.",
+  "fix_validation": {
+    "closed_predecessor_run_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-PROOF-RECOVERY-V1",
+    "closed_predecessor_receipt": {
+      "relpath": "coordination/slurp-native-knowledge-proof-v1/flight-closure-v1.json",
+      "sha256": "fc44b1f8cc7a21c776724e08a2da0e6a3b6d701f0e037b39fb76a2221f488a86"
+    },
+    "authorization": "AGENTS.md Engineering base and experiment rules: a second failure stops the flight and the fix is proven on a 4-row dry run; owner ongoing goal and GPU authorization.",
+    "correction_commit": "9a775064f2c7214c88ad2d9fc2f0aec1a8d06e22",
+    "model_free_evidence": "Actual NativeRoleNode callback and shared MeteredNativeSpeechRequest.prepare; 7 focused tests passed. Actual full 60-intent render differs only by the v2 terminal LF.",
+    "new_contact_allocation": true,
+    "predecessor_reopened": false,
+    "on_failure": "Stop this diagnostic and preserve; no recovery under this registration."
+  }
+}
