@@ -171,6 +171,81 @@ def test_analytical_role_uses_framework_tool_history_and_meters_every_call():
     assert script.requests[0].context.evidence_pins == {"packet": "a" * 64}
 
 
+def test_successive_same_role_nodes_keep_tool_callbacks_instance_bound():
+    observed: list[tuple[str, int]] = []
+
+    def node(
+        label: str,
+        abilities: tuple[str, ...],
+        selected: str,
+        value: int,
+    ) -> NativeRoleNode:
+        resources = tuple(
+            LocalFunction(
+                card=_card(name),
+                func=lambda value, *, _name=name: observed.append(
+                    (f"{label}:{_name}", value)
+                )
+                or {"label": label, "value": value},
+            )
+            for name in abilities
+        )
+        role_node = NativeRoleNode(
+            spec=NativeRoleNodeSpec(
+                role_id="reviewer",
+                role_kind="reviewer",
+                prompt=f"Review with the {label} analytical tools.",
+                max_iterations=2,
+                ability_names=abilities,
+            ),
+            metered_request=_MeteredScript(
+                [
+                    _completion(
+                        text=f"{label} tool call",
+                        sample_id=f"sample-{label}",
+                        tool_calls=_tool_call(
+                            selected,
+                            f"call-{label}",
+                            json.dumps({"value": value}),
+                        ),
+                        wire_content=f"{label} tool call",
+                    ),
+                    _completion(
+                        text=f"{label} complete",
+                        sample_id=f"sample-{label}",
+                        contact_id="contact-2",
+                        serial=2,
+                    ),
+                ]
+            ),
+            contact_context_provider=lambda index: NativeRoleContactContext(
+                sample_id=f"sample-{label}",
+                agent_contact_id=f"contact-{index + 1}",
+                evidence_pins={"packet": ("a" if label == "first" else "b") * 64},
+            ),
+            abilities=resources,
+            tool_allowed=lambda role, name: (
+                role == "reviewer" and name in abilities
+            ),
+        )
+        assert tuple(resource.card.id for resource in resources) == abilities
+        assert all(resource.card.stateless for resource in resources)
+        return role_node
+
+    first = node("first", ("analyze",), "analyze", 1)
+    second = node("second", ("analyze", "inspect"), "analyze", 2)
+
+    assert (
+        asyncio.run(first.invoke_direct("Inspect the first state."))["actor_output"]
+        == "first complete"
+    )
+    assert (
+        asyncio.run(second.invoke_direct("Inspect the second state."))["actor_output"]
+        == "second complete"
+    )
+    assert observed == [("first:analyze", 1), ("second:analyze", 2)]
+
+
 def test_role_spec_rejects_tools_for_perception_and_solver():
     for kind in ("perception", "solver"):
         with pytest.raises(ValueError, match="must be tool-free"):
