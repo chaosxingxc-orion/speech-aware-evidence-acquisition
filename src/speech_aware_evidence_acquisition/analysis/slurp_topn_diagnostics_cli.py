@@ -996,7 +996,10 @@ def run(
         src, refs = _subset(source_rows, ids), _subset(references, ids)
         br = {name: _subset(rows, ids) for name, rows in branches.items()}
         try:
-            report = aggregate_topn_diagnostics(src, refs, br, candidate_width=width).as_json()
+            report = aggregate_topn_diagnostics(
+                src, refs, br, candidate_width=width,
+                allow_variable_width=distinct_source,
+            ).as_json()
         except TopNDiagnosticError as error:
             raise SlurpTopNAnalysisError(f"{population} aggregation failed: {error}") from error
         strata = {}
@@ -1010,10 +1013,12 @@ def run(
                 _subset(src, members), _subset(refs, members),
                 {name: _subset(rows, members) for name, rows in br.items()},
                 candidate_width=width,
+                allow_variable_width=distinct_source,
             ).as_json()
             for key, members in sorted(strata.items())
         }
         if distinct_source:
+            report["candidate_width_semantics"] = "maximum; retain the actual unpadded candidate set"
             report["by_observed_distinct_width"] = _observed_width_reports(
                 src, refs, br, candidate_width=width
             )
