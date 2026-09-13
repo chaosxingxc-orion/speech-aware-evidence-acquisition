@@ -31,7 +31,7 @@ check proves each of them against the tree rather than against a comment:
    enforced; a hand-built ``ToolEntry`` slipped into the registry would
    otherwise carry no marker at all.
 
-Plus the committed toolkit table: it loads, and every id in it resolves.
+Plus the committed default and every committed opt-in toolkit table load, resolve, and cover the registered ids.
 
 Zero model contacts, zero GPU, no network, no ``SPEECHRL_DATA_DIR`` read.
 The package is imported (the catalog is a runtime object), the framework is
@@ -326,14 +326,24 @@ def check_registrations_enforce_the_marker(repo_root: Path) -> tuple[list[str], 
 # ---------------------------------------------------------------------------
 
 
-def check_toolkit_table(repo_root: Path, tools_module: Any) -> tuple[list[str], dict]:
-    failures: list[str] = []
+def _toolkit_relpaths(repo_root: Path, tools_module: Any) -> list[str]:
+    """Return the frozen default followed by every committed toolkit JSON."""
+
+    directory = repo_root / "configs" / "toolkit"
+    if not directory.is_dir():
+        raise ToolCatalogCheckError("configs/toolkit does not exist")
+    default_relpath = str(tools_module.TOOLKIT_CONFIG_RELPATH).replace("\\", "/")
+    paths = [
+        path.relative_to(repo_root).as_posix()
+        for path in directory.iterdir()
+        if path.is_file() and path.suffix == ".json"
+    ]
+    optional = sorted(path for path in paths if path != default_relpath)
+    return [default_relpath, *optional]
+
+
+def _toolkit_summary(table: Any, tools_module: Any) -> tuple[dict[str, Any], set[str]]:
     summary: dict[str, Any] = {}
-    try:
-        table = tools_module.default_toolkit_table(repo_root)
-    except Exception as exc:
-        failures.append(f"the committed toolkit table does not load: {exc}")
-        return failures, summary
     offered: set[str] = set()
     for task_type in tools_module.TASK_TYPES:
         toolkit = table.for_task(task_type)
@@ -342,10 +352,58 @@ def check_toolkit_table(repo_root: Path, tools_module: Any) -> tuple[list[str], 
         }
         for role in tools_module.TOOLKIT_ROLES:
             offered.update(toolkit.tools_for(role))
-    unoffered = sorted(set(tools_module.catalog_ids()) - offered)
+    return summary, offered
+
+
+def check_toolkit_tables(
+    repo_root: Path, tools_module: Any
+) -> tuple[list[str], dict[str, Any], dict[str, Any]]:
+    """Validate the default and every explicitly committed toolkit table.
+
+    The historical default remains a separate summary. Registered tools need
+    appear in at least one valid table, allowing a versioned opt-in table to
+    add a capability without changing historical defaults.
+    """
+
+    failures: list[str] = []
+    default_summary: dict[str, Any] = {}
+    table_summaries: dict[str, Any] = {}
+    offered_by_valid_table: set[str] = set()
+    try:
+        relpaths = _toolkit_relpaths(repo_root, tools_module)
+    except ToolCatalogCheckError as exc:
+        return [str(exc)], default_summary, table_summaries
+
+    default_relpath = str(tools_module.TOOLKIT_CONFIG_RELPATH).replace("\\", "/")
+    for relpath in relpaths:
+        path = repo_root / relpath
+        try:
+            table = tools_module.load_toolkit_table(path)
+            summary, offered = _toolkit_summary(table, tools_module)
+        except Exception as exc:
+            failures.append(f"toolkit table {relpath} does not load: {exc}")
+            continue
+        table_summaries[relpath] = {
+            "valid": True,
+            "task_types": summary,
+        }
+        offered_by_valid_table.update(offered)
+        if relpath == default_relpath:
+            default_summary = summary
+
+    unoffered = sorted(set(tools_module.catalog_ids()) - offered_by_valid_table)
     if unoffered:
-        failures.append(f"registered but in no toolkit: {unoffered}")
-    return failures, summary
+        failures.append(f"registered but in no valid toolkit: {unoffered}")
+    return failures, default_summary, table_summaries
+
+
+def check_toolkit_table(repo_root: Path, tools_module: Any) -> tuple[list[str], dict]:
+    """Backward-compatible default summary over the complete toolkit check."""
+
+    failures, default_summary, _table_summaries = check_toolkit_tables(
+        repo_root, tools_module
+    )
+    return failures, default_summary
 
 
 # ---------------------------------------------------------------------------
@@ -380,7 +438,9 @@ def evaluate(repo_root: Path) -> dict[str, Any]:
             f"{registered_ids} vs {sorted(tools_module.catalog_ids())}"
         )
 
-    toolkit_failures, toolkit_summary = check_toolkit_table(repo_root, tools_module)
+    toolkit_failures, toolkit_summary, toolkit_tables = check_toolkit_tables(
+        repo_root, tools_module
+    )
     failures.extend(toolkit_failures)
 
     return {
@@ -391,6 +451,7 @@ def evaluate(repo_root: Path) -> dict[str, Any]:
         "modules": module_rows,
         "registered_ids": registered_ids,
         "toolkits": toolkit_summary,
+        "toolkit_tables": toolkit_tables,
         "failures": failures,
         "passed": not failures,
     }

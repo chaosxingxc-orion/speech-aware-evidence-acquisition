@@ -1,0 +1,89 @@
+{
+  "schema": "saea-task-toolkits-v1",
+  "note": "Which catalog tools each agent role may call, per task type (design note 2026-09-08 section 7; loader rails.tools.load_toolkit_table). Every id resolves in rails.tools.TOOL_CATALOG and is checked by scripts/checks/engineering_base_check.py. The Solver has no row: the Solver is the frozen core behind the single door and calls no tool. An empty list means that role calls nothing yet, which is a statement, not an omission. WAVE R7 (2026-09-08): the tool-call rows carry the eighteen rails/a2t_* renderers the reuse map's Group A named -- registered, never rebuilt (rails/tool_wrappers/a2t_renderers.py). The Planner reads the knowledge grounds and the prompt/response envelopes, the Observer the two state organizers, and the Reviewer the hard-validity check that used to be a private branch inside a retired controller. OWNER016 adds two command task-action primitives; OWNER017 adds admitted corrective-memory guidance for the command Planner. Their fixed/core selection is enabled only by phase_tools; catalog membership alone does not execute them. OPT-IN v2 adds candidate-contract lookup to command and tool-call planners; the historical v1 table remains unchanged. OWNER023 adds cached full-utterance speech observations to command and tool-call Observers. Explicit phase_tools and a finalized source-bound catalog are required; membership does not execute ASR. Native action programs may expose the distinct live speech observation tool; it performs no work until the frozen core selects it and the registered custodian records the invocation.",
+  "toolkits": {
+    "meeting": {
+      "planner": {
+        "tools": [
+          "saea-tool-prompt-fit-tokens-v1"
+        ]
+      },
+      "observer": {
+        "tools": [
+          "saea-tool-diarization-artifact-v1",
+          "saea-tool-speaker-turn-units-v2",
+          "saea-tool-slice-encode-v1",
+          "saea-tool-flagged-spans-v1"
+        ]
+      },
+      "reviewer": {
+        "tools": [
+          "saea-tool-flagged-spans-v1",
+          "saea-tool-repair-alignment-v1"
+        ]
+      }
+    },
+    "command": {
+      "planner": {
+        "tools": [
+          "saea-tool-prompt-fit-tokens-v1",
+          "saea-tool-task-contract-v1",
+          "saea-tool-phase-knowledge-v1",
+          "saea-tool-candidate-contract-lookup-v1",
+          "saea-tool-corrective-memory-v1"
+        ]
+      },
+      "observer": {
+        "tools": [
+          "saea-tool-slice-encode-v1",
+          "saea-tool-sealed-vector-query-v1",
+          "saea-tool-prepared-speech-observation-v1",
+          "saea-tool-live-speech-observation-v1"
+        ]
+      },
+      "reviewer": {
+        "tools": [
+          "saea-tool-legal-label-projection-v2"
+        ]
+      }
+    },
+    "tool-call": {
+      "planner": {
+        "tools": [
+          "saea-tool-prompt-fit-tokens-v1",
+          "saea-tool-a2t-ground-prompt-envelopes-v1",
+          "saea-tool-a2t-call-array-response-format-v1",
+          "saea-tool-a2t-select-stage-envelope-v1",
+          "saea-tool-a2t-select-fill-factorial-binding-v1",
+          "saea-tool-a2t-canonical-family-ground-v1",
+          "saea-tool-a2t-construction-example-ground-v1",
+          "saea-tool-a2t-construction-semantic-ground-v1",
+          "saea-tool-a2t-executable-ground-v1",
+          "saea-tool-a2t-executable-semantic-cards-v1",
+          "saea-tool-a2t-frozen-semantic-assets-v1",
+          "saea-tool-a2t-plain-english-retrieval-v1",
+          "saea-tool-a2t-routing-knowledge-ground-v1",
+          "saea-tool-candidate-contract-lookup-v1",
+          "saea-tool-a2t-selected-tool-ground-v1",
+          "saea-tool-a2t-semantic-microground-v1",
+          "saea-tool-a2t-semantic-ranking-fusion-v1"
+        ]
+      },
+      "observer": {
+        "tools": [
+          "saea-tool-slice-encode-v1",
+          "saea-tool-sealed-vector-query-v1",
+          "saea-tool-a2t-observation-state-organizer-v1",
+          "saea-tool-a2t-structured-dialogue-state-v1",
+          "saea-tool-prepared-speech-observation-v1",
+          "saea-tool-live-speech-observation-v1"
+        ]
+      },
+      "reviewer": {
+        "tools": [
+          "saea-tool-a2t-hard-validity-v1"
+        ]
+      }
+    }
+  }
+}
