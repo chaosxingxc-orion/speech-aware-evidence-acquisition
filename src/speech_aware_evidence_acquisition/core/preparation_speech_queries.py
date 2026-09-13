@@ -342,6 +342,7 @@ def prepare_text_facet_vectors(
     snapshot_sha256: str,
     protocol_id: str,
     dimension: int,
+    facet_dimension: str = "content",
 ) -> dict[str, object]:
     """Seal one passage vector per frozen positive text facet.
 
@@ -349,6 +350,14 @@ def prepare_text_facet_vectors(
     queries while carrying no media field or audio duration.
     """
     dimension = _positive_int(dimension, "dimension")
+    if (
+        not isinstance(facet_dimension, str)
+        or not facet_dimension
+        or facet_dimension != facet_dimension.strip()
+    ):
+        raise PreparationError(
+            "facet_dimension must be non-empty text without surrounding space"
+        )
     if (
         not isinstance(snapshot_sha256, str)
         or len(snapshot_sha256) != 64
@@ -384,6 +393,12 @@ def prepare_text_facet_vectors(
     if not ordered:
         raise PreparationError("text facet set must be non-empty")
     ordered.sort(key=lambda row: row["id"])
+    geometry = {"prompt": "passage: ", "audio": False, "batch_size": 1}
+    # The historical positive-content path deliberately keeps its old identity
+    # bytes. A non-content retrieval dimension is an explicit cache/input
+    # binding, so vectors cannot cross from one snapshot dimension to another.
+    if facet_dimension != "content":
+        geometry["facet_dimension"] = facet_dimension
     inputs = {
         "snapshot_sha256": snapshot_sha256,
         "facets": [
@@ -396,7 +411,7 @@ def prepare_text_facet_vectors(
         "encoder_identity": dict(encoder_identity),
         "protocol_id": protocol_id,
         "dimension": dimension,
-        "geometry": {"prompt": "passage: ", "audio": False, "batch_size": 1},
+        "geometry": geometry,
     }
     if Path(path).exists():
         artifact = prepare_artifact(
@@ -422,10 +437,10 @@ def prepare_text_facet_vectors(
             if (
                 not isinstance(row, Mapping)
                 or row.get("id") != expected["id"]
-                or set(row.get("vectors", {})) != {"content"}
+                or set(row.get("vectors", {})) != {facet_dimension}
             ):
                 raise PreparationError("cached text facet set changed")
-            _checked_vector(row["vectors"]["content"], dimension)
+            _checked_vector(row["vectors"][facet_dimension], dimension)
         return {
             "artifact": {
                 "path": artifact["path"],
@@ -455,7 +470,7 @@ def prepare_text_facet_vectors(
             return {
                 "id": row["id"],
                 "vectors": {
-                    "content": _checked_vector(encoder(row["text"]), dimension)
+                    facet_dimension: _checked_vector(encoder(row["text"]), dimension)
                 },
             }
 
@@ -477,10 +492,10 @@ def prepare_text_facet_vectors(
         if (
             set(saved) != {"id", "vectors"}
             or saved["id"] != row["id"]
-            or set(saved["vectors"]) != {"content"}
+            or set(saved["vectors"]) != {facet_dimension}
         ):
             raise PreparationError("cached text facet output binding changed")
-        _checked_vector(saved["vectors"].get("content"), dimension)
+        _checked_vector(saved["vectors"].get(facet_dimension), dimension)
         result.append(saved)
     output = {
         "schema": "saea-text-facet-vectors-v1",
@@ -490,6 +505,8 @@ def prepare_text_facet_vectors(
         "protocol_id": protocol_id,
         "dimension": dimension,
     }
+    if facet_dimension != "content":
+        output["facet_dimension"] = facet_dimension
     artifact = prepare_artifact(
         path,
         kind=TEXT_FACET_SET_KIND,
