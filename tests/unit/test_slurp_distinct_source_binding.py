@@ -79,3 +79,24 @@ def test_conflicting_source_aliases_are_rejected(tmp_path):
     binding["manifest"] = {"path": "/different", "sha256": "a" * 64}
     with pytest.raises(SlurpTopNAnalysisError):
         _source_pin(binding, distinct=True)
+
+
+def test_variable_source_width_preserves_every_actual_candidate():
+    from speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics import (
+        BranchOutcomeRow, ReferenceIntentRow, SourceCandidateRow,
+        TopNDiagnosticError, aggregate_topn_diagnostics,
+    )
+    source = [SourceCandidateRow("s1", ("a",)), SourceCandidateRow("s2", ("a", "b"))]
+    refs = [ReferenceIntentRow("s1", "a"), ReferenceIntentRow("s2", "b")]
+    branches = {"joint": [BranchOutcomeRow("s1", "a", False), BranchOutcomeRow("s2", "b", False)]}
+    with pytest.raises(TopNDiagnosticError, match="shorter"):
+        aggregate_topn_diagnostics(source, refs, branches, candidate_width=3)
+    report = aggregate_topn_diagnostics(
+        source, refs, branches, candidate_width=3, allow_variable_width=True,
+    ).as_json()
+    assert [row["candidate_ids"] for row in report["per_sample"]] == [["a"], ["a", "b"]]
+    assert all(row["topn_included"] for row in report["per_sample"])
+    with pytest.raises(TopNDiagnosticError, match="maximum"):
+        aggregate_topn_diagnostics(
+            source, refs, branches, candidate_width=1, allow_variable_width=True,
+        )
