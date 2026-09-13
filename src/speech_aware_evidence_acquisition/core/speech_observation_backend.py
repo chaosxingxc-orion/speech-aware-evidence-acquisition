@@ -219,6 +219,73 @@ class LocalWhisperBackend:
             self.event("model_load_finished")
         return self.stack
 
+    def _decode_batch_locked(self, sources, prefetch):
+        whisper, audio, torch, tokenizer_module, model = self._ensure_stack()
+        try:
+            tokenizer = tokenizer_module.get_tokenizer(
+                model.is_multilingual,
+                num_languages=model.num_languages,
+                language="en",
+                task="transcribe",
+            )
+            initial_token_count = len(tokenizer.sot_sequence_including_notimestamps)
+            decoder_context = model.dims.n_text_ctx
+        except (AttributeError, TypeError, ValueError) as error:
+            raise SpeechObservationBackendError(
+                "Whisper model lacks a bounded decoder context"
+            ) from error
+        if (
+            type(decoder_context) is not int
+            or decoder_context < 1
+            or self.protocol["sample_len"] + initial_token_count > decoder_context
+        ):
+            raise SpeechObservationBackendError(
+                "Whisper sample_len exceeds the decoder context after initial tokens"
+            )
+        waves = []
+        for source in sources:
+            self.event("data_wait_started")
+            wave = prefetch.take(source)
+            self.event("data_wait_finished")
+            if not hasattr(wave, "__len__") or not 0 < len(wave) <= MAX_WHISPER_SAMPLES:
+                raise SpeechObservationBackendError(
+                    "speech observation audio would require duration truncation"
+                )
+            waves.append(wave)
+        self.event("mel_started")
+        mels = []
+        for wave in waves:
+            padded_wave = audio.pad_or_trim(wave, audio.N_SAMPLES)
+            mel = audio.log_mel_spectrogram(padded_wave, model.dims.n_mels)
+            if not hasattr(mel, "shape") or mel.shape[-1] != audio.N_FRAMES:
+                raise SpeechObservationBackendError(
+                    "Whisper mel construction did not produce exactly 3000 frames"
+                )
+            mels.append(mel)
+        batch = torch.stack(mels).to(self.protocol["device"])
+        self.event("mel_finished")
+        options = whisper.DecodingOptions(
+            language="en",
+            task="transcribe",
+            temperature=0,
+            beam_size=self.protocol["beam_size"],
+            sample_len=self.protocol["sample_len"],
+            without_timestamps=True,
+            fp16=self.protocol["fp16"],
+            prompt=None,
+            prefix=None,
+        )
+        self.event("speech_tool_forward_started")
+        try:
+            results = whisper.decode(model, batch, options)
+        finally:
+            self.event("speech_tool_forward_finished")
+        if not isinstance(results, Sequence) or len(results) != len(sources):
+            raise SpeechObservationBackendError(
+                "Whisper batch result count differs from source order"
+            )
+        return [self._render_result(result) for result in results]
+
     def decode_batch(self, sources):
         if self._closed:
             raise SpeechObservationBackendError("speech observation backend is closed")
@@ -230,71 +297,23 @@ class LocalWhisperBackend:
         if not self._decode_lock.acquire(blocking=False):
             raise SpeechObservationBackendError("concurrent Whisper decode is forbidden")
         try:
-            whisper, audio, torch, tokenizer_module, model = self._ensure_stack()
-            try:
-                tokenizer = tokenizer_module.get_tokenizer(
-                    model.is_multilingual,
-                    num_languages=model.num_languages,
-                    language="en",
-                    task="transcribe",
-                )
-                initial_token_count = len(tokenizer.sot_sequence_including_notimestamps)
-                decoder_context = model.dims.n_text_ctx
-            except (AttributeError, TypeError, ValueError) as error:
-                raise SpeechObservationBackendError(
-                    "Whisper model lacks a bounded decoder context"
-                ) from error
-            if (
-                type(decoder_context) is not int
-                or decoder_context < 1
-                or self.protocol["sample_len"] + initial_token_count > decoder_context
-            ):
-                raise SpeechObservationBackendError(
-                    "Whisper sample_len exceeds the decoder context after initial tokens"
-                )
-            waves = []
-            for source in sources:
-                self.event("data_wait_started")
-                wave = self.prefetch.take(source)
-                self.event("data_wait_finished")
-                if not hasattr(wave, "__len__") or not 0 < len(wave) <= MAX_WHISPER_SAMPLES:
-                    raise SpeechObservationBackendError(
-                        "speech observation audio would require duration truncation"
-                    )
-                waves.append(wave)
-            self.event("mel_started")
-            mels = []
-            for wave in waves:
-                padded_wave = audio.pad_or_trim(wave, audio.N_SAMPLES)
-                mel = audio.log_mel_spectrogram(padded_wave, model.dims.n_mels)
-                if not hasattr(mel, "shape") or mel.shape[-1] != audio.N_FRAMES:
-                    raise SpeechObservationBackendError(
-                        "Whisper mel construction did not produce exactly 3000 frames"
-                    )
-                mels.append(mel)
-            batch = torch.stack(mels).to(self.protocol["device"])
-            self.event("mel_finished")
-            options = whisper.DecodingOptions(
-                language="en",
-                task="transcribe",
-                temperature=0,
-                beam_size=self.protocol["beam_size"],
-                sample_len=self.protocol["sample_len"],
-                without_timestamps=True,
-                fp16=self.protocol["fp16"],
-                prompt=None,
-                prefix=None,
-            )
-            self.event("speech_tool_forward_started")
-            try:
-                results = whisper.decode(model, batch, options)
-            finally:
-                self.event("speech_tool_forward_finished")
-            if not isinstance(results, Sequence) or len(results) != len(sources):
-                raise SpeechObservationBackendError("Whisper batch result count differs from source order")
-            return [self._render_result(result) for result in results]
+            return self._decode_batch_locked(sources, self.prefetch)
         finally:
             self._decode_lock.release()
+
+    def decode_selected(self, source):
+        """Decode only one already-selected source while retaining loaded weights."""
+
+        if self._closed:
+            raise SpeechObservationBackendError("speech observation backend is closed")
+        _validate_source(source)
+        with self._decode_lock:
+            selected_prefetch = BoundedAudioPrefetch(self.protocol["cpu_workers"])
+            try:
+                selected_prefetch.prepare_sources([source])
+                return self._decode_batch_locked([source], selected_prefetch)[0]
+            finally:
+                selected_prefetch.close()
 
     def _render_result(self, result):
         raw_text = getattr(result, "text", None)
