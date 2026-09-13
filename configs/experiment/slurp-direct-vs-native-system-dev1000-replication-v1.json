@@ -13,15 +13,15 @@
         "campaign"
       ],
       "readiness": {
-        "state": "held",
-        "reason": "Await the root-authored final original verdict pin, hash-pinned replication admission receipt, and four committed unconsumed exposure rows.",
+        "state": "ready",
+        "reason": "Root admitted one same-roster same-mechanism replication after the completed source pair passed its frozen exploratory candidate condition.",
         "requirements": [
           {
             "kind": "decision",
             "relpath": "coordination/slurp-direct-vs-native-system-dev1000-replication-v1/admission-v1.json",
-            "sha256": "PENDING-ROOT-ADMISSION-SHA256",
+            "sha256": "e44cfc144dfb421d816d47158f3ba08ec57932f5cb57bc02fa893a6d8ce13128",
             "expected_decision_id": "slurp-direct-vs-native-system-dev1000-replication-admission-v1",
-            "reason": "Root same-roster direct versus complete native system replication admission, pending the final source-verdict pin"
+            "reason": "Root source-bound same-roster replication admission"
           }
         ]
       }

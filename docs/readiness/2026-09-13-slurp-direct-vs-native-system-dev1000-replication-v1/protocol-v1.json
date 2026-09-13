@@ -1,15 +1,15 @@
 {
   "schema": "saea-direct-vs-native-system-protocol-v1",
   "protocol_id": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-REPLICATION-PROTOCOL-V1",
-  "root_admitted_at": null,
+  "root_admitted_at": "2026-09-13T20:14:45.361204+00:00",
   "configurations": {
     "direct": {
       "experiment_fragment": "slurp-direct-vs-native-direct-dev1000-replication-v1",
       "model_fragment": "q4km-mmproj-free-slurp-direct-vs-native-np4-ctx24k-max256-v1",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "baseline_fragment": "slurp-direct-vs-native-direct-dev1000-replication-v1",
-      "composed_config_hash": "79d68e8ff6728a74f4fda186d66991a769a36b302149c24976c4f37de7144d18",
-      "execution_plan_protocol_hash": "55782e07a0f3defc9cdf855569e9043f3c738f82f673aeb44a1b771b2f68d6e8",
+      "composed_config_hash": "96c822ea9b94426e5ffc23f90f0baf864685946c85f91a6df85092acfbf1eecd",
+      "execution_plan_protocol_hash": "85a16c6b941469ced47592fd19b6024b15c061dc5e4c3d1ca8cf756727323071",
       "run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-REPLICATION-V1",
       "attempt_id": "attempt-slurp-direct-vs-native-direct-generation-replication-v1",
       "fit": {
@@ -30,8 +30,8 @@
       "model_fragment": "q4km-mmproj-free-slurp-direct-vs-native-np4-ctx24k-max256-v1",
       "dataset_fragment": "slurp-speech-native-dev1000",
       "baseline_fragment": "slurp-direct-vs-native-system-dev1000-replication-v1",
-      "composed_config_hash": "b91b540fc33f358f5acca6005fc4e8ec6068b3d812ecd81f083191d80816c203",
-      "execution_plan_protocol_hash": "ac32ae3180b4eaeb84b40f97a9bcb388ed128a21e1c019b0057b3f92b48ae95a",
+      "composed_config_hash": "5f1ef1ea9f80cc7b25a170979b3b4d1a538866acb2278d9997d09d9312222c97",
+      "execution_plan_protocol_hash": "b29974d5a9e35f99e7d3bc8d2b35dedcd8420915177a87414ec52d41de056b43",
       "run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-REPLICATION-V1",
       "attempt_id": "attempt-slurp-direct-vs-native-system-generation-replication-v1",
       "fit": {
@@ -251,11 +251,11 @@
   "admission": {
     "kind": "decision",
     "relpath": "coordination/slurp-direct-vs-native-system-dev1000-replication-v1/admission-v1.json",
-    "sha256": "PENDING-ROOT-ADMISSION-SHA256",
+    "sha256": "e44cfc144dfb421d816d47158f3ba08ec57932f5cb57bc02fa893a6d8ce13128",
     "expected_decision_id": "slurp-direct-vs-native-system-dev1000-replication-admission-v1",
-    "reason": "Root same-roster replication admission remains pending the final original source-verdict pin and concrete configuration review."
+    "reason": "Root source-bound same-roster replication admission"
   },
-  "root_admission_state": "PENDING: the original source verdict is bound; root must write the concrete decision receipt, add four unconsumed exposure rows, and recompute composed/protocol hashes before launch.",
+  "root_admission_state": "REGISTERED: root reviewed exact mechanisms and source verdict; fresh fit and generation plans bind the exposure ledger.",
   "replication": {
     "source_pair": "SAEA-SLURP-DIRECT-VS-NATIVE-{DIRECT|SYSTEM}-DEV1000-V1",
     "source_verdict": {
@@ -277,6 +277,6 @@
     "new_draw": false,
     "added_capability": false,
     "consistency_read": "Secondary descriptive original-versus-replication same-arm contrasts only; no new gate or contact.",
-    "provisional_hash_notice": "The composed and execution-plan protocol hashes above are genuine for the committed held fragments with the source verdict bound. The final decision receipt hash changes each experiment fragment, so root must recompute and replace these hashes and every dependent plan SHA before changing readiness to ready."
+    "registration_hash_rule": "Configuration and plan hashes are recomputed after binding the root decision. Any future mutation requires a new prospective binding before contact."
   }
 }

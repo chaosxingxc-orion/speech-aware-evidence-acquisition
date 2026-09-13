@@ -5,7 +5,7 @@
   "expected_session_id": "serving-slurp-direct-vs-native-np4-ctx24k-v1",
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-13-slurp-direct-vs-native-system-dev1000-replication-v1/protocol-v1.json",
-    "sha256": "7c758dfc0e8685347d3efaac554fdd711dfe20920b2fbfbff634ead2417d0fbb"
+    "sha256": "0e745a715271294c57b6a92b3574d50b4beed88531c1470ef20646328cb5b489"
   },
   "root_registration_required": true,
   "execution_plan": {
@@ -20,9 +20,9 @@
     "planned_model_calls": 11000,
     "planned_gpu_hours": 12.0,
     "planned_speech_audio_seconds": 44000,
-    "protocol_hash": "ac32ae3180b4eaeb84b40f97a9bcb388ed128a21e1c019b0057b3f92b48ae95a"
+    "protocol_hash": "b29974d5a9e35f99e7d3bc8d2b35dedcd8420915177a87414ec52d41de056b43"
   },
   "scoring": "Complete official scoring once after seal with per-sample fields; quality read waits for both receipts.",
-  "execution_location": "Before each realized native request under generation lease; one speech packet plus three endpoint checks per model call; 44000 endpoint cap.",
-  "registration_state": "PENDING root admission receipt and exposure-ledger row; refresh protocol/config hashes after the decision pin is bound."
+  "execution_location": "Shared native Perception, Solver, Reviewer and Planner executor.",
+  "registration_state": "REGISTERED by root before contact; this plan binds its fresh unconsumed exposure-ledger row and root admission."
 }
