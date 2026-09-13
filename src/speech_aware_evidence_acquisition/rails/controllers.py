@@ -517,6 +517,22 @@ StateViewForPhase = Callable[[str, str], str]
 ContactIdentity = tuple[str, str] | Mapping[str, tuple[str, str]]
 
 
+def _starts_with_textual_native_tool_call(response_text: str) -> bool:
+    """Reject a native tool frame that arrived as answer text."""
+
+    candidate = response_text.lstrip()
+    if candidate.startswith("```"):
+        newline = candidate.find("\n")
+        if newline < 0:
+            return False
+        candidate = candidate[newline + 1 :].lstrip()
+    prefix = "<tool_call"
+    return candidate.startswith(prefix) and (
+        len(candidate) == len(prefix)
+        or candidate[len(prefix)] in "> \t\r\n"
+    )
+
+
 class EvidenceAgentController:
     """One generic ``rails.runner.AgentController`` walking a
     :class:`PhaseProgram` phase-by-phase (module docstring).
@@ -794,6 +810,13 @@ class EvidenceAgentController:
                 raise RailsControllersError(f"native completion binding refused: {error}") from error
             raw_calls = completion.tool_calls
             native_requested = raw_calls is not None and raw_calls != []
+            if (
+                not native_requested
+                and _starts_with_textual_native_tool_call(response_text)
+            ):
+                raise RailsControllersError(
+                    "textual native tool frame cannot be accepted as an answer"
+                )
             if index + 1 == len(self._program.phases) and native_requested:
                 raise RailsControllersError("final answer contact returned a native tool request")
         response_sha256 = hashlib.sha256(response_text.encode("utf-8")).hexdigest()
