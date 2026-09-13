@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 79,
+  "generation": 80,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "52b94648253babe66ac346368159cdc1dc49303e",
-  "updated_at_utc": "2026-09-13T21:00:07.687097+00:00",
-  "next_action": "Read STATUS-079. Replication remains active on frozen532d8788 (campaign27240/exec29344): direct FINALIZED1000, system OPENED1097 consumed contacts at snapshot. Preserve service45101 and monitor86723. Do not read new quality until both first scores and a new root release. Shared native TRAIN projection and named-store first-phase preparation are integrated and passed259 tests in isolated code; no new capability is GPU-admitted. Prepare the next complete-system configuration and exact60 facet-embedding registration while replication runs.",
+  "snapshot_commit": "64983e41527f968e7ee9c39abeb791ad01594a18",
+  "updated_at_utc": "2026-09-13T21:45:21.802311+00:00",
+  "next_action": "Read STATUS-080. Strict-accept replication is ABORTED1329 at a named revision-limit component; direct FINALIZED1000 and first score retained unread. Sole terminal-policy recovery is active on frozen64983e41 at /home/chao/saea-worktrees/slurp-native-terminal-recovery-v1, campaign48608/exec72701. Preserve same service756/exec45101 and monitor961/exec86723. Follow generation/seal/first official score, then new source-bound read release. Do not replay or edit runtime. Prepare60 intent facet encoding config model-free; GPU encoder not admitted. Shared changes passed90 preparation +72 native/queue/custody tests.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SYSTEM-VERSIONS-025"

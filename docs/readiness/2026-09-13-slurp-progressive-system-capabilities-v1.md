@@ -15,18 +15,19 @@ official pooled SLU micro F1 increased from 36.2485 to 50.6782, a 14.4297 percen
 point difference with speaker-cluster CI90 [11.2108, 17.5903]. Joint intent increased
 from 72.4% to 78.6%. These are complete-system results, not causal estimates for
 one role or one knowledge component. See the immutable original verdict and its
-source pins. Same-roster replication is still in progress and has no released
-quality conclusion.
+source pins. The strict-accept same-roster replication stopped at a named revision-limit component and has no complete quality conclusion. The original result remains exploratory.
 
 ## Immediate sequence
 
-1. Finish the registered direct/native replication, seal each arm, and complete
-   its one full official scoring job. Release the pair for quality reading only
-   when both first-score receipts are present. Apply the frozen recipe; preserve
-   every stratum and failure. Do not read one arm early to tune the next.
-2. If the system candidate replicates, freeze that version as the current system
-   reference. If it does not, identify the changed behavior before adding a
-   mechanism. Do not erase the original exploratory result.
+1. Preserve the stopped strict-accept system replication, its contacts and its
+   unchanged source code. The direct arm completed 1,000 responses and one
+   official score; keep that comparator without rereading quality early.
+2. Validate and run the sole prospectively registered recovery with explicit
+   finite terminal delivery. At the existing revision limit, deliver the latest
+   eligible Solver response with planner_accepted=false when Planner requests
+   more work. Never relabel this as explicit acceptance or exact v1 replication.
+   Use the same still-resident process and the same roster. A second failure
+   closes this flight. See the root-cause record and recovery protocol.
 3. Prepare the next complete system with intent-boundary knowledge available to
    Perception, while the existing candidate-conditioned slot-contract knowledge
    remains available to Solver. The role graph, final-answer ownership, legal
@@ -65,9 +66,18 @@ compatible preparation uses the existing pinned omni-embed-nemotron-3b MF-7b
 geometry: 2,048 dimensions, attention-mask mean pooling with prompt included,
 L2 normalization, passage prefix for keys and query prefix for speech queries.
 
-- Reuse the exact DEV1000 speech query file
-  vectors/slurp-kus3/query-vectors-speech.jsonl, SHA-256
+- Reuse the exact numeric DEV1000 speech query vectors from
+  vectors/slurp-kus3/query-vectors-speech.jsonl, source SHA-256
   99b2e1700a058640a12c86fb261e3fc1898cd99004b0157366682b2a048b2e7c.
+  The store uses the intent-boundary dimension while the old export calls that
+  axis content. The shared config-driven model-free alias now preserves all
+  1,000 IDs, row order and 2,048 numeric components per row under the new axis.
+  Export: vectors/slurp-intent-boundaries-dev1000-v1/query-vectors-speech.jsonl,
+  SHA-256 6f391f883129f88fd7f843a76de95a805c39f165b2938a7ae9e3bb92d5860967.
+  Receipt: prepared/SAEA-SLURP-INTENT-BOUNDARY-VECTOR-PREPARE-V1/query-dimension-alias.json,
+  SHA-256 f83b5b002d0823de40ac3f52f9a839f83daedf4ecdbbf0606b85f1fc07bd01a8.
+  No encoder, tokenizer or model was contacted. Do not pass the old axis name
+  into the new store or claim a new embedding space.
 - Prospectively register exactly 60 text embedding contacts for the released
   KeyFacet.representation strings. No new speech query encoding is required.
 - Do not substitute the old 11,514 TRAIN facet vectors: their identities and
