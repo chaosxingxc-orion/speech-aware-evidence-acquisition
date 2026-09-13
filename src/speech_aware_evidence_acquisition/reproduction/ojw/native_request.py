@@ -7,6 +7,7 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 
 from ...core.model.native_framework_history import framework_contact_instruction
+from ...e0.d2_leakage import ARM_VISIBLE_FIELDS
 from ...rails.core_client import CoreCompletion, FrozenCoreClient, PreparedCoreRequest
 from .native_roles import (
     FROZEN_CORE_CALLBACK_MODEL, NativeRoleContactContext, NativeRoleModelRequest,
@@ -190,7 +191,11 @@ class MeteredNativeSpeechRequest:
         prepared = self._client.prepare_request(
             messages, **kwargs, speech_feature_sample_id=binding.sample_id,
             agent_contact_id=request.context.agent_contact_id,
-            contact_instruction=instruction, tool_names=binding.tool_names,
+            contact_instruction=instruction,
+            tool_names=(
+                None if not binding.tool_names and "tool_schemas" not in ARM_VISIBLE_FIELDS[self._client.arm]
+                else binding.tool_names
+            ),
         )
         payload = prepared.as_payload()
         selected = payload.get("tool_schemas", [])
