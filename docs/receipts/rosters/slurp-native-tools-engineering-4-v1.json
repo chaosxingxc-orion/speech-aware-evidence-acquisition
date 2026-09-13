@@ -1,0 +1,99 @@
+{
+  "authority": "Derived from the first four ordered records of the committed SLURP-EVO-FOLD-A-V2 construction roster for a bounded engineering proof.",
+  "carrier_lock_key": "slurp",
+  "construction_split": "TRAIN-A",
+  "engineering_only": true,
+  "excluded_count": 0,
+  "items": [
+    {
+      "audio_seconds": 1.98375,
+      "audio_sha256": "a215777964e40ebaee5a3568ba05a9bec9201af5976cc3e471d47e22df6650a4",
+      "headset": false,
+      "id": "slurp:train:000007:audio--1504197557",
+      "key": "slurp:slurp:train:000007:audio--1504197557",
+      "media_relpath": "datasets/slurp/slurp_real/audio--1504197557.flac",
+      "packet_id": "slurp/train/000007/audio--1504197557",
+      "packet_sha256": "450f2bb92ad1dd487b922642e885fe270fed9c8eda5c7620492037c90babd3e5",
+      "sample_id": "slurp:train:000007:audio--1504197557",
+      "sample_rate_hz": 16000,
+      "stratum": "audio",
+      "utterance_id": "slurp:train:000007"
+    },
+    {
+      "audio_seconds": 3.968,
+      "audio_sha256": "0406bfcb5f9e2154a5e2786f62eac4b22df71609db068f37fe01436973bc799b",
+      "headset": true,
+      "id": "slurp:train:000009:audio-1497557594-headset",
+      "key": "slurp:slurp:train:000009:audio-1497557594-headset",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1497557594-headset.flac",
+      "packet_id": "slurp/train/000009/audio-1497557594-headset",
+      "packet_sha256": "cfeceb2d01593138d5407cc20a4ec5ce1f27b5a593c7a74135cd998f32b09011",
+      "sample_id": "slurp:train:000009:audio-1497557594-headset",
+      "sample_rate_hz": 16000,
+      "stratum": "iot",
+      "utterance_id": "slurp:train:000009"
+    },
+    {
+      "audio_seconds": 2.98,
+      "audio_sha256": "a161018123834f7413cff4f41b209c0d2728e154cb8a282ae9c9711f02051d57",
+      "headset": false,
+      "id": "slurp:train:000015:audio-1488524781",
+      "key": "slurp:slurp:train:000015:audio-1488524781",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1488524781.flac",
+      "packet_id": "slurp/train/000015/audio-1488524781",
+      "packet_sha256": "6f0e9302adb62e13e60dac748073ee7e7133de28dd461d2de5ba86a32fc02dac",
+      "sample_id": "slurp:train:000015:audio-1488524781",
+      "sample_rate_hz": 16000,
+      "stratum": "iot",
+      "utterance_id": "slurp:train:000015"
+    },
+    {
+      "audio_seconds": 1.6638125,
+      "audio_sha256": "e1e18aeedf18d9b9da5a48356947cfb82b034e1c890d702e837dd636fabb2d41",
+      "headset": false,
+      "id": "slurp:train:000023:audio-1490956038",
+      "key": "slurp:slurp:train:000023:audio-1490956038",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490956038.flac",
+      "packet_id": "slurp/train/000023/audio-1490956038",
+      "packet_sha256": "963251fbabde70abaca602e7dbe23c6226200b05a4eef54092dbe886da92e17d",
+      "sample_id": "slurp:train:000023:audio-1490956038",
+      "sample_rate_hz": 16000,
+      "stratum": "iot",
+      "utterance_id": "slurp:train:000023"
+    }
+  ],
+  "no_contacts": true,
+  "no_efficacy_sample": true,
+  "packet_metadata_verification": {
+    "all_audio_hashes_match": true,
+    "covered_count": 4,
+    "decoder_gguf_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "mmproj_sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883"
+  },
+  "packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+  "packet_promotion_receipt_sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247",
+  "packet_union_count": 2160,
+  "per_stratum": {
+    "audio": 1,
+    "iot": 3
+  },
+  "readiness": "MODEL-FREE, LABEL-FREE ENGINEERING INPUT; NO EFFICACY SAMPLE; NOT AN EXPOSURE REGISTRATION",
+  "roster_id": "SLURP-NATIVE-TOOLS-ENGINEERING-4-V1",
+  "roster_role": "construction",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20260906,
+  "selection_rule": "Exactly the first four items in the source roster's committed item order; no redraw, no new sampling, and no stratification change. The source roster was originally frozen by core.roster.freeze_roster with one shared random.Random(20260906) across ascending strata and utterance-group exclusion.",
+  "source_dataset_fragment": "configs/dataset/slurp-speech-native-evo-fold-a-1080.json",
+  "source_dataset_fragment_sha256": "4ba55688e80d8d768ec6cfc3ff4bacc9802fb34e4dab54913934015184497215",
+  "source_dataset_split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+  "source_roster": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+  "source_roster_id": "SLURP-EVO-FOLD-A-V2",
+  "source_roster_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+  "source_roster_split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+  "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+  "split_role": "discovery",
+  "strata_counts": {
+    "audio": 1,
+    "iot": 3
+  }
+}
