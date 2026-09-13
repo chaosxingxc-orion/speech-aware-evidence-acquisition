@@ -8,19 +8,19 @@ uses the existing speaker-cluster resampling function when explicitly configured
 from __future__ import annotations
 
 import argparse
-import base64
 import hashlib
 import json
-import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
-from ..contracts import ExecutionPlan, TraceRecord
-from ..core.attempts import STATE_ABORTED
-from ..core.bundle.delivery_replay import canonical
 from ..core.bundle.verify import verify_bundle
+from ..core.bundle.raw_contact_source import (
+    RawContactSourceError,
+    _load_verified_trace,
+    verify_aborted_contact_source,
+)
 from ..core.roster import read_roster
 from ..core.scoring_receipt import SavedScoreReceiptRef, verify_complete_score_receipt
 from ..data.lock import load_lock
@@ -406,98 +406,6 @@ def _raw_candidate_ids(
     return tuple(candidate_ids)
 
 
-def _raw_trace_channels(
-    trace_path: Path, *, trace_sha256: str
-) -> dict[str, dict[str, Mapping[str, object]]]:
-    """Verify unsealed raw bytes without inventing a manifest for failed sealing."""
-    if _sha256_file(trace_path) != trace_sha256:
-        raise SlurpTopNAnalysisError("raw trace changed after its pinned verification")
-    channels: dict[str, dict[str, Mapping[str, object]]] = {}
-    seen: set[str] = set()
-    for number, line in enumerate(trace_path.read_text(encoding="utf-8").splitlines(), 1):
-        if not line.strip():
-            continue
-        try:
-            document = json.loads(line, object_pairs_hook=_raw_json_object)
-            record = TraceRecord(
-                channel=document["channel"], record_id=document["record_id"],
-                payload=document["payload"],
-            ).validate()
-        except (KeyError, TypeError, ValueError) as error:
-            raise SlurpTopNAnalysisError(f"invalid raw trace line {number}: {error}") from error
-        if record.record_id in seen:
-            raise SlurpTopNAnalysisError(f"raw trace duplicates record_id {record.record_id!r}")
-        seen.add(record.record_id)
-        channels.setdefault(record.channel, {})[record.record_id] = dict(record.payload)
-    return channels
-
-
-def _raw_request_id(record_id: object, suffix: str) -> str:
-    if not isinstance(record_id, str) or not record_id.endswith(suffix):
-        raise SlurpTopNAnalysisError(
-            f"raw trace record ID must end with {suffix!r}: {record_id!r}"
-        )
-    request_id = record_id[: -len(suffix)]
-    if not request_id:
-        raise SlurpTopNAnalysisError("raw trace request ID is empty")
-    return request_id
-
-
-def _transport_response_sha256(
-    raw_wire: bytes,
-    *,
-    expected_text: str,
-    expected_usage: object,
-    expected_finish_reason: object,
-) -> str:
-    """Rebuild the adapter envelope hash from the immutable wire bytes."""
-    try:
-        parsed = json.loads(raw_wire.decode("utf-8"), object_pairs_hook=_raw_json_object)
-        choice = parsed["choices"][0]
-        message = choice["message"]
-        response_tool_calls = message.get("tool_calls") if isinstance(message, Mapping) else None
-        argument_errors: list[int] = []
-        if isinstance(response_tool_calls, list) and response_tool_calls:
-            canonical_calls = []
-            for index, call in enumerate(response_tool_calls):
-                function = call["function"]
-                name = function["name"]
-                raw_arguments = function.get("arguments")
-                try:
-                    arguments = json.loads(raw_arguments) if isinstance(raw_arguments, str) else None
-                    if not isinstance(arguments, dict):
-                        raise ValueError("tool call arguments must decode to an object")
-                except (TypeError, ValueError):
-                    arguments = {}
-                    argument_errors.append(index)
-                canonical_calls.append({"name": name, "arguments": arguments})
-            text = json.dumps(canonical_calls)
-        else:
-            text = message["content"]
-        usage = {
-            str(key): int(value)
-            for key, value in dict(parsed.get("usage", {})).items()
-            if not isinstance(value, Mapping)
-        }
-        envelope: dict[str, object] = {"text": text, "usage": usage}
-        envelope["wire_response_b64"] = base64.b64encode(raw_wire).decode("ascii")
-        envelope["wire_response_sha256"] = hashlib.sha256(raw_wire).hexdigest()
-        envelope["wire_finish_reason"] = choice.get("finish_reason")
-        if isinstance(response_tool_calls, list) and response_tool_calls:
-            envelope["tool_calls"] = response_tool_calls
-            if argument_errors:
-                envelope["tool_call_argument_parse_errors"] = argument_errors
-        if isinstance(choice, Mapping) and "logprobs" in choice:
-            envelope["logprobs"] = choice["logprobs"]
-    except (KeyError, TypeError, ValueError, IndexError, UnicodeError) as error:
-        raise SlurpTopNAnalysisError(
-            f"wire response cannot reconstruct the transport envelope: {error}"
-        ) from error
-    if text != expected_text or usage != expected_usage or envelope["wire_finish_reason"] != expected_finish_reason:
-        raise SlurpTopNAnalysisError("wire response disagrees with normalized response fields")
-    return hashlib.sha256(json.dumps(envelope).encode("utf-8")).hexdigest()
-
-
 def _raw_source_rows(
     trace_path: Path,
     *,
@@ -508,106 +416,34 @@ def _raw_source_rows(
     trace_sha256: str,
     expected_audio_seconds: float,
 ) -> tuple[RawProposalRow, ...]:
-    channels = _raw_trace_channels(trace_path, trace_sha256=trace_sha256)
-    required = ("MODEL_REQUEST", "MODEL_RESPONSE", "MODEL_WIRE_RESPONSE", "COST")
-    missing_channels = [channel for channel in required if channel not in channels]
-    if missing_channels:
-        raise SlurpTopNAnalysisError(f"raw trace lacks required channels: {missing_channels}")
-    indexed = {}
-    for channel in required:
-        indexed[channel] = {}
-        for record_id, payload in channels[channel].items():
-            suffix = {
-                "MODEL_REQUEST": "/request",
-                "MODEL_RESPONSE": "/response",
-                "MODEL_WIRE_RESPONSE": "/wire-response",
-                "COST": "/cost",
-            }[channel]
-            request_id = _raw_request_id(record_id, suffix)
-            if request_id in indexed[channel]:
-                raise SlurpTopNAnalysisError(
-                    f"raw trace has duplicate {channel} request ID {request_id!r}"
-                )
-            indexed[channel][request_id] = payload
-    if any(len(indexed[channel]) != expected_contacts for channel in required):
-        raise SlurpTopNAnalysisError(
-            "raw trace required channels do not each contain expected_contacts records"
+    """Parse labels only after the shared carrier contact verifier succeeds."""
+    if expected_contacts != len(expected_ids):
+        raise SlurpTopNAnalysisError("raw expected contact count does not match roster")
+    try:
+        _trace_records, contacts = _load_verified_trace(
+            {"path": str(trace_path), "sha256": trace_sha256},
+            expected_sample_ids=expected_ids,
+            expected_audio_seconds=expected_audio_seconds,
         )
-    request_ids = set(indexed["MODEL_REQUEST"])
-    if any(set(indexed[channel]) != request_ids for channel in required[1:]):
-        raise SlurpTopNAnalysisError(
-            "raw trace required channels do not have identical request IDs"
-        )
-    if len(request_ids) != len(expected_ids):
-        raise SlurpTopNAnalysisError("raw request count does not match the pinned roster")
-    by_sample: dict[str, RawProposalRow] = {}
-    audio_seconds = 0.0
-    for request_id, request in indexed["MODEL_REQUEST"].items():
-        inner = request.get("payload")
-        if (
-            not isinstance(inner, Mapping)
-            or inner.get("request_id") != request_id
-            or not isinstance(inner.get("sample_id"), str)
-            or not inner["sample_id"]
-            or request.get("payload_sha256") != hashlib.sha256(canonical(inner)).hexdigest()
-        ):
-            raise SlurpTopNAnalysisError(f"raw request {request_id!r} identity/hash is invalid")
-        sample_id = inner["sample_id"]
-        if sample_id in by_sample:
-            raise SlurpTopNAnalysisError(f"raw trace has duplicate sample ID {sample_id!r}")
-        response = indexed["MODEL_RESPONSE"][request_id]
-        text = response.get("text")
-        if (
-            not isinstance(text, str)
-            or response.get("response_text_sha256")
-            != hashlib.sha256(text.encode("utf-8")).hexdigest()
-        ):
-            raise SlurpTopNAnalysisError(f"raw response {request_id!r} text hash is invalid")
-        wire = indexed["MODEL_WIRE_RESPONSE"][request_id]
-        wire_request = wire.get("request_id")
-        if wire_request != request_id or wire.get("sample_id") != sample_id:
-            raise SlurpTopNAnalysisError(f"raw wire response {request_id!r} identity is invalid")
-        if wire.get("finish_reason") != "stop":
-            raise SlurpTopNAnalysisError(f"raw wire response {request_id!r} did not stop normally")
-        try:
-            raw_wire = base64.b64decode(wire["response_b64"], validate=True)
-        except (KeyError, TypeError, ValueError) as error:
-            raise SlurpTopNAnalysisError(
-                f"raw wire response {request_id!r} bytes are invalid"
-            ) from error
-        wire_sha = hashlib.sha256(raw_wire).hexdigest()
-        if wire.get("response_sha256") != wire_sha:
-            raise SlurpTopNAnalysisError(f"raw response {request_id!r} wire hash is invalid")
-        normalized_sha = _transport_response_sha256(
-            raw_wire,
-            expected_text=text,
-            expected_usage=response.get("usage", {}),
-            expected_finish_reason=wire.get("finish_reason"),
-        )
-        if response.get("response_sha256") != normalized_sha:
-            raise SlurpTopNAnalysisError(
-                f"raw response {request_id!r} normalized envelope hash is invalid"
+    except RawContactSourceError as error:
+        raise SlurpTopNAnalysisError(str(error)) from error
+    rows = []
+    for sample_id in expected_ids:
+        contact = contacts[sample_id]
+        response = _map(contact["response"], f"raw response {sample_id!r}")
+        rows.append(
+            RawProposalRow(
+                sample_id,
+                str(contact["request_id"]),
+                _raw_candidate_ids(
+                    response.get("text"),
+                    sample_id=sample_id,
+                    legal_intent_ids=legal_intent_ids,
+                    max_candidates=max_candidates,
+                ),
             )
-        cost = indexed["COST"][request_id]
-        if cost.get("request_id", request_id) != request_id or cost.get("calls") != 1:
-            raise SlurpTopNAnalysisError(f"raw cost {request_id!r} identity/calls are invalid")
-        audio = cost.get("audio_seconds")
-        if isinstance(audio, bool) or not isinstance(audio, (int, float)) or not math.isfinite(audio) or audio < 0:
-            raise SlurpTopNAnalysisError("raw cost audio_seconds must be finite and nonnegative")
-        audio_seconds += audio
-        try:
-            candidate_ids = _raw_candidate_ids(
-                text, sample_id=sample_id, legal_intent_ids=legal_intent_ids,
-                max_candidates=max_candidates,
-            )
-        except SlurpTopNAnalysisError:
-            raise
-        by_sample[sample_id] = RawProposalRow(sample_id, request_id, candidate_ids)
-    if not math.isclose(audio_seconds, expected_audio_seconds, rel_tol=1e-9, abs_tol=1e-6):
-        raise SlurpTopNAnalysisError("raw trace audio cost differs from the aborted attempt")
-    if set(by_sample) != set(expected_ids):
-        raise SlurpTopNAnalysisError("raw response sample IDs do not match the pinned roster")
-    return tuple(by_sample[sample_id] for sample_id in expected_ids)
+        )
+    return tuple(rows)
 
 
 def _raw_aggregate(
@@ -735,44 +571,36 @@ def run_raw_source(
     if len(full_ids) != expected_contacts or not set(primary_ids) <= set(full_ids):
         raise SlurpTopNAnalysisError("raw source roster does not match expected contacts")
     metadata = _metadata(spec.get("metadata"), set(full_ids))
+
     trace_path, trace_sha = _pin(raw.get("raw_trace"), "raw trace")
     attempt_path, attempt_sha = _pin(raw.get("attempt"), "aborted source attempt")
     plan_path, plan_sha = _pin(raw.get("generation_plan"), "source generation plan")
-    attempt = _map(json.loads(attempt_path.read_text()), "aborted source attempt")
-    plan_doc = _map(json.loads(plan_path.read_text()), "source generation plan")
     try:
-        plan = ExecutionPlan(**_map(plan_doc.get("execution_plan"), "execution plan")).validate()
-    except (TypeError, ValueError) as error:
-        raise SlurpTopNAnalysisError(f"source execution plan is invalid: {error}") from error
-    if attempt.get("schema") != "saea-attempt-v1" or attempt.get("state") != STATE_ABORTED:
-        raise SlurpTopNAnalysisError("raw source must have an ABORTED attempt")
-    for key in ("run_id", "attempt_id", "carrier_lock_key"):
-        if attempt.get(key) != getattr(plan, key):
-            raise SlurpTopNAnalysisError(f"aborted attempt differs from source plan: {key}")
-    actual = _map(attempt.get("actual"), "attempt actual cost")
-    reserved = _map(attempt.get("reserved"), "attempt reserved cost")
-    if (actual.get("calls") != expected_contacts
-            or reserved.get("calls") != plan.planned_model_calls
-            or reserved.get("audio_seconds") != plan.planned_speech_audio_seconds
-            or expected_contacts > plan.planned_model_calls):
-        raise SlurpTopNAnalysisError("aborted attempt cost does not match plan and roster")
-    actual_audio = actual.get("audio_seconds")
-    if (isinstance(actual_audio, bool) or not isinstance(actual_audio, (int, float))
-            or not math.isfinite(actual_audio) or not 0 <= actual_audio <= plan.planned_speech_audio_seconds):
-        raise SlurpTopNAnalysisError("aborted attempt audio cost is invalid")
-    expected_split_hash = raw.get("split_identity_hash")
-    if (plan.carrier_lock_key != "slurp"
-            or plan.split_identity_hash != expected_split_hash
-            or expected_split_hash != split_identity_hash(prefixed("slurp", full_ids))):
-        raise SlurpTopNAnalysisError("raw source split identity does not match plan and full roster")
-    release_path, release_sha = _pin(release.get("registration"), "source quality read registration")
-    release_doc = _map(json.loads(release_path.read_text()), "source quality read registration")
+        verified_source = verify_aborted_contact_source(
+            attempt_pin=raw["attempt"],
+            trace_pin=raw["raw_trace"],
+            generation_plan_pin=raw["generation_plan"],
+            expected_sample_ids=full_ids,
+        )
+    except RawContactSourceError as error:
+        raise SlurpTopNAnalysisError(
+            f"aborted contact source verification failed: {error}"
+        ) from error
+    release_path, release_sha = _pin(
+        release.get("registration"), "source quality read registration"
+    )
+    release_doc = _map(
+        json.loads(release_path.read_text(encoding="utf-8")),
+        "source quality read registration",
+    )
     if release_doc.get("experiment_id") != release["release_id"]:
         raise SlurpTopNAnalysisError("source quality read registration ID differs")
     for key, binding in (
-        ("source_attempt", raw["attempt"]), ("source_trace", raw["raw_trace"]),
+        ("source_attempt", raw["attempt"]),
+        ("source_trace", raw["raw_trace"]),
         ("source_generation_plan", raw["generation_plan"]),
-        ("full_roster", spec["full_roster"]), ("primary_roster", spec["roster"]),
+        ("full_roster", spec["full_roster"]),
+        ("primary_roster", spec["roster"]),
         ("metadata", spec["metadata"]),
     ):
         if release_doc.get(key) != binding:
@@ -781,14 +609,23 @@ def run_raw_source(
     if isinstance(width, bool) or not isinstance(width, int) or not 1 <= width <= 3:
         raise SlurpTopNAnalysisError("raw max_candidates must be an integer from 1 through 3")
     legal_ids = _raw_legal_ids(raw.get("legal_intent_ids"))
-    rows = _raw_source_rows(
-        trace_path, expected_ids=full_ids,
-        legal_intent_ids=legal_ids,
-        max_candidates=width,
-        expected_contacts=expected_contacts,
-        trace_sha256=trace_sha,
-        expected_audio_seconds=float(actual_audio),
-    )
+    rows = []
+    for sample_id in full_ids:
+        contact = verified_source.contacts_by_sample_id[sample_id]
+        response = _map(contact["response"], f"raw response {sample_id!r}")
+        rows.append(
+            RawProposalRow(
+                sample_id,
+                str(contact["request_id"]),
+                _raw_candidate_ids(
+                    response.get("text"),
+                    sample_id=sample_id,
+                    legal_intent_ids=legal_ids,
+                    max_candidates=width,
+                ),
+            )
+        )
+    rows = tuple(rows)
     reference_binding = _map(
         _map(spec.get("source_diagnostics"), "analysis.source_diagnostics").get("reference_source"),
         "raw reference source",
@@ -820,9 +657,13 @@ def run_raw_source(
                 rows, references, metadata, ordered, settings
             )
             for width_key, subgroup in reports[name]["by_observed_distinct_width"].items():
-                member_ids = {row.sample_id for row in rows if len(set(row.candidate_ids)) == int(width_key)}
+                member_ids = {
+                    row.sample_id for row in rows
+                    if len(set(row.candidate_ids)) == int(width_key)
+                }
                 subgroup["speaker_ci90_percent"] = _raw_uncertainty(
-                    rows, references, metadata, tuple(s for s in ordered if s in member_ids), settings
+                    rows, references, metadata,
+                    tuple(s for s in ordered if s in member_ids), settings
                 )
     result = {
         "schema": "saea-slurp-raw-source-diagnostics-v1",
@@ -833,7 +674,7 @@ def run_raw_source(
             "attempt": {"path": str(attempt_path), "sha256": attempt_sha},
             "generation_plan": {"path": str(plan_path), "sha256": plan_sha},
             "raw_trace": {"path": str(trace_path), "sha256": trace_sha},
-            "attempt_state": STATE_ABORTED,
+            "attempt_state": verified_source.attempt.get("state"),
             "expected_contacts": expected_contacts,
         },
         "source_quality_read_release": {
