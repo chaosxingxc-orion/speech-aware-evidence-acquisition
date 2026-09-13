@@ -71,6 +71,7 @@ def _config(
     max_revisions: int,
     max_contacts: int,
     reviewer_task_tool: bool = False,
+    exhaustion_policy: str = "raise",
 ) -> NativeEpisodeConfig:
     return NativeEpisodeConfig(
         episode_id="native-role-runner-proof-v1",
@@ -90,6 +91,7 @@ def _config(
             for phase in PHASES
         ),
         max_contacts=max_contacts,
+        exhaustion_policy=exhaustion_policy,
     )
 
 
@@ -177,6 +179,7 @@ class _ActualEpisodeHarness:
         overlap: bool = False,
         arm: str = "speech-feature-query-native-tools",
         reviewer_task_tool: bool = False,
+        exhaustion_policy: str = "raise",
     ):
         self.world = _World(tmp_path)
         self.world.samples = self.world.samples[:sample_count]
@@ -192,6 +195,7 @@ class _ActualEpisodeHarness:
             max_revisions=max_revisions,
             max_contacts=max_contacts,
             reviewer_task_tool=reviewer_task_tool,
+            exhaustion_policy=exhaustion_policy,
         )
         self.reviewer_task_tool = reviewer_task_tool
         self.planner_actions = planner_actions
@@ -452,6 +456,11 @@ def test_actual_native_episode_accepts_only_solver_and_preserves_shared_fit_and_
     for result in summary.results:
         sample_id = result.sample_id
         receipt = result.native_episode_receipt
+        assert set(receipt) == {
+            "role_visits",
+            "planner_routes",
+            "accepted_solver_receipt",
+        }
         assert [visit["stage"] for visit in receipt["role_visits"]] == [
             "perception",
             "solver",
@@ -562,6 +571,60 @@ def test_actual_native_episode_contact_cap_refusal_preserves_completed_contacts(
         if channel == "MODEL_RESPONSE"
     ]
     assert len(model_responses) == 4
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+@pytest.mark.parametrize(
+    ("max_revisions", "planner_actions", "solver_visit", "terminal_action"),
+    (
+        (0, ("REVISE",), 1, "REVISE"),
+        (0, ("ACQUIRE",), 1, "ACQUIRE"),
+        (1, ("REVISE", "REVISE"), 2, "REVISE"),
+        (1, ("REVISE", "ACQUIRE"), 2, "ACQUIRE"),
+    ),
+)
+def test_actual_opt_in_terminal_delivery_preserves_last_solver_trace(
+    tmp_path,
+    max_revisions,
+    planner_actions,
+    solver_visit,
+    terminal_action,
+):
+    harness = _ActualEpisodeHarness(
+        tmp_path,
+        sample_count=1,
+        max_revisions=max_revisions,
+        max_contacts=4 + 3 * max_revisions,
+        planner_actions=planner_actions,
+        exhaustion_policy="deliver-latest-solver",
+    )
+    try:
+        summary = harness.run()
+    finally:
+        close_summary = harness.close()
+
+    result = summary.results[0]
+    receipt = result.native_episode_receipt
+    terminal = receipt["terminal_solver_receipt"]["final_contact"]
+    assert close_summary["request_count"] == len(result.contacts) == 4 + 3 * max_revisions
+    assert result.final_response_text == f"solver-answer:s1:visit:{solver_visit}"
+    assert "accepted_solver_receipt" not in receipt
+    assert terminal == harness.traced_contact(terminal["agent_contact_id"])
+    assert terminal["response_text_sha256"] == harness.dispatched[
+        ("s1", "solver", solver_visit, 1)
+    ]["response_text_sha256"]
+    assert receipt["terminal_disposition"] == {
+        "reason": "revision_limit",
+        "planner_action": terminal_action,
+        "revision_count": max_revisions,
+        "planner_accepted": False,
+    }
+    terminal_traces = [
+        payload
+        for channel, _record_id, payload in harness.trace.records
+        if channel == "USE" and payload.get("use_native_episode") == receipt
+    ]
+    assert len(terminal_traces) == 1
 
 
 @pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")

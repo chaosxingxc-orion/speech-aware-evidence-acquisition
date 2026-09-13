@@ -21,6 +21,7 @@ class NativeEpisodeConfig:
     actions: tuple[str, str, str]
     roles: tuple[NativeEpisodeRole, ...]
     max_contacts: int
+    exhaustion_policy: str = "raise"
 
     def role(self, kind: str) -> NativeEpisodeRole:
         return next(role for role in self.roles if role.role_kind == kind)
@@ -50,15 +51,28 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         return None
     if not active:
         raise ValueError("native_episode requires the registered native-role-episode program")
-    if not isinstance(raw, Mapping) or set(raw) != {
+    required_fields = {
         "schema", "episode_id", "max_revisions", "actions", "roles",
-    } or raw["schema"] != "saea-native-episode-config-v1":
+    }
+    optional_fields = {"exhaustion_policy"}
+    if (
+        not isinstance(raw, Mapping)
+        or set(raw) - required_fields - optional_fields
+        or not required_fields <= set(raw)
+        or raw["schema"] != "saea-native-episode-config-v1"
+    ):
         raise ValueError("native_episode has unknown or missing fields")
     if not isinstance(raw["episode_id"], str) or not raw["episode_id"].strip():
         raise ValueError("native episode identity must be nonempty")
     revisions = raw["max_revisions"]
     if isinstance(revisions, bool) or not isinstance(revisions, int) or revisions < 0:
         raise ValueError("max_revisions must be a nonnegative integer")
+    exhaustion_policy = raw.get("exhaustion_policy", "raise")
+    if (
+        not isinstance(exhaustion_policy, str)
+        or exhaustion_policy not in {"raise", "deliver-latest-solver"}
+    ):
+        raise ValueError("native episode exhaustion policy is invalid")
     actions = raw["actions"]
     if not isinstance(actions, Mapping) or set(actions) != {"accept", "revise", "acquire"}:
         raise ValueError("native actions must name accept, revise and acquire")
@@ -103,4 +117,11 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     ceiling = roles[0].max_iterations + (revisions + 1) * sum(r.max_iterations for r in roles[1:])
     if program.max_contacts != ceiling:
         raise ValueError("program contact ceiling must equal the bounded native graph ceiling")
-    return NativeEpisodeConfig(raw["episode_id"], revisions, action_values, tuple(roles), ceiling)
+    return NativeEpisodeConfig(
+        raw["episode_id"],
+        revisions,
+        action_values,
+        tuple(roles),
+        ceiling,
+        exhaustion_policy,
+    )

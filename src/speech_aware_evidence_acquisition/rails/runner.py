@@ -1930,28 +1930,79 @@ async def _invoke_native_role_episode(
                 delivery_allowed=lambda _role, output: isinstance(output, str) and bool(output.strip()),
             )
         workflow = build_native_episode(
-            spec=NativeEpisodeSpec(config.episode_id, config.max_revisions, NativeEpisodeActions(*config.actions)),
+            spec=NativeEpisodeSpec(
+                config.episode_id,
+                config.max_revisions,
+                NativeEpisodeActions(*config.actions),
+                config.exhaustion_policy,
+            ),
             nodes=NativeEpisodeNodes(**nodes),
             role_input_builder=role_input,
         )
         result = await workflow.invoke_direct(state.prepared.task_contract, (), session=session)
         settle()
         receipt = result["state"]
-        accepted = receipt["accepted_solver_receipt"]["final_contact"]
-        completion = completed.get(accepted["agent_contact_id"])
+        accepted_receipt = receipt.get("accepted_solver_receipt")
+        terminal_receipt = receipt.get("terminal_solver_receipt")
+        if isinstance(accepted_receipt, Mapping) and terminal_receipt is None:
+            final_solver_receipt = accepted_receipt
+            terminal_disposition = None
+        elif accepted_receipt is None and isinstance(terminal_receipt, Mapping):
+            terminal_disposition = receipt.get("terminal_disposition")
+            if (
+                not isinstance(terminal_disposition, Mapping)
+                or terminal_disposition.get("reason") != "revision_limit"
+                or terminal_disposition.get("planner_action")
+                not in {config.actions[1], config.actions[2]}
+                or terminal_disposition.get("revision_count") != config.max_revisions
+                or terminal_disposition.get("planner_accepted") is not False
+            ):
+                raise RailsRunnerError("native terminal delivery disposition is invalid")
+            planner_routes = receipt.get("planner_routes")
+            if (
+                not isinstance(planner_routes, Sequence)
+                or isinstance(planner_routes, (str, bytes))
+                or not planner_routes
+                or not isinstance(planner_routes[-1], Mapping)
+                or planner_routes[-1].get("action")
+                != terminal_disposition["planner_action"]
+                or planner_routes[-1].get("revision_count")
+                != terminal_disposition["revision_count"]
+            ):
+                raise RailsRunnerError("native terminal delivery route is invalid")
+            final_solver_receipt = terminal_receipt
+        else:
+            raise RailsRunnerError("native episode has no unambiguous final Solver receipt")
+        accepted = final_solver_receipt.get("final_contact")
+        if not isinstance(accepted, Mapping):
+            raise RailsRunnerError("native final Solver receipt has no final contact")
+        solver_visits = [
+            visit
+            for visit in receipt.get("role_visits", ())
+            if isinstance(visit, Mapping) and visit.get("stage") == "solver"
+        ]
+        if (
+            not solver_visits
+            or solver_visits[-1].get("execution_receipt") != final_solver_receipt
+        ):
+            raise RailsRunnerError("native final receipt is not the latest Solver visit")
+        completion = completed.get(accepted.get("agent_contact_id"))
         if (
             completion is None or completion.request_sha256 != accepted["request_sha256"]
             or completion.response_sha256 != accepted["response_sha256"]
             or completion.response_text_sha256 != accepted["response_text_sha256"]
             or result["delivery"]["actor_output"] != completion.text
         ):
-            raise RailsRunnerError("native acceptance is not bound to its actual Solver response")
+            raise RailsRunnerError("native delivery is not bound to its actual Solver response")
         trace = TraceBuffer(run_id)
         for key in sorted(state.trace_buffers):
             trace.extend_from(state.trace_buffers[key])
         compact_receipt = {key: receipt[key] for key in (
             "role_visits", "planner_routes", "accepted_solver_receipt",
-        )}
+        ) if key in receipt}
+        if terminal_disposition is not None:
+            compact_receipt["terminal_solver_receipt"] = dict(final_solver_receipt)
+            compact_receipt["terminal_disposition"] = dict(terminal_disposition)
         trace.emit("USE", f"{state.prepared.sample.sample_id}/{program.program_id}/native-episode", {
             "use_native_episode": compact_receipt,
         })

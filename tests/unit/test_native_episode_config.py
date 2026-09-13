@@ -5,7 +5,10 @@ from copy import deepcopy
 import pytest
 
 from speech_aware_evidence_acquisition.rails.controllers import PhaseProgram, PhaseSpec
-from speech_aware_evidence_acquisition.rails.native_episode_config import load_native_episode_config
+from speech_aware_evidence_acquisition.rails.native_episode_config import (
+    NativeEpisodeConfig,
+    load_native_episode_config,
+)
 
 
 def program(*, ceiling=4, rule="native-role-episode"):
@@ -49,6 +52,29 @@ def test_revision_and_inner_tool_iterations_determine_the_ceiling():
     assert parsed.role("solver").tool_names == ()
     with pytest.raises(ValueError, match="ceiling"):
         load_native_episode_config(values, program(ceiling=15))
+
+
+def test_exhaustion_policy_defaults_to_raise_and_can_opt_in_to_delivery():
+    parsed = load_native_episode_config(config(), program())
+    assert parsed.exhaustion_policy == "raise"
+    assert NativeEpisodeConfig(
+        parsed.episode_id,
+        parsed.max_revisions,
+        parsed.actions,
+        parsed.roles,
+        parsed.max_contacts,
+    ).exhaustion_policy == "raise"
+
+    values = config()
+    values["native_episode"]["exhaustion_policy"] = "deliver-latest-solver"
+    assert (
+        load_native_episode_config(values, program()).exhaustion_policy
+        == "deliver-latest-solver"
+    )
+
+    values["native_episode"]["exhaustion_policy"] = "unknown"
+    with pytest.raises(ValueError, match="exhaustion policy"):
+        load_native_episode_config(values, program())
 
 
 @pytest.mark.parametrize("kind", ["solver", "perception"])
