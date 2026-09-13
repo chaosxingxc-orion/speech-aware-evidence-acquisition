@@ -204,7 +204,7 @@ def _tool_calls(completion: CoreCompletion) -> list[ToolCall] | None:
 
 def _wire_turn(
     completion: CoreCompletion,
-) -> tuple[object, list[ToolCall] | None, str]:
+) -> tuple[object | None, list[ToolCall] | None, str]:
     """Validate and project one source-bound native assistant turn.
 
     The original wire message is the only assistant content accepted here.
@@ -241,16 +241,89 @@ def _wire_turn(
             "finish_reason 'tool_calls' requires native tool_calls"
         )
     content = message.get("content")
-    if content is None:
-        raise FrozenCoreRoleModelError(
-            "metered completion wire message content is null; "
-            "AssistantMessage does not support null content"
-        )
-    if not isinstance(content, (str, list, tuple)):
+    if content is not None and not isinstance(content, (str, list, tuple)):
         raise FrozenCoreRoleModelError(
             "metered completion wire message content is not framework-compatible"
         )
     return content, calls, finish_reason
+
+
+def project_native_assistant_message(
+    completion: CoreCompletion,
+) -> AssistantMessage:
+    """Project one preserved native wire turn into OpenJiuwen losslessly.
+
+    OpenJiuwen 0.1.16 requires non-null assistant content. A validated wire
+    ``null`` is represented as an empty framework string; every other content
+    value is preserved. Reversal remains possible only with the same
+    source-bound ``CoreCompletion`` and its unchanged wire bytes.
+    """
+
+    if not isinstance(completion, CoreCompletion) or not _has_source_binding(
+        completion
+    ):
+        raise FrozenCoreRoleModelError(
+            "native assistant projection requires a CoreCompletion with source binding"
+        )
+    content, calls, finish_reason = _wire_turn(completion)
+    return AssistantMessage(
+        content="" if content is None else content,
+        tool_calls=calls,
+        finish_reason=finish_reason,
+    )
+
+
+def restore_native_assistant_wire_message(
+    message: AssistantMessage,
+    *,
+    completion: CoreCompletion,
+) -> Mapping[str, object]:
+    """Restore the preserved wire message after exact projection validation.
+
+    An empty assistant string never implies a source ``null`` by itself. The
+    helper reprojects the supplied completion, compares actual OpenJiuwen
+    serialization (including raw call ids, names and argument text), then
+    returns a detached JSON-shaped copy of the original wire message. Empty
+    source strings and structured content therefore remain distinct from
+    source nulls.
+    """
+
+    if not isinstance(completion, CoreCompletion) or not _has_source_binding(
+        completion
+    ):
+        raise FrozenCoreRoleModelError(
+            "native assistant restoration requires a CoreCompletion with source binding"
+        )
+    if not isinstance(message, AssistantMessage):
+        raise FrozenCoreRoleModelError(
+            "native assistant restoration requires an AssistantMessage"
+        )
+    expected = project_native_assistant_message(completion)
+    if _document(message) != _document(expected):
+        raise FrozenCoreRoleModelError(
+            "framework projected content or native tool calls were changed"
+        )
+    try:
+        original = completion.original_message
+    except ValueError as error:
+        raise FrozenCoreRoleModelError(
+            f"metered completion wire metadata is invalid: {error}"
+        ) from error
+    if original is None:
+        raise FrozenCoreRoleModelError(
+            "metered completion requires preserved wire metadata"
+        )
+    restored = _thaw_wire_value(original)
+    assert isinstance(restored, dict)
+    return restored
+
+
+def _thaw_wire_value(value: object) -> object:
+    if isinstance(value, Mapping):
+        return {key: _thaw_wire_value(item) for key, item in value.items()}
+    if isinstance(value, tuple):
+        return [_thaw_wire_value(item) for item in value]
+    return value
 
 
 def _has_source_binding(completion: CoreCompletion) -> bool:
@@ -369,12 +442,7 @@ class FrozenCoreRoleModel:
             raise FrozenCoreRoleModelError(
                 f"metered completion binding failed: {error}"
             ) from error
-        content, calls, finish_reason = _wire_turn(completion)
-        return AssistantMessage(
-            content=content,
-            tool_calls=calls,
-            finish_reason=finish_reason,
-        )
+        return project_native_assistant_message(completion)
 
 
 class _RoleAuthorityRail(AgentRail):
@@ -603,4 +671,6 @@ __all__ = [
     "NativeRoleNodeSpec",
     "NativeRoleWorkflow",
     "build_native_role_workflow",
+    "project_native_assistant_message",
+    "restore_native_assistant_wire_message",
 ]
