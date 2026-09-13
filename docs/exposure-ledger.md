@@ -3429,3 +3429,21 @@ SAEA-SLURP-NATIVE-KNOWLEDGE-PROOF-V1 stopped during tool-dispatcher construction
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2026-09-13T15:33:52.605514+00:00 | SAEA-SLURP-NATIVE-KNOWLEDGE-PROOF-RECOVERY-FIT-V1 | bounded-discovery-probe | Single recovery of zero-contact native initialization failure; full candidate slot union before Solver. | Frozen Q4_K_M; prepared speech; no mmproj; c65536 np4 max256. Reviewer task-contract tool; automatic named-store supply. | slurp exposed four-row TRAIN | discovery | 4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb | no | 176 | 117 | 1.0 | Original proof, zero-contact failed bridge and original four rows remain preserved. | docs/readiness/2026-09-13-slurp-native-knowledge-proof-recovery-v1/dynamic-fit-plan-v1.json | REGISTERED BEFORE CONTACT. Plan SHA256 9625375455efafe44fbee5c7ea5a1854aeb11de06b6d052d84957afe2afb2cc3; runtime protocol 99e4970abad936e01fac3f119ad5653b32a5f1df4b425ff331f9d940fb939b70. One joint GPU hour across generation and fit; same unused 44/176 ceilings. No scoring, ASR, new encoding, roster draw, or extra knowledge dose. Attach only to serving-slurp-native-knowledge-proof-np4-v1. Second failure stops this flight; no additional recovery registration. |
 | 2026-09-13T15:33:52.605514+00:00 | SAEA-SLURP-NATIVE-KNOWLEDGE-PROOF-RECOVERY-V1 | bounded-discovery-probe | Single recovery of zero-contact native initialization failure; full candidate slot union before Solver. | Frozen Q4_K_M; prepared speech; no mmproj; c65536 np4 max256. Reviewer task-contract tool; automatic named-store supply. | slurp exposed four-row TRAIN | discovery | 4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb | no | 44 | 117 | 1.0 | Original proof, zero-contact failed bridge and original four rows remain preserved. | docs/readiness/2026-09-13-slurp-native-knowledge-proof-recovery-v1/generation-plan-v1.json | REGISTERED BEFORE CONTACT. Plan SHA256 2cde7c1662934dd2d28624cb87058d7856cd5daa9f83555167d3f211a4c0db74; runtime protocol 99e4970abad936e01fac3f119ad5653b32a5f1df4b425ff331f9d940fb939b70. One joint GPU hour across generation and fit; same unused 44/176 ceilings. No scoring, ASR, new encoding, roster draw, or extra knowledge dose. Attach only to serving-slurp-native-knowledge-proof-np4-v1. Second failure stops this flight; no additional recovery registration. |
+
+## 2026-09-13: Close native knowledge bridge after its sole recovery
+
+The original SAEA-SLURP-NATIVE-KNOWLEDGE-PROOF-V1 and its sole recovery both
+stopped with zero model, tokenizer, analytical-tool, encoder and scorer contacts.
+The recovery failed in the first Perception callback before client request
+preparation: OpenJiuwen stripped one terminal system-prompt newline while the
+registered request retained it. Structured output was not the cause. Root released
+the lease and used the existing durable attempt API to mark the zero-contact
+opened attempt ABORTED. Preserve consumed=no on all four registration rows.
+
+The immutable closure receipt has SHA-256
+fc44b1f8cc7a21c776724e08a2da0e6a3b6d701f0e037b39fb76a2221f488a86.
+The executed checkout 657ce3a3 stays frozen; successor experiment cells are
+held/check-only. The v3 template is prospective model-free compatibility work,
+not another GPU admission. Do not retry this closed flight. See
+[the closure and root-cause analysis](readiness/2026-09-13-slurp-native-knowledge-proof-closure-v1.md).
+The resident np4 decoder has no active worker; no new quality result is claimed.

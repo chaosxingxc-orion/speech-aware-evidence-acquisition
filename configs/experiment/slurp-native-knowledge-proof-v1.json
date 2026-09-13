@@ -8,12 +8,11 @@
       "run_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-PROOF-V1",
       "attempt_id": "attempt-slurp-native-knowledge-proof-generation-v1",
       "allowed_execution_stages": [
-        "check",
-        "worker"
+        "check"
       ],
       "readiness": {
-        "state": "ready",
-        "reason": "Root admits the registered four-row engineering bridge after compact-state custody, full candidate card supply, native revision retention, and the role-specific enum contract passed model-free checks. Require the root-issued lease, full np4 service identity, and prospective actual-request fit. No scoring or task-quality conclusion."
+        "state": "held",
+        "reason": "Closed after the original zero-contact initialization failure and its sole recovery failed before model, tokenizer or tool contact. Preserve execution checkout 657ce3a3 and registered protocol bytes. The successor template is model-free compatibility work only; no further recovery of this flight is authorized. See docs/readiness/2026-09-13-slurp-native-knowledge-proof-closure-v1.md."
       }
     }
   ],

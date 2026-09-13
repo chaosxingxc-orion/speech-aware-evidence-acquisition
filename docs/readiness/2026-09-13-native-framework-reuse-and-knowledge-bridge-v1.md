@@ -76,3 +76,15 @@ touched behavior, including stale historical-readiness expectations, environment
 PATH setup, and existing registry/catalog assumptions. The suite is not claimed
 green. Do not expand this bridge into unrelated maintenance before the next
 registered GPU work.
+
+## Execution closure update
+
+The proposed bridge and its sole recovery both stopped before any model,
+tokenizer or analytical-tool contact. The second cause is the framework's terminal
+system-prompt whitespace normalization, not structured output. The original
+registered prompt and strict request guard are preserved; a successor template
+removes the single terminal newline for model-free compatibility verification.
+Both experiment cells are now held/check-only. See
+[the closure](2026-09-13-slurp-native-knowledge-proof-closure-v1.md).
+The prior successful native tool proof remains unchanged. No semantic knowledge
+consumption or new task-quality gain has been demonstrated.
