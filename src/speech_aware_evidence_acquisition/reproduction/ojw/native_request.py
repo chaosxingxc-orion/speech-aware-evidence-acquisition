@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 
 from ...core.model.native_framework_history import framework_contact_instruction
 from ...rails.core_client import CoreCompletion, FrozenCoreClient, PreparedCoreRequest
-from .native_roles import NativeRoleModelRequest
+from .native_roles import NativeRoleContactContext, NativeRoleModelRequest
 
 
 class NativeSpeechRequestError(ValueError):
@@ -19,6 +19,30 @@ def _bytes(value: object) -> bytes:
     return json.dumps(
         value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False,
     ).encode("utf-8")
+
+
+def _model_messages(messages: Sequence[Mapping[str, object]]) -> list[dict[str, object]]:
+    """Remove only the installed framework's non-model routing metadata."""
+    normalized = []
+    for original in messages:
+        if not isinstance(original, Mapping):
+            raise NativeSpeechRequestError("framework message must be an object")
+        message = dict(original)
+        if "metadata" in message:
+            metadata = message.pop("metadata")
+            if not isinstance(metadata, Mapping):
+                raise NativeSpeechRequestError("framework routing metadata is malformed")
+            if metadata:
+                context_id = metadata.get("context_message_id")
+                if (
+                    message.get("role") == "system"
+                    or set(metadata) != {"context_message_id"}
+                    or not isinstance(context_id, str) or len(context_id) != 32
+                    or any(c not in "0123456789abcdef" for c in context_id)
+                ):
+                    raise NativeSpeechRequestError("unregistered framework message metadata")
+        normalized.append(message)
+    return normalized
 
 
 @dataclass(frozen=True)
@@ -76,8 +100,21 @@ class PreparedNativeRoleContact:
     """Actual immutable request and rendered body exposed for existing fit checks."""
 
     request: PreparedCoreRequest
-    role_request: NativeRoleModelRequest
+    role_request_bytes: bytes = field(repr=False)
     body_bytes: bytes
+    owner: object = field(repr=False, compare=False)
+
+    @property
+    def role_request(self) -> NativeRoleModelRequest:
+        document = json.loads(self.role_request_bytes)
+        return NativeRoleModelRequest(
+            role_id=document["role_id"],
+            context=NativeRoleContactContext(**document["context"]),
+            messages=tuple(document["messages"]),
+            tool_schemas=tuple(document["tool_schemas"]),
+            visible_tool_names=tuple(document["visible_tool_names"]),
+            decoding_controls=document["decoding_controls"],
+        )
 
     def rendered_body(self) -> dict[str, object]:
         return json.loads(self.body_bytes)
@@ -101,6 +138,7 @@ class MeteredNativeSpeechRequest:
             raise NativeSpeechRequestError("use the flight's existing FrozenCoreClient")
         if not all(callable(x) for x in (binding_provider, render_request, completion_sink)):
             raise NativeSpeechRequestError("binding, rendering and completion hooks are required")
+        self._owner = object()
         self._client = client
         self._binding_provider = binding_provider
         self._render_request = render_request
@@ -117,10 +155,11 @@ class MeteredNativeSpeechRequest:
         ):
             raise NativeSpeechRequestError("framework role, sample or tool scope differs")
         messages = binding.messages()
+        framework = _model_messages(request.messages)
         if (
-            len(request.messages) < 2
-            or dict(request.messages[0]) != messages[0]
-            or dict(request.messages[1]) != {"role": "user", "content": binding.role_query}
+            len(framework) < 2
+            or framework[0] != messages[0]
+            or framework[1] != {"role": "user", "content": binding.role_query}
         ):
             raise NativeSpeechRequestError("framework system or original query differs")
         kwargs = binding.kwargs()
@@ -139,7 +178,7 @@ class MeteredNativeSpeechRequest:
         kwargs["decoding_params"] = decoding
         instruction = framework_contact_instruction(
             role_id=binding.role_id, sample_id=binding.sample_id,
-            contact_id=request.context.agent_contact_id, messages=request.messages,
+            contact_id=request.context.agent_contact_id, messages=framework,
             local_tool_result_ids=binding.local_tool_result_ids,
         )
         prepared = self._client.prepare_request(
@@ -152,17 +191,35 @@ class MeteredNativeSpeechRequest:
         if len(request.tool_schemas) != len(selected):
             raise NativeSpeechRequestError("framework schemas do not match the selected scope")
         for visible, schema in zip(request.tool_schemas, selected, strict=True):
+            if (
+                not isinstance(visible, Mapping) or not isinstance(schema, Mapping)
+                or not isinstance(schema.get("function"), Mapping)
+            ):
+                raise NativeSpeechRequestError("framework tool schema is malformed")
             function = schema["function"]
             if any(visible.get(key) != function.get(key) for key in ("name", "description", "parameters")):
                 raise NativeSpeechRequestError("framework tool schema differs from the registered tool")
         # The authoritative transport validates and renders the SAME object
         # that dispatch consumes; capacity checks can inspect this body.
         body = self._render_request(prepared.payload_bytes)
-        return PreparedNativeRoleContact(prepared, request, _bytes(body))
+        role_bytes = _bytes({
+            "role_id": request.role_id,
+            "context": {
+                "sample_id": request.context.sample_id,
+                "agent_contact_id": request.context.agent_contact_id,
+                "evidence_pins": dict(request.context.evidence_pins),
+                "budget_id": request.context.budget_id,
+            },
+            "messages": framework,
+            "tool_schemas": list(request.tool_schemas),
+            "visible_tool_names": list(request.visible_tool_names),
+            "decoding_controls": dict(request.decoding_controls),
+        })
+        return PreparedNativeRoleContact(prepared, role_bytes, _bytes(body), self._owner)
 
     def dispatch(self, prepared: PreparedNativeRoleContact) -> CoreCompletion:
-        if not isinstance(prepared, PreparedNativeRoleContact):
-            raise NativeSpeechRequestError("dispatch requires a prepared native contact")
+        if not isinstance(prepared, PreparedNativeRoleContact) or prepared.owner is not self._owner:
+            raise NativeSpeechRequestError("dispatch requires this adapter's prepared native contact")
         completion = self._client.complete_prepared_with_metadata(prepared.request)
         self._completion_sink(prepared.role_request, completion)
         return completion
