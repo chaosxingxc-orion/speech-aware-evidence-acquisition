@@ -1975,6 +1975,10 @@ class FlightRuntime:
             raise FlightRuntimeError("live speech plan carrier differs from the answering roster")
         if plan.split_identity_hash != split_identity_hash:
             raise FlightRuntimeError("live speech plan split differs from the answering roster")
+        if plan.protocol_hash != spec["protocol"]["sha256"]:
+            raise FlightRuntimeError(
+                "live speech plan protocol hash differs from the pinned protocol"
+            )
         main_plan = getattr(self, "_plan", None)
         if main_plan is not None and plan.split_role != main_plan.split_role:
             raise FlightRuntimeError("live speech plan split role differs from generation")
@@ -7043,6 +7047,19 @@ class FlightRuntime:
         transport = WireCheckTransport(
             response_text=response_text, native_tool_calls_on_first=native
         )
+        if policy != "fixed":
+            self._plan = plan
+            live_spec = self._composed.values.get("live_speech_observations")
+            if live_spec not in (None, {}) and self._live_speech_config is None:
+                self._live_speech_source_bindings = self.source_audio_bindings(
+                    include_address=True
+                )
+                self._live_speech_config = self._load_live_speech_observation_config(
+                    live_spec,
+                    carrier_lock_key=carrier_lock_key,
+                    split_identity_hash=identity_hash,
+                )
+            self._prepare_native_phase_runtime(policy)
         client_kwargs = self.frozen_core_client_kwargs(
             plan=plan, gate=gate, transport=transport, run_dir=run_dir
         )
@@ -7073,7 +7090,10 @@ class FlightRuntime:
         expected_fields = set(ARM_VISIBLE_FIELDS.get(arm, ()))
         expected_payloads = len(self._samples) * contacts_per_sample
         problems: list[str] = []
-        planned_stopping = bool(self._composed.values.get("phase_planner"))
+        planned_stopping = bool(self._composed.values.get("phase_planner")) or (
+            policy != "fixed"
+            and default_phase_program(policy).stop_rule == "native-answer-or-tool"
+        )
         if planned_stopping:
             from collections import Counter
 

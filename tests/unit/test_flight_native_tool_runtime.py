@@ -49,7 +49,7 @@ def test_live_config_loads_exact_pins_and_registered_roster(tmp_path):
         execution_profile="bounded-discovery-probe", carrier_lock_key="carrier",
         split_role="discovery", split_identity_hash="c" * 64,
         planned_model_calls=1, planned_gpu_hours=1.0,
-        planned_speech_audio_seconds=3, protocol_hash="d" * 64,
+        planned_speech_audio_seconds=3, protocol_hash=_sha(protocol),
     ).validate()
     plan_path.write_text(json.dumps({"execution_plan": plan.__dict__}))
     spec = {
