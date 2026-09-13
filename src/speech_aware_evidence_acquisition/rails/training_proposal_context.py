@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from typing import Mapping
 
 from ..core.preparation import hash_stable_file, prepare_artifact
 from .group_relative_feedback import build_group_relative_feedback
@@ -193,26 +194,39 @@ def build_training_proposal_contexts(source_bindings):
         raise TrainingProposalContextError(str(error)) from error
 
 
+def training_proposal_context_preparation_inputs(document: Mapping[str, object]) -> dict[str, str]:
+    """Derive immutable prepared-artifact inputs for one verified document.
+
+    The loader reuses this exact calculation before accepting persisted bytes,
+    so a warm artifact cannot silently outlive its projection implementation.
+    """
+
+    from ..core.model import native_framework_history, native_history
+    from . import core_client, hashing, native_training_context, native_tool_authority
+
+    dependencies = [Path(__file__), *(
+        Path(module.__file__) for module in (
+            native_training_context, native_framework_history, native_history,
+            native_tool_authority, hashing, core_client,
+        )
+    )]
+    implementations = {
+        path.name: hash_stable_file(path, "proposal projection implementation")[1]
+        for path in dependencies
+    }
+    return {
+        "document_sha256": content_hash(document),
+        "implementation_sha256": content_hash(implementations),
+    }
+
+
 def prepare_training_proposal_contexts(source_bindings, output_path):
     """Persist compact model-facing contexts through shared preparation."""
     document = build_training_proposal_contexts(source_bindings)
     try:
-        from ..core.model import native_framework_history, native_history
-        from . import core_client, hashing, native_training_context, native_tool_authority
-        dependencies = [Path(__file__), *(
-            Path(module.__file__) for module in (
-                native_training_context, native_framework_history, native_history,
-                native_tool_authority, hashing, core_client,
-            )
-        )]
-        implementations = {
-            path.name: hash_stable_file(path, "proposal projection implementation")[1]
-            for path in dependencies
-        }
         return prepare_artifact(
             Path(output_path), kind="training-proposal-contexts",
-            inputs={"document_sha256": content_hash(document),
-                    "implementation_sha256": content_hash(implementations)},
+            inputs=training_proposal_context_preparation_inputs(document),
             producer=lambda: document, contact_class="model-free",
         )
     except (ValueError, RuntimeError, OSError) as error:
