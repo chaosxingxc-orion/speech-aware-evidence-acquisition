@@ -20,7 +20,7 @@ STORE_SEPARATOR = "::"
 _STORE_ID = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 _SHA256 = re.compile(r"[0-9a-f]{64}")
 _STORE_KEYS = frozenset({"store_role", "snapshot", "release"})
-_STORE_OPTIONAL_KEYS = frozenset({"phase_supply"})
+_STORE_OPTIONAL_KEYS = frozenset({"phase_supply", "candidate_supply"})
 _PIN_KEYS = frozenset({"relpath", "sha256"})
 _RELEASE_KEYS = frozenset(
     {
@@ -100,6 +100,7 @@ class KnowledgeStore:
     release_pin: Mapping[str, str]
     source_pin: Mapping[str, str]
     phase_supply: Mapping[str, object]
+    candidate_supply: Mapping[str, object]
 
 
 @dataclass(frozen=True)
@@ -358,6 +359,11 @@ def load_knowledge_store_binding(
             raise KnowledgeStoreError(
                 f"knowledge store {store_id} phase_supply must be a mapping"
             )
+        candidate_supply = spec.get("candidate_supply", {})
+        if not isinstance(candidate_supply, Mapping):
+            raise KnowledgeStoreError(
+                f"knowledge store {store_id} candidate_supply must be a mapping"
+            )
         stores[store_id] = KnowledgeStore(
             store_id,
             role,
@@ -366,6 +372,7 @@ def load_knowledge_store_binding(
             release_pin,
             source_pin,
             MappingProxyType(dict(phase_supply)),
+            MappingProxyType(dict(candidate_supply)),
         )
     proxy = MappingProxyType(stores)
     composite = _composite(proxy)
@@ -378,39 +385,80 @@ def build_knowledge_store_supply(
     program: object,
     data_root: Path,
     source_audio_bindings=None,
+    legal_candidate_ids=None,
 ):
-    """Build existing per-store PhaseSupply callables and route by explicit ID."""
+    """Build explicit store routes and automatic candidate-conditioned supply."""
     from .phase_supply import (
         build_supply_for_phase,
         load_phase_supply_specs,
         phase_supply_receipt,
     )
 
+    from .candidate_semantic_supply import (
+        build_candidate_semantic_supply,
+        load_candidate_semantic_supply_specs,
+    )
+
     callbacks, specs_by_store, receipts = {}, {}, {}
+    candidate_specs = load_candidate_semantic_supply_specs(binding, program)
+    if candidate_specs and legal_candidate_ids is None:
+        raise KnowledgeStoreError(
+            "candidate semantic supply requires the task adapter's authoritative "
+            "legal candidate inventory"
+        )
+    candidate_callback = build_candidate_semantic_supply(
+        binding,
+        candidate_specs,
+        data_root=data_root,
+        legal_candidate_ids=tuple(legal_candidate_ids or ()),
+    )
     first_phase = program.phase_names()[0]
     for store_id in binding.store_ids:
         store = binding.store(store_id)
         specs = load_phase_supply_specs({"phase_supply": store.phase_supply}, program)
-        if not specs:
-            raise KnowledgeStoreError(f"knowledge store {store_id} has no phase_supply")
-        if first_phase in specs:
+        collisions = set(specs).intersection(candidate_specs)
+        if collisions:
+            raise KnowledgeStoreError(
+                "candidate and explicit phase supply cannot both claim phase(s) "
+                f"{sorted(collisions)}"
+            )
+        if specs and first_phase in specs:
             raise KnowledgeStoreError(
                 "named knowledge stores do not support first-phase seeded supply"
             )
-        callback = build_supply_for_phase(
-            specs,
-            snapshot=store.snapshot,
-            snapshot_sha256=store.snapshot.content_hash(),
-            data_root=data_root,
-            source_audio_bindings=source_audio_bindings,
-        )
-        callbacks[store_id], specs_by_store[store_id] = callback, specs
+        callback = None
+        if specs:
+            callback = build_supply_for_phase(
+                specs,
+                snapshot=store.snapshot,
+                snapshot_sha256=store.snapshot.content_hash(),
+                data_root=data_root,
+                source_audio_bindings=source_audio_bindings,
+            )
+            callbacks[store_id] = callback
+        store_candidate_specs = {
+            phase: spec
+            for phase, spec in candidate_specs.items()
+            if spec.store_id == store_id
+        }
+        if not specs and not store_candidate_specs:
+            raise KnowledgeStoreError(f"knowledge store {store_id} has no phase_supply")
+        specs_by_store[store_id] = {**specs, **store_candidate_specs}
         receipts[store_id] = {
             **binding.store_receipt(store_id),
-            "phase_supply": phase_supply_receipt(
-                specs, callback.query_vector_rows, callback.facet_vector_rows
+            "phase_supply": (
+                None
+                if callback is None
+                else phase_supply_receipt(
+                    specs, callback.query_vector_rows, callback.facet_vector_rows
+                )
             ),
         }
+        if store_candidate_specs:
+            receipts[store_id]["candidate_supply"] = [
+                store_candidate_specs[phase].as_json()
+                for phase in sorted(store_candidate_specs)
+            ]
 
     def route(store_id, phase, context):
         try:
@@ -426,11 +474,20 @@ def build_knowledge_store_supply(
         return callback(phase, context)
 
     route.specs_by_store = specs_by_store
+    candidate_receipt = (
+        None if candidate_callback is None else candidate_callback.receipt
+    )
     route.receipt = {
         "schema": "saea-named-knowledge-store-routing-v1",
         "binding_sha256": binding.binding_sha256,
         "stores": receipts,
     }
+    if candidate_callback is not None:
+        route.automatic_for_phase = candidate_callback
+        route.receipt["candidate_supply"] = candidate_receipt
+        route.receipt["candidate_selections"] = candidate_receipt[
+            "candidate_selections"
+        ]
     return route
 
 

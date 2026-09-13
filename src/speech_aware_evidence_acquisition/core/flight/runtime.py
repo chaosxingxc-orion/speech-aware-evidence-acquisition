@@ -6354,6 +6354,9 @@ class FlightRuntime:
             from ...rails.knowledge_stores import (  # noqa: PLC0415
                 KnowledgeStoreError, build_knowledge_store_supply,
             )
+            from ...rails.candidate_semantic_supply import (  # noqa: PLC0415
+                CandidateSemanticSupplyError,
+            )
             try:
                 uses_segments = any(
                     isinstance(entry, Mapping)
@@ -6362,11 +6365,27 @@ class FlightRuntime:
                     for store in store_binding.stores.values()
                     for entry in store.phase_supply.values()
                 )
+                legal_candidate_ids = None
+                if any(store.candidate_supply for store in store_binding.stores.values()):
+                    prepare_contracts = getattr(
+                        self._adapter, "candidate_contract_provider", None
+                    )
+                    contract_provider = (
+                        None if not callable(prepare_contracts) else prepare_contracts()
+                    )
+                    candidate_ids = getattr(contract_provider, "candidate_ids", None)
+                    if not isinstance(candidate_ids, tuple) or not candidate_ids:
+                        raise FlightRuntimeError(
+                            "candidate semantic supply requires the task adapter's "
+                            "authoritative candidate contract provider"
+                        )
+                    legal_candidate_ids = candidate_ids
                 router = build_knowledge_store_supply(
                     store_binding, program=program, data_root=self._data_root,
                     source_audio_bindings=(self.source_audio_bindings() if uses_segments else None),
+                    legal_candidate_ids=legal_candidate_ids,
                 )
-            except KnowledgeStoreError as error:
+            except (KnowledgeStoreError, CandidateSemanticSupplyError) as error:
                 raise FlightRuntimeError(str(error)) from error
             self._knowledge_store_supply = router
             self._phase_supply_receipt = router.receipt
@@ -6374,7 +6393,7 @@ class FlightRuntime:
             for store_specs in router.specs_by_store.values():
                 for phase, spec in store_specs.items():
                     merged.setdefault(phase, spec)
-            return None, merged
+            return getattr(router, "automatic_for_phase", None), merged
         self._knowledge_store_supply = None
         specs = load_phase_supply_specs(self._composed.values, program)
         if not specs:
