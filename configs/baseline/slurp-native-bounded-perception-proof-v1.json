@@ -1,0 +1,111 @@
+{
+  "arm": "speech-feature-query-native-tools",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_stores": {
+    "slot-contracts": {
+      "candidate_supply": {
+        "solver": {
+          "candidate_state_phase": "perception",
+          "compact_source_phase": "perception",
+          "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+          "max_candidates": 3,
+          "max_total_values": 28,
+          "max_values_per_candidate": 16,
+          "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+          "provider": "slurp-candidate-semantic-v1",
+          "rank_policy": "saea-ranked-candidate-round-robin-v1"
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+        "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/snapshot.json",
+        "sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6"
+      },
+      "store_role": "slot-contracts"
+    }
+  },
+  "native_contact_fit": {
+    "attempt_id": "attempt-slurp-native-bounded-perception-proof-fit-v1",
+    "contact_cap": 176,
+    "max_speech_packets": 1,
+    "run_id": "SAEA-SLURP-NATIVE-BOUNDED-PERCEPTION-PROOF-FIT-V1"
+  },
+  "native_episode": {
+    "actions": {
+      "accept": "ACCEPT",
+      "acquire": "ACQUIRE",
+      "revise": "REVISE"
+    },
+    "episode_id": "slurp-native-bounded-perception-proof-v1",
+    "exhaustion_policy": "deliver-latest-solver",
+    "max_revisions": 1,
+    "roles": {
+      "perception": {"max_iterations": 1, "phase_id": "perception"},
+      "planner": {"max_iterations": 1, "phase_id": "planner"},
+      "reviewer": {"max_iterations": 3, "phase_id": "reviewer"},
+      "solver": {"max_iterations": 1, "phase_id": "solver"}
+    },
+    "schema": "saea-native-episode-config-v1"
+  },
+  "phase_material": {
+    "perception": {
+      "fill_params": {
+        "id": "slurp-intent-hypotheses-v1",
+        "max_candidates": 3,
+        "max_distinction_chars": 128,
+        "max_evidence_refs": 0,
+        "max_unresolved_fields": 0,
+        "min_candidates": 1,
+        "source_catalog": {
+          "data_relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+          "sha256": "3e60268b3f940c3018ab8b8c80ccd988b1d1efd6c5a198929c6af05ba21f8263",
+          "source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201"
+        }
+      },
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_perception_v3.txt",
+      "predecessor_binding": "none",
+      "response_format_id": "slurp-intent-hypotheses-v1",
+      "state_fill": null
+    },
+    "planner": {
+      "fill_params": {}, "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_planner_v1.txt",
+      "predecessor_binding": "none", "response_format_id": null, "state_fill": null
+    },
+    "reviewer": {
+      "fill_params": {}, "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_reviewer_v1.txt",
+      "predecessor_binding": "none", "response_format_id": null, "state_fill": null
+    },
+    "solver": {
+      "fill_params": {}, "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_solver_v2.txt",
+      "predecessor_binding": "none", "response_format_id": null, "state_fill": null
+    }
+  },
+  "phase_tools": {
+    "reviewer": {
+      "allowed_tools": ["saea-tool-task-contract-v1"],
+      "knowledge_views": ["text"],
+      "mode": "native-tools",
+      "source_authority_role": "reviewer"
+    }
+  },
+  "policy": "phase-native-candidates-review-revise-v1",
+  "scorers": ["slurp-slu-official-train", "cost"],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "DRAFT four-row TRAIN full-native engineering proof of bounded Perception artifact output through the shared FlightRuntime and OpenJiuwen path. It retains the released slot-contract store, Reviewer-only task-contract tool authority, finite terminal delivery policy, exact existing TRAIN roster and promoted packets. This is a schema and execution proof, not a task-quality, knowledge-quality, tool-benefit, or scoring claim."
+}

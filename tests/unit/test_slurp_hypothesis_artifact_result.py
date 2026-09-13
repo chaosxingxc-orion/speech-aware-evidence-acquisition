@@ -89,10 +89,15 @@ def test_compact_response_is_canonicalized_without_model_visible_bookkeeping(tmp
     [
         (_response("unknown"), "not legal"),
         (_response("alarm_set", "alarm_set"), "unique"),
-        (_response("alarm_set", "weather_query", "music_play", "alarm_set"), "at most 3"),
+        (
+            _response("alarm_set", "weather_query", "music_play", "alarm_set"),
+            "at most 3",
+        ),
     ],
 )
-def test_hypothesis_content_refuses_unknown_duplicate_or_over_limit(tmp_path, raw, match):
+def test_hypothesis_content_refuses_unknown_duplicate_or_over_limit(
+    tmp_path, raw, match
+):
     validator = build_slurp_hypothesis_artifact_validator(
         _catalog(tmp_path), data_root=tmp_path
     )
@@ -100,35 +105,132 @@ def test_hypothesis_content_refuses_unknown_duplicate_or_over_limit(tmp_path, ra
         validator.canonicalize(raw, sample_id="slurp:devel:7")
 
 
-def test_response_format_exposes_exact_canonical_ids_and_no_sample_bookkeeping(tmp_path):
+def test_response_format_exposes_exact_canonical_ids_and_no_sample_bookkeeping(
+    tmp_path,
+):
     schema = slurp_intent_hypotheses_response_format(
         {}, tmp_path, **_catalog(tmp_path)
     )["json_schema"]["schema"]
     assert schema["required"] == ["candidates"]
     assert "sample_id" not in schema["properties"]
-    enum = schema["properties"]["candidates"]["items"]["properties"]["intent_id"]["enum"]
+    enum = schema["properties"]["candidates"]["items"]["properties"]["intent_id"][
+        "enum"
+    ]
     assert enum == ["alarm_set", "weather_query", "music_play"]
+
+
+def test_legacy_contract_preserves_unbounded_distinction_and_32_item_arrays(tmp_path):
+    contract = _catalog(tmp_path)
+    schema = slurp_intent_hypotheses_response_format({}, tmp_path, **contract)[
+        "json_schema"
+    ]["schema"]
+    candidate = schema["properties"]["candidates"]["items"]["properties"]
+    assert candidate["distinction"] == {"type": "string"}
+    assert candidate["evidence_refs"] == {
+        "type": "array",
+        "items": {"type": "string"},
+        "maxItems": 32,
+    }
+    assert candidate["unresolved_fields"] == {
+        "type": "array",
+        "items": {"type": "string"},
+        "maxItems": 32,
+    }
+    response = json.loads(_response("alarm_set"))
+    response["candidates"][0]["distinction"] = "x" * 129
+    response["candidates"][0]["evidence_refs"] = [
+        f"source-{index}" for index in range(32)
+    ]
+    response["candidates"][0]["unresolved_fields"] = [
+        f"field-{index}" for index in range(32)
+    ]
+    assert build_slurp_hypothesis_artifact_validator(
+        contract, data_root=tmp_path
+    ).canonicalize(json.dumps(response), sample_id="slurp:devel:7")
+
+
+def test_explicit_output_bounds_are_emitted_and_enforced_without_repair(tmp_path):
+    contract = {
+        **_catalog(tmp_path),
+        "max_distinction_chars": 3,
+        "max_evidence_refs": 0,
+        "max_unresolved_fields": 1,
+    }
+    validator = build_slurp_hypothesis_artifact_validator(contract, data_root=tmp_path)
+    valid = json.dumps(
+        {
+            "candidates": [
+                {
+                    "intent_id": "alarm_set",
+                    "distinction": "yes",
+                    "evidence_refs": [],
+                    "unresolved_fields": ["time"],
+                }
+            ]
+        }
+    )
+    assert json.loads(validator.canonicalize(valid, sample_id="slurp:devel:7"))[
+        "candidates"
+    ][0] == {
+        "intent_id": "alarm_set",
+        "distinction": "yes",
+        "evidence_refs": [],
+        "unresolved_fields": ["time"],
+    }
+
+    for field, value, match in (
+        ("distinction", "four", "distinction"),
+        ("evidence_refs", ["source"], "evidence_refs"),
+        ("unresolved_fields", ["time", "date"], "unresolved_fields"),
+    ):
+        response = json.loads(valid)
+        response["candidates"][0][field] = value
+        with pytest.raises(ArtifactContentError, match=match):
+            validator.canonicalize(json.dumps(response), sample_id="slurp:devel:7")
+
+    candidate = slurp_intent_hypotheses_response_format({}, tmp_path, **contract)[
+        "json_schema"
+    ]["schema"]["properties"]["candidates"]["items"]["properties"]
+    assert candidate["distinction"]["maxLength"] == 3
+    assert candidate["evidence_refs"]["maxItems"] == 0
+    assert candidate["unresolved_fields"]["maxItems"] == 1
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("max_distinction_chars", 0),
+        ("max_distinction_chars", True),
+        ("max_evidence_refs", -1),
+        ("max_evidence_refs", 33),
+        ("max_unresolved_fields", -1),
+        ("max_unresolved_fields", 33),
+    ],
+)
+def test_output_bound_contract_values_are_strictly_bounded(tmp_path, field, value):
+    contract = {**_catalog(tmp_path), field: value}
+    with pytest.raises(ArtifactContentError, match="output bound"):
+        build_slurp_hypothesis_artifact_validator(contract, data_root=tmp_path)
 
 
 def test_fixed_top_three_contract_refuses_a_collapsed_shortlist(tmp_path):
     contract = {**_catalog(tmp_path), "min_candidates": 3}
     validator = build_slurp_hypothesis_artifact_validator(contract, data_root=tmp_path)
     with pytest.raises(ArtifactContentError, match="at least 3"):
-        validator.canonicalize(
-            _response("alarm_set"), sample_id="slurp:devel:7"
-        )
-    schema = slurp_intent_hypotheses_response_format(
-        {}, tmp_path, **contract
-    )["json_schema"]["schema"]
+        validator.canonicalize(_response("alarm_set"), sample_id="slurp:devel:7")
+    schema = slurp_intent_hypotheses_response_format({}, tmp_path, **contract)[
+        "json_schema"
+    ]["schema"]
     assert schema["properties"]["candidates"]["minItems"] == 3
 
 
 def test_registered_source_program_is_one_typed_contact():
     program = default_phase_program("phase-intent-hypotheses-only-v1")
     assert program.max_contacts == 1
-    assert [(phase.name, phase.knowledge, phase.response_format_id) for phase in program.phases] == [
-        ("hypotheses", "none", "slurp-intent-hypotheses-v1")
-    ]
+    assert [
+        (phase.name, phase.knowledge, phase.response_format_id)
+        for phase in program.phases
+    ] == [("hypotheses", "none", "slurp-intent-hypotheses-v1")]
 
 
 def test_dev_artifact_binding_requires_exact_evaluation_roster_and_catalog(tmp_path):
