@@ -126,7 +126,15 @@ def _node(role_id: str, role_kind: str, values: list[str], *, valid=False):
     return node, script
 
 
-def _episode(*, solver, reviewer, planner, max_revisions=1, acquisition=None):
+def _episode(
+    *,
+    solver,
+    reviewer,
+    planner,
+    max_revisions=1,
+    acquisition=None,
+    exhaustion_policy="raise",
+):
     perception, perception_script = _node("perception", "perception", ["heard"])
     seen: list[tuple[str, dict[str, object]]] = []
 
@@ -141,6 +149,7 @@ def _episode(*, solver, reviewer, planner, max_revisions=1, acquisition=None):
             actions=NativeEpisodeActions(
                 accept="ACCEPT", revise="REVISE", acquire="ACQUIRE"
             ),
+            exhaustion_policy=exhaustion_policy,
         ),
         nodes=NativeEpisodeNodes(
             perception=perception,
@@ -307,6 +316,97 @@ def test_exhausted_revision_and_invalid_solver_never_deliver():
     )
     with pytest.raises(NativeEpisodeError, match="valid Solver"):
         asyncio.run(invalid.invoke_direct("query", ()))
+
+
+def test_opt_in_terminal_delivery_still_refuses_invalid_solver_and_early_acquire():
+    bad_solver, _ = _node("bad-solver", "solver", ["not validated"])
+    reviewer, _ = _node("reviewer", "reviewer", ["review"])
+    planner, _ = _node("planner", "planner", ["REVISE"])
+    invalid, _, _ = _episode(
+        solver=bad_solver,
+        reviewer=reviewer,
+        planner=planner,
+        max_revisions=0,
+        exhaustion_policy="deliver-latest-solver",
+    )
+    with pytest.raises(NativeEpisodeError, match="valid Solver"):
+        asyncio.run(invalid.invoke_direct("query", ()))
+
+    solver, _ = _node("solver-2", "solver", ["draft one"], valid=True)
+    reviewer2, _ = _node("reviewer-2", "reviewer", ["review"])
+    planner2, _ = _node("planner-2", "planner", ["ACQUIRE"])
+    early_acquire, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer2,
+        planner=planner2,
+        max_revisions=1,
+        exhaustion_policy="deliver-latest-solver",
+    )
+    with pytest.raises(NativeEpisodeError, match="no configured analytical acquisition"):
+        asyncio.run(early_acquire.invoke_direct("query", ()))
+
+
+@pytest.mark.parametrize("planner_action", ("REVISE", "ACQUIRE"))
+def test_terminal_exhaustion_delivery_is_opt_in_and_records_actual_planner_action(
+    planner_action,
+):
+    solver, _ = _node("solver", "solver", ["draft one"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["review one"])
+    planner, _ = _node("planner", "planner", [planner_action])
+    workflow, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        max_revisions=0,
+        exhaustion_policy="deliver-latest-solver",
+    )
+
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+
+    state = result["state"]
+    assert result["delivery"]["actor_output"] == "draft one"
+    assert "accepted_solver_receipt" not in state
+    assert state["terminal_solver_receipt"] == _execution_receipt(
+        text="draft one", contact_id="solver-contact-1", serial=2
+    )
+    assert state["terminal_disposition"] == {
+        "reason": "revision_limit",
+        "planner_action": planner_action,
+        "revision_count": 0,
+        "planner_accepted": False,
+    }
+    assert state["planner_routes"] == [
+        {"role_visit_index": 3, "revision_count": 0, "action": planner_action}
+    ]
+
+
+def test_opt_in_terminal_delivery_binds_the_last_revision_solver():
+    solver, _ = _node(
+        "solver", "solver", ["draft one", "draft two"], valid=True
+    )
+    reviewer, _ = _node("reviewer", "reviewer", ["review one", "review two"])
+    planner, _ = _node("planner", "planner", ["REVISE", "ACQUIRE"])
+    workflow, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        max_revisions=1,
+        exhaustion_policy="deliver-latest-solver",
+    )
+
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+
+    state = result["state"]
+    assert result["delivery"]["actor_output"] == "draft two"
+    assert state["terminal_solver_receipt"] == _execution_receipt(
+        text="draft two", contact_id="solver-contact-2", serial=5
+    )
+    assert state["terminal_disposition"] == {
+        "reason": "revision_limit",
+        "planner_action": "ACQUIRE",
+        "revision_count": 1,
+        "planner_accepted": False,
+    }
 
 
 def test_framework_node_error_never_delivers():

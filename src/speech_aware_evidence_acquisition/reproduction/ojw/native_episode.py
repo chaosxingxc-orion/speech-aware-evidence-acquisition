@@ -62,6 +62,7 @@ class NativeEpisodeSpec:
     episode_id: str
     max_revisions: int
     actions: NativeEpisodeActions
+    exhaustion_policy: str = "raise"
 
     def __post_init__(self) -> None:
         if not isinstance(self.episode_id, str) or not self.episode_id:
@@ -74,6 +75,11 @@ class NativeEpisodeSpec:
             raise ValueError("max_revisions must be a non-negative integer")
         if not isinstance(self.actions, NativeEpisodeActions):
             raise ValueError("actions must be NativeEpisodeActions")
+        if (
+            not isinstance(self.exhaustion_policy, str)
+            or self.exhaustion_policy not in {"raise", "deliver-latest-solver"}
+        ):
+            raise ValueError("exhaustion_policy is invalid")
 
 
 @dataclass(frozen=True)
@@ -236,6 +242,38 @@ class _Exhausted(WorkflowComponent):
         self, inputs: Input, session: Session, context: ModelContext
     ) -> Output:
         raise NativeEpisodeError(self._message)
+
+
+class _TerminalDelivery(WorkflowComponent):
+    """Deliver the final Solver draft under an explicit terminal policy."""
+
+    def __init__(self, actions: NativeEpisodeActions) -> None:
+        super().__init__()
+        self._actions = actions
+
+    async def invoke(
+        self, inputs: Input, session: Session, context: ModelContext
+    ) -> Output:
+        state = _state(inputs)
+        solver = state.get("latest_solver")
+        if not isinstance(solver, Mapping) or solver.get("delivery_eligible") is not True:
+            raise NativeEpisodeError("terminal delivery has no valid Solver draft")
+        planner_action = state.get("plan")
+        if planner_action not in {self._actions.revise, self._actions.acquire}:
+            raise NativeEpisodeError("terminal delivery has no revision-limit action")
+        revision_count = state.get("revision_count")
+        if isinstance(revision_count, bool) or not isinstance(revision_count, int):
+            raise NativeEpisodeError("terminal delivery has invalid revision count")
+        updated = dict(state)
+        updated.pop("accepted_solver_receipt", None)
+        updated["terminal_solver_receipt"] = _execution_receipt(solver)
+        updated["terminal_disposition"] = {
+            "reason": "revision_limit",
+            "planner_action": planner_action,
+            "revision_count": revision_count,
+            "planner_accepted": False,
+        }
+        return {"state": updated, "delivery": dict(solver)}
 
 
 def _state(inputs: Mapping[str, object]) -> dict[str, object]:
@@ -436,9 +474,15 @@ class NativeEpisodeWorkflow:
             )
             if revision == self.spec.max_revisions:
                 exhausted_id = f"exhausted_{revision}"
+                terminal_component: WorkflowComponent
+                if self.spec.exhaustion_policy == "deliver-latest-solver":
+                    terminal_component = _TerminalDelivery(self.spec.actions)
+                    accept_ids.append(exhausted_id)
+                else:
+                    terminal_component = _Exhausted()
                 workflow.add_workflow_comp(
                     exhausted_id,
-                    _Exhausted(),
+                    terminal_component,
                     inputs_schema={"state": "${" + planner + ".state}"},
                 )
                 router.add_branch(
