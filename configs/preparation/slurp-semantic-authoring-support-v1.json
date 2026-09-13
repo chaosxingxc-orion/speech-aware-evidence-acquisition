@@ -1,0 +1,8 @@
+{
+  "registration": {
+    "relpath": "docs/readiness/2026-09-13-slurp-semantic-authoring-registration-v1.json",
+    "sha256": "cf52fe8267473d57f119978c59c846f823a4f771fe459832279f653cdc6e32cc"
+  },
+  "schema": "saea-slurp-semantic-authoring-support-config-v1",
+  "selection_policy_id": "semantic-authoring-v1"
+}
