@@ -494,7 +494,13 @@ def validate_live_phase_fit_config(values, program):
 
 
 def build_live_phase_fit_gate(
-    runtime, program, plan, *, client_factory=None, active_roster=None,
+    runtime,
+    program,
+    plan,
+    *,
+    client_factory=None,
+    active_roster=None,
+    native_active_roster=False,
 ):
     """Fit actual live waves under one generation lease and a separate tool plan.
 
@@ -513,6 +519,17 @@ def build_live_phase_fit_gate(
     spec = validate_live_phase_fit_config(values, program)
     if spec is None:
         raise PreparationError("live phase fitting was not configured")
+    if not isinstance(native_active_roster, bool):
+        raise PreparationError("native_active_roster must be a boolean")
+    if native_active_roster:
+        if active_roster is not None:
+            raise PreparationError(
+                "native active roster cannot be combined with a planner roster"
+            )
+        if program.stop_rule != "native-answer-or-tool":
+            raise PreparationError(
+                "native active roster requires the native-answer-or-tool stop rule"
+            )
     if spec["run_id"] == plan.run_id or spec["attempt_id"] == plan.attempt_id:
         raise PreparationError(
             "tokenizer fit requires distinct run and attempt identities"
@@ -559,8 +576,10 @@ def build_live_phase_fit_gate(
         contact_cap=spec["contact_cap"],
     )
     completed = []
+    prior_native_ids = expected_ids
 
     def fit_wave(phase, batch):
+        nonlocal prior_native_ids
         if len(completed) >= len(phases) or phase != phases[len(completed)]:
             raise PreparationError("live fit phase order changed or repeated")
         if (
@@ -570,24 +589,52 @@ def build_live_phase_fit_gate(
         ):
             raise PreparationError("live fit requires immutable prepared core requests")
         payloads = tuple(request.as_payload() for request in batch)
-        wave_ids = expected_ids if active_roster is None else tuple(active_roster(phase))
-        if (
-            len(set(wave_ids)) != len(wave_ids) or not set(wave_ids) <= set(expected_ids)
-            or (phase == phases[0] and wave_ids != expected_ids)
-        ):
-            raise PreparationError("live fit active roster differs from the registered roster")
-        if {p.get("sample_id") for p in payloads} != set(wave_ids) or len(
-            payloads
-        ) != len(wave_ids):
-            raise PreparationError(
-                "live fit requires the full registered roster at every phase"
-                if active_roster is None else
-                "live fit requires the complete planner-selected roster for this phase"
+        payload_ids = tuple(payload.get("sample_id") for payload in payloads)
+        if native_active_roster:
+            if not completed:
+                if payload_ids != expected_ids:
+                    raise PreparationError(
+                        "native live fit first wave requires the exact registered roster"
+                    )
+            else:
+                selected = set(payload_ids)
+                ordered_subset = tuple(
+                    sample_id for sample_id in prior_native_ids
+                    if sample_id in selected
+                )
+                if (
+                    len(selected) != len(payload_ids)
+                    or payload_ids != ordered_subset
+                ):
+                    raise PreparationError(
+                        "native live fit roster cannot grow or resurrect stopped ids"
+                    )
+            wave_ids = payload_ids
+        else:
+            wave_ids = (
+                expected_ids
+                if active_roster is None
+                else tuple(active_roster(phase))
             )
+            if (
+                len(set(wave_ids)) != len(wave_ids)
+                or not set(wave_ids) <= set(expected_ids)
+                or (phase == phases[0] and wave_ids != expected_ids)
+            ):
+                raise PreparationError(
+                    "live fit active roster differs from the registered roster"
+                )
+            if set(payload_ids) != set(wave_ids) or len(payloads) != len(wave_ids):
+                raise PreparationError(
+                    "live fit requires the full registered roster at every phase"
+                    if active_roster is None
+                    else "live fit requires the complete planner-selected roster "
+                    "for this phase"
+                )
         runtime.assert_generation_lease()
         inputs = runtime.request_fit_inputs(payloads)
         inputs = {**inputs, "live_phase": phase, "fit_plan": asdict(fit_plan)}
-        if active_roster is not None:
+        if active_roster is not None or native_active_roster:
             inputs = {**inputs, "active_sample_ids": list(wave_ids)}
         path = fit_root / (phase + ".request-fit.json")
         journal = path.with_name(path.name + ".contacts.jsonl")
@@ -669,6 +716,8 @@ def build_live_phase_fit_gate(
             raise PreparationError("live phase requests exceed the registered capacity")
         runtime.assert_generation_lease()
         completed.append({"phase": phase, **receipt})
+        if native_active_roster:
+            prior_native_ids = wave_ids
 
     fit_wave.receipts = completed
     fit_wave.execution_plan = fit_plan

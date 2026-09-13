@@ -4290,6 +4290,12 @@ class FlightRuntime:
                             phase, program.phase_names(), expected_ids
                         )
                     )
+                elif (
+                    program.stop_rule == "native-answer-or-tool"
+                    and tool_dispatcher is not None
+                    and bool(getattr(tool_dispatcher, "native_enabled", False))
+                ):
+                    fit_options["native_active_roster"] = True
                 live_fit_gate = (
                     self._live_phase_fit_factory or build_live_phase_fit_gate
                 )(self, program, self._fit_base_plan(plan), **fit_options)

@@ -161,3 +161,129 @@ def test_native_agent_keeps_response_provenance_and_observations_across_real_exe
             actual["decoding_params"].pop("id_slot", None)
             assert actual == checked
     client.close()
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_native_early_stop_fits_shrinking_real_request_waves(tmp_path, monkeypatch):
+    import speech_aware_evidence_acquisition.core.preparation_fit as fitting
+    from speech_aware_evidence_acquisition.core.preparation_fit import (
+        build_live_phase_fit_gate,
+    )
+    from speech_aware_evidence_acquisition.rails.phase_runner import (
+        run_continuous_program,
+    )
+    from test_live_phase_fit import Runtime as FitRuntime
+    from test_live_phase_fit import Tokenizer, values as fit_values
+
+    monkeypatch.setattr(fitting, "packet_token_counts", lambda *_a, **_k: (1,))
+    world = _World(tmp_path)
+    feature_root, _packet, bindings = _speech_feature_world(world, tmp_path)
+    transport = NativeTransport()
+    execution_plan = _plan(planned_model_calls=6)
+    client, _, _ = _client(
+        world,
+        tmp_path,
+        plan=execution_plan,
+        transport=transport,
+        arm="speech-feature-query-native-tools",
+        speech_feature_root=feature_root,
+        speech_packet_bindings=bindings,
+        tool_schemas=[
+            {
+                "type": "function",
+                "function": {
+                    "name": "fake_evidence",
+                    "description": "Read evidence.",
+                    "parameters": {"type": "object", "properties": {}},
+                },
+            }
+        ],
+    )
+    tokenizer = Tokenizer()
+    fit_runtime = FitRuntime(
+        tmp_path,
+        fit_values(
+            live_phase_fit={
+                "run_id": "SAEA-G6-LIVE-FIT-V1",
+                "attempt_id": "attempt-g6-fit-v1",
+                "contact_cap": 21,
+            }
+        ),
+    )
+    program = default_phase_program("native-answer-or-tool-v1")
+    fit_gate = build_live_phase_fit_gate(
+        fit_runtime,
+        program,
+        execution_plan,
+        client_factory=lambda **_k: tokenizer,
+        native_active_roster=True,
+    )
+    tools = NativeEvidence()
+    tools.render_values = lambda _snapshot, _query_state, _agent_states: ()
+    trace = TraceBuffer(execution_plan.run_id)
+
+    try:
+        summary = run_continuous_program(
+            program=program,
+            adapter=_FakeAdapter(samples=tuple(world.samples)),
+            plan=execution_plan,
+            data_root=world.data_root,
+            core_client=client,
+            split_id="all",
+            knowledge_snapshot=_knowledge_snapshot(),
+            speech_packet_bindings=bindings,
+            trace_sink=trace,
+            decoding_params={"max_tokens": 256},
+            material_for_phase=lambda name, context, _sealed: PhaseMaterial(
+                instruction="Answer the task or request needed evidence.",
+                response_format=None,
+                contact_id=f"{context.sample_id}:{name}",
+                purpose=name,
+            ),
+            tools_for_phase=tools,
+            slot_count=2,
+            queue_depth=2,
+            whole_roster_wave_barrier=True,
+            request_batch_gate=fit_gate,
+        )
+    finally:
+        client.close()
+
+    results = {result.sample_id: result for result in summary.results}
+    assert set(results) == {"s1", "s2"}
+    assert results["s1"].final_response_text == "final-answer-s1"
+    assert results["s2"].final_response_text == "final-answer-s2"
+    assert [len(results[sample].contacts) for sample in ("s1", "s2")] == [1, 3]
+    assert all(sample != "s1" for _phase, sample, _completion in tools.calls)
+    assert [(phase, sample) for phase, sample, _completion in tools.calls] == [
+        ("decision-1", "s2"),
+        ("decision-2", "s2"),
+    ]
+    assert [receipt["phase"] for receipt in fit_gate.receipts] == [
+        "decision-1",
+        "decision-2",
+        "final",
+    ]
+    assert fit_gate.execution_plan.planned_model_calls == 21
+    assert len(tokenizer.calls) == 15
+
+    fit_root = (
+        tmp_path
+        / "prepared"
+        / fit_gate.execution_plan.run_id
+        / fit_gate.execution_plan.attempt_id
+    )
+    fitted = {}
+    for phase in ("decision-1", "decision-2", "final"):
+        document = json.loads((fit_root / f"{phase}.request-fit.json").read_text())
+        assert document["output"]["every_request_fits"] is True
+        assert document["output"]["generation_contacts"] == 0
+        for payload in document["inputs"]["sources"]["payloads"]:
+            fitted[payload["history"][-1]["contact_id"]] = payload
+    sent = {payload["history"][-1]["contact_id"]: payload for payload in transport.calls}
+    assert fitted.keys() == sent.keys()
+    for contact_id, payload in fitted.items():
+        actual = json.loads(json.dumps(sent[contact_id]))
+        actual["request_id"] = payload["request_id"]
+        actual["decoding_params"].pop("id_slot", None)
+        assert actual == payload

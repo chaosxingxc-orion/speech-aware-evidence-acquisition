@@ -423,9 +423,10 @@ def test_live_fit_uses_planner_active_roster_and_retains_full_budget_ceiling(tmp
     runtime = Runtime(tmp_path, values())
     program = _program()
     _, reviewer, planner = _binding()
-    active = lambda phase: planner.active_sample_ids(
-        phase, program.phase_names(), ("s1", "s2")
-    )
+    def active(phase):
+        return planner.active_sample_ids(
+            phase, program.phase_names(), ("s1", "s2")
+        )
     gate = build_live_phase_fit_gate(
         runtime, program, plan(), client_factory=lambda **_k: tokenizer,
         active_roster=active,
@@ -447,3 +448,196 @@ def test_live_fit_uses_planner_active_roster_and_retains_full_budget_ceiling(tmp
     assert document["output"]["contacts"] == 4
     assert document["output"]["generation_contacts"] == 0
     assert document["inputs"]["active_sample_ids"] == ["s1"]
+
+
+def test_live_fit_native_active_roster_shrinks_monotonically(tmp_path, monkeypatch):
+    import speech_aware_evidence_acquisition.core.preparation_fit as fitting
+
+    tokenizer = Tokenizer()
+    monkeypatch.setattr(fitting, "packet_token_counts", lambda *_a, **_k: (1,))
+    runtime = Runtime(
+        tmp_path,
+        values(
+            live_phase_fit={
+                "run_id": "SAEA-G6-LIVE-FIT-V1",
+                "attempt_id": "attempt-g6-fit-v1",
+                "contact_cap": 21,
+            }
+        ),
+    )
+    gate = build_live_phase_fit_gate(
+        runtime,
+        default_phase_program("native-answer-or-tool-v1"),
+        plan(),
+        client_factory=lambda **_k: tokenizer,
+        native_active_roster=True,
+    )
+
+    gate("decision-1", (prepared("s1", "first"), prepared("s2", "first")))
+    gate("decision-2", (prepared("s2", "second"),))
+    gate("final", (prepared("s2", "final"),))
+
+    assert gate.execution_plan.planned_model_calls == 21
+    assert len(tokenizer.calls) == 15
+    fit_root = (
+        tmp_path
+        / "prepared"
+        / gate.execution_plan.run_id
+        / gate.execution_plan.attempt_id
+    )
+    assert [
+        json.loads((fit_root / f"{phase}.request-fit.json").read_text())["inputs"][
+            "active_sample_ids"
+        ]
+        for phase in ("decision-1", "decision-2", "final")
+    ] == [["s1", "s2"], ["s2"], ["s2"]]
+
+
+@pytest.mark.parametrize(
+    "first_batch",
+    [
+        (prepared("s1", "first"),),
+        (prepared("s2", "first"), prepared("s1", "first")),
+        (prepared("s1", "first"), prepared("s1", "first")),
+    ],
+)
+def test_live_fit_native_active_roster_requires_exact_unique_first_wave(
+    tmp_path, monkeypatch, first_batch
+):
+    import speech_aware_evidence_acquisition.core.preparation_fit as fitting
+
+    tokenizer = Tokenizer()
+    monkeypatch.setattr(fitting, "packet_token_counts", lambda *_a, **_k: (1,))
+    runtime = Runtime(
+        tmp_path,
+        values(
+            live_phase_fit={
+                "run_id": "SAEA-G6-LIVE-FIT-V1",
+                "attempt_id": "attempt-g6-fit-v1",
+                "contact_cap": 21,
+            }
+        ),
+    )
+    gate = build_live_phase_fit_gate(
+        runtime,
+        default_phase_program("native-answer-or-tool-v1"),
+        plan(),
+        client_factory=lambda **_k: tokenizer,
+        native_active_roster=True,
+    )
+
+    with pytest.raises(PreparationError, match="exact registered roster"):
+        gate("decision-1", first_batch)
+    assert not tokenizer.calls
+
+
+def test_live_fit_native_active_roster_refuses_resurrection(tmp_path, monkeypatch):
+    import speech_aware_evidence_acquisition.core.preparation_fit as fitting
+
+    tokenizer = Tokenizer()
+    monkeypatch.setattr(fitting, "packet_token_counts", lambda *_a, **_k: (1,))
+    runtime = Runtime(
+        tmp_path,
+        values(
+            live_phase_fit={
+                "run_id": "SAEA-G6-LIVE-FIT-V1",
+                "attempt_id": "attempt-g6-fit-v1",
+                "contact_cap": 21,
+            }
+        ),
+    )
+    gate = build_live_phase_fit_gate(
+        runtime,
+        default_phase_program("native-answer-or-tool-v1"),
+        plan(),
+        client_factory=lambda **_k: tokenizer,
+        native_active_roster=True,
+    )
+    gate("decision-1", (prepared("s1", "first"), prepared("s2", "first")))
+    gate("decision-2", (prepared("s2", "second"),))
+
+    with pytest.raises(PreparationError, match="cannot grow or resurrect"):
+        gate("final", (prepared("s1", "final"), prepared("s2", "final")))
+    assert len(tokenizer.calls) == 11
+
+
+def test_live_fit_native_active_roster_is_limited_to_native_program(tmp_path):
+    with pytest.raises(PreparationError, match="native-answer-or-tool"):
+        build_live_phase_fit_gate(
+            Runtime(tmp_path, values()),
+            default_phase_program("phase-direct-then-slots-v1"),
+            plan(),
+            native_active_roster=True,
+        )
+
+
+def test_dispatch_enables_native_active_roster_only_for_native_dispatcher(monkeypatch):
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    import speech_aware_evidence_acquisition.core.bundle.delivery_replay as delivery
+
+    program = default_phase_program("native-answer-or-tool-v1")
+    monkeypatch.setattr(
+        delivery, "validate_phase_delivery_sources", lambda *_a, **_k: None
+    )
+    captured = {}
+    callback = SimpleNamespace(receipts=[])
+    dispatcher = SimpleNamespace(native_enabled=True, receipt=lambda: {})
+
+    def factory(runtime, actual_program, actual_plan, **options):
+        assert runtime is instance
+        assert actual_program is program
+        assert actual_plan == plan()
+        captured["fit_options"] = options
+        return callback
+
+    def continuous(**kwargs):
+        captured.update(kwargs)
+        return SimpleNamespace(
+            results=(
+                SimpleNamespace(sample_id="s1", contacts=(object(),)),
+                SimpleNamespace(sample_id="s2", contacts=(object(), object())),
+            ),
+            controller_policy_id="program",
+        )
+
+    instance = object.__new__(FlightRuntime)
+    instance._composed = SimpleNamespace(
+        values=values(
+            live_phase_fit={
+                "run_id": "SAEA-G6-LIVE-FIT-V1",
+                "attempt_id": "attempt-g6-fit-v1",
+                "contact_cap": 21,
+            }
+        )
+    )
+    instance._live_phase_fit_factory = factory
+    instance._phase_tool_dispatcher = dispatcher
+    instance._phase_program_material = {
+        "trace_sink": SimpleNamespace(),
+        "supply_for_phase": None,
+        "supply_specs": {},
+        "review_for_phase": None,
+        "review_specs": {},
+        "knowledge_snapshot": object(),
+        "speech_packet_bindings": {"s1": {}, "s2": {}},
+        "material_for_phase": lambda *_a: None,
+    }
+    instance._phase_supply_seeds = lambda *_a, **_k: ({}, {})
+    instance._continuous_phase_runner = continuous
+    instance._phase_decoding_params = lambda: {"temperature": 0}
+    instance._rows_from_phase_summaries = lambda *_a, **_k: [{"sample_id": "s1"}]
+    instance._phase_summary_contacts = lambda _summary: 2
+    instance._result_kind = lambda: "task-answer"
+    instance._model = "model"
+    instance._dataset = "dataset"
+    instance._baseline = "baseline"
+    instance._adapter = object()
+    instance._data_root = object()
+    instance._split_id = "split"
+
+    instance._dispatch_phase_program(
+        object(), plan(), "native-answer-or-tool-v1"
+    )
+
+    assert captured["fit_options"] == {"native_active_roster": True}
+    assert captured["request_batch_gate"] is callback
