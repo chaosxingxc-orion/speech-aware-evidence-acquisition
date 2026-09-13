@@ -1,0 +1,49 @@
+{
+  "admission": {
+    "data_relpath": "coordination/slurp-top3-commitment-v1/successor-engineering-admission-v1.json",
+    "sha256": "e41fc0102d52765db49d6304e0c1071394acfbb8bedad0671b2e8e1fb823d5f7"
+  },
+  "budget": {
+    "asr_calls": 0,
+    "encoder_calls": 0,
+    "fit_and_generation_gpu_hours_shared": 0.5,
+    "fit_audio_seconds_cap": 120,
+    "fit_endpoint_calls_cap": 26,
+    "generation_audio_seconds_cap": 120,
+    "generation_calls_cap": 8,
+    "generation_calls_target": 8,
+    "official_complete_derivative_scoring_jobs": 2
+  },
+  "contact_status": "No successor fit, generation or official scoring has occurred.",
+  "plans": {
+    "closed-joint-fit": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-top3-engineering-v1/closed-joint-fit-plan-v2.json",
+      "sha256": "8b407fae85aba46ccf5f10d408b87efa78d98fc120ab0cb6b633c22e7b099d8e"
+    },
+    "closed-joint-generation": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-top3-engineering-v1/closed-joint-generation-plan-v2.json",
+      "sha256": "f15dc9c13cafd464ff928781f2cc91791a062baf8a2a250ab08b67e42ad51767"
+    },
+    "hard-first-fit": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-top3-engineering-v1/hard-first-fit-plan-v2.json",
+      "sha256": "17693490586e71a367b3ce497748ec1d540b43bfc4fbdbcdc1ee389b19725fc8"
+    },
+    "hard-first-generation": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-top3-engineering-v1/hard-first-generation-plan-v2.json",
+      "sha256": "178bc09fe8f3f2f8630278f86286931a2220e3f33e9a8c2dd9affb65426f2293"
+    }
+  },
+  "registered_at": "2026-09-13T05:06:24.490189+00:00",
+  "required_code_path": "Shared campaign -> runtime seal -> configured delivery builder -> complete official score; root must verify integration before launch.",
+  "schema": "saea-top3-successor-engineering-registration-v1",
+  "scope": "Owner-authorized Stage-2 engineering proof of shared typed source, candidate contracts, terminal model response, declared deterministic delivery and official scoring. Four rows are not an efficacy screen.",
+  "source_manifest": {
+    "data_relpath": "runs/SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-ENGINEERING-V1/attempt-slurp-intent-hypothesis-source-engineering-generation-v1/SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-ENGINEERING-V1.run-manifest.json",
+    "sha256": "653767fd69037b32733ab78f694de59ffda7484f5f4b99f2845bc8d68ef36812"
+  },
+  "supersedes": {
+    "reason": "Correct canonical phase-program identity before any contact.",
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-top3-engineering-v1/successor-registration-v1.json",
+    "sha256": "9634c7ed7febf51d36cf09dddf0744a07ac965724ef1b3d37eb7d9b2d455cf35"
+  }
+}

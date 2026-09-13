@@ -1,0 +1,54 @@
+{
+  "cell": "slurp-top3-commitment-hard-first-engineering4-generation-v1",
+  "composed_config_hash": "b9fef6e1258f8a9ab51674b05b18b0f4e39d33ed057c978c4b14e2881bcedf5e",
+  "delivery": "Only the declared source-selector/rule pair; preserve parent, build derivative, score once through shared batch with per-sample statistics.",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-top3-hard-first-engineering-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.25,
+    "planned_model_calls": 4,
+    "planned_speech_audio_seconds": 60,
+    "protocol_hash": "10eee62e7975535e05d1b73dcdb85cf572a8bb7fd2c893f058464815912ffad6",
+    "run_id": "SAEA-SLURP-TOP3-HARD-FIRST-ENGINEERING-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "e335c74149794af0f2301954b6e92cde2a4134d65ebe6069173a1a556b7a04b3",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-top3-commitment-np8-v1",
+  "experiment": "slurp-top3-commitment-hard-first-engineering4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "encoder_calls": 0,
+    "fit_and_generation_gpu_hours_shared": 0.5,
+    "fit_audio_seconds_cap": 120,
+    "fit_endpoint_calls_cap": 26,
+    "generation_audio_seconds_cap": 120,
+    "generation_calls_cap": 8,
+    "generation_calls_target": 8,
+    "official_complete_derivative_scoring_jobs": 2
+  },
+  "final_source_binding": "Bind final clean shared implementation commit, service identity and all registration hashes in the launch receipt before contact.",
+  "fit_protocol": "One actual active wave, props once plus three exact fit endpoints for each of four source-bound requests; include the complete ordered candidate state, contract view, speech and final output reserve.",
+  "protocol_hash": "10eee62e7975535e05d1b73dcdb85cf572a8bb7fd2c893f058464815912ffad6",
+  "quality_read_gate": "Engineering validity, exact replay, source and candidate binding only. No semantic correctness or effectiveness selection from four rows.",
+  "registered_at": "2026-09-13T05:06:24.444044+00:00",
+  "retry_policy": "Four generations per arm maximum, no unregistered retry or adaptive prompting. Stop and diagnose any failure.",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_eligibility": {
+    "data_relpath": "coordination/slurp-top3-commitment-v1/successor-engineering-admission-v1.json",
+    "decision_id": "SAEA-SLURP-TOP3-SUCCESSOR-ENGINEERING-ADMISSION-V1",
+    "sha256": "e41fc0102d52765db49d6304e0c1071394acfbb8bedad0671b2e8e1fb823d5f7"
+  },
+  "source_manifest": {
+    "data_relpath": "runs/SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-ENGINEERING-V1/attempt-slurp-intent-hypothesis-source-engineering-generation-v1/SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-ENGINEERING-V1.run-manifest.json",
+    "sha256": "653767fd69037b32733ab78f694de59ffda7484f5f4b99f2845bc8d68ef36812"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/agentic-native-tool-loop-v1",
+  "supersedes": {
+    "reason": "Zero-contact preflight refused a policy-file hash where the selector requires the shared canonical PhaseProgram hash. Correct the identity pin; preserve intended phase semantics and source.",
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-top3-engineering-v1/hard-first-generation-plan-v1.json",
+    "sha256": "8dba77fd07809c01bcf7f6daafe2f37b3c3b2cd9ba6f9626fa1b51f2378df1c0"
+  }
+}

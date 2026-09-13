@@ -1,0 +1,26 @@
+{
+  "current_experiments": [
+    {
+      "repo_relpath": "configs/experiment/slurp-top3-commitment-closed-joint-dev1000-v1.json",
+      "sha256": "373181c04a77a75a3f3f2a3aba29f25546c0ad6af459d6bd704985b09898f72b"
+    },
+    {
+      "repo_relpath": "configs/experiment/slurp-top3-commitment-closed-joint-engineering4-v1.json",
+      "sha256": "5b4d4b2e769cca50714998042edbf9606e02b0192522f6eaed06ba6cec1f0819"
+    },
+    {
+      "repo_relpath": "configs/experiment/slurp-top3-commitment-hard-first-dev1000-v1.json",
+      "sha256": "cd9549254a09147c7b68bb767a4e57db26494d98c7218650d3c8b158516b29b0"
+    },
+    {
+      "repo_relpath": "configs/experiment/slurp-top3-commitment-hard-first-engineering4-v1.json",
+      "sha256": "59effa6738a5f08c8978e72761bec604bf6352e206db0e5123377caf05815c46"
+    }
+  ],
+  "reason": "Correct source-selector canonical program hash; original prepared inventory remains historical. Engineering arms also now have distinct source-bound baseline fragments.",
+  "schema": "saea-top3-successor-config-precontact-amendment-v1",
+  "supersedes": {
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-top3-commitment-v1/inventory-v1.json",
+    "sha256": "6119f6dd5be6d15fdc00db4c8c037b15cbeb17eb11159f5fa6fc256daa95b49c"
+  }
+}

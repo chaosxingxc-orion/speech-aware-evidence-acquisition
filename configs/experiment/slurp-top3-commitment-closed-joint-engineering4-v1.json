@@ -44,7 +44,7 @@
       },
       "source_selector": {
         "program_id": "phase-slots-given-intent-v1",
-        "program_sha256": "9e0825a952edcf338e8d1206bd0fa8e05b3f3d8743decffdca687d73320f69bb",
+        "program_sha256": "3ebb3afa30b6072b22ed2fb00f39db2ff8744b6adbe494d31efa76e47c452abd",
         "response_phase": "slots",
         "schema": "saea-sealed-state-response-pair-v1"
       }
