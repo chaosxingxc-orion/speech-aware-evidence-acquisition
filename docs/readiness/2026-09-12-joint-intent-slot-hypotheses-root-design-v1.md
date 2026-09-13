@@ -45,7 +45,7 @@ The hypothesis artifact should contain candidate IDs, their order, compact obser
 
 For example, a spoken city name can be a weather location or a travel destination. It does not identify the task by itself. The requested operation and any origin/destination relationship jointly determine which interpretation is supported. An available field of the right type is insufficient.
 
-The original local Whisper proof established real execution and returned observations but failed final delivery. Its separately registered single recovery has now sealed four legal final task JSON answers after eight Qwen contacts and four actual CPU Whisper calls. Its source-chain audit remains the engineering closure gate. The recovery changed native dialogue projection and phase instructions together, so their individual causal effects are not isolated. Neither four-row outcome tests the Top-N mechanism or useful autonomous triggering.
+The original local Whisper proof established real execution and returned observations but failed final delivery. Its separately registered single recovery has now sealed four legal final task JSON answers after eight Qwen contacts and four actual CPU Whisper calls. Its source-chain audit passed, and the single recovery is closed for engineering execution only; see 2026-09-12-native-speech-tool-recovery-result-v1.md. The recovery changed native dialogue projection and phase instructions together, so their individual causal effects are not isolated. Neither four-row outcome tests the Top-N mechanism or useful autonomous triggering.
 
 ## Minimal experimental sequence
 
