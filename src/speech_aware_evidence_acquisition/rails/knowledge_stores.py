@@ -202,15 +202,11 @@ class KnowledgeStoreBinding:
 
         store = self.store(store_id)
         qualified = qualify_id(store_id, local_evidence_id)
-        provenance = (
-            f"store_id={store_id} "
-            f"store_snapshot_sha256={store.snapshot_pin['sha256']} "
-            f"store_release_sha256={store.release_pin['sha256']} "
-            f"store_source_sha256={store.source_pin['sha256']}"
-        )
         return {
             "evidence_id": qualified,
-            "text": f"[{provenance}] {content}",
+            "text": (
+                f"[knowledge store={store_id} role={store.store_role}] {content}"
+            ),
             "store_id": store_id,
         }
 

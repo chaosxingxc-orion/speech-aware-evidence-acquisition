@@ -184,9 +184,12 @@ def _native_config(store_ids):
 
 
 def test_native_model_selects_each_store_and_joint_history_keeps_both(tmp_path):
+    from speech_aware_evidence_acquisition.core.tracing import TraceBuffer
+
     config, snapshots = _config(tmp_path)
     binding = load_knowledge_store_binding(config, data_root=tmp_path)
     calls = []
+    trace = TraceBuffer("named-store-test-v1")
 
     def supplied(store_id, phase, context):
         calls.append((store_id, phase))
@@ -199,6 +202,7 @@ def test_native_model_selects_each_store_and_joint_history_keeps_both(tmp_path):
         knowledge_stores=binding,
         supply_for_store=supplied,
         tool_contact=Custody(),
+        trace_sink=trace,
     )
     schema = dispatcher.native_tool_schemas()[0]["function"]["parameters"]
     assert schema["properties"]["store_id"]["enum"] == list(binding.store_ids)
@@ -209,13 +213,23 @@ def test_native_model_selects_each_store_and_joint_history_keeps_both(tmp_path):
     first = dispatcher("decision-1", "decision-2", first_context)
     first_doc = json.loads(first.state.content)
     assert first_doc["result"]["store_id"] == "intent-boundaries"
-    assert first_doc["result"]["store_snapshot_sha256"] == snapshots[
+    assert first_doc["result"] == {
+        "knowledge_view": "text",
+        "selected_value_ids": ["intent-boundaries::value:dim-light"],
+        "store_id": "intent-boundaries",
+        "store_role": "intent-boundaries",
+        "supporting_facet_ids": ["intent-boundaries::operation:dim"],
+    }
+    traced = [
+        payload["use_result"]
+        for channel, _record, payload in trace.records
+        if channel == "USE" and payload.get("use_schema") == "saea-phase-tool-result-v1"
+    ][0]
+    assert traced["store_snapshot_sha256"] == snapshots[
         "intent-boundaries"
     ].content_hash()
-    assert first_doc["result"]["composite_snapshot_sha256"] == binding.binding_sha256
-    assert first_doc["result"]["local_rank_sha256"] != first_doc["result"][
-        "qualified_rank_sha256"
-    ]
+    assert traced["composite_snapshot_sha256"] == binding.binding_sha256
+    assert traced["local_rank_sha256"] != traced["qualified_rank_sha256"]
     second_context = staged_native(
         call(PHASE_KNOWLEDGE_TOOL, {"store_id": "slot-contracts", "view": "text"}),
         phase="decision-2",
@@ -245,7 +259,8 @@ def test_native_model_selects_each_store_and_joint_history_keeps_both(tmp_path):
         "intent-boundaries",
         "slot-contracts",
     }
-    assert all("store_release_sha256=" in block["text"] for block in blocks)
+    assert all("[knowledge store=" in block["text"] for block in blocks)
+    assert all("sha256" not in block["text"] for block in blocks)
 
 
 def test_real_request_gate_retains_exact_qualified_store_evidence(tmp_path):
@@ -385,10 +400,18 @@ def test_real_request_gate_retains_exact_qualified_store_evidence(tmp_path):
         "supplied_evidence"
     ]
     assert "intent-boundaries::" in second_wire
-    assert "store_release_sha256=" in second_wire
+    assert "[knowledge store=intent-boundaries role=intent-boundaries]" in second_wire
+    assert "store_release_sha256=" not in second_wire
     assert "intent-boundaries::" in final_wire
     assert "slot-contracts::" in final_wire
-    assert final_wire.count("store_release_sha256=") == 2
+    assert len(fitted[2][0]["supplied_evidence"]) == 2
+    assert all(
+        "[knowledge store=" in item["content"]
+        for item in fitted[2][0]["supplied_evidence"]
+    )
+    assert "store_snapshot_sha256" not in final_wire
+    assert router.receipt["stores"]["intent-boundaries"]["store_release_sha256"]
+    assert router.receipt["stores"]["slot-contracts"]["store_source_sha256"]
 
 
 def test_disallowed_store_and_cross_store_citation_refuse(tmp_path):
@@ -485,7 +508,8 @@ def test_named_prompt_bound_qualifies_and_retains_prior_store_evidence(tmp_path)
     final_text = "\n".join(text for text, _role in bound["final"])
     assert "intent-boundaries::" in final_text
     assert "slot-contracts::" in final_text
-    assert final_text.count("store_release_sha256=") == 2
+    assert final_text.count("[knowledge store=") == 2
+    assert "sha256=" not in final_text
 
 
 def test_shared_phase_supply_builds_and_routes_each_independent_store(tmp_path):

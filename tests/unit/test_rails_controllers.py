@@ -41,6 +41,11 @@ _SHA_A = "a" * 64
 _SHA_B = "b" * 64
 
 _EXPECTED_PROGRAM_SHAPES = {
+    "phase-intent-hypotheses-only-v1": (
+        ("hypotheses",),
+        1,
+        "always-run-full-program",
+    ),
     "native-answer-or-tool-v1": (("decision-1", "decision-2", "final"), 3, "native-answer-or-tool"),
     "native-answer-or-one-tool-v1": (("decision-1", "final"), 2, "native-answer-or-tool"),
     "phase-task-tools-then-solve-v1": (("plan", "solve"), 2, "always-run-full-program"),
