@@ -14,11 +14,14 @@ from speech_aware_evidence_acquisition.rails.phase_material import (
     build_material_for_phase,
 )
 from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
+    FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256,
     HYPOTHESIS_SEMANTICS,
     HYPOTHESIS_STATE_SCHEMA,
     SlurpIntentHypothesisError,
     SlurpIntentHypothesisStateFill,
     parse_slurp_intent_hypothesis_state,
+    project_fixed_three_slurp_intent_hypotheses,
 )
 
 LEGAL = frozenset({"weather_query", "transport_taxi", "calendar_set"})
@@ -191,3 +194,133 @@ def test_phase_material_passes_full_artifact_only_to_registered_hypothesis_fill(
     )
     assert "ranked alternatives" in material.instruction
     assert PHASE_STATE_FILLS.resolve("slurp-intent-hypotheses-for-joint-resolution-v1")
+
+
+def _compact_response(*candidates):
+    return json.dumps({"candidates": list(candidates)}, ensure_ascii=False)
+
+
+@pytest.mark.parametrize(
+    "raw_ids,expected_ids,projected_positions",
+    [
+        (("weather_query",) * 3, ("weather_query",), (1, 1, 1)),
+        (
+            ("weather_query", "transport_taxi", "weather_query"),
+            ("weather_query", "transport_taxi"),
+            (1, 2, 1),
+        ),
+        (
+            ("weather_query", "transport_taxi", "calendar_set"),
+            ("weather_query", "transport_taxi", "calendar_set"),
+            (1, 2, 3),
+        ),
+    ],
+)
+def test_fixed_three_first_occurrence_projection_supports_widths_one_to_three(
+    raw_ids, expected_ids, projected_positions
+):
+    by_id = {
+        candidate["intent_id"]: candidate for candidate in _payload()["candidates"]
+    }
+    by_id["calendar_set"] = {
+        "intent_id": "calendar_set",
+        "distinction": "Creates a calendar entry.",
+        "evidence_refs": [],
+        "unresolved_fields": ["date"],
+    }
+    raw = _compact_response(*(by_id[intent_id] for intent_id in raw_ids))
+
+    result = project_fixed_three_slurp_intent_hypotheses(
+        raw, sample_id=SAMPLE_ID, legal_intent_ids=LEGAL
+    )
+
+    projected = json.loads(result.content)
+    assert tuple(row["intent_id"] for row in projected["candidates"]) == expected_ids
+    assert tuple(row.raw_position for row in result.raw_positions) == (1, 2, 3)
+    assert tuple(row.projected_position for row in result.raw_positions) == projected_positions
+    assert result.projection_policy_id == FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+    assert result.projection_policy_sha256 == FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256
+    assert len(result.projection_policy_sha256) == 64
+    assert result.original_text_sha256 == hashlib.sha256(raw.encode("utf-8")).hexdigest()
+    assert result.projected_content_sha256 == hashlib.sha256(
+        result.content.encode("utf-8")
+    ).hexdigest()
+
+
+def test_projection_retains_the_exact_first_object_and_binds_every_raw_position():
+    first = _payload()["candidates"][0]
+    later_duplicate = {
+        **first,
+        "distinction": "A later duplicate that must not replace the first.",
+        "evidence_refs": ["speech:later"],
+    }
+    taxi = _payload()["candidates"][1]
+    raw = _compact_response(first, later_duplicate, taxi)
+
+    result = project_fixed_three_slurp_intent_hypotheses(
+        raw, sample_id=SAMPLE_ID, legal_intent_ids=LEGAL
+    )
+
+    candidates = json.loads(result.content)["candidates"]
+    assert candidates == [first, taxi]
+    assert result.raw_positions[0].candidate_sha256 == result.raw_positions[0].retained_sha256
+    assert result.raw_positions[1].candidate_sha256 != result.raw_positions[1].retained_sha256
+    assert result.raw_positions[1].first_raw_position == 1
+    assert result.raw_positions[2].first_raw_position == 3
+
+
+@pytest.mark.parametrize(
+    "raw,match",
+    [
+        ('{"candidates":[],"candidates":[]}', "duplicate JSON key"),
+        (
+            '{"candidates":[{"intent_id":"weather_query",'
+            '"intent_id":"transport_taxi","distinction":"x",'
+            '"evidence_refs":[],"unresolved_fields":[]},{},{}]}',
+            "duplicate JSON key",
+        ),
+        (_compact_response(*_payload()["candidates"]), "exactly three"),
+        (
+            _compact_response(
+                _payload()["candidates"][0],
+                {**_payload()["candidates"][1], "intent_id": "illegal"},
+                _payload()["candidates"][0],
+            ),
+            "not legal",
+        ),
+        (
+            _compact_response(
+                _payload()["candidates"][0],
+                {**_payload()["candidates"][1], "distinction": "x" * 513},
+                _payload()["candidates"][0],
+            ),
+            "512-character bound",
+        ),
+    ],
+)
+def test_projection_refuses_malformed_illegal_or_non_fixed_three_input(raw, match):
+    with pytest.raises(SlurpIntentHypothesisError, match=match):
+        project_fixed_three_slurp_intent_hypotheses(
+            raw, sample_id=SAMPLE_ID, legal_intent_ids=LEGAL
+        )
+
+
+def test_projection_does_not_relax_historical_duplicate_rejection():
+    duplicate = _payload()["candidates"][0]
+    raw = _compact_response(duplicate, duplicate, duplicate)
+    projected = project_fixed_three_slurp_intent_hypotheses(
+        raw, sample_id=SAMPLE_ID, legal_intent_ids=LEGAL
+    )
+    assert len(json.loads(projected.content)["candidates"]) == 1
+
+    from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
+        canonicalize_slurp_intent_hypothesis_response,
+    )
+
+    with pytest.raises(SlurpIntentHypothesisError, match="unique"):
+        canonicalize_slurp_intent_hypothesis_response(
+            raw,
+            sample_id=SAMPLE_ID,
+            legal_intent_ids=LEGAL,
+            max_candidates=3,
+        )
