@@ -51,9 +51,13 @@ class _Pin:
     relpath: str
     sha256: str
     path: Path
+    root: str
 
-    def as_json(self) -> dict[str, str]:
-        return {"relpath": self.relpath, "sha256": self.sha256}
+    def as_json(self, *, include_root: bool = True) -> dict[str, str]:
+        result = {"relpath": self.relpath, "sha256": self.sha256}
+        if include_root:
+            result["root"] = self.root
+        return result
 
 
 def _mapping(value: object, *, name: str) -> Mapping[str, Any]:
@@ -105,16 +109,34 @@ def _confined(root: Path, relpath: str, *, name: str) -> Path:
     return path
 
 
-def _pin(value: object, *, root: Path, name: str) -> _Pin:
+def _pin(
+    value: object,
+    *,
+    roots: Mapping[str, Path],
+    default_root: str,
+    allowed_roots: frozenset[str],
+    name: str,
+) -> _Pin:
     mapping = _mapping(value, name=name)
-    _exact_keys(mapping, {"relpath", "sha256"}, name=name)
+    if set(mapping) not in ({"relpath", "sha256"}, {"relpath", "sha256", "root"}):
+        raise SemanticKnowledgePreparationError(
+            f"{name} fields differ from the registered schema"
+        )
+    root_name = mapping.get("root", default_root)
+    if not isinstance(root_name, str) or root_name not in allowed_roots:
+        raise SemanticKnowledgePreparationError(f"{name}.root is not permitted")
     relpath = _relative(mapping["relpath"], name=f"{name}.relpath")
     sha256 = _text(mapping["sha256"], name=f"{name}.sha256")
     if _SHA256.fullmatch(sha256) is None:
         raise SemanticKnowledgePreparationError(
             f"{name}.sha256 must be lowercase SHA-256"
         )
-    return _Pin(relpath, sha256, _confined(root, relpath, name=name))
+    return _Pin(
+        relpath,
+        sha256,
+        _confined(roots[root_name], relpath, name=name),
+        root_name,
+    )
 
 
 def _read_pin(pin: _Pin, *, name: str) -> bytes:
@@ -183,6 +205,10 @@ def _roster(
             split_role=split_role,
         )
     if schema == "saea-dev-ladder-v1" and not require_construction:
+        if pin.root != "repo":
+            raise SemanticKnowledgePreparationError(
+                f"{name} probe receipt must use the repository root"
+            )
         expected_parent = Path("docs") / "receipts" / PROBE_SAMPLES_DIRNAME
         relative = Path(pin.relpath)
         if relative.parent != expected_parent or relative.suffix != ".json":
@@ -288,20 +314,37 @@ def _registration(
         raise SemanticKnowledgePreparationError(
             "registration.forbidden_rosters must be a list"
         )
+    roots = {"repo": repo_root, "data": data_root}
     pins = {
         "authored_source": _pin(
-            registration["authored_source"], root=data_root, name="authored_source"
+            registration["authored_source"],
+            roots=roots,
+            default_root="data",
+            allowed_roots=frozenset({"data"}),
+            name="authored_source",
         ),
         "construction_scope": _pin(
             registration["construction_scope"],
-            root=repo_root,
+            roots=roots,
+            default_root="repo",
+            allowed_roots=frozenset({"repo", "data"}),
             name="construction_scope",
         ),
         "permitted_roster": _pin(
-            registration["permitted_roster"], root=repo_root, name="permitted_roster"
+            registration["permitted_roster"],
+            roots=roots,
+            default_root="repo",
+            allowed_roots=frozenset({"repo", "data"}),
+            name="permitted_roster",
         ),
         "forbidden_rosters": tuple(
-            _pin(value, root=repo_root, name=f"forbidden_rosters[{index}]")
+            _pin(
+                value,
+                roots=roots,
+                default_root="repo",
+                allowed_roots=frozenset({"repo"}),
+                name=f"forbidden_rosters[{index}]",
+            )
             for index, value in enumerate(forbidden)
         ),
         "output_namespace": output_namespace,
@@ -315,7 +358,7 @@ def _registration(
             "registration must be confined to repo_root"
         ) from exc
     pins["registration"] = _Pin(
-        registration_relpath, hashlib.sha256(raw).hexdigest(), path.resolve()
+        registration_relpath, hashlib.sha256(raw).hexdigest(), path.resolve(), "repo"
     )
     pins["source_identity"] = source_identity
     return registration, pins
@@ -397,9 +440,9 @@ def prepare_semantic_knowledge_store(
         require_construction=True,
         repo_root=repo_root,
     )
-    if permitted.split_identity_hash != pins["source_identity"]:
+    if scope.split_identity_hash != pins["source_identity"]:
         raise SemanticKnowledgePreparationError(
-            "permitted roster split identity differs"
+            "construction scope split identity differs"
         )
     if not set(permitted.sample_ids).issubset(scope.sample_ids):
         raise SemanticKnowledgePreparationError(
@@ -462,7 +505,7 @@ def prepare_semantic_knowledge_store(
         "snapshot_sha256": snapshot.content_hash(),
         "source_split_identity_hash": pins["source_identity"],
         "builder_policy_id": registration["builder_policy_id"],
-        "source": pins["authored_source"].as_json(),
+        "source": pins["authored_source"].as_json(include_root=False),
     }
     release_raw = canonical_bytes(release)
     release_pin = {
