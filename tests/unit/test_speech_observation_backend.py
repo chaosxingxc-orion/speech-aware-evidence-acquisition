@@ -265,3 +265,58 @@ def test_sample_len_must_fit_decoder_context_before_forward(monkeypatch):
     with pytest.raises(backend.SpeechObservationBackendError, match="decoder context"):
         worker.decode_batch([item])
     assert "speech_tool_forward_started" not in events
+
+
+def test_cpu_protocol_requires_fp32_before_any_eager_work(monkeypatch):
+    created = []
+
+    class RefusingPrefetch:
+        def __init__(self, _workers):
+            created.append(True)
+
+    monkeypatch.setattr(backend, "BoundedAudioPrefetch", RefusingPrefetch)
+    with pytest.raises(backend.SpeechObservationBackendError, match="fp16"):
+        backend.LocalWhisperBackend(
+            inventory(), protocol(device="cpu", fp16=True), "/unused", lambda _: None
+        )
+    assert created == []
+
+
+def test_cpu_decode_propagates_cpu_device_and_fp32_without_eager_work(monkeypatch):
+    calls, events = {}, []
+    results = [FakeResult("cpu transcript", [1], -0.1, 0.0)]
+    monkeypatch.setattr(backend, "BoundedAudioPrefetch", FakePrefetch)
+    monkeypatch.setattr(
+        backend,
+        "_load_whisper_stack",
+        lambda actual_inventory, actual_protocol: (
+            calls.setdefault("loads", []).append((actual_inventory, actual_protocol))
+            or fake_stack(results, calls)
+        ),
+    )
+    worker = backend.LocalWhisperBackend(
+        inventory(), protocol(device="cpu", fp16=False, batch_size=1),
+        "/unused", events.append,
+    )
+    assert calls == {}
+    assert events == []
+    assert FakePrefetch.instances[-1].prepared == []
+
+    item = source()
+    worker.prepare_sources([item])
+    output = worker(item)
+
+    assert output["transcript"] == "cpu transcript"
+    assert calls["loads"][0][1]["device"] == "cpu"
+    assert calls["decode"][1].moves == ["cpu"]
+    assert calls["options"]["fp16"] is False
+
+
+@pytest.mark.parametrize("device", ["cuda", "cuda:0"])
+def test_existing_cuda_device_and_fp16_contract_remains_valid(monkeypatch, device):
+    monkeypatch.setattr(backend, "BoundedAudioPrefetch", FakePrefetch)
+    worker = backend.LocalWhisperBackend(
+        inventory(), protocol(device=device, fp16=True), "/unused", lambda _: None
+    )
+    assert worker.protocol["device"] == device
+    assert worker.protocol["fp16"] is True
