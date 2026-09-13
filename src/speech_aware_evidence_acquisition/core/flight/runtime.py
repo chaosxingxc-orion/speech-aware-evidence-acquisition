@@ -5091,16 +5091,70 @@ class FlightRuntime:
         if len(program.phase_names()) != 1:
             raise PreparationError("actual fit requires one phase with sealed predecessors")
         payloads = []
-        prior_client = getattr(self, "_client", None)
-        prior_outputs = getattr(self, "_output_rows", None)
+        # The shared wire path writes a synthetic plan, client, and phase
+        # bindings. None may survive into the registered flight, including
+        # when dispatch fails. Keep live resources outside the scratch scope.
+        missing = object()
+        saved = {
+            name: getattr(self, name, missing)
+            for name in (
+                "_plan", "_client", "_output_rows", "_binding",
+                "_phase_program_material", "_phase_tool_dispatcher",
+                "_phase_tool_trace_sink", "_phase_review_receipt",
+                "_phase_material_receipt", "_phase_supply_receipt",
+                "_phase_summaries", "_wire_check_active",
+                "_live_speech_config", "_live_speech_source_bindings",
+                "_live_speech_provider", "_knowledge_store_binding",
+                "_knowledge_store_supply", "_window_feature_packet_config",
+                "_window_feature_packets",
+            )
+        }
         try:
+            self._client = None
+            self._live_speech_provider = None
+            self._phase_tool_dispatcher = None
+            self._phase_tool_trace_sink = None
+            material = getattr(self, "_phase_program_material", None)
+            if material is not None:
+                self._phase_program_material = {
+                    key: value for key, value in material.items() if key != "trace_sink"
+                }
             self.wire_check(
                 seal_and_score=False, max_workers=max_workers,
                 request_payload_observer=payloads.append,
             )
+        except BaseException as error:
+            # Dispatch can fail before wire_check reaches its ordinary close
+            # and abort block. Release only the newly created scratch objects.
+            for name in ("_live_speech_provider", "_client"):
+                resource = getattr(self, name, None)
+                close = getattr(resource, "close", None)
+                if resource is not saved[name] and callable(close):
+                    try:
+                        close()
+                    except Exception as cleanup_error:
+                        error.add_note(f"scratch {name} cleanup: {cleanup_error}")
+            scratch_plan = getattr(self, "_plan", None)
+            scratch_run = getattr(scratch_plan, "run_id", "")
+            if (
+                scratch_plan is not saved["_plan"]
+                and isinstance(scratch_run, str)
+                and scratch_run.startswith(WIRE_CHECK_RUN_ID_PREFIX)
+            ):
+                try:
+                    self._abort_attempt(
+                        self._data_root, scratch_run, scratch_plan.attempt_id,
+                        reason="request materialization failed without model contact",
+                    )
+                except Exception as cleanup_error:
+                    error.add_note(f"scratch attempt cleanup: {cleanup_error}")
+            raise
         finally:
-            self._client = prior_client
-            self._output_rows = prior_outputs
+            for name, value in saved.items():
+                if value is missing:
+                    self.__dict__.pop(name, None)
+                else:
+                    setattr(self, name, value)
         expected = [sample.sample_id for sample in self._samples]
         actual = [payload.get("sample_id") for payload in payloads]
         if len(set(actual)) != len(actual) or set(actual) != set(expected):

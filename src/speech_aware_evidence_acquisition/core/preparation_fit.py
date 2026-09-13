@@ -769,3 +769,124 @@ def build_live_phase_fit_gate(
     fit_wave.receipts = completed
     fit_wave.execution_plan = fit_plan
     return fit_wave
+
+
+def revalidate_phase_fit(runtime, *, registration, registration_sha256, data_root):
+    """Derive a contact-free fit after a reviewed runtime-only repair.
+
+    Require the complete real boundary and every non-implementation input to
+    match the immutable measurement. This operation neither refreshes the
+    service attestation nor authorizes generation. The caller must register
+    the exact implementation change before materializing dataset requests.
+    """
+    import hashlib
+    from copy import deepcopy
+    from .preparation import load_artifact, prepare_artifact
+    from .model.paths import _normalized_relative_path, _resolve_confined
+    from .model import FrozenCoreError
+
+    root = Path(data_root).resolve()
+    if (
+        registration.get("schema") != "saea-request-fit-revalidation-registration-v1"
+        or registration.get("execution_profile") != "model-free-check"
+        or registration.get("new_endpoint_contacts") != 0
+        or not registration.get("reason")
+        or digest(registration) != registration_sha256
+    ):
+        raise PreparationError("invalid model-free fit revalidation registration")
+
+    def confined(relative, *, exists):
+        try:
+            return _resolve_confined(
+                root, _normalized_relative_path(relative, "fit revalidation"),
+                root, "fit revalidation", strict=exists,
+            )
+        except (ValueError, OSError, FrozenCoreError) as error:
+            raise PreparationError(f"invalid fit revalidation path: {error}") from error
+
+    source_pin = registration["source"]
+    source = confined(source_pin["relpath"], exists=True)
+    destination = confined(registration["output_relpath"], exists=False)
+    if source == destination:
+        raise PreparationError("fit revalidation must preserve its source")
+    raw = source.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != source_pin["sha256"]:
+        raise PreparationError("fit revalidation source hash mismatch")
+    document = json.loads(raw)
+    old_inputs = document["inputs"]
+    if digest(old_inputs) != registration["source_inputs_sha256"]:
+        raise PreparationError("fit revalidation source inputs mismatch")
+    measured = load_artifact(
+        source, expected_sha256=source_pin["sha256"], kind="request-fit", inputs=old_inputs,
+    )
+    if document["contact_class"] != "tokenizer" or "revalidation" in measured:
+        raise PreparationError("fit revalidation requires an original measured artifact")
+
+    journal_pin = registration["source_journal"]
+    journal_raw = confined(journal_pin["relpath"], exists=True).read_bytes()
+    if hashlib.sha256(journal_raw).hexdigest() != journal_pin["sha256"]:
+        raise PreparationError("fit revalidation source journal hash mismatch")
+    journal = [json.loads(line) for line in journal_raw.splitlines()]
+    if (
+        len(journal) != journal_pin["line_count"] or len(journal) != measured["contacts"]
+        or measured.get("generation_contacts") != 0
+        or any(row.get("contact") != i for i, row in enumerate(journal, 1))
+        or dict(Counter(f"{row['method']} {row['route']}" for row in journal))
+        != measured["contact_counts"]
+    ):
+        raise PreparationError("fit revalidation source journal accounting mismatch")
+
+    expected = deepcopy(old_inputs)
+    implementation = expected["sources"]["implementation"]
+    changes = registration["implementation_changes"]
+    if not isinstance(changes, Mapping) or not changes or not set(changes) <= {
+        "runtime", "preparation_fit"
+    }:
+        raise PreparationError("fit revalidation permits only reviewed runtime/fit code changes")
+    for name, change in changes.items():
+        if (
+            not isinstance(change, Mapping) or set(change) != {"before", "after"}
+            or implementation.get(name) != change["before"]
+            or change["before"] == change["after"]
+            or not isinstance(change["after"], str) or len(change["after"]) != 64
+            or any(c not in "0123456789abcdef" for c in change["after"])
+        ):
+            raise PreparationError("fit revalidation implementation binding mismatch")
+        implementation[name] = change["after"]
+
+    context = runtime.preparation_context()
+    payloads = runtime.materialize_phase_requests()
+    _validate_phase_roster(payloads, context)
+    current = runtime.request_fit_inputs(payloads)
+    if current != expected or boundary_identity(payloads) != current["sources"]["boundary_sha256"]:
+        raise PreparationError("fit revalidation changed requests, config, service, or sources")
+    ids = set(context["sample_ids"])
+    rows = measured.get("rows")
+    if (
+        measured.get("every_request_fits") is not True
+        or measured.get("boundary_sha256") != current["sources"]["boundary_sha256"]
+        or measured.get("sample_count") != len(ids)
+        or not isinstance(rows, list) or len(rows) != len(ids)
+        or any(not isinstance(row, dict) or row.get("fits") is not True for row in rows)
+        or {row.get("sample_id") for row in rows} != ids
+    ):
+        raise PreparationError("fit revalidation source does not certify the full roster")
+    output = {
+        **measured,
+        "contacts": 0, "contact_counts": {}, "generation_contacts": 0,
+        "revalidation": {
+            "schema": "saea-request-fit-revalidation-v1",
+            "registration_sha256": registration_sha256,
+            "source": dict(source_pin), "source_journal": dict(journal_pin),
+            "source_output_sha256": document["output_sha256"],
+            "source_inputs_sha256": digest(old_inputs),
+            "source_measurement_contacts": measured.get("contacts"),
+            "source_measurement_contact_counts": measured.get("contact_counts"),
+            "implementation_changes": changes, "new_endpoint_contacts": 0,
+            "reason": registration["reason"],
+        },
+    }
+    return prepare_artifact(
+        destination, kind="request-fit", inputs=current,
+        producer=lambda: output, contact_class="model-free",
+    )

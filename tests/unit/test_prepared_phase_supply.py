@@ -380,3 +380,129 @@ def test_segmented_source_binding_is_part_of_prepared_artifact_identity(tmp_path
 
     inputs = runtime._phase_seed_inputs(binding, spec, "d" * 64)
     assert inputs["sources"]["source_audio_bindings"] == source_bindings
+
+
+@pytest.mark.parametrize("fail", [False, True])
+def test_materialization_restores_registered_plan_and_phase_state(tmp_path, fail):
+    runtime, binding, _program = setup_runtime(tmp_path)
+    original = {
+        "_plan": object(), "_client": object(), "_output_rows": ["original"],
+        "_binding": object(), "_phase_program_material": binding,
+        "_phase_tool_dispatcher": object(), "_phase_tool_trace_sink": object(),
+        "_phase_review_receipt": {"original": True},
+        "_phase_material_receipt": {"original": True},
+        "_phase_supply_receipt": {"original": True},
+        "_phase_summaries": ("original",), "_wire_check_active": False,
+        "_live_speech_config": object(), "_live_speech_source_bindings": object(),
+    }
+    for name, value in original.items():
+        setattr(runtime, name, value)
+    def wire(**kwargs):
+        for name in original:
+            setattr(runtime, name, object())
+        kwargs["request_payload_observer"]({"sample_id": "s1"})
+        if fail:
+            raise RuntimeError("synthetic dispatch failed")
+    runtime.wire_check = wire
+    if fail:
+        with pytest.raises(RuntimeError, match="synthetic dispatch failed"):
+            runtime.materialize_phase_requests()
+    else:
+        runtime.materialize_phase_requests()
+    assert all(getattr(runtime, name) is value for name, value in original.items())
+
+
+@pytest.mark.parametrize("dispatch_fails", [False, True])
+def test_real_materialization_preserves_plan_used_by_serve(tmp_path, dispatch_fails):
+    import json
+    from test_flight_runtime import _make_runtime, _git, _FakeGate
+    from test_rails_frozen_core_client import (
+        _World, _speech_feature_world, _binding as payload_binding,
+    )
+    from test_rails_runner import _FakeAdapter, _knowledge_snapshot
+    from speech_aware_evidence_acquisition.rails.core_client import FrozenCoreClient
+    from speech_aware_evidence_acquisition.rails.phase_runner import run_program
+    from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
+
+    world = _World(tmp_path)
+    feature_root, _, packets = _speech_feature_world(world, tmp_path)
+    policy = "phase-direct-only-v1"
+    phases = default_phase_program(policy).phase_names()
+    gate = _FakeGate()
+    runtime = _make_runtime(
+        tmp_path, happy_path=True, gate=gate,
+        config_kwargs={
+            "arm": "speech-feature-query", "policy": policy,
+            "model_extra": {"speech_feature_root": str(feature_root)},
+            "baseline_extra": {"phase_material": {
+                phase: {"instruction_template": f"probes/{phase}.txt",
+                        "predecessor_binding": "none"} for phase in phases}},
+        },
+        adapter_cls=lambda _lock, _root: _FakeAdapter(samples=tuple(world.samples)),
+        client_factory=FrozenCoreClient, phase_runner=run_program,
+        payload_binding_factory=lambda **_kw: payload_binding(world),
+    )
+    (runtime._repo_root / "configs/dataset/d.json").write_text(
+        json.dumps({"carrier_lock_key": "fake-carrier", "split_id": "all"}))
+    for phase in phases:
+        prompt = runtime._repo_root / f"configs/probes/{phase}.txt"
+        prompt.parent.mkdir(parents=True, exist_ok=True)
+        prompt.write_text("Transcribe the speech.")
+    _git(runtime._repo_root, "add", "-A")
+    _git(runtime._repo_root, "commit", "-q", "-m", "Bind synthetic single-phase fixture")
+    runtime._load_knowledge_snapshot = _knowledge_snapshot
+    runtime.speech_packet_bindings = lambda: packets
+    runtime._speech_feature_root = lambda: feature_root
+    runtime.preflight()
+    plan = runtime._plan
+    if dispatch_fails:
+        original_runner = runtime._phase_runner
+        opened = {}
+        provider = Mock()
+
+        def fail_after_real_dispatch(**kwargs):
+            original_runner(**kwargs)
+            opened.update(client=kwargs["core_client"], plan=kwargs["plan"])
+            runtime._live_speech_provider = provider
+            raise RuntimeError("dispatch failed after opening scratch attempt")
+
+        runtime._phase_runner = fail_after_real_dispatch
+        with pytest.raises(RuntimeError, match="dispatch failed after opening scratch attempt"):
+            runtime.materialize_phase_requests()
+        assert opened["client"]._closed is True
+        provider.close.assert_called_once()
+        from speech_aware_evidence_acquisition.core.bundle.finalize import abort_attempt_if_opened
+        assert abort_attempt_if_opened(
+            runtime._data_root, opened["plan"].run_id, opened["plan"].attempt_id,
+            reason="test confirms scratch attempt was already aborted",
+        ) is False
+    else:
+        payloads = runtime.materialize_phase_requests()
+        assert len(payloads) == len(world.samples)
+    assert runtime._plan is plan
+    assert runtime._client is None
+    runtime.preprocess()
+    runtime.serve()
+    assert runtime._plan is plan
+
+
+def test_materialization_isolates_live_provider_and_trace_sink(tmp_path):
+    runtime, binding, _program = setup_runtime(tmp_path)
+    provider, sink = Mock(), Mock()
+    binding["trace_sink"] = sink
+    runtime._phase_program_material = binding
+    runtime._live_speech_provider = provider
+
+    def wire(**kwargs):
+        assert runtime._live_speech_provider is None
+        assert "trace_sink" not in runtime._phase_program_material
+        assert runtime._phase_program_material["knowledge_snapshot"] is binding["knowledge_snapshot"]
+        kwargs["request_payload_observer"]({"sample_id": "s1"})
+
+    runtime.wire_check = wire
+    runtime.materialize_phase_requests()
+    assert runtime._phase_program_material is binding
+    assert runtime._live_speech_provider is provider
+    assert not hasattr(runtime, "_phase_tool_dispatcher")
+    provider.close.assert_not_called()
+    assert not sink.mock_calls

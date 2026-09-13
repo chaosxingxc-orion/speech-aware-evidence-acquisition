@@ -735,6 +735,36 @@ def _cli_prepare_state_source(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cli_revalidate_request_fit(args: argparse.Namespace) -> int:
+    """Revalidate a registered full-roster fit without endpoint access."""
+    from ..bundle.git_commit import require_clean_study_repo
+    from ..flight.factory import build_flight_runtime
+    from ..preparation import canonical_bytes, digest
+    from ..preparation_fit import revalidate_phase_fit
+
+    repo = Path(args.repo_root).resolve()
+    if repo != REPO_ROOT.resolve():
+        raise ValueError("fit revalidation repo_root must match the imported checkout")
+    require_clean_study_repo(repo)
+    path = Path(args.registration).resolve()
+    if not path.is_relative_to(repo):
+        raise ValueError("fit revalidation registration must be committed in repo_root")
+    raw = path.read_bytes()
+    registration = json.loads(raw)
+    if raw != canonical_bytes(registration):
+        raise ValueError("fit revalidation registration must use canonical JSON bytes")
+    runtime = build_flight_runtime(
+        repo, Path(args.data_root), **registration["flight"],
+        runtime_root=Path(args.runtime_root), lock_path=Path(args.lock_path),
+    )
+    receipt = revalidate_phase_fit(
+        runtime, registration=registration, registration_sha256=digest(registration),
+        data_root=Path(args.data_root),
+    )
+    print(json.dumps(receipt, indent=2, sort_keys=True))
+    return 0
+
+
 def _cli_build_delivery(args: argparse.Namespace) -> int:
     """Build one verified phase-delivery derivative through the shared API."""
 
@@ -1372,6 +1402,14 @@ def main(argv: list[str] | None = None) -> int:
     prepare_state.add_argument("--repo-root", required=True)
     prepare_state.add_argument("--data-root", required=True)
     prepare_state.set_defaults(func=_cli_prepare_state_source)
+
+    revalidate_fit = sub.add_parser(
+        "revalidate-request-fit",
+        help="reuse unchanged full-roster capacity measurements after a registered repair",
+    )
+    for name in ("registration", "repo-root", "data-root", "runtime-root", "lock-path"):
+        revalidate_fit.add_argument("--" + name, required=True)
+    revalidate_fit.set_defaults(func=_cli_revalidate_request_fit)
 
     build_delivery = sub.add_parser(
         "build-delivery",

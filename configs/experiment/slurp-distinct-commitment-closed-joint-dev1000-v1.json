@@ -14,6 +14,7 @@
       "dataset_fragment": "slurp-speech-native-dev1000",
       "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
       "readiness": {
+        "reason": "Registered runtime-state repair and zero-contact capacity revalidation are in progress; no new measured fit or generation has occurred.",
         "requirements": [
           {
             "expected_decision_id": "SAEA-SLURP-DISTINCT-SUCCESSOR-GENERATION-ADMISSION-V1",
@@ -37,7 +38,7 @@
             "sha256": "311d269e960cdfa2b1dd63ac98084dc7c801ab637e2c92cf4348806f63cf0afa"
           }
         ],
-        "state": "ready"
+        "state": "held"
       },
       "run_id": "SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1"
     },
