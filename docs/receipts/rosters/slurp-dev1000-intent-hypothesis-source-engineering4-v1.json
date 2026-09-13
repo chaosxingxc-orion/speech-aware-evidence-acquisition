@@ -1,0 +1,49 @@
+{
+  "carrier_lock_key": "slurp",
+  "derived_from": {
+    "selection": "Deterministic first four entries of the retained global sample-ID ordering; scenario labels joined by exact sample ID; engineering only; no draw.",
+    "source_roster": {
+      "repo_relpath": "docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "stratum_metadata": {
+      "data_relpath": "analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+    }
+  },
+  "excluded_count": 996,
+  "items": [
+    {
+      "sample_id": "slurp:devel:000011:audio-1497266596",
+      "stratum": "iot"
+    },
+    {
+      "sample_id": "slurp:devel:000053:audio-1498758443",
+      "stratum": "takeaway"
+    },
+    {
+      "sample_id": "slurp:devel:000058:audio-1488637952",
+      "stratum": "takeaway"
+    },
+    {
+      "sample_id": "slurp:devel:000068:audio-1488550098",
+      "stratum": "play"
+    }
+  ],
+  "per_stratum": {
+    "iot": 1,
+    "play": 1,
+    "takeaway": 2
+  },
+  "roster_id": "SLURP-DEV1000-INTENT-HYPOTHESIS-SOURCE-ENGINEERING4-V1",
+  "roster_role": "evaluation",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20260823,
+  "split_identity_hash": "e335c74149794af0f2301954b6e92cde2a4134d65ebe6069173a1a556b7a04b3",
+  "split_role": "dev",
+  "strata_counts": {
+    "iot": 1,
+    "play": 1,
+    "takeaway": 2
+  }
+}

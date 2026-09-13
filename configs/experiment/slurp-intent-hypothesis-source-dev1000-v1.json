@@ -1,0 +1,40 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-slurp-intent-hypothesis-source-generation-v1",
+      "baseline_fragment": "slurp-intent-hypothesis-source-dev1000-v1",
+      "cell_id": "slurp-intent-hypothesis-source-dev1000-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+      "readiness": {
+        "reason": "No model execution is admitted. Root must register the exact generation plan and exposure, add an admission receipt, prepare and bind actual live-phase request fit, and attest the np8 resident service.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-V1"
+    }
+  ],
+  "date": "2026-09-13",
+  "experiment_id": "SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-V1",
+  "fragment_kind": "saea-slurp-task-agent-experiment-v1",
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "decision_population": "Exact retained exposed DEV1000 roster; NEW500 primary, OLD500 and pooled secondary for later registered analysis.",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "Create one ordered fixed Top-3 intent-hypothesis artifact for every retained DEV1000 row, without scoring.",
+  "request_decoding_overrides": {
+    "max_tokens": 512
+  },
+  "service_session": "serving-slurp-intent-hypothesis-source-np8-v1",
+  "split_id": "DEV-1000"
+}
