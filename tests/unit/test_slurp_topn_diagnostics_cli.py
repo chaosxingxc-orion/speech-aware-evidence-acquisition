@@ -16,6 +16,8 @@ from speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics_cli impor
     _raw_source_rows,
     _references,
     _observed_width_reports,
+    _raw_delivery_diagnostic_report,
+    _raw_delivery_reports_by_branch_and_width,
     _select_source_binding,
     _source_rows,
     run_raw_source,
@@ -163,6 +165,129 @@ def test_branch_reader_requires_common_state_and_delivery_hashes(tmp_path):
 
     branch.manifest["phase_sources"][1]["sealed_state_sha256"] = "f" * 64
     with pytest.raises(SlurpTopNAnalysisError, match="state binding"):
+        _branch_rows(
+            "joint", branch, source_path, binding["manifest"]["sha256"], states, ids
+        )
+
+
+def test_branch_reader_exposes_raw_outside_shortlist_flag_for_empty_delivery(tmp_path):
+    ids, binding, bundle, states = _source_fixture(tmp_path)
+    source_path = Path(binding["manifest"]["path"])
+    branch = SimpleNamespace(
+        manifest={"schema": "saea-derived-delivery-v1", "phase_sources": [
+            {
+                "sample_id": sample_id,
+                "predecessor_manifest": {
+                    "path": str(source_path), "sha256": binding["manifest"]["sha256"]
+                },
+                "sealed_state_sha256": states[sample_id].content_hash(),
+                "delivered_text_sha256": hashlib.sha256(b"").hexdigest(),
+                "refusal_reason": "final_intent_outside_shortlist" if sample_id == "s1" else None,
+                "delivery_diagnostics": {
+                    "final_intent_outside_shortlist": 1 if sample_id == "s1" else 0,
+                    "final_authoritative": 0 if sample_id == "s1" else 1,
+                },
+            }
+            for sample_id in ids
+        ]},
+        attempt_state="DERIVED",
+        outputs_rows=[
+            {
+                "sample_id": sample_id, "text": "",
+                "delivery_text_sha256": hashlib.sha256(b"").hexdigest(),
+            }
+            for sample_id in ids
+        ],
+    )
+    captured = {}
+    _branch_rows(
+        "joint", branch, source_path, binding["manifest"]["sha256"], states, ids,
+        delivery_diagnostics=captured,
+    )
+    report = _raw_delivery_diagnostic_report(captured, ids)
+    assert report["diagnostics_available"] is True
+    assert report["flag_row_counts"]["final_intent_outside_shortlist"] == 1
+    assert report["refused_count"] == 1
+    assert report["refusal_reason_counts"] == {"final_intent_outside_shortlist": 1}
+
+
+@pytest.mark.parametrize(
+    "rows,ids,match",
+    [
+        ({"s1": []}, ("s1",), "row malformed"),
+        ({"s1": {"flags": "bad"}}, ("s1",), "flags malformed"),
+        ({"s1": {"flags": {1: 1}}}, ("s1",), "flag key malformed"),
+        ({"s1": {"flags": {"outside": -1}}}, ("s1",), "flag value malformed"),
+        ({"s1": {"flags": {}, "refusal_reason": 1}}, ("s1",), "refusal reason malformed"),
+    ],
+)
+def test_raw_delivery_report_rejects_malformed_verified_rows(rows, ids, match):
+    with pytest.raises(SlurpTopNAnalysisError, match=match):
+        _raw_delivery_diagnostic_report(rows, ids)
+
+
+def test_raw_delivery_report_rejects_duplicate_or_missing_roster():
+    row = {"s1": {"flags": {}, "refusal_reason": None}}
+    with pytest.raises(SlurpTopNAnalysisError, match="duplicates"):
+        _raw_delivery_diagnostic_report(row, ("s1", "s1"))
+    with pytest.raises(SlurpTopNAnalysisError, match="roster"):
+        _raw_delivery_diagnostic_report(row, ("s1", "s2"))
+
+
+def test_raw_delivery_reports_are_grouped_by_width_and_missing_flags_stay_unavailable():
+    source_rows = (
+        SourceCandidateRow("s1", ("a",)),
+        SourceCandidateRow("s2", ("a", "b")),
+        SourceCandidateRow("s3", ("a", "b", "c")),
+    )
+    delivery = {
+        "hard": {
+            "s1": {"flags": {"outside": 0}, "refusal_reason": None},
+            "s2": {"flags": None, "refusal_reason": None},
+            "s3": {"flags": {"outside": 1}, "refusal_reason": "outside"},
+        },
+        "joint": {
+            "s1": {"flags": {"outside": 1}, "refusal_reason": "outside"},
+            "s2": {"flags": {"outside": 0}, "refusal_reason": None},
+            "s3": {"flags": {"outside": 0}, "refusal_reason": None},
+        },
+    }
+    reports = _raw_delivery_reports_by_branch_and_width(
+        source_rows, delivery, {"s1", "s2", "s3"}
+    )
+    assert set(reports) == {"1", "2", "3"}
+    assert reports["1"]["hard"]["diagnostics_available"] is True
+    assert reports["2"]["hard"]["diagnostics_available"] is False
+    assert reports["3"]["hard"]["flag_row_counts"]["outside"] == 1
+    assert reports["1"]["joint"]["refused_count"] == 1
+
+
+def test_branch_reader_rejects_malformed_raw_delivery_diagnostics(tmp_path):
+    ids, binding, bundle, states = _source_fixture(tmp_path)
+    source_path = Path(binding["manifest"]["path"])
+    text = '{"scenario":"a","action":"x","entities":[]}'
+    delivery_sha = hashlib.sha256(text.encode()).hexdigest()
+    branch = SimpleNamespace(
+        manifest={"schema": "saea-derived-delivery-v1", "phase_sources": [
+            {
+                "sample_id": sample_id,
+                "predecessor_manifest": {
+                    "path": str(source_path), "sha256": binding["manifest"]["sha256"]
+                },
+                "sealed_state_sha256": states[sample_id].content_hash(),
+                "delivered_text_sha256": delivery_sha,
+                "refusal_reason": None,
+                "delivery_diagnostics": "malformed",
+            }
+            for sample_id in ids
+        ]},
+        attempt_state="DERIVED",
+        outputs_rows=[
+            {"sample_id": sample_id, "text": text, "delivery_text_sha256": delivery_sha}
+            for sample_id in ids
+        ],
+    )
+    with pytest.raises(SlurpTopNAnalysisError, match="diagnostics malformed"):
         _branch_rows(
             "joint", branch, source_path, binding["manifest"]["sha256"], states, ids
         )
@@ -328,6 +453,12 @@ def test_run_is_config_driven_and_score_gate_precedes_semantic_reads(tmp_path, m
     assert distinct_result["diagnostics"]["DEV1000"]["branches"]["joint"][
         "entity_unavailable"
     ] == 2
+    assert distinct_result["diagnostics"]["DEV1000"]["raw_delivery_diagnostics"][
+        "joint"
+    ]["diagnostics_available"] is False
+    assert distinct_result["diagnostic_semantics"]["branches.*.out_of_shortlist_attempts"].startswith(
+        "delivered_projection_only"
+    )
 
 
 def _raw_trace_fixture(tmp_path: Path, *, finish_reason: str = "stop"):
