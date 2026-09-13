@@ -7,7 +7,7 @@ The experiment config shape is:
 ```json
 {
   "live_speech_observations": {
-    "inventory": {"relpath": "<DATA-relative backend inventory>", "sha256": "<sha256>"},
+    "inventory": {"relpath": "<DATA-relative full runtime inventory>", "sha256": "<sha256>"},
     "protocol": {"relpath": "<DATA-relative decode protocol>", "sha256": "<sha256>"},
     "execution_plan": {"relpath": "<repository-relative registered plan>", "sha256": "<sha256>"},
     "output_relpath": "prepared/<tool-run-id>/<tool-attempt-id>/live"
@@ -16,7 +16,7 @@ The experiment config shape is:
 }
 ```
 
-The runtime derives source bindings from the answering roster and validated packet promotion receipt. It stores their aggregate hash in the live-tool receipt. The tool plan must match the main carrier, split role and split identity; its ledger row must remain unconsumed at preflight. The provider is constructed without opening audio, loading Whisper or creating a service. Its backend stays lazy until a selected cold action. Seal closes the provider and finalizes an opened speech-tool attempt with a create-only receipt. Abort closes it and preserves an aborted attempt with the main failure reason.
+The runtime verifies the full inventory through the existing `verify_whisper_inventory` contract before serving: checkpoint size and SHA-256, every declared source and tokenizer asset, and the registered package versions. That verifier projects the compact backend inventory consumed by the lazy provider. The runtime also derives source bindings from the answering roster and validated packet promotion receipt and stores their aggregate hash in the live-tool receipt. The tool plan must match the main carrier, split role and split identity; its ledger row must remain unconsumed at preflight. The provider is constructed without opening audio, loading Whisper or creating a service. Its backend stays lazy until a selected cold action. Seal closes the provider and finalizes an opened speech-tool attempt with a create-only receipt. Abort closes it and preserves an aborted attempt with the main failure reason.
 
 `live_phase_fit_audio_seconds_cap` is optional and leaves historical configurations unchanged. When present, it replaces the generation plan's speech-audio reservation only for the separate live request-fit plan. This prevents a fit registration from inheriting an unrelated generation audio cap.
 

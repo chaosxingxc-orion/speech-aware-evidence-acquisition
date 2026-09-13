@@ -965,6 +965,7 @@ class FlightRuntime:
         continuous_phase_runner: Callable[..., object] = run_continuous_program,
         live_phase_fit_factory: Callable[..., object] | None = None,
         live_speech_observation_provider_factory: Callable[..., object] | None = None,
+        whisper_inventory_verifier: Callable[[Mapping[str, object]], Mapping[str, object]] | None = None,
         phase_tool_builder: Callable[..., object] | None = None,
         score_batch: Callable[..., Mapping[str, object]] = run_score_batch,
         clock: Callable[[], float] = time.time,
@@ -1038,6 +1039,7 @@ class FlightRuntime:
         self._continuous_phase_runner = continuous_phase_runner
         self._live_phase_fit_factory = live_phase_fit_factory
         self._live_speech_observation_provider_factory = live_speech_observation_provider_factory
+        self._whisper_inventory_verifier = whisper_inventory_verifier
         self._phase_tool_builder = phase_tool_builder
         self._score_batch = score_batch
         self._clock = clock
@@ -1125,6 +1127,7 @@ class FlightRuntime:
         self._live_speech_source_bindings = None
         self._phase_tool_dispatcher = None
         self._phase_tool_trace_sink = None
+        self._wire_check_active = False
         self._experience_memory = None
         self._experience_memory_loaded = False
         self._promotion_receipt: Mapping[str, object] | None = None
@@ -1971,6 +1974,33 @@ class FlightRuntime:
             ExecutionScopeError,
         ) as error:
             raise FlightRuntimeError(f"invalid live speech pin: {error}") from None
+        verifier = self._whisper_inventory_verifier
+        if verifier is None:
+            from ..preparation_speech_observations import (  # noqa: PLC0415
+                verify_whisper_inventory,
+            )
+
+            verifier = verify_whisper_inventory
+        source_path = (
+            inventory.get("whisper_source_path")
+            if isinstance(inventory, Mapping)
+            else None
+        )
+        inserted_source = False
+        if isinstance(source_path, str) and Path(source_path).is_absolute():
+            import sys
+
+            if source_path not in sys.path:
+                sys.path.insert(0, source_path)
+                inserted_source = True
+        try:
+            inventory = verifier(inventory)
+        except Exception as error:
+            if inserted_source:
+                sys.path.remove(source_path)
+            raise FlightRuntimeError(
+                f"live speech runtime inventory verification failed: {error}"
+            ) from error
         if plan.carrier_lock_key != carrier_lock_key:
             raise FlightRuntimeError("live speech plan carrier differs from the answering roster")
         if plan.split_identity_hash != split_identity_hash:
@@ -2097,10 +2127,16 @@ class FlightRuntime:
     def _record_phase_tool_contact(self, **facts: object) -> Mapping[str, object]:
         """Validate and count one model-selected tool action, independent of ASR cache use."""
 
+        if getattr(self, "_wire_check_active", False):
+            raise FlightRuntimeError(
+                "wire check refuses native tool execution and contact accounting"
+            )
         sample_id = facts.get("sample_id")
-        bindings = self._live_speech_source_bindings
+        samples = {sample.sample_id for sample in getattr(self, "_samples", ())}
+        if not samples and isinstance(self._live_speech_source_bindings, Mapping):
+            samples = set(self._live_speech_source_bindings)
         self.assert_generation_lease()
-        if not isinstance(bindings, Mapping) or sample_id not in bindings:
+        if sample_id not in samples:
             raise FlightRuntimeError("native tool action sample is outside the bound roster")
         required_text = ("phase", "next_phase", "tool_id", "source_response_sha256", "request_id", "tool_call_id", "tool_calls_sha256")
         if any(not isinstance(facts.get(key), str) or not facts[key] for key in required_text):
@@ -2114,15 +2150,23 @@ class FlightRuntime:
                 "native speech tools require FrozenCoreClient.record_tool_call custody"
             )
         callback(count=1)
-        binding = bindings[sample_id]
+        live_bindings = self._live_speech_source_bindings
+        if isinstance(live_bindings, Mapping) and sample_id in live_bindings:
+            descriptor = live_bindings[sample_id]
+            packet_id = descriptor["packet_id"]
+            packet_sha256 = descriptor["packet_sha256"]
+        else:
+            descriptor = self.speech_packet_bindings()[sample_id]
+            packet_id = descriptor["packet_id"]
+            packet_sha256 = descriptor["sha256"]
         return {
             "schema": "saea-native-phase-tool-contact-v1",
             **{key: facts[key] for key in required_text},
             "arguments_sha256": hashlib.sha256(
                 json.dumps(arguments, sort_keys=True, separators=(",", ":")).encode("utf-8")
             ).hexdigest(),
-            "speech_packet_id": binding["packet_id"],
-            "speech_packet_sha256": binding["packet_sha256"],
+            "speech_packet_id": packet_id,
+            "speech_packet_sha256": packet_sha256,
         }
 
     def _fit_base_plan(self, plan: ExecutionPlan) -> ExecutionPlan:
@@ -4096,12 +4140,13 @@ class FlightRuntime:
             "experience_memory": self._experience_memory,
             "speech_observations": self._speech_observations,
         }
+        uses_native = any(spec.get("mode") == "native-tools" for spec in tool_specs.values())
+        if uses_native:
+            kwargs["tool_contact"] = self._record_phase_tool_contact
         if self._live_speech_config is not None:
             provider = self._ensure_live_speech_provider()
-            contact = self._record_phase_tool_contact
             kwargs.update(
                 live_speech_observations=provider,
-                tool_contact=contact,
             )
         dispatcher = builder(self._composed.values, program, **kwargs)
         if self._live_speech_config is not None and not bool(
@@ -5548,7 +5593,9 @@ class FlightRuntime:
         declares_live_observation = values.get("live_speech_observations") not in (None, {})
         if declared is None or declared == {}:
             if declares_observation or declares_live_observation:
-                raise FlightRuntimeError("prepared speech observations require the speech observation phase tool")
+                raise FlightRuntimeError(
+                    "speech observation bindings require their registered phase tool"
+                )
             if knowledge is not None:
                 raise FlightRuntimeError("phase_knowledge_views requires active phase_tools")
             if values.get("experience_memory") is not None:
@@ -5561,7 +5608,17 @@ class FlightRuntime:
         from ...rails.phase_tools import load_phase_tool_specs
         specs = load_phase_tool_specs(values, default_phase_program(policy))
         from ...rails.experience_memory_runtime import CORRECTIVE_MEMORY_TOOL
+        from ...rails.phase_tools import LIVE_SPEECH_OBSERVATION_TOOL
         from ...rails.speech_observation import PREPARED_SPEECH_OBSERVATION_TOOL
+        uses_native = any(
+            spec.get("mode") == "native-tools" for spec in specs.values()
+        )
+        if uses_native and "tool_schemas" not in ARM_VISIBLE_FIELDS.get(
+            self._arm(), ()
+        ):
+            raise FlightRuntimeError(
+                "native-tools requires an arm whose request contract exposes tool_schemas"
+            )
         uses_observation = any(
             PREPARED_SPEECH_OBSERVATION_TOOL in spec["allowed_tools"] for spec in specs.values()
         )
@@ -5569,10 +5626,13 @@ class FlightRuntime:
             raise FlightRuntimeError(
                 "speech observation phase tool and prepared speech observation binding must be declared together"
             )
-        uses_native = any(spec.get("mode") == "native-tools" for spec in specs.values())
-        if declares_live_observation != uses_native:
+        uses_live_observation = any(
+            LIVE_SPEECH_OBSERVATION_TOOL in spec["allowed_tools"]
+            for spec in specs.values()
+        )
+        if declares_live_observation != uses_live_observation:
             raise FlightRuntimeError(
-                "live speech observations and native-tools phase mode must be declared together"
+                "live speech observations and the live speech tool must be declared together"
             )
         if declares_live_observation and declares_observation:
             raise FlightRuntimeError(
@@ -7071,20 +7131,24 @@ class FlightRuntime:
 
         started = self._clock()
         phase_receipt: list[Mapping[str, object]] = []
-        if policy == "fixed":
-            rows, contact_count, policy_kind, dispatch = self._dispatch_fixed_policy(
-                client, plan, workers=workers
-            )
-        else:
-            (
-                rows,
-                contact_count,
-                policy_kind,
-                dispatch,
-                phase_receipt,
-            ) = self._dispatch_phase_program(
-                client, plan, policy, model_free_check=True
-            )
+        self._wire_check_active = True
+        try:
+            if policy == "fixed":
+                rows, contact_count, policy_kind, dispatch = self._dispatch_fixed_policy(
+                    client, plan, workers=workers
+                )
+            else:
+                (
+                    rows,
+                    contact_count,
+                    policy_kind,
+                    dispatch,
+                    phase_receipt,
+                ) = self._dispatch_phase_program(
+                    client, plan, policy, model_free_check=True
+                )
+        finally:
+            self._wire_check_active = False
         wall_seconds = max(self._clock() - started, 1e-9)
         self._output_rows = rows
 
