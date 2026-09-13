@@ -112,6 +112,13 @@ class PreparedFeedbackStateArtifact:
             _sha256(getattr(self, field), field=field)
         if self.prepared_feedback_state_version != PREPARED_FEEDBACK_STATE_VERSION:
             raise PreparedFeedbackError("unexpected prepared feedback state version")
+        if self.state_id != _state_id(
+            prepared_artifact_sha256=self.prepared_artifact_sha256,
+            source_feedback_sha256=self.source_feedback_sha256,
+            construction_roster_sha256=self.construction_roster_sha256,
+            model_context_sha256=self.model_context_sha256,
+        ):
+            raise PreparedFeedbackError("state_id differs from prepared feedback provenance")
         try:
             model_context = json.loads(self.content)
         except (TypeError, json.JSONDecodeError) as error:

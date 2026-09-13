@@ -15,6 +15,7 @@ from speech_aware_evidence_acquisition.rails.prepared_feedback import (
     PREPARED_FEEDBACK_STATE_KIND,
     PreparedFeedbackError,
     PreparedFeedbackStateArtifact,
+    _state_id,
     load_prepared_feedback,
 )
 from speech_aware_evidence_acquisition.rails.training_proposal_context import (
@@ -156,7 +157,12 @@ def test_loader_enforces_content_limit_and_never_writes(source_pair, tmp_path): 
 
 def test_state_refuses_non_latin_content_without_claiming_language_detection():
     state = PreparedFeedbackStateArtifact(
-        state_id="prepared-feedback:" + "a" * 64,
+        state_id=_state_id(
+            prepared_artifact_sha256="a" * 64,
+            source_feedback_sha256="b" * 64,
+            construction_roster_sha256="c" * 64,
+            model_context_sha256="d" * 64,
+        ),
         state_kind=PREPARED_FEEDBACK_STATE_KIND,
         content=json.dumps({"text": "English Ελληνικά"}, separators=(",", ":")),
         cited_value_ids=(),
