@@ -232,6 +232,28 @@ def test_native_mode_requires_tool_schema_visible_arm(monkeypatch, tmp_path):
         runtime._phase_tool_specs("native-answer-or-tool-v1")
 
 
+def test_wire_validator_accepts_only_source_bound_native_error_observation():
+    response_hash = "e" * 64
+    item = {
+        "evidence_id": "tool-error:decision-1:s1",
+        "source_uri": (
+            f"phase-tool-error://{response_hash}/tool-error:decision-1:s1"
+        ),
+        "content": "The internal tool request was rejected: malformed call",
+    }
+    assert FlightRuntime._bound_native_tool_error(
+        item, sample_id="s1", response_hashes={response_hash}
+    )
+    assert not FlightRuntime._bound_native_tool_error(
+        {**item, "source_uri": item["source_uri"].replace(response_hash, "f" * 64)},
+        sample_id="s1",
+        response_hashes={response_hash},
+    )
+    assert not FlightRuntime._bound_native_tool_error(
+        item, sample_id="s2", response_hashes={response_hash}
+    )
+
+
 def test_seal_closes_provider_and_finalizes_cold_attempt_with_receipt(tmp_path):
     runtime = _runtime(tmp_path)
     runtime._live_speech_config = {
