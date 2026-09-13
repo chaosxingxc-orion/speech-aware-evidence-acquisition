@@ -1,1 +1,1 @@
-Choose the next allowed episode action from the Reviewer evidence and source-bound role history. Use the task-contract tool only when it materially resolves the action choice. Do not answer the task. Emit only the configured action token.
+Choose the next allowed episode action from the Reviewer findings and source-bound role history. Do not call analytical tools and do not answer the task. Emit only the configured action token.
