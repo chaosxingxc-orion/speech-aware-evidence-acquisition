@@ -1,0 +1,42 @@
+{
+  "bound_config": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-PAIRED-ANALYSIS-V1/candidate-source-paired-analysis-bound-v1.json",
+    "sha256": "af82d26176af6516d72f22473a69bf479917732ab341e61e1c2bf5743d8bead9"
+  },
+  "corrected_reader_recipe": {
+    "path": "/home/chao/saea-worktrees/candidate-contract-lookup-v1/docs/readiness/2026-09-12-slurp-native-candidate-source-analysis-recipe-v1.json",
+    "sha256": "9a2d94423b12fe9808f1a1b74691a24bb3c78cb0176b36bea1c64c94c405ec5d"
+  },
+  "new_model_calls": 0,
+  "new_scorer_calls": 0,
+  "new_tokenizer_calls": 0,
+  "original_before_contact_recipe": {
+    "path": "/home/chao/saea-worktrees/agentic-native-tool-loop-v1/docs/readiness/2026-09-12-slurp-native-candidate-source-analysis-recipe-v1.json",
+    "sha256": "2e9e492242f63213b29291ba5016fa02f80ee16dd3c41303298fa75e255b9feb"
+  },
+  "predecessor_mechanism_limit": "Optional source has42 active final requests out of1000; a small action subset cannot support a fresh paired effectiveness claim. It does not replace the full-roster common-first-pass commitment comparison.",
+  "primary": "NEW500 pooled official SLU micro F1; existing OLD500 and DEV1000 secondary;10,000 paired speaker-cluster resamples, fixed base seed20260913.",
+  "profile": "model-free-check",
+  "reader_file_pins": [
+    {
+      "path": "/home/chao/saea-worktrees/candidate-contract-lookup-v1/src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py",
+      "sha256": "b9cc1bc5308957b655283d613fb72d3530f60469748a0a17c494c91d98c5cf69"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/candidate-contract-lookup-v1/src/speech_aware_evidence_acquisition/analysis/paired.py",
+      "sha256": "63676cd4a06c3b799279663f26a3651986f32b54e2e34e9e0ab09d0d800e7752"
+    }
+  ],
+  "reader_source_commit": "3c5b3c7eb0f06e1f4f6e84d7abb88e07251b5571",
+  "reader_worktree": "/home/chao/saea-worktrees/candidate-contract-lookup-v1",
+  "registered_at": "2026-09-13T04:00:53.889838+00:00",
+  "release": "Root authorizes paired semantic quality and sealed-trace diagnostics after measured source and saved-score verification. No adaptive subset, estimator, seed, prompt, rerun or threshold change.",
+  "result": "candidate-source-paired-contrasts.json",
+  "run_id": "SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-PAIRED-ANALYSIS-V1",
+  "schema": "saea-native-candidate-source-quality-read-registration-v1",
+  "source_complete_verification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-native-candidate-source-v1/complete-source-verification-v1.json",
+    "sha256": "3ffe6f97ef2bf2f13b18e6e97deb2d23983aba42a440dd834245c47128a6adfd"
+  },
+  "unchanged_estimates": true
+}
