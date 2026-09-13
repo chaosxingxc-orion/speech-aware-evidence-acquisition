@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 import hashlib
 import importlib.metadata
 import math
@@ -88,12 +89,58 @@ def _load_sources(pin, data_root, plan):
     return bindings
 
 
+def _pinned_whisper_version(source_path, bound):
+    """Read a pinned literal version without importing or executing Whisper."""
+    path = source_path / "whisper/version.py"
+    raw = path.read_bytes()
+    if len(raw) != bound["bytes"] or hashlib.sha256(raw).hexdigest() != bound["sha256"]:
+        raise PreparationError("Whisper version source changed after source verification")
+    try:
+        module = ast.parse(raw.decode("utf-8"))
+    except (SyntaxError, UnicodeError) as error:
+        raise PreparationError("Whisper version source is not a literal assignment") from error
+    if len(module.body) != 1:
+        raise PreparationError("Whisper version source must contain one literal assignment")
+    statement = module.body[0]
+    if not (
+        isinstance(statement, ast.Assign) and len(statement.targets) == 1
+        and isinstance(statement.targets[0], ast.Name)
+        and statement.targets[0].id == "__version__"
+        and isinstance(statement.value, ast.Constant)
+        and isinstance(statement.value.value, str) and statement.value.value
+    ):
+        raise PreparationError("Whisper version source must assign a literal __version__")
+    return statement.value.value
+
+
 def verify_whisper_inventory(inventory):
-    """Verify the local checkpoint, complete declared source files and package versions."""
-    _exact_mapping(inventory, {"schema", "model", "checkpoint", "whisper_source_path",
-                              "source_files", "packages"}, "Whisper runtime inventory")
-    if inventory["schema"] != "saea-local-whisper-runtime-inventory-v1" or inventory["model"] != "large-v3":
+    """Verify explicit installed-distribution or pinned-source package identity.
+
+    Historical v1 inventories require distribution metadata. V2 explicitly
+    identifies Whisper through its hash-bound source version; dependencies
+    continue to require exact installed distribution versions. Never infer a
+    fallback merely because installed metadata is missing.
+    """
+    source_version = (
+        isinstance(inventory, Mapping)
+        and inventory.get("schema") == "saea-local-whisper-runtime-inventory-v2"
+    )
+    fields = {"schema", "model", "checkpoint", "whisper_source_path", "source_files", "packages"}
+    if source_version:
+        fields.add("whisper_version_source")
+    _exact_mapping(inventory, fields, "Whisper runtime inventory")
+    if inventory["schema"] not in {
+        "saea-local-whisper-runtime-inventory-v1", "saea-local-whisper-runtime-inventory-v2",
+    } or inventory["model"] != "large-v3":
         raise PreparationError("Whisper runtime inventory identity differs")
+    if source_version:
+        version_source = _exact_mapping(
+            inventory["whisper_version_source"], {"kind", "relpath"}, "Whisper version source",
+        )
+        if version_source != {
+            "kind": "pinned-source-file", "relpath": "whisper/version.py",
+        }:
+            raise PreparationError("Whisper version source must name pinned whisper/version.py")
     checkpoint = _exact_mapping(inventory["checkpoint"], {"path", "bytes", "sha256"}, "Whisper checkpoint")
     checkpoint_path = Path(checkpoint["path"])
     source_path = Path(inventory["whisper_source_path"])
@@ -105,6 +152,8 @@ def verify_whisper_inventory(inventory):
     required = {"whisper/__init__.py", "whisper/audio.py", "whisper/decoding.py",
                 "whisper/model.py", "whisper/tokenizer.py", "whisper/assets/mel_filters.npz",
                 "whisper/assets/multilingual.tiktoken"}
+    if source_version:
+        required.add("whisper/version.py")
     if not isinstance(files, Mapping) or not required <= set(files):
         raise PreparationError("Whisper inventory omits required source or tokenizer assets")
     for relative, bound in files.items():
@@ -116,7 +165,12 @@ def verify_whisper_inventory(inventory):
     if not isinstance(packages, Mapping) or not {"openai-whisper", "torch", "numpy", "tiktoken"} <= set(packages):
         raise PreparationError("Whisper runtime package versions are incomplete")
     for name, version in packages.items():
-        if importlib.metadata.version(name) != version:
+        actual = (
+            _pinned_whisper_version(source_path, files["whisper/version.py"])
+            if source_version and name == "openai-whisper"
+            else importlib.metadata.version(name)
+        )
+        if actual != version:
             raise PreparationError(f"Whisper runtime package version changed: {name}")
     return {"schema": "saea-local-whisper-backend-inventory-v1", "model": "large-v3",
             "checkpoint_path": str(checkpoint_path), "checkpoint_sha256": checkpoint["sha256"],

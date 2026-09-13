@@ -300,3 +300,100 @@ def test_runtime_inventory_checks_actual_source_bytes_and_package_versions(tmp_p
     monkeypatch.setattr(importlib.metadata, "version", lambda name: "2")
     with pytest.raises(Exception, match="version changed"):
         verify_whisper_inventory(inventory)
+
+
+def _source_version_inventory(tmp_path, version_bytes=b'__version__ = "20250625"\n'):
+    source = tmp_path / "source"
+    source.mkdir()
+    checkpoint = tmp_path / "checkpoint"
+    checkpoint.write_bytes(b"synthetic checkpoint; never loaded")
+    files = {}
+    for relative in (
+        "whisper/__init__.py", "whisper/audio.py", "whisper/decoding.py",
+        "whisper/model.py", "whisper/tokenizer.py", "whisper/assets/mel_filters.npz",
+        "whisper/assets/multilingual.tiktoken", "whisper/version.py",
+    ):
+        path = source / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        raw = version_bytes if relative == "whisper/version.py" else b"synthetic source"
+        path.write_bytes(raw)
+        files[relative] = {"bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
+    return {
+        "schema": "saea-local-whisper-runtime-inventory-v2", "model": "large-v3",
+        "checkpoint": {"path": str(checkpoint), "bytes": checkpoint.stat().st_size,
+                       "sha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest()},
+        "whisper_source_path": str(source), "source_files": files,
+        "packages": {"openai-whisper": "20250625", "torch": "1", "numpy": "1", "tiktoken": "1"},
+        "whisper_version_source": {"kind": "pinned-source-file", "relpath": "whisper/version.py"},
+    }
+
+
+def test_explicit_source_version_needs_no_whisper_distribution_or_import(tmp_path, monkeypatch):
+    import importlib.metadata
+    from speech_aware_evidence_acquisition.core.preparation_speech_observations import verify_whisper_inventory
+    inventory = _source_version_inventory(tmp_path)
+    queried = []
+
+    def version(name):
+        queried.append(name)
+        if name == "openai-whisper":
+            raise importlib.metadata.PackageNotFoundError(name)
+        return "1"
+
+    monkeypatch.setattr(importlib.metadata, "version", version)
+    result = verify_whisper_inventory(inventory)
+    assert result["whisper_source_path"] == inventory["whisper_source_path"]
+    assert queried == ["torch", "numpy", "tiktoken"]
+    # V1 cannot silently opt into this source-only behavior.
+    inventory["schema"] = "saea-local-whisper-runtime-inventory-v1"
+    del inventory["whisper_version_source"]
+    with pytest.raises(importlib.metadata.PackageNotFoundError):
+        verify_whisper_inventory(inventory)
+
+
+@pytest.mark.parametrize("version_bytes", [
+    b'__version__ = "wrong"\n',
+    b'__version__ = str(20250625)\n',
+    b'__version__ = "20250625"\nraise RuntimeError("must not execute")\n',
+    b'__version__: str = "20250625"\n',
+])
+def test_source_version_rejects_wrong_or_executable_version(tmp_path, monkeypatch, version_bytes):
+    import importlib.metadata
+    from speech_aware_evidence_acquisition.core.preparation import PreparationError
+    from speech_aware_evidence_acquisition.core.preparation_speech_observations import verify_whisper_inventory
+    inventory = _source_version_inventory(tmp_path, version_bytes)
+    monkeypatch.setattr(importlib.metadata, "version", lambda name: "1")
+    with pytest.raises(PreparationError, match="version|literal"):
+        verify_whisper_inventory(inventory)
+
+
+def test_source_version_keeps_dependency_and_source_hash_checks(tmp_path, monkeypatch):
+    import importlib.metadata
+    from speech_aware_evidence_acquisition.core.preparation import PreparationError
+    from speech_aware_evidence_acquisition.core.preparation_speech_observations import verify_whisper_inventory
+    inventory = _source_version_inventory(tmp_path)
+    monkeypatch.setattr(importlib.metadata, "version", lambda name: "wrong" if name == "torch" else "1")
+    with pytest.raises(PreparationError, match="torch"):
+        verify_whisper_inventory(inventory)
+    monkeypatch.setattr(importlib.metadata, "version", lambda name: "1")
+    from pathlib import Path
+    (Path(inventory["whisper_source_path"]) / "whisper/version.py").write_bytes(b'__version__ = "20250626"\n')
+    with pytest.raises(PreparationError):
+        verify_whisper_inventory(inventory)
+
+
+@pytest.mark.parametrize("change", ["unpinned", "foreign_path", "unknown_kind"])
+def test_source_version_requires_exact_explicit_version_pin(tmp_path, monkeypatch, change):
+    import importlib.metadata
+    from speech_aware_evidence_acquisition.core.preparation import PreparationError
+    from speech_aware_evidence_acquisition.core.preparation_speech_observations import verify_whisper_inventory
+    inventory = _source_version_inventory(tmp_path)
+    monkeypatch.setattr(importlib.metadata, "version", lambda name: "1")
+    if change == "unpinned":
+        del inventory["source_files"]["whisper/version.py"]
+    elif change == "foreign_path":
+        inventory["whisper_version_source"]["relpath"] = "../version.py"
+    else:
+        inventory["whisper_version_source"]["kind"] = "import-and-evaluate"
+    with pytest.raises(PreparationError):
+        verify_whisper_inventory(inventory)

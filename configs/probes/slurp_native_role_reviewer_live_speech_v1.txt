@@ -1,0 +1,7 @@
+Review the current Solver draft against the original speech, the role history, and any source-bound tool result already returned. Do not provide the final task answer.
+
+Use a native tool only when it is needed. You may call the task-contract tool once only if the legal response schema or label interpretation is unclear. You may call the live speech observation tool once only when you can name a concrete, high-confidence suspected lexical or speech error in the draft, or when a decisive spoken value remains missing after reviewing the original speech and role history. For a live speech observation call, request the full utterance as an ASR transcript and state the specific lexical distinction that the observation must resolve.
+
+An unfilled slot described by knowledge is not evidence that a spoken value is missing. Name a speech-supported problem or a specific unresolved lexical distinction; do not infer a required value from a knowledge association. If this episode already has a returned transcript, reuse it rather than calling ASR again.
+
+Do not call either tool routinely, to corroborate a hunch without a concrete distinction, or to simulate a result. If a source-bound transcript is returned, treat it as fallible evidence alongside the original speech. Return concise findings for the Planner, including whether one bounded Solver revision is warranted.

@@ -1,0 +1,53 @@
+{
+  "cells": [
+    {
+      "cell_id": "slurp-native-system-live-speech-dev1000-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-direct-vs-native-np4-ctx24k-max256-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "baseline_fragment": "slurp-native-system-live-speech-dev1000-v1",
+      "run_id": "SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-DEV1000-V1",
+      "attempt_id": "attempt-slurp-native-system-live-speech-generation-v1",
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "readiness": {
+        "state": "held",
+        "reason": "Held candidate system version only. The explicit source-version inventory now verifies without inference. Root must use the current pair's diagnosed errors to choose this extension, then register generation/fit/ASR plans, scoring and all exposure bindings before any worker stage."
+      }
+    }
+  ],
+  "date": "2026-09-13",
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-DEV1000-V1",
+  "fragment_kind": "saea-slurp-native-system-live-speech-draft-v1",
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "decision_population": "Historically exposed DEV1000. Preserve the existing roster and split identity; do not draw or inspect a new population.",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "Held next-version configuration for the complete current native system with optional Reviewer-selected local full-utterance ASR. It is not registered for execution and declares no final new live-ASR contact, audio, GPU, or scoring budget.",
+  "service_session": "serving-slurp-native-system-live-speech-np4-ctx24k-v1",
+  "split_id": "DEV-1000",
+  "pending_root_bindings": {
+    "generation_execution_plan": "Root will bind a new prospective generation plan after current-pair conclusion; no final budget is frozen here.",
+    "native_contact_fit": "Baseline carries the inherited exact 44000 endpoint formula with fresh prospective identities; root must register and rebind it before any worker stage.",
+    "live_asr_execution_plan": "Required before adding the runtime live_speech_observations binding. Contact and audio ceilings are intentionally unset.",
+    "exposure_ledger": "No row is created by this draft.",
+    "official_scoring": "No scoring job, scorer contact, or analysis registration is created by this draft.",
+    "cpu_resource_envelope": "cpu_workers=4 currently bounds audio preparation. At activation, also pin CPU library thread limits in the worker launch environment and record them; do not describe the existing field as an inference-thread cap."
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 11000,
+    "planned_speech_audio_seconds": 44000,
+    "split_role": "dev"
+  },
+  "generation_budget": {
+    "target": 5000,
+    "cap": 11000,
+    "definition": "Inherited current-system generation envelope for configuration composition only. These are ceilings, not forced calls, and do not set any live-ASR budget."
+  }
+}

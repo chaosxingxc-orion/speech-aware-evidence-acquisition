@@ -1,0 +1,162 @@
+{
+  "arm": "speech-feature-query-native-tools",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_stores": {
+    "slot-contracts": {
+      "store_role": "slot-contracts",
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/snapshot.json",
+        "sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6"
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+        "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+      },
+      "candidate_supply": {
+        "solver": {
+          "provider": "slurp-candidate-semantic-v1",
+          "rank_policy": "saea-ranked-candidate-round-robin-v1",
+          "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+          "candidate_state_phase": "perception",
+          "max_candidates": 3,
+          "max_values_per_candidate": 16,
+          "max_total_values": 28,
+          "compact_source_phase": "perception",
+          "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1"
+        }
+      }
+    }
+  },
+  "native_episode": {
+    "schema": "saea-native-episode-config-v1",
+    "episode_id": "slurp-native-system-live-speech-dev1000-v1",
+    "max_revisions": 1,
+    "actions": {
+      "accept": "ACCEPT",
+      "revise": "REVISE",
+      "acquire": "ACQUIRE"
+    },
+    "roles": {
+      "perception": {
+        "phase_id": "perception",
+        "max_iterations": 1
+      },
+      "solver": {
+        "phase_id": "solver",
+        "max_iterations": 1
+      },
+      "reviewer": {
+        "phase_id": "reviewer",
+        "max_iterations": 3
+      },
+      "planner": {
+        "phase_id": "planner",
+        "max_iterations": 1
+      }
+    }
+  },
+  "native_contact_fit": {
+    "run_id": "SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-FIT-V1",
+    "attempt_id": "attempt-slurp-native-system-live-speech-fit-v1",
+    "contact_cap": 44000,
+    "max_speech_packets": 1
+  },
+  "phase_material": {
+    "perception": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_perception_v2.txt",
+      "fill_params": {
+        "id": "slurp-intent-hypotheses-v1",
+        "min_candidates": 1,
+        "max_candidates": 3,
+        "source_catalog": {
+          "data_relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+          "sha256": "3e60268b3f940c3018ab8b8c80ccd988b1d1efd6c5a198929c6af05ba21f8263",
+          "source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201"
+        }
+      },
+      "response_format_id": "slurp-intent-hypotheses-v1",
+      "predecessor_binding": "none",
+      "state_fill": null
+    },
+    "reviewer": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_reviewer_live_speech_v1.txt",
+      "fill_params": {},
+      "response_format_id": null,
+      "predecessor_binding": "none",
+      "state_fill": null
+    },
+    "planner": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_planner_v1.txt",
+      "fill_params": {},
+      "response_format_id": null,
+      "predecessor_binding": "none",
+      "state_fill": null
+    },
+    "solver": {
+      "instruction_fill": null,
+      "instruction_template": "probes/slurp_native_role_solver_v2.txt",
+      "fill_params": {},
+      "response_format_id": null,
+      "predecessor_binding": "none",
+      "state_fill": null
+    }
+  },
+  "phase_tools": {
+    "reviewer": {
+      "mode": "native-tools",
+      "source_authority_role": "reviewer",
+      "allowed_tools": [
+        "saea-tool-task-contract-v1",
+        "saea-tool-live-speech-observation-v1"
+      ],
+      "knowledge_views": [
+        "text"
+      ]
+    }
+  },
+  "policy": "phase-native-candidates-review-revise-v1",
+  "scorers": [
+    "slurp-slu-official",
+    "slurp-slu",
+    "cost"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "Prospective complete native SLURP system with selective Reviewer-owned local live ASR. Perception and Solver have no tools; Planner remains at one iteration; Reviewer remains at three iterations and may call the task contract only for schema ambiguity or live full-utterance ASR only for a concrete high-confidence suspected lexical or speech error or missing decisive speech evidence. The live-ASR runtime binding is intentionally pending root registration. The full candidate-associated released slot-card union, native role graph, maximum one revision, Solver final-answer custody, prepared speech features, decoder-only geometry and max256 stay unchanged. This draft authorizes no ASR, model, scoring, service, or experiment contact.",
+  "prospective_live_speech_observation": {
+    "status": "PENDING_ROOT_REGISTRATION",
+    "source_inventory": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-PREPARE-V1/source-inventory.json",
+      "sha256": "435d64b9e4fd341d9db6f8e574d5eda08007f48c432dda55b09bc0b2ab318782",
+      "contact_class": "model-free"
+    },
+    "inventory": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-PREPARE-V1/full-runtime-inventory-v2.json",
+      "sha256": "e5e6d37646438ab57bb3362ced18726cde4f2762a2893f7e6a416e7e484d0427"
+    },
+    "protocol": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-PREPARE-V1/cpu-decode-protocol.json",
+      "sha256": "986eb37756a4b72a0732ad5aac92ac83de2f53199b370645c20f4ba429ddc32f"
+    },
+    "activation_requires": [
+      "A root-owned, separately registered live-ASR ExecutionPlan with final contact and audio ceilings.",
+      "One unconsumed parser-valid exposure-ledger row for that live-ASR run before preflight.",
+      "A final live_speech_observations runtime binding with the registered plan pin and a new attempt-namespaced output_relpath."
+    ],
+    "model_free_inventory_verification": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-PREPARE-V1/source-version-verification-v1.json",
+      "sha256": "5863c96a720b14030bdd746feb6dd910914c6f507ca07b7a52699f7a53011c32"
+    }
+  }
+}
