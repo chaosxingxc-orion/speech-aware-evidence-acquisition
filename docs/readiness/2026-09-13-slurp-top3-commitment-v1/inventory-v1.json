@@ -1,0 +1,70 @@
+{
+  "schema": "saea-held-successor-config-package-v1",
+  "status": "HELD",
+  "date": "2026-09-13",
+  "source_commit": "c48a5e43eed59f50bd841dbead6a73c5ae6635ea",
+  "files": [
+    {
+      "repo_relpath": "configs/baseline/slurp-top3-commitment-hard-first-v1.json",
+      "sha256": "b90b91b4d5a2682b5558fc64be4d07f8b999cc619d2b946614db6418ff4566fe"
+    },
+    {
+      "repo_relpath": "configs/baseline/slurp-top3-commitment-closed-joint-v1.json",
+      "sha256": "b5a9d306f8ebfcca240d5edbed008bb924988e8f91aa0ac8a58cd2e998dbedf0"
+    },
+    {
+      "repo_relpath": "configs/experiment/slurp-top3-commitment-hard-first-engineering4-v1.json",
+      "sha256": "b6b16a407d72bfe9967def4d1401ff7b93c8551fa9f7f8687225c3aa066b9210"
+    },
+    {
+      "repo_relpath": "configs/experiment/slurp-top3-commitment-closed-joint-engineering4-v1.json",
+      "sha256": "6246862aa393d975d6fca69424f541edb4e8682abd576bc53af97acc69ec4426"
+    },
+    {
+      "repo_relpath": "configs/experiment/slurp-top3-commitment-hard-first-dev1000-v1.json",
+      "sha256": "b322648c9fbf34ef0ea4ab28dfb996ff775a7d0fce11a8c35b9d0446eab3fb51"
+    },
+    {
+      "repo_relpath": "configs/experiment/slurp-top3-commitment-closed-joint-dev1000-v1.json",
+      "sha256": "2af025f7c58827ce70e65385d77dd8b4204ff0fa4af5255e5f457bf060076bfe"
+    },
+    {
+      "repo_relpath": "configs/probes/slurp_top3_hard_first_slots_v1.txt",
+      "sha256": "c814d07822aa47368adad9b2ee60de0b0036e05ade964ca56e2c98b24ee5bcab"
+    },
+    {
+      "repo_relpath": "configs/probes/slurp_top3_closed_joint_slots_v1.txt",
+      "sha256": "db7168bf4adab7ece0616add41ffa98809f7f1508c1f9069ba2327229dd01dee"
+    },
+    {
+      "repo_relpath": "configs/probes/manifest.json",
+      "sha256": "a1f6b443e4d36d3953813c22b3f9a100ce7471b8486248b3454b44c488b8f1ed"
+    }
+  ],
+  "shared_source": {
+    "producer_policy_id": "phase-intent-hypotheses-only-v1",
+    "artifact_binding_schema": "saea-artifact-result-binding-v2",
+    "artifact_role": "slurp-intent-hypotheses",
+    "manifest_relpath": "__UNRESOLVED_FINALIZED_SOURCE_MANIFEST_RELPATH__",
+    "manifest_sha256": "__UNRESOLVED_FINALIZED_SOURCE_MANIFEST_SHA256__"
+  },
+  "unresolved_before_contact": [
+    "Replace both baseline predecessor manifest placeholders with the same exact FINALIZED source manifest path and SHA-256.",
+    "Assign registered run and attempt IDs; do not retain the explicit unregistered markers.",
+    "Freeze final composed config/source hashes.",
+    "Register generation and actual-request fit ExecutionPlans and exposure rows.",
+    "Bind readiness receipts and record root admission."
+  ],
+  "constraints": {
+    "contacts_per_sample": 1,
+    "program_id": "phase-slots-given-intent-v1",
+    "full_speech": true,
+    "serving_slots": 8,
+    "output_tokens": 256,
+    "fixed_preprocessing_asr": false,
+    "phase_supply": false,
+    "candidate_source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201",
+    "max_candidates": 3
+  },
+  "scope": "Engineering-four variants are wiring-only. DEV1000 variants remain held. This package grants no execution or quality-read authority."
+}

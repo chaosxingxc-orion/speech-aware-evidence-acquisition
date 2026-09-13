@@ -1,0 +1,1 @@
+Use the full speech and the supplied ordered intent hypotheses. Jointly choose exactly one supplied candidate as the final scenario and action, then extract only entities supported by the speech for that intent. Return only the required SLURP task JSON object. Do not introduce an intent outside the supplied shortlist.

@@ -1,0 +1,56 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "wire-check",
+        "worker",
+        "campaign"
+      ],
+      "arm": "speech-feature-query",
+      "attempt_id": "__UNREGISTERED_ATTEMPT_CLOSED_JOINT_DEV1000__",
+      "baseline_fragment": "slurp-top3-commitment-closed-joint-v1",
+      "cell_id": "slurp-top3-commitment-closed-joint-dev1000-generation-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
+      "readiness": {
+        "reason": "HELD. Bind the exact FINALIZED shared source manifest in the baseline, freeze config/source identities, register generation and fit plans, and record root admission before any contact.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "__UNREGISTERED_RUN_CLOSED_JOINT_DEV1000__"
+    }
+  ],
+  "date": "2026-09-13",
+  "delivery_derivatives": [
+    {
+      "cell_id": "slurp-top3-commitment-closed-joint-dev1000-delivery-v1",
+      "parent_cell_id": "slurp-top3-commitment-closed-joint-dev1000-generation-v1",
+      "response_postprocessor": "slurp-shortlist-joint-hypothesis-delivery-v1",
+      "response_postprocessor_params": {
+        "max_candidates": 3
+      },
+      "source_selector": {
+        "schema": "saea-sealed-state-response-pair-v1",
+        "program_id": "phase-slots-given-intent-v1",
+        "program_sha256": "9e0825a952edcf338e8d1206bd0fa8e05b3f3d8743decffdca687d73320f69bb",
+        "response_phase": "slots"
+      }
+    }
+  ],
+  "experiment_id": "HELD-SAEA-SLURP-TOP3-COMMITMENT-CLOSED-JOINT-DEV1000-V1",
+  "fragment_kind": "saea-slurp-task-agent-experiment-v1",
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "decision_population": "Exact retained exposed DEV1000 roster; NEW500 primary, OLD500 and pooled secondary under a later registered analysis.",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "HELD matched closed-joint successor over the same future sealed ordered Top-3 source; component comparison only.",
+  "request_decoding_overrides": {
+    "max_tokens": 256
+  },
+  "service_session": "serving-slurp-top3-commitment-np8-v1",
+  "split_id": "DEV-1000"
+}
