@@ -1308,31 +1308,48 @@ def _agent_history(
             "contact_instruction must be a non-empty string for an Agent contact"
         )
     try:
+        from .prepared_feedback import PreparedFeedbackStateArtifact
+
         artifacts = tuple(
-            AgentStateArtifact.from_json(document) for document in agent_state
+            PreparedFeedbackStateArtifact.from_json(document)
+            if isinstance(document, Mapping)
+            and "prepared_feedback_state_version" in document
+            else AgentStateArtifact.from_json(document)
+            for document in agent_state
         )
-    except (KeyError, RailsError, TypeError) as error:
+    except (KeyError, RailsError, TypeError, ValueError) as error:
         raise FrozenCoreClientError(
             f"malformed Agent state artifact: {error}"
         ) from error
     ids = [artifact.state_id for artifact in artifacts]
     if len(set(ids)) != len(ids):
         raise FrozenCoreClientError("agent_state contains duplicate state ids")
-    history: list[dict[str, object]] = [
-        {
+    history: list[dict[str, object]] = []
+    for index, artifact in enumerate(artifacts, start=1):
+        state = {
             "turn": index,
             "role": "agent_state",
             "state_id": artifact.state_id,
             "state_kind": artifact.state_kind,
             "content": artifact.content,
             "content_sha256": _content_sha256(artifact.content),
-            "source_query_state_sha256": artifact.source_query_state_sha256,
-            "source_response_sha256": artifact.source_response_sha256,
-            "producer_policy_id": artifact.producer_policy_id,
             "cited_value_ids": list(artifact.cited_value_ids),
         }
-        for index, artifact in enumerate(artifacts, start=1)
-    ]
+        if isinstance(artifact, PreparedFeedbackStateArtifact):
+            state.update({
+                "prepared_feedback_state_version": artifact.prepared_feedback_state_version,
+                "prepared_artifact_sha256": artifact.prepared_artifact_sha256,
+                "source_feedback_sha256": artifact.source_feedback_sha256,
+                "construction_roster_sha256": artifact.construction_roster_sha256,
+                "model_context_sha256": artifact.model_context_sha256,
+            })
+        else:
+            state.update({
+                "source_query_state_sha256": artifact.source_query_state_sha256,
+                "source_response_sha256": artifact.source_response_sha256,
+                "producer_policy_id": artifact.producer_policy_id,
+            })
+        history.append(state)
     history.append(
         {
             "turn": len(history) + 1,

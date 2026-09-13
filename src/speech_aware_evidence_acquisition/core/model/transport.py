@@ -235,6 +235,38 @@ def _speech_history_texts(history: object) -> list[str]:
                 raise FrozenCoreError(
                     f"history[{index}] agent_state requires state_kind"
                 )
+            prepared_version = item.get("prepared_feedback_state_version")
+            if prepared_version is not None or state_kind == "prepared-training-feedback":
+                from ...rails.prepared_feedback import PreparedFeedbackStateArtifact
+
+                prepared_fields = {
+                    "turn", "role", "state_id", "state_kind", "content", "content_sha256",
+                    "cited_value_ids", "prepared_feedback_state_version",
+                    "prepared_artifact_sha256", "source_feedback_sha256",
+                    "construction_roster_sha256", "model_context_sha256",
+                }
+                if set(item) != prepared_fields:
+                    raise FrozenCoreError(
+                        f"history[{index}] prepared feedback state has wrong fields"
+                    )
+                try:
+                    PreparedFeedbackStateArtifact.from_json({
+                        "prepared_feedback_state_version": item["prepared_feedback_state_version"],
+                        "state_id": state_id,
+                        "state_kind": state_kind,
+                        "content": content,
+                        "cited_value_ids": item["cited_value_ids"],
+                        "prepared_artifact_sha256": item["prepared_artifact_sha256"],
+                        "source_feedback_sha256": item["source_feedback_sha256"],
+                        "construction_roster_sha256": item["construction_roster_sha256"],
+                        "model_context_sha256": item["model_context_sha256"],
+                    })
+                except (KeyError, TypeError, ValueError) as error:
+                    raise FrozenCoreError(
+                        f"history[{index}] prepared feedback state is malformed: {error}"
+                    ) from error
+                rendered.append(f"[agent state {state_id} kind={state_kind}] {content}")
+                continue
             for field in (
                 "source_query_state_sha256",
                 "source_response_sha256",
