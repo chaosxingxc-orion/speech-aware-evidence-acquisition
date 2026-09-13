@@ -112,6 +112,7 @@ _ALPHA_BLEND_INSTRUCTIONS = {
 
 RANK_POLICY_ID = "saea-rank-wcos-prior-agree-v1"
 FUSE_POLICY_ID = "saea-fuse-supplyfilter-v1"
+ASSOCIATED_VALUES_FUSE_POLICY_ID = "saea-fuse-associated-values-v1"
 CONTROLLER_POLICY_ID = "saea-kb-alpha-blend-v1"
 
 _DIRECT_CONTACT_ID = "direct-decode"
@@ -794,6 +795,72 @@ def fuse_supplyfilter_factory(
             rank_result=rank_result,
             recall_scores=recall_scores,
         )
+
+    return fuser
+
+
+def fuse_associated_values_factory(
+    knobs: FuseKnobs | None = None,
+) -> Callable[..., FusionDecision]:
+    """Supply associated content without requiring an answer-bearing target.
+
+    Admit the first m ranked facets by cosine threshold. Traverse them in rank
+    order, select at most c new values per facet in value-ID order, and stop at
+    top_l values overall. A value shared by facets is supplied once. Existing
+    visible values consume neither budget. Keep target-based fusion unchanged.
+    """
+    if knobs is None:
+        raise RailsError("associated-value fusion requires explicit FuseKnobs")
+    resolved = knobs.validate()
+
+    def fuser(
+        *,
+        snapshot: KnowledgeSnapshot,
+        snapshot_sha256: str,
+        query_state: QueryState,
+        rank_result: RankResult,
+        recall_scores: Mapping[str, Mapping[str, float]],
+    ) -> FusionDecision:
+        rank_result.validate()
+        visible = set(query_state.retrieved_value_ids)
+        selected: list[str] = []
+        supporting: list[str] = []
+        values_by_facet: dict[str, list[str]] = {}
+        for value in snapshot.values:
+            if value.value_id in visible:
+                continue
+            for facet_id in value.associated_facet_ids:
+                values_by_facet.setdefault(facet_id, []).append(value.value_id)
+        seen = set(visible)
+        for candidate in rank_result.candidates[:resolved.m]:
+            facet_id = candidate.facet_id
+            cosines = [
+                score for dimension, score in recall_scores.get(facet_id, {}).items()
+                if dimension not in PRIOR_MASS_DIMENSIONS
+            ]
+            if not cosines or max(cosines) < resolved.tau:
+                continue
+            count = 0
+            for value_id in sorted(values_by_facet.get(facet_id, ())):
+                if value_id in seen:
+                    continue
+                selected.append(value_id)
+                seen.add(value_id)
+                count += 1
+                if count == resolved.c or len(selected) == resolved.top_l:
+                    break
+            if count:
+                supporting.append(facet_id)
+            if len(selected) == resolved.top_l:
+                break
+        return FusionDecision(
+            snapshot_sha256=snapshot_sha256,
+            query_state_sha256=query_state.content_hash(),
+            rank_result_sha256=rank_result.content_hash(),
+            fusion_policy_id=ASSOCIATED_VALUES_FUSE_POLICY_ID,
+            supporting_facet_ids=tuple(supporting),
+            selected_value_ids=tuple(selected),
+        ).validate()
 
     return fuser
 
@@ -1561,6 +1628,10 @@ def register_kb_policy_v1() -> None:
         KNOWLEDGE_RANKERS.register(RANK_POLICY_ID, rank_wcos_prior_agree_factory)
     if FUSE_POLICY_ID not in KNOWLEDGE_FUSERS.names():
         KNOWLEDGE_FUSERS.register(FUSE_POLICY_ID, fuse_supplyfilter_factory)
+    if ASSOCIATED_VALUES_FUSE_POLICY_ID not in KNOWLEDGE_FUSERS.names():
+        KNOWLEDGE_FUSERS.register(
+            ASSOCIATED_VALUES_FUSE_POLICY_ID, fuse_associated_values_factory
+        )
     if CONTROLLER_POLICY_ID not in AGENT_CONTROLLERS.names():
         AGENT_CONTROLLERS.register(CONTROLLER_POLICY_ID, _default_controller_factory)
 
@@ -1569,6 +1640,8 @@ register_kb_policy_v1()
 
 
 __all__ = [
+    "ASSOCIATED_VALUES_FUSE_POLICY_ID",
+    "fuse_associated_values_factory",
     "CONTROLLER_POLICY_ID",
     "DEFAULT_POLICY_CONFIG_PATH",
     "FUSE_POLICY_ID",

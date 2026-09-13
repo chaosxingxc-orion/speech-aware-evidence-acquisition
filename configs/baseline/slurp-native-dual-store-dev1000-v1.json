@@ -17,7 +17,12 @@
             "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
             "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
           },
-          "fuse_policy": "saea-fuse-supplyfilter-v1",
+          "fuse_coverage": {
+            "c": 1,
+            "m": 8,
+            "top_l": 8
+          },
+          "fuse_policy": "saea-fuse-associated-values-v1",
           "k": 8,
           "provider": "kb-facet-v1",
           "query_source": {
