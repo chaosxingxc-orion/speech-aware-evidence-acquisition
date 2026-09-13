@@ -61,10 +61,14 @@ procedures, ownership rules, or correction rules.
 
 ## Canonical linkage
 
-Every intent and slot value has one canonical intent_id in the legal SLURP
-inventory. The identifier is a linkage key, not a semantic claim. The stores
-must retain their own value IDs and content hashes while exposing the same
-canonical intent ID for joins.
+Every intent value exposes a canonical intent_id in the legal SLURP inventory.
+A slot value may define a reusable slot concept; a separate intent-slot binding
+states its role in each operation. Reuse a common definition only when its
+semantics agree. For example, a shared time concept does not make a reminder
+time and a query time range interchangeable. Join an intent to its applicable
+slot bindings through canonical intent_id, and retain stable slot/value IDs,
+both store versions, and all content hashes. The linkage is not itself a
+semantic claim.
 
 A store release must carry four separately checked contracts:
 
@@ -117,8 +121,10 @@ the store itself must not collapse Top-N hypotheses into one authority.
 
 ## Slot store contract
 
-A slot value is keyed by a canonical intent_id plus a stable semantic slot
-identity. Its contract has four distinct parts:
+A slot value has a stable semantic slot identity. Its intent-specific binding
+adds canonical intent_id and any conditional role or extraction overrides.
+This avoids duplicating compatible definitions without treating different
+roles with the same surface name as identical. Its contract has four parts:
 
 - **Semantic contract:** what role the slot plays in the operation and how it
   differs from similarly named or neighboring roles.
@@ -168,13 +174,22 @@ useful component matrix is:
 
 | Cell | Intent store | Slot store | Purpose |
 | --- | --- | --- | --- |
-| direct | absent | absent | Existing direct decision path |
+| matched-null | absent | absent | Same Top-N source and joint executor without either value store |
 | intent-only | present | absent | Test intent boundary knowledge |
 | slot-only | absent | present | Test semantic and extraction role knowledge |
 | joint | present | present | Test joint revision with both stores |
 
-The joint cell should preserve the same Top-N source, candidate order,
-speech, model-contact ceiling, and output contract as its matched controls.
+These four cells isolate value consumption at a common joint decision. Every
+cell preserves the same Top-N source, candidate order, speech, model-contact
+ceiling, and output contract. The historical one-contact direct baseline is a
+separate system reference, not the matched-null cell.
+
+Candidate construction is a second question. After the consumption comparison
+is closed, separately test whether intent boundary knowledge improves the
+first-stage candidate source. A fixed shared Top-N source cannot establish
+that effect. Report true-intent inclusion, conditional selection quality when
+included, and entity quality separately; better parameter extraction cannot
+recover an intent excluded by a closed shortlist.
 The intent-only and slot-only cells must use the same harness and state
 bookkeeping. Report zero-tool direct paths, store-view calls, revisions,
 unchanged intent decisions, slot ownership errors, correction attempts, and
@@ -185,7 +200,7 @@ The first follow-up should be a four-row engineering proof covering source
 hash, value ordering, per-sample state binding, and joint revision
 bookkeeping. A full DEV evaluation, store-width sweep, new source selection,
 or efficacy claim requires its own frozen construction/evaluation bindings,
-registered plan, and owner admission. These ablations are proposed design
+registered plan, and root admission within the existing owner-authorized scope. These ablations are proposed design
 cells only; this addendum does not authorize them.
 
 ## Separation from experience memory
@@ -204,8 +219,11 @@ for an intent or slot semantic contract. In particular:
 - store construction does not create provisional or admitted memory;
 - memory selection does not alter store content or candidate ordering;
 - store values do not carry reward, score, diagnosis, or optimization guidance;
-- memory guidance does not define legal intent IDs, slot ownership, or
-  extraction vocabulary;
+- memory guidance may suggest a validated diagnostic or extraction strategy,
+  but must not silently redefine legal IDs or the released task schema;
+- a stable general rule distilled from experience may be promoted to knowledge
+  only through an explicit, source-bound successor release and separate
+  validation; it is not copied into both stores with conflicting authority;
 - any future composition retains both independent hashes and makes the
   composition explicit in runtime provenance.
 
@@ -220,3 +238,33 @@ construction on a new roster, a store release, a model contact, a fit,
 a scorer invocation, a width sweep, or a change to the current Top-3
 comparison. Root must review and freeze the construction, version,
 evaluation, content, and runtime bindings before any subsequent ablation.
+
+## Root implementation direction
+
+Use two logical stores with independent builders, snapshots, value contracts,
+and retrieval namespaces. Share the embedding backend, persistent storage,
+serialization, preparation cache, and registry interfaces where appropriate.
+Do not require two database processes or duplicate the engineering base.
+
+Expose distinct configured acquisition operations for intent boundaries and
+slot contracts. The main model chooses which operation to request during an
+agent episode, and may request both for an unresolved candidate set. Reviewer
+flags evidence gaps; Planner controls the bounded continuation; the frozen core
+retains the final answer. A deterministic component comparison may supply
+fixed views to isolate their effects, but must be labeled as such. It does not
+establish autonomous acquisition quality.
+
+Evaluate content construction and consumption together. A retrieved value is
+useful only if it supplies a needed distinction or extraction constraint and
+the solver uses it correctly. Record source coverage, retrieved-value
+relevance, consumed evidence, corrected errors and newly introduced errors.
+Select content granularity and any retrieval adaptation on the allowed
+construction/discovery partitions, not by repeatedly reading evaluation
+outcomes. Keep the current legal inventory and statistical slot profiles
+honestly labeled as initial assets.
+
+The same separation applies to Audio2Tool operation selection versus parameter
+contracts. Do not force this taxonomy onto Earnings transcription: its
+knowledge should instead follow the native task, such as entity identity and
+surface-form disambiguation. Reuse the control plane across carriers while
+allowing their value schemas to differ.
