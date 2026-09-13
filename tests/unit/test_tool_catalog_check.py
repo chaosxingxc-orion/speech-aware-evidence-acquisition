@@ -75,7 +75,7 @@ def test_the_real_catalog_passes():
     # renderers, OWNER016 added two explicit task actions, and OWNER017 adds
     # the corrective-memory Planner action; OWNER023 adds one cached OBS
     # action; native dispatch adds one live OBS action.
-    assert len(data["tools"]) == 31
+    assert len(data["tools"]) == 32
     assert all(row["complete"] and row["pin_ok"] for row in data["tools"])
     assert all(row["pin_ok"] for row in data["additional_pins"])
     assert data["registered_ids"] == sorted(data["registered_ids"])
@@ -235,3 +235,71 @@ def test_a_missing_wrappers_directory_is_an_error(tmp_path):
 
     with pytest.raises(tcc.ToolCatalogCheckError):
         tcc.check_no_framework_clients(tmp_path)
+
+
+def test_historical_default_stays_unoffered_while_opt_in_table_offers_candidate():
+    from speech_aware_evidence_acquisition.rails import tools
+
+    candidate_id = "saea-tool-candidate-contract-lookup-v1"
+    default = tools.default_toolkit_table(REPO_ROOT)
+    assert not default.for_task("command").may_call("planner", candidate_id)
+    assert not default.for_task("tool-call").may_call("planner", candidate_id)
+
+    data = tcc.evaluate(REPO_ROOT)
+    optional_path = "configs/toolkit/task-toolkits-v2-candidate-contract-lookup-v1.json"
+    assert optional_path in data["toolkit_tables"]
+    optional = data["toolkit_tables"][optional_path]["task_types"]
+    assert candidate_id in optional["command"]["planner"]
+    assert candidate_id in optional["tool-call"]["planner"]
+
+
+def test_invalid_optional_toolkit_id_is_refused(tmp_path):
+    import json
+    import shutil
+
+    default_path = REPO_ROOT / "configs" / "toolkit" / "task-toolkits-v1.json"
+    toolkit_dir = tmp_path / "configs" / "toolkit"
+    toolkit_dir.mkdir(parents=True)
+    shutil.copyfile(default_path, toolkit_dir / default_path.name)
+    optional = json.loads(default_path.read_text(encoding="utf-8"))
+    optional["toolkits"]["command"]["planner"]["tools"].append(
+        "saea-tool-unknown-optional-v1"
+    )
+    (toolkit_dir / "optional-invalid.json").write_text(
+        json.dumps(optional), encoding="utf-8"
+    )
+
+    failures, _default, tables = tcc.check_toolkit_tables(
+        tmp_path,
+        __import__(
+            "speech_aware_evidence_acquisition.rails.tools",
+            fromlist=["tools"],
+        ),
+    )
+    assert any(
+        "optional-invalid.json" in failure
+        and "unknown tool" in failure
+        for failure in failures
+    )
+    assert "configs/toolkit/optional-invalid.json" not in tables
+
+
+def test_registered_tool_missing_from_all_valid_tables_still_fails(tmp_path):
+    import shutil
+
+    default_path = REPO_ROOT / "configs" / "toolkit" / "task-toolkits-v1.json"
+    toolkit_dir = tmp_path / "configs" / "toolkit"
+    toolkit_dir.mkdir(parents=True)
+    shutil.copyfile(default_path, toolkit_dir / default_path.name)
+
+    tools_module = __import__(
+        "speech_aware_evidence_acquisition.rails.tools",
+        fromlist=["tools"],
+    )
+    failures, _default, tables = tcc.check_toolkit_tables(tmp_path, tools_module)
+    assert "configs/toolkit/task-toolkits-v1.json" in tables
+    assert any(
+        "registered but in no valid toolkit" in failure
+        and "saea-tool-candidate-contract-lookup-v1" in failure
+        for failure in failures
+    )
