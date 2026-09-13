@@ -1,0 +1,84 @@
+{
+  "arm": "speech-feature-query-native-tools",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame-tfrl-folds-v1/snapshot.json",
+  "knowledge_snapshot_sha256": "9c64e8ec48a0fce4f172bd190932f99c98c7efa18bbfb14526d54c62fdf7032b",
+  "knowledge_visibility": "The A/B-excluded snapshot remains bound for shared containment checks only; no phase knowledge retrieval or value supply is enabled in this engineering proof.",
+  "live_phase_fit": {
+    "attempt_id": "attempt-slurp-native-tools-engineering-fit-v1",
+    "contact_cap": 39,
+    "run_id": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-FIT-V1"
+  },
+  "live_phase_fit_audio_seconds_cap": 32,
+  "live_speech_observations": {
+    "execution_plan": {
+      "relpath": "docs/readiness/2026-09-12-slurp-native-tools-engineering-v1/asr-plan-v1.json",
+      "sha256": "2f2b382bed89bc9005675b33f3e71696712f8f661674d763a692b63118111cf1"
+    },
+    "inventory": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-PREPARE-V1/full-runtime-inventory.json",
+      "sha256": "79c79469975a8c014f6fc1b94bb3ab439f9e0cdc877c11378ec33d37170dc697"
+    },
+    "output_relpath": "prepared/SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-ASR-V1/attempt-slurp-native-tools-engineering-asr-v1/observations",
+    "protocol": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-PREPARE-V1/cpu-decode-protocol.json",
+      "sha256": "4b4cf3c80f94e98b19245400eebb63891054af6006dd915195e24dbf27d6268c"
+    }
+  },
+  "phase_material": {
+    "decision-1": {
+      "instruction_fill": null,
+      "instruction_template": "probes/native_speech_tool_engineering_v1.txt",
+      "predecessor_binding": "none"
+    },
+    "decision-2": {
+      "instruction_fill": null,
+      "instruction_template": "probes/native_speech_tool_engineering_v1.txt",
+      "predecessor_binding": "none"
+    },
+    "final": {
+      "instruction_fill": null,
+      "instruction_template": "probes/native_speech_tool_engineering_v1.txt",
+      "predecessor_binding": "none"
+    }
+  },
+  "phase_tools": {
+    "decision-1": {
+      "allowed_tools": [
+        "saea-tool-live-speech-observation-v1",
+        "saea-tool-task-contract-v1"
+      ],
+      "knowledge_views": [
+        "text"
+      ],
+      "mode": "native-tools"
+    },
+    "decision-2": {
+      "allowed_tools": [
+        "saea-tool-live-speech-observation-v1",
+        "saea-tool-task-contract-v1"
+      ],
+      "knowledge_views": [
+        "text"
+      ],
+      "mode": "native-tools"
+    }
+  },
+  "policy": "native-answer-or-tool-v1",
+  "scorers": [
+    "slurp-slu-official-train",
+    "cost"
+  ],
+  "serving_slot_tokens": 16384,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "Four-row engineering branch proof of native main-model tool selection, actual on-demand local ASR and subsequent final answering. The prompt requests one corroboration to exercise the tool branch; this is not evidence of an optimized autonomous trigger or task improvement.",
+  "whole_roster_wave_barrier": true
+}

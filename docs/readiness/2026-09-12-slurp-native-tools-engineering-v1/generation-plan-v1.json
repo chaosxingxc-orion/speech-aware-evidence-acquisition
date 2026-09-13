@@ -1,0 +1,43 @@
+{
+  "cell": "slurp-native-tools-engineering-4-v1",
+  "composed_config_hash": "cd08d5f1f7a20a64f61930403fcb518d6ae748ec492263c2cb2e84d49a3b1ec4",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-tools-engineering-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 12,
+    "planned_speech_audio_seconds": 32,
+    "protocol_hash": "a86db904fa10553f1f2c7a02a47a7b9000e945d144b9024282a3163a93e2ac57",
+    "run_id": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-train-a-incumbent-reward-source-np4-v1",
+  "experiment": "slurp-native-tools-engineering-4-v1",
+  "family_budget": {
+    "asr_speech_audio_seconds_total": 11,
+    "cold_asr_calls_total": 4,
+    "fit_contacts_total": 39,
+    "fit_speech_audio_seconds_total": 32,
+    "generation_calls_total": 12,
+    "generation_speech_audio_seconds_total": 32,
+    "gpu_hours_fit_inclusive": 1.0,
+    "internal_tool_invocations_total": 8
+  },
+  "final_source_binding": "Bind the clean committed checkout and complete resident identity in a separate launch receipt before contact.",
+  "fit_protocol": "Before each actual active wave use one GET /props plus three real fit endpoints per active row; maximum three waves, 39 contacts. Prepared bytes must be the bytes sent. No approximate count is a live capacity receipt.",
+  "protocol_hash": "a86db904fa10553f1f2c7a02a47a7b9000e945d144b9024282a3163a93e2ac57",
+  "quality_read_gate": "Seal all four final outputs before reading semantics or scoring. Run the complete native TRAIN scorer once. Results are engineering diagnostics only.",
+  "registered_at": "2026-09-13T01:12:19.100363+00:00",
+  "retry_policy": "No adaptive rerun, silent recovery, hidden forced tool or service restart. Unused ceiling is not new attempt authority.",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_eligibility": {
+    "decision_id": "SAEA-SLURP-NATIVE-TOOLS-ENGINEERING-ADMISSION-V1",
+    "relpath": "coordination/slurp-native-tools-engineering-v1/root-admission-v1.json",
+    "sha256": "70fcd492aef72391c68d89540567ede1cf89f8911c7434f3c6ce4e9ed811a31a"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/agentic-native-tool-loop-v1"
+}
