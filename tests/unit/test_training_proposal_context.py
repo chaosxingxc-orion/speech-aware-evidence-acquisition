@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 import pytest
-from test_group_relative_feedback import source_pair  # noqa: F401
+from test_group_relative_feedback import native_source_pair, source_pair  # noqa: F401
 
 from speech_aware_evidence_acquisition.rails.training_proposal_context import (
     TrainingProposalContextError, build_training_proposal_contexts,
@@ -126,3 +126,24 @@ def test_selected_response_must_match_verified_reward_lineage(source_pair, monke
     monkeypatch.setattr(module, "_source_trajectories", wrong_final)
     with pytest.raises(TrainingProposalContextError, match="response lineage"):
         build_training_proposal_contexts(source_pair)
+
+
+def test_native_train_context_keeps_role_revisits_and_selected_solver(native_source_pair):
+    document = build_training_proposal_contexts(native_source_pair)
+    assert document["status"] == "source-verified"
+    assert len(document["contexts"]) == 2
+    for row in document["contexts"]:
+        model = row["model_context"]
+        assert "slurp:train:" not in json.dumps(model)
+        for candidate in model["candidates"]:
+            trajectory = candidate["trajectory"]
+            assert len(trajectory) == 9
+            assert sum(step["action"].startswith("synthetic-program:reviewer:")
+                       for step in trajectory) == 4
+            selected = [step for step in trajectory if step["selected_final"]]
+            assert len(selected) == 1
+            assert selected[0]["action"] == "synthetic-program:solver:1"
+            assert selected[0]["response"].endswith("-solver-1")
+            assert trajectory[-1]["action"] == "synthetic-program:planner:1"
+            assert not trajectory[-1]["selected_final"]
+            assert len(candidate["quality"]) == 7

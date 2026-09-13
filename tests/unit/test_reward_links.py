@@ -148,8 +148,7 @@ def test_changed_link_order_or_feedback_is_rejected(completed_source):
         bad.validate()
 
 
-@pytest.fixture(params=("separate", "continuous"))
-def slurp_source(completed_source, tmp_path, request):
+def _slurp_source(completed_source, tmp_path, mode):
     """Build complete schema-bound synthetic SLURP phases with overlapping IDs."""
     from speech_aware_evidence_acquisition.contracts import ExecutionPlan, TraceRecord
     from speech_aware_evidence_acquisition.core.attempts import AttemptStore
@@ -164,16 +163,21 @@ def slurp_source(completed_source, tmp_path, request):
     ids = ("slurp:train:1", "slurp:train:10")
     run_id, attempt_id = "SAEA-SYNTHETIC-SLURP", "synthetic-attempt"
     split_hash = split_identity_hash(prefixed("slurp", ids))
+    stages = ([("perception", 0), ("solver", 0), ("reviewer", 0),
+               ("reviewer", 1), ("planner", 0), ("solver", 1),
+               ("reviewer", 2), ("reviewer", 3), ("planner", 1)]
+              if mode == "native" else [(name, None) for name in ("plan", "solve", "revise")])
+    call_count = len(ids) * len(stages)
     config_hash = content_hash({"synthetic": "three-phase"})
     protocol = protocol_hash(config_hash, "bare-core", split_hash)
     plan = ExecutionPlan(
         run_id=run_id, attempt_id=attempt_id, execution_profile="bounded-discovery-probe",
         carrier_lock_key="slurp", split_role="discovery", split_identity_hash=split_hash,
-        planned_model_calls=7, planned_gpu_hours=1, planned_speech_audio_seconds=60,
+        planned_model_calls=call_count + 1, planned_gpu_hours=1, planned_speech_audio_seconds=60,
         protocol_hash=protocol,
     )
     handle = AttemptStore(root / "attempts").open_attempt(
-        run_id, attempt_id, carrier_lock_key="slurp", reserved_calls=7, reserved_audio_seconds=60,
+        run_id, attempt_id, carrier_lock_key="slurp", reserved_calls=call_count + 1, reserved_audio_seconds=60,
     )
     documents, outputs, hashes = [], [], {}
 
@@ -184,14 +188,14 @@ def slurp_source(completed_source, tmp_path, request):
 
     for index, sid in enumerate(ids):
         phase_contacts, phase_states = [], []
-        for phase in ("plan", "solve", "revise"):
-            rid = f"opaque-{index}-{phase}"
-            cid = f"synthetic-program:{phase}:{sid}"
+        for phase, iteration in stages:
+            rid = f"opaque-{index}-{phase}" + (f"-{iteration}" if iteration is not None else "")
+            cid = f"synthetic-program:{phase}:" + (f"{iteration}:" if iteration is not None else "") + sid
             payload = {
                 "sample_id": sid, "request_id": rid, "carrier_lock_key": "slurp",
                 "history": [{"role": "control", "contact_id": cid}],
             }
-            text = f"synthetic-answer-{index}-{phase}"
+            text = f"synthetic-answer-{index}-{phase}" + (f"-{iteration}" if iteration is not None else "")
             text_hash = hashlib.sha256(text.encode()).hexdigest()
             wire_hash = content_hash({"wire": text})
             emit("MODEL_REQUEST", rid + "/request", {
@@ -201,10 +205,26 @@ def slurp_source(completed_source, tmp_path, request):
                 "text": text, "response_sha256": wire_hash, "response_text_sha256": text_hash,
             })
             phase_contacts.append({"plan": {"contact_id": cid}, "response_sha256": text_hash})
+            if mode == "native":
+                emit("USE", rid + "/native-role-contact", {
+                    "use_role_id": phase, "use_agent_contact_id": cid,
+                    "use_request_sha256": content_hash(payload),
+                    "use_response_sha256": wire_hash,
+                    "use_response_text_sha256": text_hash,
+                })
+                if phase == "reviewer" and iteration in (0, 2):
+                    call_id = f"call-{iteration}"
+                    suffix = content_hash({"request_id": rid, "tool_call_id": call_id})
+                    emit("USE", f"{sid}/synthetic-program/{phase}/tool-result/{suffix}", {
+                        "use_tool_id": "saea-tool-task-contract-v1",
+                        "use_core_request_id": rid, "use_tool_call_id": call_id,
+                        "use_sample_id": sid, "use_phase": phase,
+                        "use_source_response_sha256": text_hash,
+                    })
             if phase != "revise":
                 phase_states.append({"state_kind": "phase:" + phase,
                                      "source_response_sha256": text_hash})
-            if request.param == "separate":
+            if mode == "separate":
                 emit("ORG", f"{sid}/{phase}/agent-loop/org", {
                     "org_initial_query_state": {"query_sample_id": sid},
                     "org_final_query_state": {"query_sample_id": sid},
@@ -222,14 +242,15 @@ def slurp_source(completed_source, tmp_path, request):
                     "review_sample_id": sid, "review_phase": phase,
                     "review_response_sha256": text_hash,
                 })
-            if phase == "revise":
+            if phase == "revise" or (mode == "native" and phase == "solver" and iteration == 1):
+                selected_hash, selected_contact_id = text_hash, cid
                 outputs.append({
                     "sample_id": sid, "request_id": rid, "carrier_lock_key": "slurp",
                     "arm": "bare-core", "text": text, "admitted": True,
                     "request_sha256": content_hash(payload), "response_sha256": wire_hash,
                     "response_text_sha256": text_hash,
                 })
-        if request.param == "continuous":
+        if mode in {"continuous", "native"}:
             base = f"{sid}/synthetic-program/agent-loop"
             query = {"query_sample_id": sid}
             emit("ORG", base + "/org", {
@@ -249,8 +270,14 @@ def slurp_source(completed_source, tmp_path, request):
                            "selected_final_contact_id": contact["plan"]["contact_id"]
                            if contact is phase_contacts[-1] else None}
                           for contact in phase_contacts],
-                "transitions": [], "final_response_sha256": text_hash,
+                "transitions": [], "final_response_sha256": selected_hash,
             }
+            if mode == "native":
+                runtime_document["waves"] = [{
+                    "contact_plans": [contact["plan"] for contact in phase_contacts],
+                    "response_sha256s": [contact["response_sha256"] for contact in phase_contacts],
+                    "selected_final_contact_id": selected_contact_id,
+                }]
             runtime_hash = content_hash(runtime_document)
             emit("USE", base + "/runtime-use", {
                 **{"use_" + key: value for key, value in runtime_document.items()},
@@ -258,7 +285,7 @@ def slurp_source(completed_source, tmp_path, request):
             })
             emit("USE", base + "/posthoc-use", {
                 "use_runtime_trace_sha256": runtime_hash,
-                "use_final_response_sha256": text_hash, "use_metrics": {},
+                "use_final_response_sha256": selected_hash, "use_metrics": {},
             })
     # A global event must stay source-bound without being assigned to either row.
     emit("TOOL", "global/tool-registry", {"tool_manifest_sha256": "b" * 64})
@@ -279,7 +306,7 @@ def slurp_source(completed_source, tmp_path, request):
         attempt={"run_id": run_id, "attempt_id": attempt_id, "state_path": str(handle.path)},
         scorers=["slurp-slu-official-train"], scores=None,
     )
-    manifest["cost"]["calls_used"] = 6
+    manifest["cost"]["calls_used"] = call_count
     for key, path in files.items():
         manifest[key] = {"path": str(path), "sha256": _sha(path)}
     path = root / "manifest.json"
@@ -312,6 +339,30 @@ def slurp_source(completed_source, tmp_path, request):
     projection = RewardProjection("slurp-native-v1", "slurp-slu-official-train",
                                   ("port_micro.samples",), SLURP_NATIVE_FIELDS)
     return path, ref, roster_path, projection, per_sample
+
+
+
+@pytest.fixture(params=("separate", "continuous"))
+def slurp_source(completed_source, tmp_path, request):
+    return _slurp_source(completed_source, tmp_path, request.param)
+
+
+@pytest.fixture
+def native_slurp_source(completed_source, tmp_path):
+    return _slurp_source(completed_source, tmp_path, "native")
+
+
+def test_native_role_revisits_keep_every_contact_and_accepted_solver(native_slurp_source):
+    path, ref, roster, projection, native = native_slurp_source
+    links = build_reward_links(path, ref, roster, projection)
+    assert len(links) == 2
+    for index, link in enumerate(links):
+        events = link.provenance["ordered_events"]
+        assert sum(event["axis"] == "MODEL_REQUEST" for event in events) == 9
+        assert sum("/tool-result/" in event["record_id"] for event in events) == 2
+        assert link.source.response_sha256 == hashlib.sha256(
+            f"synthetic-answer-{index}-solver-1".encode()
+        ).hexdigest()
 
 
 def test_slurp_exact_sample_joins_keep_tools_reviews_and_sufficient_counts(slurp_source):
@@ -356,9 +407,29 @@ def _mutate_synthetic_trace(source, case):
                   else f"{sid}/synthetic-program/agent-loop/runtime-use")
     use = by_id[runtime_id]["payload"]
     org = by_id[runtime_id.removesuffix("runtime-use") + "org"]["payload"]
-    review = by_id[f"{sid}/synthetic-program/solve/review"]["payload"]
-    solve_hash = by_id["opaque-0-solve/response"]["payload"]["response_text_sha256"]
-    if case == "request_identity":
+    review = by_id.get(f"{sid}/synthetic-program/solve/review", {}).get("payload")
+    solve_hash = by_id.get("opaque-0-solve/response", {}).get("payload", {}).get("response_text_sha256")
+    if case.startswith("native_"):
+        role = by_id["opaque-0-reviewer-0/native-role-contact"]["payload"]
+        solver_hash = by_id["opaque-0-solver-0/response"]["payload"]["response_text_sha256"]
+        tool = next(row["payload"] for row in documents
+                    if row["record_id"].startswith(f"{sid}/synthetic-program/reviewer/tool-result/"))
+        if case == "native_role":
+            role["use_role_id"] = "solver"
+        elif case == "native_contact_hash":
+            role["use_request_sha256"] = "f" * 64
+        elif case == "native_missing_role":
+            documents.remove(by_id["opaque-0-reviewer-0/native-role-contact"])
+        elif case == "native_state":
+            next(state for state in org["org_agent_states"]
+                 if state["state_kind"] == "phase:reviewer")["source_response_sha256"] = solver_hash
+        elif case == "native_tool":
+            tool["use_source_response_sha256"] = solver_hash
+        elif case == "native_tool_missing_request":
+            tool.pop("use_core_request_id")
+        else:
+            raise AssertionError(case)
+    elif case == "request_identity":
         request = by_id["opaque-0-plan/request"]["payload"]
         request["payload"]["request_id"] = "opaque-1-plan"
         request["payload_sha256"] = content_hash(request["payload"])
@@ -460,3 +531,13 @@ def test_self_consistent_forgery_cannot_convert_through_verified_source_api(comp
     forged.validate()  # Local integrity is distinct from authoritative source verification.
     with pytest.raises(RewardLinkError):
         verify_experience_sources((forged,) + links[1:], manifest, ref, roster, _projection())
+
+
+@pytest.mark.parametrize("case", [
+    "native_role", "native_contact_hash", "native_missing_role",
+    "native_state", "native_tool", "native_tool_missing_request",
+])
+def test_native_role_and_tool_sources_cannot_cross_roles(native_slurp_source, case):
+    path, ref, roster, projection = _mutate_synthetic_trace(native_slurp_source, case)
+    with pytest.raises(RewardLinkError):
+        build_reward_links(path, ref, roster, projection)

@@ -6,7 +6,6 @@ import copy
 import hashlib
 import json
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
 import test_reward_links as fixtures
@@ -125,17 +124,17 @@ def _enrich_trace_with_supplied_evidence_and_failed_contact(manifest_path):
     manifest["cost"]["calls_used"] += 1
     Path(manifest_path).write_text(json.dumps(manifest))
 
-@pytest.fixture
-def source_pair(synthetic_world, bundled_repo, tmp_path):
+def _source_pair(synthetic_world, bundled_repo, tmp_path, *, native=False):
     base = fixtures.completed_source.__wrapped__(synthetic_world, bundled_repo, tmp_path)
     bindings = []
     for arm in range(2):
         folder = tmp_path / f"arm-{arm}"
         folder.mkdir()
-        path, _, roster, projection, _ = fixtures.slurp_source.__wrapped__(
-            base, folder, SimpleNamespace(param="continuous"),
+        path, _, roster, projection, _ = fixtures._slurp_source(
+            base, folder, "native" if native else "continuous",
         )
-        _enrich_trace_with_supplied_evidence_and_failed_contact(path)
+        if not native:
+            _enrich_trace_with_supplied_evidence_and_failed_contact(path)
         manifest = json.loads(path.read_text())
         run = f"SAEA-SYNTHETIC-GROUP-{arm}"
         manifest["run_id"] = manifest["exposure_run_id"] = run
@@ -169,6 +168,17 @@ def source_pair(synthetic_world, bundled_repo, tmp_path):
         pin = build_reward_link_artifact(config, path.parent / "reward-links.json")
         bindings.append({"candidate_id": f"candidate-{arm}", "config": config, "artifact": pin})
     return bindings
+
+
+
+@pytest.fixture
+def source_pair(synthetic_world, bundled_repo, tmp_path):
+    return _source_pair(synthetic_world, bundled_repo, tmp_path)
+
+
+@pytest.fixture
+def native_source_pair(synthetic_world, bundled_repo, tmp_path):
+    return _source_pair(synthetic_world, bundled_repo, tmp_path, native=True)
 
 
 def test_complete_verified_sources_form_exact_groups_and_preserve_counts(source_pair):

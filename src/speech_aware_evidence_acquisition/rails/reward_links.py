@@ -261,10 +261,50 @@ def _model_index(documents, sample_ids):
     return requests, responses, contacts
 
 
+
+def _native_contact_roles(assigned, contacts):
+    """Read explicit native roles; never infer a role from an invocation index."""
+    records = {(sample, row["record_id"]): row["payload"] for sample, row in assigned}
+    roles, requests = {}, {}
+    for sample, row in assigned:
+        rid, payload = row["record_id"], row["payload"]
+        if row["channel"] != "USE" or not rid.endswith("/native-role-contact"):
+            continue
+        request_id = rid.removesuffix("/native-role-contact")
+        role = _text(payload.get("use_role_id"), "native role ID")
+        cid = _text(payload.get("use_agent_contact_id"), "native contact ID")
+        digest = _sha(payload.get("use_response_text_sha256"), "native response text")
+        key = (sample, cid, digest)
+        request = records.get((sample, request_id + "/request"))
+        response = records.get((sample, request_id + "/response"))
+        if (request_id not in contacts.get(key, ()) or request is None or response is None
+                or payload.get("use_request_sha256") != request.get("payload_sha256")
+                or payload.get("use_response_sha256") != response.get("response_sha256")
+                or digest != response.get("response_text_sha256")):
+            raise RewardLinkError("native role differs from its exact model contact")
+        suffix = ":" + sample
+        prefix, separator, index = cid.removesuffix(suffix).rpartition(":")
+        if (not cid.endswith(suffix) or not separator or not index.isdecimal()
+                or str(int(index)) != index or not prefix.endswith(":" + role)):
+            raise RewardLinkError("native role differs from its registered contact identity")
+        if key in roles or request_id in requests:
+            raise RewardLinkError("native contact has duplicate role attribution")
+        roles[key] = role
+        requests[request_id] = (sample, role, digest)
+    return roles, requests
+
+
 def _validate_actions(assigned, contacts, outputs):
     """Cross-check typed phase identities before crediting any action."""
-    phases, runtime, latest = {}, {}, {}
+    phases, native_phases, runtime, latest = {}, {}, {}, {}
+    native_roles, native_requests = _native_contact_roles(assigned, contacts)
     successful_responses = {(sample, digest) for sample, _, digest in contacts}
+
+    def phase_responses(sample, phase):
+        key = (sample, phase)
+        if key in native_phases:
+            return native_phases[key]
+        return {phases[key]} if key in phases else set()
 
     def contact_requests(sample, contact):
         contact = _mapping(contact, "USE contact")
@@ -288,6 +328,10 @@ def _validate_actions(assigned, contacts, outputs):
         if not isinstance(rows, list) or not rows:
             raise RewardLinkError("runtime USE requires successful contacts")
         final_hash = _sha(payload.get("use_final_response_sha256"), "phase final response")
+        native_runtime = any(
+            (sample, contact.get("plan", {}).get("contact_id"), contact.get("response_sha256"))
+            in native_roles for contact in rows if isinstance(contact, Mapping)
+        )
         eligible = set()
         for contact in rows:
             matches, digest = contact_requests(sample, contact)
@@ -296,6 +340,12 @@ def _validate_actions(assigned, contacts, outputs):
             # Shared phase materials name contacts as program:phase:sample.
             # Continuous programs have one runtime-use record for all phases.
             cid = contact["plan"]["contact_id"]
+            native_role = native_roles.get((sample, cid, digest))
+            if native_role is not None:
+                native_phases.setdefault((sample, native_role), set()).add(digest)
+                continue
+            if native_runtime:
+                raise RewardLinkError("native runtime contact lacks explicit role custody")
             suffix = ":" + sample
             if cid.endswith(suffix):
                 _, separator, contact_phase = cid.removesuffix(suffix).rpartition(":")
@@ -343,9 +393,13 @@ def _validate_actions(assigned, contacts, outputs):
             if (sample, digest) not in successful_responses:
                 raise RewardLinkError("phase state lacks a traced sample response")
             key = (sample, phase)
-            if key in phases and phases[key] != digest:
-                raise RewardLinkError("phase state conflicts with its contact response")
-            phases[key] = digest
+            if key in native_phases:
+                if digest not in native_phases[key]:
+                    raise RewardLinkError("native phase state conflicts with its role contacts")
+            else:
+                if key in phases and phases[key] != digest:
+                    raise RewardLinkError("phase state conflicts with its contact response")
+                phases[key] = digest
 
     for sample, row in assigned:
         record_id, payload = row["record_id"], row["payload"]
@@ -364,14 +418,30 @@ def _validate_actions(assigned, contacts, outputs):
             key = prefix + "_response_sha256"
             if key in payload:
                 phase = payload.get("review_phase" if prefix == "review" else "use_phase")
-                expected = phases.get((sample, phase))
-                if expected is None or payload[key] != expected:
+                expected = phase_responses(sample, phase)
+                if payload[key] not in expected:
                     raise RewardLinkError("review references a stale or cross-phase answer")
-        if record_id.rsplit("/", 1)[-1].startswith("tool-"):
-            phase = record_id.rsplit("/", 2)[-2]
+        parts = record_id.rsplit("/", 3)
+        if parts[-1].startswith("tool-"):
+            phase = parts[-2]
             for key in ("obs_source_response_sha256", "use_source_response_sha256"):
-                if key in payload and payload[key] != phases.get((sample, phase)):
+                if key in payload and payload[key] not in phase_responses(sample, phase):
                     raise RewardLinkError("phase tool references a stale source response")
+        elif len(parts) == 4 and parts[-2].startswith("tool-"):
+            phase = parts[-3]
+            axes = [axis for axis in ("obs", "use") if axis + "_core_request_id" in payload]
+            if len(axes) != 1:
+                raise RewardLinkError("native phase tool lacks a unique source contact")
+            for axis in axes:
+                request_key = axis + "_core_request_id"
+                request_id = payload[request_key]
+                digest = payload.get(axis + "_source_response_sha256")
+                call_id = _text(payload.get(axis + "_tool_call_id"), "native tool call ID")
+                if (native_requests.get(request_id) != (sample, phase, digest)
+                        or payload.get(axis + "_phase") != phase
+                        or parts[-1] != content_hash({"request_id": request_id,
+                                                      "tool_call_id": call_id})):
+                    raise RewardLinkError("native phase tool differs from its source contact")
         if record_id.endswith("/agent-loop/posthoc-use"):
             head = record_id.removesuffix("/agent-loop/posthoc-use")
             prior = runtime.get(head)

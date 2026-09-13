@@ -131,6 +131,8 @@ Treat memory and policy as separate but interacting external objects:
 - OBS: choose legal speech extent or re-listening when there is a real observation decision.
 - USE/control: choose how evidence is consumed, when a recommendation is adopted, the next tool, revision and stopping.
 
+The [native TRAIN feedback bridge](2026-09-13-native-train-feedback-bridge-result-v1.md) now has synthetic end-to-end source proof through grouped feedback and legal proposal contexts. Config-driven proposal updates, disjoint candidate selection and final memory admission remain incomplete.
+
 Use outcome-linked updates to experience utility and conditional policy, with provenance. Terminal reward alone does not allocate credit to every earlier action; use matched alternatives or explicit uncertainty in credit. Do not call arbitrary summarization or prompt editing RL. TF-GRPO is the 2025 reference; previously audited 2026 implementations remain candidates, not the architecture's organizing principle. No cost or online-latency reward penalty is required.
 
 ## Current preparation and execution schedule
