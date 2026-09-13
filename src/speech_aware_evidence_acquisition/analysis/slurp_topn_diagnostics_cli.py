@@ -254,18 +254,57 @@ def _metadata(value: object, expected: set[str]) -> dict[str, Mapping[str, objec
     return indexed
 
 
-def _source_rows(binding, bundle, full_ids, *, state_loader, distinct=False):
-    manifest_path, manifest_sha = _pin(binding.get("manifest"), "source manifest")
+def _source_pin(binding, *, distinct=False):
+    """Resolve the actual source artifact without relabelling it a model run."""
+    artifact = binding.get("hypothesis_artifact") if distinct else None
+    manifest = binding.get("manifest")
+    if artifact is not None and manifest is not None and artifact != manifest:
+        raise SlurpTopNAnalysisError("conflicting source artifact and manifest pins")
+    return _pin(artifact if artifact is not None else manifest, "source artifact")
+
+
+def _source_contract(bundle, *, distinct=False):
+    """Read the contract under the verified original or derived source authority."""
+    from ..core.bundle.hypothesis_source import is_derived_hypothesis_bundle
+
     manifest = _map(getattr(bundle, "manifest", None), "verified source manifest")
-    if manifest.get("status") != "COMPLETED" or getattr(bundle, "attempt_state", None) != "FINALIZED":
-        raise SlurpTopNAnalysisError("common source must be FINALIZED and COMPLETED")
-    if set(getattr(bundle, "split_ids", ())) != set(full_ids):
-        raise SlurpTopNAnalysisError("common source roster does not match full roster")
+    if distinct and is_derived_hypothesis_bundle(bundle):
+        source_inputs = _map(manifest.get("source_inputs"), "derived source inputs")
+        source_pin = _map(source_inputs.get("source_config"), "original source config")
+        baseline = _map(pinned_json(dict(source_pin)), "original source baseline")
+        artifact = _map(baseline.get("artifact_result"), "original artifact_result")
+        contract = _map(artifact.get("content_contract"), "original content contract")
+        data_root = manifest.get("data_root")
+        if not isinstance(data_root, str) or not data_root:
+            raise SlurpTopNAnalysisError("derived source data_root must be explicit")
+        return contract, Path(data_root)
+    if (manifest.get("status") != "COMPLETED"
+            or getattr(bundle, "attempt_state", None) != "FINALIZED"):
+        raise SlurpTopNAnalysisError(
+            "source must be FINALIZED/COMPLETED or an explicitly verified distinct derivation"
+        )
     artifact = _map(manifest.get("artifact_result"), "source artifact_result")
     if (artifact.get("schema") != "saea-artifact-result-binding-v2"
             or artifact.get("role") != "slurp-intent-hypotheses"):
         raise SlurpTopNAnalysisError("common source is not a typed SLURP hypothesis artifact")
     contract = _map(artifact.get("content_contract"), "source content contract")
+    catalog = _map(contract.get("source_catalog"), "source candidate catalog")
+    source_meta = _map(manifest.get("artifact_content_source"), "source content source")
+    data_root = Path(str(source_meta.get("path")))
+    relpath = catalog.get("data_relpath")
+    if not isinstance(relpath, str) or not relpath:
+        raise SlurpTopNAnalysisError("source candidate catalog lacks data_relpath")
+    for _ in relpath.split("/"):
+        data_root = data_root.parent
+    return contract, data_root
+
+
+def _source_rows(binding, bundle, full_ids, *, state_loader, distinct=False):
+    manifest_path, manifest_sha = _source_pin(binding, distinct=distinct)
+    manifest = _map(getattr(bundle, "manifest", None), "verified source manifest")
+    if set(getattr(bundle, "split_ids", ())) != set(full_ids):
+        raise SlurpTopNAnalysisError("common source roster does not match full roster")
+    contract, data_root = _source_contract(bundle, distinct=distinct)
     catalog = _map(contract.get("source_catalog"), "source candidate catalog")
     if catalog.get("source_sha256") != binding.get("candidate_contract_source_sha256"):
         raise SlurpTopNAnalysisError("source candidate catalog hash differs from configured source hash")
@@ -286,14 +325,6 @@ def _source_rows(binding, bundle, full_ids, *, state_loader, distinct=False):
     if set(states) != set(full_ids):
         raise SlurpTopNAnalysisError("common source state roster mismatch")
     from ..rails.artifact_results import build_slurp_hypothesis_artifact_validator
-    source_meta = _map(manifest.get("artifact_content_source"), "source content source")
-    source_path = Path(str(source_meta.get("path")))
-    relpath = catalog.get("data_relpath")
-    if not isinstance(relpath, str) or not relpath:
-        raise SlurpTopNAnalysisError("source candidate catalog lacks data_relpath")
-    data_root = source_path
-    for _ in relpath.split("/"):
-        data_root = data_root.parent
     try:
         validator = build_slurp_hypothesis_artifact_validator(contract, data_root=data_root)
     except Exception as error:
@@ -895,7 +926,7 @@ def run(
     if not set(primary_ids) <= set(full_ids):
         raise SlurpTopNAnalysisError("primary roster must be a subset of full roster")
     metadata = _metadata(spec.get("metadata"), set(full_ids))
-    source_path, source_sha = _pin(source.get("manifest"), "source manifest")
+    source_path, source_sha = _source_pin(source, distinct=distinct_source)
     source_bundle = bundle_verifier(source_path)
     inputs = _map(spec.get("inputs"), "analysis.inputs")
     if not inputs:
