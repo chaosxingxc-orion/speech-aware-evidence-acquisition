@@ -1,0 +1,107 @@
+{
+  "arms": {
+    "direct": {
+      "actual": {
+        "audio_seconds": 2884.793687499999,
+        "calls": 1000
+      },
+      "attempt_id": "attempt-slurp-direct-vs-native-direct-generation-v1",
+      "complete_score_receipt": {
+        "cell_id": "attempt-slurp-direct-vs-native-direct-generation-v1",
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-PAIRED-ANALYSIS-V1/saved-score-receipts/direct/complete-score-receipt.json",
+        "sha256": "e6bc6eb14ea16a38d75b089d452d7e6915c9282f5ca36e961adb8f1802427b8c"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-V1/attempt-slurp-direct-vs-native-direct-generation-v1/SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-V1.run-manifest.json",
+        "sha256": "d899351a5793130192a192853aad1870112c61bcd5e0561e166273d4dc669bf2"
+      },
+      "manifest_status": "COMPLETED",
+      "run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-DIRECT-DEV1000-V1",
+      "source_reuse": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-PAIRED-ANALYSIS-V1/saved-score-receipts/direct/source-reuse.json",
+        "sha256": "05e80f898af1e5f31d103113bfdc106818ceb6f81ad6caedbe4c9444363e0bf4"
+      },
+      "state": "FINALIZED"
+    },
+    "system": {
+      "actual": {
+        "audio_seconds": 14476.191437499854,
+        "calls": 5020
+      },
+      "attempt_id": "attempt-slurp-direct-vs-native-system-generation-v1",
+      "complete_score_receipt": {
+        "cell_id": "attempt-slurp-direct-vs-native-system-generation-v1",
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-PAIRED-ANALYSIS-V1/saved-score-receipts/system/complete-score-receipt.json",
+        "sha256": "b710f71d37fb7d79bf2fc38ef4898d35f1fb954e6a08647b47f25f70ed41d506"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1/attempt-slurp-direct-vs-native-system-generation-v1/SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1.run-manifest.json",
+        "sha256": "f4568e15af3db2d9f8f949d5585886894e5d76418accd458d35a166093688b73"
+      },
+      "manifest_status": "COMPLETED",
+      "run_id": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1",
+      "source_reuse": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-PAIRED-ANALYSIS-V1/saved-score-receipts/system/source-reuse.json",
+        "sha256": "866478c863f1e0851468a0b410b9dc4b7c9c19810a727a107f68fe011dad8cac"
+      },
+      "state": "FINALIZED"
+    }
+  },
+  "authority": "OWNER-SYSTEM-VERSIONS-025 and the frozen paired analysis recipe",
+  "authorized": true,
+  "bound_configurations": {
+    "native-diagnostics-config.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-PAIRED-ANALYSIS-V1/bound-inputs-v1/native-diagnostics-config.json",
+      "sha256": "bdc5ec75c5cc1f8a35cb02208ff8a1b915df762a29d3ec7417dba1759ad9919e"
+    },
+    "paired-config.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-PAIRED-ANALYSIS-V1/bound-inputs-v1/paired-config.json",
+      "sha256": "0ffd7c3232d675dc7bd0035da275da5c9a80b5a32ddccc45e387662a1b6c2df9"
+    }
+  },
+  "checks": [
+    "Both full DEV1000 task-answer runs are FINALIZED/COMPLETED.",
+    "Each first saved official-score mapping was verified and repackaged through core.scoring_receipt without rescoring.",
+    "The direct manifest and saved-score receipt hashes still match prior custody.",
+    "System phase summaries are independently pinned, not described as manifest-pinned.",
+    "Frozen analysis method, metrics, seed, bootstrap count and populations are unchanged.",
+    "No current quality or trajectory result was read while preparing this release."
+  ],
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-PAIRED-ANALYSIS-V1",
+  "full_roster": {
+    "path": "/home/chao/saea-worktrees/slurp-native-slot-values-dev1000-v1/docs/receipts/probe-samples/DEV-1000.json",
+    "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+  },
+  "implementation_head": "4dae6236989130d17030175d16aa5980e7748c92",
+  "limits": [
+    "Keep NEW500 primary; retain all rows regardless of candidate width or coverage.",
+    "Report source-derived projection separately from unavailable original candidate-supply audit custody.",
+    "Do not turn current DEV evidence into TRAIN memory or silently update a later evaluation sample.",
+    "No new model, encoder, ASR, tokenizer or official-scorer invocation is authorized by this analysis release."
+  ],
+  "metadata": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+    "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+  },
+  "primary_roster": {
+    "path": "/home/chao/saea-worktrees/slurp-native-slot-values-dev1000-v1/docs/receipts/probe-samples/DEV-1000-NEW500.json",
+    "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+  },
+  "recorded_at": "2026-09-13T19:41:21.011612+00:00",
+  "release_id": "ROOT-SLURP-DIRECT-VS-NATIVE-SYSTEM-QUALITY-READ-V1",
+  "schema": "saea-root-quality-read-release-v1",
+  "scope": [
+    "Read both complete official score artifacts and run the frozen paired comparison.",
+    "Read verified system Perception and role/tool/Planner/Solver traces through the registered diagnostics.",
+    "Read full-roster saved outputs, source-bound diagnostics and operational cost records to explain results."
+  ],
+  "source_recipe": {
+    "path": "/home/chao/saea-worktrees/slurp-native-slot-values-dev1000-v1/docs/readiness/2026-09-13-slurp-direct-vs-native-system-analysis-recipe-v1.json",
+    "sha256": "fc01785df80224a999b8ac53986e5ba0f400c2cfd2360cc4c9a1900ebe63e35a"
+  },
+  "system_phase_artifact": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1/attempt-slurp-direct-vs-native-system-generation-v1/SAEA-SLURP-DIRECT-VS-NATIVE-SYSTEM-DEV1000-V1.phases.json",
+    "sha256": "4710588a6fe26e7956ff6f82d68c36c9debf165c108c29eccf2ac790b7eb78fc"
+  }
+}
