@@ -530,8 +530,8 @@ def _manifest(tmp_path: Path, body: bytes = b'{"schema": "fake"}') -> Path:
     return path
 
 
-def _verified(rows):
-    return SimpleNamespace(outputs_rows=tuple(rows))
+def _verified(rows, manifest=None):
+    return SimpleNamespace(outputs_rows=tuple(rows), manifest=manifest or {})
 
 
 def test_sealed_states_from_manifest_binds_the_sealed_response_hashes(tmp_path):
@@ -603,7 +603,16 @@ def test_sealed_hypothesis_artifact_uses_canonical_content_hash_for_state_fill(t
         phase_name="hypotheses",
         producer_policy_id="phase-intent-hypotheses-only-v1",
         sample_ids=("s1",),
-        bundle_verifier=lambda _p: _verified(rows),
+        bundle_verifier=lambda _p: _verified(
+            rows,
+            {
+                "result_kind": "artifact",
+                "artifact_result": {
+                    "schema": "saea-artifact-result-binding-v2",
+                    "role": "slurp-intent-hypotheses",
+                },
+            },
+        ),
     )["s1"]
     rendered = SlurpIntentHypothesisStateFill(
         legal_intent_ids={"weather_query"}, max_candidates=1
@@ -611,6 +620,80 @@ def test_sealed_hypothesis_artifact_uses_canonical_content_hash_for_state_fill(t
     assert state.content == canonical
     assert state.source_response_sha256 == canonical_sha
     assert "weather_query" in rendered
+
+
+@pytest.mark.parametrize(
+    "manifest",
+    [
+        {},
+        {
+            "result_kind": "artifact",
+            "artifact_result": {
+                "schema": "saea-artifact-result-binding-v1",
+                "role": "training-feedback-proposal",
+            },
+        },
+        {
+            "result_kind": "task-answer",
+            "artifact_result": {
+                "schema": "saea-artifact-result-binding-v2",
+                "role": "slurp-intent-hypotheses",
+            },
+        },
+    ],
+)
+def test_sealed_hypothesis_row_cannot_opt_in_without_verified_v2_manifest(
+    tmp_path, manifest
+):
+    path = _manifest(tmp_path)
+    rows = [
+        {
+            "sample_id": "s1",
+            "text": "raw",
+            "request_sha256": HASHES["3"],
+            "response_text_sha256": HASHES["4"],
+            "artifact_role": "slurp-intent-hypotheses",
+            "artifact_content": "canonical",
+            "artifact_content_sha256": HASHES["5"],
+        }
+    ]
+    with pytest.raises(PhaseMaterialError, match="conflicts"):
+        sealed_states_from_manifest(
+            path,
+            expected_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+            phase_name="hypotheses",
+            producer_policy_id="phase-intent-hypotheses-only-v1",
+            sample_ids=("s1",),
+            bundle_verifier=lambda _p: _verified(rows, manifest),
+        )
+
+
+def test_verified_v2_hypothesis_manifest_refuses_missing_row_role(tmp_path):
+    path = _manifest(tmp_path)
+    rows = [
+        {
+            "sample_id": "s1",
+            "text": "raw",
+            "request_sha256": HASHES["3"],
+            "response_text_sha256": HASHES["4"],
+        }
+    ]
+    manifest = {
+        "result_kind": "artifact",
+        "artifact_result": {
+            "schema": "saea-artifact-result-binding-v2",
+            "role": "slurp-intent-hypotheses",
+        },
+    }
+    with pytest.raises(PhaseMaterialError, match="conflicts"):
+        sealed_states_from_manifest(
+            path,
+            expected_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+            phase_name="hypotheses",
+            producer_policy_id="phase-intent-hypotheses-only-v1",
+            sample_ids=("s1",),
+            bundle_verifier=lambda _p: _verified(rows, manifest),
+        )
 
 
 def test_sealed_states_from_manifest_refuses_a_hash_mismatch(tmp_path):

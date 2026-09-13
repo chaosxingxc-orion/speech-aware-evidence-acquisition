@@ -1224,6 +1224,19 @@ def sealed_states_from_manifest(
         )
 
     verified = verifier(manifest_path)
+    verified_manifest = getattr(verified, "manifest", None)
+    artifact_result = (
+        verified_manifest.get("artifact_result")
+        if isinstance(verified_manifest, Mapping)
+        else None
+    )
+    typed_hypothesis_manifest = (
+        isinstance(verified_manifest, Mapping)
+        and verified_manifest.get("result_kind") == "artifact"
+        and isinstance(artifact_result, Mapping)
+        and artifact_result.get("schema") == "saea-artifact-result-binding-v2"
+        and artifact_result.get("role") == "slurp-intent-hypotheses"
+    )
     by_sample: dict[str, Mapping[str, object]] = {}
     for row in verified.outputs_rows:
         sample_id = str(row.get("sample_id"))
@@ -1246,7 +1259,12 @@ def sealed_states_from_manifest(
         row = by_sample[sample_id]
         content = row["text"]
         content_sha256 = row["response_text_sha256"]
-        if row.get("artifact_role") == "slurp-intent-hypotheses":
+        row_claims_hypotheses = row.get("artifact_role") == "slurp-intent-hypotheses"
+        if row_claims_hypotheses != typed_hypothesis_manifest:
+            raise PhaseMaterialError(
+                "sealed hypothesis artifact row conflicts with its verified manifest binding"
+            )
+        if typed_hypothesis_manifest:
             content = row.get("artifact_content")
             content_sha256 = row.get("artifact_content_sha256")
             if not isinstance(content, str) or not isinstance(content_sha256, str):
