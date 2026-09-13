@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -30,7 +31,7 @@ from ..rails.phase_material import sealed_states_from_manifest
 from ..rails.slurp_intent_hypotheses import parse_slurp_intent_hypothesis_state
 from ..reproduction.slurp_scoring import parse_slu_response
 from ..reproduction.probe_split import load_verified_probe_split
-from .null_calibration_cli import digest, pinned_json
+from .null_calibration_cli import digest, pinned_json, rows_for
 from .paired import resampled_statistic
 from .slurp_topn_diagnostics import (
     BranchOutcomeRow,
@@ -105,6 +106,129 @@ def _roster_ids(value: object, label: str) -> tuple[str, ...]:
     return tuple(ids)
 
 
+def _select_source_binding(
+    source_section: Mapping[str, object],
+) -> tuple[str, Mapping[str, object], bool]:
+    """Select exactly one registered source binding.
+
+    The historical fixed Top-3 key remains the default. The distinct-source
+    key is an explicit opt-in and is reported to the caller as such.
+    """
+    fixed = source_section.get("shared_fixed_top3_source")
+    distinct = source_section.get("shared_distinct_source")
+    if fixed is not None and distinct is not None:
+        raise SlurpTopNAnalysisError(
+            "source binding must select exactly one fixed or distinct source"
+        )
+    if distinct is not None:
+        return "shared_distinct_source", _map(distinct, "shared distinct source"), True
+    if fixed is not None:
+        return "shared_fixed_top3_source", _map(fixed, "shared fixed Top-3 source"), False
+    raise SlurpTopNAnalysisError(
+        "source binding must provide shared_fixed_top3_source or shared_distinct_source"
+    )
+
+
+def _source_candidate_width(
+    binding: Mapping[str, object], *, distinct: bool,
+) -> int:
+    """Resolve the parser width while enforcing the distinct-source range."""
+    raw_width = binding.get("candidate_count")
+    raw_range = binding.get("candidate_count_range")
+    if distinct:
+        if raw_range is not None:
+            if (
+                isinstance(raw_range, (str, bytes))
+                or not isinstance(raw_range, Sequence)
+                or len(raw_range) != 2
+                or any(isinstance(value, bool) or not isinstance(value, int) for value in raw_range)
+                or not 1 <= raw_range[0] <= raw_range[1] <= 3
+            ):
+                raise SlurpTopNAnalysisError(
+                    "distinct source candidate_count_range must be [1..3, low <= high]"
+                )
+            if raw_width is None:
+                raw_width = raw_range[1]
+        elif raw_width is None:
+            raw_width = 3
+    if raw_width is None:
+        raw_width = 3
+    if isinstance(raw_width, bool) or not isinstance(raw_width, int) or raw_width < 1:
+        raise SlurpTopNAnalysisError(
+            "candidate_count must be a positive integer"
+            + (" from 1 through 3 for a distinct source" if distinct else "")
+        )
+    if distinct and raw_width > 3:
+        raise SlurpTopNAnalysisError(
+            "candidate_count must be a positive integer from 1 through 3 for a distinct source"
+        )
+    if distinct and raw_range is not None and not raw_range[0] <= raw_width <= raw_range[1]:
+        raise SlurpTopNAnalysisError(
+            "distinct source candidate_count must be within candidate_count_range"
+        )
+    return raw_width
+
+
+def _entity_correctness_from_verified_score_document(
+    document: Mapping[str, object],
+    *,
+    scorer: str,
+    expected_ids: set[str],
+) -> dict[str, bool | None]:
+    """Map verified official exact entity sufficient counts to row booleans.
+
+    slot_f1_exact_fp and slot_f1_exact_fn are the only accepted evidence.
+    Missing fields leave every row unavailable; F1 values are never used as
+    a substitute.
+    """
+    if not isinstance(scorer, str) or not scorer:
+        raise SlurpTopNAnalysisError("entity score scorer must be nonempty text")
+    try:
+        rows = rows_for(
+            dict(document), scorer,
+            ("slot_f1_exact_fp", "slot_f1_exact_fn"),
+        )
+    except ValueError as error:
+        if "missing or has invalid retained field" in str(error):
+            return {sample_id: None for sample_id in expected_ids}
+        raise SlurpTopNAnalysisError(
+            f"verified entity score rows are unavailable: {error}"
+        ) from error
+    if set(rows) != expected_ids:
+        raise SlurpTopNAnalysisError("verified entity score roster mismatch")
+    result: dict[str, bool | None] = {}
+    for sample_id in expected_ids:
+        fp = rows[sample_id]["slot_f1_exact_fp"]
+        fn = rows[sample_id]["slot_f1_exact_fn"]
+        if not math.isfinite(fp) or not math.isfinite(fn) or fp < 0 or fn < 0:
+            raise SlurpTopNAnalysisError(
+                f"verified entity counts are invalid for {sample_id!r}"
+            )
+        result[sample_id] = fp == 0.0 and fn == 0.0
+    return result
+
+
+def _entity_correctness_from_verified_receipt(
+    receipt: Mapping[str, object],
+    *,
+    scorer: str,
+    expected_ids: set[str],
+) -> dict[str, bool | None]:
+    """Load the hash-pinned score result from an already verified receipt."""
+    score_pin = receipt.get("score_result")
+    if not isinstance(score_pin, Mapping):
+        return {sample_id: None for sample_id in expected_ids}
+    try:
+        document = pinned_json(dict(score_pin))
+    except (OSError, UnicodeError, ValueError, KeyError, TypeError) as error:
+        raise SlurpTopNAnalysisError(
+            f"verified score result cannot be read: {error}"
+        ) from error
+    return _entity_correctness_from_verified_score_document(
+        document, scorer=scorer, expected_ids=expected_ids
+    )
+
+
 def _metadata(value: object, expected: set[str]) -> dict[str, Mapping[str, object]]:
     document = pinned_json(_map(value, "analysis.metadata"))
     rows = document.get("rows") if isinstance(document, Mapping) else None
@@ -130,7 +254,7 @@ def _metadata(value: object, expected: set[str]) -> dict[str, Mapping[str, objec
     return indexed
 
 
-def _source_rows(binding, bundle, full_ids, *, state_loader):
+def _source_rows(binding, bundle, full_ids, *, state_loader, distinct=False):
     manifest_path, manifest_sha = _pin(binding.get("manifest"), "source manifest")
     manifest = _map(getattr(bundle, "manifest", None), "verified source manifest")
     if manifest.get("status") != "COMPLETED" or getattr(bundle, "attempt_state", None) != "FINALIZED":
@@ -174,9 +298,7 @@ def _source_rows(binding, bundle, full_ids, *, state_loader):
         validator = build_slurp_hypothesis_artifact_validator(contract, data_root=data_root)
     except Exception as error:
         raise SlurpTopNAnalysisError(f"source candidate catalog validation failed: {error}") from error
-    width = binding.get("candidate_count", 3)
-    if isinstance(width, bool) or not isinstance(width, int) or width < 1:
-        raise SlurpTopNAnalysisError("candidate_count must be a positive integer")
+    width = _source_candidate_width(binding, distinct=distinct)
     rows = []
     for sample_id in full_ids:
         try:
@@ -231,7 +353,10 @@ def _references(binding, expected_ids, *, loader):
     return tuple(ReferenceIntentRow(sample_id, by_id[sample_id].intent) for sample_id in expected_ids)
 
 
-def _branch_rows(name, bundle, source_path, source_sha, source_states, full_ids):
+def _branch_rows(
+    name, bundle, source_path, source_sha, source_states, full_ids,
+    entity_correctness: Mapping[str, bool | None] | None = None,
+):
     manifest = _map(getattr(bundle, "manifest", None), f"{name} manifest")
     if manifest.get("schema") != "saea-derived-delivery-v1" or getattr(bundle, "attempt_state", None) != "DERIVED":
         raise SlurpTopNAnalysisError(f"{name} must be a verified derived-delivery bundle")
@@ -283,7 +408,12 @@ def _branch_rows(name, bundle, source_path, source_sha, source_states, full_ids)
         refusal = phase.get("refusal_reason")
         if refusal is not None and (not isinstance(refusal, str) or not refusal):
             raise SlurpTopNAnalysisError(f"{name} refusal reason malformed for {sample_id!r}")
-        outcomes.append(BranchOutcomeRow(sample_id, final_intent, refusal is not None, None))
+        outcomes.append(
+            BranchOutcomeRow(
+                sample_id, final_intent, refusal is not None,
+                None if entity_correctness is None else entity_correctness.get(sample_id),
+            )
+        )
     return tuple(outcomes)
 
 
@@ -705,6 +835,39 @@ def _subset(rows: Sequence, ids: set[str]) -> tuple:
     return tuple(row for row in rows if row.sample_id in ids)
 
 
+def _observed_width_reports(
+    source_rows: Sequence[SourceCandidateRow],
+    references: Sequence[ReferenceIntentRow],
+    branches: Mapping[str, Sequence[BranchOutcomeRow]],
+    *,
+    candidate_width: int,
+) -> dict[str, dict[str, object]]:
+    """Aggregate descriptive subgroups by observed distinct candidate width."""
+    if isinstance(candidate_width, bool) or not isinstance(candidate_width, int) or not 1 <= candidate_width <= 3:
+        raise SlurpTopNAnalysisError("observed width reports require candidate_width from 1 through 3")
+    groups: dict[int, list[SourceCandidateRow]] = {width: [] for width in (1, 2, 3)}
+    for row in source_rows:
+        observed = len(set(row.candidate_ids))
+        if observed not in groups or observed > candidate_width:
+            raise SlurpTopNAnalysisError(
+                f"observed candidate width {observed} is outside configured width"
+            )
+        groups[observed].append(row)
+    reports: dict[str, dict[str, object]] = {}
+    for observed, members in groups.items():
+        if not members:
+            continue
+        ids = {row.sample_id for row in members}
+        report = aggregate_topn_diagnostics(
+            members,
+            _subset(references, ids),
+            {name: _subset(rows, ids) for name, rows in branches.items()},
+            candidate_width=observed,
+        ).as_json()
+        reports[str(observed)] = report
+    return reports
+
+
 def run(
     config_path, output, *, bundle_verifier=verify_bundle,
     score_receipt_verifier=verify_complete_score_receipt,
@@ -726,7 +889,7 @@ def run(
             reference_loader=reference_loader,
         )
     source_section = _map(spec.get("source_diagnostics"), "analysis.source_diagnostics")
-    source = _map(source_section.get("shared_fixed_top3_source"), "shared fixed Top-3 source")
+    source_name, source, distinct_source = _select_source_binding(source_section)
     full_ids = _roster_ids(spec.get("full_roster"), "analysis.full_roster")
     primary_ids = _roster_ids(spec.get("roster"), "analysis.roster")
     if not set(primary_ids) <= set(full_ids):
@@ -760,21 +923,33 @@ def run(
         except Exception as error:
             raise SlurpTopNAnalysisError(f"{name} complete score receipt failed: {error}") from error
     source_rows, source_manifest, source_states = _source_rows(
-        source, source_bundle, full_ids, state_loader=state_loader
+        source, source_bundle, full_ids, state_loader=state_loader, distinct=distinct_source
     )
     references = _references(
         _map(source_section.get("reference_source"), "reference_source"),
         full_ids, loader=reference_loader
     )
-    branches = {
-        str(name): _branch_rows(
-            str(name), bundles[name], source_path, source_sha, source_states, full_ids
+    branches = {}
+    for name, value in inputs.items():
+        entity_correctness = None
+        if distinct_source:
+            binding = _map(value, f"analysis.inputs.{name}")
+            scorer_map = binding.get("scorers", {})
+            if scorer_map is None:
+                scorer_map = {}
+            if not isinstance(scorer_map, Mapping):
+                raise SlurpTopNAnalysisError(f"{name} scorers must be a mapping")
+            scorer = scorer_map.get("official", "slurp-slu-official")
+            entity_correctness = _entity_correctness_from_verified_receipt(
+                receipts[str(name)],
+                scorer=scorer,
+                expected_ids=set(full_ids),
+            )
+        branches[str(name)] = _branch_rows(
+            str(name), bundles[name], source_path, source_sha, source_states, full_ids,
+            entity_correctness,
         )
-        for name in inputs
-    }
-    width = source.get("candidate_count", 3)
-    if isinstance(width, bool) or not isinstance(width, int) or width < 1:
-        raise SlurpTopNAnalysisError("candidate_count must be a positive integer")
+    width = _source_candidate_width(source, distinct=distinct_source)
     populations = {
         "NEW500": set(primary_ids),
         "DEV1000": set(full_ids),
@@ -807,13 +982,31 @@ def run(
             ).as_json()
             for key, members in sorted(strata.items())
         }
+        if distinct_source:
+            report["by_observed_distinct_width"] = _observed_width_reports(
+                src, refs, br, candidate_width=width
+            )
+            report["per_stratum_observed_distinct_width"] = {
+                key: _observed_width_reports(
+                    _subset(src, members), _subset(refs, members),
+                    {name: _subset(rows, members) for name, rows in br.items()},
+                    candidate_width=width,
+                )
+                for key, members in sorted(strata.items())
+            }
         reports[population] = report
+    source_output = {
+        **source,
+        "manifest": {"path": str(source_path), "sha256": source_sha},
+    }
+    if distinct_source:
+        source_output["binding_name"] = source_name
     result = {
         "schema": "saea-slurp-topn-diagnostics-v1",
         "experiment_id": config.get("experiment_id"),
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "config": {"path": str(config_path.resolve()), "sha256": digest(config_path)},
-        "source": {**source, "manifest": {"path": str(source_path), "sha256": source_sha}},
+        "source": source_output,
         "score_gate": {
             name: {"path": value["score_receipt"]["path"],
                    "sha256": value["score_receipt"]["sha256"], "verified": True}
