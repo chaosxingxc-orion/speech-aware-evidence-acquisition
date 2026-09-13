@@ -3363,3 +3363,8 @@ After the registered read release, run the shared model-free source-bound diagno
 ## 2026-09-13: Register semantic authoring source preparation
 
 Before inspecting new TRAIN semantic support, freeze docs/readiness/2026-09-13-slurp-semantic-authoring-registration-v1.json. Use only the governed A/B-excluded pool, exact identity 22f6092dfdb4a160376e529d8e59e9215bc7701e274620d35feb1c4d82f309e9. Prepare separate deterministic intent and slot support materials and construction rosters; keep DEV/test content and result feedback outside authoring. This is model-free preparation and root authoring, not a runtime knowledge release. All neural, GPU, tokenizer, tool-backend and scorer contact caps are zero.
+
+
+## 2026-09-13: Close raw delivery diagnostic supplement
+
+Under the existing read release, run the shared diagnostic entry at 0bc53729 to create conditional-diagnostics-v2.json, SHA-256 a9fdac614352a767719694d893b65f8431914daff4874d3ecb696636d296a17b. Preserve v1. Root verified all common scientific aggregates and stratum/width tables are identical. The added source-verified flags show zero outside-shortlist proposals, 15 joint refusals, 18 hard-first refusals and 56 hard-first attempted intent switches across DEV1000. See docs/readiness/2026-09-13-slurp-distinct-commitment-delivery-supplement-v1.md. No new model, encoder, tokenizer, tool-backend or scorer contacts; no verdict or threshold changes.
