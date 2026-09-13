@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 75,
+  "generation": 76,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "cebcbdf6e8328c31497eda957123f55d74a8872a",
-  "updated_at_utc": "2026-09-13T17:53:25.812656+00:00",
-  "next_action": "Read STATUS-075 and OWNER-SYSTEM-VERSIONS-025. Direct DEV1000 is FINALIZED and scored once; the native system campaign is generating from frozen 7ec4cf34. Revalidate and preserve its existing service/campaign handles. Let the campaign score the system once, reuse attached statistics without rescoring, then bind both complete receipts and register the root quality read release before paired analysis. Expand system capability only from the resulting evidence. No current owner decision is pending.",
+  "snapshot_commit": "ce1820752fab692de9f3ac8f87cf63abd1920906",
+  "updated_at_utc": "2026-09-13T19:22:50.911057+00:00",
+  "next_action": "Read STATUS-076 and OWNER-SYSTEM-VERSIONS-025. Revalidate the live frozen7ec4cf34 campaign and preserve its handles. Prepared paired/native analysis inputs await the complete system manifest and first saved score. Repackage the attached score without rescoring, write bound successors and register the root quality read release before analysis. Optional physical-power/OEM-mode clarification is pending but does not block generation. Expand the system from the resulting evidence.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SYSTEM-VERSIONS-025"
