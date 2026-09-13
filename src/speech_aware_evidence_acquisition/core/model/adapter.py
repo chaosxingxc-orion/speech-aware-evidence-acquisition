@@ -33,6 +33,7 @@ from .request_types import (
     MAX_TOP_LOGPROBS,
     CoreResponse,
     _canonical,
+    native_tool_request_controls,
 )
 from .slices import SliceRegistry
 
@@ -200,6 +201,12 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
                     "payload decoding_params contains disallowed keys: "
                     f"{sorted(disallowed_decoding_keys)}"
                 )
+            try:
+                native_tool_request_controls(
+                    decoding_params, native_tools="tool_schemas" in self._allowlist
+                )
+            except ValueError as error:
+                raise FrozenCoreError(str(error)) from error
             if "id_slot" in decoding_params:
                 id_slot = decoding_params["id_slot"]
                 if isinstance(id_slot, bool) or not isinstance(id_slot, int) or id_slot < 0:
