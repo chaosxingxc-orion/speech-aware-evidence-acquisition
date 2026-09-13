@@ -1,0 +1,14 @@
+{
+  "attempt_id": "encode-v1",
+  "carrier_lock_key": "slurp",
+  "execution_profile": "bounded-discovery-probe",
+  "planned_gpu_hours": 0.5,
+  "planned_model_calls": 60,
+  "planned_speech_audio_seconds": 0,
+  "protocol_hash": "ff1436aa07dcdd480c37196d9f630591f621e032d07ebfc681ffc7f3e35a289a",
+  "run_id": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1",
+  "schema": "saea-text-encoder-plan-v1",
+  "split_identity_hash": "2baa0bf8615723e3b69a43ce7ade8333f71e8402a1e4db8e9da995b67774a80c",
+  "split_role": "discovery",
+  "study": "speech-aware-evidence-acquisition"
+}

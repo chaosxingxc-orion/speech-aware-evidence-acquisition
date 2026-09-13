@@ -1,0 +1,41 @@
+{
+  "cold_warm_semantics": "Cold missing facets receive one forward each; verified warm facets receive zero encoder contacts. Never alter source values or re-encode the 1000 speech queries.",
+  "launch_conditions": [
+    "Current SAEA-SLURP-NATIVE-TERMINAL-SYSTEM-DEV1000-RECOVERY-V1 is sealed, officially scored once and formally decided, or a separate named stop decision permits this independent preparation.",
+    "Root publishes a separate source-bound dispatch receipt before any encoder contact. Registration alone is not dispatch.",
+    "No generation lease remains; root confirms no outstanding model request before stopping the resident decoder and rebinding monitoring.",
+    "Use the frozen clean encoding checkout and exact shared runtime config. Run the pinned local encoder only in an exclusive GPU window; no CPU encoder substitution or co-resident decoder encoding.",
+    "Verify all source snapshot/release/completion, inventory and query-axis pins before contact.",
+    "Seal all 60 vectors, verify source/count/axis/2048 dimensions/readback, then prepare complete-roster retrieval before actual request capacity checks."
+  ],
+  "plan": {
+    "attempt_id": "encode-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 60,
+    "planned_speech_audio_seconds": 0,
+    "protocol_hash": "ff1436aa07dcdd480c37196d9f630591f621e032d07ebfc681ffc7f3e35a289a",
+    "run_id": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1",
+    "schema": "saea-text-encoder-plan-v1",
+    "split_identity_hash": "2baa0bf8615723e3b69a43ce7ade8333f71e8402a1e4db8e9da995b67774a80c",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "protocol_repo_path": "configs/preparation/slurp-intent-boundary-key-encoding-protocol-v1.json",
+  "protocol_sha256": "ff1436aa07dcdd480c37196d9f630591f621e032d07ebfc681ffc7f3e35a289a",
+  "query_comparison_binding": {
+    "dimension": "intent-boundary",
+    "receipt_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-INTENT-BOUNDARY-VECTOR-PREPARE-V1/query-dimension-alias.json",
+    "receipt_sha256": "f83b5b002d0823de40ac3f52f9a839f83daedf4ecdbbf0606b85f1fc07bd01a8",
+    "vector_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/vectors/slurp-intent-boundaries-dev1000-v1/query-vectors-speech.jsonl",
+    "vector_sha256": "6f391f883129f88fd7f843a76de95a805c39f165b2938a7ae9e3bb92d5860967",
+    "vector_width": 2048
+  },
+  "registered_at": "2026-09-13T21:51:30.997988+00:00",
+  "root_dispatch_state": "HELD",
+  "runtime_task_authority": false,
+  "schema": "saea-local-text-encoder-registration-v1",
+  "scope": "Source-only passage preparation for a future intent-boundary complete-system capability; no task-answer generation or task-score read.",
+  "source_inventory_sha256": "4d771352cc3c945ffdff343673ed89e37b629b6826fa73b3492db40cb889ff6d"
+}

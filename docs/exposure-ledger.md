@@ -3531,3 +3531,11 @@ The failed strict-accept system remains ABORTED. Root admits a prospective compl
 ## September 13: complete the model-free query dimension alias
 
 SAEA-SLURP-INTENT-BOUNDARY-VECTOR-PREPARE-V1 completed with zero model, encoder and tokenizer contacts. All 1,000 IDs, row order and 2,048 numeric components per query match the source, with maximum absolute difference 0. Export SHA256 6f391f883129f88fd7f843a76de95a805c39f165b2938a7ae9e3bb92d5860967; receipt SHA256 f83b5b002d0823de40ac3f52f9a839f83daedf4ecdbbf0606b85f1fc07bd01a8. This prepares the intent-boundary axis only and grants no encoder or task-generation contact.
+
+## September 13: register the held intent-boundary text encoding preparation
+
+Root prospectively registers exactly the 60 released TRAIN-derived text key facets in the existing MF-7b geometry. Dispatch is HELD behind the current native-system recovery and a separate root release of the exclusive GPU encoding window. This row is not a task-quality read or answering-model authorization.
+
+| date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-09-13T21:51:30.997988+00:00 | SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1 | bounded-discovery-probe | Prepare 60 released intent-boundary text KeyFacet representations; no task answers. | Pinned local omni-embed-nemotron-3b MF-7b passage encoder; 2048 dimensions. | slurp released TRAIN-authored key facets | discovery | 2baa0bf8615723e3b69a43ce7ade8333f71e8402a1e4db8e9da995b67774a80c | no | 60 | 0 | 0.5 | Existing source construction and query-vector exposures remain recorded. | docs/readiness/2026-09-13-slurp-intent-boundary-key-encoding-v1/tool-plan-v1.json | Registered before contact, dispatch HELD. Plan schema saea-text-encoder-plan-v1; protocol SHA256 ff1436aa07dcdd480c37196d9f630591f621e032d07ebfc681ffc7f3e35a289a; registration SHA256 53580acd179882744f52275450197e992b705016a971f4e96a46e95d0373c840. Existing query vectors are reused under their zero-contact dimension alias. Root must establish an exclusive GPU window; do not interrupt the active recovery or load encoder beside its decoder. |

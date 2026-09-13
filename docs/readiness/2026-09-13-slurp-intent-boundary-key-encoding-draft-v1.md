@@ -107,3 +107,7 @@ these new DATA paths:
 The draft changes no runtime code or launcher and has no effect on the active
 terminal recovery. A failure would stop and preserve the attempt; any recovery
 would require a separately registered named cause.
+
+## Root successor
+
+Root registration now resides in docs/readiness/2026-09-13-slurp-intent-boundary-key-encoding-v1. Its launch state is HELD. This draft records the earlier inventory and is not a dispatch receipt. The protocol contact-policy text is superseded by the registered protocol hash; content and geometry are unchanged. Owner authorization for progressive system capabilities is already present; no additional permission request is implied by this draft.
