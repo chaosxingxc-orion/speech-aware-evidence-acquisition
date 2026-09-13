@@ -71,7 +71,7 @@ from ..core.model import (
     load_speech_feature_packets,
 )
 from ..core.model.binding import _PayloadBindingMixin
-from ..core.model.request_types import CoreResponse
+from ..core.model.request_types import CoreResponse, wire_response_message
 from ..core.model.slices import SliceRecord
 from ..core.tracing import DispatchingSink, TraceBuffer, TraceSink
 from ..e0.d2_leakage import ARM_VISIBLE_FIELDS
@@ -97,6 +97,9 @@ class CoreCompletion:
     response_sha256: str
     response_text_sha256: str
     tool_calls_json: bytes = field(repr=False)
+    # Exact preserved server response bytes. Absent for the historical
+    # transport default; never reconstructed from normalized text.
+    wire_response_bytes: bytes | None = field(default=None, repr=False, compare=False)
 
     @property
     def tool_calls(self) -> object:
@@ -106,6 +109,14 @@ class CoreCompletion:
     @property
     def tool_calls_sha256(self) -> str:
         return hashlib.sha256(self.tool_calls_json).hexdigest()
+
+    @property
+    def original_message(self) -> Mapping[str, object] | None:
+        return wire_response_message(self.wire_response_bytes, self.tool_calls)[0]
+
+    @property
+    def finish_reason(self) -> object | None:
+        return wire_response_message(self.wire_response_bytes, self.tool_calls)[1]
 
     def assert_binding(
         self, *, sample_id: str, agent_contact_id: str | None,
@@ -1751,6 +1762,7 @@ class FrozenCoreClient:
                 response.tool_calls, ensure_ascii=False,
                 sort_keys=True, separators=(",", ":"),
             ).encode("utf-8"),
+            wire_response_bytes=response.wire_response_bytes,
         )
 
     def _dispatch_payload(self, payload: Mapping[str, object]) -> CoreResponse:
