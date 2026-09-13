@@ -238,8 +238,26 @@ class FlightQueue:
                     with context:
                         profile = flight.serving_profile_fingerprint()
                         self._serve(flight, profile)
-                        flight.run_phases()
-                        flight.seal()
+                        try:
+                            flight.run_phases()
+                            flight.seal()
+                        except Exception as error:
+                            # An attempt may already be OPENED once generation
+                            # begins. Abort it before the coordinator-owned
+                            # execution context releases its lease, while
+                            # retaining the generation failure as the primary
+                            # error if aborting also fails.
+                            try:
+                                flight.abort(
+                                    "generation failed during run_phases or seal: "
+                                    f"{type(error).__name__}: {error}"
+                                )
+                            except Exception as abort_error:
+                                error.add_note(
+                                    "FlightQueue could not abort the failed attempt: "
+                                    f"{type(abort_error).__name__}: {abort_error}"
+                                )
+                            raise
                     self._states[flight.run_id] = FlightReadiness("sealed")
                     kwargs = {"include_per_sample": True} if self._include_per_sample else {}
                     future = self._score_pool().submit(flight.score, **kwargs)

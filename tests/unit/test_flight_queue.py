@@ -14,8 +14,11 @@ import hashlib
 import json
 import subprocess
 import threading
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Mapping
+
+import pytest
 
 from speech_aware_evidence_acquisition.core.flight.queue import FlightQueue
 from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
@@ -333,7 +336,6 @@ def _make_flight(
         "bundle_verifier": _fake_bundle_verifier,
         "bundle_finalizer": _fake_bundle_finalizer,
         "ledger_validator": _fake_ledger_validator,
-    "ledger_validator": _fake_ledger_validator,
         "score_batch": _fake_score_batch,
         "rails_runner": _fake_rails_runner,
     }
@@ -352,6 +354,27 @@ def _make_flight(
         gate_factory=lambda *a, **kw: _FakeGate(),
         lock={},
         **merged,
+    )
+
+
+def _open_attempt_for_failure(flight: FlightRuntime) -> None:
+    """Model the one-time reservation made by the real core client.
+
+    The queue fakes intentionally avoid the real request path, so they need
+    this explicit reservation before they can prove that failure cleanup
+    aborts an OPENED attempt.
+    """
+
+    from speech_aware_evidence_acquisition.core.attempts.store import AttemptStore
+
+    plan = flight._plan
+    assert plan is not None
+    AttemptStore(flight._data_root / "attempts").open_attempt(
+        plan.run_id,
+        plan.attempt_id,
+        carrier_lock_key="fake-carrier",
+        reserved_calls=10,
+        reserved_audio_seconds=100.0,
     )
 
 
@@ -581,3 +604,171 @@ def test_dry_run_queue_starts_and_stops_nothing(tmp_path):
     queue.run()
     queue.shutdown()
     assert events == []
+
+
+def test_queue_aborts_generation_failure_before_releasing_execution_context(tmp_path):
+    events: list[str] = []
+    active: list[bool] = []
+    stops: list[str] = []
+    abort_results: list[bool] = []
+
+    def tracking_stopper(session, **kwargs):
+        stops.append(session.session_id)
+        return {"termination_signal": "SIGTERM"}
+
+    flight = _make_flight(
+        tmp_path,
+        run_id="SAEA-Q-ABORT-ORDER",
+        attempt_id="attempt-abort-order",
+        session_stopper=tracking_stopper,
+    )
+
+    @contextmanager
+    def context(_flight):
+        events.append("context-enter")
+        active.append(True)
+        try:
+            yield
+        except Exception:
+            events.append("context-exit-error")
+            raise
+        finally:
+            active.pop()
+
+    original_run_phases = flight.run_phases
+
+    def fail_after_opening_attempt():
+        original_run_phases()
+        _open_attempt_for_failure(flight)
+        events.append("run-phases-failed")
+        raise RuntimeError("generation failed")
+
+    original_abort = flight.abort
+
+    def abort(reason: str):
+        assert active
+        events.append("abort")
+        result = original_abort(reason)
+        abort_results.append(result)
+        return result
+
+    flight.run_phases = fail_after_opening_attempt
+    flight.abort = abort
+    queue = FlightQueue([flight], execution_context_factory=context)
+
+    with pytest.raises(RuntimeError, match="generation failed"):
+        queue.run()
+
+    assert events == [
+        "context-enter",
+        "run-phases-failed",
+        "abort",
+        "context-exit-error",
+    ]
+    assert abort_results == [True]
+    assert queue.states[flight.run_id].state == "failed"
+    queue.shutdown()
+    assert stops == []
+
+
+def test_queue_aborts_seal_failure_before_releasing_execution_context(tmp_path):
+    events: list[str] = []
+    active: list[bool] = []
+    flight = _make_flight(tmp_path, run_id="SAEA-Q-ABORT-SEAL", attempt_id="attempt-abort-seal")
+
+    @contextmanager
+    def context(_flight):
+        events.append("context-enter")
+        active.append(True)
+        try:
+            yield
+        except Exception:
+            events.append("context-exit-error")
+            raise
+        finally:
+            active.pop()
+
+    def fail_finalization(*args, **kwargs):
+        _open_attempt_for_failure(flight)
+        events.append("seal-failed")
+        raise RuntimeError("seal failed")
+
+    original_abort = flight.abort
+
+    def abort(reason: str):
+        assert active
+        events.append("abort")
+        return original_abort(reason)
+
+    flight._bundle_finalizer = fail_finalization
+    flight.abort = abort
+    queue = FlightQueue([flight], execution_context_factory=context)
+
+    with pytest.raises(RuntimeError, match="seal failed"):
+        queue.run()
+
+    assert events == ["context-enter", "seal-failed", "abort", "context-exit-error"]
+    assert queue.states[flight.run_id].state == "failed"
+
+
+def test_queue_preserves_generation_error_when_abort_fails(tmp_path):
+    flight = _make_flight(tmp_path, run_id="SAEA-Q-ABORT-PRIMARY", attempt_id="attempt-abort-primary")
+    original_run_phases = flight.run_phases
+
+    def fail_after_opening_attempt():
+        original_run_phases()
+        _open_attempt_for_failure(flight)
+        raise ValueError("primary generation failure")
+
+    def fail_abort(reason: str):
+        assert "ValueError" in reason
+        raise RuntimeError("abort failure")
+
+    flight.run_phases = fail_after_opening_attempt
+    flight.abort = fail_abort
+    queue = FlightQueue([flight])
+
+    with pytest.raises(ValueError, match="primary generation failure") as raised:
+        queue.run()
+
+    assert any("abort failure" in note for note in raised.value.__notes__)
+    assert queue.states[flight.run_id].state == "failed"
+
+
+def test_queue_does_not_abort_or_stop_coordinator_service_after_scoring_failure(tmp_path):
+    stops: list[str] = []
+    aborts: list[str] = []
+
+    @contextmanager
+    def coordinator_context(_flight):
+        yield
+
+    def tracking_stopper(session, **kwargs):
+        stops.append(session.session_id)
+        return {"termination_signal": "SIGTERM"}
+
+    flight = _make_flight(
+        tmp_path,
+        run_id="SAEA-Q-SCORE-FAILURE",
+        attempt_id="attempt-score-failure",
+        session_stopper=tracking_stopper,
+    )
+
+    def abort(reason: str):
+        aborts.append(reason)
+        return False
+
+    def fail_score(**kwargs):
+        raise RuntimeError("scoring failed")
+
+    flight.abort = abort
+    flight.score = fail_score
+    queue = FlightQueue([flight], execution_context_factory=coordinator_context)
+    entry = queue.run()[0]
+
+    with pytest.raises(RuntimeError, match="scoring failed"):
+        entry.score_future.result()
+    queue.shutdown()
+
+    assert aborts == []
+    assert stops == []
