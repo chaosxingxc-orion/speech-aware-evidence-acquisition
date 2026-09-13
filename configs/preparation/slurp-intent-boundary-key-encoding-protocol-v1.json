@@ -1,0 +1,36 @@
+{
+  "answer_authority": "Retrieval-tool passage vectors only. No answering-model generation, task-score, or speech observation contact.",
+  "cache_relpath": "prepared/slurp-intent-boundary-text-facet-cache-v1",
+  "contact_policy": "DRAFT ONLY. One prospective registered attempt, one passage per forward, 60 logical text-encoder contacts, and zero speech seconds. No automatic restart, jitter, or retry.",
+  "cpu_workers": 1,
+  "dimension": 2048,
+  "encoder": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-speech-query-encoder-inventory-v2.json",
+    "sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31"
+  },
+  "expected_positive_content_facets": 60,
+  "facet_dimension": "intent-boundary",
+  "facet_rows_relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+  "max_sequence_tokens": 8192,
+  "monitor_interval_seconds": 10,
+  "output_relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/index.json",
+  "passage_prompt": "passage: ",
+  "query_axis": {
+    "dimension": "intent-boundary",
+    "receipt_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-INTENT-BOUNDARY-VECTOR-PREPARE-V1/query-dimension-alias.json",
+    "receipt_sha256": "f83b5b002d0823de40ac3f52f9a839f83daedf4ecdbbf0606b85f1fc07bd01a8",
+    "vector_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/vectors/slurp-intent-boundaries-dev1000-v1/query-vectors-speech.jsonl",
+    "vector_sha256": "6f391f883129f88fd7f843a76de95a805c39f165b2938a7ae9e3bb92d5860967",
+    "vector_width": 2048
+  },
+  "schema": "saea-text-facet-encoding-protocol-v1",
+  "snapshot": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+    "sha256": "4579079c949e7da71125047c8d57027a55f0b90c3fc6db5704ba3c9322e6afd3"
+  },
+  "source_inventory": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-intent-boundary-key-source-inventory-v1.json",
+    "sha256": "4d771352cc3c945ffdff343673ed89e37b629b6826fa73b3492db40cb889ff6d"
+  },
+  "source_scope": "Only the 60 released TRAIN-derived intent-boundary text facets in the pinned snapshot are passage inputs. The separately sealed query-axis alias establishes retrieval dimension compatibility and is never re-encoded."
+}
