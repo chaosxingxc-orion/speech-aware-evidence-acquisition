@@ -730,6 +730,21 @@ def _cli_prepare_semantic_knowledge(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cli_prepare_semantic_authoring_support(args: argparse.Namespace) -> int:
+    """Prepare registered, model-free SLURP authoring support."""
+    from ..semantic_authoring_support import (
+        prepare_slurp_semantic_authoring_support,
+    )
+
+    receipt = prepare_slurp_semantic_authoring_support(
+        Path(args.config),
+        repo_root=Path(args.repo_root),
+        data_root=Path(args.data_root),
+    )
+    print(json.dumps(receipt, indent=2, sort_keys=True))
+    return 0
+
+
 def _cli_prepare_state_source(args: argparse.Namespace) -> int:
     """Prepare one registered deterministic source through the common cache."""
     from ..bundle.git_commit import require_clean_study_repo
@@ -1415,6 +1430,14 @@ def main(argv: list[str] | None = None) -> int:
     prepare_semantic.add_argument("--repo-root", required=True)
     prepare_semantic.add_argument("--data-root", required=True)
     prepare_semantic.set_defaults(func=_cli_prepare_semantic_knowledge)
+    prepare_support = sub.add_parser(
+        "prepare-semantic-authoring-support",
+        help="prepare registered SLURP authoring support without model contact",
+    )
+    prepare_support.add_argument("--config", required=True)
+    prepare_support.add_argument("--repo-root", required=True)
+    prepare_support.add_argument("--data-root", required=True)
+    prepare_support.set_defaults(func=_cli_prepare_semantic_authoring_support)
     prepare_state = sub.add_parser(
         "prepare-state-source",
         help="prepare a registered deterministic predecessor without new inference",
