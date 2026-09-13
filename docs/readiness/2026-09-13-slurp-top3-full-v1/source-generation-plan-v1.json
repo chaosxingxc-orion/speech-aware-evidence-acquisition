@@ -1,0 +1,60 @@
+{
+  "analysis_method": {
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-top3-commitment-analysis-recipe-v1.json",
+    "sha256": "684681ba48f12a1d2cbae50f5a7e7dc28945a113955741bec29af1573f949af0"
+  },
+  "cell": "slurp-intent-hypothesis-source-dev1000-v1",
+  "composed_config_hash": "629e0b886308e0e2270fae001dc648067ef8737e959f9d3c6677784b352289ff",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-intent-hypothesis-source-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1050,
+    "planned_speech_audio_seconds": 3500,
+    "protocol_hash": "6fe907cdc1f848b1f158299c9bfd4404ece494914ac7ca4c12a654247b591ecf",
+    "run_id": "SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-top3-commitment-np8-v1",
+  "experiment": "slurp-intent-hypothesis-source-dev1000-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "common_source_counted_once": true,
+    "encoder_calls": 0,
+    "fit_audio_seconds_cap": 9000,
+    "fit_endpoint_calls_cap": 9003,
+    "generation_audio_seconds_cap": 10500,
+    "generation_calls_cap": 3150,
+    "generation_calls_target": 3000,
+    "gpu_hours_fit_inclusive": 3.0,
+    "official_complete_derivative_scoring_jobs": 2
+  },
+  "final_source_binding": "Bind the clean source commit, full service identity and model-free check receipts in a root launch receipt before contact.",
+  "fit_protocol": "One props read and three exact request-capacity endpoints for every one of 1000 rows. Use the shared actual request builder and prepared speech bytes; no output generation during fit.",
+  "protocol_hash": "6fe907cdc1f848b1f158299c9bfd4404ece494914ac7ca4c12a654247b591ecf",
+  "quality_read_gate": "Artifact validity and source binding only. Hold all semantic quality reads until both full successor derivatives receive complete official scores.",
+  "registered_at": "2026-09-13T05:38:38.679043+00:00",
+  "retry_policy": "No adaptive repetitions or automatic recovery. Preserve the fixed roster and all attempted contacts; stop and root-cause a failure before a separately registered recovery.",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_eligibility": {
+    "decision_id": "SAEA-SLURP-TOP3-FULL-SOURCE-ADMISSION-V1",
+    "relpath": "coordination/slurp-top3-commitment-v1/full-source-admission-v1.json",
+    "sha256": "b1f356a4c6244ad895f893d6ca27e5cfe1f67f0780bda8313eb31f49ff00aa78"
+  },
+  "source_budget": {
+    "asr_calls": 0,
+    "encoder_calls": 0,
+    "fit_audio_seconds_cap": 3000,
+    "fit_calls_cap": 3001,
+    "generation_audio_seconds_cap": 3500,
+    "generation_cap": 1050,
+    "generation_target": 1000,
+    "gpu_hours_fit_inclusive": 1.0,
+    "scorer_calls": 0
+  },
+  "source_worktree": "/home/chao/saea-worktrees/agentic-native-tool-loop-v1"
+}

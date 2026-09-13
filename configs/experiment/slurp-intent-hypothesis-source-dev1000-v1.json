@@ -14,9 +14,21 @@
       "dataset_fragment": "slurp-speech-native-dev1000",
       "model_fragment": "q4km-mmproj-free-speech-native-np8-base-speech-query-prefix-max64",
       "readiness": {
-        "reason": "HELD pending finalized source-to-delivery engineering closure, root admission, concrete preregistered plans/exposure, and actual full-roster capacity check. Preparation alone does not authorize contact.",
-        "requirements": [],
-        "state": "held"
+        "reason": "Root admitted the full common scoreless source after source-to-delivery engineering closure; actual full-roster fit and complete service match remain mandatory. Successors remain separately held.",
+        "requirements": [
+          {
+            "expected_decision_id": "SAEA-SLURP-TOP3-FULL-SOURCE-ADMISSION-V1",
+            "kind": "decision",
+            "relpath": "coordination/slurp-top3-commitment-v1/full-source-admission-v1.json",
+            "sha256": "b1f356a4c6244ad895f893d6ca27e5cfe1f67f0780bda8313eb31f49ff00aa78"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/receipt.json",
+            "sha256": "7b93a1ae1912c97b4be7813cf394629042c0dcc976cf8f74993647aee7213c2b"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-V1"
     }

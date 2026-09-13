@@ -1,0 +1,40 @@
+{
+  "admission": {
+    "data_relpath": "coordination/slurp-top3-commitment-v1/full-source-admission-v1.json",
+    "sha256": "b1f356a4c6244ad895f893d6ca27e5cfe1f67f0780bda8313eb31f49ff00aa78"
+  },
+  "analysis_method": {
+    "repo_relpath": "docs/readiness/2026-09-13-slurp-top3-commitment-analysis-recipe-v1.json",
+    "sha256": "684681ba48f12a1d2cbae50f5a7e7dc28945a113955741bec29af1573f949af0"
+  },
+  "campaign": {
+    "repo_relpath": "configs/campaign/slurp-top3-full-source-v1.json",
+    "sha256": "552bb08c4f7b108b8b3a77e47356f74dd4cc1d7645546ec4a37a3d342481ca28"
+  },
+  "contact_status": "No full-roster source model, tokenizer, encoder, ASR or scorer contact before registration.",
+  "model_geometry": {
+    "mmproj": false,
+    "session_id": "serving-slurp-top3-commitment-np8-v1",
+    "slot_tokens": 8192,
+    "slots": 8,
+    "source_max_tokens": 512
+  },
+  "plans": {
+    "fit": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-top3-full-v1/source-fit-plan-v1.json",
+      "sha256": "025a5b9667891114b8bb37976aa02c24fcc737d9acd9feb62a1a8a3083691756"
+    },
+    "generation": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-top3-full-v1/source-generation-plan-v1.json",
+      "sha256": "56a94af776d7d0d4a8e09b51d0f10a49ecf4fb71f4d29211355154cf57f21e4e"
+    }
+  },
+  "quality_read_gate": "Retain raw responses and validate exact three unique canonical intent hypotheses for every source row. Do not read source Top-N quality until both later complete derivatives have their first official score receipts.",
+  "registered_at": "2026-09-13T05:38:38.679043+00:00",
+  "schema": "saea-top3-full-source-registration-v1",
+  "scope": "Owner-authorized Stage-2 component experiment on the exact historically exposed DEV1000 roster. Admit only the common scoreless Top-3 source now; bind successor generations separately after source validation.",
+  "source_roster": {
+    "repo_relpath": "docs/receipts/rosters/slurp-dev1000-intent-hypothesis-source-v1.json",
+    "sha256": "aff787436856c68537e6ce67fda9dce00b368262b2dabe8e3e57c57bb302070e"
+  }
+}
