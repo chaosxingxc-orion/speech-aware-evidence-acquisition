@@ -40,14 +40,13 @@ class FinalizeResult:
     attempt_state: str
 
 
-def _validate_artifact_finalization_binding(bundle, repo_root: Path) -> None:
+def _validate_artifact_finalization_binding(
+    bundle, repo_root: Path, data_root: Path
+) -> None:
     """Rebuild an artifact flight's frozen config and bind its proposal rows."""
     from ...contracts import ExecutionPlan
     from ..config import compose
-    from ..flight.runtime import (
-        ARTIFACT_RESULT_ROLE,
-        validate_artifact_result_binding,
-    )
+    from ..flight.runtime import validate_artifact_result_binding
 
     require_clean_load_bearing_surface(Path(repo_root))
     manifest = bundle.manifest
@@ -70,6 +69,7 @@ def _validate_artifact_finalization_binding(bundle, repo_root: Path) -> None:
             plan=plan,
             repo_root=Path(repo_root),
             sample_ids=tuple(sorted(bundle.split_ids)),
+            data_root=Path(data_root),
         )
     except (KeyError, TypeError, ValueError, RuntimeError, OSError) as error:
         raise BundleError(
@@ -85,7 +85,7 @@ def _validate_artifact_finalization_binding(bundle, repo_root: Path) -> None:
         )
     if any(
         row.get("result_kind") != "artifact"
-        or row.get("artifact_role") != ARTIFACT_RESULT_ROLE
+        or row.get("artifact_role") != binding.get("role")
         for row in bundle.outputs_rows
     ):
         raise BundleError("artifact outputs do not carry the registered proposal role")
@@ -139,7 +139,7 @@ def finalize_bundle(
             f"{bundle.manifest.get('status')!r}, not {STATUS_COMPLETED!r}"
         )
     if bundle.manifest.get("result_kind", "task-answer") == "artifact":
-        _validate_artifact_finalization_binding(bundle, Path(repo_root))
+        _validate_artifact_finalization_binding(bundle, Path(repo_root), Path(root))
     if bundle.attempt_state != STATE_OPENED:
         raise BundleError(
             f"cannot finalize {manifest_path}: the attempt's durable state on disk is "

@@ -562,6 +562,57 @@ def test_sealed_states_from_manifest_binds_the_sealed_response_hashes(tmp_path):
     assert state.producer_policy_id == "saea-slurp-closed-list-direct-v1"
 
 
+def test_sealed_hypothesis_artifact_uses_canonical_content_hash_for_state_fill(tmp_path):
+    from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
+        SlurpIntentHypothesisStateFill,
+    )
+
+    path = _manifest(tmp_path)
+    canonical = json.dumps(
+        {
+            "schema": "saea-slurp-intent-hypotheses-v1",
+            "semantics": "ranked-mutually-exclusive-intent-alternatives",
+            "sample_id": "s1",
+            "candidates": [
+                {
+                    "intent_id": "weather_query",
+                    "distinction": "Observed weather request.",
+                    "evidence_refs": [],
+                    "unresolved_fields": [],
+                }
+            ],
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    canonical_sha = hashlib.sha256(canonical.encode()).hexdigest()
+    rows = [
+        {
+            "sample_id": "s1",
+            "text": '{"candidates":[]}',
+            "request_sha256": HASHES["3"],
+            "response_text_sha256": HASHES["4"],
+            "artifact_role": "slurp-intent-hypotheses",
+            "artifact_content": canonical,
+            "artifact_content_sha256": canonical_sha,
+        }
+    ]
+    state = sealed_states_from_manifest(
+        path,
+        expected_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+        phase_name="hypotheses",
+        producer_policy_id="phase-intent-hypotheses-only-v1",
+        sample_ids=("s1",),
+        bundle_verifier=lambda _p: _verified(rows),
+    )["s1"]
+    rendered = SlurpIntentHypothesisStateFill(
+        legal_intent_ids={"weather_query"}, max_candidates=1
+    ).render_state(state, sample_id="s1")
+    assert state.content == canonical
+    assert state.source_response_sha256 == canonical_sha
+    assert "weather_query" in rendered
+
+
 def test_sealed_states_from_manifest_refuses_a_hash_mismatch(tmp_path):
     path = _manifest(tmp_path)
     with pytest.raises(PhaseMaterialError, match="not the configured"):

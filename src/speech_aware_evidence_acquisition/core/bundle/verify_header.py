@@ -80,20 +80,26 @@ def _verify_manifest_header(manifest: Mapping[str, object]) -> str:
     artifact_result = manifest.get("artifact_result")
     scorer_names_value = manifest.get("scorers")
     if result_kind == "artifact":
-        if not isinstance(artifact_result, Mapping) or set(artifact_result) != {
-            "schema",
-            "role",
-            "construction_roster",
-        }:
+        if not isinstance(artifact_result, Mapping):
             raise BundleError(
                 "artifact result manifest requires an exact artifact_result binding"
             )
-        if (
-            artifact_result.get("schema") != "saea-artifact-result-binding-v1"
-            or artifact_result.get("role") != "training-feedback-proposal"
-        ):
+        legacy = (
+            artifact_result.get("schema") == "saea-artifact-result-binding-v1"
+            and artifact_result.get("role") == "training-feedback-proposal"
+            and set(artifact_result) == {"schema", "role", "construction_roster"}
+        )
+        hypotheses = (
+            artifact_result.get("schema") == "saea-artifact-result-binding-v2"
+            and artifact_result.get("role") == "slurp-intent-hypotheses"
+            and set(artifact_result)
+            == {"schema", "role", "source_roster", "content_contract"}
+        )
+        if not legacy and not hypotheses:
             raise BundleError("artifact_result schema or proposal role is invalid")
-        roster = artifact_result.get("construction_roster")
+        roster = artifact_result.get(
+            "construction_roster" if legacy else "source_roster"
+        )
         if not isinstance(roster, Mapping) or set(roster) != {"repo_relpath", "sha256"}:
             raise BundleError("artifact_result construction_roster pin is invalid")
         relpath, digest = roster.get("repo_relpath"), roster.get("sha256")

@@ -22,6 +22,7 @@ _CANDIDATE_KEYS = frozenset(
     {"intent_id", "distinction", "evidence_refs", "unresolved_fields"}
 )
 _DOCUMENT_KEYS = frozenset({"schema", "semantics", "sample_id", "candidates"})
+_COMPACT_DOCUMENT_KEYS = frozenset({"candidates"})
 _MAX_TEXT_CHARS = 512
 _MAX_LIST_ITEMS = 32
 
@@ -167,6 +168,41 @@ def parse_slurp_intent_hypothesis_content(
     return SlurpIntentHypothesisState(
         sample_id=sample_id, candidates=tuple(candidates)
     )
+
+
+def canonicalize_slurp_intent_hypothesis_response(
+    content: str,
+    *,
+    sample_id: str,
+    legal_intent_ids: Iterable[str],
+    max_candidates: int,
+) -> str:
+    """Add trusted bookkeeping to one compact, otherwise unchanged response."""
+
+    try:
+        compact = json.loads(content, object_pairs_hook=_unique_json_object)
+    except (TypeError, json.JSONDecodeError) as error:
+        raise SlurpIntentHypothesisError("compact hypothesis response must be JSON") from error
+    if not isinstance(compact, Mapping) or set(compact) != _COMPACT_DOCUMENT_KEYS:
+        raise SlurpIntentHypothesisError(
+            "compact hypothesis response must contain exactly candidates"
+        )
+    document = {
+        "schema": HYPOTHESIS_STATE_SCHEMA,
+        "semantics": HYPOTHESIS_SEMANTICS,
+        "sample_id": sample_id,
+        "candidates": compact["candidates"],
+    }
+    canonical = json.dumps(
+        document, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    )
+    parse_slurp_intent_hypothesis_content(
+        canonical,
+        expected_sample_id=sample_id,
+        legal_intent_ids=legal_intent_ids,
+        max_candidates=max_candidates,
+    )
+    return canonical
 
 
 def parse_slurp_intent_hypothesis_state(

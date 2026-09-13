@@ -1244,12 +1244,21 @@ def sealed_states_from_manifest(
     states: dict[str, AgentStateArtifact] = {}
     for sample_id in wanted:
         row = by_sample[sample_id]
+        content = row["text"]
+        content_sha256 = row["response_text_sha256"]
+        if row.get("artifact_role") == "slurp-intent-hypotheses":
+            content = row.get("artifact_content")
+            content_sha256 = row.get("artifact_content_sha256")
+            if not isinstance(content, str) or not isinstance(content_sha256, str):
+                raise PhaseMaterialError(
+                    "SLURP hypothesis artifact row lacks validated canonical content"
+                )
         states[sample_id] = AgentStateArtifact(
             state_id=f"{phase_name}:{sample_id}",
             state_kind=f"phase:{phase_name}",
-            content=str(row["text"]),
+            content=str(content),
             source_query_state_sha256=str(row["request_sha256"]),
-            source_response_sha256=str(row["response_text_sha256"]),
+            source_response_sha256=str(content_sha256),
             producer_policy_id=producer_policy_id,
             cited_value_ids=(),
         ).validate()
