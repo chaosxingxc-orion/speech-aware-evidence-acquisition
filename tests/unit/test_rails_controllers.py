@@ -1066,3 +1066,88 @@ def test_native_program_requires_dispatcher_and_owns_stop_decision():
         )
     with pytest.raises(rc.RailsControllersError, match="native.*stop"):
         _native_controller(stop_policy=lambda *_: True)
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "<tool_call>{\"name\":\"observe_speech\"}</tool_call>",
+        "  \n<tool_call>\n{\"name\":\"observe_speech\"}",
+        "```json\n<tool_call>\n{\"name\":\"observe_speech\"",
+        "```\n<tool_call",
+    ],
+)
+def test_native_first_phase_rejects_textual_tool_call_frames(text):
+    tools = _NativeToolSteps()
+    controller = _native_controller(tools)
+    context = _context(_query_state())
+    contact = controller.initial_contact(context)
+    response_context = _native_response_context(
+        context, contact, text, tool_calls=[]
+    )
+
+    with pytest.raises(rc.RailsControllersError, match="textual native tool"):
+        controller.advance(response_context, contact, text)
+
+    assert tools.calls == []
+    assert controller.sealed_states == {}
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "<tool_call>{}",
+        " \t```json\n<tool_call>{}",
+        "\n```\n  <tool_call",
+    ],
+)
+def test_native_final_phase_rejects_textual_tool_call_frames(text):
+    tools = _NativeToolSteps()
+    program = replace(
+        rc.default_phase_program("native-answer-or-tool-v1"),
+        phases=(rc.default_phase_program("native-answer-or-tool-v1").phases[-1],),
+        max_contacts=1,
+    )
+    controller = rc.EvidenceAgentController(
+        program=program,
+        material_for_phase=lambda name, context: _material(name, context.sample_id),
+        tools_for_phase=tools,
+    )
+    context = _context(_query_state())
+    contact = controller.initial_contact(context)
+    response_context = _native_response_context(context, contact, text)
+
+    with pytest.raises(rc.RailsControllersError, match="textual native tool"):
+        controller.advance(response_context, contact, text)
+
+    assert tools.calls == []
+    assert controller.sealed_states == {}
+
+
+def test_native_final_answer_allows_tool_call_text_as_quoted_json_value():
+    controller = _native_controller()
+    context = _context(_query_state())
+    contact = controller.initial_contact(context)
+    text = '{"answer":"The literal marker <tool_call> is part of the task value."}'
+    response_context = _native_response_context(context, contact, text)
+
+    advance = controller.advance(response_context, contact, text)
+
+    assert advance.final_response_contact_id == contact.contact_id
+    assert controller.sealed_states["decision-1"].content == text
+
+
+def test_legacy_controller_preserves_textual_tool_call_answer_behavior():
+    program = rc.default_phase_program("phase-direct-only-v1")
+    controller = rc.EvidenceAgentController(
+        program=program,
+        material_for_phase=lambda name, context: _material(name, context.sample_id),
+    )
+    context = _context(_query_state())
+    contact = controller.initial_contact(context)
+    text = "<tool_call>{\"legacy\":true}</tool_call>"
+
+    advance = controller.advance(context, contact, text)
+
+    assert advance.final_response_contact_id == contact.contact_id
+    assert controller.sealed_states["direct"].content == text
