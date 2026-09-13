@@ -4433,8 +4433,13 @@ class FlightRuntime:
                 {"result_kind": "artifact"} if self._result_kind() == "artifact" else {}
             ),
         }
+        records_realized_contacts = planner is not None or (
+            tool_dispatcher is not None
+            and bool(getattr(tool_dispatcher, "native_enabled", False))
+        )
         if planner is not None:
             dispatch["phase_planner"] = phase_planner_receipt(planner_specs, planner)
+        if records_realized_contacts:
             dispatch["contacts_per_sample_ceiling"] = dispatch.pop(
                 "contacts_per_sample"
             )
@@ -4443,7 +4448,7 @@ class FlightRuntime:
                 for summary in self._phase_summaries
                 for result in summary.results
             ]
-            if not whole_roster:
+            if planner is not None and not whole_roster:
                 dispatch["barrier"] = (
                     "none: one continuous trajectory with bounded review decisions"
                 )
@@ -6983,6 +6988,30 @@ class FlightRuntime:
                 request_payload_observer(payload)
         return receipt
 
+    @staticmethod
+    def _bound_native_tool_error(
+        item: Mapping[str, object],
+        *,
+        sample_id: str,
+        response_hashes: set[str],
+    ) -> bool:
+        source_uri = str(item.get("source_uri") or "")
+        evidence_id = str(item.get("evidence_id") or "")
+        prefix = "phase-tool-error://"
+        if not source_uri.startswith(prefix):
+            return False
+        response_hash, separator, bound_id = source_uri[len(prefix):].partition("/")
+        return (
+            separator == "/"
+            and bound_id == evidence_id
+            and evidence_id.startswith("tool-error:")
+            and evidence_id.endswith(f":{sample_id}")
+            and response_hash in response_hashes
+            and str(item.get("content") or "").startswith(
+                "The internal tool request was rejected: "
+            )
+        )
+
     def wire_check(
         self,
         *,
@@ -7310,6 +7339,11 @@ class FlightRuntime:
                 }
         typed_blocks: list[int] = []
         observation_blocks: list[int] = []
+        response_hashes_by_sample: dict[str, set[str]] = {}
+        for timing in client.timings:
+            response_hashes_by_sample.setdefault(timing.sample_id, set()).add(
+                timing.response_text_sha256
+            )
         for index, payload in enumerate(transport.payloads):
             items = payload.get("supplied_evidence") or []
             typed_blocks.append(0)
@@ -7341,6 +7375,23 @@ class FlightRuntime:
                         )
                     else:
                         observation_blocks[-1] += 1
+                elif str(item.get("source_uri") or "").startswith(
+                    "phase-tool-error://"
+                ):
+                    sample_id = str(payload.get("sample_id") or "")
+                    if not self._bound_native_tool_error(
+                        item,
+                        sample_id=sample_id,
+                        response_hashes=response_hashes_by_sample.get(
+                            sample_id, set()
+                        ),
+                    ):
+                        problems.append(
+                            f"request {index} supplied_evidence[{position}] carries "
+                            "an unbound native tool error"
+                        )
+                    else:
+                        observation_blocks[-1] += 1
                 elif item.get("knowledge_role") not in {"key", "value"}:
                     problems.append(
                         f"request {index} supplied_evidence[{position}] carries "
@@ -7355,8 +7406,30 @@ class FlightRuntime:
                 "knowledge block; the supply never reached the wire"
             )
         if problems:
-            raise FlightRuntimeError("wire check failed: " + "; ".join(problems))
+            close_error = None
+            try:
+                if self._live_speech_provider is not None:
+                    self._live_speech_provider.close()
+                    self._live_speech_provider = None
+                client.close()
+            except Exception as error:  # validation remains the primary failure
+                close_error = error
+            aborted = self._abort_attempt(
+                self._data_root,
+                wire_run_id,
+                wire_attempt_id,
+                reason="wire check validation failed: no model was ever reached",
+            )
+            detail = "; ".join(problems)
+            if close_error is not None:
+                detail += f"; fake client close also failed: {close_error}"
+            if not aborted:
+                detail += "; scratch attempt was not abortable"
+            raise FlightRuntimeError("wire check failed: " + detail)
 
+        if self._live_speech_provider is not None:
+            self._live_speech_provider.close()
+            self._live_speech_provider = None
         close_receipt = client.close()
         seal_and_score_result: Mapping[str, object] = {
             "status": "SKIPPED",
