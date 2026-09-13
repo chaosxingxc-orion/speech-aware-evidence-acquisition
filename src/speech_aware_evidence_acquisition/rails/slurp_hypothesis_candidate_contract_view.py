@@ -18,6 +18,7 @@ from typing import Mapping
 from .candidate_contract_lookup import (
     CandidateContractLookupError,
     CandidateContractLookupResult,
+    CandidateContractRequest,
 )
 from .knowledge import AgentStateArtifact
 from .slurp_candidate_contracts import (
@@ -127,6 +128,11 @@ class SlurpHypothesisCandidateContractStateView:
 
         return replace(self, max_candidates=max_candidates)
 
+    def __call__(self, state_content: str) -> str:
+        raise SlurpHypothesisCandidateContractViewError(
+            "source-bound candidate-contract views require the full AgentStateArtifact"
+        )
+
     def render_state(
         self, artifact: AgentStateArtifact, *, sample_id: str
     ) -> str:
@@ -143,9 +149,11 @@ class SlurpHypothesisCandidateContractStateView:
                 legal_intent_ids=self.provider.candidate_ids,
                 max_candidates=min(self.max_candidates, len(self.provider.candidate_ids)),
             )
-            result = self.provider.lookup(
+            request = CandidateContractRequest.from_ids(
                 tuple(candidate.intent_id for candidate in state.candidates)
             )
+            result = self.provider.lookup(request.candidate_ids)
+            result.validate_for(request)
             if result.source_sha256 != self.candidate_source_sha256:
                 raise SlurpHypothesisCandidateContractViewError(
                     "candidate contract result source does not match the pinned source"
