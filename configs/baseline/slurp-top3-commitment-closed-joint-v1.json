@@ -18,8 +18,8 @@
   "serving_slots": 8,
   "serving_slot_tokens": 8192,
   "whole_roster_wave_barrier": true,
-  "speech_feature_key_representation_id": "saea-slurp-top3-commitment-closed-joint-v1:slots",
-  "speech_feature_matcher_policy_id": "saea-slurp-top3-commitment-closed-joint-v1",
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
   "phase_material": {
     "slots": {
       "instruction_template": "probes/slurp_top3_closed_joint_slots_v1.txt",
@@ -38,7 +38,7 @@
       }
     }
   },
-  "held_binding": "The predecessor manifest path and SHA-256 are unresolved. This fragment is not executable until root binds the FINALIZED typed source without changing any other field.",
+  "held_binding": "The predecessor manifest path and SHA-256 are unresolved. Root must bind the exact FINALIZED typed source, then freeze all source, config, run, fit, plan, exposure, readiness, and admission identities before any contact.",
   "delivery_basis": {
     "response_postprocessor": "slurp-shortlist-joint-hypothesis-delivery-v1",
     "response_postprocessor_params": {
