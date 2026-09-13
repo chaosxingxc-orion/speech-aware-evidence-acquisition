@@ -1,0 +1,84 @@
+{
+  "schema": "saea-slurp-native-candidate-source-draft-inventory-v1",
+  "status": "non-launching-admission-pending",
+  "source_pair": {
+    "direct_run_id": "SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-DIRECT-V1",
+    "lookup_run_id": "SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-LOOKUP-V1",
+    "candidate_limit": 3,
+    "candidate_tool_invocation_cap": 1000
+  },
+  "retained_dev1000": {
+    "dataset_fragment": "configs/dataset/slurp-speech-native-dev1000.json",
+    "dataset_fragment_sha256": "f92846760b3657ba50009e52f98fcec96df27c16ac66ea57467b4f8fa42f288d",
+    "count": 1000,
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "speech_audio_seconds": 2884.7936875,
+    "maximum_row_audio_seconds": 12.032,
+    "analysis_populations": [
+      "NEW-500 primary",
+      "OLD-500 secondary",
+      "DEV-1000 pooled secondary"
+    ],
+    "roster_receipts": {
+      "DEV-1000": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b",
+      "DEV-500": "adc3e4ddd20518d279dc6c3aa42821629ca67b05eaba7802e1918f0349c2f315",
+      "NEW-500": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    }
+  },
+  "retained_speech_route": {
+    "model_fragment": "configs/model/q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64.json",
+    "model_fragment_file_sha256": "39ae54d72838b359a893a3938e242859c037cb3af1ddb1e7aca838e33fa45ca0",
+    "resident_identity_model_fragment_sha256": "7545a1ac3eb0c1e88d4121fdf84726e5201bb9d5ae5a32804cc62a7f6a289f74",
+    "serving_session": "serving-slurp-train-a-incumbent-reward-source-np4-v1",
+    "context_capacity": 65536,
+    "parallel_slots": 4,
+    "request_max_tokens": 256,
+    "mmproj": null,
+    "packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/DEV-1000-promotion.json",
+    "packet_promotion_receipt_sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6",
+    "runtime_view_sha256": "e148dbbcbda5b5145de9d3270f8bf7d6fb83fd00c7533f5ffa0fea1735fa0e87",
+    "decoder_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+  },
+  "candidate_source": {
+    "source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201",
+    "receipt": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/receipt.json",
+      "root": "data",
+      "sha256": "7b93a1ae1912c97b4be7813cf394629042c0dcc976cf8f74993647aee7213c2b"
+    },
+    "catalog_relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+    "catalog_file_sha256": "3e60268b3f940c3018ab8b8c80ccd988b1d1efd6c5a198929c6af05ba21f8263",
+    "legal_candidate_count": 60,
+    "train_utterance_count": 11514,
+    "retention": "min_share=0.02, examples=0",
+    "runtime_contacts_during_preparation": 0
+  },
+  "budgets": {
+    "direct": {
+      "generation_target": 1000,
+      "generation_cap": 1050,
+      "generation_speech_seconds_cap": 3500,
+      "fit_contacts": 3001,
+      "fit_speech_seconds_cap": 3000,
+      "gpu_hours_fit_inclusive": 1.0
+    },
+    "lookup": {
+      "generation_target": 2000,
+      "generation_cap": 2100,
+      "generation_speech_seconds_cap": 7000,
+      "fit_contacts": 6002,
+      "fit_speech_seconds_cap": 6000,
+      "gpu_hours_fit_inclusive": 2.0
+    },
+    "family": {
+      "generation_cap": 3150,
+      "fit_contacts": 9003,
+      "speech_seconds_cap": 10500,
+      "fit_speech_seconds_cap": 9000,
+      "gpu_hours_fit_inclusive": 3.0,
+      "cold_asr_calls": 0,
+      "encoder_calls": 0
+    }
+  },
+  "scientific_boundary": "This source pair measures a complete two-contact native candidate-tool system against its shared direct reference. It does not isolate Top-N commitment and does not replace the later matched common-first-pass commitment branches."
+}

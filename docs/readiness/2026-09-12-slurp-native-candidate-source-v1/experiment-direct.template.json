@@ -1,0 +1,64 @@
+{
+  "config": {
+    "cells": [
+      {
+        "allowed_execution_stages": [
+          "check",
+          "wire-check",
+          "worker",
+          "campaign"
+        ],
+        "arm": "speech-feature-query",
+        "attempt_id": "attempt-slurp-native-candidate-source-direct-generation-v1",
+        "baseline_fragment": "slurp-native-candidate-source-direct-v1",
+        "cell_id": "slurp-native-candidate-source-direct-v1",
+        "dataset_fragment": "slurp-speech-native-dev1000",
+        "model_fragment": "q4km-mmproj-free-speech-native-np4-base-speech-query-prefix-max64",
+        "run_id": "SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-DIRECT-V1"
+      }
+    ],
+    "date": "2026-09-12",
+    "execution_plan": {
+      "execution_profile": "baseline-reproduction",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 1050,
+      "planned_speech_audio_seconds": 3500,
+      "split_role": "dev"
+    },
+    "experiment_id": "SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-DIRECT-V1",
+    "family_budget": {
+      "cold_asr_calls_total": 0,
+      "encoder_calls_total": 0,
+      "fit_contacts_total": 9003,
+      "fit_speech_audio_seconds_total": 9000,
+      "generation_calls_total": 3150,
+      "gpu_hours_fit_inclusive": 3.0,
+      "internal_candidate_tool_invocations_total": 1000,
+      "speech_audio_seconds_total": 10500
+    },
+    "fragment_kind": "saea-slurp-task-agent-experiment-v1",
+    "generation_budget": {
+      "cap": 1050,
+      "target": 1000
+    },
+    "population": {
+      "count": 1000,
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "decision_population": "Historically exposed NEW500 primary; OLD500 and pooled DEV-1000 secondary.",
+      "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+    },
+    "preserve_wire_responses": true,
+    "purpose": "Reproduce a one-contact shared-controller direct source baseline on the retained exposed roster.",
+    "request_decoding_overrides": {
+      "max_tokens": 256
+    },
+    "service_session": "serving-slurp-train-a-incumbent-reward-source-np4-v1",
+    "split_id": "DEV-1000"
+  },
+  "pending_before_materialization": [
+    "Readiness requirements and registered generation/fit ExecutionPlans."
+  ],
+  "proposed_config_path": "configs/experiment/slurp-native-candidate-source-direct-v1.json",
+  "schema": "saea-non-runnable-config-draft-v1",
+  "status": "budget-and-admission-pending"
+}
