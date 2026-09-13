@@ -50,6 +50,22 @@ def _completion(text: str, contact_id: str, serial: int) -> CoreCompletion:
     )
 
 
+def _execution_receipt(
+    *, text: str, contact_id: str, serial: int
+) -> dict[str, object]:
+    request_id = f"request-{serial}"
+    contact = {
+        "agent_contact_id": contact_id,
+        "request_id": request_id,
+        "request_sha256": hashlib.sha256(request_id.encode()).hexdigest(),
+        "response_sha256": hashlib.sha256(
+            _completion(text, contact_id, serial).wire_response_bytes
+        ).hexdigest(),
+        "response_text_sha256": hashlib.sha256(text.encode()).hexdigest(),
+    }
+    return {"contacts": [contact], "final_contact": dict(contact)}
+
+
 @dataclass
 class _Script:
     values: list[str]
@@ -135,10 +151,31 @@ def test_accept_delivers_only_the_validated_solver_output():
         "actor_output": "draft one",
         "result_type": "answer",
         "delivery_eligible": True,
+        "execution_receipt": _execution_receipt(
+            text="draft one", contact_id="solver-contact-1", serial=2
+        ),
     }
     assert result["state"]["latest_solver"] == result["delivery"]
+    assert result["state"]["accepted_solver_receipt"] == result["delivery"][
+        "execution_receipt"
+    ]
     assert result["state"]["review"] == "review one"
     assert result["state"]["plan"] == "ACCEPT"
+    assert [visit["stage"] for visit in result["state"]["role_visits"]] == [
+        "perception",
+        "solver",
+        "review",
+        "planner",
+    ]
+    assert [visit["role_id"] for visit in result["state"]["role_visits"]] == [
+        "perception",
+        "solver",
+        "reviewer",
+        "planner",
+    ]
+    assert result["state"]["planner_routes"] == [
+        {"role_visit_index": 3, "revision_count": 0, "action": "ACCEPT"},
+    ]
     assert [role for role, _ in seen] == [
         "perception",
         "solver",
@@ -159,6 +196,22 @@ def test_revise_runs_solver_and_review_again_before_acceptance():
 
     assert result["delivery"]["actor_output"] == "draft two"
     assert result["state"]["revision_count"] == 1
+    assert [visit["stage"] for visit in result["state"]["role_visits"]] == [
+        "perception",
+        "solver",
+        "review",
+        "planner",
+        "solver",
+        "review",
+        "planner",
+    ]
+    assert result["state"]["planner_routes"] == [
+        {"role_visit_index": 3, "revision_count": 0, "action": "REVISE"},
+        {"role_visit_index": 6, "revision_count": 1, "action": "ACCEPT"},
+    ]
+    assert result["state"]["accepted_solver_receipt"] == _execution_receipt(
+        text="draft two", contact_id="solver-contact-2", serial=5
+    )
     assert len(solver_script.requests) == 2
     second_solver_state = [state for role, state in seen if role == "solver"][1]
     assert second_solver_state["review"] == "review one"
@@ -183,6 +236,20 @@ def test_acquire_routes_to_configured_analytical_role_then_revises():
 
     assert result["delivery"]["actor_output"] == "draft two"
     assert result["state"]["acquisition"] == "acquired fact"
+    assert [visit["stage"] for visit in result["state"]["role_visits"]] == [
+        "perception",
+        "solver",
+        "review",
+        "planner",
+        "acquisition",
+        "solver",
+        "review",
+        "planner",
+    ]
+    assert result["state"]["planner_routes"] == [
+        {"role_visit_index": 3, "revision_count": 0, "action": "ACQUIRE"},
+        {"role_visit_index": 7, "revision_count": 1, "action": "ACCEPT"},
+    ]
     assert len(acquisition_script.requests) == 1
     second_solver_state = [state for role, state in seen if role == "solver"][1]
     assert second_solver_state["acquisition"] == "acquired fact"
