@@ -1,0 +1,165 @@
+{
+  "experiment_id": "SAEA-SLURP-NATIVE-CANDIDATE-SOURCE-PAIRED-ANALYSIS-V1",
+  "schema": "saea-slurp-saved-score-analysis-recipe-v1",
+  "execution_profile": "model-free-check",
+  "binding_state": "DRAFT ONLY, HELD. The direct and lookup source bindings remain unbound until both complete final-output bundles are FINALIZED and COMPLETED and each has one verified first official score. Root must replace every null binding with measured artifact paths and SHA-256 values, register the read release, and review before any semantic result read.",
+  "analysis_runner": {
+    "module": "src/speech_aware_evidence_acquisition/analysis/score_compare_cli.py",
+    "mode": "default saved-score path with explicit finalized-bundle sources; do not use generic-scores-v1",
+    "shared_resampling": [
+      "src/speech_aware_evidence_acquisition/analysis/paired.py",
+      "src/speech_aware_evidence_acquisition/analysis/bootstrap.py"
+    ],
+    "score_once": "src/speech_aware_evidence_acquisition/core/scoring_batch.py",
+    "score_receipt_verifier": "src/speech_aware_evidence_acquisition/core/scoring_receipt.py"
+  },
+  "source_analysis_plan": {
+    "status": "ROOT BINDS THE FINAL EXPOSURE AND PROGRAM PLAN AFTER THE PROSPECTIVE RECIPE IS REVIEWED",
+    "path": null,
+    "sha256": null
+  },
+  "analysis": {
+    "carrier": "slurp",
+    "full_roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    },
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+    },
+    "populations": {
+      "primary": "NEW500",
+      "secondary": ["OLD500", "DEV1000"],
+      "construction": "NEW500 is the existing DEV-1000-NEW500 receipt; OLD500 is the full DEV1000 set difference, and DEV1000 is the pooled full receipt. Do not redraw or promote a secondary population to primary."
+    },
+    "seed": 20260913,
+    "n_replicates": 10000,
+    "intervals": {
+      "primary": {
+        "resampling": "paired whole-speaker cluster bootstrap",
+        "ci90": {"level": 0.9, "tail_definition": "two-sided percentile CI"},
+        "one_sided_lower95": {"level": 0.95, "tail_definition": "lower 5th percentile of the same paired bootstrap draws"}
+      },
+      "sensitivity": {
+        "resampling": "scenario-stratified paired row bootstrap",
+        "ci90": {"level": 0.9, "tail_definition": "two-sided percentile CI"}
+      },
+      "weightings": ["natural mixture", "equal scenario", "per stratum"]
+    },
+    "metrics": [
+      "scenario_action_exact",
+      "scenario_exact",
+      "action_exact",
+      "slot_f1_exact_f1",
+      "slu_f1_f1"
+    ],
+    "metric_labels": {
+      "intent": "scenario_action_exact (joint scenario/action accuracy)",
+      "scenario": "scenario_exact",
+      "action": "action_exact",
+      "span_f1": "slot_f1_exact_f1 (per-row exact span/entity F1)",
+      "row_mean_slu_f1": "slu_f1_f1 (mean of per-row official SLU F1)",
+      "pooled_slu_micro_f1": "slu_f1_micro (pooled official SLU F1 from saved sufficient counts)"
+    },
+    "primary_metric": "slu_f1_micro",
+    "micro_metrics": {
+      "slu_f1_micro": {
+        "tp": ["slu_f1_word_tp", "slu_f1_char_tp"],
+        "fp": ["slu_f1_word_fp", "slu_f1_char_fp"],
+        "fn": ["slu_f1_word_fn", "slu_f1_char_fn"]
+      }
+    },
+    "inputs": {
+      "direct": {
+        "manifest": null,
+        "score": null,
+        "scorers": {"official": "slurp-slu-official"},
+        "complete_score_receipt": null
+      },
+      "lookup": {
+        "manifest": null,
+        "score": null,
+        "scorers": {"official": "slurp-slu-official"},
+        "complete_score_receipt": null
+      }
+    },
+    "contrasts": [
+      {
+        "name": "candidate_lookup_minus_direct",
+        "left": "direct",
+        "right": "lookup",
+        "scorers": ["official"],
+        "populations": ["NEW500", "OLD500", "DEV1000"]
+      }
+    ]
+  },
+  "score_source_contract": {
+    "official_scorer": "slurp-slu-official",
+    "source_order": [
+      "verify both FINALIZED/COMPLETED bundles",
+      "score each complete final-output manifest exactly once through core.scoring_batch with per-sample ingredients",
+      "verify each complete-score receipt and saved score bytes",
+      "bind the measured source paths and SHA-256 values",
+      "run score_compare_cli once with zero new scorer invocations",
+      "release semantic comparison only after both sources are sealed and scored"
+    ],
+    "no_new_scorer_invocations": 0,
+    "no_projection": "Use the raw slurp-slu-official result; retain the six saved word/character TP, FP and FN fields. Never replace pooled counts with row averages."
+  },
+  "diagnostics": {
+    "read_after_release_only": true,
+    "sources": "Verified first complete score rows and sealed per-row traces; no new quality, reference or current-result read is authorized by this draft.",
+    "required_when_available": [
+      "zero-tool direct paths",
+      "candidate counts",
+      "successful lookup calls",
+      "rescues and spoils",
+      "outside-shortlist final intent",
+      "invalid or unknown tool calls",
+      "format failures",
+      "model and tool contact counts",
+      "parse, empty, saturation, retry and fallback outcomes",
+      "OBS, ORG, SUPPLY and USE event counts"
+    ],
+    "quality_descriptives": {
+      "entity_attribution_api": "analysis.slurp_entity_attribution.attribute_parsed_rows",
+      "populations": ["NEW500", "OLD500", "DEV1000"],
+      "scenario_strata": true,
+      "rule": "Use only saved official rows and verified sealed traces after the registered read release; do not select outcome-dependent subsets."
+    }
+  },
+  "estimator_interpretation": {
+    "primary_population": "NEW500",
+    "reporting_populations": ["NEW500", "OLD500", "DEV1000"],
+    "sign": "lookup minus direct; higher quality is positive",
+    "positive": "The requested interval for a metric lies wholly above zero; this is exploratory evidence only.",
+    "negative": "The requested interval lies wholly below zero.",
+    "unresolved": "Otherwise; report the uncertainty and any intent/entity tradeoff.",
+    "no_borrowed_margin": true,
+    "no_historical_gate": true,
+    "next_action": "A positive result does not admit the mechanism. Replicate on the same roster or root-cause the result to a named registered component before another mechanism or new roster."
+  },
+  "shared_reader_support": {
+    "supported_now": [
+      "DEV1000, NEW500 and derived OLD500 populations",
+      "speaker-cluster and scenario-stratified paired CI90",
+      "natural-mixture and equal-stratum point reporting with per-stratum rows",
+      "scenario_action_exact, scenario_exact, action_exact",
+      "per-row slot_f1_exact_f1 and row-mean slu_f1_f1",
+      "pooled slu_f1_micro from saved word/character count fields",
+      "complete-score receipt and bundle verification without scorer calls"
+    ],
+    "missing_or_external": [
+      "score_compare_cli currently emits only its two-sided CI90 result and does not emit the requested one-sided lower-95 percentile; retain that requirement as a held reader-output gap and do not synthesize it from CI90",
+      "candidate/rescue/spoil, outside-shortlist intent, invalid/unknown calls, format failures and contact counts are sealed-trace diagnostics outside the shared score projection path; report them only when the retained trace schema supplies them"
+    ]
+  },
+  "execution_gate": "HELD. This draft contains no source hashes and no read authority. Root must bind both finalized complete-score sources after one-time scoring, register the release, and review the supported one-sided lower-95 output before running the shared comparator.",
+  "recorded_at_utc": "2026-09-12T00:00:00Z"
+}
+
