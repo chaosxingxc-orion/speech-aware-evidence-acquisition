@@ -81,6 +81,7 @@ from ..session import (
     require_loopback,
 )
 from . import FrozenCoreError
+from .native_history import project_native_history
 from .paths import _normalized_relative_path, _resolve_confined
 from .prepared_feature_cache import PreparedFeatureCacheGuard
 from .request_types import (
@@ -767,18 +768,6 @@ class LlamaServerTransport:
                         "speech_features": dict(descriptor),
                     }
                 )
-            load_speech_feature_packets(
-                self._feature_root,
-                tuple(
-                    {
-                        "packet_id": descriptor["packet_id"],
-                        "sha256": descriptor["sha256"],
-                    }
-                    for descriptor in validated_descriptors
-                ),
-                workers=8,
-                expected_decoder_gguf_sha256=decoder_sha256,
-            )
             if query_count != 1:
                 raise FrozenCoreError(
                     "formal speech feature request must carry exactly one query packet"
@@ -809,6 +798,32 @@ class LlamaServerTransport:
                 {"role": "system", "content": payload["task_instruction"]},
                 {"role": "user", "content": content},
             ]
+            messages, historical_descriptors = project_native_history(
+                payload=payload, messages=messages, state_texts=state_texts,
+            )
+            packet_identities = {
+                (item["packet_id"], item["sha256"])
+                for item in validated_descriptors
+            }
+            for descriptor in historical_descriptors:
+                identity = (descriptor["packet_id"], descriptor["sha256"])
+                if identity not in packet_identities:
+                    validated_descriptors.append(descriptor)
+                    packet_identities.add(identity)
+            # Validate historical native speech returns through the same
+            # confined, hash-pinned loader as the current query and supply.
+            load_speech_feature_packets(
+                self._feature_root,
+                tuple(
+                    {
+                        "packet_id": descriptor["packet_id"],
+                        "sha256": descriptor["sha256"],
+                    }
+                    for descriptor in validated_descriptors
+                ),
+                workers=8,
+                expected_decoder_gguf_sha256=decoder_sha256,
+            )
         elif self._prompt_order == "evidence-first-system-v2":
             # Stable-first order: [system: evidence…, instruction(+tail at its
             # end)][user: audio]. The evidence formatting strings are

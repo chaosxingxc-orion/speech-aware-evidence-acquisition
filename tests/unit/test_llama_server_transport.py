@@ -2870,3 +2870,47 @@ def test_transport_without_prepared_cache_guard_keeps_legacy_render_and_post(tmp
     transport(payload_bytes := canonical_bytes(payload))
     assert captured
     assert payload_bytes
+
+
+@pytest.mark.parametrize("prompt_order", (
+    "speech-features-text-keys-v1", "speech-query-prefix-v2", "knowledge-speech-state-v2",
+))
+def test_native_chat_projection_matches_rendered_and_sent_body(tmp_path, prompt_order):
+    from test_native_history_projection import world
+
+    feature_root = tmp_path / "features"
+    query = _materialize_packet(feature_root, "slurp/train/query")
+    native, _, _ = world(
+        repeat=True, packet_id=query.packet_id, packet_sha256=query.packet_sha256,
+    )
+    captured = []
+
+    def post(_url, body):
+        captured.append(json.loads(body))
+        return _canned_response()
+
+    transport = _transport(
+        _base_url(), tmp_path, post=post, session=_fake_inference_session(),
+        prompt_order=prompt_order, feature_root=feature_root,
+    )
+    payload = _boundary_payload(
+        tmp_path, **native,
+        query_source="speech_features", mmproj_loaded=False,
+        key_representation_id="k1-text-card-v1", matcher_policy_id="agent-loop-v1",
+    )
+    request = json.dumps(payload).encode()
+    fitted_body = transport.render_request(request)
+    assert captured == []
+    transport(request)
+    assert captured == [fitted_body]
+    messages = fitted_body["messages"]
+    assert [m["role"] for m in messages] == [
+        "system", "user", "assistant", "tool", "assistant", "tool", "user",
+    ]
+    assert fitted_body["tool_choice"] == "none"
+    assert sum(json.dumps(m).count("Set the timer for fifteen minutes.") for m in messages) == 1
+    assert "native_tool_calls_json" not in json.dumps(messages)
+    assert "native_result_content_sha256" not in json.dumps(messages)
+    for index, message in enumerate(messages):
+        if message["role"] == "assistant":
+            assert messages[index + 1]["tool_call_id"] == message["tool_calls"][0]["id"]

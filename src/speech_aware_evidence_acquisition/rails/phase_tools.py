@@ -406,6 +406,15 @@ class PhaseToolDispatcher:
                 "tool_call_id": native_call["call_id"],
                 "tool_calls_sha256": native_call["completion"].tool_calls_sha256,
                 "core_request_id": native_call["completion"].request_id,
+                "sample_id": context.sample_id,
+                "phase": phase,
+                "next_phase": next_phase,
+                "speech_packet_id": context.query_state.speech_packet_id,
+                "speech_packet_sha256": context.query_state.speech_packet_sha256,
+                "native_source_state_id": source.state_id,
+                "native_tool_calls_json": (
+                    native_call["completion"].tool_calls_json.decode("utf-8")
+                ),
             })
         self._emit(context.sample_id, phase, "attempt", request)
         try:
@@ -543,6 +552,23 @@ class PhaseToolDispatcher:
                         "corrective-memory tool did not return a bound selection"
                     )
                 result = dict(output.result.visible)
+            if native_call is not None:
+                # Preserve the actual return at invocation time. Later knowledge
+                # selections can change the current view but not an earlier turn.
+                if action["tool_id"] == PHASE_KNOWLEDGE_TOOL:
+                    native_content = list(self._value_renderer.assemble(
+                        cited, view=action["arguments"]["view"],
+                    ))
+                elif action["tool_id"] in {
+                    PREPARED_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_OBSERVATION_TOOL,
+                }:
+                    native_content = [output.result.content_block()]
+                else:
+                    native_content = []
+                request["native_result_content"] = native_content
+                request["native_result_content_sha256"] = content_hash(
+                    {"blocks": native_content}
+                )
             document = {
                 **request,
                 "schema": "saea-phase-tool-result-v1",

@@ -2161,6 +2161,7 @@ class FlightRuntime:
             packet_sha256 = descriptor["sha256"]
         return {
             "schema": "saea-native-phase-tool-contact-v1",
+            "sample_id": sample_id,
             **{key: facts[key] for key in required_text},
             "arguments_sha256": hashlib.sha256(
                 json.dumps(arguments, sort_keys=True, separators=(",", ":")).encode("utf-8")
