@@ -41,6 +41,10 @@ from ..rails.slurp_intent_hypotheses import (
 )
 from ..reproduction.slurp_scoring import parse_slu_response
 from ..reproduction.probe_split import load_verified_probe_split
+from .native_episode_diagnostics import (
+    NativeEpisodeDiagnosticError,
+    analyze_verified_native_episode_statistics,
+)
 from .null_calibration_cli import digest, pinned_json, rows_for
 from .paired import resampled_statistic
 from .slurp_topn_diagnostics import (
@@ -758,6 +762,7 @@ def _native_system_rows(
     parsed_states: dict[str, object] = {}
     branches: list[BranchOutcomeRow] = []
     source_rows: list[SourceCandidateRow] = []
+    final_parse_status: dict[str, bool] = {}
     for sample_id in full_ids:
         result, output_row = results[sample_id], outputs[sample_id]
         text = output_row.get("text")
@@ -828,7 +833,8 @@ def _native_system_rows(
         states[sample_id], parsed_states[sample_id] = state, parsed
         candidate_ids = tuple(candidate.intent_id for candidate in parsed.candidates)
         source_rows.append(SourceCandidateRow(sample_id, candidate_ids))
-        scenario, action, _entities, _parsed = parse_slu_response(text)
+        scenario, action, _entities, parsed_final = parse_slu_response(text)
+        final_parse_status[sample_id] = parsed_final
         final_intent = (
             f"{scenario}_{action}" if isinstance(scenario, str) and scenario
             and isinstance(action, str) and action else None
@@ -856,6 +862,43 @@ def _native_system_rows(
             max_candidates=width,
         )
     )
+    try:
+        postseal = analyze_verified_native_episode_statistics(
+            sample_ids=full_ids,
+            controller_policy_id=producer,
+            phase_results=results,
+            output_rows=outputs,
+            trace_records=_map(
+                getattr(bundle, "trace_records", None),
+                "verified native trace records",
+            ),
+        )
+    except NativeEpisodeDiagnosticError as error:
+        raise SlurpTopNAnalysisError(
+            f"native episode diagnostics failed: {error}"
+        ) from error
+    raw_widths: list[int] = []
+    projected_widths: list[int] = []
+    duplicate_counts: list[int] = []
+    for sample_id in full_ids:
+        parsed = parsed_states[sample_id]
+        projection = getattr(parsed, "projection", None)
+        if projection is None:
+            raise SlurpTopNAnalysisError(
+                f"native Perception projection is unavailable for {sample_id!r}"
+            )
+        raw_width = len(projection.raw_positions)
+        projected_width = len(parsed.candidates)
+        raw_widths.append(raw_width)
+        projected_widths.append(projected_width)
+        duplicate_counts.append(raw_width - projected_width)
+
+    def histogram(values: Sequence[int]) -> dict[str, int]:
+        return {
+            str(value): sum(item == value for item in values)
+            for value in sorted(set(values))
+        }
+
     return tuple(source_rows), tuple(branches), {
         "phase_artifact": {"path": str(phase_path), "sha256": phase_sha256},
         "candidate_source": {
@@ -874,6 +917,32 @@ def _native_system_rows(
                 None if phase_supply is None else len(audit_counts)
             ),
         },
+        "perception_projection_diagnostics": {
+            "sample_count": len(full_ids),
+            "raw_candidate_position_count": sum(raw_widths),
+            "projected_distinct_candidate_count": sum(projected_widths),
+            "duplicate_candidate_position_count": sum(duplicate_counts),
+            "raw_width_histogram": histogram(raw_widths),
+            "projected_width_histogram": histogram(projected_widths),
+            "duplicate_count_histogram": histogram(duplicate_counts),
+            "semantics": (
+                "Duplicates are repeated intent IDs in the untouched compact "
+                "Perception candidates before first-occurrence projection."
+            ),
+        },
+        "final_answer_format_diagnostics": {
+            "sample_count": len(full_ids),
+            "parsed_count": sum(final_parse_status.values()),
+            "malformed_count": sum(
+                not value for value in final_parse_status.values()
+            ),
+            "refusal_count": 0,
+            "semantics": (
+                "Finalized native episodes have an accepted Solver response; "
+                "nonempty malformed SLURP answers are counted separately."
+            ),
+        },
+        "native_episode_postseal_diagnostics": postseal,
         "projection_policy": projection_policy,
         "candidate_count_range": [1, width],
         "legal_candidate_inventory_sha256": legal_inventory_sha256,

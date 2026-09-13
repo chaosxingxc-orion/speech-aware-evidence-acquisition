@@ -109,6 +109,101 @@ def _stage(name: str, **values: object) -> dict[str, object]:
     return result
 
 
+def _add_episode_trace(
+    sample_id: str,
+    state: AgentStateArtifact,
+    final_text: str,
+    trace_records: dict[str, dict[str, object]],
+) -> tuple[dict[str, object], list[dict[str, object]]]:
+    policy = "native-policy"
+    phase_contacts: list[dict[str, object]] = []
+
+    def receipt(role: str, index: int, text: str) -> dict[str, str]:
+        request_id = f"{sample_id}-{role}-{index}"
+        contact_id = f"{policy}:{role}:{index}:{sample_id}"
+        request_sha256 = hashlib.sha256(f"request:{request_id}".encode()).hexdigest()
+        response_sha256 = hashlib.sha256(f"response:{request_id}".encode()).hexdigest()
+        text_sha256 = hashlib.sha256(text.encode()).hexdigest()
+        trace_records[f"{request_id}/request"] = {
+            "payload": {
+                "request_id": request_id,
+                "sample_id": sample_id,
+                "history": [],
+                "decoding_params": {"max_tokens": 16},
+                "supplied_evidence": [],
+            },
+            "payload_sha256": request_sha256,
+        }
+        trace_records[f"{request_id}/response"] = {
+            "text": text,
+            "response_sha256": response_sha256,
+            "response_text_sha256": text_sha256,
+            "usage": {"completion_tokens": 2},
+        }
+        trace_records[f"{request_id}/native-role-contact"] = {
+            "use_role_id": role,
+            "use_agent_contact_id": contact_id,
+            "use_request_sha256": request_sha256,
+            "use_response_sha256": response_sha256,
+            "use_response_text_sha256": text_sha256,
+        }
+        result = {
+            "agent_contact_id": contact_id,
+            "request_id": request_id,
+            "request_sha256": request_sha256,
+            "response_sha256": response_sha256,
+            "response_text_sha256": text_sha256,
+        }
+        phase_contacts.append({
+            "plan": {"contact_id": contact_id},
+            "response_sha256": text_sha256,
+        })
+        return result
+
+    perception_request = f"rails-{sample_id}"
+    perception_trace = trace_records[f"{perception_request}/request"]
+    perception_trace["payload"]["decoding_params"] = {"max_tokens": 16}
+    perception_trace["payload"]["supplied_evidence"] = []
+    trace_records[f"{perception_request}/response"]["usage"] = {
+        "completion_tokens": 2
+    }
+    perception = {
+        "agent_contact_id": f"{policy}:perception:0:{sample_id}",
+        "request_id": perception_request,
+        "request_sha256": perception_trace["payload_sha256"],
+        "response_sha256": trace_records[f"{perception_request}/response"][
+            "response_sha256"
+        ],
+        "response_text_sha256": state.source_response_sha256,
+    }
+    phase_contacts.append({
+        "plan": {"contact_id": perception["agent_contact_id"]},
+        "response_sha256": state.source_response_sha256,
+    })
+    solver = receipt("solver", 0, final_text)
+    reviewer = receipt("reviewer", 0, "review")
+    planner = receipt("planner", 0, "ACCEPT")
+
+    def visit(role: str, stage: str, contact: dict[str, str]) -> dict[str, object]:
+        execution = {"contacts": [contact], "final_contact": contact}
+        return {"role_id": role, "stage": stage, "execution_receipt": execution}
+
+    solver_execution = {"contacts": [solver], "final_contact": solver}
+    episode = {
+        "role_visits": [
+            visit("perception", "perception", perception),
+            {"role_id": "solver", "stage": "solver", "execution_receipt": solver_execution},
+            visit("reviewer", "review", reviewer),
+            visit("planner", "planner", planner),
+        ],
+        "planner_routes": [
+            {"role_visit_index": 3, "revision_count": 0, "action": "ACCEPT"}
+        ],
+        "accepted_solver_receipt": solver_execution,
+    }
+    return episode, phase_contacts
+
+
 def _native_fixture(
     tmp_path: Path,
     *,
@@ -138,9 +233,7 @@ def _native_fixture(
         "s1": '{"scenario":"a","action":"x","entities":[]}',
         "s2": '{"scenario":"b","action":"y","entities":[]}',
     }
-    episode = {
-        "role_visits": [], "planner_routes": [], "accepted_solver_receipt": {}
-    }
+
     results = []
     output_rows = []
     trace_records = {}
@@ -187,6 +280,11 @@ def _native_fixture(
             trace_records[f"{request_id}/native-role-contact"][
                 "use_role_id"
             ] = "solver"
+        episode, episode_contacts = _add_episode_trace(
+            sample_id, state, outputs[sample_id], trace_records
+        )
+        if defect == "wrong_contact" and sample_id == "s2":
+            episode_contacts[0]["response_sha256"] = "e" * 64
         results.append(
             {
                 "sample_id": sample_id,
@@ -194,18 +292,17 @@ def _native_fixture(
                 "final_response_sha256": hashlib.sha256(outputs[sample_id].encode()).hexdigest(),
                 "contacts": [
                     {
+                        **episode_contacts[0],
                         "plan": {
-                            "contact_id": contact_id,
+                            **episode_contacts[0]["plan"],
                             "query_state_sha256": state.source_query_state_sha256,
                             "instruction": instruction,
                         },
                         "query_state_sha256": state.source_query_state_sha256,
-                        "response_sha256": (
-                            "e" * 64 if defect == "wrong_contact" and sample_id == "s2"
-                            else state.source_response_sha256
-                        ),
-                    }
+                    },
+                    *episode_contacts[1:],
                 ],
+                "consumption": None,
                 "agent_states": [state.as_json()],
                 "native_episode_receipt": episode,
             }
@@ -393,6 +490,19 @@ def test_native_mode_reads_internal_perception_and_reports_actual_width(tmp_path
         "verified-source-derived-projection"
     )
     assert result["source"]["actual_candidate_supply"]["status"] == "unavailable"
+    projection = result["source"]["perception_projection_diagnostics"]
+    assert projection["raw_candidate_position_count"] == 4
+    assert projection["projected_distinct_candidate_count"] == 3
+    assert projection["duplicate_count_histogram"] == {"0": 1, "1": 1}
+    assert result["source"]["final_answer_format_diagnostics"]["malformed_count"] == 0
+    assert result["source"]["native_episode_postseal_diagnostics"][
+        "model_contacts"
+    ]["by_role"] == {
+        "perception": 2,
+        "planner": 2,
+        "reviewer": 2,
+        "solver": 2,
+    }
     assert (
         result["source"]["actual_candidate_supply"]["candidate_selection_audits"]
         is None

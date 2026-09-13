@@ -50,8 +50,45 @@ named-store receipt, candidate spec store ID and selection audit provenance.
 This optional path proves more than source projection and is reported
 separately.
 
+## Post-seal native episode statistics
+
+The shared pure native episode helper joins each exact model contact in the
+native role receipt to its manifest-verified request, response and role USE
+trace. It reports contacts by role, per-role and accepted-Solver completion-cap
+metadata, the accepted Solver binding, ordered Planner routes, native tool
+events, per-contact supplied evidence and value IDs, and trace-bound lexical
+consumption counts. Count model contacts rather than role visits: one ReAct
+visit can make multiple model contacts around a native tool action. Tool event
+counts distinguish attempt, result, failure and rejection records; they are not
+additional model contacts.
+
+The Planner revision histogram counts recorded Planner routes at each revision
+number, not distinct samples. Per-sample ordered routes retain the action and
+role-visit index needed to interpret repeated Solver, Reviewer and Planner
+transitions.
+
+Lexical USE/COPY/IGNORE means final-answer token overlap with supplied items. It
+is descriptive and does not establish semantic or causal use. Missing optional
+wire finish reasons, token usage, request evidence metadata or posthoc
+consumption records remain explicitly unavailable; do not convert unknowns to
+zero. The helper never reconstructs candidate-to-value selections from visible
+or supplied value IDs. Only genuine preserved FlightReceipts can establish that
+audit.
+
 Validation: 43 focused native and legacy Top-N diagnostic tests passed in WSL.
 They cover source-derived projection, genuine optional supply receipts,
 candidate width, trace/state/role/sample/hash mismatches, and named-store
 binding disagreement. No model, scorer, test-quality or current-run result
 was accessed in implementation and review.
+
+Additional validation: 57 focused native episode and native/legacy Top-N tests
+passed in WSL after adding post-seal statistics. Targeted Ruff checks and
+`git diff --check` also passed. These tests cover multiple ReAct contacts in one
+visit, accepted-Solver custody, role-separated contact counts, native tool
+events, missing optional metadata, raw Perception duplicate histograms and
+explicit malformed-final counts.
+
+Root integration validation: 80 focused diagnostics and saved-score receipt tests
+passed in WSL. The engineering-base check passed. Root reviewed the joins
+against the native role executor, phase tool event producer and runtime/posthoc
+consumption source. The active campaign worktree was not changed.
