@@ -1,0 +1,55 @@
+{
+  "arm": "speech-feature-query-native-tools",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame-tfrl-folds-v1/snapshot.json",
+  "knowledge_snapshot_sha256": "9c64e8ec48a0fce4f172bd190932f99c98c7efa18bbfb14526d54c62fdf7032b",
+  "knowledge_visibility": "No knowledge value is supplied in this pre-release proof configuration. The existing snapshot is retained only for shared runtime binding. Separate root-authored intent and slot stores are intentionally absent until their source, snapshot, and release SHA-256 bindings are supplied and reviewed.",
+  "native_episode": {
+    "schema": "saea-native-episode-config-v1",
+    "episode_id": "slurp-native-role-gpu-proof-v1",
+    "max_revisions": 1,
+    "actions": {"accept": "ACCEPT", "revise": "REVISE", "acquire": "ACQUIRE"},
+    "roles": {
+      "perception": {"phase_id": "perception", "max_iterations": 1},
+      "solver": {"phase_id": "solver", "max_iterations": 1},
+      "reviewer": {"phase_id": "reviewer", "max_iterations": 3},
+      "planner": {"phase_id": "planner", "max_iterations": 1}
+    }
+  },
+  "native_contact_fit": {
+    "run_id": "SAEA-SLURP-NATIVE-ROLE-GPU-PROOF-FIT-V1",
+    "attempt_id": "attempt-slurp-native-role-gpu-proof-fit-v1",
+    "contact_cap": 176,
+    "max_speech_packets": 1
+  },
+  "phase_material": {
+    "perception": {"instruction_fill": null, "instruction_template": "probes/slurp_native_role_perception_v1.txt", "predecessor_binding": "none"},
+    "solver": {"instruction_fill": null, "instruction_template": "probes/slurp_native_role_solver_v1.txt", "predecessor_binding": "none"},
+    "reviewer": {"instruction_fill": null, "instruction_template": "probes/slurp_native_role_reviewer_v1.txt", "predecessor_binding": "none"},
+    "planner": {"instruction_fill": null, "instruction_template": "probes/slurp_native_role_planner_v1.txt", "predecessor_binding": "none"}
+  },
+  "phase_tools": {
+    "reviewer": {
+      "mode": "native-tools", "source_authority_role": "reviewer",
+      "allowed_tools": ["saea-tool-task-contract-v1"], "knowledge_views": ["text"]
+    },
+    "planner": {
+      "mode": "native-tools", "source_authority_role": "planner",
+      "allowed_tools": ["saea-tool-task-contract-v1"], "knowledge_views": ["text"]
+    }
+  },
+  "policy": "phase-native-review-revise-v1",
+  "scorers": ["slurp-slu-official-train", "cost"],
+  "serving_slot_tokens": 8192,
+  "serving_slots": 8,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247",
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_direct_closed_list.txt",
+  "task_instruction_template_active": true,
+  "what_this_is": "Prospective four-row TRAIN engineering proof of the shared FlightRuntime/OpenJiuwen native role graph. Reviewer or Planner analytical actions are only model-proposed native task-contract calls. Perception and Solver have explicit empty native-tool authority. The proof cannot establish task quality or knowledge-store value.",
+  "knowledge_release_gate": "The root must replace this pre-release task-contract-only configuration with separately pinned intent and slot named-store bindings after review. The provider must return selected values only; it must never attach all 60 intent cards or all 54 slot cards."
+}
