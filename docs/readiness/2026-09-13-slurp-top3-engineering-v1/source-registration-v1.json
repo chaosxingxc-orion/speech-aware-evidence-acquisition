@@ -1,0 +1,31 @@
+{
+  "admission": {
+    "data_relpath": "coordination/slurp-top3-commitment-v1/source-engineering-admission-v1.json",
+    "sha256": "3f734466a334bd7951c065c02fa1ee1ae58c80b0bb2e498bbb03f63148e43c61"
+  },
+  "contact_status": "No source generation or tokenizer contact has occurred. Mock verification uses no socket.",
+  "model_geometry": {
+    "mmproj": false,
+    "session_id": "serving-slurp-top3-commitment-np8-v1",
+    "slot_tokens": 8192,
+    "slots": 8,
+    "source_max_tokens": 512
+  },
+  "plans": {
+    "fit": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-top3-engineering-v1/source-fit-plan-v1.json",
+      "sha256": "3af42490831684f0dc43cadcdabd009349c0530ba9a2a694bfbac6453c7be58f"
+    },
+    "generation": {
+      "repo_relpath": "docs/readiness/2026-09-13-slurp-top3-engineering-v1/source-generation-plan-v1.json",
+      "sha256": "fda5950158cc6108494108fef7595e5b102b8fd107b98a4a7281ecc2c39cfb2f"
+    }
+  },
+  "registered_at": "2026-09-13T04:49:15.244981+00:00",
+  "schema": "saea-top3-engineering-registration-v1",
+  "scope": "Owner-authorized Stage-2 engineering proof of four fixed Top-3 hypothesis artifacts on the retained exposed DEV roster. This does not admit a powered campaign or claim task effectiveness.",
+  "source_roster": {
+    "repo_relpath": "docs/receipts/rosters/slurp-dev1000-intent-hypothesis-source-engineering4-v1.json",
+    "sha256": "0d9fab6b7274aa941699d1b944e908afd68e18e7dfdad2acaada6cc1ebd2009c"
+  }
+}

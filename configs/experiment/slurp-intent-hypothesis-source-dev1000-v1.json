@@ -35,6 +35,6 @@
   "request_decoding_overrides": {
     "max_tokens": 512
   },
-  "service_session": "serving-slurp-intent-hypothesis-source-np8-v1",
+  "service_session": "serving-slurp-top3-commitment-np8-v1",
   "split_id": "DEV-1000"
 }

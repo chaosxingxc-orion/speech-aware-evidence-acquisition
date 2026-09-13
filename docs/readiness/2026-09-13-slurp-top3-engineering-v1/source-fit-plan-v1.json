@@ -1,0 +1,44 @@
+{
+  "cell": "slurp-intent-hypothesis-source-engineering4-v1",
+  "composed_config_hash": "f708e067d22f5a96a2c50530c2bbccf155fb7d24030f58a230ad7d2027c40e3d",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-intent-hypothesis-source-engineering-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.25,
+    "planned_model_calls": 13,
+    "planned_speech_audio_seconds": 60,
+    "protocol_hash": "4b63c1e28adf3ca5d5d8f8d335fcd4cbf614e96f17a24dc455b237ef32070f33",
+    "run_id": "SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-ENGINEERING-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "e335c74149794af0f2301954b6e92cde2a4134d65ebe6069173a1a556b7a04b3",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-top3-commitment-np8-v1",
+  "experiment": "slurp-intent-hypothesis-source-engineering4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "encoder_calls": 0,
+    "fit_contacts": 13,
+    "fit_speech_seconds_cap": 60,
+    "generation_cap": 4,
+    "generation_speech_seconds_cap": 60,
+    "generation_target": 4,
+    "gpu_hours_fit_inclusive": 0.25,
+    "scorer_calls": 0
+  },
+  "final_source_binding": "Bind the clean experiment commit and locally attested complete np8 service identity in the launch receipt before contact.",
+  "fit_protocol": "One actual active wave. Register one props read and three exact capacity endpoints per each of four rows; use the same request builder and all speech packet bytes. No separate approximate model contact.",
+  "protocol_hash": "4b63c1e28adf3ca5d5d8f8d335fcd4cbf614e96f17a24dc455b237ef32070f33",
+  "quality_read_gate": "Engineering artifact shape, binding and refusal checks only. No efficacy inference; scoreless source.",
+  "registered_at": "2026-09-13T04:49:15.244981+00:00",
+  "retry_policy": "No adaptive repetition. Four generation contacts maximum. Stop on failure and root-cause before any separately registered recovery.",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_eligibility": {
+    "decision_id": "SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-ENGINEERING-ADMISSION-V1",
+    "relpath": "coordination/slurp-top3-commitment-v1/source-engineering-admission-v1.json",
+    "sha256": "3f734466a334bd7951c065c02fa1ee1ae58c80b0bb2e498bbb03f63148e43c61"
+  },
+  "source_worktree": "/home/chao/saea-worktrees/agentic-native-tool-loop-v1"
+}
