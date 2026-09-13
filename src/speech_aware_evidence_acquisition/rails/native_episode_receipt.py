@@ -98,6 +98,8 @@ def validate_native_episode_delivery_receipt(
     )
 
     if accepted_present:
+        if receipt.get("terminal_disposition") is not None:
+            _raise(error_type, "accepted delivery must not carry a terminal disposition")
         accepted = _receipt(
             receipt.get("accepted_solver_receipt"),
             "accepted Solver receipt",

@@ -358,3 +358,17 @@ def test_rejects_ambiguous_accepted_and_terminal_delivery_receipts():
             output_rows={"s1": output},
             trace_records=trace,
         )
+
+
+def test_accepted_delivery_rejects_a_conflicting_terminal_disposition():
+    policy, phase_result, output, trace = _fixture()
+    phase_result["native_episode_receipt"]["terminal_disposition"] = {
+        "reason": "revision_limit", "planner_action": "REVISE",
+        "revision_count": 0, "planner_accepted": False,
+    }
+    with pytest.raises(NativeEpisodeDiagnosticError, match="must not carry"):
+        analyze_verified_native_episode_statistics(
+            sample_ids=("s1",), controller_policy_id=policy,
+            phase_results={"s1": phase_result}, output_rows={"s1": output},
+            trace_records=trace,
+        )

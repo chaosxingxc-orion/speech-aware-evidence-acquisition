@@ -1942,50 +1942,19 @@ async def _invoke_native_role_episode(
         result = await workflow.invoke_direct(state.prepared.task_contract, (), session=session)
         settle()
         receipt = result["state"]
-        accepted_receipt = receipt.get("accepted_solver_receipt")
-        terminal_receipt = receipt.get("terminal_solver_receipt")
-        if isinstance(accepted_receipt, Mapping) and terminal_receipt is None:
-            final_solver_receipt = accepted_receipt
-            terminal_disposition = None
-        elif accepted_receipt is None and isinstance(terminal_receipt, Mapping):
-            terminal_disposition = receipt.get("terminal_disposition")
-            if (
-                not isinstance(terminal_disposition, Mapping)
-                or terminal_disposition.get("reason") != "revision_limit"
-                or terminal_disposition.get("planner_action")
-                not in {config.actions[1], config.actions[2]}
-                or terminal_disposition.get("revision_count") != config.max_revisions
-                or terminal_disposition.get("planner_accepted") is not False
-            ):
-                raise RailsRunnerError("native terminal delivery disposition is invalid")
-            planner_routes = receipt.get("planner_routes")
-            if (
-                not isinstance(planner_routes, Sequence)
-                or isinstance(planner_routes, (str, bytes))
-                or not planner_routes
-                or not isinstance(planner_routes[-1], Mapping)
-                or planner_routes[-1].get("action")
-                != terminal_disposition["planner_action"]
-                or planner_routes[-1].get("revision_count")
-                != terminal_disposition["revision_count"]
-            ):
-                raise RailsRunnerError("native terminal delivery route is invalid")
-            final_solver_receipt = terminal_receipt
-        else:
-            raise RailsRunnerError("native episode has no unambiguous final Solver receipt")
-        accepted = final_solver_receipt.get("final_contact")
-        if not isinstance(accepted, Mapping):
-            raise RailsRunnerError("native final Solver receipt has no final contact")
-        solver_visits = [
-            visit
-            for visit in receipt.get("role_visits", ())
-            if isinstance(visit, Mapping) and visit.get("stage") == "solver"
-        ]
-        if (
-            not solver_visits
-            or solver_visits[-1].get("execution_receipt") != final_solver_receipt
+        from .native_episode_receipt import validate_native_episode_delivery_receipt
+
+        delivery = validate_native_episode_delivery_receipt(
+            receipt, terminal_actions=config.actions[1:], error_type=RailsRunnerError,
+        )
+        final_solver_receipt = delivery.solver_receipt
+        terminal_disposition = delivery.terminal_disposition
+        if terminal_disposition is not None and (
+            config.exhaustion_policy != "deliver-latest-solver"
+            or terminal_disposition["revision_count"] != config.max_revisions
         ):
-            raise RailsRunnerError("native final receipt is not the latest Solver visit")
+            raise RailsRunnerError("native terminal delivery differs from its configured policy")
+        accepted = delivery.final_contact
         completion = completed.get(accepted.get("agent_contact_id"))
         if (
             completion is None or completion.request_sha256 != accepted["request_sha256"]
