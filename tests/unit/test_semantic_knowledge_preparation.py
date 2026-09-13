@@ -106,7 +106,9 @@ def _world(tmp_path: Path, *, builder: str = INTENT_BOUNDARY_BUILD_POLICY_ID):
     repo_root, data_root = tmp_path / "repo", tmp_path / "data"
     repo_root.mkdir(parents=True)
     data_root.mkdir(parents=True)
-    support_identity = split_identity_hash(prefixed("slurp", ("train-1", "train-2")))
+    scope_identity = split_identity_hash(
+        prefixed("slurp", ("train-1", "train-2", "train-3"))
+    )
     scope_pin = _write(
         repo_root / "scope.json",
         _roster(("train-1", "train-2", "train-3"), roster_id="scope"),
@@ -127,7 +129,7 @@ def _world(tmp_path: Path, *, builder: str = INTENT_BOUNDARY_BUILD_POLICY_ID):
     source = {
         "schema": "saea-authored-semantic-knowledge-source-v1",
         "builder_policy_id": builder,
-        "source_split_identity_hash": support_identity,
+        "source_split_identity_hash": scope_identity,
         "rows": rows,
     }
     source_pin = _write(data_root / "authored.json", source)
@@ -136,7 +138,7 @@ def _world(tmp_path: Path, *, builder: str = INTENT_BOUNDARY_BUILD_POLICY_ID):
         "registration_id": "SYNTHETIC-SEMANTIC-PREP-V1",
         "carrier_lock_key": "slurp",
         "source_partition_role": "train",
-        "source_split_identity_hash": support_identity,
+        "source_split_identity_hash": scope_identity,
         "builder_policy_id": builder,
         "store_id": "intent-boundaries",
         "store_role": "intent-boundaries",
@@ -149,6 +151,41 @@ def _world(tmp_path: Path, *, builder: str = INTENT_BOUNDARY_BUILD_POLICY_ID):
     registration_path = repo_root / "registration.json"
     registration_path.write_bytes(canonical_bytes(registration))
     return repo_root, data_root, registration_path, registration
+
+
+def test_accepts_explicit_data_root_scope_and_support_rosters(tmp_path):
+    repo_root, data_root, registration_path, registration = _world(tmp_path)
+    registration["authored_source"]["root"] = "data"
+    for field in ("construction_scope", "permitted_roster"):
+        original = registration[field]
+        document = json.loads((repo_root / original["relpath"]).read_text())
+        registration[field] = _write(data_root / original["relpath"], document)
+        registration[field]["root"] = "data"
+    registration_path.write_bytes(canonical_bytes(registration))
+
+    result = prepare_semantic_knowledge_store(
+        registration_path, repo_root=repo_root, data_root=data_root
+    )
+
+    assert result["completion"]["binding"]["construction_scope"]["root"] == "data"
+    assert result["completion"]["binding"]["permitted_roster"]["root"] == "data"
+
+
+def test_source_identity_must_match_the_outer_construction_scope(tmp_path):
+    repo_root, data_root, registration_path, registration = _world(tmp_path)
+    registration["source_split_identity_hash"] = "d" * 64
+    source = json.loads((data_root / "authored.json").read_text())
+    source["source_split_identity_hash"] = "d" * 64
+    registration["authored_source"] = _write(data_root / "authored.json", source)
+    registration_path.write_bytes(canonical_bytes(registration))
+
+    with pytest.raises(
+        SemanticKnowledgePreparationError,
+        match="construction scope split identity differs",
+    ):
+        prepare_semantic_knowledge_store(
+            registration_path, repo_root=repo_root, data_root=data_root
+        )
 
 
 @pytest.mark.parametrize(
@@ -281,14 +318,11 @@ def test_wrong_source_identity_unknown_builder_and_support_outside_scope_refuse(
         )
 
     repo_root, data_root, registration_path, registration = _world(tmp_path / "outside")
-    outside_identity = split_identity_hash(prefixed("slurp", ("train-1", "outside")))
     registration["permitted_roster"] = _write(
         repo_root / "support.json",
         _roster(("train-1", "outside"), roster_id="support"),
     )
-    registration["source_split_identity_hash"] = outside_identity
     source = json.loads((data_root / "authored.json").read_text())
-    source["source_split_identity_hash"] = outside_identity
     source["rows"][1] = _intent("intent_two", "outside")
     registration["authored_source"] = _write(data_root / "authored.json", source)
     registration_path.write_bytes(canonical_bytes(registration))
