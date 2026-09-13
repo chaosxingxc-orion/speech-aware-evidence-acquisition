@@ -38,6 +38,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Awaitable, Callable, Mapping, Sequence
+from typing import TypeVar
 
 from openjiuwen.core.common.exception.codes import StatusCode
 from openjiuwen.core.common.exception.errors import BaseError
@@ -89,6 +90,8 @@ END_NODE_ID = "end"
 # selects a cache, not arithmetic) and run-to-run byte identity is already
 # absent at this protocol (2026-08-11 determinism read-out).
 SLOT_AFFINITY_SENTINEL = "per-sample"
+
+ContactResult = TypeVar("ContactResult")
 
 
 def _resolve_slot_affinity(state: "ObsSampleState", slot: int) -> bool:
@@ -401,14 +404,25 @@ def build_speech_agent_workflow(
 def execute_speech_agent_workflows(
     states: Sequence[object],
     *,
-    prepare_wave: Callable[[object, object], int],
-    invoke_contact: Callable[[object, int, int], Mapping[str, object]],
-    aggregate_wave: Callable[[object, tuple[Mapping[str, object], ...], object], None],
-    should_continue: Callable[[object], bool],
+    prepare_wave: Callable[[object, object], int] | None = None,
+    invoke_contact: Callable[[object, int, int], Mapping[str, object]] | None = None,
+    aggregate_wave: (
+        Callable[[object, tuple[Mapping[str, object], ...], object], None] | None
+    ) = None,
+    should_continue: Callable[[object], bool] | None = None,
     branch_count: int,
     slot_count: int,
     queue_depth: int,
     workflow_timeout_seconds: float,
+    episode_invoker: Callable[
+        [
+            object,
+            Callable[[Callable[[int], ContactResult]], Awaitable[ContactResult]],
+            object,
+        ],
+        Awaitable[object],
+    ]
+    | None = None,
 ) -> list[object]:
     """Run speech Agent workflows on one openJiuwen event loop.
 
@@ -420,7 +434,30 @@ def execute_speech_agent_workflows(
     component waits for its blocking worker to settle before the slot can be
     released. The repository's frozen-core callback remains the only model
     door; no framework LLM client is instantiated.
+
+    When ``episode_invoker`` is configured, it replaces only the legacy
+    graph construction for one admitted state. It receives that state, a
+    generic ``run_contact(blocking_contact)`` awaitable, and the configured
+    OpenJiuwen session. ``blocking_contact`` takes the trajectory's stable
+    primary slot id and runs through the same serialized, shielded worker
+    lifecycle as a legacy branch. The invoker must use the supplied session
+    for its workflow invocation so the configured framework timeout remains
+    authoritative. With no invoker, the legacy graph path is unchanged.
     """
+
+    if episode_invoker is None and any(
+        callback is None
+        for callback in (
+            prepare_wave,
+            invoke_contact,
+            aggregate_wave,
+            should_continue,
+        )
+    ):
+        raise TypeError(
+            "legacy speech Agent execution requires prepare_wave, "
+            "invoke_contact, aggregate_wave, and should_continue"
+        )
 
     ordered_states = list(states)
 
@@ -433,7 +470,7 @@ def execute_speech_agent_workflows(
             primary_slot_id: int | None = None
             slot_assignment_lock = asyncio.Lock()
             contact_lock = asyncio.Lock()
-            worker_tasks: set[asyncio.Task[Mapping[str, object]]] = set()
+            worker_tasks: set[asyncio.Task[object]] = set()
 
             async def primary_slot() -> int:
                 nonlocal primary_slot_id
@@ -443,16 +480,13 @@ def execute_speech_agent_workflows(
                             primary_slot_id = await slots.get()
                 return primary_slot_id
 
-            async def invoke_branch(branch_index: int) -> Mapping[str, object]:
+            async def run_contact(
+                blocking_contact: Callable[[int], ContactResult],
+            ) -> ContactResult:
                 async with contact_lock:
                     slot_id = await primary_slot()
                     worker = asyncio.create_task(
-                        asyncio.to_thread(
-                            invoke_contact,
-                            state,
-                            branch_index,
-                            slot_id,
-                        )
+                        asyncio.to_thread(blocking_contact, slot_id)
                     )
                     worker_tasks.add(worker)
                     try:
@@ -467,21 +501,38 @@ def execute_speech_agent_workflows(
                         if worker.done():
                             worker_tasks.discard(worker)
 
-            flow = build_speech_agent_workflow(
-                prepare_wave=lambda session: prepare_wave(state, session),
-                invoke_contact=invoke_branch,
-                aggregate_wave=lambda responses, session: aggregate_wave(
-                    state, responses, session
-                ),
-                should_continue=lambda: should_continue(state),
-                branch_count=branch_count,
-            )
+            async def invoke_branch(branch_index: int) -> Mapping[str, object]:
+                assert invoke_contact is not None
+                return await run_contact(
+                    lambda slot_id: invoke_contact(
+                        state,
+                        branch_index,
+                        slot_id,
+                    )
+                )
+
+            if episode_invoker is None:
+                assert prepare_wave is not None
+                assert aggregate_wave is not None
+                assert should_continue is not None
+                flow = build_speech_agent_workflow(
+                    prepare_wave=lambda session: prepare_wave(state, session),
+                    invoke_contact=invoke_branch,
+                    aggregate_wave=lambda responses, session: aggregate_wave(
+                        state, responses, session
+                    ),
+                    should_continue=lambda: should_continue(state),
+                    branch_count=branch_count,
+                )
             session = create_workflow_session(
                 envs={WORKFLOW_EXECUTE_TIMEOUT: float(workflow_timeout_seconds)}
             )
             try:
                 try:
-                    await flow.invoke(inputs={}, session=session)
+                    if episode_invoker is None:
+                        await flow.invoke(inputs={}, session=session)
+                    else:
+                        await episode_invoker(state, run_contact, session)
                 except BaseError as error:
                     if (
                         getattr(error, "code", None)
