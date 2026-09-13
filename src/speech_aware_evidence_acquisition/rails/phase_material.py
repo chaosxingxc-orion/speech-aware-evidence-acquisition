@@ -1271,6 +1271,8 @@ def sealed_states_from_manifest(
         )
 
     verified = verifier(manifest_path)
+    from ..core.bundle.hypothesis_source import is_derived_hypothesis_bundle
+
     verified_manifest = getattr(verified, "manifest", None)
     artifact_result = (
         verified_manifest.get("artifact_result")
@@ -1283,6 +1285,9 @@ def sealed_states_from_manifest(
         and isinstance(artifact_result, Mapping)
         and artifact_result.get("schema") == "saea-artifact-result-binding-v2"
         and artifact_result.get("role") == "slurp-intent-hypotheses"
+    ) or (
+        isinstance(verified_manifest, Mapping)
+        and is_derived_hypothesis_bundle(verified)
     )
     by_sample: dict[str, Mapping[str, object]] = {}
     for row in verified.outputs_rows:

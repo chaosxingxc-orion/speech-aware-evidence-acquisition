@@ -717,6 +717,24 @@ def _cli_finalize(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cli_prepare_state_source(args: argparse.Namespace) -> int:
+    """Prepare one registered deterministic source through the common cache."""
+    from ..bundle.git_commit import require_clean_study_repo
+    from ..bundle.hypothesis_source import prepare_hypothesis_source
+
+    repo_root = Path(args.repo_root).resolve()
+    if repo_root != REPO_ROOT.resolve():
+        raise ValueError("prepare-state-source repo_root must match the imported checkout")
+    commit = require_clean_study_repo(repo_root)
+    receipt = prepare_hypothesis_source(
+        registration_path=Path(args.registration),
+        data_root=Path(args.data_root),
+        implementation_commit=commit,
+    )
+    print(json.dumps(receipt, indent=2, sort_keys=True))
+    return 0
+
+
 def _cli_build_delivery(args: argparse.Namespace) -> int:
     """Build one verified phase-delivery derivative through the shared API."""
 
@@ -1345,6 +1363,15 @@ def main(argv: list[str] | None = None) -> int:
     speech_read.add_argument("--split-name", required=True)
     speech_read.add_argument("--output", required=True)
     speech_read.set_defaults(func=_cli_speech_native_read)
+
+    prepare_state = sub.add_parser(
+        "prepare-state-source",
+        help="prepare a registered deterministic predecessor without new inference",
+    )
+    prepare_state.add_argument("--registration", required=True)
+    prepare_state.add_argument("--repo-root", required=True)
+    prepare_state.add_argument("--data-root", required=True)
+    prepare_state.set_defaults(func=_cli_prepare_state_source)
 
     build_delivery = sub.add_parser(
         "build-delivery",

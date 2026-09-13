@@ -48,6 +48,13 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
 
     if manifest.get("schema") == DELIVERY_MANIFEST_SCHEMA:
         return verify_delivery_bundle(manifest_path, manifest)
+    from .hypothesis_source import PREPARATION_KIND, verify_hypothesis_source
+
+    if (
+        manifest.get("schema") == "saea-prepared-artifact-v1"
+        and manifest.get("kind") == PREPARATION_KIND
+    ):
+        return verify_hypothesis_source(manifest_path)
     _verify_manifest_header(manifest)
 
     # Minor hardening (round-2 external-threat-model review): every artifact

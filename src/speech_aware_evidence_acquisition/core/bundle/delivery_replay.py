@@ -548,11 +548,19 @@ def replay_sealed_state_response_delivery(
     if source_manifest_sha256 != source["manifest_sha256"]:
         raise BundleError("sealed-state predecessor manifest hash differs from source")
     predecessor = verify_bundle(source_path)
-    if (
-        predecessor.attempt_state != "FINALIZED"
-        or predecessor.manifest.get("status") != "COMPLETED"
+    from .hypothesis_source import is_derived_hypothesis_bundle
+
+    if not (
+        (
+            predecessor.attempt_state == "FINALIZED"
+            and predecessor.manifest.get("status") == "COMPLETED"
+        )
+        or is_derived_hypothesis_bundle(predecessor)
     ):
-        raise BundleError("sealed-state predecessor must be FINALIZED and COMPLETED")
+        raise BundleError(
+            "sealed-state predecessor must be FINALIZED and COMPLETED "
+            "or an explicitly verified hypothesis derivation"
+        )
     if predecessor.split_ids != parent.split_ids:
         raise BundleError("sealed-state predecessor roster differs from response parent")
     runtime_producers = [
