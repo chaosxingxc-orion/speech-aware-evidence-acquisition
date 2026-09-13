@@ -1,0 +1,87 @@
+{
+  "authorization_change": "The owner explicitly requests a limited source-intent quality diagnosis before choosing the recovery design. This supersedes only the earlier source-quality hold until both successors score. Preserve all prior registration bytes, failed source and original sequence; authorize no successor generation or production projection.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "official_scorer": 0,
+    "tokenizer": 0
+  },
+  "decision_discipline": "Do not invent a universal sufficient-accuracy threshold, promote width to calibrated confidence, or claim a routing policy works from this diagnostic alone. Assess remaining error and candidate headroom, then propose a bounded route validation on legitimate construction/discovery data.",
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-SLURP-TOP3-SOURCE-INTENT-DIAGNOSTIC-V1",
+  "full_roster": {
+    "path": "/home/chao/saea-worktrees/slurp-top3-full-successors-v1/docs/receipts/probe-samples/DEV-1000.json",
+    "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+  },
+  "metadata": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+    "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+  },
+  "metrics": {
+    "additional_descriptive_counts": [
+      "Top1 wrong but reference in later distinct proposals",
+      "Top1 wrong and reference absent",
+      "most frequent actual-versus-first-proposed intent confusions, with count denominators"
+    ],
+    "coverage_headroom": "Coverage minus Top1; potential recovery within available proposals, not achieved final-answer improvement.",
+    "distinct_proposal_coverage": "Reference membership in the set of all three raw proposed IDs. Duplicates do not increase coverage; do not create an admissible runtime projection.",
+    "partitions": [
+      "NEW500 primary",
+      "OLD500 secondary",
+      "DEV1000 secondary",
+      "observed distinct-width1,2,3 within each population",
+      "scenario strata within each population"
+    ],
+    "top1": "Exact equality of the first raw proposed canonical intent ID and reference intent.",
+    "uncertainty": "Use shared analysis.paired.resampled_statistic with whole-speaker cluster resampling,10000 replicates,seed20260913,CI90; repeated metric calls use identical paired draws. Report subgroup counts and avoid treating width as confidence.",
+    "weightings": [
+      "natural sample mixture",
+      "equal scenario mixture"
+    ]
+  },
+  "output_relpath": "analysis/SAEA-SLURP-TOP3-SOURCE-INTENT-DIAGNOSTIC-V1/source-intent-diagnostic.json",
+  "owner_direction_english": "Analyze the current target-intent accuracy first. If it is sufficiently high, follow a model-driven approach; otherwise use Top-N intent matching.",
+  "primary_roster": {
+    "path": "/home/chao/saea-worktrees/slurp-top3-full-successors-v1/docs/receipts/probe-samples/DEV-1000-NEW500.json",
+    "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+  },
+  "reference_source": {
+    "allow_heldout": false,
+    "allow_synthetic": false,
+    "data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+    "kind": "slurp-split",
+    "lock": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+      "sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+    },
+    "scope": "Use the existing governed devel reference loader offline, select exactly the retained1000 IDs before metrics, and never pass reference records to a runtime or model.",
+    "split_id": "devel",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "registered_at": "2026-09-13T06:16:38.272765+00:00",
+  "schema": "saea-source-intent-diagnostic-read-registration-v1",
+  "source_attempt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-V1/attempt-slurp-intent-hypothesis-source-generation-v1.json",
+    "sha256": "67fd53a945849bd03b543da621a8e787f7e194615c68b88f0776f477f826409f"
+  },
+  "source_config": {
+    "path": "/home/chao/saea-worktrees/slurp-top3-full-successors-v1/configs/baseline/slurp-intent-hypothesis-source-dev1000-v1.json",
+    "sha256": "3eac1b787e570cdf60441f4bfaaa0620dccdd3536e231e45aacac48029296a4a"
+  },
+  "source_format_audit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-top3-commitment-v1/full-source-format-audit-v1.json",
+    "sha256": "21f8c1c3e527e4a262774ab2f39a838d7d1895ee3c29802827684eb9e8840123"
+  },
+  "source_generation_plan": {
+    "path": "/home/chao/saea-worktrees/slurp-top3-full-successors-v1/docs/readiness/2026-09-13-slurp-top3-full-v1/source-generation-plan-v1.json",
+    "sha256": "56a94af776d7d0d4a8e09b51d0f10a49ecf4fb71f4d29211355154cf57f21e4e"
+  },
+  "source_status": "ABORTED after all1000 generation responses; exact-three-unique artifact contract failed on333 rows. Raw predictions remain diagnostic evidence only.",
+  "source_trace": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-V1/attempt-slurp-intent-hypothesis-source-generation-v1/SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-V1.trace.jsonl",
+    "sha256": "e990f3db2bbf105a09c0d1cf5f7ce6c3f75e5d21814f549d376ec773496873cf"
+  },
+  "status": "REGISTERED_BEFORE_SOURCE_QUALITY_READ"
+}
