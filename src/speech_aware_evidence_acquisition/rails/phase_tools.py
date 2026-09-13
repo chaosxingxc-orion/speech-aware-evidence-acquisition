@@ -701,9 +701,13 @@ class PhaseToolDispatcher:
                 # Preserve the actual return at invocation time. Later knowledge
                 # selections can change the current view but not an earlier turn.
                 if action["tool_id"] == PHASE_KNOWLEDGE_TOOL:
-                    native_content = list(self._value_renderer.assemble(
-                        cited, view=action["arguments"]["view"],
-                    ))
+                    native_content = list(
+                        self._model_knowledge_blocks(
+                            self._value_renderer.assemble(
+                                cited, view=action["arguments"]["view"]
+                            )
+                        )
+                    )
                 elif action["tool_id"] in {
                     PREPARED_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_OBSERVATION_TOOL,
                 }:
@@ -714,11 +718,20 @@ class PhaseToolDispatcher:
                 request["native_result_content_sha256"] = content_hash(
                     {"blocks": native_content}
                 )
+            model_result = result
+            if action["tool_id"] == PHASE_KNOWLEDGE_TOOL and store_receipt is not None:
+                model_result = {
+                    "store_id": result["store_id"],
+                    "store_role": result["store_role"],
+                    "selected_value_ids": result["selected_value_ids"],
+                    "supporting_facet_ids": result["supporting_facet_ids"],
+                    "knowledge_view": result["knowledge_view"],
+                }
             document = {
                 **request,
                 "schema": "saea-phase-tool-result-v1",
-                "result": result,
-                "result_sha256": content_hash(result),
+                "result": model_result,
+                "result_sha256": content_hash(model_result),
             }
             artifact = AgentStateArtifact(
                 state_id=f"tool-result:{phase}:{context.sample_id}",
@@ -729,7 +742,16 @@ class PhaseToolDispatcher:
                 producer_policy_id=self.program.program_id,
                 cited_value_ids=cited,
             ).validate()
-            receipt_document = document
+            receipt_document = (
+                {
+                    **document,
+                    "result": result,
+                    "result_sha256": content_hash(result),
+                    "model_result_sha256": content_hash(model_result),
+                }
+                if model_result is not result
+                else document
+            )
             if action["tool_id"] == CORRECTIVE_MEMORY_TOOL:
                 receipt_document = {
                     **document,
@@ -933,30 +955,38 @@ class PhaseToolDispatcher:
             previous = view
         if group:
             blocks.extend(self._value_renderer.assemble(group, view=previous))
-        if self.knowledge_stores is not None:
-            named_blocks = []
-            for block in blocks:
-                evidence_id = str(block.get("evidence_id", ""))
-                store_id, separator, local_id = evidence_id.partition("::")
-                if not separator or not local_id:
-                    raise PhaseToolError(
-                        "named knowledge evidence lacks a store-qualified ID"
-                    )
-                try:
-                    visible = self.knowledge_stores.model_evidence_block(
-                        store_id,
-                        local_evidence_id=local_id,
-                        content=str(block["text"]),
-                    )
-                except RailsError as error:
-                    raise PhaseToolError(str(error)) from error
-                if visible["evidence_id"] != evidence_id:
-                    raise PhaseToolError(
-                        "named knowledge evidence changed its store-qualified ID"
-                    )
-                named_blocks.append({**block, **visible})
-            blocks = named_blocks
+        blocks = list(self._model_knowledge_blocks(blocks))
         return tuple(blocks + observations)
+
+    def _model_knowledge_blocks(self, blocks):
+        if self.knowledge_stores is None:
+            return tuple(blocks)
+        named_blocks = []
+        for block in blocks:
+            evidence_id = str(block.get("evidence_id", ""))
+            store_id, separator, local_id = evidence_id.partition("::")
+            if not separator or not local_id:
+                raise PhaseToolError(
+                    "named knowledge evidence lacks a store-qualified ID"
+                )
+            if block.get("type") != "text" or not isinstance(block.get("text"), str):
+                raise PhaseToolError(
+                    "named knowledge evidence requires a text value block"
+                )
+            try:
+                visible = self.knowledge_stores.model_evidence_block(
+                    store_id,
+                    local_evidence_id=local_id,
+                    content=block["text"],
+                )
+            except RailsError as error:
+                raise PhaseToolError(str(error)) from error
+            if visible["evidence_id"] != evidence_id:
+                raise PhaseToolError(
+                    "named knowledge evidence changed its store-qualified ID"
+                )
+            named_blocks.append({**block, **visible})
+        return tuple(named_blocks)
 
     def receipt(self):
         with self._lock:
