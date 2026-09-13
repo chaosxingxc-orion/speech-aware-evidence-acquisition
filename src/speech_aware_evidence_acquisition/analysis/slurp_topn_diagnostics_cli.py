@@ -387,6 +387,7 @@ def _references(binding, expected_ids, *, loader):
 def _branch_rows(
     name, bundle, source_path, source_sha, source_states, full_ids,
     entity_correctness: Mapping[str, bool | None] | None = None,
+    delivery_diagnostics: dict[str, Mapping[str, object]] | None = None,
 ):
     manifest = _map(getattr(bundle, "manifest", None), f"{name} manifest")
     if manifest.get("schema") != "saea-derived-delivery-v1" or getattr(bundle, "attempt_state", None) != "DERIVED":
@@ -439,6 +440,29 @@ def _branch_rows(
         refusal = phase.get("refusal_reason")
         if refusal is not None and (not isinstance(refusal, str) or not refusal):
             raise SlurpTopNAnalysisError(f"{name} refusal reason malformed for {sample_id!r}")
+        diagnostics = phase.get("delivery_diagnostics")
+        if diagnostics is not None:
+            if not isinstance(diagnostics, Mapping):
+                raise SlurpTopNAnalysisError(
+                    f"{name} delivery diagnostics malformed for {sample_id!r}"
+                )
+            for key, value in diagnostics.items():
+                if not isinstance(key, str) or not key:
+                    raise SlurpTopNAnalysisError(
+                        f"{name} delivery diagnostic key malformed for {sample_id!r}"
+                    )
+                if isinstance(value, bool):
+                    continue
+                if isinstance(value, int) and value >= 0:
+                    continue
+                raise SlurpTopNAnalysisError(
+                    f"{name} delivery diagnostic value malformed for {sample_id!r}"
+                )
+        if delivery_diagnostics is not None:
+            delivery_diagnostics[sample_id] = {
+                "flags": None if diagnostics is None else dict(diagnostics),
+                "refusal_reason": refusal,
+            }
         outcomes.append(
             BranchOutcomeRow(
                 sample_id, final_intent, refusal is not None,
@@ -446,6 +470,117 @@ def _branch_rows(
             )
         )
     return tuple(outcomes)
+
+
+def _raw_delivery_diagnostic_report(
+    delivery_rows: Mapping[str, Mapping[str, object]],
+    sample_ids: Sequence[str] | set[str] | frozenset[str],
+) -> dict[str, object]:
+    """Count verified phase delivery flags without reading or scoring outputs.
+
+    delivery_rows is populated while the derived bundle is verified. A missing
+    delivery_diagnostics mapping remains unavailable rather than being silently
+    interpreted as zero. The old aggregator's out_of_shortlist_attempts is a
+    delivered-text projection; this report counts the raw phase flags and
+    refusal reasons retained by the bundle.
+    """
+    ids = tuple(sample_ids)
+    if len(ids) != len(set(ids)):
+        raise SlurpTopNAnalysisError("raw delivery diagnostic sample ids contain duplicates")
+    if not set(ids) <= set(delivery_rows):
+        raise SlurpTopNAnalysisError("raw delivery diagnostic roster mismatch")
+    flag_values: dict[str, int] = {}
+    refusal_reasons: dict[str, int] = {}
+    available = 0
+    for sample_id in ids:
+        row = delivery_rows[sample_id]
+        if not isinstance(row, Mapping):
+            raise SlurpTopNAnalysisError(
+                f"raw delivery diagnostic row malformed for {sample_id!r}"
+            )
+        flags = row.get("flags")
+        flags_available = isinstance(flags, Mapping)
+        if flags is None:
+            flags = {}
+        if not isinstance(flags, Mapping):
+            raise SlurpTopNAnalysisError(
+                f"raw delivery diagnostic flags malformed for {sample_id!r}"
+            )
+        if flags_available:
+            available += 1
+        for key, value in flags.items():
+            if not isinstance(key, str) or not key:
+                raise SlurpTopNAnalysisError("raw delivery diagnostic flag key malformed")
+            if isinstance(value, bool):
+                enabled = value
+            elif isinstance(value, int) and value >= 0:
+                enabled = value != 0
+            else:
+                raise SlurpTopNAnalysisError(
+                    f"raw delivery diagnostic flag value malformed for {sample_id!r}"
+                )
+            flag_values[key] = flag_values.get(key, 0) + int(enabled)
+        refusal = row.get("refusal_reason")
+        if refusal is not None:
+            if not isinstance(refusal, str) or not refusal:
+                raise SlurpTopNAnalysisError(
+                    f"raw delivery refusal reason malformed for {sample_id!r}"
+                )
+            refusal_reasons[refusal] = refusal_reasons.get(refusal, 0) + 1
+    return {
+        "sample_count": len(ids),
+        "diagnostics_available": available == len(ids),
+        "diagnostics_available_count": available,
+        "diagnostics_unavailable_count": len(ids) - available,
+        "flag_row_counts": dict(sorted(flag_values.items())),
+        "refused_count": sum(refusal_reasons.values()),
+        "refusal_reason_counts": dict(sorted(refusal_reasons.items())),
+    }
+
+
+def _raw_delivery_reports_by_observed_width(
+    source_rows: Sequence[SourceCandidateRow],
+    delivery_rows: Mapping[str, Mapping[str, object]],
+    sample_ids: Sequence[str] | set[str] | frozenset[str],
+) -> dict[str, dict[str, object]]:
+    """Group raw delivery flags by the verified distinct candidate width."""
+    ids = set(sample_ids)
+    groups: dict[int, list[str]] = {1: [], 2: [], 3: []}
+    for row in source_rows:
+        if row.sample_id not in ids:
+            continue
+        width = len(set(row.candidate_ids))
+        if width not in groups:
+            raise SlurpTopNAnalysisError(
+                f"observed candidate width {width} is outside supported range"
+            )
+        groups[width].append(row.sample_id)
+    return {
+        str(width): _raw_delivery_diagnostic_report(delivery_rows, members)
+        for width, members in groups.items()
+        if members
+    }
+
+
+def _raw_delivery_reports_by_branch_and_width(
+    source_rows: Sequence[SourceCandidateRow],
+    delivery_by_branch: Mapping[str, Mapping[str, Mapping[str, object]]],
+    sample_ids: Sequence[str] | set[str] | frozenset[str],
+) -> dict[str, dict[str, dict[str, object]]]:
+    """Transpose per-branch raw delivery reports into width-first groups."""
+    per_branch = {
+        name: _raw_delivery_reports_by_observed_width(source_rows, rows, sample_ids)
+        for name, rows in delivery_by_branch.items()
+    }
+    return {
+        str(width): {
+            name: reports[str(width)]
+            for name, reports in per_branch.items()
+            if str(width) in reports
+        }
+        for width in (1, 2, 3)
+        if any(str(width) in reports for reports in per_branch.values())
+    }
 
 
 @dataclass(frozen=True)
@@ -961,6 +1096,7 @@ def run(
         full_ids, loader=reference_loader
     )
     branches = {}
+    delivery_by_branch: dict[str, dict[str, Mapping[str, object]]] = {}
     for name, value in inputs.items():
         entity_correctness = None
         if distinct_source:
@@ -976,10 +1112,12 @@ def run(
                 scorer=scorer,
                 expected_ids=set(full_ids),
             )
+        delivery_rows: dict[str, Mapping[str, object]] = {}
         branches[str(name)] = _branch_rows(
             str(name), bundles[name], source_path, source_sha, source_states, full_ids,
-            entity_correctness,
+            entity_correctness, delivery_rows,
         )
+        delivery_by_branch[str(name)] = delivery_rows
     width = _source_candidate_width(source, distinct=distinct_source)
     populations = {
         "NEW500": set(primary_ids),
@@ -1017,6 +1155,25 @@ def run(
             ).as_json()
             for key, members in sorted(strata.items())
         }
+        report["metric_semantics"] = {
+            "branches.*.out_of_shortlist_attempts": (
+                "delivered_projection_only; derived from delivered final intent text"
+            ),
+            "raw_delivery_diagnostics": (
+                "verified phase_sources.delivery_diagnostics and refusal_reason"
+            ),
+        }
+        report["raw_delivery_diagnostics"] = {
+            name: _raw_delivery_diagnostic_report(rows, ids)
+            for name, rows in delivery_by_branch.items()
+        }
+        report["per_stratum_raw_delivery_diagnostics"] = {
+            key: {
+                name: _raw_delivery_diagnostic_report(rows, members)
+                for name, rows in delivery_by_branch.items()
+            }
+            for key, members in sorted(strata.items())
+        }
         if distinct_source:
             report["candidate_width_semantics"] = "maximum; retain the actual unpadded candidate set"
             report["by_observed_distinct_width"] = _observed_width_reports(
@@ -1027,6 +1184,19 @@ def run(
                     _subset(src, members), _subset(refs, members),
                     {name: _subset(rows, members) for name, rows in br.items()},
                     candidate_width=width,
+                )
+                for key, members in sorted(strata.items())
+            }
+            report["raw_delivery_diagnostics_by_observed_distinct_width"] = (
+                _raw_delivery_reports_by_branch_and_width(
+                    src, delivery_by_branch, ids
+                )
+            )
+            report["per_stratum_raw_delivery_diagnostics_by_observed_distinct_width"] = {
+                key: _raw_delivery_reports_by_branch_and_width(
+                    _subset(src, members),
+                    delivery_by_branch,
+                    members,
                 )
                 for key, members in sorted(strata.items())
             }
@@ -1050,6 +1220,14 @@ def run(
         },
         "populations": {name: len(ids) for name, ids in populations.items()},
         "stratum_field": field, "diagnostics": reports,
+        "diagnostic_semantics": {
+            "branches.*.out_of_shortlist_attempts": (
+                "delivered_projection_only; derived from delivered final intent text"
+            ),
+            "raw_delivery_diagnostics": (
+                "verified phase_sources.delivery_diagnostics and refusal_reason"
+            ),
+        },
         "model_calls": 0, "encoder_calls": 0, "tokenizer_calls": 0,
         "scorer_invocations": 0,
     }
