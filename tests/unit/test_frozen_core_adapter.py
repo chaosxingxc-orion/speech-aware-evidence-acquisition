@@ -16,7 +16,7 @@ from speech_aware_evidence_acquisition.contracts import (
 )
 from speech_aware_evidence_acquisition.e0.d2_leakage import ARM_VISIBLE_FIELDS
 from speech_aware_evidence_acquisition.core.attempts import AttemptStore
-from speech_aware_evidence_acquisition.core.base import CoreError, PayloadBindingContext
+from speech_aware_evidence_acquisition.core.base import PayloadBindingContext
 from speech_aware_evidence_acquisition.core.model import FrozenCoreAdapter, FrozenCoreError
 from speech_aware_evidence_acquisition.core.tracing import TraceSink
 
@@ -1487,3 +1487,97 @@ def test_tool_calls_changes_no_audited_artifact(tmp_path):
         response.response_text_sha256
         == hashlib.sha256(response.text.encode("utf-8")).hexdigest()
     )
+
+
+def _wire_native_transport(request_bytes):
+    assert isinstance(request_bytes, bytes)
+    raw = json.dumps(
+        {
+            "choices": [
+                {
+                    "message": {
+                        "role": "assistant",
+                        "content": "native explanation",
+                        "tool_calls": [
+                            {
+                                "id": "call-raw-7",
+                                "type": "function",
+                                "function": {
+                                    "name": "setLighting",
+                                    "arguments": '{"zone":"kitchen","level":7}',
+                                },
+                            }
+                        ],
+                    },
+                    "finish_reason": "tool_calls",
+                }
+            ],
+            "usage": {"prompt_tokens": 5, "completion_tokens": 2},
+        },
+        separators=(",", ":"),
+    ).encode()
+    return json.dumps(
+        {
+            "text": '[{"name": "setLighting", "arguments": {"zone": "kitchen", "level": 7}}]',
+            "usage": {"prompt_tokens": 5, "completion_tokens": 2},
+            "tool_calls": [
+                {
+                    "id": "call-raw-7",
+                    "type": "function",
+                    "function": {
+                        "name": "setLighting",
+                        "arguments": '{"zone":"kitchen","level":7}',
+                    },
+                }
+            ],
+            "wire_response_b64": __import__("base64").b64encode(raw).decode("ascii"),
+            "wire_response_sha256": hashlib.sha256(raw).hexdigest(),
+            "wire_finish_reason": "tool_calls",
+        }
+    ).encode()
+
+
+def test_preserved_wire_metadata_exposes_original_message_without_changing_text(tmp_path):
+    sink = TraceSink(tmp_path / "run", "SAEA-E-000-adapter-wire-metadata")
+    adapter = FrozenCoreAdapter(
+        gate=_OpenGate(),
+        plan=_plan(),
+        arm="bare-core",
+        transport=_wire_native_transport,
+        sink=sink,
+        binding=_binding(tmp_path),
+    )
+    response = adapter.request(_payload())
+
+    assert response.text == '[{"name": "setLighting", "arguments": {"zone": "kitchen", "level": 7}}]'
+    assert response.wire_response_bytes is not None
+    assert response.original_message["content"] == "native explanation"
+    assert response.original_message["tool_calls"][0]["id"] == "call-raw-7"
+    assert response.original_message["tool_calls"][0]["function"]["arguments"] == '{"zone":"kitchen","level":7}'
+    assert response.finish_reason == "tool_calls"
+    with pytest.raises(TypeError):
+        response.original_message["content"] = "changed"
+
+
+def test_wire_tool_calls_must_match_original_message_when_accessed(tmp_path):
+    def mismatching_transport(request_bytes):
+        envelope = json.loads(_wire_native_transport(request_bytes).decode())
+        envelope["tool_calls"][0]["id"] = "different"
+        return json.dumps(envelope).encode()
+
+    adapter = FrozenCoreAdapter(
+        gate=_OpenGate(), plan=_plan(), arm="bare-core",
+        transport=mismatching_transport, sink=TraceSink(tmp_path / "run", "mismatch"),
+        binding=_binding(tmp_path),
+    )
+    response = adapter.request(_payload())
+    with pytest.raises(ValueError, match="tool_calls"):
+        _ = response.original_message
+
+
+def test_wire_metadata_is_absent_by_default(tmp_path):
+    adapter, _ = _adapter(tmp_path)
+    response = adapter.request(_payload())
+    assert response.wire_response_bytes is None
+    assert response.original_message is None
+    assert response.finish_reason is None

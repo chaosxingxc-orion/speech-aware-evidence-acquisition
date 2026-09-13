@@ -7,7 +7,8 @@ no behaviour change) purely for file size.
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from types import MappingProxyType
 from typing import Mapping
 
 # The exact set of decoding_params keys the frozen core will ever accept. This is
@@ -17,6 +18,68 @@ from typing import Mapping
 # constructed chat-completions body (dropping audio while the adapter still
 # meters it as delivered).
 NATIVE_TOOL_REQUEST_CONTROL_KEYS = frozenset({"tool_choice", "parallel_tool_calls"})
+
+
+class WireResponseMetadataError(ValueError):
+    """Preserved wire response metadata is malformed or inconsistent."""
+
+
+def _freeze_wire_value(value: object) -> object:
+    """Return a recursively read-only view of parsed wire JSON."""
+
+    if isinstance(value, Mapping):
+        return MappingProxyType(
+            {key: _freeze_wire_value(item) for key, item in value.items()}
+        )
+    if isinstance(value, list):
+        return tuple(_freeze_wire_value(item) for item in value)
+    return value
+
+
+def wire_response_message(
+    wire_response_bytes: bytes | None, expected_tool_calls: object,
+) -> tuple[Mapping[str, object] | None, object | None]:
+    """Read the exact original choice message and finish reason.
+
+    The bytes are the server original response, separate from the adapter
+    normalized text. Native calls must agree with calls already forwarded in
+    the adapter envelope; a canonical text array cannot stand in for missing
+    wire provenance.
+    """
+
+    if wire_response_bytes is None:
+        return None, None
+    if not isinstance(wire_response_bytes, bytes):
+        raise WireResponseMetadataError("wire response metadata must contain bytes")
+    try:
+        document = json.loads(wire_response_bytes.decode("utf-8"))
+        choices = document["choices"]
+        choice = choices[0]
+        message = choice["message"]
+    except (UnicodeError, json.JSONDecodeError, KeyError, IndexError, TypeError) as error:
+        raise WireResponseMetadataError(
+            f"preserved wire response has no readable choice message: {error}"
+        ) from error
+    if not isinstance(document, Mapping) or not isinstance(choices, list):
+        raise WireResponseMetadataError("preserved wire response choices must be a list")
+    if not isinstance(choice, Mapping) or not isinstance(message, Mapping):
+        raise WireResponseMetadataError(
+            "preserved wire response choice message must be an object"
+        )
+    wire_tool_calls = message.get("tool_calls")
+    if wire_tool_calls is not None or expected_tool_calls is not None:
+        if (
+            (wire_tool_calls is not None and not isinstance(wire_tool_calls, list))
+            or (expected_tool_calls is not None and not isinstance(expected_tool_calls, list))
+            or wire_tool_calls != expected_tool_calls
+        ):
+            raise WireResponseMetadataError(
+                "preserved wire response tool_calls disagree with "
+                "CoreResponse.tool_calls"
+            )
+    frozen = _freeze_wire_value(message)
+    assert isinstance(frozen, Mapping)
+    return frozen, _freeze_wire_value(choice.get("finish_reason"))
 
 
 ALLOWED_DECODING_KEYS = frozenset(
@@ -144,6 +207,18 @@ class CoreResponse:
     # all, i.e. the model answered as text -- the byte-identical default for
     # every request that never asked for tools.
     tool_calls: object = None
+    # Exact HTTP response bytes, when the transport was explicitly configured
+    # with preserve_wire_responses=True. This is provenance metadata only;
+    # normalized text and all existing trace records remain unchanged.
+    wire_response_bytes: bytes | None = field(default=None, repr=False, compare=False)
+
+    @property
+    def original_message(self) -> Mapping[str, object] | None:
+        return wire_response_message(self.wire_response_bytes, self.tool_calls)[0]
+
+    @property
+    def finish_reason(self) -> object | None:
+        return wire_response_message(self.wire_response_bytes, self.tool_calls)[1]
 
 
 def _canonical(payload: Mapping[str, object]) -> bytes:

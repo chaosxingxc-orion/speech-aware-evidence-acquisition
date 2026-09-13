@@ -715,3 +715,22 @@ def test_non_native_arm_never_reports_native_tool_calls(tmp_path):
     client.complete(_zero_supply_messages(world.media_relpath("s1")))
 
     assert client.timings[0].native_tool_calls is None
+
+
+def test_no_wire_metadata_stays_absent_on_core_completion(tmp_path):
+    world = _World(tmp_path)
+    client, _, _ = _client(
+        world,
+        tmp_path,
+        arm="bare-core-native-tools",
+        tool_schemas=_TOOLS,
+    )
+    completion = client.complete_with_metadata(
+        _zero_supply_messages(world.media_relpath("s1")),
+        decoding_params={"tool_choice": "auto"},
+    )
+    client.close()
+
+    assert completion.wire_response_bytes is None
+    assert completion.original_message is None
+    assert completion.finish_reason is None

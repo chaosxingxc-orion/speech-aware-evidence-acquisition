@@ -14,10 +14,11 @@ import subprocess
 import sys
 import threading
 import time
+from types import SimpleNamespace
 
 import pytest
 
-from speech_aware_evidence_acquisition.contracts import STUDY_SLUG
+from speech_aware_evidence_acquisition.contracts import ExecutionPlan, STUDY_SLUG
 from speech_aware_evidence_acquisition.core.base import EvidenceItem
 from speech_aware_evidence_acquisition.core.model import (
     FrozenCoreError,
@@ -32,6 +33,7 @@ from speech_aware_evidence_acquisition.core.model import (
     materialize_speech_feature_packet,
 )
 from speech_aware_evidence_acquisition.core.model.transport import _llama_server_factory
+from speech_aware_evidence_acquisition.core.config import protocol_hash
 from speech_aware_evidence_acquisition.core.policies import build_arm_payload
 from speech_aware_evidence_acquisition.core.preparation import canonical_bytes
 from speech_aware_evidence_acquisition.core.preparation_feature_cache import prepare_feature_cache_audit
@@ -44,6 +46,7 @@ from speech_aware_evidence_acquisition.core.session import (
     SessionReceipt,
 )
 from speech_aware_evidence_acquisition.data.loader import SampleRef
+from speech_aware_evidence_acquisition.rails import AudioRef, FrozenCoreClient, build_payload_binding
 
 # R0 repair T5 (I5): every LlamaServerTransport now requires a session receipt
 # that has already been verified against a runtime receipt. These tests are
@@ -2914,3 +2917,118 @@ def test_native_chat_projection_matches_rendered_and_sent_body(tmp_path, prompt_
     for index, message in enumerate(messages):
         if message["role"] == "assistant":
             assert messages[index + 1]["tool_call_id"] == message["tool_calls"][0]["id"]
+
+
+class _WireMetadataOpenGate:
+    def assert_model_touch_allowed(self, plan):
+        self.plan = plan
+
+
+def test_real_transport_client_preserves_native_wire_message_metadata(tmp_path):
+    raw = json.dumps(
+        {
+            "id": "chatcmpl-wire-metadata",
+            "choices": [
+                {
+                    "message": {
+                        "role": "assistant",
+                        "content": "assistant explanation",
+                        "tool_calls": [
+                            {
+                                "id": "call-native-1",
+                                "type": "function",
+                                "function": {
+                                    "name": "turnOnLight",
+                                    "arguments": '{"zone":"kitchen"}',
+                                },
+                            }
+                        ],
+                    },
+                    "finish_reason": "tool_calls",
+                }
+            ],
+            "usage": {"prompt_tokens": 11, "completion_tokens": 6},
+        },
+        separators=(",", ":"),
+    ).encode()
+
+    media = tmp_path / "media" / "5000001.mp3"
+    media.parent.mkdir(parents=True)
+    media.write_bytes(b"fake-mp3-bytes")
+    sample = SimpleNamespace(
+        sample_id="5000001",
+        audio_ref=AudioRef(
+            path="media/5000001.mp3",
+            sha256=hashlib.sha256(media.read_bytes()).hexdigest(),
+        ),
+        audio_seconds=10.0,
+    )
+    binding = build_payload_binding(
+        carrier_lock_key="earnings22-original",
+        samples=(sample,),
+        data_root=tmp_path,
+        carrier_root=tmp_path,
+        sample_rate_prober=lambda _path: 16000,
+    )
+    plan = ExecutionPlan(
+        run_id="SAEA-E-wire-metadata-client",
+        execution_profile="bounded-discovery-probe",
+        carrier_lock_key="earnings22-original",
+        split_role="dev",
+        split_identity_hash="a" * 64,
+        planned_model_calls=1,
+        planned_gpu_hours=1.0,
+        planned_speech_audio_seconds=10,
+        protocol_hash=protocol_hash("b" * 64, "bare-core-native-tools", "a" * 64),
+        attempt_id="attempt-wire-metadata-client",
+    )
+    transport = _transport(
+        _base_url(),
+        tmp_path,
+        post=lambda _url, _body: raw,
+        preserve_wire_responses=True,
+    )
+    client = FrozenCoreClient(
+        plan=plan,
+        gate=_WireMetadataOpenGate(),
+        transport=transport,
+        run_dir=tmp_path / "client-run",
+        binding=binding,
+        arm="bare-core-native-tools",
+        tool_schemas=(
+            {
+                "type": "function",
+                "function": {
+                    "name": "turnOnLight",
+                    "description": "Turn on a named light.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {"zone": {"type": "string"}},
+                        "required": ["zone"],
+                    },
+                },
+            },
+        ),
+    )
+    completion = client.complete_with_metadata(
+        (
+            {"role": "system", "content": "Handle the request."},
+            {
+                "role": "user",
+                "content": [
+                    {"type": "input_audio", "media_relpath": "media/5000001.mp3"},
+                ],
+            },
+        ),
+        decoding_params={"temperature": 0, "tool_choice": "auto"},
+    )
+    client.close()
+
+    assert completion.text == json.dumps(
+        [{"name": "turnOnLight", "arguments": {"zone": "kitchen"}}]
+    )
+    assert completion.wire_response_bytes == raw
+    assert completion.original_message["content"] == "assistant explanation"
+    assert completion.original_message["tool_calls"][0]["id"] == "call-native-1"
+    assert completion.original_message["tool_calls"][0]["function"]["arguments"] == '{"zone":"kitchen"}'
+    assert completion.finish_reason == "tool_calls"
