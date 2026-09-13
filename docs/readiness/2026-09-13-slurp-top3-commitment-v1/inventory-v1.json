@@ -6,11 +6,11 @@
   "files": [
     {
       "repo_relpath": "configs/baseline/slurp-top3-commitment-hard-first-v1.json",
-      "sha256": "b90b91b4d5a2682b5558fc64be4d07f8b999cc619d2b946614db6418ff4566fe"
+      "sha256": "4bf749119122d06bdf5ad7929085304d0861be08fbcfcd2e333e8acbc43b6e46"
     },
     {
       "repo_relpath": "configs/baseline/slurp-top3-commitment-closed-joint-v1.json",
-      "sha256": "b5a9d306f8ebfcca240d5edbed008bb924988e8f91aa0ac8a58cd2e998dbedf0"
+      "sha256": "866ac7e162c33d771e84d9edb298aba445959450bce46985be5805f1c44ed171"
     },
     {
       "repo_relpath": "configs/experiment/slurp-top3-commitment-hard-first-engineering4-v1.json",
