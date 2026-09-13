@@ -19,7 +19,7 @@ from .knowledge import AgentStateArtifact
 HYPOTHESIS_STATE_SCHEMA = "saea-slurp-intent-hypotheses-v1"
 HYPOTHESIS_SEMANTICS = "ranked-mutually-exclusive-intent-alternatives"
 FIRST_OCCURRENCE_PROJECTION_POLICY_ID = (
-    "slurp-fixed-three-first-occurrence-projection-v1"
+    "first-occurrence-distinct-slurp-intent-hypotheses-v1"
 )
 _FIRST_OCCURRENCE_PROJECTION_POLICY = {
     "schema": "saea-slurp-intent-hypothesis-projection-policy-v1",
