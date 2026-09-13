@@ -18,6 +18,24 @@ from .knowledge import AgentStateArtifact
 
 HYPOTHESIS_STATE_SCHEMA = "saea-slurp-intent-hypotheses-v1"
 HYPOTHESIS_SEMANTICS = "ranked-mutually-exclusive-intent-alternatives"
+FIRST_OCCURRENCE_PROJECTION_POLICY_ID = (
+    "slurp-fixed-three-first-occurrence-projection-v1"
+)
+_FIRST_OCCURRENCE_PROJECTION_POLICY = {
+    "schema": "saea-slurp-intent-hypothesis-projection-policy-v1",
+    "policy_id": FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+    "input_candidate_count": 3,
+    "identity_key": "intent_id",
+    "retention": "first-occurrence-in-original-order",
+}
+FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256 = hashlib.sha256(
+    json.dumps(
+        _FIRST_OCCURRENCE_PROJECTION_POLICY,
+        ensure_ascii=True,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+).hexdigest()
 _CANDIDATE_KEYS = frozenset(
     {"intent_id", "distinction", "evidence_refs", "unresolved_fields"}
 )
@@ -47,6 +65,30 @@ class SlurpIntentHypothesisState:
 
     sample_id: str
     candidates: tuple[SlurpIntentHypothesisCandidate, ...]
+
+
+@dataclass(frozen=True)
+class SlurpIntentHypothesisProjectionPosition:
+    """Audit binding from one original position to its retained first occurrence."""
+
+    raw_position: int
+    intent_id: str
+    candidate_sha256: str
+    first_raw_position: int
+    projected_position: int
+    retained_sha256: str
+
+
+@dataclass(frozen=True)
+class SlurpIntentHypothesisProjection:
+    """One validated first-occurrence projection and its source provenance."""
+
+    content: str
+    original_text_sha256: str
+    projected_content_sha256: str
+    projection_policy_id: str
+    projection_policy_sha256: str
+    raw_positions: tuple[SlurpIntentHypothesisProjectionPosition, ...]
 
 
 def _text(value: object, *, field: str, allow_empty: bool = False) -> str:
@@ -203,6 +245,112 @@ def canonicalize_slurp_intent_hypothesis_response(
         max_candidates=max_candidates,
     )
     return canonical
+
+
+def _canonical_candidate_sha256(candidate: Mapping[str, object]) -> str:
+    return hashlib.sha256(
+        json.dumps(
+            candidate, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+    ).hexdigest()
+
+
+def project_fixed_three_slurp_intent_hypotheses(
+    content: str,
+    *,
+    sample_id: str,
+    legal_intent_ids: Iterable[str],
+) -> SlurpIntentHypothesisProjection:
+    """Project a validated fixed-three response by exact first occurrence.
+
+    All three original candidate objects are validated before projection.
+    Duplicate intent IDs are allowed only at this explicit projection seam;
+    the historical canonicalizer and state parser continue to reject them.
+    """
+
+    if not isinstance(content, str):
+        raise SlurpIntentHypothesisError(
+            "fixed-three hypothesis response must be JSON text"
+        )
+    legal = _legal_ids(legal_intent_ids)
+    try:
+        compact = json.loads(content, object_pairs_hook=_unique_json_object)
+    except (TypeError, json.JSONDecodeError) as error:
+        raise SlurpIntentHypothesisError(
+            "fixed-three hypothesis response must be JSON"
+        ) from error
+    if not isinstance(compact, Mapping) or set(compact) != _COMPACT_DOCUMENT_KEYS:
+        raise SlurpIntentHypothesisError(
+            "fixed-three hypothesis response must contain exactly candidates"
+        )
+    rows = compact["candidates"]
+    if not isinstance(rows, list) or len(rows) != 3:
+        raise SlurpIntentHypothesisError(
+            "fixed-three hypothesis response must contain exactly three candidates"
+        )
+
+    validated_rows: list[dict[str, object]] = []
+    for row in rows:
+        single = json.dumps(
+            {"candidates": [row]},
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        canonical = canonicalize_slurp_intent_hypothesis_response(
+            single,
+            sample_id=sample_id,
+            legal_intent_ids=legal,
+            max_candidates=1,
+        )
+        validated = json.loads(canonical)["candidates"][0]
+        validated_rows.append(dict(validated))
+
+    retained: list[dict[str, object]] = []
+    first_by_intent: dict[str, tuple[int, int, str]] = {}
+    provenance: list[SlurpIntentHypothesisProjectionPosition] = []
+    for raw_position, row in enumerate(validated_rows, start=1):
+        intent_id = str(row["intent_id"])
+        candidate_sha = _canonical_candidate_sha256(row)
+        first = first_by_intent.get(intent_id)
+        if first is None:
+            projected_position = len(retained) + 1
+            retained.append(row)
+            first = (raw_position, projected_position, candidate_sha)
+            first_by_intent[intent_id] = first
+        provenance.append(
+            SlurpIntentHypothesisProjectionPosition(
+                raw_position=raw_position,
+                intent_id=intent_id,
+                candidate_sha256=candidate_sha,
+                first_raw_position=first[0],
+                projected_position=first[1],
+                retained_sha256=first[2],
+            )
+        )
+
+    projected_compact = json.dumps(
+        {"candidates": retained},
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    projected = canonicalize_slurp_intent_hypothesis_response(
+        projected_compact,
+        sample_id=sample_id,
+        legal_intent_ids=legal,
+        max_candidates=3,
+    )
+    return SlurpIntentHypothesisProjection(
+        content=projected,
+        original_text_sha256=hashlib.sha256(content.encode("utf-8")).hexdigest(),
+        projected_content_sha256=hashlib.sha256(
+            projected.encode("utf-8")
+        ).hexdigest(),
+        projection_policy_id=FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+        projection_policy_sha256=FIRST_OCCURRENCE_PROJECTION_POLICY_SHA256,
+        raw_positions=tuple(provenance),
+    )
 
 
 def parse_slurp_intent_hypothesis_state(
