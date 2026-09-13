@@ -183,6 +183,15 @@ def _native_config(store_ids):
     }
 
 
+def _first_phase_config(tmp_path):
+    config, snapshots = _config(tmp_path)
+    for store in config["knowledge_stores"].values():
+        supply = store["phase_supply"]["decision-2"]
+        supply["expose_facets"] = True
+        store["phase_supply"] = {"direct": supply}
+    return config, snapshots
+
+
 def test_native_model_selects_each_store_and_joint_history_keeps_both(tmp_path):
     from speech_aware_evidence_acquisition.core.tracing import TraceBuffer
 
@@ -542,6 +551,177 @@ def test_shared_phase_supply_builds_and_routes_each_independent_store(tmp_path):
         router.receipt["stores"]["intent-boundaries"]["store_release_sha256"]
         != router.receipt["stores"]["slot-contracts"]["store_release_sha256"]
     )
+
+
+def test_named_stores_bootstrap_colliding_local_ids_as_qualified_evidence(tmp_path):
+    from speech_aware_evidence_acquisition.rails.controllers import (
+        default_phase_program,
+    )
+    from speech_aware_evidence_acquisition.rails.knowledge_value_views import (
+        KnowledgeValueRenderer,
+    )
+
+    config, snapshots = _first_phase_config(tmp_path)
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding,
+        program=default_phase_program("phase-direct-only-supplied-v1"),
+        data_root=tmp_path,
+    )
+    facets, values = router.bootstrap_first_phase(
+        speech_packet_bindings={
+            "s1": {"packet_id": "speech/s1", "sha256": "a" * 64}
+        },
+        split_identity_hash="b" * 64,
+    )
+
+    assert facets == {
+        "s1": (
+            "intent-boundaries::operation:dim",
+            "slot-contracts::operation:dim",
+        )
+    }
+    assert values == {
+        "s1": (
+            "intent-boundaries::value:dim-light",
+            "slot-contracts::value:dim-light",
+        )
+    }
+    blocks = KnowledgeValueRenderer(binding.composite_snapshot).assemble(values["s1"])
+    assert [block["evidence_id"] for block in blocks] == list(values["s1"])
+    assert {block["text"] for block in blocks} == {
+        snapshots["intent-boundaries"].values[0].content,
+        snapshots["slot-contracts"].values[0].content,
+    }
+    assert router("intent-boundaries", "direct", None) is None
+    for store_id in binding.store_ids:
+        receipt = router.receipt["stores"][store_id]
+        assert receipt["store_snapshot_sha256"] == snapshots[store_id].content_hash()
+        assert receipt["composite_snapshot_sha256"] == binding.binding_sha256
+        assert receipt["phase_supply"]["phases"][0]["spec"]["phase"] == "direct"
+
+
+def test_flight_runtime_seeds_all_named_stores_for_the_first_phase(tmp_path):
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    from speech_aware_evidence_acquisition.rails.controllers import (
+        default_phase_program,
+    )
+
+    config, _ = _first_phase_config(tmp_path)
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    runtime = SimpleNamespace(
+        _composed=SimpleNamespace(values=config),
+        _data_root=tmp_path,
+        _knowledge_store_binding=binding,
+        _knowledge_store_supply=None,
+    )
+    program = default_phase_program("phase-direct-only-supplied-v1")
+    supply, specs = FlightRuntime._resolve_phase_supply(
+        runtime, program, binding.composite_snapshot
+    )
+    phase_binding = {
+        "supply_for_phase": supply,
+        "supply_for_store": runtime._knowledge_store_supply,
+        "speech_packet_bindings": {
+            "s1": {"packet_id": "speech/s1", "sha256": "a" * 64}
+        },
+    }
+    facets, values = FlightRuntime._phase_supply_seeds(
+        runtime,
+        program,
+        phase_binding,
+        specs,
+        SimpleNamespace(split_identity_hash="b" * 64),
+    )
+
+    assert facets == {
+        "direct": {
+            "s1": (
+                "intent-boundaries::operation:dim",
+                "slot-contracts::operation:dim",
+            )
+        }
+    }
+    assert values == {
+        "direct": {
+            "s1": (
+                "intent-boundaries::value:dim-light",
+                "slot-contracts::value:dim-light",
+            )
+        }
+    }
+
+
+def test_named_store_first_phase_prepared_artifact_round_trip_is_fully_bound(
+    tmp_path, monkeypatch
+):
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    from speech_aware_evidence_acquisition.core.preparation import PreparationError
+    from speech_aware_evidence_acquisition.rails.controllers import (
+        default_phase_program,
+    )
+
+    config, _ = _first_phase_config(tmp_path)
+    frozen_source = b"synthetic frozen preparation source"
+    (tmp_path / "frozen-source.json").write_bytes(frozen_source)
+    config.update(
+        {
+            "policy": "phase-direct-only-supplied-v1",
+            "preparation_source_receipts": [
+                {
+                    "root": "repository",
+                    "relpath": "frozen-source.json",
+                    "sha256": hashlib.sha256(frozen_source).hexdigest(),
+                }
+            ],
+        }
+    )
+    store_binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    runtime = object.__new__(FlightRuntime)
+    runtime._composed = SimpleNamespace(values=config)
+    runtime._data_root = tmp_path
+    runtime._repo_root = tmp_path
+    runtime._knowledge_store_binding = store_binding
+    runtime._knowledge_store_supply = None
+    runtime._prepare = lambda: (config, "slurp", "DEV", "b" * 64)
+    program = default_phase_program(config["policy"])
+    supply, specs = runtime._resolve_phase_supply(
+        program, store_binding.composite_snapshot
+    )
+    phase_binding = {
+        "knowledge_snapshot": store_binding.composite_snapshot,
+        "supply_for_phase": supply,
+        "supply_for_store": runtime._knowledge_store_supply,
+        "supply_specs": specs,
+        "speech_packet_bindings": {
+            "s1": {"packet_id": "speech/s1", "sha256": "a" * 64}
+        },
+    }
+    runtime._phase_program_material = phase_binding
+    plan = SimpleNamespace(split_identity_hash="b" * 64)
+    live = runtime._phase_supply_seeds(program, phase_binding, specs, plan)
+
+    artifact = runtime.prepare_phase_supply(tmp_path / "prepared-seed.json")
+    config["prepared_phase_supply"] = {
+        "relpath": "prepared-seed.json",
+        "sha256": artifact["sha256"],
+    }
+    monkeypatch.setattr(
+        runtime._knowledge_store_supply,
+        "bootstrap_first_phase",
+        lambda **_kwargs: pytest.fail("prepared selection was recomputed"),
+    )
+    assert runtime._phase_supply_seeds(program, phase_binding, specs, plan) == live
+
+    config["knowledge_stores"]["slot-contracts"]["phase_supply"]["direct"][
+        "query_source"
+    ]["embedded_signal"] = "speech: changed second-store source declaration"
+    with pytest.raises(PreparationError, match="identity mismatch"):
+        runtime._phase_supply_seeds(program, phase_binding, specs, plan)
 
 
 def test_flight_runtime_resolves_named_store_supply_without_a_launcher(tmp_path):

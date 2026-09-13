@@ -389,6 +389,7 @@ def build_knowledge_store_supply(
 ):
     """Build explicit store routes and automatic candidate-conditioned supply."""
     from .phase_supply import (
+        build_bootstrap_selection,
         build_supply_for_phase,
         load_phase_supply_specs,
         phase_supply_receipt,
@@ -399,7 +400,7 @@ def build_knowledge_store_supply(
         load_candidate_semantic_supply_specs,
     )
 
-    callbacks, specs_by_store, receipts = {}, {}, {}
+    callbacks, explicit_specs_by_store, specs_by_store, receipts = {}, {}, {}, {}
     candidate_specs = load_candidate_semantic_supply_specs(binding, program)
     if candidate_specs and legal_candidate_ids is None:
         raise KnowledgeStoreError(
@@ -422,10 +423,6 @@ def build_knowledge_store_supply(
                 "candidate and explicit phase supply cannot both claim phase(s) "
                 f"{sorted(collisions)}"
             )
-        if specs and first_phase in specs:
-            raise KnowledgeStoreError(
-                "named knowledge stores do not support first-phase seeded supply"
-            )
         callback = None
         if specs:
             callback = build_supply_for_phase(
@@ -433,9 +430,11 @@ def build_knowledge_store_supply(
                 snapshot=store.snapshot,
                 snapshot_sha256=store.snapshot.content_hash(),
                 data_root=data_root,
+                seed_phases=(first_phase,) if first_phase in specs else (),
                 source_audio_bindings=source_audio_bindings,
             )
             callbacks[store_id] = callback
+        explicit_specs_by_store[store_id] = specs
         store_candidate_specs = {
             phase: spec
             for phase, spec in candidate_specs.items()
@@ -460,6 +459,53 @@ def build_knowledge_store_supply(
                 for phase in sorted(store_candidate_specs)
             ]
 
+    def bootstrap_first_phase(
+        *,
+        speech_packet_bindings: Mapping[str, Mapping[str, object]],
+        split_identity_hash: str,
+        workers: int = 1,
+        lease_metadata_present: bool = False,
+    ) -> tuple[dict[str, tuple[str, ...]], dict[str, tuple[str, ...]]]:
+        """Select and qualify every named store routed to the first phase."""
+
+        facets_by_sample: dict[str, list[str]] = {}
+        values_by_sample: dict[str, list[str]] = {}
+        for store_id in binding.store_ids:
+            spec = explicit_specs_by_store[store_id].get(first_phase)
+            callback = callbacks.get(store_id)
+            if spec is None or callback is None:
+                continue
+            local_facets, local_values = build_bootstrap_selection(
+                spec,
+                provider=callback.provider_factories[first_phase](),
+                query_vectors_by_sample=callback.query_tables[first_phase],
+                speech_packet_bindings=speech_packet_bindings,
+                split_identity_hash=split_identity_hash,
+                source_audio_bindings=callback.source_audio_bindings,
+                workers=workers,
+                lease_metadata_present=lease_metadata_present,
+            )
+            for sample_id in sorted(local_facets):
+                facets_by_sample.setdefault(sample_id, []).extend(
+                    qualify_id(store_id, facet_id)
+                    for facet_id in local_facets[sample_id]
+                )
+            for sample_id in sorted(local_values):
+                values_by_sample.setdefault(sample_id, []).extend(
+                    qualify_id(store_id, value_id)
+                    for value_id in local_values[sample_id]
+                )
+        return (
+            {
+                sample_id: tuple(facet_ids)
+                for sample_id, facet_ids in sorted(facets_by_sample.items())
+            },
+            {
+                sample_id: tuple(value_ids)
+                for sample_id, value_ids in sorted(values_by_sample.items())
+            },
+        )
+
     def route(store_id, phase, context):
         try:
             callback = callbacks[store_id]
@@ -474,6 +520,7 @@ def build_knowledge_store_supply(
         return callback(phase, context)
 
     route.specs_by_store = specs_by_store
+    route.bootstrap_first_phase = bootstrap_first_phase
     candidate_receipt = (
         None if candidate_callback is None else candidate_callback.receipt
     )
