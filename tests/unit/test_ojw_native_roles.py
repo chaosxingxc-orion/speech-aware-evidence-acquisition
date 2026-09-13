@@ -97,7 +97,7 @@ def test_analytical_role_uses_framework_tool_history_and_meters_every_call():
                 text="I will inspect the supplied value.",
                 tool_calls=_tool_call("analyze", "call-1", '{"value":4}'),
             ),
-            _completion(text="review complete", serial=2),
+            _completion(text="review complete", contact_id="contact-2", serial=2),
         ]
     )
     node = NativeRoleNode(
@@ -109,9 +109,9 @@ def test_analytical_role_uses_framework_tool_history_and_meters_every_call():
             ability_names=("analyze",),
         ),
         metered_request=script,
-        contact_context=NativeRoleContactContext(
+        contact_context_provider=lambda index: NativeRoleContactContext(
             sample_id="sample-1",
-            agent_contact_id="contact-1",
+            agent_contact_id=f"contact-{index + 1}",
             evidence_pins={"packet": "a" * 64},
         ),
         abilities=(tool,),
@@ -128,6 +128,10 @@ def test_analytical_role_uses_framework_tool_history_and_meters_every_call():
     }
     assert observed == [4]
     assert len(script.requests) == 2
+    assert [request.context.agent_contact_id for request in script.requests] == [
+        "contact-1",
+        "contact-2",
+    ]
     assert script.requests[0].visible_tool_names == ("analyze",)
     assert [message["role"] for message in script.requests[1].messages][-2:] == [
         "assistant",
@@ -173,7 +177,9 @@ def test_global_unadvertised_tool_is_denied_before_callback():
                 text="hidden request",
                 tool_calls=_tool_call(name, "hidden-1", '{"value":7}'),
             ),
-            _completion(text="continued after denial", serial=2),
+            _completion(
+                text="continued after denial", contact_id="contact-2", serial=2
+            ),
         ]
     )
     node = NativeRoleNode(
@@ -184,8 +190,8 @@ def test_global_unadvertised_tool_is_denied_before_callback():
             max_iterations=2,
         ),
         metered_request=script,
-        contact_context=NativeRoleContactContext(
-            sample_id="sample-1", agent_contact_id="contact-1"
+        contact_context_provider=lambda index: NativeRoleContactContext(
+            sample_id="sample-1", agent_contact_id=f"contact-{index + 1}"
         ),
         tool_allowed=lambda _role, _name: False,
     )
@@ -326,15 +332,18 @@ def test_bridge_refuses_noncompletion_and_cross_sample_completion():
 
 def test_repeated_node_invocations_use_fresh_framework_history():
     script = _MeteredScript(
-        [_completion(text="first answer"), _completion(text="second answer", serial=2)]
+        [
+            _completion(text="first answer"),
+            _completion(text="second answer", contact_id="contact-2", serial=2),
+        ]
     )
     node = NativeRoleNode(
         spec=NativeRoleNodeSpec(
             role_id="solver", role_kind="solver", prompt="Solve.", max_iterations=1
         ),
         metered_request=script,
-        contact_context=NativeRoleContactContext(
-            sample_id="sample-1", agent_contact_id="contact-1"
+        contact_context_provider=lambda index: NativeRoleContactContext(
+            sample_id="sample-1", agent_contact_id=f"contact-{index + 1}"
         ),
     )
 
@@ -350,3 +359,67 @@ def test_repeated_node_invocations_use_fresh_framework_history():
     ]
     assert script.requests[0].messages[-1]["content"] == "First independent query."
     assert script.requests[1].messages[-1]["content"] == "Second independent query."
+
+
+def test_fixed_contact_context_refuses_a_second_episode_before_callback():
+    script = _MeteredScript([_completion(text="first answer")])
+    node = NativeRoleNode(
+        spec=NativeRoleNodeSpec(
+            role_id="solver", role_kind="solver", prompt="Solve.", max_iterations=1
+        ),
+        metered_request=script,
+        contact_context=NativeRoleContactContext(
+            sample_id="sample-1", agent_contact_id="contact-1"
+        ),
+    )
+
+    assert asyncio.run(node.invoke_direct("First."))["result_type"] == "answer"
+    with pytest.raises(FrozenCoreRoleModelError, match="fixed contact context is exhausted"):
+        asyncio.run(node.invoke_direct("Second."))
+    assert len(script.requests) == 1
+
+
+@pytest.mark.parametrize("bad_context", [None, "duplicate"])
+def test_context_provider_exhaustion_or_duplicate_refuses_before_callback(bad_context):
+    calls = []
+    tool_name = f"continue_{bad_context or 'missing'}"
+    tool = LocalFunction(
+        card=_card(tool_name),
+        func=lambda value: calls.append(value) or {"continue": True},
+    )
+    first_context = NativeRoleContactContext(
+        sample_id="sample-1", agent_contact_id="contact-1"
+    )
+
+    def contexts(index):
+        if index == 0 or bad_context == "duplicate":
+            return first_context
+        return None
+
+    script = _MeteredScript(
+        [
+            _completion(
+                text="Continue.",
+                tool_calls=_tool_call(tool_name, "continue-1", '{"value":1}'),
+            )
+        ]
+    )
+    node = NativeRoleNode(
+        spec=NativeRoleNodeSpec(
+            role_id="reviewer",
+            role_kind="reviewer",
+            prompt="Review.",
+            max_iterations=2,
+            ability_names=(tool_name,),
+        ),
+        metered_request=script,
+        contact_context_provider=contexts,
+        abilities=(tool,),
+        tool_allowed=lambda _role, name: name == tool_name,
+    )
+
+    match = "repeated agent_contact_id" if bad_context == "duplicate" else "no registered context"
+    with pytest.raises(FrozenCoreRoleModelError, match=match):
+        asyncio.run(node.invoke_direct("Review twice."))
+    assert calls == [1]
+    assert len(script.requests) == 1

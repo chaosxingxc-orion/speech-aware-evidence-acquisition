@@ -141,6 +141,12 @@ class MeteredRoleRequest(Protocol):
     def __call__(self, request: NativeRoleModelRequest) -> CoreCompletion: ...
 
 
+class ContactContextProvider(Protocol):
+    """Resolve one preallocated registered context by zero-based invocation."""
+
+    def __call__(self, invocation_index: int) -> NativeRoleContactContext: ...
+
+
 def _document(value: object) -> dict[str, object]:
     if isinstance(value, Mapping):
         return dict(value)
@@ -221,16 +227,58 @@ class FrozenCoreRoleModel:
         self,
         *,
         role_id: str,
-        context: NativeRoleContactContext,
         metered_request: MeteredRoleRequest,
+        context: NativeRoleContactContext | None = None,
+        context_provider: ContactContextProvider | None = None,
     ) -> None:
         if not callable(metered_request):
             raise ValueError("metered_request must be callable")
+        if (context is None) == (context_provider is None):
+            raise ValueError(
+                "provide exactly one fixed context or contact-context provider"
+            )
+        if context is not None and not isinstance(context, NativeRoleContactContext):
+            raise ValueError("fixed context must be a NativeRoleContactContext")
+        if context_provider is not None and not callable(context_provider):
+            raise ValueError("contact-context provider must be callable")
         self._role_id = role_id
-        self._context = context
         self._metered_request = metered_request
+        self._fixed_context = context
+        self._context_provider = context_provider
+        self._contact_index = itertools.count(0)
+        self._used_contact_ids: set[str] = set()
+
+    def _next_context(self) -> NativeRoleContactContext:
+        index = next(self._contact_index)
+        if self._fixed_context is not None:
+            if index > 0:
+                raise FrozenCoreRoleModelError(
+                    "fixed contact context is exhausted after one invocation"
+                )
+            context = self._fixed_context
+        else:
+            assert self._context_provider is not None
+            try:
+                context = self._context_provider(index)
+            except (IndexError, StopIteration) as error:
+                raise FrozenCoreRoleModelError(
+                    f"contact-context provider is exhausted at invocation {index}"
+                ) from error
+        if not isinstance(context, NativeRoleContactContext):
+            raise FrozenCoreRoleModelError(
+                f"contact-context provider returned no registered context at "
+                f"invocation {index}"
+            )
+        if context.agent_contact_id in self._used_contact_ids:
+            raise FrozenCoreRoleModelError(
+                f"contact-context provider repeated agent_contact_id "
+                f"{context.agent_contact_id!r}"
+            )
+        self._used_contact_ids.add(context.agent_contact_id)
+        return context
 
     async def invoke(self, messages, *, tools=None, **kwargs) -> AssistantMessage:
+        context = self._next_context()
         message_documents = tuple(_document(message) for message in messages)
         tool_documents = tuple(_document(tool) for tool in (tools or ()))
         names: list[str] = []
@@ -241,7 +289,7 @@ class FrozenCoreRoleModel:
             names.append(name)
         request = NativeRoleModelRequest(
             role_id=self._role_id,
-            context=self._context,
+            context=context,
             messages=message_documents,
             tool_schemas=tool_documents,
             visible_tool_names=tuple(names),
@@ -262,8 +310,8 @@ class FrozenCoreRoleModel:
             )
         try:
             completion.assert_binding(
-                sample_id=self._context.sample_id,
-                agent_contact_id=self._context.agent_contact_id,
+                sample_id=context.sample_id,
+                agent_contact_id=context.agent_contact_id,
                 response_text=completion.text,
             )
         except FrozenCoreClientError as error:
@@ -306,7 +354,8 @@ class NativeRoleNode(WorkflowComponent):
         *,
         spec: NativeRoleNodeSpec,
         metered_request: MeteredRoleRequest,
-        contact_context: NativeRoleContactContext,
+        contact_context: NativeRoleContactContext | None = None,
+        contact_context_provider: ContactContextProvider | None = None,
         abilities: Sequence[object] = (),
         tool_allowed: Callable[[str, str], bool] | None = None,
         delivery_allowed: Callable[[str, str], bool] | None = None,
@@ -337,8 +386,9 @@ class NativeRoleNode(WorkflowComponent):
         self._agent.set_llm(
             FrozenCoreRoleModel(
                 role_id=spec.role_id,
-                context=contact_context,
                 metered_request=metered_request,
+                context=contact_context,
+                context_provider=contact_context_provider,
             )
         )
         for ability in abilities:
@@ -488,6 +538,7 @@ def build_native_role_workflow(
 
 
 __all__ = [
+    "ContactContextProvider",
     "FrozenCoreRoleModel",
     "FrozenCoreRoleModelError",
     "MeteredRoleRequest",
