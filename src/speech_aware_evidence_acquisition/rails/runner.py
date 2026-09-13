@@ -1727,6 +1727,10 @@ async def _invoke_native_role_episode(
             "max_revisions": config.max_revisions,
             "remaining_model_contacts": config.max_contacts - state.scheduled_contacts,
             "role_max_iterations": role_configs[phase_id].max_iterations,
+            "available_planner_actions": [
+                config.actions[0],
+                *([config.actions[1]] if episode_state["revision_count"] < config.max_revisions else []),
+            ],
         }
         material = replace(
             material,
@@ -1803,6 +1807,8 @@ async def _invoke_native_role_episode(
                 core_completions=(completion,),
             )
             verdicts = binding.review_for_phase(request.role_id, staged, completion.text)
+            if verdicts is None:
+                verdicts = ()
             from ..core.base import JudgeVerdict
             if not isinstance(verdicts, Sequence) or isinstance(verdicts, (str, bytes)):
                 raise RailsRunnerError("native phase judges must return structured criticism")
@@ -1810,6 +1816,16 @@ async def _invoke_native_role_episode(
                 if not isinstance(verdict, JudgeVerdict):
                     raise RailsRunnerError("native phase judge cannot replace an answer")
                 verdict.validate()
+            if verdicts:
+                state.trace_buffers[(state.scheduled_contacts - 1, 0)].emit(
+                    "USE", f"{completion.request_id}/native-phase-review",
+                    {
+                        "use_role_id": request.role_id,
+                        "use_source_request_id": completion.request_id,
+                        "use_source_response_sha256": completion.response_sha256,
+                        "use_phase_judgments": [verdict.as_json() for verdict in verdicts],
+                    },
+                )
 
     adapter_request = MeteredNativeSpeechRequest(
         client=core_client, binding_provider=speech_binding,
@@ -1891,68 +1907,90 @@ async def _invoke_native_role_episode(
         }
     prompt = base_messages(context())[0]["content"]
     nodes = {}
-    for role in config.roles:
-        def contact_context(index, role=role):
-            return NativeRoleContactContext(
-                sample_id=state.prepared.sample.sample_id,
-                agent_contact_id=f"{program.program_id}:{role.phase_id}:{index}:{state.prepared.sample.sample_id}",
-                evidence_pins={"knowledge_snapshot": snapshot_sha256},
-                budget_id=run_id,
+    try:
+        for role in config.roles:
+            def contact_context(index, role=role):
+                return NativeRoleContactContext(
+                    sample_id=state.prepared.sample.sample_id,
+                    agent_contact_id=f"{program.program_id}:{role.phase_id}:{index}:{state.prepared.sample.sample_id}",
+                    evidence_pins={"knowledge_snapshot": snapshot_sha256},
+                    budget_id=run_id,
+                )
+            nodes[role.role_kind] = NativeRoleNode(
+                spec=NativeRoleNodeSpec(
+                    role_id=role.phase_id, role_kind=role.role_kind, prompt=prompt,
+                    max_iterations=role.max_iterations, ability_names=role.tool_names,
+                ),
+                metered_request=metered, contact_context_provider=contact_context,
+                abilities=tuple(ability_for(role, schema_by_name[name]) for name in role.tool_names),
+                tool_allowed=(
+                    (lambda phase, name, role=role: phase == role.phase_id and name in role.tool_names)
+                    if role.role_kind in {"reviewer", "planner"} else None
+                ),
+                delivery_allowed=lambda _role, output: isinstance(output, str) and bool(output.strip()),
             )
-        nodes[role.role_kind] = NativeRoleNode(
-            spec=NativeRoleNodeSpec(
-                role_id=role.phase_id, role_kind=role.role_kind, prompt=prompt,
-                max_iterations=role.max_iterations, ability_names=role.tool_names,
-            ),
-            metered_request=metered, contact_context_provider=contact_context,
-            abilities=tuple(ability_for(role, schema_by_name[name]) for name in role.tool_names),
-            tool_allowed=(
-                (lambda phase, name, role=role: phase == role.phase_id and name in role.tool_names)
-                if role.role_kind in {"reviewer", "planner"} else None
-            ),
-            delivery_allowed=lambda _role, output: isinstance(output, str) and bool(output.strip()),
+        workflow = build_native_episode(
+            spec=NativeEpisodeSpec(config.episode_id, config.max_revisions, NativeEpisodeActions(*config.actions)),
+            nodes=NativeEpisodeNodes(**nodes),
+            role_input_builder=role_input,
         )
-    workflow = build_native_episode(
-        spec=NativeEpisodeSpec(config.episode_id, config.max_revisions, NativeEpisodeActions(*config.actions)),
-        nodes=NativeEpisodeNodes(**nodes),
-        role_input_builder=role_input,
-    )
-    result = await workflow.invoke_direct(state.prepared.task_contract, (), session=session)
-    settle()
-    receipt = result["state"]
-    accepted = receipt["accepted_solver_receipt"]["final_contact"]
-    completion = completed.get(accepted["agent_contact_id"])
-    if (
-        completion is None or completion.request_sha256 != accepted["request_sha256"]
-        or completion.response_sha256 != accepted["response_sha256"]
-        or completion.response_text_sha256 != accepted["response_text_sha256"]
-        or result["delivery"]["actor_output"] != completion.text
-    ):
-        raise RailsRunnerError("native acceptance is not bound to its actual Solver response")
-    trace = TraceBuffer(run_id)
-    for key in sorted(state.trace_buffers):
-        trace.extend_from(state.trace_buffers[key])
-    compact_receipt = {key: receipt[key] for key in (
-        "role_visits", "planner_routes", "accepted_solver_receipt",
-    )}
-    trace.emit("USE", f"{state.prepared.sample.sample_id}/{program.program_id}/native-episode", {
-        "use_native_episode": compact_receipt,
-    })
-    state.transitions.append(AgentStepTransition(
-        snapshot_sha256=snapshot_sha256,
-        prior_query_state_sha256=state.query_state.content_hash(),
-        next_query_state_sha256=None, action_kind="stop", action_target_refs=(),
-        new_value_ids=(), used_value_ids=(), dropped_value_ids=(),
-        new_agent_state_ids=(), dropped_agent_state_ids=(),
-    ).validate())
-    state.final_outcome = _AgentRuntimeOutcome(
-        prepared=state.prepared, final_query_state=state.query_state,
-        final_response_text=completion.text, contacts=tuple(state.contacts),
-        waves=tuple(state.waves), transitions=tuple(state.transitions),
-        agent_states=tuple(state.state_store[k] for k in state.query_state.agent_state_ids),
-        final_supply=_supply_for_state(snapshot, state.query_state),
-        trace_buffer=trace, native_episode_receipt=compact_receipt,
-    )
+        result = await workflow.invoke_direct(state.prepared.task_contract, (), session=session)
+        settle()
+        receipt = result["state"]
+        accepted = receipt["accepted_solver_receipt"]["final_contact"]
+        completion = completed.get(accepted["agent_contact_id"])
+        if (
+            completion is None or completion.request_sha256 != accepted["request_sha256"]
+            or completion.response_sha256 != accepted["response_sha256"]
+            or completion.response_text_sha256 != accepted["response_text_sha256"]
+            or result["delivery"]["actor_output"] != completion.text
+        ):
+            raise RailsRunnerError("native acceptance is not bound to its actual Solver response")
+        trace = TraceBuffer(run_id)
+        for key in sorted(state.trace_buffers):
+            trace.extend_from(state.trace_buffers[key])
+        compact_receipt = {key: receipt[key] for key in (
+            "role_visits", "planner_routes", "accepted_solver_receipt",
+        )}
+        trace.emit("USE", f"{state.prepared.sample.sample_id}/{program.program_id}/native-episode", {
+            "use_native_episode": compact_receipt,
+        })
+        state.transitions.append(AgentStepTransition(
+            snapshot_sha256=snapshot_sha256,
+            prior_query_state_sha256=state.query_state.content_hash(),
+            next_query_state_sha256=None, action_kind="stop", action_target_refs=(),
+            new_value_ids=(), used_value_ids=(), dropped_value_ids=(),
+            new_agent_state_ids=(), dropped_agent_state_ids=(),
+        ).validate())
+        state.final_outcome = _AgentRuntimeOutcome(
+            prepared=state.prepared, final_query_state=state.query_state,
+            final_response_text=completion.text, contacts=tuple(state.contacts),
+            waves=tuple(state.waves), transitions=tuple(state.transitions),
+            agent_states=tuple(state.state_store[k] for k in state.query_state.agent_state_ids),
+            final_supply=_supply_for_state(snapshot, state.query_state),
+            trace_buffer=trace, native_episode_receipt=compact_receipt,
+        )
+    finally:
+        # Public framework resources are episode-owned, not role-visit-owned.
+        # Keep reused nodes alive through revisions, then release every node.
+        import sys
+
+        original_error = sys.exception()
+        cleanup_errors = []
+        for node in nodes.values():
+            try:
+                await node.close()
+            except BaseException as error:
+                cleanup_errors.append(error)
+        if cleanup_errors:
+            message = "native role cleanup failed: " + ", ".join(
+                type(error).__name__ for error in cleanup_errors
+            )
+            if original_error is not None:
+                original_error.add_note(message)
+            else:
+                raise RailsRunnerError(message) from cleanup_errors[0]
+
 
 def _run_agent_openjiuwen(
     *,
