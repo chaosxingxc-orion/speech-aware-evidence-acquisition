@@ -654,6 +654,76 @@ def test_flight_runtime_seeds_all_named_stores_for_the_first_phase(tmp_path):
     }
 
 
+def test_named_store_first_phase_prepared_artifact_round_trip_is_fully_bound(
+    tmp_path, monkeypatch
+):
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    from speech_aware_evidence_acquisition.core.preparation import PreparationError
+    from speech_aware_evidence_acquisition.rails.controllers import (
+        default_phase_program,
+    )
+
+    config, _ = _first_phase_config(tmp_path)
+    frozen_source = b"synthetic frozen preparation source"
+    (tmp_path / "frozen-source.json").write_bytes(frozen_source)
+    config.update(
+        {
+            "policy": "phase-direct-only-supplied-v1",
+            "preparation_source_receipts": [
+                {
+                    "root": "repository",
+                    "relpath": "frozen-source.json",
+                    "sha256": hashlib.sha256(frozen_source).hexdigest(),
+                }
+            ],
+        }
+    )
+    store_binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    runtime = object.__new__(FlightRuntime)
+    runtime._composed = SimpleNamespace(values=config)
+    runtime._data_root = tmp_path
+    runtime._repo_root = tmp_path
+    runtime._knowledge_store_binding = store_binding
+    runtime._knowledge_store_supply = None
+    runtime._prepare = lambda: (config, "slurp", "DEV", "b" * 64)
+    program = default_phase_program(config["policy"])
+    supply, specs = runtime._resolve_phase_supply(
+        program, store_binding.composite_snapshot
+    )
+    phase_binding = {
+        "knowledge_snapshot": store_binding.composite_snapshot,
+        "supply_for_phase": supply,
+        "supply_for_store": runtime._knowledge_store_supply,
+        "supply_specs": specs,
+        "speech_packet_bindings": {
+            "s1": {"packet_id": "speech/s1", "sha256": "a" * 64}
+        },
+    }
+    runtime._phase_program_material = phase_binding
+    plan = SimpleNamespace(split_identity_hash="b" * 64)
+    live = runtime._phase_supply_seeds(program, phase_binding, specs, plan)
+
+    artifact = runtime.prepare_phase_supply(tmp_path / "prepared-seed.json")
+    config["prepared_phase_supply"] = {
+        "relpath": "prepared-seed.json",
+        "sha256": artifact["sha256"],
+    }
+    monkeypatch.setattr(
+        runtime._knowledge_store_supply,
+        "bootstrap_first_phase",
+        lambda **_kwargs: pytest.fail("prepared selection was recomputed"),
+    )
+    assert runtime._phase_supply_seeds(program, phase_binding, specs, plan) == live
+
+    config["knowledge_stores"]["slot-contracts"]["phase_supply"]["direct"][
+        "query_source"
+    ]["embedded_signal"] = "speech: changed second-store source declaration"
+    with pytest.raises(PreparationError, match="identity mismatch"):
+        runtime._phase_supply_seeds(program, phase_binding, specs, plan)
+
+
 def test_flight_runtime_resolves_named_store_supply_without_a_launcher(tmp_path):
     from speech_aware_evidence_acquisition.rails.controllers import (
         default_phase_program,
