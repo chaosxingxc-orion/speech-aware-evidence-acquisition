@@ -59,7 +59,7 @@ class SlurpDeliveryOutcome:
     diagnostics: Mapping[str, int]
 
 
-_FINAL_FENCE_RE = re.compile(r"```(?:json)?\\s*(.*?)```", re.DOTALL | re.IGNORECASE)
+_FINAL_FENCE_RE = re.compile(r"```(?:json)?\s*(.*?)```", re.DOTALL | re.IGNORECASE)
 _FINAL_KEYS = frozenset({"scenario", "action", "entities"})
 _ENTITY_KEYS = frozenset({"type", "filler"})
 

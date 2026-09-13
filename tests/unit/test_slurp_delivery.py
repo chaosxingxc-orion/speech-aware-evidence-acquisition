@@ -323,3 +323,41 @@ def test_joint_hypothesis_delivery_is_registered_separately():
     from speech_aware_evidence_acquisition.core.base import RESPONSE_POSTPROCESSORS
 
     assert RESPONSE_POSTPROCESSORS.resolve("slurp-joint-hypothesis-delivery-v1")
+
+
+def test_joint_delivery_accepts_real_multiline_json_fence_and_rejects_fenced_duplicates():
+    from speech_aware_evidence_acquisition.reproduction.slurp_delivery import (
+        slurp_joint_hypothesis_delivery_rule,
+    )
+
+    predecessor = json.dumps({
+        "schema": "saea-slurp-intent-hypotheses-v1",
+        "semantics": "ranked-mutually-exclusive-intent-alternatives",
+        "sample_id": "s",
+        "candidates": [
+            {"intent_id": "transport_taxi", "distinction": "Taxi request.",
+             "evidence_refs": [], "unresolved_fields": []},
+        ],
+    }, sort_keys=True)
+    legal = {"transport_taxi"}
+
+    fenced = """  ```json
+      {"scenario": "transport", "action": "taxi", "entities": []}
+    ```  """
+    accepted = slurp_joint_hypothesis_delivery_rule(
+        predecessor, fenced, legal_intent_ids=legal, max_candidates=1
+    )
+    assert accepted.refusal_reason is None
+    assert json.loads(accepted.text) == {
+        "scenario": "transport", "action": "taxi", "entities": []
+    }
+
+    duplicated = """```json
+    {"scenario": "weather", "scenario": "transport",
+     "action": "taxi", "entities": []}
+    ```"""
+    refused = slurp_joint_hypothesis_delivery_rule(
+        predecessor, duplicated, legal_intent_ids=legal, max_candidates=1
+    )
+    assert refused.refusal_reason == "malformed_final_response"
+    assert refused.diagnostics["final_authoritative"] == 0
