@@ -1159,3 +1159,30 @@ def test_legacy_controller_preserves_textual_tool_call_answer_behavior():
 
     assert advance.final_response_contact_id == contact.contact_id
     assert controller.sealed_states["direct"].content == text
+
+
+def test_shared_phase_response_sealer_preserves_view_raw_hash_namespace_and_citations():
+    raw = '{"scenario":"weather","action":"query"}'
+    viewed = '{"status":"valid"}'
+
+    artifact = rc.seal_phase_response_state(
+        phase_name="draft",
+        sample_id="s1",
+        state_content=viewed,
+        raw_response_text=raw,
+        source_query_state_sha256=_SHA_A,
+        producer_policy_id="phase-reviewed-repair-v1",
+        state_namespace="window-2",
+        cited_value_ids=("value-1", "value-2"),
+    )
+
+    assert artifact == AgentStateArtifact(
+        state_id="window-2:draft:s1",
+        state_kind="phase:draft",
+        content=viewed,
+        source_query_state_sha256=_SHA_A,
+        source_response_sha256=hashlib.sha256(raw.encode()).hexdigest(),
+        producer_policy_id="phase-reviewed-repair-v1",
+        cited_value_ids=("value-1", "value-2"),
+    ).validate()
+    assert artifact.source_response_sha256 != hashlib.sha256(viewed.encode()).hexdigest()
