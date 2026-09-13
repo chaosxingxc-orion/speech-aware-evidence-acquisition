@@ -80,6 +80,23 @@ def test_revalidation_preserves_measurements_and_source_bytes(tmp_path):
     assert execute(tmp_path, runtime, registration)["sha256"] == receipt["sha256"]
 
 
+def test_revalidation_refuses_same_profile_journal_from_another_fit(tmp_path):
+    runtime, registration, _current, source = world(tmp_path)
+    source_journal = source.with_name(source.name + ".contacts.jsonl")
+    other_journal = tmp_path / "other-fit.json.contacts.jsonl"
+    other_journal.write_bytes(source_journal.read_bytes())
+    import hashlib
+    registration["source_journal"] = {
+        "relpath": other_journal.name,
+        "sha256": hashlib.sha256(other_journal.read_bytes()).hexdigest(),
+        "line_count": 2,
+    }
+
+    with pytest.raises(PreparationError, match="source journal path"):
+        execute(tmp_path, runtime, registration)
+    assert not (tmp_path / "revalidated.json").exists()
+
+
 @pytest.mark.parametrize("drift", ["boundary", "config", "split", "service", "undeclared-code",
                                   "wrong-code", "source-input-pin", "source-hash",
                                   "escape", "same-output", "profile", "contacts", "journal-hash", "journal-count"])

@@ -823,7 +823,10 @@ def revalidate_phase_fit(runtime, *, registration, registration_sha256, data_roo
         raise PreparationError("fit revalidation requires an original measured artifact")
 
     journal_pin = registration["source_journal"]
-    journal_raw = confined(journal_pin["relpath"], exists=True).read_bytes()
+    journal_path = confined(journal_pin["relpath"], exists=True)
+    if journal_path != source.with_name(source.name + ".contacts.jsonl"):
+        raise PreparationError("fit revalidation source journal path mismatch")
+    journal_raw = journal_path.read_bytes()
     if hashlib.sha256(journal_raw).hexdigest() != journal_pin["sha256"]:
         raise PreparationError("fit revalidation source journal hash mismatch")
     journal = [json.loads(line) for line in journal_raw.splitlines()]
