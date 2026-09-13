@@ -30,13 +30,15 @@ import json
 import math
 import threading
 import time
-from pathlib import Path
+from dataclasses import replace
+from pathlib import Path, PurePosixPath
 from typing import Callable, Mapping, Sequence
 
 from ...contracts import (
     CONSTRUCTION_VISIBLE_FIELD,
     STUDY_SLUG,
     ExecutionPlan,
+    ExecutionScopeError,
     FrozenCoreGate,
     _EXPOSURE_RUN_COLUMN,
     _parse_ledger_tables,
@@ -962,6 +964,8 @@ class FlightRuntime:
         phase_runner: Callable[..., object] = run_program,
         continuous_phase_runner: Callable[..., object] = run_continuous_program,
         live_phase_fit_factory: Callable[..., object] | None = None,
+        live_speech_observation_provider_factory: Callable[..., object] | None = None,
+        phase_tool_builder: Callable[..., object] | None = None,
         score_batch: Callable[..., Mapping[str, object]] = run_score_batch,
         clock: Callable[[], float] = time.time,
         # -- additional seams the C4c brief calls for "through seams" but
@@ -1033,6 +1037,8 @@ class FlightRuntime:
         self._phase_runner = phase_runner
         self._continuous_phase_runner = continuous_phase_runner
         self._live_phase_fit_factory = live_phase_fit_factory
+        self._live_speech_observation_provider_factory = live_speech_observation_provider_factory
+        self._phase_tool_builder = phase_tool_builder
         self._score_batch = score_batch
         self._clock = clock
         self._manifest_builder = manifest_builder
@@ -1112,6 +1118,13 @@ class FlightRuntime:
         self._phase_review_material: Mapping[str, object] | None = None
         self._speech_observations = None
         self._speech_observations_loaded = False
+        self._live_speech_config = None
+        self._live_speech_provider = None
+        self._live_speech_attempt_handle = None
+        self._live_speech_finalized = False
+        self._live_speech_source_bindings = None
+        self._phase_tool_dispatcher = None
+        self._phase_tool_trace_sink = None
         self._experience_memory = None
         self._experience_memory_loaded = False
         self._promotion_receipt: Mapping[str, object] | None = None
@@ -1887,6 +1900,233 @@ class FlightRuntime:
             self._speech_observations_loaded = True
         return values, carrier_lock_key, split_id, identity_hash
 
+    @staticmethod
+    def _confined_pin(root: Path, pin: object, label: str) -> Path:
+        if not isinstance(pin, Mapping) or set(pin) != {"relpath", "sha256"}:
+            raise FlightRuntimeError(f"{label} must pin relpath and sha256")
+        relpath = pin["relpath"]
+        expected = pin["sha256"]
+        if (
+            not isinstance(relpath, str)
+            or not relpath
+            or "\\" in relpath
+            or ":" in relpath
+            or PurePosixPath(relpath).is_absolute()
+            or any(part in {"", ".", ".."} for part in relpath.split("/"))
+        ):
+            raise FlightRuntimeError(f"{label} relpath must be a canonical relative path")
+        if (
+            not isinstance(expected, str)
+            or len(expected) != 64
+            or set(expected) - set("0123456789abcdef")
+        ):
+            raise FlightRuntimeError(f"{label} sha256 is invalid")
+        path = (root / relpath).resolve()
+        if not path.is_relative_to(root.resolve()) or not path.is_file():
+            raise FlightRuntimeError(f"{label} pin does not resolve to a confined file")
+        if _sha256_file(path) != expected:
+            raise FlightRuntimeError(f"{label} pin hash differs from the file")
+        return path
+
+    def _load_live_speech_observation_config(
+        self,
+        spec: object,
+        *,
+        carrier_lock_key: str,
+        split_identity_hash: str,
+    ) -> Mapping[str, object]:
+        """Validate the separate, preregistered speech-tool custody inputs."""
+
+        if not isinstance(spec, Mapping) or set(spec) != {
+            "inventory",
+            "protocol",
+            "execution_plan",
+            "output_relpath",
+        }:
+            raise FlightRuntimeError(
+                "live_speech_observations requires inventory, protocol, "
+                "execution_plan and output_relpath"
+            )
+        inventory_path = self._confined_pin(
+            self._data_root, spec["inventory"], "live speech inventory"
+        )
+        protocol_path = self._confined_pin(
+            self._data_root, spec["protocol"], "live speech protocol"
+        )
+        plan_path = self._confined_pin(
+            self._repo_root, spec["execution_plan"], "live speech execution plan"
+        )
+        try:
+            inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
+            protocol = json.loads(protocol_path.read_text(encoding="utf-8"))
+            envelope = json.loads(plan_path.read_text(encoding="utf-8"))
+            plan_values = envelope.get("execution_plan", envelope)
+            plan = ExecutionPlan(**plan_values).validate()
+        except (
+            OSError,
+            UnicodeError,
+            json.JSONDecodeError,
+            TypeError,
+            ValueError,
+            ExecutionScopeError,
+        ) as error:
+            raise FlightRuntimeError(f"invalid live speech pin: {error}") from None
+        if plan.carrier_lock_key != carrier_lock_key:
+            raise FlightRuntimeError("live speech plan carrier differs from the answering roster")
+        if plan.split_identity_hash != split_identity_hash:
+            raise FlightRuntimeError("live speech plan split differs from the answering roster")
+        main_plan = getattr(self, "_plan", None)
+        if main_plan is not None and plan.split_role != main_plan.split_role:
+            raise FlightRuntimeError("live speech plan split role differs from generation")
+        bindings = self._live_speech_source_bindings
+        if not isinstance(bindings, Mapping) or not bindings:
+            raise FlightRuntimeError("live speech source bindings are unavailable")
+        if plan.planned_model_calls < 1:
+            raise FlightRuntimeError("live speech plan must admit at least one selected contact")
+        total_seconds = sum(
+            float(binding["source_audio_duration_seconds"])
+            for binding in bindings.values()
+        )
+        if plan.planned_speech_audio_seconds + 1e-9 < max(
+            float(binding["source_audio_duration_seconds"])
+            for binding in bindings.values()
+        ):
+            raise FlightRuntimeError("live speech audio cap cannot cover one roster source")
+        output_relpath = spec["output_relpath"]
+        if (
+            not isinstance(output_relpath, str)
+            or not output_relpath
+            or "\\" in output_relpath
+            or ":" in output_relpath
+            or PurePosixPath(output_relpath).is_absolute()
+            or any(part in {"", ".", ".."} for part in output_relpath.split("/"))
+        ):
+            raise FlightRuntimeError("live speech output_relpath must be canonical and confined")
+        output_root = (self._data_root / output_relpath).resolve()
+        if not output_root.is_relative_to(self._data_root.resolve()):
+            raise FlightRuntimeError("live speech output root escapes DATA")
+        expected_prefix = f"prepared/{plan.run_id}/{plan.attempt_id}/"
+        if not output_relpath.startswith(expected_prefix):
+            raise FlightRuntimeError(
+                "live speech output must be namespaced to its registered attempt"
+            )
+        source_hash = hashlib.sha256(
+            json.dumps(bindings, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        ).hexdigest()
+        return {
+            "inventory": inventory,
+            "protocol": protocol,
+            "plan": plan,
+            "output_root": output_root,
+            "source_bindings_sha256": source_hash,
+            "roster_audio_seconds": total_seconds,
+            "pins": {
+                key: dict(spec[key])
+                for key in ("inventory", "protocol", "execution_plan")
+            },
+        }
+
+    def _record_live_speech_contact(self, **facts: object) -> Mapping[str, object]:
+        """Debit one cold ASR contact before the provider can read its source."""
+
+        config = self._live_speech_config
+        bindings = self._live_speech_source_bindings
+        if not isinstance(config, Mapping) or not isinstance(bindings, Mapping):
+            raise FlightRuntimeError("live speech custody is not configured")
+        sample_id = facts.get("sample_id")
+        binding = bindings.get(sample_id)
+        source = facts.get("source")
+        audio_seconds = facts.get("audio_seconds")
+        if (
+            not isinstance(binding, Mapping)
+            or not isinstance(source, Mapping)
+            or source.get("audio_sha256") != binding.get("source_audio_sha256")
+            or audio_seconds != binding.get("source_audio_duration_seconds")
+            or source.get("span")
+            != {
+                "kind": "full-utterance",
+                "start_seconds": 0.0,
+                "end_seconds": binding.get("source_audio_duration_seconds"),
+            }
+        ):
+            raise FlightRuntimeError("live speech selected source identity is invalid")
+        plan = config["plan"]
+        store = self._attempt_store_factory(self._data_root)
+        sibling_calls, sibling_seconds = store.prior_actual_usage(
+            plan.run_id, exclude_attempt_id=plan.attempt_id
+        )
+        current_calls, current_seconds = (
+            self._live_speech_attempt_handle.actual_totals()
+            if self._live_speech_attempt_handle is not None
+            else (0, 0.0)
+        )
+        if (
+            sibling_calls + current_calls + 1 > plan.planned_model_calls
+            or sibling_seconds + current_seconds + float(audio_seconds)
+            > plan.planned_speech_audio_seconds + 1e-9
+        ):
+            raise FlightRuntimeError("live speech contact would exceed its registered budget")
+        if self._live_speech_attempt_handle is None:
+            self._live_speech_attempt_handle = store.open_attempt(
+                plan.run_id,
+                plan.attempt_id,
+                carrier_lock_key=plan.carrier_lock_key,
+                reserved_calls=plan.planned_model_calls,
+                reserved_audio_seconds=plan.planned_speech_audio_seconds,
+            )
+        calls, seconds = self._live_speech_attempt_handle.record_usage(
+            calls=1, audio_seconds=float(audio_seconds)
+        )
+        return {
+            "schema": "saea-live-speech-neural-contact-v1",
+            "run_id": plan.run_id,
+            "attempt_id": plan.attempt_id,
+            "ordinal": calls,
+            "sample_id": sample_id,
+            "source_response_sha256": facts.get("source_response_sha256"),
+            "cache_key": facts.get("cache_key"),
+            "source_audio_sha256": binding["source_audio_sha256"],
+            "actual_speech_audio_seconds": seconds,
+        }
+
+    def _record_phase_tool_contact(self, **facts: object) -> Mapping[str, object]:
+        """Validate and count one model-selected tool action, independent of ASR cache use."""
+
+        sample_id = facts.get("sample_id")
+        bindings = self._live_speech_source_bindings
+        if not isinstance(bindings, Mapping) or sample_id not in bindings:
+            raise FlightRuntimeError("native tool action sample is outside the bound roster")
+        required_text = ("phase", "next_phase", "tool_id", "source_response_sha256", "request_id", "tool_call_id", "tool_calls_sha256")
+        if any(not isinstance(facts.get(key), str) or not facts[key] for key in required_text):
+            raise FlightRuntimeError("native tool action lacks a source-bound identity")
+        arguments = facts.get("arguments")
+        if not isinstance(arguments, Mapping):
+            raise FlightRuntimeError("native tool action arguments must be a mapping")
+        callback = getattr(self._client, "record_tool_call", None)
+        if not callable(callback):
+            raise FlightRuntimeError(
+                "native speech tools require FrozenCoreClient.record_tool_call custody"
+            )
+        callback(count=1)
+        binding = bindings[sample_id]
+        return {
+            "schema": "saea-native-phase-tool-contact-v1",
+            **{key: facts[key] for key in required_text},
+            "arguments_sha256": hashlib.sha256(
+                json.dumps(arguments, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            ).hexdigest(),
+            "speech_packet_id": binding["packet_id"],
+            "speech_packet_sha256": binding["packet_sha256"],
+        }
+
+    def _fit_base_plan(self, plan: ExecutionPlan) -> ExecutionPlan:
+        cap = self._composed.values.get("live_phase_fit_audio_seconds_cap")
+        if cap is None:
+            return plan
+        if isinstance(cap, bool) or not isinstance(cap, int) or cap <= 0:
+            raise FlightRuntimeError("live_phase_fit_audio_seconds_cap must be a positive integer")
+        return replace(plan, planned_speech_audio_seconds=cap).validate()
+
     def preflight(self) -> Mapping[str, object]:
         """Compose the four config fragments, load and identity-hash the
         split, build and validate the :class:`~contracts.ExecutionPlan`,
@@ -1946,6 +2186,30 @@ class FlightRuntime:
         )
         self._gate = gate
         self._gate_touch(gate, plan)
+
+        live_spec = values.get("live_speech_observations")
+        if live_spec not in (None, {}):
+            self._live_speech_source_bindings = self.source_audio_bindings(
+                include_address=True
+            )
+            self._live_speech_config = self._load_live_speech_observation_config(
+                live_spec,
+                carrier_lock_key=carrier_lock_key,
+                split_identity_hash=identity_hash,
+            )
+            self._gate_touch(gate, self._live_speech_config["plan"])
+            self._require_exposure_row_unconsumed(
+                self._live_speech_config["plan"].run_id
+            )
+            live_plan = self._live_speech_config["plan"]
+            live_attempt_path = self._attempt_store_factory(self._data_root).handle(
+                live_plan.run_id, live_plan.attempt_id
+            ).path
+            if live_attempt_path.exists():
+                raise FlightRuntimeError(
+                    f"live speech attempt {live_plan.run_id}/{live_plan.attempt_id} "
+                    "already exists; a recovery requires a new registered attempt"
+                )
 
         self._require_exposure_row_unconsumed(plan.run_id)
 
@@ -2977,13 +3241,22 @@ class FlightRuntime:
         }
         arm_fields = ARM_VISIBLE_FIELDS.get(arm, ())
         if "tool_schemas" in arm_fields:
-            fill_name = baseline_values.get("tool_schema_fill")
-            if self._tool_schema_resolver is None or not isinstance(fill_name, str):
-                raise FlightRuntimeError(
-                    f"arm {arm!r} declares tool_schemas; a tool_schema_resolver seam and "
-                    "a baseline 'tool_schema_fill' name are both required"
+            dispatcher = self._phase_tool_dispatcher
+            if dispatcher is not None and bool(getattr(dispatcher, "native_enabled", False)):
+                schemas = getattr(dispatcher, "native_tool_schemas", None)
+                if not callable(schemas):
+                    raise FlightRuntimeError("native dispatcher does not expose tool schemas")
+                kwargs["tool_schemas"] = tuple(schemas())
+            else:
+                fill_name = baseline_values.get("tool_schema_fill")
+                if self._tool_schema_resolver is None or not isinstance(fill_name, str):
+                    raise FlightRuntimeError(
+                        f"arm {arm!r} declares tool_schemas; a tool_schema_resolver seam and "
+                        "a baseline 'tool_schema_fill' name are both required"
+                    )
+                kwargs["tool_schemas"] = self._tool_schema_resolver(
+                    self._lock, self._data_root, fill_name
                 )
-            kwargs["tool_schemas"] = self._tool_schema_resolver(self._lock, self._data_root, fill_name)
         if SPEECH_FEATURE_ARM_FIELD in arm_fields:
             # rails.core_client.FrozenCoreClient REFUSES to be constructed
             # for a speech-feature arm without these two -- and nothing on
@@ -3775,6 +4048,94 @@ class FlightRuntime:
             rows.append(row)
         return rows
 
+    def _ensure_live_speech_provider(self) -> object | None:
+        if self._live_speech_config is None:
+            return None
+        if self._live_speech_provider is None:
+            factory = self._live_speech_observation_provider_factory
+            if factory is None:
+                from ...rails.live_speech_observation import (  # noqa: PLC0415
+                    LiveSpeechObservationProvider,
+                )
+
+                factory = LiveSpeechObservationProvider
+            self._live_speech_provider = factory(
+                inventory=self._live_speech_config["inventory"],
+                protocol=self._live_speech_config["protocol"],
+                source_bindings=self._live_speech_source_bindings,
+                data_root=self._data_root,
+                output_root=self._live_speech_config["output_root"],
+                contact=self._record_live_speech_contact,
+            )
+        return self._live_speech_provider
+
+    def _build_phase_tool_dispatcher(
+        self, policy: str, program: object, *, binding: Mapping[str, object], sink: object, client: object
+    ) -> object | None:
+        tool_specs = self._phase_tool_specs(policy)
+        if not tool_specs:
+            return None
+        builder = self._phase_tool_builder
+        if builder is None:
+            from ...rails.phase_tools import build_phase_tools  # noqa: PLC0415
+
+            builder = build_phase_tools
+        kwargs = {
+            "snapshot": binding["knowledge_snapshot"],
+            "supply_for_phase": binding.get("supply_for_phase"),
+            "trace_sink": sink,
+            "knowledge_catalog": self._phase_knowledge_catalog(
+                binding["knowledge_snapshot"]
+            ),
+            "experience_memory": self._experience_memory,
+            "speech_observations": self._speech_observations,
+        }
+        if self._live_speech_config is not None:
+            provider = self._ensure_live_speech_provider()
+            contact = self._record_phase_tool_contact
+            kwargs.update(
+                live_speech_observations=provider,
+                tool_contact=contact,
+            )
+        dispatcher = builder(self._composed.values, program, **kwargs)
+        if self._live_speech_config is not None and not bool(
+            getattr(dispatcher, "native_enabled", False)
+        ):
+            raise FlightRuntimeError(
+                "live speech observations require a native-enabled phase dispatcher"
+            )
+        native_rule = getattr(program, "stop_rule", None) == "native-answer-or-tool"
+        if native_rule != bool(getattr(dispatcher, "native_enabled", False)):
+            raise FlightRuntimeError(
+                "native-answer-or-tool stop rule and dispatcher mode must agree"
+            )
+        if native_rule and self._composed.values.get("phase_planner") is not None:
+            raise FlightRuntimeError(
+                "native-answer-or-tool refuses an external stop policy"
+            )
+        return dispatcher
+
+    def _prepare_native_phase_runtime(self, policy: str) -> None:
+        if policy == "fixed" or policy in self._obs_policy_names():
+            return
+        program = default_phase_program(policy)
+        specs = self._phase_tool_specs(policy)
+        if not specs:
+            return
+        from ..tracing import TraceBuffer  # noqa: PLC0415
+
+        binding = self._phase_program_material
+        if binding is None:
+            binding = self._default_phase_program_binding(program, None)
+            self._phase_program_material = binding
+        sink = binding.get("trace_sink")
+        if sink is None:
+            sink = TraceBuffer(self._plan.run_id)
+        self._phase_tool_trace_sink = sink
+        self._phase_tool_dispatcher = self._build_phase_tool_dispatcher(
+            policy, program, binding=binding, sink=sink, client=None
+        )
+
     def _dispatch_phase_program(
         self,
         client: object,
@@ -3829,7 +4190,7 @@ class FlightRuntime:
         # so the loop gets a TraceBuffer, exactly as every sealed AgentLoop
         # launcher in this study did, and it is flushed into the client's own
         # sink once the whole program has settled.
-        sink = binding.get("trace_sink")
+        sink = getattr(self, "_phase_tool_trace_sink", None) or binding.get("trace_sink")
         if sink is None or sink is client:
             sink = TraceBuffer(plan.run_id)
         supply_for_phase = binding.get("supply_for_phase")
@@ -3844,23 +4205,11 @@ class FlightRuntime:
 
         planner_specs = self._phase_planner_specs(policy)
         planner = build_phase_planner(planner_specs, review_for_phase)
-        from ...rails.phase_tools import build_phase_tools
-
-        tool_specs = self._phase_tool_specs(policy)
-        tool_dispatcher = build_phase_tools(
-            self._composed.values,
-            program,
-            snapshot=binding["knowledge_snapshot"],
-            supply_for_phase=supply_for_phase,
-            trace_sink=sink,
-            knowledge_catalog=self._phase_knowledge_catalog(
-                binding["knowledge_snapshot"]
+        tool_dispatcher = getattr(self, "_phase_tool_dispatcher", None)
+        if tool_dispatcher is None:
+            tool_dispatcher = self._build_phase_tool_dispatcher(
+                policy, program, binding=binding, sink=sink, client=client
             )
-            if tool_specs
-            else None,
-            experience_memory=self._experience_memory,
-            speech_observations=self._speech_observations,
-        )
         live_fit_gate = None
         if whole_roster:
             if model_free_check:
@@ -3892,7 +4241,7 @@ class FlightRuntime:
                     )
                 live_fit_gate = (
                     self._live_phase_fit_factory or build_live_phase_fit_gate
-                )(self, program, plan, **fit_options)
+                )(self, program, self._fit_base_plan(plan), **fit_options)
         facet_seed, value_seed = self._phase_supply_seeds(
             program, binding, supply_specs, plan
         )
@@ -4911,6 +5260,7 @@ class FlightRuntime:
         if policy in self._obs_policy_names():
             return self._run_obs_phases(policy)
 
+        self._prepare_native_phase_runtime(policy)
         client_kwargs = self.frozen_core_client_kwargs()
         client_initialization_started = self._clock()
         client = self._client_factory(**client_kwargs)
@@ -5189,8 +5539,9 @@ class FlightRuntime:
         declared = values.get("phase_tools")
         knowledge = values.get("phase_knowledge_views")
         declares_observation = values.get("prepared_speech_observations") not in (None, {})
+        declares_live_observation = values.get("live_speech_observations") not in (None, {})
         if declared is None or declared == {}:
-            if declares_observation:
+            if declares_observation or declares_live_observation:
                 raise FlightRuntimeError("prepared speech observations require the speech observation phase tool")
             if knowledge is not None:
                 raise FlightRuntimeError("phase_knowledge_views requires active phase_tools")
@@ -5211,6 +5562,15 @@ class FlightRuntime:
         if uses_observation != declares_observation:
             raise FlightRuntimeError(
                 "speech observation phase tool and prepared speech observation binding must be declared together"
+            )
+        uses_native = any(spec.get("mode") == "native-tools" for spec in specs.values())
+        if declares_live_observation != uses_native:
+            raise FlightRuntimeError(
+                "live speech observations and native-tools phase mode must be declared together"
+            )
+        if declares_live_observation and declares_observation:
+            raise FlightRuntimeError(
+                "live and prepared speech observations cannot be active together"
             )
 
         uses_memory = any(
@@ -5906,6 +6266,59 @@ class FlightRuntime:
             )
         return rows
 
+    def _close_live_speech_provider(
+        self, *, finalize: bool, reason: str | None = None
+    ) -> Mapping[str, object] | None:
+        provider = self._live_speech_provider
+        if provider is None:
+            return None
+        try:
+            provider.close()
+        finally:
+            receipt = provider.receipt()
+        config = self._live_speech_config
+        plan = config["plan"]
+        document = {
+            "schema": "saea-live-speech-observation-runtime-receipt-v1",
+            "run_id": plan.run_id,
+            "attempt_id": plan.attempt_id,
+            "source_bindings_sha256": config["source_bindings_sha256"],
+            "pins": config["pins"],
+            "provider": receipt,
+            "status": "FINALIZED" if finalize else "ABORTED",
+            **({"failure_reason": reason} if reason else {}),
+        }
+        receipt_path = (
+            self._data_root
+            / "prepared"
+            / plan.run_id
+            / plan.attempt_id
+            / "live-speech-observation-runtime-receipt.json"
+        )
+        receipt_path.parent.mkdir(parents=True, exist_ok=True)
+        raw = json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+        try:
+            with receipt_path.open("x", encoding="utf-8", newline="\n") as handle:
+                handle.write(raw)
+        except FileExistsError as error:
+            raise FlightRuntimeError(
+                f"live speech receipt already exists at {receipt_path}"
+            ) from error
+        sha256 = _sha256_file(receipt_path)
+        handle = self._live_speech_attempt_handle
+        if handle is not None:
+            if finalize:
+                handle.finalize_with_receipt(
+                    str(receipt_path.relative_to(self._data_root)),
+                    sha256,
+                    "live-speech-observation-runtime",
+                )
+                self._live_speech_finalized = True
+            else:
+                handle.mark_aborted(reason or "answering flight aborted")
+        self._live_speech_provider = None
+        return {"path": str(receipt_path), "sha256": sha256, **document}
+
     def seal(
         self,
         *,
@@ -5941,6 +6354,7 @@ class FlightRuntime:
                 "baseline_fragment": self._baseline,
             },
         )
+        self._close_live_speech_provider(finalize=True)
         run_dir = self._run_dir()
         run_dir.mkdir(parents=True, exist_ok=True)
         # `<run_id>.outputs.jsonl`, not `outputs.jsonl`: the cost scorer
@@ -7219,8 +7633,20 @@ class FlightRuntime:
 
         if not isinstance(reason, str) or not reason.strip():
             raise FlightRuntimeError("abort reason must be a non-empty string")
+        close_error = None
+        try:
+            self._close_live_speech_provider(finalize=False, reason=reason)
+        except Exception as error:  # preserve the primary flight abort below
+            close_error = error
         attempt_id = self._plan.attempt_id if self._plan is not None else self._attempt_id
-        return self._abort_attempt(self._data_root, self._run_id, attempt_id, reason=reason)
+        aborted = self._abort_attempt(
+            self._data_root, self._run_id, attempt_id, reason=reason
+        )
+        if close_error is not None:
+            raise FlightRuntimeError(
+                f"answering attempt aborted, but live speech closure failed: {close_error}"
+            ) from close_error
+        return aborted
 
 
 __all__ = [
