@@ -86,6 +86,7 @@ def load_phase_tool_specs(config, program):
             "knowledge_views",
             "fixed_action",
             "candidate_limit",
+            "knowledge_store_ids",
         }:
             raise PhaseToolError("phase_tools entry has unknown fields")
         mode = entry.get("mode")
@@ -95,6 +96,15 @@ def load_phase_tool_specs(config, program):
         views = _unique(
             entry.get("knowledge_views", ["text"]), VIEWS, "knowledge_views"
         )
+        store_ids = entry.get("knowledge_store_ids")
+        if store_ids is not None:
+            if PHASE_KNOWLEDGE_TOOL not in tools:
+                raise PhaseToolError("knowledge_store_ids requires the phase knowledge tool")
+            if (not isinstance(store_ids, list) or not store_ids
+                    or any(not isinstance(item, str) or not item for item in store_ids)
+                    or len(set(store_ids)) != len(store_ids)):
+                raise PhaseToolError("knowledge_store_ids must be a nonempty unique list")
+            store_ids = tuple(store_ids)
         candidate_limit = entry.get("candidate_limit")
         if CANDIDATE_CONTRACT_TOOL in tools:
             if (
@@ -122,6 +132,8 @@ def load_phase_tool_specs(config, program):
             "knowledge_views": views,
             "fixed_action": fixed,
         }
+        if store_ids is not None:
+            specs[phase]["knowledge_store_ids"] = store_ids
         if CANDIDATE_CONTRACT_TOOL in tools:
             specs[phase]["candidate_limit"] = candidate_limit
     native_program = getattr(program, "stop_rule", None) == "native-answer-or-tool"
@@ -137,7 +149,7 @@ def load_phase_tool_specs(config, program):
                 "native-answer-or-tool requires native-tools on every nonfinal phase"
             )
         signatures = {
-            (spec["allowed_tools"], spec["knowledge_views"], spec.get("candidate_limit"))
+            (spec["allowed_tools"], spec["knowledge_views"], spec.get("candidate_limit"), spec.get("knowledge_store_ids"))
             for spec in specs.values()
         }
         if len(signatures) != 1:
@@ -147,7 +159,7 @@ def load_phase_tool_specs(config, program):
     return specs
 
 
-def _validate_action(action, allowed, views, *, candidate_limit=None):
+def _validate_action(action, allowed, views, *, candidate_limit=None, store_ids=None):
     if not isinstance(action, Mapping) or set(action) != {"tool_id", "arguments"}:
         raise PhaseToolError("action must contain exactly tool_id and arguments")
     tool_id = action["tool_id"]
@@ -159,12 +171,13 @@ def _validate_action(action, allowed, views, *, candidate_limit=None):
     if tool_id in {TASK_CONTRACT_TOOL, CORRECTIVE_MEMORY_TOOL} and args:
         raise PhaseToolError(f"{tool_id} action takes no arguments")
     if tool_id == PHASE_KNOWLEDGE_TOOL:
-        if (
-            set(args) != {"view"}
-            or not isinstance(args["view"], str)
-            or args["view"] not in views
-        ):
+        expected = {"view"} if store_ids is None else {"store_id", "view"}
+        if (set(args) != expected or not isinstance(args["view"], str)
+                or args["view"] not in views):
             raise PhaseToolError("knowledge action needs one allowed knowledge view")
+        if store_ids is not None and (
+                not isinstance(args["store_id"], str) or args["store_id"] not in store_ids):
+            raise PhaseToolError("knowledge action names a disallowed knowledge store")
     if tool_id in {PREPARED_SPEECH_OBSERVATION_TOOL, LIVE_SPEECH_OBSERVATION_TOOL}:
         if (
             set(args) != {"span", "representation", "distinction"}
@@ -189,7 +202,7 @@ def _validate_action(action, allowed, views, *, candidate_limit=None):
     return {"tool_id": tool_id, "arguments": dict(args)}
 
 
-def _native_tool_schema(tool_id, views, *, candidate_limit=None):
+def _native_tool_schema(tool_id, views, *, candidate_limit=None, store_ids=None):
     descriptions = {
         TASK_CONTRACT_TOOL: "Read the legal task contract.",
         CANDIDATE_CONTRACT_TOOL: (
@@ -207,6 +220,9 @@ def _native_tool_schema(tool_id, views, *, candidate_limit=None):
     elif tool_id == PHASE_KNOWLEDGE_TOOL:
         properties = {"view": {"type": "string", "enum": list(views)}}
         required = ["view"]
+        if store_ids is not None:
+            properties = {"store_id": {"type": "string", "enum": list(store_ids)}, **properties}
+            required = ["store_id", "view"]
     elif tool_id == CANDIDATE_CONTRACT_TOOL:
         properties = {"candidate_ids": {
             "type": "array", "minItems": 1, "maxItems": candidate_limit,
@@ -250,6 +266,8 @@ class PhaseToolDispatcher:
         live_speech_observations=None,
         tool_contact=None,
         candidate_contracts=None,
+        knowledge_stores=None,
+        supply_for_store=None,
     ):
         self.specs = specs
         self.program = program
@@ -261,6 +279,8 @@ class PhaseToolDispatcher:
         self.live_speech_observations = live_speech_observations
         self.tool_contact = tool_contact
         self.candidate_contracts = candidate_contracts
+        self.knowledge_stores = knowledge_stores
+        self.supply_for_store = supply_for_store
         self._candidate_ids = ()
         self._candidate_source_sha256 = None
         if any(CANDIDATE_CONTRACT_TOOL in spec["allowed_tools"] for spec in specs.values()):
@@ -296,9 +316,21 @@ class PhaseToolDispatcher:
             raise PhaseToolError(
                 "speech/paired action requires a prepared knowledge catalog"
             )
-        if any(
-            PHASE_KNOWLEDGE_TOOL in s["allowed_tools"] for s in specs.values()
-        ) and not callable(supply_for_phase):
+        configured_store_ids = {
+            store_id for spec in specs.values()
+            for store_id in spec.get("knowledge_store_ids", ())
+        }
+        if configured_store_ids:
+            if knowledge_stores is None or not callable(supply_for_store):
+                raise PhaseToolError("named knowledge stores require a bound store router")
+            if not configured_store_ids <= set(getattr(knowledge_stores, "store_ids", ())):
+                raise PhaseToolError("configured knowledge stores differ from the bound releases")
+            if getattr(knowledge_stores, "binding_sha256", None) != self.snapshot_sha256:
+                raise PhaseToolError("named knowledge stores differ from the runtime snapshot")
+        elif knowledge_stores is not None or supply_for_store is not None:
+            raise PhaseToolError("named knowledge stores are bound without configured store IDs")
+        if (any(PHASE_KNOWLEDGE_TOOL in spec["allowed_tools"] for spec in specs.values())
+                and not configured_store_ids and not callable(supply_for_phase)):
             raise PhaseToolError("knowledge action requires the shared supply binding")
         if any(
             CORRECTIVE_MEMORY_TOOL in s["allowed_tools"] for s in specs.values()
@@ -337,6 +369,7 @@ class PhaseToolDispatcher:
                     ordered.append(_native_tool_schema(
                         tool_id, self.specs[phase]["knowledge_views"],
                         candidate_limit=self.specs[phase].get("candidate_limit"),
+                        store_ids=self.specs[phase].get("knowledge_store_ids"),
                     ))
                     seen.add(tool_id)
         return tuple(ordered)
@@ -519,7 +552,14 @@ class PhaseToolDispatcher:
             elif action["tool_id"] == CORRECTIVE_MEMORY_TOOL:
                 output = tool.call(self.experience_memory, next_phase, context)
             else:
-                output = tool.call(self.supply_for_phase, next_phase, context)
+                store_id = action["arguments"].get("store_id")
+                if store_id is None:
+                    output = tool.call(self.supply_for_phase, next_phase, context)
+                else:
+                    output = tool.call(
+                        lambda next_name, ctx: self.supply_for_store(store_id, next_name, ctx),
+                        next_phase, context,
+                    )
             if output.tool_id != action["tool_id"] or output.derivation is not None:
                 raise PhaseToolError(
                     "tool returned a different identity or unexpected derivation"
@@ -533,6 +573,21 @@ class PhaseToolDispatcher:
                 supply.validate()
                 from .knowledge import assert_knowledge_use_binding
 
+                store_id = action["arguments"].get("store_id")
+                store_receipt = None
+                local_identity = None
+                if store_id is not None:
+                    try:
+                        local_identity = {
+                            "local_rank_sha256": supply.rank_result.content_hash(),
+                            "local_fusion_sha256": supply.fusion_decision.content_hash(),
+                        }
+                        supply = self.knowledge_stores.qualify_supply(
+                            store_id, supply, context.query_state
+                        )
+                        store_receipt = self.knowledge_stores.store_receipt(store_id)
+                    except RailsError as error:
+                        raise PhaseToolError(str(error)) from error
                 assert_knowledge_use_binding(
                     snapshot=self.snapshot,
                     query_state=context.query_state,
@@ -547,9 +602,21 @@ class PhaseToolDispatcher:
                         supply.fusion_decision.supporting_facet_ids
                     ),
                     "knowledge_view": action["arguments"]["view"],
-                    "rank_sha256": content_hash(supply.rank_result.as_json()),
-                    "fusion_sha256": content_hash(supply.fusion_decision.as_json()),
                 }
+                if store_receipt is not None:
+                    result.update(
+                        {
+                            **store_receipt,
+                            **local_identity,
+                            "qualified_rank_sha256": supply.rank_result.content_hash(),
+                            "qualified_fusion_sha256": supply.fusion_decision.content_hash(),
+                        }
+                    )
+                else:
+                    result.update(
+                        rank_sha256=content_hash(supply.rank_result.as_json()),
+                        fusion_sha256=content_hash(supply.fusion_decision.as_json()),
+                    )
                 if action["arguments"]["view"] != "text":
                     # Preserve an explicit association in the source-bound tool
                     # state; the legacy packet wire grammar uses ordered keys.
@@ -737,6 +804,7 @@ class PhaseToolDispatcher:
             spec["allowed_tools"],
             spec["knowledge_views"],
             candidate_limit=spec.get("candidate_limit"),
+            store_ids=spec.get("knowledge_store_ids"),
         )
         if action["tool_id"] == CANDIDATE_CONTRACT_TOOL:
             if not set(action["arguments"]["candidate_ids"]) <= set(self._candidate_ids):
@@ -865,6 +933,29 @@ class PhaseToolDispatcher:
             previous = view
         if group:
             blocks.extend(self._value_renderer.assemble(group, view=previous))
+        if self.knowledge_stores is not None:
+            named_blocks = []
+            for block in blocks:
+                evidence_id = str(block.get("evidence_id", ""))
+                store_id, separator, local_id = evidence_id.partition("::")
+                if not separator or not local_id:
+                    raise PhaseToolError(
+                        "named knowledge evidence lacks a store-qualified ID"
+                    )
+                try:
+                    visible = self.knowledge_stores.model_evidence_block(
+                        store_id,
+                        local_evidence_id=local_id,
+                        content=str(block["text"]),
+                    )
+                except RailsError as error:
+                    raise PhaseToolError(str(error)) from error
+                if visible["evidence_id"] != evidence_id:
+                    raise PhaseToolError(
+                        "named knowledge evidence changed its store-qualified ID"
+                    )
+                named_blocks.append({**block, **visible})
+            blocks = named_blocks
         return tuple(blocks + observations)
 
     def receipt(self):
@@ -941,6 +1032,8 @@ def build_phase_tools(
     live_speech_observations=None,
     tool_contact=None,
     candidate_contracts=None,
+    knowledge_stores=None,
+    supply_for_store=None,
 ):
     specs = load_phase_tool_specs(config, program)
     if not specs:
@@ -957,4 +1050,6 @@ def build_phase_tools(
         live_speech_observations=live_speech_observations,
         tool_contact=tool_contact,
         candidate_contracts=candidate_contracts,
+        knowledge_stores=knowledge_stores,
+        supply_for_store=supply_for_store,
     )

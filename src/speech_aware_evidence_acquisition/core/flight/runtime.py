@@ -1518,30 +1518,82 @@ class FlightRuntime:
         )
 
         specs = load_phase_supply_specs(self._composed.values, program)
-        if not specs:
+        if not specs and self._composed.values.get("knowledge_stores") is None:
             return {}
         snapshot = self._load_knowledge_snapshot()
-        by_length = sorted(
-            snapshot.values, key=lambda value: (-len(value.content), value.value_id)
-        )
-        facets_by_length = sorted(
-            snapshot.facets,
-            key=lambda facet: (-len(facet.representation), facet.facet_id),
-        )
+        store_binding = getattr(self, "_knowledge_store_binding", None)
+        if not specs and store_binding is None:
+            return {}
         bound: dict[str, tuple[tuple[str, str], ...]] = {}
-        for phase, spec in specs.items():
-            blocks: list[tuple[str, str]] = []
-            if spec.expose_facets:
-                width = int((spec.fuse_coverage or {}).get("m", spec.k))
-                blocks.extend(
-                    (f"[evidence key:{facet.facet_id}] {facet.representation}", "key")
-                    for facet in facets_by_length[:width]
-                )
-            blocks.extend(
-                (f"[evidence {value.value_id}] {value.content}", "value")
-                for value in by_length[: spec.k]
+        sources = [(specs, snapshot, None)] if store_binding is None else [
+            (
+                load_phase_supply_specs(
+                    {"phase_supply": store.phase_supply}, program
+                ),
+                store.snapshot,
+                store_id,
             )
-            bound[phase] = tuple(blocks)
+            for store_id, store in store_binding.stores.items()
+        ]
+        for source_specs, source_snapshot, store_id in sources:
+            by_length = sorted(
+                source_snapshot.values, key=lambda value: (-len(value.content), value.value_id)
+            )
+            facets_by_length = sorted(
+                source_snapshot.facets,
+                key=lambda facet: (-len(facet.representation), facet.facet_id),
+            )
+            for phase, spec in source_specs.items():
+                blocks: list[tuple[str, str]] = []
+                if spec.expose_facets:
+                    width = int((spec.fuse_coverage or {}).get("m", spec.k))
+                    for facet in facets_by_length[:width]:
+                        if store_id is None:
+                            text = (
+                                f"[evidence key:{facet.facet_id}] "
+                                f"{facet.representation}"
+                            )
+                        else:
+                            visible = store_binding.model_evidence_block(
+                                store_id,
+                                local_evidence_id=facet.facet_id,
+                                content=facet.representation,
+                            )
+                            text = (
+                                f"[evidence key:{visible['evidence_id']}] "
+                                f"{visible['text']}"
+                            )
+                        blocks.append((text, "key"))
+                for value in by_length[: spec.k]:
+                    if store_id is None:
+                        text = f"[evidence {value.value_id}] {value.content}"
+                    else:
+                        visible = store_binding.model_evidence_block(
+                            store_id,
+                            local_evidence_id=value.value_id,
+                            content=value.content,
+                        )
+                        text = (
+                            f"[evidence {visible['evidence_id']}] "
+                            f"{visible['text']}"
+                        )
+                    blocks.append((text, "value"))
+                previous = list(bound.get(phase, ()))
+                if store_binding is not None:
+                    previous.extend(block for block in blocks if block not in previous)
+                    bound[phase] = tuple(previous)
+                elif sum(len(text) for text, _role in blocks) > sum(
+                    len(text) for text, _role in previous
+                ):
+                    bound[phase] = tuple(blocks)
+        if store_binding is not None:
+            retained: list[tuple[str, str]] = []
+            for phase in program.phase_names():
+                retained.extend(
+                    block for block in bound.get(phase, ()) if block not in retained
+                )
+                if retained:
+                    bound[phase] = tuple(retained)
         return bound
 
     def _verify_phase_prompt_fit(self) -> Mapping[str, object] | None:
@@ -4210,6 +4262,8 @@ class FlightRuntime:
             ),
             "experience_memory": self._experience_memory,
             "speech_observations": self._speech_observations,
+            "knowledge_stores": binding.get("knowledge_stores"),
+            "supply_for_store": binding.get("supply_for_store"),
         }
         from ...rails.candidate_contract_lookup import TOOL_ID as CANDIDATE_CONTRACT_TOOL  # noqa: PLC0415
 
@@ -5871,6 +5925,21 @@ class FlightRuntime:
         from ...rails.knowledge import KnowledgeSnapshot  # noqa: PLC0415 (cycle guard)
 
         values = self._composed.values
+        if values.get("knowledge_stores") is not None:
+            if values.get("knowledge_snapshot_relpath") is not None or values.get("knowledge_snapshot_sha256") is not None:
+                raise FlightRuntimeError("knowledge_stores cannot be combined with the legacy knowledge snapshot pins")
+            from ...rails.knowledge_stores import (  # noqa: PLC0415
+                KnowledgeStoreError, load_knowledge_store_binding,
+            )
+            try:
+                binding = load_knowledge_store_binding(values, data_root=self._data_root)
+            except KnowledgeStoreError as error:
+                raise FlightRuntimeError(str(error)) from error
+            if binding is None:
+                raise FlightRuntimeError("knowledge_stores did not produce a binding")
+            self._knowledge_store_binding = binding
+            return binding.composite_snapshot
+        self._knowledge_store_binding = None
         relpath = values.get("knowledge_snapshot_relpath")
         expected = values.get("knowledge_snapshot_sha256")
         if not isinstance(relpath, str) or not relpath:
@@ -6005,6 +6074,8 @@ class FlightRuntime:
                 per_sample_states=per_sample_states,
             ),
             "supply_for_phase": supply_for_phase,
+            "supply_for_store": getattr(self, "_knowledge_store_supply", None),
+            "knowledge_stores": getattr(self, "_knowledge_store_binding", None),
             "supply_specs": supply_specs,
             "review_for_phase": review_for_phase,
             "review_specs": review_specs,
@@ -6111,6 +6182,37 @@ class FlightRuntime:
             phase_supply_receipt,
         )
 
+        store_binding = getattr(self, "_knowledge_store_binding", None)
+        if store_binding is not None:
+            if self._composed.values.get("phase_supply") not in (None, {}):
+                raise FlightRuntimeError("named knowledge stores cannot use top-level phase_supply")
+            if self._composed.values.get("prepared_phase_recall") is not None:
+                raise FlightRuntimeError("named knowledge stores require independently pinned store recall")
+            from ...rails.knowledge_stores import (  # noqa: PLC0415
+                KnowledgeStoreError, build_knowledge_store_supply,
+            )
+            try:
+                uses_segments = any(
+                    isinstance(entry, Mapping)
+                    and isinstance(entry.get("query_source"), Mapping)
+                    and entry["query_source"].get("kind") == "sealed-segment-vectors"
+                    for store in store_binding.stores.values()
+                    for entry in store.phase_supply.values()
+                )
+                router = build_knowledge_store_supply(
+                    store_binding, program=program, data_root=self._data_root,
+                    source_audio_bindings=(self.source_audio_bindings() if uses_segments else None),
+                )
+            except KnowledgeStoreError as error:
+                raise FlightRuntimeError(str(error)) from error
+            self._knowledge_store_supply = router
+            self._phase_supply_receipt = router.receipt
+            merged = {}
+            for store_specs in router.specs_by_store.values():
+                for phase, spec in store_specs.items():
+                    merged.setdefault(phase, spec)
+            return None, merged
+        self._knowledge_store_supply = None
         specs = load_phase_supply_specs(self._composed.values, program)
         if not specs:
             self._phase_supply_receipt = None
