@@ -20,6 +20,8 @@ from speech_aware_evidence_acquisition.reproduction.ojw.native_roles import (
     NativeRoleNode,
     NativeRoleNodeSpec,
     build_native_role_workflow,
+    project_native_assistant_message,
+    restore_native_assistant_wire_message,
 )
 
 
@@ -522,30 +524,98 @@ def test_role_preserves_structured_wire_content_supported_by_assistant_message()
     assert message.content != completion.text
 
 
-def test_role_refuses_wire_null_content_instead_of_rewriting_it():
-    completion = _completion(text="normalized scorer text")
+def test_null_tool_content_round_trips_only_through_preserved_wire_binding():
+    calls = _tool_call("analyze", "call-null", '{"value":1}')
+    completion = _completion(
+        text='[{"name":"analyze","arguments":{"value":1}}]',
+        tool_calls=calls,
+    )
     wire = json.dumps(
         {
             "choices": [
                 {
-                    "message": {"role": "assistant", "content": None},
-                    "finish_reason": "stop",
+                    "message": {
+                        "role": "assistant",
+                        "content": None,
+                        "tool_calls": calls,
+                    },
+                    "finish_reason": "tool_calls",
                 }
             ]
         },
         separators=(",", ":"),
     ).encode()
     completion = replace(completion, wire_response_bytes=wire)
-    model = FrozenCoreRoleModel(
-        role_id="solver",
-        metered_request=lambda _request: completion,
-        context=NativeRoleContactContext(
-            sample_id="sample-1", agent_contact_id="contact-1"
-        ),
+
+    projected = project_native_assistant_message(completion)
+    serialized = projected.model_dump(mode="json", exclude_none=True)
+    restored = restore_native_assistant_wire_message(projected, completion=completion)
+    through_model = asyncio.run(
+        FrozenCoreRoleModel(
+            role_id="reviewer",
+            metered_request=lambda _request: completion,
+            context=NativeRoleContactContext(
+                sample_id="sample-1", agent_contact_id="contact-1"
+            ),
+        ).invoke(
+            ({"role": "user", "content": "Review."},),
+            tools=({"name": "analyze"},),
+        )
     )
 
-    with pytest.raises(FrozenCoreRoleModelError, match="null"):
-        asyncio.run(model.invoke(
-            ({"role": "user", "content": "Solve."},),
-            tools=(),
-        ))
+    assert projected.content == ""
+    assert through_model.model_dump(mode="json", exclude_none=True) == serialized
+    assert serialized["content"] == ""
+    assert serialized["tool_calls"][0]["id"] == "call-null"
+    assert serialized["tool_calls"][0]["function"]["arguments"] == '{"value":1}'
+    assert restored["content"] is None
+    assert restored["tool_calls"] == calls
+    assert completion.wire_response_bytes == wire
+
+
+@pytest.mark.parametrize(
+    ("wire_content", "expected"),
+    [
+        ("", ""),
+        ([{"type": "text", "text": "structured"}], [{"type": "text", "text": "structured"}]),
+    ],
+)
+def test_empty_and_structured_content_round_trip_without_null_inference(
+    wire_content, expected
+):
+    completion = _completion(text="normalized", wire_content=wire_content)
+
+    projected = project_native_assistant_message(completion)
+    restored = restore_native_assistant_wire_message(projected, completion=completion)
+
+    assert projected.content == expected
+    assert restored["content"] == expected
+
+
+def test_null_projection_refuses_tampered_content_calls_and_source_binding():
+    calls = _tool_call("analyze", "call-null", '{"value":1}')
+    completion = _completion(text="normalized", tool_calls=calls)
+    document = json.loads(completion.wire_response_bytes)
+    document["choices"][0]["message"]["content"] = None
+    completion = replace(
+        completion,
+        wire_response_bytes=json.dumps(document, separators=(",", ":")).encode(),
+    )
+    projected = project_native_assistant_message(completion)
+    changed_content = projected.model_copy(update={"content": "" + "tampered"})
+    changed_calls = projected.model_copy(
+        update={
+            "tool_calls": [
+                projected.tool_calls[0].model_copy(update={"arguments": '{"value":2}'})
+            ]
+        }
+    )
+
+    with pytest.raises(FrozenCoreRoleModelError, match="projected content"):
+        restore_native_assistant_wire_message(changed_content, completion=completion)
+    with pytest.raises(FrozenCoreRoleModelError, match="projected content"):
+        restore_native_assistant_wire_message(changed_calls, completion=completion)
+    with pytest.raises(FrozenCoreRoleModelError, match="source binding"):
+        restore_native_assistant_wire_message(
+            projected, completion=replace(completion, request_sha256="")
+        )
