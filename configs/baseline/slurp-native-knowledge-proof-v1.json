@@ -14,7 +14,7 @@
         "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
       },
       "candidate_supply": {
-        "reviewer": {
+        "solver": {
           "provider": "slurp-candidate-semantic-v1",
           "rank_policy": "saea-ranked-candidate-round-robin-v1",
           "fuse_policy": "saea-candidate-semantic-passthrough-v1",
@@ -100,7 +100,7 @@
       "instruction_template": "probes/slurp_native_role_solver_v2.txt",
       "fill_params": {},
       "response_format_id": null,
-      "predecessor_binding": "append-sealed-state",
+      "predecessor_binding": "none",
       "state_fill": null
     }
   },
@@ -127,5 +127,5 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v2.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "Unready four-row TRAIN native-role knowledge-consumption engineering proof. Perception emits one to three structurally legal complete intent IDs. The released slot-contract store maps those source-bound candidates to their full associated union and supplies it at Reviewer. Reviewer alone retains the existing native task-contract tool. Solver is the sole final-answer authority. This proof demonstrates legal candidate consumption and full slot-card materialization; it does not assess knowledge quality, dual-store quality, selective-tool benefit, revision effectiveness, or task quality."
+  "what_this_is": "Registered four-row TRAIN native-role knowledge-consumption engineering proof. Perception emits one to three structurally legal complete intent IDs. The released slot-contract store maps those source-bound candidates to their full associated union and supplies it before the initial Solver. Reviewer alone retains the existing native task-contract tool. Solver is the sole final-answer authority. This proof demonstrates legal candidate consumption and full slot-card materialization; it does not assess knowledge quality, dual-store quality, selective-tool benefit, revision effectiveness, or task quality."
 }

@@ -10,10 +10,10 @@ The proposed four-row TRAIN proof exercises one engineering path:
 
 1. Perception produces one to three distinct legal complete scenario_action intent IDs.
 2. The named released slot-contracts store reads that source-bound Perception state.
-3. Candidate supply materializes the complete associated union of released slot cards and attaches it at Reviewer.
-4. The native episode reaches Solver, the sole final-answer authority.
+3. Candidate supply materializes the complete associated union of released slot cards and attaches it before the initial Solver draft.
+4. Reviewer inspects the Solver draft, Planner decides whether to accept or revise, and Solver retains final-answer authority.
 
-It demonstrates legal candidate consumption and full slot-card materialization. It does not assess task quality, knowledge quality or effectiveness, dual-store quality, selective-tool benefit, autonomous tool triggering, or revision effectiveness. The existing Reviewer-only native task-contract tool remains for engineering continuity; it is not an experimental factor.
+If accepted, it demonstrates legal candidate consumption and full slot-card materialization. It does not assess task quality, knowledge quality or effectiveness, dual-store quality, selective-tool benefit, autonomous tool triggering, or revision effectiveness. The existing Reviewer-only native task-contract tool remains for engineering continuity; it is not an experimental factor.
 
 ## Fixed configuration
 
@@ -21,7 +21,7 @@ The policy is phase-native-candidates-review-revise-v1: Perception 1, Reviewer 3
 
 The prospective decoder-only geometry is -c 65536 -np 4, with four 16384-token slots and max_tokens 256. The receipt-bound lifecycle supplies --no-mmproj; the model fragment does not declare an mmproj argument. Dynamic fitting remains a root-owned per-realized-request check.
 
-The three root-authored v2 prompt paths are probes/slurp_native_role_context_v2.txt, probes/slurp_native_role_perception_v2.txt, and probes/slurp_native_role_solver_v2.txt. This draft deliberately does not duplicate their bytes or manifest entries. Reviewer and Planner retain their v1 prompts and only Reviewer has native tool authority. Solver appends its immediate sealed predecessor and declares no state_fill, so a revision uses the predecessor actually produced in that episode.
+The three root-authored v2 prompt paths are probes/slurp_native_role_context_v2.txt, probes/slurp_native_role_perception_v2.txt, and probes/slurp_native_role_solver_v2.txt. This draft deliberately does not duplicate their bytes or manifest entries. Reviewer and Planner retain their v1 prompts and only Reviewer has native tool authority. Solver uses the native role history without a duplicate appended predecessor or state_fill. Candidate supply selects the original Perception state explicitly, including on revisions.
 
 ## Candidate response contract
 
@@ -39,7 +39,7 @@ Only knowledge_stores is used. No legacy snapshot binding is present.
 
 The named slot-contracts store is pinned to knowledge/slurp/semantic/slot-contracts-v1/snapshot.json, logical snapshot SHA-256 11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6, and knowledge/slurp/semantic/slot-contracts-v1/release.json, file SHA-256 8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e. The release pins source prepared/SAEA-SLURP-SEMANTIC-AUTHORING-PREPARE-V1/authored-slot-contracts-v1.json, SHA-256 34f6c3dc192eca4a30ef7208d10c1e2b797a0ae2ffe5122f16b376e10a30e4c5.
 
-Candidate supply explicitly names candidate_state_phase perception and compact_source_phase perception; it is attached to Reviewer. It accepts at most three candidates, permits all 16 released cards associated with each candidate, and permits their full distinct union up to 28 cards. These caps preserve the measured released-store maximum rather than selecting alphabetically or by inverse frequency. Observed intent bindings index cards only; they do not restrict legal entity types or define required slots.
+Candidate supply explicitly names candidate_state_phase perception and compact_source_phase perception; it is attached to Solver before the initial draft. It accepts at most three candidates, permits all 16 released cards associated with each candidate, and permits their full distinct union up to 28 cards. These caps preserve the measured released-store maximum rather than selecting alphabetically or by inverse frequency. Observed intent bindings index cards only; they do not restrict legal entity types or define required slots.
 
 ## Root admission checklist
 

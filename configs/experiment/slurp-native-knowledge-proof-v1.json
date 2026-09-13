@@ -8,11 +8,12 @@
       "run_id": "SAEA-SLURP-NATIVE-KNOWLEDGE-PROOF-V1",
       "attempt_id": "attempt-slurp-native-knowledge-proof-generation-v1",
       "allowed_execution_stages": [
-        "check"
+        "check",
+        "worker"
       ],
       "readiness": {
-        "state": "held",
-        "reason": "Draft only. Root must review role prompts, released-store pins, the candidate-source contract, prospective registration, dynamic request fitting, and the serving identity before any stage capable of contact is admitted."
+        "state": "ready",
+        "reason": "Root admits the registered four-row engineering bridge after compact-state custody, full candidate card supply, native revision retention, and the role-specific enum contract passed model-free checks. Require the root-issued lease, full np4 service identity, and prospective actual-request fit. No scoring or task-quality conclusion."
       }
     }
   ],
