@@ -99,8 +99,15 @@ def _validate_protocol(protocol):
     _exact_keys(protocol, _PROTOCOL_KEYS, "Whisper decoding protocol")
     if protocol["schema"] != "saea-local-whisper-decode-v1":
         raise SpeechObservationBackendError("Whisper decoding protocol schema is invalid")
-    if not isinstance(protocol["device"], str) or not re.fullmatch(r"cuda(?::\d+)?", protocol["device"]):
-        raise SpeechObservationBackendError("Whisper device must name one explicit CUDA device")
+    if not isinstance(protocol["device"], str) or not (
+        protocol["device"] == "cpu"
+        or re.fullmatch(r"cuda(?::\d+)?", protocol["device"])
+    ):
+        raise SpeechObservationBackendError(
+            "Whisper device must be cpu or name one explicit CUDA device"
+        )
+    if protocol["device"] == "cpu" and protocol["fp16"] is not False:
+        raise SpeechObservationBackendError("Whisper CPU device requires fp16=false")
     for field, upper in (("cpu_workers", 8), ("batch_size", None), ("beam_size", None), ("sample_len", None)):
         value = protocol[field]
         if type(value) is not int or value < 1 or (upper is not None and value > upper):
