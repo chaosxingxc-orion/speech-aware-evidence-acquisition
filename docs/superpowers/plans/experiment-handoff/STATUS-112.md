@@ -55,7 +55,8 @@ sample.
 
 The shared runtime confirms exactly those four identities and their distinct
 split hash 31fa4c9918d4e4c34f62c6cc0a5d7ef13229e6f711e2889b7c8a3213e63c37c2.
-No new dataset loader, media version or roster draw is introduced.
+No new dataset loader or media version is introduced. This new engineering
+subset is not a new effectiveness population.
 Composition forbids overriding colliding baseline fields, so the proof uses a
 baseline clone whose method bytes are identical except the fit identity/cap and
 prepared artifact pin. The model, prompts, 8-by-4 candidate contract, tools,
