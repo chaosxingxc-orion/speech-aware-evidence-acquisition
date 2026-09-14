@@ -1,5 +1,7 @@
 import hashlib
 import json
+
+import pytest
 from pathlib import Path
 
 from speech_aware_evidence_acquisition.core.config import compose
@@ -31,9 +33,7 @@ def test_cells_are_held_check_only_and_compose_without_contact_authority():
         values = compose(REPO, model=MODEL, dataset=expected["dataset"], baseline=expected["baseline"], experiment="slurp-native-dual-store-train-source-folds-held-v1").values
         assert values["split_identity_hash"] == expected["split_hash"]
         assert values["policy"] == recovery["policy"]
-        episode, reference = dict(values["native_episode"]), dict(recovery["native_episode"])
-        episode.pop("episode_id"); reference.pop("episode_id")
-        assert episode == reference
+        assert values["native_episode"] == recovery["native_episode"]
         assert values["phase_material"] == recovery["phase_material"]
         assert values["phase_tools"] == recovery["phase_tools"]
         assert values["scorers"] == []
@@ -43,6 +43,10 @@ def test_cells_are_held_check_only_and_compose_without_contact_authority():
         assert query["sha256"] == expected["query_sha"]
         assert f"slurp-intent-boundaries-train-fold-{fold}" in query["relpath"]
 
+@pytest.mark.skipif(
+    not DATA.is_dir() or not PROMOTION.is_file(),
+    reason="Requires the local sealed TRAIN vectors and promoted packet metadata",
+)
 def test_fold_segments_join_datasets_and_promoted_packets_exactly():
     assert hashlib.sha256(PROMOTION.read_bytes()).hexdigest() == "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247"
     packets = {row["packet_id"]: row for row in _read(PROMOTION)["packets"]}

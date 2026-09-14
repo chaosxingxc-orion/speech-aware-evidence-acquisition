@@ -82,7 +82,7 @@
       "acquire": "ACQUIRE",
       "revise": "REVISE"
     },
-    "episode_id": "slurp-native-dual-store-train-source-v1",
+    "episode_id": "slurp-native-dual-store-dev1000-v1",
     "exhaustion_policy": "deliver-latest-solver",
     "max_revisions": 1,
     "roles": {
