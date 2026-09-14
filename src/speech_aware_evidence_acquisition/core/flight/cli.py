@@ -9,6 +9,7 @@ from pathlib import Path
 from .campaign import CampaignError, declared_readiness, load_campaign_cells, run_campaign
 from .factory import build_flight_runtime
 from .lease import WorkerExecutionPolicy
+from .receipts import persist_flight_receipts
 
 
 def load_campaign_plan(repo: Path, path: Path):
@@ -174,13 +175,37 @@ def main(argv=None) -> int:
                 runtime, args.output, policy=policy, contact_cap=args.contact_cap,
             )
         else:
-            runtime.preflight()
-            runtime.preprocess()
-            runtime.serve()
-            runtime.run_phases()
-            # Root releases custody after this seal and schedules official scoring
-            # independently. A standalone worker never owns the service or lease.
-            result = runtime.seal()
+            try:
+                runtime.preflight()
+                runtime.preprocess()
+                runtime.serve()
+                runtime.run_phases()
+                # Root releases custody after this seal and schedules official scoring
+                # independently. A standalone worker never owns the service or lease.
+                seal_result = runtime.seal()
+            except BaseException as error:
+                try:
+                    persist_flight_receipts(
+                        root,
+                        run_id=runtime.run_id,
+                        attempt_id=runtime.attempt_id,
+                        receipts=runtime.receipts,
+                    )
+                except Exception as receipt_error:
+                    error.add_note(
+                        "Worker could not preserve the live flight receipts: "
+                        f"{type(receipt_error).__name__}: {receipt_error}"
+                    )
+                raise
+            receipt_reference = persist_flight_receipts(
+                root,
+                run_id=runtime.run_id,
+                attempt_id=runtime.attempt_id,
+                receipts=runtime.receipts,
+            )
+            result = dict(seal_result)
+            if receipt_reference is not None:
+                result["flight_receipts"] = {runtime.run_id: receipt_reference}
     print(json.dumps(result, sort_keys=True, default=str))
     if args.mode == "campaign" and isinstance(result, dict):
         states = result.get("states", {})

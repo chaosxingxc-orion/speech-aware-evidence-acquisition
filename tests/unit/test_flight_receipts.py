@@ -1,3 +1,4 @@
+import hashlib
 import json
 import subprocess
 import sys
@@ -7,6 +8,7 @@ import pytest
 from speech_aware_evidence_acquisition.core.flight.receipts import (
     FlightReceiptError,
     FlightReceipts,
+    persist_flight_receipts,
     read_flight_receipts,
     write_flight_receipts,
 )
@@ -102,3 +104,57 @@ def test_writer_rejects_wrong_identity_or_invalid_existing_hash(tmp_path):
     path.write_text(json.dumps(document), encoding="utf-8")
     with pytest.raises(FlightReceiptError, match="stage hash"):
         read_flight_receipts(path)
+
+
+def test_shared_persistence_uses_governed_identity_path_and_skips_empty_ledger(
+    tmp_path,
+):
+    empty = FlightReceipts("run-a", "attempt-a")
+    assert (
+        persist_flight_receipts(
+            tmp_path, run_id="run-a", attempt_id="attempt-a", receipts=empty
+        )
+        is None
+    )
+    assert not (tmp_path / "runs").exists()
+
+    receipts = _receipts(through="seal")
+    reference = persist_flight_receipts(
+        tmp_path, run_id="run-a", attempt_id="attempt-a", receipts=receipts
+    )
+    path = tmp_path / "runs/run-a/attempt-a/flight-receipts.json"
+    assert reference == {
+        "path": str(path.resolve()),
+        "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+    }
+    assert read_flight_receipts(path) == receipts.as_json()
+
+
+@pytest.mark.parametrize(
+    "run_id, attempt_id",
+    [("run-b", "attempt-a"), ("run-a", "attempt-b"), ("../run-a", "attempt-a")],
+)
+def test_shared_persistence_rejects_live_identity_mismatch_or_escaped_path(
+    tmp_path, run_id, attempt_id
+):
+    with pytest.raises(FlightReceiptError, match="identity|escapes"):
+        persist_flight_receipts(
+            tmp_path,
+            run_id=run_id,
+            attempt_id=attempt_id,
+            receipts=_receipts(through="seal"),
+        )
+
+
+def test_shared_persistence_rejects_matching_identity_that_escapes_runs_root(
+    tmp_path,
+):
+    receipts = FlightReceipts("../run-a", "attempt-a")
+    receipts.record("preflight", {"sample_count": 1})
+    with pytest.raises(FlightReceiptError, match="escapes"):
+        persist_flight_receipts(
+            tmp_path,
+            run_id="../run-a",
+            attempt_id="attempt-a",
+            receipts=receipts,
+        )
