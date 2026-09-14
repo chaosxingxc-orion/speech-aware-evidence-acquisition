@@ -7,6 +7,7 @@ five-field ``SampleRef``; gold (expected tool calls) is exposed ONLY through
 the separate scorer-side ``load_expected_calls``.
 """
 
+import hashlib
 import json
 
 import pytest
@@ -16,6 +17,7 @@ from speech_aware_evidence_acquisition.data.audio2tool import (
     load_audio2tool,
     load_expected_calls,
     load_tool_registry,
+    _load_tool_registry_with_sha256,
     render_registry_row,
     render_tool_schemas,
 )
@@ -179,6 +181,35 @@ def test_render_tool_schemas_is_sorted_and_deterministic(audio2tool_world):
     assert second["tool_name"] == "setSecurityMode"
     assert second["argument_constraints"] == "mode: [Home, Armed_Away]"
     assert rendered == render_tool_schemas(lock, audio2tool_world.data_root)
+
+
+def test_registry_rows_and_sha_are_bound_to_the_same_raw_bytes(audio2tool_world, monkeypatch):
+    lock = load_lock(audio2tool_world.lock_path)
+    registry_path = audio2tool_world.carrier_dir / "tools_registry.csv"
+    original_bytes = registry_path.read_bytes()
+    replacement = original_bytes.replace(b"setLighting", b"setBrightness")
+    real_read_bytes = type(registry_path).read_bytes
+    reads = 0
+
+    def read_then_replace(path):
+        nonlocal reads
+        raw = real_read_bytes(path)
+        if path == registry_path:
+            reads += 1
+            registry_path.write_bytes(replacement)
+        return raw
+
+    monkeypatch.setattr(type(registry_path), "read_bytes", read_then_replace)
+    rows, source_sha256 = _load_tool_registry_with_sha256(
+        lock, audio2tool_world.data_root
+    )
+
+    assert reads == 1
+    assert tuple(row["tool_name"] for row in rows) == (
+        "setLighting",
+        "setSecurityMode",
+    )
+    assert source_sha256 == hashlib.sha256(original_bytes).hexdigest()
 
 
 def test_render_tool_schemas_missing_registry_fails_closed(audio2tool_world):

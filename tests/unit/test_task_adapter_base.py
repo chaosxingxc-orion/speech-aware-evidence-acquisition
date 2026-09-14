@@ -24,6 +24,7 @@ import json
 import pytest
 
 from speech_aware_evidence_acquisition.data.lock import load_lock
+from speech_aware_evidence_acquisition.rails import CandidateInventory
 from speech_aware_evidence_acquisition.rails.supply import (
     SupplyDose,
     SupplyForm,
@@ -52,6 +53,98 @@ def test_base_serving_geometry_strata_information_and_preprocess_defaults():
     assert adapter.information_spec() == {}
     assert adapter.preprocess_plan() == {"kind": "speech-packets", "workers": 8}
     assert adapter.strata_of(object()) == "all"
+
+
+def test_base_candidate_inventory_is_absent_without_a_contract_provider():
+    assert _DummyTaskAdapter().candidate_inventory() is None
+
+
+def test_base_candidate_inventory_delegates_to_the_existing_provider():
+    class _Provider:
+        candidate_ids = ("first_candidate", "second_candidate")
+        source_sha256 = "a" * 64
+
+    class _ProviderAdapter(_DummyTaskAdapter):
+        def candidate_contract_provider(self, *, excluded_construction_ids=()):
+            assert excluded_construction_ids == ()
+            return _Provider()
+
+    assert _ProviderAdapter().candidate_inventory() == CandidateInventory(
+        candidate_ids=("first_candidate", "second_candidate"),
+        source_sha256="a" * 64,
+        source_authority="task-adapter-candidate-contract-provider",
+    )
+
+
+def test_base_candidate_inventory_refuses_a_provider_without_an_inventory():
+    class _LookupOnlyProvider:
+        source_sha256 = "a" * 64
+
+    class _ProviderAdapter(_DummyTaskAdapter):
+        def candidate_contract_provider(self, *, excluded_construction_ids=()):
+            return _LookupOnlyProvider()
+
+    with pytest.raises(ValueError, match="candidate_ids must be a tuple"):
+        _ProviderAdapter().candidate_inventory()
+
+
+@pytest.mark.parametrize(
+    ("values", "message"),
+    [
+        (
+            {
+                "candidate_ids": (),
+                "source_sha256": "a" * 64,
+                "source_authority": "authority",
+            },
+            "non-empty",
+        ),
+        (
+            {
+                "candidate_ids": ("same", "same"),
+                "source_sha256": "a" * 64,
+                "source_authority": "authority",
+            },
+            "duplicate",
+        ),
+        (
+            {
+                "candidate_ids": (" leading-space",),
+                "source_sha256": "a" * 64,
+                "source_authority": "authority",
+            },
+            "candidate_ids",
+        ),
+        (
+            {
+                "candidate_ids": ("candidate",),
+                "source_sha256": "A" * 64,
+                "source_authority": "authority",
+            },
+            "source_sha256",
+        ),
+        (
+            {
+                "candidate_ids": ("candidate",),
+                "source_sha256": "a" * 64,
+                "source_authority": " ",
+            },
+            "source_authority",
+        ),
+    ],
+)
+def test_candidate_inventory_refuses_empty_duplicate_or_invalid_values(values, message):
+    with pytest.raises(ValueError, match=message):
+        CandidateInventory(**values)
+
+
+def test_candidate_inventory_has_no_task_occurrence_or_roster_size_cap():
+    candidate_ids = tuple(f"tool_{index:03d}" for index in range(152))
+    assert CandidateInventory(
+        candidate_ids=candidate_ids,
+        source_sha256="a" * 64,
+        source_authority="synthetic-public-registry",
+    ).candidate_ids == candidate_ids
 
 
 def test_base_instruction_gold_score_response_are_not_abc_abstract():

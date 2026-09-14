@@ -36,13 +36,14 @@ from ...data.audio2tool import (
     audio2tool_receipts,
     load_audio2tool,
     load_expected_calls,
+    _load_tool_registry_with_sha256,
     render_tool_schemas,
 )
 from ...data.lock import REPO_ROOT
 from ...data.variant_ids import published_sample_key
 from ...reproduction.toolcall_scoring import ToolCall, parse_tool_calls_text, score_item
 from ..obs import AudioRef, ObsPacket
-from ..task_adapter import TaskAdapter
+from ..task_adapter import CandidateInventory, TaskAdapter
 
 AUDIO2TOOL_OUTPUT_INSTRUCTION = (
     'Respond with ONLY a JSON array of tool calls, e.g. [{"name": "x", "arguments": {}}].'
@@ -112,6 +113,21 @@ class Audio2ToolAdapter(TaskAdapter):
         # committed probe receipt lives), overridable so tests can point it
         # at a synthetic repo.
         self._repo_root = Path(REPO_ROOT if repo_root is None else repo_root)
+        self._candidate_inventory: CandidateInventory | None = None
+
+    def candidate_inventory(self) -> CandidateInventory:
+        """Return the public registry's complete ordered legal tool roster."""
+
+        if self._candidate_inventory is None:
+            rows, source_sha256 = _load_tool_registry_with_sha256(
+                self._lock, self._root
+            )
+            self._candidate_inventory = CandidateInventory(
+                candidate_ids=tuple(row["tool_name"] for row in rows),
+                source_sha256=source_sha256,
+                source_authority="audio2tool-public-tool-registry",
+            )
+        return self._candidate_inventory
 
     def load_split(self, split_id: str) -> Sequence[Audio2ToolSample]:
         """``split_id`` names a frozen probe-sample receipt's ``split_role``

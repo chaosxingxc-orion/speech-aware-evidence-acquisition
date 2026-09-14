@@ -5,6 +5,7 @@ Audio2Tool adapter" test.
 
 from __future__ import annotations
 
+import hashlib
 import json
 
 import pytest
@@ -27,6 +28,7 @@ from speech_aware_evidence_acquisition.rails.adapters.audio2tool import (
     Audio2ToolAdapter,
     render_audio2tool_instruction,
 )
+from speech_aware_evidence_acquisition.rails.task_adapter import CandidateInventory
 from speech_aware_evidence_acquisition.rails.obs import default_obs_packet
 
 _SHA_A = "a" * 64
@@ -66,6 +68,41 @@ def test_build_task_contract_is_the_rendered_tool_schema_registry(audio2tool_wor
     task_contract = adapter.build_task_contract(sample, obs)
     assert '"tool_name": "setLighting"' in task_contract
     assert '"tool_name": "setSecurityMode"' in task_contract
+
+
+def test_candidate_inventory_is_lazy_cached_source_bound_and_gold_free(
+    audio2tool_world, monkeypatch
+):
+    from speech_aware_evidence_acquisition.rails.adapters import audio2tool as module
+
+    calls = []
+    real_load = module._load_tool_registry_with_sha256
+
+    def load_once(*args):
+        calls.append(args)
+        return real_load(*args)
+
+    def forbidden_gold(*args, **kwargs):
+        raise AssertionError("candidate inventory must not read scorer-side gold")
+
+    monkeypatch.setattr(module, "_load_tool_registry_with_sha256", load_once)
+    monkeypatch.setattr(module, "load_expected_calls", forbidden_gold)
+    monkeypatch.setattr(module, "load_audio2tool", forbidden_gold)
+    monkeypatch.setattr(module, "audio2tool_receipts", forbidden_gold)
+    adapter = _adapter(audio2tool_world)
+    assert calls == []
+
+    first = adapter.candidate_inventory()
+    second = adapter.candidate_inventory()
+    registry_bytes = (audio2tool_world.carrier_dir / "tools_registry.csv").read_bytes()
+
+    assert first is second
+    assert calls and len(calls) == 1
+    assert first == CandidateInventory(
+        candidate_ids=("setLighting", "setSecurityMode"),
+        source_sha256=hashlib.sha256(registry_bytes).hexdigest(),
+        source_authority="audio2tool-public-tool-registry",
+    )
 
 
 def test_assemble_prompt_zero_supply_has_no_text_content_part(audio2tool_world):

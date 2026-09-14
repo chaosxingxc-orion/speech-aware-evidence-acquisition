@@ -79,7 +79,7 @@ from .runner import (
     run_bounded_contact_dag,
 )
 from .supply import SupplyDose, SupplyForm, SupplyItem, SupplyPacket
-from .task_adapter import TaskAdapter, TaskSample
+from .task_adapter import CandidateInventory, TaskAdapter, TaskSample
 
 __all__ = [
     "ArmResult",
@@ -98,6 +98,7 @@ __all__ = [
     "ContactDAGAdvance",
     "ContactDAGCompletion",
     "AudioRef",
+    "CandidateInventory",
     "ConsumptionOutcome",
     "ConsumptionRecord",
     "ConsumptionTrace",
