@@ -164,7 +164,8 @@ def build_initial_intent_support_diagnostics(
         "projection": spec,
         "store_source": pins,
         "semantics": {
-            "support": "A nonempty value block mapped to the gold intent is present in the actual initial Perception request.",
+            "support": "A nonempty own-intent value block is present in the actual initial Perception request.",
+            "support_scope": "Own-intent card presence only; cross-intent contrasts in other cards are not counted.",
             "mapping": "Declared store-local value ID suffix; no label inferred from content.",
             "semantic_use_proven": False,
             "retrieval_availability_is_supply": False,
