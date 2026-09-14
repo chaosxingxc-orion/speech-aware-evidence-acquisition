@@ -3614,3 +3614,35 @@ absent; operational log events do not recover raw wire-response bytes.
 Audit: DATA/coordination/slurp-direct-vs-native-dual-store-reboot-recovery-v1/
 interruption-contact-audit-v1.json, SHA256
 77de89a0ac813d7e322a93cbe4b78a1e02de81bc7dce4eecc7058cab420aa3e8.
+
+
+## September 14: release the complete reboot-recovery pair for analysis
+
+Both recovery arms are FINALIZED/COMPLETED on the same DEV1000 roster and
+frozen runtime. Each has exactly its first successful complete official score,
+with all per-sample statistics retained. Root verified both bundles, their
+configuration/protocol/roster identity, native phase summary and first score
+jobs before any quality read. Repackage the attached scores through the shared
+receipt writer with zero scorer invocations; do not rescore.
+
+Root release: DATA/coordination/slurp-direct-vs-native-dual-store-reboot-recovery-v1/
+result-read-release-v1.json.
+SHA256: 2395134eb860fbd04a5cd9af2de32c6f43ea5434fca98acd25cd8078304bdcd5.
+
+The release also pins score-receipt-cell-binding-correction-v1.json. The actual
+manifests omit declaration.cell_id, so the unchanged shared receipt API uses
+the original score job/attempt ID. The handoff incorrectly expected a config
+fragment name. Bind the measured receipt references; keep every run, protocol,
+configuration, roster, metric and analysis method unchanged. Preserve the
+first created direct receipt; no original source bytes were rewritten.
+The earlier registered native diagnostic key correction remains bound.
+
+Run the frozen shared paired comparison and native diagnostics once against
+the bound configurations. Model, tokenizer, encoder and scorer contacts for
+this registered read are all zero. Preserve per-stratum and primary-population
+rules; do not select, retry or redefine a comparison based on results.
+
+The registered read completed successfully. Both shared readers invoked no
+scorer or model. The root exploratory decision passes the frozen primary and
+secondary conditions; preserve full results and strata in the September 14
+recovery verdict. The decision does not authorize a new generation contact.
