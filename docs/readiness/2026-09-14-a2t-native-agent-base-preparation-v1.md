@@ -93,3 +93,38 @@ missing evidence or failed information flow. Keep algorithm factors, trajectory
 sampling and reward-driven policy updates deferred until the useful base is
 reproducible. These compiler and runtime changes are engineering, not
 training-free RL results.
+
+## Completed offline materialization
+
+Both public compiler invocations completed successfully from clean source
+da4d84ef26caed3c75434a36448fad4b109788c9. Root loaded the outputs through the
+shared KnowledgeSnapshot reader and verified every key and projected value
+against the pinned legacy snapshot.
+
+| View | Tools | Schema-only tools | Total value UTF-8 bytes | Internal snapshot SHA-256 |
+| --- | ---: | ---: | ---: | --- |
+| tool-activation | 152 | 4 | 55,399 | cfb1e9e71660e98d21493925c4f6fe9343ff99e6a8075a7286c1e8027fed42bc |
+| parameter-meaning | 152 | 4 | 205,581 | 7084f9c56b361ab8f38d2e0a6864ccb2d05bcc053dc70441de263b410ca6041f |
+
+The original full values contain 252,102 bytes. These are corpus totals, not
+request token counts or measured latency. Shared tool-name headers occur in
+both views. All facet IDs, dimensions, representation kinds and representation
+text equal the legacy version. Existing 152 key-vector IDs cover the exact
+facet set. Both new corpora equal the original corpus bytes; the snapshots
+select the different supplied values. All three original artifacts remain
+unchanged. Both new snapshots preserve external-governed provenance.
+
+Root verification:
+DATA/coordination/a2t-agent-base-transfer-v1/value-view-preparation-verification-v1.json,
+SHA-256 9f53ddbadacf1cbcac65660bff3084b06591140998e22586d5d281de4a93dafa.
+The receipt binds both compilation receipts and snapshot files, the pre-run
+input audit and the clean source-freeze receipt. Every recorded compiler
+contact class is zero. Named-store release and runtime supply qualification
+remain pending; exact vector-key equality alone is not that qualification.
+
+Root's combined compiler/store/native-episode check passed 61 tests. The
+compiler agent's adjacent compilation/card suites passed 69 tests and reported
+87 percent compiler coverage; these counts overlap and must not be added.
+Ruff, diff checks and the engineering-base check passed. Root reviewed the
+implementation. The previous adapter/store integration change was already
+incorporated into canonical master at 6a6c08d84d7b0cf580c215c1a69a862341c27a21.
