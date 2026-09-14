@@ -1,0 +1,15 @@
+{
+  "schema": "saea-phase-program-v1",
+  "program_id": "phase-training-feedback-proposal-v1",
+  "phases": [
+    {
+      "name": "proposal",
+      "purpose": "training-feedback-proposal",
+      "knowledge": "none",
+      "response_format_id": "training-feedback-proposal-v1",
+      "barrier": false
+    }
+  ],
+  "max_contacts": 1,
+  "stop_rule": "always-run-full-program"
+}

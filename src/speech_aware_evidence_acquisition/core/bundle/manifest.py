@@ -153,10 +153,18 @@ def _manifest_document(
     artifact_binding = composed.values.get("artifact_result")
     if (
         isinstance(artifact_binding, dict)
-        and artifact_binding.get("schema") == "saea-artifact-result-binding-v2"
+        and artifact_binding.get("schema") in {
+            "saea-artifact-result-binding-v2",
+            "saea-artifact-result-binding-v3",
+        }
     ):
+        from ...rails.training_feedback_artifacts import artifact_content_source_pin
+
         contract = artifact_binding.get("content_contract")
-        source = contract.get("source_catalog") if isinstance(contract, dict) else None
+        try:
+            source = artifact_content_source_pin(contract)
+        except (AttributeError, ValueError) as error:
+            raise BundleError(f"typed artifact content source is malformed: {error}") from error
         if not isinstance(source, dict) or not isinstance(source.get("data_relpath"), str):
             raise BundleError("typed artifact content source is malformed")
         source_path = Path(data_root) / source["data_relpath"]

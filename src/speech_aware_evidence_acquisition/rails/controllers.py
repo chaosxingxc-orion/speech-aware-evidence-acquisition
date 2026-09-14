@@ -1272,6 +1272,7 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-task-tools-then-solve-v1": "phase-task-tools-then-solve-v1.json",
     "phase-task-tools-solve-revise-v1": "phase-task-tools-solve-revise-v1.json",
     "phase-direct-only-v1": "phase-direct-only-v1.json",
+    "phase-training-feedback-proposal-v1": "phase-training-feedback-proposal-v1.json",
     "phase-intent-hypotheses-only-v1": "phase-intent-hypotheses-only-v1.json",
     "phase-direct-then-slots-v1": "phase-direct-then-slots-v1.json",
     "phase-direct-then-slots-supplied-v1": "phase-direct-then-slots-supplied-v1.json",
@@ -1379,6 +1380,13 @@ def register_phase_programs_v1() -> None:
         AGENT_CONTROLLERS.register(
             "phase-direct-only-v1",
             default_controller_factory(default_phase_program("phase-direct-only-v1")),
+        )
+    if "phase-training-feedback-proposal-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-training-feedback-proposal-v1",
+            default_controller_factory(
+                default_phase_program("phase-training-feedback-proposal-v1")
+            ),
         )
     if "phase-intent-hypotheses-only-v1" not in registered:
         AGENT_CONTROLLERS.register(
@@ -1596,6 +1604,13 @@ def register_response_formats_v1() -> None:
         RESPONSE_FORMATS.register(
             "slurp-intent-hypotheses-v1",
             slurp_intent_hypotheses_response_format,
+        )
+    if "training-feedback-proposal-v1" not in registered:
+        from .training_feedback_artifacts import training_feedback_response_format
+
+        RESPONSE_FORMATS.register(
+            "training-feedback-proposal-v1",
+            training_feedback_response_format,
         )
 
 

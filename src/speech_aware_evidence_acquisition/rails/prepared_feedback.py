@@ -53,7 +53,7 @@ def _canonical_context(model_context: Mapping[str, object]) -> str:
         raise PreparedFeedbackError("model context is not canonical JSON") from error
 
 
-def _reject_non_latin_scripts(value: object) -> None:
+def reject_non_latin_scripts(value: object) -> None:
     """Reject alphabetic non-Latin script; this is not language detection."""
 
     if isinstance(value, str):
@@ -68,16 +68,19 @@ def _reject_non_latin_scripts(value: object) -> None:
         for key, nested in value.items():
             if not isinstance(key, str):
                 raise PreparedFeedbackError("model context keys must be text")
-            _reject_non_latin_scripts(key)
-            _reject_non_latin_scripts(nested)
+            reject_non_latin_scripts(key)
+            reject_non_latin_scripts(nested)
         return
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
         for nested in value:
-            _reject_non_latin_scripts(nested)
+            reject_non_latin_scripts(nested)
         return
     if value is None or isinstance(value, (bool, int, float)):
         return
     raise PreparedFeedbackError("model context contains a non-JSON value")
+
+
+_reject_non_latin_scripts = reject_non_latin_scripts
 
 
 @dataclass(frozen=True)

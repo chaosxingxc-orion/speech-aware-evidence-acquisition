@@ -46,6 +46,7 @@ import hashlib
 import json
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -2714,6 +2715,145 @@ def test_verify_bundle_accepts_and_revalidates_typed_hypothesis_artifact(
     assert all(row["artifact_content"] != raw for row in verified.outputs_rows)
 
     rows[0]["artifact_content"] = rows[0]["artifact_content"].replace("alarm_set", "weather_query")
+    outputs_path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+    manifest["outputs"]["sha256"] = sha256_file(outputs_path)
+    manifest_path.write_text(json.dumps(manifest))
+    with pytest.raises(BundleError, match="canonical content"):
+        verify_bundle(manifest_path)
+
+
+def test_verify_bundle_resolves_typed_train_proposals_through_content_registry(
+    synthetic_world, bundled_repo, tmp_path
+):
+    from speech_aware_evidence_acquisition.contracts import TraceRecord
+    from test_training_feedback_artifacts import (
+        _contract,
+        _prepared_contexts,
+        _response,
+    )
+
+    manifest_path, _composed, _plan, _lock = _run_completed(
+        synthetic_world,
+        bundled_repo,
+        tmp_path,
+        run_id="SAEA-E-000-typed-train-proposal",
+        attempt_id="attempt-typed-train-proposal",
+        run_dir_name="run-typed-train-proposal",
+    )
+    manifest = _read_manifest(manifest_path)
+    outputs_path = Path(manifest["outputs"]["path"])
+    rows = [json.loads(line) for line in outputs_path.read_text().splitlines() if line]
+    prepared_path = synthetic_world.data_root / "prepared" / "proposal-contexts.json"
+    prepared, prepared_sha = _prepared_contexts(
+        prepared_path,
+        {row["sample_id"]: ("option-1", "option-2") for row in rows},
+    )
+    contract = _contract(
+        "prepared/proposal-contexts.json",
+        prepared_sha,
+        prepared["output_sha256"],
+        applicability={
+            "allowed_task_ids": [manifest["split"]["carrier_lock_key"]],
+            "allowed_roles": ["solver"],
+            "allowed_component_tags": ["org", "use"],
+        },
+    )
+    binding = {
+        "schema": "saea-artifact-result-binding-v3",
+        "role": "training-feedback-proposal",
+        "construction_roster": {
+            "repo_relpath": "docs/rosters/train.json",
+            "sha256": "c" * 64,
+        },
+        "content_contract": contract,
+    }
+    raw = _response()
+    from speech_aware_evidence_acquisition.rails.training_feedback_artifacts import (
+        build_training_feedback_artifact_validator,
+    )
+
+    validator = build_training_feedback_artifact_validator(
+        contract, data_root=synthetic_world.data_root
+    )
+    by_request = {}
+    for row in rows:
+        proposal = json.loads(raw)
+        proposal["proposals"][0]["applicability"]["task_ids"] = [
+            manifest["split"]["carrier_lock_key"]
+        ]
+        row_raw = json.dumps(proposal)
+        row_raw_sha = hashlib.sha256(row_raw.encode()).hexdigest()
+        canonical = validator.canonicalize(row_raw, sample_id=row["sample_id"])
+        row.update(
+            text=row_raw,
+            response_text_sha256=row_raw_sha,
+            result_kind="artifact",
+            artifact_role="training-feedback-proposal",
+            artifact_content=canonical,
+            artifact_content_sha256=hashlib.sha256(canonical.encode()).hexdigest(),
+            artifact_source_sha256=prepared_sha,
+        )
+        by_request[row["request_id"]] = row
+    outputs_path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+
+    trace_path = Path(manifest["raw_trace"]["path"])
+    records = []
+    for line in trace_path.read_text().splitlines():
+        document = json.loads(line)
+        if document["record_id"].endswith("/response"):
+            request_id = document["record_id"][: -len("/response")]
+            if request_id in by_request:
+                output = by_request[request_id]
+                document["payload"]["text"] = output["text"]
+                document["payload"]["response_text_sha256"] = output[
+                    "response_text_sha256"
+                ]
+        records.append(
+            TraceRecord(document["channel"], document["record_id"], document["payload"])
+        )
+    trace_path.write_text("".join(record.serialize() + "\n" for record in records))
+    trace_manifest_path = Path(manifest["trace_manifest"]["path"])
+    trace_manifest_path.write_text(
+        json.dumps({"records": {r.record_id: r.content_hash() for r in records}})
+    )
+    manifest.update(
+        result_kind="artifact",
+        artifact_result=binding,
+        artifact_content_source={
+            "path": str(prepared_path),
+            "sha256": prepared_sha,
+        },
+        scorers=[],
+    )
+    for key in ("outputs", "raw_trace", "trace_manifest"):
+        manifest[key]["sha256"] = sha256_file(Path(manifest[key]["path"]))
+    manifest_path.write_text(json.dumps(manifest))
+
+    verified = verify_bundle(manifest_path)
+    assert all(row["text"] != row["artifact_content"] for row in verified.outputs_rows)
+    assert all(
+        json.loads(row["artifact_content"])["status"] == "provisional"
+        for row in verified.outputs_rows
+    )
+    fresh = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            (
+                "from speech_aware_evidence_acquisition.core.bundle import verify_bundle; "
+                "import sys; verify_bundle(sys.argv[1])"
+            ),
+            str(manifest_path),
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert fresh.returncode == 0, fresh.stderr
+
+    rows[0]["artifact_content"] = rows[0]["artifact_content"].replace(
+        "option-2", "option-9"
+    )
     outputs_path.write_text("".join(json.dumps(row) + "\n" for row in rows))
     manifest["outputs"]["sha256"] = sha256_file(outputs_path)
     manifest_path.write_text(json.dumps(manifest))
