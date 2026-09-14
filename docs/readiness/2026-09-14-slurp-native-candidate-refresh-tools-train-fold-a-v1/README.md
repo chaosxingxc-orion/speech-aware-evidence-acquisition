@@ -1,7 +1,7 @@
 # Held native candidate refresh and selective tools on TRAIN A
 
 Date: 2026-09-14. Root prospective design under OWNER-CANDIDATE-COVERAGE-026.
-Status: configuration and model-free preparation only. The unchanged TRAIN A
+Status: configuration, original-audio metadata export and model-free preparation only. The unchanged TRAIN A
 anchor is still generating. Do not read partial task quality or launch this
 successor until its complete source, first score and diagnostics are released.
 
@@ -117,8 +117,9 @@ the active anchor's exclusive generation lease.
    obtain the sole lease, fit actual requests and dispatch through the shared entry.
    Keep source code for both versions until scoring and analysis are complete.
 
-This held config has no generation, ASR or fit authority and no prepared phase
-supply receipt. Do not turn placeholder fields into launch evidence.
+This held config permits the shared original-audio metadata export independently
+of the scientific verdict. It has no generation, ASR or fit authority and no
+prepared phase supply receipt. Do not turn placeholder fields into launch evidence.
 
 ## Training-free optimization handoff
 
@@ -132,3 +133,34 @@ while selection stays accountable to full final task quality.
 Use actual trajectories to propose compact corrective procedures with provenance,
 not a memory of TRAIN examples. Validate and freeze a candidate before disjoint
 Fold B evaluation. No such optimization cycle is completed by this preparation.
+
+
+## Structural knowledge audit and tool wording correction
+
+The pinned factual audit is DATA/coordination/
+slurp-native-dual-store-train-fold-a-anchor-recovery-v1/
+knowledge-value-structure-audit-v1.json, SHA256
+49e705adeef8c2cb38b6043ccab615896cdbdcec9b1acdbfbeeb0c26f0f2016e.
+
+There are 60 intent keys/values with exactly one explicit confusable alternative
+per intent, and 54 slot keys/values with 402 intent-slot associations. Exhaustive
+enumeration of all legal candidate sets of widths one, two and three finds
+maximum distinct slot-card counts of 16, 23 and 28. Thus the current 16/28
+limits do not omit any uniquely mapped slot card. This says nothing about
+semantic adequacy or the model's use of those cards.
+
+Reviewer prompt v2 states the actual lookup scope: observed slot-type association
+comparison. It must consult the supplied rich values for activation/extraction
+meaning and explicitly report a missing semantic explanation. Do not promise
+that the statistical lookup supplies those explanations.
+
+After full source release, measure actual supplied intent support separately
+from C0 recall. Use verified bootstrap/initial-state evidence IDs qualified as
+intent-boundaries::intent-boundary:<intent_id>, and compare them to the true
+intent offline. Keep C0 candidate IDs from the actual Perception response.
+Report supplied-and-covered, supplied-but-missed, not-supplied-but-covered and
+neither. These describe support and model selection; they do not establish
+semantic use, causality or an upper bound imposed by the full legal label list.
+This diagnostic will determine whether a later experiment should change keys,
+retrieval, discriminative values or evidence acquisition. Do not enlarge all
+knowledge indiscriminately or change the live experiment.

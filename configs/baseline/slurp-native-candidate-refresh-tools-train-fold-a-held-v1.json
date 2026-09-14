@@ -160,7 +160,7 @@
     "reviewer": {
       "fill_params": {},
       "instruction_fill": null,
-      "instruction_template": "probes/slurp_native_role_reviewer_refresh_tools_v1.txt",
+      "instruction_template": "probes/slurp_native_role_reviewer_refresh_tools_v2.txt",
       "predecessor_binding": "none",
       "response_format_id": null,
       "state_fill": null

@@ -2,7 +2,8 @@
   "cells": [
     {
       "allowed_execution_stages": [
-        "check"
+        "check",
+        "prepare-speech-observation-sources"
       ],
       "attempt_id": "HELD-NO-CONTACT-REFRESH-TOOLS-A",
       "baseline_fragment": "slurp-native-candidate-refresh-tools-train-fold-a-held-v1",
@@ -10,7 +11,7 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Complete TRAIN A diagnostic and root admission, execution plans, fit, ASR and final preparation are absent.",
+        "reason": "Generation remains held for complete TRAIN A diagnosis and root admission. Source-audio metadata export is independently allowed and makes no model, tokenizer, ASR, scorer or service contact.",
         "state": "held"
       },
       "run_id": "HELD-NO-CONTACT-REFRESH-TOOLS-A"
@@ -19,10 +20,11 @@
   "date": "2026-09-14",
   "execution_profile": "model-free-check",
   "experiment_id": "SAEA-SLURP-NATIVE-CANDIDATE-REFRESH-TOOLS-TRAIN-FOLD-A-HELD-V1",
+  "failure_policy": "Only configuration checks and original-audio metadata export are allowed. No worker, campaign, prompt-fit, audio decoding, ASR or model stage is admitted.",
   "preserve_wire_responses": true,
   "protocol": {
     "relpath": "docs/readiness/2026-09-14-slurp-native-candidate-refresh-tools-train-fold-a-v1/README.md",
-    "sha256": "8da0d13fda9f2d509ad029eb63439aec028a2340d6e9d3ba6175aec7ca0fbd18"
+    "sha256": "c3d8dd325dab138c48da51af675b629a9b58b0489369fb32734830c22cbee958"
   },
   "purpose": "Prepare the complete-system successor described in the source-pinned prospective protocol; no runtime contact.",
   "service_session": "HELD-NO-SERVICE",
