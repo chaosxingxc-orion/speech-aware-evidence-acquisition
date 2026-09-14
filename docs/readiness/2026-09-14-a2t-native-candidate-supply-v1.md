@@ -112,3 +112,17 @@ remain a known contract ambiguity; do not silently change the benchmark.
 
 The active SLURP replication remains on its separately frozen execution source.
 This engineering change neither edits that source nor admits another GPU flight.
+
+## Final committed verification receipts
+
+Implementation source: 08c099ddab0ff41ced846504cbbfbead9bba2322.
+Under DATA/coordination/a2t-agent-base-transfer-v1:
+
+- candidate-route-source-verification-v2.json SHA-256
+  e00c7514fd02799c3f0e0f8809658c040d18df193b6bfc85e506a6dd503e99a3.
+- shared-route-engineering-verification-v2.json SHA-256
+  8c93be72d6085b0d765add088d1a1ca1053637eb45f4a25f6eaf8c22f49f4041.
+
+The master integration changed no source/test bytes from tested implementation
+6c4bb79b. The final source check used the new registered role program and the
+existing public 152-tool release; it did not execute a candidate episode.
