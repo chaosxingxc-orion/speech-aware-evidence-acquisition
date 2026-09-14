@@ -1,10 +1,15 @@
 """Fake-transport campaign integration: configuration to shared runtime and scoring."""
+import hashlib
 import json
+from pathlib import Path
 
 import pytest
 
 from speech_aware_evidence_acquisition.core.flight.campaign import (
     CampaignError, CampaignCell, declared_readiness, run_campaign,
+)
+from speech_aware_evidence_acquisition.core.flight.receipts import (
+    FLIGHT_STAGES, read_flight_receipts,
 )
 from test_flight_runtime import (
     _serving_world, _serving_runtime, _write_serving_session, _SERVING_RUN_ID,
@@ -50,8 +55,10 @@ def test_campaign_without_resident_holds_without_opening_a_lease(tmp_path):
         owner="coordinator", expected_session_id="serving-test",
     )
     assert report["states"][_SERVING_RUN_ID]["state"] == "held"
+    assert report["flight_receipts"] == {}
     assert starter.calls == 0 and attached == []
     assert not (data / "locks/flight.lock").exists()
+    assert not (data / "runs" / _SERVING_RUN_ID / "attempt-serving").exists()
 
 
 def test_root_campaign_runs_existing_harness_and_complete_score_under_lease(tmp_path):
@@ -62,6 +69,10 @@ def test_root_campaign_runs_existing_harness_and_complete_score_under_lease(tmp_
     original_score = runtime.score
     def score(**kwargs):
         assert not (data / "locks/flight.lock").exists()
+        sealed = read_flight_receipts(
+            data / "runs" / _SERVING_RUN_ID / "attempt-serving" / "flight-receipts.json"
+        )
+        assert "seal" in sealed["stages"] and "score" not in sealed["stages"]
         scored.append(kwargs)
         return original_score(**kwargs)
     runtime.score = score
@@ -75,6 +86,131 @@ def test_root_campaign_runs_existing_harness_and_complete_score_under_lease(tmp_
     assert attached == [session_dir / "session-receipt.json"]
     assert runtime.stop_serving() is None
     assert not (data / "locks/flight.lock").exists()
+    receipt_ref = report["flight_receipts"][_SERVING_RUN_ID]
+    receipt_path = Path(receipt_ref["path"])
+    assert receipt_path == (
+        data / "runs" / _SERVING_RUN_ID / "attempt-serving" / "flight-receipts.json"
+    ).resolve()
+    assert hashlib.sha256(receipt_path.read_bytes()).hexdigest() == receipt_ref["sha256"]
+    score_receipt = read_flight_receipts(receipt_path)["stages"]["score"]
+    assert score_receipt["include_per_sample"] is True
+    assert score_receipt["result"]
+
+
+def test_campaign_preserves_genuine_partial_receipts_on_generation_failure(tmp_path):
+    repo, runtime_root, data = _serving_world(tmp_path)
+    _write_serving_session(repo, runtime_root, data)
+    runtime, _, _ = _serving_runtime(tmp_path, repo)
+    original_run_phases = runtime.run_phases
+
+    def fail_after_run_phases():
+        original_run_phases()
+        raise RuntimeError("generation failed after the phase receipt")
+
+    runtime.run_phases = fail_after_run_phases
+    with pytest.raises(RuntimeError, match="generation failed"):
+        run_campaign(
+            [runtime], cells=[cell()], repo_root=repo, data_root=data,
+            owner="coordinator", expected_session_id="serving-test",
+        )
+
+    persisted = read_flight_receipts(
+        data / "runs" / _SERVING_RUN_ID / "attempt-serving" / "flight-receipts.json"
+    )
+    assert tuple(stage for stage in FLIGHT_STAGES if stage in persisted["stages"]) == (
+        "preflight", "preprocess", "serve", "run_phases",
+    )
+
+
+def test_campaign_receipt_failure_does_not_hide_generation_failure(
+    tmp_path, monkeypatch,
+):
+    from speech_aware_evidence_acquisition.core.flight import campaign
+
+    repo, runtime_root, data = _serving_world(tmp_path)
+    _write_serving_session(repo, runtime_root, data)
+    runtime, _, _ = _serving_runtime(tmp_path, repo)
+    original_run_phases = runtime.run_phases
+
+    def fail_after_run_phases():
+        original_run_phases()
+        raise RuntimeError("primary generation failure")
+
+    def fail_receipt(*args, **kwargs):
+        raise OSError("receipt storage unavailable")
+
+    runtime.run_phases = fail_after_run_phases
+    monkeypatch.setattr(campaign, "write_flight_receipts", fail_receipt)
+    with pytest.raises(RuntimeError, match="primary generation failure") as raised:
+        run_campaign(
+            [runtime], cells=[cell()], repo_root=repo, data_root=data,
+            owner="coordinator", expected_session_id="serving-test",
+        )
+
+    assert any("receipt storage unavailable" in note for note in raised.value.__notes__)
+
+
+def test_campaign_preserves_seal_without_inventing_failed_score_stage(
+    tmp_path, monkeypatch,
+):
+    from speech_aware_evidence_acquisition.core.flight import campaign
+
+    repo, runtime_root, data = _serving_world(tmp_path)
+    _write_serving_session(repo, runtime_root, data)
+    runtime, _, _ = _serving_runtime(tmp_path, repo)
+    original_writer = campaign.write_flight_receipts
+    writes = 0
+
+    def fail_score(**kwargs):
+        raise RuntimeError("scoring failed before its receipt")
+
+    def fail_later_receipt(path, receipts):
+        nonlocal writes
+        writes += 1
+        if writes > 1:
+            raise OSError("receipt update unavailable")
+        return original_writer(path, receipts)
+
+    runtime.score = fail_score
+    monkeypatch.setattr(campaign, "write_flight_receipts", fail_later_receipt)
+    with pytest.raises(RuntimeError, match="scoring failed") as raised:
+        run_campaign(
+            [runtime], cells=[cell()], repo_root=repo, data_root=data,
+            owner="coordinator", expected_session_id="serving-test",
+        )
+
+    persisted = read_flight_receipts(
+        data / "runs" / _SERVING_RUN_ID / "attempt-serving" / "flight-receipts.json"
+    )
+    completed = tuple(stage for stage in FLIGHT_STAGES if stage in persisted["stages"])
+    assert completed[-1] == "seal"
+    assert "score" not in persisted["stages"]
+    assert any("receipt update unavailable" in note for note in raised.value.__notes__)
+
+
+def test_campaign_preserves_complete_score_when_shutdown_fails(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core.flight import campaign
+
+    repo, runtime_root, data = _serving_world(tmp_path)
+    _write_serving_session(repo, runtime_root, data)
+    runtime, _, _ = _serving_runtime(tmp_path, repo)
+    original_shutdown = campaign.FlightQueue.shutdown
+
+    def fail_after_shutdown(queue):
+        original_shutdown(queue)
+        raise RuntimeError("shutdown failed after score completion")
+
+    monkeypatch.setattr(campaign.FlightQueue, "shutdown", fail_after_shutdown)
+    with pytest.raises(RuntimeError, match="shutdown failed"):
+        run_campaign(
+            [runtime], cells=[cell()], repo_root=repo, data_root=data,
+            owner="coordinator", expected_session_id="serving-test",
+        )
+
+    persisted = read_flight_receipts(
+        data / "runs" / _SERVING_RUN_ID / "attempt-serving" / "flight-receipts.json"
+    )
+    assert "score" in persisted["stages"]
 
 
 def test_worker_cli_requires_root_capability_before_runtime_build(monkeypatch):
