@@ -20,6 +20,15 @@ from ..data.splits import prefixed, split_identity_hash
 from ..rails.hashing import content_hash
 from ..rails.reward_link_io import read_verified_reward_link_artifact
 from ..rails.slurp_candidate_contracts import build_slurp_candidate_contract_provider
+from ..rails.slurp_intent_hypotheses import (
+    BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID,
+)
+from .native_candidate_stage_projections import (
+    PROJECTION_CONFIG_SCHEMA,
+    PROJECTION_POLICY_ID,
+    NativeCandidateStagePair,
+    project_verified_native_candidate_stages,
+)
 from .native_episode_source import verify_native_episode_source
 from .slurp_topn_diagnostics import ReferenceIntentRow, SourceCandidateRow
 from .slurp_topn_diagnostics_cli import (
@@ -30,7 +39,9 @@ from .slurp_topn_diagnostics_cli import (
 
 CONFIG_SCHEMA = "saea-native-train-stage-diagnostic-config-v1"
 OUTPUT_SCHEMA = "saea-native-train-stage-diagnostics-v1"
+STAGE_OUTPUT_SCHEMA = "saea-native-train-candidate-stage-diagnostics-v2"
 ARTIFACT_KIND = "native-train-stage-diagnostics"
+STAGE_ARTIFACT_KIND = "native-train-candidate-stage-diagnostics"
 _SHA256 = re.compile(r"[0-9a-f]{64}")
 _SOURCE_KEYS = frozenset(
     {
@@ -241,6 +252,131 @@ def build_native_train_stage_diagnostics(
     }
 
 
+def build_native_train_candidate_stage_diagnostics(
+    *,
+    stage_pairs: Sequence[NativeCandidateStagePair],
+    reference_rows: Sequence[ReferenceIntentRow],
+    reward_links: Sequence[object],
+    source: Mapping[str, object],
+) -> dict[str, object]:
+    """Build numeric C0/C1 coverage diagnostics from verified stage pairs."""
+
+    pairs = tuple(stage_pairs)
+    if not pairs or any(not isinstance(pair, NativeCandidateStagePair) for pair in pairs):
+        raise NativeTrainStageDiagnosticError("candidate stage pairs are malformed or empty")
+    pair_ids = tuple(pair.sample_id for pair in pairs)
+    if len(pair_ids) != len(set(pair_ids)):
+        raise NativeTrainStageDiagnosticError("candidate stage pairs contain duplicate samples")
+    if any(
+        pair.c0.visit_index > pair.c1.visit_index
+        or pair.refresh_executed != (pair.c0.visit_index != pair.c1.visit_index)
+        or (not pair.refresh_executed and pair.c0 != pair.c1)
+        for pair in pairs
+    ):
+        raise NativeTrainStageDiagnosticError(
+            "candidate stage pairs have inconsistent visit or refresh semantics"
+        )
+    c0_document = build_native_train_stage_diagnostics(
+        candidate_rows=tuple(
+            SourceCandidateRow(pair.sample_id, pair.c0.candidate_ids) for pair in pairs
+        ),
+        reference_rows=reference_rows,
+        reward_links=reward_links,
+        source=source,
+    )
+    c1_document = build_native_train_stage_diagnostics(
+        candidate_rows=tuple(
+            SourceCandidateRow(pair.sample_id, pair.c1.candidate_ids) for pair in pairs
+        ),
+        reference_rows=reference_rows,
+        reward_links=reward_links,
+        source=source,
+    )
+    samples = []
+    for pair, c0, c1 in zip(
+        pairs, c0_document["samples"], c1_document["samples"], strict=True
+    ):
+        c0_covered = bool(c0["gold_covered"])
+        c1_covered = bool(c1["gold_covered"])
+        correct = bool(c1["final_correct"])
+        samples.append(
+            {
+                "sample_id": pair.sample_id,
+                "c0": pair.c0.diagnostic_json(),
+                "c1": pair.c1.diagnostic_json(),
+                "refresh_executed": pair.refresh_executed,
+                "initial_covered": c0_covered,
+                "pre_final_covered": c1_covered,
+                "recovered": not c0_covered and c1_covered,
+                "lost": c0_covered and not c1_covered,
+                "stable_covered": c0_covered and c1_covered,
+                "stable_uncovered": not c0_covered and not c1_covered,
+                "final_correct": correct,
+                "correct_outside_c1": correct and not c1_covered,
+            }
+        )
+
+    total = len(samples)
+    initial_covered = sum(row["initial_covered"] for row in samples)
+    pre_final_covered = sum(row["pre_final_covered"] for row in samples)
+    stable_covered = sum(row["stable_covered"] for row in samples)
+    final_correct = sum(row["final_correct"] for row in samples)
+    return {
+        "schema": STAGE_OUTPUT_SCHEMA,
+        "status": "source-verified-diagnostic",
+        "source": dict(source),
+        "cohort": dict(c0_document["cohort"]),
+        "projection": {
+            "schema": PROJECTION_CONFIG_SCHEMA,
+            "policy_id": PROJECTION_POLICY_ID,
+            "candidate_projection_policy": source["candidate_projection_policy"],
+            "legal_candidate_inventory_sha256": source[
+                "legal_candidate_inventory_sha256"
+            ],
+        },
+        "semantics": {
+            "c0": "first actual Perception visit",
+            "c1": "last actual Perception before the delivered final Solver visit",
+            "no_refresh": "C0 and C1 retain the same verified source",
+            "final_correct": "official per-sample scenario_action_exact",
+            "gold_or_reference_strings_exported": False,
+            "conditional_accuracy_scope": "the named covered set only",
+            "causal_or_counterfactual_claim": None,
+        },
+        "aggregate": {
+            "initial_candidate_coverage": _ratio(initial_covered, total),
+            "pre_final_candidate_coverage": _ratio(pre_final_covered, total),
+            "recovered": _ratio(sum(row["recovered"] for row in samples), total),
+            "lost": _ratio(sum(row["lost"] for row in samples), total),
+            "stable_covered": _ratio(stable_covered, total),
+            "stable_uncovered": _ratio(
+                sum(row["stable_uncovered"] for row in samples), total
+            ),
+            "final_accuracy": _ratio(final_correct, total),
+            "conditional_accuracy_given_initial_coverage": _ratio(
+                sum(row["initial_covered"] and row["final_correct"] for row in samples),
+                initial_covered,
+            ),
+            "conditional_accuracy_given_pre_final_coverage": _ratio(
+                sum(
+                    row["pre_final_covered"] and row["final_correct"]
+                    for row in samples
+                ),
+                pre_final_covered,
+            ),
+            "common_covered_final_accuracy": _ratio(
+                sum(row["stable_covered"] and row["final_correct"] for row in samples),
+                stable_covered,
+            ),
+            "correct_answers_outside_c1": _ratio(
+                sum(row["correct_outside_c1"] for row in samples),
+                total - pre_final_covered,
+            ),
+        },
+        "samples": samples,
+    }
+
+
 def prepare_native_train_stage_diagnostics(
     *,
     config_path: Path,
@@ -257,11 +393,27 @@ def prepare_native_train_stage_diagnostics(
         "sha256": _sha(expected_config_sha256, "config SHA-256"),
     }
     _, config = _read_json_pin(config_pin, "diagnostic config")
-    if (
-        set(config) != {"schema", "native_source", "reward_source", "reference_source"}
-        or config.get("schema") != CONFIG_SCHEMA
+    legacy_fields = {"schema", "native_source", "reward_source", "reference_source"}
+    if set(config) not in (legacy_fields, legacy_fields | {"candidate_stage_projection"}) or (
+        config.get("schema") != CONFIG_SCHEMA
     ):
         raise NativeTrainStageDiagnosticError("diagnostic config has wrong fields or schema")
+    stage_projection = config.get("candidate_stage_projection")
+    if stage_projection is not None and (
+        not isinstance(stage_projection, Mapping)
+        or set(stage_projection) != {
+            "schema",
+            "policy_id",
+            "candidate_projection_policy",
+        }
+        or stage_projection.get("schema") != PROJECTION_CONFIG_SCHEMA
+        or stage_projection.get("policy_id") != PROJECTION_POLICY_ID
+        or stage_projection.get("candidate_projection_policy")
+        != BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
+    ):
+        raise NativeTrainStageDiagnosticError(
+            "candidate_stage_projection contract is invalid"
+        )
     native = config.get("native_source")
     reward = config.get("reward_source")
     reference = config.get("reference_source")
@@ -332,16 +484,38 @@ def prepare_native_train_stage_diagnostics(
         "candidate_count": maximum,
         "candidate_count_range": [1, maximum],
     }
+    stage_pairs = None
     try:
-        candidates, _branches, candidate_metadata = load_verified_native_system_candidate_rows(
-            candidate_binding,
-            verified.bundle,
-            verified.sample_ids,
-            legal_ids=legal_ids,
-        )
+        if stage_projection is None:
+            candidates, _branches, candidate_metadata = (
+                load_verified_native_system_candidate_rows(
+                    candidate_binding,
+                    verified.bundle,
+                    verified.sample_ids,
+                    legal_ids=legal_ids,
+                )
+            )
+        else:
+            stage_pairs = project_verified_native_candidate_stages(
+                verified,
+                legal_candidate_ids=legal_ids,
+                max_candidates=maximum,
+                projection_policy=stage_projection["candidate_projection_policy"],
+            )
+            candidate_metadata = {
+                "projection_policy": stage_projection[
+                    "candidate_projection_policy"
+                ],
+                "legal_candidate_inventory_sha256": content_hash(
+                    {"candidate_ids": sorted(legal_ids)}
+                ),
+            }
     except (OSError, TypeError, ValueError) as error:
+        source_label = (
+            "initial candidates" if stage_projection is None else "candidate stages"
+        )
         raise NativeTrainStageDiagnosticError(
-            f"cannot verify initial candidates: {error}"
+            f"cannot verify {source_label}: {error}"
         ) from error
 
     source = {
@@ -363,11 +537,20 @@ def prepare_native_train_stage_diagnostics(
             "legal_candidate_inventory_sha256"
         ],
     }
-    document = build_native_train_stage_diagnostics(
-        candidate_rows=candidates,
-        reference_rows=references,
-        reward_links=reward_links,
-        source=source,
+    document = (
+        build_native_train_stage_diagnostics(
+            candidate_rows=candidates,
+            reference_rows=references,
+            reward_links=reward_links,
+            source=source,
+        )
+        if stage_pairs is None
+        else build_native_train_candidate_stage_diagnostics(
+            stage_pairs=stage_pairs,
+            reference_rows=references,
+            reward_links=reward_links,
+            source=source,
+        )
     )
     inputs = {
         "config_sha256": config_pin["sha256"],
@@ -383,7 +566,7 @@ def prepare_native_train_stage_diagnostics(
     try:
         return prepare_artifact(
             Path(output_path),
-            kind=ARTIFACT_KIND,
+            kind=(ARTIFACT_KIND if stage_pairs is None else STAGE_ARTIFACT_KIND),
             inputs=inputs,
             producer=lambda: document,
             contact_class="model-free",

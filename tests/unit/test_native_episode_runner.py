@@ -911,3 +911,203 @@ def test_actual_refresh_request_is_fitted_and_bound_before_second_solver(tmp_pat
             verify(corrupted)
     finally:
         harness.close()
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_actual_refreshed_native_trajectory_projects_verified_c0_and_c1(tmp_path):
+    from copy import deepcopy
+    from dataclasses import replace
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.analysis.native_candidate_stage_projections import (
+        NativeCandidateStageProjectionError,
+        project_verified_native_candidate_stages,
+    )
+
+    harness = _ActualEpisodeHarness(
+        tmp_path,
+        sample_count=1,
+        max_revisions=1,
+        max_contacts=8,
+        planner_actions=("REFRESH_CANDIDATES", "ACCEPT"),
+    )
+    harness.config = replace(
+        harness.config,
+        refresh_action="REFRESH_CANDIDATES",
+        max_candidate_refreshes=1,
+    )
+    original_output = harness._output
+
+    def candidate_output(key):
+        sample_id, phase, visit, _turn = key
+        if phase != "perception":
+            return original_output(key)
+        intent_id = "alpha" if visit == 1 else "beta"
+        return json.dumps(
+            {
+                "candidates": [
+                    {
+                        "intent_id": intent_id,
+                        "distinction": f"Evidence for {intent_id}.",
+                        "evidence_refs": ["speech"],
+                        "unresolved_fields": [],
+                    }
+                ]
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+
+    harness._output = candidate_output
+    try:
+        result = harness.run().results[0]
+        trace_records = {
+            record_id: payload
+            for _channel, record_id, payload in harness.trace.records
+        }
+        source = SimpleNamespace(
+            sample_ids=(result.sample_id,),
+            phase_results={result.sample_id: result.as_json()},
+            bundle=SimpleNamespace(trace_records=trace_records),
+        )
+        pairs = project_verified_native_candidate_stages(
+            source,
+            legal_candidate_ids=frozenset({"alpha", "beta", "gamma"}),
+            max_candidates=3,
+        )
+        assert len(pairs) == 1
+        assert pairs[0].c0.candidate_ids == ("alpha",)
+        assert pairs[0].c1.candidate_ids == ("beta",)
+        assert pairs[0].c0.visit_index == 0
+        assert pairs[0].c1.visit_index == 4
+        assert pairs[0].refresh_executed is True
+
+        missing = deepcopy(result.as_json())
+        missing["agent_states"] = [
+            state
+            for state in missing["agent_states"]
+            if state["state_id"] != pairs[0].c1.state_id
+        ]
+        with pytest.raises(NativeCandidateStageProjectionError, match="sealed phase state"):
+            project_verified_native_candidate_stages(
+                SimpleNamespace(
+                    sample_ids=source.sample_ids,
+                    phase_results={result.sample_id: missing},
+                    bundle=source.bundle,
+                ),
+                legal_candidate_ids=frozenset({"alpha", "beta", "gamma"}),
+                max_candidates=3,
+            )
+
+        corrupted = deepcopy(result.as_json())
+        next(
+            state
+            for state in corrupted["agent_states"]
+            if state["state_id"] == pairs[0].c1.state_id
+        )["source_query_state_sha256"] = "0" * 64
+        with pytest.raises(NativeCandidateStageProjectionError, match="state binding"):
+            project_verified_native_candidate_stages(
+                SimpleNamespace(
+                    sample_ids=source.sample_ids,
+                    phase_results={result.sample_id: corrupted},
+                    bundle=source.bundle,
+                ),
+                legal_candidate_ids=frozenset({"alpha", "beta", "gamma"}),
+                max_candidates=3,
+            )
+
+        wrong_request = deepcopy(result.as_json())
+        wrong_request["native_episode_receipt"]["role_visits"][4][
+            "execution_receipt"
+        ]["contacts"][0]["request_sha256"] = "0" * 64
+        wrong_request["native_episode_receipt"]["role_visits"][4][
+            "execution_receipt"
+        ]["final_contact"]["request_sha256"] = "0" * 64
+        with pytest.raises(NativeCandidateStageProjectionError, match="verified trace"):
+            project_verified_native_candidate_stages(
+                SimpleNamespace(
+                    sample_ids=source.sample_ids,
+                    phase_results={result.sample_id: wrong_request},
+                    bundle=source.bundle,
+                ),
+                legal_candidate_ids=frozenset({"alpha", "beta", "gamma"}),
+                max_candidates=3,
+            )
+
+        reordered = deepcopy(result.as_json())
+        reordered["native_episode_receipt"]["role_visits"][0:2] = reversed(
+            reordered["native_episode_receipt"]["role_visits"][0:2]
+        )
+        with pytest.raises(NativeCandidateStageProjectionError):
+            project_verified_native_candidate_stages(
+                SimpleNamespace(
+                    sample_ids=source.sample_ids,
+                    phase_results={result.sample_id: reordered},
+                    bundle=source.bundle,
+                ),
+                legal_candidate_ids=frozenset({"alpha", "beta", "gamma"}),
+                max_candidates=3,
+            )
+    finally:
+        harness.close()
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_actual_zero_refresh_native_trajectory_reuses_c0_as_c1(tmp_path):
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.analysis.native_candidate_stage_projections import (
+        project_verified_native_candidate_stages,
+    )
+
+    harness = _ActualEpisodeHarness(
+        tmp_path,
+        sample_count=1,
+        max_revisions=0,
+        max_contacts=4,
+        planner_actions=("ACCEPT",),
+    )
+    original_output = harness._output
+
+    def candidate_output(key):
+        _sample_id, phase, _visit, _turn = key
+        if phase != "perception":
+            return original_output(key)
+        return json.dumps(
+            {
+                "candidates": [
+                    {
+                        "intent_id": "alpha",
+                        "distinction": "Evidence for alpha.",
+                        "evidence_refs": ["speech"],
+                        "unresolved_fields": [],
+                    }
+                ]
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+
+    harness._output = candidate_output
+    try:
+        result = harness.run().results[0]
+        source = SimpleNamespace(
+            sample_ids=(result.sample_id,),
+            phase_results={result.sample_id: result.as_json()},
+            bundle=SimpleNamespace(
+                trace_records={
+                    record_id: payload
+                    for _channel, record_id, payload in harness.trace.records
+                }
+            ),
+        )
+        pair = project_verified_native_candidate_stages(
+            source,
+            legal_candidate_ids=frozenset({"alpha", "beta", "gamma"}),
+            max_candidates=3,
+        )[0]
+        assert pair.c0 == pair.c1
+        assert pair.c0.visit_index == 0
+        assert pair.refresh_executed is False
+    finally:
+        harness.close()
