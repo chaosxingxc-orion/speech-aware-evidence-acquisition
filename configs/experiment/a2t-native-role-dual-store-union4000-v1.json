@@ -20,7 +20,14 @@
       "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
       "readiness": {
         "reason": "No generation admission. Await full source-bound preparation, frozen SLURP base decision, real request/output capacity and complete prospective contact registration.",
-        "requirements": [],
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "Complete prepared activation choices for all4000 source-bound recordings.",
+            "relpath": "prepared/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-V1/phase-supply-v1.json",
+            "sha256": "91847da0921f12a0a1be5cc1b4eafee091de3e1e32986a779d77d29a36026b68"
+          }
+        ],
         "state": "preparation-pending"
       },
       "run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-V1"

@@ -210,6 +210,10 @@
       "sha256": "24071625a272ac39b64090f8f1da90d847468523185de0317c32591dbdd1f90a"
     }
   ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-V1/phase-supply-v1.json",
+    "sha256": "91847da0921f12a0a1be5cc1b4eafee091de3e1e32986a779d77d29a36026b68"
+  },
   "prompt_fit_multiple": 1.3333333333333333,
   "scorers": [
     "a2t-toolcall-official",
