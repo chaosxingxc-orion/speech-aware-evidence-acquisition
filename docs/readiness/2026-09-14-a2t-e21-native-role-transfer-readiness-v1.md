@@ -98,7 +98,7 @@ Source-verified group-relative optimization therefore cannot consume Audio2Tool 
 root chooses and registers the task-native per-sample sufficient statistics and vector
 interpretation. This note does not invent either.
 
-## Earnings-21: resolve raw audio and feature packets
+## Earnings-21: reuse the admitted packet route
 
 Both input paths exist, but they describe different source histories.
 
@@ -117,8 +117,23 @@ stages used `speech-feature-query`,
 resident service. That fixed two-stage system was finalized but was not admitted, and its released
 note explicitly says it does not prove live Reviewer/Planner selection. Packet-backed proof,
 dialogue-refresh and loop configs are thus real source capability, and the September 11 pair is
-real finalized execution; they do not change the owner requirement that a prospective E21
-native-role transfer retain raw-audio frozen-core input.
+real finalized execution.
+
+The initial transfer audit incorrectly treated the continuation plan's raw-audio requirement as
+current. Root corrected that interpretation before transfer implementation or contact. The
+[owner feature-serving amendment](../superpowers/plans/experiment-handoff/OWNER-FEATURE-SERVING-007.md)
+explicitly supersedes G5 GPU-resident mmproj. The subsequently admitted
+[September 10 packet successor](2026-09-10-e21-dr-window-packets.md) abandons the stopped strict
+raw-cache qualification and uses formal exact-window packets. Its
+[root generation admission](2026-09-10-e21-dr-packets-root-generation-admission.md) records the
+source and capacity qualification. The later on-demand-tool direction retains decoder-only
+core serving while reserving semantic speech tools for live Reviewer/Planner decisions.
+
+Build prospective E21 native roles on this already admitted packet route, with source-bound
+window preparation and actual request capacity for the new episode. Preserve historical raw
+and packet experiments under their original identities. Do not require a shared raw-audio
+phase-program retrofit to proceed. The raw-program refusal above remains a real limitation
+only if a separately motivated raw transport is selected.
 
 The runtime makes the distinction centrally:
 `core.flight.runtime.arm_uses_speech_feature_packets` tests the arm's
@@ -129,13 +144,11 @@ The runtime makes the distinction centrally:
 calls are divided into source windows. It does not assert which model transport consumes those
 windows.
 
-Earnings cannot express the target raw-audio native episode by configuration today:
+Earnings still cannot express the target window-level native episode by configuration today:
 
 - `EarningsRuntimeAdapter.__init__` permits only `obs-agent-loop-ojw` and
   `obs-repair-loop-ojw`, then validates the window controller. It rejects the registered native
   role policy.
-- Even if that adapter allowlist were widened, `FlightRuntime._default_phase_program_binding`
-  rejects raw-audio phase programs.
 - The native episode operates on one prepared sample state; no shared interface nests it at the
   fixed-window unit and returns the final Solver transcript to the existing ordered whole-call
   stitch/delivery path.
@@ -168,11 +181,11 @@ sets `scalar_reward` and `cost_penalty` to null.
 
 | Boundary | Audio2Tool | Earnings-21 |
 |---|---|---|
-| Four-role execution | Source-capable by config on packet arm; carrier flight unproved | Blocked by adapter allowlist, raw phase binding and window/stitch interfaces |
+| Four-role execution | Source-capable by config on packet arm; carrier flight unproved | Needs adapter policy admission and window/stitch integration on the admitted packet route |
 | Perception state | Full registry plus carried role state is sufficient initially | Needs current-window uncertainty/candidate state |
 | On-demand evidence | Named knowledge/task tools work; live ASR needs roster duration proof | Needs named ConEC views and a window/span raw-source tool contract |
 | Solver authority | Existing answer contract plus shared Solver-only delivery | Shared authority exists, but final window revision-to-stitch return is missing |
-| Core audio | Config-built phase path requires packets; raw direct path exists separately | Historical raw flights and latest finalized packet system both exist; owner requires raw for prospective transfer |
+| Core audio | Config-built phase path requires packets; raw direct path exists separately | Historical raw and packet flights remain distinct; reuse admitted exact-window packets and decoder-only serving |
 | Native scoring | Whole-manifest Audio2Tool scorer exists | Whole-manifest WER/entity/numeric/semantic scorers exist |
 | Optimization feedback | No Audio2Tool reward projection or group-quality branch | ASR projection exists, but quality collapses to negative WER; required vector is absent |
 
