@@ -1,0 +1,35 @@
+{
+  "attached_generation_run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-BASE-REPLICATION-V1",
+  "cell": "slurp-native-dual-store-dev1000-base-replication-v1",
+  "contact_cap": 44000,
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-dual-store-dev1000-fit-base-replication-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 44000,
+    "planned_speech_audio_seconds": 44000,
+    "protocol_hash": "6fb8ee21b4b2831638d4d83a1aa25608be73e0c4dd294c17ba0b12cdf32eae1f",
+    "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-FIT-BASE-REPLICATION-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-dual-store-base-replication-np4-v1",
+  "experiment": "slurp-native-dual-store-dev1000-base-replication-v1",
+  "max_speech_packets": 1,
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-14-slurp-dual-store-base-replication-v1/protocol-v2.json",
+    "sha256": "33af274e103443226658f542d9d52dcd1881ab7145d6f9a84c1786e1357bd31d"
+  },
+  "registration_state": "Root admitted; final source freeze, shared preflight, complete live identity and exclusive custody are required before contacts.",
+  "root_registration_required": true,
+  "schema": "saea-native-contact-fit-execution-plan-v1",
+  "scoring": "One first complete official score per successful generation arm; no fit score and no partial score.",
+  "supersedes": {
+    "reason": "Update operational binding; preserve unused prospective run/attempt identity.",
+    "relpath": "docs/readiness/2026-09-14-slurp-dual-store-base-replication-v1/system-fit-plan-v1.json",
+    "sha256": "cd95cbebe43f523343d026987c362a5979db410edf5bd70ac20a8a30404cef25"
+  }
+}

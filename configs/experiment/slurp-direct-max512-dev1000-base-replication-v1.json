@@ -16,8 +16,17 @@
       "dataset_fragment": "slurp-speech-native-dev1000",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "state": "held",
-        "reason": "Pending fresh source/config-bound preparation, independent identity review and root run-boundary admission after the active bounded-evidence flight closes. No model contact is authorized."
+        "reason": "Root admitted the unchanged useful-base pair after closing the failed predecessor; source-bound preparation is complete.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-dual-store-base-replication-admission-v1",
+            "kind": "decision",
+            "reason": "Root exact-method base replication admission",
+            "relpath": "coordination/slurp-dual-store-base-replication-v1/admission-v1.json",
+            "sha256": "7359471e3b168e6aa7ac4beb828b09deb021530ad1c91683b0ca024193c86613"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-BASE-REPLICATION-V1"
     }
@@ -57,6 +66,6 @@
   },
   "preserve_wire_responses": true,
   "purpose": "Replicate the complete matched direct versus max512 dual-store agent comparison on the same DEV1000 roster and exact source method. Preserve source prompts, decoding, knowledge, native behavior and scoring.",
-  "service_session": "serving-slurp-native-train-a-recovery-np4-v1",
+  "service_session": "serving-slurp-dual-store-base-replication-np4-v1",
   "split_id": "DEV-1000"
 }
