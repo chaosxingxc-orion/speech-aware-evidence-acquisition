@@ -133,7 +133,9 @@ The prepared phase-supply artifact SHA-256 is
 No model, tokenizer, encoder, ASR or official-scoring contact was made.
 
 Full preflight remains pending prospective exposure registration; real
-capacity and serving output proof remain unverified. Persist genuine runtime
-phase-supply and stage receipts through the shared campaign before admission,
-so a later process can analyze the evidence actually consumed. Do not fabricate
-these receipts for historical episodes that did not preserve them.
+capacity and serving output proof remain unverified. The shared campaign now
+persists genuine runtime phase-supply and stage receipts, including the final
+score stage, through atomic monotonic updates. Root verified 89 integrated
+tests and the engineering-base check. The change preserves prepared runtime
+and configuration identity. Do not fabricate these receipts for historical
+episodes that did not preserve them.

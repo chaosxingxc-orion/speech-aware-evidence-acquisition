@@ -1,6 +1,6 @@
 # Owner-directed recovery and continuation plan
 
-**Current overlay:** Read [STATUS-111](STATUS-111.md). The resident SLURP replication is running; root verified 98-percent GPU utilization after the owner restart report without restarting a healthy service. Audio2Tool configurations and all 4,000 activation selections are prepared and warm-cache verified. Genuine campaign receipt persistence, actual serving/capacity proof and prospective admission remain pending.
+**Current overlay:** Read [STATUS-111](STATUS-111.md). The resident SLURP replication is running; root verified 98-percent GPU utilization after the owner restart report without restarting a healthy service. Audio2Tool configurations and all 4,000 activation selections are prepared and warm-cache verified. Genuine campaign receipt persistence is implemented and verified; actual serving/capacity proof and prospective admission remain pending.
 
 **Latest owner direction:** Establish a useful, reproducibly beneficial multimodal agent base and a configurable, observable workspace first. Define training-free RL factors, trajectory sampling and policy optimization only afterward. Root engineering improvements are not algorithm innovation. Retain SLURP-first execution, task-specific separate knowledge stores, corrective memory rather than raw training examples, on-demand Reviewer/Planner evidence tools, sole-Solver answer authority and native dataset metrics. Audio2Tool and E21 transfer remain necessary but follow the stable SLURP anchor.
 
@@ -72,7 +72,7 @@ treatment results exist. Any unresolved analysis must remain descriptive until i
 ## Current ordered work queue
 
 1. Close the running same-roster SLURP direct/native replication with first complete official scores, registered paired release and the frozen analysis.
-2. Establish reproducible package benefit and preserve an observable, configurable trajectory workspace. Resolve the bounded campaign receipt-persistence gap without changing active execution source.
+2. Establish reproducible package benefit and preserve an observable, configurable trajectory workspace. Use the verified genuine campaign receipt persistence without changing active execution source.
 3. Admit the already prepared Audio2Tool native-role transfer only after scientific readiness, actual serving/capacity proof and prospective contact registration.
 4. Use disjoint TRAIN evidence to improve candidate inclusion, joint resolution and slot interpretation; add local speech tools as on-demand Reviewer/Planner actions.
 5. Transfer the stable shared base to E21 with dataset-native metrics. E22, summary objectives and held S4 exemplars are not active GPU tasks.

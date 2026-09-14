@@ -106,20 +106,26 @@ the engineering-base check. A coarse bound is not an actual token-fit receipt.
 Generic synthetic wire-check supports the direct arm only. Native proof must use
 the real renderer/OpenJiuwen path and the registered bounded serving validation.
 
-One concrete shared gap remains under implementation: campaign execution must
-persist genuine FlightReceipts, including candidate selection audit and eventual
-score stage, for a later process. Preserve historical missing-receipt limitations;
-do not reconstruct fictitious old receipts. Restrict the fix to campaign custody
-and receipt persistence without changing the frozen running source or prepared
-runtime inputs.
+The genuine-receipt custody gap is now fixed in shared campaign/receipt code.
+Campaigns persist actual stage and candidate-selection receipts after seal and
+score completion. Atomic writes reject rollback, identity changes and mutation
+of prior stages; failures preserve genuine completed stages and the primary
+error. Root identified and closed a shutdown-failure omission, then verified
+89 integrated tests and the engineering-base check. The prepared runtime/config
+bytes remain identical to dce62993 and the artifact hash is unchanged. Historical
+missing-receipt limitations and active execution source remain unchanged.
+
+Verification: DATA/coordination/a2t-agent-base-transfer-v1/
+campaign-receipt-custody-verification-v1.json, SHA-256
+48d3ff64b9d4aacd1121311b72d65f1182fdace27e40c0bd8736bbafff64757e.
 
 ## Next actions and completion criteria
 
 1. Finish the admitted SLURP replica, both first full scores and registered paired
    analysis. Apply the existing primary/stratum rule. If it disagrees with the
    first comparison, root-cause the discrepancy; do not average away instability.
-2. Close and verify the small genuine-receipt persistence fix, integrate prepared
-   configs at a run boundary, and retain the active checkout unchanged.
+2. Retain the completed preparation and receipt-persistence integration for the
+   next run boundary; keep the current execution checkout unchanged.
 3. Use the complete Audio2Tool preparation to finish prospective registration,
    current-configuration native serving proof and actual capacity validation.
    Settle the whole comparison's three-slot or two-slot geometry before generation.
