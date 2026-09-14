@@ -1,0 +1,115 @@
+"""Publish existing governed compiler outputs through the shared preparation entry."""
+from dataclasses import replace
+import hashlib
+import json
+
+import pytest
+
+from speech_aware_evidence_acquisition.core.driver.cli import main
+from speech_aware_evidence_acquisition.core.preparation import canonical_bytes
+from speech_aware_evidence_acquisition.core.semantic_knowledge_preparation import (
+    SemanticKnowledgePreparationError, prepare_semantic_knowledge_store,
+)
+from speech_aware_evidence_acquisition.rails import knowledge_compile_a2t as compiler
+from speech_aware_evidence_acquisition.rails.knowledge_stores import load_knowledge_store_binding
+from test_a2t_semantic_card_compilation import _world
+
+
+def _pin(path, root):
+    return {
+        "relpath": path.relative_to(root).as_posix(),
+        "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+    }
+
+
+def _prepared(tmp_path, view="parameter-meaning"):
+    config = _world(tmp_path)
+    out = config.data_root / "compiled"
+    config = replace(
+        config, presentation_version=compiler.NATIVE_COMPATIBLE_PRESENTATION_V1,
+        snapshot_value_view=view, corpus_output_path=out / "corpus.txt",
+        receipt_output_path=out / "compilation.json",
+        snapshot_output_path=out / "snapshot.json",
+    )
+    compiler.compile_a2t_semantic_card_artifacts(config)
+    repo = tmp_path / "release-repo"
+    repo.mkdir()
+    registration = {
+        "schema": "saea-compiled-knowledge-store-preparation-v1",
+        "registration_id": "SYNTHETIC-COMPILED-STORE",
+        "store_id": view,
+        "store_role": view,
+        "compilation_receipt": _pin(config.receipt_output_path, config.data_root),
+        "snapshot": _pin(config.snapshot_output_path, config.data_root),
+        "output_namespace": "released/" + view,
+    }
+    path = repo / "registration.json"
+    path.write_bytes(canonical_bytes(registration))
+    return repo, config, path, registration
+
+
+@pytest.mark.parametrize("view", ["tool-activation", "parameter-meaning"])
+def test_compiled_store_public_cli_roundtrip_and_exact_cache(tmp_path, capsys, view):
+    repo, config, path, registration = _prepared(tmp_path, view)
+    before = {p: p.read_bytes() for p in (config.snapshot_output_path, config.receipt_output_path)}
+    assert main(["prepare-semantic-knowledge", "--registration", str(path),
+                 "--repo-root", str(repo), "--data-root", str(config.data_root)]) == 0
+    result = json.loads(capsys.readouterr().out)
+    assert result["cache"] == "cold"
+    completion = result["completion"]
+    binding = load_knowledge_store_binding({"knowledge_stores": {view: {
+        "store_role": view, "snapshot": completion["snapshot"],
+        "release": completion["release"],
+    }}}, data_root=config.data_root)
+    assert binding.composite_snapshot.source_partition_role == "external-governed"
+    assert len(binding.snapshot_for(view).values) == 152
+    release = config.data_root / completion["release"]["relpath"]
+    mtime = release.stat().st_mtime_ns
+    again = prepare_semantic_knowledge_store(path, repo_root=repo, data_root=config.data_root)
+    assert again["cache"] == "warm" and release.stat().st_mtime_ns == mtime
+    assert before == {p: p.read_bytes() for p in before}
+    assert completion["contacts"] == {"model": 0, "tool": 0, "scorer": 0}
+
+
+@pytest.mark.parametrize("defect", ["snapshot-pin", "receipt-pin", "role-view", "source-changed", "collision"])
+def test_compiled_store_refuses_bad_binding_or_overwrite(tmp_path, defect):
+    repo, config, path, registration = _prepared(tmp_path)
+    if defect == "snapshot-pin":
+        registration["snapshot"]["sha256"] = "0" * 64
+    elif defect == "receipt-pin":
+        registration["compilation_receipt"]["sha256"] = "0" * 64
+    elif defect == "role-view":
+        registration["store_role"] = "tool-activation"
+    elif defect == "source-changed":
+        config.construction_receipt_path.write_text("changed source")
+    else:
+        target = config.data_root / registration["output_namespace"] / "release.json"
+        target.parent.mkdir(parents=True)
+        target.write_text("preserve me")
+    path.write_bytes(canonical_bytes(registration))
+    with pytest.raises(SemanticKnowledgePreparationError):
+        prepare_semantic_knowledge_store(path, repo_root=repo, data_root=config.data_root)
+    if defect == "collision":
+        assert target.read_text() == "preserve me"
+    assert not (config.data_root / registration["output_namespace"] / "completion.json").exists()
+
+
+@pytest.mark.parametrize("field", [
+    ("compilation_id",), ("corpus", "sha256"),
+    ("compiler", "minimum_compatibility_support"), ("compiler", "max_utf8_bytes"),
+    ("registry", "tool_count"), ("knowledge_snapshot", "value_count"),
+])
+def test_compiled_store_refuses_rebinding_receipt_claims(tmp_path, field):
+    repo, config, path, registration = _prepared(tmp_path)
+    receipt = json.loads(config.receipt_output_path.read_text())
+    target = receipt
+    for key in field[:-1]:
+        target = target[key]
+    prior = target[field[-1]]
+    target[field[-1]] = prior + 1 if isinstance(prior, int) else "different-compilation"
+    config.receipt_output_path.write_bytes(canonical_bytes(receipt))
+    registration["compilation_receipt"] = _pin(config.receipt_output_path, config.data_root)
+    path.write_bytes(canonical_bytes(registration))
+    with pytest.raises(SemanticKnowledgePreparationError, match="compiler receipt"):
+        prepare_semantic_knowledge_store(path, repo_root=repo, data_root=config.data_root)
+    assert not (config.data_root / registration["output_namespace"] / "completion.json").exists()
