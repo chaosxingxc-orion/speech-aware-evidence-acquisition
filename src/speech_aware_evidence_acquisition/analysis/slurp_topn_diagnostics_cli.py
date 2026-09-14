@@ -977,6 +977,18 @@ def _native_system_rows(
     }
 
 
+def load_verified_native_system_candidate_rows(
+    binding: Mapping[str, object],
+    bundle: object,
+    full_ids: Sequence[str],
+    *,
+    legal_ids: frozenset[str],
+):
+    """Expose the existing verified native Perception join to offline sidecars."""
+
+    return _native_system_rows(binding, bundle, full_ids, legal_ids=legal_ids)
+
+
 def _references(binding, expected_ids, *, loader):
     if binding.get("kind") != "slurp-split":
         raise SlurpTopNAnalysisError("reference source kind must be slurp-split")
@@ -1015,6 +1027,16 @@ def _references(binding, expected_ids, *, loader):
     return tuple(ReferenceIntentRow(sample_id, by_id[sample_id].intent) for sample_id in expected_ids)
 
 
+def load_verified_slurp_reference_intents(binding, expected_ids, *, loader):
+    """Expose the existing source-bound reference join to offline sidecars.
+
+    Callers must discard the returned intent strings before persisting any
+    model-visible or runtime artifact.
+    """
+
+    return _references(binding, expected_ids, loader=loader)
+
+
 def _authoritative_candidate_ids(binding: Mapping[str, object], *, loader) -> frozenset[str]:
     """Load the exact candidate-contract authority used by the task adapter."""
     if binding.get("kind") != "slurp-split":
@@ -1035,6 +1057,14 @@ def _authoritative_candidate_ids(binding: Mapping[str, object], *, loader) -> fr
             "authoritative candidate contract inventory is empty or malformed"
         )
     return legal
+
+
+def load_authoritative_slurp_candidate_ids(
+    binding: Mapping[str, object], *, loader
+) -> frozenset[str]:
+    """Expose the task adapter's existing legal candidate inventory loader."""
+
+    return _authoritative_candidate_ids(binding, loader=loader)
 
 
 def _branch_rows(
