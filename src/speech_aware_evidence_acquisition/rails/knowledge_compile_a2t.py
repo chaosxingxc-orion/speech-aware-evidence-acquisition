@@ -1670,6 +1670,152 @@ def _is_sha256(value: object) -> bool:
     )
 
 
+def _compiled_mapping(value: object, *, name: str) -> Mapping[str, object]:
+    if not isinstance(value, Mapping):
+        raise RailsError(f"{name} must be an object")
+    return value
+
+
+def validate_compiled_knowledge_snapshot(
+    receipt: Mapping[str, object],
+    snapshot: KnowledgeSnapshot,
+    *,
+    store_role: str,
+    snapshot_file_sha256: str,
+    snapshot_path: Path,
+) -> Mapping[str, object]:
+    """Validate compiler receipt custody against one already-loaded snapshot.
+
+    This pure check never reads any declared path. Callers that publish or
+    load source bytes retain responsibility for path confinement and rehashing.
+    """
+
+    if not isinstance(receipt, Mapping):
+        raise RailsError("compiler receipt must be an object")
+    if store_role not in {
+        NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION,
+        NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING,
+    }:
+        raise RailsError("compiled store role is unsupported")
+    if not _is_sha256(snapshot_file_sha256):
+        raise RailsError("compiled snapshot file SHA-256 is malformed")
+    if not isinstance(snapshot_path, Path):
+        raise RailsError("compiled snapshot path must be a Path")
+    if not isinstance(snapshot, KnowledgeSnapshot):
+        raise RailsError("compiled snapshot must be a KnowledgeSnapshot")
+    snapshot.validate()
+
+    info = _compiled_mapping(
+        receipt.get("knowledge_snapshot"), name="knowledge_snapshot"
+    )
+    source = _compiled_mapping(info.get("source"), name="snapshot source")
+    if set(source) != {"metadata", "sha256"}:
+        raise RailsError("snapshot source fields differ from the compiler schema")
+    metadata = _compiled_mapping(
+        source.get("metadata"), name="snapshot source metadata"
+    )
+    expected_metadata_fields = {
+        "schema",
+        "compilation_id",
+        "presentation_version",
+        "dataset_lock_sha256",
+        "construction_selection_sha256",
+        "tool_registry_sha256",
+        "corpus_sha256",
+        "minimum_compatibility_support",
+        "max_utf8_bytes",
+        "value_view",
+    }
+    if set(metadata) != expected_metadata_fields:
+        raise RailsError("snapshot source metadata fields differ from the compiler schema")
+    if (
+        receipt.get("schema") != COMPILATION_RECEIPT_SCHEMA
+        or receipt.get("execution_profile") != "model-free-check"
+        or metadata.get("schema") != NATIVE_CARD_SNAPSHOT_SOURCE_V1
+        or metadata.get("presentation_version")
+        != NATIVE_COMPATIBLE_PRESENTATION_V1
+        or info.get("value_view") != store_role
+        or metadata.get("value_view") != store_role
+    ):
+        raise RailsError("compiled store role or compiler schema differs")
+    if (
+        not isinstance(metadata.get("compilation_id"), str)
+        or not metadata["compilation_id"]
+        or not str(metadata["compilation_id"]).isascii()
+    ):
+        raise RailsError("snapshot source compilation identity is malformed")
+    for field in (
+        "dataset_lock_sha256",
+        "construction_selection_sha256",
+        "tool_registry_sha256",
+        "corpus_sha256",
+    ):
+        if not _is_sha256(metadata.get(field)):
+            raise RailsError(f"snapshot source metadata {field} is malformed")
+    for field in ("minimum_compatibility_support", "max_utf8_bytes"):
+        value = metadata.get(field)
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise RailsError(f"snapshot source metadata {field} is malformed")
+
+    info_path = info.get("path")
+    if (
+        info.get("file_sha256") != snapshot_file_sha256
+        or info.get("snapshot_sha256") != snapshot.content_hash()
+        or not isinstance(info_path, str)
+        or Path(info_path).absolute() != snapshot_path.absolute()
+        or info.get("builder_policy_id") != snapshot.builder_policy_id
+        or snapshot.builder_policy_id != NATIVE_CARD_SNAPSHOT_BUILDER_V1
+        or snapshot.source_partition_role != EXTERNAL_GOVERNED_PARTITION_ROLE
+        or info.get("source_partition_role") != snapshot.source_partition_role
+        or source.get("sha256") != snapshot.source_split_identity_hash
+        or content_hash(metadata) != snapshot.source_split_identity_hash
+    ):
+        raise RailsError("compiled snapshot and receipt bindings differ")
+
+    corpus = _compiled_mapping(receipt.get("corpus"), name="compiler receipt corpus")
+    compiler = _compiled_mapping(
+        receipt.get("compiler"), name="compiler receipt settings"
+    )
+    registry = _compiled_mapping(
+        receipt.get("registry"), name="compiler receipt registry"
+    )
+    if (
+        receipt.get("compilation_id") != metadata.get("compilation_id")
+        or corpus.get("sha256") != metadata.get("corpus_sha256")
+        or any(
+            compiler.get(key) != metadata.get(key)
+            for key in ("minimum_compatibility_support", "max_utf8_bytes")
+        )
+        or registry.get("tool_count") != len(snapshot.values)
+        or info.get("value_count") != len(snapshot.values)
+        or info.get("positive_content_facet_count") != len(snapshot.facets)
+        or info.get("key_text_row_count") != len(snapshot.facets)
+    ):
+        raise RailsError("compiler receipt describes another compilation")
+
+    sources = _compiled_mapping(receipt.get("sources"), name="compiler sources")
+    source_fields = {
+        "dataset_lock": "dataset_lock_sha256",
+        "construction_selection": "construction_selection_sha256",
+        "tool_registry": "tool_registry_sha256",
+    }
+    if set(sources) != set(source_fields):
+        raise RailsError("compiler sources fields differ from the compiler schema")
+    for name, metadata_key in source_fields.items():
+        pin = _compiled_mapping(sources[name], name=name)
+        if set(pin) != {"path", "sha256"}:
+            raise RailsError(f"compiler source {name} fields are malformed")
+        if (
+            not isinstance(pin.get("path"), str)
+            or not pin["path"]
+            or not _is_sha256(pin.get("sha256"))
+            or pin.get("sha256") != metadata.get(metadata_key)
+        ):
+            raise RailsError(f"compiler source {name} SHA-256 differs")
+
+    return dict(metadata)
+
+
 def _validate_config(config: A2tSemanticCardCompilationConfig) -> None:
     if (
         not isinstance(config.compilation_id, str)
@@ -2238,6 +2384,7 @@ __all__ = [
     "compile_a2t_semantic_card_artifacts",
     "load_a2t_semantic_card_compilation_config",
     "main",
+    "validate_compiled_knowledge_snapshot",
     "derive_compatibility_rules",
 ]
 
