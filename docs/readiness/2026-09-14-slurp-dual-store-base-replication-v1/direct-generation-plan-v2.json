@@ -1,0 +1,32 @@
+{
+  "cell": "slurp-direct-max512-dev1000-base-replication-v1",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-direct-max512-dev1000-generation-base-replication-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1000,
+    "planned_speech_audio_seconds": 3500,
+    "protocol_hash": "15a636ab0f1fb788b437630efdfdae206030bade770509076aa612d15c866321",
+    "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-BASE-REPLICATION-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-dual-store-base-replication-np4-v1",
+  "experiment": "slurp-direct-max512-dev1000-base-replication-v1",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-14-slurp-dual-store-base-replication-v1/protocol-v2.json",
+    "sha256": "33af274e103443226658f542d9d52dcd1881ab7145d6f9a84c1786e1357bd31d"
+  },
+  "registration_state": "Root admitted; final source freeze, shared preflight, complete live identity and exclusive custody are required before contacts.",
+  "root_registration_required": true,
+  "schema": "saea-registered-generation-plan-v1",
+  "scoring": "One first complete official score per successful generation arm; no fit score and no partial score.",
+  "supersedes": {
+    "reason": "Update operational binding; preserve unused prospective run/attempt identity.",
+    "relpath": "docs/readiness/2026-09-14-slurp-dual-store-base-replication-v1/direct-generation-plan-v1.json",
+    "sha256": "8dbe2d55ff57cdbe00d869cb9247c0274406e3b44b1af8af221a18685fc4f718"
+  }
+}

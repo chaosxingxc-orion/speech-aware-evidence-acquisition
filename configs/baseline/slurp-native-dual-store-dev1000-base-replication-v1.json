@@ -202,6 +202,10 @@
       "sha256": "f83b5b002d0823de40ac3f52f9a839f83daedf4ecdbbf0606b85f1fc07bd01a8"
     }
   ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-BASE-REPLICATION-V1/phase-supply-session-v2.json",
+    "sha256": "7f598acec4f5bc7feb801c306f3b94cebad511191ccff590eaf4f3dedaf72c84"
+  },
   "scorers": [
     "slurp-slu-official",
     "slurp-slu",
@@ -216,9 +220,5 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "Sole reboot recovery of the unchanged complete native dual-store system after the original direct arm was interrupted at 43 durable model calls and this native arm had not started. The task contract keeps the full 60-label SLURP space available. Before the first Perception contact, the shared named-store bootstrap supplies at most eight intent-boundary values from the same sealed speech-query and released key-vector inputs; Solver retains the same candidate-associated slot-contract supply. The bounded Perception prompt and format, native graph, original episode identity, Reviewer-only task-contract tool authority, finite terminal delivery policy, DEV-1000 promoted packets and sole-Solver answer authority are retained. The separately registered recovery generation and fit attempts keep the original roster, protocol, max512 geometry and frozen weights. Any second failure closes the comparison flight.",
-  "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-BASE-REPLICATION-V1/phase-supply.json",
-    "sha256": "bccf41b816f58e26f510165f47e711c4d611cca813fe8ba03fcc10539791d9bd"
-  }
+  "what_this_is": "Sole reboot recovery of the unchanged complete native dual-store system after the original direct arm was interrupted at 43 durable model calls and this native arm had not started. The task contract keeps the full 60-label SLURP space available. Before the first Perception contact, the shared named-store bootstrap supplies at most eight intent-boundary values from the same sealed speech-query and released key-vector inputs; Solver retains the same candidate-associated slot-contract supply. The bounded Perception prompt and format, native graph, original episode identity, Reviewer-only task-contract tool authority, finite terminal delivery policy, DEV-1000 promoted packets and sole-Solver answer authority are retained. The separately registered recovery generation and fit attempts keep the original roster, protocol, max512 geometry and frozen weights. Any second failure closes the comparison flight."
 }
