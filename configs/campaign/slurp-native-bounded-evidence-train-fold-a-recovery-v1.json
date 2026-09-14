@@ -1,0 +1,9 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "slurp-native-bounded-evidence-train-fold-a-recovery-v1",
+      "cell": "slurp-native-bounded-evidence-train-fold-a-recovery-v1"
+    }
+  ]
+}
