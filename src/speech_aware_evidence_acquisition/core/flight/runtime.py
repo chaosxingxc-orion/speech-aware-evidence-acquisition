@@ -4411,23 +4411,7 @@ class FlightRuntime:
         )
         candidate_spec = self._composed.values.get("candidate_contracts")
         if uses_candidate_contracts:
-            if (
-                not isinstance(candidate_spec, Mapping)
-                or set(candidate_spec) != {"source_sha256"}
-                or not isinstance(candidate_spec["source_sha256"], str)
-                or len(candidate_spec["source_sha256"]) != 64
-                or any(char not in "0123456789abcdef" for char in candidate_spec["source_sha256"])
-            ):
-                raise FlightRuntimeError("candidate contracts require an exact canonical source pin")
-            prepare = getattr(self._adapter, "candidate_contract_provider", None)
-            provider = prepare() if callable(prepare) else None
-            if (
-                provider is None
-                or not callable(getattr(provider, "lookup", None))
-                or getattr(provider, "source_sha256", None) != candidate_spec["source_sha256"]
-            ):
-                raise FlightRuntimeError("candidate contract source differs from the configured pin")
-            kwargs["candidate_contracts"] = provider
+            kwargs["candidate_contracts"] = self._prepare_candidate_contract_provider(candidate_spec)
         elif candidate_spec is not None:
             raise FlightRuntimeError("candidate contracts are configured without a candidate lookup action")
         uses_native = any(spec.get("mode") == "native-tools" for spec in tool_specs.values())
@@ -4455,6 +4439,67 @@ class FlightRuntime:
                 "native-answer-or-tool refuses an external stop policy"
             )
         return dispatcher
+
+    def _prepare_candidate_contract_provider(self, spec: object):
+        """Bind on-demand contracts to a source and any held-out TRAIN rosters."""
+        from ...data.slurp import normalize_slurp_train_utterance_exclusions
+        from ..roster import read_roster
+
+        if (
+            not isinstance(spec, Mapping)
+            or set(spec) not in (
+                {"source_sha256"}, {"source_sha256", "excluded_construction_rosters"},
+            )
+            or not isinstance(spec.get("source_sha256"), str)
+            or len(spec["source_sha256"]) != 64
+            or set(spec["source_sha256"]) - set("0123456789abcdef")
+        ):
+            raise FlightRuntimeError("candidate contracts require an exact canonical source pin")
+        values = self._composed.values
+        is_slurp = values.get("carrier_lock_key") == "slurp"
+        exclusions: set[str] = set()
+
+        def utterance(sample_id: str) -> str:
+            parts = sample_id.split(":")
+            if len(parts) < 3:
+                raise FlightRuntimeError("candidate construction requires canonical TRAIN sample IDs")
+            return normalize_slurp_train_utterance_exclusions((":".join(parts[:3]),))[0]
+
+        if "excluded_construction_rosters" in spec:
+            pins = spec["excluded_construction_rosters"]
+            if not is_slurp or not isinstance(pins, list) or not pins:
+                raise FlightRuntimeError("candidate construction rosters require a nonempty SLURP list")
+            paths: set[Path] = set()
+            for pin in pins:
+                path = self._confined_pin(self._repo_root, pin, "candidate construction roster")
+                if path in paths:
+                    raise FlightRuntimeError("candidate construction roster is duplicated")
+                paths.add(path)
+                roster = read_roster(path)
+                if roster["carrier_lock_key"] != "slurp":
+                    raise FlightRuntimeError("candidate construction roster belongs to another carrier")
+                exclusions.update(utterance(item["sample_id"]) for item in roster["items"])
+        if is_slurp:
+            train_ids = {
+                utterance(sample.sample_id) for sample in self._samples
+                if sample.sample_id.startswith("slurp:train:")
+            }
+            if not train_ids.issubset(exclusions):
+                raise FlightRuntimeError("candidate contracts must exclude every current TRAIN utterance")
+        prepare = getattr(self._adapter, "candidate_contract_provider", None)
+        provider = None
+        if callable(prepare):
+            provider = (
+                prepare(excluded_construction_ids=tuple(sorted(exclusions)))
+                if exclusions else prepare()
+            )
+        if (
+            provider is None
+            or not callable(getattr(provider, "lookup", None))
+            or getattr(provider, "source_sha256", None) != spec["source_sha256"]
+        ):
+            raise FlightRuntimeError("candidate contract source differs from the configured pin")
+        return provider
 
     def _prepare_native_phase_runtime(self, policy: str) -> None:
         if policy == "fixed" or policy in self._obs_policy_names():
@@ -4823,6 +4868,8 @@ class FlightRuntime:
                 }
                 dispatch["native_episode"]["actions"] = list(native_config.actions)
                 dispatch["native_episode"]["exhaustion_policy"] = native_config.exhaustion_policy
+            if native_config.reserve_final_report:
+                dispatch["native_episode"]["tool_iteration_policy"] = "reserve-final-report"
             if native_config.local_tool_workers:
                 dispatch["native_episode"]["local_tool_execution"] = {
                     "mode": "yield-model-slot",

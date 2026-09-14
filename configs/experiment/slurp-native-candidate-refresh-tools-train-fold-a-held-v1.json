@@ -1,0 +1,30 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "attempt_id": "HELD-NO-CONTACT-REFRESH-TOOLS-A",
+      "baseline_fragment": "slurp-native-candidate-refresh-tools-train-fold-a-held-v1",
+      "cell_id": "slurp-native-candidate-refresh-tools-train-fold-a-held-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Complete TRAIN A diagnostic and root admission, execution plans, fit, ASR and final preparation are absent.",
+        "state": "held"
+      },
+      "run_id": "HELD-NO-CONTACT-REFRESH-TOOLS-A"
+    }
+  ],
+  "date": "2026-09-14",
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-SLURP-NATIVE-CANDIDATE-REFRESH-TOOLS-TRAIN-FOLD-A-HELD-V1",
+  "preserve_wire_responses": true,
+  "protocol": {
+    "relpath": "docs/readiness/2026-09-14-slurp-native-candidate-refresh-tools-train-fold-a-v1/README.md",
+    "sha256": "96b78613bf8715d0d0de06952fc640af93268edc517b7e6f1eee55f6513210d2"
+  },
+  "purpose": "Prepare the complete-system successor described in the source-pinned prospective protocol; no runtime contact.",
+  "service_session": "HELD-NO-SERVICE",
+  "split_id": "SLURP-EVO-FOLD-A-V2"
+}

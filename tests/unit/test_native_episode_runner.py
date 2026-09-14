@@ -1190,3 +1190,57 @@ def test_actual_refresh_at_ceiling_delivers_without_a_third_perception(tmp_path)
         assert pair.refresh_executed is True
     finally:
         harness.close()
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_reserved_final_reviewer_turn_has_no_tools_in_actual_fitted_request(tmp_path, monkeypatch):
+    from dataclasses import replace
+    import sys
+
+    original_wire = _wire_tool_call
+    serial = 0
+
+    def unique_tool_call(tool_id):
+        nonlocal serial
+        serial += 1
+        document = json.loads(original_wire(tool_id))
+        document["choices"][0]["message"]["tool_calls"][0]["id"] = f"report-tool-{serial}"
+        return json.dumps(document, separators=(",", ":")).encode()
+
+    monkeypatch.setattr(sys.modules[__name__], "_wire_tool_call", unique_tool_call)
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=1, max_contacts=11,
+        planner_actions=("REVISE", "ACCEPT"), reviewer_task_tool=True,
+    )
+    harness.config = replace(
+        harness.config, reserve_final_report=True, local_tool_workers=1,
+        roles=tuple(
+            replace(role, max_iterations=3) if role.role_kind == "reviewer" else role
+            for role in harness.config.roles
+        ),
+    )
+    original_output = harness._output
+
+    def output(key):
+        if key[1] == "reviewer":
+            return None if key[3] < 3 else "review report with source-bound evidence"
+        return original_output(key)
+    harness._output = output
+    try:
+        result = harness.run().results[0]
+    finally:
+        closed = harness.close()
+
+    assert result.final_response_text == "solver-answer:s1:visit:2"
+    assert closed["request_count"] == 11
+    assert closed["cost"]["tool_calls"] == 4
+    assert len(harness.tool_contacts) == 4
+    for visit in (1, 2):
+        for turn in (1, 2, 3):
+            key = ("s1", "reviewer", visit, turn)
+            request = harness.prepared[key]["rendered"]
+            assert request["tool_choice"] == ("none" if turn == 3 else "auto")
+            assert bool(request.get("tools")) == (turn < 3)
+            assert harness.events.index(("fit", key)) < harness.events.index(("dispatch", key))
+        final = harness.prepared[("s1", "reviewer", visit, 3)]["rendered"]
+        assert sum(message["role"] == "tool" for message in final["messages"]) == 2 * visit

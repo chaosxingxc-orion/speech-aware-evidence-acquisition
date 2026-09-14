@@ -112,7 +112,8 @@
     "local_tool_execution": {
       "mode": "yield-model-slot",
       "max_workers": 1
-    }
+    },
+    "tool_iteration_policy": "reserve-final-report"
   },
   "phase_material": {
     "perception": {
@@ -222,7 +223,8 @@
       "selection_role": "Solver",
       "tool_roles": [
         "Reviewer"
-      ]
+      ],
+      "analytical_tool_actions_per_episode_ceiling": 4
     },
     "new_model_contacts_authorized": false,
     "source_anchor": {
@@ -235,10 +237,7 @@
     "status": "HELD_PENDING_FULL_TRAIN_A_DIAGNOSTIC_AND_ROOT_ADMISSION",
     "unresolved_bindings": [
       "complete TRAIN A source and diagnostic decision",
-      "C0 and pre-final-Solver C1 source projections",
-      "TRAIN Fold A runtime audio inventory",
       "source-pinned local CPU Whisper execution plan and exposure row",
-      "shared CPU tool scheduling and thread limits",
       "generation and native actual-contact fit execution plans",
       "attempt-namespaced preparation and outputs",
       "first complete official TRAIN scoring registration"

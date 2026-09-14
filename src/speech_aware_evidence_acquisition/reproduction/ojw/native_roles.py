@@ -98,6 +98,7 @@ class NativeRoleNodeSpec:
     prompt: str
     max_iterations: int
     ability_names: tuple[str, ...] = ()
+    reserve_final_report: bool = False
 
     def __post_init__(self) -> None:
         if not isinstance(self.role_id, str) or not self.role_id:
@@ -125,6 +126,11 @@ class NativeRoleNodeSpec:
             raise ValueError("ability_names must be ordered unique non-empty strings")
         if self.role_kind in _TOOL_FREE_ROLE_KINDS and self.ability_names:
             raise ValueError(f"{self.role_kind} role must be tool-free")
+        if type(self.reserve_final_report) is not bool or (
+            self.reserve_final_report
+            and (not self.ability_names or self.max_iterations < 2)
+        ):
+            raise ValueError("final report reservation requires a tool role with two or more iterations")
 
 
 @dataclass(frozen=True)
@@ -487,16 +493,33 @@ class _RoleAuthorityRail(AgentRail):
         role_id: str,
         advertised_names: frozenset[str],
         tool_allowed: Callable[[str, str], bool],
+        final_report_iteration: int | None = None,
     ) -> None:
         self._role_id = role_id
         self._advertised_names = advertised_names
         self._tool_allowed = tool_allowed
+        self._final_report_iteration = final_report_iteration
+        self._iteration_key = f"saea-native-report-turn:{role_id}"
+
+    async def before_model_call(self, ctx) -> None:
+        if self._final_report_iteration is None:
+            return
+        iteration = ctx.extra.get(self._iteration_key, 0) + 1
+        ctx.extra[self._iteration_key] = iteration
+        if iteration >= self._final_report_iteration:
+            # Use the framework's public hook to reserve an actual model report.
+            ctx.inputs.tools = []
+
 
     async def before_tool_call(self, ctx) -> None:
         name = ctx.inputs.tool_call.name
         if (
             name not in self._advertised_names
             or not self._tool_allowed(self._role_id, name)
+            or (
+                self._final_report_iteration is not None
+                and ctx.extra.get(self._iteration_key, 0) >= self._final_report_iteration
+            )
         ):
             cause = PermissionError(
                 f"Tool {name!r} is outside role authority for {self._role_id!r}."
@@ -594,6 +617,7 @@ class NativeRoleNode(WorkflowComponent):
             role_id=spec.role_id,
             advertised_names=self._advertised_names,
             tool_allowed=allowed,
+            final_report_iteration=(spec.max_iterations if spec.reserve_final_report else None),
         )
         self._rail_registered = False
         self._registration_lock = asyncio.Lock()

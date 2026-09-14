@@ -184,3 +184,85 @@ def test_runtime_refuses_wrong_canonical_source_pin_before_dispatch(tmp_path):
             SimpleNamespace(stop_rule="native-answer-or-tool"),
             binding={"knowledge_snapshot": object()}, sink=None, client=None)
     assert captured == {}
+
+
+def _construction_roster_pin(tmp_path, name, sample_ids, *, carrier="slurp"):
+    import hashlib
+
+    from speech_aware_evidence_acquisition.core.roster import write_roster
+    from speech_aware_evidence_acquisition.data.splits import prefixed, split_identity_hash
+
+    path = tmp_path / name
+    document = {
+        "carrier_lock_key": carrier,
+        "items": [{"sample_id": item} for item in sample_ids],
+        "split_identity_hash": split_identity_hash(prefixed(carrier, sample_ids)),
+    }
+    write_roster(document, path)
+    return {"relpath": name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
+
+def _train_candidate_runtime(tmp_path, pins=None):
+    runtime, provider, calls, captured = runtime_for_candidate(tmp_path)
+    runtime._repo_root = tmp_path
+    runtime._samples = (SimpleNamespace(sample_id="slurp:train:000301:audio-other"),)
+    runtime._composed.values["carrier_lock_key"] = "slurp"
+    spec = runtime._composed.values["candidate_contracts"]
+    if pins is not None:
+        spec["excluded_construction_rosters"] = pins
+    runtime._adapter = SimpleNamespace(
+        candidate_contract_provider=lambda **kwargs: (calls.append(kwargs) or provider)
+    )
+    return runtime, provider, calls, captured
+
+
+def _dispatch_candidate(runtime):
+    return runtime._build_phase_tool_dispatcher(
+        "native-answer-or-tool-v1",
+        SimpleNamespace(stop_rule="native-answer-or-tool"),
+        binding={"knowledge_snapshot": object()}, sink=None, client=None,
+    )
+
+
+def test_train_contract_dispatch_excludes_siblings_and_both_pinned_folds(tmp_path):
+    pins = [
+        _construction_roster_pin(tmp_path, "a.json", [
+            "slurp:train:000301:audio-a", "slurp:train:000301:audio-b",
+        ]),
+        _construction_roster_pin(tmp_path, "b.json", ["slurp:train:000302:audio-c"]),
+    ]
+    runtime, provider, calls, captured = _train_candidate_runtime(tmp_path, pins)
+    _dispatch_candidate(runtime)
+    assert calls == [{"excluded_construction_ids": (
+        "slurp:train:000301", "slurp:train:000302",
+    )}]
+    assert captured["candidate_contracts"] is provider
+
+
+@pytest.mark.parametrize("mode", ["absent", "empty", "uncovered", "duplicate", "tampered", "other"])
+def test_train_contract_refuses_unbound_construction_before_provider_read(tmp_path, mode):
+    pins = [_construction_roster_pin(tmp_path, "a.json", [
+        "slurp:train:000302:audio-c" if mode == "uncovered" else "slurp:train:000301:audio-a"
+    ], carrier="other" if mode == "other" else "slurp")]
+    if mode == "absent":
+        pins = None
+    elif mode == "empty":
+        pins = []
+    elif mode == "duplicate":
+        pins *= 2
+    elif mode == "tampered":
+        (tmp_path / "a.json").write_text("{}")
+    runtime, _, calls, captured = _train_candidate_runtime(tmp_path, pins)
+    with pytest.raises(FlightRuntimeError):
+        _dispatch_candidate(runtime)
+    assert calls == []
+    assert captured == {}
+
+
+def test_devel_contract_dispatch_preserves_legacy_no_argument_provider(tmp_path):
+    runtime, provider, calls, captured = runtime_for_candidate(tmp_path)
+    runtime._composed.values["carrier_lock_key"] = "slurp"
+    runtime._samples = (SimpleNamespace(sample_id="slurp:devel:000001:audio-a"),)
+    _dispatch_candidate(runtime)
+    assert calls == ["prepare"]
+    assert captured["candidate_contracts"] is provider

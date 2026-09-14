@@ -1750,7 +1750,9 @@ async def _invoke_native_role_episode(
         phase = program.phase(phase_id)
         if (phase.response_format_id is not None) != (material.response_format is not None):
             raise RailsRunnerError("native role response format differs from its phase")
-        visits[phase_id] = {"query": material.instruction, "material": material, "local_ids": []}
+        visits[phase_id] = {
+            "query": material.instruction, "material": material, "local_ids": [], "model_contacts": 0,
+        }
         return material.instruction
 
     def speech_binding(request):
@@ -1762,7 +1764,12 @@ async def _invoke_native_role_episode(
         decoding = dict(base_decoding_params or {})
         if material.response_format is not None:
             decoding["response_format"] = dict(material.response_format)
-        decoding.update(tool_choice="auto" if role.tool_names else "none", parallel_tool_calls=False)
+        names = role.tool_names
+        if config.reserve_final_report and names and visit["model_contacts"] >= role.max_iterations - 1:
+            names = ()
+        if request.visible_tool_names != names:
+            raise RailsRunnerError("framework tool scope differs from the configured report turn")
+        decoding.update(tool_choice="auto" if names else "none", parallel_tool_calls=False)
         plan = AgentContactPlan(
             contact_id=request.context.agent_contact_id,
             query_state_sha256=ctx.query_state.content_hash(),
@@ -1782,7 +1789,7 @@ async def _invoke_native_role_episode(
                 "matcher_policy_id": plan.matcher_policy_id,
                 "agent_state": [a.as_json() for a in ctx.agent_states],
             },
-            tool_names=role.tool_names, local_tool_result_ids=tuple(visit["local_ids"]),
+            tool_names=names, local_tool_result_ids=tuple(visit["local_ids"]),
         )
 
     def capture_completion(request, completion):
@@ -1799,6 +1806,7 @@ async def _invoke_native_role_episode(
             state_namespace=plan.contact_id,
         )
         slot_id = visits[request.role_id]["slot_id"]
+        visits[request.role_id]["model_contacts"] += 1
         state.contacts.append(AgentContactRecord(
             plan=plan, query_state_sha256=before.query_state.content_hash(),
             speech_packet_sha256=before.query_state.speech_packet_sha256,
@@ -1932,6 +1940,7 @@ async def _invoke_native_role_episode(
                 spec=NativeRoleNodeSpec(
                     role_id=role.phase_id, role_kind=role.role_kind, prompt=prompt,
                     max_iterations=role.max_iterations, ability_names=role.tool_names,
+                    reserve_final_report=config.reserve_final_report and bool(role.tool_names),
                 ),
                 metered_request=metered, contact_context_provider=contact_context,
                 abilities=tuple(ability_for(role, schema_by_name[name]) for name in role.tool_names),

@@ -210,3 +210,24 @@ def test_local_tool_execution_rejects_unbound_resource_policy(bad):
     values["native_episode"]["local_tool_execution"] = bad
     with pytest.raises(ValueError, match="local_tool_execution"):
         load_native_episode_config(values, program())
+
+
+@pytest.mark.parametrize("invalid", [None, False, 1, "auto", {}, []])
+def test_final_report_policy_rejects_unknown_explicit_value(invalid):
+    values = config()
+    values["native_episode"]["tool_iteration_policy"] = invalid
+    with pytest.raises(ValueError, match="tool_iteration_policy"):
+        load_native_episode_config(values, program())
+
+
+def test_final_report_policy_is_opt_in_and_requires_a_report_turn():
+    values = config()
+    assert not load_native_episode_config(values, program()).reserve_final_report
+    values["native_episode"]["tool_iteration_policy"] = "reserve-final-report"
+    values["phase_tools"] = {"reviewer": {
+        "mode": "native-tools", "source_authority_role": "reviewer", "allowed_tools": ["analyze"],
+    }}
+    with pytest.raises(ValueError, match="two tool-role iterations"):
+        load_native_episode_config(values, program())
+    values["native_episode"]["roles"]["reviewer"]["max_iterations"] = 3
+    assert load_native_episode_config(values, program(ceiling=6)).reserve_final_report

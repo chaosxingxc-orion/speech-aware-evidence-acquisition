@@ -215,3 +215,18 @@ def test_source_document_is_a_detached_copy(slurp_world):
     document["profiles"].clear()
     assert provider.source_document["profiles"]
     assert canonical_sha256(provider.source_document) == provider.source_sha256
+
+
+def test_adapter_keeps_excluded_and_legacy_catalogs_in_separate_cache_entries(slurp_world):
+    adapter = _adapter(slurp_world)
+    legacy = adapter.candidate_contract_provider()
+    excluded = adapter.candidate_contract_provider(
+        excluded_construction_ids=("slurp:train:000301",)
+    )
+    assert excluded.source_sha256 != legacy.source_sha256
+    assert adapter.candidate_contract_provider() is legacy
+    assert adapter.candidate_contract_provider(excluded_construction_ids=()) is legacy
+    assert adapter.candidate_contract_provider(
+        excluded_construction_ids=("slurp:train:000301",)
+    ) is excluded
+    assert excluded.source_document["source_utterance_count"] == 1

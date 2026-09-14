@@ -213,15 +213,20 @@ class TaskAdapter(abc.ABC):
     # -- additional non-abstract hooks (owner design: Part B fills these
     # in further; today they carry small, honest defaults) --------------
 
-    def candidate_contract_provider(self) -> CandidateContractProvider | None:
+    def candidate_contract_provider(
+        self, *, excluded_construction_ids: Sequence[str] = ()
+    ) -> CandidateContractProvider | None:
         """Return this carrier's canonical candidate contracts, when configured.
 
         The default is exactly no provider. A task adapter may prepare and cache
         an immutable provider when this hook is explicitly requested before a
         model run; ordinary historical adapter construction remains free of
-        that task-specific I/O.
+        that task-specific I/O. Canonical construction exclusions name source
+        units to omit, including all their recordings; unsupported adapters refuse them.
         """
 
+        if excluded_construction_ids:
+            raise ValueError("this adapter has no excluded-construction contract provider")
         return None
 
     def strata_of(self, sample: TaskSample) -> str:

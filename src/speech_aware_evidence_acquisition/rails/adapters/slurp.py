@@ -37,7 +37,9 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 from ...data.lock import REPO_ROOT
-from ...data.slurp import SLURP_LOCK_KEY, load_slurp_split
+from ...data.slurp import (
+    SLURP_LOCK_KEY, load_slurp_split, normalize_slurp_train_utterance_exclusions,
+)
 from ...data.slurp_contract_cache import load_cached_slurp_contract
 from ...reproduction.slurp_scoring import SlotEntity, parse_slu_response, score_slu
 from ..obs import AudioRef, ObsPacket
@@ -98,16 +100,19 @@ class SlurpAdapter(TaskAdapter):
         self._lock = lock
         self._root = Path(root)
         self._repo_root = Path(REPO_ROOT if repo_root is None else repo_root)
-        self._candidate_contracts: SlurpCandidateContractProvider | None = None
+        self._candidate_contracts: dict[tuple[str, ...], SlurpCandidateContractProvider] = {}
 
-    def candidate_contract_provider(self) -> SlurpCandidateContractProvider:
-        """Prepare the TRAIN-only canonical catalog on explicit opt-in."""
+    def candidate_contract_provider(
+        self, *, excluded_construction_ids: Sequence[str] = ()
+    ) -> SlurpCandidateContractProvider:
+        """Cache each canonical TRAIN construction boundary independently."""
 
-        if self._candidate_contracts is None:
-            self._candidate_contracts = build_slurp_candidate_contract_provider(
-                self._lock, self._root
+        exclusions = normalize_slurp_train_utterance_exclusions(excluded_construction_ids)
+        if exclusions not in self._candidate_contracts:
+            self._candidate_contracts[exclusions] = build_slurp_candidate_contract_provider(
+                self._lock, self._root, excluded_train_utterance_ids=exclusions
             )
-        return self._candidate_contracts
+        return self._candidate_contracts[exclusions]
 
     def load_split(
         self, split_id: str, *, allow_heldout: bool = False, allow_synthetic: bool = False

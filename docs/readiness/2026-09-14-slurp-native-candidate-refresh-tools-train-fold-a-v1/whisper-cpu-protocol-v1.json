@@ -1,0 +1,19 @@
+{
+  "batch_size": 1,
+  "beam_size": 5,
+  "cpu_thread_limits": {
+    "inference_threads": 4,
+    "interop_threads": 1
+  },
+  "cpu_workers": 1,
+  "device": "cpu",
+  "fp16": false,
+  "language": "en",
+  "logprob_threshold": -1.0,
+  "no_speech_threshold": 0.6,
+  "sample_len": 256,
+  "schema": "saea-local-whisper-decode-v1",
+  "task": "transcribe",
+  "temperature": 0,
+  "without_timestamps": true
+}

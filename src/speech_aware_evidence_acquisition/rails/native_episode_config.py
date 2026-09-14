@@ -25,6 +25,7 @@ class NativeEpisodeConfig:
     refresh_action: str | None = None
     max_candidate_refreshes: int = 0
     local_tool_workers: int = 0
+    reserve_final_report: bool = False
 
     @property
     def terminal_actions(self) -> tuple[str, ...]:
@@ -61,7 +62,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     required_fields = {
         "schema", "episode_id", "max_revisions", "actions", "roles",
     }
-    optional_fields = {"exhaustion_policy", "candidate_refresh", "local_tool_execution"}
+    optional_fields = {"exhaustion_policy", "candidate_refresh", "local_tool_execution", "tool_iteration_policy"}
     if (
         not isinstance(raw, Mapping)
         or set(raw) - required_fields - optional_fields
@@ -112,6 +113,9 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         ):
             raise ValueError("local_tool_execution requires yield-model-slot and 1..8 workers")
         local_workers = local_execution["max_workers"]
+    reserve_report = "tool_iteration_policy" in raw
+    if reserve_report and raw["tool_iteration_policy"] != "reserve-final-report":
+        raise ValueError("tool_iteration_policy must be reserve-final-report")
     raw_roles = raw["roles"]
     kinds = ("perception", "solver", "reviewer", "planner")
     if not isinstance(raw_roles, Mapping) or set(raw_roles) != set(kinds):
@@ -139,6 +143,8 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
             tools = tuple(spec.get("allowed_tools", ()))
             if not tools or len(set(tools)) != len(tools):
                 raise ValueError("native role tool names must be nonempty and unique")
+        if reserve_report and tools and iterations < 2:
+            raise ValueError("reserve-final-report requires at least two tool-role iterations")
         roles.append(NativeEpisodeRole(phase_id, kind, iterations, tools))
     phase_ids = tuple(role.phase_id for role in roles)
     if len(set(phase_ids)) != 4 or set(phase_ids) != set(program.phase_names()):
@@ -179,4 +185,5 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         refresh_action,
         refreshes,
         local_workers,
+        reserve_report,
     )

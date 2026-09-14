@@ -854,3 +854,105 @@ def test_null_projection_refuses_tampered_content_calls_and_source_binding():
         restore_native_assistant_wire_message(
             projected, completion=replace(completion, request_sha256="")
         )
+
+
+@pytest.mark.parametrize("reserve", [False, True])
+def test_final_report_tool_scope_resets_per_framework_invocation(reserve):
+    calls = []
+    responses = []
+    for index in range(6):
+        final = index % 3 == 2
+        responses.append(_completion(
+            text="report" if final else "inspect",
+            contact_id=f"contact-{index + 1}", serial=index + 1,
+            tool_calls=None if final else _tool_call("analyze", f"call-{index}", '{"value":1}'),
+        ))
+    script = _MeteredScript(responses)
+    node = NativeRoleNode(
+        spec=NativeRoleNodeSpec(
+            role_id="reviewer", role_kind="reviewer", prompt="Review and report.",
+            max_iterations=3, ability_names=("analyze",), reserve_final_report=reserve,
+        ),
+        metered_request=script,
+        contact_context_provider=lambda index: NativeRoleContactContext(
+            sample_id="sample-1", agent_contact_id=f"contact-{index + 1}",
+        ),
+        abilities=(LocalFunction(
+            card=_card("analyze"), func=lambda value: calls.append(value) or {"evidence": value},
+        ),),
+        tool_allowed=lambda _role, name: name == "analyze",
+    )
+
+    async def invoke_twice():
+        try:
+            return [await node.invoke_direct("First review."), await node.invoke_direct("Second review.")]
+        finally:
+            await node.close()
+
+    results = asyncio.run(invoke_twice())
+    assert [item["result_type"] for item in results] == ["answer", "answer"]
+    assert calls == [1, 1, 1, 1]
+    expected = [("analyze",), ("analyze",), () if reserve else ("analyze",)] * 2
+    assert [request.visible_tool_names for request in script.requests] == expected
+    for index in (2, 5):
+        assert sum(message["role"] == "tool" for message in script.requests[index].messages) == 2
+
+
+def test_final_report_authority_refuses_noncompliant_third_tool_invocation():
+    calls = []
+    responses = [
+        _completion(
+            text="inspect",
+            contact_id=f"contact-{index + 1}",
+            serial=index + 1,
+            tool_calls=_tool_call("analyze", f"call-{index}", '{"value":1}'),
+        )
+        for index in range(3)
+    ]
+    script = _MeteredScript(responses)
+    node = NativeRoleNode(
+        spec=NativeRoleNodeSpec(
+            role_id="reviewer",
+            role_kind="reviewer",
+            prompt="Review and report.",
+            max_iterations=3,
+            ability_names=("analyze",),
+            reserve_final_report=True,
+        ),
+        metered_request=script,
+        contact_context_provider=lambda index: NativeRoleContactContext(
+            sample_id="sample-1", agent_contact_id=f"contact-{index + 1}",
+        ),
+        abilities=(
+            LocalFunction(
+                card=_card("analyze"),
+                func=lambda value: calls.append(value) or {"evidence": value},
+            ),
+        ),
+        tool_allowed=lambda _role, name: name == "analyze",
+    )
+
+    async def invoke_once():
+        try:
+            return await node.invoke_direct("Review.")
+        finally:
+            await node.close()
+
+    result = asyncio.run(invoke_once())
+    assert result["result_type"] == "error"
+    assert calls == [1, 1]
+    assert [request.visible_tool_names for request in script.requests] == [
+        ("analyze",),
+        ("analyze",),
+        (),
+    ]
+
+
+@pytest.mark.parametrize("kwargs", [
+    {"max_iterations": 1, "ability_names": ("analyze",), "reserve_final_report": True},
+    {"max_iterations": 3, "ability_names": (), "reserve_final_report": True},
+    {"max_iterations": 3, "ability_names": ("analyze",), "reserve_final_report": 1},
+])
+def test_final_report_reservation_rejects_invalid_role_shapes(kwargs):
+    with pytest.raises(ValueError, match="final report reservation"):
+        NativeRoleNodeSpec(role_id="reviewer", role_kind="reviewer", prompt="Review.", **kwargs)
