@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from threading import Lock
 from types import MappingProxyType
@@ -60,7 +60,14 @@ _SPEC_KEYS = frozenset(
         "max_total_values",
     }
 )
-_OPTIONAL_SPEC_KEYS = frozenset({"compact_source_phase", "supply_mode", "projection_policy"})
+_OPTIONAL_SPEC_KEYS = frozenset(
+    {
+        "candidate_state_selection",
+        "compact_source_phase",
+        "supply_mode",
+        "projection_policy",
+    }
+)
 _SOURCE_KEYS = frozenset(
     {"schema", "builder_policy_id", "source_split_identity_hash", "rows"}
 )
@@ -96,11 +103,16 @@ class CandidateSemanticSupplySpec:
     compact_source_phase: str | None = None
     supply_mode: str = "provide"
     projection_policy: str | None = None
+    candidate_state_selection: str = "single"
 
     def validate(self, program: PhaseProgram) -> "CandidateSemanticSupplySpec":
         program.validate()
         if self.supply_mode not in ("provide", "withhold"):
             raise CandidateSemanticSupplyError("supply_mode must be provide or withhold")
+        if self.candidate_state_selection not in ("single", "latest"):
+            raise CandidateSemanticSupplyError(
+                "candidate_state_selection must be single or latest"
+            )
         if self.projection_policy is not None and (
             self.projection_policy != BOUNDED_FIRST_OCCURRENCE_PROJECTION_POLICY_ID
             or self.compact_source_phase is None
@@ -186,6 +198,8 @@ class CandidateSemanticSupplySpec:
             result["supply_mode"] = self.supply_mode
         if self.projection_policy is not None:
             result["projection_policy"] = self.projection_policy
+        if self.candidate_state_selection != "single":
+            result["candidate_state_selection"] = self.candidate_state_selection
         return result
 
 
@@ -232,6 +246,9 @@ def load_candidate_semantic_supply_specs(
                 compact_source_phase=raw.get("compact_source_phase"),
                 supply_mode=raw.get("supply_mode", "provide"),
                 projection_policy=raw.get("projection_policy"),
+                candidate_state_selection=raw.get(
+                    "candidate_state_selection", "single"
+                ),
             ).validate(program)
             specs[phase] = spec
     return MappingProxyType(specs)
@@ -356,6 +373,74 @@ def build_candidate_semantic_supply(
     audits: dict[str, Mapping[str, object]] = {}
     audit_lock = Lock()
 
+    def candidate_state_for(
+        spec: CandidateSemanticSupplySpec,
+        *,
+        phase: str,
+        query_state: object,
+        states: object,
+        prior_response_sha256s: object,
+    ) -> AgentStateArtifact:
+        expected_kind = f"phase:{spec.candidate_state_phase}"
+        state_rows = tuple(states)
+        matches = tuple(
+            state
+            for state in state_rows
+            if isinstance(state, AgentStateArtifact)
+            and state.state_kind == expected_kind
+        )
+        if spec.candidate_state_selection == "single":
+            if len(matches) != 1:
+                raise CandidateSemanticSupplyError(
+                    f"candidate supply for {phase!r} requires exactly one source-bound "
+                    f"{spec.candidate_state_phase!r} state, got {len(matches)}"
+                )
+            return matches[0]
+
+        if any(not isinstance(state, AgentStateArtifact) for state in state_rows):
+            raise CandidateSemanticSupplyError(
+                "latest candidate state selection requires only AgentStateArtifact context"
+            )
+        state_ids = tuple(state.state_id for state in state_rows)
+        if len(state_ids) != len(set(state_ids)):
+            raise CandidateSemanticSupplyError(
+                "latest candidate state selection requires unique context state IDs"
+            )
+        declared_ids = getattr(query_state, "agent_state_ids", None)
+        if not isinstance(declared_ids, tuple):
+            raise CandidateSemanticSupplyError(
+                "latest candidate state selection requires QueryState.agent_state_ids"
+            )
+        if state_ids == declared_ids:
+            staged_state = None
+        elif len(state_ids) == len(declared_ids) + 1 and state_ids[:-1] == declared_ids:
+            staged_state = state_rows[-1]
+        else:
+            raise CandidateSemanticSupplyError(
+                "latest candidate state context must exactly match committed "
+                "QueryState.agent_state_ids in order, with at most one trailing staged state"
+            )
+        if staged_state is not None:
+            query_hash = query_state.content_hash()
+            response_hashes = tuple(prior_response_sha256s)
+            if staged_state.source_query_state_sha256 != query_hash:
+                raise CandidateSemanticSupplyError(
+                    "latest staged candidate state is bound to another QueryState"
+                )
+            if (
+                not response_hashes
+                or staged_state.source_response_sha256 != response_hashes[-1]
+            ):
+                raise CandidateSemanticSupplyError(
+                    "latest staged candidate state is bound to another final response"
+                )
+        if not matches:
+            raise CandidateSemanticSupplyError(
+                f"candidate supply for {phase!r} requires at least one source-bound "
+                f"{spec.candidate_state_phase!r} state"
+            )
+        return matches[-1]
+
     def automatic_for_phase(phase: str, context: object) -> PhaseSupply | None:
         spec = specs.get(phase)
         if spec is None:
@@ -363,17 +448,14 @@ def build_candidate_semantic_supply(
         sample_id = getattr(context, "sample_id", None)
         query_state = getattr(context, "query_state", None)
         states = getattr(context, "agent_states", ())
-        matches = tuple(
-            state
-            for state in states
-            if isinstance(state, AgentStateArtifact)
-            and state.state_kind == f"phase:{spec.candidate_state_phase}"
+        prior_response_sha256s = getattr(context, "prior_response_sha256s", ())
+        selected_state = candidate_state_for(
+            spec,
+            phase=phase,
+            query_state=query_state,
+            states=states,
+            prior_response_sha256s=prior_response_sha256s,
         )
-        if len(matches) != 1:
-            raise CandidateSemanticSupplyError(
-                f"candidate supply for {phase!r} requires exactly one source-bound "
-                f"{spec.candidate_state_phase!r} state, got {len(matches)}"
-            )
         store = binding.store(spec.store_id)
         provider = SlurpCandidateSemanticProvider(
             candidate_values=indexes[spec.store_id],
@@ -393,7 +475,7 @@ def build_candidate_semantic_supply(
             ranking = provider.candidates(
                 {
                     "query_state": query_state,
-                    "candidate_state": matches[0],
+                    "candidate_state": selected_state,
                     "sample_id": sample_id,
                 },
                 k=spec.max_total_values,
@@ -415,18 +497,32 @@ def build_candidate_semantic_supply(
             qualify_id(spec.store_id, value_id)
             for value_id in decision.selected_value_ids
         )
-        overlap = set(selected_ids) & set(query_state.retrieved_value_ids)
-        if overlap and overlap != set(selected_ids):
+        visible_ids = set(query_state.retrieved_value_ids)
+        already_visible_ids = tuple(
+            value_id for value_id in selected_ids if value_id in visible_ids
+        )
+        added_ids = tuple(
+            value_id for value_id in selected_ids if value_id not in visible_ids
+        )
+        if (
+            spec.candidate_state_selection == "single"
+            and already_visible_ids
+            and len(already_visible_ids) != len(selected_ids)
+        ):
             raise CandidateSemanticSupplyError(
                 "candidate supply partially overlaps visible values; refuse a changed dose"
             )
-        if spec.supply_mode == "withhold" and overlap:
+        if spec.supply_mode == "withhold" and already_visible_ids:
             raise CandidateSemanticSupplyError(
                 "withheld candidate values are already visible; refuse a contaminated control"
             )
         disposition = (
             "withheld" if spec.supply_mode == "withhold"
-            else "already-visible" if overlap else "acquired" if selected_ids else "no-mapping"
+            else "already-visible"
+            if selected_ids and not added_ids
+            else "acquired"
+            if added_ids
+            else "no-mapping"
         )
         query_hash = query_state.content_hash()
         audit.update(
@@ -436,20 +532,44 @@ def build_candidate_semantic_supply(
                 "supply_disposition": disposition,
             }
         )
+        if spec.candidate_state_selection == "latest":
+            audit.update(
+                {
+                    "source_selection_policy": "last-matching-state-in-query-order-v1",
+                    "selected_source_state_id": selected_state.state_id,
+                    "selected_source_state_sha256": selected_state.content_hash(),
+                    "already_visible_value_ids": list(already_visible_ids),
+                    "added_value_ids": list(added_ids),
+                }
+            )
         audit["selection_receipt_sha256"] = content_hash(audit)
         qualified = None
         if disposition == "acquired":
+            added_id_set = set(added_ids)
+            local_added_ids = tuple(
+                value_id
+                for value_id, qualified_id in zip(
+                    decision.selected_value_ids, selected_ids, strict=True
+                )
+                if qualified_id in added_id_set
+            )
+            supplied_decision = replace(
+                decision,
+                supporting_facet_ids=local_added_ids,
+                selected_value_ids=local_added_ids,
+            ).validate()
             local_supply = PhaseSupply(
                 rank_result=provider.last_rank_result(),
-                fusion_decision=decision,
+                fusion_decision=supplied_decision,
                 action_target_ref=(
                     f"{spec.provider}:{spec.rank_policy}:{spec.fuse_policy}:"
                     f"selection-receipt={audit['selection_receipt_sha256']}"
                 ),
             ).validate()
             qualified = binding.qualify_supply(spec.store_id, local_supply, query_state)
-        # Revisions retain the same bounded cards. Do not expose the next cards
-        # by filtering already-visible values before candidate selection.
+        # The provider forms the full bounded selection before this layer
+        # removes already-visible cards. Never filter before rank/fuse or page
+        # farther into the released index to replace a visible card.
         audit_key = f"{phase}:{sample_id}:{query_hash}"
         with audit_lock:
             prior = audits.get(audit_key)

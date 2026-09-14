@@ -15,6 +15,7 @@ from speech_aware_evidence_acquisition.rails.controllers import (
     EvidenceAgentController,
     PhaseProgram,
     PhaseSpec,
+    advance_phase_response_state,
 )
 from speech_aware_evidence_acquisition.rails.knowledge import (
     AgentStateArtifact,
@@ -64,11 +65,11 @@ def _slot_row(slot_id, intents):
     }
 
 
-def _program():
+def _program(candidate_state_phase="hypotheses"):
     return PhaseProgram(
         program_id="synthetic-hypotheses-then-solve-v1",
         phases=(
-            PhaseSpec("hypotheses", "propose", "none", None, False),
+            PhaseSpec(candidate_state_phase, "propose", "none", None, False),
             PhaseSpec("solve", "solve", "supplied", None, False),
         ),
         max_contacts=2,
@@ -145,7 +146,14 @@ def _config(tmp_path, *, rows=None, inventory=("alpha", "beta", "gamma", "delta"
     return {"knowledge_stores": stores}, inventory
 
 
-def _artifact(sample_id, intents):
+def _artifact(
+    sample_id,
+    intents,
+    *,
+    state_id=None,
+    state_kind="phase:hypotheses",
+    source_query_state_sha256=SHA_B,
+):
     content = json.dumps(
         {
             "schema": "saea-slurp-intent-hypotheses-v1",
@@ -165,10 +173,10 @@ def _artifact(sample_id, intents):
         separators=(",", ":"),
     )
     return AgentStateArtifact(
-        state_id=f"hypotheses:{sample_id}",
-        state_kind="phase:hypotheses",
+        state_id=state_id or f"hypotheses:{sample_id}",
+        state_kind=state_kind,
         content=content,
-        source_query_state_sha256=SHA_B,
+        source_query_state_sha256=source_query_state_sha256,
         source_response_sha256=hashlib.sha256(content.encode()).hexdigest(),
         producer_policy_id="synthetic-hypothesis-proposer-v1",
         cited_value_ids=(),
@@ -194,6 +202,23 @@ def _context(binding, artifact, sample_id="s1"):
         agent_states=(artifact,),
         prior_response_sha256s=(artifact.source_response_sha256,),
         contact_index=1,
+    )
+
+
+def _latest_context(binding, artifacts, *, retrieved_value_ids=(), sample_id="s1"):
+    context = _context(binding, artifacts[-1], sample_id=sample_id)
+    query_state = replace(
+        context.query_state,
+        agent_state_ids=tuple(artifact.state_id for artifact in artifacts),
+        retrieved_value_ids=tuple(retrieved_value_ids),
+    ).validate()
+    return replace(
+        context,
+        query_state=query_state,
+        agent_states=tuple(artifacts),
+        prior_response_sha256s=tuple(
+            artifact.source_response_sha256 for artifact in artifacts
+        ),
     )
 
 
@@ -420,6 +445,26 @@ def test_candidate_supply_requires_a_later_supplied_phase_and_exact_known_fields
         )
 
 
+def test_candidate_state_selection_default_is_single_and_not_serialized(tmp_path):
+    config, legal = _config(tmp_path)
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal
+    )
+
+    serialized = router.receipt["candidate_supply"]["specs"][0]
+    assert "candidate_state_selection" not in serialized
+    duplicate = replace(
+        _context(binding, _artifact("s1", ("alpha",))),
+        agent_states=(
+            _artifact("s1", ("alpha",), state_id="hypotheses:s1:first"),
+            _artifact("s1", ("beta",), state_id="hypotheses:s1:second"),
+        ),
+    )
+    with pytest.raises(CandidateSemanticSupplyError, match="exactly one source-bound"):
+        router.automatic_for_phase("solve", duplicate)
+
+
 def test_native_compact_candidates_reach_released_cards_only_when_configured(tmp_path):
     config, legal = _config(tmp_path)
     source = _artifact("s1", ("beta", "alpha"))
@@ -503,6 +548,234 @@ def test_revision_cannot_partially_overlap_or_reveal_next_cards(tmp_path):
         router.automatic_for_phase("solve", changed)
 
 
+def test_latest_candidate_state_supplies_only_new_cards_after_full_selection(tmp_path):
+    config, legal = _config(tmp_path)
+    spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
+    spec["candidate_state_selection"] = "latest"
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal
+    )
+    prior = _artifact(
+        "s1", ("gamma",), state_id="z-hypotheses:s1:initial"
+    )
+    refreshed = _artifact(
+        "s1", ("beta", "alpha"), state_id="a-hypotheses:s1:refresh"
+    )
+    visible = ("slot-contracts::slot-contract:alpha_one",)
+
+    context = _latest_context(
+        binding, (prior, refreshed), retrieved_value_ids=visible
+    )
+    supply = router.automatic_for_phase("solve", context)
+
+    assert tuple(item.facet_id for item in supply.rank_result.candidates) == (
+        "slot-contracts::slot-contract:beta_one",
+        "slot-contracts::slot-contract:alpha_one",
+    )
+    assert supply.fusion_decision.selected_value_ids == (
+        "slot-contracts::slot-contract:beta_one",
+    )
+    next_state, transition = advance_phase_response_state(
+        context=context,
+        added_states=(),
+        action_target_ref="synthetic-refresh",
+        supply=supply,
+    )
+    assert next_state.retrieved_value_ids == (
+        "slot-contracts::slot-contract:alpha_one",
+        "slot-contracts::slot-contract:beta_one",
+    )
+    assert transition.new_value_ids == (
+        "slot-contracts::slot-contract:beta_one",
+    )
+    audit = next(iter(router.receipt["candidate_selections"].values()))
+    assert audit["qualified_selected_value_ids"] == [
+        "slot-contracts::slot-contract:beta_one",
+        "slot-contracts::slot-contract:alpha_one",
+    ]
+    assert audit["already_visible_value_ids"] == list(visible)
+    assert audit["added_value_ids"] == [
+        "slot-contracts::slot-contract:beta_one"
+    ]
+    assert audit["selected_source_state_id"] == refreshed.state_id
+    assert audit["selected_source_state_sha256"] == refreshed.content_hash()
+    assert audit["source_selection_policy"] == (
+        "last-matching-state-in-query-order-v1"
+    )
+    assert router.receipt["candidate_supply"]["specs"][0][
+        "candidate_state_selection"
+    ] == "latest"
+
+
+def test_latest_same_source_repeat_adds_no_cards(tmp_path):
+    config, legal = _config(tmp_path)
+    spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
+    spec["candidate_state_selection"] = "latest"
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal
+    )
+    state = _artifact("s1", ("beta",), state_id="hypotheses:s1:refresh")
+    selected = ("slot-contracts::slot-contract:beta_one",)
+
+    result = router.automatic_for_phase(
+        "solve",
+        _latest_context(binding, (state,), retrieved_value_ids=selected),
+    )
+
+    assert result is None
+    audit = next(iter(router.receipt["candidate_selections"].values()))
+    assert audit["supply_disposition"] == "already-visible"
+    assert audit["already_visible_value_ids"] == list(selected)
+    assert audit["added_value_ids"] == []
+
+
+def test_latest_accepts_one_fresh_staged_perception_state(tmp_path):
+    config, legal = _config(tmp_path)
+    spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
+    spec.update(
+        candidate_state_phase="perception", candidate_state_selection="latest"
+    )
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding,
+        program=_program("perception"),
+        data_root=tmp_path,
+        legal_candidate_ids=legal,
+    )
+    context = _context(binding, _artifact("s1", ("beta",)))
+    staged = _artifact(
+        "s1",
+        ("beta",),
+        state_id="perception:s1:refresh",
+        state_kind="phase:perception",
+        source_query_state_sha256=context.query_state.content_hash(),
+    )
+    context = replace(
+        context,
+        agent_states=(staged,),
+        prior_response_sha256s=(staged.source_response_sha256,),
+    )
+
+    supply = router.automatic_for_phase("solve", context)
+
+    assert supply.fusion_decision.selected_value_ids == (
+        "slot-contracts::slot-contract:beta_one",
+    )
+    audit = next(iter(router.receipt["candidate_selections"].values()))
+    assert audit["selected_source_state_id"] == staged.state_id
+
+
+@pytest.mark.parametrize("failure", ["stale-query", "wrong-response"])
+def test_latest_refuses_stale_or_wrong_response_staged_perception_state(
+    tmp_path, failure
+):
+    config, legal = _config(tmp_path)
+    spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
+    spec.update(
+        candidate_state_phase="perception", candidate_state_selection="latest"
+    )
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding,
+        program=_program("perception"),
+        data_root=tmp_path,
+        legal_candidate_ids=legal,
+    )
+    context = _context(binding, _artifact("s1", ("alpha",)))
+    source_query_hash = (
+        SHA_B if failure == "stale-query" else context.query_state.content_hash()
+    )
+    staged = _artifact(
+        "s1",
+        ("alpha",),
+        state_id="perception:s1:refresh",
+        state_kind="phase:perception",
+        source_query_state_sha256=source_query_hash,
+    )
+    final_response_hash = (
+        SHA_A
+        if failure == "wrong-response"
+        else staged.source_response_sha256
+    )
+    context = replace(
+        context,
+        agent_states=(staged,),
+        prior_response_sha256s=(final_response_hash,),
+    )
+    expected = "another QueryState" if failure == "stale-query" else "another final response"
+
+    with pytest.raises(CandidateSemanticSupplyError, match=expected):
+        router.automatic_for_phase("solve", context)
+
+
+@pytest.mark.parametrize(
+    "declared_ids",
+    [
+        ("a-hypotheses:s1:refresh", "z-hypotheses:s1:initial"),
+        (),
+    ],
+)
+def test_latest_candidate_state_refuses_out_of_order_or_missing_query_binding(
+    tmp_path, declared_ids
+):
+    config, legal = _config(tmp_path)
+    spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
+    spec["candidate_state_selection"] = "latest"
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal
+    )
+    states = (
+        _artifact("s1", ("gamma",), state_id="z-hypotheses:s1:initial"),
+        _artifact("s1", ("alpha",), state_id="a-hypotheses:s1:refresh"),
+    )
+    context = _latest_context(binding, states)
+    context = replace(
+        context,
+        query_state=replace(context.query_state, agent_state_ids=declared_ids).validate(),
+    )
+
+    with pytest.raises(CandidateSemanticSupplyError, match="exactly match.*in order"):
+        router.automatic_for_phase("solve", context)
+
+
+def test_latest_candidate_state_refuses_duplicate_context_ids(tmp_path):
+    config, legal = _config(tmp_path)
+    spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
+    spec["candidate_state_selection"] = "latest"
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal
+    )
+    state = _artifact("s1", ("alpha",), state_id="hypotheses:s1:repeat")
+    context = _latest_context(binding, (state,))
+    context = replace(context, agent_states=(state, state))
+
+    with pytest.raises(CandidateSemanticSupplyError, match="unique context state IDs"):
+        router.automatic_for_phase("solve", context)
+
+
+def test_latest_withhold_refuses_visible_selected_values(tmp_path):
+    config, legal = _config(tmp_path)
+    spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
+    spec.update(candidate_state_selection="latest", supply_mode="withhold")
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal
+    )
+    state = _artifact("s1", ("beta",), state_id="hypotheses:s1:refresh")
+    context = _latest_context(
+        binding,
+        (state,),
+        retrieved_value_ids=("slot-contracts::slot-contract:beta_one",),
+    )
+
+    with pytest.raises(CandidateSemanticSupplyError, match="contaminated control"):
+        router.automatic_for_phase("solve", context)
+
+
 def test_withheld_control_validates_and_ranks_without_exposing_knowledge(tmp_path):
     config, legal = _config(tmp_path)
     spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
@@ -554,6 +827,21 @@ def test_candidate_supply_refuses_unknown_mode(tmp_path, mode):
     config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]["supply_mode"] = mode
     binding = load_knowledge_store_binding(config, data_root=tmp_path)
     with pytest.raises(CandidateSemanticSupplyError, match="supply_mode"):
+        build_knowledge_store_supply(
+            binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal
+        )
+
+
+@pytest.mark.parametrize("selection", [None, True, "", "first", "unvalidated"])
+def test_candidate_supply_refuses_unknown_candidate_state_selection(
+    tmp_path, selection
+):
+    config, legal = _config(tmp_path)
+    config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"][
+        "candidate_state_selection"
+    ] = selection
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    with pytest.raises(CandidateSemanticSupplyError, match="candidate_state_selection"):
         build_knowledge_store_supply(
             binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal
         )
