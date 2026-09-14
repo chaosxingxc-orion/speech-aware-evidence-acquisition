@@ -74,6 +74,8 @@ charging only a cold ASR forward as new neural work.
 
 ## Resource and contact envelope to bind at admission
 
+The owner confirmed the existing power configuration is optimal. Do not
+investigate or adjust the power mode further; focus on useful model work.
 The unchanged decoder service has four 24,576-token slots, 98,304 total context,
 max512, and no mmproj. CPU Whisper uses local large-v3, fp32, beam5, temperature0,
 batch1, sample_len256. The proposed protocol assigns one audio worker, four

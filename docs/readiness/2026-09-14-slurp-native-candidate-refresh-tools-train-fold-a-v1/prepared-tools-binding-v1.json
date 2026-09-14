@@ -1,0 +1,29 @@
+{
+  "candidate_contracts": {
+    "excluded_construction_rosters": [
+      {
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+        "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+      },
+      {
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+        "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8"
+      }
+    ],
+    "source_sha256": "9b7489769e73cbba1543caa5a3b0ce2a5fcad79a4e1fd82ddcb101da5b433be0"
+  },
+  "catalog": {
+    "relpath": "prepared/SAEA-SLURP-TRAIN-EXCLUDED-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+    "sha256": "fd75c3b7605f827910908c79e122412c6c736c237d7faad7bf95ffd32640a6ca"
+  },
+  "preparation_receipt": {
+    "relpath": "prepared/SAEA-SLURP-TRAIN-EXCLUDED-CANDIDATE-CONTRACTS-PREPARE-V1/receipt.json",
+    "sha256": "e6c9c538b2d6dd35673ecae5fe2f92596318dd1847248e74de22791c4d7dbc6f"
+  },
+  "schema": "saea-held-tool-preparation-binding-v1",
+  "status": "PREPARED_MODEL_FREE; NOT_RUNTIME_ADMITTED",
+  "whisper_protocol": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-REFRESH-TOOLS-CPU-PROTOCOL-V1/protocol.json",
+    "sha256": "abc76adebcf824085e4c383fc55b083e664c3a8b2b00cda809d72fc15bb058bd"
+  }
+}

@@ -1,5 +1,18 @@
 {
   "arm": "speech-feature-query-native-tools",
+  "candidate_contracts": {
+    "excluded_construction_rosters": [
+      {
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+        "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+      },
+      {
+        "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+        "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8"
+      }
+    ],
+    "source_sha256": "9b7489769e73cbba1543caa5a3b0ce2a5fcad79a4e1fd82ddcb101da5b433be0"
+  },
   "evidence_mismatch": false,
   "evidence_source": "none",
   "knowledge_stores": {
@@ -89,6 +102,10 @@
     },
     "episode_id": "slurp-native-candidate-refresh-tools-train-v1",
     "exhaustion_policy": "deliver-latest-solver",
+    "local_tool_execution": {
+      "max_workers": 1,
+      "mode": "yield-model-slot"
+    },
     "max_revisions": 1,
     "roles": {
       "perception": {
@@ -109,10 +126,6 @@
       }
     },
     "schema": "saea-native-episode-config-v1",
-    "local_tool_execution": {
-      "mode": "yield-model-slot",
-      "max_workers": 1
-    },
     "tool_iteration_policy": "reserve-final-report"
   },
   "phase_material": {
@@ -207,10 +220,16 @@
       "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-TRAIN-FOLD-A-ALIAS-V1/query-dimension-alias.json",
       "root": "data",
       "sha256": "c1aaf37a678240633078a8fcca455f949a5c4b2b18d37356129976006c9dc138"
+    },
+    {
+      "relpath": "prepared/SAEA-SLURP-TRAIN-EXCLUDED-CANDIDATE-CONTRACTS-PREPARE-V1/receipt.json",
+      "root": "data",
+      "sha256": "e6c9c538b2d6dd35673ecae5fe2f92596318dd1847248e74de22791c4d7dbc6f"
     }
   ],
   "prospective_candidate_refresh_tools": {
     "method": {
+      "analytical_tool_actions_per_episode_ceiling": 4,
       "asr_use": "on-demand full utterance by Reviewer only; never pretranscribe",
       "candidate_width": [
         1,
@@ -223,8 +242,7 @@
       "selection_role": "Solver",
       "tool_roles": [
         "Reviewer"
-      ],
-      "analytical_tool_actions_per_episode_ceiling": 4
+      ]
     },
     "new_model_contacts_authorized": false,
     "source_anchor": {
@@ -246,6 +264,20 @@
   "prospective_phase_supply": {
     "reason": "The shared preparation entry requires a source-bound executable ExecutionPlan, run and attempt identities, and contact readiness. Those bindings are intentionally absent from this check-only candidate; do not create or claim a prepared phase-supply receipt.",
     "state": "held"
+  },
+  "prospective_prepared_tools": {
+    "all_tool_actions_ceiling": 4320,
+    "asr_audio_seconds_ceiling": 3085,
+    "asr_execution_plan_status": "HELD_PENDING_ROOT_ADMISSION",
+    "asr_new_decode_ceiling": 1080,
+    "binding": {
+      "relpath": "docs/readiness/2026-09-14-slurp-native-candidate-refresh-tools-train-fold-a-v1/prepared-tools-binding-v1.json",
+      "sha256": "8d49f0f8b327da15e3dd128f0d15469d6a98fef9fab4bea3c520b71d4059edce"
+    },
+    "whisper_protocol": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-REFRESH-TOOLS-CPU-PROTOCOL-V1/protocol.json",
+      "sha256": "abc76adebcf824085e4c383fc55b083e664c3a8b2b00cda809d72fc15bb058bd"
+    }
   },
   "scorers": [],
   "serving_slot_tokens": 24576,

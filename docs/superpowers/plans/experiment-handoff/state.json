@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 92,
+  "generation": 93,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -11,9 +11,10 @@
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
   "snapshot_commit": "826a77c7bd9030ccbc25f2b74cd6fa4ed69db561",
-  "updated_at_utc": "2026-09-14T07:01:27.423435+00:00",
-  "next_action": "Read STATUS-092. Monitor the sole TRAIN A recovery on existing resident PID767/campaign PID2124; keep frozen runtime826a77c7. Do not restart/replay after another failure. Campaign owns one full official TRAIN score and finalization; use postseal recipe-v2 and diagnostics checkout8f35ae1f, with no duplicate scoring. Verify full1080, wrap first score, build native reward links and diagnostics. Root-reviewed C0/C1 projections, CPU-slot yielding, Whisper thread envelope and a max12 candidate-refresh/tools successor are prepared separately but HELD. Choose and formally bind any successor only after complete TRAIN A evidence. Keep Fold B untouched.",
+  "updated_at_utc": "2026-09-14T07:50:31.479081+00:00",
+  "next_action": "Read STATUS-093. Preserve healthy resident PID767 and live sole TRAIN A recovery PID2124 at frozen clean826a77c7. Campaign performs one complete official score/finalization; use postseal recipe-v2, no duplicate scoring or partial quality. At seal verify full1080, wrap first score, build native reward links and diagnostics with pinned8f35ae1f. Root-reviewed final Reviewer report turn, fold-excluded contract provider/binding, held four-fragment refresh/tools protocol and local CPU Whisper protocol are now prepared. Admit and bind final fit/generation/ASR/scoring/phase supply only after full TRAIN A decision. Fold B untouched. Owner confirmed current power configuration is optimal: close the power inquiry and do not investigate or adjust it further. Continue useful generation and full task analysis.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
-  "latest_owner_decision_id": "OWNER-CANDIDATE-COVERAGE-026"
+  "latest_owner_decision_id": "OWNER-CANDIDATE-COVERAGE-026",
+  "owner_power_direction": "2026-09-14: The owner confirmed that current power mode is optimal and instructed root not to dwell on it. Preserve current hardware/service settings."
 }
