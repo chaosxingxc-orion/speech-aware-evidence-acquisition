@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 91,
+  "generation": 92,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -11,8 +11,8 @@
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
   "snapshot_commit": "826a77c7bd9030ccbc25f2b74cd6fa4ed69db561",
-  "updated_at_utc": "2026-09-14T06:25:49.329694+00:00",
-  "next_action": "Read STATUS-091. Continue monitoring sole TRAIN A recovery PID2124/session3387 on resident PID767; frozen clean runtime826a77c7. Do not restart/replay after another failure. Campaign owns the first complete official TRAIN score and finalization; recipe-v2 forbids duplicate scoring. Verify full1080 finalized source, wrap its score, build actual native reward links and stage diagnostics using unchanged diagnostics checkout8f35ae1f. Root-reviewed optional candidate-refresh code is prepared separately at native-candidate-refresh-v1; no enhanced model contact is admitted. Add explicit C0/C1 projections and a distinct registered program/fit/config before a successor chosen from TRAIN A. Keep Fold B untouched.",
+  "updated_at_utc": "2026-09-14T07:01:27.423435+00:00",
+  "next_action": "Read STATUS-092. Monitor the sole TRAIN A recovery on existing resident PID767/campaign PID2124; keep frozen runtime826a77c7. Do not restart/replay after another failure. Campaign owns one full official TRAIN score and finalization; use postseal recipe-v2 and diagnostics checkout8f35ae1f, with no duplicate scoring. Verify full1080, wrap first score, build native reward links and diagnostics. Root-reviewed C0/C1 projections, CPU-slot yielding, Whisper thread envelope and a max12 candidate-refresh/tools successor are prepared separately but HELD. Choose and formally bind any successor only after complete TRAIN A evidence. Keep Fold B untouched.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-CANDIDATE-COVERAGE-026"
