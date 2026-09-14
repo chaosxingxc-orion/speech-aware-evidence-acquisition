@@ -1818,7 +1818,8 @@ async def _invoke_native_role_episode(
             completion=completion, source=source, context=before, plan=plan,
             slot_id=slot_id, phase_id=request.role_id,
         )
-        if binding.review_for_phase is not None and not completion.tool_calls:
+        if (binding.review_for_phase is not None and not completion.tool_calls
+                and completion.finish_reason == "stop"):
             staged = replace(
                 before, agent_states=before.agent_states + (source,),
                 prior_response_sha256s=before.prior_response_sha256s + (completion.response_text_sha256,),
@@ -1958,14 +1959,40 @@ async def _invoke_native_role_episode(
                 config.exhaustion_policy,
                 config.refresh_action,
                 config.max_candidate_refreshes,
+                config.finite_completion_policy,
             ),
             nodes=NativeEpisodeNodes(**nodes),
             role_input_builder=role_input,
         )
         result = await workflow.invoke_direct(state.prepared.task_contract, (), session=session)
-        settle()
         receipt = result["state"]
-        from .native_episode_receipt import validate_native_episode_delivery_receipt
+        from .native_episode_receipt import (
+            validate_native_episode_delivery_receipt, validate_native_episode_finite_path,
+            validate_native_episode_terminal_policy,
+        )
+        raw_disposition = receipt.get("terminal_disposition")
+        finite = (
+            isinstance(raw_disposition, Mapping)
+            and raw_disposition.get("reason") == "finite_completion"
+        )
+        if finite:
+            if not pending:
+                raise RailsRunnerError("finite episode lost its quarantined model completion")
+            rejected = raw_disposition.get("rejected_contact")
+            completion = pending["completion"]
+            if (
+                not isinstance(rejected, Mapping)
+                or any(getattr(completion, key) != rejected.get(key) for key in (
+                    "agent_contact_id", "request_id", "request_sha256",
+                    "response_sha256", "response_text_sha256",
+                ))
+                or completion.finish_reason != raw_disposition.get("finish_reason")
+                or pending["phase_id"] != raw_disposition.get("role_id")
+                or config.finite_completion_policy != "deliver-latest-or-abstain"
+            ):
+                raise RailsRunnerError("finite episode disposition differs from its actual source")
+        else:
+            settle()
 
         delivery = validate_native_episode_delivery_receipt(
             receipt, terminal_actions=config.terminal_actions, error_type=RailsRunnerError,
@@ -1981,42 +2008,80 @@ async def _invoke_native_role_episode(
             )
         final_solver_receipt = delivery.solver_receipt
         terminal_disposition = delivery.terminal_disposition
-        if terminal_disposition is not None and (
-            config.exhaustion_policy != "deliver-latest-solver"
-            or terminal_disposition["revision_count"] != config.max_revisions
-        ):
-            raise RailsRunnerError("native terminal delivery differs from its configured policy")
+        validate_native_episode_terminal_policy(
+            delivery, exhaustion_policy=config.exhaustion_policy,
+            finite_completion_policy=config.finite_completion_policy,
+            max_revisions=config.max_revisions, error_type=RailsRunnerError,
+        )
+        if finite:
+            validate_native_episode_finite_path(
+                receipt, max_revisions=config.max_revisions, accept_action=config.actions[0],
+                revise_action=config.actions[1], refresh_action=config.refresh_action,
+                max_refreshes=config.max_candidate_refreshes, error_type=RailsRunnerError,
+            )
         accepted = delivery.final_contact
         completion = completed.get(accepted.get("agent_contact_id"))
         if (
             completion is None or completion.request_sha256 != accepted["request_sha256"]
             or completion.response_sha256 != accepted["response_sha256"]
             or completion.response_text_sha256 != accepted["response_text_sha256"]
-            or result["delivery"]["actor_output"] != completion.text
+            or (delivery.kind != "abstention" and result["delivery"]["actor_output"] != completion.text)
+            or (delivery.kind == "abstention" and result["delivery"] != {
+                "actor_output": "", "result_type": "abstention", "delivery_eligible": False,
+            })
         ):
-            raise RailsRunnerError("native delivery is not bound to its actual Solver response")
-        trace = TraceBuffer(run_id)
-        for key in sorted(state.trace_buffers):
-            trace.extend_from(state.trace_buffers[key])
-        compact_receipt = {key: receipt[key] for key in (
-            "role_visits", "planner_routes", "accepted_solver_receipt",
-        ) if key in receipt}
-        if terminal_disposition is not None:
-            compact_receipt["terminal_solver_receipt"] = dict(final_solver_receipt)
-            compact_receipt["terminal_disposition"] = dict(terminal_disposition)
-        trace.emit("USE", f"{state.prepared.sample.sample_id}/{program.program_id}/native-episode", {
-            "use_native_episode": compact_receipt,
-        })
-        state.transitions.append(AgentStepTransition(
+            raise RailsRunnerError("native delivery is not bound to its actual source response")
+        final_text = "" if delivery.kind == "abstention" else completion.text
+        stop_transition = AgentStepTransition(
             snapshot_sha256=snapshot_sha256,
             prior_query_state_sha256=state.query_state.content_hash(),
             next_query_state_sha256=None, action_kind="stop", action_target_refs=(),
             new_value_ids=(), used_value_ids=(), dropped_value_ids=(),
             new_agent_state_ids=(), dropped_agent_state_ids=(),
-        ).validate())
+        ).validate()
+        if finite:
+            state.waves.append(_agent_wave_record(
+                wave_index=len(state.waves), contact=pending["plan"],
+                response=pending["completion"].text, slot_ids=(pending["slot_id"],),
+                query_state=pending["context"].query_state,
+                advance=AgentLoopAdvance(
+                    transition=stop_transition, next_query_state=None,
+                    new_agent_states=(), next_contact=None,
+                    final_response_contact_id=(
+                        None if delivery.kind == "abstention" else completion.agent_contact_id
+                    ),
+                ),
+            ))
+            # Keep its raw request/response and cost; never promote finite text into semantic state.
+            pending.clear()
+        trace = TraceBuffer(run_id)
+        for key in sorted(state.trace_buffers):
+            trace.extend_from(state.trace_buffers[key])
+        compact_receipt = {key: receipt[key] for key in (
+            "role_visits", "planner_routes", "accepted_solver_receipt", "interrupted_role",
+            "abstention_receipt",
+        ) if key in receipt}
+        if terminal_disposition is not None:
+            if final_solver_receipt is not None:
+                compact_receipt["terminal_solver_receipt"] = dict(final_solver_receipt)
+            compact_receipt["terminal_disposition"] = dict(terminal_disposition)
+        if delivery.kind == "abstention":
+            from ..core.delivery import native_abstention_records
+
+            derived_id, derived_request, derived_response = native_abstention_records(
+                sample_id=state.prepared.sample.sample_id,
+                source_contact=delivery.final_contact,
+                finish_reason=terminal_disposition["finish_reason"],
+            )
+            trace.emit("TOOL", f"{derived_id}/request", derived_request)
+            trace.emit("TOOL", f"{derived_id}/response", derived_response)
+        trace.emit("USE", f"{state.prepared.sample.sample_id}/{program.program_id}/native-episode", {
+            "use_native_episode": compact_receipt,
+        })
+        state.transitions.append(stop_transition)
         state.final_outcome = _AgentRuntimeOutcome(
             prepared=state.prepared, final_query_state=state.query_state,
-            final_response_text=completion.text, contacts=tuple(state.contacts),
+            final_response_text=final_text, contacts=tuple(state.contacts),
             waves=tuple(state.waves), transitions=tuple(state.transitions),
             agent_states=tuple(state.state_store[k] for k in state.query_state.agent_state_ids),
             final_supply=_supply_for_state(snapshot, state.query_state),

@@ -1,9 +1,8 @@
 """Pure custody checks for native episode delivery receipts.
 
-The graph has two mutually exclusive delivery outcomes.  Legacy episodes end
-only through an explicit Planner acceptance.  A prospectively configured
-episode may instead deliver its latest valid Solver result after revision
-exhaustion.  This module intentionally has no runtime or framework imports so
+Legacy episodes end through explicit Planner acceptance or configured
+revision exhaustion. A separately configured finite completion may retain
+the last completed Solver or derive an empty abstention when none exists.  This module intentionally has no runtime or framework imports so
 both sealing and post-seal readers apply the same receipt shape checks.
 """
 
@@ -15,10 +14,10 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class NativeEpisodeDelivery:
-    """The one Solver receipt that is authorized to supply final text."""
+    """The delivered Solver receipt, or rejected source for explicit abstention."""
 
     kind: str
-    solver_receipt: Mapping[str, object]
+    solver_receipt: Mapping[str, object] | None
     final_contact: Mapping[str, object]
     terminal_disposition: Mapping[str, object] | None
     planner_route: Mapping[str, object] | None
@@ -78,6 +77,13 @@ def validate_native_episode_delivery_receipt(
         planner_routes = _sequence(
             receipt.get("planner_routes"), "Planner routes", error_type=error_type
         )
+    disposition = receipt.get("terminal_disposition")
+    if (
+        isinstance(disposition, Mapping) and disposition.get("reason") == "finite_completion"
+        or receipt.get("abstention_receipt") is not None
+        or receipt.get("interrupted_role") is not None
+    ):
+        return _finite_delivery(receipt, role_visits, error_type=error_type)
     accepted_present = receipt.get("accepted_solver_receipt") is not None
     terminal_present = receipt.get("terminal_solver_receipt") is not None
     if accepted_present == terminal_present:
@@ -200,6 +206,13 @@ def validate_native_candidate_refresh_receipt(
         _raise(error_type, "invalid candidate refresh receipt configuration")
     if not isinstance(receipt, Mapping):
         _raise(error_type, "candidate refresh receipt must be a mapping")
+    disposition = receipt.get("terminal_disposition")
+    if isinstance(disposition, Mapping) and disposition.get("reason") == "finite_completion":
+        return validate_native_episode_finite_path(
+            receipt, max_revisions=max_revisions, accept_action=accept_action,
+            revise_action=revise_action, refresh_action=refresh_action,
+            max_refreshes=max_refreshes, error_type=error_type,
+        )
     visits = _sequence(receipt.get("role_visits"), "native role visits", error_type=error_type)
     routes = _sequence(receipt.get("planner_routes"), "Planner routes", error_type=error_type)
     if not visits or not all(isinstance(v, Mapping) for v in visits):
@@ -245,7 +258,182 @@ def validate_native_candidate_refresh_receipt(
     return refreshes
 
 
+
+_CONTACT_FIELDS = (
+    "agent_contact_id", "request_id", "request_sha256",
+    "response_sha256", "response_text_sha256",
+)
+
+
+def _checked_contact(value, *, error_type):
+    if not isinstance(value, Mapping):
+        _raise(error_type, "finite contact must be a mapping")
+    for key in _CONTACT_FIELDS:
+        item = value.get(key)
+        if not isinstance(item, str) or not item:
+            _raise(error_type, "finite contact lacks source identity")
+        if key.endswith("sha256") and (
+            len(item) != 64 or any(c not in "0123456789abcdef" for c in item)
+        ):
+            _raise(error_type, "finite contact has an invalid source hash")
+    return value
+
+
+def _finite_delivery(receipt, visits, *, error_type):
+    disposition = receipt.get("terminal_disposition")
+    if not isinstance(disposition, Mapping) or set(disposition) != {
+        "reason", "finish_reason", "role_id", "stage", "revision_count",
+        "planner_accepted", "rejected_contact",
+    }:
+        _raise(error_type, "finite terminal disposition is malformed")
+    if (
+        disposition["reason"] != "finite_completion"
+        or disposition["finish_reason"] not in ("length", "content_filter")
+        or disposition["stage"] not in ("perception", "solver", "review", "planner", "acquisition")
+        or not isinstance(disposition["role_id"], str) or not disposition["role_id"]
+        or isinstance(disposition["revision_count"], bool)
+        or not isinstance(disposition["revision_count"], int)
+        or disposition["revision_count"] < 0
+        or disposition["planner_accepted"] is not False
+        or receipt.get("accepted_solver_receipt") is not None
+    ):
+        _raise(error_type, "finite terminal disposition has invalid authority")
+    rejected = _checked_contact(disposition["rejected_contact"], error_type=error_type)
+    interrupted = receipt.get("interrupted_role")
+    if (
+        not isinstance(interrupted, Mapping)
+        or interrupted.get("role_id") != disposition["role_id"]
+        or interrupted.get("stage") != disposition["stage"]
+    ):
+        _raise(error_type, "finite disposition differs from its interrupted role")
+    execution = _receipt(interrupted.get("execution_receipt"), "interrupted role", error_type=error_type)
+    if execution["final_contact"] != rejected:
+        _raise(error_type, "finite disposition differs from its rejected contact")
+    used = set()
+    solvers = []
+    for visit in visits:
+        if not isinstance(visit, Mapping):
+            _raise(error_type, "finite episode role visit must be a mapping")
+        prior = _receipt(visit.get("execution_receipt"), "completed role", error_type=error_type)
+        for contact in prior["contacts"]:
+            _checked_contact(contact, error_type=error_type)
+            pair = contact["agent_contact_id"], contact["request_id"]
+            if pair in used:
+                _raise(error_type, "finite episode duplicates completed contacts")
+            used.add(pair)
+        if visit.get("stage") == "solver":
+            solvers.append(prior)
+    for contact in execution["contacts"]:
+        _checked_contact(contact, error_type=error_type)
+        pair = contact["agent_contact_id"], contact["request_id"]
+        if pair in used:
+            _raise(error_type, "interrupted role repeats a completed contact")
+        used.add(pair)
+    terminal = receipt.get("terminal_solver_receipt")
+    abstention = receipt.get("abstention_receipt")
+    if solvers:
+        if terminal != solvers[-1] or abstention is not None:
+            _raise(error_type, "finite delivery must retain the last completed Solver")
+        return NativeEpisodeDelivery("finite", terminal, terminal["final_contact"], disposition, None)
+    if terminal is not None or abstention != {"source_contact": rejected}:
+        _raise(error_type, "finite episode without a Solver requires a bound abstention")
+    return NativeEpisodeDelivery("abstention", None, rejected, disposition, None)
+
+
+def validate_native_episode_terminal_policy(
+    delivery, *, exhaustion_policy, finite_completion_policy, max_revisions,
+    error_type=ValueError,
+):
+    """Require prospective configuration for either kind of terminal delivery."""
+    if delivery.kind == "accepted":
+        return
+    disposition = delivery.terminal_disposition
+    if isinstance(max_revisions, bool) or not isinstance(max_revisions, int) or max_revisions < 0:
+        _raise(error_type, "invalid configured revision allowance")
+    if delivery.kind == "terminal":
+        if (
+            exhaustion_policy != "deliver-latest-solver"
+            or disposition["revision_count"] != max_revisions
+        ):
+            _raise(error_type, "terminal delivery differs from its configured policy")
+    elif delivery.kind in {"finite", "abstention"}:
+        if (
+            finite_completion_policy != "deliver-latest-or-abstain"
+            or not 0 <= disposition["revision_count"] <= max_revisions
+        ):
+            _raise(error_type, "finite delivery differs from its configured policy")
+    else:
+        _raise(error_type, "unknown native delivery kind")
+
+
+def validate_native_episode_finite_path(
+    receipt, *, max_revisions, accept_action, revise_action,
+    refresh_action=None, max_refreshes=0, error_type=ValueError,
+):
+    """Validate a completed graph prefix and its exact next interrupted role."""
+    delivery = validate_native_episode_delivery_receipt(receipt, error_type=error_type)
+    if delivery.kind not in {"finite", "abstention"}:
+        _raise(error_type, "finite path requires a finite delivery")
+    if isinstance(max_revisions, bool) or not isinstance(max_revisions, int) or max_revisions < 0:
+        _raise(error_type, "invalid finite path revision allowance")
+    visits = receipt["role_visits"]
+    routes = _sequence(receipt["planner_routes"], "finite Planner routes", error_type=error_type)
+    terminal = delivery.terminal_disposition
+    cursor = route_index = revision = refreshes = 0
+
+    def stopped(stage):
+        if (
+            terminal["stage"] != stage or terminal["revision_count"] != revision
+            or route_index != len(routes)
+        ):
+            _raise(error_type, "finite role or revision differs from the actual graph prefix")
+        return refreshes
+
+    def consume(stage):
+        nonlocal cursor
+        if visits[cursor].get("stage") != stage:
+            _raise(error_type, "finite path has an invalid completed role order")
+        cursor += 1
+
+    if not visits:
+        return stopped("perception")
+    consume("perception")
+    while True:
+        for stage in ("solver", "review", "planner"):
+            if cursor == len(visits):
+                return stopped(stage)
+            consume(stage)
+        if route_index >= len(routes):
+            _raise(error_type, "finite path omits an actual Planner route")
+        route = routes[route_index]
+        if (
+            not isinstance(route, Mapping)
+            or isinstance(route.get("revision_count"), bool)
+            or not isinstance(route.get("revision_count"), int)
+            or route.get("revision_count") != revision
+            or isinstance(route.get("role_visit_index"), bool)
+            or not isinstance(route.get("role_visit_index"), int)
+            or route.get("role_visit_index") != cursor - 1
+        ):
+            _raise(error_type, "finite path has an invalid Planner route")
+        action = route.get("action")
+        if action == accept_action or revision >= max_revisions:
+            _raise(error_type, "finite path continues after a terminal Planner route")
+        route_index += 1
+        revision += 1
+        if refresh_action is not None and action == refresh_action:
+            if refreshes >= max_refreshes:
+                _raise(error_type, "finite path exceeds its candidate refresh allowance")
+            if cursor == len(visits):
+                return stopped("perception")
+            consume("perception")
+            refreshes += 1
+        elif action != revise_action:
+            _raise(error_type, "finite path has an unsupported Planner continuation")
+
+
 __all__ = [
     "NativeEpisodeDelivery", "validate_native_episode_delivery_receipt",
-    "validate_native_candidate_refresh_receipt",
+    "validate_native_candidate_refresh_receipt", "validate_native_episode_terminal_policy",
+    "validate_native_episode_finite_path",
 ]

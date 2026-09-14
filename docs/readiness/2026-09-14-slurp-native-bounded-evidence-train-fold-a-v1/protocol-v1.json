@@ -1,0 +1,139 @@
+{
+  "schema": "saea-prospective-bounded-system-protocol-v1",
+  "date": "2026-09-14",
+  "status": "HELD_PENDING_ROOT_ADMISSION_AND_SOURCE_FREEZE",
+  "identity": {
+    "run_id": "SAEA-SLURP-NATIVE-BOUNDED-EVIDENCE-TRAIN-FOLD-A-V1",
+    "attempt_id": "attempt-slurp-native-bounded-evidence-train-fold-a-generation-v1",
+    "system": "slurp-native-bounded-evidence-train-fold-a-v1",
+    "recovery_of_closed_flight": false,
+    "namespace_semantics": "This fresh namespace prospectively declares the finite-completion policy before any contact. It is a new bounded-controller system evaluation, not a replay, continuation or second recovery of the closed predecessor flight."
+  },
+  "scientific_question": "Does the complete selectively tool-using and candidate-refresh agent, with prospectively configured source-bound finite outcomes, improve full-roster TRAIN A task quality relative to the released unchanged TRAIN A anchor?",
+  "population": {
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
+    "count": 1080,
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    "fold_b_exclusion_roster": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8"
+    },
+    "fold_b_contact": false
+  },
+  "comparison_anchor": {
+    "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+    "result_relpath": "docs/results/2026-09-14-slurp-native-train-a-anchor.md",
+    "same_ordered_roster_required": true
+  },
+  "method": {
+    "frozen_weights": true,
+    "decoder_only": true,
+    "total_context": 98304,
+    "slots": 4,
+    "context_per_slot": 24576,
+    "max_output_tokens": 512,
+    "temperature": 0,
+    "seed": 20260913,
+    "candidate_width": [
+      1,
+      3
+    ],
+    "max_candidate_refreshes": 1,
+    "max_solver_revisions": 1,
+    "reviewer_contacts_per_visit": 3,
+    "last_reviewer_contact_tool_free": true,
+    "model_contacts_per_episode_ceiling": 12,
+    "analytical_tools": [
+      "saea-tool-task-contract-v1",
+      "saea-tool-candidate-contract-lookup-v1",
+      "saea-tool-live-speech-observation-v1"
+    ],
+    "analytical_tool_roles": [
+      "reviewer"
+    ],
+    "final_answer_role": "solver",
+    "planner_actions": [
+      "ACCEPT",
+      "REVISE",
+      "REFRESH_CANDIDATES"
+    ],
+    "finite_completion_policy": "deliver-latest-or-abstain",
+    "finite_outcome": "Stop the episode at the committed pre-role checkpoint. Preserve the rejected source contact separately from completed role visits. Deliver the last complete Solver unchanged when present; otherwise record a source-bound abstention. Never execute partial tool calls, deliver partial text, accept a failed Planner action, or manufacture a candidate stage.",
+    "knowledge": "Use the same released intent-boundary and slot-contract stores, A/B-excluded observed candidate-contract catalog, initial speech query retrieval and full legal label inventory.",
+    "local_asr": "Only Reviewer may request pinned local CPU large-v3 for a named uncertainty. Never pretranscribe and never allocate Whisper on GPU."
+  },
+  "primary": {
+    "metric": "official pooled SLURP SLU micro F1",
+    "full_roster": true,
+    "score_every_row_including_abstentions": true,
+    "complete_official_scores": 1,
+    "natural_and_equal_scenario": true,
+    "paired_anchor_comparison": {
+      "unit": "speaker cluster",
+      "resamples": 10000,
+      "seed": 20260913,
+      "interval": "CI90"
+    },
+    "candidate_gate": "A strictly positive full-task point-estimate difference is required only to claim observed improvement over the released anchor. A non-positive TRAIN result does not prevent root-caused, TRAIN-only optimization of the agentic system under a separately prospective protocol. Preserve all historical gates, verdicts and disjoint-evaluation requirements."
+  },
+  "secondary": [
+    "intent, scenario and action accuracy",
+    "exact intent and entities",
+    "entity micro F1 and utterance entity exactness",
+    "all scenario strata",
+    "natural and equal-scenario summaries",
+    "abstention and retained-Solver counts",
+    "C0 and C1 candidate coverage and conditional correctness",
+    "own-intent-card initial supply diagnostic",
+    "native tool, refresh, OBS, ORG, SUPPLY, USE and contact costs"
+  ],
+  "bounds": {
+    "generation_calls": 12960,
+    "actual_fit_endpoints": 51840,
+    "primary_repeated_speech_seconds": 37015,
+    "fit_inclusive_gpu_hours": 12.0,
+    "analytical_actions": 4320,
+    "fresh_cpu_asr_decodes": 1080,
+    "asr_speech_seconds": 3085,
+    "new_encoder_calls": 0,
+    "paid_api_calls": 0,
+    "complete_official_scores": 1
+  },
+  "source_and_input_pins": {
+    "implementation_source_commit": null,
+    "predecessor_method_protocol": {
+      "relpath": "docs/readiness/2026-09-14-slurp-native-candidate-refresh-tools-train-fold-a-v1/protocol-v1.json",
+      "sha256": "473cfa6c6c80c6142459ac80d5bfb93a90112952b18c8a57275b407b35647af5"
+    },
+    "prepared_tools_binding": {
+      "relpath": "docs/readiness/2026-09-14-slurp-native-candidate-refresh-tools-train-fold-a-v1/prepared-tools-binding-v2.json",
+      "sha256": "4c764ad12794c5a63844069241cfd74d2f9e6c8451e804dc1b95c4fcb1324a96"
+    }
+  },
+  "quality_read_gate": "Read no partial task quality. After an admitted sole campaign completes, seal the full source and run manifest, score the complete roster once including abstentions, and release only after exact source, roster and score verification.",
+  "unresolved_before_admission": [
+    "root decision and signed readiness receipt",
+    "clean frozen implementation source commit",
+    "generation and actual-request fit ExecutionPlans",
+    "local CPU ASR ExecutionPlan and exposure registration",
+    "new attempt-namespaced prepared phase supply",
+    "sole complete official score registration"
+  ],
+  "launch_authorized": false,
+  "registered_execution_plans": false,
+  "root_signature": null,
+  "candidate_stage_diagnostics": {
+    "cohort": "the exact complete ordered 1080-row TRAIN A scoring roster",
+    "c0": "The first completed Perception visit. Report its availability count and source-bound candidate set; do not reconstruct a missing visit.",
+    "c1": "The last completed Perception visit before the Solver whose answer is actually delivered. If finite fallback delivers an earlier complete Solver, exclude any later completed refresh from C1.",
+    "missing_stage_reporting": "Report explicit C0 and C1 availability counts. Report each coverage rate unconditionally over all 1080 scored rows; unavailable stages contribute no covered case and remain visible in the availability count.",
+    "conditional_accuracy": "Report explicit denominators for correctness conditional on each available gold-covered candidate set. Do not convert unavailable or uncovered rows into conditional failures.",
+    "refresh_accounting": "Report actual completed refresh execution separately. A refresh after the fallback-delivered Solver is not credited to C1.",
+    "reference_isolation": "Derive stages only from source-bound completed role visits and actual delivery custody. Join numeric reference diagnostics only after the complete source and sole official score are sealed and released."
+  }
+}

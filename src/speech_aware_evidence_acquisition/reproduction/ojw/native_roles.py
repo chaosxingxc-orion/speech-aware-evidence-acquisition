@@ -17,6 +17,7 @@ provides that callback. The bridge never flattens or silently drops them.
 from __future__ import annotations
 
 import asyncio
+import copy
 import inspect
 import itertools
 import uuid
@@ -73,6 +74,20 @@ class FrozenCoreRoleFiniteCompletionError(FrozenCoreRoleModelError):
         self.completion = completion
         self.finish_reason = finish_reason
         self.original_message = original_message
+        self.role_id: str | None = None
+        self.execution_receipt: Mapping[str, object] | None = None
+
+    def __deepcopy__(self, memo):
+        # Framework error snapshots copy exception objects through their constructor.
+        # Preserve immutable completion custody instead of reconstructing from args.
+        cloned = type(self)(
+            completion=self.completion, finish_reason=self.finish_reason,
+            original_message=self.original_message,
+        )
+        memo[id(self)] = cloned
+        cloned.role_id = self.role_id
+        cloned.execution_receipt = copy.deepcopy(self.execution_receipt, memo)
+        return cloned
 
     @property
     def request_sha256(self) -> str:
@@ -742,6 +757,17 @@ class NativeRoleNode(WorkflowComponent):
                     ),
                 },
             )
+        except FrozenCoreRoleFiniteCompletionError as error:
+            if not receipt_contacts or receipt_contacts[-1] != _contact_receipt(error.completion):
+                raise FrozenCoreRoleModelError(
+                    "finite role completion lost its actual contact receipt"
+                ) from error
+            error.role_id = self.spec.role_id
+            error.execution_receipt = {
+                "contacts": [dict(contact) for contact in receipt_contacts],
+                "final_contact": dict(receipt_contacts[-1]),
+            }
+            raise
         finally:
             self._model._end_receipt_capture(receipt_token)
         actor_output = result.get("output")

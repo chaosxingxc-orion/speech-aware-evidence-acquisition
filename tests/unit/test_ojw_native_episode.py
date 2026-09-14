@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import asyncio
+import dataclasses
 import hashlib
 import json
 from dataclasses import dataclass, field
 from types import SimpleNamespace
 
 import pytest
+from openjiuwen.core.foundation.tool import LocalFunction, ToolCard
 from openjiuwen.core.workflow import create_workflow_session
 
 from speech_aware_evidence_acquisition.rails.core_client import CoreCompletion
@@ -23,20 +25,31 @@ from speech_aware_evidence_acquisition.reproduction.ojw.native_episode import (
     build_native_episode,
 )
 from speech_aware_evidence_acquisition.reproduction.ojw.native_roles import (
+    FrozenCoreRoleFiniteCompletionError,
     NativeRoleContactContext,
     NativeRoleNode,
     NativeRoleNodeSpec,
 )
 
 
-def _completion(text: str, contact_id: str, serial: int) -> CoreCompletion:
+def _completion(
+    text: str,
+    contact_id: str,
+    serial: int,
+    *,
+    finish_reason: str = "stop",
+    tool_calls: object = None,
+) -> CoreCompletion:
     request_id = f"request-{serial}"
+    message: dict[str, object] = {"role": "assistant", "content": text}
+    if tool_calls is not None:
+        message["tool_calls"] = tool_calls
     wire = json.dumps(
         {
             "choices": [
                 {
-                    "message": {"role": "assistant", "content": text},
-                    "finish_reason": "stop",
+                    "message": message,
+                    "finish_reason": finish_reason,
                 }
             ]
         },
@@ -50,9 +63,24 @@ def _completion(text: str, contact_id: str, serial: int) -> CoreCompletion:
         request_sha256=hashlib.sha256(request_id.encode()).hexdigest(),
         response_sha256=hashlib.sha256(wire).hexdigest(),
         response_text_sha256=hashlib.sha256(text.encode()).hexdigest(),
-        tool_calls_json=b"null",
+        tool_calls_json=json.dumps(
+            tool_calls,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode(),
         wire_response_bytes=wire,
     )
+
+
+def _source_contact(completion: CoreCompletion) -> dict[str, str]:
+    return {
+        "agent_contact_id": completion.agent_contact_id,
+        "request_id": completion.request_id,
+        "request_sha256": completion.request_sha256,
+        "response_sha256": completion.response_sha256,
+        "response_text_sha256": completion.response_text_sha256,
+    }
 
 
 def _execution_receipt(
@@ -71,17 +99,39 @@ def _execution_receipt(
     return {"contacts": [contact], "final_contact": dict(contact)}
 
 
+@dataclass(frozen=True)
+class _FiniteResponse:
+    text: str
+    finish_reason: str
+
+
 @dataclass
 class _Script:
-    values: list[str]
+    values: list[str | _FiniteResponse]
     requests: list[object] = field(default_factory=list)
+    completions: list[CoreCompletion] = field(default_factory=list)
 
     def __call__(self, request):
         self.requests.append(request)
         if not self.values:
             raise AssertionError("script exhausted")
         serial = sum(len(script.requests) for script in _ALL_SCRIPTS)
-        return _completion(self.values.pop(0), request.context.agent_contact_id, serial)
+        value = self.values.pop(0)
+        if isinstance(value, _FiniteResponse):
+            completion = _completion(
+                value.text,
+                request.context.agent_contact_id,
+                serial,
+                finish_reason=value.finish_reason,
+            )
+        else:
+            completion = _completion(
+                value,
+                request.context.agent_contact_id,
+                serial,
+            )
+        self.completions.append(completion)
+        return completion
 
 
 _ALL_SCRIPTS: list[_Script] = []
@@ -105,7 +155,13 @@ class _CapturingWorkflow:
         )
 
 
-def _node(role_id: str, role_kind: str, values: list[str], *, valid=False):
+def _node(
+    role_id: str,
+    role_kind: str,
+    values: list[str | _FiniteResponse],
+    *,
+    valid=False,
+):
     script = _Script(values)
     _ALL_SCRIPTS.append(script)
     node = NativeRoleNode(
@@ -136,8 +192,14 @@ def _episode(
     exhaustion_policy="raise",
     refresh_action=None,
     max_candidate_refreshes=0,
+    finite_completion_policy="raise",
+    perception_values=None,
 ):
-    perception, perception_script = _node("perception", "perception", ["heard"])
+    perception, perception_script = _node(
+        "perception",
+        "perception",
+        ["heard"] if perception_values is None else perception_values,
+    )
     seen: list[tuple[str, dict[str, object]]] = []
 
     def role_input(role_id, state):
@@ -154,6 +216,7 @@ def _episode(
             exhaustion_policy=exhaustion_policy,
             refresh_action=refresh_action,
             max_candidate_refreshes=max_candidate_refreshes,
+            finite_completion_policy=finite_completion_policy,
         ),
         nodes=NativeEpisodeNodes(
             perception=perception,
@@ -460,7 +523,7 @@ def test_invoke_direct_passes_the_exact_caller_session(monkeypatch):
     workflow, _, _ = _episode(solver=solver, reviewer=reviewer, planner=planner)
     capturing = _CapturingWorkflow()
     supplied_session = create_workflow_session()
-    monkeypatch.setattr(workflow, "_build", lambda: capturing)
+    monkeypatch.setattr(workflow, "_build", lambda _checkpoint: capturing)
     monkeypatch.setattr(
         native_episode_module,
         "create_workflow_session",
@@ -483,7 +546,7 @@ def test_invoke_direct_still_creates_a_default_session_when_absent(monkeypatch):
     capturing = _CapturingWorkflow()
     default_session = create_workflow_session()
     factory_calls: list[None] = []
-    monkeypatch.setattr(workflow, "_build", lambda: capturing)
+    monkeypatch.setattr(workflow, "_build", lambda _checkpoint: capturing)
 
     def default_factory():
         factory_calls.append(None)
@@ -566,3 +629,487 @@ def test_unconfigured_refresh_action_never_revisits_perception():
     with pytest.raises(NativeEpisodeError, match="registered action"):
         asyncio.run(workflow.invoke_direct("query", ()))
     assert len(perception_script.requests) == 1
+
+
+@pytest.mark.parametrize(
+    ("failed_stage", "finish_reason", "expected_visits", "has_solver"),
+    [
+        ("perception", "length", [], False),
+        ("solver", "content_filter", ["perception"], False),
+        ("reviewer", "length", ["perception", "solver"], True),
+        ("planner", "content_filter", ["perception", "solver", "review"], True),
+    ],
+)
+def test_finite_completion_policy_terminalizes_at_actual_initial_role_checkpoint(
+    failed_stage,
+    finish_reason,
+    expected_visits,
+    has_solver,
+):
+    finite = _FiniteResponse(f"partial {failed_stage}", finish_reason)
+    perception_values = [finite] if failed_stage == "perception" else ["heard"]
+    solver, solver_script = _node(
+        "solver",
+        "solver",
+        [finite] if failed_stage == "solver" else ["draft one"],
+        valid=True,
+    )
+    reviewer, reviewer_script = _node(
+        "reviewer",
+        "reviewer",
+        [finite] if failed_stage == "reviewer" else ["review one"],
+    )
+    planner, planner_script = _node(
+        "planner",
+        "planner",
+        [finite] if failed_stage == "planner" else ["ACCEPT"],
+    )
+    workflow, perception_script, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        max_revisions=0,
+        finite_completion_policy="deliver-latest-or-abstain",
+        perception_values=perception_values,
+    )
+
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+
+    failed_script = {
+        "perception": perception_script,
+        "solver": solver_script,
+        "reviewer": reviewer_script,
+        "planner": planner_script,
+    }[failed_stage]
+    completion = failed_script.completions[-1]
+    rejected_contact = _source_contact(completion)
+    state = result["state"]
+    assert [visit["stage"] for visit in state["role_visits"]] == expected_visits
+    assert state["terminal_disposition"] == {
+        "reason": "finite_completion",
+        "finish_reason": finish_reason,
+        "role_id": failed_stage,
+        "stage": "review" if failed_stage == "reviewer" else failed_stage,
+        "revision_count": 0,
+        "planner_accepted": False,
+        "rejected_contact": rejected_contact,
+    }
+    assert state["interrupted_role"] == {
+        "role_id": failed_stage,
+        "stage": "review" if failed_stage == "reviewer" else failed_stage,
+        "execution_receipt": {
+            "contacts": [rejected_contact],
+            "final_contact": rejected_contact,
+        },
+    }
+    assert "accepted_solver_receipt" not in state
+    assert "partial" not in json.dumps(result)
+    if has_solver:
+        assert result["delivery"]["actor_output"] == "draft one"
+        assert result["delivery"] == state["latest_solver"]
+        assert state["terminal_solver_receipt"] == result["delivery"][
+            "execution_receipt"
+        ]
+        assert "abstention_receipt" not in state
+    else:
+        assert result["delivery"] == {
+            "actor_output": "",
+            "result_type": "abstention",
+            "delivery_eligible": False,
+        }
+        assert state["abstention_receipt"] == {
+            "source_contact": rejected_contact,
+        }
+        assert "terminal_solver_receipt" not in state
+    if failed_stage == "planner":
+        assert state["plan"] is None
+        assert state["planner_routes"] == []
+
+
+def test_finite_refreshed_perception_preserves_last_solver_without_failed_visit():
+    solver, _ = _node("solver", "solver", ["draft one", "unused"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["review one"])
+    planner, _ = _node("planner", "planner", ["REFRESH_CANDIDATES"])
+    workflow, perception_script, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        max_revisions=1,
+        refresh_action="REFRESH_CANDIDATES",
+        max_candidate_refreshes=1,
+        finite_completion_policy="deliver-latest-or-abstain",
+        perception_values=[
+            "heard",
+            _FiniteResponse("partial refreshed perception", "length"),
+        ],
+    )
+
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+
+    state = result["state"]
+    rejected_contact = _source_contact(perception_script.completions[-1])
+    assert [visit["stage"] for visit in state["role_visits"]] == [
+        "perception",
+        "solver",
+        "review",
+        "planner",
+    ]
+    assert state["revision_count"] == 1
+    assert state["candidate_refresh_count"] == 1
+    assert state["planner_routes"] == [
+        {
+            "role_visit_index": 3,
+            "revision_count": 0,
+            "action": "REFRESH_CANDIDATES",
+        }
+    ]
+    assert result["delivery"]["actor_output"] == "draft one"
+    assert state["terminal_disposition"]["stage"] == "perception"
+    assert state["terminal_disposition"]["rejected_contact"] == rejected_contact
+    assert "partial refreshed perception" not in json.dumps(result)
+
+
+def test_finite_revised_solver_preserves_previous_solver_without_failed_visit():
+    solver, solver_script = _node(
+        "solver",
+        "solver",
+        ["draft one", _FiniteResponse("partial revised answer", "content_filter")],
+        valid=True,
+    )
+    reviewer, _ = _node("reviewer", "reviewer", ["review one"])
+    planner, _ = _node("planner", "planner", ["REVISE"])
+    workflow, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        max_revisions=1,
+        finite_completion_policy="deliver-latest-or-abstain",
+    )
+
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+
+    state = result["state"]
+    rejected_contact = _source_contact(solver_script.completions[-1])
+    assert [visit["stage"] for visit in state["role_visits"]] == [
+        "perception",
+        "solver",
+        "review",
+        "planner",
+    ]
+    assert state["revision_count"] == 1
+    assert result["delivery"]["actor_output"] == "draft one"
+    assert state["terminal_disposition"] == {
+        "reason": "finite_completion",
+        "finish_reason": "content_filter",
+        "role_id": "solver",
+        "stage": "solver",
+        "revision_count": 1,
+        "planner_accepted": False,
+        "rejected_contact": rejected_contact,
+    }
+    assert "partial revised answer" not in json.dumps(result)
+
+
+def test_interrupted_reviewer_keeps_completed_tool_and_finite_contacts_separate():
+    completions: list[CoreCompletion] = []
+    invoked: list[int] = []
+
+    def reviewer_request(request):
+        serial = 3 + len(completions)
+        if not completions:
+            tool_calls = [
+                {
+                    "id": "inspect-1",
+                    "type": "function",
+                    "function": {
+                        "name": "inspect",
+                        "arguments": '{"value":4}',
+                    },
+                }
+            ]
+            completion = _completion(
+                "Inspect the draft.",
+                request.context.agent_contact_id,
+                serial,
+                finish_reason="tool_calls",
+                tool_calls=tool_calls,
+            )
+        else:
+            completion = _completion(
+                "partial reviewer conclusion",
+                request.context.agent_contact_id,
+                serial,
+                finish_reason="length",
+            )
+        completions.append(completion)
+        return completion
+
+    card = ToolCard(
+        id="inspect",
+        name="inspect",
+        description="Inspect a synthetic integer.",
+        input_params={
+            "type": "object",
+            "properties": {"value": {"type": "integer"}},
+            "required": ["value"],
+            "additionalProperties": False,
+        },
+        stateless=True,
+        idempotent=True,
+    )
+    reviewer = NativeRoleNode(
+        spec=NativeRoleNodeSpec(
+            role_id="reviewer",
+            role_kind="reviewer",
+            prompt="Review.",
+            max_iterations=3,
+            ability_names=("inspect",),
+        ),
+        metered_request=reviewer_request,
+        contact_context_provider=lambda index: NativeRoleContactContext(
+            sample_id="sample-1",
+            agent_contact_id=f"reviewer-contact-{index + 1}",
+        ),
+        abilities=(
+            LocalFunction(
+                card=card,
+                func=lambda value: invoked.append(value) or {"value": value},
+            ),
+        ),
+        tool_allowed=lambda role, name: role == "reviewer" and name == "inspect",
+    )
+    solver, _ = _node("solver", "solver", ["draft one"], valid=True)
+    planner, _ = _node("planner", "planner", ["unused"])
+    workflow, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        max_revisions=0,
+        finite_completion_policy="deliver-latest-or-abstain",
+    )
+
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+
+    expected_contacts = [_source_contact(completion) for completion in completions]
+    assert invoked == [4]
+    assert len(completions) == 2
+    assert [visit["stage"] for visit in result["state"]["role_visits"]] == [
+        "perception",
+        "solver",
+    ]
+    assert result["state"]["interrupted_role"] == {
+        "role_id": "reviewer",
+        "stage": "review",
+        "execution_receipt": {
+            "contacts": expected_contacts,
+            "final_contact": expected_contacts[-1],
+        },
+    }
+    assert result["state"]["terminal_disposition"]["rejected_contact"] == (
+        expected_contacts[-1]
+    )
+    assert result["delivery"]["actor_output"] == "draft one"
+    assert "partial reviewer conclusion" not in json.dumps(result)
+
+
+def test_finite_completion_policy_default_and_invalid_value_are_strict():
+    spec = NativeEpisodeSpec(
+        episode_id="strict-default",
+        max_revisions=0,
+        actions=NativeEpisodeActions(
+            accept="ACCEPT",
+            revise="REVISE",
+            acquire="ACQUIRE",
+        ),
+    )
+    assert spec.finite_completion_policy == "raise"
+
+    with pytest.raises(ValueError, match="finite_completion_policy"):
+        NativeEpisodeSpec(
+            episode_id="invalid-policy",
+            max_revisions=0,
+            actions=spec.actions,
+            finite_completion_policy="deliver-partial",
+        )
+
+    solver, _ = _node("solver", "solver", ["unused"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["unused"])
+    planner, _ = _node("planner", "planner", ["unused"])
+    workflow, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        max_revisions=0,
+        perception_values=[_FiniteResponse("partial", "length")],
+    )
+    with pytest.raises(NativeEpisodeError, match="native episode node failed"):
+        asyncio.run(workflow.invoke_direct("query", ()))
+
+
+@pytest.mark.parametrize("mismatch", ["role", "contact"])
+def test_finite_terminalization_rejects_interrupted_custody_mismatch(mismatch):
+    checkpoint = native_episode_module._RoleCheckpoint()
+    checkpoint.capture(
+        state={
+            "latest_solver": None,
+            "revision_count": 0,
+            "role_visits": [],
+        },
+        role_id="reviewer",
+        stage="review",
+    )
+    completion = _completion(
+        "partial",
+        "reviewer-contact-1",
+        1,
+        finish_reason="length",
+    )
+    error = FrozenCoreRoleFiniteCompletionError(
+        completion=completion,
+        finish_reason="length",
+        original_message=completion.original_message,
+    )
+    contact = _source_contact(completion)
+    error.role_id = "planner" if mismatch == "role" else "reviewer"
+    receipt_contact = dict(contact)
+    if mismatch == "contact":
+        receipt_contact["request_id"] = "wrong-request"
+    error.execution_receipt = {
+        "contacts": [receipt_contact],
+        "final_contact": receipt_contact,
+    }
+
+    with pytest.raises(NativeEpisodeError, match="does not match"):
+        native_episode_module._finite_terminal_outcome(error, checkpoint)
+
+
+def test_finite_checkpoint_is_isolated_between_concurrent_invocations(monkeypatch):
+    solver, _ = _node("solver", "solver", ["unused"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["unused"])
+    planner, _ = _node("planner", "planner", ["unused"])
+    workflow, _, _ = _episode(
+        solver=solver,
+        reviewer=reviewer,
+        planner=planner,
+        finite_completion_policy="deliver-latest-or-abstain",
+    )
+    checkpoints: list[object] = []
+
+    class FiniteWorkflow:
+        def __init__(self, checkpoint):
+            self.checkpoint = checkpoint
+
+        async def invoke(self, *, inputs, session):
+            del session
+            query = inputs["original_query"]
+            await asyncio.sleep(0 if query == "second" else 0.01)
+            self.checkpoint.capture(
+                state={
+                    "original_query": query,
+                    "latest_solver": None,
+                    "revision_count": 0,
+                    "role_visits": [],
+                    "accepted_solver_receipt": None,
+                },
+                role_id="perception",
+                stage="perception",
+            )
+            serial = 1 if query == "first" else 2
+            completion = _completion(
+                f"partial {query}",
+                f"{query}-contact",
+                serial,
+                finish_reason="length",
+            )
+            error = FrozenCoreRoleFiniteCompletionError(
+                completion=completion,
+                finish_reason="length",
+                original_message=completion.original_message,
+            )
+            contact = _source_contact(completion)
+            error.role_id = "perception"
+            error.execution_receipt = {
+                "contacts": [contact],
+                "final_contact": contact,
+            }
+            raise RuntimeError("wrapped finite completion") from error
+
+    def build(checkpoint):
+        checkpoints.append(checkpoint)
+        return FiniteWorkflow(checkpoint)
+
+    monkeypatch.setattr(workflow, "_build", build)
+
+    async def invoke_both():
+        return await asyncio.gather(
+            workflow.invoke_direct("first", ()),
+            workflow.invoke_direct("second", ()),
+        )
+
+    first, second = asyncio.run(invoke_both())
+
+    assert len(checkpoints) == 2
+    assert checkpoints[0] is not checkpoints[1]
+    assert first["state"]["original_query"] == "first"
+    assert second["state"]["original_query"] == "second"
+    assert first["state"]["terminal_disposition"]["rejected_contact"][
+        "agent_contact_id"
+    ] == "first-contact"
+    assert second["state"]["terminal_disposition"]["rejected_contact"][
+        "agent_contact_id"
+    ] == "second-contact"
+
+
+@pytest.mark.parametrize("failure_kind", ["unknown_finish", "invalid_source"])
+def test_opt_in_policy_does_not_downgrade_other_source_failures(failure_kind):
+    def failed_perception(request):
+        completion = _completion(
+            "partial",
+            request.context.agent_contact_id,
+            1,
+            finish_reason=(
+                "server_error" if failure_kind == "unknown_finish" else "length"
+            ),
+        )
+        if failure_kind == "invalid_source":
+            completion = dataclasses.replace(completion, response_sha256="")
+        return completion
+
+    perception = NativeRoleNode(
+        spec=NativeRoleNodeSpec(
+            role_id="perception",
+            role_kind="perception",
+            prompt="Perceive.",
+            max_iterations=1,
+        ),
+        metered_request=failed_perception,
+        contact_context=NativeRoleContactContext(
+            sample_id="sample-1",
+            agent_contact_id="perception-contact-1",
+        ),
+    )
+    solver, _ = _node("solver", "solver", ["unused"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["unused"])
+    planner, _ = _node("planner", "planner", ["unused"])
+    workflow = build_native_episode(
+        spec=NativeEpisodeSpec(
+            episode_id=failure_kind,
+            max_revisions=0,
+            actions=NativeEpisodeActions(
+                accept="ACCEPT",
+                revise="REVISE",
+                acquire="ACQUIRE",
+            ),
+            finite_completion_policy="deliver-latest-or-abstain",
+        ),
+        nodes=NativeEpisodeNodes(
+            perception=perception,
+            solver=solver,
+            reviewer=reviewer,
+            planner=planner,
+        ),
+        role_input_builder=lambda role, _state: f"Run {role}.",
+    )
+
+    with pytest.raises(NativeEpisodeError, match="native episode node failed"):
+        asyncio.run(workflow.invoke_direct("query", ()))

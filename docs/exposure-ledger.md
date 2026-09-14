@@ -3734,3 +3734,19 @@ root-flight-closure-v1.json, SHA256
 Do not replay or re-register this full flight. A model-free shared terminal
 handling fix and four synthetic framework proof rows precede consideration of
 a different prospective flight. This closure grants no new research contact.
+
+## September 14: model-free bounded outcome proof
+
+The shared opt-in finite-completion policy now passes four synthetic framework
+role positions and the selected 618-test shared-runtime suite. Preserve raw
+responses; deliver only a previous complete Solver or a separately bound empty
+abstention. Verify all interrupted contacts and derived output hashes. Missing
+candidate stages stay in the full roster; later unused refreshes get no C1 credit.
+
+This engineering proof made zero actual generation, fit, speech-tool, GPU or
+official-scoring contacts. It does not reopen either failed predecessor attempt
+or admit the held bounded-evidence TRAIN A draft. Register fresh plans and
+exposure before considering any new real contact.
+
+Proof: DATA/coordination/native-terminal-bounds-v1/bounded-outcome-proof-v1.json.
+SHA256: 776fb63013bd73e7d6cfecbe2e5089e16efc2e0c067aba1fd24f761c190c83c0.

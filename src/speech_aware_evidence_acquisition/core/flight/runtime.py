@@ -6920,6 +6920,7 @@ class FlightRuntime:
                 rows.append(dict(row))
                 continue
             timing = timing_by_sample.get(sample_id)
+            derived_output_fields = {}
             episode_receipt = row.get("native_episode_receipt")
             if episode_receipt is not None:
                 # The delivery Solver can precede Reviewer/Planner contacts.
@@ -6942,6 +6943,8 @@ class FlightRuntime:
                     raise FlightRuntimeError("native delivery lacks ordered Planner routes")
                 from ...rails.native_episode_receipt import (  # noqa: PLC0415
                     validate_native_episode_delivery_receipt,
+                    validate_native_episode_finite_path,
+                    validate_native_episode_terminal_policy,
                 )
 
                 raw_native = self._composed.values.get("native_episode")
@@ -6977,40 +6980,69 @@ class FlightRuntime:
                         accept_action=raw_actions.get("accept"),
                         revise_action=raw_actions.get("revise"), error_type=FlightRuntimeError,
                     )
-                if delivery.kind == "terminal":
+                if not isinstance(raw_native, Mapping):
+                    raise FlightRuntimeError("native delivery requires its composed configuration")
+                validate_native_episode_terminal_policy(
+                    delivery,
+                    exhaustion_policy=raw_native.get("exhaustion_policy", "raise"),
+                    finite_completion_policy=raw_native.get("finite_completion_policy", "raise"),
+                    max_revisions=raw_native.get("max_revisions"),
+                    error_type=FlightRuntimeError,
+                )
+                if delivery.kind in {"finite", "abstention"}:
+                    if not isinstance(raw_actions, Mapping):
+                        raise FlightRuntimeError("finite delivery lacks configured Planner actions")
+                    refresh = raw_native.get("candidate_refresh") or {}
+                    validate_native_episode_finite_path(
+                        episode_receipt, max_revisions=raw_native.get("max_revisions"),
+                        accept_action=raw_actions.get("accept"), revise_action=raw_actions.get("revise"),
+                        refresh_action=refresh.get("action"), max_refreshes=refresh.get("max_refreshes", 0),
+                        error_type=FlightRuntimeError,
+                    )
+                    interrupted = episode_receipt["interrupted_role"]["execution_receipt"]
+                    for raw_contact in interrupted["contacts"]:
+                        recorded = timing_by_request.get(raw_contact["request_id"])
+                        if (
+                            recorded is None or recorded.sample_id != sample_id
+                            or any(getattr(recorded, key, None) != raw_contact.get(key) for key in (
+                                "request_sha256", "response_sha256", "response_text_sha256",
+                            ))
+                        ):
+                            raise FlightRuntimeError("finite interrupted contact differs from actual timing")
                     if (
-                        not isinstance(raw_native, Mapping)
-                        or raw_native.get("exhaustion_policy", "raise")
-                        != "deliver-latest-solver"
+                        timing_by_sample[sample_id].request_id
+                        != interrupted["final_contact"]["request_id"]
                     ):
-                        raise FlightRuntimeError(
-                            "terminal native delivery requires the composed "
-                            "exhaustion_policy deliver-latest-solver"
-                        )
-                    configured_revisions = raw_native.get("max_revisions")
-                    disposition = delivery.terminal_disposition
-                    if (
-                        isinstance(configured_revisions, bool)
-                        or not isinstance(configured_revisions, int)
-                        or not isinstance(disposition, Mapping)
-                        or disposition.get("revision_count") != configured_revisions
-                    ):
-                        raise FlightRuntimeError(
-                            "terminal native delivery revision count differs from "
-                            "the composed max_revisions"
-                        )
+                        raise FlightRuntimeError("finite source is not the last actual sample contact")
                 contact = delivery.final_contact
                 timing = timing_by_request.get(contact.get("request_id"))
                 if (
                     timing is None or timing.sample_id != sample_id
-                    or getattr(timing, "native_tool_calls", None) not in (None, 0)
+                    or (delivery.kind != "abstention"
+                        and getattr(timing, "native_tool_calls", None) not in (None, 0))
                     or any(getattr(timing, key, None) != contact.get(key) for key in (
                         "request_sha256", "response_sha256", "response_text_sha256",
                     ))
-                    or hashlib.sha256(sources[0].final_response_text.encode("utf-8")).hexdigest()
-                    != contact.get("response_text_sha256")
+                    or (delivery.kind != "abstention"
+                        and hashlib.sha256(sources[0].final_response_text.encode("utf-8")).hexdigest()
+                        != contact.get("response_text_sha256"))
                 ):
-                    raise FlightRuntimeError("native Solver source differs from the recorded model response")
+                    raise FlightRuntimeError("native source differs from the recorded model response")
+                if delivery.kind == "abstention":
+                    from ..delivery import native_abstention_records
+
+                    if sources[0].final_response_text != "":
+                        raise FlightRuntimeError("native abstention must deliver empty text")
+                    derived_id, request_document, response_document = native_abstention_records(
+                        sample_id=sample_id, source_contact=contact,
+                        finish_reason=delivery.terminal_disposition["finish_reason"],
+                    )
+                    derived_output_fields = {
+                        "request_id": derived_id,
+                        "request_sha256": request_document["payload_sha256"],
+                        "response_sha256": response_document["response_sha256"],
+                        "response_text_sha256": response_document["response_text_sha256"],
+                    }
             if timing is None:
                 raise FlightRuntimeError(
                     f"no per-request record for sample {sample_id!r}; an outputs row "
@@ -7072,6 +7104,7 @@ class FlightRuntime:
                     "request_sha256": timing.request_sha256,
                     "response_sha256": timing.response_sha256,
                     "response_text_sha256": timing.response_text_sha256,
+                    **derived_output_fields,
                     **artifact_fields,
                     **(
                         {"native_episode_receipt": dict(episode_receipt)}

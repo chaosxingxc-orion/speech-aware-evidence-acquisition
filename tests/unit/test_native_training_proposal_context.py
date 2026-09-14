@@ -17,10 +17,16 @@ from speech_aware_evidence_acquisition.rails.native_training_context import (
 )
 from speech_aware_evidence_acquisition.rails.training_proposal_context import (
     TrainingProposalContextError,
+    _source_trajectories,
     build_training_proposal_contexts,
 )
+from speech_aware_evidence_acquisition.core.delivery import native_abstention_records
 
 pytest_plugins = ("test_bundle",)
+
+
+def _sha_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def test_native_framework_projection_keeps_role_queries_and_bound_tool_semantics(
@@ -76,6 +82,223 @@ def test_native_framework_projection_keeps_role_queries_and_bound_tool_semantics
         "synthetic-native-call-", "synthetic-task-contract://",
     ):
         assert private_value not in visible
+
+
+def _abstention_source(native_training_source_pair, tmp_path):
+    source_manifest = Path(native_training_source_pair[0]["config"]["manifest"]["path"])
+    manifest = copy.deepcopy(json.loads(source_manifest.read_text()))
+    trace_rows = [
+        json.loads(line) for line in Path(manifest["raw_trace"]["path"]).read_text().splitlines()
+        if line
+    ]
+    outputs = [
+        json.loads(line) for line in Path(manifest["outputs"]["path"]).read_text().splitlines()
+        if line
+    ]
+    output = outputs[0]
+    sample_id = output["sample_id"]
+    sample_requests = [
+        row for row in trace_rows
+        if row["channel"] == "MODEL_REQUEST"
+        and row["payload"]["payload"]["sample_id"] == sample_id
+    ]
+
+    def role_and_contact(request_row):
+        control = next(
+            item for item in reversed(request_row["payload"]["payload"]["history"])
+            if item["role"] == "control"
+        )
+        contact_id = control["contact_id"]
+        role = next(
+            name for name in ("perception", "solver", "reviewer", "planner")
+            if f":{name}:" in contact_id
+        )
+        request_id = request_row["payload"]["payload"]["request_id"]
+        response = next(
+            row["payload"] for row in trace_rows
+            if row["channel"] == "MODEL_RESPONSE"
+            and row["record_id"] == request_id + "/response"
+        )
+        contact = {
+            "agent_contact_id": contact_id,
+            "request_id": request_id,
+            "request_sha256": request_row["payload"]["payload_sha256"],
+            "response_sha256": response["response_sha256"],
+            "response_text_sha256": response["response_text_sha256"],
+        }
+        return role, contact
+
+    role_contacts = [role_and_contact(row) for row in sample_requests]
+    solver_index = next(
+        index for index, (role, _contact) in enumerate(role_contacts)
+        if role == "solver"
+    )
+    completed = [
+        {
+            "role_id": role,
+            "stage": role,
+            "execution_receipt": {"contacts": [contact], "final_contact": contact},
+        }
+        for role, contact in role_contacts[:solver_index]
+    ]
+    solver_contact = role_contacts[solver_index][1]
+    interrupted = {
+        "role_id": "solver",
+        "stage": "solver",
+        "execution_receipt": {
+            "contacts": [solver_contact],
+            "final_contact": solver_contact,
+        },
+    }
+    rejected = interrupted["execution_receipt"]["final_contact"]
+    receipt = {
+        "role_visits": completed,
+        "planner_routes": [],
+        "interrupted_role": interrupted,
+        "terminal_disposition": {
+            "reason": "finite_completion",
+            "finish_reason": "length",
+            "role_id": interrupted["role_id"],
+            "stage": interrupted["stage"],
+            "revision_count": 0,
+            "planner_accepted": False,
+            "rejected_contact": rejected,
+        },
+        "abstention_receipt": {"source_contact": rejected},
+    }
+    output["native_episode_receipt"] = receipt
+    derived_id, request_document, response_document = native_abstention_records(
+        sample_id=sample_id, source_contact=rejected, finish_reason="length",
+    )
+    trace_rows.extend([
+        {"channel": "TOOL", "record_id": derived_id + "/request", "payload": request_document},
+        {"channel": "TOOL", "record_id": derived_id + "/response", "payload": response_document},
+    ])
+    output["request_id"] = derived_id
+    for field in ("request_sha256", "response_sha256", "response_text_sha256"):
+        output[field] = response_document[field]
+    if "text" in output:
+        output["text"] = ""
+    if "response" in output:
+        output["response"] = ""
+
+    trace_path = tmp_path / "abstention-trace.jsonl"
+    trace_path.write_text("".join(json.dumps(row) + "\n" for row in trace_rows))
+    output_path = tmp_path / "abstention-outputs.jsonl"
+    output_path.write_text("".join(json.dumps(row) + "\n" for row in outputs))
+    manifest["raw_trace"] = {"path": str(trace_path), "sha256": _sha_file(trace_path)}
+    manifest["outputs"] = {"path": str(output_path), "sha256": _sha_file(output_path)}
+    manifest_path = tmp_path / "abstention-manifest.json"
+    manifest_path.write_text(json.dumps(manifest))
+    source = {"manifest": {"path": str(manifest_path), "sha256": _sha_file(manifest_path)}}
+    return source, tuple(row["sample_id"] for row in outputs), sample_id, derived_id, trace_path
+
+
+def test_verified_abstention_retains_model_steps_and_binds_empty_derivative(
+    native_training_source_pair, tmp_path,
+):
+    source, sample_ids, sample_id, derived_id, _trace_path = _abstention_source(
+        native_training_source_pair, tmp_path,
+    )
+    result = _source_trajectories(source, sample_ids)
+    projected = result[sample_id]
+
+    assert projected["trajectory"]
+    assert not any(step["selected_final"] for step in projected["trajectory"])
+    assert projected["delivery"] == {
+        "kind": "abstention",
+        "delivered_solver": False,
+        "derived_request_id": derived_id,
+        "response_sha256": projected["delivery"]["response_sha256"],
+        "response_text_sha256": hashlib.sha256(b"").hexdigest(),
+    }
+    assert projected["final_response_sha256"] == hashlib.sha256(b"").hexdigest()
+
+
+def test_abstention_refuses_a_derivative_response_that_differs_from_shared_builder(
+    native_training_source_pair, tmp_path,
+):
+    source, sample_ids, _sample_id, derived_id, trace_path = _abstention_source(
+        native_training_source_pair, tmp_path,
+    )
+    rows = [json.loads(line) for line in trace_path.read_text().splitlines()]
+    response = next(row for row in rows if row["record_id"] == derived_id + "/response")
+    response["payload"]["text"] = "rejected partial response"
+    trace_path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+    manifest_path = Path(source["manifest"]["path"])
+    manifest = json.loads(manifest_path.read_text())
+    manifest["raw_trace"]["sha256"] = _sha_file(trace_path)
+    manifest_path.write_text(json.dumps(manifest))
+    source["manifest"]["sha256"] = _sha_file(manifest_path)
+
+    with pytest.raises(TrainingProposalContextError, match="abstention derivative"):
+        _source_trajectories(source, sample_ids)
+
+
+def test_legacy_projected_context_has_no_new_delivery_fields(native_training_source_pair):
+    document = build_training_proposal_contexts(native_training_source_pair)
+    for context in document["contexts"]:
+        for candidate in context["model_context"]["candidates"]:
+            assert "delivery" not in candidate
+        for binding in context["candidate_bindings"]:
+            assert "delivery" not in binding
+
+
+def test_abstention_identity_is_private_while_visible_context_names_the_outcome(
+    monkeypatch,
+):
+    from speech_aware_evidence_acquisition.rails import training_proposal_context as module
+
+    empty_hash = hashlib.sha256(b"").hexdigest()
+    private_delivery = {
+        "kind": "abstention",
+        "delivered_solver": False,
+        "derived_request_id": "synthetic-request/delivery/native-abstention-v1",
+        "response_sha256": "1" * 64,
+        "response_text_sha256": empty_hash,
+    }
+    source = {
+        "candidate_id": "candidate-1",
+        "run_id": "synthetic-run",
+        "attempt_id": "synthetic-attempt",
+        "manifest": {"path": "/synthetic/manifest"},
+        "reward_artifact": {"path": "/synthetic/reward"},
+    }
+    feedback = {
+        "carrier_lock_key": "synthetic-carrier",
+        "construction_roster_sha256": "2" * 64,
+        "sources": [source],
+        "groups": [{
+            "sample_id": "synthetic-sample",
+            "members": [{
+                "candidate_id": "candidate-1",
+                "reward_link_sha256": "3" * 64,
+                "source": {"response_sha256": empty_hash},
+                "native_counts": {},
+                "quality": {},
+            }],
+        }],
+    }
+    trajectory = {
+        "synthetic-sample": {
+            "trajectory": [{"selected_final": False}],
+            "evidence": [],
+            "final_response_sha256": empty_hash,
+            "delivery": private_delivery,
+        },
+    }
+    monkeypatch.setattr(module, "build_group_relative_feedback", lambda _sources: feedback)
+    monkeypatch.setattr(module, "_source_trajectories", lambda _source, _ids: trajectory)
+
+    document = build_training_proposal_contexts([source])
+    context = document["contexts"][0]
+    assert context["model_context"]["candidates"][0]["delivery"] == {
+        "kind": "abstention", "delivered_solver": False,
+    }
+    assert context["candidate_bindings"][0]["delivery"] == private_delivery
+    assert private_delivery["derived_request_id"] not in json.dumps(
+        context["model_context"], ensure_ascii=False,
+    )
 
 
 def _native_request_material(native_training_source_pair):
@@ -243,3 +466,23 @@ def test_proposal_source_requires_canonical_response_record_join(
             {"manifest": {"path": str(source), "sha256": hashlib.sha256(source.read_bytes()).hexdigest()}},
             ("slurp:train:1", "slurp:train:10"),
         )
+
+
+@pytest.mark.parametrize("hash_field", ("request_sha256", "response_sha256"))
+def test_abstention_source_rejects_mismatched_output_hash(
+    native_training_source_pair, tmp_path, hash_field,
+):
+    source, sample_ids, sample_id, _derived_id, _trace_path = _abstention_source(
+        native_training_source_pair, tmp_path,
+    )
+    manifest_path = Path(source["manifest"]["path"])
+    manifest = json.loads(manifest_path.read_text())
+    output_path = Path(manifest["outputs"]["path"])
+    rows = [json.loads(line) for line in output_path.read_text().splitlines()]
+    next(row for row in rows if row["sample_id"] == sample_id)[hash_field] = "0" * 64
+    output_path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+    manifest["outputs"]["sha256"] = _sha_file(output_path)
+    manifest_path.write_text(json.dumps(manifest))
+    source["manifest"]["sha256"] = _sha_file(manifest_path)
+    with pytest.raises(TrainingProposalContextError, match="abstention derivative"):
+        _source_trajectories(source, sample_ids)

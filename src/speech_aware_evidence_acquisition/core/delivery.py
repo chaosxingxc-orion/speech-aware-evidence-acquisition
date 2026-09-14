@@ -7,6 +7,9 @@ so the registered rule can fall back to its bound predecessor.
 
 from __future__ import annotations
 
+import hashlib
+import json
+
 from typing import Callable, Mapping, Protocol, TypeVar
 
 
@@ -66,3 +69,56 @@ def terminal_response_saturated(
     ):
         return False
     return completion_tokens >= max_tokens
+
+
+def native_abstention_records(
+    *, sample_id: str, source_contact: Mapping[str, object], finish_reason: str,
+) -> tuple[str, dict[str, object], dict[str, object]]:
+    """Derive empty delivery from a quarantined source without a new model call.
+
+    The returned request and response are deterministic derivation records.
+    Keep the original metered response under its original request ID. Callers
+    validate the complete episode receipt before selecting this no-Solver rule.
+    """
+    if not isinstance(sample_id, str) or not sample_id:
+        raise ValueError("native abstention requires a sample identity")
+    if finish_reason not in ("length", "content_filter"):
+        raise ValueError("native abstention requires a finite completion")
+    fields = ("agent_contact_id", "request_id", "request_sha256",
+              "response_sha256", "response_text_sha256")
+    if not isinstance(source_contact, Mapping):
+        raise ValueError("native abstention requires source contact custody")
+    source = {key: source_contact.get(key) for key in fields}
+    for key, value in source.items():
+        if not isinstance(value, str) or not value:
+            raise ValueError("native abstention source identity is invalid")
+        if key.endswith("sha256") and (
+            len(value) != 64 or any(c not in "0123456789abcdef" for c in value)
+        ):
+            raise ValueError("native abstention source hash is invalid")
+
+    def digest(value):
+        return hashlib.sha256(json.dumps(
+            value, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+            allow_nan=False,
+        ).encode("utf-8")).hexdigest()
+
+    request_id = f"{source['request_id']}/delivery/native-abstention-v1"
+    request = {
+        "tool_id": "native-terminal-abstention-v1",
+        "sample_id": sample_id,
+        "source": {"source_request_id": source["request_id"], "contact": source},
+        "finish_reason": finish_reason,
+        "policy": "deliver-latest-or-abstain",
+        "disposition": "no-completed-solver",
+    }
+    request["payload_sha256"] = digest(request)
+    response = {
+        "text": normalize_terminal_response(None, skipped=True),
+        "source_request_id": source["request_id"],
+        "delivery_kind": "abstention",
+        "request_sha256": request["payload_sha256"],
+    }
+    response["response_sha256"] = digest(response)
+    response["response_text_sha256"] = hashlib.sha256(b"").hexdigest()
+    return request_id, request, response

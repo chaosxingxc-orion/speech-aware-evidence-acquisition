@@ -729,6 +729,9 @@ def test_role_requires_wire_metadata_and_rejects_terminal_saturation():
     with pytest.raises(FrozenCoreRoleFiniteCompletionError, match="length") as caught:
         asyncio.run(saturated_node.invoke_direct("Review."))
     assert caught.value.completion is saturated
+    assert caught.value.role_id == "reviewer"
+    assert caught.value.execution_receipt["final_contact"]["request_id"] == saturated.request_id
+    assert len(caught.value.execution_receipt["contacts"]) == 1
     assert caught.value.finish_reason == "length"
     assert caught.value.original_message == saturated.original_message
     assert caught.value.request_sha256 == saturated.request_sha256
@@ -1075,3 +1078,27 @@ def test_final_report_authority_refuses_noncompliant_third_tool_invocation():
 def test_final_report_reservation_rejects_invalid_role_shapes(kwargs):
     with pytest.raises(ValueError, match="final report reservation"):
         NativeRoleNodeSpec(role_id="reviewer", role_kind="reviewer", prompt="Review.", **kwargs)
+
+
+def test_finite_exception_framework_copy_preserves_exact_completion():
+    import copy
+    completion = _completion(text="partial", finish_reason="length")
+    with pytest.raises(FrozenCoreRoleFiniteCompletionError) as caught:
+        project_native_assistant_message(completion)
+    copied = copy.deepcopy(caught.value)
+    assert copied.completion is completion
+    assert copied.finish_reason == "length"
+    assert copied.original_message == completion.original_message
+
+
+def test_custody_error_wrapping_finite_completion_is_not_downgraded():
+    from speech_aware_evidence_acquisition.reproduction.ojw.native_episode import (
+        _finite_error_in_chain,
+    )
+    try:
+        try:
+            project_native_assistant_message(_completion(text="partial", finish_reason="length"))
+        except FrozenCoreRoleFiniteCompletionError as error:
+            raise FrozenCoreRoleModelError("custody lost") from error
+    except FrozenCoreRoleModelError as caught:
+        assert _finite_error_in_chain(caught) is None

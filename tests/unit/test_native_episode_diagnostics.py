@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import copy
+import base64
 import hashlib
+import json
 
 import pytest
 
@@ -214,6 +216,100 @@ def _terminal_fixture(*, planner_text: str = "REVISE"):
     return policy, phase_result, output, trace
 
 
+def _finite_fixture(*, with_solver: bool, finish_reason: str = "length"):
+    """Build a finite stop whose interrupted contact remains source evidence."""
+    policy, phase_result, output, trace = _fixture()
+    phase_result = copy.deepcopy(phase_result)
+    episode = phase_result["native_episode_receipt"]
+    visits = episode["role_visits"]
+    interrupted_visit = visits[2] if with_solver else visits[1]
+    completed_visits = visits[:2] if with_solver else visits[:1]
+    interrupted_execution = copy.deepcopy(interrupted_visit["execution_receipt"])
+    rejected_contact = interrupted_execution["final_contact"]
+    rejected_request_id = rejected_contact["request_id"]
+    rejected_text = trace[f"{rejected_request_id}/response"]["text"]
+    usage = trace[f"{rejected_request_id}/response"]["usage"]
+    trace[f"{rejected_request_id}/request"]["payload"]["decoding_params"] = {
+        "max_tokens": 8,
+    }
+    wire_document = {
+        "choices": [{
+            "message": {"content": rejected_text},
+            "finish_reason": finish_reason,
+        }],
+        "usage": usage,
+    }
+    raw_wire = json.dumps(wire_document).encode()
+    trace[f"{rejected_request_id}/wire-response"] = {
+        "request_id": rejected_request_id,
+        "sample_id": "s1",
+        "finish_reason": finish_reason,
+        "response_b64": base64.b64encode(raw_wire).decode(),
+        "response_sha256": hashlib.sha256(raw_wire).hexdigest(),
+    }
+    episode.clear()
+    episode.update({
+        "role_visits": completed_visits,
+        "planner_routes": [],
+        "interrupted_role": {
+            "role_id": interrupted_visit["role_id"],
+            "stage": interrupted_visit["stage"],
+            "execution_receipt": interrupted_execution,
+        },
+        "terminal_disposition": {
+            "reason": "finite_completion",
+            "finish_reason": finish_reason,
+            "role_id": interrupted_visit["role_id"],
+            "stage": interrupted_visit["stage"],
+            "revision_count": 0,
+            "planner_accepted": False,
+            "rejected_contact": rejected_contact,
+        },
+    })
+    completed_contact_count = sum(
+        len(visit["execution_receipt"]["contacts"]) for visit in completed_visits
+    )
+    phase_result["contacts"] = phase_result["contacts"][:
+        completed_contact_count + len(interrupted_execution["contacts"])
+    ]
+    if with_solver:
+        solver_receipt = copy.deepcopy(completed_visits[-1]["execution_receipt"])
+        episode["terminal_solver_receipt"] = solver_receipt
+        final_text = trace[f"{solver_receipt['final_contact']['request_id']}/response"]["text"]
+    else:
+        episode["abstention_receipt"] = {"source_contact": rejected_contact}
+        final_text = ""
+        from speech_aware_evidence_acquisition.core.delivery import native_abstention_records
+
+        derived_id, request_document, response_document = native_abstention_records(
+            sample_id="s1",
+            source_contact=rejected_contact,
+            finish_reason=finish_reason,
+        )
+        trace[f"{derived_id}/request"] = request_document
+        trace[f"{derived_id}/response"] = response_document
+        for suffix in ("runtime-use", "posthoc-use"):
+            trace.pop(f"s1/{policy}/agent-loop/{suffix}")
+    phase_result["final_response_text"] = final_text
+    phase_result["final_response_sha256"] = _sha(final_text)
+    output = {
+        "sample_id": "s1",
+        "text": final_text,
+        "native_episode_receipt": episode,
+    }
+    if not with_solver:
+        output.update(
+            request_id=derived_id, request_sha256=request_document["payload_sha256"],
+            response_sha256=response_document["response_sha256"],
+            response_text_sha256=response_document["response_text_sha256"],
+        )
+        trace = {
+            key: value for key, value in trace.items()
+            if "/reviewer/tool-" not in key
+        }
+    return policy, phase_result, output, trace
+
+
 def test_counts_react_contacts_by_role_and_preserves_accepted_solver_custody():
     policy, phase_result, output, trace = _fixture()
 
@@ -367,6 +463,140 @@ def test_accepted_delivery_rejects_a_conflicting_terminal_disposition():
         "revision_count": 0, "planner_accepted": False,
     }
     with pytest.raises(NativeEpisodeDiagnosticError, match="must not carry"):
+        analyze_verified_native_episode_statistics(
+            sample_ids=("s1",), controller_policy_id=policy,
+            phase_results={"s1": phase_result}, output_rows={"s1": output},
+            trace_records=trace,
+        )
+
+
+@pytest.mark.parametrize("finish_reason", ["length", "content_filter"])
+def test_finite_stop_flattens_interrupted_contacts_without_completing_the_visit(
+    finish_reason,
+):
+    policy, phase_result, output, trace = _finite_fixture(
+        with_solver=True, finish_reason=finish_reason,
+    )
+    delivery = validate_native_episode_delivery_receipt(
+        phase_result["native_episode_receipt"],
+        error_type=NativeEpisodeDiagnosticError,
+    )
+    assert delivery.kind == "finite"
+
+    result = analyze_verified_native_episode_statistics(
+        sample_ids=("s1",), controller_policy_id=policy,
+        phase_results={"s1": phase_result}, output_rows={"s1": output},
+        trace_records=trace,
+    )
+
+    assert result["model_contacts"]["count"] == 4
+    assert result["model_contacts"]["by_role"] == {
+        "perception": 1, "reviewer": 2, "solver": 1,
+    }
+    assert result["planner"]["route_count"] == 0
+    assert result["finite_stops"] == {
+        "count": 1,
+        "solver_delivery_count": 1,
+        "abstention_count": 0,
+        "by_finish_reason": {finish_reason: 1},
+        "by_role": {"reviewer": 1},
+        "by_stage": {"review": 1},
+    }
+    sample = result["samples"][0]
+    assert sample["finite_solver"]["request_id"] == "request-solver-1"
+    assert sample["finite_disposition"] == {
+        "reason": "finite_completion",
+        "finish_reason": finish_reason,
+        "role_id": "reviewer",
+        "stage": "review",
+        "revision_count": 0,
+        "planner_accepted": False,
+        "rejected_contact": phase_result["native_episode_receipt"]
+        ["interrupted_role"]["execution_receipt"]["final_contact"],
+    }
+    interrupted = [
+        row for row in sample["model_contacts"] if row.get("interrupted") is True
+    ]
+    assert len(interrupted) == 2
+    assert interrupted[-1]["completion"]["stop_reason"] == finish_reason
+    assert result["native_tool_events"]["contacted_call_count"] == 1
+
+
+def test_finite_stop_without_solver_validates_deterministic_empty_abstention():
+    policy, phase_result, output, trace = _finite_fixture(with_solver=False)
+    episode = phase_result["native_episode_receipt"]
+    delivery = validate_native_episode_delivery_receipt(
+        episode, error_type=NativeEpisodeDiagnosticError,
+    )
+    assert delivery.kind == "abstention"
+    assert delivery.solver_receipt is None
+    assert delivery.final_contact == episode["terminal_disposition"]["rejected_contact"]
+
+    result = analyze_verified_native_episode_statistics(
+        sample_ids=("s1",), controller_policy_id=policy,
+        phase_results={"s1": phase_result}, output_rows={"s1": output},
+        trace_records=trace,
+    )
+
+    assert output["text"] == ""
+    assert result["model_contacts"]["count"] == 2
+    assert result["finite_stops"]["solver_delivery_count"] == 0
+    assert result["finite_stops"]["abstention_count"] == 1
+    sample = result["samples"][0]
+    assert "finite_solver" not in sample
+    assert sample["abstention"]["delivered_solver"] is False
+    assert sample["abstention"]["source_request_id"] == "request-solver-1"
+    assert sample["abstention"]["completion"]["metadata_available"] is False
+    assert "no Solver response was delivered" in (
+        sample["abstention"]["completion"]["missing_reason"]
+    )
+    assert result["model_contacts"]["final_completion_cap"] == {
+        "contact_count": 1,
+        "metadata_available_count": 0,
+        "metadata_unavailable_count": 1,
+        "completion_tokens_available_count": 0,
+        "at_cap_count": 0,
+        "at_cap_unknown_count": 1,
+        "length_stop_count": 0,
+        "length_stop_unknown_count": 1,
+    }
+
+
+def test_abstention_rejects_a_trace_derivative_that_differs_from_shared_builder():
+    policy, phase_result, output, trace = _finite_fixture(with_solver=False)
+    derived_response = next(
+        key for key in trace
+        if key.endswith("/response") and "native-abstention" in key
+    )
+    trace[derived_response] = {**trace[derived_response], "text": "partial source text"}
+
+    with pytest.raises(NativeEpisodeDiagnosticError, match="abstention derivative"):
+        analyze_verified_native_episode_statistics(
+            sample_ids=("s1",), controller_policy_id=policy,
+            phase_results={"s1": phase_result}, output_rows={"s1": output},
+            trace_records=trace,
+        )
+
+
+def test_finite_stop_rejects_wire_reason_not_bound_to_disposition():
+    policy, phase_result, output, trace = _finite_fixture(with_solver=True)
+    interrupted = phase_result["native_episode_receipt"]["interrupted_role"]
+    request_id = interrupted["execution_receipt"]["final_contact"]["request_id"]
+    trace[f"{request_id}/wire-response"]["finish_reason"] = "content_filter"
+
+    with pytest.raises(NativeEpisodeDiagnosticError, match="wire finish reason"):
+        analyze_verified_native_episode_statistics(
+            sample_ids=("s1",), controller_policy_id=policy,
+            phase_results={"s1": phase_result}, output_rows={"s1": output},
+            trace_records=trace,
+        )
+
+
+def test_finite_stop_rejects_finite_metadata_before_interrupted_final_contact():
+    policy, phase_result, output, trace = _finite_fixture(with_solver=True)
+    trace["request-reviewer-1/wire-response"] = {"finish_reason": "length"}
+
+    with pytest.raises(NativeEpisodeDiagnosticError, match="only the interrupted role final"):
         analyze_verified_native_episode_statistics(
             sample_ids=("s1",), controller_policy_id=policy,
             phase_results={"s1": phase_result}, output_rows={"s1": output},

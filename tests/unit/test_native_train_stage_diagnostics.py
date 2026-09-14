@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import hashlib
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -18,7 +18,9 @@ from speech_aware_evidence_acquisition.analysis.native_train_stage_diagnostics i
 from speech_aware_evidence_acquisition.analysis.native_candidate_stage_projections import (
     NativeCandidateStage,
     NativeCandidateStagePair,
+    project_verified_native_candidate_stages,
 )
+from speech_aware_evidence_acquisition.analysis import native_candidate_stage_projections
 from speech_aware_evidence_acquisition.analysis import native_train_stage_diagnostics as module
 from speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics import (
     ReferenceIntentRow,
@@ -121,6 +123,48 @@ def _stage_pairs(ids, c0_rows, c1_rows):
             )
         )
     return tuple(pairs)
+
+
+def _receipt_contact(marker):
+    return {
+        "agent_contact_id": f"contact-{marker}",
+        "request_id": f"request-{marker}",
+        "request_sha256": "1" * 64,
+        "response_sha256": "2" * 64,
+        "response_text_sha256": "3" * 64,
+    }
+
+
+def _visit(stage, marker):
+    contact = _receipt_contact(marker)
+    return {
+        "role_id": stage,
+        "stage": stage,
+        "execution_receipt": {"contacts": [contact], "final_contact": contact},
+    }
+
+
+def _finite_receipt(visits, interrupted, *, solver_receipt=None):
+    rejected = interrupted["execution_receipt"]["final_contact"]
+    receipt = {
+        "role_visits": visits,
+        "planner_routes": [],
+        "interrupted_role": interrupted,
+        "terminal_disposition": {
+            "reason": "finite_completion",
+            "finish_reason": "length",
+            "role_id": interrupted["role_id"],
+            "stage": interrupted["stage"],
+            "revision_count": 0,
+            "planner_accepted": False,
+            "rejected_contact": rejected,
+        },
+    }
+    if solver_receipt is None:
+        receipt["abstention_receipt"] = {"source_contact": rejected}
+    else:
+        receipt["terminal_solver_receipt"] = solver_receipt
+    return receipt
 
 
 def test_export_separates_coverage_and_conditional_correctness_without_gold_text():
@@ -260,6 +304,145 @@ def test_c0_c1_export_retains_explicit_zero_conditional_denominators():
         "denominator": 4,
         "value": 0.5,
     }
+
+
+def test_stage_diagnostics_retain_missing_stages_and_report_available_denominators():
+    ids, candidates, references, links = _world()
+    pairs = list(_stage_pairs(ids, candidates, candidates))
+    pairs[1] = NativeCandidateStagePair(ids[1], pairs[1].c0, None, False)
+    pairs[2] = NativeCandidateStagePair(ids[2], None, None, False)
+
+    result = build_native_train_candidate_stage_diagnostics(
+        stage_pairs=pairs,
+        reference_rows=references,
+        reward_links=links,
+        source=_source(ids),
+    )
+
+    assert result["cohort"]["sample_count"] == 4
+    assert result["stage_availability"] == {
+        "c0_available_count": 3,
+        "c0_unavailable_count": 1,
+        "c1_available_count": 2,
+        "c1_unavailable_count": 2,
+        "transition_eligible_count": 2,
+        "transition_unavailable_count": 2,
+    }
+    assert result["aggregate"]["initial_candidate_coverage"] == {
+        "numerator": 2, "denominator": 4, "value": 0.5,
+    }
+    assert result["aggregate"]["pre_final_candidate_coverage"] == {
+        "numerator": 1, "denominator": 4, "value": 0.25,
+    }
+    assert result["aggregate"]["initial_candidate_coverage_available_stage"] == {
+        "numerator": 2, "denominator": 3, "value": 2 / 3,
+    }
+    assert result["aggregate"]["pre_final_candidate_coverage_available_stage"] == {
+        "numerator": 1, "denominator": 2, "value": 0.5,
+    }
+    for name in ("recovered", "lost", "stable_covered", "stable_uncovered"):
+        assert result["aggregate"][name]["denominator"] == 2
+    assert result["aggregate"]["correct_answers_outside_c1"] == {
+        "numerator": 1, "denominator": 1, "value": 1.0,
+    }
+    assert result["aggregate"]["final_accuracy"] == {
+        "numerator": 2, "denominator": 4, "value": 0.5,
+    }
+    missing_c1 = result["samples"][1]
+    assert missing_c1["c0_available"] is True
+    assert missing_c1["c1_available"] is False
+    assert missing_c1["c1"] is None
+    assert missing_c1["pre_final_covered"] is False
+    assert missing_c1["recovered"] is None
+    missing_both = result["samples"][2]
+    assert missing_both["c0"] is None and missing_both["c1"] is None
+    assert missing_both["initial_covered"] is False
+    assert missing_both["transition_available"] is False
+
+
+def test_projection_never_promotes_an_interrupted_initial_perception(monkeypatch):
+    sample_id = "slurp:train:synthetic-finite-perception"
+    interrupted = _visit("perception", "interrupted-perception")
+    receipt = _finite_receipt([], interrupted)
+    source = SimpleNamespace(
+        sample_ids=(sample_id,),
+        phase_results={sample_id: {"native_episode_receipt": receipt}},
+    )
+    monkeypatch.setattr(
+        native_candidate_stage_projections,
+        "_stage",
+        lambda **_kwargs: pytest.fail("interrupted Perception must not be parsed"),
+    )
+
+    pair = project_verified_native_candidate_stages(
+        source,
+        legal_candidate_ids=frozenset({"intent-alpha"}),
+        max_candidates=1,
+    )[0]
+    assert pair.c0 is None
+    assert pair.c1 is None
+    assert pair.refresh_executed is False
+
+
+def test_projection_has_c0_but_no_c1_without_a_delivered_solver(monkeypatch):
+    sample_id = "slurp:train:synthetic-no-solver"
+    perception = _visit("perception", "completed-perception")
+    interrupted = _visit("solver", "interrupted-solver")
+    receipt = _finite_receipt([perception], interrupted)
+    source = SimpleNamespace(
+        sample_ids=(sample_id,),
+        phase_results={sample_id: {"native_episode_receipt": receipt}},
+    )
+    monkeypatch.setattr(
+        native_candidate_stage_projections,
+        "_stage",
+        lambda **kwargs: _stage(
+            sample_id, ("intent-alpha",), kwargs["visit_index"], "a"
+        ),
+    )
+
+    pair = project_verified_native_candidate_stages(
+        source,
+        legal_candidate_ids=frozenset({"intent-alpha"}),
+        max_candidates=1,
+    )[0]
+    assert pair.c0 is not None
+    assert pair.c1 is None
+    assert pair.refresh_executed is False
+
+
+def test_projection_keeps_c1_before_delivered_solver_despite_later_failed_work(
+    monkeypatch,
+):
+    sample_id = "slurp:train:synthetic-prior-solver"
+    perception_before = _visit("perception", "perception-before")
+    solver = _visit("solver", "delivered-solver")
+    perception_after = _visit("perception", "perception-after")
+    interrupted = _visit("reviewer", "interrupted-reviewer")
+    interrupted["stage"] = "review"
+    visits = [perception_before, solver, perception_after]
+    receipt = _finite_receipt(
+        visits, interrupted, solver_receipt=solver["execution_receipt"],
+    )
+    source = SimpleNamespace(
+        sample_ids=(sample_id,),
+        phase_results={sample_id: {"native_episode_receipt": receipt}},
+    )
+
+    def stage(**kwargs):
+        return _stage(sample_id, ("intent-alpha",), kwargs["visit_index"], "a")
+
+    monkeypatch.setattr(native_candidate_stage_projections, "_stage", stage)
+    pair = project_verified_native_candidate_stages(
+        source,
+        legal_candidate_ids=frozenset({"intent-alpha"}),
+        max_candidates=1,
+    )[0]
+    assert pair.c0.visit_index == 0
+    assert pair.c1.visit_index == 0
+    assert pair.refresh_executed is True
+    assert pair.refresh_used_by_delivered_solver is False
+    assert pair.refresh_after_delivered_solver is True
 
 
 def test_c0_c1_export_rejects_inconsistent_refresh_metadata():
@@ -616,3 +799,73 @@ def test_initial_support_requires_verified_candidate_stage_projection(tmp_path):
             source_repo_root=tmp_path, output_path=tmp_path / "output.json",
             reference_loader=lambda *_args, **_kwargs: (),
         )
+
+
+@pytest.mark.parametrize("delivery_kind", ("accepted", "terminal", "finite"))
+def test_delivered_solver_requires_completed_perception(monkeypatch, delivery_kind):
+    sample_id = "slurp:train:missing-perception"
+    solver = _visit("solver", "solver")
+    source = SimpleNamespace(
+        sample_ids=(sample_id,),
+        phase_results={sample_id: {"native_episode_receipt": {"role_visits": [solver]}}},
+    )
+    monkeypatch.setattr(
+        native_candidate_stage_projections, "validate_native_episode_delivery_receipt",
+        lambda *_args, **_kwargs: SimpleNamespace(
+            kind=delivery_kind, solver_receipt=solver["execution_receipt"],
+        ),
+    )
+    with pytest.raises(
+        native_candidate_stage_projections.NativeCandidateStageProjectionError,
+        match="completed Perception",
+    ):
+        project_verified_native_candidate_stages(
+            source, legal_candidate_ids=frozenset({"intent-alpha"}), max_candidates=1,
+        )
+
+
+@pytest.mark.parametrize("delivery_kind", ("accepted", "terminal"))
+def test_legacy_delivery_rejects_later_perception(monkeypatch, delivery_kind):
+    sample_id = "slurp:train:legacy-late-perception"
+    solver = _visit("solver", "solver")
+    visits = [_visit("perception", "p0"), solver, _visit("perception", "p1")]
+    source = SimpleNamespace(
+        sample_ids=(sample_id,),
+        phase_results={sample_id: {"native_episode_receipt": {"role_visits": visits}}},
+    )
+    monkeypatch.setattr(
+        native_candidate_stage_projections, "validate_native_episode_delivery_receipt",
+        lambda *_args, **_kwargs: SimpleNamespace(
+            kind=delivery_kind, solver_receipt=solver["execution_receipt"],
+        ),
+    )
+    monkeypatch.setattr(
+        native_candidate_stage_projections, "_stage",
+        lambda **kwargs: _stage(sample_id, ("intent-alpha",), kwargs["visit_index"], "a"),
+    )
+    with pytest.raises(
+        native_candidate_stage_projections.NativeCandidateStageProjectionError,
+        match="after the delivered Solver",
+    ):
+        project_verified_native_candidate_stages(
+            source, legal_candidate_ids=frozenset({"intent-alpha"}), max_candidates=1,
+        )
+
+
+def test_completed_refresh_after_fallback_is_counted_without_c1_credit():
+    ids, candidates, references, links = _world()
+    pairs = list(_stage_pairs(ids, candidates, candidates))
+    pairs[0] = replace(
+        pairs[0], refresh_executed=True, refresh_after_delivered_solver=True,
+    )
+    result = build_native_train_candidate_stage_diagnostics(
+        stage_pairs=pairs, reference_rows=references,
+        reward_links=links, source=_source(ids),
+    )
+    row = result["samples"][0]
+    assert row["refresh_executed"] is True
+    assert row["refresh_used_by_delivered_solver"] is False
+    assert row["refresh_after_delivered_solver"] is True
+    assert row["c0"] == row["c1"]
+    assert result["aggregate"]["completed_refreshes"]["numerator"] == 1
+    assert result["aggregate"]["refreshes_used_by_delivered_solver"]["numerator"] == 0

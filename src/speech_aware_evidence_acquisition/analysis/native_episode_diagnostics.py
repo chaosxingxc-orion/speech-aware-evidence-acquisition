@@ -159,6 +159,19 @@ def _cap_summary(rows: Sequence[Mapping[str, object]]) -> dict[str, int]:
     }
 
 
+def _abstention_completion() -> dict[str, object]:
+    return {
+        "metadata_available": False,
+        "missing_reason": "no Solver response was delivered; deterministic abstention",
+        "max_tokens": None,
+        "completion_tokens": None,
+        "at_cap": None,
+        "actual_length_stop": None,
+        "stop_reason": None,
+        "wire_metadata_available": False,
+    }
+
+
 def _tool_rows(
     sample_id: str,
     controller_policy_id: str,
@@ -331,6 +344,11 @@ def analyze_verified_native_episode_statistics(
     revision_counts: Counter[int] = Counter()
     terminal_actions: Counter[str] = Counter()
     terminal_revisions: Counter[int] = Counter()
+    finite_finish_reasons: Counter[str] = Counter()
+    finite_roles: Counter[str] = Counter()
+    finite_stages: Counter[str] = Counter()
+    finite_solver_deliveries = 0
+    abstentions = 0
 
     for sample_id in ids:
         phase_result = _map(phase_results[sample_id], f"phase result {sample_id!r}")
@@ -358,8 +376,14 @@ def analyze_verified_native_episode_statistics(
         contact_ids: set[str] = set()
         request_ids: set[str] = set()
         by_request: dict[str, Mapping[str, object]] = {}
-        for visit_index, raw_visit in enumerate(visits):
-            visit = _map(raw_visit, f"native role visit {sample_id!r}[{visit_index}]")
+        visit_rows: list[tuple[int | None, object, bool]] = [
+            (index, raw_visit, False) for index, raw_visit in enumerate(visits)
+        ]
+        if episode.get("interrupted_role") is not None:
+            visit_rows.append((None, episode["interrupted_role"], True))
+        for visit_index, raw_visit, interrupted in visit_rows:
+            label = "interrupted role" if interrupted else f"role visit [{visit_index}]"
+            visit = _map(raw_visit, f"native {label} {sample_id!r}")
             role_id, stage = visit.get("role_id"), visit.get("stage")
             if not all(isinstance(item, str) and item for item in (role_id, stage)):
                 raise NativeEpisodeDiagnosticError("native role visit lacks role identity")
@@ -368,12 +392,13 @@ def analyze_verified_native_episode_statistics(
             if not raw_contacts:
                 raise NativeEpisodeDiagnosticError("native role visit has no contacts")
             contacts = [
-                _contact(raw, f"native contact {sample_id!r}[{visit_index}][{index}]")
+                _contact(raw, f"native contact {sample_id!r}[{label}][{index}]")
                 for index, raw in enumerate(raw_contacts)
             ]
             if _contact(execution.get("final_contact"), "native role final contact") != contacts[-1]:
                 raise NativeEpisodeDiagnosticError("native role final contact is not its last contact")
-            executions.append((str(role_id), str(stage), execution))
+            if not interrupted:
+                executions.append((str(role_id), str(stage), execution))
             for contact_index, item in enumerate(contacts):
                 request_id = item["request_id"]
                 agent_contact_id = item["agent_contact_id"]
@@ -410,6 +435,22 @@ def analyze_verified_native_episode_statistics(
                     raise NativeEpisodeDiagnosticError(
                         f"native contact {request_id!r} differs from receipt/trace"
                     )
+                wire = trace_records.get(f"{request_id}/wire-response")
+                if interrupted:
+                    wire_mapping = wire if isinstance(wire, Mapping) else None
+                    wire_reason = wire_mapping.get("finish_reason") if wire_mapping else None
+                    if contact_index == len(contacts) - 1:
+                        disposition = _map(
+                            episode.get("terminal_disposition"), "finite terminal disposition"
+                        )
+                        if wire_reason != disposition.get("finish_reason"):
+                            raise NativeEpisodeDiagnosticError(
+                                "interrupted role wire finish reason differs from disposition"
+                            )
+                    elif wire_reason in {"length", "content_filter"}:
+                        raise NativeEpisodeDiagnosticError(
+                            "only the interrupted role final contact may have a finite wire finish reason"
+                        )
                 row = {
                     "sample_id": sample_id,
                     "role_id": role_id,
@@ -420,10 +461,12 @@ def analyze_verified_native_episode_statistics(
                     "request_id": request_id,
                     "completion": _completion(
                         request_id, request, response,
-                        trace_records.get(f"{request_id}/wire-response"),
+                        wire,
                     ),
                     **_supplied(payload, f"request payload {request_id!r}"),
                 }
+                if interrupted:
+                    row["interrupted"] = True
                 flattened.append(row)
                 all_contacts.append(row)
                 by_request[request_id] = row
@@ -482,30 +525,57 @@ def analyze_verified_native_episode_statistics(
             routes,
             error_type=NativeEpisodeDiagnosticError,
         )
-        delivered_final = _contact(
-            delivery.final_contact,
-            f"{delivery.kind} Solver final contact",
-        )
-        delivered_request_id = delivered_final["request_id"]
-        delivered_response = _map(
-            trace_records.get(f"{delivered_request_id}/response"),
-            f"{delivery.kind} Solver response",
-        )
-        if (
-            delivered_final["response_text_sha256"] != final_sha256
-            or delivered_response.get("text") != text
-        ):
-            raise NativeEpisodeDiagnosticError(
-                f"{delivery.kind} Solver response {sample_id!r} is not final output"
+        delivered_final = _contact(delivery.final_contact, f"{delivery.kind} final contact")
+        delivered_request_id: str | None = None
+        derived_request_id: str | None = None
+        if delivery.kind == "abstention":
+            from ..core.delivery import native_abstention_records
+
+            disposition = _map(delivery.terminal_disposition, "finite terminal disposition")
+            derived_request_id, request_document, response_document = (
+                native_abstention_records(
+                    sample_id=sample_id,
+                    source_contact=delivered_final,
+                    finish_reason=str(disposition["finish_reason"]),
+                )
             )
-        final_completion = _completion(
-            delivered_request_id,
-            _map(trace_records[f"{delivered_request_id}/request"], "delivered Solver request"),
-            delivered_response,
-            trace_records.get(f"{delivered_request_id}/wire-response"),
-            delivered_text=text,
-        )
-        by_request[delivered_request_id]["completion"] = final_completion
+            if (
+                text != ""
+                or output.get("request_id") != derived_request_id
+                or output.get("request_sha256") != request_document["payload_sha256"]
+                or output.get("response_sha256") != response_document["response_sha256"]
+                or output.get("response_text_sha256") != response_document["response_text_sha256"]
+                or trace_records.get(f"{derived_request_id}/request") != request_document
+                or trace_records.get(f"{derived_request_id}/response") != response_document
+            ):
+                raise NativeEpisodeDiagnosticError(
+                    f"native abstention derivative {sample_id!r} differs from shared delivery"
+                )
+            final_completion = _abstention_completion()
+        else:
+            delivered_request_id = delivered_final["request_id"]
+            delivered_response = _map(
+                trace_records.get(f"{delivered_request_id}/response"),
+                f"{delivery.kind} Solver response",
+            )
+            if (
+                delivered_final["response_text_sha256"] != final_sha256
+                or delivered_response.get("text") != text
+            ):
+                raise NativeEpisodeDiagnosticError(
+                    f"{delivery.kind} Solver response {sample_id!r} is not final output"
+                )
+            final_completion = _completion(
+                delivered_request_id,
+                _map(
+                    trace_records[f"{delivered_request_id}/request"],
+                    "delivered Solver request",
+                ),
+                delivered_response,
+                trace_records.get(f"{delivered_request_id}/wire-response"),
+                delivered_text=text,
+            )
+            by_request[delivered_request_id]["completion"] = final_completion
         final_completions.append(final_completion)
         if delivery.kind == "terminal":
             disposition = _map(delivery.terminal_disposition, "terminal disposition")
@@ -525,6 +595,15 @@ def analyze_verified_native_episode_statistics(
                 )
             terminal_actions[str(disposition["planner_action"])] += 1
             terminal_revisions[int(disposition["revision_count"])] += 1
+        elif delivery.kind in {"finite", "abstention"}:
+            disposition = _map(delivery.terminal_disposition, "finite terminal disposition")
+            finite_finish_reasons[str(disposition["finish_reason"])] += 1
+            finite_roles[str(disposition["role_id"])] += 1
+            finite_stages[str(disposition["stage"])] += 1
+            if delivery.kind == "finite":
+                finite_solver_deliveries += 1
+            else:
+                abstentions += 1
 
         tools = _tool_rows(sample_id, controller_policy_id, trace_records, by_request)
         consumption = _consumption(
@@ -546,10 +625,25 @@ def analyze_verified_native_episode_statistics(
         }
         if delivery.kind == "accepted":
             sample["accepted_solver"] = delivery_record
-        else:
+        elif delivery.kind == "terminal":
             sample["terminal_solver"] = delivery_record
             sample["terminal_disposition"] = dict(
                 _map(delivery.terminal_disposition, "terminal disposition")
+            )
+        elif delivery.kind == "finite":
+            sample["finite_solver"] = delivery_record
+            sample["finite_disposition"] = dict(
+                _map(delivery.terminal_disposition, "finite terminal disposition")
+            )
+        else:
+            sample["abstention"] = {
+                "derived_request_id": derived_request_id,
+                "source_request_id": delivered_final["request_id"],
+                "delivered_solver": False,
+                "completion": final_completion,
+            }
+            sample["finite_disposition"] = dict(
+                _map(delivery.terminal_disposition, "finite terminal disposition")
             )
         samples.append(sample)
 
@@ -653,6 +747,15 @@ def analyze_verified_native_episode_statistics(
             "by_revision_count": {
                 str(key): value for key, value in sorted(terminal_revisions.items())
             },
+        }
+    if finite_finish_reasons:
+        result["finite_stops"] = {
+            "count": sum(finite_finish_reasons.values()),
+            "solver_delivery_count": finite_solver_deliveries,
+            "abstention_count": abstentions,
+            "by_finish_reason": dict(sorted(finite_finish_reasons.items())),
+            "by_role": dict(sorted(finite_roles.items())),
+            "by_stage": dict(sorted(finite_stages.items())),
         }
     return result
 

@@ -61,9 +61,18 @@ class NativeCandidateStagePair:
     """C0 and C1 for one sample, selected by verified execution order."""
 
     sample_id: str
-    c0: NativeCandidateStage
-    c1: NativeCandidateStage
+    c0: NativeCandidateStage | None
+    c1: NativeCandidateStage | None
     refresh_executed: bool
+    refresh_after_delivered_solver: bool = False
+
+    @property
+    def refresh_used_by_delivered_solver(self) -> bool:
+        """Identify a completed refresh that supplied the delivered Solver."""
+        return (
+            self.c0 is not None and self.c1 is not None
+            and self.c0.visit_index != self.c1.visit_index
+        )
 
 
 def _mapping(value: object, label: str) -> Mapping[str, object]:
@@ -253,66 +262,72 @@ def project_verified_native_candidate_stages(
         delivery = validate_native_episode_delivery_receipt(
             receipt, role_visits=visits, error_type=NativeCandidateStageProjectionError
         )
-        delivered_solver_indices = [
-            index
+        delivered_solver_indices = [] if delivery.solver_receipt is None else [
+            (index, _mapping(raw_visit, f"role visit {sample_id!r}[{index}]"))
             for index, raw_visit in enumerate(visits)
             if isinstance(raw_visit, Mapping)
             and raw_visit.get("stage") == "solver"
             and raw_visit.get("execution_receipt") == delivery.solver_receipt
         ]
-        if len(delivered_solver_indices) != 1:
+        if delivery.solver_receipt is not None and len(delivered_solver_indices) != 1:
             raise NativeCandidateStageProjectionError(
                 f"delivered Solver visit is not unique for {sample_id!r}"
             )
-        solver_index = delivered_solver_indices[0]
-        perception_visits = [
+        solver_index = (
+            delivered_solver_indices[0][0] if delivered_solver_indices else None
+        )
+        all_perception_visits = [
             (index, _mapping(raw_visit, f"role visit {sample_id!r}[{index}]"))
             for index, raw_visit in enumerate(visits)
-            if isinstance(raw_visit, Mapping)
-            and raw_visit.get("stage") == "perception"
-            and index < solver_index
+            if isinstance(raw_visit, Mapping) and raw_visit.get("stage") == "perception"
         ]
-        if not perception_visits or perception_visits[0][0] != 0:
+        if all_perception_visits and all_perception_visits[0][0] != 0:
             raise NativeCandidateStageProjectionError(
                 f"C0 must be the first actual role visit for {sample_id!r}"
             )
-        if any(
-            isinstance(raw_visit, Mapping)
-            and raw_visit.get("stage") == "perception"
-            and index > solver_index
-            for index, raw_visit in enumerate(visits)
-        ):
+        later_perception = (
+            solver_index is not None
+            and any(index > solver_index for index, _ in all_perception_visits)
+        )
+        if later_perception and delivery.kind != "finite":
             raise NativeCandidateStageProjectionError(
                 f"Perception appears after the delivered Solver for {sample_id!r}"
             )
-        c0_index, c0_visit = perception_visits[0]
-        c1_index, c1_visit = perception_visits[-1]
-        c0 = _stage(
-            source=source,
-            sample_id=sample_id,
-            result=result,
-            visit_index=c0_index,
-            visit=c0_visit,
-            legal_candidate_ids=legal_candidate_ids,
-            max_candidates=max_candidates,
-            projection_policy=projection_policy,
-        )
-        c1 = c0 if c1_index == c0_index else _stage(
-            source=source,
-            sample_id=sample_id,
-            result=result,
-            visit_index=c1_index,
-            visit=c1_visit,
-            legal_candidate_ids=legal_candidate_ids,
-            max_candidates=max_candidates,
-            projection_policy=projection_policy,
-        )
+        if solver_index is not None and not any(
+            index < solver_index for index, _ in all_perception_visits
+        ):
+            raise NativeCandidateStageProjectionError(
+                f"delivered Solver requires a completed Perception for {sample_id!r}"
+            )
+        c0 = None
+        if all_perception_visits:
+            c0_index, c0_visit = all_perception_visits[0]
+            c0 = _stage(
+                source=source, sample_id=sample_id, result=result,
+                visit_index=c0_index, visit=c0_visit,
+                legal_candidate_ids=legal_candidate_ids,
+                max_candidates=max_candidates, projection_policy=projection_policy,
+            )
+        c1 = None
+        if solver_index is not None:
+            prior_perceptions = [
+                item for item in all_perception_visits if item[0] < solver_index
+            ]
+            if prior_perceptions:
+                c1_index, c1_visit = prior_perceptions[-1]
+                c1 = c0 if c0 is not None and c1_index == c0.visit_index else _stage(
+                    source=source, sample_id=sample_id, result=result,
+                    visit_index=c1_index, visit=c1_visit,
+                    legal_candidate_ids=legal_candidate_ids,
+                    max_candidates=max_candidates, projection_policy=projection_policy,
+                )
         pairs.append(
             NativeCandidateStagePair(
                 sample_id=sample_id,
                 c0=c0,
                 c1=c1,
-                refresh_executed=c1.visit_index != c0.visit_index,
+                refresh_executed=len(all_perception_visits) > 1,
+                refresh_after_delivered_solver=later_perception,
             )
         )
     return tuple(pairs)

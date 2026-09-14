@@ -12,9 +12,11 @@ import json
 from pathlib import Path
 from typing import Mapping
 
+from ..core.delivery import native_abstention_records
 from ..core.preparation import hash_stable_file, prepare_artifact
 from .group_relative_feedback import build_group_relative_feedback
 from .hashing import content_hash
+from .native_episode_receipt import validate_native_episode_delivery_receipt
 from .native_training_context import NativeTrainingContextProjector
 
 TRAINING_PROPOSAL_CONTEXT_SCHEMA = "saea-training-proposal-contexts-v2"
@@ -48,7 +50,7 @@ def _source_trajectories(source, sample_ids):
                 _read_pinned(manifest["outputs"], "proposal source outputs").splitlines())}
     if set(outputs) != set(sample_ids):
         raise TrainingProposalContextError("proposal outputs do not cover the exact construction cohort")
-    responses, completions, request_ids = {}, {}, set()
+    responses, completions, derivatives, request_ids = {}, {}, {}, set()
     requests = {sid: [] for sid in sample_ids}
     for row in documents:
         if row["channel"] == "MODEL_RESPONSE":
@@ -56,12 +58,17 @@ def _source_trajectories(source, sample_ids):
             if rid in responses or row["record_id"] != rid + "/response":
                 raise TrainingProposalContextError("ambiguous source response")
             responses[rid] = row["payload"]
-        elif row["channel"] == "TOOL" and row["payload"].get("schema") == "saea-native-completion-v1":
-            completion = row["payload"]
-            rid = completion["request_id"]
-            if rid in completions or row["record_id"] != rid + "/native-completion":
-                raise TrainingProposalContextError("ambiguous native source completion")
-            completions[rid] = completion
+        elif row["channel"] == "TOOL":
+            if row["payload"].get("schema") == "saea-native-completion-v1":
+                completion = row["payload"]
+                rid = completion["request_id"]
+                if rid in completions or row["record_id"] != rid + "/native-completion":
+                    raise TrainingProposalContextError("ambiguous native source completion")
+                completions[rid] = completion
+            elif "/delivery/native-abstention-v1/" in row["record_id"]:
+                if row["record_id"] in derivatives:
+                    raise TrainingProposalContextError("ambiguous native abstention derivative")
+                derivatives[row["record_id"]] = row["payload"]
         elif row["channel"] == "MODEL_REQUEST":
             request = row["payload"]["payload"]
             if "construction_targets" in request:
@@ -80,6 +87,48 @@ def _source_trajectories(source, sample_ids):
         raise TrainingProposalContextError("source completion has no recorded request")
     result = {}
     for sid in sample_ids:
+        abstention = None
+        receipt = outputs[sid].get("native_episode_receipt")
+        if receipt is not None:
+            delivery = validate_native_episode_delivery_receipt(
+                receipt, error_type=TrainingProposalContextError,
+            )
+            if delivery.kind == "abstention":
+                disposition = delivery.terminal_disposition
+                derived_id, request_document, response_document = native_abstention_records(
+                    sample_id=sid,
+                    source_contact=delivery.final_contact,
+                    finish_reason=disposition["finish_reason"],
+                )
+                derivative_ids = {
+                    record_id for record_id in derivatives
+                    if record_id.startswith(derived_id + "/")
+                }
+                if (
+                    outputs[sid].get("request_id") != derived_id
+                    or derivative_ids != {
+                        derived_id + "/request", derived_id + "/response",
+                    }
+                    or derivatives.get(derived_id + "/request") != request_document
+                    or derivatives.get(derived_id + "/response") != response_document
+                    or any(
+                        outputs[sid].get(field) != response_document[field]
+                        for field in (
+                            "request_sha256", "response_sha256", "response_text_sha256",
+                        )
+                    )
+                    or any(outputs[sid].get(field, "") != "" for field in ("text", "response"))
+                ):
+                    raise TrainingProposalContextError(
+                        "native abstention derivative differs from shared delivery"
+                    )
+                abstention = {
+                    "kind": "abstention",
+                    "delivered_solver": False,
+                    "derived_request_id": derived_id,
+                    "response_sha256": response_document["response_sha256"],
+                    "response_text_sha256": response_document["response_text_sha256"],
+                }
         trajectory = []
         native = NativeTrainingContextProjector()
         evidence_pool, evidence_labels = [], {}
@@ -119,23 +168,31 @@ def _source_trajectories(source, sample_ids):
                 step.update(native_fields)
             trajectory.append(step)
         selected = [step for step in trajectory if step["selected_final"]]
-        if len(selected) != 1:
+        if abstention is None and len(selected) != 1:
             raise TrainingProposalContextError("source has no unique selected final request")
-        final = selected[0]
         output_hash = outputs[sid].get("response_text_sha256")
-        if (
-            not final["response_observed"]
-            or not isinstance(output_hash, str)
-            or hashlib.sha256(final["response"].encode()).hexdigest() != output_hash
-        ):
+        if abstention is None:
+            final = selected[0]
+            if (
+                not final["response_observed"]
+                or not isinstance(output_hash, str)
+                or hashlib.sha256(final["response"].encode()).hexdigest() != output_hash
+            ):
+                raise TrainingProposalContextError(
+                    "selected response does not match output response lineage"
+                )
+        elif selected:
             raise TrainingProposalContextError(
-                "selected response does not match output response lineage"
+                "native abstention must not select a model response as final"
             )
-        result[sid] = {
+        projected = {
             "trajectory": trajectory,
             "evidence": evidence_pool,
             "final_response_sha256": output_hash,
         }
+        if abstention is not None:
+            projected["delivery"] = abstention
+        result[sid] = projected
     return result
 
 
@@ -149,9 +206,11 @@ def build_training_proposal_contexts(source_bindings):
         for group in feedback["groups"]:
             sid = group["sample_id"]
             candidates = []
+            candidate_deliveries = []
             for i, member in enumerate(group["members"]):
                 projected = dict(trajectories[i][sid])
                 final_response_sha256 = projected.pop("final_response_sha256")
+                delivery = projected.pop("delivery", None)
                 if final_response_sha256 != member["source"]["response_sha256"]:
                     raise TrainingProposalContextError(
                         "selected response differs from verified reward response lineage"
@@ -159,8 +218,12 @@ def build_training_proposal_contexts(source_bindings):
                 candidates.append({
                     "label": f"option-{i + 1}",
                     **projected,
+                    **({"delivery": {
+                        "kind": "abstention", "delivered_solver": False,
+                    }} if delivery is not None else {}),
                     "native_counts": member["native_counts"], "quality": member["quality"],
                 })
+                candidate_deliveries.append(delivery)
             visible = {"task_family": feedback["carrier_lock_key"], "candidates": candidates}
             serialized = json.dumps(visible, ensure_ascii=False)
             hidden = set(ids)
@@ -178,7 +241,9 @@ def build_training_proposal_contexts(source_bindings):
                 "candidate_bindings": [
                     {"label": f"option-{i + 1}", "candidate_id": member["candidate_id"],
                      "reward_link_sha256": member["reward_link_sha256"],
-                     "source": member["source"]}
+                     "source": member["source"],
+                     **({"delivery": candidate_deliveries[i]}
+                        if candidate_deliveries[i] is not None else {})}
                     for i, member in enumerate(group["members"])
                 ],
                 "model_context": visible, "model_context_sha256": content_hash(visible),

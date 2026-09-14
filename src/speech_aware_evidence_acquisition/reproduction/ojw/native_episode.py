@@ -26,7 +26,11 @@ from openjiuwen.core.workflow import (
     create_workflow_session,
 )
 
-from .native_roles import NativeRoleNode
+from .native_roles import (
+    FrozenCoreRoleFiniteCompletionError,
+    FrozenCoreRoleModelError,
+    NativeRoleNode,
+)
 
 
 class NativeEpisodeError(RuntimeError):
@@ -65,6 +69,7 @@ class NativeEpisodeSpec:
     exhaustion_policy: str = "raise"
     refresh_action: str | None = None
     max_candidate_refreshes: int = 0
+    finite_completion_policy: str = "raise"
 
     def __post_init__(self) -> None:
         if not isinstance(self.episode_id, str) or not self.episode_id:
@@ -99,6 +104,12 @@ class NativeEpisodeSpec:
             or not 1 <= self.max_candidate_refreshes <= self.max_revisions
         ):
             raise ValueError("candidate refresh must have a distinct action and a bounded count")
+        if (
+            not isinstance(self.finite_completion_policy, str)
+            or self.finite_completion_policy
+            not in {"raise", "deliver-latest-or-abstain"}
+        ):
+            raise ValueError("finite_completion_policy is invalid")
 
 
 @dataclass(frozen=True)
@@ -142,16 +153,49 @@ class _InitialState(WorkflowComponent):
         }
 
 
+@dataclass
+class _RoleCheckpoint:
+    """Invocation-local committed state immediately before one role contact."""
+
+    state: dict[str, object] | None = None
+    role_id: str | None = None
+    stage: str | None = None
+
+    def capture(
+        self,
+        *,
+        state: Mapping[str, object],
+        role_id: str,
+        stage: str,
+    ) -> None:
+        self.state = copy.deepcopy(dict(state))
+        self.role_id = role_id
+        self.stage = stage
+
+
 class _RoleQuery(WorkflowComponent):
-    def __init__(self, role_id: str, builder: RoleInputBuilder) -> None:
+    def __init__(
+        self,
+        role_id: str,
+        stage: str,
+        builder: RoleInputBuilder,
+        checkpoint: _RoleCheckpoint,
+    ) -> None:
         super().__init__()
         self._role_id = role_id
+        self._stage = stage
         self._builder = builder
+        self._checkpoint = checkpoint
 
     async def invoke(
         self, inputs: Input, session: Session, context: ModelContext
     ) -> Output:
         state = _state(inputs)
+        self._checkpoint.capture(
+            state=state,
+            role_id=self._role_id,
+            stage=self._stage,
+        )
         query = self._builder(self._role_id, copy.deepcopy(state))
         if not isinstance(query, str) or not query:
             raise NativeEpisodeError(
@@ -375,6 +419,113 @@ def _execution_receipt(role: Mapping[str, object]) -> dict[str, object]:
     return {"contacts": normalized, "final_contact": dict(normalized[-1])}
 
 
+def _finite_error_in_chain(
+    error: BaseException,
+) -> FrozenCoreRoleFiniteCompletionError | None:
+    cause: BaseException | None = error
+    seen: set[int] = set()
+    while cause is not None and id(cause) not in seen:
+        if isinstance(cause, FrozenCoreRoleFiniteCompletionError):
+            return cause
+        if isinstance(cause, FrozenCoreRoleModelError):
+            return None
+        seen.add(id(cause))
+        cause = cause.__cause__ or cause.__context__
+    return None
+
+
+def _finite_terminal_outcome(
+    error: FrozenCoreRoleFiniteCompletionError,
+    checkpoint: _RoleCheckpoint,
+) -> dict[str, object]:
+    if (
+        checkpoint.state is None
+        or checkpoint.role_id is None
+        or checkpoint.stage is None
+    ):
+        raise NativeEpisodeError(
+            "finite completion has no invocation-local role checkpoint"
+        )
+    error_role_id = getattr(error, "role_id", None)
+    if error_role_id != checkpoint.role_id:
+        raise NativeEpisodeError(
+            "finite completion role does not match its role checkpoint"
+        )
+    completion = error.completion
+    rejected_contact = {
+        "agent_contact_id": completion.agent_contact_id,
+        "request_id": completion.request_id,
+        "request_sha256": completion.request_sha256,
+        "response_sha256": completion.response_sha256,
+        "response_text_sha256": completion.response_text_sha256,
+    }
+    normalized_rejected = _execution_receipt(
+        {
+            "execution_receipt": {
+                "contacts": [rejected_contact],
+                "final_contact": rejected_contact,
+            }
+        }
+    )["final_contact"]
+    interrupted_receipt = getattr(error, "execution_receipt", None)
+    if not isinstance(interrupted_receipt, Mapping):
+        raise NativeEpisodeError(
+            "finite completion has no interrupted execution receipt"
+        )
+    normalized_interrupted = _execution_receipt(
+        {"execution_receipt": interrupted_receipt}
+    )
+    if normalized_interrupted["final_contact"] != normalized_rejected:
+        raise NativeEpisodeError(
+            "finite completion contact does not match interrupted role receipt"
+        )
+
+    state = copy.deepcopy(checkpoint.state)
+    revision_count = state.get("revision_count")
+    if isinstance(revision_count, bool) or not isinstance(revision_count, int):
+        raise NativeEpisodeError(
+            "finite completion checkpoint has invalid revision count"
+        )
+    state.pop("accepted_solver_receipt", None)
+    state["interrupted_role"] = {
+        "role_id": checkpoint.role_id,
+        "stage": checkpoint.stage,
+        "execution_receipt": copy.deepcopy(dict(interrupted_receipt)),
+    }
+    state["terminal_disposition"] = {
+        "reason": "finite_completion",
+        "finish_reason": error.finish_reason,
+        "role_id": checkpoint.role_id,
+        "stage": checkpoint.stage,
+        "revision_count": revision_count,
+        "planner_accepted": False,
+        "rejected_contact": dict(normalized_rejected),
+    }
+
+    solver = state.get("latest_solver")
+    if isinstance(solver, Mapping) and solver.get("delivery_eligible") is True:
+        _execution_receipt(solver)
+        exact_receipt = solver.get("execution_receipt")
+        if not isinstance(exact_receipt, Mapping):
+            raise NativeEpisodeError(
+                "finite completion latest Solver has no execution receipt"
+            )
+        state.pop("abstention_receipt", None)
+        state["terminal_solver_receipt"] = copy.deepcopy(dict(exact_receipt))
+        delivery = copy.deepcopy(dict(solver))
+    else:
+        state.pop("terminal_solver_receipt", None)
+        state["abstention_receipt"] = {
+            "source_contact": dict(normalized_rejected),
+        }
+        delivery = {
+            "actor_output": "",
+            "result_type": "abstention",
+            "delivery_eligible": False,
+        }
+    return {"state": state, "delivery": delivery}
+
+
 def _first_available_state(component_ids: Sequence[str]):
     ids = tuple(component_ids)
 
@@ -418,6 +569,7 @@ class NativeEpisodeWorkflow:
     def _add_role(
         self,
         workflow: Workflow,
+        checkpoint: _RoleCheckpoint,
         *,
         stage_id: str,
         node: NativeRoleNode,
@@ -429,7 +581,12 @@ class NativeEpisodeWorkflow:
         apply_id = f"{stage_id}_state"
         workflow.add_workflow_comp(
             query_id,
-            _RoleQuery(node.spec.role_id, self._role_input_builder),
+            _RoleQuery(
+                node.spec.role_id,
+                kind,
+                self._role_input_builder,
+                checkpoint,
+            ),
             wait_for_all=False,
             inputs_schema=_first_available_state(predecessors),
         )
@@ -452,7 +609,7 @@ class NativeEpisodeWorkflow:
         workflow.add_connection(role_id, apply_id)
         return apply_id
 
-    def _build(self) -> Workflow:
+    def _build(self, checkpoint: _RoleCheckpoint) -> Workflow:
         workflow = Workflow()
         workflow.set_start_comp(
             "start",
@@ -473,6 +630,7 @@ class NativeEpisodeWorkflow:
         workflow.add_connection("start", "episode_state")
         perception = self._add_role(
             workflow,
+            checkpoint,
             stage_id="perception",
             node=self.nodes.perception,
             predecessors=("episode_state",),
@@ -484,6 +642,7 @@ class NativeEpisodeWorkflow:
         for revision in range(self.spec.max_revisions + 1):
             solver = self._add_role(
                 workflow,
+                checkpoint,
                 stage_id=f"solver_{revision}",
                 node=self.nodes.solver,
                 predecessors=solver_predecessors,
@@ -491,6 +650,7 @@ class NativeEpisodeWorkflow:
             )
             reviewer = self._add_role(
                 workflow,
+                checkpoint,
                 stage_id=f"reviewer_{revision}",
                 node=self.nodes.reviewer,
                 predecessors=(solver,),
@@ -498,6 +658,7 @@ class NativeEpisodeWorkflow:
             )
             planner = self._add_role(
                 workflow,
+                checkpoint,
                 stage_id=f"planner_{revision}",
                 node=self.nodes.planner,
                 predecessors=(reviewer,),
@@ -571,6 +732,7 @@ class NativeEpisodeWorkflow:
                 )
                 refreshed = self._add_role(
                     workflow,
+                    checkpoint,
                     stage_id=f"perception_refresh_{revision}",
                     node=self.nodes.perception,
                     predecessors=(refresh_id,),
@@ -603,6 +765,7 @@ class NativeEpisodeWorkflow:
                 )
                 acquired = self._add_role(
                     workflow,
+                    checkpoint,
                     stage_id=f"acquisition_{revision}",
                     node=self.nodes.acquisition,
                     predecessors=(acquire_advance,),
@@ -628,14 +791,25 @@ class NativeEpisodeWorkflow:
         *,
         session: Session | None = None,
     ) -> dict[str, object]:
+        checkpoint = _RoleCheckpoint()
         try:
-            output = await self._build().invoke(
+            output = await self._build(checkpoint).invoke(
                 inputs={"original_query": original_query, "candidates": candidates},
                 session=(
                     session if session is not None else create_workflow_session()
                 ),
             )
         except Exception as error:
+            finite_error = _finite_error_in_chain(error)
+            if (
+                finite_error is not None
+                and self.spec.finite_completion_policy
+                == "deliver-latest-or-abstain"
+            ):
+                try:
+                    return _finite_terminal_outcome(finite_error, checkpoint)
+                except NativeEpisodeError as terminal_error:
+                    raise NativeEpisodeError(str(terminal_error)) from error
             cause: BaseException | None = error
             seen: set[int] = set()
             while cause is not None and id(cause) not in seen:

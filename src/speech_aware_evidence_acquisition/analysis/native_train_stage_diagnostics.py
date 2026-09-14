@@ -115,6 +115,7 @@ def build_native_train_stage_diagnostics(
     reference_rows: Sequence[ReferenceIntentRow],
     reward_links: Sequence[object],
     source: Mapping[str, object],
+    _availability: Sequence[bool] | None = None,
 ) -> dict[str, object]:
     """Join exact-cohort candidates, references, and final native correctness.
 
@@ -128,12 +129,21 @@ def build_native_train_stage_diagnostics(
     if not candidates:
         raise NativeTrainStageDiagnosticError("diagnostic cohort must be nonempty")
     ids = tuple(row.sample_id for row in candidates)
+    availability = (
+        tuple(True for _ in candidates)
+        if _availability is None else tuple(_availability)
+    )
+    if len(availability) != len(candidates) or any(
+        not isinstance(item, bool) for item in availability
+    ):
+        raise NativeTrainStageDiagnosticError("candidate availability is malformed")
     if len(ids) != len(set(ids)):
         raise NativeTrainStageDiagnosticError("candidate rows contain duplicate samples")
-    for row in candidates:
+    for row, available in zip(candidates, availability, strict=True):
         if (
             not isinstance(row, SourceCandidateRow)
-            or not row.candidate_ids
+            or (available and not row.candidate_ids)
+            or (not available and bool(row.candidate_ids))
             or len(row.candidate_ids) > 3
             or len(row.candidate_ids) != len(set(row.candidate_ids))
             or any(not isinstance(item, str) or not item for item in row.candidate_ids)
@@ -185,7 +195,9 @@ def build_native_train_stage_diagnostics(
         raise NativeTrainStageDiagnosticError("reward links name different construction rosters")
 
     samples = []
-    for candidate, reference, link in zip(candidates, references, links, strict=True):
+    for candidate, reference, link, available in zip(
+        candidates, references, links, availability, strict=True
+    ):
         try:
             link.validate()
             counts = link.native_score_vector["per_sample"]
@@ -207,12 +219,14 @@ def build_native_train_stage_diagnostics(
             raise NativeTrainStageDiagnosticError(
                 "final intent correctness must be a binary native score"
             )
-        covered = reference.intent_id in set(candidate.candidate_ids)
+        covered = available and reference.intent_id in set(candidate.candidate_ids)
         correct = bool(exact)
         samples.append(
             {
                 "sample_id": candidate.sample_id,
-                "initial_candidate_width": len(candidate.candidate_ids),
+                "initial_candidate_width": (
+                    len(candidate.candidate_ids) if available else None
+                ),
                 "gold_covered": covered,
                 "final_correct": correct,
                 "covered_and_correct": covered and correct,
@@ -272,9 +286,25 @@ def build_native_train_candidate_stage_diagnostics(
     if len(pair_ids) != len(set(pair_ids)):
         raise NativeTrainStageDiagnosticError("candidate stage pairs contain duplicate samples")
     if any(
-        pair.c0.visit_index > pair.c1.visit_index
-        or pair.refresh_executed != (pair.c0.visit_index != pair.c1.visit_index)
-        or (not pair.refresh_executed and pair.c0 != pair.c1)
+        pair.c0 is None and pair.c1 is not None
+        or (
+            pair.c0 is not None and pair.c1 is not None
+            and pair.c0.visit_index > pair.c1.visit_index
+        )
+        or type(pair.refresh_executed) is not bool
+        or type(pair.refresh_after_delivered_solver) is not bool
+        or pair.refresh_executed != (
+            pair.refresh_used_by_delivered_solver or pair.refresh_after_delivered_solver
+        )
+        or (
+            pair.refresh_after_delivered_solver
+            and (pair.c0 is None or pair.c1 is None)
+        )
+        or (
+            not pair.refresh_used_by_delivered_solver
+            and pair.c0 is not None and pair.c1 is not None
+            and pair.c0 != pair.c1
+        )
         for pair in pairs
     ):
         raise NativeTrainStageDiagnosticError(
@@ -282,54 +312,91 @@ def build_native_train_candidate_stage_diagnostics(
         )
     c0_document = build_native_train_stage_diagnostics(
         candidate_rows=tuple(
-            SourceCandidateRow(pair.sample_id, pair.c0.candidate_ids) for pair in pairs
+            SourceCandidateRow(
+                pair.sample_id, () if pair.c0 is None else pair.c0.candidate_ids
+            )
+            for pair in pairs
         ),
         reference_rows=reference_rows,
         reward_links=reward_links,
         source=source,
+        _availability=tuple(pair.c0 is not None for pair in pairs),
     )
     c1_document = build_native_train_stage_diagnostics(
         candidate_rows=tuple(
-            SourceCandidateRow(pair.sample_id, pair.c1.candidate_ids) for pair in pairs
+            SourceCandidateRow(
+                pair.sample_id, () if pair.c1 is None else pair.c1.candidate_ids
+            )
+            for pair in pairs
         ),
         reference_rows=reference_rows,
         reward_links=reward_links,
         source=source,
+        _availability=tuple(pair.c1 is not None for pair in pairs),
     )
     samples = []
     for pair, c0, c1 in zip(
         pairs, c0_document["samples"], c1_document["samples"], strict=True
     ):
+        c0_available = pair.c0 is not None
+        c1_available = pair.c1 is not None
+        transition_available = c0_available and c1_available
         c0_covered = bool(c0["gold_covered"])
         c1_covered = bool(c1["gold_covered"])
         correct = bool(c1["final_correct"])
         samples.append(
             {
                 "sample_id": pair.sample_id,
-                "c0": pair.c0.diagnostic_json(),
-                "c1": pair.c1.diagnostic_json(),
+                "c0": None if pair.c0 is None else pair.c0.diagnostic_json(),
+                "c1": None if pair.c1 is None else pair.c1.diagnostic_json(),
+                "c0_available": c0_available,
+                "c1_available": c1_available,
+                "transition_available": transition_available,
                 "refresh_executed": pair.refresh_executed,
+                "refresh_used_by_delivered_solver": pair.refresh_used_by_delivered_solver,
+                "refresh_after_delivered_solver": pair.refresh_after_delivered_solver,
                 "initial_covered": c0_covered,
                 "pre_final_covered": c1_covered,
-                "recovered": not c0_covered and c1_covered,
-                "lost": c0_covered and not c1_covered,
-                "stable_covered": c0_covered and c1_covered,
-                "stable_uncovered": not c0_covered and not c1_covered,
+                "recovered": (
+                    not c0_covered and c1_covered if transition_available else None
+                ),
+                "lost": (
+                    c0_covered and not c1_covered if transition_available else None
+                ),
+                "stable_covered": (
+                    c0_covered and c1_covered if transition_available else None
+                ),
+                "stable_uncovered": (
+                    not c0_covered and not c1_covered if transition_available else None
+                ),
                 "final_correct": correct,
-                "correct_outside_c1": correct and not c1_covered,
+                "correct_outside_c1": (
+                    correct and not c1_covered if c1_available else None
+                ),
             }
         )
 
     total = len(samples)
+    c0_available = sum(row["c0_available"] for row in samples)
+    c1_available = sum(row["c1_available"] for row in samples)
+    transition_eligible = sum(row["transition_available"] for row in samples)
     initial_covered = sum(row["initial_covered"] for row in samples)
     pre_final_covered = sum(row["pre_final_covered"] for row in samples)
-    stable_covered = sum(row["stable_covered"] for row in samples)
+    stable_covered = sum(row["stable_covered"] is True for row in samples)
     final_correct = sum(row["final_correct"] for row in samples)
     return {
         "schema": STAGE_OUTPUT_SCHEMA,
         "status": "source-verified-diagnostic",
         "source": dict(source),
         "cohort": dict(c0_document["cohort"]),
+        "stage_availability": {
+            "c0_available_count": c0_available,
+            "c0_unavailable_count": total - c0_available,
+            "c1_available_count": c1_available,
+            "c1_unavailable_count": total - c1_available,
+            "transition_eligible_count": transition_eligible,
+            "transition_unavailable_count": total - transition_eligible,
+        },
         "projection": {
             "schema": PROJECTION_CONFIG_SCHEMA,
             "policy_id": PROJECTION_POLICY_ID,
@@ -341,20 +408,50 @@ def build_native_train_candidate_stage_diagnostics(
         "semantics": {
             "c0": "first actual Perception visit",
             "c1": "last actual Perception before the delivered final Solver visit",
-            "no_refresh": "C0 and C1 retain the same verified source",
+            "unavailable_stage_coverage": (
+                "Unconditional full-roster coverage counts an unavailable stage as not covered."
+            ),
+            "refresh_executed": "At least two Perception visits completed.",
+            "refresh_used_by_delivered_solver": (
+                "C1 differs from C0 by verified visit, before the delivered Solver."
+            ),
+            "refresh_after_delivered_solver": (
+                "Later completed Perception is counted as work but supplies no C1 credit."
+            ),
+            "no_refresh": "C0 and C1 retain the same verified source when both exist",
             "final_correct": "official per-sample scenario_action_exact",
             "gold_or_reference_strings_exported": False,
             "conditional_accuracy_scope": "the named covered set only",
             "causal_or_counterfactual_claim": None,
         },
         "aggregate": {
+            "completed_refreshes": _ratio(
+                sum(row["refresh_executed"] for row in samples), total
+            ),
+            "refreshes_used_by_delivered_solver": _ratio(
+                sum(row["refresh_used_by_delivered_solver"] for row in samples), total
+            ),
+            "refreshes_after_delivered_solver": _ratio(
+                sum(row["refresh_after_delivered_solver"] for row in samples), total
+            ),
             "initial_candidate_coverage": _ratio(initial_covered, total),
             "pre_final_candidate_coverage": _ratio(pre_final_covered, total),
-            "recovered": _ratio(sum(row["recovered"] for row in samples), total),
-            "lost": _ratio(sum(row["lost"] for row in samples), total),
-            "stable_covered": _ratio(stable_covered, total),
+            "initial_candidate_coverage_available_stage": _ratio(
+                initial_covered, c0_available
+            ),
+            "pre_final_candidate_coverage_available_stage": _ratio(
+                pre_final_covered, c1_available
+            ),
+            "recovered": _ratio(
+                sum(row["recovered"] is True for row in samples), transition_eligible
+            ),
+            "lost": _ratio(
+                sum(row["lost"] is True for row in samples), transition_eligible
+            ),
+            "stable_covered": _ratio(stable_covered, transition_eligible),
             "stable_uncovered": _ratio(
-                sum(row["stable_uncovered"] for row in samples), total
+                sum(row["stable_uncovered"] is True for row in samples),
+                transition_eligible,
             ),
             "final_accuracy": _ratio(final_correct, total),
             "conditional_accuracy_given_initial_coverage": _ratio(
@@ -369,12 +466,15 @@ def build_native_train_candidate_stage_diagnostics(
                 pre_final_covered,
             ),
             "common_covered_final_accuracy": _ratio(
-                sum(row["stable_covered"] and row["final_correct"] for row in samples),
+                sum(
+                    row["stable_covered"] is True and row["final_correct"]
+                    for row in samples
+                ),
                 stable_covered,
             ),
             "correct_answers_outside_c1": _ratio(
-                sum(row["correct_outside_c1"] for row in samples),
-                total - pre_final_covered,
+                sum(row["correct_outside_c1"] is True for row in samples),
+                c1_available - pre_final_covered,
             ),
         },
         "samples": samples,

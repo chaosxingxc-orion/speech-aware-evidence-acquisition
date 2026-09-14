@@ -26,6 +26,7 @@ class NativeEpisodeConfig:
     max_candidate_refreshes: int = 0
     local_tool_workers: int = 0
     reserve_final_report: bool = False
+    finite_completion_policy: str = "raise"
 
     @property
     def terminal_actions(self) -> tuple[str, ...]:
@@ -62,7 +63,13 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     required_fields = {
         "schema", "episode_id", "max_revisions", "actions", "roles",
     }
-    optional_fields = {"exhaustion_policy", "candidate_refresh", "local_tool_execution", "tool_iteration_policy"}
+    optional_fields = {
+        "exhaustion_policy",
+        "candidate_refresh",
+        "local_tool_execution",
+        "tool_iteration_policy",
+        "finite_completion_policy",
+    }
     if (
         not isinstance(raw, Mapping)
         or set(raw) - required_fields - optional_fields
@@ -81,6 +88,12 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         or exhaustion_policy not in {"raise", "deliver-latest-solver"}
     ):
         raise ValueError("native episode exhaustion policy is invalid")
+    finite_completion_policy = raw.get("finite_completion_policy", "raise")
+    if (
+        not isinstance(finite_completion_policy, str)
+        or finite_completion_policy not in {"raise", "deliver-latest-or-abstain"}
+    ):
+        raise ValueError("native episode finite completion policy is invalid")
     actions = raw["actions"]
     if not isinstance(actions, Mapping) or set(actions) != {"accept", "revise", "acquire"}:
         raise ValueError("native actions must name accept, revise and acquire")
@@ -186,4 +199,5 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         refreshes,
         local_workers,
         reserve_report,
+        finite_completion_policy,
     )

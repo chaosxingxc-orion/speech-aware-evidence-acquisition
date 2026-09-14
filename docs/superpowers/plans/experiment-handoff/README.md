@@ -60,7 +60,7 @@ complete (16560 statistical fields agree); its report is
 
 | Work | Current state | Evidence / next action |
 |---|---|---|
-| SLURP direct versus native system | Direct FINALIZED and first-scored; system generating; quality unread | Preserve the running frozen campaign, complete first scoring and release the paired analysis under STATUS-075 |
+| SLURP direct versus native system | Released DEV comparison and TRAIN A anchor complete; selective tools/refresh flight closed after two failures | Preserve both failed sources. Shared bounded outcomes are model-free verified; admit the distinct held TRAIN A system only through fresh plans under STATUS-099 |
 | SLURP role-coverage package | Both arms FINALIZED; intent negative, entity improvement unresolved | Close package; preserve compact-frame baseline; full strata and raw lineage verified |
 | Audio2Tool native three-arm recovery | All arms FINALIZED and first-scored; frozen analysis and root decision complete | System not admitted; knowledge contribution not established. Full strata and separate labels in the September 12 final result |
 | KV recovery and aligned null | Closed retrospectively; retain KC-S1b examples and preserve historical order/missing-decision facts | Existing seven-run FAMILY-REPORT; no rerun or rescore |
@@ -90,4 +90,4 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest implementation handoff: [STATUS-075](STATUS-075.md). Reward lineage, authoritative corrective-memory source admission, the renderer repair, isolated TRAIN knowledge and query preparation are merged. The historical fixed Whisper contrast is decided; the current native system comparison and the first actual optimizer cycle remain. Completed experiment sources stay frozen. This pointer grants no separate generation authority.
+Latest implementation handoff: [STATUS-099](STATUS-099.md). Shared bounded terminal outcomes and missing-stage accounting are verified. The next TRAIN A system draft remains held pending fresh admission and plans; the first actual optimizer cycle remains pending. Completed and failed experiment sources stay frozen. Monitoring uses local metadata events and a lightweight ChatGPT observer. This pointer grants no separate generation authority.

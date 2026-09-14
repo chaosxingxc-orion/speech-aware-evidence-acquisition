@@ -77,6 +77,29 @@ def test_exhaustion_policy_defaults_to_raise_and_can_opt_in_to_delivery():
         load_native_episode_config(values, program())
 
 
+def test_finite_completion_policy_defaults_to_raise_and_can_deliver_or_abstain():
+    parsed = load_native_episode_config(config(), program())
+    assert parsed.finite_completion_policy == "raise"
+
+    values = config()
+    values["native_episode"]["finite_completion_policy"] = "deliver-latest-or-abstain"
+    assert (
+        load_native_episode_config(values, program()).finite_completion_policy
+        == "deliver-latest-or-abstain"
+    )
+
+
+@pytest.mark.parametrize(
+    "invalid",
+    [True, False, None, 1, {}, [], "", "deliver-latest-solver", "unknown"],
+)
+def test_finite_completion_policy_rejects_invalid_types_and_values(invalid):
+    values = config()
+    values["native_episode"]["finite_completion_policy"] = invalid
+    with pytest.raises(ValueError, match="finite completion policy"):
+        load_native_episode_config(values, program())
+
+
 @pytest.mark.parametrize("kind", ["solver", "perception"])
 def test_perception_and_solver_cannot_gain_analytical_tool_authority(kind):
     values = config()

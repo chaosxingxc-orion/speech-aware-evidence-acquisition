@@ -79,8 +79,23 @@ def build_initial_intent_support_diagnostics(
         "supplied_and_covered", "supplied_but_missed",
         "not_supplied_but_covered", "neither",
     ), 0)
+    unavailable = 0
     for pair, reference in zip(pairs, references, strict=True):
         stage = pair.c0
+        if stage is None:
+            unavailable += 1
+            samples.append({
+                "sample_id": pair.sample_id,
+                "support_available": False,
+                "request_sha256": None,
+                "candidate_set_sha256": None,
+                "supplied_intent_value_ids_sha256": None,
+                "intent_value_count": None,
+                "gold_intent_value_supplied": None,
+                "c0_gold_covered": None,
+                "cell": None,
+            })
+            continue
         record = traces.get(stage.request_id + "/request")
         payload = record.get("payload") if isinstance(record, Mapping) else None
         if (
@@ -163,6 +178,10 @@ def build_initial_intent_support_diagnostics(
         "schema": "saea-initial-intent-support-diagnostics-v1",
         "projection": spec,
         "store_source": pins,
+        "support_availability": {
+            "available_count": len(ids) - unavailable,
+            "unavailable_count": unavailable,
+        },
         "semantics": {
             "support": "A nonempty own-intent value block is present in the actual initial Perception request.",
             "support_scope": "Own-intent card presence only; cross-intent contrasts in other cards are not counted.",
@@ -170,6 +189,7 @@ def build_initial_intent_support_diagnostics(
             "semantic_use_proven": False,
             "retrieval_availability_is_supply": False,
             "later_requests_included": False,
+            "missing_c0_is_knowledge_absence": False,
             "gold_or_reference_strings_exported": False,
             "causal_claim": None,
         },
@@ -179,7 +199,7 @@ def build_initial_intent_support_diagnostics(
             "gold_intent_value_supplied": _ratio(supplied, len(ids)),
             "c0_coverage_given_supply": _ratio(counts["supplied_and_covered"], supplied),
             "c0_coverage_without_supply": _ratio(counts["not_supplied_but_covered"],
-                                               len(ids) - supplied),
+                                               len(ids) - unavailable - supplied),
         },
         "samples": samples,
     }

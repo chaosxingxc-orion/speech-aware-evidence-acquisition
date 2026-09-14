@@ -140,6 +140,44 @@ def test_empty_actual_supply_is_supported_and_empty_condition_has_no_value():
     assert result["cell_counts"]["neither"] == 2
 
 
+def test_missing_c0_retains_unknown_support_row_and_full_roster_denominator():
+    source, pairs, references = _world()
+    pairs = (
+        NativeCandidateStagePair(pairs[0].sample_id, None, None, False),
+        *pairs[1:],
+    )
+
+    result = _build(source, pairs, references)
+
+    assert result["support_availability"] == {
+        "available_count": 3,
+        "unavailable_count": 1,
+    }
+    assert result["aggregate"]["gold_intent_value_supplied"] == {
+        "numerator": 1,
+        "denominator": 4,
+        "value": 0.25,
+    }
+    assert result["cell_counts"] == {
+        "supplied_and_covered": 0,
+        "supplied_but_missed": 1,
+        "not_supplied_but_covered": 1,
+        "neither": 1,
+    }
+    unavailable = result["samples"][0]
+    assert unavailable == {
+        "sample_id": pairs[0].sample_id,
+        "support_available": False,
+        "request_sha256": None,
+        "candidate_set_sha256": None,
+        "supplied_intent_value_ids_sha256": None,
+        "intent_value_count": None,
+        "gold_intent_value_supplied": None,
+        "c0_gold_covered": None,
+        "cell": None,
+    }
+
+
 @pytest.mark.parametrize("mutation", [
     "request-sha", "payload-tamper", "sample", "missing-request", "missing-evidence",
     "non-list", "duplicate-id", "unmapped-store-value", "empty-content",
