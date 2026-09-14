@@ -116,3 +116,40 @@ Implement the provider, source attestation, runtime wiring and focused proof
 first. The post-seal source verifier and admission writer are subsequent shared
 pieces, and remain mandatory before those respective stages may run. This
 increment is not a complete training-free RL cycle.
+
+
+## Root post-seal reuse and behavior distinction
+
+The source review located an existing whole-episode join:
+analysis.native_episode_diagnostics.analyze_verified_native_episode_statistics
+already verifies phase/receipt/request/response/USE correspondence and Solver
+terminal delivery. Reuse it for the candidate evaluator rather than rebuilding
+those joins. The remaining common increment is native tool-result exposure
+analysis; the candidate-specific increment verifies the actual artifact,
+attestation, decision, selected records and exact registered source configuration.
+
+Bind every result to its source request and tool-call ID. Check actual source
+authority against verified trace custody, and compare a later request's returned
+document to that same result. Keep retries distinct. Reject a false or altered
+history claim, wrong role/source, and a future result claimed by an earlier
+contact. Report only source identities and counts in the compact source receipt.
+
+Do not make tool use a prerequisite for source integrity. A finalized episode
+may legitimately have no memory call, an empty selection or no observed exposure.
+These are behavioral outcomes, including possible negative efficacy evidence.
+A successful selection without later exposure is not automatically an invalid
+evaluation. Admission and quality analysis must not relabel availability,
+invocation, exposure or lexical overlap as beneficial causal use.
+
+Native local and inherited histories differ. The local framework validator
+proves the executing role's exact ReAct assistant/tool sequence. Later roles can
+carry the same result through the existing inherited native-history renderer.
+Verify that route through the same pure projection if it is included in the
+reported exposure counts. Otherwise label local exposure as a lower bound and
+inherited exposure as unverified; never equate unverified with absent.
+Do not instantiate a fake live model transport during offline verification.
+
+The next shared analyzer is being implemented separately from the candidate
+provider. It adds no model contact, changes no active flight, and cannot by
+itself admit a memory pack. Compact pack construction, complete source/scoring
+comparison, admission writing and a real frozen evaluation remain open.
