@@ -11,9 +11,9 @@
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
   "snapshot_commit": "6307a3ab30c93a6be35114deb5f701e6e444292f",
-  "updated_at_utc": "2026-09-14T04:27:28.091309+00:00",
-  "next_action": "Read STATUS-089 and the September14 dual-store recovery verdict. Both matched DEV1000 arms are complete and first-scored; registered paired analysis passed: NEW500 SLU micro +14.3042pp CI90[11.2445,17.5009]. Keep root-owned decoder service and monitor resident; generation is finished. Preserve current complete system as TRAIN anchor. Prioritize slot interpretation/joint candidate resolution based on coverage424/500, covered-wrong37 and intent-correct/entity-wrong250. Define actual disjoint TRAIN source plans and same-sample alternatives, then compact procedural evaluation; do not treat synthetic memory proof as an RL cycle. No generic engineering detour or unregistered GPU contact.",
+  "updated_at_utc": "2026-09-14T04:34:04.128424+00:00",
+  "next_action": "Read STATUS-089 plus OWNER-CANDIDATE-COVERAGE-026. Preserve the positive system verdict. Root is preparing the unchanged TRAIN Fold A incumbent source while auditing candidate coverage and conditional resolution metrics. Future target is at least95% gold-in-candidate coverage with a fixed declared candidate width and complete roster; distinguish C0/C1 and covered-set selection. Design task-useful tools for Reviewer/Planner and explicit Solver evidence needs. Keep Fold B untouched and do not launch enhanced tools or a slot-only successor before the shared design and registration close.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
-  "latest_owner_decision_id": "OWNER-SYSTEM-VERSIONS-025"
+  "latest_owner_decision_id": "OWNER-CANDIDATE-COVERAGE-026"
 }
