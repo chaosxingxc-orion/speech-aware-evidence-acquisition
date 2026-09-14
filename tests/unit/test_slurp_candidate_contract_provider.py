@@ -38,6 +38,16 @@ def test_task_adapter_default_has_no_candidate_contract_provider():
     assert MinimalAdapter().candidate_contract_provider() is None
 
 
+def test_legacy_adapter_inventory_delegates_to_its_existing_provider(slurp_world):
+    adapter = _adapter(slurp_world)
+    provider = adapter.candidate_contract_provider()
+    inventory = adapter.candidate_inventory()
+
+    assert inventory.candidate_ids == provider.candidate_ids
+    assert inventory.source_sha256 == provider.source_sha256
+    assert inventory.source_authority == "task-adapter-candidate-contract-provider"
+
+
 def test_slurp_adapter_prepares_provider_once_from_train_only(slurp_world, monkeypatch):
     real_read = slurp_data._read_jsonl
     seen = []

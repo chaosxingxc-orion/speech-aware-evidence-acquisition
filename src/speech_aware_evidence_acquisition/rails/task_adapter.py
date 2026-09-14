@@ -39,6 +39,7 @@ from __future__ import annotations
 
 import abc
 import hashlib
+from dataclasses import dataclass
 from typing import Mapping, Protocol, Sequence, runtime_checkable
 
 from .candidate_contract_lookup import CandidateContractProvider
@@ -62,6 +63,50 @@ class TaskSample(Protocol):
     sample_id: str
     audio_ref: AudioRef
     audio_seconds: float
+
+
+@dataclass(frozen=True)
+class CandidateInventory:
+    """A carrier's complete ordered candidate names and source identity."""
+
+    candidate_ids: tuple[str, ...]
+    source_sha256: str
+    source_authority: str
+
+    def __post_init__(self) -> None:
+        self.validate()
+
+    def validate(self) -> "CandidateInventory":
+        if not isinstance(self.candidate_ids, tuple):
+            raise ValueError("candidate_ids must be a tuple")
+        if not self.candidate_ids:
+            raise ValueError("candidate_ids must be non-empty")
+        for candidate_id in self.candidate_ids:
+            if (
+                not isinstance(candidate_id, str)
+                or not candidate_id
+                or candidate_id.strip() != candidate_id
+                or not candidate_id.isascii()
+            ):
+                raise ValueError(
+                    "candidate_ids must contain non-empty trimmed ASCII names"
+                )
+        if len(self.candidate_ids) != len(set(self.candidate_ids)):
+            raise ValueError("candidate_ids contains a duplicate")
+        if (
+            not isinstance(self.source_sha256, str)
+            or len(self.source_sha256) != 64
+            or any(char not in "0123456789abcdef" for char in self.source_sha256)
+        ):
+            raise ValueError("source_sha256 must be 64 lowercase hex characters")
+        if (
+            not isinstance(self.source_authority, str)
+            or not self.source_authority
+            or self.source_authority.strip() != self.source_authority
+            or not self.source_authority.isascii()
+        ):
+            raise ValueError("source_authority must be non-empty trimmed ASCII text")
+        return self
 
 
 class TaskAdapter(abc.ABC):
@@ -228,6 +273,23 @@ class TaskAdapter(abc.ABC):
         if excluded_construction_ids:
             raise ValueError("this adapter has no excluded-construction contract provider")
         return None
+
+    def candidate_inventory(self) -> CandidateInventory | None:
+        """Return the provider's complete candidate roster when one exists.
+
+        This default deliberately delegates to the existing task-specific
+        contract provider. It does not create a second source of candidate
+        legality, and adapters with no provider retain an absent inventory.
+        """
+
+        provider = self.candidate_contract_provider()
+        if provider is None:
+            return None
+        return CandidateInventory(
+            candidate_ids=getattr(provider, "candidate_ids", None),
+            source_sha256=provider.source_sha256,
+            source_authority="task-adapter-candidate-contract-provider",
+        )
 
     def strata_of(self, sample: TaskSample) -> str:
         """Which analysis stratum ``sample`` belongs to. Default ``"all"``

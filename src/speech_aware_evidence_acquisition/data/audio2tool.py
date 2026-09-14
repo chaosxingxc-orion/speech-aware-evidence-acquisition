@@ -50,6 +50,7 @@ engineering notes record this protocol-fidelity gap and the options.
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import math
 import re
@@ -613,13 +614,11 @@ _REGISTRY_COLUMNS = (
 )
 
 
-def _load_registry_rows(lock: Mapping[str, object], root: Path) -> tuple[tuple[int, dict[str, str]], ...]:
+def _load_registry_rows_with_sha256(
+    lock: Mapping[str, object], root: Path
+) -> tuple[tuple[tuple[int, dict[str, str]], ...], str]:
     """Every ``tools_registry.csv`` row, parsed and validated, sorted by
-    numeric ``tool_id`` -- the shared parse both :func:`render_tool_schemas`
-    (all 152 rows) and :func:`load_tool_registry` (the same rows, exposed
-    per-row for a caller that needs to select a SUBSET rather than the
-    flattened all-rows string) build on, so the CSV is parsed once per call
-    site instead of twice."""
+    numeric ``tool_id``, plus the SHA-256 of the exact bytes parsed."""
 
     import csv
 
@@ -628,7 +627,8 @@ def _load_registry_rows(lock: Mapping[str, object], root: Path) -> tuple[tuple[i
     if not path.is_file():
         raise LoaderError(f"audio2tool tools_registry.csv missing: {path}")
     try:
-        with path.open(encoding="utf-8-sig", newline="") as handle:
+        raw = path.read_bytes()
+        with io.StringIO(raw.decode("utf-8-sig"), newline="") as handle:
             reader = csv.DictReader(handle)
             fields = reader.fieldnames or []
             missing = [column for column in _REGISTRY_COLUMNS if column not in fields]
@@ -657,7 +657,16 @@ def _load_registry_rows(lock: Mapping[str, object], root: Path) -> tuple[tuple[i
             (tool_id, {column: (row.get(column) or "") for column in _REGISTRY_COLUMNS})
         )
     parsed.sort(key=lambda pair: pair[0])
-    return tuple(parsed)
+    return tuple(parsed), hashlib.sha256(raw).hexdigest()
+
+
+def _load_registry_rows(
+    lock: Mapping[str, object], root: Path
+) -> tuple[tuple[int, dict[str, str]], ...]:
+    """Compatibility view of the shared source-bound registry parse."""
+
+    rows, _source_sha256 = _load_registry_rows_with_sha256(lock, root)
+    return rows
 
 
 def render_registry_row(row: Mapping[str, str], *, strip_defaults: bool = False) -> str:
@@ -693,6 +702,15 @@ def load_tool_registry(lock: Mapping[str, object], root: Path) -> tuple[dict[str
     than the flattened all-152 string."""
 
     return tuple(row for _tool_id, row in _load_registry_rows(lock, root))
+
+
+def _load_tool_registry_with_sha256(
+    lock: Mapping[str, object], root: Path
+) -> tuple[tuple[dict[str, str], ...], str]:
+    """Internal row view paired with the hash of the exact bytes parsed."""
+
+    rows, source_sha256 = _load_registry_rows_with_sha256(lock, root)
+    return tuple(row for _tool_id, row in rows), source_sha256
 
 
 def render_tool_schemas(lock: Mapping[str, object], root: Path) -> str:
