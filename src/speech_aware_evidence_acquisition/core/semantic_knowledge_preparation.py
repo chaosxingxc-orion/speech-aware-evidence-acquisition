@@ -397,13 +397,165 @@ def _existing_bytes(path: Path) -> bytes | None:
         ) from exc
 
 
+def _publish_exact_artifacts(expected: Sequence[tuple[Path, bytes]]) -> str:
+    """Create or exactly reuse prepared artifacts through one shared writer."""
+    with _output_locks([path for path, _ in expected]):
+        prior = []
+        for path, raw in expected:
+            existing = _existing_bytes(path)
+            if existing is not None and existing != raw:
+                raise SemanticKnowledgePreparationError(f"output collision at {path.name}")
+            prior.append(existing is not None)
+        for path, raw in expected:
+            if not os.path.lexists(path):
+                _publish_artifact(path, raw, contact_class="model-free")
+        for path, raw in expected:
+            if _existing_bytes(path) != raw:
+                raise SemanticKnowledgePreparationError(f"published output differs at {path.name}")
+    return "warm" if all(prior) else "cold"
+
+
+COMPILED_REGISTRATION_SCHEMA = "saea-compiled-knowledge-store-preparation-v1"
+
+
+def _prepare_compiled_store(
+    registration_path: Path, registration_raw: bytes, *, repo_root: Path, data_root: Path
+) -> Mapping[str, Any]:
+    """Release an existing pinned compiler snapshot without rebuilding knowledge."""
+    from ..rails.hashing import content_hash
+    from ..rails.knowledge import KnowledgeSnapshot
+    from ..rails.knowledge_compile_a2t import (
+        COMPILATION_RECEIPT_SCHEMA,
+        NATIVE_CARD_SNAPSHOT_BUILDER_V1,
+    )
+
+    registration = _json(registration_raw, name="registration")
+    _exact_keys(registration, {
+        "schema", "registration_id", "store_id", "store_role",
+        "compilation_receipt", "snapshot", "output_namespace",
+    }, name="compiled registration")
+    _text(registration["registration_id"], name="registration_id")
+    for key in ("store_id", "store_role"):
+        _text(registration[key], name=key, slug=True)
+    try:
+        registration_relpath = registration_path.resolve().relative_to(repo_root.resolve()).as_posix()
+    except ValueError as error:
+        raise SemanticKnowledgePreparationError("registration must be confined to repo_root") from error
+    roots = {"repo": repo_root, "data": data_root}
+    pins = {
+        key: _pin(registration[key], roots=roots, default_root="data",
+                  allowed_roots=frozenset({"data"}), name=key)
+        for key in ("compilation_receipt", "snapshot")
+    }
+    receipt = _json(_read_pin(pins["compilation_receipt"], name="compilation receipt"),
+                    name="compilation receipt")
+    snapshot_raw = _read_pin(pins["snapshot"], name="compiled snapshot")
+    info = _mapping(receipt.get("knowledge_snapshot"), name="knowledge_snapshot")
+    if (receipt.get("schema") != COMPILATION_RECEIPT_SCHEMA
+            or receipt.get("execution_profile") != "model-free-check"
+            or not isinstance(info.get("value_view"), str)
+            or info.get("value_view") not in {"tool-activation", "parameter-meaning"}
+            or registration["store_role"] != info["value_view"]):
+        raise SemanticKnowledgePreparationError("compiled store role or compiler schema differs")
+    try:
+        snapshot = KnowledgeSnapshot.from_frozen_json(_json(snapshot_raw, name="snapshot"))
+    except (RailsError, KeyError, TypeError, ValueError) as error:
+        raise SemanticKnowledgePreparationError("compiled snapshot is invalid") from error
+    source = _mapping(info.get("source"), name="snapshot source")
+    metadata = _mapping(source.get("metadata"), name="snapshot source metadata")
+    if (info.get("file_sha256") != pins["snapshot"].sha256
+            or info.get("snapshot_sha256") != snapshot.content_hash()
+            or Path(_text(info.get("path"), name="snapshot path")).resolve() != pins["snapshot"].path
+            or info.get("builder_policy_id") != snapshot.builder_policy_id
+            or snapshot.builder_policy_id != NATIVE_CARD_SNAPSHOT_BUILDER_V1
+            or snapshot.source_partition_role != "external-governed"
+            or info.get("source_partition_role") != snapshot.source_partition_role
+            or source.get("sha256") != snapshot.source_split_identity_hash
+            or content_hash(metadata) != snapshot.source_split_identity_hash
+            or metadata.get("value_view") != registration["store_role"]):
+        raise SemanticKnowledgePreparationError("compiled snapshot and receipt bindings differ")
+    corpus = _mapping(receipt.get("corpus"), name="compiler receipt corpus")
+    compiler = _mapping(receipt.get("compiler"), name="compiler receipt settings")
+    registry = _mapping(receipt.get("registry"), name="compiler receipt registry")
+    if (receipt.get("compilation_id") != metadata.get("compilation_id")
+            or corpus.get("sha256") != metadata.get("corpus_sha256")
+            or any(compiler.get(key) != metadata.get(key)
+                   for key in ("minimum_compatibility_support", "max_utf8_bytes"))
+            or registry.get("tool_count") != len(snapshot.values)
+            or info.get("value_count") != len(snapshot.values)
+            or info.get("positive_content_facet_count") != len(snapshot.facets)
+            or info.get("key_text_row_count") != len(snapshot.facets)):
+        raise SemanticKnowledgePreparationError("compiler receipt describes another compilation")
+    sources = _mapping(receipt.get("sources"), name="compiler sources")
+    source_fields = {
+        "dataset_lock": "dataset_lock_sha256",
+        "construction_selection": "construction_selection_sha256",
+        "tool_registry": "tool_registry_sha256",
+    }
+    _exact_keys(sources, set(source_fields), name="compiler sources")
+    for name, metadata_key in source_fields.items():
+        pin = _mapping(sources[name], name=name)
+        _exact_keys(pin, {"path", "sha256"}, name=name)
+        path = Path(_text(pin["path"], name=f"{name}.path"))
+        digest_value = _text(pin["sha256"], name=f"{name}.sha256")
+        try:
+            actual = hashlib.sha256(path.read_bytes()).hexdigest()
+        except OSError as error:
+            raise SemanticKnowledgePreparationError(f"cannot verify compiler source {name}") from error
+        if actual != digest_value or metadata.get(metadata_key) != digest_value:
+            raise SemanticKnowledgePreparationError(f"compiler source {name} SHA-256 differs")
+    namespace = _confined(
+        data_root, _relative(registration["output_namespace"], name="output_namespace"),
+        name="output_namespace",
+    )
+    release_path, completion_path = namespace / "release.json", namespace / "completion.json"
+    if {release_path, completion_path} & {pin.path for pin in pins.values()}:
+        raise SemanticKnowledgePreparationError("compiled release output aliases an input")
+    snapshot_pin = {"relpath": pins["snapshot"].relpath, "sha256": snapshot.content_hash()}
+    release = {
+        "schema": _RELEASE_SCHEMA,
+        "store_id": registration["store_id"], "store_role": registration["store_role"],
+        "snapshot_sha256": snapshot.content_hash(),
+        "source_split_identity_hash": snapshot.source_split_identity_hash,
+        "builder_policy_id": snapshot.builder_policy_id,
+        "source": pins["compilation_receipt"].as_json(include_root=False),
+    }
+    release_raw = canonical_bytes(release)
+    release_pin = {
+        "relpath": release_path.relative_to(data_root.resolve()).as_posix(),
+        "sha256": hashlib.sha256(release_raw).hexdigest(),
+    }
+    completion = {
+        "schema": "saea-compiled-knowledge-store-completion-v1",
+        "registration": {"relpath": registration_relpath,
+                         "sha256": hashlib.sha256(registration_raw).hexdigest()},
+        "compilation_receipt": pins["compilation_receipt"].as_json(include_root=False),
+        "snapshot": snapshot_pin, "snapshot_file_sha256": pins["snapshot"].sha256,
+        "release": release_pin, "source_partition_role": snapshot.source_partition_role,
+        "tool_count": len(snapshot.values),
+        "contacts": {"model": 0, "tool": 0, "scorer": 0},
+    }
+    completion_raw = canonical_bytes(completion)
+    expected = ((release_path, release_raw), (completion_path, completion_raw))
+    cache = _publish_exact_artifacts(expected)
+
+    return {
+        "cache": cache,
+        "completion": completion,
+        "completion_pin": {
+            "relpath": completion_path.relative_to(data_root.resolve()).as_posix(),
+            "sha256": hashlib.sha256(completion_raw).hexdigest(),
+        },
+    }
+
+
 def prepare_semantic_knowledge_store(
     registration_path: Path,
     *,
     repo_root: Path,
     data_root: Path,
 ) -> Mapping[str, Any]:
-    """Build or exactly reuse one registered, source-bound named knowledge store."""
+    """Build authored knowledge or release an existing governed compiler snapshot."""
 
     registration_path = Path(registration_path)
     repo_root = Path(repo_root)
@@ -412,6 +564,10 @@ def prepare_semantic_knowledge_store(
         registration_raw = registration_path.read_bytes()
     except OSError as exc:
         raise SemanticKnowledgePreparationError("unable to read registration") from exc
+    if _json(registration_raw, name="registration").get("schema") == COMPILED_REGISTRATION_SCHEMA:
+        return _prepare_compiled_store(
+            registration_path, registration_raw, repo_root=repo_root, data_root=data_root
+        )
     registration, pins = _registration(
         registration_path, registration_raw, repo_root=repo_root, data_root=data_root
     )
@@ -567,29 +723,10 @@ def prepare_semantic_knowledge_store(
         (completion_path, completion_raw),
     )
 
-    with _output_locks([path for path, _ in expected]):
-        prior = []
-        for path, raw in expected:
-            existing = _existing_bytes(path)
-            if existing is not None and existing != raw:
-                raise SemanticKnowledgePreparationError(
-                    f"output collision at {path.name}"
-                )
-            prior.append(existing is not None)
-        for path, raw in expected:
-            if not os.path.lexists(path):
-                try:
-                    _publish_artifact(path, raw, contact_class="model-free")
-                except PreparationError as exc:
-                    raise SemanticKnowledgePreparationError(str(exc)) from exc
-        for path, raw in expected:
-            if _existing_bytes(path) != raw:
-                raise SemanticKnowledgePreparationError(
-                    f"published output differs at {path.name}"
-                )
+    cache = _publish_exact_artifacts(expected)
 
     return {
-        "cache": "warm" if all(prior) else "cold",
+        "cache": cache,
         "completion": completion,
         "completion_pin": {
             "relpath": completion_relpath,

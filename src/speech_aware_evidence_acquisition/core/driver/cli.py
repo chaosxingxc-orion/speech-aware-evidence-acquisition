@@ -718,7 +718,7 @@ def _cli_finalize(args: argparse.Namespace) -> int:
 
 
 def _cli_prepare_semantic_knowledge(args: argparse.Namespace) -> int:
-    """Build or exactly reuse one registered authored semantic knowledge store."""
+    """Build or release one registered source-bound semantic knowledge store."""
     from ..semantic_knowledge_preparation import prepare_semantic_knowledge_store
 
     receipt = prepare_semantic_knowledge_store(
@@ -1424,7 +1424,7 @@ def main(argv: list[str] | None = None) -> int:
 
     prepare_semantic = sub.add_parser(
         "prepare-semantic-knowledge",
-        help="build a registered authored semantic knowledge store without model contact",
+        help="build or release a registered semantic knowledge store without model contact",
     )
     prepare_semantic.add_argument("--registration", required=True)
     prepare_semantic.add_argument("--repo-root", required=True)

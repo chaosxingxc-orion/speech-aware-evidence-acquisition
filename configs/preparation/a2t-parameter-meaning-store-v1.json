@@ -1,0 +1,15 @@
+{
+  "compilation_receipt": {
+    "relpath": "prepared/SAEA-A2T-PARAMETER-MEANING-KNOWLEDGE-V1/compilation-receipt.json",
+    "sha256": "210b173825db51b814b71dcf800841bf2d23b3f04b1caf01bf4de7663dfcb243"
+  },
+  "output_namespace": "knowledge/audio2tool/parameter-meaning-v1",
+  "registration_id": "SAEA-A2T-PARAMETER-MEANING-STORE-V1",
+  "schema": "saea-compiled-knowledge-store-preparation-v1",
+  "snapshot": {
+    "relpath": "prepared/SAEA-A2T-PARAMETER-MEANING-KNOWLEDGE-V1/knowledge-snapshot.json",
+    "sha256": "eaee6a2bc4c71a410bcccbfb128bdb58b18a5854bc3e833ad2b631995c650d67"
+  },
+  "store_id": "parameter-meaning",
+  "store_role": "parameter-meaning"
+}
