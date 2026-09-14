@@ -359,11 +359,15 @@ def test_maps_options_to_real_hidden_sources_without_reordering(materialization_
     record = first["records"][0]
     assert record["source"] == _source(world["sample_ids"][0], 2)
     assert [ref["ref_id"] for ref in record["supporting_source_refs"]] == [
-        "candidate-2"
+        "reward-link:" + "8" * 64
     ]
     assert record["supporting_source_refs"][0]["sha256"] == "8" * 64
+    from speech_aware_evidence_acquisition.rails.experience_memory_sources import (
+        reward_link_hash_source_ref,
+    )
+    assert record["supporting_source_refs"][0] == reward_link_hash_source_ref("8" * 64).as_json()
     assert [ref["ref_id"] for ref in record["contradicting_source_refs"]] == [
-        "candidate-1"
+        "reward-link:" + "7" * 64
     ]
     assert record["validation"] == {
         "status": "provisional",

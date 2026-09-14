@@ -39,3 +39,5 @@ memory has been admitted. Next freeze a compact candidate/relevance policy,
 evaluate through a distinct TRAIN-only candidate boundary, and write admission
 only from the actual registered evaluation decision. Do not pass provisional
 records through the admitted loader by changing their status.
+
+A follow-up source-interface audit found that provisional references used candidate labels while the existing admitted-source verifier expects canonical reward-link references. Root corrected the materializer to use the same shared hash-to-reference helper as admitted source verification, before any real candidate materialization. Candidate labels remain in the exact prepared bindings; no provenance is discarded or admission granted. The integrated materializer, memory and source-verification selection passed 67 tests. This correction changes future prepared implementation identity; do not edit any earlier hash-pinned artifact in place.

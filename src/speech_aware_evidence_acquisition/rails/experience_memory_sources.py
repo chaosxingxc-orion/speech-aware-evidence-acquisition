@@ -40,7 +40,7 @@ class MemorySourceVerificationError(ValueError):
 def reward_link_source_ref(link) -> SourceRef:
     """Name a link canonically; this helper alone does not verify its authority."""
     link.validate()
-    return SourceRef("reward-link:" + link.link_sha256, link.link_sha256, "train")
+    return reward_link_hash_source_ref(link.link_sha256)
 
 
 def _sha_value(value, field):
@@ -50,10 +50,16 @@ def _sha_value(value, field):
         raise MemorySourceVerificationError(str(error)) from error
 
 
+def reward_link_hash_source_ref(link_sha256: str) -> SourceRef:
+    """Name a source-verified link hash; naming alone grants no authority."""
+    canonical = _sha_value(link_sha256, "reward-link SHA-256")
+    return SourceRef("reward-link:" + canonical, canonical, "train")
+
+
 def _record_row(record, primary):
     references = record.supporting_source_refs + record.contradicting_source_refs
     for ref in references:
-        if ref != SourceRef("reward-link:" + ref.sha256, ref.sha256, "train"):
+        if ref != reward_link_hash_source_ref(ref.sha256):
             raise MemorySourceVerificationError("memory source reference is not canonical")
     return {
         "record_sha256": record.record_sha256,

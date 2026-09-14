@@ -26,6 +26,7 @@ from ..rails.experience_memory import (
     SourceRef,
     ValidationBinding,
 )
+from ..rails.experience_memory_sources import reward_link_hash_source_ref
 from ..rails.hashing import content_hash
 from ..rails.training_feedback_artifacts import (
     TrainingFeedbackArtifactError,
@@ -323,11 +324,7 @@ def _context_index(output: Mapping[str, object]) -> tuple[tuple[str, ...], dict[
 
 
 def _source_ref(binding: Mapping[str, object]) -> SourceRef:
-    return SourceRef(
-        ref_id=str(binding["candidate_id"]),
-        sha256=str(binding["reward_link_sha256"]),
-        partition_role="train",
-    )
+    return reward_link_hash_source_ref(str(binding["reward_link_sha256"]))
 
 
 def _record(
