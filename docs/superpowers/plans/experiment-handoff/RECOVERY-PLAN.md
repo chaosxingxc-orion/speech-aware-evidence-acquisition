@@ -1,6 +1,6 @@
 # Owner-directed recovery and continuation plan
 
-**Current overlay:** Read [STATUS-112](STATUS-112.md). SLURP replication continues on its frozen checkout. Full4000 Audio2Tool preparation and a metadata-selected four-row native engineering proof are prepared and source-verified. Campaign and standalone worker now share genuine receipt persistence; root integrated tests and engineering checks pass. Final decision/readiness binding, contact registration and actual serving/capacity proof remain pending.
+**Current overlay:** Read [STATUS-113](STATUS-113.md). The reported restart was reconciled: the same SLURP generation continued at the timestamped check. Audio2Tool four-row engineering registration, clean source freeze and shared model-free preflight are complete. Dispatch awaits the SLURP generation boundary and root service handoff; actual request capacity remains to be measured. The full4000 comparison still requires the formal SLURP verdict and successful engineering proof.
 
 **Latest owner direction:** Establish a useful, reproducibly beneficial multimodal agent base and a configurable, observable workspace first. Define training-free RL factors, trajectory sampling and policy optimization only afterward. Root engineering improvements are not algorithm innovation. Retain SLURP-first execution, task-specific separate knowledge stores, corrective memory rather than raw training examples, on-demand Reviewer/Planner evidence tools, sole-Solver answer authority and native dataset metrics. Audio2Tool and E21 transfer remain necessary but follow the stable SLURP anchor.
 
@@ -73,7 +73,7 @@ treatment results exist. Any unresolved analysis must remain descriptive until i
 
 1. Close the running same-roster SLURP direct/native replication with first complete official scores, registered paired release and the frozen analysis.
 2. Establish reproducible package benefit and preserve an observable, configurable trajectory workspace. Use the verified genuine campaign receipt persistence without changing active execution source.
-3. Admit the already prepared Audio2Tool native-role transfer only after scientific readiness, actual serving/capacity proof and prospective contact registration.
+3. Run the registered Audio2Tool engineering proof after the SLURP generation boundary and root service handoff. Admit the full4000 transfer only after scientific readiness, successful actual serving/capacity proof and final full-pair contact registration.
 4. Use disjoint TRAIN evidence to improve candidate inclusion, joint resolution and slot interpretation; add local speech tools as on-demand Reviewer/Planner actions.
 5. Transfer the stable shared base to E21 with dataset-native metrics. E22, summary objectives and held S4 exemplars are not active GPU tasks.
 6. Define training-free RL factors, trajectory sampling, rewards and update rules after the SLURP base/workspace qualifies. Root-led engineering is not an RL algorithm result.
