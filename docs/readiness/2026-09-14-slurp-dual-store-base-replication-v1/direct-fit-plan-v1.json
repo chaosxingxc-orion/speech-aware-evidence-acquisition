@@ -1,0 +1,30 @@
+{
+  "attached_generation_run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-BASE-REPLICATION-V1",
+  "cell": "slurp-direct-max512-dev1000-base-replication-v1",
+  "contact_cap": 3001,
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-direct-max512-dev1000-fit-base-replication-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 3001,
+    "planned_speech_audio_seconds": 3500,
+    "protocol_hash": "a83866a4722da8fc6853b1b39584dbc7bab5016f01e254e3d6aa5898963ef38c",
+    "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-FIT-BASE-REPLICATION-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-native-train-a-recovery-np4-v1",
+  "experiment": "slurp-direct-max512-dev1000-base-replication-v1",
+  "max_speech_packets": 1,
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-14-slurp-dual-store-base-replication-v1/protocol-v1.json",
+    "sha256": "f98651c3ade826526762c0b51f507f842212b2efd5a4311fec9e44c66009f12e"
+  },
+  "registration_state": "Held prospective same-method replication; root must admit the exact source and final plans before any model or fit endpoint contact.",
+  "root_registration_required": true,
+  "schema": "saea-live-phase-fit-execution-plan-v1",
+  "scoring": "One first complete official score per successful generation arm; no fit score and no partial score."
+}
