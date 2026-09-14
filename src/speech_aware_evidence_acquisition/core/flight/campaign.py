@@ -19,6 +19,7 @@ from ..bundle.git_commit import require_clean_study_repo
 from ..session.serving import assert_identity_matches, find_resident_session
 from .lease import GenerationLease, WorkerExecutionPolicy
 from .queue import FlightDependency, FlightQueue, FlightReadiness
+from .receipts import write_flight_receipts
 from .runtime import FlightRuntime
 
 
@@ -178,6 +179,37 @@ def run_campaign(
     by_run = {cell.run_id: cell for cell in cells}
     if len(by_run) != len(cells) or {flight.run_id for flight in flights} != set(by_run):
         raise CampaignError("campaign runtime roster differs from declared cell identities")
+    receipt_refs: dict[str, Mapping[str, str]] = {}
+
+    def persist_receipts(flight: FlightRuntime) -> None:
+        receipts = flight.receipts
+        if not receipts.completed_stages():
+            return
+        if (receipts.run_id, receipts.attempt_id) != (flight.run_id, flight.attempt_id):
+            raise CampaignError("runtime receipt identity differs from its campaign flight")
+        runs_root = (Path(data_root).resolve() / "runs").resolve()
+        receipt_path = (
+            runs_root / flight.run_id / flight.attempt_id / "flight-receipts.json"
+        ).resolve()
+        if len(receipt_path.parents) < 3 or receipt_path.parents[2] != runs_root:
+            raise CampaignError("flight receipt path escapes the governed runs directory")
+        receipt_sha256 = write_flight_receipts(receipt_path, receipts)
+        receipt_refs[flight.run_id] = {
+            "path": str(receipt_path),
+            "sha256": receipt_sha256,
+        }
+
+    def persist_all(primary_error: BaseException | None = None) -> None:
+        for flight in flights:
+            try:
+                persist_receipts(flight)
+            except Exception as error:  # noqa: BLE001 -- preserve the primary campaign failure
+                if primary_error is None:
+                    raise
+                primary_error.add_note(
+                    "Campaign could not preserve the live flight receipts for "
+                    f"{flight.run_id!r}: {type(error).__name__}: {error}"
+                )
 
     def readiness(flight):
         cell = by_run[flight.run_id]
@@ -209,7 +241,19 @@ def run_campaign(
             session_id=expected_session_id, study_head=require_clean_study_repo(repo_root),
         ) as lease:
             flight.bind_execution_policy(WorkerExecutionPolicy(expected_session_id, lease.token))
-            yield
+            try:
+                yield
+            except BaseException as error:
+                try:
+                    persist_receipts(flight)
+                except Exception as receipt_error:  # preserve the generation failure
+                    error.add_note(
+                        "Campaign could not preserve the live flight receipts: "
+                        f"{type(receipt_error).__name__}: {receipt_error}"
+                    )
+                raise
+            else:
+                persist_receipts(flight)
 
     queue = FlightQueue(
         flights, readiness=readiness,
@@ -219,14 +263,36 @@ def run_campaign(
     try:
         while queue.pending:
             completed = queue.run()
-            queue.drain_scores()
+            try:
+                queue.drain_scores()
+            except BaseException as error:
+                persist_all(error)
+                raise
+            else:
+                persist_all()
             if not completed:
                 break
+    except BaseException as error:
+        try:
+            queue.shutdown()
+        except Exception as shutdown_error:  # preserve the campaign failure
+            error.add_note(
+                "Campaign queue shutdown also failed: "
+                f"{type(shutdown_error).__name__}: {shutdown_error}"
+            )
+        persist_all(error)
+        raise
+    else:
+        try:
+            queue.shutdown()
+        except BaseException as error:
+            persist_all(error)
+            raise
+        persist_all()
         return {
             "schema": "saea-campaign-status-v1",
             "states": {key: asdict(value) for key, value in queue.states.items()},
             "pending": [flight.run_id for flight in queue.pending],
             "completed": [entry.flight.run_id for entry in queue.completed],
+            "flight_receipts": dict(receipt_refs),
         }
-    finally:
-        queue.shutdown()

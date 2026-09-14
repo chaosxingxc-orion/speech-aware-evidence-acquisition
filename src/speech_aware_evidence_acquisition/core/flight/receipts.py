@@ -7,9 +7,9 @@ runs through (``preflight`` -> ``preprocess`` -> ``serve`` -> ``run_phases``
 payload; this module is the shared, minimal record that binds those payloads
 together under one run/attempt identity, refuses to record the same stage
 twice (a stage's own re-run discipline lives in ``runtime.py``; this module
-only refuses silent overwrite of an already-recorded receipt), and exposes a
-single canonical ``as_json()`` for whatever writes ``preflight.json``/
-``flight-receipt.json`` to disk.
+only refuses silent overwrite of an already-recorded receipt), exposes a
+single canonical ``as_json()``, and persists exact monotonically growing
+snapshots for the shared campaign.
 
 Standard-library only, no dependency on ``core.model``/``rails`` -- like
 ``core.attempts``/``core.session``, this is a small, self-contained seam.
@@ -17,9 +17,13 @@ Standard-library only, no dependency on ``core.model``/``rails`` -- like
 
 from __future__ import annotations
 
+import fcntl
 import hashlib
 import json
+import os
+import time
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Mapping, Sequence
 
 #: The six stages a :class:`FlightRuntime` walks through, in the only order
@@ -48,6 +52,135 @@ class FlightReceiptError(RuntimeError):
 def _canonical_hash(document: Mapping[str, object]) -> str:
     blob = json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()
+
+
+def _file_hash(path: Path) -> str:
+    with path.open("rb") as handle:
+        return hashlib.file_digest(handle, "sha256").hexdigest()
+
+
+def _validate_document(document: object) -> dict[str, object]:
+    if not isinstance(document, dict) or set(document) != {
+        "schema", "run_id", "attempt_id", "stages", "receipts_hash",
+    }:
+        raise FlightReceiptError("flight receipts must be an exact schema object")
+    if document.get("schema") != FLIGHT_RECEIPTS_SCHEMA:
+        raise FlightReceiptError(
+            f"flight receipts schema must be {FLIGHT_RECEIPTS_SCHEMA!r}"
+        )
+    for field_name in ("run_id", "attempt_id"):
+        if not isinstance(document.get(field_name), str) or not document[field_name]:
+            raise FlightReceiptError(f"flight receipts {field_name} must be nonempty")
+    stages = document.get("stages")
+    if not isinstance(stages, dict):
+        raise FlightReceiptError("flight receipts stages must be an object")
+    unknown = set(stages) - set(FLIGHT_STAGES)
+    if unknown:
+        raise FlightReceiptError(f"flight receipts contain unknown stages: {sorted(unknown)}")
+    completed = tuple(stage for stage in FLIGHT_STAGES if stage in stages)
+    if completed != FLIGHT_STAGES[: len(completed)]:
+        raise FlightReceiptError("flight receipt stages must form the canonical stage prefix")
+    for stage in completed:
+        payload = stages[stage]
+        if not isinstance(payload, dict):
+            raise FlightReceiptError(f"flight stage {stage!r} receipt must be an object")
+        if payload.get("stage") != stage or not isinstance(payload.get("stage_hash"), str):
+            raise FlightReceiptError(f"flight stage {stage!r} identity is malformed")
+        hashed = dict(payload)
+        recorded_hash = hashed.pop("stage_hash")
+        if _canonical_hash(hashed) != recorded_hash:
+            raise FlightReceiptError(f"flight stage {stage!r} stage hash mismatch")
+    hashed_document = dict(document)
+    recorded_receipts_hash = hashed_document.pop("receipts_hash")
+    if not isinstance(recorded_receipts_hash, str) or (
+        _canonical_hash(hashed_document) != recorded_receipts_hash
+    ):
+        raise FlightReceiptError("flight receipts hash mismatch")
+    return document
+
+
+def read_flight_receipts(path: Path) -> dict[str, object]:
+    """Load and validate one exact :meth:`FlightReceipts.as_json` snapshot."""
+
+    path = Path(path)
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise FlightReceiptError(f"cannot read flight receipts {path}: {error}") from error
+    return _validate_document(document)
+
+
+def write_flight_receipts(path: Path, receipts: "FlightReceipts") -> str:
+    """Atomically persist an exact, monotonically growing receipt ledger.
+
+    An existing snapshot may be repeated or extended with later stages. Its
+    identity and every prior stage must remain identical as JSON values;
+    rollback and mutation are refused before the atomic replacement.
+    """
+
+    if not isinstance(receipts, FlightReceipts):
+        raise FlightReceiptError("write_flight_receipts requires FlightReceipts")
+    try:
+        document = json.loads(
+            json.dumps(receipts.as_json(), ensure_ascii=False, sort_keys=True)
+        )
+    except (TypeError, ValueError) as error:
+        raise FlightReceiptError(f"flight receipts are not JSON serializable: {error}") from error
+    document = _validate_document(document)
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    lock_path = path.with_name(f".{path.name}.lock")
+    temporary = path.with_name(
+        f".{path.name}.tmp-{os.getpid()}-{time.monotonic_ns()}"
+    )
+    try:
+        with lock_path.open("a+", encoding="utf-8") as lock:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+            if path.is_file():
+                existing = read_flight_receipts(path)
+                if (
+                    existing["run_id"], existing["attempt_id"]
+                ) != (document["run_id"], document["attempt_id"]):
+                    raise FlightReceiptError(
+                        "persisted flight receipt identity differs from the live ledger"
+                    )
+                old_stages = tuple(
+                    stage for stage in FLIGHT_STAGES if stage in existing["stages"]
+                )
+                new_stages = tuple(
+                    stage for stage in FLIGHT_STAGES if stage in document["stages"]
+                )
+                if len(new_stages) < len(old_stages):
+                    raise FlightReceiptError("refusing flight receipt stage rollback")
+                if new_stages[: len(old_stages)] != old_stages:
+                    raise FlightReceiptError("flight receipt stages are not an exact prior prefix")
+                for stage in old_stages:
+                    if existing["stages"][stage] != document["stages"][stage]:
+                        raise FlightReceiptError(
+                            f"refusing to change recorded stage {stage!r}"
+                        )
+                if existing == document:
+                    return _file_hash(path)
+            raw = json.dumps(
+                document, ensure_ascii=False, sort_keys=True, indent=2,
+            ).encode("utf-8") + b"\n"
+            with temporary.open("xb") as handle:
+                handle.write(raw)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary, path)
+            return _file_hash(path)
+    except FlightReceiptError:
+        raise
+    except OSError as error:
+        raise FlightReceiptError(f"cannot persist flight receipts {path}: {error}") from error
+    finally:
+        try:
+            temporary.unlink()
+        except FileNotFoundError:
+            pass
+        except OSError:
+            pass
 
 
 @dataclass
@@ -168,5 +301,7 @@ __all__ = [
     "FLIGHT_STAGES",
     "FlightReceiptError",
     "FlightReceipts",
+    "read_flight_receipts",
     "require_mandatory_throughput_fields",
+    "write_flight_receipts",
 ]
