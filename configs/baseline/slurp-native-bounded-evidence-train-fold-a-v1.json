@@ -226,27 +226,37 @@
       "relpath": "prepared/SAEA-SLURP-TRAIN-EXCLUDED-CANDIDATE-CONTRACTS-PREPARE-V1/receipt.json",
       "root": "data",
       "sha256": "e6c9c538b2d6dd35673ecae5fe2f92596318dd1847248e74de22791c4d7dbc6f"
-    }
-  ],
-  "prospective_phase_supply": {
-    "state": "held",
-    "reason": "The new run and attempt have no admitted ExecutionPlans or prepared phase-supply receipt. Do not prepare, launch, or borrow predecessor execution identities."
-  },
-  "prospective_prepared_tools": {
-    "all_tool_actions_ceiling": 4320,
-    "asr_audio_seconds_ceiling": 3085,
-    "asr_execution_plan_status": "HELD_PENDING_ROOT_ADMISSION",
-    "asr_new_decode_ceiling": 1080,
-    "binding": {
+    },
+    {
+      "root": "repository",
       "relpath": "docs/readiness/2026-09-14-slurp-native-candidate-refresh-tools-train-fold-a-v1/prepared-tools-binding-v2.json",
       "sha256": "4c764ad12794c5a63844069241cfd74d2f9e6c8451e804dc1b95c4fcb1324a96"
     },
-    "whisper_protocol": {
+    {
+      "root": "data",
+      "relpath": "prepared/SAEA-SLURP-TRAIN-EXCLUDED-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+      "sha256": "fd75c3b7605f827910908c79e122412c6c736c237d7faad7bf95ffd32640a6ca"
+    },
+    {
+      "root": "data",
+      "relpath": "prepared/SAEA-SLURP-TRAIN-A-LIVE-SPEECH-SOURCES-PREPARE-V1/sources.json",
+      "sha256": "e756e7f7dfb876e856dd0e12691a2e9497260036a1721efb883cd741d4ffd9c3"
+    },
+    {
+      "root": "data",
+      "relpath": "prepared/SAEA-SLURP-TRAIN-A-LIVE-SPEECH-SOURCES-PREPARE-V1/verification-v1.json",
+      "sha256": "c5420aacf78eccb7948a4bb12725af24933db52ba9874848b0d6b65b0819db1e"
+    },
+    {
+      "root": "data",
       "relpath": "prepared/SAEA-SLURP-NATIVE-REFRESH-TOOLS-CPU-PROTOCOL-V1/protocol.json",
       "sha256": "abc76adebcf824085e4c383fc55b083e664c3a8b2b00cda809d72fc15bb058bd"
     }
-  },
-  "scorers": [],
+  ],
+  "scorers": [
+    "slurp-slu-official-train",
+    "cost"
+  ],
   "serving_slot_tokens": 24576,
   "serving_slots": 4,
   "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
@@ -256,51 +266,30 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "HELD prospective bounded-controller system for the original TRAIN Fold A roster. Preserve the complete candidate-refresh and selective Reviewer-tool method, frozen decoder geometry, released knowledge, full legal labels and prepared speech inputs. Explicit finite-completion handling retains the last complete Solver or records a source-bound abstention; it never executes a partial tool request, admits partial text, or fabricates a candidate stage. Fold B remains untouched.",
-  "prospective_bounded_evidence": {
-    "status": "HELD_PENDING_ROOT_PROTOCOL_AND_EXECUTION_ADMISSION",
-    "new_model_contacts_authorized": false,
-    "scientific_question": "Evaluate the complete selectively tool-using and candidate-refresh controller with prospectively configured finite outcomes against the released unchanged TRAIN A anchor.",
-    "comparison_anchor": {
-      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
-      "result_relpath": "docs/results/2026-09-14-slurp-native-train-a-anchor.md"
+  "what_this_is": "Prospectively admitted complete selective-tool and candidate-refresh system on TRAIN A with explicit source-bound finite outcomes. Compare against the released TRAIN A anchor. Preserve all raw contacts and the full roster. No partial quality read or Fold B contact.",
+  "native_contact_fit": {
+    "run_id": "SAEA-SLURP-NATIVE-BOUNDED-EVIDENCE-TRAIN-FOLD-A-FIT-V1",
+    "attempt_id": "attempt-slurp-native-bounded-evidence-train-fold-a-fit-v1",
+    "contact_cap": 51840,
+    "max_speech_packets": 1
+  },
+  "live_speech_observations": {
+    "inventory": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-PREPARE-V1/full-runtime-inventory-v2.json",
+      "sha256": "e5e6d37646438ab57bb3362ced18726cde4f2762a2893f7e6a416e7e484d0427"
     },
-    "method": {
-      "finite_completion_policy": "deliver-latest-or-abstain",
-      "model_contacts_per_episode_ceiling": 12,
-      "analytical_tool_actions_per_episode_ceiling": 4,
-      "max_candidate_refreshes": 1,
-      "max_revisions": 1,
-      "candidate_width": [
-        1,
-        3
-      ],
-      "selection_role": "Solver",
-      "tool_roles": [
-        "Reviewer"
-      ],
-      "finite_with_valid_solver": "deliver the last complete Solver unchanged",
-      "finite_without_valid_solver": "source-bound abstention",
-      "partial_tool_execution": false,
-      "partial_answer_delivery": false,
-      "manufactured_candidate_stages": false
+    "protocol": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-REFRESH-TOOLS-CPU-PROTOCOL-V1/protocol.json",
+      "sha256": "abc76adebcf824085e4c383fc55b083e664c3a8b2b00cda809d72fc15bb058bd"
     },
-    "bounds": {
-      "generation_calls_cap": 12960,
-      "fit_endpoint_calls_cap": 51840,
-      "fresh_cpu_asr_decodes_cap": 1080,
-      "asr_audio_seconds_cap": 3085,
-      "repeated_speech_audio_seconds_cap": 37015,
-      "fit_inclusive_gpu_hours_cap": 12.0,
-      "official_complete_scoring_jobs": 1
+    "execution_plan": {
+      "relpath": "docs/readiness/2026-09-14-slurp-native-bounded-evidence-train-fold-a-v1/live-asr-execution-plan-v1.json",
+      "sha256": "d32cab7f18080adea42a165fcbf2dc47e12f6dddf59f0c0cba080fc6eacbba83"
     },
-    "unresolved_bindings": [
-      "root scientific admission and signed readiness",
-      "clean frozen implementation source commit",
-      "generation and native actual-contact fit execution plans",
-      "source-bound local CPU ASR execution plan and exposure row",
-      "attempt-namespaced phase-supply preparation receipt",
-      "sole complete official TRAIN A score registration"
-    ]
+    "output_relpath": "prepared/SAEA-SLURP-NATIVE-BOUNDED-EVIDENCE-TRAIN-FOLD-A-ASR-V1/attempt-slurp-native-bounded-evidence-train-fold-a-asr-v1/observations"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-BOUNDED-EVIDENCE-TRAIN-FOLD-A-V1/phase-supply.json",
+    "sha256": "3c5cd08425940d2fd47915c4529f6ad0d0004eb60573683a2e1ae627cf389137"
   }
 }

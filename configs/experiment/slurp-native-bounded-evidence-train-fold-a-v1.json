@@ -2,7 +2,10 @@
   "cells": [
     {
       "allowed_execution_stages": [
-        "check"
+        "check",
+        "prepare-supply",
+        "worker",
+        "campaign"
       ],
       "attempt_id": "attempt-slurp-native-bounded-evidence-train-fold-a-generation-v1",
       "baseline_fragment": "slurp-native-bounded-evidence-train-fold-a-v1",
@@ -10,16 +13,31 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "state": "held",
-        "reason": "Prospective bounded-system draft only. Root admission, frozen source, registered generation/fit/ASR plans, exposure registration and final phase supply are absent."
+        "state": "ready",
+        "reason": "Root prospective system admission and validated reusable initial supply complete. Shared campaign must still enforce registered plans, exposure, clean source and exact resident service.",
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-native-bounded-evidence-train-a-admission-v1",
+            "relpath": "coordination/slurp-native-bounded-evidence-train-fold-a-v1/admission-v1.json",
+            "sha256": "0ad1fdb1657e512e02113763d496414e3b099fce67e70eda58bd90531ecd3713",
+            "reason": "Root admits the new finite-outcome system after four-role synthetic proof; failed predecessor stays closed."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-BOUNDED-EVIDENCE-TRAIN-FOLD-A-V1/phase-supply.json",
+            "sha256": "3c5cd08425940d2fd47915c4529f6ad0d0004eb60573683a2e1ae627cf389137",
+            "reason": "Exact original 1080-row initial supply preserved; zero model, ASR or encoding contact."
+          }
+        ]
       },
       "run_id": "SAEA-SLURP-NATIVE-BOUNDED-EVIDENCE-TRAIN-FOLD-A-V1"
     }
   ],
   "date": "2026-09-14",
-  "execution_profile": "model-free-check",
+  "execution_profile": "bounded-discovery-probe",
   "experiment_id": "SAEA-SLURP-NATIVE-BOUNDED-EVIDENCE-TRAIN-FOLD-A-V1",
-  "failure_policy": "HELD: check only. Do not treat this prospective system as a replay or recovery of the closed second-failure flight. Root must admit a new bounded flight before any preparation or execution.",
+  "failure_policy": "Stop and preserve any infrastructure, source or schema failure. No automatic restart or replay. Any sole recovery requires a named root cause and prospective root registration; second failure closes this new flight.",
   "fragment_kind": "saea-slurp-native-bounded-evidence-train-fold-a-v1",
   "population": {
     "count": 1080,
@@ -28,8 +46,8 @@
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
   },
   "preserve_wire_responses": true,
-  "purpose": "Prospective complete-system TRAIN A comparison against the released anchor with explicit finite-completion outcomes. No model, tool, scorer or preparation contact is admitted by this draft.",
-  "service_session": "HELD-NO-SERVICE",
+  "purpose": "Complete prospectively bounded selective-tool and candidate-refresh agentic system on TRAIN A; compare full-roster quality and diagnostic stages with the released anchor.",
+  "service_session": "serving-slurp-native-train-a-recovery-np4-v1",
   "split_id": "SLURP-EVO-FOLD-A-V2",
   "populations": [
     {
@@ -1119,7 +1137,26 @@
     }
   ],
   "protocol": {
-    "relpath": "docs/readiness/2026-09-14-slurp-native-bounded-evidence-train-fold-a-v1/protocol-v1.json",
-    "sha256": "9039ff47af35fc2dec6e1eee265cff687b8f25a21a238b4de6d1a981ae7ac858"
+    "relpath": "docs/readiness/2026-09-14-slurp-native-bounded-evidence-train-fold-a-v1/protocol-v2.json",
+    "sha256": "a81c7839c736a5f6d529c4c15351748508970f6ba4cde828ab68cd5a21cb3b30"
+  },
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 12.0,
+    "planned_model_calls": 12960,
+    "planned_speech_audio_seconds": 37015,
+    "split_role": "discovery"
+  },
+  "family_budget": {
+    "generation_calls_cap": 12960,
+    "fit_endpoint_calls_cap": 51840,
+    "gpu_hours_fit_inclusive": 12.0,
+    "repeated_speech_audio_seconds_cap": 37015,
+    "native_analytical_tool_actions_cap": 4320,
+    "asr_calls": 1080,
+    "asr_audio_seconds_cap": 3085,
+    "encoder_calls": 0,
+    "official_complete_scoring_jobs": 1,
+    "ceilings_are_not_targets": true
   }
 }

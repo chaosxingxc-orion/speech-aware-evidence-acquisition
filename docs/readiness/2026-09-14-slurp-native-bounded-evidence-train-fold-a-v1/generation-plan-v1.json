@@ -1,0 +1,14 @@
+{
+  "run_id": "SAEA-SLURP-NATIVE-BOUNDED-EVIDENCE-TRAIN-FOLD-A-V1",
+  "execution_profile": "bounded-discovery-probe",
+  "carrier_lock_key": "slurp",
+  "split_role": "discovery",
+  "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+  "planned_model_calls": 12960,
+  "planned_gpu_hours": 12.0,
+  "planned_speech_audio_seconds": 37015,
+  "protocol_hash": "b0660077b2ffc4d74f7492af8ba9de67c865bd99bdefb7c8974fd31796c09916",
+  "attempt_id": "attempt-slurp-native-bounded-evidence-train-fold-a-generation-v1",
+  "schema": "saea-execution-plan-v1",
+  "study": "speech-aware-evidence-acquisition"
+}
