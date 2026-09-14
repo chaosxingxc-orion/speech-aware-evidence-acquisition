@@ -41,3 +41,14 @@ observer when the next authorized campaign is actually dispatched.
 The completed TRAIN A anchor and its released analyses remain valid. Fold B
 and the source-bound training-free proposal, consolidation and disjoint
 evaluation cycle remain pending. The owner has closed power-mode discussion.
+
+Engineering checkpoint: the typed bridge classifier is now implemented and
+root-reviewed. It preserves the exact finite completion, distinguishes length
+from content_filter, and rejects invalid wire/source metadata without treating
+it as bounded exhaustion. The targeted bridge, graph and schema integration
+suite passes 57 tests; Ruff and the engineering base check pass. Existing
+configuration still raises on finite non-authoritative output. Episode fallback,
+abstention and end-to-end custody remain the next required work.
+
+Proof: DATA/coordination/native-terminal-bounds-v1/classifier-proof-v1.json.
+SHA256: 42343a49b05d217de5409b37c4fabfc738bda04eb6239f80f0d8d0ccc2520fdb.

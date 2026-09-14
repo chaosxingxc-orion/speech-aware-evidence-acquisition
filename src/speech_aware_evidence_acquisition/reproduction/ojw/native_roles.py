@@ -56,6 +56,37 @@ class FrozenCoreRoleModelError(RuntimeError):
     """The bridge refuses an invalid callback result or native call envelope."""
 
 
+class FrozenCoreRoleFiniteCompletionError(FrozenCoreRoleModelError):
+    """A valid source-bound completion ended before authoritative delivery."""
+
+    def __init__(
+        self,
+        *,
+        completion: CoreCompletion,
+        finish_reason: Literal["length", "content_filter"],
+        original_message: Mapping[str, object],
+    ) -> None:
+        super().__init__(
+            "metered completion is non-authoritative because finish_reason "
+            f"is {finish_reason!r}"
+        )
+        self.completion = completion
+        self.finish_reason = finish_reason
+        self.original_message = original_message
+
+    @property
+    def request_sha256(self) -> str:
+        return self.completion.request_sha256
+
+    @property
+    def response_sha256(self) -> str:
+        return self.completion.response_sha256
+
+    @property
+    def response_text_sha256(self) -> str:
+        return self.completion.response_text_sha256
+
+
 class NativeSourceFunction(Tool):
     """Validate native arguments without converting their wire representation.
 
@@ -267,6 +298,17 @@ def _wire_turn(
         raise FrozenCoreRoleModelError(
             "metered completion wire message must be an object"
         )
+    content = message.get("content")
+    if content is not None and not isinstance(content, (str, list, tuple)):
+        raise FrozenCoreRoleModelError(
+            "metered completion wire message content is not framework-compatible"
+        )
+    if isinstance(finish_reason, str) and finish_reason in {"length", "content_filter"}:
+        raise FrozenCoreRoleFiniteCompletionError(
+            completion=completion,
+            finish_reason=finish_reason,
+            original_message=message,
+        )
     if not isinstance(finish_reason, str) or finish_reason not in {"stop", "tool_calls"}:
         raise FrozenCoreRoleModelError(
             f"metered completion has unsupported finish_reason {finish_reason!r}"
@@ -279,11 +321,6 @@ def _wire_turn(
     if finish_reason == "tool_calls" and calls is None:
         raise FrozenCoreRoleModelError(
             "finish_reason 'tool_calls' requires native tool_calls"
-        )
-    content = message.get("content")
-    if content is not None and not isinstance(content, (str, list, tuple)):
-        raise FrozenCoreRoleModelError(
-            "metered completion wire message content is not framework-compatible"
         )
     return content, calls, finish_reason
 
@@ -808,6 +845,7 @@ def build_native_role_workflow(
 
 __all__ = [
     "ContactContextProvider",
+    "FrozenCoreRoleFiniteCompletionError",
     "FrozenCoreRoleModel",
     "FrozenCoreRoleModelError",
     "MeteredRoleRequest",

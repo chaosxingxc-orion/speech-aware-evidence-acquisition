@@ -14,6 +14,7 @@ from openjiuwen.core.runner import Runner
 
 from speech_aware_evidence_acquisition.rails.core_client import CoreCompletion
 from speech_aware_evidence_acquisition.reproduction.ojw.native_roles import (
+    FrozenCoreRoleFiniteCompletionError,
     FrozenCoreRoleModel,
     FrozenCoreRoleModelError,
     NativeRoleContactContext,
@@ -693,32 +694,56 @@ def test_role_requires_wire_metadata_and_rejects_terminal_saturation():
         metered_request=lambda _request: missing_wire,
         context=context,
     )
-    with pytest.raises(FrozenCoreRoleModelError, match="wire metadata"):
+    with pytest.raises(FrozenCoreRoleModelError, match="wire metadata") as missing:
         asyncio.run(model.invoke(
             ({"role": "user", "content": "Solve."},),
             tools=(),
         ))
+    assert not isinstance(missing.value, FrozenCoreRoleFiniteCompletionError)
 
     tool_calls = _tool_call("analyze", "call-length", '{"value":1}')
-    backend_calls: list[str] = []
+    invoked: list[int] = []
     saturated = _completion(
         text='[{"name":"analyze","arguments":{"value":1}}]',
         tool_calls=tool_calls,
         finish_reason="length",
     )
-    saturated_model = FrozenCoreRoleModel(
-        role_id="reviewer",
+    saturated_node = NativeRoleNode(
+        spec=NativeRoleNodeSpec(
+            role_id="reviewer",
+            role_kind="reviewer",
+            prompt="Review.",
+            max_iterations=2,
+            ability_names=("analyze",),
+        ),
         metered_request=lambda _request: saturated,
-        context=context,
+        contact_context=context,
+        abilities=(
+            LocalFunction(
+                card=_card("analyze"),
+                func=lambda value: invoked.append(value) or {"accepted": True},
+            ),
+        ),
+        tool_allowed=lambda role, name: role == "reviewer" and name == "analyze",
     )
-    with pytest.raises(FrozenCoreRoleModelError, match="finish_reason"):
-        asyncio.run(saturated_model.invoke(
-            ({"role": "user", "content": "Review."},),
-            tools=({"name": "analyze"},),
-        ))
-    assert backend_calls == []
+    with pytest.raises(FrozenCoreRoleFiniteCompletionError, match="length") as caught:
+        asyncio.run(saturated_node.invoke_direct("Review."))
+    assert caught.value.completion is saturated
+    assert caught.value.finish_reason == "length"
+    assert caught.value.original_message == saturated.original_message
+    assert caught.value.request_sha256 == saturated.request_sha256
+    assert caught.value.response_sha256 == saturated.response_sha256
+    assert caught.value.response_text_sha256 == saturated.response_text_sha256
+    assert invoked == []
 
+
+@pytest.mark.parametrize("finish_reason", ["length", "content_filter"])
+def test_finite_solver_completion_cannot_reach_delivery(finish_reason):
     delivered: list[str] = []
+    terminal_completion = _completion(
+        text="partial answer",
+        finish_reason=finish_reason,
+    )
     terminal_node = NativeRoleNode(
         spec=NativeRoleNodeSpec(
             role_id="solver",
@@ -726,15 +751,109 @@ def test_role_requires_wire_metadata_and_rejects_terminal_saturation():
             prompt="Solve.",
             max_iterations=1,
         ),
-        metered_request=lambda _request: _completion(
-            text="partial answer", finish_reason="length"
+        metered_request=lambda _request: terminal_completion,
+        contact_context=NativeRoleContactContext(
+            sample_id="sample-1",
+            agent_contact_id="contact-1",
         ),
-        contact_context=context,
         delivery_allowed=lambda _role, output: delivered.append(output) or True,
     )
-    with pytest.raises(FrozenCoreRoleModelError, match="finish_reason"):
+
+    with pytest.raises(
+        FrozenCoreRoleFiniteCompletionError,
+        match=finish_reason,
+    ) as caught:
         asyncio.run(terminal_node.invoke_direct("Deliver the answer."))
+
+    assert caught.value.completion is terminal_completion
+    assert caught.value.finish_reason == finish_reason
     assert delivered == []
+
+
+@pytest.mark.parametrize("finish_reason", ["length", "content_filter"])
+def test_finite_completion_error_preserves_exact_source_completion(finish_reason):
+    completion = _completion(
+        text="finite output",
+        finish_reason=finish_reason,
+        serial=7,
+    )
+
+    with pytest.raises(FrozenCoreRoleFiniteCompletionError) as caught:
+        project_native_assistant_message(completion)
+
+    error = caught.value
+    assert isinstance(error, FrozenCoreRoleModelError)
+    assert error.completion is completion
+    assert error.finish_reason == finish_reason
+    assert error.original_message == completion.original_message
+    assert error.request_sha256 == completion.request_sha256
+    assert error.response_sha256 == completion.response_sha256
+    assert error.response_text_sha256 == completion.response_text_sha256
+
+
+def test_finite_completion_is_classified_before_partial_tool_call_parsing():
+    partial_call = _completion(
+        text="partial call",
+        tool_calls=[{"id": "unfinished"}],
+        finish_reason="length",
+    )
+
+    with pytest.raises(FrozenCoreRoleFiniteCompletionError) as caught:
+        project_native_assistant_message(partial_call)
+
+    assert caught.value.completion is partial_call
+
+
+@pytest.mark.parametrize("finish_reason", [[], {}])
+def test_malformed_finish_metadata_remains_a_generic_fatal_error(finish_reason):
+    completion = _completion(text="invalid metadata", finish_reason=finish_reason)
+    with pytest.raises(FrozenCoreRoleModelError, match="unsupported") as caught:
+        project_native_assistant_message(completion)
+    assert not isinstance(caught.value, FrozenCoreRoleFiniteCompletionError)
+
+
+def test_malformed_wire_content_is_not_a_finite_completion():
+    completion = _completion(text="invalid content", wire_content=123, finish_reason="length")
+    with pytest.raises(FrozenCoreRoleModelError, match="content") as caught:
+        project_native_assistant_message(completion)
+    assert not isinstance(caught.value, FrozenCoreRoleFiniteCompletionError)
+
+
+def test_unknown_finish_and_invalid_source_are_not_finite_completion_errors():
+    unknown = _completion(text="answer", finish_reason="server_error")
+    with pytest.raises(FrozenCoreRoleModelError, match="unsupported") as caught:
+        project_native_assistant_message(unknown)
+    assert not isinstance(caught.value, FrozenCoreRoleFiniteCompletionError)
+
+    invalid_source = replace(
+        _completion(text="partial", finish_reason="length"),
+        response_sha256="",
+    )
+    with pytest.raises(FrozenCoreRoleModelError, match="source binding") as invalid:
+        project_native_assistant_message(invalid_source)
+    assert not isinstance(invalid.value, FrozenCoreRoleFiniteCompletionError)
+
+    wrong_sample = _completion(
+        text="partial",
+        sample_id="sample-2",
+        finish_reason="length",
+    )
+    model = FrozenCoreRoleModel(
+        role_id="solver",
+        metered_request=lambda _request: wrong_sample,
+        context=NativeRoleContactContext(
+            sample_id="sample-1",
+            agent_contact_id="contact-1",
+        ),
+    )
+    with pytest.raises(FrozenCoreRoleModelError, match="binding") as mismatch:
+        asyncio.run(
+            model.invoke(
+                ({"role": "user", "content": "Solve."},),
+                tools=(),
+            )
+        )
+    assert not isinstance(mismatch.value, FrozenCoreRoleFiniteCompletionError)
 
 
 def test_role_preserves_structured_wire_content_supported_by_assistant_message():
