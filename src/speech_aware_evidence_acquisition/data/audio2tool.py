@@ -704,10 +704,10 @@ def load_tool_registry(lock: Mapping[str, object], root: Path) -> tuple[dict[str
     return tuple(row for _tool_id, row in _load_registry_rows(lock, root))
 
 
-def _load_tool_registry_with_sha256(
+def load_tool_registry_with_sha256(
     lock: Mapping[str, object], root: Path
 ) -> tuple[tuple[dict[str, str], ...], str]:
-    """Internal row view paired with the hash of the exact bytes parsed."""
+    """Public rows paired with the hash of the exact registry bytes parsed."""
 
     rows, source_sha256 = _load_registry_rows_with_sha256(lock, root)
     return tuple(row for _tool_id, row in rows), source_sha256

@@ -1793,6 +1793,15 @@ def validate_compiled_knowledge_snapshot(
     ):
         raise RailsError("compiler receipt describes another compilation")
 
+    for value in snapshot.values:
+        target = value.task_target
+        if (
+            not isinstance(target, str) or not target
+            or value.value_id != f"a2t-native-card:{target}:value"
+            or value.associated_facet_ids != (f"a2t-native-card:{target}:content",)
+        ):
+            raise RailsError("compiled tool-to-card association differs from its builder")
+
     sources = _compiled_mapping(receipt.get("sources"), name="compiler sources")
     source_fields = {
         "dataset_lock": "dataset_lock_sha256",

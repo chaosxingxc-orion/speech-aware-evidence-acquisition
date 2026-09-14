@@ -3,6 +3,7 @@ from dataclasses import replace
 from pathlib import Path
 import hashlib
 import json
+import socket
 
 import pytest
 
@@ -34,7 +35,15 @@ def _prepared(tmp_path, view="parameter-meaning"):
         receipt_output_path=out / "compilation.json",
         snapshot_output_path=out / "snapshot.json",
     )
-    compiler.compile_a2t_semantic_card_artifacts(config)
+    # The production CLI guard lasts for its process. Keep it active during
+    # compilation, then restore this test process for later loopback fixtures.
+    with pytest.MonkeyPatch.context() as isolation:
+        for owner, name in (
+            (socket.socket, "connect"), (socket.socket, "connect_ex"),
+            (socket, "create_connection"),
+        ):
+            isolation.setattr(owner, name, getattr(owner, name))
+        compiler.compile_a2t_semantic_card_artifacts(config)
     repo = tmp_path / "release-repo"
     repo.mkdir()
     registration = {
@@ -185,4 +194,35 @@ def test_shared_compiled_snapshot_validator_rejects_direct_tampering(
                 config.snapshot_output_path.read_bytes()
             ).hexdigest(),
             snapshot_path=config.snapshot_output_path,
+        )
+
+
+def test_compiler_fixture_restores_process_socket_functions(tmp_path):
+    before = (socket.socket.connect, socket.socket.connect_ex, socket.create_connection)
+    _prepared(tmp_path)
+    assert before == (socket.socket.connect, socket.socket.connect_ex, socket.create_connection)
+
+
+@pytest.mark.parametrize("defect", ["swapped-targets", "swapped-facets", "swapped-value-ids"])
+def test_compiled_validator_refuses_rehashed_tool_card_association_swaps(tmp_path, defect):
+    _repo, config, _path, _registration = _prepared(tmp_path)
+    receipt, snapshot = _direct_validator_inputs(config)
+    values = list(snapshot.values)
+    first, second = values[:2]
+    field = {
+        "swapped-targets": "task_target",
+        "swapped-facets": "associated_facet_ids",
+        "swapped-value-ids": "value_id",
+    }[defect]
+    values[0] = replace(first, **{field: getattr(second, field)})
+    values[1] = replace(second, **{field: getattr(first, field)})
+    changed = replace(snapshot, values=tuple(values)).validate()
+    raw = canonical_bytes(changed.frozen_json())
+    raw_sha = hashlib.sha256(raw).hexdigest()
+    receipt["knowledge_snapshot"]["snapshot_sha256"] = changed.content_hash()
+    receipt["knowledge_snapshot"]["file_sha256"] = raw_sha
+    with pytest.raises(RailsError, match="tool-to-card association"):
+        compiler.validate_compiled_knowledge_snapshot(
+            receipt, changed, store_role="parameter-meaning",
+            snapshot_file_sha256=raw_sha, snapshot_path=config.snapshot_output_path,
         )

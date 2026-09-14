@@ -873,3 +873,35 @@ def test_bounded_projection_is_shared_by_treatment_and_control(tmp_path, mode):
     assert len(audit["candidate_projection"]["raw_positions"]) == 3
     assert source.content == raw
     assert router.receipt["candidate_supply"]["specs"][0]["projection_policy"] == spec["projection_policy"]
+
+
+@pytest.mark.parametrize("mode,expected", [
+    ("single", "bdcc8387f6181d96ff4f3bba2a1591362bb2cca7fc1f06721068ceced9a1f7e7"),
+    ("withhold", "0983a13f259df05a597895e3e86a52419299dfa6523ae5a8431f890447c62bde"),
+    ("latest", "49d48c6fa82a2ce6dcc464b73a51fb01ddee56e5293bde68afb247bea3908925"),
+])
+def test_existing_slurp_receipt_identity_survives_shared_provider_extraction(tmp_path, mode, expected):
+    # Golden hashes were measured from the unchanged a66aa023 source before
+    # extracting the shared provider, including the existing synthetic sources.
+    from speech_aware_evidence_acquisition.rails.hashing import content_hash
+
+    config, legal = _config(tmp_path)
+    spec = config["knowledge_stores"]["slot-contracts"]["candidate_supply"]["solve"]
+    if mode == "withhold":
+        spec["supply_mode"] = "withhold"
+    elif mode == "latest":
+        spec["candidate_state_selection"] = "latest"
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    router = build_knowledge_store_supply(
+        binding, program=_program(), data_root=tmp_path, legal_candidate_ids=legal,
+    )
+    artifact = _artifact("s1", ("beta", "alpha", "gamma"))
+    context = _context(binding, artifact)
+    if mode == "latest":
+        context = _latest_context(
+            binding, (
+                _artifact("s1", ("alpha",), state_id="old:hypotheses:s1"), artifact,
+            ), retrieved_value_ids=("slot-contracts::slot-contract:alpha_one",),
+        )
+    router.automatic_for_phase("solve", context)
+    assert content_hash(router.receipt) == expected

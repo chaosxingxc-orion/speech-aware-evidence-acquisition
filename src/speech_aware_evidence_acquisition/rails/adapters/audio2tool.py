@@ -36,7 +36,7 @@ from ...data.audio2tool import (
     audio2tool_receipts,
     load_audio2tool,
     load_expected_calls,
-    _load_tool_registry_with_sha256,
+    load_tool_registry_with_sha256,
     render_tool_schemas,
 )
 from ...data.lock import REPO_ROOT
@@ -119,7 +119,7 @@ class Audio2ToolAdapter(TaskAdapter):
         """Return the public registry's complete ordered legal tool roster."""
 
         if self._candidate_inventory is None:
-            rows, source_sha256 = _load_tool_registry_with_sha256(
+            rows, source_sha256 = load_tool_registry_with_sha256(
                 self._lock, self._root
             )
             self._candidate_inventory = CandidateInventory(

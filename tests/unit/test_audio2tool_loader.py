@@ -17,7 +17,7 @@ from speech_aware_evidence_acquisition.data.audio2tool import (
     load_audio2tool,
     load_expected_calls,
     load_tool_registry,
-    _load_tool_registry_with_sha256,
+    load_tool_registry_with_sha256,
     render_registry_row,
     render_tool_schemas,
 )
@@ -200,7 +200,7 @@ def test_registry_rows_and_sha_are_bound_to_the_same_raw_bytes(audio2tool_world,
         return raw
 
     monkeypatch.setattr(type(registry_path), "read_bytes", read_then_replace)
-    rows, source_sha256 = _load_tool_registry_with_sha256(
+    rows, source_sha256 = load_tool_registry_with_sha256(
         lock, audio2tool_world.data_root
     )
 

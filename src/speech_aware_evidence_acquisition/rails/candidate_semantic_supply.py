@@ -1,11 +1,9 @@
-"""Configuration-only supply of released slot cards from candidate state.
+"""Deliver released task-specific semantic values from source-bound candidate state.
 
-The model contributes only the ranked, source-bound SLURP intent candidates
-sealed by an earlier phase.  This module validates those candidates against
-the task adapter's authoritative legal inventory, uses the released authored
-slot source only as an index, and returns ordinary ``PhaseSupply`` through the
-existing named-store custody path.  Sparse intent bindings are indexing hints;
-they never declare required, optional, forbidden, or exhaustive slot types.
+The shared route validates task candidates against an authoritative inventory,
+selects from released knowledge and returns ordinary PhaseSupply through the
+existing named-store custody path. Candidate hypotheses are evidence selectors;
+they never restrict the Solver's legal answer space.
 """
 
 from __future__ import annotations
@@ -24,6 +22,7 @@ from ..core.base import (
     KNOWLEDGE_RANKERS,
     CoreError,
 )
+from .a2t_perception_state import Audio2ToolPerceptionStateError
 from .controllers import PhaseProgram, PhaseSupply
 from .errors import RailsError
 from .hashing import content_hash
@@ -32,7 +31,7 @@ from .knowledge_provider import (
     SLURP_CANDIDATE_SEMANTIC_FUSE_POLICY_ID,
     SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID,
     SLURP_CANDIDATE_SEMANTIC_RANK_POLICY_ID,
-    SlurpCandidateSemanticProvider,
+    A2T_CANDIDATE_SEMANTIC_PROVIDER_ID,
 )
 from .semantic_knowledge_build import (
     SLOT_CONTRACT_BUILD_POLICY_ID,
@@ -60,6 +59,9 @@ _SPEC_KEYS = frozenset(
         "max_total_values",
     }
 )
+_A2T_SPEC_KEYS = (_SPEC_KEYS - {"max_candidates"}) | {
+    "max_actions", "max_candidates_per_action"
+}
 _OPTIONAL_SPEC_KEYS = frozenset(
     {
         "candidate_state_selection",
@@ -104,6 +106,8 @@ class CandidateSemanticSupplySpec:
     supply_mode: str = "provide"
     projection_policy: str | None = None
     candidate_state_selection: str = "single"
+    max_actions: int | None = None
+    max_candidates_per_action: int | None = None
 
     def validate(self, program: PhaseProgram) -> "CandidateSemanticSupplySpec":
         program.validate()
@@ -141,11 +145,28 @@ class CandidateSemanticSupplySpec:
             raise CandidateSemanticSupplyError(
                 f"candidate supply phase {self.phase!r} must declare knowledge='supplied'"
             )
+        if self.provider not in (
+            SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID, A2T_CANDIDATE_SEMANTIC_PROVIDER_ID
+        ):
+            raise CandidateSemanticSupplyError(f"unsupported candidate provider {self.provider!r}")
+        if self.provider == A2T_CANDIDATE_SEMANTIC_PROVIDER_ID:
+            actions = _positive_int(self.max_actions, field="max_actions")
+            alternatives = _positive_int(
+                self.max_candidates_per_action, field="max_candidates_per_action"
+            )
+            if self.max_candidates != actions * alternatives:
+                raise CandidateSemanticSupplyError("candidate bound differs from action alternatives")
+            if self.compact_source_phase is None or self.projection_policy is not None:
+                raise CandidateSemanticSupplyError(
+                    "Audio2Tool requires an explicit compact source phase and no projection"
+                )
+        elif self.max_actions is not None or self.max_candidates_per_action is not None:
+            raise CandidateSemanticSupplyError("SLURP does not declare action occurrence bounds")
         expected = (
             (
                 "provider",
                 self.provider,
-                SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID,
+                self.provider,
                 KNOWLEDGE_PROVIDERS,
             ),
             (
@@ -170,7 +191,10 @@ class CandidateSemanticSupplySpec:
                 registry.resolve(value)
             except CoreError as error:
                 raise CandidateSemanticSupplyError(str(error)) from None
-        _positive_int(self.max_candidates, field="max_candidates", maximum=3)
+        _positive_int(
+            self.max_candidates, field="max_candidates",
+            maximum=3 if self.provider == SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID else None,
+        )
         _positive_int(self.max_values_per_candidate, field="max_values_per_candidate")
         _positive_int(self.max_total_values, field="max_total_values")
         if self.max_total_values > self.max_candidates * self.max_values_per_candidate:
@@ -192,6 +216,12 @@ class CandidateSemanticSupplySpec:
             "max_values_per_candidate": self.max_values_per_candidate,
             "max_total_values": self.max_total_values,
         }
+        if self.provider == A2T_CANDIDATE_SEMANTIC_PROVIDER_ID:
+            result.pop("max_candidates")
+            result.update(
+                max_actions=self.max_actions,
+                max_candidates_per_action=self.max_candidates_per_action,
+            )
         if self.compact_source_phase is not None:
             result["compact_source_phase"] = self.compact_source_phase
         if self.supply_mode != "provide":
@@ -214,17 +244,20 @@ def load_candidate_semantic_supply_specs(
         declared = store.candidate_supply
         if not declared:
             continue
-        if store.store_role != "slot-contracts":
-            raise CandidateSemanticSupplyError(
-                "candidate semantic supply requires a slot-contracts store"
-            )
         for phase, raw in declared.items():
             if not isinstance(phase, str) or not phase or not isinstance(raw, Mapping):
                 raise CandidateSemanticSupplyError(
                     "candidate_supply entries must be objects"
                 )
-            if not _SPEC_KEYS <= set(raw) or set(raw) - (
-                _SPEC_KEYS | _OPTIONAL_SPEC_KEYS
+            is_a2t = raw.get("provider") == A2T_CANDIDATE_SEMANTIC_PROVIDER_ID
+            expected_role = "parameter-meaning" if is_a2t else "slot-contracts"
+            if store.store_role != expected_role:
+                raise CandidateSemanticSupplyError(
+                    f"candidate semantic supply requires a {expected_role} store"
+                )
+            required = _A2T_SPEC_KEYS if is_a2t else _SPEC_KEYS
+            if not required <= set(raw) or set(raw) - (
+                required | _OPTIONAL_SPEC_KEYS
             ):
                 raise CandidateSemanticSupplyError(
                     f"candidate_supply[{phase!r}] has the wrong fields"
@@ -240,7 +273,13 @@ def load_candidate_semantic_supply_specs(
                 rank_policy=raw["rank_policy"],
                 fuse_policy=raw["fuse_policy"],
                 candidate_state_phase=raw["candidate_state_phase"],
-                max_candidates=raw["max_candidates"],
+                max_candidates=(
+                    _positive_int(raw["max_actions"], field="max_actions")
+                    * _positive_int(
+                        raw["max_candidates_per_action"], field="max_candidates_per_action"
+                    )
+                    if is_a2t else raw["max_candidates"]
+                ),
                 max_values_per_candidate=raw["max_values_per_candidate"],
                 max_total_values=raw["max_total_values"],
                 compact_source_phase=raw.get("compact_source_phase"),
@@ -249,6 +288,8 @@ def load_candidate_semantic_supply_specs(
                 candidate_state_selection=raw.get(
                     "candidate_state_selection", "single"
                 ),
+                max_actions=raw.get("max_actions"),
+                max_candidates_per_action=raw.get("max_candidates_per_action"),
             ).validate(program)
             specs[phase] = spec
     return MappingProxyType(specs)
@@ -273,7 +314,14 @@ def _read_released_source(store: object, data_root: Path) -> Mapping[str, object
         raise CandidateSemanticSupplyError(
             "released authored source is not JSON"
         ) from error
-    if not isinstance(source, Mapping) or set(source) != _SOURCE_KEYS:
+    if not isinstance(source, Mapping):
+        raise CandidateSemanticSupplyError("released source must be a JSON object")
+    return source
+
+
+def _read_released_authored_source(store: object, data_root: Path) -> Mapping[str, object]:
+    source = _read_released_source(store, data_root)
+    if set(source) != _SOURCE_KEYS:
         raise CandidateSemanticSupplyError(
             "released authored source has the wrong fields"
         )
@@ -305,7 +353,7 @@ def _released_candidate_index(
     data_root: Path,
     legal_candidate_ids: Sequence[str],
 ) -> Mapping[str, tuple[str, ...]]:
-    source = _read_released_source(store, data_root)
+    source = _read_released_authored_source(store, data_root)
     rows = source["rows"]
     try:
         rebuilt = build_slot_contract_snapshot(
@@ -349,12 +397,67 @@ def _released_candidate_index(
     )
 
 
+
+def _released_audio2tool_candidate_index(
+    store: object, *, data_root: Path, legal_candidate_ids: Sequence[str],
+    candidate_inventory_source_sha256: str | None,
+) -> Mapping[str, tuple[str, ...]]:
+    from .knowledge_compile_a2t import validate_compiled_knowledge_snapshot  # noqa: PLC0415
+
+    source = _read_released_source(store, data_root)
+    root = Path(data_root).resolve()
+    path = (root / store.snapshot_pin["relpath"]).resolve()
+    if path == root or root not in path.parents:
+        raise CandidateSemanticSupplyError("compiled snapshot escapes data root")
+    try:
+        raw_hash = hashlib.sha256(path.read_bytes()).hexdigest()
+        metadata = validate_compiled_knowledge_snapshot(
+            source, store.snapshot, store_role=store.store_role,
+            snapshot_file_sha256=raw_hash, snapshot_path=path,
+        )
+    except (OSError, RailsError, ValueError, TypeError) as error:
+        raise CandidateSemanticSupplyError(str(error)) from error
+    if (
+        not candidate_inventory_source_sha256
+        or metadata["tool_registry_sha256"] != candidate_inventory_source_sha256
+    ):
+        raise CandidateSemanticSupplyError(
+            "compiled parameter knowledge and authoritative tool registry source differ"
+        )
+    legal = tuple(legal_candidate_ids)
+    if not legal or len(legal) != len(set(legal)):
+        raise CandidateSemanticSupplyError("authoritative tool inventory must be nonempty and unique")
+    snapshot = store.snapshot
+    index: dict[str, tuple[str, ...]] = {}
+    for value in snapshot.values:
+        target = value.task_target
+        if target not in legal or target in index:
+            raise CandidateSemanticSupplyError(
+                "compiled parameter targets must match the complete legal tool inventory"
+            )
+        expected_provenance = {
+            f"a2t-native-card-compilation-source-sha256:{snapshot.source_split_identity_hash}",
+            f"a2t-native-card-corpus-sha256:{metadata['corpus_sha256']}",
+            "a2t-native-card-sha256:" + hashlib.sha256(value.content.encode("utf-8")).hexdigest(),
+            "a2t-native-card-value-view:parameter-meaning",
+        }
+        if not expected_provenance <= set(value.provenance_refs):
+            raise CandidateSemanticSupplyError("compiled parameter value provenance differs")
+        index[target] = (value.value_id,)
+    if set(index) != set(legal):
+        raise CandidateSemanticSupplyError(
+            "compiled parameter targets must cover the complete legal tool inventory"
+        )
+    return MappingProxyType(index)
+
 def build_candidate_semantic_supply(
     binding: object,
     specs: Mapping[str, CandidateSemanticSupplySpec],
     *,
     data_root: Path,
     legal_candidate_ids: Sequence[str],
+    candidate_inventory_source_sha256: str | None = None,
+    candidate_inventory_authority: str = "task-adapter-candidate-contract-provider",
 ):
     """Build automatic per-phase supply and its mutable run receipt."""
 
@@ -365,11 +468,22 @@ def build_candidate_semantic_supply(
     indexes: dict[str, Mapping[str, tuple[str, ...]]] = {}
     for spec in specs.values():
         if spec.store_id not in indexes:
-            indexes[spec.store_id] = _released_candidate_index(
-                binding.store(spec.store_id),
-                data_root=data_root,
-                legal_candidate_ids=legal_candidate_ids,
-            )
+            if spec.provider == A2T_CANDIDATE_SEMANTIC_PROVIDER_ID:
+                if candidate_inventory_authority != "audio2tool-public-tool-registry":
+                    raise CandidateSemanticSupplyError(
+                        "Audio2Tool requires its public tool registry authority"
+                    )
+                indexes[spec.store_id] = _released_audio2tool_candidate_index(
+                    binding.store(spec.store_id), data_root=data_root,
+                    legal_candidate_ids=legal_candidate_ids,
+                    candidate_inventory_source_sha256=candidate_inventory_source_sha256,
+                )
+            else:
+                indexes[spec.store_id] = _released_candidate_index(
+                    binding.store(spec.store_id),
+                    data_root=data_root,
+                    legal_candidate_ids=legal_candidate_ids,
+                )
     audits: dict[str, Mapping[str, object]] = {}
     audit_lock = Lock()
 
@@ -457,15 +571,23 @@ def build_candidate_semantic_supply(
             prior_response_sha256s=prior_response_sha256s,
         )
         store = binding.store(spec.store_id)
-        provider = SlurpCandidateSemanticProvider(
-            candidate_values=indexes[spec.store_id],
-            legal_candidate_ids=legal_candidate_ids,
-            max_candidates=spec.max_candidates,
-            max_values_per_candidate=spec.max_values_per_candidate,
-            max_total_values=spec.max_total_values,
-            compact_source_phase=spec.compact_source_phase,
-            projection_policy=spec.projection_policy,
-        ).adopt(
+        provider_args = {
+            "candidate_values": indexes[spec.store_id],
+            "legal_candidate_ids": legal_candidate_ids,
+            "max_values_per_candidate": spec.max_values_per_candidate,
+            "max_total_values": spec.max_total_values,
+            "compact_source_phase": spec.compact_source_phase,
+        }
+        if spec.provider == A2T_CANDIDATE_SEMANTIC_PROVIDER_ID:
+            provider_args.update(
+                max_actions=spec.max_actions,
+                max_candidates_per_action=spec.max_candidates_per_action,
+            )
+        else:
+            provider_args.update(
+                max_candidates=spec.max_candidates, projection_policy=spec.projection_policy
+            )
+        provider = KNOWLEDGE_PROVIDERS.resolve(spec.provider)(**provider_args).adopt(
             store.snapshot,
             policy_id=store.snapshot.builder_policy_id,
             source_ids=store.snapshot.source_sample_ids,
@@ -485,7 +607,7 @@ def build_candidate_semantic_supply(
                 k=spec.max_total_values,
                 policy_id=spec.fuse_policy,
             )
-        except (RailsError, SlurpIntentHypothesisError) as error:
+        except (RailsError, SlurpIntentHypothesisError, Audio2ToolPerceptionStateError) as error:
             raise CandidateSemanticSupplyError(str(error)) from error
         audit = dict(provider.last_selection_audit() or {})
         if not audit:
@@ -493,6 +615,11 @@ def build_candidate_semantic_supply(
                 "candidate provider produced no selection audit"
             )
         audit.update(binding.store_receipt(spec.store_id))
+        if candidate_inventory_source_sha256 is not None:
+            audit.update(
+                candidate_inventory_source_sha256=candidate_inventory_source_sha256,
+                candidate_inventory_authority=candidate_inventory_authority,
+            )
         selected_ids = tuple(
             qualify_id(spec.store_id, value_id)
             for value_id in decision.selected_value_ids
@@ -557,7 +684,7 @@ def build_candidate_semantic_supply(
             if spec.candidate_state_selection == "latest":
                 supplied_decision = replace(
                     decision,
-                    supporting_facet_ids=local_added_ids,
+                    supporting_facet_ids=provider.supporting_facet_ids(local_added_ids),
                     selected_value_ids=local_added_ids,
                 ).validate()
             local_supply = PhaseSupply(
@@ -585,13 +712,15 @@ def build_candidate_semantic_supply(
     automatic_for_phase.receipt = {
         "schema": CANDIDATE_SUPPLY_SCHEMA,
         "specs": [specs[phase].as_json() for phase in sorted(specs)],
-        "candidate_inventory_authority": "task-adapter-candidate-contract-provider",
+        "candidate_inventory_authority": candidate_inventory_authority,
         "candidate_inventory_count": len(frozenset(legal_candidate_ids)),
         "candidate_inventory_sha256": content_hash(
             {"candidate_ids": sorted(frozenset(legal_candidate_ids))}
         ),
         "candidate_selections": audits,
     }
+    if candidate_inventory_source_sha256 is not None:
+        automatic_for_phase.receipt["candidate_inventory_source_sha256"] = candidate_inventory_source_sha256
     return automatic_for_phase
 
 

@@ -393,6 +393,8 @@ def build_knowledge_store_supply(
     data_root: Path,
     source_audio_bindings=None,
     legal_candidate_ids=None,
+    candidate_inventory_source_sha256=None,
+    candidate_inventory_authority="task-adapter-candidate-contract-provider",
 ):
     """Build explicit store routes and automatic candidate-conditioned supply."""
     from .phase_supply import (
@@ -419,6 +421,8 @@ def build_knowledge_store_supply(
         candidate_specs,
         data_root=data_root,
         legal_candidate_ids=tuple(legal_candidate_ids or ()),
+        candidate_inventory_source_sha256=candidate_inventory_source_sha256,
+        candidate_inventory_authority=candidate_inventory_authority,
     )
     first_phase = program.phase_names()[0]
     for store_id in binding.store_ids:

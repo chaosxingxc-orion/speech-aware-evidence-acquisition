@@ -6607,26 +6607,33 @@ class FlightRuntime:
                     for entry in store.phase_supply.values()
                 )
                 legal_candidate_ids = None
+                inventory_options = {}
                 if any(store.candidate_supply for store in store_binding.stores.values()):
-                    prepare_contracts = getattr(
-                        self._adapter, "candidate_contract_provider", None
+                    from ...rails.task_adapter import CandidateInventory  # noqa: PLC0415
+
+                    prepare_inventory = getattr(self._adapter, "candidate_inventory", None)
+                    inventory = (
+                        prepare_inventory() if callable(prepare_inventory) else None
                     )
-                    contract_provider = (
-                        None if not callable(prepare_contracts) else prepare_contracts()
-                    )
-                    candidate_ids = getattr(contract_provider, "candidate_ids", None)
-                    if not isinstance(candidate_ids, tuple) or not candidate_ids:
+                    if not isinstance(inventory, CandidateInventory):
                         raise FlightRuntimeError(
                             "candidate semantic supply requires the task adapter's "
-                            "authoritative candidate contract provider"
+                            "authoritative candidate inventory"
                         )
-                    legal_candidate_ids = candidate_ids
+                    inventory.validate()
+                    legal_candidate_ids = inventory.candidate_ids
+                    if inventory.source_authority != "task-adapter-candidate-contract-provider":
+                        inventory_options = {
+                            "candidate_inventory_source_sha256": inventory.source_sha256,
+                            "candidate_inventory_authority": inventory.source_authority,
+                        }
                 router = build_knowledge_store_supply(
                     store_binding, program=program, data_root=self._data_root,
                     source_audio_bindings=(self.source_audio_bindings() if uses_segments else None),
                     legal_candidate_ids=legal_candidate_ids,
+                    **inventory_options,
                 )
-            except (KnowledgeStoreError, CandidateSemanticSupplyError) as error:
+            except (KnowledgeStoreError, CandidateSemanticSupplyError, ValueError) as error:
                 raise FlightRuntimeError(str(error)) from error
             self._knowledge_store_supply = router
             self._phase_supply_receipt = router.receipt

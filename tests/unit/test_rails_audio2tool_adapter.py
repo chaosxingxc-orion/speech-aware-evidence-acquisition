@@ -76,7 +76,7 @@ def test_candidate_inventory_is_lazy_cached_source_bound_and_gold_free(
     from speech_aware_evidence_acquisition.rails.adapters import audio2tool as module
 
     calls = []
-    real_load = module._load_tool_registry_with_sha256
+    real_load = module.load_tool_registry_with_sha256
 
     def load_once(*args):
         calls.append(args)
@@ -85,7 +85,7 @@ def test_candidate_inventory_is_lazy_cached_source_bound_and_gold_free(
     def forbidden_gold(*args, **kwargs):
         raise AssertionError("candidate inventory must not read scorer-side gold")
 
-    monkeypatch.setattr(module, "_load_tool_registry_with_sha256", load_once)
+    monkeypatch.setattr(module, "load_tool_registry_with_sha256", load_once)
     monkeypatch.setattr(module, "load_expected_calls", forbidden_gold)
     monkeypatch.setattr(module, "load_audio2tool", forbidden_gold)
     monkeypatch.setattr(module, "audio2tool_receipts", forbidden_gold)

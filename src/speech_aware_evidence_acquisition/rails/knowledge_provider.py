@@ -1306,10 +1306,11 @@ class SlurpIntentCandidateProvider(KnowledgeProvider):
 
 
 # ---------------------------------------------------------------------------
-# SlurpCandidateSemanticProvider -- candidate-conditioned authored cards
+# CandidateSemanticProvider -- candidate-conditioned released cards
 # ---------------------------------------------------------------------------
 
 SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID = "slurp-candidate-semantic-v1"
+A2T_CANDIDATE_SEMANTIC_PROVIDER_ID = "audio2tool-candidate-semantic-v1"
 SLURP_CANDIDATE_SEMANTIC_RANK_POLICY_ID = (
     "saea-ranked-candidate-round-robin-v1"
 )
@@ -1318,7 +1319,7 @@ SLURP_CANDIDATE_SEMANTIC_FUSE_POLICY_ID = (
 )
 
 
-class SlurpCandidateSemanticProvider(KnowledgeProvider):
+class CandidateSemanticProvider(KnowledgeProvider):
     """Select released semantic values from a ranked hypothesis state.
 
     The provider reads only a source-bound ``AgentStateArtifact`` produced by
@@ -1329,6 +1330,8 @@ class SlurpCandidateSemanticProvider(KnowledgeProvider):
     A shared value is supplied once, under the first ranked candidate that
     reaches it.  Per-candidate and total caps are independent hard bounds.
     """
+
+    MAX_CANDIDATES: int | None = None
 
     def __init__(
         self,
@@ -1346,10 +1349,10 @@ class SlurpCandidateSemanticProvider(KnowledgeProvider):
         legal = frozenset(legal_candidate_ids)
         if not legal or any(not isinstance(item, str) or not item for item in legal):
             raise RailsError(
-                "SlurpCandidateSemanticProvider needs a non-empty legal candidate inventory"
+                "CandidateSemanticProvider needs a non-empty legal candidate inventory"
             )
         for field, value, maximum in (
-            ("max_candidates", max_candidates, 3),
+            ("max_candidates", max_candidates, self.MAX_CANDIDATES),
             ("max_values_per_candidate", max_values_per_candidate, None),
             ("max_total_values", max_total_values, None),
         ):
@@ -1396,7 +1399,7 @@ class SlurpCandidateSemanticProvider(KnowledgeProvider):
 
     def build(self, source_rows: object, *, policy_id: str) -> object:
         raise RailsError(
-            "SlurpCandidateSemanticProvider does not build at runtime; load and "
+            "CandidateSemanticProvider does not build at runtime; load and "
             "verify the released named store, then use adopt()"
         )
 
@@ -1407,7 +1410,7 @@ class SlurpCandidateSemanticProvider(KnowledgeProvider):
         policy_id: str,
         source_ids: Sequence[str] = (),
         snapshot_sha256: str | None = None,
-    ) -> "SlurpCandidateSemanticProvider":
+    ) -> "CandidateSemanticProvider":
         super().adopt(
             built,
             policy_id=policy_id,
@@ -1427,12 +1430,34 @@ class SlurpCandidateSemanticProvider(KnowledgeProvider):
                 f"{sorted(unknown)[:5]}"
             )
         for value_id in indexed:
-            value = value_by_id[value_id]
-            if value_id not in facet_ids or value.associated_facet_ids != (value_id,):
-                raise RailsError(
-                    "candidate semantic values must retain their same-ID released facet"
-                )
+            self._validate_value_facets(value_by_id[value_id], facet_ids)
+        self._value_facets = {
+            value_id: value.associated_facet_ids
+            for value_id, value in value_by_id.items()
+        }
         return self
+
+    def _validate_value_facets(self, value: object, facet_ids: set[str]) -> None:
+        if not value.associated_facet_ids or not set(value.associated_facet_ids) <= facet_ids:
+            raise RailsError("candidate semantic value has invalid released facet associations")
+
+    def supporting_facet_ids(self, value_ids: Sequence[str]) -> tuple[str, ...]:
+        """Follow actual released value-to-facet links in first-occurrence order."""
+        result: dict[str, None] = {}
+        for value_id in value_ids:
+            if value_id not in self._value_facets:
+                raise RailsError("candidate semantic selection cites an unknown value")
+            for facet_id in self._value_facets[value_id]:
+                result.setdefault(facet_id, None)
+        return tuple(result)
+
+    def _candidate_state(
+        self, artifact: AgentStateArtifact, *, sample_id: str
+    ) -> tuple[tuple[str, ...], dict[str, object]]:
+        raise NotImplementedError("a carrier must parse its source-bound candidate state")
+
+    def _candidate_bounds(self) -> dict[str, int]:
+        return {"max_candidates": self._max_candidates}
 
     def _built_sample_ids(self) -> frozenset[str]:
         snapshot: KnowledgeSnapshot = self._built_object()
@@ -1506,13 +1531,9 @@ class SlurpCandidateSemanticProvider(KnowledgeProvider):
 
     def candidates(self, query: object, *, k: int) -> Ranking:
         from .knowledge import RankedFacet, RankResult  # noqa: PLC0415
-        from .slurp_intent_hypotheses import (  # noqa: PLC0415
-            parse_slurp_intent_hypothesis_state,
-        )
-
         if k != self._max_total_values:
             raise RailsError(
-                "SlurpCandidateSemanticProvider.candidates k must equal the configured "
+                "CandidateSemanticProvider.candidates k must equal the configured "
                 "max_total_values"
             )
         if not isinstance(query, Mapping):
@@ -1526,19 +1547,12 @@ class SlurpCandidateSemanticProvider(KnowledgeProvider):
             raise RailsError("candidate semantic query needs an AgentStateArtifact")
         if sample_id != query_state.query_sample_id:
             raise RailsError("candidate semantic query sample identity mismatch")
-        state = parse_slurp_intent_hypothesis_state(
-            artifact,
-            expected_sample_id=str(sample_id),
-            legal_intent_ids=self._legal_candidate_ids,
-            max_candidates=self._max_candidates,
-            compact_source_phase=self._compact_source_phase,
-            projection_policy=self._projection_policy,
-        )
-        candidate_ids = tuple(item.intent_id for item in state.candidates)
+        candidate_ids, state_audit = self._candidate_state(artifact, sample_id=str(sample_id))
         selected, mappings = self._select(candidate_ids)
+        supporting_facets = self.supporting_facet_ids(selected)
         ranked = tuple(
-            RankedFacet(facet_id=value_id, score=float(len(selected) - index))
-            for index, value_id in enumerate(selected)
+            RankedFacet(facet_id=facet_id, score=float(len(supporting_facets) - index))
+            for index, facet_id in enumerate(supporting_facets)
         )
         rank_result = RankResult(
             snapshot_sha256=self.snapshot_sha256(),
@@ -1559,7 +1573,7 @@ class SlurpCandidateSemanticProvider(KnowledgeProvider):
                 {"candidate_ids": sorted(self._legal_candidate_ids)}
             ),
             "selection_policy_id": SLURP_CANDIDATE_SEMANTIC_RANK_POLICY_ID,
-            "max_candidates": self._max_candidates,
+            **self._candidate_bounds(),
             "max_values_per_candidate": self._max_values_per_candidate,
             "max_total_values": self._max_total_values,
             "mappings": mappings,
@@ -1567,10 +1581,7 @@ class SlurpCandidateSemanticProvider(KnowledgeProvider):
         }
         if self._compact_source_phase is not None:
             audit["compact_source_phase"] = self._compact_source_phase
-        if state.projection is not None:
-            from dataclasses import asdict  # noqa: PLC0415
-
-            audit["candidate_projection"] = asdict(state.projection)
+        audit.update(state_audit)
         audit["selection_sha256"] = content_hash(audit)
         self._last_query_state = query_state
         self._last_rank_result = rank_result
@@ -1607,7 +1618,7 @@ class SlurpCandidateSemanticProvider(KnowledgeProvider):
             query_state_sha256=expected,
             rank_result_sha256=self._last_rank_result.content_hash(),
             fusion_policy_id=SLURP_CANDIDATE_SEMANTIC_FUSE_POLICY_ID,
-            supporting_facet_ids=selected,
+            supporting_facet_ids=self.supporting_facet_ids(selected),
             selected_value_ids=selected,
         ).validate()
 
@@ -1629,6 +1640,104 @@ class SlurpCandidateSemanticProvider(KnowledgeProvider):
                 "candidate semantic selection must be visible before materialization"
             )
         return _render_kb_supply_packet(snapshot, query_state)
+
+
+class SlurpCandidateSemanticProvider(CandidateSemanticProvider):
+    """Retain the original SLURP candidate and same-ID authored-card contract."""
+
+    MAX_CANDIDATES = 3
+
+    def _validate_value_facets(self, value: object, facet_ids: set[str]) -> None:
+        if value.value_id not in facet_ids or value.associated_facet_ids != (value.value_id,):
+            raise RailsError(
+                "candidate semantic values must retain their same-ID released facet"
+            )
+
+    def _candidate_state(
+        self, artifact: AgentStateArtifact, *, sample_id: str
+    ) -> tuple[tuple[str, ...], dict[str, object]]:
+        from dataclasses import asdict  # noqa: PLC0415
+
+        from .slurp_intent_hypotheses import (  # noqa: PLC0415
+            parse_slurp_intent_hypothesis_state,
+        )
+
+        state = parse_slurp_intent_hypothesis_state(
+            artifact,
+            expected_sample_id=sample_id,
+            legal_intent_ids=self._legal_candidate_ids,
+            max_candidates=self._max_candidates,
+            compact_source_phase=self._compact_source_phase,
+            projection_policy=self._projection_policy,
+        )
+        audit = {}
+        if state.projection is not None:
+            audit["candidate_projection"] = asdict(state.projection)
+        return tuple(item.intent_id for item in state.candidates), audit
+
+
+class Audio2ToolCandidateSemanticProvider(CandidateSemanticProvider):
+    """Deliver parameter explanations for ordered action alternatives."""
+
+    def __init__(
+        self, *, candidate_values: Mapping[str, Sequence[str]],
+        legal_candidate_ids: Sequence[str], max_actions: int,
+        max_candidates_per_action: int, max_values_per_candidate: int,
+        max_total_values: int, compact_source_phase: str,
+    ) -> None:
+        for name, bound in (
+            ("max_actions", max_actions),
+            ("max_candidates_per_action", max_candidates_per_action),
+        ):
+            if isinstance(bound, bool) or not isinstance(bound, int) or bound < 1:
+                raise RailsError(f"{name} must be a positive integer")
+        if (
+            not isinstance(compact_source_phase, str) or not compact_source_phase
+            or ":" in compact_source_phase
+            or any(char.isspace() for char in compact_source_phase)
+        ):
+            raise RailsError("Audio2Tool candidate state needs an explicit source phase")
+        self._max_actions = max_actions
+        self._max_candidates_per_action = max_candidates_per_action
+        super().__init__(
+            candidate_values=candidate_values, legal_candidate_ids=legal_candidate_ids,
+            max_candidates=max_actions * max_candidates_per_action,
+            max_values_per_candidate=max_values_per_candidate,
+            max_total_values=max_total_values, compact_source_phase=compact_source_phase,
+            provider_id=A2T_CANDIDATE_SEMANTIC_PROVIDER_ID,
+        )
+
+    def _candidate_bounds(self) -> dict[str, int]:
+        return {
+            "max_actions": self._max_actions,
+            "max_candidates_per_action": self._max_candidates_per_action,
+        }
+
+    def _candidate_state(
+        self, artifact: AgentStateArtifact, *, sample_id: str
+    ) -> tuple[tuple[str, ...], dict[str, object]]:
+        from .a2t_perception_state import parse_audio2tool_perception_state  # noqa: PLC0415
+
+        artifact.validate()
+        phase = self._compact_source_phase
+        expected_id = f"{phase}:{sample_id}"
+        if artifact.state_kind != f"phase:{phase}" or not (
+            artifact.state_id == expected_id or artifact.state_id.endswith(":" + expected_id)
+        ):
+            raise RailsError("Audio2Tool candidate state phase or sample identity mismatch")
+        if hashlib.sha256(artifact.content.encode("utf-8")).hexdigest() != artifact.source_response_sha256:
+            raise RailsError("Audio2Tool candidate state content differs from its source response")
+        state = parse_audio2tool_perception_state(
+            artifact.content, legal_tool_names=tuple(self._legal_candidate_ids),
+            max_actions=self._max_actions,
+            max_candidates_per_action=self._max_candidates_per_action,
+        )
+        return state.unique_tool_names, {
+            "candidate_occurrences": [
+                {"action_id": action.action_id, "candidate_tools": list(action.candidate_tools)}
+                for action in state.actions
+            ]
+        }
 
 
 # ---------------------------------------------------------------------------
@@ -1667,10 +1776,16 @@ if SLURP_CANDIDATE_SEMANTIC_PROVIDER_ID not in KNOWLEDGE_PROVIDERS.names():
     )
 
 
+if A2T_CANDIDATE_SEMANTIC_PROVIDER_ID not in KNOWLEDGE_PROVIDERS.names():
+    KNOWLEDGE_PROVIDERS.register(
+        "audio2tool-candidate-semantic-v1", Audio2ToolCandidateSemanticProvider
+    )
+
+
 def _candidate_semantic_policy_is_not_callable(_knobs: object = None) -> object:
     raise RailsError(
         "candidate semantic rank/fuse policy IDs name the deterministic decision "
-        "inside SlurpCandidateSemanticProvider; no independent callable exists"
+        "inside CandidateSemanticProvider; no independent callable exists"
     )
 
 
@@ -1734,6 +1849,9 @@ def resolve_provider(provider_id: str, **kwargs: object) -> KnowledgeProvider:
 
 
 __all__ = [
+    "A2T_CANDIDATE_SEMANTIC_PROVIDER_ID",
+    "Audio2ToolCandidateSemanticProvider",
+    "CandidateSemanticProvider",
     "CONEC_FUSE_POLICY_ID",
     "DENSE_CENTROID_FUSE_POLICY_ID",
     "KNOWLEDGE_PROVIDERS",
