@@ -30,6 +30,10 @@ from .native_candidate_stage_projections import (
     project_verified_native_candidate_stages,
 )
 from .native_episode_source import verify_native_episode_source
+from .native_intent_support import (
+    build_initial_intent_support_diagnostics,
+    validate_initial_intent_support_spec,
+)
 from .slurp_topn_diagnostics import ReferenceIntentRow, SourceCandidateRow
 from .slurp_topn_diagnostics_cli import (
     load_authoritative_slurp_candidate_ids,
@@ -394,7 +398,8 @@ def prepare_native_train_stage_diagnostics(
     }
     _, config = _read_json_pin(config_pin, "diagnostic config")
     legacy_fields = {"schema", "native_source", "reward_source", "reference_source"}
-    if set(config) not in (legacy_fields, legacy_fields | {"candidate_stage_projection"}) or (
+    optional_fields = {"candidate_stage_projection", "initial_intent_support_projection"}
+    if not legacy_fields <= set(config) or set(config) - legacy_fields - optional_fields or (
         config.get("schema") != CONFIG_SCHEMA
     ):
         raise NativeTrainStageDiagnosticError("diagnostic config has wrong fields or schema")
@@ -415,6 +420,17 @@ def prepare_native_train_stage_diagnostics(
         raise NativeTrainStageDiagnosticError(
             "candidate_stage_projection contract is invalid"
         )
+    support_enabled = "initial_intent_support_projection" in config
+    support_spec = config.get("initial_intent_support_projection")
+    if support_enabled:
+        if not stage_projection_enabled:
+            raise NativeTrainStageDiagnosticError(
+                "initial intent support requires candidate_stage_projection"
+            )
+        try:
+            validate_initial_intent_support_spec(support_spec)
+        except ValueError as error:
+            raise NativeTrainStageDiagnosticError(str(error)) from error
     native = config.get("native_source")
     reward = config.get("reward_source")
     reference = config.get("reference_source")
@@ -553,6 +569,16 @@ def prepare_native_train_stage_diagnostics(
             source=source,
         )
     )
+    if support_enabled:
+        try:
+            document["initial_intent_support"] = build_initial_intent_support_diagnostics(
+                source=verified, stage_pairs=stage_pairs, reference_rows=references,
+                legal_candidate_ids=legal_ids, specification=support_spec,
+            )
+        except (TypeError, ValueError) as error:
+            raise NativeTrainStageDiagnosticError(
+                f"cannot verify initial intent support: {error}"
+            ) from error
     inputs = {
         "config_sha256": config_pin["sha256"],
         "manifest_sha256": manifest_pin["sha256"],
@@ -564,6 +590,11 @@ def prepare_native_train_stage_diagnostics(
             Path(__file__), "stage diagnostic implementation"
         )[1],
     }
+    if support_enabled:
+        inputs["support_implementation_sha256"] = hash_stable_file(
+            Path(__file__).with_name("native_intent_support.py"),
+            "initial intent support implementation",
+        )[1]
     try:
         return prepare_artifact(
             Path(output_path),

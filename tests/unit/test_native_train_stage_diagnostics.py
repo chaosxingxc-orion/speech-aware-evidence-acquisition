@@ -353,9 +353,9 @@ def test_explicit_null_candidate_stage_projection_fails_as_malformed(tmp_path):
         )
 
 
-@pytest.mark.parametrize("stage_projection_enabled", (False, True))
+@pytest.mark.parametrize("stage_projection_enabled,support_enabled", ((False, False), (True, False), (True, True)))
 def test_prepared_sidecar_reuses_verified_source_candidate_and_reward_joins(
-    tmp_path, monkeypatch, stage_projection_enabled
+    tmp_path, monkeypatch, stage_projection_enabled, support_enabled
 ):
     ids, candidates, references, links = _world()
     manifest_path = tmp_path / "manifest.json"
@@ -397,6 +397,13 @@ def test_prepared_sidecar_reuses_verified_source_candidate_and_reward_joins(
             "candidate_projection_policy": (
                 "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1"
             ),
+        }
+    if support_enabled:
+        config["initial_intent_support_projection"] = {
+            "schema": "saea-initial-intent-support-projection-v1",
+            "policy_id": "initial-perception-request-intent-value-id-suffix-v1",
+            "store_id": "intent-boundaries",
+            "value_id_prefix": "intent-boundary:",
         }
     config_path = tmp_path / "config.json"
     config_sha = _write(config_path, config)
@@ -463,6 +470,16 @@ def test_prepared_sidecar_reuses_verified_source_candidate_and_reward_joins(
         module, "project_verified_native_candidate_stages", stage_reader
     )
 
+    support_calls = []
+    def support_reader(**kwargs):
+        assert support_enabled
+        assert kwargs["source"] is verified
+        assert tuple(x.sample_id for x in kwargs["stage_pairs"]) == ids
+        assert kwargs["reference_rows"] == reference_rows["value"]
+        support_calls.append(kwargs["specification"])
+        return {"synthetic_support": True}
+
+    monkeypatch.setattr(module, "build_initial_intent_support_diagnostics", support_reader)
     output_path = tmp_path / "diagnostics.json"
     receipt = module.prepare_native_train_stage_diagnostics(
         config_path=config_path,
@@ -491,6 +508,10 @@ def test_prepared_sidecar_reuses_verified_source_candidate_and_reward_joins(
         else module.ARTIFACT_KIND
     )
     assert artifact["contact_class"] == "model-free"
+    assert ("initial_intent_support" in artifact["output"]) == support_enabled
+    assert bool(support_calls) == support_enabled
+    if support_enabled:
+        assert artifact["output"]["initial_intent_support"] == {"synthetic_support": True}
     assert receipt["path"] == str(output_path)
     assert calls == [(reward_config, reward_artifact_path)]
 
@@ -573,5 +594,25 @@ def test_prepared_sidecar_rejects_a_reward_config_for_another_manifest(
             expected_config_sha256=config_sha,
             source_repo_root=tmp_path,
             output_path=tmp_path / "diagnostics.json",
+            reference_loader=lambda *_args, **_kwargs: (),
+        )
+
+
+def test_initial_support_requires_verified_candidate_stage_projection(tmp_path):
+    config = {
+        "schema": module.CONFIG_SCHEMA,
+        "native_source": {}, "reward_source": {}, "reference_source": {},
+        "initial_intent_support_projection": {
+            "schema": "saea-initial-intent-support-projection-v1",
+            "policy_id": "initial-perception-request-intent-value-id-suffix-v1",
+            "store_id": "intent-boundaries", "value_id_prefix": "intent-boundary:",
+        },
+    }
+    config_path = tmp_path / "config.json"
+    sha = _write(config_path, config)
+    with pytest.raises(NativeTrainStageDiagnosticError, match="requires candidate_stage_projection"):
+        module.prepare_native_train_stage_diagnostics(
+            config_path=config_path, expected_config_sha256=sha,
+            source_repo_root=tmp_path, output_path=tmp_path / "output.json",
             reference_loader=lambda *_args, **_kwargs: (),
         )
