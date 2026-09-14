@@ -396,6 +396,18 @@
   },
   "sampling_policy": "Each carrier is sampled exactly once, by scripts/build_probe_samples.py (seeded, order-independent, metadata-only); the receipt under docs/receipts/probe-samples/ is frozen and every later experiment on that carrier resolves its items through the binding in this manifest \u2014 never through a fresh draw. Adding a carrier means adding a new receipt through the same script and regenerating this manifest; changing an existing receipt requires owner approval and a new probe entry. R4 draws from the already-frozen dev subset10 split receipt (docs/receipts/splits.json); R3 has no sample yet (data acquisition blocked).",
   "templates": {
+    "a2t_native_role_perception_v1.txt": {
+      "sha256": "41b4a3b4d1c1293f815b63023f46efc3ae0137e8bb6d5499738e96566ec1a22e"
+    },
+    "a2t_native_role_planner_v1.txt": {
+      "sha256": "cc7d57b2d303283366c73bf1df0aa95bf45e82a482628e5447c90d0b795e5bab"
+    },
+    "a2t_native_role_reviewer_v1.txt": {
+      "sha256": "79bdf7b6340d358c83490894649f32e7256c9c9127888543d0e032a3f67858ea"
+    },
+    "a2t_native_role_solver_v1.txt": {
+      "sha256": "89327bf1d84de6edf495da9eb527a58ba4ab97b1acd22c6a0558b157db2e6547"
+    },
     "a2t_phase_fill.txt": {
       "sha256": "4a0b4cb11e1b866035f5a9cfa84348f4a99889a05f1998b02d85a90fefc03245"
     },

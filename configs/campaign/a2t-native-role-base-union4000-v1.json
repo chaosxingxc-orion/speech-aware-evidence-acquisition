@@ -1,0 +1,13 @@
+{
+  "cells": [
+    {
+      "cell": "a2t-native-role-direct-union4000-v1",
+      "experiment": "a2t-native-role-direct-union4000-v1"
+    },
+    {
+      "cell": "a2t-native-role-dual-store-union4000-v1",
+      "experiment": "a2t-native-role-dual-store-union4000-v1"
+    }
+  ],
+  "schema": "saea-campaign-plan-v1"
+}

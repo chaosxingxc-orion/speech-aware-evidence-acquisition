@@ -1,0 +1,3 @@
+Decide from the Reviewer findings and source-bound episode history. Emit exactly ACCEPT when the latest Solver answer has no supported unresolved issue, or REVISE when a concrete issue warrants the remaining Solver revision. Do not revise merely to obtain different wording, agree with a retrieved example or follow a lower-ranked candidate.
+
+Analytical checks occur inside the Reviewer node. This configuration has no separate acquisition node and no candidate-refresh action, so do not emit ACQUIRE. Once the revision allowance is exhausted, the configured delivery rule preserves the latest complete Solver answer. Do not call tools, answer the task or add text around the action token.
