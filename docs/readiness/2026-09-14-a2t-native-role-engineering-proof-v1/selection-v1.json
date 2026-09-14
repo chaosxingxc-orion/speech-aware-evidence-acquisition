@@ -1,0 +1,56 @@
+{
+  "count": 4,
+  "gold_or_outcome_selection": false,
+  "items": [
+    {
+      "audio_seconds": 2.076166667,
+      "audio_sha256": "93b098721f40d08d57d7e291e9ebde0b47d42f1471ffc3d03f83bcb32e8fa55e",
+      "id": 3,
+      "key": "audio2tool:tier1_direct:000003",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00002/speaker_00_voxpopuli_speaker_5729.wav",
+      "query_idx": 2101,
+      "sample_id": "tier1_direct:000003",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 2.073208333,
+      "audio_sha256": "597016a439d307beb6d8cac4882bb0424e8b67aeadc73aa297e0ef5dce70944e",
+      "id": 9,
+      "key": "audio2tool:tier1_direct:000009",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00005/speaker_01_voxpopuli_speaker_4267.wav",
+      "query_idx": 2104,
+      "sample_id": "tier1_direct:000009",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 1.496875,
+      "audio_sha256": "5aefaa00161be371643d7fa790f5b9359cf6a6d5d5e9e59ad6014a3bfa72da6b",
+      "id": 15,
+      "key": "audio2tool:tier1_direct:000015",
+      "media_relpath": "datasets/audio2tool/public/tier1_direct_audios/query_00008/speaker_12_ecapa_speaker_2967.wav",
+      "query_idx": 2107,
+      "sample_id": "tier1_direct:000015",
+      "tier": "tier1_direct"
+    },
+    {
+      "audio_seconds": 654.635666667,
+      "audio_sha256": "e65bb051d0ede7de1da1d3d1a6b36a48790360019ff65213a9dcea9114d5b6f9",
+      "id": 3151,
+      "key": "audio2tool:tier6_correction:003151",
+      "media_relpath": "datasets/audio2tool/public/tier6_correction_audios/query_01576/speaker_04_voxpopuli_speaker_129073.wav",
+      "query_idx": 4425,
+      "sample_id": "tier6_correction:003151",
+      "tier": "tier6_correction"
+    }
+  ],
+  "model_and_tool_contacts": 0,
+  "quality_claim": false,
+  "rule": "Select the longest original recording by audio_seconds with ascending sample_id tie-break, then the first three remaining sample_ids lexicographically; sort final identities.",
+  "schema": "saea-engineering-subset-selection-v1",
+  "source_roster": {
+    "repo_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-org1-domain-grouped-roster/flight-roster-receipt.json",
+    "sha256": "e5a81b71e1253ff866262991f79d132b89f4bfb47e7c8a0c0cf0aa04857b8736"
+  },
+  "split_identity_hash": "31fa4c9918d4e4c34f62c6cc0a5d7ef13229e6f711e2889b7c8a3213e63c37c2",
+  "total_audio_seconds": 660.281916667
+}

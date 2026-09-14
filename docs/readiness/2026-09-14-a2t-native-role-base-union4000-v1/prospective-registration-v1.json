@@ -1,0 +1,227 @@
+{
+  "analysis_recipe": {
+    "repo_relpath": "docs/readiness/2026-09-14-a2t-native-role-base-analysis-recipe-v1.json",
+    "sha256": "7697ce0e8303fa2dd68f34a91bdfd9fc5e3322e986a923f4b11d570a2bb3f104"
+  },
+  "authorization": "This prospective registration document grants no model or tool contact. Final executable admission and exposure plans must resolve the listed items.",
+  "comparison": {
+    "claim": "Exploratory complete-system package comparison; no isolated component causality, independent confirmatory generalization or training-free RL result.",
+    "fixed": [
+      "original speech packets",
+      "full public 152-tool registry",
+      "official input/output contract",
+      "frozen core",
+      "greedy max2048 decoding",
+      "resident process and geometry",
+      "shared controller, FlightRuntime and OpenJiuwen executor",
+      "official complete-manifest scorer"
+    ],
+    "intentional_changes": [
+      "native Perception/Solver/Reviewer/Planner roles",
+      "speech-retrieved activation knowledge",
+      "candidate-associated parameter explanations",
+      "optional Reviewer task-contract evidence",
+      "at most one Planner-directed Solver revision"
+    ]
+  },
+  "configurations": {
+    "direct": {
+      "cell": {
+        "allowed_execution_stages": [
+          "check",
+          "wire-check",
+          "prompt-fit",
+          "worker",
+          "campaign"
+        ],
+        "attempt_id": "attempt-a2t-native-role-direct-union4000-generation-v1",
+        "baseline_fragment": "a2t-native-role-direct-union4000-v1",
+        "cell_id": "a2t-native-role-direct-union4000-v1",
+        "dataset_fragment": "audio2tool-org1-union-4000",
+        "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
+        "readiness": {
+          "reason": "No generation admission. Await full source-bound preparation, frozen SLURP base decision, real request/output capacity and complete prospective contact registration.",
+          "requirements": [],
+          "state": "preparation-pending"
+        },
+        "run_id": "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1"
+      },
+      "composed_config_hash": "b9551f17dc66c3e91e733dc06369f01beff9f6d3df977f29d37f9c6473a85db9",
+      "experiment_fragment": "a2t-native-role-direct-union4000-v1",
+      "fit": {
+        "attempt_id": "attempt-a2t-native-role-direct-union4000-fit-v1",
+        "contact_cap": 12001,
+        "run_id": "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-FIT-V1"
+      },
+      "generation_plan": {
+        "attempt_id": "attempt-a2t-native-role-direct-union4000-generation-v1",
+        "carrier_lock_key": "audio2tool",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 8.0,
+        "planned_model_calls": 4000,
+        "planned_speech_audio_seconds": 25000,
+        "protocol_hash": "17fd913782ef18ba94058fea2bd31b070f4853534bae05a5f2cf05a1e6715e1f",
+        "run_id": "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      }
+    },
+    "dual-store": {
+      "cell": {
+        "allowed_execution_stages": [
+          "check",
+          "wire-check",
+          "prepare-supply",
+          "prompt-fit",
+          "worker",
+          "campaign"
+        ],
+        "attempt_id": "attempt-a2t-native-role-dual-store-union4000-generation-v1",
+        "baseline_fragment": "a2t-native-role-dual-store-union4000-v1",
+        "cell_id": "a2t-native-role-dual-store-union4000-v1",
+        "dataset_fragment": "audio2tool-org1-union-4000",
+        "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
+        "readiness": {
+          "reason": "No generation admission. Await full source-bound preparation, frozen SLURP base decision, real request/output capacity and complete prospective contact registration.",
+          "requirements": [
+            {
+              "kind": "preparation",
+              "reason": "Complete prepared activation choices for all4000 source-bound recordings.",
+              "relpath": "prepared/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-V1/phase-supply-v1.json",
+              "sha256": "91847da0921f12a0a1be5cc1b4eafee091de3e1e32986a779d77d29a36026b68"
+            }
+          ],
+          "state": "preparation-pending"
+        },
+        "run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-V1"
+      },
+      "composed_config_hash": "95c0fe1ed5328f400b64bb79ab84d8570294059a6e3367ef08397c8c42bfc953",
+      "experiment_fragment": "a2t-native-role-dual-store-union4000-v1",
+      "fit": {
+        "attempt_id": "attempt-a2t-native-role-dual-store-union4000-fit-v1",
+        "contact_cap": 176000,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-FIT-V1"
+      },
+      "generation_plan": {
+        "attempt_id": "attempt-a2t-native-role-dual-store-union4000-generation-v1",
+        "carrier_lock_key": "audio2tool",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 48.0,
+        "planned_model_calls": 44000,
+        "planned_speech_audio_seconds": 260000,
+        "protocol_hash": "617cb6e686f86cdb68a0a250cbc3587e50d2d78a2d40fa7f1c5ff9bae406a576",
+        "run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      }
+    }
+  },
+  "failure_policy": "Preserve every contact and stop on failure; no automatic service restart, replay or mid-attempt changes. At most one separately registered named recovery; a second failure closes the flight.",
+  "full_comparison_budget": {
+    "ceilings_are_not_targets": true,
+    "cost_quality_veto": false,
+    "fit_endpoint_calls_cap": 188001,
+    "generation_calls_cap": 48000,
+    "gpu_hours_fit_inclusive": 56.0,
+    "official_complete_scoring_jobs": 2,
+    "proof_budget": "Separate prospective engineering proof; bind before any contact.",
+    "speech_audio_seconds_cap": 285000,
+    "task_contract_calls_cap": 16000
+  },
+  "population": {
+    "count": 4000,
+    "historically_exposed": true,
+    "per_tier": 500,
+    "roster_changed": false,
+    "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+    "tier7_input": "first user turn, preserving the current dataset contract",
+    "tiers": 8
+  },
+  "preparation": {
+    "asr_contacts_required": 0,
+    "encoder_contacts_required": 0,
+    "phase_supply": {
+      "relpath": "prepared/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-V1/phase-supply-v1.json",
+      "sha256": "91847da0921f12a0a1be5cc1b4eafee091de3e1e32986a779d77d29a36026b68"
+    }
+  },
+  "quality_reading": "Hold new quality until both complete first scores are verified and root registers the paired read. Do not score the engineering subset or failed partial arms.",
+  "question": "Does the task-specific native multi-role agent improve official Audio2Tool task performance over the same frozen core called directly under the same original speech, full legal registry and serving geometry?",
+  "runtime_identity_receipt": {
+    "data_relpath": "coordination/a2t-agent-base-transfer-v1/prospective-runtime-identities-v1.json",
+    "sha256": "2d9dbf50af80ded1822bfb3d3d815b4881bd8feb9f4c1e56d306d99ad2b5dfd9"
+  },
+  "schema": "saea-prospective-direct-native-registration-v1",
+  "serving_identity": {
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "host": "127.0.0.1",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      }
+    ],
+    "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
+    "model_fragment_sha256": "ce5ba00e086d79b7d3e7583b9520f31a7719df538325fa548b833c669af9fdfd",
+    "model_root": "/home/chao",
+    "port": 8080,
+    "props_identity": {
+      "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "slot_n_ctx": 32768,
+      "total_slots": 3
+    },
+    "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+    "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+    "server_argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8080",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--no-mmproj",
+      "-c",
+      "98304",
+      "-np",
+      "3",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ],
+    "server_env": {
+      "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+      "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/a2t-native-system-4000-packets-04ccc72a"
+    },
+    "session_role": "inference"
+  },
+  "source_commit": "8b4d2f20397f39defad0f5eb36ccde8246c57258",
+  "status": "HELD_PENDING_SCIENTIFIC_AND_ENGINEERING_ADMISSION",
+  "unresolved_admission_items": [
+    "SLURP same-method replication verdict and root decision receipt",
+    "current-configuration native generation-and-seal engineering proof",
+    "whole-comparison serving geometry and exact actual-request capacity",
+    "final source/config/preparation binding and exposure rows"
+  ]
+}
