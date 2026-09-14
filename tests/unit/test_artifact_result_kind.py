@@ -118,3 +118,47 @@ def test_result_kind_default_preserves_historical_task_answer_config(tmp_path):
             repo_root=tmp_path,
             sample_ids=("s1",),
         )
+
+
+def test_typed_train_binding_rejects_slurp_non_train_construction_roster(
+    tmp_path,
+):
+    from test_training_feedback_artifacts import _contract, _prepared_contexts
+
+    samples, _identity, path, _sha = _roster(tmp_path)
+    devel_samples = tuple(sample.replace(":train:", ":devel:") for sample in samples)
+    identity = split_identity_hash(prefixed("slurp", devel_samples))
+    document = json.loads(path.read_text())
+    document["items"] = [
+        {"sample_id": sample, "stratum": "all"} for sample in devel_samples
+    ]
+    document["split_identity_hash"] = identity
+    raw = json.dumps(document).encode()
+    path.write_bytes(raw)
+    data_root = tmp_path / "data"
+    prepared, prepared_sha = _prepared_contexts(
+        data_root / "prepared.json",
+        {sample: ("option-1", "option-2") for sample in devel_samples},
+    )
+    values = _values(
+        path,
+        hashlib.sha256(raw).hexdigest(),
+        prepared_training_feedback={"synthetic": True},
+    )
+    values["artifact_result"] = {
+        "schema": "saea-artifact-result-binding-v3",
+        "role": "training-feedback-proposal",
+        "construction_roster": values["artifact_result"]["construction_roster"],
+        "content_contract": _contract(
+            "prepared.json", prepared_sha, prepared["output_sha256"]
+        ),
+    }
+    values["policy"] = "phase-training-feedback-proposal-v1"
+    with pytest.raises(FlightRuntimeError, match="TRAIN construction samples"):
+        validate_artifact_result_binding(
+            values,
+            plan=_plan(identity),
+            repo_root=tmp_path,
+            sample_ids=devel_samples,
+            data_root=data_root,
+        )

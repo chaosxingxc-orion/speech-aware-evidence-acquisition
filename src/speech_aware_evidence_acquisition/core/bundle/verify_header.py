@@ -95,10 +95,16 @@ def _verify_manifest_header(manifest: Mapping[str, object]) -> str:
             and set(artifact_result)
             == {"schema", "role", "source_roster", "content_contract"}
         )
-        if not legacy and not hypotheses:
+        typed_proposals = (
+            artifact_result.get("schema") == "saea-artifact-result-binding-v3"
+            and artifact_result.get("role") == "training-feedback-proposal"
+            and set(artifact_result)
+            == {"schema", "role", "construction_roster", "content_contract"}
+        )
+        if not legacy and not hypotheses and not typed_proposals:
             raise BundleError("artifact_result schema or proposal role is invalid")
         roster = artifact_result.get(
-            "construction_roster" if legacy else "source_roster"
+            "construction_roster" if legacy or typed_proposals else "source_roster"
         )
         if not isinstance(roster, Mapping) or set(roster) != {"repo_relpath", "sha256"}:
             raise BundleError("artifact_result construction_roster pin is invalid")

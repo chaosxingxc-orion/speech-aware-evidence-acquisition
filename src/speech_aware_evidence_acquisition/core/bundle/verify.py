@@ -138,16 +138,24 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
     artifact_result = manifest.get("artifact_result")
     if (
         isinstance(artifact_result, Mapping)
-        and artifact_result.get("schema") == "saea-artifact-result-binding-v2"
+        and artifact_result.get("schema") in {
+            "saea-artifact-result-binding-v2",
+            "saea-artifact-result-binding-v3",
+        }
     ):
-        from ...rails.artifact_results import (
-            ArtifactContentError,
-            build_slurp_hypothesis_artifact_validator,
+        from ..base import ARTIFACT_CONTENT_VALIDATORS, CoreError
+        from ...rails.artifact_results import register_artifact_content_v1
+        from ...rails.training_feedback_artifacts import (
+            TrainingFeedbackArtifactError,
+            artifact_content_source_pin,
         )
 
         source_meta = manifest.get("artifact_content_source")
         contract = artifact_result.get("content_contract")
-        source_pin = contract.get("source_catalog") if isinstance(contract, Mapping) else None
+        try:
+            source_pin = artifact_content_source_pin(contract)
+        except (AttributeError, TrainingFeedbackArtifactError) as error:
+            raise BundleError(f"typed artifact content is invalid: {error}") from error
         if (
             artifact_content_source_raw is None
             or not isinstance(source_meta, Mapping)
@@ -157,15 +165,15 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
         ):
             raise BundleError("typed artifact bundle lacks its content source artifact")
         try:
+            register_artifact_content_v1()
             source_path = Path(source_meta["path"]).resolve()
             data_root = source_path
             for _part in source_pin["data_relpath"].split("/"):
                 data_root = data_root.parent
             if (data_root / source_pin["data_relpath"]).resolve() != source_path:
                 raise BundleError("typed artifact content source path is not canonical")
-            validator = build_slurp_hypothesis_artifact_validator(
-                contract, data_root=data_root
-            )
+            factory = ARTIFACT_CONTENT_VALIDATORS.resolve(str(contract.get("id")))
+            validator = factory(contract, data_root=data_root)
             for row in outputs_rows:
                 canonical = validator.canonicalize(
                     row["text"], sample_id=str(row["sample_id"])
@@ -180,7 +188,7 @@ def verify_bundle(manifest_path: Path) -> VerifiedBundle:
                     raise BundleError(
                         "typed artifact output differs from its registered canonical content"
                     )
-        except (KeyError, IndexError, ArtifactContentError, ValueError) as error:
+        except (KeyError, IndexError, CoreError, ValueError) as error:
             if isinstance(error, BundleError):
                 raise
             raise BundleError(f"typed artifact content is invalid: {error}") from error

@@ -268,6 +268,16 @@ def register_artifact_content_v1() -> None:
             SLURP_HYPOTHESIS_CONTENT_ID,
             build_slurp_hypothesis_artifact_validator,
         )
+    from .training_feedback_artifacts import (
+        TRAINING_FEEDBACK_CONTENT_ID,
+        build_training_feedback_artifact_validator,
+    )
+
+    if TRAINING_FEEDBACK_CONTENT_ID not in ARTIFACT_CONTENT_VALIDATORS.names():
+        ARTIFACT_CONTENT_VALIDATORS.register(
+            TRAINING_FEEDBACK_CONTENT_ID,
+            build_training_feedback_artifact_validator,
+        )
 
 
 register_artifact_content_v1()

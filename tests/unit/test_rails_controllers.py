@@ -59,6 +59,11 @@ _EXPECTED_PROGRAM_SHAPES = {
         "always-run-full-program",
     ),
     "phase-direct-only-v1": (("direct",), 1, "always-run-full-program"),
+    "phase-training-feedback-proposal-v1": (
+        ("proposal",),
+        1,
+        "always-run-full-program",
+    ),
     "phase-direct-then-slots-v1": (("direct", "slots"), 2, "always-run-full-program"),
     "phase-direct-then-slots-supplied-v1": (("direct", "slots"), 2, "always-run-full-program"),
     "phase-direct-evidence-alpha-blend-v1": (

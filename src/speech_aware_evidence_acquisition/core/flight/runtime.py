@@ -330,6 +330,7 @@ def arm_shows_construction_targets(arm: str) -> bool:
 ARTIFACT_RESULT_BINDING_SCHEMA = "saea-artifact-result-binding-v1"
 ARTIFACT_RESULT_ROLE = "training-feedback-proposal"
 ARTIFACT_RESULT_BINDING_SCHEMA_V2 = "saea-artifact-result-binding-v2"
+ARTIFACT_RESULT_BINDING_SCHEMA_V3 = "saea-artifact-result-binding-v3"
 SLURP_HYPOTHESIS_ARTIFACT_ROLE = "slurp-intent-hypotheses"
 
 
@@ -362,21 +363,29 @@ def validate_artifact_result_binding(
         schema == ARTIFACT_RESULT_BINDING_SCHEMA_V2
         and role == SLURP_HYPOTHESIS_ARTIFACT_ROLE
     )
+    typed_proposals = (
+        schema == ARTIFACT_RESULT_BINDING_SCHEMA_V3
+        and role == ARTIFACT_RESULT_ROLE
+    )
     required_keys = (
         {"schema", "role", "construction_roster"}
         if legacy
-        else {"schema", "role", "source_roster", "content_contract"}
+        else (
+            {"schema", "role", "construction_roster", "content_contract"}
+            if typed_proposals
+            else {"schema", "role", "source_roster", "content_contract"}
+        )
     )
     if set(declared) != required_keys:
         raise FlightRuntimeError(
             "artifact_result fields do not match its registered schema and role"
         )
-    if not legacy and not hypotheses:
+    if not legacy and not hypotheses and not typed_proposals:
         raise FlightRuntimeError("artifact_result schema or proposal role is invalid")
     if values.get("policy") == "fixed":
         raise FlightRuntimeError("artifact results require a registered phase program")
     try:
-        default_phase_program(str(values.get("policy")))
+        program = default_phase_program(str(values.get("policy")))
     except (CoreError, ValueError, RuntimeError, OSError) as error:
         raise FlightRuntimeError(
             "artifact results require a registered phase program"
@@ -386,7 +395,7 @@ def validate_artifact_result_binding(
         raise FlightRuntimeError(
             "artifact results require the speech-feature packet path"
         )
-    expected_role = "discovery" if legacy else "dev"
+    expected_role = "discovery" if legacy or typed_proposals else "dev"
     if getattr(plan, "execution_profile", None) != "bounded-discovery-probe" or getattr(
         plan, "split_role", None
     ) != expected_role:
@@ -397,7 +406,7 @@ def validate_artifact_result_binding(
     if not isinstance(scorers, list) or scorers:
         raise FlightRuntimeError("artifact results require an empty scorers list")
 
-    pin_name = "construction_roster" if legacy else "source_roster"
+    pin_name = "construction_roster" if legacy or typed_proposals else "source_roster"
     pin = declared[pin_name]
     if not isinstance(pin, Mapping) or set(pin) != {"repo_relpath", "sha256"}:
         raise FlightRuntimeError(
@@ -448,7 +457,9 @@ def validate_artifact_result_binding(
         ) from error
     roster_ids = tuple(str(item["sample_id"]) for item in roster["items"])
     if (
-        roster.get("roster_role") != ("construction" if legacy else "evaluation")
+        roster.get("roster_role") != (
+            "construction" if legacy or typed_proposals else "evaluation"
+        )
         or roster.get("split_role") != expected_role
         or roster.get("carrier_lock_key") != getattr(plan, "carrier_lock_key", None)
         or roster.get("split_identity_hash")
@@ -458,7 +469,7 @@ def validate_artifact_result_binding(
         raise FlightRuntimeError(
             "artifact result roster must exactly bind the plan carrier, split and samples"
         )
-    if legacy and roster.get("carrier_lock_key") == "slurp" and any(
+    if (legacy or typed_proposals) and roster.get("carrier_lock_key") == "slurp" and any(
         not sample_id.startswith("slurp:train:") for sample_id in roster_ids
     ):
         raise FlightRuntimeError(
@@ -490,6 +501,39 @@ def validate_artifact_result_binding(
             "schema": ARTIFACT_RESULT_BINDING_SCHEMA_V2,
             "role": SLURP_HYPOTHESIS_ARTIFACT_ROLE,
             "source_roster": {"repo_relpath": relpath, "sha256": digest},
+            "content_contract": dict(contract),
+        }
+    if typed_proposals:
+        if values.get("prepared_training_feedback") is None:
+            raise FlightRuntimeError(
+                "typed TRAIN proposal artifacts require prepared_training_feedback"
+            )
+        if data_root is None:
+            raise FlightRuntimeError("typed TRAIN proposal artifacts require data_root")
+        from ..base import ARTIFACT_CONTENT_VALIDATORS
+        from ...rails.artifact_results import register_artifact_content_v1
+        from ...rails.training_feedback_artifacts import (
+            TRAINING_FEEDBACK_CONTENT_ID,
+            TrainingFeedbackArtifactError,
+        )
+
+        contract = declared["content_contract"]
+        try:
+            register_artifact_content_v1()
+            if contract.get("id") != TRAINING_FEEDBACK_CONTENT_ID:
+                raise TrainingFeedbackArtifactError("content id is not a TRAIN proposal")
+            if program.phases[-1].response_format_id != TRAINING_FEEDBACK_CONTENT_ID:
+                raise TrainingFeedbackArtifactError(
+                    "proposal program final phase does not declare the typed response format"
+                )
+            factory = ARTIFACT_CONTENT_VALIDATORS.resolve(str(contract.get("id")))
+            factory(contract, data_root=Path(data_root))
+        except (AttributeError, CoreError, TrainingFeedbackArtifactError) as error:
+            raise FlightRuntimeError(f"artifact content contract is invalid: {error}") from error
+        return {
+            "schema": ARTIFACT_RESULT_BINDING_SCHEMA_V3,
+            "role": ARTIFACT_RESULT_ROLE,
+            "construction_roster": {"repo_relpath": relpath, "sha256": digest},
             "content_contract": dict(contract),
         }
     return {
@@ -2379,7 +2423,7 @@ class FlightRuntime:
         if (
             self._artifact_result_binding is not None
             and self._artifact_result_binding.get("schema")
-            == ARTIFACT_RESULT_BINDING_SCHEMA_V2
+            in {ARTIFACT_RESULT_BINDING_SCHEMA_V2, ARTIFACT_RESULT_BINDING_SCHEMA_V3}
         ):
             from ..base import ARTIFACT_CONTENT_VALIDATORS
 
@@ -6199,13 +6243,20 @@ class FlightRuntime:
         if authority is None or authority.get("role") != ARTIFACT_RESULT_ROLE:
             raise FlightRuntimeError("prepared feedback requires the TRAIN proposal artifact role")
         try:
-            return load_prepared_feedback(
+            states, receipt = load_prepared_feedback(
                 spec, repo_root=self._repo_root, data_root=self._data_root,
                 sample_ids=sample_ids,
                 construction_roster_sha256=authority["construction_roster"]["sha256"],
                 result_kind=values.get("result_kind"),
                 artifact_role=authority["role"],
             )
+            if authority.get("schema") == ARTIFACT_RESULT_BINDING_SCHEMA_V3:
+                source_pin = authority["content_contract"]["prepared_contexts"]
+                if receipt.get("prepared_artifact_sha256") != source_pin.get("sha256"):
+                    raise FlightRuntimeError(
+                        "rebuilt prepared feedback differs from typed artifact source pin"
+                    )
+            return states, receipt
         except PreparedFeedbackError as error:
             raise FlightRuntimeError(str(error)) from error
 
