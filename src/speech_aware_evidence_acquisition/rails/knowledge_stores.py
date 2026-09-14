@@ -213,6 +213,12 @@ class KnowledgeStoreBinding:
 
 
 def _composite(stores: Mapping[str, KnowledgeStore]) -> KnowledgeSnapshot:
+    source_roles = {store.snapshot.source_partition_role for store in stores.values()}
+    if len(source_roles) != 1:
+        raise KnowledgeStoreError(
+            "mixed source partition roles require an explicit composition contract"
+        )
+    source_role = next(iter(source_roles))
     facets, values, sources = [], [], set()
     for store_id, store in stores.items():
         sources.update(store.snapshot.source_sample_ids)
@@ -256,6 +262,7 @@ def _composite(stores: Mapping[str, KnowledgeStore]) -> KnowledgeSnapshot:
         ),
         source_sample_ids=tuple(sorted(sources)),
         builder_policy_id="saea-named-knowledge-store-router-v1",
+        source_partition_role=source_role,
         facets=tuple(facets),
         values=tuple(values),
     ).validate()

@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import replace
 import hashlib
 import json
+import sys
 
 import pytest
 
@@ -753,3 +754,34 @@ def test_flight_runtime_resolves_named_store_supply_without_a_launcher(tmp_path)
         runtime._knowledge_store_supply.receipt["binding_sha256"]
         == snapshot.content_hash()
     )
+
+
+@pytest.mark.parametrize("partition_role", ["train", "external-governed"])
+def test_named_stores_preserve_the_source_partition_role(tmp_path, monkeypatch, partition_role):
+    original = _store_snapshot
+
+    def governed_snapshot(store_id):
+        return replace(original(store_id), source_partition_role=partition_role).validate()
+
+    monkeypatch.setattr(sys.modules[__name__], "_store_snapshot", governed_snapshot)
+    config, snapshots = _config(tmp_path, ("tool-activation", "parameter-meaning"))
+    binding = load_knowledge_store_binding(config, data_root=tmp_path)
+    assert binding.composite_snapshot.source_partition_role == partition_role
+    restored = KnowledgeSnapshot.from_frozen_json(binding.composite_snapshot.frozen_json())
+    assert restored.source_partition_role == partition_role
+    assert restored.content_hash() == binding.binding_sha256
+    assert all(binding.snapshot_for(key) == snapshot for key, snapshot in snapshots.items())
+
+
+def test_mixed_source_partition_roles_are_not_silently_relabelled(tmp_path, monkeypatch):
+    original = _store_snapshot
+
+    def mixed_snapshot(store_id):
+        source = original(store_id)
+        role = "external-governed" if store_id == "tool-activation" else "train"
+        return replace(source, source_partition_role=role).validate()
+
+    monkeypatch.setattr(sys.modules[__name__], "_store_snapshot", mixed_snapshot)
+    config, _ = _config(tmp_path, ("tool-activation", "parameter-meaning"))
+    with pytest.raises(KnowledgeStoreError, match="mixed source partition"):
+        load_knowledge_store_binding(config, data_root=tmp_path)
