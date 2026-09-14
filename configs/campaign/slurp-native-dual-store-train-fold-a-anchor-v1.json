@@ -1,0 +1,9 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "slurp-native-dual-store-train-fold-a-anchor-v1",
+      "cell": "slurp-native-dual-store-train-fold-a-anchor-v1"
+    }
+  ]
+}
