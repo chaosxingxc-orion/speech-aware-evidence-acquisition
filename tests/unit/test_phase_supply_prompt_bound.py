@@ -15,7 +15,7 @@ No model, GPU, network or embedding contact.
 from __future__ import annotations
 
 import json
-from types import SimpleNamespace
+from types import MappingProxyType, SimpleNamespace
 
 import pytest
 
@@ -218,6 +218,178 @@ def test_prompt_bound_is_empty_for_a_cell_that_supplies_nothing():
     )
     assert FlightRuntime._phase_supply_prompt_bound(stub, program) == {}
 
+
+def _named_candidate_bound(
+    *, mode="provide", ordinary=False, malformed=False, native=True, refreshes=0
+):
+    from speech_aware_evidence_acquisition.rails.controllers import (
+        PhaseProgram,
+        PhaseSpec,
+    )
+    from speech_aware_evidence_acquisition.rails.knowledge_stores import (
+        KnowledgeStore,
+        KnowledgeStoreBinding,
+    )
+
+    if native:
+        registered = rc.default_phase_program(
+            "phase-audio2tool-native-candidates-review-revise-v1"
+        )
+        revisions = max(1, refreshes)
+        max_contacts = 1 + (revisions + 1) * 3 + refreshes
+        program = PhaseProgram(
+            program_id="synthetic-native-candidate-bound-v1",
+            phases=registered.phases,
+            max_contacts=max_contacts,
+            stop_rule="native-role-episode",
+        ).validate()
+    else:
+        program = PhaseProgram(
+            program_id="synthetic-linear-candidate-bound-v1",
+            phases=(
+                PhaseSpec("perception", "propose", "supplied", None, False),
+                PhaseSpec("solver", "solve", "supplied", None, False),
+                PhaseSpec("review", "review", "supplied", None, False),
+            ),
+            max_contacts=3,
+            stop_rule="always-run-full-program",
+        ).validate()
+
+    parameter = _snapshot()
+    candidate = {
+        "provider": "audio2tool-candidate-semantic-v1",
+        "rank_policy": "saea-ranked-candidate-round-robin-v1",
+        "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+        "candidate_state_phase": "perception",
+        "compact_source_phase": "perception",
+        "max_actions": 2,
+        "max_candidates_per_action": 2,
+        "max_values_per_candidate": 1,
+        "max_total_values": 2,
+        "supply_mode": mode,
+    }
+    if malformed:
+        candidate["max_total_values"] = 5
+    if refreshes:
+        candidate["candidate_state_selection"] = "latest"
+    pin = MappingProxyType({"relpath": "unused.json", "sha256": _SHA_A})
+    stores = {
+        "parameter-meaning": KnowledgeStore(
+            "parameter-meaning",
+            "parameter-meaning",
+            parameter,
+            pin,
+            pin,
+            pin,
+            MappingProxyType({}),
+            MappingProxyType({"solver": candidate}),
+        )
+    }
+    if ordinary:
+        activation = parameter
+        stores["tool-activation"] = KnowledgeStore(
+            "tool-activation",
+            "tool-activation",
+            activation,
+            pin,
+            pin,
+            pin,
+            MappingProxyType(
+                {
+                    "perception": {
+                        "provider": "kb-facet-v1",
+                        "rank_policy": "saea-rank-wcos-prior-agree-v1",
+                        "fuse_policy": "saea-fuse-supplyfilter-v1",
+                        "k": 1,
+                        "tau": 0.0,
+                        "dimensions": ["content"],
+                        "expose_facets": False,
+                        "query_source": {
+                            "kind": "sealed-vectors",
+                            "relpath": "unused.jsonl",
+                            "sha256": _SHA_A,
+                            "tool_contact_ledger_row": "SYNTHETIC-BOUND",
+                            "embedded_signal": "speech: synthetic bound",
+                        },
+                    }
+                }
+            ),
+            MappingProxyType({}),
+        )
+    stores = MappingProxyType(dict(sorted(stores.items())))
+    binding = KnowledgeStoreBinding(stores, parameter, _SHA_B)
+    values = {"knowledge_stores": {}}
+    if native:
+        values["native_episode"] = {
+            "schema": "saea-native-episode-config-v1",
+            "episode_id": "synthetic-native-candidate-bound-v1",
+            "max_revisions": revisions,
+            "actions": {
+                "accept": "ACCEPT",
+                "revise": "REVISE",
+                "acquire": "ACQUIRE",
+            },
+            "roles": {
+                kind: {"phase_id": kind, "max_iterations": 1}
+                for kind in ("perception", "solver", "reviewer", "planner")
+            },
+        }
+        if refreshes:
+            values["native_episode"]["candidate_refresh"] = {
+                "action": "REFRESH_CANDIDATES",
+                "max_refreshes": refreshes,
+            }
+    stub = SimpleNamespace(
+        _composed=SimpleNamespace(values=values),
+        _knowledge_store_binding=binding,
+        _load_knowledge_snapshot=lambda: parameter,
+    )
+    return FlightRuntime._phase_supply_prompt_bound(stub, program)
+
+def test_candidate_only_store_bounds_longest_values_and_native_retained_history():
+    bound = _named_candidate_bound()
+    assert set(bound) == {"perception", "solver", "reviewer", "planner"}
+    for blocks in bound.values():
+        assert [text for text, role in blocks if role == "value"] == [
+            f"[evidence parameter-meaning::value:{index}] "
+            f"[knowledge store=parameter-meaning role=parameter-meaning] "
+            f"{'v' * (10 + index)}"
+            for index in (5, 4)
+        ]
+
+def test_native_refresh_bound_includes_disjoint_selections_up_to_snapshot_size():
+    bound = _named_candidate_bound(refreshes=1)
+    for blocks in bound.values():
+        assert [text for text, role in blocks if role == "value"] == [
+            f"[evidence parameter-meaning::value:{index}] "
+            f"[knowledge store=parameter-meaning role=parameter-meaning] "
+            f"{'v' * (10 + index)}"
+            for index in (5, 4, 3, 2)
+        ]
+
+def test_linear_candidate_bound_starts_at_target_and_retains_into_later_phase():
+    bound = _named_candidate_bound(native=False)
+    assert "perception" not in bound
+    assert bound["solver"] == bound["review"]
+
+def test_ordinary_and_candidate_store_bounds_are_combined_without_replacement():
+    bound = _named_candidate_bound(ordinary=True)
+    for phase in ("perception", "solver", "reviewer", "planner"):
+        text = "\n".join(block for block, _role in bound[phase])
+        assert "tool-activation::value:5" in text
+        assert "parameter-meaning::value:5" in text
+        assert "parameter-meaning::value:4" in text
+
+def test_withheld_candidate_supply_adds_no_prompt_bound():
+    assert _named_candidate_bound(mode="withhold") == {}
+
+def test_malformed_candidate_supply_is_rejected_by_the_shared_loader():
+    from speech_aware_evidence_acquisition.rails.candidate_semantic_supply import (
+        CandidateSemanticSupplyError,
+    )
+
+    with pytest.raises(CandidateSemanticSupplyError, match="max_total_values"):
+        _named_candidate_bound(malformed=True)
 
 def test_shared_slurp_program_supports_null_arm_without_direct_prompt_id_drift():
     """A config-only null arm keeps the direct model-visible program identity."""

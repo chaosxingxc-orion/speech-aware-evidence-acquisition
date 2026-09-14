@@ -1541,23 +1541,28 @@ class FlightRuntime:
     def _phase_supply_prompt_bound(
         self, program: object
     ) -> dict[str, tuple[tuple[str, str], ...]]:
-        """An UPPER BOUND on the traced blocks each supplied phase adds (E6).
+        """Return a coarse UTF-8 volume envelope for traced supply blocks.
 
-        The exact per-sample selection is a function of that sample's sealed
-        query vector, and rendering it here would mean loading the vector
-        file and running recall/rank/fuse 1,000 times inside a fail-early
-        estimate. The bound instead takes the ``k`` LONGEST values in the
-        frozen snapshot (and, for a facet-exposing phase, the ``m`` longest
-        facet representations): no per-sample decision can select more than
-        ``k`` values, and none can select a longer one, so this is a true
-        ceiling and it errs in the SAFE direction -- the same discipline
-        :func:`render_phase_prompt_envelopes` already applies to an
-        ``append-sealed-state`` predecessor it cannot know yet.
+        Ordinary retrieval contributes the longest values allowed by k and,
+        when exposed, the longest facets allowed by m. Candidate-conditioned
+        retrieval contributes the longest rendered values allowed by
+        max_total_values unless the route is withheld. These are conservative
+        block-volume estimates over frozen snapshots, not token proofs or
+        exhaustive trajectory-capacity receipts. Exact native requests still
+        require native_contact_fit immediately before dispatch.
 
-        The exact per-request measurement remains the pinned prompt-fit
-        receipt.
+        Named-store values remain visible after supply. Linear programs retain
+        blocks in declaration order. Native role execution and refresh loops do
+        not follow declaration order, so every candidate envelope is conservatively
+        unioned into every native role. Each allowed refresh adds another
+        potentially disjoint selection, capped by the store snapshot size. This
+        can overestimate an early request but cannot omit a retained candidate card
+        from a later request.
         """
 
+        from ...rails.candidate_semantic_supply import (  # noqa: PLC0415
+            load_candidate_semantic_supply_specs,
+        )
         from ...rails.phase_supply import (  # noqa: PLC0415 (cycle guard)
             load_phase_supply_specs,
         )
@@ -1631,6 +1636,68 @@ class FlightRuntime:
                     len(text) for text, _role in previous
                 ):
                     bound[phase] = tuple(blocks)
+
+        candidate_blocks: list[tuple[str, str]] = []
+        if store_binding is not None:
+            candidate_specs = load_candidate_semantic_supply_specs(
+                store_binding, program
+            )
+            selection_count = 1
+            if (
+                candidate_specs
+                and getattr(program, "stop_rule", None) == "native-role-episode"
+            ):
+                from ...rails.native_episode_config import (  # noqa: PLC0415
+                    load_native_episode_config,
+                )
+
+                native_config = load_native_episode_config(
+                    self._composed.values, program
+                )
+                assert native_config is not None
+                selection_count += native_config.max_candidate_refreshes
+            for phase, spec in candidate_specs.items():
+                if spec.supply_mode == "withhold":
+                    continue
+                store = store_binding.store(spec.store_id)
+                rendered = []
+                for value in store.snapshot.values:
+                    visible = store_binding.model_evidence_block(
+                        spec.store_id,
+                        local_evidence_id=value.value_id,
+                        content=value.content,
+                    )
+                    text = (
+                        f"[evidence {visible['evidence_id']}] "
+                        f"{visible['text']}"
+                    )
+                    rendered.append((text, "value"))
+                selection_limit = min(
+                    len(rendered), spec.max_total_values * selection_count
+                )
+                blocks = sorted(
+                    rendered,
+                    key=lambda block: (-len(block[0].encode("utf-8")), block[0]),
+                )[:selection_limit]
+                previous = list(bound.get(phase, ()))
+                previous.extend(block for block in blocks if block not in previous)
+                bound[phase] = tuple(previous)
+                candidate_blocks.extend(
+                    block for block in blocks if block not in candidate_blocks
+                )
+
+        if (
+            store_binding is not None
+            and getattr(program, "stop_rule", None) == "native-role-episode"
+            and candidate_blocks
+        ):
+            for phase in program.phase_names():
+                previous = list(bound.get(phase, ()))
+                previous.extend(
+                    block for block in candidate_blocks if block not in previous
+                )
+                bound[phase] = tuple(previous)
+
         if store_binding is not None:
             retained: list[tuple[str, str]] = []
             for phase in program.phase_names():
