@@ -21,6 +21,7 @@ dependencies = []
 # `argparse.ArgumentParser(prog="saea-driver")` already names this program.
 [project.scripts]
 saea-driver = "speech_aware_evidence_acquisition.core.driver.cli:main"
+saea-materialize-provisional-candidates = "speech_aware_evidence_acquisition.core.provisional_candidate_materialization:main"
 
 # TEST-TIME dependencies (numpy / soundfile / jiwer).
 #
