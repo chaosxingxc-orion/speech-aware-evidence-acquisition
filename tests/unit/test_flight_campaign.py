@@ -9,7 +9,7 @@ from speech_aware_evidence_acquisition.core.flight.campaign import (
     CampaignError, CampaignCell, declared_readiness, run_campaign,
 )
 from speech_aware_evidence_acquisition.core.flight.receipts import (
-    FLIGHT_STAGES, read_flight_receipts,
+    FLIGHT_STAGES, FlightReceipts, read_flight_receipts,
 )
 from test_flight_runtime import (
     _serving_world, _serving_runtime, _write_serving_session, _SERVING_RUN_ID,
@@ -140,7 +140,7 @@ def test_campaign_receipt_failure_does_not_hide_generation_failure(
         raise OSError("receipt storage unavailable")
 
     runtime.run_phases = fail_after_run_phases
-    monkeypatch.setattr(campaign, "write_flight_receipts", fail_receipt)
+    monkeypatch.setattr(campaign, "persist_flight_receipts", fail_receipt)
     with pytest.raises(RuntimeError, match="primary generation failure") as raised:
         run_campaign(
             [runtime], cells=[cell()], repo_root=repo, data_root=data,
@@ -158,21 +158,21 @@ def test_campaign_preserves_seal_without_inventing_failed_score_stage(
     repo, runtime_root, data = _serving_world(tmp_path)
     _write_serving_session(repo, runtime_root, data)
     runtime, _, _ = _serving_runtime(tmp_path, repo)
-    original_writer = campaign.write_flight_receipts
+    original_writer = campaign.persist_flight_receipts
     writes = 0
 
     def fail_score(**kwargs):
         raise RuntimeError("scoring failed before its receipt")
 
-    def fail_later_receipt(path, receipts):
+    def fail_later_receipt(*args, **kwargs):
         nonlocal writes
         writes += 1
         if writes > 1:
             raise OSError("receipt update unavailable")
-        return original_writer(path, receipts)
+        return original_writer(*args, **kwargs)
 
     runtime.score = fail_score
-    monkeypatch.setattr(campaign, "write_flight_receipts", fail_later_receipt)
+    monkeypatch.setattr(campaign, "persist_flight_receipts", fail_later_receipt)
     with pytest.raises(RuntimeError, match="scoring failed") as raised:
         run_campaign(
             [runtime], cells=[cell()], repo_root=repo, data_root=data,
@@ -402,8 +402,17 @@ def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, mon
     repo = tmp_path / "repo"
     calls = []
     class Runtime:
+        def __init__(self):
+            self.run_id = _SERVING_RUN_ID
+            self.attempt_id = "attempt-serving"
+            self.receipts = FlightReceipts(self.run_id, self.attempt_id)
+
+        def _record(self, stage):
+            self.receipts.record(stage, {"test": stage})
+
         def preflight(self):
             calls.append("preflight")
+            self._record("preflight")
             return {}
         def wire_check(self, **kwargs):
             assert kwargs == {"seal_and_score": False}
@@ -420,15 +429,21 @@ def test_cli_routes_shared_modes_and_leaves_worker_scoring_to_root(tmp_path, mon
             return {}
         def preprocess(self):
             calls.append("preprocess")
+            self._record("preprocess")
         def serve(self):
             calls.append("serve")
+            self._record("serve")
         def run_phases(self):
             calls.append("generate")
+            self._record("run_phases")
         def seal(self):
             calls.append("seal")
+            self._record("seal")
             return {"manifest_path": "complete-manifest.json"}
         def score(self, **kwargs):
             pytest.fail("standalone worker must not hold generation custody during scoring")
+        def stop_serving(self):
+            pytest.fail("standalone worker must not stop the root-owned service")
     monkeypatch.setattr(cli, "__file__", str(repo / "src/package/core/flight/cli.py"))
     selected_document = dict(cell().document)
     if mode == "check":

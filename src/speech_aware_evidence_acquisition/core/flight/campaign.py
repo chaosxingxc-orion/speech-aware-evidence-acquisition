@@ -19,7 +19,7 @@ from ..bundle.git_commit import require_clean_study_repo
 from ..session.serving import assert_identity_matches, find_resident_session
 from .lease import GenerationLease, WorkerExecutionPolicy
 from .queue import FlightDependency, FlightQueue, FlightReadiness
-from .receipts import write_flight_receipts
+from .receipts import persist_flight_receipts
 from .runtime import FlightRuntime
 
 
@@ -182,22 +182,14 @@ def run_campaign(
     receipt_refs: dict[str, Mapping[str, str]] = {}
 
     def persist_receipts(flight: FlightRuntime) -> None:
-        receipts = flight.receipts
-        if not receipts.completed_stages():
-            return
-        if (receipts.run_id, receipts.attempt_id) != (flight.run_id, flight.attempt_id):
-            raise CampaignError("runtime receipt identity differs from its campaign flight")
-        runs_root = (Path(data_root).resolve() / "runs").resolve()
-        receipt_path = (
-            runs_root / flight.run_id / flight.attempt_id / "flight-receipts.json"
-        ).resolve()
-        if len(receipt_path.parents) < 3 or receipt_path.parents[2] != runs_root:
-            raise CampaignError("flight receipt path escapes the governed runs directory")
-        receipt_sha256 = write_flight_receipts(receipt_path, receipts)
-        receipt_refs[flight.run_id] = {
-            "path": str(receipt_path),
-            "sha256": receipt_sha256,
-        }
+        reference = persist_flight_receipts(
+            data_root,
+            run_id=flight.run_id,
+            attempt_id=flight.attempt_id,
+            receipts=flight.receipts,
+        )
+        if reference is not None:
+            receipt_refs[flight.run_id] = reference
 
     def persist_all(primary_error: BaseException | None = None) -> None:
         for flight in flights:

@@ -9,7 +9,7 @@ together under one run/attempt identity, refuses to record the same stage
 twice (a stage's own re-run discipline lives in ``runtime.py``; this module
 only refuses silent overwrite of an already-recorded receipt), exposes a
 single canonical ``as_json()``, and persists exact monotonically growing
-snapshots for the shared campaign.
+snapshots for shared campaigns and generation-only workers.
 
 Standard-library only, no dependency on ``core.model``/``rails`` -- like
 ``core.attempts``/``core.session``, this is a small, self-contained seam.
@@ -183,6 +183,35 @@ def write_flight_receipts(path: Path, receipts: "FlightReceipts") -> str:
             pass
 
 
+def persist_flight_receipts(
+    data_root: Path,
+    *,
+    run_id: str,
+    attempt_id: str,
+    receipts: "FlightReceipts",
+) -> dict[str, str] | None:
+    """Persist genuine stages under the governed live run and attempt identity."""
+
+    if not isinstance(receipts, FlightReceipts):
+        raise FlightReceiptError("persist_flight_receipts requires FlightReceipts")
+    if not receipts.completed_stages():
+        return None
+    if (receipts.run_id, receipts.attempt_id) != (run_id, attempt_id):
+        raise FlightReceiptError(
+            "live flight identity differs from its receipt ledger"
+        )
+    runs_root = (Path(data_root).resolve() / "runs").resolve()
+    receipt_path = (
+        runs_root / run_id / attempt_id / "flight-receipts.json"
+    ).resolve()
+    if len(receipt_path.parents) < 3 or receipt_path.parents[2] != runs_root:
+        raise FlightReceiptError(
+            "flight receipt path escapes the governed runs directory"
+        )
+    receipt_sha256 = write_flight_receipts(receipt_path, receipts)
+    return {"path": str(receipt_path), "sha256": receipt_sha256}
+
+
 @dataclass
 class FlightReceipts:
     """One flight's stage ledger: ``run_id``/``attempt_id`` identity plus an
@@ -301,6 +330,7 @@ __all__ = [
     "FLIGHT_STAGES",
     "FlightReceiptError",
     "FlightReceipts",
+    "persist_flight_receipts",
     "read_flight_receipts",
     "require_mandatory_throughput_fields",
     "write_flight_receipts",
