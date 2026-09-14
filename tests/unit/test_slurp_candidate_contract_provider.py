@@ -17,6 +17,7 @@ from speech_aware_evidence_acquisition.rails.adapters.slurp import SlurpAdapter
 from speech_aware_evidence_acquisition.rails.slurp_candidate_contracts import (
     PROVIDER_SCHEMA,
     SlurpCandidateContractProvider,
+    build_slurp_candidate_contract_provider,
 )
 from speech_aware_evidence_acquisition.rails.task_adapter import TaskAdapter
 
@@ -116,6 +117,9 @@ def test_source_hash_binds_exact_projection_and_is_deterministic(slurp_world):
     first = _adapter(slurp_world).candidate_contract_provider()
     second = _adapter(slurp_world).candidate_contract_provider()
     assert first.source_sha256 == second.source_sha256
+    assert first.source_sha256 == (
+        "51372165542c4a7c6065a8fe33cb4b8465f69dc18a4c8329b46d42409e73d4c1"
+    )
     assert first.candidate_ids == ("iot_hue_lightdim", "weather_query")
     assert first.source_document == second.source_document
     assert first.source_sha256 == canonical_sha256(first.source_document)
@@ -132,6 +136,38 @@ def test_source_hash_binds_exact_projection_and_is_deterministic(slurp_world):
     assert first.source_document["profiles"] == [
         item.as_json() for item in first.profiles
     ]
+    assert "construction_exclusions" not in first.source_document
+
+
+def test_excluded_provider_binds_exclusions_and_retained_source(slurp_world):
+    lock = load_lock(slurp_world.lock_path)
+    legacy = build_slurp_candidate_contract_provider(lock, slurp_world.data_root)
+    explicit_empty = build_slurp_candidate_contract_provider(
+        lock, slurp_world.data_root, excluded_train_utterance_ids=()
+    )
+    excluded = build_slurp_candidate_contract_provider(
+        lock,
+        slurp_world.data_root,
+        excluded_train_utterance_ids=("slurp:train:000301",),
+    )
+
+    assert explicit_empty.source_document == legacy.source_document
+    assert explicit_empty.source_sha256 == legacy.source_sha256
+    assert excluded.source_sha256 != legacy.source_sha256
+    assert excluded.source_sha256 == canonical_sha256(excluded.source_document)
+    assert excluded.source_document["construction_exclusions"] == {
+        "train_utterance_ids": ["slurp:train:000301"]
+    }
+    assert excluded.source_document["source_identity_sha256"] != (
+        legacy.source_document["source_identity_sha256"]
+    )
+    assert excluded.source_document["source_utterance_count"] == 1
+    profiles = {item.candidate_id: item for item in excluded.profiles}
+    empty = profiles["iot_hue_lightdim"]
+    assert empty.utterances == 0
+    assert empty.slot_mentions == 0
+    assert empty.types == ()
+    assert excluded.lookup(("iot_hue_lightdim",)).candidates[0].schema == ()
 
 
 def test_lookup_refuses_duplicate_ids_before_returning_a_result(slurp_world):
