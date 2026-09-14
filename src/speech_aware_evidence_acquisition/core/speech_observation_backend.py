@@ -45,6 +45,8 @@ _PROTOCOL_KEYS = {
     "no_speech_threshold",
     "logprob_threshold",
 }
+_OPTIONAL_PROTOCOL_KEYS = {"cpu_thread_limits"}
+_CPU_THREAD_LIMIT_KEYS = {"inference_threads", "interop_threads"}
 _SOURCE_KEYS = {
     "media_path",
     "audio_sha256",
@@ -56,11 +58,11 @@ _SOURCE_KEYS = {
 }
 
 
-def _exact_keys(value, expected, label):
+def _exact_keys(value, expected, label, *, optional=frozenset()):
     if not isinstance(value, Mapping):
         raise SpeechObservationBackendError(f"{label} must be an object")
     unknown = set(value) - expected
-    missing = expected - set(value)
+    missing = expected - set(optional) - set(value)
     if unknown:
         raise SpeechObservationBackendError(f"{label} has unknown fields: {sorted(unknown)}")
     if missing:
@@ -96,7 +98,12 @@ def _validate_inventory(inventory):
 
 
 def _validate_protocol(protocol):
-    _exact_keys(protocol, _PROTOCOL_KEYS, "Whisper decoding protocol")
+    _exact_keys(
+        protocol,
+        _PROTOCOL_KEYS | _OPTIONAL_PROTOCOL_KEYS,
+        "Whisper decoding protocol",
+        optional=_OPTIONAL_PROTOCOL_KEYS,
+    )
     if protocol["schema"] != "saea-local-whisper-decode-v1":
         raise SpeechObservationBackendError("Whisper decoding protocol schema is invalid")
     if not isinstance(protocol["device"], str) or not (
@@ -112,6 +119,28 @@ def _validate_protocol(protocol):
         value = protocol[field]
         if type(value) is not int or value < 1 or (upper is not None and value > upper):
             raise SpeechObservationBackendError(f"Whisper {field} is invalid")
+    limits = protocol.get("cpu_thread_limits")
+    if limits is not None:
+        _exact_keys(limits, _CPU_THREAD_LIMIT_KEYS, "Whisper CPU thread limits")
+        if protocol["device"] != "cpu":
+            raise SpeechObservationBackendError(
+                "Whisper CPU thread limits require device='cpu'"
+            )
+        for field in sorted(_CPU_THREAD_LIMIT_KEYS):
+            value = limits[field]
+            if type(value) is not int or value < 1:
+                raise SpeechObservationBackendError(
+                    f"Whisper CPU thread limit {field} must be a positive integer"
+                )
+        if (
+            protocol["cpu_workers"]
+            + limits["inference_threads"]
+            + limits["interop_threads"]
+            > 8
+        ):
+            raise SpeechObservationBackendError(
+                "Whisper CPU thread envelope exceeds eight workers"
+            )
     if protocol["language"] != "en":
         raise SpeechObservationBackendError("Whisper language must be 'en'")
     if protocol["task"] != "transcribe":
@@ -156,6 +185,59 @@ def _validate_source(source):
         raise SpeechObservationBackendError("speech observation exceeds 30 seconds")
 
 
+_CPU_THREAD_LIMITS_LOCK = Lock()
+_APPLIED_CPU_THREAD_LIMITS: tuple[int, int] | None = None
+
+
+def _apply_cpu_thread_limits(torch, protocol):
+    """Apply one process-global CPU envelope and refuse later drift."""
+
+    limits = protocol.get("cpu_thread_limits")
+    if limits is None:
+        return
+    desired = (limits["inference_threads"], limits["interop_threads"])
+    setters = (
+        getattr(torch, "set_num_threads", None),
+        getattr(torch, "set_num_interop_threads", None),
+    )
+    getters = (
+        getattr(torch, "get_num_threads", None),
+        getattr(torch, "get_num_interop_threads", None),
+    )
+    if not all(callable(function) for function in setters + getters):
+        raise SpeechObservationBackendError(
+            "Torch does not expose enforceable CPU thread controls"
+        )
+
+    global _APPLIED_CPU_THREAD_LIMITS
+    with _CPU_THREAD_LIMITS_LOCK:
+        if _APPLIED_CPU_THREAD_LIMITS is None:
+            try:
+                setters[0](desired[0])
+                setters[1](desired[1])
+            except Exception as error:
+                raise SpeechObservationBackendError(
+                    "Torch refused the configured CPU thread limits"
+                ) from error
+            actual = (getters[0](), getters[1]())
+            if actual != desired:
+                raise SpeechObservationBackendError(
+                    "Torch CPU thread limits differ after application"
+                )
+            _APPLIED_CPU_THREAD_LIMITS = desired
+            return
+
+        if _APPLIED_CPU_THREAD_LIMITS != desired:
+            raise SpeechObservationBackendError(
+                "configured Whisper CPU thread limits drifted within this process"
+            )
+        actual = (getters[0](), getters[1]())
+        if actual != desired:
+            raise SpeechObservationBackendError(
+                "Torch CPU thread limits drifted after application"
+            )
+
+
 def _load_whisper_stack(inventory, protocol):
     """Import the declared official source and load only the exact local checkpoint."""
     source_root = Path(inventory["whisper_source_path"]).resolve()
@@ -169,6 +251,7 @@ def _load_whisper_stack(inventory, protocol):
     audio = importlib.import_module("whisper.audio")
     tokenizer = importlib.import_module("whisper.tokenizer")
     torch = importlib.import_module("torch")
+    _apply_cpu_thread_limits(torch, protocol)
     model = whisper.load_model(
         inventory["checkpoint_path"],
         device=protocol["device"],

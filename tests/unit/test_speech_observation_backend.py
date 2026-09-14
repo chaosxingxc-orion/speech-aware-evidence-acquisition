@@ -43,6 +43,19 @@ def protocol(**changes):
     return values
 
 
+def bounded_cpu_protocol(**changes):
+    values = protocol(
+        device="cpu",
+        cpu_workers=2,
+        batch_size=1,
+        sample_len=256,
+        fp16=False,
+        cpu_thread_limits={"inference_threads": 5, "interop_threads": 1},
+    )
+    values.update(changes)
+    return values
+
+
 def source(name="one", *, frames=16000, start_frame=0, end_frame=None):
     if end_frame is None:
         end_frame = frames
@@ -87,6 +100,37 @@ class FakeTensor:
     def to(self, device):
         self.moves.append(device)
         return self
+
+
+class FakeTorchThreads:
+    def __init__(self, events, *, refuse=None, apply=True):
+        self.events = events
+        self.refuse = refuse
+        self.apply = apply
+        self.inference_threads = 97
+        self.interop_threads = 89
+
+    def set_num_threads(self, value):
+        self.events.append(("set_num_threads", value))
+        if self.refuse == "inference":
+            raise RuntimeError("synthetic inference refusal")
+        if self.apply:
+            self.inference_threads = value
+
+    def set_num_interop_threads(self, value):
+        self.events.append(("set_num_interop_threads", value))
+        if self.refuse == "interop":
+            raise RuntimeError("synthetic interop refusal")
+        if self.apply:
+            self.interop_threads = value
+
+    def get_num_threads(self):
+        self.events.append(("get_num_threads", self.inference_threads))
+        return self.inference_threads
+
+    def get_num_interop_threads(self):
+        self.events.append(("get_num_interop_threads", self.interop_threads))
+        return self.interop_threads
 
 
 @dataclass
@@ -148,6 +192,30 @@ def fake_stack(results, calls):
         )
     )
     return whisper, audio, torch, tokenizer, model
+
+
+def fake_imports(monkeypatch, torch, events):
+    class FakeModel:
+        def eval(self):
+            events.append(("model_eval", None))
+            return self
+
+    def load_model(path, *, device, in_memory):
+        events.append(("load_model", (path, device, in_memory)))
+        return FakeModel()
+
+    source = inventory()["whisper_source_path"]
+    modules = {
+        "whisper": SimpleNamespace(
+            __file__=source + "/whisper/__init__.py", load_model=load_model
+        ),
+        "whisper.audio": SimpleNamespace(),
+        "whisper.tokenizer": SimpleNamespace(),
+        "torch": torch,
+    }
+    monkeypatch.setattr(
+        backend.importlib, "import_module", lambda name: modules[name]
+    )
 
 
 def test_native_batch_is_ordered_lazy_and_retains_bounded_diagnostics(monkeypatch):
@@ -280,6 +348,170 @@ def test_cpu_protocol_requires_fp32_before_any_eager_work(monkeypatch):
             inventory(), protocol(device="cpu", fp16=True), "/unused", lambda _: None
         )
     assert created == []
+
+
+@pytest.mark.parametrize(
+    "limits,protocol_changes,match",
+    [
+        ({"inference_threads": 5}, {}, "lacks fields"),
+        (
+            {"inference_threads": 5, "interop_threads": 1, "extra": 1},
+            {},
+            "unknown fields",
+        ),
+        ({"inference_threads": True, "interop_threads": 1}, {}, "positive integer"),
+        ({"inference_threads": 5, "interop_threads": 0}, {}, "positive integer"),
+        (
+            {"inference_threads": 5, "interop_threads": 1},
+            {"device": "cuda:0", "fp16": True},
+            "require device='cpu'",
+        ),
+        (
+            {"inference_threads": 6, "interop_threads": 1},
+            {},
+            "exceeds eight workers",
+        ),
+    ],
+)
+def test_cpu_thread_envelope_refuses_before_eager_work(
+    monkeypatch, limits, protocol_changes, match
+):
+    created = []
+
+    class RefusingPrefetch:
+        def __init__(self, _workers):
+            created.append(True)
+
+    monkeypatch.setattr(backend, "BoundedAudioPrefetch", RefusingPrefetch)
+    configured = bounded_cpu_protocol(
+        cpu_thread_limits=limits, **protocol_changes
+    )
+    with pytest.raises(backend.SpeechObservationBackendError, match=match):
+        backend.LocalWhisperBackend(
+            inventory(), configured, "/unused", lambda _: None
+        )
+    assert created == []
+
+
+def test_cpu_thread_limits_apply_once_before_lazy_model_load(monkeypatch):
+    events = []
+    torch = FakeTorchThreads(events)
+    monkeypatch.setattr(backend, "BoundedAudioPrefetch", FakePrefetch)
+    monkeypatch.setattr(backend, "_APPLIED_CPU_THREAD_LIMITS", None)
+    fake_imports(monkeypatch, torch, events)
+
+    first = backend.LocalWhisperBackend(
+        inventory(), bounded_cpu_protocol(), "/unused", lambda _: None
+    )
+    second = backend.LocalWhisperBackend(
+        inventory(), bounded_cpu_protocol(), "/unused", lambda _: None
+    )
+    assert events == []
+
+    first._ensure_stack()
+    first._ensure_stack()
+    second._ensure_stack()
+
+    assert [event for event in events if event[0] == "set_num_threads"] == [
+        ("set_num_threads", 5)
+    ]
+    assert [event for event in events if event[0] == "set_num_interop_threads"] == [
+        ("set_num_interop_threads", 1)
+    ]
+    load_positions = [
+        index for index, event in enumerate(events) if event[0] == "load_model"
+    ]
+    assert len(load_positions) == 2
+    assert events.index(("set_num_threads", 5)) < load_positions[0]
+    assert events.index(("set_num_interop_threads", 1)) < load_positions[0]
+
+
+def test_changed_cpu_thread_limits_are_refused_before_second_load(monkeypatch):
+    events = []
+    torch = FakeTorchThreads(events)
+    monkeypatch.setattr(backend, "BoundedAudioPrefetch", FakePrefetch)
+    monkeypatch.setattr(backend, "_APPLIED_CPU_THREAD_LIMITS", None)
+    fake_imports(monkeypatch, torch, events)
+    backend.LocalWhisperBackend(
+        inventory(), bounded_cpu_protocol(), "/unused", lambda _: None
+    )._ensure_stack()
+
+    changed = bounded_cpu_protocol(
+        cpu_thread_limits={"inference_threads": 4, "interop_threads": 1}
+    )
+    with pytest.raises(
+        backend.SpeechObservationBackendError, match="configured.*drifted"
+    ):
+        backend.LocalWhisperBackend(
+            inventory(), changed, "/unused", lambda _: None
+        )._ensure_stack()
+    assert len([event for event in events if event[0] == "load_model"]) == 1
+
+
+def test_observed_torch_thread_drift_is_refused(monkeypatch):
+    events = []
+    torch = FakeTorchThreads(events)
+    monkeypatch.setattr(backend, "BoundedAudioPrefetch", FakePrefetch)
+    monkeypatch.setattr(backend, "_APPLIED_CPU_THREAD_LIMITS", None)
+    fake_imports(monkeypatch, torch, events)
+    backend.LocalWhisperBackend(
+        inventory(), bounded_cpu_protocol(), "/unused", lambda _: None
+    )._ensure_stack()
+    torch.inference_threads = 4
+
+    with pytest.raises(
+        backend.SpeechObservationBackendError, match="drifted after application"
+    ):
+        backend.LocalWhisperBackend(
+            inventory(), bounded_cpu_protocol(), "/unused", lambda _: None
+        )._ensure_stack()
+    assert len([event for event in events if event[0] == "load_model"]) == 1
+
+
+@pytest.mark.parametrize("refuse", ["inference", "interop"])
+def test_torch_thread_limit_application_failure_is_not_silent(monkeypatch, refuse):
+    events = []
+    torch = FakeTorchThreads(events, refuse=refuse)
+    monkeypatch.setattr(backend, "BoundedAudioPrefetch", FakePrefetch)
+    monkeypatch.setattr(backend, "_APPLIED_CPU_THREAD_LIMITS", None)
+    fake_imports(monkeypatch, torch, events)
+
+    with pytest.raises(backend.SpeechObservationBackendError, match="Torch refused"):
+        backend.LocalWhisperBackend(
+            inventory(), bounded_cpu_protocol(), "/unused", lambda _: None
+        )._ensure_stack()
+    assert not [event for event in events if event[0] == "load_model"]
+
+
+def test_torch_thread_limit_mismatch_after_set_is_refused(monkeypatch):
+    events = []
+    torch = FakeTorchThreads(events, apply=False)
+    monkeypatch.setattr(backend, "BoundedAudioPrefetch", FakePrefetch)
+    monkeypatch.setattr(backend, "_APPLIED_CPU_THREAD_LIMITS", None)
+    fake_imports(monkeypatch, torch, events)
+
+    with pytest.raises(
+        backend.SpeechObservationBackendError, match="differ after application"
+    ):
+        backend.LocalWhisperBackend(
+            inventory(), bounded_cpu_protocol(), "/unused", lambda _: None
+        )._ensure_stack()
+    assert not [event for event in events if event[0] == "load_model"]
+
+
+def test_legacy_protocol_does_not_require_or_apply_torch_thread_controls(monkeypatch):
+    events = []
+    torch = SimpleNamespace()
+    monkeypatch.setattr(backend, "BoundedAudioPrefetch", FakePrefetch)
+    monkeypatch.setattr(backend, "_APPLIED_CPU_THREAD_LIMITS", None)
+    fake_imports(monkeypatch, torch, events)
+
+    worker = backend.LocalWhisperBackend(
+        inventory(), protocol(device="cpu", fp16=False, batch_size=1),
+        "/unused", lambda _: None,
+    )
+    worker._ensure_stack()
+    assert [event[0] for event in events] == ["load_model", "model_eval"]
 
 
 def test_cpu_decode_propagates_cpu_device_and_fp32_without_eager_work(monkeypatch):
