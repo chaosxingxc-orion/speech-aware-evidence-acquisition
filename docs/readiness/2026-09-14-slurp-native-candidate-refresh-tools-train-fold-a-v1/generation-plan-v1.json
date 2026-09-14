@@ -1,0 +1,47 @@
+{
+  "schema": "saea-registered-generation-plan-v1",
+  "registered_at_utc": "2026-09-14T09:47:37.341076+00:00",
+  "status": "ROOT_PREREGISTERED_AWAITING_CLEAN_SOURCE_CAMPAIGN",
+  "source_worktree": "/home/chao/saea-worktrees/native-refresh-tools-admission-v1",
+  "accepted_implementation_commit": "3ec8787a3f8c5ab8785eba736a78dcef43d7759e",
+  "experiment": "slurp-native-candidate-refresh-tools-train-fold-a-v1",
+  "cell": "slurp-native-candidate-refresh-tools-train-fold-a-v1",
+  "expected_session_id": "serving-slurp-native-train-a-recovery-np4-v1",
+  "composed_config_hash": "e12e9745e9e453adfd717a7a8baba36201d2f0f05d83f1befd74336075128a59",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-14-slurp-native-candidate-refresh-tools-train-fold-a-v1/protocol-v1.json",
+    "sha256": "473cfa6c6c80c6142459ac80d5bfb93a90112952b18c8a57275b407b35647af5"
+  },
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-native-candidate-refresh-tools-train-fold-a-v1/admission-v1.json",
+    "sha256": "0d567c24a03d0d7271afbd8081b799b00865484c144c9226ef99c47ec8deafca"
+  },
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-NATIVE-CANDIDATE-REFRESH-TOOLS-TRAIN-FOLD-A-V1",
+    "execution_profile": "baseline-reproduction",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "planned_model_calls": 12960,
+    "planned_gpu_hours": 12.0,
+    "planned_speech_audio_seconds": 37015,
+    "protocol_hash": "e8dad08ee35f9d24c4a99fb4a206a6967c0e3275a432d9de361ba447cc3a13f4",
+    "attempt_id": "attempt-slurp-native-candidate-refresh-tools-train-fold-a-generation-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "family_budget": {
+    "asr_calls": 1080,
+    "asr_audio_seconds_cap": 3085,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 51840,
+    "generation_calls_cap": 12960,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_analytical_tool_actions_cap": 4320,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 37015
+  },
+  "quality_read_gate": "No partial successor quality; require complete source, first official score and root release.",
+  "unused_budget_is_not_new_attempt_authority": true
+}

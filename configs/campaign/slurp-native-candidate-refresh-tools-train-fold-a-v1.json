@@ -1,0 +1,9 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "slurp-native-candidate-refresh-tools-train-fold-a-v1",
+      "cell": "slurp-native-candidate-refresh-tools-train-fold-a-v1"
+    }
+  ]
+}

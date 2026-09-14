@@ -1418,3 +1418,7 @@ The [independent reproduction report](2026-09-10-fable-reproduction-audit.md) an
 ## September 13: complete native-system candidate
 
 EXPLORATORY_SYSTEM_CANDIDATE. Direct and native system each completed DEV1000 and received one complete official score. Primary NEW500 micro improves by 14.429673 percentage points and joint intent by 6.2 points; both frozen lower-bound conditions pass. Same-roster replication is next. See [the verdict and all scenario tables](../readiness/2026-09-13-slurp-direct-vs-native-system-v1-verdict.md). This continuation preserves historical rows and does not establish component causality/generalization.
+
+## September 14: complete TRAIN Fold A native anchor
+
+COMPLETE_TRAIN_CONSTRUCTION_ANCHOR. The sole CUDA/reboot recovery completed all 1,080 ordered samples, 5,417 model calls and one official full score. Natural-mixture official SLU micro F1 is 48.53363%, intent accuracy 77.96296%, C0 coverage 86.75926%, covered-set final intent accuracy 89.86126%, and full intent/entity exact match 29.35185%. These are anchor levels, not a same-roster direct-model effect. The original failed five-contact attempt remains separate. All 18 scenario strata, actual initial knowledge support and source pins are in [the complete result](2026-09-14-slurp-native-train-a-anchor.md). Root admits one same-roster complete-system refresh/tools successor; Fold B remains untouched and no training-free optimization cycle is yet complete.

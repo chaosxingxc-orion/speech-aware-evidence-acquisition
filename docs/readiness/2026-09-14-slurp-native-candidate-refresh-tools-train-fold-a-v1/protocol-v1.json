@@ -1,0 +1,104 @@
+{
+  "schema": "saea-registered-system-comparison-protocol-v1",
+  "date": "2026-09-14",
+  "status": "ROOT_ADMITTED_PENDING_FINAL_PREPARATION_AND_CLEAN_RUNTIME",
+  "registered_before_successor_contact": true,
+  "prospective_design": {
+    "relpath": "docs/readiness/2026-09-14-slurp-native-candidate-refresh-tools-train-fold-a-v1/README.md",
+    "sha256": "23d33bfe48b4360c2dfbebb63ca1c1dc8f441b305bf65b00407fc0aaa72364a8"
+  },
+  "admission": {
+    "relpath": "coordination/slurp-native-candidate-refresh-tools-train-fold-a-v1/admission-v1.json",
+    "sha256": "0d567c24a03d0d7271afbd8081b799b00865484c144c9226ef99c47ec8deafca"
+  },
+  "supersession": "The prospective held document remains immutable. This protocol adopts its scientific question, complete-system comparison, metric definitions, bounded graph, authority boundaries, CPU resource design and training-free handoff. Its held/pending status and unresolved launch bindings are superseded only by this protocol, root admission and final configuration receipts.",
+  "source_result": "docs/results/2026-09-14-slurp-native-train-a-anchor.md",
+  "population": {
+    "roster": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    "count": 1080,
+    "paired_with": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1",
+    "fold_b_contact": false
+  },
+  "method": {
+    "frozen_weights": true,
+    "decoder_only": true,
+    "total_context": 98304,
+    "slots": 4,
+    "context_per_slot": 24576,
+    "max_output_tokens": 512,
+    "temperature": 0,
+    "seed": 20260913,
+    "candidate_width": [
+      1,
+      3
+    ],
+    "max_candidate_refreshes": 1,
+    "max_solver_revisions": 1,
+    "reviewer_contacts_per_visit": 3,
+    "last_reviewer_contact_tool_free": true,
+    "analytical_tools": [
+      "saea-tool-task-contract-v1",
+      "saea-tool-candidate-contract-lookup-v1",
+      "saea-tool-live-speech-observation-v1"
+    ],
+    "analytical_tool_roles": [
+      "reviewer"
+    ],
+    "final_answer_role": "solver",
+    "planner_actions": [
+      "ACCEPT",
+      "REVISE",
+      "REFRESH_CANDIDATES"
+    ],
+    "knowledge": "Keep the released separate intent and slot stores, initial speech query retrieval and full legal label list. Latest actual Perception supplies candidate-specific slot cards.",
+    "local_asr": "Only Reviewer may request local CPU large-v3 for a named uncertainty. Never pretranscribe or load Whisper onto GPU. Same utterance cache reuse avoids repeated fresh decode.",
+    "cost_quality_role": "Report cost and latency; do not use them as quality-selection vetoes."
+  },
+  "primary": {
+    "metric": "official pooled SLURP SLU micro F1",
+    "full_roster": true,
+    "natural_and_equal_scenario": true,
+    "bootstrap": {
+      "unit": "speaker cluster",
+      "paired": true,
+      "resamples": 10000,
+      "seed": 20260913,
+      "interval": "CI90"
+    },
+    "admission_to_disjoint_evaluation": "Strictly higher full-task point estimate is necessary for exploratory candidacy, with uncertainty/tradeoffs reported. Not superiority or generalization. A tie is not improvement."
+  },
+  "secondary": [
+    "intent/scenario/action accuracy",
+    "exact entity-pair micro F1",
+    "utterance entities exact",
+    "intent and entities fully exact",
+    "all scenario strata",
+    "saves and harms",
+    "C0 first Perception and C1 last actual Perception before delivered Solver",
+    "gold coverage, widths, recovered and lost coverage",
+    "final correctness conditional on C0, C1 and common coverage",
+    "own-intent-card actual initial supply",
+    "malformed, fallback, failed and saturated outputs",
+    "OBS/ORG/SUPPLY/USE and contact costs"
+  ],
+  "supply_diagnostic_scope": "Own-intent card presence, not all helpful discriminative content and not causal use.",
+  "coverage_target": "95 percent is prospective engineering direction within width<=3; not a historical replacement gate or widening authority.",
+  "bounds": {
+    "primary_calls": 12960,
+    "actual_fit_endpoints": 51840,
+    "primary_repeated_speech_seconds": 37015,
+    "fit_inclusive_gpu_hours": 12.0,
+    "analytical_actions": 4320,
+    "fresh_cpu_asr_decodes": 1080,
+    "asr_speech_seconds": 3085,
+    "new_encoder_calls": 0,
+    "paid_api_calls": 0,
+    "complete_official_scores": 1
+  },
+  "quality_read_gate": "No partial successor task quality. Let the sole shared campaign complete generation, seal, run the first full official score and finalize; root verifies exact ordered roster and source/score identity before source-bound quality release.",
+  "failure_policy": "Stop and preserve. Do not automatically restart or replay. Any sole recovery requires explicit root source-bound re-registration; a second failure closes this flight.",
+  "runtime": "All operations run in WSL Ubuntu-24.04. Root owns the one resident service and sole generation lease. Use the shared FlightRuntime, controller and OpenJiuwen executor. Existing speech features are prepared. CPU ASR yields the model slot; aggregate other CPU preparation remains at most two workers."
+}

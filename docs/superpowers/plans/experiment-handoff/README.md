@@ -1,3 +1,7 @@
+# Current continuation: September 14
+
+Read [STATUS-096](STATUS-096.md): the TRAIN A anchor is finalized and fully analyzed; root has admitted the next complete-system refresh/tools experiment. Earlier live/pending snapshots below are historical. The successor's source-bound launch receipt determines whether generation has begun.
+
 # Owner-directed Stage-2 continuation
 
 **Latest execution:** [STATUS-075.md](STATUS-075.md) records the active direct-versus-native DEV1000 campaign. Direct completed and scored once; the system is generating. Quality is unread. Preserve the frozen runtime and resident service, then complete the paired analysis.

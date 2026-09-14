@@ -459,6 +459,9 @@
     "slurp_native_role_reviewer_refresh_tools_v1.txt": {
       "sha256": "b71e89bb06601d4328af904370d38dfca8859bb576fd19282054a673d441e97f"
     },
+    "slurp_native_role_reviewer_refresh_tools_v2.txt": {
+      "sha256": "47ced90af55361e6f59c1570351b3ca75daf07ad461f9bc94aa0ba75c18a54f0"
+    },
     "slurp_native_role_solver_refresh_v1.txt": {
       "sha256": "3c3c83bec3625d13006344fb9777655e658b0c2715cc70665dcd25194b73c303"
     },

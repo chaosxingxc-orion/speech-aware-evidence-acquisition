@@ -1,0 +1,14 @@
+{
+  "schema": "saea-execution-plan-v1",
+  "study": "speech-aware-evidence-acquisition",
+  "run_id": "SAEA-SLURP-NATIVE-CANDIDATE-REFRESH-TOOLS-TRAIN-FOLD-A-ASR-V1",
+  "execution_profile": "baseline-reproduction",
+  "carrier_lock_key": "slurp",
+  "split_role": "discovery",
+  "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+  "planned_model_calls": 1080,
+  "planned_gpu_hours": 0.01,
+  "planned_speech_audio_seconds": 3085,
+  "protocol_hash": "abc76adebcf824085e4c383fc55b083e664c3a8b2b00cda809d72fc15bb058bd",
+  "attempt_id": "attempt-slurp-native-candidate-refresh-tools-train-fold-a-asr-v1"
+}
