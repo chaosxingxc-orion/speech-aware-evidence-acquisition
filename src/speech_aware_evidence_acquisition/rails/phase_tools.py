@@ -629,6 +629,14 @@ class PhaseToolDispatcher:
                     )
                 content_hash(invocation)
                 request["tool_invocation"] = dict(invocation)
+            if (
+                self.native_role_episode
+                and action["tool_id"] == CANDIDATE_CONTRACT_TOOL
+                and not set(action["arguments"]["candidate_ids"]) <= set(self._candidate_ids)
+            ):
+                return self._native_candidate_rejection(
+                    phase, context, source, expected, request, key
+                )
             if action["tool_id"] == TASK_CONTRACT_TOOL:
                 output = tool.call(context)
             elif action["tool_id"] == CANDIDATE_CONTRACT_TOOL:
@@ -953,13 +961,54 @@ class PhaseToolDispatcher:
             candidate_limit=spec.get("candidate_limit"),
             store_ids=spec.get("knowledge_store_ids"),
         )
-        if action["tool_id"] == CANDIDATE_CONTRACT_TOOL:
+        if action["tool_id"] == CANDIDATE_CONTRACT_TOOL and not self.native_role_episode:
             if not set(action["arguments"]["candidate_ids"]) <= set(self._candidate_ids):
                 raise PhaseToolError("candidate request contains unknown legal IDs")
         return action, {
             "call_id": call["id"],
             "completion": completion,
         }
+
+    def _native_candidate_rejection(self, phase, context, source, expected, request, key):
+        """Return counted input feedback after source validation, before lookup.
+
+        The framework consumes the same bound assistant/tool sequence as a
+        successful invocation. Do not catch execution, custody or source errors.
+        """
+        result = {
+            "status": "rejected",
+            "error_code": "unknown-candidate-ids",
+            "message": "Use exact candidate IDs from the task's legal label catalog.",
+            "invalid_candidate_ids": [
+                item for item in request["arguments"]["candidate_ids"]
+                if item not in self._candidate_ids
+            ],
+            "lookup_performed": False,
+        }
+        document = {
+            **request,
+            "schema": "saea-phase-tool-result-v2",
+            "candidate_source_sha256": self._candidate_source_sha256,
+            "result": result,
+            "result_sha256": content_hash(result),
+            "native_result_content": [],
+            "native_result_content_sha256": content_hash({"blocks": []}),
+        }
+        artifact = AgentStateArtifact(
+            state_id=f"tool-rejection:{phase}:{context.sample_id}:" + content_hash({
+                "request_id": key[0], "tool_call_id": key[1],
+            }),
+            state_kind="tool-result",
+            content=json.dumps(document, sort_keys=True),
+            source_query_state_sha256=expected,
+            source_response_sha256=source.source_response_sha256,
+            producer_policy_id=self.program.program_id,
+            cited_value_ids=(),
+        ).validate()
+        with self._lock:
+            self._native_rejections.append(content_hash(document))
+        self._emit(context.sample_id, phase, "rejected", document)
+        return PhaseToolStep(supply=None, state=artifact)
 
     def _native_error(self, phase, context, source, expected, message):
         document = {

@@ -43,8 +43,9 @@ def _document(payload: Mapping[str, object], prefix: str) -> dict[str, object]:
     }
 
 
-def _state_id(document: Mapping[str, object]) -> str:
-    return f"tool-result:{document['phase']}:{document['sample_id']}:" + content_hash(
+def _state_id(document: Mapping[str, object], *, rejected: bool = False) -> str:
+    kind = "tool-rejection" if rejected else "tool-result"
+    return f"{kind}:{document['phase']}:{document['sample_id']}:" + content_hash(
         {
             "request_id": document["core_request_id"],
             "tool_call_id": document["tool_call_id"],
@@ -257,7 +258,7 @@ def analyze_verified_native_tool_exposure(
     output_rows: Mapping[str, Mapping[str, object]],
     trace_records: Mapping[str, Mapping[str, object]],
 ) -> dict[str, Any]:
-    """Verify successful native results and their later history exposure."""
+    """Verify successful results and counted rejection feedback separately."""
     diagnostics = analyze_verified_native_episode_statistics(
         sample_ids=sample_ids,
         controller_policy_id=controller_policy_id,
@@ -277,7 +278,7 @@ def analyze_verified_native_tool_exposure(
             contact_by_request[request_id] = contact
             contact_rank[request_id] = rank
 
-    successful: dict[tuple[str, str], dict[str, object]] = {}
+    observations: dict[tuple[str, str], dict[str, object]] = {}
     non_results: list[dict[str, object]] = []
     for sample in diagnostics["samples"]:
         sample_id = str(sample["sample_id"])
@@ -298,13 +299,32 @@ def analyze_verified_native_tool_exposure(
                         )
                     }
                 )
-                continue
+                if event["event"] != "rejected":
+                    continue
+                raw_rejection = _mapping(
+                    trace_records.get(str(event["record_id"])), "tool rejection event"
+                )
+                prefix = "use" if event["axis"] == "analytical" else "obs"
+                rejected_document = _document(raw_rejection, prefix)
+                if rejected_document.get("schema") != "saea-phase-tool-result-v2":
+                    # Historical pre-dispatch rejections have no counted result.
+                    continue
+                rejected_result = _mapping(
+                    rejected_document.get("result"), "tool rejection result"
+                )
+                if (
+                    rejected_result.get("status") != "rejected"
+                    or rejected_result.get("lookup_performed") is not False
+                    or rejected_document.get("native_result_content") != []
+                ):
+                    raise NativeToolExposureError("rejection claims executed evidence")
+            rejected = event["event"] == "rejected"
             request_id = str(event["request_id"])
             call_id = str(event["tool_call_id"])
             key = (request_id, call_id)
-            if key in successful:
+            if key in observations:
                 raise NativeToolExposureError(
-                    "native trace duplicates a successful call"
+                    "native trace duplicates a returned call"
                 )
             raw = _mapping(
                 trace_records.get(str(event["record_id"])), "tool result event"
@@ -319,7 +339,7 @@ def analyze_verified_native_tool_exposure(
                 document=receipt,
                 trace_records=trace_records,
             )
-            state_id = _state_id(receipt)
+            state_id = _state_id(receipt, rejected=rejected)
             result_hash = receipt.get(
                 "model_result_sha256", receipt.get("result_sha256")
             )
@@ -328,7 +348,8 @@ def analyze_verified_native_tool_exposure(
                     "native result lacks its model-visible result hash"
                 )
             selection_count, selection_empty = _visible_selection(receipt.get("result"))
-            successful[key] = {
+            observations[key] = {
+                **({"outcome": "rejected"} if rejected else {}),
                 "record_id": event["record_id"],
                 "sample_id": sample_id,
                 "axis": event["axis"],
@@ -353,9 +374,9 @@ def analyze_verified_native_tool_exposure(
         for event in sample["native_tool_events"]
         if event["event"] == "attempt" and event["source_call_identity_available"]
     }
-    if any(key not in attempted for key in successful):
+    if any(key not in attempted for key in observations):
         raise NativeToolExposureError(
-            "successful native result lacks its attempt event"
+            "native return lacks its attempt event"
         )
 
     for request_id, contact in contact_by_request.items():
@@ -394,7 +415,7 @@ def analyze_verified_native_tool_exposure(
                 str(document.get("core_request_id")),
                 str(document.get("tool_call_id")),
             )
-            call = successful.get(key)
+            call = observations.get(key)
             if call is None:
                 raise NativeToolExposureError(
                     f"request {request_id!r} claims foreign native call history {key!r}"
@@ -425,7 +446,7 @@ def analyze_verified_native_tool_exposure(
             paths[request_id] = path
 
     calls = []
-    for call in successful.values():
+    for call in observations.values():
         exposed_ids = list(call.pop("exposed_request_ids"))
         paths = dict(call.pop("exposure_paths"))
         calls.append(
@@ -445,6 +466,13 @@ def analyze_verified_native_tool_exposure(
             str(row["tool_call_id"]),
         )
     )
+    rejected_calls = [row for row in calls if row.get("outcome") == "rejected"]
+    calls = [row for row in calls if row.get("outcome") != "rejected"]
+    rejection_summary = ({
+        "rejected_call_count": len(rejected_calls),
+        "exposed_rejected_call_count": sum(row["exposed"] is True for row in rejected_calls),
+        "rejected_calls": rejected_calls,
+    } if rejected_calls else {})
     counts = Counter(row["event"] for row in non_results)
     return {
         "schema": "saea-native-tool-exposure-postseal-v1",
@@ -460,6 +488,7 @@ def analyze_verified_native_tool_exposure(
         },
         "calls": calls,
         "non_result_events": non_results,
+        **rejection_summary,
         "semantics": (
             "Exposure proves exact native tool-result visibility in a later "
             "frozen-core request history projection; it does not establish "
