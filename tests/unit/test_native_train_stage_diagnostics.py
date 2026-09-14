@@ -247,8 +247,11 @@ def test_prepared_sidecar_reuses_verified_source_candidate_and_reward_joins(
     monkeypatch.setattr(
         module, "load_authoritative_slurp_candidate_ids", lambda *_args, **_kwargs: {"a"}
     )
+    reference_rows = {"value": references}
     monkeypatch.setattr(
-        module, "load_verified_slurp_reference_intents", lambda *_args, **_kwargs: references
+        module,
+        "load_verified_slurp_reference_intents",
+        lambda *_args, **_kwargs: reference_rows["value"],
     )
     monkeypatch.setattr(
         module,
@@ -278,6 +281,33 @@ def test_prepared_sidecar_reuses_verified_source_candidate_and_reward_joins(
     assert artifact["contact_class"] == "model-free"
     assert receipt["path"] == str(output_path)
     assert calls == [(reward_config, reward_artifact_path)]
+
+    warm_receipt = module.prepare_native_train_stage_diagnostics(
+        config_path=config_path,
+        expected_config_sha256=config_sha,
+        source_repo_root=tmp_path,
+        output_path=output_path,
+        reference_loader=lambda *_args, **_kwargs: (),
+        candidate_contract_loader=lambda *_args, **_kwargs: None,
+    )
+    assert warm_receipt == {**receipt, "cache": "warm"}
+
+    reference_rows["value"] = (
+        ReferenceIntentRow(ids[0], "changed-derived-reference"),
+        *references[1:],
+    )
+    with pytest.raises(
+        NativeTrainStageDiagnosticError,
+        match="cannot persist stage diagnostics",
+    ):
+        module.prepare_native_train_stage_diagnostics(
+            config_path=config_path,
+            expected_config_sha256=config_sha,
+            source_repo_root=tmp_path,
+            output_path=output_path,
+            reference_loader=lambda *_args, **_kwargs: (),
+            candidate_contract_loader=lambda *_args, **_kwargs: None,
+        )
 
 
 def test_prepared_sidecar_rejects_a_reward_config_for_another_manifest(

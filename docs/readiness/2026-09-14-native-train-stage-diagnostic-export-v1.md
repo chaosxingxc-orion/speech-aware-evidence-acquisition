@@ -37,7 +37,9 @@ The output uses shared `prepare_artifact` storage with contact class
 `model-free`. It binds the manifest, phase artifact, reward configuration,
 reward artifact, complete score receipt, composed configuration, run, attempt,
 protocol, split, candidate projection, legal inventory, ordered cohort, and
-construction roster identities.
+construction roster identities. It also binds the hash of the fully derived
+document, so an unchanged document can reuse a warm artifact while a changed
+derivation refuses stale bytes.
 
 ## Exported diagnostic
 
@@ -73,5 +75,6 @@ Synthetic tests cover successful exact joins, zero candidate coverage,
 malformed or duplicate candidate rows, wrong cohort order, wrong reward sample,
 mixed construction rosters, wrong split identity, a reward configuration bound
 to another manifest, explicit conditional denominators, and absence of gold
-strings from serialized output. Existing native-source and SLURP Top-N tests
-remain in the regression selection.
+strings from serialized output. Preparation tests cover valid warm reuse and
+refusal when a derived document changes under unchanged source identities.
+Existing native-source and SLURP Top-N tests remain in the regression selection.

@@ -375,6 +375,7 @@ def prepare_native_train_stage_diagnostics(
         "phase_artifact_sha256": phase_pin["sha256"],
         "reward_config_sha256": reward_config_pin["sha256"],
         "reward_artifact_sha256": reward_artifact_pin["sha256"],
+        "document_sha256": content_hash(document),
         "implementation_sha256": hash_stable_file(
             Path(__file__), "stage diagnostic implementation"
         )[1],
