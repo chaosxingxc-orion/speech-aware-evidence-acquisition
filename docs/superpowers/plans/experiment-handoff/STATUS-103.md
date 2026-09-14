@@ -46,3 +46,14 @@ decision currently blocks this execution. Prepare shared cross-case corrective
 rule consolidation in an isolated checkout. Keep Fold B untouched until a
 selected candidate is frozen. Audio2Tool/E21 native-role transfer and task-native
 reward vectors remain subsequent shared work; no E22 GPU flight is active.
+
+## Subsequent owner steering: algorithmic optimization
+
+The owner clarified that root/GPT-6 manual system edits strengthen the base but
+do not constitute training-free algorithm innovation. Supersede the next-work
+priority of cross-case rule consolidation above with genuine same-policy rollout
+sampling, explicit reward-driven updates and frozen evaluation. Preserve the
+current campaign's exact admission and do not reclassify its eventual paired
+comparison as an on-policy GRPO group. See
+[the owner ruling](OWNER-ALGORITHMIC-TRAJECTORY-OPTIMIZATION-2026-09-14.md) and
+[the algorithm specification](../../../readiness/2026-09-14-trajectory-policy-optimization-v1.md).

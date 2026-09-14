@@ -3,6 +3,18 @@
 Status: prospective design, not an execution plan or contact authorization.
 Date: 2026-09-14. Root owns the scientific design and admission.
 
+## Owner clarification: algorithmic sampling takes precedence
+
+The owner subsequently clarified that training-free research must use reproducible
+trajectory sampling and algorithmic policy updates, rather than root/GPT-6 manual
+system optimization. Follow the successor
+[trajectory-policy specification](2026-09-14-trajectory-policy-optimization-v1.md).
+The anchor/successor pair below is a comparison of different systems, not an
+on-policy GRPO group. Treat the remaining rule-consolidation proposal as an
+optional shared artifact facility; it is not the first algorithmic update or a
+prerequisite for beginning genuine grouped sampling. Root reviews validity and
+protocol compliance, not hand-selected rule content or preferred checkpoints.
+
 Owner priority, confirmed on 2026-09-14: pursue candidate coverage of at least
 95% while continuing training-free system optimization in parallel. Candidate
 coverage does not independently gate entry to this TRAIN cycle. Full-task
