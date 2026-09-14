@@ -1,0 +1,29 @@
+{
+  "schema": "saea-analysis-template-interface-correction-v1",
+  "registered_at": "2026-09-14T01:07:41.133519+00:00",
+  "source_template": {
+    "repo_relpath": "docs/readiness/2026-09-14-slurp-direct-vs-native-dual-store-reboot-recovery-native-diagnostics.template.json",
+    "sha256": "b19474c3e48ef2434ad1c5364f4ff1b762dd6452fdf1cc898e0473259df6b780"
+  },
+  "successor_template": {
+    "repo_relpath": "docs/readiness/2026-09-14-slurp-dual-store-native-diagnostics-reader-ready.template.json",
+    "sha256": "c238271865c81a690e39a0d9be71bb9f470ff25425a33c6e6e2e67a195503b69"
+  },
+  "change": {
+    "parent": "analysis.source_diagnostics",
+    "from": "native_system_perception_only",
+    "to": "native_system_perception_source",
+    "value_unchanged": true
+  },
+  "reason": "The existing shared native diagnostic CLI selects native mode with _NATIVE_SOURCE_KEY='native_system_perception_source'. The original template used a documentation label instead of the actual interface key.",
+  "evidence": {
+    "repo_relpath": "src/speech_aware_evidence_acquisition/analysis/slurp_topn_diagnostics_cli.py",
+    "constant": "_NATIVE_SOURCE_KEY",
+    "line": 64
+  },
+  "method_changes": [],
+  "current_or_new_quality_read": false,
+  "model_or_tool_contacts": 0,
+  "frozen_source_unchanged": true,
+  "remaining": "Bind actual sealed manifest/phase/first-score hashes only after both complete arms, then record root paired read release. Optional FlightReceipts must not be invented."
+}
