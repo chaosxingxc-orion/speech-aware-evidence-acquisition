@@ -60,6 +60,7 @@ _SHA256 = re.compile(r"[0-9a-f]{64}")
 _SAFE_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
 _PROTOCOL_SCHEMA = "saea-training-proposal-protocol-binding-v1"
 _DECISION_SCHEMA = "saea-provisional-candidate-materialization-decision-v1"
+_EMPTY_TEXT_SHA256 = hashlib.sha256(b"").hexdigest()
 _CONFIG_KEYS = frozenset(
     {
         "schema",
@@ -264,6 +265,30 @@ def _load_prepared_contexts(
     return output, (path, expected_file, fingerprint)
 
 
+def _validate_candidate_delivery(value: object) -> None:
+    keys = {
+        "kind",
+        "delivered_solver",
+        "derived_request_id",
+        "response_sha256",
+        "response_text_sha256",
+    }
+    request_suffix = "/delivery/native-abstention-v1"
+    if not isinstance(value, Mapping) or set(value) != keys:
+        raise MaterializationError("prepared candidate delivery is malformed")
+    derived_request_id = value.get("derived_request_id")
+    if (
+        value.get("kind") != "abstention"
+        or value.get("delivered_solver") is not False
+        or not isinstance(derived_request_id, str)
+        or len(derived_request_id) <= len(request_suffix)
+        or not derived_request_id.endswith(request_suffix)
+        or value.get("response_text_sha256") != _EMPTY_TEXT_SHA256
+    ):
+        raise MaterializationError("prepared candidate delivery is not a bound abstention")
+    _sha(value.get("response_sha256"), "candidate abstention response SHA-256")
+
+
 def _context_index(output: Mapping[str, object]) -> tuple[tuple[str, ...], dict[str, Mapping[str, object]]]:
     if (
         output.get("schema") != "saea-training-proposal-contexts-v2"
@@ -288,13 +313,19 @@ def _context_index(output: Mapping[str, object]) -> tuple[tuple[str, ...], dict[
         labels: set[str] = set()
         candidate_ids: set[str] = set()
         for binding in bindings:
-            if not isinstance(binding, Mapping) or set(binding) != {
+            base_fields = {
                 "label",
                 "candidate_id",
                 "reward_link_sha256",
                 "source",
-            }:
+            }
+            if not isinstance(binding, Mapping) or set(binding) not in (
+                base_fields,
+                base_fields | {"delivery"},
+            ):
                 raise MaterializationError("prepared candidate binding is malformed")
+            if "delivery" in binding:
+                _validate_candidate_delivery(binding["delivery"])
             label = binding.get("label")
             candidate_id = binding.get("candidate_id")
             source = binding.get("source")
