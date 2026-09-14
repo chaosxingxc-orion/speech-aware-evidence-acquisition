@@ -210,6 +210,10 @@
       "sha256": "24071625a272ac39b64090f8f1da90d847468523185de0317c32591dbdd1f90a"
     }
   ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-A2T-NATIVE-ROLE-ENGINEERING-PROOF-V1/phase-supply-v1.json",
+    "sha256": "17d2d6001871cd7c8a6ca6b25d2480d34bf6f11240d5b23f74e37a87333eb746"
+  },
   "prompt_fit_multiple": 1.3333333333333333,
   "scorers": [
     "a2t-toolcall-official",

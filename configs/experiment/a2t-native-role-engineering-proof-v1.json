@@ -13,7 +13,14 @@
       "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
       "readiness": {
         "reason": "Engineering-only proof remains held until root scientific/service admission, source-bound four-row preparation and both generation/fit registrations. No official score or quality screen.",
-        "requirements": [],
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "Exactly the four source-bound engineering samples, each matching the full4000 activation selection.",
+            "relpath": "prepared/SAEA-A2T-NATIVE-ROLE-ENGINEERING-PROOF-V1/phase-supply-v1.json",
+            "sha256": "17d2d6001871cd7c8a6ca6b25d2480d34bf6f11240d5b23f74e37a87333eb746"
+          }
+        ],
         "state": "preparation-pending"
       },
       "run_id": "SAEA-A2T-NATIVE-ROLE-ENGINEERING-PROOF-V1"
