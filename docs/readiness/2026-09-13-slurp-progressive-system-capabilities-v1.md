@@ -136,17 +136,50 @@ component is not accepted merely because it is richer, and a component need not
 produce an independent superiority claim before it can be studied in the system.
 
 
-## Next complete-system comparison draft
+## Registered next complete-system comparison
 
-The config-only slurp-native-dual-store-dev1000-v1 draft routes up to eight
-intent-boundary values to Perception (k=8, tau=0, one speech-query dimension,
-values exposed without key text). The full 60-label task inventory remains
-available. Solver retains candidate-associated slot-contract values. The existing
-named-store bootstrap and native graph already implement this behavior.
+The slurp-native-dual-store-dev1000-v1 complete system and matched
+slurp-direct-max512-dev1000-v1 direct arm are now registered in
+docs/readiness/2026-09-13-slurp-direct-vs-native-dual-store-dev1000-v1.
+The paired method and native diagnostics template were frozen before contact.
+The campaign attaches to the existing root-owned max512 decoder service.
 
-The matching slurp-direct-max512-dev1000-v1 draft uses the same max512 model
-fragment and resident process. Both drafts are CHECK ONLY and not registered for
-generation. Prepare and bind the full native selection artifact, finalize exact
-comparison budgets and source-bound analysis/read rules, then admit the new pair.
-The failed max256 full-system recovery stays closed. Reusing its old direct score
-as a matched max512 control would be incorrect.
+Full-roster preparation caught a semantic mismatch: the inherited target-bearing
+fuser discarded all targetless intent values after successful key ranking.
+The new opt-in shared saea-fuse-associated-values-v1 consumes associated semantic
+content without inventing target labels; the historical fuser remains unchanged.
+The rejected empty artifact is preserved. The corrected source-bound artifact
+covers all1000 rows with 1-8 values and passed live/warm equivalence and no-recompute
+readback. Its SHA256 is
+8f44dc4e2d9a51202d7618b89bec47a5b34f6484187302fea7e80f751a1df029.
+
+Generation order is direct then complete system, with first complete direct
+scoring overlapped against system generation. The frozen runtime is
+d22fdd402b3d3ddd167b78d75835f911ec73e71e. Keep quality unread until both new complete
+first-score receipts are source-verified and root records a paired read release.
+This compares whole systems; it does not establish the isolated benefit of the
+new intent store or rehabilitate either closed predecessor flight.
+
+## September 14 reboot recovery
+
+The first max512 direct arm was interrupted by an owner-confirmed reboot after
+43 launched requests, 39 completed responses and 4 in-flight requests. Its shared
+attempt is ABORTED; no complete output manifest or official score exists. The
+native dual-store arm had not started. Preserve this interruption independently
+of the earlier two closed native-system flights.
+
+Root reloaded the exact decoder identity under
+serving-slurp-dual-store-reboot-np4-v1. The sole same-method recovery is registered
+in docs/readiness/2026-09-14-slurp-direct-vs-native-dual-store-reboot-recovery-v1.
+The source prompts, native episode identity, stores, candidate contract, output
+limit and serving geometry remain identical. Both arms restart on the entire
+roster under fresh generation and fit attempts. A second failure closes this
+comparison flight. The new prepared supply is source-bound and has the exact
+same output as the corrected original, with no new encoding.
+
+The shared campaign is running from frozen commit
+6307a3ab30c93a6be35114deb5f701e6e444292f. The first complete official score from
+each arm is still required before a paired quality-read release. No interim
+accuracy informed recovery. See STATUS-083 for operational state, and the
+September 14 on-demand speech-tool inventory for the existing framework bridge
+and the limited remaining activation work.
