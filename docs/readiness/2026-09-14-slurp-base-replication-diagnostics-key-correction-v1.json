@@ -1,0 +1,43 @@
+{
+  "binding_instruction": "After both full scores and source verification, bind this successor for native diagnostics and pin this correction beside the original frozen paired recipe in the read release. The original template remains unchanged.",
+  "change": {
+    "from_key": "native_system_perception_only",
+    "parent_pointer": "/analysis/source_diagnostics",
+    "to_key": "native_system_perception_source"
+  },
+  "contact_scope": {
+    "model": 0,
+    "quality_read": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "created_at": "2026-09-14T18:14:46.056484+00:00",
+  "original": {
+    "repo_relpath": "docs/readiness/2026-09-14-slurp-direct-vs-native-dual-store-base-replication-native-diagnostics.template.json",
+    "sha256": "6ea91e9818ec1192df65d8d6118b842433c430b368495a612bd2e3b12b79eb40"
+  },
+  "reader": {
+    "repo_relpath": "src/speech_aware_evidence_acquisition/analysis/slurp_topn_diagnostics_cli.py",
+    "sha256": "a3229bc3ef8c6105a7fd2816d348242828310cf2bfde4140cb6db7ae6a5652c4"
+  },
+  "reason": "The native diagnostics reader dispatches on native_system_perception_source. The original template used an unrecognized key, which would select the wrong reader path.",
+  "schema": "saea-analysis-template-correction-v1",
+  "status": "REGISTERED_BEFORE_PAIRED_QUALITY_READ",
+  "successor": {
+    "repo_relpath": "docs/readiness/2026-09-14-slurp-direct-vs-native-dual-store-base-replication-native-diagnostics.template-v2.json",
+    "sha256": "f7b5bf341857f123c409327130c885aeb371683232cc94a4efdf9319bcdb25ac"
+  },
+  "unchanged": [
+    "Every source pin and pending binding",
+    "Cohort, candidate projection and diagnostic definitions",
+    "Paired score analysis, metric, estimand, seed and advancement rule",
+    "Running experiment and frozen execution checkout"
+  ],
+  "verification": {
+    "actual_reader_dispatch_to_native_branch": true,
+    "exactly_one_key_rename": true,
+    "native_execution_stubbed_before_any_bundle_or_reference_read": true,
+    "new_analysis_output_created": false,
+    "renaming_back_restores_entire_original_document": true
+  }
+}

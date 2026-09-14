@@ -1,0 +1,41 @@
+{
+  "candidate_diagnostics": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/native-train-support-diagnostics-v1.json",
+    "sha256": "214b3e058782703490558c54805541d9722dbafe44f64a5bb1880b16785f9e34"
+  },
+  "classification": {
+    "entity_exact": "slot_f1_exact_fp == 0 and slot_f1_exact_fn == 0",
+    "fn_only": "slot_f1_exact_fp == 0 and slot_f1_exact_fn > 0",
+    "fp_and_fn": "slot_f1_exact_fp > 0 and slot_f1_exact_fn > 0",
+    "fp_only": "slot_f1_exact_fp > 0 and slot_f1_exact_fn == 0",
+    "scope": "Classify saved exact entity-pair FP and FN without reading new references or predictions. Each sample receives exactly one pattern."
+  },
+  "cross_tabs": [
+    "all",
+    "intent_correct",
+    "intent_wrong",
+    "candidate_absent",
+    "candidate_present_intent_wrong",
+    "unparsed"
+  ],
+  "execution_profile": "model-free-check",
+  "expected_rows": 1080,
+  "limitations": [
+    "FP/FN are exact entity-pair count patterns, not semantic causes.",
+    "A wrong type or changed surface can create both FP and FN.",
+    "Do not label FP as hallucination or FN as acoustic recognition failure.",
+    "This is descriptive diagnosis of the released TRAIN A anchor; no successor or runtime memory is admitted."
+  ],
+  "new_model_tool_scorer_contacts": 0,
+  "output_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/entity-count-patterns-v1.json",
+  "schema": "saea-saved-official-count-projection-v1",
+  "scorer_id": "slurp-slu-official-train",
+  "scores": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.scores.json",
+    "sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47"
+  },
+  "source_release": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-native-dual-store-train-fold-a-anchor-recovery-v1/root-quality-release-v1.json",
+    "sha256": "0be030c3d4d43bd27035575ff455cf30830d042b5f35d3ab6b83ff69ecc43bdf"
+  }
+}
