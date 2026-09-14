@@ -10,7 +10,7 @@ Both arms use the complete original speech packet, the existing official
 task contract and compact full 152-tool registry, the same frozen core,
 greedy decoding, output ceiling 2048, controller, FlightRuntime and
 OpenJiuwen executor. Direct uses phase-direct-only-v1 with no supplied
-knowledge or analytical tools. The native system uses
+knowledge or analytical tools. Its hidden parameter snapshot supports the shared\nleakage guard without routing any knowledge to the model; its single direct\nphase retains the whole-roster barrier required by live_phase_fit. The native system uses
 phase-audio2tool-native-candidates-review-revise-v1.
 
 The native graph runs Perception, Solver, Reviewer, then Planner, with one

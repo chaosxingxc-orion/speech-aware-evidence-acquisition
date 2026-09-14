@@ -4,7 +4,6 @@
       "allowed_execution_stages": [
         "check",
         "wire-check",
-        "prepare-supply",
         "prompt-fit",
         "worker",
         "campaign"

@@ -2,30 +2,8 @@
   "arm": "speech-feature-query",
   "evidence_mismatch": false,
   "evidence_source": "none",
-  "knowledge_stores": {
-    "parameter-meaning": {
-      "release": {
-        "relpath": "knowledge/audio2tool/parameter-meaning-v1/release.json",
-        "sha256": "7bafef2137bbbf9b44baebf0beb70570422d496729f7846ea99a22b6708a4373"
-      },
-      "snapshot": {
-        "relpath": "prepared/SAEA-A2T-PARAMETER-MEANING-KNOWLEDGE-V1/knowledge-snapshot.json",
-        "sha256": "7084f9c56b361ab8f38d2e0a6864ccb2d05bcc053dc70441de263b410ca6041f"
-      },
-      "store_role": "parameter-meaning"
-    },
-    "tool-activation": {
-      "release": {
-        "relpath": "knowledge/audio2tool/tool-activation-v1/release.json",
-        "sha256": "3fe5686762468c34ff441ddfa3a8591889726676258d352cf04367544fca43a1"
-      },
-      "snapshot": {
-        "relpath": "prepared/SAEA-A2T-TOOL-ACTIVATION-KNOWLEDGE-V1/knowledge-snapshot.json",
-        "sha256": "cfb1e9e71660e98d21493925c4f6fe9343ff99e6a8075a7286c1e8027fed42bc"
-      },
-      "store_role": "tool-activation"
-    }
-  },
+  "knowledge_snapshot_relpath": "prepared/SAEA-A2T-PARAMETER-MEANING-KNOWLEDGE-V1/knowledge-snapshot.json",
+  "knowledge_snapshot_sha256": "7084f9c56b361ab8f38d2e0a6864ccb2d05bcc053dc70441de263b410ca6041f",
   "live_phase_fit": {
     "attempt_id": "attempt-a2t-native-role-direct-union4000-fit-v1",
     "contact_cap": 12001,
@@ -108,5 +86,6 @@
   "task_instruction_fill": "audio2tool-registry-compact",
   "task_instruction_template": "probes/r1_audio2tool_official.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "Matched complete direct answer through the shared controller, FlightRuntime and OpenJiuwen; no knowledge supply or analytical tools. New max2048 pair; no historical result is overwritten."
+  "what_this_is": "Matched complete direct answer through the shared controller, FlightRuntime and OpenJiuwen; no knowledge supply or analytical tools. New max2048 pair; no historical result is overwritten.",
+  "whole_roster_wave_barrier": true
 }
