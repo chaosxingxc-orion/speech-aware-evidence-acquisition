@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 85,
+  "generation": 86,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -11,8 +11,8 @@
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
   "snapshot_commit": "6307a3ab30c93a6be35114deb5f701e6e444292f",
-  "updated_at_utc": "2026-09-14T01:43:42.173393+00:00",
-  "next_action": "Read STATUS-085. Native reboot recovery continues on frozen6307a3ab, PID3413/exec9571; direct1000 and first score finalized and verified with quality held until pair closure. Typed TRAIN proposal and source-bound provisional materializer are root-reviewed/tested/integrated; aliases A/B warm-verified2160rows. Root disproved low-clock inference with host/WSL telemetry comparison; no hardware change. Agent reboot_contact_audit prepares HELD native TRAIN source configs in slurp-native-dual-store-train-source-held-v1; review before use. Next paired verified analysis decides system progression. Candidate evaluation/relevance policy/admission remain incomplete; no new GPU flight authorized by this state.",
+  "updated_at_utc": "2026-09-14T02:16:16.140417+00:00",
+  "next_action": "Read STATUS-086. Native reboot recovery continues on frozen6307a3ab, PID3413/exec9571; direct1000 and first score finalized with quality held. Service healthy decoder-only no-mmproj, do not restart. Root70focused tests and engineering base pass; held TRAIN sources, canonical provisional source refs and evaluation design integrated. Corrected E21 transfer uses owner-admitted packets, not mandatory raw-core retrofit. Agent reboot_pair_preparation implements evaluation provider; reboot_contact_audit maps post-seal trace verification. Review unfinished work, complete paired analysis before next scientific selection. No extra GPU flight admitted by this state.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SYSTEM-VERSIONS-025"
