@@ -71,6 +71,7 @@ def _json_object(pairs):
 
 def load_phase_tool_specs(config, program):
     raw = config.get("phase_tools")
+    candidate_memory = config.get("candidate_experience_memory") is not None
     if raw is None or raw == {}:
         return {}
     if not isinstance(raw, Mapping):
@@ -148,6 +149,8 @@ def load_phase_tool_specs(config, program):
             specs[phase]["source_authority_role"] = authority_role
         if CANDIDATE_CONTRACT_TOOL in tools:
             specs[phase]["candidate_limit"] = candidate_limit
+        if candidate_memory and CORRECTIVE_MEMORY_TOOL in tools:
+            specs[phase]["candidate_experience_memory"] = True
     stop_rule = getattr(program, "stop_rule", None)
     native_program = stop_rule == "native-answer-or-tool"
     native_role_episode = stop_rule == "native-role-episode"
@@ -190,6 +193,7 @@ def load_phase_tool_specs(config, program):
                     spec["knowledge_views"],
                     candidate_limit=spec.get("candidate_limit"),
                     store_ids=spec.get("knowledge_store_ids"),
+                    candidate_memory=bool(spec.get("candidate_experience_memory")),
                 )
                 previous = schemas_by_name.setdefault(tool_id, schema)
                 if previous != schema:
@@ -242,7 +246,9 @@ def _validate_action(action, allowed, views, *, candidate_limit=None, store_ids=
     return {"tool_id": tool_id, "arguments": dict(args)}
 
 
-def _native_tool_schema(tool_id, views, *, candidate_limit=None, store_ids=None):
+def _native_tool_schema(
+    tool_id, views, *, candidate_limit=None, store_ids=None, candidate_memory=False
+):
     descriptions = {
         TASK_CONTRACT_TOOL: "Read the legal task contract.",
         CANDIDATE_CONTRACT_TOOL: (
@@ -250,7 +256,11 @@ def _native_tool_schema(tool_id, views, *, candidate_limit=None, store_ids=None)
             "Returned field associations are task knowledge, not evidence of spoken values."
         ),
         PHASE_KNOWLEDGE_TOOL: "Retrieve prepared task knowledge.",
-        CORRECTIVE_MEMORY_TOOL: "Read admitted corrective guidance.",
+        CORRECTIVE_MEMORY_TOOL: (
+            "Read provisional guidance for this registered TRAIN evaluation."
+            if candidate_memory
+            else "Read admitted corrective guidance."
+        ),
         PREPARED_SPEECH_OBSERVATION_TOOL: "Read a prepared speech transcript.",
         LIVE_SPEECH_OBSERVATION_TOOL: "Transcribe the current full utterance on demand.",
     }
@@ -423,6 +433,7 @@ class PhaseToolDispatcher:
                         tool_id, spec["knowledge_views"],
                         candidate_limit=spec.get("candidate_limit"),
                         store_ids=spec.get("knowledge_store_ids"),
+                        candidate_memory=bool(spec.get("candidate_experience_memory")),
                     ))
                     seen.add(tool_id)
         return tuple(ordered)

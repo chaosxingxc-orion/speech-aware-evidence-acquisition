@@ -201,3 +201,45 @@ def test_forged_result_and_foreign_history_fail_closed(tmp_path):
     state["content_sha256"] = hashlib.sha256(state["content"].encode()).hexdigest()
     with pytest.raises(NativeToolExposureError):
         analyze_verified_native_tool_exposure(**foreign)
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+@pytest.mark.parametrize("empty", (False, True))
+def test_provisional_selection_is_visible_locally_and_in_revised_solver(tmp_path, empty):
+    from dataclasses import replace
+    from test_native_episode_runner import _provisional_memory_for_native_episode
+
+    memory = _provisional_memory_for_native_episode()
+    if empty:
+        memory = replace(memory, records=())
+    harness = _ActualEpisodeHarness(
+        tmp_path,
+        sample_count=1,
+        max_revisions=1,
+        max_contacts=9,
+        planner_actions=("REVISE", "ACCEPT"),
+        reviewer_memory=memory,
+    )
+    harness.tools_for_phase.trace_sink = harness.trace
+    try:
+        summary = harness.run()
+        inputs = _inputs(summary, harness.trace)
+        report = analyze_verified_native_tool_exposure(**inputs)
+    finally:
+        harness.close()
+
+    assert report["successful_call_count"] == 1
+    assert report["exposed_successful_call_count"] == 1
+    call = report["calls"][0]
+    assert call["selection_count"] == (0 if empty else 2)
+    assert call["selection_empty"] is empty
+    exposed_roles = {
+        visit["role_id"]
+        for visit in summary.results[0].native_episode_receipt["role_visits"]
+        for contact in visit["execution_receipt"]["contacts"]
+        if contact["request_id"] in call["exposed_request_ids"]
+    }
+    assert {"reviewer", "solver"} <= exposed_roles
+    assert "Guidance 1." not in json.dumps(report)
+    for key in (("s1", "reviewer", 1, 2), ("s1", "solver", 2, 1)):
+        assert harness.events.index(("fit", key)) < harness.events.index(("dispatch", key))

@@ -23,6 +23,21 @@ from speech_aware_evidence_acquisition.rails.native_episode_config import (
     NativeEpisodeRole,
     NativeEpisodeRunBinding,
 )
+from speech_aware_evidence_acquisition.rails.candidate_experience_memory import (
+    LoadedCandidateExperienceMemory,
+)
+from speech_aware_evidence_acquisition.rails.experience_memory import (
+    Applicability,
+    ExperienceRecord,
+    ExperienceSource,
+    ValidationBinding,
+)
+from speech_aware_evidence_acquisition.rails.experience_memory_runtime import (
+    CORRECTIVE_MEMORY_TOOL,
+)
+from speech_aware_evidence_acquisition.rails.experience_memory_sources import (
+    reward_link_hash_source_ref,
+)
 from speech_aware_evidence_acquisition.rails.phase_tools import (
     TASK_CONTRACT_TOOL,
     build_phase_tools,
@@ -70,7 +85,7 @@ def _config(
     *,
     max_revisions: int,
     max_contacts: int,
-    reviewer_task_tool: bool = False,
+    reviewer_tool: str | None = None,
     exhaustion_policy: str = "raise",
 ) -> NativeEpisodeConfig:
     return NativeEpisodeConfig(
@@ -81,11 +96,9 @@ def _config(
             NativeEpisodeRole(
                 phase_id=phase,
                 role_kind=phase,
-                max_iterations=(2 if reviewer_task_tool and phase == "reviewer" else 1),
+                max_iterations=(2 if reviewer_tool and phase == "reviewer" else 1),
                 tool_names=(
-                    (TASK_CONTRACT_TOOL,)
-                    if reviewer_task_tool and phase == "reviewer"
-                    else ()
+                    (reviewer_tool,) if reviewer_tool and phase == "reviewer" else ()
                 ),
             )
             for phase in PHASES
@@ -139,7 +152,7 @@ def _wire_response(text: str) -> bytes:
     ).encode()
 
 
-def _wire_tool_call() -> bytes:
+def _wire_tool_call(tool_id: str = TASK_CONTRACT_TOOL) -> bytes:
     return json.dumps(
         {
             "choices": [
@@ -152,7 +165,7 @@ def _wire_tool_call() -> bytes:
                                 "id": "call-task-contract-1",
                                 "type": "function",
                                 "function": {
-                                    "name": TASK_CONTRACT_TOOL,
+                                    "name": tool_id,
                                     "arguments": "{}",
                                 },
                             }
@@ -179,6 +192,7 @@ class _ActualEpisodeHarness:
         overlap: bool = False,
         arm: str = "speech-feature-query-native-tools",
         reviewer_task_tool: bool = False,
+        reviewer_memory: LoadedCandidateExperienceMemory | None = None,
         exhaustion_policy: str = "raise",
     ):
         self.world = _World(tmp_path)
@@ -191,13 +205,17 @@ class _ActualEpisodeHarness:
             sample.sample_id: all_bindings[sample.sample_id] for sample in self.samples
         }
         self.program = _program(max_contacts=max_contacts)
+        self.reviewer_tool = (
+            CORRECTIVE_MEMORY_TOOL
+            if reviewer_memory is not None
+            else TASK_CONTRACT_TOOL if reviewer_task_tool else None
+        )
         self.config = _config(
             max_revisions=max_revisions,
             max_contacts=max_contacts,
-            reviewer_task_tool=reviewer_task_tool,
+            reviewer_tool=self.reviewer_tool,
             exhaustion_policy=exhaustion_policy,
         )
-        self.reviewer_task_tool = reviewer_task_tool
         self.planner_actions = planner_actions
         self.material_visits = Counter()
         self.markers = {}
@@ -224,7 +242,11 @@ class _ActualEpisodeHarness:
             if self.first_contacts is not None and key[1] == "perception":
                 self.first_contacts.wait(timeout=2.0)
             output = self._output(key)
-            response = _wire_tool_call() if output is None else _wire_response(output)
+            response = (
+                _wire_tool_call(self.reviewer_tool)
+                if output is None
+                else _wire_response(output)
+            )
             with self.lock:
                 self.dispatched[key] = (
                     {}
@@ -252,7 +274,7 @@ class _ActualEpisodeHarness:
             planned_model_calls=len(self.samples) * max_contacts,
         )
         self.tools_for_phase = None
-        if reviewer_task_tool:
+        if self.reviewer_tool:
 
             def tool_contact(**facts):
                 self.tool_contacts.append(facts)
@@ -288,19 +310,23 @@ class _ActualEpisodeHarness:
                     "source_completion_sha256": authority["completion_sha256"],
                 }
 
-            self.tools_for_phase = build_phase_tools(
-                {
-                    "phase_tools": {
-                        "reviewer": {
+            tool_config = {
+                "phase_tools": {
+                    "reviewer": {
                             "mode": "native-tools",
-                            "allowed_tools": [TASK_CONTRACT_TOOL],
+                            "allowed_tools": [self.reviewer_tool],
                             "knowledge_views": ["text"],
                             "source_authority_role": "reviewer",
-                        }
                     }
-                },
+                }
+            }
+            if reviewer_memory is not None:
+                tool_config["candidate_experience_memory"] = {"test": "bound"}
+            self.tools_for_phase = build_phase_tools(
+                tool_config,
                 self.program,
                 snapshot=_knowledge_snapshot(),
+                experience_memory=reviewer_memory,
                 tool_contact=tool_contact,
             )
         client_kwargs = {}
@@ -337,7 +363,7 @@ class _ActualEpisodeHarness:
 
     def _output(self, key):
         sample_id, phase, visit, turn = key
-        if self.reviewer_task_tool and phase == "reviewer" and visit == turn == 1:
+        if self.reviewer_tool and phase == "reviewer" and visit == turn == 1:
             return None
         if phase == "planner":
             return self.planner_actions[visit - 1]
@@ -682,3 +708,102 @@ def test_actual_reviewer_tool_result_reaches_next_contact_and_revised_solver(
     assert harness.events.index(
         ("fit", ("s1", "reviewer", 1, 2))
     ) < harness.events.index(("dispatch", ("s1", "reviewer", 1, 2)))
+
+
+def _provisional_memory_for_native_episode() -> LoadedCandidateExperienceMemory:
+    construction_sha = "c" * 64
+    validation = ValidationBinding(
+        status="provisional",
+        decision_sha256="d" * 64,
+        protocol_sha256="e" * 64,
+        roster_sha256=construction_sha,
+        result_sha256="f" * 64,
+    )
+    applicability = Applicability(
+        task_ids=("slurp",),
+        phases=("reviewer",),
+        component_tags=("org",),
+        required_conditions=("state:prior-response-present",),
+        excluded_conditions=(),
+    )
+    records = tuple(
+        ExperienceRecord.create(
+            record_id=f"candidate-{index}",
+            revision=1,
+            kind="corrective-experience",
+            train_construction_sha256=construction_sha,
+            source=ExperienceSource(
+                "train",
+                f"slurp:train:construction-{index}",
+                str(index) * 64,
+                chr(96 + index) * 64,
+                chr(98 + index) * 64,
+                chr(100 + index) * 64,
+            ),
+            applicability=applicability,
+            diagnosis=f"Diagnosis {index}.",
+            guidance=f"Guidance {index}.",
+            limitations=("Evaluate this provisionally.",),
+            supporting_source_refs=(
+                reward_link_hash_source_ref(str(5 + index) * 64),
+            ),
+            validation=validation,
+        )
+        for index in (1, 2)
+    )
+    return LoadedCandidateExperienceMemory(
+        records=(records[1], records[0]),
+        artifact_sha256="1" * 64,
+        artifact_output_sha256="2" * 64,
+        source_attestation_sha256="3" * 64,
+        evaluation_decision_sha256="4" * 64,
+        construction_roster_sha256=construction_sha,
+        evaluation_roster_sha256="5" * 64,
+        task_id="slurp",
+        component_tags=("org",),
+        allowed_roles=("reviewer",),
+    )
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_provisional_memory_visible_guidance_reaches_fitted_native_history(tmp_path):
+    memory = _provisional_memory_for_native_episode()
+    harness = _ActualEpisodeHarness(
+        tmp_path,
+        sample_count=1,
+        max_revisions=1,
+        max_contacts=9,
+        planner_actions=("REVISE", "ACCEPT"),
+        reviewer_memory=memory,
+    )
+    try:
+        summary = harness.run()
+    finally:
+        close_summary = harness.close()
+
+    result = summary.results[0]
+    assert result.final_response_text == "solver-answer:s1:visit:2"
+    assert close_summary["cost"]["tool_calls"] == 1
+    schemas = harness.tools_for_phase.native_tool_schemas()
+    assert schemas[0]["function"]["description"] == (
+        "Read provisional guidance for this registered TRAIN evaluation."
+    )
+    for key in (
+        ("s1", "reviewer", 1, 2),
+        ("s1", "solver", 2, 1),
+    ):
+        body = harness.prepared[key]["rendered"]
+        messages = [message for message in body["messages"] if message["role"] == "tool"]
+        assert len(messages) == 1
+        document = json.loads(messages[0]["content"])
+        selection = document["result"]
+        assert selection["status"] == "provisional"
+        assert [row["record_sha256"] for row in selection["selected_records"]] == [
+            record.record_sha256 for record in memory.records
+        ]
+        assert harness.events.index(("fit", key)) < harness.events.index(("dispatch", key))
+    receipt = harness.tools_for_phase.receipt()
+    assert receipt["memory_lineage"][0]["candidate_artifact_sha256"] == "1" * 64
+    assert receipt["memory_lineage"][0]["ordered_pack_record_sha256s"] == [
+        record.record_sha256 for record in memory.records
+    ]

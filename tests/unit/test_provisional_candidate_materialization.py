@@ -22,6 +22,9 @@ from speech_aware_evidence_acquisition.core.provisional_candidate_materializatio
     MaterializationError,
     prepare_provisional_candidates,
 )
+from speech_aware_evidence_acquisition.rails.candidate_experience_memory import (
+    prepare_candidate_experience_source_attestation,
+)
 from speech_aware_evidence_acquisition.rails.experience_memory import (
     ExperienceMemoryCatalog,
     ExperienceMemoryError,
@@ -731,6 +734,23 @@ def test_real_bundle_and_feedback_authority_complete_path_and_opened_refusal(
     output = json.loads(Path(receipt["path"]).read_bytes())["output"]
     assert tuple(sample["source_sample_id"] for sample in output["samples"]) == sample_ids
     assert [len(sample["records"]) for sample in output["samples"]] == [1, 0]
+    attestation = prepare_candidate_experience_source_attestation(
+        config_path=config_path,
+        expected_config_sha256=config_sha,
+        data_root=data_root,
+        candidate_artifact_relpath=(
+            "provisional/experience-candidates/whole-path-provisional-v1.json"
+        ),
+        expected_candidate_sha256=receipt["sha256"],
+        output_relpath="prepared/whole-path-candidate-source-attestation.json",
+    )
+    attested = json.loads(Path(attestation["path"]).read_bytes())["output"]
+    assert attested["candidate_artifact_sha256"] == receipt["sha256"]
+    assert attested["construction_roster_sha256"] == roster_sha
+    assert attested["records"][0]["source"]["source_sample_id"] == sample_ids[0]
+    assert attested["interpretation"].endswith(
+        "this is not evaluation evidence or admission."
+    )
 
     state = json.loads(state_path.read_bytes())
     state["state"] = "OPENED"

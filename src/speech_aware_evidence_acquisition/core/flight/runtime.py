@@ -1230,6 +1230,7 @@ class FlightRuntime:
         self._wire_check_active = False
         self._experience_memory = None
         self._experience_memory_loaded = False
+        self._candidate_experience_memory = None
         self._promotion_receipt: Mapping[str, object] | None = None
         self._window_feature_packets = None
         self._window_feature_packet_config = None
@@ -2420,6 +2421,30 @@ class FlightRuntime:
             or self._artifact_result_binding.get("role") != ARTIFACT_RESULT_ROLE
         ):
             raise FlightRuntimeError("prepared feedback requires the TRAIN proposal artifact role")
+        if values.get("candidate_experience_memory") is not None:
+            from ...rails.candidate_experience_memory import (
+                CandidateExperienceMemoryError,
+                load_candidate_experience_memory,
+            )
+
+            try:
+                policy = values.get("policy")
+                self._candidate_experience_memory = (
+                    load_candidate_experience_memory(
+                        values,
+                        repo_root=self._repo_root,
+                        data_root=self._data_root,
+                        carrier_lock_key=carrier_lock_key,
+                        plan=plan,
+                        sample_ids=tuple(
+                            sample.sample_id for sample in samples
+                        ),
+                        program=default_phase_program(policy),
+                        tool_specs=self._phase_tool_specs(policy),
+                    )
+                )
+            except CandidateExperienceMemoryError as error:
+                raise FlightRuntimeError(str(error)) from error
         if (
             self._artifact_result_binding is not None
             and self._artifact_result_binding.get("schema")
@@ -4360,7 +4385,11 @@ class FlightRuntime:
             "knowledge_catalog": self._phase_knowledge_catalog(
                 binding["knowledge_snapshot"]
             ),
-            "experience_memory": self._experience_memory,
+            "experience_memory": (
+                self._candidate_experience_memory
+                if self._candidate_experience_memory is not None
+                else self._experience_memory
+            ),
             "speech_observations": self._speech_observations,
             # Automatic phase supply owns its store binding independently.
             # Hand a store router to tools only when their declared authority
@@ -6014,9 +6043,12 @@ class FlightRuntime:
                 )
             if knowledge is not None:
                 raise FlightRuntimeError("phase_knowledge_views requires active phase_tools")
-            if values.get("experience_memory") is not None:
+            if (
+                values.get("experience_memory") is not None
+                or values.get("candidate_experience_memory") is not None
+            ):
                 raise FlightRuntimeError(
-                    "experience_memory requires the corrective-memory phase tool"
+                    "an experience memory binding requires the corrective-memory phase tool"
                 )
             return {}
         if policy == "fixed" or policy in self._obs_policy_names():
@@ -6058,14 +6090,22 @@ class FlightRuntime:
         uses_memory = any(
             CORRECTIVE_MEMORY_TOOL in spec["allowed_tools"] for spec in specs.values()
         )
-        declares_memory = values.get("experience_memory") is not None
+        declares_admitted_memory = values.get("experience_memory") is not None
+        declares_candidate_memory = (
+            values.get("candidate_experience_memory") is not None
+        )
+        if declares_admitted_memory and declares_candidate_memory:
+            raise FlightRuntimeError(
+                "admitted and candidate experience memory are mutually exclusive"
+            )
+        declares_memory = declares_admitted_memory or declares_candidate_memory
         if uses_memory and not declares_memory:
             raise FlightRuntimeError(
-                "corrective-memory phase tool requires an experience_memory binding"
+                "corrective-memory phase tool requires one experience memory binding"
             )
         if declares_memory and not uses_memory:
             raise FlightRuntimeError(
-                "experience_memory requires the corrective-memory phase tool"
+                "an experience memory binding requires the corrective-memory phase tool"
             )
         if knowledge is not None:
             if not isinstance(knowledge, Mapping) or set(knowledge) != {"catalog_relpath", "catalog_sha256"}:
