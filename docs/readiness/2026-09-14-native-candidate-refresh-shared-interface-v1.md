@@ -74,3 +74,24 @@ postseal-handoff-recipe-v2.md, SHA-256
 f7028cd3250a6d30f30684d17fb4ae2b70adfa6043931ba8b76316080175b51a, under the
 slurp-native-dual-store-train-fold-a-anchor-recovery-v1 coordination directory.
 It supersedes v1 and prohibits duplicate scoring.
+
+## Completed root review
+
+The integrated graph, source verification, supply, existing diagnostics and reward checks
+passed 190 tests. After the final legacy-preservation and route-type refinements, the
+affected 65 tests passed again. Ruff and the engineering-base check passed.
+Logs and hashes are retained in runtime-progress-and-refresh-preparation-v2.json in the
+recovery coordination directory. Tests use synthetic responses; they establish no
+candidate-coverage or final-quality gain.
+
+The shared receipt validator now checks actual ordered Perception/Solver/Reviewer/Planner
+visits, refresh-to-Perception transitions, revision indices and bounds at runtime, at
+canonical delivery, and when verifying an opt-in sealed source. The dispatch receipt
+records refresh action and allowance only for enhanced configurations. Default receipts
+remain unchanged. The root review also corrected terminal refresh acceptance in sealing
+and preserved the original single-source FusionDecision without rewriting it.
+
+The existing TRAIN stage exporter still deliberately accepts the incumbent single
+Perception source only. A successor must add explicit initial and post-refresh candidate
+projections bound to actual contacts before enhanced generation is admitted. Generic
+native source custody and actual-trajectory reward links already support repeated visits.

@@ -198,6 +198,8 @@ def validate_native_candidate_refresh_receipt(
         or refresh_action in {accept_action, revise_action}
     ):
         _raise(error_type, "invalid candidate refresh receipt configuration")
+    if not isinstance(receipt, Mapping):
+        _raise(error_type, "candidate refresh receipt must be a mapping")
     visits = _sequence(receipt.get("role_visits"), "native role visits", error_type=error_type)
     routes = _sequence(receipt.get("planner_routes"), "Planner routes", error_type=error_type)
     if not visits or not all(isinstance(v, Mapping) for v in visits):
@@ -211,8 +213,10 @@ def validate_native_candidate_refresh_receipt(
         if (
             not isinstance(route, Mapping)
             or isinstance(route.get("revision_count"), bool)
+            or not isinstance(route.get("revision_count"), int)
             or route.get("revision_count") != revision
             or isinstance(route.get("role_visit_index"), bool)
+            or not isinstance(route.get("role_visit_index"), int)
             or route.get("role_visit_index") != cursor + 2
             or [v.get("stage") for v in visits[cursor:cursor + 3]]
             != ["solver", "review", "planner"]

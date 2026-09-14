@@ -553,11 +553,13 @@ def build_candidate_semantic_supply(
                 )
                 if qualified_id in added_id_set
             )
-            supplied_decision = replace(
-                decision,
-                supporting_facet_ids=local_added_ids,
-                selected_value_ids=local_added_ids,
-            ).validate()
+            supplied_decision = decision
+            if spec.candidate_state_selection == "latest":
+                supplied_decision = replace(
+                    decision,
+                    supporting_facet_ids=local_added_ids,
+                    selected_value_ids=local_added_ids,
+                ).validate()
             local_supply = PhaseSupply(
                 rank_result=provider.last_rank_result(),
                 fusion_decision=supplied_decision,
