@@ -23,7 +23,7 @@
   "preserve_wire_responses": true,
   "protocol": {
     "relpath": "docs/readiness/2026-09-14-slurp-native-candidate-refresh-tools-train-fold-a-v1/README.md",
-    "sha256": "1a2e3e56b7bfc096aafeae0391181143ec99e988f0b7f6c46ddbe9f1da44b08b"
+    "sha256": "23d33bfe48b4360c2dfbebb63ca1c1dc8f441b305bf65b00407fc0aaa72364a8"
   },
   "purpose": "Prepare the complete-system successor described in the source-pinned prospective protocol; no runtime contact.",
   "service_session": "HELD-NO-SERVICE",

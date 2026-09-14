@@ -104,7 +104,7 @@ the active anchor's exclusive generation lease.
 ## Admission and preparation handoff
 
 1. Let the current campaign seal, run its one complete official score and finalize.
-   Use its postseal recipe v2; never manually score it a second time.
+   Use its postseal recipe v3, which preserves v2 single-score ownership; never manually score it a second time.
 2. Release complete TRAIN A trajectories and C0 diagnostics. Record root's named
    gap and complete-system admission; no partial-result design decisions.
 3. Bind the prepared fold-excluded candidate catalog and the new CPU protocol.
@@ -154,10 +154,12 @@ comparison. It must consult the supplied rich values for activation/extraction
 meaning and explicitly report a missing semantic explanation. Do not promise
 that the statistical lookup supplies those explanations.
 
-After full source release, measure actual supplied intent support separately
-from C0 recall. Use verified bootstrap/initial-state evidence IDs qualified as
-intent-boundaries::intent-boundary:<intent_id>, and compare them to the true
-intent offline. Keep C0 candidate IDs from the actual Perception response.
+After full source release, measure own-intent-card supply separately from
+C0 recall. Use the exact manifest-verified initial Perception request's
+supplied_evidence qualified as intent-boundaries::intent-boundary:<intent_id>.
+Use bootstrap/initial-state IDs as strict cross-checks, not proof of delivery.
+Keep C0 candidate IDs from the actual Perception response. Another card can
+contain a useful contrast even when the gold intent's own card is absent.
 Report supplied-and-covered, supplied-but-missed, not-supplied-but-covered and
 neither. These describe support and model selection; they do not establish
 semantic use, causality or an upper bound imposed by the full legal label list.
