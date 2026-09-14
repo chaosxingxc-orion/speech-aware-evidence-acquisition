@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 89,
+  "generation": 90,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,9 +10,9 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "6307a3ab30c93a6be35114deb5f701e6e444292f",
-  "updated_at_utc": "2026-09-14T04:34:04.128424+00:00",
-  "next_action": "Read STATUS-089 plus OWNER-CANDIDATE-COVERAGE-026. Preserve the positive system verdict. Root is preparing the unchanged TRAIN Fold A incumbent source while auditing candidate coverage and conditional resolution metrics. Future target is at least95% gold-in-candidate coverage with a fixed declared candidate width and complete roster; distinguish C0/C1 and covered-set selection. Design task-useful tools for Reviewer/Planner and explicit Solver evidence needs. Keep Fold B untouched and do not launch enhanced tools or a slot-only successor before the shared design and registration close.",
+  "snapshot_commit": "826a77c7bd9030ccbc25f2b74cd6fa4ed69db561",
+  "updated_at_utc": "2026-09-14T05:56:57.488083+00:00",
+  "next_action": "Read STATUS-090. Monitor the sole unchanged TRAIN A recovery: campaign PID2124/session3387, resident PID767/session32418, monitor58863, boot66947d87-43d2-4860-9766-11060b2e6bb6. Frozen runtime /home/chao/saea-worktrees/slurp-train-anchor-cuda-recovery-v1 at826a77c7; no edits there. Original five-contact anchor is ABORTED after CUDA illegal access, with one response and no quality result; preserve it. Any second failure closes this flight. After full1080 seal and first complete official TRAIN score, verify/release source, build reward links and offline candidate-stage diagnostics without rescoring. Keep Fold B untouched and follow OWNER-CANDIDATE-COVERAGE-026.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-CANDIDATE-COVERAGE-026"

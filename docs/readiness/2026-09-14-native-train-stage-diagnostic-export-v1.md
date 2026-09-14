@@ -78,3 +78,19 @@ to another manifest, explicit conditional denominators, and absence of gold
 strings from serialized output. Preparation tests cover valid warm reuse and
 refusal when a derived document changes under unchanged source identities.
 Existing native-source and SLURP Top-N tests remain in the regression selection.
+
+## Root integration review
+
+Root reviewed the shared reuse and found a concrete warm-cache issue: changed
+helper behavior could produce a new verified document under unchanged source
+pins. The correction includes the derived document hash in preparation inputs.
+The synthetic test now checks unchanged warm reuse and refusal of changed
+derived output. The integrated65-test selection passed in8.76seconds.
+Log: DATA/coordination/slurp-native-dual-store-train-fold-a-anchor-recovery-v1/
+integrated-stage-diagnostic-tests-v1.log.
+SHA256: d9b2a1d8a862d3d2016272bcb9b9bb50e6a98aead8b870eaf7311fd5fd4cec14.
+
+The assembly test substitutes separately tested source, reward and candidate
+verifiers. This is synthetic composition evidence, not a completed real TRAIN
+source analysis. The live recovery source remains on its frozen826a77c7 checkout;
+these offline code changes do not enter its requests.
