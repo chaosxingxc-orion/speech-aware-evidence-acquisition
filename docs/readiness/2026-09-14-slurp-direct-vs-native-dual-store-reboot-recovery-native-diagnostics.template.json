@@ -1,0 +1,99 @@
+{
+  "experiment_id": "SAEA-SLURP-DIRECT-VS-NATIVE-DUAL-STORE-REBOOT-RECOVERY-PAIRED-ANALYSIS-V1",
+  "execution_profile": "model-free-check",
+  "binding_state": "TEMPLATE ONLY. Root replaces every PENDING path and SHA-256 only after the reboot-recovery native dual-store manifest, phase summary, and first complete official score receipt seal and the result-read release exists.",
+  "analysis": {
+    "carrier": "slurp",
+    "full_roster": {
+      "path": "docs/receipts/probe-samples/DEV-1000.json",
+      "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
+    },
+    "roster": {
+      "path": "docs/receipts/probe-samples/DEV-1000-NEW500.json",
+      "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
+    },
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
+    },
+    "inputs": {
+      "system": {
+        "manifest": {
+          "path": null,
+          "sha256": "PENDING-NATIVE-DUAL-STORE-DEV1000-REBOOT-RECOVERY-MANIFEST-SHA256"
+        },
+        "score_source": "complete-score-receipt",
+        "score_receipt": {
+          "cell_id": "PENDING-NATIVE-DUAL-STORE-DEV1000-REBOOT-RECOVERY-SCORE-RECEIPT-CELL-ID",
+          "path": null,
+          "sha256": "PENDING-NATIVE-DUAL-STORE-DEV1000-REBOOT-RECOVERY-SCORE-RECEIPT-SHA256"
+        },
+        "scorers": {
+          "official": "slurp-slu-official"
+        },
+        "future_run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-REBOOT-RECOVERY-V1",
+        "future_attempt_id": "attempt-slurp-native-dual-store-dev1000-generation-reboot-recovery-v1"
+      }
+    },
+    "source_diagnostics": {
+      "reference_source": {
+        "kind": "slurp-split",
+        "data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        "lock": {
+          "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+          "sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+        },
+        "split_id": "devel",
+        "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+        "allow_heldout": false,
+        "allow_synthetic": false,
+        "scope": "Use the governed devel reference loader only after release, select exactly the retained DEV1000 IDs, and never pass reference records to a runtime or model."
+      },
+      "native_system_perception_only": {
+        "analysis_role": "Post-seal native-arm diagnostic only. Never filter, match, reweight, or redefine the direct-versus-native paired quality comparison.",
+        "manifest": {
+          "path": null,
+          "sha256": "PENDING-NATIVE-DUAL-STORE-DEV1000-REBOOT-RECOVERY-MANIFEST-SHA256"
+        },
+        "phase_artifact": {
+          "path": null,
+          "sha256": "PENDING-NATIVE-DUAL-STORE-DEV1000-REBOOT-RECOVERY-PHASE-SUMMARY-SHA256"
+        },
+        "producer_policy_id": "phase-native-candidates-review-revise-v1",
+        "compact_source_phase": "perception",
+        "candidate_selection_phase": "solver",
+        "candidate_count_range": [
+          1,
+          3
+        ],
+        "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+        "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+        "diagnostics": [
+          "gold intent inclusion in the actual projected up-to-three candidate set",
+          "candidate-missing, covered-but-final-incorrect, and final-correct-outside-candidate cases",
+          "rank-one-to-final rescues and harms",
+          "actual candidate width and parse, empty, malformed, duplicate, illegal-ID, and saturation outcomes",
+          "native role, contact, tool, terminal, supply, lexical-consumption, and OBS/ORG/SUPPLY/USE trace statistics"
+        ],
+        "projection": {
+          "input_contract": "Validate every raw compact Perception candidate object, then retain the first occurrence of each legal intent ID in original order.",
+          "policy_id": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+          "width_semantics": "Projected width is the unpadded distinct model-produced candidate count and is not confidence.",
+          "custody": "Preserve raw Perception response bytes and hashes, canonical state, raw positions, projected content hash, phase summary, and manifest trace joins."
+        }
+      }
+    },
+    "stratum_field": "scenario"
+  },
+  "analysis_runner": {
+    "module": "src/speech_aware_evidence_acquisition/analysis/slurp_topn_diagnostics_cli.py",
+    "native_episode_helper": "src/speech_aware_evidence_acquisition/analysis/native_episode_diagnostics.py:analyze_verified_native_episode_statistics",
+    "no_new_script": true,
+    "no_new_scorer_invocations": 0
+  },
+  "output": {
+    "future_output_relpath": "analysis/SAEA-SLURP-DIRECT-VS-NATIVE-DUAL-STORE-REBOOT-RECOVERY-PAIRED-ANALYSIS-V1/native-perception-diagnostics.json",
+    "binding_rule": "Use the same measured manifest and complete-score receipt bindings as the paired recipe. Bind the measured phase summary independently; do not infer it from a path convention."
+  },
+  "authorization_state": "This pending template authorizes no read. The shared diagnostics run only after root binds every measured pin and records the result-read release."
+}

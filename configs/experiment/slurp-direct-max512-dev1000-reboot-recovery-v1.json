@@ -1,0 +1,71 @@
+{
+  "analysis_recipe": {
+    "repo_relpath": "docs/readiness/2026-09-14-slurp-direct-vs-native-dual-store-reboot-recovery-analysis-recipe-v1.json",
+    "sha256": "3fe63ce40201b94809d4063b2177238f8359be1659325aad03cded2bfc9a2359"
+  },
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-direct-max512-dev1000-generation-reboot-recovery-v1",
+      "baseline_fragment": "slurp-direct-max512-dev1000-reboot-recovery-v1",
+      "cell_id": "slurp-direct-max512-dev1000-reboot-recovery-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Root admitted the sole reboot recovery of the unchanged complete-system comparison after the original direct arm was interrupted at 43 durable model calls and the native arm had not started; frozen preparation and exact-fit launch conditions remain mandatory.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-direct-vs-native-dual-store-reboot-recovery-admission-v1",
+            "kind": "decision",
+            "reason": "Root source-bound sole reboot-recovery admission for the unchanged comparison.",
+            "relpath": "coordination/slurp-direct-vs-native-dual-store-reboot-recovery-v1/admission-v1.json",
+            "sha256": "4e88442e06e6ff83db4251b65b337caa5c7314e38348f394bd6238f9603a3060"
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-REBOOT-RECOVERY-V1"
+    }
+  ],
+  "date": "2026-09-14",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1000,
+    "planned_speech_audio_seconds": 3500,
+    "split_role": "dev"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-REBOOT-RECOVERY-V1",
+  "failure_policy": "Stop and preserve on any failure; no automatic restart/replay, cap or geometry change, response repair or sample filtering. This is the sole recovery of the same complete-system comparison after the original direct generation was interrupted at 43 durable model calls and the native arm had not started. A second failure closes the comparison flight and forbids another recovery.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47001,
+    "generation_calls_cap": 12000,
+    "gpu_hours_fit_inclusive": 13.0,
+    "native_task_contract_calls_cap": 6000,
+    "official_complete_scoring_jobs": 2
+  },
+  "fragment_kind": "saea-slurp-progressive-complete-system-v1",
+  "generation_budget": {
+    "cap": 1000,
+    "definition": "Complete every existing DEV1000 sample; ceilings bound contacts and are not targets.",
+    "target": 1000
+  },
+  "population": {
+    "count": 1000,
+    "dataset_fragment": "slurp-speech-native-dev1000",
+    "decision_population": "Historically exposed DEV1000; NEW500 primary, OLD500 descriptive sensitivity, DEV1000 pooled secondary. Keep all rows and actual candidate widths.",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84"
+  },
+  "preserve_wire_responses": true,
+  "purpose": "Sole reboot recovery of the unchanged matched direct frozen model versus complete native dual-store system comparison; same weights, full60label task contract, prepared speech, max512 decoding, resident process, prompts, roster and protocol.",
+  "service_session": "serving-slurp-dual-store-reboot-np4-v1",
+  "split_id": "DEV-1000"
+}
