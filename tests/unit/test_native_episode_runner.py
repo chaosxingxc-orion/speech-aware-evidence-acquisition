@@ -1111,3 +1111,82 @@ def test_actual_zero_refresh_native_trajectory_reuses_c0_as_c1(tmp_path):
         assert pair.refresh_executed is False
     finally:
         harness.close()
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_actual_refresh_at_ceiling_delivers_without_a_third_perception(tmp_path):
+    from dataclasses import replace
+    from types import SimpleNamespace
+
+    from speech_aware_evidence_acquisition.analysis.native_candidate_stage_projections import (
+        project_verified_native_candidate_stages,
+    )
+
+    harness = _ActualEpisodeHarness(
+        tmp_path,
+        sample_count=1,
+        max_revisions=1,
+        max_contacts=8,
+        planner_actions=("REFRESH_CANDIDATES", "REFRESH_CANDIDATES"),
+        exhaustion_policy="deliver-latest-solver",
+    )
+    harness.config = replace(
+        harness.config,
+        refresh_action="REFRESH_CANDIDATES",
+        max_candidate_refreshes=1,
+    )
+    original_output = harness._output
+
+    def candidate_output(key):
+        _sample_id, phase, visit, _turn = key
+        if phase != "perception":
+            return original_output(key)
+        intent_id = "alpha" if visit == 1 else "beta"
+        return json.dumps(
+            {
+                "candidates": [
+                    {
+                        "intent_id": intent_id,
+                        "distinction": f"Evidence for {intent_id}.",
+                        "evidence_refs": ["speech"],
+                        "unresolved_fields": [],
+                    }
+                ]
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+
+    harness._output = candidate_output
+    try:
+        result = harness.run().results[0]
+        visits = result.native_episode_receipt["role_visits"]
+        assert [index for index, visit in enumerate(visits) if visit["stage"] == "perception"] == [0, 4]
+        assert "accepted_solver_receipt" not in result.native_episode_receipt
+        assert result.native_episode_receipt["terminal_disposition"] == {
+            "reason": "revision_limit",
+            "planner_action": "REFRESH_CANDIDATES",
+            "revision_count": 1,
+            "planner_accepted": False,
+        }
+        source = SimpleNamespace(
+            sample_ids=(result.sample_id,),
+            phase_results={result.sample_id: result.as_json()},
+            bundle=SimpleNamespace(
+                trace_records={
+                    record_id: payload
+                    for _channel, record_id, payload in harness.trace.records
+                }
+            ),
+        )
+        pair = project_verified_native_candidate_stages(
+            source,
+            legal_candidate_ids=frozenset({"alpha", "beta", "gamma"}),
+            max_candidates=3,
+        )[0]
+        assert pair.c0.candidate_ids == ("alpha",)
+        assert pair.c1.candidate_ids == ("beta",)
+        assert pair.c1.visit_index == 4
+        assert pair.refresh_executed is True
+    finally:
+        harness.close()

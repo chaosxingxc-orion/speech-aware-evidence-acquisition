@@ -398,8 +398,9 @@ def prepare_native_train_stage_diagnostics(
         config.get("schema") != CONFIG_SCHEMA
     ):
         raise NativeTrainStageDiagnosticError("diagnostic config has wrong fields or schema")
+    stage_projection_enabled = "candidate_stage_projection" in config
     stage_projection = config.get("candidate_stage_projection")
-    if stage_projection is not None and (
+    if stage_projection_enabled and (
         not isinstance(stage_projection, Mapping)
         or set(stage_projection) != {
             "schema",
@@ -486,7 +487,7 @@ def prepare_native_train_stage_diagnostics(
     }
     stage_pairs = None
     try:
-        if stage_projection is None:
+        if not stage_projection_enabled:
             candidates, _branches, candidate_metadata = (
                 load_verified_native_system_candidate_rows(
                     candidate_binding,
@@ -512,7 +513,7 @@ def prepare_native_train_stage_diagnostics(
             }
     except (OSError, TypeError, ValueError) as error:
         source_label = (
-            "initial candidates" if stage_projection is None else "candidate stages"
+            "initial candidates" if not stage_projection_enabled else "candidate stages"
         )
         raise NativeTrainStageDiagnosticError(
             f"cannot verify {source_label}: {error}"
@@ -544,7 +545,7 @@ def prepare_native_train_stage_diagnostics(
             reward_links=reward_links,
             source=source,
         )
-        if stage_pairs is None
+        if not stage_projection_enabled
         else build_native_train_candidate_stage_diagnostics(
             stage_pairs=stage_pairs,
             reference_rows=references,
@@ -566,7 +567,11 @@ def prepare_native_train_stage_diagnostics(
     try:
         return prepare_artifact(
             Path(output_path),
-            kind=(ARTIFACT_KIND if stage_pairs is None else STAGE_ARTIFACT_KIND),
+            kind=(
+                ARTIFACT_KIND
+                if not stage_projection_enabled
+                else STAGE_ARTIFACT_KIND
+            ),
             inputs=inputs,
             producer=lambda: document,
             contact_class="model-free",

@@ -330,6 +330,29 @@ def _write(path: Path, value: object) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def test_explicit_null_candidate_stage_projection_fails_as_malformed(tmp_path):
+    config = {
+        "schema": module.CONFIG_SCHEMA,
+        "native_source": {},
+        "reward_source": {},
+        "reference_source": {},
+        "candidate_stage_projection": None,
+    }
+    config_path = tmp_path / "config.json"
+    config_sha = _write(config_path, config)
+    with pytest.raises(
+        NativeTrainStageDiagnosticError,
+        match="candidate_stage_projection contract is invalid",
+    ):
+        module.prepare_native_train_stage_diagnostics(
+            config_path=config_path,
+            expected_config_sha256=config_sha,
+            source_repo_root=tmp_path,
+            output_path=tmp_path / "diagnostics.json",
+            reference_loader=lambda *_args, **_kwargs: (),
+        )
+
+
 @pytest.mark.parametrize("stage_projection_enabled", (False, True))
 def test_prepared_sidecar_reuses_verified_source_candidate_and_reward_joins(
     tmp_path, monkeypatch, stage_projection_enabled
