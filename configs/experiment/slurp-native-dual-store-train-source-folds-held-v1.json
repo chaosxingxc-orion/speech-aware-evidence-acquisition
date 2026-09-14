@@ -1,0 +1,17 @@
+{
+  "cells": [
+    {"allowed_execution_stages": ["check"], "attempt_id": "HELD-NO-CONTACT-ATTEMPT-FOLD-A", "baseline_fragment": "slurp-native-dual-store-train-fold-a-held-v1", "cell_id": "slurp-native-dual-store-train-fold-a-held-v1", "dataset_fragment": "slurp-speech-native-evo-fold-a-1080", "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1", "prospective_partition_role": "corrective-guidance-source", "readiness": {"reason": "Configuration-only candidate with no execution plan, fit, prepared phase supply, ledger, score or contact authority.", "state": "held"}, "run_id": "HELD-NO-CONTACT-RUN-FOLD-A"},
+    {"allowed_execution_stages": ["check"], "attempt_id": "HELD-NO-CONTACT-ATTEMPT-FOLD-B", "baseline_fragment": "slurp-native-dual-store-train-fold-b-held-v1", "cell_id": "slurp-native-dual-store-train-fold-b-held-v1", "dataset_fragment": "slurp-speech-native-evo-fold-b-1080", "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1", "prospective_partition_role": "disjoint-train-evaluation", "readiness": {"reason": "Configuration-only candidate with no execution plan, fit, prepared phase supply, ledger, score or contact authority.", "state": "held"}, "run_id": "HELD-NO-CONTACT-RUN-FOLD-B"}
+  ],
+  "date": "2026-09-14",
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-SOURCE-FOLDS-HELD-V1",
+  "failure_policy": "HELD: permit deterministic config and source-binding checks only. Refuse preparation, fit, worker, campaign, model, tool, audio, encoder, tokenizer, scorer and GPU contact.",
+  "fragment_kind": "saea-slurp-native-dual-store-train-source-folds-held-v1",
+  "pending_root_bindings": {"admission_decision": "Choose an incumbent and exploration policy after the active comparison verdict; these folds are prospective partitions, not admitted experiments.", "execution_plan": "Create a source-bound plan only after admission and assign real run and attempt identities.", "prepared_phase_supply": "Use the shared FlightRuntime preparation path only after all execution and readiness bindings exist; no receipt is claimed by this held config.", "standard_train_scoring": "Retain the registered SLURP TRAIN official scorer when an admitted source trajectory is composed, and create the evaluation protocol and scoring receipts only after the scientific role and claim boundary are selected."},
+  "population": {"count_per_fold": 1080, "fold_a_split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6", "fold_b_split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a", "partition_contract": "Fold A is a prospective corrective-guidance source and Fold B is its disjoint TRAIN evaluation partition. Neither is admitted by this registration."},
+  "preserve_wire_responses": true,
+  "purpose": "Hold the exact current native dual-store episode semantics on the disjoint 1,080-row TRAIN A/B rosters through the shared runner, with original audio-segment query structure preserved.",
+  "service_session": "HELD-NO-SERVICE",
+  "split_id": "SLURP-EVO-FOLDS-V2"
+}
