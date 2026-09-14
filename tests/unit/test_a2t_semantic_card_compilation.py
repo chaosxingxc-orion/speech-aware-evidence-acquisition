@@ -654,3 +654,344 @@ def test_snapshot_export_refuses_an_output_path_alias_before_reading_sources(
 
     assert not config.corpus_output_path.exists()
     assert not config.receipt_output_path.exists()
+
+
+def _native_source(corpus, *, value_view: str | None = None) -> dict[str, object]:
+    source: dict[str, object] = {
+        "schema": compilation.NATIVE_CARD_SNAPSHOT_SOURCE_V1,
+        "compilation_id": "SYNTHETIC-CARD-COMPILATION",
+        "presentation_version": compilation.NATIVE_COMPATIBLE_PRESENTATION_V1,
+        "dataset_lock_sha256": "1" * 64,
+        "construction_selection_sha256": "2" * 64,
+        "tool_registry_sha256": "3" * 64,
+        "corpus_sha256": corpus.sha256,
+        "minimum_compatibility_support": 2,
+        "max_utf8_bytes": 524288,
+    }
+    if value_view is not None:
+        source["value_view"] = value_view
+    return source
+
+
+def _compile_native_view(tmp_path: Path, value_view: str | None):
+    config = replace(
+        _world(tmp_path),
+        presentation_version=compilation.NATIVE_COMPATIBLE_PRESENTATION_V1,
+        snapshot_output_path=tmp_path / "outputs" / "snapshot.json",
+        snapshot_value_view=value_view,
+    )
+    receipt = compilation.compile_a2t_semantic_card_artifacts(config)
+    snapshot = KnowledgeSnapshot.from_frozen_json(
+        json.loads(config.snapshot_output_path.read_text(encoding="utf-8"))
+    )
+    return receipt, snapshot
+
+
+def test_native_snapshot_value_views_preserve_keys_and_all_tools(
+    tmp_path: Path, offline: None
+) -> None:
+    full_receipt, full = _compile_native_view(tmp_path / "full", "full")
+    activation_receipt, activation = _compile_native_view(
+        tmp_path / "activation", "tool-activation"
+    )
+    parameter_receipt, parameter = _compile_native_view(
+        tmp_path / "parameter", "parameter-meaning"
+    )
+    expected_keys = [(facet.facet_id, facet.representation) for facet in full.facets]
+    assert [(facet.facet_id, facet.representation) for facet in activation.facets] == expected_keys
+    assert [(facet.facet_id, facet.representation) for facet in parameter.facets] == expected_keys
+    for snapshot in (full, activation, parameter):
+        assert len(snapshot.facets) == len(snapshot.values) == 152
+        assert {value.task_target for value in snapshot.values} == {
+            f"syntheticTool{index:03d}" for index in range(152)
+        }
+
+    activation_value = next(v for v in activation.values if v.task_target == "syntheticTool000")
+    lines = activation_value.content.splitlines()
+    assert lines[:3] == [
+        "TOOL CARD syntheticTool000",
+        "Exact tool name: syntheticTool000",
+        "Choose when: Perform synthetic operation 000.",
+    ]
+    assert len(lines) == 4
+    assert lines[3].startswith("Avoid when: ")
+    assert "Public signature:" not in activation_value.content
+
+    parameter_value = next(v for v in parameter.values if v.task_target == "syntheticTool000")
+    assert "Choose when:" not in parameter_value.content
+    assert "Avoid when:" not in parameter_value.content
+    for retained in (
+        "Exact tool name: syntheticTool000",
+        "Public signature:",
+        "Public types:",
+        "Public constraints:",
+        "Public API documentation: required keys",
+        "Observed native task forms:",
+        "Native task form scope:",
+        "Public spoken-role-to-key guidance:",
+        "Observed native-role-to-key guidance:",
+        "Public synthetic JSON examples:",
+        "Native-form synthetic JSON examples:",
+    ):
+        assert retained in parameter_value.content
+
+    assert "value_view" not in full_receipt["knowledge_snapshot"]
+    assert "value_view" not in full_receipt["knowledge_snapshot"]["source"]["metadata"]
+    for receipt, view in (
+        (activation_receipt, "tool-activation"),
+        (parameter_receipt, "parameter-meaning"),
+    ):
+        assert receipt["knowledge_snapshot"]["value_view"] == view
+        assert receipt["knowledge_snapshot"]["source"]["metadata"]["value_view"] == view
+
+
+def test_nondefault_value_view_is_bound_in_each_value_provenance(
+    tmp_path: Path, offline: None
+) -> None:
+    _receipt, snapshot = _compile_native_view(tmp_path, "parameter-meaning")
+    for value in snapshot.values:
+        assert "a2t-native-card-value-view:parameter-meaning" in value.provenance_refs
+
+
+@pytest.mark.parametrize("value_view", ("", "unknown", []))
+def test_compilation_refuses_unknown_snapshot_value_view_before_reading_sources(
+    tmp_path: Path, offline: None, monkeypatch: pytest.MonkeyPatch, value_view
+) -> None:
+    config = replace(_world(tmp_path), snapshot_value_view=value_view)
+    monkeypatch.setattr(
+        compilation, "a2t_pool_rows",
+        lambda *_args, **_kwargs: pytest.fail("source pool was read"),
+    )
+    with pytest.raises(compilation.SemanticCardCompilationError, match="snapshot_value_view"):
+        compilation.compile_a2t_semantic_card_artifacts(config)
+
+
+@pytest.mark.parametrize(
+    ("presentation_version", "with_snapshot"),
+    ((None, True), (compilation.NATIVE_COMPATIBLE_PRESENTATION_V1, False)),
+)
+def test_nondefault_value_view_requires_native_snapshot_export_before_source_read(
+    tmp_path: Path, offline: None, monkeypatch: pytest.MonkeyPatch,
+    presentation_version: str | None, with_snapshot: bool
+) -> None:
+    config = replace(
+        _world(tmp_path),
+        presentation_version=presentation_version,
+        snapshot_output_path=(tmp_path / "outputs" / "snapshot.json") if with_snapshot else None,
+        snapshot_value_view="tool-activation",
+    )
+    monkeypatch.setattr(
+        compilation, "a2t_pool_rows",
+        lambda *_args, **_kwargs: pytest.fail("source pool was read"),
+    )
+    with pytest.raises(
+        compilation.SemanticCardCompilationError,
+        match="non-default snapshot_value_view requires native-compatible snapshot export",
+    ):
+        compilation.compile_a2t_semantic_card_artifacts(config)
+
+
+def test_native_snapshot_refuses_source_view_mismatch() -> None:
+    corpus, _ = compilation.build_from_partition_with_native_compatibility(
+        _registry_rows(), (_row(),)
+    )
+    with pytest.raises(compilation.SemanticCardCompilationError, match="value view does not match"):
+        compilation.build_native_compatible_knowledge_snapshot(
+            corpus,
+            compilation_source=_native_source(corpus, value_view="parameter-meaning"),
+            value_view="tool-activation",
+        )
+
+
+def test_nondefault_native_snapshot_refuses_card_prefix_drift() -> None:
+    corpus, _ = compilation.build_from_partition_with_native_compatibility(
+        _registry_rows(), (_row(),)
+    )
+    malformed = replace(
+        corpus.tool_cards[0],
+        text=corpus.tool_cards[0].text.replace("Choose when:", "Select when:", 1),
+    )
+    drifted = replace(corpus, tool_cards=(malformed, *corpus.tool_cards[1:]))
+    with pytest.raises(compilation.SemanticCardCompilationError, match="activation prefix drift"):
+        compilation.build_native_compatible_knowledge_snapshot(
+            drifted,
+            compilation_source=_native_source(corpus, value_view="parameter-meaning"),
+            value_view="parameter-meaning",
+        )
+
+
+def test_explicit_full_value_view_is_identical_to_omission(
+    tmp_path: Path, offline: None
+) -> None:
+    omitted_receipt, omitted = _compile_native_view(tmp_path / "omitted", None)
+    explicit_receipt, explicit = _compile_native_view(tmp_path / "explicit", "full")
+
+    assert omitted.frozen_json() == explicit.frozen_json()
+    assert omitted.frozen_json()["snapshot_sha256"] == (
+        "d88f144e5273c9497318a9fe568ff7d9b93e3b277256fffdeca7f3047bb21a2e"
+    )
+    frozen_bytes = (json.dumps(omitted.frozen_json(), indent=2, sort_keys=True) + "\n").encode()
+    assert hashlib.sha256(frozen_bytes).hexdigest() == (
+        "8d476d35537c4fd5292571026fa268b20950dde965d324e262c65baf5a591c2e"
+    )
+    assert omitted_receipt["knowledge_snapshot"]["source"] == (
+        explicit_receipt["knowledge_snapshot"]["source"]
+    )
+    assert "value_view" not in omitted_receipt["knowledge_snapshot"]
+    assert "value_view" not in explicit_receipt["knowledge_snapshot"]
+
+
+def test_parameter_meaning_retains_supported_native_form_details() -> None:
+    registry = list(_registry_rows())
+    registry[0] = {
+        **registry[0],
+        "signature": "syntheticTool000(deviceId: String?)",
+        "argument_constraints": "deviceId: [named device]",
+    }
+    rows = tuple(
+        replace(
+            _row(index),
+            arg_signature=("action", "deviceId"),
+            arg_pairs=(("action", "play"), ("deviceId", "device")),
+        )
+        for index in (100, 101)
+    )
+    corpus, _ = compilation.build_from_partition_with_native_compatibility(
+        tuple(registry), rows
+    )
+    snapshot = compilation.build_native_compatible_knowledge_snapshot(
+        corpus,
+        compilation_source=_native_source(
+            corpus, value_view="parameter-meaning"
+        ),
+        value_view="parameter-meaning",
+    )
+    content = next(
+        value.content
+        for value in snapshot.values
+        if value.task_target == "syntheticTool000"
+    )
+
+    assert "Choose when:" not in content
+    assert "Avoid when:" not in content
+    assert "Public signature: syntheticTool000(deviceId: String?)" in content
+    assert "Public constraints: deviceId: [named device]" in content
+    assert "Observed native task forms:" in content
+    assert "action: JSON string" in content
+    assert "construction support count: 2" in content
+    assert "source scope: hash-pinned, evaluation-excluded construction units" in content
+    assert "Observed native role: action -> action (JSON string)" in content
+    assert "Native-form synthetic JSON examples:" in content
+
+
+def _config_document(
+    config: compilation.A2tSemanticCardCompilationConfig,
+) -> dict[str, object]:
+    document: dict[str, object] = {
+        "compilation_id": config.compilation_id,
+        "dataset_lock_path": str(config.dataset_lock_path),
+        "dataset_lock_sha256": config.dataset_lock_sha256,
+        "data_root": str(config.data_root),
+        "construction_receipt_path": str(config.construction_receipt_path),
+        "construction_receipt_sha256": config.construction_receipt_sha256,
+        "tool_registry_path": str(config.tool_registry_path),
+        "tool_registry_sha256": config.tool_registry_sha256,
+        "corpus_output_path": str(config.corpus_output_path),
+        "receipt_output_path": str(config.receipt_output_path),
+        "minimum_compatibility_support": config.minimum_compatibility_support,
+        "max_utf8_bytes": config.max_utf8_bytes,
+        "presentation_version": config.presentation_version,
+        "snapshot_output_path": (
+            str(config.snapshot_output_path)
+            if config.snapshot_output_path is not None
+            else None
+        ),
+        "snapshot_value_view": config.snapshot_value_view,
+    }
+    return document
+
+
+def test_cli_loads_pinned_config_and_honors_snapshot_value_view(
+    tmp_path: Path, offline: None, capsys: pytest.CaptureFixture[str]
+) -> None:
+    config = replace(
+        _world(tmp_path),
+        presentation_version=compilation.NATIVE_COMPATIBLE_PRESENTATION_V1,
+        snapshot_output_path=tmp_path / "outputs" / "snapshot.json",
+        snapshot_value_view="tool-activation",
+    )
+    config_path = tmp_path / "compilation.json"
+    _write_json(config_path, _config_document(config))
+
+    assert compilation.main(["--config", str(config_path)]) == 0
+
+    snapshot = KnowledgeSnapshot.from_frozen_json(
+        json.loads(config.snapshot_output_path.read_text(encoding="utf-8"))
+    )
+    assert all("Choose when:" in value.content for value in snapshot.values)
+    assert all("Public signature:" not in value.content for value in snapshot.values)
+    summary = json.loads(capsys.readouterr().out)
+    assert summary["compilation_id"] == config.compilation_id
+    assert summary["snapshot_value_view"] == "tool-activation"
+    assert summary["receipt_output_path"] == str(config.receipt_output_path)
+
+
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    (
+        (lambda document: document.update({"unknown": True}), "missing or unknown fields"),
+        (lambda document: document.pop("compilation_id"), "missing or unknown fields"),
+        (lambda document: document.update({"data_root": 7}), "data_root"),
+        (
+            lambda document: document.update({"minimum_compatibility_support": True}),
+            "minimum_compatibility_support",
+        ),
+        (
+            lambda document: document.update({"snapshot_value_view": []}),
+            "snapshot_value_view",
+        ),
+    ),
+)
+def test_config_loader_refuses_malformed_or_unknown_fields(
+    tmp_path: Path, mutate, message: str
+) -> None:
+    config = _world(tmp_path)
+    document = _config_document(config)
+    mutate(document)
+    path = tmp_path / "invalid.json"
+    _write_json(path, document)
+
+    with pytest.raises(compilation.SemanticCardCompilationError, match=message):
+        compilation.load_a2t_semantic_card_compilation_config(path)
+
+
+def test_config_loader_refuses_malformed_json(tmp_path: Path) -> None:
+    path = tmp_path / "invalid.json"
+    path.write_text("{", encoding="utf-8")
+
+    with pytest.raises(compilation.SemanticCardCompilationError, match="cannot parse"):
+        compilation.load_a2t_semantic_card_compilation_config(path)
+
+
+def test_cli_invalid_config_fails_before_compilation_or_output(
+    tmp_path: Path, offline: None, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    config = _world(tmp_path)
+    document = _config_document(config)
+    document["unknown"] = "forged"
+    path = tmp_path / "invalid.json"
+    _write_json(path, document)
+    monkeypatch.setattr(
+        compilation,
+        "compile_a2t_semantic_card_artifacts",
+        lambda _config: pytest.fail("compiler was invoked"),
+    )
+
+    with pytest.raises(
+        compilation.SemanticCardCompilationError,
+        match="missing or unknown fields",
+    ):
+        compilation.main(["--config", str(path)])
+
+    assert not config.corpus_output_path.exists()
+    assert not config.receipt_output_path.exists()

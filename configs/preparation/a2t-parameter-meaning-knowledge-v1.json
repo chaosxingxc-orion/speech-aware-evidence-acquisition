@@ -1,0 +1,17 @@
+{
+  "compilation_id": "SAEA-A2T-PARAMETER-MEANING-KNOWLEDGE-V1",
+  "construction_receipt_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-current-construction-selection-v1.json",
+  "construction_receipt_sha256": "04b2750f12e2771fe76c511cdbf913d703743e2ee1ab66f03b3ad71f43f218e2",
+  "corpus_output_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-PARAMETER-MEANING-KNOWLEDGE-V1/corpus.txt",
+  "data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+  "dataset_lock_path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+  "dataset_lock_sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe",
+  "max_utf8_bytes": 524288,
+  "minimum_compatibility_support": 2,
+  "presentation_version": "saea-a2t-native-compatible-presentation-v1",
+  "receipt_output_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-PARAMETER-MEANING-KNOWLEDGE-V1/compilation-receipt.json",
+  "snapshot_output_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-PARAMETER-MEANING-KNOWLEDGE-V1/knowledge-snapshot.json",
+  "snapshot_value_view": "parameter-meaning",
+  "tool_registry_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool/tools_registry.csv",
+  "tool_registry_sha256": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4"
+}
