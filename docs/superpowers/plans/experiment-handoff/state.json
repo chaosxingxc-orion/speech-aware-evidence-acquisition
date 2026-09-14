@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 90,
+  "generation": 91,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -11,8 +11,8 @@
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
   "snapshot_commit": "826a77c7bd9030ccbc25f2b74cd6fa4ed69db561",
-  "updated_at_utc": "2026-09-14T05:56:57.488083+00:00",
-  "next_action": "Read STATUS-090. Monitor the sole unchanged TRAIN A recovery: campaign PID2124/session3387, resident PID767/session32418, monitor58863, boot66947d87-43d2-4860-9766-11060b2e6bb6. Frozen runtime /home/chao/saea-worktrees/slurp-train-anchor-cuda-recovery-v1 at826a77c7; no edits there. Original five-contact anchor is ABORTED after CUDA illegal access, with one response and no quality result; preserve it. Any second failure closes this flight. After full1080 seal and first complete official TRAIN score, verify/release source, build reward links and offline candidate-stage diagnostics without rescoring. Keep Fold B untouched and follow OWNER-CANDIDATE-COVERAGE-026.",
+  "updated_at_utc": "2026-09-14T06:25:49.329694+00:00",
+  "next_action": "Read STATUS-091. Continue monitoring sole TRAIN A recovery PID2124/session3387 on resident PID767; frozen clean runtime826a77c7. Do not restart/replay after another failure. Campaign owns the first complete official TRAIN score and finalization; recipe-v2 forbids duplicate scoring. Verify full1080 finalized source, wrap its score, build actual native reward links and stage diagnostics using unchanged diagnostics checkout8f35ae1f. Root-reviewed optional candidate-refresh code is prepared separately at native-candidate-refresh-v1; no enhanced model contact is admitted. Add explicit C0/C1 projections and a distinct registered program/fit/config before a successor chosen from TRAIN A. Keep Fold B untouched.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-CANDIDATE-COVERAGE-026"
