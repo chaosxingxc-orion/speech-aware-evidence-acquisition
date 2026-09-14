@@ -162,10 +162,15 @@ def validate_native_episode_delivery_receipt(
         _raise(error_type, "terminal disposition does not bind the last Planner visit")
     if terminal_actions is not None:
         allowed = tuple(terminal_actions)
-        if len(allowed) != 2 or any(not isinstance(item, str) or not item for item in allowed):
+        if (
+            len(allowed) not in {2, 3}
+            or any(not isinstance(item, str) or not item for item in allowed)
+            or len(set(allowed)) != len(allowed)
+        ):
             _raise(error_type, "configured terminal actions are malformed")
         if action not in allowed:
-            _raise(error_type, "terminal Planner action is not a configured revise/acquire action")
+            label = "revise/acquire action" if len(allowed) == 2 else "continuation action"
+            _raise(error_type, f"terminal Planner action is not a configured {label}")
     elif action == "ACCEPT":
         _raise(error_type, "terminal Planner action must not be ACCEPT")
 
@@ -178,4 +183,65 @@ def validate_native_episode_delivery_receipt(
     )
 
 
-__all__ = ["NativeEpisodeDelivery", "validate_native_episode_delivery_receipt"]
+def validate_native_candidate_refresh_receipt(
+    receipt: Mapping[str, object], *,
+    refresh_action: str, max_refreshes: int, max_revisions: int,
+    accept_action: str, revise_action: str,
+    error_type: type[Exception] = ValueError,
+) -> int:
+    """Bind each executed refresh to an actual Perception-before-Solver visit."""
+    if (
+        not isinstance(refresh_action, str) or not refresh_action
+        or isinstance(max_refreshes, bool) or not isinstance(max_refreshes, int)
+        or isinstance(max_revisions, bool) or not isinstance(max_revisions, int)
+        or not 1 <= max_refreshes <= max_revisions
+        or refresh_action in {accept_action, revise_action}
+    ):
+        _raise(error_type, "invalid candidate refresh receipt configuration")
+    visits = _sequence(receipt.get("role_visits"), "native role visits", error_type=error_type)
+    routes = _sequence(receipt.get("planner_routes"), "Planner routes", error_type=error_type)
+    if not visits or not all(isinstance(v, Mapping) for v in visits):
+        _raise(error_type, "candidate refresh requires structured role visits")
+    if visits[0].get("stage") != "perception":
+        _raise(error_type, "candidate refresh requires the initial Perception visit")
+    cursor, refreshes = 1, 0
+    if not routes or len(routes) - 1 > max_revisions:
+        _raise(error_type, "candidate refresh exceeds the revision allowance")
+    for revision, route in enumerate(routes):
+        if (
+            not isinstance(route, Mapping)
+            or isinstance(route.get("revision_count"), bool)
+            or route.get("revision_count") != revision
+            or isinstance(route.get("role_visit_index"), bool)
+            or route.get("role_visit_index") != cursor + 2
+            or [v.get("stage") for v in visits[cursor:cursor + 3]]
+            != ["solver", "review", "planner"]
+        ):
+            _raise(error_type, "candidate refresh has an invalid ordered role/route binding")
+        cursor += 3
+        action = route.get("action")
+        if revision == len(routes) - 1:
+            delivery = validate_native_episode_delivery_receipt(receipt, error_type=error_type)
+            if delivery.kind == "accepted" and action != accept_action:
+                _raise(error_type, "candidate refresh accepted delivery has no final acceptance")
+            if delivery.kind == "terminal" and revision != max_revisions:
+                _raise(error_type, "candidate refresh terminated before the revision allowance")
+            continue
+        if action == refresh_action:
+            if cursor >= len(visits) or visits[cursor].get("stage") != "perception":
+                _raise(error_type, "candidate refresh route has no following Perception")
+            refreshes += 1
+            cursor += 1
+        elif action != revise_action:
+            _raise(error_type, "candidate refresh graph has an unsupported continuation")
+        if refreshes > max_refreshes:
+            _raise(error_type, "candidate refresh exceeds its configured allowance")
+    if cursor != len(visits):
+        _raise(error_type, "candidate refresh has extra or unaccounted role visits")
+    return refreshes
+
+
+__all__ = [
+    "NativeEpisodeDelivery", "validate_native_episode_delivery_receipt",
+    "validate_native_candidate_refresh_receipt",
+]

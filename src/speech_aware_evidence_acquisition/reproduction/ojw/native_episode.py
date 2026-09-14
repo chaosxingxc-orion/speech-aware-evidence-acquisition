@@ -63,6 +63,8 @@ class NativeEpisodeSpec:
     max_revisions: int
     actions: NativeEpisodeActions
     exhaustion_policy: str = "raise"
+    refresh_action: str | None = None
+    max_candidate_refreshes: int = 0
 
     def __post_init__(self) -> None:
         if not isinstance(self.episode_id, str) or not self.episode_id:
@@ -80,6 +82,23 @@ class NativeEpisodeSpec:
             or self.exhaustion_policy not in {"raise", "deliver-latest-solver"}
         ):
             raise ValueError("exhaustion_policy is invalid")
+        if self.refresh_action is None:
+            if (
+                self.max_candidate_refreshes != 0
+                or isinstance(self.max_candidate_refreshes, bool)
+                or not isinstance(self.max_candidate_refreshes, int)
+            ):
+                raise ValueError("candidate refresh count requires an explicit action")
+        elif (
+            not isinstance(self.refresh_action, str) or not self.refresh_action.strip()
+            or self.refresh_action in (
+                self.actions.accept, self.actions.revise, self.actions.acquire
+            )
+            or isinstance(self.max_candidate_refreshes, bool)
+            or not isinstance(self.max_candidate_refreshes, int)
+            or not 1 <= self.max_candidate_refreshes <= self.max_revisions
+        ):
+            raise ValueError("candidate refresh must have a distinct action and a bounded count")
 
 
 @dataclass(frozen=True)
@@ -142,10 +161,11 @@ class _RoleQuery(WorkflowComponent):
 
 
 class _ApplyRole(WorkflowComponent):
-    def __init__(self, kind: str, actions: NativeEpisodeActions) -> None:
+    def __init__(self, kind: str, actions: NativeEpisodeActions, refresh_action: str | None = None) -> None:
         super().__init__()
         self._kind = kind
         self._actions = actions
+        self._refresh_action = refresh_action
 
     async def invoke(
         self, inputs: Input, session: Session, context: ModelContext
@@ -185,6 +205,8 @@ class _ApplyRole(WorkflowComponent):
                 self._actions.revise,
                 self._actions.acquire,
             }
+            if self._refresh_action is not None:
+                legal.add(self._refresh_action)
             if output not in legal:
                 raise NativeEpisodeError(
                     "Planner output does not exact-match a registered action"
@@ -220,6 +242,24 @@ class _AdvanceRevision(WorkflowComponent):
         return {"state": updated}
 
 
+class _AdvanceCandidateRefresh(WorkflowComponent):
+    def __init__(self, limit: int) -> None:
+        super().__init__()
+        self._limit = limit
+
+    async def invoke(
+        self, inputs: Input, session: Session, context: ModelContext
+    ) -> Output:
+        state = _state(inputs)
+        count = state.get("candidate_refresh_count", 0)
+        if isinstance(count, bool) or not isinstance(count, int) or not 0 <= count < self._limit:
+            raise NativeEpisodeError("episode candidate refresh limit is exhausted")
+        updated = dict(state)
+        updated["revision_count"] = int(updated["revision_count"]) + 1
+        updated["candidate_refresh_count"] = count + 1
+        return {"state": updated}
+
+
 class _Accept(WorkflowComponent):
     async def invoke(
         self, inputs: Input, session: Session, context: ModelContext
@@ -247,9 +287,10 @@ class _Exhausted(WorkflowComponent):
 class _TerminalDelivery(WorkflowComponent):
     """Deliver the final Solver draft under an explicit terminal policy."""
 
-    def __init__(self, actions: NativeEpisodeActions) -> None:
+    def __init__(self, actions: NativeEpisodeActions, refresh_action: str | None = None) -> None:
         super().__init__()
         self._actions = actions
+        self._refresh_action = refresh_action
 
     async def invoke(
         self, inputs: Input, session: Session, context: ModelContext
@@ -259,7 +300,10 @@ class _TerminalDelivery(WorkflowComponent):
         if not isinstance(solver, Mapping) or solver.get("delivery_eligible") is not True:
             raise NativeEpisodeError("terminal delivery has no valid Solver draft")
         planner_action = state.get("plan")
-        if planner_action not in {self._actions.revise, self._actions.acquire}:
+        terminal_actions = {self._actions.revise, self._actions.acquire}
+        if self._refresh_action is not None:
+            terminal_actions.add(self._refresh_action)
+        if planner_action not in terminal_actions:
             raise NativeEpisodeError("terminal delivery has no revision-limit action")
         revision_count = state.get("revision_count")
         if isinstance(revision_count, bool) or not isinstance(revision_count, int):
@@ -399,7 +443,7 @@ class NativeEpisodeWorkflow:
         workflow.add_connection(query_id, role_id)
         workflow.add_workflow_comp(
             apply_id,
-            _ApplyRole(kind, self.spec.actions),
+            _ApplyRole(kind, self.spec.actions, self.spec.refresh_action),
             inputs_schema={
                 "state": "${" + query_id + ".state}",
                 "role": "${" + role_id + "}",
@@ -476,7 +520,7 @@ class NativeEpisodeWorkflow:
                 exhausted_id = f"exhausted_{revision}"
                 terminal_component: WorkflowComponent
                 if self.spec.exhaustion_policy == "deliver-latest-solver":
-                    terminal_component = _TerminalDelivery(self.spec.actions)
+                    terminal_component = _TerminalDelivery(self.spec.actions, self.spec.refresh_action)
                     accept_ids.append(exhausted_id)
                 else:
                     terminal_component = _Exhausted()
@@ -495,6 +539,11 @@ class NativeEpisodeWorkflow:
                     + json.dumps(self.spec.actions.acquire),
                     exhausted_id,
                 )
+                if self.spec.refresh_action is not None:
+                    router.add_branch(
+                        "${" + planner + ".action} == " + json.dumps(self.spec.refresh_action),
+                        exhausted_id,
+                    )
                 workflow.add_conditional_connection(planner, router)
                 continue
 
@@ -509,6 +558,25 @@ class NativeEpisodeWorkflow:
                 revise_id,
             )
             next_predecessors = [revise_id]
+            if self.spec.refresh_action is not None:
+                refresh_id = f"refresh_{revision}"
+                workflow.add_workflow_comp(
+                    refresh_id,
+                    _AdvanceCandidateRefresh(self.spec.max_candidate_refreshes),
+                    inputs_schema={"state": "${" + planner + ".state}"},
+                )
+                router.add_branch(
+                    "${" + planner + ".action} == " + json.dumps(self.spec.refresh_action),
+                    refresh_id,
+                )
+                refreshed = self._add_role(
+                    workflow,
+                    stage_id=f"perception_refresh_{revision}",
+                    node=self.nodes.perception,
+                    predecessors=(refresh_id,),
+                    kind="perception",
+                )
+                next_predecessors.append(refreshed)
             if self.nodes.acquisition is None:
                 acquire_id = f"acquire_unavailable_{revision}"
                 workflow.add_workflow_comp(

@@ -134,6 +134,8 @@ def _episode(
     max_revisions=1,
     acquisition=None,
     exhaustion_policy="raise",
+    refresh_action=None,
+    max_candidate_refreshes=0,
 ):
     perception, perception_script = _node("perception", "perception", ["heard"])
     seen: list[tuple[str, dict[str, object]]] = []
@@ -150,6 +152,8 @@ def _episode(
                 accept="ACCEPT", revise="REVISE", acquire="ACQUIRE"
             ),
             exhaustion_policy=exhaustion_policy,
+            refresh_action=refresh_action,
+            max_candidate_refreshes=max_candidate_refreshes,
         ),
         nodes=NativeEpisodeNodes(
             perception=perception,
@@ -493,3 +497,72 @@ def test_invoke_direct_still_creates_a_default_session_when_absent(monkeypatch):
 
     assert factory_calls == [None]
     assert capturing.sessions[0] is default_session
+
+
+def test_refresh_revisits_perception_then_solver_and_preserves_both_receipts():
+    solver, _ = _node("solver", "solver", ["draft one", "draft two"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["missing operation", "resolved"])
+    planner, _ = _node("planner", "planner", ["REFRESH_CANDIDATES", "ACCEPT"])
+    workflow, perception_script, seen = _episode(
+        solver=solver, reviewer=reviewer, planner=planner,
+        refresh_action="REFRESH_CANDIDATES", max_candidate_refreshes=1,
+    )
+    perception_script.values.append("new candidate set")
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+    visits = result["state"]["role_visits"]
+    assert [v["stage"] for v in visits] == [
+        "perception", "solver", "review", "planner",
+        "perception", "solver", "review", "planner",
+    ]
+    assert visits[0]["execution_receipt"] != visits[4]["execution_receipt"]
+    assert len(perception_script.requests) == 2
+    solver_states = [state for role, state in seen if role == "solver"]
+    assert solver_states[0]["perception"] == "heard"
+    assert solver_states[1]["perception"] == "new candidate set"
+    assert solver_states[1]["review"] == "missing operation"
+    assert solver_states[1]["candidate_refresh_count"] == 1
+    assert result["state"]["revision_count"] == 1
+    assert result["delivery"]["actor_output"] == "draft two"
+
+
+def test_refresh_cannot_exceed_its_sub_bound_even_with_more_revision_budget():
+    solver, _ = _node("solver", "solver", ["draft one", "draft two"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["review one", "review two"])
+    planner, _ = _node("planner", "planner", ["REFRESH_CANDIDATES"] * 2)
+    workflow, perception_script, _ = _episode(
+        solver=solver, reviewer=reviewer, planner=planner, max_revisions=3,
+        refresh_action="REFRESH_CANDIDATES", max_candidate_refreshes=1,
+    )
+    perception_script.values.append("new candidate set")
+    with pytest.raises(NativeEpisodeError, match="candidate refresh limit"):
+        asyncio.run(workflow.invoke_direct("query", ()))
+    assert len(perception_script.requests) == 2
+
+
+def test_refresh_after_final_revision_delivers_only_latest_solver_under_explicit_policy():
+    solver, _ = _node("solver", "solver", ["draft one", "draft two"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["review one", "review two"])
+    planner, _ = _node("planner", "planner", ["REFRESH_CANDIDATES"] * 2)
+    workflow, perception_script, _ = _episode(
+        solver=solver, reviewer=reviewer, planner=planner,
+        refresh_action="REFRESH_CANDIDATES", max_candidate_refreshes=1,
+        exhaustion_policy="deliver-latest-solver",
+    )
+    perception_script.values.append("new candidate set")
+    result = asyncio.run(workflow.invoke_direct("query", ()))
+    assert len(perception_script.requests) == 2
+    assert result["delivery"]["actor_output"] == "draft two"
+    assert result["state"]["terminal_disposition"]["planner_accepted"] is False
+    assert result["state"]["terminal_disposition"]["planner_action"] == "REFRESH_CANDIDATES"
+
+
+def test_unconfigured_refresh_action_never_revisits_perception():
+    solver, _ = _node("solver", "solver", ["draft one"], valid=True)
+    reviewer, _ = _node("reviewer", "reviewer", ["review one"])
+    planner, _ = _node("planner", "planner", ["REFRESH_CANDIDATES"])
+    workflow, perception_script, _ = _episode(
+        solver=solver, reviewer=reviewer, planner=planner,
+    )
+    with pytest.raises(NativeEpisodeError, match="registered action"):
+        asyncio.run(workflow.invoke_direct("query", ()))
+    assert len(perception_script.requests) == 1

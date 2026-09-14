@@ -85,7 +85,7 @@ def verify_native_episode_source(
     program = default_phase_program(policy)
     if program.stop_rule != "native-role-episode":
         raise NativeEpisodeSourceError("native source requires the shared native role program")
-    load_native_episode_config(values, program)
+    native_config = load_native_episode_config(values, program)
     plan = ExecutionPlan(**manifest["plan"]).validate()
     sample_ids = tuple(row["sample_id"] for row in bundle.outputs_rows)
     if not sample_ids or len(sample_ids) != len(set(sample_ids)) or set(sample_ids) != bundle.split_ids:
@@ -117,6 +117,17 @@ def verify_native_episode_source(
     ):
         raise NativeEpisodeSourceError("native phase results differ from the actual ordered outputs")
     results = {row["sample_id"]: row for row in summary["results"]}
+    if native_config.refresh_action is not None:
+        from ..rails.native_episode_receipt import validate_native_candidate_refresh_receipt
+
+        for row in results.values():
+            validate_native_candidate_refresh_receipt(
+                row["native_episode_receipt"], refresh_action=native_config.refresh_action,
+                max_refreshes=native_config.max_candidate_refreshes,
+                max_revisions=native_config.max_revisions,
+                accept_action=native_config.actions[0], revise_action=native_config.actions[1],
+                error_type=NativeEpisodeSourceError,
+            )
     outputs = {row["sample_id"]: row for row in bundle.outputs_rows}
     diagnostics = analyze_verified_native_episode_statistics(
         sample_ids=sample_ids, controller_policy_id=policy,

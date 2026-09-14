@@ -4816,6 +4816,13 @@ class FlightRuntime:
                     for role in native_config.roles
                 ],
             }
+            if native_config.refresh_action is not None:
+                dispatch["native_episode"]["candidate_refresh"] = {
+                    "action": native_config.refresh_action,
+                    "max_refreshes": native_config.max_candidate_refreshes,
+                }
+                dispatch["native_episode"]["actions"] = list(native_config.actions)
+                dispatch["native_episode"]["exhaustion_policy"] = native_config.exhaustion_policy
             dispatch["barrier"] = "none: bounded native role graph per sample"
             dispatch["native_contact_fit_receipts"] = list(native_fit_gate.receipts)
         if whole_roster:
@@ -6893,6 +6900,9 @@ class FlightRuntime:
                         terminal_actions = (
                             raw_actions.get("revise"), raw_actions.get("acquire")
                         )
+                        raw_refresh = raw_native.get("candidate_refresh")
+                        if isinstance(raw_refresh, Mapping):
+                            terminal_actions += (raw_refresh.get("action"),)
                 delivery = validate_native_episode_delivery_receipt(
                     episode_receipt,
                     visits,
@@ -6900,6 +6910,21 @@ class FlightRuntime:
                     terminal_actions=terminal_actions,
                     error_type=FlightRuntimeError,
                 )
+                if isinstance(raw_native, Mapping) and "candidate_refresh" in raw_native:
+                    from ...rails.native_episode_receipt import (
+                        validate_native_candidate_refresh_receipt,
+                    )
+
+                    refresh = raw_native["candidate_refresh"]
+                    if not isinstance(refresh, Mapping) or not isinstance(raw_actions, Mapping):
+                        raise FlightRuntimeError("invalid candidate refresh seal configuration")
+                    validate_native_candidate_refresh_receipt(
+                        episode_receipt, refresh_action=refresh.get("action"),
+                        max_refreshes=refresh.get("max_refreshes"),
+                        max_revisions=raw_native.get("max_revisions"),
+                        accept_action=raw_actions.get("accept"),
+                        revise_action=raw_actions.get("revise"), error_type=FlightRuntimeError,
+                    )
                 if delivery.kind == "terminal":
                     if (
                         not isinstance(raw_native, Mapping)

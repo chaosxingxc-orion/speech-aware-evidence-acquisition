@@ -284,3 +284,16 @@ def test_canonical_outputs_accept_an_opted_in_terminal_solver_delivery(
     terminal_receipt["planner_routes"][-1]["action"] = "UNREGISTERED"
     with pytest.raises(FlightRuntimeError, match="configured revise/acquire action"):
         runtime._canonical_output_rows(harness.client)
+
+
+    if max_revisions:
+        terminal_receipt["terminal_disposition"]["planner_action"] = "REFRESH_CANDIDATES"
+        terminal_receipt["planner_routes"][-1]["action"] = "REFRESH_CANDIDATES"
+        with pytest.raises(FlightRuntimeError, match="configured revise/acquire action"):
+            runtime._canonical_output_rows(harness.client)
+        values["native_episode"]["candidate_refresh"] = {
+            "action": "REFRESH_CANDIDATES", "max_refreshes": 1,
+        }
+        refreshed_terminal = runtime._canonical_output_rows(harness.client)
+        assert refreshed_terminal[0]["request_id"] == terminal["request_id"]
+        assert refreshed_terminal[0]["text"] == row["final_response_text"]

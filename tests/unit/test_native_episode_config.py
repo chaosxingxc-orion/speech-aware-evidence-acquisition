@@ -102,3 +102,53 @@ def test_invalid_config_refuses_before_any_runtime_callback(mutation):
     mutation(values)
     with pytest.raises(ValueError):
         load_native_episode_config(values, program())
+
+
+def test_candidate_refresh_opt_in_counts_extra_perception_without_changing_legacy():
+    legacy = load_native_episode_config(config(), program())
+    assert legacy.refresh_action is None
+    assert legacy.max_candidate_refreshes == 0
+    assert legacy.terminal_actions == ("REVISE", "ACQUIRE")
+    values = config()
+    values["native_episode"]["max_revisions"] = 2
+    values["native_episode"]["roles"]["perception"]["max_iterations"] = 2
+    values["native_episode"]["candidate_refresh"] = {
+        "action": "REFRESH_CANDIDATES", "max_refreshes": 1,
+    }
+    # Initial Perception 2 + three rounds of 3 + one refreshed Perception 2.
+    parsed = load_native_episode_config(values, program(ceiling=13))
+    assert parsed.max_contacts == 13
+    assert parsed.refresh_action == "REFRESH_CANDIDATES"
+    assert parsed.max_candidate_refreshes == 1
+    assert parsed.terminal_actions == ("REVISE", "ACQUIRE", "REFRESH_CANDIDATES")
+    with pytest.raises(ValueError, match="ceiling"):
+        load_native_episode_config(values, program(ceiling=11))
+
+
+@pytest.mark.parametrize("refresh", [
+    {}, {"action": "REFRESH", "max_refreshes": 0},
+    {"action": "REFRESH", "max_refreshes": True},
+    {"action": "REFRESH", "max_refreshes": 2},
+    {"action": "REVISE", "max_refreshes": 1},
+    {"action": " ", "max_refreshes": 1},
+])
+def test_invalid_candidate_refresh_is_rejected_before_runtime(refresh):
+    values = config()
+    values["native_episode"]["max_revisions"] = 1
+    values["native_episode"]["candidate_refresh"] = refresh
+    with pytest.raises(ValueError, match="candidate_refresh"):
+        load_native_episode_config(values, program(ceiling=8))
+
+
+def test_refresh_rejects_stale_candidate_supply_binding_before_any_contact():
+    values = config()
+    values["native_episode"]["max_revisions"] = 1
+    values["native_episode"]["candidate_refresh"] = {
+        "action": "REFRESH_CANDIDATES", "max_refreshes": 1,
+    }
+    supply = {"candidate_state_phase": "perception"}
+    values["knowledge_stores"] = {"slot-contracts": {"candidate_supply": {"solver": supply}}}
+    with pytest.raises(ValueError, match="latest candidate source selection"):
+        load_native_episode_config(values, program(ceiling=8))
+    supply["candidate_state_selection"] = "latest"
+    assert load_native_episode_config(values, program(ceiling=8)).refresh_action

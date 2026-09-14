@@ -829,3 +829,82 @@ def test_provisional_memory_visible_guidance_reaches_fitted_native_history(tmp_p
     assert receipt["memory_lineage"][0]["ordered_pack_record_sha256s"] == [
         record.record_sha256 for record in memory.records
     ]
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_actual_refresh_request_is_fitted_and_bound_before_second_solver(tmp_path):
+    from dataclasses import replace
+
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=1, max_contacts=8,
+        planner_actions=("REFRESH_CANDIDATES", "ACCEPT"),
+    )
+    harness.config = replace(
+        harness.config, refresh_action="REFRESH_CANDIDATES", max_candidate_refreshes=1,
+    )
+    try:
+        result = harness.run().results[0]
+        assert len(harness.prepared) == len(harness.dispatched) == 8
+        for key in harness.prepared:
+            assert harness.events.index(("fit", key)) < harness.events.index(("dispatch", key))
+        keys = list(harness.prepared)
+        assert [key[1] for key in keys] == [
+            "perception", "solver", "reviewer", "planner",
+            "perception", "solver", "reviewer", "planner",
+        ]
+        def limits(rendered):
+            def strings(value):
+                if isinstance(value, str):
+                    yield value
+                elif isinstance(value, dict):
+                    for item in value.values():
+                        yield from strings(item)
+                elif isinstance(value, list):
+                    for item in value:
+                        yield from strings(item)
+            matches = []
+            for text in strings(rendered):
+                for line in text.splitlines():
+                    if line.startswith("Native episode limits: "):
+                        matches.append(json.loads(line.removeprefix("Native episode limits: ")))
+            assert len(matches) == 1
+            return matches[0]
+
+        initial_limits = limits(harness.prepared[keys[3]]["rendered"])
+        final_limits = limits(harness.prepared[keys[-1]]["rendered"])
+        assert initial_limits["available_planner_actions"] == [
+            "ACCEPT", "REVISE", "REFRESH_CANDIDATES",
+        ]
+        assert initial_limits["remaining_candidate_refreshes"] == 1
+        assert final_limits["available_planner_actions"] == ["ACCEPT"]
+        assert final_limits["remaining_candidate_refreshes"] == 0
+        visits = result.native_episode_receipt["role_visits"]
+        perceptions = [v for v in visits if v["stage"] == "perception"]
+        assert len(perceptions) == 2
+        assert perceptions[0]["execution_receipt"] != perceptions[1]["execution_receipt"]
+        assert result.final_response_text.endswith(":visit:2")
+        from copy import deepcopy
+        from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
+            validate_native_candidate_refresh_receipt,
+        )
+
+        def verify(receipt):
+            return validate_native_candidate_refresh_receipt(
+                receipt, refresh_action="REFRESH_CANDIDATES",
+                max_refreshes=1, max_revisions=1, accept_action="ACCEPT", revise_action="REVISE",
+            )
+        assert verify(result.native_episode_receipt) == 1
+        corrupted = deepcopy(result.native_episode_receipt)
+        corrupted["planner_routes"][0]["action"] = "REVISE"
+        with pytest.raises(ValueError, match="ordered role/route"):
+            verify(corrupted)
+        corrupted = deepcopy(result.native_episode_receipt)
+        corrupted["role_visits"][4]["stage"] = "solver"
+        with pytest.raises(ValueError, match="following Perception"):
+            verify(corrupted)
+        corrupted = deepcopy(result.native_episode_receipt)
+        corrupted["planner_routes"][1]["revision_count"] = 0
+        with pytest.raises(ValueError, match="ordered role/route"):
+            verify(corrupted)
+    finally:
+        harness.close()

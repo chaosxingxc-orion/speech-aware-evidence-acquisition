@@ -1733,6 +1733,13 @@ async def _invoke_native_role_episode(
                 *([config.actions[1]] if episode_state["revision_count"] < config.max_revisions else []),
             ],
         }
+        if config.refresh_action is not None:
+            remaining_refreshes = (
+                config.max_candidate_refreshes - episode_state.get("candidate_refresh_count", 0)
+            )
+            limits["remaining_candidate_refreshes"] = remaining_refreshes
+            if remaining_refreshes > 0 and episode_state["revision_count"] < config.max_revisions:
+                limits["available_planner_actions"].append(config.refresh_action)
         material = replace(
             material,
             instruction=material.instruction + "\n\nNative episode limits: "
@@ -1936,6 +1943,8 @@ async def _invoke_native_role_episode(
                 config.max_revisions,
                 NativeEpisodeActions(*config.actions),
                 config.exhaustion_policy,
+                config.refresh_action,
+                config.max_candidate_refreshes,
             ),
             nodes=NativeEpisodeNodes(**nodes),
             role_input_builder=role_input,
@@ -1946,8 +1955,17 @@ async def _invoke_native_role_episode(
         from .native_episode_receipt import validate_native_episode_delivery_receipt
 
         delivery = validate_native_episode_delivery_receipt(
-            receipt, terminal_actions=config.actions[1:], error_type=RailsRunnerError,
+            receipt, terminal_actions=config.terminal_actions, error_type=RailsRunnerError,
         )
+        if config.refresh_action is not None:
+            from .native_episode_receipt import validate_native_candidate_refresh_receipt
+
+            validate_native_candidate_refresh_receipt(
+                receipt, refresh_action=config.refresh_action,
+                max_refreshes=config.max_candidate_refreshes, max_revisions=config.max_revisions,
+                accept_action=config.actions[0], revise_action=config.actions[1],
+                error_type=RailsRunnerError,
+            )
         final_solver_receipt = delivery.solver_receipt
         terminal_disposition = delivery.terminal_disposition
         if terminal_disposition is not None and (

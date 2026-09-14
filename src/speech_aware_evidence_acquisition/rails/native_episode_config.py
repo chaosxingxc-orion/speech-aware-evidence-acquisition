@@ -22,6 +22,12 @@ class NativeEpisodeConfig:
     roles: tuple[NativeEpisodeRole, ...]
     max_contacts: int
     exhaustion_policy: str = "raise"
+    refresh_action: str | None = None
+    max_candidate_refreshes: int = 0
+
+    @property
+    def terminal_actions(self) -> tuple[str, ...]:
+        return self.actions[1:] + (() if self.refresh_action is None else (self.refresh_action,))
 
     def role(self, kind: str) -> NativeEpisodeRole:
         return next(role for role in self.roles if role.role_kind == kind)
@@ -54,7 +60,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     required_fields = {
         "schema", "episode_id", "max_revisions", "actions", "roles",
     }
-    optional_fields = {"exhaustion_policy"}
+    optional_fields = {"exhaustion_policy", "candidate_refresh"}
     if (
         not isinstance(raw, Mapping)
         or set(raw) - required_fields - optional_fields
@@ -79,6 +85,19 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     action_values = tuple(actions[key] for key in ("accept", "revise", "acquire"))
     if any(not isinstance(v, str) or not v for v in action_values) or len(set(action_values)) != 3:
         raise ValueError("native actions must be distinct nonempty strings")
+    refresh_action, refreshes = None, 0
+    if "candidate_refresh" in raw:
+        refresh = raw["candidate_refresh"]
+        if not isinstance(refresh, Mapping) or set(refresh) != {"action", "max_refreshes"}:
+            raise ValueError("candidate_refresh requires action and max_refreshes")
+        refresh_action, refreshes = refresh["action"], refresh["max_refreshes"]
+        if (
+            not isinstance(refresh_action, str) or not refresh_action.strip()
+            or refresh_action in action_values
+            or isinstance(refreshes, bool) or not isinstance(refreshes, int)
+            or not 1 <= refreshes <= revisions
+        ):
+            raise ValueError("candidate_refresh needs a distinct action and a bounded revision allowance")
     raw_roles = raw["roles"]
     kinds = ("perception", "solver", "reviewer", "planner")
     if not isinstance(raw_roles, Mapping) or set(raw_roles) != set(kinds):
@@ -114,7 +133,26 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         raise ValueError("native tool phase is outside the episode")
     if any(phase.barrier for phase in program.phases):
         raise ValueError("conditional native episodes cannot declare whole-roster phase barriers")
+    if refresh_action is not None:
+        stores = values.get("knowledge_stores", {})
+        if not isinstance(stores, Mapping):
+            raise ValueError("candidate refresh knowledge_stores must be a mapping")
+        for store in stores.values():
+            if not isinstance(store, Mapping):
+                raise ValueError("candidate refresh knowledge store must be a mapping")
+            supplies = store.get("candidate_supply", {})
+            if not isinstance(supplies, Mapping):
+                raise ValueError("candidate refresh candidate_supply must be a mapping")
+            for spec in supplies.values():
+                if not isinstance(spec, Mapping):
+                    raise ValueError("candidate refresh candidate supply must be a mapping")
+                if (
+                    spec.get("candidate_state_phase") == roles[0].phase_id
+                    and spec.get("candidate_state_selection", "single") != "latest"
+                ):
+                    raise ValueError("candidate refresh requires latest candidate source selection")
     ceiling = roles[0].max_iterations + (revisions + 1) * sum(r.max_iterations for r in roles[1:])
+    ceiling += refreshes * roles[0].max_iterations
     if program.max_contacts != ceiling:
         raise ValueError("program contact ceiling must equal the bounded native graph ceiling")
     return NativeEpisodeConfig(
@@ -124,4 +162,6 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         tuple(roles),
         ceiling,
         exhaustion_policy,
+        refresh_action,
+        refreshes,
     )
