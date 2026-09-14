@@ -82,7 +82,7 @@
       "acquire": "ACQUIRE",
       "revise": "REVISE"
     },
-    "episode_id": "slurp-native-dual-store-live-speech-dev1000-v1",
+    "episode_id": "slurp-native-dual-store-dev1000-v1",
     "exhaustion_policy": "deliver-latest-solver",
     "max_revisions": 1,
     "roles": {
@@ -197,9 +197,53 @@
       "sha256": "f83b5b002d0823de40ac3f52f9a839f83daedf4ecdbbf0606b85f1fc07bd01a8"
     }
   ],
-  "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-V1/phase-supply-associated-values-v1.json",
-    "sha256": "8f44dc4e2d9a51202d7618b89bec47a5b34f6484187302fea7e80f751a1df029"
+  "prospective_live_speech_observation": {
+    "inventory": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-PREPARE-V1/full-runtime-inventory-v2.json",
+      "sha256": "e5e6d37646438ab57bb3362ced18726cde4f2762a2893f7e6a416e7e484d0427"
+    },
+    "model_free_inventory_verification": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-PREPARE-V1/source-version-verification-v1.json",
+      "sha256": "5863c96a720b14030bdd746feb6dd910914c6f507ca07b7a52699f7a53011c32"
+    },
+    "protocol": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-PREPARE-V1/cpu-decode-protocol.json",
+      "sha256": "986eb37756a4b72a0732ad5aac92ac83de2f53199b370645c20f4ba429ddc32f"
+    },
+    "scope": {
+      "alternate_answer_model": false,
+      "authority_role": "reviewer",
+      "crop_interface": false,
+      "fixed_preprocessing": false,
+      "representation": "asr-transcript",
+      "span": "full-utterance",
+      "tool_id": "saea-tool-live-speech-observation-v1"
+    },
+    "source_inventory": {
+      "contact_class": "model-free",
+      "relpath": "prepared/SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-PREPARE-V1/source-inventory.json",
+      "sha256": "435d64b9e4fd341d9db6f8e574d5eda08007f48c432dda55b09bc0b2ab318782"
+    },
+    "status": "HELD_PENDING_ROOT_DIAGNOSTIC_DECISION",
+    "unresolved_runtime_bindings": {
+      "attempt_namespaced_output_relpath": null,
+      "cpu_library_thread_limits": null,
+      "generation_execution_plan": null,
+      "live_asr_execution_plan": null,
+      "live_asr_exposure_ledger_row": null,
+      "live_speech_observations": null,
+      "native_contact_fit_plan": null,
+      "official_scoring_registration": null,
+      "root_admission_decision": null
+    }
+  },
+  "prospective_phase_supply": {
+    "reason": "Reuse sealed knowledge and vectors, then prepare and verify a new receipt after the final admitted successor configuration is composed. This old source pin is comparison evidence, not an active prepared_phase_supply binding.",
+    "source_artifact": {
+      "relpath": "prepared/SAEA-SLURP-NATIVE-DUAL-STORE-DEV1000-V1/phase-supply-associated-values-v1.json",
+      "sha256": "8f44dc4e2d9a51202d7618b89bec47a5b34f6484187302fea7e80f751a1df029"
+    },
+    "status": "REQUIRES_FRESH_CONFIG_BOUND_PREPARATION"
   },
   "scorers": [
     "slurp-slu-official",
@@ -215,45 +259,5 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "HELD prospective version of the current complete dual-store native max512 system. Preserve both released knowledge stores, bounded Perception, candidate-associated Solver supply, the native role graph, one revision, DEV-1000 promoted speech packets and sole-Solver answer authority. Reviewer alone may select the existing source-bound full-utterance local Whisper tool for a concrete lexical ambiguity or missing decisive spoken value. No transcript is prepared in advance. This fragment deliberately omits executable live-ASR, fit and generation bindings until root admits the capability after the current pair diagnostics; inherited scorer names do not register a scoring job.",
-  "prospective_live_speech_observation": {
-    "status": "HELD_PENDING_ROOT_DIAGNOSTIC_DECISION",
-    "scope": {
-      "authority_role": "reviewer",
-      "tool_id": "saea-tool-live-speech-observation-v1",
-      "span": "full-utterance",
-      "representation": "asr-transcript",
-      "fixed_preprocessing": false,
-      "crop_interface": false,
-      "alternate_answer_model": false
-    },
-    "source_inventory": {
-      "relpath": "prepared/SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-PREPARE-V1/source-inventory.json",
-      "sha256": "435d64b9e4fd341d9db6f8e574d5eda08007f48c432dda55b09bc0b2ab318782",
-      "contact_class": "model-free"
-    },
-    "inventory": {
-      "relpath": "prepared/SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-PREPARE-V1/full-runtime-inventory-v2.json",
-      "sha256": "e5e6d37646438ab57bb3362ced18726cde4f2762a2893f7e6a416e7e484d0427"
-    },
-    "protocol": {
-      "relpath": "prepared/SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-PREPARE-V1/cpu-decode-protocol.json",
-      "sha256": "986eb37756a4b72a0732ad5aac92ac83de2f53199b370645c20f4ba429ddc32f"
-    },
-    "model_free_inventory_verification": {
-      "relpath": "prepared/SAEA-SLURP-NATIVE-SYSTEM-LIVE-SPEECH-PREPARE-V1/source-version-verification-v1.json",
-      "sha256": "5863c96a720b14030bdd746feb6dd910914c6f507ca07b7a52699f7a53011c32"
-    },
-    "unresolved_runtime_bindings": {
-      "root_admission_decision": null,
-      "generation_execution_plan": null,
-      "native_contact_fit_plan": null,
-      "live_asr_execution_plan": null,
-      "live_asr_exposure_ledger_row": null,
-      "live_speech_observations": null,
-      "attempt_namespaced_output_relpath": null,
-      "official_scoring_registration": null,
-      "cpu_library_thread_limits": null
-    }
-  }
+  "what_this_is": "HELD prospective version of the current complete dual-store native max512 system. Preserve both released knowledge stores, bounded Perception, candidate-associated Solver supply, the native role graph, one revision, DEV-1000 promoted speech packets and sole-Solver answer authority. Reviewer alone may select the existing source-bound full-utterance local Whisper tool for a concrete lexical ambiguity or missing decisive spoken value. No transcript is prepared in advance. This fragment deliberately omits executable live-ASR, fit and generation bindings until root admits the capability after the current pair diagnostics; inherited scorer names do not register a scoring job."
 }

@@ -1,19 +1,19 @@
 {
   "cells": [
     {
-      "cell_id": "slurp-native-dual-store-live-speech-dev1000-held-v1",
-      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
-      "dataset_fragment": "slurp-speech-native-dev1000",
-      "baseline_fragment": "slurp-native-dual-store-live-speech-dev1000-v1",
-      "run_id": "PENDING_ROOT_GENERATION_RUN_ID",
-      "attempt_id": "PENDING_ROOT_GENERATION_ATTEMPT_ID",
       "allowed_execution_stages": [
         "check"
       ],
+      "attempt_id": "PENDING_ROOT_GENERATION_ATTEMPT_ID",
+      "baseline_fragment": "slurp-native-dual-store-live-speech-dev1000-v1",
+      "cell_id": "slurp-native-dual-store-live-speech-dev1000-held-v1",
+      "dataset_fragment": "slurp-speech-native-dev1000",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "state": "held",
-        "reason": "Root must first conclude the current direct/native dual-store diagnostics and decide that speech evidence is warranted. This config has no executable generation, fit, ASR, ledger, scoring or resource binding."
-      }
+        "reason": "Root must first conclude the current direct/native dual-store diagnostics and decide that speech evidence is warranted. This config has no executable generation, fit, ASR, ledger, scoring or resource binding.",
+        "state": "held"
+      },
+      "run_id": "PENDING_ROOT_GENERATION_RUN_ID"
     }
   ],
   "date": "2026-09-14",
@@ -21,6 +21,17 @@
   "experiment_id": "SAEA-SLURP-NATIVE-DUAL-STORE-LIVE-SPEECH-DEV1000-HELD-V1",
   "failure_policy": "HELD: check configuration structure only. Refuse worker, campaign, preparation, scoring, model, tool, audio, backend and GPU contact until root records a diagnostic-based admission and supplies every unresolved binding.",
   "fragment_kind": "saea-slurp-native-dual-store-live-speech-held-v1",
+  "pending_root_bindings": {
+    "cpu_resource_envelope": "Pin CPU inference-library thread limits in the future worker environment; the prepared protocol's cpu_workers field covers audio preparation only.",
+    "diagnostic_decision": "Name the current-pair failure component and decide whether full-utterance speech evidence is warranted.",
+    "exposure_ledger": "Create one parser-valid, unconsumed live-ASR row before preflight.",
+    "generation_execution_plan": "Create and pin a source-bound plan only after admission; model/audio/GPU ceilings remain unresolved.",
+    "live_asr_execution_plan": "Create and pin a separate source-bound speech-tool plan; contact and audio ceilings remain unresolved.",
+    "native_contact_fit": "Register fresh fit identities and exact endpoint ceiling for the unchanged max512 role graph plus possible Reviewer tool history.",
+    "official_scoring": "Register scoring and analysis only after the comparison and claim boundary are chosen.",
+    "prepared_phase_supply": "Regenerate the source/config-bound prepared wrapper after final configuration, verify all1000 rows against the same sealed sources, and pin the newly returned artifact. Do not install the predecessor artifact as the successor's active receipt.",
+    "runtime_binding": "Replace prospective metadata with live_speech_observations containing the pinned inventory, protocol, ASR plan and a fresh attempt-namespaced output_relpath."
+  },
   "population": {
     "count": 1000,
     "dataset_fragment": "slurp-speech-native-dev1000",
@@ -30,15 +41,5 @@
   "preserve_wire_responses": true,
   "purpose": "Prospective current dual-store native max512 system with Reviewer-owned, on-demand, full-utterance local Whisper evidence. Solver alone answers. No fixed ASR preprocessing, crop interface, alternate answering model or isolated-component claim is admitted.",
   "service_session": "PENDING_ROOT_SELECTION",
-  "split_id": "DEV-1000",
-  "pending_root_bindings": {
-    "diagnostic_decision": "Name the current-pair failure component and decide whether full-utterance speech evidence is warranted.",
-    "generation_execution_plan": "Create and pin a source-bound plan only after admission; model/audio/GPU ceilings remain unresolved.",
-    "native_contact_fit": "Register fresh fit identities and exact endpoint ceiling for the unchanged max512 role graph plus possible Reviewer tool history.",
-    "live_asr_execution_plan": "Create and pin a separate source-bound speech-tool plan; contact and audio ceilings remain unresolved.",
-    "exposure_ledger": "Create one parser-valid, unconsumed live-ASR row before preflight.",
-    "runtime_binding": "Replace prospective metadata with live_speech_observations containing the pinned inventory, protocol, ASR plan and a fresh attempt-namespaced output_relpath.",
-    "official_scoring": "Register scoring and analysis only after the comparison and claim boundary are chosen.",
-    "cpu_resource_envelope": "Pin CPU inference-library thread limits in the future worker environment; the prepared protocol's cpu_workers field covers audio preparation only."
-  }
+  "split_id": "DEV-1000"
 }
