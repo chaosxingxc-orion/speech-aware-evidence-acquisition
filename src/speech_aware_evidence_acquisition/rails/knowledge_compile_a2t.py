@@ -7,6 +7,7 @@ source-bound outputs through registered knowledge providers after preparation.
 
 from __future__ import annotations
 
+import argparse
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 import hashlib
@@ -45,6 +46,39 @@ PUBLIC_API_LEGALITY_PRESENTATION_V1 = "saea-a2t-public-api-legality-presentation
 NATIVE_COMPATIBLE_PRESENTATION_V1 = "saea-a2t-native-compatible-presentation-v1"
 NATIVE_CARD_SNAPSHOT_BUILDER_V1 = "saea-a2t-native-card-snapshot-v1"
 NATIVE_CARD_SNAPSHOT_SOURCE_V1 = "saea-a2t-native-card-snapshot-source-v1"
+NATIVE_SNAPSHOT_VALUE_VIEW_FULL = "full"
+NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION = "tool-activation"
+NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING = "parameter-meaning"
+_NATIVE_SNAPSHOT_VALUE_VIEWS = frozenset(
+    {
+        NATIVE_SNAPSHOT_VALUE_VIEW_FULL,
+        NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION,
+        NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING,
+    }
+)
+_COMPILATION_CONFIG_REQUIRED_FIELDS = frozenset(
+    {
+        "compilation_id",
+        "dataset_lock_path",
+        "dataset_lock_sha256",
+        "data_root",
+        "construction_receipt_path",
+        "construction_receipt_sha256",
+        "tool_registry_path",
+        "tool_registry_sha256",
+        "corpus_output_path",
+        "receipt_output_path",
+    }
+)
+_COMPILATION_CONFIG_OPTIONAL_FIELDS = frozenset(
+    {
+        "minimum_compatibility_support",
+        "max_utf8_bytes",
+        "presentation_version",
+        "snapshot_output_path",
+        "snapshot_value_view",
+    }
+)
 _ZERO_CONTACTS = {
     "audio_seconds": 0,
     "embedding_tool": 0,
@@ -75,6 +109,7 @@ class A2tSemanticCardCompilationConfig:
     max_utf8_bytes: int = DEFAULT_MAX_UTF8_BYTES
     presentation_version: str | None = None
     snapshot_output_path: Path | None = None
+    snapshot_value_view: str | None = None
 
 
 @dataclass(frozen=True)
@@ -1445,10 +1480,51 @@ def _native_snapshot_key_text(card: NativeCompatibleToolSemanticCard) -> str:
     return text
 
 
+def _native_snapshot_value_text(
+    card: NativeCompatibleToolSemanticCard,
+    *,
+    value_view: str,
+) -> str:
+    """Project a compiler-owned native card without parsing external text."""
+
+    if value_view == NATIVE_SNAPSHOT_VALUE_VIEW_FULL:
+        return card.text
+    expected_prefix = (
+        f"TOOL CARD {card.tool_name}",
+        f"Exact tool name: {card.tool_name}",
+        f"Choose when: {card.choose_semantics}",
+        f"Avoid when: {card.avoid_semantics}",
+    )
+    lines = tuple(card.text.splitlines())
+    if (
+        lines[:4] != expected_prefix
+        or len(lines) <= 4
+        or lines[4] != f"Public signature: {card.signature}"
+    ):
+        raise SemanticCardCompilationError(
+            f"native semantic-card activation prefix drift for {card.tool_name!r}"
+        )
+    if value_view == NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION:
+        selected = expected_prefix
+    elif value_view == NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING:
+        selected = (*expected_prefix[:2], *lines[4:])
+    else:
+        raise SemanticCardCompilationError(
+            f"unsupported native snapshot value view {value_view!r}"
+        )
+    text = "\n".join(selected)
+    if not text.isascii():
+        raise SemanticCardCompilationError(
+            f"snapshot value text must be ASCII English for {card.tool_name!r}"
+        )
+    return text
+
+
 def build_native_compatible_knowledge_snapshot(
     corpus: NativeCompatibleSemanticCardCorpus,
     *,
     compilation_source: Mapping[str, object],
+    value_view: str | None = None,
 ) -> KnowledgeSnapshot:
     """Project native cards into positive keys and complete supplied values.
 
@@ -1457,6 +1533,13 @@ def build_native_compatible_knowledge_snapshot(
     bind the snapshot without a circular artifact dependency.
     """
 
+    effective_value_view = (
+        NATIVE_SNAPSHOT_VALUE_VIEW_FULL if value_view is None else value_view
+    )
+    if effective_value_view not in _NATIVE_SNAPSHOT_VALUE_VIEWS:
+        raise SemanticCardCompilationError(
+            f"unsupported native snapshot value view {value_view!r}"
+        )
     expected_source_keys = {
         "schema",
         "compilation_id",
@@ -1468,6 +1551,8 @@ def build_native_compatible_knowledge_snapshot(
         "minimum_compatibility_support",
         "max_utf8_bytes",
     }
+    if effective_value_view != NATIVE_SNAPSHOT_VALUE_VIEW_FULL:
+        expected_source_keys.add("value_view")
     if set(compilation_source) != expected_source_keys:
         raise SemanticCardCompilationError(
             "native snapshot compilation source has malformed fields"
@@ -1475,6 +1560,13 @@ def build_native_compatible_knowledge_snapshot(
     if compilation_source.get("schema") != NATIVE_CARD_SNAPSHOT_SOURCE_V1:
         raise SemanticCardCompilationError(
             "native snapshot compilation source schema is unsupported"
+        )
+    source_value_view = compilation_source.get(
+        "value_view", NATIVE_SNAPSHOT_VALUE_VIEW_FULL
+    )
+    if source_value_view != effective_value_view:
+        raise SemanticCardCompilationError(
+            "native snapshot compilation source value view does not match the requested view"
         )
     if (
         compilation_source.get("presentation_version")
@@ -1526,6 +1618,9 @@ def build_native_compatible_knowledge_snapshot(
     for card in ordered_cards:
         facet_id = f"a2t-native-card:{card.tool_name}:content"
         value_id = f"a2t-native-card:{card.tool_name}:value"
+        value_text = _native_snapshot_value_text(
+            card, value_view=effective_value_view
+        )
         facets.append(
             KeyFacet(
                 facet_id=facet_id,
@@ -1538,14 +1633,19 @@ def build_native_compatible_knowledge_snapshot(
         values.append(
             ValueBundle(
                 value_id=value_id,
-                content=card.text,
+                content=value_text,
                 associated_facet_ids=(facet_id,),
                 source_sample_ids=(source_id,),
                 provenance_refs=(
                     f"a2t-native-card-compilation-source-sha256:{source_sha256}",
                     f"a2t-native-card-corpus-sha256:{corpus.sha256}",
                     "a2t-native-card-sha256:"
-                    f"{hashlib.sha256(card.text.encode('utf-8')).hexdigest()}",
+                    f"{hashlib.sha256(value_text.encode('utf-8')).hexdigest()}",
+                    *(
+                        (f"a2t-native-card-value-view:{effective_value_view}",)
+                        if effective_value_view != NATIVE_SNAPSHOT_VALUE_VIEW_FULL
+                        else ()
+                    ),
                 ),
                 task_target=card.tool_name,
                 prior_score=None,
@@ -1603,6 +1703,28 @@ def _validate_config(config: A2tSemanticCardCompilationConfig) -> None:
             f"{NATIVE_COMPATIBLE_PRESENTATION_V1!r}"
         )
     if (
+        config.snapshot_value_view is not None
+        and (
+            not isinstance(config.snapshot_value_view, str)
+            or config.snapshot_value_view not in _NATIVE_SNAPSHOT_VALUE_VIEWS
+        )
+    ):
+        raise SemanticCardCompilationError(
+            "snapshot_value_view must be None or one of "
+            f"{sorted(_NATIVE_SNAPSHOT_VALUE_VIEWS)!r}"
+        )
+    if (
+        config.snapshot_value_view
+        not in {None, NATIVE_SNAPSHOT_VALUE_VIEW_FULL}
+        and (
+            config.presentation_version != NATIVE_COMPATIBLE_PRESENTATION_V1
+            or config.snapshot_output_path is None
+        )
+    ):
+        raise SemanticCardCompilationError(
+            "non-default snapshot_value_view requires native-compatible snapshot export"
+        )
+    if (
         config.snapshot_output_path is not None
         and config.presentation_version != NATIVE_COMPATIBLE_PRESENTATION_V1
     ):
@@ -1617,6 +1739,121 @@ def _validate_config(config: A2tSemanticCardCompilationConfig) -> None:
     for path in output_paths:
         if Path(path).exists():
             raise SemanticCardCompilationError(f"output already exists: {path}")
+
+
+def _required_config_text(document: Mapping[str, object], field: str) -> str:
+    value = document.get(field)
+    if not isinstance(value, str) or not value:
+        raise SemanticCardCompilationError(
+            f"semantic-card compilation config {field} must be non-empty text"
+        )
+    return value
+
+
+def _optional_config_text(
+    document: Mapping[str, object], field: str
+) -> str | None:
+    value = document.get(field)
+    if value is None:
+        return None
+    if not isinstance(value, str) or not value:
+        raise SemanticCardCompilationError(
+            f"semantic-card compilation config {field} must be null or non-empty text"
+        )
+    return value
+
+
+def _config_positive_integer(
+    document: Mapping[str, object], field: str, default: int
+) -> int:
+    value = document.get(field, default)
+    if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+        raise SemanticCardCompilationError(
+            f"semantic-card compilation config {field} must be a positive integer"
+        )
+    return value
+
+
+def load_a2t_semantic_card_compilation_config(
+    config_path: Path,
+) -> A2tSemanticCardCompilationConfig:
+    """Load one exact JSON config for the shared offline compiler."""
+
+    path = Path(config_path)
+    try:
+        raw = path.read_bytes()
+    except OSError as error:
+        raise SemanticCardCompilationError(
+            f"cannot read semantic-card compilation config {path}: {error}"
+        ) from error
+    try:
+        document = json.loads(raw.decode("utf-8"))
+    except (UnicodeError, json.JSONDecodeError) as error:
+        raise SemanticCardCompilationError(
+            f"cannot parse semantic-card compilation config {path}: {error}"
+        ) from error
+    allowed = _COMPILATION_CONFIG_REQUIRED_FIELDS | _COMPILATION_CONFIG_OPTIONAL_FIELDS
+    if (
+        not isinstance(document, Mapping)
+        or not _COMPILATION_CONFIG_REQUIRED_FIELDS <= set(document)
+        or not set(document) <= allowed
+    ):
+        raise SemanticCardCompilationError(
+            "semantic-card compilation config has missing or unknown fields"
+        )
+
+    snapshot_output = _optional_config_text(document, "snapshot_output_path")
+    value_view = document.get("snapshot_value_view")
+    if value_view is not None and (
+        not isinstance(value_view, str) or not value_view
+    ):
+        raise SemanticCardCompilationError(
+            "semantic-card compilation config snapshot_value_view must be "
+            "null or non-empty text"
+        )
+    config = A2tSemanticCardCompilationConfig(
+        compilation_id=_required_config_text(document, "compilation_id"),
+        dataset_lock_path=Path(_required_config_text(document, "dataset_lock_path")),
+        dataset_lock_sha256=_required_config_text(
+            document, "dataset_lock_sha256"
+        ),
+        data_root=Path(_required_config_text(document, "data_root")),
+        construction_receipt_path=Path(
+            _required_config_text(document, "construction_receipt_path")
+        ),
+        construction_receipt_sha256=_required_config_text(
+            document, "construction_receipt_sha256"
+        ),
+        tool_registry_path=Path(
+            _required_config_text(document, "tool_registry_path")
+        ),
+        tool_registry_sha256=_required_config_text(
+            document, "tool_registry_sha256"
+        ),
+        corpus_output_path=Path(
+            _required_config_text(document, "corpus_output_path")
+        ),
+        receipt_output_path=Path(
+            _required_config_text(document, "receipt_output_path")
+        ),
+        minimum_compatibility_support=_config_positive_integer(
+            document,
+            "minimum_compatibility_support",
+            MINIMUM_COMPATIBILITY_SUPPORT,
+        ),
+        max_utf8_bytes=_config_positive_integer(
+            document, "max_utf8_bytes", DEFAULT_MAX_UTF8_BYTES
+        ),
+        presentation_version=_optional_config_text(
+            document, "presentation_version"
+        ),
+        snapshot_output_path=(
+            Path(snapshot_output) if snapshot_output is not None else None
+        ),
+        snapshot_value_view=value_view,
+    )
+    _validate_config(config)
+    return config
 
 
 def _read_pinned_bytes(path: Path, expected_sha256: str, *, label: str) -> bytes:
@@ -1803,9 +2040,15 @@ def compile_a2t_semantic_card_artifacts(
             "minimum_compatibility_support": config.minimum_compatibility_support,
             "max_utf8_bytes": config.max_utf8_bytes,
         }
+        if config.snapshot_value_view not in {
+            None,
+            NATIVE_SNAPSHOT_VALUE_VIEW_FULL,
+        }:
+            snapshot_source["value_view"] = config.snapshot_value_view
         snapshot = build_native_compatible_knowledge_snapshot(
             corpus,
             compilation_source=snapshot_source,
+            value_view=config.snapshot_value_view,
         )
         snapshot_target_tools = {value.task_target for value in snapshot.values}
         if snapshot_target_tools != registry_tools:
@@ -1888,6 +2131,19 @@ def compile_a2t_semantic_card_artifacts(
             "supplied_value": "full-native-compatible-tool-card",
             "encoded_vectors_written": 0,
         }
+        if config.snapshot_value_view not in {
+            None,
+            NATIVE_SNAPSHOT_VALUE_VIEW_FULL,
+        }:
+            receipt["knowledge_snapshot"].update(
+                {
+                    "value_view": config.snapshot_value_view,
+                    "positive_key_reuse": (
+                        "unchanged-existing-mixed-tool-activation-and-parameter-role-guidance"
+                    ),
+                    "supplied_value": config.snapshot_value_view,
+                }
+            )
     receipt_bytes = (json.dumps(receipt, indent=2, sort_keys=True) + "\n").encode(
         "utf-8"
     )
@@ -1910,6 +2166,51 @@ def compile_a2t_semantic_card_artifacts(
     return receipt
 
 
+def _cli_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Compile source-bound Audio2Tool semantic-card artifacts offline."
+    )
+    parser.add_argument("--config", required=True, type=Path)
+    return parser
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """Run the shared Audio2Tool semantic-card compiler from strict JSON."""
+
+    args = _cli_parser().parse_args(argv)
+    config_path = Path(args.config)
+    config = load_a2t_semantic_card_compilation_config(config_path)
+    receipt = compile_a2t_semantic_card_artifacts(config)
+    snapshot_receipt = receipt.get("knowledge_snapshot")
+    summary: dict[str, object] = {
+        "compilation_id": config.compilation_id,
+        "config_path": str(config_path),
+        "config_sha256": _sha256_file(config_path),
+        "corpus_output_path": str(config.corpus_output_path),
+        "receipt_output_path": str(config.receipt_output_path),
+        "snapshot_output_path": (
+            str(config.snapshot_output_path)
+            if config.snapshot_output_path is not None
+            else None
+        ),
+        "snapshot_value_view": (
+            NATIVE_SNAPSHOT_VALUE_VIEW_FULL
+            if config.snapshot_value_view is None
+            else config.snapshot_value_view
+        ),
+        "tool_count": receipt["registry"]["tool_count"],
+    }
+    if isinstance(snapshot_receipt, Mapping):
+        summary.update(
+            {
+                "snapshot_sha256": snapshot_receipt["snapshot_sha256"],
+                "value_count": snapshot_receipt["value_count"],
+            }
+        )
+    print(json.dumps(summary, ensure_ascii=True, sort_keys=True))
+    return 0
+
+
 __all__ = [
     "A2tSemanticCardCompilationConfig",
     "COMPILATION_RECEIPT_SCHEMA",
@@ -1917,6 +2218,9 @@ __all__ = [
     "NATIVE_COMPATIBLE_PRESENTATION_V1",
     "NATIVE_CARD_SNAPSHOT_BUILDER_V1",
     "NATIVE_CARD_SNAPSHOT_SOURCE_V1",
+    "NATIVE_SNAPSHOT_VALUE_VIEW_FULL",
+    "NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING",
+    "NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION",
     "PUBLIC_API_LEGALITY_PRESENTATION_V1",
     "CompatibilityRule",
     "ExecutableSemanticCardCorpus",
@@ -1932,5 +2236,11 @@ __all__ = [
     "build_native_compatible_knowledge_snapshot",
     "build_public_legality_semantic_card_corpus",
     "compile_a2t_semantic_card_artifacts",
+    "load_a2t_semantic_card_compilation_config",
+    "main",
     "derive_compatibility_rules",
 ]
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
