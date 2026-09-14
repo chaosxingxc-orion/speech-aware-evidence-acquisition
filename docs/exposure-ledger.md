@@ -3688,3 +3688,14 @@ Register model-free TRAIN catalog construction before its source is read. The bo
 | date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2026-09-14T07:48:22.110636+00:00 | SAEA-SLURP-TRAIN-EXCLUDED-CANDIDATE-CONTRACTS-PREPARE-V1 | model-free-check | Filler-free canonical contract construction excluding both TRAIN folds and sibling recordings. | Shared SlurpAdapter provider; no neural or runtime tool contact. | slurp TRAIN excluding A/B utterances | discovery | ccae844e931569978e330ac2fd5b5cba91a625e038952d31613a5dca96259913 | yes | 0 | 0 | 0 | Existing pinned A/B identities only; do not read trajectories or scores. | docs/readiness/2026-09-14-slurp-native-candidate-refresh-tools-train-fold-a-v1/contract-preparation-registration-v1.json | Registration SHA256 dc62e04132a0b4afbac1bfc3be962c3a0019d1ae161c9c34cdb05fc23647a8f7; completed with 9,354 retained TRAIN utterances, 2,160 excluded utterances and all 60 legal intents; receipt SHA256 e6c9c538b2d6dd35673ecae5fe2f92596318dd1847248e74de22791c4d7dbc6f; zero neural/runtime tool contacts. No A/B example or reference value retained. |
+
+## September 14: complete registered source-audio metadata export
+
+This is a zero-contact metadata completion record. The source-preparation
+registration v2 preceded the successful export; the earlier model-free
+configuration refusals produced no source artifact or neural contact. Preserve
+their logs. This record does not retroactively authorize model or tool use.
+
+| date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-09-14T08:38:18.541539+00:00 | SAEA-SLURP-TRAIN-A-LIVE-SPEECH-SOURCES-PREPARE-V1 | model-free-check | Source-audio addresses, duration and packet binding export. | Shared metadata exporter; no neural or runtime analytical tool. | slurp TRAIN A, 1080 | discovery | 61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6 | yes | 0 | 0 | 0 | Existing registered source and packet metadata only; no outcome, reference text or decoded audio read. | docs/readiness/2026-09-14-slurp-native-candidate-refresh-tools-train-fold-a-v1/audio-source-preparation-registration-v2.json; prepared-tools-binding-v2.json | Source SHA256 e756e7f7dfb876e856dd0e12691a2e9497260036a1721efb883cd741d4ffd9c3; verification SHA256 c5420aacf78eccb7948a4bb12725af24933db52ba9874848b0d6b65b0819db1e. Total bound duration 3084.5284375 seconds is source metadata, not contacted speech. |

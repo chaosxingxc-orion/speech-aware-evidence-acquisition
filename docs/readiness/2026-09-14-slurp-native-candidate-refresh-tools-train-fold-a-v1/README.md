@@ -117,8 +117,8 @@ the active anchor's exclusive generation lease.
    obtain the sole lease, fit actual requests and dispatch through the shared entry.
    Keep source code for both versions until scoring and analysis are complete.
 
-This held config permits the shared original-audio metadata export independently
-of the scientific verdict. It has no generation, ASR or fit authority and no
+A separate preparation-only config permits the shared original-audio metadata
+export independently of the scientific verdict. It has no generation, ASR or fit authority and no
 prepared phase supply receipt. Do not turn placeholder fields into launch evidence.
 
 ## Training-free optimization handoff
@@ -164,3 +164,38 @@ semantic use, causality or an upper bound imposed by the full legal label list.
 This diagnostic will determine whether a later experiment should change keys,
 retrieval, discriminative values or evidence acquisition. Do not enlarge all
 knowledge indiscriminately or change the live experiment.
+
+
+Source-export entry correction: future live-tool declarations require actual
+ASR plan bindings, even before that future runtime exports metadata. Preserve
+both model-free refusal logs; no output or neural contact occurred. Use the
+separate source-preparation experiment over the already registered incumbent
+baseline, with identical Fold A identities and original packet/audio bindings.
+The prepared metadata is independent of the future role graph. Do not disable
+the runtime tool guard or invent a live ASR plan to pass it.
+
+Reproduce the metadata artifact through core.flight.cli mode
+prepare-speech-observation-sources, experiment/cell
+slurp-train-fold-a-speech-source-preparation-v1, and output
+DATA/prepared/SAEA-SLURP-TRAIN-A-LIVE-SPEECH-SOURCES-PREPARE-V1/sources.json.
+Use the normal repo/data/runtime/lock arguments and literal checkout PYTHONPATH.
+This preparation-only cell permits no other execution stage and contains only
+discovery-role metadata, not a complete contact ExecutionPlan.
+
+
+## Completed original-audio metadata preparation
+
+The separate source-preparation entry completed without neural contact. The
+source artifact contains exactly the registered 1,080 ordered TRAIN A records
+and 3,084.5284375 seconds. Its per-record audio address, audio hash, duration
+and packet ID match the dataset fragment; the shared loader verifies packet
+hash fields, prepared input/output hashes and split identity.
+
+Use prepared-tools-binding-v2.json for the catalog, CPU protocol and source
+inventory pins. Source artifact SHA256:
+e756e7f7dfb876e856dd0e12691a2e9497260036a1721efb883cd741d4ffd9c3.
+Verification receipt SHA256:
+c5420aacf78eccb7948a4bb12725af24933db52ba9874848b0d6b65b0819db1e.
+No audio was decoded, no ASR transcript was produced and no model, tokenizer,
+encoder, ASR or scoring contact occurred. This receipt prepares future
+role-selected access; it grants no fit, generation or ASR execution authority.

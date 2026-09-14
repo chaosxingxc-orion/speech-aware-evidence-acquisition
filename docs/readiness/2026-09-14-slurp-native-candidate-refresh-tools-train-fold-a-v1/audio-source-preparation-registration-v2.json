@@ -1,0 +1,29 @@
+{
+  "boundaries": {
+    "asr_calls": 0,
+    "audio_decode": 0,
+    "encoder_calls": 0,
+    "new_model_calls": 0,
+    "scorer_calls": 0,
+    "service_actions": 0,
+    "tokenizer_calls": 0
+  },
+  "cell": "slurp-train-fold-a-speech-source-preparation-v1",
+  "correction": "The future tools baseline truthfully refuses missing ASR runtime bindings before metadata export. Use a separate metadata-only cell over the already registered incumbent, with the identical source roster/packets; do not disable the tool/runtime guard. Prior attempts produced no output and no neural contact.",
+  "created_at": "2026-09-14T08:26:00.801291+00:00",
+  "experiment": "slurp-train-fold-a-speech-source-preparation-v1",
+  "knowledge_structure_audit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-native-dual-store-train-fold-a-anchor-recovery-v1/knowledge-value-structure-audit-v1.json",
+    "sha256": "49e705adeef8c2cb38b6043ccab615896cdbdcec9b1acdbfbeeb0c26f0f2016e"
+  },
+  "output_relpath": "prepared/SAEA-SLURP-TRAIN-A-LIVE-SPEECH-SOURCES-PREPARE-V1/sources.json",
+  "producer": "FlightRuntime.prepare_speech_observation_sources through core.flight.cli",
+  "profile": "model-free-check",
+  "purpose": "Export the existing label-free Fold A source-audio addresses, durations and packet/source hashes before a future selective ASR flight. No transcript is computed and no source outcome is read.",
+  "run_id": "SAEA-SLURP-TRAIN-A-LIVE-SPEECH-SOURCES-PREPARE-V1",
+  "schema": "saea-model-free-preparation-registration-v1",
+  "supersedes": {
+    "relpath": "docs/readiness/2026-09-14-slurp-native-candidate-refresh-tools-train-fold-a-v1/audio-source-preparation-registration-v1.json",
+    "sha256": "389c52c697543a5d090325f622f0a1c1bf87cfcd7e89d55883f42f9fe9f5639c"
+  }
+}
