@@ -28,6 +28,7 @@ def _runtime(tmp_path: Path) -> FlightRuntime:
     runtime._whisper_inventory_verifier = lambda value: dict(value)
     runtime._live_speech_attempt_handle = None
     runtime._live_speech_provider = None
+    runtime._candidate_experience_memory = None
     runtime._live_speech_finalized = False
     runtime._live_speech_source_bindings = {
         "s1": {

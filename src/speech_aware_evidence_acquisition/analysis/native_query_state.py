@@ -358,6 +358,37 @@ def reconstruct_verified_native_query_states(
                 raise NativeQueryStateReplayError(
                     f"native request {request_id!r} differs from its wave contact"
                 )
+            # The request has no top-level QueryState hash. Bind its actual
+            # speech descriptor and ordered state history to the replayed wave.
+            query_parts = [
+                row for row in _sequence(
+                    payload.get("speech_feature_parts"), "native speech descriptors"
+                )
+                if isinstance(row, Mapping) and row.get("role") == "query"
+            ]
+            history_states = [
+                row for row in _sequence(payload.get("history"), "native history")
+                if isinstance(row, Mapping) and row.get("role") == "agent_state"
+            ]
+            if (
+                current.query_sample_id != sample_id
+                or payload.get("query_source") != current.query_source
+                or payload.get("speech_packet_sha256") != current.speech_packet_sha256
+                or query_parts != [{
+                    "packet_id": current.speech_packet_id,
+                    "sha256": current.speech_packet_sha256,
+                    "role": "query",
+                }]
+                or tuple(row.get("state_id") for row in history_states)
+                != current.agent_state_ids
+                or any(
+                    row.get("state_kind") != states[row["state_id"]].state_kind
+                    for row in history_states
+                )
+            ):
+                raise NativeQueryStateReplayError(
+                    f"native request {request_id!r} differs from replayed speech or history"
+                )
             replayed[request_id] = current
 
             if wave.get("transition") != transitions[index]:

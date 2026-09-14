@@ -9,6 +9,7 @@ from pathlib import Path
 
 import pytest
 from test_group_relative_feedback import source_pair  # noqa: F401
+from test_llama_server_transport import _spawn_live_matching_process  # noqa: F401
 
 from speech_aware_evidence_acquisition.contracts import TraceRecord
 from speech_aware_evidence_acquisition.core.bundle.artifacts import VerifiedBundle
@@ -562,8 +563,8 @@ def test_provisional_records_remain_outside_admitted_runtime_catalog(
         )
 
 
-def test_real_bundle_and_feedback_authority_complete_path_and_opened_refusal(
-    source_pair, synthetic_world, tmp_path
+def _real_materialized_source(
+    source_pair, synthetic_world, *, roles=("solver",)
 ):
     data_root = synthetic_world.data_root
     source_bindings_path = data_root / "prepared" / "whole-path-source-bindings.json"
@@ -603,7 +604,7 @@ def test_real_bundle_and_feedback_authority_complete_path_and_opened_refusal(
         },
         "applicability": {
             "allowed_task_ids": ["slurp"],
-            "allowed_roles": ["solver"],
+            "allowed_roles": list(roles),
             "allowed_component_tags": ["org", "use"],
         },
     }
@@ -617,7 +618,9 @@ def test_real_bundle_and_feedback_authority_complete_path_and_opened_refusal(
     for index, row in enumerate(rows):
         content = {"status": "provisional", "proposals": []}
         if index == 0:
-            content["proposals"] = [_proposal()]
+            proposal = _proposal()
+            proposal["applicability"]["phases"] = list(roles)
+            content["proposals"] = [proposal]
         raw = json.dumps(content)
         canonical = validator.canonicalize(raw, sample_id=row["sample_id"])
         row.update(
@@ -752,6 +755,20 @@ def test_real_bundle_and_feedback_authority_complete_path_and_opened_refusal(
         "this is not evaluation evidence or admission."
     )
 
+    return {
+        "data_root": data_root, "config": config, "config_path": config_path,
+        "state_path": state_path, "receipt": receipt, "attestation": attestation,
+        "roster_path": roster_path, "roster_sha": roster_sha, "sample_ids": sample_ids,
+    }
+
+
+def test_real_bundle_and_feedback_authority_complete_path_and_opened_refusal(
+    source_pair, synthetic_world, tmp_path
+):
+    world = _real_materialized_source(source_pair, synthetic_world)
+    data_root, config, config_path, state_path = (
+        world[key] for key in ("data_root", "config", "config_path", "state_path")
+    )
     state = json.loads(state_path.read_bytes())
     state["state"] = "OPENED"
     state_path.write_text(json.dumps(state))
@@ -770,3 +787,210 @@ def test_real_bundle_and_feedback_authority_complete_path_and_opened_refusal(
             data_root=data_root,
         )
     assert not refused_path.exists()
+
+
+
+def _connected_candidate_native_source(
+    source_pair, synthetic_world, tmp_path, monkeypatch, *, memory_call=True, empty_pack=False
+):
+    from dataclasses import replace
+    from types import SimpleNamespace
+
+    from test_candidate_experience_memory import _world
+    from test_native_episode_runner import _ActualEpisodeHarness
+    from test_rails_runner import _knowledge_snapshot
+
+    from speech_aware_evidence_acquisition.analysis.native_tool_exposure import (
+        analyze_verified_native_tool_exposure,
+    )
+    from speech_aware_evidence_acquisition.core import preparation_fit
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+    from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
+    from speech_aware_evidence_acquisition.rails.phase_runner import run_continuous_program
+
+    source = _real_materialized_source(
+        source_pair, synthetic_world, roles=("reviewer",)
+    )
+    world = _world(tmp_path / "evaluation")
+    data_root = source["data_root"]
+    raw = world["config"]["candidate_experience_memory"]
+    for key, receipt in (
+        ("artifact", source["receipt"]),
+        ("source_attestation", source["attestation"]),
+    ):
+        path = Path(receipt["path"])
+        raw[key] = {
+            "data_relpath": str(path.relative_to(data_root)),
+            "sha256": receipt["sha256"],
+            "output_sha256": json.loads(path.read_bytes())["output_sha256"],
+        }
+    construction = world["repo_root"] / "construction.json"
+    shutil.copyfile(source["roster_path"], construction)
+    raw["construction_roster"]["sha256"] = _sha(construction)
+    output = json.loads(Path(source["receipt"]["path"]).read_bytes())["output"]
+    records = [
+        ExperienceRecord.from_json(record)
+        for sample in output["samples"] for record in sample["records"]
+    ]
+    raw["ordered_record_sha256s"] = (
+        [] if empty_pack else [record.record_sha256 for record in records]
+    )
+    values = dict(
+        world["config"], policy="phase-native-review-revise-v1",
+        arm="speech-feature-query-native-tools",
+        model_lock_key="qwen3-omni-30b-a3b-instruct-gguf",
+        phase_tools={
+            "reviewer": {
+                "mode": "native-tools",
+                "allowed_tools": ["saea-tool-corrective-memory-v1"],
+                "knowledge_views": ["text"],
+                "source_authority_role": "reviewer",
+            }
+        },
+    )
+    program = default_phase_program(values["policy"])
+    plan = replace(
+        world["plan"], planned_model_calls=len(world["evaluation_ids"]) * program.max_contacts,
+        planned_speech_audio_seconds=1000,
+    ).validate()
+    decision = json.loads(world["decision_path"].read_bytes())
+    decision.update(
+        candidate_artifact_sha256=raw["artifact"]["sha256"],
+        candidate_output_sha256=raw["artifact"]["output_sha256"],
+        source_attestation_sha256=raw["source_attestation"]["sha256"],
+        construction_roster_sha256=raw["construction_roster"]["sha256"],
+        ordered_record_sha256s=raw["ordered_record_sha256s"],
+    )
+    raw["evaluation_decision"]["sha256"] = _write_json(world["decision_path"], decision)
+
+    runtime = object.__new__(FlightRuntime)
+    runtime._repo_root = world["repo_root"]
+    runtime._data_root = data_root
+    runtime._runtime_root = tmp_path
+    runtime._composed = SimpleNamespace(values=values)
+    runtime._model = runtime._dataset = runtime._baseline = {}
+    runtime._adapter = SimpleNamespace()
+    runtime._samples = tuple(
+        SimpleNamespace(sample_id=item) for item in world["evaluation_ids"]
+    )
+    runtime._require_prior_stages = lambda _stage: None
+    runtime._prepare = lambda: (values, "slurp", "TRAIN-EVALUATION", plan.split_identity_hash)
+    runtime._build_execution_plan = lambda *_args: plan
+
+    class ContactGateReached(Exception):
+        pass
+
+    def gate(*_args, **_kwargs):
+        raise ContactGateReached
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("Answering runtime must not reopen source outcomes")
+
+    from speech_aware_evidence_acquisition.core import provisional_candidate_materialization
+    from speech_aware_evidence_acquisition.rails import reward_link_io
+    monkeypatch.setattr(
+        provisional_candidate_materialization, "prepare_provisional_candidates", forbidden
+    )
+    monkeypatch.setattr(reward_link_io, "read_verified_reward_link_artifact", forbidden)
+    runtime._gate_factory = gate
+    with pytest.raises(ContactGateReached):
+        runtime.preflight()
+    memory = runtime._candidate_experience_memory
+    assert [record.record_sha256 for record in memory.records] == raw["ordered_record_sha256s"]
+    assert memory.artifact_sha256 == source["receipt"]["sha256"]
+
+    harness = _ActualEpisodeHarness(
+        tmp_path / "episode", sample_count=2, max_revisions=1,
+        max_contacts=program.max_contacts, planner_actions=("REVISE", "ACCEPT"),
+        reviewer_memory=memory, sample_ids=world["evaluation_ids"], execution_plan=plan,
+        data_root=data_root,
+    )
+    if not memory_call:
+        original_output = harness._output
+        harness._output = lambda key: (
+            "Review complete." if key[1] == "reviewer" else original_output(key)
+        )
+    runtime._adapter = harness.adapter
+    runtime._samples = harness.samples
+    assert runtime._data_root == harness.world.data_root
+    runtime._split_id = "all"
+    runtime._transport = harness.transport
+    runtime._client = harness.client
+    runtime._phase_program_material = {
+        "knowledge_snapshot": _knowledge_snapshot(),
+        "speech_packet_bindings": harness.speech_bindings,
+        "material_for_phase": harness.material_for_phase,
+        "trace_sink": harness.trace,
+        "review_for_phase": None,
+    }
+    runtime._continuous_phase_runner = run_continuous_program
+    runtime._phase_planner_specs = lambda _policy: {}
+    runtime._phase_decoding_params = lambda: {"temperature": 0, "max_tokens": 64}
+    runtime._fit_base_plan = lambda actual_plan: actual_plan
+    runtime._phase_tool_builder = None
+    runtime._experience_memory = None
+    runtime._speech_observations = None
+    runtime._live_speech_config = None
+    runtime._live_speech_source_bindings = {}
+    runtime._phase_knowledge_catalog = lambda _snapshot: None
+    runtime.assert_generation_lease = lambda: None
+    runtime.speech_packet_bindings = lambda: harness.speech_bindings
+
+    def fitted_request(request):
+        harness.request_gate(request)
+        fitted_request.receipts.append({"capacity_verified": False})
+
+    fitted_request.receipts = []
+    monkeypatch.setattr(
+        preparation_fit, "build_native_contact_fit_gate", lambda *_args: fitted_request
+    )
+    try:
+        rows, contacts, _kind, _dispatch, _phases = runtime._dispatch_phase_program(
+            harness.client, plan, values["policy"]
+        )
+        runtime._output_rows = rows
+        canonical = runtime._canonical_output_rows(harness.client)
+    finally:
+        harness.close()
+
+    assert contacts == (16 if memory_call else 14)
+    assert [row["sample_id"] for row in canonical] == list(world["evaluation_ids"])
+    trace_path = harness.world.run_dir / f"{plan.run_id}.trace.jsonl"
+    traces = {
+        row["record_id"]: row["payload"]
+        for row in (json.loads(line) for line in trace_path.read_text().splitlines())
+    }
+    phases = {
+        result.sample_id: result.as_json()
+        for summary in runtime._phase_summaries for result in summary.results
+    }
+    report = analyze_verified_native_tool_exposure(
+        sample_ids=world["evaluation_ids"], controller_policy_id=values["policy"],
+        phase_results=phases,
+        output_rows={row["sample_id"]: row for row in canonical},
+        trace_records=traces,
+    )
+    assert report["successful_call_count"] == (2 if memory_call else 0)
+    assert report["exposed_successful_call_count"] == (2 if memory_call else 0)
+    for sample_id in (world["evaluation_ids"] if memory_call else ()):
+        for key in ((sample_id, "reviewer", 1, 2), (sample_id, "solver", 2, 1)):
+            messages = harness.prepared[key]["rendered"]["messages"]
+            tool = next(message for message in messages if message["role"] == "tool")
+            selection = json.loads(tool["content"])["result"]
+            assert [row["record_sha256"] for row in selection["selected_records"]] == (
+                raw["ordered_record_sha256s"]
+            )
+            assert harness.events.index(("fit", key)) < harness.events.index(("dispatch", key))
+    assert all(
+        row["text"] == f"solver-answer:{row['sample_id']}:visit:2" for row in canonical
+    )
+    return {
+        "world": world, "data_root": data_root, "values": values, "plan": plan,
+        "canonical": canonical, "phases": phases, "traces": traces, "memory": memory,
+    }
+
+
+def test_verified_source_reaches_runtime_dispatch_and_exact_native_memory_history(
+    source_pair, synthetic_world, tmp_path, monkeypatch
+):
+    _connected_candidate_native_source(source_pair, synthetic_world, tmp_path, monkeypatch)

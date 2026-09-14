@@ -111,9 +111,13 @@ def _config(
 def _feature_bindings(world: _World, feature_root):
     bindings = {}
     for sample in world.samples:
+        packet_key = (
+            hashlib.sha256(sample.sample_id.encode()).hexdigest()
+            if ":" in sample.sample_id else sample.sample_id
+        )
         packet = materialize_speech_feature_packet(
             feature_root=feature_root,
-            packet_id=f"slurp/train/{sample.sample_id}",
+            packet_id=f"slurp/train/{packet_key}",
             audio_sha256=sample.audio_ref.sha256,
             encoder_receipt_sha256="e" * 64,
             decoder_gguf_sha256=_MODEL_FILES[0].sha256,
@@ -194,9 +198,19 @@ class _ActualEpisodeHarness:
         reviewer_task_tool: bool = False,
         reviewer_memory: LoadedCandidateExperienceMemory | None = None,
         exhaustion_policy: str = "raise",
+        sample_ids: tuple[str, ...] | None = None,
+        execution_plan=None,
+        data_root=None,
     ):
-        self.world = _World(tmp_path)
+        self.world = _World(tmp_path, data_root=data_root)
         self.world.samples = self.world.samples[:sample_count]
+        if sample_ids is not None:
+            from dataclasses import replace
+            assert len(sample_ids) == sample_count
+            self.world.samples = [
+                replace(sample, sample_id=sample_id)
+                for sample, sample_id in zip(self.world.samples, sample_ids, strict=True)
+            ]
         self.samples = tuple(self.world.samples)
         self.adapter = _FakeAdapter(samples=self.samples)
         self.feature_root = tmp_path / "features"
@@ -268,7 +282,7 @@ class _ActualEpisodeHarness:
             preserve_wire_responses=True,
             prompt_order="speech-query-prefix-v2",
         )
-        self.plan = _plan(
+        self.plan = execution_plan or _plan(
             run_id="SAEA-E-native-role-runner-proof",
             attempt_id="attempt-native-role-runner-proof",
             planned_model_calls=len(self.samples) * max_contacts,
@@ -342,6 +356,14 @@ class _ActualEpisodeHarness:
                         "parameters": {"type": "object", "properties": {}},
                     },
                 },
+            )
+        if execution_plan is not None:
+            from speech_aware_evidence_acquisition.rails import build_payload_binding
+            client_kwargs["binding"] = build_payload_binding(
+                carrier_lock_key=execution_plan.carrier_lock_key,
+                samples=self.samples,
+                data_root=self.world.data_root,
+                carrier_root=self.world.carrier_root,
             )
         self.client, _, _ = _client(
             self.world,

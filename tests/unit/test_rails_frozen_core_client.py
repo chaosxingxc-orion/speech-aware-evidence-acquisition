@@ -95,8 +95,10 @@ class _FakeSample:
 
 
 class _World:
-    def __init__(self, tmp_path: Path, *, sample_rate_hz: int = 16000) -> None:
-        self.data_root = tmp_path / "data"
+    def __init__(
+        self, tmp_path: Path, *, sample_rate_hz: int = 16000, data_root: Path | None = None
+    ) -> None:
+        self.data_root = data_root if data_root is not None else tmp_path / "data"
         self.carrier_root = self.data_root / "datasets" / "fake-carrier"
         self.media_dir = self.carrier_root / "media"
         self.run_dir = tmp_path / "run"
@@ -146,7 +148,7 @@ def _binding(world: _World):
 
 
 def _client(
-    world, tmp_path, *, gate=None, transport=None, plan=None, **kwargs
+    world, tmp_path, *, gate=None, transport=None, plan=None, binding=None, **kwargs
 ) -> tuple[FrozenCoreClient, _OpenGate, _CapturingTransport]:
     gate = gate or _OpenGate()
     transport = transport or _CapturingTransport()
@@ -155,7 +157,7 @@ def _client(
         gate=gate,
         transport=transport,
         run_dir=world.run_dir,
-        binding=_binding(world),
+        binding=binding if binding is not None else _binding(world),
         **kwargs,
     )
     return client, gate, transport
