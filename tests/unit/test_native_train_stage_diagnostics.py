@@ -12,7 +12,12 @@ import pytest
 
 from speech_aware_evidence_acquisition.analysis.native_train_stage_diagnostics import (
     NativeTrainStageDiagnosticError,
+    build_native_train_candidate_stage_diagnostics,
     build_native_train_stage_diagnostics,
+)
+from speech_aware_evidence_acquisition.analysis.native_candidate_stage_projections import (
+    NativeCandidateStage,
+    NativeCandidateStagePair,
 )
 from speech_aware_evidence_acquisition.analysis import native_train_stage_diagnostics as module
 from speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics import (
@@ -79,6 +84,45 @@ def _world():
     return ids, candidates, references, links
 
 
+def _stage(sample_id, candidate_ids, visit_index, marker):
+    return NativeCandidateStage(
+        visit_index=visit_index,
+        state_id=f"state:{sample_id}:{marker}",
+        state_sha256=marker * 64,
+        query_state_sha256="9" * 64,
+        agent_contact_id=f"contact:{sample_id}:{marker}",
+        request_id=f"request:{sample_id}:{marker}",
+        request_sha256="a" * 64,
+        response_sha256="b" * 64,
+        response_text_sha256="c" * 64,
+        candidate_ids=tuple(candidate_ids),
+        candidate_set_sha256=hashlib.sha256(
+            json.dumps(list(candidate_ids)).encode()
+        ).hexdigest(),
+    )
+
+
+def _stage_pairs(ids, c0_rows, c1_rows):
+    pairs = []
+    for index, (sample_id, c0_row, c1_row) in enumerate(
+        zip(ids, c0_rows, c1_rows, strict=True)
+    ):
+        c0 = _stage(sample_id, c0_row.candidate_ids, 0, str(index + 1))
+        if c0_row.candidate_ids == c1_row.candidate_ids:
+            c1 = c0
+        else:
+            c1 = _stage(sample_id, c1_row.candidate_ids, 4, str(index + 5))
+        pairs.append(
+            NativeCandidateStagePair(
+                sample_id=sample_id,
+                c0=c0,
+                c1=c1,
+                refresh_executed=c1 is not c0,
+            )
+        )
+    return tuple(pairs)
+
+
 def test_export_separates_coverage_and_conditional_correctness_without_gold_text():
     ids, candidates, references, links = _world()
     result = build_native_train_stage_diagnostics(
@@ -124,6 +168,116 @@ def test_absent_coverage_has_an_explicit_zero_denominator_not_conditional_failur
         "numerator": 0, "denominator": 0, "value": None,
     }
     assert all(row["uncovered"] for row in result["samples"])
+
+
+def test_c0_c1_export_reports_recovery_loss_and_conditional_cohorts_without_gold_text():
+    ids, c0_rows, references, links = _world()
+    c1_rows = (
+        c0_rows[0],
+        SourceCandidateRow(ids[1], ("intent-gamma",)),
+        SourceCandidateRow(ids[2], ("private-gold-delta",)),
+        SourceCandidateRow(ids[3], ("intent-gamma",)),
+    )
+    result = build_native_train_candidate_stage_diagnostics(
+        stage_pairs=_stage_pairs(ids, c0_rows, c1_rows),
+        reference_rows=references,
+        reward_links=links,
+        source=_source(ids),
+    )
+
+    assert result["aggregate"]["initial_candidate_coverage"] == {
+        "numerator": 2,
+        "denominator": 4,
+        "value": 0.5,
+    }
+    assert result["aggregate"]["pre_final_candidate_coverage"] == {
+        "numerator": 2,
+        "denominator": 4,
+        "value": 0.5,
+    }
+    assert result["aggregate"]["recovered"]["numerator"] == 1
+    assert result["aggregate"]["lost"]["numerator"] == 1
+    assert result["aggregate"]["stable_covered"]["numerator"] == 1
+    assert result["aggregate"]["stable_uncovered"]["numerator"] == 1
+    assert result["aggregate"]["final_accuracy"] == {
+        "numerator": 2,
+        "denominator": 4,
+        "value": 0.5,
+    }
+    assert result["aggregate"]["conditional_accuracy_given_initial_coverage"] == {
+        "numerator": 1,
+        "denominator": 2,
+        "value": 0.5,
+    }
+    assert result["aggregate"]["conditional_accuracy_given_pre_final_coverage"] == {
+        "numerator": 1,
+        "denominator": 2,
+        "value": 0.5,
+    }
+    assert result["aggregate"]["common_covered_final_accuracy"] == {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0,
+    }
+    assert result["aggregate"]["correct_answers_outside_c1"] == {
+        "numerator": 1,
+        "denominator": 2,
+        "value": 0.5,
+    }
+    assert result["samples"][0]["refresh_executed"] is False
+    assert result["samples"][0]["c0"] == result["samples"][0]["c1"]
+    assert result["samples"][1]["lost"] is True
+    assert result["samples"][2]["recovered"] is True
+    serialized = json.dumps(result)
+    assert "private-gold-delta" not in serialized
+    assert "private-gold-epsilon" not in serialized
+
+
+def test_c0_c1_export_retains_explicit_zero_conditional_denominators():
+    ids, c0_rows, references, links = _world()
+    uncovered = tuple(
+        SourceCandidateRow(sample_id, ("never-gold",)) for sample_id in ids
+    )
+    result = build_native_train_candidate_stage_diagnostics(
+        stage_pairs=_stage_pairs(ids, uncovered, uncovered),
+        reference_rows=references,
+        reward_links=links,
+        source=_source(ids),
+    )
+
+    for name in (
+        "conditional_accuracy_given_initial_coverage",
+        "conditional_accuracy_given_pre_final_coverage",
+        "common_covered_final_accuracy",
+    ):
+        assert result["aggregate"][name] == {
+            "numerator": 0,
+            "denominator": 0,
+            "value": None,
+        }
+    assert result["aggregate"]["correct_answers_outside_c1"] == {
+        "numerator": 2,
+        "denominator": 4,
+        "value": 0.5,
+    }
+
+
+def test_c0_c1_export_rejects_inconsistent_refresh_metadata():
+    ids, candidates, references, links = _world()
+    pair = _stage_pairs(ids, candidates, candidates)[0]
+    malformed = NativeCandidateStagePair(
+        sample_id=pair.sample_id,
+        c0=pair.c0,
+        c1=pair.c1,
+        refresh_executed=True,
+    )
+    with pytest.raises(NativeTrainStageDiagnosticError, match="refresh semantics"):
+        build_native_train_candidate_stage_diagnostics(
+            stage_pairs=(malformed,),
+            reference_rows=references[:1],
+            reward_links=links[:1],
+            source=_source(ids[:1]),
+        )
 
 
 @pytest.mark.parametrize(
@@ -176,8 +330,9 @@ def _write(path: Path, value: object) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+@pytest.mark.parametrize("stage_projection_enabled", (False, True))
 def test_prepared_sidecar_reuses_verified_source_candidate_and_reward_joins(
-    tmp_path, monkeypatch
+    tmp_path, monkeypatch, stage_projection_enabled
 ):
     ids, candidates, references, links = _world()
     manifest_path = tmp_path / "manifest.json"
@@ -212,6 +367,14 @@ def test_prepared_sidecar_reuses_verified_source_candidate_and_reward_joins(
         },
         "reference_source": reference,
     }
+    if stage_projection_enabled:
+        config["candidate_stage_projection"] = {
+            "schema": module.PROJECTION_CONFIG_SCHEMA,
+            "policy_id": module.PROJECTION_POLICY_ID,
+            "candidate_projection_policy": (
+                "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1"
+            ),
+        }
     config_path = tmp_path / "config.json"
     config_sha = _write(config_path, config)
     verified = SimpleNamespace(
@@ -253,17 +416,28 @@ def test_prepared_sidecar_reuses_verified_source_candidate_and_reward_joins(
         "load_verified_slurp_reference_intents",
         lambda *_args, **_kwargs: reference_rows["value"],
     )
-    monkeypatch.setattr(
-        module,
-        "load_verified_native_system_candidate_rows",
-        lambda *_args, **_kwargs: (
+    def singleton_reader(*_args, **_kwargs):
+        if stage_projection_enabled:
+            raise AssertionError("stage mode must not call the singleton reader")
+        return (
             candidates,
             (),
             {
                 "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
                 "legal_candidate_inventory_sha256": "8" * 64,
             },
-        ),
+        )
+
+    def stage_reader(*_args, **_kwargs):
+        if not stage_projection_enabled:
+            raise AssertionError("legacy mode must not call the stage projector")
+        return _stage_pairs(ids, candidates, candidates)
+
+    monkeypatch.setattr(
+        module, "load_verified_native_system_candidate_rows", singleton_reader
+    )
+    monkeypatch.setattr(
+        module, "project_verified_native_candidate_stages", stage_reader
     )
 
     output_path = tmp_path / "diagnostics.json"
@@ -277,7 +451,22 @@ def test_prepared_sidecar_reuses_verified_source_candidate_and_reward_joins(
     )
 
     artifact = json.loads(output_path.read_text(encoding="utf-8"))
-    assert artifact["output"]["aggregate"]["candidate_coverage"]["numerator"] == 2
+    coverage_name = (
+        "initial_candidate_coverage"
+        if stage_projection_enabled
+        else "candidate_coverage"
+    )
+    assert artifact["output"]["aggregate"][coverage_name]["numerator"] == 2
+    assert artifact["output"]["schema"] == (
+        module.STAGE_OUTPUT_SCHEMA
+        if stage_projection_enabled
+        else module.OUTPUT_SCHEMA
+    )
+    assert artifact["kind"] == (
+        module.STAGE_ARTIFACT_KIND
+        if stage_projection_enabled
+        else module.ARTIFACT_KIND
+    )
     assert artifact["contact_class"] == "model-free"
     assert receipt["path"] == str(output_path)
     assert calls == [(reward_config, reward_artifact_path)]

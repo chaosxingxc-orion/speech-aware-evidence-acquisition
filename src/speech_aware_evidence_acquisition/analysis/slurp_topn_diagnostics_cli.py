@@ -472,6 +472,8 @@ def _trace_contact_for_state(
     source_phase: str,
     state: AgentStateArtifact,
     contact: Mapping[str, object],
+    allow_prior_history: bool = False,
+    execution_contact: Mapping[str, object] | None = None,
 ) -> None:
     """Join a phase-local Perception state to manifest-verified raw trace records."""
     plan = _map(contact.get("plan"), "native Perception contact plan")
@@ -510,7 +512,10 @@ def _trace_contact_for_state(
         if isinstance(history, list)
         else []
     )
-    control = control_rows[0] if len(control_rows) == 1 else {}
+    current_control_rows = [
+        row for row in control_rows if row.get("contact_id") == agent_contact_id
+    ]
+    control = current_control_rows[0] if len(current_control_rows) == 1 else {}
     control_text = control.get("content")
     # Perception has no local tools. Compare the complete canonical producer
     # envelope, whose initial user message carries the phase instruction.
@@ -536,9 +541,9 @@ def _trace_contact_for_state(
         or payload.get("sample_id") != sample_id
         or request.get("payload_sha256") != use.get("use_request_sha256")
         or use.get("use_role_id") != source_phase
-        or len(control_rows) != 1
-        or control_rows[0].get("contact_id") != agent_contact_id
-        or len(history) != 1
+        or len(current_control_rows) != 1
+        or (not allow_prior_history and len(control_rows) != 1)
+        or (not allow_prior_history and len(history) != 1)
         or history[-1] != control
         or not isinstance(control_text, str)
         or control_text != expected_control
@@ -549,6 +554,19 @@ def _trace_contact_for_state(
         or response.get("response_text_sha256")
         != use.get("use_response_text_sha256")
         or response.get("response_sha256") != use.get("use_response_sha256")
+        or (
+            execution_contact is not None
+            and (
+                execution_contact.get("agent_contact_id") != agent_contact_id
+                or execution_contact.get("request_id") != request_id
+                or execution_contact.get("request_sha256")
+                != request.get("payload_sha256")
+                or execution_contact.get("response_sha256")
+                != response.get("response_sha256")
+                or execution_contact.get("response_text_sha256")
+                != response.get("response_text_sha256")
+            )
+        )
         or state.source_response_sha256 != response.get("response_text_sha256")
         or contact.get("response_sha256") != response.get("response_text_sha256")
         or contact.get("query_state_sha256") != state.source_query_state_sha256
@@ -558,6 +576,33 @@ def _trace_contact_for_state(
         raise SlurpTopNAnalysisError(
             f"native Perception state differs from manifest-verified trace for {sample_id!r}"
         )
+
+
+def verify_native_perception_state_contact(
+    bundle: object,
+    *,
+    sample_id: str,
+    source_phase: str,
+    state: AgentStateArtifact,
+    contact: Mapping[str, object],
+    allow_prior_history: bool = False,
+    execution_contact: Mapping[str, object] | None = None,
+) -> None:
+    """Expose the manifest-verified Perception contact join.
+
+    Refreshed visits may carry prior history, but their current control envelope
+    must remain unique and last. The singleton reader keeps the stricter default.
+    """
+
+    _trace_contact_for_state(
+        bundle,
+        sample_id=sample_id,
+        source_phase=source_phase,
+        state=state,
+        contact=contact,
+        allow_prior_history=allow_prior_history,
+        execution_contact=execution_contact,
+    )
 
 
 def _validate_candidate_audits(
