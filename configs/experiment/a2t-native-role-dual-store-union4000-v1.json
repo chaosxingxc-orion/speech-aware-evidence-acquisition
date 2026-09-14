@@ -1,4 +1,8 @@
 {
+  "analysis_recipe": {
+    "repo_relpath": "docs/readiness/2026-09-14-a2t-native-role-base-analysis-recipe-v1.json",
+    "sha256": "7697ce0e8303fa2dd68f34a91bdfd9fc5e3322e986a923f4b11d570a2bb3f104"
+  },
   "cells": [
     {
       "allowed_execution_stages": [

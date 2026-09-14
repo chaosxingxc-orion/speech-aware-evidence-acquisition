@@ -98,3 +98,18 @@ tier tables, the paper/repository metric columns, natural-mixture and
 equal-stratum summaries, action/argument errors and role/tool/revision
 diagnostics. Define and register the complete analysis recipe before reading
 the new results.
+
+## Prospective analysis
+
+The shared saved-score analysis uses 10,000 whole-query paired cluster
+bootstrap draws with seed 20260914. The single primary system-minus-direct
+official exact-match contrast uses a two-sided 95-percent interval; 90-percent
+diagnostic intervals do not replace it. Preserve natural, equal-tier and
+equal-domain sensitivity views. Keep the existing published-headroom-relative
+promising threshold and tool/parameter point guards, then require a same-roster
+replica before adopting a beneficial system. This threshold does not define
+whether a system has any future optimization space.
+
+Recipe: docs/readiness/2026-09-14-a2t-native-role-base-analysis-recipe-v1.json.
+Decision: configs/analysis/a2t-native-role-base-decision-v1.json.
+No new result or gold annotation was read to select these statistical fields.
