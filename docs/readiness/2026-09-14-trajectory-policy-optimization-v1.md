@@ -243,6 +243,38 @@ slots with independent episodes within the admitted flight. Interleave CPU
 preparation and complete scoring without bypassing model-contact custody.
 An observed failure does not authorize another recovery or a renamed replacement.
 
+## Source audit completed before implementation
+
+Read-only audit used frozen source f2c90cb2 and root rechecked the decisive shared
+interfaces. Existing decoding requests admit seed and temperature
+(core/model/request_types.py:85); separate registered runs can reuse one policy
+and roster with distinct seeds at one fixed temperature. Changing temperature
+changes the stochastic policy. Existing build_group_relative_feedback joins
+distinct complete runs on the same ordered cohort; it explicitly permits
+different policies and therefore does not certify same-policy sampling.
+The bundle verifier rejects duplicate sample IDs (core/bundle/outputs.py:201).
+
+The minimum first extension is a shared rollout-family preparation contract that
+expands a pinned policy/roster and ordered random-stream schedule into existing
+run identities. Bind one common stochastic-policy identity separately from
+individual seed-bearing request identities. Keep one output per input in each
+run and join the complete runs through existing feedback readers. This avoids
+rewriting the executor or bundle format just to start grouped sampling.
+
+The current Planner records the returned legal action but no probability
+(reproduction/ojw/native_episode.py:246-273). Reviewer free-form tool calls also
+have no normalized categorical action distribution. The numerical policy
+candidate therefore needs an actual finite decision interface and source-bound
+decision receipt; raw token log probabilities do not fill that gap.
+
+The native graph starts at _InitialState, and _RoleCheckpoint is invocation-local
+custody (native_episode.py:126-160, 612-630). There is no public source-verified
+branch-resume interface. Defer its implementation until the matched-prefix
+attribution experiment is registered. Full-episode sampling can proceed first.
+
+No audited interface or document change has added experimental contacts or
+modified the active frozen recovery source.
+
 ## Claim boundary
 
 A candidate algorithmic contribution is state-dependent estimation and use of
