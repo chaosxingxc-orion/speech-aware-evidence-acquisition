@@ -1,0 +1,80 @@
+{
+  "contacts": {
+    "asr": 0,
+    "audio_decode": 0,
+    "encoder": 0,
+    "model": 0,
+    "note": "The governed exact-ID reference loader also verifies selected audio metadata and hashes audio bytes; that is file validation, not speech decoding or model observation.",
+    "official_scorer": 0,
+    "tokenizer": 0
+  },
+  "execution_profile": "model-free-check",
+  "limits": [
+    "These losses reconstruct saved official ingredients; they do not establish a causal mechanism.",
+    "Surface disagreement does not distinguish hearing, normalization, span boundaries or semantic interpretation.",
+    "Residual pairing is descriptive and cannot prove a true entity-type substitution.",
+    "No new policy, candidate generation, tool use, knowledge version, runtime memory or algorithm is admitted."
+  ],
+  "lock": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+    "sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+  },
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.run-manifest.json",
+    "sha256": "049ac230e536bc6c8fe45bc847756ba486c4904e9c7602c698157f78d70c0152"
+  },
+  "output_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/entity-loss-attribution-v1.json",
+  "outputs": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.outputs.jsonl",
+    "sha256": "d87d71e8fa0fe93b45d5c6817ba125b016d8d91f44a14309171dd0f3a64270d8"
+  },
+  "projection": {
+    "cohorts": [
+      "all1080",
+      "intent_correct842",
+      "intent_wrong238"
+    ],
+    "missing": "Count 2 units per remaining unmatched reference after heuristic type pairing.",
+    "persist": "Persist only categorical/numeric row statistics, source sample IDs and aggregate entity-type/scenario tables. Never persist reference/prediction fillers or sentence strings.",
+    "scenario_tables": "Report all18 scenario strata.",
+    "spurious": "Count 2 units per remaining unmatched prediction after heuristic type pairing.",
+    "surface": "Use the shared official same-type distance-matching surface_mass.",
+    "type_ranking": "Assign surface mass to its matched type, unmatched residual mass to its own type, and a type-swap pair 2 units to each side. Require all type totals to close.",
+    "type_swap": "Use shared equal-normalized-filler/different-type residual pairing; count 4 units per pair. This is a heuristic."
+  },
+  "roster": {
+    "path": "/home/chao/saea-worktrees/slurp-train-anchor-cuda-recovery-v1/docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+  },
+  "sample_selection": "Use exactly the 1080 unique manifest split IDs, all in real TRAIN Fold A. Do not draw, filter or select cases by outcome.",
+  "saved_score": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/attempt-slurp-native-dual-store-train-fold-a-anchor-generation-recovery-v1/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1.scores.json",
+    "sha256": "7360876322488e5fda689fcafda00e90da2ebf559e5a35e635c550f940202b47"
+  },
+  "schema": "saea-source-bound-entity-loss-attribution-v1",
+  "shared_calls": {
+    "attribution": "analysis.slurp_entity_attribution.attribute_parsed_rows(gold_by_id, predicted_by_id, saved_official_rows)",
+    "extra_identity_check": "Verify parsed and exact entity-pair counts against each saved row as well as all six official word/character ingredients.",
+    "parser": "reproduction.slurp_scoring.parse_slu_response(output.text)",
+    "reference_loader": "data.slurp.load_slurp_train_construction_rows(lock, data_root, manifest.split.ids)"
+  },
+  "source_code": [
+    {
+      "repo_relpath": "src/speech_aware_evidence_acquisition/data/slurp.py",
+      "sha256": "b85d5ecc9bbaeabe1efd115a6412f47b42d74b40b03c6f6a5e32a4ed658e7ebd"
+    },
+    {
+      "repo_relpath": "src/speech_aware_evidence_acquisition/reproduction/slurp_scoring.py",
+      "sha256": "c94df075e7f5f323713442a9097c43176d0a1a81b133485150ec7a4deda2b24e"
+    },
+    {
+      "repo_relpath": "src/speech_aware_evidence_acquisition/analysis/slurp_entity_attribution.py",
+      "sha256": "b32bc35db9f0ad566ad408264253989d604a7552dbc8396883980dfdad55215e"
+    }
+  ],
+  "source_release": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-native-dual-store-train-fold-a-anchor-recovery-v1/root-quality-release-v1.json",
+    "sha256": "0be030c3d4d43bd27035575ff455cf30830d042b5f35d3ab6b83ff69ecc43bdf"
+  },
+  "source_split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+}
