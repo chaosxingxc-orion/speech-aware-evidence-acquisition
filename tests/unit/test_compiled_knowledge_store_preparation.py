@@ -1,5 +1,6 @@
 """Publish existing governed compiler outputs through the shared preparation entry."""
 from dataclasses import replace
+from pathlib import Path
 import hashlib
 import json
 
@@ -11,6 +12,8 @@ from speech_aware_evidence_acquisition.core.semantic_knowledge_preparation impor
     SemanticKnowledgePreparationError, prepare_semantic_knowledge_store,
 )
 from speech_aware_evidence_acquisition.rails import knowledge_compile_a2t as compiler
+from speech_aware_evidence_acquisition.rails.errors import RailsError
+from speech_aware_evidence_acquisition.rails.knowledge import KnowledgeSnapshot
 from speech_aware_evidence_acquisition.rails.knowledge_stores import load_knowledge_store_binding
 from test_a2t_semantic_card_compilation import _world
 
@@ -113,3 +116,73 @@ def test_compiled_store_refuses_rebinding_receipt_claims(tmp_path, field):
     with pytest.raises(SemanticKnowledgePreparationError, match="compiler receipt"):
         prepare_semantic_knowledge_store(path, repo_root=repo, data_root=config.data_root)
     assert not (config.data_root / registration["output_namespace"] / "completion.json").exists()
+
+
+def _direct_validator_inputs(config):
+    receipt = json.loads(config.receipt_output_path.read_text())
+    snapshot_document = json.loads(config.snapshot_output_path.read_text())
+    snapshot = KnowledgeSnapshot.from_frozen_json(snapshot_document)
+    return receipt, snapshot
+
+
+def test_shared_compiled_snapshot_validator_returns_bound_source_metadata(
+    tmp_path, monkeypatch
+):
+    _repo, config, _path, _registration = _prepared(tmp_path)
+    receipt, snapshot = _direct_validator_inputs(config)
+
+    snapshot_file_sha256 = hashlib.sha256(
+        config.snapshot_output_path.read_bytes()
+    ).hexdigest()
+    monkeypatch.setattr(
+        Path,
+        "read_bytes",
+        lambda _path: pytest.fail("pure validator attempted file I/O"),
+    )
+    metadata = compiler.validate_compiled_knowledge_snapshot(
+        receipt,
+        snapshot,
+        store_role="parameter-meaning",
+        snapshot_file_sha256=snapshot_file_sha256,
+        snapshot_path=config.snapshot_output_path,
+    )
+
+    assert metadata == receipt["knowledge_snapshot"]["source"]["metadata"]
+
+
+@pytest.mark.parametrize(
+    ("target_path", "replacement"),
+    [
+        (("knowledge_snapshot", "value_view"), "tool-activation"),
+        (
+            ("knowledge_snapshot", "source", "metadata", "value_view"),
+            "tool-activation",
+        ),
+        (("knowledge_snapshot", "file_sha256"), "0" * 64),
+        (("knowledge_snapshot", "snapshot_sha256"), "0" * 64),
+        (("knowledge_snapshot", "source", "sha256"), "0" * 64),
+        (("sources", "dataset_lock", "sha256"), "0" * 64),
+        (("registry", "tool_count"), 151),
+        (("knowledge_snapshot", "value_count"), 151),
+    ],
+)
+def test_shared_compiled_snapshot_validator_rejects_direct_tampering(
+    tmp_path, target_path, replacement
+):
+    _repo, config, _path, _registration = _prepared(tmp_path)
+    receipt, snapshot = _direct_validator_inputs(config)
+    target = receipt
+    for key in target_path[:-1]:
+        target = target[key]
+    target[target_path[-1]] = replacement
+
+    with pytest.raises(RailsError):
+        compiler.validate_compiled_knowledge_snapshot(
+            receipt,
+            snapshot,
+            store_role="parameter-meaning",
+            snapshot_file_sha256=hashlib.sha256(
+                config.snapshot_output_path.read_bytes()
+            ).hexdigest(),
+            snapshot_path=config.snapshot_output_path,
+        )
