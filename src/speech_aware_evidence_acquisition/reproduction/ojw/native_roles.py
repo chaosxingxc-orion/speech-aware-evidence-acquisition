@@ -56,6 +56,36 @@ class FrozenCoreRoleModelError(RuntimeError):
     """The bridge refuses an invalid callback result or native call envelope."""
 
 
+class NativeSourceFunction(Tool):
+    """Validate native arguments without converting their wire representation.
+
+    LocalFunction's JSON-Schema-to-Pydantic formatter rewrites input values and
+    rejects uniqueItems with the pinned Pydantic version. Use the framework's
+    public Tool extension and the original JSON schema instead. The bound
+    dispatcher still verifies source hashes, role authority and task semantics.
+    """
+
+    def __init__(self, *, card, func):
+        from jsonschema.validators import validator_for
+
+        super().__init__(card)
+        if not isinstance(card.input_params, dict) or not inspect.iscoroutinefunction(func):
+            raise ValueError("native source tools require a JSON schema and async handler")
+        validator = validator_for(card.input_params)
+        validator.check_schema(card.input_params)
+        self._validator = validator(card.input_params)
+        self._source_handler = func
+
+    async def invoke(self, inputs: Input, **kwargs) -> Output:
+        # Never honor formatting/coercion skips: source identity requires the
+        # unchanged validated dict and ordered arrays, including uniqueness.
+        self._validator.validate(inputs)
+        return await self._source_handler(**inputs)
+
+    async def stream(self, inputs: Input, **kwargs):
+        yield await self.invoke(inputs, **kwargs)
+
+
 @dataclass(frozen=True)
 class NativeRoleContactContext:
     """Non-model-visible bindings carried to every metered role contact."""

@@ -1,6 +1,6 @@
 # Current continuation: September 14
 
-Read [STATUS-096](STATUS-096.md): the TRAIN A anchor is finalized and fully analyzed; root has admitted the next complete-system refresh/tools experiment. Earlier live/pending snapshots below are historical. The successor's source-bound launch receipt determines whether generation has begun.
+Read [STATUS-097](STATUS-097.md): the refresh/tools successor failed in a shared tool-schema adapter; root has verified the fix and admitted its sole same-method recovery. The DATA launch receipt determines whether recovery generation has begun. Earlier status snapshots remain historical.
 
 # Owner-directed Stage-2 continuation
 

@@ -1619,7 +1619,7 @@ async def _invoke_native_role_episode(
     ReAct owns model/tool iteration and history. Workflow owns routing. This
     adapter only binds their actual contacts to existing state, fit and traces.
     """
-    from openjiuwen.core.foundation.tool import LocalFunction, ToolCard
+    from openjiuwen.core.foundation.tool import ToolCard
     from ..core.model.native_framework_history import native_tool_result_message
     from ..reproduction.ojw.native_episode import (
         NativeEpisodeActions, NativeEpisodeNodes, NativeEpisodeSpec, build_native_episode,
@@ -1628,7 +1628,7 @@ async def _invoke_native_role_episode(
         MeteredNativeSpeechRequest, NativeRoleSpeechBinding,
     )
     from ..reproduction.ojw.native_roles import (
-        NativeRoleContactContext, NativeRoleNode, NativeRoleNodeSpec,
+        NativeRoleContactContext, NativeRoleNode, NativeRoleNodeSpec, NativeSourceFunction,
     )
     from .controllers import (
         advance_phase_response_state, seal_phase_response_state,
@@ -1912,7 +1912,7 @@ async def _invoke_native_role_episode(
             if run_local is not None:
                 return await run_local(lambda: execute(None))
             return await run_contact(execute)
-        return LocalFunction(
+        return NativeSourceFunction(
             card=ToolCard(id=function["name"], name=function["name"],
                           description=function.get("description", ""),
                           input_params=function["parameters"]),

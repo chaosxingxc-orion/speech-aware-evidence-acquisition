@@ -1,0 +1,14 @@
+{
+  "run_id": "SAEA-SLURP-NATIVE-CANDIDATE-REFRESH-TOOLS-TRAIN-FOLD-A-RECOVERY-V1",
+  "execution_profile": "baseline-reproduction",
+  "carrier_lock_key": "slurp",
+  "split_role": "discovery",
+  "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+  "planned_model_calls": 12960,
+  "planned_gpu_hours": 12.0,
+  "planned_speech_audio_seconds": 37015,
+  "protocol_hash": "bbbe0bf538259fe82b4df0202161219388c78281b6544cfefb2a64ed9d20bd70",
+  "attempt_id": "attempt-slurp-native-candidate-refresh-tools-train-fold-a-generation-recovery-v1",
+  "schema": "saea-execution-plan-v1",
+  "study": "speech-aware-evidence-acquisition"
+}
