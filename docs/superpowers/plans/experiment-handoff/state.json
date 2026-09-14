@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 87,
+  "generation": 88,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -11,8 +11,8 @@
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
   "snapshot_commit": "6307a3ab30c93a6be35114deb5f701e6e444292f",
-  "updated_at_utc": "2026-09-14T03:20:35.998859+00:00",
-  "next_action": "Read STATUS-087. The recovered decoder-only service is healthy and must not be restarted: PID793, campaign3413/exec9571, monitor1142. Direct1000 is finalized and scored with quality held; native continues on frozen6307a3ab. Root reviewed and integrated provisional TRAIN memory and native tool exposure, 95 tests and engineering base passing. Preserve the WSL environment recovery provenance. Close the current paired analysis before selecting the next system. Connected candidate source-to-runtime proof, domain evaluation-source verifier, pack construction and real admission remain open. No extra GPU flight admitted by this state.",
+  "updated_at_utc": "2026-09-14T04:16:17.608442+00:00",
+  "next_action": "Read STATUS-088. The recovered decoder-only service is verified and must not be restarted. Native generation reached 5046 registered requests and is writing its seal; direct1000 is finalized and first-scored with quality held. Prioritize native sealing, first whole-manifest score and the registered paired read using analysis-binding-handoff-v1.json before more engineering. Root merged the connected candidate-memory source verification increment at 2988fd0f; 141 tests passed, with explicit synthetic proof limits. No real memory evaluation or admission occurred. Preserve frozen active6307a3ab; no extra GPU flight admitted by this state.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-SYSTEM-VERSIONS-025"
