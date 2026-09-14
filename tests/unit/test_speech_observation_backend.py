@@ -353,6 +353,7 @@ def test_cpu_protocol_requires_fp32_before_any_eager_work(monkeypatch):
 @pytest.mark.parametrize(
     "limits,protocol_changes,match",
     [
+        (None, {}, "must be an object"),
         ({"inference_threads": 5}, {}, "lacks fields"),
         (
             {"inference_threads": 5, "interop_threads": 1, "extra": 1},
@@ -466,6 +467,32 @@ def test_observed_torch_thread_drift_is_refused(monkeypatch):
             inventory(), bounded_cpu_protocol(), "/unused", lambda _: None
         )._ensure_stack()
     assert len([event for event in events if event[0] == "load_model"]) == 1
+
+
+def test_loaded_backend_refuses_thread_drift_before_next_decode(monkeypatch):
+    calls, events = {}, []
+    results = [FakeResult("unused", [1], -0.1, 0.0)]
+    torch = FakeTorchThreads(events)
+    torch.inference_threads = 5
+    torch.interop_threads = 1
+    monkeypatch.setattr(backend, "BoundedAudioPrefetch", FakePrefetch)
+    monkeypatch.setattr(backend, "_APPLIED_CPU_THREAD_LIMITS", (5, 1))
+    worker = backend.LocalWhisperBackend(
+        inventory(), bounded_cpu_protocol(), "/unused", lambda _: None
+    )
+    loaded = list(fake_stack(results, calls))
+    loaded[2] = torch
+    worker.stack = tuple(loaded)
+    item = source()
+    worker.prepare_sources([item])
+    torch.inference_threads = 4
+
+    with pytest.raises(
+        backend.SpeechObservationBackendError, match="drifted after application"
+    ):
+        worker.decode_batch([item])
+    assert "decode" not in calls
+    assert not [event for event in events if event[0].startswith("set_num")]
 
 
 @pytest.mark.parametrize("refuse", ["inference", "interop"])

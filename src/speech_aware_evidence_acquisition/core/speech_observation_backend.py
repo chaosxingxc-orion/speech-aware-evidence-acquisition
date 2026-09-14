@@ -119,8 +119,8 @@ def _validate_protocol(protocol):
         value = protocol[field]
         if type(value) is not int or value < 1 or (upper is not None and value > upper):
             raise SpeechObservationBackendError(f"Whisper {field} is invalid")
-    limits = protocol.get("cpu_thread_limits")
-    if limits is not None:
+    if "cpu_thread_limits" in protocol:
+        limits = protocol["cpu_thread_limits"]
         _exact_keys(limits, _CPU_THREAD_LIMIT_KEYS, "Whisper CPU thread limits")
         if protocol["device"] != "cpu":
             raise SpeechObservationBackendError(
@@ -192,9 +192,9 @@ _APPLIED_CPU_THREAD_LIMITS: tuple[int, int] | None = None
 def _apply_cpu_thread_limits(torch, protocol):
     """Apply one process-global CPU envelope and refuse later drift."""
 
-    limits = protocol.get("cpu_thread_limits")
-    if limits is None:
+    if "cpu_thread_limits" not in protocol:
         return
+    limits = protocol["cpu_thread_limits"]
     desired = (limits["inference_threads"], limits["interop_threads"])
     setters = (
         getattr(torch, "set_num_threads", None),
@@ -300,6 +300,8 @@ class LocalWhisperBackend:
             self.event("model_load_started")
             self.stack = _load_whisper_stack(self.inventory, self.protocol)
             self.event("model_load_finished")
+        else:
+            _apply_cpu_thread_limits(self.stack[2], self.protocol)
         return self.stack
 
     def _decode_batch_locked(self, sources, prefetch):
