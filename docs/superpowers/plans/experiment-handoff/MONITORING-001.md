@@ -47,5 +47,6 @@ Operational handoff: DATA/coordination/
 slurp-native-candidate-refresh-tools-train-fold-a-recovery-v1/observer-handoff-v1.md.
 SHA256: 83a1da45d712af4191a7f0c34e38e3dbb1b9c6e173c9e2a872fb21044fcc6c52.
 
-Current flight state is in STATUS-099.md. No active generating campaign exists
-at this handoff; the closed flight does not need a waiting observer.
+Current flight state is in STATUS-101.md. The prospective bounded-evidence
+campaign has a session-bound observer attached. Read its material events and
+current process evidence; never poll either closed predecessor.
