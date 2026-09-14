@@ -1593,6 +1593,26 @@ def fill_response_format_v1(
     )
 
 
+def audio2tool_perception_state_response_format_v1(
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    max_actions: int,
+    max_candidates_per_action: int,
+) -> Mapping[str, object]:
+    """Build the native Perception state schema over the whole pinned registry."""
+
+    from .a2t_response_schema import (  # noqa: PLC0415 (import cost)
+        audio2tool_perception_state_response_format,
+    )
+
+    return audio2tool_perception_state_response_format(
+        _a2t_registry_rows(lock, root),
+        max_actions=max_actions,
+        max_candidates_per_action=max_candidates_per_action,
+    )
+
+
 def register_response_formats_v1() -> None:
     """Idempotently register the E1 response-format ids into the shared
     ``core.base.RESPONSE_FORMATS`` registry (same shape and same
@@ -1606,6 +1626,11 @@ def register_response_formats_v1() -> None:
         RESPONSE_FORMATS.register("select-response-v1", select_response_format_v1)
     if "fill-response-v1" not in registered:
         RESPONSE_FORMATS.register("fill-response-v1", fill_response_format_v1)
+    if "audio2tool-perception-state-v1" not in registered:
+        RESPONSE_FORMATS.register(
+            "audio2tool-perception-state-v1",
+            audio2tool_perception_state_response_format_v1,
+        )
     if "slurp-intent-hypotheses-v1" not in registered:
         from .artifact_results import slurp_intent_hypotheses_response_format
 

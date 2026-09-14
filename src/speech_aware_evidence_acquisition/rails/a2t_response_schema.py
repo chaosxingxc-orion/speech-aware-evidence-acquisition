@@ -186,6 +186,85 @@ def _load_registry_names(rows: Sequence[Mapping[str, str]]) -> frozenset[str]:
     return frozenset(names)
 
 
+def audio2tool_perception_state_response_format(
+    registry_rows: Sequence[Mapping[str, str]],
+    *,
+    max_actions: int,
+    max_candidates_per_action: int,
+) -> dict[str, object]:
+    """Build the strict native Perception candidate-state response schema.
+
+    Tool names come from the complete authoritative registry. Arrays preserve
+    action order, alternative order, and repeated candidate occurrences.
+    Unique action occurrence identifiers are enforced by the matching parser
+    because JSON Schema cannot require uniqueness of one field across objects.
+    """
+
+    if (
+        isinstance(max_actions, bool)
+        or not isinstance(max_actions, int)
+        or max_actions < 1
+        or isinstance(max_candidates_per_action, bool)
+        or not isinstance(max_candidates_per_action, int)
+        or max_candidates_per_action < 1
+    ):
+        raise A2tResponseSchemaError(
+            "Perception-state bounds must be positive integers"
+        )
+    tool_names = sorted(_load_registry_names(registry_rows))
+    text_list = {
+        "type": "array",
+        "items": {"type": "string"},
+    }
+    action = {
+        "type": "object",
+        "properties": {
+            "action_id": {
+                "type": "string",
+                "pattern": r"^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+            },
+            "candidate_tools": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": max_candidates_per_action,
+                "items": {
+                    "type": "string",
+                    "enum": tool_names,
+                },
+            },
+            "evidence": {"type": "string"},
+            "uncertain_arguments": text_list,
+        },
+        "required": [
+            "action_id",
+            "candidate_tools",
+            "evidence",
+            "uncertain_arguments",
+        ],
+        "additionalProperties": False,
+    }
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "audio2tool_perception_state",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "actions": {
+                        "type": "array",
+                        "maxItems": max_actions,
+                        "items": action,
+                    },
+                    "global_constraints": text_list,
+                },
+                "required": ["actions", "global_constraints"],
+                "additionalProperties": False,
+            },
+        },
+    }
+
+
 def _base_type_schema(type_name: str) -> dict[str, object]:
     lowered = type_name.lower()
     if lowered in {"boolean", "bool"}:
