@@ -1612,7 +1612,7 @@ def _run_agent_trajectory(
 async def _invoke_native_role_episode(
     *, state, run_contact, session, binding, adapter, core_client, snapshot,
     snapshot_sha256, protected_material, base_decoding_params, run_id,
-    knowledge_value_renderer,
+    knowledge_value_renderer, run_local=None,
 ):
     """Collect one public role graph through the shared speech request custody.
 
@@ -1636,6 +1636,8 @@ async def _invoke_native_role_episode(
     from .material import PhaseMaterial
 
     config, program = binding.config, binding.program
+    if bool(config.local_tool_workers) != (run_local is not None):
+        raise RailsRunnerError("native local tool scheduling differs from its configuration")
     pending = {}
     visits = {}
     completed = {}
@@ -1899,6 +1901,8 @@ async def _invoke_native_role_episode(
                 settle(tool_step=step)
                 visits[role.phase_id]["local_ids"].append(step.state.state_id)
                 return message["content"]
+            if run_local is not None:
+                return await run_local(lambda: execute(None))
             return await run_contact(execute)
         return LocalFunction(
             card=ToolCard(id=function["name"], name=function["name"],
@@ -2074,9 +2078,9 @@ def _run_agent_openjiuwen(
             for task in prepared_tasks
         ]
 
-        async def invoke_episode(state, run_contact, session):
+        async def invoke_episode(state, run_contact, session, *, run_local=None):
             await _invoke_native_role_episode(
-                state=state, run_contact=run_contact, session=session,
+                state=state, run_contact=run_contact, session=session, run_local=run_local,
                 binding=native_episode_binding, adapter=adapter,
                 core_client=core_client, snapshot=snapshot,
                 snapshot_sha256=snapshot_sha256, protected_material=protected_material,
@@ -2090,6 +2094,7 @@ def _run_agent_openjiuwen(
                 queue_depth=queue_depth,
                 workflow_timeout_seconds=DEFAULT_WORKFLOW_TIMEOUT_SECONDS,
                 episode_invoker=invoke_episode,
+                local_tool_workers=native_episode_binding.config.local_tool_workers,
             )
         except BaseException:
             for state in states:

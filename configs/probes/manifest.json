@@ -450,6 +450,18 @@
     "slurp_intent_hypothesis_source_system_v1.txt": {
       "sha256": "1c695a68452c8858f91eff6e683f9a6983d53328fc86b2884b50381532e0132b"
     },
+    "slurp_native_role_perception_refresh_v1.txt": {
+      "sha256": "d4ee4cf9991089c6f9e0cf4bf1ab27c83d209f801beb5662398028fdc52800be"
+    },
+    "slurp_native_role_planner_refresh_v1.txt": {
+      "sha256": "83820ab6fb77de89a7cdb45aa00149557364aa3a5833cdd772807be5d6d58272"
+    },
+    "slurp_native_role_reviewer_refresh_tools_v1.txt": {
+      "sha256": "b71e89bb06601d4328af904370d38dfca8859bb576fd19282054a673d441e97f"
+    },
+    "slurp_native_role_solver_refresh_v1.txt": {
+      "sha256": "3c3c83bec3625d13006344fb9777655e658b0c2715cc70665dcd25194b73c303"
+    },
     "slurp_phase_direct.txt": {
       "sha256": "d02f194c3c8a8375a15c28f7ca874f30bd2ad34d60e8ff9cdbc654572ebf9d50"
     },

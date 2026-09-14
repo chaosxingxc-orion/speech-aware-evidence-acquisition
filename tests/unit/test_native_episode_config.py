@@ -152,3 +152,61 @@ def test_refresh_rejects_stale_candidate_supply_binding_before_any_contact():
         load_native_episode_config(values, program(ceiling=8))
     supply["candidate_state_selection"] = "latest"
     assert load_native_episode_config(values, program(ceiling=8)).refresh_action
+
+
+def test_held_refresh_tools_fragment_uses_distinct_program_and_reviewer_tools_only():
+    import hashlib
+    import json
+    from pathlib import Path
+    from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
+    from speech_aware_evidence_acquisition.rails.phase_material import load_phase_material_specs
+    from speech_aware_evidence_acquisition.rails.phase_tools import load_phase_tool_specs
+
+    root = Path(__file__).resolve().parents[2]
+    fragment = json.loads((
+        root / "configs/baseline/slurp-native-candidate-refresh-tools-train-fold-a-held-v1.json"
+    ).read_text())
+    incumbent = default_phase_program("phase-native-candidates-review-revise-v1")
+    successor = default_phase_program(fragment["policy"])
+    assert successor.program_id != incumbent.program_id
+    assert incumbent.max_contacts == 11
+    assert successor.max_contacts == 12
+    parsed = load_native_episode_config(fragment, successor)
+    assert parsed.max_candidate_refreshes == 1
+    assert parsed.max_contacts == 12
+    assert set(load_phase_tool_specs(fragment, successor)) == {"reviewer"}
+    assert parsed.role("perception").tool_names == parsed.role("solver").tool_names == ()
+    assert "saea-tool-live-speech-observation-v1" in parsed.role("reviewer").tool_names
+    assert parsed.role("reviewer").max_iterations == 3
+    assert set(load_phase_material_specs(fragment, successor)) == set(successor.phase_names())
+    templates = json.loads((root / "configs/probes/manifest.json").read_text())["templates"]
+    for spec in fragment["phase_material"].values():
+        template_path = root / "configs" / spec["instruction_template"]
+        assert hashlib.sha256(template_path.read_bytes()).hexdigest() == templates[template_path.name]["sha256"]
+    assert fragment["prospective_candidate_refresh_tools"]["new_model_contacts_authorized"] is False
+    assert "native_contact_fit" not in fragment
+    assert "live_speech_observations" not in fragment
+
+
+def test_local_tool_execution_is_explicit_and_bounded():
+    values = config()
+    assert load_native_episode_config(values, program()).local_tool_workers == 0
+    values["native_episode"]["local_tool_execution"] = {
+        "mode": "yield-model-slot", "max_workers": 1,
+    }
+    assert load_native_episode_config(values, program()).local_tool_workers == 1
+
+
+@pytest.mark.parametrize("bad", [
+    None, {}, {"mode": "yield-model-slot"},
+    {"mode": "fixed", "max_workers": 1},
+    {"mode": "yield-model-slot", "max_workers": True},
+    {"mode": "yield-model-slot", "max_workers": 0},
+    {"mode": "yield-model-slot", "max_workers": 9},
+    {"mode": "yield-model-slot", "max_workers": 1, "extra": 1},
+])
+def test_local_tool_execution_rejects_unbound_resource_policy(bad):
+    values = config()
+    values["native_episode"]["local_tool_execution"] = bad
+    with pytest.raises(ValueError, match="local_tool_execution"):
+        load_native_episode_config(values, program())

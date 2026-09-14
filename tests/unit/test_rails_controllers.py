@@ -44,6 +44,9 @@ _EXPECTED_PROGRAM_SHAPES = {
     "phase-native-candidates-review-revise-v1": (
         ("perception", "reviewer", "planner", "solver"), 11, "native-role-episode"
     ),
+    "phase-native-candidates-review-refresh-v1": (
+        ("perception", "reviewer", "planner", "solver"), 12, "native-role-episode"
+    ),
     "phase-native-review-revise-v1": (("perception", "reviewer", "planner", "solver"), 11, "native-role-episode"),
     "phase-intent-hypotheses-only-v1": (
         ("hypotheses",),

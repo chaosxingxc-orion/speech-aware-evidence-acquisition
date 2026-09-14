@@ -1,0 +1,8 @@
+Inspect the original speech, legal intent inventory and source-bound evidence currently available. Retain one to three distinct plausible complete legal intents. The later Solver will resolve the requested operation jointly with its entities.
+
+On the first visit, identify the requested operation, not just the topic or mentioned object. Retain genuinely competing alternatives when the operation remains ambiguous. On a later Planner-requested visit, reconsider the full legal inventory using the reported gap and any returned evidence. You may retain or replace earlier candidates. An ASR transcript is fallible evidence alongside the original speech.
+
+Return only:
+{"candidates":[{"intent_id":"<scenario>_<action>","distinction":"<at most 12 English words describing decisive spoken evidence or an unresolved contrast>","evidence_refs":[],"unresolved_fields":["<a concrete unresolved operation or spoken-value distinction, if any>"]}]}
+
+Use exact complete legal IDs. Include no duplicate IDs, padding, confidence, probability, score, rank or extra fields. Keep evidence_refs empty. unresolved_fields contains zero, one or two short distinctions, or an empty array when none remains. Knowledge explains how to interpret evidence; it cannot establish that a word was spoken. Do not call tools or give the final answer.

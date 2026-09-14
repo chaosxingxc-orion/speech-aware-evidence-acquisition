@@ -24,6 +24,7 @@ class NativeEpisodeConfig:
     exhaustion_policy: str = "raise"
     refresh_action: str | None = None
     max_candidate_refreshes: int = 0
+    local_tool_workers: int = 0
 
     @property
     def terminal_actions(self) -> tuple[str, ...]:
@@ -60,7 +61,7 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
     required_fields = {
         "schema", "episode_id", "max_revisions", "actions", "roles",
     }
-    optional_fields = {"exhaustion_policy", "candidate_refresh"}
+    optional_fields = {"exhaustion_policy", "candidate_refresh", "local_tool_execution"}
     if (
         not isinstance(raw, Mapping)
         or set(raw) - required_fields - optional_fields
@@ -98,6 +99,19 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
             or not 1 <= refreshes <= revisions
         ):
             raise ValueError("candidate_refresh needs a distinct action and a bounded revision allowance")
+    local_workers = 0
+    if "local_tool_execution" in raw:
+        local_execution = raw["local_tool_execution"]
+        if (
+            not isinstance(local_execution, Mapping)
+            or set(local_execution) != {"mode", "max_workers"}
+            or local_execution["mode"] != "yield-model-slot"
+            or isinstance(local_execution["max_workers"], bool)
+            or not isinstance(local_execution["max_workers"], int)
+            or not 1 <= local_execution["max_workers"] <= 8
+        ):
+            raise ValueError("local_tool_execution requires yield-model-slot and 1..8 workers")
+        local_workers = local_execution["max_workers"]
     raw_roles = raw["roles"]
     kinds = ("perception", "solver", "reviewer", "planner")
     if not isinstance(raw_roles, Mapping) or set(raw_roles) != set(kinds):
@@ -164,4 +178,5 @@ def load_native_episode_config(values: Mapping, program) -> NativeEpisodeConfig 
         exhaustion_policy,
         refresh_action,
         refreshes,
+        local_workers,
     )

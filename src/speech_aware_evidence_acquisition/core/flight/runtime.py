@@ -4823,6 +4823,11 @@ class FlightRuntime:
                 }
                 dispatch["native_episode"]["actions"] = list(native_config.actions)
                 dispatch["native_episode"]["exhaustion_policy"] = native_config.exhaustion_policy
+            if native_config.local_tool_workers:
+                dispatch["native_episode"]["local_tool_execution"] = {
+                    "mode": "yield-model-slot",
+                    "max_workers": native_config.local_tool_workers,
+                }
             dispatch["barrier"] = "none: bounded native role graph per sample"
             dispatch["native_contact_fit_receipts"] = list(native_fit_gate.receipts)
         if whole_roster:

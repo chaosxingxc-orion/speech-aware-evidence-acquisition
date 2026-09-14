@@ -37,7 +37,9 @@ This module imports openjiuwen at module level and is imported only behind
 from __future__ import annotations
 
 import asyncio
+import contextvars
 from collections.abc import Awaitable, Callable, Mapping, Sequence
+from concurrent.futures import ThreadPoolExecutor
 from typing import TypeVar
 
 from openjiuwen.core.common.exception.codes import StatusCode
@@ -414,15 +416,8 @@ def execute_speech_agent_workflows(
     slot_count: int,
     queue_depth: int,
     workflow_timeout_seconds: float,
-    episode_invoker: Callable[
-        [
-            object,
-            Callable[[Callable[[int], ContactResult]], Awaitable[ContactResult]],
-            object,
-        ],
-        Awaitable[object],
-    ]
-    | None = None,
+    episode_invoker: Callable[..., Awaitable[object]] | None = None,
+    local_tool_workers: int = 0,
 ) -> list[object]:
     """Run speech Agent workflows on one openJiuwen event loop.
 
@@ -443,7 +438,22 @@ def execute_speech_agent_workflows(
     lifecycle as a legacy branch. The invoker must use the supplied session
     for its workflow invocation so the configured framework timeout remains
     authoritative. With no invoker, the legacy graph path is unchanged.
+
+    Opt-in local_tool_workers supplies a fourth keyword-only callback,
+    run_local(blocking_tool). It releases the trajectory's model slot before
+    waiting for the shared CPU worker pool; the next model contact reacquires a
+    slot. The synchronous tool settles before cancellation completes. This is a
+    resource policy only: the caller still owns tool authority, accounting and
+    evidence custody. The default retains stable slot affinity.
     """
+
+    if (
+        isinstance(local_tool_workers, bool)
+        or not isinstance(local_tool_workers, int)
+        or not 0 <= local_tool_workers <= 8
+        or (local_tool_workers and episode_invoker is None)
+    ):
+        raise ValueError("local_tool_workers requires a native episode and an integer in 0..8")
 
     if episode_invoker is None and any(
         callback is None
@@ -462,6 +472,11 @@ def execute_speech_agent_workflows(
     ordered_states = list(states)
 
     async def _run_all():
+        local_executor = (
+            ThreadPoolExecutor(max_workers=local_tool_workers, thread_name_prefix="saea-local-tool")
+            if local_tool_workers else None
+        )
+        local_capacity = asyncio.Semaphore(local_tool_workers)
         slots: asyncio.Queue[int] = asyncio.Queue(maxsize=slot_count)
         for slot_id in range(slot_count):
             slots.put_nowait(slot_id)
@@ -470,7 +485,7 @@ def execute_speech_agent_workflows(
             primary_slot_id: int | None = None
             slot_assignment_lock = asyncio.Lock()
             contact_lock = asyncio.Lock()
-            worker_tasks: set[asyncio.Task[object]] = set()
+            worker_tasks: set[asyncio.Future[object]] = set()
 
             async def primary_slot() -> int:
                 nonlocal primary_slot_id
@@ -500,6 +515,43 @@ def execute_speech_agent_workflows(
                     finally:
                         if worker.done():
                             worker_tasks.discard(worker)
+
+            async def run_local(
+                blocking_tool: Callable[[], ContactResult],
+            ) -> ContactResult:
+                nonlocal primary_slot_id
+                if local_executor is None:
+                    raise RuntimeError("local tool scheduling was not configured")
+                async with contact_lock:
+                    if primary_slot_id is not None:
+                        slots.put_nowait(primary_slot_id)
+                        primary_slot_id = None
+                    # Wait before submitting, so cancellation while queued never
+                    # causes a tool contact after its caller has stopped.
+                    async with local_capacity:
+                        context = contextvars.copy_context()
+                        worker = asyncio.get_running_loop().run_in_executor(
+                            local_executor, context.run, blocking_tool
+                        )
+                        worker_tasks.add(worker)
+                        try:
+                            return await asyncio.shield(worker)
+                        except asyncio.CancelledError:
+                            # Repeated cancellation must not cancel the Future
+                            # while its synchronous tool still mutates custody.
+                            while not worker.done():
+                                try:
+                                    await asyncio.shield(worker)
+                                except asyncio.CancelledError:
+                                    continue
+                                except BaseException:
+                                    break
+                            if not worker.cancelled():
+                                worker.exception()
+                            raise
+                        finally:
+                            if worker.done():
+                                worker_tasks.discard(worker)
 
             async def invoke_branch(branch_index: int) -> Mapping[str, object]:
                 assert invoke_contact is not None
@@ -531,6 +583,8 @@ def execute_speech_agent_workflows(
                 try:
                     if episode_invoker is None:
                         await flow.invoke(inputs={}, session=session)
+                    elif local_tool_workers:
+                        await episode_invoker(state, run_contact, session, run_local=run_local)
                     else:
                         await episode_invoker(state, run_contact, session)
                 except BaseError as error:
@@ -580,8 +634,14 @@ def execute_speech_agent_workflows(
         admission_workers = [
             asyncio.create_task(admission_worker()) for _ in range(worker_count)
         ]
-        await asyncio.gather(*admission_workers)
-        return failures
+        try:
+            await asyncio.gather(*admission_workers)
+            return failures
+        finally:
+            # Admission cleanup drains any synchronous contact before pool shutdown.
+            await asyncio.gather(*admission_workers, return_exceptions=True)
+            if local_executor is not None:
+                local_executor.shutdown(wait=True, cancel_futures=True)
 
     failures = asyncio.run(_run_all())
     if failures:

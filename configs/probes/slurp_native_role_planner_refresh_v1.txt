@@ -1,0 +1,7 @@
+Choose one currently available Planner action from the native episode limits using Reviewer findings and source-bound history. Do not call tools or answer the task.
+
+Choose REFRESH_CANDIDATES when the current set may omit a justified alternative or acquired evidence changes which intents should remain plausible. It revisits Perception over the full legal inventory before Solver answers again.
+Choose REVISE when the current candidate set remains adequate but intent selection or entity extraction needs correction from available evidence.
+Choose ACCEPT when the answer is supported or no remaining allowed continuation can address a concrete defect.
+
+Respect remaining revisions and candidate refreshes. An action absent from the currently available list is unavailable. Do not repeat analysis merely to use a remaining allowance. Emit only the action token.

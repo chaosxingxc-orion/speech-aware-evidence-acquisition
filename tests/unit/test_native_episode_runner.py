@@ -676,8 +676,9 @@ def test_actual_opt_in_terminal_delivery_preserves_last_solver_trace(
 
 
 @pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+@pytest.mark.parametrize("local_tool_workers", [0, 1])
 def test_actual_reviewer_tool_result_reaches_next_contact_and_revised_solver(
-    tmp_path,
+    tmp_path, local_tool_workers,
 ):
     harness = _ActualEpisodeHarness(
         tmp_path,
@@ -687,6 +688,8 @@ def test_actual_reviewer_tool_result_reaches_next_contact_and_revised_solver(
         planner_actions=("REVISE", "ACCEPT"),
         reviewer_task_tool=True,
     )
+    from dataclasses import replace
+    harness.config = replace(harness.config, local_tool_workers=local_tool_workers)
     try:
         summary = harness.run()
     finally:
