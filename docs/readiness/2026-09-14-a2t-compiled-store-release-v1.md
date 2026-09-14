@@ -74,3 +74,25 @@ configuration, actual request fit, admitted campaign and complete paired task
 evaluation remain outstanding. Preserve the current SLURP recovery and the
 separately frozen exact base replication. Algorithm factors and sampling remain
 deferred until the agent base is useful and reproducible.
+
+## Completed publication and shared-loader verification
+
+Both public driver invocations completed from clean source
+c05b77f40cab8b194974ced18a448265c9188104. Root then loaded both releases together
+through load_knowledge_store_binding. Each store has 152 values; the composite
+contains 304 namespaced values and retains external-governed source role.
+This is a store inventory count, not a number of values supplied per request.
+
+| Store | Release SHA-256 | Completion SHA-256 |
+| --- | --- | --- |
+| tool-activation | 3fe5686762468c34ff441ddfa3a8591889726676258d352cf04367544fca43a1 | dfdcaaccc15ca5ec7682bce3312d5566888891d1e7973f3ee2536e82c08df82e |
+| parameter-meaning | 7bafef2137bbbf9b44baebf0beb70570422d496729f7846ea99a22b6708a4373 | 24071625a272ac39b64090f8f1da90d847468523185de0317c32591dbdd1f90a |
+
+The composite snapshot identity is
+70df477a371a544d76d015701fa5040cfa18d7f0a4d95f3efe603aa0538c12cf.
+The source-bound runtime binding and verification record is
+DATA/coordination/a2t-agent-base-transfer-v1/compiled-store-binding-v1.json,
+SHA-256 915a837babe4721876057b631a56cbdbb14108ebc40d84b9dc532a2a48909a1e.
+All original compiler artifacts remain unchanged. Preparation added zero
+model, encoder, tokenizer, tool and scorer contacts. This verification does
+not instantiate runtime supply routes or qualify a model-serving geometry.
