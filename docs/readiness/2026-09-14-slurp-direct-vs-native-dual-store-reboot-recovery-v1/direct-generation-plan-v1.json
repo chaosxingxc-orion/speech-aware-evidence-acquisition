@@ -1,0 +1,27 @@
+{
+  "cell": "slurp-direct-max512-dev1000-reboot-recovery-v1",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-direct-max512-dev1000-generation-reboot-recovery-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1000,
+    "planned_speech_audio_seconds": 3500,
+    "protocol_hash": "d8ce37886d2ff1b7c17e6199b65a1e61c9518461674f71091be33a7c3ccef00e",
+    "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV1000-REBOOT-RECOVERY-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "8580d199bffc95a51ad6d8c5b2a2e9e39faa2c551dd095f8afcd78174a1e3c84",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-slurp-dual-store-reboot-np4-v1",
+  "experiment": "slurp-direct-max512-dev1000-reboot-recovery-v1",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-14-slurp-direct-vs-native-dual-store-reboot-recovery-v1/protocol-v1.json",
+    "sha256": "bda7e1d199d886abb0ebbee1bf90d5cf956c072fe1d64c587022aac710ae18e7"
+  },
+  "registration_state": "Root prospectively registered the sole reboot recovery before contact. The shared campaign performs the authoritative preflight and fit under exclusive ownership; do not run a duplicate standalone preflight.",
+  "root_registration_required": false,
+  "schema": "saea-registered-generation-plan-v1",
+  "scoring": "One first complete official score per successful generation arm; no fit score and no partial score."
+}
