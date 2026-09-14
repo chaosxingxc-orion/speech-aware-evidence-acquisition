@@ -1,0 +1,27 @@
+{
+  "cell": "a2t-native-role-engineering-proof-v1",
+  "execution_plan": {
+    "attempt_id": "attempt-a2t-native-role-engineering-proof-generation-v1",
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 7264,
+    "protocol_hash": "7e0acd00888cb9519311e79e334314e7a71fa8a39f6b261453644547cf3ecc22",
+    "run_id": "SAEA-A2T-NATIVE-ROLE-ENGINEERING-PROOF-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "31fa4c9918d4e4c34f62c6cc0a5d7ef13229e6f711e2889b7c8a3213e63c37c2",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-a2t-native-role-base-np3-max2048-v1",
+  "experiment": "a2t-native-role-engineering-proof-v1",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-14-a2t-native-role-engineering-proof-v1/protocol-v1.json",
+    "sha256": "796bf84f5fb2bcdbf208fc779bb7a1a7981e9c4fe6b0c798d58b8e16bfaad779"
+  },
+  "registration_state": "Registered by root for engineering only; clean source/preflight, service boundary, exact resident identity and exclusive custody remain required.",
+  "root_registration_required": false,
+  "schema": "saea-registered-generation-plan-v1",
+  "scoring": "None. Stop after seal; engineering integrity read only."
+}

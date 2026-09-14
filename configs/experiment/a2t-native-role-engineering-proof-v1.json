@@ -12,16 +12,23 @@
       "dataset_fragment": "audio2tool-org1-union-4000",
       "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
       "readiness": {
-        "reason": "Engineering-only proof remains held until root scientific/service admission, source-bound four-row preparation and both generation/fit registrations. No official score or quality screen.",
+        "reason": "Root admits only generation-and-seal engineering validation after the current SLURP generation boundary; exact service identity and exclusive lease remain mandatory. No score or quality read.",
         "requirements": [
           {
             "kind": "preparation",
-            "reason": "Exactly the four source-bound engineering samples, each matching the full4000 activation selection.",
+            "reason": "Four prepared original-speech samples; choices match the full4000 preparation.",
             "relpath": "prepared/SAEA-A2T-NATIVE-ROLE-ENGINEERING-PROOF-V1/phase-supply-v1.json",
             "sha256": "17d2d6001871cd7c8a6ca6b25d2480d34bf6f11240d5b23f74e37a87333eb746"
+          },
+          {
+            "expected_decision_id": "a2t-native-role-engineering-proof-admission-v1",
+            "kind": "decision",
+            "reason": "Root engineering-only admission; full4000 remains held.",
+            "relpath": "coordination/a2t-native-role-engineering-proof-v1/admission-v1.json",
+            "sha256": "dbcfea138ce8a25448520adff726f29fbead99cd0375da844bf8eedcbaa95332"
           }
         ],
-        "state": "preparation-pending"
+        "state": "ready"
       },
       "run_id": "SAEA-A2T-NATIVE-ROLE-ENGINEERING-PROOF-V1"
     }

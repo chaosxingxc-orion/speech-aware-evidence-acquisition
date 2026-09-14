@@ -3800,3 +3800,17 @@ Correct only these four prospective row spellings. Preserve the rejected command
 log and zero-contact receipt; run/attempt IDs, plans, configs, methods and caps do
 not change. This is a pre-contact registration correction, not an executed-attempt
 recovery. Root verified both attempt directories and the flight lease absent.
+
+## September 14: register the prepared native Audio2Tool engineering proof
+
+Root admits four metadata-selected original-speech episodes through the shared
+generation-only worker. This engineering check adds no task-quality read or
+official score. Preserve the active SLURP generation until its terminal boundary;
+full4000 transfer remains scientifically held. The two registered plans use the
+actual four-row runtime split identity and the same frozen method as the prepared
+full system. No model or tokenizer contact has occurred at registration.
+
+| date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-09-14T17:48:31.587227+00:00 | SAEA-A2T-NATIVE-ROLE-ENGINEERING-PROOF-V1 | bounded-discovery-probe | Four native engineering episodes; generation and seal only. | Frozen Q4_K_M decoder-only c98304 np3 max2048; prepared speech; optional Reviewer task-contract tool. | audio2tool original-speech engineering subset4 | discovery | 31fa4c9918d4e4c34f62c6cc0a5d7ef13229e6f711e2889b7c8a3213e63c37c2 | no | 44 | 7264 | 1.0 | Preserve all full4000 discovery exposure; no new task-quality population. | docs/readiness/2026-09-14-a2t-native-role-engineering-proof-v1/generation-plan-v1.json | Plan SHA256 ee473e58ecf3111dd1bd5066e1147a8c39a3150ef2e22e7db045a047292eefb7; runtime protocol 7e0acd00888cb9519311e79e334314e7a71fa8a39f6b261453644547cf3ecc22. Shared proof ceilings: 44 generations, 176 fit endpoints, 16 task-contract calls, 7264 repeated speech-seconds, 1 fit-inclusive GPU hour, zero ASR/encoder/official scoring. No automatic restart or replay; root service boundary and exclusive lease required. |
+| 2026-09-14T17:48:31.587227+00:00 | SAEA-A2T-NATIVE-ROLE-ENGINEERING-PROOF-FIT-V1 | bounded-discovery-probe | Actual per-contact native request capacity; no generation. | Frozen Q4_K_M decoder-only c98304 np3 max2048; prepared speech; optional Reviewer task-contract tool. | audio2tool original-speech engineering subset4 | discovery | 31fa4c9918d4e4c34f62c6cc0a5d7ef13229e6f711e2889b7c8a3213e63c37c2 | no | 176 | 7264 | 1.0 | Preserve all full4000 discovery exposure; no new task-quality population. | docs/readiness/2026-09-14-a2t-native-role-engineering-proof-v1/fit-plan-v1.json | Plan SHA256 e15dd9c2cbae64f53b471f457a7b8d43d372c01093894535f518909cb0d88b51; runtime protocol 7e0acd00888cb9519311e79e334314e7a71fa8a39f6b261453644547cf3ecc22. Shared proof ceilings: 44 generations, 176 fit endpoints, 16 task-contract calls, 7264 repeated speech-seconds, 1 fit-inclusive GPU hour, zero ASR/encoder/official scoring. No automatic restart or replay; root service boundary and exclusive lease required. |

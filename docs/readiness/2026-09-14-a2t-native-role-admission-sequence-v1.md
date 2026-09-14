@@ -8,7 +8,7 @@ and its frozen checkout unchanged.
 
 Use the current shared direct/system union4000 configurations and the already
 prepared activation selections. Complete the SLURP same-method replication and
-registered paired verdict before dispatching this transfer. Bind the resulting
+registered paired verdict before dispatching the full-population comparison. Bind the resulting
 campaign decision receipt to both full-population cells; do not substitute a
 process exit, complete score or a prior positive result for that decision.
 
@@ -94,3 +94,29 @@ now share genuine receipt persistence. Bind final decision/readiness, recompute
 composed protocol hashes and register the separate plans before service contact.
 No new experiment-specific controller, launcher or scoring implementation is
 needed to assemble this admission.
+
+## Registered engineering admission
+
+Root registered the four-row proof and its dynamic fit plan at
+2026-09-14T17:48:31Z. The versioned protocol, generation-plan and fit-plan files
+in docs/readiness/2026-09-14-a2t-native-role-engineering-proof-v1/ and the two
+unconsumed exposure rows supersede the prospective registration state above.
+
+The proof is an independent engineering task. It may execute after the current
+SLURP generation has sealed and root has verified the service/lease boundary,
+while complete SLURP scoring or its registered analysis continues. The full
+4,000-row comparison still requires the formal SLURP decision and successful
+engineering proof; this admission does not release it.
+
+In protocol-v1.json, source_commit 206d99e1 identifies the configuration and
+preparation origin. It does not identify the later worker receipt implementation.
+The admission receipt binds method_source_commit cec07414. Before contact,
+the external source-freeze receipt must bind the actual clean execution commit,
+explicitly preserve these distinct source roles, and pin the registered protocol,
+plans and prepared artifact. Do not rewrite the prepared or historical bytes.
+
+The operational sequence uses the existing serving_session script, a newly
+bound root monitor, lease_cli and the generation-only shared worker. Root
+verifies the genuine persisted receipt prefix and seal in a fresh process before
+releasing custody. Preserve the primary failure and recorded contacts on error;
+do not automatically restart the attempt or reconstruct missing stage receipts.
