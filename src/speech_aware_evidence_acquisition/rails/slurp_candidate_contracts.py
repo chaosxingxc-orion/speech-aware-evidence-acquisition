@@ -9,7 +9,9 @@ is not automatically valid for TRAIN reward-fold use.
 
 Construction is intentionally separate from native dispatch. The SLURP
 adapter builds this immutable catalog lazily only when the optional provider
-hook is requested during configured preparation.
+hook is requested during configured preparation. A caller may construct a
+fold-safe catalog by excluding canonical TRAIN utterance IDs; the exclusion
+set and retained source identity are then part of the catalog hash.
 """
 
 from __future__ import annotations
@@ -18,7 +20,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 from types import MappingProxyType
-from typing import Mapping
+from typing import Mapping, Sequence
 
 from ..data.slurp import SlurpIntentSlotSchema, load_slurp_intent_slot_schema
 from .candidate_contract_lookup import (
@@ -175,11 +177,19 @@ def _profiles(schema: SlurpIntentSlotSchema) -> tuple[SlurpCandidateProfile, ...
 
 
 def build_slurp_candidate_contract_provider(
-    lock: Mapping[str, object], root: Path
+    lock: Mapping[str, object],
+    root: Path,
+    *,
+    excluded_train_utterance_ids: Sequence[str] | None = None,
 ) -> SlurpCandidateContractProvider:
-    """Build once from the loader's fixed TRAIN source, retaining no fillers."""
+    """Build from retained TRAIN utterances while keeping all legal labels."""
 
-    schema = load_slurp_intent_slot_schema(lock, root, examples_per_type=0)
+    schema = load_slurp_intent_slot_schema(
+        lock,
+        root,
+        examples_per_type=0,
+        excluded_train_utterance_ids=excluded_train_utterance_ids,
+    )
     profiles = _profiles(schema)
     source_document: dict[str, object] = {
         "schema": PROVIDER_SCHEMA,
@@ -195,6 +205,10 @@ def build_slurp_candidate_contract_provider(
         },
         "profiles": [profile.as_json() for profile in profiles],
     }
+    if schema.excluded_train_utterance_ids:
+        source_document["construction_exclusions"] = {
+            "train_utterance_ids": list(schema.excluded_train_utterance_ids),
+        }
     by_id = MappingProxyType(
         {profile.candidate_id: profile for profile in profiles}
     )

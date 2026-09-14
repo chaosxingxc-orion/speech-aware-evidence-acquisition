@@ -33,6 +33,7 @@ from speech_aware_evidence_acquisition.data.slurp import (
     SLURP_INTENT_SLOT_DECONTAMINATION_RECEIPTS,
     SLURP_INTENT_SLOT_SCHEMA_ID,
     load_slurp_intent_slot_schema,
+    normalize_slurp_train_utterance_exclusions,
     render_slurp_closed_label_inventory,
     render_slurp_closed_label_inventory_with_slot_schema,
     render_slurp_intent_slot_schema,
@@ -231,6 +232,102 @@ def test_schema_identity_hash_binds_the_train_utterance_ids(schema):
     ).hexdigest()
 
 
+def test_exclusions_remove_all_sibling_recordings_before_statistics(slot_world):
+    rows = _train_rows()
+    rows[0]["recordings"].append(
+        {"file": "audio-1000-sibling.flac", "status": "correct"}
+    )
+    slot_world._write("train.jsonl", rows)
+
+    schema = load_slurp_intent_slot_schema(
+        slot_world.lock,
+        slot_world.data_root,
+        excluded_train_utterance_ids=("slurp:train:001000",),
+    )
+
+    alarm = schema.intents["alarm_set"]
+    assert alarm.n == 103
+    assert alarm.mentions == 103
+    assert "filler 0" not in alarm.fillers["time"]
+    retained_ids = sorted(
+        f"slurp:train:{row['slurp_id']:06d}" for row in rows[1:]
+    )
+    assert schema.source_identity_hash == hashlib.sha256(
+        "\n".join(retained_ids).encode("utf-8")
+    ).hexdigest()
+    assert schema.excluded_train_utterance_ids == ("slurp:train:001000",)
+
+
+def test_excluding_only_observations_keeps_an_empty_legal_profile(slot_world):
+    schema = load_slurp_intent_slot_schema(
+        slot_world.lock,
+        slot_world.data_root,
+        excluded_train_utterance_ids=(
+            "slurp:train:002000",
+            "slurp:train:002001",
+        ),
+    )
+
+    assert schema.intent_ids == ("alarm_set", "weather_query")
+    weather = schema.intents["weather_query"]
+    assert weather.n == 0
+    assert weather.mentions == 0
+    assert weather.types == ()
+    assert weather.fillers == {}
+
+
+def test_exclusion_normalization_is_canonical_and_precedes_source_read(
+    slot_world, monkeypatch
+):
+    assert normalize_slurp_train_utterance_exclusions(
+        ["slurp:train:002001", "slurp:train:001000"]
+    ) == ("slurp:train:001000", "slurp:train:002001")
+
+    opened = False
+
+    def unexpected_read(_path):
+        nonlocal opened
+        opened = True
+        raise AssertionError("malformed exclusions must fail before source read")
+
+    monkeypatch.setattr(ds, "_read_jsonl", unexpected_read)
+    for malformed in (
+        "slurp:train:001000",
+        ["001000"],
+        ["train:001000"],
+        ["slurp:train:1000"],
+        ["slurp:devel:001000"],
+        ["slurp:train:001000", "slurp:train:001000"],
+        [1000],
+    ):
+        with pytest.raises(LoaderError):
+            load_slurp_intent_slot_schema(
+                slot_world.lock,
+                slot_world.data_root,
+                excluded_train_utterance_ids=malformed,
+            )
+    assert opened is False
+
+
+def test_unknown_and_fully_empty_exclusions_are_refused(slot_world):
+    with pytest.raises(LoaderError, match="absent from governed TRAIN"):
+        load_slurp_intent_slot_schema(
+            slot_world.lock,
+            slot_world.data_root,
+            excluded_train_utterance_ids=("slurp:train:009999",),
+        )
+
+    all_ids = tuple(
+        f"slurp:train:{row['slurp_id']:06d}" for row in _train_rows()
+    )
+    with pytest.raises(LoaderError, match="empty slot schema"):
+        load_slurp_intent_slot_schema(
+            slot_world.lock,
+            slot_world.data_root,
+            excluded_train_utterance_ids=all_ids,
+        )
+
+
 def test_a_wider_floor_and_a_smaller_example_cap_are_honoured(slot_world):
     wide = load_slurp_intent_slot_schema(
         slot_world.lock, slot_world.data_root, min_share=0.0, examples_per_type=2
@@ -305,7 +402,13 @@ def test_the_loader_takes_no_split_or_path_argument():
     import inspect
 
     parameters = inspect.signature(load_slurp_intent_slot_schema).parameters
-    assert set(parameters) == {"lock", "root", "min_share", "examples_per_type"}
+    assert set(parameters) == {
+        "lock",
+        "root",
+        "min_share",
+        "examples_per_type",
+        "excluded_train_utterance_ids",
+    }
 
 
 # ---------------------------------------------------------------------------

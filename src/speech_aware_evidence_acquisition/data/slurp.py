@@ -1237,7 +1237,10 @@ class SlurpIntentSlotSchema:
     ``intents`` is keyed by the SAME ``f"{scenario}_{action}"`` spelling
     :func:`_parse_record` gives ``SlurpRecord.intent`` and
     :class:`SlurpOntology.intents` renders, so a schema block, an inventory
-    line and a gold label all compare directly.
+    line and a gold label all compare directly. Non-empty
+    ``excluded_train_utterance_ids`` records the canonical utterance-level
+    construction exclusions; it is omitted from the legacy JSON projection
+    when empty so existing identities remain exact.
     """
 
     schema_id: str
@@ -1247,6 +1250,7 @@ class SlurpIntentSlotSchema:
     min_share: float
     examples_per_type: int
     intents: Mapping[str, SlurpIntentSlots]
+    excluded_train_utterance_ids: tuple[str, ...] = ()
 
     @property
     def intent_ids(self) -> tuple[str, ...]:
@@ -1255,7 +1259,7 @@ class SlurpIntentSlotSchema:
         return tuple(sorted(self.intents))
 
     def as_json(self) -> dict[str, object]:
-        return {
+        document = {
             "schema_id": self.schema_id,
             "source_split": self.source_split,
             "source_identity_hash": self.source_identity_hash,
@@ -1264,6 +1268,11 @@ class SlurpIntentSlotSchema:
             "examples_per_type": self.examples_per_type,
             "intents": [self.intents[intent].as_json() for intent in self.intent_ids],
         }
+        if self.excluded_train_utterance_ids:
+            document["excluded_train_utterance_ids"] = list(
+                self.excluded_train_utterance_ids
+            )
+        return document
 
     def content_hash(self) -> str:
         """Canonical-JSON sha256 of :meth:`as_json` (the same canonicalization
@@ -1279,12 +1288,64 @@ def _train_utterance_id(raw: Mapping[str, object], context: str) -> str:
     return f"slurp:train:{slurp_id:06d}"
 
 
+def normalize_slurp_train_utterance_exclusions(
+    excluded_train_utterance_ids: Sequence[str] | None,
+) -> tuple[str, ...]:
+    """Validate and canonically order TRAIN utterance exclusions.
+
+    Each ID names an utterance, not one recording, and has the exact form
+    ``slurp:train:000001``. A caller that starts from recording-scoped roster
+    IDs must collapse their shared utterance prefix before calling this
+    helper. Excluding that utterance then excludes every sibling recording
+    represented by its governed TRAIN row.
+    """
+
+    if excluded_train_utterance_ids is None:
+        return ()
+    if isinstance(excluded_train_utterance_ids, (str, bytes)) or not isinstance(
+        excluded_train_utterance_ids, Sequence
+    ):
+        raise LoaderError(
+            "excluded_train_utterance_ids must be a sequence of canonical "
+            "SLURP TRAIN utterance IDs"
+        )
+    normalized: list[str] = []
+    seen: set[str] = set()
+    for index, utterance_id in enumerate(excluded_train_utterance_ids):
+        context = f"excluded_train_utterance_ids[{index}]"
+        if not isinstance(utterance_id, str):
+            raise LoaderError(f"{context} must be text")
+        parts = utterance_id.split(":")
+        if (
+            len(parts) != 3
+            or parts[:2] != ["slurp", "train"]
+            or len(parts[2]) != 6
+            or not parts[2].isdigit()
+        ):
+            raise LoaderError(
+                f"{context} must have the canonical form 'slurp:train:<six digits>'"
+            )
+        canonical = _train_utterance_id({"slurp_id": int(parts[2])}, context)
+        if canonical != utterance_id:
+            raise LoaderError(
+                f"{context} must have the canonical form 'slurp:train:<six digits>'"
+            )
+        if canonical in seen:
+            raise LoaderError(
+                f"excluded_train_utterance_ids contains duplicate ID {canonical!r}"
+            )
+        seen.add(canonical)
+        normalized.append(canonical)
+    return tuple(sorted(normalized))
+
+
 def load_slurp_intent_slot_schema(
     lock: Mapping[str, object],
     root: Path,
     *,
     min_share: float = _INTENT_SLOT_MIN_SHARE,
     examples_per_type: int = _INTENT_SLOT_EXAMPLES_PER_TYPE,
+    excluded_train_utterance_ids: Sequence[str] | None = None,
 ) -> SlurpIntentSlotSchema:
     """Mine the per-intent slot schema from ``train.jsonl`` -- and only from
     ``train.jsonl``.
@@ -1306,6 +1367,14 @@ def load_slurp_intent_slot_schema(
     recorded share is rounded to :data:`_INTENT_SLOT_SHARE_DIGITS` places
     AFTER the floor test has run on the exact ratio.
 
+    Optional construction exclusion. ``excluded_train_utterance_ids`` uses
+    canonical IDs such as ``slurp:train:000001``. The loader validates their
+    form before reading TRAIN, refuses unknown IDs after validating source
+    membership, and removes matching utterances before accumulating observed
+    counts or fillers. The full source label inventory remains available, so
+    a label whose observations were all excluded has an explicit empty
+    profile.
+
     Tolerance mirrors :func:`load_slurp_ontology` deliberately: a row with an
     unusable ``tokens`` block or a malformed entity contributes no slot
     mentions but still counts toward its intent's ``n``, so ``n`` always means
@@ -1314,6 +1383,10 @@ def load_slurp_intent_slot_schema(
     unbound.
     """
 
+    exclusions = normalize_slurp_train_utterance_exclusions(
+        excluded_train_utterance_ids
+    )
+    exclusion_set = frozenset(exclusions)
     if isinstance(min_share, bool) or not isinstance(min_share, (int, float)):
         raise LoaderError(f"min_share must be a number, got {min_share!r}")
     if not 0.0 <= float(min_share) <= 1.0:
@@ -1329,7 +1402,9 @@ def load_slurp_intent_slot_schema(
     if not metadata_path.is_file():
         raise LoaderError(f"SLURP split metadata file missing: {metadata_path}")
 
+    available_utterance_ids: set[str] = set()
     utterance_ids: set[str] = set()
+    legal_intents: set[str] = set()
     utterances_by_intent: dict[str, int] = {}
     mentions_by_intent: dict[str, dict[str, int]] = {}
     fillers_by_intent_type: dict[tuple[str, str], list[str]] = {}
@@ -1341,8 +1416,13 @@ def load_slurp_intent_slot_schema(
             continue
         if not isinstance(action, str) or not action:
             continue
-        utterance_ids.add(_train_utterance_id(raw, context))
+        utterance_id = _train_utterance_id(raw, context)
         intent = f"{scenario}_{action}"
+        available_utterance_ids.add(utterance_id)
+        legal_intents.add(intent)
+        if utterance_id in exclusion_set:
+            continue
+        utterance_ids.add(utterance_id)
         utterances_by_intent[intent] = utterances_by_intent.get(intent, 0) + 1
         mentions_by_intent.setdefault(intent, {})
         try:
@@ -1368,15 +1448,21 @@ def load_slurp_intent_slot_schema(
             if filler and len(examples) < examples_per_type and filler not in examples:
                 examples.append(filler)
 
-    if not utterances_by_intent:
+    unknown_exclusions = sorted(exclusion_set - available_utterance_ids)
+    if unknown_exclusions:
+        raise LoaderError(
+            "excluded_train_utterance_ids contains ID absent from governed TRAIN "
+            f"metadata: {unknown_exclusions[0]}"
+        )
+    if not utterance_ids:
         raise LoaderError(
             f"SLURP {split_id} metadata {metadata_path} yielded no labelled utterance; "
             "refusing to build an empty slot schema"
         )
 
     profiles: dict[str, SlurpIntentSlots] = {}
-    for intent in sorted(utterances_by_intent):
-        counts = mentions_by_intent[intent]
+    for intent in sorted(legal_intents):
+        counts = mentions_by_intent.get(intent, {})
         mentions = sum(counts.values())
         kept = [
             (entity_type, count)
@@ -1390,7 +1476,7 @@ def load_slurp_intent_slot_schema(
         )
         profiles[intent] = SlurpIntentSlots(
             intent=intent,
-            n=utterances_by_intent[intent],
+            n=utterances_by_intent.get(intent, 0),
             mentions=mentions,
             types=types,
             fillers=MappingProxyType(
@@ -1413,6 +1499,7 @@ def load_slurp_intent_slot_schema(
         min_share=float(min_share),
         examples_per_type=examples_per_type,
         intents=MappingProxyType(profiles),
+        excluded_train_utterance_ids=exclusions,
     )
 
 
@@ -1816,6 +1903,7 @@ __all__ = [
     "load_slurp_split",
     "load_slurp_train_construction_rows",
     "load_slurp_train_material",
+    "normalize_slurp_train_utterance_exclusions",
     "render_slurp_closed_label_inventory",
     "render_slurp_closed_label_inventory_with_slot_schema",
     "render_slurp_intent_slot_schema",
