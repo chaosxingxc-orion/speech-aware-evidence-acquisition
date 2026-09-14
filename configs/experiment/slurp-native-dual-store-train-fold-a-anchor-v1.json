@@ -12,18 +12,25 @@
       "cell_id": "slurp-native-dual-store-train-fold-a-anchor-v1",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
-    "readiness": {
-      "reason": "The shared model-free phase-supply receipt is bound. Root admission, exposure pre-registration, final clean-source registration and resident attestation remain required before worker or campaign execution.",
-      "requirements": [
-        {
-          "kind": "preparation",
-          "reason": "Require all 1,080 exact source-bound native Perception supplies from the corrected final draft identity.",
-          "relpath": "prepared/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-PREPARE-V1-R2/phase-supply.json",
-          "sha256": "c5b0b51c23ef22feb1284559cd9e37286922d4cefc2e3cfcf7feafb23e3b595e"
-        }
-      ],
-      "state": "preparation-pending"
-    },
+      "readiness": {
+        "state": "ready",
+        "reason": "Root admitted one unchanged TRAIN Fold A incumbent source. All 1080 prepared Perception supplies are bound; final source registration, exclusive resident attachment and exact realized-request fitting are mandatory.",
+        "requirements": [
+          {
+            "kind": "decision",
+            "expected_decision_id": "slurp-native-dual-store-train-fold-a-anchor-admission-v1",
+            "relpath": "coordination/slurp-native-dual-store-train-fold-a-anchor-v1/root-admission-v1.json",
+            "sha256": "2d409020d92f3a8fe3e835a52296fddf7df25a7a5d7afec8e75d114ca4ffbd58",
+            "reason": "Root admitted the unchanged Fold A trajectory source and no enhanced mechanism."
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-PREPARE-V1-R2/phase-supply.json",
+            "sha256": "c5b0b51c23ef22feb1284559cd9e37286922d4cefc2e3cfcf7feafb23e3b595e",
+            "reason": "Full1080 source-bound offline Perception supply, warm-verified without producer invocation."
+          }
+        ]
+      },
       "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-V1"
     }
   ],

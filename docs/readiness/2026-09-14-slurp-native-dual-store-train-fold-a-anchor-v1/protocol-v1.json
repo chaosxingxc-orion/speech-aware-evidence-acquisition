@@ -1,0 +1,310 @@
+{
+  "schema": "saea-native-train-anchor-protocol-v1",
+  "registered_at_utc": "2026-09-14T04:57:48.996928+00:00",
+  "status": "ROOT_PREREGISTERED_AWAITING_CLEAN_SOURCE_CAMPAIGN",
+  "purpose": "Reproduce the unchanged accepted native dual-store incumbent on all 1,080 TRAIN Fold A rows through the shared FlightRuntime to create a frozen trajectory source for later TRAIN-only procedural optimization. This source flight adds no candidate refresh, information-gain tool or method change and makes no effectiveness claim.",
+  "source_worktree": "/home/chao/saea-worktrees/slurp-train-anchor-v1",
+  "accepted_implementation_commit": "308a43880da29c5bf35c0fba0ec16c071db3afb3",
+  "admission": {
+    "relpath": "coordination/slurp-native-dual-store-train-fold-a-anchor-v1/root-admission-v1.json",
+    "sha256": "2d409020d92f3a8fe3e835a52296fddf7df25a7a5d7afec8e75d114ca4ffbd58"
+  },
+  "preparation_verification": {
+    "relpath": "coordination/slurp-native-dual-store-train-fold-a-anchor-v1/root-preparation-verification-v1.json",
+    "sha256": "0a4ec28ba77d2ef1e1ff8ec4fd1446cc8e6bf1badf2a22563a5e5326d170a20e"
+  },
+  "configurations": {
+    "experiment": "slurp-native-dual-store-train-fold-a-anchor-v1",
+    "cell": "slurp-native-dual-store-train-fold-a-anchor-v1",
+    "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-V1",
+    "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-v1",
+    "composed_config_hash": "30f00a12aecb3f6ab6fcb7b0059534a3a82837833cbce53f82b2383fd12a1584",
+    "execution_plan_protocol_hash": "d1c61c09102dcb8801ea134d763fca0b5b60054d6ef80a3a38752642c107c87d",
+    "fragments": {
+      "model": {
+        "relpath": "configs/model/q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1.json",
+        "sha256": "d1a644d80646de9e0e6b5799fb98e2151de7e03b1b14c5f260d16f77f8a77f09"
+      },
+      "dataset": {
+        "relpath": "configs/dataset/slurp-speech-native-evo-fold-a-1080.json",
+        "sha256": "4ba55688e80d8d768ec6cfc3ff4bacc9802fb34e4dab54913934015184497215"
+      },
+      "baseline": {
+        "relpath": "configs/baseline/slurp-native-dual-store-train-fold-a-anchor-v1.json",
+        "sha256": "b77a31d369f18567ccda362bbfdb019ce77c96c344ab726020e8ee4e82bf2b3a"
+      },
+      "experiment": {
+        "relpath": "configs/experiment/slurp-native-dual-store-train-fold-a-anchor-v1.json",
+        "sha256": "022a0eb25ad107223a0d2b73cfe3088a8d143e611310d429f3f51e5d4039195b"
+      }
+    }
+  },
+  "population": {
+    "name": "TRAIN Fold A",
+    "count": 1080,
+    "split_id": "SLURP-EVO-FOLD-A-V2",
+    "split_role": "discovery",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "ordered_roster_binding": "The experiment population exactly equals the adapter roster and the prepared supply roster.",
+    "fold_b": "Keep disjoint TRAIN Fold B untouched; no B attempt is admitted.",
+    "construction": "Both A and B were excluded from the fixed intent and slot knowledge construction."
+  },
+  "program": {
+    "policy": "phase-native-candidates-review-revise-v1",
+    "native_episode": {
+      "actions": {
+        "accept": "ACCEPT",
+        "acquire": "ACQUIRE",
+        "revise": "REVISE"
+      },
+      "episode_id": "slurp-native-dual-store-dev1000-v1",
+      "exhaustion_policy": "deliver-latest-solver",
+      "max_revisions": 1,
+      "roles": {
+        "perception": {
+          "max_iterations": 1,
+          "phase_id": "perception"
+        },
+        "planner": {
+          "max_iterations": 1,
+          "phase_id": "planner"
+        },
+        "reviewer": {
+          "max_iterations": 3,
+          "phase_id": "reviewer"
+        },
+        "solver": {
+          "max_iterations": 1,
+          "phase_id": "solver"
+        }
+      },
+      "schema": "saea-native-episode-config-v1"
+    },
+    "phase_tools": {
+      "reviewer": {
+        "allowed_tools": [
+          "saea-tool-task-contract-v1"
+        ],
+        "knowledge_views": [
+          "text"
+        ],
+        "mode": "native-tools",
+        "source_authority_role": "reviewer"
+      }
+    },
+    "phase_material": {
+      "perception": {
+        "fill_params": {
+          "id": "slurp-intent-hypotheses-v1",
+          "max_candidates": 3,
+          "max_distinction_chars": 128,
+          "max_evidence_refs": 0,
+          "max_unresolved_fields": 0,
+          "min_candidates": 1,
+          "source_catalog": {
+            "data_relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+            "sha256": "3e60268b3f940c3018ab8b8c80ccd988b1d1efd6c5a198929c6af05ba21f8263",
+            "source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201"
+          }
+        },
+        "instruction_fill": null,
+        "instruction_template": "probes/slurp_native_role_perception_v3.txt",
+        "predecessor_binding": "none",
+        "response_format_id": "slurp-intent-hypotheses-v1",
+        "state_fill": null
+      },
+      "planner": {
+        "fill_params": {},
+        "instruction_fill": null,
+        "instruction_template": "probes/slurp_native_role_planner_v1.txt",
+        "predecessor_binding": "none",
+        "response_format_id": null,
+        "state_fill": null
+      },
+      "reviewer": {
+        "fill_params": {},
+        "instruction_fill": null,
+        "instruction_template": "probes/slurp_native_role_reviewer_v1.txt",
+        "predecessor_binding": "none",
+        "response_format_id": null,
+        "state_fill": null
+      },
+      "solver": {
+        "fill_params": {},
+        "instruction_fill": null,
+        "instruction_template": "probes/slurp_native_role_solver_v2.txt",
+        "predecessor_binding": "none",
+        "response_format_id": null,
+        "state_fill": null
+      }
+    },
+    "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
+    "fixed_candidate_maximum": 3,
+    "prompt_semantics": "Preserve all current incumbent model-visible role and episode identities, even where the episode ID includes dev1000."
+  },
+  "knowledge_stores": {
+    "intent-boundaries": {
+      "phase_supply": {
+        "perception": {
+          "dimensions": [
+            "intent-boundary"
+          ],
+          "expose_facets": false,
+          "facet_source": {
+            "embedded_signal": "text: sealed released TRAIN-derived intent-boundary facet vectors; the key side is knowledge text.",
+            "kind": "sealed-vectors",
+            "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/facets.jsonl",
+            "sha256": "76e8d16a067ebfc5d67a4ecef2966636310815b950a7d9790ec7c0136f01ecd2",
+            "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1"
+          },
+          "fuse_coverage": {
+            "c": 1,
+            "m": 8,
+            "top_l": 8
+          },
+          "fuse_policy": "saea-fuse-associated-values-v1",
+          "k": 8,
+          "provider": "kb-facet-v1",
+          "query_source": {
+            "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+            "kind": "sealed-segment-vectors",
+            "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+            "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+            "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+          },
+          "rank_policy": "saea-rank-wcos-prior-agree-v1",
+          "rank_weights": {
+            "w_agree": 0.0,
+            "w_cos": 1.0,
+            "w_prior": 0.0
+          },
+          "tau": 0.0
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+        "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+        "sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+      },
+      "store_role": "intent-boundaries"
+    },
+    "slot-contracts": {
+      "candidate_supply": {
+        "solver": {
+          "candidate_state_phase": "perception",
+          "compact_source_phase": "perception",
+          "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+          "max_candidates": 3,
+          "max_total_values": 28,
+          "max_values_per_candidate": 16,
+          "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+          "provider": "slurp-candidate-semantic-v1",
+          "rank_policy": "saea-ranked-candidate-round-robin-v1"
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+        "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v1/snapshot.json",
+        "sha256": "11c246e4b815a4f966e8cf8785f06b70515755eca71658862c6f98e9914044e6"
+      },
+      "store_role": "slot-contracts"
+    }
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-PREPARE-V1-R2/phase-supply.json",
+    "sha256": "c5b0b51c23ef22feb1284559cd9e37286922d4cefc2e3cfcf7feafb23e3b595e"
+  },
+  "accounting": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "generation_budget": {
+    "cap": 11880,
+    "definition": "Complete the unchanged maximum eleven-contact native program for every Fold A row. The ceiling is a conservative safety bound, not an estimated cost or a reusable global allowance.",
+    "target": 5400
+  },
+  "fit": {
+    "mode": "native_contact_fit",
+    "configuration": {
+      "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-fit-v1",
+      "contact_cap": 47520,
+      "max_speech_packets": 1,
+      "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-FIT-V1"
+    },
+    "exact_fit": "Each realized immutable request, including actual role/tool history and supplies, is fitted before transmission under the same exclusive lease.",
+    "maximum_endpoint_count": "1080 records * 11 possible native contacts * (1 speech packet + 3 endpoints) = 47520. Only realized requests spend contacts.",
+    "not_claimed": "A static all-branches full-roster capacity guarantee; later model-dependent request bodies do not exist before execution."
+  },
+  "service": {
+    "session_id": "serving-slurp-dual-store-reboot-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "total_context": 98304,
+    "slots": 4,
+    "slot_tokens": 24576,
+    "max_output_tokens": 512,
+    "mmproj": "absent",
+    "feature_packets": "Reuse verified prepared packets; zero encoding contacts.",
+    "load_or_switch": false
+  },
+  "scoring": {
+    "scorers": [
+      "slurp-slu-official-train",
+      "cost"
+    ],
+    "official_scorer": "Pinned SLURP official TRAIN evaluate.py through core.scoring_batch",
+    "complete_jobs": 1,
+    "include_per_sample": true,
+    "no_sharding": true,
+    "no_partial_quality_read": true,
+    "source_release": "Verify the complete sealed manifest, exact ordered 1080 outputs, native phase summary and first successful complete official score before any task-quality read. Create a source-bound release receipt."
+  },
+  "offline_analysis": {
+    "primary": "Describe complete Fold A official pooled SLU micro F1 and intent/scenario/action accuracy; this is an incumbent source, not an effectiveness comparison.",
+    "diagnostics": [
+      "candidate C0 coverage with actual width",
+      "final selection conditional on coverage with denominator",
+      "outside-candidate delivery",
+      "correct intent with entity errors",
+      "native role actions and tool calls",
+      "malformed responses, output limits, failures and fallback",
+      "natural-mixture and equal-scenario summaries with full strata"
+    ],
+    "reward": "Preserve final task-native sufficient counts for future verified TRAIN reward links. No proposal, alternative trajectory, memory construction or evaluation is run by this protocol.",
+    "gold_boundary": "Official labels and references are offline scoring/analysis inputs only; no gold/reference strings enter task runtime or proposal model context."
+  },
+  "pipeline": {
+    "one_experiment_generating": true,
+    "root_owns_service": true,
+    "exclusive_lease": true,
+    "cpu_workers_total_during_generation": 8,
+    "monitor_interval_seconds": 10,
+    "background_official_score_jobs_maximum": 1,
+    "preserve_running_source_until_scored": true
+  },
+  "failure_policy": "Stop and preserve on any failure. Do not automatically restart, replay, filter rows, change the roster, candidate width, role graph, prompts, geometry or caps. At most one root-diagnosed recovery may be separately registered. A second failure closes this flight and requires a four-row fix proof before another mechanism.",
+  "unused_budget_is_not_attempt_authority": true,
+  "not_authorized": [
+    "Fold B generation",
+    "candidate refresh",
+    "new knowledge or memory",
+    "Whisper/ASR invocation",
+    "extra scorer runs",
+    "proposal generation",
+    "new model service",
+    "a new DEV comparison"
+  ],
+  "readiness_history": "A preliminary contact-free check stopped at missing exposure registration. An initial CPU-only preparation was superseded after root corrected nominal and tool budgets; both immutable artifacts are retained and the corrected preparation was warm-verified with its producer forced to fail if invoked."
+}

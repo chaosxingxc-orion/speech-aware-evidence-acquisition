@@ -1,0 +1,48 @@
+{
+  "schema": "saea-registered-generation-plan-v1",
+  "registered_at_utc": "2026-09-14T04:57:48.996928+00:00",
+  "status": "ROOT_PREREGISTERED_AWAITING_CLEAN_SOURCE_CAMPAIGN",
+  "source_worktree": "/home/chao/saea-worktrees/slurp-train-anchor-v1",
+  "accepted_implementation_commit": "308a43880da29c5bf35c0fba0ec16c071db3afb3",
+  "experiment": "slurp-native-dual-store-train-fold-a-anchor-v1",
+  "cell": "slurp-native-dual-store-train-fold-a-anchor-v1",
+  "attached_generation_run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-V1",
+  "expected_session_id": "serving-slurp-dual-store-reboot-np4-v1",
+  "composed_config_hash": "30f00a12aecb3f6ab6fcb7b0059534a3a82837833cbce53f82b2383fd12a1584",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-14-slurp-native-dual-store-train-fold-a-anchor-v1/protocol-v1.json",
+    "sha256": "e7051710783cba6e6e784e90962cb77c2df8c65a77eeda305c1372f3964ee106"
+  },
+  "scientific_eligibility": {
+    "relpath": "coordination/slurp-native-dual-store-train-fold-a-anchor-v1/root-admission-v1.json",
+    "sha256": "2d409020d92f3a8fe3e835a52296fddf7df25a7a5d7afec8e75d114ca4ffbd58"
+  },
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-V1",
+    "execution_profile": "baseline-reproduction",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "planned_model_calls": 11880,
+    "planned_gpu_hours": 12.0,
+    "planned_speech_audio_seconds": 33930,
+    "protocol_hash": "d1c61c09102dcb8801ea134d763fca0b5b60054d6ef80a3a38752642c107c87d",
+    "attempt_id": "attempt-slurp-native-dual-store-train-fold-a-anchor-generation-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 47520,
+    "generation_calls_cap": 11880,
+    "gpu_hours_fit_inclusive": 12.0,
+    "native_task_contract_calls_cap": 6480,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 33930
+  },
+  "registration_state": "Root preregistered before contact. The shared campaign performs authoritative preflight and exact fit under one exclusive lease; do not run duplicate standalone preflight.",
+  "quality_read_gate": "Verify the complete sealed manifest, exact ordered 1080 outputs, native phase summary and first successful complete official score before any task-quality read. Create a source-bound release receipt.",
+  "unused_budget_is_not_new_attempt_authority": true
+}
