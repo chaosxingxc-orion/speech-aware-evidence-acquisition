@@ -2,6 +2,13 @@
 
 Date: 2026-09-14.
 Status: prospective algorithm specification; no new contact authorization.
+
+**Later owner sequencing instruction:** first establish a stable-benefit agent
+base and useful optimization workspace. Follow
+[the current base-first plan](2026-09-14-stable-agent-base-first-v1.md).
+Defer implementation of this document's sampling contract, factor abstraction
+and update operators until that base is established. Preserve this proposal for
+later review; it is not current execution priority.
 Authority: owner clarification that reproducible trajectory sampling and algorithmic
 optimization, rather than root/GPT-6 system edits, must define training-free research.
 

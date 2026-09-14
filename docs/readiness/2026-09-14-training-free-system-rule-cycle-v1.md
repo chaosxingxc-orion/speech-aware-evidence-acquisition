@@ -3,6 +3,13 @@
 Status: prospective design, not an execution plan or contact authorization.
 Date: 2026-09-14. Root owns the scientific design and admission.
 
+## Latest execution order: establish the agent base first
+
+The owner's subsequent sequencing instruction takes precedence over immediate
+algorithm work. Follow [the base-first plan](2026-09-14-stable-agent-base-first-v1.md).
+Keep both rule consolidation and trajectory-policy algorithms deferred until
+stable system benefit and an observable optimization workspace are established.
+
 ## Owner clarification: algorithmic sampling takes precedence
 
 The owner subsequently clarified that training-free research must use reproducible

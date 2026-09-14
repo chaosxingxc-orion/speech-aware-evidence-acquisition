@@ -57,3 +57,12 @@ current campaign's exact admission and do not reclassify its eventual paired
 comparison as an on-policy GRPO group. See
 [the owner ruling](OWNER-ALGORITHMIC-TRAJECTORY-OPTIMIZATION-2026-09-14.md) and
 [the algorithm specification](../../../readiness/2026-09-14-trajectory-policy-optimization-v1.md).
+
+## Latest owner sequence: base validation before algorithm design
+
+The owner subsequently required a stable-benefit agent base and observable
+optimization workspace before defining RL factors, sampling or update methods.
+Follow [the base-first plan](../../../readiness/2026-09-14-stable-agent-base-first-v1.md)
+and [the owner ruling](OWNER-AGENT-BASE-BEFORE-RL-2026-09-14.md).
+Immediate sampling-interface work is paused; the unexecuted test draft was
+preserved outside active source. Current experiment admission is unchanged.
