@@ -33,8 +33,8 @@ identity. No evidence identifies a new method defect from this interruption.
 - Prepared speech and intent/slot stores are reused. No encoder or ASR contact.
 - Shared campaign owns its authoritative preflight, actual-request fit,
   exclusive generation lease, complete sealing and background official scoring.
-  At this snapshot it was checking readiness; inspect fresh attempts and monitor
-  before claiming generation or utilization. Do not duplicate its preflight.
+  The authoritative check and direct whole-roster fit have passed; direct GPU
+  generation is active. Do not duplicate its preflight.
 
 The only recovery order is:
 
@@ -84,3 +84,10 @@ official evaluation and explicit admission. Do not call that loop complete.
 Interruption audit receipt SHA256:
 77de89a0ac813d7e322a93cbe4b78a1e02de81bc7dce4eecc7058cab420aa3e8.
 All six operational source hashes were reverified before the receipt was written.
+
+At 2026-09-14T00:54:12.725549+00:00, the direct recovery attempt is OPENED with
+293 launched model calls. The latest 10-second GPU sample is
+88.0% with 4/4 busy slots.
+This is a live utilization sample, not a sustained full-load claim. Source-bound
+observation: DATA/coordination/slurp-direct-vs-native-dual-store-reboot-recovery-v1/
+resumed-generation-observation-v1.json. Quality remains unread.
