@@ -3,6 +3,12 @@
 Status: prospective design, not an execution plan or contact authorization.
 Date: 2026-09-14. Root owns the scientific design and admission.
 
+Owner priority, confirmed on 2026-09-14: pursue candidate coverage of at least
+95% while continuing training-free system optimization in parallel. Candidate
+coverage does not independently gate entry to this TRAIN cycle. Full-task
+quality still determines system progression. See
+docs/superpowers/plans/experiment-handoff/OWNER-CANDIDATE-COVERAGE-PRIORITY-2026-09-14.md.
+
 ## Objective and evidence boundary
 
 Improve the frozen multimodal agent through its external control policy. Optimize
