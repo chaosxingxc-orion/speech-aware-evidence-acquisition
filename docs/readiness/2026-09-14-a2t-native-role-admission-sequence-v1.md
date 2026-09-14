@@ -85,10 +85,12 @@ until both first full scores have been verified and paired reading registered.
 Use the already frozen whole-query cluster analysis, native dataset metrics and
 all tier/domain views. No proof-quality reading or partial failed-arm scoring.
 
-## Remaining concrete preparation
+## Completed preparation and remaining admission
 
-Resolve the exact existing engineering-roster and generation-only shared entry;
-bind source/composed/protocol hashes from the runtime's actual configuration;
-check full-family and proof contact arithmetic; register the separate plans.
+The existing populations selector and generation-only worker have been verified.
+The deterministic four-row selection, actual runtime split, prepared supply and
+full/proof contact arithmetic are recorded in STATUS-112. Worker and campaign
+now share genuine receipt persistence. Bind final decision/readiness, recompute
+composed protocol hashes and register the separate plans before service contact.
 No new experiment-specific controller, launcher or scoring implementation is
-needed merely to assemble this admission.
+needed to assemble this admission.

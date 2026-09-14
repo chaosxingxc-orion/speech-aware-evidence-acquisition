@@ -1,0 +1,92 @@
+{
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 176,
+    "generation_calls_cap": 44,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 16,
+    "official_complete_scoring_jobs": 0,
+    "speech_audio_seconds_cap": 7264
+  },
+  "configuration": {
+    "baseline": "a2t-native-role-engineering-proof-v1",
+    "cell": "a2t-native-role-engineering-proof-v1",
+    "composed_config_hash": "5a8abf4f9281d78fcdf5391d3f65f24c124e52dae2ba99d4b0bfdcf9a302c586",
+    "dataset": "audio2tool-org1-union-4000",
+    "experiment": "a2t-native-role-engineering-proof-v1",
+    "model": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1"
+  },
+  "criteria": [
+    "Seal exactly the four selected native episodes with complete source-bound Solver outputs and raw response metadata.",
+    "Validate Perception source JSON and legal ordered action candidates without clipping, padding or response repair.",
+    "Verify each actual request fit identity, speech binding, supplied parameter selections and delivered Solver source.",
+    "Persist genuine FlightReceipts through the shared generation-only worker and verify them in a fresh process.",
+    "Report actual tool/revision branches; do not claim an unobserved GPU branch was exercised."
+  ],
+  "expected_session_id": "serving-a2t-native-role-base-np3-max2048-v1",
+  "failure_policy": "Stop and preserve on failure. No automatic restart or replay. At most one separately registered recovery; second failure closes. Do not change method, output or geometry mid-attempt.",
+  "fit_plan": {
+    "attempt_id": "attempt-a2t-native-role-engineering-proof-fit-v1",
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 176,
+    "planned_speech_audio_seconds": 7264,
+    "protocol_hash": "50ddd55b8ad02f5b08ff1aff211eeffa82870126d9d80d8d55b30684a62bb735",
+    "run_id": "SAEA-A2T-NATIVE-ROLE-ENGINEERING-PROOF-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "31fa4c9918d4e4c34f62c6cc0a5d7ef13229e6f711e2889b7c8a3213e63c37c2",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "full_method_source": "configs/baseline/a2t-native-role-dual-store-union4000-v1.json",
+  "generation_plan": {
+    "attempt_id": "attempt-a2t-native-role-engineering-proof-generation-v1",
+    "carrier_lock_key": "audio2tool",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 44,
+    "planned_speech_audio_seconds": 7264,
+    "protocol_hash": "50ddd55b8ad02f5b08ff1aff211eeffa82870126d9d80d8d55b30684a62bb735",
+    "run_id": "SAEA-A2T-NATIVE-ROLE-ENGINEERING-PROOF-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "31fa4c9918d4e4c34f62c6cc0a5d7ef13229e6f711e2889b7c8a3213e63c37c2",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "limitations": [
+    "Four rows provide engineering evidence only, never task-quality screening or effectiveness.",
+    "The longest selected sample is a retained release synthesis defect, not a representative recording; selection is based solely on frozen duration and ID metadata.",
+    "This proof does not establish complete4000 capacity or later native-state capacity; every full-run actual request still requires fitting."
+  ],
+  "method_equality": "Identical baseline fields except fit run/attempt/cap and prepared-supply binding; same current role prompts, 8 actions by4 alternatives, parameter supply, optional tool and terminal behavior.",
+  "no_quality_read": true,
+  "no_scoring": true,
+  "population": {
+    "count": 4,
+    "dataset_fragment": "audio2tool-org1-union-4000",
+    "decision_population": "Deterministic engineering subset of the already exposed original-speech union4000; one longest recording then three smallest remaining sample IDs. No labels or correctness used.",
+    "split_identity_hash": "31fa4c9918d4e4c34f62c6cc0a5d7ef13229e6f711e2889b7c8a3213e63c37c2"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-A2T-NATIVE-ROLE-ENGINEERING-PROOF-V1/phase-supply-v1.json",
+    "sha256": "17d2d6001871cd7c8a6ca6b25d2480d34bf6f11240d5b23f74e37a87333eb746"
+  },
+  "remaining_admission": "Close worker persistence verification, bind actual root admission inside readiness, recompute the runtime protocol hash and final generation/fit wrappers, then register both exposure rows before any contact. Keep the cell held until these steps and service handoff complete.",
+  "schema": "saea-native-role-engineering-prospective-protocol-v1",
+  "selection": {
+    "repo_relpath": "docs/readiness/2026-09-14-a2t-native-role-engineering-proof-v1/selection-v1.json",
+    "sha256": "90e05dedb1af8595e11234d1efba0e17a76539a7b4776638b565c8b4aa9aa7d3"
+  },
+  "source_commit": "206d99e11b90062da3b1406fd3086aa8069616cc",
+  "stage_scope": [
+    "preflight",
+    "preprocess",
+    "serve",
+    "run_phases",
+    "seal"
+  ],
+  "status": "PREPARED_NOT_CONTACT_AUTHORITY"
+}

@@ -1,6 +1,6 @@
 # Owner-directed recovery and continuation plan
 
-**Current overlay:** Read [STATUS-111](STATUS-111.md). The resident SLURP replication is running; root verified 98-percent GPU utilization after the owner restart report without restarting a healthy service. Audio2Tool configurations and all 4,000 activation selections are prepared and warm-cache verified. Genuine campaign receipt persistence is implemented and verified; actual serving/capacity proof and prospective admission remain pending.
+**Current overlay:** Read [STATUS-112](STATUS-112.md). SLURP replication continues on its frozen checkout. Full4000 Audio2Tool preparation and a metadata-selected four-row native engineering proof are prepared and source-verified. Campaign and standalone worker now share genuine receipt persistence; root integrated tests and engineering checks pass. Final decision/readiness binding, contact registration and actual serving/capacity proof remain pending.
 
 **Latest owner direction:** Establish a useful, reproducibly beneficial multimodal agent base and a configurable, observable workspace first. Define training-free RL factors, trajectory sampling and policy optimization only afterward. Root engineering improvements are not algorithm innovation. Retain SLURP-first execution, task-specific separate knowledge stores, corrective memory rather than raw training examples, on-demand Reviewer/Planner evidence tools, sole-Solver answer authority and native dataset metrics. Audio2Tool and E21 transfer remain necessary but follow the stable SLURP anchor.
 
