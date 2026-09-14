@@ -10,7 +10,9 @@ Both arms use the complete original speech packet, the existing official
 task contract and compact full 152-tool registry, the same frozen core,
 greedy decoding, output ceiling 2048, controller, FlightRuntime and
 OpenJiuwen executor. Direct uses phase-direct-only-v1 with no supplied
-knowledge or analytical tools. Its hidden parameter snapshot supports the shared\nleakage guard without routing any knowledge to the model; its single direct\nphase retains the whole-roster barrier required by live_phase_fit. The native system uses
+knowledge or analytical tools. Its hidden parameter snapshot supports the shared
+leakage guard without routing any knowledge to the model; its single direct
+phase retains the whole-roster barrier required by live_phase_fit. The native system uses
 phase-audio2tool-native-candidates-review-revise-v1.
 
 The native graph runs Perception, Solver, Reviewer, then Planner, with one
@@ -67,8 +69,10 @@ unverified. The runtime must fit every actual role request before dispatch.
 
 Reuse the released activation/parameter snapshots, 4000 speech packets and
 pinned speech-query/key vectors. Existing key text is mixed rather than a
-newly optimized activation-only embedding. Recompute first-phase activation
-selections with shared prepare-supply; the old snapshot/solve-phase recall
+newly optimized activation-only embedding. The shared prepare-supply entry has completed and verified all 4,000 first-phase
+activation selections. Every row has eight selections, with the exact speech-packet
+roster and frozen input hashes. A second invocation consumed the artifact as a
+warm cache hit without changing its bytes. The old snapshot/solve-phase recall
 is incompatible and is deliberately absent.
 
 The corpus has four schema-only tools; the two value views each cover all
@@ -88,10 +92,13 @@ are reviewed. Planned contact/GPU caps are prospective ceilings, not targets
 or authorization. At most one named recovery is allowed after a first failure.
 
 Use the shared scripts/flights/run_campaign.py entry with explicit WSL roots:
-check both cells, prepare-supply for the system, add its pin, then wire-check.
-Only root can later grant a resident-session lease for actual fitting or
-generation. A wire check uses synthetic responses; it is not model capacity
-or effectiveness evidence.
+check both cells after registration and verify the pinned prepared supply.
+The generic wire-check supports the direct arm only; the native path explicitly
+requires the actual request renderer and is not supported by that synthetic
+transport. Use the existing actual-renderer/OpenJiuwen integration proof for
+native engineering evidence, followed by a registered bounded serving proof
+and complete actual-request fitting. None of these proves task effectiveness.
+Only root can later grant a resident-session lease for fitting or generation.
 
 The official whole-manifest scorer runs once per arm. Preserve all eight
 tier tables, the paper/repository metric columns, natural-mixture and
@@ -113,3 +120,20 @@ whether a system has any future optimization space.
 Recipe: docs/readiness/2026-09-14-a2t-native-role-base-analysis-recipe-v1.json.
 Decision: configs/analysis/a2t-native-role-base-decision-v1.json.
 No new result or gold annotation was read to select these statistical fields.
+
+## Completed preparation receipt
+
+The source-bound receipt is DATA/coordination/a2t-agent-base-transfer-v1/
+native-role-configuration-preparation-v1.json, SHA-256
+67836d65b502880fcb1957893107f9214ab58c30df4c3560e071f85265d8f4e1.
+It records 115 passing focused/adjacent tests and the engineering-base check,
+the complete cold preparation and byte-identical warm consumption.
+The prepared phase-supply artifact SHA-256 is
+91847da0921f12a0a1be5cc1b4eafee091de3e1e32986a779d77d29a36026b68.
+No model, tokenizer, encoder, ASR or official-scoring contact was made.
+
+Full preflight remains pending prospective exposure registration; real
+capacity and serving output proof remain unverified. Persist genuine runtime
+phase-supply and stage receipts through the shared campaign before admission,
+so a later process can analyze the evidence actually consumed. Do not fabricate
+these receipts for historical episodes that did not preserve them.

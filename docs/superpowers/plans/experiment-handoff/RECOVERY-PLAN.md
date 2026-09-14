@@ -1,6 +1,6 @@
 # Owner-directed recovery and continuation plan
 
-**Latest execution:** [STATUS-110.md](STATUS-110.md) supersedes earlier status summaries. The resident SLURP replica continues; the direct arm is complete and first-scored, and the native arm is generating. Paired quality remains held. Audio2Tool's shared candidate-to-parameter route is implemented, independently reviewed and verified through real configuration and executor paths with synthetic service responses. Full experiment configuration and actual-request capacity admission remain pending. Follow timestamped process and first-score receipts for live state.
+**Current overlay:** Read [STATUS-111](STATUS-111.md). The resident SLURP replication is running; root verified 98-percent GPU utilization after the owner restart report without restarting a healthy service. Audio2Tool configurations and all 4,000 activation selections are prepared and warm-cache verified. Genuine campaign receipt persistence, actual serving/capacity proof and prospective admission remain pending.
 
 **Latest owner direction:** Establish a useful, reproducibly beneficial multimodal agent base and a configurable, observable workspace first. Define training-free RL factors, trajectory sampling and policy optimization only afterward. Root engineering improvements are not algorithm innovation. Retain SLURP-first execution, task-specific separate knowledge stores, corrective memory rather than raw training examples, on-demand Reviewer/Planner evidence tools, sole-Solver answer authority and native dataset metrics. Audio2Tool and E21 transfer remain necessary but follow the stable SLURP anchor.
 
@@ -71,14 +71,15 @@ treatment results exist. Any unresolved analysis must remain descriptive until i
 
 ## Current ordered work queue
 
-1. Use the completed sealed-score headroom audit and 2026 static source review in STATUS-040.
-2. Add only the shared SLURP supply-action policy seam: row-level retrieval or explicit no retrieval from the same current draft, both continuing to the same slots phase.
-3. Prepare fixed update/validation/evaluation roles, actual requests, action groups and a new prospective registration while the resident decoder stays available.
-4. Execute the first shared feedback loop with TF-GRPO as the 2025 baseline; prioritize EvoTool-style targeted module evolution as the first 2026 system candidate.
-5. Lock reproducible interfaces without requiring a large gain, then extend the same base to E21 and E22 with dataset-native scoring.
-6. Preserve closed comparisons and held S4 exemplars; do not repeat failed flights. Depth2 remains deferred.
+1. Close the running same-roster SLURP direct/native replication with first complete official scores, registered paired release and the frozen analysis.
+2. Establish reproducible package benefit and preserve an observable, configurable trajectory workspace. Resolve the bounded campaign receipt-persistence gap without changing active execution source.
+3. Admit the already prepared Audio2Tool native-role transfer only after scientific readiness, actual serving/capacity proof and prospective contact registration.
+4. Use disjoint TRAIN evidence to improve candidate inclusion, joint resolution and slot interpretation; add local speech tools as on-demand Reviewer/Planner actions.
+5. Transfer the stable shared base to E21 with dataset-native metrics. E22, summary objectives and held S4 exemplars are not active GPU tasks.
+6. Define training-free RL factors, trajectory sampling, rewards and update rules after the SLURP base/workspace qualifies. Root-led engineering is not an RL algorithm result.
 
-OWNER013 permits eligible GPU work; OWNER014 prioritizes quality/headroom; OWNER015 changes task order. Shared code, frozen source, complete identity, per-flight plans, zero paid experimental APIs and Stage-2 remain binding. No remote push has been performed.
+Shared code, frozen source, complete service identity, per-flight plans, zero paid
+experimental APIs and Stage-2 remain binding. No remote push has been performed.
 
 ## Work preserved outside main
 
