@@ -12,8 +12,14 @@ from speech_aware_evidence_acquisition.rails import build_slice_registry
 from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
 from speech_aware_evidence_acquisition.rails.core_client import FrozenCoreClientError
 from speech_aware_evidence_acquisition.rails.material import PhaseMaterial
-from speech_aware_evidence_acquisition.rails.phase_runner import run_agent_phase
-from speech_aware_evidence_acquisition.rails.runner import RailsRunnerError
+from speech_aware_evidence_acquisition.rails.phase_runner import (
+    run_agent_phase,
+    run_program,
+)
+from speech_aware_evidence_acquisition.rails.runner import (
+    RailsRunnerError,
+    run_speech_native_agent_loop,
+)
 from speech_aware_evidence_acquisition.reproduction.ojw import openjiuwen_available
 from speech_aware_evidence_acquisition.reproduction.ojw.native_request import (
     NativeRoleSpeechBinding, NativeSpeechRequestError,
@@ -84,6 +90,142 @@ def test_direct_only_phase_uses_the_shared_raw_client_and_original_audio(tmp_pat
     assert base64.b64decode(audio[0]["input_audio"]["data"]) == (
         harness.world.data_root / harness.samples[0].audio_ref.path
     ).read_bytes()
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_direct_only_raw_phase_uses_a_registered_slice_with_parent_identity(tmp_path):
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=0, max_contacts=4,
+        planner_actions=("ACCEPT",), arm=ARM, query_source="speech_audio",
+    )
+    parent = harness.samples[0]
+    # The public client registration path requires the flight-owned registry.
+    # This harness normally exercises original audio only, so attach the same
+    # real registry constructor before registering the test slice.
+    slice_registry = build_slice_registry(
+        data_root=harness.world.data_root,
+        run_id=harness.plan.run_id,
+        samples=harness.samples,
+    )
+    harness.client._slice_registry = slice_registry  # noqa: SLF001
+    harness.client._adapter._slice_registry = slice_registry  # noqa: SLF001
+    slice_relpath = slice_registry.slice_relpath(parent.sample_id, 0)
+    slice_path = harness.world.data_root / slice_relpath
+    slice_path.parent.mkdir(parents=True, exist_ok=True)
+    slice_bytes = b"RIFF registered direct raw slice"
+    slice_path.write_bytes(slice_bytes)
+    record = SliceRecord(
+        sample_id=parent.sample_id,
+        parent_media_relpath=parent.audio_ref.path,
+        parent_sha256=parent.audio_ref.sha256,
+        start_seconds=0.0,
+        end_seconds=0.5,
+        audio_seconds=0.5,
+        sample_rate_hz=16000,
+        media_relpath=slice_relpath,
+        sha256=hashlib.sha256(slice_bytes).hexdigest(),
+        bytes=len(slice_bytes),
+        iteration=0,
+    )
+    harness.client.register_slice(record)
+    harness.speech_bindings[parent.sample_id] = {
+        "packet_id": record.media_relpath,
+        "sha256": record.sha256,
+    }
+    bodies = []
+    harness.transport._post = lambda _url, body: (
+        bodies.append(json.loads(body)) or _wire_response("slice direct answer")
+    )
+    program = default_phase_program("phase-direct-only-v1")
+    try:
+        summary = run_agent_phase(
+            phase_name="direct", program=program, adapter=harness.adapter,
+            plan=harness.plan, data_root=harness.world.data_root,
+            core_client=harness.client, split_id="all",
+            knowledge_snapshot=_knowledge_snapshot(),
+            speech_packet_bindings=harness.speech_bindings,
+            query_source="speech_audio", trace_sink=harness.trace,
+            decoding_params={"temperature": 0, "max_tokens": 64},
+            material_for_phase=lambda _phase, _context: PhaseMaterial(
+                instruction="Answer the registered speech slice.",
+                response_format=None, contact_id="direct-slice-contact", purpose="direct",
+            ),
+        )
+    finally:
+        harness.close()
+
+    assert summary.results[0].sample_id == parent.sample_id
+    audio = [
+        part for part in bodies[0]["messages"][1]["content"]
+        if part["type"] == "input_audio"
+    ]
+    assert len(audio) == 1
+    assert base64.b64decode(audio[0]["input_audio"]["data"]) == slice_bytes
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_run_program_forwards_raw_query_source_to_direct_phase(tmp_path):
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=0, max_contacts=4,
+        planner_actions=("ACCEPT",), arm=ARM, query_source="speech_audio",
+    )
+    bodies = []
+    harness.transport._post = lambda _url, body: (
+        bodies.append(json.loads(body)) or _wire_response("program direct answer")
+    )
+    program = default_phase_program("phase-direct-only-v1")
+    try:
+        summaries = run_program(
+            program=program, adapter=harness.adapter, plan=harness.plan,
+            data_root=harness.world.data_root, core_client=harness.client,
+            split_id="all", knowledge_snapshot=_knowledge_snapshot(),
+            speech_packet_bindings=harness.speech_bindings,
+            query_source="speech_audio", trace_sink=harness.trace,
+            decoding_params={"temperature": 0, "max_tokens": 64},
+            material_for_phase=lambda _phase, _context, _sealed: PhaseMaterial(
+                instruction="Answer through the shared program.", response_format=None,
+                contact_id="program-direct-contact", purpose="direct",
+            ),
+        )
+    finally:
+        harness.close()
+
+    assert len(summaries) == len(bodies) == 1
+    assert any(
+        part["type"] == "input_audio" for part in bodies[0]["messages"][1]["content"]
+    )
+
+
+@pytest.mark.parametrize(
+    ("arm", "controller_policy_id", "max_contacts"),
+    [
+        ("speech-feature-query-native-tools", "phase-direct-only-v1", 1),
+        (ARM, "phase-direct-evidence-alpha-blend-v1", 1),
+        (ARM, "phase-direct-only-v1", 2),
+    ],
+)
+def test_raw_direct_gate_refuses_invalid_arm_or_shape_before_transport(
+    tmp_path, arm, controller_policy_id, max_contacts
+):
+    harness = _ActualEpisodeHarness(
+        tmp_path, sample_count=1, max_revisions=0, max_contacts=4,
+        planner_actions=("ACCEPT",), arm=arm,
+        query_source="speech_features" if arm != ARM else "speech_audio",
+    )
+    harness.transport._post = lambda *_args: pytest.fail("raw gate touched transport")
+    try:
+        with pytest.raises(RailsRunnerError, match="speech_audio requires"):
+            run_speech_native_agent_loop(
+                data_root=harness.world.data_root, plan=harness.plan,
+                adapter=harness.adapter, core_client=harness.client, split_id="all",
+                knowledge_snapshot=_knowledge_snapshot(),
+                speech_packet_bindings=harness.speech_bindings,
+                query_source="speech_audio", controller_policy_id=controller_policy_id,
+                max_contacts=max_contacts, slot_count=1, queue_depth=1,
+                trace_sink=harness.trace, agent_executor_id="openjiuwen-workflow-v1",
+            )
+    finally:
+        harness.close()
 
 
 def messages(world):
