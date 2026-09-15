@@ -176,10 +176,15 @@ def run_agent_phase(
             raise PhaseRunnerError(
                 "expected_row_count must be a positive integer or None"
             )
-        if len(speech_packet_bindings) != expected_row_count:
+        declared_row_count = (
+            len(execution_units.units)
+            if execution_units is not None and hasattr(execution_units, "units")
+            else len(speech_packet_bindings)
+        )
+        if declared_row_count != expected_row_count:
             raise PhaseRunnerError(
                 f"phase {phase_name!r} requires exactly {expected_row_count} "
-                "speech packet bindings"
+                f"{'execution units' if execution_units is not None else 'speech packet bindings'}"
             )
 
     geometry = adapter.serving_geometry()
@@ -664,7 +669,8 @@ def run_continuous_program(
     sample_ids = [getattr(result, "sample_id", None) for result in results]
     if len(set(sample_ids)) != len(sample_ids):
         raise PhaseRunnerError(
-            f"program {program.program_id!r} results have duplicate sample ids"
+            f"program {program.program_id!r} results have "
+            f"{'duplicate execution identities' if execution_units is not None else 'duplicate sample ids'}"
         )
     if set(sample_ids) != set(speech_packet_bindings):
         raise PhaseRunnerError(
