@@ -1,0 +1,6199 @@
+{
+  "analysis_id": "SAEA-A2T-PRIMARY-PARAMETER-ATTRIBUTION-V1",
+  "both_correct_by_domain": {
+    "smart_car": {
+      "arms": {
+        "direct": {
+          "correct_keys": 46,
+          "error_combinations": {
+            "extra_keys": 12,
+            "extra_keys+wrong_value_keys": 3,
+            "missing_keys": 39,
+            "none": 138,
+            "wrong_value_keys": 30
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 18,
+              "samples": 15
+            },
+            "missing_keys": {
+              "keys": 57,
+              "samples": 39
+            },
+            "wrong_value_keys": {
+              "keys": 41,
+              "samples": 33
+            }
+          },
+          "extra_keys_matching_declared_defaults": 9,
+          "official_exact": 138,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 222,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 222,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 105,
+          "reference_keys": 144,
+          "repo_exact": 105.0,
+          "saved_repo_extra_keys_stripped": 63,
+          "wrong_keys_equal_under_repo_coercion": 0
+        },
+        "system": {
+          "correct_keys": 110,
+          "error_combinations": {
+            "extra_keys": 26,
+            "extra_keys+wrong_value_keys": 1,
+            "missing_keys": 2,
+            "none": 165,
+            "wrong_value_keys": 28
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 36,
+              "samples": 27
+            },
+            "missing_keys": {
+              "keys": 2,
+              "samples": 2
+            },
+            "wrong_value_keys": {
+              "keys": 32,
+              "samples": 29
+            }
+          },
+          "extra_keys_matching_declared_defaults": 21,
+          "official_exact": 165,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 222,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 222,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 178,
+          "reference_keys": 144,
+          "repo_exact": 116.0,
+          "saved_repo_extra_keys_stripped": 105,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 222
+    },
+    "smart_home": {
+      "arms": {
+        "direct": {
+          "correct_keys": 505,
+          "error_combinations": {
+            "extra_keys": 311,
+            "extra_keys+wrong_value_keys": 41,
+            "missing_keys": 8,
+            "missing_keys+extra_keys+wrong_value_keys": 5,
+            "missing_keys+wrong_value_keys": 15,
+            "none": 229,
+            "wrong_value_keys": 641
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 509,
+              "samples": 357
+            },
+            "missing_keys": {
+              "keys": 29,
+              "samples": 28
+            },
+            "wrong_value_keys": {
+              "keys": 925,
+              "samples": 702
+            }
+          },
+          "extra_keys_matching_declared_defaults": 35,
+          "official_exact": 229,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 1250,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 1250,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 1939,
+          "reference_keys": 1459,
+          "repo_exact": 186.0,
+          "saved_repo_extra_keys_stripped": 93,
+          "wrong_keys_equal_under_repo_coercion": 5
+        },
+        "system": {
+          "correct_keys": 575,
+          "error_combinations": {
+            "extra_keys": 314,
+            "extra_keys+wrong_value_keys": 6,
+            "missing_keys": 28,
+            "missing_keys+extra_keys": 1,
+            "missing_keys+extra_keys+wrong_value_keys": 5,
+            "missing_keys+wrong_value_keys": 49,
+            "none": 247,
+            "wrong_value_keys": 600
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 452,
+              "samples": 326
+            },
+            "missing_keys": {
+              "keys": 90,
+              "samples": 83
+            },
+            "wrong_value_keys": {
+              "keys": 794,
+              "samples": 660
+            }
+          },
+          "extra_keys_matching_declared_defaults": 73,
+          "official_exact": 247,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 1250,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 1250,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 1821,
+          "reference_keys": 1459,
+          "repo_exact": 204.0,
+          "saved_repo_extra_keys_stripped": 145,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 1250
+    },
+    "wearables": {
+      "arms": {
+        "direct": {
+          "correct_keys": 311,
+          "error_combinations": {
+            "extra_keys": 69,
+            "extra_keys+wrong_value_keys": 17,
+            "missing_keys": 23,
+            "missing_keys+extra_keys": 12,
+            "missing_keys+extra_keys+wrong_value_keys": 2,
+            "missing_keys+wrong_value_keys": 3,
+            "none": 298,
+            "wrong_value_keys": 193
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 129,
+              "samples": 100
+            },
+            "missing_keys": {
+              "keys": 49,
+              "samples": 40
+            },
+            "wrong_value_keys": {
+              "keys": 239,
+              "samples": 215
+            }
+          },
+          "extra_keys_matching_declared_defaults": 26,
+          "official_exact": 298,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 617,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 617,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 679,
+          "reference_keys": 599,
+          "repo_exact": 226.0,
+          "saved_repo_extra_keys_stripped": 85,
+          "wrong_keys_equal_under_repo_coercion": 0
+        },
+        "system": {
+          "correct_keys": 434,
+          "error_combinations": {
+            "extra_keys": 78,
+            "extra_keys+wrong_value_keys": 8,
+            "missing_keys": 22,
+            "missing_keys+extra_keys": 5,
+            "missing_keys+extra_keys+wrong_value_keys": 7,
+            "missing_keys+wrong_value_keys": 12,
+            "none": 417,
+            "wrong_value_keys": 68
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 112,
+              "samples": 98
+            },
+            "missing_keys": {
+              "keys": 50,
+              "samples": 46
+            },
+            "wrong_value_keys": {
+              "keys": 115,
+              "samples": 95
+            }
+          },
+          "extra_keys_matching_declared_defaults": 50,
+          "official_exact": 417,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 617,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 617,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 661,
+          "reference_keys": 599,
+          "repo_exact": 359.0,
+          "saved_repo_extra_keys_stripped": 145,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 617
+    }
+  },
+  "both_correct_by_tier": {
+    "tier1_direct": {
+      "arms": {
+        "direct": {
+          "correct_keys": 4,
+          "error_combinations": {
+            "extra_keys": 197,
+            "missing_keys": 3,
+            "none": 78,
+            "wrong_value_keys": 2
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 313,
+              "samples": 197
+            },
+            "missing_keys": {
+              "keys": 3,
+              "samples": 3
+            },
+            "wrong_value_keys": {
+              "keys": 2,
+              "samples": 2
+            }
+          },
+          "extra_keys_matching_declared_defaults": 44,
+          "official_exact": 78,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 280,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 280,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 319,
+          "reference_keys": 9,
+          "repo_exact": 93.0,
+          "saved_repo_extra_keys_stripped": 48,
+          "wrong_keys_equal_under_repo_coercion": 0
+        },
+        "system": {
+          "correct_keys": 6,
+          "error_combinations": {
+            "extra_keys": 230,
+            "none": 47,
+            "wrong_value_keys": 3
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 317,
+              "samples": 230
+            },
+            "missing_keys": {
+              "keys": 0,
+              "samples": 0
+            },
+            "wrong_value_keys": {
+              "keys": 3,
+              "samples": 3
+            }
+          },
+          "extra_keys_matching_declared_defaults": 105,
+          "official_exact": 47,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 280,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 280,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 326,
+          "reference_keys": 9,
+          "repo_exact": 104.0,
+          "saved_repo_extra_keys_stripped": 111,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 280
+    },
+    "tier2_parametric": {
+      "arms": {
+        "direct": {
+          "correct_keys": 234,
+          "error_combinations": {
+            "extra_keys": 11,
+            "extra_keys+wrong_value_keys": 11,
+            "missing_keys": 14,
+            "missing_keys+wrong_value_keys": 1,
+            "none": 126,
+            "wrong_value_keys": 185
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 24,
+              "samples": 22
+            },
+            "missing_keys": {
+              "keys": 19,
+              "samples": 15
+            },
+            "wrong_value_keys": {
+              "keys": 242,
+              "samples": 197
+            }
+          },
+          "extra_keys_matching_declared_defaults": 1,
+          "official_exact": 126,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 348,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 348,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 500,
+          "reference_keys": 495,
+          "repo_exact": 127.0,
+          "saved_repo_extra_keys_stripped": 0,
+          "wrong_keys_equal_under_repo_coercion": 1
+        },
+        "system": {
+          "correct_keys": 283,
+          "error_combinations": {
+            "extra_keys": 5,
+            "extra_keys+wrong_value_keys": 2,
+            "missing_keys": 8,
+            "missing_keys+wrong_value_keys": 10,
+            "none": 160,
+            "wrong_value_keys": 163
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 8,
+              "samples": 7
+            },
+            "missing_keys": {
+              "keys": 18,
+              "samples": 18
+            },
+            "wrong_value_keys": {
+              "keys": 194,
+              "samples": 175
+            }
+          },
+          "extra_keys_matching_declared_defaults": 1,
+          "official_exact": 160,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 348,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 348,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 485,
+          "reference_keys": 495,
+          "repo_exact": 151.0,
+          "saved_repo_extra_keys_stripped": 0,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 348
+    },
+    "tier3_multi_intent": {
+      "arms": {
+        "direct": {
+          "correct_keys": 139,
+          "error_combinations": {
+            "extra_keys": 66,
+            "extra_keys+wrong_value_keys": 24,
+            "missing_keys": 6,
+            "missing_keys+extra_keys+wrong_value_keys": 3,
+            "none": 94,
+            "wrong_value_keys": 98
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 118,
+              "samples": 93
+            },
+            "missing_keys": {
+              "keys": 12,
+              "samples": 9
+            },
+            "wrong_value_keys": {
+              "keys": 149,
+              "samples": 125
+            }
+          },
+          "extra_keys_matching_declared_defaults": 3,
+          "official_exact": 94,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 291,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 291,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 406,
+          "reference_keys": 300,
+          "repo_exact": 12.0,
+          "saved_repo_extra_keys_stripped": 104,
+          "wrong_keys_equal_under_repo_coercion": 1
+        },
+        "system": {
+          "correct_keys": 177,
+          "error_combinations": {
+            "extra_keys": 64,
+            "extra_keys+wrong_value_keys": 6,
+            "missing_keys": 3,
+            "missing_keys+extra_keys": 1,
+            "missing_keys+extra_keys+wrong_value_keys": 3,
+            "missing_keys+wrong_value_keys": 8,
+            "none": 129,
+            "wrong_value_keys": 77
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 96,
+              "samples": 74
+            },
+            "missing_keys": {
+              "keys": 17,
+              "samples": 15
+            },
+            "wrong_value_keys": {
+              "keys": 106,
+              "samples": 94
+            }
+          },
+          "extra_keys_matching_declared_defaults": 4,
+          "official_exact": 129,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 291,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 291,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 379,
+          "reference_keys": 300,
+          "repo_exact": 29.0,
+          "saved_repo_extra_keys_stripped": 138,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 291
+    },
+    "tier4_implicit": {
+      "arms": {
+        "direct": {
+          "correct_keys": 16,
+          "error_combinations": {
+            "extra_keys": 1,
+            "extra_keys+wrong_value_keys": 4,
+            "missing_keys": 4,
+            "missing_keys+wrong_value_keys": 2,
+            "none": 27,
+            "wrong_value_keys": 50
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 5,
+              "samples": 5
+            },
+            "missing_keys": {
+              "keys": 6,
+              "samples": 6
+            },
+            "wrong_value_keys": {
+              "keys": 81,
+              "samples": 56
+            }
+          },
+          "extra_keys_matching_declared_defaults": 0,
+          "official_exact": 27,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 88,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 88,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 102,
+          "reference_keys": 103,
+          "repo_exact": 27.0,
+          "saved_repo_extra_keys_stripped": 0,
+          "wrong_keys_equal_under_repo_coercion": 0
+        },
+        "system": {
+          "correct_keys": 36,
+          "error_combinations": {
+            "extra_keys": 1,
+            "extra_keys+wrong_value_keys": 3,
+            "missing_keys": 2,
+            "missing_keys+wrong_value_keys": 1,
+            "none": 40,
+            "wrong_value_keys": 41
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 4,
+              "samples": 4
+            },
+            "missing_keys": {
+              "keys": 3,
+              "samples": 3
+            },
+            "wrong_value_keys": {
+              "keys": 64,
+              "samples": 45
+            }
+          },
+          "extra_keys_matching_declared_defaults": 0,
+          "official_exact": 40,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 88,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 88,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 104,
+          "reference_keys": 103,
+          "repo_exact": 39.0,
+          "saved_repo_extra_keys_stripped": 0,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 88
+    },
+    "tier5_needle": {
+      "arms": {
+        "direct": {
+          "correct_keys": 144,
+          "error_combinations": {
+            "extra_keys": 105,
+            "extra_keys+wrong_value_keys": 11,
+            "missing_keys": 11,
+            "missing_keys+extra_keys": 4,
+            "missing_keys+extra_keys+wrong_value_keys": 2,
+            "missing_keys+wrong_value_keys": 1,
+            "none": 99,
+            "wrong_value_keys": 124
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 161,
+              "samples": 122
+            },
+            "missing_keys": {
+              "keys": 23,
+              "samples": 18
+            },
+            "wrong_value_keys": {
+              "keys": 167,
+              "samples": 138
+            }
+          },
+          "extra_keys_matching_declared_defaults": 22,
+          "official_exact": 99,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 357,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 357,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 472,
+          "reference_keys": 334,
+          "repo_exact": 106.0,
+          "saved_repo_extra_keys_stripped": 8,
+          "wrong_keys_equal_under_repo_coercion": 0
+        },
+        "system": {
+          "correct_keys": 185,
+          "error_combinations": {
+            "extra_keys": 102,
+            "missing_keys": 7,
+            "missing_keys+extra_keys": 2,
+            "missing_keys+extra_keys+wrong_value_keys": 4,
+            "missing_keys+wrong_value_keys": 1,
+            "none": 133,
+            "wrong_value_keys": 108
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 146,
+              "samples": 108
+            },
+            "missing_keys": {
+              "keys": 15,
+              "samples": 14
+            },
+            "wrong_value_keys": {
+              "keys": 134,
+              "samples": 113
+            }
+          },
+          "extra_keys_matching_declared_defaults": 32,
+          "official_exact": 133,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 357,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 357,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 465,
+          "reference_keys": 334,
+          "repo_exact": 145.0,
+          "saved_repo_extra_keys_stripped": 11,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 357
+    },
+    "tier6_correction": {
+      "arms": {
+        "direct": {
+          "correct_keys": 170,
+          "error_combinations": {
+            "extra_keys": 3,
+            "missing_keys": 12,
+            "missing_keys+wrong_value_keys": 6,
+            "none": 100,
+            "wrong_value_keys": 206
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 3,
+              "samples": 3
+            },
+            "missing_keys": {
+              "keys": 28,
+              "samples": 18
+            },
+            "wrong_value_keys": {
+              "keys": 278,
+              "samples": 212
+            }
+          },
+          "extra_keys_matching_declared_defaults": 0,
+          "official_exact": 100,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 327,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 327,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 451,
+          "reference_keys": 476,
+          "repo_exact": 98.0,
+          "saved_repo_extra_keys_stripped": 0,
+          "wrong_keys_equal_under_repo_coercion": 3
+        },
+        "system": {
+          "correct_keys": 228,
+          "error_combinations": {
+            "extra_keys": 4,
+            "missing_keys": 15,
+            "missing_keys+wrong_value_keys": 20,
+            "none": 132,
+            "wrong_value_keys": 156
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 4,
+              "samples": 4
+            },
+            "missing_keys": {
+              "keys": 38,
+              "samples": 35
+            },
+            "wrong_value_keys": {
+              "keys": 210,
+              "samples": 176
+            }
+          },
+          "extra_keys_matching_declared_defaults": 1,
+          "official_exact": 132,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 327,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 327,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 442,
+          "reference_keys": 476,
+          "repo_exact": 132.0,
+          "saved_repo_extra_keys_stripped": 1,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 327
+    },
+    "tier7_multiturn": {
+      "arms": {
+        "direct": {
+          "correct_keys": 47,
+          "error_combinations": {
+            "extra_keys": 1,
+            "extra_keys+wrong_value_keys": 2,
+            "missing_keys": 7,
+            "missing_keys+wrong_value_keys": 8,
+            "none": 47,
+            "wrong_value_keys": 126
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 3,
+              "samples": 3
+            },
+            "missing_keys": {
+              "keys": 16,
+              "samples": 15
+            },
+            "wrong_value_keys": {
+              "keys": 194,
+              "samples": 136
+            }
+          },
+          "extra_keys_matching_declared_defaults": 0,
+          "official_exact": 47,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 191,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 191,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 244,
+          "reference_keys": 257,
+          "repo_exact": 47.0,
+          "saved_repo_extra_keys_stripped": 0,
+          "wrong_keys_equal_under_repo_coercion": 0
+        },
+        "system": {
+          "correct_keys": 56,
+          "error_combinations": {
+            "extra_keys": 1,
+            "extra_keys+wrong_value_keys": 2,
+            "missing_keys": 7,
+            "missing_keys+wrong_value_keys": 20,
+            "none": 57,
+            "wrong_value_keys": 104
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 3,
+              "samples": 3
+            },
+            "missing_keys": {
+              "keys": 32,
+              "samples": 27
+            },
+            "wrong_value_keys": {
+              "keys": 169,
+              "samples": 126
+            }
+          },
+          "extra_keys_matching_declared_defaults": 0,
+          "official_exact": 57,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 191,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 191,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 228,
+          "reference_keys": 257,
+          "repo_exact": 57.0,
+          "saved_repo_extra_keys_stripped": 0,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 191
+    },
+    "tier8_intent_blending": {
+      "arms": {
+        "direct": {
+          "correct_keys": 108,
+          "error_combinations": {
+            "extra_keys": 8,
+            "extra_keys+wrong_value_keys": 9,
+            "missing_keys": 13,
+            "missing_keys+extra_keys": 8,
+            "missing_keys+extra_keys+wrong_value_keys": 2,
+            "none": 94,
+            "wrong_value_keys": 73
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 29,
+              "samples": 27
+            },
+            "missing_keys": {
+              "keys": 28,
+              "samples": 23
+            },
+            "wrong_value_keys": {
+              "keys": 92,
+              "samples": 84
+            }
+          },
+          "extra_keys_matching_declared_defaults": 0,
+          "official_exact": 94,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 207,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 207,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 229,
+          "reference_keys": 228,
+          "repo_exact": 7.0,
+          "saved_repo_extra_keys_stripped": 81,
+          "wrong_keys_equal_under_repo_coercion": 0
+        },
+        "system": {
+          "correct_keys": 148,
+          "error_combinations": {
+            "extra_keys": 11,
+            "extra_keys+wrong_value_keys": 2,
+            "missing_keys": 10,
+            "missing_keys+extra_keys": 3,
+            "missing_keys+extra_keys+wrong_value_keys": 5,
+            "missing_keys+wrong_value_keys": 1,
+            "none": 131,
+            "wrong_value_keys": 44
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 22,
+              "samples": 21
+            },
+            "missing_keys": {
+              "keys": 19,
+              "samples": 19
+            },
+            "wrong_value_keys": {
+              "keys": 61,
+              "samples": 52
+            }
+          },
+          "extra_keys_matching_declared_defaults": 1,
+          "official_exact": 131,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 207,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 207,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 231,
+          "reference_keys": 228,
+          "repo_exact": 22.0,
+          "saved_repo_extra_keys_stripped": 134,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 207
+    }
+  },
+  "by_domain": {
+    "smart_car": {
+      "arms": {
+        "direct": {
+          "correct_keys": 71,
+          "error_combinations": {
+            "extra_keys": 36,
+            "extra_keys+wrong_value_keys": 3,
+            "missing_keys": 64,
+            "missing_keys+extra_keys": 26,
+            "none": 185,
+            "wrong_value_keys": 37
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 94,
+              "samples": 65
+            },
+            "missing_keys": {
+              "keys": 124,
+              "samples": 90
+            },
+            "wrong_value_keys": {
+              "keys": 48,
+              "samples": 40
+            }
+          },
+          "extra_keys_matching_declared_defaults": 10,
+          "official_exact": 157,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 251,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 348,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 213,
+          "reference_keys": 243,
+          "repo_exact": 117.0,
+          "saved_repo_extra_keys_stripped": 132,
+          "wrong_keys_equal_under_repo_coercion": 2
+        },
+        "system": {
+          "correct_keys": 133,
+          "error_combinations": {
+            "extra_keys": 50,
+            "extra_keys+wrong_value_keys": 1,
+            "missing_keys": 19,
+            "missing_keys+extra_keys": 38,
+            "none": 214,
+            "wrong_value_keys": 29
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 120,
+              "samples": 89
+            },
+            "missing_keys": {
+              "keys": 77,
+              "samples": 57
+            },
+            "wrong_value_keys": {
+              "keys": 33,
+              "samples": 30
+            }
+          },
+          "extra_keys_matching_declared_defaults": 24,
+          "official_exact": 179,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 239,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 351,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 286,
+          "reference_keys": 243,
+          "repo_exact": 124.0,
+          "saved_repo_extra_keys_stripped": 199,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 351
+    },
+    "smart_home": {
+      "arms": {
+        "direct": {
+          "correct_keys": 809,
+          "error_combinations": {
+            "extra_keys": 595,
+            "extra_keys+wrong_value_keys": 126,
+            "missing_keys": 175,
+            "missing_keys+extra_keys": 398,
+            "missing_keys+extra_keys+wrong_value_keys": 101,
+            "missing_keys+wrong_value_keys": 44,
+            "none": 390,
+            "wrong_value_keys": 963
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 1900,
+              "samples": 1220
+            },
+            "missing_keys": {
+              "keys": 1081,
+              "samples": 718
+            },
+            "wrong_value_keys": {
+              "keys": 1561,
+              "samples": 1234
+            }
+          },
+          "extra_keys_matching_declared_defaults": 57,
+          "official_exact": 262,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 1551,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 2772,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 4270,
+          "reference_keys": 3451,
+          "repo_exact": 218.0,
+          "saved_repo_extra_keys_stripped": 471,
+          "wrong_keys_equal_under_repo_coercion": 11
+        },
+        "system": {
+          "correct_keys": 828,
+          "error_combinations": {
+            "extra_keys": 563,
+            "extra_keys+wrong_value_keys": 38,
+            "missing_keys": 257,
+            "missing_keys+extra_keys": 429,
+            "missing_keys+extra_keys+wrong_value_keys": 91,
+            "missing_keys+wrong_value_keys": 123,
+            "none": 423,
+            "wrong_value_keys": 868
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 1552,
+              "samples": 1121
+            },
+            "missing_keys": {
+              "keys": 1337,
+              "samples": 900
+            },
+            "wrong_value_keys": {
+              "keys": 1286,
+              "samples": 1120
+            }
+          },
+          "extra_keys_matching_declared_defaults": 101,
+          "official_exact": 296,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 1468,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 2781,
+          "parser_parameter_disagreement_samples": 5,
+          "predicted_keys": 3666,
+          "reference_keys": 3451,
+          "repo_exact": 239.0,
+          "saved_repo_extra_keys_stripped": 670,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 2792
+    },
+    "wearables": {
+      "arms": {
+        "direct": {
+          "correct_keys": 339,
+          "error_combinations": {
+            "extra_keys": 94,
+            "extra_keys+wrong_value_keys": 21,
+            "missing_keys": 70,
+            "missing_keys+extra_keys": 112,
+            "missing_keys+extra_keys+wrong_value_keys": 2,
+            "missing_keys+wrong_value_keys": 5,
+            "none": 329,
+            "wrong_value_keys": 224
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 294,
+              "samples": 229
+            },
+            "missing_keys": {
+              "keys": 230,
+              "samples": 189
+            },
+            "wrong_value_keys": {
+              "keys": 279,
+              "samples": 252
+            }
+          },
+          "extra_keys_matching_declared_defaults": 28,
+          "official_exact": 321,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 679,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 852,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 912,
+          "reference_keys": 848,
+          "repo_exact": 249.0,
+          "saved_repo_extra_keys_stripped": 156,
+          "wrong_keys_equal_under_repo_coercion": 0
+        },
+        "system": {
+          "correct_keys": 456,
+          "error_combinations": {
+            "extra_keys": 108,
+            "extra_keys+wrong_value_keys": 9,
+            "missing_keys": 78,
+            "missing_keys+extra_keys": 116,
+            "missing_keys+extra_keys+wrong_value_keys": 7,
+            "missing_keys+wrong_value_keys": 17,
+            "none": 441,
+            "wrong_value_keys": 81
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 276,
+              "samples": 240
+            },
+            "missing_keys": {
+              "keys": 258,
+              "samples": 218
+            },
+            "wrong_value_keys": {
+              "keys": 134,
+              "samples": 114
+            }
+          },
+          "extra_keys_matching_declared_defaults": 52,
+          "official_exact": 427,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 630,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 852,
+          "parser_parameter_disagreement_samples": 1,
+          "predicted_keys": 866,
+          "reference_keys": 848,
+          "repo_exact": 377.0,
+          "saved_repo_extra_keys_stripped": 285,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 857
+    }
+  },
+  "by_ordered_candidate_coverage": {
+    "False": {
+      "arms": {
+        "direct": {
+          "correct_keys": 297,
+          "error_combinations": {
+            "extra_keys": 231,
+            "extra_keys+wrong_value_keys": 78,
+            "missing_keys": 181,
+            "missing_keys+extra_keys": 387,
+            "missing_keys+extra_keys+wrong_value_keys": 69,
+            "missing_keys+wrong_value_keys": 28,
+            "none": 179,
+            "wrong_value_keys": 280
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 1210,
+              "samples": 765
+            },
+            "missing_keys": {
+              "keys": 982,
+              "samples": 665
+            },
+            "wrong_value_keys": {
+              "keys": 541,
+              "samples": 455
+            }
+          },
+          "extra_keys_matching_declared_defaults": 15,
+          "official_exact": 92,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 421,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 1411,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 2048,
+          "reference_keys": 1820,
+          "repo_exact": 38.0,
+          "saved_repo_extra_keys_stripped": 461,
+          "wrong_keys_equal_under_repo_coercion": 3
+        },
+        "system": {
+          "correct_keys": 222,
+          "error_combinations": {
+            "extra_keys": 208,
+            "extra_keys+wrong_value_keys": 27,
+            "missing_keys": 248,
+            "missing_keys+extra_keys": 457,
+            "missing_keys+extra_keys+wrong_value_keys": 65,
+            "missing_keys+wrong_value_keys": 65,
+            "none": 176,
+            "wrong_value_keys": 187
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 1024,
+              "samples": 757
+            },
+            "missing_keys": {
+              "keys": 1225,
+              "samples": 835
+            },
+            "wrong_value_keys": {
+              "keys": 373,
+              "samples": 344
+            }
+          },
+          "extra_keys_matching_declared_defaults": 18,
+          "official_exact": 72,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 229,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 1421,
+          "parser_parameter_disagreement_samples": 6,
+          "predicted_keys": 1619,
+          "reference_keys": 1820,
+          "repo_exact": 16.0,
+          "saved_repo_extra_keys_stripped": 669,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 1433
+    },
+    "True": {
+      "arms": {
+        "direct": {
+          "correct_keys": 922,
+          "error_combinations": {
+            "extra_keys": 494,
+            "extra_keys+wrong_value_keys": 72,
+            "missing_keys": 128,
+            "missing_keys+extra_keys": 149,
+            "missing_keys+extra_keys+wrong_value_keys": 34,
+            "missing_keys+wrong_value_keys": 21,
+            "none": 725,
+            "wrong_value_keys": 944
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 1078,
+              "samples": 749
+            },
+            "missing_keys": {
+              "keys": 453,
+              "samples": 332
+            },
+            "wrong_value_keys": {
+              "keys": 1347,
+              "samples": 1071
+            }
+          },
+          "extra_keys_matching_declared_defaults": 80,
+          "official_exact": 648,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 2060,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 2561,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 3347,
+          "reference_keys": 2722,
+          "repo_exact": 546.0,
+          "saved_repo_extra_keys_stripped": 298,
+          "wrong_keys_equal_under_repo_coercion": 10
+        },
+        "system": {
+          "correct_keys": 1195,
+          "error_combinations": {
+            "extra_keys": 513,
+            "extra_keys+wrong_value_keys": 21,
+            "missing_keys": 106,
+            "missing_keys+extra_keys": 126,
+            "missing_keys+extra_keys+wrong_value_keys": 33,
+            "missing_keys+wrong_value_keys": 75,
+            "none": 902,
+            "wrong_value_keys": 791
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 924,
+              "samples": 693
+            },
+            "missing_keys": {
+              "keys": 447,
+              "samples": 340
+            },
+            "wrong_value_keys": {
+              "keys": 1080,
+              "samples": 920
+            }
+          },
+          "extra_keys_matching_declared_defaults": 159,
+          "official_exact": 830,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 2108,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 2563,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 3199,
+          "reference_keys": 2722,
+          "repo_exact": 724.0,
+          "saved_repo_extra_keys_stripped": 485,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 2567
+    }
+  },
+  "by_reference_empty": {
+    "False": {
+      "arms": {
+        "direct": {
+          "correct_keys": 1219,
+          "error_combinations": {
+            "extra_keys": 97,
+            "extra_keys+wrong_value_keys": 150,
+            "missing_keys": 309,
+            "missing_keys+extra_keys": 536,
+            "missing_keys+extra_keys+wrong_value_keys": 103,
+            "missing_keys+wrong_value_keys": 49,
+            "none": 483,
+            "wrong_value_keys": 1224
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 1294,
+              "samples": 886
+            },
+            "missing_keys": {
+              "keys": 1435,
+              "samples": 997
+            },
+            "wrong_value_keys": {
+              "keys": 1888,
+              "samples": 1526
+            }
+          },
+          "extra_keys_matching_declared_defaults": 1,
+          "official_exact": 422,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 1764,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 2928,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 4401,
+          "reference_keys": 4542,
+          "repo_exact": 316.0,
+          "saved_repo_extra_keys_stripped": 525,
+          "wrong_keys_equal_under_repo_coercion": 13
+        },
+        "system": {
+          "correct_keys": 1417,
+          "error_combinations": {
+            "extra_keys": 74,
+            "extra_keys+wrong_value_keys": 48,
+            "missing_keys": 354,
+            "missing_keys+extra_keys": 583,
+            "missing_keys+extra_keys+wrong_value_keys": 98,
+            "missing_keys+wrong_value_keys": 140,
+            "none": 676,
+            "wrong_value_keys": 978
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 1038,
+              "samples": 803
+            },
+            "missing_keys": {
+              "keys": 1672,
+              "samples": 1175
+            },
+            "wrong_value_keys": {
+              "keys": 1453,
+              "samples": 1264
+            }
+          },
+          "extra_keys_matching_declared_defaults": 5,
+          "official_exact": 627,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 1673,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 2936,
+          "parser_parameter_disagreement_samples": 6,
+          "predicted_keys": 3908,
+          "reference_keys": 4542,
+          "repo_exact": 469.0,
+          "saved_repo_extra_keys_stripped": 763,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 2951
+    },
+    "True": {
+      "arms": {
+        "direct": {
+          "correct_keys": 0,
+          "error_combinations": {
+            "extra_keys": 628,
+            "none": 421
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 994,
+              "samples": 628
+            },
+            "missing_keys": {
+              "keys": 0,
+              "samples": 0
+            },
+            "wrong_value_keys": {
+              "keys": 0,
+              "samples": 0
+            }
+          },
+          "extra_keys_matching_declared_defaults": 94,
+          "official_exact": 318,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 717,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 1044,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 994,
+          "reference_keys": 0,
+          "repo_exact": 268.0,
+          "saved_repo_extra_keys_stripped": 234,
+          "wrong_keys_equal_under_repo_coercion": 0
+        },
+        "system": {
+          "correct_keys": 0,
+          "error_combinations": {
+            "extra_keys": 647,
+            "none": 402
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 910,
+              "samples": 647
+            },
+            "missing_keys": {
+              "keys": 0,
+              "samples": 0
+            },
+            "wrong_value_keys": {
+              "keys": 0,
+              "samples": 0
+            }
+          },
+          "extra_keys_matching_declared_defaults": 172,
+          "official_exact": 275,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 664,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 1048,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 910,
+          "reference_keys": 0,
+          "repo_exact": 271.0,
+          "saved_repo_extra_keys_stripped": 391,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 1049
+    }
+  },
+  "by_tier": {
+    "tier1_direct": {
+      "arms": {
+        "direct": {
+          "correct_keys": 4,
+          "error_combinations": {
+            "extra_keys": 379,
+            "missing_keys": 3,
+            "missing_keys+extra_keys": 3,
+            "none": 112,
+            "wrong_value_keys": 3
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 607,
+              "samples": 382
+            },
+            "missing_keys": {
+              "keys": 6,
+              "samples": 6
+            },
+            "wrong_value_keys": {
+              "keys": 3,
+              "samples": 3
+            }
+          },
+          "extra_keys_matching_declared_defaults": 67,
+          "official_exact": 80,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 336,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 499,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 614,
+          "reference_keys": 13,
+          "repo_exact": 98.0,
+          "saved_repo_extra_keys_stripped": 104,
+          "wrong_keys_equal_under_repo_coercion": 0
+        },
+        "system": {
+          "correct_keys": 7,
+          "error_combinations": {
+            "extra_keys": 399,
+            "missing_keys+extra_keys": 2,
+            "none": 95,
+            "wrong_value_keys": 4
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 557,
+              "samples": 401
+            },
+            "missing_keys": {
+              "keys": 2,
+              "samples": 2
+            },
+            "wrong_value_keys": {
+              "keys": 4,
+              "samples": 4
+            }
+          },
+          "extra_keys_matching_declared_defaults": 134,
+          "official_exact": 49,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 307,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 500,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 568,
+          "reference_keys": 13,
+          "repo_exact": 107.0,
+          "saved_repo_extra_keys_stripped": 207,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 500
+    },
+    "tier2_parametric": {
+      "arms": {
+        "direct": {
+          "correct_keys": 305,
+          "error_combinations": {
+            "extra_keys": 14,
+            "extra_keys+wrong_value_keys": 17,
+            "missing_keys": 33,
+            "missing_keys+extra_keys": 32,
+            "missing_keys+extra_keys+wrong_value_keys": 8,
+            "missing_keys+wrong_value_keys": 2,
+            "none": 160,
+            "wrong_value_keys": 234
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 90,
+              "samples": 71
+            },
+            "missing_keys": {
+              "keys": 98,
+              "samples": 75
+            },
+            "wrong_value_keys": {
+              "keys": 323,
+              "samples": 261
+            }
+          },
+          "extra_keys_matching_declared_defaults": 1,
+          "official_exact": 141,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 392,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 500,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 718,
+          "reference_keys": 726,
+          "repo_exact": 142.0,
+          "saved_repo_extra_keys_stripped": 22,
+          "wrong_keys_equal_under_repo_coercion": 5
+        },
+        "system": {
+          "correct_keys": 343,
+          "error_combinations": {
+            "extra_keys": 6,
+            "extra_keys+wrong_value_keys": 3,
+            "missing_keys": 27,
+            "missing_keys+extra_keys": 52,
+            "missing_keys+extra_keys+wrong_value_keys": 8,
+            "missing_keys+wrong_value_keys": 17,
+            "none": 188,
+            "wrong_value_keys": 199
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 83,
+              "samples": 69
+            },
+            "missing_keys": {
+              "keys": 134,
+              "samples": 104
+            },
+            "wrong_value_keys": {
+              "keys": 249,
+              "samples": 227
+            }
+          },
+          "extra_keys_matching_declared_defaults": 2,
+          "official_exact": 176,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 379,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 498,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 675,
+          "reference_keys": 726,
+          "repo_exact": 165.0,
+          "saved_repo_extra_keys_stripped": 37,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 500
+    },
+    "tier3_multi_intent": {
+      "arms": {
+        "direct": {
+          "correct_keys": 204,
+          "error_combinations": {
+            "extra_keys": 111,
+            "extra_keys+wrong_value_keys": 38,
+            "missing_keys": 15,
+            "missing_keys+extra_keys": 56,
+            "missing_keys+extra_keys+wrong_value_keys": 21,
+            "missing_keys+wrong_value_keys": 1,
+            "none": 121,
+            "wrong_value_keys": 137
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 351,
+              "samples": 226
+            },
+            "missing_keys": {
+              "keys": 131,
+              "samples": 93
+            },
+            "wrong_value_keys": {
+              "keys": 233,
+              "samples": 197
+            }
+          },
+          "extra_keys_matching_declared_defaults": 3,
+          "official_exact": 102,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 338,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 499,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 788,
+          "reference_keys": 568,
+          "repo_exact": 13.0,
+          "saved_repo_extra_keys_stripped": 196,
+          "wrong_keys_equal_under_repo_coercion": 1
+        },
+        "system": {
+          "correct_keys": 232,
+          "error_combinations": {
+            "extra_keys": 101,
+            "extra_keys+wrong_value_keys": 11,
+            "missing_keys": 20,
+            "missing_keys+extra_keys": 62,
+            "missing_keys+extra_keys+wrong_value_keys": 18,
+            "missing_keys+wrong_value_keys": 15,
+            "none": 157,
+            "wrong_value_keys": 116
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 259,
+              "samples": 192
+            },
+            "missing_keys": {
+              "keys": 160,
+              "samples": 115
+            },
+            "wrong_value_keys": {
+              "keys": 176,
+              "samples": 160
+            }
+          },
+          "extra_keys_matching_declared_defaults": 4,
+          "official_exact": 137,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 324,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 500,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 667,
+          "reference_keys": 568,
+          "repo_exact": 34.0,
+          "saved_repo_extra_keys_stripped": 250,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 500
+    },
+    "tier4_implicit": {
+      "arms": {
+        "direct": {
+          "correct_keys": 38,
+          "error_combinations": {
+            "extra_keys": 34,
+            "extra_keys+wrong_value_keys": 19,
+            "missing_keys": 93,
+            "missing_keys+extra_keys": 152,
+            "missing_keys+extra_keys+wrong_value_keys": 16,
+            "missing_keys+wrong_value_keys": 6,
+            "none": 69,
+            "wrong_value_keys": 111
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 332,
+              "samples": 221
+            },
+            "missing_keys": {
+              "keys": 382,
+              "samples": 267
+            },
+            "wrong_value_keys": {
+              "keys": 187,
+              "samples": 152
+            }
+          },
+          "extra_keys_matching_declared_defaults": 0,
+          "official_exact": 32,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 145,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 485,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 557,
+          "reference_keys": 607,
+          "repo_exact": 32.0,
+          "saved_repo_extra_keys_stripped": 75,
+          "wrong_keys_equal_under_repo_coercion": 0
+        },
+        "system": {
+          "correct_keys": 54,
+          "error_combinations": {
+            "extra_keys": 31,
+            "extra_keys+wrong_value_keys": 10,
+            "missing_keys": 113,
+            "missing_keys+extra_keys": 149,
+            "missing_keys+extra_keys+wrong_value_keys": 8,
+            "missing_keys+wrong_value_keys": 16,
+            "none": 88,
+            "wrong_value_keys": 85
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 263,
+              "samples": 198
+            },
+            "missing_keys": {
+              "keys": 410,
+              "samples": 286
+            },
+            "wrong_value_keys": {
+              "keys": 143,
+              "samples": 119
+            }
+          },
+          "extra_keys_matching_declared_defaults": 0,
+          "official_exact": 49,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 122,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 498,
+          "parser_parameter_disagreement_samples": 4,
+          "predicted_keys": 460,
+          "reference_keys": 607,
+          "repo_exact": 48.0,
+          "saved_repo_extra_keys_stripped": 97,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 500
+    },
+    "tier5_needle": {
+      "arms": {
+        "direct": {
+          "correct_keys": 207,
+          "error_combinations": {
+            "extra_keys": 134,
+            "extra_keys+wrong_value_keys": 16,
+            "missing_keys": 21,
+            "missing_keys+extra_keys": 33,
+            "missing_keys+extra_keys+wrong_value_keys": 13,
+            "missing_keys+wrong_value_keys": 1,
+            "none": 117,
+            "wrong_value_keys": 165
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 255,
+              "samples": 196
+            },
+            "missing_keys": {
+              "keys": 110,
+              "samples": 68
+            },
+            "wrong_value_keys": {
+              "keys": 228,
+              "samples": 195
+            }
+          },
+          "extra_keys_matching_declared_defaults": 24,
+          "official_exact": 109,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 402,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 499,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 690,
+          "reference_keys": 545,
+          "repo_exact": 116.0,
+          "saved_repo_extra_keys_stripped": 19,
+          "wrong_keys_equal_under_repo_coercion": 2
+        },
+        "system": {
+          "correct_keys": 231,
+          "error_combinations": {
+            "extra_keys": 121,
+            "missing_keys": 27,
+            "missing_keys+extra_keys": 49,
+            "missing_keys+extra_keys+wrong_value_keys": 12,
+            "missing_keys+wrong_value_keys": 3,
+            "none": 154,
+            "wrong_value_keys": 134
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 246,
+              "samples": 182
+            },
+            "missing_keys": {
+              "keys": 143,
+              "samples": 91
+            },
+            "wrong_value_keys": {
+              "keys": 171,
+              "samples": 149
+            }
+          },
+          "extra_keys_matching_declared_defaults": 34,
+          "official_exact": 139,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 372,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 498,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 648,
+          "reference_keys": 545,
+          "repo_exact": 151.0,
+          "saved_repo_extra_keys_stripped": 48,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 500
+    },
+    "tier6_correction": {
+      "arms": {
+        "direct": {
+          "correct_keys": 232,
+          "error_combinations": {
+            "extra_keys": 5,
+            "extra_keys+wrong_value_keys": 6,
+            "missing_keys": 26,
+            "missing_keys+extra_keys": 35,
+            "missing_keys+extra_keys+wrong_value_keys": 9,
+            "missing_keys+wrong_value_keys": 17,
+            "none": 135,
+            "wrong_value_keys": 267
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 77,
+              "samples": 55
+            },
+            "missing_keys": {
+              "keys": 122,
+              "samples": 87
+            },
+            "wrong_value_keys": {
+              "keys": 398,
+              "samples": 299
+            }
+          },
+          "extra_keys_matching_declared_defaults": 0,
+          "official_exact": 120,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 380,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 498,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 707,
+          "reference_keys": 752,
+          "repo_exact": 118.0,
+          "saved_repo_extra_keys_stripped": 19,
+          "wrong_keys_equal_under_repo_coercion": 3
+        },
+        "system": {
+          "correct_keys": 285,
+          "error_combinations": {
+            "extra_keys": 16,
+            "extra_keys+wrong_value_keys": 2,
+            "missing_keys": 34,
+            "missing_keys+extra_keys": 41,
+            "missing_keys+extra_keys+wrong_value_keys": 15,
+            "missing_keys+wrong_value_keys": 34,
+            "none": 156,
+            "wrong_value_keys": 202
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 87,
+              "samples": 74
+            },
+            "missing_keys": {
+              "keys": 171,
+              "samples": 124
+            },
+            "wrong_value_keys": {
+              "keys": 296,
+              "samples": 253
+            }
+          },
+          "extra_keys_matching_declared_defaults": 1,
+          "official_exact": 145,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 364,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 499,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 668,
+          "reference_keys": 752,
+          "repo_exact": 145.0,
+          "saved_repo_extra_keys_stripped": 48,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 500
+    },
+    "tier7_multiturn": {
+      "arms": {
+        "direct": {
+          "correct_keys": 74,
+          "error_combinations": {
+            "extra_keys": 9,
+            "extra_keys+wrong_value_keys": 13,
+            "missing_keys": 73,
+            "missing_keys+extra_keys": 94,
+            "missing_keys+extra_keys+wrong_value_keys": 23,
+            "missing_keys+wrong_value_keys": 18,
+            "none": 68,
+            "wrong_value_keys": 202
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 209,
+              "samples": 139
+            },
+            "missing_keys": {
+              "keys": 326,
+              "samples": 208
+            },
+            "wrong_value_keys": {
+              "keys": 337,
+              "samples": 256
+            }
+          },
+          "extra_keys_matching_declared_defaults": 0,
+          "official_exact": 53,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 245,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 492,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 620,
+          "reference_keys": 737,
+          "repo_exact": 53.0,
+          "saved_repo_extra_keys_stripped": 63,
+          "wrong_keys_equal_under_repo_coercion": 0
+        },
+        "system": {
+          "correct_keys": 78,
+          "error_combinations": {
+            "extra_keys": 6,
+            "extra_keys+wrong_value_keys": 8,
+            "missing_keys": 79,
+            "missing_keys+extra_keys": 92,
+            "missing_keys+extra_keys+wrong_value_keys": 19,
+            "missing_keys+wrong_value_keys": 50,
+            "none": 79,
+            "wrong_value_keys": 167
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 165,
+              "samples": 125
+            },
+            "missing_keys": {
+              "keys": 363,
+              "samples": 240
+            },
+            "wrong_value_keys": {
+              "keys": 296,
+              "samples": 244
+            }
+          },
+          "extra_keys_matching_declared_defaults": 0,
+          "official_exact": 62,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 227,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 492,
+          "parser_parameter_disagreement_samples": 2,
+          "predicted_keys": 539,
+          "reference_keys": 737,
+          "repo_exact": 60.0,
+          "saved_repo_extra_keys_stripped": 103,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 500
+    },
+    "tier8_intent_blending": {
+      "arms": {
+        "direct": {
+          "correct_keys": 155,
+          "error_combinations": {
+            "extra_keys": 39,
+            "extra_keys+wrong_value_keys": 41,
+            "missing_keys": 45,
+            "missing_keys+extra_keys": 131,
+            "missing_keys+extra_keys+wrong_value_keys": 13,
+            "missing_keys+wrong_value_keys": 4,
+            "none": 122,
+            "wrong_value_keys": 105
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 367,
+              "samples": 224
+            },
+            "missing_keys": {
+              "keys": 260,
+              "samples": 193
+            },
+            "wrong_value_keys": {
+              "keys": 179,
+              "samples": 163
+            }
+          },
+          "extra_keys_matching_declared_defaults": 0,
+          "official_exact": 103,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 243,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 500,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 701,
+          "reference_keys": 594,
+          "repo_exact": 12.0,
+          "saved_repo_extra_keys_stripped": 261,
+          "wrong_keys_equal_under_repo_coercion": 2
+        },
+        "system": {
+          "correct_keys": 187,
+          "error_combinations": {
+            "extra_keys": 41,
+            "extra_keys+wrong_value_keys": 14,
+            "missing_keys": 54,
+            "missing_keys+extra_keys": 136,
+            "missing_keys+extra_keys+wrong_value_keys": 18,
+            "missing_keys+wrong_value_keys": 5,
+            "none": 161,
+            "wrong_value_keys": 71
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 288,
+              "samples": 209
+            },
+            "missing_keys": {
+              "keys": 289,
+              "samples": 213
+            },
+            "wrong_value_keys": {
+              "keys": 118,
+              "samples": 108
+            }
+          },
+          "extra_keys_matching_declared_defaults": 2,
+          "official_exact": 145,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 242,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 499,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 593,
+          "reference_keys": 594,
+          "repo_exact": 30.0,
+          "saved_repo_extra_keys_stripped": 364,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 500
+    }
+  },
+  "default_diagnostics": {
+    "read_intent": {
+      "at_utc": "2026-09-15T14:39:12.450807+00:00",
+      "method": "After key-only counts, compare each officially wrong shared key to the same public reference-tool default under official normalization, on both-primary-correct and system-primary-correct scopes. Inspect top repeated device-id value pairs as post-hoc explanatory examples only, never runtime rules. Use only already-admitted primary reference and output values; no transcripts, scoring, new metrics or configuration change.",
+      "model_calls": 0,
+      "schema": "saea-parameter-public-default-diagnostic-intent-v1",
+      "source_binding_sha256": "591b4320d14baa4843907ec16a6093612a4813b0413e20dd99688cc621e273e2"
+    },
+    "runtime_use_allowed": false,
+    "schema": "saea-public-default-parameter-diagnostic-v1",
+    "scopes": {
+      "both_primary_correct": {
+        "arms": {
+          "direct": {
+            "deviceid_prediction_matches_default": 0,
+            "deviceid_reference_matches_default": 399,
+            "deviceid_wrong": 587,
+            "has_declared_default": 1205,
+            "prediction_matches_declared_default": 26,
+            "reference_matches_declared_default": 636,
+            "wrong_keys": 1205
+          },
+          "system": {
+            "deviceid_prediction_matches_default": 0,
+            "deviceid_reference_matches_default": 376,
+            "deviceid_wrong": 583,
+            "has_declared_default": 941,
+            "prediction_matches_declared_default": 43,
+            "reference_matches_declared_default": 467,
+            "wrong_keys": 941
+          }
+        },
+        "wrong_key_counts": {
+          "direct": {
+            "action": 4,
+            "activity": 8,
+            "address": 4,
+            "appname": 8,
+            "avoidferries": 1,
+            "brightness": 1,
+            "category": 2,
+            "color": 11,
+            "coollevel": 1,
+            "deviceid": 587,
+            "door": 4,
+            "duration": 22,
+            "enabled": 4,
+            "eventtype": 11,
+            "filter": 1,
+            "game": 1,
+            "goal": 18,
+            "groupid": 10,
+            "hvacmode": 1,
+            "input": 24,
+            "label": 14,
+            "level": 23,
+            "message": 13,
+            "mirror": 2,
+            "mode": 25,
+            "notes": 1,
+            "offset": 8,
+            "parameters": 3,
+            "period": 96,
+            "pin": 1,
+            "position": 2,
+            "query": 20,
+            "rear": 1,
+            "repeat": 24,
+            "routineid": 9,
+            "sceneid": 19,
+            "schedule": 22,
+            "seat": 1,
+            "source": 20,
+            "sourceurl": 16,
+            "state": 38,
+            "targetdeviceid": 18,
+            "targethumidity": 7,
+            "targetlevel": 2,
+            "targetrooms": 15,
+            "temp": 1,
+            "temperature": 5,
+            "time": 20,
+            "type": 29,
+            "usehov": 1,
+            "window": 2,
+            "y": 2,
+            "zones": 22
+          },
+          "system": {
+            "action": 2,
+            "activity": 4,
+            "address": 4,
+            "appname": 8,
+            "avoidferries": 1,
+            "brightness": 1,
+            "camera": 1,
+            "color": 7,
+            "coollevel": 1,
+            "deviceid": 583,
+            "duration": 12,
+            "enabled": 6,
+            "eventtype": 7,
+            "goal": 8,
+            "groupid": 8,
+            "heatlevel": 1,
+            "input": 8,
+            "label": 8,
+            "level": 16,
+            "maxtemp": 1,
+            "message": 12,
+            "mode": 8,
+            "notes": 3,
+            "offset": 7,
+            "period": 13,
+            "pin": 1,
+            "position": 2,
+            "query": 22,
+            "rear": 1,
+            "repeat": 16,
+            "routineid": 2,
+            "sceneid": 4,
+            "schedule": 23,
+            "sound": 1,
+            "source": 6,
+            "sourceurl": 17,
+            "state": 3,
+            "targetdeviceid": 20,
+            "targethumidity": 9,
+            "targetlevel": 3,
+            "targetrooms": 11,
+            "temp": 2,
+            "temperature": 1,
+            "time": 41,
+            "type": 5,
+            "usehov": 1,
+            "y": 1,
+            "zones": 19
+          }
+        }
+      },
+      "system_primary_correct": {
+        "arms": {
+          "direct": {
+            "deviceid_prediction_matches_default": 0,
+            "deviceid_reference_matches_default": 433,
+            "deviceid_wrong": 643,
+            "has_declared_default": 1280,
+            "prediction_matches_declared_default": 26,
+            "reference_matches_declared_default": 678,
+            "wrong_keys": 1282
+          },
+          "system": {
+            "deviceid_prediction_matches_default": 0,
+            "deviceid_reference_matches_default": 449,
+            "deviceid_wrong": 688,
+            "has_declared_default": 1081,
+            "prediction_matches_declared_default": 47,
+            "reference_matches_declared_default": 545,
+            "wrong_keys": 1082
+          }
+        },
+        "wrong_key_counts": {
+          "direct": {
+            "action": 5,
+            "activity": 8,
+            "address": 4,
+            "appname": 8,
+            "avoidferries": 1,
+            "brightness": 1,
+            "category": 2,
+            "color": 18,
+            "coollevel": 1,
+            "deviceid": 643,
+            "door": 4,
+            "duration": 22,
+            "enabled": 5,
+            "eventtype": 11,
+            "filter": 1,
+            "game": 1,
+            "goal": 18,
+            "groupid": 10,
+            "hvacmode": 1,
+            "input": 24,
+            "label": 14,
+            "level": 24,
+            "maxtemp": 1,
+            "message": 13,
+            "mirror": 2,
+            "mode": 31,
+            "notes": 1,
+            "offset": 8,
+            "parameters": 3,
+            "period": 96,
+            "pin": 1,
+            "position": 2,
+            "protocol": 1,
+            "query": 20,
+            "rear": 1,
+            "repeat": 24,
+            "routineid": 9,
+            "sceneid": 19,
+            "schedule": 22,
+            "seat": 1,
+            "source": 20,
+            "sourceurl": 16,
+            "state": 41,
+            "targetdeviceid": 18,
+            "targethumidity": 7,
+            "targetlevel": 2,
+            "targetrooms": 15,
+            "temp": 1,
+            "temperature": 5,
+            "time": 20,
+            "type": 29,
+            "usehov": 1,
+            "window": 2,
+            "y": 2,
+            "zones": 22
+          },
+          "system": {
+            "action": 3,
+            "activity": 5,
+            "address": 4,
+            "appname": 8,
+            "avoidferries": 1,
+            "brightness": 1,
+            "camera": 1,
+            "color": 14,
+            "coollevel": 1,
+            "deviceid": 688,
+            "duration": 12,
+            "enabled": 6,
+            "eventtype": 7,
+            "goal": 8,
+            "groupid": 10,
+            "heatlevel": 1,
+            "input": 8,
+            "kelvin": 6,
+            "label": 8,
+            "level": 18,
+            "maxtemp": 1,
+            "message": 13,
+            "mode": 12,
+            "notes": 3,
+            "offset": 8,
+            "period": 14,
+            "pin": 1,
+            "position": 2,
+            "protocol": 1,
+            "query": 22,
+            "rear": 1,
+            "repeat": 16,
+            "routineid": 2,
+            "sceneid": 4,
+            "schedule": 23,
+            "sound": 1,
+            "source": 6,
+            "sourceurl": 18,
+            "state": 4,
+            "targetdeviceid": 21,
+            "targethumidity": 9,
+            "targetlevel": 3,
+            "targetrooms": 11,
+            "temp": 2,
+            "temperature": 3,
+            "time": 41,
+            "type": 5,
+            "usehov": 1,
+            "y": 1,
+            "zones": 23
+          }
+        }
+      }
+    }
+  },
+  "equal_stratum_error_sample_rates": {
+    "both_correct_by_domain": {
+      "direct": {
+        "extra_keys": 0.17174737395418108,
+        "missing_keys": 0.08763516579788866,
+        "wrong_value_keys": 0.3529029801276155
+      },
+      "system": {
+        "extra_keys": 0.18041822827689927,
+        "missing_keys": 0.04998776799489927,
+        "wrong_value_keys": 0.2708671524036192
+      }
+    },
+    "both_correct_by_tier": {
+      "direct": {
+        "extra_keys": 0.2050310281945103,
+        "missing_keys": 0.056004821171886994,
+        "wrong_value_keys": 0.4739829203828147
+      },
+      "system": {
+        "extra_keys": 0.1966503872510555,
+        "missing_keys": 0.06459493254384885,
+        "wrong_value_keys": 0.38920275549506533
+      }
+    },
+    "by_domain": {
+      "direct": {
+        "extra_keys": 0.2964530459228318,
+        "missing_keys": 0.2447034454395041,
+        "wrong_value_keys": 0.2833287331640129
+      },
+      "system": {
+        "extra_keys": 0.3117040753337546,
+        "missing_keys": 0.24637282062731672,
+        "wrong_value_keys": 0.20654612921232332
+      }
+    },
+    "by_tier": {
+      "direct": {
+        "extra_keys": 0.3785,
+        "missing_keys": 0.24925,
+        "wrong_value_keys": 0.3815
+      },
+      "system": {
+        "extra_keys": 0.3625,
+        "missing_keys": 0.29375,
+        "wrong_value_keys": 0.316
+      }
+    }
+  },
+  "external_report_sha256": "8b11e11f7a14c33fb1d69f3955c1d018d53f83fbfc116c50e0b6c0872df3a56a",
+  "external_rows_sha256": "76397aac58624f022066302506a959277f15b76ca4aa8b148f679bedbe932fe6",
+  "public_identifier_availability": {
+    "any_parameter_value_literal_present": 0,
+    "compact_literal_present": 0,
+    "model_calls": 0,
+    "own_parameter_value_literal_present": 0,
+    "runtime_changes": 0,
+    "schema": "saea-public-device-id-availability-audit-v1",
+    "scope": "CPU source inspection only; string presence of published default ID is not contextual entity resolution, normative fallback authority or ground-truth runtime access.",
+    "sources": {
+      "compact_renderer": {
+        "path": "/home/chao/saea-worktrees/a2t-parameter-attribution-v1/src/speech_aware_evidence_acquisition/data/audio2tool_tools.py",
+        "sha256": "00576d1810549a4b74b3fe692f71a24122abd54eab2c3ca9b442fb5eab7c82ba"
+      },
+      "parameter_release": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/knowledge/audio2tool/parameter-meaning-v1/release.json",
+        "sha256": "7bafef2137bbbf9b44baebf0beb70570422d496729f7846ea99a22b6708a4373"
+      },
+      "parameter_renderer": {
+        "path": "/home/chao/saea-worktrees/a2t-parameter-attribution-v1/src/speech_aware_evidence_acquisition/rails/knowledge_compile_a2t.py",
+        "sha256": "78609e152a467d2a03f8616b96bce2efb6cff0c23b4a4c4049a537e9b52f042b"
+      },
+      "parameter_snapshot": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-A2T-PARAMETER-MEANING-KNOWLEDGE-V1/knowledge-snapshot.json",
+        "sha256": "eaee6a2bc4c71a410bcccbfb128bdb58b18a5854bc3e833ad2b631995c650d67"
+      },
+      "registry": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool/tools_registry.csv",
+        "sha256": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4"
+      }
+    },
+    "tools_with_public_deviceid_default": 43
+  },
+  "schema": "saea-primary-parameter-attribution-v1",
+  "scopes": {
+    "all": {
+      "arms": {
+        "direct": {
+          "correct_keys": 1219,
+          "error_combinations": {
+            "extra_keys": 725,
+            "extra_keys+wrong_value_keys": 150,
+            "missing_keys": 309,
+            "missing_keys+extra_keys": 536,
+            "missing_keys+extra_keys+wrong_value_keys": 103,
+            "missing_keys+wrong_value_keys": 49,
+            "none": 904,
+            "wrong_value_keys": 1224
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 2288,
+              "samples": 1514
+            },
+            "missing_keys": {
+              "keys": 1435,
+              "samples": 997
+            },
+            "wrong_value_keys": {
+              "keys": 1888,
+              "samples": 1526
+            }
+          },
+          "extra_keys_matching_declared_defaults": 95,
+          "official_exact": 740,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 2481,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 3972,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 5395,
+          "reference_keys": 4542,
+          "repo_exact": 584.0,
+          "saved_repo_extra_keys_stripped": 759,
+          "wrong_keys_equal_under_repo_coercion": 13
+        },
+        "system": {
+          "correct_keys": 1417,
+          "error_combinations": {
+            "extra_keys": 721,
+            "extra_keys+wrong_value_keys": 48,
+            "missing_keys": 354,
+            "missing_keys+extra_keys": 583,
+            "missing_keys+extra_keys+wrong_value_keys": 98,
+            "missing_keys+wrong_value_keys": 140,
+            "none": 1078,
+            "wrong_value_keys": 978
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 1948,
+              "samples": 1450
+            },
+            "missing_keys": {
+              "keys": 1672,
+              "samples": 1175
+            },
+            "wrong_value_keys": {
+              "keys": 1453,
+              "samples": 1264
+            }
+          },
+          "extra_keys_matching_declared_defaults": 177,
+          "official_exact": 902,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 2337,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 3984,
+          "parser_parameter_disagreement_samples": 6,
+          "predicted_keys": 4818,
+          "reference_keys": 4542,
+          "repo_exact": 740.0,
+          "saved_repo_extra_keys_stripped": 1154,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 4000
+    },
+    "both_primary_tools_correct": {
+      "arms": {
+        "direct": {
+          "correct_keys": 862,
+          "error_combinations": {
+            "extra_keys": 392,
+            "extra_keys+wrong_value_keys": 61,
+            "missing_keys": 70,
+            "missing_keys+extra_keys": 12,
+            "missing_keys+extra_keys+wrong_value_keys": 7,
+            "missing_keys+wrong_value_keys": 18,
+            "none": 665,
+            "wrong_value_keys": 864
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 656,
+              "samples": 472
+            },
+            "missing_keys": {
+              "keys": 135,
+              "samples": 107
+            },
+            "wrong_value_keys": {
+              "keys": 1205,
+              "samples": 950
+            }
+          },
+          "extra_keys_matching_declared_defaults": 70,
+          "official_exact": 665,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 2089,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 2089,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 2723,
+          "reference_keys": 2202,
+          "repo_exact": 517.0,
+          "saved_repo_extra_keys_stripped": 241,
+          "wrong_keys_equal_under_repo_coercion": 5
+        },
+        "system": {
+          "correct_keys": 1119,
+          "error_combinations": {
+            "extra_keys": 418,
+            "extra_keys+wrong_value_keys": 15,
+            "missing_keys": 52,
+            "missing_keys+extra_keys": 6,
+            "missing_keys+extra_keys+wrong_value_keys": 12,
+            "missing_keys+wrong_value_keys": 61,
+            "none": 829,
+            "wrong_value_keys": 696
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 600,
+              "samples": 451
+            },
+            "missing_keys": {
+              "keys": 142,
+              "samples": 131
+            },
+            "wrong_value_keys": {
+              "keys": 941,
+              "samples": 784
+            }
+          },
+          "extra_keys_matching_declared_defaults": 144,
+          "official_exact": 829,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 2089,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 2089,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 2660,
+          "reference_keys": 2202,
+          "repo_exact": 679.0,
+          "saved_repo_extra_keys_stripped": 395,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 2089
+    },
+    "direct_primary_tool_correct": {
+      "arms": {
+        "direct": {
+          "correct_keys": 1027,
+          "error_combinations": {
+            "extra_keys": 481,
+            "extra_keys+wrong_value_keys": 80,
+            "missing_keys": 85,
+            "missing_keys+extra_keys": 13,
+            "missing_keys+extra_keys+wrong_value_keys": 7,
+            "missing_keys+wrong_value_keys": 21,
+            "none": 740,
+            "wrong_value_keys": 1054
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 819,
+              "samples": 581
+            },
+            "missing_keys": {
+              "keys": 159,
+              "samples": 126
+            },
+            "wrong_value_keys": {
+              "keys": 1486,
+              "samples": 1162
+            }
+          },
+          "extra_keys_matching_declared_defaults": 85,
+          "official_exact": 740,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 2481,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 2481,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 3332,
+          "reference_keys": 2672,
+          "repo_exact": 580.0,
+          "saved_repo_extra_keys_stripped": 290,
+          "wrong_keys_equal_under_repo_coercion": 13
+        },
+        "system": {
+          "correct_keys": 1157,
+          "error_combinations": {
+            "extra_keys": 483,
+            "extra_keys+wrong_value_keys": 20,
+            "missing_keys": 132,
+            "missing_keys+extra_keys": 134,
+            "missing_keys+extra_keys+wrong_value_keys": 32,
+            "missing_keys+wrong_value_keys": 75,
+            "none": 877,
+            "wrong_value_keys": 728
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 888,
+              "samples": 669
+            },
+            "missing_keys": {
+              "keys": 498,
+              "samples": 373
+            },
+            "wrong_value_keys": {
+              "keys": 1017,
+              "samples": 855
+            }
+          },
+          "extra_keys_matching_declared_defaults": 156,
+          "official_exact": 829,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 2089,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 2472,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 3062,
+          "reference_keys": 2672,
+          "repo_exact": 679.0,
+          "saved_repo_extra_keys_stripped": 558,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 2481
+    },
+    "official_exact_harms": {
+      "arms": {
+        "direct": {
+          "correct_keys": 118,
+          "error_combinations": {
+            "none": 151
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 0,
+              "samples": 0
+            },
+            "missing_keys": {
+              "keys": 0,
+              "samples": 0
+            },
+            "wrong_value_keys": {
+              "keys": 0,
+              "samples": 0
+            }
+          },
+          "extra_keys_matching_declared_defaults": 0,
+          "official_exact": 151,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 151,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 151,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 118,
+          "reference_keys": 118,
+          "repo_exact": 127.0,
+          "saved_repo_extra_keys_stripped": 7,
+          "wrong_keys_equal_under_repo_coercion": 0
+        },
+        "system": {
+          "correct_keys": 30,
+          "error_combinations": {
+            "extra_keys": 52,
+            "extra_keys+wrong_value_keys": 1,
+            "missing_keys": 20,
+            "missing_keys+extra_keys": 20,
+            "none": 15,
+            "wrong_value_keys": 43
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 84,
+              "samples": 73
+            },
+            "missing_keys": {
+              "keys": 44,
+              "samples": 40
+            },
+            "wrong_value_keys": {
+              "keys": 44,
+              "samples": 44
+            }
+          },
+          "extra_keys_matching_declared_defaults": 26,
+          "official_exact": 0,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 76,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 151,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 158,
+          "reference_keys": 118,
+          "repo_exact": 23.0,
+          "saved_repo_extra_keys_stripped": 65,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 151
+    },
+    "official_exact_saves": {
+      "arms": {
+        "direct": {
+          "correct_keys": 65,
+          "error_combinations": {
+            "extra_keys": 31,
+            "extra_keys+wrong_value_keys": 6,
+            "missing_keys": 45,
+            "missing_keys+extra_keys": 27,
+            "none": 29,
+            "wrong_value_keys": 175
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 88,
+              "samples": 64
+            },
+            "missing_keys": {
+              "keys": 89,
+              "samples": 72
+            },
+            "wrong_value_keys": {
+              "keys": 182,
+              "samples": 181
+            }
+          },
+          "extra_keys_matching_declared_defaults": 0,
+          "official_exact": 0,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 240,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 312,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 335,
+          "reference_keys": 336,
+          "repo_exact": 2.0,
+          "saved_repo_extra_keys_stripped": 51,
+          "wrong_keys_equal_under_repo_coercion": 0
+        },
+        "system": {
+          "correct_keys": 336,
+          "error_combinations": {
+            "none": 313
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 0,
+              "samples": 0
+            },
+            "missing_keys": {
+              "keys": 0,
+              "samples": 0
+            },
+            "wrong_value_keys": {
+              "keys": 0,
+              "samples": 0
+            }
+          },
+          "extra_keys_matching_declared_defaults": 0,
+          "official_exact": 313,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 313,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 313,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 336,
+          "reference_keys": 336,
+          "repo_exact": 216.0,
+          "saved_repo_extra_keys_stripped": 55,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 313
+    },
+    "system_primary_tool_correct": {
+      "arms": {
+        "direct": {
+          "correct_keys": 913,
+          "error_combinations": {
+            "extra_keys": 429,
+            "extra_keys+wrong_value_keys": 79,
+            "missing_keys": 95,
+            "missing_keys+extra_keys": 93,
+            "missing_keys+extra_keys+wrong_value_keys": 22,
+            "missing_keys+wrong_value_keys": 18,
+            "none": 705,
+            "wrong_value_keys": 896
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 906,
+              "samples": 623
+            },
+            "missing_keys": {
+              "keys": 309,
+              "samples": 228
+            },
+            "wrong_value_keys": {
+              "keys": 1282,
+              "samples": 1015
+            }
+          },
+          "extra_keys_matching_declared_defaults": 70,
+          "official_exact": 665,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 2089,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 2334,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 3101,
+          "reference_keys": 2504,
+          "repo_exact": 517.0,
+          "saved_repo_extra_keys_stripped": 309,
+          "wrong_keys_equal_under_repo_coercion": 5
+        },
+        "system": {
+          "correct_keys": 1256,
+          "error_combinations": {
+            "extra_keys": 459,
+            "extra_keys+wrong_value_keys": 17,
+            "missing_keys": 61,
+            "missing_keys+extra_keys": 7,
+            "missing_keys+extra_keys+wrong_value_keys": 12,
+            "missing_keys+wrong_value_keys": 72,
+            "none": 902,
+            "wrong_value_keys": 807
+          },
+          "errors": {
+            "extra_keys": {
+              "keys": 660,
+              "samples": 495
+            },
+            "missing_keys": {
+              "keys": 166,
+              "samples": 152
+            },
+            "wrong_value_keys": {
+              "keys": 1082,
+              "samples": 908
+            }
+          },
+          "extra_keys_matching_declared_defaults": 153,
+          "official_exact": 902,
+          "official_missing_keys_matching_repo_parse": 0,
+          "official_tool_correct": 2337,
+          "official_wrong_keys_matching_repo_parse": 0,
+          "parser_comparable_samples": 2337,
+          "parser_parameter_disagreement_samples": 0,
+          "predicted_keys": 2998,
+          "reference_keys": 2504,
+          "repo_exact": 727.0,
+          "saved_repo_extra_keys_stripped": 439,
+          "wrong_keys_equal_under_repo_coercion": 0
+        }
+      },
+      "sample_count": 2337
+    }
+  },
+  "source_read_intent_sha256": "591b4320d14baa4843907ec16a6093612a4813b0413e20dd99688cc621e273e2",
+  "status": "POSTHOC_DESCRIPTIVE_NO_NEW_VERDICT",
+  "top_error_keys_when_primary_correct": {
+    "direct": [
+      {
+        "count": 57,
+        "error": "wrong_value_keys",
+        "parameter": "period",
+        "tool": "getSleepSummary"
+      },
+      {
+        "count": 43,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "playMedia"
+      },
+      {
+        "count": 38,
+        "error": "wrong_value_keys",
+        "parameter": "type",
+        "tool": "getBiometricData"
+      },
+      {
+        "count": 38,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "resetFilterStatus"
+      },
+      {
+        "count": 38,
+        "error": "extra_keys",
+        "parameter": "repeat",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 34,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "startCleaning"
+      },
+      {
+        "count": 31,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getCameraEvent"
+      },
+      {
+        "count": 30,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setHumidifierState"
+      },
+      {
+        "count": 29,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setThermostatSchedule"
+      },
+      {
+        "count": 28,
+        "error": "wrong_value_keys",
+        "parameter": "period",
+        "tool": "getHRV"
+      },
+      {
+        "count": 27,
+        "error": "wrong_value_keys",
+        "parameter": "schedule",
+        "tool": "setThermostatSchedule"
+      },
+      {
+        "count": 26,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "rebootDevice"
+      },
+      {
+        "count": 26,
+        "error": "wrong_value_keys",
+        "parameter": "repeat",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 25,
+        "error": "wrong_value_keys",
+        "parameter": "input",
+        "tool": "setInputSource"
+      },
+      {
+        "count": 24,
+        "error": "wrong_value_keys",
+        "parameter": "sceneid",
+        "tool": "activateScene"
+      },
+      {
+        "count": 24,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getAirQuality"
+      },
+      {
+        "count": 24,
+        "error": "wrong_value_keys",
+        "parameter": "source",
+        "tool": "playMedia"
+      },
+      {
+        "count": 24,
+        "error": "wrong_value_keys",
+        "parameter": "zones",
+        "tool": "startCleaning"
+      },
+      {
+        "count": 23,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getApplianceStatus"
+      },
+      {
+        "count": 23,
+        "error": "wrong_value_keys",
+        "parameter": "duration",
+        "tool": "rampBrightness"
+      },
+      {
+        "count": 23,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setWaterValve"
+      },
+      {
+        "count": 22,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getLightState"
+      },
+      {
+        "count": 22,
+        "error": "wrong_value_keys",
+        "parameter": "query",
+        "tool": "playMedia"
+      },
+      {
+        "count": 22,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "rampBrightness"
+      },
+      {
+        "count": 22,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setAdaptiveLighting"
+      },
+      {
+        "count": 22,
+        "error": "extra_keys",
+        "parameter": "label",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 21,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "calibrateThermostat"
+      },
+      {
+        "count": 21,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getEnergyUsage"
+      },
+      {
+        "count": 21,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setInputSource"
+      },
+      {
+        "count": 21,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setPowerState"
+      },
+      {
+        "count": 21,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setPowerState"
+      },
+      {
+        "count": 21,
+        "error": "wrong_value_keys",
+        "parameter": "goal",
+        "tool": "startWorkout"
+      },
+      {
+        "count": 20,
+        "error": "wrong_value_keys",
+        "parameter": "targetdeviceid",
+        "tool": "castContent"
+      },
+      {
+        "count": 20,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setGarageDoor"
+      },
+      {
+        "count": 20,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setWaterValve"
+      },
+      {
+        "count": 20,
+        "error": "extra_keys",
+        "parameter": "state",
+        "tool": "setWaterValve"
+      },
+      {
+        "count": 19,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getCameraEvent"
+      },
+      {
+        "count": 19,
+        "error": "wrong_value_keys",
+        "parameter": "time",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 19,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setApplianceMode"
+      },
+      {
+        "count": 19,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setBrightness"
+      },
+      {
+        "count": 19,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setTargetTemperature"
+      },
+      {
+        "count": 18,
+        "error": "wrong_value_keys",
+        "parameter": "targetrooms",
+        "tool": "broadcastMessage"
+      },
+      {
+        "count": 18,
+        "error": "wrong_value_keys",
+        "parameter": "sourceurl",
+        "tool": "castContent"
+      },
+      {
+        "count": 18,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getAirQuality_diag"
+      },
+      {
+        "count": 18,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getAirQuality_diag"
+      },
+      {
+        "count": 18,
+        "error": "extra_keys",
+        "parameter": "source",
+        "tool": "playMedia"
+      },
+      {
+        "count": 18,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setAdaptiveLighting"
+      },
+      {
+        "count": 18,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setDockState"
+      },
+      {
+        "count": 18,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setHumidifierState"
+      },
+      {
+        "count": 18,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "updateFirmware"
+      },
+      {
+        "count": 17,
+        "error": "wrong_value_keys",
+        "parameter": "period",
+        "tool": "getActivitySummary"
+      },
+      {
+        "count": 17,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getFilterLife"
+      },
+      {
+        "count": 17,
+        "error": "wrong_value_keys",
+        "parameter": "state",
+        "tool": "setGarageDoor"
+      },
+      {
+        "count": 16,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getSensorState"
+      },
+      {
+        "count": 16,
+        "error": "wrong_value_keys",
+        "parameter": "label",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 16,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setGarageDoor"
+      },
+      {
+        "count": 16,
+        "error": "extra_keys",
+        "parameter": "state",
+        "tool": "setPowerState"
+      },
+      {
+        "count": 16,
+        "error": "extra_keys",
+        "parameter": "goal",
+        "tool": "startWorkout"
+      },
+      {
+        "count": 15,
+        "error": "wrong_value_keys",
+        "parameter": "message",
+        "tool": "broadcastMessage"
+      },
+      {
+        "count": 15,
+        "error": "extra_keys",
+        "parameter": "eventtype",
+        "tool": "getCameraEvent"
+      },
+      {
+        "count": 15,
+        "error": "wrong_value_keys",
+        "parameter": "eventtype",
+        "tool": "getCameraEvent"
+      },
+      {
+        "count": 15,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "resetFilterStatus"
+      },
+      {
+        "count": 15,
+        "error": "wrong_value_keys",
+        "parameter": "groupid",
+        "tool": "setGroupLightState"
+      },
+      {
+        "count": 15,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setThermostatMode"
+      },
+      {
+        "count": 14,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "playMedia"
+      },
+      {
+        "count": 14,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "rebootDevice"
+      },
+      {
+        "count": 14,
+        "error": "wrong_value_keys",
+        "parameter": "state",
+        "tool": "setWaterValve"
+      },
+      {
+        "count": 13,
+        "error": "extra_keys",
+        "parameter": "sourceurl",
+        "tool": "castContent"
+      },
+      {
+        "count": 13,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getAirQuality"
+      },
+      {
+        "count": 13,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getBatteryLevel"
+      },
+      {
+        "count": 13,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "setAdaptiveLighting"
+      },
+      {
+        "count": 13,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setBrightness"
+      },
+      {
+        "count": 13,
+        "error": "wrong_value_keys",
+        "parameter": "mode",
+        "tool": "setDoNotDisturb"
+      },
+      {
+        "count": 13,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setInputSource"
+      },
+      {
+        "count": 13,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setLighting"
+      },
+      {
+        "count": 12,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getLockState"
+      },
+      {
+        "count": 12,
+        "error": "extra_keys",
+        "parameter": "parameters",
+        "tool": "setApplianceMode"
+      },
+      {
+        "count": 12,
+        "error": "wrong_value_keys",
+        "parameter": "level",
+        "tool": "setHapticStrength"
+      },
+      {
+        "count": 12,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setLighting"
+      },
+      {
+        "count": 12,
+        "error": "extra_keys",
+        "parameter": "level",
+        "tool": "setLighting"
+      },
+      {
+        "count": 12,
+        "error": "wrong_value_keys",
+        "parameter": "temperature",
+        "tool": "setTargetTemperature"
+      },
+      {
+        "count": 12,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setThermostatMode"
+      },
+      {
+        "count": 11,
+        "error": "wrong_value_keys",
+        "parameter": "routineid",
+        "tool": "activateRoutine"
+      },
+      {
+        "count": 11,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "calibrateThermostat"
+      },
+      {
+        "count": 11,
+        "error": "extra_keys",
+        "parameter": "targetdeviceid",
+        "tool": "castContent"
+      },
+      {
+        "count": 11,
+        "error": "wrong_value_keys",
+        "parameter": "appname",
+        "tool": "installApp"
+      },
+      {
+        "count": 11,
+        "error": "extra_keys",
+        "parameter": "query",
+        "tool": "playMedia"
+      },
+      {
+        "count": 11,
+        "error": "missing_keys",
+        "parameter": "repeat:[",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 11,
+        "error": "extra_keys",
+        "parameter": "state",
+        "tool": "setGarageDoor"
+      },
+      {
+        "count": 11,
+        "error": "wrong_value_keys",
+        "parameter": "targethumidity",
+        "tool": "setHumidifierState"
+      },
+      {
+        "count": 11,
+        "error": "wrong_value_keys",
+        "parameter": "color",
+        "tool": "setLighting"
+      },
+      {
+        "count": 11,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setThermostatSchedule"
+      },
+      {
+        "count": 11,
+        "error": "extra_keys",
+        "parameter": "schedule",
+        "tool": "setThermostatSchedule"
+      },
+      {
+        "count": 11,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "startCleaning"
+      },
+      {
+        "count": 11,
+        "error": "wrong_value_keys",
+        "parameter": "activity",
+        "tool": "startWorkout"
+      },
+      {
+        "count": 10,
+        "error": "wrong_value_keys",
+        "parameter": "offset",
+        "tool": "calibrateThermostat"
+      },
+      {
+        "count": 10,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "controlPlayback"
+      },
+      {
+        "count": 10,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getSensorState"
+      },
+      {
+        "count": 10,
+        "error": "wrong_value_keys",
+        "parameter": "mode",
+        "tool": "setApplianceMode"
+      },
+      {
+        "count": 10,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setFanMode"
+      },
+      {
+        "count": 10,
+        "error": "wrong_value_keys",
+        "parameter": "state",
+        "tool": "setGroupLightState"
+      },
+      {
+        "count": 10,
+        "error": "extra_keys",
+        "parameter": "color",
+        "tool": "setLighting"
+      },
+      {
+        "count": 10,
+        "error": "extra_keys",
+        "parameter": "state",
+        "tool": "setLighting"
+      },
+      {
+        "count": 10,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "updateFirmware"
+      },
+      {
+        "count": 9,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getNetworkHealth"
+      },
+      {
+        "count": 9,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getNetworkHealth"
+      },
+      {
+        "count": 9,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "rampBrightness"
+      },
+      {
+        "count": 9,
+        "error": "wrong_value_keys",
+        "parameter": "color",
+        "tool": "setGroupLightState"
+      },
+      {
+        "count": 9,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setTargetTemperature"
+      },
+      {
+        "count": 9,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setVolume"
+      },
+      {
+        "count": 9,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "streamCamera"
+      },
+      {
+        "count": 8,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getBatteryLevel"
+      },
+      {
+        "count": 8,
+        "error": "extra_keys",
+        "parameter": "time",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 8,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "setAlwaysOnDisplay"
+      },
+      {
+        "count": 8,
+        "error": "wrong_value_keys",
+        "parameter": "parameters",
+        "tool": "setApplianceMode"
+      },
+      {
+        "count": 8,
+        "error": "extra_keys",
+        "parameter": "level",
+        "tool": "setHapticStrength"
+      },
+      {
+        "count": 8,
+        "error": "extra_keys",
+        "parameter": "input",
+        "tool": "setInputSource"
+      },
+      {
+        "count": 8,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setLightState"
+      },
+      {
+        "count": 8,
+        "error": "wrong_value_keys",
+        "parameter": "mode",
+        "tool": "setThermostatMode"
+      },
+      {
+        "count": 8,
+        "error": "extra_keys",
+        "parameter": "zones",
+        "tool": "startCleaning"
+      },
+      {
+        "count": 7,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getApplianceStatus"
+      },
+      {
+        "count": 7,
+        "error": "extra_keys",
+        "parameter": "appname",
+        "tool": "installApp"
+      },
+      {
+        "count": 7,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setFanMode"
+      },
+      {
+        "count": 7,
+        "error": "extra_keys",
+        "parameter": "targethumidity",
+        "tool": "setHumidifierState"
+      },
+      {
+        "count": 7,
+        "error": "missing_keys",
+        "parameter": "zones",
+        "tool": "startCleaning"
+      },
+      {
+        "count": 7,
+        "error": "missing_keys",
+        "parameter": "activity",
+        "tool": "startWorkout"
+      },
+      {
+        "count": 7,
+        "error": "missing_keys",
+        "parameter": "goal",
+        "tool": "startWorkout"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "routineid",
+        "tool": "activateRoutine"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "targetrooms",
+        "tool": "broadcastMessage"
+      },
+      {
+        "count": 6,
+        "error": "missing_keys",
+        "parameter": "state",
+        "tool": "foldExteriorMirrors"
+      },
+      {
+        "count": 6,
+        "error": "missing_keys",
+        "parameter": "period",
+        "tool": "getActivitySummary"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "type",
+        "tool": "getBiometricData"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getEnergyUsage"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getFilterLife"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getLightState"
+      },
+      {
+        "count": 6,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getThermostatState"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "level",
+        "tool": "setBrightness"
+      },
+      {
+        "count": 6,
+        "error": "wrong_value_keys",
+        "parameter": "level",
+        "tool": "setGroupLightState"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "streamCamera"
+      },
+      {
+        "count": 5,
+        "error": "extra_keys",
+        "parameter": "message",
+        "tool": "broadcastMessage"
+      },
+      {
+        "count": 5,
+        "error": "extra_keys",
+        "parameter": "offset",
+        "tool": "calibrateThermostat"
+      },
+      {
+        "count": 5,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "enableWaterLock"
+      },
+      {
+        "count": 5,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getApplianceState"
+      },
+      {
+        "count": 5,
+        "error": "extra_keys",
+        "parameter": "period",
+        "tool": "getHRV"
+      },
+      {
+        "count": 5,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getLockState"
+      },
+      {
+        "count": 5,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getThermostatState"
+      },
+      {
+        "count": 5,
+        "error": "missing_keys",
+        "parameter": "enabled",
+        "tool": "setAlwaysOnDisplay"
+      },
+      {
+        "count": 5,
+        "error": "wrong_value_keys",
+        "parameter": "level",
+        "tool": "setBrightness"
+      },
+      {
+        "count": 5,
+        "error": "missing_keys",
+        "parameter": "zones:[",
+        "tool": "startCleaning"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "action",
+        "tool": "controlPlayback"
+      },
+      {
+        "count": 4,
+        "error": "wrong_value_keys",
+        "parameter": "door",
+        "tool": "getDoorStatus"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "eventtype",
+        "tool": "getSensorState"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "period",
+        "tool": "getSleepSummary"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "duration",
+        "tool": "rampBrightness"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "targetlevel",
+        "tool": "rampBrightness"
+      },
+      {
+        "count": 4,
+        "error": "missing_keys",
+        "parameter": "repeat=[",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "setDoNotDisturb"
+      },
+      {
+        "count": 4,
+        "error": "missing_keys",
+        "parameter": "enabled",
+        "tool": "setDoNotDisturb"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "mode",
+        "tool": "setDoNotDisturb"
+      },
+      {
+        "count": 4,
+        "error": "missing_keys",
+        "parameter": "mode",
+        "tool": "setDoNotDisturb"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setDockState"
+      },
+      {
+        "count": 4,
+        "error": "wrong_value_keys",
+        "parameter": "mode",
+        "tool": "setFanMode"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "speed",
+        "tool": "setFanMode"
+      },
+      {
+        "count": 4,
+        "error": "wrong_value_keys",
+        "parameter": "level",
+        "tool": "setLighting"
+      },
+      {
+        "count": 4,
+        "error": "missing_keys",
+        "parameter": "enabled",
+        "tool": "setPetComfortMode"
+      },
+      {
+        "count": 4,
+        "error": "missing_keys",
+        "parameter": "targettemp",
+        "tool": "setPetComfortMode"
+      },
+      {
+        "count": 4,
+        "error": "missing_keys",
+        "parameter": "enabled",
+        "tool": "setSecureStorageAccess"
+      },
+      {
+        "count": 4,
+        "error": "missing_keys",
+        "parameter": "pin",
+        "tool": "setSecureStorageAccess"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setVolume"
+      },
+      {
+        "count": 3,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getApplianceState"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getCameraStream"
+      },
+      {
+        "count": 3,
+        "error": "missing_keys",
+        "parameter": "period",
+        "tool": "getSleepSummary"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "restartDevice"
+      },
+      {
+        "count": 3,
+        "error": "missing_keys",
+        "parameter": "notes",
+        "tool": "scheduleService"
+      },
+      {
+        "count": 3,
+        "error": "missing_keys",
+        "parameter": "type",
+        "tool": "scheduleService"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "enabled",
+        "tool": "setAdaptiveLighting"
+      },
+      {
+        "count": 3,
+        "error": "missing_keys",
+        "parameter": "repeat",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 3,
+        "error": "missing_keys",
+        "parameter": "enabled",
+        "tool": "setCabinOverheatProtection"
+      },
+      {
+        "count": 3,
+        "error": "missing_keys",
+        "parameter": "maxtemp",
+        "tool": "setCabinOverheatProtection"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setColorTemperature"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "address",
+        "tool": "setDestination"
+      },
+      {
+        "count": 3,
+        "error": "extra_keys",
+        "parameter": "mode",
+        "tool": "setFanMode"
+      },
+      {
+        "count": 3,
+        "error": "missing_keys",
+        "parameter": "speed",
+        "tool": "setFanMode"
+      },
+      {
+        "count": 3,
+        "error": "missing_keys",
+        "parameter": "color",
+        "tool": "setGroupLightState"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "state",
+        "tool": "setLighting"
+      },
+      {
+        "count": 3,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "setLockState"
+      },
+      {
+        "count": 3,
+        "error": "extra_keys",
+        "parameter": "precondition",
+        "tool": "setScheduledDeparture"
+      },
+      {
+        "count": 3,
+        "error": "extra_keys",
+        "parameter": "mode",
+        "tool": "setThermostatMode"
+      },
+      {
+        "count": 3,
+        "error": "missing_keys",
+        "parameter": "position",
+        "tool": "setWindowPosition"
+      },
+      {
+        "count": 3,
+        "error": "missing_keys",
+        "parameter": "window",
+        "tool": "setWindowPosition"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "address",
+        "tool": "addTripStop"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "address",
+        "tool": "addTripStop"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "action",
+        "tool": "controlPlayback"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "controlPlayback_home"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "state",
+        "tool": "foldExteriorMirrors"
+      },
+      {
+        "count": 2,
+        "error": "missing_keys",
+        "parameter": "period",
+        "tool": "getHRV"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "targetlevel",
+        "tool": "rampBrightness"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "category",
+        "tool": "searchPOI"
+      },
+      {
+        "count": 2,
+        "error": "missing_keys",
+        "parameter": "mode",
+        "tool": "setAirQualityMode"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "color",
+        "tool": "setAmbientLighting"
+      },
+      {
+        "count": 2,
+        "error": "missing_keys",
+        "parameter": "mode",
+        "tool": "setDrivingMode"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "state",
+        "tool": "setLightState"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "colortemperature",
+        "tool": "setLighting"
+      },
+      {
+        "count": 2,
+        "error": "missing_keys",
+        "parameter": "level",
+        "tool": "setLighting"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "state",
+        "tool": "setLockState"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setLockState_home"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "mirror",
+        "tool": "setMirrorAngle"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "y",
+        "tool": "setMirrorAngle"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "setPassengerQuietMode"
+      },
+      {
+        "count": 2,
+        "error": "missing_keys",
+        "parameter": "enabled",
+        "tool": "setPassengerQuietMode"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "state",
+        "tool": "setPowerState"
+      },
+      {
+        "count": 2,
+        "error": "missing_keys",
+        "parameter": "enabled",
+        "tool": "setRecirculation"
+      },
+      {
+        "count": 2,
+        "error": "missing_keys",
+        "parameter": "level",
+        "tool": "setRegenerativeBraking"
+      },
+      {
+        "count": 2,
+        "error": "missing_keys",
+        "parameter": "avoidferries",
+        "tool": "setRoutePreferences"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "time",
+        "tool": "setScheduledDeparture"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "mode",
+        "tool": "setSecurityMode"
+      },
+      {
+        "count": 2,
+        "error": "missing_keys",
+        "parameter": "mode",
+        "tool": "setSteeringFeel"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "position",
+        "tool": "setSunroofPosition"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "temperature",
+        "tool": "setTargetTemperature"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "window",
+        "tool": "setWindowPosition"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "activity",
+        "tool": "startWorkout"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "duration",
+        "tool": "startWorkout"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "sceneid",
+        "tool": "activateScene"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "action",
+        "tool": "controlPlayback_home"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "enabled",
+        "tool": "enableWaterLock"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "state",
+        "tool": "foldExteriorMirrors"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "period",
+        "tool": "getActivitySummary"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "getNetworkHealth"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "game",
+        "tool": "launchInCarGaming"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "query",
+        "tool": "playMedia"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "notes",
+        "tool": "scheduleService"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "type",
+        "tool": "scheduleService"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "filter",
+        "tool": "searchPOI"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "filter",
+        "tool": "searchPOI"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "mode",
+        "tool": "setAirQualityMode"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "brightness",
+        "tool": "setAmbientLighting"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setApplianceMode"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "mode",
+        "tool": "setApplianceMode"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "level",
+        "tool": "setAutonomousDriving"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "enabled",
+        "tool": "setCampingMode"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "hvacmode",
+        "tool": "setClimate"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "hvacmode",
+        "tool": "setClimate"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "temp",
+        "tool": "setClimate"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "temp",
+        "tool": "setClimate"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setColorTemperature"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "speed",
+        "tool": "setCruiseSpeed"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "front",
+        "tool": "setDefrost"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "rear",
+        "tool": "setDefrost"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "rear",
+        "tool": "setDefrost"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "enabled",
+        "tool": "setExternalSpeakerOutput"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "sound",
+        "tool": "setExternalSpeakerOutput"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "sound",
+        "tool": "setExternalSpeakerOutput"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "level",
+        "tool": "setFollowDistance"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "level",
+        "tool": "setFollowDistance"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "targetposition",
+        "tool": "setGarageDoor"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "action",
+        "tool": "setGarageOpener"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "action",
+        "tool": "setGarageOpener"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "color",
+        "tool": "setGroupLightState"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "level",
+        "tool": "setGroupLightState"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "state",
+        "tool": "setLockState"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "x",
+        "tool": "setMirrorAngle"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "setPetComfortMode"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "avoidferries",
+        "tool": "setRoutePreferences"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "avoidferries",
+        "tool": "setRoutePreferences"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "avoidtolls",
+        "tool": "setRoutePreferences"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "avoidtolls",
+        "tool": "setRoutePreferences"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "usehov",
+        "tool": "setRoutePreferences"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "usehov",
+        "tool": "setRoutePreferences"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "usehov",
+        "tool": "setRoutePreferences"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "time",
+        "tool": "setScheduledDeparture"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "coollevel",
+        "tool": "setSeatComfort"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "seat",
+        "tool": "setSeatComfort"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "mode",
+        "tool": "setSecurityMode"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "enabled",
+        "tool": "setSurveillanceMode"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "pin",
+        "tool": "setValetMode"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "level",
+        "tool": "setVolume"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "temperature",
+        "tool": "setZoneTemperature"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "living_room]?",
+        "tool": "startCleaning"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "showname",
+        "tool": "startLightShow"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "action",
+        "tool": "triggerRemoteParking"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "wiperServiceMode"
+      }
+    ],
+    "system": [
+      {
+        "count": 39,
+        "error": "wrong_value_keys",
+        "parameter": "time",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 38,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "resetFilterStatus"
+      },
+      {
+        "count": 37,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "startCleaning"
+      },
+      {
+        "count": 32,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "playMedia"
+      },
+      {
+        "count": 29,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getAirQuality"
+      },
+      {
+        "count": 27,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setDockState"
+      },
+      {
+        "count": 27,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setHumidifierState"
+      },
+      {
+        "count": 25,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setAdaptiveLighting"
+      },
+      {
+        "count": 24,
+        "error": "extra_keys",
+        "parameter": "repeat",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 24,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setWaterValve"
+      },
+      {
+        "count": 23,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getCameraEvent"
+      },
+      {
+        "count": 23,
+        "error": "wrong_value_keys",
+        "parameter": "schedule",
+        "tool": "setThermostatSchedule"
+      },
+      {
+        "count": 23,
+        "error": "wrong_value_keys",
+        "parameter": "zones",
+        "tool": "startCleaning"
+      },
+      {
+        "count": 22,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "calibrateThermostat"
+      },
+      {
+        "count": 22,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getLightState"
+      },
+      {
+        "count": 22,
+        "error": "wrong_value_keys",
+        "parameter": "query",
+        "tool": "playMedia"
+      },
+      {
+        "count": 22,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setColorTemperature"
+      },
+      {
+        "count": 22,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setThermostatSchedule"
+      },
+      {
+        "count": 21,
+        "error": "wrong_value_keys",
+        "parameter": "targetdeviceid",
+        "tool": "castContent"
+      },
+      {
+        "count": 21,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "rampBrightness"
+      },
+      {
+        "count": 21,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setGarageDoor"
+      },
+      {
+        "count": 21,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setPowerState"
+      },
+      {
+        "count": 21,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setWaterValve"
+      },
+      {
+        "count": 20,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setInputSource"
+      },
+      {
+        "count": 20,
+        "error": "extra_keys",
+        "parameter": "state",
+        "tool": "setWaterValve"
+      },
+      {
+        "count": 19,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getCameraEvent"
+      },
+      {
+        "count": 19,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "rebootDevice"
+      },
+      {
+        "count": 18,
+        "error": "wrong_value_keys",
+        "parameter": "sourceurl",
+        "tool": "castContent"
+      },
+      {
+        "count": 18,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setBrightness"
+      },
+      {
+        "count": 18,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setPowerState"
+      },
+      {
+        "count": 17,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getAirQuality"
+      },
+      {
+        "count": 17,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getAirQuality_diag"
+      },
+      {
+        "count": 17,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getFilterLife"
+      },
+      {
+        "count": 17,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getNetworkHealth"
+      },
+      {
+        "count": 17,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setGarageDoor"
+      },
+      {
+        "count": 17,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setHumidifierState"
+      },
+      {
+        "count": 16,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getAirQuality_diag"
+      },
+      {
+        "count": 16,
+        "error": "extra_keys",
+        "parameter": "eventtype",
+        "tool": "getCameraEvent"
+      },
+      {
+        "count": 16,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getEnergyUsage"
+      },
+      {
+        "count": 16,
+        "error": "wrong_value_keys",
+        "parameter": "repeat",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 16,
+        "error": "missing_keys",
+        "parameter": "goal",
+        "tool": "startWorkout"
+      },
+      {
+        "count": 15,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getSensorState"
+      },
+      {
+        "count": 15,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "resetFilterStatus"
+      },
+      {
+        "count": 15,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setAdaptiveLighting"
+      },
+      {
+        "count": 14,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getBatteryLevel"
+      },
+      {
+        "count": 14,
+        "error": "extra_keys",
+        "parameter": "state",
+        "tool": "setPowerState"
+      },
+      {
+        "count": 14,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setTargetTemperature"
+      },
+      {
+        "count": 13,
+        "error": "wrong_value_keys",
+        "parameter": "message",
+        "tool": "broadcastMessage"
+      },
+      {
+        "count": 13,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getApplianceStatus"
+      },
+      {
+        "count": 13,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "rebootDevice"
+      },
+      {
+        "count": 13,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setApplianceMode"
+      },
+      {
+        "count": 13,
+        "error": "extra_keys",
+        "parameter": "state",
+        "tool": "setGarageDoor"
+      },
+      {
+        "count": 13,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "updateFirmware"
+      },
+      {
+        "count": 12,
+        "error": "extra_keys",
+        "parameter": "sourceurl",
+        "tool": "castContent"
+      },
+      {
+        "count": 12,
+        "error": "extra_keys",
+        "parameter": "period",
+        "tool": "getHRV"
+      },
+      {
+        "count": 12,
+        "error": "missing_keys",
+        "parameter": "source",
+        "tool": "playMedia"
+      },
+      {
+        "count": 12,
+        "error": "wrong_value_keys",
+        "parameter": "duration",
+        "tool": "rampBrightness"
+      },
+      {
+        "count": 11,
+        "error": "wrong_value_keys",
+        "parameter": "targetrooms",
+        "tool": "broadcastMessage"
+      },
+      {
+        "count": 11,
+        "error": "extra_keys",
+        "parameter": "period",
+        "tool": "getSleepSummary"
+      },
+      {
+        "count": 11,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "setAdaptiveLighting"
+      },
+      {
+        "count": 11,
+        "error": "missing_keys",
+        "parameter": "repeat",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 11,
+        "error": "missing_keys",
+        "parameter": "repeat:[",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 11,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setThermostatMode"
+      },
+      {
+        "count": 11,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setThermostatSchedule"
+      },
+      {
+        "count": 11,
+        "error": "extra_keys",
+        "parameter": "schedule",
+        "tool": "setThermostatSchedule"
+      },
+      {
+        "count": 10,
+        "error": "extra_keys",
+        "parameter": "targetdeviceid",
+        "tool": "castContent"
+      },
+      {
+        "count": 10,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getNetworkHealth"
+      },
+      {
+        "count": 10,
+        "error": "extra_keys",
+        "parameter": "label",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 10,
+        "error": "wrong_value_keys",
+        "parameter": "groupid",
+        "tool": "setGroupLightState"
+      },
+      {
+        "count": 10,
+        "error": "wrong_value_keys",
+        "parameter": "level",
+        "tool": "setHapticStrength"
+      },
+      {
+        "count": 10,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setThermostatMode"
+      },
+      {
+        "count": 10,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "startCleaning"
+      },
+      {
+        "count": 10,
+        "error": "missing_keys",
+        "parameter": "zones",
+        "tool": "startCleaning"
+      },
+      {
+        "count": 9,
+        "error": "wrong_value_keys",
+        "parameter": "period",
+        "tool": "getHRV"
+      },
+      {
+        "count": 9,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getThermostatState"
+      },
+      {
+        "count": 9,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "playMedia"
+      },
+      {
+        "count": 9,
+        "error": "extra_keys",
+        "parameter": "query",
+        "tool": "playMedia"
+      },
+      {
+        "count": 9,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "rampBrightness"
+      },
+      {
+        "count": 9,
+        "error": "wrong_value_keys",
+        "parameter": "targethumidity",
+        "tool": "setHumidifierState"
+      },
+      {
+        "count": 8,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "calibrateThermostat"
+      },
+      {
+        "count": 8,
+        "error": "wrong_value_keys",
+        "parameter": "offset",
+        "tool": "calibrateThermostat"
+      },
+      {
+        "count": 8,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getApplianceState"
+      },
+      {
+        "count": 8,
+        "error": "wrong_value_keys",
+        "parameter": "appname",
+        "tool": "installApp"
+      },
+      {
+        "count": 8,
+        "error": "wrong_value_keys",
+        "parameter": "label",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 8,
+        "error": "extra_keys",
+        "parameter": "time",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 8,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setBrightness"
+      },
+      {
+        "count": 8,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setColorTemperature"
+      },
+      {
+        "count": 8,
+        "error": "missing_keys",
+        "parameter": "color",
+        "tool": "setGroupLightState"
+      },
+      {
+        "count": 8,
+        "error": "extra_keys",
+        "parameter": "input",
+        "tool": "setInputSource"
+      },
+      {
+        "count": 8,
+        "error": "wrong_value_keys",
+        "parameter": "input",
+        "tool": "setInputSource"
+      },
+      {
+        "count": 8,
+        "error": "wrong_value_keys",
+        "parameter": "goal",
+        "tool": "startWorkout"
+      },
+      {
+        "count": 7,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "controlPlayback"
+      },
+      {
+        "count": 7,
+        "error": "extra_keys",
+        "parameter": "type",
+        "tool": "getBiometricData"
+      },
+      {
+        "count": 7,
+        "error": "wrong_value_keys",
+        "parameter": "eventtype",
+        "tool": "getCameraEvent"
+      },
+      {
+        "count": 7,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "setAlwaysOnDisplay"
+      },
+      {
+        "count": 7,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "setFanMode"
+      },
+      {
+        "count": 7,
+        "error": "extra_keys",
+        "parameter": "level",
+        "tool": "setHapticStrength"
+      },
+      {
+        "count": 7,
+        "error": "extra_keys",
+        "parameter": "targethumidity",
+        "tool": "setHumidifierState"
+      },
+      {
+        "count": 7,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "streamCamera"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "routineid",
+        "tool": "activateRoutine"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "period",
+        "tool": "getActivitySummary"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getApplianceStatus"
+      },
+      {
+        "count": 6,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getCameraStream"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getFilterLife"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getLightState"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getSensorState"
+      },
+      {
+        "count": 6,
+        "error": "wrong_value_keys",
+        "parameter": "source",
+        "tool": "playMedia"
+      },
+      {
+        "count": 6,
+        "error": "missing_keys",
+        "parameter": "label",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 6,
+        "error": "missing_keys",
+        "parameter": "parameters",
+        "tool": "setApplianceMode"
+      },
+      {
+        "count": 6,
+        "error": "wrong_value_keys",
+        "parameter": "color",
+        "tool": "setColor"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "kelvin",
+        "tool": "setColorTemperature"
+      },
+      {
+        "count": 6,
+        "error": "wrong_value_keys",
+        "parameter": "kelvin",
+        "tool": "setColorTemperature"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setInputSource"
+      },
+      {
+        "count": 6,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setLightState"
+      },
+      {
+        "count": 6,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setTargetTemperature"
+      },
+      {
+        "count": 5,
+        "error": "extra_keys",
+        "parameter": "message",
+        "tool": "broadcastMessage"
+      },
+      {
+        "count": 5,
+        "error": "extra_keys",
+        "parameter": "targetrooms",
+        "tool": "broadcastMessage"
+      },
+      {
+        "count": 5,
+        "error": "extra_keys",
+        "parameter": "offset",
+        "tool": "calibrateThermostat"
+      },
+      {
+        "count": 5,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "enableWaterLock"
+      },
+      {
+        "count": 5,
+        "error": "wrong_value_keys",
+        "parameter": "type",
+        "tool": "getBiometricData"
+      },
+      {
+        "count": 5,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getThermostatState"
+      },
+      {
+        "count": 5,
+        "error": "extra_keys",
+        "parameter": "appname",
+        "tool": "installApp"
+      },
+      {
+        "count": 5,
+        "error": "wrong_value_keys",
+        "parameter": "level",
+        "tool": "setBrightness"
+      },
+      {
+        "count": 5,
+        "error": "missing_keys",
+        "parameter": "speed",
+        "tool": "setFanMode"
+      },
+      {
+        "count": 5,
+        "error": "missing_keys",
+        "parameter": "level",
+        "tool": "setGroupLightState"
+      },
+      {
+        "count": 5,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "setLockState"
+      },
+      {
+        "count": 5,
+        "error": "extra_keys",
+        "parameter": "zones",
+        "tool": "startCleaning"
+      },
+      {
+        "count": 5,
+        "error": "missing_keys",
+        "parameter": "zones:[",
+        "tool": "startCleaning"
+      },
+      {
+        "count": 5,
+        "error": "extra_keys",
+        "parameter": "activity",
+        "tool": "startWorkout"
+      },
+      {
+        "count": 5,
+        "error": "wrong_value_keys",
+        "parameter": "activity",
+        "tool": "startWorkout"
+      },
+      {
+        "count": 4,
+        "error": "wrong_value_keys",
+        "parameter": "sceneid",
+        "tool": "activateScene"
+      },
+      {
+        "count": 4,
+        "error": "missing_keys",
+        "parameter": "targetrooms",
+        "tool": "broadcastMessage"
+      },
+      {
+        "count": 4,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "getLockState"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "playMedia"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "duration",
+        "tool": "rampBrightness"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "targetlevel",
+        "tool": "rampBrightness"
+      },
+      {
+        "count": 4,
+        "error": "wrong_value_keys",
+        "parameter": "enabled",
+        "tool": "setAdaptiveLighting"
+      },
+      {
+        "count": 4,
+        "error": "missing_keys",
+        "parameter": "repeat=[",
+        "tool": "setAlarm"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "level",
+        "tool": "setBrightness"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setDockState"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setFanMode"
+      },
+      {
+        "count": 4,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setFanMode"
+      },
+      {
+        "count": 4,
+        "error": "wrong_value_keys",
+        "parameter": "color",
+        "tool": "setGroupLightState"
+      },
+      {
+        "count": 4,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "setTargetTemperature"
+      },
+      {
+        "count": 4,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setVolume"
+      },
+      {
+        "count": 4,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "updateFirmware"
+      },
+      {
+        "count": 3,
+        "error": "extra_keys",
+        "parameter": "action",
+        "tool": "controlPlayback"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "controlPlayback_home"
+      },
+      {
+        "count": 3,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getBatteryLevel"
+      },
+      {
+        "count": 3,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getEnergyUsage"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "period",
+        "tool": "getSleepSummary"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "targetlevel",
+        "tool": "rampBrightness"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "restartDevice"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "notes",
+        "tool": "scheduleService"
+      },
+      {
+        "count": 3,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "setColor"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setColor"
+      },
+      {
+        "count": 3,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "setColorTemperature"
+      },
+      {
+        "count": 3,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "setDoNotDisturb"
+      },
+      {
+        "count": 3,
+        "error": "extra_keys",
+        "parameter": "mode",
+        "tool": "setDoNotDisturb"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "mode",
+        "tool": "setDoNotDisturb"
+      },
+      {
+        "count": 3,
+        "error": "extra_keys",
+        "parameter": "mode",
+        "tool": "setFanMode"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "mode",
+        "tool": "setSecurityMode"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "temperature",
+        "tool": "setTargetTemperature"
+      },
+      {
+        "count": 3,
+        "error": "wrong_value_keys",
+        "parameter": "state",
+        "tool": "setWaterValve"
+      },
+      {
+        "count": 3,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "streamCamera"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "routineid",
+        "tool": "activateRoutine"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "address",
+        "tool": "addTripStop"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "address",
+        "tool": "addTripStop"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "action",
+        "tool": "controlPlayback"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "state",
+        "tool": "foldExteriorMirrors"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "period",
+        "tool": "getActivitySummary"
+      },
+      {
+        "count": 2,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "getCameraEvent"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "source",
+        "tool": "playMedia"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "notes",
+        "tool": "scheduleService"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "type",
+        "tool": "scheduleService"
+      },
+      {
+        "count": 2,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "setAdaptiveLighting"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "color",
+        "tool": "setAmbientLighting"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "mode",
+        "tool": "setApplianceMode"
+      },
+      {
+        "count": 2,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "setBrightness"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "maxtemp",
+        "tool": "setCabinOverheatProtection"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "temp",
+        "tool": "setClimate"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "address",
+        "tool": "setDestination"
+      },
+      {
+        "count": 2,
+        "error": "missing_keys",
+        "parameter": "mode",
+        "tool": "setDoNotDisturb"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "mode",
+        "tool": "setDrivingMode"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "mode",
+        "tool": "setFanMode"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "level",
+        "tool": "setFollowDistance"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "color",
+        "tool": "setLighting"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setLighting"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "setPassengerQuietMode"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "avoidtolls",
+        "tool": "setRoutePreferences"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "usehov",
+        "tool": "setRoutePreferences"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "precondition",
+        "tool": "setScheduledDeparture"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "time",
+        "tool": "setScheduledDeparture"
+      },
+      {
+        "count": 2,
+        "error": "wrong_value_keys",
+        "parameter": "position",
+        "tool": "setSunroofPosition"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "mode",
+        "tool": "setThermostatMode"
+      },
+      {
+        "count": 2,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "setThermostatSchedule"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setVolume"
+      },
+      {
+        "count": 2,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "setVolume"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "position",
+        "tool": "setWindowPosition"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "window",
+        "tool": "setWindowPosition"
+      },
+      {
+        "count": 2,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "wiperServiceMode"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "calibrateThermostat"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "controlPlayback"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "enabled",
+        "tool": "enableWaterLock"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getApplianceState"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "protocol",
+        "tool": "getCameraStream"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "door",
+        "tool": "getDoorStatus"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "period",
+        "tool": "getEnergyUsage"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "getLockState"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "period",
+        "tool": "getSleepSummary"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "getThermostatState"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "rampBrightness"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "filter",
+        "tool": "searchPOI"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "mode",
+        "tool": "setAirQualityMode"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "brightness",
+        "tool": "setAmbientLighting"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "deviceid",
+        "tool": "setApplianceMode"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "setApplianceMode"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "mode",
+        "tool": "setApplianceMode"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "setCabinOverheatProtection"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "maxtemp",
+        "tool": "setCabinOverheatProtection"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "hvacmode",
+        "tool": "setClimate"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "rear",
+        "tool": "setDefrost"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "sound",
+        "tool": "setExternalSpeakerOutput"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "level",
+        "tool": "setFollowDistance"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "level",
+        "tool": "setGroupLightState"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "setInputSource"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "color",
+        "tool": "setLighting"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "deviceid",
+        "tool": "setLighting"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "level",
+        "tool": "setLighting"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "level",
+        "tool": "setLighting"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "x",
+        "tool": "setMirrorAngle"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "y",
+        "tool": "setMirrorAngle"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "setPetComfortMode"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "targettemp",
+        "tool": "setPetComfortMode"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "state",
+        "tool": "setPowerState"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "setRecirculation"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "level",
+        "tool": "setRegenerativeBraking"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "avoidferries",
+        "tool": "setRoutePreferences"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "avoidferries",
+        "tool": "setRoutePreferences"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "usehov",
+        "tool": "setRoutePreferences"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "time",
+        "tool": "setScheduledDeparture"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "coollevel",
+        "tool": "setSeatComfort"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "heatlevel",
+        "tool": "setSeatComfort"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "enabled",
+        "tool": "setSecureStorageAccess"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "pin",
+        "tool": "setSecureStorageAccess"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "mode",
+        "tool": "setSecurityMode"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "mode",
+        "tool": "setSteeringFeel"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "enabled",
+        "tool": "setSurveillanceMode"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "temperature",
+        "tool": "setTargetTemperature"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "mode",
+        "tool": "setThermostatMode"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "temperature",
+        "tool": "setThermostatMode"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "pin",
+        "tool": "setValetMode"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "deviceid",
+        "tool": "setWaterValve"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "living_room]?",
+        "tool": "startCleaning"
+      },
+      {
+        "count": 1,
+        "error": "extra_keys",
+        "parameter": "showname",
+        "tool": "startLightShow"
+      },
+      {
+        "count": 1,
+        "error": "missing_keys",
+        "parameter": "activity",
+        "tool": "startWorkout"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "action",
+        "tool": "triggerRemoteParking"
+      },
+      {
+        "count": 1,
+        "error": "wrong_value_keys",
+        "parameter": "camera",
+        "tool": "viewRemoteCamera"
+      }
+    ]
+  },
+  "validation": {
+    "sample_count": 4000,
+    "saved_primary_and_parameter_facts": "ALL_MATCHED"
+  }
+}

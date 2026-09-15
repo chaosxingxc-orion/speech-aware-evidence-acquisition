@@ -1,0 +1,136 @@
+{
+  "analysis_id": "SAEA-A2T-PRIMARY-PARAMETER-ATTRIBUTION-V1",
+  "definitions": {
+    "default_diagnostic": "For extra keys, mark equality to declared public default under the same official normalization. This differs from repo v2's typed default-stripping behavior; retain saved v2 facts separately.",
+    "error_taxonomy": "Missing normalized key; extra normalized key; shared normalized key with unequal official-normalized value. Categories may coexist per sample. Retain correct keys and normalized-key collisions.",
+    "limits": "This primary-call diagnostic does not explain every full multi-call parameter error or establish speech support, tool utility or causality.",
+    "parser_diagnostic": "Compare official parsed primary params to the existing repo parsed first call only when normalized primary tools agree. Report parser representation disagreement, not a corrected answer.",
+    "quality": "Reuse first saved official and repo metrics. Partition all4000, each arm's primary-tool-correct rows, both-arms-primary-tool-correct rows, primary exact saves/harms, ordered coverage and all tier/domain strata. Conditional partitions are descriptive.",
+    "value_diagnostic": "Where existing repo v2 coerced canonical values agree despite official-normalized inequality, report that diagnostic without replacing official outcomes or inventing an alternative accuracy."
+  },
+  "encoder_calls": 0,
+  "gpu_launch_allowed": false,
+  "held_configuration_mutation_allowed": false,
+  "model_calls": 0,
+  "output_namespace": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-PRIMARY-PARAMETER-ATTRIBUTION-V1",
+  "read_scope": "Exactly4000 registered discovery IDs and matching tier/id/query_idx. Read official primary reference extracted_params and sealed output text, using the official primary parser and official normalization. Compare parameter key presence/value relations and validate every persisted original count/primary match fact. Do not invoke compute_parameter_accuracy, any scorer or a model. Do not extract transcripts, inspect out-of-roster labels or read additional-call argument references for this analysis.",
+  "reference_manifests": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool/public/tier1_direct_data/tier1_direct.json",
+      "sha256": "7ce7189f9fb118069434d0ffd78242365f3979d790c397df9d49c9d068d361a6"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool/public/tier2_parametric_data/tier2_parametric.json",
+      "sha256": "93c04df65e9348eaa2bd010926420ffc7f207aa0d375c2124c5d99b94b163f24"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool/public/tier3_multi_intent_data/tier3_multi_intent.json",
+      "sha256": "69c4b9921f6cae94a5ac305106ffff88025d3cae1e783895d78131af5a47b650"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool/public/tier4_implicit_data/tier4_implicit.json",
+      "sha256": "d430e801c9bba5db03b3d044ac626ebec35de1b8a4eb2e2beb4cdec0013e9271"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool/public/tier5_needle_data/tier5_needle.json",
+      "sha256": "d38e588dccb99ed3291c9467a29adcd71e4f1c4eb62c118fd482a8e9616a1850"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool/public/tier6_correction_data/tier6_correction.json",
+      "sha256": "fa5c0825d99c4f68e226480261befe9ce7aa33c9dfbb7ff1fe1fc82493bcb991"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool/public/tier7_multiturn_data/tier7_multiturn.json",
+      "sha256": "7be95ff2dd904a1cadb45afb323dde0a3b7c2574932718ed3743fcd7fc09cddc"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool/public/tier8_intent_blending_data/tier8_intent_blending.json",
+      "sha256": "0d1dbecb14cc97f62dacd48a035d733f9a94c10cf388c5b7b91cf3e28858fa70"
+    }
+  ],
+  "registered_at_utc": "2026-09-15T14:31:02.058420+00:00",
+  "registered_by": "root",
+  "research_status": "Post-hoc descriptive source analysis after all paired and ordered-action outcomes; no new hypothesis test, gate or parameter delivery.",
+  "runtime_knowledge_mutation_allowed": false,
+  "sample_count": 4000,
+  "schema": "saea-primary-parameter-read-intent-v1",
+  "scorer_invocations": 0,
+  "source_code": [
+    {
+      "path": "/home/chao/saea-worktrees/a2t-parameter-attribution-v1/src/speech_aware_evidence_acquisition/data/audio2tool.py",
+      "sha256": "7b4a9ad4305396fa3d8798b6dc19088fe389f2c283024b35a00b0911bf68a7a0"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/a2t-parameter-attribution-v1/src/speech_aware_evidence_acquisition/analysis/a2t_ordered_action_sources.py",
+      "sha256": "7ea0aa4149fdcfb7046f33a4b20dedff889d512f7cc9236bb9e095ddfb3799bd"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/a2t-parameter-attribution-v1/src/speech_aware_evidence_acquisition/reproduction/audio2tool_official/parse.py",
+      "sha256": "1b0e0d3264d0ed4fd1869204e79167f2840929dc9ad67d02a960b2e9b77a21b4"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/a2t-parameter-attribution-v1/src/speech_aware_evidence_acquisition/reproduction/audio2tool_official/metrics.py",
+      "sha256": "b092cc5ba1bac59d58dbfeb56c7f7cf63f1970df59892ea7b56ee24ac2c86802"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/a2t-parameter-attribution-v1/src/speech_aware_evidence_acquisition/reproduction/toolcall_scoring.py",
+      "sha256": "4dc260ff33d99ed66508c947484762aac3b497aaf19e218dcf4f6bfd4dff05c6"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/a2t-parameter-attribution-v1/src/speech_aware_evidence_acquisition/reproduction/toolcall_scoring_v2.py",
+      "sha256": "e7964c28c230eec8eab57ca0046ba90ad09fa9de30474d25c823e447b2fbfa28"
+    }
+  ],
+  "sources": {
+    "dataset_lock": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+      "sha256": "c4ee908562c0f274bc13295b42c1f5fef7c4c8ac2d27e8e86a4cd0d4b580cabe"
+    },
+    "direct_attached_score": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1/attempt-a2t-native-role-direct-union4000-generation-v1/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1.scores.json",
+      "sha256": "2071602b9ea40dfa571ded2508d92051cd945ce4b2d50a6a9dd935367a058026"
+    },
+    "direct_manifest": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1/attempt-a2t-native-role-direct-union4000-generation-v1/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1.run-manifest.json",
+      "sha256": "a3fb34c6c1825a5bbb0642f88c8d130fd72f348c9b8c3d78e0f69d2c2c51d004"
+    },
+    "direct_outputs": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1/attempt-a2t-native-role-direct-union4000-generation-v1/SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1.outputs.jsonl",
+      "sha256": "658fd21d362467233e2e220f48334ac6894c74885b8677aeeee8980073810ba6"
+    },
+    "metadata": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/full4000-metadata-v2.json",
+      "sha256": "f0cc01a84506dbd6bd4be9b53388e251c4ffa108711acb46c281a70fb4cd8251"
+    },
+    "ordered_rows": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-ORDERED-ACTION-ATTRIBUTION-V1/rows.jsonl",
+      "sha256": "ab3ecbb963a3f3c71fee38bacb724557b400268ebe32a283f8419f237eeb4106"
+    },
+    "prior_binding": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/complete-source-bindings-v1.json",
+      "sha256": "2f21b106f88b7a420b06569c35a441ea2b7bfc4b87462caca59677bd9240af00"
+    },
+    "registry": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool/tools_registry.csv",
+      "sha256": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4"
+    },
+    "roster": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/checks/speech-aware-evidence-acquisition/2026-09-05-a2t-org1-domain-grouped-roster/flight-roster-receipt.json",
+      "sha256": "e5a81b71e1253ff866262991f79d132b89f4bfb47e7c8a0c0cf0aa04857b8736"
+    },
+    "system_attached_score": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1/attempt-a2t-native-role-dual-store-union4000-recovery-generation-v1/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1.scores.json",
+      "sha256": "8082e46b8f2e0c7693f1bf57cf683ba79112888a104a10d3773c6ce23547cae7"
+    },
+    "system_manifest": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1/attempt-a2t-native-role-dual-store-union4000-recovery-generation-v1/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1.run-manifest.json",
+      "sha256": "8a4e515bb52ed4692bdca855e7053586c409760e4ee33df9fcca9b4542466b73"
+    },
+    "system_outputs": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1/attempt-a2t-native-role-dual-store-union4000-recovery-generation-v1/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1.outputs.jsonl",
+      "sha256": "92ede1f8338072e0d6ebdcc635fe0d3ac1ed4ec961b613721560c710c66dad7e"
+    }
+  },
+  "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+  "tokenizer_calls": 0
+}
