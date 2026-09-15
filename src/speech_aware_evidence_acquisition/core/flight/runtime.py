@@ -1458,12 +1458,29 @@ class FlightRuntime:
             )
             for phase, spec in specs.items()
         }
-        bindings = self.speech_packet_bindings()
+        units = self.execution_unit_roster()
+        if units is None:
+            bindings = self.speech_packet_bindings()
+            sources = tuple(
+                (sample, str(sample.sample_id), bindings[str(sample.sample_id)])
+                for sample in samples
+            )
+        else:
+            # Preserve parent task semantics while rendering EVERY registered
+            # window. State custody uses the unit key, as the phase runner does.
+            parents = {str(sample.sample_id): sample for sample in samples}
+            sources = tuple(
+                (parents[unit.parent_sample_id], unit.request_key,
+                 {"packet_id": unit.speech_packet_id, "sha256": unit.speech_packet_sha256})
+                for unit in units.units if unit.parent_sample_id in parents
+            )
+            if not sources or {str(sample.sample_id) for sample, _, _ in sources} != set(parents):
+                raise FlightRuntimeError("prompt estimate does not cover the requested parent roster")
         prompt_order = str(
             baseline_values.get("prompt_order") or "speech-query-prefix-v2"
         )
         ceiling = self._completion_token_ceiling()
-        sample_ids = tuple(str(sample.sample_id) for sample in samples)
+        sample_ids = tuple(identity for _, identity, _ in sources)
 
         # A sealed-manifest phase's predecessor is REAL and per-sample: load
         # the whole roster's states once, from the manifest the fragment
@@ -1514,8 +1531,7 @@ class FlightRuntime:
         supply_blocks = self._phase_supply_prompt_bound(program)
 
         payloads: dict[str, bytes] = {}
-        for sample in samples:
-            sample_id = str(sample.sample_id)
+        for sample, sample_id, descriptor in sources:
             envelopes = render_phase_prompt_envelopes(
                 program_id=program.program_id,
                 phase_names=program.phase_names(),
@@ -1523,7 +1539,7 @@ class FlightRuntime:
                 static_text_by_phase=static_text,
                 system_text=phase_program_system_text(self._adapter, sample),
                 prompt_order=prompt_order,
-                packet_descriptor=bindings[sample_id],
+                packet_descriptor=descriptor,
                 sample_id=sample_id,
                 sealed_states_by_phase=sealed_states,
                 state_fill_by_phase=fills,
@@ -1994,6 +2010,15 @@ class FlightRuntime:
                 if obs_policy
                 else float(getattr(representative, "audio_seconds", 1.0))
             )
+            units = self.execution_unit_roster()
+            if units is not None:
+                # A call is a scoring identity; only one unit reaches a request.
+                # Use the widest declared unit, never the whole parent recording.
+                parent_ids = {str(sample.sample_id) for sample in samples}
+                audio_seconds = max(
+                    unit.slice_record.audio_seconds for unit in units.units
+                    if unit.parent_sample_id in parent_ids
+                )
             speech_tokens = max(
                 1, round(audio_seconds * self._speech_tokens_per_second)
             )

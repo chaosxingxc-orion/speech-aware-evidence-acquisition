@@ -176,3 +176,58 @@ def test_configured_runtime_loads_window_packets_without_a_parent_packet(tmp_pat
     runtime._composed.values["prepared_window_feature_packets"] = None
     with pytest.raises(FlightRuntimeError, match="prepared window packets"):
         runtime.execution_unit_roster()
+
+
+def test_preflight_estimate_visits_every_window_and_uses_window_duration(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core.flight import runtime as runtime_module
+    from test_execution_unit_static_fit import _unit
+    from test_flight_runtime import _make_runtime
+
+    runtime = _make_runtime(tmp_path, happy_path=True)
+    runtime.preflight()
+    for sample in runtime._samples:
+        sample.audio_seconds = 3600.0
+    units = tuple(replace(
+        _unit(parent.sample_id, index),
+        speech_packet_id=f"window/{parent.sample_id}/{index}",
+        speech_packet_sha256=f"{index + 1:064x}",
+    ) for parent in runtime._samples for index in range(2))
+    roster = ExecutionUnitRoster(units)
+    runtime.execution_unit_roster = lambda: roster
+    values = runtime._composed.values
+    values.update(
+        arm="speech-feature-query", policy="phase-direct-only-v1",
+        phase_material={"direct": {
+            "instruction_fill": None, "instruction_template": "probes/direct.txt",
+            "predecessor_binding": "none",
+        }},
+    )
+    prompt = runtime._repo_root / "configs/probes/direct.txt"
+    prompt.parent.mkdir(parents=True, exist_ok=True)
+    prompt.write_text("Transcribe this speech window.", encoding="utf-8")
+    runtime.speech_packet_bindings = lambda: pytest.fail("whole-parent packet requested")
+    rendered, budgets = [], []
+    original_render = runtime_module.render_phase_prompt_envelopes
+    original_assess = runtime_module.assess_context_budget
+
+    def render(**kwargs):
+        rendered.append(kwargs)
+        return original_render(**kwargs)
+
+    def assess(candidate):
+        budgets.append(candidate)
+        return original_assess(candidate)
+
+    monkeypatch.setattr(runtime_module, "render_phase_prompt_envelopes", render)
+    monkeypatch.setattr(runtime_module, "assess_context_budget", assess)
+    receipts = runtime._assess_prompt_budget(runtime._samples)
+
+    assert len(receipts) == 1
+    assert [item["sample_id"] for item in rendered] == [unit.request_key for unit in units]
+    assert [item["packet_descriptor"] for item in rendered] == [{
+        "packet_id": unit.speech_packet_id, "sha256": unit.speech_packet_sha256,
+    } for unit in units]
+    assert len(budgets) == 1
+    assert budgets[0].breakdown.speech_feature_tokens == max(
+        1, round(runtime._speech_tokens_per_second)
+    )
