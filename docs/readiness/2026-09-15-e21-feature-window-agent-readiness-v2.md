@@ -43,10 +43,19 @@ execution windows cannot consume a whole-parent sealed-manifest predecessor. Tha
 not yet carry window-bound external state. Existing in-run state remains isolated by trajectory.
 The focused material/runtime suite passed 79 tests.
 
-These sources remain isolated while the complete configured synthetic lifecycle is tested.
-The proof uses actual request construction, shared dispatch, trace validation and parent
-stitching, with simulated transport, capacity and bundle/scoring boundaries. It does not prove
-real service fit, real bundle finalization or task quality. No new E21 GPU contact occurred.
+Root independently verified the complete configured synthetic lifecycle at commit
+d6511135. The 639-test regression passed with nine existing dependency/process warnings.
+Direct dispatch produced two simulated contacts; the native episode produced eight under
+its legal 22-contact reservation. Both reached ordered parent stitching, trace validation,
+seal orchestration and exactly one complete-manifest scoring handoff. Gold-bearing adapter
+methods remained forbidden throughout generation.
+
+The proof uses actual configuration, request construction, shared OpenJiuwen dispatch, trace
+validation and parent stitching. Service/post, native capacity, synthetic packet artifact
+loading, manifest construction and bundle/scoring boundaries are simulated. It proves their
+integration handoff, not real service fit, real bundle finalization or task quality. The earlier
+1,593-packet real artifact validation remains separate evidence. No new E21 GPU contact occurred.
+The tested sources remain isolated for review and integration at the permitted flight boundary.
 
 ## Task-native role design
 
@@ -119,8 +128,8 @@ geometry within a comparison to conceal a fit failure.
 
 ## Finite next work and queue boundary
 
-1. Finish the full configured synthetic lifecycle and root review; integrate tested shared
-   changes at the allowed boundary without modifying frozen flight worktrees.
+1. Integrate the reviewed, tested shared changes at the allowed flight boundary without
+   modifying frozen flight worktrees. The configured synthetic lifecycle is complete.
 2. Build source-bound ConEC store views and the current-window bounded ASR source contract
    through shared components. Freeze exact role prompts, tool allowlists and iteration bounds.
 3. Freeze matching direct/system configurations, complete-call scoring and paired analysis,
@@ -150,3 +159,8 @@ All paths below are relative to SPEECHRL_DATA_DIR.
   SHA256 bb102b0c9c790018ac258395be33ef7b0d4c2f50f7efc28624bad1ccd9383894.
 - coordination/e21-native-window-bridge-v1/feature-metadata-capacity-envelope-v1.json;
   SHA256 9d7c76ac79002a1da7a2c5f7787ab1e5a886a12c01c1dc67df630b669045cd9e.
+
+- coordination/e21-native-window-bridge-v1/root-configured-feature-lifecycle-checkpoint-v2.json;
+  SHA256 7a7cd5454311384404a45dbb04e86586c0a8287b1f3500e1814dc8b64bb005ad.
+- coordination/e21-native-window-bridge-v1/root-configured-lifecycle-regression-v2.log;
+  SHA256 a5202d979acfe56f86002a4954128e68d2511928a55571978153cde640a0a345.
