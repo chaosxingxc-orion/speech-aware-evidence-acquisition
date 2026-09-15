@@ -1,0 +1,35 @@
+{
+  "actual_request_count": 1593,
+  "attached_generation_run_id": "SAEA-E21-NATIVE-WINDOW-DIRECT-FULL44-V1",
+  "cell": "e21-native-window-direct-full44-fit-v1",
+  "contact_cap": 4780,
+  "execution_plan": {
+    "attempt_id": "attempt-e21-native-window-direct-full44-fit-v1",
+    "carrier_lock_key": "earnings21-original",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 4.0,
+    "planned_model_calls": 4780,
+    "planned_speech_audio_seconds": 141346,
+    "protocol_hash": "23ce891d1b9335a4045950e214712a28a072782ee20b83c4b9a7ba7e36d32000",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-DIRECT-FULL44-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-e21-native-window-context-tools-np4-max1024-v1",
+  "experiment": "e21-native-window-direct-full44-fit-v1",
+  "fit_mode": "static-execution-unit-aware",
+  "fit_output": "prepared/SAEA-E21-NATIVE-WINDOW-DIRECT-FULL44-FIT-V1/attempt-e21-native-window-direct-full44-fit-v1/request-fit.json",
+  "generation_contacts": 0,
+  "max_speech_packets": 1,
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-09-15-e21-native-window-direct-fit-registration-v1/protocol-v1.json",
+    "sha256": "ebafb75dc81df62e9cfcc72f14781b103e10b961ce56557c04c6be929790a7f9"
+  },
+  "registered_at_utc": "2026-09-15T18:22:28.980419+00:00",
+  "registration_state": "ROOT ADMITTED; final source freeze, matching service and monitor, and root-owned exclusive lease remain mandatory.",
+  "root_registration_required": false,
+  "schema": "saea-live-phase-fit-execution-plan-v1",
+  "scoring": "No fit score."
+}

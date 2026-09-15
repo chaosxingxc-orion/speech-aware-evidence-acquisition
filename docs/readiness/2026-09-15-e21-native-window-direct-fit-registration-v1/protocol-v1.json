@@ -1,0 +1,114 @@
+{
+  "budget": {
+    "accounting": "The fit and future direct generation share these arm ceilings; the fit does not add a second allowance.",
+    "fit_endpoint_calls_cap": 4780,
+    "generation_calls": 0,
+    "gpu_hours_fit_inclusive_cap": 4.0,
+    "repeated_speech_seconds_cap": 141346
+  },
+  "configuration": {
+    "composed_config_hash": "d4594775716f9ef45c266e82d7bff584de44f039beb6dc4e4112bdcef773b69d",
+    "fragment_file_sha256": {
+      "baseline": "22f82fe43024fac92ee3569a7d93da01730dd4ddfd6f509c5c9dec0b7bfae08c",
+      "dataset": "44925bb04e703d508faff4fed57e158f67f496b4b196f35a2d179d9f55852bc0",
+      "experiment": "4546d9e5cfdd2f93c52871831cc8003b61cb9d30057861ed83734e25b7e030a7",
+      "model": "408da6e61f5fd0f62e24f3211bbaf7e37b59bb7621d046cc7d7575d13633b1e1"
+    },
+    "fragments": {
+      "baseline": "e21-native-window-direct-full44-registration-v1",
+      "dataset": "earnings21-native-window-full44-v1",
+      "experiment": "e21-native-window-direct-full44-fit-v1",
+      "model": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1"
+    },
+    "runtime_protocol_hash": "23ce891d1b9335a4045950e214712a28a072782ee20b83c4b9a7ba7e36d32000"
+  },
+  "contacts_during_registration": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "runtime": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-e21-native-window-direct-full44-fit-v1",
+    "carrier_lock_key": "earnings21-original",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 4.0,
+    "planned_model_calls": 4780,
+    "planned_speech_audio_seconds": 141346,
+    "protocol_hash": "23ce891d1b9335a4045950e214712a28a072782ee20b83c4b9a7ba7e36d32000",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-DIRECT-FULL44-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "fit": {
+    "actual_request_count": 1593,
+    "contact_cap": 4780,
+    "endpoint_pattern": "One GET /props plus one apply-template and two tokenize endpoints for each exact request.",
+    "entry": "speech_aware_evidence_acquisition.core.flight.cli prompt-fit",
+    "fit_output": "prepared/SAEA-E21-NATIVE-WINDOW-DIRECT-FULL44-FIT-V1/attempt-e21-native-window-direct-full44-fit-v1/request-fit.json",
+    "generation_contacts": 0,
+    "max_speech_packets": 1,
+    "mode": "static-execution-unit-aware",
+    "prompt_fit_multiple": 1.3333333333333333
+  },
+  "held_contacts": {
+    "direct_generation": "SAEA-E21-NATIVE-WINDOW-DIRECT-FULL44-V1",
+    "reviewer_cpu_asr": "SAEA-E21-NATIVE-WINDOW-CONTEXT-TOOLS-FULL44-ASR-V1",
+    "system_generation": "SAEA-E21-NATIVE-WINDOW-CONTEXT-TOOLS-FULL44-V1",
+    "system_native_fit": "SAEA-E21-NATIVE-WINDOW-CONTEXT-TOOLS-FULL44-V1-FIT"
+  },
+  "ledger_prefix": {
+    "byte_count": 3715862,
+    "sha256": "488c0597a86854527c70ccae540186a3af241a901b1d2672d35d020a68ffa580"
+  },
+  "pending_root_bindings": [
+    "Root publishes the clean final source-freeze receipt after reviewing this commit.",
+    "Root starts and verifies the exact resident service and its shared monitor before contact.",
+    "Root acquires the standard exclusive GenerationLease for the exact fit run and attempt and supplies its token to the attach-only prompt-fit entry."
+  ],
+  "population": {
+    "execution_unit_inventory": {
+      "relpath": "analysis/SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1/window-inventory.json",
+      "sha256": "7b12a5c32654855701c48b57152ab1643e0c776b9a7a3853fda009a6ac78face"
+    },
+    "execution_units": 1593,
+    "feature_packets": {
+      "relpath": "analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+      "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
+    },
+    "parent_calls": 44,
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "split_role": "discovery"
+  },
+  "registered_at_utc": "2026-09-15T18:22:28.980419+00:00",
+  "root_admission": {
+    "decision_id": "e21-native-window-full44-stable-source-admission-v1",
+    "relpath": "coordination/e21-native-window-registration-v1/admission-v1.json",
+    "sha256": "de78bb55f4fcb46e0b04432da997dc2ff3c8e5a002d358646f7cdcd0542272e8"
+  },
+  "schema": "saea-e21-native-window-direct-fit-registration-v1",
+  "serving": {
+    "expected_session_id": "serving-e21-native-window-context-tools-np4-max1024-v1",
+    "max_output_tokens": 1024,
+    "mmproj": "absent",
+    "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
+    "prompt_fit_multiple": 1.3333333333333333,
+    "runtime_receipt": {
+      "relpath": "docs/receipts/runtime-q4km-e21-feature-inference-cddb000c-v2.json",
+      "sha256": "a472219e12fd2a3d08446c29ecf5273646832990fd0379cba380c702b111aba2"
+    },
+    "slot_tokens": 24576,
+    "slots": 4,
+    "total_context_tokens": 98304
+  },
+  "stable_source_review": {
+    "relpath": "coordination/e21-native-window-registration-v1/root-stable-source-review-v1.json",
+    "reviewed_source_commit": "64ff6fe6c744285b48d3a4454be2e74ff11b2431",
+    "sha256": "bbffc0281efcc3ed3d830a9815393e6cafcd2bdfc6113f92576c84cbcae7d616"
+  },
+  "status": "ROOT_ADMITTED_PENDING_FINAL_SOURCE_FREEZE_SERVICE_AND_LEASE"
+}
