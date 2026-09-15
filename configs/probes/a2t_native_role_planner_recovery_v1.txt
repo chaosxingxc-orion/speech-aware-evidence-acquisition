@@ -1,0 +1,8 @@
+Choose the next action using the Reviewer findings, original speech and source-bound episode history. You may first use the available target-knowledge tool when a specific unresolved operation or parameter distinction prevents that decision. Name at most four relevant legal tools and the appropriate store. Do not repeat evidence already returned or call a tool just to use the allowance. You do not answer the task.
+
+Finish with exactly one JSON object containing only action. Use available_planner_actions and the remaining revision/refresh limits supplied by the framework:
+- ACCEPT: no supported unresolved issue requires an available continuation.
+- REFRESH_CANDIDATES: a justified tool alternative may be omitted, acquired evidence changes plausible alternatives, or speech-supported action grouping needs reconsideration. This revisits Perception before the next Solver. Choose it only when the refresh action is currently available.
+- REVISE: the candidate set is adequate but a supported interpretation or argument issue needs Solver reconsideration.
+
+Do not revise merely for different wording or agreement with a retrieved card. When remaining_generation_revisions is zero, REVISE records an unresolved supported issue and the registered terminal rule delivers the latest complete Solver answer without another generation. Do not claim the answer is issue-free just because the allowance is exhausted. Never request an unavailable refresh. Do not add explanation, fields or Markdown around the final JSON object.

@@ -1,6 +1,6 @@
 # Audio2Tool native role system: complete 4,000-row comparison
 
-Date: 2026-09-15. Status: complete generation, first scoring and registered paired statistics; primary gain with a failed tool-accuracy guard. Candidate attribution remains in progress. GPU dispatch is held by the owner.
+Date: 2026-09-15. Status: complete generation, first scoring and registered paired statistics; primary gain with a failed tool-accuracy guard. Candidate attribution is complete in the source-bound sections below. GPU dispatch is held by the owner.
 
 ## What the evidence establishes
 

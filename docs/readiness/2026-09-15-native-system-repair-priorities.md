@@ -67,3 +67,8 @@ This is a CPU-ready scientific direction. It does not authorize new model calls,
 ## Integrated on-demand knowledge capability
 
 STATUS-131 adds a shared target-specific lookup for Reviewer/Planner with explicit named-store and candidate/value limits. Actual CPU native-graph tests preserve the same tool return through the calling role and later Solver revision. See [the capability contract](2026-09-15-native-target-knowledge-tool-v1.md). This lookup addresses a named unresolved distinction; it does not itself recover an unnamed missing candidate, and the request reason is not a semantic ranking algorithm. Historical experimental configurations remain unchanged. Adopt it only through a newly prepared, registered and fitted future version.
+
+
+## Candidate-recovery preparation update
+
+The shared on-demand dormant-store route, bounded candidate refresh and operative-Solver candidate analysis are verified in the actual CPU graph. Read [the implementation and root value review](2026-09-15-a2t-candidate-recovery-cpu-v1.md). The lexical-neighbor activation artifact is held for redesign and has not been published as a store. Complete legal inventory visibility is confirmed; the next content work targets explicit domain, operation, object and scope distinctions rather than a larger list of name-similar tools. No formal successor experiment or GPU contact is enabled.

@@ -33,7 +33,7 @@ Pin every result to the store release, local snapshot, composite identity, sourc
 
 ## Integration correction and verification
 
-The native program orders Planner last. The old phase-tool bridge excluded the final listed phase when loading tools and building schemas, then unconditionally indexed a sequential successor during dispatch. Native tool calls return inside the calling role's node loop. The shared bridge now includes native roles and handles a last-role call without indexing a nonexistent successor. Legacy sequential programs retain their previous nonfinal-phase and successor behavior.
+Native role programs may list Planner last; the Audio2Tool program instead lists Solver last. The old phase-tool bridge excluded the final listed phase when loading tools and building schemas, then unconditionally indexed a sequential successor during dispatch. Native tool calls return inside the calling role's node loop. The shared bridge now includes native roles and handles a last-role call without indexing a nonexistent successor. Legacy sequential programs retain their previous nonfinal-phase and successor behavior.
 
 The real OpenJiuwen workflow test covers Reviewer and Planner independently, each querying activation and parameter-meaning stores across two synthetic samples. Selected values appear in the calling role's next request and in Solver's subsequent revision. The test uses the same named-store renderer wiring as the shared phase runner; the sealed-return equality check is retained. Fake transports and synthetic packets create no model or GPU contact.
 
@@ -48,3 +48,6 @@ A future Audio2Tool version may reuse the frozen tool-activation and parameter-m
 Preserve candidate formation, ordered action identity and final resolution as separate analysis surfaces. A broader legal overview and candidate reconsideration address inclusion; targeted values and acoustic tools address the evidence needed for selection or arguments. Use observable ambiguity or conflicting speech support as runtime triggers. Keep evaluation gold and error labels outside runtime knowledge and memory.
 
 No successor fit, tokenizer call, generation, encoding or service restart has occurred. A useful replicated task-agent system remains necessary before defining trajectory-sampling and training-free RL updates. This shared tool expands the controllable action workspace; it is not an RL algorithm.
+
+
+A subsequent actual Audio2Tool integration also removed the mandatory automatic-supply requirement for explicitly target-tool-owned stores and added source-bound analysis of refreshed candidates. See [the CPU implementation and value review](2026-09-15-a2t-candidate-recovery-cpu-v1.md). This extends dormant on-demand routing; it does not claim the historical Audio2Tool program suffered from a last-listed Planner.

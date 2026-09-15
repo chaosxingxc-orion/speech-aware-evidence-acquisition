@@ -48,13 +48,46 @@ NATIVE_CARD_SNAPSHOT_BUILDER_V1 = "saea-a2t-native-card-snapshot-v1"
 NATIVE_CARD_SNAPSHOT_SOURCE_V1 = "saea-a2t-native-card-snapshot-source-v1"
 NATIVE_SNAPSHOT_VALUE_VIEW_FULL = "full"
 NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION = "tool-activation"
+NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1 = (
+    "tool-activation-contrast-v1"
+)
 NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING = "parameter-meaning"
 _NATIVE_SNAPSHOT_VALUE_VIEWS = frozenset(
     {
         NATIVE_SNAPSHOT_VALUE_VIEW_FULL,
         NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION,
+        NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1,
         NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING,
     }
+)
+_ACTIVATION_CONTRAST_MAX_ALTERNATIVES = 3
+_ACTIVATION_CONTRAST_STOPWORDS = frozenset(
+    {
+        "a",
+        "an",
+        "the",
+        "of",
+        "on",
+        "to",
+        "for",
+        "and",
+        "or",
+        "in",
+        "is",
+        "are",
+        "this",
+        "that",
+        "with",
+        "its",
+    }
+)
+_ACTIVATION_CONTRAST_POLICY_V1 = (
+    "Build each neighborhood from exact tool_name and complete choose_semantics "
+    "across the authoritative native-compatible corpus. Split camelCase tool "
+    "names; tokenize lowercase English alphanumeric words; remove only a, an, "
+    "the, of, on, to, for, and, or, in, is, are, this, that, with, its; score "
+    "positive-overlap alternatives by set-Jaccard; exclude self; sort by "
+    "descending score then exact tool_name; retain at most 3."
 )
 _COMPILATION_CONFIG_REQUIRED_FIELDS = frozenset(
     {
@@ -1484,40 +1517,101 @@ def _native_snapshot_value_text(
     card: NativeCompatibleToolSemanticCard,
     *,
     value_view: str,
+    contrast_alternatives: Sequence[NativeCompatibleToolSemanticCard] = (),
 ) -> str:
     """Project a compiler-owned native card without parsing external text."""
 
     if value_view == NATIVE_SNAPSHOT_VALUE_VIEW_FULL:
         return card.text
-    expected_prefix = (
-        f"TOOL CARD {card.tool_name}",
-        f"Exact tool name: {card.tool_name}",
-        f"Choose when: {card.choose_semantics}",
-        f"Avoid when: {card.avoid_semantics}",
-    )
-    lines = tuple(card.text.splitlines())
-    if (
-        lines[:4] != expected_prefix
-        or len(lines) <= 4
-        or lines[4] != f"Public signature: {card.signature}"
-    ):
-        raise SemanticCardCompilationError(
-            f"native semantic-card activation prefix drift for {card.tool_name!r}"
+    if value_view == NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1:
+        selected = (
+            f"TOOL ACTIVATION CONTRAST {card.tool_name}",
+            f"Exact tool name: {card.tool_name}",
+            f"Choose semantics: {card.choose_semantics}",
+            "Related operations (lexical search aid; up to 3, non-exhaustive and "
+            "non-exclusive):",
+            "Compare the requested operation, object, and scope with the listed "
+            "public descriptions.",
+            *(
+                line
+                for index, alternative in enumerate(contrast_alternatives, start=1)
+                for line in (
+                    "Lexically related alternative "
+                    f"{index} exact tool name: {alternative.tool_name}",
+                    "Lexically related alternative "
+                    f"{index} choose semantics: {alternative.choose_semantics}",
+                )
+            ),
         )
-    if value_view == NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION:
-        selected = expected_prefix
-    elif value_view == NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING:
-        selected = (*expected_prefix[:2], *lines[4:])
     else:
-        raise SemanticCardCompilationError(
-            f"unsupported native snapshot value view {value_view!r}"
+        expected_prefix = (
+            f"TOOL CARD {card.tool_name}",
+            f"Exact tool name: {card.tool_name}",
+            f"Choose when: {card.choose_semantics}",
+            f"Avoid when: {card.avoid_semantics}",
         )
+        lines = tuple(card.text.splitlines())
+        if (
+            lines[:4] != expected_prefix
+            or len(lines) <= 4
+            or lines[4] != f"Public signature: {card.signature}"
+        ):
+            raise SemanticCardCompilationError(
+                f"native semantic-card activation prefix drift for {card.tool_name!r}"
+            )
+        if value_view == NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION:
+            selected = expected_prefix
+        elif value_view == NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING:
+            selected = (*expected_prefix[:2], *lines[4:])
+        else:
+            raise SemanticCardCompilationError(
+                f"unsupported native snapshot value view {value_view!r}"
+            )
     text = "\n".join(selected)
     if not text.isascii():
         raise SemanticCardCompilationError(
             f"snapshot value text must be ASCII English for {card.tool_name!r}"
         )
     return text
+
+
+def _activation_contrast_tokens(
+    card: NativeCompatibleToolSemanticCard,
+) -> frozenset[str]:
+    text = f"{_humanize_tool_name(card.tool_name)} {card.choose_semantics}"
+    return frozenset(
+        token
+        for token in re.findall(r"[A-Za-z0-9]+", text.lower())
+        if token not in _ACTIVATION_CONTRAST_STOPWORDS
+    )
+
+
+def _activation_contrast_neighborhoods(
+    cards: Sequence[NativeCompatibleToolSemanticCard],
+) -> dict[str, tuple[NativeCompatibleToolSemanticCard, ...]]:
+    tokens_by_name = {
+        card.tool_name: _activation_contrast_tokens(card) for card in cards
+    }
+    neighborhoods: dict[str, tuple[NativeCompatibleToolSemanticCard, ...]] = {}
+    for card in cards:
+        own_tokens = tokens_by_name[card.tool_name]
+        scored: list[tuple[float, str, NativeCompatibleToolSemanticCard]] = []
+        for alternative in cards:
+            if alternative.tool_name == card.tool_name:
+                continue
+            alternative_tokens = tokens_by_name[alternative.tool_name]
+            overlap = own_tokens & alternative_tokens
+            if not overlap:
+                continue
+            union = own_tokens | alternative_tokens
+            scored.append(
+                (len(overlap) / len(union), alternative.tool_name, alternative)
+            )
+        scored.sort(key=lambda item: (-item[0], item[1]))
+        neighborhoods[card.tool_name] = tuple(
+            item[2] for item in scored[:_ACTIVATION_CONTRAST_MAX_ALTERNATIVES]
+        )
+    return neighborhoods
 
 
 def build_native_compatible_knowledge_snapshot(
@@ -1613,13 +1707,21 @@ def build_native_compatible_knowledge_snapshot(
     source_document = dict(compilation_source)
     source_sha256 = content_hash(source_document)
     source_id = f"external:a2t-native-card-source:{source_sha256}"
+    contrast_neighborhoods = (
+        _activation_contrast_neighborhoods(ordered_cards)
+        if effective_value_view
+        == NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1
+        else {}
+    )
     facets: list[KeyFacet] = []
     values: list[ValueBundle] = []
     for card in ordered_cards:
         facet_id = f"a2t-native-card:{card.tool_name}:content"
         value_id = f"a2t-native-card:{card.tool_name}:value"
         value_text = _native_snapshot_value_text(
-            card, value_view=effective_value_view
+            card,
+            value_view=effective_value_view,
+            contrast_alternatives=contrast_neighborhoods.get(card.tool_name, ()),
         )
         facets.append(
             KeyFacet(
@@ -1728,14 +1830,37 @@ def validate_compiled_knowledge_snapshot(
     }
     if set(metadata) != expected_metadata_fields:
         raise RailsError("snapshot source metadata fields differ from the compiler schema")
+    receipt_value_view = info.get("value_view")
+    metadata_value_view = metadata.get("value_view")
+    allowed_value_views_by_role = {
+        NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION: {
+            NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION,
+            NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1,
+        },
+        NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING: {
+            NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING,
+        },
+    }
     if (
         receipt.get("schema") != COMPILATION_RECEIPT_SCHEMA
         or receipt.get("execution_profile") != "model-free-check"
         or metadata.get("schema") != NATIVE_CARD_SNAPSHOT_SOURCE_V1
         or metadata.get("presentation_version")
         != NATIVE_COMPATIBLE_PRESENTATION_V1
-        or info.get("value_view") != store_role
-        or metadata.get("value_view") != store_role
+        or not isinstance(receipt_value_view, str)
+        or not isinstance(metadata_value_view, str)
+        or receipt_value_view != metadata_value_view
+        or metadata_value_view not in allowed_value_views_by_role[store_role]
+        or (
+            metadata_value_view
+            == NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1
+            and info.get("value_view_policy") != _ACTIVATION_CONTRAST_POLICY_V1
+        )
+        or (
+            metadata_value_view
+            != NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1
+            and "value_view_policy" in info
+        )
     ):
         raise RailsError("compiled store role or compiler schema differs")
     if (
@@ -2299,6 +2424,13 @@ def compile_a2t_semantic_card_artifacts(
                     "supplied_value": config.snapshot_value_view,
                 }
             )
+            if (
+                config.snapshot_value_view
+                == NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1
+            ):
+                receipt["knowledge_snapshot"]["value_view_policy"] = (
+                    _ACTIVATION_CONTRAST_POLICY_V1
+                )
     receipt_bytes = (json.dumps(receipt, indent=2, sort_keys=True) + "\n").encode(
         "utf-8"
     )
@@ -2376,6 +2508,7 @@ __all__ = [
     "NATIVE_SNAPSHOT_VALUE_VIEW_FULL",
     "NATIVE_SNAPSHOT_VALUE_VIEW_PARAMETER_MEANING",
     "NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION",
+    "NATIVE_SNAPSHOT_VALUE_VIEW_TOOL_ACTIVATION_CONTRAST_V1",
     "PUBLIC_API_LEGALITY_PRESENTATION_V1",
     "CompatibilityRule",
     "ExecutableSemanticCardCorpus",

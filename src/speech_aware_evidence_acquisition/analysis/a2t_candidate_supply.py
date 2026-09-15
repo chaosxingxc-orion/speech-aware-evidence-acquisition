@@ -31,11 +31,17 @@ from ..rails.knowledge import (
 )
 from ..rails.knowledge_provider import select_candidate_semantic_values
 from ..rails.knowledge_stores import qualify_id
+from ..rails.native_episode_receipt import validate_native_episode_delivery_receipt
 from ..rails.task_adapter import CandidateInventory
 from .native_episode_source import VerifiedNativeEpisodeSource
 
 
 A2T_CANDIDATE_SUPPLY_REPORT_SCHEMA = "saea-a2t-candidate-supply-attribution-v1"
+A2T_CANDIDATE_SUPPLY_REFRESH_REPORT_SCHEMA = "saea-a2t-candidate-supply-attribution-v2"
+_LATEST_FIELDS = (
+    "source_selection_policy", "selected_source_state_id",
+    "selected_source_state_sha256", "already_visible_value_ids", "added_value_ids",
+)
 _PROVIDER_ID = "audio2tool-candidate-semantic-v1"
 _RANK_POLICY_ID = "saea-ranked-candidate-round-robin-v1"
 _FUSE_POLICY_ID = "saea-candidate-semantic-passthrough-v1"
@@ -165,7 +171,7 @@ def _configured_spec(
         or spec.get("compact_source_phase") != "perception"
         or spec.get("rank_policy") != _RANK_POLICY_ID
         or spec.get("fuse_policy") != _FUSE_POLICY_ID
-        or spec.get("candidate_state_selection", "single") != "single"
+        or spec.get("candidate_state_selection", "single") not in ("single", "latest")
         or spec.get("supply_mode", "provide") not in {"provide", "withhold"}
     ):
         raise A2TCandidateSupplyError(
@@ -426,7 +432,7 @@ def _contact_source(
     }, phase_contact, text)
 
 
-def _perception_state(
+def _perception_states(
     source: VerifiedNativeEpisodeSource,
     result: Mapping[str, object],
     *,
@@ -434,7 +440,7 @@ def _perception_state(
     inventory: CandidateInventory,
     max_actions: int,
     max_candidates_per_action: int,
-) -> dict[str, object]:
+) -> list[dict[str, object]]:
     receipt = _mapping(
         result.get("native_episode_receipt"), f"native episode receipt {sample_id!r}"
     )
@@ -447,11 +453,29 @@ def _perception_state(
     interrupted = receipt.get("interrupted_role")
     if isinstance(interrupted, Mapping) and interrupted.get("stage") == "perception":
         perception.append((None, interrupted, True))
-    if len(perception) != 1:
+    return [
+        _perception_visit(
+            source, result, receipt, visit, visit_index=visit_index,
+            is_interrupted=is_interrupted, sample_id=sample_id, inventory=inventory,
+            max_actions=max_actions, max_candidates_per_action=max_candidates_per_action,
+        )
+        for visit_index, visit, is_interrupted in perception
+    ]
+
+
+def _perception_state(source, result, **kwargs):
+    states = _perception_states(source, result, **kwargs)
+    if len(states) != 1:
         raise A2TCandidateSupplyError(
             "this Audio2Tool reader requires exactly one Perception visit"
         )
-    visit_index, visit, is_interrupted = perception[0]
+    return states[0]
+
+
+def _perception_visit(
+    source, result, receipt, visit, *, visit_index, is_interrupted,
+    sample_id, inventory, max_actions, max_candidates_per_action,
+):
     execution = _mapping(visit.get("execution_receipt"), "Perception execution receipt")
     contact, _phase, raw_text = _contact_source(
         source, result, execution, sample_id=sample_id, stage="perception"
@@ -585,6 +609,8 @@ def _transition_context(
     visible = set(initial.retrieved_value_ids)
     current_hash = initial.content_hash()
     visible_by_hash = {current_hash: frozenset(visible)}
+    state_ids = initial.agent_state_ids
+    state_ids_by_hash = {current_hash: state_ids}
     for index, raw in enumerate(raw_transitions):
         document = dict(_mapping(raw, f"native transition {index}"))
         try:
@@ -607,13 +633,20 @@ def _transition_context(
             if index != len(raw_transitions) - 1:
                 raise A2TCandidateSupplyError("native stop transition must be terminal")
             continue
+        state_ids = tuple(
+            item for item in state_ids if item not in transition.dropped_agent_state_ids
+        ) + transition.new_agent_state_ids
+        if len(state_ids) != len(set(state_ids)):
+            raise A2TCandidateSupplyError("native transition duplicates a visible agent state")
         visible.difference_update(transition.dropped_value_ids)
         visible.update(transition.new_value_ids)
         current_hash = str(transition.next_query_state_sha256)
         visible_by_hash[current_hash] = frozenset(visible)
+        state_ids_by_hash[current_hash] = state_ids
     if (
         current_hash != final.content_hash()
         or frozenset(visible) != frozenset(final.retrieved_value_ids)
+        or state_ids != final.agent_state_ids
     ):
         raise A2TCandidateSupplyError("native transition chain does not reach final query state")
     waves = _sequence(result.get("waves"), "native waves")
@@ -654,19 +687,12 @@ def _transition_context(
         "transitions": non_stop,
         "waves": normalized_waves,
         "visible_by_hash": visible_by_hash,
+        "state_ids_by_hash": state_ids_by_hash,
     }
 
 
-def _bind_selection_transition(
-    audit: Mapping[str, object],
-    *,
-    transition_context: Mapping[str, object],
-    spec: Mapping[str, object],
-    store_id: str,
-    snapshot_sha256: str,
-) -> None:
+def _selection_transition(audit, transition_context):
     query_hash = str(audit["query_state_sha256"])
-    qualified = tuple(audit["qualified_selected_value_ids"])
     solver_hashes = transition_context["solver_query_hashes"]
     transitions = transition_context["transitions"]
     matches = [
@@ -680,7 +706,23 @@ def _bind_selection_transition(
             "candidate selection has no unique pre-Solver transition binding"
         )
     index, _raw, transition = matches[0]
-    wave = transition_context["waves"][index]
+    return index, transition, transition_context["waves"][index]
+
+
+def _bind_selection_transition(
+    audit: Mapping[str, object],
+    *,
+    transition_context: Mapping[str, object],
+    spec: Mapping[str, object],
+    store_id: str,
+    snapshot_sha256: str,
+) -> None:
+    query_hash = str(audit["query_state_sha256"])
+    qualified = tuple(audit[
+        "added_value_ids" if spec.get("candidate_state_selection") == "latest"
+        else "qualified_selected_value_ids"
+    ])
+    index, transition, wave = _selection_transition(audit, transition_context)
     disposition = audit["supply_disposition"]
     target = (
         f"knowledge-store:{store_id}:{_PROVIDER_ID}:{_RANK_POLICY_ID}:"
@@ -789,6 +831,9 @@ def _validate_selection(
 ) -> dict[str, object]:
     audit = _mapping(raw, f"candidate selection {key!r}")
     expected_keys = set(_PROVIDER_FIELDS) | set(_RECEIPT_EXTENSION_FIELDS)
+    latest = spec.get("candidate_state_selection") == "latest"
+    if latest:
+        expected_keys.update(_LATEST_FIELDS)
     if set(audit) != expected_keys:
         raise A2TCandidateSupplyError("candidate selection receipt has wrong fields")
     receipt_unsigned = dict(audit)
@@ -854,6 +899,10 @@ def _validate_selection(
         raise A2TCandidateSupplyError("qualified selected IDs differ from the store binding")
     disposition = audit.get("supply_disposition")
     mode = spec.get("supply_mode", "provide")
+    if latest:
+        _validate_latest_selection(
+            audit, perception=perception, transition_context=transition_context, mode=mode,
+        )
     allowed = (
         {"no-mapping"} if not selected
         else {"withheld"} if mode == "withhold"
@@ -869,6 +918,176 @@ def _validate_selection(
         snapshot_sha256=str(store["composite_snapshot_sha256"]),
     )
     return dict(audit)
+
+
+def _validate_latest_selection(audit, *, perception, transition_context, mode):
+    query_hash = audit["query_state_sha256"]
+    _index, transition, _wave = _selection_transition(audit, transition_context)
+    context_ids = transition_context["state_ids_by_hash"].get(query_hash)
+    if context_ids is None or len(transition.new_agent_state_ids) > 1:
+        raise A2TCandidateSupplyError("latest selection lacks exact ordered state context")
+    # Supply is selected against committed states and at most one staged state;
+    # that staged artifact is committed by this same pre-Solver transition.
+    context_ids = context_ids + transition.new_agent_state_ids
+    perception_sources = transition_context["perception_sources"]
+    candidates = [perception_sources[item] for item in context_ids if item in perception_sources]
+    if not candidates or candidates[-1]["agent_state_id"] != perception["agent_state_id"]:
+        raise A2TCandidateSupplyError("latest selection used a stale or foreign Perception state")
+    if (
+        audit["source_selection_policy"] != "last-matching-state-in-query-order-v1"
+        or audit["selected_source_state_id"] != perception["agent_state_id"]
+        or audit["selected_source_state_sha256"] != perception["agent_state_artifact_sha256"]
+    ):
+        raise A2TCandidateSupplyError("latest selection source policy or artifact binding differs")
+    qualified = audit["qualified_selected_value_ids"]
+    visible = transition_context["visible_by_hash"][query_hash]
+    old = [item for item in qualified if item in visible]
+    added = [item for item in qualified if item not in visible]
+    if audit["already_visible_value_ids"] != old or audit["added_value_ids"] != added:
+        raise A2TCandidateSupplyError("latest selection visible/new partition differs")
+    if mode == "withhold" and old:
+        raise A2TCandidateSupplyError("withheld latest selection contains visible evidence")
+    expected = (
+        "withheld" if mode == "withhold"
+        else "already-visible" if qualified and not added
+        else "acquired" if added else "no-mapping"
+    )
+    if audit["supply_disposition"] != expected:
+        raise A2TCandidateSupplyError("latest selection disposition differs from the visible state")
+
+
+def _candidate_visit_report(state_row):
+    parsed = state_row["parsed"]
+    actions = None if parsed is None else [
+        {"action_id": action.action_id, "candidate_tools": list(action.candidate_tools),
+         "candidate_width": len(action.candidate_tools)}
+        for action in parsed.actions
+    ]
+    candidates = None if parsed is None else list(parsed.unique_tool_names)
+    return {
+        "status": state_row["status"], "missing_reason": state_row["missing_reason"],
+        "malformed_reason": state_row["malformed_reason"], "perception": state_row["perception"],
+        "actions": actions, "action_count": None if actions is None else len(actions),
+        "per_action_candidate_widths": None if actions is None else [row["candidate_width"] for row in actions],
+        "unique_candidate_ids": candidates,
+        "unique_candidate_count": None if candidates is None else len(candidates),
+    }
+
+
+def _operative_candidate_source(source, result, *, sample_id, context, validated, visits):
+    receipt = _mapping(result["native_episode_receipt"], "native episode receipt")
+    delivery = validate_native_episode_delivery_receipt(receipt, error_type=A2TCandidateSupplyError)
+    report = {
+        "status": "unavailable", "delivery_kind": delivery.kind,
+        "missing_reason": None, "solver": None, "selection_receipt_sha256": None,
+        "candidate_source": None,
+    }
+    if delivery.solver_receipt is None:
+        report["missing_reason"] = "no completed Solver owns the delivered output"
+        return report
+    solver, _phase, _text = _contact_source(
+        source, result, delivery.solver_receipt, sample_id=sample_id, stage="solver",
+    )
+    report["solver"] = solver
+    if solver["query_state_sha256"] not in context["state_ids_by_hash"]:
+        raise A2TCandidateSupplyError("delivered Solver query is outside the transition chain")
+    matches = [
+        audit for audit in validated
+        if _selection_transition(audit, context)[1].next_query_state_sha256
+        == solver["query_state_sha256"]
+    ]
+    if not matches:
+        report["missing_reason"] = "delivered Solver lacks a candidate selection receipt"
+        return report
+    if len(matches) != 1:
+        raise A2TCandidateSupplyError("delivered Solver has ambiguous candidate sources")
+    audit = matches[0]
+    visit = next(row for row in visits
+                 if row["perception"]["agent_state_id"] == audit["selected_source_state_id"])
+    report.update(
+        status="available", candidate_source=dict(visit),
+        selection_receipt_sha256=audit["selection_receipt_sha256"],
+    )
+    return report
+
+
+def _analyze_latest_samples(source, *, selections_by_sample, inventory, legal_hash,
+                            spec, store, store_id, phase, candidate_values):
+    rows = []
+    visit_counts, operative_counts, dispositions = Counter(), Counter(), Counter()
+    selection_count = 0
+    for sample_id in source.sample_ids:
+        result = _mapping(source.phase_results[sample_id], f"phase result {sample_id!r}")
+        if result.get("sample_id") != sample_id:
+            raise A2TCandidateSupplyError("phase result sample identity mismatch")
+        states = _perception_states(
+            source, result, sample_id=sample_id, inventory=inventory,
+            max_actions=int(spec["max_actions"]),
+            max_candidates_per_action=int(spec["max_candidates_per_action"]),
+        )
+        if not states:
+            raise A2TCandidateSupplyError("latest candidate report lacks a Perception attempt")
+        by_id = {
+            row["perception"]["agent_state_id"]: row
+            for row in states if row["perception"]["agent_state_id"] is not None
+        }
+        if len(by_id) != sum(row["perception"]["agent_state_id"] is not None for row in states):
+            raise A2TCandidateSupplyError("Perception visits duplicate an agent state")
+        raw_states = _sequence(result.get("agent_states"), "native agent states")
+        all_perception_ids = [
+            raw["state_id"] for raw in raw_states
+            if isinstance(raw, Mapping) and raw.get("state_kind") == "phase:perception"
+        ]
+        if len(all_perception_ids) != len(by_id) or set(all_perception_ids) != set(by_id):
+            raise A2TCandidateSupplyError("native state inventory contains an unbound Perception source")
+        context = _transition_context(
+            result, sample_id=sample_id, snapshot_sha256=str(store["composite_snapshot_sha256"]),
+        )
+        context["perception_sources"] = {key: row["perception"] for key, row in by_id.items()}
+        validated = []
+        for key, raw in selections_by_sample[sample_id]:
+            audit = _mapping(raw, "candidate selection")
+            state_row = by_id.get(audit.get("candidate_state_id"))
+            if state_row is None or state_row["parsed"] is None:
+                raise A2TCandidateSupplyError("candidate selection has no parsed, source-bound Perception")
+            validated.append(_validate_selection(
+                key, audit, sample_id=sample_id, parsed=state_row["parsed"],
+                perception=state_row["perception"], transition_context=context,
+                inventory=inventory, legal_hash=legal_hash, spec=spec, store=store,
+                store_id=store_id, phase=phase, candidate_values=candidate_values,
+            ))
+        validated.sort(key=lambda audit: _selection_transition(audit, context)[0])
+        visits = []
+        for state_row in states:
+            row = _candidate_visit_report(state_row)
+            row["selections"] = [
+                audit for audit in validated
+                if audit["selected_source_state_id"] == row["perception"]["agent_state_id"]
+            ]
+            row["selection_status"] = "available" if row["selections"] else "unavailable"
+            # Full selection is recomputed against the same frozen index for
+            # every visit; only the visible/new partition may change over time.
+            visits.append(row)
+            visit_counts[row["status"]] += 1
+        operative = _operative_candidate_source(
+            source, result, sample_id=sample_id, context=context, validated=validated, visits=visits,
+        )
+        operative_counts[operative["status"]] += 1
+        selection_count += len(validated)
+        dispositions.update(str(audit["supply_disposition"]) for audit in validated)
+        rows.append({
+            "sample_id": sample_id, "finite_reason": _finite_reason(result["native_episode_receipt"]),
+            "initial": _candidate_visit_report(states[0]),
+            "last_attempted": _candidate_visit_report(states[-1]),
+            "perception_visits": visits, "operative": operative,
+        })
+    return rows, {
+        "sample_count": len(rows), "perception_visit_count": sum(visit_counts.values()),
+        "perception_visit_status_counts": dict(sorted(visit_counts.items())),
+        "operative_source_status_counts": dict(sorted(operative_counts.items())),
+        "selection_receipt_count": selection_count,
+        "supply_dispositions": dict(sorted(dispositions.items())),
+    }
 
 
 def _unavailable_selection(store_id: str, reason: str) -> dict[str, object]:
@@ -946,6 +1165,25 @@ def analyze_a2t_candidate_supply(
         if sample_id not in selections_by_sample:
             raise A2TCandidateSupplyError("candidate selection has a foreign sample")
         selections_by_sample[str(sample_id)].append((key, audit))
+
+    if spec.get("candidate_state_selection") == "latest":
+        rows, summary = _analyze_latest_samples(
+            source, selections_by_sample=selections_by_sample, inventory=candidate_inventory,
+            legal_hash=legal_hash, spec=spec, store=store, store_id=store_id,
+            phase=phase, candidate_values=candidate_values,
+        )
+        return {
+            "schema": A2T_CANDIDATE_SUPPLY_REFRESH_REPORT_SCHEMA,
+            "run_id": source.plan.run_id, "attempt_id": source.plan.attempt_id,
+            "source_sample_ids": list(sample_ids),
+            "candidate_inventory": {
+                "candidate_count": len(candidate_inventory.candidate_ids),
+                "candidate_inventory_sha256": legal_hash,
+                "source_sha256": candidate_inventory.source_sha256,
+                "source_authority": candidate_inventory.source_authority,
+            },
+            "configured_route": dict(receipt_spec), "summary": summary, "samples": rows,
+        }
 
     rows: list[dict[str, object]] = []
     status_counts: Counter[str] = Counter()
@@ -1122,6 +1360,7 @@ def analyze_a2t_candidate_supply(
 
 __all__ = [
     "A2T_CANDIDATE_SUPPLY_REPORT_SCHEMA",
+    "A2T_CANDIDATE_SUPPLY_REFRESH_REPORT_SCHEMA",
     "A2TCandidateSupplyError",
     "analyze_a2t_candidate_supply",
 ]

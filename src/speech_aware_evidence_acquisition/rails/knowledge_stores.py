@@ -409,6 +409,7 @@ def build_knowledge_store_supply(
     legal_candidate_ids=None,
     candidate_inventory_source_sha256=None,
     candidate_inventory_authority="task-adapter-candidate-contract-provider",
+    on_demand_store_ids=(),
 ):
     """Build explicit store routes and automatic candidate-conditioned supply."""
     from .phase_supply import (
@@ -429,6 +430,14 @@ def build_knowledge_store_supply(
 
     from .knowledge_provider import resolve_provider
 
+    if isinstance(on_demand_store_ids, (str, bytes)):
+        raise KnowledgeStoreError("on-demand stores must be an explicit sequence of store IDs")
+    requested = tuple(on_demand_store_ids)
+    if (any(not isinstance(item, str) or not item for item in requested)
+            or len(set(requested)) != len(requested)
+            or not set(requested) <= set(binding.store_ids)):
+        raise KnowledgeStoreError("on-demand stores must name unique bound stores")
+    on_demand = frozenset(requested)
     callbacks, explicit_specs_by_store, specs_by_store, receipts = {}, {}, {}, {}
     context_specs: dict[tuple[str, str], object] = {}
     candidate_specs = load_candidate_semantic_supply_specs(binding, program)
@@ -497,7 +506,7 @@ def build_knowledge_store_supply(
             for phase, spec in candidate_specs.items()
             if spec.store_id == store_id
         }
-        if not specs and not store_candidate_specs and not scoped_phases:
+        if not specs and not store_candidate_specs and not scoped_phases and store_id not in on_demand:
             raise KnowledgeStoreError(f"knowledge store {store_id} has no phase_supply")
         specs_by_store[store_id] = {**specs, **store_candidate_specs}
         specs_by_store[store_id].update({phase: raw for phase, raw in store.context_supply.items()})
@@ -511,6 +520,8 @@ def build_knowledge_store_supply(
                 )
             ),
         }
+        if store_id in on_demand:
+            receipts[store_id]["on_demand_target_lookup"] = True
         if store_candidate_specs:
             receipts[store_id]["candidate_supply"] = [
                 store_candidate_specs[phase].as_json()
