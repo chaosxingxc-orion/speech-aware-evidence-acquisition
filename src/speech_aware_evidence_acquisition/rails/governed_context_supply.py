@@ -46,6 +46,7 @@ class SourceScopedContextProvider(KnowledgeProvider):
         )
         self._last_rank: RankResult | None = None
         self._last_query: QueryState | None = None
+        self._last_ranking: Ranking | None = None
 
     @staticmethod
     def _validate_snapshot(snapshot: KnowledgeSnapshot) -> Mapping[str, tuple[str, str]]:
@@ -58,7 +59,9 @@ class SourceScopedContextProvider(KnowledgeProvider):
                 or facet.representation in facets
             ):
                 raise GovernedContextSupplyError("malformed or duplicate source-scope facet")
-            facets[facet.representation] = facet.facet_id
+            if facet.representation in facet.source_sample_ids:
+                raise GovernedContextSupplyError("scope parent cannot be an external context source")
+            facets[facet.representation] = (facet.facet_id, facet.source_sample_ids)
         values: dict[str, tuple[str, str]] = {}
         for value in snapshot.values:
             if value.task_target is not None or value.prior_score is not None:
@@ -66,9 +69,11 @@ class SourceScopedContextProvider(KnowledgeProvider):
             if len(value.associated_facet_ids) != 1:
                 raise GovernedContextSupplyError("source-scoped value has mixed association scopes")
             facet_id = value.associated_facet_ids[0]
-            scope = next((key for key, item in facets.items() if item == facet_id), None)
+            scope = next((key for key, item in facets.items() if item[0] == facet_id), None)
             if scope is None or scope in values:
                 raise GovernedContextSupplyError("source-scoped values require one value per scope")
+            if value.source_sample_ids != facets[scope][1] or scope in value.source_sample_ids:
+                raise GovernedContextSupplyError("source-scoped facet and value provenance differs")
             values[scope] = (facet_id, value.value_id)
         if set(values) != set(facets):
             raise GovernedContextSupplyError("every source scope requires exactly one associated value")
@@ -90,50 +95,56 @@ class SourceScopedContextProvider(KnowledgeProvider):
         if type(k) is not int or k < 1 or sample_id not in self._scope_values:
             raise GovernedContextSupplyError("unknown or invalid source-scoped query")
         facet_id, _value_id = self._scope_values[sample_id]
-        rank = RankResult(
-            snapshot_sha256=self.snapshot_sha256(),
-            query_state_sha256=query_state.content_hash(),
-            ranking_policy_id=SOURCE_SCOPED_CONTEXT_RANK_POLICY_ID,
-            candidates=(RankedFacet(facet_id, 1.0),),
-        ).validate()
+        rank = KNOWLEDGE_RANKERS.resolve(SOURCE_SCOPED_CONTEXT_RANK_POLICY_ID)()(
+            snapshot_sha256=self.snapshot_sha256(), query_state=query_state, facet_id=facet_id
+        )
         self._last_rank, self._last_query = rank, query_state
-        return Ranking(
+        ranking = Ranking(
             entries=(RankedEntry(facet_id, 1.0, {}),),
             index_sha256=self.snapshot_sha256(),
             query_sha256=query_state.content_hash(), source=self.provider_id,
         ).validate()
+        self._last_ranking = ranking
+        return ranking
 
     def fuse(self, rankings: Sequence[Ranking], *, k: int, policy_id: str) -> FusionDecision:
         if (
             policy_id != SOURCE_SCOPED_CONTEXT_FUSE_POLICY_ID
             or type(k) is not int or k < 1 or len(rankings) != 1
-            or self._last_rank is None or self._last_query is None
+            or self._last_rank is None or self._last_query is None or self._last_ranking is None
         ):
             raise GovernedContextSupplyError("invalid source-scoped fusion")
         facet_id = self._last_rank.candidates[0].facet_id
         scope = self._last_query.query_sample_id
         expected_facet, value_id = self._scope_values[scope]
-        if facet_id != expected_facet or rankings[0].query_sha256 != self._last_query.content_hash():
+        if facet_id != expected_facet or rankings[0].as_json() != self._last_ranking.as_json():
             raise GovernedContextSupplyError("source-scoped ranking changed before fusion")
-        return FusionDecision(
+        decision = FusionDecision(
             snapshot_sha256=self.snapshot_sha256(),
             query_state_sha256=self._last_query.content_hash(),
             rank_result_sha256=self._last_rank.content_hash(),
             fusion_policy_id=SOURCE_SCOPED_CONTEXT_FUSE_POLICY_ID,
             supporting_facet_ids=(facet_id,), selected_value_ids=(value_id,),
         ).validate()
+        return KNOWLEDGE_FUSERS.resolve(SOURCE_SCOPED_CONTEXT_FUSE_POLICY_ID)()(decision)
 
     def last_rank_result(self) -> RankResult | None:
         return self._last_rank
 
 
-def _policy_placeholder(_knobs: object = None) -> object:
-    raise GovernedContextSupplyError("source-scoped context uses its deterministic provider decision")
+def _source_scoped_rank(_knobs: object = None):
+    def rank(*, snapshot_sha256, query_state, facet_id):
+        return RankResult(snapshot_sha256, query_state.content_hash(), SOURCE_SCOPED_CONTEXT_RANK_POLICY_ID, (RankedFacet(facet_id, 1.0),)).validate()
+    return rank
+
+
+def _source_scoped_fuse(_knobs: object = None):
+    return lambda decision: decision
 
 
 if SOURCE_SCOPED_CONTEXT_PROVIDER_ID not in KNOWLEDGE_PROVIDERS.names():
     KNOWLEDGE_PROVIDERS.register(SOURCE_SCOPED_CONTEXT_PROVIDER_ID, SourceScopedContextProvider)
 if SOURCE_SCOPED_CONTEXT_RANK_POLICY_ID not in KNOWLEDGE_RANKERS.names():
-    KNOWLEDGE_RANKERS.register(SOURCE_SCOPED_CONTEXT_RANK_POLICY_ID, _policy_placeholder)
+    KNOWLEDGE_RANKERS.register(SOURCE_SCOPED_CONTEXT_RANK_POLICY_ID, _source_scoped_rank)
 if SOURCE_SCOPED_CONTEXT_FUSE_POLICY_ID not in KNOWLEDGE_FUSERS.names():
-    KNOWLEDGE_FUSERS.register(SOURCE_SCOPED_CONTEXT_FUSE_POLICY_ID, _policy_placeholder)
+    KNOWLEDGE_FUSERS.register(SOURCE_SCOPED_CONTEXT_FUSE_POLICY_ID, _source_scoped_fuse)
