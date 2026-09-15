@@ -75,15 +75,15 @@ Do not modify the experiment cell roster, allowed stages, model, dataset, task p
 
 ## Acyclic finalization sequence
 
-1. Root performs stable-source admission while the active SLURP and Audio2Tool queue remains authoritative.
-2. Root freezes these fit-source bytes, changes only the direct fit cell readiness as needed, finalizes the direct-fit ExecutionPlan, registers its exact source/protocol hash and appends its unique `consumed=no` exposure row. The draft row in this directory is not appended automatically.
-3. Root runs the registered static fit once through the shared coordinator, the admitted resident service identity and an exclusive lease. Stop on any failure; preserve its journal and attempt.
-4. Root validates and hashes the complete fit artifact, then adds only its data-relative `prepared_request_fit` path and SHA-256 to the reserved direct baseline. Add the resulting preparation requirement to the direct generation cell readiness.
-5. Root recomputes the final direct composed configuration and protocol, final direct generation plan, applicable configuration/source hash documents and direct generation exposure row. Independently finalize the unchanged-system generation, native-fit and ASR exposure rows against their exact final plans. Do not alter the completed direct-fit plan or ledger row after contact.
-6. Root freezes the final source/configuration set, issues the campaign decision receipt with both generation run IDs eligible, promotes both generation cells to ready, and records the current resident session identity. Only then may the ordered campaign be considered executable.
-7. Before reading either arm's results, root registers the paired sealed-result release. Each complete manifest is scored once through the shared scoring batch with per-sample evidence retained.
+1. Root records stable-source scientific admission over the intended fit and generation identities, behavior, source evidence and arm ceilings. Do not bind future final configuration, protocol or source-freeze hashes inside a decision whose own hash will enter readiness.
+2. Bind the admission in the fit cell readiness and finalize all non-receipt configuration metadata before fitting. Derive the exact direct-fit plan and append its unique unconsumed exposure row. The shared static preparation authorization replaces the experiment's generation call count with the explicit 4,780-endpoint cap for the distinct fit run; the same experiment fragment is intentional.
+3. Freeze the completed fit configuration, plan, ledger and implementation source last. Run the registered static fit once through the shared coordinator, matching root service and exclusive lease. Stop on failure and preserve its contact journal and source checkout.
+4. Validate the complete fit artifact. In a separate final-generation checkout with identical implementation, add its data-relative prepared_request_fit path/hash to the reserved direct baseline, its preparation requirement to direct readiness, and the existing root decision requirement to both generation cells. Promote the generation readiness before deriving final generation hashes. Only receipt/readiness fields may change from the fitted configuration.
+5. Recompute final direct and system composed hashes and runtime protocols, finalize both generation plans and the system native-fit plan, and append their exact exposure rows. Register the unchanged CPU ASR ExecutionPlan under its existing protocol and source pins. Preserve the completed direct-fit plan, row, artifact and checkout.
+6. Verify all final plan, exposure, decision and preparation bindings; freeze the final generation source last. Do not issue another decision or edit readiness after this freeze. Root then runs the committed direct-then-system campaign in the same service process used for the fit.
+7. After both arms and their first complete official scores seal, root registers and binds the paired quality release before opening task outcomes. Retain per-sample evidence and do not repeat the official scorer.
 
-No final generation hash is claimed in this package. In particular, the direct generation hash must change after the fit receipt binding, and later readiness/source bindings may change the composed protocol hashes. The draft generation, native-fit and ASR exposure rows must remain outside `docs/exposure-ledger.md` until root has finalized their exact plans.
+No final generation hash is claimed by this preparation. The direct generation hash changes after receipt/readiness binding even though the shared static-fit input normalization preserves request equivalence. Draft generation, native-fit and ASR exposure rows remain outside the live ledger until their exact final plans exist.
 
 ## Fixed source pins
 
