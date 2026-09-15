@@ -542,6 +542,12 @@ def prepare_semantic_knowledge_store(
         registration_raw = registration_path.read_bytes()
     except OSError as exc:
         raise SemanticKnowledgePreparationError("unable to read registration") from exc
+    if _json(registration_raw, name="registration").get("schema") == "saea-governed-context-store-preparation-v1":
+        from .governed_context_preparation import prepare_governed_context_store
+
+        return prepare_governed_context_store(
+            registration_path, registration_raw, repo_root=repo_root, data_root=data_root,
+        )
     if _json(registration_raw, name="registration").get("schema") == COMPILED_REGISTRATION_SCHEMA:
         return _prepare_compiled_store(
             registration_path, registration_raw, repo_root=repo_root, data_root=data_root
