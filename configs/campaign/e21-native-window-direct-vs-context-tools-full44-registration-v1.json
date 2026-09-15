@@ -1,0 +1,13 @@
+{
+  "schema": "saea-campaign-plan-v1",
+  "cells": [
+    {
+      "experiment": "e21-native-window-direct-full44-registration-v1",
+      "cell": "e21-native-window-direct-full44-v1"
+    },
+    {
+      "experiment": "e21-native-window-context-tools-full44-registration-v1",
+      "cell": "e21-native-window-context-tools-full44-v1"
+    }
+  ]
+}
