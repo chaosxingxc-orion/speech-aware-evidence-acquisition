@@ -1,0 +1,34 @@
+{
+  "change": "Canonical decimal text cluster IDs only.",
+  "cluster_count": 2097,
+  "cluster_partition_unchanged": true,
+  "config": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/paired-score-config-v2.json",
+    "sha256": "2fc0f2f562fa06abb2ef6c1ba0f5ae5899df47e2e922a657f3fa47d6564d6c77"
+  },
+  "created_at_utc": "2026-09-15T09:47:19.503429+00:00",
+  "failed_analysis_log": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/paired-score-analysis-v1.log",
+    "sha256": "f2a4fb642c7358ff9887892fbe72f4272ed2b367ed8fde873acafc4516fd3b64"
+  },
+  "failed_execution": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/paired-score-analysis-exit-v1.json",
+    "sha256": "0b4b2cc6ef7d661a6672c561c05644ae60fe1c2facb816658d995c59dd993772"
+  },
+  "gpu_contacts": 0,
+  "metric_and_bootstrap_fields_unchanged": true,
+  "model_calls": 0,
+  "new_metadata": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/full4000-metadata-v2.json",
+    "sha256": "f0cc01a84506dbd6bd4be9b53388e251c4ffa108711acb46c281a70fb4cd8251"
+  },
+  "old_metadata": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/full4000-metadata-v1.json",
+    "sha256": "98683bc8115c80c00e7d458ae13c6fdef68082d3539008e61460e06937a41952"
+  },
+  "original_scores_or_traces_changed": false,
+  "sample_count": 4000,
+  "schema": "saea-model-free-analysis-binding-correction-v1",
+  "scorer_invocations": 0,
+  "statistical_estimates_emitted_before_failure": false
+}
