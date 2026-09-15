@@ -1,10 +1,10 @@
 # Current continuation: September 15
 
-Read [STATUS-121](STATUS-121.md): Audio2Tool native full4000 recovery is the sole active generation flight; the broad factored SLURP successor is fully prepared and preregistered for the next service boundary. E21 now follows the already authorized prepared-window packet route; shared window primitives are verified while feature integration remains pending. DATA-side receipts determine current process state. Earlier status snapshots remain historical.
+Read [STATUS-122](STATUS-122.md): allow the current Audio2Tool GPU task to finish, then hold all new GPU experiments until the owner explicitly resumes. SLURP and E21 dispatch are held; CPU scoring, analysis and preparation continue. Preserve resident model memory. See [the owner directive](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md).
 
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-121.md](STATUS-121.md) records the active Audio2Tool flight, prepared SLURP successor, established task results and corrected E21 packet integration. Preserve frozen active code and release gates.
+**Latest execution:** [STATUS-122.md](STATUS-122.md) records the owner GPU scheduling hold, continuing Audio2Tool task and verified CPU progress on E21 packet integration. Preserve frozen active code and release gates.
 
 **Current comparison direction:** [OWNER-SYSTEM-VERSIONS-025.md](OWNER-SYSTEM-VERSIONS-025.md) makes complete model-versus-system task quality primary and allows evidence-guided expansion of system versions. The supplied/withheld knowledge draft is withdrawn. [The current system plan](../../../readiness/2026-09-13-slurp-direct-vs-native-system-plan-v1.md) and [extension sequence](../../../readiness/2026-09-13-finalized-score-reuse-and-system-extension.md) govern the next work.
 
@@ -12,7 +12,7 @@ Read [STATUS-121](STATUS-121.md): Audio2Tool native full4000 recovery is the sol
 
 **Current owner amendment:** [OWNER-SYSTEM-OPTIMIZATION-014.md](OWNER-SYSTEM-OPTIMIZATION-014.md) prioritizes a reusable system with optimization headroom, direct-model comparisons and component directions before system-level training-free RL. Large gains and cost efficiency are not current selection requirements. Earlier statistical verdicts remain recorded but do not veto a promising research base. See [system design](../../../readiness/2026-09-11-system-selection-and-training-free-optimization.md).
 
-Status: **owner-directed execution**, generation 121. Codex coordinates implementation and
+Status: **owner-directed execution**, generation 122. Codex coordinates implementation and
 owns the model service under [OWNER-CONTINUATION-002.md](OWNER-CONTINUATION-002.md).
 The accepted specification is [CONTINUATION-PLAN.md](CONTINUATION-PLAN.md).
 
@@ -45,9 +45,10 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-121.md](STATUS-121.md), state.json and [OWNER-GPU-RESUME-013.md](OWNER-GPU-RESUME-013.md) first.
-The owner explicitly resumed GPU work after network reconnection and prioritizes
-high utilization. This supersedes OWNER012's scheduling hold. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
+Read [STATUS-122.md](STATUS-122.md), state.json and [OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md) first.
+The September15 owner directive holds all new GPU experiments after the current Audio2Tool
+task completes or stops. It supersedes the launch scheduling in OWNER-GPU-RESUME-013;
+an explicit owner resume is required before dispatching another GPU task. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
 are complete. Those earlier G6 SLURP and E21 system admissions fail their frozen rules. STATUS-044 separately admits the newer SLURP task-agent working baseline for exploration. The newer role-coverage pair is closed under STATUS-046; it is not adopted and cannot be replayed under its exhausted registration.
 The task-scope
 clarification is [OWNER-DATASET-TASKS-010.md](OWNER-DATASET-TASKS-010.md):

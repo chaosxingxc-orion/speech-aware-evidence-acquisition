@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 121,
+  "generation": 122,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,11 +10,12 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "b456637944f8651fcdcdbe925cb91833a342582f",
-  "updated_at_utc": "2026-09-15T05:21:18.033274+00:00",
-  "next_action": "Read STATUS-121. Preserve the sole A2T recovery and bounded metadata observer; quality stays gated. The prepared and registered SLURP TRAIN A1080 successor remains first at the eligible service boundary. E21 must reuse validated prepared window packets in a decoder-only resident service under OWNER-FEATURE-SERVING-007; complete feature-window integration in isolation, then root review. The raw-only prerequisite is superseded. No new owner decision currently blocks this queue.",
+  "snapshot_commit": "18c22a628688407f1532d45940385204d7855f08",
+  "updated_at_utc": "2026-09-15T05:50:47.817968+00:00",
+  "next_action": "Read STATUS-122 and OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15. Preserve the current one-cell A2T recovery; after it is terminal, do not dispatch SLURP, E21 or other GPU work until explicit owner resume. CPU complete scoring, scientific analysis and E21 feature-window lifecycle work may continue. Do not unload the resident model merely for memory release.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
-  "latest_owner_decision_id": "OWNER-CANDIDATE-COVERAGE-026",
-  "owner_power_direction": "2026-09-14: The owner confirmed that current power mode is optimal and instructed root not to dwell on it. Preserve current hardware/service settings."
+  "latest_owner_decision_id": "OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15",
+  "owner_power_direction": "2026-09-14: The owner confirmed that current power mode is optimal and instructed root not to dwell on it. Preserve current hardware/service settings.",
+  "owner_gpu_direction": "Allow current A2T GPU task to finish. After completion or any stop, hold all new GPU experiments, fits, encoding and restarts until explicit owner resume. CPU work continues; do not proactively unload resident model."
 }
