@@ -1,0 +1,47 @@
+{
+  "analysis_plan": {
+    "relpath": "docs/readiness/2026-09-15-e21-native-window-system-v1/analysis-plan.json",
+    "sha256": "d498ecbb637d5b19e7a031d36cff6d012cb208c2ca1f054148e14d1362568087"
+  },
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "campaign"
+      ],
+      "attempt_id": "attempt-e21-native-window-context-tools-full44-v1",
+      "baseline_fragment": "e21-native-window-context-tools-full44-v1",
+      "cell_id": "e21-native-window-context-tools-full44-v1",
+      "dataset_fragment": "earnings21-native-window-full44-v1",
+      "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
+      "readiness": {
+        "state": "held",
+        "reason": "CPU-prepared registration only. Root admission and final generation, native-fit, ASR, source, protocol, exposure, and campaign bindings remain required."
+      },
+      "run_id": "SAEA-E21-NATIVE-WINDOW-CONTEXT-TOOLS-FULL44-V1"
+    }
+  ],
+  "date": "2026-09-15",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 24.0,
+    "planned_model_calls": 17523,
+    "planned_speech_audio_seconds": 1554805,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-E21-NATIVE-WINDOW-CONTEXT-TOOLS-FULL44-REGISTRATION-V1",
+  "failure_policy": "Preserve original failure and contact record. No automatic restart/replay/geometry/output-cap change. At most one separately registered recovery after a named cause and bounded proof.",
+  "generation_budget": {
+    "cap": 17523,
+    "ceilings_are_not_targets": true,
+    "target": 6372
+  },
+  "population": {
+    "count": 44,
+    "execution_units": 1593,
+    "historically_exposed": true,
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e"
+  },
+  "purpose": "Additive held registration for the approved full44 native window system. No contact authority; original held artifacts remain unchanged."
+}

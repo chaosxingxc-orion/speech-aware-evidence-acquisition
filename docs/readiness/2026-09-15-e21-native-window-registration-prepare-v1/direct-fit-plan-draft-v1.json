@@ -1,0 +1,22 @@
+{
+  "schema": "saea-e21-native-window-plan-draft-v1",
+  "status": "DRAFT_NO_CONTACT_AUTHORITY",
+  "role": "direct-static-execution-unit-fit",
+  "composed_config_sha256_at_cpu_preparation": "ab43b870ecc8471b44f9ba1d13cc59e0f3752bec73b0e67f262d9bd74affd0f1",
+  "execution_plan": {
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-DIRECT-FULL44-FIT-V1",
+    "attempt_id": "attempt-e21-native-window-direct-full44-fit-v1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "earnings21-original",
+    "split_role": "discovery",
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "planned_model_calls": 4780,
+    "planned_gpu_hours": 4.0,
+    "planned_speech_audio_seconds": 141346,
+    "protocol_hash": "a89a38f5e6960794c2f7ce642be8ab305d40d4dfcef1f40d454c45b6b344e9e1"
+  },
+  "budget_interpretation": "The fit and generation plans for this arm share the existing arm GPU-hour ceiling; fit is not an additional allowance.",
+  "pending_finalization": "Root must first freeze the stable source, finalize the fit cell readiness and this plan, and append the exact unconsumed exposure row. Do not recompute or replace this plan after the fit contact begins."
+}

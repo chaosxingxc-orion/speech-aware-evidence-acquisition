@@ -1,0 +1,22 @@
+{
+  "schema": "saea-e21-native-window-plan-draft-v1",
+  "status": "DRAFT_NO_CONTACT_AUTHORITY",
+  "role": "system-realized-native-contact-fit",
+  "composed_config_sha256_at_cpu_preparation": "6b1b24c9d49d2e91645ab1aa5178dde217997ac549d2055c060038e6debd6a80",
+  "execution_plan": {
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-CONTEXT-TOOLS-FULL44-V1-FIT",
+    "attempt_id": "attempt-e21-native-window-context-tools-full44-v1-fit",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "earnings21-original",
+    "split_role": "discovery",
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "planned_model_calls": 70092,
+    "planned_gpu_hours": 24.0,
+    "planned_speech_audio_seconds": 1554805,
+    "protocol_hash": "f70d04ad408f0d802ce826ad90b151a24f8c084e28b8acd1c3eeb78f32077f6e"
+  },
+  "budget_interpretation": "The fit and generation plans for this arm share the existing arm GPU-hour ceiling; fit is not an additional allowance.",
+  "pending_finalization": "Root must finalize this plan and its exact unconsumed exposure row together with the system generation plan. The runtime derives this fit identity from the final system generation plan and fits each realized request immediately before dispatch."
+}
