@@ -306,6 +306,39 @@ def fit_requests(
     }
 
 
+def materialize_request_fit_batch(runtime, *, execution_plan=None):
+    """Select the registered raw fit request builder without changing its prompt."""
+
+    values = getattr(getattr(runtime, "_composed", None), "values", {})
+    prepared_units = (
+        isinstance(values, Mapping)
+        and values.get("prepared_execution_units") is not None
+    )
+    if runtime._adapter.preprocess_plan().get("kind") != "raw-speech-windows":
+        if prepared_units:
+            raise PreparationError(
+                "prepared execution unit fit requires the raw-speech-windows adapter"
+            )
+        return None
+    if not prepared_units:
+        if execution_plan is None:
+            return runtime.materialize_window_batch()
+        return runtime.materialize_window_batch(execution_plan=execution_plan)
+    roster = runtime.execution_unit_roster()
+    if roster is None:
+        raise PreparationError("prepared execution unit fit has no validated roster")
+    payloads = runtime.materialize_phase_requests()
+    if len(payloads) != len(roster.units):
+        raise PreparationError("prepared execution unit fit does not cover every unit")
+    from .preparation_windows import WindowRequestBatch
+
+    return WindowRequestBatch(
+        tuple(payloads),
+        tuple(unit.request_key for unit in roster.units),
+        tuple(unit.slice_record.trace_view() for unit in roster.units),
+    )
+
+
 @dataclass(frozen=True)
 class PreparedPhaseRequests:
     """Keep real single-phase requests immutable until root begins fitting."""

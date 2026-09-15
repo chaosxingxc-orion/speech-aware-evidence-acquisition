@@ -5222,15 +5222,12 @@ class FlightRuntime:
         )
 
     def materialize_request_fit_batch(self, *, execution_plan=None):
-        """Return raw E21 fit requests, or ``None`` for phase-program fits.
+        """Return the registered static raw request batch, when configured."""
+        from ..preparation_fit import materialize_request_fit_batch
 
-        The shared preparation fitter calls this before it decides how to
-        render a request. Keeping the dispatch here makes root-coordinated
-        and attach-only fits bind the same request builder and source facts.
-        """
-        if self._adapter.preprocess_plan().get("kind") != "raw-speech-windows":
-            return None
-        return self.materialize_window_batch(execution_plan=execution_plan)
+        return materialize_request_fit_batch(
+            self, execution_plan=execution_plan
+        )
 
     def materialize_window_batch(self, *, execution_plan=None, max_workers: int | None = None):
         """Build the configured E21 raw-window requests without model contact."""
@@ -5449,9 +5446,7 @@ class FlightRuntime:
             self._data_root, "prepared fit", strict=True,
         )
         self._prepare()
-        window_batch = None
-        if self._adapter.preprocess_plan().get("kind") == "raw-speech-windows":
-            window_batch = self.materialize_window_batch()
+        window_batch = self.materialize_request_fit_batch()
         if window_batch is not None:
             payloads = window_batch.payloads
         else:
@@ -5465,17 +5460,27 @@ class FlightRuntime:
         if not isinstance(result, dict) or result.get("every_request_fits") is not True:
             raise PreparationError("prepared request fit did not pass every row")
         rows = result.get("rows")
-        expected = (
-            set(window_batch.request_keys)
+        expected_order = (
+            list(window_batch.request_keys)
             if window_batch is not None
-            else {payload["sample_id"] for payload in payloads}
+            else [payload["sample_id"] for payload in payloads]
         )
+        expected = set(expected_order)
         row_key = "request_key" if window_batch is not None else "sample_id"
+        fit_values = getattr(getattr(self, "_composed", None), "values", {})
+        unit_fit = (
+            isinstance(fit_values, Mapping)
+            and fit_values.get("prepared_execution_units") is not None
+        )
         if (
             not isinstance(rows, list)
             or len(rows) != len(expected)
             or any(not isinstance(row, dict) or row.get("fits") is not True for row in rows)
             or {row.get(row_key) for row in rows} != expected
+            or (
+                unit_fit
+                and [row.get(row_key) for row in rows] != expected_order
+            )
             or result.get("sample_count") != len(expected)
         ):
             raise PreparationError("prepared request fit does not certify the full roster")
@@ -5501,6 +5506,11 @@ class FlightRuntime:
         program = default_phase_program(str(values["policy"]))
         if len(program.phase_names()) != 1:
             raise PreparationError("actual fit requires one phase with sealed predecessors")
+        unit_roster = (
+            self.execution_unit_roster()
+            if values.get("prepared_execution_units") is not None
+            else None
+        )
         payloads = []
         # The shared wire path writes a synthetic plan, client, and phase
         # bindings. None may survive into the registered flight, including
@@ -5517,7 +5527,8 @@ class FlightRuntime:
                 "_live_speech_config", "_live_speech_source_bindings",
                 "_live_speech_provider", "_knowledge_store_binding",
                 "_knowledge_store_supply", "_window_feature_packet_config",
-                "_window_feature_packets",
+                "_window_feature_packets", "_execution_units",
+                "_execution_unit_registry", "_execution_unit_config_hash",
             )
         }
         try:
@@ -5568,8 +5579,50 @@ class FlightRuntime:
                     setattr(self, name, value)
         expected = [sample.sample_id for sample in self._samples]
         actual = [payload.get("sample_id") for payload in payloads]
-        if len(set(actual)) != len(actual) or set(actual) != set(expected):
-            raise PreparationError("actual request materialization must cover the full roster")
+        if unit_roster is None:
+            if len(set(actual)) != len(actual) or set(actual) != set(expected):
+                raise PreparationError(
+                    "actual request materialization must cover the full roster"
+                )
+            return tuple(payloads)
+        if len(payloads) != len(unit_roster.units):
+            raise PreparationError(
+                "actual request materialization must cover every execution unit"
+            )
+        for position, (payload, unit) in enumerate(
+            zip(payloads, unit_roster.units, strict=True)
+        ):
+            history = payload.get("history")
+            contact_id = (
+                history[-1].get("contact_id")
+                if isinstance(history, list)
+                and history
+                and isinstance(history[-1], Mapping)
+                else None
+            )
+            expected_query = {
+                "media_relpath": unit.slice_record.media_relpath,
+                "sha256": unit.slice_record.sha256,
+            }
+            try:
+                contact_unit = self.execution_unit_for_contact(
+                    unit.parent_sample_id, contact_id
+                )
+            except FlightRuntimeError as error:
+                raise PreparationError(
+                    f"actual request {position} has no registered execution unit contact"
+                ) from error
+            if (
+                payload.get("sample_id") != unit.parent_sample_id
+                or payload.get("media_relpath") != unit.slice_record.media_relpath
+                or payload.get("audio_seconds") != unit.slice_record.audio_seconds
+                or payload.get("sample_rate_hz") != unit.slice_record.sample_rate_hz
+                or payload.get("raw_speech_query") != expected_query
+                or contact_unit != unit
+            ):
+                raise PreparationError(
+                    f"actual request {position} differs from its ordered execution unit"
+                )
         return tuple(payloads)
 
     def _source_audio_bindings_for_supply(self, binding, spec):
@@ -8078,6 +8131,16 @@ class FlightRuntime:
             if obs_policy
             else (1 if policy == "fixed" else len(default_phase_program(policy).phases))
         )
+        execution_unit_roster = (
+            self.execution_unit_roster()
+            if not obs_policy and values.get("prepared_execution_units") is not None
+            else None
+        )
+        execution_count = (
+            len(execution_unit_roster.units)
+            if execution_unit_roster is not None
+            else len(self._samples)
+        )
         stamp = int(self._clock() * 1000)
         wire_run_id = f"{WIRE_CHECK_RUN_ID_PREFIX}{self._run_id}-{stamp:d}"
         wire_attempt_id = f"attempt-wire-check-{stamp:d}"
@@ -8113,7 +8176,7 @@ class FlightRuntime:
             carrier_lock_key=carrier_lock_key,
             split_role=declared["split_role"],
             split_identity_hash=identity_hash,
-            planned_model_calls=max(len(self._samples) * contacts_per_sample, 1),
+            planned_model_calls=max(execution_count * contacts_per_sample, 1),
             planned_gpu_hours=declared["planned_gpu_hours"],
             planned_speech_audio_seconds=declared["planned_speech_audio_seconds"],
             protocol_hash=compute_protocol_hash(
@@ -8181,7 +8244,7 @@ class FlightRuntime:
 
         # -- the assertions each landed defect would have failed -----------
         expected_fields = set(ARM_VISIBLE_FIELDS.get(arm, ()))
-        expected_payloads = len(self._samples) * contacts_per_sample
+        expected_payloads = execution_count * contacts_per_sample
         problems: list[str] = []
         planned_stopping = bool(self._composed.values.get("phase_planner")) or (
             policy != "fixed"
