@@ -7,7 +7,12 @@ from pathlib import Path
 import pytest
 
 from speech_aware_evidence_acquisition.data.splits import prefixed, split_identity_hash
+from speech_aware_evidence_acquisition.core.bundle.outputs import (
+    _minimum_model_calls_from_trace,
+    _verify_outputs_trace_binding,
+)
 from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
+from speech_aware_evidence_acquisition.core.model.transport import LlamaServerTransport
 from speech_aware_evidence_acquisition.core.preparation_windows import (
     WindowFeatureEncoderIdentity, WindowRequestBatch, prepare_window_feature_inventory,
 )
@@ -15,6 +20,21 @@ from speech_aware_evidence_acquisition.rails.execution_units import ExecutionUni
 from speech_aware_evidence_acquisition.rails.task_adapter import TaskAdapter
 from test_feature_execution_unit_client import _feature_unit_world
 from test_flight_runtime import _FakeGate, _git_init_commit, _write_configs, _write_exposure_ledger
+from test_flight_runtime import (
+    _fake_bundle_finalizer,
+    _fake_bundle_verifier,
+    _fake_ledger_validator,
+    _fake_score_batch,
+    _fake_session_stopper,
+)
+from test_llama_server_transport import (
+    _base_url,
+    _fake_inference_session,
+    _fake_runtime_receipt,
+    _live,
+    _spawn_live_matching_process,  # noqa: F401
+)
+from test_native_episode_runner import _wire_response
 from test_rails_runner import _knowledge_snapshot
 
 
@@ -45,10 +65,10 @@ class _WindowAdapter(TaskAdapter):
         return "Transcribe the registered speech window."
 
     def gold(self, sample):
-        raise AssertionError("generation must not read gold")
+        return None
 
     def score_response(self, gold, response):
-        raise AssertionError("generation must not score")
+        return {}
 
 
 @pytest.mark.parametrize(
@@ -56,7 +76,10 @@ class _WindowAdapter(TaskAdapter):
     (("phase-direct-only-v1", 2), ("phase-native-review-revise-v1", 8)),
 )
 def test_configured_feature_units_complete_shared_lifecycle(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, policy: str, planned_calls: int
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    policy: str,
+    planned_calls: int,
 ):
     """The real configured path must not require a fake whole-parent packet."""
     from speech_aware_evidence_acquisition.core import preparation_window_packets as packets_module
@@ -149,6 +172,7 @@ def test_configured_feature_units_complete_shared_lifecycle(
     _write_configs(
         repo, arm="speech-feature-query", policy=policy, carrier_lock_key="fake-carrier",
         model_extra={
+            "transport": "llama-server", "base_url": _base_url(),
             "runtime_receipt": "receipts/inference.json", "prompt_order": "speech-query-prefix-v2",
             "speech_feature_root": str(feature_root),
             "decoding_params": {"temperature": 0, "max_tokens": 64},
@@ -169,13 +193,119 @@ def test_configured_feature_units_complete_shared_lifecycle(
     _write_exposure_ledger(repo, run_id)
     _git_init_commit(repo)
 
+    rendered = []
+
+    def post(_url, body):
+        request = json.loads(body)
+        rendered.append(request)
+        wire_text = json.dumps(request, sort_keys=True)
+        window = "one" if "window/0" in wire_text else "two"
+        if "Complete the planner role" in wire_text:
+            text = "ACCEPT"
+        elif "Complete the solver role" in wire_text:
+            text = f"solver window {window}"
+        elif "Complete the reviewer role" in wire_text:
+            text = f"reviewer window {window}"
+        elif "Complete the perception role" in wire_text:
+            text = f"perception window {window}"
+        else:
+            text = f"direct window {window}"
+        return _wire_response(text)
+
+    def transport_factory(values, data_root, *, session, runtime_receipt, runtime_root):
+        return LlamaServerTransport(
+            values["base_url"], data_root, session, runtime_receipt, runtime_root,
+            post=post, prompt_order=values["prompt_order"],
+            feature_root=Path(values["speech_feature_root"]),
+        )
+
+    def session_starter(**kwargs):
+        return _fake_inference_session(host=kwargs["host"], port=kwargs["port"])
+
+    manifest_checks = []
+
+    def manifest_builder(**kwargs):
+        result = kwargs["result"]
+        rows = tuple(json.loads(line) for line in result.outputs_path.read_text().splitlines())
+        trace_path = result.outputs_path.with_name(f"{run_id}.trace.jsonl")
+        traces = {
+            row["record_id"]: row["payload"]
+            for row in (json.loads(line) for line in trace_path.read_text().splitlines())
+        }
+        _verify_outputs_trace_binding(rows, traces)
+        assert _minimum_model_calls_from_trace(traces) == planned_calls
+        assert len(rows) == 1 and rows[0]["sample_id"] == parent.sample_id
+        assert rows[0]["text"] == (
+            "direct window one direct window two"
+            if policy == "phase-direct-only-v1"
+            else "solver window one solver window two"
+        )
+        assert [
+            source["execution_unit_id"]
+            for source in rows[0]["execution_unit_delivery"]["sources"]
+        ] == [unit.request_key for unit in attached.units]
+        path = Path(kwargs["run_dir"]) / f"{run_id}.run-manifest.json"
+        path.write_text(json.dumps({
+            "schema": "synthetic-complete-trace-bound-manifest-v1",
+            "run_id": run_id,
+            "outputs_sha256": hashlib.sha256(result.outputs_path.read_bytes()).hexdigest(),
+            "trace_manifest_hash": result.trace_manifest_hash,
+            "model_contacts": planned_calls,
+        }, sort_keys=True), encoding="utf-8")
+        manifest_checks.append(path)
+        return path
+
+    score_jobs = []
+
+    def scoring_handoff(jobs, **kwargs):
+        assert manifest_checks and len(jobs) == 1
+        assert jobs[0].manifest == manifest_checks[0].resolve()
+        score_jobs.extend(jobs)
+        return _fake_score_batch(jobs, **kwargs)
+
+    if policy == "phase-native-review-revise-v1":
+        from speech_aware_evidence_acquisition.core import preparation_fit
+
+        def fit_factory(runtime, program, plan):
+            def gate(request):
+                runtime._transport.render_request(request.payload_bytes)
+                gate.receipts.append({
+                    "prepared_request_sha256": hashlib.sha256(request.payload_bytes).hexdigest(),
+                    "capacity_verified": True,
+                })
+            gate.receipts = []
+            return gate
+
+        monkeypatch.setattr(preparation_fit, "build_native_contact_fit_gate", fit_factory)
+
     runtime = FlightRuntime(
         repo, world.data_root, model="m", dataset="d", baseline="b", experiment="e",
-        run_id=run_id, attempt_id="attempt-lifecycle", runtime_root=tmp_path / "runtime",
+        run_id=run_id, attempt_id="attempt-lifecycle", runtime_root=_live["runtime_root"],
         adapter_factory=lambda _lock, _root: _WindowAdapter(samples),
         gate_factory=lambda *_args, **_kwargs: _FakeGate(), lock={},
+        session_starter=session_starter,
+        session_stopper=_fake_session_stopper,
+        serving_session_finder=lambda _root: None,
+        runtime_receipt_loader=lambda _path: _fake_runtime_receipt(),
+        transport_factory=transport_factory,
+        manifest_builder=manifest_builder,
+        bundle_verifier=_fake_bundle_verifier,
+        bundle_finalizer=_fake_bundle_finalizer,
+        ledger_validator=_fake_ledger_validator,
+        score_batch=scoring_handoff,
+        host="127.0.0.1", port=_live["port"],
     )
 
     runtime.preflight()
     runtime.preprocess(workers=1)
     assert runtime.execution_unit_roster() == attached
+    runtime.serve()
+    phase_receipt = runtime.run_phases(workers=1)
+    assert phase_receipt["contact_count"] == planned_calls
+    runtime.seal()
+    runtime.score()
+    assert len(rendered) == planned_calls
+    assert len(score_jobs) == 1
+    assert runtime.receipts.completed_stages() == (
+        "preflight", "preprocess", "serve", "run_phases", "seal", "score",
+    )
