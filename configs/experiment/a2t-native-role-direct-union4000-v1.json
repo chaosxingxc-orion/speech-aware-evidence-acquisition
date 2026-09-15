@@ -18,9 +18,17 @@
       "dataset_fragment": "audio2tool-org1-union-4000",
       "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
       "readiness": {
-        "reason": "No generation admission. Await full source-bound preparation, frozen SLURP base decision, real request/output capacity and complete prospective contact registration.",
-        "requirements": [],
-        "state": "preparation-pending"
+        "reason": "DRAFT HELD. Preparation is complete, but root has not admitted full-population model contact. A final source freeze, complete actual-request fit, live service identity and exclusive lease remain required.",
+        "requirements": [
+          {
+            "expected_decision_id": "a2t-native-role-full4000-prerequisite-eligibility-v1",
+            "kind": "decision",
+            "reason": "Root campaign-compatible prerequisite eligibility for both full4000 runs.",
+            "relpath": "coordination/a2t-agent-base-transfer-v1/root-full4000-prerequisite-eligibility-v1.json",
+            "sha256": "58f52d86d9422cca9b4202e8b8b78f4713757fe8dcfcab993f3f9304a905f6f5"
+          }
+        ],
+        "state": "held"
       },
       "run_id": "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1"
     }
