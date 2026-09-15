@@ -1,0 +1,48 @@
+{
+  "schema": "saea-slurp-retrieval-supply-audit-config-v1",
+  "what_this_is": "A model-free deterministic diagnostic of own-intent card selection coverage under fixed recall and supply breadths for the released TRAIN Fold A cohort. It is not generated candidate accuracy or a causal gain estimate.",
+  "breadths": [
+    1,
+    3,
+    8,
+    12,
+    16,
+    24,
+    32,
+    60
+  ],
+  "store_id": "intent-boundaries",
+  "phase": "perception",
+  "inputs": {
+    "baseline": {
+      "relpath": "configs/baseline/slurp-native-dual-store-train-fold-a-anchor-recovery-v1.json",
+      "sha256": "8445f4ef1b29fa776a628cd6000a7ba481622a72c78fb999e107fbdfac380aab"
+    },
+    "release": {
+      "relpath": "coordination/slurp-native-dual-store-train-fold-a-anchor-recovery-v1/root-quality-release-v1.json",
+      "sha256": "0be030c3d4d43bd27035575ff455cf30830d042b5f35d3ab6b83ff69ecc43bdf"
+    },
+    "reference_config": {
+      "relpath": "coordination/slurp-native-dual-store-train-fold-a-anchor-recovery-v1/native-train-support-diagnostic-config-v1.json",
+      "sha256": "0faaafa3826fc4dd3cc01754316ebad0bac8aae007bca0604a8dba3050906dd3"
+    },
+    "support_diagnostic": {
+      "relpath": "analysis/SAEA-SLURP-NATIVE-DUAL-STORE-TRAIN-FOLD-A-ANCHOR-RECOVERY-V1/native-train-support-diagnostics-v1.json",
+      "sha256": "214b3e058782703490558c54805541d9722dbafe44f64a5bb1880b16785f9e34"
+    }
+  },
+  "expected": {
+    "sample_count": 1080,
+    "ordered_sample_ids_sha256": "1a4e4772342c5beaec47f883560833b5f355d9bdd2f65074346892f8cf9ee429",
+    "replay_breadth": 8,
+    "replay_own_supplied": 947,
+    "replay_supply_and_covered": 914,
+    "c0_miss_count": 143,
+    "c0_neither_count": 110
+  },
+  "outputs": {
+    "selection": "selection-commitment-v1.json",
+    "report": "retrieval-supply-audit-v1.json",
+    "receipt": "receipt-v1.json"
+  }
+}
