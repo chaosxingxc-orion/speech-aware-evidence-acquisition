@@ -22,8 +22,13 @@ from speech_aware_evidence_acquisition.core.flight.receipts import FlightReceipt
 from speech_aware_evidence_acquisition.rails.hashing import content_hash
 from speech_aware_evidence_acquisition.rails.knowledge import (
     AgentStateArtifact,
+    AgentStepTransition,
+    FusionDecision,
     KeyFacet,
     KnowledgeSnapshot,
+    QueryState,
+    RankedFacet,
+    RankResult,
     ValueBundle,
 )
 from speech_aware_evidence_acquisition.rails.task_adapter import CandidateInventory
@@ -175,7 +180,12 @@ def _fixture(
     content = json.dumps({"actions": actions, "global_constraints": ["Keep order."]})
     text_sha = hashlib.sha256(content.encode()).hexdigest()
     perception_contact_id = f"policy:perception:0:{sample_id}"
-    perception_query = "a" * 64
+    initial_query = QueryState(
+        query_id=f"query:initial:{sample_id}", query_sample_id=sample_id,
+        speech_packet_id=f"packet:{sample_id}", speech_packet_sha256="a" * 64,
+        use_split_identity_hash="b" * 64,
+    ).validate()
+    perception_query = initial_query.content_hash()
     perception_request_id = "request-perception"
     perception_final = {
         "agent_contact_id": perception_contact_id,
@@ -202,7 +212,94 @@ def _fixture(
     }]
     visits = [perception_visit]
     selections: dict[str, object] = {}
-    for index, query_hash in enumerate(solver_queries):
+    transitions: list[dict[str, object]] = []
+    waves: list[dict[str, object]] = []
+    current_query = initial_query
+    qualified = [
+        f"parameter-meaning::card:{name}:value"
+        for name in dict.fromkeys(
+            name for action in actions for name in action["candidate_tools"]
+        )
+    ]
+    supporting = tuple(
+        f"parameter-meaning::facet:{name}"
+        for name in dict.fromkeys(
+            name for action in actions for name in action["candidate_tools"]
+        )
+    )
+    for index, _requested_hash in enumerate(solver_queries):
+        audit_query_hash = current_query.content_hash()
+        disposition = "acquired" if index == 0 and actions else (
+            "already-visible" if actions else "no-mapping"
+        )
+        audit = _selection(
+            sample_id=sample_id, state=state, actions=actions,
+            query_sha256=audit_query_hash, disposition=disposition,
+            store_fields=store_fields,
+        )
+        selections[f"solver:{sample_id}:{audit_query_hash}"] = audit
+        next_state_ids = current_query.agent_state_ids + (
+            state.state_id if index == 0 else f"revision-state:{index}:{sample_id}",
+        )
+        next_query = QueryState(
+            query_id=f"query:solver:{index}:{sample_id}", query_sample_id=sample_id,
+            speech_packet_id=current_query.speech_packet_id,
+            speech_packet_sha256=current_query.speech_packet_sha256,
+            use_split_identity_hash=current_query.use_split_identity_hash,
+            loop_step=current_query.loop_step + 1,
+            agent_state_ids=next_state_ids,
+            retrieved_value_ids=tuple(qualified),
+            visible_facet_ids=supporting,
+        ).validate()
+        target = (
+            "knowledge-store:parameter-meaning:audio2tool-candidate-semantic-v1:"
+            "saea-ranked-candidate-round-robin-v1:"
+            "saea-candidate-semantic-passthrough-v1:selection-receipt="
+            f"{audit['selection_receipt_sha256']}"
+        )
+        transition = AgentStepTransition(
+            snapshot_sha256=store_fields["composite_snapshot_sha256"],
+            prior_query_state_sha256=audit_query_hash,
+            next_query_state_sha256=next_query.content_hash(),
+            action_kind="acquire" if disposition == "acquired" else "organize",
+            action_target_refs=(
+                (f"state:{next_state_ids[-1]}", target)
+                if disposition == "acquired" else (f"state:{next_state_ids[-1]}",)
+            ),
+            new_value_ids=tuple(qualified) if disposition == "acquired" else (),
+            used_value_ids=(), dropped_value_ids=(),
+            new_agent_state_ids=(next_state_ids[-1],), dropped_agent_state_ids=(),
+            new_facet_ids=supporting if disposition == "acquired" else (),
+        ).validate()
+        rank = None
+        fusion = None
+        if disposition == "acquired":
+            rank = RankResult(
+                snapshot_sha256=store_fields["composite_snapshot_sha256"],
+                query_state_sha256=audit_query_hash,
+                ranking_policy_id="saea-ranked-candidate-round-robin-v1",
+                candidates=tuple(
+                    RankedFacet(facet_id=facet_id, score=float(len(supporting) - position))
+                    for position, facet_id in enumerate(supporting)
+                ),
+            ).validate()
+            fusion = FusionDecision(
+                snapshot_sha256=store_fields["composite_snapshot_sha256"],
+                query_state_sha256=audit_query_hash,
+                rank_result_sha256=rank.content_hash(),
+                fusion_policy_id="saea-candidate-semantic-passthrough-v1",
+                supporting_facet_ids=supporting,
+                selected_value_ids=tuple(qualified),
+            ).validate()
+        transitions.append(transition.as_json())
+        waves.append({
+            "query_state_sha256": audit_query_hash,
+            "next_query_state_sha256": next_query.content_hash(),
+            "transition": transition.as_json(),
+            "rank_result": None if rank is None else rank.as_json(),
+            "fusion_decision": None if fusion is None else fusion.as_json(),
+        })
+        query_hash = next_query.content_hash()
         solver_contact_id = f"policy:solver:{index}:{sample_id}"
         solver_final = {
             "agent_contact_id": solver_contact_id,
@@ -218,18 +315,19 @@ def _fixture(
             "plan": {"contact_id": solver_contact_id, "query_state_sha256": query_hash},
             "query_state_sha256": query_hash, "response_sha256": "0" * 64,
         })
-        disposition = "acquired" if index == 0 and actions else (
-            "already-visible" if actions else "no-mapping"
-        )
-        audit = _selection(
-            sample_id=sample_id, state=state, actions=actions,
-            query_sha256=query_hash, disposition=disposition,
-            store_fields=store_fields,
-        )
-        selections[f"solver:{sample_id}:{query_hash}"] = audit
+        current_query = next_query
+    transitions.append(AgentStepTransition(
+        snapshot_sha256=store_fields["composite_snapshot_sha256"],
+        prior_query_state_sha256=current_query.content_hash(),
+        next_query_state_sha256=None, action_kind="stop", action_target_refs=(),
+        new_value_ids=(), used_value_ids=(), dropped_value_ids=(),
+        new_agent_state_ids=(), dropped_agent_state_ids=(),
+    ).validate().as_json())
     result = {
         "sample_id": sample_id, "agent_states": [state.as_json()],
-        "contacts": phase_contacts,
+        "contacts": phase_contacts, "initial_query_state": initial_query.as_json(),
+        "final_query_state": current_query.as_json(),
+        "transitions": transitions, "waves": waves,
         "native_episode_receipt": {
             "role_visits": visits, "planner_routes": [],
             "accepted_solver_receipt": visits[-1]["execution_receipt"],
@@ -323,6 +421,12 @@ def test_reports_repeated_action_occurrences_and_deduplicates_revision_candidate
         tmp_path,
         actions=actions, solver_queries=("d" * 64, "e" * 64)
     )
+    first_audit = next(iter(
+        receipts["stages"]["run_phases"]["phase_supply"]
+        ["candidate_selections"].values()
+    ))
+    first_solver = source.phase_results["tier1_direct:000001"]["contacts"][1]
+    assert first_audit["query_state_sha256"] != first_solver["query_state_sha256"]
     report = analyze_a2t_candidate_supply(
         source, flight_receipts=receipts, candidate_inventory=inventory,
         data_root=tmp_path,

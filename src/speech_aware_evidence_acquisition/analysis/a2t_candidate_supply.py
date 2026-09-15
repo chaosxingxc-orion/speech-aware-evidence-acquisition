@@ -21,7 +21,15 @@ from ..rails.a2t_perception_state import (
 )
 from ..rails.errors import RailsError
 from ..rails.hashing import content_hash
-from ..rails.knowledge import AgentStateArtifact, KnowledgeSnapshot
+from ..rails.knowledge import (
+    AgentStateArtifact,
+    AgentStepTransition,
+    FusionDecision,
+    KnowledgeSnapshot,
+    QueryState,
+    RankResult,
+)
+from ..rails.knowledge_provider import select_candidate_semantic_values
 from ..rails.knowledge_stores import qualify_id
 from ..rails.task_adapter import CandidateInventory
 from .native_episode_source import VerifiedNativeEpisodeSource
@@ -555,6 +563,160 @@ def _solver_query_hashes(
     return frozenset(hashes)
 
 
+def _transition_context(
+    result: Mapping[str, object],
+    *,
+    sample_id: str,
+    snapshot_sha256: str,
+) -> dict[str, object]:
+    try:
+        initial = QueryState.from_json(
+            _mapping(result.get("initial_query_state"), "initial query state")
+        ).validate()
+        final = QueryState.from_json(
+            _mapping(result.get("final_query_state"), "final query state")
+        ).validate()
+    except (KeyError, TypeError, ValueError, RailsError) as error:
+        raise A2TCandidateSupplyError(f"native query state is invalid: {error}") from error
+    if initial.query_sample_id != sample_id or final.query_sample_id != sample_id:
+        raise A2TCandidateSupplyError("native query state sample identity mismatch")
+    raw_transitions = _sequence(result.get("transitions"), "native transitions")
+    transitions: list[tuple[dict[str, object], AgentStepTransition]] = []
+    visible = set(initial.retrieved_value_ids)
+    current_hash = initial.content_hash()
+    visible_by_hash = {current_hash: frozenset(visible)}
+    for index, raw in enumerate(raw_transitions):
+        document = dict(_mapping(raw, f"native transition {index}"))
+        try:
+            transition = AgentStepTransition.from_json(document).validate()
+        except (KeyError, TypeError, ValueError, RailsError) as error:
+            raise A2TCandidateSupplyError(
+                f"native transition {index} is invalid: {error}"
+            ) from error
+        if transition.as_json() != document:
+            raise A2TCandidateSupplyError(
+                f"native transition {index} contains unsupported fields"
+            )
+        if (
+            transition.snapshot_sha256 != snapshot_sha256
+            or transition.prior_query_state_sha256 != current_hash
+        ):
+            raise A2TCandidateSupplyError("native transition chain or snapshot binding differs")
+        transitions.append((document, transition))
+        if transition.action_kind == "stop":
+            continue
+        visible.difference_update(transition.dropped_value_ids)
+        visible.update(transition.new_value_ids)
+        current_hash = str(transition.next_query_state_sha256)
+        visible_by_hash[current_hash] = frozenset(visible)
+    if (
+        current_hash != final.content_hash()
+        or frozenset(visible) != frozenset(final.retrieved_value_ids)
+    ):
+        raise A2TCandidateSupplyError("native transition chain does not reach final query state")
+    waves = _sequence(result.get("waves"), "native waves")
+    non_stop = [pair for pair in transitions if pair[1].action_kind != "stop"]
+    if len(waves) != len(non_stop):
+        raise A2TCandidateSupplyError("native waves do not cover every non-stop transition")
+    normalized_waves: list[Mapping[str, object]] = []
+    for index, (raw_wave, (raw_transition, transition)) in enumerate(
+        zip(waves, non_stop, strict=True)
+    ):
+        wave = _mapping(raw_wave, f"native wave {index}")
+        if (
+            wave.get("transition") != raw_transition
+            or wave.get("query_state_sha256") != transition.prior_query_state_sha256
+            or wave.get("next_query_state_sha256") != transition.next_query_state_sha256
+        ):
+            raise A2TCandidateSupplyError("native wave differs from its transition")
+        normalized_waves.append(wave)
+    return {
+        "solver_query_hashes": _solver_query_hashes(result, sample_id=sample_id),
+        "transitions": non_stop,
+        "waves": normalized_waves,
+        "visible_by_hash": visible_by_hash,
+    }
+
+
+def _bind_selection_transition(
+    audit: Mapping[str, object],
+    *,
+    transition_context: Mapping[str, object],
+    spec: Mapping[str, object],
+    store_id: str,
+    snapshot_sha256: str,
+) -> None:
+    query_hash = str(audit["query_state_sha256"])
+    qualified = tuple(audit["qualified_selected_value_ids"])
+    solver_hashes = transition_context["solver_query_hashes"]
+    transitions = transition_context["transitions"]
+    matches = [
+        (index, raw, transition)
+        for index, (raw, transition) in enumerate(transitions)
+        if transition.prior_query_state_sha256 == query_hash
+        and transition.next_query_state_sha256 in solver_hashes
+    ]
+    if len(matches) != 1:
+        raise A2TCandidateSupplyError(
+            "candidate selection has no unique pre-Solver transition binding"
+        )
+    index, _raw, transition = matches[0]
+    wave = transition_context["waves"][index]
+    disposition = audit["supply_disposition"]
+    target = (
+        f"knowledge-store:{store_id}:{_PROVIDER_ID}:{_RANK_POLICY_ID}:"
+        f"{_FUSE_POLICY_ID}:selection-receipt={audit['selection_receipt_sha256']}"
+    )
+    if disposition == "acquired":
+        if (
+            transition.action_kind != "acquire"
+            or transition.new_value_ids != qualified
+            or sum(reference == target for reference in transition.action_target_refs) != 1
+        ):
+            raise A2TCandidateSupplyError(
+                "acquired candidate selection differs from its exact transition target"
+            )
+        try:
+            rank = RankResult.from_json(
+                _mapping(wave.get("rank_result"), "candidate selection rank result")
+            ).validate()
+            fusion = FusionDecision.from_json(
+                _mapping(wave.get("fusion_decision"), "candidate selection fusion decision")
+            ).validate()
+        except (KeyError, TypeError, ValueError, RailsError) as error:
+            raise A2TCandidateSupplyError(
+                f"candidate selection wave is invalid: {error}"
+            ) from error
+        if (
+            rank.snapshot_sha256 != snapshot_sha256
+            or rank.query_state_sha256 != query_hash
+            or rank.ranking_policy_id != spec.get("rank_policy")
+            or fusion.snapshot_sha256 != snapshot_sha256
+            or fusion.query_state_sha256 != query_hash
+            or fusion.rank_result_sha256 != rank.content_hash()
+            or fusion.fusion_policy_id != spec.get("fuse_policy")
+            or fusion.selected_value_ids != qualified
+        ):
+            raise A2TCandidateSupplyError(
+                "candidate selection wave rank or fusion binding differs"
+            )
+        return
+    if wave.get("rank_result") is not None or wave.get("fusion_decision") is not None:
+        raise A2TCandidateSupplyError(
+            "non-acquired candidate selection unexpectedly carries a supply decision"
+        )
+    if transition.new_value_ids or transition.dropped_value_ids:
+        raise A2TCandidateSupplyError(
+            "non-acquired candidate selection changes visible values"
+        )
+    if disposition == "already-visible" and not set(qualified) <= set(
+        transition_context["visible_by_hash"].get(query_hash, ())
+    ):
+        raise A2TCandidateSupplyError(
+            "already-visible candidate selection lacks retained visible IDs"
+        )
+
+
 def _expected_mapping_selection(
     candidate_ids: tuple[str, ...],
     mappings: Sequence[Mapping[str, object]],
@@ -563,7 +725,6 @@ def _expected_mapping_selection(
     max_values_per_candidate: int,
     max_total_values: int,
 ) -> tuple[list[str], list[dict[str, object]]]:
-    values_by_candidate: list[tuple[str, ...]] = []
     for index, (candidate_id, raw_mapping) in enumerate(
         zip(candidate_ids, mappings, strict=True)
     ):
@@ -582,66 +743,13 @@ def _expected_mapping_selection(
             raise A2TCandidateSupplyError(
                 "candidate mapping differs from frozen value task_target fields"
             )
-        values_by_candidate.append(mapped)
-    positions = [0] * len(candidate_ids)
-    selected_by: list[list[str]] = [[] for _ in candidate_ids]
-    ignored_by: list[list[dict[str, str]]] = [[] for _ in candidate_ids]
-    selected: list[str] = []
-    selected_set: set[str] = set()
-    while len(selected) < max_total_values:
-        progressed = False
-        for index, values in enumerate(values_by_candidate):
-            if len(selected) >= max_total_values:
-                break
-            if len(selected_by[index]) >= max_values_per_candidate:
-                continue
-            while positions[index] < len(values):
-                value_id = values[positions[index]]
-                positions[index] += 1
-                progressed = True
-                if value_id in selected_set:
-                    ignored_by[index].append({
-                        "value_id": value_id,
-                        "reason": "shared-value-already-selected",
-                    })
-                    continue
-                selected.append(value_id)
-                selected_set.add(value_id)
-                selected_by[index].append(value_id)
-                break
-        if not progressed:
-            break
-        if all(
-            positions[index] >= len(values)
-            or len(selected_by[index]) >= max_values_per_candidate
-            for index, values in enumerate(values_by_candidate)
-        ):
-            break
-    total_full = len(selected) >= max_total_values
-    for index, values in enumerate(values_by_candidate):
-        while positions[index] < len(values):
-            value_id = values[positions[index]]
-            positions[index] += 1
-            reason = (
-                "shared-value-already-selected" if value_id in selected_set
-                else "per-candidate-limit"
-                if len(selected_by[index]) >= max_values_per_candidate
-                else "total-limit" if total_full else "not-selected"
-            )
-            ignored_by[index].append({"value_id": value_id, "reason": reason})
-    expected = [
-        {
-            "candidate_id": candidate_id,
-            "mapped_value_ids": list(values_by_candidate[index]),
-            "selected_value_ids": selected_by[index],
-            "ignored_mappings": sorted(
-                ignored_by[index], key=lambda item: (item["value_id"], item["reason"])
-            ),
-            "status": "mapped" if values_by_candidate[index] else "absent",
-        }
-        for index, candidate_id in enumerate(candidate_ids)
-    ]
-    return selected, expected
+    selected, expected = select_candidate_semantic_values(
+        candidate_ids,
+        candidate_values,
+        max_values_per_candidate=max_values_per_candidate,
+        max_total_values=max_total_values,
+    )
+    return list(selected), expected
 
 
 def _validate_selection(
@@ -651,7 +759,7 @@ def _validate_selection(
     sample_id: str,
     parsed: object,
     perception: Mapping[str, object],
-    solver_queries: frozenset[str],
+    transition_context: Mapping[str, object],
     inventory: CandidateInventory,
     legal_hash: str,
     spec: Mapping[str, object],
@@ -681,7 +789,6 @@ def _validate_selection(
         audit.get("schema") != _SELECTION_SCHEMA
         or audit.get("sample_id") != sample_id
         or key != f"{phase}:{sample_id}:{query_hash}"
-        or query_hash not in solver_queries
         or audit.get("candidate_state_id") != perception.get("agent_state_id")
         or audit.get("candidate_state_sha256")
         != perception.get("candidate_state_sha256")
@@ -735,6 +842,13 @@ def _validate_selection(
     )
     if disposition not in allowed:
         raise A2TCandidateSupplyError("candidate supply disposition is inconsistent")
+    _bind_selection_transition(
+        audit,
+        transition_context=transition_context,
+        spec=spec,
+        store_id=store_id,
+        snapshot_sha256=str(store["composite_snapshot_sha256"]),
+    )
     return dict(audit)
 
 
@@ -838,7 +952,11 @@ def analyze_a2t_candidate_supply(
         status_counts[status] += 1
         parsed = state_row["parsed"]
         audits = selections_by_sample[sample_id]
-        solver_queries = _solver_query_hashes(result, sample_id=sample_id)
+        transition_context = _transition_context(
+            result,
+            sample_id=sample_id,
+            snapshot_sha256=str(store["composite_snapshot_sha256"]),
+        )
         if parsed is None:
             if audits:
                 raise A2TCandidateSupplyError(
@@ -872,7 +990,7 @@ def analyze_a2t_candidate_supply(
                     sample_id=sample_id,
                     parsed=parsed,
                     perception=_mapping(state_row["perception"], "Perception source"),
-                    solver_queries=solver_queries,
+                    transition_context=transition_context,
                     inventory=candidate_inventory,
                     legal_hash=legal_hash,
                     spec=spec,
