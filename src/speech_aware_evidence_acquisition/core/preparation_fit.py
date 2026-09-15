@@ -112,6 +112,14 @@ def rendered_raw_speech_sha256(body: Mapping[str, object]) -> str:
         if not isinstance(content, list):
             continue
         for part_index, part in enumerate(content):
+            if (
+                isinstance(part, Mapping)
+                and part.get("type") == "input_speech_features"
+            ):
+                raise PreparationError(
+                    "native raw fit refuses rendered speech feature input at "
+                    f"messages[{message_index}].content[{part_index}]"
+                )
             if isinstance(part, Mapping) and part.get("type") == "input_audio":
                 audio_parts.append((message_index, part_index, part))
     if len(audio_parts) != 1:
@@ -896,9 +904,10 @@ def validate_native_contact_fit_config(values, program):
     return {**dict(spec), "max_speech_packets": max_speech_packets}
 
 
-def _native_contact_identity(
+def _native_contact_control_identity(
     payload: Mapping[str, object],
-) -> tuple[str, str, tuple[dict[str, object], ...]]:
+) -> tuple[str, str]:
+    """Return the sample and final control contact bound by one request."""
     sample_id = payload.get("sample_id")
     if not isinstance(sample_id, str) or not sample_id:
         raise PreparationError("native contact has no sample_id")
@@ -918,6 +927,13 @@ def _native_contact_identity(
     contact_id = controls[0].get("contact_id")
     if not isinstance(contact_id, str) or not contact_id:
         raise PreparationError("native contact has no agent_contact_id")
+    return sample_id, contact_id
+
+
+def _native_contact_identity(
+    payload: Mapping[str, object],
+) -> tuple[str, str, tuple[dict[str, object], ...]]:
+    sample_id, contact_id = _native_contact_control_identity(payload)
     descriptors = payload.get("speech_feature_parts")
     if (
         not isinstance(descriptors, list)
@@ -948,25 +964,7 @@ def _native_raw_contact_identity(
     payload: Mapping[str, object],
 ) -> tuple[str, str, dict[str, str]]:
     """Validate the source identity required for one raw native contact."""
-    sample_id = payload.get("sample_id")
-    if not isinstance(sample_id, str) or not sample_id:
-        raise PreparationError("native contact has no sample_id")
-    history = payload.get("history")
-    if (
-        not isinstance(history, Sequence)
-        or isinstance(history, (str, bytes))
-        or not history
-        or any(not isinstance(item, Mapping) for item in history)
-    ):
-        raise PreparationError("native contact has no bound control history")
-    controls = [item for item in history if item.get("role") == "control"]
-    if len(controls) != 1 or controls[0] is not history[-1]:
-        raise PreparationError(
-            "native contact requires exactly one final control binding"
-        )
-    contact_id = controls[0].get("contact_id")
-    if not isinstance(contact_id, str) or not contact_id:
-        raise PreparationError("native contact has no agent_contact_id")
+    sample_id, contact_id = _native_contact_control_identity(payload)
     if "speech_feature_parts" in payload:
         raise PreparationError("native raw contact refuses mixed feature input")
     raw = payload.get("raw_speech_query")
@@ -1025,6 +1023,10 @@ def build_native_contact_fit_gate(
             "tokenizer fit requires distinct run and attempt identities"
         )
     feature_packets = runtime.uses_speech_feature_packets()
+    if not feature_packets and runtime._arm() != "raw-speech-agent-native-tools":
+        raise PreparationError(
+            "native raw contact fitting requires the raw-speech-agent-native-tools arm"
+        )
     if runtime._session is None or runtime._transport is None:
         raise PreparationError(
             "native contact fitting requires an attached root session"
@@ -1210,20 +1212,23 @@ def build_native_contact_fit_gate(
                                 "resident tokenizer has no media marker"
                             )
                     from .preparation import measure_multimodal_request
-                    result = fit_requests(
-                        (payload,),
-                        expected_sample_ids=(sample_id,),
-                        transport=runtime._transport,
-                        client=guarded,
-                        speech_counts=(
+                    speech_counts = (
+                        (
                             lambda actual: packet_token_counts(
                                 actual,
                                 feature_root=Path(str(values["speech_feature_root"])),
                                 decoder_sha256=decoder_sha256,
                             )
-                            if feature_packets
-                            else lambda _actual: ()
-                        ),
+                        )
+                        if feature_packets
+                        else (lambda _actual: ())
+                    )
+                    result = fit_requests(
+                        (payload,),
+                        expected_sample_ids=(sample_id,),
+                        transport=runtime._transport,
+                        client=guarded,
+                        speech_counts=speech_counts,
                         media_marker=marker,
                         slot_tokens=int(
                             runtime._adapter.serving_geometry()["slot_tokens"]
