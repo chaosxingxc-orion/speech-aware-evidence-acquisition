@@ -589,7 +589,14 @@ def analyze_verified_native_episode_statistics(
                 trace_records.get(f"{planner_final['request_id']}/response"),
                 "terminal Planner response",
             )
-            if planner_response.get("text") != disposition["planner_action"]:
+            # The shared receipt validator already binds JSON control to the
+            # raw Planner text, final contact hash and route action.
+            expected_planner_text = (
+                episode["plan"]
+                if episode.get("planner_control") is not None
+                else disposition["planner_action"]
+            )
+            if planner_response.get("text") != expected_planner_text:
                 raise NativeEpisodeDiagnosticError(
                     f"terminal Planner response {sample_id!r} differs from disposition"
                 )
