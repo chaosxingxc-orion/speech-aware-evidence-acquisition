@@ -1319,6 +1319,80 @@ SLURP_CANDIDATE_SEMANTIC_FUSE_POLICY_ID = (
 )
 
 
+def select_candidate_semantic_values(
+    candidate_ids: Sequence[str],
+    candidate_values: Mapping[str, Sequence[str]],
+    *,
+    max_values_per_candidate: int,
+    max_total_values: int,
+) -> tuple[tuple[str, ...], list[dict[str, object]]]:
+    """Apply the shared candidate round-robin selection and audit policy."""
+    mapped = [candidate_values.get(candidate_id, ()) for candidate_id in candidate_ids]
+    positions = [0 for _ in candidate_ids]
+    selected_by = [[] for _ in candidate_ids]
+    ignored_by: list[list[dict[str, str]]] = [[] for _ in candidate_ids]
+    selected: list[str] = []
+    selected_set: set[str] = set()
+
+    while len(selected) < max_total_values:
+        progressed = False
+        for index, values in enumerate(mapped):
+            if len(selected) >= max_total_values:
+                break
+            if len(selected_by[index]) >= max_values_per_candidate:
+                continue
+            while positions[index] < len(values):
+                value_id = values[positions[index]]
+                positions[index] += 1
+                progressed = True
+                if value_id in selected_set:
+                    ignored_by[index].append(
+                        {"value_id": value_id, "reason": "shared-value-already-selected"}
+                    )
+                    continue
+                selected.append(value_id)
+                selected_set.add(value_id)
+                selected_by[index].append(value_id)
+                break
+        if not progressed:
+            break
+        if all(
+            positions[index] >= len(values)
+            or len(selected_by[index]) >= max_values_per_candidate
+            for index, values in enumerate(mapped)
+        ):
+            break
+
+    total_full = len(selected) >= max_total_values
+    for index, values in enumerate(mapped):
+        while positions[index] < len(values):
+            value_id = values[positions[index]]
+            positions[index] += 1
+            if value_id in selected_set:
+                reason = "shared-value-already-selected"
+            elif len(selected_by[index]) >= max_values_per_candidate:
+                reason = "per-candidate-limit"
+            elif total_full:
+                reason = "total-limit"
+            else:  # defensive: the round-robin loop should have selected it
+                reason = "not-selected"
+            ignored_by[index].append({"value_id": value_id, "reason": reason})
+
+    mappings = [
+        {
+            "candidate_id": candidate_id,
+            "mapped_value_ids": list(mapped[index]),
+            "selected_value_ids": list(selected_by[index]),
+            "ignored_mappings": sorted(
+                ignored_by[index], key=lambda item: (item["value_id"], item["reason"])
+            ),
+            "status": "mapped" if mapped[index] else "absent",
+        }
+        for index, candidate_id in enumerate(candidate_ids)
+    ]
+    return tuple(selected), mappings
+
+
 class CandidateSemanticProvider(KnowledgeProvider):
     """Select released semantic values from a ranked hypothesis state.
 
@@ -1464,70 +1538,12 @@ class CandidateSemanticProvider(KnowledgeProvider):
         return frozenset(snapshot.source_sample_ids)
 
     def _select(self, candidate_ids: tuple[str, ...]) -> tuple[tuple[str, ...], list[dict[str, object]]]:
-        mapped = [self._candidate_values.get(candidate_id, ()) for candidate_id in candidate_ids]
-        positions = [0 for _ in candidate_ids]
-        selected_by = [[] for _ in candidate_ids]
-        ignored_by: list[list[dict[str, str]]] = [[] for _ in candidate_ids]
-        selected: list[str] = []
-        selected_set: set[str] = set()
-
-        while len(selected) < self._max_total_values:
-            progressed = False
-            for index, values in enumerate(mapped):
-                if len(selected) >= self._max_total_values:
-                    break
-                if len(selected_by[index]) >= self._max_values_per_candidate:
-                    continue
-                while positions[index] < len(values):
-                    value_id = values[positions[index]]
-                    positions[index] += 1
-                    progressed = True
-                    if value_id in selected_set:
-                        ignored_by[index].append(
-                            {"value_id": value_id, "reason": "shared-value-already-selected"}
-                        )
-                        continue
-                    selected.append(value_id)
-                    selected_set.add(value_id)
-                    selected_by[index].append(value_id)
-                    break
-            if not progressed:
-                break
-            if all(
-                positions[index] >= len(values)
-                or len(selected_by[index]) >= self._max_values_per_candidate
-                for index, values in enumerate(mapped)
-            ):
-                break
-
-        total_full = len(selected) >= self._max_total_values
-        for index, values in enumerate(mapped):
-            while positions[index] < len(values):
-                value_id = values[positions[index]]
-                positions[index] += 1
-                if value_id in selected_set:
-                    reason = "shared-value-already-selected"
-                elif len(selected_by[index]) >= self._max_values_per_candidate:
-                    reason = "per-candidate-limit"
-                elif total_full:
-                    reason = "total-limit"
-                else:  # defensive: the round-robin loop should have selected it
-                    reason = "not-selected"
-                ignored_by[index].append({"value_id": value_id, "reason": reason})
-
-        mappings = [
-            {
-                "candidate_id": candidate_id,
-                "mapped_value_ids": list(mapped[index]),
-                "selected_value_ids": list(selected_by[index]),
-                "ignored_mappings": sorted(
-                    ignored_by[index], key=lambda item: (item["value_id"], item["reason"])
-                ),
-                "status": "mapped" if mapped[index] else "absent",
-            }
-            for index, candidate_id in enumerate(candidate_ids)
-        ]
-        return tuple(selected), mappings
+        return select_candidate_semantic_values(
+            candidate_ids,
+            self._candidate_values,
+            max_values_per_candidate=self._max_values_per_candidate,
+            max_total_values=self._max_total_values,
+        )
 
     def candidates(self, query: object, *, k: int) -> Ranking:
         from .knowledge import RankedFacet, RankResult  # noqa: PLC0415
@@ -1914,4 +1930,5 @@ __all__ = [
     "SlurpCandidateSemanticProvider",
     "SlurpIntentCandidateProvider",
     "resolve_provider",
+    "select_candidate_semantic_values",
 ]

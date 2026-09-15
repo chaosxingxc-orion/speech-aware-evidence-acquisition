@@ -25,6 +25,10 @@ from speech_aware_evidence_acquisition.rails.knowledge_stores import (
     build_knowledge_store_supply,
     load_knowledge_store_binding,
 )
+from speech_aware_evidence_acquisition.rails.knowledge_provider import (
+    CandidateSemanticProvider,
+    select_candidate_semantic_values,
+)
 from speech_aware_evidence_acquisition.rails.runner import AgentRuntimeContext
 from speech_aware_evidence_acquisition.rails.material import PhaseMaterial
 from speech_aware_evidence_acquisition.rails.semantic_knowledge_build import (
@@ -35,6 +39,35 @@ from speech_aware_evidence_acquisition.rails.semantic_knowledge_build import (
 
 SHA_A = "a" * 64
 SHA_B = "b" * 64
+
+
+def test_shared_candidate_selection_helper_preserves_provider_cap_semantics():
+    candidate_ids = ("alpha", "beta")
+    candidate_values = {
+        "alpha": ("alpha-one", "shared", "zz-alpha-three"),
+        "beta": ("beta-one", "shared", "zz-beta-three"),
+    }
+    expected = select_candidate_semantic_values(
+        candidate_ids,
+        candidate_values,
+        max_values_per_candidate=2,
+        max_total_values=3,
+    )
+    provider = object.__new__(CandidateSemanticProvider)
+    provider._candidate_values = candidate_values
+    provider._max_values_per_candidate = 2
+    provider._max_total_values = 3
+
+    assert provider._select(candidate_ids) == expected
+    selected, mappings = expected
+    assert selected == ("alpha-one", "beta-one", "shared")
+    assert mappings[0]["ignored_mappings"] == [
+        {"value_id": "zz-alpha-three", "reason": "per-candidate-limit"}
+    ]
+    assert mappings[1]["ignored_mappings"] == [
+        {"value_id": "shared", "reason": "shared-value-already-selected"},
+        {"value_id": "zz-beta-three", "reason": "total-limit"},
+    ]
 
 
 def _write(path, document):
