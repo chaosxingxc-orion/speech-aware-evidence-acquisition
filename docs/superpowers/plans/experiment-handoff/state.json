@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generation": 131,
+  "generation": 132,
   "phase": "owner_directed_execution",
   "coordinator": "Codex",
   "execution_owner": "Codex",
@@ -10,12 +10,12 @@
   "response_status": "unavailable",
   "owner_decision_id": "OWNER-CONTINUATION-002",
   "owner_decision_path": "docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-002.md",
-  "snapshot_commit": "b0b9bf30950e2f87c5c01f724fac0f088f32de68",
-  "updated_at_utc": "2026-09-15T12:16:42.357834+00:00",
-  "next_action": "Read STATUS-131.md. Shared on-demand target knowledge and last-role Planner tools are CPU-verified and merged. Keep all new GPU generation, fit/tokenizer contact, encoding and service restart held until explicit owner resume; preserve resident memory. SLURP broad/factored TRAIN-A remains first using its frozen source, followed by a named A2T repair and E21 transfer. Future tool-enabled configurations need distinct source, preparation, prompt, budget and fit bindings; no current experiment was changed.",
+  "snapshot_commit": "4fc6eb764e3df4913f3281ed5acec7325359ed4e",
+  "updated_at_utc": "2026-09-15T13:09:36.331452+00:00",
+  "next_action": "Read STATUS-132.md. Shared dormant on-demand stores, bounded candidate refresh and operative-Solver source analysis are merged with 320 passing CPU tests. The lexical-neighbor activation artifact is HELD_FOR_VALUE_REDESIGN_NOT_PUBLISHED; no formal successor baseline or experiment is enabled. Continue source-grounded domain/operation/object/scope value preparation and one complete A2T system configuration. Keep all new GPU generation, fit/tokenizer contact, encoding and restarts held until explicit owner resume; preserve resident memory. SLURP broad/factored TRAIN-A remains first from its frozen source, then reviewed A2T and E21 transfer.",
   "launch_allowed": false,
   "launch_allowed_semantics": "The coordination checker never grants a launch; each registered ExecutionPlan is checked independently under OWNER-CONTINUATION-002.",
   "latest_owner_decision_id": "OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15",
   "owner_power_direction": "2026-09-14: The owner confirmed that current power mode is optimal and instructed root not to dwell on it. Preserve current hardware/service settings.",
-  "owner_gpu_direction": "Current A2T task completed normally at2026-09-15T09:36:23.183569Z. Hold all new GPU experiments, fit, encoding and restarts until explicit owner resume. CPU analysis/preparation continues; preserve resident memory."
+  "owner_gpu_direction": "Current A2T task completed normally at 2026-09-15T09:36:23.183569Z. Hold all new GPU experiments, fit, encoding and restarts until explicit owner resume. CPU analysis/preparation continues; preserve resident memory."
 }

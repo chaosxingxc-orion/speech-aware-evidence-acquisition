@@ -1,10 +1,10 @@
 # Current continuation: September 15
 
-Read [STATUS-131](STATUS-131.md): the current Audio2Tool task finalized4000 rows and first-scored; hold all new GPU experiments until the owner explicitly resumes. SLURP and E21 dispatch are held; CPU scoring, analysis and preparation continue. Preserve resident model memory. See [the owner directive](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md).
+Read [STATUS-132](STATUS-132.md): the current Audio2Tool task finalized 4000 rows and first-scored; hold all new GPU experiments until the owner explicitly resumes. SLURP and E21 dispatch are held; CPU scoring, analysis and preparation continue. Preserve resident model memory. See [the owner directive](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md).
 
 # Owner-directed Stage-2 continuation
 
-**Latest execution:** [STATUS-131.md](STATUS-131.md) records the CPU-verified on-demand target knowledge tool and Planner dispatch correction, merged to master with 460 focused tests. Actual OpenJiuwen tests show Reviewer/Planner acquired values reaching a later Solver. Historical configurations stay unchanged; no new GPU contact is admitted. Audio2Tool full4000 generation, first scoring and candidate attribution remain complete under [STATUS-130](STATUS-130.md); candidate inclusion is 72.05%, and the original tool guard still fails.
+**Latest execution:** [STATUS-132.md](STATUS-132.md) records shared dormant on-demand stores, candidate refresh and operative-Solver candidate analysis, merged to master with 320 relevant CPU tests. The lexical-neighbor activation artifact is held for value redesign and has no runtime store release or formal successor experiment. Historical configurations and results remain intact; all new GPU work stays held. Audio2Tool full4000 scoring and candidate attribution are complete, with 72.05% candidate inclusion and the original tool guard still failed.
 
 **Current comparison direction:** [OWNER-SYSTEM-VERSIONS-025.md](OWNER-SYSTEM-VERSIONS-025.md) makes complete model-versus-system task quality primary and allows evidence-guided expansion of system versions. The supplied/withheld knowledge draft is withdrawn. [The current system plan](../../../readiness/2026-09-13-slurp-direct-vs-native-system-plan-v1.md) and [extension sequence](../../../readiness/2026-09-13-finalized-score-reuse-and-system-extension.md) govern the next work.
 
@@ -45,7 +45,7 @@ each contact. Recovery and original reply-exchange states remain supported.
 
 ## Current execution and decisions
 
-Read [STATUS-131.md](STATUS-131.md), state.json and [OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md) first.
+Read [STATUS-132.md](STATUS-132.md), state.json and [OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15](OWNER-GPU-AFTER-CURRENT-HOLD-2026-09-15.md) first.
 The September15 owner directive holds all new GPU experiments after the current Audio2Tool
 task completes or stops. It supersedes the launch scheduling in OWNER-GPU-RESUME-013;
 an explicit owner resume is required before dispatching another GPU task. The earlier G6/E21 campaigns' generation, scoring, fixed analysis and all four settlements
@@ -91,4 +91,4 @@ no new test/confirmatory exposure or Stage-3 execution is admitted.
 
 Current knowledge design: [discriminative values](../../../readiness/2026-09-11-discriminative-knowledge-values.md).
 
-Latest implementation handoff: [STATUS-131](STATUS-131.md). Shared target knowledge, native Planner tool dispatch, E21 window/context code and candidate diagnostics are integrated. The new tool has 460 focused CPU tests, including actual OpenJiuwen evidence delivery to Solver. The prepared SLURP broad/factored flight retains its frozen source and original tool configuration. New runtime fits, task gains, replications and the first actual optimizer cycle remain pending. GPU dispatch follows the owner hold. Preserve completed and failed sources. This pointer grants no generation authority.
+Latest implementation handoff: [STATUS-132](STATUS-132.md). Shared target knowledge, native Planner tool dispatch, E21 window/context code and candidate diagnostics are integrated. The new tool has 460 focused CPU tests, including actual OpenJiuwen evidence delivery to Solver. The prepared SLURP broad/factored flight retains its frozen source and original tool configuration. New runtime fits, task gains, replications and the first actual optimizer cycle remain pending. GPU dispatch follows the owner hold. Preserve completed and failed sources. This pointer grants no generation authority.
