@@ -3223,6 +3223,14 @@ def run_speech_native_agent_loop(
             raise RailsRunnerError(
                 "TaskAdapter.build_task_contract must return non-empty English text"
             )
+        if unit is not None:
+            # Expose source geometry to both direct and agent requests, without labels.
+            duration = unit.slice_record.audio_seconds
+            task_contract += (
+                f"\n\nCurrent speech window: local time starts at 0 seconds and ends "
+                f"at {duration:.9g} seconds. Use this window-local coordinate system "
+                "when referring to positions in the speech."
+            )
         query_state = _initial_query_state(
             plan=plan,
             sample=sample,

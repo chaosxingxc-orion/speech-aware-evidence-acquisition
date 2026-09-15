@@ -1278,6 +1278,7 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     "phase-audio2tool-native-candidates-review-revise-v1": "phase-audio2tool-native-candidates-review-revise-v1.json",
     "phase-audio2tool-native-candidates-review-revise-json-v1": "phase-audio2tool-native-candidates-review-revise-json-v1.json",
     "phase-native-review-revise-v1": "phase-native-review-revise-v1.json",
+    "phase-native-review-revise-json-v1": "phase-native-review-revise-json-v1.json",
     "phase-native-candidates-review-revise-v1": "phase-native-candidates-review-revise-v1.json",
     "phase-native-candidates-review-refresh-v1": "phase-native-candidates-review-refresh-v1.json",
     "native-answer-or-one-tool-v1": "native-answer-or-one-tool-v1.json",
@@ -1394,6 +1395,11 @@ def register_phase_programs_v1() -> None:
             default_controller_factory(
                 default_phase_program("phase-native-candidates-review-revise-v1")
             ),
+        )
+    if "phase-native-review-revise-json-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-native-review-revise-json-v1",
+            default_controller_factory(default_phase_program("phase-native-review-revise-json-v1")),
         )
     if "phase-native-review-revise-v1" not in registered:
         AGENT_CONTROLLERS.register(

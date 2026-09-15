@@ -1,0 +1,46 @@
+{
+  "analysis_plan": {
+    "relpath": "docs/readiness/2026-09-15-e21-native-window-system-v1/analysis-plan.json",
+    "sha256": "d498ecbb637d5b19e7a031d36cff6d012cb208c2ca1f054148e14d1362568087"
+  },
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check"
+      ],
+      "attempt_id": "attempt-e21-native-window-direct-full44-v1",
+      "baseline_fragment": "e21-native-window-direct-full44-v1",
+      "cell_id": "e21-native-window-direct-full44-v1",
+      "dataset_fragment": "earnings21-native-window-full44-v1",
+      "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1",
+      "readiness": {
+        "reason": "Owner holds new GPU tasks after current A2T. Complete source/config validation does not authorize service, fit, worker, ASR or generation. New exposure registration and explicit owner resume remain required.",
+        "state": "held"
+      },
+      "run_id": "SAEA-E21-NATIVE-WINDOW-DIRECT-FULL44-V1"
+    }
+  ],
+  "date": "2026-09-15",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 4.0,
+    "planned_model_calls": 1593,
+    "planned_speech_audio_seconds": 141346,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-E21-NATIVE-WINDOW-DIRECT-FULL44-V1",
+  "failure_policy": "Preserve original failure and contact record. No automatic restart/replay/geometry/output-cap change. At most one separately registered recovery after a named cause and bounded proof.",
+  "generation_budget": {
+    "cap": 1593,
+    "ceilings_are_not_targets": true,
+    "target": 1593
+  },
+  "population": {
+    "count": 44,
+    "execution_units": 1593,
+    "historically_exposed": true,
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e"
+  },
+  "purpose": "Prospective CPU-prepared whole44 direct/system comparison; every new GPU contact remains owner-held."
+}

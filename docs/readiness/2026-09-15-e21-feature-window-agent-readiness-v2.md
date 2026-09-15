@@ -197,3 +197,7 @@ All paths below are relative to SPEECHRL_DATA_DIR.
   SHA256 6b7333804b0d941e156f998426f03e0a17637a3235f1c640fcdaccd13bcb121c.
 - coordination/e21-native-window-bridge-v1/root-span-scope-admission-regression-v1.log;
   SHA256 99d1f2776ea1396ed3bc162d6d17ea3fd7698f38a4871b778d2f75e04a59a1f9.
+
+## Complete configuration successor
+
+The role prompts, matching direct/native cells, local ASR plan and prospective analysis are now prepared. Read [the complete held configuration](2026-09-15-e21-native-window-system-v1/README.md). The full actual source/config validation and 509-test CPU regression are complete; real service fit, task quality, postseal native window-reader proof and GPU admission remain pending. This successor does not release the owner hold.

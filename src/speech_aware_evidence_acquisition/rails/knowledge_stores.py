@@ -425,8 +425,9 @@ def build_knowledge_store_supply(
     from .governed_context_supply import (
         SOURCE_SCOPED_CONTEXT_FUSE_POLICY_ID,
         SOURCE_SCOPED_CONTEXT_PROVIDER_ID,
-        SourceScopedContextProvider,
     )
+
+    from .knowledge_provider import resolve_provider
 
     callbacks, explicit_specs_by_store, specs_by_store, receipts = {}, {}, {}, {}
     context_specs: dict[tuple[str, str], object] = {}
@@ -463,7 +464,10 @@ def build_knowledge_store_supply(
             context_specs[(store_id, phase)] = raw_spec
         if store.context_supply:
             # Prove scope/provenance compatibility before any runtime contact.
-            SourceScopedContextProvider(snapshot=store.snapshot, value_id_namespace=store_id)
+            resolve_provider(
+                SOURCE_SCOPED_CONTEXT_PROVIDER_ID,
+                snapshot=store.snapshot, value_id_namespace=store_id,
+            )
     for store_id in binding.store_ids:
         store = binding.store(store_id)
         scoped_phases = {phase for (owner, phase) in context_specs if owner == store_id}
@@ -566,7 +570,10 @@ def build_knowledge_store_supply(
         if (store_id, phase) in context_specs:
             store = binding.store(store_id)
             query_state = getattr(context, "query_state", None)
-            provider = SourceScopedContextProvider(snapshot=store.snapshot, value_id_namespace=store_id)
+            provider = resolve_provider(
+                SOURCE_SCOPED_CONTEXT_PROVIDER_ID,
+                snapshot=store.snapshot, value_id_namespace=store_id,
+            )
             ranking = provider.candidates(
                 {"context": context, "query_state": query_state}, k=1
             )
@@ -702,11 +709,6 @@ def _composite_context_fuse(_knobs=None):
         ).validate()
     return fuse
 
-
-if COMPOSITE_CONTEXT_RANK_POLICY_ID not in KNOWLEDGE_RANKERS.names():
-    KNOWLEDGE_RANKERS.register(COMPOSITE_CONTEXT_RANK_POLICY_ID, _composite_context_rank)
-if COMPOSITE_CONTEXT_FUSE_POLICY_ID not in KNOWLEDGE_FUSERS.names():
-    KNOWLEDGE_FUSERS.register(COMPOSITE_CONTEXT_FUSE_POLICY_ID, _composite_context_fuse)
 
 
 __all__ = [

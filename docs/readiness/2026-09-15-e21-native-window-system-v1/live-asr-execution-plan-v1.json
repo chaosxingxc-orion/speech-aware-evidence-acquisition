@@ -1,0 +1,18 @@
+{
+  "budget_basis": "CPU-only local Whisper, at most four cold span requests per execution unit from two Reviewer visits with at most two calls each; each span is at most 30 seconds. planned_gpu_hours is a positive API schema ceiling, not GPU use. Global caps do not impose a fixed target selection count.",
+  "execution_plan": {
+    "attempt_id": "attempt-e21-native-window-context-tools-full44-asr-v1",
+    "carrier_lock_key": "earnings21-original",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.001,
+    "planned_model_calls": 6372,
+    "planned_speech_audio_seconds": 190257,
+    "protocol_hash": "566f35df0b3780bfab347726e637065c94c2e3fc8a33abfeafd342895011a112",
+    "run_id": "SAEA-E21-NATIVE-WINDOW-CONTEXT-TOOLS-FULL44-ASR-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "status": "OWNER_GPU_HOLD_NO_CONTACT_AUTHORITY"
+}

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Mapping, Sequence
 
-from ..core.base import KNOWLEDGE_FUSERS, KNOWLEDGE_PROVIDERS, KNOWLEDGE_RANKERS
+from ..core.base import KNOWLEDGE_FUSERS, KNOWLEDGE_RANKERS
 from .errors import RailsError
 from .knowledge import (
     EXTERNAL_GOVERNED_PARTITION_ROLE,
@@ -155,11 +155,3 @@ def _source_scoped_fuse(_knobs: object = None):
             selected_value_ids=() if visible_id in query_state.retrieved_value_ids else (value_id,),
         ).validate()
     return fuse
-
-
-if SOURCE_SCOPED_CONTEXT_PROVIDER_ID not in KNOWLEDGE_PROVIDERS.names():
-    KNOWLEDGE_PROVIDERS.register(SOURCE_SCOPED_CONTEXT_PROVIDER_ID, SourceScopedContextProvider)
-if SOURCE_SCOPED_CONTEXT_RANK_POLICY_ID not in KNOWLEDGE_RANKERS.names():
-    KNOWLEDGE_RANKERS.register(SOURCE_SCOPED_CONTEXT_RANK_POLICY_ID, _source_scoped_rank)
-if SOURCE_SCOPED_CONTEXT_FUSE_POLICY_ID not in KNOWLEDGE_FUSERS.names():
-    KNOWLEDGE_FUSERS.register(SOURCE_SCOPED_CONTEXT_FUSE_POLICY_ID, _source_scoped_fuse)

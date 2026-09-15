@@ -81,6 +81,7 @@ class _WindowAdapter(TaskAdapter):
         ("phase-native-review-revise-v1", 22, 8, False, True),
         ("phase-native-review-revise-v1", 22, 16, True, False),
         ("phase-native-review-revise-v1", 22, 16, True, True),
+        ("phase-native-review-revise-json-v1", 22, 16, True, True),
     ),
 )
 def test_configured_feature_units_complete_shared_lifecycle(
@@ -170,7 +171,7 @@ def test_configured_feature_units_complete_shared_lifecycle(
         "speech_feature_key_representation_id": "window-query-v1",
         "speech_feature_matcher_policy_id": "window-direct-v1",
     }
-    if policy == "phase-native-review-revise-v1":
+    if policy != "phase-direct-only-v1":
         baseline.update(
             native_episode={
                 "schema": "saea-native-episode-config-v1", "episode_id": "configured-window-proof",
@@ -189,6 +190,12 @@ def test_configured_feature_units_complete_shared_lifecycle(
                 "attempt_id": "attempt-fit",
                 "contact_cap": 22,
             },
+        )
+    if policy == "phase-native-review-revise-json-v1":
+        baseline["native_episode"]["planner_output_format"] = "json-action-v1"
+        baseline["phase_material"]["planner"].update(
+            response_format_id="saea-native-planner-action-v1",
+            fill_params={"actions": ["ACCEPT", "REVISE"]},
         )
     if with_context:
         from speech_aware_evidence_acquisition.rails.governed_context_build import (
@@ -289,7 +296,7 @@ def test_configured_feature_units_complete_shared_lifecycle(
         model_extra={
             "transport": "llama-server", "base_url": _base_url(),
             "runtime_receipt": "receipts/inference.json", "prompt_order": "speech-query-prefix-v2",
-            "preserve_wire_responses": policy == "phase-native-review-revise-v1",
+            "preserve_wire_responses": policy != "phase-direct-only-v1",
             "speech_feature_root": str(feature_root),
             "decoding_params": {"temperature": 0, "max_tokens": 64},
             "server_args": [], "server_env": {
@@ -330,7 +337,11 @@ def test_configured_feature_units_complete_shared_lifecycle(
             message for message in reversed(request["messages"])
             if message["role"] == "user"
         ), sort_keys=True)
+        assert "Current speech window: local time starts at 0 seconds" in wire_text
+        assert "Use this window-local coordinate system" in wire_text
         window = "one" if "window/0" in wire_text else "two"
+        unit = attached.units[0 if window == "one" else 1]
+        assert f"ends at {unit.slice_record.audio_seconds:.9g} seconds" in wire_text
         role = next((name for name in phases
                      if f"Complete the {name} role" in current_instruction), "direct")
         if with_context:
@@ -344,6 +355,9 @@ def test_configured_feature_units_complete_shared_lifecycle(
         role_visits[key] = role_visits.get(key, 0) + 1
         if "Complete the planner role" in current_instruction:
             text = "REVISE" if with_span and role_visits[key] == 1 else "ACCEPT"
+            if policy == "phase-native-review-revise-json-v1":
+                assert request["response_format"]["type"] == "json_schema"
+                text = json.dumps({"action": text})
         elif "Complete the solver role" in current_instruction:
             if with_span and role_visits[key] > 1:
                 assert "turn on the kitchen lights" in wire_text
@@ -436,7 +450,7 @@ def test_configured_feature_units_complete_shared_lifecycle(
         score_jobs.extend(jobs)
         return _fake_score_batch(jobs, **kwargs)
 
-    if policy == "phase-native-review-revise-v1":
+    if policy != "phase-direct-only-v1":
         from speech_aware_evidence_acquisition.core import preparation_fit
 
         def fit_factory(runtime, program, plan):

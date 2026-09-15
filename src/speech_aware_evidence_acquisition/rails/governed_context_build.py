@@ -7,7 +7,6 @@ import hashlib
 import re
 from collections.abc import Sequence
 
-from ..core.base import KNOWLEDGE_BUILDERS
 from ..core.class_lists import ClassListError, context_tokens, roster_entries
 from .errors import RailsError
 from .knowledge import (
@@ -242,12 +241,6 @@ def build_governed_context_snapshot(
         values=tuple(values),
     ).validate()
 
-
-if GOVERNED_CONTEXT_BUILD_POLICY_ID not in KNOWLEDGE_BUILDERS.names():
-    KNOWLEDGE_BUILDERS.register(
-        GOVERNED_CONTEXT_BUILD_POLICY_ID,
-        build_governed_context_snapshot,
-    )
 
 
 __all__ = [

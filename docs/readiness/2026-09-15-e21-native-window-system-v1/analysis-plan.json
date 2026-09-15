@@ -1,0 +1,138 @@
+{
+  "arms": {
+    "direct": "SAEA-E21-NATIVE-WINDOW-DIRECT-FULL44-V1",
+    "system": "SAEA-E21-NATIVE-WINDOW-CONTEXT-TOOLS-FULL44-V1"
+  },
+  "candidate_rule": {
+    "historical": "Preserve all earlier verdicts including the historical strict insertion-rule failure. Do not apply this prospective rule retrospectively.",
+    "inconclusive": "If direction is favorable but no priority CI95 lower bound exceeds zero, report insufficient evidence and diagnose named failure modes. Do not rerun to search for a pass.",
+    "insertions": "Small insertion increases are analyzed separately and do not automatically veto a candidate. Report total and per-call insertion deltas, normalized insertion rate, affected entities/numbers and saved alignment examples.",
+    "other_quality": "Report non-entity, all entity classes, numeric value accuracy and semantic-high-impact errors. Any concentrated harm remains visible and requires root assessment before replication.",
+    "promising": "Require nonnegative natural-mixture point gains for both overall WER and PERSON, a strictly positive CI95 lower bound for at least one, and a strictly positive equal-call point gain for that supporting endpoint.",
+    "purpose": "Select whether a same-roster replication is justified; not a final effectiveness or generalization claim.",
+    "stability": "No stable-gain claim until a separately registered same-roster matched replication supports the conclusion. Owner GPU hold still governs all further contacts.",
+    "tradeoff": "If a priority endpoint worsens, report the full quality tradeoff for a named owner decision; do not silently retune thresholds or call it a pass."
+  },
+  "contact_budgets": {
+    "aggregate": "Ceilings are not targets. No additional model contact is authorized by this document; use the first registered flight units for engineering observation rather than adding an undeclared screen.",
+    "direct": {
+      "core_cap": 1593,
+      "fit_basis": "One props request plus3 endpoints for each of1593 real direct requests; shared fit_phase_runtime.",
+      "static_fit_endpoint_cap": 4780
+    },
+    "local_asr": {
+      "device": "cpu",
+      "family_call_cap": 6372,
+      "family_selected_audio_seconds_cap": 190257,
+      "inference_threads": 4,
+      "interop_threads": 1,
+      "maximum_span_seconds": 30,
+      "per_review_visit_cap": 2,
+      "per_unit_cap": 4,
+      "workers": 1
+    },
+    "system": {
+      "core_cap": 17523,
+      "core_minimum_target": 6372,
+      "fit_basis": "1593*11*(one query packet +3 endpoints), charged only when the real contact is materialized.",
+      "live_fit_endpoint_cap": 70092,
+      "per_unit_core_cap": 11,
+      "per_unit_formula": "1 + 2*(1+3+1)"
+    }
+  },
+  "cost": {
+    "priority": "Offline task quality; no online-latency veto.",
+    "report": [
+      "Model loading and resident wall time",
+      "Actual core contacts and outputs by role, input/output tokens and speech exposure",
+      "Actual fit endpoint contacts separately",
+      "Whisper cold calls, selected audio seconds, cache reuse and CPU wall time",
+      "GPU utilization integral and10-second utilization/power/slot/memory telemetry",
+      "Generation, CPU/tool wait, science wait, handoff and scoring-tail durations",
+      "Failures, retries, aborts and their consumed contacts"
+    ],
+    "system_total": "Include all realized Perception, Solver, Reviewer, Planner and tool work, including fallback and failed contacts. Do not report only the final revision cost."
+  },
+  "date": "2026-09-15",
+  "diagnostics": {
+    "pipeline": [
+      "Original/current speech OBS binding and selected intervals",
+      "Constructed and actually supplied ORG/SUPPLY values by call and role",
+      "Perception uncertainties, Reviewer findings, Planner routes and final Solver USE",
+      "Tool-request validity, cache hits, tool failures and returned evidence consumption",
+      "First Solver versus final Solver changes, saves and harms from saved scoring-compatible alignments",
+      "Output saturation, abstention, last-Solver fallback, contact exhaustion and complete44-call coverage"
+    ],
+    "restriction": "Do not equate tool call count, Reviewer confidence or ASR agreement with useful information gain. Do not claim neural RL or an optimized policy from root-authored prompts.",
+    "scope": "Postseal descriptive attribution; selected-tool and revised subsets are policy-selected, not randomized causal contrasts."
+  },
+  "estimators": {
+    "equal_call": "Average per-call rates over the prespecified eligible calls; report the denominator and zero-reference exclusions",
+    "equal_stratum": "Average pooled rates across nonempty sector strata; report the separate equal-sample-rate result as sensitivity",
+    "gain_direction": "Direct error rate minus system error rate; positive is better. Accuracy gains use system minus direct.",
+    "natural_mixture": "Pool counts across all44 calls before division; do not average window WER",
+    "overall_wer": "100 * sum(substitutions + deletions + insertions) / sum(reference_words), from asr-wer-whisper saved per-call counts",
+    "person_wer": "100 * sum(PERSON errors) / sum(PERSON reference_words), using the registered ConEC scorer's saved PERSON bucket; never reconstruct a different entity scorer",
+    "strata": "All sector and sample-rate strata from the frozen roster metadata, plus available source-metadata speaker strata; do not infer speakers from evaluation references",
+    "zero_reference": "Report errors and reference counts. Mark an undefined rate/interval NA rather than zero; never discard a failed or empty system output."
+  },
+  "future_optimization": "After the base yields reproducible task gains, define trajectory sampling and training-free policy optimization over knowledge construction/consumption, Reviewer acquisition decisions and Planner revision choices. Root manual tuning is engineering, not algorithmic RL.",
+  "launch_conditions": [
+    "Explicit owner GPU resumption",
+    "Integrate reviewed shared implementation at a flight boundary and freeze its code version",
+    "Complete new exposure/fit/tool registrations and required attempt bindings",
+    "Root-owned decoder-only service matches the complete identity and exclusive lease",
+    "Direct whole-roster actual-request fit passes at the fixed geometry and4/3 reserve",
+    "System each actual contact passes registered fitting before generation; any refusal stops the flight, without reducing output cap or switching geometry",
+    "A2T predecessor is replicated or root-caused before admitting this new mechanism"
+  ],
+  "matching": [
+    "Same44 parents and1593 source-bound packets",
+    "Same decoder/build/feature root, serving geometry, seed, temperature and1024 output cap",
+    "Same current-window geometry and transcription task contract",
+    "Same shared controller, FlightRuntime, OpenJiuwen executor, delivery and official scorers",
+    "Direct and system consecutively use one root-owned service process; any interruption stops dispatch and requires a prospective decision, never an automatic matched rerun"
+  ],
+  "population": {
+    "exclusions": "None based on outcomes, tool use, saturation, revision, abstention or failure.",
+    "execution_windows": 1593,
+    "historically_exposed": true,
+    "parent_calls": 44,
+    "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e",
+    "unit_of_inference": "call"
+  },
+  "question": "Does the complete frozen-core agent improve task-native transcription and PERSON quality over a new matched direct invocation?",
+  "resampling": {
+    "descriptive_intervals": "Also report CI90 for historical comparability, explicitly not the selection rule. All other intervals are descriptive.",
+    "equal_stratum_sensitivity": "Use the shared stratified call resampler within source-metadata sector strata and compute an equal-sector pooled-rate statistic.",
+    "implementation": "analysis.paired.resampled_statistic",
+    "pairing": "Use the same resampled44 call IDs in both arms; include all windows of each selected call.",
+    "priority_intervals": "Report CI95 for overall WER gain and PERSON gain. Together these provide at least90% simultaneous coverage by Bonferroni; they are the only two priority tests.",
+    "replicates": 10000,
+    "seed": 20260915
+  },
+  "runtime_boundaries": [
+    "No reference transcripts, gold entity annotations or future turns enter runtime",
+    "Public ConEC participant and token/count sources are source-scoped external knowledge, not transcript truth",
+    "Whisper runs only for a Reviewer-selected current-window span; never as fixed ASR preprocessing",
+    "Perception and Solver have no analytical tool authority; Solver alone delivers the answer; Planner chooses ACCEPT or one bounded REVISE",
+    "No meeting-minutes, diarization or summary-quality claim"
+  ],
+  "schema": "saea-e21-native-window-system-analysis-plan-v1",
+  "scoring": {
+    "entry": "core.scoring_batch",
+    "no_rescore": "Saved-score analysis performs no reference-loader or official-scoring invocation.",
+    "policy": "Run one complete44-call manifest per arm, one complete scoring job at a time. Preserve per-call counts and required alignments on the first score.",
+    "quality_read": "Register the model-free paired read before opening quality-bearing files. Release neither arm's task accuracy until both are sealed or a formal terminal closure ends the comparison.",
+    "scorers": [
+      "asr-wer-whisper",
+      "conec-entity-wer-official",
+      "numeric-value-accuracy-v1",
+      "semantic-high-impact-error-rate-v1",
+      "cost"
+    ],
+    "verification": "Use core.bundle.verify_bundle and core.scoring_receipt.verify_complete_score_receipt; require exact paired roster, source identity, scorer identity and original artifact hashes.",
+    "windows": "Use shared saved-score window decomposition only after verifying exact native delivery reconstruction. Extend the shared reader for native execution-unit receipts if needed; do not use legacy hard-coded historical verdict scripts."
+  },
+  "status": "PROSPECTIVE_OWNER_GPU_HOLD_NO_NEW_CONTACT_AUTHORITY"
+}
