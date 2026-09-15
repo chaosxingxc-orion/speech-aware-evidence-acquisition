@@ -1,0 +1,57 @@
+{
+  "claim_scope": "Previously exposed Stage-2 discovery comparison. No isolated component, stable replication, superiority or generalization claim.",
+  "comparison_source_commit": "834d4d475ec4ffe0e9d61ea031746d5c2dd024ee",
+  "comparison_source_worktree": "/home/chao/saea-worktrees/a2t-native-control-full-recovery-v1",
+  "complete_sources": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/complete-source-bindings-v1.json",
+    "sha256": "2f21b106f88b7a420b06569c35a441ea2b7bfc4b87462caca59677bd9240af00"
+  },
+  "config": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/paired-score-config-v1.json",
+    "sha256": "d872aa559963f269018e67512cfdffdcaf86d9cedf15e28d66362dbe22040cdd"
+  },
+  "decision_rule": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/configs/analysis/a2t-native-role-base-decision-v1.json",
+    "sha256": "6d7cd578f66c44cfc195fff4a2eb42f508e3546b4018918357f347161b468156"
+  },
+  "deferred": [
+    "Full ordered-action candidate coverage until scorer-side action-name sequences are separately hash-bound"
+  ],
+  "encoder_calls": 0,
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1",
+  "gpu_launch_allowed": false,
+  "metadata": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/full4000-metadata-v1.json",
+    "sha256": "98683bc8115c80c00e7d458ae13c6fdef68082d3539008e61460e06937a41952"
+  },
+  "model_calls": 0,
+  "native_attribution_recipe": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/native-attribution-recipe-v1.json",
+    "sha256": "31ac67fbaf2f031d53367be03169ef1eeb9b09d7584173696314d7b2015843bd"
+  },
+  "native_flight_receipts": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1/attempt-a2t-native-role-dual-store-union4000-recovery-generation-v1/flight-receipts.json",
+    "sha256": "b410055734e4561cdb783805ad17d29366b81720bc34a0c39c913175f995d1e0"
+  },
+  "population_count": 4000,
+  "primary_recipe": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-09-14-a2t-native-role-base-analysis-recipe-v1.json",
+    "sha256": "7697ce0e8303fa2dd68f34a91bdfd9fc5e3322e986a923f4b11d570a2bb3f104"
+  },
+  "quality_read_before_registration": false,
+  "query_clusters": 2097,
+  "read_scope": [
+    "Both first complete saved scores after shared full bundle validation",
+    "Paired complete output and native phase/trace/selection sources for registered descriptive attribution",
+    "Native role/contact/tool/revision/finite/fallback statistics from the verified shared implementation"
+  ],
+  "registered_at_utc": "2026-09-15T09:41:55.027400+00:00",
+  "registered_by": "root",
+  "schema": "saea-complete-paired-outcome-read-release-v1",
+  "scorer_invocations": 0,
+  "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+  "statistical_changes": false,
+  "tokenizer_calls": 0,
+  "tool_inference_calls": 0
+}
