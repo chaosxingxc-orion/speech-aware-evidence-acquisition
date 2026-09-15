@@ -3563,6 +3563,18 @@
         "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1",
         "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1"
       ]
+    },
+    {
+      "date": "2026-09-15",
+      "cell_id": "A2T-NATIVE-ROLE-CANDIDATE-ATTRIBUTION-UNION4000-V1",
+      "status": "CANDIDATE_ATTRIBUTION_COMPLETE_NO_NEW_GENERATION",
+      "source": "docs/results/2026-09-15-a2t-native-role-candidate-attribution-v1.json",
+      "source_sha256": "6126deb61a143361e5331eb422571b10fde3aa65d0e5ace41e19fc3727bad6c7",
+      "meaning": "Complete source-bound primary-target candidate attribution: 2882/4000 included (72.05%); 1117 observed misses and one unavailable Perception. All8883 unique candidate observations map to parameter values. Candidate-present rows gain65 correct primary tools and202 exact calls; absent rows lose209 tools and40 exact calls. The original failed tool guard remains unchanged. No new generation or scoring; owner GPU hold active.",
+      "run_ids": [
+        "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1",
+        "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1"
+      ]
     }
   ]
 }

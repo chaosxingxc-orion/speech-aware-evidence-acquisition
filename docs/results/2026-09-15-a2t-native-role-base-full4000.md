@@ -117,10 +117,57 @@ Thus the whole -144 correct-tool change is the sum of +3 where guidance is prese
 | tier7_multiturn | 366 | 73.2% |
 | tier8_intent_blending | 322 | 64.4% |
 
-The next candidate join must determine whether Perception omits uncovered tools or Solver abandons candidates containing them. Do not gate a runtime route on gold-guidance coverage: that is an analysis-only quantity. Any recovery trigger must use available speech, registry distinctions, disagreement or a problem-specific Reviewer finding.
+The completed candidate join below distinguishes Perception omissions from downstream primary-tool failures. Do not gate a runtime route on gold-guidance coverage: that is an analysis-only quantity. Any recovery trigger must use available speech, registry distinctions, disagreement or a problem-specific Reviewer finding.
 
 <!-- CANDIDATE_STATUS_START -->
-Actual Perception candidates and parameter selections are being joined using the existing Audio2Tool parser and preserved FlightReceipts, with raw-response and inventory binding. Report official-primary union coverage, actual per-action widths, downstream correctness and mapping availability after that join. Do not substitute the SLURP candidate parser or infer candidate identities from value titles. Full ordered-action coverage remains deferred until its scorer-side source is separately registered.
+The shared Audio2Tool reader has now verified all 4,000 frozen sources and 5,156 candidate-selection receipts, using raw Perception response/state bindings and the runtime selection function. Root corrected two reader assumptions: selection is registered before supply changes the Solver query, and finite completion preserves a terminal stop wave. The original failed reader receipt remains intact; no experiment output or score changed.
+
+The official primary target appears in the candidate union on **2,882/4,000 rows (72.05%)**. Of 3,999 available Perception states, 1,117 actually omit it; one Perception length stop has unavailable candidates and must not be relabeled an observed miss. Available-state coverage is 72.068%. Natural and equal-tier coverage are both 72.05%; equal-domain coverage is 76.346%. These are descriptive inclusion rates against the saved official primary target, not full ordered-action coverage.
+
+| Primary target in candidates | Rows | Direct tool correct | System tool correct | Direct exact | System exact |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Present | 2,882 | 2,242 | 2,307 | 696 | 898 |
+| Observed absent | 1,117 | 239 | 30 | 44 | 4 |
+| Candidate state unavailable | 1 | 0 | 0 | 0 | 0 |
+
+Candidate-present rows gain 65 correct primary tools and 202 exact calls. Candidate-absent rows lose 209 correct tools and 40 exact calls. This exhaustively localizes the overall -144 tools and +162 exact calls; it is not a causal effect of imposing or removing candidates.
+
+There remain 575 rows with the target somewhere in the candidates but an incorrect final primary tool. Qualify this with action structure: the target is in first-action candidates on 2,661 rows, of which 404 have an incorrect final primary tool; it occurs only in later-action candidates on 221 rows, of which 171 have an incorrect final primary tool. The latter group may involve action grouping/order or selection, and cannot simply be labeled intent discrimination failure. The observed correct-final rate among all union-covered rows is 2,307/2,882 (80.05%).
+
+The solver is not hard restricted to the candidate union. On 103 parsed outputs the final primary tool is outside it: 30 correct and 73 incorrect. All 30 correct escapes recover observed candidate misses; 17 incorrect escapes occur despite the correct primary tool being in the union. Unrestricted authority alone is therefore not an effective recovery mechanism, while hard filtering would eliminate these 30 observed recoveries. Retain final Solver authority and give Reviewer/Planner an explicit, evidence-based recovery route.
+
+| Activation guidance | Candidate target | Rows | Direct tool correct | System tool correct | Direct exact | System exact |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| Present | Present | 2,783 | 2,168 | 2,232 | 673 | 867 |
+| Present | Absent | 283 | 77 | 16 | 18 | 4 |
+| Absent | Present | 99 | 74 | 75 | 23 | 31 |
+| Absent | Absent | 834 | 162 | 14 | 26 | 0 |
+| Absent | Unavailable | 1 | 0 | 0 | 0 | 0 |
+
+Thus Perception loses the primary target on 283 guidance-covered rows and recovers it on 99 guidance-uncovered rows. Improve both the upstream guidance and its consumption; increasing retrieved card count alone is not an evidence-supported repair.
+
+| Tier | Candidate target present / 500 | Candidate coverage | Covered but final primary wrong |
+| --- | ---: | ---: | ---: |
+| tier1_direct | 399 | 79.8% | 97 |
+| tier2_parametric | 428 | 85.6% | 53 |
+| tier3_multi_intent | 399 | 79.8% | 79 |
+| tier4_implicit | 171 | 34.2% | 54 |
+| tier5_needle | 420 | 84.0% | 51 |
+| tier6_correction | 423 | 84.6% | 59 |
+| tier7_multiturn | 325 | 65.0% | 101 |
+| tier8_intent_blending | 317 | 63.4% | 81 |
+
+| Domain | Rows | Candidate target present | Candidate coverage |
+| --- | ---: | ---: | ---: |
+| smart_car | 351 | 272 | 77.493% |
+| smart_home | 2792 | 1892 | 67.765% |
+| wearables | 857 | 718 | 83.781% |
+
+These candidate diagnostics have no comparable published per-tier/domain candidate metric; the official paper and repo task columns remain in the complete-strata tables above.
+
+All 8,883 per-sample unique candidate observations map to authoritative parameter values, and actual selection matches the shared runtime policy. This establishes mapping/custody, not sufficient value content or semantic use. Of 3,999 observed states, 31 contain zero actions. Across 6,392 action records the candidate widths are: one = 4,467; two = 1,292; three = 324; four = 309. A configured maximum of four does not produce a broad four-candidate set; width one is not a calibrated confidence score. Repeated Solver visits do not count as new candidate-generation observations.
+
+Full ordered-action gold coverage remains explicitly deferred until its scorer-side sequence source is separately registered. Do not reconstruct it from value titles, the primary gold tool, or unavailable fields.
 <!-- CANDIDATE_STATUS_END -->
 
 ## Native behavior, tool use and contact costs
@@ -148,8 +195,8 @@ The campaign exited normally at 09:36:23.183569 UTC. Its trace persisted through
 
 ## Next work and scientific boundaries
 
-1. Retain the completed fixed paired decision and finish the verified candidate join. The primary intervals pass and the original tool-accuracy guard fails.
-2. Preserve the separate activation and parameter-meaning stores. Use measured candidate coverage to distinguish missed evidence from downstream selection failure; keep missing receipt evidence separate from actual candidate misses.
+1. Retain the completed paired decision and verified candidate attribution. The primary intervals pass and the original tool-accuracy guard fails; candidate coverage is 72.05%, with downstream primary-tool errors remaining on 575 covered rows.
+2. Preserve the separate activation and parameter-meaning stores. Prioritize candidate formation and evidence-based recovery while preserving parameter improvements. Keep missing receipt evidence separate from actual candidate misses; address action ordering separately from tool discrimination.
 3. After explicit owner GPU resume, prioritize the already prepared SLURP TRAIN-A broad/factored system because it provides a faster system iteration surface. Candidate inclusion remains a 95% target alongside complete task quality; it is not a reason to stop parameter optimization.
 4. Design the next A2T version from named failures: request-grounded candidate distinctions, parameter omission/default provenance and problem-specific review. Keep analytical tools under Reviewer/Planner and final answer authority under Solver. Dynamic speech tools require actual targeted calls and demonstrated information gain, not just a declared toolkit.
 5. The prepared E21 native window/context/tool configuration remains held. Evaluate the native transcription/PERSON task with its registered full44 population; do not replace it with an invented summarization objective.
@@ -171,5 +218,8 @@ Use SPEECHRL_DATA_DIR/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/ for large 
 | native-saved-score-groups-v1.json | 04b590acc75c36d99d1a925c388d8e1320c1048eea36b7070222a8fe837d0e3a |
 | official-tool-confusion-and-semantics-v1.json | f1927dd9171e8706cf1da13fa447f0bd3f4473084966461e7bb6ca70b08ad863 |
 | activation-supply-projection-v1.json | cfbc5242223931031733341d7760b6b9a274c1a799f1ea8060b8a74bc60db545 |
+| candidate-source-audit-v2.json | dea6d3026648bcfbc4aa4912da9de57072269b7acb8af8e060f245e4995d1acb |
+| candidate-outcome-join-v1.json | f0c38ab4608f46aeb9c4c722ff8a6941d2075d67e6cb20b76764415528dae95f |
+| candidate-primary-order-diagnostic-v1.json | 5f475a0468d1cd50754e93814dbdff819e487a1496de3ec8dacf5f5172d99792 |
 
 The [prospective decision](../../configs/analysis/a2t-native-role-base-decision-v1.json), [paired read release](../readiness/2026-09-15-a2t-native-role-paired-read-release-v1.json), [analysis recipe](../readiness/2026-09-14-a2t-native-role-base-analysis-recipe-v1.json) and [STATUS-128](../superpowers/plans/experiment-handoff/STATUS-128.md) retain the execution and analysis history. Historical failures and immutable source bytes remain unchanged.

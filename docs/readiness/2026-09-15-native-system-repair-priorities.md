@@ -9,7 +9,7 @@ Use the complete Audio2Tool report in docs/results/2026-09-15-a2t-native-role-ba
 The actionable structure has three parts:
 
 1. Preserve parameter resolution. Most exact improvement occurs when both systems already select the correct tool and on rows with nonempty reference parameters. Analyze omission, defaults, units, scope and cancellation separately instead of indiscriminately adding or removing explanatory content.
-2. Repair selection under weak guidance. Actual eight-card activation supply contains the official target on 76.65% of rows. The guidance-absent group accounts for net -147 correct tools, offset by +3 in the present group. This is source-bound localization, not an isolated retrieval effect. Complete the real candidate join before deciding whether the next change belongs primarily to candidate formation or downstream resolution.
+2. Repair selection under weak guidance. Actual eight-card activation supply contains the official target on 76.65% of rows. The guidance-absent group accounts for net -147 correct tools, offset by +3 in the present group. This is source-bound localization, not an isolated retrieval effect. The completed candidate join places official primary-target inclusion at 72.05%; the target-present group gains 65 correct tools, while actual target misses lose 209. Prioritize candidate formation/recovery and preserve downstream parameter gains.
 3. Give review a route to acquire missing evidence. Only 11 rows invoke analytical task-contract tools, and no observation tool executes. More Reviewer prose alone is not demonstrated to create new information. A frozen task-contract response can resolve schema or parameter-meaning uncertainty; it cannot recover unheard words.
 
 ## Distinct optimization surfaces
@@ -43,3 +43,22 @@ Later algorithm work must specify proposal/sampling distributions, group-relativ
 Use public registry and permitted construction/TRAIN sources for new values, examples or corrective memory. Keep current evaluation errors in analysis; never insert their gold labels or transcripts into runtime stores. Preserve existing frozen split identities, one-shot attempt/recovery limits and source receipts.
 
 All work uses WSL Ubuntu-24.04 and shared configuration-driven components. Current permitted work is CPU analysis, bounded tests, source integration and configuration preparation. No new GPU generation, capacity/tokenizer contact, encoding or service restart is allowed until an explicit owner resume. Preserve resident service memory.
+
+
+## Completed candidate evidence and the next system version
+
+Root completed the source-bound join: 2,882 targets enter the candidate union, 1,117 are observed absent and one candidate state is unavailable. Coverage is 72.05%, versus the owner's 95% objective. All 8,883 unique candidate observations successfully map to their parameter values. Mapping loss is not the measured bottleneck; value content and use still require semantic evaluation.
+
+Candidate breadth must be deliberate and grounded. Although the current bound allows four tools per action, 4,467 of 6,392 action records contain only one. Do not read this as confidence or silently pad/rewrite sealed outputs. The next prospective system should preserve alternative operation/object/goal interpretations when speech and the public registry do not disambiguate them. The already prepared SLURP broad/factored TRAIN-A system is the first GPU iteration after explicit resume.
+
+For A2T, retain separate stores and align their consumption with the role:
+- Perception consumes activation distinctions and decomposes requested actions. Construction keys should cover permitted paraphrases and implicit goals; values should state activation evidence, near-neighbor exclusions and the discriminating question, not just tool names.
+- Solver consumes candidate-specific parameter meaning, ranges, units, reference resolution, required/optional status and evidence for explicit versus default arguments. Keep its final authority and do not hard filter to the candidate union.
+- Reviewer identifies a specific unresolved distinction, contradicted argument or missing speech evidence. Planner chooses a bounded next action: retrieve a targeted activation contrast, inspect a public parameter contract, or request targeted local ASR/relisten when the problem is acoustic. More critique without an evidence-changing action is not the repair.
+- Preserve action identities and speech-grounded order through selection and argument filling. Of 575 union-covered primary-tool errors, 171 occur where the gold primary tool appears only in later-action candidates; these must not all be called tool discrimination failures.
+
+Runtime triggers must use available speech, disagreement, semantic conflicts and contract checks. Gold inclusion and guidance coverage are analysis-only variables. Build new knowledge and corrective memory from public/construction/TRAIN material; current evaluation labels and failures must never enter runtime stores.
+
+Do not infer a randomized candidate or retrieval effect from these groups. The next system comparison should test the complete revised system against the frozen direct baseline under a prospective matched setup, with candidate inclusion, conditional resolution, action structure, argument provenance and tool information gain as diagnostics. Preserve the current failed tool guard; do not reinterpret the existing flight as passing. Register and replicate the next admissible version before claiming stable benefit.
+
+This is a CPU-ready scientific direction. It does not authorize new model calls, a service restart or an experiment successor during the owner GPU hold.

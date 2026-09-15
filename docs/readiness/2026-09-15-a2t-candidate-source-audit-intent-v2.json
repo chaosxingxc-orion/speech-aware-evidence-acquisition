@@ -1,0 +1,52 @@
+{
+  "analysis_id": "SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1",
+  "encoder_calls": 0,
+  "flight_receipts": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1/attempt-a2t-native-role-dual-store-union4000-recovery-generation-v1/flight-receipts.json",
+    "sha256": "b410055734e4561cdb783805ad17d29366b81720bc34a0c39c913175f995d1e0"
+  },
+  "gpu_launch_allowed": false,
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1/attempt-a2t-native-role-dual-store-union4000-recovery-generation-v1/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1.run-manifest.json",
+    "sha256": "8a4e515bb52ed4692bdca855e7053586c409760e4ee33df9fcca9b4542466b73"
+  },
+  "model_calls": 0,
+  "outcome_read_release": "docs/readiness/2026-09-15-a2t-native-role-paired-read-release-v1.json",
+  "output": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/candidate-source-audit-v2.json",
+  "phase_source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1/attempt-a2t-native-role-dual-store-union4000-recovery-generation-v1/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1.phases.json",
+    "sha256": "fe782461cce43b9e688d04b1862735866e059aae7e1263ade4fb6eddf3ee0ca8"
+  },
+  "prior_reader_failure": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/candidate-source-audit-exit-v1.json",
+    "sha256": "34252765bbd11d4adf2be137609e446ce36cc610b0a0fe44cdbbc3af72cb48b3"
+  },
+  "reader_commit": "90a89e3eab6b258f0f92679c9c939bbcf10fe27b",
+  "reader_worktree": "/home/chao/saea-worktrees/a2t-postseal-analysis-v1",
+  "recipe": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/native-attribution-recipe-v1.json",
+    "sha256": "31ac67fbaf2f031d53367be03169ef1eeb9b09d7584173696314d7b2015843bd"
+  },
+  "registered_at_utc": "2026-09-15T11:30:18.794700+00:00",
+  "root_repair": "Preserve and validate the terminal stop wave of finite completions; retain ordinary acceptance semantics and all non-stop supply bindings. The original experiment is unchanged.",
+  "root_review_fixes": [
+    "Reuse runtime round-robin selection as a shared pure function.",
+    "Bind PRE-supply selection state through recorded transition to POST-supply Solver request; do not compare their hashes as if identical.",
+    "Recognize the actual recorded finite-completion stop wave, including unavailable Perception and retained earlier Solver candidates."
+  ],
+  "runtime_commit": "834d4d475ec4ffe0e9d61ea031746d5c2dd024ee",
+  "runtime_worktree": "/home/chao/saea-worktrees/a2t-native-control-full-recovery-v1",
+  "schema": "saea-a2t-candidate-source-audit-intent-v1",
+  "scorer_invocations": 0,
+  "source_algorithm_extraction_ast_equivalent": true,
+  "supersedes_reader_intent": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-A2T-NATIVE-ROLE-BASE-ANALYSIS-V1/candidate-source-audit-intent-v1.json",
+    "sha256": "a14a25d09a0a1d1ff34eb62d74ccbf6b0a6a98082d78945e500adda856b52a95"
+  },
+  "tokenizer_calls": 0,
+  "validation": {
+    "engineering_base_check": "PASS",
+    "ruff": "PASS",
+    "tests": 84
+  }
+}
