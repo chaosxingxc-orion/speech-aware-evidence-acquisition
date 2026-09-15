@@ -96,7 +96,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
 
-from ..core.delivery import normalize_terminal_response, terminal_response_saturated
+from ..core.delivery import (
+    normalize_terminal_response,
+    stitch_ordered_text,
+    terminal_response_saturated,
+)
 from ..core.base import SampleContext, SampleOutcome
 from ..core.model import FrozenCoreError, SliceRecord, SliceRegistry
 from ..core.tracing import set_current_trace_buffer
@@ -2330,7 +2334,7 @@ class ObsAgentLoopPolicy:
                 "refusing to emit an empty hypothesis silently"
             )
 
-        stitched = " ".join(span for span in accepted_spans if span)
+        stitched = stitch_ordered_text(accepted_spans)
         write_json_artifact(
             run_dir / f"{ctx.sink.run_id}.obs-derivation.{sample.sample_id}.json",
             {
