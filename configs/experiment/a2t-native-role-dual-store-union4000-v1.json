@@ -19,7 +19,7 @@
       "dataset_fragment": "audio2tool-org1-union-4000",
       "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1",
       "readiness": {
-        "reason": "DRAFT HELD. Preparation is complete, but root has not admitted full-population model contact. A final source freeze, complete actual-request fit, live service identity and exclusive lease remain required.",
+        "reason": "Root admits the registered shared pipeline. Complete direct actual-request fitting remains a mandatory pre-generation barrier; each native request must pass its actual-history fit before dispatch. Readiness does not certify unobserved capacity.",
         "requirements": [
           {
             "kind": "preparation",
@@ -33,9 +33,16 @@
             "reason": "Root campaign-compatible prerequisite eligibility for both full4000 runs.",
             "relpath": "coordination/a2t-agent-base-transfer-v1/root-full4000-prerequisite-eligibility-v1.json",
             "sha256": "58f52d86d9422cca9b4202e8b8b78f4713757fe8dcfcab993f3f9304a905f6f5"
+          },
+          {
+            "expected_decision_id": "a2t-native-role-full4000-operational-admission-v1",
+            "kind": "decision",
+            "reason": "Root reviewed host/service custody and scientific prerequisites; execution remains subject to registered actual-fit gates.",
+            "relpath": "coordination/a2t-native-role-full4000-v1/root-operational-admission-v1.json",
+            "sha256": "32144b4cc1d1c61e0a461d6181cf70138b3570fc75f3b4897ac6fc69dd5008bd"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-V1"
     }

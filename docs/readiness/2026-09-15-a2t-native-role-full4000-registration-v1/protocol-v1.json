@@ -1,0 +1,210 @@
+{
+  "analysis_recipe": {
+    "repo_relpath": "docs/readiness/2026-09-14-a2t-native-role-base-analysis-recipe-v1.json",
+    "sha256": "7697ce0e8303fa2dd68f34a91bdfd9fc5e3322e986a923f4b11d570a2bb3f104"
+  },
+  "authorization": "Existing owner-directed full4000 direct-versus-agent transfer. Root has verified the completed SLURP prerequisite, sealed native engineering proof, live v2 service and operational admission. Generation is conditional on the registered actual-request capacity gates.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 188001,
+    "generation_calls_cap": 48000,
+    "gpu_hours_fit_inclusive": 56.0,
+    "native_task_contract_calls_cap": 16000,
+    "official_complete_scoring_jobs": 2,
+    "speech_audio_seconds_cap": 285000
+  },
+  "configuration": {
+    "direct": {
+      "composed_config_hash": "000c05dea25a63d5a8cb74c42d086f8fecae5b9ea032227650e8f251939805cc",
+      "fragment_file_sha256": {
+        "baseline": "b4debd5a55ad3d6c2ffb9a64392bda8127d8292c60cf431f353a548bc9b082c9",
+        "dataset": "00064d591240d15a4640cdb824160cd6b88d2e767f1e2570d0743f148ef281ef",
+        "experiment": "d2f2623bc6405c09b28d1e9380b0974bd523f5fb9d4563ba321ba4fe2250e934",
+        "model": "853a9645e8a47ff94bc34a61dbb12e963ddba0a3dcf06be7b3f2a3a6fcd5fcd6"
+      },
+      "fragments": {
+        "baseline": "a2t-native-role-direct-union4000-v1",
+        "dataset": "audio2tool-org1-union-4000",
+        "experiment": "a2t-native-role-direct-union4000-v1",
+        "model": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1"
+      },
+      "normalized_preparation_config_sha256": "08f632f79077d8fb25f85abe615abea24f488b93128db780a3e9f1a27310779b",
+      "runtime_protocol_hash": "f9950652677c3b4efa87306865e20b99998914671aaadb71412996f7536eace8"
+    },
+    "system": {
+      "composed_config_hash": "7935243e2fbd397711f31547c771b9cfc010f3733d1e267830d7f75673e90a76",
+      "fragment_file_sha256": {
+        "baseline": "ab66487fb7752df3265c23133f2090ecf27271a7fd7ec3f507f8734863e28072",
+        "dataset": "00064d591240d15a4640cdb824160cd6b88d2e767f1e2570d0743f148ef281ef",
+        "experiment": "eb3f3c88403e6826acd7b441ce7289ad9f15876a8ef3babec5e73f1dc0ed1490",
+        "model": "853a9645e8a47ff94bc34a61dbb12e963ddba0a3dcf06be7b3f2a3a6fcd5fcd6"
+      },
+      "fragments": {
+        "baseline": "a2t-native-role-dual-store-union4000-v1",
+        "dataset": "audio2tool-org1-union-4000",
+        "experiment": "a2t-native-role-dual-store-union4000-v1",
+        "model": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1"
+      },
+      "normalized_preparation_config_sha256": "e0b57120c6b44479e08335fe7fb6f74fb2e7118d4af2470bf5d640a971992634",
+      "runtime_protocol_hash": "9203e089cd33c067576c70304ec01e3a0ec15a0dd2a3d260cedf4918f26e16d7"
+    }
+  },
+  "draft_base_commit": "37a0099ac199a6c0a25d4fbff4b0e2c18853bb95",
+  "draft_origin": {
+    "relpath": "docs/readiness/2026-09-15-a2t-native-role-full4000-registration-v1/protocol-draft-v1.json",
+    "sha256": "cd8269c118e11f9d56a21d383c72656721d4194035b9b6ed430535a3d67235f9"
+  },
+  "execution_plans": {
+    "direct_fit": {
+      "attempt_id": "attempt-a2t-native-role-direct-union4000-fit-v1",
+      "carrier_lock_key": "audio2tool",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 8.0,
+      "planned_model_calls": 12001,
+      "planned_speech_audio_seconds": 25000,
+      "protocol_hash": "f9950652677c3b4efa87306865e20b99998914671aaadb71412996f7536eace8",
+      "run_id": "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-FIT-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "direct_generation": {
+      "attempt_id": "attempt-a2t-native-role-direct-union4000-generation-v1",
+      "carrier_lock_key": "audio2tool",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 8.0,
+      "planned_model_calls": 4000,
+      "planned_speech_audio_seconds": 25000,
+      "protocol_hash": "f9950652677c3b4efa87306865e20b99998914671aaadb71412996f7536eace8",
+      "run_id": "SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "system_fit": {
+      "attempt_id": "attempt-a2t-native-role-dual-store-union4000-fit-v1",
+      "carrier_lock_key": "audio2tool",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 48.0,
+      "planned_model_calls": 176000,
+      "planned_speech_audio_seconds": 260000,
+      "protocol_hash": "9203e089cd33c067576c70304ec01e3a0ec15a0dd2a3d260cedf4918f26e16d7",
+      "run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-FIT-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "system_generation": {
+      "attempt_id": "attempt-a2t-native-role-dual-store-union4000-generation-v1",
+      "carrier_lock_key": "audio2tool",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 48.0,
+      "planned_model_calls": 44000,
+      "planned_speech_audio_seconds": 260000,
+      "protocol_hash": "9203e089cd33c067576c70304ec01e3a0ec15a0dd2a3d260cedf4918f26e16d7",
+      "run_id": "SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    }
+  },
+  "failure_policy": "Preserve every contact and stop on failure. Do not replay the proof, invent stages, restart automatically or change roster, method, output ceiling or geometry mid-attempt.",
+  "final_execution_source_freeze": {
+    "binding_policy": "Root must publish and verify the final clean execution commit and file pins after this registration commit and before contact. This external receipt avoids a self-referential commit hash.",
+    "relpath": "coordination/a2t-native-role-full4000-v1/source-freeze-v1.json",
+    "root": "data"
+  },
+  "method": {
+    "actual_fit_required_for_full_roster": true,
+    "campaign": "a2t-native-role-base-union4000-v1",
+    "direct_experiment": "a2t-native-role-direct-union4000-v1",
+    "full_shared_harness": true,
+    "system_experiment": "a2t-native-role-dual-store-union4000-v1"
+  },
+  "pending_root_bindings": [
+    "final clean source-freeze receipt before contact",
+    "exclusive generation lease before contact",
+    "direct full-roster actual fit before first direct generation",
+    "native per-contact actual fit before each realized request"
+  ],
+  "population": {
+    "count": 4000,
+    "dataset_fragment": "audio2tool-org1-union-4000",
+    "per_tier": 500,
+    "roster_changed": false,
+    "speech": "original frozen union4000 packets",
+    "split_identity_hash": "ed8946ddf99f9e898af1c8cb94932c538165cd591c2cff3021321749e52103d6",
+    "tiers": 8
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-V1/phase-supply-v1.json",
+    "sha256": "91847da0921f12a0a1be5cc1b4eafee091de3e1e32986a779d77d29a36026b68"
+  },
+  "prerequisite_receipts": {
+    "campaign_eligibility": {
+      "decision_id": "a2t-native-role-full4000-prerequisite-eligibility-v1",
+      "relpath": "coordination/a2t-agent-base-transfer-v1/root-full4000-prerequisite-eligibility-v1.json",
+      "sha256": "58f52d86d9422cca9b4202e8b8b78f4713757fe8dcfcab993f3f9304a905f6f5"
+    },
+    "native_engineering_completion": {
+      "observed": {
+        "actual_requests": 22,
+        "canonical_perception_states": 4,
+        "clipping_or_padding": false,
+        "episodes": 4,
+        "fit_endpoint_contacts": 88,
+        "minimum_fit_margin_tokens": 9054,
+        "source_bound_parameter_selections": 6,
+        "tool_branch_exercised": false
+      },
+      "relpath": "coordination/a2t-native-role-engineering-proof-v1/root-engineering-completion-v1.json",
+      "sha256": "5341f2fc972b07b177a84086b886d2b8f896b72d91a52b3a33c0e2a3cb7dfbe3",
+      "status": "PASS_OBSERVED_ENGINEERING_PATHS"
+    },
+    "operational_admission": {
+      "decision_id": "a2t-native-role-full4000-operational-admission-v1",
+      "relpath": "coordination/a2t-native-role-full4000-v1/root-operational-admission-v1.json",
+      "sha256": "32144b4cc1d1c61e0a461d6181cf70138b3570fc75f3b4897ac6fc69dd5008bd"
+    },
+    "slurp_advance": {
+      "relpath": "coordination/slurp-dual-store-base-replication-v1/root-verdict-v1.json",
+      "sha256": "c0d99f1aab031f83c8f75288e08cc18e01ede79323f4134fb04a55a65611a3c8"
+    }
+  },
+  "readiness_semantics": "Admission enters the shared fit/generation pipeline. The direct arm cannot generate before all4000 actual requests fit. Native future histories are checked on realization, never certified by this document.",
+  "registered_at_utc": "2026-09-15T01:03:29.029116+00:00",
+  "registered_by": "root",
+  "registration_base_commit": "5ef48c49468cb3c15af6f4b096dc954a0094c440",
+  "schema": "saea-audio2tool-native-role-full4000-protocol-v1",
+  "scoring": {
+    "complete_manifest_only": true,
+    "deferred_until_seal": true,
+    "direct": 1,
+    "per_sample": true,
+    "system": 1
+  },
+  "serving": {
+    "binding_note": "The v1 label remains in the frozen preparation identity. Shared campaign and fit APIs bind the actual resident through expected_session_id. Full-pair contacts require the new v2 session and never attach to the stopped proof process.",
+    "expected_session_id": "serving-a2t-native-role-base-np3-max2048-v2",
+    "geometry": {
+      "max_output_tokens": 2048,
+      "slot_tokens": 32768,
+      "slots": 3,
+      "total_context_tokens": 98304
+    },
+    "prepared_config_session_label": "serving-a2t-native-role-base-np3-max2048-v1",
+    "proof_process": {
+      "ended_at": "2026-09-14T19:15:03Z",
+      "reuse_for_full_pair": false,
+      "session_id": "serving-a2t-native-role-base-np3-max2048-v1"
+    },
+    "shared_by_arms": true
+  },
+  "status": "REGISTERED_WITH_MANDATORY_IN_RUN_CAPACITY_GATES"
+}
