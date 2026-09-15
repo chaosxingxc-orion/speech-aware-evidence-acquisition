@@ -1,6 +1,7 @@
 """Raw native speech keeps source-bound evidence and the prepared request contract."""
 
 import copy
+import base64
 import hashlib
 import json
 
@@ -8,8 +9,12 @@ import pytest
 
 from speech_aware_evidence_acquisition.core.model import SliceRecord
 from speech_aware_evidence_acquisition.rails import build_slice_registry
+from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
 from speech_aware_evidence_acquisition.rails.core_client import FrozenCoreClientError
+from speech_aware_evidence_acquisition.rails.material import PhaseMaterial
+from speech_aware_evidence_acquisition.rails.phase_runner import run_agent_phase
 from speech_aware_evidence_acquisition.rails.runner import RailsRunnerError
+from speech_aware_evidence_acquisition.reproduction.ojw import openjiuwen_available
 from speech_aware_evidence_acquisition.reproduction.ojw.native_request import (
     NativeRoleSpeechBinding, NativeSpeechRequestError,
 )
@@ -17,10 +22,68 @@ from test_native_request_regressions import _adapter, _role_request
 from test_native_episode_runner import (  # noqa: F401
     _ActualEpisodeHarness,
     _spawn_live_matching_process,
+    _knowledge_snapshot,
+    _wire_response,
 )
 from test_rails_core_client_native_tools import _TOOLS, _World, _client, _plan
 
 ARM = "raw-speech-agent-native-tools"
+
+
+@pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
+def test_direct_only_phase_uses_the_shared_raw_client_and_original_audio(tmp_path):
+    harness = _ActualEpisodeHarness(
+        tmp_path,
+        sample_count=1,
+        max_revisions=0,
+        max_contacts=4,
+        planner_actions=("ACCEPT",),
+        arm=ARM,
+        query_source="speech_audio",
+    )
+    bodies = []
+
+    def post(_url, body_bytes):
+        bodies.append(json.loads(body_bytes))
+        return _wire_response("direct raw answer")
+
+    harness.transport._post = post
+    program = default_phase_program("phase-direct-only-v1")
+    try:
+        summary = run_agent_phase(
+            phase_name="direct",
+            program=program,
+            adapter=harness.adapter,
+            plan=harness.plan,
+            data_root=harness.world.data_root,
+            core_client=harness.client,
+            split_id="all",
+            knowledge_snapshot=_knowledge_snapshot(),
+            speech_packet_bindings=harness.speech_bindings,
+            query_source="speech_audio",
+            trace_sink=harness.trace,
+            decoding_params={"temperature": 0, "max_tokens": 64},
+            material_for_phase=lambda _phase, _context: PhaseMaterial(
+                instruction="Answer the original speech.",
+                response_format=None,
+                contact_id="direct-raw-contact",
+                purpose="direct",
+            ),
+        )
+    finally:
+        close_summary = harness.close()
+
+    assert len(summary.results) == 1
+    assert len(summary.results[0].contacts) == 1
+    assert close_summary["request_count"] == 1
+    assert len(bodies) == 1
+    content = bodies[0]["messages"][1]["content"]
+    audio = [part for part in content if part["type"] == "input_audio"]
+    assert len(audio) == 1
+    assert all(part["type"] != "input_speech_features" for part in content)
+    assert base64.b64decode(audio[0]["input_audio"]["data"]) == (
+        harness.world.data_root / harness.samples[0].audio_ref.path
+    ).read_bytes()
 
 
 def messages(world):
