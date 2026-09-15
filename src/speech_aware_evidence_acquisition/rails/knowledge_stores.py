@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 import hashlib
 import json
 import re
 from pathlib import Path
 from types import MappingProxyType
 from typing import Mapping
+
+from ..core.base import KNOWLEDGE_FUSERS, KNOWLEDGE_RANKERS
 
 from .controllers import PhaseSupply
 from .knowledge import FusionDecision, RankResult
@@ -18,6 +20,12 @@ from .knowledge import KnowledgeSnapshot
 
 KNOWLEDGE_STORE_RELEASE_SCHEMA = "saea-knowledge-store-release-v1"
 STORE_SEPARATOR = "::"
+COMPOSITE_CONTEXT_RANK_POLICY_ID = "saea-named-context-composite-rank-v1"
+COMPOSITE_CONTEXT_FUSE_POLICY_ID = "saea-named-context-composite-fuse-v1"
+if COMPOSITE_CONTEXT_RANK_POLICY_ID not in KNOWLEDGE_RANKERS.names():
+    KNOWLEDGE_RANKERS.register(COMPOSITE_CONTEXT_RANK_POLICY_ID, lambda _=None: lambda *a, **k: None)
+if COMPOSITE_CONTEXT_FUSE_POLICY_ID not in KNOWLEDGE_FUSERS.names():
+    KNOWLEDGE_FUSERS.register(COMPOSITE_CONTEXT_FUSE_POLICY_ID, lambda _=None: lambda *a, **k: None)
 _STORE_ID = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 _SHA256 = re.compile(r"[0-9a-f]{64}")
 _STORE_KEYS = frozenset({"store_role", "snapshot", "release"})
@@ -104,7 +112,7 @@ class KnowledgeStore:
     source_pin: Mapping[str, str]
     phase_supply: Mapping[str, object]
     candidate_supply: Mapping[str, object]
-    context_supply: Mapping[str, object]
+    context_supply: Mapping[str, object] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -461,6 +469,8 @@ def build_knowledge_store_supply(
         store = binding.store(store_id)
         specs = load_phase_supply_specs({"phase_supply": store.phase_supply}, program)
         scoped_phases = {phase for (owner, phase) in context_specs if owner == store_id}
+        if set(specs).intersection(scoped_phases):
+            raise KnowledgeStoreError("explicit and scoped supply cannot overlap on one store phase")
         collisions = (set(specs) | scoped_phases).intersection(candidate_specs)
         if collisions:
             raise KnowledgeStoreError(
@@ -568,7 +578,7 @@ def build_knowledge_store_supply(
                 rank_result=provider.last_rank_result(), fusion_decision=decision,
                 action_target_ref=SOURCE_SCOPED_CONTEXT_PROVIDER_ID,
             ).validate()
-            return binding.qualify_supply(store_id, local, query_state)
+            return local
         try:
             callback = callbacks[store_id]
         except KeyError as error:
@@ -594,14 +604,14 @@ def build_knowledge_store_supply(
         rank = RankResult(
             snapshot_sha256=binding.binding_sha256,
             query_state_sha256=query_state.content_hash(),
-            ranking_policy_id="saea-named-context-composite-rank-v1",
+            ranking_policy_id=COMPOSITE_CONTEXT_RANK_POLICY_ID,
             candidates=tuple(sorted(candidates, key=lambda item: (-item.score, item.facet_id))),
         ).validate()
         decision = FusionDecision(
             snapshot_sha256=binding.binding_sha256,
             query_state_sha256=query_state.content_hash(),
             rank_result_sha256=rank.content_hash(),
-            fusion_policy_id="saea-named-context-composite-fuse-v1",
+            fusion_policy_id=COMPOSITE_CONTEXT_FUSE_POLICY_ID,
             supporting_facet_ids=tuple(candidate.facet_id for candidate in rank.candidates),
             selected_value_ids=tuple(
                 value_id for supply in supplies for value_id in supply.fusion_decision.selected_value_ids
@@ -614,7 +624,7 @@ def build_knowledge_store_supply(
         if query_state is None:
             raise KnowledgeStoreError("automatic context supply requires a QueryState")
         supplies = [
-            route(store_id, phase, context)
+            binding.qualify_supply(store_id, route(store_id, phase, context), query_state)
             for store_id in binding.store_ids
             if (store_id, phase) in context_specs
         ]
@@ -636,10 +646,9 @@ def build_knowledge_store_supply(
     }
     if candidate_callback is not None or context_specs:
         route.automatic_for_phase = automatic_for_phase
-        route.receipt["candidate_supply"] = candidate_receipt
-        route.receipt["candidate_selections"] = candidate_receipt[
-            "candidate_selections"
-        ]
+        if candidate_receipt is not None:
+            route.receipt["candidate_supply"] = candidate_receipt
+            route.receipt["candidate_selections"] = candidate_receipt["candidate_selections"]
     return route
 
 

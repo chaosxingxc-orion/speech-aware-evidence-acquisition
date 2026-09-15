@@ -27,7 +27,7 @@ def _snapshot(*, malformed=False):
         KeyFacet(
             facet_id=f"scope-{sample}", dimension="source-scope",
             representation_kind="parent-sample-id", representation=sample,
-            source_sample_ids=(sample,),
+            source_sample_ids=(f"external-{sample}",),
         )
         for sample in ("parent-a", "parent-b")
     )
@@ -35,13 +35,13 @@ def _snapshot(*, malformed=False):
         ValueBundle(
             value_id=f"value-{sample}", content=f"governed context {sample}",
             associated_facet_ids=(("scope-parent-a", "scope-parent-b") if malformed and sample == "parent-a" else (f"scope-{sample}",)),
-            source_sample_ids=(sample,), provenance_refs=("synthetic",),
+            source_sample_ids=(f"external-{sample}",), provenance_refs=("synthetic",),
         )
         for sample in ("parent-a", "parent-b")
     )
     return KnowledgeSnapshot(
         snapshot_id="governed-context", source_split_identity_hash=SHA,
-        source_sample_ids=("parent-a", "parent-b"), builder_policy_id="synthetic",
+        source_sample_ids=("external-parent-a", "external-parent-b"), builder_policy_id="synthetic",
         source_partition_role=EXTERNAL_GOVERNED_PARTITION_ROLE, facets=facets, values=values,
     ).validate()
 
